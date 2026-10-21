@@ -1,0 +1,35 @@
+# Beispiel: Dialog + zugehörige Locale-Einträge (concept/11 §6). Bei Umsetzung:
+# Dialog → content/dialogue/dlg.ch01.intro.yaml, Texte → content/locales/{de,en}.yaml
+dialogue:
+  id: dlg.ch01.intro
+  background: bg_varnhold_burning
+  lines:
+    - { speaker: tobin,  mood: surprised, side: right, key: dlg.ch01.intro.001 }
+    - { speaker: kael,   mood: angry,     side: left,  key: dlg.ch01.intro.002 }
+    - { speaker: brenna, mood: neutral,   side: right, key: dlg.ch01.intro.003 }
+    - { speaker: kael,   mood: sad,       side: left,  key: dlg.ch01.intro.004 }
+    - choice:
+        - { key: dlg.ch01.intro.c1, setFlag: avatar_cautious }
+        - { key: dlg.ch01.intro.c2, setFlag: avatar_bold }
+    - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.intro.005a, if: { flag: avatar_cautious } }
+    - { speaker: kael, mood: happy,   side: left, key: dlg.ch01.intro.005b, if: { flag: avatar_bold } }
+
+locales:
+  de:
+    dlg.ch01.intro.001: "Hauptmann! Die Stadt brennt – und die Leute sagen, der König ist tot!"
+    dlg.ch01.intro.002: "Tot? Aldric war gesund wie ein Ochse, als ich ihn zuletzt bewacht habe."
+    dlg.ch01.intro.003: "Marodeure nutzen die Nachricht schneller als jeder Herold. Wir müssen über die Brücke, bevor sie sie einreißen."
+    dlg.ch01.intro.004: "{avatar.name}. Du wolltest beweisen, dass du mehr kannst als Karten lesen. Jetzt ist die Gelegenheit."
+    dlg.ch01.intro.c1: "„Wir bleiben zusammen und meiden das Feuer.“"
+    dlg.ch01.intro.c2: "„Wir schlagen eine Schneise mitten hindurch.“"
+    dlg.ch01.intro.005a: "Vorsichtig. Gut. Tote Söldner kassieren keinen Sold."
+    dlg.ch01.intro.005b: "Mutig. Hoffen wir, dass das Feuer das auch so sieht."
+  en:
+    dlg.ch01.intro.001: "Captain! The town's burning – and people say the king is dead!"
+    dlg.ch01.intro.002: "Dead? Aldric was healthy as an ox when I last stood guard over him."
+    dlg.ch01.intro.003: "Marauders spread news faster than any herald. We need to cross that bridge before they tear it down."
+    dlg.ch01.intro.004: "{avatar.name}. You wanted to prove you can do more than read maps. Here's your chance."
+    dlg.ch01.intro.c1: "\"We stay together and avoid the fire.\""
+    dlg.ch01.intro.c2: "\"We cut a path straight through.\""
+    dlg.ch01.intro.005a: "Careful. Good. Dead mercenaries don't collect pay."
+    dlg.ch01.intro.005b: "Bold. Let's hope the fire agrees."

@@ -1,0 +1,258 @@
+# Startwerte [C]. v1: true = in V1 implementiert. Siehe concept/04-units-progression.md
+# growthMod wird zur Charakter-Wachstumsrate addiert (Prozentpunkte).
+- id: tactician
+  nameKey: class.tactician.name
+  tier: unique
+  moveType: foot
+  mov: 5
+  weapons: [sword, anima]
+  tags: []
+  skill: tactician_command
+  growthMod: { hp: 0, str: 5, mag: 5, skl: 5, spd: 5, lck: 5, def: 0, res: 5 }
+  caps: { hp: 50, str: 22, mag: 22, skl: 24, spd: 24, lck: 25, def: 20, res: 20 }
+  promotesTo: [grandmaster]
+  playable: true
+  v1: true
+
+- id: captain
+  nameKey: class.captain.name
+  tier: unique
+  moveType: foot
+  mov: 5
+  weapons: [sword, lance]
+  tags: []
+  skill: rally
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 5, spd: 5, lck: 5, def: 5, res: 0 }
+  caps: { hp: 55, str: 24, mag: 12, skl: 24, spd: 23, lck: 25, def: 22, res: 16 }
+  promotesTo: [banner_lord]
+  playable: true
+  v1: true
+
+- id: mercenary
+  nameKey: class.mercenary.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [sword]
+  tags: []
+  skill: counter_instinct
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 10, spd: 10, lck: 0, def: 0, res: 0 }
+  caps: { hp: 50, str: 22, mag: 12, skl: 25, spd: 24, lck: 25, def: 20, res: 15 }
+  promotesTo: [hero, swordmaster]
+  playable: true
+  v1: true
+
+- id: soldier
+  nameKey: class.soldier.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [lance]
+  tags: []
+  skill: phalanx
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 5, spd: 0, lck: 0, def: 10, res: 0 }
+  caps: { hp: 52, str: 23, mag: 12, skl: 22, spd: 20, lck: 25, def: 23, res: 15 }
+  promotesTo: [halberdier, cavalier]
+  playable: true
+  v1: true
+
+- id: fighter
+  nameKey: class.fighter.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [axe]
+  tags: []
+  skill: climber
+  growthMod: { hp: 15, str: 10, mag: 0, skl: 0, spd: 0, lck: 0, def: 5, res: -5 }
+  caps: { hp: 60, str: 26, mag: 10, skl: 20, spd: 20, lck: 25, def: 20, res: 12 }
+  promotesTo: [warrior, berserker]
+  playable: true
+  v1: true
+
+- id: archer
+  nameKey: class.archer.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [bow]
+  tags: []
+  skill: eagle_eye
+  growthMod: { hp: 5, str: 5, mag: 0, skl: 15, spd: 5, lck: 0, def: 0, res: 0 }
+  caps: { hp: 48, str: 22, mag: 12, skl: 26, spd: 22, lck: 25, def: 18, res: 15 }
+  promotesTo: [sniper, ranger]
+  playable: true
+  v1: true
+
+- id: mage
+  nameKey: class.mage.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [anima]
+  tags: []
+  skill: elemental_focus
+  growthMod: { hp: 0, str: 0, mag: 15, skl: 5, spd: 5, lck: 0, def: 0, res: 10 }
+  caps: { hp: 45, str: 12, mag: 25, skl: 22, spd: 22, lck: 25, def: 15, res: 22 }
+  promotesTo: [sage, warlock]
+  playable: true
+  v1: true
+
+- id: cleric
+  nameKey: class.cleric.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [staff, light]
+  tags: [holy]
+  skill: blessing
+  growthMod: { hp: 0, str: 0, mag: 10, skl: 0, spd: 5, lck: 10, def: 0, res: 15 }
+  caps: { hp: 45, str: 12, mag: 23, skl: 20, spd: 22, lck: 28, def: 15, res: 25 }
+  promotesTo: [bishop, war_cleric]
+  playable: true
+  v1: true
+
+# --- Profiklassen (V1: hero, halberdier, warrior, sniper, sage, bishop) ---
+- id: hero
+  nameKey: class.hero.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [sword, axe]
+  tags: []
+  skill: sol
+  growthMod: { hp: 15, str: 10, mag: 0, skl: 10, spd: 10, lck: 0, def: 5, res: 0 }
+  caps: { hp: 65, str: 30, mag: 15, skl: 32, spd: 30, lck: 30, def: 27, res: 20 }
+  promotionBonus: { hp: 4, str: 2, skl: 2, spd: 1, def: 2, res: 1 }
+  playable: true
+  v1: true
+
+- id: halberdier
+  nameKey: class.halberdier.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [lance]
+  tags: []
+  skill: impale
+  growthMod: { hp: 15, str: 10, mag: 0, skl: 5, spd: 5, lck: 0, def: 15, res: 0 }
+  caps: { hp: 65, str: 30, mag: 15, skl: 28, spd: 26, lck: 30, def: 32, res: 20 }
+  promotionBonus: { hp: 4, str: 2, skl: 1, spd: 1, def: 3, res: 1 }
+  playable: true
+  v1: true
+
+- id: warrior
+  nameKey: class.warrior.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [axe, bow]
+  tags: []
+  skill: climber
+  growthMod: { hp: 20, str: 15, mag: 0, skl: 5, spd: 0, lck: 0, def: 5, res: -5 }
+  caps: { hp: 70, str: 34, mag: 12, skl: 28, spd: 26, lck: 30, def: 28, res: 18 }
+  promotionBonus: { hp: 5, str: 3, skl: 1, def: 2 }
+  playable: true
+  v1: true
+
+- id: sniper
+  nameKey: class.sniper.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [bow]
+  tags: []
+  skill: longshot      # +1 max. Reichweite mit Bögen
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 20, spd: 10, lck: 0, def: 5, res: 0 }
+  caps: { hp: 60, str: 28, mag: 15, skl: 35, spd: 30, lck: 30, def: 25, res: 20 }
+  promotionBonus: { hp: 3, str: 1, skl: 3, spd: 2, def: 1, res: 1 }
+  playable: true
+  v1: true
+
+- id: sage
+  nameKey: class.sage.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [anima, staff]
+  tags: []
+  skill: elemental_focus
+  growthMod: { hp: 5, str: 0, mag: 20, skl: 5, spd: 5, lck: 0, def: 0, res: 15 }
+  caps: { hp: 55, str: 15, mag: 32, skl: 30, spd: 28, lck: 30, def: 20, res: 30 }
+  promotionBonus: { hp: 3, mag: 3, skl: 1, spd: 1, res: 2 }
+  playable: true
+  v1: true
+
+- id: bishop
+  nameKey: class.bishop.name
+  tier: advanced
+  moveType: foot
+  mov: 6
+  weapons: [staff, light]
+  tags: [holy]
+  skill: blessing
+  growthMod: { hp: 5, str: 0, mag: 15, skl: 0, spd: 5, lck: 15, def: 0, res: 20 }
+  caps: { hp: 55, str: 15, mag: 30, skl: 26, spd: 28, lck: 35, def: 20, res: 34 }
+  promotionBonus: { hp: 3, mag: 2, spd: 1, lck: 2, res: 3 }
+  playable: true
+  v1: true
+
+# --- Profiklassen nach V1 (Spezifikation siehe concept/04 §4): swordmaster, cavalier, berserker,
+#     ranger, warlock, war_cleric, grandmaster, banner_lord, assassin, rogue, falcon_knight,
+#     seraph_knight, general, great_knight, wyvern_lord, dragonslayer ---
+
+# --- Nur Gegner in V1 ---
+- id: brigand
+  nameKey: class.brigand.name
+  tier: base
+  moveType: foot
+  mov: 5
+  weapons: [axe]
+  tags: []
+  skill: climber
+  growthMod: { hp: 20, str: 10, mag: 0, skl: -5, spd: 0, lck: -5, def: 0, res: -5 }
+  caps: { hp: 60, str: 26, mag: 8, skl: 18, spd: 20, lck: 20, def: 18, res: 10 }
+  promotesTo: []
+  playable: false
+  v1: true
+
+- id: knight
+  nameKey: class.knight.name
+  tier: base
+  moveType: armored
+  mov: 4
+  weapons: [lance]
+  tags: [armored]
+  skill: heavy_armor
+  growthMod: { hp: 15, str: 5, mag: 0, skl: 0, spd: -10, lck: 0, def: 20, res: -5 }
+  caps: { hp: 60, str: 25, mag: 10, skl: 22, spd: 16, lck: 22, def: 30, res: 12 }
+  promotesTo: [general, great_knight]
+  playable: false
+  v1: true
+
+- id: pegasus_knight
+  nameKey: class.pegasus_knight.name
+  tier: base
+  moveType: flier
+  mov: 7
+  weapons: [lance]
+  tags: [flier]
+  growthMod: { hp: 0, str: 0, mag: 5, skl: 10, spd: 15, lck: 5, def: -5, res: 15 }
+  caps: { hp: 45, str: 20, mag: 18, skl: 24, spd: 26, lck: 25, def: 16, res: 22 }
+  promotesTo: [falcon_knight, seraph_knight]
+  playable: false
+  v1: true
+
+- id: drake_young
+  nameKey: class.drake_young.name
+  tier: unique
+  moveType: flier
+  mov: 6
+  weapons: [breath]   # Monster-Waffe, nur für Monster
+  tags: [flier, monster, dragon]
+  skill: dragonhide   # −50 % Schaden von Waffen ohne Element, außer effektive
+  growthMod: {}
+  caps: { hp: 90, str: 30, mag: 30, skl: 25, spd: 22, lck: 20, def: 28, res: 25 }
+  promotesTo: []
+  playable: false
+  v1: true

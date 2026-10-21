@@ -1,0 +1,117 @@
+# V1-Itemliste. Startwerte [C]. Felder siehe concept/05-inventory-items.md §4.
+# Kurzform: mt=might, wt=weight, rng=[min,max]. nameKey = item.<id>.name (implizit).
+# Runen-Slots: Default nach Seltenheit (common 1, sonst 2), Rüstung (body) 1, sonst 0.
+
+# --- Schwerter ---
+- { id: iron_sword,  kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 5,  hit: 90,  crit: 0, rng: [1,1], wt: 5,  rarity: common, price: 400 }
+- { id: steel_sword, kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 8,  hit: 75,  crit: 0, rng: [1,1], wt: 10, rarity: common, price: 900, grantsSkill: { skill: vantage, masteryCost: 40 } }
+- { id: slim_sword,  kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 3,  hit: 100, crit: 5, rng: [1,1], wt: 2,  rarity: common, price: 550, grantsSkill: { skill: pass, masteryCost: 30 } }
+
+# --- Lanzen ---
+- { id: iron_lance,  kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7,  rarity: common, price: 450 }
+- { id: steel_lance, kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [1,1], wt: 12, rarity: common, price: 1000 }
+- { id: javelin,     kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 4, hit: 65, crit: 0, rng: [1,2], wt: 9,  rarity: common, price: 700 }
+- { id: horseslayer, kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 6, hit: 70, crit: 0, rng: [1,1], wt: 11, rarity: rare,   price: 1300, effectiveVs: [mounted] }
+
+# --- Äxte ---
+- { id: iron_axe,  kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 8,  hit: 70, crit: 0, rng: [1,1], wt: 9,  rarity: common, price: 450 }
+- { id: steel_axe, kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 11, hit: 60, crit: 0, rng: [1,1], wt: 14, rarity: common, price: 1000, grantsSkill: { skill: momentum, masteryCost: 25 } }
+- { id: hand_axe,  kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 6,  hit: 60, crit: 0, rng: [1,2], wt: 11, rarity: common, price: 700 }
+- { id: hammer,    kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 10, hit: 55, crit: 0, rng: [1,1], wt: 15, rarity: rare,   price: 1300, effectiveVs: [armored], twoHanded: true }
+
+# --- Bögen (immer effektiv gegen flier) ---
+- { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
+- { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
+- { id: longbow,   kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 5, hit: 65, crit: 0, rng: [2,3], wt: 9, rarity: rare,   price: 1500, twoHanded: true, effectiveVs: [flier], grantsSkill: { skill: precision, masteryCost: 35 } }
+
+# --- Zauber (anima = 4 Elemente, light) ---
+- { id: ember,      kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: fire,  mt: 5, hit: 90,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 500, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite }
+- { id: gust,       kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: wind,  mt: 3, hit: 100, crit: 5, rng: [1,2], wt: 2, rarity: common, price: 500, statusOnHit: { status: knockback, chance: 100 } }
+- { id: rockfall,   kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: earth, mt: 7, hit: 75,  crit: 0, rng: [1,2], wt: 7, rarity: common, price: 650, statusOnHit: { status: slowed, chance: 50 } }
+- { id: surge,      kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: water, mt: 4, hit: 85,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 550, statusOnHit: { status: wet, chance: 100 }, terrainOnHit: extinguish }
+- { id: stone_wall, kind: tome, slot: mainHand, weaponType: anima, element: earth, utility: { createTerrain: rockwall, rng: [1,3] }, wt: 5, rarity: rare, price: 1200 }   # kein Schaden
+- { id: shine,      kind: tome, slot: mainHand, weaponType: light, damageType: magical, element: light, mt: 4, hit: 95,  crit: 5, rng: [1,2], wt: 3, rarity: common, price: 600, effectiveVs: [monster, undead] }
+
+# --- Stäbe (Heilung = Wert + MAG) ---
+- { id: heal_staff,   kind: staff, slot: mainHand, weaponType: staff, heal: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
+- { id: mend_staff,   kind: staff, slot: mainHand, weaponType: staff, heal: 20, rng: [1,1], wt: 5, rarity: common, price: 900 }
+- { id: remedy_staff, kind: staff, slot: mainHand, weaponType: staff, cureStatus: true, heal: 5, rng: [1,2], wt: 3, rarity: rare, price: 1000 }
+
+# --- Schilde / Nebenhand ---
+- { id: wooden_shield, kind: shield, slot: offHand, statMods: { def: 2 }, wt: 4,  rarity: common, price: 300 }
+- { id: iron_shield,   kind: shield, slot: offHand, statMods: { def: 4 }, wt: 7,  rarity: common, price: 700, setId: ashen_watch, grantsSkill: { skill: shield_wall, masteryCost: 20 } }
+- { id: tower_shield,  kind: shield, slot: offHand, statMods: { def: 6, mov: -1 }, wt: 10, rarity: rare, price: 1200 }
+- { id: ember_focus,   kind: accessory, slot: offHand, statMods: { mag: 1 }, wt: 1, rarity: common, price: 600, setId: ember_garb }
+
+# --- Kopf ---
+- { id: leather_cap, kind: armor, slot: head, statMods: { def: 1 }, wt: 1, rarity: common, price: 200 }
+- { id: iron_helm,   kind: armor, slot: head, statMods: { def: 2 }, wt: 3, rarity: common, price: 500, setId: ashen_watch }
+- { id: mage_hood,   kind: armor, slot: head, statMods: { res: 2 }, wt: 1, rarity: common, price: 500, setId: ember_garb, grantsSkill: { skill: magic_ward, masteryCost: 30 } }
+
+# --- Körper (bestimmt Affinität, wenn element gesetzt) ---
+- { id: leather_vest, kind: armor, slot: body, armorClass: light,  statMods: { def: 2 }, wt: 2,  rarity: common, price: 300 }
+- { id: chainmail,    kind: armor, slot: body, armorClass: medium, statMods: { def: 4 }, wt: 6,  rarity: common, price: 900, setId: ashen_watch }
+- { id: plate_armor,  kind: armor, slot: body, armorClass: heavy,  statMods: { def: 7, spd: -1 }, wt: 12, rarity: common, price: 1500 }
+- { id: mage_robe,    kind: armor, slot: body, armorClass: light,  statMods: { res: 3, mag: 1 }, wt: 1, rarity: common, price: 600 }
+- { id: ember_robe,   kind: armor, slot: body, armorClass: light,  statMods: { res: 3, mag: 1 }, element: fire, wt: 1, rarity: rare, price: 1400, setId: ember_garb }
+
+# --- Accessoires ---
+- { id: power_ring,  kind: accessory, slot: accessory, statMods: { str: 2 }, wt: 0, rarity: rare,   price: 1500 }
+- { id: wind_feather,kind: accessory, slot: accessory, statMods: { mov: 1 }, wt: 0, rarity: rare,   price: 2000, grantsSkill: { skill: canto, masteryCost: 40 } }
+- { id: lucky_charm, kind: accessory, slot: accessory, statMods: { lck: 4 }, wt: 0, rarity: common, price: 800,  grantsSkill: { skill: miracle, masteryCost: 50 } }
+- { id: earth_amulet,kind: accessory, slot: accessory, statMods: { res: 2 }, wt: 1, rarity: rare,   price: 1600, grantsSkill: { skill: renewal, masteryCost: 45 } }
+- { id: ashen_badge, kind: accessory, slot: accessory, combatMods: { hit: 5 }, wt: 0, rarity: common, price: 800,  setId: ashen_watch, grantsSkill: { skill: armsthrift, masteryCost: 30 } }
+
+# --- Legendär (handplatziert) ---
+- id: ashen_blade        # Kap. 3, Nebenziel „Truhe im Kommandantenturm"
+  kind: weapon
+  slot: mainHand
+  weaponType: sword
+  damageType: physical
+  element: fire
+  mt: 10
+  hit: 85
+  crit: 10
+  rng: [1, 1]
+  wt: 7
+  rarity: legendary
+  price: 0               # unverkäuflich
+  statusOnHit: { status: burning, chance: 30 }
+  grantsSkill: { skill: embers, masteryCost: 60 }
+  tags: [unsellable]
+- id: dawnbreaker        # Kap. 4, Nebenziel „alle Flüchtlinge gerettet"
+  kind: weapon
+  slot: mainHand
+  weaponType: bow
+  damageType: physical
+  element: light
+  mt: 8
+  hit: 80
+  crit: 5
+  rng: [2, 3]
+  wt: 6
+  twoHanded: true
+  rarity: legendary
+  price: 0
+  effectiveVs: [flier, monster, dragon]
+  grantsSkill: { skill: dawn_volley, masteryCost: 60 }
+  tags: [unsellable]
+
+# --- Monster-Waffe (nicht für Spieler) ---
+- { id: drake_breath, kind: weapon, slot: mainHand, weaponType: breath, damageType: magical, element: fire, mt: 9, hit: 80, crit: 0, rng: [1,2], wt: 0, rarity: common, price: 0, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite, tags: [monsterOnly] }
+
+# --- Beutel / Verbrauch ---
+- { id: vulnerary,      kind: consumable, slot: bag, use: { heal: 10 }, charges: 3, refillAfterMission: true, wt: 0, rarity: common, price: 300 }
+- { id: remedy_salve,   kind: consumable, slot: bag, use: { cureStatus: true }, charges: 2, refillAfterMission: true, wt: 0, rarity: common, price: 300 }
+- { id: door_key,       kind: key,        slot: bag, use: { open: [door, chest] }, charges: 1, wt: 0, rarity: common, price: 250 }
+- { id: fire_bomb,      kind: consumable, slot: bag, use: { damage: 8, element: fire, rng: [1,2], status: burning, terrain: ignite }, charges: 1, wt: 0, rarity: common, price: 400 }
+- { id: haste_scroll,   kind: consumable, slot: bag, use: { target: ally, rng: [0,1], statMods: { mov: 2 }, duration: round }, charges: 1, wt: 0, rarity: rare, price: 800 }
+- { id: torch,          kind: consumable, slot: bag, use: { vision: 4, duration: 3 }, charges: 1, wt: 0, rarity: common, price: 150 }
+- { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000 }
+- { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
+
+# --- Materialien (nur Konvoi) ---
+- { id: iron_ore,     kind: material, slot: bag, wt: 0, rarity: common,    price: 100, tags: [convoyOnly] }
+- { id: moonsteel,    kind: material, slot: bag, wt: 0, rarity: rare,      price: 400, tags: [convoyOnly] }
+- { id: dragon_scale, kind: material, slot: bag, wt: 0, rarity: epic,      price: 0,   tags: [convoyOnly] }
+- { id: arcane_dust,  kind: material, slot: bag, wt: 0, rarity: common,    price: 150, tags: [convoyOnly] }
