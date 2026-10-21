@@ -1,0 +1,39 @@
+# Startwerte [C]. source: class | personal | item. Effekte als Bausteine (siehe concept/11 §5).
+# --- Klassen-Skills ---
+- { id: tactician_command, source: class, trigger: action, usesPerMap: 1, target: { ally: true, adjacent: true, exhausted: true }, effect: { refreshAction: true } }
+- { id: rally,             source: class, trigger: action, usesPerMap: 1, area: { radius: 2, allies: true }, effect: { damageBonus: 2, hitBonus: 10, until: end_of_next_enemy_phase } }
+- { id: counter_instinct,  source: class, trigger: on_defend, effect: { hitBonus: 10 } }
+- { id: phalanx,           source: class, trigger: passive, condition: { adjacentAllies: 1 }, effect: { stats: { def: 2 } } }
+- { id: climber,           source: class, trigger: passive, effect: { terrainCost: { mountain: 3 } } }
+- { id: eagle_eye,         source: class, trigger: on_attack, condition: { distanceAtLeast: 2 }, effect: { hitBonus: 10 } }
+- { id: elemental_focus,   source: class, trigger: passive, effect: { statusChanceBonus: 20 } }
+- { id: blessing,          source: class, trigger: passive, effect: { healBonus: 5 } }
+- { id: heavy_armor,       source: class, trigger: passive, effect: { allowArmorClass: heavy } }
+- { id: sol,               source: class, trigger: on_hit, chanceFrom: skl, effect: { lifestealPercent: 50 } }
+- { id: impale,            source: class, trigger: on_hit, chanceFrom: skl, chanceDivisor: 2, effect: { ignoreDefPercent: 50 } }
+- { id: longshot,          source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1 } }
+- { id: dragonhide,        source: class, trigger: on_defend, condition: { attackerNoElement: true, notEffective: true }, effect: { damageTakenPercent: 50 } }
+
+# --- Persönliche Skills ---
+- { id: strategist_eye, source: personal, trigger: on_attack, condition: { alliesAdjacentToTarget: 2 }, effect: { hitBonus: 10 } }          # Avatar
+- { id: steadfast,      source: personal, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { def: 3 } } }             # Kael
+- { id: veteran_grit,   source: personal, trigger: passive,   condition: { adjacentTo: kael }, effect: { stats: { str: 2 }, critBonus: 5 } } # Brenna
+- { id: underdog,       source: personal, trigger: passive,   condition: { enemyLevelHigher: true }, effect: { hitBonus: 10, avoidBonus: 10 } } # Tobin
+- { id: poacher,        source: personal, trigger: on_attack, condition: { distanceAtLeast: 2, selfOnTerrain: forest }, effect: { damageBonus: 2 } } # Mira
+- { id: foresight,      source: personal, trigger: on_defend, condition: { attackerDamageType: magical }, effect: { avoidBonus: 15 } } # Liora
+- { id: gamblers_luck,  source: personal, trigger: passive,   effect: { critBonus: 10, hitBonus: -5 } }                                     # Varek
+- { id: prodigy,        source: personal, trigger: passive,   effect: { statusChanceBonus: 15 } }                                           # Ysolde
+
+# --- Item-Skills (meisterbar) ---
+- { id: shield_wall,  source: item, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }
+- { id: momentum,     source: item, trigger: on_attack, condition: { initiator: true }, effect: { damageBonus: 3 } }
+- { id: precision,    source: item, trigger: passive,   effect: { hitBonus: 15 } }
+- { id: canto,        source: item, trigger: after_action, effect: { extraMove: 2 } }
+- { id: renewal,      source: item, trigger: on_turn_start, effect: { healPercent: 10 } }
+- { id: miracle,      source: item, trigger: on_lethal, chanceFrom: lck, condition: { hpAbove: 1 }, effect: { surviveWith: 1 } }
+- { id: magic_ward,   source: item, trigger: on_defend, condition: { attackerDamageType: magical }, effect: { damageTakenPercent: 70 } }
+- { id: vantage,      source: item, trigger: on_defend, condition: { hpBelowPercent: 50 }, effect: { strikeFirst: true } }
+- { id: pass,         source: item, trigger: passive,   effect: { moveThroughEnemies: true } }
+- { id: armsthrift,   source: item, trigger: passive,   effect: { bagChargeSaveChance: 30 } }     # Verbrauchsladung mit 30 % nicht verbraucht
+- { id: embers,       source: item, trigger: on_hit,    condition: { targetStatus: burning }, effect: { damageBonus: 4 } }   # legendär: Aschenklinge
+- { id: dawn_volley,  source: item, trigger: on_attack, condition: { targetTag: dragon }, effect: { hitBonus: 20 } }          # legendär: Morgenbrecher

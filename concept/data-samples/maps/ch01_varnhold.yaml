@@ -1,0 +1,114 @@
+# Kapitel 1 – Asche über Varnhold. Ziel: Kael erreicht die Brücke im Norden.
+# Referenzkarte für das Format (concept/11-content-format.md §2). Werte = Startwerte [C].
+id: ch01_varnhold
+nameKey: map.ch01_varnhold.name
+size: [12, 18]
+fog: false
+legend:
+  ".": plain
+  ",": grass
+  "T": forest
+  "^": mountain
+  "~": river
+  "=": bridge
+  "#": wall
+  "H": village
+  "F": fort
+#          x: 0123456789AB
+terrain: |
+  ^^,,,..,,,^^
+  ~~~~~==~~~~~
+  ~~~~~==~~~~~
+  ,,TT,..,TT,,
+  ,TTT,..,,T,,
+  ,,,,....,,,F
+  ##.H..##..##
+  #...,,#....#
+  ..,,TT,,..,,
+  .,TTT,,,.TT,
+  ..,,,,..,,..
+  ##..##..##.H
+  #H..#....#..
+  ....,,,,....
+  .,,TT..TT,,.
+  ..,,......,,
+  ...F....F...
+  ............
+
+objects:
+  - { id: v_north, type: village, at: [3, 6],  reward: { gold: 300, dialogue: dlg.ch01.village_north } }
+  - { id: v_east,  type: village, at: [11, 11], reward: { recruit: mira, dialogue: dlg.ch01.mira_village } }
+  - { id: v_west,  type: village, at: [1, 12], reward: { item: { def: fire_rune_1 }, dialogue: dlg.ch01.village_west } }
+  - { id: chest_merchant, type: chest, at: [10, 7], contents: { item: { def: lucky_charm } } }   # Brenna trägt einen Schlüssel
+
+initialEffects:
+  - { effect: burning, tiles: [[4, 13], [5, 13]], turns: 3 }     # Brand in der Stadtmitte, breitet sich aus
+
+deploy:
+  max: 4
+  forced: [avatar, kael]
+  slots: [[4, 17], [5, 17], [6, 17], [7, 17], [5, 16], [6, 16]]
+
+units:
+  - id: hask
+    nameKey: unit.hask.name
+    team: enemy
+    class: brigand
+    level: 4
+    at: [5, 3]
+    boss: true
+    items: [ { def: steel_axe }, { def: vulnerary } ]
+    drops: [0]
+    ai: { profile: guard }
+    quote: dlg.ch01.hask_battle
+  - { id: e1, team: enemy, class: brigand, level: 2, at: [3, 9],  items: [{ def: iron_axe }],  ai: { profile: aggressive } }
+  - { id: e2, team: enemy, class: brigand, level: 2, at: [8, 10], items: [{ def: iron_axe }],  ai: { profile: aggressive } }
+  - { id: e3, team: enemy, class: archer,  level: 2, at: [9, 8],  items: [{ def: iron_bow }],  ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: e4, team: enemy, class: brigand, level: 3, at: [2, 7],  items: [{ def: hand_axe }],  ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: e5, team: enemy, class: archer,  level: 3, at: [7, 4],  items: [{ def: iron_bow }],  ai: { profile: hold } }
+  - { id: e6, team: enemy, class: brigand, level: 2, at: [4, 5],  items: [{ def: iron_axe }], ai: { profile: raider, target: v_east } }   # erreicht das Dorf in Gegnerphase 3
+  - { id: e7, team: enemy, class: brigand, level: 3, at: [9, 5],  items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
+
+pairs: []
+
+reinforcements:
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { class: brigand, level: 2, at: [0, 10], items: [{ def: hand_axe }], ai: { profile: aggressive } }
+      - { class: brigand, level: 2, at: [11, 8], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+
+objectives:
+  victory: { type: reach, unit: kael, area: { tiles: [[5, 0], [6, 0]] } }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+  side:
+    - { id: s_villages, type: visit_villages, reward: { gold: 500 } }
+    - { id: s_fast,     type: turn_limit, turns: 12, reward: { item: { def: iron_shield } } }
+    - { id: s_clean,    type: no_downs, reward: { material: { arcane_dust: 2 } } }
+
+triggers:
+  - id: t_intro_fire
+    once: true
+    when: { type: turn_start, turn: 1, phase: player }
+    then:
+      - { action: dialogue, id: dlg.ch01.tutorial_fire }
+  - id: t_ambush
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [0, 7, 11, 8] } }
+    then:
+      - { action: dialogue, id: dlg.ch01.ambush }
+      - { action: set_ai, units: [e3, e4], profile: aggressive }
+  - id: t_village_razed
+    once: true
+    when: { type: object_destroyed, object: v_east }
+    then:
+      - { action: dialogue, id: dlg.ch01.mira_lost }   # Mira ist dann in V1 nicht rekrutierbar
+
+music: battle_tense
+devNote: >
+  Tutorial-Schwerpunkte: Feuer breitet sich aus (Gras), Dörfer besuchen (Raider e6 setzt Zeitdruck
+  auf das Dorf mit Mira), Gefahrenzone vor dem Hinterhalt (Zeilen 7–8), Boss bewacht die Brücke.
+  Das Brückenfeld x=6 bleibt frei, man muss Hask nicht besiegen.
