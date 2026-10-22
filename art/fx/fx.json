@@ -1,0 +1,98 @@
+{
+  "cell": [
+    48,
+    48
+  ],
+  "anims": {
+    "flame": {
+      "row": 0,
+      "frames": 6,
+      "fps": 12,
+      "loop": "loop"
+    },
+    "embers": {
+      "row": 1,
+      "frames": 4,
+      "fps": 8,
+      "loop": "loop"
+    },
+    "hit_spark": {
+      "row": 2,
+      "frames": 4,
+      "fps": 15,
+      "loop": "once"
+    },
+    "hit_star_crit": {
+      "row": 3,
+      "frames": 5,
+      "fps": 12,
+      "loop": "once"
+    },
+    "heal": {
+      "row": 4,
+      "frames": 6,
+      "fps": 10,
+      "loop": "loop"
+    },
+    "smoke": {
+      "row": 5,
+      "frames": 6,
+      "fps": 8,
+      "loop": "loop"
+    },
+    "levelup": {
+      "row": 6,
+      "frames": 6,
+      "fps": 10,
+      "loop": "once"
+    },
+    "fire_bolt": {
+      "row": 7,
+      "frames": 4,
+      "fps": 12,
+      "loop": "loop"
+    },
+    "wind_slash": {
+      "row": 8,
+      "frames": 4,
+      "fps": 12,
+      "loop": "once"
+    },
+    "water_burst": {
+      "row": 9,
+      "frames": 4,
+      "fps": 12,
+      "loop": "once"
+    },
+    "earth_spikes": {
+      "row": 10,
+      "frames": 4,
+      "fps": 12,
+      "loop": "once"
+    },
+    "light_pillar": {
+      "row": 11,
+      "frames": 5,
+      "fps": 10,
+      "loop": "once"
+    },
+    "dark_tendrils": {
+      "row": 12,
+      "frames": 4,
+      "fps": 10,
+      "loop": "loop"
+    },
+    "arrow": {
+      "row": 13,
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    "downed_pulse": {
+      "row": 14,
+      "frames": 4,
+      "fps": 6,
+      "loop": "loop"
+    }
+  }
+}

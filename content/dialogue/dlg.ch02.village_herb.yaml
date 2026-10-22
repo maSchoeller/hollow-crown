@@ -1,0 +1,4 @@
+id: dlg.ch02.village_herb
+background: bg_silverbrook_shrine
+lines:
+  - { key: dlg.ch02.village_herb.001 }

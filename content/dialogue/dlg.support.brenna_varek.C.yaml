@@ -1,0 +1,8 @@
+id: dlg.support.brenna_varek.C
+background: bg_camp_night
+music: camp
+lines:
+  - { speaker: brenna, mood: angry, side: left, key: dlg.support.brenna_varek.C.001 }
+  - { speaker: varek, mood: happy, side: right, key: dlg.support.brenna_varek.C.002 }
+  - { speaker: brenna, mood: neutral, side: left, key: dlg.support.brenna_varek.C.003 }
+  - { speaker: varek, mood: neutral, side: right, key: dlg.support.brenna_varek.C.004 }

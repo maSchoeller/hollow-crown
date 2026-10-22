@@ -1,0 +1,30 @@
+{
+  "cell": [
+    96,
+    96
+  ],
+  "anchor": [
+    48,
+    87
+  ],
+  "rows": [
+    {
+      "name": "a",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    {
+      "name": "b",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    {
+      "name": "c",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+id: dlg.ch01.village_west
+background: bg_varnhold_burning
+lines:
+  - { key: dlg.ch01.village_west.001 }

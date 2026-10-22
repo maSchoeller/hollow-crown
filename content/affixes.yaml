@@ -1,0 +1,17 @@
+# affixes – Startwerte [C], aus concept/data-samples/affixes-runes-sets.yaml (concept/05).
+# appliesTo: weapon | armor | shield | accessory ; position: prefix | suffix (für den Namen)
+- { id: swift,       position: prefix, appliesTo: [weapon, armor],     mods: { stats: { spd: 2 } } }
+- { id: heavy,       position: prefix, appliesTo: [weapon],            mods: { might: 2, weight: 2 } }
+- { id: featherlight, position: prefix, appliesTo: [weapon, armor, shield], mods: { weight: -2 } }
+- { id: keen,        position: prefix, appliesTo: [weapon],            mods: { crit: 5 } }
+- { id: accurate,    position: prefix, appliesTo: [weapon],            mods: { hit: 10 } }
+- { id: sturdy,      position: prefix, appliesTo: [armor, shield],     mods: { stats: { def: 1 } } }
+- { id: warded,      position: prefix, appliesTo: [armor, shield],     mods: { stats: { res: 2 } } }
+- { id: lucky,       position: prefix, appliesTo: [weapon, accessory], mods: { stats: { lck: 3 } } }
+- { id: of_might,    position: suffix, appliesTo: [weapon, accessory], mods: { stats: { str: 1 } } }
+- { id: of_sorcery,  position: suffix, appliesTo: [weapon, accessory], mods: { stats: { mag: 1 } } }
+- { id: of_the_watch,position: suffix, appliesTo: [armor, shield],     mods: { avoid: 5 } }
+- { id: of_vigor,    position: suffix, appliesTo: [armor, accessory],  mods: { stats: { hp: 3 } } }
+- { id: dragonslayer,position: suffix, appliesTo: [weapon],            mods: { effectiveVs: [dragon] }, rarityMin: epic }
+- { id: of_embers,   position: suffix, appliesTo: [weapon],            mods: { statusOnHit: { status: burning, chance: 15 } } }
+- { id: of_the_hunt, position: suffix, appliesTo: [weapon],            mods: { damageVsTag: { tag: flier, bonus: 2 } } }

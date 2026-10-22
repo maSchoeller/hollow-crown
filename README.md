@@ -12,7 +12,26 @@
 
 ## Status
 
-📐 **Anforderungsdefinition abgeschlossen.** Siehe [`concept/`](concept/README.md). Die Umsetzung von V1 (Vertical Slice) steht als Nächstes an.
+🎮 **Erster Wurf von V1:** Prolog, Kapitel 1 und 2 sind spielbar (DE/EN), mit Lager, Speichern und PWA. Umfang und offene Punkte: [`concept/01-decisions.md`](concept/01-decisions.md) (U1–U13). Konzept: [`concept/`](concept/README.md).
+
+Spielen: nach dem Merge auf `main` unter **https://maschoeller.github.io/hollow-crown/** (als App installierbar: „Zum Startbildschirm hinzufügen“).
+
+## Entwicklung
+
+Node 22+, pnpm 10, Python 3.12+ mit Pillow (nur für die Assets).
+
+```bash
+pnpm install
+pnpm art:build      # art/ → public/assets
+pnpm dev            # http://localhost:5173
+pnpm test           # Vitest (Kern, Replays)
+pnpm test:e2e       # Playwright (iPhone 13, Pixel 7, iPad quer, Desktop)
+pnpm lint           # ESLint (inkl. Schichtenregeln) + Typecheck
+pnpm content:check  # YAML-Validierung, Referenzen, DE/EN
+pnpm sim ch01_varnhold --runs 50   # KI gegen KI fürs Balancing
+```
+
+Struktur: `src/core` (reiner Regelkern, deterministisch), `src/content` (YAML + Zod), `src/render` (Babylon.js, 48-px-Pixel-Brett), `src/ui` + `src/app` (Preact), `content/` (Spieldaten), `art/` (Asset-Quellen, Git LFS).
 
 ## Tech
 

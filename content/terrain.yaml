@@ -1,0 +1,26 @@
+# Gelände (concept/06 §2, Bewegungskosten concept/04 §2). Startwerte [C].
+# cost: Bewegungskosten je Bewegungstyp, null = nicht betretbar.
+# ground: Bodenschicht fürs Dual-Grid-Rendering, prop: Requisite darüber (art/README.md).
+- { id: plain,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: grass,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: road,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: forest,   def: 1, avoid: 20,  heal: 0,  flammable: true,  ground: grass, prop: tree, cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 } }
+- { id: sand,     def: 0, avoid: 5,   heal: 0,  flammable: false, ground: sand,  cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 } }
+- { id: mountain, def: 2, avoid: 30,  heal: 0,  flammable: false, ground: grass, prop: rock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: 3 } }
+- { id: shallows, def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 } }
+- { id: river,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null } }
+- { id: bridge,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, prop: bridge, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: fort,     def: 2, avoid: 20,  heal: 20, flammable: false, ground: plain, prop: fort, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: throne,   def: 3, avoid: 30,  heal: 20, flammable: false, ground: plain, prop: throne, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: gate,     def: 2, avoid: 20,  heal: 0,  flammable: false, ground: road,  prop: gate, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: village,  def: 0, avoid: 10,  heal: 0,  flammable: false, ground: plain, prop: house, visitable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: ruins,    def: 1, avoid: 10,  heal: 0,  flammable: false, ground: plain, prop: ruins, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: wall,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: wall,  cost: { foot: null, armored: null, mounted: null, flier: null, monster: null } }
+- { id: burning,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, cost: { foot: 2, armored: 2, mounted: 2, flier: 1, monster: 2 } }
+- { id: ash,      def: 0, avoid: 0,   heal: 0,  flammable: false, ground: ash,   cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+- { id: rockwall, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: rockwall, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null } }
+- { id: door,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: door_closed, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null } }
+- { id: door_open, def: 0, avoid: 0,  heal: 0,  flammable: false, ground: road,  prop: door_open, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }
+# Kapitel-spezifisch
+- { id: wagon,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: wagon, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null } }
+- { id: shrine,   def: 2, avoid: 20,  heal: 20, flammable: false, ground: plain, prop: shrine, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 } }

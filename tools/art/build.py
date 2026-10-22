@@ -1,0 +1,132 @@
+"""pnpm art:build – builds public/assets from art/ (concept/16-asset-pipeline.md §2, §6).
+
+python tools/art/build.py [--quality mid|high]
+
+- Tiles, FX, sprite sheets: copied losslessly (PNG).
+- Portraits: WebP q85, 768 px high (high: 1152 px).
+- Backgrounds: WebP q80, 1920×1080 (high: 2560×1440).
+- Writes public/assets/manifest.json describing everything that exists.
+Requires Pillow.
+"""
+import json
+import os
+import shutil
+import sys
+
+from PIL import Image
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ART = os.path.join(ROOT, 'art')
+OUT = os.path.join(ROOT, 'public', 'assets')
+HIGH = '--quality' in sys.argv and sys.argv[sys.argv.index('--quality') + 1] == 'high'
+PORTRAIT_H = 1152 if HIGH else 768
+BG_SIZE = (2560, 1440) if HIGH else (1920, 1080)
+
+
+def ensure(p):
+    os.makedirs(p, exist_ok=True)
+    return p
+
+
+def copy_tree_files(src, dst, exts):
+    out = []
+    if not os.path.isdir(src):
+        return out
+    ensure(dst)
+    for f in sorted(os.listdir(src)):
+        if os.path.splitext(f)[1].lower() in exts and 'preview' not in f:
+            shutil.copy2(os.path.join(src, f), os.path.join(dst, f))
+            out.append(f)
+    return out
+
+
+def build_sheets(kind):
+    base = os.path.join(ART, 'sprites', kind)
+    result = {}
+    if not os.path.isdir(base):
+        return result
+    for sid in sorted(os.listdir(base)):
+        d = os.path.join(base, sid)
+        meta = os.path.join(d, 'sheet.json')
+        color = os.path.join(d, 'sheet.key.png')
+        if not (os.path.isfile(meta) and os.path.isfile(color)):
+            continue
+        dst = ensure(os.path.join(OUT, 'sprites', kind, sid))
+        shutil.copy2(color, os.path.join(dst, 'sheet.png'))
+        has_normal = os.path.isfile(os.path.join(d, 'sheet.normal.png'))
+        if has_normal:
+            shutil.copy2(os.path.join(d, 'sheet.normal.png'), os.path.join(dst, 'normal.png'))
+        with open(meta, encoding='utf-8') as f:
+            m = json.load(f)
+        m['normal'] = has_normal
+        result[sid] = m
+    return result
+
+
+def build_portraits():
+    base = os.path.join(ART, 'portraits')
+    result = {}
+    if not os.path.isdir(base):
+        return result
+    for pid in sorted(os.listdir(base)):
+        d = os.path.join(base, pid)
+        if not os.path.isdir(d):
+            continue
+        moods = []
+        for f in sorted(os.listdir(d)):
+            if not f.endswith('.png'):
+                continue
+            mood = f[:-4]
+            im = Image.open(os.path.join(d, f)).convert('RGBA')
+            w = round(im.width * PORTRAIT_H / im.height)
+            im = im.resize((w, PORTRAIT_H), Image.LANCZOS)
+            dst = ensure(os.path.join(OUT, 'portraits', pid))
+            im.save(os.path.join(dst, f"{mood}.webp"), "WEBP", quality=85, method=4)
+            moods.append(mood)
+        result[pid] = moods
+    return result
+
+
+def build_backgrounds():
+    base = os.path.join(ART, 'backgrounds')
+    result = []
+    if not os.path.isdir(base):
+        return result
+    dst = ensure(os.path.join(OUT, 'backgrounds'))
+    for f in sorted(os.listdir(base)):
+        if not f.endswith('.png'):
+            continue
+        im = Image.open(os.path.join(base, f)).convert('RGB').resize(BG_SIZE, Image.LANCZOS)
+        im.save(os.path.join(dst, f[:-4] + '.webp'), 'WEBP', quality=80, method=4)
+        result.append(f[:-4])
+    return result
+
+
+def main():
+    if os.path.isdir(OUT):
+        shutil.rmtree(OUT)
+    ensure(OUT)
+    tiles = copy_tree_files(os.path.join(ART, 'tiles'), os.path.join(OUT, 'tiles'), {'.png', '.json'})
+    fx = copy_tree_files(os.path.join(ART, 'fx'), os.path.join(OUT, 'fx'), {'.png', '.json'})
+    manifest = {
+        'tileSize': 48,
+        'tiles': [t[:-4] for t in tiles if t.endswith('.png')],
+        'fx': bool(fx),
+        'units': build_sheets('units'),
+        'props': build_sheets('props'),
+        'portraits': build_portraits(),
+        'backgrounds': build_backgrounds(),
+    }
+    audio_src = os.path.join(ROOT, 'audio-src', 'build')
+    if os.path.isdir(audio_src):
+        files = copy_tree_files(audio_src, os.path.join(OUT, 'audio'), {'.mp3', '.webm', '.m4a', '.ogg', '.json'})
+        manifest['audio'] = sorted({os.path.splitext(f)[0] for f in files if not f.endswith('.json')})
+    with open(os.path.join(OUT, 'manifest.json'), 'w', encoding='utf-8') as f:
+        json.dump(manifest, f, indent=1)
+    total = sum(os.path.getsize(os.path.join(dp, fn)) for dp, _, fns in os.walk(OUT) for fn in fns)
+    print(f"assets: {len(manifest['units'])} units, {len(manifest['props'])} props, {len(manifest['portraits'])} portraits, "
+          f"{len(manifest['backgrounds'])} backgrounds, {len(manifest['tiles'])} tile sheets – {total / 1e6:.1f} MB")
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,30 @@
+{
+  "cell": [
+    96,
+    96
+  ],
+  "anchor": [
+    48,
+    87
+  ],
+  "rows": [
+    {
+      "name": "intact",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    {
+      "name": "visited",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    {
+      "name": "razed",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    }
+  ]
+}

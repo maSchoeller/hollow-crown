@@ -1,0 +1,24 @@
+{
+  "cell": [
+    72,
+    72
+  ],
+  "anchor": [
+    36,
+    63
+  ],
+  "rows": [
+    {
+      "name": "closed",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    },
+    {
+      "name": "open",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    }
+  ]
+}

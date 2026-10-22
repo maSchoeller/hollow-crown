@@ -1,0 +1,149 @@
+import type { z } from 'zod';
+import type {
+  AffixDef,
+  Balance,
+  CampaignDef,
+  CharDef,
+  ClassDef,
+  DialogueDef,
+  GameData,
+  ItemDef,
+  MapDef,
+  Rarity,
+  RuneDef,
+  SetDef,
+  SkillDef,
+  TerrainDef,
+} from '../core/defs';
+import {
+  affixSchema,
+  balanceSchema,
+  campaignSchema,
+  charSchema,
+  classSchema,
+  dialogueSchema,
+  itemSchema,
+  mapSchema,
+  runeSchema,
+  setSchema,
+  skillSchema,
+  terrainSchema,
+} from './schemas';
+
+export type Locales = Record<string, Record<string, string>>;
+
+export interface ContentIssue {
+  file: string;
+  message: string;
+}
+
+export interface LoadedContent {
+  data: GameData;
+  locales: Locales;
+  issues: ContentIssue[];
+}
+
+/** Normalises a glob/file path to "maps/x.yaml" relative to the content root. */
+export function contentPath(p: string): string {
+  const n = p.replace(/\\/g, '/');
+  const i = n.lastIndexOf('content/');
+  return i >= 0 ? n.slice(i + 'content/'.length) : n;
+}
+
+function flatten(obj: unknown, prefix = '', out: Record<string, string> = {}): Record<string, string> {
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) flatten(v, prefix ? `${prefix}.${k}` : k, out);
+  } else if (obj !== undefined && obj !== null) out[prefix] = String(obj);
+  return out;
+}
+
+function parseList<T>(file: string, raw: unknown, schema: z.ZodType, issues: ContentIssue[]): T[] {
+  if (!Array.isArray(raw)) {
+    issues.push({ file, message: 'expected a list' });
+    return [];
+  }
+  const out: T[] = [];
+  raw.forEach((entry, i) => {
+    const r = schema.safeParse(entry);
+    if (r.success) out.push(r.data as T);
+    else
+      issues.push({
+        file,
+        message: `entry ${i} (${(entry as { id?: string })?.id ?? '?'}): ${r.error.issues.map((x) => `${x.path.join('.')}: ${x.message}`).join('; ')}`,
+      });
+  });
+  return out;
+}
+
+function parseOne<T>(file: string, raw: unknown, schema: z.ZodType, issues: ContentIssue[]): T | null {
+  const r = schema.safeParse(raw);
+  if (r.success) return r.data as T;
+  issues.push({ file, message: r.error.issues.map((x) => `${x.path.join('.')}: ${x.message}`).join('; ') });
+  return null;
+}
+
+const byId = <T extends { id: string }>(list: T[]): Record<string, T> => Object.fromEntries(list.map((x) => [x.id, x]));
+
+const RUNE_RARITY: Record<number, Rarity> = { 1: 'common', 2: 'rare', 3: 'epic' };
+
+/** Builds GameData from parsed YAML documents keyed by path (browser: import.meta.glob, Node: fs). */
+export function buildContent(files: Record<string, unknown>): LoadedContent {
+  const issues: ContentIssue[] = [];
+  const get = (p: string) => {
+    const key = Object.keys(files).find((k) => contentPath(k) === p);
+    if (!key) issues.push({ file: p, message: 'missing file' });
+    return key ? files[key] : undefined;
+  };
+  const balance = parseOne<Balance>('balance.yaml', get('balance.yaml'), balanceSchema, issues);
+  const classes = parseList<ClassDef>('classes.yaml', get('classes.yaml'), classSchema, issues);
+  const chars = parseList<CharDef>('units.yaml', get('units.yaml'), charSchema, issues);
+  const items = parseList<ItemDef>('items.yaml', get('items.yaml'), itemSchema, issues);
+  const skills = parseList<SkillDef>('skills.yaml', get('skills.yaml'), skillSchema, issues);
+  const affixes = parseList<AffixDef>('affixes.yaml', get('affixes.yaml'), affixSchema, issues);
+  const runes = parseList<RuneDef>('runes.yaml', get('runes.yaml'), runeSchema, issues);
+  const sets = parseList<SetDef>('sets.yaml', get('sets.yaml'), setSchema, issues);
+  const terrain = parseList<TerrainDef>('terrain.yaml', get('terrain.yaml'), terrainSchema, issues);
+  const campaign = parseOne<CampaignDef>('campaign.yaml', get('campaign.yaml'), campaignSchema, issues);
+  const maps: Record<string, MapDef> = {};
+  const dialogues: Record<string, DialogueDef> = {};
+  const locales: Locales = {};
+  for (const [k, raw] of Object.entries(files)) {
+    const p = contentPath(k);
+    if (p.startsWith('maps/')) {
+      const m = parseOne<MapDef>(p, raw, mapSchema, issues);
+      if (m) maps[m.id] = m;
+    } else if (p.startsWith('dialogue/')) {
+      const d = parseOne<DialogueDef>(p, raw, dialogueSchema, issues);
+      if (d) dialogues[d.id] = d;
+    } else if (p.startsWith('locales/')) {
+      const lang = p.slice('locales/'.length).split('.')[0]!;
+      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
+    }
+  }
+  // runes are items too (they sit in the convoy and get sold/bought)
+  const runeItems: ItemDef[] = runes.map((r) => ({
+    id: r.id,
+    kind: 'rune',
+    slot: 'bag',
+    wt: 0,
+    rarity: r.utility ? 'rare' : (RUNE_RARITY[r.tier ?? 1] ?? 'common'),
+    price: r.price ?? 0,
+    element: r.element,
+    tags: ['convoyOnly'],
+  }));
+  const data: GameData = {
+    balance: balance as Balance,
+    classes: byId(classes),
+    chars: byId(chars),
+    items: byId([...items, ...runeItems]),
+    skills: byId(skills),
+    affixes: byId(affixes),
+    runes: byId(runes),
+    sets: byId(sets),
+    terrain: byId(terrain),
+    maps,
+    dialogues,
+    campaign: campaign as CampaignDef,
+  };
+  return { data, locales, issues };
+}

@@ -1,0 +1,17 @@
+id: dlg.prologue.intro
+background: bg_caravan_road
+music: title
+lines:
+  - { speaker: liora, mood: neutral, side: right, key: dlg.prologue.intro.001 }
+  - { speaker: liora, mood: sad, side: right, key: dlg.prologue.intro.002 }
+  - { key: dlg.prologue.intro.003 }
+  - { speaker: tobin, mood: happy, side: right, key: dlg.prologue.intro.004 }
+  - { speaker: brenna, mood: happy, side: right, key: dlg.prologue.intro.005 }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.intro.006 }
+  - choice:
+      - { key: dlg.prologue.intro.c1, setFlag: avatar_honest }
+      - { key: dlg.prologue.intro.c2, setFlag: avatar_proud }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.intro.007, if: { flag: avatar_honest } }
+  - { speaker: kael, mood: happy, side: left, key: dlg.prologue.intro.008, if: { flag: avatar_proud } }
+  - { speaker: brenna, mood: surprised, side: right, key: dlg.prologue.intro.009 }
+  - { speaker: kael, mood: angry, side: left, key: dlg.prologue.intro.010 }
