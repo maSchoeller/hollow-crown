@@ -1,6 +1,8 @@
 import { useEffect } from 'preact/hooks';
 import { t } from '../i18n';
+import { asset } from '../ui/components';
 import { Dialogue } from '../ui/Dialogue';
+import { Icon } from '../ui/icons';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
@@ -12,21 +14,24 @@ function Defeat() {
   const b = battle.value;
   return (
     <div class="screen title-screen" style={{ justifyContent: 'center' }}>
-      <div class="logo" style={{ fontSize: 'clamp(30px, 9vw, 52px)', color: '#f59a8a' }}>
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_varnhold_burning.webp')})` }} />
+      <div class="logo" style={{ fontSize: 'clamp(40px, 11vw, 64px)' }}>
         {t('ui.defeat.title')}
       </div>
       <div class="tagline">{t('ui.defeat.text')}</div>
       <div class="title-menu">
         {b && b.start.settings.deathMode !== 'classic' && (
-          <button class="btn primary" onClick={() => restartBattle(true)}>
-            ↺ {t('ui.battle.restartRound')}
+          <button class="btn primary big" onClick={() => restartBattle(true)}>
+            {t('ui.battle.restartRound')}
           </button>
         )}
         <button class="btn" onClick={() => restartBattle(false)}>
-          ⟲ {t('ui.battle.restartMission')}
+          <Icon name="restart" />
+          {t('ui.battle.restartMission')}
         </button>
-        <button class="btn ghost" onClick={() => (screen.value = { name: 'title' })}>
-          ⌂ {t('ui.battle.toTitle')}
+        <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
+          <Icon name="home" />
+          {t('ui.battle.toTitle')}
         </button>
       </div>
     </div>

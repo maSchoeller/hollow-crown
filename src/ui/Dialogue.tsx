@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { DialogueLine, GameData } from '../core';
 import { t } from '../i18n';
 import { asset, Modal } from './components';
+import { Icon } from './icons';
 
 const ENEMIES = new Set(['grosk', 'hask', 'morra']);
 const OTHERS = new Set(['liora']);
@@ -97,7 +98,8 @@ export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onD
           {t('ui.dialogue.log')}
         </button>
         <button class="btn small ghost" onClick={onDone}>
-          {t('ui.dialogue.skip')} ⏭
+          {t('ui.dialogue.skip')}
+          <Icon name="skip" size={16} />
         </button>
       </div>
       <div class="vn-box" onClick={(e) => choice && e.stopPropagation()}>
@@ -126,7 +128,11 @@ export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onD
         ) : (
           <div class={speaking ? '' : 'vn-narration'}>{text.slice(0, shown)}</div>
         )}
-        {!choice && shown >= text.length && <span class="vn-next">▼</span>}
+        {!choice && shown >= text.length && (
+          <span class="vn-next">
+            <Icon name="forward" size={18} />
+          </span>
+        )}
       </div>
       {log && (
         <div onClick={(e) => e.stopPropagation()}>

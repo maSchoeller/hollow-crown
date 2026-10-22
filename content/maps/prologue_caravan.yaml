@@ -1,5 +1,5 @@
 # Prolog – Die letzte Wacht. Banditen überfallen die Karawane. Ziel: alle Gegner besiegen (rout).
-# Tutorial: Bewegen, Angriff, Waffendreieck, Kampfvorschau. Startwerte [C].
+# Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf). Startwerte [C].
 id: prologue_caravan
 nameKey: map.prologue_caravan.name
 size: [10, 12]
@@ -49,12 +49,22 @@ units:
     drops: [1]
     ai: { profile: guard }
     quote: dlg.prologue.grosk_battle
+  # Nur eine Gegnerart (Axt-Banditen) und keine Fernkämpfer: Der Prolog lehrt Bewegen, Angreifen,
+  # Kampfvorschau, Gefahrenzone und Deckung. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
   - { id: p_e1, team: enemy, class: brigand, level: 1, at: [2, 4], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { id: p_e2, team: enemy, class: brigand, level: 1, at: [7, 3], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: p_e3, team: enemy, class: archer, level: 1, at: [6, 2], sprite: bandit_archer, nameKey: unit.bandit_archer.name, items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: p_e3, team: enemy, class: brigand, level: 1, at: [6, 2], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
   - { id: p_e4, team: enemy, class: brigand, level: 2, at: [8, 6], sprite: brigand, items: [{ def: hand_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p_e5, team: enemy, class: brigand, level: 2, at: [1, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
 pairs: []
-reinforcements: []
+reinforcements:
+  # Schwer: Zwei Nachzügler fallen der Karawane in den Rücken.
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [0, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [9, 11], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: rout }
   defeat:
@@ -64,6 +74,7 @@ objectives:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
     - { id: s_fast, type: turn_limit, turns: 7, reward: { gold: 200 } }
 triggers:
+  # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
   - id: t_intro
     when: { type: turn_start, turn: 1, phase: player }
     then:
@@ -71,7 +82,11 @@ triggers:
   - id: t_turn2
     when: { type: turn_start, turn: 2, phase: player }
     then:
-      - { action: dialogue, id: dlg.prologue.tutorial_triangle }
+      - { action: dialogue, id: dlg.prologue.tutorial_danger }
+  - id: t_heal
+    when: { type: hp_below, unit: kael, percent: 60 }
+    then:
+      - { action: dialogue, id: dlg.prologue.tutorial_heal }
 goldReward: 300
 music: battle_a
-devNote: "Kompakte Tutorialkarte. Grosk bewacht die Festung im Norden, die Karawane steht in der Mitte der Straße."
+devNote: "Kompakte Tutorialkarte. Grosk bewacht die Festung im Norden, die Karawane steht in der Mitte der Straße. Leicht: 3 Banditen + Grosk; Normal: +1; Schwer: +1 und Rückenangriff in Runde 3."

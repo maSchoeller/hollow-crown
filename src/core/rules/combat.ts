@@ -2,7 +2,7 @@ import type { Element, GameData, Pos, StatusId } from '../defs';
 import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
-import { active, clamp, dist, getUnit, inBounds, pairKey, terrainAt, unitAt } from '../util';
+import { active, clamp, dist, getUnit, inBounds, pairKey, ruleOn, terrainAt, unitAt } from '../util';
 import { applyStatus, extinguishTile, igniteTile, knockOut, setTerrain } from './effects';
 import { itemDef, weaponProfile, type WeaponProfile } from './items';
 import { moveCost, weaponRange } from './movement';
@@ -115,7 +115,8 @@ function calcSide(
     initiator ? 'combat_defend' : 'combat_attack',
   );
   const magic = wp?.damageType === 'magical';
-  const tri = triangleOf(data, wp, owp);
+  const tri = ruleOn(s, 'triangle') ? triangleOf(data, wp, owp) : 0;
+  const elements = ruleOn(s, 'elements');
   const myBonus = adjacencyBonus(data, s, me, myPos);
   const oppBonus = adjacencyBonus(data, s, opp, oppPos);
   const oppFlier = data.classes[opp.classId]?.moveType === 'flier';
@@ -134,7 +135,7 @@ function calcSide(
     const might = effective ? wp.might * b.combat.effectiveMightMultiplier : wp.might;
     const tagBonus = wp.damageVsTag.filter((x) => oppTags.includes(x.tag)).reduce((t, x) => t + x.bonus, 0);
     atk = (magic ? stats.stats.mag : stats.stats.str) + might + stats.skills.damage + buffDamage + tagBonus;
-    elementMult = elementMultiplier(data, wp.element, oppStats.affinity, oppTags);
+    elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags) : 1;
     const base = atk - def;
     const triDmg = tri * b.triangle.damage;
     let dmg = Math.floor((base + triDmg) * elementMult);
@@ -158,7 +159,7 @@ function calcSide(
   const setStatus = setBonuses(data, me)
     .map((m) => m.statusChanceBonus)
     .filter((x): x is NonNullable<typeof x> => !!x);
-  const status = (wp?.statusOnHit ?? []).map((x) => {
+  const status = (elements ? (wp?.statusOnHit ?? []) : []).map((x) => {
     const el = Object.entries(b.element.statusOf).find(([, st]) => st === x.status)?.[0];
     const setB = setStatus.filter((sb) => sb.element === el).reduce((t, sb) => t + sb.value, 0);
     const immune = oppStats.affinity && el === oppStats.affinity;
@@ -345,7 +346,7 @@ function applyOnHitEffects(
     if (st.status === 'knockback') knockback(data, s, me, opp, events);
     else applyStatus(data, s, opp, st.status, events);
   }
-  if (wp.terrainOnHit && opp.pos) {
+  if (wp.terrainOnHit && opp.pos && ruleOn(s, 'elements')) {
     if (wp.terrainOnHit === 'ignite') igniteTile(data, s, opp.pos, 'ignite', events);
     else extinguishTile(s, opp.pos, events);
   }
@@ -475,7 +476,7 @@ export function resolveAttack(
   }
   if (landed.a && active(d)) applyOnHitEffects(data, s, a, d, f.attacker, aWp, events);
   if (landed.d && active(a)) applyOnHitEffects(data, s, d, a, f.defender, dWp, events);
-  if (landed.a && aWp?.terrainOnHit && d.gone === 'dead' && d.pos) {
+  if (landed.a && aWp?.terrainOnHit && d.gone === 'dead' && d.pos && ruleOn(s, 'elements')) {
     // a kill still sets the tile alight (fire spreading from the strike)
     if (aWp.terrainOnHit === 'ignite') igniteTile(data, s, d.pos, 'ignite', events);
   }

@@ -32,6 +32,8 @@
 
 ## 4. Wireframes (Hochformat, Handy)
 
+> **Stand 2026-10-22:** Die Wireframes unten sind die ursprüngliche Skizze. Umgesetzt ist die überarbeitete Bedienführung aus `01-decisions.md` U20 (Kriegslager-Hub, Kampf-Dock mit max. 4 Aktionen, Duell-Vorschau) im Stil U21; Referenz sind die Mockups „B hell“ auf der Design-Leinwand „Hollow Crown – UI-Richtungen“.
+
 ### 4.1 Kampf-HUD
 
 ```

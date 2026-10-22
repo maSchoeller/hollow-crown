@@ -1,6 +1,6 @@
 import { SUPPORT_RANKS, type GameData, type Pos, type SupportRank } from '../defs';
 import type { BattleState, BattleUnit, SupportState } from '../state';
-import { active, isAlly, neighbors, pairKey, unitAt } from '../util';
+import { active, isAlly, neighbors, pairKey, ruleOn, unitAt } from '../util';
 
 export const rankIndex = (r: SupportRank | null | undefined): number => (r ? SUPPORT_RANKS.indexOf(r) : -1);
 
@@ -12,6 +12,7 @@ export function supportRank(s: BattleState, a: BattleUnit, b: BattleUnit): Suppo
 /** Adjacent partners of a unit at a position with their rank. */
 export function adjacentPartners(s: BattleState, unit: BattleUnit, pos: Pos): Array<{ unit: BattleUnit; rank: SupportRank }> {
   const out: Array<{ unit: BattleUnit; rank: SupportRank }> = [];
+  if (!ruleOn(s, 'supports')) return out;
   for (const p of neighbors(pos)) {
     const o = unitAt(s, p);
     if (!o || o.uid === unit.uid || !active(o) || !isAlly(o.team, unit.team)) continue;

@@ -1,7 +1,14 @@
-import type { Area, Pos, Team } from './defs';
+import type { Area, Difficulty, Mechanic, Pos, Team } from './defs';
 import type { BattleState, BattleUnit } from './state';
 
 export const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
+
+/** Whether a step-by-step introduced mechanic applies in this battle. */
+export const ruleOn = (s: { locked?: Mechanic[] }, m: Mechanic): boolean => !s.locked?.includes(m);
+
+/** Map units / reinforcements present on a difficulty. */
+export const onDifficulty = <T extends { difficulty?: Difficulty[] }>(defs: T[], d: Difficulty): T[] =>
+  defs.filter((x) => !x.difficulty || x.difficulty.includes(d));
 
 export const dist = (a: Pos, b: Pos): number => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
 export const samePos = (a: Pos | null | undefined, b: Pos | null | undefined): boolean =>
