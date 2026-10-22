@@ -53,7 +53,7 @@ export interface BattleResult {
   outcome: 'victory' | 'defeat';
   nodeId: string;
   turns: number;
-  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward }>;
+  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward; turns?: number }>;
   gold: number;
   materials: Record<string, number>;
   items: ItemInstance[];
@@ -184,7 +184,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   // side objectives
   for (const o of map.objectives.side) {
     const done = sideObjectiveDone(data, s, o);
-    result.side.push({ id: o.id, type: o.type, done, reward: o.reward });
+    result.side.push({ id: o.id, type: o.type, done, reward: o.reward, turns: o.turns });
     if (!done) continue;
     if (o.reward.gold) s.goldGained += o.reward.gold;
     for (const [id, n] of Object.entries(o.reward.material ?? {})) s.materialsGained[id] = (s.materialsGained[id] ?? 0) + n;

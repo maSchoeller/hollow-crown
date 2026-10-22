@@ -1020,6 +1020,9 @@ input[type='text'] {
 }
 
 /* ---------- responsive: tablet & desktop side panels (concept/09 §2) ---------- */
+.side-left {
+  display: none !important;
+}
 @media (min-width: 600px) {
   .battle.has-side {
     grid-template-columns: 1fr 340px;
@@ -1052,9 +1055,6 @@ input[type='text'] {
     border-left: none;
     border-right: 1px solid rgba(201, 162, 74, 0.5);
   }
-}
-.side-left {
-  display: none !important;
 }
 .roster-mini {
   display: flex;

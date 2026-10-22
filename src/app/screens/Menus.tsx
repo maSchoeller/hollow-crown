@@ -337,7 +337,7 @@ export function Result({ result }: { result: import('../../core').BattleResult }
           {result.side.map((s) => (
             <div key={s.id} class="row">
               <span class={s.done ? 'adv' : 'dis'}>{s.done ? '✔' : '✘'}</span>
-              <span class="grow">{t(`ui.side.${s.type}`)}</span>
+              <span class="grow">{t(`ui.side.${s.type}`, { turns: s.turns ?? 0 })}</span>
               <span class="muted">{rewardText(s.reward)}</span>
             </div>
           ))}

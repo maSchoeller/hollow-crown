@@ -215,3 +215,19 @@ export function setFlag(flag: string): void {
   // battle state stays untouched so replays remain pure; choices only happen outside battles
   if (c && !c.flags.includes(flag)) campaign.value = { ...c, flags: [...c.flags, flag] };
 }
+
+/** Dev helper: lets the simulator play the current battle (manual testing only). */
+if (import.meta.env.DEV) {
+  void import('../core/ai/autoplay').then(({ autoCommand }) => {
+    (window as unknown as { __hc: unknown }).__hc = {
+      autoStep: () => command(autoCommand(data, battle.value!.state)),
+      autoWin: () => {
+        for (let i = 0; i < 3000 && battle.value && !battle.value.state.outcome; i++) command(autoCommand(data, battle.value.state));
+        concludeBattle();
+      },
+      campaign,
+      battle,
+      screen,
+    };
+  });
+}

@@ -96,7 +96,8 @@ def props(sprites, out, scale=3):
             c = swap(img.crop((0, ri * ch, cw, ri * ch + ch)), "player")
             bg = Image.new("RGBA", (96, 106), (40, 44, 52, 255))
             t = on_tile(c, meta)
-            bg.paste(t, ((96 - cw) // 2, 10 + (96 - ch)))
+            ax, ay = meta["anchor"]
+            bg.paste(t, (48 - ax, 10 + 87 - ay))
             ImageDraw.Draw(bg).text((2, 0), f"{pid}:{r['name']}", fill=(232, 226, 214, 255))
             tiles.append(bg)
     cols = 6

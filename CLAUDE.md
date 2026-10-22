@@ -4,7 +4,7 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 
 ## Projektstand
 
-Bisher gibt es **nur die Anforderungsdefinition** in `concept/`. Als Nächstes wird **V1 (Vertical Slice)** umgesetzt.
+Anforderungsdefinition in `concept/`. **Erster Wurf von V1** ist umgesetzt: Prolog + Kapitel 1–2 spielbar (Umfang und Lücken: `concept/01-decisions.md` U1–U13). Raster ist **48 px** (GA4b, Asset-Format in `art/README.md`). Deployment: GitHub Pages (`.github/workflows/pages.yml`).
 
 ## Bevor du Code schreibst
 
@@ -39,4 +39,5 @@ pnpm test:e2e       # Playwright
 pnpm lint           # ESLint + Typecheck
 pnpm content:check  # Content-Validierung
 pnpm sim <mapId>    # KI-gegen-KI-Simulation fürs Balancing
+pnpm art:build      # art/ → public/assets (Python + Pillow)
 ```
