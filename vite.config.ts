@@ -23,7 +23,7 @@ export default defineConfig({
     yamlPlugin(),
     preact(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['icons/*.png', 'icons/*.ico'],
       manifest: {
         name: 'Hollow Crown',
