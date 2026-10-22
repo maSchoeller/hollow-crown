@@ -2,7 +2,7 @@
 # Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf). Startwerte [C].
 id: prologue_caravan
 nameKey: map.prologue_caravan.name
-size: [10, 12]
+size: [12, 12]
 fog: false
 legend:
   ".": plain
@@ -12,37 +12,37 @@ legend:
   "^": mountain
   "F": fort
   "W": wagon
-#          x: 0123456789
+#          x: 0123456789AB
 terrain: |
-  TT,,^^,,TT
-  T,,.F..,,T
-  ,,..__..,,
-  ,T,.__.,T,
-  ,,,.__.,,,
-  TT,,__,,TT
-  ,,,,__,,,,
-  ,T,,__,T,,
-  ,,,W__W,,,
-  ,,,.__.,,,
-  T,,.__.,,T
-  TT,.__.,TT
+  TTT,,^^,,TTT
+  ,T,,.F..,,T,
+  T,,..__..,,,
+  ,,T,.__.,T,T
+  ,,,,.__.,,,,
+  ,TT,,__,,TT,
+  T,,,,__,,,,,
+  ,,T,,__,T,,T
+  ,,,,W__W,,,,
+  ,,,,.__.,,,,
+  TT,,.__.,,TT
+  TTT,.__.,TTT
 ambient: { color: "#ffe2b0", intensity: 1.0 }
 sun: { color: "#ffd9a0", intensity: 1.1, azimuthDeg: 250, elevationDeg: 30 }    # 3D-Brett (D7): tiefe Nachmittagssonne aus Westsüdwest
 lights:
-  - { at: [4, 1], color: "#ffb35c", radius: 3 }
+  - { at: [5, 1], color: "#ffb35c", radius: 3 }
 objects: []
 initialEffects: []
 deploy:
   max: 4
   forced: [avatar, kael]
-  slots: [[4, 9], [5, 9], [4, 10], [5, 10], [3, 10], [6, 10]]
+  slots: [[5, 9], [6, 9], [5, 10], [6, 10], [4, 10], [7, 10]]
 units:
   - id: grosk
     nameKey: unit.grosk.name
     team: enemy
     class: brigand
     level: 3
-    at: [4, 1]
+    at: [5, 1]
     boss: true
     sprite: grosk
     portrait: grosk
@@ -52,11 +52,11 @@ units:
     quote: dlg.prologue.grosk_battle
   # Nur eine Gegnerart (Axt-Banditen) und keine Fernkämpfer: Der Prolog lehrt Bewegen, Angreifen,
   # Kampfvorschau, Gefahrenzone und Deckung. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
-  - { id: p_e1, team: enemy, class: brigand, level: 1, at: [2, 4], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: p_e2, team: enemy, class: brigand, level: 1, at: [7, 3], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: p_e3, team: enemy, class: brigand, level: 1, at: [6, 2], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: p_e4, team: enemy, class: brigand, level: 2, at: [8, 6], sprite: brigand, items: [{ def: hand_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: p_e5, team: enemy, class: brigand, level: 2, at: [1, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: p_e1, team: enemy, class: brigand, level: 1, at: [3, 4], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: p_e2, team: enemy, class: brigand, level: 1, at: [8, 3], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: p_e3, team: enemy, class: brigand, level: 1, at: [7, 2], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: p_e4, team: enemy, class: brigand, level: 2, at: [9, 6], sprite: brigand, items: [{ def: hand_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p_e5, team: enemy, class: brigand, level: 2, at: [2, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements:
   # Schwer: Zwei Nachzügler fallen der Karawane in den Rücken.
@@ -64,8 +64,8 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [0, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [9, 11], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [1, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [10, 11], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: rout }
   defeat:
