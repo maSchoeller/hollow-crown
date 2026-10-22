@@ -3,7 +3,7 @@
 blender -b --factory-startup --python tools/art/export_models.py -- <out_dir> [<id> ...]
 
 Builds units/props with the sprite pipeline's builders (blender_*.py) and writes glTF binaries:
-  <out>/units/<id>.glb            rigid rig (one mesh per joint), animations idle/walk/attack/hit/downed
+  <out>/units/<id>.glb            one skinned mesh (a bone per joint and fx mesh), animations idle/walk/attack/hit/downed
   <out>/props/<id>_<state>.glb    one static mesh per prop state (tree_a, house_razed, chest_open …)
 
 Colours: one material that reads the vertex colours (COLOR_0, linear). Each role gets its ramp's mid
@@ -37,6 +37,9 @@ FPS = 24
 # (animation, sprite fps, loop) – timings match the sprite rows in art/sprites/units/*/sheet.json
 ANIMS = [("idle", 6, "pingpong"), ("walk", 10, "loop"), ("attack", 12, "once"), ("hit", 12, "once"), ("downed", 1, "once")]
 HIDDEN = 1e-4  # scale of a tagged object outside the frames that show it (glTF has no visibility track)
+# Props drawn in large numbers (forests, rock fields) are thinned out: round shapes keep their silhouette
+# with a third of the triangles. Ratio for Blender's collapse decimation; props not listed keep everything.
+PROP_DECIMATE = {"tree": 0.35, "rock": 0.3}
 
 
 def lin(c):
@@ -97,32 +100,105 @@ def join(objs, name):
     return objs[0]
 
 
-def bake_unit(uid, col):
-    """Replaces the unit's meshes by one coloured mesh per joint; tagged fx meshes stay separate."""
-    from mathutils import Matrix
-    groups = {}
-    for ob in [o for o in col.all_objects if o.type == "MESH"]:
-        if ob.get("hc_tag"):
-            me = baked_mesh(ob, Matrix.Identity(4))
-            old = ob.data
-            ob.modifiers.clear()
-            ob.data = me
-            bpy.data.meshes.remove(old)
-            continue
-        groups.setdefault(ob.parent.name if ob.parent else "", []).append(ob)
-    for pname, obs in groups.items():
-        parent = bpy.data.objects.get(pname)
-        inv = parent.matrix_world.inverted() if parent else Matrix.Identity(4)
-        baked = []
-        for ob in obs:
-            me = baked_mesh(ob, inv @ ob.matrix_world)
-            nob = bpy.data.objects.new(f"{ob.name}_b", me)
-            col.objects.link(nob)
-            nob.parent = parent
-            nob.matrix_parent_inverse = Matrix.Identity(4)
-            baked.append(nob)
-            bpy.data.objects.remove(ob, do_unlink=True)
-        join(baked, f"{uid}_{pname.split('_', 1)[-1] if pname else 'body'}_mesh")
+def rest_pose(uid, weapon, animated):
+    """Neutral pose with every NLA track muted; fx meshes at full size so they can be baked."""
+    for o in animated:
+        if o.animation_data:
+            o.animation_data.action = None
+            for t in o.animation_data.nla_tracks:
+                t.mute = True
+    ns["apply_pose"](uid, "s", {k: v for k, v in ns["REST"][weapon].items() if k != "over"}, 0)
+    for o in animated:
+        if o.get("hc_tag"):
+            o.scale = tuple(o["rest_scale"])
+    bpy.context.view_layer.update()
+
+
+def skin_unit(uid, weapon, col):
+    """Turns the rigid rig into one skinned mesh: a bone per joint and per fx mesh, all meshes joined.
+
+    The joint animations (keyframe_anims, on the empties) are sampled frame by frame onto the bones,
+    so the board draws one mesh per figure instead of one per joint.
+    """
+    from mathutils import Matrix, Vector
+    rig = {k: v for k, v in ns["rig"](uid).items() if v is not None}
+    meshes = [o for o in col.all_objects if o.type == "MESH"]
+    tagged = [o for o in meshes if o.get("hc_tag")]
+    animated = list(rig.values()) + tagged
+    names = {o.name for o in animated}
+    rest_pose(uid, weapon, animated)
+
+    data = bpy.data.armatures.new(f"{uid}_skeleton")
+    arm = bpy.data.objects.new(f"{uid}_skeleton", data)
+    col.objects.link(arm)
+    sc = ns["get_scene"]()
+    layer = sc.view_layers[0]
+    layer.objects.active = arm
+    with bpy.context.temp_override(scene=sc, view_layer=layer, active_object=arm, object=arm, selected_objects=[arm], selected_editable_objects=[arm]):
+        bpy.ops.object.mode_set(mode="EDIT")
+        for o in animated:
+            eb = data.edit_bones.new(o.name)
+            eb.head = (0, 0, 0)
+            eb.tail = (0, 0.1, 0)
+            eb.matrix = o.matrix_world.normalized()
+        for o in animated:
+            if o.parent is not None and o.parent.name in names:
+                data.edit_bones[o.name].parent = data.edit_bones[o.parent.name]
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+    # one mesh, every vertex bound to the bone of the joint (or fx mesh) it belonged to
+    pieces = []
+    for ob in meshes:
+        bone = ob.name if ob.get("hc_tag") else (ob.parent.name if ob.parent is not None and ob.parent.name in names else rig["root"].name)
+        nob = bpy.data.objects.new(f"{ob.name}_s", baked_mesh(ob, ob.matrix_world.copy()))
+        col.objects.link(nob)
+        vg = nob.vertex_groups.new(name=bone)
+        vg.add(list(range(len(nob.data.vertices))), 1.0, "REPLACE")
+        pieces.append(nob)
+    body = join(pieces, f"{uid}_body")
+    body.parent = arm
+    body.matrix_parent_inverse = Matrix.Identity(4)
+    mod = body.modifiers.new("skeleton", "ARMATURE")
+    mod.object = arm
+
+    # sample the joint animations onto the bones: basis = rest_rel⁻¹ · pose(parent)⁻¹ · pose(bone)
+    rest = {b.name: b.matrix_local.copy() for b in data.bones}
+    arm.animation_data_create()
+    for pb in arm.pose.bones:
+        pb.rotation_mode = "QUATERNION"
+    for anim, _fps, _loop in ANIMS:
+        end = 1.0
+        for o in animated:
+            track = o.animation_data.nla_tracks.get(anim) if o.animation_data else None
+            o.animation_data.action = track.strips[0].action if track else None
+            if o.animation_data.action:
+                end = max(end, o.animation_data.action.frame_range[1])
+        frames = sorted({float(f) for f in range(1, int(end) + 1)} | {end})
+        act = bpy.data.actions.new(f"{uid}_{anim}")
+        arm.animation_data.action = act
+        for f in frames:
+            sc.frame_set(int(f), subframe=f - int(f))
+            pose = {o.name: o.matrix_world.copy() for o in animated}
+            for b in data.bones:
+                if b.parent:
+                    basis = (rest[b.parent.name].inverted() @ rest[b.name]).inverted() @ pose[b.parent.name].inverted() @ pose[b.name]
+                else:
+                    basis = rest[b.name].inverted() @ pose[b.name]
+                pb = arm.pose.bones[b.name]
+                pb.matrix_basis = basis
+                for path in ("location", "rotation_quaternion", "scale"):
+                    pb.keyframe_insert(path, frame=f)
+        track = arm.animation_data.nla_tracks.new()
+        track.name = anim
+        track.strips.new(anim, 1, act)
+        arm.animation_data.action = None
+    for pb in arm.pose.bones:
+        pb.matrix_basis = Matrix.Identity(4)
+    for o in meshes:
+        bpy.data.objects.remove(o, do_unlink=True)
+    for o in rig.values():
+        bpy.data.objects.remove(o, do_unlink=True)
+    return arm
 
 
 def keyframe_anims(uid, weapon, meta):
@@ -235,11 +311,9 @@ def export_unit(uid):
     visible_in_layer(col)
     root = bpy.data.objects[f"{uid}_root"]
     meta = json.loads(root["hc_meta"])
-    ns["apply_pose"](uid, "s", {k: v for k, v in ns["REST"][meta["weapon"]].items() if k != "over"}, 0)
-    bpy.context.view_layer.update()
-    bake_unit(uid, col)
     keyframe_anims(uid, meta["weapon"], meta)
-    w = wrap(f"HC_{uid}", [root])
+    arm = skin_unit(uid, meta["weapon"], col)
+    w = wrap(f"HC_{uid}", [arm])
     select_tree(w)
     path = os.path.join(OUT, "units", f"{uid}.glb")
     export(path, True)
@@ -263,6 +337,10 @@ def export_prop(pid):
             baked.append(nob)
         name = f"{pid}_{st['row']}" if st else pid
         mesh = join(baked, f"{name}_mesh")
+        if pid in PROP_DECIMATE:
+            dec = mesh.modifiers.new("decimate", "DECIMATE")
+            dec.decimate_type = "COLLAPSE"
+            dec.ratio = PROP_DECIMATE[pid]
         w = wrap(f"HC_{name}", [mesh])
         select_tree(w)
         path = os.path.join(OUT, "props", f"{name}.glb")

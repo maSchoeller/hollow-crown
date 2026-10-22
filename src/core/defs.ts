@@ -538,6 +538,9 @@ export interface RenderDef {
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;
+    /** frame rate caps while something moves and at rest */
+    fpsActive: number;
+    fpsIdle: number;
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
   };

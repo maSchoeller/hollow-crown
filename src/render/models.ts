@@ -49,7 +49,8 @@ function container(scene: Scene, path: string): Promise<AssetContainer | null> {
   const key = `${scene.uid}:${path}`;
   let p = containers.get(key);
   if (!p) {
-    p = LoadAssetContainerAsync(assetUrl(path), scene).catch(() => null);
+    // the board assigns its own vertex-colour materials; skipping the glTF ones avoids compiling PBR shaders
+    p = LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: true } } }).catch(() => null);
     containers.set(key, p);
   }
   return p;

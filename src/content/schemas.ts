@@ -427,6 +427,8 @@ export const renderSchema = z.object({
     baseDepth: z.number().positive(),
     lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
     figureScale: z.number().positive(),
+    fpsActive: z.number().positive(),
+    fpsIdle: z.number().positive(),
     sceneryPropsLow: z.number().int().min(0),
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),

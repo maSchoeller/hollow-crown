@@ -167,6 +167,9 @@ export class BoardView {
   private longFired = false;
   private pinchStart = 0;
   private zoomTween: { from: number; to: number; start: number } | null = null;
+  // frame cap: full rate while something moves, a lower one at rest (render.yaml board.fpsActive/fpsIdle)
+  private lastFrame = 0;
+  private activeUntil = 0;
 
   constructor(canvas: HTMLCanvasElement, floatLayer: HTMLDivElement, data: GameData, hooks: BoardHooks) {
     this.canvas = canvas;
@@ -285,10 +288,10 @@ export class BoardView {
       this.fx = await loadFx();
       if (this.fx) this.fxTexture = this.textureFromImage('fx', this.fx.image);
       await this.buildTerrain();
-      await this.syncUnits(state, true);
       this.fitCamera();
-      // rendering starts once the board is complete; frames during loading only slow it down
+      // the terrain shows while the figures load (they load in parallel and appear together)
       if (!this.disposed) this.engine.runRenderLoop(() => this.frame());
+      await this.syncUnits(state, true);
     })();
     return this.readyPromise;
   }
@@ -317,6 +320,19 @@ export class BoardView {
     this.castShadows(this.terrain.casters);
     await this.buildProps();
     this.buildFires();
+  }
+
+  /** The same prop for scenery outside the map: shares the geometry, casts no shadow. */
+  private sceneryTemplate(key: string, tpl: Mesh): Mesh {
+    const name = `${tpl.name}:scenery`;
+    let m = this.scene.getMeshByName(name) as Mesh | null;
+    if (!m) {
+      m = tpl.clone(name, null, true)!;
+      m.isVisible = false;
+      m.alwaysSelectAsActiveMesh = true;
+      void key;
+    }
+    return m;
   }
 
   private propTemplate(pid: string, state: string): Promise<Mesh | null> {
@@ -412,10 +428,20 @@ export class BoardView {
         }
       }
     for (const o of s.objects) if (o.type === 'chest') put(`chest_${o.state === 'open' ? 'open' : 'closed'}`, { x: o.at[0], y: o.at[1], h: this.terrain!.standOn(o.at[0], o.at[1]), rot: Math.PI, scale: 1, dim: false });
+    // map props cast shadows; the darkened scenery around it does not (a third of the shadow pass)
+    const split = new Map<string, Place[]>();
     for (const [key, list] of places) {
+      const near = list.filter((p) => !p.dim);
+      const far = list.filter((p) => p.dim);
+      if (near.length) split.set(key, near);
+      if (far.length) split.set(`${key}|scenery`, far);
+    }
+    for (const [fullKey, list] of split) {
+      const [key, kind] = fullKey.split('|') as [string, string | undefined];
       const i = key.lastIndexOf('_');
-      const tpl = await this.propTemplate(key.slice(0, i), key.slice(i + 1));
-      if (!tpl) continue;
+      const base = await this.propTemplate(key.slice(0, i), key.slice(i + 1));
+      if (!base) continue;
+      const tpl = kind === 'scenery' ? this.sceneryTemplate(key, base) : base;
       const mats = new Float32Array(list.length * 16);
       const cols = new Float32Array(list.length * 4);
       list.forEach((p, k) => {
@@ -587,6 +613,7 @@ export class BoardView {
 
   setOverlays(o: Overlays): void {
     this.overlays = o;
+    this.wake();
     this.buildOverlays();
     void this.updateGhost();
   }
@@ -753,6 +780,7 @@ export class BoardView {
   /** Call when the HUD changed size. */
   relayout(): void {
     this.clampCamera();
+    this.wake();
   }
 
   /** Steps through the zoom levels of render.yaml (D9): +1 = closer. */
@@ -762,6 +790,7 @@ export class BoardView {
     if (next === this.step) return;
     this.step = next;
     this.zoomTween = { from: this.ppt, to: this.pptFor(next), start: performance.now() };
+    this.wake();
   }
 
   centerOn(p: Pos, smooth = true): Promise<void> {
@@ -870,6 +899,7 @@ export class BoardView {
       if (e.button === 2) return;
       c.setPointerCapture(e.pointerId);
       this.pointer.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
+      this.wake();
       if (this.pointer.size === 1) {
         this.panMoved = false;
         this.longFired = false;
@@ -938,6 +968,12 @@ export class BoardView {
     this.camX -= dxCss / this.ppt;
     this.camY -= dyCss / this.ppt / this.cosTilt();
     this.clampCamera();
+    this.wake();
+  }
+
+  /** Keeps the full frame rate for a moment (input, animation, camera moves). */
+  private wake(ms = 600): void {
+    this.activeUntil = Math.max(this.activeUntil, performance.now() + ms);
   }
 
   // ------------------------------------------------------------------ frame
@@ -945,6 +981,11 @@ export class BoardView {
   private frame(): void {
     if (this.disposed) return;
     const now = performance.now();
+    const busy = now < this.activeUntil || this.zoomTween !== null || this.fxSprites.length > 0 || this.floaters.length > 0 || this.shake > 0;
+    const fps = busy ? this.data.render.board.fpsActive : this.data.render.board.fpsIdle;
+    // 2 ms slack so a 60 Hz display does not drop every other frame
+    if (now - this.lastFrame < 1000 / fps - 2) return;
+    this.lastFrame = now;
     this.updateCamera(now);
     this.terrain?.tick(now);
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);
@@ -1055,6 +1096,7 @@ export class BoardView {
       const step = () => {
         const t = Math.min(1, (performance.now() - start) / dur);
         fn(t);
+        this.wake(200);
         if (t < 1 && !this.disposed) schedule(step);
         else resolve();
       };

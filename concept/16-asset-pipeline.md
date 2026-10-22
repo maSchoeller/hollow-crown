@@ -160,6 +160,12 @@ Der **Treffer-Frame** der Angriffsanimation wird im Manifest markiert. Der Rende
 
 ## 7. Rendering in Babylon (Ergänzung zu `10` §5)
 
+> **Stand 3D-Brett** (`01-decisions.md` D1–D18). Der folgende Abschnitt beschreibt die abgelöste Pixel-Draufsicht. Heute gilt:
+> - **Modelle**: `tools/art/export_models.py` exportiert aus den Blender-Bauskripten pro Figur **ein Mesh mit Skelett** (ein Knochen je Gelenk und Effekt-Teil, Animationen idle/walk/attack/hit/downed) und pro Requisiten-Zustand ein statisches Mesh; Bäume und Felsen werden beim Export auf rund ein Drittel der Dreiecke reduziert. Farben als Vertexfarben, Teamtuch im Vertex-Alpha (Details `art/README.md`).
+> - **Boden**: `tools/art/ground.py` erzeugt beim `art:build` die gemalten 256-px-Texturen; das Brett mischt sie über eine Splat-Map.
+> - **Zeichnen**: Requisiten als Thin Instances (ein Aufruf je Modell), Landschaft außerhalb der Karte ohne Schattenwurf, Figuren mit GPU-Skinning (ein Aufruf je Figur). Bildrate gedeckelt: `render.yaml board.fpsActive` bei Bewegung, `fpsIdle` in Ruhe.
+> - **Software-WebGL** (kein Grafikchip) wählt automatisch „Niedrig“ mit halber Auflösung (D17).
+
 - Orthografische Draufsicht. **Zoomstufen ganzzahlig**: Skalierung `s ∈ {2, 3, 4, 5, 6} / devicePixelRatio`, ein Pinch rastet auf die nächste Stufe ein (mit kurzer weicher Überblendung). Kameraposition wird auf ganze Bildpixel gerundet.
 - Alle Texturen `NEAREST_SAMPLINGMODE`, keine Mipmaps für Pixel-Atlanten.
 - Einheiten, Requisiten und Tiles als **Thin Instances** mit einem eigenen `ShaderMaterial` (Atlas-UV pro Instanz). Funktionen im Shader:
@@ -176,6 +182,8 @@ Der **Treffer-Frame** der Angriffsanimation wird im Manifest markiert. Der Rende
 ## 8. Qualitätsstufen
 
 Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optionen änderbar.
+
+3D-Brett: Render-Auflösung, Schattenkarte und Punktlichter je Stufe stehen in `content/render.yaml` (`quality`, `board.lightsMax`); auf „Niedrig“ keine Schatten und Landschafts-Requisiten nur nahe der Karte. Die Tabelle gilt weiter für Porträts, Hintergründe und Audio.
 
 | Stufe | Licht | Bloom | Partikel | Porträts | Hintergründe | Audio |
 |---|---|---|---|---|---|---|
