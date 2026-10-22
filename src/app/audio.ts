@@ -90,6 +90,8 @@ class AudioManager {
     this.wanted = id;
     if (!this.ctx || !this.musicGain) return;
     if (this.current?.id === id) return;
+    // unknown cue (e.g. a dialogue mood without its own track): keep the current music
+    if (id && this.available && !this.available.has(id)) return;
     const old = this.current;
     const offset = old && this.ctx ? (this.ctx.currentTime - (old.src as unknown as { startedAt: number }).startedAt) : 0;
     if (old) {

@@ -63,7 +63,12 @@ export function App() {
   useEffect(() => {
     if (sc.name === 'title' || sc.name === 'newGame') audio.music('title');
     else if (sc.name === 'worldmap') audio.music('worldmap');
-  }, [sc.name]);
+    else if (sc.name === 'result' || sc.name === 'camp') audio.music('camp');
+    else if (sc.name === 'dialogue') {
+      const cue = data.dialogues[sc.id]?.music;
+      if (cue) audio.music(cue);
+    }
+  }, [sc.name, sc.name === 'dialogue' ? sc.id : '']);
   switch (sc.name) {
     case 'title':
       return <Title />;

@@ -115,7 +115,7 @@ Details: `15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`.
 | U1 | Umfang erster Wurf | Prolog + Kap. 1–2 spielbar: Kern-Kampf mit allen Regeln, Inventar/Paperdoll, Dialoge DE/EN, Lager (Kompanie, Konvoi, Händler, Schmied, Verzauberer, Heiler, Lagerfeuer, Speichern), Weltkarte, Auto-Save. **Noch nicht:** Taverne, Scharmützel/Übungsplatz, Nebel des Krieges, Krit-Cut-ins, Minikarte, Karten-Viewer (Dev-Route), Canto, Stimmungs-Porträts, Avatar-Vorlagen 3–4 | A |
 | U2 | Deployment | GitHub Pages per GitHub Action (`.github/workflows/pages.yml`), LFS-Objekte im Actions-Cache | A |
 | U3 | Bild-KI | Neutrale Halbfigur-Porträts (Avatar ×2, Kael, Brenna, Tobin, Mira, Liora, Varek, Grosk, Hask, Morra) + 3 VN-Hintergründe via ChatGPT; Stimmungen später | A |
-| U4 | Audio | ElevenLabs; Code hat Audio-Busse und spielt vorhandene Dateien ab, ohne Dateien läuft alles stumm | A |
+| U4 | Audio | ElevenLabs per API (`tools/audio/elevenlabs.py`, Key aus `ELEVENLABS_API_KEY`): 26 SFX (UI, Treffer mit Varianten, Elemente, Ereignisse) und 5 Musikstücke (Titel, Weltkarte, Lager, Spieler-/Gegnerphase). Noch nicht: Stimmen/Barks, Stimm-Laute, Ambiente, nahtlose Loop-Punkte. Lizenzprüfung GA26/O5 weiterhin offen | A |
 | U5 | Bedienung | Tippen auf einen Gegner, während eine Einheit gewählt ist, wählt automatisch das nächste Angriffsfeld und öffnet die Vorschau; zweites Tippen auf das Ziel greift an | C |
 | U6 | Phasenende | Haben alle Einheiten gehandelt, endet die Spielerphase automatisch | C |
 | U7 | Freie Aktionen | Waffe wechseln im Kampf nicht auf 1×/Zug begrenzt; Tauschen legt Items in den Beutel; Konvoi: 1× pro Zug je ein Item nehmen und/oder ablegen | C |
