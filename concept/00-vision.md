@@ -33,9 +33,9 @@ Der König von Valmora ist tot, seine Krone verschwunden – und mit ihr der Pak
 
 **Risiken:**
 - F2P ohne Gacha monetarisiert schwächer → Kosten niedrig halten, Kosmetik attraktiv gestalten, Werbefrei-Kauf als „Premium-Ersatz“.
-- Genre-Nische → starke Story, starke Optik (später Blender-3D), Steam/Web-Version als zweiter Kanal.
+- Genre-Nische → starke Story, starke Optik (Pixel-Karte mit moderner Lichtschicht + Anime-Porträts, siehe `15-art-direction.md`), Steam/Web-Version als zweiter Kanal.
 - Name: „The Hollow Crown“ ist auch eine BBC-Serie, und es existiert das PC-Indie-RPG *Lore of Luvarith: The Hollow Crown* (2025). Für den Store-Auftritt einen Untertitel ergänzen (z. B. *Hollow Crown: Ashen Oath*), Markenrecht vor Release prüfen.
 
 ## Was V1 beweisen soll
 
-Ein **Vertical Slice** (siehe `13-v1-scope.md`): Prolog + 5 Kapitel, die alle Missionstypen, das komplette Kampf- und Inventarsystem, Lager, Permadeath und Scharmützel zeigen. Platzhaltergrafik, keine Monetarisierung. Ziel: Spaß am Kernloop belegen, bevor Grafik (Blender) und Monetarisierung investiert werden.
+Ein **Vertical Slice** (siehe `13-v1-scope.md`): Prolog + 5 Kapitel, die alle Missionstypen, das komplette Kampf- und Inventarsystem, Lager, Permadeath und Scharmützel zeigen. Finale Grafik und Audio entstehen in einem parallelen Art-Track (`16-asset-pipeline.md` §12), keine Monetarisierung. Ziel: Spaß am Kernloop belegen und zeigen, wie das Spiel aussieht und klingt.
