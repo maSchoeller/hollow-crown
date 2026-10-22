@@ -6,6 +6,7 @@ const DEFAULT_AFFINITY: Element = 'wind';
 import { t } from '../../i18n';
 import { asset, Crest, itemName, Modal, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
+import { checkForUpdate, installUpdate, updateStatus } from '../update';
 import { exportSave, importSave, listSaves, readSave, type SaveRecord, type SlotId } from '../../persistence/save';
 import {
   campaign,
@@ -68,10 +69,30 @@ export function Title() {
         <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
         <div class="title-foot">
           {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
+          <UpdateLink />
         </div>
       </div>
       {load && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s)} onClose={() => setLoad(false)} />}
     </div>
+  );
+}
+
+function UpdateLink() {
+  const status = updateStatus.value;
+  useEffect(() => {
+    void checkForUpdate();
+  }, []);
+  if (status === 'available') {
+    return (
+      <button class="btn small update-btn" onClick={installUpdate}>
+        <Icon name="download" /> {t('ui.update.install')}
+      </button>
+    );
+  }
+  return (
+    <button class="link-btn" disabled={status === 'checking'} onClick={() => void checkForUpdate()}>
+      {t(`ui.update.${status === 'idle' ? 'check' : status}`)}
+    </button>
   );
 }
 
