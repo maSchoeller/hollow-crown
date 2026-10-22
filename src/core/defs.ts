@@ -528,6 +528,19 @@ export interface RenderDef {
     zoomSteps: number[];
     zoomMs: number;
   };
+  board: {
+    /** scenery tiles around the map (D10) and how much it is darkened */
+    skirt: number;
+    skirtDim: number;
+    waterLevel: number;
+    /** depth of the diorama's bottom below ground level, tiles */
+    baseDepth: number;
+    lightsMax: Record<'high' | 'mid' | 'low', number>;
+    /** on the low quality level, scenery props only this many tiles around the map */
+    sceneryPropsLow: number;
+    /** size of 3D figures relative to their Blender scale */
+    figureScale: number;
+  };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
 }
 

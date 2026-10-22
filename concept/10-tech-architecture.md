@@ -81,13 +81,15 @@ Renderer spielt Events als Animationen ab; UI liest State (Signals).
 
 ## 5. Rendering (Babylon)
 
-- Orthografische Kamera, Top-down (leicht schräg optional für 2.5D-Look später). Zoom = Ortho-Größe, Pan = Kameraposition, begrenzt auf Kartenrand.
-- Kacheln: Thin Instances oder ein Mesh pro Gelände-Typ mit Texture-Atlas; Overlays (Bewegung/Angriff/Gefahr) als separates instanziertes Mesh mit Alpha.
-- Einheiten: Pixel-Sprites (32 px, Frame-Animationen laut `16-asset-pipeline.md` §4.4) als Thin Instances mit eigenem Shader (Teamtausch, Entsättigen, Blitz, Normal-Map-Licht). Bis zur Lieferung des Art-Tracks Platzhalter-Sprites im finalen Format. Bewegung entlang des Pfads per Tween, Angriff/Treffer per Frame-Animation; Treffer-Events auf dem markierten Treffer-Frame.
-- Pixelgenaue Darstellung, ganzzahlige Zoomstufen, Lichtschicht, Partikel, Qualitätsstufen: siehe `16-asset-pipeline.md` §7–8.
-- **Austauschbarkeit**: Renderer kapselt Darstellung hinter `UnitView`/`TileView`-Interfaces; später glTF-Modelle aus Blender (`SceneLoader`) ohne Änderungen am Kern.
-- Picking: Bildschirm → Rasterkoordinate per Ray/Plane, nicht per Mesh-Picking (schneller, robust).
-- Render-on-demand: Ohne Animation/Input keine neuen Frames (Akku).
+> **Stand 2026-10-22: Echtzeit-3D-Brett** (`concept/01-decisions.md` D1–D16). Die frühere Pixel-Draufsicht (T3 alt) ist abgelöst.
+
+- **Kamera** (`src/render/board.ts`, Rechnung in `src/render/camera.ts`): orthografisch, um `render.yaml camera.tiltDeg` aus der Senkrechten geneigt, Norden oben, nicht drehbar. Drei Zoomstufen (`zoomSteps`, Spalten auf der kürzeren Bildschirmseite), Pinch/Mausrad wechseln die Stufe. Pan begrenzt auf den Kartenrand plus `margin` × freie Sichtfläche; die freie Fläche liegt zwischen den gemessenen HUD-Leisten (D10).
+- **Gelände** (`src/render/terrain3d.ts`): Blöcke mit Höhe aus `terrain.yaml`, Oberseiten mit gemalten Texturen über eine Splat-Map (MixMaterial), Seitenwände Erde/Fels/Mauer, Mauerkronen, abgesenktes Wasser, Brückendecks. Rundherum `board.skirt` Felder abgedunkelte Landschaft.
+- **Requisiten**: glTF-Modelle pro Zustand (`src/render/models.ts`), je Modell ein Mesh mit Thin Instances; Landschaft außerhalb der Karte über Instanzfarbe abgedunkelt.
+- **Einheiten** (`src/render/figures.ts`): `ModelFigure` (glTF mit Animationsgruppen, Teamfarbe aus dem Vertex-Alpha) oder `SpriteFigure` (Pixel-Sheet als Billboard, Option „Figuren: 2D“). Bewegung per Tween, Treffer-Events zum Treffer-Frame der Sprite-Zeile `attack_s`.
+- **Licht**: Umgebungslicht aus `ambient`, Sonne aus `sun` der Karte mit Schattenkarte je Qualitätsstufe, Punktlichter aus `lights` und brennenden Feldern (gedeckelt durch `board.lightsMax`).
+- **Picking**: Bildschirm → Feld per Strahl durch die Höhenkarte (kein Mesh-Picking).
+- **Austauschbarkeit**: Das Brett hat nach außen nur `load`, `play`, `setOverlays`, `centerOn`, `relayout`, `skip`, `speed`, `quality`, `figures`, `dispose`; der Kern bleibt unberührt.
 
 ## 6. Speichern
 

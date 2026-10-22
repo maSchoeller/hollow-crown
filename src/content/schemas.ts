@@ -420,6 +420,15 @@ export const renderSchema = z.object({
     zoomSteps: z.array(z.number().positive()).min(1),
     zoomMs: z.number().min(0),
   }),
+  board: z.object({
+    skirt: z.number().int().min(0),
+    skirtDim: z.number().min(0).max(1),
+    waterLevel: z.number(),
+    baseDepth: z.number().positive(),
+    lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
+    figureScale: z.number().positive(),
+    sceneryPropsLow: z.number().int().min(0),
+  }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
 });
 

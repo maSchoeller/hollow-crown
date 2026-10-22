@@ -35,17 +35,17 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   for (let i = 0; i < 2; i++) {
     await page.mouse.move(x, y);
     await page.mouse.down();
-    await page.mouse.move(x, y - 1500, { steps: 15 });
+    await page.mouse.move(x, y - 1500, { steps: 4 });
     await page.mouse.up();
   }
   const view = await page.evaluate(() => {
+    // screenOf takes ground coordinates in tiles (x east, y south)
     const board = (window as unknown as { __board: { screenOf(x: number, y: number): { y: number }; state: { height: number } } }).__board;
-    const tile = 48; // art px per tile (GA4b)
     const canvas = document.querySelector('canvas.board-canvas')!.getBoundingClientRect();
     const top = document.querySelector('.topbar')!.getBoundingClientRect();
     const sheet = document.querySelector('.battle .bottom')?.getBoundingClientRect();
     const mapTop = board.screenOf(0, 0).y;
-    const mapBottom = board.screenOf(0, board.state.height * tile).y;
+    const mapBottom = board.screenOf(0, board.state.height).y;
     const sheetTop = (sheet ? sheet.top : canvas.bottom) - canvas.top;
     return { mapBottom, mapHeight: mapBottom - mapTop, sheetTop, free: sheetTop - (top.bottom - canvas.top) };
   });

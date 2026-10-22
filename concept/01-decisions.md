@@ -161,6 +161,7 @@ Grundlage: drei Fragerunden und das Mockup (claude.ai/artifact/2LzhXxZWubQz7bKCY
 | D14 | Asset-Format | `public/assets/models/<id>.glb` je Figur und Requisite, Bodentexturen als PNG in `public/assets/ground/`; das Budget aus T8 (< 15 MB für Shell + Prolog) gilt weiter | C |
 | D15 | Markierungen | Bewegung (blau), Angriff (rot), Gefahrenzone, Pfad und Cursor liegen als Flächen auf Feldhöhe; Antippen wählt das Feld per Strahl aus | C |
 | D16 | Darstellungswerte | Kamerawinkel, Zoomstufen, Rand und Qualitätsstufen stehen in der neuen `content/render.yaml` (nicht in `balance.yaml`, das nur Regelkonstanten hält; `src/core` liest sie nie), Höhe/Bodentextur/Seitenwand/Wasser pro Gelände in `terrain.yaml`, Sonne pro Karte in der Karten-YAML (`sun`) | C |
+| D17 | Umsetzung R2/R3 | Software-WebGL (kein Grafikchip, z. B. Headless-Tests) wählt automatisch „Niedrig“ und rendert mit halber Auflösung; auf „Niedrig“ stehen Bäume/Felsen der Landschaft nur `board.sceneryPropsLow` Felder um die Karte. Das 2D-Tileset (`art/tiles`) und die 2D-Requisiten-Sheets werden nicht mehr gebaut. Türen, Tore und Throne sind vorerst schlichte Kisten-Modelle, bis es Blender-Modelle gibt. Figuren sind 1,3-mal so groß wie im Blender-Maßstab (`board.figureScale`) | C |
 
 ## Von Claude gesetzte Detail-Defaults [C]
 
@@ -195,4 +196,4 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | 2026-10-22 | Grilling-Session Grafik & Audio: Abschnitt „Grafik & Audio“ (GA1–GA26) ergänzt; T3 geändert (Pixel-Draufsicht statt späterer glTF), T8 präzisiert (Kapitel-Pakete, Qualitätsstufen), S5 ergänzt (Krit-Cut-ins). V1-Scope: finale Grafik, SFX und Musik jetzt in V1 (Art-Track). Neue Dokumente 15–17 |
 | 2026-10-22 | Erster Wurf V1: GA4 → GA4b (48 px), T5/T11 präzisiert (Preact 10, TS 6), neuer Abschnitt U1–U13 |
 | 2026-10-22 | Einführung, Balancing, Audio: U14–U21 (UI-Stil B hell gewählt und umgesetzt, Bedienführung U20 umgesetzt), U13-Simwert ersetzt; neuer Abschnitt `06` §10 |
-| 2026-10-22 | 3D-Karte (Mockup, Variante A mit 3D-Figuren): neuer Abschnitt D1–D16; T3, GA1, GA2, GA3, GA11, GA12, GA22, GA25 abgelöst; G2, G20, G21, GA10 ergänzt |
+| 2026-10-22 | 3D-Karte (Mockup, Variante A mit 3D-Figuren): neuer Abschnitt D1–D17; T3, GA1, GA2, GA3, GA11, GA12, GA22, GA25 abgelöst; G2, G20, G21, GA10 ergänzt |

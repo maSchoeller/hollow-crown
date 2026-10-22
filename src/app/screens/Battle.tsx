@@ -126,6 +126,7 @@ export function Battle() {
     });
     boardRef.current = board;
     board.quality = settings.value.quality;
+    board.figures = settings.value.figures;
     let alive = true;
     void (async () => {
       await board.load(battle.value!.state);

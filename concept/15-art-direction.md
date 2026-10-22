@@ -21,6 +21,8 @@ Referenzen (Stimmung, nicht kopieren): Fire Emblem: The Sacred Stones (Karte, Le
 
 ## 2. Kamera & Raster
 
+> **Abgelöst durch das 3D-Brett** (`01-decisions.md` D1–D16): geneigte orthografische Kamera, 3D-Gelände und -Figuren, drei Zoomstufen. Der folgende Abschnitt beschreibt die Pixel-Draufsicht und gilt nur noch für die 2D-Figuren-Option und die Sprite-Sheets.
+
 - **Draufsicht**, orthografisch, nicht drehbar. Norden ist oben. Eine spätere 3D-Ansicht ist möglich (Renderer-Kapselung `TileView`/`UnitView`), aber nicht geplant.
 - Konvention wie bei FE: Boden wird **von oben** gezeigt, Figuren und hohe Objekte (Häuser, Bäume, Festungen) **leicht von vorn** (Schrägaufsicht). Hohe Objekte dürfen ins Feld darüber ragen.
 - **Feldgröße 32 × 32 px**. Figuren-Frames 32 × 32 px; große Einheiten (Pegasus, Drache, Boss) 48 × 48 px, am Fußpunkt verankert.
