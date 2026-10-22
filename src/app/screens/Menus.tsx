@@ -63,7 +63,7 @@ export function Title() {
         {err && <div class="dis">{err}</div>}
         <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
         <div class="muted" style={{ fontSize: 12 }}>
-          {t('ui.title.version')} {import.meta.env.VITE_APP_VERSION ?? '0.1.0'}
+          {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
         </div>
       </div>
       {load && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s)} onClose={() => setLoad(false)} />}
