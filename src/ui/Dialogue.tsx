@@ -1,0 +1,147 @@
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import type { DialogueLine, GameData } from '../core';
+import { t } from '../i18n';
+import { asset, Modal } from './components';
+
+const ENEMIES = new Set(['grosk', 'hask', 'morra']);
+const OTHERS = new Set(['liora']);
+
+export interface DialogueProps {
+  data: GameData;
+  id: string;
+  flags: string[];
+  avatarPortrait: string;
+  overlay?: boolean;
+  onFlag: (flag: string) => void;
+  onDone: () => void;
+  onLine?: (speaker?: string, mood?: string) => void;
+}
+
+type Line = Extract<DialogueLine, { key: string }>;
+type Choice = Extract<DialogueLine, { choice: unknown }>;
+
+/** Visual-novel dialogue: background, two portraits, name tag, tap to continue, choices, log, skip (concept/08 §7). */
+export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onDone, onLine }: DialogueProps) {
+  const def = data.dialogues[id];
+  const [idx, setIdx] = useState(0);
+  const [local, setLocal] = useState<string[]>([]);
+  const [shown, setShown] = useState(0);
+  const [log, setLog] = useState(false);
+  const allFlags = useMemo(() => [...flags, ...local], [flags, local]);
+  const lines = def?.lines ?? [];
+
+  // skip lines whose condition does not hold
+  const visible = (l: DialogueLine) => {
+    if ('choice' in l) return true;
+    if (l.if?.flag && !allFlags.includes(l.if.flag)) return false;
+    if (l.if?.notFlag && allFlags.includes(l.if.notFlag)) return false;
+    return true;
+  };
+  let cur = idx;
+  while (cur < lines.length && !visible(lines[cur]!)) cur++;
+  const line = lines[cur];
+
+  useEffect(() => {
+    if (!def || cur >= lines.length) onDone();
+  }, [cur, def]);
+
+  const text = line && 'key' in line ? t(line.key) : '';
+  useEffect(() => {
+    setShown(0);
+    if (line && 'key' in line) onLine?.(line.speaker, line.mood);
+  }, [cur]);
+  useEffect(() => {
+    if (shown >= text.length) return;
+    const id2 = setTimeout(() => setShown((s) => Math.min(text.length, s + 2)), 16);
+    return () => clearTimeout(id2);
+  }, [shown, text]);
+
+  // speakers on stage: last speaker per side
+  const stage = useMemo(() => {
+    const st: { left?: Line; right?: Line } = {};
+    for (let i = 0; i <= cur && i < lines.length; i++) {
+      const l = lines[i]!;
+      if ('key' in l && l.speaker && visible(l)) st[l.side === 'left' ? 'left' : 'right'] = l;
+    }
+    return st;
+  }, [cur, allFlags]);
+
+  if (!def || !line) return null;
+  const advance = () => {
+    if ('choice' in line) return;
+    if (shown < text.length) return setShown(text.length);
+    setIdx(cur + 1);
+  };
+  const portraitOf = (sp: string) => (sp === 'avatar' ? avatarPortrait : (data.chars[sp]?.portrait ?? sp));
+  const nameOf = (sp: string) => (sp === 'avatar' ? t('unit.avatar.name', {}) : t(`unit.${sp}.name`));
+  const speaking = 'key' in line ? line.speaker : undefined;
+  const choice = 'choice' in line ? (line as Choice) : undefined;
+  const history = lines.slice(0, cur).filter((l): l is Line => 'key' in l && visible(l));
+
+  return (
+    <div class={`vn ${overlay ? 'overlay' : ''}`} onClick={advance}>
+      {def.background && !overlay && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`backgrounds/${def.background}.webp`)})` }} />}
+      <div class="vn-stage">
+        {(['left', 'right'] as const).map((side) => {
+          const l = stage[side];
+          if (!l?.speaker) return null;
+          return (
+            <div key={side + l.speaker} class={`vn-char ${side} ${speaking && l.speaker !== speaking ? 'dim' : ''}`}>
+              <img src={asset(`portraits/${portraitOf(l.speaker)}/neutral.webp`)} alt="" draggable={false} onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />
+            </div>
+          );
+        })}
+      </div>
+      <div class="vn-tools" onClick={(e) => e.stopPropagation()}>
+        <button class="btn small ghost" onClick={() => setLog(true)}>
+          {t('ui.dialogue.log')}
+        </button>
+        <button class="btn small ghost" onClick={onDone}>
+          {t('ui.dialogue.skip')} ⏭
+        </button>
+      </div>
+      <div class="vn-box" onClick={(e) => choice && e.stopPropagation()}>
+        {speaking && (
+          <div class={`vn-name ${ENEMIES.has(speaking) ? 'enemy' : OTHERS.has(speaking) ? 'other' : ''}`}>{speaking === 'avatar' ? t('unit.avatar.name') : nameOf(speaking)}</div>
+        )}
+        {choice ? (
+          <div class="vn-choices">
+            <div class="muted">{t('ui.dialogue.choose')}</div>
+            {choice.choice.map((c) => (
+              <button
+                key={c.key}
+                class="btn"
+                onClick={() => {
+                  if (c.setFlag) {
+                    onFlag(c.setFlag);
+                    setLocal((l) => [...l, c.setFlag!]);
+                  }
+                  setIdx(cur + 1);
+                }}
+              >
+                {t(c.key)}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div class={speaking ? '' : 'vn-narration'}>{text.slice(0, shown)}</div>
+        )}
+        {!choice && shown >= text.length && <span class="vn-next">▼</span>}
+      </div>
+      {log && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Modal title={t('ui.dialogue.log')} onClose={() => setLog(false)}>
+            <div class="col">
+              {history.map((l) => (
+                <div key={l.key}>
+                  {l.speaker && <b class="gold">{nameOf(l.speaker)}: </b>}
+                  {t(l.key)}
+                </div>
+              ))}
+            </div>
+          </Modal>
+        </div>
+      )}
+    </div>
+  );
+}

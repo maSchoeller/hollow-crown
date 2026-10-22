@@ -51,7 +51,7 @@ export default defineConfig({
   ],
   build: { target: 'es2022', chunkSizeWarningLimit: 2500 },
   test: {
-    include: ['src/**/*.test.ts', 'tools/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'],
     environment: 'node',
     coverage: { provider: 'v8', include: ['src/core/**/*.ts'], exclude: ['src/core/**/*.test.ts'], reporter: ['text-summary', 'html'] },
   },

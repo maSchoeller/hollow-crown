@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import { loadContentFromDisk } from '../content/node';
-import { validateContent } from '../content/validate';
+import { loadContentFromDisk } from '../../src/content/node';
+import { validateContent } from '../../src/content/validate';
 import {
   applyCommand,
   autoplay,
@@ -20,7 +20,7 @@ import {
   type BattleState,
   type CampaignState,
   type GameData,
-} from './index';
+} from '../../src/core';
 
 let data: GameData;
 let campaign: CampaignState;

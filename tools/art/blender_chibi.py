@@ -3,7 +3,7 @@
 Runs inside Blender 5.x (e.g. via MCP: exec(open(PATH).read(), ns)). Builds/uses the scene "HC_Sprites".
 
 Concept (see concept/16-asset-pipeline.md §4 and art/README.md):
-- Every material is a *role* (skin, hair_brown, steel, team, ...). Blender renders only data passes:
+- Every material is a *role* (skin, hair_brown, steel, team, ...). Blender (Cycles, 1 sample) renders only data passes:
   1. ID pass   – flat emission, R = (id % 128) * 2, B = (id // 128) * 64 (Raw view, no dither, 1 sample);
      ids = position in ramps.ROLES
   2. normal    – camera-space normals as colour (n * 0.5 + 0.5)
@@ -44,7 +44,15 @@ def get_scene():
 
 def setup_render(sc):
     r = sc.render
-    r.engine = "BLENDER_EEVEE"
+    # Cycles with 1 sample and a ~0 px box filter: exact flat ids, ~10x faster than EEVEE here
+    r.engine = "CYCLES"
+    cy = sc.cycles
+    cy.samples = 1
+    cy.use_denoising = False
+    cy.pixel_filter_type = "BOX"
+    cy.filter_width = 0.01
+    cy.max_bounces = 0
+    cy.device = "CPU"
     r.film_transparent = True
     r.filter_size = 0.0
     r.dither_intensity = 0.0
@@ -53,10 +61,6 @@ def setup_render(sc):
     r.image_settings.color_depth = "8"
     r.use_compositing = False
     r.use_sequencer = False
-    try:
-        sc.eevee.taa_render_samples = 1
-    except AttributeError:
-        pass
     sc.view_settings.view_transform = "Raw"
     sc.view_settings.look = "None"
     sc.view_settings.exposure = 0.0
@@ -220,6 +224,8 @@ def new_collection(sc, name):
     if old:
         for ob in list(old.all_objects):
             bpy.data.objects.remove(ob, do_unlink=True)
+        for child in list(old.children_recursive):
+            bpy.data.collections.remove(child)
         bpy.data.collections.remove(old)
     col = bpy.data.collections.new(name)
     sc.collection.children.link(col)

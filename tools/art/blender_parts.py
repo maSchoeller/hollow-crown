@@ -196,7 +196,7 @@ def spear(col, R, shaft="wood", tip="blade", length=1.6, wrap=None, side="R", ti
     hx, hy, hz = R["hand_" + side]
     W = R["wrist_" + side]
     y = hy - 0.02
-    z0 = hz - 0.35
+    z0 = hz - 0.45
     shape(col, "cyl", shaft, (hx, y, z0 + length / 2), (0.035, 0.035, length / 2), parent=W, seg=8)
     if wrap:
         for k in range(4):
@@ -274,8 +274,8 @@ def torch(col, R, side="L", wood="wood", flame="fire"):
     W = R["wrist_" + side]
     shape(col, "cyl", wood, (hx, hy - 0.02, hz + 0.15), (0.04, 0.04, 0.28), parent=W, seg=8, top=1.3)
     shape(col, "cyl", "rag", (hx, hy - 0.02, hz + 0.42), (0.065, 0.065, 0.06), parent=W, seg=8)
-    f = shape(col, "cone", flame, (hx, hy - 0.02, hz + 0.6), (0.12, 0.12, 0.18), parent=W, seg=10, name=f"{W.name}_flame")
-    shape(col, "sphere", "fire_core", (hx, hy - 0.05, hz + 0.52), (0.07, 0.07, 0.08), parent=W, seg=8, name=f"{W.name}_flamecore")
+    f = shape(col, "cone", flame, (hx, hy - 0.02, hz + 0.66), (0.17, 0.17, 0.26), parent=W, seg=10, name=f"{W.name}_flame")
+    shape(col, "sphere", "fire_core", (hx, hy - 0.06, hz + 0.56), (0.09, 0.09, 0.11), parent=W, seg=8, name=f"{W.name}_flamecore")
     return f
 
 

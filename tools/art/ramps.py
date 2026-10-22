@@ -27,6 +27,8 @@ Palette index cheat sheet (art/palette/hollow-64.hex):
 
 K = ["K0", "K1", "K2", "K3"]
 
+# NOTE: the role id rendered by Blender is the 1-based position of the role in this dict.
+# Append new roles at the end so existing raw renders stay decodable.
 ROLES = {
     # --- skin & faces -------------------------------------------------------------------------
     "skin": {"ramp": [6, 7, 8, 9], "kind": "skin"},
@@ -54,8 +56,8 @@ ROLES = {
     "blush": {"ramp": [7, 7, 7, 7], "kind": "flat", "prio": 3},
     # --- hair ---------------------------------------------------------------------------------
     "hair_brown": {"ramp": [0, 10, 11, 21, 22], "kind": "hair"},
-    "hair_black": {"ramp": [0, 0, 1, 2, 3], "kind": "hair"},
-    "hair_black_violet": {"ramp": [0, 0, 47, 48, 3], "kind": "hair"},
+    "hair_black": {"ramp": [0, 0, 1, 2, 25], "kind": "hair"},
+    "hair_black_violet": {"ramp": [0, 0, 1, 47, 48], "kind": "hair"},
     "hair_red": {"ramp": [13, 37, 14, 15, 16], "kind": "hair"},
     "hair_grey": {"ramp": [1, 3, 4, 27, 5], "kind": "hair"},
     "hair_straw": {"ramp": [41, 17, 18, 19, 5], "kind": "hair"},
@@ -76,8 +78,8 @@ ROLES = {
     "leaf_hi": {"ramp": [29, 30, 31, 32], "prio": 2},
     "night": {"ramp": [0, 1, 33, 34]},
     "night_lining": {"ramp": [0, 33, 34, 34]},
-    "plum": {"ramp": [47, 44, 48, 49]},
-    "plum_dark": {"ramp": [0, 47, 44, 48]},
+    "plum": {"ramp": [0, 47, 44, 45]},
+    "plum_dark": {"ramp": [0, 0, 47, 44]},
     "crimson": {"ramp": [44, 44, 45, 46]},
     "violet": {"ramp": [47, 47, 48, 49]},
     "rags_brown": {"ramp": [20, 21, 50, 22]},
@@ -149,6 +151,9 @@ ROLES = {
     "flag": {"ramp": [K[0], K[1], K[2], K[2], K[3]]},
     "chest_wood": {"ramp": [20, 21, 22, 23]},
     "gold_coins": {"ramp": [41, 42, 43, 19], "kind": "metal", "prio": 2},
+    # --- appended later (keep appending at the end: role id = position in this dict) -------------
+    "roof_tile": {"ramp": [13, 37, 13, 14]},
+    "bald": {"ramp": [20, 6, 7, 8, 9], "kind": "hair"},
 }
 
 # light direction (camera space: x right, y up, z towards the viewer) – from the top left, a bit in front

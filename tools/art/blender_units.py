@@ -12,7 +12,7 @@ import math
 # ------------------------------------------------------------------------------------------------
 
 
-def smear_arc(col, R, role="smear", r0=0.95, r1=1.38, a0=-35, a1=145, tilt=28, cx=-0.22, cz=None, n=12, x_off=0.0):
+def smear_arc(col, R, role="smear", r0=0.85, r1=1.22, a0=-35, a1=140, tilt=28, cx=-0.22, cz=None, n=12, x_off=0.0):
     """Crescent swing trail in the figure's sagittal plane, tilted so it reads from the front too.
     Angles: 0 = up, 90 = forward (-Y), 180 = down."""
     cz = R["top"] if cz is None else cz
@@ -36,7 +36,7 @@ def smear_arc(col, R, role="smear", r0=0.95, r1=1.38, a0=-35, a1=145, tilt=28, c
     return tag(ob, "smear")
 
 
-def smear_front(col, R, role="smear", r0=0.7, r1=1.05, a0=-10, a1=160, cz=None, n=12, y=-0.55, cx=-0.15):
+def smear_front(col, R, role="smear", r0=0.62, r1=0.94, a0=-10, a1=150, cz=None, n=12, y=-0.55, cx=-0.12):
     """Crescent in the frontal (XZ) plane for the s/n views: sweeps from overhead down the weapon side."""
     cz = R["top"] - 0.05 if cz is None else cz
     verts, faces = [], []
@@ -61,7 +61,7 @@ def smears(col, R, **kw):
 def thrust_lines(col, R, role="smear", z=None):
     z = R["top"] - 0.2 if z is None else z
     for dx, dz, L in ((0.0, 0.0, 0.7), (0.12, 0.1, 0.45), (-0.1, -0.08, 0.5)):
-        ob = shape(col, "box", role, (-0.3 + dx, -1.05, z + dz), (0.02, L / 2, 0.02), parent=R["root"])
+        ob = shape(col, "box", role, (-0.3 + dx, -0.8, z + dz), (0.02, L / 2, 0.02), parent=R["root"])
         tag(ob, "thrust")
 
 
@@ -213,10 +213,10 @@ def build_brenna(sc):
     shape(col, "sphere", "hair_grey", (-0.2, -0.16, head_c(R) + 0.26), (0.1, 0.18, 0.08), rot=(0, -30, 0), parent=R["head"], seg=10)
     side_locks(col, R, "hair_red", length=0.2, r=0.11, x=0.4)
     # thick braid over the right shoulder, grey streaks woven in
-    braid(col, R, "hair_red", n=6, start=(-0.34, -0.02, head_c(R) - 0.22), step=(-0.02, -0.035, -0.11), r=0.12, shrink=0.9, streak="hair_grey", tie="leather_dark")
+    braid(col, R, "hair_red", n=6, start=(-0.3, -0.16, head_c(R) - 0.26), step=(-0.015, -0.03, -0.11), r=0.115, shrink=0.9, streak="hair_grey", tie="leather_dark")
     axe(col, R, head_role="steel", edge="blade", haft="wood", length=1.05, big=1.2, double=True, wrap="team")
     smears(col, R)
-    return finish_unit(col, uid, R, "axe")
+    return finish_unit(col, uid, R, "axe", {"atk": {"3": {"aR": 116, "step": 0.1}, "4": {"aR": 126, "step": 0.08}}})
 
 
 # ------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ def build_tobin(sc):
     fringe(col, R, "hair_straw", [(-0.28, -30, 0.9), (-0.12, -6, 1.05), (0.06, 12, 0.95), (0.24, 28, 1.0)], length=0.18, r=0.12, tilt=30)
     crown_spikes(col, R, "hair_straw", [(0.36, 0.05, -10, 80, 0.16), (-0.36, 0.1, -10, -80, 0.16), (0.2, 0.3, -60, 50, 0.16), (-0.18, 0.32, -70, -40, 0.16)], r=0.1)
     kettle_hat(col, R, "hat_steel", brim=0.6, tilt=(-6, 15), dome=(0.42, 0.42, 0.3), z=0.27, rim="steel_dark")
-    spear(col, R, shaft="wood_light", tip="blade", length=1.75, wrap="wrap")
+    spear(col, R, shaft="wood_light", tip="blade", length=1.6, wrap="wrap")
     # round wooden shield on the left arm
     hx, hy, hz = R["hand_L"]
     W = R["wrist_L"]
@@ -337,6 +337,7 @@ def build_grosk(sc):
     hc = head_c(R)
     legs(col, R, "rags_brown", "leather_dark", r=0.14, cuff="fur_dark")
     torso(col, R, "leather_dark", rx=0.36, ry=0.27, flare=1.05)
+    shape(col, "torus", "fur", (0, 0.05, top + 0.04), (0.3, 0.26, 0.22), parent=R["chest"], minor=0.4, seg=16)
     shape(col, "sphere", "skin_tan", (0, -0.2, top - 0.2), (0.16, 0.06, 0.14), parent=R["chest"])  # bare chest
     # heavy fur coat: shoulders + long sides
     shape(col, "torus", "fur_dark", (0, 0.03, top - 0.03), (0.38, 0.31, 0.3), parent=R["chest"], minor=0.45, seg=16)
@@ -352,15 +353,20 @@ def build_grosk(sc):
         hx, hy, hz = R["hand_" + side]
         shape(col, "cyl", "iron", (hx, 0, hz + 0.12), (0.13, 0.13, 0.09), parent=R["arm_" + side], top=1.1)
     # bald head with heavy brow, iron jaw guard, two braided beard tails
-    head(col, R, "skin_tan", "eye", iris="eye_dark", brows="hair_ginger")
-    shape(col, "sphere", "scar", (0.18, -0.3, hc + 0.22), (0.05, 0.02, 0.1), rot=(0, 30, 0), parent=R["head"])
-    shape(col, "cyl", "iron", (0, -0.12, hc - 0.2), (0.36, 0.3, 0.1), parent=R["head"], seg=16)
-    shape(col, "box", "iron", (0, -0.4, hc - 0.2), (0.16, 0.03, 0.08), parent=R["head"], bevel=0.3)
+    head(col, R, "skin_tan", "eye", iris="eye_red", brows="hair_ginger")
+    shape(col, "sphere", "bald", (0, 0.02, hc + 0.04), (0.425, 0.405, 0.4), parent=R["head"], seg=20)
+    shape(col, "box", "scar", (0.2, -0.33, hc + 0.16), (0.02, 0.02, 0.09), rot=(0, 30, 0), parent=R["head"])
+    # iron jaw guard: a strap around the jaw + plate over the chin
+    shape(col, "cyl", "iron", (0, -0.1, hc - 0.27), (0.33, 0.28, 0.07), parent=R["head"], seg=16)
+    shape(col, "box", "iron", (0, -0.37, hc - 0.26), (0.15, 0.04, 0.07), parent=R["head"], bevel=0.3)
     for s in (1, -1):
-        braid(col, R, "hair_ginger", n=4, start=(s * 0.1, -0.33, hc - 0.32), step=(s * 0.01, -0.02, -0.1), r=0.075, shrink=0.88, tie="iron")
-    axe(col, R, head_role="iron", edge="blade", haft="wood", length=1.15, big=1.35, double=False, wrap="leather")
+        shape(col, "sphere", "iron", (s * 0.33, -0.15, hc - 0.2), (0.05, 0.05, 0.05), parent=R["head"], seg=8)
+        braid(col, R, "hair_ginger", n=4, start=(s * 0.1, -0.42, hc - 0.36), step=(s * 0.01, -0.03, -0.1), r=0.075, shrink=0.88, tie="iron")
+    axe(col, R, head_role="iron", edge="blade", haft="wood", length=0.98, big=1.18, double=False, wrap="leather")
     smears(col, R)
-    return finish_unit(col, uid, R, "axe")
+    return finish_unit(col, uid, R, "axe", {"atk": {"3": {"aR": 104, "step": 0.04, "over": {"s": {"aR": 92}}},
+                                                    "4": {"aR": 112, "step": 0.03, "over": {"s": {"aR": 96}}},
+                                                    "5": {"step": 0.0}}})
 
 
 # ------------------------------------------------------------------------------------------------
@@ -463,8 +469,8 @@ def build_liora(sc):
     side_locks(col, R, "hair_silver", length=0.5, r=0.11, x=0.37, y=-0.05)
     long_hair(col, R, "hair_silver", length=0.85, width=0.36)
     shape(col, "torus", "gold", (0, 0.03, hc + 0.26), (0.4, 0.38, 0.4), rot=(-8, 0, 0), parent=R["head"], minor=0.05, seg=20)  # circlet
-    staff(col, R, shaft="wood_light", head_role="gold", gem=None, length=1.6, crown=True)
-    staff_glow(col, R, length=1.6)
+    staff(col, R, shaft="wood_light", head_role="gold", gem=None, length=1.95, crown=True)
+    staff_glow(col, R, length=1.95)
     glow_fx(col, R, "burst")
     return finish_unit(col, uid, R, "staff")
 
@@ -674,7 +680,7 @@ def build_soldier(sc):
     hair_cap(col, R, "hair_brown", back=0.03)
     fringe(col, R, "hair_brown", [(-0.22, -16, 0.8), (0.0, 0, 0.9), (0.22, 16, 0.8)], length=0.15, r=0.12, tilt=26)
     kettle_hat(col, R, "hat_steel", brim=0.55, tilt=(-4, 0), dome=(0.42, 0.42, 0.3), z=0.25, rim="steel_dark")
-    spear(col, R, shaft="wood", tip="blade", length=1.8)
+    spear(col, R, shaft="wood", tip="blade", length=1.62)
     thrust_lines(col, R)
     return finish_unit(col, uid, R, "lance")
 

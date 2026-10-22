@@ -45,7 +45,7 @@ REST = {
     "lance_shield": {"armR": -12, "sprR": 10, "aR": 4, "armL": -28, "sprL": 8, "aL": 28},
     "bow": {"armR": 2, "sprR": 9, "aR": 0, "armL": -12, "sprL": 12, "aL": 12},
     "tome": {"armR": 2, "sprR": 10, "aR": 0, "armL": -52, "sprL": 4, "aL": 40},
-    "staff": {"armR": -10, "sprR": 12, "aR": 2, "armL": 2, "sprL": 9},
+    "staff": {"armR": -10, "sprR": 14, "aR": 2, "tR": 12, "armL": 2, "sprL": 9, "over": {"e": {"tR": 0, "aR": 10}}},
 }
 
 
@@ -80,8 +80,8 @@ def anim_frames(weapon, anim):
             _f(rest, lean=-7, step=-0.08, head=-6, armL=-14, sprL=18, armR=rest["armR"] - 8, sprR=rest["sprR"] + 8, cape=-2, tail=-4),
         ]
     if anim == "downed":
-        return [_f(rest, hz=-0.42, legL=-58, legR=-46, sprLegL=-18, sprLegR=16, lean=40, head=28, armL=-10, sprL=24, armR=-12, sprR=40,
-                   aR=150 if weapon not in ("bow", "tome") else rest.get("aR", 0), tR=-60, cape=-30, tail=-20, step=-0.42)]
+        return [_f(rest, hz=-0.42, legL=-58, legR=-46, sprLegL=-18, sprLegR=16, lean=40, head=28, armL=-10, sprL=24, armR=-12, sprR=30,
+                   aR=-100 if weapon not in ("bow", "tome") else rest.get("aR", 0), tR=30, cape=-30, tail=-20, step=-0.42, over={})]
     if anim == "attack":
         rest = {k: v for k, v in rest.items() if k != "over"}
         return ATTACKS[weapon](rest)
@@ -94,8 +94,8 @@ def _sword_attack(r):
         _f(r, armR=-42, aR=62, sprR=12, legL=-6, legR=6),
         _f(r, armR=-150, aR=-55, sprR=28, twist=22, lean=-6, step=-0.04, armL=-25, sprL=20, legL=-10, legR=10, cape=-4),
         _f(r, armR=-178, aR=-110, sprR=32, twist=28, lean=-9, step=-0.06, hz=0.03, armL=-35, sprL=24, legL=-14, legR=14, cape=-6, tail=-6),
-        _f(r, armR=-58, aR=128, sprR=-12, twist=-26, lean=18, step=0.32, armL=8, sprL=30, legL=-30, legR=24, cape=24, tail=18, show=["smear"]),
-        _f(r, armR=-36, aR=152, sprR=-16, twist=-20, lean=13, step=0.27, armL=6, sprL=24, legL=-26, legR=20, cape=18, tail=12),
+        _f(r, over={"s": {"aR": 100}}, armR=-72, aR=124, sprR=-12, twist=-26, lean=18, step=0.2, armL=8, sprL=30, legL=-30, legR=24, cape=24, tail=18, show=["smear"]),
+        _f(r, over={"s": {"aR": 106}}, armR=-54, aR=140, sprR=-16, twist=-20, lean=13, step=0.17, armL=6, sprL=24, legL=-26, legR=20, cape=18, tail=12),
         _f(r, armR=-30, aR=70, sprR=6, twist=-4, lean=4, step=0.08, legL=-8, legR=6, cape=6),
     ]
 
@@ -107,8 +107,8 @@ def _axe_attack(r, torch=False):
         _f(r, armR=-40, aR=40, sprR=10, legL=-6, legR=6, **lft(armL=-40, sprL=-14)),
         _f(r, armR=-160, aR=-80, sprR=8, twist=12, lean=-10, step=-0.06, legL=-10, legR=12, cape=-6, **lft(armL=-160, sprL=-22)),
         _f(r, armR=-188, aR=-135, sprR=6, twist=14, lean=-14, step=-0.08, hz=0.04, legL=-16, legR=16, cape=-8, tail=-8, **lft(armL=-188, sprL=-24)),
-        _f(r, armR=-74, aR=132, sprR=-4, twist=-14, lean=20, step=0.3, legL=-32, legR=26, cape=24, tail=20, show=["smear"], **lft(armL=-74, sprL=-26)),
-        _f(r, armR=-55, aR=146, sprR=-6, twist=-10, lean=16, step=0.27, legL=-28, legR=22, cape=18, tail=14, **lft(armL=-55, sprL=-22)),
+        _f(r, over={"s": {"aR": 98}}, armR=-88, aR=122, sprR=-4, twist=-14, lean=20, step=0.18, legL=-32, legR=26, cape=24, tail=20, show=["smear"], **lft(armL=-74, sprL=-26)),
+        _f(r, over={"s": {"aR": 104}}, armR=-70, aR=134, sprR=-6, twist=-10, lean=16, step=0.15, legL=-28, legR=22, cape=18, tail=14, **lft(armL=-55, sprL=-22)),
         _f(r, armR=-32, aR=70, sprR=8, twist=-2, lean=6, step=0.08, legL=-8, legR=6, cape=6, **lft(armL=-24, sprL=-8)),
     ]
 
@@ -118,8 +118,8 @@ def _lance_attack(r):
         _f(r, armR=-55, aR=78, sprR=8, armL=-50, sprL=-10, legL=-6, legR=6),
         _f(r, armR=-22, aR=92, sprR=12, armL=-40, sprL=-6, twist=18, lean=-6, step=-0.1, legL=-12, legR=12, cape=-4),
         _f(r, armR=4, aR=92, sprR=14, armL=-30, sprL=-4, twist=24, lean=-10, step=-0.14, legL=-16, legR=16, cape=-6, tail=-6),
-        _f(r, armR=-88, aR=96, sprR=-4, armL=-70, sprL=-16, twist=-14, lean=16, step=0.42, legL=-34, legR=28, cape=24, tail=18, show=["thrust"]),
-        _f(r, armR=-80, aR=96, sprR=-2, armL=-64, sprL=-14, twist=-10, lean=12, step=0.34, legL=-28, legR=22, cape=16, tail=12),
+        _f(r, armR=-88, aR=96, sprR=-4, armL=-70, sprL=-16, twist=-14, lean=16, step=0.2, legL=-34, legR=28, cape=24, tail=18, show=["thrust"]),
+        _f(r, armR=-80, aR=96, sprR=-2, armL=-64, sprL=-14, twist=-10, lean=12, step=0.15, legL=-28, legR=22, cape=16, tail=12),
         _f(r, armR=-48, aR=72, sprR=6, armL=-30, sprL=-4, twist=-2, lean=4, step=0.1, legL=-8, legR=6, cape=6),
     ]
 
@@ -155,12 +155,13 @@ def _tome_attack(r):
 
 
 def _staff_attack(r):
+    r = dict(r, tR=0)
     return [
         _f(r, armR=-30, aR=8, sprR=10, armL=-20, sprL=10),
         _f(r, armR=-80, aR=0, sprR=12, armL=-40, sprL=16, lean=-4, show=["glow_staff"], fx={"glow_staff": 0.6}),
         _f(r, armR=-150, aR=-6, sprR=10, armL=-60, sprL=20, lean=-8, hz=0.03, show=["glow_staff"], fx={"glow_staff": 1.0}, cape=-6),
-        _f(r, armR=-100, aR=48, sprR=-4, armL=-30, sprL=24, lean=12, step=0.2, twist=-10, show=["glow_staff", "glow_burst"], fx={"glow_staff": 1.2, "glow_burst": 1.0}, legL=-20, legR=16, cape=16, tail=12),
-        _f(r, armR=-86, aR=40, sprR=-2, armL=-24, sprL=20, lean=8, step=0.15, show=["glow_burst"], fx={"glow_burst": 0.6}, legL=-14, legR=10, cape=10),
+        _f(r, armR=-100, aR=30, sprR=-4, armL=-30, sprL=24, lean=12, step=0.12, twist=-10, show=["glow_staff", "glow_burst"], fx={"glow_staff": 1.2, "glow_burst": 1.0}, legL=-20, legR=16, cape=16, tail=12),
+        _f(r, armR=-86, aR=24, sprR=-2, armL=-24, sprL=20, lean=8, step=0.1, show=["glow_burst"], fx={"glow_burst": 0.6}, legL=-14, legR=10, cape=10),
         _f(r, armR=-34, aR=10, sprR=8, armL=-6, sprL=12, lean=2, step=0.04),
     ]
 
@@ -288,6 +289,8 @@ def render_unit(uid, out, rows=None, frames=None):
     row_meta = []
     for name, anim, direction, fps, loop in UNIT_ROWS:
         fr = anim_frames(weapon, anim)
+        if anim == "attack" and meta.get("atk"):
+            fr = [dict(f, **meta["atk"].get(str(i), {})) for i, f in enumerate(fr)]
         row_meta.append({"name": name, "frames": len(fr), "fps": fps, "loop": loop})
         if rows and name not in rows:
             continue
