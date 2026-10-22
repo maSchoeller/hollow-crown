@@ -1125,6 +1125,7 @@ export class BoardView {
             if (e.t === 'heal') this.spawnFx('heal', p[0], p[1]);
           }
           this.hooks.onUnitHp?.(e.unit, e.hpAfter);
+          if (e.t === 'heal') void this.hooks.onEvent?.(e);
           await this.wait(e.t === 'heal' ? 350 : 250);
           break;
         }
