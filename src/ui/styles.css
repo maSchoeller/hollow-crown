@@ -58,6 +58,20 @@ body,
   user-select: none;
   -webkit-user-select: none;
 }
+/* iOS home-screen app: 100% stops short of the rounded corners (status bar and home indicator),
+   the large viewport unit covers the whole display */
+@media (display-mode: standalone) {
+  html,
+  body,
+  #app {
+    height: 100lvh;
+  }
+  .screen-bg,
+  .screen > .screen-bg {
+    bottom: auto;
+    height: 100lvh;
+  }
+}
 button {
   font: inherit;
   color: inherit;
