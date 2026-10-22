@@ -51,6 +51,8 @@ let losses = 0;
 let ms = 0;
 let played = 0;
 const causes: Record<string, number> = {};
+const recruits: Record<string, number> = {};
+let villages = 0;
 for (let r = 0; r < runs; r++) {
   const c = chained ? campaignChained(data, seed0 + r, node.id) : campaignAt(data, seed0 + r, node.id);
   if (!c) continue;
@@ -69,7 +71,17 @@ for (let r = 0; r < runs; r++) {
     causes[u.id] = (causes[u.id] ?? 0) + 1;
   }
   if (state.outcome !== 'victory') causes[`outcome:${state.outcome ?? 'timeout'}`] = (causes[`outcome:${state.outcome ?? 'timeout'}`] ?? 0) + 1;
+  if (state.outcome === 'defeat') {
+    const map = data.maps[state.mapId]!;
+    for (const d of map.objectives.defeat) {
+      const u = 'unit' in d ? state.units.find((x) => x.id === d.unit) : undefined;
+      if (u && (u.downed || u.gone === 'dead')) causes[`lost:${u.id}`] = (causes[`lost:${u.id}`] ?? 0) + 1;
+    }
+  }
+  villages += state.stats.villagesVisited.length;
+  for (const r of state.stats.recruited) recruits[r] = (recruits[r] ?? 0) + 1;
 }
 console.log(`${node.id} (${mapId}) – ${played}/${runs} runs ${chained ? '(chained campaign)' : '(fresh roster)'}, ${difficulty}/${deathMode}`);
 console.log(`win rate ${((wins / Math.max(1, played)) * 100).toFixed(0)} %, avg turns ${(turns / Math.max(1, wins)).toFixed(1)}, avg losses ${(losses / Math.max(1, played)).toFixed(2)}, avg ${(ms / Math.max(1, played)).toFixed(0)} ms/run`);
-console.log('downs/deaths:', causes);
+console.log('downs/deaths:', JSON.stringify(causes));
+console.log(`villages/run ${(villages / Math.max(1, played)).toFixed(1)}, recruited: ${JSON.stringify(recruits)}`);

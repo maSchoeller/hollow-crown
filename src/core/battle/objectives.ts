@@ -2,7 +2,7 @@ import type { GameData, MapDef, MapUnitDef, Pos, SideObjectiveDef, Team, Trigger
 import type { GameEvent } from '../events';
 import { burningTileHit } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
-import { active, findUnit, inArea, inBounds, neighbors, onMap, unitAt } from '../util';
+import { active, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
 import { battleUnitFromMap } from './create';
 
 export function mapOf(data: GameData, s: BattleState): MapDef {
@@ -87,7 +87,7 @@ export function sideObjectiveDone(data: GameData, s: BattleState, o: SideObjecti
 /** Spawns map-defined units near their position if the tile is taken. */
 export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], reinforcement: boolean, events: GameEvent[]): void {
   const pct = data.balance.difficulty[s.settings.difficulty].enemyStatPercent;
-  for (const def of defs) {
+  for (const def of onDifficulty(defs, s.settings.difficulty)) {
     const at = freeTileNear(s, def.at);
     if (!at) continue;
     const uid = def.id ?? `r${s.nextUid++}`;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { signal } from '@preact/signals';
 import {
   active,
+  onDifficulty,
   applyCommand,
   availableActions,
   combinedRange,
@@ -35,12 +35,12 @@ import { mapOf, sideObjectiveDone } from '../../core/battle/objectives';
 import { BoardView } from '../../render/board';
 import { t } from '../../i18n';
 import { Dialogue } from '../../ui/Dialogue';
-import { ForecastView, HpBar, ItemDetails, ItemRow, itemName, Modal, Portrait, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
+import { Crest, ForecastView, HpBar, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
+import { Icon } from '../../ui/icons';
 import { audio } from '../audio';
-import { battle, campaign, command, concludeBattle, data, restartBattle, screen, settings, setFlag } from '../store';
+import { battle, campaign, command, concludeBattle, data, pendingEvents, restartBattle, screen, settings, setFlag } from '../store';
 
-/** Events from startBattle waiting for the board (opening phase banner, turn-1 dialogue). */
-export const pendingEvents = signal<GameEvent[]>([]);
+export { pendingEvents };
 
 type Mode =
   | { k: 'idle' }
@@ -65,6 +65,14 @@ const AI_TEXT: Record<string, string> = {
   aggressive: 'ui.ai.aggressive', hold: 'ui.ai.hold', guard: 'ui.ai.guard', trigger: 'ui.ai.trigger', hunt: 'ui.ai.hunt', raider: 'ui.ai.raider', flee: 'ui.ai.flee', support: 'ui.ai.support',
 };
 
+/** Action bar (U20): the most important action gets the big button, the rest share four slots with "Back". */
+const PRIMARY_ORDER: ActionOption['kind'][] = ['attack', 'seize', 'escape', 'visit', 'talk', 'staff', 'rescue', 'chest', 'door'];
+const SECONDARY_ORDER: ActionOption['kind'][] = ['visit', 'talk', 'seize', 'escape', 'staff', 'rescue', 'chest', 'door', 'item', 'trade', 'convoy', 'rally', 'command', 'wait'];
+const ACTION_ICON: Partial<Record<ActionOption['kind'], string>> = {
+  attack: 'attack', staff: 'staff', item: 'item', trade: 'trade', convoy: 'convoy', wait: 'wait', visit: 'visit', chest: 'chest',
+  door: 'door', talk: 'talk', rescue: 'rescue', seize: 'seize', escape: 'escape', rally: 'rally', command: 'command',
+};
+
 export function Battle() {
   const session = battle.value!;
   const s = session.state;
@@ -82,6 +90,8 @@ export function Battle() {
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
+  const [more, setMore] = useState(false);
+  const [confirmEnd, setConfirmEnd] = useState(false);
   const [objectives, setObjectives] = useState(false);
   const [trade, setTrade] = useState<{ a: string; b: string } | null>(null);
   const [convoy, setConvoy] = useState<string | null>(null);
@@ -144,7 +154,7 @@ export function Battle() {
     })();
     const reinforce = mapOf(data, s)
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
-      .flatMap((r) => r.units.map((u) => u.at));
+      .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     const base = { danger: dangerTiles, goal, reinforce };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
@@ -389,6 +399,26 @@ export function Battle() {
     await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'attack', target: mode.target, weapon: mode.weapon } });
   };
 
+  /** Selects the next unit that has not acted yet and centres the camera on it. */
+  const nextUnit = () => {
+    const ready = s.units.filter(selectable);
+    if (!ready.length) return;
+    const cur = mode.k !== 'idle' ? ready.findIndex((u) => u.uid === mode.uid) : -1;
+    const next = ready[(cur + 1) % ready.length]!;
+    audio.sfx('tap');
+    setMode({ k: 'selected', uid: next.uid });
+    setTileInfo(null);
+    void boardRef.current?.centerOn(next.pos!);
+  };
+
+  // "End phase" with units still ready asks once more; the question expires after a few seconds
+  useEffect(() => {
+    if (!confirmEnd) return;
+    const id = setTimeout(() => setConfirmEnd(false), 3000);
+    return () => clearTimeout(id);
+  }, [confirmEnd]);
+  useEffect(() => setConfirmEnd(false), [mode]);
+
   // keyboard (concept/09 §3)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -397,12 +427,7 @@ export function Battle() {
       else if ((e.key === 'e' || e.key === 'E') && playerTurn) void run({ type: 'endPhase' });
       else if (e.key === ' ' && playerTurn) {
         e.preventDefault();
-        const ready = s.units.filter(selectable);
-        if (!ready.length) return;
-        const cur = mode.k !== 'idle' ? ready.findIndex((u) => u.uid === mode.uid) : -1;
-        const next = ready[(cur + 1) % ready.length]!;
-        setMode({ k: 'selected', uid: next.uid });
-        void boardRef.current?.centerOn(next.pos!);
+        nextUnit();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -471,56 +496,144 @@ export function Battle() {
     mode.k === 'forecast' ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === 'attack')?.weapons?.[mode.target] ?? []) : [];
   const readyCount = s.units.filter(selectable).length;
 
+  const map = mapOf(data, s);
+  const victory = map.objectives.victory;
+  const enemiesLeft = s.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
+  const goalProgress =
+    victory.type === 'rout'
+      ? t('ui.hud.left', { n: enemiesLeft })
+      : victory.type === 'defend' || victory.type === 'survive'
+        ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
+        : '';
+
+  const back = (
+    <button class="act ghost" onClick={() => cancelRef.current()}>
+      <Icon name="back" />
+      {t('ui.back')}
+    </button>
+  );
+  const dangerBtn = (
+    <button class={`act ${danger ? 'on' : ''}`} aria-pressed={danger} onClick={() => setDanger(!danger)}>
+      <Icon name="danger" />
+      {t('ui.danger')}
+    </button>
+  );
+  const actBtn = (o: ActionOption) => (
+    <button key={o.kind} class="act" onClick={() => void doAction(o)}>
+      <Icon name={ACTION_ICON[o.kind] ?? 'star'} />
+      {t(`ui.action.${o.kind}`)}
+    </button>
+  );
+  const primary = PRIMARY_ORDER.map((k) => options.find((o) => o.kind === k)).find(Boolean) ?? options.find((o) => o.kind === 'wait');
+  const secondary = options
+    .filter((o) => o !== primary)
+    .sort((x, y) => SECONDARY_ORDER.indexOf(x.kind) - SECONDARY_ORDER.indexOf(y.kind));
+  const overflow = secondary.length > 3;
+  const shown = overflow ? secondary.slice(0, 2) : secondary;
+
   const sheet = (
-    <>
-      {fc && (
-        <div class="panel">
-          <ForecastView data={data} state={s} f={fc} />
-        </div>
-      )}
+    <div class={`dock ${wide ? '' : 'edge'}`}>
+      {fc && <ForecastView data={data} state={s} f={fc} />}
       {!fc && selUnit && (
-        <div class="panel sheet" onClick={() => setInfo(selUnit.uid)}>
+        <div onClick={() => setInfo(selUnit.uid)} style={{ cursor: 'pointer' }}>
           <UnitCard data={data} unit={{ ...selUnit, hp: hp[selUnit.uid] ?? selUnit.hp }} state={s} />
         </div>
       )}
       {!fc && !selUnit && tileInfo && <TileInfo s={s} p={tileInfo} hp={hp} onInfo={(uid) => setInfo(uid)} />}
-      {mode.k === 'moved' && (
-        <div class="actionbar">
-          {options.map((o) => (
-            <button key={o.kind} class={`btn ${o.kind === 'attack' ? 'primary' : ''}`} onClick={() => void doAction(o)}>
-              {t(`ui.action.${o.kind}`)}
-            </button>
-          ))}
-        </div>
-      )}
-      {mode.k === 'target' && <div class="panel sheet muted">{t(`ui.pick.${mode.action}`)}</div>}
-      {mode.k === 'forecast' && (
-        <div class="actionbar">
-          {weaponsForTarget.length > 1 && (
-            <button
-              class="btn"
-              onClick={() => {
-                const i = weaponsForTarget.indexOf(mode.weapon ?? '');
-                setMode({ ...mode, weapon: weaponsForTarget[(i + 1) % weaponsForTarget.length] });
-              }}
-            >
-              ⇄ {t('ui.action.swapWeapon')}
-            </button>
-          )}
-          <button class="btn primary" onClick={() => void confirmAttack()}>
-            ⚔ {t('ui.action.confirmAttack')}
+
+      {mode.k === 'idle' && (
+        <div class="dock-row three">
+          {dangerBtn}
+          <button class="act" disabled={!playerTurn || readyCount === 0} onClick={nextUnit}>
+            <Icon name="next" />
+            {t('ui.hud.nextUnit')}
+          </button>
+          <button
+            class={`act ${confirmEnd ? 'on' : 'ink'}`}
+            disabled={!playerTurn}
+            onClick={() => {
+              if (readyCount > 0 && !confirmEnd) return setConfirmEnd(true);
+              setConfirmEnd(false);
+              void run({ type: 'endPhase' });
+            }}
+          >
+            <Icon name="forward" />
+            {confirmEnd ? t('ui.hud.endConfirm') : t('ui.endPhase')}
+            {readyCount > 0 && <span class="count">{t('ui.hud.ready', { n: readyCount })}</span>}
           </button>
         </div>
       )}
-      <div class="navbar">
-        <button class="btn" disabled={mode.k === 'idle' && !info && !tileInfo} onClick={() => cancelRef.current()}>
-          ◀ {t('ui.back')}
-        </button>
-        <button class="btn" disabled={!playerTurn} onClick={() => void run({ type: 'endPhase' })}>
-          {t('ui.endPhase')} ▶{readyCount > 0 && <span class="badge">{readyCount}</span>}
-        </button>
-      </div>
-    </>
+      {mode.k === 'selected' && (
+        <>
+          <div class="dock-hint">{t('ui.hud.pickTile')}</div>
+          <div class="dock-row three">
+            {dangerBtn}
+            <span />
+            {back}
+          </div>
+        </>
+      )}
+      {mode.k === 'moved' && primary && (
+        <>
+          <button class="primary-act" onClick={() => void doAction(primary)}>
+            <span>
+              <Icon name={ACTION_ICON[primary.kind] ?? 'star'} size={22} />
+              {t(`ui.action.${primary.kind}`)}
+            </span>
+            {primary.kind === 'attack' && <small>{t('ui.hud.targets', { n: primary.targets?.length ?? 0 })}</small>}
+          </button>
+          <div class="dock-row">
+            {shown.map(actBtn)}
+            {overflow && (
+              <button class="act" onClick={() => setMore(true)}>
+                <Icon name="plus" />
+                {t('ui.hud.more')}
+              </button>
+            )}
+            {Array.from({ length: Math.max(0, 3 - (overflow ? 3 : shown.length)) }, (_, i) => (
+              <span key={`pad${i}`} />
+            ))}
+            {back}
+          </div>
+        </>
+      )}
+      {mode.k === 'target' && (
+        <>
+          <div class="dock-hint">{t(`ui.pick.${mode.action}`)}</div>
+          <div class="dock-row three">
+            <span />
+            <span />
+            {back}
+          </div>
+        </>
+      )}
+      {mode.k === 'forecast' && (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: weaponsForTarget.length > 1 ? '1fr 1fr 1.6fr' : '1fr 1.7fr', gap: 8 }}>
+            <button class="act ghost" onClick={() => cancelRef.current()}>
+              <Icon name="back" />
+              {t('ui.cancel')}
+            </button>
+            {weaponsForTarget.length > 1 && (
+              <button
+                class="act"
+                onClick={() => {
+                  const i = weaponsForTarget.indexOf(mode.weapon ?? '');
+                  setMode({ ...mode, weapon: weaponsForTarget[(i + 1) % weaponsForTarget.length] });
+                }}
+              >
+                <Icon name="swap" />
+                {t('ui.action.swapWeapon')}
+              </button>
+            )}
+            <button class="primary-act" style={{ justifyContent: 'center' }} onClick={() => void confirmAttack()}>
+              {t('ui.action.confirmAttack')}
+            </button>
+          </div>
+          <div class="dock-hint" style={{ fontSize: 13 }}>{t('ui.hud.tapAgain')}</div>
+        </>
+      )}
+    </div>
   );
 
   return (
@@ -536,12 +649,12 @@ export function Battle() {
                   if (selectable(u) && playerTurn) setMode({ k: 'selected', uid: u.uid });
                   void boardRef.current?.centerOn(u.pos!);
                 }}>
-                  <Portrait id={u.portrait} name={unitName(u)} size={40} />
-                  <div>
-                    <div class="unit-name" style={{ fontSize: 14 }}>{unitName(u)}</div>
+                  <Crest id={u.portrait} name={unitName(u)} w={40} h={48} />
+                  <div class="col" style={{ gap: 6 }}>
+                    <div class="unit-name">{unitName(u)}</div>
                     <HpBar hp={hp[u.uid] ?? u.hp} max={computeStats(data, u).maxHp} />
                   </div>
-                  <span class="num muted">{u.level}</span>
+                  <span class="lbl">{t('ui.lv')} {u.level}</span>
                 </div>
               ))}
           </div>
@@ -551,23 +664,21 @@ export function Battle() {
         <canvas ref={canvasRef} class="board-canvas" />
         <div ref={floatRef} class="float-layer" />
         <div class="topbar">
-          <button class="chip" onClick={() => setMenu(true)} aria-label={t('ui.menu')}>
-            ☰
+          <button class="hud-bar" onClick={() => setObjectives(true)} aria-label={t('ui.obj.title')}>
+            <span class={`hud-round ${s.phase !== 'player' ? s.phase : ''}`}>{s.turn}</span>
+            <span class="hud-goal">
+              <span class={`lbl phase-${s.phase}`}>
+                {t('ui.hud.round', { n: s.turn })} · {t(`ui.phase.${s.phase}`)}
+              </span>
+              <b>
+                {t(`ui.world.goal.${victory.type}`, { turns: 'turns' in victory ? victory.turns : 0 }).replace(/\.$/, '')}
+                {goalProgress && <span class="muted"> · {goalProgress}</span>}
+              </b>
+            </span>
           </button>
-          <span class={`chip phase-${s.phase}`}>
-            <span class="num">{s.turn}</span>&nbsp;{t(`ui.phaseShort.${s.phase}`)}
-          </span>
-          <span class="spacer" />
-          <button class="chip" onClick={() => setObjectives(true)}>
-            🎯 {t(`ui.goalShort.${mapOf(data, s).objectives.victory.type}`)}
+          <button class="hud-btn" onClick={() => setMenu(true)} aria-label={t('ui.menu')}>
+            <Icon name="menu" size={22} />
           </button>
-          <button class={`chip ${danger ? 'on' : ''}`} onClick={() => setDanger(!danger)}>
-            ⚠ {t('ui.danger')}
-          </button>
-          <span class="row" style={{ position: 'absolute', top: '100%', left: 8, gap: 4 }}>
-            <button class="chip" onClick={() => boardRef.current?.zoom(1)} aria-label="zoom in">＋</button>
-            <button class="chip" onClick={() => boardRef.current?.zoom(-1)} aria-label="zoom out">－</button>
-          </span>
         </div>
         {!wide && <div class="bottom">{sheet}</div>}
         {banner && <div class={`banner ${banner.cls}`}>{banner.text}</div>}
@@ -575,24 +686,40 @@ export function Battle() {
       </div>
       {wide && <div class="side">{sheet}</div>}
 
+      {more && mode.k === 'moved' && (
+        <Modal title={t('ui.hud.more')} onClose={() => setMore(false)}>
+          <div class="col">
+            {secondary.slice(2).map((o) => (
+              <button key={o.kind} class="btn" style={{ justifyContent: 'flex-start' }} onClick={() => { setMore(false); void doAction(o); }}>
+                <Icon name={ACTION_ICON[o.kind] ?? 'star'} />
+                {t(`ui.action.${o.kind}`)}
+              </button>
+            ))}
+          </div>
+        </Modal>
+      )}
       {infoUnit && <UnitInfo u={infoUnit} s={s} onClose={() => setInfo(null)} onEquip={(item, slot) => void run({ type: 'equip', unit: infoUnit.uid, item, slot })} canEdit={playerTurn && infoUnit.team === 'player' && !infoUnit.acted} />}
       {objectives && <ObjectivesPanel s={s} onClose={() => setObjectives(false)} />}
       {menu && (
         <Modal title={t('ui.menu')} onClose={() => setMenu(false)}>
           <div class="col">
             <button class="btn" onClick={() => { setMenu(false); screen.value = { name: 'options', back: { name: 'battle' } }; }}>
-              ⚙ {t('ui.options')}
+              <Icon name="gear" />
+              {t('ui.options')}
             </button>
             {s.settings.deathMode !== 'classic' && (
               <button class="btn" onClick={() => { setMenu(false); restartBattle(true); remount(); }}>
-                ↺ {t('ui.battle.restartRound')}
+                <Icon name="rewind" />
+                {t('ui.battle.restartRound')}
               </button>
             )}
             <button class="btn" onClick={() => { setMenu(false); restartBattle(false); remount(); }}>
-              ⟲ {t('ui.battle.restartMission')}
+              <Icon name="restart" />
+              {t('ui.battle.restartMission')}
             </button>
-            <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
-              ⌂ {t('ui.battle.toTitle')}
+            <button class="btn ghost" onClick={() => (screen.value = { name: 'title' })}>
+              <Icon name="home" />
+              {t('ui.battle.toTitle')}
             </button>
             <div class="muted" style={{ fontSize: 13 }}>{t('ui.battle.autosaved')}</div>
           </div>
@@ -628,7 +755,7 @@ export function Battle() {
 
 /** Re-mounts the battle screen after a restart (fresh board). */
 function remount(): void {
-  screen.value = { name: 'worldmap' };
+  screen.value = { name: 'camp' };
   queueMicrotask(() => (screen.value = { name: 'battle' }));
 }
 
@@ -677,7 +804,12 @@ function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s: Battl
       <div class="col" style={{ gap: 12 }}>
         <UnitCard data={data} unit={u} state={s} />
         <StatsGrid data={data} unit={u} state={s} />
-        {u.ai && u.team !== 'player' && <div class="muted">🧠 {t(AI_TEXT[u.ai.profile] ?? 'ui.ai.aggressive')}</div>}
+        {u.ai && u.team !== 'player' && (
+          <div class="row muted">
+            <Icon name="ai" size={18} />
+            {t(AI_TEXT[u.ai.profile] ?? 'ui.ai.aggressive')}
+          </div>
+        )}
         <div>
           <h3>{t('ui.inventory')}</h3>
           <div class="list">
@@ -708,7 +840,10 @@ function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s: Battl
             </div>
           ))}
           {u.scars.map((sc) => (
-            <div key={sc} class="dis">✚ {t(`scar.${sc}`)}</div>
+            <div key={sc} class="row dis">
+              <Icon name="scar" size={16} />
+              {t(`scar.${sc}`)}
+            </div>
           ))}
         </div>
       </div>
@@ -735,7 +870,9 @@ function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () => void }
         <h3>{t('ui.obj.side')}</h3>
         {map.objectives.side.map((o) => (
           <div key={o.id} class="row">
-            <span>{sideObjectiveDone(data, s, o) ? '✔' : '○'}</span>
+            <span class={sideObjectiveDone(data, s, o) ? 'adv' : 'muted'}>
+              <Icon name={sideObjectiveDone(data, s, o) ? 'check' : 'target'} size={18} />
+            </span>
             <span class="grow">{t(`ui.side.${o.type}`, { turns: o.turns ?? 0 })}</span>
           </div>
         ))}

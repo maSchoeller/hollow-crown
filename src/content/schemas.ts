@@ -261,6 +261,7 @@ export const mapUnitSchema = z.object({
   quote: z.string().optional(),
   recruit: z.object({ by: z.union([z.array(z.string()), z.literal('any')]), dialogue: z.string().optional() }).optional(),
   ignoreForRout: z.boolean().optional(),
+  difficulty: z.array(z.enum(['easy', 'normal', 'hard'])).optional(),
 });
 
 const reward = z
@@ -387,8 +388,11 @@ export const campaignSchema = z.object({
       next: z.array(z.string()),
       pos,
       merchantTier: z.number().int(),
+      grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
     }),
   ),
+  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.string()).default({}),
+  facilities: z.record(z.string(), z.string()).default({}),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
   supportPairs: z.array(z.tuple([z.string(), z.string()])),
   supportDialogues: z.record(z.string(), z.object({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial()),

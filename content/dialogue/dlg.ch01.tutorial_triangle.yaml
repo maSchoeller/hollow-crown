@@ -1,0 +1,6 @@
+id: dlg.ch01.tutorial_triangle
+lines:
+  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.tutorial_fire.002 }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.tutorial_triangle.001 }
+  - { speaker: tobin, mood: happy, side: right, key: dlg.ch01.tutorial_triangle.002 }
+  - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.tutorial_triangle.003 }

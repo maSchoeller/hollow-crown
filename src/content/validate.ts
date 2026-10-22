@@ -47,6 +47,16 @@ export function validateContent(data: GameData, locales: Locales, spriteIds?: Se
       for (const nx of n.next) if (!camp.nodes.some((x) => x.id === nx)) err('campaign.yaml', `${n.id}: unknown next ${nx}`);
     }
     for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
+    for (const [m, from] of Object.entries(camp.mechanics))
+      if (!camp.nodes.some((n) => n.id === from) && !/^ch\d+$/.test(from)) err('campaign.yaml', `mechanics.${m}: unknown node ${from}`);
+    for (const n of camp.nodes)
+      for (const g of n.grants ?? []) {
+        item('campaign.yaml', g.item, `${n.id} grants`);
+        if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
+      }
+    for (const [f, at] of Object.entries(camp.facilities))
+      if (at !== 'start' && !camp.nodes.some((n) => n.id === at) && !/^ch\d+$/.test(at)) err('campaign.yaml', `facilities.${f}: unknown node ${at}`);
+    validateMechanics(data, err);
     for (const [k, v] of Object.entries(camp.supportDialogues))
       for (const d of Object.values(v)) dialogue('campaign.yaml', d, `support ${k}`);
   }
@@ -78,6 +88,34 @@ export function validateContent(data: GameData, locales: Locales, spriteIds?: Se
       for (const u of allUnits(m)) if (u.sprite && !spriteIds.has(u.sprite)) err(`maps/${m.id}`, `unknown sprite ${u.sprite}`);
   }
   return issues;
+}
+
+/**
+ * Step-by-step introduction (concept/06 §10): before magic is introduced no map unit, starting character
+ * or merchant tier may carry a tome, otherwise the player meets the mechanic before it is explained.
+ */
+function validateMechanics(data: GameData, err: (f: string, m: string) => void): void {
+  const camp = data.campaign;
+  const from = camp.mechanics.magic;
+  if (!from) return;
+  const order = camp.nodes.map((n) => n.id);
+  const until = order.indexOf(from) < 0 ? order.length : order.indexOf(from);
+  const magical = (r: ItemRef) => data.items[r.def]?.damageType === 'magical';
+  for (const n of camp.nodes.slice(0, until)) {
+    const map = data.maps[n.map];
+    if (!map) continue;
+    for (const u of allUnits(map))
+      if (u.items.some(magical)) err(`maps/${map.id}`, `${u.id ?? u.class}: tome before magic is introduced (${from})`);
+    for (const o of map.objects)
+      for (const r of [o.reward?.item, o.contents?.item]) if (r && magical(r)) err(`maps/${map.id}`, `${o.id}: tome before ${from}`);
+    for (const ch of Object.values(data.chars))
+      if (ch.joins === n.id && ch.items.some(magical)) err('units.yaml', `${ch.id}: joins with a tome before ${from}`);
+  }
+  // the shop before node i sells the tiers of nodes < i
+  const shopTier = Math.max(-1, ...camp.nodes.slice(0, Math.max(0, until - 1)).map((n) => n.merchantTier));
+  for (const m of camp.merchant)
+    if (m.tier <= shopTier)
+      for (const id of m.items) if (data.items[id]?.damageType === 'magical') err('campaign.yaml', `merchant tier ${m.tier}: tome ${id} before ${from}`);
 }
 
 function allUnits(m: MapDef): MapUnitDef[] {

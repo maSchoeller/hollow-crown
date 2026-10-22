@@ -34,17 +34,36 @@ import {
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
 import { t } from '../../i18n';
-import { asset, ItemDetails, ItemRow, itemName, Modal, Portrait, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
+import { asset, Crest, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
+import { Icon } from '../../ui/icons';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
-import { campaign, data, saveSlot, screen, setCampaign, setFlag, startBattle } from '../store';
+import { campaign, data, nodeDef, pendingEvents, playNode, saveSlot, screen, setCampaign, setFlag, startBattle } from '../store';
 import { downloadSave, SlotPicker } from './Menus';
-import { pendingEvents } from './Battle';
 import { audio } from '../audio';
 
-const TABS = ['company', 'convoy', 'merchant', 'smith', 'enchanter', 'healer', 'campfire', 'save'] as const;
+const TABS = ['company', 'convoy', 'merchant', 'smith', 'healer', 'campfire', 'enchanter', 'save'] as const;
 type Tab = (typeof TABS)[number];
+const FACILITIES = TABS.filter((k) => k !== 'save');
+const FAC_ICON: Record<Tab, string> = {
+  company: 'company', convoy: 'convoy', merchant: 'merchant', smith: 'smith', enchanter: 'enchanter', healer: 'healer', campfire: 'campfire', save: 'save',
+};
 
+/** Node after which a camp facility opens (campaign.yaml `facilities`; 'start' or missing = always). */
+function unlockNode(tab: Tab): string | undefined {
+  const at = data.campaign.facilities[tab];
+  return at && at !== 'start' ? at : undefined;
+}
+const isOpen = (tab: Tab, done: string[]) => {
+  const at = unlockNode(tab);
+  return !at || done.includes(at);
+};
+const shortTitle = (nodeId: string) => {
+  const n = data.campaign.nodes.find((x) => x.id === nodeId);
+  return n ? t(n.titleKey).split('–')[0]!.trim() : t('ui.hub.later');
+};
+
+/** The war camp (U20): one hub with the next mission as the main button and facilities that open over time. */
 export function Camp({ tab: initial }: { tab?: string }) {
   const c = campaign.value!;
   const [tab, setTab] = useState<Tab | null>((initial as Tab) ?? null);
@@ -61,54 +80,136 @@ export function Camp({ tab: initial }: { tab?: string }) {
       setToast(t(`ui.camp.err.${r.error}`));
     }
   };
-  return (
-    <div class="screen" style={{ gap: 10 }}>
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})`, opacity: 0.55 }} />
-      <div class="screen-narrow col" style={{ gap: 10, flex: 1, minHeight: 0 }}>
-        <div class="row">
-          {tab ? (
-            <button class="btn small ghost" onClick={() => setTab(null)}>
-              ◀
+  const gold = (
+    <div class="panel hub-gold">
+      <Icon name="gold" size={18} />
+      {c.gold}
+    </div>
+  );
+
+  if (tab) {
+    return (
+      <div class="screen" style={{ gap: 12 }}>
+        <div class="screen-narrow col" style={{ gap: 12, flex: 1, minHeight: 0 }}>
+          <div class="page-head">
+            <button class="btn small ghost icon-only" onClick={() => setTab(null)} aria-label={t('ui.back')}>
+              <Icon name="back" />
             </button>
-          ) : null}
-          <h2 class="grow">{tab ? t(`ui.camp.${tab}`) : t('ui.camp.title')}</h2>
-          <span class="chip">
-            <span class="gold">◉</span> <span class="num">{c.gold}</span>
-          </span>
-        </div>
-        <div class="muted" style={{ fontSize: 13 }}>
-          {Object.entries(c.materials)
-            .filter(([, n]) => n > 0)
-            .map(([m, n]) => `${t(`item.${m}.name`)} ${n}`)
-            .join(' · ')}
-        </div>
-        {!tab && (
-          <>
-            <div class="camp-grid">
-              {TABS.map((k) => (
-                <button key={k} class="camp-tile" onClick={() => setTab(k)}>
-                  <b>
-                    {t(`ui.camp.${k}`)} {k === 'campfire' && talks.length > 0 && <span class="badge">{talks.length}</span>}
-                  </b>
-                  <small>{t(`ui.camp.${k}.desc`)}</small>
-                </button>
-              ))}
+            <div class="titles">
+              <span class="lbl">{t('ui.camp.title')}</span>
+              <h2>{t(`ui.camp.${tab}`)}</h2>
             </div>
-            <span class="spacer" />
-            <button class="btn primary" onClick={() => (screen.value = { name: 'worldmap' })}>
-              {t('ui.camp.toWorld')} ▶
+            <span class="hub-gold" style={{ padding: 0 }}>
+              <Icon name="gold" size={18} />
+              {c.gold}
+            </span>
+          </div>
+          {Object.values(c.materials).some((n) => n > 0) && (
+            <div class="muted" style={{ fontSize: 13 }}>
+              {Object.entries(c.materials)
+                .filter(([, n]) => n > 0)
+                .map(([m, n]) => `${t(`item.${m}.name`)} ${n}`)
+                .join(' · ')}
+            </div>
+          )}
+          <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+            {tab === 'company' && <Company apply={apply} />}
+            {tab === 'convoy' && <Convoy apply={apply} />}
+            {tab === 'merchant' && <Merchant apply={apply} />}
+            {tab === 'smith' && <Smith apply={apply} />}
+            {tab === 'enchanter' && <Enchanter apply={apply} />}
+            {tab === 'healer' && <Healer apply={apply} />}
+            {tab === 'campfire' && <Campfire apply={apply} />}
+            {tab === 'save' && <SavePanel onToast={setToast} />}
+          </div>
+        </div>
+        {toast && <Toast text={toast} onDone={() => setToast(null)} />}
+      </div>
+    );
+  }
+
+  const last = c.completed[c.completed.length - 1];
+  const next = c.available[0] ? nodeDef(c.available[0]) : null;
+  const nextMap = next ? data.maps[next.map]! : null;
+  const v = nextMap?.objectives.victory;
+  const fresh = (k: Tab) => !!last && unlockNode(k) === last;
+  return (
+    <div class="screen" style={{ gap: 12, background: '#15141a' }}>
+      <div class="hub-hero" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
+      <div class="screen-narrow col" style={{ gap: 0, flex: 1 }}>
+        <div class="hub-head">
+          <div class="panel hub-title">
+            <span class="display">{t('ui.camp.title')}</span>
+            <span class="lbl gold">{last ? t('ui.hub.after', { node: shortTitle(last) }) : t('ui.hub.start')}</span>
+          </div>
+          <div class="row" style={{ gap: 8 }}>
+            {gold}
+            <button class="hud-btn" onClick={() => (screen.value = { name: 'options', back: { name: 'camp' } })} aria-label={t('ui.options')}>
+              <Icon name="gear" />
             </button>
-          </>
-        )}
-        <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-          {tab === 'company' && <Company apply={apply} />}
-          {tab === 'convoy' && <Convoy apply={apply} />}
-          {tab === 'merchant' && <Merchant apply={apply} />}
-          {tab === 'smith' && <Smith apply={apply} />}
-          {tab === 'enchanter' && <Enchanter apply={apply} />}
-          {tab === 'healer' && <Healer apply={apply} />}
-          {tab === 'campfire' && <Campfire apply={apply} />}
-          {tab === 'save' && <SavePanel onToast={setToast} />}
+          </div>
+        </div>
+        <div class="hub-body edge">
+          {next && nextMap && v ? (
+            <div class="col" style={{ gap: 12 }}>
+              <div class="mission">
+                <span class="lbl gold">
+                  {t('ui.hub.next')} · {shortTitle(next.id)}
+                </span>
+                <span class="display">{t(nextMap.nameKey)}</span>
+                <span class="muted">{t(`ui.world.goal.${v.type}`, { turns: 'turns' in v ? v.turns : 0 })}</span>
+              </div>
+              <div class="mission-actions">
+                <button class="btn primary big" onClick={() => playNode(next.id)}>
+                  {t('ui.hub.setOut')}
+                </button>
+                <button class="btn" onClick={() => playNode(next.id, { prep: true })}>
+                  {t('ui.hub.prep')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div class="mission">
+              <span class="display">{t('ui.world.endTitle')}</span>
+              <span class="muted">{t('ui.world.endText')}</span>
+            </div>
+          )}
+          <div class="col" style={{ gap: 0 }}>
+            {FACILITIES.map((k) => {
+              const open = isOpen(k, c.completed);
+              const at = unlockNode(k);
+              return (
+                <button key={k} class="fac" disabled={!open} onClick={() => setTab(k)}>
+                  <span class="ico">
+                    <Icon name={open ? FAC_ICON[k] : 'lock'} size={19} />
+                  </span>
+                  {t(`ui.camp.${k}`)}
+                  <span class="meta">
+                    {!open && at ? (
+                      t('ui.hub.unlockAfter', { node: shortTitle(at) })
+                    ) : k === 'campfire' && talks.length > 0 ? (
+                      <span class="badge">{talks.length}</span>
+                    ) : fresh(k) ? (
+                      <span class="badge new">{t('ui.hub.new')}</span>
+                    ) : (
+                      t(`ui.camp.${k}.desc`)
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div class="hub-foot">
+            <Icon name="check" size={14} />
+            <span class="grow">{t('ui.battle.autosaved')}</span>
+            <button class="linkish" onClick={() => setTab('save')}>
+              {t('ui.save.title')}
+            </button>
+            <span aria-hidden="true">·</span>
+            <button class="linkish" onClick={() => (screen.value = { name: 'worldmap' })}>
+              {t('ui.world.title')}
+            </button>
+          </div>
         </div>
       </div>
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
@@ -154,20 +255,20 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
     const a = k === 'mov' ? after.mov : k === 'as' ? after.as : k === 'hp' ? after.maxHp : after.stats[k];
     const b = k === 'mov' ? before.mov : k === 'as' ? before.as : k === 'hp' ? before.maxHp : before.stats[k];
     if (a === b) return null;
-    return <span class={a > b ? 'adv' : 'dis'}> {a > b ? '▲' : '▼'}{a - b > 0 ? `+${a - b}` : a - b}</span>;
+    return <span class={a > b ? 'adv' : 'dis'}> {a - b > 0 ? `+${a - b}` : a - b}</span>;
   };
   return (
     <div class="col" style={{ gap: 10 }}>
       <div class="row">
-        <button class="btn small ghost" onClick={onBack}>
-          ◀
+        <button class="btn small ghost icon-only" onClick={onBack} aria-label={t('ui.back')}>
+          <Icon name="back" />
         </button>
-        <Portrait id={unit.portrait} name={unitName(unit)} size={48} />
-        <div class="grow">
+        <Crest id={unit.portrait} name={unitName(unit)} w={48} h={56} />
+        <div class="grow col" style={{ gap: 4 }}>
           <div class="unit-name">{unitName(unit)}</div>
-          <div class="unit-sub">
+          <span class="lbl">
             {t(`class.${unit.classId}.name`)} · {t('ui.lv')} {unit.level}
-          </div>
+          </span>
         </div>
       </div>
       <div class="panel sheet">
@@ -388,11 +489,12 @@ function Smith({ apply }: { apply: Apply }) {
             right={
               <div class="col" style={{ gap: 4 }}>
                 <button class="btn small" disabled={!cost} onClick={() => apply(upgrade(data, c, inst.uid), t('ui.camp.upgraded'))}>
-                  ⚒ +{inst.upgrade + 1}
+                  <Icon name="smith" size={16} />+{inst.upgrade + 1}
                 </button>
                 {inst.affixes.map((a, i) => (
                   <button key={a} class="btn small ghost" onClick={() => apply(rerollAffix(data, c, inst.uid, i), t('ui.camp.rerolled'))}>
-                    ↻ {t(`affix.${a}`)} ({rr.gold})
+                    <Icon name="restart" size={16} />
+                    {t(`affix.${a}`)} ({rr.gold})
                   </button>
                 ))}
               </div>
@@ -426,13 +528,15 @@ function Enchanter({ apply }: { apply: Apply }) {
           {selInst.runes.map((r, i) =>
             r ? (
               <button key={i} class="btn small" onClick={() => apply(removeRune(data, c, selInst.uid, i))}>
-                ✕ {t(`item.${r}.name`)}
+                <Icon name="close" size={16} />
+                {t(`item.${r}.name`)}
               </button>
             ) : null,
           )}
           {runes.map((r) => (
             <button key={r.uid} class="btn small" onClick={() => apply(insertRune(data, c, selInst.uid, r.uid), t('ui.camp.enchanted'))}>
-              ◈ {t(`item.${r.def}.name`)}
+              <Icon name="rune" size={16} />
+              {t(`item.${r.def}.name`)}
             </button>
           ))}
         </div>
@@ -441,7 +545,7 @@ function Enchanter({ apply }: { apply: Apply }) {
       <div class="list">
         {[...new Set(runes.map((r) => r.def))].map((id) => (
           <div key={id} class="item-row">
-            <span class="ico">◈</span>
+            <span class="ico"><Icon name="rune" /></span>
             <span>
               {t(`item.${id}.name`)} ×{runes.filter((r) => r.def === id).length}
             </span>
@@ -455,7 +559,7 @@ function Enchanter({ apply }: { apply: Apply }) {
       <div class="list">
         {buyable.map((r) => (
           <div key={r.id} class="item-row">
-            <span class="ico">◈</span>
+            <span class="ico"><Icon name="rune" /></span>
             <span>{t(`item.${r.id}.name`)}</span>
             <button class="btn small" disabled={c.gold < (r.price ?? 0)} onClick={() => apply(buy(data, c, r.id), t('ui.camp.bought'))}>
               {r.price}
@@ -477,7 +581,7 @@ function Healer({ apply }: { apply: Apply }) {
       {scarred.map((u) =>
         u.scars.map((sc, i) => (
           <div key={u.id + sc} class="item-row">
-            <span class="ico">✚</span>
+            <span class="ico"><Icon name="healer" /></span>
             <span>
               {unitName(u)}: {t(`scar.${sc}`)}
             </span>
@@ -487,7 +591,7 @@ function Healer({ apply }: { apply: Apply }) {
               </button>
               {herb && (
                 <button class="btn small ghost" onClick={() => apply(removeScar(data, c, u.id, i, true), t('ui.camp.healed'))}>
-                  🌿
+                  {t('item.seers_herb.name')}
                 </button>
               )}
             </div>
@@ -554,16 +658,19 @@ function SavePanel({ onToast }: { onToast: (s: string) => void }) {
   return (
     <div class="col">
       <button class="btn" onClick={() => setPicker(true)}>
-        💾 {t('ui.save.title')}
+        <Icon name="save" />
+        {t('ui.save.title')}
       </button>
       {saves.filter((s) => s.slot !== 'auto').map((s) => (
         <button key={s.slot} class="btn ghost" onClick={() => downloadSave(s)}>
-          ⤓ {t('ui.save.export')} {t('ui.save.slot')} {s.slot}
+          <Icon name="download" />
+          {t('ui.save.export')} {t('ui.save.slot')} {s.slot}
         </button>
       ))}
       {saves.find((s) => s.slot === 'auto') && (
         <button class="btn ghost" onClick={() => downloadSave(saves.find((s) => s.slot === 'auto')!)}>
-          ⤓ {t('ui.save.export')} ({t('ui.save.auto')})
+          <Icon name="download" />
+          {t('ui.save.export')} ({t('ui.save.auto')})
         </button>
       )}
       {picker && (
@@ -603,8 +710,8 @@ export function Prep({ node }: { node: string }) {
     <div class="screen" style={{ gap: 10 }}>
       <div class="screen-narrow col" style={{ gap: 10 }}>
         <div class="row">
-          <button class="btn small ghost" onClick={() => (screen.value = { name: 'worldmap' })}>
-            ◀
+          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: 'camp' })} aria-label={t('ui.back')}>
+            <Icon name="back" />
           </button>
           <h2 class="grow">{t('ui.prep.title')}</h2>
         </div>
@@ -632,10 +739,10 @@ export function Prep({ node }: { node: string }) {
                           disabled={locked || (!on && chosen.length >= map.deploy.max)}
                           onClick={() => setChosen(on ? chosen.filter((x) => x !== r.id) : [...chosen, r.id])}
                         >
-                          {locked ? '🔒' : on ? '✔' : '+'}
+                          <Icon name={locked ? 'lock' : on ? 'check' : 'plus'} size={18} />
                         </button>
-                        <button class="btn small ghost" onClick={() => setInv(r.id)}>
-                          🎒
+                        <button class="btn small ghost icon-only" onClick={() => setInv(r.id)} aria-label={t('ui.inventory')}>
+                          <Icon name="bag" size={18} />
                         </button>
                       </div>
                     }
@@ -652,7 +759,7 @@ export function Prep({ node }: { node: string }) {
               pendingEvents.value = startBattle(node, chosen);
             }}
           >
-            ⚔ {t('ui.prep.start')}
+            {t('ui.prep.start')}
           </button>
         )}
       </div>

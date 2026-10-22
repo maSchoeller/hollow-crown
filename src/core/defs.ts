@@ -18,6 +18,8 @@ export type EquipSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory1' 
 export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head', 'body', 'accessory1', 'accessory2'];
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary';
 export type Difficulty = 'easy' | 'normal' | 'hard';
+/** Rules that the campaign introduces step by step (campaign.yaml `mechanics`). */
+export type Mechanic = 'triangle' | 'magic' | 'elements' | 'supports';
 export type DeathMode = 'classic' | 'standard' | 'casual';
 export type SupportRank = 'C' | 'B' | 'A' | 'S';
 export const SUPPORT_RANKS: readonly SupportRank[] = ['C', 'B', 'A', 'S'];
@@ -255,6 +257,8 @@ export interface MapUnitDef {
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };
   ignoreForRout?: boolean;
+  /** unit only appears on these difficulties (default: all) */
+  difficulty?: Difficulty[];
 }
 
 export interface AiDef {
@@ -373,10 +377,16 @@ export interface CampaignNodeDef {
   next: string[];
   pos: Pos;
   merchantTier: number;
+  /** items handed to company members when the node is won (e.g. the avatar's first tome) */
+  grants?: Array<{ unit: string; item: ItemRef }>;
 }
 
 export interface CampaignDef {
   nodes: CampaignNodeDef[];
+  /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
+  mechanics: Partial<Record<Mechanic, string>>;
+  /** camp facility → node after whose victory it opens ('start' = from the beginning); UI only */
+  facilities: Record<string, string>;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];

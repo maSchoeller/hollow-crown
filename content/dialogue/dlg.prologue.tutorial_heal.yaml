@@ -1,0 +1,3 @@
+id: dlg.prologue.tutorial_heal
+lines:
+  - { speaker: tobin, mood: neutral, side: right, key: dlg.prologue.tutorial_heal.001 }

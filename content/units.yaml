@@ -9,7 +9,7 @@
   personalSkill: strategist_eye
   base:   { hp: 20, str: 5, mag: 5, skl: 6, spd: 6, lck: 5, def: 4, res: 4 }
   growth: { hp: 70, str: 40, mag: 40, skl: 50, spd: 45, lck: 45, def: 30, res: 30 }
-  items: [ { def: iron_sword }, { def: ember }, { def: leather_vest } ]
+  items: [ { def: iron_sword }, { def: leather_vest } ]   # Glut-Folio nach Kapitel 1 (campaign.yaml grants)
   flags: [avatar, mustSurvive]
   supports: [kael, liora]
   joins: prologue

@@ -1,5 +1,5 @@
 id: dlg.ch02.tutorial_talk
 lines:
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.tutorial_talk.001 }
   - { speaker: brenna, mood: neutral, side: right, key: dlg.ch02.tutorial_talk.002 }
   - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.tutorial_talk.003 }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.tutorial_talk.004 }

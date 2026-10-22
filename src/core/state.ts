@@ -5,6 +5,7 @@ import type {
   Element,
   EquipSlot,
   MapDef,
+  Mechanic,
   Pos,
   Stats,
   StatusId,
@@ -157,6 +158,8 @@ export interface BattleState {
   flags: string[];
   nextUid: number;
   avatarName: string;
+  /** mechanics not introduced yet at this point of the campaign (missing in old saves = none locked) */
+  locked?: Mechanic[];
 }
 
 export interface AvatarSettings {

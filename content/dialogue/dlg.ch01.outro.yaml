@@ -5,3 +5,4 @@ lines:
   - { speaker: kael, mood: sad, side: left, key: dlg.ch01.outro.001 }
   - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.outro.002 }
   - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.outro.003 }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.outro.004 }

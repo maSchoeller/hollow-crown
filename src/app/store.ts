@@ -45,6 +45,9 @@ export interface BattleSession {
 }
 export const battle = signal<BattleSession | null>(null);
 
+/** Events from startBattle waiting for the board (opening phase banner, turn-1 dialogue). */
+export const pendingEvents = signal<GameEvent[]>([]);
+
 export interface Settings {
   lang: Lang;
   speed: 1 | 2 | 3; // 3 = skip
@@ -137,7 +140,7 @@ export function restore(p: SavePayload): void {
     screen.value = { name: 'battle' };
   } else {
     battle.value = null;
-    screen.value = p.screen === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+    screen.value = { name: 'camp' };
   }
 }
 
@@ -145,12 +148,29 @@ export function nodeDef(id: string) {
   return data.campaign.nodes.find((n) => n.id === id)!;
 }
 
-/** World map → pre dialogue → preparation. */
-export function playNode(nodeId: string): void {
+/** Default deployment: forced units first, then the company in roster order up to the map's limit. */
+export function defaultDeploy(nodeId: string): string[] {
+  const c = campaign.value!;
+  const map = data.maps[nodeDef(nodeId).map]!;
+  const list = map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id));
+  for (const r of c.roster) if (list.length < map.deploy.max && !list.includes(r.id)) list.push(r.id);
+  return list;
+}
+
+/**
+ * War camp → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
+ * there is a real choice (more company members than deployment slots).
+ */
+export function playNode(nodeId: string, opts: { prep?: boolean } = {}): void {
   const node = nodeDef(nodeId);
-  const toPrep = () => (screen.value = { name: 'prep', node: nodeId });
-  if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: toPrep };
-  else toPrep();
+  const map = data.maps[node.map]!;
+  const choice = campaign.value!.roster.length > map.deploy.max;
+  const go = () => {
+    if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId };
+    else pendingEvents.value = startBattle(nodeId, defaultDeploy(nodeId));
+  };
+  if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
+  else go();
 }
 
 export function startBattle(nodeId: string, deploy: string[]): GameEvent[] {

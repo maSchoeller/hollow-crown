@@ -111,3 +111,26 @@ score = erwarteterSchaden + 50 × Killchance − 0.5 × erwarteterKonterschaden
 - Nutzen vorhandene Karten (Kapitelkarten + 2 eigene Scharmützel-Karten in V1) mit **generierten Gegnergruppen**: Klassen-Mix aus Kapitel-Pool, Stufe = Armee-Durchschnitt ± 1, Ausrüstung nach Kapitelstufe, Ziel `rout` oder `boss`.
 - Belohnung: Gold, Materialien, gelegentlich seltene Items/Runen, kein Story-Fortschritt.
 - Erscheinen nach jedem Kapitel auf 1–2 Weltkarten-Knoten, verschwinden nach dem Spielen (neue nach nächstem Kapitel). Ein „Übungsplatz“-Knoten ist dauerhaft (nur EP, wenig Gold).
+
+## 10. Einführung der Mechaniken & Schwierigkeit
+
+**Eine neue Regel pro Kapitel.** Die ersten drei Karten sind die Einführung. Jede Mechanik gilt erst ab dem Knoten, den `campaign.yaml` unter `mechanics` nennt; davor rechnet der Regelkern ohne sie (Vorschau und Auflösung gleich), und die UI blendet ihre Anzeigen aus. `pnpm content:check` prüft, dass vor der Magie kein Zauberbuch auf Karten, bei Rekruten oder beim Händler auftaucht.
+
+| Karte | Neu | Nebenbei | Gesperrt |
+|---|---|---|---|
+| Prolog – Die letzte Wacht | Bewegen, Angreifen, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (wenn Kael verwundet ist) | – | Dreieck, Magie, Elemente, Unterstützungen |
+| Kap. 1 – Asche über Varnhold | **Waffendreieck**: Gegner mit Axt, Lanze und Schwert gemischt | Dörfer besuchen (Zeitdruck durch Plünderer), Feuer (Hinweis beim ersten Betreten) | Magie, Elemente, Unterstützungen |
+| Kap. 2 – Der Schrein am Silberbach | **Magie** (Rhens Glut-Folio aus Kap. 1, gegnerische Magierin, Lioras Stab), **Anwerben durch Ansprechen** (Kael → Varek), Beschützen | Wellen von Verstärkungen | Elemente, Unterstützungen |
+| ab Kap. 3 | Element-Kreis, Statuseffekte, Runen; Unterstützungen und Tandem | | |
+
+Regeln für Lektionen: höchstens eine Lektion pro Runde, höchstens drei Zeilen, ausgelöst genau dann, wenn sie gebraucht wird (Runde, Feld betreten, TP-Schwelle).
+
+**Schwierigkeit** wirkt auf zwei Wegen: Gegnerwerte (`balance.yaml` `difficulty.*.enemyStatPercent`, KI-Verhalten) und **Aufstellung** – Karteneinheiten und Verstärkungen können mit `difficulty: [normal, hard]` auf bestimmte Stufen beschränkt werden. Leicht hat weniger Gegner und kleinere Wellen, Schwer zusätzliche Gegner und Flankenangriffe.
+
+**Zielwerte im Simulator** (`pnpm sim <map> --difficulty …`; der Sim-Spieler spielt vorsichtig, besucht Dörfer und wirbt an, plant aber nicht voraus – ein Mensch, der taktisch denkt, liegt darüber):
+
+| Stufe | Siegquote Sim | Niedergestreckte pro Karte | Gefühl |
+|---|---|---|---|
+| Leicht | ≥ 95 % | ≤ 0,5 | leicht, aber nicht ohne Gegenwehr |
+| Normal | 75–100 %, sinkend über die Kapitel | 0,4–1,3 | man muss überlegen, wen man wohin stellt |
+| Schwer | 30–70 % | ≥ 0,5, steigend | fast unfair: Flanken, Fokusfeuer, Gegner beenden Niedergestreckte |

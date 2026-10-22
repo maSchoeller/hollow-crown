@@ -50,6 +50,8 @@ deploy:
   max: 6
   forced: [avatar, kael]
   slots: [[6, 15], [7, 15], [5, 15], [8, 15], [6, 16], [7, 16], [5, 16], [8, 16]]
+# Neue Mechaniken: Magie (Rhens Glut-Folio, gegnerische Magierin, Lioras Heilstab) und Anwerben
+# durch Ansprechen (Kael → Varek). Element-Kreis und Unterstützungen folgen später (campaign.yaml mechanics).
 units:
   - { char: liora, id: liora, team: other, class: cleric, level: 3, at: [7, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }], ai: { profile: hold } }
   - id: morra
@@ -57,13 +59,13 @@ units:
     team: enemy
     class: mercenary
     level: 6
-    at: [4, 3]
+    at: [3, 3]
     boss: true
     sprite: morra
     portrait: morra
     items: [ { def: steel_sword }, { def: vulnerary } ]
     drops: [1]
-    ai: { profile: trigger, radius: 3, then: aggressive }
+    ai: { profile: trigger, radius: 2, then: aggressive }
     quote: dlg.ch02.morra_battle
   - id: varek
     char: varek
@@ -75,32 +77,33 @@ units:
     ai: { profile: trigger, radius: 2, then: aggressive }
     recruit: { by: [kael], dialogue: dlg.ch02.varek_talk }
   - { id: m1, team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [2, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m2, team: enemy, class: archer, sprite: archer, level: 3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: m2, team: enemy, class: archer, sprite: archer, level: 3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: m3, team: enemy, class: fighter, sprite: fighter, level: 3, at: [3, 10], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: m4, team: enemy, class: soldier, sprite: soldier, level: 3, at: [6, 9], items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: m5, team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [10, 9], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m6, team: enemy, class: mage, sprite: mage, level: 3, at: [9, 4], items: [{ def: ember }], ai: { profile: trigger, radius: 3, then: aggressive } }
-pairs:
-  - { a: morra, b: m6, rank: B }
+  - { id: m6, team: enemy, class: mage, sprite: mage, level: 3, at: [9, 5], items: [{ def: ember }], ai: { profile: hold } }   # Lehrstück Magie: steht, trifft auf 1–2 Felder
+pairs: []
 reinforcements:
   - turn: 3
     phase: enemy
     announce: true
     units:
       - { team: enemy, class: mercenary, sprite: mercenary, level: 2, at: [0, 6], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { team: enemy, class: fighter, sprite: fighter, level: 2, at: [13, 6], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { team: enemy, class: fighter, sprite: fighter, level: 2, at: [13, 6], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: archer, sprite: archer, level: 3, at: [1, 1], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [12, 1], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { team: enemy, class: archer, sprite: archer, level: 3, at: [0, 10], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal] }   # Normal: Flanke statt Schrein
+      - { team: enemy, class: archer, sprite: archer, level: 3, at: [1, 1], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [12, 1], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   - turn: 7
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: fighter, sprite: fighter, level: 4, at: [0, 18], items: [{ def: hand_axe }], ai: { profile: aggressive } }
-      - { team: enemy, class: soldier, sprite: soldier, level: 4, at: [13, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { team: enemy, class: fighter, sprite: fighter, level: 4, at: [0, 18], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { team: enemy, class: soldier, sprite: soldier, level: 4, at: [13, 18], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: mage, sprite: mage, level: 4, at: [12, 1], items: [{ def: ember }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: defend, unit: liora, turns: 8 }
   defeat:
@@ -115,6 +118,11 @@ triggers:
   - id: t_intro
     when: { type: turn_start, turn: 1, phase: player }
     then:
+      - { action: dialogue, id: dlg.ch02.tutorial_magic }
+  - id: t_varek_hint
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [6, 5, 13, 11] } }
+    then:
       - { action: dialogue, id: dlg.ch02.tutorial_talk }
   - id: t_varek_near
     when: { type: unit_enters, unit: kael, area: { rect: [8, 3, 13, 9] } }
@@ -127,5 +135,6 @@ triggers:
 goldReward: 1200
 music: battle_a
 devNote: >
-  Liora steht auf dem Schrein (Heilung 20 %, DEF +2). Die Söldner kommen in drei Wellen (Runde 3, 5, 7).
+  Liora steht auf dem Schrein (Heilung 20 %, DEF +2). Die Söldner kommen in drei Wellen (Runde 3, 5, 7);
+  Leicht: je Welle höchstens ein Gegner, Schwer: volle Wellen plus Magierin in Runde 7.
   Der Bach ist nur über die Brücke (x=6) oder die Furten (x=4–5, x=10–11) passierbar.

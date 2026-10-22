@@ -1,4 +1,4 @@
-import type { GameData, Reward, SideObjectiveDef, Stats } from '../defs';
+import type { GameData, Mechanic, Reward, SideObjectiveDef, Stats } from '../defs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip } from '../battle/create';
 import { sideObjectiveDone } from '../battle/objectives';
@@ -62,6 +62,20 @@ export interface BattleResult {
   scars: Array<{ id: string; scar: string }>;
   recruited: string[];
   supportsReady: string[];
+  /** items handed to company members by the node (campaign.yaml `grants`) */
+  granted: Array<{ id: string; item: ItemInstance }>;
+}
+
+/**
+ * Mechanics not yet introduced at a node (concept/06 §10, gestaffelte Einführung). A mechanic applies from
+ * its node in campaign.yaml `mechanics` onwards; if that node is not part of the campaign yet, it is locked.
+ */
+export function lockedMechanics(data: GameData, nodeId: string): Mechanic[] {
+  const order = data.campaign.nodes.map((n) => n.id);
+  const here = order.indexOf(nodeId);
+  return (Object.entries(data.campaign.mechanics) as Array<[Mechanic, string]>)
+    .filter(([, from]) => here < 0 || order.indexOf(from) < 0 || here < order.indexOf(from))
+    .map(([m]) => m);
 }
 
 function refill(data: GameData, items: ItemInstance[]): void {
@@ -120,6 +134,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     scars: [],
     recruited: [],
     supportsReady: [],
+    granted: [],
   };
   if (result.outcome === 'defeat') return { campaign: c0, result };
   const c = clone(c0);
@@ -193,6 +208,13 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       c.convoy.push(inst);
       result.items.push(inst);
     }
+  }
+  for (const g of node.grants ?? []) {
+    const rec = c.roster.find((r) => r.id === g.unit);
+    const inst = newItem(c, g.item, data);
+    if (rec) c.convoy.push(...autoEquip(data, rec, [inst]));
+    else c.convoy.push(inst);
+    result.granted.push({ id: g.unit, item: inst });
   }
   const gold = map.goldReward + s.goldGained;
   c.gold += gold;

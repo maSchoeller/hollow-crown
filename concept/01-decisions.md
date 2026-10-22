@@ -124,7 +124,20 @@ Details: `15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`.
 | U10 | Narbe „Schwaches Auge“ | vereinfacht: −5 Krit und −5 Treffer immer (nicht nur auf Distanz ≥ 2) | C |
 | U11 | Neustart (O1) | Umgesetzt wie der Vorschlag in O1: Runde neu starten in Standard/Casual, Mission neu starten in allen Modi. **O1 bleibt offen** (Playtest) | C |
 | U12 | Generische Einheiten | Klassen haben `base`/`growth` für generische Einheiten; Stufe L = Basis + ⌊Wachstum × (L−1)⌋, dann Schwierigkeits-Prozent | C |
-| U13 | Kapitel 2 | Liora ist dritte Partei mit Profil `hold`, schließt sich nach dem Sieg an; Wellen in Runde 3/5/7; Sim-Siegquote ~40–50 % mit dem einfachen Sim-Spieler (ohne Bergen), Feinbalancing im Playtest | C |
+| U13 | Kapitel 2 | Liora ist dritte Partei mit Profil `hold`, schließt sich nach dem Sieg an; Wellen in Runde 3/5/7; ~~Sim-Siegquote ~40–50 % mit dem einfachen Sim-Spieler (ohne Bergen), Feinbalancing im Playtest~~ → siehe U18 | C |
+
+## Einführung, Balancing, Audio (Session 2026-10-22, Nachmittag)
+
+| # | Thema | Entscheidung | Status |
+|---|---|---|---|
+| U14 | Gestaffelte Mechaniken | Eine neue Regel pro Kapitel: `campaign.yaml` `mechanics` nennt pro Mechanik den ersten Knoten (Dreieck ab Kap. 1, Magie ab Kap. 2, Elemente/Status/Runen-Effekte und Unterstützungen ab Kap. 3). Vorher rechnet der Kern ohne sie (`BattleState.locked`), alte Spielstände ohne Feld = alles an. Details: `06` §10. Grund: Wunsch des Produktinhabers, Prolog bisher mit Dreieck, Magie und Affinität überladen | C |
+| U15 | Schwierigkeit über Aufstellung | Karteneinheiten und Verstärkungen haben optional `difficulty: [...]`. Leicht = weniger Gegner/kleinere Wellen, Schwer = Zusatzgegner und Flanken. `enemyStatPercent` bleibt −15/0/+15 | C |
+| U16 | Rhens Zauberbuch | Der Avatar startet ohne Glut; das Glut-Folio gibt es nach Kap. 1 (`grants` am Kampagnenknoten, Ergebnisbildschirm zeigt es). Händler: Glut ab Stufe 1, Feuerbombe ab Stufe 2. Dorf West in Kap. 1 gibt einen Wurfspieß statt einer Feuerrune | C |
+| U17 | Lektionen | Tutorial-Dialoge: höchstens eine Lektion pro Runde, max. drei Zeilen, situativ ausgelöst. Prolog: Bewegen/Vorschau (R1), Gefahrenzone + Deckung (R2), Heiltrank (Kael < 60 % TP). Kap. 1: Ziel + Dreieck (R1), Feuer beim Betreten der Stadtmitte. Kap. 2: Beschützen + Magie (R1), Varek-Hinweis beim Überqueren des Bachs. Kap. 1 ohne Truhe, ohne Nebenziel „keine Verluste“; Kap. 2 ohne Gegner-Unterstützungspaar | C |
+| U18 | Balancing-Stand | Sim (40 Läufe, verkettete Kampagne, Tod-Modus Standard; Sim-Spieler besucht jetzt Dörfer und wirbt an): **Leicht** 100 / 100 / 97 %, **Normal** 100 / 100 / 83 % (0,07 / 0,42 / 1,30 Niedergestreckte), **Schwer** 70 / 36 / 40 %. Vorher: Leicht 100/100/73, Normal 100/95/39, Schwer 90/86/29. Zielkorridore in `06` §10 | C |
+| U19 | Audio-Mischung | Vier SFX-Kanäle: UI (1 Stimme, ersetzt), Kampf (max. 2), Ereignis (1 Stimme + kurze Warteschlange), Jingle (Phase, Stufenaufstieg, Anwerben, Sieg, Niederlage; senkt die Musik um ≈ −9 dB). Sieg/Niederlage blenden die Kampfmusik aus und halten den nächsten Titel bis zum Ende des Jingles an. Gleicher Sound nicht öfter als alle 60 ms. Behoben: Musik startete bei Taps während des Ladens mehrfach übereinander. Tab im Hintergrund → Audio pausiert (`17` §7) | C |
+| U20 | Bedienführung (Vorschlag) | Ein Hub „Kriegslager“ statt Weltkarte + Lager, „Aufbrechen“ als Haupttaste, Aufstellung nur wenn nötig, Kampfleiste mit max. 4 Aktionen, „Phase beenden“ nie neben „Zurück“, Neues Spiel nur Name/Porträt/Schwierigkeit, Affinität erst mit den Elementen, Lager-Einrichtungen schalten sich frei. Mockups A/B/C: Design-Leinwand „Hollow Crown – UI-Richtungen“. **Umgesetzt:** Hub `Camp` mit Haupttaste „Aufbrechen“ und „Aufstellung“, Einrichtungen per `campaign.yaml` `facilities` (Kompanie/Konvoi/Händler ab Start, Schmied/Heiler nach Kap. 1, Lagerfeuer nach Kap. 2, Verzauberer ab Kap. 3); Aufstellung wird übersprungen, wenn die Kompanie nicht größer als die Einsatzplätze ist; Kampf-Dock in vier Zuständen (Leerlauf: Gefahr / Nächste / Phase beenden mit Rückfrage bei bereiten Einheiten), Zoom-Tasten entfallen (Pinch/Mausrad); Affinität vorerst fest „Wind“, Wahl folgt mit den Elementen; eigenes Linien-Icon-Set statt Emoji (`src/ui/icons.tsx`) | A |
+| U21 | UI-Stil | **B hell – Wappen & Banner, Studio-Fassung**: Knochenweiß `#F3EEE4`, Panels `rgba(250,247,240,.9)` mit Hintergrund-Unschärfe über dem Brett, Tinte `#1F1E24`, Grau `#65605A`, Tonfläche `#E9E3D6` für Nebenaktionen, Glutorange `#E8743B` nur für Haupttaste und Panelkante (mit Raute), Blau `#2F64C8`/Rot `#B83A2E` nur für Teams. Formen: Banner, Wappenschild als Porträtrahmen, Ecken 6 px abgeschrägt. **Keine Schlagschatten**, keine Verläufe, keine Rundungen, Haarlinien statt Rahmen, eine weiche Schattenkante nur unter dem Bottom Sheet. Schriften: Grenze Gotisch nur für Namen und Titel, Barlow (Text), Barlow Condensed (Labels, Zahlen) – ersetzt Cinzel/Nunito Sans aus GA24 für die UI. Präzisiert GA13 (Elfenbein bleibt, Nachtblau/Gold entfällt). Ziel: professioneller Studio-Look statt Fantasy-Kitsch | A |
 
 ## Von Claude gesetzte Detail-Defaults [C]
 
@@ -149,6 +162,7 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | O3 | Kosmetik-Katalog & Preisgestaltung | Nach V1, siehe `12-monetization.md` |
 | O4 | Store-Name / Markenrecherche | Vor Store-Release |
 | O5 | Kommerzielle Nutzungsrechte ChatGPT-Bilder / ElevenLabs (GA26) | Vor Beginn von Art-Meilenstein A1 prüfen und dokumentieren |
+| ~~O6~~ | ~~UI-Stilrichtung~~ | → entschieden: U21 (B hell) |
 
 ## Änderungshistorie
 
@@ -157,3 +171,4 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | 2026-10-21 | Initiale Anforderungsdefinition (Grilling-Session) |
 | 2026-10-22 | Grilling-Session Grafik & Audio: Abschnitt „Grafik & Audio“ (GA1–GA26) ergänzt; T3 geändert (Pixel-Draufsicht statt späterer glTF), T8 präzisiert (Kapitel-Pakete, Qualitätsstufen), S5 ergänzt (Krit-Cut-ins). V1-Scope: finale Grafik, SFX und Musik jetzt in V1 (Art-Track). Neue Dokumente 15–17 |
 | 2026-10-22 | Erster Wurf V1: GA4 → GA4b (48 px), T5/T11 präzisiert (Preact 10, TS 6), neuer Abschnitt U1–U13 |
+| 2026-10-22 | Einführung, Balancing, Audio: U14–U21 (UI-Stil B hell gewählt und umgesetzt, Bedienführung U20 umgesetzt), U13-Simwert ersetzt; neuer Abschnitt `06` §10 |

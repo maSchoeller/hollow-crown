@@ -1,7 +1,8 @@
 import type { GameData, Pos } from '../defs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
-import { clone, pairKey, posKey } from '../util';
+import { clone, onDifficulty, pairKey, posKey } from '../util';
+import { lockedMechanics } from '../campaign/campaign';
 import { battleUnitFromMap, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 
@@ -56,6 +57,7 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     flags: [...c.flags],
     nextUid: c.nextUid,
     avatarName: c.avatar.name,
+    locked: lockedMechanics(data, nodeId),
   };
   const forced = map.deploy.forced;
   const chosen = [...forced.filter((id) => c.roster.some((r) => r.id === id)), ...deployIds.filter((id) => !forced.includes(id))];
@@ -66,7 +68,7 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     s.units.push(battleUnitFromRecord(data, rec, 'player', slots[i]!));
   });
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
-  map.units.forEach((def, i) => {
+  onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited
     const uid = def.id ?? def.char ?? `m${i}`;
     s.units.push(battleUnitFromMap(data, def, s, def.team === 'enemy' ? pct : 0, uid));
