@@ -2,7 +2,7 @@
 
 ## 1. Ziel von V1
 
-Ein **spielbarer Vertical Slice im Browser** (Handy hoch, Tablet, PC), der den Kernloop vollständig zeigt: Prolog + 5 Kapitel, alle Missionstypen, Kampf mit allen Regeln, Inventar mit Loot/Affixen/Runen/Skills, Lager, Permadeath, Scharmützel, Speichern. Platzhaltergrafik. Keine Monetarisierung, kein Backend.
+Ein **spielbarer Vertical Slice im Browser** (Handy hoch, Tablet, PC), der den Kernloop vollständig zeigt: Prolog + 5 Kapitel, alle Missionstypen, Kampf mit allen Regeln, Inventar mit Loot/Affixen/Runen/Skills, Lager, Permadeath, Scharmützel, Speichern. Finale Pixel-Grafik, Anime-Porträts, SFX, Musik und Teilvertonung über den parallelen Art-Track (`16-asset-pipeline.md` §12). Keine Monetarisierung, kein Backend.
 
 ## 2. In V1 enthalten (MUSS)
 
@@ -49,7 +49,7 @@ Ein **spielbarer Vertical Slice im Browser** (Handy hoch, Tablet, PC), der den K
 
 ## 3. Nicht in V1 (SOLL später)
 
-Mahlzeiten/Training (V1.1), S-Rang-Gespräche, Kapitel 6–10 + Fraktionsrouten, weitere Klassen (Dieb, Wyvernreiter, zweite Profi-Zweige), Status Geblendet/Verflucht, Barrierefreiheit (Farbenblind-Modus, Schriftgröße, Linkshänder), Monetarisierung, Cloud-Save/Konto, Capacitor-Apps, Musik/SFX (V1: Platzhalter-Sounds optional), 3D-Grafik aus Blender, separate Kampfszene, Optimieren-Knopf im Inventar.
+Mahlzeiten/Training (V1.1), S-Rang-Gespräche, Kapitel 6–10 + Fraktionsrouten, weitere Klassen (Dieb, Wyvernreiter, zweite Profi-Zweige), Status Geblendet/Verflucht, Barrierefreiheit (Farbenblind-Modus, Schriftgröße, Linkshänder), Monetarisierung, Cloud-Save/Konto, Capacitor-Apps, Vollvertonung aller Dialoge, 3D-Ansicht des Bretts, separate Kampfszene, Optimieren-Knopf im Inventar.
 
 ## 4. Meilensteine
 
@@ -63,6 +63,8 @@ Mahlzeiten/Training (V1.1), S-Rang-Gespräche, Kapitel 6–10 + Fraktionsrouten,
 | M5 | Fortschritt & Lager | EP/Level-up, Aufstieg, Supports/Tandem/Schutz, Lager-Hub mit allen V1-Bereichen, Weltkarte, Ergebnis-Screen, Taverne, Scharmützel, Speichern/Laden/Export |
 | M6 | Content | Prolog + Kap. 1–5 Karten, Dialoge DE/EN, Supports, Balancing per `sim`, Nebenziele |
 | M7 | Politur & Performance | Animationen, Feedback, Optionen, Performance-Budget, E2E-Flows komplett, Bugfixing |
+
+**Art-Track (parallel):** A0 Pipeline-Beweis → A1 Prolog komplett → A2 UI-Kit → A3 Kap. 1–2 → A4 Kap. 3–5 → A5 Politur. Zuordnung zu M0–M7 und Inhalte: `16-asset-pipeline.md` §12. Audio-Umfang: `17-audio.md` §8.
 
 ## 5. Definition of Done (pro Feature)
 

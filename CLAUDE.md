@@ -9,7 +9,7 @@ Bisher gibt es **nur die Anforderungsdefinition** in `concept/`. Als Nächstes w
 ## Bevor du Code schreibst
 
 1. Lies `concept/README.md` und **`concept/01-decisions.md`** (verbindlich).
-2. Lies für deinen Meilenstein die zugehörigen Dokumente (`concept/13-v1-scope.md` §4 nennt die Meilensteine M0–M7).
+2. Lies für deinen Meilenstein die zugehörigen Dokumente (`concept/13-v1-scope.md` §4 nennt die Meilensteine M0–M7). Für Renderer, UI, Assets und Audio zusätzlich `concept/15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md` (Art-Track A0–A5).
 3. Arbeite die Meilensteine **der Reihe nach** ab. Jeder Meilenstein endet mit grünen Tests und einem lauffähigen Build.
 
 ## Architektur-Regeln (nicht verhandelbar)

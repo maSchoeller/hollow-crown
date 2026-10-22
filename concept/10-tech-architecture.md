@@ -83,7 +83,8 @@ Renderer spielt Events als Animationen ab; UI liest State (Signals).
 
 - Orthografische Kamera, Top-down (leicht schräg optional für 2.5D-Look später). Zoom = Ortho-Größe, Pan = Kameraposition, begrenzt auf Kartenrand.
 - Kacheln: Thin Instances oder ein Mesh pro Gelände-Typ mit Texture-Atlas; Overlays (Bewegung/Angriff/Gefahr) als separates instanziertes Mesh mit Alpha.
-- Einheiten in V1: Sprites (Billboards) aus Platzhalter-Atlas (Farbe + Klassen-Icon); Animationen per Tweens (Bewegen entlang Pfad, Angriff Lunge, Treffer-Flash, Schadenszahl).
+- Einheiten: Pixel-Sprites (32 px, Frame-Animationen laut `16-asset-pipeline.md` §4.4) als Thin Instances mit eigenem Shader (Teamtausch, Entsättigen, Blitz, Normal-Map-Licht). Bis zur Lieferung des Art-Tracks Platzhalter-Sprites im finalen Format. Bewegung entlang des Pfads per Tween, Angriff/Treffer per Frame-Animation; Treffer-Events auf dem markierten Treffer-Frame.
+- Pixelgenaue Darstellung, ganzzahlige Zoomstufen, Lichtschicht, Partikel, Qualitätsstufen: siehe `16-asset-pipeline.md` §7–8.
 - **Austauschbarkeit**: Renderer kapselt Darstellung hinter `UnitView`/`TileView`-Interfaces; später glTF-Modelle aus Blender (`SceneLoader`) ohne Änderungen am Kern.
 - Picking: Bildschirm → Rasterkoordinate per Ray/Plane, nicht per Mesh-Picking (schneller, robust).
 - Render-on-demand: Ohne Animation/Input keine neuen Frames (Akku).

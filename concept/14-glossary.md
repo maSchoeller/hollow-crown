@@ -48,3 +48,19 @@ Code, Datenschlüssel und Bezeichner verwenden die **englische** Spalte.
 | Wachstumsrate | growth rate | |
 | Weltkarte | world map | |
 | Einnehmen / Erreichen / Beschützen / Wellen überleben / Entkommen / Besiegen | seize / reach / defend / survive / escape / rout | Missionsziele |
+
+### Grafik & Audio
+
+| Deutsch | Englisch (Code) | Erklärung |
+|---|---|---|
+| Teamtuch | team cloth (`team` material role) | Stoffelement jeder Figur, das per Palettentausch die Teamfarbe annimmt |
+| Bodenring | team ring | Ellipse in Teamfarbe unter jeder Einheit |
+| Signaturdetail | signature detail | Merkmal, das eine Figur in Chibi und Porträt wiedererkennbar macht |
+| Stimmung (Porträt) | mood | neutral, happy, angry, sad, surprised, hurt |
+| Krit-Cut-in | crit cut-in (`cutin`) | Anime-Illustration, die bei Krit/Tandem/Skill/Boss einblendet |
+| Treffer-Frame | hit frame (`hitFrame`) | Frame der Angriffsanimation, auf dem das Treffer-Event ausgelöst wird |
+| Ausruf | bark | kurze vertonte Kampfzeile |
+| Stimm-Laut | voice blip (`blip`) | kurzer Laut beim Einblenden einer Dialogzeile |
+| Leitmotiv | leitmotif | Melodie einer Fraktion/Figur, kehrt in Varianten wieder |
+| Qualitätsstufe | quality tier | low / medium / high |
+| Kapitel-Paket | chapter pack | nachgeladene Assets eines Kapitels |

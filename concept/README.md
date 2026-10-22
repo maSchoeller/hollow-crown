@@ -21,6 +21,10 @@ Anforderungsdefinition für **V1 (Vertical Slice)**. Ergebnis einer Grilling-Ses
 | [12-monetization.md](12-monetization.md) | F2P-Leitplanken (nach V1) | Produkt |
 | [13-v1-scope.md](13-v1-scope.md) | V1-Checkliste, Meilensteine, DoD, Abnahmeszenarien | Umsetzung |
 | [14-glossary.md](14-glossary.md) | Glossar DE ↔ EN | alle |
+| [15-art-direction.md](15-art-direction.md) | Stil, Farbwelt, Kapitel-Farbskript, Figuren-Briefings, Effekte, UI | Art + Render + UI |
+| [16-asset-pipeline.md](16-asset-pipeline.md) | ChatGPT/Blender → Pixel → Babylon, Formate, Budgets, Qualitätsstufen, Art-Track A0–A5 | Art + Technik |
+| [17-audio.md](17-audio.md) | Stimmen, Barks, SFX, Musik-Leitmotive, Mischung | Audio + Technik |
+| [art/](art/) | Beispiele: Palette, Blender-Pixel-Beweis, Charakter-Sheets, Audio-Proben, Styleguide | alle |
 | [data-samples/](data-samples/) | Beispieldaten: Balancing, Klassen, Charaktere, Skills, Items, Affixe/Runen/Sets, Supports, Karte Kap. 1, Dialog | Umsetzung |
 
 ## Konventionen

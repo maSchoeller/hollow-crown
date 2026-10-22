@@ -81,4 +81,5 @@ Jedes Gespräch: 8–16 Zeilen, DE und EN.
 
 - Visual Novel: Hintergrund, 1–2 Porträts (links/rechts) mit Stimmungen (`neutral`, `happy`, `angry`, `sad`, `surprised`, `hurt`), Namensfeld, Text mit Tipp zum Fortsetzen, Auto-Modus, Skip, Log.
 - Kampfdialoge: Sprechblasen über Einheiten auf dem Brett (Boss-Kommentare, Ansprechen), blockieren kurz, mit Tipp überspringbar.
-- Placeholder-Porträts in V1: farbiger Rahmen nach Fraktion + Initiale + Stimmungs-Emoji/Icon.
+- Porträts: Anime-Halbfiguren mit 6 Stimmungen, Design-Briefings in `15-art-direction.md` §6.3. Bis zur Lieferung (Art-Track) Platzhalter: farbiger Rahmen nach Fraktion + Initiale + Stimmungs-Icon.
+- Vertonung: Barks, Boss-Zitate und zwei Schlüsselszenen, siehe `17-audio.md`.

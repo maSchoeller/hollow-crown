@@ -24,12 +24,12 @@ Dieses Dokument hält **alle getroffenen Entscheidungen** fest. Es ist die verbi
 |---|---|---|---|
 | T1 | Plattform | Web-first (Browser auf Handy/Tablet/PC), PWA; später Capacitor für App Stores | A |
 | T2 | Sprache/Build | TypeScript (strict) + Vite | A |
-| T3 | Rendering | Babylon.js, orthografische Kamera für das 2D-Brett; später glTF-Modelle aus Blender | A |
+| T3 | Rendering | ~~Babylon.js, orthografische Kamera für das 2D-Brett; später glTF-Modelle aus Blender~~ → Babylon.js, orthografische **Draufsicht auf Pixel-Art** (32 px/Feld, ganzzahliger Zoom, `nearest`), Thin Instances + eigener Shader (Teamtausch, Licht über Normal-Maps). 3D-Ansicht nur als spätere Option (siehe GA2) | A |
 | T4 | UI | HTML/CSS-Overlay über dem Canvas | A |
 | T5 | UI-Framework | Preact + @preact/signals (leicht) | C |
 | T6 | Regelkern | Pure TS ohne DOM/Babylon-Abhängigkeit, deterministisch mit Seed-RNG, Command/Event-Architektur | A |
 | T7 | Tests | Vitest (Kern), Playwright mit Mobil-Profilen (E2E) | A |
-| T8 | Performance | 60 FPS auf ~3 Jahre altem Mittelklasse-Handy, Ladezeit < 5 s, initialer Download < 15 MB, offline-fähig | A |
+| T8 | Performance | 60 FPS auf ~3 Jahre altem Mittelklasse-Handy, Ladezeit < 5 s, initialer Download < 15 MB, offline-fähig. **Präzisiert:** < 15 MB gilt für Shell + Prolog; weitere Kapitel als Pakete nachgeladen und offline gecacht; Qualitätsstufen Niedrig/Mittel/Hoch (siehe `16-asset-pipeline.md` §8–9) | A / C |
 | T9 | Speichern | Lokal in IndexedDB, Auto-Save nach jeder Aktion + 3 Slots, Export/Import als Datei, versioniert mit Migrationen; Cloud später | A |
 | T10 | Content-Format | Eigenes YAML-Textformat (Karten als ASCII-Raster) + Zod-Schemas; Karten-Viewer/-Validator im Browser + CLI-Simulator (KI vs. KI) in V1 | A |
 | T11 | Paketmanager/Runtime | pnpm, Node 22 LTS | C |
@@ -72,7 +72,40 @@ Dieses Dokument hält **alle getroffenen Entscheidungen** fest. Es ist die verbi
 | S2 | Prämisse | „Der gebrochene Drachenpakt“ | A |
 | S3 | Hauptfiguren | Avatar (Taktiker, auf dem Feld, Fähigkeit „Befehl“) + Lord **Kael**, Hauptmann des Aschenbanners | A |
 | S4 | Verzweigung | Akt 1 linear, danach Fraktionswahl (3 Routen); V1 nur Datenmodell vorbereitet | A |
-| S5 | Darstellung | Visual-Novel-Dialoge mit Porträts, Kurzkampf auf dem Brett; Speed 1x/2x/Skip; 3D-Kampfszene später optional | A |
+| S5 | Darstellung | Visual-Novel-Dialoge mit Porträts, Kurzkampf auf dem Brett; Speed 1x/2x/Skip; 3D-Kampfszene später optional. **Ergänzt:** Krit-Cut-ins (Anime-Illustration) bei Krit/Tandem/Skill/Boss | A |
+
+## Grafik & Audio (Grilling-Session 2026-10-22)
+
+Details: `15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`.
+
+| # | Thema | Entscheidung | Status |
+|---|---|---|---|
+| GA1 | Leitbild | Modernisiertes Fire Emblem (GBA-Ära): Pixel-Karte + moderne Lichtschicht („HD-Pixel“), Anime-Ebene für Porträts/Cut-ins/Hintergründe/Key Art | A |
+| GA2 | Kamera | Draufsicht, orthografisch, fest; Figuren/hohe Objekte leicht von vorn (FE-Konvention). Spätere 3D-Ansicht möglich, nicht geplant | A |
+| GA3 | Darstellung Brett | Hybrid im Sinne von „3D bauen, 2D rendern“: Figuren und Requisiten in Blender modelliert und zu Pixel-Sprites gerendert | A |
+| GA4 | Raster | 32 × 32 px pro Feld; Figuren-Frames 32 × 32 (Angriff/große Einheiten 48 × 48) | A |
+| GA5 | Stil Anime-Ebene | Hell, klares Cel-Shading, leicht erwachsenere Gesichter | A |
+| GA6 | Sprite-Produktion | Blender → Pixel: Low-Poly-Chibi auf gemeinsamem Rig, Toon-Shader, klein rendern, auf Palette Hollow-64 quantisieren | A |
+| GA7 | Proportionen | Chibi, ca. 2,5 Köpfe | A |
+| GA8 | Animationen V1 | FE-Set: Idle, Laufen 4 Richtungen, Angriff je Waffenart, Treffer, Niedergestreckt | A |
+| GA9 | Ausrüstung sichtbar | Ausgerüstete Waffenart als eigene Ebene (nicht jedes Item) | A |
+| GA10 | Teamfarben | Teamtuch per Palettentausch + Bodenring; Haare/Haut/Signatur bleiben individuell | A |
+| GA11 | Gelände | Pixel-Tileset mit Autotiling (KI-Entwurf + nachgepixelt); Requisiten aus Blender | A |
+| GA12 | Licht & Effekte | Pixel + dynamisches Licht (Normal-Maps), dezentes Bloom, auf Pixelraster einrastende Partikel | A |
+| GA13 | UI-Stil | Klar, vektorbasiert, Elfenbein/Nachtblau mit Goldornament; Pixel-Schrift nur für Zahlen auf dem Brett | A |
+| GA14 | Anime-Assets | VN-Porträts, Krit-Cut-ins, VN-Hintergründe, Key Art & Titel | A |
+| GA15 | Bild-KI | ChatGPT (Abo des Produktinhabers), gesteuert über Claude in Chrome; Blender lokal per MCP. Kosten niedrig halten | A |
+| GA16 | Weltstimmung | Jahreszeiten als Dramaturgie (Spätsommer → Drachenglut), Fraktionsfarben laut `15` §3.2 | A |
+| GA17 | Zeitpunkt | Finale Grafik ist Teil von V1, als paralleler Art-Track A0–A5; Code nutzt bis dahin Platzhalter im finalen Format | A |
+| GA18 | Stimmen | Teilvertonung DE + EN: Barks, Boss-Zitate, 2 Schlüsselszenen; Rest gelesen mit Stimm-Lauten. Avatar unvertont | A |
+| GA19 | SFX & Musik | ElevenLabs (Sound Effects, Music); Musik Orchester + Folk mit Leitmotiv pro Fraktion; Spieler-/Gegnerphase als Arrangement-Paar | A |
+| GA20 | Audio-Zugang | ElevenLabs-MCP (User-Scope), Key aus Umgebungsvariable `ELEVENLABS_API_KEY` | A |
+| GA21 | Binärdateien | Git LFS für `.blend`, Roh-Audio, große PNGs; `public/assets` wird generiert, nicht eingecheckt | A |
+| GA22 | Feldgröße/Zoom | Zoom nur in ganzzahligen Stufen, Kamera rastet auf Bildpixel ein | C |
+| GA23 | Avatar-Porträts | 4 Porträtvorlagen | C |
+| GA24 | Schriften | Cinzel (Titel), Nunito Sans (UI), Silkscreen (Brett-Zahlen); alle SIL OFL | C |
+| GA25 | Autotiling | Dual-Grid (16 Kacheln pro Geländepaar) | C |
+| GA26 | Lizenzen | Vor Produktion: kommerzielle Nutzungsrechte von ChatGPT-Bildern und ElevenLabs-Ausgaben prüfen und hier dokumentieren | offen |
 
 ## Von Claude gesetzte Detail-Defaults [C]
 
@@ -96,9 +129,11 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | O2 | Niedergestreckte Einheit: Blutungs-Countdown statt „bis Missionsende“? | Erst ohne Countdown testen; Option `bleedOutTurns` im Datenmodell vorsehen |
 | O3 | Kosmetik-Katalog & Preisgestaltung | Nach V1, siehe `12-monetization.md` |
 | O4 | Store-Name / Markenrecherche | Vor Store-Release |
+| O5 | Kommerzielle Nutzungsrechte ChatGPT-Bilder / ElevenLabs (GA26) | Vor Beginn von Art-Meilenstein A1 prüfen und dokumentieren |
 
 ## Änderungshistorie
 
 | Datum | Änderung |
 |---|---|
 | 2026-10-21 | Initiale Anforderungsdefinition (Grilling-Session) |
+| 2026-10-22 | Grilling-Session Grafik & Audio: Abschnitt „Grafik & Audio“ (GA1–GA26) ergänzt; T3 geändert (Pixel-Draufsicht statt späterer glTF), T8 präzisiert (Kapitel-Pakete, Qualitätsstufen), S5 ergänzt (Krit-Cut-ins). V1-Scope: finale Grafik, SFX und Musik jetzt in V1 (Art-Track). Neue Dokumente 15–17 |
