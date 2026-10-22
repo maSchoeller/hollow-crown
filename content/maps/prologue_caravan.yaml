@@ -27,6 +27,7 @@ terrain: |
   T,,.__.,,T
   TT,.__.,TT
 ambient: { color: "#ffe2b0", intensity: 1.0 }
+sun: { color: "#ffd9a0", intensity: 1.1, azimuthDeg: 250, elevationDeg: 30 }    # 3D-Brett (D7): tiefe Nachmittagssonne aus Westsüdwest
 lights:
   - { at: [4, 1], color: "#ffb35c", radius: 3 }
 objects: []

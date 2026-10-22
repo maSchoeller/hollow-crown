@@ -36,6 +36,7 @@ terrain: |
   ............
 
 ambient: { color: "#e0a6b8", intensity: 0.72 }
+sun: { color: "#ff9a6a", intensity: 0.8, azimuthDeg: 270, elevationDeg: 18 }     # 3D-Brett (D7): Abendrot über der brennenden Stadt
 lights:
   - { at: [11, 5], color: "#ffb35c", radius: 3 }
   - { at: [3, 16], color: "#ffb35c", radius: 3 }

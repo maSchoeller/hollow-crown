@@ -40,6 +40,7 @@ terrain: |
   ,,,,,,..,,,,,,
   TT,,,,..,,,,TT
 ambient: { color: "#d6e4ff", intensity: 0.95 }
+sun: { color: "#fff4e0", intensity: 1.15, azimuthDeg: 300, elevationDeg: 50 }   # 3D-Brett (D7): klarer Vormittag aus Nordwest
 lights:
   - { at: [7, 2], color: "#fff1c4", radius: 3 }
 objects:

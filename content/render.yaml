@@ -1,0 +1,13 @@
+# Darstellungswerte des Kampfbretts (concept/01-decisions.md D2, D8–D10, D16). Startwerte [C].
+# Keine Regelwerte: src/core liest diese Datei nie.
+camera:
+  tiltDeg: 35            # D2: Neigung aus der Senkrechten, Feinabstimmung im Playtest
+  margin: 0.25           # D10: Anteil der freien Sichtfläche, um den die Karte über den Rand darf
+  zoomSteps: [7, 10, 15] # D9: sichtbare Spalten auf der kürzeren Bildschirmseite (Nah, Mittel, Übersicht)
+  zoomMs: 240            # Dauer des Übergangs zwischen zwei Zoomstufen
+
+# D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
+quality:
+  high: { maxDpr: 2.5, shadowMap: 2048 }
+  mid: { maxDpr: 1.5, shadowMap: 1024 }
+  low: { maxDpr: 1, shadowMap: 0 }

@@ -233,6 +233,10 @@ export const terrainSchema = z.object({
   prop: z.string().optional(),
   seizable: z.boolean().optional(),
   visitable: z.boolean().optional(),
+  height: z.number().default(0),
+  surface: z.enum(['grass', 'dirt', 'road', 'sand', 'ash', 'stone', 'riverbed']),
+  cliff: z.enum(['earth', 'rock', 'wall']).default('earth'),
+  water: z.boolean().default(false),
 });
 
 const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support']);
@@ -310,6 +314,9 @@ export const mapSchema = z.object({
   terrain: z.string(),
   ambient: z.object({ color: z.string(), intensity: z.number() }).optional(),
   lights: z.array(z.object({ at: pos, color: z.string(), radius: z.number() })).optional(),
+  sun: z
+    .object({ color: z.string(), intensity: z.number(), azimuthDeg: z.number(), elevationDeg: z.number().min(1).max(90) })
+    .optional(),
   objects: z
     .array(
       z.object({
@@ -402,6 +409,18 @@ export const campaignSchema = z.object({
       mods: statMods.extend({ hit: z.number().optional(), crit: z.number().optional(), avoid: z.number().optional() }),
     }),
   ),
+});
+
+/** Presentation values of the battle board; see core/defs.ts RenderDef. */
+const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
+export const renderSchema = z.object({
+  camera: z.object({
+    tiltDeg: z.number().min(0).max(80),
+    margin: z.number().min(0).max(1),
+    zoomSteps: z.array(z.number().positive()).min(1),
+    zoomMs: z.number().min(0),
+  }),
+  quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
 });
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
