@@ -19,6 +19,7 @@
     "content:check": "tsx tools/content-check.ts",
     "sim": "tsx tools/simulate.ts",
     "art:build": "python tools/art/build.py",
+    "art:icons": "python tools/art/icons.py",
     "format": "prettier --write ."
   },
   "dependencies": {

@@ -15,6 +15,7 @@ Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets na
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
 | `portraits/<id>/<mood>.png` | Anime-Halbfiguren, transparent, Master 1536 px hoch | ChatGPT, nachbearbeitet |
 | `backgrounds/<id>.png` | VN-Hintergründe 2560 × 1440 (Sicherheitszone mittlere 810 px) | ChatGPT |
+| `icon/icon.png` | App-Icon-Master 1254 × 1254 (Favicon, PWA-Icons, Apple-Touch); `pnpm art:icons` schreibt `public/icons/` (eingecheckt) | ChatGPT |
 | `prompts/<asset>.md` | Prompt, Referenzen, Datum | Hand |
 
 ## Figuren-Sheet (`sprites/units/<id>/`)
