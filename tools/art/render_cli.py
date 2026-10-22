@@ -35,6 +35,12 @@ for sid in ids:
         ns["build_props"]([sid])
         n = 0 if norender else ns["render_prop_id"](sid, raw)
     print(f"[hc] {sid}: {n} frames in {time.time() - t:.1f}s", flush=True)
+    if not save:  # keep the scene small: hidden collections still cost sync time
+        prefix = "U_" if sid in ns["UNITS"] else "P_"
+        ns["new_collection"](ns["get_scene"](), prefix + sid)
+        c = bpy.data.collections.get(prefix + sid)
+        if c:
+            bpy.data.collections.remove(c)
 if save:
     sc = ns["get_scene"]()
     for name in [s.name for s in bpy.data.scenes if s.name != ns["SCENE"]]:

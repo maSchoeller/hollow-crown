@@ -1,0 +1,69 @@
+{
+  "cell": [
+    72,
+    72
+  ],
+  "anchor": [
+    36,
+    63
+  ],
+  "rows": [
+    {
+      "name": "idle_s",
+      "frames": 4,
+      "fps": 6,
+      "loop": "pingpong"
+    },
+    {
+      "name": "walk_s",
+      "frames": 4,
+      "fps": 10,
+      "loop": "loop"
+    },
+    {
+      "name": "walk_n",
+      "frames": 4,
+      "fps": 10,
+      "loop": "loop"
+    },
+    {
+      "name": "walk_e",
+      "frames": 4,
+      "fps": 10,
+      "loop": "loop"
+    },
+    {
+      "name": "attack_s",
+      "frames": 6,
+      "fps": 12,
+      "loop": "once",
+      "hitFrame": 3
+    },
+    {
+      "name": "attack_n",
+      "frames": 6,
+      "fps": 12,
+      "loop": "once",
+      "hitFrame": 3
+    },
+    {
+      "name": "attack_e",
+      "frames": 6,
+      "fps": 12,
+      "loop": "once",
+      "hitFrame": 3
+    },
+    {
+      "name": "hit_s",
+      "frames": 2,
+      "fps": 12,
+      "loop": "once"
+    },
+    {
+      "name": "downed_s",
+      "frames": 1,
+      "fps": 1,
+      "loop": "once"
+    }
+  ]
+}
