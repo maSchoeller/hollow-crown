@@ -135,7 +135,7 @@ export function Camp({ tab: initial }: { tab?: string }) {
   const fresh = (k: Tab) => !!last && unlockNode(k) === last;
   return (
     <div class="screen" style={{ gap: 12, background: '#15141a' }}>
-      <div class="hub-hero" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
       <div class="screen-narrow col" style={{ gap: 0, flex: 1 }}>
         <div class="hub-head">
           <div class="panel hub-title">

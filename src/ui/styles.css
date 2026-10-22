@@ -175,16 +175,23 @@ button {
   background: var(--bg);
 }
 .screen-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-size: cover;
   background-position: center;
 }
+.screen-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(21, 20, 26, 0.35);
+}
 .screen > * {
   position: relative;
 }
+/* fixed: the image always fills the whole viewport, also while a screen scrolls */
 .screen > .screen-bg {
-  position: absolute;
+  position: fixed;
 }
 h1,
 h2,
@@ -278,12 +285,6 @@ h3 {
   text-align: center;
   gap: 10px;
   background: #15141a;
-}
-.title-screen .screen-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(21, 20, 26, 0.35);
 }
 .logo {
   font-family: 'Grenze Gotisch', serif;
@@ -1264,15 +1265,6 @@ input[type='range'] {
 }
 
 /* ---------- war camp (hub) ---------- */
-.hub-hero {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 300px;
-  background-size: cover;
-  background-position: center;
-}
 .hub-head {
   display: flex;
   justify-content: space-between;

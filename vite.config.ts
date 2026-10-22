@@ -24,7 +24,7 @@ export default defineConfig({
     preact(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/*.png', 'icons/*.svg'],
+      includeAssets: ['icons/*.png', 'icons/*.ico'],
       manifest: {
         name: 'Hollow Crown',
         short_name: 'Hollow Crown',
