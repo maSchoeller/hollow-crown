@@ -78,6 +78,8 @@ export function Battle() {
   const s = session.state;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const floatRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<BoardView | null>(null);
   const [mode, setMode] = useState<Mode>({ k: 'idle' });
   const [busy, setBusy] = useState(true);
@@ -109,6 +111,18 @@ export function Battle() {
       onCancel: () => cancelRef.current(),
       onEvent: (e) => eventRef.current(e),
       onUnitHp: (uid, v) => setHp((h) => ({ ...h, [uid]: v })),
+      insets: () => {
+        const c = canvasRef.current?.getBoundingClientRect();
+        if (!c) return { top: 0, right: 0, bottom: 0, left: 0 };
+        const top = topRef.current?.getBoundingClientRect();
+        const bottom = bottomRef.current?.getBoundingClientRect();
+        return {
+          top: top ? Math.max(0, top.bottom - c.top) : 0,
+          right: 0,
+          bottom: bottom ? Math.max(0, c.bottom - bottom.top) : 0,
+          left: 0,
+        };
+      },
     });
     boardRef.current = board;
     board.quality = settings.value.quality;
@@ -128,6 +142,15 @@ export function Battle() {
       board.dispose();
     };
   }, []);
+
+  // the bottom sheet changes height with the selection (and leaves in landscape); keep the map clear of the HUD
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+    const hud = new ResizeObserver(() => board.relayout());
+    for (const el of [topRef.current, bottomRef.current]) if (el) hud.observe(el);
+    return () => hud.disconnect();
+  }, [wide]);
 
   // --------------------------------------------------------------- overlays
   const reachCache = useMemo(() => new Map<string, Map<string, ReachNode>>(), [s]);
@@ -663,7 +686,7 @@ export function Battle() {
       <div class="board-wrap">
         <canvas ref={canvasRef} class="board-canvas" />
         <div ref={floatRef} class="float-layer" />
-        <div class="topbar">
+        <div class="topbar" ref={topRef}>
           <button class="hud-bar" onClick={() => setObjectives(true)} aria-label={t('ui.obj.title')}>
             <span class={`hud-round ${s.phase !== 'player' ? s.phase : ''}`}>{s.turn}</span>
             <span class="hud-goal">
@@ -680,7 +703,7 @@ export function Battle() {
             <Icon name="menu" size={22} />
           </button>
         </div>
-        {!wide && <div class="bottom">{sheet}</div>}
+        {!wide && <div class="bottom" ref={bottomRef}>{sheet}</div>}
         {banner && <div class={`banner ${banner.cls}`}>{banner.text}</div>}
         {toast && <Toast text={toast} onDone={() => setToast(null)} />}
       </div>

@@ -15,6 +15,7 @@ import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, GameData, GameEvent, Pos, Team } from '../core';
 import { itemDef } from '../core';
 import { MAX_LIGHTS } from './shaders';
+import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from './camera';
 import { loadFx, loadPropSheet, loadTiles, loadUnitSheet, TILE, type FxInfo, type Sheet, type TileAssets } from './assets';
 import { composeGround, groundGrid, groundObjects } from './tilemap';
 import './shaders';
@@ -28,6 +29,8 @@ export interface BoardHooks {
   onEvent?(e: GameEvent): Promise<void> | void;
   /** hp changed during playback (UI hp bars) */
   onUnitHp?(uid: string, hp: number): void;
+  /** HUD covering the canvas edges, CSS px (camera keeps the map clear of it) */
+  insets?(): Insets;
 }
 
 export interface Overlays {
@@ -193,7 +196,8 @@ export class BoardView {
         this.frame();
       }
     }, 250);
-    if (import.meta.env.DEV) (window as unknown as { __board: BoardView }).__board = this;
+    // dev tools and E2E tests (Playwright sets navigator.webdriver) inspect the board
+    if (import.meta.env.DEV || navigator.webdriver) (window as unknown as { __board: BoardView }).__board = this;
     window.addEventListener('resize', this.onResize);
   }
 
@@ -504,30 +508,41 @@ export class BoardView {
     const cols = Math.min(s.width, w / dpr < 600 ? 10 : 16);
     this.scale = Math.max(1, Math.round(w / (cols * TILE)));
     const player = s.units.filter((u) => u.team === 'player' && u.pos);
+    let cx = (s.width * TILE) / 2;
+    let cy = (s.height * TILE) / 2;
     if (player.length) {
-      const cx = player.reduce((t, u) => t + u.pos![0], 0) / player.length;
-      const cy = player.reduce((t, u) => t + u.pos![1], 0) / player.length;
-      this.camX = (cx + 0.5) * TILE;
-      this.camY = (cy + 0.5) * TILE - 48;
-    } else {
-      this.camX = (s.width * TILE) / 2;
-      this.camY = (s.height * TILE) / 2;
+      cx = (player.reduce((t, u) => t + u.pos![0], 0) / player.length + 0.5) * TILE;
+      cy = (player.reduce((t, u) => t + u.pos![1], 0) / player.length + 0.5) * TILE;
     }
-    this.clampCamera();
+    const hud = this.hudInsets();
+    this.camX = centreOn(cx, hud.left, hud.right);
+    this.camY = centreOn(cy, hud.top, hud.bottom);
+    // the opening view stays on the map; the margin is for dragging
+    this.clampCamera(0);
   }
 
-  private clampCamera(): void {
+  /** HUD insets in art px at the current zoom. */
+  private hudInsets(): Insets {
+    const css = this.hooks.insets?.() ?? NO_INSETS;
+    const width = this.canvas.getBoundingClientRect().width;
+    const k = width ? this.engine.getRenderWidth() / width / this.scale : 0;
+    return { top: css.top * k, right: css.right * k, bottom: css.bottom * k, left: css.left * k };
+  }
+
+  /** Keeps the map reachable around the HUD: each edge may be pushed into the free area by the configured margin (D10). */
+  private clampCamera(margin = this.data.render.camera.margin): void {
     if (!this.state) return;
     const w = this.engine.getRenderWidth() / this.scale;
     const h = this.engine.getRenderHeight() / this.scale;
-    const mw = this.state.width * TILE;
-    const mh = this.state.height * TILE;
-    const marginTop = 72; // UI bars
-    const marginBottom = 160;
-    this.camX = w >= mw ? mw / 2 : Math.min(Math.max(this.camX, w / 2), mw - w / 2);
-    const minY = h / 2 - marginTop / this.scale;
-    const maxY = mh - h / 2 + marginBottom / this.scale;
-    this.camY = h >= mh + (marginTop + marginBottom) / this.scale ? mh / 2 : Math.min(Math.max(this.camY, minY), maxY);
+    const hud = this.hudInsets();
+    this.camX = clampAxis(this.camX, w, hud.left, hud.right, this.state.width * TILE, margin);
+    this.camY = clampAxis(this.camY, h, hud.top, hud.bottom, this.state.height * TILE, margin);
+  }
+
+  /** Call when the HUD changed size. */
+  relayout(): void {
+    this.clampCamera();
+    this.dirty = true;
   }
 
   zoom(delta: number): void {
@@ -540,8 +555,9 @@ export class BoardView {
   }
 
   centerOn(p: Pos, smooth = true): Promise<void> {
-    const tx = (p[0] + 0.5) * TILE;
-    const ty = (p[1] + 0.5) * TILE;
+    const hud = this.hudInsets();
+    const tx = centreOn((p[0] + 0.5) * TILE, hud.left, hud.right);
+    const ty = centreOn((p[1] + 0.5) * TILE, hud.top, hud.bottom);
     if (!smooth || this.skip) {
       this.camX = tx;
       this.camY = ty;
@@ -558,13 +574,15 @@ export class BoardView {
     });
   }
 
-  /** Is the tile comfortably on screen? */
+  /** Is the tile comfortably on screen, clear of the HUD? */
   isVisible(p: Pos): boolean {
     const w = this.engine.getRenderWidth() / this.scale;
     const h = this.engine.getRenderHeight() / this.scale;
-    const x = (p[0] + 0.5) * TILE;
-    const y = (p[1] + 0.5) * TILE;
-    return Math.abs(x - this.camX) < w / 2 - TILE && Math.abs(y - this.camY) < h / 2 - TILE * 2;
+    const hud = this.hudInsets();
+    return (
+      inFreeArea((p[0] + 0.5) * TILE, this.camX, w, hud.left, hud.right, TILE) &&
+      inFreeArea((p[1] + 0.5) * TILE, this.camY, h, hud.top, hud.bottom, TILE)
+    );
   }
 
   private updateCamera(): void {
