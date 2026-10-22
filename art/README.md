@@ -11,7 +11,9 @@ Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets na
 | `palette/hollow-64.hex` | Masterpalette (64 Farben, 52 frei + 3 Team-Rampen à 4) | Hand |
 | `sprites/units/<id>/` | Figuren-Sheets (`sheet.key.png`, `sheet.normal.png`, `sheet.json`) | `tools/art/` + Blender |
 | `sprites/props/<id>/` | Requisiten (Bäume, Häuser, Festung, Truhe …), gleiches Format, nur Zeile `idle_s` bzw. Zustände | `tools/art/` + Blender |
-| `tiles/` | Boden-Tileset, Dual-Grid, je Gelände ein 4×4-Atlas | `tools/art/tiles.py` |
+| `models/units/<id>.glb` | 3D-Figuren fürs 3D-Brett (D4): ein Mesh pro Gelenk, Animationen `idle`, `walk`, `attack`, `hit`, `downed` | `tools/art/export_models.py` + Blender |
+| `models/props/<id>_<zustand>.glb` | 3D-Requisiten (D5), ein statisches Mesh pro Zustand (`tree_a`, `house_razed`, `chest_open` …) | `tools/art/export_models.py` + Blender |
+| `tiles/` | Boden-Tileset, Dual-Grid, je Gelände ein 4×4-Atlas. **Wird seit dem 3D-Brett nicht mehr gebaut** (D6) | `tools/art/tiles.py` |
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
 | `portraits/<id>/<mood>.png` | Anime-Halbfiguren, transparent, Master 1536 px hoch | ChatGPT, nachbearbeitet |
 | `backgrounds/<id>.png` | VN-Hintergründe 2560 × 1440 (Sicherheitszone mittlere 810 px) | ChatGPT |
@@ -45,6 +47,23 @@ Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets na
   "rows": [ { "name": "idle_s", "frames": 4, "fps": 6, "loop": "pingpong" },
             { "name": "attack_e", "frames": 6, "fps": 12, "loop": "once", "hitFrame": 3 } ] }
 ```
+
+## 3D-Modelle (`models/`)
+
+Erzeugt aus denselben Blender-Bauskripten wie die Sprites (`concept/01-decisions.md` D4, D5, D12, D13):
+
+```
+blender -b --factory-startup --python tools/art/export_models.py -- art/models [id ...]
+```
+
+- **Maßstab**: 1 glTF-Einheit = 1 Feld, Ursprung = Feldmitte am Boden. Figuren schauen nach dem glTF-Import nach Norden (+Z); das Brett dreht sie.
+- **Farben**: ein Material, das die Vertexfarben liest (linear). Jede Rolle bekommt den mittleren Ton ihrer Rampe aus `tools/art/ramps.py`. Teamtuch (K0–K3) speichert den Schlüssel im Vertex-Alpha (`(k + 1) / 8`), das Brett setzt die Team-Rampe ein.
+- **Figuren**: alle Teile, die am selben Gelenk hängen, sind zu einem Mesh verbunden (rund 14 statt 70 Meshes). Effekt-Teile (Schwungbogen, Glühen, Pfeil) bleiben einzeln und werden über ihre Skalierung ein- und ausgeblendet. Animationen als NLA-Spuren, Timing wie die Sprite-Zeilen (Idle 6 fps Pingpong, Laufen 10 fps, Angriff 12 fps mit Treffer-Frame 3).
+- **Requisiten**: ein statisches Mesh pro Zustand, im Brett per Thin Instances gezeichnet.
+
+## Bodentexturen (generiert)
+
+`tools/art/ground.py` erzeugt beim `pnpm art:build` die gemalten, kachelbaren 256-px-Texturen des 3D-Bretts nach `public/assets/ground/` (Gras, Erde, Pflaster, Sand, Asche, Flussbett, Mauerkrone, Mauer, Erd- und Felswand, Bohlen, Wasser in 4 Phasen). Sie sind deterministisch und werden nicht eingecheckt. Übergänge zwischen Bodenarten mischt das Brett zur Laufzeit über eine Splat-Map (D6).
 
 ## Requisiten (`sprites/props/<id>/`)
 

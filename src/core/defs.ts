@@ -222,6 +222,9 @@ export interface SkillDef {
   target?: { ally?: boolean; adjacent?: boolean; exhausted?: boolean };
 }
 
+export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed';
+export type TerrainCliff = 'earth' | 'rock' | 'wall';
+
 export interface TerrainDef {
   id: string;
   def: number;
@@ -234,6 +237,11 @@ export interface TerrainDef {
   ground: string;
   /** optional prop drawn on top (tree, house, …) */
   prop?: string;
+  /** 3D board (render only, concept/01-decisions.md D3/D6): top height in tiles, ground texture, side wall, water plane */
+  height: number;
+  surface: TerrainSurface;
+  cliff: TerrainCliff;
+  water: boolean;
   seizable?: boolean;
   visitable?: boolean;
 }
@@ -344,6 +352,8 @@ export interface MapDef {
   terrain: string;
   ambient?: { color: string; intensity: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;
+  /** directional light of the 3D board (render only, D7); compass bearing the light comes from, elevation above the horizon */
+  sun?: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number };
   objects: MapObjectDef[];
   initialEffects: Array<{ effect: 'burning'; tiles: Pos[]; turns: number }>;
   deploy: { max: number; forced: string[]; slots: Pos[] };
@@ -507,8 +517,39 @@ export interface Balance {
   };
 }
 
+/** Presentation values of the battle board (content/render.yaml); never read by the rules. */
+export interface RenderDef {
+  camera: {
+    /** tilt away from straight down, degrees (D2) */
+    tiltDeg: number;
+    /** share of the free view the map may be pushed past its edge (D10) */
+    margin: number;
+    /** visible columns on the shorter screen side, near → overview (D9) */
+    zoomSteps: number[];
+    zoomMs: number;
+  };
+  board: {
+    /** scenery tiles around the map (D10) and how much it is darkened */
+    skirt: number;
+    skirtDim: number;
+    waterLevel: number;
+    /** depth of the diorama's bottom below ground level, tiles */
+    baseDepth: number;
+    lightsMax: Record<'high' | 'mid' | 'low', number>;
+    /** on the low quality level, scenery props only this many tiles around the map */
+    sceneryPropsLow: number;
+    /** frame rate caps while something moves and at rest */
+    fpsActive: number;
+    fpsIdle: number;
+    /** size of 3D figures relative to their Blender scale */
+    figureScale: number;
+  };
+  quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
+}
+
 export interface GameData {
   balance: Balance;
+  render: RenderDef;
   classes: Record<string, ClassDef>;
   chars: Record<string, CharDef>;
   items: Record<string, ItemDef>;

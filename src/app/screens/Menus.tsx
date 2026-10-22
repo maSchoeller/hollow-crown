@@ -337,6 +337,10 @@ export function Options({ back }: { back: Screen }) {
           {seg('quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
         </div>
         <div class="field">
+          <label>{t('ui.opt.figures')}</label>
+          {seg('figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
+        </div>
+        <div class="field">
           <label>{t('ui.opt.shake')}</label>
           {seg('shake', [[true, t('ui.on')], [false, t('ui.off')]])}
         </div>

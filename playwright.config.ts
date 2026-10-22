@@ -3,8 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 const port = 4173;
 export default defineConfig({
   testDir: 'tests/e2e',
-  timeout: 90_000,
+  timeout: 120_000,
   retries: process.env.CI ? 1 : 0,
+  // the 3D board runs on software WebGL here, which is CPU-bound; parallel browsers starve each other
+  workers: 1,
   use: { baseURL: `http://localhost:${port}/`, trace: 'retain-on-failure' },
   webServer: { command: `pnpm preview --port ${port} --strictPort`, port, reuseExistingServer: !process.env.CI },
   projects: [

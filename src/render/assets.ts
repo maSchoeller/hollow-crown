@@ -1,5 +1,5 @@
 /**
- * Asset loading for the board: manifest, sprite sheets, tiles, FX. Missing sprites fall back to
+ * Asset loading for the board: manifest, sprite sheets, FX (models: models.ts, ground: terrain3d.ts). Missing sprites fall back to
  * procedural placeholders in the final sheet format (concept/16 §12.1, `art:placeholder`).
  */
 export const TILE = 48;
@@ -25,10 +25,12 @@ export interface Sheet {
 
 export interface Manifest {
   tileSize: number;
-  tiles: string[];
   fx: boolean;
   units: Record<string, { cell: [number, number]; anchor: [number, number]; rows: SheetRow[]; normal?: boolean }>;
-  props: Record<string, { cell: [number, number]; anchor: [number, number]; rows: SheetRow[]; normal?: boolean }>;
+  /** 3D models (tools/art/export_models.py): unit ids and prop states per prop id */
+  models?: { units: string[]; props: Record<string, string[]> };
+  /** painted ground textures of the 3D board (tools/art/ground.py) */
+  ground?: string[];
   portraits: Record<string, string[]>;
   backgrounds: string[];
   audio?: string[];
@@ -38,13 +40,6 @@ export interface FxInfo {
   image: HTMLImageElement | HTMLCanvasElement;
   cell: [number, number];
   anims: Record<string, { row: number; frames: number; fps: number; loop?: string }>;
-}
-
-export interface TileAssets {
-  grounds: Record<string, Array<HTMLImageElement | HTMLCanvasElement>>; // frames
-  full: Record<string, HTMLImageElement | undefined>;
-  decals?: { image: HTMLImageElement; allowed: string[][] };
-  objects?: { image: HTMLImageElement; items: Record<string, [number, number]> };
 }
 
 const BASE = import.meta.env.BASE_URL;
@@ -72,7 +67,7 @@ async function loadJson<T>(url: string): Promise<T | undefined> {
 let manifestPromise: Promise<Manifest> | null = null;
 export function loadManifest(): Promise<Manifest> {
   manifestPromise ??= loadJson<Manifest>(assetUrl('manifest.json')).then(
-    (m) => m ?? { tileSize: TILE, tiles: [], fx: false, units: {}, props: {}, portraits: {}, backgrounds: [] },
+    (m) => m ?? { tileSize: TILE, fx: false, units: {}, portraits: {}, backgrounds: [] },
   );
   return manifestPromise;
 }
@@ -114,60 +109,6 @@ export function loadUnitSheet(id: string, hint: { classId: string; weapon?: stri
     sheetCache.set(key, p);
   }
   return p;
-}
-
-export function loadPropSheet(id: string): Promise<Sheet> {
-  const key = `prop:${id}`;
-  let p = sheetCache.get(key);
-  if (!p) {
-    p = (async () => {
-      const m = await loadManifest();
-      const meta = m.props[id];
-      if (meta) {
-        const [image, normal] = await Promise.all([
-          loadImage(assetUrl(`sprites/props/${id}/sheet.png`)),
-          meta.normal ? loadImage(assetUrl(`sprites/props/${id}/normal.png`)) : Promise.resolve(undefined),
-        ]);
-        if (image) return { id, image, normal, cell: meta.cell, anchor: meta.anchor, rows: meta.rows, rowIndex: rowIndex(meta.rows), placeholder: false };
-      }
-      return placeholderProp(id);
-    })();
-    sheetCache.set(key, p);
-  }
-  return p;
-}
-
-const GROUNDS = ['river', 'shallows', 'plain', 'sand', 'road', 'grass', 'ash', 'wall'];
-let tilePromise: Promise<TileAssets> | null = null;
-export function loadTiles(): Promise<TileAssets> {
-  tilePromise ??= (async () => {
-    const grounds: TileAssets['grounds'] = {};
-    const full: TileAssets['full'] = {};
-    await Promise.all(
-      GROUNDS.map(async (g) => {
-        const animated = g === 'river' || g === 'shallows';
-        const frames = animated
-          ? await Promise.all([0, 1, 2, 3].map((i) => loadImage(assetUrl(`tiles/${g}_${i}.png`))))
-          : [await loadImage(assetUrl(`tiles/${g}.png`))];
-        const ok = frames.filter((f): f is HTMLImageElement => !!f);
-        grounds[g] = ok.length ? ok : [placeholderGround(g)];
-        full[g] = await loadImage(assetUrl(`tiles/${g}_full.png`));
-      }),
-    );
-    const [decalImg, decalMeta, objImg, objMeta] = await Promise.all([
-      loadImage(assetUrl('tiles/decals.png')),
-      loadJson<{ allowed?: string[][]; ground?: string[] }>(assetUrl('tiles/decals.json')),
-      loadImage(assetUrl('tiles/objects.png')),
-      loadJson<{ items: Record<string, [number, number]> }>(assetUrl('tiles/objects.json')),
-    ]);
-    return {
-      grounds,
-      full,
-      decals: decalImg && decalMeta ? { image: decalImg, allowed: decalMeta.allowed ?? (decalMeta.ground ?? []).map((g) => [g]) } : undefined,
-      objects: objImg && objMeta ? { image: objImg, items: objMeta.items } : undefined,
-    };
-  })();
-  return tilePromise;
 }
 
 let fxPromise: Promise<FxInfo | undefined> | null = null;
@@ -272,98 +213,4 @@ function placeholderUnit(id: string, classId: string, weapon?: string): Sheet {
     }
   });
   return { id, image: c, cell, anchor, rows: UNIT_ROWS, rowIndex: rowIndex(UNIT_ROWS), placeholder: true };
-}
-
-function placeholderProp(id: string): Sheet {
-  const cell: [number, number] = [72, 72];
-  const anchor: [number, number] = [36, 63];
-  const states = id === 'house' ? ['intact', 'visited', 'razed'] : id === 'chest' ? ['closed', 'open'] : ['a'];
-  const c = document.createElement('canvas');
-  c.width = cell[0];
-  c.height = cell[1] * states.length;
-  const g = c.getContext('2d')!;
-  states.forEach((st, r) => {
-    const fx = anchor[0];
-    const fy = r * cell[1] + anchor[1];
-    const px = (col: string, x: number, y: number, w: number, h: number) => {
-      g.fillStyle = col;
-      g.fillRect(fx + x, fy + y, w, h);
-    };
-    switch (id) {
-      case 'tree':
-        px('#3b2420', -3, -14, 6, 14);
-        px('#1f3a2c', -17, -46, 34, 34);
-        px('#2f5e33', -15, -44, 30, 28);
-        px('#4f8a3a', -11, -42, 18, 14);
-        px('#8bbb4a', -7, -40, 6, 4);
-        break;
-      case 'rock':
-        px('#2b3242', -20, -30, 40, 30);
-        px('#4f5b70', -18, -28, 36, 26);
-        px('#8995a8', -14, -26, 16, 10);
-        px('#d3dae4', -10, -25, 6, 3);
-        break;
-      case 'house':
-        px('#3b2420', -20, -38, 40, 38);
-        px(st === 'razed' ? '#4a4656' : '#e8e2d6', -18, -24, 36, 22);
-        px(st === 'razed' ? '#2e2a3b' : '#9a3a24', -21, -40, 42, 18);
-        if (st !== 'razed') px(st === 'visited' ? '#16285a' : '#6a4130', -4, -14, 8, 12);
-        break;
-      case 'fort':
-        px('#2e2a3b', -18, -50, 36, 50);
-        px('#a39fa6', -16, -48, 32, 46);
-        px('#6e6a78', -16, -48, 32, 6);
-        px('#E8743B', 2, -64, 10, 7);
-        px('#3b2420', 0, -64, 2, 18);
-        px('#1a1625', -4, -12, 8, 10);
-        break;
-      case 'wagon':
-        px('#3b2420', -22, -30, 44, 24);
-        px('#c79a68', -20, -40, 40, 18);
-        px('#e8e2d6', -18, -42, 36, 14);
-        px('#2d1e1a', -18, -8, 8, 8);
-        px('#2d1e1a', 10, -8, 8, 8);
-        break;
-      case 'shrine':
-        px('#4a4656', -18, -10, 36, 10);
-        px('#e8e2d6', -14, -44, 28, 36);
-        px('#a8e4f5', -6, -36, 12, 12);
-        px('#d3dae4', -18, -48, 36, 6);
-        break;
-      case 'ruins':
-        px('#4a4656', -18, -18, 12, 18);
-        px('#6e6a78', 4, -12, 14, 12);
-        px('#a39fa6', -16, -16, 8, 4);
-        break;
-      case 'chest':
-        px('#2d1e1a', -10, -14, 20, 14);
-        px(st === 'open' ? '#4f3426' : '#9a6a45', -9, -13, 18, 12);
-        px('#c9a24a', -2, -9, 4, 4);
-        break;
-      default:
-        px('#ff00ff', -8, -8, 16, 8);
-    }
-  });
-  const rows = states.map((s) => ({ name: s, frames: 1 }));
-  return { id, image: c, cell, anchor, rows, rowIndex: rowIndex(rows), placeholder: true };
-}
-
-function placeholderGround(g: string): HTMLCanvasElement {
-  const colors: Record<string, string> = {
-    river: '#2f5f9e', shallows: '#4aa8e8', plain: '#a0644e', sand: '#d1aa4f', road: '#9a6a45', grass: '#4f8a3a', ash: '#4a4656', wall: '#6e6a78',
-  };
-  const c = document.createElement('canvas');
-  c.width = c.height = TILE * 4;
-  const x = c.getContext('2d')!;
-  x.fillStyle = colors[g] ?? '#ff00ff';
-  for (let i = 0; i < 16; i++) {
-    const tx = (i % 4) * TILE;
-    const ty = Math.floor(i / 4) * TILE;
-    const h = TILE / 2;
-    if (i & 1) x.fillRect(tx, ty, h, h);
-    if (i & 2) x.fillRect(tx + h, ty, h, h);
-    if (i & 4) x.fillRect(tx, ty + h, h, h);
-    if (i & 8) x.fillRect(tx + h, ty + h, h, h);
-  }
-  return c;
 }

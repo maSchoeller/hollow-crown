@@ -55,6 +55,8 @@ export interface Settings {
   dangerDefault: boolean;
   confirmForecast: boolean;
   quality: 'low' | 'mid' | 'high';
+  /** figures on the board: 3D models or pixel sprites (concept/01-decisions.md D4) */
+  figures: '3d' | '2d';
   music: number;
   sfx: number;
   keepAwake: boolean;
@@ -70,6 +72,7 @@ function loadSettings(): Settings {
     dangerDefault: false,
     confirmForecast: true,
     quality: 'mid',
+    figures: '3d',
     music: 0.6,
     sfx: 0.8,
     keepAwake: true,

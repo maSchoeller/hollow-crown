@@ -10,6 +10,7 @@ import type {
   ItemDef,
   MapDef,
   Rarity,
+  RenderDef,
   RuneDef,
   SetDef,
   SkillDef,
@@ -24,6 +25,7 @@ import {
   dialogueSchema,
   itemSchema,
   mapSchema,
+  renderSchema,
   runeSchema,
   setSchema,
   skillSchema,
@@ -95,6 +97,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     return key ? files[key] : undefined;
   };
   const balance = parseOne<Balance>('balance.yaml', get('balance.yaml'), balanceSchema, issues);
+  const render = parseOne<RenderDef>('render.yaml', get('render.yaml'), renderSchema, issues);
   const classes = parseList<ClassDef>('classes.yaml', get('classes.yaml'), classSchema, issues);
   const chars = parseList<CharDef>('units.yaml', get('units.yaml'), charSchema, issues);
   const items = parseList<ItemDef>('items.yaml', get('items.yaml'), itemSchema, issues);
@@ -133,6 +136,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   }));
   const data: GameData = {
     balance: balance as Balance,
+    render: render as RenderDef,
     classes: byId(classes),
     chars: byId(chars),
     items: byId([...items, ...runeItems]),

@@ -4,6 +4,7 @@
 
 - Rechteckiges Raster, Koordinaten `[x, y]`, Ursprung oben links.
 - Größen: **kompakt** 8×12 – 12×18, **mittel** bis 16×24, **groß** bis 24×32. Alle Größen sind erwünscht.
+- **Form** (D11): eher quadratisch als länglich, je Karte frei – man verschiebt die Karte ohnehin in beide Richtungen. Stand V1: Prolog 12×12, Kap. 1 16×16, Kap. 2 18×18 (D18).
 - Kamera: Pinch-Zoom (min. 5 Spalten sichtbar bis ganze Karte), Zwei-Finger-Pan, Doppeltipp auf Einheit zentriert; **Minikarte** einblendbar (Ecke oben, zeigt Einheiten als Punkte und Ziele).
 - Kartenformat und Beispiele: `11-content-format.md`, `data-samples/maps/`.
 
