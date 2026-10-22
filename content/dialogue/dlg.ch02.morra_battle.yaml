@@ -1,0 +1,3 @@
+id: dlg.ch02.morra_battle
+lines:
+  - { speaker: morra, mood: neutral, side: right, key: dlg.ch02.morra_battle.001 }

@@ -1,0 +1,3 @@
+id: dlg.prologue.grosk_battle
+lines:
+  - { speaker: grosk, mood: angry, side: right, key: dlg.prologue.grosk_battle.001 }

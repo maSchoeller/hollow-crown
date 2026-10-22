@@ -1,0 +1,5 @@
+id: dlg.ch01.tutorial_fire
+lines:
+  - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.tutorial_fire.001 }
+  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.tutorial_fire.002 }
+  - { speaker: tobin, mood: neutral, side: right, key: dlg.ch01.tutorial_fire.003 }

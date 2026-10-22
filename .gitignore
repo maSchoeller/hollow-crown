@@ -1,2 +1,11 @@
 *.blend1
 __pycache__/
+node_modules/
+dist/
+dev-dist/
+coverage/
+public/assets/
+test-results/
+playwright-report/
+*.log
+.vite/

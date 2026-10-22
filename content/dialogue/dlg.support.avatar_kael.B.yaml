@@ -1,0 +1,7 @@
+id: dlg.support.avatar_kael.B
+background: bg_camp_night
+music: camp
+lines:
+  - { speaker: kael, mood: neutral, side: right, key: dlg.support.avatar_kael.B.001 }
+  - { speaker: kael, mood: happy, side: right, key: dlg.support.avatar_kael.B.002 }
+  - { speaker: kael, mood: neutral, side: right, key: dlg.support.avatar_kael.B.003 }

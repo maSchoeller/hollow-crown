@@ -1,0 +1,11 @@
+# sets – Startwerte [C], aus concept/data-samples/affixes-runes-sets.yaml (concept/05).
+- id: ashen_watch
+  pieces: [iron_helm, chainmail, iron_shield, ashen_badge]
+  bonuses:
+    - { count: 2, mods: { stats: { def: 2 } } }
+    - { count: 4, mods: { grantSkill: shield_wall } }
+- id: ember_garb
+  pieces: [mage_hood, ember_robe, ember_focus]
+  bonuses:
+    - { count: 2, mods: { stats: { mag: 2 } } }
+    - { count: 3, mods: { statusChanceBonus: { element: fire, value: 20 } } }

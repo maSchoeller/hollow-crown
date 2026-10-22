@@ -1,0 +1,3 @@
+id: dlg.ch01.ambush
+lines:
+  - { speaker: brenna, mood: angry, side: right, key: dlg.ch01.ambush.001 }

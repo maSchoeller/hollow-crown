@@ -1,0 +1,9 @@
+id: dlg.support.mira_tobin.C
+background: bg_camp_night
+music: camp
+lines:
+  - { speaker: mira, mood: happy, side: left, key: dlg.support.mira_tobin.C.001 }
+  - { speaker: tobin, mood: angry, side: right, key: dlg.support.mira_tobin.C.002 }
+  - { speaker: mira, mood: happy, side: left, key: dlg.support.mira_tobin.C.003 }
+  - { speaker: tobin, mood: surprised, side: right, key: dlg.support.mira_tobin.C.004 }
+  - { speaker: mira, mood: neutral, side: left, key: dlg.support.mira_tobin.C.005 }

@@ -1,0 +1,159 @@
+import type { Area, GameData, ItemRef, MapDef, MapUnitDef, Pos, Reward } from '../core/defs';
+import { areaTiles } from '../core/util';
+import type { ContentIssue, Locales } from './load';
+
+/** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
+export function validateContent(data: GameData, locales: Locales, spriteIds?: Set<string>): ContentIssue[] {
+  const issues: ContentIssue[] = [];
+  const err = (file: string, message: string) => issues.push({ file, message });
+  const item = (file: string, ref: ItemRef | undefined, ctx: string) => {
+    if (ref && !data.items[ref.def]) err(file, `${ctx}: unknown item ${ref.def}`);
+    for (const a of ref?.affixes ?? []) if (!data.affixes[a]) err(file, `${ctx}: unknown affix ${a}`);
+    for (const r of ref?.runes ?? []) if (!data.runes[r]) err(file, `${ctx}: unknown rune ${r}`);
+  };
+  const dialogue = (file: string, id: string | undefined, ctx: string) => {
+    if (id && !data.dialogues[id]) err(file, `${ctx}: unknown dialogue ${id}`);
+  };
+  const reward = (file: string, r: Reward | undefined, ctx: string) => {
+    if (!r) return;
+    item(file, r.item, ctx);
+    dialogue(file, r.dialogue, ctx);
+    if (r.recruit && !data.chars[r.recruit]) err(file, `${ctx}: unknown recruit ${r.recruit}`);
+    for (const m of Object.keys(r.material ?? {})) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
+  };
+
+  for (const c of Object.values(data.classes)) {
+    if (c.skill && !data.skills[c.skill]) err('classes.yaml', `${c.id}: unknown skill ${c.skill}`);
+  }
+  for (const ch of Object.values(data.chars)) {
+    if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
+    if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);
+    ch.items.forEach((r) => item('units.yaml', r, ch.id));
+  }
+  for (const it of Object.values(data.items)) {
+    if (it.grantsSkill && !data.skills[it.grantsSkill.skill]) err('items.yaml', `${it.id}: unknown skill ${it.grantsSkill.skill}`);
+    if (it.setId && !data.sets[it.setId]) err('items.yaml', `${it.id}: unknown set ${it.setId}`);
+  }
+  for (const s of Object.values(data.sets)) {
+    for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
+  }
+  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, dialogue, reward);
+  const camp = data.campaign;
+  if (camp) {
+    for (const n of camp.nodes) {
+      if (!data.maps[n.map]) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
+      dialogue('campaign.yaml', n.pre, n.id);
+      dialogue('campaign.yaml', n.post, n.id);
+      for (const nx of n.next) if (!camp.nodes.some((x) => x.id === nx)) err('campaign.yaml', `${n.id}: unknown next ${nx}`);
+    }
+    for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
+    for (const [k, v] of Object.entries(camp.supportDialogues))
+      for (const d of Object.values(v)) dialogue('campaign.yaml', d, `support ${k}`);
+  }
+  // dialogue keys
+  for (const d of Object.values(data.dialogues)) {
+    for (const l of d.lines) {
+      const keys = 'choice' in l ? l.choice.map((c) => c.key) : [l.key];
+      for (const k of keys) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`dialogue/${d.id}`, `missing ${lang} text ${k}`);
+    }
+  }
+  // i18n: names of all content + parity between DE and EN
+  const need: string[] = [];
+  for (const c of Object.values(data.classes)) need.push(`class.${c.id}.name`);
+  for (const i of Object.values(data.items)) need.push(`item.${i.id}.name`);
+  for (const s of Object.values(data.skills)) need.push(`skill.${s.id}.name`, `skill.${s.id}.desc`);
+  for (const a of Object.values(data.affixes)) need.push(`affix.${a.id}`);
+  for (const t of Object.values(data.terrain)) need.push(`terrain.${t.id}`);
+  for (const m of Object.values(data.maps)) need.push(m.nameKey);
+  for (const ch of Object.values(data.chars)) need.push(`unit.${ch.id}.name`);
+  for (const n of camp?.nodes ?? []) need.push(n.titleKey);
+  for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
+  for (const k of need) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`locales/${lang}`, `missing key ${k}`);
+  const de = Object.keys(locales.de ?? {});
+  const en = new Set(Object.keys(locales.en ?? {}));
+  for (const k of de) if (!en.has(k)) err('locales/en', `missing key ${k} (present in de)`);
+  for (const k of en) if (!(locales.de ?? {})[k]) err('locales/de', `missing key ${k} (present in en)`);
+  if (spriteIds) {
+    for (const m of Object.values(data.maps))
+      for (const u of allUnits(m)) if (u.sprite && !spriteIds.has(u.sprite)) err(`maps/${m.id}`, `unknown sprite ${u.sprite}`);
+  }
+  return issues;
+}
+
+function allUnits(m: MapDef): MapUnitDef[] {
+  return [
+    ...m.units,
+    ...m.reinforcements.flatMap((r) => r.units),
+    ...m.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : []))),
+  ];
+}
+
+function validateMap(
+  data: GameData,
+  map: MapDef,
+  err: (f: string, m: string) => void,
+  item: (f: string, r: ItemRef | undefined, c: string) => void,
+  dialogue: (f: string, id: string | undefined, c: string) => void,
+  reward: (f: string, r: Reward | undefined, c: string) => void,
+): void {
+  const f = `maps/${map.id}`;
+  const [w, h] = map.size;
+  const rows = map.terrain.replace(/\r/g, '').split('\n').filter((r) => r.length > 0);
+  if (rows.length !== h) err(f, `terrain has ${rows.length} rows, size says ${h}`);
+  const grid: string[][] = [];
+  rows.forEach((row, y) => {
+    if (row.length !== w) err(f, `row ${y} has ${row.length} chars, size says ${w}`);
+    const line: string[] = [];
+    for (const ch of row) {
+      const t = map.legend[ch];
+      if (!t) err(f, `row ${y}: char '${ch}' not in legend`);
+      else if (!data.terrain[t]) err(f, `legend '${ch}': unknown terrain ${t}`);
+      line.push(t ?? 'plain');
+    }
+    grid.push(line);
+  });
+  const inside = (p: Pos) => p[0] >= 0 && p[1] >= 0 && p[0] < w && p[1] < h;
+  const terr = (p: Pos) => data.terrain[grid[p[1]]?.[p[0]] ?? 'plain'];
+  const checkUnit = (u: MapUnitDef, ctx: string) => {
+    if (!data.classes[u.class]) err(f, `${ctx}: unknown class ${u.class}`);
+    if (u.char && !data.chars[u.char]) err(f, `${ctx}: unknown char ${u.char}`);
+    if (!inside(u.at)) err(f, `${ctx}: position ${u.at} out of bounds`);
+    else {
+      const mt = data.classes[u.class]?.moveType ?? 'foot';
+      if (terr(u.at)?.cost[mt] === null) err(f, `${ctx}: placed on impassable ${terr(u.at)?.id}`);
+    }
+    u.items.forEach((r) => item(f, r, ctx));
+    dialogue(f, u.quote, ctx);
+    dialogue(f, u.recruit?.dialogue, ctx);
+    for (const d of u.drops ?? []) if (d >= u.items.length) err(f, `${ctx}: drop index ${d} out of range`);
+  };
+  map.units.forEach((u, i) => checkUnit(u, u.id ?? `unit ${i}`));
+  map.reinforcements.forEach((r, i) => r.units.forEach((u, j) => checkUnit(u, `reinforcement ${i}.${j}`)));
+  if (map.deploy.slots.length < map.deploy.max) err(f, 'deploy.slots < deploy.max');
+  for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
+  for (const o of map.objects) {
+    if (!inside(o.at)) err(f, `${o.id}: out of bounds`);
+    reward(f, o.reward, o.id);
+    reward(f, o.contents, o.id);
+  }
+  for (const t of map.triggers) for (const a of t.then) if (a.action === 'dialogue') dialogue(f, a.id, t.id);
+  for (const s of map.objectives.side) reward(f, s.reward, s.id);
+  // reachability of reach/seize/escape goals for a foot unit from the deploy area (ignoring units)
+  const v = map.objectives.victory;
+  const goalArea: Area | undefined = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? v.area : undefined;
+  if (goalArea && map.deploy.slots[0]) {
+    const goals = new Set(areaTiles(goalArea).map((p) => `${p[0]},${p[1]}`));
+    const seen = new Set<string>();
+    const queue: Pos[] = [map.deploy.slots[0]];
+    let found = false;
+    while (queue.length && !found) {
+      const p = queue.shift()!;
+      const k = `${p[0]},${p[1]}`;
+      if (seen.has(k) || !inside(p) || terr(p)?.cost.foot === null) continue;
+      seen.add(k);
+      if (goals.has(k)) found = true;
+      queue.push([p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]);
+    }
+    if (!found) err(f, 'victory area not reachable on foot from the deploy area');
+  }
+}
