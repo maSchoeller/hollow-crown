@@ -58,6 +58,10 @@ body,
   user-select: none;
   -webkit-user-select: none;
 }
+/* screens and the battle are absolute with inset 0: anchor them to #app, not to the initial viewport */
+#app {
+  position: relative;
+}
 /* iOS home-screen app: 100% stops short of the rounded corners (status bar and home indicator),
    the large viewport unit covers the whole display */
 @media (display-mode: standalone) {
