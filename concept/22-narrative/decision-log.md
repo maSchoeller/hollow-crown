@@ -45,3 +45,6 @@
 | 2026-10-23 | Delivery: Visual-Novel-Szenen plus ca. 10 Illustrationstafeln (Chibi-Stil, ChatGPT); im Kampf sparsam (Sprechblasen, max. eine kurze VN-Einblendung pro Mission), alles überspringbar | Produktinhaber, Empfehlungen bestätigt |
 | 2026-10-23 | Ende: ein Finale, Wahrheit oder Frieden, Bonus-Antwort „Vhaelyra selbst fragen“ mit allen 12 Chronik-Seiten; Flag `s1_ending`; kein bestes Ende | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Nach dem Finale freies Weiterspielen bis Staffel 2 (Heimsuchungen, Nebenquests, Supports, Burg); kein NG+ | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Integration [C]: Missionsfolge der 20 Story-Missionen (Ziele, Leutnants, Beitritte), 12 Entscheidungen (je Akt 2 persönlich, 1 Gewissen, 1 politisch), 7 Nebenquests (4 persönlich, 3 Lore), 25 Support-Paare mit 6 S-Rängen (fest geschriebene Bindungen, 4 romantisch) | Produktinhaber: Leitlinien gewählt, Entwurf per „C“ bestätigt |
+| 2026-10-23 | Akt 3: Nur 3-2 und 3-3 sind frei wählbar; Krönung, Drachenangriff und Finale folgen fest aufeinander. Abweichung vom GDD, dort im Log vermerkt | Produktinhaber per „C“; Hauptbogen dominiert in Akt 3 |
+| 2026-10-23 | In Akt 2 kämpft die Truppe immer gegen die Champions der *anderen* Anwärter (gegenseitige Sabotage) | Assistent [C], per „C“ bestätigt |

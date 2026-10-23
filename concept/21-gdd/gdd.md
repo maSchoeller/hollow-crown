@@ -219,7 +219,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 | Stufendeckel | 10 | 20 | 20 |
 | Release | MVP | 2. Release | 3. Release |
 
-- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind.
+- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahme Akt 3: Nach den zwei frei wählbaren Missionen folgen Krönung, Drachenangriff und Finale fest aufeinander (siehe `concept/22-narrative/narrative.md`).
 - **Missionsgrößen:** 14 der 20 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
 - **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Kael), defend, survive, escape, **escort** (NPC zum Ausgang bringen), **treasure** (Truhen vor Rundenlimit bergen); 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
 

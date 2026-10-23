@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 8 of 11 (Narrative Delivery)
+**Steps Completed:** 9 of 11 (Gameplay Integration)
 
 ---
 
@@ -624,3 +624,169 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 **True Ending:** keins. Jeder Durchlauf wird über das Mosaik eigen.
 
 **Replayability:** Wer andere Wege sehen will, spielt neu. Ein zweiter Spielstand ist im Modus Standard oder Casual möglich.
+
+---
+
+## Gameplay Integration
+
+### Narrative-Gameplay Connection
+
+**Integration Approach:** Mechanik und Story erzählen dasselbe.
+
+**Mechanic-Theme Alignment:**
+
+| Mechanik | erzählt |
+|---|---|
+| Permadeath, Verbluten, Bergen | „Wer zahlt den Preis?“ Der Spieler entscheidet mit jedem Zug, wer das Risiko trägt. |
+| Glutfunke (Aufstieg) | Glut ist Leben und Magie. Nicht jeder kann aufsteigen, also wird ausgewählt, wer wächst. |
+| Gedächtnishalle (Lektion) | Gefallene hinterlassen ein Erbe, ihr Platz bleibt sichtbar leer. |
+| Leutnants mit Groll | Die Welt erinnert sich an die Truppe. Kopfgeld und Gegner kehren wieder. |
+| Burg-Ausbau durch Gefährten | Gewählte Familie: Die Heimat wächst mit den Menschen. |
+| Supports und Tandem | Nähe macht stark. Trauer kostet Treffsicherheit. |
+| Elementmagie | Mit dem Erwachen der Drachen wird Magie stärker; je Akt steigt die Werte-Kurve der Zauberwaffen. |
+
+**Story-Gameplay Balance:** Story vor und nach jeder Mission, im Kampf sparsam (siehe Narrative Delivery); die Mitte jedes Akts ist episodisch und frei wählbar.
+
+**Ludonarrative Considerations:** Das Kopfgeld ist Teil der Story: Der Spieler kassiert es selbst von Leutnants. Dass Söldner für Geld kämpfen, wird nie verschwiegen. Der Konflikt Gold gegen Gewissen wird in Entscheidung E3 ausdrücklich gemacht.
+
+### Missionsfolge (20 Story-Missionen)
+
+★ = fester Platz, sonst innerhalb des Akts frei wählbar.
+
+**Akt 1 „Asche“ (Prolog + 6)**
+
+| # | Mission | Ziel | Leutnant | Beitritt | Beat |
+|---|---|---|---|---|---|
+| P ★ | Die Paktnacht | escape | – (Tempelwachen) | Rhen, Kael, Brenna, Tobin | Paktnacht, Gerrit fällt (Szene) |
+| 1-1 ★ | Steckbriefe | rout | – | Fenn | Die Truppe ist gesucht |
+| 1-2 | Asche über Erlbach | defend | **Hask** (erste Begegnung) | Mira | Dorf retten |
+| 1-3 | Der Fremde mit dem Siegel | escort (Liora) | **Morra** | Liora | Halvard tritt auf |
+| 1-4 | Die Spur des Maklers | boss (Osric Dunn) | **Ulvric** | Ysolde (Gefangene der Wolfsreiter) | Dunn stirbt; danach Rhens Geständnis |
+| 1-5 | Das Hungerlager | rout | **Grosk** | Varek (Ansprechen) | Entscheidung E3 |
+| 1-6 ★ | Die Paktwacht (Finale) | seize | Hask, Morra, Ulvric (Grosk, falls nicht gewechselt) | Grosk (bei E3 „verschonen“) | Heimat erobert, 2 Glutfunken |
+
+**Akt 2 „Glut“ (7).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter.
+
+| # | Mission | Strang | Ziel | Leutnant | Beitritt |
+|---|---|---|---|---|---|
+| 2-1 ★ | Wind über der Eisenmark | – | survive | **Brakka** | Jory, danach die drei Angebote |
+| 2-2 | Das Siegel im Salzpass | Prinzessin | treasure | **Grell** | Nell |
+| 2-3 | Die verstoßene Leibwache | Prinzessin | escort (Odile) | **Sable** | Odile |
+| 2-4 | Der Wyvernhorst | Dravn | boss | **Rowena** | Ilka |
+| 2-5 | Die Brandschneise | Dravn | defend (Brandhang) | **Grell** | Brann; Sable bei E7 „warnen“ |
+| 2-6 | Gold für Banditen | Herzogin | rout | **Rowena**, **Sable** | Amos |
+| 2-7 ★ | Kronfeld (Finale, große Schlacht) | – | survive → escape | Rowena, Grell, Brakka, Sable (falls nicht gewechselt) | – („Die Krone war hohl“) |
+
+**Akt 3 „Krone“ (6, davon 2 große Schlachten)**
+
+| # | Mission | Ziel | Leutnant | Beitritt |
+|---|---|---|---|---|
+| 3-1 ★ | Winter über Aurenhall | reach (durch die Palastgänge) | **Eluned** | Kit |
+| 3-2 | Das verbotene Lied | escort (Harlan) | **Cassian** | Harlan |
+| 3-3 | Die Einsiedlerin | defend (Vesnas Hütte) | **Mael** | Vesna; Mael bei E11 „verschonen“ |
+| 3-4 ★ | Die Krönung | seize (Glutdom) | Cassian, Eluned, **Torvald** | – (Halvard enttarnt) |
+| 3-5 ★ | Drachen über der Stadt (große Schlacht) | defend | **Torvald**, Drachen (dritte Partei) | Pell |
+| 3-6 ★ | Im Drachengebirge (Finale, große Schlacht) | boss (Halvard) | Cassian, Torvald, Eluned, Mael (falls nicht gewechselt) | – (Der Preis, Wahrheit oder Frieden) |
+
+In Akt 3 sind nur 3-2 und 3-3 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale (Abweichung vom GDD, dort im Log vermerkt).
+
+Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale. Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor. Beitritte: 8, 7 und 5.
+
+### Die 12 Entscheidungen
+
+Je Akt 2 persönliche, 1 Gewissensfrage, 1 politische.
+
+| # | Akt | Art | Wahl | Folgen |
+|---|---|---|---|---|
+| E1 | 1 | persönlich | Erlbach bietet **Mira** die Heimkehr an: gehen lassen oder halten | Mira geht und Erlbach gibt Dorfhilfe (Heiltrank +1 für Akt 1), oder Mira bleibt |
+| E2 | 1 | persönlich | Der Diebesring will **Fenn** zurück, im Tausch gegen Infos über den Makler | Fenn ausliefern (Mission 1-4 leichter, Fenn geht) oder schützen (Nebenquest N1 öffnet) |
+| E3 | 1 | Gewissen | Das **Hungerlager**: verschonen oder das Kopfgeld kassieren | Grosk tritt bei und Hask-Groll −1, oder +600 Gold |
+| E4 | 1 | politisch | Die **Paktwacht**: Flüchtlinge aufnehmen oder geheim halten | Dorfhilfe in Akt 2, oder Händler −10 % in Akt 2 |
+| E5 | 2 | persönlich | Seraphine bietet **Odile** die Rückkehr in die Garde an | Odile geht (ihre Zeile in Kronfeld wechselt), oder sie bleibt |
+| E6 | 2 | persönlich | Dravn bietet **Varek** Begnadigung im Heer an | Varek geht, oder er bleibt und Sable-Groll −1 |
+| E7 | 2 | Gewissen | **Brandhang** warnen oder den Befehl ausführen | Sable tritt bei, oder Dravns Gunst bringt Händler −10 % |
+| E8 | 2 | politisch | Die Beweise gegen **Maelis** an Seraphine geben oder zurückverkaufen | Grell-Groll −1, oder +1 000 Gold |
+| E9 | 3 | persönlich | Vesna will **Ysolde** mit ins Gebirge zum Forschen nehmen | Ysolde geht (Epilog-Wendung) und Vesna bleibt, oder Ysolde bleibt und Nebenquest N5 öffnet |
+| E10 | 3 | persönlich | **Liora**: Halvard vergeben oder verurteilen | Epilog-Wendung, Halvards letzte Worte, Lioras Kachel |
+| E11 | 3 | Gewissen | **Mael** verschonen und ihm die Chronik zeigen, oder ihn besiegen | Mael tritt bei, oder Torvald-Groll −1 |
+| E12 | 3 | politisch | **Wahrheit oder Frieden** (Bonus: „Vhaelyra fragen“) | `s1_ending`, Schlusstafel, Staffel 2 |
+
+Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuft als Gedenk-Variante. Avatar und Kael gehen nie. Die Gold- und Preiswerte sind Startwerte für das Balancing. `[ASSUMPTION]`
+
+### Die 7 Nebenquests
+
+| # | Akt | Art | Quest | Auslöser | Belohnung |
+|---|---|---|---|---|---|
+| N1 | 1 | persönlich | Der Ring von Varnhold (Fenns Vergangenheit) | E2 „schützen“ | Glutfunke, Signaturdolch |
+| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, legendärer Schild |
+| N3 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan) | Ilka in der Truppe | Glutfunke, Signaturbogen |
+| N4 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III |
+| N5 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
+| N6 | 3 | persönlich | Brennas Bruder | Brenna lebt und hat B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
+| N7 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Zeile für „Vhaelyra fragen“ |
+
+Fällt der Gefährte, an den eine Quest gebunden ist, läuft sie als Gedenk-Variante (laut GDD).
+
+### Die 25 Support-Paare
+
+★ = S-Rang (fest geschriebene Bindung).
+
+| Paar | Thema |
+|---|---|
+| ★ Kael × Rhen | Waffenbrüder (platonisch) |
+| ★ Kael × Brenna | alte Liebe, nie ausgesprochen (romantisch) |
+| Kael × Mael | Soldaten, die einer Lüge dienten |
+| ★ Brenna × Tobin | Ziehmutter, „Helden sterben jung“ |
+| Brenna × Varek | Misstrauen gegenüber dem Deserteur |
+| Tobin × Mira | Bogenunterricht, Kabbelei |
+| Tobin × Grosk | der Riese und der Junge |
+| Mira × Fenn | Wilderin und Dieb, Ehre unter Gaunern |
+| Fenn × Kit | Straßenkinder |
+| Kit × Pell | Aurenhall von unten und von oben |
+| Pell × Harlan | Wer singt die Wahrheit? |
+| Harlan × Jory | Hofbarde gegen Gaukler |
+| Jory × Nell | Seemannslieder |
+| Nell × Varek | Spieler gegen Schmugglerin |
+| ★ Varek × Odile | Pflicht gegen Freiheit (romantisch) |
+| Odile × Sable | zwei Klingen, zwei Herren |
+| Sable × Ilka | Eisenmark-Heimweh |
+| ★ Ilka × Brann | zwei Stille (romantisch) |
+| Brann × Vesna | Angst vor der eigenen Glut |
+| Vesna × Ysolde | Lehrerin und Schülerin |
+| Liora × Ysolde | Glaube gegen Wissen, die Chronik |
+| ★ Liora × Rhen | Vision und Schuld (romantisch, bei beiden Avatar-Varianten) |
+| Liora × Amos | Heiler ohne Orden |
+| Amos × Grosk | Galgenhumor |
+| Amos × Mael | Glaube nach dem Verrat |
+
+Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
+
+---
+
+### Story Gating
+
+**Gating Approach:** harte Schranken an Akt-Eckpunkten, weiche dazwischen.
+
+**Story-Locked Elements:** Die erste Mission eines Akts und das Finale sind fest. Das Finale öffnet sich erst, wenn alle anderen Story-Missionen des Akts gespielt sind. Akt 3 ab der Krönung ist linear. Die Burg ist erst ab Akt 2 nutzbar. Die Lektionen der gestaffelten Regeln hängen an der Zahl gespielter Missionen (GDD).
+
+**Cutscene Triggers:** Akt-Einstieg, Akt-Finale, die 11 Tafeln aus der Narrative Delivery, der Tod eines Gefährten (Gedenken nach der Mission).
+
+**Mandatory Story Beats:** die 20 Story-Missionen und ihre Szenen.
+
+**Optional Narrative:** Nebenquests, Supports, Chronik-Seiten, Heimsuchungen, Gedenken.
+
+---
+
+### Player Agency
+
+**Agency Level:** bedeutsame kleine Entscheidungen. Die Hauptgeschichte ist fest, ihre Folgen formen die Familie.
+
+**Player Influence:** wer bleibt oder geht, wer lebt (Taktik), Groll, Wirtschaft, Epilog-Mosaik, Staffel-2-Flags.
+
+**Choice System:**
+
+- Choice types: 12 Entscheidungen (persönlich, Gewissen, politisch), dazu Rhens Haltungsprofil.
+- Consequence scope: jede Entscheidung mit sichtbarer Folge (Gefährte, Nebenquest, Groll, Preise, Dorfhilfe, Epilog).
+- Timing: nur außerhalb des Kampfs, in Szenen vor oder nach Missionen.
+
+**Role-Playing Freedom:** Name und Erscheinung des Avatars, die Haltung warm, nüchtern oder trotzig, und Romanzen über die S-Ränge (Liora mit Rhen).
