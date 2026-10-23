@@ -37,10 +37,10 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 - FR2 (bestehend): Formeln für Treffer, Schaden, Krit, Doppelangriff, Waffendreieck, Effektivität, Elemente, Status, Gelände und Elementfelder laut GDD; Vorschau nutzt denselben Code.
 - FR3 (bestehend): Supports mit Punkten, Nachbarbonus, Tandem ab B, Schutz ab A, Trauer.
 - FR4 (geändert): Tod-Modi Klassik/Standard/Casual; in Standard **Verbluten nach 3 eigenen Phasen** ohne Bergen, sichtbarer Zähler, jeder weitere Treffer tötet; nach 2 Narben ist der nächste 0-TP-Fall tödlich; Avatar oder Kael bei 0 TP = Niederlage.
-- FR5 (geändert): Neustart: Runde neu (Standard/Casual) und Mission neu (alle Modi; Klassik nur nach Niederlage) setzen alles inklusive Tode auf den jeweiligen Beginn zurück.
+- FR5 (geändert; im PoC in der App, künftig als Kampagnen-Command): Neustart: Runde neu (Standard/Casual) und Mission neu (alle Modi; Klassik nur nach Niederlage) setzen alles inklusive Tode auf den jeweiligen Beginn zurück.
 - FR6 (bestehend): Missionsziele rout, boss, reach, seize, defend, survive, escape; Nebenziele visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc; Verstärkungen eine Runde angekündigt, Hinterhalte nur auf Schwer.
 - FR7 (neu): Neue Missionsziele **escort** (NPC zum Ausgang bringen) und **treasure** (Truhen vor Rundenlimit bergen) mit Sieg- und Niederlagebedingungen.
-- FR8 (bestehend): Nebel des Krieges auf einzelnen Karten (Sicht 3, Boni je Rolle); Mauern und geschlossene Türen blockieren die Sicht.
+- FR8 (neu; im PoC nur als Datenfeld): Nebel des Krieges auf einzelnen Karten (Sicht 3, Boni je Rolle); Mauern und geschlossene Türen blockieren die Sicht.
 - FR9 (bestehend): Gegner-KI mit Profilen aggressive, hold, guard, trigger, hunt, raider, flee, support und Zielwertung; Zugreihenfolge nach Kill-Chance, dann Distanz.
 - FR10 (bestehend): Schwierigkeit Leicht/Normal/Schwer (Gegnerwerte −15/0/+15 %, Aufstellung je Schwierigkeit, Schwer mit Affixen und Hinterhalten), nur absenkbar; Tod-Modus unabhängig.
 
@@ -198,7 +198,8 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 
 | FR | Epic | Kurz |
 |---|---|---|
-| FR1–FR3, FR6, FR8–FR10 | Epic 2 | bestehende Kampfregeln, im neuen HUD und Rollenmodell übernommen |
+| FR1–FR3, FR6, FR9, FR10 | Epic 2 | bestehende Kampfregeln, im neuen HUD und Rollenmodell übernommen |
+| FR8 | Epic 2 | Nebel des Krieges (neu im Kern) |
 | FR4, FR5 | Epic 1 | Verbluten, Neustart je Tod-Modus |
 | FR7 | Epic 4 | Ziele escort und treasure |
 | FR11–FR13, FR16, FR17 | Epic 2 | Rollenmodell, Klassen-Aktionen, KI, Gegnertypen Akt 1 |
@@ -273,3 +274,585 @@ Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen 
 **FRs covered:** FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
 
 **Reihenfolge:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Jedes Epic baut nur auf den vorherigen auf; Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus.
+
+<!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
+
+## Epic 1: Kampagnen und Spielstände
+
+Spieler führen bis zu drei Kampagnen, sehen die neue Oberfläche (Stil B) zuerst auf Titel und Kampagnen, speichern nach jeder Aktion sicher und starten nach den Regeln ihres Tod-Modus neu. Grundlage für alle weiteren Epics: UI-Bausteine, Speicherformat 2, Kampagnen-Commands mit Journal, Fehlerbericht.
+
+### Story 1.1: Neue Oberfläche – Steine, Tokens und Währung
+
+Als Spieler
+möchte ich eine Oberfläche, die aussieht wie Spielzeug aus derselben Kiste wie die Welt,
+damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Tokens aus `concept/25-ux/DESIGN.md` (Farben, Typografie, Rundungen, Abstände)
+**Wenn** die App startet
+**Dann** stehen sie als CSS-Variablen in `src/ui/` bereit und Fraunces ist als Namensschrift eingebunden (einzige neue Abhängigkeit: Schriftpaket)
+**Und** es gibt wiederverwendbare Preact-Komponenten `Piece`, `PrimaryButton`, `SecondaryButton`, `QuietButton` mit Druckzustand (Unterkante 4 → 1 px).
+
+**Angenommen** ein Betrag an Gold, Material, EP oder Glutfunken
+**Wenn** die UI ihn anzeigt
+**Dann** rendert die Komponente `Amount` immer Symbol + Zahl (Münze, Erz-Raute, Stern, Funke) mit tabellarischen Ziffern
+**Und** ein Material ohne festgelegtes Symbol lässt `pnpm content:check` scheitern.
+
+**Angenommen** der Titelbildschirm
+**Wenn** er neu gebaut ist
+**Dann** entspricht er `concept/25-ux/mockups/07-start-kampagnen.html` (eine Haupttaste „Fortsetzen“ mit Avatar, Akt und Stand; „Kampagnen“; „Optionen“; Versionszeile mit Update-Prüfung)
+**Und** `pnpm build` bleibt im Bundle-Budget; `prefers-reduced-motion` schaltet den Druck-Effekt nicht ab, aber jedes Wackeln.
+
+### Story 1.2: Speicherformat 2 mit Kampagnen
+
+Als Spieler
+möchte ich bis zu drei Kampagnen nebeneinander haben,
+damit ich zum Beispiel eine Klassik-Kampagne neben meinem Standard-Spiel führen kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** IndexedDB `hollow-crown` in Version 1
+**Wenn** die neue App-Version startet
+**Dann** legt sie Version 2 mit den Stores `campaigns`, `saves` (Schlüssel `[campaignId, slot]`), `journal` und `legacy` an (Architektur §5.15)
+**Und** vorhandene Format-1-Spielstände wandern unverändert nach `legacy`.
+
+**Angenommen** eine laufende Kampagne
+**Wenn** ein Command (Kampf oder Kampagne) angewendet wird
+**Dann** schreibt die App den Auto-Save asynchron, ohne die Eingabe zu blockieren, und beim Wechsel in den Hintergrund sofort
+**Und** `SaveRecord` trägt `format: 2`, `campaignId`, `contentVersion` und `appVersion`.
+
+**Angenommen** drei Kampagnen existieren
+**Wenn** der Spieler eine vierte anlegen will
+**Dann** verlangt die App zuerst das Löschen einer Kampagne (mit Rückfrage)
+**Und** Fixture-Spielstände in `tests/fixtures/saves/` decken Format 1 (Legacy) und Format 2 ab.
+
+### Story 1.3: Kampagnen-Ansicht und Neue Kampagne
+
+Als Spieler
+möchte ich meine Kampagnen sehen und eine neue auf einer Seite anlegen,
+damit ich in Sekunden weiß, wo ich stehe, und schnell ins Spiel komme.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** gespeicherte Kampagnen
+**Wenn** der Spieler „Kampagnen“ öffnet
+**Dann** zeigt jede Zeile Avatar, Name, Modus-Marke (Klassik dunkel), Akt und Stand, Spielzeit und Zeit des Auto-Saves (Mockup 07)
+**Und** ein Tipp lädt den Auto-Save, ein Langdruck bietet Löschen mit Rückfrage.
+
+**Angenommen** ein freier Platz
+**Wenn** der Spieler „Neue Kampagne“ wählt
+**Dann** legt er auf einer Seite Name, Aussehen (zwei Avatar-Vorlagen) mit Pronomen, Schwierigkeit und Tod-Modus mit je einem Satz Erklärung fest; Standard ist vorgewählt
+**Und** „Aufbrechen“ startet den Prolog.
+
+**Angenommen** ein Proof-of-Concept-Spielstand in `legacy`
+**Wenn** die Kampagnen-Ansicht erscheint
+**Dann** steht er als graue Zeile „Spielstand aus dem Proof of Concept · nicht mehr kompatibel“ mit „Exportieren“
+**Und** er lässt sich nicht laden.
+
+### Story 1.4: Kampagnen-Commands und Journal
+
+Als Spieler
+möchte ich, dass alles zwischen den Missionen genauso zuverlässig gespeichert und nachvollziehbar ist wie der Kampf,
+damit kein Kauf, keine Entscheidung und kein Fortschritt verloren geht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die heutigen Funktionen in `src/core/campaign/camp.ts` (kaufen, verkaufen, ausrüsten, aufwerten, Runen, Narben, Supports, Loadout)
+**Wenn** die Story umgesetzt ist
+**Dann** laufen sie als `CampaignCommand` über `validateCampaign` und `applyCampaign` mit strukturierten Fehlercodes und `CampaignEvent`s (Architektur §5.2)
+**Und** Kosten- und Vorschaufunktionen bleiben exportiert und werden von UI und Handler gemeinsam genutzt.
+
+**Angenommen** eine Kampagne
+**Wenn** ein Kampagnen-Command angewendet wird
+**Dann** hängt die App es mit laufender Nummer an den Store `journal`; `finishMission` enthält das Kampf-Log
+**Und** ein Test zeigt: Startzustand + Journal ergibt exakt denselben `CampaignState`.
+
+**Angenommen** ein App-Update mit neuer `contentVersion`
+**Wenn** eine Kampagne geladen wird
+**Dann** schreibt die App einen Checkpoint (voller Zustand) ins Journal, ab dem Replays beginnen
+**Und** die Coverage von `src/core` sinkt nicht.
+
+### Story 1.5: Speicherplätze und Neustart je Tod-Modus
+
+Als Spieler
+möchte ich je nach Tod-Modus Runde oder Mission neu starten und in Standard/Casual eigene Speicherplätze nutzen,
+damit Klassik streng bleibt und die anderen Modi Fehler verzeihen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Kampagne in Standard oder Casual
+**Wenn** der Spieler außerhalb des Kampfs im Menü speichert
+**Dann** stehen 3 Speicherplätze zur Wahl, die in der Kampagnen-Zeile mit Stand erscheinen und einzeln ladbar sind
+**Und** in Klassik gibt es diese Funktion nicht; die Zeile sagt „nur Auto-Save“.
+
+**Angenommen** ein laufender Kampf
+**Wenn** der Spieler „Runde neu“ oder „Mission neu“ wählt
+**Dann** laufen die Kampagnen-Commands `restartTurn` (Replay bis `turnStartIndex`) bzw. `restartMission` (Replay ab Start), die auch Tode zurücksetzen
+**Und** `validateCampaign` lehnt in Klassik `restartTurn` immer und `restartMission` außer nach einer Niederlage ab.
+
+**Angenommen** Klassik
+**Wenn** der Spieler exportiert oder importiert
+**Dann** ist Export jederzeit außerhalb des Kampfs möglich und Import nur aus der Kampagnen-Ansicht; er überschreibt die Kampagne gleicher ID (Ehrensystem, AR18)
+**Und** ein Import prüft Größe (≤ 5 MB), Prüfsumme und Schema und nennt Fehler in einem Satz.
+
+### Story 1.6: Verbluten im Modus Standard
+
+Als Spieler im Modus Standard
+möchte ich sehen, wie lange eine niedergestreckte Figur noch hat,
+damit Bergen dringlich und lesbar wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Figur fällt in Standard auf 0 TP
+**Wenn** sie niedergestreckt ist
+**Dann** zählt `BattleUnit.bleed` ihre eigenen Phasen; nach `balance.death.bleedOutTurns` (3) stirbt sie, jeder weitere Treffer tötet sofort
+**Und** ein Event meldet den Zähler, damit Brett und UI ihn zeigen.
+
+**Angenommen** eine Figur mit 2 Narben
+**Wenn** sie erneut auf 0 TP fällt
+**Dann** stirbt sie sofort
+**Und** Avatar oder Kael bei 0 TP bleiben eine Niederlage.
+
+**Angenommen** eine niedergestreckte Figur
+**Wenn** der Spieler sie auf dem Brett sieht
+**Dann** ist sie grau mit Puls-Symbol und Verblutungs-Zähler (DESIGN.md, Farbe `downed`)
+**Und** Tests decken Zähler, Tod, Bergen mit Narbe und die Zwei-Narben-Regel ab.
+
+### Story 1.7: Fehlerbericht und Speicherschutz
+
+Als Spieler
+möchte ich nach einem Fehler weiterspielen und meinen Spielstand vor dem Browser schützen,
+damit eine lange Kampagne nicht an einem Absturz oder an gelöschten Websitedaten scheitert.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Kern-Invariante wird verletzt (`CoreInvariantError`)
+**Wenn** die App den Fehler fängt
+**Dann** zeigt sie „Etwas ist schiefgelaufen“, bietet „Fehlerbericht exportieren“ (Versionen, Gerät, Checkpoint, Journal, laufender Kampf, letzte 500 Log-Zeilen) und lädt den letzten Auto-Save
+**Und** `src/app/log.ts` hält einen Ringpuffer mit Stufen; `debug` nur im Dev-Build oder mit `?debug`.
+
+**Angenommen** das erste Speichern einer Kampagne
+**Wenn** die App nicht als Home-Bildschirm-App läuft
+**Dann** ruft sie `navigator.storage.persist()` auf und zeigt einmal den Hinweis „Zum Home-Bildschirm hinzufügen, damit dein Spielstand sicher bleibt“
+**Und** schlägt ein Speichern fehl, erscheint ein Banner mit Export-Angebot; der nächste Commit versucht es erneut.
+
+## Epic 2: Rollenklassen und neues Kampf-HUD
+
+Spieler kämpfen mit Rollen statt Waffenklassen; jede Rolle hat eine Klassen-Aktion auf festem Platz im neuen HUD (Stil B). Die Gegnerphase rechnet im Web Worker.
+
+### Story 2.1: Kampf-HUD in Stil B
+
+Als Spieler
+möchte ich im Kampf eine klare, einhändige Oberfläche im neuen Stil,
+damit ich Ziel, Einheit und Aktionen auf einen Blick erfasse.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die bestehenden Kampfregeln (FR1–FR3, FR6, FR9, FR10)
+**Wenn** der Kampfbildschirm neu gebaut ist
+**Dann** zeigt er oben die Rundenpille mit Hauptziel und darunter Nebenziel-Pillen, unten die Einheitenkarte (Medaillon mit TP-Ring, Name, Rolle, TP, Waffen-Chip) und das Dock mit vier festen Plätzen: Angriff, Klassen-Aktion, Item, Warten (Mockup 02)
+**Und** nicht mögliche Aktionen sind gedimmt, nie versteckt.
+
+**Angenommen** keine Einheit ist gewählt
+**Wenn** die Spielerphase läuft
+**Dann** zeigt das Dock Gefahr (Umschalter), Nächste und Phase beenden mit der Zahl bereiter Einheiten; Phase beenden fragt nach, solange Einheiten bereit sind.
+
+**Angenommen** die Gegnerphase
+**Wenn** sie beginnt
+**Dann** verschwinden Dock und Einheitenkarte, oben erscheint die rote Phasen-Pille, unten rechts Tempo 1×/2×/Überspringen
+**Und** die Kampfvorschau erscheint im Stil B mit Dreieck/Element und Tandem als Chips und nutzt denselben Formelcode wie die Auflösung.
+
+**Angenommen** Tablet- oder PC-Breite
+**Wenn** das HUD gerendert wird
+**Dann** gelten die Breakpoints aus EXPERIENCE.md (Seitenleiste 320 px ab 600 px, Panels ab 1024 px) und die Tastenkürzel Esc, Leertaste, E, D.
+
+### Story 2.2: Rollenmodell und Waffengruppen
+
+Als Spieler
+möchte ich, dass die Rolle bestimmt, wie sich eine Figur verhält, und die Ausrüstung, womit sie kämpft,
+damit Ausrüstung der Charakter ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `classes.yaml` im Rollenschema (`role`, `tier`, `moveType`, `mov`, `weaponGroups`, `classAction`, `proPaths`, Wachstum, Basiswerte, Caps)
+**Wenn** der Content geladen wird
+**Dann** gibt es die 7 Kernrollen sowie Taktiker und Hauptmann mit Werten aus den PoC-Klassen abgeleitet (GDD-Annahme 3)
+**Und** jedes Item hat eine Waffengruppe `group`; `canEquip` erlaubt nur Gruppen der Rolle.
+
+**Angenommen** die PoC-Figuren und -Karten
+**Wenn** sie umgemappt sind (Söldner/Held → Plänkler, Soldat/Ritter → Vorkämpfer, Schütze → Schütze, Magier → Elementarist, Kleriker → Heiler)
+**Dann** laufen Prolog und die bestehenden Karten weiter und `pnpm sim` liegt in den Korridoren aus NFR12 oder die Abweichung ist im Log der Story begründet
+**Und** das Ausrüsten zeigt unpassende Items gedimmt mit Grund.
+
+### Story 2.3: Klassen-Aktionen Zielen, Fernbergen und Anfeuern
+
+Als Spieler
+möchte ich die Klassen-Aktionen von Schütze, Heiler und Spielmann einsetzen,
+damit jede Rolle eine eigene Antwort auf die Lage hat.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Schütze, der sich nicht bewegt hat
+**Wenn** der Spieler „Zielen“ wählt
+**Dann** greift er mit +1 Reichweite und +15 Treffer an; die Vorschau zeigt beides.
+
+**Angenommen** ein Heiler und eine niedergestreckte Figur in bis zu 2 Feldern
+**Wenn** der Spieler „Fernbergen“ wählt
+**Dann** wird die Figur geborgen wie beim normalen Bergen.
+
+**Angenommen** ein Spielmann neben einem Verbündeten
+**Wenn** der Spieler „Anfeuern“ wählt
+**Dann** erhält der Verbündete bis Zugende +1 MOV und +10 Treffer
+**Und** jede Klassen-Aktion ersetzt die Aktion des Zugs, hat eine Vorschau, sitzt auf dem festen Dock-Platz mit Rollen-Icon und ist in `src/core` getestet.
+
+### Story 2.4: Halten und Nachsetzen
+
+Als Spieler
+möchte ich mit Vorkämpfern Engstellen halten und mit Plänklern nach dem Angriff weiterziehen,
+damit Positionierung zählt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Vorkämpfer
+**Wenn** ein Gegner ein Nachbarfeld betritt
+**Dann** endet dessen Bewegung dort; die Bewegungsbereiche von Spieler und KI berücksichtigen das
+**Und** die KI-Pfadsuche umgeht Haltezonen, wenn der Umweg höchstens 2 Felder länger ist, sonst läuft sie hinein.
+
+**Angenommen** ein Plänkler hat angegriffen und noch Restbewegung
+**Wenn** der Spieler ein erreichbares Feld wählt
+**Dann** zieht er per Command `pursue` dorthin; jedes andere Command beendet die Möglichkeit
+**Und** Replays mit `pursue` liefern identische Ergebnisse.
+
+### Story 2.5: Wirken der Elementaristen
+
+Als Spieler
+möchte ich mit Elementaristen das Gelände formen,
+damit Magie mehr ist als Schaden.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Elementarist mit Zauberwaffe eines Elements
+**Wenn** der Spieler „Wirken“ auf ein Feld in Reichweite wählt
+**Dann** entsteht für 2 Runden: Feuer → Brand, Wasser → löscht und macht Nass, Erde → Felswall, Wind → lichtet Nebel im Radius 2
+**Und** die Vorschau zeigt die betroffenen Felder; Brandausbreitung bleibt reproduzierbar.
+
+**Angenommen** ein gegnerischer Elementarist
+**Wenn** mindestens 2 Spieler-Einheiten im Brand-Ausbreitungsbereich stehen oder ein Felswall einen Spieler-Pfad zum Ziel sperrt
+**Dann** nutzt die KI Wirken statt anzugreifen.
+
+### Story 2.6: Nebel des Krieges, Öffnen und Stehlen
+
+Als Spieler
+möchte ich auf Nebelkarten nur sehen, was meine Truppe sieht, und mit Spähern Türen, Truhen und Taschen öffnen,
+damit Späher eine eigene Aufgabe haben.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Karte mit `fog: true`
+**Wenn** der Kampf läuft
+**Dann** berechnet `visibleTiles(state, team)` im Kern die Sicht (Basis 3, Schütze/Späher +2, Flieger +1; Mauern und geschlossene Türen blockieren)
+**Und** Brett und UI zeigen nur Sichtbares; Events auf unsichtbaren Feldern werden vor dem Abspielen gefiltert, die Vorschau verrät nichts Verborgenes.
+
+**Angenommen** ein Späher neben einer Tür, Truhe oder einem Gegner mit nicht ausgerüstetem Item
+**Wenn** der Spieler „Öffnen“ bzw. „Stehlen“ wählt
+**Dann** öffnet er ohne Schlüssel bzw. nimmt das Item in den Beutel (oder Konvoi, wenn voll)
+**Und** auf Nebelkarten hat der Späher +2 Sicht.
+
+### Story 2.7: Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
+
+Als Spieler
+möchte ich situative Aktionen genau dann angeboten bekommen, wenn sie möglich sind,
+damit das Dock fest bleibt und ich nichts übersehe.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine gewählte Einheit auf einem Feld, von dem aus Bergen, Ansprechen, Besuchen oder Öffnen möglich ist
+**Wenn** die Bewegung gesetzt ist
+**Dann** erscheint das grüne Kontext-Band über der Einheitenkarte mit Mini-Porträt bzw. Objekt, Aktion und Grund (z. B. „Verblutet nach 2 eigenen Phasen“) und einer Taste
+**Und** ein Tipp führt die Aktion aus; das Dock bleibt unverändert (Mockup 02, „Kontext-Aktion: Bergen“).
+
+**Angenommen** mehrere Kontext-Aktionen sind möglich
+**Wenn** das Band erscheint
+**Dann** steht die dringlichste vorn (Bergen vor Ansprechen vor Besuchen vor Öffnen) und die anderen sind per Wischen erreichbar.
+
+### Story 2.8: Gegnerphase im Web Worker
+
+Als Spieler
+möchte ich, dass das Spiel in der Gegnerphase großer Schlachten flüssig bleibt,
+damit es sich auf dem Handy nie hakelig anfühlt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `src/worker/core.worker.ts`
+**Wenn** der Spieler die Phase beendet
+**Dann** rechnet der Worker `applyCommand(state, endPhase)` mit denselben Content-Daten und gibt `{ state, events }` zurück (Protokoll Architektur §5.13); fehlt `Worker`, läuft dieselbe Funktion synchron
+**Und** ein Test zeigt: Replay mit und ohne Worker ergibt denselben Zustand.
+
+**Angenommen** CI
+**Wenn** `pnpm bench:ai` läuft
+**Dann** misst es die Gegnerphase der größten vorhandenen Karte und scheitert über 300 ms je Gegnereinheit
+**Und** ESLint-Schichtregeln kennen `src/worker` (nur `core` und `content`).
+
+### Story 2.9: Gegnertypen von Akt 1
+
+Als Spieler
+möchte ich in Akt 1 unterscheidbare Gegner (Banditen, Wolfsreiter, Söldner) erleben,
+damit Kämpfe abwechslungsreich bleiben.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Gegnerklassen von Akt 1 im Rollenschema
+**Wenn** sie auf Karten stehen
+**Dann** haben Wolfsreiter den Bewegungstyp beritten und Effektivität gegen sie greift (z. B. Pferdetöter); Banditen und Söldner unterscheiden sich in Waffen und KI-Profil
+**Und** ihre Werte stehen in Content-YAML und sind per `pnpm sim` geprüft.
+
+## Epic 3: Leutnants
+
+Spieler treffen benannte Leutnants, die bei 0 TP fliehen, Groll gegen ihren Vertreiber tragen, mitwachsen und Kopfgeld bringen. Nichts davon wird prozedural erzeugt (NFR14).
+
+### Story 3.1: Leutnants als Content und auf dem Brett
+
+Als Spieler
+möchte ich Leutnants sofort von normalen Gegnern unterscheiden,
+damit ich weiß, wer wiederkommt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/acts/act1/lieutenants.yaml` (bis Epic 4 vorläufig `content/lieutenants.yaml`) mit id, Name, Porträt, Modell, Klasse, Fraktion, Signatur-Item, 3 Groll-Fähigkeiten und Zeilen
+**Wenn** `pnpm content:check` läuft
+**Dann** prüft es Schema und Referenzen, höchstens 4 Leutnants je Akt und eindeutige IDs
+**Und** Karteneinheiten können `lieutenant: <id>` tragen.
+
+**Angenommen** ein Leutnant steht auf dem Brett
+**Wenn** er gerendert wird
+**Dann** hat er den doppelten Bodenring mit Goldkante und über dem Kopf den Groll-Wimpel mit 0–3 Kerben
+**Und** beim Antippen zeigt eine dünne Linie zum Groll-Ziel, falls Groll ≥ 1.
+
+### Story 3.2: Flucht bei 0 TP
+
+Als Spieler
+möchte ich vorher sehen, dass ein Leutnant flieht statt stirbt,
+damit sich nichts beliebig anfühlt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Leutnant würde auf 0 TP fallen
+**Wenn** der Treffer aufgelöst wird
+**Dann** setzt der Kern `gone: 'fled'` und meldet `fled{unit, by}`; der Leutnant verlässt die Karte
+**Und** die Ziele `boss` und `rout` zählen ihn als besiegt.
+
+**Angenommen** die Kampfvorschau gegen einen Leutnant
+**Wenn** der Angriff ihn auf 0 TP bringen würde
+**Dann** zeigt sie „flieht“ statt 0 (Mockup 01/02)
+**Und** das Brett spielt Rückwärtssprung, Rauchwölkchen und fallenden Wimpel, dazu eine Fluchtzeile als Sprechblase.
+
+### Story 3.3: Groll und Groll-Ziel
+
+Als Spieler
+möchte ich, dass ein Leutnant sich an die Figur erinnert, die ihn vertrieben hat,
+damit die Welt sich an meine Truppe erinnert.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Leutnant ist geflohen
+**Wenn** die Mission gewonnen ist
+**Dann** erhöht `finishBattle` in `c.lieutenants[id]` `routs`, setzt `grudge = min(3, grudge + 1)` und `target` auf den Vertreiber
+**Und** die Wirkung `grudge: { lt, delta: -1 }` senkt den Groll (für Entscheidungen, Epic 4).
+
+**Angenommen** ein Leutnant mit Groll-Ziel steht auf der Karte
+**Wenn** die KI Ziele bewertet
+**Dann** bekommt das Groll-Ziel +20; beim ersten Sichtkontakt spricht der Leutnant seine Groll-Zeile mit dem Namen des Ziels
+**Und** ist das Ziel gefallen, bleibt der Groll, und er spricht die Gedenk-Spottzeile, bis die nächste Vertreibung ein neues Ziel setzt.
+
+### Story 3.4: Mitwachsende Stärke
+
+Als Spieler
+möchte ich, dass Leutnants weder abgehängt noch unschlagbar sind,
+damit jede Begegnung fordernd bleibt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Mission mit Leutnant
+**Wenn** der Kampf erzeugt wird
+**Dann** ist seine Stufe der effektive Durchschnitt der 6 stärksten Einheiten der Armee plus Groll; je Groll-Stufe +1 Ausrüstungs-Tier und eine weitere Groll-Fähigkeit
+**Und** das Ergebnis ist deterministisch und getestet.
+
+### Story 3.5: Kopfgeld und Signatur-Item
+
+Als Spieler
+möchte ich für jede Vertreibung belohnt werden,
+damit ein wiederkehrender Feind kein Frust ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Leutnant wurde vertrieben
+**Wenn** die Mission endet
+**Dann** gibt es Kopfgeld 200 × (Groll + 1) Gold + 1–2 Material des Akts und mit 10 % das Signatur-Item, garantiert bei der 4. Vertreibung desselben Leutnants (Werte in `balance.yaml`, Zufall aus dem Kampf-RNG)
+**Und** das Ergebnis zeigt Kopfgeld und neuen Groll mit Symbol + Zahl (Mockup 08).
+
+### Story 3.6: Steckbriefe
+
+Als Spieler
+möchte ich alles über einen Leutnant nachlesen können,
+damit ich planen kann, wer ihn stellt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Leutnant im Kampf
+**Wenn** der Spieler ihn lange drückt
+**Dann** öffnet der Steckbrief: Medaillon mit Goldring, Groll-Kerben, Name und Rolle, Groll-Ziel, Fluchtregel, Kopfgeld, Begegnungen und Vertreibungen, Groll-Fähigkeiten (gesperrte gestrichelt) (Mockup 02)
+**Und** dieselbe Ansicht gibt es als Liste aller bekannten Leutnants, erreichbar über das Menü (ab Epic 5 über die Leiste „Steckbriefe“).
+
+## Epic 4: Akt-Struktur, Szenen und Entscheidungen
+
+Spieler erleben einen Akt mit teils freier Reihenfolge, Szenen mit Halbfiguren und Ersatzsprechern, Entscheidungen mit Folgen, eine Chronik und feste Support-Paare.
+
+### Story 4.1: Content je Akt ablegen
+
+Als Entwickler
+möchte ich Regeln und Akt-Inhalte getrennt ablegen,
+damit Akte einzeln wachsen und später als Pakete ausgeliefert werden können.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Layout aus Architektur §7
+**Wenn** die Story umgesetzt ist
+**Dann** liegen Regeln, UI-Texte und Werte in `content/core/`, Akt-Inhalte in `content/acts/act1/` (Kampagne, Karten, Leutnants, Dialoge); Browser-Loader, Node-Loader, `content:check` und `pnpm sim` finden alles
+**Und** das Spiel verhält sich unverändert (E2E-Smoke-Test grün).
+
+### Story 4.2: Bedingungen und Wirkungen
+
+Als Content-Autor
+möchte ich „wenn“ und „dann“ in YAML ausdrücken,
+damit Szenen, Knoten, Entscheidungen und Belohnungen ohne Code wirken.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Bedingungen `flag`, `alive`, `dead`, `left`, `completed`, `storyCount`, `act`, `support`, `stance`, `met`, `chronicle`, `any`, `not` und die Wirkungen `setFlag`, `recruit`, `leave`, `grudge`, `gold`, `material`, `item`, `priceMod`, `villageAid`, `openQuest`, `stance`, `chronicle` (Architektur §5.3)
+**Wenn** sie in `src/core/campaign/conditions.ts` und `effects.ts` umgesetzt sind
+**Dann** sind sie per Zod-Schema validiert und jede Referenz wird von `content:check` geprüft
+**Und** `recruit`/`leave` für Avatar oder Kael lehnt das Schema ab; Tests decken jede Bedingung und Wirkung ab.
+
+**Angenommen** ein Flag-Register `content/acts/act1/flags.yaml`
+**Wenn** ein Content-Element ein undeklariertes Flag nutzt
+**Dann** scheitert `content:check`
+**Und** `CampaignState.flags` ist ein Record mit Werten statt einer Liste.
+
+### Story 4.3: Kampagnen-Graph eines Akts
+
+Als Spieler
+möchte ich nach dem Akt-Einstieg zwischen mehreren Missionen wählen,
+damit ich die Mitte eines Akts in meiner Reihenfolge spiele.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/acts/act1/campaign.yaml` mit Knoten (`kind`, `fixed: first|finale`, `requires`, `memorialIf`)
+**Wenn** die Kampagne fortschreitet
+**Dann** liefert `availableNodes(data, c)` die verfügbaren Knoten: zuerst nur die feste erste Mission, danach alle mit erfüllten Bedingungen, das Finale erst nach allen anderen Story-Knoten
+**Und** `CampaignState.available` und `next` entfallen.
+
+**Angenommen** gestaffelte Regeln im Akt (`mechanics` nach `storyCount`)
+**Wenn** eine Mission startet
+**Dann** sperrt `lockedMechanics` nach Zahl abgeschlossener Story-Missionen statt Knotenposition
+**Und** Klassen-Aktionen einer Rolle sind erst aktiv, wenn der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`).
+
+**Angenommen** eine Nebenquest, deren Auslöser gefallen ist
+**Wenn** sie gespielt wird
+**Dann** läuft die Gedenk-Variante der Szene; Story-Knoten sind nach Abschluss nicht wiederholbar.
+
+### Story 4.4: Szenen-Schema mit Ersatzsprechern
+
+Als Content-Autor
+möchte ich Szenen mit deutschem Text, Sprecherketten und Bedingungen in einer Datei schreiben,
+damit Permadeath nie eine Szene zerbricht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Szene `content/acts/act1/scenes/<id>.yaml` mit Zeilen (`id`, `speaker` als Kette, `mood`, `text`, `requires`, `memorial`) und Antworten (`choice` mit `id`, `text`, `stance`, `effects`) (Architektur §5.8)
+**Wenn** `resolveScene(data, ctx, id)` läuft
+**Dann** spricht der erste lebende Sprecher der Kette, Zeilen mit unerfüllten Bedingungen entfallen, und eine Gedenkzeile erscheint, wenn die erste Figur der Kette tot ist
+**Und** Schlüssel entstehen automatisch (`dlg.<szene>.<zeile>`); Englisch steht in `content/locales/en/act1.dialogue.yaml`.
+
+**Angenommen** `pnpm content:check`
+**Wenn** Szenen geprüft werden
+**Dann** scheitert es bei Boxen über 110 Zeichen (DE oder EN), Ketten ohne Avatar/Kael am Ende und ohne `fallback: skip`, fehlenden EN-Schlüsseln, unbekannten Stimmungen und Antworten in Kampf-Szenen
+**Und** die PoC-Dialoge sind ins neue Format überführt; das alte Schema entfällt.
+
+### Story 4.5: Szenen im neuen Stil
+
+Als Spieler
+möchte ich Gespräche mit großen Figuren erleben, die zeigen, wer spricht,
+damit mir die Truppe ans Herz wächst.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine aufgelöste Szene
+**Wenn** sie läuft
+**Dann** steht der Sprecher als Halbfigur hell im Vordergrund, Zuhörer gedämpft, das Namensschild als Glut-Pille an seiner Seite, der Hintergrund weichgezeichnet und leicht entsättigt (Mockup 05)
+**Und** oben rechts gibt es Log, Auto und Überspringen; bereits gesehene Szenen lassen sich ganz überspringen; ein Tipp führt weiter.
+
+**Angenommen** eine Sprechblase im Kampf
+**Wenn** ein Trigger oder Leutnant spricht
+**Dann** erscheint sie am Kopf der Figur, höchstens 2 Zeilen, und blockiert bis zum Tipp bzw. 2,5 s im Auto-Modus.
+
+### Story 4.6: Entscheidungen und Folgen-Karte
+
+Als Spieler
+möchte ich wissen, wann eine Antwort Folgen hat, und sehen, welche,
+damit sich kleine Wahlen groß anfühlen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Antwort-Zeile
+**Wenn** sie erscheint
+**Dann** trägt sie die Marke „Entscheidung · hat Folgen“; der erste Tipp markiert, der zweite bestätigt; Überspringen und Auto sind aus
+**Und** die Wahl läuft als Kampagnen-Command `choose`, wendet die `effects` an und zählt die Haltung (warm, nüchtern, trotzig).
+
+**Angenommen** eine bestätigte Wahl mit Wirkungen
+**Wenn** sie angewendet ist
+**Dann** zeigt die Folgen-Karte je Wirkung eine Zeile (Symbol, Satz, Erklärung, Mengen als Symbol + Zahl) und schreibt einen Chronik-Eintrag
+**Und** das Dialog-Log hebt die eigene Wahl hervor; Wahlen lassen sich nicht zurückspulen.
+
+### Story 4.7: Chronik
+
+Als Spieler
+möchte ich nachlesen, was ich entschieden habe und welche Chronik-Seiten ich gefunden habe,
+damit ich die Geschichte meines Durchlaufs im Blick behalte.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** getroffene Entscheidungen und gefundene Chronik-Seiten
+**Wenn** der Spieler die Chronik öffnet (Menü; ab Epic 5 Leiste)
+**Dann** sieht er je Akt die Entscheidungen mit gewählter Antwort und Folgen sowie die Chronik-Seiten (x von 12) zum Lesen
+**Und** die Ansicht folgt dem Listen-Muster aus Stil B.
+
+### Story 4.8: Neue Missionsziele escort und treasure
+
+Als Spieler
+möchte ich Eskorten und Truhenjagden spielen,
+damit Missionen und Heimsuchungen abwechslungsreich sind.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Karte mit Ziel `escort` (NPC, Ausgang)
+**Wenn** der NPC den Ausgang erreicht
+**Dann** ist die Mission gewonnen; fällt der NPC, ist sie verloren.
+
+**Angenommen** eine Karte mit Ziel `treasure` (Truhen, Rundenlimit)
+**Wenn** alle Truhen vor Ablauf geborgen sind
+**Dann** ist die Mission gewonnen; läuft das Limit ab, ist sie verloren
+**Und** beide Ziele erscheinen in Rundenpille, Knoten-Karte und Vorschau der Mission; Zod-Schema und Tests decken sie ab.
+
+### Story 4.9: Feste Support-Paare
+
+Als Spieler
+möchte ich, dass Freundschaften zwischen bestimmten Gefährten wachsen,
+damit jeder seine eigene Geschichte in der Truppe hat.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/acts/act1/supports.yaml` mit festen Paaren (Narrative, 25 Paare über die Staffel) und Kennzeichnung der 6 S-Kernpaare
+**Wenn** Punkte die Schwellen C 10, B 25, A 45, S 70 erreichen
+**Dann** steht am Lagerfeuer ein Gespräch bereit; S gibt es nur für Kernpaare
+**Und** das Lagerfeuer erlaubt in Akt 1 nur C und B (A und S über die Burg-Stufen, Epic 10); die Marke „Gespräche bereit“ erscheint in Truppe und Lager.

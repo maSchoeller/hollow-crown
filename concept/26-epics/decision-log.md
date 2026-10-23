@@ -9,3 +9,4 @@
 | 2026-10-23 | **12 Epics nach Spielerwert**, Fundament-Bausteine im ersten Epic, das sie braucht; E0 aus der Architektur entfällt | Produktinhaber, Empfehlung bestätigt; BMAD „keine große Vorleistung“, früh spielbar |
 | 2026-10-23 | Profi-Wege und Fallensteller/Schatten wandern nach Epic 10 (Burg), weil Aufstieg erst ab Akt 2 möglich ist (Stufendeckel 10, Akademie ab Akt 2) | Assistent [C], folgt aus dem GDD |
 | 2026-10-23 | Content-Layout `content/core/` + `content/acts/actN/` entsteht in Epic 4 (erste Story), weil Akt-Daten dort zuerst gebraucht werden; Epic 7 baut darauf die Pakete | Assistent [C] |
+| 2026-10-23 | Epics 1–4 mit 31 Stories freigegeben; HTML-Ansicht in `concept/26-epics/html/epics-1-4.html` (erzeugt mit `tools/docs/epics_html.py`) | Produktinhaber |
