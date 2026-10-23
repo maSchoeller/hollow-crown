@@ -39,3 +39,6 @@
 | 2026-10-23 | Dialogstil: leicht altertümlich (Truppe duzt, Adel/Tempel ihrzen), knappe Boxen (max. ca. 2 Zeilen / 110 Zeichen), Fantasy-Flüche statt Schimpfwörter | Produktinhaber, Empfehlungen bestätigt |
 | 2026-10-23 | Rhens Antworthaltungen bilden ein verstecktes Profil (warm/nüchtern/trotzig), das Epilog-Kachel und einzelne Kael-Antworten färbt; keine Mechanik | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Ersatzsprecher-Kette [C]: Story-Zeilen von Gefährten haben eine Sprecherkette, nur Rhen und Kael sind garantiert am Leben; keine unsterblichen Story-Gefährten | Assistent, per „C“ bestätigt |
+| 2026-10-23 | Fundstücke: 12 optionale Chronik-Seiten der Paktwächter, 4 pro Akt (hält die gestaffelte Enthüllung); Belohnung Burgarchiv, Epilog-Zeile, Zusatzantwort ohne Mechanik | Produktinhaber, Empfehlung bestätigt; Verteilung 4/4/4 [C] |
+| 2026-10-23 | Weltkarte zeigt sichtbare Spuren: Entscheidungsfolgen an Dioramen (max. 2 Varianten je Ort) und zunehmende Drachenzeichen | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Musik: Motive verwandeln sich (Truppen-Thema wächst je Akt, Halvards Thema kippt in Moll, Solo-Motiv beim Tod); vertonte Schlüsselszenen: Gerrits Grab und Halvards Opfer | Produktinhaber, Empfehlung bestätigt |

@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5, 6]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 6 of 11 (Dialogue)
+**Steps Completed:** 7 of 11 (Environmental Storytelling)
 
 ---
 
@@ -467,3 +467,82 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 - Datenmodell: Szenen in YAML mit `requires: { flags?, alive?, stance? }` und `speaker: [liora, ysolde, vesna, rhen]` als Kette. `[ASSUMPTION: Schema-Details in der Architektur-Etappe]`
 
 **Consequence System:** Folgen werden immer sichtbar gemacht: Ein Gefährte kommt oder geht, eine Nebenquest erscheint auf der Weltkarte, die Groll-Anzeige sinkt, der Händler nennt einen anderen Preis, und am Ende kommt das Epilog-Mosaik.
+
+---
+
+## Environmental Storytelling
+
+### Visual Storytelling
+
+**Set Dressing:**
+
+- **Die Glutfarbe:** Jedes Mitglied der Truppe trägt ein glutorangefarbenes Stoffstück (#E8743B). Neue Gefährten bekommen es beim Beitritt, und Seitenwechsler binden es sich sichtbar um.
+- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel. Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein.
+- **Steckbriefe:** In Akt 1 hängen in Dörfern Steckbriefe der Truppe, in Akt 3 werden sie abgerissen oder übermalt.
+
+**Environmental Details:**
+
+| Ort | Was die Umgebung erzählt |
+|---|---|
+| Grenzland (Akt 1) | Gräber junger Könige an Wegkreuzen, verlassene Wachtürme der Paktwächter, Asche auf Spätsommerfeldern |
+| Paktwacht | Inschriften mit Königsnamen und Jahreszahlen, deren Abstände kurz sind; leere Nischen, aus denen die Chronik-Seiten fehlen |
+| Eisenmark (Akt 2) | Brandschneisen, verbrannte Wälder, Wyvern-Nester; Drachenschatten über dem Hochland |
+| Aurenhall (Akt 3) | Festschmuck der Paktnacht, der noch hängt und einschneit; Risse im Glutdom |
+| Drachengebirge | Glut in den Felsritzen, uralte Reliefs, die den echten Pakt zeigen: einen König, der kniet, keinen Sieger |
+
+**Visual Symbolism:**
+
+- **Die hohle Krone:** Das Motiv taucht überall auf, auf Fahnen, Münzen, Tempelfenstern und im App-Icon. Erst in Akt 2 begreift man, dass sie leer ist.
+- **Glut:** Sie steht für Leben, Magie und Opfer zugleich. Glut in den Augen der Drachen, im Lagerfeuer, im Glutfunken.
+- **Leere Plätze:** ein leerer Stuhl am Lagerfeuer, ein leerer Thron, leere Nischen in der Paktwacht.
+- **Brot:** Halvard bringt Brot. Im Rückblick ist das ein Zeichen des Hirten, der sein Opfer füttert.
+
+**Color and Lighting:**
+
+- Akt 1: warmes Spätsommergold, Staub, Asche.
+- Akt 2: Herbstorange, kühles Hochlandblau, Wind.
+- Akt 3: Winterweiß und Gold, dazu rote Drachenglut.
+- Ruhe: In Lager und Burg ist es immer warm und abendlich.
+- Gedenken: Die Szenen sind entsättigt, nur das Glutorange bleibt farbig.
+
+---
+
+### Audio Storytelling
+
+**Ambient Design:** Grenzland mit Zikaden, Wind im Korn und fernem Beben; Eisenmark mit Wind, Wyvern-Rufen und Schmiede; Aurenhall mit Glocken, Schnee und Menschenmengen; Drachengebirge mit tiefem Atem im Fels. Das Lager hat Feuerknistern, die Burg wird lebendiger, je mehr Räume ausgebaut sind.
+
+**Music Integration:**
+
+- Das Truppen-Thema wächst mit den Akten. In Akt 1 spielt es eine Laute, in Akt 2 kommen Flöte und Fiedel dazu, in Akt 3 das volle Ensemble.
+- Halvards Thema ist eine warme Variante des Königs- und Pakt-Themas. Bei der Enttarnung kippt es in Moll.
+- Leitmotiv je Gefährte: Bei einem Tod erklingt kurz sein Motiv solo und verstummt dann.
+- Drachenmotiv: In Akt 1 ist es nur ein tiefer Ton unter anderen Stücken, in Akt 3 ist es voll ausgeprägt.
+
+**Voice Elements:** Teilvertonung laut `17-audio.md`: Barks, Groll-Zeilen der Leutnants, Boss-Zitate und 2 Schlüsselszenen, nämlich Gerrits Grab und Der Preis (Halvards Opfer).
+
+**Sound Design Narrative:** Das Beben kündigt das Erwachen der Drachen an und wird von Akt zu Akt häufiger. Ein Glockenschlag markiert jedes Mal den Tod eines Gefährten. Ein Funkenknistern steht für den Glutfunken.
+
+---
+
+### Found Documents
+
+**Document Types:** Chronik-Seiten der Paktwächter. Jede Seite erzählt in wenigen Sätzen die Paktnacht eines Königs, verfasst vom Wächter, der dabei war.
+
+**Quantity:** 12 Seiten, 4 pro Akt.
+
+**Content Focus:**
+
+- Akt 1: dass die Könige jung starben und wie oft
+- Akt 2: dass sie beim Paktfest etwas „gaben“
+- Akt 3: was genau sie gaben, und dass einer von ihnen es verweigern wollte
+
+**Discovery:**
+
+- Required: keine; die Story funktioniert ohne sie.
+- Optional: alle 12, in Truhen, in Dörfern, über Nebenziele und als Belohnung für Nebenquests.
+
+**Rewards:** Die gefundenen Seiten liegen im Burgarchiv der Paktwacht, wo Liora oder die Ersatzsprecher sie kommentieren. Wer alle 12 Seiten hat, bekommt eine eigene Epilog-Zeile und eine zusätzliche Antwort in der Entscheidung „Wahrheit oder Frieden“, die keinen mechanischen Vorteil bringt.
+
+### Weltkarte als Gedächtnis
+
+Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern sich nach Entscheidungen. Ein Dorf ist gerettet oder verbrannt, aus dem Hungerlager wird eine Siedlung oder Ödnis. Mit jedem Akt nehmen die Drachenzeichen zu: Asche, Risse, Schatten. Pro Ort gibt es höchstens 2 Varianten. `[ASSUMPTION: Asset-Umfang klärt die Art-Direction-Etappe]`
