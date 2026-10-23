@@ -1,7 +1,7 @@
 ---
 title: 'Hollow Crown – Epics und Stories (Staffel 1)'
-stepsCompleted: [1, 2]
-status: in-progress
+stepsCompleted: [1, 2, 3, 4]
+status: final
 created: 2026-10-23
 updated: 2026-10-23
 source: BMAD-Workflow gds-create-epics-and-stories
@@ -856,3 +856,878 @@ damit jeder seine eigene Geschichte in der Truppe hat.
 **Wenn** Punkte die Schwellen C 10, B 25, A 45, S 70 erreichen
 **Dann** steht am Lagerfeuer ein Gespräch bereit; S gibt es nur für Kernpaare
 **Und** das Lagerfeuer erlaubt in Akt 1 nur C und B (A und S über die Burg-Stufen, Epic 10); die Marke „Gespräche bereit“ erscheint in Truppe und Lager.
+
+## Epic 5: Weltkarte und Heimsuchungen
+
+Spieler wählen die nächste Mission auf einer 3D-Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen bekannter Leutnants auf bekannten Karten.
+
+### Story 5.1: Szenen-Host und geteilter Asset-Cache
+
+Als Spieler
+möchte ich zwischen Brett, Weltkarte und Heimat wechseln, ohne lange zu warten,
+damit sich das Spiel wie ein Ganzes anfühlt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `src/render/host.ts` mit Engine, Canvas, Qualitätsstufe und FPS-Deckel
+**Wenn** die App zwischen Szenen wechselt
+**Dann** ist immer nur eine Szene aktiv; die alte wird entsorgt, Modelle bleiben im geteilten Asset-Cache (Referenzzählung) und werden nicht neu geladen
+**Und** das Brett ist in `render/board/` und gemeinsame Teile (Gelände, Modelle, Figuren, Kamera, Jahreszeit) in `render/shared/` aufgeteilt, mit unveränderter Schnittstelle (`load`, `play`, `setOverlays`, `centerOn`, `relayout`, `quality`, `dispose`).
+
+**Angenommen** eine Szene im Hintergrund eines Dialogs
+**Wenn** eine Visual-Novel-Szene läuft
+**Dann** rendert der Canvas mit `board.fpsIdle` oder pausiert
+**Und** die Zeichenaufrufe auf Kap. 1 (Mittel) steigen nicht gegenüber D17.
+
+### Story 5.2: Die Weltkarte als 3D-Szene
+
+Als Spieler
+möchte ich Valmora als bespielte Miniaturlandschaft sehen,
+damit ich spüre, wo meine Truppe gewesen ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/world/valmora.yaml` (Kachelraster mit Legende, Regionen mit Akt und Jahreszeit, Orte mit Knoten-ID, Feld, Modell und Varianten mit `requires`)
+**Wenn** die Weltkarte geladen wird
+**Dann** baut `render/world/` sie mit `terrain3d` und denselben Bodentexturen und Requisiten wie das Brett; Regionen späterer Akte liegen unter Nebel mit Regionsname
+**Und** die Kamera hat 2 Zoomstufen und lässt sich verschieben.
+
+**Angenommen** ein gespielter Ort mit Varianten (z. B. Erlbach gerettet/verbrannt)
+**Wenn** die Bedingungen einer Variante erfüllt sind
+**Dann** zeigt die Weltkarte diese Variante als Miniatur
+**Und** je Akt kommen Drachenzeichen als zusätzliche Ebene dazu (Akt 1 Asche).
+
+### Story 5.3: Weltkarte als Hub
+
+Als Spieler
+möchte ich nach jeder Mission auf der Weltkarte landen und von dort alles erreichen,
+damit ich immer sehe, was als Nächstes ansteht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Kampagne nach dem Prolog
+**Wenn** eine Mission endet oder der Spieler fortsetzt
+**Dann** erscheint die Weltkarte mit Akt-Pille (Nummer, Jahreszeit, Name), Gold und Material als Pillen, Menü rund oben rechts und der Leiste unten mit vier Steinen (Heimat, Truppe, Steckbriefe, Chronik) (Mockup 03)
+**Und** der Kriegslager-Hub aus U20 entfällt; die Heimat ist zusätzlich ein Ort auf der Karte.
+
+**Angenommen** Knoten aus `availableNodes`
+**Wenn** sie dargestellt werden
+**Dann** sind Story-Knoten orange mit Nummer, Nebenquests grün mit „!“, Heimsuchungen rot mit Leutnant-Gesicht (am ersten Tag „NEU“), Heimat mit Zelt bzw. Burg, Erledigtes klein und grau
+**Und** ein Tipp zoomt leicht heran und öffnet die Knoten-Karte (Kicker, Titel, Ziel, Plätze, Stufe, Leutnant mit Fluchtregel bzw. Groll, Belohnung als Symbol + Zahl, Aufstellung, Aufbrechen).
+
+### Story 5.4: Tageswechsel
+
+Als Spieler
+möchte ich jeden Tag neue Heimsuchungen finden, ohne dass mir etwas wegläuft,
+damit ich gern, aber nicht aus Pflicht zurückkomme.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `src/app/day.ts` mit `dayNumber(now, 4)` (Tageswechsel 04:00 Ortszeit)
+**Wenn** die Weltkarte öffnet oder die App fortgesetzt wird
+**Dann** schickt die App `advanceDay{ day }`; der Kern erzeugt Tagespakete für höchstens die letzten 3 Tage bis `day` und setzt `c.day.last`
+**Und** ist `day ≤ last`, passiert nichts (zurückgestellte Uhr erzeugt nichts).
+
+**Angenommen** neue Tagespakete
+**Wenn** die Weltkarte erscheint
+**Dann** zeigt ein Hinweis „Neuer Tag: n Heimsuchungen · nächste ab morgen 4:00“
+**Und** vor der ersten Leutnant-Begegnung entstehen keine Heimsuchungen; Sommerzeitwechsel ändert nichts (Test).
+
+### Story 5.5: Heimsuchungs-Anker und Generator
+
+Als Spieler
+möchte ich auf bekannten Karten neue, faire Aufgaben gegen bekannte Leutnants bekommen,
+damit sich Wiederkehr lohnt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karten-YAML mit `haunts:`-Ankern (Variante, Ziel, Spawn-Zone, Einsatzzone, Rundenlimit bzw. Truhen) und `content/acts/act1/haunts.yaml` mit Gegner-Pools
+**Wenn** ein Tagespaket entsteht
+**Dann** wählt der Generator mit `seedRng(hash32(c.seed, day))` 1–3 abgeschlossene Story-Karten mit Ankern, die gerade nicht heimgesucht sind, je eine Variante (nicht die zuletzt gespielte) und einen Leutnant aus erreichten Akten, der nicht gewechselt ist
+**Und** Gegner kommen aus den Pools auf erwarteter Armee-Stufe mit dem Ausrüstungs-Tier des Akts.
+
+**Angenommen** mehr als 6 offene Heimsuchungen
+**Wenn** eine neue entsteht
+**Dann** verfällt die älteste
+**Und** `content:check` prüft für jeden Anker die Erreichbarkeit (Pfad von jedem Einsatzfeld zum Ziel); Tests zeigen Reproduzierbarkeit aus Seed und Tag.
+
+### Story 5.6: Heimsuchungen spielen und belohnen
+
+Als Spieler
+möchte ich für Heimsuchungen angemessen belohnt werden, ohne davonzulaufen,
+damit sie eine Ergänzung zur Story bleiben.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine gewonnene Heimsuchung
+**Wenn** das Ergebnis berechnet wird
+**Dann** gibt es 40 % des Story-Golds des aktuellen Akts, Kopfgeld, Material und 60 % EP, keine Glutfunken (Werte in `balance.yaml`)
+**Und** ab der 4. Heimsuchung seit der letzten Story-Mission halbieren sich Gold und Kopfgeld; Einheiten über der erwarteten Armee-Stufe der nächsten Story-Mission erhalten 50 % der Heimsuchungs-EP.
+
+**Angenommen** `pnpm sim --haunt <mapId>:<variant>`
+**Wenn** es für jeden Anker der Akt-1-Karten läuft
+**Dann** liegen die Ergebnisse im Normal-Korridor oder die Abweichung ist begründet.
+
+## Epic 6: Truppe, Fortschritt und Lager
+
+Spieler verwalten Truppe und Ausrüstung im neuen Stil, versorgen sich im Lager, sehen nach jeder Mission ein klares Ergebnis und nehmen Abschied von Gefallenen; die Kurven tragen über Akt 1.
+
+### Story 6.1: Truppe und Figur
+
+Als Spieler
+möchte ich meine Truppe auf einen Blick sehen und jede Figur genau ansehen,
+damit ich weiß, wer bereit ist und wer etwas braucht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Leiste „Truppe“
+**Wenn** der Spieler sie öffnet
+**Dann** zeigt ein Medaillon-Raster alle Gefährten und Söldner mit Rolle und Stufe, filterbar nach Rollengruppe, mit Marken für „kann aufsteigen“, „Gespräche bereit“ und „Narbe“ (Mockup 06)
+**Und** Gefallene erscheinen nicht hier.
+
+**Angenommen** eine Figur
+**Wenn** der Spieler sie öffnet
+**Dann** sieht er Halbfigur, Rolle und Stufe, EP-Balken, 10 Werte, 8 Ausrüstungsplätze (Zahl = Aufwertung oder Ladungen, Raute = Seltenheit), Last und Meisterung; Wischen wechselt die Figur
+**Und** die Ansicht ist auch aus der Einheitenkarte im Kampf per Langdruck erreichbar (nur lesend).
+
+### Story 6.2: Ausrüsten mit Vergleich
+
+Als Spieler
+möchte ich beim Ausrüsten sofort sehen, was besser oder schlechter wird,
+damit Ausrüstung eine bewusste Entscheidung ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Ausrüstungsplatz einer Figur
+**Wenn** der Spieler ihn antippt
+**Dann** listet die Ansicht passende Items aus Beutel und Konvoi mit Bild, Werten und Vergleich grün/rot gegen das Angelegte; Items, die die Rolle nicht führen darf, stehen gedimmt mit Grund
+**Und** erster Tipp wählt, die Haupttaste („Wurfspieß anlegen“) führt das Kampagnen-Command aus.
+
+**Angenommen** der Konvoi
+**Wenn** der Spieler ihn öffnet
+**Dann** folgt er demselben Listen-Muster mit Filter nach Art.
+
+### Story 6.3: Das Lager in Akt 1
+
+Als Spieler
+möchte ich zwischen Missionen im Lager meine Truppe versorgen,
+damit die Heimat schon in Akt 1 ein Ort ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/core/rooms.yaml` und `c.home = { kind: 'camp', rooms }`
+**Wenn** der Spieler die Heimat öffnet
+**Dann** zeigt sie oben das Lager-Diorama und unten die Stationen Konvoi, Händler, Schmied, Heiler, Taverne, Lagerfeuer als Raumsteine (Mockup 04, Lager)
+**Und** jede Station öffnet ein Raum-Panel über der weichgezeichneten Ansicht; jede Handlung braucht höchstens 2 Taps und ist ein Kampagnen-Command.
+
+**Angenommen** die Freischaltung aus U20 (Schmied und Heiler nach der ersten Mission usw.)
+**Wenn** sie durch `requires` je Station ersetzt ist
+**Dann** sind gesperrte Stationen gestrichelt mit Grund.
+
+### Story 6.4: Händler, Schmied, Heiler und Taverne
+
+Als Spieler
+möchte ich kaufen, aufwerten, Narben heilen und Söldner anheuern,
+damit ich Gold sinnvoll einsetze.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** der Händler
+**Wenn** der Spieler ihn öffnet
+**Dann** sieht er Börse, Kaufen/Verkaufen, Sortiment nach Ausrüstungs-Tier des Akts, Angebot des Tages und jeden Preis als Münze + Zahl; die Haupttaste nennt den Betrag; „Für wen?“ zeigt, wer das Item führen kann
+**Und** Preisänderungen aus Entscheidungen (`priceMod`) und Dorfhilfe (`villageAid`) wirken sichtbar.
+
+**Angenommen** Schmied, Heiler und Taverne
+**Wenn** der Spieler sie nutzt
+**Dann** gelten Kosten und Grenzen aus `balance.yaml` (Aufwerten bis +3 auf Stufe 1, Narbe heilen, Söldner 600 + 150 × Stufe, 3 Angebote) und das Armee-Limit 20 Gefährten + 6 Söldner.
+
+### Story 6.5: Stufendeckel und EP-Regeln
+
+Als Spieler
+möchte ich, dass meine Truppe in Akt 1 nicht davonläuft,
+damit Akt 2 noch Herausforderung bietet.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `levelCap` aus der Akt-Kampagne (Akt 1: 10)
+**Wenn** eine Einheit die Grenze erreicht
+**Dann** verfallen weitere EP und das `exp`-Event meldet `capped`; die UI zeigt „Stufe 10 · Deckel in Akt 1“
+**Und** Leutnant-Vertreibung gibt +20 EP wie ein Boss; die übrigen EP-Regeln laut GDD sind getestet.
+
+### Story 6.6: Missionsergebnis
+
+Als Spieler
+möchte ich nach einer Mission auf einen Blick sehen, was ich gewonnen und verloren habe,
+damit sich Erfolg und Verlust klar anfühlen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine gewonnene Mission
+**Wenn** das Ergebnis erscheint
+**Dann** zeigt es die Sieg-Pille mit Missionsname und Runden, Beute (Gold, Material, Item-Bilder), Kopfgeld vertriebener Leutnants mit neuem Groll, Nebenziele (erfüllt/nicht) und EP je Figur mit Stufenaufstieg; Gefallene grau (Mockup 08)
+**Und** alle Mengen als Symbol + Zahl.
+
+**Angenommen** eine Niederlage
+**Wenn** sie eintritt
+**Dann** nennt der Bildschirm den Grund in einem Satz und bietet die Neustarts des Tod-Modus an (Story 1.5).
+
+### Story 6.7: Abschied von Gefallenen
+
+Als Spieler
+möchte ich von jedem Gefallenen Abschied nehmen,
+damit ein Verlust erzählerisch getragen wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Mission mit Gefallenen
+**Wenn** der Spieler im Ergebnis „Weiter“ tippt
+**Dann** folgt je Gefallenem die Abschieds-Karte: alles entsättigt bis auf eine Glutlinie, Halbfigur grau, Ort und Rolle, letzte Zeile aus der Szene des Gefährten, Trauer-Zeile des Support-Partners mit Wirkung, Taste „Abschied nehmen“ in Grau (Mockup 08)
+**Und** die ersten 2 s lassen sich nicht überspringen; ein Glockenschlag erklingt.
+
+**Angenommen** ein gefallener Söldner aus der Taverne
+**Wenn** er fällt
+**Dann** bekommt auch er einen Abschied (kurze Form) und später einen Gedenkstein.
+
+### Story 6.8: Wirtschaftskurve und verkettete Simulation
+
+Als Entwickler
+möchte ich den ganzen Akt am Stück simulieren,
+damit Gold, EP und Schwierigkeit über alle Missionen zusammenpassen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `pnpm sim --campaign act1`
+**Wenn** es läuft
+**Dann** spielt es die Story-Missionen in einer gültigen Reihenfolge mit KI auf beiden Seiten und einer einfachen Heimat-Heuristik (kaufen, aufwerten, heilen), optional mit Heimsuchungen zwischen den Missionen
+**Und** es gibt je Story-Mission Siegquote, Niedergestreckte, Gold und Armee-Stufe aus und markiert Missionen außerhalb der Korridore (NFR12) sowie Gold außerhalb der GDD-Kurve.
+
+## Epic 7: Akt-Pakete und Offline
+
+Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
+
+### Story 7.1: Pakete im Build
+
+Als Spieler
+möchte ich, dass das Spiel beim ersten Öffnen schnell startet,
+damit ich nicht auf einen großen Download warte.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/packs.yaml` mit Paketen `core` (Shell, Regeln, Prolog), `act1`, `voice.act1.de`, `voice.act1.en`, Globs und `released`
+**Wenn** `pnpm build` läuft
+**Dann** erzeugt ein Vite-Plugin je Paket ein virtuelles Modul `virtual:hc-pack/<id>` und eine `packs.json` mit Dateien, Hashes und Größen; nur veröffentlichte Pakete kommen in den Build
+**Und** `pnpm art:build` schreibt Assets nach `public/assets/<pack>/` mit Manifest je Paket.
+
+**Angenommen** `tools/check-bundle-size.mjs`
+**Wenn** der Build fertig ist
+**Dann** bricht er ab, wenn `core` über 15 MB (gzip) liegt, und meldet die anderen Pakete gegen ihre Budgets.
+
+### Story 7.2: Hintergrund-Download und Offline
+
+Als Spieler
+möchte ich, dass der Rest eines Akts im Hintergrund lädt und danach offline bleibt,
+damit ich unterwegs ohne Netz spielen kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein fehlendes Paket eines erreichten Akts
+**Wenn** die App läuft
+**Dann** lädt `src/packs/` alle Dateien des Pakets in einen Cache `hc-pack-<id>-<hash>`, der Service Worker liefert sie cache-first, und `loadPack(id)` registriert Daten und Locales (auch im Worker)
+**Und** die Weltkarte zeigt den Fortschrittsring (Prozent, MB, „danach offline spielbar“), Missionen des Pakets sind sichtbar mit „Wird noch geladen …“ (Mockup 07).
+
+**Angenommen** der Download scheitert oder das Gerät ist offline
+**Wenn** die App es bemerkt
+**Dann** versucht sie es mit Backoff erneut und zeigt „Wird geladen, sobald du online bist“
+**Und** bei einem Update werden nur geänderte Dateien neu geholt und alte Caches nach Erfolg gelöscht.
+
+### Story 7.3: Ende eines veröffentlichten Akts
+
+Als Spieler
+möchte ich wissen, dass es weitergeht, wenn ich alle verfügbaren Missionen gespielt habe,
+damit ich nicht vor einem leeren Bildschirm stehe.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Finale eines Akts ist gewonnen und das nächste Akt-Paket ist nicht im Build
+**Wenn** die Weltkarte erscheint
+**Dann** steht über der nächsten Region im Nebel „Akt n „Name“ erscheint bald“ mit dem Hinweis auf Heimsuchungen, Nebenquests und Lagerfeuer
+**Und** nach dem Akt-Finale erinnert die App einmal an ein Backup (Export).
+
+### Story 7.4: Stabile IDs und Release-Ablauf
+
+Als Spieler
+möchte ich, dass mein Spielstand jedes Update übersteht,
+damit ich Akt für Akt mit derselben Truppe weiterspiele.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `pnpm content:lock`
+**Wenn** ein Akt veröffentlicht wird
+**Dann** schreibt es alle veröffentlichten IDs in `content/released-ids.json`; `content:check` scheitert, wenn eine gesperrte ID fehlt und nicht in `content/renames.yaml` steht
+**Und** jede Save-Migration hat einen Fixture-Spielstand und einen Test; der Release-Ablauf (`released: true`, `content:lock`, Migration, Pull Request) steht in `AGENTS.md`.
+
+## Epic 8: Chibi-Stil, Item-Bilder und Audio
+
+Spieler sehen und hören Akt 1 im Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen. Bilder per ChatGPT über Claude in Chrome mit Prompt und Abnahme in `art/prompts/`.
+
+### Story 8.1: Tonbruch-Test mit einer Gedenkszene
+
+Als Produktinhaber
+möchte ich früh prüfen, ob der Chibi-Stil einen Tod ernst genug trägt,
+damit das größte Stilrisiko vor der Massenproduktion geklärt ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Fenns Porträt in 4 Stimmungen, ein Dialog-Hintergrund und die Abschieds-Karte (Story 6.7)
+**Wenn** die Gedenkszene im Spiel läuft
+**Dann** bewerten Produktinhaber und 2–3 Tester, ob der Stil den Tod verharmlost (Brief-Risiko „Tonbruch“)
+**Und** das Ergebnis steht in `concept/23-art-direction/decision-log.md`.
+
+### Story 8.2: Tripo-Figuren in der Pipeline
+
+Als Entwickler
+möchte ich Tripo-Figuren reproduzierbar ins Spiel bringen,
+damit jede neue Figur gleich aussieht und ins Budget passt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Tripo-Export in `art/models/source/<id>_board_tripo.glb`
+**Wenn** `pnpm art:build` läuft
+**Dann** bereitet `tools/art/prepare_tripo_unit.py` sie auf (Ausrichtung, Höhe, Edge Padding, nur Grundfarbe, Animationen idle/walk/attack/hit/downed/flee/cheer im Brett-Takt) und schreibt sie nach `public/assets/<pack>/models/`
+**Und** jede Figur liegt bei ≤ 7 000 Dreiecken, 512er-Textur und ≤ 0,5 MB; Teamtuch über eine eigene Maske, die Waffe der Waffengruppe sitzt in der Hand.
+
+### Story 8.3: Brettfiguren für Akt 1
+
+Als Spieler
+möchte ich jede Story-Figur und jeden Gegnertyp von Akt 1 auf dem Brett wiedererkennen,
+damit Porträt und Figur zusammengehören.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Story-Figuren von Akt 1 (Rhen in 2 Varianten, Kael, Brenna, Tobin, Fenn, Mira, Liora, Ysolde, Varek, Grosk), die Leutnants Hask, Morra, Ulvric, Grosk und die Gegnertypen Bandit, Wolfsreiter, Söldner, Tempelwache
+**Wenn** sie über Turnaround → Tripo → Pipeline entstanden sind
+**Dann** besteht jede Rolle den Silhouettentest in Zoom „Mittel“ und trägt ihr Signaturteil (Art Direction §4.3)
+**Und** Prompts und Abnahmen liegen in `art/prompts/`.
+
+### Story 8.4: Porträts mit Stimmungen für Akt 1
+
+Als Spieler
+möchte ich Gesichter, die Gefühle zeigen,
+damit Szenen tragen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Moodboard-Porträts aus `art/mockups/characters-s1/`
+**Wenn** die Kernfiguren von Akt 1 final sind
+**Dann** haben sie 4 Stimmungen (`neutral`, `happy`, `angry`, `sad`) in gleicher Pose, freigestellt; Nebenfiguren nur `neutral`
+**Und** die alten Anime-Porträts in `art/portraits/` werden ersetzt und die Veraltet-Hinweise entfernt.
+
+### Story 8.5: Item-Bilder
+
+Als Spieler
+möchte ich jedes Item als gemaltes Bild sehen,
+damit Ausrüstung so lebendig wirkt wie die Figuren.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** alle Items, Runen, Verbrauchsgüter, Glutfunke und Materialien, die in Akt 1 vorkommen
+**Wenn** ihre Bilder per ChatGPT im Round-Chibi-Stil entstanden sind (quadratisch, freigestellt, einheitliches Licht)
+**Dann** zeigen Inventar, Händler, Beute, Vorschau und Ergebnis sie statt Platzhaltern
+**Und** `content:check` meldet Items ohne Bild.
+
+### Story 8.6: Licht, Wetter und Effekte auf dem Brett
+
+Als Spieler
+möchte ich ein warmes, lebendiges Diorama mit klaren Effekten,
+damit Kämpfe schön und trotzdem lesbar sind.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `timeOfDay` und `weather` je Karte und die Presets in `render.yaml` (Art Direction §2.5)
+**Wenn** eine Karte geladen wird
+**Dann** gelten Jahreszeit des Akts, Tageszeit und Wetter; Teamfarben, Bodenringe und Markierungen bleiben ungelit
+**Und** die Effekte aus Art Direction §8 (Cartoon-Treffer, Elemente, Status, Krit mit Cut-in, Leutnant-Flucht, Tod in Asche) laufen ≤ 600 ms bei 1×; Bildschirmwackeln ist abschaltbar.
+
+### Story 8.7: Titelbild, Logo und Dialog-Hintergründe von Akt 1
+
+Als Spieler
+möchte ich beim Start und in Szenen Bilder im Stil der Welt sehen,
+damit der erste Eindruck stimmt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Titelbild (Kael und Rhen am Lagerfeuer), das Logo mit Kronen-O und die Orte von Akt 1 aus dem Moodboard
+**Wenn** sie final sind
+**Dann** zeigen Titel und Szenen sie; Hintergründe im Spiel leicht weichgezeichnet und entsättigt, Hochformat-Sicherheitszone in der Mitte
+**Und** die Logo-Schrift ist aus den Kandidaten der Art Direction gewählt und im Log vermerkt.
+
+### Story 8.8: Musik und Klang von Akt 1
+
+Als Spieler
+möchte ich warme, folk-lastige Musik und klare Klänge,
+damit Akt 1 nach Spätsommer und Aufbruch klingt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ElevenLabs (MCP oder `tools/audio/elevenlabs.py`)
+**Wenn** die Stücke für Weltkarte, Lager, Kampf (Phasenpaar), Leutnant und Gedenken sowie die Signaturklänge (Glockenschlag, Funkenknistern, Beben) entstanden sind
+**Dann** spielt das Spiel sie nach `17-audio.md` und dem Mischkonzept aus U19; Hub-Musik ohne Gesang
+**Und** Lizenzfrage GA26 bleibt offen; nichts wird kommerziell veröffentlicht.
+
+### Story 8.9: Teilvertonung von Akt 1
+
+Als Spieler
+möchte ich die wichtigsten Zeilen hören,
+damit Gefährten und Leutnants eine Stimme haben.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Barks der Akt-1-Gefährten, Groll- und Fluchtzeilen der Akt-1-Leutnants und die Schlüsselszene „Gerrits Grab“
+**Wenn** sie in DE und EN vertont sind (eine mehrsprachige Stimme je Figur)
+**Dann** liegen sie im Paket `voice.act1.<lang>` und spielen zur passenden Zeile; Untertitel sind immer an
+**Und** fehlt eine Aufnahme, läuft die Zeile ohne Ton weiter.
+
+## Epic 9: Akt 1 „Asche“ (MVP)
+
+Spieler spielen Prolog und Akt 1 komplett. Jede Missions-Story liefert Karte, Szenen vor/nach (DE + EN), Leutnant-Auftritte, Beitritte, Entscheidungen, Heimsuchungs-Anker (2–3 je Karte) und einen Sim-Lauf im Korridor (NFR12). Grundlage: `concept/22-narrative/narrative.md` (Missionsfolge, Entscheidungen, Nebenquests).
+
+### Story 9.1: Prolog „Die Paktnacht“
+
+Als Spieler
+möchte ich in der Paktnacht ankommen, die Truppe kennenlernen und Gerrit verlieren,
+damit ich weiß, worum es geht, bevor ich die Regeln kenne.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Prolog-Karte (kompakt, Ziel `escape`, Tempelwachen, keine Leutnants) und die Szenen „Paktnacht“ und „Gerrits Grab“ (Illustrationstafeln)
+**Wenn** der Spieler den Prolog spielt
+**Dann** treten Rhen, Kael, Brenna und Tobin bei; die Lektionen zu Bewegung, Vorschau, Gefahrenzone und Heiltrank erscheinen höchstens einmal je Runde
+**Und** der Prolog liegt im Paket `core`; `pnpm sim prologue --runs 50` liegt im Korridor.
+
+### Story 9.2: Mission 1-1 „Steckbriefe“
+
+Als Spieler
+möchte ich erfahren, dass die Truppe als Königsmörder gesucht wird,
+damit der Antrieb „Sündenbock“ greift.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karte (Ziel `rout`, Waffendreieck als neue Regel) und Szenen
+**Wenn** die Mission gewonnen ist
+**Dann** tritt Fenn bei; danach sind 1-2, 1-3 und die übrigen Missionen der Akt-Mitte nach ihren Bedingungen wählbar
+**Und** Heimsuchungs-Anker und Sim-Korridor wie oben.
+
+### Story 9.3: Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
+
+Als Spieler
+möchte ich ein Dorf gegen Hask verteidigen und ihm zum ersten Mal begegnen,
+damit ich die Leutnants kennenlerne.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karte (Ziel `defend`, Leutnant Hask, erste Begegnung), Szenen und Mira als Beitritt
+**Wenn** Hask flieht und die Mission gewonnen ist
+**Dann** beginnen ab jetzt Heimsuchungen; Mira tritt bei
+**Und** in der Szene danach fällt E1 (Mira heimkehren lassen oder halten) mit Folgen-Karte (Mockup 05); die Weltkarten-Variante von Erlbach folgt dem Ausgang.
+
+### Story 9.4: Mission 1-3 „Der Fremde mit dem Siegel“
+
+Als Spieler
+möchte ich Liora sicher herausbringen und Halvard zum ersten Mal sehen,
+damit die Paktgeschichte beginnt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karte (Ziel `escort` mit Liora, Leutnant Morra) und Szenen mit Halvards Auftritt
+**Wenn** Liora den Ausgang erreicht
+**Dann** tritt sie bei; die Nebenquest N2 „Der letzte Wachturm“ öffnet sich
+**Und** gestaffelte Regeln hängen nur an der Zahl abgeschlossener Story-Missionen (Magie nach 2), nicht an dieser Mission.
+
+### Story 9.5: Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
+
+Als Spieler
+möchte ich den Makler Osric Dunn stellen und Ysolde befreien,
+damit Akt 1 seinen Wendepunkt bekommt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** vor der Mission E2 (Fenn ausliefern oder schützen) und die Karte (Ziel `boss` Osric Dunn, Leutnant Ulvric, Gefangene Ysolde)
+**Wenn** die Mission gewonnen ist
+**Dann** stirbt Dunn (Story), Ysolde tritt bei, danach folgt die Szene „Rhens Geständnis“ (Illustrationstafel)
+**Und** E2 wirkt: „ausliefern“ macht die Mission leichter und Fenn geht, „schützen“ öffnet N1.
+
+### Story 9.6: Mission 1-5 „Das Hungerlager“ und Entscheidung E3
+
+Als Spieler
+möchte ich gegen Banditen kämpfen, die eigentlich Hungernde sind,
+damit die Gewissensfrage „Gold gegen Gewissen“ spürbar wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karte (Ziel `rout`, Leutnant Grosk, Varek per Ansprechen) und Szenen
+**Wenn** die Mission gewonnen ist
+**Dann** fällt E3: verschonen (Grosk tritt im Finale bei, Hask-Groll −1) oder Kopfgeld (+600 Gold)
+**Und** Elemente, Status, Runen und Supports sind ab der dritten abgeschlossenen Story-Mission aktiv, unabhängig von der Reihenfolge.
+
+### Story 9.7: Mission 1-6 „Die Paktwacht“ (Finale) und Entscheidung E4
+
+Als Spieler
+möchte ich die Burgruine erobern und eine Heimat gewinnen,
+damit Akt 1 rund endet und Akt 2 ein Zuhause hat.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Finalkarte (Ziel `seize` durch Kael, Leutnants Hask, Morra, Ulvric und Grosk, falls nicht gewechselt) und die Tafel „Das Banner auf der Ruine“
+**Wenn** die Mission gewonnen ist
+**Dann** erhält die Truppe 2 Glutfunken (Moment inszeniert), `c.home` wechselt für Akt 2 auf die Burg, und E4 (Flüchtlinge aufnehmen oder geheim halten) fällt
+**Und** ohne Akt-2-Paket zeigt die Weltkarte „Akt 2 „Glut“ erscheint bald“ (Story 7.3).
+
+### Story 9.8: Nebenquest N1 „Der Ring von Varnhold“
+
+Als Spieler
+möchte ich Fenns Vergangenheit kennenlernen, wenn ich ihn geschützt habe,
+damit Entscheidungen eigene Geschichten öffnen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** E2 „schützen“
+**Wenn** der Spieler N1 spielt
+**Dann** erhält er Glutfunke und Signaturdolch; ist Fenn gefallen, läuft die Gedenk-Variante
+**Und** N1 bleibt über Akte offen.
+
+### Story 9.9: Nebenquest N2 „Der letzte Wachturm“
+
+Als Spieler
+möchte ich einen alten Wachturm der Paktwächter erkunden,
+damit ich die erste Chronik-Seite und Lore finde.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Mission 1-3 ist gespielt
+**Wenn** der Spieler N2 spielt
+**Dann** erhält er Glutfunke, Chronik-Seite und legendären Schild
+**Und** die Chronik zeigt die Seite.
+
+### Story 9.10: Supports und Barks von Akt 1
+
+Als Spieler
+möchte ich am Lagerfeuer die Paare von Akt 1 kennenlernen,
+damit Beziehungen wachsen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Support-Paare, deren beide Figuren in Akt 1 beitreten (Narrative, Tabelle der 25 Paare)
+**Wenn** ihre C- und B-Gespräche geschrieben sind (Schreib-Pipeline der Narrative, DE + EN, ≤ 110 Zeichen je Box)
+**Dann** stehen sie am Lagerfeuer bereit, sobald die Punkte reichen
+**Und** jeder Akt-1-Gefährte hat seine Barks, Todeszeile und Trauerzeilen je Partner.
+
+### Story 9.11: Akt 1 abstimmen und veröffentlichen
+
+Als Produktinhaber
+möchte ich Akt 1 als MVP veröffentlichen und testen,
+damit die Kernhypothese geprüft wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** alle Stories von Epic 1–9
+**Wenn** `pnpm sim --campaign act1` auf allen Schwierigkeiten läuft
+**Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 passt zu 25–30 Stunden für die Staffel
+**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD) liegt vor (`gds-playtest-plan`).
+
+## Epic 10: Die Burg (Heimat ab Akt 2) – grob
+
+Spieler ziehen in die eroberte Paktwacht, bauen 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle. Story-Liste mit Kurz-Kriterien; vor Akt 2 mit `gds-create-story` verfeinern. Hinweis: Die Burg wird ein 3D-Diorama (Art Direction §7); der obere Teil des Heimat-Screens wird dann neu geprüft (UX-Log).
+
+### Story 10.1: Die Burg als 3D-Diorama mit Raumsteinen
+
+Als Spieler
+möchte ich in Akt 2 in einer Burg statt im Lager leben,
+damit die Heimat mit der Truppe wächst.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `c.home.kind = 'castle'` nach dem Akt-1-Finale
+**Wenn** der Spieler die Heimat öffnet
+**Dann** zeigt `render/home/` die Paktwacht als 3D-Diorama mit Raum-Ankern und unten alle 11 Räume als Raumsteine (Stufe, ausbaubar, Neues, gesperrt) (UX-DR10).
+
+### Story 10.2: Räume ausbauen
+
+Als Spieler
+möchte ich Räume mit dem passenden Gefährten und Gold auf Stufe 2 und 3 bringen,
+damit die Burg eine zweite Fortschrittsachse ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `rooms.yaml` mit Kosten (Stufe 2 ≈ 1 500, Stufe 3 ≈ 4 000 Gold) und `requires` (Gefährte in der Truppe)
+**Wenn** beides erfüllt ist
+**Dann** baut `buildRoom` aus, das Ausbau-Band im Panel zeigt Kosten als Symbol + Zahl, und die Burg zeigt das neue Modellteil.
+
+### Story 10.3: Akademie und Aufstieg mit Glutfunke
+
+Als Spieler
+möchte ich ausgewählte Gefährten mit einem Glutfunken aufsteigen lassen,
+damit die knappe Wahl, wer wächst, ein Moment wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Figur ab Stufe 10 und ein Glutfunke
+**Wenn** der Spieler in der Akademie einen von zwei Profi-Wegen wählt
+**Dann** steigt sie auf (Stufe → 1, Loadout 4 → 5), der Glutfunke ist verbraucht, und der Funken-Moment spielt (Mockup 08, UX-DR21); Akademie-Stufen 2/3 laut GDD.
+
+### Story 10.4: Profi-Wege aller Rollen
+
+Als Spieler
+möchte ich zwischen zwei klar verschiedenen Profi-Wegen je Rolle wählen,
+damit ein Aufstieg die Spielweise ändert.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die 14 Profiklassen plus Großstratege und Bannerherr mit den Effekten aus dem GDD (u. a. Bollwerk, Sturmbrecher, Klingentänzer, Duellant, Scharfschütze, Waldläufer, Weiser, Hexer, Bischof, Kampfpriester, Barde, Bannerträger)
+**Wenn** eine Figur aufgestiegen ist
+**Dann** gelten ihre Effekte mit Vorschau und neuem Signaturteil auf dem Brett.
+
+### Story 10.5: Fallensteller und Schatten
+
+Als Spieler
+möchte ich mit Späher-Profis Fallen legen oder im Nebel verschwinden,
+damit Späher im späten Spiel eine eigene Taktik haben.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Fallensteller bzw. Schatten
+**Wenn** er seine Fähigkeit nutzt
+**Dann** liegen bis zu 2 für Gegner unsichtbare Fallen (8 Schaden + Verlangsamt, entschärfbar) bzw. ist er im Nebel unsichtbar, bis er angreift; beides reproduzierbar und für die KI regelkonform.
+
+### Story 10.6: Verzauberer und Werkstatt
+
+Als Spieler
+möchte ich Runen bearbeiten und Verbrauchsgüter aus Material herstellen,
+damit Material aus Heimsuchungen einen Zweck hat.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Verzauberer und Werkstatt in der Burg
+**Wenn** der Spieler sie nutzt
+**Dann** gelten Runen-Stufen und Rezepte je Raumstufe (Feuerbombe, Schlüssel → Hast, verstärktes Gegengift → Fallen-Set, Rune I) mit Kosten als Symbol + Zahl.
+
+### Story 10.7: Gedächtnishalle und Lektionen
+
+Als Spieler
+möchte ich Gefallene ehren und ihr Erbe weitergeben,
+damit Verlust Bedeutung behält.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** gefallene Gefährten und Söldner
+**Wenn** der Spieler die Gedächtnishalle öffnet
+**Dann** stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), und einmal pro Akt vererbt ein Gefallener eine Lektion an einen Gefährten; Stufen 2/3 laut GDD (UX-DR11).
+
+### Story 10.8: Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+
+Als Spieler
+möchte ich, dass die Reserve mitwächst, Freundschaften tiefer werden und die Burg sich mit den Menschen füllt,
+damit die Heimat lebendig wirkt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Burg
+**Wenn** Übungsplatz und Lagerfeuer ausgebaut sind und Gefährten beitreten oder fallen
+**Dann** erhält die Reserve 20/35/50 % der Durchschnitts-EP, das Lagerfeuer öffnet A und (Kernpaare) S, Gefährten und ihre Gegenstände stehen an festen Plätzen, und Gefallene hinterlassen einen leeren Platz.
+
+## Epic 11: Akt 2 „Glut“ – grob
+
+Spieler spielen Akt 2 in der Eisenmark. Eine Story je Mission wie in Epic 9 (Karte, Szenen DE/EN, Leutnants, Beitritte, Entscheidungen, Heimsuchungs-Anker, Sim-Korridor). Vor Akt 2 verfeinern.
+
+### Story 11.1: Paket, Region und Gegner von Akt 2
+
+Als Spieler
+möchte ich die Eisenmark im Herbst betreten,
+damit Akt 2 eine eigene Welt hat.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Paket `act2` mit Region 2, Herbst-Texturen, Gegnertypen (Eisenmark-Truppen, Ritter, Pegasusritter, Ballisten), Leutnants Brakka, Grell, Sable, Rowena und Ausrüstungs-Tier Stahl
+**Wenn** Akt 2 erreicht ist
+**Dann** lichtet sich der Nebel über der Eisenmark und die Weltkarte zeigt die Knoten von Akt 2.
+
+### Story 11.2: Mission 2-1 „Wind über der Eisenmark“ (survive, Brakka) und die drei Angebote
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** die Szenen danach laufen
+**Dann** tritt Jory bei und die drei Thronanwärter machen ihre Angebote (Illustrationstafel).
+
+### Story 11.3: Mission 2-2 „Das Siegel im Salzpass“ (treasure, Grell)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** die Szenen laufen
+**Dann** tritt Nell bei; E5 (Odile) und E8 (Maelis) werden über die Prinzessinnen-Missionen vorbereitet.
+
+### Story 11.4: Mission 2-3 „Die verstoßene Leibwache“ (escort Odile, Sable)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Odile erreicht den Ausgang
+**Wenn** die Mission gewonnen ist
+**Dann** tritt Odile bei; E5 (Odile kehrt zur Garde zurück oder bleibt) fällt.
+
+### Story 11.5: Mission 2-4 „Der Wyvernhorst“ (boss, Rowena)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** die Szenen laufen
+**Dann** tritt Ilka bei; E6 (Varek) fällt; Nebenquest N3 öffnet, solange Ilka in der Truppe ist.
+
+### Story 11.6: Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** E7 fällt (warnen oder Befehl ausführen)
+**Dann** tritt Brann bei, bei „warnen“ zusätzlich Sable (Seitenwechsel); N4 öffnet.
+
+### Story 11.7: Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** die Szenen laufen
+**Dann** tritt Amos bei; E8 (Beweise gegen Maelis) fällt.
+
+### Story 11.8: Mission 2-7 „Kronfeld“ (große Schlacht, survive → escape)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die große Schlacht (bis 24×32, ~15 eigene Einheiten, alle Leutnants von Akt 2, sofern nicht gewechselt)
+**Wenn** sie gewonnen ist
+**Dann** folgt „Die Krone war hohl“ (Illustrationstafel); die Gegnerphase hält NFR1 und NFR3 auf dem Referenzgerät.
+
+### Story 11.9: Nebenquests N3 „Der Clan im Schnee“ und N4 „Glut unter dem Berg“
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Auslöser (Ilka in der Truppe bzw. 2-5 gespielt)
+**Wenn** der Spieler sie spielt
+**Dann** gibt es je Glutfunke und Sonderbelohnung (Signaturbogen bzw. Chronik-Seite und Erd-Rune III), mit Gedenk-Varianten.
+
+### Story 11.10: Supports, Barks und Vertonung von Akt 2
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Paare mit beiden Figuren ab Akt 2
+**Wenn** C/B/A-Gespräche, Barks und Groll-Zeilen der Akt-2-Leutnants geschrieben und vertont sind
+**Dann** stehen sie bereit (DE + EN, Paket `voice.act2.<lang>`).
+
+### Story 11.11: Akt 2 abstimmen und veröffentlichen
+
+**Akzeptanzkriterien:**
+
+**Angenommen** alle Akt-2-Stories
+**Wenn** die verkettete Simulation über Akt 1 und 2 läuft
+**Dann** liegen alle Missionen in den Korridoren; `act2` ist veröffentlicht, IDs gesperrt, Spielstände aus Akt 1 laufen weiter (Migrationstest).
+
+## Epic 12: Akt 3 „Krone“ und Staffelende – grob
+
+Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2. Vor Akt 3 verfeinern.
+
+### Story 12.1: Paket, Region und Gegner von Akt 3
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Paket `act3` mit Region 3, Winter, Glut-Orden, Untoten, Drachen (dritte Partei, eigene Modelle), Leutnants Eluned, Cassian, Mael, Torvald und Tier Silber/Mondstahl
+**Wenn** Akt 3 erreicht ist
+**Dann** lichtet sich der Nebel über Aurenhall und dem Drachengebirge.
+
+### Story 12.2: Mission 3-1 „Winter über Aurenhall“ (reach, Eluned)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** die Szenen laufen
+**Dann** tritt Kit bei; 3-2 und 3-3 sind frei wählbar.
+
+### Story 12.3: Mission 3-2 „Das verbotene Lied“ (escort Harlan, Cassian)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Harlan erreicht den Ausgang
+**Wenn** die Mission gewonnen ist
+**Dann** tritt Harlan bei; N7 öffnet.
+
+### Story 12.4: Mission 3-3 „Die Einsiedlerin“ (defend, Mael) und E11
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen
+**Wenn** E11 fällt
+**Dann** tritt Vesna bei, bei „verschonen“ zusätzlich Mael; E9 (Ysolde) fällt in dieser Phase des Akts.
+
+### Story 12.5: Mission 3-4 „Die Krönung“ (seize Glutdom)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** 3-2 und 3-3 sind gespielt
+**Wenn** die Krönung gewonnen ist
+**Dann** wird Halvard enttarnt (Illustrationstafel); ab hier läuft Akt 3 linear.
+
+### Story 12.6: Mission 3-5 „Drachen über der Stadt“ (große Schlacht, defend)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Drachen als dritte Partei und Torvald
+**Wenn** die Mission gewonnen ist
+**Dann** tritt Pell bei; die Leistungsziele gelten auch mit Drachen.
+
+### Story 12.7: Mission 3-6 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Finale ist gewonnen
+**Wenn** E10 (Liora und Halvard) und E12 (Wahrheit, Frieden oder mit 12 Chronik-Seiten „Vhaelyra fragen“) fallen
+**Dann** setzt `choose` `s1_ending` und schreibt `c.archive.s1` (Ende, Haltung, Überlebende, Gefallene, Gegangene, Staffel-2-Flags).
+
+### Story 12.8: Epilog-Mosaik
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/acts/act3/epilogue.yaml` mit Kacheln je Gefährte und Region und Varianten nach Bedingungen
+**Wenn** das Staffelfinale endet
+**Dann** zeigt das Mosaik je Gefährte lebt (farbig), gefallen (grau) oder gegangen (sepia) mit einer Wendung, je Region eine breite Kachel, im Kopf Ende und Haltung (Mockup 08, UX-DR22); jede Kachel hat eine Variante ohne Bedingung.
+
+### Story 12.9: Nebenquests N5, N6, N7
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Auslöser aus der Narrative (E9, Brenna mit B-Support zu Kael oder Tobin, 3-2 gespielt)
+**Wenn** der Spieler sie spielt
+**Dann** gibt es je Glutfunke und Sonderbelohnung, N7 liefert die Zeile für „Vhaelyra fragen“.
+
+### Story 12.10: Nach dem Finale und Übergabe an Staffel 2
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine abgeschlossene Staffel
+**Wenn** der Spieler weiterspielt
+**Dann** laufen Heimsuchungen, offene Nebenquests, Supports und Burgausbau weiter; die Abschlussszene bietet den Export der Staffel-Zusammenfassung an (AR20).
+
+### Story 12.11: Akt 3 abstimmen und veröffentlichen
+
+**Akzeptanzkriterien:**
+
+**Angenommen** alle Akt-3-Stories
+**Wenn** die verkettete Simulation über die ganze Staffel läuft
+**Dann** liegen alle Missionen in den Korridoren, die Spielzeit trifft 25–30 Stunden auf Normal, `act3` ist veröffentlicht und Spielstände aus Akt 1 und 2 laufen weiter.
+
+## Validierung
+
+- **FR-Abdeckung:** FR1–FR63 sind in der Coverage Map einem Epic zugeordnet und in mindestens einer Story mit Kriterien hinterlegt; bestehende Regeln (FR1–FR3, FR6, FR9, FR10, FR45) werden in Story 2.1/2.2 bzw. 6.2 übernommen und nicht neu gebaut.
+- **UX-Abdeckung:** UX-DR1–UX-DR25 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt.
+- **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
+- **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
+- **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager) und Epic 10 (Burg) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
+- **Offen:** Epics 10–12 sind grob und werden vor dem jeweiligen Akt mit `gds-create-story` verfeinert; Lizenzfrage GA26 bleibt offen (NFR15).
+- **Nächster Schritt:** `gds-check-implementation-readiness`, danach `gds-sprint-planning` mit diesem Dokument als Epics-Quelle (`concept/26-epics/epics.md`).
