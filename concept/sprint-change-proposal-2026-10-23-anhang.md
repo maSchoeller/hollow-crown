@@ -2,7 +2,7 @@
 title: "Durchrechnung: Staffel 1 mit 8/8/8 Story-Missionen und Burg ab 1-6"
 status: geprüft, Entscheidungen F1–F5 getroffen (2026-10-23)
 created: 2026-10-23
-purpose: Grundlage für gds-correct-course; noch keine Änderung an Brief, GDD, Narrative oder Epics
+purpose: Anhang zu concept/sprint-change-proposal-2026-10-23.md (Durchrechnung und Entscheidungen F1–F5)
 ---
 
 # Durchrechnung 8/8/8 und Burg ab 1-6
