@@ -1,0 +1,190 @@
+<title>Hollow Crown Start und Kampagnen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&display=swap">
+<style>
+/* Schritt 7: Titel, Kampagnen-Plätze (3 Kampagnen, Snapshots, Klassik), Neues Spiel, Paket-Laden auf der Weltkarte. Stil B. */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 74ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #403020; }
+.screen > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.screen > img.bg.blur { filter: blur(6px) saturate(.7) brightness(.8); transform: scale(1.08); }
+.screen svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.row { display: flex; align-items: center; gap: 8px; } .grow { flex: 1; min-width: 0; }
+.fill { position: absolute; left: 10px; right: 10px; top: 12px; bottom: 12px; display: grid; grid-template-rows: auto 1fr auto; gap: 10px; }
+
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --red: #b83a2e; --green: #2f8a4c; --gold: #d9a931; color: var(--line); }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+.B .head { display: flex; align-items: center; gap: 8px; }
+.B .back { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.B .title { flex: 1; display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; }
+.B .title b { font-family: var(--f-name); font-size: 18px; }
+.B .title span { font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; margin-left: auto; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 11px 8px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 17px; background: var(--cream); box-shadow: 0 4px 0 var(--line); }
+.B .btn.primary { background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+.B .btn small { display: block; font-size: 12px; font-weight: 600; opacity: .9; }
+/* Titel */
+.B .logo { position: absolute; left: 0; right: 0; top: 13%; text-align: center; color: #fff8ec; font-family: var(--f-name); font-weight: 900; font-size: 46px; line-height: .9; letter-spacing: .02em; text-shadow: 0 3px 0 var(--line), 0 0 18px rgba(0, 0, 0, .35); }
+.B .logo .crown { display: inline-block; color: var(--gold); }
+.B .logo small { display: block; font-family: var(--f-label); font-weight: 700; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: #f4e9d6; margin-top: 10px; text-shadow: 0 2px 0 var(--line); }
+.B .menu { position: absolute; left: 22px; right: 22px; bottom: 54px; display: grid; gap: 12px; }
+.B .foot { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 12px; color: #f4e9d6; text-shadow: 0 1px 0 var(--line); }
+/* Kampagnen */
+.B .slots { display: grid; gap: 10px; align-content: start; }
+.B .camp { padding: 10px; display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center; }
+.B .camp .m { width: 56px; height: 56px; border-radius: 50%; border: 2.5px solid var(--line); overflow: hidden; background: #cfe0f7; }
+.B .camp .m img { width: 100%; height: 100%; object-fit: cover; }
+.B .camp b { font-family: var(--f-name); font-size: 18px; line-height: 1; }
+.B .camp .s { font-size: 12px; color: var(--soft); font-weight: 600; line-height: 1.3; }
+.B .mode { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-label); font-weight: 700; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; border: 2px solid var(--line); border-radius: 999px; padding: 0 7px; background: var(--cream-2); }
+.B .mode.klassik { background: var(--line); color: var(--cream); }
+.B .snaps { grid-column: 1 / -1; display: flex; gap: 6px; }
+.B .snap { flex: 1; border: 2px solid var(--line); border-radius: 10px; padding: 3px 6px; font-size: 11px; font-weight: 600; background: var(--cream-2); line-height: 1.2; }
+.B .snap b { font-family: var(--f-label); font-size: 12px; display: block; }
+.B .snap.empty { border-style: dashed; background: transparent; color: var(--soft); }
+.B .camp.new { grid-template-columns: 1fr; justify-items: center; padding: 18px; border-style: dashed; box-shadow: none; background: rgba(255, 248, 236, .75); font-family: var(--f-label); font-weight: 700; font-size: 16px; }
+.B .legacy { padding: 8px 12px; font-size: 12px; font-weight: 600; display: flex; gap: 8px; align-items: center; background: #ece7df; color: var(--soft); }
+.B .legacy b { font-family: var(--f-label); font-size: 13px; color: var(--line); display: block; }
+.B .linkbtn { font-family: var(--f-label); font-weight: 700; font-size: 13px; border: 2px solid var(--line); border-radius: 999px; padding: 1px 9px; background: var(--cream); color: var(--line); white-space: nowrap; }
+.B .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+/* Neues Spiel */
+.B .form { padding: 12px; display: grid; gap: 12px; align-content: start; }
+.B .lab { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.B .input { border: 2.5px solid var(--line); border-radius: 12px; padding: 7px 12px; font-family: var(--f-name); font-weight: 700; font-size: 19px; background: #fff; }
+.B .faces { display: flex; gap: 10px; align-items: center; }
+.B .face { width: 62px; height: 62px; border-radius: 50%; border: 2.5px solid var(--line); overflow: hidden; background: #cfe0f7; }
+.B .face img { width: 100%; height: 100%; object-fit: cover; }
+.B .face.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5.5px var(--ember); }
+.B .seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 2.5px solid var(--line); border-radius: 999px; overflow: hidden; }
+.B .seg span { text-align: center; padding: 5px 0; font-family: var(--f-label); font-weight: 700; font-size: 14px; border-left: 2px solid var(--line); }
+.B .seg span:first-child { border-left: 0; }
+.B .seg span.on { background: var(--line); color: var(--cream); }
+.B .modes { display: grid; gap: 7px; }
+.B .mcard { border: 2.5px solid var(--line); border-radius: 14px; padding: 7px 10px; background: var(--cream-2); font-size: 12px; font-weight: 600; line-height: 1.3; }
+.B .mcard b { font-family: var(--f-name); font-size: 16px; display: flex; justify-content: space-between; align-items: baseline; }
+.B .mcard b span { font-family: var(--f-label); font-size: 11px; color: var(--soft); letter-spacing: .05em; text-transform: uppercase; }
+.B .mcard.on { background: #fdf0e3; box-shadow: 0 0 0 3px var(--ember); }
+/* Weltkarte mit Paket */
+.B .dl { display: flex; align-items: center; gap: 10px; padding: 7px 12px 7px 8px; border-radius: 999px; }
+.B .ring { width: 34px; height: 34px; border-radius: 50%; background: conic-gradient(var(--ember) 0 63%, var(--cream-2) 0 100%); border: 2px solid var(--line); display: grid; place-items: center; flex: none; }
+.B .ring i { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); border: 2px solid var(--line); display: block; }
+.B .dl b { font-family: var(--f-label); font-size: 14px; display: block; line-height: 1.1; }
+.B .dl span { font-size: 12px; color: var(--soft); font-weight: 600; }
+.B .soon { position: absolute; left: 14px; right: 14px; top: 34%; padding: 10px 12px; display: grid; gap: 4px; text-align: center; background: rgba(255, 248, 236, .94); }
+.B .soon b { font-family: var(--f-name); font-size: 18px; }
+.B .soon span { font-size: 12px; color: var(--soft); font-weight: 600; }
+.fog { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(224, 229, 239, .95) 0 15%, rgba(224, 229, 239, 0) 24%), radial-gradient(48% 34% at 0% 36%, rgba(224, 229, 239, .95) 0 55%, rgba(224, 229, 239, 0) 100%); }
+.B .card { padding: 12px; display: grid; gap: 8px; }
+.B .card .kicker { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-d); }
+.B .card h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 21px; line-height: 1.05; }
+.B .btn.wait { background: var(--cream-2); color: var(--soft); box-shadow: 0 4px 0 var(--line); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M4 7h16v13H4Z"/><path d="M4 7l2-3h12l2 3M10 11h4"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 7 · Start und Kampagnen</span>
+    <h1>Titel, Kampagnen, Neues Spiel, Akt-Pakete</h1>
+    <p>Architektur AR16–AR18: bis zu 3 Kampagnen je Gerät, jede mit Auto-Save; in Standard und Casual zusätzlich 3 Speicherplätze, in Klassik nur der Auto-Save. Proof-of-Concept-Spielstände werden erkannt, aber nicht geladen. Akt-Pakete laden im Hintergrund (AR15). Das Titelbild ist ein Platzhalter (Lager-Moodboard); das Logo kommt aus der Art Direction.</p>
+  </header>
+
+  <div class="phones">
+    <!-- Titel -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/lager.jpg" alt="">
+        <div class="logo">H<span class="crown">♛</span>LLOW<br>CROWN<small>Staffel 1</small></div>
+        <div class="menu">
+          <div class="btn primary">Fortsetzen<small>Rhen · Akt 1 · vor Mission 1-3</small></div>
+          <div class="btn">Kampagnen</div>
+          <div class="btn">Optionen</div>
+        </div>
+        <div class="foot">Version 0.4 · Nach Updates suchen</div>
+      </div></div>
+      <div class="cap">Titel</div>
+      <p class="note">Eine Haupttaste „Fortsetzen“ mit Ort und Stand der zuletzt gespielten Kampagne. Neues Spiel steckt in „Kampagnen“, damit der Platz sichtbar ist, den es belegt.</p>
+    </div>
+
+    <!-- Kampagnen -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg blur" src="assets/lager.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Kampagnen</b><span>2 von 3</span></div></div>
+          <div class="slots">
+            <div class="piece camp"><div class="m"><img src="assets/rhen_a_head.webp" alt=""></div><div><b>Rhen</b><div class="row" style="gap:5px;margin:3px 0"><span class="mode">Standard · Normal</span></div><div class="s">Akt 1 · vor 1-3 · 6 h 20 min · Auto-Save vor 5 Min.</div></div>
+              <div class="snaps"><div class="snap"><b>Platz 1</b>vor 1-2</div><div class="snap"><b>Platz 2</b>nach 1-2</div><div class="snap empty"><b>Platz 3</b>frei</div></div></div>
+            <div class="piece camp"><div class="m"><img src="assets/rhen_b_head.webp" alt=""></div><div><b>Mara</b><div class="row" style="gap:5px;margin:3px 0"><span class="mode klassik">Klassik · Schwer</span></div><div class="s">Akt 1 · im Kampf 1-1 · 1 h 05 min · nur Auto-Save</div></div></div>
+            <div class="piece camp new"><span class="row"><svg class="i"><use href="#i-plus"/></svg>Neue Kampagne</span></div>
+            <div class="piece legacy"><svg class="i"><use href="#i-box"/></svg><div class="grow"><b>Spielstand aus dem Proof of Concept</b>Nicht mehr kompatibel</div><span class="linkbtn">Exportieren</span></div>
+          </div>
+          <div class="row2"><div class="btn">Importieren</div><div class="btn">Exportieren</div></div>
+        </div>
+      </div></div>
+      <div class="cap">Kampagnen-Plätze</div>
+      <p class="note">Je Kampagne Avatar, Modus, Stand und Spielzeit. Standard zeigt seine 3 Speicherplätze, Klassik sagt offen „nur Auto-Save“. Import nur von hier (Ehrensystem).</p>
+    </div>
+
+    <!-- Neues Spiel -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg blur" src="assets/lager.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Neue Kampagne</b><span>Platz 3</span></div></div>
+          <div class="piece form">
+            <div style="display:grid;gap:5px"><span class="lab">Name</span><div class="input">Rhen</div></div>
+            <div style="display:grid;gap:5px"><span class="lab">Aussehen</span><div class="faces"><div class="face on"><img src="assets/rhen_a_head.webp" alt=""></div><div class="face"><img src="assets/rhen_b_head.webp" alt=""></div><span class="lab" style="text-transform:none;letter-spacing:0;font-size:13px">sie · er · they</span></div></div>
+            <div style="display:grid;gap:5px"><span class="lab">Schwierigkeit</span><div class="seg"><span>Leicht</span><span class="on">Normal</span><span>Schwer</span></div></div>
+            <div style="display:grid;gap:5px"><span class="lab">Wenn jemand fällt</span>
+              <div class="modes">
+                <div class="mcard"><b>Klassik <span>streng</span></b>Wer fällt, ist tot. Kein Neustart der Runde, nur ein Spielstand.</div>
+                <div class="mcard on"><b>Standard <span>empfohlen</span></b>Niedergestreckt, bergen oder nach 3 Phasen tot. Runde neu starten erlaubt.</div>
+                <div class="mcard"><b>Casual <span>sanft</span></b>Wer fällt, zieht sich zurück und ist nächste Mission wieder da.</div>
+              </div>
+            </div>
+          </div>
+          <div class="btn primary">Aufbrechen</div>
+        </div>
+      </div></div>
+      <div class="cap">Neues Spiel</div>
+      <p class="note">Eine Seite statt Assistent: Name, Aussehen mit Pronomen, Schwierigkeit, Tod-Modus mit einem Satz Erklärung. Affinität kommt später mit den Elementen (U20).</p>
+    </div>
+
+    <!-- Paket lädt -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/world.jpg" alt=""><div class="fog"></div>
+        <div class="fill">
+          <div class="piece dl"><div class="ring"><i></i></div><div class="grow"><b>Akt 1 wird geladen · 63 %</b><span>18 von 28 MB · danach offline spielbar</span></div></div>
+          <div></div>
+          <div class="piece card">
+            <div class="kicker">Story-Mission 1-3</div>
+            <h3>Der Fremde mit dem Siegel</h3>
+            <div class="btn wait">Wird noch geladen …</div>
+          </div>
+        </div>
+        <div class="piece soon"><b>Akt 2 „Glut“ erscheint bald</b><span>Bis dahin: Heimsuchungen, Nebenquests, Lagerfeuer</span></div>
+      </div></div>
+      <div class="cap">Akt-Paket lädt · nächster Akt noch nicht da</div>
+      <p class="note">Download als Fortschrittsring oben, nur solange er läuft. Missionen aus dem Paket sind sichtbar, starten aber erst danach. Am Akt-Ende zeigt der Nebel, was bald kommt.</p>
+    </div>
+  </div>
+</div>

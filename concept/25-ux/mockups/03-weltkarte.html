@@ -1,0 +1,242 @@
+<title>Hollow Crown Weltkarte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+<style>
+/* Schritt 3: Weltkarte als Hub in Stil B (Fraunces, Dunkelbraun, Creme). Vier Handys: zwei Navigationsvarianten,
+   gewählte Story-Mission, gewählte Heimsuchung. Hintergrund = Moodboard-Gemälde als Platzhalter für die 3D-Szene. */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 72ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.cap .v { color: var(--accent); }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #6aa7c9; }
+.screen > img.map { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.fog { position: absolute; inset: 0; pointer-events: none; background:
+  linear-gradient(180deg, rgba(224, 229, 239, .95) 0 15%, rgba(224, 229, 239, 0) 24%),
+  radial-gradient(48% 34% at 0% 36%, rgba(224, 229, 239, .95) 0 55%, rgba(224, 229, 239, 0) 100%); }
+.fog-label { position: absolute; left: 5%; top: 33%; font-family: var(--f-name); font-weight: 700; font-size: 15px; color: #5f6a80; line-height: 1.1; }
+.fog-label small { display: block; font-family: var(--f-label); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.hud-top, .hud-bottom { position: absolute; left: 10px; right: 10px; display: grid; gap: 9px; }
+.hud-top { top: 12px; } .hud-bottom { bottom: 12px; }
+.screen svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.row { display: flex; align-items: center; gap: 8px; } .grow { flex: 1; min-width: 0; }
+
+/* ---------- Stil B, final: Fraunces, Dunkelbraun, Creme ---------- */
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --red: #b83a2e; --green: #3f9a5a; --gold: #d9a931; color: var(--line); }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+.B .pill { border-radius: 999px; }
+.B .topbar { display: flex; gap: 8px; align-items: center; }
+.B .actpill { display: flex; align-items: center; gap: 8px; padding: 5px 14px 5px 5px; border-radius: 999px; }
+.B .badge { width: 36px; height: 36px; border-radius: 50%; background: var(--ember); color: #fff; display: grid; place-items: center; font-family: var(--f-name); font-weight: 700; font-size: 19px; border: 2px solid var(--line); flex: none; }
+.B .l1 { font-family: var(--f-label); font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.B .l2 { font-family: var(--f-name); font-weight: 700; font-size: 16px; line-height: 1.1; }
+.B .round { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.B .res { display: flex; gap: 6px; }
+.B .res span { display: inline-flex; align-items: center; gap: 4px; background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 1px 9px 1px 5px; font-family: var(--f-label); font-weight: 700; font-size: 13px; box-shadow: 0 3px 0 var(--line); font-variant-numeric: tabular-nums; }
+.B .coin { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid var(--line); }
+.B .ore { width: 14px; height: 14px; background: #8b9bb0; border: 2px solid var(--line); transform: rotate(45deg); border-radius: 3px; }
+.B .toast { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; width: fit-content; justify-self: center; background: #fdeee9; }
+.B .toast .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-family: var(--f-label); font-weight: 700; border: 2px solid var(--line); }
+.B .toast b { font-family: var(--f-label); font-size: 14px; }
+.B .toast span { font-size: 12px; color: var(--soft); font-weight: 600; }
+
+/* Knoten auf der Karte */
+.B .node { position: absolute; transform: translate(-50%, -100%); display: grid; justify-items: center; }
+.B .node .head { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--line); display: grid; place-items: center; font-family: var(--f-name); font-weight: 700; font-size: 14px; color: #fff; box-shadow: 0 3px 0 var(--line); overflow: hidden; }
+.B .node .tail { width: 0; height: 0; border: 7px solid transparent; border-top: 10px solid var(--line); margin-top: -1px; }
+.B .node .lab { margin-top: 2px; background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 0 7px; font-family: var(--f-label); font-weight: 700; font-size: 11px; white-space: nowrap; }
+.B .node.story .head { background: var(--ember); }
+.B .node.side .head { background: var(--green); font-size: 20px; }
+.B .node.haunt .head { background: var(--red); padding: 2px; }
+.B .node.haunt .head img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #f6d3cd; }
+.B .node.haunt .flag { position: absolute; top: -8px; right: -10px; background: var(--red); color: #fff; border: 2px solid var(--line); border-radius: 4px 4px 8px 8px; padding: 0 4px; font-family: var(--f-label); font-weight: 700; font-size: 10px; letter-spacing: .05em; }
+.B .node.home .head { background: var(--cream); color: var(--line); }
+.B .node.done .head { background: var(--cream-2); color: var(--soft); width: 30px; height: 30px; font-size: 12px; }
+.B .node.sel .head { box-shadow: 0 0 0 4px #fff, 0 0 0 6.5px var(--line), 0 5px 0 4px var(--line); }
+
+/* Leiste unten (Variante 1) */
+.B .navbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.B .nav { background: var(--cream); border: 2.5px solid var(--line); border-radius: 16px; box-shadow: 0 4px 0 var(--line); display: grid; justify-items: center; gap: 1px; padding: 8px 2px 6px; font-family: var(--f-label); font-weight: 700; font-size: 13px; position: relative; }
+.B .nav svg.i { width: 26px; height: 26px; }
+.B .nav .dotn { position: absolute; top: -8px; right: -4px; background: var(--ember); color: #fff; border: 2px solid var(--line); border-radius: 999px; font-size: 11px; padding: 0 6px; }
+/* Ecken (Variante 2) */
+.B .corner { position: absolute; display: grid; justify-items: center; gap: 2px; font-family: var(--f-label); font-weight: 700; font-size: 12px; }
+.B .corner .stone { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; }
+.B .corner .stone svg.i { width: 30px; height: 30px; }
+.B .corner .lab { background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 0 8px; }
+.B .stack { display: flex; }
+.B .stack img { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); margin-left: -10px; background: #cfe0f7; object-fit: cover; }
+.B .stack img:first-child { margin-left: 0; }
+
+/* Knoten-Karte */
+.B .card { padding: 12px; display: grid; gap: 10px; }
+.B .card .kicker { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-d); display: flex; gap: 6px; align-items: center; }
+.B .card .kicker.red { color: var(--red); }
+.B .card h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 23px; line-height: 1.05; }
+.B .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.B .tag { display: inline-flex; align-items: center; gap: 5px; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; padding: 1px 9px 1px 6px; font-size: 12px; font-weight: 700; }
+.B .tag svg.i { width: 15px; height: 15px; }
+.B .lt { display: flex; align-items: center; gap: 10px; background: #fdeee9; border-radius: 12px; padding: 6px 10px 6px 6px; }
+.B .lt .m { width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid var(--line); box-shadow: 0 0 0 2px var(--gold); overflow: hidden; background: #f6d3cd; flex: none; }
+.B .lt .m img { width: 100%; height: 100%; object-fit: cover; }
+.B .lt b { font-family: var(--f-name); font-size: 16px; }
+.B .lt .s { font-size: 12px; color: var(--soft); font-weight: 600; line-height: 1.25; }
+.B .notch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); border: 1.5px solid var(--line); margin-left: 2px; vertical-align: 0; }
+.B .notch.off { background: var(--cream-2); }
+.B .reward { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; font-weight: 600; }
+.B .reward span { display: inline-flex; align-items: center; gap: 5px; }
+.B .btns { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 10px 6px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 16px; background: var(--cream); box-shadow: 0 4px 0 var(--line); }
+.B .btn.primary { background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+.B .hint { font-size: 12px; color: var(--soft); font-weight: 600; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-tent" viewBox="0 0 24 24"><path d="M3 20 12 4l9 16Z"/><path d="M12 4v16M9 20l3-6 3 6"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c3 .1 5.5 2.4 5.5 5.8"/></symbol>
+  <symbol id="i-wanted" viewBox="0 0 24 24"><path d="M5 3h14v18H5Z"/><circle cx="12" cy="10" r="3"/><path d="M8 17h8"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0Z"/><path d="M20 5c-3-1.5-5.5-1.5-8 0v15c2.5-1.5 5-1.5 8 0Z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/></symbol>
+  <symbol id="i-chest" viewBox="0 0 24 24"><path d="M3 10h18v10H3Z"/><path d="M3 10a9 5 0 0 1 18 0"/><path d="M11 13h2v3h-2z"/></symbol>
+  <symbol id="i-people2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.8 3.1-6.5 7-6.5s7 2.7 7 6.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 3 · Weltkarte als Hub</span>
+    <h1>Die Weltkarte als Startpunkt nach jeder Mission</h1>
+    <p>Stil B mit den gewählten Feinwerten. Der Hintergrund ist das Weltkarten-Moodboard als Platzhalter, im Spiel wird das eine echte 3D-Szene. Akt 1: nur das Grenzland ist offen, Eisenmark und Drachengebirge liegen im Nebel. Knoten: <b>orange</b> Story, <b>grün</b> Nebenquest, <b>rot</b> Heimsuchung mit dem Gesicht des Leutnants, <b>Zelt</b> Heimat, kleine graue Steine sind erledigt. Links zwei Varianten, wie man zu Heimat, Truppe, Steckbriefen und Chronik kommt.</p>
+  </header>
+
+  <div class="phones">
+    <!-- 1 Variante Leiste -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="map" src="assets/world.jpg" alt="">
+        <div class="fog"></div><div class="fog-label">Eisenmark<small>Akt 2</small></div>
+        <div class="node done" style="left:16%;top:86%"><div class="head">P</div></div>
+        <div class="node done" style="left:79%;top:35%"><div class="head">1-1</div></div>
+        <div class="node story" style="left:85%;top:62%"><div class="head">1-2</div><div class="tail"></div><div class="lab">Erlbach</div></div>
+        <div class="node story" style="left:31%;top:50%"><div class="head">1-3</div><div class="tail"></div><div class="lab">Silberbach</div></div>
+        <div class="node side" style="left:86%;top:24%"><div class="head">!</div><div class="tail"></div><div class="lab">Wachturm</div></div>
+        <div class="node haunt" style="left:60%;top:48%"><div class="head"><img src="assets/morra_head.webp" alt=""></div><span class="flag">NEU</span><div class="tail"></div><div class="lab">Varnhold</div></div>
+        <div class="node home" style="left:45%;top:77%"><div class="head"><svg class="i"><use href="#i-tent"/></svg></div><div class="tail"></div><div class="lab">Lager</div></div>
+        <div class="hud-top">
+          <div class="topbar">
+            <div class="piece actpill grow"><div class="badge">1</div><div><div class="l1">Akt 1 · Spätsommer</div><div class="l2">Asche</div></div></div>
+            <div class="piece round"><svg class="i"><use href="#i-menu"/></svg></div>
+          </div>
+          <div class="row"><div class="res"><span><i class="coin"></i>1 240</span><span><i class="ore"></i>3</span></div><span class="grow"></span></div>
+          <div class="piece toast"><span class="dot">2</span><div><b>Neuer Tag: 2 Heimsuchungen</b><br><span>Nächste ab morgen 4:00</span></div></div>
+        </div>
+        <div class="hud-bottom">
+          <div class="navbar">
+            <div class="nav"><svg class="i"><use href="#i-tent"/></svg>Lager<span class="dotn">2</span></div>
+            <div class="nav"><svg class="i"><use href="#i-people"/></svg>Truppe</div>
+            <div class="nav"><svg class="i"><use href="#i-wanted"/></svg>Steckbriefe</div>
+            <div class="nav"><svg class="i"><use href="#i-book"/></svg>Chronik</div>
+          </div>
+        </div>
+      </div></div>
+      <div class="cap"><span class="v">Variante 1</span> · Leiste unten</div>
+      <p class="note">Vier feste Steine unten wie das Kampf-Dock. Heimat ist zusätzlich ein Ort auf der Karte. Zahl am Lager = neue Gespräche oder Rekruten.</p>
+    </div>
+
+    <!-- 2 Variante Ecken -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="map" src="assets/world.jpg" alt="">
+        <div class="fog"></div><div class="fog-label">Eisenmark<small>Akt 2</small></div>
+        <div class="node done" style="left:16%;top:86%"><div class="head">P</div></div>
+        <div class="node done" style="left:79%;top:35%"><div class="head">1-1</div></div>
+        <div class="node story" style="left:85%;top:62%"><div class="head">1-2</div><div class="tail"></div><div class="lab">Erlbach</div></div>
+        <div class="node story" style="left:31%;top:50%"><div class="head">1-3</div><div class="tail"></div><div class="lab">Silberbach</div></div>
+        <div class="node side" style="left:86%;top:24%"><div class="head">!</div><div class="tail"></div><div class="lab">Wachturm</div></div>
+        <div class="node haunt" style="left:60%;top:48%"><div class="head"><img src="assets/morra_head.webp" alt=""></div><span class="flag">NEU</span><div class="tail"></div><div class="lab">Varnhold</div></div>
+        <div class="node home" style="left:45%;top:77%"><div class="head"><svg class="i"><use href="#i-tent"/></svg></div><div class="tail"></div><div class="lab">Lager</div></div>
+        <div class="hud-top">
+          <div class="topbar">
+            <div class="piece actpill grow"><div class="badge">1</div><div><div class="l1">Akt 1 · Spätsommer · 2 Heimsuchungen</div><div class="l2">Asche</div></div></div>
+            <div class="piece round"><svg class="i"><use href="#i-menu"/></svg></div>
+          </div>
+          <div class="row"><div class="res"><span><i class="coin"></i>1 240</span><span><i class="ore"></i>3</span></div></div>
+        </div>
+        <div class="corner" style="left:12px;bottom:14px"><div class="piece stone" style="border-radius:50%;width:auto;height:auto;padding:8px 10px"><div class="stack"><img src="assets/kael_head.webp" alt=""><img src="assets/brenna_head.webp" alt=""><img src="assets/tobin_head.webp" alt=""></div></div><span class="lab">Truppe</span></div>
+        <div class="corner" style="right:12px;bottom:14px"><div class="piece stone"><svg class="i"><use href="#i-wanted"/></svg></div><span class="lab">Steckbriefe</span></div>
+      </div></div>
+      <div class="cap"><span class="v">Variante 2</span> · nur Ecken</div>
+      <p class="note">Mehr Karte, weniger Rahmen. Heimat nur über den Ort auf der Karte, Chronik im Menü. Truppe als Gesichter-Stapel unten links.</p>
+    </div>
+
+    <!-- 3 Story gewählt -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="map" src="assets/world.jpg" alt="">
+        <div class="fog"></div>
+        <div class="node story sel" style="left:80%;top:45%"><div class="head">1-2</div><div class="tail"></div><div class="lab">Erlbach</div></div>
+        <div class="node haunt" style="left:58%;top:33%"><div class="head"><img src="assets/morra_head.webp" alt=""></div><div class="tail"></div></div>
+        <div class="node home" style="left:42%;top:55%"><div class="head"><svg class="i"><use href="#i-tent"/></svg></div><div class="tail"></div></div>
+        <div class="hud-top">
+          <div class="topbar">
+            <div class="piece actpill grow"><div class="badge">1</div><div><div class="l1">Akt 1 · Spätsommer</div><div class="l2">Asche</div></div></div>
+            <div class="piece round"><svg class="i"><use href="#i-menu"/></svg></div>
+          </div>
+        </div>
+        <div class="hud-bottom">
+          <div class="piece card">
+            <div class="kicker">Story-Mission 1-2</div>
+            <h3>Asche über Erlbach</h3>
+            <div class="tags"><span class="tag"><svg class="i"><use href="#i-shield"/></svg>Dorf verteidigen</span><span class="tag"><svg class="i"><use href="#i-people2"/></svg>6 Plätze</span><span class="tag">Stufe ≈ 3</span></div>
+            <div class="lt"><div class="m"><img src="assets/hask_head.webp" alt=""></div><div><b>Hask</b> <span class="s">Leutnant · erste Begegnung</span><div class="s">Flieht bei 0 TP und kehrt wieder</div></div></div>
+            <div class="reward"><span><i class="coin"></i>≈ 1 000</span><span>2 Nebenziele</span></div>
+            <div class="btns"><div class="btn">Aufstellung</div><div class="btn primary">Aufbrechen</div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Story-Mission gewählt</div>
+      <p class="note">Ein Tap auf den Knoten zoomt leicht heran und öffnet die Karte. Alles Wichtige vorab: Ziel, Plätze, Stufe, Leutnant mit Fluchtregel, Belohnung.</p>
+    </div>
+
+    <!-- 4 Heimsuchung gewählt -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="map" src="assets/world.jpg" alt="">
+        <div class="fog"></div>
+        <div class="node haunt sel" style="left:58%;top:40%"><div class="head"><img src="assets/morra_head.webp" alt=""></div><span class="flag">NEU</span><div class="tail"></div><div class="lab">Varnhold</div></div>
+        <div class="hud-top">
+          <div class="topbar">
+            <div class="piece actpill grow"><div class="badge">1</div><div><div class="l1">Akt 1 · Spätsommer</div><div class="l2">Asche</div></div></div>
+            <div class="piece round"><svg class="i"><use href="#i-menu"/></svg></div>
+          </div>
+        </div>
+        <div class="hud-bottom">
+          <div class="piece card">
+            <div class="kicker red">Heimsuchung · seit heute</div>
+            <h3>Truhenjagd in Varnhold</h3>
+            <div class="tags"><span class="tag"><svg class="i"><use href="#i-chest"/></svg>3 Truhen bis Runde 10</span><span class="tag">Stufe ≈ 4</span></div>
+            <div class="lt"><div class="m"><img src="assets/morra_head.webp" alt=""></div><div><b>Morra</b> <span class="s">Groll <span class="notch"></span><span class="notch"></span><span class="notch off"></span></span><div class="s">Groll gegen Mira · Kopfgeld <i class="coin" style="display:inline-block;width:12px;height:12px;vertical-align:-2px"></i> 600</div></div></div>
+            <div class="reward"><span><i class="coin"></i>≈ 400</span><span><i class="ore"></i>+1</span><span>60 % EP</span></div>
+            <p class="hint">Bleibt offen; erst die 7. Heimsuchung verdrängt die älteste.</p>
+            <div class="btns"><div class="btn">Aufstellung</div><div class="btn primary">Aufbrechen</div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Heimsuchung gewählt</div>
+      <p class="note">Rot statt Orange, Leutnant im Mittelpunkt. Kein Ablaufdatum, damit kein Täglich-Druck entsteht (GDD-Risiko).</p>
+    </div>
+  </div>
+</div>

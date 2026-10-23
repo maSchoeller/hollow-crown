@@ -338,6 +338,7 @@ Startschätzung zur Planung der Epics. [C]
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
 | Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
+| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. Rund 120 Bilder für Staffel 1 (Bestand `content/items.yaml` plus Akt-2/3-Tiers, Signatur- und legendäre Items) [A] |
 
 ## 12. Do & Don't
 
