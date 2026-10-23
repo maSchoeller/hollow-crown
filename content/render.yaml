@@ -19,6 +19,24 @@ board:
   fpsIdle: 30                             # Bildrate in Ruhe (nur Idle-Animationen, Wasser, Feuer): spart Akku
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
 
+# GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
+# Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel
+# der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die
+# X-Achse des Sockels außerhalb des Angriffs (das Modell ist im Angriffsgriff gebaut). Nur Bild-zu-3D-Figuren haben
+# Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
+gear:
+  weapons:
+    sword: { model: sword, hand: right }
+    lance: { model: lance, hand: right, motion: thrust, hold: -125 }
+    axe: { model: axe, hand: right, motion: chop }
+    bow: { model: bow, hand: left, motion: shoot }
+    anima: { model: book, hand: left, motion: cast }
+    light: { model: book, hand: left, motion: cast }
+    dark: { model: book, hand: left, motion: cast }
+    staff: { model: staff, hand: right, motion: cast }
+  offHand:
+    shield: { model: shield, hand: left }
+
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:
   high: { maxDpr: 2.5, shadowMap: 2048 }

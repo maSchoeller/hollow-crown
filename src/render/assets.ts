@@ -28,7 +28,7 @@ export interface Manifest {
   fx: boolean;
   units: Record<string, { cell: [number, number]; anchor: [number, number]; rows: SheetRow[]; normal?: boolean }>;
   /** 3D models (tools/art/export_models.py): unit ids and prop states per prop id */
-  models?: { units: string[]; props: Record<string, string[]> };
+  models?: { units: string[]; props: Record<string, string[]>; weapons?: string[] };
   /** painted ground textures of the 3D board (tools/art/ground.py) */
   ground?: string[];
   portraits: Record<string, string[]>;

@@ -26,7 +26,7 @@ import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { BattleState, BattleUnit, GameData, GameEvent, Pos, Team } from '../core';
+import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../core';
 import { itemDef } from '../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from './camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from './assets';
@@ -67,6 +67,8 @@ interface UnitView {
   uid: string;
   team: Team;
   sprite: string;
+  /** weapon models on the figure's hands (GA9); a change rebuilds the figure */
+  gear: string;
   figure: Figure;
   ring: Mesh;
   /** tile position (float while moving) and a small offset for lunges/knockback, tiles */
@@ -507,13 +509,39 @@ export class BoardView {
     return u.sprite ?? u.charId ?? u.classId;
   }
 
+  /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
+  private weaponOf(u: BattleUnit): GearPiece | undefined {
+    const main = u.equip.mainHand && itemDef(this.data, u.equip.mainHand).weaponType;
+    return main ? this.data.render.gear.weapons[main] : undefined;
+  }
+
+  /** Weapon models for the equipped weapon group and off-hand item (GA9); one piece per hand, the weapon first. */
+  private gearOf(u: BattleUnit): GearPiece[] {
+    const { offHand } = this.data.render.gear;
+    const out: GearPiece[] = [];
+    const w = this.weaponOf(u);
+    if (w) out.push(w);
+    const off = u.equip.offHand && offHand[itemDef(this.data, u.equip.offHand).kind];
+    if (off && !out.some((p) => p.hand === off.hand)) out.push(off);
+    return out;
+  }
+
+  private gearKey(u: BattleUnit): string {
+    return this.gearOf(u)
+      .map((p) => `${p.model}@${p.hand}`)
+      .join();
+  }
+
   private async makeFigure(u: BattleUnit, name: string): Promise<Figure> {
     const id = this.unitSpriteId(u);
     if (this.figures === '3d') {
-      const model = await loadUnitModel(this.scene, id, u.team, name);
+      // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
+      const models = (await loadManifest()).models?.units ?? [];
+      const mid = u.portrait && models.includes(u.portrait) ? u.portrait : id;
+      const model = await loadUnitModel(this.scene, mid, u.team, name, this.gearOf(u));
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
-        return new ModelFigure(model);
+        return new ModelFigure(model, this.weaponOf(u)?.motion);
       }
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
@@ -542,13 +570,13 @@ export class BoardView {
     for (const u of state.units) {
       if (!u.pos || u.gone) continue;
       const v = this.units.get(u.uid);
-      if (!v || v.team !== u.team || v.sprite !== this.unitSpriteId(u)) fresh.set(u.uid, this.makeFigure(u, `unit:${u.uid}:${u.team}`));
+      if (!v || v.team !== u.team || v.sprite !== this.unitSpriteId(u) || v.gear !== this.gearKey(u)) fresh.set(u.uid, this.makeFigure(u, `unit:${u.uid}:${u.team}`));
     }
     for (const u of state.units) {
       if (!u.pos || u.gone) continue;
       seen.add(u.uid);
       let v = this.units.get(u.uid);
-      if (v && (v.team !== u.team || v.sprite !== this.unitSpriteId(u))) {
+      if (v && (v.team !== u.team || v.sprite !== this.unitSpriteId(u) || v.gear !== this.gearKey(u))) {
         this.removeUnit(v);
         v = undefined;
       }
@@ -559,6 +587,7 @@ export class BoardView {
           uid: u.uid,
           team: u.team,
           sprite: this.unitSpriteId(u),
+          gear: this.gearKey(u),
           figure,
           ring: this.makeRing(u.uid, u.team),
           x: u.pos[0],
