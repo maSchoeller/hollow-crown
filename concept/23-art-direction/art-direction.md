@@ -368,10 +368,10 @@ Startschätzung zur Planung der Epics. [C]
 | Porträts | rund 18 Kernfiguren × 4 Stimmungen + rund 20 Nebenfiguren × 1 ≈ 90 Bilder |
 | Dialog-Hintergründe | rund 20 (14 aus dem Moodboard + Varianten) |
 | Illustrationstafeln | 11 + 3 Akt-Karten + Titelbild |
-| Item-Icons | rund 139 (60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items) |
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
 | Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
+| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 139 Bilder für Staffel 1, erzeugt: 60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items (Regeln §5.6, Dateien `art/items/`) [A] |
 
 ## 12. Do & Don't
 

@@ -1,0 +1,228 @@
+<title>Hollow Crown Truppe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+<style>
+/* Schritt 6: Truppe, Figur mit Paperdoll, Ausrüsten mit Vergleich, Händler. Stil B.
+   Ressourcen immer Symbol + Zahl (Münze = Gold, Raute = Eisenerz). Item-Werte aus content/items.yaml. */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 74ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #403020; }
+.screen > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(6px) saturate(.7) brightness(.8); transform: scale(1.08); }
+.screen svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.row { display: flex; align-items: center; gap: 8px; } .grow { flex: 1; min-width: 0; }
+.fill { position: absolute; left: 10px; right: 10px; top: 12px; bottom: 12px; display: grid; grid-template-rows: auto 1fr auto; gap: 10px; }
+
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --red: #b83a2e; --green: #2f8a4c; --gold: #d9a931; --rare: #2f7fb0; --epic: #7b4fc9; color: var(--line); }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+.B .head { display: flex; align-items: center; gap: 8px; }
+.B .back { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.B .title { flex: 1; display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; }
+.B .title b { font-family: var(--f-name); font-size: 18px; }
+.B .title span { font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; margin-left: auto; }
+.B .cur { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-label); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.B .coin { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid var(--line); display: inline-block; flex: none; }
+.B .ore { width: 12px; height: 12px; background: #8b9bb0; border: 2px solid var(--line); transform: rotate(45deg); border-radius: 3px; display: inline-block; flex: none; }
+.B .wallet { display: inline-flex; gap: 10px; background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px; box-shadow: 0 3px 0 var(--line); font-size: 14px; }
+.B .tabs { display: flex; gap: 6px; }
+.B .tab { font-family: var(--f-label); font-weight: 700; font-size: 14px; padding: 4px 14px; border-radius: 999px; background: var(--cream-2); border: 2px solid var(--line); }
+.B .tab.on { background: var(--line); color: var(--cream); }
+/* Truppe */
+.B .grid { padding: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 8px; align-content: start; overflow: hidden; }
+.B .mate { display: grid; justify-items: center; gap: 2px; text-align: center; position: relative; }
+.B .mate .m { width: 70px; height: 70px; border-radius: 50%; border: 2.5px solid var(--line); background: #cfe0f7; overflow: hidden; box-shadow: 0 3px 0 var(--line); }
+.B .mate .m img { width: 100%; height: 100%; object-fit: cover; }
+.B .mate b { font-family: var(--f-name); font-size: 15px; line-height: 1.05; }
+.B .mate .s { font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); }
+.B .mate .flags { position: absolute; top: -4px; right: 4px; display: flex; gap: 2px; }
+.B .fl { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-family: var(--f-label); font-weight: 700; font-size: 11px; color: #fff; }
+.B .fl.spark { background: var(--ember); }
+.B .fl.scar { background: #8a8d96; }
+.B .fl.talk { background: var(--green); }
+.B .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; font-weight: 600; padding: 8px 12px; }
+.B .legend span { display: inline-flex; align-items: center; gap: 5px; }
+/* Figur */
+.B .char { padding: 12px; display: grid; gap: 10px; align-content: start; overflow: hidden; }
+.B .char-top { display: grid; grid-template-columns: 120px 1fr; gap: 8px; align-items: end; }
+.B .char-top img { width: 140px; margin: -10px 0 -12px -14px; }
+.B .char-top h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 26px; line-height: 1; }
+.B .rolechip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-label); font-weight: 700; font-size: 13px; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; padding: 0 9px; margin: 4px 0; }
+.B .exp { display: grid; gap: 2px; font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); }
+.B .bar { height: 8px; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; overflow: hidden; }
+.B .bar i { display: block; height: 100%; background: var(--ember); }
+.B .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: var(--cream-2); border-radius: 12px; padding: 8px 6px; }
+.B .stat { display: grid; justify-items: center; font-family: var(--f-label); font-weight: 700; line-height: 1.05; }
+.B .stat small { font-size: 11px; color: var(--soft); letter-spacing: .06em; }
+.B .stat span { font-size: 18px; font-variant-numeric: tabular-nums; }
+.B .slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.B .slot { display: grid; justify-items: center; gap: 8px; font-family: var(--f-label); font-weight: 700; font-size: 11px; color: var(--soft); text-align: center; line-height: 1.05; }
+.B .slot .ic { width: 52px; height: 52px; border-radius: 14px; border: 2.5px solid var(--line); background: var(--cream-2); display: grid; place-items: center; position: relative; box-shadow: 0 3px 0 var(--line); color: var(--line); }
+.B .slot .ic.empty { border-style: dashed; box-shadow: none; opacity: .6; }
+.B .slot .ic.sel { box-shadow: 0 0 0 3px var(--ember), 0 3px 0 3px var(--line); }
+.B .gem { position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; border: 2px solid var(--line); transform: rotate(45deg); background: #bdb6aa; }
+.B .gem.rare { background: var(--rare); } .B .gem.epic { background: var(--epic); }
+.B .plus { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); background: var(--cream); border: 2px solid var(--line); border-radius: 999px; font-size: 11px; padding: 0 5px; color: var(--line); }
+.B .weight { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font-family: var(--f-label); font-weight: 700; font-size: 13px; }
+.B .weight .bar i { background: #8a6a3c; }
+.B .skill { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.B .skill b { font-family: var(--f-label); font-size: 14px; }
+.B .skill .bar { flex: 1; } .B .skill .bar i { background: var(--green); }
+/* Liste mit Vergleich */
+.B .sheet { padding: 12px; display: grid; gap: 8px; align-content: start; overflow: hidden; }
+.B .sheet h4 { margin: 0; font-family: var(--f-name); font-size: 18px; display: flex; justify-content: space-between; align-items: baseline; }
+.B .sheet h4 span { font-family: var(--f-label); font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; }
+.B .it { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 12px; border: 2px solid transparent; }
+.B .it.sel { background: #fdf0e3; border-color: var(--ember); }
+.B .it.cur { background: var(--cream-2); }
+.B .it .ic { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--line); background: var(--cream-2); display: grid; place-items: center; position: relative; }
+.B .it b { font-family: var(--f-label); font-size: 15px; display: block; line-height: 1.1; }
+.B .it .s { font-size: 12px; color: var(--soft); font-weight: 600; }
+.B .delta { font-family: var(--f-label); font-weight: 700; font-size: 13px; text-align: right; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.B .up { color: var(--green); } .B .dn { color: var(--red); }
+.B .tagchip { font-family: var(--f-label); font-weight: 700; font-size: 11px; background: var(--line); color: var(--cream); border-radius: 999px; padding: 0 6px; margin-left: 4px; vertical-align: 1px; }
+.B .offer { background: #fff1d6; border: 2px solid var(--gold); border-radius: 14px; padding: 8px; display: grid; gap: 4px; }
+.B .offer .k { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #8a6a10; }
+.B .btns { display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 10px 6px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 16px; background: var(--cream); box-shadow: 0 4px 0 var(--line); display: flex; justify-content: center; align-items: center; gap: 6px; }
+.B .btn.primary { background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+.B .btn.primary .coin { border-color: #fff; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-axe" viewBox="0 0 24 24"><path d="M6 21 17 6"/><path d="M13 4c3-1 6 0 7 3-2 0-4 1-5 3Z"/></symbol>
+  <symbol id="i-lance" viewBox="0 0 24 24"><path d="M4 20 18 6"/><path d="M15 3h6v6l-3-1-2-2Z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/></symbol>
+  <symbol id="i-helm" viewBox="0 0 24 24"><path d="M4 15a8 8 0 0 1 16 0v4H4Z"/><path d="M12 7v12M8 15h8"/></symbol>
+  <symbol id="i-body" viewBox="0 0 24 24"><path d="M8 4l4 2 4-2 4 4-3 2v10H7V10L4 8Z"/></symbol>
+  <symbol id="i-ring" viewBox="0 0 24 24"><circle cx="12" cy="14" r="6"/><path d="M10 8l2-4 2 4"/></symbol>
+  <symbol id="i-potion" viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v5L5.5 15a5 5 0 0 0 4.3 7.5h4.4A5 5 0 0 0 18.5 15L14 8V3"/></symbol>
+  <symbol id="i-guard" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6Z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M8 7c0-2 1.8-3 4-3s4 1 4 3"/><path d="M5 8h14l-1.5 12h-11Z"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 6 · Truppe und Ausrüstung</span>
+    <h1>Truppe, Figur, Ausrüsten und Händler</h1>
+    <p>Vollbild-Ansichten liegen über der weichgezeichneten Heimat. Item-Werte stammen aus <code>content/items.yaml</code>. Neu und ab jetzt überall: Beträge immer als Symbol und Zahl (Münze = Gold, graue Raute = Eisenerz), nie als Wort und nie als nackte Zahl.</p>
+  </header>
+
+  <div class="phones">
+    <!-- Truppe -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill">
+          <div style="display:grid;gap:8px">
+            <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Truppe</b><span>9 Gefährten · 1 Söldner</span></div></div>
+            <div class="tabs"><span class="tab on">Alle</span><span class="tab">Nahkampf</span><span class="tab">Fernkampf</span><span class="tab">Hilfe</span></div>
+          </div>
+          <div class="piece grid">
+            <div class="mate"><div class="m"><img src="assets/kael_head.webp" alt=""></div><b>Kael</b><span class="s">Hauptmann · 9</span></div>
+            <div class="mate"><div class="flags"><span class="fl spark">✦</span></div><div class="m"><img src="assets/brenna_head.webp" alt=""></div><b>Brenna</b><span class="s">Vorkämpfer · 10</span></div>
+            <div class="mate"><div class="flags"><span class="fl talk">2</span></div><div class="m"><img src="assets/tobin_head.webp" alt=""></div><b>Tobin</b><span class="s">Schütze · 8</span></div>
+            <div class="mate"><div class="m"><img src="assets/liora_head.webp" alt=""></div><b>Liora</b><span class="s">Heiler · 7</span></div>
+            <div class="mate"><div class="flags"><span class="fl scar">!</span></div><div class="m"><img src="assets/fenn_head.webp" alt=""></div><b>Fenn</b><span class="s">Späher · 7</span></div>
+            <div class="mate"><div class="m"><img src="assets/ysolde_head.webp" alt=""></div><b>Ysolde</b><span class="s">Elementarist · 6</span></div>
+            <div class="mate"><div class="m"><img src="assets/varek_head.webp" alt=""></div><b>Varek</b><span class="s">Plänkler · 8</span></div>
+            <div class="mate"><div class="m"><img src="assets/grosk_head.webp" alt=""></div><b>Grosk</b><span class="s">Vorkämpfer · 9</span></div>
+            <div class="mate"><div class="m"><img src="assets/mira_head.webp" alt=""></div><b>Mira</b><span class="s">Schütze · 7</span></div>
+          </div>
+          <div class="piece legend"><span><span class="fl spark">✦</span>kann aufsteigen</span><span><span class="fl talk">2</span>Gespräche bereit</span><span><span class="fl scar">!</span>Narbe</span></div>
+        </div>
+      </div></div>
+      <div class="cap">Truppe</div>
+      <p class="note">Medaillons mit Rolle und Stufe, Filter nach Rollengruppe. Kleine Marken zeigen, wo etwas zu tun ist. Gefallene stehen in der Gedächtnishalle, nicht hier.</p>
+    </div>
+
+    <!-- Figur -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Brenna</b><span>‹ 2 / 10 ›</span></div></div>
+          <div class="piece char">
+            <div class="char-top"><img src="assets/brenna_bust.webp" alt=""><div><h3>Brenna</h3><span class="rolechip"><svg class="i" style="width:15px;height:15px"><use href="#i-guard"/></svg>Vorkämpfer · St. 10</span><div class="exp">Bereit für den Aufstieg<div class="bar"><i style="width:100%"></i></div></div></div></div>
+            <div class="stats">
+              <div class="stat"><small>TP</small><span>31</span></div><div class="stat"><small>STR</small><span>12</span></div><div class="stat"><small>MAG</small><span>1</span></div><div class="stat"><small>SKL</small><span>8</span></div><div class="stat"><small>SPD</small><span>7</span></div>
+              <div class="stat"><small>LCK</small><span>5</span></div><div class="stat"><small>DEF</small><span>11</span></div><div class="stat"><small>RES</small><span>3</span></div><div class="stat"><small>MOV</small><span>4</span></div><div class="stat"><small>TRAG</small><span>20</span></div>
+            </div>
+            <div class="slots">
+              <div class="slot"><div class="ic sel"><svg class="i"><use href="#i-axe"/></svg><span class="plus">+2</span></div>Haupthand</div>
+              <div class="slot"><div class="ic"><svg class="i"><use href="#i-shield"/></svg><span class="gem"></span></div>Nebenhand</div>
+              <div class="slot"><div class="ic"><svg class="i"><use href="#i-helm"/></svg></div>Kopf</div>
+              <div class="slot"><div class="ic"><svg class="i"><use href="#i-body"/></svg></div>Körper</div>
+              <div class="slot"><div class="ic"><svg class="i"><use href="#i-ring"/></svg><span class="gem rare"></span></div>Accessoire</div>
+              <div class="slot"><div class="ic empty"></div>Accessoire</div>
+              <div class="slot"><div class="ic"><svg class="i"><use href="#i-potion"/></svg><span class="plus">3/3</span></div>Beutel</div>
+              <div class="slot"><div class="ic empty"></div>Beutel</div>
+            </div>
+            <div class="weight"><span>Last</span><div class="bar"><i style="width:85%"></i></div><span>17 / 20</span></div>
+            <div class="skill"><b>Wucht</b><div class="bar"><i style="width:72%"></i></div><span>18 / 25 FP</span></div>
+          </div>
+          <div class="btns"><div class="btn">Supports</div><div class="btn primary">Aufsteigen</div></div>
+        </div>
+      </div></div>
+      <div class="cap">Figur mit Ausrüstung</div>
+      <p class="note">Oben Halbfigur, darunter Werte und acht Plätze. Zahl am Item = Aufwertung oder Ladungen, Raute = Seltenheit. Wischen wechselt die Figur.</p>
+    </div>
+
+    <!-- Ausrüsten -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Haupthand</b><span>Brenna</span></div></div>
+          <div class="piece sheet">
+            <h4>Axt, Lanze <span>Konvoi · 4 passen</span></h4>
+            <div class="it cur"><div class="ic"><svg class="i"><use href="#i-axe"/></svg></div><div><b>Stahlaxt +2 <span class="tagchip">angelegt</span></b><span class="s">Mt 13 · Tr 66 · Gew 14 · lehrt Wucht</span></div><div class="delta"></div></div>
+            <div class="it sel"><div class="ic"><svg class="i"><use href="#i-lance"/></svg></div><div><b>Wurfspieß</b><span class="s">Mt 4 · Tr 65 · Reichw. 1–2 · Gew 9</span></div><div class="delta"><span class="dn">Mt −9</span><br><span class="up">Reichw. +1</span><br><span class="up">Last −5</span></div></div>
+            <div class="it"><div class="ic"><svg class="i"><use href="#i-axe"/></svg></div><div><b>Handaxt</b><span class="s">Mt 6 · Tr 60 · Reichw. 1–2 · Gew 11</span></div><div class="delta"><span class="dn">Mt −7</span><br><span class="up">Reichw. +1</span></div></div>
+            <div class="it"><div class="ic"><svg class="i"><use href="#i-lance"/></svg><span class="gem rare"></span></div><div><b>Pferdetöter</b><span class="s">Mt 6 · Tr 70 · effektiv gegen Reiter</span></div><div class="delta"><span class="dn">Mt −7</span><br><span class="up">Tr +4</span></div></div>
+            <div class="it" style="opacity:.45"><div class="ic"><svg class="i"><use href="#i-axe"/></svg></div><div><b>Eisenschwert</b><span class="s">Schwert passt nicht zum Vorkämpfer</span></div><div class="delta"></div></div>
+          </div>
+          <div class="btns"><div class="btn">Ablegen</div><div class="btn primary">Wurfspieß anlegen</div></div>
+        </div>
+      </div></div>
+      <div class="cap">Ausrüsten mit Vergleich</div>
+      <p class="note">Platz antippen öffnet passende Items aus Konvoi und Beutel, Unterschiede grün/rot gegen das Angelegte. Was die Rolle nicht führen darf, steht ausgegraut mit Grund.</p>
+    </div>
+
+    <!-- Händler -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill">
+          <div style="display:grid;gap:8px">
+            <div class="head"><div class="piece back"><svg class="i"><use href="#i-back"/></svg></div><div class="piece title"><b>Händler</b><span>Stufe 2</span></div></div>
+            <div class="row"><div class="tabs"><span class="tab on">Kaufen</span><span class="tab">Verkaufen</span></div><span class="grow"></span><span class="wallet"><span class="cur"><i class="coin"></i>3 860</span><span class="cur"><i class="ore"></i>5</span></span></div>
+          </div>
+          <div class="piece sheet">
+            <div class="offer"><span class="k">Angebot des Tages · −10 %</span><div class="it" style="padding:0"><div class="ic"><svg class="i"><use href="#i-shield"/></svg><span class="gem rare"></span></div><div><b>Eisenschild der Aschenwacht</b><span class="s">DEF +4 · Set Aschenwacht · lehrt Schildwall</span></div><div class="delta"><span class="cur"><i class="coin"></i>630</span></div></div></div>
+            <div class="it sel"><div class="ic"><svg class="i"><use href="#i-lance"/></svg></div><div><b>Stahllanze</b><span class="s">Mt 9 · Tr 70 · Gew 12 · für 3 in der Truppe</span></div><div class="delta"><span class="cur"><i class="coin"></i>1 000</span></div></div>
+            <div class="it"><div class="ic"><svg class="i"><use href="#i-axe"/></svg></div><div><b>Stahlaxt</b><span class="s">Mt 11 · Tr 60 · Gew 14</span></div><div class="delta"><span class="cur"><i class="coin"></i>1 000</span></div></div>
+            <div class="it"><div class="ic"><svg class="i"><use href="#i-body"/></svg></div><div><b>Kettenhemd</b><span class="s">DEF +4 · Gew 6</span></div><div class="delta"><span class="cur"><i class="coin"></i>900</span></div></div>
+            <div class="it"><div class="ic"><svg class="i"><use href="#i-potion"/></svg></div><div><b>Heiltrank</b><span class="s">heilt 10 TP · 3 Ladungen, füllt sich auf</span></div><div class="delta"><span class="cur"><i class="coin"></i>300</span></div></div>
+          </div>
+          <div class="btns"><div class="btn">Für wen?</div><div class="btn primary">Kaufen · <span class="cur"><i class="coin"></i>1 000</span></div></div>
+        </div>
+      </div></div>
+      <div class="cap">Händler</div>
+      <p class="note">Börse oben rechts, jeder Preis mit Münze. Die Haupttaste nennt den Betrag noch einmal. „Für wen?“ zeigt, wer das Item führen kann.</p>
+    </div>
+  </div>
+</div>

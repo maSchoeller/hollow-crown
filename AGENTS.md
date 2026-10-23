@@ -16,8 +16,9 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 
 - Vor Planungs- oder Feature-Arbeit `concept/20-game-brief/brief.md` lesen, vor Arbeit an Spielregeln zusätzlich `concept/21-gdd/gdd.md`. Vor Arbeit an Story, Figuren, Dialogen oder Missionsinhalten `concept/22-narrative/narrative.md`. Wo diese schweigen, gilt `concept/01-decisions.md`; widerspricht ein BMAD-Artefakt dem Protokoll, gilt das Artefakt.
 - Vor Arbeit an Grafik, Figuren, Karten-Look, Effekten oder Audio-Richtung `concept/23-art-direction/art-direction.md` lesen (löst `15-art-direction.md` ab); Pipeline und Formate in `16-asset-pipeline.md`, Audio-Technik in `17-audio.md`, Asset-Formate in `art/README.md`. Zeichenstil ist runder Chibi (B8), Brettfiguren entstehen per Bild-zu-3D mit Tripo (§4.6).
-- Architektur: `concept/10-tech-architecture.md`. Spielwerte in `content/balance.yaml`, Startwerte in `concept/data-samples/`.
-- Stories und Sprint-Status (sobald vorhanden): `_bmad-output/implementation-artifacts/`.
+- Vor Arbeit an Oberfläche, HUD, Menüs oder Screens `concept/25-ux/DESIGN.md` und `EXPERIENCE.md` lesen (Mockups in `concept/25-ux/mockups/`); Beträge immer als Symbol + Zahl.
+- Vor technischer Arbeit `concept/24-architecture/architecture.md` lesen (Delta zu `concept/10-tech-architecture.md`, das gilt, wo das Delta schweigt): Kampagnen-Commands, Bedingungen/Wirkungen, Akt-Pakete, Speicherformat 2, Muster in §8. Spielwerte in `content/balance.yaml`, Startwerte in `concept/data-samples/`.
+- Epics und Stories: `concept/26-epics/epics.md` (Quelle für `gds-sprint-planning` und `gds-create-story`, lesbar in `concept/26-epics/html/epics.html`); Story-Dateien und Sprint-Status (sobald vorhanden): `_bmad-output/implementation-artifacts/`.
 
 ## Ausführen und prüfen
 
