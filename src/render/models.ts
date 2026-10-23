@@ -91,9 +91,10 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
     for (const m of n.getChildMeshes(false)) {
       if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
       m.makeGeometryUnique();
-      // vertex-coloured Blender figures carry team cloth in vertex alpha; textured figures keep their base colour map
+      // team cloth sits in vertex alpha (Blender figures: vertex colours; Tripo figures: white vertices over their
+      // base colour map, the cloth in a neutral grey that the team ramp tints)
       if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) teamColours(m, team);
-      else material.diffuseTexture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
+      material.diffuseTexture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
       m.material = material;
       m.isPickable = false;
       m.receiveShadows = true;
