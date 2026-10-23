@@ -7,14 +7,16 @@ import { t } from '../../i18n';
 import { asset, Crest, itemName, Modal, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { exportSave, importSave, listSaves, readSave, type SaveRecord, type SlotId } from '../../persistence/save';
+import { deleteCampaign, exportSave, importSave, listCampaigns, listSaves, readSave, type CampaignMeta, type SaveRecord, type SlotId } from '../../persistence/save';
 import {
   campaign,
+  campaignId,
   data,
+  importRecord,
+  latestAutoSave,
   loadSlot,
   nodeDef,
   playNode,
-  restore,
   screen,
   settings,
   startNewGame,
@@ -24,20 +26,24 @@ import {
 
 export function Title() {
   const [saves, setSaves] = useState<SaveRecord[]>([]);
+  const [auto, setAuto] = useState<SaveRecord | undefined>();
   const [load, setLoad] = useState(false);
   const [err, setErr] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    void listSaves().then(setSaves).catch(() => setSaves([]));
+    void latestAutoSave()
+      .then(async (rec) => {
+        setAuto(rec);
+        setSaves(rec ? await listSaves(rec.campaignId) : []);
+      })
+      .catch(() => setSaves([]));
   }, []);
-  const auto = saves.find((s) => s.slot === 'auto');
   const onImport = async (f: File | undefined) => {
     if (!f) return;
     try {
-      const rec = importSave(await f.text());
-      restore(rec.payload);
-    } catch {
-      setErr(t('ui.title.importFailed'));
+      if (!(await importRecord(importSave(await f.text())))) setErr(t('ui.campaign.limit.text'));
+    } catch (e) {
+      setErr(t(e instanceof Error && e.message === 'legacy' ? 'ui.title.importLegacy' : 'ui.title.importFailed'));
     }
   };
   return (
@@ -47,7 +53,7 @@ export function Title() {
       <div class="tagline">{t('ui.title.tagline')}</div>
       <div class="title-menu">
         {auto && (
-          <button class="btn primary big" onClick={() => void loadSlot('auto')}>
+          <button class="btn primary big" onClick={() => void loadSlot('auto', auto.campaignId)}>
             {t('ui.title.continue')}
           </button>
         )}
@@ -72,7 +78,7 @@ export function Title() {
           <UpdateLink />
         </div>
       </div>
-      {load && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s)} onClose={() => setLoad(false)} />}
+      {load && auto && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s, auto.campaignId)} onClose={() => setLoad(false)} />}
     </div>
   );
 }
@@ -133,7 +139,8 @@ export function downloadSave(rec: SaveRecord): void {
 }
 
 export async function exportCurrent(): Promise<void> {
-  const rec = await readSave('auto');
+  const id = campaignId.value;
+  const rec = id ? await readSave(id, 'auto') : undefined;
   if (rec) downloadSave(rec);
 }
 
@@ -147,6 +154,7 @@ export function NewGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [deathMode, setDeathMode] = useState<DeathMode>('standard');
   const [more, setMore] = useState(false);
+  const [limit, setLimit] = useState(false);
   const opt = <T extends string>(val: T, cur: T, set: (v: T) => void, label: string, sub?: string) => (
     <button key={val} class={`choice ${val === cur ? 'on' : ''}`} onClick={() => set(val)} aria-pressed={val === cur}>
       {label}
@@ -209,13 +217,47 @@ export function NewGame() {
           class="btn primary big"
           disabled={!name.trim()}
           onClick={() => {
-            startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY });
+            void startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY }).then((ok) => setLimit(!ok));
           }}
         >
           {t('ui.new.start')}
         </button>
       </div>
+      {limit && <CampaignLimit onClose={() => setLimit(false)} />}
     </div>
+  );
+}
+
+/**
+ * At most three campaigns (concept/24-architecture §5.15): asks to delete one, with confirmation.
+ * Interim dialog until the campaign view (story 1.3) takes over.
+ */
+function CampaignLimit({ onClose }: { onClose: () => void }) {
+  const [list, setList] = useState<CampaignMeta[]>([]);
+  const [confirm, setConfirm] = useState<string | null>(null);
+  const refresh = () => void listCampaigns().then(setList);
+  useEffect(refresh, []);
+  const remove = async (id: string) => {
+    await deleteCampaign(id);
+    setConfirm(null);
+    onClose();
+  };
+  return (
+    <Modal title={t('ui.campaign.limit.title')} onClose={onClose}>
+      <div class="col">
+        <div class="muted">{t('ui.campaign.limit.text')}</div>
+        {list.map((m) => (
+          <div key={m.id} class="row" style={{ justifyContent: 'space-between', gap: 8 }}>
+            <span>
+              {m.name} · {t(`ui.death.${m.deathMode}`)} · {new Date(m.updatedAt).toLocaleString()}
+            </span>
+            <button class={`btn small ${confirm === m.id ? 'danger' : 'ghost'}`} onClick={() => (confirm === m.id ? void remove(m.id) : setConfirm(m.id))}>
+              {confirm === m.id ? t('ui.campaign.deleteConfirm') : t('ui.campaign.delete')}
+            </button>
+          </div>
+        ))}
+      </div>
+    </Modal>
   );
 }
 

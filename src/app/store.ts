@@ -16,11 +16,23 @@ import {
 } from '../core';
 import { loadContent } from '../content/browser';
 import { lang, setAvatar, setLocales, type Lang } from '../i18n';
-import { readSave, writeSave, type SavePayload, type SlotId } from '../persistence/save';
+import { createAutoSaver } from '../persistence/autosave';
+import {
+  CampaignLimitError,
+  contentVersionOf,
+  createCampaign,
+  listCampaigns,
+  readSave,
+  writeSave,
+  type SavePayload,
+  type SaveRecord,
+  type SlotId,
+} from '../persistence/save';
 
 const loaded = loadContent();
 export const data: GameData = loaded.data;
 setLocales(loaded.locales);
+const contentVersion = contentVersionOf(data);
 
 export type Screen =
   | { name: 'title' }
@@ -37,6 +49,8 @@ export type Screen =
 
 export const screen = signal<Screen>({ name: 'title' });
 export const campaign = signal<CampaignState | null>(null);
+/** id of the active campaign in the save database (format 2); lives outside CampaignState */
+export const campaignId = signal<string | null>(null);
 
 export interface BattleSession {
   start: BattleState;
@@ -98,18 +112,55 @@ export function updateSettings(p: Partial<Settings>): void {
 
 const nowIso = (): string => new Date().toISOString();
 
-export async function autosave(where: SavePayload['screen']): Promise<void> {
+const saver = createAutoSaver();
+/** play time is counted while the page is visible */
+let playClock = performance.now();
+function takePlaytime(): number {
+  const now = performance.now();
+  const d = document.visibilityState === 'visible' ? now - playClock : 0;
+  playClock = now;
+  return d;
+}
+
+/** Log length at the start of the current round (replay target of "restart round"). */
+function turnStartIndex(log: Command[]): number {
+  return log.map((c) => c.type).lastIndexOf('endPhase') + 1;
+}
+
+/** Queues the auto-save of the active campaign; the snapshot is taken now, the write happens later. */
+export function autosave(where: SavePayload['screen']): void {
   const c = campaign.value;
-  if (!c) return;
+  const id = campaignId.value;
+  if (!c || !id) return;
   const b = battle.value;
-  const payload: SavePayload = { campaign: c, screen: where, battle: b && where === 'battle' ? { start: b.start, commands: b.log } : undefined };
-  await writeSave('auto', payload, nowIso()).catch((e) => console.warn('autosave failed', e));
+  const payload: SavePayload = {
+    campaign: c,
+    screen: where,
+    battle: b && where === 'battle' ? { start: b.start, commands: b.log, turnStartIndex: turnStartIndex(b.log) } : undefined,
+  };
+  saver.schedule(async () => {
+    await writeSave(id, 'auto', payload, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
+  });
+}
+
+/** Writes the pending auto-save at once (page goes to the background). */
+export function flushAutosave(): Promise<void> {
+  return saver.flush();
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') void flushAutosave();
+    else playClock = performance.now();
+  });
+  window.addEventListener('pagehide', () => void flushAutosave());
 }
 
 export async function saveSlot(slot: SlotId): Promise<void> {
   const c = campaign.value;
-  if (!c) return;
-  await writeSave(slot, { campaign: c, screen: 'camp' }, nowIso());
+  const id = campaignId.value;
+  if (!c || !id) return;
+  await writeSave(id, slot, { campaign: c, screen: 'camp' }, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
 }
 
 function applyCampaign(c: CampaignState): void {
@@ -117,24 +168,65 @@ function applyCampaign(c: CampaignState): void {
   setAvatar(c.avatar.name, c.avatar.pronoun);
 }
 
-export function startNewGame(settingsIn: BattleSettings, avatar: AvatarSettings): void {
+/**
+ * Starts a new campaign. Resolves `false` when three campaigns exist (the caller asks the player to
+ * delete one first, concept/24-architecture §5.15).
+ */
+export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSettings): Promise<boolean> {
   const seed = (Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0;
   const c = newCampaign(data, seed, settingsIn, avatar);
+  try {
+    const meta = await createCampaign({ campaign: c, now: nowIso(), contentVersion });
+    campaignId.value = meta.id;
+  } catch (e) {
+    if (e instanceof CampaignLimitError) return false;
+    throw e;
+  }
+  await saver.flush();
   applyCampaign(c);
   battle.value = null;
-  void autosave('worldmap');
+  playClock = performance.now();
+  autosave('worldmap');
   playNode(data.campaign.start);
-}
-
-/** Restores a save: replays a running battle's command log (concept/13 acceptance 8). */
-export async function loadSlot(slot: SlotId): Promise<boolean> {
-  const rec = await readSave(slot);
-  if (!rec) return false;
-  restore(rec.payload);
   return true;
 }
 
-export function restore(p: SavePayload): void {
+/** Restores a slot of a campaign (default: the active one): replays a running battle's command log (concept/13 acceptance 8). */
+export async function loadSlot(slot: SlotId, id = campaignId.value): Promise<boolean> {
+  if (!id) return false;
+  await saver.flush();
+  const rec = await readSave(id, slot);
+  if (!rec) return false;
+  restore(rec);
+  return true;
+}
+
+/** Auto-save of the most recently played campaign ("Continue"). */
+export async function latestAutoSave(): Promise<SaveRecord | undefined> {
+  const [last] = await listCampaigns();
+  return last ? readSave(last.id, 'auto') : undefined;
+}
+
+/**
+ * Imports an exported save: overwrites the campaign with the same id or registers it as a new one.
+ * Resolves `false` when that would exceed three campaigns.
+ */
+export async function importRecord(rec: SaveRecord): Promise<boolean> {
+  try {
+    await createCampaign({ campaign: rec.payload.campaign, now: nowIso(), contentVersion, id: rec.campaignId });
+  } catch (e) {
+    if (e instanceof CampaignLimitError) return false;
+    throw e;
+  }
+  await writeSave(rec.campaignId, 'auto', rec.payload, { now: nowIso(), contentVersion });
+  restore(rec);
+  return true;
+}
+
+export function restore(rec: SaveRecord): void {
+  const p = rec.payload;
+  campaignId.value = rec.campaignId;
+  playClock = performance.now();
   applyCampaign(p.campaign);
   if (p.battle) {
     let s = p.battle.start;
@@ -181,7 +273,7 @@ export function startBattle(nodeId: string, deploy: string[]): GameEvent[] {
   const r = beginBattle(data, c, nodeId, deploy);
   battle.value = { start: r.state, state: r.state, log: [] };
   screen.value = { name: 'battle' };
-  void autosave('battle');
+  autosave('battle');
   return r.events;
 }
 
@@ -190,7 +282,7 @@ export function command(cmd: Command): GameEvent[] {
   const b = battle.value!;
   const r = applyCommand(data, b.state, cmd);
   battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
-  void autosave('battle');
+  autosave('battle');
   return r.events;
 }
 
@@ -207,7 +299,7 @@ export function restartBattle(fromRound: boolean): void {
   for (const cmd of log) s = applyCommand(data, s, cmd).state;
   battle.value = { start: b.start, state: s, log };
   screen.value = { name: 'battle' };
-  void autosave('battle');
+  autosave('battle');
 }
 
 /** Battle ended: apply results, show outro and result screen. */
@@ -221,7 +313,7 @@ export function concludeBattle(): void {
   const { campaign: next, result } = finishBattle(data, c, b.state);
   applyCampaign(next);
   battle.value = null;
-  void autosave('camp');
+  autosave('camp');
   const node = nodeDef(b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
   if (node.post) screen.value = { name: 'dialogue', id: node.post, next: toResult };
@@ -230,7 +322,7 @@ export function concludeBattle(): void {
 
 export function setCampaign(c: CampaignState): void {
   applyCampaign(c);
-  void autosave('camp');
+  autosave('camp');
 }
 
 export function setFlag(flag: string): void {

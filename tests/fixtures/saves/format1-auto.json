@@ -1,0 +1,434 @@
+{
+ "slot": "auto",
+ "version": 1,
+ "createdAt": "2026-10-01T12:00:00.000Z",
+ "appVersion": "0.1.0",
+ "payload": {
+  "campaign": {
+   "version": 1,
+   "seed": 11,
+   "rng": [
+    2212174512,
+    4237235382,
+    3650447460,
+    3030939890
+   ],
+   "settings": {
+    "difficulty": "normal",
+    "deathMode": "standard"
+   },
+   "avatar": {
+    "name": "Rhen",
+    "pronoun": "they",
+    "portrait": "avatar_a",
+    "affinity": "wind"
+   },
+   "roster": [
+    {
+     "id": "avatar",
+     "charId": "avatar",
+     "nameKey": "unit.avatar.name",
+     "classId": "tactician",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 20,
+      "str": 5,
+      "mag": 5,
+      "skl": 6,
+      "spd": 6,
+      "lck": 5,
+      "def": 4,
+      "res": 4
+     },
+     "growth": {
+      "hp": 70,
+      "str": 40,
+      "mag": 40,
+      "skl": 50,
+      "spd": 45,
+      "lck": 45,
+      "def": 30,
+      "res": 30
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "wind",
+     "personalSkill": "strategist_eye",
+     "flags": [
+      "avatar",
+      "mustSurvive"
+     ],
+     "equip": {
+      "mainHand": {
+       "uid": "i1",
+       "def": "iron_sword",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "body": {
+       "uid": "i2",
+       "def": "leather_vest",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "avatar_a",
+     "sprite": "avatar",
+     "name": "Rhen"
+    },
+    {
+     "id": "kael",
+     "charId": "kael",
+     "nameKey": "unit.kael.name",
+     "classId": "captain",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 22,
+      "str": 6,
+      "mag": 1,
+      "skl": 7,
+      "spd": 7,
+      "lck": 5,
+      "def": 5,
+      "res": 2
+     },
+     "growth": {
+      "hp": 80,
+      "str": 45,
+      "mag": 10,
+      "skl": 50,
+      "spd": 45,
+      "lck": 40,
+      "def": 35,
+      "res": 20
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "earth",
+     "personalSkill": "steadfast",
+     "flags": [
+      "lord",
+      "mustSurvive",
+      "convoyAccess",
+      "seizer"
+     ],
+     "equip": {
+      "mainHand": {
+       "uid": "i3",
+       "def": "iron_sword",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "body": {
+       "uid": "i5",
+       "def": "leather_vest",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i4",
+       "def": "iron_lance",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      {
+       "uid": "i6",
+       "def": "vulnerary",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 3
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "kael",
+     "sprite": "kael"
+    },
+    {
+     "id": "brenna",
+     "charId": "brenna",
+     "nameKey": "unit.brenna.name",
+     "classId": "fighter",
+     "level": 3,
+     "exp": 0,
+     "stats": {
+      "hp": 27,
+      "str": 8,
+      "mag": 0,
+      "skl": 5,
+      "spd": 4,
+      "lck": 3,
+      "def": 5,
+      "res": 1
+     },
+     "growth": {
+      "hp": 85,
+      "str": 55,
+      "mag": 0,
+      "skl": 40,
+      "spd": 30,
+      "lck": 25,
+      "def": 35,
+      "res": 10
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "fire",
+     "personalSkill": "veteran_grit",
+     "flags": [],
+     "equip": {
+      "mainHand": {
+       "uid": "i7",
+       "def": "iron_axe",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "head": {
+       "uid": "i9",
+       "def": "leather_cap",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i8",
+       "def": "hand_axe",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      {
+       "uid": "i10",
+       "def": "door_key",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 1
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "brenna",
+     "sprite": "brenna"
+    },
+    {
+     "id": "tobin",
+     "charId": "tobin",
+     "nameKey": "unit.tobin.name",
+     "classId": "soldier",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 19,
+      "str": 5,
+      "mag": 0,
+      "skl": 4,
+      "spd": 6,
+      "lck": 6,
+      "def": 4,
+      "res": 1
+     },
+     "growth": {
+      "hp": 75,
+      "str": 50,
+      "mag": 5,
+      "skl": 45,
+      "spd": 50,
+      "lck": 55,
+      "def": 40,
+      "res": 20
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "wind",
+     "personalSkill": "underdog",
+     "flags": [],
+     "equip": {
+      "mainHand": {
+       "uid": "i11",
+       "def": "iron_lance",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "offHand": {
+       "uid": "i12",
+       "def": "wooden_shield",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i13",
+       "def": "vulnerary",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 3
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "tobin",
+     "sprite": "tobin"
+    }
+   ],
+   "fallen": [],
+   "convoy": [
+    {
+     "uid": "i14",
+     "def": "vulnerary",
+     "upgrade": 0,
+     "affixes": [],
+     "runes": [],
+     "charges": 3
+    },
+    {
+     "uid": "i15",
+     "def": "iron_lance",
+     "upgrade": 0,
+     "affixes": [],
+     "runes": []
+    }
+   ],
+   "gold": 500,
+   "materials": {},
+   "flags": [],
+   "completed": [],
+   "available": [
+    "prologue"
+   ],
+   "supports": {
+    "avatar|kael": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|kael": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|tobin": {
+     "points": 0,
+     "rank": null
+    },
+    "mira|tobin": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|varek": {
+     "points": 0,
+     "rank": null
+    },
+    "liora|ysolde": {
+     "points": 0,
+     "rank": null
+    },
+    "avatar|liora": {
+     "points": 0,
+     "rank": null
+    }
+   },
+   "nextUid": 16,
+   "offers": []
+  },
+  "screen": "worldmap"
+ }
+}

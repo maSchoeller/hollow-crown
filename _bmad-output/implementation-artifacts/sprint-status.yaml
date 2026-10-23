@@ -1,0 +1,192 @@
+# generated: 2026-10-23
+# last_updated: 2026-10-23
+# project: Hollow Crown
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+# source: concept/26-epics/epics.md (12 epics, 99 stories)
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
+
+generated: 2026-10-23
+last_updated: 2026-10-23
+project: Hollow Crown
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Kampagnen und Spielstände
+  epic-1: in-progress
+  1-1-neue-oberflaeche-steine-tokens-und-waehrung: backlog  # Neue Oberfläche – Steine, Tokens und Währung
+  1-2-speicherformat-2-mit-kampagnen: review  # Speicherformat 2 mit Kampagnen
+  1-3-kampagnen-ansicht-und-neue-kampagne: backlog  # Kampagnen-Ansicht und Neue Kampagne
+  1-4-kampagnen-commands-und-journal: backlog  # Kampagnen-Commands und Journal
+  1-5-speicherplaetze-und-neustart-je-tod-modus: backlog  # Speicherplätze und Neustart je Tod-Modus
+  1-6-verbluten-im-modus-standard: backlog  # Verbluten im Modus Standard
+  1-7-fehlerbericht-und-speicherschutz: backlog  # Fehlerbericht und Speicherschutz
+  epic-1-retrospective: optional
+
+  # Epic 2: Rollenklassen und neues Kampf-HUD
+  epic-2: backlog
+  2-1-kampf-hud-in-stil-b: backlog  # Kampf-HUD in Stil B
+  2-2-rollenmodell-und-waffengruppen: backlog  # Rollenmodell und Waffengruppen
+  2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: backlog  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
+  2-4-halten-und-nachsetzen: backlog  # Halten und Nachsetzen
+  2-5-wirken-der-elementaristen: backlog  # Wirken der Elementaristen
+  2-6-nebel-des-krieges-oeffnen-und-stehlen: backlog  # Nebel des Krieges, Öffnen und Stehlen
+  2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: backlog  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
+  2-8-gegnerphase-im-web-worker: backlog  # Gegnerphase im Web Worker
+  2-9-gegnertypen-von-akt-1: backlog  # Gegnertypen von Akt 1
+  epic-2-retrospective: optional
+
+  # Epic 3: Leutnants
+  epic-3: backlog
+  3-1-leutnants-als-content-und-auf-dem-brett: backlog  # Leutnants als Content und auf dem Brett
+  3-2-flucht-bei-0-tp: backlog  # Flucht bei 0 TP
+  3-3-groll-und-groll-ziel: backlog  # Groll und Groll-Ziel
+  3-4-mitwachsende-staerke: backlog  # Mitwachsende Stärke
+  3-5-kopfgeld-und-signatur-item: backlog  # Kopfgeld und Signatur-Item
+  3-6-steckbriefe: backlog  # Steckbriefe
+  epic-3-retrospective: optional
+
+  # Epic 4: Akt-Struktur, Szenen und Entscheidungen
+  epic-4: backlog
+  4-1-content-je-akt-ablegen: backlog  # Content je Akt ablegen
+  4-2-bedingungen-und-wirkungen: backlog  # Bedingungen und Wirkungen
+  4-3-kampagnen-graph-eines-akts: backlog  # Kampagnen-Graph eines Akts
+  4-4-szenen-schema-mit-ersatzsprechern: backlog  # Szenen-Schema mit Ersatzsprechern
+  4-5-szenen-im-neuen-stil: backlog  # Szenen im neuen Stil
+  4-6-entscheidungen-und-folgen-karte: backlog  # Entscheidungen und Folgen-Karte
+  4-7-chronik: backlog  # Chronik
+  4-8-neue-missionsziele-escort-und-treasure: backlog  # Neue Missionsziele escort und treasure
+  4-9-feste-support-paare: backlog  # Feste Support-Paare
+  epic-4-retrospective: optional
+
+  # Epic 5: Weltkarte und Heimsuchungen
+  epic-5: backlog
+  5-1-szenen-host-und-geteilter-asset-cache: backlog  # Szenen-Host und geteilter Asset-Cache
+  5-2-die-weltkarte-als-3d-szene: backlog  # Die Weltkarte als 3D-Szene
+  5-3-weltkarte-als-hub: backlog  # Weltkarte als Hub
+  5-4-tageswechsel: backlog  # Tageswechsel
+  5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator
+  5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
+  epic-5-retrospective: optional
+
+  # Epic 6: Truppe, Fortschritt und Lager
+  epic-6: backlog
+  6-1-truppe-und-figur: backlog  # Truppe und Figur
+  6-2-ausruesten-mit-vergleich: backlog  # Ausrüsten mit Vergleich
+  6-3-das-lager-in-akt-1: backlog  # Das Lager in Akt 1
+  6-4-haendler-schmied-heiler-und-taverne: backlog  # Händler, Schmied, Heiler und Taverne
+  6-5-stufendeckel-und-ep-regeln: backlog  # Stufendeckel und EP-Regeln
+  6-6-missionsergebnis: backlog  # Missionsergebnis
+  6-7-abschied-von-gefallenen: backlog  # Abschied von Gefallenen
+  6-8-wirtschaftskurve-und-verkettete-simulation: backlog  # Wirtschaftskurve und verkettete Simulation
+  epic-6-retrospective: optional
+
+  # Epic 7: Akt-Pakete und Offline
+  epic-7: backlog
+  7-1-pakete-im-build: backlog  # Pakete im Build
+  7-2-hintergrund-download-und-offline: backlog  # Hintergrund-Download und Offline
+  7-3-ende-eines-veroeffentlichten-akts: backlog  # Ende eines veröffentlichten Akts
+  7-4-stabile-ids-und-release-ablauf: backlog  # Stabile IDs und Release-Ablauf
+  epic-7-retrospective: optional
+
+  # Epic 8: Chibi-Stil, Item-Bilder und Audio
+  epic-8: backlog
+  8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
+  8-2-tripo-pipeline-vervollstaendigen: backlog  # Tripo-Pipeline vervollständigen
+  8-3-brettfiguren-fuer-akt-1: backlog  # Brettfiguren für Akt 1
+  8-4-portraets-mit-stimmungen-fuer-akt-1: backlog  # Porträts mit Stimmungen für Akt 1
+  8-5-item-bilder: backlog  # Item-Bilder
+  8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
+  8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: backlog  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
+  8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
+  8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
+  epic-8-retrospective: optional
+
+  # Epic 9: Akt 1 „Asche“ (MVP)
+  epic-9: backlog
+  9-1-prolog-die-paktnacht: backlog  # Prolog „Die Paktnacht“
+  9-2-mission-1-1-steckbriefe: backlog  # Mission 1-1 „Steckbriefe“
+  9-3-mission-1-2-asche-ueber-erlbach-und-entscheidung-e1: backlog  # Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
+  9-4-mission-1-3-der-fremde-mit-dem-siegel: backlog  # Mission 1-3 „Der Fremde mit dem Siegel“
+  9-5-mission-1-4-die-spur-des-maklers-und-entscheidung-e2: backlog  # Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
+  9-6-mission-1-5-das-hungerlager-und-entscheidung-e3: backlog  # Mission 1-5 „Das Hungerlager“ und Entscheidung E3
+  9-7-mission-1-6-die-paktwacht-finale-und-entscheidung-e4: backlog  # Mission 1-6 „Die Paktwacht“ (Finale) und Entscheidung E4
+  9-8-nebenquest-n1-der-ring-von-varnhold: backlog  # Nebenquest N1 „Der Ring von Varnhold“
+  9-9-nebenquest-n2-der-letzte-wachturm: backlog  # Nebenquest N2 „Der letzte Wachturm“
+  9-10-supports-und-barks-von-akt-1: backlog  # Supports und Barks von Akt 1
+  9-11-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
+  epic-9-retrospective: optional
+
+  # Epic 10: Die Burg (Heimat ab Akt 2) – grob
+  epic-10: backlog
+  10-1-die-burg-als-3d-diorama-mit-raumsteinen: backlog  # Die Burg als 3D-Diorama mit Raumsteinen
+  10-2-raeume-ausbauen: backlog  # Räume ausbauen
+  10-3-akademie-und-aufstieg-mit-glutfunke: backlog  # Akademie und Aufstieg mit Glutfunke
+  10-4-profi-wege-aller-rollen: backlog  # Profi-Wege aller Rollen
+  10-5-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
+  10-6-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt
+  10-7-gedaechtnishalle-und-lektionen: backlog  # Gedächtnishalle und Lektionen
+  10-8-uebungsplatz-lagerfeuer-raenge-und-lebende-burg: backlog  # Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+  epic-10-retrospective: optional
+
+  # Epic 11: Akt 2 „Glut“ – grob
+  epic-11: backlog
+  11-1-paket-region-und-gegner-von-akt-2: backlog  # Paket, Region und Gegner von Akt 2
+  11-2-mission-2-1-wind-ueber-der-eisenmark-survive-brakka-und-die-drei-angebote: backlog  # Mission 2-1 „Wind über der Eisenmark“ (survive, Brakka) und die drei Angebote
+  11-3-mission-2-2-das-siegel-im-salzpass-treasure-grell: backlog  # Mission 2-2 „Das Siegel im Salzpass“ (treasure, Grell)
+  11-4-mission-2-3-die-verstossene-leibwache-escort-odile-sable: backlog  # Mission 2-3 „Die verstoßene Leibwache“ (escort Odile, Sable)
+  11-5-mission-2-4-der-wyvernhorst-boss-rowena: backlog  # Mission 2-4 „Der Wyvernhorst“ (boss, Rowena)
+  11-6-mission-2-5-die-brandschneise-defend-brandhang-grell-und-e7: backlog  # Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
+  11-7-mission-2-6-gold-fuer-banditen-rout-rowena-und-sable: backlog  # Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
+  11-8-mission-2-7-kronfeld-grosse-schlacht-survive-escape: backlog  # Mission 2-7 „Kronfeld“ (große Schlacht, survive → escape)
+  11-9-nebenquests-n3-der-clan-im-schnee-und-n4-glut-unter-dem-berg: backlog  # Nebenquests N3 „Der Clan im Schnee“ und N4 „Glut unter dem Berg“
+  11-10-supports-barks-und-vertonung-von-akt-2: backlog  # Supports, Barks und Vertonung von Akt 2
+  11-11-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
+  epic-11-retrospective: optional
+
+  # Epic 12: Akt 3 „Krone“ und Staffelende – grob
+  epic-12: backlog
+  12-1-paket-region-und-gegner-von-akt-3: backlog  # Paket, Region und Gegner von Akt 3
+  12-2-mission-3-1-winter-ueber-aurenhall-reach-eluned: backlog  # Mission 3-1 „Winter über Aurenhall“ (reach, Eluned)
+  12-3-mission-3-2-das-verbotene-lied-escort-harlan-cassian: backlog  # Mission 3-2 „Das verbotene Lied“ (escort Harlan, Cassian)
+  12-4-mission-3-3-die-einsiedlerin-defend-mael-und-e11: backlog  # Mission 3-3 „Die Einsiedlerin“ (defend, Mael) und E11
+  12-5-mission-3-4-die-kroenung-seize-glutdom: backlog  # Mission 3-4 „Die Krönung“ (seize Glutdom)
+  12-6-mission-3-5-drachen-ueber-der-stadt-grosse-schlacht-defend: backlog  # Mission 3-5 „Drachen über der Stadt“ (große Schlacht, defend)
+  12-7-mission-3-6-im-drachengebirge-finale-boss-halvard-e10-und-e12: backlog  # Mission 3-6 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
+  12-8-epilog-mosaik: backlog  # Epilog-Mosaik
+  12-9-nebenquests-n5-n6-n7: backlog  # Nebenquests N5, N6, N7
+  12-10-nach-dem-finale-und-uebergabe-an-staffel-2: backlog  # Nach dem Finale und Übergabe an Staffel 2
+  12-11-akt-3-abstimmen-und-veroeffentlichen: backlog  # Akt 3 abstimmen und veröffentlichen
+  epic-12-retrospective: optional

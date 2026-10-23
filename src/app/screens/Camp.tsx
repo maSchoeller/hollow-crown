@@ -38,7 +38,7 @@ import { asset, Crest, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, 
 import { Icon } from '../../ui/icons';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
-import { campaign, data, nodeDef, pendingEvents, playNode, saveSlot, screen, setCampaign, setFlag, startBattle } from '../store';
+import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, saveSlot, screen, setCampaign, setFlag, startBattle } from '../store';
 import { downloadSave, SlotPicker } from './Menus';
 import { audio } from '../audio';
 
@@ -653,7 +653,7 @@ function Campfire({ apply }: { apply: Apply }) {
 function SavePanel({ onToast }: { onToast: (s: string) => void }) {
   const [saves, setSaves] = useState<SaveRecord[]>([]);
   const [picker, setPicker] = useState(false);
-  const refresh = () => void listSaves().then(setSaves);
+  const refresh = () => void (campaignId.value ? listSaves(campaignId.value).then(setSaves) : setSaves([]));
   useEffect(refresh, []);
   return (
     <div class="col">
