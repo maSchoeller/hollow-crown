@@ -53,6 +53,13 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'],
     environment: 'node',
-    coverage: { provider: 'v8', include: ['src/core/**/*.ts'], exclude: ['src/core/**/*.test.ts'], reporter: ['text-summary', 'html'] },
+    coverage: {
+      provider: 'v8',
+      include: ['src/core/**/*.ts'],
+      exclude: ['src/core/**/*.test.ts'],
+      reporter: ['text-summary', 'html'],
+      // Ratchet at the current level (target 90 %, see AGENTS.md); raise whenever coverage improves, never lower.
+      thresholds: { statements: 58, branches: 51, functions: 62, lines: 64 },
+    },
   },
 });

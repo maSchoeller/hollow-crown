@@ -2,12 +2,17 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
-const layer = (from, forbidden) => ({
+const layer = (from, forbidden, packages = []) => ({
   files: [`src/${from}/**/*.{ts,tsx}`],
   rules: {
     'no-restricted-imports': [
       'error',
-      { patterns: forbidden.map((f) => ({ group: [`**/${f}/**`, `**/${f}`], message: `${from} must not import ${f} (layer rule, concept/10 §2)` })) },
+      {
+        patterns: [
+          ...forbidden.map((f) => ({ group: [`**/${f}/**`, `**/${f}`], message: `${from} must not import ${f} (layer rule, concept/10 §2)` })),
+          ...packages.map((p) => ({ group: [p, `${p}/**`], message: `${from} must not import ${p} (pure core, concept/10 §2)` })),
+        ],
+      },
     ],
   },
 });
@@ -23,7 +28,7 @@ export default tseslint.config(
       '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
-  layer('core', ['content', 'render', 'ui', 'app', 'input', 'persistence', 'i18n', 'platform']),
+  layer('core', ['content', 'render', 'ui', 'app', 'input', 'persistence', 'i18n', 'platform'], ['@babylonjs/*', 'preact', '@preact/*']),
   layer('content', ['render', 'ui', 'app', 'input', 'persistence']),
   layer('render', ['ui', 'app', 'persistence']),
   layer('ui', ['render', 'app']),
