@@ -12,9 +12,14 @@ import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { MeshoptCompression } from '@babylonjs/core/Meshes/Compression/meshoptCompression';
 import '@babylonjs/core/Animations/animatable';
 import '@babylonjs/loaders/glTF/glTFFileLoader';
 import '@babylonjs/loaders/glTF/2.0/glTFLoader';
+import '@babylonjs/loaders/glTF/2.0/Extensions/EXT_meshopt_compression';
+import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
+import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_texture_transform';
+import { MeshoptDecoder } from 'meshoptimizer/decoder';
 import type { GearPiece, Team } from '../core';
 import { assetUrl } from './assets';
 
@@ -24,6 +29,11 @@ export const TEAM_RAMP: Record<Team, string[]> = {
   enemy: ['4a1018', '9e2a2a', 'd9413a', 'f59a8a'],
   other: ['123a24', '2a7a3e', '3fa65a', '9be08f'],
 };
+
+// Image-to-3D figures are meshopt-compressed (tools/art/tripo_units.py). Babylon looks for a global decoder that it would
+// otherwise fetch from its CDN; the bundled one keeps the game offline, an empty script satisfies the loader.
+(globalThis as { MeshoptDecoder?: typeof MeshoptDecoder }).MeshoptDecoder = MeshoptDecoder;
+MeshoptCompression.Configuration = { decoder: { url: 'data:text/javascript,' } };
 
 const toGamma = (c: number) => (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
 const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255];
