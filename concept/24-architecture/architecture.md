@@ -567,7 +567,9 @@ Neue Darstellung bekommt Events oder Overlays, nie direkten Zugriff auf `Campaig
 
 ## 9. Epic-Zuordnung
 
-Die Architektur fügt ein technisches Fundament-Epic vor E1 ein; danach gilt die Reihenfolge aus dem GDD.
+> **Nachtrag aus `gds-create-epics-and-stories` (2026-10-23):** Das Fundament-Epic E0 entfällt. Seine Bausteine entstehen im ersten Epic, das sie braucht (Speicherformat, Kampagnen-Commands, Fehlerbericht → Epic 1; Worker → Epic 2; Content-Layout, Bedingungen, Szenen-Schema → Epic 4; Pakete, ID-Sperre → Epic 7). Maßgeblich ist `concept/26-epics/epics.md`; die Tabelle unten bleibt als Zuordnung der Bausteine.
+
+Ursprünglicher Vorschlag: ein technisches Fundament-Epic vor E1, danach die Reihenfolge aus dem GDD.
 
 | Epic | Architektur-Bausteine | Entscheidungen |
 |---|---|---|
