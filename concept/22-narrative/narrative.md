@@ -242,7 +242,7 @@ Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte tre
 | 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden) |
 | 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
 
-Signaturwaffen, Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
+Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
 
 ---
 
@@ -718,12 +718,12 @@ Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuf
 | # | Akt | Art | Quest | Auslöser | Belohnung |
 |---|---|---|---|---|---|
 | N1 | 1 | persönlich | Der Ring von Varnhold (Fenns Vergangenheit) | E2 „schützen“ | Glutfunke, Signaturdolch |
-| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, legendärer Schild |
+| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, Relikt Schild der Paktwächter |
 | N3 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan) | Ilka in der Truppe | Glutfunke, Signaturbogen |
-| N4 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III |
+| N4 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III, Relikt Drachenglut |
 | N5 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
 | N6 | 3 | persönlich | Brennas Bruder | Brenna lebt und hat B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
-| N7 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Zeile für „Vhaelyra fragen“ |
+| N7 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Relikt Aldrics Paktklinge, Zeile für „Vhaelyra fragen“ |
 
 Fällt der Gefährte, an den eine Quest gebunden ist, läuft sie als Gedenk-Variante (laut GDD).
 

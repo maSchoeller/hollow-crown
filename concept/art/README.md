@@ -1,5 +1,7 @@
 # concept/art – Beispiele zur Art Direction
 
+> **Historisch:** Material zur abgelösten `15-art-direction.md` (Pixel-Look, Anime-Porträts). Aktueller Stil: `concept/23-art-direction/art-direction.md`, aktuelle Figuren in `art/mockups/characters-s1/`.
+
 Anschauungsmaterial zu `15-art-direction.md`, `16-asset-pipeline.md` und `17-audio.md`. Nichts hier wird vom Spiel geladen. Die echten Quellen kommen in der Umsetzung nach `art/` und `audio-src/` (siehe `16` §2).
 
 | Ordner / Datei | Inhalt |
@@ -9,7 +11,7 @@ Anschauungsmaterial zu `15-art-direction.md`, `16-asset-pipeline.md` und `17-aud
 | `pipeline/` | Pipeline-Beweis A0: `blender_chibi.py` (Szene, Toon-Material, Chibi-Figuren, Requisiten), `blender_render.py` (Posen, Farb- und Normal-Durchgang), `pixelize.py` (Palette, Verkleinerung, Umriss, Teamtausch, Sheets), `compose_map.py` (Kartenmockup mit Licht), `previews.py` (GIFs) |
 | `blender/hc_pixel_proof.blend` | Blender-Szene `HC_Sprites` des Pipeline-Beweises |
 | `sprites/` | Ergebnisse: Sprite-Sheets (Kael, Bandit, Haus, Baum) in den Varianten key/player/enemy/other/normal, animierte GIFs, Teamfarben-Vergleich, Normal-Map, Kartenmockup Varnhold |
-| `characters/` | Anime-Referenzblätter, Porträt-Stimmungen und Krit-Cut-in aus ChatGPT + Prompts |
+| `characters/` | **veraltet:** Anime-Referenzblätter, Porträt-Stimmungen und Krit-Cut-in aus ChatGPT + Prompts (vor B8); aktuelle Figuren in `art/mockups/characters-s1/` |
 | `audio/` | *folgt:* Stimm-, SFX- und Musikproben aus ElevenLabs (MCP ist eingetragen, der API-Key war in der Session vom 2026-10-22 nicht verfügbar) |
 
 ## Pipeline-Beweis nachbauen

@@ -8,6 +8,8 @@ source: concept/21-gdd/gdd.md
 
 # Development Epics – Staffel 1
 
+> **Abgelöst** durch `concept/26-epics/epics.md` (12 Epics, 99 Stories, Etappe 5). Diese Grobfassung bleibt als Herleitung stehen.
+
 Grobe Epics mit High-Level-Stories aus dem GDD. Die Feinplanung (Akzeptanzkriterien, Story-Dateien) macht später `gds-create-epics-and-stories` nach der Architektur-Etappe. Jedes Epic endet mit grünen Prüfungen (`pnpm lint`, `test`, `content:check`, `build`).
 
 ## E1 – Rollenklassen

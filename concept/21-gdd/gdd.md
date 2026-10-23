@@ -255,7 +255,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 - Paperdoll: Haupthand, Nebenhand, Kopf, Körper, 2 Accessoires, Beutel 3 (ohne Gewicht); kein Verschleiß. Die Waffengruppen der Rolle begrenzen, was eine Figur führen darf.
 - Gewicht: Tragkraft = STR + Bewegungstyp-Bonus (Fuß 4, Gepanzert 8, Beritten 6, Flieger 2, Monster 10); Überlast senkt AS 1:1, ab 5 −1 MOV, ab 10 −2 MOV.
-- Seltenheit Gewöhnlich/Selten/Episch/Legendär mit 0/1/2/fest Affixen und 1/2/2/2 Rune-Slots; Sets mit Bonus ab 2 bzw. 4 Teilen.
+- Seltenheit Gewöhnlich/Selten/Episch/Legendär/Relikt mit 0/1/2/fest/fest Affixen und 1/2/2/2/1 Rune-Slots; Sets mit Bonus ab 2 bzw. 4 Teilen. Signaturen sind legendäre Unikate mit Besitzer-Effekt; drei Relikte (eins je Akt) erwachen mit der Story. Katalog, Waffengruppen und Unikate in `items.md`.
 - Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); 1 Element-Rune je Waffe, zweiter Slot für Hilfs-Runen; Körperrüstung setzt die Affinität.
 - Aufwerten +1…+5 (Waffe je +1 Mt/+3 Treffer, Rüstung je +1 DEF oder RES).
 - Ausrüstungs-Tier pro Akt: Akt 1 Eisen, Akt 2 Stahl, Akt 3 Silber und Mondstahl.

@@ -1,0 +1,200 @@
+<title>Hollow Crown Ergebnis und Abschied</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap">
+<style>
+/* Schritt 8: Missionsergebnis, Gedenken nach einem Tod, Glutfunke-Aufstieg, Epilog-Mosaik. Stil B.
+   Ressourcen als Symbol + Zahl. Item-Bilder aus art/items/ (Rahmen = Seltenheit). */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 74ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #2b2622; }
+.screen > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(6px) saturate(.75) brightness(.8); transform: scale(1.08); }
+.screen.mourn > img.bg { filter: blur(6px) saturate(.1) brightness(.45); }
+.screen svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.row { display: flex; align-items: center; gap: 8px; } .grow { flex: 1; min-width: 0; }
+.fill { position: absolute; left: 10px; right: 10px; top: 12px; bottom: 12px; display: grid; grid-template-rows: auto 1fr auto; gap: 10px; }
+
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --red: #b83a2e; --green: #2f8a4c; --gold: #d9a931; color: var(--line); }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+.B .cur { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-label); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.B .coin { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid var(--line); display: inline-block; flex: none; }
+.B .ore { width: 12px; height: 12px; background: #8b9bb0; border: 2px solid var(--line); transform: rotate(45deg); border-radius: 3px; display: inline-block; flex: none; }
+.B .xp { width: 15px; height: 15px; background: var(--green); border: 2px solid var(--line); clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%); display: inline-block; flex: none; }
+.B .spark { width: 15px; height: 15px; background: var(--ember); border: 2px solid var(--line); transform: rotate(45deg); border-radius: 2px 7px 2px 7px; display: inline-block; flex: none; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 11px 8px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 17px; background: var(--cream); box-shadow: 0 4px 0 var(--line); display: flex; justify-content: center; align-items: center; gap: 6px; }
+.B .btn.primary { background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+.B .btn.quiet { background: #e9e6e1; color: var(--line); }
+/* Ergebnis */
+.B .victory { justify-self: center; display: grid; justify-items: center; gap: 2px; padding: 8px 24px; border-radius: 999px; background: var(--ember); color: #fff; }
+.B .victory b { font-family: var(--f-name); font-size: 26px; line-height: 1; }
+.B .victory span { font-family: var(--f-label); font-weight: 700; font-size: 13px; letter-spacing: .06em; }
+.B .res { padding: 12px; display: grid; gap: 10px; align-content: start; overflow: hidden; }
+.B .sec { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.B .loot { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 17px; }
+.B .r-common { border-color: #9A9488 !important; } .B .r-rare { border-color: #1F9E94 !important; } .B .r-epic { border-color: #7A4CC2 !important; } .B .r-legendary { border-color: #D9A931 !important; }
+.B img.itm { width: 100%; height: 100%; object-fit: contain; display: block; }
+.B .gem { position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; border: 2px solid var(--line); transform: rotate(45deg); }
+.B .gem.rare { background: #1f9e94; }
+.B .itemimg { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--line); background: #f4e9d6; position: relative; display: grid; place-items: center; font-family: var(--f-label); font-weight: 700; font-size: 9px; color: var(--soft); text-align: center; line-height: 1; }
+.B .lt { display: flex; align-items: center; gap: 10px; background: #fdeee9; border-radius: 12px; padding: 6px 10px 6px 6px; font-size: 13px; font-weight: 600; }
+.B .lt .m { width: 40px; height: 40px; border-radius: 50%; border: 2.5px solid var(--line); box-shadow: 0 0 0 2px var(--gold); overflow: hidden; background: #f6d3cd; flex: none; }
+.B .lt .m img, .B .u .m img { width: 100%; height: 100%; object-fit: cover; }
+.B .lt b { font-family: var(--f-name); }
+.B .side { display: grid; gap: 3px; font-size: 13px; font-weight: 600; }
+.B .side span { display: flex; gap: 6px; align-items: center; }
+.B .ok { width: 18px; height: 18px; border-radius: 50%; background: var(--green); border: 2px solid var(--line); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
+.B .no { background: var(--cream-2); color: var(--soft); }
+.B .units { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.B .u { display: grid; justify-items: center; gap: 1px; font-family: var(--f-label); font-weight: 700; font-size: 12px; text-align: center; position: relative; }
+.B .u .m { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid var(--line); overflow: hidden; background: #cfe0f7; }
+.B .u .lv { position: absolute; top: -4px; right: 0; background: var(--green); color: #fff; border: 2px solid var(--line); border-radius: 999px; font-size: 10px; padding: 0 5px; }
+.B .u.dead .m { filter: grayscale(1); background: #d8d4cc; }
+/* Gedenken */
+.B .mourn-card { align-self: center; padding: 16px 14px; display: grid; justify-items: center; gap: 10px; text-align: center; background: #f3efe8; }
+.B .mourn-card img.bust { width: 190px; margin: -70px 0 -14px; filter: grayscale(1) contrast(.95); }
+.B .mourn-card h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 28px; line-height: 1; }
+.B .mourn-card .s { font-size: 13px; color: var(--soft); font-weight: 600; }
+.B .ember-line { height: 3px; width: 40px; background: var(--ember); border-radius: 2px; }
+.B .last { font-family: var(--f-name); font-style: italic; font-weight: 600; font-size: 16px; line-height: 1.35; }
+.B .grief { display: flex; gap: 8px; align-items: center; text-align: left; font-size: 13px; font-weight: 600; background: #e9e6e1; border-radius: 12px; padding: 6px 10px 6px 6px; }
+.B .grief img { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); object-fit: cover; background: #cfe0f7; }
+.B .grief b { font-family: var(--f-name); }
+/* Aufstieg */
+.B .promo { padding: 12px; display: grid; gap: 10px; align-content: start; }
+.B .promo-top { display: grid; grid-template-columns: 132px 1fr; align-items: end; gap: 6px; }
+.B .promo-top img { width: 140px; margin: -16px 0 -12px -14px; }
+.B .promo-top h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 24px; line-height: 1; }
+.B .promo-top .s { font-size: 12px; color: var(--soft); font-weight: 600; }
+.B .path { border: 2.5px solid var(--line); border-radius: 14px; padding: 8px 10px; background: var(--cream-2); display: grid; gap: 3px; font-size: 12.5px; font-weight: 600; line-height: 1.3; }
+.B .path b { font-family: var(--f-name); font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; }
+.B .path b span { font-family: var(--f-label); font-size: 11px; color: var(--soft); letter-spacing: .05em; text-transform: uppercase; }
+.B .path.on { background: #fdf0e3; box-shadow: 0 0 0 3px var(--ember); }
+.B .gain { font-family: var(--f-label); font-weight: 700; font-size: 13px; color: var(--green); }
+.B .have { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--f-label); font-weight: 700; font-size: 14px; }
+/* Epilog */
+.B .mosaic { padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; align-content: start; overflow: hidden; }
+.B .tile { border: 2px solid var(--line); border-radius: 12px; padding: 6px; background: var(--cream-2); display: grid; justify-items: center; gap: 3px; text-align: center; font-size: 10.5px; font-weight: 600; line-height: 1.25; }
+.B .tile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); object-fit: cover; background: #cfe0f7; }
+.B .tile b { font-family: var(--f-name); font-size: 13px; line-height: 1; }
+.B .tile.dead { background: #e3e0da; } .B .tile.dead img { filter: grayscale(1); }
+.B .tile.gone { background: #f3e6cf; } .B .tile.gone img { filter: sepia(.6); }
+.B .tile.region { grid-column: span 3; grid-template-columns: auto 1fr; justify-items: start; text-align: left; align-items: center; gap: 10px; background: #e8f0e3; font-size: 12px; }
+.B .tile.region .ic { width: 40px; height: 40px; border-radius: 12px; border: 2px solid var(--line); background: #cfe5c4; display: grid; place-items: center; }
+.B .ep-head { padding: 10px 14px; text-align: center; display: grid; gap: 2px; }
+.B .ep-head b { font-family: var(--f-name); font-size: 22px; line-height: 1; }
+.B .ep-head span { font-size: 12px; color: var(--soft); font-weight: 600; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-village" viewBox="0 0 24 24"><path d="M3 20V11l5-4 5 4v9Z"/><path d="M13 20v-6l4-3 4 3v6"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 8 · Ergebnis und Abschied</span>
+    <h1>Was nach einer Mission kommt und wie die Staffel endet</h1>
+    <p>Vier Momente, die die Säule „Jeder zählt“ tragen: das Ergebnis mit Beute und Kopfgeld, der Abschied von einem Gefallenen direkt danach, der Aufstieg mit einem Glutfunken und das Epilog-Mosaik am Ende der Staffel. Die Beute zeigt die gemalten Item-Bilder mit Seltenheitsrahmen.</p>
+  </header>
+
+  <div class="phones">
+    <!-- Ergebnis -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/board.jpg" alt="">
+        <div class="fill">
+          <div class="piece victory"><b>Sieg</b><span>1-4 · Die Spur des Maklers · 9 Runden</span></div>
+          <div class="piece res">
+            <span class="sec">Beute</span>
+            <div class="loot"><span class="cur"><i class="coin"></i>+1 120</span><span class="cur"><i class="ore"></i>+2</span><div class="itemimg r-rare"><img class="itm" src="assets/items/iron_lance.webp" alt=""><span class="gem rare"></span></div><div class="itemimg r-common"><img class="itm" src="assets/items/fire_bomb.webp" alt=""></div></div>
+            <div class="lt"><div class="m"><img src="assets/hask_head.webp" alt=""></div><div class="grow"><b>Hask</b> vertrieben, Groll 2<br>Kopfgeld <span class="cur"><i class="coin"></i>+400</span> <span class="cur"><i class="ore"></i>+1</span></div></div>
+            <span class="sec">Nebenziele</span>
+            <div class="side"><span><i class="ok">✓</i>Ysolde befreien · <span class="cur"><i class="coin"></i>+300</span></span><span><i class="ok no">–</i>Niemand niedergestreckt</span></div>
+            <span class="sec">Truppe</span>
+            <div class="units">
+              <div class="u"><div class="m"><img src="assets/kael_head.webp" alt=""></div><span class="cur"><i class="xp"></i>+48</span></div>
+              <div class="u"><span class="lv">St. 9</span><div class="m"><img src="assets/brenna_head.webp" alt=""></div><span class="cur"><i class="xp"></i>+112</span></div>
+              <div class="u"><div class="m"><img src="assets/tobin_head.webp" alt=""></div><span class="cur"><i class="xp"></i>+61</span></div>
+              <div class="u dead"><div class="m"><img src="assets/fenn_head.webp" alt=""></div><span>gefallen</span></div>
+            </div>
+          </div>
+          <div class="btn primary">Weiter</div>
+        </div>
+      </div></div>
+      <div class="cap">Missionsergebnis</div>
+      <p class="note">Glut-Pille „Sieg“, darunter Beute, Kopfgeld des Leutnants, Nebenziele und EP je Figur, alles als Symbol + Zahl (Stern = EP). Gefallene stehen grau dabei; „Weiter“ führt in ihren Abschied.</p>
+    </div>
+
+    <!-- Gedenken -->
+    <div>
+      <div class="phone B"><div class="screen mourn"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill" style="grid-template-rows: 1fr auto">
+          <div class="piece mourn-card">
+            <img class="bust" src="assets/fenn_bust.webp" alt="">
+            <h3>Fenn</h3>
+            <span class="s">Späher · fiel in 1-4, Die Spur des Maklers</span>
+            <span class="ember-line"></span>
+            <p class="last">„Sagt Mira … sie schuldet mir noch einen Pfeil.“</p>
+            <div class="grief"><img src="assets/mira_head.webp" alt=""><div><b>Mira</b> trauert · 3 Missionen −10 Treffer</div></div>
+          </div>
+          <div class="btn quiet">Abschied nehmen</div>
+        </div>
+      </div></div>
+      <div class="cap">Abschied nach der Mission</div>
+      <p class="note">Ganz still: alles entsättigt, nur die Glutlinie bleibt. Letzte Zeile, Trauer des Support-Partners mit ihrer Wirkung. Kein Überspringen in den ersten zwei Sekunden, keine Haupttaste in Glutorange.</p>
+    </div>
+
+    <!-- Aufstieg -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill">
+          <div class="piece have"><span>Akademie · Aufstieg</span><span class="cur"><i class="spark"></i>2</span></div>
+          <div class="piece promo">
+            <div class="promo-top"><img src="assets/brenna_bust.webp" alt=""><div><h3>Brenna</h3><span class="s">Vorkämpfer · Stufe 10 · wird Stufe 1, Loadout 4 → 5</span></div></div>
+            <div class="path on"><b>Bollwerk <span>Profi A</span></b>Schutz für Nachbarn +10 %. Neues Signaturteil: Turmschild.<span class="gain">TP +4 · DEF +3 · RES +2</span></div>
+            <div class="path"><b>Sturmbrecher <span>Profi B</span></b>Jeder Treffer stößt das Ziel 1 Feld zurück. Neues Signaturteil: Rammaxt.<span class="gain">TP +3 · STR +3 · SPD +1</span></div>
+          </div>
+          <div class="btn primary">Aufsteigen · <span class="cur"><i class="spark" style="border-color:#fff"></i>1</span></div>
+        </div>
+      </div></div>
+      <div class="cap">Aufstieg mit Glutfunke</div>
+      <p class="note">Oben der Vorrat an Glutfunken, unten zwei Wege mit Wirkung und Wertgewinn. Die Haupttaste nennt den Preis. Danach folgt ein kurzer Moment mit Funkenknistern (Art Direction, Signaturklang).</p>
+    </div>
+
+    <!-- Epilog -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/burg.jpg" alt="">
+        <div class="fill" style="grid-template-rows: auto 1fr auto">
+          <div class="piece ep-head"><b>Was aus ihnen wurde</b><span>Staffel 1 · Wahrheit · Rhen: warm</span></div>
+          <div class="piece mosaic">
+            <div class="tile"><img src="assets/kael_head.webp" alt=""><b>Kael</b>baut die Paktwacht zur Schule für Waisen aus.</div>
+            <div class="tile"><img src="assets/brenna_head.webp" alt=""><b>Brenna</b>spricht es endlich aus. Kael lacht.</div>
+            <div class="tile dead"><img src="assets/fenn_head.webp" alt=""><b>Fenn</b>Sein Dolch hängt über dem Kamin.</div>
+            <div class="tile gone"><img src="assets/mira_head.webp" alt=""><b>Mira</b>jagt wieder in Erlbach und schickt Wild.</div>
+            <div class="tile"><img src="assets/tobin_head.webp" alt=""><b>Tobin</b>trägt den zu großen Helm jetzt passend.</div>
+            <div class="tile"><img src="assets/liora_head.webp" alt=""><b>Liora</b>vergibt Halvard und schweigt nicht mehr.</div>
+            <div class="tile region"><div class="ic"><svg class="i"><use href="#i-village"/></svg></div><div><b>Grenzland</b><br>Erlbach steht, das Hungerlager ist ein Dorf geworden.</div></div>
+          </div>
+          <div class="btn primary">Weiter zu Staffel 2</div>
+        </div>
+      </div></div>
+      <div class="cap">Epilog-Mosaik</div>
+      <p class="note">Eine Kachel je Gefährte: farbig = lebt, grau = gefallen, sepia = gegangen; dazu je Region eine breite Kachel. Kopf nennt Ende und Haltung. Wischen zeigt alle.</p>
+    </div>
+  </div>
+</div>

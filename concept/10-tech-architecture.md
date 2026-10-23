@@ -1,5 +1,7 @@
 # 10 – Technische Architektur
 
+> **Staffel 1:** Ergänzt und teilweise ersetzt durch `24-architecture/architecture.md` (Delta). Neu gefasst sind dort die Modulstruktur (§2) und das Speichern (§6); der Rest gilt, wo das Delta schweigt.
+
 ## 1. Stack
 
 | Bereich | Wahl | Status |

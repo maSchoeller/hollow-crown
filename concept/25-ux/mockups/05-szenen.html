@@ -1,0 +1,179 @@
+<title>Hollow Crown Szenen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap">
+<style>
+/* Schritt 5: Szenen (Visual Novel) in Stil B. Zwei Layout-Varianten, dann Entscheidung, Folgen-Karte, Dialog-Log.
+   Hintergrund = Orte-Moodboard Erlbach, im Spiel leicht weichgezeichnet und entsättigt (Art Direction §5.2). */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1840px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 74ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.cap .v { color: var(--accent); }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #403020; }
+.screen > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(2.5px) saturate(.8); transform: scale(1.04); }
+.screen > .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(40, 28, 20, 0) 45%, rgba(40, 28, 20, .35) 100%); }
+.screen svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.row { display: flex; align-items: center; gap: 8px; } .grow { flex: 1; min-width: 0; }
+
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --red: #b83a2e; --green: #3f9a5a; --gold: #d9a931; color: var(--line); }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+.B .ctrl { position: absolute; top: 12px; right: 10px; display: flex; gap: 6px; }
+.B .ctrl span { background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 2px 10px; font-family: var(--f-label); font-weight: 700; font-size: 13px; box-shadow: 0 3px 0 var(--line); }
+.B .ctrl span.on { background: var(--line); color: var(--cream); }
+/* Variante A: Halbfiguren */
+.B .bust { position: absolute; bottom: 27%; width: 82%; }
+.B .bust.r { right: -14%; }
+.B .bust.l { left: -18%; filter: brightness(.62) saturate(.7); }
+.B .box { position: absolute; left: 10px; right: 10px; bottom: 14px; padding: 22px 16px 14px; min-height: 150px; }
+.B .nametag { position: absolute; top: -18px; left: 14px; background: var(--ember); color: #fff; border: 2.5px solid var(--line); border-radius: 999px; padding: 1px 16px; font-family: var(--f-name); font-weight: 700; font-size: 18px; box-shadow: 0 3px 0 var(--line); }
+.B .nametag.r { left: auto; right: 14px; }
+.B .text { font-size: 17px; font-weight: 600; line-height: 1.38; }
+.B .more { position: absolute; right: 14px; bottom: 8px; font-size: 14px; color: var(--ember-d); }
+/* Variante B: Medaillon */
+.B .medal { width: 92px; height: 92px; border-radius: 50%; border: 2.5px solid var(--line); background: #cfe0f7; overflow: hidden; box-shadow: 0 4px 0 var(--line); flex: none; }
+.B .medal img { width: 100%; height: 100%; object-fit: cover; }
+.B .box2 { position: absolute; left: 10px; right: 10px; bottom: 14px; padding: 14px 14px 16px; display: grid; gap: 8px; }
+.B .box2 .who { display: flex; align-items: flex-end; gap: 10px; margin-top: -58px; }
+.B .box2 .who b { font-family: var(--f-name); font-size: 22px; line-height: 1; padding-bottom: 6px; }
+.B .box2 .who .mood { font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); padding-bottom: 8px; }
+/* Entscheidung */
+.B .choices { position: absolute; left: 10px; right: 10px; bottom: 14px; display: grid; gap: 10px; }
+.B .kick { justify-self: center; display: inline-flex; gap: 6px; align-items: center; background: var(--line); color: var(--cream); border-radius: 999px; padding: 3px 12px; font-family: var(--f-label); font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.B .kick i { width: 8px; height: 8px; background: var(--ember); transform: rotate(45deg); display: block; }
+.B .q { padding: 12px 14px; font-size: 15px; font-weight: 600; line-height: 1.35; }
+.B .q b { font-family: var(--f-name); }
+.B .opt { padding: 12px 14px; font-size: 16px; font-weight: 700; line-height: 1.3; display: flex; gap: 10px; align-items: center; }
+.B .opt .n { width: 26px; height: 26px; border-radius: 50%; background: var(--cream-2); border: 2px solid var(--line); display: grid; place-items: center; font-family: var(--f-label); font-size: 14px; flex: none; }
+.B .opt.sel { background: #fdf0e3; border-color: var(--line); box-shadow: 0 4px 0 var(--ember-d), 0 0 0 3px var(--ember); }
+/* Folgen-Karte */
+.B .veil { position: absolute; inset: 0; background: rgba(40, 28, 20, .45); }
+.B .conseq { position: absolute; left: 14px; right: 14px; top: 50%; transform: translateY(-50%); padding: 16px; display: grid; gap: 12px; }
+.B .conseq h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 22px; text-align: center; }
+.B .conseq .kick { margin-top: -30px; }
+.B .eff { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; font-size: 14px; font-weight: 600; line-height: 1.3; }
+.B .eff .ic { width: 44px; height: 44px; border-radius: 50%; border: 2.5px solid var(--line); background: var(--cream-2); display: grid; place-items: center; overflow: hidden; }
+.B .eff .ic img { width: 100%; height: 100%; object-fit: cover; }
+.B .eff b { font-family: var(--f-label); font-size: 15px; display: block; }
+.B .res { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-label); font-weight: 700; font-size: 15px; white-space: nowrap; }
+.B .potion { width: 14px; height: 18px; border-radius: 3px 3px 7px 7px; background: #e0566a; border: 2px solid var(--line); display: inline-block; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 10px 6px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 16px; background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+/* Log */
+.B .log { position: absolute; left: 10px; right: 10px; top: 56px; bottom: 14px; padding: 12px; display: grid; grid-template-rows: auto 1fr; gap: 10px; }
+.B .log h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; }
+.B .log h3 span { font-family: var(--f-label); font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; }
+.B .lines { display: grid; gap: 10px; align-content: start; overflow: hidden; }
+.B .ln { display: grid; grid-template-columns: 34px 1fr; gap: 8px; font-size: 13.5px; line-height: 1.32; }
+.B .ln img { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); object-fit: cover; background: #cfe0f7; }
+.B .ln b { font-family: var(--f-name); font-size: 14px; display: block; }
+.B .ln.choice { background: #fdf0e3; border: 2px solid var(--ember); border-radius: 12px; padding: 6px 8px; grid-template-columns: 1fr; }
+.B .ln.choice b { font-family: var(--f-label); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ember-d); }
+.B .close { position: absolute; top: 12px; left: 10px; background: var(--cream); border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px 3px 8px; font-family: var(--f-label); font-weight: 700; font-size: 13px; box-shadow: 0 3px 0 var(--line); display: flex; align-items: center; gap: 4px; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5c3-1.5 5.5-1.5 8 0v15c-2.5-1.5-5-1.5-8 0Z"/><path d="M20 5c-3-1.5-5.5-1.5-8 0v15c2.5-1.5 5-1.5 8 0Z"/></symbol>
+  <symbol id="i-house" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4Z"/><path d="M10 20v-5h4v5"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 5 · Szenen</span>
+    <h1>Dialoge, Entscheidungen und ihre Folgen</h1>
+    <p>Szene nach Mission 1-2 in Erlbach, Entscheidung E1: Mira darf heimkehren. Der Hintergrund ist im Spiel leicht weichgezeichnet und entsättigt, damit die Figuren davor stehen. Oben rechts immer Log, Auto und Überspringen; ein Tipp irgendwo führt weiter. Zuerst zwei Varianten für die Dialogzeile, dann Entscheidung, Folgen-Karte und Dialog-Log.</p>
+  </header>
+
+  <div class="phones">
+    <!-- A Halbfiguren -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/erlbach.jpg" alt=""><div class="shade"></div>
+        <img class="bust l" src="assets/kael_bust.webp" alt="">
+        <img class="bust r" src="assets/mira_bust.webp" alt="">
+        <div class="ctrl"><span>Log</span><span>Auto</span><span>Überspringen</span></div>
+        <div class="piece box"><span class="nametag r">Mira</span><p class="text">Das Dorf steht noch. Ohne euch hätte Hask es angezündet wie Varnhold.</p><span class="more">▼</span></div>
+      </div></div>
+      <div class="cap"><span class="v">Variante A</span> · Halbfiguren</div>
+      <p class="note">Klassische Visual Novel: Wer spricht, steht hell im Vordergrund, wer zuhört, gedämpft. Namensschild an der Seite der Sprecherin. Braucht die 4 Stimmungen je Kernfigur.</p>
+    </div>
+
+    <!-- B Medaillon -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/erlbach.jpg" alt=""><div class="shade"></div>
+        <div class="ctrl"><span>Log</span><span>Auto</span><span>Überspringen</span></div>
+        <div class="piece box2">
+          <div class="who"><div class="medal"><img src="assets/mira_head.webp" alt=""></div><b>Mira</b></div>
+          <p class="text">Das Dorf steht noch. Ohne euch hätte Hask es angezündet wie Varnhold.</p>
+        </div>
+      </div></div>
+      <div class="cap"><span class="v">Variante B</span> · Medaillon an der Box</div>
+      <p class="note">Kompakter, der Ort bleibt sichtbar. Wirkt eher wie eine Sprechblase im Spiel; die Figur ist kleiner, ihr Gesicht trägt weniger Gefühl.</p>
+    </div>
+
+    <!-- Entscheidung -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/erlbach.jpg" alt=""><div class="shade"></div>
+        <img class="bust r" src="assets/mira_bust.webp" alt="" style="bottom:40%">
+        <div class="ctrl"><span>Log</span></div>
+        <div class="choices">
+          <span class="kick"><i></i>Entscheidung · hat Folgen</span>
+          <div class="piece q"><b>Mira:</b> Die Leute hier fragen, ob ich bleibe. Sie brauchen jemanden, der jagen kann. Was meinst du, Rhen?</div>
+          <div class="piece opt sel"><span class="n">1</span>„Geh nach Hause. Erlbach braucht dich mehr als wir.“</div>
+          <div class="piece opt"><span class="n">2</span>„Bleib bei uns. Du gehörst jetzt zur Truppe.“</div>
+        </div>
+      </div></div>
+      <div class="cap">Entscheidung</div>
+      <p class="note">Schwarze Marke „hat Folgen“, damit Wahlen mit Wirkung nie mit Plauder-Antworten verwechselt werden. Erster Tipp markiert, zweiter bestätigt. Überspringen ist hier aus.</p>
+    </div>
+
+    <!-- Folgen-Karte -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/erlbach.jpg" alt=""><div class="veil"></div>
+        <div class="piece conseq">
+          <span class="kick" style="justify-self:center"><i></i>Folgen</span>
+          <h3>Mira kehrt heim</h3>
+          <div class="eff"><div class="ic"><img src="assets/mira_head.webp" alt="" style="filter:grayscale(.6)"></div><div><b>Mira verlässt die Truppe</b>Ihre Ausrüstung geht in den Konvoi.</div></div>
+          <div class="eff"><div class="ic"><svg class="i"><use href="#i-house"/></svg></div><div><b>Dorfhilfe aus Erlbach</b><span class="res"><i class="potion"></i>+1 Ladung</span> für jeden Heiltrank bis Ende Akt 1</div></div>
+          <div class="eff"><div class="ic"><svg class="i"><use href="#i-book"/></svg></div><div><b>In der Chronik vermerkt</b>Zählt für das Epilog-Mosaik.</div></div>
+          <div class="btn">Weiter</div>
+        </div>
+      </div></div>
+      <div class="cap">Folgen-Karte</div>
+      <p class="note">Direkt nach der Wahl, im Stil der Lektionen. Jede Wirkung mit Symbol; Mengen immer als Symbol + Zahl. Ein Tipp schließt.</p>
+    </div>
+
+    <!-- Log -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/erlbach.jpg" alt=""><div class="veil"></div>
+        <div class="close"><svg class="i" style="width:16px;height:16px"><use href="#i-back"/></svg>Zurück zur Szene</div>
+        <div class="piece log">
+          <h3>Dialog-Log <span>Erlbach · nach 1-2</span></h3>
+          <div class="lines">
+            <div class="ln"><img src="assets/kael_head.webp" alt=""><div><b>Kael</b>Hask ist weg. Aber er kommt wieder, das schwöre ich euch.</div></div>
+            <div class="ln"><img src="assets/mira_head.webp" alt=""><div><b>Mira</b>Das Dorf steht noch. Ohne euch hätte Hask es angezündet wie Varnhold.</div></div>
+            <div class="ln"><img src="assets/mira_head.webp" alt=""><div><b>Mira</b>Die Leute hier fragen, ob ich bleibe. Was meinst du, Rhen?</div></div>
+            <div class="ln choice"><div><b>Deine Wahl</b>„Geh nach Hause. Erlbach braucht dich mehr als wir.“</div></div>
+            <div class="ln"><img src="assets/mira_head.webp" alt=""><div><b>Mira</b>Dann pass auf Tobin auf. Er zielt immer noch zu hoch.</div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Dialog-Log</div>
+      <p class="note">Über „Log“ oben rechts; zeigt die Szene bis hier, eigene Wahl hervorgehoben. Kein Zurückspulen von Entscheidungen.</p>
+    </div>
+  </div>
+</div>
