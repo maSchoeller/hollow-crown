@@ -18,7 +18,9 @@
 | **Schriften** | **erlaubt mit Bedingungen** | Alle sechs `@fontsource`-Pakete tragen OFL-1.1; Lizenztext und Copyright-Hinweis müssen mitgeliefert werden. |
 | **Bibliotheken** | **erlaubt mit Bedingungen** | Apache-2.0 (Babylon.js), MIT, ISC; Hinweise in die Credits. |
 
-**Größte Fragen an den Produktinhaber** (Details §7): Welche Pläne hat er seit wann bei ChatGPT, ElevenLabs und Tripo? Welche Rechtsform hat er (Einzelperson oder Firma)? Läuft die Web-Demo bereits öffentlich? Ist Steam geplant?
+**Angaben des Produktinhabers** (§7a, ohne Beleg): ChatGPT Plus, ElevenLabs Pro, Tripo Pro; alle Inhalte nur in diesen bezahlten Tarifen erzeugt.
+
+**Größte offene Fragen an den Produktinhaber** (Details §7): Welche Rechtsform hat er (Einzelperson oder Firma)? Läuft die Web-Demo bereits öffentlich? Ist Steam geplant? Wie hoch ist der erwartete Umsatz (Indie-Grenze bei Musik)?
 
 **Empfehlung zum Anwalt** (Details §9): Ja, gezielt – vor allem für die ElevenLabs-Verträge (Widersprüche, „Individual Use Only“, Studio Game), die Tripo-Rückwirkung und die Schutzstrategie (Logo/Marke). Für Schriften, Bibliotheken und die Store-Fragebögen reicht Sorgfalt ohne Anwalt.
 
@@ -252,6 +254,25 @@ Ohne diese Antworten lässt sich GA26 nicht schließen. Pläne bitte mit **Tarif
 | F8 | Soll ein **Soundtrack** oder ein Asset-Pack separat erscheinen? |
 | F9 | Wer holt die **schriftlichen Zusagen** von ElevenLabs und Tripo (§9)? |
 | F10 | Gibt es weitere Quellen, die ich nicht kenne (Stockbilder, Sound-Pakete, Auftragsarbeiten, andere KI-Werkzeuge)? |
+
+### 7a. Angaben des Produktinhabers (2026-10-23)
+
+Mündlich im Chat gemacht, ohne Rechnung und ohne Datumsangaben; nicht von mir geprüft.
+
+| Dienst | Angabe |
+|---|---|
+| ChatGPT | Plus-Abo |
+| ElevenLabs | Pro-Tarif |
+| Tripo | Pro-Tarif |
+| Herkunft der Assets | Alle Inhalte wurden nur in diesen bezahlten Tarifen erzeugt, nichts im Free-Tarif |
+
+Abgleich mit dem Repo und Folgen:
+
+- **Kaels erster Tripo-Test** entstand laut `art/mockups/tripo-test-2026-10/README.md` im kostenlosen Tarif und liegt öffentlich in der Galerie. Das ist mit der Angabe vereinbar, solange `kael_tripo.glb` nicht ausgeliefert wird (A4). Er ist in den Dateien als Test dokumentiert, nicht als Produktivasset.
+- **Smart-Mesh-Runden „Testversion“** (zweiter und dritter Tripo-Durchgang): Die Angabe deckt sie ab, wenn sie im Pro-Konto liefen. Eine Bestätigung des Tripo-Supports bleibt sinnvoll (F3, F9).
+- **ElevenLabs Pro** erfüllt die Tarifvoraussetzung für SFX und Musik. Offen bleiben „Individual Use Only“ (F5) und die Studio-Game-Grenze (A10).
+- **Nachweis:** Rechnungen mit Datum je Dienst archivieren (A5). Sie belegen, dass der Tarif zum Zeitpunkt der Erzeugung lief; das Prompt-Protokoll (A2) hält das Erzeugungsdatum fest.
+- **Weiter offen:** F4–F10 (Referenzen, Rechtsform, Vertrieb, öffentliche Demo, Soundtrack, Zusagen, weitere Quellen). Die Angaben ändern nichts an §5 (Schutz der Ausgaben), Marke/Logo (A8) und an den Kennzeichnungspflichten (§6a).
 
 ## 8. Entscheidungsvorlage (Freigabe liegt beim Produktinhaber)
 
