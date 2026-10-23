@@ -12,12 +12,16 @@ Vertiefungen für GDD, Narrative und Art Direction, die nicht in den Brief gehö
 
 ## Nemesis-Leutnants – Rohidee für das GDD
 
+> **Abgelöst durch `concept/21-gdd/gdd.md`:** Leutnants sterben nie, sie fliehen bei 0 TP; es gibt weder Fluchtschwelle noch endgültigen Sieg. Der Abschnitt bleibt als Herleitung stehen.
+
 - Fluchtregel: Leutnant fällt unter X % TP oder würde sterben → zieht sich zurück (vorhersehbar, in der Vorschau angezeigt), kein Zufall.
 - Wiederkehr: +Stufe, neue Ausrüstung, Narbe sichtbar, Groll-Zeile gegen die Einheit, die ihn vertrieben hat.
 - Endgültig besiegbar, wenn die Fluchtbedingung verhindert wird (z. B. Fluchtfeld blockiert, Einheit mit „Fesseln“) → Belohnung (Rekrut, Legendäres Item).
 - Gefahr: Wiederkehr nach sauberem Sieg frustriert → Spieler muss Flucht aktiv verhindern können.
 
 ## Hauptmechaniken – Detailregeln aus dem Brief (für das GDD)
+
+> **Abgelöst durch `concept/21-gdd/gdd.md`:** Leutnants sterben nie; statt rund 15 Aufträgen gibt es 7 Nebenquests und tägliche Heimsuchungen; die Burg hat 11 Räume mit je 3 Stufen; das Beispiel „Leutnant verschonen“ entfällt.
 
 - **Heimat-Burg:** In Akt 1 zieht die Truppe mit einem Lager umher (vorhandener Hub, U20). Am Ende von Akt 1 erobert sie eine Burgruine, ab Akt 2 ist das ihr Zuhause. Jeder Raum steht für genau eine spielerische Funktion (etwa Schmieden, Heilen, Verzaubern). Wie viele Räume es gibt, ergibt sich aus den Funktionen, nicht aus einer festen Zahl.
 - **Nemesis-Leutnants:** 4 pro Akt. Sie kehren mit Narbe, höherer Stufe, neuer Ausrüstung und Groll zurück. Wer die Flucht verhindert, besiegt sie endgültig und erhält eine Belohnung. Deterministisch über Kampagnen-Flags, nicht prozedural erzeugt.

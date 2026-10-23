@@ -41,10 +41,10 @@ V1 ist ein Leidenschaftsprojekt: eine runde, in sich abgeschlossene erste Staffe
 
 ### Kernloop
 
-1. **Mission:** Auf einer 3D-Diorama-Karte bewegen, angreifen und Ziele erfüllen. Leutnants vertreiben oder ihre Flucht verhindern und sie endgültig stellen.
+1. **Mission:** Auf einer 3D-Diorama-Karte bewegen, angreifen und Ziele erfüllen. Leutnants vertreiben; sie fliehen bei 0 TP und kehren wieder.
 2. **Heimkehr:** Im Lager bzw. in der Burg Verwundete versorgen, Gefallene betrauern und Beute verteilen.
 3. **Lager/Burg und Truppe:** Räume ausbauen (ab Akt 2), Gefährten anwerben, Ausrüstung schmieden und verzaubern, Gespräche am Lagerfeuer führen.
-4. **Weltkarte:** Die nächste Story-Mission oder einen Auftrag in der aktuellen Region wählen.
+4. **Weltkarte:** Die nächste Story-Mission, eine Nebenquest oder eine Heimsuchung wählen.
 
 ### Säulen
 
@@ -56,10 +56,10 @@ V1 ist ein Leidenschaftsprojekt: eine runde, in sich abgeschlossene erste Staffe
 
 ### Neue Hauptmechaniken
 
-- **Heimat-Burg:** Nach dem Suikoden-Prinzip wächst sie mit der Truppe. Jeder Raum steht für eine spielerische Funktion und wird durch Rekruten oder Missionserfolge freigeschaltet.
-- **Nemesis-Leutnants:** 12 handgeschriebene, benannte Unterführer, die nach einer sichtbaren Regel fliehen, statt zu sterben, und stärker zurückkehren, bis der Spieler sie endgültig stellt.
+- **Heimat-Burg:** Nach dem Suikoden-Prinzip wächst sie mit der Truppe. Jeder Raum steht für eine spielerische Funktion und wird mit dem passenden Gefährten und Gold in drei Stufen ausgebaut.
+- **Nemesis-Leutnants:** 12 handgeschriebene, benannte Unterführer. Sie fliehen bei 0 TP, statt zu sterben, und kehren mit Groll gegen ihren Vertreiber zurück, unbegrenzt.
 - **Kleine Wahl, große Wirkung:** Viele kleine Entscheidungen verändern Rekruten, Dialoge und Begegnungen und ergeben am Staffelende ein Epilog-Mosaik. Es gibt keine Fraktionsrouten.
-- **Weltkarte mit drei Regionen:** Innerhalb eines Akts ist die Reihenfolge der Missionen teilweise frei. Dazwischen gibt es Aufträge auf wiederverwendeten Missionskarten.
+- **3D-Weltkarte mit drei Regionen:** Innerhalb eines Akts ist die Reihenfolge der Missionen teilweise frei. Leutnants suchen täglich bereits gespielte Karten heim, die man erneut spielen kann.
 
 ## Referenzen und Abgrenzung
 
@@ -76,7 +76,7 @@ V1 ist ein Leidenschaftsprojekt: eine runde, in sich abgeschlossene erste Staffe
 
 - **Plattformen:** 1. Handy-Browser im Hochformat (PWA), 2. PC-Browser, 3. später App-Stores über Capacitor.
 - **Team:** ein Entwickler mit KI-Unterstützung (Code mit Claude, Bilder mit ChatGPT, Audio mit ElevenLabs, 3D mit Blender per MCP).
-- **Umfang von Staffel 1:** rund 20 Story-Missionen, rund 15 Aufträge, rund 20 Story-Gefährten plus Rekruten aus der Taverne, 12 Nemesis-Leutnants, eine Heimat-Burg. Die Spielzeit liegt bei 25–30 Stunden.
+- **Umfang von Staffel 1:** 20 Story-Missionen, 7 Nebenquests, tägliche Heimsuchungen, rund 20 Story-Gefährten plus Rekruten aus der Taverne, 12 Nemesis-Leutnants, eine Heimat-Burg. Die Spielzeit liegt bei 25–30 Stunden.
 - **Technik:** Architektur und Performance-Ziele gelten unverändert (`10-tech-architecture.md`, T8).
 
 ### Staffel 1 im Überblick
@@ -85,8 +85,8 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 
 | Akt | Region und Jahreszeit | Story-Kern | Neue Systeme | Release |
 |---|---|---|---|---|
-| 1 „Asche“ | Grenzland um Varnhold, Spätsommer | Die Truppe findet sich, Banditen plündern das zerfallende Land. Am Ende erobert sie eine Burgruine. | Prolog und rund 6 Missionen, erste 4 Leutnants, Weltkarte Region 1, wanderndes Lager | **MVP** |
-| 2 „Glut“ | Hochland der Eisenmark, Herbst | Drei Thronanwärter werben um die Kompanie, der Verrat beginnt. | Heimat-Burg, Region 2, 4 Leutnants | 2. Release |
+| 1 „Asche“ | Grenzland um Varnhold, Spätsommer | Die Truppe findet sich, Banditen plündern das zerfallende Land. Am Ende erobert sie eine Burgruine. | Prolog und 6 Missionen, Rollenklassen, erste 4 Leutnants, 3D-Weltkarte mit Region 1, Heimsuchungen, wanderndes Lager | **MVP** |
+| 2 „Glut“ | Hochland der Eisenmark, Herbst | Drei Thronanwärter werben um die Kompanie, der Verrat beginnt. | Heimat-Burg, Akademie und Glutfunke (Aufstieg), Region 2, 4 Leutnants | 2. Release |
 | 3 „Krone“ | Aurenhall und Drachengebirge, Winter | Ein Teil der Wahrheit über den Pakt kommt ans Licht. Das Staffelfinale klärt, wer den König getötet hat, und öffnet den Bogen um Krone und Drachen für Staffel 2. | Region 3, Drachen, 4 Leutnants, Epilog-Mosaik | 3. Release |
 
 **Kernhypothese des MVP:** *Found Family, Permadeath und wiederkehrende Feinde erzeugen Bindung, und die freundliche Optik trägt den ernsten Ton.*
@@ -105,11 +105,13 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 | **Umfang:** rund 20 Gefährten mit Porträts, Stimmungen, Supports und Burg-Räumen übersteigen die Kraft eines Solo-Entwicklers | Lieferung in Akten; Supports nur für feste Paare; Stimmungsporträts nur für Kernfiguren; Content per YAML |
 | **Stil-Konsistenz:** Der Chibi-Look wirkt bei 20+ Figuren gleichförmig, und ChatGPT driftet von Bild zu Bild im Stil ab | Model Sheets, feste Farbpalette pro Figur, Silhouetten-Regeln; Prompt-Bibliothek in `art/prompts/` |
 | **Tonbruch:** Die Chibi-Optik könnte den ernsten Ton und Permadeath verharmlosen | Prototyp-Test in Akt 1: eine Gedenkszene im neuen Stil früh bauen |
-| **Nemesis-Frust:** Ein Feind, der nach einem sauberen Sieg wiederkehrt, nervt | sichtbare, verhinderbare Fluchtregel (siehe Hauptmechaniken, Säule 3) |
+| **Nemesis-Frust:** Ein Feind, der nach einem sauberen Sieg wiederkehrt, nervt | Groll gedeckelt, jede Vertreibung belohnt, Entscheidungen senken Groll (Details im GDD) |
 | **Burg als Menüfriedhof:** Hub-Aktivitäten ziehen sich (Kritik an Three Houses) | Jeder Raum hat eine Wirkung und braucht höchstens 1–2 Taps, nichts ist Pflicht |
 | **Lizenzen (GA26):** ungeklärte Nutzungsrechte an KI-Bildern und -Audio | vor jeder Veröffentlichung klären |
 
 ## Offene Fragen
+
+> Die Fragen für das GDD sind in `concept/21-gdd/gdd.md` beantwortet. Die Fragen für die Narrative bleiben offen.
 
 **Für das GDD**
 - Welche Funktionen braucht die Burg, und welche Wirkung hat jeder Raum?
