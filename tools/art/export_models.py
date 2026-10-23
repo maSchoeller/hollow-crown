@@ -27,6 +27,9 @@ OUT = argv[0] if argv else os.path.join(ROOT, "art", "models")
 ns = {"HC_TOOLS": HERE, "__file__": os.path.join(HERE, "blender_load.py")}
 exec(compile(open(os.path.join(HERE, "blender_load.py"), encoding="utf-8").read(), "blender_load.py", "exec"), ns)
 IDS = argv[1:] or list(ns["UNITS"]) + list(ns["PROPS"])
+# units with an image-to-3D figure come from tools/art/tripo_units.py (concept/23-art-direction §4.6); never overwrite them
+TRIPO = os.path.join(ROOT, "art", "models", "source")
+IDS = [i for i in IDS if not os.path.exists(os.path.join(TRIPO, f"{i}_board_tripo.glb"))]
 
 spec = importlib.util.spec_from_file_location("hc_ramps", os.path.join(HERE, "ramps.py"))
 ramps = importlib.util.module_from_spec(spec)
