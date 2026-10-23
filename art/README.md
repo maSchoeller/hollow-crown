@@ -1,8 +1,21 @@
 # art/ – Asset-Quellen
 
-Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets nach `public/assets/` (generiert, nicht eingecheckt) und schreibt die Manifeste. Stil: `concept/15-art-direction.md`, Pipeline: `concept/16-asset-pipeline.md`.
+Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets nach `public/assets/` (generiert, nicht eingecheckt) und schreibt die Manifeste. Stil: `concept/23-art-direction/art-direction.md` (löst `concept/15-art-direction.md` ab), Pipeline: `concept/16-asset-pipeline.md`.
 
 **Raster: 48 px pro Feld** (Entscheidung GA4b in `concept/01-decisions.md`, ersetzt 32 px).
+
+## Aktueller Stand und veraltete Quellen
+
+Maßgeblich ist seit 2026-10-23 `concept/23-art-direction/art-direction.md` (Round-Chibi, B8). Für neue Arbeit, Mockups und Referenzen nur diese Quellen nutzen:
+
+| Aktuell | Wo |
+|---|---|
+| Porträts aller Figuren (Round-Chibi, Moodboard-Stand) | `art/mockups/characters-s1/<id>.png` |
+| Orte und Dialog-Hintergründe (Kandidaten) | `art/mockups/locations-s1/` |
+| Stil-Leitreferenz | `art/mockups/style-2026-10/round_chibi_kael.png` |
+| Brettfigur Kael (Tripo) und Ingame-Probe | `art/models/source/kael_board_tripo.glb`, `art/turnarounds/kael*/`, `art/mockups/tripo-test-2026-10/` |
+
+**Veraltet** (Proof of Concept, vom Spiel bis zur Umstellung in Epic E7 noch geladen, nicht als Referenz verwenden): `portraits/` (Anime-Halbfiguren, GA5), `backgrounds/` (PoC-Hintergründe), `models/units/*.glb` außer Kael aus Tripo (Blender-Skriptfiguren, abgelöst durch Bild-zu-3D), `sprites/` (2D-Pixel, D4, nicht weiterentwickelt), `tiles/`, `concept/art/characters/` (Anime-Sheets), `art/mockups/style-3d-2026-10/` (abgelehnte Stilprobe).
 
 ## Ordner
 
@@ -15,7 +28,7 @@ Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets na
 | `models/props/<id>_<zustand>.glb` | 3D-Requisiten (D5), ein statisches Mesh pro Zustand (`tree_a`, `house_razed`, `chest_open` …) | `tools/art/export_models.py` + Blender |
 | `tiles/` | Boden-Tileset, Dual-Grid, je Gelände ein 4×4-Atlas. **Wird seit dem 3D-Brett nicht mehr gebaut** (D6) | `tools/art/tiles.py` |
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
-| `portraits/<id>/<mood>.png` | Anime-Halbfiguren, transparent, Master 1536 px hoch | ChatGPT, nachbearbeitet |
+| `portraits/<id>/<mood>.png` | **veraltet:** Anime-Halbfiguren des PoC, transparent, Master 1536 px hoch; neue Porträts siehe oben | ChatGPT, nachbearbeitet |
 | `backgrounds/<id>.png` | VN-Hintergründe 2560 × 1440 (Sicherheitszone mittlere 810 px) | ChatGPT |
 | `icon/icon.png` | App-Icon-Master 1254 × 1254 (Favicon, PWA-Icons, Apple-Touch); `pnpm art:icons` schreibt `public/icons/` (eingecheckt) | ChatGPT |
 | `prompts/<asset>.md` | Prompt, Referenzen, Datum | Hand |
