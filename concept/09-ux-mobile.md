@@ -1,5 +1,7 @@
 # 09 – UX & Mobile-Bedienung
 
+> **Staffel 1:** Wireframes (§4) und Bildschirmliste (§5) sind abgelöst durch `25-ux/EXPERIENCE.md` und `25-ux/DESIGN.md`; die übrigen Abschnitte gelten weiter, soweit dort nichts anderes steht.
+
 ## 1. Grundsätze
 
 - **Hochformat zuerst**, adaptiv für Tablet und PC (Querformat).
