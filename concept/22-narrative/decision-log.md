@@ -42,3 +42,6 @@
 | 2026-10-23 | Fundstücke: 12 optionale Chronik-Seiten der Paktwächter, 4 pro Akt (hält die gestaffelte Enthüllung); Belohnung Burgarchiv, Epilog-Zeile, Zusatzantwort ohne Mechanik | Produktinhaber, Empfehlung bestätigt; Verteilung 4/4/4 [C] |
 | 2026-10-23 | Weltkarte zeigt sichtbare Spuren: Entscheidungsfolgen an Dioramen (max. 2 Varianten je Ort) und zunehmende Drachenzeichen | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Musik: Motive verwandeln sich (Truppen-Thema wächst je Akt, Halvards Thema kippt in Moll, Solo-Motiv beim Tod); vertonte Schlüsselszenen: Gerrits Grab und Halvards Opfer | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Delivery: Visual-Novel-Szenen plus ca. 10 Illustrationstafeln (Chibi-Stil, ChatGPT); im Kampf sparsam (Sprechblasen, max. eine kurze VN-Einblendung pro Mission), alles überspringbar | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Ende: ein Finale, Wahrheit oder Frieden, Bonus-Antwort „Vhaelyra selbst fragen“ mit allen 12 Chronik-Seiten; Flag `s1_ending`; kein bestes Ende | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Nach dem Finale freies Weiterspielen bis Staffel 2 (Heimsuchungen, Nebenquests, Supports, Burg); kein NG+ | Produktinhaber, Empfehlung bestätigt |

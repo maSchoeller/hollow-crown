@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 7 of 11 (Environmental Storytelling)
+**Steps Completed:** 8 of 11 (Narrative Delivery)
 
 ---
 
@@ -546,3 +546,81 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 ### Weltkarte als Gedächtnis
 
 Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern sich nach Entscheidungen. Ein Dorf ist gerettet oder verbrannt, aus dem Hungerlager wird eine Siedlung oder Ödnis. Mit jedem Akt nehmen die Drachenzeichen zu: Asche, Risse, Schatten. Pro Ort gibt es höchstens 2 Varianten. `[ASSUMPTION: Asset-Umfang klärt die Art-Direction-Etappe]`
+
+---
+
+## Narrative Delivery
+
+> Stil-Referenzen der Orte (Moodboard): `art/mockups/locations-s1/`.
+
+### Cutscenes
+
+**Quantity:** etwa 10 Illustrationstafeln, alles andere sind Visual-Novel-Szenen.
+**Average Length:** Eine Tafel steht während 1–4 Textboxen.
+**Style:** Vollbild-Standbilder im runden Chibi-Stil, erzeugt per ChatGPT und abgelegt wie die Moodboards mit Prompt-Dokumentation.
+**Skippable:** ja.
+**Interactive Elements:** keine; Entscheidungen fallen immer in der Visual-Novel-Szene danach.
+
+**Major Cutscenes:**
+
+1. Die Paktnacht: Alarm im Glutdom
+2. Gerrits Grab
+3. Rhens Geständnis am Feuer
+4. Die Paktwacht erobert: das Banner auf der Ruine
+5. Drei Angebote: drei Throne, drei Gesichter
+6. Kronfeld: der Verrat
+7. „Die Krone war hohl“
+8. Die Krönung: Halvards Enttarnung
+9. Drachen über Aurenhall
+10. Der Preis: Halvards Opfer
+11. Wahrheit oder Frieden: die Schlusstafel (zwei bzw. drei Varianten)
+
+---
+
+### In-Game Storytelling
+
+**Primary Methods:**
+
+- Visual-Novel-Szenen vor und nach jeder Mission
+- Sprechblasen im Kampf: Boss- und Leutnant-Zeilen, Ansprechen, Barks
+- Lagerfeuer-Supports
+- Chronik-Seiten im Burgarchiv
+- Weltkarten-Dioramen und Steckbriefe der Leutnants
+
+**Show vs. Tell Balance:** Folgen sieht man in Burg und Weltkarte. Erklärt wird nur, was die Figuren selbst wissen.
+
+**Interruption Approach:** Sprechblasen jederzeit (sie blockieren kurz), höchstens eine kurze Visual-Novel-Einblendung pro Mission, etwa beim Auftritt eines Bosses oder bei einer Wendung.
+
+**Player Control:** Alles lässt sich mit einem Tipp überspringen. Dazu gibt es Dialog-Log, Auto-Modus und Tempo 1×/2×. Bereits gesehene Szenen lassen sich komplett überspringen.
+
+---
+
+### Optional Content
+
+**Nebenquests (7):** an Gefährten und Entscheidungen gebunden (Zuordnung in Schritt 9).
+
+**Chronik-Seiten (12):** 4 pro Akt.
+
+**Supports:** 75 Gespräche, dazu 6 S-Ränge.
+
+**Heimsuchungen:** Groll-Zeilen und Steckbriefe der Leutnants.
+
+**Nach dem Staffelfinale:** Es geht auf der Weltkarte weiter: Heimsuchungen, offene Nebenquests, Supports, Burg ausbauen. Der Spielstand trägt in Staffel 2. Kein NG+.
+
+---
+
+### Ending Structure
+
+**Number of Endings:** ein Finale mit zwei Wegen und einem Bonus.
+
+**Ending Triggers:** die letzte Entscheidung der Staffel.
+
+- **Wahrheit:** Die Truppe verkündet den Opferpakt. Flag `s1_ending: truth`.
+- **Frieden:** Die Truppe schweigt, die Lüge hält. Flag `s1_ending: peace`.
+- **Bonus**, nur mit allen 12 Chronik-Seiten: „Vhaelyra selbst fragen“ mit eigener Schlusszeile. Flag `s1_ending: ask_vhaelyra`.
+
+**Ending Variety:** Schlusstafel, letzte Szene und Staffel-2-Flag. Dazu kommt das Epilog-Mosaik mit Kacheln je Gefährte (lebt, gefallen, gegangen, plus eine Wendung) und je Region, gefärbt von Rhens Haltungsprofil.
+
+**True Ending:** keins. Jeder Durchlauf wird über das Mosaik eigen.
+
+**Replayability:** Wer andere Wege sehen will, spielt neu. Ein zweiter Spielstand ist im Modus Standard oder Casual möglich.
