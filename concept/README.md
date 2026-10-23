@@ -10,6 +10,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 | [21-gdd/gdd.md](21-gdd/gdd.md) | **Game Design Document Staffel 1**: Quelle der Wahrheit für die Spielmechanik (Rollenklassen, Leutnants, Weltkarte, Heimsuchungen, Burg, Fortschritt, Wirtschaft); Epics in `21-gdd/epics.md`. Löst die Mechanik aus `01`, `02`, `04` §4 und `07` ab | alle, nach dem Brief |
 | [22-narrative/narrative.md](22-narrative/narrative.md) | **Narrative Design Staffel 1**: Prämisse, Story Beats, Figuren, Welt, Dialogstil, Missionsfolge, Entscheidungen, Nebenquests, Supports, Produktion; Moodboards in `art/mockups/characters-s1/` und `locations-s1/`. Löst `08-story-world.md` bis auf die Prämisse ab | Story, Content, Dialoge |
 | [23-art-direction/art-direction.md](23-art-direction/art-direction.md) | **Art Direction Staffel 1**: Spielzeug-Diorama mit Detailgrad der bestehenden Karte, Round-Chibi-Figuren per Bild-zu-3D (Tripo), Farbwelt, Jahreszeit je Akt, Bildebene, Weltkarte und Burg in 3D, Effekte, Audio-Richtung, Asset-Budget. Löst `15-art-direction.md` ab; Proben in `art/mockups/style-3d-2026-10/` und `tripo-test-2026-10/` | Art, Render, Content |
+| [24-architecture/architecture.md](24-architecture/architecture.md) | **Architektur Staffel 1 (Delta zu `10`)**: zwei Command-Ebenen (Kampf, Kampagne), Bedingungen/Wirkungen als Daten, Akt-Pakete mit Hintergrund-Download, Speicherformat 2, Tageswechsel 04:00, Heimsuchungs-Anker, Leutnants, Szenen-Schema, KI im Worker, drei 3D-Szenen; Epic-Zuordnung inkl. neuem Fundament-Epic E0 | Technik, alle Umsetzungs-Sessions |
 | [00-vision.md](00-vision.md) | ~~Pitch, Säulen, Zielgruppe, Marktanalyse~~ → abgelöst durch den Game Brief | Archiv |
 | [01-decisions.md](01-decisions.md) | Entscheidungsprotokoll des Proof of Concept, **eingefroren seit 2026-10-23**; gilt, wo der Game Brief und spätere BMAD-Artefakte schweigen. Offene Punkte O1–O5 | alle |
 | [02-core-loop.md](02-core-loop.md) | Spielschleife Mission ↔ Lager | Design |
@@ -20,7 +21,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 | [07-camp-economy.md](07-camp-economy.md) | Lager-Funktionen, Ressourcen, Kosten | Kern + UI |
 | [08-story-world.md](08-story-world.md) | Welt, Fraktionen, Figuren, Akt-1-Kapitel, Supports. **Abgelöst** durch `22-narrative/narrative.md` (nur die Prämisse gilt weiter) | Herleitung |
 | [09-ux-mobile.md](09-ux-mobile.md) | Bedienung, Breakpoints, Wireframes, Screens | UI |
-| [10-tech-architecture.md](10-tech-architecture.md) | Stack, Module, Command/Event, Determinismus, Save, Tools, Tests | Technik |
+| [10-tech-architecture.md](10-tech-architecture.md) | Stack, Module, Command/Event, Determinismus, Save, Tools, Tests. Gilt weiter, wo `24-architecture/` schweigt; Modulstruktur und Speichern sind dort neu gefasst | Technik |
 | [11-content-format.md](11-content-format.md) | YAML-Formate (Karten, Klassen, Items, Skills, Dialoge, Kampagne) | Content + Technik |
 | [12-monetization.md](12-monetization.md) | F2P-Leitplanken (nach V1) | Produkt |
 | [13-v1-scope.md](13-v1-scope.md) | V1-Checkliste, Meilensteine, DoD, Abnahmeszenarien | Umsetzung |

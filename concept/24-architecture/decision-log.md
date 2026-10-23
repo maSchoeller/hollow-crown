@@ -1,0 +1,28 @@
+# Entscheidungslog – Architektur Staffel 1
+
+| Datum | Entscheidung | Begründung |
+|---|---|---|
+| 2026-10-23 | Architektur gestartet (`gds-game-architecture`), Ablage `concept/24-architecture/`; Basis Brief, GDD mit Epics, Narrative, Art Direction, `10-tech-architecture.md` und der Code des Proof of Concept | Etappe 5 des BMAD-Pfads |
+| 2026-10-23 | Form: **Delta** zu `10-tech-architecture.md`, das gültig bleibt, wo das neue Dokument schweigt; Workflow-Schritte 1–9 in einem Durchgang, Fragen gebündelt | Auftrag „Architektur-Delta“; wie Etappe 1–4: Assistent liefert bewertete Varianten, Produktinhaber wählt |
+| 2026-10-23 | AR1: Stack bleibt (Babylon 9.32, Preact 10.29, Vite 8.3, TS 6.0, Zod 4.6, idb 8, Vitest 5, Playwright 1.64), keine neuen Laufzeitabhängigkeiten [C] | PoC bestätigt Stack; reiner TS-Kern ist das wertvollste Teil |
+| 2026-10-23 | AR15: Akt-Pakete laden **im Hintergrund** und bleiben offline; `core` (Shell + Regeln + Prolog) < 15 MB, Stimmen je Sprache getrennt | Produktinhaber, Empfehlung bestätigt; hält T8/GDD-Budget ohne Bedienaufwand |
+| 2026-10-23 | AR6: Tageswechsel um **04:00 Ortszeit**; die App liefert die Tagesnummer per `advanceDay`, Seed = Kampagnen-Seed + Tag | Produktinhaber, Empfehlung bestätigt; kein Wechsel mitten in der Abendsitzung |
+| 2026-10-23 | AR17: PoC-Spielstände **sauberer Schnitt**: erkannt, als nicht kompatibel gezeigt, exportierbar, nicht migriert. Die E1-Story „Spielstände migrieren“ entfällt | Produktinhaber, Empfehlung bestätigt; alte Kapitel existieren in der neuen Missionsfolge nicht |
+| 2026-10-23 | AR18: Klassik als **Ehrensystem**: Export außerhalb des Kampfs, Import nur vom Titelbildschirm, überschreibt | Produktinhaber, Empfehlung bestätigt; lokal ohnehin nicht verhinderbar |
+| 2026-10-23 | AR2: Kampagnenebene (Weltkarte, Heimat, Händler, Entscheidungen, Tageswechsel) als **Commands mit Journal** | Produktinhaber, Empfehlung bestätigt; ganze Kampagne replay- und simulierbar |
+| 2026-10-23 | AR7: Heimsuchungs-Varianten über **handgesetzte Anker** je Karte (2–3), Generator füllt nur Gegner und Werte | Produktinhaber, Empfehlung bestätigt; verlässlich lesbar, per Sim prüfbar |
+| 2026-10-23 | AR9: **Deutscher Dialogtext direkt in der Szenen-YAML**, Schlüssel automatisch, Englisch je Akt in `content/locales/en/<akt>.dialogue.yaml`; UI-Text bleibt in Locale-Dateien | Produktinhaber, Empfehlung bestätigt; Schreib-Pipeline sieht Kontext und Text zusammen |
+| 2026-10-23 | AR14: Gegner-KI **von Anfang an im Web Worker**; der Worker führt `applyCommand` des reinen Kerns aus, Fallback synchron | Produktinhaber, gegen Empfehlung „bei Bedarf, gemessen“; UI bleibt in der Gegnerphase immer flüssig |
+| 2026-10-23 | AR16: **Bis zu 3 Kampagnen** je Gerät mit Auto-Save; Standard/Casual zusätzlich 3 manuelle Plätze je Kampagne, Klassik nur Auto-Save | Produktinhaber, Empfehlung bestätigt; präzisiert „3 Slots“ / „1 pro Kampagne“ aus dem GDD |
+| 2026-10-23 | AR3: gemeinsame Bedingungs- und Wirkungssprache (`requires`, `effects`) für Knoten, Szenen, Antworten, Nebenquests, Epilog, Räume [C] | eine Auswertung statt vieler Sonderfälle; präzisiert das Datenmodell aus der Narrative |
+| 2026-10-23 | AR4: Knoten-Verfügbarkeit wird aus Bedingungen abgeleitet statt gespeichert; gestaffelte Regeln zählen abgeschlossene Story-Missionen [C] | freie Reihenfolge ohne Zustandsdrift; folgt GDD „am Akt-Fortschritt, nicht am Knoten“ |
+| 2026-10-23 | AR5: Leutnants als feste Content-Liste (genau 12), Zustand in `CampaignState.lieutenants`, Flucht bei 0 TP als Kernregel mit Vorschau „flieht“ [C] | Nemesis-Leitplanken aus dem GDD; nichts wird prozedural erzeugt |
+| 2026-10-23 | AR8: Rollen-Datenmodell (`role`, `weaponGroups`, `classAction`, `proPaths`), Items mit `group`; aktive Klassen-Aktionen als `Action`, Halten und Nachsetzen als Regeln bzw. `pursue` [C] | GDD Rollenklassen; Vorschau = gleicher Code |
+| 2026-10-23 | AR10: Flag-Register je Akt, Flags als Werte statt Liste, Haltung als Zähler warm/sober/defiant, Chronik, Epilog-Kacheln mit Varianten [C] | Narrative Branching; undeklarierte Flags fallen im `content:check` auf |
+| 2026-10-23 | AR11: Heimat-Räume in `rooms.yaml`, Ausbau und Nutzung als Kampagnen-Commands [C] | GDD Heimat; keine verstreuten Akt-Abfragen im Code |
+| 2026-10-23 | AR12/AR13: eine Babylon-Engine mit drei Szenen-Modulen (Brett, Weltkarte, Heimat), nur eine aktiv, geteilter Asset-Cache; Weltkarte als Kachelraster mit `terrain3d` [C] | Art Direction §6/§7: dieselben Bausteine wie die Kampfkarte |
+| 2026-10-23 | AR19: Content-IDs nach jedem Release in `content/released-ids.json` gesperrt, Umbenennen nur über `content/renames.yaml` mit Migration [C] | Spielstand lebt über Akt-Releases bis Staffel 2 |
+| 2026-10-23 | AR20: Staffel-2-Übertrag über denselben Spielstand plus Zusammenfassung `archive.s1` und eigenen Export [C] | Narrative „Der Spielstand trägt in Staffel 2“; Export als Rückfallebene |
+| 2026-10-23 | AR21–AR23: `storage.persist()` und Installationshinweis; Fehlerbericht lokal mit Journal und Log; nur Pakete mit `released: true` im Build [C] | Safari löscht Daten nicht installierter Seiten; Solo-Debugging; Akt-Releases |
+| 2026-10-23 | Neues technisches Fundament-Epic **E0** vor E1 für die Querschnitts-Bausteine (Pakete, Save 2, Kampagnen-Commands, Bedingungen, Szenen-Schema, Worker, ID-Sperre) | Abhängigkeiten aller Feature-Epics; Eingabe für `gds-create-epics-and-stories` |
+| 2026-10-23 | Architektur abgeschlossen (`status: complete`); Verweise in `concept/README.md`, `AGENTS.md` und `10-tech-architecture.md`. Nächster Schritt: `gds-create-epics-and-stories` | Abschluss Etappe 5 (Teil 1) |
