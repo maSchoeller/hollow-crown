@@ -4,8 +4,8 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-status: 'in-progress'
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+status: 'complete'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
 brief: 'concept/20-game-brief/brief.md'
@@ -19,10 +19,10 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 
 ### Document Status
 
-This narrative document is being created through the GDS Narrative Workflow.
+This narrative document was created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 10 of 11 (Production Planning)
+**Steps Completed:** 11 of 11 (Complete)
 
 ---
 
@@ -823,6 +823,8 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 
 `[ASSUMPTION: Der Skill humanizer ist englischsprachig ausgelegt; ob er Deutsch zuverlässig verbessert, wird an einer Probeszene getestet, bevor ein ganzer Akt geschrieben wird.]`
 
+Installiert ist `humanizer@humanizer` 3.1.0 (github.com/blader/humanizer, MIT, Benutzer-Scope, Aufruf `/humanizer:humanizer`). Für deutsche Texte gilt seine Regel 21 (gerade Anführungszeichen) nicht: Deutsche Dialoge behalten „…“.
+
 ---
 
 ### Localization
@@ -850,3 +852,104 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 **Voice Cast Notes:** Stimmen nach den Moodboard-Porträts auswählen; ältere Figuren tief und warm, Leutnants markanter; Halvard großväterlich warm.
 
 **Recording Approach:** generiert über ElevenLabs (MCP oder `tools/audio/elevenlabs.py`); Lizenzfrage GA26 bleibt vor einer Veröffentlichung offen.
+
+---
+
+## Appendix: Character Relationships
+
+### Relationship Map
+
+```
+                         VHAELYRA (Drachenkönigin)
+                                  │ Vertrag: Lebenszeit der Könige gegen Schlaf
+                                  ▼
+   ALDRIC IV. (†) ◄──(tötet)── HALVARD, Hüter des Paktes ──(lenkt, will opfern)──► SERAPHINE
+                                  │        │                                          │
+                     (heuert über │        │ (Ziehvater)                    (liefert aus, Akt 2)
+                      Osric Dunn) │        ▼                                          │
+                                  │     LIORA ──(S, romantisch)── RHEN ◄──────────────┘
+                                  ▼                                │
+                     ASCHENBANNER: KAEL ──(S, Waffenbrüder)────────┘
+                         │   └─(S, romantisch)── BRENNA ──(S, Ziehmutter)── TOBIN
+                         │
+       DRAVN ◄─(Brücke: Varek, Sable)─┤
+       MAELIS ◄─(Brücke: Nell)────────┤
+       SERAPHINE ◄─(Brücke: Odile)────┘
+```
+
+### Relationship Key
+
+- Halvard → Aldric IV.: Mörder (liebte ihn wie einen Sohn)
+- Halvard → Aschenbanner: hat es als Sündenbock angeheuert, danach heimlicher Mentor
+- Halvard → Seraphine: Erzieher; sie ist seine Marionette und das nächste Opfer
+- Halvard → Liora: Ziehvater (Brückenfigur)
+- Halvard → Vhaelyra: hütet den Vertrag, zahlt am Ende selbst den Preis
+- Rhen → Aschenbanner: hat den Paktnacht-Vertrag geholt (Schuld)
+- Kael → Rhen: Waffenbrüder (S, platonisch)
+- Kael → Brenna: alte Liebe (S, romantisch)
+- Brenna → Tobin: Ziehmutter (S)
+- Liora → Rhen: Vision und Schuld (S, romantisch)
+- Varek → Odile: Pflicht gegen Freiheit (S, romantisch)
+- Ilka → Brann: zwei Stille (S, romantisch)
+- Odile → Seraphine: entlassene Leibwächterin (Brücke Prinzessin)
+- Varek, Sable → Dravn: Deserteur bzw. Champion und spätere Überläuferin (Brücke General)
+- Nell → Maelis: fallen gelassene Kaperfahrerin (Brücke Herzogin)
+- Seraphine, Dravn, Maelis: rivalisierende Thronanwärter; ihre Champions sabotieren einander
+- Grosk, Sable, Mael: Leutnants, die je nach Entscheidung zur Truppe wechseln
+- Ysolde → Vesna: Schülerin und Lehrerin; Ysolde → Rhen: kennen sich von der Akademie
+- Alle 25 Support-Paare: siehe Gameplay Integration
+
+---
+
+## Appendix: Story Timeline
+
+### Chronological Events
+
+```
+[VORGESCHICHTE]
+├── vor ~300 J.: Drachenkrieg, Aldric I. schließt den Pakt mit Vhaelyra
+├── bis vor ~80 J.: Paktwächter führen die Chronik in der Paktwacht
+├── vor ~80 J.: Tempel löst den Orden auf, die Paktwacht verfällt
+└── vor 12 J.: Grenzkrieg gegen Kharesh, Kael gründet das Aschenbanner
+|
+v
+[PROLOG – Paktnacht]
+├── Halvard tötet Aldric IV., die Krone verschwindet
+└── Flucht aus dem Tempelbezirk, Gerrit fällt
+|
+v
+[AKT 1 „ASCHE“ – Spätsommer, Grenzland]
+├── Steckbriefe: die Truppe gilt als Königsmörder
+├── Halvard tritt als Mentor auf
+├── Die Spur des Maklers endet mit Osric Dunns Tod; Rhens Geständnis
+└── Finale: Eroberung der Paktwacht (neue Heimat)
+|
+v
+[AKT 2 „GLUT“ – Herbst, Eisenmark]
+├── Drei Angebote: Freispruch gegen Auftrag
+├── Drei Stränge, drei Lügen; Chronik der Wächter entziffert
+├── Finale: Hinterhalt auf dem Kronfeld (Seraphines Verrat)
+└── Wende der Staffel: „Die Krone war hohl.“
+|
+v
+[AKT 3 „KRONE“ – Winter, Aurenhall und Drachengebirge]
+├── Winter über Aurenhall, die Krone taucht wieder auf
+├── Die Krönung: Halvard enttarnt
+├── Drachen über der Stadt
+├── Finale im Drachengebirge: Halvard zahlt den Preis
+└── Wahrheit oder Frieden → Epilog-Mosaik → Staffel 2
+```
+
+### Timeline Notes
+
+- Die Staffel umfasst ein einziges Jahr (Spätsommer bis Winter).
+- In Akt 1 und 2 ist die Reihenfolge der Missionen in der Mitte frei; in Akt 3 läuft die Folge ab der Krönung fest.
+
+---
+
+## Appendix: References
+
+- **Spiele:** Fire Emblem (GBA, Three Houses, Engage), Suikoden (Burg und Familie), Triangle Strategy (Politik, Akte), Battle Brothers und Wartales (Söldner, Verlust), Shadow of Mordor (wiederkehrende Gegner, bewusst ohne Prozedur), Kingdom Rush und Mario + Rabbids (runder Stil)
+- **Ton:** Studio Ghibli (Prinzessin Mononoke, Das wandelnde Schloss): freundliche Bilder, ernste Themen
+- **Bildreferenzen (Moodboards):** `art/mockups/characters-s1/` (37 Figuren), `art/mockups/locations-s1/` (14 Orte), `art/mockups/style-2026-10/round_chibi_kael.png` (Stil)
+- **Projektdokumente:** `concept/20-game-brief/brief.md`, `concept/21-gdd/gdd.md`, `concept/17-audio.md`, Prämisse aus `concept/08-story-world.md`

@@ -52,3 +52,4 @@
 | 2026-10-23 | Texte schreibt **Claude komplett**, umgesetzt über einen **Haiku-Subagenten** mit dem Skill **humanizer** (gegen KI-Klang); Abnahme beim Durchspielen. Probeszene vorab, weil humanizer englischsprachig ausgelegt ist | Produktinhaber, gegen Empfehlung „Claude entwirft, du redigierst“ |
 | 2026-10-23 | Teilvertonung in Deutsch und Englisch, gleiche ElevenLabs-Stimme je Figur, ca. 400 Zeilen je Sprache | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Schreibumfang geschätzt ~56 000 Wörter je Sprache (~112 000 gesamt) | Assistent [C] |
+| 2026-10-23 | Narrative abgeschlossen (`status: complete`): Anhänge Beziehungskarte, Zeitleiste, Referenzen; Verweise in `concept/README.md` und `AGENTS.md`; `08-story-world.md` als abgelöst markiert. Nächste Etappe laut BMAD-Pfad: Art Direction | Abschluss Etappe 3 |
