@@ -6,9 +6,14 @@
 # [agents.bmad-agent-pm]
 # description = "Prefers short, bulleted PRDs over narrative drafts."
 
-# Hollow Crown: the concept lives in concept/ (not docs/).
+# Hollow Crown: planning artifacts (brief, GDD, narrative, art direction,
+# architecture) and project knowledge live in concept/ (not docs/ or
+# _bmad-output/). Implementation artifacts (stories, sprint status) stay in
+# _bmad-output/implementation-artifacts.
 [modules.bmm]
 project_knowledge = "{project-root}/concept"
+planning_artifacts = "{project-root}/concept"
 
 [modules.gds]
 project_knowledge = "{project-root}/concept"
+planning_artifacts = "{project-root}/concept"

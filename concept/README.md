@@ -1,6 +1,6 @@
 # Hollow Crown – Konzeptordner
 
-Anforderungsdefinition für **V1 (Vertical Slice)**. Ergebnis einer Grilling-Session am 2026-10-21. Hier wird nichts implementiert. Dieser Ordner ist die Grundlage für die Umsetzungs-Sessions.
+Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe Game Brief); die Dokumente 00–17 stammen aus der Grilling-Session am 2026-10-21 und dem Proof of Concept. Hier wird nichts implementiert. Dieser Ordner ist die Grundlage für die Umsetzungs-Sessions.
 
 ## Lesereihenfolge
 
@@ -8,7 +8,7 @@ Anforderungsdefinition für **V1 (Vertical Slice)**. Ergebnis einer Grilling-Ses
 |---|---|---|
 | [20-game-brief/brief.md](20-game-brief/brief.md) | **Game Brief Staffel 1** (V1 = vollständige erste Staffel): Vision, Säulen, Umfang, Akte, Risiken. Löst `00-vision.md` und den V1-Umfang aus `13` ab | alle, zuerst lesen |
 | [00-vision.md](00-vision.md) | ~~Pitch, Säulen, Zielgruppe, Marktanalyse~~ → abgelöst durch den Game Brief | Archiv |
-| [01-decisions.md](01-decisions.md) | **Verbindliches Entscheidungsprotokoll**, offene Punkte | alle, zuerst lesen |
+| [01-decisions.md](01-decisions.md) | Entscheidungsprotokoll des Proof of Concept, **eingefroren seit 2026-10-23**; gilt, wo der Game Brief und spätere BMAD-Artefakte schweigen. Offene Punkte O1–O5 | alle |
 | [02-core-loop.md](02-core-loop.md) | Spielschleife Mission ↔ Lager | Design |
 | [03-combat.md](03-combat.md) | Phasen, Formeln, Dreieck, Elemente, Status, Supports/Tandem, Tod | Kern-Implementierung |
 | [04-units-progression.md](04-units-progression.md) | Werte, Bewegung, Wachstum, Klassen, Skills, Söldner | Kern-Implementierung |
@@ -30,6 +30,7 @@ Anforderungsdefinition für **V1 (Vertical Slice)**. Ergebnis einer Grilling-Ses
 
 ## Konventionen
 
-- **[A]** = abgestimmt, **[C]** = von Claude gesetzter Default bzw. Startwert (änderbar, aber Änderung in `01-decisions.md` dokumentieren).
+- Planung läuft über BMAD (Modul gds). Neue Entscheidungen stehen im zuständigen Artefakt (Game Brief, GDD, Narrative, Art Direction, Architektur) und dessen `.decision-log.md`, nicht mehr in `01-decisions.md`.
+- **[A]** = abgestimmt, **[C]** = von Claude gesetzter Default bzw. Startwert (in `01-decisions.md` aus dem Proof of Concept).
 - Alle Zahlen sind Startwerte fürs Balancing und gehören in `content/balance.yaml`.
 - Konzept auf Deutsch, Code und Datenschlüssel auf Englisch (siehe Glossar).

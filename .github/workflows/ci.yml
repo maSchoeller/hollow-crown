@@ -24,8 +24,8 @@ jobs:
         run: pnpm lint
       - name: Content
         run: pnpm content:check
-      - name: Unit tests (incl. replay determinism)
-        run: pnpm test
+      - name: Unit tests (incl. replay determinism, core coverage ratchet)
+        run: pnpm test:coverage
       - name: Balancing smoke (KI vs. KI)
         run: pnpm sim prologue_caravan --runs 5
 

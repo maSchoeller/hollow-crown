@@ -1,11 +1,13 @@
-# 01 – Entscheidungsprotokoll
+# 01 – Entscheidungsprotokoll (Proof of Concept, eingefroren)
 
-Dieses Dokument hält **alle getroffenen Entscheidungen** fest. Es ist die verbindliche Referenz: Widerspricht ein anderes Dokument diesem Protokoll, gilt das Protokoll.
+> **Eingefroren am 2026-10-23.** Ab jetzt werden Entscheidungen im BMAD-System dokumentiert, und zwar im jeweiligen Artefakt mit seinem `.decision-log.md`: Game Brief (`20-game-brief/`), GDD, Narrative, Art Direction, Architektur. Hier kommen keine neuen Einträge mehr hinzu. Noch gültige Einträge wandern in das passende Artefakt, sobald es entsteht: Spielmechanik ins GDD, Story in die Narrative, Grafik und Audio in die Art Direction, Technik in die Architektur. Bis dahin gilt dieses Protokoll weiter, soweit der Game Brief (B1–B9) nichts anderes sagt. Widerspricht ein BMAD-Artefakt diesem Protokoll, gilt das Artefakt.
+
+Dieses Dokument hielt alle Entscheidungen des Proof of Concept fest.
 
 - **[A]** = mit dem Produktinhaber abgestimmt.
 - **[C]** = von Claude als Default gesetzt (nicht explizit abgestimmt). Darf die Umsetzung begründet ändern; Änderung hier dokumentieren.
 
-Änderungen an Entscheidungen: neue Zeile in „Änderungshistorie“ unten, alte Entscheidung durchstreichen, nicht löschen.
+Änderungen an Entscheidungen erfolgen nur noch im zuständigen BMAD-Artefakt (siehe Hinweis oben).
 
 ## Produkt
 
@@ -219,3 +221,4 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | 2026-10-22 | U22 ergänzt: Kampf füllt als iOS-Home-Bildschirm-App die ganze Höhe (`#app` positioniert) |
 | 2026-10-22 | 3D-Karte (Mockup, Variante A mit 3D-Figuren): neuer Abschnitt D1–D18 (D18: neue Kartenformen und Balancing); T3, GA1, GA2, GA3, GA11, GA12, GA22, GA25 abgelöst; G2, G20, G21, GA10 ergänzt |
 | 2026-10-23 | Game Brief Staffel 1 (BMAD): neuer Abschnitt B1–B9; P4, S4, GA5, GA14 abgelöst, G24, GA19 präzisiert. Neues Dokument `20-game-brief/` |
+| 2026-10-23 | Protokoll eingefroren; Entscheidungen leben ab jetzt in den BMAD-Artefakten unter `concept/` |
