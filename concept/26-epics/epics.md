@@ -1183,18 +1183,23 @@ damit das größte Stilrisiko vor der Massenproduktion geklärt ist.
 **Dann** bewerten Produktinhaber und 2–3 Tester, ob der Stil den Tod verharmlost (Brief-Risiko „Tonbruch“)
 **Und** das Ergebnis steht in `concept/23-art-direction/decision-log.md`.
 
-### Story 8.2: Tripo-Figuren in der Pipeline
+### Story 8.2: Tripo-Pipeline vervollständigen
 
 Als Entwickler
-möchte ich Tripo-Figuren reproduzierbar ins Spiel bringen,
-damit jede neue Figur gleich aussieht und ins Budget passt.
+möchte ich jede neue Tripo-Figur ohne Handarbeit und ohne zusätzliche KI-Animationen ins Spiel bringen,
+damit alle Figuren gleich aussehen, ins Budget passen und Credits sparen.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** ein Tripo-Export in `art/models/source/<id>_board_tripo.glb`
+**Angenommen** die bestehende Pipeline `pnpm art:tripo` (Teamtuch per Magenta-Schlüssel, Animationen mit 12 fps, Skript-Schwert an der Hand; Art Direction §4.6)
+**Wenn** die Story umgesetzt ist
+**Dann** gibt es eine Bibliothek der Waffengruppen (Schwert, Lanze, Axt, Bogen, Buch, Stab, Schild, Dolch, Laute) als Modellteile an der Hand, passend zur ausgerüsteten Waffengruppe
+**Und** Animationen eines Skeletttyps (inklusive Flucht und Jubel) lassen sich in Blender auf weitere Figuren übertragen, sodass je Skeletttyp höchstens eine KI-Animation nötig ist.
+
+**Angenommen** eine aufbereitete Figur
 **Wenn** `pnpm art:build` läuft
-**Dann** bereitet `tools/art/prepare_tripo_unit.py` sie auf (Ausrichtung, Höhe, Edge Padding, nur Grundfarbe, Animationen idle/walk/attack/hit/downed/flee/cheer im Brett-Takt) und schreibt sie nach `public/assets/<pack>/models/`
-**Und** jede Figur liegt bei ≤ 7 000 Dreiecken, 512er-Textur und ≤ 0,5 MB; Teamtuch über eine eigene Maske, die Waffe der Waffengruppe sitzt in der Hand.
+**Dann** landet sie im Paket ihres ersten Auftritts (`public/assets/<pack>/models/`, Epic 7)
+**Und** jede Figur liegt bei ≤ 7 000 Dreiecken, 512er-Textur und ≤ 0,5 MB Transfergröße; der Build meldet Ausreißer.
 
 ### Story 8.3: Brettfiguren für Akt 1
 
