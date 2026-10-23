@@ -48,3 +48,7 @@
 | 2026-10-23 | Integration [C]: Missionsfolge der 20 Story-Missionen (Ziele, Leutnants, Beitritte), 12 Entscheidungen (je Akt 2 persönlich, 1 Gewissen, 1 politisch), 7 Nebenquests (4 persönlich, 3 Lore), 25 Support-Paare mit 6 S-Rängen (fest geschriebene Bindungen, 4 romantisch) | Produktinhaber: Leitlinien gewählt, Entwurf per „C“ bestätigt |
 | 2026-10-23 | Akt 3: Nur 3-2 und 3-3 sind frei wählbar; Krönung, Drachenangriff und Finale folgen fest aufeinander. Abweichung vom GDD, dort im Log vermerkt | Produktinhaber per „C“; Hauptbogen dominiert in Akt 3 |
 | 2026-10-23 | In Akt 2 kämpft die Truppe immer gegen die Champions der *anderen* Anwärter (gegenseitige Sabotage) | Assistent [C], per „C“ bestätigt |
+| 2026-10-23 | Quellsprache Deutsch, Englisch wird übersetzt | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Texte schreibt **Claude komplett**, umgesetzt über einen **Haiku-Subagenten** mit dem Skill **humanizer** (gegen KI-Klang); Abnahme beim Durchspielen. Probeszene vorab, weil humanizer englischsprachig ausgelegt ist | Produktinhaber, gegen Empfehlung „Claude entwirft, du redigierst“ |
+| 2026-10-23 | Teilvertonung in Deutsch und Englisch, gleiche ElevenLabs-Stimme je Figur, ca. 400 Zeilen je Sprache | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Schreibumfang geschätzt ~56 000 Wörter je Sprache (~112 000 gesamt) | Assistent [C] |

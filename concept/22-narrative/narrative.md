@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 9 of 11 (Gameplay Integration)
+**Steps Completed:** 10 of 11 (Production Planning)
 
 ---
 
@@ -790,3 +790,63 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 - Timing: nur außerhalb des Kampfs, in Szenen vor oder nach Missionen.
 
 **Role-Playing Freedom:** Name und Erscheinung des Avatars, die Haltung warm, nüchtern oder trotzig, und Romanzen über die S-Ränge (Liora mit Rhen).
+
+---
+
+## Production Planning
+
+### Writing Scope
+
+**Estimated Word Count:** ~56 000 Wörter je Sprache, ~112 000 in DE und EN.
+
+**Content Breakdown:**
+
+- Main story (Szenen, Sprechblasen, Varianten): ~25 600
+- Side content (Supports, Nebenquests): ~19 200
+- Environmental/lore (Chronik, Epilog, Leutnants, Barks, Tod und Trauer): ~6 500
+- UI/system text: ~5 000
+
+**Scene Count:** etwa 40 Story-Szenen (2 je Mission), 14 Nebenquest-Szenen, 81 Support-Gespräche (75 + 6 S-Ränge), 11 Illustrationstafeln.
+
+**Dialogue Lines:** etwa 4 000 Boxen je Sprache, davon rund 400 vertonte Zeilen.
+
+**Branching Complexity:** etwa 10 % Variantentext (Entscheidungen, Haltungsprofil, Ersatzsprecher, Gedenken). Die Ersatzsprecher-Kette kostet kaum zusätzlichen Text, weil meist dieselbe Zeile einem anderen Sprecher zufällt.
+
+### Schreib-Pipeline
+
+1. **Grundlage:** Stilblatt (Dialogue Framework), Figurenblätter (Characters), Missionsfolge und Entscheidungen (Gameplay Integration).
+2. **Entwurf:** Ein Subagent auf **Haiku** schreibt akt- und szenenweise direkt als YAML in `content/dialogues/` auf Deutsch.
+3. **Humanisieren:** Durchgang mit dem Skill **humanizer** gegen KI-Muster: gleichförmigen Satzrhythmus, Dreierlisten, Floskeln, zu glatte Pointen.
+4. **Prüfen:** `pnpm content:check` (Schema, Länge der Boxen ≤ 110 Zeichen, Sprecherketten, Schlüssel in beiden Sprachen); danach Stichprobe durch Claude gegen das Stilblatt.
+5. **Englisch:** Übersetzung aus dem Deutschen, ebenfalls mit Haiku und anschließend humanisiert.
+6. **Abnahme:** beim Durchspielen jedes Akt-Releases.
+
+`[ASSUMPTION: Der Skill humanizer ist englischsprachig ausgelegt; ob er Deutsch zuverlässig verbessert, wird an einer Probeszene getestet, bevor ein ganzer Akt geschrieben wird.]`
+
+---
+
+### Localization
+
+**Target Languages:** Deutsch (Quelle) und Englisch; weitere Sprachen erst nach V1.
+
+**Cultural Adaptation Notes:** Weltflüche, Ihr- und Du-Wechsel sowie Wortspiele (Brenna, Jory) werden im Englischen sinngemäß nachgebaut, nicht wörtlich übersetzt. Anrede im Englischen über Titel („Your Grace“) und Vornamen, kein Thou.
+
+**Technical Considerations:**
+
+- Text expansion buffer: 30 %
+- UI flexibility: Boxen mit fester Zeilenbegrenzung; `content:check` prüft beide Sprachen; Namen in beiden Sprachen gleich
+- Audio approach: Vertonung in beiden Sprachen, Untertitel immer an
+
+---
+
+### Voice Acting
+
+**Approach:** Teilvertonung mit ElevenLabs; pro Figur eine mehrsprachige Stimme für Deutsch und Englisch.
+
+**Characters Needing Voices:** etwa 36 (20 Gefährten, Rhen in 2 Varianten, Kael, Halvard, Seraphine, Dravn, Maelis, 12 Leutnants, Vhaelyra als Stimme); Gerrit nur in seiner Szene.
+
+**Dialogue Volume:** etwa 400 Zeilen je Sprache: Barks (~130), Groll- und Fluchtzeilen der Leutnants (~120), Boss-Zitate (~40), Schlüsselszenen Gerrits Grab und Der Preis (~60), Tod und Trauer (~50).
+
+**Voice Cast Notes:** Stimmen nach den Moodboard-Porträts auswählen; ältere Figuren tief und warm, Leutnants markanter; Halvard großväterlich warm.
+
+**Recording Approach:** generiert über ElevenLabs (MCP oder `tools/audio/elevenlabs.py`); Lizenzfrage GA26 bleibt vor einer Veröffentlichung offen.
