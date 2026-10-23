@@ -4,7 +4,8 @@
 # project_key: NOKEY
 # tracking_system: file-system
 # story_location: _bmad-output/implementation-artifacts
-# source: concept/26-epics/epics.md (12 epics, 99 stories)
+# source: concept/26-epics/epics.md (12 epics, 101 stories)
+# order: Epic 4 runs before (or together with) Epic 3; epics 10-12 stay backlog until refined
 
 # STATUS DEFINITIONS:
 # ==================
@@ -76,6 +77,7 @@ development_status:
   3-4-mitwachsende-staerke: backlog  # Mitwachsende Stärke
   3-5-kopfgeld-und-signatur-item: backlog  # Kopfgeld und Signatur-Item
   3-6-steckbriefe: backlog  # Steckbriefe
+  3-7-seitenwechsel: backlog  # Seitenwechsel
   epic-3-retrospective: optional
 
   # Epic 4: Akt-Struktur, Szenen und Entscheidungen
@@ -119,6 +121,7 @@ development_status:
   7-2-hintergrund-download-und-offline: backlog  # Hintergrund-Download und Offline
   7-3-ende-eines-veroeffentlichten-akts: backlog  # Ende eines veröffentlichten Akts
   7-4-stabile-ids-und-release-ablauf: backlog  # Stabile IDs und Release-Ablauf
+  7-5-leistung-messen: backlog  # Leistung messen
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio

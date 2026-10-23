@@ -8,7 +8,7 @@ stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 status: 'complete'
 source: 'BMAD-Workflow gds-game-architecture'
 gdd: 'concept/21-gdd/gdd.md'
-epics: 'concept/21-gdd/epics.md'
+epics: 'concept/26-epics/epics.md'
 brief: 'concept/20-game-brief/brief.md'
 narrative: 'concept/22-narrative/narrative.md'
 art: 'concept/23-art-direction/art-direction.md'
@@ -86,31 +86,33 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 
 ## 4. Entscheidungsübersicht
 
+> Die Spalte „Epics“ nutzt die Nummern aus `concept/26-epics/epics.md` (Epic 1–12, nachgetragen 2026-10-23). „E1–E12“ bezeichnet in GDD und Narrative die Story-Entscheidungen, nicht Epics.
+
 | ID | Kategorie | Entscheidung | Epics | Status |
 |---|---|---|---|---|
 | AR1 | Stack | Stack und Versionen bleiben, keine neuen Laufzeitabhängigkeiten | alle | C |
-| AR2 | Zustand | Zwei Command-Ebenen: Kampf (`Command`) und Kampagne (`CampaignCommand`), beide mit validate → apply → Events | E0, E3–E6 | **A** |
-| AR3 | Daten | Gemeinsame Bedingungs- und Wirkungssprache (`requires`, `effects`) im Kern | E0, E3, E4, E6 | C |
-| AR4 | Kampagne | Verfügbarkeit von Knoten wird aus Bedingungen abgeleitet, nicht gespeichert; Akt-Fortschritt = Zahl abgeschlossener Story-Missionen | E4 | C |
-| AR5 | Leutnants | Feste Leutnant-Liste im Content, Zustand in `CampaignState.lieutenants`, Flucht als Kernregel | E2 | C |
-| AR6 | Zeit | Tageswechsel **04:00 Ortszeit**; die App liefert die Tagesnummer per `advanceDay`; Uhr zählt nur vorwärts | E3 | **A** / C |
-| AR7 | Heimsuchungen | **Handgesetzte Anker** je Karte, Generator rein aus Seed + Tag + Zustand | E3 | **A** |
-| AR8 | Klassen | Rollen-Datenmodell; Klassen-Aktionen als Aktionen bzw. passive Regeln im Kern, jede mit Vorschau | E1 | C |
-| AR9 | Dialog | Szenen-Schema 2: **deutscher Text in der Szene**, Sprecherketten, Bedingungen je Zeile, Auflösung im Kern | E0, E4, E8–E10 | **A** / C |
-| AR10 | Story-Zustand | Flag-Register je Akt; Entscheidungen, Haltung, Chronik und Epilog datengetrieben | E4 | C |
-| AR11 | Heimat | Räume als Daten (`rooms.yaml`), Ausbau und Nutzung als Kampagnen-Commands | E6 | C |
-| AR12 | Rendering | Eine Babylon-Engine, ein Canvas, drei Szenen-Module; immer nur eine Szene aktiv, geteilter Asset-Cache | E3, E6, E7 | C |
-| AR13 | Weltkarte | Weltkarte als Kachelraster in YAML, gebaut mit `terrain3d`; Orte als Miniatur-Modelle mit Varianten | E3, E7 | C |
-| AR14 | KI | **Gegnerphase im Web Worker von Anfang an**; der Worker führt `applyCommand` des reinen Kerns aus | E0, E1 | **A** |
-| AR15 | Auslieferung | Pakete `core` (Shell + Regeln + Prolog), `act1`, `act2`, `act3`, Stimmen je Sprache getrennt; **Hintergrund-Download**, offline gecacht | E0, E8–E10 | **A** |
-| AR16 | Speichern | Format 2: **bis zu 3 Kampagnen**, je Auto-Save; Standard/Casual + 3 Snapshots je Kampagne; Klassik nur Auto-Save; Journal getrennt | E0, E5 | **A** |
-| AR17 | Migration | PoC-Spielstände: **sauberer Schnitt**, erkannt und exportierbar, nicht ladbar | E0 | **A** |
-| AR18 | Klassik | **Ehrensystem:** Export außerhalb des Kampfs, Import nur vom Titelbildschirm, überschreibt | E5 | **A** |
-| AR19 | Stabilität | Content-IDs sind nach einem Release gesperrt (`content/released-ids.json`), Umbenennen nur mit Migration | E0, alle Content-Epics | C |
-| AR20 | Staffel 2 | Derselbe Spielstand trägt weiter; zusätzlich Staffel-Zusammenfassung im Spielstand und als eigener Export | E4, E10 | C |
-| AR21 | Speicherschutz | `navigator.storage.persist()`, Installationshinweis, Backup-Erinnerung | E0 | C |
-| AR22 | Fehler | Kern meldet Spielerfehler per `validate`, Invarianten per Ausnahme; App fängt, bietet Fehlerbericht, lädt den letzten Auto-Save | E0 | C |
-| AR23 | Release | Veröffentlichte Akte stehen in `content/packs.yaml` (`released`); unveröffentlichte Pakete kommen nicht in den Build | E0, E8–E10 | C |
+| AR2 | Zustand | Zwei Command-Ebenen: Kampf (`Command`) und Kampagne (`CampaignCommand`), beide mit validate → apply → Events | Epic 1, 4–6 | **A** |
+| AR3 | Daten | Gemeinsame Bedingungs- und Wirkungssprache (`requires`, `effects`) im Kern | Epic 3–6 | C |
+| AR4 | Kampagne | Verfügbarkeit von Knoten wird aus Bedingungen abgeleitet, nicht gespeichert; Akt-Fortschritt = Zahl abgeschlossener Story-Missionen | Epic 4 | C |
+| AR5 | Leutnants | Feste Leutnant-Liste im Content, Zustand in `CampaignState.lieutenants`, Flucht als Kernregel | Epic 3 | C |
+| AR6 | Zeit | Tageswechsel **04:00 Ortszeit**; die App liefert die Tagesnummer per `advanceDay`; Uhr zählt nur vorwärts | Epic 5 | **A** / C |
+| AR7 | Heimsuchungen | **Handgesetzte Anker** je Karte, Generator rein aus Seed + Tag + Zustand | Epic 5 | **A** |
+| AR8 | Klassen | Rollen-Datenmodell; Klassen-Aktionen als Aktionen bzw. passive Regeln im Kern, jede mit Vorschau | Epic 2 | C |
+| AR9 | Dialog | Szenen-Schema 2: **deutscher Text in der Szene**, Sprecherketten, Bedingungen je Zeile, Auflösung im Kern | Epic 4, 9, 11, 12 | **A** / C |
+| AR10 | Story-Zustand | Flag-Register je Akt; Entscheidungen, Haltung, Chronik und Epilog datengetrieben | Epic 4 | C |
+| AR11 | Heimat | Räume als Daten (`rooms.yaml`), Ausbau und Nutzung als Kampagnen-Commands | Epic 6, 10 | C |
+| AR12 | Rendering | Eine Babylon-Engine, ein Canvas, drei Szenen-Module; immer nur eine Szene aktiv, geteilter Asset-Cache | Epic 5, 6, 8, 10 | C |
+| AR13 | Weltkarte | Weltkarte als Kachelraster in YAML, gebaut mit `terrain3d`; Orte als Miniatur-Modelle mit Varianten | Epic 5, 8 | C |
+| AR14 | KI | **Gegnerphase im Web Worker von Anfang an**; der Worker führt `applyCommand` des reinen Kerns aus | Epic 2 | **A** |
+| AR15 | Auslieferung | Pakete `core` (Shell + Regeln + Prolog), `act1`, `act2`, `act3`, Stimmen je Sprache getrennt; **Hintergrund-Download**, offline gecacht | Epic 7, 9, 11, 12 | **A** |
+| AR16 | Speichern | Format 2: **bis zu 3 Kampagnen**, je Auto-Save; Standard/Casual + 3 Snapshots je Kampagne; Klassik nur Auto-Save; Journal getrennt | Epic 1 | **A** |
+| AR17 | Migration | PoC-Spielstände: **sauberer Schnitt**, erkannt und exportierbar, nicht ladbar | Epic 1 | **A** |
+| AR18 | Klassik | **Ehrensystem:** Export außerhalb des Kampfs, Import nur vom Titelbildschirm, überschreibt | Epic 1 | **A** |
+| AR19 | Stabilität | Content-IDs sind nach einem Release gesperrt (`content/released-ids.json`), Umbenennen nur mit Migration | Epic 7, alle Content-Epics | C |
+| AR20 | Staffel 2 | Derselbe Spielstand trägt weiter; zusätzlich Staffel-Zusammenfassung im Spielstand und als eigener Export | Epic 4, 12 | C |
+| AR21 | Speicherschutz | `navigator.storage.persist()`, Installationshinweis, Backup-Erinnerung | Epic 1 | C |
+| AR22 | Fehler | Kern meldet Spielerfehler per `validate`, Invarianten per Ausnahme; App fängt, bietet Fehlerbericht, lädt den letzten Auto-Save | Epic 1 | C |
+| AR23 | Release | Veröffentlichte Akte stehen in `content/packs.yaml` (`released`); unveröffentlichte Pakete kommen nicht in den Build | Epic 7, 9, 11, 12 | C |
 
 ## 5. Architektur im Detail
 
@@ -567,6 +569,8 @@ Neue Darstellung bekommt Events oder Overlays, nie direkten Zugriff auf `Campaig
 
 ## 9. Epic-Zuordnung
 
+> **Achtung, alte Nummern:** Die Tabelle unten nutzt die frühere Epic-Zählung E0–E10 aus dem GDD-Entwurf; maßgeblich sind die Epics 1–12 in `concept/26-epics/epics.md` (Zuordnung je Entscheidung in §4).
+>
 > **Nachtrag aus `gds-create-epics-and-stories` (2026-10-23):** Das Fundament-Epic E0 entfällt. Seine Bausteine entstehen im ersten Epic, das sie braucht (Speicherformat, Kampagnen-Commands, Fehlerbericht → Epic 1; Worker → Epic 2; Content-Layout, Bedingungen, Szenen-Schema → Epic 4; Pakete, ID-Sperre → Epic 7). Maßgeblich ist `concept/26-epics/epics.md`; die Tabelle unten bleibt als Zuordnung der Bausteine.
 
 Ursprünglicher Vorschlag: ein technisches Fundament-Epic vor E1, danach die Reihenfolge aus dem GDD.
@@ -623,9 +627,9 @@ pnpm install --frozen-lockfile
 pnpm dev                       # Entwicklung
 pnpm lint && pnpm test && pnpm content:check && pnpm build
 pnpm sim m1_2 --runs 50        # Balancing einer Mission
-pnpm sim --campaign act1       # verketteter Akt (neu, E5)
-pnpm bench:ai                  # KI-Budget (neu, E0)
-pnpm content:lock              # IDs nach Release sperren (neu, E0)
+pnpm sim --campaign act1       # verketteter Akt (neu, Story 6.8)
+pnpm bench:ai                  # KI-Budget (neu, Story 2.8)
+pnpm content:lock              # IDs nach Release sperren (neu, Story 7.4)
 ```
 
 ## 14. Architecture Decision Records

@@ -5,7 +5,7 @@ project: 'Hollow Crown'
 source: 'BMAD-Workflow gds-check-implementation-readiness (nicht interaktiv)'
 stepsCompleted: [1, 2, 3, 4, 5, 6]
 status: final
-verdict: 'NEEDS WORK'
+verdict: 'NEEDS WORK → READY nach Klärung (Abschnitt 9)'
 includedFiles:
   - concept/20-game-brief/brief.md
   - concept/21-gdd/gdd.md
@@ -343,3 +343,28 @@ Ist-Stand: `src/persistence/save.ts` öffnet `hollow-crown` Version 1 mit einem 
 Diese Prüfung fand **2 kritische, 9 große und 7 kleine Befunde** in den Kategorien Abdeckung, UX-Abgleich, Story-Qualität und Abhängigkeiten, dazu 15 Klärungspunkte zu Story 1.2 und 13 offene Punkte mit betroffenen Stories. Die kritischen Punkte sollten vor der Umsetzung von 1.2 bzw. 1.5/1.6 geklärt werden; die übrigen lassen sich vor dem jeweils betroffenen Epic nachziehen. Offene Punkte (O1–O5, GA26, offene Fragen des Briefs) wurden nicht entschieden, nur aufgelistet.
 
 *Prüfer: Claude (gds-check-implementation-readiness, nicht interaktiv), 2026-10-23.*
+## 9. Auflösung (2026-10-23, Produktinhaber)
+
+Alle Befunde wurden mit dem Produktinhaber per Fragetool geklärt; Einträge im `decision-log.md` dieses Ordners.
+
+| Befund | Auflösung | Wo umgesetzt |
+|---|---|---|
+| Story 1.2 unklar | umgesetzt; Kampagnen-ID in Meta und `SaveRecord`, `contentVersion` als Content-Prüfsumme bis Epic 7, Lösch-Dialog als Zwischenlösung, Journal-Store angelegt | Story-Datei 1.2 |
+| O1, O2 widersprüchlich | beide geschlossen wie GDD (Runde neu Standard/Casual; Verbluten 3 Phasen) | Decision-Log |
+| Epic 3 → Epic 4 | Epic 4 vor bzw. mit Epic 3 | `epics.md` Reihenfolge, 3.2, 3.3 |
+| FR25 ohne Story | Story 3.7 Seitenwechsel | `epics.md` |
+| Erwartete Armee-Stufe | `expectedLevel` je Story-Knoten | Story 4.1 |
+| Heimat nach dem Finale | Lager bis Akt 2, Burg ab erster Mission von Akt 2 | 9.7, Epic 10, EXPERIENCE (Mara) |
+| Tonbruch-Test spät | bleibt nach 6.7 | – |
+| Export/Import Standard/Casual | Kampagnen-Ansicht, alle Modi | Story 1.3 |
+| NFR1/NFR2 ohne Story | Story 7.5 Leistung messen | `epics.md`, 9.11 |
+| Nummern-Kollision | Entscheidungen E1–E12, Epics „Epic N“ | Architektur §4, §9, §13.3 |
+| Klassen-Aktion passiv | Zustand mit Info | 2.1, EXPERIENCE |
+| Langdruck Leutnant | Steckbrief plus Gefahrenzone | 3.6, EXPERIENCE |
+| Angebot des Tages | erst Händler-Stufe 3 | 6.4 |
+| Staffel 2 | alles trägt weiter | Decision-Log (AR20 bleibt gültig) |
+| Wolfsreiter | zu Fuß, Vierbeiner nach dem MVP | 2.9 |
+| Kleinkram G2, G5, G6, Schriften, Slots, Spielzeit, Epics 10–12, D2 | Vorschläge übernommen | Decision-Log, 1.1, 3.7, 9.11, Sprint-Status |
+| O4, O5/GA26, Nemesis-Patent | laut Produktinhaber geklärt (`licensing.md`) | – |
+
+**Neues Urteil: READY** für Epic 1 und die MVP-Epics. Offen sind nur Nachträge in GDD und Art Direction, die die dort arbeitenden Sessions übernehmen.
