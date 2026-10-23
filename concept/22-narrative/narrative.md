@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3]
+stepsCompleted: [1, 2, 3, 4]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 3 of 11 (Story Beats)
+**Steps Completed:** 4 of 11 (Characters)
 
 ---
 
@@ -120,3 +120,184 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 - **Höchste Spannung:** der Hinterhalt im Akt-2-Finale und das Staffelfinale im Drachengebirge
 - **Emotionaler Höhepunkt:** die Krönung in Aurenhall, als der Mentor sich als Mörder entpuppt, sowie jedes Grab, das der Spieler selbst verursacht hat
 - **Auflösung:** Der Hüter zahlt den Preis, danach fällt die Entscheidung „Wahrheit oder Frieden“, gefolgt vom Epilog-Mosaik
+
+---
+
+## Characters
+
+> Porträts aller Figuren (Moodboard, runder Chibi-Stil): `art/mockups/characters-s1/` (Übersicht `overview.png`).
+
+### Protagonisten
+
+#### Avatar (Standardname „Rhen“, Name und Erscheinung wählbar)
+
+**Beschreibung:** Taktiker und jüngster Neuzugang des Aschenbanners.
+
+**Hintergrund:** Rhen wurde wegen Spielschulden von der Kriegsakademie in Aurenhall verwiesen und heuerte erst wenige Wochen vor der Paktnacht bei Kael an. Den lukrativen Paktnacht-Auftrag hat Rhen selbst vom Makler Osric Dunn angenommen. Die Truppe sitzt also seinetwegen in der Falle.
+
+**Motivation:** Wiedergutmachung: Rhen will alle heimbringen und den Auftraggeber finden.
+
+**Stärken:** liest Karten und Menschen, hat Ideen unter Druck.
+
+**Schwächen:** verschweigt Fehler, will Schuld allein abtragen.
+
+**Konflikte:**
+
+- Innerlich: Rhen will sich der Familie würdig erweisen, die es durch seine Schuld beinahe nicht mehr gäbe.
+- Äußerlich: Rhen ist ein Gesuchter, und die einzige Spur führt zu einem Toten.
+
+**Stimme:** In Schlüsselszenen gibt es 2–3 Antworthaltungen (warm, nüchtern, trotzig). Mechanische Folgen haben nur die 12 Entscheidungen.
+
+#### Kael, Hauptmann des Aschenbanners (38)
+
+**Beschreibung:** Gründer der Kompanie, trocken, verlässlich, ein Bär mit leiser Stimme.
+
+**Hintergrund:** Kael ist Veteran des Grenzkriegs. Dort ließ ein adliger Kommandant Kaels Einheit für einen Sieg verheizen. Danach gründete er das Aschenbanner aus Leuten, die niemand wollte.
+
+**Motivation:** alle heimbringen.
+
+**Stärken:** Loyalität, Ruhe, Führung durch Vorbild.
+
+**Schwächen:** trägt alles allein und misstraut Mächtigen. Ausgerechnet dem Hüter vertraut er, weil der sich wie ein Vater benimmt.
+
+**Konflikte:**
+
+- Innerlich: Das Kopfgeld zerrt an ihm. Es würde reichen, die Truppe aufzulösen und alle zu retten.
+- Äußerlich: Er ist der meistgesuchte Mann Valmoras.
+
+---
+
+### Antagonisten
+
+#### Ehrwürden Halvard, der Hüter des Paktes (72)
+
+**Beschreibung:** Oberster Paktwahrer, warm, humorvoll, kennt jeden Namen und bringt Brot und Rat. Er ist der Mörder.
+
+**Hintergrund:** Halvard hat drei Königen gedient und sie alle jung sterben sehen. Er weiß als Einziger, dass der Pakt Lebenszeit frisst. Aldric liebte er wie einen Sohn.
+
+**Ziele:** Frieden um jeden Preis. Der Pakt soll halten, die Wahrheit geheim bleiben.
+
+**Methoden:** Als Aldric ankündigte, das Opfer zu verweigern und alles öffentlich zu machen, tötete Halvard ihn und nahm die Krone. Über Osric Dunn hatte er das Aschenbanner als Sündenböcke angeheuert. Danach lenkt er die gejagte Truppe als heimlicher Mentor und führt Seraphine zum Thron, die das nächste Opfer bringen soll.
+
+**Beziehung zu den Protagonisten:** Er ist Kaels Vaterfigur und Lioras Ziehvater. Rhens Vertrag geht auf ihn zurück.
+
+**Sympathische Seite:** Er glaubt ehrlich, Valmora zu retten. Im Finale zahlt er den Preis selbst.
+
+#### Prinzessin Seraphine, die Marionette (17)
+
+**Beschreibung:** Aldrics Tochter und rechtmäßige Erbin, ängstlich, pflichtbewusst, von Halvard erzogen.
+
+**Ziele:** den Mörder ihres Vaters bestrafen und Königin werden, um Valmora zu retten.
+
+**Methoden:** Sie bietet der Truppe Freispruch an und liefert sie im Akt-2-Finale aus, weil Halvard ihr einflüstert, das Aschenbanner sei schuldig.
+
+**Sympathische Seite:** Sie ist tragisch, nicht böse. Sie ahnt nicht, dass sie das nächste Opfer sein soll. Ihr Weg nach der Staffel hängt an der Entscheidung „Wahrheit oder Frieden“ (Staffel 2).
+
+### Weitere Gegenspieler (Thronanwärter)
+
+| Figur | Wer | Lüge in Akt 2 |
+|---|---|---|
+| **General Dravn** (45) | Aldrics Halbbruder, führt das Grenzheer der Eisenmark, hält den Pakt für Aberglauben | Er will Grenzdörfer als Brandschneise gegen die Drachen opfern |
+| **Herzogin Maelis vom Silbermeer** (50) | Reichste Adlige, entfernte Cousine, kauft Loyalität | Sie hat die Banden aus Akt 1 finanziert, um das Kronland zu schwächen |
+| **Seraphine** | siehe oben | Der Freispruch ist eine Falle |
+
+---
+
+### Supporting Characters
+
+#### Gefährten (20, nach dem Prinzip „von etwas verstoßen“)
+
+Bei den drei Seitenwechslern ist der Beitritt an eine **Story-Bedingung** geknüpft, nicht an den Groll und nicht an das Finale. Die Brückenfiguren sind fett hervorgehoben.
+
+| # | Name | Rolle | Verstoßen von | Beitritt | Brücke/Kern |
+|---|---|---|---|---|---|
+| 1 | **Brenna** (41) | Vorkämpfer (Axt) | der eigenen Familie, weil sie die Schuld ihres Bruders auf sich nahm | Prolog | Kaels Stellvertreterin, mütterlich, schlechte Witze |
+| 2 | **Tobin** (17) | Vorkämpfer (Lanze) | vom Vater enterbt, weil er die Pacht nicht übernehmen wollte | Prolog | will ein Held werden; „Helden sterben jung“ |
+| 3 | **Mira** (24) | Schütze | ihrem Dorf, verbannt wegen Wilderei, mit der sie das Dorf ernährte | Akt 1 | sarkastisch, misstraut Adligen |
+| 4 | **Fenn** (19) | Späher | dem Diebesring von Varnhold, weil er ein Kind nicht bestehlen wollte | Akt 1 | Großmaul mit weichem Kern, sorgt für Witz |
+| 5 | **Liora** (22) | Heiler (Licht) | dem Pakttempel, weil sie nach den jungen Königen fragte | Akt 1 | **Brücke Hüter:** Halvards Ziehtochter, überbringt seine Nachrichten |
+| 6 | **Varek** (29) | Plänkler | dem Grenzheer als Deserteur | Akt 1 | **Brücke General:** kennt Kael und Dravn, Spieler |
+| 7 | **Ysolde** (20) | Elementarist (Feuer) | der Akademie, verwiesen wegen verbotener Forschung | Akt 1 | kennt Rhen von der Akademie, entziffert mit Liora die Chronik |
+| 8 | **Grosk** (44) | Vorkämpfer | dem Heer, als Invalide entlassen | Akt 1, *Seitenwechsel* | Banditenführer mit weichem Herzen. Bedingung: Akt-1-Entscheidung, das Hungerlager seiner Bande zu verschonen, statt das Kopfgeld zu kassieren |
+| 9 | **Jory** (26) | Spielmann | der Gauklertruppe | Akt 2 | Laute, Spottlieder, Seele der Burg |
+| 10 | **Odile** (31) | Plänkler | dem Hof, als Leibwächterin der Prinzessin nach der Paktnacht entlassen | Akt 2 | **Brücke Prinzessin:** zerrissen zwischen Pflicht und Truppe |
+| 11 | **Nell** (34) | Späher | der Herzogin, ehemals ihre Kaperfahrerin, fallen gelassen | Akt 2 | **Brücke Herzogin:** kennt die Geldwege der Herzogin |
+| 12 | **Brann** (23) | Elementarist (Erde) | seinem Bergdorf, als „Hexenkind“ | Akt 2 | still, stark, Angst vor sich selbst |
+| 13 | **Bruder Amos** (58) | Heiler | dem Orden, weil er Feinde behandelte | Akt 2 | alter Feldscher, Galgenhumor |
+| 14 | **Ilka** (27) | Schütze | ihrem Jägerclan der Eisenmark | Akt 2 | wortkarg, liest Spuren |
+| 15 | **Sable** (36) | Plänkler | dem Grenzheer, desertiert | Akt 2, *Seitenwechsel* | Dravns Champion. Bedingung: Dravns Lüge aufdecken und ihr Heimatdorf vor der Brandschneise warnen |
+| 16 | **Mael** (30) | Heiler (Kampfpriester) | der Paktgarde | Akt 3, *Seitenwechsel* | Bedingung: Mael verschonen und ihm die Chronik zeigen, noch vor der Krönung |
+| 17 | **Pell** (25) | Schütze | der Stadtwache, weil er sich weigerte, das Aschenbanner zu jagen | Akt 3 | Stadtkind, kennt Aurenhall |
+| 18 | **Vesna** (64) | Elementarist (Wind) | der Akademie, vor langer Zeit | Akt 3 | Drachenkundlerin und Einsiedlerin, Ysoldes alte Lehrerin |
+| 19 | **Kit** (18) | Späher | der Gilde der Palastdiener | Akt 3 | kennt die Gänge unter dem Palast |
+| 20 | **Harlan** (52) | Spielmann | dem Hof, als Hofbarde des toten Königs | Akt 3 | singt ein verbotenes Lied über die Paktnacht, das einen Hinweis enthält |
+
+Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte treten 8, 7 und 5 bei. Nicht spielbar ist **der alte Gerrit**, Bannerträger der Kompanie, der im Prolog fällt (das erste Grab).
+
+#### Leutnants (12, je Akt ein Lager)
+
+| Akt | Lager | Leutnants |
+|---|---|---|
+| 1 | Kopfgeldjäger und Banditen | **Grosk** (Banditenführer, Seitenwechsler), **Hask** (Marodeur-Hauptmann), **Morra** (Kopfgeldjägerin), **Ulvric** (Wolfsreiter) |
+| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden) |
+| 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
+
+Signaturwaffen, Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
+
+---
+
+## Character Arcs
+
+### Rhen Arc
+
+**Starting State:** Rhen beginnt als Schuldiger, der schweigt (positiver Bogen).
+
+**Transformation Moments:** das Geständnis an Kael in Akt 1; die Erkenntnis, dass Halvard Rhen benutzt hat.
+
+**Ending State:** ein Stratege, der Verantwortung teilt.
+
+**Lessons Learned:** Schuld trägt man gemeinsam.
+
+### Kael Arc
+
+**Starting State:** Kael trägt alles allein (flacher Bogen, geprüft).
+
+**Transformation Moments:** der Tod Gerrits, der Verrat durch den Mann, dem er vertraute, und die Burg als Heimat.
+
+**Ending State:** Er lässt sich tragen.
+
+**Lessons Learned:** Familie ist, wer bleibt, wenn man schwach ist.
+
+### Liora Arc
+
+**Starting State:** gläubige Ziehtochter (Wandlung).
+
+**Transformation Moments:** Sie entziffert die Chronik und erlebt die Enttarnung Halvards.
+
+**Ending State:** Sie glaubt an Menschen statt an den Pakt.
+
+**Lessons Learned:** Ob sie Halvard vergibt, ist eine Akt-3-Entscheidung.
+
+### Seraphine Arc
+
+**Starting State:** ängstliche Erbin (negativ, dann offen).
+
+**Transformation Moments:** Der Verrat geschieht aus Angst; bei der Krönung erfährt sie die Wahrheit.
+
+**Ending State:** gebrochen, aber wach.
+
+**Lessons Learned:** Ihr Weg in Staffel 2 hängt an der Entscheidung „Wahrheit oder Frieden“.
+
+### Halvard Arc
+
+**Starting State:** liebevoller Mörder (tragischer flacher Bogen).
+
+**Transformation Moments:** Er bleibt seiner Überzeugung treu bis zum Ende.
+
+**Ending State:** Er opfert sich selbst.
+
+**Lessons Learned:** für den Spieler: Frieden durch Lüge ist auch eine Wahl.
+
+### Gefährten-Bögen
+
+Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn verstoßen hat, und der gewählten Familie der Truppe. Mehrere dieser Bögen münden in eine der 12 Entscheidungen (in Schritt 9 zugeordnet).

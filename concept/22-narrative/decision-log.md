@@ -23,3 +23,11 @@
 | 2026-10-23 | Drachen steigernd: Akt 1 Beben und Asche, Akt 2 Schatten und ein verbranntes Dorf (kein Kampf), Akt 3 Drachen auf dem Schlachtfeld | Produktinhaber, Empfehlung bestätigt; Drachen-Assets erst ab Akt 3 |
 | 2026-10-23 | Assistenten-Ergänzungen [C] bestätigt: (1) Im Prolog fällt ein nicht spielbares Kompaniemitglied, erste Gedenkszene; (2) der Hüter schickt die Truppe selbst zur Paktwacht und übersieht die Chronik; (3) die Marionette ahnt nicht, dass sie das nächste Opfer sein soll | Produktinhaber per „C“ |
 | 2026-10-23 | Story Beats (19) und Pacing „Wellen mit steigender Grundlinie“ gespeichert | Abschluss Schritt 3 |
+| 2026-10-23 | Avatar Rhen hat den Paktnacht-Auftrag selbst angenommen (Schuld, Wiedergutmachung); spricht über 2–3 Antworthaltungen ohne Mechanik-Folgen außerhalb der 12 Entscheidungen | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Kael: Grenzland-Veteran und Gründer der Kompanie (nicht Königsbastard, nicht Ex-Königsritter) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Hüter Halvard wirkt wie ein gütiger Großvater | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Thronanwärter: Prinzessin Seraphine, General Dravn (Bastard-Halbbruder, Eisenmark), Herzogin Maelis vom Silbermeer; kein Glutkardinal (doppelt sich mit dem Hüter). Die Jüngste, Seraphine, ist die Marionette | Produktinhaber |
+| 2026-10-23 | Leutnants pro Akt ein Lager: Akt 1 Kopfgeldjäger/Banditen, Akt 2 Champions der Anwärter + Wildcard, Akt 3 Paktgarde | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Seitenwechsel: je Akt ein Leutnant, **während** des Akts (nicht erst im Finale); Bedingung ist eine Story-Bedingung, **Groll ist irrelevant** | Produktinhaber, präzisiert die Empfehlung |
+| 2026-10-23 | PoC-Figuren adaptiert (Name, Rolle, Kern bleiben, Hintergründe neu); Gefährten-Prinzip „von etwas verstoßen“; je eine Brückenfigur zu Prinzessin, General, Herzogin und Hüter; Beitritte 8/7/5 | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Figurenliste (Rhen, Kael, Halvard, Seraphine, Dravn, Maelis, 20 Gefährten, 12 Leutnants, Gerrit) mit Namen, Alter und Bedingungen vom Assistenten gesetzt [C]; per Moodboard (`art/mockups/characters-s1/`) geprüft und bestätigt. Nachgebessert: Pell (echter Langbogen), Grell (Haken links), Mael (klar erwachsen) | Produktinhaber |
