@@ -169,7 +169,7 @@ Safe Areas (Notch, Home-Indikator) gelten für alle Ränder (U22). Die Anordnung
 
 ## Key Flows
 
-> Die Protagonisten sind Vorschläge des Assistenten auf Basis der Zielgruppe im Brief. `[ASSUMPTION]`
+> Protagonisten aus der Zielgruppe des Briefs, vom Produktinhaber bestätigt.
 
 ### Lena spielt Akt 1 in der S-Bahn
 
