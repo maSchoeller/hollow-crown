@@ -544,7 +544,19 @@ export interface RenderDef {
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
   };
+  /** GA9: weapon model per equipped weapon group / off-hand item kind, hung on a figure's hand socket */
+  gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<ItemDef['kind'], GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
+}
+
+/** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */
+export interface GearPiece {
+  model: string;
+  hand: 'left' | 'right';
+  /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
+  motion?: string;
+  /** degrees about the hand socket's X outside attacks: the model is built in its striking grip */
+  hold?: number;
 }
 
 export interface GameData {

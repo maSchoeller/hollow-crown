@@ -1,6 +1,7 @@
 """Hollow Crown – prepare a Tripo image-to-3D figure for the battle board (concept/23-art-direction §4.6).
 
 blender -b --factory-startup --python tools/art/prepare_tripo_unit.py -- <in.glb> <out.glb> [--height 0.8] [--tex 512] [--faces 6000]
+                                                                             [--anims <library.glb>]
 
 Feet on z = 0, centred on the tile, facing south (Blender -Y, glTF +Z) and scaled to the board height of the
 Blender figures (1 glTF unit = 1 tile, figureScale in content/render.yaml applies on top). Keeps only the base
@@ -10,13 +11,15 @@ key magenta becomes team cloth (neutral texture, team key in vertex alpha; see t
 Static figures: --faces decimates the mesh to about that many triangles.
 Rigged figures (Tripo auto-rig, Mixamo skeleton, presets exported "in place"): the Tripo presets and AI animations
 are mapped by keyword to the board's animations and retimed to its sprite timing (src/render/assets.ts UNIT_ROWS):
-attack = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
-keep their length. A plain longsword is parented to the right hand (weapon layer, GA9).
+attack (and attack_<motion> per weapon group) = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
+keep their length. --anims fills the animations the export lacks from another Tripo export (same Mixamo bone names),
+transferred relative to each rig's rest pose (retarget()); a new figure then needs only the Tripo auto-rig.
+Hand sockets (sockets()) carry the weapon layer (GA9): the renderer attaches the equipped weapon group at runtime.
 Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
+import os
 import sys
 
-import bmesh
 import bpy
 import numpy as np
 from mathutils import Matrix, Vector
@@ -26,10 +29,17 @@ src, dst = argv[0], argv[1]
 height = float(argv[argv.index("--height") + 1]) if "--height" in argv else 0.8
 tex = int(argv[argv.index("--tex") + 1]) if "--tex" in argv else 512
 faces = int(argv[argv.index("--faces") + 1]) if "--faces" in argv else 0
+anims = argv[argv.index("--anims") + 1] if "--anims" in argv else None
 
 FPS = 12  # board animations are sampled at the sprite rate; halves the animation data
 # Tripo preset (English action name prefix) -> board animation
 PRESETS = {"idle": "idle", "walk": "walk", "slash": "attack", "hit_to_body_01": "hit", "fall": "downed"}
+REQUIRED = set(PRESETS.values())
+# attacks per weapon group (art-direction §4.5), attack_<motion>; content/render.yaml gear picks the motion per weapon.
+# Optional: without one the renderer plays the sword's attack. AI animations are named after their prompt.
+PRESETS.update({"bow shot": "attack_shoot", "axe chop": "attack_chop", "spear thrust": "attack_thrust",
+                "cast_a_spell": "attack_cast"})
+DOWNWARD = {"attack_chop"}  # impact at the fastest downward hand movement
 ATTACK_HALF = 6  # source frames (at FPS) on each side of the impact; squeezed into 3 frames (0.25 s) each
 SKIP = ("Thumb", "Index", "Middle", "Ring", "Pinky")  # finger bones: not readable at board size, never keyed
 HAND = "mixamorig:RightHand"
@@ -44,6 +54,115 @@ arm = next((o for o in bpy.data.objects if o.type == "ARMATURE"), None)
 skinned = [o for o in bpy.data.objects if o.type == "MESH" and o.parent is arm and arm is not None]
 for o in [o for o in bpy.data.objects if o.type == "MESH" and o not in skinned and arm is not None]:
     bpy.data.objects.remove(o)  # bone display shapes from the importer
+
+def board_actions(objects):
+    """Board animation -> action of a Tripo export, keyword-mapped (PRESETS); only actions used by `objects`."""
+    used = set()
+    for o in objects:
+        ad = o.animation_data
+        if ad:
+            used |= {s.action for t in ad.nla_tracks for s in t.strips if s.action}
+            if ad.action:
+                used.add(ad.action)
+    found = {}
+    for act in bpy.data.actions:
+        # presets keep their English name, AI animations are named after their prompt ("A quick one-handed sword slash: …")
+        key = next((k for k in PRESETS if k in act.name.lower()), None)
+        if key and (act in used or not used):
+            found[PRESETS[key]] = act
+    return found
+
+
+def impact_frame(rig, action, down=False):
+    """Frame of the fastest right-hand movement (the swing's hit) in an action; `down`: fastest downward movement
+    (a chop, whose wind-up can be faster than the blow)."""
+    lo_f, hi_f = (int(f) for f in action.frame_range)
+    rig.animation_data_create()
+    for track in rig.animation_data.nla_tracks:  # the importer's tracks would blend under the action
+        track.mute = True
+    pos = []
+    for f in range(lo_f, hi_f + 1):
+        rig.animation_data.action = action
+        scene.frame_set(f)
+        pos.append((rig.matrix_world @ rig.pose.bones[HAND].head).copy())
+    speed = [pos[i].z - pos[i + 1].z if down else (pos[i + 1] - pos[i]).length for i in range(len(pos) - 1)]
+    rig.animation_data.action = None
+    return lo_f + int(np.argmax(speed)) + 1
+
+
+def retarget(lib, target, action, name):
+    """Transfers `action` of armature `lib` onto armature `target`, relative to each rig's own rest pose.
+
+    Tripo rigs share the Mixamo bone names but not their rest poses (arm angles, bone rolls, proportions), so local
+    rotations cannot be copied. Per bone, the world rotation away from its rest pose is applied to the target bone's
+    own rest orientation; the hips' movement is scaled by the hip height ratio. Both armatures as imported (same
+    Tripo axes), before the board orientation.
+    """
+    names = [b.name for b in target.data.bones if b.name in lib.pose.bones]  # parents before children
+    feet = "mixamorig:LeftFoot"
+    hip = "mixamorig:Hips"
+    ratio = ((target.matrix_world @ target.data.bones[hip].head_local).z - (target.matrix_world @ target.data.bones[feet].head_local).z) / \
+            ((lib.matrix_world @ lib.data.bones[hip].head_local).z - (lib.matrix_world @ lib.data.bones[feet].head_local).z)
+    s_rest = {n: (lib.matrix_world @ lib.data.bones[n].matrix_local) for n in names}
+    t_rest = {n: (target.matrix_world @ target.data.bones[n].matrix_local) for n in names}
+    t_arm = target.matrix_world.to_quaternion()
+    lib.animation_data_create()
+    for track in lib.animation_data.nla_tracks:  # the importer's tracks would blend under the sampled action
+        track.mute = True
+    lib.animation_data.action = action
+    out = bpy.data.actions.new(name)
+    target.animation_data_create()
+    target.animation_data.action = out
+    f0, f1 = action.frame_range
+    steps = int(round((f1 - f0) * 2))  # half-frame samples: bake() resamples once more
+    for i in range(steps + 1):
+        f = f0 + (f1 - f0) * i / max(steps, 1)
+        scene.frame_set(int(f), subframe=f - int(f))
+        pose = {}  # armature-space pose matrices of the target, filled parent first
+        for n in names:
+            src = lib.matrix_world @ lib.pose.bones[n].matrix
+            delta = src.to_quaternion() @ s_rest[n].to_quaternion().inverted()
+            rot = t_arm.inverted() @ (delta @ t_rest[n].to_quaternion())  # target bone rotation in armature space
+            bone = target.data.bones[n]
+            pb = target.pose.bones[n]
+            if bone.parent is None or bone.parent.name not in pose:
+                moved = (src.translation - s_rest[n].translation) * ratio
+                head = target.matrix_world.inverted() @ (t_rest[n].translation + moved)
+                frame = bone.matrix_local
+                basis = frame.inverted() @ (Matrix.Translation(head) @ rot.to_matrix().to_4x4())
+                keys = ("location", "rotation_quaternion")
+            else:
+                frame = pose[bone.parent.name] @ (bone.parent.matrix_local.inverted() @ bone.matrix_local)
+                basis = (frame.to_quaternion().inverted() @ rot).to_matrix().to_4x4()
+                keys = ("rotation_quaternion",)
+            pose[n] = frame @ basis
+            pb.rotation_mode = "QUATERNION"
+            pb.location, pb.rotation_quaternion = basis.to_translation(), basis.to_quaternion()
+            for k in keys:
+                pb.keyframe_insert(k, frame=f)
+    lib.animation_data.action = None
+    target.animation_data.action = None
+    return out
+
+
+own, library, hit_at = (board_actions([arm]) if arm else {}), {}, {}
+if anims and arm is not None:
+    before, before_actions = set(bpy.data.objects), set(bpy.data.actions)
+    bpy.ops.import_scene.gltf(filepath=anims)
+    lib_objs = [o for o in bpy.data.objects if o not in before]
+    lib_arm = next((o for o in lib_objs if o.type == "ARMATURE"), None)
+    if lib_arm is None:
+        raise SystemExit(f"{anims}: no armature")
+    for board, act in board_actions(lib_objs).items():
+        if board.startswith("attack") and board not in own:
+            hit_at[board] = impact_frame(lib_arm, act, board in DOWNWARD)  # a property of the animation; on another rig the hand's peaks shift
+        if board not in own:  # the figure's own Tripo animations win over the library's
+            library[board] = retarget(lib_arm, arm, act, f"{board}_library")
+    for o in lib_objs:
+        bpy.data.objects.remove(o)
+    for act in set(bpy.data.actions) - before_actions - set(library.values()):
+        bpy.data.actions.remove(act)
+    print(f"[hc] animations from {os.path.basename(anims)}: {', '.join(sorted(library)) or 'none'}", flush=True)
 
 if arm is None:
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
@@ -83,11 +202,17 @@ def rest_bounds():
     return lo, hi
 
 
-# Tripo figures face +Y in Blender; the board's figures face -Y (glTF +Z): turn by 180°, feet to z = 0
+# the board's figures face -Y (glTF +Z), feet on z = 0. Rigged Tripo figures already face -Y (their right hand on -X);
+# turn by 180° only if the hands say otherwise. Static exports were taken to face +Y (first test, not re-checked).
+if arm:
+    hands = [(arm.matrix_world @ arm.data.bones[f"mixamorig:{s}Hand"].head_local).x for s in ("Right", "Left")]
+    turn = hands[0] > hands[1]
+else:
+    turn = True
 lo, hi = rest_bounds()
 k = height / (hi.z - lo.z)
 centre = Matrix.Translation(Vector((-(lo.x + hi.x) / 2, -(lo.y + hi.y) / 2, -lo.z)))
-root.matrix_world = Matrix.Rotation(np.pi, 4, "Z") @ Matrix.Scale(k, 4) @ centre @ root.matrix_world
+root.matrix_world = Matrix.Rotation(np.pi if turn else 0, 4, "Z") @ Matrix.Scale(k, 4) @ centre @ root.matrix_world
 if arm is None:
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
 
@@ -122,39 +247,24 @@ def bake(action, name, t0, t1, frames):
     return out
 
 
-def impact_frame(action):
-    """Frame of the fastest right-hand movement (the swing's hit) in an action."""
-    lo_f, hi_f = (int(f) for f in action.frame_range)
-    pos = []
-    for f in range(lo_f, hi_f + 1):
-        arm.animation_data.action = action
-        scene.frame_set(f)
-        pos.append((arm.matrix_world @ arm.pose.bones[HAND].head).copy())
-    speed = [(pos[i + 1] - pos[i]).length for i in range(len(pos) - 1)]
-    return lo_f + int(np.argmax(speed)) + 1
-
-
 if arm:
     arm.animation_data_create()
-    found = {}
-    for act in list(bpy.data.actions):
-        # presets keep their English name, AI animations are named after their prompt ("A quick one-handed sword slash: …")
-        key = next((k for k in PRESETS if k in act.name.lower()), None)
-        if key:
-            found[PRESETS[key]] = act
-    missing = set(PRESETS.values()) - set(found)
+    found = {**own, **library}
+    missing = REQUIRED - set(found)
     if missing:
-        raise SystemExit(f"missing Tripo presets for {sorted(missing)}")
-    hit_at = impact_frame(found["attack"])
-    a0, a1 = found["attack"].frame_range
-    t0, t1 = max(a0, hit_at - ATTACK_HALF), min(a1, hit_at + ATTACK_HALF)
+        raise SystemExit(f"missing Tripo presets for {sorted(missing)} (export them from Tripo or pass --anims)")
     keep = {
         "idle": bake(found["idle"], "idle", *found["idle"].frame_range, span(found["idle"])),
         "walk": bake(found["walk"], "walk", *found["walk"].frame_range, span(found["walk"])),
-        "attack": bake(found["attack"], "attack", t0, t1, FPS // 2 + 1),
         "hit": bake(found["hit"], "hit", *found["hit"].frame_range, FPS // 2 + 1),
         "downed": bake(found["downed"], "downed", *found["downed"].frame_range, span(found["downed"])),
     }
+    for name in sorted(n for n in found if n.startswith("attack")):
+        hit = hit_at.get(name) or impact_frame(arm, found[name], name in DOWNWARD)
+        a0, a1 = found[name].frame_range
+        t0, t1 = max(a0, hit - ATTACK_HALF), min(a1, hit + ATTACK_HALF)
+        keep[name] = bake(found[name], name, t0, t1, FPS // 2 + 1)
+        print(f"[hc] {name} impact at source frame {hit}, window {t0:.0f}–{t1:.0f}", flush=True)
     for act in list(bpy.data.actions):
         if act not in keep.values():
             bpy.data.actions.remove(act)
@@ -167,7 +277,6 @@ if arm:
         track = arm.animation_data.nla_tracks.new()
         track.name = name
         track.strips.new(name, 0, act)
-    print(f"[hc] attack impact at source frame {hit_at}, window {t0:.0f}–{t1:.0f}", flush=True)
 
 # base colour only
 base = None
@@ -249,77 +358,36 @@ body.data.materials.append(mat)
 body.name = "body"
 
 
-def swatch(image, pick):
-    """UV of the calmest texel whose colour satisfies pick(r, g, b) (the weapon reuses the figure's texture)."""
-    w, h = image.size
-    px = np.empty(w * h * 4, dtype=np.float32)
-    image.pixels.foreach_get(px)
-    rgb = px.reshape(h, w, 4)[..., :3]
-    ok = pick(rgb[..., 0], rgb[..., 1], rgb[..., 2])
-    var = np.zeros((h, w), np.float32)
-    for dy in (-2, 0, 2):
-        for dx in (-2, 0, 2):
-            var += np.abs(np.roll(rgb, (dy, dx), (0, 1)) - rgb).sum(2)
-    var[~ok] = np.inf
-    y, x = np.unravel_index(np.argmin(var), var.shape)
-    return (x + 0.5) / w, (y + 0.5) / h
-
-
-def hand_sword(image):
-    """Plain longsword parented to the right hand bone, blade pointing forward in the rest pose (GA9 weapon layer)."""
-    def hsv(r, g, b):
-        mx, mn = np.maximum(np.maximum(r, g), b), np.minimum(np.minimum(r, g), b)
-        return mx, (mx - mn) / np.maximum(mx, 1e-4)
-    steel = swatch(image, lambda r, g, b: (hsv(r, g, b)[0] > 0.55) & (hsv(r, g, b)[1] < 0.12))
-    leather = swatch(image, lambda r, g, b: (r > g) & (g > b) & (hsv(r, g, b)[0] > 0.2) & (hsv(r, g, b)[0] < 0.45) & (hsv(r, g, b)[1] > 0.4))
+def sockets():
+    """Empties `socket_r` / `socket_l` in the fists, parented to the hand bones: the renderer hangs the weapon library
+    (tools/art/blender_weapons.py) there by weapon group (GA9). Frame in the rest pose: +Y up along the hand towards the
+    forearm, +Z forward across the fist (the grip axis), +X = Y × Z (the figure's left); unit scale in board units."""
     arm.data.pose_position = "REST"
     bpy.context.view_layer.update()
-    bone = arm.data.bones[HAND]
-    m = arm.matrix_world @ bone.matrix_local
-    axes = [m.col[i].to_3d().normalized() for i in (0, 2)]
     fwd = Vector((0, -1, 0))
-    blade = max((a * s for a in axes for s in (1, -1)), key=lambda a: a.dot(fwd))
-    fingers = m.col[1].to_3d().normalized()
-    side = blade.cross(fingers).normalized()
-    grip = arm.matrix_world @ (bone.head_local + (bone.tail_local - bone.head_local) * 0.5)
-    s = height  # sizes relative to the figure height
-    parts = [  # (centre along blade, length, width, thickness, uv)
-        (0.26 * s, 0.40 * s, 0.040 * s, 0.012 * s, steel),   # blade
-        (0.05 * s, 0.020 * s, 0.11 * s, 0.022 * s, steel),   # guard
-        (-0.035 * s, 0.09 * s, 0.022 * s, 0.022 * s, leather),  # grip
-    ]
-    verts, faces, uvs = [], [], []
-    for c, ln, wd, th in [(p[0], p[1], p[2], p[3]) for p in parts]:
-        base_i = len(verts)
-        for dz in (-0.5, 0.5):
-            for dx in (-0.5, 0.5):
-                for dy in (-0.5, 0.5):
-                    verts.append(grip + blade * (c + dz * ln) + side * (dx * wd) + fingers * (dy * th))
-        faces += [[base_i + i for i in f] for f in ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3))]
-    me = bpy.data.meshes.new("weapon")
-    me.from_pydata([arm.matrix_world.inverted() @ v for v in verts], [], faces)
-    bm = bmesh.new()
-    bm.from_mesh(me)
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)  # outward, whatever the handedness of the hand axes
-    bm.to_mesh(me)
-    bm.free()
-    uv = me.uv_layers.new(name="UVMap")
-    for poly, (_, _, _, _, st) in zip(me.polygons, [p for p in parts for _ in range(6)]):
-        for li in poly.loop_indices:
-            uv.data[li].uv = st
-    me.materials.append(mat)
-    ob = bpy.data.objects.new("weapon", me)
-    bpy.context.scene.collection.objects.link(ob)
-    ob.parent = arm
-    ob.parent_type = "BONE"
-    ob.parent_bone = HAND
-    ob.matrix_world = arm.matrix_world  # vertices are in armature space; keep them where they are
+    made = []
+    for name, side in (("socket_r", "Right"), ("socket_l", "Left")):
+        bone = arm.data.bones[f"mixamorig:{side}Hand"]
+        m = arm.matrix_world @ bone.matrix_local
+        y = -m.col[1].to_3d().normalized()  # bone +Y runs along the fingers, away from the forearm
+        z = (fwd - y * fwd.dot(y)).normalized()  # forward across the fist, whatever the bone's roll
+        x = y.cross(z)
+        grip = arm.matrix_world @ (bone.head_local + (bone.tail_local - bone.head_local) * 0.5)
+        frame = Matrix((x, y, z)).transposed().to_4x4()
+        frame.translation = grip
+        ob = bpy.data.objects.new(name, None)
+        bpy.context.scene.collection.objects.link(ob)
+        ob.parent = arm
+        ob.parent_type = "BONE"
+        ob.parent_bone = bone.name
+        ob.matrix_world = frame
+        made.append(ob)
     arm.data.pose_position = "POSE"
-    return ob
+    return made
 
 
 if arm:
-    hand_sword(base)
+    sockets()
 
 bpy.ops.export_scene.gltf(filepath=dst, export_format="GLB", use_selection=False, export_image_format="JPEG",
                           export_jpeg_quality=88, export_apply=arm is None, export_vertex_color="ACTIVE", export_animations=arm is not None,

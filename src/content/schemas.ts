@@ -413,6 +413,7 @@ export const campaignSchema = z.object({
 
 /** Presentation values of the battle board; see core/defs.ts RenderDef. */
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
+const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 export const renderSchema = z.object({
   camera: z.object({
     tiltDeg: z.number().min(0).max(80),
@@ -430,6 +431,10 @@ export const renderSchema = z.object({
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     sceneryPropsLow: z.number().int().min(0),
+  }),
+  gear: z.object({
+    weapons: z.partialRecord(weaponType, gearPiece),
+    offHand: z.partialRecord(itemSchema.shape.kind, gearPiece),
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
 });
