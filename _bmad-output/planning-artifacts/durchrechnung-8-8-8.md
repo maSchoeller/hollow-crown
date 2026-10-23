@@ -1,6 +1,6 @@
 ---
 title: "Durchrechnung: Staffel 1 mit 8/8/8 Story-Missionen und Burg ab 1-6"
-status: zur Prüfung
+status: geprüft, Entscheidungen F1–F5 getroffen (2026-10-23)
 created: 2026-10-23
 purpose: Grundlage für gds-correct-course; noch keine Änderung an Brief, GDD, Narrative oder Epics
 ---
@@ -41,7 +41,7 @@ Legende: ★ fester Platz · **neu** · *verschoben*
 | 1-2 | Asche über Erlbach | defend | Hask | Mira | E1 |
 | 1-3 | Der Fremde mit dem Siegel | escort (Liora) | Morra | Liora | 4 |
 | 1-4 | Die Spur des Maklers | boss (Osric Dunn) | Ulvric | Ysolde | 5, E2, Rhens Geständnis |
-| 1-5 | Das Hungerlager | rout | Grosk | Varek; *Grosk direkt danach* bei E3 „verschonen“ | E3 |
+| 1-5 | Das Hungerlager | survive (standhalten, bis Grosk redet) | Grosk | Varek; *Grosk direkt danach* bei E3 „verschonen“ | E3 |
 | 1-6 ★ | Die Paktwacht | seize | Hask, Ulvric | – | 7 Heimat erobert (Tafel 4); *E4 danach* |
 | **1-7 ★** | **Unter der Paktwacht** | treasure (vor dem Einsturz bergen) | – (Plünderer) | – | *6 Junge Könige* (Grabreliefs); Chronik versiegelt gefunden |
 | **1-8 ★** | **Die Heimat halten** (Finale) | defend | **Morra** (führt), Hask, Ulvric, Grosk falls nicht gewechselt | – | **7b** Morra findet das Versteck; 2 Glutfunken |
@@ -88,7 +88,7 @@ Legende: ★ fester Platz · **neu** · *verschoben*
 | Regel | Ergebnis |
 |---|---|
 | Jeder Leutnant ≥ 2 Story-Missionen, eine davon das Akt-Finale | erfüllt: Hask 3, Morra 2, Ulvric 3, Grosk 2 · Brakka 3, Grell 3, Sable 3, Rowena 3 · Eluned 4, Cassian 3, Torvald 4, Mael 2 |
-| Kein Ziel zweimal direkt hintereinander (Narrative) | erfüllt bei jeder Reihenfolge der freien Missionen (1-1 rout und 1-5 rout liegen höchstens dann direkt hintereinander, wenn 1-5 als erste freie Mission gespielt wird; das gilt schon in der bisherigen Folge → **Prüfpunkt**, ggf. 1-5 auf survive) |
+| Kein Ziel zweimal direkt hintereinander (Narrative) | erfüllt bei jeder Reihenfolge der freien Missionen; 1-5 ist dafür survive statt rout (vorher konnten 1-1 und 1-5 als rout direkt aufeinanderfolgen). survive kommt damit schon in Akt 1 vor |
 | Beitritte je Akt | 8 / 7 / 5 wie bisher |
 | Letzter Beitritt im Akt, danach noch | Akt 1: 1-5, dann 3 Missionen · Akt 2: spätestens 7. Mission, dann 1 + 8 · Akt 3: spätestens 3-4, dann 4 |
 | Neue Ziel-Einführung | treasure kommt schon in Akt 1 (1-7), vorher erst in 2-2 |
@@ -139,10 +139,15 @@ Legende: ★ fester Platz · **neu** · *verschoben*
 | `25-ux/EXPERIENCE.md` | Zeile Heimat: Burg ab 1-6, in Akt 1 nur Stufe 1 und Gedächtnishalle |
 | `26-epics/epics.md` + Log + HTML | FR49, FR55, FR60; Epic 9 +3 Stories (1-7, 1-8, N3); Story 10.1 und der Gedenkstein-Teil von 10.7 rücken vor den MVP; Epic 11 +1 (2-7); Epic 12 +2 (3-4, 3-7), Umnummerierung |
 
-## 8. Offene Fragen an dich
+## 8. Entscheidungen des Produktinhabers (2026-10-23)
 
-- **F1 Zählung:** Prolog zusätzlich (25 Missionen, so gerechnet) oder Prolog zählt mit (24, dann Eroberung in 1-5, Finale 1-7)?
-- **F2 Glutfunken:** bei 12 bleiben (Empfehlung, Knappheit ist Absicht) oder 15 mit je einem aus den neuen Quests?
-- **F3 Burg in Akt 1:** nur Stufe 1 plus Gedenksteine (Empfehlung) oder schon Ausbau auf Stufe 2?
-- **F4 Neue Nebenquests:** Tobin, Jory, Kit und Pell einverstanden, oder andere Figuren?
-- **F5 MVP:** Der MVP wächst um 2 Missionen, eine Nebenquest und das Burg-Diorama. Ist das in Ordnung, oder soll N3 erst nach dem MVP-Playtest nachgeliefert werden?
+| # | Frage | Entscheidung |
+|---|---|---|
+| F1 | Zählung | Prolog zusätzlich: P + 8/8/8 = 25 Story-Missionen; Eroberung 1-6, Finale 1-8 |
+| F2 | Glutfunken | bleibt bei 12; die neuen Nebenquests N3, N6, N10 geben Signaturwaffen statt Glutfunken |
+| F3 | Burg in Akt 1 | Stufe 1 der sechs Lagerfunktionen plus Gedächtnishalle mit Gedenksteinen ohne Lektion; alles Weitere ab Akt 2 |
+| F4 | Neue Nebenquests | Tobin (Akt 1), Jory (Akt 2), Kit und Pell (Akt 3) |
+| F5 | MVP | alles in den MVP: P + 8, Nebenquests N1–N3, Burg Stufe 1 mit Gedenksteinen |
+| – | Ziel-Doppel in Akt 1 | 1-5 „Das Hungerlager“ wird survive statt rout |
+
+Nächster Schritt: `gds-correct-course` mit dieser Durchrechnung als Grundlage.
