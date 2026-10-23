@@ -65,3 +65,14 @@ blender -b --factory-startup --python tools/art/prepare_tripo_unit.py -- art/mod
 - **Im Spiel geprüft:** Idle und Laufen auf der Prolog-Karte. Der Hieb ist in den Brett-Takt geschnitten (Aufprall aus der Handgeschwindigkeit ermittelt).
 - **Fehler behoben:** Die Geisterfigur der Zugvorschau hat beim Aufräumen die gemeinsame Textur entsorgt, danach war Kael schwarz (`src/render/models.ts`).
 - **Offen:** Schwert in die Hand, Teamtuch-Maske, Animationsdaten verkleinern, Einbindung in `pnpm art:build`.
+
+## Dritter Durchgang: Teamtuch-Maske, Waffe in der Hand, Asset-Build
+
+- **Brett-Turnaround v2** (`art/prompts/kael_board_turnaround.md`): ohne Schwert und Scheide, Umhang und Kragen flach Magenta.
+- **Tripo:** Smart-Mesh (letzte kostenlose Testrunde, 3 772 Quads), Textur (20), Auto-Rig (20), KI-Hieb (20), Presets Inaktiv, Gehen, Körpertreffer_01, fallen (kostenlos). Stand danach: 5 985 Credits.
+- **Aufbereitung:** `pnpm art:tripo` → `art/models/units/kael.glb` (6 385 Dreiecke, 522 Tuch-Vertices, Schwert an der rechten Hand), `pnpm art:build` übernimmt sie.
+
+| Datei | Inhalt |
+|---|---|
+| `ingame_team_blue_red.png` | Kael blau neben einer Testkopie als Bandit in Rot (Kopie nur lokal, nicht eingecheckt) |
+| `ingame_attack_swing.png`, `ingame_attack_hit.png` | Kaels Angriff im Spiel: Schwung und Treffer mit Schadenszahl |

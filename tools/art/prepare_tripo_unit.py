@@ -4,12 +4,15 @@ blender -b --factory-startup --python tools/art/prepare_tripo_unit.py -- <in.glb
 
 Feet on z = 0, centred on the tile, facing south (Blender -Y, glTF +Z) and scaled to the board height of the
 Blender figures (1 glTF unit = 1 tile, figureScale in content/render.yaml applies on top). Keeps only the base
-colour map (the board shades with its own material), edge-padded and downsized to --tex pixels.
+colour map (the board shades with its own material), edge-padded and downsized to --tex pixels. Cloth painted in
+key magenta becomes team cloth (neutral texture, team key in vertex alpha; see team_cloth()).
 
 Static figures: --faces decimates the mesh to about that many triangles.
-Rigged figures (Tripo auto-rig, Mixamo skeleton, presets exported "in place"): the Tripo presets are renamed to the
-board's animations and retimed to its sprite timing (src/render/assets.ts UNIT_ROWS): attack = 0.5 s with the
-impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame) keep their length.
+Rigged figures (Tripo auto-rig, Mixamo skeleton, presets exported "in place"): the Tripo presets and AI animations
+are mapped by keyword to the board's animations and retimed to its sprite timing (src/render/assets.ts UNIT_ROWS):
+attack = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
+keep their length. A plain longsword is parented to the right hand (weapon layer, GA9).
+Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
 import sys
 
@@ -30,6 +33,8 @@ PRESETS = {"idle": "idle", "walk": "walk", "slash": "attack", "hit_to_body_01": 
 ATTACK_HALF = 6  # source frames (at FPS) on each side of the impact; squeezed into 3 frames (0.25 s) each
 SKIP = ("Thumb", "Index", "Middle", "Ring", "Pinky")  # finger bones: not readable at board size, never keyed
 HAND = "mixamorig:RightHand"
+TEAM_KEY = 2  # team ramp step for the cloth (K2 = mid tone, src/render/models.ts TEAM_RAMP)
+CLOTH_GREY = 0.85  # texture value under the team colour
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
@@ -199,6 +204,39 @@ def pad_islands(image, rounds=24):
 
 pad_islands(base)
 base.scale(tex, tex)
+
+
+def team_cloth(image, mesh):
+    """Key-magenta cloth (#FF00FF in the turnaround) -> neutral texture + team key in vertex alpha.
+
+    The texture keeps a light grey there; the vertices on the cloth get colour (1, 1, 1, (TEAM_KEY + 1) / 8), all
+    others (1, 1, 1, 1). src/render/models.ts teamColours() swaps the key for the team ramp, the board's material
+    multiplies it with the texture: the same contract as the Blender figures' K0–K3 cloth (export_models.py).
+    """
+    w, h = image.size
+    px = np.empty(w * h * 4, dtype=np.float32)
+    image.pixels.foreach_get(px)
+    px = px.reshape(h, w, 4)
+    r, g, b = px[..., 0], px[..., 1], px[..., 2]
+    key = np.clip((np.minimum(r, b) - g - 0.15) / 0.35, 0, 1)  # 1 on pure magenta, 0 off it, soft at the edges
+    px[..., :3] = px[..., :3] * (1 - key[..., None]) + CLOTH_GREY * key[..., None]
+    image.pixels.foreach_set(px.ravel())
+    hit = np.zeros(len(mesh.vertices))
+    seen = np.zeros(len(mesh.vertices))
+    uv = mesh.uv_layers.active.data
+    for li, loop in enumerate(mesh.loops):
+        u, v = uv[li].uv
+        hit[loop.vertex_index] += key[min(h - 1, max(0, int(v * h))), min(w - 1, max(0, int(u * w)))]
+        seen[loop.vertex_index] += 1
+    cloth = hit / np.maximum(seen, 1) > 0.5
+    attr = mesh.color_attributes.new("team", "FLOAT_COLOR", "POINT")
+    alpha = np.where(cloth, (TEAM_KEY + 1) / 8, 1.0)
+    attr.data.foreach_set("color", np.c_[np.ones((len(alpha), 3)), alpha].astype(np.float32).ravel())
+    mesh.color_attributes.active_color = attr
+    return int(cloth.sum())
+
+
+cloth_vertices = team_cloth(base, body.data)
 mat = bpy.data.materials.new("HC_Tripo")
 nt = mat.node_tree
 bsdf = nt.nodes["Principled BSDF"]
@@ -284,8 +322,9 @@ if arm:
     hand_sword(base)
 
 bpy.ops.export_scene.gltf(filepath=dst, export_format="GLB", use_selection=False, export_image_format="JPEG",
-                          export_jpeg_quality=88, export_apply=arm is None, export_animations=arm is not None,
+                          export_jpeg_quality=88, export_apply=arm is None, export_vertex_color="ACTIVE", export_animations=arm is not None,
                           export_animation_mode="NLA_TRACKS", export_force_sampling=False,
                           export_optimize_animation_size=True)
 tris = sum(len(p.vertices) - 2 for p in body.data.polygons)
-print(f"[hc] {dst}: {tris} triangles, height {height}, texture {tex}px, rigged {arm is not None}", flush=True)
+print(f"[hc] {dst}: {tris} triangles, height {height}, texture {tex}px, rigged {arm is not None}, "
+      f"team cloth {cloth_vertices} vertices", flush=True)
