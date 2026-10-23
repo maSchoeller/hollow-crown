@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 5 of 11 (World Building)
+**Steps Completed:** 6 of 11 (Dialogue)
 
 ---
 
@@ -385,3 +385,85 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | **Salzpass** | Eisenmark, Akt 2 | Schmuggelroute der Herzogin, Nell kennt sie | Nebel, Karawanen |
 | **Kronfeld** | Eisenmark, Akt-2-Finale | neutraler Treffpunkt zum „Freispruch“, Ort des Hinterhalts (große Schlacht) | weites Feld, Banner, Verrat |
 | **Urtempel und Vhaelyras Hort** | Drachengebirge, Akt-3-Finale | Ort des ersten Paktes, Halvards Opfer, Entscheidung „Wahrheit oder Frieden“ | Eis, Glut, uralter Stein |
+
+---
+
+## Dialogue Framework
+
+### Dialogue Style
+
+**Overall Voice:** warm-ernst, leicht altertümlich. Die Truppe redet wie eine Familie: direkt, frotzelnd, mit Herz. Die Mächtigen reden in Floskeln und Titeln. Je wichtiger die Szene, desto kürzer die Sätze.
+
+**Style Elements:**
+
+- Formality: In der Truppe duzt man sich. Adel, Tempel und Fremde werden geihrzt bzw. gesiezt („Euer Hoheit“, „Ehrwürden“). Wer vom Ihr ins Du wechselt, macht damit Beziehung sichtbar.
+- Period: modern verständlich mit Fantasy-Farbe. Keine Anglizismen, keine Netz-Sprache, keine modernen Redewendungen wie „okay“ oder „cool“.
+- Verbosity: knapp und handytauglich. Eine Box hat höchstens etwa 2 Zeilen (rund 110 Zeichen), ein Lagerfeuer-Gespräch 8–16 Boxen. Szenen vor und nach Missionen sind kurz, Akt-Eckpunkte dürfen länger sein.
+- Humor: Running Gags, Spitznamen, Brennas schlechte Witze, Fenns großes Mundwerk. Humor setzt nie in Trauerszenen ein, er kommt erst danach als Erleichterung.
+- Profanity: keine echten Schimpfwörter. Stattdessen Weltflüche wie „Asche und Glut!“, „Beim Pakt!“, „Verbrannt noch eins!“ und „Drachendreck!“.
+
+**Character Voice Distinctions:**
+
+| Figur | Stimme |
+|---|---|
+| Rhen | kurz, beobachtend; je nach Haltung warm, nüchtern oder trotzig |
+| Kael | wenige Worte, trocken, beendet Diskussionen mit einem Satz |
+| Brenna | laut, mütterlich, Wortwitze, nennt alle „Küken“ |
+| Tobin | begeistert, Heldensagen-Pathos, verhaspelt sich |
+| Mira | spitz, sarkastisch, Fragen statt Antworten |
+| Fenn | Gaunersprache, prahlt, übertreibt |
+| Liora | ruhig, bildhaft, zitiert Tempelsprüche und hinterfragt sie |
+| Varek | charmant, Glücksspiel-Metaphern („Die Würfel liegen schlecht“) |
+| Ysolde | akademisch, belehrend, Fachwörter |
+| Halvard | großväterlich, Sprichwörter, nennt jeden beim Vornamen. Im Rückblick doppeldeutig |
+| Seraphine | höfisch korrekt, wenn sie Angst hat, stockend |
+| Leutnants | jeder mit einer Erkennungsformel, etwa Hask „Feuer frisst alles“ oder Morra mit dem Kopfgeld in Gold |
+
+---
+
+### Key Conversations
+
+| # | Gespräch | Wer | Wann | Zweck | Ton |
+|---|---|---|---|---|---|
+| 1 | Die Wache am Ring | Kael, Rhen, Gerrit, Brenna, Tobin | Prolog, vor dem Alarm | Familie zeigen, Rhens Vertrag andeuten | warm, Vorabend |
+| 2 | Gerrits Grab | ganze Truppe | nach dem Prolog (Lagerfeuer) | erste Gedenkszene, Ton der Staffel | Trauer, leise |
+| 3 | Rhens Geständnis | Rhen, Kael | Akt 1, nach der Spur des Auftraggebers | Rhen hat den Vertrag geholt; Kaels Reaktion hängt am Haltungsprofil | Schuld, Vergebung |
+| 4 | Der Fremde mit dem Siegel | Halvard, Kael, Liora | Akt 1 | Mentor tritt auf; im Rückblick doppeldeutige Sätze | Trost, Vertrauen |
+| 5 | Eine Burg für Niemande | Kael, Truppe | Akt-1-Finale | die Paktwacht wird Heimat | Stolz, Aufbruch |
+| 6 | Drei Angebote | Seraphine, Dravn, Maelis, Kael | Akt-2-Einstieg | drei Verhandlungen, Freispruch gegen Auftrag | Politik, Misstrauen |
+| 7 | Die Chronik | Liora, Ysolde, Rhen | Akt 2, Burg | „Der Pakt verlangt etwas von den Königen“ | Unruhe, Neugier |
+| 8 | Kronfeld | Seraphine, Kael | Akt-2-Finale | der Verrat, „Die Krone war hohl“ | Schock |
+| 9 | Die Krönung | Halvard, Seraphine, Kael, Liora | Akt 3 | Enttarnung des Mentors als Mörder | Herzbruch |
+| 10 | Warum Aldric starb | Halvard, Rhen | Akt 3 | Motiv und Wahrheit, „Frieden über Wahrheit“ | tragisch, ruhig |
+| 11 | Der Preis | Halvard, Vhaelyra (Stimme), Truppe | Staffelfinale | Halvard opfert sich | erhaben, still |
+| 12 | Wahrheit oder Frieden | Rhen, Kael, überlebende Brückenfiguren | Schluss | letzte Entscheidung | offen |
+
+**Weitere Gesprächsarten:**
+
+- **Supports:** 25 Paare mit je C/B/A (75 Gespräche), dazu 6 S-Ränge (Kernpaare folgen in Schritt 9).
+- **Gedenken:** Zu jedem Gefährten gehören eine letzte Zeile beim Tod und eine Trauerzeile je Support-Partner.
+- **Barks:** Je Gefährte gibt es etwa 6 kurze Zeilen: Kampfbeginn, Krit, niedergestreckt, Dank fürs Bergen, Stufenaufstieg, Glutfunke.
+- **Leutnants:** Je Leutnant gibt es etwa 10 Zeilen: erste Begegnung, Groll 1–3 mit dem Namen des Ziels, 3 Fluchtzeilen, eine Gedenk-Spottzeile, Seitenwechsel (bei 3 Leutnants). Zusammen etwa 120 Zeilen.
+
+---
+
+### Branching Dialogue System
+
+**System Type:** linear mit Weichen. Es gibt keine Routen, nur kleine Abzweigungen, die immer wieder zusammenlaufen.
+
+**Branch Triggers:**
+
+1. **12 Entscheidungen** (4 pro Akt): Antworten mit Flag in `campaign.flags`. Sie wirken auf Rekruten, Nebenquests, Groll, Preise und Epilog (zugeordnet in Schritt 9).
+2. **Rhens Haltungsprofil:** Jede Antwort zählt warm, nüchtern oder trotzig. Die vorherrschende Haltung färbt Rhens Epilog-Kachel und einzelne Antworten Kaels (jeweils ein Satz Unterschied). Mechanisch hat das keine Wirkung.
+3. **Wer lebt:** Tote und gegangene Gefährten sprechen nicht mehr. Ihre Zeilen fallen weg oder werden ersetzt.
+4. **Seitenwechsel:** Grosk, Sable und Mael haben eigene Zeilen, sobald sie beigetreten sind.
+
+**Ersatzsprecher-Kette:** Weil jeder Gefährte sterben kann, hat jede Story-Zeile, die ein Gefährte spricht, eine Kette möglicher Sprecher. Ein Beispiel: Die Chronik entziffern Liora, sonst Ysolde, sonst Vesna, sonst Rhen. Nur Rhen und Kael sind garantiert am Leben. Wer in der Kette fehlt, wird übersprungen. Ist eine Brückenfigur tot, gibt es zusätzlich eine Gedenkzeile („Liora hätte das lesen können …“).
+
+**Branch Scope:**
+
+- Weichen: 12 Entscheidungen mit je 2–3 Antworten, alle laufen spätestens am Akt-Ende wieder zusammen.
+- Eigener Text: rund 10 % durch Entscheidungen und Haltungen, dazu Ersatz- und Gedenkzeilen.
+- Datenmodell: Szenen in YAML mit `requires: { flags?, alive?, stance? }` und `speaker: [liora, ysolde, vesna, rhen]` als Kette. `[ASSUMPTION: Schema-Details in der Architektur-Etappe]`
+
+**Consequence System:** Folgen werden immer sichtbar gemacht: Ein Gefährte kommt oder geht, eine Nebenquest erscheint auf der Weltkarte, die Groll-Anzeige sinkt, der Händler nennt einen anderen Preis, und am Ende kommt das Epilog-Mosaik.

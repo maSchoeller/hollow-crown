@@ -36,3 +36,6 @@
 | 2026-10-23 | Drachen sind **uralt, nicht böse**, verhandelbar; der Pakt ist ein Vertrag | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Grenzkrieg vor 12 Jahren gegen ein **Nachbarreich** jenseits der Grenzmarken | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Vom Assistenten gesetzt [C] und per „C“ bestätigt: Orden der Paktwächter mit Chronik (aufgelöst vor ca. 80 Jahren), Nachbarreich Kharesh, Glutdom, Erlbach, Brandhang, Salzpass, Kronfeld, Urtempel; Vhaelyras verworfener Alternativpreis als Staffel-2-Haken | Produktinhaber |
+| 2026-10-23 | Dialogstil: leicht altertümlich (Truppe duzt, Adel/Tempel ihrzen), knappe Boxen (max. ca. 2 Zeilen / 110 Zeichen), Fantasy-Flüche statt Schimpfwörter | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Rhens Antworthaltungen bilden ein verstecktes Profil (warm/nüchtern/trotzig), das Epilog-Kachel und einzelne Kael-Antworten färbt; keine Mechanik | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Ersatzsprecher-Kette [C]: Story-Zeilen von Gefährten haben eine Sprecherkette, nur Rhen und Kael sind garantiert am Leben; keine unsterblichen Story-Gefährten | Assistent, per „C“ bestätigt |
