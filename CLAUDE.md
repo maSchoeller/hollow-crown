@@ -29,6 +29,13 @@ Anforderungsdefinition in `concept/`. **Erster Wurf von V1** ist umgesetzt: Prol
 - Tests: Vitest für `src/core` (Ziel ≥ 90 %), Playwright mit den Profilen iPhone 13, Pixel 7, iPad quer und Desktop.
 - Weichst du vom Konzept ab oder triffst du eine neue Entscheidung, trägst du sie in `concept/01-decisions.md` ein (Status [C] plus Begründung). Offene Punkte (O1–O4) dort klärst du nicht stillschweigend.
 
+## Asset-Werkzeuge (KI)
+
+- **Bilder** (Porträts, Hintergründe, Key Art, Stil-Mockups): ChatGPT-Bildgenerierung, ferngesteuert über **Claude in Chrome** (Abo des Produktinhabers). Prompt und Abnahme je Bild in `art/prompts/<id>.md` ablegen (GA15, U3).
+- **Sound, Musik, Stimmen**: **ElevenLabs**, per MCP-Server `elevenlabs` oder per API über `tools/audio/elevenlabs.py`; Key aus `ELEVENLABS_API_KEY` (GA19, GA20, U4).
+- **3D**: Blender lokal per MCP-Server `blender` bzw. Bauskripte `tools/art/blender_*.py`.
+- Lizenzfrage GA26 ist offen: vor kommerzieller Nutzung klären.
+
 ## Befehle (ab M0 anlegen)
 
 ```

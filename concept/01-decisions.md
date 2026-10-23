@@ -165,6 +165,22 @@ Grundlage: drei Fragerunden und das Mockup (claude.ai/artifact/2LzhXxZWubQz7bKCY
 | D17 | Umsetzung R2/R3 | Software-WebGL (kein Grafikchip, z. B. Headless-Tests) wählt automatisch „Niedrig“ und rendert mit halber Auflösung; auf „Niedrig“ stehen Bäume/Felsen der Landschaft nur `board.sceneryPropsLow` Felder um die Karte. Das 2D-Tileset (`art/tiles`) und die 2D-Requisiten-Sheets werden nicht mehr gebaut. Türen, Tore und Throne sind vorerst schlichte Kisten-Modelle, bis es Blender-Modelle gibt. Figuren sind 1,3-mal so groß wie im Blender-Maßstab (`board.figureScale`). **Leistung:** Figuren als ein Mesh mit Skelett (GPU-Skinning, ein Zeichenaufruf statt ~14), Bäume und Felsen beim Export auf rund ein Drittel der Dreiecke reduziert, Landschafts-Requisiten ohne Schattenwurf, Bildrate gedeckelt auf `board.fpsActive` (60) bei Bewegung und `board.fpsIdle` (30) in Ruhe, glTF ohne Materialien geladen. Gemessen auf Kap. 1 (Mittel): 192 → 49 Zeichenaufrufe, 4,25 → 1,04 Mio. Indizes, CPU-Last in Ruhe −74 % | C |
 | D18 | Neue Kartenformen (R5) | **Prolog** 12 × 12 (je eine Waldspalte links/rechts, Ablauf unverändert). **Kap. 1** 16 × 16, neu gelayoutet: Pflasterstraße Süd → Nord, zwei Mauerriegel mit Toren, Hask neben dem Brückenkopf, Miras Dorf im Südosten (gleiche Wegstrecke wie zuvor, Plünderer erreicht es in Gegnerphase 3), neuer Torwächter `e9` (Normal/Schwer). **Kap. 2** 18 × 18: zwei Spalten Ufer- und Waldland je Seite, die zwei südlichsten Reihen entfallen; Nordwellen auf Schwer starten am Kartenrand; die Magierin steht auf Leicht ein Feld abseits des Schrein-Wegs (`m6e`). Sim (60 Läufe, verkettet, Standard): Leicht 100 / 100 / 100 %, Normal 98 / 88 / 87 % (0,08 / 0,15 / 1,65 Niedergestreckte), Schwer 75 / 49 / 50 %. Kap. 2 Normal liegt mit 1,65 über dem Korridor; das alte Kap.-2-Layout liefert hinter dem neuen Kap. 1 dieselben Werte, Ursache ist der kürzere Fortschritt in Kap. 1, nicht das Layout. Ersetzt die Werte aus U18 | C |
 
+## Game Brief Staffel 1 (BMAD-Session 2026-10-23)
+
+Grundlage: `concept/20-game-brief/brief.md` (BMAD `gds-create-game-brief`), Herleitung in `concept/20-game-brief/.decision-log.md`. Der Proof of Concept (Prolog, Kap. 1–2) bleibt technische Grundlage.
+
+| # | Thema | Entscheidung | Status |
+|---|---|---|---|
+| B1 | V1-Umfang | ~~P4 Vertical Slice~~ → **V1 = Staffel 1**: 3 Akte, rund 20 Story-Missionen, rund 15 Aufträge, rund 20 Story-Gefährten + Taverne, 25–30 h. Endet mit Staffelfinale, nicht mit dem Gesamtfinale. Lieferung Akt für Akt, Akt 1 = MVP | A |
+| B2 | Einsatz | Leidenschaftsprojekt; P3 (Monetarisierung) bleibt geparkt | A |
+| B3 | Kernfantasie & Ton | Found Family; warm-ernst (freundliche Bilder, ernste Themen) | A |
+| B4 | Säulen | Jeder zählt · Ausrüstung ist der Charakter · Lesbare Taktik. „Daumenfreundlich“ ist verbindliche Randbedingung; „Fair F2P“ entfällt | A |
+| B5 | Kampagnenstruktur | Akte mit je einer Region auf der Weltkarte, Missionsreihenfolge innerhalb eines Akts teils frei. Löst S4 ab: **keine Fraktionsrouten**, stattdessen viele kleine Entscheidungen → Epilog-Mosaik, Flags wirken in Staffel 2 weiter | A |
+| B6 | Heimat-Burg | Suikoden-Prinzip ab Akt 2 (Akt 1 wanderndes Lager). Ein Raum pro spielerischer Funktion, keine feste Raumzahl. Erweitert G24 | A |
+| B7 | Nemesis-Leutnants | 12 handgeschriebene Leutnants (4 pro Akt), fliehen nach sichtbarer Regel, kehren stärker zurück, endgültig besiegbar. Deterministisch, nicht prozedural | A |
+| B8 | Zeichenstil | **Runder Chibi-Cartoon** für Porträts und Figuren (Mockup `art/mockups/style-2026-10/round_chibi_kael.png`). Löst GA5 und GA14 (Anime-Halbfiguren/-Ebene) ab; Ausarbeitung in der Art-Etappe | A |
+| B9 | Audio | Folk-lastig und wärmer, Orchester nur bei Bossen/Drama, Leitmotive pro Figur/Truppe statt pro Fraktion (präzisiert GA19); Hub-, Weltkarten- und Menümusik dezent, ohne Gesang | A |
+
 ## Von Claude gesetzte Detail-Defaults [C]
 
 Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt. Balancing im Playtest.
@@ -202,3 +218,4 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 | 2026-10-22 | U22 ergänzt: randlose Darstellung als iOS-Home-Bildschirm-App (`100lvh`) |
 | 2026-10-22 | U22 ergänzt: Kampf füllt als iOS-Home-Bildschirm-App die ganze Höhe (`#app` positioniert) |
 | 2026-10-22 | 3D-Karte (Mockup, Variante A mit 3D-Figuren): neuer Abschnitt D1–D18 (D18: neue Kartenformen und Balancing); T3, GA1, GA2, GA3, GA11, GA12, GA22, GA25 abgelöst; G2, G20, G21, GA10 ergänzt |
+| 2026-10-23 | Game Brief Staffel 1 (BMAD): neuer Abschnitt B1–B9; P4, S4, GA5, GA14 abgelöst, G24, GA19 präzisiert. Neues Dokument `20-game-brief/` |

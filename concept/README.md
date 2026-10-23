@@ -6,7 +6,8 @@ Anforderungsdefinition für **V1 (Vertical Slice)**. Ergebnis einer Grilling-Ses
 
 | Datei | Inhalt | Für wen |
 |---|---|---|
-| [00-vision.md](00-vision.md) | Pitch, Säulen, Zielgruppe, Marktanalyse | alle |
+| [20-game-brief/brief.md](20-game-brief/brief.md) | **Game Brief Staffel 1** (V1 = vollständige erste Staffel): Vision, Säulen, Umfang, Akte, Risiken. Löst `00-vision.md` und den V1-Umfang aus `13` ab | alle, zuerst lesen |
+| [00-vision.md](00-vision.md) | ~~Pitch, Säulen, Zielgruppe, Marktanalyse~~ → abgelöst durch den Game Brief | Archiv |
 | [01-decisions.md](01-decisions.md) | **Verbindliches Entscheidungsprotokoll**, offene Punkte | alle, zuerst lesen |
 | [02-core-loop.md](02-core-loop.md) | Spielschleife Mission ↔ Lager | Design |
 | [03-combat.md](03-combat.md) | Phasen, Formeln, Dreieck, Elemente, Status, Supports/Tandem, Tod | Kern-Implementierung |
