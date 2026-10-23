@@ -5,3 +5,10 @@
 #
 # [agents.bmad-agent-pm]
 # description = "Prefers short, bulleted PRDs over narrative drafts."
+
+# Hollow Crown: the concept lives in concept/ (not docs/).
+[modules.bmm]
+project_knowledge = "{project-root}/concept"
+
+[modules.gds]
+project_knowledge = "{project-root}/concept"
