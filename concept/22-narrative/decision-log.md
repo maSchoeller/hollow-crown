@@ -31,3 +31,8 @@
 | 2026-10-23 | Seitenwechsel: je Akt ein Leutnant, **während** des Akts (nicht erst im Finale); Bedingung ist eine Story-Bedingung, **Groll ist irrelevant** | Produktinhaber, präzisiert die Empfehlung |
 | 2026-10-23 | PoC-Figuren adaptiert (Name, Rolle, Kern bleiben, Hintergründe neu); Gefährten-Prinzip „von etwas verstoßen“; je eine Brückenfigur zu Prinzessin, General, Herzogin und Hüter; Beitritte 8/7/5 | Produktinhaber, Empfehlungen bestätigt |
 | 2026-10-23 | Figurenliste (Rhen, Kael, Halvard, Seraphine, Dravn, Maelis, 20 Gefährten, 12 Leutnants, Gerrit) mit Namen, Alter und Bedingungen vom Assistenten gesetzt [C]; per Moodboard (`art/mockups/characters-s1/`) geprüft und bestätigt. Nachgebessert: Pell (echter Langbogen), Grell (Haken links), Mael (klar erwachsen) | Produktinhaber |
+| 2026-10-23 | Magie ist **Drachenglut** (Rest der Glut der schlafenden Drachen, wird mit dem Erwachen stärker); Tempel erlaubt nur Licht, Dunkel gilt als Ketzerei | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Volksglaube: **Heldenlüge** (Aldric I. habe Vhaelyra bezwungen, die Krone banne sie) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Drachen sind **uralt, nicht böse**, verhandelbar; der Pakt ist ein Vertrag | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Grenzkrieg vor 12 Jahren gegen ein **Nachbarreich** jenseits der Grenzmarken | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Vom Assistenten gesetzt [C] und per „C“ bestätigt: Orden der Paktwächter mit Chronik (aufgelöst vor ca. 80 Jahren), Nachbarreich Kharesh, Glutdom, Erlbach, Brandhang, Salzpass, Kronfeld, Urtempel; Vhaelyras verworfener Alternativpreis als Staffel-2-Haken | Produktinhaber |

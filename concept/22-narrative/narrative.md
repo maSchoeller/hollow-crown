@@ -4,7 +4,7 @@ project: 'Hollow Crown – Staffel 1'
 date: '2026-10-23'
 author: 'Marvin'
 version: '1.0'
-stepsCompleted: [1, 2, 3, 4]
+stepsCompleted: [1, 2, 3, 4, 5]
 status: 'in-progress'
 narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
@@ -22,7 +22,7 @@ supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
 This narrative document is being created through the GDS Narrative Workflow.
 
 **Narrative Complexity:** Heavy
-**Steps Completed:** 4 of 11 (Characters)
+**Steps Completed:** 5 of 11 (World Building)
 
 ---
 
@@ -301,3 +301,87 @@ Signaturwaffen, Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog)
 ### Gefährten-Bögen
 
 Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn verstoßen hat, und der gewählten Familie der Truppe. Mehrere dieser Bögen münden in eine der 12 Entscheidungen (in Schritt 9 zugeordnet).
+
+---
+
+## World Building
+
+> Stil-Referenzen der Orte (Moodboard): `art/mockups/locations-s1/`.
+
+### World Overview
+
+**Setting:** das Königreich **Valmora**, 300 Jahre nach dem Drachenpakt. Im Norden das Drachengebirge, im Westen das Silbermeer, im Osten die Grenzmarken. Hauptstadt ist **Aurenhall**. Die Staffel spielt von Spätsommer bis Winter eines einzigen Jahres.
+
+**World Type:** klassische High Fantasy mit mittelalterlicher Technik: Burgen, Armbrüste, Segelschiffe, kein Schießpulver.
+
+**World Rules:**
+
+- **Magie ist Drachenglut.** Jede Magie ist ein Rest der Glut der schlafenden Drachen. Die sechs Elemente sind Facetten dieser Glut. Seit dem Pakt ist Magie schwach und selten. Wenn die Drachen erwachen, wird sie stärker und unberechenbarer: Akt 1 kennt nur Funken, Akt 3 bringt Stürme.
+- **Kontrolle der Magie:** Der Tempel lehrt Licht als „Glut der Krone“ und erlaubt es allein. Dunkelmagie gilt als Ketzerei. Wer ohne Ausbildung zaubert, gilt als „Hexenkind“, so wie Brann. Die Akademie in Aurenhall erforscht Magie, aber nur in den Grenzen, die der Tempel duldet. Ysolde wurde verwiesen, weil sie herausfand, dass Magie in der Nähe des Gebirges stärker wird.
+- **Drachen sind nicht böse.** Sie sind uralt, gefährlich wie ein Sturm, aber verhandelbar. Vhaelyra, die Drachenkönigin, ist müde und hält einen Vertrag ein.
+
+**Atmosphere:** ein schönes, müdes Land. Grüne Hügel, Burgen voller Fahnen und darunter Risse: verlassene Wachtürme, Gräber junger Könige, Asche im Wind.
+
+**Unique Elements:** Der Frieden des Landes ist ein Vertrag, den niemand kennt. Was als Heldensage gefeiert wird, ist in Wahrheit ein stilles Opfer.
+
+---
+
+### History and Backstory
+
+**Timeline Overview:**
+
+| Wann | Ereignis |
+|---|---|
+| vor ca. 300 Jahren | **Drachenkrieg.** Drachen verbrennen halb Valmora. König **Aldric I.** steigt ins Gebirge und schließt mit **Vhaelyra** den Pakt: Die Drachen schlafen, dafür gibt jeder König beim Paktfest einen Teil seiner Lebenszeit. Gefäß des Paktes ist die **Glutkrone**. |
+| bis vor ca. 80 Jahren | Der Orden der **Paktwächter** hütet die Wahrheit in der **Paktwacht** an der Grenze und schreibt in der **Chronik der Wächter** jedes Opfer auf. |
+| vor ca. 80 Jahren | Der Tempel löst den Orden auf und zieht das Geheimnis an sich. Die Paktwacht verfällt, die Chronik bleibt vergessen in ihren Mauern zurück. Seitdem kennt nur noch der jeweils oberste Paktwahrer die Wahrheit. |
+| vor 12 Jahren | **Grenzkrieg** gegen das Nachbarreich **Kharesh** jenseits der Grenzmarken. Valmora gewinnt teuer. Dravn wird zum Helden, Kaels Einheit wird von einem adligen Kommandanten verheizt. Danach gründet Kael das Aschenbanner. |
+| Paktnacht (Staffelbeginn) | König **Aldric IV.** (41) will das Opfer verweigern und die Wahrheit verkünden. Halvard tötet ihn, nimmt die Krone und belastet das Aschenbanner. Die Erde bebt. |
+
+**Major Events:** der Drachenkrieg, die Paktschließung, die Auflösung der Paktwächter, der Grenzkrieg, die Paktnacht.
+
+**Legends and Myths:**
+
+- **Die Heldenlüge:** Die offizielle Legende sagt, Aldric I. habe die Drachenkönigin bezwungen, und die Glutkrone banne sie seither. Jedes Paktfest feiert diesen Sieg mit Feuerwerk.
+- **Volksglauben:** „Die Könige verglühen schnell, weil sie die Glut tragen“ gilt als Ehre, nicht als Warnung. Wenn die Erde bebt, sagt man, Vhaelyra träume schlecht.
+
+**Hidden Secrets:**
+
+- Der Pakt ist ein Opfervertrag (Enthüllung gestaffelt über die Akte 1, 2 und 3).
+- Die Chronik der Wächter liegt in der Paktwacht.
+- Die Glutkrone ist hohl. Sie ist kein Bann, sondern ein Gefäß, das die Lebenszeit überträgt.
+- Vhaelyra hat Aldric I. damals einen anderen Preis angeboten. Er wählte das Opfer der Könige, weil es das Volk verschonte. Das ist ein Haken für Staffel 2 und wird in Staffel 1 nicht aufgelöst.
+
+---
+
+### Factions and Organizations
+
+| Fraktion | Führung | Ziel | Rolle in der Story |
+|---|---|---|---|
+| **Die Krone** und die Ritter der **Silbernen Lanze** | Prinzessin Seraphine, Pegasusritterin Dame Rowena | Thronfolge, Rache für Aldric | Akt-2-Strang, Verrat im Akt-2-Finale |
+| **Grenzheer der Eisenmark** | General Dravn, Hauptfrau Sable | Drachen bekämpfen statt Pakt | Akt-2-Strang (Brandschneise), Sables Wechsel |
+| **Haus Silbermeer** | Herzogin Maelis, Kapitän Grell | Macht durch Geld, die Krone schwächen | Akt-2-Strang; hat heimlich die Banden aus Akt 1 finanziert |
+| **Pakttempel** und **Paktgarde** | Ehrwürden Halvard; Cassian, Torvald, Eluned | Pakt und Geheimnis um jeden Preis erhalten | Mentor in Akt 1, Antagonist in Akt 3 |
+| **Akademie von Aurenhall** | (Rektorat, offstage) | Wissen im Rahmen des Tempels | Hat Rhen, Ysolde und Vesna verwiesen |
+| **Aschenbanner** | Kael | alle heimbringen, Namen reinwaschen | Spielerfraktion |
+| **Grenzlandbanden** und **Kopfgeldjäger** | Hask, Morra, Ulvric, Grosk | Beute und Kopfgeld auf die „Königsmörder“ | Gegner in Akt 1 |
+| **Die Drachen** | Vhaelyra | Ruhe, Einhaltung des Vertrags | Bedrohung, die sich steigert; Staffel 2 |
+| **Kharesh** | (offstage) | lauert jenseits der Grenze | nur Gerüchte; Haken für Staffel 2 |
+
+---
+
+### Key Locations
+
+| Ort | Region und Akt | Bedeutung für die Story | Stimmung |
+|---|---|---|---|
+| **Glutdom** (Pakttempel in Aurenhall) | Aurenhall; Prolog und Akt 3 | Schauplatz der Paktnacht und der Krönung, an der Halvard enttarnt wird | goldenes Kerzenlicht, Weihrauch, später Schnee |
+| **Aurenhall** | Akt 3 | Hauptstadt, die die Truppe jagte; Drachenangriff; Gänge unter dem Palast (Kit) | Winter, Gold, Panik |
+| **Varnhold** | Grenzland, Akt 1 | Grenzstädtchen, erster Halt, Steckbriefe, Diebesring (Fenn) | Spätsommer, Staub, Markt |
+| **Erlbach** | Grenzland, Akt 1 | Miras Dorf, Beitritt Mira | Felder, Wald |
+| **Hungerlager** | Grenzland, Akt 1 | Lager von Grosks Bande, Entscheidung zum Seitenwechsel | Elend, Kinder, Rauch |
+| **Die Paktwacht** | Grenzland → Heimat ab Akt 2 | Burgruine der Paktwächter, Akt-1-Finale, Heimat-Burg, Chronik der Wächter | Ruine, die zum Zuhause wird |
+| **Grauwacht** | Eisenmark, Akt 2 | Festung und Hauptquartier Dravns | Eisen, Wind, Wyvern |
+| **Sables Dorf am Brandhang** | Eisenmark, Akt 2 | soll als Brandschneise geopfert werden, Bedingung für Sables Wechsel | Herbst, Heu, Angst |
+| **Salzpass** | Eisenmark, Akt 2 | Schmuggelroute der Herzogin, Nell kennt sie | Nebel, Karawanen |
+| **Kronfeld** | Eisenmark, Akt-2-Finale | neutraler Treffpunkt zum „Freispruch“, Ort des Hinterhalts (große Schlacht) | weites Feld, Banner, Verrat |
+| **Urtempel und Vhaelyras Hort** | Drachengebirge, Akt-3-Finale | Ort des ersten Paktes, Halvards Opfer, Entscheidung „Wahrheit oder Frieden“ | Eis, Glut, uralter Stein |
