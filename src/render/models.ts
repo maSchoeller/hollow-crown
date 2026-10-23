@@ -10,6 +10,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import type { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import '@babylonjs/core/Animations/animatable';
 import '@babylonjs/loaders/glTF/glTFFileLoader';
@@ -45,12 +46,14 @@ export function teamColours(mesh: Mesh, team: Team): void {
 }
 
 const containers = new Map<string, Promise<AssetContainer | null>>();
-function container(scene: Scene, path: string): Promise<AssetContainer | null> {
+function container(scene: Scene, path: string, materials = false): Promise<AssetContainer | null> {
   const key = `${scene.uid}:${path}`;
   let p = containers.get(key);
   if (!p) {
-    // the board assigns its own vertex-colour materials; skipping the glTF ones avoids compiling PBR shaders
-    p = LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: true } } }).catch(() => null);
+    // the board assigns its own materials; skipping the glTF ones avoids compiling PBR shaders.
+    // Textured figures (image-to-3D, concept/23-art-direction) need them loaded to reuse their base colour texture;
+    // the board shades in gamma space like the vertex colours, so the texture must not be decoded as sRGB.
+    p = LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: !materials, useSRGBBuffers: false } } }).catch(() => null);
     containers.set(key, p);
   }
   return p;
@@ -75,7 +78,7 @@ export interface UnitModel {
 }
 
 export async function loadUnitModel(scene: Scene, id: string, team: Team, name: string): Promise<UnitModel | null> {
-  const c = await container(scene, `models/units/${id}.glb`);
+  const c = await container(scene, `models/units/${id}.glb`, true);
   if (!c) return null;
   const inst = c.instantiateModelsToScene((n) => `${name}:${n}`, false, { doNotInstantiate: true });
   const root = new TransformNode(name, scene);
@@ -88,7 +91,9 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
     for (const m of n.getChildMeshes(false)) {
       if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
       m.makeGeometryUnique();
-      teamColours(m, team);
+      // vertex-coloured Blender figures carry team cloth in vertex alpha; textured figures keep their base colour map
+      if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) teamColours(m, team);
+      else material.diffuseTexture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
       m.material = material;
       m.isPickable = false;
       m.receiveShadows = true;
@@ -106,6 +111,7 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
     anims,
     dispose: () => {
       for (const g of inst.animationGroups) g.dispose();
+      material.diffuseTexture = null; // shared with every instance of the model, owned by the container
       root.dispose(false, true);
       material.dispose();
     },

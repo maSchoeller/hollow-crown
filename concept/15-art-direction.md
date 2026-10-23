@@ -1,5 +1,7 @@
 # 15 – Art Direction
 
+> **Abgelöst** durch `23-art-direction/art-direction.md` (2026-10-23). Dieses Dokument bleibt als Herleitung; übernommen wurden Elementfarben, Effekt-Liste, Gelände-IDs und Lesbarkeitsregeln.
+
 > Ergebnis der Grilling-Session vom 2026-10-22. Entscheidungen stehen in `01-decisions.md` (Abschnitt „Grafik & Audio“). Pipeline und Formate: `16-asset-pipeline.md`. Audio: `17-audio.md`. Beispiele: `concept/art/`.
 
 ## 1. Leitbild
