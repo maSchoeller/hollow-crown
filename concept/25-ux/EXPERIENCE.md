@@ -100,7 +100,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Kampf | Leerlauf · Einheit gewählt · Bewegung gesetzt (zurücknehmbar bis zur Aktion) · Ziel gewählt (Vorschau) · Gegnerphase (Tempo 1×/2×/Überspringen) · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
 | Einheit | bereit · erschöpft (entsättigt, Ring gestrichelt) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
 | Weltkarte | normal · neuer Tag (Hinweis mit Zahl der Heimsuchungen) · Paket lädt · Akt beendet, nächster nicht veröffentlicht („erscheint bald“ im Nebel) · offline mit fehlendem Paket (Knoten sichtbar, „Wird geladen, sobald du online bist“) |
-| Heimat | Lager (Akt 1, sechs Stationen) · Burg (ab Akt 2, elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
+| Heimat | Lager (Akt 1 bis Mission 1-6, sechs Stationen) · Burg (ab 1-6: sechs Räume auf Stufe 1 und Gedächtnishalle; ab Akt 2 elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
 | Szene | Zeile · Sprecher fehlt (Ersatzsprecher, ggf. Gedenkzeile) · Entscheidung · Folgen · Log |
 | Kampagnen | leer (nur „Neue Kampagne“) · 1–3 belegt · voll (Neue Kampagne verlangt Löschen) · PoC-Stand vorhanden · Import fehlerhaft (Grund in einem Satz) |
 | Speichern | gespeichert (still) · fehlgeschlagen (Banner, nächster Versuch beim nächsten Commit, Export anbieten) · Speicherschutz fehlt (Hinweis „Zum Home-Bildschirm“, einmal) |

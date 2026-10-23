@@ -305,7 +305,7 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 7. Heimat-Burg [A]
 
-- Die **Paktwacht als 3D-Diorama**, Vorlage `paktwacht_ruine.png` und `paktwacht_heimat.png`. Akt 1 zeigt das wandernde Lager (ebenfalls 3D: Zelte, Lagerfeuer, Wagen), ab Akt 2 die Burg.
+- Die **Paktwacht als 3D-Diorama**, Vorlage `paktwacht_ruine.png` und `paktwacht_heimat.png`. Akt 1 zeigt bis Mission 1-6 das wandernde Lager (ebenfalls 3D: Zelte, Lagerfeuer, Wagen), danach die Burg als Ruine mit Räumen auf Stufe 1; Ausbauteile ab Akt 2.
 - **Ausbaustufen** als zusätzliche Modellteile je Raum: Stufe 1 Gerüst und Planen, Stufe 2 neues Dach und Fenster, Stufe 3 Banner, Licht und Leben (Rauch, Figuren).
 - **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen. Stirbt ein Gefährte, bleibt der Gegenstand liegen; in der Gedächtnishalle steht ein Gedenkstein.
 - Antippen eines Raums öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
@@ -366,12 +366,12 @@ Startschätzung zur Planung der Epics. [C]
 | 3D-Figuren (Tripo) | rund 35 Story-Figuren, rund 16 generische Gegner (Typ × Fraktion), 3 Reittiere, 2 Drachen; je ein Turnaround |
 | Skelette und Animationen | 9 Rollen (7 Rollen + Taktiker + Hauptmann), rund 8 Gegnertypen, Reittiere und Drachen eigens |
 | Porträts | rund 18 Kernfiguren × 4 Stimmungen + rund 20 Nebenfiguren × 1 ≈ 90 Bilder |
-| Dialog-Hintergründe | rund 20 (14 aus dem Moodboard + Varianten) |
+| Dialog-Hintergründe | rund 26 (14 aus dem Moodboard + Varianten; neu durch 8/8/8: Gewölbe der Paktwacht, Kontor am Silbermeer, Pass ins Gebirge, Pachthof, Gauklerlager, Unterstadt) |
 | Illustrationstafeln | 11 + 3 Akt-Karten + Titelbild |
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
 | Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
-| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 139 Bilder für Staffel 1, erzeugt: 60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items (Regeln §5.6, Dateien `art/items/`) [A] |
+| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 142 Bilder für Staffel 1; erzeugt sind 139 (60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items), offen 3 neue Signaturen aus der Course Correction 8/8/8 (Erbstück, Letzter Vorhang, Turmfalke) (Regeln §5.6, Dateien `art/items/`) [A] |
 
 ## 12. Do & Don't
 

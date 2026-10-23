@@ -57,3 +57,4 @@
 | 2026-10-23 | Item-Icons alle in einem Durchgang (rund 139), vorher **10 Testbilder** als Stilreferenz | Produktinhaber |
 | 2026-10-23 | Item-Icons: Referenz sind **nur die aktuellen Charakterbilder** (characters-s1: Kael, Brenna, Mira, Tobin), nicht Stil-Mockup oder alte Porträts | Produktinhaber |
 | 2026-10-23 | **Detail nach Seltenheit:** gewöhnliche Items schlicht texturiert, je seltener desto mehr Oberflächendetail; Relikte am reichsten. Testbilder als Stil abgenommen, Werte der Testtabelle passen | Produktinhaber |
+| 2026-10-23 | Course Correction 8/8/8 (`concept/sprint-change-proposal-2026-10-23.md`): Burg-Diorama ab Mission 1-6 (Ruine mit Stufe-1-Räumen, gehört zum MVP), Ausbauteile ab Akt 2; rund 26 Dialog-Hintergründe; 3 neue Signatur-Bilder offen | Produktinhaber, Proposal freigegeben |

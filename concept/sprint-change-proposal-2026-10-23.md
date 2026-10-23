@@ -1,6 +1,6 @@
 ---
 title: "Sprint Change Proposal: Staffel 1 auf 8/8/8 Story-Missionen, Burg ab 1-6"
-status: zur Freigabe
+status: freigegeben und umgesetzt (2026-10-23)
 created: 2026-10-23
 source: BMAD-Workflow gds-correct-course (Batch-Modus)
 appendix: concept/sprint-change-proposal-2026-10-23-anhang.md
@@ -145,7 +145,7 @@ Grundsatz: Die neuen Tabellen (Missionsfolge, Nebenquests) übernehme ich wörtl
   - Schild der Paktwächter: N2 bleibt; Stufe 2 „2-7 Die Krone war hohl“ → „2-8“.
   - Drachenglut: N4 → **N5**; Stufen 2-7 → 2-8 und 3-5 → 3-6.
   - Aldrics Paktklinge: N7 → **N9**; Stufen 3-4 → 3-5 und 3-6 → 3-8.
-- **Signaturen:** Ilka N3 → N4, Rhen N5 → N7, Brenna N6 → N8. Neu sind drei Signaturwaffen für Tobin (Lanze, N3), Jory (Wanderlaute, N6) und Pell (Bogen, N10); ihre Werte kommen in die Item-Stories.
+- **Signaturen:** Ilka N3 → N4, Rhen N5 → N7, Brenna N6 → N8. Neu sind drei Signaturwaffen für Tobin (Lanze, N3), Jory (Laute, N6) und Pell (Bogen, N10); ihre Werte kommen in die Item-Stories.
 - **Unikate:** „Truhe in 1-6“ und „Nebenziel in 3-3“ bleiben.
 
 ### 4.5 Architektur (`24-architecture/architecture.md`)
@@ -266,4 +266,4 @@ Danach entsteht die HTML-Ansicht neu mit `tools/docs/epics_html.py`. Die Validie
 | 3 Artefakte | [x] Brief, GDD, Narrative, Items, Architektur, UX, Art Direction; [N/A] Deployment, CI, Tests, Sprint-Status (noch keiner) |
 | 4 Weg | [x] direkte Anpassung; Rückbau N/A; MVP wächst laut F5 |
 | 5 Vorschlag | [x] dieses Dokument |
-| 6 Abschluss | [ ] Freigabe durch den Produktinhaber ausstehend |
+| 6 Abschluss | [x] Freigabe durch den Produktinhaber am 2026-10-23; Änderungen aus §4 übernommen, Decision-Logs ergänzt, Epics-HTML neu erzeugt; nächster Schritt `gds-check-implementation-readiness`, dann `gds-sprint-planning` |

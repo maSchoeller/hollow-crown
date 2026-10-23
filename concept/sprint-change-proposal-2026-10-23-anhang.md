@@ -110,7 +110,7 @@ Legende: ★ fester Platz · **neu** · *verschoben*
 | **N3** | 1 | persönlich | **Das Erbe** (Tobins Pachthof, Variante der Karte Erlbach) | Tobin in der Truppe, 1-6 gespielt | Signaturlanze |
 | N4 | 2 | persönlich | Der Clan im Schnee (Ilka) | Ilka in der Truppe | Glutfunke, Signaturbogen |
 | N5 | 2 | Lore | Glut unter dem Berg | 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III, Relikt |
-| **N6** | 2 | persönlich | **Die Gauklertruppe** (Jory, „Seele der Burg“) | Jory in der Truppe | Wanderlaute als Signatur |
+| **N6** | 2 | persönlich | **Die Gauklertruppe** (Jory, „Seele der Burg“) | Jory in der Truppe | Signaturlaute |
 | N7 | 3 | persönlich | Verwiesen (Rhen und Ysolde) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
 | N8 | 3 | persönlich | Brennas Bruder | Brenna lebt, B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
 | N9 | 3 | Lore | Das Grab Aldrics I. | 3-2 gespielt | Glutfunke, Chronik-Seite, Relikt |

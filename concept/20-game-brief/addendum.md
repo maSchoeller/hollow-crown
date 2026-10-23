@@ -21,9 +21,9 @@ Vertiefungen für GDD, Narrative und Art Direction, die nicht in den Brief gehö
 
 ## Hauptmechaniken – Detailregeln aus dem Brief (für das GDD)
 
-> **Abgelöst durch `concept/21-gdd/gdd.md`:** Leutnants sterben nie; statt rund 15 Aufträgen gibt es 7 Nebenquests und tägliche Heimsuchungen; die Burg hat 11 Räume mit je 3 Stufen; das Beispiel „Leutnant verschonen“ entfällt.
+> **Abgelöst durch `concept/21-gdd/gdd.md`:** Leutnants sterben nie; statt rund 15 Aufträgen gibt es 10 Nebenquests und tägliche Heimsuchungen; die Burg hat 11 Räume mit je 3 Stufen; das Beispiel „Leutnant verschonen“ entfällt.
 
-- **Heimat-Burg:** In Akt 1 zieht die Truppe mit einem Lager umher (vorhandener Hub, U20). Am Ende von Akt 1 erobert sie eine Burgruine, ab Akt 2 ist das ihr Zuhause. Jeder Raum steht für genau eine spielerische Funktion (etwa Schmieden, Heilen, Verzaubern). Wie viele Räume es gibt, ergibt sich aus den Funktionen, nicht aus einer festen Zahl.
+- **Heimat-Burg:** In Akt 1 zieht die Truppe mit einem Lager umher (vorhandener Hub, U20). In Mission 1-6 erobert sie eine Burgruine, die ab dann ihr Zuhause ist; ausgebaut wird ab Akt 2 (Course Correction 2026-10-23). Jeder Raum steht für genau eine spielerische Funktion (etwa Schmieden, Heilen, Verzaubern). Wie viele Räume es gibt, ergibt sich aus den Funktionen, nicht aus einer festen Zahl.
 - **Nemesis-Leutnants:** 4 pro Akt. Sie kehren mit Narbe, höherer Stufe, neuer Ausrüstung und Groll zurück. Wer die Flucht verhindert, besiegt sie endgültig und erhält eine Belohnung. Deterministisch über Kampagnen-Flags, nicht prozedural erzeugt.
 - **Kleine Wahl, große Wirkung:** Beispiele: einen Leutnant verschonen, ein Dorf retten, einen Gefährten ziehen lassen. Die Entscheidungen wirken in Staffel 2 weiter (Datenmodell `campaign.flags`).
 - **Aufträge:** Kopfgelder, Eskorten, Banditennester – auf wiederverwendeten Missionskarten, rund 15 in Staffel 1.

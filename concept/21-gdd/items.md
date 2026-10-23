@@ -71,9 +71,9 @@ Drei Relikte, eins je Akt. Jedes kommt aus der Lore-Nebenquest seines Akts und *
 
 | Akt | Relikt | Slot | Quelle | Erwachend bei | Erwacht bei | Idee |
 |---|---|---|---|---|---|---|
-| 1 | **Schild der Paktwächter** (`pact_warden_shield`) | Nebenhand, Schild | N2 „Der letzte Wachturm der Paktwächter“ (ersetzt den legendären Schild) | 1-6 Paktwacht erobert | 2-7 „Die Krone war hohl“ | Schutz für Nachbarn, später Halten auch ohne Vorkämpfer-Rolle |
-| 2 | **Drachenglut** (`dragon_ember`) | Accessoire, Amulett | N4 „Glut unter dem Berg“ (zusätzlich zur Erd-Rune III) | 2-7 Kronfeld | 3-5 Drachen über der Stadt | Magie wächst mit den erwachenden Drachen; MAG, später Feuer-Affinität und Brandschutz |
-| 3 | **Aldrics Paktklinge** (`pact_blade`) | Haupthand, Schwert | N7 „Das Grab Aldrics I.“ | 3-4 Die Krönung | 3-6 Finale | effektiv gegen Drachen; die letzte Stufe hängt am Gespräch mit Vhaelyra |
+| 1 | **Schild der Paktwächter** (`pact_warden_shield`) | Nebenhand, Schild | N2 „Der letzte Wachturm der Paktwächter“ (ersetzt den legendären Schild) | 1-6 Paktwacht erobert | 2-8 „Die Krone war hohl“ | Schutz für Nachbarn, später Halten auch ohne Vorkämpfer-Rolle |
+| 2 | **Drachenglut** (`dragon_ember`) | Accessoire, Amulett | N5 „Glut unter dem Berg“ (zusätzlich zur Erd-Rune III) | 2-8 Kronfeld | 3-6 Drachen über der Stadt | Magie wächst mit den erwachenden Drachen; MAG, später Feuer-Affinität und Brandschutz |
+| 3 | **Aldrics Paktklinge** (`pact_blade`) | Haupthand, Schwert | N9 „Das Grab Aldrics I.“ | 3-5 Die Krönung | 3-8 Finale | effektiv gegen Drachen; die letzte Stufe hängt am Gespräch mit Vhaelyra |
 
 ## 6. Katalog Staffel 1
 
@@ -99,14 +99,17 @@ Drei Relikte, eins je Akt. Jedes kommt aus der Lore-Nebenquest seines Akts und *
 | Fokus | Glutfokus (`ember_focus`) | **Kristallfokus** (`crystal_focus`, +RES) | **Mondstahlkugel** (`moonsteel_orb`, +MAG) | – |
 | Laute | – | **Wanderlaute** (`travel_lute`) | **Silberlaute** (`silver_lute`) | – |
 
-### 6.2 Gefährten-Signaturen (4, aus Nebenquests)
+### 6.2 Gefährten-Signaturen (7, aus Nebenquests)
 
 | Besitzer | Waffe | Gruppe | Quelle | Idee |
 |---|---|---|---|---|
 | Fenn | **Elster** (`magpie`) | Dolch | N1 Der Ring von Varnhold | Stehlen auch von ausgerüsteten Items |
-| Ilka | **Weißwolf** (`white_wolf`) | Bogen | N3 Der Clan im Schnee | Nebel und Schnee kosten keine Sicht |
-| Rhen | **Das verbotene Kompendium** (`forbidden_compendium`) | Elementarbuch | N5 Verwiesen | wechselt das Element je Kampf |
-| Brenna | **Heimkehr** (`homecoming`) | Axt (Doppelaxt) | N6 Brennas Bruder | Schutz für Nachbarn mit Support |
+| Tobin | **Erbstück** (`heirloom`) | Lanze | N3 Das Erbe | +Mt, solange ein Verbündeter in Reichweite 2 niedergestreckt ist („Helden sterben jung“) [C] |
+| Ilka | **Weißwolf** (`white_wolf`) | Bogen | N4 Der Clan im Schnee | Nebel und Schnee kosten keine Sicht |
+| Jory | **Letzter Vorhang** (`final_curtain`) | Laute (Nebenhand) | N6 Die Gauklertruppe | Anfeuern wirkt auf zwei Verbündete [C] |
+| Rhen | **Das verbotene Kompendium** (`forbidden_compendium`) | Elementarbuch | N7 Verwiesen | wechselt das Element je Kampf |
+| Brenna | **Heimkehr** (`homecoming`) | Axt (Doppelaxt) | N8 Brennas Bruder | Schutz für Nachbarn mit Support |
+| Pell | **Turmfalke** (`kestrel`) | Bogen (Langbogen) | N10 Die Unterstadt | +1 Reichweite von Mauern, Dächern und Türmen [C] |
 
 ### 6.3 Leutnant-Signaturen (12)
 
@@ -158,11 +161,11 @@ Siehe §5: Schild der Paktwächter, Drachenglut, Aldrics Paktklinge.
 | Block | Icons |
 |---|---|
 | Basiswaffen | 60 |
-| Signaturen (Gefährten + Leutnants) | 16 |
+| Signaturen (Gefährten + Leutnants) | 19 |
 | Legendäre | 5 |
 | Relikte (3 × 3 Stufen) | 9 |
 | Weitere Items | 49 |
-| **Summe** | **139** |
+| **Summe** | **142** |
 
 Stil, Format und Ablauf der Erzeugung: Art Direction §5.6.
 
