@@ -1,0 +1,55 @@
+# Entscheidungslog – Narrative Staffel 1
+
+| Datum | Entscheidung | Begründung |
+|---|---|---|
+| 2026-10-23 | Narrative gestartet (Create), Ablage `concept/22-narrative/`; Basis GDD `concept/21-gdd/gdd.md` und Brief `concept/20-game-brief/brief.md` | Etappe 3 des BMAD-Pfads |
+| 2026-10-23 | Narrative-Komplexität: **Heavy** (Story treibt das Erlebnis, Mechanik bleibt das Herz) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Bestand aus `08-story-world.md`: **nur die Prämisse bleibt fix** (gebrochener Drachenpakt, hohle Krone durch Opfer der Könige, Frage „Wer hat Aldric IV. getötet?“). Welt-Details, Figuren, Antagonisten und PoC-Kapitel werden neu gedacht; Bestand darf als Ideenquelle dienen | Produktinhaber, gegen Empfehlung „Rohmaterial“ |
+| 2026-10-23 | Arbeitsweise: Assistent liefert bewertete Varianten, Produktinhaber wählt per Auswahl | wie Etappe 1 und 2 |
+| 2026-10-23 | Antrieb **Sündenbock**: Das Aschenbanner hielt in der Paktnacht Wache am äußeren Tempelring und gilt als Königsmörder; Ziel ist, den Namen reinzuwaschen. Abgelehnt: Avatar als Schlüssel (Amnesie-Klischee), Auftrag mit Haken, Überleben & Zuflucht | Produktinhaber, Empfehlung bestätigt; macht den fremden Krieg persönlich |
+| 2026-10-23 | Themen: Gewählte Familie gegen Blut; Wer zahlt den Preis?; Wahrheit gegen Frieden. Nicht als Kernthema: Schuld & Vergebung | Produktinhaber |
+| 2026-10-23 | Dunkelheit **Ghibli-Ernst**: Tod und Leid ernst, aber nicht ausgestellt; kein Blut, keine Folter | Produktinhaber, Empfehlung bestätigt; trägt den Chibi-Stil |
+| 2026-10-23 | Struktur: 3 Akte + Missions-Episoden; nur Akt-Einstieg und Akt-Finale tragen den Hauptbogen fest, Episoden funktionieren in freier Reihenfolge | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Prolog = Paktnacht, Flucht aus dem Tempelbezirk (Ziel `escape`) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Akt 2: Die Truppe dient nacheinander allen drei Thronanwärtern (je ein Strang, freie Reihenfolge, je eine aufgedeckte Lüge) | Produktinhaber, Empfehlung bestätigt; keine Routenkosten |
+| 2026-10-23 | Staffelfinale: Mörder enttarnt und gestellt, Name reingewaschen; letzte Entscheidung „Wahrheit öffentlich machen oder verschweigen“ trägt in Staffel 2 | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Enthüllung des Opferpakts gestaffelt: Akt 1 Andeutungen, Akt-2-Finale „Die Krone war hohl“, Akt 3 volle Mechanik und Motiv | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | **Mörder: der Hüter des Paktes** (oberster Paktwahrer, kennt das Opfergeheimnis); tötet Aldric, damit die Wahrheit nicht verkündet wird, und nimmt die Krone für einen gefügigen Nachfolger. Abgelehnt: Aldrics eigener Plan, ein Thronanwärter, Diener der Drachen | Produktinhaber, Empfehlung bestätigt; spiegelt „Wahrheit gegen Frieden“ |
+| 2026-10-23 | Das Aschenbanner wurde vom Hüter über Mittelsleute gezielt als Sündenbock angeheuert; die Spur des Auftraggebers ist der rote Faden von Akt 1 | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Verrat in Akt 2: Ein Thronanwärter liefert die Truppe im Akt-2-Finale aus; er ist die Marionette des Hüters (der Nachfolger, den er krönen will) | Produktinhaber, Empfehlung bestätigt; verbindet Akt 2 und 3 |
+| 2026-10-23 | Burgruine = **alte Paktwacht** (verlassene Feste der früheren Paktwächter mit Aufzeichnungen über das Opfer) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Der Hüter tritt bis zur Enttarnung als heimlicher Helfer und Mentor auf | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Ende des Hüters: Er gibt nach seiner Niederlage sein eigenes Leben in den Pakt und kauft eine kurze Frist (Staffel-2-Haken) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Drachen steigernd: Akt 1 Beben und Asche, Akt 2 Schatten und ein verbranntes Dorf (kein Kampf), Akt 3 Drachen auf dem Schlachtfeld | Produktinhaber, Empfehlung bestätigt; Drachen-Assets erst ab Akt 3 |
+| 2026-10-23 | Assistenten-Ergänzungen [C] bestätigt: (1) Im Prolog fällt ein nicht spielbares Kompaniemitglied, erste Gedenkszene; (2) der Hüter schickt die Truppe selbst zur Paktwacht und übersieht die Chronik; (3) die Marionette ahnt nicht, dass sie das nächste Opfer sein soll | Produktinhaber per „C“ |
+| 2026-10-23 | Story Beats (19) und Pacing „Wellen mit steigender Grundlinie“ gespeichert | Abschluss Schritt 3 |
+| 2026-10-23 | Avatar Rhen hat den Paktnacht-Auftrag selbst angenommen (Schuld, Wiedergutmachung); spricht über 2–3 Antworthaltungen ohne Mechanik-Folgen außerhalb der 12 Entscheidungen | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Kael: Grenzland-Veteran und Gründer der Kompanie (nicht Königsbastard, nicht Ex-Königsritter) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Hüter Halvard wirkt wie ein gütiger Großvater | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Thronanwärter: Prinzessin Seraphine, General Dravn (Bastard-Halbbruder, Eisenmark), Herzogin Maelis vom Silbermeer; kein Glutkardinal (doppelt sich mit dem Hüter). Die Jüngste, Seraphine, ist die Marionette | Produktinhaber |
+| 2026-10-23 | Leutnants pro Akt ein Lager: Akt 1 Kopfgeldjäger/Banditen, Akt 2 Champions der Anwärter + Wildcard, Akt 3 Paktgarde | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Seitenwechsel: je Akt ein Leutnant, **während** des Akts (nicht erst im Finale); Bedingung ist eine Story-Bedingung, **Groll ist irrelevant** | Produktinhaber, präzisiert die Empfehlung |
+| 2026-10-23 | PoC-Figuren adaptiert (Name, Rolle, Kern bleiben, Hintergründe neu); Gefährten-Prinzip „von etwas verstoßen“; je eine Brückenfigur zu Prinzessin, General, Herzogin und Hüter; Beitritte 8/7/5 | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Figurenliste (Rhen, Kael, Halvard, Seraphine, Dravn, Maelis, 20 Gefährten, 12 Leutnants, Gerrit) mit Namen, Alter und Bedingungen vom Assistenten gesetzt [C]; per Moodboard (`art/mockups/characters-s1/`) geprüft und bestätigt. Nachgebessert: Pell (echter Langbogen), Grell (Haken links), Mael (klar erwachsen) | Produktinhaber |
+| 2026-10-23 | Magie ist **Drachenglut** (Rest der Glut der schlafenden Drachen, wird mit dem Erwachen stärker); Tempel erlaubt nur Licht, Dunkel gilt als Ketzerei | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Volksglaube: **Heldenlüge** (Aldric I. habe Vhaelyra bezwungen, die Krone banne sie) | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Drachen sind **uralt, nicht böse**, verhandelbar; der Pakt ist ein Vertrag | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Grenzkrieg vor 12 Jahren gegen ein **Nachbarreich** jenseits der Grenzmarken | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Vom Assistenten gesetzt [C] und per „C“ bestätigt: Orden der Paktwächter mit Chronik (aufgelöst vor ca. 80 Jahren), Nachbarreich Kharesh, Glutdom, Erlbach, Brandhang, Salzpass, Kronfeld, Urtempel; Vhaelyras verworfener Alternativpreis als Staffel-2-Haken | Produktinhaber |
+| 2026-10-23 | Dialogstil: leicht altertümlich (Truppe duzt, Adel/Tempel ihrzen), knappe Boxen (max. ca. 2 Zeilen / 110 Zeichen), Fantasy-Flüche statt Schimpfwörter | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Rhens Antworthaltungen bilden ein verstecktes Profil (warm/nüchtern/trotzig), das Epilog-Kachel und einzelne Kael-Antworten färbt; keine Mechanik | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Ersatzsprecher-Kette [C]: Story-Zeilen von Gefährten haben eine Sprecherkette, nur Rhen und Kael sind garantiert am Leben; keine unsterblichen Story-Gefährten | Assistent, per „C“ bestätigt |
+| 2026-10-23 | Fundstücke: 12 optionale Chronik-Seiten der Paktwächter, 4 pro Akt (hält die gestaffelte Enthüllung); Belohnung Burgarchiv, Epilog-Zeile, Zusatzantwort ohne Mechanik | Produktinhaber, Empfehlung bestätigt; Verteilung 4/4/4 [C] |
+| 2026-10-23 | Weltkarte zeigt sichtbare Spuren: Entscheidungsfolgen an Dioramen (max. 2 Varianten je Ort) und zunehmende Drachenzeichen | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Musik: Motive verwandeln sich (Truppen-Thema wächst je Akt, Halvards Thema kippt in Moll, Solo-Motiv beim Tod); vertonte Schlüsselszenen: Gerrits Grab und Halvards Opfer | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Delivery: Visual-Novel-Szenen plus ca. 10 Illustrationstafeln (Chibi-Stil, ChatGPT); im Kampf sparsam (Sprechblasen, max. eine kurze VN-Einblendung pro Mission), alles überspringbar | Produktinhaber, Empfehlungen bestätigt |
+| 2026-10-23 | Ende: ein Finale, Wahrheit oder Frieden, Bonus-Antwort „Vhaelyra selbst fragen“ mit allen 12 Chronik-Seiten; Flag `s1_ending`; kein bestes Ende | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Nach dem Finale freies Weiterspielen bis Staffel 2 (Heimsuchungen, Nebenquests, Supports, Burg); kein NG+ | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Integration [C]: Missionsfolge der 20 Story-Missionen (Ziele, Leutnants, Beitritte), 12 Entscheidungen (je Akt 2 persönlich, 1 Gewissen, 1 politisch), 7 Nebenquests (4 persönlich, 3 Lore), 25 Support-Paare mit 6 S-Rängen (fest geschriebene Bindungen, 4 romantisch) | Produktinhaber: Leitlinien gewählt, Entwurf per „C“ bestätigt |
+| 2026-10-23 | Akt 3: Nur 3-2 und 3-3 sind frei wählbar; Krönung, Drachenangriff und Finale folgen fest aufeinander. Abweichung vom GDD, dort im Log vermerkt | Produktinhaber per „C“; Hauptbogen dominiert in Akt 3 |
+| 2026-10-23 | In Akt 2 kämpft die Truppe immer gegen die Champions der *anderen* Anwärter (gegenseitige Sabotage) | Assistent [C], per „C“ bestätigt |
+| 2026-10-23 | Quellsprache Deutsch, Englisch wird übersetzt | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Texte schreibt **Claude komplett**, umgesetzt über einen **Haiku-Subagenten** mit dem Skill **humanizer** (gegen KI-Klang); Abnahme beim Durchspielen. Probeszene vorab, weil humanizer englischsprachig ausgelegt ist | Produktinhaber, gegen Empfehlung „Claude entwirft, du redigierst“ |
+| 2026-10-23 | Teilvertonung in Deutsch und Englisch, gleiche ElevenLabs-Stimme je Figur, ca. 400 Zeilen je Sprache | Produktinhaber, Empfehlung bestätigt |
+| 2026-10-23 | Schreibumfang geschätzt ~56 000 Wörter je Sprache (~112 000 gesamt) | Assistent [C] |
+| 2026-10-23 | Narrative abgeschlossen (`status: complete`): Anhänge Beziehungskarte, Zeitleiste, Referenzen; Verweise in `concept/README.md` und `AGENTS.md`; `08-story-world.md` als abgelöst markiert. Nächste Etappe laut BMAD-Pfad: Art Direction | Abschluss Etappe 3 |

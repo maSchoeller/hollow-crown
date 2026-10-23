@@ -8,6 +8,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 |---|---|---|
 | [20-game-brief/brief.md](20-game-brief/brief.md) | **Game Brief Staffel 1** (V1 = vollständige erste Staffel): Vision, Säulen, Umfang, Akte, Risiken. Löst `00-vision.md` und den V1-Umfang aus `13` ab | alle, zuerst lesen |
 | [21-gdd/gdd.md](21-gdd/gdd.md) | **Game Design Document Staffel 1**: Quelle der Wahrheit für die Spielmechanik (Rollenklassen, Leutnants, Weltkarte, Heimsuchungen, Burg, Fortschritt, Wirtschaft); Epics in `21-gdd/epics.md`. Löst die Mechanik aus `01`, `02`, `04` §4 und `07` ab | alle, nach dem Brief |
+| [22-narrative/narrative.md](22-narrative/narrative.md) | **Narrative Design Staffel 1**: Prämisse, Story Beats, Figuren, Welt, Dialogstil, Missionsfolge, Entscheidungen, Nebenquests, Supports, Produktion; Moodboards in `art/mockups/characters-s1/` und `locations-s1/`. Löst `08-story-world.md` bis auf die Prämisse ab | Story, Content, Dialoge |
 | [00-vision.md](00-vision.md) | ~~Pitch, Säulen, Zielgruppe, Marktanalyse~~ → abgelöst durch den Game Brief | Archiv |
 | [01-decisions.md](01-decisions.md) | Entscheidungsprotokoll des Proof of Concept, **eingefroren seit 2026-10-23**; gilt, wo der Game Brief und spätere BMAD-Artefakte schweigen. Offene Punkte O1–O5 | alle |
 | [02-core-loop.md](02-core-loop.md) | Spielschleife Mission ↔ Lager | Design |
@@ -16,7 +17,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 | [05-inventory-items.md](05-inventory-items.md) | Paperdoll, Gewicht, Loot, Affixe, Runen, Sets, Verbrauch | Kern + UI |
 | [06-maps-missions.md](06-maps-missions.md) | Gelände, Objekte, Nebel, Ziele, Trigger, KI-Profile, Scharmützel | Kern + Content |
 | [07-camp-economy.md](07-camp-economy.md) | Lager-Funktionen, Ressourcen, Kosten | Kern + UI |
-| [08-story-world.md](08-story-world.md) | Welt, Fraktionen, Figuren, Akt-1-Kapitel, Supports | Content |
+| [08-story-world.md](08-story-world.md) | Welt, Fraktionen, Figuren, Akt-1-Kapitel, Supports. **Abgelöst** durch `22-narrative/narrative.md` (nur die Prämisse gilt weiter) | Herleitung |
 | [09-ux-mobile.md](09-ux-mobile.md) | Bedienung, Breakpoints, Wireframes, Screens | UI |
 | [10-tech-architecture.md](10-tech-architecture.md) | Stack, Module, Command/Event, Determinismus, Save, Tools, Tests | Technik |
 | [11-content-format.md](11-content-format.md) | YAML-Formate (Karten, Klassen, Items, Skills, Dialoge, Kampagne) | Content + Technik |

@@ -14,7 +14,7 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 
 ## Wo was liegt
 
-- Vor Planungs- oder Feature-Arbeit `concept/20-game-brief/brief.md` lesen, vor Arbeit an Spielregeln zusätzlich `concept/21-gdd/gdd.md`. Wo diese schweigen, gilt `concept/01-decisions.md`; widerspricht ein BMAD-Artefakt dem Protokoll, gilt das Artefakt.
+- Vor Planungs- oder Feature-Arbeit `concept/20-game-brief/brief.md` lesen, vor Arbeit an Spielregeln zusätzlich `concept/21-gdd/gdd.md`. Vor Arbeit an Story, Figuren, Dialogen oder Missionsinhalten `concept/22-narrative/narrative.md`. Wo diese schweigen, gilt `concept/01-decisions.md`; widerspricht ein BMAD-Artefakt dem Protokoll, gilt das Artefakt.
 - Renderer, UI, Assets, Audio: `concept/15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`, Asset-Formate in `art/README.md`. Zeichenstil ist runder Chibi (B8, `art/mockups/style-2026-10/`), nicht mehr Anime.
 - Architektur: `concept/10-tech-architecture.md`. Spielwerte in `content/balance.yaml`, Startwerte in `concept/data-samples/`.
 - Stories und Sprint-Status (sobald vorhanden): `_bmad-output/implementation-artifacts/`.
