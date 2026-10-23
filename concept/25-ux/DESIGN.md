@@ -36,10 +36,12 @@ colors:
   mourn-quiet: '#E9E6E1'
   fog: '#E0E5EF'
   material-ore: '#8B9BB0'
-  rarity-common: '#BDB6AA'
-  rarity-rare: '#2F7FB0'
-  rarity-epic: '#7B4FC9'
+  rarity-common: '#9A9488'
+  rarity-rare: '#1F9E94'
+  rarity-epic: '#7A4CC2'
   rarity-legendary: '#D9A931'
+  rarity-relic: '#D9A931'
+  rarity-relic-accent: '#E8743B'
   element-fire: '#F2603A'
   element-wind: '#7BD389'
   element-earth: '#B9874B'
@@ -209,7 +211,7 @@ Referenz ist das Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png`. V
 | Nebel | `{colors.fog}` | `#E0E5EF` | gesperrte Regionen der Weltkarte | |
 | Gedenken | `{colors.mourn}`, `{colors.mourn-quiet}` | `#F3EFE8`, `#E9E6E1` | Abschied, Gedächtnishalle, ruhige Taste | fröhliche Momente |
 | Material | `{colors.material-ore}` | `#8B9BB0` | Eisenerz-Raute; weitere Materialien bekommen eigene Farbe + Form | |
-| Seltenheit | `{colors.rarity-*}` | siehe Frontmatter | kleine Raute am Item | Teamfarben |
+| Seltenheit | `{colors.rarity-*}` | Steingrau `#9A9488`, Türkis `#1F9E94`, Violett `#7A4CC2`, Gold `#D9A931`; Relikt Gold mit Glutorange `#E8743B` | Rauten am Item (Gewöhnlich 0, Selten 1, Episch 2, Legendär 3), Relikt hohle Krone; gleiche Werte wie Art Direction §5.6 | Teamfarben, Blau |
 | Elemente | `{colors.element-*}` | aus Art Direction §2.3 | Element-Symbole, Speedlines | UI-Rahmen |
 
 **Kontrast:** `{colors.line}` auf `{colors.cream}` ≈ 13 : 1, `{colors.soft}` auf `{colors.cream}` ≈ 5 : 1, Weiß auf `{colors.ember}` ≈ 3 : 1 (nur für fette Labels ab 16 px). Teamfarben, Glutorange und Positiv/Negativ stehen nie allein: immer zusammen mit Form, Symbol oder Text.
@@ -280,7 +282,7 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Raumstein** (`room-stone`) | quadratischer Stein mit Raum-Icon, Name, Stufe als drei Punkte; grüner Pfeil = ausbaubar, Glut-Zahl = Neues; gesperrt gestrichelt |
 | **Raum-Panel** | Stein mit Kopf (Raum-Icon, Name, Stufe, Wirkung), Ausbau-Band in Grün, Liste, zwei Tasten |
 | **Item-Zeile** | Item-Bild (`item-image`), Name, Werte, rechts Vergleich (grün/rot) oder Preis; gewählt mit Glutrand |
-| **Item-Bild** (`item-image`) | gemaltes Bild im Stil der Porträts, Seltenheits-Raute oben rechts, Zahl unten (Aufwertung, Ladungen) |
+| **Item-Bild** (`item-image`) | gemaltes Bild im Stil der Porträts (`art/items/`), Rahmen in Seltenheitsfarbe, Seltenheits-Rauten oben rechts (Relikt: hohle Krone, Rahmen mit Glutorange-Akzent), Zahl unten (Aufwertung, Ladungen) |
 | **Währung** (`currency`) | Symbol + Zahl in `{typography.number}`; nie Wort, nie nackte Zahl |
 | **Namensschild** (`nametag`) | Glut-Pille am Rand der Dialogbox, auf der Seite des Sprechers |
 | **Entscheidungs-Marke** | schwarze Pille „Entscheidung · hat Folgen“ mit Glutraute |

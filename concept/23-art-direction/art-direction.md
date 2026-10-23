@@ -261,6 +261,39 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 - **Titelbild:** Kael und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
 - **Akt-Karten:** je Akt ein Vollbild zum Aktbeginn im Stil der Illustrationstafeln.
 
+### 5.6 Item-Icons
+
+Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept/21-gdd/items.md`. Getrennt von den flachen 24-px-UI-Icons der Waffengruppen (§9).
+
+- **Ein Icon je Basis-Item** (Tier sichtbar, Seltenheit nicht); Unikate (Signatur, Legendär) mit eigenem Bild; Relikte mit einem Bild je Erwachungsstufe. Rund 139 Icons. [A]
+- **Stil:** dieselbe Formensprache wie die Chibi-Figuren. Übergroße, runde, spielzeughafte Formen mit abgerundeten Spitzen und dicken Griffen, weiche dunkelbraune Outline (kräftiger als im Porträt), Cel-Shading mit zwei Schattentönen und einem klaren Glanzlicht, warme satte Farben, Licht von oben links. [C]
+- **Format:** quadratisch, freigestellt (echter Alphakanal), Item zentriert auf rund 80 % der Fläche. Lange Items (Klingen, Lanzen, Stäbe, Bögen) diagonal von unten links nach oben rechts, kompakte Items (Buch, Trank, Ring, Schild) frontal und leicht gedreht. Kein Rahmen, kein Text, kein Bodenschatten, keine Hand. Master `art/items/<id>.png` mit 512 × 512 px, im Spiel 128 bzw. 256 px. [C]
+- **Lesbarkeit:** Die schwarz gefüllte Silhouette zeigt bei 48 px die Waffengruppe, die Metallfarbe bei 64 px das Tier. Keine dünnen Details. [C]
+
+| Tier | Metall | Griff und Beschläge |
+|---|---|---|
+| Eisen | warmes Dunkelgrau, gehämmert, matt | braune Lederwicklung, schlichtes Eisen |
+| Stahl | helles Blaugrau, poliert, kräftiges Glanzlicht | dunkles Leder, Messing |
+| Silber | fast Weiß, kühles Glanzlicht, feine Gravur | helles Leder, kleine Goldbeschläge |
+| Mondstahl | kühles Silber mit dunklen Gravuren und Mondsichel | wie Silber |
+
+- **Bücher:** Einband in Elementfarbe (§2.3) mit Element-Symbol; das Tier zeigen die Eckbeschläge (Leder, Messing, Silber mit Gold).
+- **Unikate:** eigene Form und die Signaturfarbe des Besitzers (z. B. Brennas Glutorange-Wicklung); Leutnant-Signaturen tragen die Fraktionsfarbe (§2.2).
+- **Relikte:** schlafend matt mit Patina und Rissen, erwachend mit Glutlinien in den Rissen, erwacht mit voller Glut und einzelnen Funken.
+- **Detail nach Seltenheit:** Je seltener das Item im Katalog, desto mehr Oberflächendetail. Gewöhnliche Basis-Items schlicht mit klaren Farbflächen ohne Gravur, seltene mit etwas Struktur und einem kleinen Schmuckteil, Legendär und Signatur reich verziert (Gravuren, Wicklungen, Steine), Relikte am reichsten (alte Gravuren, Goldeinlagen, Glut). Basis-Items, die selten oder episch droppen, behalten ihr schlichtes Bild; das zeigt nur der Rahmen. [A]
+
+**Seltenheit im UI-Rahmen** (nicht im Icon). Farbe und Rauten sind doppelt kodiert, damit es auch ohne Farbsehen lesbar ist. Blau kommt nicht vor, weil Blau und Rot den Teams gehören. [A]
+
+| Stufe | Rahmenfarbe [C] | Zeichen |
+|---|---|---|
+| Gewöhnlich | Steingrau `#9A9488` | keine Raute |
+| Selten | Türkis `#1F9E94` | 1 Raute |
+| Episch | Violett `#7A4CC2` | 2 Rauten |
+| Legendär | Gold `#D9A931` | 3 Rauten; Signatur zusätzlich mit Namensbanner des Besitzers |
+| Relikt | Gold `#D9A931` mit Glutorange `#E8743B` | hohle Krone statt Rauten |
+
+**Erzeugung:** ChatGPT über Claude in Chrome, parallel in mehreren Tabs; Referenzen sind nur die aktuellen Charakterbilder aus `art/mockups/characters-s1/` (Kael, Brenna, Mira, Tobin), bei Unikaten zusätzlich das Bild des Besitzers; nicht das Stil-Mockup und nicht `art/portraits/`. Zuerst 10 Testbilder (`art/prompts/items_test.md`). Die abgenommenen Tests werden zur Stilreferenz für alle weiteren. Ob danach Einzelbilder oder 3×3-Bögen entstehen, entscheidet der Test. Prompt und Abnahme je Durchgang in `art/prompts/items_<batch>.md`.
+
 ## 6. Weltkarte [A]
 
 - **Echte 3D-Szene** aus denselben Bausteinen wie die Kampfkarte, nur kleiner skaliert: Valmora mit Drachengebirge im Norden, Silbermeer im Westen, Grenzmarken im Osten, Aurenhall in der Mitte. Vorbild für Aufteilung und Farben: `weltkarte_valmora.png`.
@@ -338,7 +371,7 @@ Startschätzung zur Planung der Epics. [C]
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
 | Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
-| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. Rund 120 Bilder für Staffel 1 (Bestand `content/items.yaml` plus Akt-2/3-Tiers, Signatur- und legendäre Items) [A] |
+| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 139 Bilder für Staffel 1, erzeugt: 60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items (Regeln §5.6, Dateien `art/items/`) [A] |
 
 ## 12. Do & Don't
 

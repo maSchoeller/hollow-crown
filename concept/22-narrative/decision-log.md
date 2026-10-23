@@ -53,3 +53,4 @@
 | 2026-10-23 | Teilvertonung in Deutsch und Englisch, gleiche ElevenLabs-Stimme je Figur, ca. 400 Zeilen je Sprache | Produktinhaber, Empfehlung bestätigt |
 | 2026-10-23 | Schreibumfang geschätzt ~56 000 Wörter je Sprache (~112 000 gesamt) | Assistent [C] |
 | 2026-10-23 | Narrative abgeschlossen (`status: complete`): Anhänge Beziehungskarte, Zeitleiste, Referenzen; Verweise in `concept/README.md` und `AGENTS.md`; `08-story-world.md` als abgelöst markiert. Nächste Etappe laut BMAD-Pfad: Art Direction | Abschluss Etappe 3 |
+| 2026-10-23 | Belohnungen der Lore-Nebenquests um je ein **Relikt** ergänzt: N2 Schild der Paktwächter (statt „legendärer Schild“), N4 Drachenglut, N7 Aldrics Paktklinge; Vorschlag für die 12 Leutnant-Signaturwaffen in `concept/21-gdd/items.md` §6.3 | Assistent [C], folgt aus der Relikt-Entscheidung im GDD |
