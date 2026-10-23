@@ -9,6 +9,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 | [20-game-brief/brief.md](20-game-brief/brief.md) | **Game Brief Staffel 1** (V1 = vollständige erste Staffel): Vision, Säulen, Umfang, Akte, Risiken. Löst `00-vision.md` und den V1-Umfang aus `13` ab | alle, zuerst lesen |
 | [21-gdd/gdd.md](21-gdd/gdd.md) | **Game Design Document Staffel 1**: Quelle der Wahrheit für die Spielmechanik (Rollenklassen, Leutnants, Weltkarte, Heimsuchungen, Burg, Fortschritt, Wirtschaft); Epics in `21-gdd/epics.md`. Löst die Mechanik aus `01`, `02`, `04` §4 und `07` ab | alle, nach dem Brief |
 | [22-narrative/narrative.md](22-narrative/narrative.md) | **Narrative Design Staffel 1**: Prämisse, Story Beats, Figuren, Welt, Dialogstil, Missionsfolge, Entscheidungen, Nebenquests, Supports, Produktion; Moodboards in `art/mockups/characters-s1/` und `locations-s1/`. Löst `08-story-world.md` bis auf die Prämisse ab | Story, Content, Dialoge |
+| [23-art-direction/art-direction.md](23-art-direction/art-direction.md) | **Art Direction Staffel 1**: Spielzeug-Diorama mit Detailgrad der bestehenden Karte, Round-Chibi-Figuren per Bild-zu-3D (Tripo), Farbwelt, Jahreszeit je Akt, Bildebene, Weltkarte und Burg in 3D, Effekte, Audio-Richtung, Asset-Budget. Löst `15-art-direction.md` ab; Proben in `art/mockups/style-3d-2026-10/` und `tripo-test-2026-10/` | Art, Render, Content |
 | [00-vision.md](00-vision.md) | ~~Pitch, Säulen, Zielgruppe, Marktanalyse~~ → abgelöst durch den Game Brief | Archiv |
 | [01-decisions.md](01-decisions.md) | Entscheidungsprotokoll des Proof of Concept, **eingefroren seit 2026-10-23**; gilt, wo der Game Brief und spätere BMAD-Artefakte schweigen. Offene Punkte O1–O5 | alle |
 | [02-core-loop.md](02-core-loop.md) | Spielschleife Mission ↔ Lager | Design |
@@ -24,7 +25,7 @@ Planungsartefakte für Hollow Crown. V1 ist seit 2026-10-23 **Staffel 1** (siehe
 | [12-monetization.md](12-monetization.md) | F2P-Leitplanken (nach V1) | Produkt |
 | [13-v1-scope.md](13-v1-scope.md) | V1-Checkliste, Meilensteine, DoD, Abnahmeszenarien | Umsetzung |
 | [14-glossary.md](14-glossary.md) | Glossar DE ↔ EN | alle |
-| [15-art-direction.md](15-art-direction.md) | Stil, Farbwelt, Kapitel-Farbskript, Figuren-Briefings, Effekte, UI | Art + Render + UI |
+| [15-art-direction.md](15-art-direction.md) | ~~Stil, Farbwelt, Kapitel-Farbskript, Figuren-Briefings, Effekte, UI~~ → abgelöst durch `23-art-direction/` | Herleitung |
 | [16-asset-pipeline.md](16-asset-pipeline.md) | ChatGPT/Blender → Pixel → Babylon, Formate, Budgets, Qualitätsstufen, Art-Track A0–A5 | Art + Technik |
 | [17-audio.md](17-audio.md) | Stimmen, Barks, SFX, Musik-Leitmotive, Mischung | Audio + Technik |
 | [art/](art/) | Beispiele: Palette, Blender-Pixel-Beweis, Charakter-Sheets, Audio-Proben, Styleguide | alle |
