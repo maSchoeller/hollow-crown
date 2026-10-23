@@ -18,7 +18,7 @@ supersedes: Spielmechanik in concept/01-decisions.md (G*, U*, O1, O2, D3/D11/D18
 
 ### Kernkonzept
 
-Hollow Crown ist ein rundenbasiertes Taktik-RPG fürs Handy im Hochformat. Der Spieler führt die Söldnertruppe **Aschenbanner** durch Staffel 1: drei Akte, 20 Story-Missionen, 7 Nebenquests und täglich wechselnde **Heimsuchungen**, in denen benannte Leutnants auf bekannte Karten zurückkehren. Zwischen den Missionen ist die **Heimat-Burg** das Zuhause der Truppe. Jede Figur kann dauerhaft fallen.
+Hollow Crown ist ein rundenbasiertes Taktik-RPG fürs Handy im Hochformat. Der Spieler führt die Söldnertruppe **Aschenbanner** durch Staffel 1: drei Akte, 25 Story-Missionen, 10 Nebenquests und täglich wechselnde **Heimsuchungen**, in denen benannte Leutnants auf bekannte Karten zurückkehren. Zwischen den Missionen ist die **Heimat-Burg** das Zuhause der Truppe. Jede Figur kann dauerhaft fallen.
 
 - **Kernfantasie:** *Führe eine Truppe liebenswerter Außenseiter durch einen Krieg, der nicht ihrer ist, und bring so viele wie möglich heim.*
 - **Gefühl danach:** Stolz auf die eigene Familie, Wehmut über die Gefallenen, Neugier, was hinter der hohlen Krone steckt.
@@ -40,7 +40,7 @@ Primär Fans von Fire Emblem, Advance Wars und Triangle Strategy (20–45 Jahre)
 
 ### Projektziele
 
-- Eine runde erste Staffel (25–30 Stunden auf Normal), Akt für Akt veröffentlicht; Akt 1 ist der MVP.
+- Eine runde erste Staffel (30–35 Stunden auf Normal), Akt für Akt veröffentlicht; Akt 1 ist der MVP.
 - MVP-Kernhypothese: *Found Family, Permadeath und wiederkehrende Feinde erzeugen Bindung, und die freundliche Optik trägt den ernsten Ton.*
 - Leidenschaftsprojekt eines Solo-Entwicklers mit KI-Unterstützung; keine Monetarisierung in V1.
 
@@ -64,7 +64,7 @@ Der Proof of Concept (Prolog, Kap. 1–2) hat Kampfgefühl und Bedienung bestät
 
 1. **Mission** (10–45 Min.): Truppe aufstellen, auf der Diorama-Karte bewegen und angreifen, Ziele erfüllen, Leutnants vertreiben.
 2. **Ergebnis:** EP, Beute, Kopfgeld; Gefallene und Narben werden sichtbar.
-3. **Heimat** (Lager in Akt 1, Burg ab Akt 2): ausrüsten, aufwerten, Räume ausbauen, Gespräche führen, Gefallene ehren.
+3. **Heimat** (Lager zu Beginn von Akt 1, Burg ab Mission 1-6): ausrüsten, aufwerten, Räume ausbauen, Gespräche führen, Gefallene ehren.
 4. **Weltkarte:** nächste Story-Mission, Nebenquest oder Heimsuchung wählen.
 
 ### Rückverfolgung: Mechanik → Säule → Epic
@@ -209,18 +209,18 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 | | Akt 1 „Asche“ | Akt 2 „Glut“ | Akt 3 „Krone“ |
 |---|---|---|---|
-| Story-Missionen | Prolog + 6 | 7 | 6 (inkl. Finale) |
+| Story-Missionen | Prolog + 8 | 8 | 8 (inkl. Finale) |
 | Große Schlachten (~15 Einheiten) | – | 1 (Akt-Finale) | 2 (Vorbereitung aufs Finale, Finale) |
-| Nebenquests | 2 | 2 | 3 |
+| Nebenquests | 3 | 3 | 4 |
 | Leutnants | 4 | 4 | 4 |
 | Entscheidungen | 4 | 4 | 4 |
-| Heimat | Lager; am Akt-Ende Eroberung der Burgruine | Burg | Burg |
+| Heimat | Lager; ab 1-6 Burg auf Stufe 1 mit Gedächtnishalle | Burg mit Ausbau | Burg mit Ausbau |
 | Einsatzplätze | 5–7 | 7–9 | 9–12 (große Schlachten 15) |
 | Stufendeckel | 10 | 20 | 20 |
 | Release | MVP | 2. Release | 3. Release |
 
-- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahme Akt 3: Nach den zwei frei wählbaren Missionen folgen Krönung, Drachenangriff und Finale fest aufeinander (siehe `concept/22-narrative/narrative.md`).
-- **Missionsgrößen:** 14 der 20 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
+- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
+- **Missionsgrößen:** 19 der 25 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
 - **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Kael), defend, survive, escape, **escort** (NPC zum Ausgang bringen), **treasure** (Truhen vor Rundenlimit bergen); 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
 
 ### Missionszustände
@@ -246,6 +246,8 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 | Akt 2 | 11 → 20 (erste Aufstiege ab Mission 2) |
 | Akt 3 | 21 → 28 |
 
+Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übernimmt die verkettete Simulation (Story 6.8).
+
 - **Wachstum:** Wachstumsraten mit Glättung (Ist ≤ Erwartung − 1,0 → garantiert +1; Ist ≥ Erwartung + 1,5 → 0; mindestens 1 Wert pro Level-up).
 - **Aufstieg:** ab Stufe 10 mit einem **Glutfunken** in der Akademie (ab Akt 2); Wahl Profi A oder B; Stufe wird 1, Loadout 4 → 5.
 - **Skills:** persönlicher Skill + Klassen-Skills + Item-Skills. Item-Skills werden durch Tragen gemeistert: FP +1 je Kampfsequenz, +5 bei Missionsende; Meisterung nach Seltenheit 20/30/40/60 FP (Gewöhnlich/Selten/Episch/Legendär) `[ASSUMPTION]`.
@@ -264,8 +266,8 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 ### Quest-System
 
-- **Story-Missionen** (20): tragen die Handlung und den Akt-Fortschritt.
-- **Nebenquests** (7): optional, dauerhaft offen, je ein Glutfunke plus besondere Ausrüstung, ein besonderer Gefährte oder ein Vorteil für die Hauptstory.
+- **Story-Missionen** (25): tragen die Handlung und den Akt-Fortschritt.
+- **Nebenquests** (10): optional, dauerhaft offen; 7 geben einen Glutfunken plus besondere Ausrüstung, einen besonderen Gefährten oder einen Vorteil für die Hauptstory, die 3 persönlichen Quests von Tobin, Jory sowie Kit und Pell eine Signaturwaffe statt des Glutfunkens.
 - **Heimsuchungen:** wiederholbar, ohne Story (siehe Welt und Erkundung).
 - **Gestaffelte Regeln** nach Zahl abgeschlossener Story-Missionen: Bewegung und Angriff (Prolog) → Waffendreieck (nach 1) → Magie (nach 2) → Elemente, Status, Runen, Supports (nach 3); Klassen-Aktionen einer Rolle, sobald der erste Gefährte dieser Rolle beitritt. Höchstens eine Lektion pro Runde, maximal 3 Zeilen.
 - **Entscheidungen:** 12 Wahlpunkte (4 pro Akt), je 2–3 Antworten, nur außerhalb des Kampfs. Wirkungen: Ein Gefährte kommt oder geht, eine Nebenquest öffnet sich, Groll eines Leutnants −1, Händlerpreise ±10 % oder Dorfhilfe (Heiltrank +1 Ladung für einen Akt). Avatar und Kael verlassen die Truppe nie. Jede Wahl wird im Spielstand vermerkt und trägt in Staffel 2.
@@ -297,13 +299,13 @@ Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit 
 ### Fortschritt des Spielers
 
 - **Stufen:** siehe Figurensystem; Deckel 20/20 lässt Luft für Staffel 2.
-- **Glutfunke:** kostbares Aufstiegs-Item, 12 Stück in Staffel 1: 2 aus dem Finale von Akt 1, 1 je Nebenquest (7), 3 rotierend beim Händler (ab Händler-Stufe 3, 3 000 Gold, höchstens einer gleichzeitig im Angebot). Nicht alle Gefährten können aufsteigen; die Wahl, wer und wohin, ist Absicht. Der Erhalt wird als Moment inszeniert.
+- **Glutfunke:** kostbares Aufstiegs-Item, 12 Stück in Staffel 1: 2 aus dem Finale von Akt 1, je 1 aus 7 der 10 Nebenquests, 3 rotierend beim Händler (ab Händler-Stufe 3, 3 000 Gold, höchstens einer gleichzeitig im Angebot). Nicht alle Gefährten können aufsteigen; die Wahl, wer und wohin, ist Absicht. Der Erhalt wird als Moment inszeniert.
 - **Ausrüstung:** Tier pro Akt; Legendäre und Signatur-Items über Nebenquests und Leutnants.
 - **Burg:** Raumausbau als zweite Fortschrittsachse.
 
 ### Heimat: Lager und Burg
 
-In Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, Taverne und Lagerfeuer auf Stufe 1. Ab Akt 2 übernimmt die Burg alle Funktionen. Jeder Raum steht für genau eine Funktion und hat drei Stufen. Für Stufe 2 und 3 braucht es den passenden Gefährten in der Truppe und Gold (Stufe 2 = 1 500, Stufe 3 = 4 000 Gold `[ASSUMPTION]`).
+Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, Taverne und Lagerfeuer auf Stufe 1. Ab Mission 1-6 übernimmt die Burg diese Funktionen auf Stufe 1, dazu die Gedächtnishalle mit Gedenksteinen. Ab Akt 2 kommen Ausbau und die übrigen Räume dazu. Jeder Raum steht für genau eine Funktion und hat drei Stufen. Für Stufe 2 und 3 braucht es den passenden Gefährten in der Truppe und Gold (Stufe 2 = 1 500, Stufe 3 = 4 000 Gold `[ASSUMPTION]`).
 
 | Raum | Funktion | Stufe 1 → 2 → 3 |
 |---|---|---|
@@ -316,7 +318,7 @@ In Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, Taverne und 
 | Lagerfeuer | Support-Gespräche | Ränge C und B → A → S (Kernpaare) |
 | Akademie (ab Akt 2) | Aufstieg per Glutfunke, Skill-Loadout | Aufstieg → Profi-Weg innerhalb der Rolle wechseln → zweiter Profi-Weg für Aufgestiegene `[ASSUMPTION]` |
 | Werkstatt (ab Akt 2) | Verbrauchsgüter aus Material herstellen | Feuerbombe, Schlüssel → Hast, verstärktes Gegengift → Fallen-Set, Rune I |
-| Gedächtnishalle (ab Akt 2) | Gedenksteine; einmal pro Akt vererbt ein Gefallener eine Lektion (passiver Skill seiner Rolle, z. B. +5 Treffer, +1 MOV im Wald) an einen Gefährten | 1 Lektion → 2 Lektionen → freie Wahl der Lektion |
+| Gedächtnishalle (Gedenksteine ab 1-6, Lektionen ab Akt 2) | Gedenksteine; einmal pro Akt vererbt ein Gefallener eine Lektion (passiver Skill seiner Rolle, z. B. +5 Treffer, +1 MOV im Wald) an einen Gefährten | 1 Lektion → 2 Lektionen → freie Wahl der Lektion |
 | Übungsplatz (ab Akt 2) | Reserve erhält EP | 20 % → 35 % → 50 % der Durchschnitts-EP der Mission |
 
 Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
@@ -340,9 +342,9 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 
 | Typ | Anzahl | Größe | Dauer |
 |---|---|---|---|
-| Story-Mission | 17 | kompakt bis mittelgroß, eher quadratisch | 15–30 Min. |
-| Große Schlacht | 3 (Teil der 20 Story-Missionen) | bis 24×32, 15 eigene Einheiten | 30–45 Min. |
-| Nebenquest | 7 | kompakt bis mittel | 10–25 Min. |
+| Story-Mission | 22 | kompakt bis mittelgroß, eher quadratisch | 15–30 Min. |
+| Große Schlacht | 3 (Teil der 25 Story-Missionen) | bis 24×32, 15 eigene Einheiten | 30–45 Min. |
+| Nebenquest | 10 (2 als Variante einer Story-Karte) | kompakt bis mittel | 10–25 Min. |
 | Heimsuchung | Varianten auf gespielten Karten | Größe der Vorlage | 10–20 Min. |
 
 Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle besonders belohnt (Engstelle für Vorkämpfer, Nebel für Späher, Brennbares für Elementaristen).
@@ -352,6 +354,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 - Pro Akt steht eine neue Regel oder Rolle im Fokus.
 - Jeder Leutnant eines Akts tritt in mindestens 2 Story-Missionen auf, einer davon auch im Akt-Finale.
 - Kein Missionsziel kommt im selben Akt mehr als zweimal hintereinander vor.
+- Jeder Beitritt hat in seinem Akt mindestens eine weitere Story-Mission; Gefährten aus Akt 3 treten spätestens in dessen vierter Mission bei.
 
 ## Art and Audio Direction
 
@@ -378,7 +381,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ### Asset-Bedarf
 
-20 Story-Gefährten, 12 Leutnants, 10 Gegnertypen, 7 Rollen in Basis + 2 Profi-Varianten plus Unikate als 3D-Figuren mit Animationen für Idle, Laufen, Angriff je Waffenart, Treffer, Niedergestreckt, Flucht; 30 Karten (20 Story, 7 Nebenquest, 3 Reserve); 1 Weltkarte mit 3 Regionen; 11 Burg-Räume mit je 3 Ausbaustufen (optisch); Porträts mit Stimmungen für Kernfiguren.
+20 Story-Gefährten, 12 Leutnants, 10 Gegnertypen, 7 Rollen in Basis + 2 Profi-Varianten plus Unikate als 3D-Figuren mit Animationen für Idle, Laufen, Angriff je Waffenart, Treffer, Niedergestreckt, Flucht; 36 Karten (25 Story, 8 Nebenquest, 3 Reserve; 2 Nebenquests als Variante einer Story-Karte); 1 Weltkarte mit 3 Regionen; 11 Burg-Räume mit je 3 Ausbaustufen (optisch); Porträts mit Stimmungen für Kernfiguren.
 
 ## Development Epics
 
@@ -391,9 +394,9 @@ Zusammenfassung; Details in `epics.md`.
 | E3 | Weltkarte & Heimsuchungen | 3D-Weltkarte, Knoten, Tagespakete, Deckel | Kernloop | Akt 1 |
 | E4 | Kampagne, Entscheidungen, Supports | Akt-Struktur, gestaffelte Regeln, Missionszustände, Entscheidungen, Epilog-Mosaik, 25 feste Paare | Jeder zählt | Akt 1 (Basis) |
 | E5 | Fortschritt & Wirtschaft | Stufendeckel, Glutfunke, Aufstieg, EP- und Goldkurve, Verbluten, Speicherregeln | Ausrüstung, Jeder zählt | Akt 1 / Akt 2 |
-| E6 | Heimat | Lager (Akt 1), Burg mit 11 Räumen und Stufen | Jeder zählt | Akt 1 / Akt 2 |
+| E6 | Heimat | Lager und Burg auf Stufe 1 (Akt 1), Burg mit 11 Räumen und Stufen (Akt 2) | Jeder zählt | Akt 1 / Akt 2 |
 | E7 | Chibi-Stil & Audio | Figuren, Porträts, Weltkarte im neuen Stil; Musik, Teilvertonung | Ton | Akt 1 |
-| E8 | Content Akt 1 | Prolog + 6 Missionen, 2 Nebenquests, 4 Leutnants, Burg-Eroberung | alle | Akt 1 (MVP) |
+| E8 | Content Akt 1 | Prolog + 8 Missionen, 3 Nebenquests, 4 Leutnants, Burg erobern und halten | alle | Akt 1 (MVP) |
 | E9 | Content Akt 2 | 7 Missionen inkl. großer Schlacht, 2 Nebenquests, 4 Leutnants | alle | Akt 2 |
 | E10 | Content Akt 3 | 6 Missionen inkl. 2 großer Schlachten, 3 Nebenquests, 4 Leutnants, Drachen, Epilog | alle | Akt 3 |
 
@@ -409,7 +412,7 @@ Reihenfolge: E1, E2, E4 → E3, E5, E6 (Lager) → E7 → E8 → MVP-Release; da
 
 - Simulations-Korridore je Story-Mission erfüllt.
 - Playtest MVP (Akt 1, 5–10 Tester): mindestens 70 % wollen Akt 2 spielen; mindestens die Hälfte nennt einen Gefährten beim Namen, den sie vermissen würden; der Chibi-Stil verharmlost laut Testern den Tod nicht (Gedenkszene).
-- Spielzeit Staffel 1: 25–30 Stunden auf Normal.
+- Spielzeit Staffel 1: 30–35 Stunden auf Normal.
 
 ## Risiken
 

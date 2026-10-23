@@ -17,7 +17,7 @@ supersedes: concept/00-vision.md, V1-Umfang in concept/13-v1-scope.md
 
 **Hollow Crown** ist ein rundenbasiertes Taktik-RPG fürs Handy im Hochformat, spielbar im Browser auf Handy und PC. Der König ist tot, die Krone verschwunden, die Drachen erwachen. Mittendrin steht eine kleine Söldnertruppe aus Außenseitern, die in einen Krieg gerät, der nicht ihrer ist.
 
-Der Spieler führt diese Truppe durch **Staffel 1**: drei Akte mit rund 20 Story-Missionen, die mit einem Staffelfinale enden. Die große Geschichte um Krone und Drachen geht danach weiter. Jede Figur kann dauerhaft fallen. Gerade weil die Welt freundlich und rund gezeichnet ist, wiegt jeder Verlust schwer.
+Der Spieler führt diese Truppe durch **Staffel 1**: drei Akte mit 25 Story-Missionen (Prolog und je 8 pro Akt), die mit einem Staffelfinale enden. Die große Geschichte um Krone und Drachen geht danach weiter. Jede Figur kann dauerhaft fallen. Gerade weil die Welt freundlich und rund gezeichnet ist, wiegt jeder Verlust schwer.
 
 **Was Hollow Crown unterscheidet:** Story-Taktik mit echter Ausrüstungstiefe im Hochformat. Dazu kommen eine Heimat, die mit der Truppe wächst, und Feinde, die sich an dich erinnern. Der freundliche Stil steht bewusst im Kontrast zu echtem Verlust. Alles Weitere entscheiden Ausführung und Gefühl, keine technische Exklusivität.
 
@@ -43,7 +43,7 @@ V1 ist ein Leidenschaftsprojekt: eine runde, in sich abgeschlossene erste Staffe
 
 1. **Mission:** Auf einer 3D-Diorama-Karte bewegen, angreifen und Ziele erfüllen. Leutnants vertreiben; sie fliehen bei 0 TP und kehren wieder.
 2. **Heimkehr:** Im Lager bzw. in der Burg Verwundete versorgen, Gefallene betrauern und Beute verteilen.
-3. **Lager/Burg und Truppe:** Räume ausbauen (ab Akt 2), Gefährten anwerben, Ausrüstung schmieden und verzaubern, Gespräche am Lagerfeuer führen.
+3. **Lager/Burg und Truppe:** Räume ausbauen (Burg ab Mission 1-6, Ausbau ab Akt 2), Gefährten anwerben, Ausrüstung schmieden und verzaubern, Gespräche am Lagerfeuer führen.
 4. **Weltkarte:** Die nächste Story-Mission, eine Nebenquest oder eine Heimsuchung wählen.
 
 ### Säulen
@@ -76,7 +76,7 @@ V1 ist ein Leidenschaftsprojekt: eine runde, in sich abgeschlossene erste Staffe
 
 - **Plattformen:** 1. Handy-Browser im Hochformat (PWA), 2. PC-Browser, 3. später App-Stores über Capacitor.
 - **Team:** ein Entwickler mit KI-Unterstützung (Code mit Claude, Bilder mit ChatGPT, Audio mit ElevenLabs, 3D mit Blender per MCP).
-- **Umfang von Staffel 1:** 20 Story-Missionen, 7 Nebenquests, tägliche Heimsuchungen, rund 20 Story-Gefährten plus Rekruten aus der Taverne, 12 Nemesis-Leutnants, eine Heimat-Burg. Die Spielzeit liegt bei 25–30 Stunden.
+- **Umfang von Staffel 1:** 25 Story-Missionen, 10 Nebenquests, tägliche Heimsuchungen, rund 20 Story-Gefährten plus Rekruten aus der Taverne, 12 Nemesis-Leutnants, eine Heimat-Burg. Die Spielzeit liegt bei rund 30–35 Stunden.
 - **Technik:** Architektur und Performance-Ziele gelten unverändert (`10-tech-architecture.md`, T8).
 
 ### Staffel 1 im Überblick
@@ -85,8 +85,8 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 
 | Akt | Region und Jahreszeit | Story-Kern | Neue Systeme | Release |
 |---|---|---|---|---|
-| 1 „Asche“ | Grenzland um Varnhold, Spätsommer | Die Truppe findet sich, Banditen plündern das zerfallende Land. Am Ende erobert sie eine Burgruine. | Prolog und 6 Missionen, Rollenklassen, erste 4 Leutnants, 3D-Weltkarte mit Region 1, Heimsuchungen, wanderndes Lager | **MVP** |
-| 2 „Glut“ | Hochland der Eisenmark, Herbst | Drei Thronanwärter werben um die Kompanie, der Verrat beginnt. | Heimat-Burg, Akademie und Glutfunke (Aufstieg), Region 2, 4 Leutnants | 2. Release |
+| 1 „Asche“ | Grenzland um Varnhold, Spätsommer | Die Truppe findet sich, Banditen plündern das zerfallende Land. Mitten im Akt erobert sie eine Burgruine und muss sie im Finale halten. | Prolog und 8 Missionen, Rollenklassen, erste 4 Leutnants, 3D-Weltkarte mit Region 1, Heimsuchungen, wanderndes Lager, Burg (Stufe 1) mit Gedächtnishalle | **MVP** |
+| 2 „Glut“ | Hochland der Eisenmark, Herbst | Drei Thronanwärter werben um die Kompanie, der Verrat beginnt. | Burg-Ausbau, Akademie und Glutfunke (Aufstieg), Region 2, 4 Leutnants | 2. Release |
 | 3 „Krone“ | Aurenhall und Drachengebirge, Winter | Ein Teil der Wahrheit über den Pakt kommt ans Licht. Das Staffelfinale klärt, wer den König getötet hat, und öffnet den Bogen um Krone und Drachen für Staffel 2. | Region 3, Drachen, 4 Leutnants, Epilog-Mosaik | 3. Release |
 
 **Kernhypothese des MVP:** *Found Family, Permadeath und wiederkehrende Feinde erzeugen Bindung, und die freundliche Optik trägt den ernsten Ton.*
@@ -116,7 +116,7 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 **Für das GDD**
 - Welche Funktionen braucht die Burg, und welche Wirkung hat jeder Raum?
 - Wie lauten Fluchtregel und Wiederkehr-Skalierung der Leutnants?
-- Wie funktioniert die Wirtschaft über rund 20 Missionen (Gold, Ausrüstungskurve, Aufträge als Ventil)?
+- Wie funktioniert die Wirtschaft über 25 Missionen (Gold, Ausrüstungskurve, Aufträge als Ventil)?
 - Behält die 3D-Diorama-Karte ihre Richtung (D1–D16)? Wie passen sich Licht und Farbe an den neuen Stil an?
 
 **Für die Narrative**
