@@ -1,5 +1,5 @@
 import { useEffect, useErrorBoundary } from 'preact/hooks';
-import { Dialogue } from '../ui/Dialogue';
+import { Scene } from './screens/Scene';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
@@ -10,8 +10,8 @@ import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
 import { WorldMap } from './screens/WorldMap';
 import { MissionLoading, PrepareScreen } from './screens/Loading';
-import { campaign, data } from './state/session';
-import { nodeDef, runEffects, storyContext } from './state/flow';
+import { data } from './state/session';
+import { nodeDef } from './state/flow';
 import { missionLoad } from './state/loading';
 import { prepare } from './state/prepare';
 import { battle } from './state/battle';
@@ -83,15 +83,7 @@ function Screens() {
       return <WorldMap />;
     case 'dialogue':
       return (
-        <Dialogue
-          key={sc.id}
-          data={data}
-          id={sc.id}
-          ctx={storyContext()}
-          avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
-          onEffects={runEffects}
-          onDone={sc.next}
-        />
+        <Scene key={sc.id} id={sc.id} onDone={sc.next} />
       );
     case 'prep':
       return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;

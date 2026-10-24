@@ -77,3 +77,23 @@ export function sceneTexts(scene: SceneDef): Record<string, string> {
   }
   return out;
 }
+
+/** Whether the player has seen scene `id` to the end (or skipped it). */
+export const sceneSeen = (seen: readonly string[], id: string): boolean => seen.includes(id);
+
+/**
+ * Splits a text into speech-bubble pages of at most `maxChars` characters, cut at spaces (a bubble holds two lines).
+ * A word longer than the limit stays whole. Pure.
+ */
+export function bubblePages(text: string, maxChars: number): string[] {
+  const pages: string[] = [];
+  let cur = '';
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    if (cur && cur.length + 1 + word.length > maxChars) {
+      pages.push(cur);
+      cur = word;
+    } else cur = cur ? `${cur} ${word}` : word;
+  }
+  if (cur) pages.push(cur);
+  return pages.length ? pages : [text];
+}

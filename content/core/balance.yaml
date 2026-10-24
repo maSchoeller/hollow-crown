@@ -85,6 +85,15 @@ death:
   scarsUntilInstantDeath: 2
   # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)
   bleedOutTurns: 3
+# scenes (story 4.5): auto mode waits autoBaseMs + autoPerCharMs per character; a speech bubble in battle waits
+# bubbleAutoMs (UX: 2.5 s) and holds at most bubbleMaxChars characters per page (two lines)
+scene:
+  autoBaseMs: 1200
+  autoPerCharMs: 45
+  typeCharsPerTick: 2
+  typeTickMs: 16
+  bubbleAutoMs: 2500
+  bubbleMaxChars: 64
 rally: { radius: 2, damage: 2, hit: 10 }
 bag: { size: 3 }
 fog:

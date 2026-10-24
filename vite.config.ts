@@ -19,7 +19,7 @@ function yamlPlugin(): Plugin {
 const base = process.env.BASE_PATH ?? '/';
 
 /** public/assets folders not precached: places, half figures and the world map load on demand (decision 2026-10-24). */
-const ON_DEMAND_ASSETS = ['locations', 'busts', 'world'];
+const ON_DEMAND_ASSETS = ['locations', 'busts', 'halves', 'world'];
 
 /** Unit models are not in the glob either; they join the runtime cache so a mission's models stay available offline (story 7.6). */
 const RUNTIME_CACHED = [...ON_DEMAND_ASSETS, 'models'];

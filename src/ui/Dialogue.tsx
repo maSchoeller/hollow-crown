@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { resolveScene, type ConditionContext, type Effect, type FlagValue, type GameData, type ResolvedLine } from '../core';
 import { t } from '../i18n';
 import { asset, Modal } from './components';
+import { figureId, halfUrl, pickHalf } from './halfFigure';
 import { Icon } from './icons';
+import { SceneTools } from './SceneTools';
+import './Dialogue.css';
 
 const ENEMIES = new Set(['grosk', 'hask', 'morra']);
 const OTHERS = new Set(['liora']);
@@ -13,13 +16,23 @@ export interface DialogueProps {
   ctx: ConditionContext;
   avatarPortrait: string;
   overlay?: boolean;
+  /** the player has seen this scene before: Skip is marked and leaves it whole */
+  seen?: boolean;
   onEffects: (effects: Effect[]) => void;
+  /** the scene ended (read to the end or skipped) */
   onDone: () => void;
+  /** records that the scene was seen (called just before `onDone`) */
+  onSeen?: (id: string) => void;
+  auto: boolean;
+  onAuto: () => void;
+  /** stems of the built half figures (manifest), `null` while unknown */
+  halves?: ReadonlySet<string> | null;
   onLine?: (speaker?: string, mood?: string) => void;
 }
 
 type Line = Extract<ResolvedLine, { kind: 'line' }>;
 type Choice = Extract<ResolvedLine, { kind: 'choice' }>;
+type Side = 'left' | 'right';
 
 /** Flags an answer sets (`setFlag: name` = true), so later lines of the scene see them before the campaign state has caught up. */
 function setFlags(effects: readonly Effect[]): Record<string, FlagValue> {
@@ -32,20 +45,39 @@ function setFlags(effects: readonly Effect[]): Record<string, FlagValue> {
   return out;
 }
 
-/** Visual-novel dialogue: background, two portraits, name tag, tap to continue, choices, log, skip (concept/08 §7). */
-export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, onDone, onLine }: DialogueProps) {
+/** Half figure of a speaker (mood variant, else neutral; else the old portrait). Speaker bright, listeners dimmed. */
+function Figure({ speaker, mood, avatarPortrait, portraitId, side, active, halves }: { halves?: ReadonlySet<string> | null; speaker: string; mood: string; avatarPortrait: string; portraitId: string; side: Side; active: boolean }) {
+  const stem = pickHalf(figureId(speaker, avatarPortrait), mood, halves);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [stem]);
+  const src = stem && !failed ? halfUrl(stem) : asset(`portraits/${portraitId}/neutral.webp`);
+  return (
+    <div class={`vn-fig vn-fig--${side} ${active ? 'is-speaker' : 'is-listener'}`}>
+      <img src={src} alt="" draggable={false} onError={(e) => (stem && !failed ? setFailed(true) : ((e.currentTarget as HTMLImageElement).style.display = 'none'))} />
+    </div>
+  );
+}
+
+/** Visual-novel scene: blurred place, speaker as a bright half figure, listeners dimmed, glow-pill name tag, Log/Auto/Skip, tap to go on (mockup 05). */
+export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false, auto, onAuto, halves, onEffects, onDone, onSeen, onLine }: DialogueProps) {
   const def = data.scenes[id];
+  const cfg = data.balance.scene;
   const [idx, setIdx] = useState(0);
   const [local, setLocal] = useState<Record<string, FlagValue>>({});
   const [shown, setShown] = useState(0);
   const [log, setLog] = useState(false);
+  const [wasSeen] = useState(seen);
   // answers given in this scene count at once, before the campaign state has caught up
   const now = useMemo(() => ({ ...ctx, flags: { ...ctx.flags, ...local } }), [ctx, local]);
   const lines = useMemo(() => (def ? resolveScene(data, now, id) : []), [data, now, id]);
   const line = lines[idx];
 
+  const finish = () => {
+    onSeen?.(id);
+    onDone();
+  };
   useEffect(() => {
-    if (!def || idx >= lines.length) onDone();
+    if (!def || idx >= lines.length) finish();
   }, [idx, def]);
 
   const text = line?.kind === 'line' ? t(line.key) : '';
@@ -55,13 +87,20 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, on
   }, [idx]);
   useEffect(() => {
     if (shown >= text.length) return;
-    const id2 = setTimeout(() => setShown((s) => Math.min(text.length, s + 2)), 16);
-    return () => clearTimeout(id2);
+    const timer = setTimeout(() => setShown((s) => Math.min(text.length, s + cfg.typeCharsPerTick)), cfg.typeTickMs);
+    return () => clearTimeout(timer);
   }, [shown, text]);
+  // auto mode: once a line is shown it waits for the time it takes to read, then goes on (never at a choice)
+  const readyToGo = line?.kind === 'line' && shown >= text.length;
+  useEffect(() => {
+    if (!auto || !readyToGo) return;
+    const timer = setTimeout(() => setIdx((i) => i + 1), cfg.autoBaseMs + cfg.autoPerCharMs * text.length);
+    return () => clearTimeout(timer);
+  }, [auto, readyToGo, idx]);
 
   // sides follow the order of first appearance: kael and the avatar left, the others right (then left)
   const sides = useMemo(() => {
-    const m: Record<string, 'left' | 'right'> = {};
+    const m: Record<string, Side> = {};
     for (const l of lines) {
       if (l.kind !== 'line' || !l.speaker || m[l.speaker]) continue;
       const taken = new Set(Object.values(m));
@@ -69,7 +108,7 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, on
     }
     return m;
   }, [lines]);
-  // speakers on stage: last speaker per side
+  // figures on stage: the last line per side up to now
   const stage = useMemo(() => {
     const st: { left?: Line; right?: Line } = {};
     for (let i = 0; i <= idx && i < lines.length; i++) {
@@ -86,45 +125,37 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, on
     setIdx(idx + 1);
   };
   const portraitOf = (sp: string) => (sp === 'avatar' ? avatarPortrait : (data.chars[sp]?.portrait ?? sp));
-  const nameOf = (sp: string) => (sp === 'avatar' ? t('unit.avatar.name', {}) : t(`unit.${sp}.name`));
+  const nameOf = (sp: string) => (sp === 'avatar' ? t('unit.avatar.name') : t(`unit.${sp}.name`));
   const speaking = line.kind === 'line' ? line.speaker : undefined;
+  const speakerSide = speaking ? (sides[speaking] ?? 'right') : 'left';
   const choice = line.kind === 'choice' ? (line as Choice) : undefined;
   const history = lines.slice(0, idx).filter((l): l is Line => l.kind === 'line');
+  const teamOf = (sp: string) => (ENEMIES.has(sp) ? 'enemy' : OTHERS.has(sp) ? 'other' : 'player');
 
   return (
-    <div class={`vn ${overlay ? 'overlay' : ''}`} onClick={advance}>
+    <div class={`vn ${overlay ? 'vn--overlay' : ''}`} onClick={advance}>
       {def.background && !overlay && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`backgrounds/${def.background}.webp`)})` }} />}
+      <div class="vn-shade" />
       <div class="vn-stage">
         {(['left', 'right'] as const).map((side) => {
           const l = stage[side];
           if (!l?.speaker) return null;
           return (
-            <div key={side + l.speaker} class={`vn-char ${side} ${speaking && l.speaker !== speaking ? 'dim' : ''}`}>
-              <img src={asset(`portraits/${portraitOf(l.speaker)}/neutral.webp`)} alt="" draggable={false} onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />
-            </div>
+            <Figure key={side + l.speaker} speaker={l.speaker} mood={l.mood} avatarPortrait={avatarPortrait} portraitId={portraitOf(l.speaker)} side={side} active={!speaking || l.speaker === speaking} halves={halves} />
           );
         })}
       </div>
-      <div class="vn-tools" onClick={(e) => e.stopPropagation()}>
-        <button class="btn small ghost" onClick={() => setLog(true)}>
-          {t('ui.dialogue.log')}
-        </button>
-        <button class="btn small ghost" onClick={onDone}>
-          {t('ui.dialogue.skip')}
-          <Icon name="skip" size={16} />
-        </button>
-      </div>
+      <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onLog={() => setLog(true)} onSkip={finish} />
       <div class="vn-box" onClick={(e) => choice && e.stopPropagation()}>
-        {speaking && (
-          <div class={`vn-name ${ENEMIES.has(speaking) ? 'enemy' : OTHERS.has(speaking) ? 'other' : ''}`}>{speaking === 'avatar' ? t('unit.avatar.name') : nameOf(speaking)}</div>
-        )}
+        {speaking && <span class={`vn-name vn-name--${speakerSide} vn-name--${teamOf(speaking)}`}>{nameOf(speaking)}</span>}
         {choice ? (
           <div class="vn-choices">
-            <div class="muted">{t('ui.dialogue.choose')}</div>
+            <div class="vn-choose">{t('ui.dialogue.choose')}</div>
             {choice.options.map((c) => (
               <button
                 key={c.id}
-                class="btn"
+                type="button"
+                class="vn-option"
                 onClick={() => {
                   if (c.effects.length) {
                     onEffects(c.effects);
@@ -142,7 +173,9 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, on
             ))}
           </div>
         ) : (
-          <div class={speaking ? '' : 'vn-narration'}>{text.slice(0, shown)}</div>
+          <p class={`vn-text ${speaking ? '' : 'vn-text--narration'}`} aria-label={t('ui.dialogue.tap')}>
+            {text.slice(0, shown)}
+          </p>
         )}
         {!choice && shown >= text.length && (
           <span class="vn-next">
@@ -153,10 +186,11 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, on
       {log && (
         <div onClick={(e) => e.stopPropagation()}>
           <Modal title={t('ui.dialogue.log')} onClose={() => setLog(false)}>
-            <div class="col">
+            <div class="vn-log">
+              {history.length === 0 && <span class="vn-log__empty">{t('ui.dialogue.empty')}</span>}
               {history.map((l) => (
-                <div key={l.uid}>
-                  {l.speaker && <b class="gold">{nameOf(l.speaker)}: </b>}
+                <div key={l.uid} class="vn-log__line">
+                  {l.speaker && <b>{nameOf(l.speaker)}</b>}
                   {t(l.key)}
                 </div>
               ))}

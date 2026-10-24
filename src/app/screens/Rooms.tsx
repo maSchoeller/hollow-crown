@@ -33,8 +33,7 @@ import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { ItemLine, itemName, unitName } from '../../ui/components';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton, Tabs } from '../../ui/pieces';
-import { Dialogue } from '../../ui/Dialogue';
-import { runEffects, storyContext } from '../state/flow';
+import { Scene } from './Scene';
 import { campaign, data } from '../state/session';
 import { UnitHead } from './unitArt';
 import '../../ui/camp.css';
@@ -448,12 +447,8 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
           </div>
         ))}
       {talk && (
-        <Dialogue
-          data={data}
+        <Scene
           id={talk.dialogue}
-          ctx={storyContext()}
-          avatarPortrait={c.avatar.portrait}
-          onEffects={runEffects}
           onDone={() => {
             apply({ type: 'unlockSupport', pair: talk.key }, t('ui.camp.bond'));
             setTalk(null);

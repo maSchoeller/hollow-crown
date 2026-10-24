@@ -28,6 +28,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     left: [],
     stance: { warm: 0, sober: 0, defiant: 0 },
     chronicle: [],
+    scenesSeen: [],
     completed: [],
     available: [data.campaign.start],
     supports: {},
@@ -47,7 +48,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
 
 /** Fills fields a saved campaign may lack (architecture §8.7: new persisted fields get a default on load). */
 export function normalizeCampaign(c: CampaignState): CampaignState {
-  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[] };
+  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[]; scenesSeen?: string[] };
   return {
     ...c,
     // format 2 as the PoC wrote it kept a list of flag names
@@ -55,6 +56,7 @@ export function normalizeCampaign(c: CampaignState): CampaignState {
     left: old.left ?? [],
     stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
     chronicle: old.chronicle ?? [],
+    scenesSeen: old.scenesSeen ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
   };

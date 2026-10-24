@@ -27,7 +27,7 @@ const map = start && content(`${act}/maps/${start.map}.yaml`);
 const mapUnits = [...(map?.units ?? []), ...(map?.reinforcements ?? []).flatMap((r) => r.units ?? [])];
 for (const u of mapUnits) prologue.add(u.sprite ?? u.id ?? u.class);
 // places, half figures and the world map are not precached; they load when first shown (vite.config.ts ON_DEMAND_ASSETS)
-const onDemand = /[\\/]assets[\\/](locations|busts|world)[\\/]/;
+const onDemand = /[\\/]assets[\\/](locations|busts|halves|world)[\\/]/;
 const later = (p) => {
   if (onDemand.test(p)) return true;
   const m = /[\\/]models[\\/]units[\\/]([^\\/]+)\.glb$/.exec(p);

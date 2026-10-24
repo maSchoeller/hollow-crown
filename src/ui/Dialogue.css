@@ -1,0 +1,281 @@
+/* Scene (visual novel) and battle speech bubble (concept/25-ux/mockups/05-szenen.html, story 4.5). Style B. */
+@import './tokens.css';
+
+.vn {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  cursor: pointer;
+  background: #2a1d14;
+  color: var(--hc-line);
+}
+.vn--overlay {
+  background: rgba(40, 28, 20, 0.4);
+}
+
+/* the place: slightly blurred and desaturated so the figures stand in front (art direction 5.2) */
+.vn-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2.5px) saturate(0.8);
+  transform: scale(1.04);
+}
+.vn-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(40, 28, 20, 0) 45%, rgba(40, 28, 20, 0.35) 100%);
+  pointer-events: none;
+}
+
+/* half figures: speaker bright in front, listener dimmed behind */
+.vn-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.vn-fig {
+  position: absolute;
+  bottom: 24%;
+  width: 82%;
+  max-height: 66%;
+  display: flex;
+  align-items: flex-end;
+  transition: filter 0.2s, transform 0.25s;
+}
+.vn-fig img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  display: block;
+}
+.vn-fig--right {
+  right: -14%;
+}
+.vn-fig--left {
+  left: -14%;
+}
+.vn-fig.is-speaker {
+  z-index: 2;
+}
+.vn-fig.is-listener {
+  z-index: 1;
+  filter: brightness(0.62) saturate(0.7);
+  transform: translateY(6px);
+}
+.vn-fig--left.is-listener {
+  left: -18%;
+}
+.vn-fig--right.is-listener {
+  right: -18%;
+}
+
+/* Log / Auto / Skip, top right */
+.vn-tools {
+  position: absolute;
+  top: calc(var(--hc-hud-top) + var(--safe-top, 0px));
+  right: var(--hc-hud-edge);
+  display: flex;
+  gap: var(--hc-gap-tight);
+  z-index: 5;
+}
+.vn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 2px 12px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 3px 0 var(--hc-line);
+  cursor: pointer;
+}
+.vn-pill:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.vn-pill.is-on {
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+.vn-pill.is-seen {
+  background: var(--hc-positive-soft);
+}
+
+/* dialogue box with the glow-pill name tag at the speaker's side */
+.vn-box {
+  position: relative;
+  z-index: 3;
+  margin: 0 10px calc(14px + var(--safe-bottom, 0px));
+  padding: 24px 16px 14px;
+  min-height: 150px;
+  background: var(--hc-cream);
+  border: 2.5px solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 4px 0 var(--hc-line), 0 10px 20px rgba(40, 28, 20, 0.28);
+  cursor: pointer;
+}
+.vn-name {
+  position: absolute;
+  top: -18px;
+  padding: 1px 16px 3px;
+  background: var(--hc-ember);
+  color: #fff;
+  border: 2.5px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.35;
+  box-shadow: 0 3px 0 var(--hc-line), 0 0 14px rgba(232, 116, 59, 0.6);
+}
+.vn-name--left {
+  left: 14px;
+}
+.vn-name--right {
+  right: 14px;
+}
+.vn-name--enemy {
+  background: var(--hc-team-enemy);
+  box-shadow: 0 3px 0 var(--hc-line), 0 0 14px rgba(184, 58, 46, 0.55);
+}
+.vn-name--other {
+  background: var(--hc-team-other);
+  box-shadow: 0 3px 0 var(--hc-line), 0 0 14px rgba(63, 166, 90, 0.55);
+}
+.vn-text {
+  margin: 0;
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: var(--hc-size-dialogue);
+  line-height: 1.38;
+}
+.vn-text--narration {
+  font-style: italic;
+  color: var(--hc-soft);
+}
+.vn-next {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  color: var(--hc-ember-dark);
+  animation: vn-bob 1s ease-in-out infinite;
+}
+@keyframes vn-bob {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* answers (the decision flow with consequences is story 4.6) */
+.vn-choices {
+  display: grid;
+  gap: 8px;
+}
+.vn-choose {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+}
+.vn-option {
+  min-height: var(--hc-touch-min);
+  padding: 10px 14px;
+  text-align: left;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  border: 2.5px solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 4px 0 var(--hc-line);
+  font-family: var(--hc-font-body);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.vn-option:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--hc-line);
+}
+
+/* dialogue log */
+.vn-log {
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.vn-log__line b {
+  display: block;
+  font-family: var(--hc-font-name);
+  font-size: 15px;
+}
+.vn-log__empty {
+  color: var(--hc-soft);
+}
+
+/* ---------- speech bubble in battle: at the figure's head, two lines, blocks until tap / auto ---------- */
+.bubble-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  cursor: pointer;
+}
+.bubble {
+  position: absolute;
+  max-width: min(260px, 74%);
+  padding: 8px 12px 9px;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  border: 2.5px solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 3px 0 var(--hc-line), 0 8px 16px rgba(40, 28, 20, 0.28);
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  transform: translate(-50%, calc(-100% - 10px));
+}
+.bubble__text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: var(--bubble-tail, 50%);
+  width: 12px;
+  height: 12px;
+  margin: -7px 0 0 -6px;
+  background: var(--hc-cream);
+  border: solid var(--hc-line);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vn-next {
+    animation: none;
+  }
+  .vn-fig {
+    transition: none;
+  }
+}

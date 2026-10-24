@@ -166,6 +166,14 @@ export function storyContext(): ConditionContext {
   return conditionContext(data, campaign.value, b ? queuedFlags(b.effects) : {});
 }
 
+/** Whether the running campaign has seen scene `id` (a scene read before is shown as skippable whole). */
+export const isSceneSeen = (id: string): boolean => campaign.value?.scenesSeen.includes(id) ?? false;
+
+/** Records that scene `id` was seen to the end or skipped (idempotent; a record only, no story state). */
+export function markSceneSeen(id: string): void {
+  if (!isSceneSeen(id)) campaignCommand({ type: 'markSceneSeen', scene: id });
+}
+
 function inBattle() {
   return screen.value.name === 'battle' ? battle.value : null;
 }

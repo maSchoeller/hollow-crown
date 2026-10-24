@@ -12,6 +12,7 @@ import {
   pathTo,
   posKey,
   reachable,
+  resolveScene,
   samePos,
   tilesInRange,
   unitAt,
@@ -31,12 +32,12 @@ import {
 import { mapOf } from '../../core/battle/objectives';
 import { BoardView } from '../../render/board';
 import { t } from '../../i18n';
-import { Dialogue } from '../../ui/Dialogue';
+import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
-import { campaign, data } from '../state/session';
-import { concludeBattle, runEffects, storyContext } from '../state/flow';
+import { data } from '../state/session';
+import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
@@ -101,7 +102,7 @@ export function Battle() {
   const [info, setInfo] = useState<string | null>(null);
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
-  const [dialogue, setDialogue] = useState<{ id: string; done: () => void } | null>(null);
+  const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
   const setToast = (text: string, item?: ItemInstance) => setToastState({ text, item });
@@ -120,6 +121,15 @@ export function Battle() {
   const wide = useWide();
 
   const unit = (uid: string) => s.units.find((u) => u.uid === uid)!;
+
+  /** The unit that speaks as `speaker` (company member by id or story character); a quote falls back to its own unit. */
+  const speakerUnit = (speaker: string, quoteUnit?: string) =>
+    s.units.find((u) => u.pos && !u.gone && !u.downed && (u.id === speaker || u.charId === speaker)) ?? (quoteUnit ? s.units.find((u) => u.uid === quoteUnit && u.pos && !u.gone) : undefined);
+  /** Whether scene `id` can play as bubbles: only spoken lines, every speaker on the board. */
+  const bubbleSpeakers = (id: string, quoteUnit?: string): boolean => {
+    const lines = resolveScene(data, storyContext(), id);
+    return lines.length > 0 && lines.every((l) => l.kind === 'line' && !!l.speaker && !!speakerUnit(l.speaker, quoteUnit));
+  };
 
   // --------------------------------------------------------------- board lifecycle
   useEffect(() => {
@@ -304,8 +314,12 @@ export function Battle() {
       case 'dialogue':
       case 'quote':
         if (!data.scenes[e.id]) break;
-        await new Promise<void>((resolve) => setDialogue({ id: e.id, done: resolve }));
-        setDialogue(null);
+        {
+          const quote = e.t === 'quote' ? e.unit : undefined;
+          // a scene without answers whose speakers all stand on the board plays as speech bubbles at their heads
+          await new Promise<void>((resolve) => setDialogue({ id: e.id, done: resolve, bubble: bubbleSpeakers(e.id, quote), quote }));
+          setDialogue(null);
+        }
         break;
       case 'levelUp':
         audio.sfx('levelup');
@@ -758,6 +772,19 @@ export function Battle() {
       <div class="board-wrap">
         <canvas ref={canvasRef} class="board-canvas" />
         <div ref={floatRef} class="float-layer" />
+        {dialogue?.bubble && (
+          <SceneBubbles
+            id={dialogue.id}
+            anchorOf={async (speaker) => {
+              const u = speakerUnit(speaker, dialogue.quote);
+              const board = boardRef.current;
+              if (!u?.pos || !board) return null;
+              await board.centerOn(u.pos);
+              return board.headScreen(u.uid);
+            }}
+            onDone={dialogue.done}
+          />
+        )}
         <div class="hud-top" ref={topRef}>
           {otherPhase ? (
             <PhasePill turn={shownTurn} phase={shownPhase} />
@@ -826,16 +853,8 @@ export function Battle() {
       {trade && <TradeSheet s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
       {convoy && <ConvoySheet s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
       {levelUp && <LevelUpPopup u={unit(levelUp.uid)} gains={levelUp.gains} level={levelUp.level} onDone={levelUp.done} />}
-      {dialogue && (
-        <Dialogue
-          data={data}
-          id={dialogue.id}
-          ctx={storyContext()}
-          avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
-          overlay
-          onEffects={runEffects}
-          onDone={dialogue.done}
-        />
+      {dialogue && !dialogue.bubble && (
+        <Scene id={dialogue.id} overlay onDone={dialogue.done} />
       )}
     </div>
   );

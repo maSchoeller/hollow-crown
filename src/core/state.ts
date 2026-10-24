@@ -202,6 +202,8 @@ export interface CampaignState {
   stance: Record<Stance, number>;
   /** collected chronicle pages */
   chronicle: string[];
+  /** ids of the scenes the player has seen to the end (or skipped): a seen scene can be skipped whole (story 4.5) */
+  scenesSeen: string[];
   completed: string[];
   /** node ids available on the world map */
   available: string[];
