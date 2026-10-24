@@ -66,14 +66,21 @@ export function fogLabels(world: WorldDef, layout: WorldLayout): Array<{ id: str
 }
 
 /**
- * Fog density at each tile corner, (width + 1) × (height + 1) row-major: the share of the four tiles around the corner
- * that lie under fog, so the fog fades out over one tile at its edge.
+ * Fog density at each tile corner, row-major: the share of the four tiles around the corner that lie under fog, so the
+ * fog fades out over one tile at its edge. Without a skirt the grid is (width + 1) × (height + 1) and the map's border
+ * counts as open; with `skirt` tiles of land around the map it is (width + 2 skirt + 1) × (height + 2 skirt + 1) and
+ * every skirt tile takes the fog of the nearest map tile, so fogged regions continue under the skirt without a seam.
  */
-export function fogCorners(layout: WorldLayout): number[] {
+export function fogCorners(layout: WorldLayout, skirt = 0): number[] {
   const { width: w, height: h, fog } = layout;
-  const at = (x: number, y: number) => (x >= 0 && y >= 0 && x < w && y < h && fog[y * w + x] ? 1 : 0);
+  const at = (gx: number, gy: number) => {
+    const x = gx - skirt;
+    const y = gy - skirt;
+    if (skirt > 0) return fog[Math.min(h - 1, Math.max(0, y)) * w + Math.min(w - 1, Math.max(0, x))] ? 1 : 0;
+    return x >= 0 && y >= 0 && x < w && y < h && fog[y * w + x] ? 1 : 0;
+  };
   const out: number[] = [];
-  for (let y = 0; y <= h; y++) for (let x = 0; x <= w; x++) out.push((at(x - 1, y - 1) + at(x, y - 1) + at(x - 1, y) + at(x, y)) / 4);
+  for (let y = 0; y <= h + 2 * skirt; y++) for (let x = 0; x <= w + 2 * skirt; x++) out.push((at(x - 1, y - 1) + at(x, y - 1) + at(x - 1, y) + at(x, y)) / 4);
   return out;
 }
 

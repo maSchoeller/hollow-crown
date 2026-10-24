@@ -60,7 +60,13 @@ world:
   focusZoom: 1.12
   skirt: { width: 5, terrain: river }
   miniatureScale: 0.85
-  waterAlpha: 0.38       # Deckkraft des Wassers über dem gemalten Meeresboden
+  # Wasser der Weltkarte: eine Fläche mit langsam treibender Wellen-Normalmap über dem gemalten Meeresboden
+  # alpha = Deckkraft, tint = Wasserfarbe, normalScale = Felder je Kachelung der Normalmap, bump = Wellenstärke,
+  # drift = Felder pro Sekunde (Ost, Süd)
+  # Wasser: alpha/tint über dem gemalten Meeresboden, glow = Eigenlicht (Wellen werden nicht grau), normalScale = Felder je
+  # Wiederholung der Wellenkarte, bump = Wellenstärke, drift = Felder je Sekunde (Ost, Süd), reach = so weit reicht das Meer
+  # nach Süden und Westen über den Rand, deep = Farbe des offenen Meers dahinter
+  water: { alpha: 0.45, tint: "#4fb3d4", glow: 0.25, normalScale: 10, bump: 0.35, drift: [0.12, 0.07], reach: 60, deep: "#0d5a92" }
   pinHeight: 1.9         # Spitze eines Knotens (Weltkarten-Stein) so viele Felder über dem Boden des Orts
   fog: { color: "#e0e5ef", alpha: 0.86, height: 1.4 }
   ash: { high: 260, mid: 140, low: 0 }

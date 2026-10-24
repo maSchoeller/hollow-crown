@@ -32,7 +32,7 @@ import { assetUrl, loadManifest } from '../shared/assets';
 import { clampAxis } from '../shared/camera';
 import { PropLayer, type PropPlace } from '../shared/props';
 import { applyLight } from '../shared/season';
-import { hash3, loadGroundTextures, type GroundTextures } from '../shared/terrain3d';
+import { hash3 } from '../shared/terrain3d';
 import { fogCorners, fogLabels, heightSampler, locationModel, worldLayout, type HeightField, type WorldLayout } from './layout';
 
 let heights: Promise<HeightField | null> | null = null;
@@ -70,7 +70,7 @@ export class WorldView implements HostedView {
   private layout: WorldLayout | null = null;
   /** heights of the Blender terrain in tiles (null until loaded: everything stands at 0) */
   private height: ((x: number, y: number) => number) | null = null;
-  private water: { mat: StandardMaterial; frames: Texture[]; frame: number } | null = null;
+  private water: { bump: Texture; drift: [number, number]; scale: number } | null = null;
   private ash: ParticleSystem | null = null;
   private disposed = false;
   private ready: Promise<string[]> | null = null;
@@ -97,7 +97,8 @@ export class WorldView implements HostedView {
     this.store = this.host.store(this);
     this.host.activate(this);
     // the sea beyond the skirt, the same blue as the hub's ground
-    this.scene.clearColor = Color4.FromHexString('#3a8fc0ff');
+    // the open sea beyond the painted sea floor (under the water sheet)
+    this.scene.clearColor = Color4.FromHexString(`${data.render.world.water.deep}ff`);
     this.camera = new FreeCamera('world:cam', new Vector3(0, 30, -30), this.scene);
     this.camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
     this.camera.minZ = 0.1;
@@ -140,12 +141,12 @@ export class WorldView implements HostedView {
     const light = conf.seasons[season];
     applyLight(this.hemi, this.sun, light?.ambient, light?.sun);
     this.fitCamera();
-    const [textures, field, land] = await Promise.all([loadGroundTextures(this.store), loadHeights(), this.store.container(`world/${world.id}.glb`)]);
+    const [field, land] = await Promise.all([loadHeights(), this.store.container(`world/${world.id}.glb`)]);
     if (this.disposed) return [];
     const seed = [...world.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
     if (field) this.height = heightSampler(field);
     if (land) this.buildLand(land);
-    this.buildWater(textures, field);
+    this.buildWater(field);
     this.buildFog();
     this.buildAsh(act);
     this.wake();
@@ -182,35 +183,47 @@ export class WorldView implements HostedView {
       }
   }
 
-  /** The sea and the rivers: one animated water sheet at the water level of the height map (the board's water look). */
-  private buildWater(tex: GroundTextures, field: HeightField | null): void {
+  /**
+   * The sea and the rivers: one calm water sheet at the water level of the height map. The sea floor is painted (foam at
+   * the coast, turquoise shallows, deep blue); the sheet adds a light tint and slowly drifting long waves as a normal map
+   * that catch the sun in soft glints (render.yaml world.water).
+   */
+  private buildWater(field: HeightField | null): void {
     const s = this.data.render.world.skirt.width;
+    const conf = this.data.render.world.water;
     const { w, h } = this.size;
     const level = field?.water ?? this.data.render.board.waterLevel;
     const mesh = new Mesh('world:water', this.scene);
     const vd = new VertexData();
-    vd.positions = [-s, level, s, w + s, level, s, w + s, level, -h - s, -s, level, -h - s];
+    // the sea reaches far out to the south and west (the camera may look past the map there), land ends the east and north
+    const far = conf.reach;
+    const x0 = -s - far;
+    const x1 = w + s;
+    const z0 = s;
+    const z1 = -h - s - far;
+    vd.positions = [x0, level, z0, x1, level, z0, x1, level, z1, x0, level, z1];
     vd.indices = [0, 1, 2, 0, 2, 3];
     vd.normals = [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0];
     vd.uvs = [0, 1, 1, 1, 1, 0, 0, 0];
     vd.applyToMesh(mesh);
-    const frames = [0, 1, 2, 3].map((k) => {
-      const t = tex[`water_${k}`]!.clone();
-      t.uScale = (w + 2 * s) / 2;
-      t.vScale = (h + 2 * s) / 2;
-      return t;
-    });
+    const bump = new Texture(assetUrl('world/water_normal.png'), this.scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
+    bump.wrapU = bump.wrapV = Texture.WRAP_ADDRESSMODE;
+    bump.uScale = (x1 - x0) / conf.normalScale;
+    bump.vScale = (z0 - z1) / conf.normalScale;
+    bump.level = conf.bump;
     const mat = new StandardMaterial('world:water', this.scene);
-    mat.diffuseTexture = frames[0]!;
-    // the sea floor is painted (turquoise shallows, deep blue): the water only adds a light sheen and the moving waves
-    mat.alpha = this.data.render.world.waterAlpha;
-    mat.specularColor = new Color3(0.35, 0.35, 0.4);
-    mat.specularPower = 48;
+    mat.diffuseColor = Color3.FromHexString(conf.tint);
+    // a little own light, so the waves do not turn the sea grey in their shadowed slopes
+    mat.emissiveColor = Color3.FromHexString(conf.tint).scale(conf.glow);
+    mat.bumpTexture = bump;
+    mat.alpha = conf.alpha;
+    mat.specularColor = new Color3(0.55, 0.58, 0.6);
+    mat.specularPower = 96;
     mat.backFaceCulling = false;
     mesh.material = mat;
     mesh.isPickable = false;
     mesh.receiveShadows = true;
-    this.water = { mat, frames, frame: 0 };
+    this.water = { bump, drift: conf.drift, scale: conf.normalScale };
   }
 
   private applyQuality(): void {
@@ -245,11 +258,21 @@ export class WorldView implements HostedView {
       if (list) list.push(p);
       else groups.set(key, [p]);
     };
-    const trees = (await loadManifest()).models?.props.tree ?? ['a'];
+    const manifest = await loadManifest();
+    const trees = manifest.models?.props.tree ?? ['a'];
+    const bushes = manifest.models?.props.bush ?? [];
     for (let y = 0; y < layout.height; y++)
       for (let x = 0; x < layout.width; x++) {
         const def = this.data.terrain[layout.terrain[y * layout.width + x]!];
         // the peaks are the terrain now; rocks only where the grid has them outside the mountains
+        if (!def?.prop && bushes.length && def?.id === 'grass') {
+          // a few bushes on open grass, away from roads and places
+          const b = hash3(x, y, seed + 17);
+          const bh = this.groundAt(x + 0.5, y + 0.5);
+          if (b % 12 === 0 && bh >= water + 0.05 && !world.locations.some((l) => Math.abs(l.at[0] - x) <= 1 && Math.abs(l.at[1] - y) <= 1))
+            put(`bush_${bushes[(b >>> 8) % bushes.length]}`, { x: x + 0.5 + (((b >>> 12) % 5) - 2) * 0.06, z: -y - 0.5, h: bh, rot: ((b >>> 16) % 360) * (Math.PI / 180), scale: 0.8 + ((b >>> 4) % 21) / 100, shade: layout.fog[y * layout.width + x] ? 0.8 : 1 });
+          continue;
+        }
         if (!def?.prop || def.prop === 'bridge' || def.prop === 'rock') continue;
         const r = hash3(x, y, seed + 5);
         const h = this.groundAt(x + 0.5, y + 0.5);
@@ -278,23 +301,24 @@ export class WorldView implements HostedView {
   private buildFog(): void {
     const layout = this.layout!;
     const fog = this.data.render.world.fog;
-    const corners = fogCorners(layout);
-    const w = layout.width + 1;
+    const s = this.data.render.world.skirt.width;
+    const corners = fogCorners(layout, s);
+    const w = layout.width + 2 * s + 1;
     const positions: number[] = [];
     const colors: number[] = [];
     const c = Color3.FromHexString(fog.color);
     const sea = this.data.render.board.waterLevel;
     corners.forEach((a, i) => {
-      const x = i % w;
-      const y = Math.floor(i / w);
+      const x = (i % w) - s;
+      const y = Math.floor(i / w) - s;
       positions.push(x, Math.max(this.groundAt(x, y), sea) + fog.height, -y);
       // a little cloud texture in the density, so the sheet does not look like a flat lid
       const n = 0.86 + ((hash3(x, y, 91) & 0xff) / 255) * 0.14;
       colors.push(c.r, c.g, c.b, Math.min(1, a * n) * fog.alpha);
     });
     const indices: number[] = [];
-    for (let y = 0; y < layout.height; y++)
-      for (let x = 0; x < layout.width; x++) {
+    for (let y = 0; y < layout.height + 2 * s; y++)
+      for (let x = 0; x < layout.width + 2 * s; x++) {
         const i = y * w + x;
         if (corners[i]! + corners[i + 1]! + corners[i + w]! + corners[i + w + 1]! === 0) continue;
         indices.push(i, i + 1, i + w + 1, i, i + w + 1, i + w);
@@ -391,12 +415,20 @@ export class WorldView implements HostedView {
     return close ? base * this.data.render.world.focusZoom : base;
   }
 
+  /** Land continues east and north into the skirt, the sea lies south and west: the view never leaves the land's edge. */
+  private landEdge(axis: number, view: number): number {
+    return this.data.render.world.skirt.width + axis - view / 2;
+  }
+
   private clampX(x: number, ppt = this.ppt): number {
-    return clampAxis(x, this.cssSize().w / ppt, 0, 0, this.size.w, CLAMP_MARGIN);
+    const view = this.cssSize().w / ppt;
+    return Math.min(clampAxis(x, view, 0, 0, this.size.w, CLAMP_MARGIN), Math.max(view / 2 - this.data.render.world.skirt.width, this.landEdge(this.size.w, view)));
   }
 
   private clampY(y: number, ppt = this.ppt): number {
-    return clampAxis(y, this.cssSize().h / ppt / Math.cos(this.tilt()), 0, 0, this.size.h, CLAMP_MARGIN);
+    const view = this.cssSize().h / ppt / Math.cos(this.tilt());
+    // north = small y: the top of the view stays on the skirt
+    return Math.max(clampAxis(y, view, 0, 0, this.size.h, CLAMP_MARGIN), view / 2 - this.data.render.world.skirt.width);
   }
 
   private fitCamera(): void {
@@ -513,11 +545,11 @@ export class WorldView implements HostedView {
     if (this.disposed) return;
     this.updateCamera(now);
     if (this.water) {
-      const f = Math.floor(now / 160) % this.water.frames.length;
-      if (f !== this.water.frame) {
-        this.water.frame = f;
-        this.water.mat.diffuseTexture = this.water.frames[f]!;
-      }
+      // the waves drift slowly (tiles per second → texture repeats) and sway a little across, so they do not slide like a belt
+      const { bump, drift, scale } = this.water;
+      const sec = now / 1000;
+      bump.uOffset = (drift[0] * sec) / scale;
+      bump.vOffset = (drift[1] * sec) / scale + 0.012 * Math.sin(sec * 0.35);
     }
     this.scene.render();
     this.hooks.onFrame?.();

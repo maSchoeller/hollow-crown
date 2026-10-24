@@ -796,8 +796,11 @@ export interface RenderDef {
     miniatureScale: number;
     /** height of a node's tip above the ground of its place, tiles */
     pinHeight: number;
-    /** opacity of the water sheet over the painted sea floor */
-    waterAlpha: number;
+    /**
+     * the calm water sheet over the painted sea floor: opacity, tint, tiles per repeat of the normal map, wave strength,
+     * drift in tiles per second (east, south)
+     */
+    water: { alpha: number; tint: string; normalScale: number; bump: number; drift: [number, number]; glow: number; reach: number; deep: string };
     fog: { color: string; alpha: number; height: number };
     /** falling ash flakes (act 1 dragon sign) per quality level */
     ash: Record<'high' | 'mid' | 'low', number>;

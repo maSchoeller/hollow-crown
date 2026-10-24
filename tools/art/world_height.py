@@ -7,12 +7,14 @@ cliffs, sea stacks and small beaches; the Drachengebirge in the north as connect
 Eisenmark as a raised table land with cliff walls all round, cut by a winding river canyon; the Grenzland as rolling
 lowland with small rocky knolls. Layout (coast, regions, places, roads) comes from the tile grid.
 
-Units are tiles (one tile = one Babylon unit). The grid is the map plus `render.yaml world.skirt.width` tiles of sea on
-every side. Output (art/world/; the PNGs and the GLB in Git LFS):
+Units are tiles (one tile = one Babylon unit). The grid is the map plus `render.yaml world.skirt.width` tiles on every
+side: sea in the west and the south, meadows of the Grenzland continuing to the east and the Drachengebirge to the north.
+Output (art/world/; the PNGs and the GLB in Git LFS):
 - valmora_height.png        16-bit grayscale, RES samples per tile (Blender displaces the mesh with it)
 - valmora_height.json       size, resolution and height range for Blender
 - valmora_albedo.png        the painted ground, TEX px per tile (grass, autumn grass, layered rock, snow, sand, roads,
-                            ash, the sea floor from turquoise to deep blue, ambient occlusion); north row on top
+                            ash, the sea floor from turquoise to deep blue, a foam line along the coast, ambient occlusion); north row on top
+- water_normal.png          tileable normal map of calm water (the game drifts it over the sea)
 - valmora_heights_game.json heights for the game (props, places, fog), 2 per tile
 """
 import json
@@ -115,6 +117,16 @@ class World:
             for x in range(mw):
                 self.tid[y + s, x + s] = legend[tiles[y][x]]
                 self.act[y + s, x + s] = acts.get(regions[y][x], 0)
+        # the skirt is land to the east (the Grenzland's meadows) and to the north (the Drachengebirge); sea stays in the south
+        # and the west: a skirt tile takes the act of the nearest map tile and becomes plain grass or mountain
+        for y in range(self.gh):
+            for x in range(self.gw):
+                if (x >= s + mw and y < s + mh) or (y < s and x >= s):
+                    cx, cy = min(max(x - s, 0), mw - 1), min(max(y - s, 0), mh - 1)
+                    a = acts.get(regions[cy][cx], 0)
+                    self.act[y, x] = a
+                    if a:
+                        self.tid[y, x] = 'mountain' if y < s or self.tid[cy + s, cx + s] == 'mountain' else 'grass'
         self.sea = (self.tid == 'river') & (self.act == 0)
         self.river = np.isin(self.tid, ['river', 'shallows', 'bridge']) & ~self.sea
         self.ash = np.zeros((self.gh, self.gw), bool)
@@ -136,7 +148,7 @@ class World:
         """Mountain chains of the Drachengebirge: a main crest across the north, a lower crest behind it and spurs to the south."""
         rng = np.random.default_rng(17)
         s = self.skirt
-        x0, x1 = s - 1.0, self.gw - s + 1.0
+        x0, x1 = s - 1.0, self.gw + 1.0
         main = [(x, s + 4.2 + 1.2 * np.sin(x * 0.23) + 0.7 * np.sin(x * 0.71 + 1.0)) for x in np.arange(x0, x1, 0.8)]
         back = [(x, s + 1.2 + 0.7 * np.sin(x * 0.37 + 2.0)) for x in np.arange(x0, x1, 0.8)]
         chains = [{'pts': main, 'width': 2.6, 'h': (3.6, 5.8)}, {'pts': back, 'width': 2.0, 'h': (2.8, 4.4)}]
@@ -145,6 +157,21 @@ class World:
             ex, ey = sx + rng.uniform(-2.5, 2.5), sy + rng.uniform(3.5, 6.0)
             mid = ((sx + ex) / 2 + rng.uniform(-0.8, 0.8), (sy + ey) / 2)
             chains.append({'pts': [(sx, sy), mid, (ex, ey)], 'width': 1.6, 'h': (3.0, 1.3), 'spur': True})
+        # the range goes on to the north and the east, beyond the map: two more crests with spurs and a snowy back row
+        rng = np.random.default_rng(29)
+        north = [(x, s - 1.8 + 1.1 * np.sin(x * 0.19 + 0.6) + 0.6 * np.sin(x * 0.63)) for x in np.arange(x0, x1, 0.8)]
+        far = [(x, s - 4.3 + 0.9 * np.sin(x * 0.29 + 2.4) + 0.5 * np.sin(x * 0.8 + 1.0)) for x in np.arange(x0, x1, 0.8)]
+        chains += [{'pts': north, 'width': 2.7, 'h': (3.8, 6.0)}, {'pts': far, 'width': 2.3, 'h': (3.4, 5.6)}]
+        for sx in np.arange(s + 1.5, self.gw + 0.5, 2.6):
+            sy = s - 1.8 + 1.1 * np.sin(sx * 0.19 + 0.6) + 0.6 * np.sin(sx * 0.63)
+            ex, ey = sx + rng.uniform(-2.5, 2.5), sy + rng.uniform(-5.0, -3.0)
+            mid = ((sx + ex) / 2 + rng.uniform(-0.8, 0.8), (sy + ey) / 2)
+            chains.append({'pts': [(sx, sy), mid, (ex, ey)], 'width': 1.6, 'h': (3.4, 2.0), 'spur': True})
+        # east of the map the chains carry on from the north-east corner
+        for sy in np.arange(s + 0.5, s + 11.0, 3.2):
+            ex = self.gw - s + 3.5
+            sx = self.gw - s - 1.0
+            chains.append({'pts': [(sx, sy), ((sx + ex) / 2, sy + rng.uniform(-0.8, 0.8)), (ex, sy + rng.uniform(-1.5, 1.5))], 'width': 1.7, 'h': (3.4, 2.4), 'spur': True})
         return chains
 
 
@@ -168,7 +195,8 @@ def heights(w, res):
     n1 = lattice_noise(xs * 0.35, ys * 0.35, 11)
     n2 = lattice_noise(xs * 0.9, ys * 0.9, 23)
     sharp = (1 - np.abs(2 * lattice_noise(xs * 0.5 + 3.1, ys * 0.5 - 1.7, 41, 5) - 1)) ** 2.0
-    edge = np.minimum.reduce([xs - s, ys - s, w.gw - s - xs, w.gh - s - ys])
+    # the coast rags only in the west and the south; north and east the land goes on
+    edge = np.minimum(xs - s, w.gh - s - ys)
     ragged = edge + (lattice_noise(xs * 0.5, ys * 0.5, 61) - 0.5) * 3.0
     land = field(~w.sea, 0.7) * np.clip(ragged * 0.9 + 0.2, 0, 1)
     a1 = field(w.act == 1, 0.6)
@@ -186,6 +214,15 @@ def heights(w, res):
         r = rng.uniform(0.7, 1.5)
         d = np.hypot(xs - kx, ys - ky) / r
         knolls = np.maximum(knolls, rng.uniform(0.45, 1.05) * np.clip(1 - d, 0, 1) ** 1.6)
+    # knolls of the meadows east of the map
+    rng2 = np.random.default_rng(37)
+    for _ in range(40):
+        kx, ky = rng2.uniform(w.gw - s, w.gw), rng2.uniform(s, w.gh - s - 2)
+        if w.act[int(ky), int(kx)] != 1:
+            continue
+        r = rng2.uniform(0.7, 1.5)
+        d = np.hypot(xs - kx, ys - ky) / r
+        knolls = np.maximum(knolls, rng2.uniform(0.45, 1.05) * np.clip(1 - d, 0, 1) ** 1.6)
     low = low + knolls
     # table land: terraces with cliff bands
     raw = 1.35 + 0.45 * (n1 * 0.7 + n2 * 0.3) * 1.6
@@ -298,6 +335,12 @@ def paint(w, h, aux, res):
     col = lerp(col, lerp(hexc('#e6cf96'), hexc('#f2e2b4'), n_fine), sand_m)
     floor = lerp(lerp(hexc('#7fd6cf'), hexc('#2a9fbe'), smooth(0.0, 0.35, depth)), hexc('#0b4f8c'), smooth(0.3, 0.9, depth))
     col = np.where((depth > 0)[..., None], floor, col)
+    # a soft, broken line of white foam along the coast, on the sea floor right at the waterline (not along the river)
+    shore = blur((h > WATER).astype(float), 0.32 * res)
+    band = smooth(0.1, 0.22, shore) * smooth(0.62, 0.4, shore)
+    broken = smooth(0.3, 0.62, n_mid + 0.35 * (n_fine - 0.5) + 0.15 * (n_big - 0.5))
+    foam = band * (0.35 + 0.65 * broken) * (depth > 0) * smooth(0.8, 1.6, aux['rv'])
+    col = lerp(col, hexc('#f4fbfa') * np.ones(3), np.clip(foam * 0.85, 0, 1))
     # river banks: wet, darker ground
     col = col * (1 - 0.25 * smooth(1.0, 0.3, aux['rv']) * (depth <= 0))[..., None]
     # ambient occlusion from the height field: valleys and cliff feet darker, crests a touch lighter
@@ -307,9 +350,28 @@ def paint(w, h, aux, res):
     return np.clip(col, 0, 1)
 
 
+def water_normal(size=256, seed=303):
+    """Tileable normal map of calm water: long soft waves from low-pass filtered noise (FFT, so it wraps on all sides)."""
+    rng = np.random.default_rng(seed)
+    k = np.fft.fftfreq(size) * size
+    kx, ky = np.meshgrid(k, k)
+    r = np.hypot(kx, ky)
+    spec = np.fft.fft2(rng.standard_normal((size, size)))
+    # energy in waves of 4 to 16 per texture, softly rolled off on both sides, a bit longer along one direction
+    amp = np.exp(-((np.log(np.maximum(r, 1e-3)) - np.log(7.0)) ** 2) / (2 * 0.55 ** 2)) * (1 + 0.5 * np.cos(2 * np.arctan2(ky, kx) - 0.6))
+    height = np.real(np.fft.ifft2(spec * amp))
+    height /= np.abs(height).max()
+    gx = (np.roll(height, -1, 1) - np.roll(height, 1, 1)) * 0.5 * size / 20
+    gy = (np.roll(height, -1, 0) - np.roll(height, 1, 0)) * 0.5 * size / 20
+    n = np.stack([-gx, -gy, np.ones_like(gx)], -1)
+    n /= np.linalg.norm(n, axis=-1, keepdims=True)
+    return Image.fromarray(((n * 0.5 + 0.5) * 255).round().astype(np.uint8), 'RGB')
+
+
 def main():
     w = World()
     os.makedirs(OUT, exist_ok=True)
+    water_normal().save(os.path.join(OUT, 'water_normal.png'))
     h, _ = heights(w, RES)
     Image.fromarray(((h - MIN) / (MAX - MIN) * 65535).round().astype(np.uint16)).save(os.path.join(OUT, 'valmora_height.png'))
     sh, sw = h.shape

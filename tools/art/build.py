@@ -153,6 +153,8 @@ def build_world():
     dst = ensure(os.path.join(OUT, 'world'))
     shutil.copy2(os.path.join(src, 'valmora.glb'), os.path.join(dst, 'valmora.glb'))
     shutil.copy2(os.path.join(src, 'valmora_heights_game.json'), os.path.join(dst, 'valmora_heights.json'))
+    if os.path.isfile(os.path.join(src, 'water_normal.png')):
+        shutil.copy2(os.path.join(src, 'water_normal.png'), os.path.join(dst, 'water_normal.png'))
     Image.open(os.path.join(src, 'valmora_albedo.png')).convert('RGB').save(os.path.join(dst, 'valmora_ground.webp'), 'WEBP', quality=82, method=6)
     return ['valmora']
 

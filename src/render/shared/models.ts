@@ -10,6 +10,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
 import type { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { MeshoptCompression } from '@babylonjs/core/Meshes/Compression/meshoptCompression';
@@ -191,12 +192,18 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
   };
 }
 
-/** One static mesh per prop state with baked transform and the player's colours on team cloth (forts, wagons). */
+/**
+ * One static mesh per prop state with baked transform and the player's colours on team cloth (forts, wagons).
+ * A prop with a base colour texture (low-poly Blender props, tools/art/props) gets its own material built from the
+ * settings of `material` with that texture; the texture stays owned by the cached container, the material never
+ * disposes it (the host's stage clear disposes materials without textures). Others share `material`.
+ */
 export async function loadPropMesh(store: AssetStore, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
-  const c = await store.container(`models/props/${pid}_${state}.glb`);
+  const c = await store.container(`models/props/${pid}_${state}.glb`, true);
   if (!c) return null;
   const inst = c.instantiateModelsToScene((n) => `prop:${pid}_${state}:${n}`, false, { doNotInstantiate: true });
   const parts: Mesh[] = [];
+  let texture: BaseTexture | null = null;
   for (const n of inst.rootNodes)
     for (const m of n.getChildMeshes(false)) {
       if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
@@ -204,14 +211,27 @@ export async function loadPropMesh(store: AssetStore, pid: string, state: string
       m.computeWorldMatrix(true);
       m.setParent(null);
       m.bakeCurrentTransformIntoVertices();
+      texture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
       teamColours(m, 'player');
       parts.push(m);
     }
-  for (const n of inst.rootNodes) n.dispose(false, true);
+  // the glTF material belongs to the shared container (instances do not clone it): keep it for the next scene
+  for (const n of inst.rootNodes) n.dispose(false, false);
   if (!parts.length) return null;
   const mesh = parts.length > 1 ? Mesh.MergeMeshes(parts, true, true)! : parts[0]!;
   mesh.name = `prop:${pid}_${state}`;
-  mesh.material = material;
+  if (texture) {
+    const own = new StandardMaterial(`prop:${pid}_${state}:mat`, store.scene);
+    own.specularColor = material.specularColor.clone();
+    own.backFaceCulling = material.backFaceCulling;
+    own.maxSimultaneousLights = material.maxSimultaneousLights;
+    own.diffuseTexture = texture;
+    mesh.material = own;
+    mesh.onDisposeObservable.add(() => {
+      own.diffuseTexture = null; // owned by the container
+      own.dispose(false, false);
+    });
+  } else mesh.material = material;
   mesh.isPickable = false;
   mesh.receiveShadows = true;
   return mesh;

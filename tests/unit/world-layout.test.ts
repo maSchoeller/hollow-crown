@@ -48,6 +48,22 @@ describe('world map layout (story 5.2)', () => {
     expect(c[3 * 5 + 0]).toBe(0);
   });
 
+  it('carries the fog on under the skirt of land around the map', () => {
+    const l = worldLayout(tiny, 1);
+    const c = fogCorners(l, 2);
+    expect(c.length).toBe((4 + 4 + 1) * (3 + 4 + 1));
+    const w = 4 + 4 + 1;
+    // north of the fogged tiles (2, 0) and (3, 0) the skirt is fogged all the way out, also at the corner of the grid
+    expect(c[0 * w + 2 + 3]).toBe(1);
+    expect(c[1 * w + 2 + 3]).toBe(1);
+    expect(c[0 * w + 8]).toBe(1);
+    // east of the open tile (3, 2) it stays open
+    expect(c[(2 + 3) * w + 8]).toBe(0);
+    // the open sea column west of the map stays clear, also out in the skirt
+    expect(c[2 * w + 0]).toBe(0);
+    expect(c[4 * w + 1]).toBe(0);
+  });
+
   it('shows the first variant whose conditions hold, else the base miniature', () => {
     const c = newCampaign(data, 1, { difficulty: 'normal', death: 'standard' } as never, { name: 'A', portrait: 'avatar_a' } as never);
     const loc = locationOf(tiny, { node: 'prologue' })!;
