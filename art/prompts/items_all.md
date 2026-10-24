@@ -66,3 +66,13 @@ Befunde aus der Sichtung:
 | `slim_sword` | dunkler Stab | „medium grey iron … NOT dark“, goldener Bügelkorb | lesbar ✓ |
 | `pact_warden_shield_1`, `_2` | spitzere Schildform als `_3` | `_3` als fünfte Referenz, „keep EXACTLY its outline“ | Form wie `_3` ✓ |
 | `pact_blade_1`, `_2` | Stufen kaum unterscheidbar | `_3` als fünfte Referenz; Stufe 1 „absolutely NO glow“, Stufe 2 Runen klar glühend, Schneide nicht | drei Stufen unterscheidbar ✓ |
+## Offen: fehlende Icons (Stand 2026-10-24)
+
+Vom Produktinhaber beauftragt, Erzeugung sobald wieder ChatGPT-Kontingent da ist (ab 01:00). Bis dahin nutzen die Items vorläufig ein ähnliches Bild über das Feld `image` in `content/items.yaml` (Story 8.5); nach dem Erzeugen `image` entfernen bzw. auf die neue id setzen.
+
+| id | Item | vorläufig | Wunsch |
+|---|---|---|---|
+| `drake_breath` | Drachenatem (Feuer-Atemwaffe nur für Drachen/Monster, `monsterOnly`) | `dragon_scale` | eigenes Icon, z. B. Feuerstoß aus einem Drachenmaul |
+| `promotion_seal` | Beförderungssiegel | `chronicle_page` | eigenes Icon: Siegel/Abzeichen für den Klassenaufstieg |
+
+Außerdem fehlen Bilder für die Ressourcen-Symbole **Gold (Münze)** und **EP (Stern)**; die UI nutzt dafür Vektorsymbole, gemalte Varianten wären möglich (optional, Entscheidung Produktinhaber).
