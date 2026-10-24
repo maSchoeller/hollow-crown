@@ -19,9 +19,13 @@
 - { id: hand_axe,  kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 6,  hit: 60, crit: 0, rng: [1,2], wt: 11, rarity: common, price: 700 }
 - { id: hammer,    kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 10, hit: 55, crit: 0, rng: [1,1], wt: 15, rarity: rare,   price: 1300, effectiveVs: [armored], twoHanded: true }
 
+# --- Dolche (außerhalb des Dreiecks, leicht, hoher Krit; Werte [C] aus Eisenschwert/Schmalschwert abgeleitet) ---
+- { id: iron_dagger, kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 4, hit: 85, crit: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
+
 # --- Bögen (immer effektiv gegen flier) ---
 - { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
 - { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
+- { id: hunting_bow, kind: weapon, slot: mainHand, weaponType: bow, group: light_bow, damageType: physical, mt: 4, hit: 90, crit: 0, rng: [2,2], wt: 3, rarity: common, price: 450, twoHanded: true, effectiveVs: [flier] }   # leichter Bogen (Späher), [C] aus iron_bow
 - { id: longbow,   kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 5, hit: 65, crit: 0, rng: [2,3], wt: 9, rarity: rare,   price: 1500, twoHanded: true, effectiveVs: [flier], grantsSkill: { skill: precision, masteryCost: 35 } }
 
 # --- Zauber (anima = 4 Elemente, light) ---
@@ -41,6 +45,7 @@
 - { id: wooden_shield, kind: shield, slot: offHand, group: shield, statMods: { def: 2 }, wt: 4,  rarity: common, price: 300 }
 - { id: iron_shield,   kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7,  rarity: common, price: 700, setId: ashen_watch, grantsSkill: { skill: shield_wall, masteryCost: 20 } }
 - { id: tower_shield,  kind: shield, slot: offHand, group: shield, statMods: { def: 6, mov: -1 }, wt: 10, rarity: rare, price: 1200 }
+- { id: travel_lute,   kind: accessory, slot: offHand, group: lute, statMods: { lck: 2 }, wt: 2, rarity: common, price: 400 }   # Basis-Laute (Spielmann), [C]; Anfeuern-Bonus folgt mit der Laute-Regel
 - { id: ember_focus,   kind: accessory, slot: offHand, group: focus, statMods: { mag: 1 }, wt: 1, rarity: common, price: 600, setId: ember_garb }
 
 # --- Kopf ---

@@ -86,8 +86,8 @@ Drei Relikte, eins je Akt. Jedes kommt aus der Lore-Nebenquest seines Akts und *
 | Schwert | Eisenschwert (`iron_sword`) | Stahlschwert (`steel_sword`) | **Silberschwert** (`silver_sword`) | Schmalschwert (`slim_sword`, A1, leicht); **Panzerstecher** (`armorpiercer`, A2, effektiv gegen Gepanzerte); **Mondstahlklinge** (`moonsteel_blade`, A3, leicht, hoher Krit) |
 | Lanze | Eisenlanze (`iron_lance`) | Stahllanze (`steel_lance`) | **Silberlanze** (`silver_lance`) | Wurfspeer (`javelin`, A1, 1–2); Reiterspieß (`horseslayer`, A1, effektiv gegen Beritten); **Mondstahlspeer** (`moonsteel_spear`, A3, 1–2, leicht) |
 | Axt | Eisenaxt (`iron_axe`) | Stahlaxt (`steel_axe`) | **Silberaxt** (`silver_axe`) | Handaxt (`hand_axe`, A1, 1–2); Kriegshammer (`hammer`, A2, effektiv gegen Gepanzerte) |
-| Dolch | **Eisendolch** (`iron_dagger`) | **Stahldolch** (`steel_dagger`) | **Silberdolch** (`silver_dagger`) | **Wurfmesser** (`throwing_knives`, A1, 1–2); **Stilett** (`stiletto`, A2, hoher Krit) |
-| Bogen | Eisenbogen (`iron_bow`) | Stahlbogen (`steel_bow`) | **Silberbogen** (`silver_bow`) | **Jagdbogen** (`hunting_bow`, A1, leicht, Späher); Langbogen (`longbow`, A2, 2–3) |
+| Dolch | Eisendolch (`iron_dagger`) | **Stahldolch** (`steel_dagger`) | **Silberdolch** (`silver_dagger`) | **Wurfmesser** (`throwing_knives`, A1, 1–2); **Stilett** (`stiletto`, A2, hoher Krit) |
+| Bogen | Eisenbogen (`iron_bow`) | Stahlbogen (`steel_bow`) | **Silberbogen** (`silver_bow`) | Jagdbogen (`hunting_bow`, A1, leicht, Späher, Gruppe `light_bow`); Langbogen (`longbow`, A2, 2–3) |
 | Feuer | Glimmen (`ember`) | **Flammenstoß** (`blaze`) | **Glutsturm** (`ember_storm`) | – |
 | Wind | Böe (`gust`) | **Sturmklinge** (`gale_blade`) | **Orkan** (`hurricane`) | – |
 | Erde | Steinschlag (`rockfall`) | **Felsfaust** (`stone_fist`) | **Beben** (`quake`) | Felswall (`stone_wall`, A1, ohne Schaden) |
@@ -97,7 +97,7 @@ Drei Relikte, eins je Akt. Jedes kommt aus der Lore-Nebenquest seines Akts und *
 | Stab | Heilstab (`heal_staff`); Linderungsstab (`remedy_staff`) | Mehrheilstab (`mend_staff`); **Fernheilstab** (`physic_staff`, 1–3) | **Schutzstab** (`ward_staff`, +RES für einen Verbündeten) | – |
 | Schild | Holzschild (`wooden_shield`); Eisenschild (`iron_shield`) | Turmschild (`tower_shield`); **Rundschild** (`round_shield`, leicht, +Ausweichen) | **Silberschild** (`silver_shield`) | – |
 | Fokus | Glutfokus (`ember_focus`) | **Kristallfokus** (`crystal_focus`, +RES) | **Mondstahlkugel** (`moonsteel_orb`, +MAG) | – |
-| Laute | – | **Wanderlaute** (`travel_lute`) | **Silberlaute** (`silver_lute`) | – |
+| Laute | Wanderlaute (`travel_lute`, Basis-Laute, Produktinhaber 2026-10-24) | – | **Silberlaute** (`silver_lute`) | – |
 
 ### 6.2 Gefährten-Signaturen (7, aus Nebenquests)
 
