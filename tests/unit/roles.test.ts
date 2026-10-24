@@ -73,14 +73,15 @@ describe('role model in classes.yaml', () => {
     expect(groups('scout')).toEqual(['dagger', 'light_bow']);
     expect(groups('minstrel')).toEqual(['dagger', 'lute']);
     expect(groups('tactician')).toEqual(['sword', 'anima']);
-    expect(groups('captain')).toEqual(['sword', 'lance']);
+    expect(groups('captain')).toEqual(['sword', 'lance', 'shield']);
     const action = (id: string) => data.classes[id]!.classAction!;
     expect(action('vanguard')).toEqual({ id: 'hold', kind: 'passive' });
     expect(action('skirmisher')).toEqual({ id: 'pursue', kind: 'passive' });
     expect(action('marksman').id).toBe('aim');
     expect(action('tactician')).toEqual({ id: 'command', kind: 'active', perMap: 1 });
     expect(action('captain')).toEqual({ id: 'rally', kind: 'active', perMap: 1 });
-    expect(data.classes.vanguard!.mov).toBe(5); // GDD says armored/4; open question, see story 2.2
+    expect(data.classes.vanguard).toMatchObject({ moveType: 'armored', mov: 4 }); // GDD values (PO 2026-10-24)
+    expect(data.classes.skirmisher).toMatchObject({ moveType: 'foot', mov: 6 });
     expect(data.classes.scout!.mov).toBe(6);
   });
 
@@ -154,7 +155,8 @@ describe('weapon groups on items and canEquip', () => {
   it('shields and foci are groups of the off hand', () => {
     expect(fits('vanguard', 'wooden_shield', 'offHand')).toBeNull();
     expect(fits('skirmisher', 'wooden_shield', 'offHand')).toBe('weapon_group');
-    expect(fits('captain', 'iron_shield', 'offHand')).toBe('weapon_group');
+    expect(fits('captain', 'iron_shield', 'offHand')).toBeNull();
+    expect(fits('tactician', 'iron_shield', 'offHand')).toBe('weapon_group');
     expect(fits('elementalist', 'ember_focus', 'offHand')).toBeNull();
     expect(fits('vanguard', 'ember_focus', 'offHand')).toBe('weapon_group');
   });

@@ -33,12 +33,11 @@ damit Ausrüstung der Charakter ist.
 - **Klassen-Aktionen** sind nur Daten (`classAction: {id, kind, perMap?}`); Umsetzung in Story 2.3 ff. Platzhalter-Skills der PoC-Klassen bleiben.
 - **Porträt generischer Einheiten:** `art` verweist auf die vorhandenen `class_<art>`-Bilder, es wurde nichts umbenannt.
 - **Speicherstände:** Klassen-Ids der Fixtures neu erzeugt; ältere Test-Saves mit PoC-Ids laden nicht mehr (Prototyp, keine veröffentlichten Akt-Builds).
-- **Nebenhand-Regel neu:** Schilde nur Vorkämpfer, Fokus nur Elementarist/Weiser; Kael und der Avatar können keinen Schild führen.
+- **Nebenhand-Regel neu:** Schilde nur Vorkämpfer, Fokus nur Elementarist/Weiser; Der Avatar (Taktiker) kann keinen Schild führen; Kael (Hauptmann) schon (Produktinhaber 2026-10-24, siehe Log unten).
 
 ### Offene Fragen für den Produktinhaber
 
-- **Vorkämpfer-MOV:** GDD sagt „Gepanzert (4)“. Mit MOV 4 brechen die PoC-Karten (ch01 Siegquote ~0 %, die Autoplay-Gruppe zerfällt); mit Bewegungstyp Gepanzert und MOV 5 sinken ch01/ch02 auf 80 %/~55 %. Umgesetzt ist `moveType: foot`, MOV 5 wie der PoC-Soldat. Entscheidung (MOV 4 samt Neubalancing der Karten, Epic 11) steht aus.
-- **Plänkler-MOV:** GDD sagt 6; umgesetzt 5 (PoC-Söldner), weil MOV 6 ch02 auf ~53 % drückt. Gleiche Frage.
+- **Vorkämpfer-MOV / Plänkler-MOV:** entschieden am 2026-10-24 (Produktinhaber), siehe „Entscheidungen Produktinhaber 2026-10-24“ unten.
 - **Vorkämpfer-Werte:** exakt der PoC-Soldat (Mittel mit dem Kämpfer ließ ch02 auf 67 % fallen); Brenna (Kämpfer) und die Gegner-Kämpfer laufen damit als Vorkämpfer ohne den PoC-Skill „Kletterer“ des Kämpfers.
 - **Waffengruppen Dolch/Leichter Bogen/Laute** haben noch keine Items (Katalog-Story); Späher und Spielmann können bis dahin keine Waffe führen.
 - **Zauber-Gruppen:** Elementarist führt `anima` plus Fokus (Nebenhand, items.md), `dark` erst mit dem Hexer.
@@ -78,3 +77,23 @@ Korridor Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte: alle drei Siegqu
 - `src/core/defs.ts`, `src/core/rules/{items,progression,skills}.ts`, `src/core/ai/ai.ts`, `src/core/campaign/{apply,camp}.ts`, `src/content/{schemas,validate}.ts`
 - `src/app/screens/{Equip,BattleHud,BattlePanels,Battle,Troop,unitArt}.tsx`, `src/render/assets.ts`
 - `tests/unit/roles.test.ts` (neu), `tests/unit/{camp,campaign-commands}.test.ts`, `tests/fixtures/saves/*`
+
+### Entscheidungen Produktinhaber 2026-10-24 und Neubalance der PoC-Karten
+
+- **GDD-Werte wiederhergestellt:** Vorkämpfer `moveType: armored`, MOV 4; Plänkler `foot`, MOV 6. Die übrigen Rollen stimmen mit der GDD-Tabelle überein (Schütze, Elementarist, Heiler, Spielmann, Taktiker, Hauptmann Fuß 5; Späher Fuß 6). Die Profiklassen (Bollwerk, Sturmbrecher MOV 6) bleiben unverändert.
+- **Schilde:** `captain` führt Lanze, Schwert und Schild; `tactician` bleibt bei Schwert und Anima. Test `roles.test.ts` angepasst.
+- **Ursache des Einbruchs:** Mit MOV 4 bleiben Brenna und Tobin hinter dem Avatar zurück, den die Autoplay-Gruppe allein nach vorn schickt (ch01: 2 % Siegquote, der Avatar fällt in Runde 3). Die Gegner-Plänkler laufen jetzt mit MOV 6 und erreichen Avatar und Liora früher.
+- **Karten (nur Inhalte, keine Klassenwerte):**
+  - `ch01_varnhold`: Gegner e2 hält (Position [8, 9], Straßen-Engstelle) statt anzugreifen; e6 startet bei [4, 5] und ist Stufe 3, Archer e3 Stufe 3, e8 Stufe 4; vierter Aufstellungsplatz [13, 15], damit Tobin das Dorf mit Mira (hinter den Mauern bei [15, 11]) in Runde 2 erreicht (Mira wird in 48 von 50 Läufen angeworben).
+  - `ch02_silverbrook`: Varek wartet (`hold`) statt den Schrein anzugreifen (er tötete Liora in 7 Läufen, solange Kael ihn nicht ansprach); Morra Stufe 5; m1–m6 Stufe 2; die Söldner m1, m5 und der Nachzügler in Runde 3 sind Banditen (MOV 5, Axt) statt Plänkler (MOV 6); Welle in Runde 7 Stufe 3.
+  - `prologue_caravan`: unverändert auf Normal; Schwer verliert einen Nachzügler (Siegquote 20 % → 62 %).
+- **Messung** (`pnpm sim <map> --runs 50`, verkettet, standard). Korridore: Leicht ≥ 95 % und ≤ 0,5; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
+
+| Karte | Leicht | Normal vorher | Normal nachher | Schwer |
+|---|---|---|---|---|
+| prologue_caravan | 100 % / 0,00 | 100 % / 0,06 | 100 % / 0,04 | 62 % / 0,54 |
+| ch01_varnhold | 100 % / 0,00 | 92 % / 0,14 | 96 % / 0,46 | 35 % / 1,71 |
+| ch02_silverbrook | 100 % / 0,22 | 76 % / 1,37 | 85 % / 0,85 | 36 % / 0,09 (nur 19 Läufe erreichen die Karte) |
+
+  Zwischenstand mit den GDD-Werten ohne Kartenänderung: prologue 100 %, ch01 2 %, ch02 1 von 50 Läufen erreicht.
+- **Nicht im Korridor:** Der Prolog liegt bei Normal mit 0,04 Niedergestreckten unter 0,4. Er ist die Tutorialkarte (nur Axt-Banditen, keine Fernkämpfer); höhere Stufen oder zwei zusätzliche Banditen ließen die Quote bei 96 % und 0,04–0,08, weil Niedergestreckte fast nur den Avatar betreffen. Offen für den Produktinhaber, ob der Prolog vom Korridor ausgenommen wird.
