@@ -47,6 +47,7 @@ gear:
     staff: { model: staff, hand: right, motion: cast }
   offHand:
     shield: { model: shield, hand: left }
+    lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
 
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:

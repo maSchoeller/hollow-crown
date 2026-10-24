@@ -4,7 +4,7 @@
  * `largeFactor` times as much. Reports outliers as a warning table, never fails (the build calls it from
  * check-bundle-size.mjs, tools/art/tripo_units.py after packing a figure).
  *
- *   node tools/figure-budget.mjs [<dir or .glb> ...]        default: dist/assets/models/units
+ *   node tools/figure-budget.mjs [<dir or .glb> ...]        default: every dist/assets/<pack>/models/units
  *
  * Everything is read from the glTF JSON chunk: accessor counts are there even with meshopt compression, and gltfpack
  * leaves the images (PNG/JPEG/WebP in a bufferView) untouched, so their headers give the texture size.
@@ -122,7 +122,10 @@ const glbs = (p) => (statSync(p).isDirectory() ? readdirSync(p).filter((f) => f.
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const args = process.argv.slice(2);
-  const dirs = args.length ? args : [join(process.cwd(), 'dist', 'assets', 'models', 'units')];
+  // unit models lie under assets/<pack>/models/units (tools/art/model_packs.py), older builds under assets/models/units
+  const assets = join(process.cwd(), 'dist', 'assets');
+  const packed = existsSync(assets) ? readdirSync(assets).map((d) => join(assets, d, 'models', 'units')) : [];
+  const dirs = args.length ? args : [join(assets, 'models', 'units'), ...packed];
   const files = dirs.filter((d) => existsSync(d)).flatMap(glbs);
   reportFigures(files, { all: true });
 }

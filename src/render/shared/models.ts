@@ -21,7 +21,7 @@ import '@babylonjs/loaders/glTF/2.0/Extensions/EXT_meshopt_compression';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_texture_transform';
 import { MeshoptDecoder } from 'meshoptimizer/decoder';
-import type { GearPiece, Team } from '../../core';
+import { unitModelPath, type GearPiece, type Team } from '../../core';
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 
@@ -157,9 +157,9 @@ async function attachGear(
   return { meshes, grips };
 }
 
-export async function loadUnitModel(store: AssetStore, id: string, team: Team, name: string, gear: GearPiece[] = []): Promise<UnitModel | null> {
+export async function loadUnitModel(store: AssetStore, id: string, team: Team, name: string, gear: GearPiece[] = [], unitPacks?: Readonly<Record<string, string>>): Promise<UnitModel | null> {
   const { scene } = store;
-  const c = await store.container(`models/units/${id}.glb`, true);
+  const c = await store.container(unitModelPath(id, unitPacks), true);
   if (!c) return null;
   const inst = instantiate(c, scene, (n) => `${name}:${n}`);
   const root = new TransformNode(name, scene);

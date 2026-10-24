@@ -109,9 +109,9 @@ def derive_gear(fid):
     main = next((items[i] for i in item_ids if items[i].get("slot") == "mainHand" and items[i].get("weaponType")), None)
     if main:
         pieces.append({**gear["weapons"][main["weaponType"]], "group": main["weaponType"]})
-    off = next((items[i] for i in item_ids if items[i].get("slot") == "offHand" and items[i]["kind"] in gear["offHand"]), None)
+    off = next((items[i] for i in item_ids if items[i].get("slot") == "offHand" and items[i].get("group") in gear["offHand"]), None)
     if off:
-        piece = {**gear["offHand"][off["kind"]], "group": off["kind"]}
+        piece = {**gear["offHand"][off["group"]], "group": off["group"]}
         if not any(p["hand"] == piece["hand"] for p in pieces):
             pieces.append(piece)
     return {"items": item_ids, "source": src, "pieces": pieces, "note": ""}

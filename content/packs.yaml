@@ -39,8 +39,10 @@ packs:
       # enthält auch die englischen Prolog-Zeilen; ohne sie zeigte der Prolog auf Englisch nur Schlüssel
       - locales/en/act1.dialogue.yaml
     # Hintergrund von Titel und Kampagnen-Liste; sonst stünde der erste Start grau da, bis act1 geladen ist
+    # Figuren des Prologs (Story 8.2): tools/art/model_packs.py legt jedes Einheitenmodell unter <Paket>/models/units/ ab
     assets:
       - locations/lager_unterwegs.webp
+      - core/**
 
   - id: act1
     released: true
@@ -52,6 +54,7 @@ packs:
       - locales/*/act1.*
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
+      - act1/**
       - locations/**
       - busts/**
       - halves/**

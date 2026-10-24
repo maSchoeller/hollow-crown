@@ -56,7 +56,7 @@ const infra = /^(sw\.js|workbox-[^/]+\.js|precache-info\.json)$/;
 // not precached, but the first mission cannot start without them (loading screen of the prologue)
 const firstMission = (p) => {
   if (/^assets\/models\/(props|weapons)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
-  const m = /^assets\/models\/units\/([^/]+)\.glb$/.exec(p);
+  const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.glb$/.exec(p);
   return m !== null && prologue.has(m[1]);
 };
 
@@ -113,7 +113,7 @@ for (const pack of manifest.packs) {
 }
 
 // board figures against figureBudget of content/packs.yaml (art-direction §4.6): a warning, not a failure
-reportFigures(files.filter((p) => /^assets\/models\/units\/[^/]+\.glb$/.test(p)).map((p) => join(dist, p)));
+reportFigures(files.filter((p) => /^assets\/(?:[^/]+\/)?models\/units\/[^/]+\.glb$/.test(p)).map((p) => join(dist, p)));
 
 if (total > BUDGET) {
   console.error('✗ first download (pack core) over budget');

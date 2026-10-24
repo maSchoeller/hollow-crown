@@ -1,6 +1,6 @@
 # Story 8.2: Tripo-Pipeline vervollständigen
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -19,26 +19,26 @@ damit alle Figuren gleich aussehen, ins Budget passen und Credits sparen.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Waffenmodelle Dolch und Laute (AC 1)
-  - [ ] `tools/art/blender_weapons.py` baut `dagger` und `lute`. Die Arbeit ist begonnen: `art/models/weapons/dagger.glb`, `lute.glb` und eine Änderung am Skript liegen im Arbeitsbaum eines anderen Agenten; vor dem Start den Stand klären und nicht doppelt bauen
-  - [ ] Maße, Griffrichtung und Vertex-Farben (Hollow-64) wie die übrigen Waffen; Prüfung in Blender
-  - [ ] `content/core/render.yaml` `gear.weapons`: Waffengruppen Dolch und Laute mit `model`, `hand`, ggf. `motion`/`hold`; Zuordnung gegen die Waffengruppen in `content/core` prüfen (keine Gruppe ohne Modell)
-- [ ] T2 Animationen Flucht und Jubel (AC 2, 3)
-  - [ ] Presets in Tripo am Rig von Kael prüfen; sonst je eine KI-Animation (20 Credits) und den Prompt in `art/prompts/` festhalten
-  - [ ] „An Ort und Stelle“ exportieren und `art/models/source/kael_board_tripo.glb` ersetzen; bestehende Clips (`idle`, `walk`, `attack*`, `hit`, `downed`) bleiben unverändert
-  - [ ] `tools/art/prepare_tripo_unit.py` benennt die neuen Clips `flee` und `cheer`, tastet sie mit 12 fps ab und überträgt sie ruheposen-relativ; `pnpm art:tripo` neu laufen lassen, jede Figur enthält beide Clips
-  - [ ] Wo der Render-Code Animationsnamen kennt, `flee`/`cheer` als bekannte Namen aufnehmen; das Abspielen im Spiel gehört zu Story 8.6, hier werden nur Clips und Namen bereitgestellt
-- [ ] T3 Budget-Prüfung (AC 4)
-  - [ ] Dreiecke, Textur und gzip-Größe je Figur in `tools/art/tripo_units.py` (Ausgabe `[hc]`-Zeilen) und im Abschlussbericht von `tools/art/build.py` melden; Schwellen aus Art Direction §4.6 (7 000, 512, 0,5 MB, große Einheiten doppelt) an einer Stelle als Konstante bzw. Konfiguration, keine Zahlen verstreut
-  - [ ] Prüfung mit einer bewusst zu großen Figur (Ausreißer wird gemeldet)
-  - [ ] Auch hier ist Arbeit begonnen (anderer Agent); Stand vorher klären
-- [ ] T4 Ausgabe ins Paket des ersten Auftritts (AC 5), **erst nach Merge von PR #33**
-  - [ ] Erster Auftritt je Figur bestimmen (aus `content/acts/*/units.yaml` und Karten; Paketzuordnung über `content/packs.yaml`) und Modelle nach `public/assets/<pack>/models/` schreiben
-  - [ ] Lader in `src/render/shared/models.ts` und Brett-Code lesen die Pfade aus dem Manifest, nicht aus festen Pfaden
-  - [ ] `content/packs.yaml` `assets`-Globs anpassen, falls sich die Pfade ändern; Budgets `core` (15 MB) und `act1` (40 MB) prüfen
-- [ ] T5 Prüfungen und Entscheidungslog (AC 6)
-  - [ ] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm art:build`, `pnpm build`
-  - [ ] Eintrag im Entscheidungslog der Art Direction: Animationsquelle (Preset oder KI), Credit-Stand, Budgetschwellen
+- [x] T1 Waffenmodelle Dolch und Laute (AC 1)
+  - [x] `tools/art/blender_weapons.py` baut `dagger` und `lute`. Die Arbeit ist begonnen: `art/models/weapons/dagger.glb`, `lute.glb` und eine Änderung am Skript liegen im Arbeitsbaum eines anderen Agenten; vor dem Start den Stand klären und nicht doppelt bauen
+  - [x] Maße, Griffrichtung und Vertex-Farben (Hollow-64) wie die übrigen Waffen; Prüfung in Blender
+  - [x] `content/core/render.yaml` `gear.weapons`: Waffengruppen Dolch und Laute mit `model`, `hand`, ggf. `motion`/`hold`; Zuordnung gegen die Waffengruppen in `content/core` prüfen (keine Gruppe ohne Modell)
+- [x] T2 Animationen Flucht und Jubel (AC 2, 3)
+  - [x] Presets in Tripo am Rig von Kael prüfen; sonst je eine KI-Animation (20 Credits) und den Prompt in `art/prompts/` festhalten
+  - [x] „An Ort und Stelle“ exportieren und `art/models/source/kael_board_tripo.glb` ersetzen; bestehende Clips (`idle`, `walk`, `attack*`, `hit`, `downed`) bleiben unverändert
+  - [x] `tools/art/prepare_tripo_unit.py` benennt die neuen Clips `flee` und `cheer`, tastet sie mit 12 fps ab und überträgt sie ruheposen-relativ; `pnpm art:tripo` neu laufen lassen, jede Figur enthält beide Clips
+  - [x] Wo der Render-Code Animationsnamen kennt, `flee`/`cheer` als bekannte Namen aufnehmen; das Abspielen im Spiel gehört zu Story 8.6, hier werden nur Clips und Namen bereitgestellt
+- [x] T3 Budget-Prüfung (AC 4)
+  - [x] Dreiecke, Textur und gzip-Größe je Figur in `tools/art/tripo_units.py` (Ausgabe `[hc]`-Zeilen) und im Abschlussbericht von `tools/art/build.py` melden; Schwellen aus Art Direction §4.6 (7 000, 512, 0,5 MB, große Einheiten doppelt) an einer Stelle als Konstante bzw. Konfiguration, keine Zahlen verstreut
+  - [x] Prüfung mit einer bewusst zu großen Figur (Ausreißer wird gemeldet)
+  - [x] Auch hier ist Arbeit begonnen (anderer Agent); Stand vorher klären
+- [x] T4 Ausgabe ins Paket des ersten Auftritts (AC 5), **erst nach Merge von PR #33**
+  - [x] Erster Auftritt je Figur bestimmen (aus `content/acts/*/units.yaml` und Karten; Paketzuordnung über `content/packs.yaml`) und Modelle nach `public/assets/<pack>/models/` schreiben
+  - [x] Lader in `src/render/shared/models.ts` und Brett-Code lesen die Pfade aus dem Manifest, nicht aus festen Pfaden
+  - [x] `content/packs.yaml` `assets`-Globs anpassen, falls sich die Pfade ändern; Budgets `core` (15 MB) und `act1` (40 MB) prüfen
+- [x] T5 Prüfungen und Entscheidungslog (AC 6)
+  - [x] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm art:build`, `pnpm build`
+  - [x] Eintrag im Entscheidungslog der Art Direction: Animationsquelle (Preset oder KI), Credit-Stand, Budgetschwellen
 
 ## Dev Notes
 
@@ -67,8 +67,37 @@ damit alle Figuren gleich aussehen, ins Budget passen und Credits sparen.
 
 ### Agent Model Used
 
+Claude Opus 5.5 (Teile T1–T3, Commit d3bd3f2), Claude Sonnet 5.5 (T4, Laute in der Nebenhand)
+
 ### Debug Log References
+
+- `pnpm lint`, `pnpm content:check`, `pnpm build` grün; `pnpm test` grün bis auf zwei Tests in `tests/unit/core.test.ts` („place images of campaign nodes“), die an der laufenden, nicht zu dieser Story gehörenden Änderung von `campaign.yaml` (Orte `erlbach`, `varnhold`) hängen.
 
 ### Completion Notes List
 
+- T1: `dagger.glb` und `lute.glb` aus `tools/art/blender_weapons.py`; `render.yaml` `gear.weapons.dagger` (Schwerthieb als Bewegung). Die Nebenhand-Zuordnung `gear.offHand` ist jetzt nach Waffengruppe des Gegenstands geschlüsselt (nicht mehr nach `kind`), weil Laute und Fokus beide `kind: accessory` haben; neu `lute: { model: lute, hand: left }`. Geändert: Schema, `GameData`-Typ, `board.ts` `gearOf`, `plan.ts` `gearModels`, `silhouettes.py`; Test in `plan.test.ts`.
+- T2/AC 3: Die Tripo-Presets „Jubeln“ und „fliehen_02“ wurden erprobt und verworfen, `flee` und `cheer` entstanden als zwei KI-Animationen an Kaels Rig (`art/models/source/kael_anims_flee_cheer.glb`); `prepare_tripo_unit.py` führt mehrere Bibliotheksdateien zusammen und überträgt sie auf jede Figur. Wahl und Credit-Stand im Entscheidungslog (2026-10-24).
+- T3: `tools/figure-budget.mjs` meldet Dreiecke, Textur und gzip-Größe je Figur (Warnung, kein Abbruch); Schwellen unter `figureBudget` in `content/packs.yaml`; aufgerufen von `check-bundle-size.mjs` (Build) und `tripo_units.py`. Ergebnis: 42 Figuren geprüft, keine über Budget.
+- T4 (AC 5): `tools/art/model_packs.py` berechnet je Einheitenmodell das Paket des ersten Auftritts (erstes freigegebenes Paket, dessen Inhalt die Figur zeigt; Roster über `joins`; sonst letztes freigegebenes Paket). `build.py` schreibt `public/assets/<Paket>/models/units/<id>.glb` und `manifest.models.unitPacks`; `content/packs.yaml` bekam `core/**` (core) und `act1/**` (act1); `unitModelPath` in `src/core/figure.ts` löst den Pfad für Lader (`loadUnitModel`), Brett und Ladeplan (`missionAssets`, `flow.ts`) über das Manifest auf. `check-bundle-size.mjs` und `figure-budget.mjs` kennen die Paketordner. 10 Modelle in `core`, 32 in `act1`. Erster Download unverändert in der Sache (Prolog-Figuren zählten schon als erste Mission). Waffen und Props bleiben unter `models/`. Neue Abhängigkeit von `pnpm art:build`: PyYAML.
+- T5: Eintrag im Entscheidungslog 2026-10-25 (Paketregel, Budget); die Animationsquelle und die Schwellen stehen im Log vom 2026-10-24.
+
 ### File List
+
+- content/core/render.yaml
+- content/packs.yaml
+- concept/23-art-direction/decision-log.md
+- src/content/schemas.ts
+- src/core/defs.ts
+- src/core/figure.ts
+- src/app/loading/plan.ts
+- src/app/loading/plan.test.ts
+- src/app/state/flow.ts
+- src/render/board/board.ts
+- src/render/shared/assets.ts
+- src/render/shared/models.ts
+- tools/art/model_packs.py (neu)
+- tools/art/build.py
+- tools/art/silhouettes.py
+- tools/art/blender_weapons.py, tools/art/prepare_tripo_unit.py, tools/art/tripo_units.py (Commit d3bd3f2)
+- tools/figure-budget.mjs, tools/check-bundle-size.mjs
+- art/models/weapons/dagger.glb, lute.glb; art/models/source/kael_anims_flee_cheer.glb; art/models/units/*.glb (neu gebaut, Commit d3bd3f2)
