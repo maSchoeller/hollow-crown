@@ -27,6 +27,7 @@ board:
 gear:
   weapons:
     sword: { model: sword, hand: right }
+    dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
     lance: { model: lance, hand: right, motion: thrust, hold: -125 }
     axe: { model: axe, hand: right, motion: chop }
     bow: { model: bow, hand: left, motion: shoot }

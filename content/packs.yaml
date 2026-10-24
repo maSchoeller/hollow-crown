@@ -7,6 +7,17 @@
 # load: precache = Service Worker beim Installieren; background = direkt nach dem Start, sobald der Akt erreicht ist;
 #       voice = nur die gewählte Sprache, nach dem Akt-Paket.
 # budgetMb: Transfergröße (gzip, Bilder und Audio wie sie sind); core bricht den Build ab, die übrigen warnen.
+# Budget je Brettfigur (art-direction §4.6), geprüft von tools/figure-budget.mjs (Build und pnpm art:tripo): zu große
+# Figuren erscheinen als Warnung, der Build bricht nicht ab. triangles = Dreiecke, texture = Kantenlänge der Grundfarb-
+# Textur in Pixeln, transferMb = Transfergröße (gzip). large = Ids großer Einheiten (Reittiere, Drachen), die das
+# largeFactor-Fache dürfen; bisher gibt es keine.
+figureBudget:
+  triangles: 7000
+  texture: 512
+  transferMb: 0.5
+  largeFactor: 2
+  large: []
+
 packs:
   - id: core
     released: true

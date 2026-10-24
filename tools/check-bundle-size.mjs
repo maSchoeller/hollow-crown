@@ -13,6 +13,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parse } from 'yaml';
+import { reportFigures } from './figure-budget.mjs';
 
 const dist = join(process.cwd(), 'dist');
 // packs.json is written by the packs plugin (tools/build/packs-plugin.ts); core's budget comes from content/packs.yaml
@@ -110,6 +111,9 @@ for (const pack of manifest.packs) {
   console.log(`pack ${pack.id}: ${pack.files.length} files, ${mb(size)} MB (budget ${mb(budget)} MB)`);
   if (size > budget) console.warn(`warning: pack ${pack.id} over its budget`);
 }
+
+// board figures against figureBudget of content/packs.yaml (art-direction §4.6): a warning, not a failure
+reportFigures(files.filter((p) => /^assets\/models\/units\/[^/]+\.glb$/.test(p)).map((p) => join(dist, p)));
 
 if (total > BUDGET) {
   console.error('✗ first download (pack core) over budget');
