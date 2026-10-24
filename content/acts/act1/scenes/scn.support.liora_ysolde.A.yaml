@@ -1,0 +1,84 @@
+id: scn.support.liora_ysolde.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Das Siegel ist Wachs auf Leder. Altes Wachs. Mit einem warmen Messer wäre es sofort offen."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Leg das Messer weg."
+  - id: l03
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Welches Messer? Ich beschreibe nur, was möglich wäre."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Unter den Gräbern junger Könige haben wir sie gefunden. Wer so etwas versiegelt, will nicht, dass man liest."
+  - id: l05
+    speaker: [ysolde]
+    fallback: skip
+    mood: angry
+    text: "Oder dass es nur der liest, der es versteht. Ein Siegel ist keine Antwort!"
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich habe von dem Gewölbe geträumt. Alle Namen auf den Gräbern waren leer."
+  - id: l07
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Leer. Hm. Das sagt mir nichts. Vielleicht sagt es dir mehr."
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich fürchte nicht das Lesen. Ich fürchte, was danach anders ist."
+  - id: l09
+    speaker: [ysolde]
+    fallback: skip
+    mood: sad
+    text: "In Aurenhall hieß es, Nichtwissen sei Demut. Ich habe es nie geglaubt."
+  - id: l10
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Allein würde ich sie trotzdem nicht öffnen. Gebe ich ungern zu."
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Dann lesen wir sie zusammen. Nicht heute."
+  - id: l12
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Wann dann?"
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Wenn es so weit ist. Wir werden es merken."
+  - id: l14
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Das ist keine Methode. Aber gut. Ich schaue nicht mehr hin."
+  - id: l15
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Du schaust seit einer Stunde hin."
+  - id: l16
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Zwei."
