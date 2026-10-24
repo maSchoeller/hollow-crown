@@ -44,7 +44,11 @@ export class ModelFigure implements Figure {
   readonly casters: Mesh[];
   private current: FigureAnim | null = null;
 
-  constructor(private model: UnitModel) {
+  /** `motion`: the weapon group's own animations (`attack_<motion>` …) win over the defaults, if the figure has them */
+  constructor(
+    private model: UnitModel,
+    private motion?: string,
+  ) {
     this.node = new TransformNode(`${model.root.name}:place`, model.root.getScene());
     model.root.parent = this.node;
     this.casters = model.meshes;
@@ -52,7 +56,8 @@ export class ModelFigure implements Figure {
 
   play(anim: FigureAnim, facing: Facing, speed: number): void {
     this.model.root.rotation.y = YAW[facing];
-    const g = this.model.anims[anim] ?? this.model.anims.idle;
+    for (const g of this.model.grips) g.node.rotation.x = anim === 'attack' ? 0 : g.hold;
+    const g = (this.motion && this.model.anims[`${anim}_${this.motion}`]) || this.model.anims[anim] || this.model.anims.idle;
     if (!g) return;
     if (this.current === anim && anim !== 'attack' && anim !== 'hit') return;
     for (const o of Object.values(this.model.anims)) if (o !== g) o.stop();
@@ -65,8 +70,10 @@ export class ModelFigure implements Figure {
   }
 
   tint(desat: number, flash: number, alpha: number): void {
-    tintMaterial(this.model.material, desat, flash, alpha);
-    this.model.material.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHABLEND : StandardMaterial.MATERIAL_OPAQUE;
+    for (const m of this.model.materials) {
+      tintMaterial(m, desat, flash, alpha);
+      m.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHABLEND : StandardMaterial.MATERIAL_OPAQUE;
+    }
   }
 
   tick(): void {}

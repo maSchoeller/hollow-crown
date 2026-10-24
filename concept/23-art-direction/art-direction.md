@@ -221,13 +221,13 @@ Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewuss
 1. **Porträt-Turnaround** per ChatGPT aus dem freigegebenen Porträt: vorn, Seite, hinten, A-Pose, gleiche Größe, grauer Grund (`art/turnarounds/<id>/`, Prompt in `art/prompts/<id>_turnaround.md`).
 2. **Brett-Turnaround** per ChatGPT aus dem Porträt-Turnaround, stark vereinfacht: große Farbflächen, glatte Rüstung ohne Dellen, wenige große Haarsträhnen, höchstens zwei Gürtel, eine Schattenstufe, etwas dickere Outline; **ohne Waffe und ohne Scheide**; das **Teamtuch flach in Magenta (#FF00FF)** als Schlüsselfarbe (`art/turnarounds/<id>_board/`, Prompt-Vorlage `art/prompts/kael_board_turnaround.md`). Die Seitenansicht geht in das Tripo-Feld, dessen Seite sie geometrisch zeigt (Blick nach rechts = rechte Seite).
 3. **Tripo** (Pro, Datenschutz „Privat“): Smart-Mesh P2.0 aus Multi-View, Quad, 3 000 Polygone, dann „Textur“. Ergebnis Kael: 3 772 Quads.
-4. **Rig und Animationen** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett; kostenlose Presets idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen; attack = KI-Animation „quick one-handed sword slash … stays in place, upper body upright“. Export GLB mit Skelett, allen Animationen und **„Animation an Ort und Stelle“** nach `art/models/source/<id>_board_tripo.glb`.
-5. **Aufbereitung** mit `pnpm art:tripo` (`tools/art/tripo_units.py` → `prepare_tripo_unit.py`, braucht Blender): Füße auf den Boden, Blick nach Süden, Höhe wie die bisherigen Figuren, Ränder der UV-Inseln auffüllen, nur Grundfarbe; Magenta → Teamtuch (Textur neutral, Vertex-Alpha mit Team-Schlüssel K2); Animationen umbenennen, mit 12 fps und nur Rotationen neu abtasten, Angriff und Treffer auf 0,5 s takten (Aufprall bei 0,25 s); Langschwert an `mixamorig:RightHand`. Ergebnis `art/models/units/<id>.glb`, das `pnpm art:build` wie die Blender-Figuren übernimmt.
-6. **Offen:** Bibliothek der Waffengruppen (Lanze, Axt, Bogen, Buch, Stab, Schild) statt des Skript-Schwerts; Übertragung von Animationen zwischen Figuren in Blender (spart KI-Animationen); Reittiere und Vierbeiner.
+4. **Rig** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett, Export GLB mit Skelett (ohne Animationen) nach `art/models/source/<id>_board_tripo.glb`. Die Animationen kommen aus der **Bibliothek** (Kaels Export `art/models/source/kael_board_tripo.glb`): idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen (Presets), attack = KI „one-handed sword slash“, attack_cast = Preset Zauberspruch, attack_shoot / attack_chop / attack_thrust = KI-Animationen Bogenschuss, Axthieb, Speerstoß. Neue Bibliotheks-Animationen entstehen an Kaels Rig und werden „an Ort und Stelle“ mit exportiert.
+5. **Aufbereitung** mit `pnpm art:tripo` (`tools/art/tripo_units.py` → `prepare_tripo_unit.py`, braucht Blender): Füße auf den Boden, Blick nach Süden, Höhe wie die bisherigen Figuren, Ränder der UV-Inseln auffüllen, nur Grundfarbe; Magenta → Teamtuch (Textur neutral, Vertex-Alpha mit Team-Schlüssel K2); fehlende Animationen ruheposen-relativ aus der Bibliothek übertragen, mit 12 fps und nur Rotationen neu abtasten, Angriffe und Treffer auf 0,5 s takten (Aufprall bei 0,25 s); Hand-Sockel `socket_r`/`socket_l`. Ergebnis `art/models/units/<id>.glb`, das `pnpm art:build` wie die Blender-Figuren übernimmt.
+6. **Waffen** (GA9): eigene kleine Modelle je Waffengruppe (`tools/art/blender_weapons.py` → `art/models/weapons/`), zur Laufzeit an den Hand-Sockel gehängt; Zuordnung Waffengruppe → Modell, Hand, Angriffsbewegung und Ruhehaltung in `content/render.yaml` `gear`. **Offen:** Reittiere und Vierbeiner; eigene Ruhehaltung des Bogens; Kapitelpakete fürs Größenbudget.
 
 **Budget je Brettfigur:** etwa **6 000–7 000 Dreiecke**, Textur **512 × 512** (nur Grundfarbe), **≤ 0,5 MB Transfergröße** (gzip, wie der Build-Check). Auf dem Handy ist eine Figur in der Zoomstufe „Nah“ nur rund 120 Gerätepixel hoch; mehr Auflösung ist nicht sichtbar. Große Einheiten (Reittiere, Drachen) dürfen das Doppelte haben. Kael: 6 385 Dreiecke, 0,91 MB roh, ≈ 0,4 MB übertragen. [A]
 
-**Credits:** sparsam (Decision Log). Je Figur Smart-Mesh, Textur (20) und Auto-Rig (20); Presets kosten nichts, KI-Animationen (20) nur einmal je Skeletttyp, danach Übertragung in Blender; Requisiten und Umgebung in Blender. Kael hat bis hierher 3 Modellversuche gekostet; Stand nach dem dritten: 5 985 Credits.
+**Credits:** sparsam (Decision Log). Je Figur Smart-Mesh (100, gleich ob 1 oder 4 Varianten, also immer 4), Textur (20) und Auto-Rig (20) = **140**; Presets kosten nichts, KI-Animationen (20) nur für die Bibliothek; Requisiten und Umgebung in Blender. Stand nach Brenna: 5 805 Credits.
 
 ## 5. Bildebene [A]
 
@@ -261,6 +261,39 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 - **Titelbild:** Kael und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
 - **Akt-Karten:** je Akt ein Vollbild zum Aktbeginn im Stil der Illustrationstafeln.
 
+### 5.6 Item-Icons
+
+Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept/21-gdd/items.md`. Getrennt von den flachen 24-px-UI-Icons der Waffengruppen (§9).
+
+- **Ein Icon je Basis-Item** (Tier sichtbar, Seltenheit nicht); Unikate (Signatur, Legendär) mit eigenem Bild; Relikte mit einem Bild je Erwachungsstufe. Rund 139 Icons. [A]
+- **Stil:** dieselbe Formensprache wie die Chibi-Figuren. Übergroße, runde, spielzeughafte Formen mit abgerundeten Spitzen und dicken Griffen, weiche dunkelbraune Outline (kräftiger als im Porträt), Cel-Shading mit zwei Schattentönen und einem klaren Glanzlicht, warme satte Farben, Licht von oben links. [C]
+- **Format:** quadratisch, freigestellt (echter Alphakanal), Item zentriert auf rund 80 % der Fläche. Lange Items (Klingen, Lanzen, Stäbe, Bögen) diagonal von unten links nach oben rechts, kompakte Items (Buch, Trank, Ring, Schild) frontal und leicht gedreht. Kein Rahmen, kein Text, kein Bodenschatten, keine Hand. Master `art/items/<id>.png` mit 512 × 512 px, im Spiel 128 bzw. 256 px. [C]
+- **Lesbarkeit:** Die schwarz gefüllte Silhouette zeigt bei 48 px die Waffengruppe, die Metallfarbe bei 64 px das Tier. Keine dünnen Details. [C]
+
+| Tier | Metall | Griff und Beschläge |
+|---|---|---|
+| Eisen | warmes Dunkelgrau, gehämmert, matt | braune Lederwicklung, schlichtes Eisen |
+| Stahl | helles Blaugrau, poliert, kräftiges Glanzlicht | dunkles Leder, Messing |
+| Silber | fast Weiß, kühles Glanzlicht, feine Gravur | helles Leder, kleine Goldbeschläge |
+| Mondstahl | kühles Silber mit dunklen Gravuren und Mondsichel | wie Silber |
+
+- **Bücher:** Einband in Elementfarbe (§2.3) mit Element-Symbol; das Tier zeigen die Eckbeschläge (Leder, Messing, Silber mit Gold).
+- **Unikate:** eigene Form und die Signaturfarbe des Besitzers (z. B. Brennas Glutorange-Wicklung); Leutnant-Signaturen tragen die Fraktionsfarbe (§2.2).
+- **Relikte:** schlafend matt mit Patina und Rissen, erwachend mit Glutlinien in den Rissen, erwacht mit voller Glut und einzelnen Funken.
+- **Detail nach Seltenheit:** Je seltener das Item im Katalog, desto mehr Oberflächendetail. Gewöhnliche Basis-Items schlicht mit klaren Farbflächen ohne Gravur, seltene mit etwas Struktur und einem kleinen Schmuckteil, Legendär und Signatur reich verziert (Gravuren, Wicklungen, Steine), Relikte am reichsten (alte Gravuren, Goldeinlagen, Glut). Basis-Items, die selten oder episch droppen, behalten ihr schlichtes Bild; das zeigt nur der Rahmen. [A]
+
+**Seltenheit im UI-Rahmen** (nicht im Icon). Farbe und Rauten sind doppelt kodiert, damit es auch ohne Farbsehen lesbar ist. Blau kommt nicht vor, weil Blau und Rot den Teams gehören. [A]
+
+| Stufe | Rahmenfarbe [C] | Zeichen |
+|---|---|---|
+| Gewöhnlich | Steingrau `#9A9488` | keine Raute |
+| Selten | Türkis `#1F9E94` | 1 Raute |
+| Episch | Violett `#7A4CC2` | 2 Rauten |
+| Legendär | Gold `#D9A931` | 3 Rauten; Signatur zusätzlich mit Namensbanner des Besitzers |
+| Relikt | Gold `#D9A931` mit Glutorange `#E8743B` | hohle Krone statt Rauten |
+
+**Erzeugung:** ChatGPT über Claude in Chrome, parallel in mehreren Tabs; Referenzen sind nur die aktuellen Charakterbilder aus `art/mockups/characters-s1/` (Kael, Brenna, Mira, Tobin), bei Unikaten zusätzlich das Bild des Besitzers; nicht das Stil-Mockup und nicht `art/portraits/`. Zuerst 10 Testbilder (`art/prompts/items_test.md`). Die abgenommenen Tests werden zur Stilreferenz für alle weiteren. Ob danach Einzelbilder oder 3×3-Bögen entstehen, entscheidet der Test. Prompt und Abnahme je Durchgang in `art/prompts/items_<batch>.md`.
+
 ## 6. Weltkarte [A]
 
 - **Echte 3D-Szene** aus denselben Bausteinen wie die Kampfkarte, nur kleiner skaliert: Valmora mit Drachengebirge im Norden, Silbermeer im Westen, Grenzmarken im Osten, Aurenhall in der Mitte. Vorbild für Aufteilung und Farben: `weltkarte_valmora.png`.
@@ -272,7 +305,7 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 
 ## 7. Heimat-Burg [A]
 
-- Die **Paktwacht als 3D-Diorama**, Vorlage `paktwacht_ruine.png` und `paktwacht_heimat.png`. Akt 1 zeigt das wandernde Lager (ebenfalls 3D: Zelte, Lagerfeuer, Wagen), ab Akt 2 die Burg.
+- Die **Paktwacht als 3D-Diorama**, Vorlage `paktwacht_ruine.png` und `paktwacht_heimat.png`. Akt 1 zeigt bis Mission 1-6 das wandernde Lager (ebenfalls 3D: Zelte, Lagerfeuer, Wagen), danach die Burg als Ruine mit Räumen auf Stufe 1; Ausbauteile ab Akt 2.
 - **Ausbaustufen** als zusätzliche Modellteile je Raum: Stufe 1 Gerüst und Planen, Stufe 2 neues Dach und Fenster, Stufe 3 Banner, Licht und Leben (Rauch, Figuren).
 - **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen. Stirbt ein Gefährte, bleibt der Gegenstand liegen; in der Gedächtnishalle steht ein Gedenkstein.
 - Antippen eines Raums öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
@@ -333,12 +366,12 @@ Startschätzung zur Planung der Epics. [C]
 | 3D-Figuren (Tripo) | rund 35 Story-Figuren, rund 16 generische Gegner (Typ × Fraktion), 3 Reittiere, 2 Drachen; je ein Turnaround |
 | Skelette und Animationen | 9 Rollen (7 Rollen + Taktiker + Hauptmann), rund 8 Gegnertypen, Reittiere und Drachen eigens |
 | Porträts | rund 18 Kernfiguren × 4 Stimmungen + rund 20 Nebenfiguren × 1 ≈ 90 Bilder |
-| Dialog-Hintergründe | rund 20 (14 aus dem Moodboard + Varianten) |
+| Dialog-Hintergründe | rund 26 (14 aus dem Moodboard + Varianten; neu durch 8/8/8: Gewölbe der Paktwacht, Kontor am Silbermeer, Pass ins Gebirge, Pachthof, Gauklerlager, Unterstadt) |
 | Illustrationstafeln | 11 + 3 Akt-Karten + Titelbild |
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
 | Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
-| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. Rund 120 Bilder für Staffel 1 (Bestand `content/items.yaml` plus Akt-2/3-Tiers, Signatur- und legendäre Items) [A] |
+| Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 142 Bilder für Staffel 1; erzeugt sind 139 (60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items), offen 3 neue Signaturen aus der Course Correction 8/8/8 (Erbstück, Letzter Vorhang, Turmfalke) (Regeln §5.6, Dateien `art/items/`) [A] |
 
 ## 12. Do & Don't
 

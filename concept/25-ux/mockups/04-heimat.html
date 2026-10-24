@@ -80,6 +80,9 @@ p { margin: 0; } .intro p { color: var(--muted); }
 .B .item { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 12px; }
 .B .item.sel { background: #fdf0e3; border: 2px solid var(--ember); }
 .B .item .ic { width: 40px; height: 40px; border-radius: 12px; background: var(--cream-2); border: 2px solid var(--line); display: grid; place-items: center; position: relative; }
+.B .r-common { border-color: #9A9488 !important; } .B .r-rare { border-color: #1F9E94 !important; } .B .r-epic { border-color: #7A4CC2 !important; } .B .r-legendary { border-color: #D9A931 !important; }
+.B img.itm { width: 100%; height: 100%; object-fit: contain; display: block; }
+.B .item .ic img.itm { position: static; width: 100%; height: 100%; border: 0; border-radius: 10px; background: none; }
 .B .item .ic img { position: absolute; right: -6px; bottom: -6px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: #cfe0f7; object-fit: cover; }
 .B .item b { font-family: var(--f-label); font-size: 15px; display: block; line-height: 1.1; }
 .B .item .s { font-size: 12px; color: var(--soft); font-weight: 600; }
@@ -244,8 +247,8 @@ p { margin: 0; } .intro p { color: var(--muted); }
           <div class="piece panel">
             <div class="panel-head"><div class="st"><svg class="i"><use href="#i-hammer"/></svg></div><div class="grow"><h3>Schmied</h3><div class="s">Stufe 2 · Aufwerten bis +4 · Affix neu würfeln ab Stufe 3</div></div></div>
             <div class="upbar"><div><b>Ausbauen auf Stufe 3</b><br>Brann in der Truppe ✓ · <i class="coin" style="vertical-align:-2px"></i> 4 000</div><span class="go">Ausbauen</span></div>
-            <div class="item sel"><div class="ic"><svg class="i"><use href="#i-axe"/></svg><img src="assets/brenna_head.webp" alt=""></div><div><b>Stahlaxt +2</b><span class="s">Brenna · Mt 11 · Treffer 75</span></div><div class="up">+3<br>Mt 12 · Tr 78</div></div>
-            <div class="item"><div class="ic"><svg class="i"><use href="#i-sword"/></svg><img src="assets/kael_head.webp" alt=""></div><div><b>Eisenschwert +1</b><span class="s">Kael · Mt 6 · Treffer 93</span></div><div class="up" style="color:var(--soft)"><i class="coin" style="vertical-align:-2px"></i> 600</div></div>
+            <div class="item sel"><div class="ic r-common"><img class="itm" src="assets/items/steel_axe.webp" alt=""><img src="assets/brenna_head.webp" alt=""></div><div><b>Stahlaxt +2</b><span class="s">Brenna · Mt 11 · Treffer 75</span></div><div class="up">+3<br>Mt 12 · Tr 78</div></div>
+            <div class="item"><div class="ic r-common"><img class="itm" src="assets/items/iron_sword.webp" alt=""><img src="assets/kael_head.webp" alt=""></div><div><b>Eisenschwert +1</b><span class="s">Kael · Mt 6 · Treffer 93</span></div><div class="up" style="color:var(--soft)"><i class="coin" style="vertical-align:-2px"></i> 600</div></div>
             <div class="row"><div class="cost grow"><span class="row" style="gap:4px"><i class="coin"></i>1 000</span><span class="row" style="gap:4px"><i class="ore"></i>2</span></div></div>
             <div class="btns"><div class="btn">Zurück</div><div class="btn primary">Aufwerten auf +3</div></div>
           </div>

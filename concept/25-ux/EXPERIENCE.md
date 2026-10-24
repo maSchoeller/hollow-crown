@@ -100,7 +100,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Kampf | Leerlauf · Einheit gewählt · Bewegung gesetzt (zurücknehmbar bis zur Aktion) · Ziel gewählt (Vorschau) · Gegnerphase (Tempo 1×/2×/Überspringen) · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
 | Einheit | bereit · erschöpft (entsättigt, Ring gestrichelt) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
 | Weltkarte | normal · neuer Tag (Hinweis mit Zahl der Heimsuchungen) · Paket lädt · Akt beendet, nächster nicht veröffentlicht („erscheint bald“ im Nebel) · offline mit fehlendem Paket (Knoten sichtbar, „Wird geladen, sobald du online bist“) |
-| Heimat | Lager (Akt 1, sechs Stationen) · Burg (ab Akt 2, elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
+| Heimat | Lager (Akt 1 bis Mission 1-6, sechs Stationen) · Burg (ab 1-6: sechs Räume auf Stufe 1 und Gedächtnishalle; ab Akt 2 elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
 | Szene | Zeile · Sprecher fehlt (Ersatzsprecher, ggf. Gedenkzeile) · Entscheidung · Folgen · Log |
 | Kampagnen | leer (nur „Neue Kampagne“) · 1–3 belegt · voll (Neue Kampagne verlangt Löschen) · PoC-Stand vorhanden · Import fehlerhaft (Grund in einem Satz) |
 | Speichern | gespeichert (still) · fehlgeschlagen (Banner, nächster Versuch beim nächsten Commit, Export anbieten) · Speicherschutz fehlt (Hinweis „Zum Home-Bildschirm“, einmal) |
@@ -201,7 +201,7 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 1. Um 7:10 öffnet sie die App. Der Tageswechsel war um 4:00; der Hinweis meldet „Neuer Tag: 3 Heimsuchungen“.
 2. Ein roter Knoten zeigt Morras Gesicht mit „NEU“. Die Karte sagt: Truhenjagd, Groll 2 gegen Mira, Kopfgeld ● 600, bleibt offen.
 3. Sie spielt sie in 15 Minuten; das Ergebnis zeigt ● +400 Gold, eine Eisenerz-Raute und 60 % EP.
-4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber das Lager hat einen grünen Pfeil: In der Taverne wartet ein neues Söldner-Angebot. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang. (Die Burg ist Heimat ab der ersten Mission von Akt 2; bis dahin bleibt das Lager.)
+4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber die Burg hat einen grünen Pfeil: In der Taverne wartet ein neues Söldner-Angebot. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang. (Die Burg ist seit 1-6 Heimat; ihre Räume lassen sich erst ab Akt 2 ausbauen.)
 
 ## Offene Punkte
 

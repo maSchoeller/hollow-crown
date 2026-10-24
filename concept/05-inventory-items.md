@@ -68,6 +68,8 @@ interface ItemInstance {
 
 ## 5. Seltenheit & Affixe
 
+> Abgelöst für Staffel 1: fünf Stufen mit Relikt und Rahmenfarben ohne Blau, siehe `21-gdd/items.md` §2 und `23-art-direction/art-direction.md` §5.6.
+
 | Seltenheit | Affixe | Runen-Slots | Farbe (UI) | Quelle |
 |---|---|---|---|---|
 | Gewöhnlich | 0 | 1 | Grau | Händler, häufige Drops |

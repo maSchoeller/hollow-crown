@@ -354,17 +354,17 @@ Alle Befunde wurden mit dem Produktinhaber per Fragetool geklärt; Einträge im 
 | Epic 3 → Epic 4 | Epic 4 vor bzw. mit Epic 3 | `epics.md` Reihenfolge, 3.2, 3.3 |
 | FR25 ohne Story | Story 3.7 Seitenwechsel | `epics.md` |
 | Erwartete Armee-Stufe | `expectedLevel` je Story-Knoten | Story 4.1 |
-| Heimat nach dem Finale | Lager bis Akt 2, Burg ab erster Mission von Akt 2 | 9.7, Epic 10, EXPERIENCE (Mara) |
+| Heimat nach dem Finale | erst „Lager bis Akt 2“, dann abgelöst durch die Course Correction 8/8/8: Burg ab 1-6 Heimat, Ausbau ab Akt 2 | Story 6.9, 9.7, Epic 10, EXPERIENCE (Mara) |
 | Tonbruch-Test spät | bleibt nach 6.7 | – |
 | Export/Import Standard/Casual | Kampagnen-Ansicht, alle Modi | Story 1.3 |
-| NFR1/NFR2 ohne Story | Story 7.5 Leistung messen | `epics.md`, 9.11 |
+| NFR1/NFR2 ohne Story | Story 7.5 Leistung messen | `epics.md`, 9.14 |
 | Nummern-Kollision | Entscheidungen E1–E12, Epics „Epic N“ | Architektur §4, §9, §13.3 |
 | Klassen-Aktion passiv | Zustand mit Info | 2.1, EXPERIENCE |
 | Langdruck Leutnant | Steckbrief plus Gefahrenzone | 3.6, EXPERIENCE |
 | Angebot des Tages | erst Händler-Stufe 3 | 6.4 |
 | Staffel 2 | alles trägt weiter | Decision-Log (AR20 bleibt gültig) |
 | Wolfsreiter | zu Fuß, Vierbeiner nach dem MVP | 2.9 |
-| Kleinkram G2, G5, G6, Schriften, Slots, Spielzeit, Epics 10–12, D2 | Vorschläge übernommen | Decision-Log, 1.1, 3.7, 9.11, Sprint-Status |
+| Kleinkram G2, G5, G6, Schriften, Slots, Spielzeit, Epics 10–12, D2 | Vorschläge übernommen; Spielzeit folgt 8/8/8 (Staffel 30–35 Stunden) | Decision-Log, 1.1, 3.7, 9.14, Sprint-Status |
 | O4, O5/GA26, Nemesis-Patent | laut Produktinhaber geklärt (`licensing.md`) | – |
 
 **Neues Urteil: READY** für Epic 1 und die MVP-Epics. Offen sind nur Nachträge in GDD und Art Direction, die die dort arbeitenden Sessions übernehmen.

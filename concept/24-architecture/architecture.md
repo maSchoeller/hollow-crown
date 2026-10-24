@@ -47,7 +47,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 | Kampagnen-Graph mit freier Reihenfolge, gestaffelte Regeln | GDD Kampagnenstruktur, Narrative Missionsfolge | neu | mittel |
 | Weltkarte, Tageswechsel, Heimsuchungen | GDD Welt und Erkundung | neu | hoch |
 | Szenen mit Sprecherketten, Entscheidungen, Haltung, Epilog-Mosaik | Narrative Branching Dialogue | neu | hoch |
-| Heimat (Lager Akt 1, Burg mit 11 Räumen ab Akt 2) | GDD Heimat | PoC-Lager, stark erweitert | mittel |
+| Heimat (Lager zu Beginn von Akt 1, Burg ab Mission 1-6, 11 Räume und Ausbau ab Akt 2) | GDD Heimat | PoC-Lager, stark erweitert | mittel |
 | Fortschritt (Deckel, Glutfunke, Verbluten, Übungsplatz, Lektionen) | GDD RPG | teils PoC | mittel |
 | Speichern, Klassik-Regeln, Übertrag über Akt-Releases und in Staffel 2 | GDD Reproduzierbarkeit | PoC, neu gefasst | hoch |
 | Auslieferung in Akt-Paketen, offline | GDD Leistungsanforderungen | neu | hoch |
@@ -65,7 +65,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 2. **Zeit im deterministischen Kern:** Heimsuchungen hängen am Kalendertag, der Kern darf keine Uhr lesen (AR6).
 3. **Permadeath trifft verzweigte Story:** Jede Zeile eines Gefährten braucht eine Ersatzkette; Bedingungen über Leben, Flags, Haltung und Supports (AR3, AR9).
 4. **Wiederkehrende Feinde ohne Nemesis-Patent:** feste Leutnant-Liste, nur Zahlen skalieren, nichts wird prozedural erzeugt (AR5).
-5. **Content-Menge eines Solo-Projekts:** 30 Karten, ~4 000 Dialogboxen je Sprache, ~50 3D-Figuren; alles als Daten mit Schema und Prüfwerkzeug.
+5. **Content-Menge eines Solo-Projekts:** 36 Karten, ~4 650 Dialogboxen je Sprache, ~50 3D-Figuren; alles als Daten mit Schema und Prüfwerkzeug.
 
 ## 3. Engine und Stack
 
@@ -186,6 +186,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 | `openQuest` | Nebenquest-Knoten wird verfügbar |
 | `stance` | `{ stance: warm }` zählt für das Haltungsprofil |
 | `chronicle` | Chronik-Seite erhalten |
+| `setHome` | `{ setHome: castle }` wechselt `c.home.kind`; die Räume behalten ihre Stufe (Course Correction 2026-10-23: Burg ab 1-6) |
 
 - Auswertung: `evalCondition(ctx, cond): boolean` und `applyEffects(c, effects, events)` in `src/core/campaign/conditions.ts` bzw. `effects.ts`. `ctx` ist eine schmale Sicht (`flags`, `roster`, `fallen`, `left`, `completed`, `supports`, `stance`, `lieutenants`, `chronicle`), damit dieselbe Funktion in Kampf und Kampagne läuft.
 - Zod-Schema `conditionSchema`/`effectSchema` in `src/content/schemas.ts`; `content:check` prüft alle Referenzen (Gefährte, Knoten, Flag, Leutnant, Paar) gegen das Register.
@@ -204,13 +205,15 @@ nodes:
   - { id: prologue, kind: story, map: m1_0_paktnacht, fixed: first, pre: scn.a1.prologue.pre, post: scn.a1.prologue.post }
   - { id: m1_1, kind: story, map: m1_1_steckbriefe, requires: [{ completed: prologue }] }
   - { id: m1_2, kind: story, map: m1_2_erlbach, requires: [{ completed: m1_1 }] }
-  - { id: m1_6, kind: story, map: m1_6_paktwacht, fixed: finale }        # öffnet sich, wenn alle anderen Story-Knoten des Akts erledigt sind
+  - { id: m1_6, kind: story, map: m1_6_paktwacht, requires: [{ completed: m1_2 }, { completed: m1_3 }, { completed: m1_4 }, { completed: m1_5 }], effects: [{ setHome: castle }] }
+  - { id: m1_7, kind: story, map: m1_7_gewoelbe, requires: [{ completed: m1_6 }] }
+  - { id: m1_8, kind: story, map: m1_8_paktwacht_halten, fixed: finale }   # öffnet sich, wenn alle anderen Story-Knoten des Akts erledigt sind
   - { id: n1, kind: side, map: n1_ring, requires: [{ flag: { e02: protect } }], memorialIf: { dead: fenn } }
-home: camp          # Akt 1 Lager, ab Akt 2 castle
+home: camp          # Startwert des Akts; m1_6 wechselt per setHome auf castle
 worldRegion: borderland
 ```
 
-- `fixed: first` ist nur ohne erledigte Story-Knoten des Akts verfügbar, `fixed: finale` erst nach allen anderen; Akt 3 bildet die feste Folge ab der Krönung über `requires` ab.
+- `fixed: first` ist nur ohne erledigte Story-Knoten des Akts verfügbar, `fixed: finale` erst nach allen anderen; Akt 1 bildet die feste Folge ab der Eroberung (1-6 → 1-7 → 1-8) und Akt 3 die ab der Krönung über `requires` ab.
 - Story-Knoten sind nach dem Abschluss nicht wiederholbar; Nebenquests bleiben über Akte offen; ein gefallener Auslöser schaltet die Gedenk-Variante (`memorialIf`) statt die Quest zu sperren.
 - **Gestaffelte Regeln:** `lockedMechanics` zählt künftig `storyCount` statt Knotenpositionen. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`).
 - **Akt-Übergang:** Nach dem Akt-Finale setzt `finishMission` `act + 1` und meldet `actReached`. Fehlt das Paket des nächsten Akts im Build (AR23), zeigt die Weltkarte „Akt 2 erscheint bald“. Heimsuchungen, Nebenquests, Supports und Heimat laufen weiter.
@@ -319,6 +322,7 @@ lines:
 
 - `content/core/rooms.yaml`: `id`, `function`, `fromAct`, `levels[1..3]` mit `cost`, `requires` (passender Gefährte über AR3), `unlocks` (z. B. `maxUpgrade`, Rezepte, Lagerfeuer-Ränge, Übungsplatz-EP).
 - `c.home = { kind: 'camp' | 'castle', rooms: Record<roomId, level> }`. Raumfunktionen prüfen `roomLevel(c, id)`; es gibt keine verstreuten `if (act >= 2)`.
+- Der Wechsel vom Lager zur Burg geschieht mitten in Akt 1 über die Wirkung `setHome` an Knoten `m1_6`. Ausbau ab Akt 2 steht in den Daten: Stufe 2 und 3 tragen `requires: [{ act: 2 }]`, Verzauberer, Akademie, Werkstatt und Übungsplatz `fromAct: 2`; die Gedächtnishalle hat `fromAct: 1` (Gedenksteine), ihre Lektionen schaltet `unlocks` erst ab Akt 2 frei.
 - Jede Interaktion ist genau ein Kampagnen-Command (≤ 2 Taps, GDD).
 - Darstellung: Raum-Anker im Burg-Modell (`home.yaml`: Anker → Raum, Ausbauteile je Stufe, Platz für Gefährten-Gegenstände).
 
@@ -634,7 +638,7 @@ pnpm content:lock              # IDs nach Release sperren (neu, Story 7.4)
 
 ## 14. Architecture Decision Records
 
-**ADR-1 Kampagne als Commands (AR2).** *Kontext:* Die Kampagne läuft 25–30 Stunden über mehrere Releases, mit Entscheidungen, Tagespaketen und Wirtschaft. *Entscheidung:* eigenes Command-Log mit validate/apply/Events. *Folgen:* Umbau von `camp.ts`; dafür verkettete Simulation, Fehlerberichte mit vollständigem Verlauf und gleiche Testmuster wie im Kampf.
+**ADR-1 Kampagne als Commands (AR2).** *Kontext:* Die Kampagne läuft 30–35 Stunden über mehrere Releases, mit Entscheidungen, Tagespaketen und Wirtschaft. *Entscheidung:* eigenes Command-Log mit validate/apply/Events. *Folgen:* Umbau von `camp.ts`; dafür verkettete Simulation, Fehlerberichte mit vollständigem Verlauf und gleiche Testmuster wie im Kampf.
 
 **ADR-2 Tag als Eingabe (AR6).** *Kontext:* Heimsuchungen hängen am Kalender, der Kern darf keine Uhr lesen. *Entscheidung:* App rechnet die Tagesnummer (04:00 Ortszeit) und schickt `advanceDay`; der Kern zählt nur vorwärts und deckelt den Stau. *Folgen:* reproduzierbar, testbar, Uhrmanipulation bringt höchstens 3 Pakete.
 

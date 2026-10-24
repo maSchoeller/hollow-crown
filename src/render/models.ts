@@ -12,10 +12,15 @@ import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { MeshoptCompression } from '@babylonjs/core/Meshes/Compression/meshoptCompression';
 import '@babylonjs/core/Animations/animatable';
 import '@babylonjs/loaders/glTF/glTFFileLoader';
 import '@babylonjs/loaders/glTF/2.0/glTFLoader';
-import type { Team } from '../core';
+import '@babylonjs/loaders/glTF/2.0/Extensions/EXT_meshopt_compression';
+import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
+import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_texture_transform';
+import { MeshoptDecoder } from 'meshoptimizer/decoder';
+import type { GearPiece, Team } from '../core';
 import { assetUrl } from './assets';
 
 /** Team ramps of Hollow-64 (dark → light), the same the sprite shader swaps in (GA10). */
@@ -24,6 +29,11 @@ export const TEAM_RAMP: Record<Team, string[]> = {
   enemy: ['4a1018', '9e2a2a', 'd9413a', 'f59a8a'],
   other: ['123a24', '2a7a3e', '3fa65a', '9be08f'],
 };
+
+// Image-to-3D figures are meshopt-compressed (tools/art/tripo_units.py). Babylon looks for a global decoder that it would
+// otherwise fetch from its CDN; the bundled one keeps the game offline, an empty script satisfies the loader.
+(globalThis as { MeshoptDecoder?: typeof MeshoptDecoder }).MeshoptDecoder = MeshoptDecoder;
+MeshoptCompression.Configuration = { decoder: { url: 'data:text/javascript,' } };
 
 const toGamma = (c: number) => (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
 const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255];
@@ -68,24 +78,74 @@ export function releaseModels(scene: Scene): void {
   }
 }
 
-/** A unit's 3D figure: animated node tree under `root`, one material for tinting. */
+/** A unit's 3D figure: animated node tree under `root`, its materials for tinting (figure, weapons). */
 export interface UnitModel {
   root: TransformNode;
   meshes: Mesh[];
-  material: StandardMaterial;
+  materials: StandardMaterial[];
   anims: Record<string, AnimationGroup>;
+  /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
+  grips: { node: TransformNode; hold: number }[];
   dispose(): void;
 }
 
-export async function loadUnitModel(scene: Scene, id: string, team: Team, name: string): Promise<UnitModel | null> {
+/** Board material: matt, both faces (the image-to-3D meshes are not always closed). */
+function figureMaterial(name: string, scene: Scene): StandardMaterial {
+  const m = new StandardMaterial(name, scene);
+  m.specularColor = new Color3(0.06, 0.06, 0.06);
+  m.backFaceCulling = false;
+  return m;
+}
+
+/**
+ * Hangs the weapon library models (GA9, tools/art/blender_weapons.py) on the figure's hand sockets (`socket_r`,
+ * `socket_l` from tools/art/prepare_tripo_unit.py). Figures without sockets carry their weapon in the model.
+ */
+async function attachGear(
+  scene: Scene,
+  root: TransformNode,
+  gear: GearPiece[],
+  team: Team,
+  name: string,
+  material: StandardMaterial,
+): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
+  const sockets = root.getDescendants(false);
+  const meshes: Mesh[] = [];
+  const grips: UnitModel['grips'] = [];
+  for (const piece of gear) {
+    const socket = sockets.find((n) => n.name.endsWith(piece.hand === 'right' ? ':socket_r' : ':socket_l')) as TransformNode | undefined;
+    const c = socket && (await container(scene, `models/weapons/${piece.model}.glb`));
+    if (!socket || !c || root.isDisposed()) continue;
+    const grip = new TransformNode(`${name}:${piece.model}:grip`, scene);
+    grip.parent = socket;
+    grips.push({ node: grip, hold: ((piece.hold ?? 0) * Math.PI) / 180 });
+    const inst = c.instantiateModelsToScene((n) => `${name}:${piece.model}:${n}`, false, { doNotInstantiate: true });
+    for (const glRoot of inst.rootNodes) {
+      // the socket already sits in the figure's glTF space: keep the meshes' glTF-local transforms and drop the
+      // weapon file's own handedness root
+      for (const n of glRoot.getChildren()) (n as TransformNode).parent = grip;
+      for (const m of glRoot.getChildMeshes(false).concat(grip.getChildMeshes(false))) {
+        if (!(m instanceof Mesh) || !m.getTotalVertices() || meshes.includes(m) || !m.name.startsWith(`${name}:${piece.model}:`)) continue;
+        m.makeGeometryUnique();
+        teamColours(m, team);
+        m.material = material;
+        m.isPickable = false;
+        m.receiveShadows = true;
+        meshes.push(m);
+      }
+      glRoot.dispose();
+    }
+  }
+  return { meshes, grips };
+}
+
+export async function loadUnitModel(scene: Scene, id: string, team: Team, name: string, gear: GearPiece[] = []): Promise<UnitModel | null> {
   const c = await container(scene, `models/units/${id}.glb`, true);
   if (!c) return null;
   const inst = c.instantiateModelsToScene((n) => `${name}:${n}`, false, { doNotInstantiate: true });
   const root = new TransformNode(name, scene);
   for (const n of inst.rootNodes) n.parent = root;
-  const material = new StandardMaterial(`${name}:mat`, scene);
-  material.specularColor = new Color3(0.06, 0.06, 0.06);
-  material.backFaceCulling = false;
+  const material = figureMaterial(`${name}:mat`, scene);
   const meshes: Mesh[] = [];
   for (const n of inst.rootNodes)
     for (const m of n.getChildMeshes(false)) {
@@ -100,6 +160,9 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
       m.receiveShadows = true;
       meshes.push(m);
     }
+  const gearMaterial = figureMaterial(`${name}:gear`, scene);
+  const held = await attachGear(scene, root, gear, team, name, gearMaterial);
+  meshes.push(...held.meshes);
   const anims: Record<string, AnimationGroup> = {};
   for (const g of inst.animationGroups) {
     g.stop();
@@ -108,13 +171,15 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
   return {
     root,
     meshes,
-    material,
+    materials: [material, gearMaterial],
     anims,
+    grips: held.grips,
     dispose: () => {
       for (const g of inst.animationGroups) g.dispose();
       material.diffuseTexture = null; // shared with every instance of the model, owned by the container
       root.dispose(false, true);
       material.dispose();
+      gearMaterial.dispose();
     },
   };
 }

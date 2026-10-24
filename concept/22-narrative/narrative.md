@@ -58,7 +58,7 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 
 **Prolog: Die Paktnacht.** Das Aschenbanner bewacht den äußeren Ring des Pakttempels. Der König stirbt, Alarm geht los, die Wachen wenden sich gegen die Söldner. Die Flucht aus dem Tempelbezirk ist das Tutorial (Ziel `escape`).
 
-**Akt 1 „Asche“ (Grenzland um Varnhold, Spätsommer):** Die Truppe ist auf der Flucht und gesucht. Im zerfallenden Grenzland plündern Banditen, und die Truppe findet sich: Neue Gefährten stoßen dazu, die ersten Leutnants tauchen auf. Erste Hinweise auf den Pakt zeigen sich, etwa dass die Könige jung starben und ein Ritual niemand versteht. Am Ende erobert die Truppe eine Burgruine und hat damit eine Zuflucht und eine Heimat.
+**Akt 1 „Asche“ (Grenzland um Varnhold, Spätsommer):** Die Truppe ist auf der Flucht und gesucht. Im zerfallenden Grenzland plündern Banditen, und die Truppe findet sich: Neue Gefährten stoßen dazu, die ersten Leutnants tauchen auf. Erste Hinweise auf den Pakt zeigen sich, etwa dass die Könige jung starben und ein Ritual niemand versteht. Mitten im Akt erobert die Truppe eine Burgruine und hat damit eine Zuflucht und eine Heimat; darunter liegen die Gräber junger Könige. Im Finale muss sie die neue Heimat gegen die Kopfgeldjäger halten.
 
 **Akt 2 „Glut“ (Hochland der Eisenmark, Herbst):** Drei Thronanwärter bieten der Kompanie Freispruch gegen einen Auftrag. Die Truppe arbeitet für jeden einen Strang ab, in freier Reihenfolge, und deckt bei jedem eine Lüge auf. Der Verrat beginnt. Die Wende im Akt-Finale (große Schlacht) lautet: *„Die Krone war hohl.“*
 
@@ -75,11 +75,12 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 3. **Steckbriefe:** Im Grenzland erfährt die Truppe, dass ganz Valmora sie für die Königsmörder hält. Ihr neues Ziel: Wer hat uns angeheuert?
 4. **Der Fremde mit dem Siegel:** Der Hüter des Paktes nimmt heimlich Kontakt auf, glaubt angeblich an ihre Unschuld und liefert Hinweise. Er wird zum Mentor.
 5. **Die Spur des Auftraggebers:** Die Truppe verfolgt den Mittelsmann, der sie angeheuert hat. Er stirbt oder verschwindet, bevor er redet. Der Hüter räumt hinter sich auf.
-6. **Junge Könige:** Erste Pakt-Andeutungen, etwa Grabsteine junger Könige oder ein Ritual, das niemand erklären kann. Die Erde bebt, Asche liegt in der Luft.
-7. **Zuflucht Paktwacht** (Akt-1-Finale): Der Hüter rät der Truppe zur verlassenen Paktwacht als Versteck. Sie erobert die Ruine und hat eine Heimat. Was er übersieht: In den Mauern liegen die Aufzeichnungen der alten Wächter.
+6. **Junge Könige:** Erste Pakt-Andeutungen, etwa Grabsteine junger Könige oder ein Ritual, das niemand erklären kann. Die Erde bebt, Asche liegt in der Luft. Fest verankert im Gewölbe unter der Paktwacht (Mission 1-7).
+7. **Zuflucht Paktwacht** (Mission 1-6): Der Hüter rät der Truppe zur verlassenen Paktwacht als Versteck. Sie erobert die Ruine und hat eine Heimat. Was er übersieht: In den Mauern liegen die Aufzeichnungen der alten Wächter.
+7b. **Die Heimat halten** (Akt-1-Finale): Die Kopfgeldjägerin Morra findet das Versteck und greift mit allen Banden an. Die Truppe verteidigt zum ersten Mal etwas, das ihr gehört.
 8. **Drei Angebote** (Akt-2-Einstieg): Drei Thronanwärter bieten Freispruch gegen einen Auftrag.
 9. **Drei Lügen:** In jedem Strang deckt die Truppe eine Lüge ihres Auftraggebers auf. Am Himmel ziehen Drachenschatten, ein Dorf brennt.
-10. **Die Chronik der Wächter:** Ein Gefährte entziffert in der Burg die Aufzeichnungen. Der Pakt verlangt etwas von den Königen, nur was genau, bleibt unklar.
+10. **Die Chronik der Wächter:** Ein Gefährte entziffert in der Burg die Aufzeichnungen, die die Truppe in 1-7 versiegelt gefunden hat. Der Pakt verlangt etwas von den Königen, nur was genau, bleibt unklar.
 11. **Der Hinterhalt** (Akt-2-Finale, große Schlacht): Die Marionette des Hüters liefert die Truppe aus, der Freispruch war gelogen.
 12. **„Die Krone war hohl.“** (Mitte der Staffel): Nach der Schlacht wird die Wahrheit ausgesprochen: Der Pakt hält nicht durch Magie, sondern durch ein Opfer. Die Marionette glaubt, sie werde König. Sie ahnt nicht, dass der Hüter sie als nächstes Opfer ausersehen hat.
 13. **Winter über Aurenhall** (Akt-3-Einstieg): Die Drachen erwachen sichtbar. Die Marionette soll gekrönt werden, und die verschwundene Krone taucht wieder auf.
@@ -93,7 +94,7 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 ### Beat Placement by Act
 
 - **Prolog:** 1, 2
-- **Akt 1 „Asche“ (Aufbau):** 3, 4, 5, 6, 7. Die Beats 3 und 7 liegen fest, 4 bis 6 verteilen sich auf die frei wählbaren Missionen.
+- **Akt 1 „Asche“ (Aufbau):** 3, 4, 5, 6, 7, 7b. Fest liegen 3 (1-1), 7 (1-6), 6 (1-7) und 7b (1-8); 4 und 5 verteilen sich auf die frei wählbaren Missionen.
 - **Akt 2 „Glut“ (Konfrontation):** 8, 9, 10, 11, 12. Fest liegen 8 sowie 11 und 12, Beat 9 läuft in den drei Strängen, Beat 10 als Burg-Szene nach einer beliebigen Mission.
 - **Akt 3 „Krone“ (Auflösung):** 13 bis 19. Hier gibt es weniger Freiheit, weil der Hauptbogen dominiert.
 
@@ -107,7 +108,7 @@ Ein langsamer Aufbau mit fester Taktung. Akt-Einstieg und Akt-Finale sind dicht 
 
 ### Tension Curve
 
-Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist eine Welle, jede Rückkehr ins Lager oder in die Burg eine Atempause. Die Akt-Finale bilden die Gipfel: die Eroberung der Paktwacht, dann der Hinterhalt mit der Enthüllung „Die Krone war hohl“, schließlich Drachen und Hüter. Die Grundlinie steigt von Akt zu Akt durch Drachenzeichen, Jahreszeit und Gegnerstärke.
+Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist eine Welle, jede Rückkehr ins Lager oder in die Burg eine Atempause. Die Akt-Finale bilden die Gipfel: die Verteidigung der Paktwacht, dann der Hinterhalt mit der Enthüllung „Die Krone war hohl“, schließlich Drachen und Hüter. Die Grundlinie steigt von Akt zu Akt durch Drachenzeichen, Jahreszeit und Gegnerstärke.
 
 ### Story Density
 
@@ -242,7 +243,7 @@ Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte tre
 | 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden) |
 | 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
 
-Signaturwaffen, Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
+Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
 
 ---
 
@@ -379,11 +380,13 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | **Varnhold** | Grenzland, Akt 1 | Grenzstädtchen, erster Halt, Steckbriefe, Diebesring (Fenn) | Spätsommer, Staub, Markt |
 | **Erlbach** | Grenzland, Akt 1 | Miras Dorf, Beitritt Mira | Felder, Wald |
 | **Hungerlager** | Grenzland, Akt 1 | Lager von Grosks Bande, Entscheidung zum Seitenwechsel | Elend, Kinder, Rauch |
-| **Die Paktwacht** | Grenzland → Heimat ab Akt 2 | Burgruine der Paktwächter, Akt-1-Finale, Heimat-Burg, Chronik der Wächter | Ruine, die zum Zuhause wird |
+| **Die Paktwacht** | Grenzland → Heimat ab 1-6 | Burgruine der Paktwächter, erobert in 1-6, verteidigt im Akt-1-Finale, Heimat-Burg, Chronik der Wächter, Gewölbe mit Gräbern junger Könige | Ruine, die zum Zuhause wird |
 | **Grauwacht** | Eisenmark, Akt 2 | Festung und Hauptquartier Dravns | Eisen, Wind, Wyvern |
 | **Sables Dorf am Brandhang** | Eisenmark, Akt 2 | soll als Brandschneise geopfert werden, Bedingung für Sables Wechsel | Herbst, Heu, Angst |
 | **Salzpass** | Eisenmark, Akt 2 | Schmuggelroute der Herzogin, Nell kennt sie | Nebel, Karawanen |
+| **Kontor am Silbermeer** | Küste der Eisenmark, Akt 2 | Handelshaus der Herzogin; die Geschäftsbücher beweisen, dass sie die Banden aus Akt 1 bezahlt hat (E8) | Salz, Tinte, Laternen |
 | **Kronfeld** | Eisenmark, Akt-2-Finale | neutraler Treffpunkt zum „Freispruch“, Ort des Hinterhalts (große Schlacht) | weites Feld, Banner, Verrat |
+| **Pass ins Drachengebirge** | Drachengebirge, Akt 3 | Weg zum Urtempel nach dem Drachenangriff; Drachen als Gefahr im Gelände | Sturm, Schnee, Glutrisse |
 | **Urtempel und Vhaelyras Hort** | Drachengebirge, Akt-3-Finale | Ort des ersten Paktes, Halvards Opfer, Entscheidung „Wahrheit oder Frieden“ | Eis, Glut, uralter Stein |
 
 ---
@@ -429,7 +432,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | 2 | Gerrits Grab | ganze Truppe | nach dem Prolog (Lagerfeuer) | erste Gedenkszene, Ton der Staffel | Trauer, leise |
 | 3 | Rhens Geständnis | Rhen, Kael | Akt 1, nach der Spur des Auftraggebers | Rhen hat den Vertrag geholt; Kaels Reaktion hängt am Haltungsprofil | Schuld, Vergebung |
 | 4 | Der Fremde mit dem Siegel | Halvard, Kael, Liora | Akt 1 | Mentor tritt auf; im Rückblick doppeldeutige Sätze | Trost, Vertrauen |
-| 5 | Eine Burg für Niemande | Kael, Truppe | Akt-1-Finale | die Paktwacht wird Heimat | Stolz, Aufbruch |
+| 5 | Eine Burg für Niemande | Kael, Truppe | nach 1-6 | die Paktwacht wird Heimat | Stolz, Aufbruch |
 | 6 | Drei Angebote | Seraphine, Dravn, Maelis, Kael | Akt-2-Einstieg | drei Verhandlungen, Freispruch gegen Auftrag | Politik, Misstrauen |
 | 7 | Die Chronik | Liora, Ysolde, Rhen | Akt 2, Burg | „Der Pakt verlangt etwas von den Königen“ | Unruhe, Neugier |
 | 8 | Kronfeld | Seraphine, Kael | Akt-2-Finale | der Verrat, „Die Krone war hohl“ | Schock |
@@ -597,7 +600,7 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 ### Optional Content
 
-**Nebenquests (7):** an Gefährten und Entscheidungen gebunden (Zuordnung in Schritt 9).
+**Nebenquests (10):** an Gefährten und Entscheidungen gebunden (siehe Gameplay Integration).
 
 **Chronik-Seiten (12):** 4 pro Akt.
 
@@ -649,23 +652,27 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 **Ludonarrative Considerations:** Das Kopfgeld ist Teil der Story: Der Spieler kassiert es selbst von Leutnants. Dass Söldner für Geld kämpfen, wird nie verschwiegen. Der Konflikt Gold gegen Gewissen wird in Entscheidung E3 ausdrücklich gemacht.
 
-### Missionsfolge (20 Story-Missionen)
+### Missionsfolge (25 Story-Missionen)
 
-★ = fester Platz, sonst innerhalb des Akts frei wählbar.
+★ = fester Platz, sonst innerhalb des Akts frei wählbar. Stand nach der Course Correction 2026-10-23 (`concept/sprint-change-proposal-2026-10-23.md`).
 
-**Akt 1 „Asche“ (Prolog + 6)**
+**Akt 1 „Asche“ (Prolog + 8)**
 
 | # | Mission | Ziel | Leutnant | Beitritt | Beat |
 |---|---|---|---|---|---|
 | P ★ | Die Paktnacht | escape | – (Tempelwachen) | Rhen, Kael, Brenna, Tobin | Paktnacht, Gerrit fällt (Szene) |
 | 1-1 ★ | Steckbriefe | rout | – | Fenn | Die Truppe ist gesucht |
-| 1-2 | Asche über Erlbach | defend | **Hask** (erste Begegnung) | Mira | Dorf retten |
+| 1-2 | Asche über Erlbach | defend | **Hask** (erste Begegnung) | Mira | Dorf retten, E1 |
 | 1-3 | Der Fremde mit dem Siegel | escort (Liora) | **Morra** | Liora | Halvard tritt auf |
-| 1-4 | Die Spur des Maklers | boss (Osric Dunn) | **Ulvric** | Ysolde (Gefangene der Wolfsreiter) | Dunn stirbt; danach Rhens Geständnis |
-| 1-5 | Das Hungerlager | rout | **Grosk** | Varek (Ansprechen) | Entscheidung E3 |
-| 1-6 ★ | Die Paktwacht (Finale) | seize | Hask, Morra, Ulvric (Grosk, falls nicht gewechselt) | Grosk (bei E3 „verschonen“) | Heimat erobert, 2 Glutfunken |
+| 1-4 | Die Spur des Maklers | boss (Osric Dunn) | **Ulvric** | Ysolde (Gefangene der Wolfsreiter) | E2 davor; Dunn stirbt; danach Rhens Geständnis |
+| 1-5 | Das Hungerlager | survive (standhalten, bis Grosk redet) | **Grosk** | Varek (Ansprechen); Grosk direkt danach bei E3 „verschonen“ | Entscheidung E3 |
+| 1-6 ★ | Die Paktwacht | seize | Hask, Ulvric | – | Heimat erobert (Tafel 4), danach E4 |
+| 1-7 ★ | Unter der Paktwacht | treasure (vor dem Einsturz bergen) | – (Plünderer) | – | Junge Könige: Grabreliefs im Gewölbe, die Chronik versiegelt gefunden |
+| 1-8 ★ | Die Heimat halten (Finale) | defend | **Morra** (führt), Hask, Ulvric, Grosk (falls nicht gewechselt) | – | Morra findet das Versteck (Weg je nach E4), 2 Glutfunken |
 
-**Akt 2 „Glut“ (7).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter.
+Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet, hängt an E4: Bei „aufnehmen“ verbreitet sich das Gerücht, bei „geheim halten“ spüren Ulvrics Wölfe die Truppe auf (eine Szenenzeile, keine Kartenvariante).
+
+**Akt 2 „Glut“ (8).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter. Jeder Strang hat zwei Missionen.
 
 | # | Mission | Strang | Ziel | Leutnant | Beitritt |
 |---|---|---|---|---|---|
@@ -675,22 +682,27 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 | 2-4 | Der Wyvernhorst | Dravn | boss | **Rowena** | Ilka |
 | 2-5 | Die Brandschneise | Dravn | defend (Brandhang) | **Grell** | Brann; Sable bei E7 „warnen“ |
 | 2-6 | Gold für Banditen | Herzogin | rout | **Rowena**, **Sable** | Amos |
-| 2-7 ★ | Kronfeld (Finale, große Schlacht) | – | survive → escape | Rowena, Grell, Brakka, Sable (falls nicht gewechselt) | – („Die Krone war hohl“) |
+| 2-7 | Das Kontor am Silbermeer | Herzogin | reach (Geschäftsbücher sichern) | **Brakka** | – (Beweis gegen Maelis, E8) |
+| 2-8 ★ | Kronfeld (Finale, große Schlacht) | – | survive → escape | Rowena, Grell, Brakka, Sable (falls nicht gewechselt) | – („Die Krone war hohl“) |
 
-**Akt 3 „Krone“ (6, davon 2 große Schlachten)**
+2-6 weckt den Verdacht, dass Maelis die Banden aus Akt 1 bezahlt hat; 2-7 bringt den Beweis.
+
+**Akt 3 „Krone“ (8, davon 2 große Schlachten)**
 
 | # | Mission | Ziel | Leutnant | Beitritt |
 |---|---|---|---|---|
-| 3-1 ★ | Winter über Aurenhall | reach (durch die Palastgänge) | **Eluned** | Kit |
+| 3-1 ★ | Winter über Aurenhall | reach (durch die Palastgänge) | **Eluned** | Kit und Pell |
 | 3-2 | Das verbotene Lied | escort (Harlan) | **Cassian** | Harlan |
-| 3-3 | Die Einsiedlerin | defend (Vesnas Hütte) | **Mael** | Vesna; Mael bei E11 „verschonen“ |
-| 3-4 ★ | Die Krönung | seize (Glutdom) | Cassian, Eluned, **Torvald** | – (Halvard enttarnt) |
-| 3-5 ★ | Drachen über der Stadt (große Schlacht) | defend | **Torvald**, Drachen (dritte Partei) | Pell |
-| 3-6 ★ | Im Drachengebirge (Finale, große Schlacht) | boss (Halvard) | Cassian, Torvald, Eluned, Mael (falls nicht gewechselt) | – (Der Preis, Wahrheit oder Frieden) |
+| 3-3 | Die Einsiedlerin | defend (Vesnas Hütte) | **Torvald** | Vesna (E9) |
+| 3-4 | Der Zweifler | boss (Mael; Nebenziel recruit) | **Mael** | Mael bei E11 „verschonen“ |
+| 3-5 ★ | Die Krönung | seize (Glutdom) | Cassian, Eluned, Torvald | – (Halvard enttarnt) |
+| 3-6 ★ | Drachen über der Stadt (große Schlacht) | defend | Torvald, Drachen (dritte Partei) | – |
+| 3-7 ★ | Der Weg ins Gebirge | reach (Pass, Drachen als Gelände-Gefahr) | Eluned | – |
+| 3-8 ★ | Im Drachengebirge (Finale, große Schlacht) | boss (Halvard) | Cassian, Torvald, Eluned, Mael (falls nicht gewechselt) | – (Der Preis, Wahrheit oder Frieden) |
 
-In Akt 3 sind nur 3-2 und 3-3 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale (Abweichung vom GDD, dort im Log vermerkt).
+In Akt 3 sind 3-2 bis 3-4 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale. Pell tritt mit Kit bei: Der eine kennt die Gänge, der andere hat sich geweigert, die Truppe zu jagen.
 
-Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale. Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor. Beitritte: 8, 7 und 5.
+Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale. Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen. Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
 
 ### Die 12 Entscheidungen
 
@@ -701,31 +713,36 @@ Je Akt 2 persönliche, 1 Gewissensfrage, 1 politische.
 | E1 | 1 | persönlich | Erlbach bietet **Mira** die Heimkehr an: gehen lassen oder halten | Mira geht und Erlbach gibt Dorfhilfe (Heiltrank +1 für Akt 1), oder Mira bleibt |
 | E2 | 1 | persönlich | Der Diebesring will **Fenn** zurück, im Tausch gegen Infos über den Makler | Fenn ausliefern (Mission 1-4 leichter, Fenn geht) oder schützen (Nebenquest N1 öffnet) |
 | E3 | 1 | Gewissen | Das **Hungerlager**: verschonen oder das Kopfgeld kassieren | Grosk tritt bei und Hask-Groll −1, oder +600 Gold |
-| E4 | 1 | politisch | Die **Paktwacht**: Flüchtlinge aufnehmen oder geheim halten | Dorfhilfe in Akt 2, oder Händler −10 % in Akt 2 |
+| E4 | 1 | politisch | Die **Paktwacht**: Flüchtlinge aufnehmen oder geheim halten | Dorfhilfe in Akt 2, oder Händler −10 % in Akt 2; dazu eine Szenenzeile in 1-8 (wie Morra das Versteck findet) |
 | E5 | 2 | persönlich | Seraphine bietet **Odile** die Rückkehr in die Garde an | Odile geht (ihre Zeile in Kronfeld wechselt), oder sie bleibt |
 | E6 | 2 | persönlich | Dravn bietet **Varek** Begnadigung im Heer an | Varek geht, oder er bleibt und Sable-Groll −1 |
 | E7 | 2 | Gewissen | **Brandhang** warnen oder den Befehl ausführen | Sable tritt bei, oder Dravns Gunst bringt Händler −10 % |
 | E8 | 2 | politisch | Die Beweise gegen **Maelis** an Seraphine geben oder zurückverkaufen | Grell-Groll −1, oder +1 000 Gold |
-| E9 | 3 | persönlich | Vesna will **Ysolde** mit ins Gebirge zum Forschen nehmen | Ysolde geht (Epilog-Wendung) und Vesna bleibt, oder Ysolde bleibt und Nebenquest N5 öffnet |
+| E9 | 3 | persönlich | Vesna will **Ysolde** mit ins Gebirge zum Forschen nehmen | Ysolde geht (Epilog-Wendung) und Vesna bleibt, oder Ysolde bleibt und Nebenquest N7 öffnet |
 | E10 | 3 | persönlich | **Liora**: Halvard vergeben oder verurteilen | Epilog-Wendung, Halvards letzte Worte, Lioras Kachel |
 | E11 | 3 | Gewissen | **Mael** verschonen und ihm die Chronik zeigen, oder ihn besiegen | Mael tritt bei, oder Torvald-Groll −1 |
 | E12 | 3 | politisch | **Wahrheit oder Frieden** (Bonus: „Vhaelyra fragen“) | `s1_ending`, Schlusstafel, Staffel 2 |
 
+Orte: E1 nach 1-2, E2 vor 1-4, E3 nach 1-5, E4 nach 1-6, E5 nach 2-3, E6 nach 2-4, E7 nach 2-5, E8 nach 2-7, E9 nach 3-3, E11 in 3-4, E10 und E12 im Finale 3-8.
+
 Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuft als Gedenk-Variante. Avatar und Kael gehen nie. Die Gold- und Preiswerte sind Startwerte für das Balancing. `[ASSUMPTION]`
 
-### Die 7 Nebenquests
+### Die 10 Nebenquests
 
 | # | Akt | Art | Quest | Auslöser | Belohnung |
 |---|---|---|---|---|---|
 | N1 | 1 | persönlich | Der Ring von Varnhold (Fenns Vergangenheit) | E2 „schützen“ | Glutfunke, Signaturdolch |
-| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, legendärer Schild |
-| N3 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan) | Ilka in der Truppe | Glutfunke, Signaturbogen |
-| N4 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III |
-| N5 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
-| N6 | 3 | persönlich | Brennas Bruder | Brenna lebt und hat B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
-| N7 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Zeile für „Vhaelyra fragen“ |
+| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, Relikt Schild der Paktwächter |
+| N3 | 1 | persönlich | Das Erbe (Tobins Pachthof; Variante der Karte Erlbach) | Tobin in der Truppe, Mission 1-6 gespielt | Signaturlanze |
+| N4 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan) | Ilka in der Truppe | Glutfunke, Signaturbogen |
+| N5 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III, Relikt Drachenglut |
+| N6 | 2 | persönlich | Die Gauklertruppe (Jorys alte Truppe) | Jory in der Truppe | Signaturlaute |
+| N7 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
+| N8 | 3 | persönlich | Brennas Bruder | Brenna lebt und hat B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
+| N9 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Relikt Aldrics Paktklinge, Zeile für „Vhaelyra fragen“ |
+| N10 | 3 | persönlich | Die Unterstadt (Kit und Pell; Variante der Karte 3-1) | Kit und Pell in der Truppe | Signaturbogen (Pell) |
 
-Fällt der Gefährte, an den eine Quest gebunden ist, läuft sie als Gedenk-Variante (laut GDD).
+Fällt der Gefährte, an den eine Quest gebunden ist, läuft sie als Gedenk-Variante (laut GDD). N3, N6 und N10 geben keinen Glutfunken, damit es bei 12 Glutfunken bleibt (GDD).
 
 ### Die 25 Support-Paare
 
@@ -767,11 +784,11 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 
 **Gating Approach:** harte Schranken an Akt-Eckpunkten, weiche dazwischen.
 
-**Story-Locked Elements:** Die erste Mission eines Akts und das Finale sind fest. Das Finale öffnet sich erst, wenn alle anderen Story-Missionen des Akts gespielt sind. Akt 3 ab der Krönung ist linear. Die Burg ist erst ab Akt 2 nutzbar. Die Lektionen der gestaffelten Regeln hängen an der Zahl gespielter Missionen (GDD).
+**Story-Locked Elements:** Die erste Mission eines Akts und das Finale sind fest. Das Finale öffnet sich erst, wenn alle anderen Story-Missionen des Akts gespielt sind. Akt 1 ab der Eroberung der Paktwacht und Akt 3 ab der Krönung sind linear. Die Burg ist ab Mission 1-6 nutzbar, ausgebaut wird sie ab Akt 2. Die Lektionen der gestaffelten Regeln hängen an der Zahl gespielter Missionen (GDD).
 
 **Cutscene Triggers:** Akt-Einstieg, Akt-Finale, die 11 Tafeln aus der Narrative Delivery, der Tod eines Gefährten (Gedenken nach der Mission).
 
-**Mandatory Story Beats:** die 20 Story-Missionen und ihre Szenen.
+**Mandatory Story Beats:** die 25 Story-Missionen und ihre Szenen.
 
 **Optional Narrative:** Nebenquests, Supports, Chronik-Seiten, Heimsuchungen, Gedenken.
 
@@ -797,18 +814,18 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 
 ### Writing Scope
 
-**Estimated Word Count:** ~56 000 Wörter je Sprache, ~112 000 in DE und EN.
+**Estimated Word Count:** ~65 000 Wörter je Sprache, ~130 000 in DE und EN (nach der Course Correction 8/8/8).
 
 **Content Breakdown:**
 
-- Main story (Szenen, Sprechblasen, Varianten): ~25 600
-- Side content (Supports, Nebenquests): ~19 200
-- Environmental/lore (Chronik, Epilog, Leutnants, Barks, Tod und Trauer): ~6 500
+- Main story (Szenen, Sprechblasen, Varianten): ~32 000
+- Side content (Supports, Nebenquests): ~21 300
+- Environmental/lore (Chronik, Epilog, Leutnants, Barks, Tod und Trauer): ~7 000
 - UI/system text: ~5 000
 
-**Scene Count:** etwa 40 Story-Szenen (2 je Mission), 14 Nebenquest-Szenen, 81 Support-Gespräche (75 + 6 S-Ränge), 11 Illustrationstafeln.
+**Scene Count:** etwa 50 Story-Szenen (2 je Mission), 20 Nebenquest-Szenen, 81 Support-Gespräche (75 + 6 S-Ränge), 11 Illustrationstafeln.
 
-**Dialogue Lines:** etwa 4 000 Boxen je Sprache, davon rund 400 vertonte Zeilen.
+**Dialogue Lines:** etwa 4 650 Boxen je Sprache, davon rund 400 vertonte Zeilen.
 
 **Branching Complexity:** etwa 10 % Variantentext (Entscheidungen, Haltungsprofil, Ersatzsprecher, Gedenken). Die Ersatzsprecher-Kette kostet kaum zusätzlichen Text, weil meist dieselbe Zeile einem anderen Sprecher zufällt.
 
@@ -922,20 +939,22 @@ v
 ├── Steckbriefe: die Truppe gilt als Königsmörder
 ├── Halvard tritt als Mentor auf
 ├── Die Spur des Maklers endet mit Osric Dunns Tod; Rhens Geständnis
-└── Finale: Eroberung der Paktwacht (neue Heimat)
+├── Eroberung der Paktwacht (neue Heimat), Gewölbe mit den Gräbern junger Könige
+└── Finale: Die Heimat halten gegen Morra und die Banden
 |
 v
 [AKT 2 „GLUT“ – Herbst, Eisenmark]
 ├── Drei Angebote: Freispruch gegen Auftrag
-├── Drei Stränge, drei Lügen; Chronik der Wächter entziffert
+├── Drei Stränge, drei Lügen; das Kontor am Silbermeer; Chronik der Wächter entziffert
 ├── Finale: Hinterhalt auf dem Kronfeld (Seraphines Verrat)
 └── Wende der Staffel: „Die Krone war hohl.“
 |
 v
 [AKT 3 „KRONE“ – Winter, Aurenhall und Drachengebirge]
-├── Winter über Aurenhall, die Krone taucht wieder auf
+├── Winter über Aurenhall, die Krone taucht wieder auf; Maels Zweifel
 ├── Die Krönung: Halvard enttarnt
 ├── Drachen über der Stadt
+├── Der Weg ins Gebirge
 ├── Finale im Drachengebirge: Halvard zahlt den Preis
 └── Wahrheit oder Frieden → Epilog-Mosaik → Staffel 2
 ```

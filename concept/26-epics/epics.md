@@ -68,14 +68,14 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 
 **Kampagne, Weltkarte, Heimsuchungen (GDD Kampagnenstruktur, Welt und Erkundung)**
 
-- FR26 (neu): 3 Akte mit 20 Story-Missionen (Prolog + 6 / 7 / 6); erste Mission je Akt fest, danach 2–3 parallel wählbar, Finale nach allen anderen; Akt 3 ab der Krönung linear.
+- FR26 (neu, Course Correction 2026-10-23): 3 Akte mit 25 Story-Missionen (Prolog + 8 / 8 / 8); erste Mission je Akt fest, danach 2–3 parallel wählbar, Finale nach allen anderen; Akt 1 ab der Eroberung der Paktwacht (1-6 → 1-8) und Akt 3 ab der Krönung linear.
 - FR27 (neu): Missionszustände: Story nicht wiederholbar, Nebenquests über Akte offen mit Gedenk-Variante, Heimsuchungen erst nach der ersten Leutnant-Begegnung, max. 6 offen.
 - FR28 (geändert): Gestaffelte Regeln nach Zahl abgeschlossener Story-Missionen (Bewegung/Angriff → Dreieck → Magie → Elemente/Status/Runen/Supports); Klassen-Aktionen einer Rolle, sobald der erste Gefährte der Rolle beitritt; max. eine Lektion je Runde.
 - FR29 (neu): 3D-Weltkarte von Valmora mit 3 Regionen, Nebel je Akt, Orts-Miniaturen mit bis zu 2 Varianten, Drachenzeichen je Akt, Knoten Story/Nebenquest/Heimsuchung/Heimat.
 - FR30 (neu): Tageswechsel: einmal pro Kalendertag 1–3 Heimsuchungen auf gespielten Karten, reproduzierbar aus dem Datum; Stau bis 3 Tagespakete; Uhr zählt nur vorwärts.
 - FR31 (neu): Heimsuchungs-Varianten boss, defend, rout (Banditennest), escort, treasure mit mindestens einem Leutnant aus einem erreichten Akt und Gegnern auf Armee-Stufe.
 - FR32 (neu): Heimsuchungs-Belohnung 40 % Gold, Kopfgeld, Material, 60 % EP, keine Glutfunken; ab der 4. Heimsuchung seit der letzten Story-Mission Gold und Kopfgeld halbiert; über der erwarteten Armee-Stufe 50 % EP.
-- FR33 (neu): 7 Nebenquests (2/2/3) mit Auslösern aus Entscheidungen, Gefährten oder Fortschritt; je ein Glutfunke plus Sonderbelohnung.
+- FR33 (neu): 10 Nebenquests (3/3/4) mit Auslösern aus Entscheidungen, Gefährten oder Fortschritt; 7 mit Glutfunke plus Sonderbelohnung, 3 persönliche (N3, N6, N10) mit Signaturwaffe.
 
 **Story, Entscheidungen, Supports (GDD Quest-System, NPC und Dialog; Narrative)**
 
@@ -92,7 +92,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 **Fortschritt und Wirtschaft (GDD RPG, Progression)**
 
 - FR43 (geändert): Stufen 1–20 je Klassenstufe, Deckel 10 in Akt 1 (EP darüber verfallen), danach 20; EP-Regeln laut GDD inklusive Leutnant-Bonus.
-- FR44 (neu): Glutfunke als Aufstiegs-Item (12 in Staffel 1: 2 aus dem Akt-1-Finale, 7 aus Nebenquests, 3 rotierend beim Händler ab Stufe 3 für 3 000 Gold); Aufstieg ab Stufe 10 in der Akademie mit Wahl Profi A/B, Stufe → 1, Loadout 4 → 5; Erhalt als Moment inszeniert.
+- FR44 (neu): Glutfunke als Aufstiegs-Item (12 in Staffel 1: 2 aus dem Akt-1-Finale, 7 aus 7 der 10 Nebenquests, 3 rotierend beim Händler ab Stufe 3 für 3 000 Gold); Aufstieg ab Stufe 10 in der Akademie mit Wahl Profi A/B, Stufe → 1, Loadout 4 → 5; Erhalt als Moment inszeniert.
 - FR45 (bestehend): Item-Skills mit Meisterung durch Tragen; Paperdoll, Gewicht, Seltenheit, Affixe, Runen, Sets, Aufwerten, Verbrauchsgüter, Konvoi 200.
 - FR46 (neu): Ausrüstungs-Tier je Akt (Eisen, Stahl, Silber/Mondstahl) im Händler-Sortiment; Legendäre und Signatur-Items aus Nebenquests und Leutnants.
 - FR47 (geändert): Goldkurve je Akt (Prolog 300; Akt 1 800–1 500; Akt 2 2 000–3 000; Akt 3 3 000–4 500; Nebenziele +30–50 %), Startgold 500; Material Eisenerz, Mondstahl, Drachenschuppe, Arkanstaub; Kosten laut GDD.
@@ -100,13 +100,13 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 
 **Heimat (GDD Heimat)**
 
-- FR49 (geändert): Akt 1 wanderndes Lager mit Konvoi, Händler, Schmied, Heiler, Taverne, Lagerfeuer auf Stufe 1.
-- FR50 (neu): Ab Akt 2 Burg mit 11 Räumen (Konvoi, Händler, Schmied, Verzauberer, Heiler, Taverne, Lagerfeuer, Akademie, Werkstatt, Gedächtnishalle, Übungsplatz), je 3 Stufen; Ausbau über passenden Gefährten + Gold.
+- FR49 (geändert): Akt 1 bis Mission 1-6 wanderndes Lager mit Konvoi, Händler, Schmied, Heiler, Taverne, Lagerfeuer auf Stufe 1.
+- FR50 (neu): Ab Mission 1-6 Burg; in Akt 1 die sechs Lagerfunktionen auf Stufe 1 und die Gedächtnishalle mit Gedenksteinen; ab Akt 2 alle 11 Räume (Konvoi, Händler, Schmied, Verzauberer, Heiler, Taverne, Lagerfeuer, Akademie, Werkstatt, Gedächtnishalle, Übungsplatz), je 3 Stufen; Ausbau über passenden Gefährten + Gold.
 - FR51 (neu): Werkstatt stellt Verbrauchsgüter aus Material her.
 - FR52 (neu): Gedächtnishalle mit Gedenksteinen (auch Söldner); einmal pro Akt vererbt ein Gefallener eine Lektion.
 - FR53 (neu): Übungsplatz gibt Reserve-EP (20/35/50 % der Durchschnitts-EP).
 - FR54 (neu): Sichtbares Wachstum: Gefährten und ihre Gegenstände in der Burg, leerer Platz und Gedenkstein nach einem Tod.
-- FR55 (neu): Eroberung der Burgruine am Ende von Akt 1 (Mission 1-6) schaltet die Burg für Akt 2 frei.
+- FR55 (neu): Eroberung der Burgruine in Mission 1-6 macht die Burg sofort zur Heimat; das Akt-1-Finale 1-8 verteidigt sie.
 
 **Spielstände und Auslieferung (GDD Technical, Architektur)**
 
@@ -117,9 +117,9 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 
 **Inhalte (Narrative Missionsfolge)**
 
-- FR60 (neu): Akt 1: Prolog + 6 Story-Missionen, 2 Nebenquests (N1, N2), 4 Leutnants (Hask, Morra, Ulvric, Grosk), Entscheidungen E1–E4, Beitritte laut Narrative, Akt-1-Supports, 2 Glutfunken im Finale.
-- FR61 (neu): Akt 2: 7 Story-Missionen inkl. großer Schlacht Kronfeld, N3/N4, Leutnants Brakka, Grell, Sable, Rowena, E5–E8, Region 2, Burg als Heimat.
-- FR62 (neu): Akt 3: 6 Story-Missionen inkl. 2 großer Schlachten, N5–N7, Leutnants Eluned, Cassian, Mael, Torvald, Drachen als dritte Partei, E9–E12, Region 3, Epilog.
+- FR60 (neu): Akt 1: Prolog + 8 Story-Missionen, 3 Nebenquests (N1–N3), 4 Leutnants (Hask, Morra, Ulvric, Grosk), Entscheidungen E1–E4, Beitritte laut Narrative, Akt-1-Supports, 2 Glutfunken im Finale 1-8.
+- FR61 (neu): Akt 2: 8 Story-Missionen inkl. großer Schlacht Kronfeld, N4–N6, Leutnants Brakka, Grell, Sable, Rowena, E5–E8, Region 2, Burg als Heimat.
+- FR62 (neu): Akt 3: 8 Story-Missionen inkl. 2 großer Schlachten, N7–N10, Leutnants Eluned, Cassian, Mael, Torvald, Drachen als dritte Partei, E9–E12, Region 3, Epilog.
 - FR63 (neu): Alle Texte in DE und EN.
 
 ### NonFunctional Requirements
@@ -139,7 +139,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 - NFR13: Kein Täglich-Druck: Heimsuchungen ohne Ablaufdatum, Story und Nebenquests brauchen sie nicht.
 - NFR14: Nemesis-Leitplanken: keine prozedurale Erzeugung von Gegnern oder Persönlichkeiten, keine Rangordnung unter Gegnern, keine Beförderung durch Spielerniederlagen.
 - NFR15: Nichts kommerziell veröffentlichen, solange GA26 (Lizenzen) offen ist.
-- NFR16: Spielzeit Staffel 1 25–30 Stunden auf Normal.
+- NFR16: Spielzeit Staffel 1 30–35 Stunden auf Normal.
 
 ### Additional Requirements
 
@@ -213,9 +213,9 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 | FR39 | Epic 12 | Epilog-Mosaik |
 | FR41 | Epic 6 | Rekrutierung, Taverne, Armee-Limit |
 | FR42 | Epic 8 | Teilvertonung |
-| FR43, FR45–FR49 | Epic 6 | Stufen, Items, Tiers, Wirtschaft, Simulation, Lager |
-| FR44, FR50–FR54 | Epic 10 | Glutfunke-Aufstieg, Burg mit 11 Räumen |
-| FR55 | Epic 9 | Eroberung der Burgruine (Mission 1-6) |
+| FR43, FR45–FR49, FR50 (Akt 1) | Epic 6 | Stufen, Items, Tiers, Wirtschaft, Simulation, Lager, Burg auf Stufe 1 |
+| FR44, FR50 (ab Akt 2)–FR54 | Epic 10 | Glutfunke-Aufstieg, Burg-Ausbau mit 11 Räumen |
+| FR55 | Epic 9 | Eroberung (1-6) und Verteidigung (1-8) der Paktwacht |
 | FR56, FR59 | Epic 1 | Kampagnen, Speicherplätze, PoC-Stände |
 | FR57 | Epic 1 (Format), Epic 7 (Release-Ablauf), Epic 12 (Staffel-2-Übergabe) | Spielstand über Releases |
 | FR58 | Epic 7 | Akt-Pakete, offline |
@@ -247,8 +247,8 @@ Spieler wählen ihre nächste Mission auf einer 3D-Weltkarte, die nach jeder Mis
 **FRs covered:** FR29–FR32 · AR6, AR7, AR12, AR13 · UX-DR9, UX-DR18 (Teil)
 
 ### Epic 6: Truppe, Fortschritt und Lager
-Spieler verwalten ihre Truppe, rüsten aus, handeln und versorgen im Lager, sehen ein klares Ergebnis nach jeder Mission und nehmen Abschied von Gefallenen; die Kurven tragen über Akt 1 hinweg.
-**FRs covered:** FR41, FR43, FR45–FR49 · AR11 · UX-DR10 (Lager), UX-DR14, UX-DR15, UX-DR19, UX-DR20
+Spieler verwalten ihre Truppe, rüsten aus, handeln und versorgen im Lager und ab 1-6 in der Paktwacht, sehen ein klares Ergebnis nach jeder Mission und nehmen Abschied von Gefallenen; die Kurven tragen über Akt 1 hinweg.
+**FRs covered:** FR41, FR43, FR45–FR49, FR50 (Akt 1) · AR11 · UX-DR10 (Lager, Burg Stufe 1), UX-DR11 (Gedenksteine), UX-DR14, UX-DR15, UX-DR19, UX-DR20
 
 ### Epic 7: Akt-Pakete und Offline
 Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
@@ -259,22 +259,22 @@ Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Por
 **FRs covered:** FR42, FR63 (Teil) · UX-DR16
 
 ### Epic 9: Akt 1 „Asche“ (MVP)
-Spieler spielen Prolog und Akt 1 komplett: 7 Story-Missionen, 2 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
+Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
 **FRs covered:** FR55, FR60, FR63
 
-### Epic 10: Die Burg (Heimat ab Akt 2) – grob
-Spieler ziehen mit der ersten Mission von Akt 2 in die eroberte Paktwacht, bauen 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle.
-**FRs covered:** FR14, FR15, FR44, FR50–FR54 · UX-DR10 (Burg), UX-DR11, UX-DR21
+### Epic 10: Die Burg ausbauen (ab Akt 2) – grob
+Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle.
+**FRs covered:** FR14, FR15, FR44, FR50 (ab Akt 2)–FR54 · UX-DR10 (Burg-Ausbau), UX-DR11 (Lektionen), UX-DR21
 
 ### Epic 11: Akt 2 „Glut“ – grob
-Spieler spielen Akt 2 mit 7 Story-Missionen inklusive der großen Schlacht Kronfeld, 2 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark.
+Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark.
 **FRs covered:** FR17 (Akt 2), FR61, FR63
 
 ### Epic 12: Akt 3 „Krone“ und Staffelende – grob
 Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2.
 **FRs covered:** FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
 
-**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Epic 10 (Burg) ist spätestens mit Akt 2 fertig: Die Burg steht ab der ersten Mission von Akt 2 bereit.
+**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
 
 <!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
 
@@ -999,7 +999,7 @@ damit sie eine Ergänzung zur Story bleiben.
 
 ## Epic 6: Truppe, Fortschritt und Lager
 
-Spieler verwalten Truppe und Ausrüstung im neuen Stil, versorgen sich im Lager, sehen nach jeder Mission ein klares Ergebnis und nehmen Abschied von Gefallenen; die Kurven tragen über Akt 1.
+Spieler verwalten Truppe und Ausrüstung im neuen Stil, versorgen sich im Lager und ab 1-6 in der Paktwacht, sehen nach jeder Mission ein klares Ergebnis und nehmen Abschied von Gefallenen; die Kurven tragen über Akt 1.
 
 ### Story 6.1: Truppe und Figur
 
@@ -1130,6 +1130,23 @@ damit Gold, EP und Schwierigkeit über alle Missionen zusammenpassen.
 **Dann** spielt es die Story-Missionen in einer gültigen Reihenfolge mit KI auf beiden Seiten und einer einfachen Heimat-Heuristik (kaufen, aufwerten, heilen), optional mit Heimsuchungen zwischen den Missionen
 **Und** es gibt je Story-Mission Siegquote, Niedergestreckte, Gold und Armee-Stufe aus und markiert Missionen außerhalb der Korridore (NFR12) sowie Gold außerhalb der GDD-Kurve.
 
+### Story 6.9: Die Paktwacht als Heimat
+
+Als Spieler
+möchte ich nach der Eroberung der Paktwacht dort statt im Lager leben,
+damit die Truppe schon in Akt 1 ein Zuhause hat und ihre Gefallenen einen Ort.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Wirkung `setHome` (Architektur §5.3, Muster §8.2) und Knoten `m1_6` mit `effects: [{ setHome: castle }]`
+**Wenn** die Mission 1-6 gewonnen ist
+**Dann** ist `c.home.kind = 'castle'`, die Räume behalten ihre Stufe, und `render/home/` zeigt die Paktwacht als Ruine im 3D-Diorama mit Raum-Ankern und unten Konvoi, Händler, Schmied, Heiler, Taverne, Lagerfeuer und Gedächtnishalle als Raumsteine (UX-DR10)
+**Und** die Ausbau-Bänder sind bis Akt 2 gestrichelt mit Grund gesperrt (`requires: [{ act: 2 }]` in `rooms.yaml`, kein `if (act >= 2)`).
+
+**Angenommen** gefallene Gefährten und Söldner, darunter Gerrit aus dem Prolog
+**Wenn** der Spieler die Gedächtnishalle öffnet
+**Dann** stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), Gerrits Stein zuerst; Lektionen gibt es erst ab Akt 2 (Story 10.6) (UX-DR11 Teil).
+
 ## Epic 7: Akt-Pakete und Offline
 
 Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
@@ -1206,7 +1223,7 @@ damit große Schlachten Spaß machen.
 **Angenommen** ein Playwright-Lauf mit Referenzprofil (Pixel 6a / iPhone 12, gedrosselte CPU und Netz)
 **Wenn** er eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten) und einen Kaltstart misst
 **Dann** schreibt er Frame-Zeiten (Ziel 60 FPS, NFR1) und Kaltstartzeit (< 5 s, NFR2) als Bericht
-**Und** die Messung läuft in CI und meldet Überschreitungen; 9.11 nutzt sie für die Freigabe.
+**Und** die Messung läuft in CI und meldet Überschreitungen; 9.14 nutzt sie für die Freigabe.
 
 ## Epic 8: Chibi-Stil, Item-Bilder und Audio
 
@@ -1411,25 +1428,51 @@ damit die Gewissensfrage „Gold gegen Gewissen“ spürbar wird.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Karte (Ziel `rout`, Leutnant Grosk, Varek per Ansprechen) und Szenen
+**Angenommen** Karte (Ziel `survive`: standhalten, bis Grosk redet; Leutnant Grosk, Varek per Ansprechen) und Szenen
 **Wenn** die Mission gewonnen ist
-**Dann** fällt E3: verschonen (Grosk tritt im Finale bei, Hask-Groll −1) oder Kopfgeld (+600 Gold)
+**Dann** fällt E3: verschonen (Grosk tritt direkt bei, Hask-Groll −1) oder Kopfgeld (+600 Gold)
 **Und** Elemente, Status, Runen und Supports sind ab der dritten abgeschlossenen Story-Mission aktiv, unabhängig von der Reihenfolge.
 
-### Story 9.7: Mission 1-6 „Die Paktwacht“ (Finale) und Entscheidung E4
+### Story 9.7: Mission 1-6 „Die Paktwacht“ und Entscheidung E4
 
 Als Spieler
 möchte ich die Burgruine erobern und eine Heimat gewinnen,
-damit Akt 1 rund endet und Akt 2 ein Zuhause hat.
+damit die Truppe mitten in Akt 1 ein Zuhause bekommt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Finalkarte (Ziel `seize` durch Kael, Leutnants Hask, Morra, Ulvric und Grosk, falls nicht gewechselt) und die Tafel „Das Banner auf der Ruine“
+**Angenommen** die Karte (Ziel `seize` durch Kael, Leutnants Hask und Ulvric), die Tafel „Das Banner auf der Ruine“ und Knoten `m1_6`, der sich nach 1-2 bis 1-5 öffnet
 **Wenn** die Mission gewonnen ist
-**Dann** erhält die Truppe 2 Glutfunken (Moment inszeniert), die Paktwacht ist erobert (Flag), und E4 (Flüchtlinge aufnehmen oder geheim halten) fällt; Heimat bleibt bis zum Akt-2-Paket das Lager, `c.home` wechselt mit der ersten Mission von Akt 2 auf die Burg (Epic 10)
+**Dann** wechselt `setHome` die Heimat auf die Burg (Story 6.9), es folgt das Gespräch „Eine Burg für Niemande“, und E4 (Flüchtlinge aufnehmen oder geheim halten) fällt
+**Und** danach ist nur 1-7 wählbar; Akt 1 läuft ab hier fest bis zum Finale.
+
+### Story 9.8: Mission 1-7 „Unter der Paktwacht“
+
+Als Spieler
+möchte ich nach einem Beben das Gewölbe unter der Paktwacht bergen,
+damit ich die Gräber junger Könige und die versiegelte Chronik finde.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Karte (Ziel `treasure`: Truhen vor dem Einsturz bergen, Plünderer, kein Leutnant) und Szenen mit den Grabreliefs (Beat 6)
+**Wenn** die Mission gewonnen ist
+**Dann** liegt die Chronik versiegelt im Burgarchiv (entziffert in Akt 2, Beat 10), und das Finale 1-8 öffnet sich
+**Und** Heimsuchungs-Anker und Sim-Korridor wie oben.
+
+### Story 9.9: Mission 1-8 „Die Heimat halten“ (Finale)
+
+Als Spieler
+möchte ich die neue Heimat gegen alle Banden verteidigen,
+damit Akt 1 mit etwas endet, das der Truppe gehört.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Finalkarte (Ziel `defend`, Leutnants Morra (führt), Hask, Ulvric und Grosk, falls nicht gewechselt) und die Szene davor mit einer Zeile je E4 (Gerücht oder Ulvrics Wölfe)
+**Wenn** die Mission gewonnen ist
+**Dann** erhält die Truppe 2 Glutfunken (Moment inszeniert)
 **Und** ohne Akt-2-Paket zeigt die Weltkarte „Akt 2 „Glut“ erscheint bald“ (Story 7.3).
 
-### Story 9.8: Nebenquest N1 „Der Ring von Varnhold“
+### Story 9.10: Nebenquest N1 „Der Ring von Varnhold“
 
 Als Spieler
 möchte ich Fenns Vergangenheit kennenlernen, wenn ich ihn geschützt habe,
@@ -1442,7 +1485,7 @@ damit Entscheidungen eigene Geschichten öffnen.
 **Dann** erhält er Glutfunke und Signaturdolch; ist Fenn gefallen, läuft die Gedenk-Variante
 **Und** N1 bleibt über Akte offen.
 
-### Story 9.9: Nebenquest N2 „Der letzte Wachturm“
+### Story 9.11: Nebenquest N2 „Der letzte Wachturm“
 
 Als Spieler
 möchte ich einen alten Wachturm der Paktwächter erkunden,
@@ -1452,10 +1495,23 @@ damit ich die erste Chronik-Seite und Lore finde.
 
 **Angenommen** Mission 1-3 ist gespielt
 **Wenn** der Spieler N2 spielt
-**Dann** erhält er Glutfunke, Chronik-Seite und legendären Schild
+**Dann** erhält er Glutfunke, Chronik-Seite und das Relikt Schild der Paktwächter
 **Und** die Chronik zeigt die Seite.
 
-### Story 9.10: Supports und Barks von Akt 1
+### Story 9.12: Nebenquest N3 „Das Erbe“
+
+Als Spieler
+möchte ich mit Tobin auf den Pachthof seines Vaters zurückkehren,
+damit auch der Jüngste eine eigene Geschichte bekommt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Tobin ist in der Truppe und Mission 1-6 ist gespielt; die Karte ist eine Variante von Erlbach
+**Wenn** der Spieler N3 spielt
+**Dann** erhält er die Signaturlanze Erbstück (keinen Glutfunken); ist Tobin gefallen, läuft die Gedenk-Variante
+**Und** N3 bleibt über Akte offen.
+
+### Story 9.13: Supports und Barks von Akt 1
 
 Als Spieler
 möchte ich am Lagerfeuer die Paare von Akt 1 kennenlernen,
@@ -1468,7 +1524,7 @@ damit Beziehungen wachsen.
 **Dann** stehen sie am Lagerfeuer bereit, sobald die Punkte reichen
 **Und** jeder Akt-1-Gefährte hat seine Barks, Todeszeile und Trauerzeilen je Partner.
 
-### Story 9.11: Akt 1 abstimmen und veröffentlichen
+### Story 9.14: Akt 1 abstimmen und veröffentlichen
 
 Als Produktinhaber
 möchte ich Akt 1 als MVP veröffentlichen und testen,
@@ -1478,26 +1534,14 @@ damit die Kernhypothese geprüft wird.
 
 **Angenommen** alle Stories von Epic 1–9
 **Wenn** `pnpm sim --campaign act1` auf allen Schwierigkeiten läuft
-**Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 liegt bei 8–10 Stunden
-**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind mit Story 7.5 auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD) liegt vor (`gds-playtest-plan`).
+**Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 passt zu 30–35 Stunden für die Staffel
+**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind mit Story 7.5 auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu die Burg als Heimat und die Gedenksteine) liegt vor (`gds-playtest-plan`).
 
-## Epic 10: Die Burg (Heimat ab Akt 2) – grob
+## Epic 10: Die Burg ausbauen (ab Akt 2) – grob
 
-Spieler ziehen in die eroberte Paktwacht, bauen 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle. Story-Liste mit Kurz-Kriterien; vor Akt 2 mit `gds-create-story` verfeinern. Hinweis: Die Burg wird ein 3D-Diorama (Art Direction §7); der obere Teil des Heimat-Screens wird dann neu geprüft (UX-Log).
+Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und geben das Erbe der Gefallenen als Lektion weiter. Die Burg als Heimat auf Stufe 1 und die Gedenksteine entstehen schon für den MVP in Story 6.9. Story-Liste mit Kurz-Kriterien; vor Akt 2 mit `gds-create-story` verfeinern. Hinweis: Die Burg ist ein 3D-Diorama (Art Direction §7); der obere Teil des Heimat-Screens wird dann neu geprüft (UX-Log).
 
-### Story 10.1: Die Burg als 3D-Diorama mit Raumsteinen
-
-Als Spieler
-möchte ich in Akt 2 in einer Burg statt im Lager leben,
-damit die Heimat mit der Truppe wächst.
-
-**Akzeptanzkriterien:**
-
-**Angenommen** `c.home.kind = 'castle'` nach dem Akt-1-Finale
-**Wenn** der Spieler die Heimat öffnet
-**Dann** zeigt `render/home/` die Paktwacht als 3D-Diorama mit Raum-Ankern und unten alle 11 Räume als Raumsteine (Stufe, ausbaubar, Neues, gesperrt) (UX-DR10).
-
-### Story 10.2: Räume ausbauen
+### Story 10.1: Räume ausbauen
 
 Als Spieler
 möchte ich Räume mit dem passenden Gefährten und Gold auf Stufe 2 und 3 bringen,
@@ -1509,7 +1553,7 @@ damit die Burg eine zweite Fortschrittsachse ist.
 **Wenn** beides erfüllt ist
 **Dann** baut `buildRoom` aus, das Ausbau-Band im Panel zeigt Kosten als Symbol + Zahl, und die Burg zeigt das neue Modellteil.
 
-### Story 10.3: Akademie und Aufstieg mit Glutfunke
+### Story 10.2: Akademie und Aufstieg mit Glutfunke
 
 Als Spieler
 möchte ich ausgewählte Gefährten mit einem Glutfunken aufsteigen lassen,
@@ -1521,7 +1565,7 @@ damit die knappe Wahl, wer wächst, ein Moment wird.
 **Wenn** der Spieler in der Akademie einen von zwei Profi-Wegen wählt
 **Dann** steigt sie auf (Stufe → 1, Loadout 4 → 5), der Glutfunke ist verbraucht, und der Funken-Moment spielt (Mockup 08, UX-DR21); Akademie-Stufen 2/3 laut GDD.
 
-### Story 10.4: Profi-Wege aller Rollen
+### Story 10.3: Profi-Wege aller Rollen
 
 Als Spieler
 möchte ich zwischen zwei klar verschiedenen Profi-Wegen je Rolle wählen,
@@ -1533,7 +1577,7 @@ damit ein Aufstieg die Spielweise ändert.
 **Wenn** eine Figur aufgestiegen ist
 **Dann** gelten ihre Effekte mit Vorschau und neuem Signaturteil auf dem Brett.
 
-### Story 10.5: Fallensteller und Schatten
+### Story 10.4: Fallensteller und Schatten
 
 Als Spieler
 möchte ich mit Späher-Profis Fallen legen oder im Nebel verschwinden,
@@ -1545,7 +1589,7 @@ damit Späher im späten Spiel eine eigene Taktik haben.
 **Wenn** er seine Fähigkeit nutzt
 **Dann** liegen bis zu 2 für Gegner unsichtbare Fallen (8 Schaden + Verlangsamt, entschärfbar) bzw. ist er im Nebel unsichtbar, bis er angreift; beides reproduzierbar und für die KI regelkonform.
 
-### Story 10.6: Verzauberer und Werkstatt
+### Story 10.5: Verzauberer und Werkstatt
 
 Als Spieler
 möchte ich Runen bearbeiten und Verbrauchsgüter aus Material herstellen,
@@ -1557,19 +1601,19 @@ damit Material aus Heimsuchungen einen Zweck hat.
 **Wenn** der Spieler sie nutzt
 **Dann** gelten Runen-Stufen und Rezepte je Raumstufe (Feuerbombe, Schlüssel → Hast, verstärktes Gegengift → Fallen-Set, Rune I) mit Kosten als Symbol + Zahl.
 
-### Story 10.7: Gedächtnishalle und Lektionen
+### Story 10.6: Lektionen der Gedächtnishalle
 
 Als Spieler
-möchte ich Gefallene ehren und ihr Erbe weitergeben,
+möchte ich das Erbe der Gefallenen an Gefährten weitergeben,
 damit Verlust Bedeutung behält.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** gefallene Gefährten und Söldner
+**Angenommen** die Gedächtnishalle mit Gedenksteinen aus Story 6.9 und Akt 2 ist erreicht
 **Wenn** der Spieler die Gedächtnishalle öffnet
-**Dann** stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), und einmal pro Akt vererbt ein Gefallener eine Lektion an einen Gefährten; Stufen 2/3 laut GDD (UX-DR11).
+**Dann** vererbt einmal pro Akt ein Gefallener eine Lektion an einen Gefährten; Stufen 2/3 laut GDD (UX-DR11).
 
-### Story 10.8: Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+### Story 10.7: Übungsplatz, Lagerfeuer-Ränge und lebende Burg
 
 Als Spieler
 möchte ich, dass die Reserve mitwächst, Freundschaften tiefer werden und die Burg sich mit den Menschen füllt,
@@ -1611,7 +1655,7 @@ damit Akt 2 eine eigene Welt hat.
 
 **Angenommen** die Mission ist gewonnen
 **Wenn** die Szenen laufen
-**Dann** tritt Nell bei; E5 (Odile) und E8 (Maelis) werden über die Prinzessinnen-Missionen vorbereitet.
+**Dann** tritt Nell bei; E5 (Odile) wird über die Prinzessinnen-Missionen vorbereitet.
 
 ### Story 11.4: Mission 2-3 „Die verstoßene Leibwache“ (escort Odile, Sable)
 
@@ -1627,7 +1671,7 @@ damit Akt 2 eine eigene Welt hat.
 
 **Angenommen** die Mission ist gewonnen
 **Wenn** die Szenen laufen
-**Dann** tritt Ilka bei; E6 (Varek) fällt; Nebenquest N3 öffnet, solange Ilka in der Truppe ist.
+**Dann** tritt Ilka bei; E6 (Varek) fällt; Nebenquest N4 öffnet, solange Ilka in der Truppe ist.
 
 ### Story 11.6: Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
 
@@ -1635,7 +1679,7 @@ damit Akt 2 eine eigene Welt hat.
 
 **Angenommen** die Mission ist gewonnen
 **Wenn** E7 fällt (warnen oder Befehl ausführen)
-**Dann** tritt Brann bei, bei „warnen“ zusätzlich Sable (Seitenwechsel); N4 öffnet.
+**Dann** tritt Brann bei, bei „warnen“ zusätzlich Sable (Seitenwechsel); N5 öffnet.
 
 ### Story 11.7: Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
 
@@ -1643,9 +1687,17 @@ damit Akt 2 eine eigene Welt hat.
 
 **Angenommen** die Mission ist gewonnen
 **Wenn** die Szenen laufen
-**Dann** tritt Amos bei; E8 (Beweise gegen Maelis) fällt.
+**Dann** tritt Amos bei; der Verdacht gegen Maelis öffnet die Spur zum Kontor (2-7).
 
-### Story 11.8: Mission 2-7 „Kronfeld“ (große Schlacht, survive → escape)
+### Story 11.8: Mission 2-7 „Das Kontor am Silbermeer“ (reach, Brakka) und E8
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Mission ist gewonnen und die Geschäftsbücher sind gesichert
+**Wenn** die Szenen laufen
+**Dann** fällt E8 (Beweise gegen Maelis an Seraphine geben oder zurückverkaufen); bis zum Finale gibt es keinen Beitritt mehr.
+
+### Story 11.9: Mission 2-8 „Kronfeld“ (große Schlacht, survive → escape)
 
 **Akzeptanzkriterien:**
 
@@ -1653,7 +1705,7 @@ damit Akt 2 eine eigene Welt hat.
 **Wenn** sie gewonnen ist
 **Dann** folgt „Die Krone war hohl“ (Illustrationstafel); die Gegnerphase hält NFR1 und NFR3 auf dem Referenzgerät.
 
-### Story 11.9: Nebenquests N3 „Der Clan im Schnee“ und N4 „Glut unter dem Berg“
+### Story 11.10: Nebenquests N4 „Der Clan im Schnee“ und N5 „Glut unter dem Berg“
 
 **Akzeptanzkriterien:**
 
@@ -1661,7 +1713,15 @@ damit Akt 2 eine eigene Welt hat.
 **Wenn** der Spieler sie spielt
 **Dann** gibt es je Glutfunke und Sonderbelohnung (Signaturbogen bzw. Chronik-Seite und Erd-Rune III), mit Gedenk-Varianten.
 
-### Story 11.10: Supports, Barks und Vertonung von Akt 2
+### Story 11.11: Nebenquest N6 „Die Gauklertruppe“
+
+**Akzeptanzkriterien:**
+
+**Angenommen** Jory ist in der Truppe
+**Wenn** der Spieler N6 spielt
+**Dann** gibt es die Signaturlaute Letzter Vorhang (keinen Glutfunken), mit Gedenk-Variante.
+
+### Story 11.12: Supports, Barks und Vertonung von Akt 2
 
 **Akzeptanzkriterien:**
 
@@ -1669,7 +1729,7 @@ damit Akt 2 eine eigene Welt hat.
 **Wenn** C/B/A-Gespräche, Barks und Groll-Zeilen der Akt-2-Leutnants geschrieben und vertont sind
 **Dann** stehen sie bereit (DE + EN, Paket `voice.act2.<lang>`).
 
-### Story 11.11: Akt 2 abstimmen und veröffentlichen
+### Story 11.13: Akt 2 abstimmen und veröffentlichen
 
 **Akzeptanzkriterien:**
 
@@ -1695,7 +1755,7 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 
 **Angenommen** die Mission ist gewonnen
 **Wenn** die Szenen laufen
-**Dann** tritt Kit bei; 3-2 und 3-3 sind frei wählbar.
+**Dann** treten Kit und Pell bei; 3-2 bis 3-4 sind frei wählbar.
 
 ### Story 12.3: Mission 3-2 „Das verbotene Lied“ (escort Harlan, Cassian)
 
@@ -1703,33 +1763,49 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 
 **Angenommen** Harlan erreicht den Ausgang
 **Wenn** die Mission gewonnen ist
-**Dann** tritt Harlan bei; N7 öffnet.
+**Dann** tritt Harlan bei; N9 öffnet.
 
-### Story 12.4: Mission 3-3 „Die Einsiedlerin“ (defend, Mael) und E11
+### Story 12.4: Mission 3-3 „Die Einsiedlerin“ (defend, Torvald) und E9
 
 **Akzeptanzkriterien:**
 
 **Angenommen** die Mission ist gewonnen
-**Wenn** E11 fällt
-**Dann** tritt Vesna bei, bei „verschonen“ zusätzlich Mael; E9 (Ysolde) fällt in dieser Phase des Akts.
+**Wenn** die Szenen laufen
+**Dann** tritt Vesna bei, und E9 (Vesna will Ysolde mit ins Gebirge nehmen) fällt; bei „bleiben“ öffnet N7.
 
-### Story 12.5: Mission 3-4 „Die Krönung“ (seize Glutdom)
+### Story 12.5: Mission 3-4 „Der Zweifler“ (boss Mael) und E11
 
 **Akzeptanzkriterien:**
 
-**Angenommen** 3-2 und 3-3 sind gespielt
+**Angenommen** die Karte (Ziel `boss` Mael, Nebenziel `recruit`) und die Chronik aus dem Burgarchiv
+**Wenn** die Mission gewonnen ist und E11 fällt
+**Dann** tritt Mael bei „verschonen und die Chronik zeigen“ bei, sonst sinkt Torvalds Groll um 1.
+
+### Story 12.6: Mission 3-5 „Die Krönung“ (seize Glutdom)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** 3-2 bis 3-4 sind gespielt
 **Wenn** die Krönung gewonnen ist
 **Dann** wird Halvard enttarnt (Illustrationstafel); ab hier läuft Akt 3 linear.
 
-### Story 12.6: Mission 3-5 „Drachen über der Stadt“ (große Schlacht, defend)
+### Story 12.7: Mission 3-6 „Drachen über der Stadt“ (große Schlacht, defend)
 
 **Akzeptanzkriterien:**
 
 **Angenommen** Drachen als dritte Partei und Torvald
 **Wenn** die Mission gewonnen ist
-**Dann** tritt Pell bei; die Leistungsziele gelten auch mit Drachen.
+**Dann** gelten die Leistungsziele auch mit Drachen; danach öffnet sich 3-7.
 
-### Story 12.7: Mission 3-6 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
+### Story 12.8: Mission 3-7 „Der Weg ins Gebirge“ (reach, Eluned)
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Karte (Ziel `reach` über den Pass, Leutnant Eluned, Drachen als Gefahr im Gelände)
+**Wenn** die Mission gewonnen ist
+**Dann** öffnet sich das Finale 3-8; die Drachen-Gefahr ist in der Vorschau sichtbar und aus dem Seed reproduzierbar.
+
+### Story 12.9: Mission 3-8 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
 
 **Akzeptanzkriterien:**
 
@@ -1737,7 +1813,7 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 **Wenn** E10 (Liora und Halvard) und E12 (Wahrheit, Frieden oder mit 12 Chronik-Seiten „Vhaelyra fragen“) fallen
 **Dann** setzt `choose` `s1_ending` und schreibt `c.archive.s1` (Ende, Haltung, Überlebende, Gefallene, Gegangene, Staffel-2-Flags).
 
-### Story 12.8: Epilog-Mosaik
+### Story 12.10: Epilog-Mosaik
 
 **Akzeptanzkriterien:**
 
@@ -1745,15 +1821,15 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 **Wenn** das Staffelfinale endet
 **Dann** zeigt das Mosaik je Gefährte lebt (farbig), gefallen (grau) oder gegangen (sepia) mit einer Wendung, je Region eine breite Kachel, im Kopf Ende und Haltung (Mockup 08, UX-DR22); jede Kachel hat eine Variante ohne Bedingung.
 
-### Story 12.9: Nebenquests N5, N6, N7
+### Story 12.11: Nebenquests N7, N8, N9 und N10
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Auslöser aus der Narrative (E9, Brenna mit B-Support zu Kael oder Tobin, 3-2 gespielt)
+**Angenommen** die Auslöser aus der Narrative (E9, Brenna mit B-Support zu Kael oder Tobin, 3-2 gespielt, Kit und Pell in der Truppe)
 **Wenn** der Spieler sie spielt
-**Dann** gibt es je Glutfunke und Sonderbelohnung, N7 liefert die Zeile für „Vhaelyra fragen“.
+**Dann** gibt es bei N7–N9 je Glutfunke und Sonderbelohnung, bei N10 die Signatur Turmfalke (keinen Glutfunken); N9 liefert die Zeile für „Vhaelyra fragen“.
 
-### Story 12.10: Nach dem Finale und Übergabe an Staffel 2
+### Story 12.12: Nach dem Finale und Übergabe an Staffel 2
 
 **Akzeptanzkriterien:**
 
@@ -1761,13 +1837,13 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 **Wenn** der Spieler weiterspielt
 **Dann** laufen Heimsuchungen, offene Nebenquests, Supports und Burgausbau weiter; die Abschlussszene bietet den Export der Staffel-Zusammenfassung an (AR20).
 
-### Story 12.11: Akt 3 abstimmen und veröffentlichen
+### Story 12.13: Akt 3 abstimmen und veröffentlichen
 
 **Akzeptanzkriterien:**
 
 **Angenommen** alle Akt-3-Stories
 **Wenn** die verkettete Simulation über die ganze Staffel läuft
-**Dann** liegen alle Missionen in den Korridoren, die Spielzeit trifft 25–30 Stunden auf Normal, `act3` ist veröffentlicht und Spielstände aus Akt 1 und 2 laufen weiter.
+**Dann** liegen alle Missionen in den Korridoren, die Spielzeit trifft 30–35 Stunden auf Normal, `act3` ist veröffentlicht und Spielstände aus Akt 1 und 2 laufen weiter.
 
 ## Validierung
 
@@ -1775,7 +1851,7 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 - **UX-Abdeckung:** UX-DR1–UX-DR25 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt.
 - **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
 - **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
-- **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager) und Epic 10 (Burg) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
+- **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager, Burg auf Stufe 1 ab 1-6) und Epic 10 (Burg-Ausbau ab Akt 2) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
 - **Offen:** Epics 10–12 sind grob und werden vor dem jeweiligen Akt mit `gds-create-story` verfeinert; bis dahin bleiben sie im Sprint-Status `backlog`. Lizenzfrage GA26: siehe `concept/23-art-direction/licensing.md`.
-- **Readiness (2026-10-23):** Befunde des Readiness-Checks mit dem Produktinhaber geklärt (Decision-Log); neu sind Story 3.7 und 7.5, damit 101 Stories.
+- **Readiness (2026-10-23):** Befunde des Readiness-Checks mit dem Produktinhaber geklärt (Decision-Log); neu sind Story 3.7 und 7.5, mit der Course Correction 8/8/8 damit 108 Stories.
 - **Nächster Schritt:** Umsetzung nach `_bmad-output/implementation-artifacts/sprint-status.yaml`, Story für Story mit `gds-create-story` und `gds-dev-story`.

@@ -1,10 +1,10 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-23
+# last_updated: 2026-10-24
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
 # story_location: _bmad-output/implementation-artifacts
-# source: concept/26-epics/epics.md (12 epics, 101 stories)
+# source: concept/26-epics/epics.md (12 epics, 108 stories, after course correction 8/8/8)
 # order: Epic 4 runs before (or together with) Epic 3; epics 10-12 stay backlog until refined
 
 # STATUS DEFINITIONS:
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-23
+last_updated: 2026-10-24
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -113,6 +113,7 @@ development_status:
   6-6-missionsergebnis: backlog  # Missionsergebnis
   6-7-abschied-von-gefallenen: backlog  # Abschied von Gefallenen
   6-8-wirtschaftskurve-und-verkettete-simulation: backlog  # Wirtschaftskurve und verkettete Simulation
+  6-9-die-paktwacht-als-heimat: backlog  # Die Paktwacht als Heimat
   epic-6-retrospective: optional
 
   # Epic 7: Akt-Pakete und Offline
@@ -145,23 +146,25 @@ development_status:
   9-4-mission-1-3-der-fremde-mit-dem-siegel: backlog  # Mission 1-3 „Der Fremde mit dem Siegel“
   9-5-mission-1-4-die-spur-des-maklers-und-entscheidung-e2: backlog  # Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
   9-6-mission-1-5-das-hungerlager-und-entscheidung-e3: backlog  # Mission 1-5 „Das Hungerlager“ und Entscheidung E3
-  9-7-mission-1-6-die-paktwacht-finale-und-entscheidung-e4: backlog  # Mission 1-6 „Die Paktwacht“ (Finale) und Entscheidung E4
-  9-8-nebenquest-n1-der-ring-von-varnhold: backlog  # Nebenquest N1 „Der Ring von Varnhold“
-  9-9-nebenquest-n2-der-letzte-wachturm: backlog  # Nebenquest N2 „Der letzte Wachturm“
-  9-10-supports-und-barks-von-akt-1: backlog  # Supports und Barks von Akt 1
-  9-11-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
+  9-7-mission-1-6-die-paktwacht-und-entscheidung-e4: backlog  # Mission 1-6 „Die Paktwacht“ und Entscheidung E4
+  9-8-mission-1-7-unter-der-paktwacht: backlog  # Mission 1-7 „Unter der Paktwacht“
+  9-9-mission-1-8-die-heimat-halten-finale: backlog  # Mission 1-8 „Die Heimat halten“ (Finale)
+  9-10-nebenquest-n1-der-ring-von-varnhold: backlog  # Nebenquest N1 „Der Ring von Varnhold“
+  9-11-nebenquest-n2-der-letzte-wachturm: backlog  # Nebenquest N2 „Der letzte Wachturm“
+  9-12-nebenquest-n3-das-erbe: backlog  # Nebenquest N3 „Das Erbe“
+  9-13-supports-und-barks-von-akt-1: backlog  # Supports und Barks von Akt 1
+  9-14-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
   epic-9-retrospective: optional
 
-  # Epic 10: Die Burg (Heimat ab Akt 2) – grob
+  # Epic 10: Die Burg ausbauen (ab Akt 2) – grob
   epic-10: backlog
-  10-1-die-burg-als-3d-diorama-mit-raumsteinen: backlog  # Die Burg als 3D-Diorama mit Raumsteinen
-  10-2-raeume-ausbauen: backlog  # Räume ausbauen
-  10-3-akademie-und-aufstieg-mit-glutfunke: backlog  # Akademie und Aufstieg mit Glutfunke
-  10-4-profi-wege-aller-rollen: backlog  # Profi-Wege aller Rollen
-  10-5-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
-  10-6-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt
-  10-7-gedaechtnishalle-und-lektionen: backlog  # Gedächtnishalle und Lektionen
-  10-8-uebungsplatz-lagerfeuer-raenge-und-lebende-burg: backlog  # Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+  10-1-raeume-ausbauen: backlog  # Räume ausbauen
+  10-2-akademie-und-aufstieg-mit-glutfunke: backlog  # Akademie und Aufstieg mit Glutfunke
+  10-3-profi-wege-aller-rollen: backlog  # Profi-Wege aller Rollen
+  10-4-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
+  10-5-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt
+  10-6-lektionen-der-gedaechtnishalle: backlog  # Lektionen der Gedächtnishalle
+  10-7-uebungsplatz-lagerfeuer-raenge-und-lebende-burg: backlog  # Übungsplatz, Lagerfeuer-Ränge und lebende Burg
   epic-10-retrospective: optional
 
   # Epic 11: Akt 2 „Glut“ – grob
@@ -173,10 +176,12 @@ development_status:
   11-5-mission-2-4-der-wyvernhorst-boss-rowena: backlog  # Mission 2-4 „Der Wyvernhorst“ (boss, Rowena)
   11-6-mission-2-5-die-brandschneise-defend-brandhang-grell-und-e7: backlog  # Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
   11-7-mission-2-6-gold-fuer-banditen-rout-rowena-und-sable: backlog  # Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
-  11-8-mission-2-7-kronfeld-grosse-schlacht-survive-escape: backlog  # Mission 2-7 „Kronfeld“ (große Schlacht, survive → escape)
-  11-9-nebenquests-n3-der-clan-im-schnee-und-n4-glut-unter-dem-berg: backlog  # Nebenquests N3 „Der Clan im Schnee“ und N4 „Glut unter dem Berg“
-  11-10-supports-barks-und-vertonung-von-akt-2: backlog  # Supports, Barks und Vertonung von Akt 2
-  11-11-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
+  11-8-mission-2-7-das-kontor-am-silbermeer-reach-brakka-und-e8: backlog  # Mission 2-7 „Das Kontor am Silbermeer“ (reach, Brakka) und E8
+  11-9-mission-2-8-kronfeld-grosse-schlacht-survive-escape: backlog  # Mission 2-8 „Kronfeld“ (große Schlacht, survive → escape)
+  11-10-nebenquests-n4-der-clan-im-schnee-und-n5-glut-unter-dem-berg: backlog  # Nebenquests N4 „Der Clan im Schnee“ und N5 „Glut unter dem Berg“
+  11-11-nebenquest-n6-die-gauklertruppe: backlog  # Nebenquest N6 „Die Gauklertruppe“
+  11-12-supports-barks-und-vertonung-von-akt-2: backlog  # Supports, Barks und Vertonung von Akt 2
+  11-13-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob
@@ -184,12 +189,14 @@ development_status:
   12-1-paket-region-und-gegner-von-akt-3: backlog  # Paket, Region und Gegner von Akt 3
   12-2-mission-3-1-winter-ueber-aurenhall-reach-eluned: backlog  # Mission 3-1 „Winter über Aurenhall“ (reach, Eluned)
   12-3-mission-3-2-das-verbotene-lied-escort-harlan-cassian: backlog  # Mission 3-2 „Das verbotene Lied“ (escort Harlan, Cassian)
-  12-4-mission-3-3-die-einsiedlerin-defend-mael-und-e11: backlog  # Mission 3-3 „Die Einsiedlerin“ (defend, Mael) und E11
-  12-5-mission-3-4-die-kroenung-seize-glutdom: backlog  # Mission 3-4 „Die Krönung“ (seize Glutdom)
-  12-6-mission-3-5-drachen-ueber-der-stadt-grosse-schlacht-defend: backlog  # Mission 3-5 „Drachen über der Stadt“ (große Schlacht, defend)
-  12-7-mission-3-6-im-drachengebirge-finale-boss-halvard-e10-und-e12: backlog  # Mission 3-6 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
-  12-8-epilog-mosaik: backlog  # Epilog-Mosaik
-  12-9-nebenquests-n5-n6-n7: backlog  # Nebenquests N5, N6, N7
-  12-10-nach-dem-finale-und-uebergabe-an-staffel-2: backlog  # Nach dem Finale und Übergabe an Staffel 2
-  12-11-akt-3-abstimmen-und-veroeffentlichen: backlog  # Akt 3 abstimmen und veröffentlichen
+  12-4-mission-3-3-die-einsiedlerin-defend-torvald-und-e9: backlog  # Mission 3-3 „Die Einsiedlerin“ (defend, Torvald) und E9
+  12-5-mission-3-4-der-zweifler-boss-mael-und-e11: backlog  # Mission 3-4 „Der Zweifler“ (boss Mael) und E11
+  12-6-mission-3-5-die-kroenung-seize-glutdom: backlog  # Mission 3-5 „Die Krönung“ (seize Glutdom)
+  12-7-mission-3-6-drachen-ueber-der-stadt-grosse-schlacht-defend: backlog  # Mission 3-6 „Drachen über der Stadt“ (große Schlacht, defend)
+  12-8-mission-3-7-der-weg-ins-gebirge-reach-eluned: backlog  # Mission 3-7 „Der Weg ins Gebirge“ (reach, Eluned)
+  12-9-mission-3-8-im-drachengebirge-finale-boss-halvard-e10-und-e12: backlog  # Mission 3-8 „Im Drachengebirge“ (Finale, boss Halvard), E10 und E12
+  12-10-epilog-mosaik: backlog  # Epilog-Mosaik
+  12-11-nebenquests-n7-n8-n9-und-n10: backlog  # Nebenquests N7, N8, N9 und N10
+  12-12-nach-dem-finale-und-uebergabe-an-staffel-2: backlog  # Nach dem Finale und Übergabe an Staffel 2
+  12-13-akt-3-abstimmen-und-veroeffentlichen: backlog  # Akt 3 abstimmen und veröffentlichen
   epic-12-retrospective: optional
