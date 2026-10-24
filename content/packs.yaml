@@ -20,6 +20,9 @@ packs:
       - acts/act1/campaign.yaml
       - acts/act1/units.yaml
       - acts/act1/flags.yaml
+      # Support-Paare und Chronik gelten über den ganzen Akt (Lager, Weltkarte), nicht nur in Missionen
+      - acts/act1/supports.yaml
+      - acts/act1/chronicle.yaml
       - acts/act1/maps/prologue_*.yaml
       - acts/act1/scenes/scn.prologue.*.yaml
       # enthält auch die englischen Prolog-Zeilen; ohne sie zeigte der Prolog auf Englisch nur Schlüssel

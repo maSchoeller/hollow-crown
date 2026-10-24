@@ -190,7 +190,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 
 - Auswertung: `evalCondition(ctx, cond): boolean` und `applyEffects(c, effects, events)` in `src/core/campaign/conditions.ts` bzw. `effects.ts`. `ctx` ist eine schmale Sicht (`flags`, `roster`, `fallen`, `left`, `completed`, `supports`, `stance`, `lieutenants`, `chronicle`), damit dieselbe Funktion in Kampf und Kampagne läuft.
 - Zod-Schema `conditionSchema`/`effectSchema` in `src/content/schemas.ts`; `content:check` prüft alle Referenzen (Gefährte, Knoten, Flag, Leutnant, Paar) gegen das Register.
-- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `openQuest`, `setHome`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross.
+- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `openQuest`, `setHome`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross. **Story 4.3:** `openQuest` ist umgesetzt (`c.quests`, Event `questOpened`, nur Nebenquest-Knoten).
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 
@@ -216,7 +216,8 @@ worldRegion: borderland
 
 - `fixed: first` ist nur ohne erledigte Story-Knoten des Akts verfügbar, `fixed: finale` erst nach allen anderen; Akt 1 bildet die feste Folge ab der Eroberung (1-6 → 1-7 → 1-8) und Akt 3 die ab der Krönung über `requires` ab.
 - Story-Knoten sind nach dem Abschluss nicht wiederholbar; Nebenquests bleiben über Akte offen; ein gefallener Auslöser schaltet die Gedenk-Variante (`memorialIf`) statt die Quest zu sperren.
-- **Gestaffelte Regeln:** `lockedMechanics` zählt künftig `storyCount` statt Knotenpositionen. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`).
+- **Gestaffelte Regeln:** `lockedMechanics(data, c)` zählt `storyCount` (nur `kind: story`) statt Knotenpositionen; `mechanics` nennt je Regel die Zahl. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`, `BattleState.lockedRoles`).
+- **Stand (Story 4.3):** umgesetzt in `src/core/campaign/graph.ts` (`availableNodes`, `isAvailable`, `nodeScenes`, `lockedMechanics`, `lockedRoles`, `nodeLinks`). Knoten: `kind` (Standard `story`), `fixed`, `requires`, `memorialIf` mit `memorial: { pre?, post? }` (Gedenk-Szenen). Eine Nebenquest öffnet sich über `openQuest` oder eigene, nicht leere `requires`; ohne beides lehnt `content:check` sie ab. Der Akt-Übergang (`act + 1`, `actReached`) folgt mit Akt 2.
 - **Akt-Übergang:** Nach dem Akt-Finale setzt `finishMission` `act + 1` und meldet `actReached`. Fehlt das Paket des nächsten Akts im Build (AR23), zeigt die Weltkarte „Akt 2 erscheint bald“. Heimsuchungen, Nebenquests, Supports und Heimat laufen weiter.
 
 ### 5.5 Leutnants (AR5)
@@ -307,7 +308,7 @@ lines:
 
 - **Schlüssel** entstehen automatisch: `dlg.<sceneId>.<lineId>`, `….memorial`, `….<optionId>`. EN steht in `content/locales/en/act1.dialogue.yaml` unter diesen Schlüsseln. UI-Texte bleiben in `content/locales/{de,en}.yaml` (AGENTS.md: kein sichtbarer Text im Code).
 - **Auflösung im Kern:** `resolveScene(data, ctx, sceneId, lang?) → ResolvedLine[]` wählt Sprecher, filtert `requires`, fügt Gedenkzeilen ein. Rein und getestet; die UI zeigt nur an. Gilt auch für Sprechblasen im Kampf (Kontext aus `BattleState`).
-- **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`.
+- **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`. **Stand (Story 4.6):** Eine Antwort-Zeile mit `title` ist eine Entscheidung (Marke, zwei Tipps, Folgen-Karte, Eintrag in `c.decisions`); jede ihrer Antworten trägt `summary`. `choose` zählt die Haltung jeder Antwort und merkt sie in `c.choices`, eine Wahl wird nie zweimal gefragt.
 - **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
 - Die PoC-Dialoge sind seit Story 4.4 ins neue Format überführt (`content/acts/act1/scenes/`, IDs `scn.<…>`); das alte Schema entfällt.
 
@@ -316,7 +317,7 @@ lines:
 - **Flag-Register** `content/acts/actN/flags.yaml`: `id`, erlaubte Werte, `kind: decision|story|quest|battle`, `season2: true|false`. Undeklarierte Flags lehnt `content:check` ab.
 - `CampaignState.flags` wird `Record<string, string | number | true>` (heute `string[]`). Kampf-Trigger `set_flag` setzen weiter boolesche Flags, nur aus dem Register.
 - **Haltung:** `c.stance = { warm, sober, defiant }` (Zähler für warm, nüchtern, trotzig); `dominantStance(c)` entscheidet einen Gleichstand in der festen Reihenfolge warm > sober > defiant.
-- **Chronik:** `c.chronicle: string[]` (12 Seiten).
+- **Chronik:** `c.chronicle: string[]` (12 Seiten). **Stand (Story 4.7):** Seiten-Register `content/acts/actN/chronicle.yaml`, `balance.chronicle.seasonPages`; die Ansicht `chronicleView` zeigt je Akt die Entscheidungen (`c.decisions`, Story 4.6) und die gefundenen Seiten.
 - **Epilog-Mosaik:** `content/acts/act3/epilogue.yaml` mit Kacheln je Gefährte und Region; jede Kachel hat Varianten mit `requires` (lebt/gefallen/gegangen + Wendung). Die erste passende Variante gewinnt; `content:check` prüft, dass jede Kachel eine Variante ohne Bedingung als letzte hat.
 
 ### 5.10 Heimat: Lager und Burg (AR11)
@@ -325,6 +326,7 @@ lines:
 - `c.home = { kind: 'camp' | 'castle', rooms: Record<roomId, level> }`. Raumfunktionen prüfen `roomLevel(c, id)`; es gibt keine verstreuten `if (act >= 2)`.
 - Der Wechsel vom Lager zur Burg geschieht mitten in Akt 1 über die Wirkung `setHome` an Knoten `m1_6`. Ausbau ab Akt 2 steht in den Daten: Stufe 2 und 3 tragen `requires: [{ act: 2 }]`, Verzauberer, Akademie, Werkstatt und Übungsplatz `fromAct: 2`; die Gedächtnishalle hat `fromAct: 1` (Gedenksteine), ihre Lektionen schaltet `unlocks` erst ab Akt 2 frei.
 - Jede Interaktion ist genau ein Kampagnen-Command (≤ 2 Taps, GDD).
+- **Supports (Story 4.9):** feste Paare je Akt in `content/acts/actN/supports.yaml` (`core` = S-Kernpaar); das Lagerfeuer schaltet Ränge bis `balance.supports.campfireMaxRank[Stufe − 1]` frei (Lager: B).
 - Darstellung: Raum-Anker im Burg-Modell (`home.yaml`: Anker → Raum, Ausbauteile je Stufe, Platz für Gefährten-Gegenstände).
 
 ### 5.11 Fortschritt und Wirtschaft

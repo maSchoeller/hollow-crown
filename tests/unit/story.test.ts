@@ -241,12 +241,11 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('grudge, priceMod, villageAid, openQuest and setHome are refused until their state exists', () => {
+  it('grudge, priceMod, villageAid and setHome are refused until their state exists', () => {
     const unsupported: Effect[] = [
       { grudge: { lt: 'hask', delta: -1 } },
       { priceMod: { pct: -10, act: 2 } },
       { villageAid: true },
-      { openQuest: 'n1' },
       { setHome: 'castle' },
     ];
     for (const e of unsupported) {
@@ -334,12 +333,13 @@ describe('content references (content:check)', () => {
     expect(eff({ recruit: 'ghost' })).toContainEqual(expect.stringContaining('unknown companion ghost'));
     expect(eff({ item: { def: 'ghost' } })).toContainEqual(expect.stringContaining('unknown item ghost'));
     expect(eff({ material: { ghost: 1 } })).toContainEqual(expect.stringContaining('unknown material ghost'));
+    expect(eff({ openQuest: 'ch01' })).toContainEqual(expect.stringContaining('openQuest ch01 is not a side quest'));
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
     const cond = problems(withDialogue(speech({ met: 'hask' })));
     expect(cond).toContainEqual(expect.stringContaining('condition met is not yet supported'));
-    for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { openQuest: 'n1' }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
+    for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }
@@ -407,7 +407,7 @@ describe('saves from before the fields existed', () => {
     const legacy = clone(old.payload.campaign) as unknown as { flags: unknown; left?: unknown };
     legacy.flags = ['avatar_honest', 'ch02_hold'];
     delete legacy.left;
-    const c = normalizeCampaign(legacy as unknown as CampaignState);
+    const c = normalizeCampaign(data, legacy as unknown as CampaignState);
     expect(c.flags).toEqual({ avatar_honest: true, ch02_hold: true });
     expect(c.left).toEqual([]);
     expect(c.stance).toEqual({ warm: 0, sober: 0, defiant: 0 });
@@ -415,6 +415,6 @@ describe('saves from before the fields existed', () => {
     // an up-to-date campaign comes through unchanged
     const cur = clone(base);
     cur.flags.avatar_honest = true;
-    expect(normalizeCampaign(cur)).toEqual(cur);
+    expect(normalizeCampaign(data, cur)).toEqual(cur);
   });
 });

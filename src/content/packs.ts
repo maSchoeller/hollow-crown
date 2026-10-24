@@ -111,8 +111,8 @@ export interface PacksManifest {
 
 /** Minimal view of the campaign for the pack checks. */
 export interface PackCheckCampaign {
-  start: string;
-  nodes: readonly { id: string; map: string; pre?: string; post?: string }[];
+  /** the opening mission is the node with `fixed: first` (campaign graph, story 4.3) */
+  nodes: readonly { id: string; map: string; pre?: string; post?: string; fixed?: string }[];
 }
 
 /**
@@ -130,7 +130,7 @@ export function checkPacks(
   }
   const inCore = (dir: string, id: string) =>
     contentFiles.some((f) => (f.endsWith(`/${dir}/${id}.yaml`) || f.endsWith(`/${dir}/${id}.yml`)) && packOf(packs, f, 'content').id === CORE_PACK);
-  const start = campaign.nodes.find((n) => n.id === campaign.start);
+  const start = campaign.nodes.find((n) => n.fixed === 'first');
   if (start) {
     if (!inCore('maps', start.map)) issues.push({ file: 'packs.yaml', message: `map ${start.map} of the first node must be in core` });
     for (const s of [start.pre, start.post]) {

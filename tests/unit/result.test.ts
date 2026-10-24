@@ -15,6 +15,7 @@ import {
   type Command,
   type GameData,
   type GameEvent,
+  firstNode,
 } from '../../src/core';
 
 let data: GameData;
@@ -78,7 +79,7 @@ describe('missionResultView (story 6.6)', () => {
   });
 
   it('a real finished mission reports no bounty and carries head data of its figures', () => {
-    const s0 = beginBattle(data, base, data.campaign.start, base.roster.map((r) => r.id)).state;
+    const s0 = beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
     const played = autoplay(data, s0);
     const r = applyCampaign(data, base, { type: 'finishMission', start: s0, commands: played.log });
     const result = r.events.find((e) => e.t === 'missionFinished')!.result;
@@ -90,7 +91,7 @@ describe('missionResultView (story 6.6)', () => {
 });
 
 describe('defeatSentence (story 6.6)', () => {
-  const start = () => beginBattle(data, base, data.campaign.start, base.roster.map((r) => r.id)).state;
+  const start = () => beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
 
   it('names the unit that had to survive', () => {
     const s = start();

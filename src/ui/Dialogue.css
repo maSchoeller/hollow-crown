@@ -9,6 +9,8 @@
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
+  /* the half figures stick out at the sides; clip, so focusing a button never scrolls the scene sideways */
+  overflow: clip;
   cursor: pointer;
   background: #2a1d14;
   color: var(--hc-line);
@@ -119,6 +121,10 @@
 .vn-pill.is-seen {
   background: var(--hc-positive-soft);
 }
+.vn-pill:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
 
 /* dialogue box with the glow-pill name tag at the speaker's side */
 .vn-box {
@@ -218,6 +224,66 @@
   box-shadow: 0 2px 0 var(--hc-line);
 }
 
+/* decision (mockup 05): black mark, the question as a stone, numbered answers; the first tap marks, the second confirms */
+.vn-box--decision {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  min-height: 0;
+}
+.vn-kick {
+  justify-self: center;
+}
+.vn-question {
+  padding: 12px 14px;
+  background: var(--hc-cream);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 4px 0 var(--hc-line);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.vn-question b {
+  font-family: var(--hc-font-name);
+}
+.vn-option {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.vn-option__n {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  background: var(--hc-cream-2);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  font-family: var(--hc-font-label);
+  font-size: 14px;
+}
+.vn-option__text {
+  flex: 1;
+}
+.vn-option.is-selected {
+  background: var(--hc-selection-soft);
+  box-shadow: 0 4px 0 var(--hc-ember-dark), 0 0 0 3px var(--hc-ember);
+}
+.vn-option__confirm {
+  flex: none;
+  padding: 2px 10px;
+  background: var(--hc-ember);
+  color: #fff;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 999px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+}
+
 /* dialogue log */
 .vn-log {
   display: grid;
@@ -229,6 +295,19 @@
   display: block;
   font-family: var(--hc-font-name);
   font-size: 15px;
+}
+.vn-log__line--choice {
+  padding: 6px 8px;
+  background: var(--hc-selection-soft);
+  border: var(--hc-outline-small) solid var(--hc-ember);
+  border-radius: 12px;
+}
+.vn-log__line--choice b {
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
 }
 .vn-log__empty {
   color: var(--hc-soft);

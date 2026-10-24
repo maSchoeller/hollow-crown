@@ -25,9 +25,11 @@ const act = 'acts/act1';
 // ids of the figures the prologue needs
 const prologue = new Set();
 const campaign = content(`${act}/campaign.yaml`);
-const start = campaign.nodes?.find((n) => n.id === campaign.start);
+// the opening mission is the node with `fixed: first` (campaign graph, story 4.3)
+const start = campaign.nodes?.find((n) => n.fixed === 'first');
+if (!start) throw new Error('campaign.yaml has no node with fixed: first');
 for (const c of content(`${act}/units.yaml`)) {
-  if (c.joins !== campaign.start) continue;
+  if (c.joins !== start.id) continue;
   prologue.add(c.sprite ?? c.id);
   if (c.flags?.includes('avatar')) for (const p of ['avatar_a', 'avatar_b']) prologue.add(p);
 }

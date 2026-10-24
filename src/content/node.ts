@@ -22,12 +22,14 @@ export function contentFiles(root = process.cwd()): string[] {
     .filter((p) => !META_FILES.includes(p));
 }
 
-export function loadContentFromDisk(root = process.cwd()): LoadedContent {
+/** The parsed YAML documents of content/, keyed like the browser loader (`content/<path>`). */
+export function readContentFiles(root = process.cwd()): Record<string, unknown> {
   const dir = join(root, 'content');
   const files: Record<string, unknown> = {};
-  for (const p of walk(dir)) {
-    const rel = relative(dir, p).split('\\').join('/');
-    if (!META_FILES.includes(rel)) files[`content/${rel}`] = parse(readFileSync(p, 'utf8'));
-  }
-  return buildContent(files);
+  for (const rel of contentFiles(root)) files[`content/${rel}`] = parse(readFileSync(join(dir, rel), 'utf8'));
+  return files;
+}
+
+export function loadContentFromDisk(root = process.cwd()): LoadedContent {
+  return buildContent(readContentFiles(root));
 }

@@ -1,10 +1,12 @@
 import type { z } from 'zod';
+import { chronicleTexts } from '../core/campaign/chronicle';
 import { sceneTexts } from '../core/campaign/scene';
 import type {
   AffixDef,
   Balance,
   CampaignDef,
   CharDef,
+  ChroniclePageDef,
   ClassDef,
   FlagDef,
   GameData,
@@ -17,15 +19,19 @@ import type {
   SceneDef,
   SetDef,
   SkillDef,
+  SupportPairDef,
   TerrainDef,
 } from '../core/defs';
+import { pairKey } from '../core/util';
 import {
   affixSchema,
   balanceSchema,
   campaignSchema,
   charSchema,
+  chroniclePageSchema,
   classSchema,
   sceneSchema,
+  supportPairSchema,
   flagSchema,
   itemSchema,
   mapSchema,
@@ -93,19 +99,38 @@ const byId = <T extends { id: string }>(list: T[]): Record<string, T> => Object.
 
 const RUNE_RARITY: Record<number, Rarity> = { 1: 'common', 2: 'rare', 3: 'epic' };
 
+interface PackParts {
+  maps: Record<string, MapDef>;
+  scenes: Record<string, SceneDef>;
+  chronicle: Record<string, ChroniclePageDef>;
+  supports: Record<string, SupportPairDef>;
+  locales: Locales;
+}
+
 /**
- * Maps, scenes and texts of a set of YAML documents (the parts a pack other than core adds, story 7.2). The German
- * text of a scene comes from the scene itself.
+ * Maps, scenes, chronicle pages, support pairs and texts of a set of YAML documents (also the parts a pack other than
+ * core adds, story 7.2). The German text of a scene or chronicle page comes from the page itself.
  */
-function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]): { maps: Record<string, MapDef>; scenes: Record<string, SceneDef>; locales: Locales } {
+function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]): PackParts {
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
+  const chronicle: Record<string, ChroniclePageDef> = {};
+  const supports: Record<string, SupportPairDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
       const m = parseOne<MapDef>(p, raw, mapSchema, issues);
       if (m) maps[m.id] = m;
+    } else if (/^acts\/act\d+\/supports\.yaml$/.test(p)) {
+      for (const sp of parseList<Omit<SupportPairDef, 'key'>>(p, raw ?? [], supportPairSchema, issues)) {
+        const key = pairKey(sp.pair[0], sp.pair[1]);
+        if (supports[key]) issues.push({ file: p, message: `support pair ${key} is listed twice` });
+        supports[key] = { ...sp, key };
+      }
+    } else if (/^acts\/act\d+\/chronicle\.yaml$/.test(p)) {
+      const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
+      for (const page of parseList<Omit<ChroniclePageDef, 'act'>>(p, raw ?? [], chroniclePageSchema, issues)) chronicle[page.id] = { ...page, act };
     } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
       const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
       if (d) scenes[d.id] = d;
@@ -118,19 +143,23 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
       locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
     }
   }
+  // the German text sits in the scene and the chronicle page itself
   for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
-  return { maps, scenes, locales };
+  for (const pg of Object.values(chronicle)) locales.de = { ...(locales.de ?? {}), ...chronicleTexts(pg) };
+  return { maps, scenes, chronicle, supports, locales };
 }
 
 /**
- * Adds the maps, scenes and texts of a pack to already loaded content, in place: modules that hold `data` or the
+ * Adds the maps, scenes, chronicle pages, support pairs and texts of a pack to already loaded content, in place: modules that hold `data` or the
  * locale tables see the new entries without reloading (story 7.2). Returns the problems of the pack's files.
  */
 export function mergePackContent(loaded: LoadedContent, files: Record<string, unknown>): ContentIssue[] {
   const issues: ContentIssue[] = [];
-  const { maps, scenes, locales } = parsePackFiles(files, issues);
+  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
   Object.assign(loaded.data.maps, maps);
   Object.assign(loaded.data.scenes, scenes);
+  Object.assign(loaded.data.chronicle, chronicle);
+  Object.assign(loaded.data.supports, supports);
   for (const [lang, table] of Object.entries(locales)) loaded.locales[lang] = Object.assign(loaded.locales[lang] ?? {}, table);
   loaded.issues.push(...issues);
   return issues;
@@ -157,7 +186,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
-  const { maps, scenes, locales } = parsePackFiles(files, issues);
+  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,
@@ -185,6 +214,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     maps,
     scenes,
     flags: byId(flagList),
+    supports,
+    chronicle,
     campaign: campaign as CampaignDef,
   };
   return { data, locales, issues };

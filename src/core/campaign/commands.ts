@@ -37,6 +37,8 @@ export type CampaignCommand =
   | { type: 'hire'; offer: string }
   /** the player saw scene `scene` to the end or skipped it (a record, not story state; idempotent) */
   | { type: 'markSceneSeen'; scene: string }
+  /** the answer `option` to choice line `line` of scene `scene`: runs its effects, counts its stance (story 4.6) */
+  | { type: 'choose'; scene: string; line: string; option: string }
   /** effects of content (dialogue answers, rewards); the only way effects ever run */
   | { type: 'effects'; effects: Effect[] }
   /**
@@ -78,7 +80,11 @@ export type CampaignError =
   | 'restart_forbidden'
   /** an effect refers to something that cannot take it (undeclared flag or value, fallen companion ...) */
   | 'effect_invalid'
-  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, openQuest, setHome, recruit by lieutenant) */
+  /** scene, choice line or answer does not exist */
+  | 'unknown_choice'
+  /** this choice was answered before: answers are never taken back */
+  | 'already_chosen'
+  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, setHome, recruit by lieutenant) */
   | 'effect_unsupported';
 
 /** What changed, for hints and banners in the UI (narrative: consequences are always shown). */
@@ -97,7 +103,11 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
+  /** a side quest became available (effect `openQuest`) */
+  | { t: 'questOpened'; node: string }
   | { t: 'sceneSeen'; scene: string }
+  /** an answer was given; `decision` = the choice is one of the decisions with consequences */
+  | { t: 'choiceMade'; scene: string; line: string; option: string; decision: boolean }
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number };

@@ -28,9 +28,14 @@ export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boo
   return (u.usedPerMap[skillId] ?? 0) < (sk.usesPerMap ?? Infinity);
 }
 
-/** Id of the unit's class action (`aim`, `far_rescue`, `inspire`, ...), if its class has one. */
-export function classActionId(data: GameData, u: BattleUnit | UnitRecord): string | undefined {
-  return data.classes[u.classId]?.classAction?.id;
+/**
+ * Id of the unit's class action (`aim`, `far_rescue`, `inspire`, ...), if its class has one. With a battle state, a role
+ * no companion has brought along yet (`lockedRoles`, story 4.3) has none.
+ */
+export function classActionId(data: GameData, u: BattleUnit | UnitRecord, s?: { lockedRoles?: string[] }): string | undefined {
+  const cls = data.classes[u.classId];
+  if (cls && s?.lockedRoles?.includes(cls.role)) return undefined;
+  return cls?.classAction?.id;
 }
 
 export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {
@@ -79,13 +84,13 @@ export function nearConvoy(s: BattleState, u: BattleUnit, pos: Pos): boolean {
  * Returns the weapons per target with the extended range, empty when not possible.
  */
 export function aimTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Record<string, string[]> {
-  if (classActionId(data, u) !== 'aim' || u.moved || !u.pos || !samePos(u.pos, pos)) return {};
+  if (classActionId(data, u, s) !== 'aim' || u.moved || !u.pos || !samePos(u.pos, pos)) return {};
   return attackTargets(data, s, u, pos, data.balance.classActions.aim.rangeBonus);
 }
 
 /** Fernbergen (Heiler): downed allies exactly `range` tiles away, rescued like normal Bergen; adjacent ones use normal Bergen. */
 export function farRescueTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
-  if (classActionId(data, u) !== 'far_rescue' || u.team !== 'player') return [];
+  if (classActionId(data, u, s) !== 'far_rescue' || u.team !== 'player') return [];
   const range = data.balance.classActions.farRescue.range;
   return s.units
     .filter((o) => o.uid !== u.uid && onMap(o) && o.downed && o.team === u.team && dist(o.pos!, pos) === range)
@@ -94,7 +99,7 @@ export function farRescueTargets(data: GameData, s: BattleState, u: BattleUnit, 
 
 /** Anfeuern (Spielmann): adjacent allies that have not acted and are not cheered already. */
 export function cheerTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
-  if (classActionId(data, u) !== 'inspire') return [];
+  if (classActionId(data, u, s) !== 'inspire') return [];
   return adjacentUnits(s, pos, u)
     .filter((o) => active(o) && o.team === u.team && !o.acted && !o.buffs.some((b) => b.source === CHEER_BUFF))
     .map((o) => o.uid);

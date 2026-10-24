@@ -67,7 +67,7 @@ describe('parsePacks', () => {
 });
 
 describe('checkPacks', () => {
-  const campaign = { start: 'prologue', nodes: [{ id: 'prologue', map: 'prologue_caravan', pre: 'scn.prologue.intro' }] };
+  const campaign = { nodes: [{ id: 'prologue', map: 'prologue_caravan', pre: 'scn.prologue.intro', fixed: 'first' }] };
   it('accepts the real content', () => {
     const { data } = loadContentFromDisk();
     expect(checkPacks(realPacks, contentFiles(), data.campaign)).toEqual([]);

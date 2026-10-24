@@ -1,0 +1,114 @@
+/* Chronicle (story 4.7): list pattern of style B, one section per act, decisions and pages. */
+.chr {
+  display: grid;
+  gap: 16px;
+  padding: 12px;
+}
+.chr-act {
+  display: grid;
+  gap: 8px;
+}
+.chr-items {
+  display: grid;
+  gap: 8px;
+}
+.chr-empty {
+  margin: 0;
+  padding: 4px 2px;
+  color: var(--hc-soft);
+}
+
+/* a decision: name, own answer (as in the log), outcome, consequences */
+.chr-dec {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--hc-cream);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+}
+.chr-dec__title {
+  font-family: var(--hc-font-name);
+  font-size: 17px;
+  line-height: 1.2;
+}
+.chr-dec__answer {
+  padding: 6px 8px;
+  background: var(--hc-selection-soft);
+  border: var(--hc-outline-small) solid var(--hc-ember);
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.32;
+}
+.chr-dec__answer span {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+}
+.chr-dec__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--hc-font-label);
+  font-size: var(--hc-size-number);
+}
+.chr-dec__kick {
+  padding: 1px 8px;
+  font-size: var(--hc-size-caps);
+}
+.chr-dec__effects {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.chr-dec__effects li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chr-dec__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  background: var(--hc-cream-2);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+}
+.chr-dec__icon .trp-head {
+  border: 0;
+  box-shadow: none;
+}
+.chr-dec__icon img,
+.chr-dec__icon .hc-item-image {
+  width: 24px;
+  height: 24px;
+}
+
+/* a page found: a list line that opens the text */
+.chr-pageline__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--hc-cream-2);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+}
+.chr-page {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-size: var(--hc-size-quote);
+  line-height: 1.5;
+  white-space: pre-line;
+}
