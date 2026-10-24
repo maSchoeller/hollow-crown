@@ -85,6 +85,17 @@ export async function loadContainer(scene: Scene, path: string, materials: boole
   }
 }
 
+/**
+ * Copies a cached container's models into the scene. Instances share the container's glTF materials, and Babylon puts
+ * those into the scene's material list; the render host clears that list on a scene switch, which would dispose the
+ * cache's materials (and leave the next scene's props without their texture). They go back off the list right away.
+ */
+function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => string) {
+  const inst = c.instantiateModelsToScene(rename, false, { doNotInstantiate: true });
+  for (const m of c.materials) scene.removeMaterial(m);
+  return inst;
+}
+
 /** A unit's 3D figure: animated node tree under `root`, its materials for tinting (figure, weapons). */
 export interface UnitModel {
   root: TransformNode;
@@ -126,7 +137,7 @@ async function attachGear(
     const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
     grip.parent = socket;
     grips.push({ node: grip, hold: ((piece.hold ?? 0) * Math.PI) / 180 });
-    const inst = c.instantiateModelsToScene((n) => `${name}:${piece.model}:${n}`, false, { doNotInstantiate: true });
+    const inst = instantiate(c, store.scene, (n) => `${name}:${piece.model}:${n}`);
     for (const glRoot of inst.rootNodes) {
       // the socket already sits in the figure's glTF space: keep the meshes' glTF-local transforms and drop the
       // weapon file's own handedness root
@@ -150,7 +161,7 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
   const { scene } = store;
   const c = await store.container(`models/units/${id}.glb`, true);
   if (!c) return null;
-  const inst = c.instantiateModelsToScene((n) => `${name}:${n}`, false, { doNotInstantiate: true });
+  const inst = instantiate(c, scene, (n) => `${name}:${n}`);
   const root = new TransformNode(name, scene);
   for (const n of inst.rootNodes) n.parent = root;
   const material = figureMaterial(`${name}:mat`, scene);
@@ -201,7 +212,7 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
 export async function loadPropMesh(store: AssetStore, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
   const c = await store.container(`models/props/${pid}_${state}.glb`, true);
   if (!c) return null;
-  const inst = c.instantiateModelsToScene((n) => `prop:${pid}_${state}:${n}`, false, { doNotInstantiate: true });
+  const inst = instantiate(c, store.scene, (n) => `prop:${pid}_${state}:${n}`);
   const parts: Mesh[] = [];
   let texture: BaseTexture | null = null;
   for (const n of inst.rootNodes)
