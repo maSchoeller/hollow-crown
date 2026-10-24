@@ -6,5 +6,4 @@
 *.flac                        filter=lfs diff=lfs merge=lfs -text
 *.mp3                         filter=lfs diff=lfs merge=lfs -text
 art/**/*.png                  filter=lfs diff=lfs merge=lfs -text
-concept/art/**/src/*.png      filter=lfs diff=lfs merge=lfs -text
 art/**/*.glb                  filter=lfs diff=lfs merge=lfs -text

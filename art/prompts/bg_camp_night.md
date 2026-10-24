@@ -3,7 +3,7 @@
 - **Datei:** `art/backgrounds/bg_camp_night.png` (2560 × 1440, RGB)
 - **Datum:** 2026-10-22
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome
-- **Referenzen:** `concept/art/characters/src/bg_varnhold_burning.png` als Stilreferenz (im selben Chat wie `bg_caravan_road` und `bg_silverbrook_shrine`)
+- **Referenzen:** `art/backgrounds/source/bg_varnhold_burning.png` als Stilreferenz (im selben Chat wie `bg_caravan_road` und `bg_silverbrook_shrine`)
 - **Iterationen:** 1
 - **Rohbild:** 1672 × 941
 

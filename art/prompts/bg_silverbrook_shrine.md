@@ -3,7 +3,7 @@
 - **Datei:** `art/backgrounds/bg_silverbrook_shrine.png` (2560 × 1440, RGB)
 - **Datum:** 2026-10-22
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome
-- **Referenzen:** `concept/art/characters/src/bg_varnhold_burning.png` als Stilreferenz (im selben Chat wie `bg_caravan_road`)
+- **Referenzen:** `art/backgrounds/source/bg_varnhold_burning.png` als Stilreferenz (im selben Chat wie `bg_caravan_road`)
 - **Iterationen:** 2 (v1 hatte warmes, oranges Sonnenaufgangslicht statt kühlem Silberlicht; Korrektur im selben Chat)
 - **Rohbild:** 1672 × 941
 

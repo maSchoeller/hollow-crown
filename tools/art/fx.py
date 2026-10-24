@@ -20,11 +20,26 @@ import numpy as np
 from PIL import Image
 
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from tiles import C, ROOT, rng  # noqa: E402  (palette + helpers shared with the tileset)
 
+ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "art" / "fx"
 T = 48
+
+PALETTE = {l.strip().lower() for l in (ROOT / "art" / "palette" / "hollow-64.hex").read_text(encoding="utf-8").splitlines() if l.strip()}
+
+
+def C(h: str) -> np.ndarray:
+    h = h.lower().lstrip("#")
+    if h not in PALETTE:
+        raise ValueError(f"{h} is not in Hollow-64")
+    return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], np.uint8)
+
+
+def rng(seed: int) -> np.random.Generator:
+    return np.random.default_rng(seed)
+
+
+
 YY, XX = np.mgrid[0:T, 0:T]
 
 
