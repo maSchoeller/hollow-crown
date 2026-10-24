@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import {
+  firstNode,
   beginBattle,
   combatExp,
   effectiveLevel,
@@ -26,7 +27,7 @@ beforeAll(() => {
   base = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
 });
 
-const kael = (): BattleUnit => getUnit(beginBattle(data, base, data.campaign.start, base.roster.map((r) => r.id)).state, 'kael');
+const kael = (): BattleUnit => getUnit(beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state, 'kael');
 
 describe('level cap (story 6.5)', () => {
   it('comes from the act campaign and never exceeds the top level', () => {

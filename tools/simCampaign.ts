@@ -5,6 +5,7 @@
  */
 import {
   applyCampaign,
+  availableNodes,
   autoplay,
   beginBattle,
   currentTier,
@@ -148,10 +149,9 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
 
 const sideGoldOf = (r: BattleResult): number => r.side.filter((s) => s.done).reduce((a, s) => a + (s.reward.gold ?? 0), 0);
 
-/** Story nodes of the act in a valid order: the start, then always the first available node not yet played. */
+/** Story nodes of the act in a valid order: always the first available story node not yet played (`availableNodes`). */
 function nextNode(data: GameData, c: CampaignState): string | undefined {
-  if (!c.completed.length) return data.campaign.start;
-  return c.available.find((id) => !c.completed.includes(id) && data.campaign.nodes.some((n) => n.id === id));
+  return availableNodes(data, c).find((n) => n.kind === 'story' && !c.completed.includes(n.id))?.id;
 }
 
 export function simulateCampaign(data: GameData, o: CampaignSimOptions): CampaignSim {

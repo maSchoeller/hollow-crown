@@ -6,6 +6,7 @@ import {
   farewellScene,
   farewellView,
   finishBattle,
+  firstNode,
   getUnit,
   lineKey,
   newCampaign,
@@ -36,13 +37,13 @@ function withRanks(c: CampaignState, ranks: Record<string, 'C' | 'B' | 'A' | 'S'
 /** Every fixed pair of `id` at rank C. */
 function rankedWith(c: CampaignState, id: string, rank: 'C' | 'B' | 'A' | 'S' | null = 'C'): CampaignState {
   const ranks: Record<string, 'C' | 'B' | 'A' | 'S' | null> = {};
-  for (const [a, b] of data.campaign.supportPairs) if (a === id || b === id) ranks[pairKey(a, b)] = rank;
+  for (const [a, b] of Object.values(data.supports).map((p) => p.pair)) if (a === id || b === id) ranks[pairKey(a, b)] = rank;
   return withRanks(c, ranks);
 }
 
 /** Prologue battle won with `dead` fallen. */
 function wonWith(c: CampaignState, dead: string[], tweak?: (s: BattleState) => void) {
-  const s = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
+  const s = beginBattle(data, c, firstNode(data).id, c.roster.map((r) => r.id)).state;
   for (const id of dead) getUnit(s, id).gone = 'dead';
   tweak?.(s);
   s.outcome = 'victory';
@@ -53,17 +54,17 @@ describe('grief (story 6.7)', () => {
   it('gives every surviving fixed support partner at rank C or higher grief for griefMissions missions', () => {
     expect(base.roster.map((r) => r.id)).toContain('brenna');
     const { campaign, result } = wonWith(rankedWith(base, 'brenna'), ['brenna']);
-    const partners = data.campaign.supportPairs.filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
+    const partners = Object.values(data.supports).map((p) => p.pair).filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
     const alive = partners.filter((id) => campaign.roster.some((r) => r.id === id));
     expect(alive.length).toBeGreaterThan(0);
     for (const id of alive) expect(campaign.roster.find((r) => r.id === id)!.grief).toBe(data.balance.supports.griefMissions);
     expect(result.fallen[0]!.grief!.map((g) => g.id).sort()).toEqual([...alive].sort());
-    expect(campaign.fallen.at(-1)).toMatchObject({ id: 'brenna', classId: 'vanguard', node: data.campaign.start });
+    expect(campaign.fallen.at(-1)).toMatchObject({ id: 'brenna', classId: 'vanguard', node: firstNode(data).id });
     expect(campaign.fallen.at(-1)).not.toHaveProperty('mercenary');
   });
 
   it('spares partners without a support rank and grieves those at rank C', () => {
-    const partners = data.campaign.supportPairs.filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
+    const partners = Object.values(data.supports).map((p) => p.pair).filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
     const alive = partners.filter((id) => base.roster.some((r) => r.id === id));
     expect(alive.length).toBeGreaterThan(0);
     const none = wonWith(rankedWith(base, 'brenna', null), ['brenna']);
@@ -95,7 +96,7 @@ describe('farewellView (story 6.7)', () => {
     const cards = farewellView(data, result);
     expect(cards).toHaveLength(1);
     const card = cards[0]!;
-    expect(card).toMatchObject({ id: 'brenna', mercenary: false, nodeId: data.campaign.start, lastKey: lineKey(farewellScene('brenna'), 'last') });
+    expect(card).toMatchObject({ id: 'brenna', mercenary: false, nodeId: firstNode(data).id, lastKey: lineKey(farewellScene('brenna'), 'last') });
     const kael = card.grief.find((g) => g.id === 'kael')!;
     expect(kael).toEqual({ id: 'kael', missions: 3, hitPenalty: 10, lineKey: lineKey('scn.farewell.brenna', 'grief_kael') });
     expect(locales.en?.[card.lastKey!]).toBeTruthy();

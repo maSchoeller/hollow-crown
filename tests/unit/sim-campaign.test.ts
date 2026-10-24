@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { newCampaign, type GameData } from '../../src/core';
+import { firstNode, newCampaign, type GameData } from '../../src/core';
 import { armyLevel, homeHeuristic, missionFlags, simulateCampaign, type MissionSim } from '../../tools/simCampaign';
 
 let data: GameData;
@@ -29,7 +29,7 @@ describe('chained act simulation (story 6.8)', () => {
     const o = { runs: 1, seed: 3, difficulty: 'normal' as const, deathMode: 'standard' as const };
     const a = simulateCampaign(data, o);
     expect(a.missions.map((m) => m.node)).toEqual(data.campaign.nodes.slice(0, a.missions.length).map((n) => n.id));
-    expect(a.missions[0]!.node).toBe(data.campaign.start);
+    expect(a.missions[0]!.node).toBe(firstNode(data).id);
     expect(simulateCampaign(data, o)).toEqual(a);
   });
 

@@ -299,11 +299,10 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   for (const f of result.fallen) {
     if (f.mercenary) continue;
     f.grief = [];
-    for (const [a, b] of data.campaign.supportPairs) {
+    for (const { key, pair: [a, b] } of Object.values(data.supports)) {
       const partner = a === f.id ? b : b === f.id ? a : null;
       const rec = partner ? c.roster.find((r) => r.id === partner) : undefined;
       if (!rec) continue;
-      const key = pairKey(a, b);
       if (!(s.supports[key] ?? c.supports[key])?.rank) continue;
       rec.grief = Math.max(rec.grief ?? 0, data.balance.supports.griefMissions);
       f.grief.push({ id: rec.id, missions: rec.grief });
