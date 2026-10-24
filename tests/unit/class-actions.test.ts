@@ -32,6 +32,7 @@ function arena(): BattleState {
   for (const u of s.units) u.pos = null;
   s.units.forEach((u) => (u.gone = 'retreated'));
   s.outcome = null;
+  s.lockedRoles = []; // the tests place roles the prologue company has not brought along yet (story 4.3)
   return s;
 }
 

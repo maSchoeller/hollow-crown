@@ -5,6 +5,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
+import { availableNodes, nodeLinks } from '../../core';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -12,6 +13,8 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { playNode } from '../state/flow';
+import { packNeededFor } from '../state/packs';
+import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
@@ -37,7 +40,8 @@ type Loaded = 'loading' | 'ready' | 'failed';
 export function WorldMap() {
   const c = campaign.value!;
   const nodes = data.campaign.nodes;
-  const shown = nodes.filter((n) => c.completed.includes(n.id) || c.available.includes(n.id));
+  const open = availableNodes(data, c).map((n) => n.id);
+  const shown = nodes.filter((n) => c.completed.includes(n.id) || open.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -125,7 +129,7 @@ export function WorldMap() {
   };
   // first view: the next mission (or the home) in the middle
   useLayoutEffect(() => {
-    const first = shown.find((n) => c.available.includes(n.id));
+    const first = shown.find((n) => open.includes(n.id));
     bring(first ? first.pos : data.campaign.homePos, 0.42, false);
   }, []);
 
@@ -138,7 +142,7 @@ export function WorldMap() {
   const node = sel ? nodes.find((n) => n.id === sel)! : null;
   const homeKind = data.campaign.home;
   const home = data.campaign.homePos;
-  const ended = c.available.length === 0;
+  const ended = open.length === 0;
 
   return (
     <div class="wm">
@@ -163,17 +167,17 @@ export function WorldMap() {
         >
           <img ref={img} class="wm__img" src={asset('world/valmora.webp')} alt="" draggable={false} onLoad={() => setLoaded('ready')} onError={() => setLoaded('failed')} />
           <svg class="wm__paths" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {shown.flatMap((n) =>
-              n.next
-                .map((id) => shown.find((m) => m.id === id))
-                .filter((m) => !!m)
-                .map((m) => (
-                  <g key={n.id + m!.id}>
-                    <line x1={n.pos[0]} y1={n.pos[1]} x2={m!.pos[0]} y2={m!.pos[1]} class="wm__path wm__path--edge" />
-                    <line x1={n.pos[0]} y1={n.pos[1]} x2={m!.pos[0]} y2={m!.pos[1]} class="wm__path" />
-                  </g>
-                )),
-            )}
+            {nodeLinks(data).flatMap(([from, to]) => {
+              const n = shown.find((x) => x.id === from);
+              const m = shown.find((x) => x.id === to);
+              if (!n || !m) return [];
+              return [
+                <g key={n.id + m.id}>
+                  <line x1={n.pos[0]} y1={n.pos[1]} x2={m.pos[0]} y2={m.pos[1]} class="wm__path wm__path--edge" />
+                  <line x1={n.pos[0]} y1={n.pos[1]} x2={m.pos[0]} y2={m.pos[1]} class="wm__path" />
+                </g>,
+              ];
+            })}
           </svg>
           {/* the home is a place on the map as well (a tent in the camp, a castle later) */}
           <button
@@ -229,6 +233,7 @@ export function WorldMap() {
           </button>
         </div>
         <Wallet data={data} gold={c.gold} materials={c.materials} />
+        <PackRing />
         {menu && (
           <Piece class="wm-menu">
             <SecondaryButton
@@ -239,6 +244,7 @@ export function WorldMap() {
             >
               {t('ui.save.title')}
             </SecondaryButton>
+            <SecondaryButton onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>{t('ui.chronicle.title')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'worldmap' } })}>{t('ui.options')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
           </Piece>
@@ -272,7 +278,7 @@ export function WorldMap() {
                 <Icon name="wanted" size={26} />
                 {t('ui.map.wanted')}
               </button>
-              <button type="button" class="is-dim" aria-disabled="true" onClick={() => setToast(t('ui.map.soon.chronicle'))}>
+              <button type="button" onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>
                 <Icon name="log" size={26} />
                 {t('ui.map.chronicle')}
               </button>
@@ -290,7 +296,18 @@ export function WorldMap() {
 function NodeCard({ id }: { id: string }) {
   const c = campaign.value!;
   const n = data.campaign.nodes.find((x) => x.id === id)!;
-  const map = data.maps[n.map]!;
+  // a mission of an act pack that is still loading is visible, but starts only afterwards (story 7.2)
+  const pack = packNeededFor(n);
+  const map = data.maps[n.map];
+  if (pack || !map) {
+    return (
+      <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
+        <div class="wm-card__kicker">{t('ui.map.kicker', { node: nodeShort(id) })}</div>
+        <h2 class="wm-card__title">{t(`map.${n.map}.name`)}</h2>
+        <PackWait pack={pack ?? ''} />
+      </Piece>
+    );
+  }
   const done = c.completed.includes(id);
   const goal = map.objectives.victory.type;
   return (

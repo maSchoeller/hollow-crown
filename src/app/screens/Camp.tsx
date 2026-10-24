@@ -100,6 +100,7 @@ export function Camp({ tab }: { tab?: string }) {
                   </span>
                   {t(`room.${r.id}.name`)}
                   {!isOpen && <small>{lockReason(unmet)}</small>}
+                  {isOpen && r.function === 'campfire' && talks > 0 && <small class="hm-room__ready">{t('ui.troop.legend.talk')}</small>}
                 </button>
               );
             })}

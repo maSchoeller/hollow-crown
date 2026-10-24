@@ -75,8 +75,15 @@ export class CampaignLimitError extends Error {
 
 export const APP_VERSION: string = import.meta.env?.VITE_APP_VERSION ?? '0.1.0';
 
-/** Migrations by from-format (only for saves of released act builds, each with a fixture in tests/fixtures/saves/). */
+/**
+ * Migrations by from-format (only for saves of released act builds). Each needs a fixture `format<n>-*.json` in
+ * tests/fixtures/saves/ written by the release it migrates from; `tests/unit/migrations.test.ts` fails without one.
+ * A migration that follows a rename reads `content/renames.yaml` through `renamedId` (src/content/ids.ts, story 7.4).
+ */
 const migrations: Record<number, (r: SaveRecord) => SaveRecord> = {};
+
+/** From-formats that have a migration (for the fixture test). */
+export const migrationFormats = (): number[] => Object.keys(migrations).map(Number);
 
 type Tx = IDBPTransaction<unknown, string[], 'versionchange'>;
 

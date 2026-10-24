@@ -1,0 +1,4 @@
+# Chronik-Seiten der Paktwächter in Akt 1 (Story 4.7, Narrative „Found Documents“: 4 je Akt, 12 in Staffel 1).
+# Je Seite: id, title, text (Deutsch); Englisch in content/locales/en/act1.chronicle.yaml unter chronicle.<id>.title|text.
+# Gefunden wird eine Seite über die Wirkung { chronicle: <id> }. Die Seiten selbst kommen mit den Missionen von Akt 1 (Epic 9).
+[]

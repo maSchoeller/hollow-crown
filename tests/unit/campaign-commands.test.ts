@@ -20,6 +20,7 @@ import {
   type GameData,
   type QueuedEffects,
   promotionTargets,
+  firstNode,
 } from '../../src/core';
 
 let data: GameData;
@@ -250,11 +251,11 @@ describe('campaign commands', () => {
   });
 
   it('finishMission replays the battle log and applies the result', () => {
-    const start = beginBattle(data, base, data.campaign.start, base.roster.map((r) => r.id)).state;
+    const start = beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
     const played = autoplay(data, start);
     expect(played.state.outcome).toBe('victory');
     const r = run(base, { type: 'finishMission', start, commands: played.log });
-    expect(r.campaign.completed).toContain(data.campaign.start);
+    expect(r.campaign.completed).toContain(firstNode(data).id);
     const done = r.events.find((e) => e.t === 'missionFinished');
     expect(done && done.t === 'missionFinished' && done.result.outcome).toBe('victory');
     expect(validateCampaign(data, r.campaign, { type: 'finishMission', start, commands: played.log })).toBe('node_unavailable');
@@ -262,14 +263,14 @@ describe('campaign commands', () => {
 });
 
 describe('finishMission with dialogue effects queued during the battle', () => {
-  const start = () => beginBattle(data, base, data.campaign.start, base.roster.map((r) => r.id)).state;
+  const start = () => beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
   const queue = [
     { at: 0, effects: [{ setFlag: 'ch02_hold' }, { gold: 7 }] },
     { at: 2, effects: [{ stance: 'warm' as const }, { chronicle: 'p_test' }] },
   ];
   /** The player idles until the enemy wins. */
   function lost(c: CampaignState): { start: BattleState; log: Command[] } {
-    const s0 = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
+    const s0 = beginBattle(data, c, firstNode(data).id, c.roster.map((r) => r.id)).state;
     let s = s0;
     const log: Command[] = [];
     for (let i = 0; i < 60 && !s.outcome; i++) {
@@ -293,7 +294,7 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     expect(r.events.filter((e) => e.t === 'flagSet')).toEqual([{ t: 'flagSet', flag: 'ch02_hold', value: true }]);
     expect(r.events.filter((e) => e.t === 'stanceGained')).toHaveLength(1);
     expect(r.events.at(-1)!.t).toBe('missionFinished');
-    expect(r.campaign.completed).toContain(data.campaign.start);
+    expect(r.campaign.completed).toContain(firstNode(data).id);
   });
 
   it('defeat: applies none and leaves the campaign unchanged', () => {
@@ -359,7 +360,7 @@ describe('journal replay', () => {
     };
     exec({ type: 'buy', item: 'iron_sword' });
     exec({ type: 'effects', effects: [{ setFlag: 'ch02_hold' }] });
-    const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
+    const start = beginBattle(data, c, firstNode(data).id, c.roster.map((r) => r.id)).state;
     exec({ type: 'finishMission', start, commands: autoplay(data, start).log });
     exec({ type: 'equip', unit: c.roster[0]!.id, uid: c.convoy.find((i) => i.def === 'iron_sword')!.uid, slot: 'bag' });
     exec({ type: 'sell', uid: c.convoy.find((i) => i.def === 'vulnerary')!.uid });

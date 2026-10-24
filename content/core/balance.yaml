@@ -55,6 +55,11 @@ supports:
   guardChance: { A: 20, S: 30 }
   griefHitPenalty: 10
   griefMissions: 3
+  # highest rank the campfire unlocks, by its level (story 4.9): the camp of act 1 = level 1 → C and B; A and S come with the castle (Epic 10)
+  campfireMaxRank: [B, A, S]
+  # fixed pairs of the season and how many of them reach S (GDD Supports, narrative "Die 25 Support-Paare")
+  seasonPairs: 25
+  corePairs: 6
 experience:
   levelUpAt: 100
   advancedLevelOffset: 15
@@ -94,9 +99,15 @@ scene:
   typeTickMs: 16
   bubbleAutoMs: 2500
   bubbleMaxChars: 56
+# chronicle (story 4.7): pages of the whole season, 4 per act (narrative "Found Documents")
+chronicle:
+  seasonPages: 12
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000
+  # Akt-Pakete im Hintergrund (Story 7.2): Pause vor dem n-ten neuen Versuch = base · 2^(n−1), höchstens max
+  packRetryBaseMs: 2000
+  packRetryMaxMs: 60000
 rally: { radius: 2, damage: 2, hit: 10 }
 # Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
 classActions:

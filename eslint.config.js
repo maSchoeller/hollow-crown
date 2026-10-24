@@ -18,7 +18,7 @@ const layer = (from, forbidden, packages = []) => ({
 });
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'node_modules', 'public/assets', 'dev-dist', 'playwright-report', 'test-results', 'concept', 'art'] },
+  { ignores: ['dist', 'dist-perf', 'coverage', 'node_modules', 'public/assets', 'dev-dist', 'playwright-report', 'test-results', 'concept', 'art'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

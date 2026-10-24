@@ -18,6 +18,7 @@ export type Screen =
   | { name: 'defeat' }
   | { name: 'camp'; tab?: string }
   | { name: 'troop'; unit?: string; from?: From }
+  | { name: 'chronicle'; from?: From }
   | { name: 'options'; back: Screen };
 
 export const screen = signal<Screen>({ name: 'title' });

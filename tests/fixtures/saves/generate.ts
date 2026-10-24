@@ -5,7 +5,7 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadContentFromDisk } from '../../../src/content/node';
-import { applyCommand, autoCommand, beginBattle, newCampaign, type Command } from '../../../src/core';
+import { applyCommand, autoCommand, beginBattle, newCampaign, firstNode, type Command } from '../../../src/core';
 
 const dir = join(process.cwd(), 'tests/fixtures/saves');
 const { data } = loadContentFromDisk();
@@ -28,7 +28,7 @@ const c2 = newCampaign(
   { difficulty: 'hard', deathMode: 'classic' },
   { ...avatar, name: 'Ilsa', pronoun: 'she', portrait: 'avatar_b' },
 );
-const node = data.campaign.start;
+const node = firstNode(data).id;
 const deploy = c2.roster.map((r) => r.id);
 const start = beginBattle(data, c2, node, deploy).state;
 let s = start;

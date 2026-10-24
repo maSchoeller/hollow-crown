@@ -6,6 +6,8 @@ import {
   CoreInvariantError,
   applyCommand,
   conditionContext,
+  firstNode,
+  nodeScenes,
   createBattle,
   queuedFlags,
   validateEffects,
@@ -17,6 +19,12 @@ import {
   type ConditionContext,
   type Effect,
   type MapUnitDef,
+  type ResolvedOption,
+  type SceneDef,
+  type FlagDef,
+  type ChroniclePageDef,
+  chronicleTexts,
+  sceneTexts,
 } from '../../core';
 import type { SaveRecord, SlotId } from '../../persistence/save';
 import {
@@ -36,9 +44,11 @@ import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
+import { addTexts } from '../../i18n';
 import { loadManifest } from '../../render/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
-import { ensureMissionAssets, prefetchQuietly } from './loading';
+import { ensureMissionAssets, ensureMissionPack, prefetchQuietly } from './loading';
+import { packNeededFor } from './packs';
 import { settings } from './settings';
 
 bindLive(() => ({
@@ -65,13 +75,23 @@ export function defaultDeploy(nodeId: string): string[] {
  */
 export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
   const node = nodeDef(nodeId);
+  // map and dialogues of later missions come with their act pack (story 7.2): wait for it on the loading screen
+  const pack = packNeededFor(node);
+  if (pack) {
+    const back: Screen = opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+    void ensureMissionPack({ node: nodeId, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back }).then((ok) => {
+      if (ok) playNode(nodeId, opts);
+    });
+    return;
+  }
   const map = data.maps[node.map]!;
   const choice = campaign.value!.roster.length > map.deploy.max;
   const go = () => {
     if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
     else void beginMission(nodeId, defaultDeploy(nodeId), opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' });
   };
-  if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
+  const { pre } = nodeScenes(data, campaign.value, nodeId);
+  if (pre) screen.value = { name: 'dialogue', id: pre, next: go };
   else go();
 }
 
@@ -135,14 +155,27 @@ export async function beginMission(nodeId: string, deploy: string[], back: Scree
 export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSettings): Promise<boolean> {
   if (!(await createNewCampaign(settingsIn, avatar))) return false;
   battle.value = null;
-  playNode(data.campaign.start);
+  playNode(firstNode(data).id);
   return true;
+}
+
+/**
+ * Before a save with a running battle is restored: the battle's act pack must be registered, or the map to replay on is
+ * missing (story 7.2). Shows the loading screen while it loads; resolves `false` when the player left it.
+ */
+export async function ensureRecordContent(rec: SaveRecord): Promise<boolean> {
+  const nodeId = rec.payload.battle?.start.nodeId;
+  const node = nodeId ? data.campaign.nodes.find((n) => n.id === nodeId) : undefined;
+  const pack = node ? packNeededFor(node) : null;
+  if (!node || !pack) return true;
+  return ensureMissionPack({ node: node.id, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back: { name: 'title' } });
 }
 
 /** Restores a slot of a campaign (default: the active one): replays a running battle's command log (concept/13 acceptance 8). */
 export async function loadSlot(slot: SlotId, id?: string | null): Promise<boolean> {
   const rec = await readSlot(slot, id);
   if (!rec) return false;
+  if (!(await ensureRecordContent(rec))) return true;
   restore(rec);
   return true;
 }
@@ -150,6 +183,7 @@ export async function loadSlot(slot: SlotId, id?: string | null): Promise<boolea
 /** Imports an exported save and makes it the active campaign. Resolves `false` when that would exceed three campaigns. */
 export async function importRecord(rec: SaveRecord): Promise<boolean> {
   if (!(await storeImportedRecord(rec))) return false;
+  if (!(await ensureRecordContent(rec))) return true;
   restore(rec, 'import');
   return true;
 }
@@ -202,6 +236,7 @@ export function concludeBattle(): void {
     screen.value = { name: 'defeat' };
     return;
   }
+  const before = campaign.value;
   const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log, effects: b.effects });
   if (!r.ok) {
     // the battle stays as it is; the fault screen takes over (an invariant violation has reported itself already)
@@ -211,9 +246,10 @@ export function concludeBattle(): void {
   battle.value = null;
   autosave('worldmap'); // campaignCommand saved while the battle was still running; the finished one must not be resumable
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
-  const node = nodeDef(b.state.nodeId);
+  // the memorial variant is decided before the battle's deaths count (the trigger fell before the quest, not in it)
+  const { post } = nodeScenes(data, before, b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
-  if (node.post) screen.value = { name: 'dialogue', id: node.post, next: toResult };
+  if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
   else toResult();
 }
 
@@ -258,6 +294,24 @@ export function runEffects(effects: Effect[]): void {
   autosave('battle');
 }
 
+/**
+ * The player's answer to a choice (story 4.6). Outside a battle it is the campaign command `choose` (effects, stance,
+ * the decision in the chronicle). Battle scenes have no answers (content:check); should one ever come up, only its
+ * effects wait for the end of the battle as before.
+ */
+export function chooseAnswer(scene: string, line: string, option: ResolvedOption): void {
+  if (inBattle()) return runEffects(option.effects);
+  const r = campaignCommand({ type: 'choose', scene, line, option: option.id });
+  if (!r.ok) log.warn('core', `answer refused: ${r.error}`, { scene, line, option: option.id });
+}
+
+/** Answers given before in scene `id`: line id → option id (a choice is never asked twice). */
+export function answeredIn(id: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(campaign.value?.choices ?? {})) if (k.startsWith(`${id}#`)) out[k.slice(id.length + 1)] = v;
+  return out;
+}
+
 /** Dev helper: lets the simulator play the current battle (manual testing only). */
 if (import.meta.env.DEV) {
   void import('../../core/ai/autoplay').then(({ autoCommand }) => {
@@ -287,6 +341,24 @@ if (import.meta.env.DEV) {
       },
       /** home-screen hint again, as after a first save */
       showHomeHint: devResetHint,
+      /**
+       * plays a scene registered at run time (decisions and consequence card without story content): `devScene(scene,
+       * flags)` adds the scene, its flags and its German texts (also as English), then shows it over the world map
+       */
+      devScene: (scene: SceneDef, flags: FlagDef[] = []) => {
+        data.scenes[scene.id] = scene;
+        for (const f of flags) data.flags[f.id] = f;
+        addTexts('de', sceneTexts(scene));
+        addTexts('en', sceneTexts(scene));
+        screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+      },
+      /** registers a chronicle page at run time (texts as German and English) and finds it: `devPage({ id, act, title, text })` */
+      devPage: (page: ChroniclePageDef) => {
+        data.chronicle[page.id] = page;
+        addTexts('de', chronicleTexts(page));
+        addTexts('en', chronicleTexts(page));
+        runEffects([{ chronicle: page.id }]);
+      },
     };
   });
 }

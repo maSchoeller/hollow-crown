@@ -4,9 +4,10 @@
  * flow (`flow.ts`) decides which files and what happens afterwards.
  */
 import { signal } from '@preact/signals';
-import { asset } from '../../ui/asset';
 import { ON_DEMAND_CACHE } from '../loading/cacheName';
 import { failureStatus, missingAssets, type MissionLoadStatus } from '../loading/plan';
+import { isPackRegistered } from '../../content/browser';
+import { ensurePack, packStates, retryPacksNow, type PackState } from './packs';
 import { screen, type Screen } from './screen';
 import { data } from './session';
 
@@ -26,8 +27,7 @@ const PARALLEL = 3;
 /** Files that arrived in this session; also answers for browsers without a Cache API (dev server, plain http). */
 const arrived = new Set<string>();
 
-/** The same URL the pictures are requested with (`asset` adds the revision), or the cache would not find them. */
-const urlOf = asset;
+const urlOf = (path: string): string => `${import.meta.env.BASE_URL}assets/${path}`;
 
 /** Whether the file is in any cache of the service worker (or has been fetched in this session). */
 export async function isCached(path: string): Promise<boolean> {
@@ -131,6 +131,40 @@ export async function ensureMissionAssets(opts: { node: string; place: string; p
       };
     };
     void round();
+  });
+}
+
+const packStatus = (s: PackState | undefined): MissionLoadStatus => (s?.phase === 'offline' ? 'offline' : s?.phase === 'retry' ? 'failed' : 'loading');
+
+/**
+ * Makes sure the act pack of a mission is there (story 7.2): its map and dialogues come with the pack. Registered: resolves
+ * `true` at once. Otherwise the loading screen shows the pack's progress (files) until it is registered, `false` when
+ * the player leaves with the back stone; the download itself goes on in the background either way.
+ */
+export async function ensureMissionPack(opts: { node: string; place: string; pack: string; back: Screen }): Promise<boolean> {
+  if (isPackRegistered(opts.pack)) return true;
+  const mine = ++run;
+  const show = () => {
+    if (run !== mine) return;
+    const s = packStates.value[opts.pack];
+    missionLoad.value = { node: opts.node, place: opts.place, total: s?.totalFiles ?? 0, done: s?.doneFiles ?? 0, status: packStatus(s) };
+  };
+  show();
+  screen.value = { name: 'loading' };
+  const stop = packStates.subscribe(show);
+  return new Promise<boolean>((resolve) => {
+    retryNow = retryPacksNow;
+    finish = (ok) => {
+      stop();
+      retryNow = null;
+      finish = null;
+      missionLoad.value = null;
+      if (!ok) screen.value = opts.back;
+      resolve(ok);
+    };
+    void ensurePack(opts.pack).then(() => {
+      if (run === mine) finish?.(true);
+    });
   });
 }
 
