@@ -85,7 +85,7 @@ export async function beginMission(nodeId: string, deploy: string[], back: Scree
   const start = createBattle(data, campaign.value!, nodeId, deploy);
   const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
   const models = (await loadManifest()).models?.units;
-  const paths = missionAssets({ units: [...start.units, ...later.map(defSource)], models, place: node.place });
+  const paths = missionAssets({ units: [...start.units, ...later.map(defSource)], models, classes: data.classes, place: node.place, defaultPlace: data.campaign.defaultPlace });
   if (!(await ensureMissionAssets({ node: nodeId, place: paths.find((p) => p.startsWith('locations/'))!, paths, back }))) return;
   pendingEvents.value = startBattle(nodeId, deploy);
 }

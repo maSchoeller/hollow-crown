@@ -4,8 +4,12 @@ import { loadContentFromDisk } from '../../src/content/node';
 import { classSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
 import {
+  applyCommand,
   beginBattle,
   canEquip,
+  CoreInvariantError,
+  type Command,
+  unitFigureId,
   CORE_ROLES,
   equipCandidates,
   groupAllowed,
@@ -229,6 +233,16 @@ describe('saves from before the role model', () => {
     expect(c.roster[0]!.classId).toBe('skirmisher');
     expect(c.roster.slice(1)).toEqual(base.roster.slice(1));
     expect(c.tavern[0]!.classId).toBe('healer');
+    // renamed tavern offers still draw the figure of their class (model and sprite files keep the old names)
+    expect(unitFigureId({ classId: c.roster[0]!.classId }, data.classes)).toBe('mercenary');
+    expect(unitFigureId({ classId: c.tavern[0]!.classId }, data.classes)).toBe('cleric');
+  });
+
+  it('a saved battle whose log no longer fits throws an invariant error instead of drifting on', () => {
+    const s = beginBattle(data, base, data.campaign.start, base.roster.map((u) => u.id)).state;
+    const unit = s.units.find((u) => u.team === 'player')!;
+    const stale: Command = { type: 'move', unit: unit.uid, to: [99, 99] };
+    expect(() => applyCommand(data, renameLegacyBattleClasses(data, s), stale)).toThrow(CoreInvariantError);
   });
 
   it('maps them in a saved battle start too and leaves current ids alone', () => {

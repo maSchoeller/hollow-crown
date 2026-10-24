@@ -20,7 +20,8 @@ function Bar({ value, label }: { value: number; label: string }) {
 export function PrepareScreen() {
   const p = prepare.value;
   if (p.phase === 'pending') return <div class="screen ld ld--wait" />;
-  const size = p.bytes ? formatBytes(p.bytes, lang.value === 'de' ? 'de-DE' : 'en-US') : null;
+  const fmt = p.bytes ? formatBytes(p.bytes, lang.value === 'de' ? 'de-DE' : 'en-US') : null;
+  const size = fmt ? t(fmt.unitKey, { n: fmt.n }) : null;
   return (
     <div class="screen ld ld--prepare">
       <Piece class="ld-stone" role="status" aria-live="polite">

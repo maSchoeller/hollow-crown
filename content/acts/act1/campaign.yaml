@@ -13,6 +13,8 @@ home: camp
 # Wo Knoten und Heimat auf der gemalten Weltkarte liegen (art/mockups/locations-s1/weltkarte_valmora.png): Prozent von Breite und Höhe
 homePos: [52, 79]
 startGold: 500
+# Ortsbild, das ein Knoten ohne eigenes place beim Laden zeigt (art/mockups/locations-s1)
+defaultPlace: lager_unterwegs
 startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
