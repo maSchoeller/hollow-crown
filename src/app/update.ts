@@ -44,11 +44,29 @@ export async function checkForUpdate(): Promise<void> {
   }
 }
 
-/** Activates the waiting version and reloads the app; `installing` shows the loading screen until the reload happens. */
+/** Longest wait for the new version to take over before the app reloads anyway. */
+const INSTALL_TIMEOUT_MS = 8000;
+
+/**
+ * Activates the waiting version and reloads the app; `installing` shows the loading screen until the reload happens.
+ * The reload does not rely on the plugin's own `controlling` handler (it stays silent for a version found by a manual
+ * check): the new worker taking control, or the timeout, reloads the page.
+ */
 export function installUpdate(): void {
   if (!applyUpdate || updateStatus.value === 'installing') return;
   updateStatus.value = 'installing';
-  applyUpdate(true).catch(() => {
-    updateStatus.value = 'available';
-  });
+  let reloaded = false;
+  const reload = () => {
+    if (reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  };
+  navigator.serviceWorker.addEventListener('controllerchange', reload, { once: true });
+  window.setTimeout(reload, INSTALL_TIMEOUT_MS);
+  applyUpdate(true)
+    .then(() => registration?.waiting?.postMessage({ type: 'SKIP_WAITING' }))
+    .catch(() => {
+      reloaded = true;
+      updateStatus.value = 'available';
+    });
 }
