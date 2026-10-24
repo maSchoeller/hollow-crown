@@ -33,7 +33,7 @@ export type GameEvent =
   | { t: 'retreated'; unit: string }
   | { t: 'rescued'; unit: string; by: string }
   | { t: 'escaped'; unit: string }
-  | { t: 'exp'; unit: string; amount: number; before: number; after: number }
+  | { t: 'exp'; unit: string; amount: number; before: number; after: number; capped?: true }
   | { t: 'levelUp'; unit: string; level: number; gains: Partial<Stats> }
   | { t: 'mastered'; unit: string; skill: string }
   | { t: 'loot'; unit: string; item: ItemInstance; toConvoy: boolean }

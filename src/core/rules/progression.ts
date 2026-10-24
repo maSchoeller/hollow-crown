@@ -52,29 +52,56 @@ export function levelUp(data: GameData, u: UnitRecord, rng: RngState): Partial<S
   return gains;
 }
 
-/** Grants EXP, levelling up as often as needed. */
+/** Highest level of the current act (`campaign.yaml` levelCap, never above `balance.levels.max`). */
+export function levelCap(data: GameData): number {
+  const max = data.balance.levels.max;
+  return Math.min(data.campaign.levelCap ?? max, max);
+}
+
+/**
+ * Grants EXP, levelling up as often as needed. At the act's level cap further EXP are forfeited:
+ * the `exp` event reports `capped` and only the EXP that still counted go into `battleExp`.
+ */
 export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: RngState, events: GameEvent[]): void {
   const e = data.balance.experience;
-  if (u.level >= data.balance.levels.max || amount <= 0) return;
+  const cap = levelCap(data);
+  if (amount <= 0) return;
   const before = u.exp;
-  u.exp += amount;
-  u.battleExp = (u.battleExp ?? 0) + amount;
-  events.push({ t: 'exp', unit: u.uid, amount, before, after: Math.min(u.exp, e.levelUpAt) });
-  while (u.exp >= e.levelUpAt && u.level < data.balance.levels.max) {
+  if (u.level >= cap) {
+    u.exp = 0;
+    events.push({ t: 'exp', unit: u.uid, amount, before: 0, after: 0, capped: true });
+    return;
+  }
+  const room = (cap - u.level) * e.levelUpAt - u.exp;
+  const counted = Math.min(amount, room);
+  u.exp += counted;
+  u.battleExp = (u.battleExp ?? 0) + counted;
+  const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(u.exp, e.levelUpAt) };
+  if (counted === room) ev.capped = true;
+  events.push(ev);
+  while (u.exp >= e.levelUpAt && u.level < cap) {
     u.exp -= e.levelUpAt;
     const hpBefore = u.stats.hp;
     const gains = levelUp(data, u, rng);
     u.hp += u.stats.hp - hpBefore;
     events.push({ t: 'levelUp', unit: u.uid, level: u.level, gains });
   }
-  if (u.level >= data.balance.levels.max) u.exp = 0;
+  if (u.level >= cap) u.exp = 0;
 }
 
-export function combatExp(data: GameData, u: UnitRecord, foe: UnitRecord, killed: boolean, boss: boolean): number {
+/** Lieutenants count like bosses for EP (GDD: "Boss oder Leutnant +20"). */
+export function combatExp(
+  data: GameData,
+  u: UnitRecord,
+  foe: UnitRecord & { lieutenant?: string },
+  killed: boolean,
+  boss: boolean,
+): number {
   const e = data.balance.experience;
   const delta = effectiveLevel(data, foe) - effectiveLevel(data, u);
   if (!killed) return clamp(e.combatBase + delta, e.combatMin, e.combatMax);
-  return clamp(e.killBase + e.killPerLevelDiff * delta, e.killMin, e.killMax) + (boss ? e.bossBonus : 0);
+  const bossLike = boss || !!foe.lieutenant;
+  return clamp(e.killBase + e.killPerLevelDiff * delta, e.killMin, e.killMax) + (bossLike ? e.bossBonus : 0);
 }
 
 /** Adds skill points to every item skill of equipped items; masters skills at the cost threshold. */

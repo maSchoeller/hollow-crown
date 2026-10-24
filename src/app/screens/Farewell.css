@@ -1,0 +1,98 @@
+/* Farewell card (concept/25-ux/mockups/08-ergebnis-abschied.html, story 6.7). Style B, serious: desaturated, only the ember line. */
+@import '../../ui/tokens.css';
+
+.fw-view .hc-backdrop img {
+  filter: blur(6px) saturate(0.1) brightness(0.45);
+}
+.fw-view {
+  animation: fw-in 900ms ease-out both;
+}
+@keyframes fw-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw-view {
+    animation: none;
+  }
+}
+.fw-stage {
+  display: grid;
+  align-content: center;
+}
+.fw-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 110px;
+  padding: 16px 14px;
+  text-align: center;
+  background: var(--hc-mourn);
+}
+.fw-bust {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: -124px 0 -4px;
+  overflow: hidden;
+  filter: grayscale(1) contrast(0.95);
+}
+.fw-bust .trp-bust {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+  object-position: top;
+}
+.fw-name {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+}
+.fw-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hc-soft);
+}
+.fw-ember {
+  width: 40px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--hc-ember);
+}
+.fw-last {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.fw-grief {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px 6px 6px;
+  border-radius: 12px;
+  background: var(--hc-mourn-quiet);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+.fw-grief .trp-head {
+  filter: grayscale(0.6);
+}
+.fw-grief b {
+  font-family: var(--hc-font-name);
+}
+.fw-grief__line {
+  display: block;
+  margin-top: 2px;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--hc-soft);
+}

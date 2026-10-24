@@ -5,7 +5,7 @@ import { sideObjectiveDone } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
 import { allItems, itemDef } from '../rules/items';
-import { grantSp } from '../rules/progression';
+import { grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
@@ -122,9 +122,24 @@ export interface UnitResult {
   levelBefore: number;
   levelAfter: number;
   exp: number;
+  /** stands at the act's level cap after the mission (further EP were forfeited) */
+  capped?: boolean;
   mastered: string[];
   portrait?: string;
   classId?: string;
+}
+
+/** A company member who died in the mission; drives the farewell card (story 6.7). */
+export interface FallenResult {
+  id: string;
+  nameKey: string;
+  name?: string;
+  portrait?: string;
+  classId?: string;
+  /** hired in the tavern: short farewell without last line and grief */
+  mercenary?: boolean;
+  /** surviving support partners who now grieve, with the missions the penalty lasts */
+  grief?: Array<{ id: string; missions: number }>;
 }
 
 /** Bounty for a lieutenant driven off in a mission, and the grudge it leaves (Epic 3 fills this; empty until then). */
@@ -147,7 +162,7 @@ export interface BattleResult {
   materials: Record<string, number>;
   items: ItemInstance[];
   units: UnitResult[];
-  fallen: Array<{ id: string; nameKey: string; name?: string; portrait?: string; classId?: string }>;
+  fallen: FallenResult[];
   /** lieutenants driven off (bounty + new grudge); empty while there are none */
   bounty: BountyResult[];
   scars: Array<{ id: string; scar: string }>;
@@ -231,8 +246,9 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     const dies = u.gone === 'dead' || (u.downed && !u.gone);
     if (dies) {
       c.roster = c.roster.filter((r) => r.id !== u.id);
-      c.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, node: s.nodeId });
-      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, portrait: u.portrait, classId: u.classId });
+      const mercenary = !u.charId;
+      c.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, node: s.nodeId, classId: u.classId, portrait: u.portrait, ...(mercenary ? { mercenary: true as const } : {}) });
+      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, portrait: u.portrait, classId: u.classId, mercenary });
       c.convoy.push(...allItems(u));
       continue;
     }
@@ -273,10 +289,24 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       levelBefore: before?.level ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
+      capped: u.level >= levelCap(data) && levelCap(data) < data.balance.levels.max,
       portrait: u.portrait,
       classId: u.classId,
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
     });
+  }
+  // grief: every surviving fixed support partner of a fallen companion from support rank C (GDD: −10 hit for 3 missions)
+  for (const f of result.fallen) {
+    if (f.mercenary) continue;
+    f.grief = [];
+    for (const { key, pair: [a, b] } of Object.values(data.supports)) {
+      const partner = a === f.id ? b : b === f.id ? a : null;
+      const rec = partner ? c.roster.find((r) => r.id === partner) : undefined;
+      if (!rec) continue;
+      if (!(s.supports[key] ?? c.supports[key])?.rank) continue;
+      rec.grief = Math.max(rec.grief ?? 0, data.balance.supports.griefMissions);
+      f.grief.push({ id: rec.id, missions: rec.grief });
+    }
   }
   // side objectives
   for (const o of map.objectives.side) {

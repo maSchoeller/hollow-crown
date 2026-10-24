@@ -1,0 +1,18 @@
+# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.tobin
+lines:
+  - id: last
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Ich hab die Linie gehalten, oder? Sagt mir, dass ich sie gehalten hab."
+  - id: grief_brenna
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Der Junge hätte einer der Besten werden können. Kein Witz heute."
+  - id: grief_mira
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Er hat versprochen, mir das Dorf wieder aufbauen zu helfen."

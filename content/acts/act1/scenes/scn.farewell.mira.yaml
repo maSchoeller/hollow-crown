@@ -1,0 +1,13 @@
+# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.mira
+lines:
+  - id: last
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Bringt mich nicht zurück ins Dorf. Lasst mich hier, wo der Wald anfängt."
+  - id: grief_tobin
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Sie hat nie danebengeschossen. Nur dieses eine Mal hat sie nicht auf sich aufgepasst."

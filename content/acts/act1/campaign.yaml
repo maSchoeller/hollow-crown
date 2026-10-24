@@ -2,6 +2,8 @@
 # Knoten (Architektur §5.4): kind story|side (Standard story), fixed first|finale, requires (Bedingungen), memorialIf + memorial { pre, post }.
 # Verfügbar ist, was availableNodes ausrechnet: erst nur fixed: first, dann alles mit erfüllten requires, das Finale nach allen anderen Story-Knoten.
 act: 1
+# Stufendeckel des Akts (GDD Figurensystem): EP darüber verfallen
+levelCap: 10
 # Gestaffelte Einführung (GDD, Architektur §5.4): Mechanik → Zahl abgeschlossener Story-Missionen des Akts, ab der sie gilt.
 # Kapitel 3 ist noch nicht gebaut; bis dahin bleiben Elemente und Unterstützungen aus.
 mechanics:

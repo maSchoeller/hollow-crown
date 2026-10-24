@@ -1,6 +1,6 @@
 import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
 import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
-import { promotionTargets } from '../rules/progression';
+import { levelCap, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
 import { pendingRank, rankIndex } from '../rules/supports';
@@ -175,10 +175,18 @@ export function canPromote(data: GameData, u: UnitRecord): boolean {
   return u.level >= data.balance.levels.promoteFrom && promotionTargets(data, u.classId).length > 0;
 }
 
-/** Experience bar of a unit: gained / needed for the next level; `full` at the top level. */
-export function expProgress(data: GameData, u: UnitRecord): { exp: number; need: number; full: boolean } {
+/**
+ * Experience bar of a unit: gained / needed for the next level; `full` at the act's level cap,
+ * `capped` when that cap lies below the top level (the UI names the act).
+ */
+export function expProgress(
+  data: GameData,
+  u: UnitRecord,
+): { exp: number; need: number; full: boolean; capped: boolean; cap: number; act: number } {
   const need = data.balance.experience.levelUpAt;
-  return { exp: u.exp, need, full: u.level >= data.balance.levels.max };
+  const cap = levelCap(data);
+  const full = u.level >= cap;
+  return { exp: u.exp, need, full, capped: full && cap < data.balance.levels.max, cap, act: data.campaign.act };
 }
 
 /** Pairs of the unit with a conversation ready at the campfire. */
