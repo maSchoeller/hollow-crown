@@ -280,7 +280,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
     });
   }
-  // grief: every surviving fixed support partner of a fallen companion (GDD: −10 hit for 3 missions)
+  // grief: every surviving fixed support partner of a fallen companion from support rank C (GDD: −10 hit for 3 missions)
   for (const f of result.fallen) {
     if (f.mercenary) continue;
     f.grief = [];
@@ -288,6 +288,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       const partner = a === f.id ? b : b === f.id ? a : null;
       const rec = partner ? c.roster.find((r) => r.id === partner) : undefined;
       if (!rec) continue;
+      const key = pairKey(a, b);
+      if (!(s.supports[key] ?? c.supports[key])?.rank) continue;
       rec.grief = Math.max(rec.grief ?? 0, data.balance.supports.griefMissions);
       f.grief.push({ id: rec.id, missions: rec.grief });
     }

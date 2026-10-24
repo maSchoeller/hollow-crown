@@ -9,6 +9,7 @@ import {
   getUnit,
   lineKey,
   newCampaign,
+  pairKey,
   type BattleState,
   type CampaignState,
   type GameData,
@@ -25,6 +26,20 @@ beforeAll(() => {
   base = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
 });
 
+/** Campaign with the given support ranks set on its pairs (all other pairs keep their rank). */
+function withRanks(c: CampaignState, ranks: Record<string, 'C' | 'B' | 'A' | 'S' | null>): CampaignState {
+  const supports = { ...c.supports };
+  for (const [key, rank] of Object.entries(ranks)) supports[key] = { ...(supports[key] ?? { points: 0 }), rank };
+  return { ...c, supports };
+}
+
+/** Every fixed pair of `id` at rank C. */
+function rankedWith(c: CampaignState, id: string, rank: 'C' | 'B' | 'A' | 'S' | null = 'C'): CampaignState {
+  const ranks: Record<string, 'C' | 'B' | 'A' | 'S' | null> = {};
+  for (const [a, b] of data.campaign.supportPairs) if (a === id || b === id) ranks[pairKey(a, b)] = rank;
+  return withRanks(c, ranks);
+}
+
 /** Prologue battle won with `dead` fallen. */
 function wonWith(c: CampaignState, dead: string[], tweak?: (s: BattleState) => void) {
   const s = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
@@ -35,9 +50,9 @@ function wonWith(c: CampaignState, dead: string[], tweak?: (s: BattleState) => v
 }
 
 describe('grief (story 6.7)', () => {
-  it('gives every surviving fixed support partner grief for griefMissions missions', () => {
+  it('gives every surviving fixed support partner at rank C or higher grief for griefMissions missions', () => {
     expect(base.roster.map((r) => r.id)).toContain('brenna');
-    const { campaign, result } = wonWith(base, ['brenna']);
+    const { campaign, result } = wonWith(rankedWith(base, 'brenna'), ['brenna']);
     const partners = data.campaign.supportPairs.filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
     const alive = partners.filter((id) => campaign.roster.some((r) => r.id === id));
     expect(alive.length).toBeGreaterThan(0);
@@ -47,8 +62,22 @@ describe('grief (story 6.7)', () => {
     expect(campaign.fallen.at(-1)).not.toHaveProperty('mercenary');
   });
 
+  it('spares partners without a support rank and grieves those at rank C', () => {
+    const partners = data.campaign.supportPairs.filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
+    const alive = partners.filter((id) => base.roster.some((r) => r.id === id));
+    expect(alive.length).toBeGreaterThan(0);
+    const none = wonWith(rankedWith(base, 'brenna', null), ['brenna']);
+    expect(none.result.fallen[0]!.grief).toEqual([]);
+    for (const id of alive) expect(none.campaign.roster.find((r) => r.id === id)!.grief ?? 0).toBe(0);
+    const [first, ...rest] = alive;
+    const mixed = wonWith(withRanks(rankedWith(base, 'brenna', null), { [pairKey('brenna', first!)]: 'C' }), ['brenna']);
+    expect(mixed.result.fallen[0]!.grief!.map((g) => g.id)).toEqual([first]);
+    expect(mixed.campaign.roster.find((r) => r.id === first)!.grief).toBe(data.balance.supports.griefMissions);
+    for (const id of rest) expect(mixed.campaign.roster.find((r) => r.id === id)!.grief ?? 0).toBe(0);
+  });
+
   it('costs hit while it lasts and wears off after griefMissions missions', () => {
-    const { campaign } = wonWith(base, ['brenna']);
+    const { campaign } = wonWith(rankedWith(base, 'brenna'), ['brenna']);
     const kael = campaign.roster.find((r) => r.id === 'kael')!;
     const clear = { ...kael, grief: 0 };
     expect(computeStats(data, clear).hit - computeStats(data, kael).hit).toBe(data.balance.supports.griefHitPenalty);
@@ -62,7 +91,7 @@ describe('grief (story 6.7)', () => {
 
 describe('farewellView (story 6.7)', () => {
   it('builds one card per fallen figure with last line and grief from the farewell scene', () => {
-    const { result } = wonWith(base, ['brenna']);
+    const { result } = wonWith(rankedWith(base, 'brenna'), ['brenna']);
     const cards = farewellView(data, result);
     expect(cards).toHaveLength(1);
     const card = cards[0]!;

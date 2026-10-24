@@ -13,7 +13,7 @@ damit ein Verlust erzählerisch getragen wird.
 1. **Ablauf:** Hat eine gewonnene Mission Gefallene, führt „Weiter“ im Ergebnis nicht zur Weltkarte, sondern nacheinander zu je einer Abschieds-Karte; nach der letzten geht es weiter wie bisher.
 2. **Abschieds-Karte (Mockup 08, DESIGN `mourn-card`):** Hintergrund entsättigt und abgedunkelt, nur die Glutlinie farbig; Halbfigur grau, Name, Rolle (Klasse) und Ort („fiel in <Mission>“), letzte Zeile, Trauer-Zeile je Support-Partner mit Wirkung („Mira trauert · 3 Missionen −10 Treffer“), ruhige graue Taste „Abschied nehmen“ (`QuietButton`), keine Glut-Taste, keine Bewegung außer Einblenden.
 3. **Nicht überspringbar:** Die Taste ist die ersten 2 s gesperrt (Dauer in `balance.yaml`, nicht im Code); beim Erscheinen spielt der Glockenschlag `audio.sfx('bell')`. Audio folgt laut Produktinhaber gesammelt in einer Audio-Story: Hook und ElevenLabs-Prompt stehen, die Datei fehlt noch (ohne Datei bleibt es still).
-4. **Trauer mit Wirkung im Kern:** Stirbt ein Gefährte, erhält jeder überlebende feste Support-Partner (`supportPairs`) Trauer für `supports.griefMissions` Missionen (`grief`, −`griefHitPenalty` Treffer, schon in `stats.ts`). `finishBattle` setzt das und meldet es im Ergebnis je Gefallenem.
+4. **Trauer mit Wirkung im Kern:** Stirbt ein Gefährte, erhält jeder überlebende feste Support-Partner (`supportPairs`) ab Support-Rang C (Produktinhaber 2026-10-24) Trauer für `supports.griefMissions` Missionen (`grief`, −`griefHitPenalty` Treffer, schon in `stats.ts`). `finishBattle` setzt das und meldet es im Ergebnis je Gefallenem.
 5. **Zeilen aus der Szene des Gefährten:** Szene `scn.farewell.<charId>` mit Zeile `last` (Sprecher der Gefährte) und optional `grief_<partner>` (Sprecher der Partner). Fehlt die Szene oder Zeile, gilt ein allgemeiner Text aus den Locales. Texte für die PoC-Gefährten, die fallen können, liegen bei.
 6. **Söldner:** Ein gefallener Söldner aus der Taverne bekommt die kurze Form (ohne letzte Zeile und Trauer, mit allgemeinem Satz) und wird im Kampagnenzustand für den Gedenkstein vermerkt (`c.fallen` mit `mercenary`, `classId`, `portrait`); die Gedächtnishalle selbst baut Story 6.9.
 7. **Aufbereitung im Kern:** `farewellView(data, result)` in `src/core/campaign/farewellView.ts` (rein, getestet); die UI zeichnet nur. Eigene `Farewell.css`, Texte de/en.
@@ -44,7 +44,7 @@ Claude Opus 5.5
 
 ### Completion Notes List
 
-- Trauer war in `stats.ts` schon wirksam, wurde aber nie gesetzt; jetzt setzt `finishBattle` sie für alle überlebenden festen Support-Partner (unabhängig vom Rang, nach `concept/02-core-loop.md`). Heiler-Stufe (Trauer 2) folgt mit dem Raumausbau.
+- Trauer war in `stats.ts` schon wirksam, wurde aber nie gesetzt; jetzt setzt `finishBattle` sie für alle überlebenden festen Support-Partner ab Support-Rang C (Produktinhaber 2026-10-24). Heiler-Stufe (Trauer 2) folgt mit dem Raumausbau.
 - Ergebnis: Haupttaste heißt bei Gefallenen „Weiter“ und führt in den Abschied, danach Weltkarte.
 - Glockenschlag: `audio.sfx('bell')` beim Erscheinen jeder Karte, Prompt in `tools/audio/elevenlabs.py`; die Datei wird laut Produktinhaber mit der Audio-Story erzeugt (bis dahin still).
 - Abschiedszeilen für die PoC-Besetzung (Brenna, Tobin, Mira, Liora, Varek, Ysolde) de/en; Avatar und Kael fallen nicht (Niederlage). Die endgültigen Zeilen der Akt-1-Gefährten schreibt Epic 9 in dieselbe Form.
@@ -65,3 +65,4 @@ Claude Opus 5.5
 
 - 2026-10-24: Story-Datei angelegt (ready-for-dev).
 - 2026-10-24: Umgesetzt, Status review.
+- 2026-10-24: Trauer erst ab Support-Rang C (Produktinhaber).
