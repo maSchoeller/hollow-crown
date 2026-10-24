@@ -29,7 +29,10 @@ import { Icon } from '../../ui/icons';
 import { Amount, ItemImage } from '../../ui/pieces';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
-import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, runEffects, saveSlot, screen, startBattle, storyContext } from '../store';
+import { campaign, campaignCommand, campaignId, data, saveSlot } from '../state/session';
+import { nodeDef, playNode, runEffects, storyContext } from '../state/flow';
+import { pendingEvents, startBattle } from '../state/battle';
+import { screen } from '../state/screen';
 import { downloadSave, SlotPicker } from './Menus';
 import { audio } from '../audio';
 

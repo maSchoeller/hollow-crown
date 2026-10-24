@@ -487,11 +487,12 @@ hollow-crown/
     packs/                        Download, Cache, Fortschritt, loadPack
     worker/core.worker.ts         AR14
     render/host.ts shared/ board/ world/ home/
-    ui/                           Komponenten
+    ui/                           Komponenten; base.css tokens.css pieces.css + eine CSS-Datei je Screen (styles.css = Altbestand, schrumpft nur)
     app/
       screens/                    Title, NewGame, World, Home, Scene, Prep, Battle, Result, Memorial, Epilogue, Options
       controllers/                campaign.ts battle.ts saves.ts packs.ts
-      day.ts log.ts coreWorker.ts store.ts audio.ts update.ts
+      state/                      App-Zustand, ein Modul je Verantwortung: settings.ts screen.ts session.ts battle.ts flow.ts
+      day.ts log.ts coreWorker.ts audio.ts update.ts
     persistence/                  Format 2, Migrationen, Legacy, Export/Import
     i18n/
   tests/
@@ -571,6 +572,8 @@ Neue Darstellung bekommt Events oder Overlays, nie direkten Zugriff auf `Campaig
 - Jede Zufallsentscheidung zieht aus einem RNG im State, in fester Reihenfolge.
 - Die Vorschau ruft denselben Formelcode wie die Auflösung.
 - Neue Felder in persistiertem State brauchen einen Default beim Laden (Migration oder `??`).
+- App-Zustand liegt in `src/app/state/`, ein Modul je Verantwortung, ohne Sammel-Datei (kein Barrel, kein neues `store.ts`): `settings.ts` (Einstellungen), `screen.ts` (aktueller Screen, Blatt-Modul), `session.ts` (Inhalte, aktive Kampagne, Kampagnen-Commands, Auto-Save, Journal, Kampagnenliste; kennt weder Screens noch Kämpfe, holt sich den Live-Zustand über `bindLive`), `battle.ts` (laufender Kampf), `flow.ts` (Missionsablauf, Laden/Neu/Import, Bedingungen und Wirkungen für die UI, Dev-Helfer `window.__hc`). Abhängigkeiten laufen nur in eine Richtung: `flow` → `battle` → `session`, alle → `screen`/`settings`; keine Zyklen. Neuer Zustand bekommt ein eigenes Modul oder gehört in das, dessen Verantwortung er trägt, damit parallele Stories nicht dieselbe Datei ändern.
+- Styles: Tokens in `tokens.css`, allgemeine Grundregeln in `base.css`, gemeinsame Bausteine in `pieces.css`, jeder Screen bekommt seine eigene CSS-Datei neben der Komponente (wie `hud.css`, `campaigns.css`). `styles.css` ist Proof-of-Concept-Altbestand und schrumpft nur: Wer einen Screen neu baut, löscht dessen Abschnitt dort und legt die neuen Styles in einer Datei je Screen ab. Am Ende verschwindet `styles.css`; übrig bleiben `tokens.css`, `pieces.css`, `base.css` und die Screen-Dateien.
 
 ## 9. Epic-Zuordnung
 

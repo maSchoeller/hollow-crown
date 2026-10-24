@@ -2,7 +2,7 @@
 import { t } from '../i18n';
 import { metaFromCampaign, type SaveRecord } from '../persistence/save';
 import { ageParts, playtimeParts } from '../ui/format';
-import { nodeDef } from './store';
+import { nodeDef } from './state/flow';
 
 /**
  * The two avatar looks of the new-campaign form (art/mockups/characters-s1/rhen_a|b.png). `portrait` is the id

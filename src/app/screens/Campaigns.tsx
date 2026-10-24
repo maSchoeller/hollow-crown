@@ -18,7 +18,8 @@ import {
   type SlotId,
 } from '../../persistence/save';
 import { AVATAR_LOOKS, avatarHead, formatAge, formatPlaytime, resumeWhere, slotSummary } from '../campaignInfo';
-import { importRecord, loadSlot, removeCampaign, screen, startNewGame } from '../store';
+import { importRecord, loadSlot, removeCampaign, startNewGame } from '../state/flow';
+import { screen } from '../state/screen';
 import { downloadSave } from './Menus';
 import '../../ui/campaigns.css';
 

@@ -8,19 +8,10 @@ import { checkForUpdate, installUpdate, updateStatus } from '../update';
 import { Amount, ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { exportSave, type LegacyRecord, type SaveRecord, type SlotId } from '../../persistence/save';
 import { resumeText, slotSummary } from '../campaignInfo';
-import {
-  campaign,
-  data,
-  latestAutoSave,
-  loadSlot,
-  nodeDef,
-  saveDbBlocked,
-  playNode,
-  screen,
-  settings,
-  updateSettings,
-  type Screen,
-} from '../store';
+import { campaign, data, latestAutoSave, saveDbBlocked } from '../state/session';
+import { loadSlot, nodeDef, playNode } from '../state/flow';
+import { screen, type Screen } from '../state/screen';
+import { settings, updateSettings } from '../state/settings';
 
 /** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {

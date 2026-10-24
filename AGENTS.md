@@ -36,6 +36,8 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 - Kein sichtbarer Text im Code; Schlüssel in `content/core/locales/de.yaml` und `en.yaml`.
 - Die Kampfvorschau ruft denselben Formelcode wie die Auflösung, nie eine Kopie.
 - Code, Bezeichner, Commits und Datenschlüssel auf Englisch, Konzeptdokumente auf Deutsch.
+- App-Zustand in `src/app/state/`, ein Modul je Verantwortung (`settings`, `screen`, `session`, `battle`, `flow`), nie wieder eine Sammel-Datei und kein Barrel-Re-Export; keine Import-Zyklen zwischen ihnen.
+- Styles je Screen in einer eigenen CSS-Datei neben der Komponente; `src/ui/styles.css` ist Altbestand und schrumpft nur (beim Neubau eines Screens dessen Abschnitt dort löschen), Grundregeln in `base.css`.
 - Coverage von `src/core` Richtung 90 % heben, nie senken; prüfen mit `pnpm test:coverage`.
 - Bilder per ChatGPT über Claude in Chrome erzeugen, Prompt und Abnahme in `art/prompts/<id>.md`. Sound, Musik und Stimmen per ElevenLabs (MCP `elevenlabs` oder `tools/audio/elevenlabs.py`, Key `ELEVENLABS_API_KEY`). 3D per Blender-MCP bzw. `tools/art/blender_*.py`.
 
