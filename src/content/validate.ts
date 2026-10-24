@@ -6,7 +6,7 @@ import { nodeLinks } from '../core/campaign/graph';
 import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
-import { areaTiles, pairKey } from '../core/util';
+import { areaTiles, gridRows, pairKey } from '../core/util';
 import { BARK_LINES } from './barkLines';
 import type { ContentIssue, Locales } from './load';
 
@@ -21,6 +21,8 @@ export function validateContent(
   placeImages?: Set<string>,
   /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
   backgroundImages?: Set<string>,
+  /** prop models `<prop>_<state>` in art/models/props (content:check passes them): miniatures of the world map use them */
+  propModels?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -59,6 +61,53 @@ export function validateContent(
   };
   const companion = (file: string, id: string, ctx: string) => {
     if (!data.chars[id]) err(file, `${ctx}: unknown companion ${id}`);
+  };
+  /** The world map (story 5.2): grid shape and legend, regions, every node and the home placed, miniatures, signs. */
+  const worldChecks = (camp: GameData['campaign']): void => {
+    const w = data.world;
+    const f = 'world/valmora.yaml';
+    if (!w) return;
+    const rows = gridRows(w.tiles);
+    const width = rows[0]?.length ?? 0;
+    if (!rows.length) err(f, 'tiles: empty');
+    rows.forEach((r, y) => {
+      if (r.length !== width) err(f, `tiles row ${y}: ${r.length} tiles, expected ${width}`);
+      for (const ch of new Set(r)) if (!w.legend[ch]) err(f, `tiles row ${y}: "${ch}" is not in the legend`);
+    });
+    for (const [ch, id] of Object.entries(w.legend)) if (!data.terrain[id]) err(f, `legend "${ch}": unknown terrain ${id}`);
+    if (!data.terrain[data.render.world.skirt.terrain]) err('render.yaml', `world.skirt: unknown terrain ${data.render.world.skirt.terrain}`);
+    const regionRows = gridRows(w.regionGrid);
+    const chars = new Set(w.regions.map((r) => r.char));
+    if (regionRows.length !== rows.length) err(f, `regionGrid: ${regionRows.length} rows, expected ${rows.length}`);
+    regionRows.forEach((r, y) => {
+      if (r.length !== width) err(f, `regionGrid row ${y}: ${r.length} tiles, expected ${width}`);
+      for (const ch of new Set(r)) if (ch !== '.' && !chars.has(ch)) err(f, `regionGrid row ${y}: "${ch}" is no region`);
+    });
+    for (const r of w.regions) {
+      if (!data.render.world.seasons[r.season]) err(f, `region ${r.id}: no light for season ${r.season} (render.yaml world.seasons)`);
+      for (const lang of ['de', 'en']) if (!locales[lang]?.[`world.region.${r.id}`]) err(`locales/${lang}`, `missing key world.region.${r.id}`);
+    }
+    const inGrid = (x: number, y: number) => x >= 0 && y >= 0 && x < width && y < rows.length;
+    for (const [id, parts] of Object.entries(w.miniatures))
+      for (const p of parts) {
+        if (!/^[a-z0-9]+_[a-z0-9]+$/.test(p.prop)) err(f, `miniature ${id}: prop ${p.prop} must read <prop>_<state>`);
+        else if (propModels && !propModels.has(p.prop)) err(f, `miniature ${id}: no model art/models/props/${p.prop}.glb`);
+      }
+    const seen = new Set<string>();
+    for (const l of w.locations) {
+      const name = l.node ?? `home ${l.home}`;
+      if (seen.has(name)) err(f, `${name}: placed twice`);
+      seen.add(name);
+      if (l.node && !camp.nodes.some((n) => n.id === l.node)) err(f, `location: unknown node ${l.node}`);
+      if (!inGrid(l.at[0], l.at[1])) err(f, `${name}: at ${l.at.join(',')} lies outside the map`);
+      else if (data.terrain[w.legend[rows[l.at[1]]![l.at[0]]!] ?? '']?.water) err(f, `${name}: stands in water`);
+      for (const m of [l.model, ...l.variants.map((v) => v.model)]) if (!w.miniatures[m]) err(f, `${name}: unknown miniature ${m}`);
+      l.variants.forEach((v, i) => conditions(f, v.requires, `${name} variant ${i + 1}`));
+    }
+    for (const n of camp.nodes) if (!seen.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
+    if (!seen.has(`home ${camp.home}`)) err(f, `home ${camp.home} has no place on the world map`);
+    for (const s of w.signs)
+      for (const [x, y, sw, sh] of s.areas) if (!inGrid(x, y) || !inGrid(x + sw - 1, y + sh - 1)) err(f, `sign act ${s.act}: area ${x},${y},${sw},${sh} leaves the map`);
   };
   const condition = (file: string, cond: Condition, ctx: string): void => {
     const key = soleKey(cond);
@@ -208,6 +257,7 @@ export function validateContent(
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
     for (const r of Object.values(data.rooms)) conditions('rooms.yaml', r.requires, `${r.id}.requires`);
+    worldChecks(camp);
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
     // nodes nor along a `completed` requirement
     let top = 0;

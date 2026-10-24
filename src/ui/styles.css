@@ -158,15 +158,6 @@ input[type='text']:focus {
   position: relative;
   overflow: hidden;
 }
-.board-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  outline: none;
-  image-rendering: pixelated;
-}
 .float-layer {
   position: absolute;
   inset: 0;

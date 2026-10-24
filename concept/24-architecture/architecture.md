@@ -236,12 +236,13 @@ worldRegion: borderland
 ```ts
 // src/app/day.ts – einzige Stelle mit Wanduhr für die Kampagne
 export function dayNumber(now = Date.now(), resetHour = 4): number {
-  const d = new Date(now - resetHour * 3_600_000);            // vor 04:00 zählt zum Vortag
-  return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86_400_000);
+  const d = new Date(now);
+  const date = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86_400_000);
+  return d.getHours() < resetHour ? date - 1 : date;           // vor 04:00 zählt zum Vortag
 }
 ```
 
-Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day: dayNumber() }`. Sommerzeit ändert nichts, weil nur das lokale Datum zählt.
+Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day: dayNumber() }`. Sommerzeit ändert nichts, weil nur lokales Datum und lokale Stunde zählen (nicht „Zeitstempel − 4 h“, das verschiebt den Wechsel in den Umstellungsnächten um eine Stunde).
 
 **Kern (`src/core/campaign/haunts.ts`):**
 
