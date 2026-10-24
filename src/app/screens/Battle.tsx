@@ -39,7 +39,7 @@ import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
-import { battle, canRestart, command, pendingEvents, restartBattle } from '../state/battle';
+import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import {
@@ -272,11 +272,19 @@ export function Battle() {
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;
     board.skip = sp === 3;
-    let events: GameEvent[];
+    let events: GameEvent[] | null;
     try {
-      events = command(cmd);
+      // the enemy phase is computed in the core worker, player commands directly (architecture §5.13)
+      events = enemy ? await commandOffThread(cmd) : command(cmd);
     } catch (e) {
       console.error(e);
+      setPhaseView(null);
+      setBusy(false);
+      return;
+    }
+    if (!events) {
+      // the battle was left or restarted while the worker computed; the answer was dropped
+      setPhaseView(null);
       setBusy(false);
       return;
     }

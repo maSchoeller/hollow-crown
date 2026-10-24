@@ -9,6 +9,16 @@ import { CONTENT_HASHED } from './tools/build/precache.ts';
 
 const packs = packsPlugin();
 
+/**
+ * The core worker (src/worker, story 2.8) is bundled apart from the app and gets only what it needs of the plugins: the
+ * virtual pack modules (own instance; the build steps of `packs` that write packs.json and sort files stay with the
+ * app's instance) and the YAML transform.
+ */
+function workerPlugins(): Plugin[] {
+  const { buildStart, resolveId, load } = packsPlugin();
+  return [{ name: 'hc-packs-worker', enforce: 'pre', buildStart, resolveId, load } as Plugin, yamlPlugin()];
+}
+
 /** Compiles content YAML to JSON modules at build time (content is validated by Zod at load). */
 function yamlPlugin(): Plugin {
   return {
@@ -48,6 +58,7 @@ export default defineConfig(({ mode }) => {
   const outDir = perf ? 'dist-perf' : 'dist';
   return {
     base,
+    worker: { format: 'es', plugins: workerPlugins },
     plugins: [
       packs,
       yamlPlugin(),

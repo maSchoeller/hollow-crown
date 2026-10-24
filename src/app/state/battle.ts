@@ -1,6 +1,7 @@
 /** The running battle: session signal, player commands, restart. Mission flow around it lives in flow.ts. */
 import { signal } from '@preact/signals';
 import {
+  CoreInvariantError,
   applyCommand,
   beginBattle,
   keepQueued,
@@ -15,8 +16,9 @@ import {
   type QueuedEffects,
   type RestartScope,
 } from '../../core';
+import { applyCommandInWorker } from '../coreWorker';
 import { autosave, campaign, campaignCommand, data } from './session';
-import { guarded } from './fault';
+import { guarded, reportFault } from './fault';
 import { screen } from './screen';
 
 export interface BattleSession {
@@ -48,6 +50,33 @@ export function command(cmd: Command): GameEvent[] {
   const b = battle.value!;
   const r = guarded(() => applyCommand(data, b.state, cmd), null);
   if (!r) return []; // invariant violated: the fault screen takes over, the battle stays as it was
+  battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
+  autosave('battle');
+  return r.events;
+}
+
+/**
+ * Executes a command in the core worker (architecture §5.13): the enemy phase, which can take long in a large battle.
+ * State, log and auto-save change only after the answer. Returns the events for the board; `[]` when the core refused
+ * the command (the fault screen takes over, the battle stays as it was); `null` when the battle's state was
+ * replaced while the worker was computing (restart, give up, world map, load): the answer is dropped and touches nothing.
+ */
+export async function commandOffThread(cmd: Command): Promise<GameEvent[] | null> {
+  const from = battle.value!.state;
+  let r;
+  try {
+    r = await applyCommandInWorker(data, from, cmd);
+  } catch (e) {
+    if (!(e instanceof CoreInvariantError)) throw e;
+    if (battle.value?.state !== from) return null;
+    reportFault(e);
+    return [];
+  }
+  // The answer is only valid for the state it was computed from. A restart, a new battle, leaving it or loading a save
+  // replaces that state; a change that keeps it (queued dialogue effects) must not drop the answer, so the session
+  // object is read again here instead of compared.
+  const b = battle.value;
+  if (!b || b.state !== from) return null;
   battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
   autosave('battle');
   return r.events;
