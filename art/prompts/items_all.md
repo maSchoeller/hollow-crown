@@ -74,5 +74,11 @@ Vom Produktinhaber beauftragt, Erzeugung sobald wieder ChatGPT-Kontingent da ist
 |---|---|---|---|
 | `drake_breath` | Drachenatem (Feuer-Atemwaffe nur für Drachen/Monster, `monsterOnly`) | `dragon_scale` | eigenes Icon, z. B. Feuerstoß aus einem Drachenmaul |
 | `promotion_seal` | Beförderungssiegel | `chronicle_page` | eigenes Icon: Siegel/Abzeichen für den Klassenaufstieg |
+| `gold` | Gold-Münze (Ressourcen-Symbol) | Vektor-Münze | gemaltes Icon, Entscheidung Produktinhaber 2026-10-24 |
+| `exp` | EP-Stern (Ressourcen-Symbol) | Vektor-Stern | gemaltes Icon, grüner Stern, Entscheidung Produktinhaber 2026-10-24 |
 
-Außerdem fehlen Bilder für die Ressourcen-Symbole **Gold (Münze)** und **EP (Stern)**; die UI nutzt dafür Vektorsymbole, gemalte Varianten wären möglich (optional, Entscheidung Produktinhaber).
+Danach in `Amount` (`src/ui/pieces.tsx`) die Vektor-Symbole durch die Bilder ersetzen.
+
+### Porträts generischer Gegner (Entscheidung Produktinhaber 2026-10-24)
+
+Je Gegnerklasse ein Round-Chibi-Porträt im Stil von `art/mockups/characters-s1/` (gleiche Kopfgröße, freigestellt), ablegen als `art/mockups/characters-s1/class_<id>.png`. Bis dahin zeigt das Medaillon den Anfangsbuchstaben. Klassen auf den Karten von Akt 1 (Stand heute): `archer`, `brigand`, `cleric`, `fighter`, `mage`, `mercenary`, `soldier`; die Gegnertypen aus Story 2.9 (Banditen, Wolfsreiter zu Fuß, Söldner) kommen dazu.

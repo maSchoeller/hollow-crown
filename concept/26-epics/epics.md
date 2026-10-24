@@ -182,7 +182,7 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 - UX-DR11: Gedächtnishalle entsättigt bis auf Glutorange, Gedenksteine mit Ort und Rolle, Zitat, Lektion vererben.
 - UX-DR12: Szenen als Halbfiguren (Sprecher hell, Zuhörer gedämpft), Namensschild als Glut-Pille, Dialogbox unten, Log/Auto/Überspringen oben rechts.
 - UX-DR13: Entscheidung mit Marke „Entscheidung · hat Folgen“, zwei Taps (markieren, bestätigen); Folgen-Karte mit einer Zeile je Wirkung und Chronik-Eintrag; Dialog-Log mit eigener Wahl.
-- UX-DR14: Truppe als Medaillon-Raster mit Rollenfilter und Marken (Aufstieg, Gespräche, Narbe); Figur mit Halbfigur, 10 Werten, 8 Plätzen, Last- und Meisterungsbalken; Wischen wechselt die Figur.
+- UX-DR14: Truppe als Medaillon-Raster mit Rollenfilter und Marken (Aufstieg, Gespräche, Narbe); Figur mit Halbfigur, 10 Werten, 6 Ausrüstungs- und 3 Beutelplätzen, Last- und Meisterungsbalken; Wischen wechselt die Figur.
 - UX-DR15: Ausrüsten und Raumlisten mit Item-Zeilen (Bild, Werte, Vergleich grün/rot oder Preis), Unpassendes gedimmt mit Grund; Händler mit Börse und Betrag auf der Haupttaste.
 - UX-DR16: Item-Bilder als gemalte Bilder im Porträt-Stil (ChatGPT) mit Seltenheits-Raute und Zahl.
 - UX-DR17: Titel mit einer Haupttaste „Fortsetzen“; Kampagnen-Plätze mit Modus-Marke, Stand, Spielzeit, Speicherplätzen; PoC-Zeile; Neue Kampagne auf einer Seite (Name, Aussehen + Pronomen, Schwierigkeit, Tod-Modus mit Erklärung).
@@ -1056,7 +1056,7 @@ damit ich weiß, wer bereit ist und wer etwas braucht.
 
 **Angenommen** eine Figur
 **Wenn** der Spieler sie öffnet
-**Dann** sieht er Halbfigur, Rolle und Stufe, EP-Balken, 10 Werte, 8 Ausrüstungsplätze (Zahl = Aufwertung oder Ladungen, Raute = Seltenheit), Last und Meisterung; Wischen wechselt die Figur
+**Dann** sieht er Halbfigur, Rolle und Stufe, EP-Balken, 10 Werte, 6 Ausrüstungs- und 3 Beutelplätze (Zahl = Aufwertung oder Ladungen, Raute = Seltenheit), Last und Meisterung; Wischen wechselt die Figur
 **Und** die Ansicht ist auch aus der Einheitenkarte im Kampf per Langdruck erreichbar (nur lesend).
 
 ### Story 6.2: Ausrüsten mit Vergleich
