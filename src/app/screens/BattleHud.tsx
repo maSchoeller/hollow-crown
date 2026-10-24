@@ -262,16 +262,16 @@ export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?:
 
 /** Role symbol of a class for the dimmed class slot until the role model brings real class actions (story 2.2/2.3). */
 const ROLE_ICON: Record<string, string> = {
-  fighter: 'shield',
-  soldier: 'shield',
-  mercenary: 'blade',
+  vanguard: 'shield',
+  skirmisher: 'blade',
   captain: 'rally',
-  archer: 'bow',
-  mage: 'fire',
-  cleric: 'healer',
+  marksman: 'bow',
+  elementalist: 'fire',
+  healer: 'healer',
   tactician: 'target',
 };
-export const roleIcon = (classId: string): string => ROLE_ICON[classId] ?? 'star';
+/** Role symbol by the class's role, so pro classes show the icon of their base role. */
+export const roleIcon = (role: string): string => ROLE_ICON[role] ?? 'star';
 
 export function DockAction({
   icon,

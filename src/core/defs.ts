@@ -10,6 +10,16 @@ export type StatMods = Partial<Record<StatKey | 'mov', number>>;
 export const ELEMENTS = ['fire', 'wind', 'earth', 'water', 'light', 'dark'] as const;
 export type Element = (typeof ELEMENTS)[number];
 export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow' | 'anima' | 'light' | 'dark' | 'staff' | 'breath';
+/**
+ * Weapon group of an item (items.md §4): what a role may carry. `weaponType` stays the rules type of a weapon
+ * (triangle, ranged/melee); the group decides who may equip it, so shields, foci and lutes have a group, too.
+ */
+export const WEAPON_GROUPS = [
+  'sword', 'lance', 'axe', 'dagger', 'bow', 'light_bow', 'anima', 'light', 'dark', 'staff', 'shield', 'focus', 'lute', 'breath',
+] as const;
+export type WeaponGroup = (typeof WEAPON_GROUPS)[number];
+/** The seven core roles plus the two single roles of the main characters (GDD Rollenklassen). */
+export const CORE_ROLES = ['vanguard', 'skirmisher', 'marksman', 'elementalist', 'healer', 'scout', 'minstrel', 'tactician', 'captain'] as const;
 export type MoveType = 'foot' | 'armored' | 'mounted' | 'flier' | 'monster';
 export type Team = 'player' | 'enemy' | 'other';
 export type StatusId = 'burning' | 'wet' | 'slowed' | 'knockback';
@@ -56,6 +66,8 @@ export interface ItemDef {
   kind: 'weapon' | 'tome' | 'staff' | 'shield' | 'armor' | 'accessory' | 'consumable' | 'key' | 'seal' | 'material' | 'rune';
   slot: ItemSlot;
   weaponType?: WeaponType;
+  /** weapon group: required for weapons, tomes, staves and shields; foci and lutes are accessories with a group */
+  group?: WeaponGroup;
   damageType?: 'physical' | 'magical';
   element?: Element;
   mt?: number;
@@ -130,23 +142,39 @@ export interface SetDef {
 export type RoleGroup = 'melee' | 'ranged' | 'support';
 export const ROLE_GROUPS: readonly RoleGroup[] = ['melee', 'ranged', 'support'];
 
+/** Class action of a role (GDD Rollenklassen). Only data here; the actions themselves arrive with Epic 2. */
+export interface ClassAction {
+  id: string;
+  /** passive rules need no button; active ones replace the action of the turn */
+  kind: 'passive' | 'active';
+  /** limited uses per map (Befehl, Sammelruf) */
+  perMap?: number;
+}
+
+/** A class is a role (GDD): movement, allowed weapon groups, class action, growth. Weapons and skills come from gear. */
 export interface ClassDef {
   id: string;
-  tier: 'base' | 'advanced' | 'unique';
+  /** core role (vanguard …), `tactician`, `captain` or an enemy type; pro classes name the role they promote from */
+  role: string;
+  tier: 'base' | 'pro' | 'unique';
   roleGroup: RoleGroup;
   moveType: MoveType;
   mov: number;
-  weapons: WeaponType[];
+  weaponGroups: WeaponGroup[];
+  classAction?: ClassAction;
+  /** the two pro paths of a base role (ids of pro classes; undefined ids are defined with the academy) */
+  proPaths: string[];
   tags: string[];
   skill?: string;
   base: Stats;
   growth: Stats;
   growthMod: Partial<Stats>;
   caps: Stats;
-  promotesTo: string[];
   promotionBonus?: Partial<Stats>;
   playable: boolean;
   sprite?: string;
+  /** portrait id for generic units: art class_<art> (defaults to the class id) */
+  art?: string;
 }
 
 export interface ItemRef {

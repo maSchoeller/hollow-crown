@@ -201,7 +201,7 @@
      "id": "brenna",
      "charId": "brenna",
      "nameKey": "unit.brenna.name",
-     "classId": "fighter",
+     "classId": "vanguard",
      "level": 3,
      "exp": 0,
      "stats": {
@@ -291,7 +291,7 @@
      "id": "tobin",
      "charId": "tobin",
      "nameKey": "unit.tobin.name",
-     "classId": "soldier",
+     "classId": "vanguard",
      "level": 1,
      "exp": 0,
      "stats": {
@@ -391,7 +391,14 @@
    ],
    "gold": 500,
    "materials": {},
-   "flags": [],
+   "flags": {},
+   "left": [],
+   "stance": {
+    "warm": 0,
+    "sober": 0,
+    "defiant": 0
+   },
+   "chronicle": [],
    "completed": [],
    "available": [
     "prologue"
@@ -427,7 +434,12 @@
     }
    },
    "nextUid": 16,
-   "offers": []
+   "offers": [],
+   "home": {
+    "kind": "camp",
+    "rooms": {}
+   },
+   "tavern": []
   },
   "screen": "worldmap"
  }

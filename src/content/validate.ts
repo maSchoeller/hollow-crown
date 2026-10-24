@@ -2,6 +2,8 @@ import { PERMANENT_COMPANIONS, type Area, type Condition, type Effect, type Flag
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { lineKey, memorialKey, optionKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
+import { CORE_ROLES } from '../core/defs';
+import { groupAllowed } from '../core/rules/items';
 import { areaTiles } from '../core/util';
 import type { ContentIssue, Locales } from './load';
 
@@ -94,6 +96,25 @@ export function validateContent(
 
   for (const c of Object.values(data.classes)) {
     if (c.skill && !data.skills[c.skill]) err('classes.yaml', `${c.id}: unknown skill ${c.skill}`);
+    if (c.tier === 'pro') {
+      const base = data.classes[c.role];
+      if (!base || base.tier !== 'base' || !base.proPaths.includes(c.id)) err('classes.yaml', `${c.id}: pro class must be a proPath of its base role ${c.role}`);
+    }
+    if (c.tier !== 'pro') {
+      for (const p of c.proPaths) {
+        const target = data.classes[p];
+        if (target && (target.tier !== 'pro' || target.role !== c.role)) err('classes.yaml', `${c.id}: proPath ${p} is not a pro class of this role`);
+      }
+    }
+    if (c.playable && !c.classAction) err('classes.yaml', `${c.id}: a playable class needs a classAction`);
+  }
+  for (const r of CORE_ROLES) {
+    const c = data.classes[r];
+    if (!c || c.role !== r || c.tier === 'pro') err('classes.yaml', `missing role ${r}`);
+  }
+  for (const it of Object.values(data.items)) {
+    // weapons, tomes, staves and shields carry a weapon group (items.md section 4)
+    if (['weapon', 'tome', 'staff', 'shield'].includes(it.kind) && !it.group) err('items.yaml', `${it.id}: no weapon group`);
   }
   for (const k of data.balance.economy.tavern.classes) {
     if (!data.classes[k.class]) err('balance.yaml', `tavern: unknown class ${k.class}`);
@@ -103,7 +124,12 @@ export function validateContent(
   for (const ch of Object.values(data.chars)) {
     if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
     if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);
-    ch.items.forEach((r) => item('units.yaml', r, ch.id));
+    ch.items.forEach((r) => {
+      item('units.yaml', r, ch.id);
+      const d = data.items[r.def];
+      const cls = data.classes[ch.class];
+      if (d && cls && !groupAllowed(cls, d)) err('units.yaml', `${ch.id}: ${cls.id} cannot carry ${d.id} (group ${d.group})`);
+    });
   }
   for (const it of Object.values(data.items)) {
     if (it.grantsSkill && !data.skills[it.grantsSkill.skill]) err('items.yaml', `${it.id}: unknown skill ${it.grantsSkill.skill}`);

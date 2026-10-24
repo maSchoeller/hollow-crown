@@ -4,7 +4,7 @@ import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
 import { canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
-import { loadoutSlots, promote } from '../rules/progression';
+import { loadoutSlots, promote, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { pendingRank } from '../rules/supports';
 import type { CampaignState } from '../state';
@@ -124,7 +124,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const u = c.roster.find((r) => r.id === cmd.unit);
       if (!u) return 'unknown_unit';
       if (u.level < data.balance.levels.promoteFrom) return 'not_available';
-      if (!data.classes[u.classId]?.promotesTo.includes(cmd.classId) || !data.classes[cmd.classId]) return 'unknown_class';
+      if (!promotionTargets(data, u.classId).includes(cmd.classId)) return 'unknown_class';
       return sealOf(data, c, cmd.unit) ? null : 'not_enough_materials';
     }
     case 'hire':

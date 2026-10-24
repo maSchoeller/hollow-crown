@@ -19,6 +19,7 @@ import {
   type Command,
   type GameData,
   type QueuedEffects,
+  promotionTargets,
 } from '../../src/core';
 
 let data: GameData;
@@ -223,8 +224,8 @@ describe('campaign commands', () => {
 
   it('promote spends a seal and changes the class', () => {
     const c = rich({ items: ['promotion_seal'] });
-    const u = c.roster.find((r) => data.classes[r.classId]!.promotesTo.some((x) => data.classes[x]))!;
-    const target = data.classes[u.classId]!.promotesTo.find((x) => data.classes[x])!;
+    const u = c.roster.find((r) => promotionTargets(data, r.classId).length > 0)!;
+    const target = promotionTargets(data, u.classId)[0]!;
     expect(validateCampaign(data, c, { type: 'promote', unit: u.id, classId: target })).toBe('not_available');
     u.level = data.balance.levels.promoteFrom;
     const r = run(c, { type: 'promote', unit: u.id, classId: target });

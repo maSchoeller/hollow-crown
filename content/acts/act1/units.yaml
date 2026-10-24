@@ -29,7 +29,7 @@
 
 - id: brenna
   nameKey: unit.brenna.name
-  class: fighter
+  class: vanguard
   level: 3
   affinity: fire
   personalSkill: veteran_grit
@@ -41,7 +41,7 @@
 
 - id: tobin
   nameKey: unit.tobin.name
-  class: soldier
+  class: vanguard
   level: 1
   affinity: wind
   personalSkill: underdog
@@ -53,7 +53,7 @@
 
 - id: mira
   nameKey: unit.mira.name
-  class: archer
+  class: marksman
   level: 3
   affinity: wind
   personalSkill: poacher
@@ -65,7 +65,7 @@
 
 - id: liora
   nameKey: unit.liora.name
-  class: cleric
+  class: healer
   level: 3
   affinity: light
   personalSkill: foresight
@@ -78,7 +78,7 @@
 
 - id: varek
   nameKey: unit.varek.name
-  class: mercenary
+  class: skirmisher
   level: 5
   affinity: dark
   personalSkill: gamblers_luck
@@ -91,7 +91,7 @@
 
 - id: ysolde
   nameKey: unit.ysolde.name
-  class: mage
+  class: elementalist
   level: 5
   affinity: fire
   personalSkill: prodigy

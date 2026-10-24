@@ -45,8 +45,8 @@ export function Deltas({ list, max = 3 }: { list: EquipDelta[]; max?: number }) 
 function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
   const d = itemDef(data, inst);
   switch (error) {
-    case 'weapon_type':
-      return t('ui.equip.why.weapon_type', { weapon: t(`ui.weapon.${d.weaponType}`), role: t(`class.${unit.classId}.name`) });
+    case 'weapon_group':
+      return t('ui.equip.why.weapon_group', { weapon: t(`ui.weapon.${d.group}`), role: t(`class.${unit.classId}.name`) });
     case 'heavy_armor':
       return t('ui.equip.why.heavy_armor', { role: t(`class.${unit.classId}.name`) });
     default:
@@ -75,7 +75,8 @@ export function EquipView({ unit, slot, onBack }: { unit: UnitRecord; slot: Equi
       setToast(t(`ui.camp.err.${r.error}`));
     }
   };
-  const groups = slot === 'mainHand' ? data.classes[unit.classId]!.weapons.map((w) => t(`ui.weapon.${w}`)).join(', ') : '';
+  const groups =
+    slot === 'mainHand' || slot === 'offHand' ? data.classes[unit.classId]!.weaponGroups.map((w) => t(`ui.weapon.${w}`)).join(', ') : '';
   const fits = cands.filter((x) => !x.error).length;
   return (
     <div class="hc-view">

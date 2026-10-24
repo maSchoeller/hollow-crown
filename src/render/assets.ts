@@ -135,8 +135,8 @@ function hashColor(s: string, palette: string[]): string {
 }
 const HAIR = ['#4f3426', '#2d1e1a', '#d1aa4f', '#9a3a24', '#e8e2d6', '#6e6a78'];
 const CLOTH: Record<string, string> = {
-  tactician: '#2a52b0', captain: '#6e6a78', mercenary: '#5a3a8e', soldier: '#a8916a', fighter: '#7a5236',
-  archer: '#2f5e33', mage: '#a3172e', cleric: '#e8e2d6', brigand: '#6b5a44', knight: '#8995a8',
+  tactician: '#2a52b0', captain: '#6e6a78', skirmisher: '#5a3a8e', vanguard: '#a8916a', scout: '#7a5236',
+  marksman: '#2f5e33', elementalist: '#a3172e', healer: '#e8e2d6', minstrel: '#c7a035', brigand: '#6b5a44', knight: '#8995a8',
 };
 
 function placeholderUnit(id: string, classId: string, weapon?: string): Sheet {
