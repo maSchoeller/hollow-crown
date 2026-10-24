@@ -53,6 +53,9 @@ function vnoise(x: number, y: number, seed: number): number {
 
 // ------------------------------------------------------------------ terrain grid
 
+/** What the terrain needs of a map: its size and tiles (a battle state; the world map's layout has the same shape). */
+export type TerrainSource = Pick<BattleState, 'width' | 'height' | 'terrain' | 'timers'>;
+
 /** Terrain ids of map + scenery skirt, row-major, (W + 2·skirt) × (H + 2·skirt). */
 export interface TerrainGrid {
   w: number;

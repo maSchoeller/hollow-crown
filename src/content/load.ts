@@ -12,6 +12,7 @@ import type {
   MapDef,
   Rarity,
   RenderDef,
+  WorldDef,
   RoomDef,
   RuneDef,
   SceneDef,
@@ -23,6 +24,7 @@ import {
   affixSchema,
   balanceSchema,
   campaignSchema,
+  worldSchema,
   charSchema,
   classSchema,
   sceneSchema,
@@ -114,6 +116,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
+  const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
   const locales: Locales = {};
@@ -164,6 +167,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     scenes,
     flags: byId(flagList),
     campaign: campaign as CampaignDef,
+    world: world as WorldDef,
   };
   return { data, locales, issues };
 }

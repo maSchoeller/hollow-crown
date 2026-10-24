@@ -731,6 +731,57 @@ export interface RenderDef {
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
   /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
   assets: { keepUnused: number };
+  /** the world map scene (story 5.2) */
+  world: {
+    tiltDeg: number;
+    /** visible columns on the shorter screen side: near, overview */
+    zoomSteps: number[];
+    zoomMs: number;
+    /** how much closer the camera goes on a chosen place */
+    focusZoom: number;
+    /** sea around the map */
+    skirt: { width: number; terrain: string };
+    miniatureScale: number;
+    /** height of a node's tip above the ground of its place, tiles */
+    pinHeight: number;
+    /** opacity of the water sheet over the painted sea floor */
+    waterAlpha: number;
+    fog: { color: string; alpha: number; height: number };
+    /** falling ash flakes (act 1 dragon sign) per quality level */
+    ash: Record<'high' | 'mid' | 'low', number>;
+    /** light per season of a region */
+    seasons: Record<string, { ambient: { color: string; intensity: number }; sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number } }>;
+  };
+}
+
+/** One prop of a place's miniature, in tiles from the place's centre (x east, y south). */
+export interface MiniaturePart {
+  prop: string;
+  at: [number, number];
+  rot: number;
+  scale: number;
+}
+
+/** A place on the world map: a campaign node or the home, its miniature and variants (first whose conditions hold). */
+export interface WorldLocation {
+  node?: string;
+  home?: 'camp' | 'castle';
+  at: Pos;
+  model: string;
+  variants: Array<{ model: string; requires: Condition[] }>;
+}
+
+/** The world map of Valmora (content/world/valmora.yaml, story 5.2). */
+export interface WorldDef {
+  id: string;
+  legend: Record<string, string>;
+  /** rows of one character per tile */
+  tiles: string;
+  regions: Array<{ id: string; char: string; act: number; season: string }>;
+  regionGrid: string;
+  miniatures: Record<string, MiniaturePart[]>;
+  locations: WorldLocation[];
+  signs: Array<{ act: number; kind: 'ash'; areas: Array<[number, number, number, number]> }>;
 }
 
 /** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */
@@ -761,4 +812,5 @@ export interface GameData {
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
   campaign: CampaignDef;
+  world: WorldDef;
 }

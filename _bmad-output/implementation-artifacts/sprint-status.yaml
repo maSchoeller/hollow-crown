@@ -98,7 +98,7 @@ development_status:
   # Epic 5: Weltkarte und Heimsuchungen
   epic-5: in-progress
   5-1-szenen-host-und-geteilter-asset-cache: review  # Szenen-Host und geteilter Asset-Cache
-  5-2-die-weltkarte-als-3d-szene: backlog  # Die Weltkarte als 3D-Szene
+  5-2-die-weltkarte-als-3d-szene: review  # Die Weltkarte als 3D-Szene
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
   5-4-tageswechsel: backlog  # Tageswechsel
   5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator

@@ -511,6 +511,36 @@ export const campaignSchema = z.object({
 });
 
 /** Presentation values of the battle board; see core/defs.ts RenderDef. */
+const lightAmbient = z.object({ color: z.string(), intensity: z.number() });
+const lightSun = z.object({ color: z.string(), intensity: z.number(), azimuthDeg: z.number(), elevationDeg: z.number().min(1).max(90) });
+
+/** The world map (story 5.2, architecture §5.12): tile grid with legend, regions, places with miniatures, dragon signs. */
+export const worldSchema = z.object({
+  id: z.string(),
+  legend: z.record(z.string().length(1), z.string()),
+  tiles: z.string(),
+  regions: z.array(z.object({ id: z.string(), char: z.string().length(1), act: z.number().int().min(1), season: z.string() })).min(1),
+  regionGrid: z.string(),
+  miniatures: z.record(
+    z.string(),
+    z.array(z.object({ prop: z.string(), at: z.tuple([z.number(), z.number()]), rot: z.number().default(0), scale: z.number().positive().default(1) })).min(1),
+  ),
+  locations: z
+    .array(
+      z
+        .object({
+          node: z.string().optional(),
+          home: z.enum(['camp', 'castle']).optional(),
+          at: pos,
+          model: z.string(),
+          variants: z.array(z.object({ model: z.string(), requires: z.array(conditionSchema).min(1) })).max(2).default([]),
+        })
+        .refine((l) => !!l.node !== !!l.home, 'a location names either node or home'),
+    )
+    .min(1),
+  signs: z.array(z.object({ act: z.number().int().min(1), kind: z.literal('ash'), areas: z.array(z.tuple([z.number().int(), z.number().int(), z.number().int().positive(), z.number().int().positive()])) })).default([]),
+});
+
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
 const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 export const renderSchema = z.object({
@@ -537,6 +567,19 @@ export const renderSchema = z.object({
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
   assets: z.object({ keepUnused: z.number().int().min(0) }),
+  world: z.object({
+    tiltDeg: z.number().min(0).max(80),
+    zoomSteps: z.array(z.number().positive()).length(2),
+    zoomMs: z.number().min(0),
+    focusZoom: z.number().positive(),
+    skirt: z.object({ width: z.number().int().min(0), terrain: z.string() }),
+    miniatureScale: z.number().positive(),
+    pinHeight: z.number().min(0),
+    waterAlpha: z.number().min(0).max(1),
+    fog: z.object({ color: z.string(), alpha: z.number().min(0).max(1), height: z.number() }),
+    ash: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
+    seasons: z.record(z.string(), z.object({ ambient: lightAmbient, sun: lightSun })),
+  }),
 });
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */

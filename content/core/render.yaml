@@ -47,3 +47,30 @@ quality:
 # benutzt, bleiben geladen (Wechsel Brett ↔ Weltkarte lädt nichts neu); darüber fallen die am längsten unbenutzten weg.
 assets:
   keepUnused: 80
+
+# Story 5.2: Weltkarte als 3D-Szene (concept/23-art-direction §6). Kamera wie auf dem Brett, aber steiler und mit 2 Zoomstufen
+# (sichtbare Spalten auf der kürzeren Bildschirmseite: Nah, Übersicht); focusZoom = so viel näher beim Tipp auf einen Ort.
+# skirt = Meer rund um die Karte (Felder, Gelände), miniatureScale = Größe der Orts-Requisiten gegenüber dem Brett,
+# fog = Nebel über Regionen späterer Akte ({colors.fog}, Deckkraft, Höhe über dem Boden in Feldern),
+# ash = fallende Ascheflocken (Drachenzeichen Akt 1) je Qualitätsstufe, seasons = Licht je Jahreszeit einer Region (§2.4).
+world:
+  tiltDeg: 42
+  zoomSteps: [9, 15]
+  zoomMs: 260
+  focusZoom: 1.12
+  skirt: { width: 5, terrain: river }
+  miniatureScale: 0.85
+  waterAlpha: 0.38       # Deckkraft des Wassers über dem gemalten Meeresboden
+  pinHeight: 1.9         # Spitze eines Knotens (Weltkarten-Stein) so viele Felder über dem Boden des Orts
+  fog: { color: "#e0e5ef", alpha: 0.86, height: 1.4 }
+  ash: { high: 260, mid: 140, low: 0 }
+  seasons:
+    late_summer:
+      ambient: { color: "#fff1d9", intensity: 1.05 }
+      sun: { color: "#fff0c9", intensity: 1.0, azimuthDeg: 210, elevationDeg: 52 }
+    autumn:
+      ambient: { color: "#ffe3c4", intensity: 0.95 }
+      sun: { color: "#ffd2a0", intensity: 0.95, azimuthDeg: 230, elevationDeg: 38 }
+    winter:
+      ambient: { color: "#e6eefc", intensity: 1.0 }
+      sun: { color: "#f4f6ff", intensity: 0.9, azimuthDeg: 200, elevationDeg: 28 }
