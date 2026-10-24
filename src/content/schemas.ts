@@ -574,6 +574,11 @@ export const balanceSchema = z.object({
   }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
+  classActions: z.object({
+    aim: z.object({ rangeBonus: z.number().int().min(0), hit: z.number() }),
+    farRescue: z.object({ range: z.number().int().min(1) }),
+    cheer: z.object({ mov: z.number().int(), hit: z.number() }),
+  }),
   bag: z.object({ size: z.number().int() }),
   economy: z.looseObject({
     rarityAffixes: z.record(z.string(), z.number()),

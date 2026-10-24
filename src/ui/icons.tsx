@@ -40,6 +40,10 @@ const P: Record<string, string> = {
   escape: 'M14 4h5v16h-5M4 12h11M11 8l4 4-4 4',
   rally: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
+  // class actions (story 2.3): reuse target / rescue / rally until dedicated glyphs exist
+  aim: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
+  farRescue: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+  cheer: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',
   wanted: 'M5 3h14v18H5zM12 7.5a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4zM8 17h8',
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',

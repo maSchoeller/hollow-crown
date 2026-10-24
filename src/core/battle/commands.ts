@@ -12,6 +12,10 @@ export type Action =
   | { kind: 'talk'; target: string }
   | { kind: 'command'; target: string }
   | { kind: 'rally' }
+  /** class actions (story 2.3) */
+  | { kind: 'aim'; target: string; weapon?: string }
+  | { kind: 'farRescue'; target: string }
+  | { kind: 'cheer'; target: string }
   | { kind: 'seize' }
   | { kind: 'escape' };
 

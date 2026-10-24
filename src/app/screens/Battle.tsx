@@ -6,6 +6,7 @@ import {
   combinedRange,
   dangerZone,
   destinations,
+  classPreview,
   forecast,
   itemDef,
   itemTargets,
@@ -47,6 +48,7 @@ import {
   ContextBand,
   Dock,
   DockAction,
+  ClassPreviewCard,
   ForecastCard,
   GoalPills,
   HintPill,
@@ -68,8 +70,10 @@ type Mode =
   | { k: 'idle' }
   | { k: 'selected'; uid: string }
   | { k: 'moved'; uid: string; to: Pos }
-  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item'; targets: string[]; item?: string }
-  | { k: 'forecast'; uid: string; to: Pos; target: string; weapon?: string };
+  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item' | ClassKind; targets: string[]; item?: string }
+  | { k: 'forecast'; uid: string; to: Pos; target: string; weapon?: string; aim?: boolean }
+  /** preview of Fernbergen / Anfeuern before it is confirmed */
+  | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string };
 
 function useWide(): boolean {
   const q = '(min-width: 600px)';
@@ -84,8 +88,10 @@ function useWide(): boolean {
 }
 
 
-/** Class slot of the dock: skill actions the PoC classes bring along; real role actions arrive with stories 2.2/2.3. */
-const CLASS_KINDS: ActionOption['kind'][] = ['staff', 'command', 'rally'];
+/** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
+const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'staff', 'command', 'rally'];
+/** Class actions with a preview and a confirmation before they run. */
+type ClassKind = 'aim' | 'farRescue' | 'cheer';
 
 export function Battle() {
   const session = battle.value!;
@@ -423,13 +429,20 @@ export function Battle() {
       }
       case 'target': {
         if (!at || !mode.targets.includes(at.uid)) return;
-        if (mode.action === 'attack') {
-          const ws = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === 'attack')?.weapons?.[at.uid];
-          return setMode({ k: 'forecast', uid: mode.uid, to: mode.to, target: at.uid, weapon: ws?.[0] });
+        if (mode.action === 'attack' || mode.action === 'aim') {
+          const ws = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === mode.action)?.weapons?.[at.uid];
+          return setMode({ k: 'forecast', uid: mode.uid, to: mode.to, target: at.uid, weapon: ws?.[0], aim: mode.action === 'aim' });
         }
+        if (mode.action === 'farRescue' || mode.action === 'cheer')
+          return setMode({ k: 'classPreview', uid: mode.uid, to: mode.to, action: mode.action, target: at.uid });
         const action: Action =
           mode.action === 'item' ? { kind: 'item', item: mode.item!, target: at.uid } : ({ kind: mode.action, target: at.uid } as Action);
         void run({ type: 'act', unit: mode.uid, to: mode.to, action });
+        return;
+      }
+      case 'classPreview': {
+        if (at && at.uid === mode.target) return void confirmClassAction();
+        setMode({ k: 'moved', uid: mode.uid, to: mode.to });
         return;
       }
       case 'forecast': {
@@ -459,6 +472,7 @@ export function Battle() {
     if (info) return setInfo(null);
     switch (mode.k) {
       case 'forecast':
+      case 'classPreview':
       case 'target':
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       case 'moved':
@@ -472,7 +486,12 @@ export function Battle() {
 
   const confirmAttack = async () => {
     if (mode.k !== 'forecast') return;
-    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'attack', target: mode.target, weapon: mode.weapon } });
+    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.aim ? 'aim' : 'attack', target: mode.target, weapon: mode.weapon } });
+  };
+
+  const confirmClassAction = async () => {
+    if (mode.k !== 'classPreview') return;
+    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, target: mode.target } });
   };
 
   /** Selects the next unit that has not acted yet and centres the camera on it. */
@@ -557,6 +576,17 @@ export function Battle() {
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind } as Action });
       case 'door':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'door', object: opt.object! } });
+      case 'aim':
+      case 'farRescue':
+      case 'cheer': {
+        // class actions always show their preview first; a single target skips the target pick
+        const targets = opt.targets ?? [];
+        if (targets.length === 1 && opt.kind !== 'aim')
+          return setMode({ k: 'classPreview', uid: u.uid, to: mode.to, action: opt.kind, target: targets[0]! });
+        if (targets.length === 1)
+          return setMode({ k: 'forecast', uid: u.uid, to: mode.to, target: targets[0]!, weapon: opt.weapons?.[targets[0]!]?.[0], aim: true });
+        return setMode({ k: 'target', uid: u.uid, to: mode.to, action: opt.kind, targets });
+      }
       case 'attack':
       case 'staff':
       case 'talk':
@@ -599,9 +629,17 @@ export function Battle() {
   const selUnit = mode.k !== 'idle' ? unit(mode.uid) : null;
   const infoUnit = info ? s.units.find((u) => u.uid === info) : null;
   const options = mode.k === 'moved' ? availableActions(data, s, unit(mode.uid), mode.to) : [];
-  const fc = mode.k === 'forecast' ? forecast(data, s, mode.uid, mode.target, mode.weapon, mode.to) : null;
+  const aimPre =
+    mode.k === 'forecast' && mode.aim
+      ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'aim', target: mode.target, weapon: mode.weapon })
+      : null;
+  const fc =
+    aimPre?.kind === 'aim' ? aimPre.forecast : mode.k === 'forecast' ? forecast(data, s, mode.uid, mode.target, mode.weapon, mode.to) : null;
   const weaponsForTarget =
-    mode.k === 'forecast' ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === 'attack')?.weapons?.[mode.target] ?? []) : [];
+    mode.k === 'forecast'
+      ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
+      : [];
+  const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;
   const readyCount = s.units.filter(selectable).length;
 
   const map = mapOf(data, s);
@@ -720,9 +758,18 @@ export function Battle() {
           {card}
         </>
       )}
+      {mode.k === 'classPreview' && cls && (
+        <>
+          <ClassPreviewCard data={data} state={s} p={cls} />
+          <div class="hud-confirm">
+            <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.cancel')}</SecondaryButton>
+            <PrimaryButton onClick={() => void confirmClassAction()}>{t(`ui.action.${mode.action}`)}</PrimaryButton>
+          </div>
+        </>
+      )}
       {mode.k === 'forecast' && fc && (
         <>
-          <ForecastCard data={data} state={s} f={fc} />
+          <ForecastCard data={data} state={s} f={fc} aim={aimPre?.kind === 'aim' ? aimPre : undefined} />
           <div class={`hud-confirm ${weaponsForTarget.length > 1 ? 'has-swap' : ''}`}>
             <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.cancel')}</SecondaryButton>
             {weaponsForTarget.length > 1 && (
