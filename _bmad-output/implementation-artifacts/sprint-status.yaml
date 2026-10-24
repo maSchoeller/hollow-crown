@@ -109,8 +109,8 @@ development_status:
   epic-6: in-progress
   6-1-truppe-und-figur: review  # Truppe und Figur
   6-2-ausruesten-mit-vergleich: review  # Ausrüsten mit Vergleich
-  6-3-das-lager-in-akt-1: backlog  # Das Lager in Akt 1
-  6-4-haendler-schmied-heiler-und-taverne: backlog  # Händler, Schmied, Heiler und Taverne
+  6-3-das-lager-in-akt-1: review  # Das Lager in Akt 1
+  6-4-haendler-schmied-heiler-und-taverne: review  # Händler, Schmied, Heiler und Taverne
   6-5-stufendeckel-und-ep-regeln: backlog  # Stufendeckel und EP-Regeln
   6-6-missionsergebnis: backlog  # Missionsergebnis
   6-7-abschied-von-gefallenen: backlog  # Abschied von Gefallenen
