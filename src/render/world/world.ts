@@ -261,24 +261,61 @@ export class WorldView implements HostedView {
     const manifest = await loadManifest();
     const trees = manifest.models?.props.tree ?? ['a'];
     const bushes = manifest.models?.props.bush ?? [];
+    const sc = conf.scenery;
+    const W = layout.width;
+    const terrainAt = (x: number, y: number) => (x < 0 || y < 0 || x >= W || y >= layout.height ? '' : layout.terrain[y * W + x]!);
+    const nearPlace = (x: number, y: number, d: number) => world.locations.some((l) => Math.abs(l.at[0] - x) <= d && Math.abs(l.at[1] - y) <= d);
+    const shadeAt = (x: number, y: number) => (layout.fog[y * W + x] ? 0.8 : 1);
+    const taken = this.ruralProps(seed, put, terrainAt, nearPlace, shadeAt);
     for (let y = 0; y < layout.height; y++)
       for (let x = 0; x < layout.width; x++) {
         const def = this.data.terrain[layout.terrain[y * layout.width + x]!];
+        // dead trees on the ash and on the open tiles next to it
+        const open = def?.id === 'grass' || def?.id === 'plain';
+        if (def?.id === 'ash' || open) {
+          let chance = 0;
+          if (def?.id === 'ash') chance = sc.deadTrees.onAsh;
+          else if ([-1, 0, 1].some((dy) => [-1, 0, 1].some((dx) => terrainAt(x + dx, y + dy) === 'ash'))) chance = sc.deadTrees.nearAsh;
+          const d = hash3(x, y, seed + 41);
+          const dh = this.groundAt(x + 0.5, y + 0.5);
+          if (chance > 0 && (d & 0xffff) / 0x10000 < chance && dh >= water + 0.05 && !nearPlace(x, y, 1))
+            put(sc.deadTrees.model, { x: x + 0.5 + (((d >>> 16) % 5) - 2) * 0.07, z: -y - 0.5 + (((d >>> 20) % 5) - 2) * 0.07, h: dh, rot: ((d >>> 8) % 360) * (Math.PI / 180), scale: 0.85 + ((d >>> 4) % 31) / 100, shade: shadeAt(x, y) });
+        }
+        if (def?.prop === 'bridge') {
+          // along the road: east-west unless the road runs north-south
+          const road = (tx: number, ty: number) => ['road', 'bridge'].includes(terrainAt(tx, ty));
+          const ns = Number(road(x, y - 1)) + Number(road(x, y + 1));
+          const ew = Number(road(x - 1, y)) + Number(road(x + 1, y));
+          put('bridge_idle', { x: x + 0.5, z: -y - 0.5, h: Math.max(this.groundAt(x + 0.5, y + 0.5), water), rot: ns > ew ? Math.PI / 2 : 0, scale: sc.bridgeScale, shade: shadeAt(x, y) });
+          continue;
+        }
         // the peaks are the terrain now; rocks only where the grid has them outside the mountains
         if (!def?.prop && bushes.length && def?.id === 'grass') {
           // a few bushes on open grass, away from roads and places
           const b = hash3(x, y, seed + 17);
           const bh = this.groundAt(x + 0.5, y + 0.5);
-          if (b % 12 === 0 && bh >= water + 0.05 && !world.locations.some((l) => Math.abs(l.at[0] - x) <= 1 && Math.abs(l.at[1] - y) <= 1))
+          if (b % 12 === 0 && bh >= water + 0.05 && !nearPlace(x, y, 1))
             put(`bush_${bushes[(b >>> 8) % bushes.length]}`, { x: x + 0.5 + (((b >>> 12) % 5) - 2) * 0.06, z: -y - 0.5, h: bh, rot: ((b >>> 16) % 360) * (Math.PI / 180), scale: 0.8 + ((b >>> 4) % 21) / 100, shade: layout.fog[y * layout.width + x] ? 0.8 : 1 });
-          continue;
         }
-        if (!def?.prop || def.prop === 'bridge' || def.prop === 'rock') continue;
+        if (!def?.prop && !taken.has(y * W + x) && open && layout.region[y * W + x] === sc.rural.region) {
+          // sparse small rocks in the borderland
+          const k = hash3(x, y, seed + 53);
+          const kh = this.groundAt(x + 0.5, y + 0.5);
+          if ((k & 0xffff) / 0x10000 < sc.rural.rocks && kh >= water + 0.05 && !nearPlace(x, y, sc.rural.clearance))
+            put(sc.rural.rocksModel, { x: x + 0.5 + (((k >>> 16) % 5) - 2) * 0.08, z: -y - 0.5 + (((k >>> 20) % 5) - 2) * 0.08, h: kh, rot: ((k >>> 8) % 360) * (Math.PI / 180), scale: 0.8 + ((k >>> 4) % 31) / 100, shade: shadeAt(x, y) });
+        }
+        if (!def?.prop || def.prop === 'rock') continue;
         const r = hash3(x, y, seed + 5);
         const h = this.groundAt(x + 0.5, y + 0.5);
         if (h < water + 0.05) continue; // the outer tiles of the map may lie in the sea
         const base: PropPlace = { x: x + 0.5, z: -y - 0.5, h, rot: Math.PI, scale: 1, shade: layout.fog[y * layout.width + x] ? 0.8 : 1 };
-        if (def.prop === 'tree') put(`tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+        const mix = sc.trees[layout.region[y * W + x] ?? ''];
+        if (def.prop === 'tree' && mix) {
+          // weighted pick from the region's tree set (autumn in Eisenmark, snow firs in Aurenhall)
+          let t = (((r >>> 20) % 1000) / 1000) * mix.reduce((a, m) => a + m.weight, 0);
+          const pick = mix.find((m) => (t -= m.weight) < 0) ?? mix[0]!;
+          put(pick.model, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+        } else if (def.prop === 'tree') put(`tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
         else if (def.prop === 'rock' || def.prop === 'rockwall') put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: 1.05 });
         else put(PROP_STATE[def.prop] ?? `${def.prop}_idle`, { ...base, rot: Math.PI + (((r >>> 4) % 3) - 1) * 0.4 });
       }
@@ -295,6 +332,46 @@ export class WorldView implements HostedView {
         });
     }
     return groups;
+  }
+
+  /** Fields and fences around the decorative villages of the rural region; returns the tiles taken by fields. */
+  private ruralProps(
+    seed: number,
+    put: (key: string, p: PropPlace) => void,
+    terrainAt: (x: number, y: number) => string,
+    nearPlace: (x: number, y: number, d: number) => boolean,
+    shadeAt: (x: number, y: number) => number,
+  ): Set<number> {
+    const layout = this.layout!;
+    const W = layout.width;
+    const rural = this.data.render.world.scenery.rural;
+    const water = this.data.render.board.waterLevel;
+    const taken = new Set<number>();
+    const eligible = (x: number, y: number) =>
+      ['grass', 'plain'].includes(terrainAt(x, y)) && layout.region[y * W + x] === rural.region && !taken.has(y * W + x) && !nearPlace(x, y, rural.clearance) && this.groundAt(x + 0.5, y + 0.5) >= water + 0.05;
+    for (let vy = 0; vy < layout.height; vy++)
+      for (let vx = 0; vx < W; vx++) {
+        if (terrainAt(vx, vy) !== 'village' || layout.region[vy * W + vx] !== rural.region) continue;
+        const cands: Array<[number, number, number]> = [];
+        for (let dy = -rural.radius; dy <= rural.radius; dy++)
+          for (let dx = -rural.radius; dx <= rural.radius; dx++) if (eligible(vx + dx, vy + dy)) cands.push([vx + dx, vy + dy, hash3(vx + dx, vy + dy, seed + 31)]);
+        cands.sort((a, b) => a[2] - b[2]);
+        const [lo, hi] = rural.fields;
+        const fields = cands.slice(0, Math.min(cands.length, lo + (hash3(vx, vy, seed + 37) % (hi - lo + 1))));
+        for (const [fx, fy] of fields) taken.add(fy * W + fx);
+        for (const [fx, fy, f] of fields) {
+          put(rural.fieldModel, { x: fx + 0.5, z: -fy - 0.5, h: this.groundAt(fx + 0.5, fy + 0.5), rot: ((f >>> 8) % 4) * (Math.PI / 2), scale: 1, shade: shadeAt(fx, fy) });
+          // a fence on some sides, along the field's edge
+          const sides: Array<[number, number]> = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+          sides.forEach(([sx, sy], i) => {
+            if ((hash3(fx, fy, seed + 43 + i) & 0xffff) / 0x10000 >= rural.fenceChance) return;
+            const ex = fx + 0.5 + sx * 0.5;
+            const ey = fy + 0.5 + sy * 0.5;
+            put(rural.fenceModel, { x: ex, z: -ey, h: this.groundAt(ex, ey), rot: sx ? Math.PI / 2 : 0, scale: 1, shade: shadeAt(fx, fy) });
+          });
+        }
+      }
+    return taken;
   }
 
   /** Fog over the regions of later acts: a sheet above the ground, its edge fading over one tile (DESIGN.md fog). */

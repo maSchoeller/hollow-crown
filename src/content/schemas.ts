@@ -610,6 +610,22 @@ export const renderSchema = z.object({
     }),
     fog: z.object({ color: z.string(), alpha: z.number().min(0).max(1), height: z.number() }),
     ash: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
+    scenery: z.object({
+      trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
+      deadTrees: z.object({ onAsh: z.number().min(0).max(1), nearAsh: z.number().min(0).max(1), model: z.string() }),
+      rural: z.object({
+        region: z.string(),
+        fieldModel: z.string(),
+        fenceModel: z.string(),
+        rocksModel: z.string(),
+        fields: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
+        radius: z.number().int().min(1),
+        fenceChance: z.number().min(0).max(1),
+        rocks: z.number().min(0).max(1),
+        clearance: z.number().int().min(0),
+      }),
+      bridgeScale: z.number().positive(),
+    }),
     seasons: z.record(z.string(), z.object({ ambient: lightAmbient, sun: lightSun })),
   }),
 });

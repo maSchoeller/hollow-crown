@@ -107,7 +107,6 @@ regionGrid: |
   ...........111111111111111111111111111111111111111111111
 # Orts-Miniaturen: Requisiten (art/models/props, <id>_<zustand>) relativ zur Feldmitte des Orts, at in Feldern
 # (x nach Osten, y nach Süden), rot in Grad, scale zusätzlich zu render.yaml world.miniatureScale.
-# Platzhalter: Für das Lager gibt es noch kein Zelt-Modell; Wagen und Kiste stehen dafür.
 miniatures:
   caravan:
     - { prop: wagon_idle, at: [0, 0], rot: 80 }
@@ -135,9 +134,11 @@ miniatures:
     - { prop: tree_a, at: [0.8, 0.45], scale: 0.8 }
     - { prop: tree_c, at: [0.7, -0.7], scale: 0.7 }
   camp:
-    - { prop: wagon_idle, at: [-0.3, -0.1], rot: 20 }
-    - { prop: chest_closed, at: [0.55, 0.35], scale: 0.9 }
-    - { prop: tree_a, at: [0.85, -0.6], scale: 0.75 }
+    - { prop: tent_idle, at: [-0.5, -0.35], rot: 20 }
+    - { prop: campfire_idle, at: [0.1, 0.1], scale: 0.9 }
+    - { prop: wagon_idle, at: [0.65, -0.4], rot: 70, scale: 0.85 }
+    - { prop: chest_closed, at: [-0.5, 0.5], rot: -15, scale: 0.9 }
+    - { prop: tree_a, at: [0.85, 0.65], scale: 0.75 }
 # Orte: node = Knoten-ID aus campaign.yaml, home = Heimat (camp, später castle). variants: höchstens 2; es gilt die erste,
 # deren requires erfüllt sind, sonst model.
 locations:

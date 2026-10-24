@@ -23,6 +23,7 @@
     "art:build": "python tools/art/build.py",
     "art:icons": "python tools/art/icons.py",
     "art:world": "python tools/art/world.py",
+    "art:props": "python tools/art/props/run.py",
     "art:tripo": "python tools/art/tripo_units.py",
     "format": "prettier --write ."
   },

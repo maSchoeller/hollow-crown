@@ -806,6 +806,13 @@ export interface RenderDef {
     fog: { color: string; alpha: number; height: number };
     /** falling ash flakes (act 1 dragon sign) per quality level */
     ash: Record<'high' | 'mid' | 'low', number>;
+    /** landscape props: trees per region (weighted `<prop>_<state>`), dead trees around ash, rural life, bridge size */
+    scenery: {
+      trees: Record<string, Array<{ model: string; weight: number }>>;
+      deadTrees: { onAsh: number; nearAsh: number; model: string };
+      rural: { region: string; fieldModel: string; fenceModel: string; rocksModel: string; fields: [number, number]; radius: number; fenceChance: number; rocks: number; clearance: number };
+      bridgeScale: number;
+    };
     /** light per season of a region */
     seasons: Record<string, { ambient: { color: string; intensity: number }; sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number } }>;
   };

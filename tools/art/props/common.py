@@ -7,7 +7,7 @@ Each group script in this folder (`trees.py`, `houses.py`, …) is a Blender scr
 or all at once with `pnpm art:props` (tools/art/props/run.py). A script builds each asset from primitives with bmesh /
 bpy, paints it with a node material, bakes that material into one small base-colour texture, and writes
 
-- art/models/props/<pid>_<state>.glb   the game model (glTF, Y up, one texture embedded, no other materials)
+- art/models/props/<pid>_<state>.glb   the game model (glTF, Y up, one JPEG texture embedded, no other materials)
 - art/props/previews/<pid>_<state>.png a 3/4 render for review
 
 Conventions (the game's board and world map, src/render/shared/models.ts `loadPropMesh`):
@@ -144,7 +144,9 @@ def export(obj, pid_state):
         export_apply=True,
         export_yup=True,
         export_vertex_color='ACTIVE',
-        export_image_format='AUTO',
+        # JPEG keeps the props small (they load with the first mission); team cloth is white, which JPEG keeps
+        export_image_format='JPEG',
+        export_image_quality=88,
         export_cameras=False,
         export_lights=False,
         export_animations=False,

@@ -71,6 +71,18 @@ world:
   pinHeight: 1.9         # Spitze eines Knotens (Weltkarten-Stein) so viele Felder über dem Boden des Orts
   fog: { color: "#e0e5ef", alpha: 0.86, height: 1.4 }
   ash: { high: 260, mid: 140, low: 0 }
+  # Landschaft der Weltkarte: trees = Baummodelle (<prop>_<state>) je Region mit Gewicht, andere Regionen nehmen die Sommerbäume
+  # des Manifests; deadTrees = Wahrscheinlichkeit je Feld für abgestorbene Bäume auf Ascheflächen und auf Nachbarfeldern;
+  # rural = Landleben im Grenzland (Region ruralRegion): um Dorffelder fields Felder (min–max) in radius Feldern, je Feldseite
+  # mit fenceChance ein Zaun, rocks = Wahrscheinlichkeit kleiner Steine je Gras-/Flachlandfeld, clearance = Abstand zu Orten;
+  # bridgeScale = Größe der Brücke auf dem Brückenfeld
+  scenery:
+    trees:
+      eisenmark: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: tree_c, weight: 1 }]
+      aurenhall: [{ model: snowfir_a, weight: 5 }, { model: tree_c, weight: 1 }]
+    deadTrees: { onAsh: 0.3, nearAsh: 0.15, model: deadtree_a }
+    rural: { region: borderland, fieldModel: field_idle, fenceModel: fence_idle, rocksModel: rocks_small, fields: [1, 3], radius: 2, fenceChance: 0.45, rocks: 0.035, clearance: 1 }
+    bridgeScale: 0.7
   seasons:
     late_summer:
       ambient: { color: "#fff1d9", intensity: 1.05 }
