@@ -666,7 +666,11 @@ export function Battle() {
   /** Dock with its four fixed slots: Attack, Class action, Item, Wait. Impossible ones are dimmed; a tap says why. */
   const dock = (u: BattleUnit) => {
     const placed = mode.k === 'moved';
-    const ask = (msg: string) => () => setReason(msg);
+    // while the hint band above already says "pick a target tile", a tap on the disabled dock must not repeat it as a toast
+    const ask = (msg: string) => () => {
+      if (mode.k === 'selected' && msg === t('ui.hud.pickTile')) return;
+      setReason(msg);
+    };
     const classOne = classOpts.length === 1 ? classOpts[0]! : undefined;
     return (
       <Dock>
