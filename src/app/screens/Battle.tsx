@@ -37,7 +37,7 @@ import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, data } from '../state/session';
 import { concludeBattle, runEffects, storyContext } from '../state/flow';
-import { battle, command, pendingEvents, restartBattle } from '../state/battle';
+import { battle, canRestart, command, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import {
@@ -796,22 +796,29 @@ export function Battle() {
       {objectives && <ObjectivesPanel s={s} onClose={() => setObjectives(false)} />}
       {menu && (
         <BattleMenu
-          s={s}
           onClose={() => setMenu(false)}
           onOptions={() => {
             setMenu(false);
             screen.value = { name: 'options', back: { name: 'battle' } };
           }}
-          onRestartRound={() => {
-            setMenu(false);
-            restartBattle(true);
-            remount();
-          }}
-          onRestartMission={() => {
-            setMenu(false);
-            restartBattle(false);
-            remount();
-          }}
+          onRestartRound={
+            canRestart('turn')
+              ? () => {
+                  setMenu(false);
+                  restartBattle('turn');
+                  remount();
+                }
+              : undefined
+          }
+          onRestartMission={
+            canRestart('mission')
+              ? () => {
+                  setMenu(false);
+                  restartBattle('mission');
+                  remount();
+                }
+              : undefined
+          }
           onTitle={() => (screen.value = { name: 'title' })}
         />
       )}

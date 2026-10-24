@@ -27,6 +27,8 @@ export type GameEvent =
   | { t: 'damage'; unit: string; amount: number; hpAfter: number; cause: 'burn' | 'fire' | 'item' }
   | { t: 'heal'; unit: string; amount: number; hpAfter: number; by?: string; cause: 'staff' | 'item' | 'terrain' | 'skill' }
   | { t: 'downed'; unit: string }
+  /** a downed unit bleeds one more own phase; `turns` of `max`, at `max` it dies (a `died` event follows) */
+  | { t: 'bleed'; unit: string; turns: number; max: number }
   | { t: 'died'; unit: string }
   | { t: 'retreated'; unit: string }
   | { t: 'rescued'; unit: string; by: string }

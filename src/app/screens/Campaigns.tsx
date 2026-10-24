@@ -214,7 +214,8 @@ export function Campaigns() {
     try {
       rec = importSave(await file.text());
     } catch (e) {
-      setNote(t(e instanceof Error && e.message === 'legacy' ? 'ui.campaign.importLegacy' : 'ui.campaign.importFailed'));
+      const why = e instanceof Error ? e.message : '';
+      setNote(t(why === 'legacy' ? 'ui.campaign.importLegacy' : why === 'size' ? 'ui.campaign.importTooBig' : why === 'checksum' ? 'ui.campaign.importChecksum' : 'ui.campaign.importFailed'));
       return;
     }
     await tryImport(rec);

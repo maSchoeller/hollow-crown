@@ -757,3 +757,44 @@
     border-right: var(--hc-outline) solid var(--hc-line);
   }
 }
+
+/* bleed-out: pulse mark and phases left on downed units (card chip, board label) */
+.hud-chip--bleed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--hc-downed);
+}
+.hc-bleed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px 1px 5px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  border: 2px solid var(--hc-downed);
+  color: var(--hc-downed);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.2;
+  pointer-events: none;
+}
+.hc-bleed svg {
+  width: 16px;
+  height: 8px;
+  animation: hc-bleed-pulse 1.1s ease-in-out infinite;
+}
+@keyframes hc-bleed-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-bleed svg {
+    animation: none;
+  }
+}

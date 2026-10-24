@@ -223,18 +223,17 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
 // ------------------------------------------------------------------ menu, class actions, items
 
 export function BattleMenu({
-  s,
   onClose,
   onOptions,
   onRestartRound,
   onRestartMission,
   onTitle,
 }: {
-  s: BattleState;
   onClose: () => void;
   onOptions: () => void;
-  onRestartRound: () => void;
-  onRestartMission: () => void;
+  /** absent when the death mode does not allow it (story 1.5, `canRestart`) */
+  onRestartRound?: () => void;
+  onRestartMission?: () => void;
   onTitle: () => void;
 }) {
   return (
@@ -243,14 +242,16 @@ export function BattleMenu({
         <Choice icon="gear" onClick={onOptions}>
           {t('ui.options')}
         </Choice>
-        {s.settings.deathMode !== 'classic' && (
+        {onRestartRound && (
           <Choice icon="rewind" onClick={onRestartRound}>
             {t('ui.battle.restartRound')}
           </Choice>
         )}
-        <Choice icon="restart" onClick={onRestartMission}>
-          {t('ui.battle.restartMission')}
-        </Choice>
+        {onRestartMission && (
+          <Choice icon="restart" onClick={onRestartMission}>
+            {t('ui.battle.restartMission')}
+          </Choice>
+        )}
         <Choice icon="home" quiet onClick={onTitle}>
           {t('ui.battle.toTitle')}
         </Choice>

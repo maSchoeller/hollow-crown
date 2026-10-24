@@ -3,12 +3,15 @@
  * campaigns, an auto slot + 3 manual slots each, a command journal and the untouched PoC saves (`legacy`).
  */
 import { openDB, type IDBPDatabase, type IDBPTransaction } from 'idb';
+import { saveRecordSchema } from './schema';
 import type { BattleState, CampaignState, Command, DeathMode, Difficulty } from '../core';
 
 export const SAVE_FORMAT = 2;
 export const DB_NAME = 'hollow-crown';
 export const DB_VERSION = 2;
 export const MAX_CAMPAIGNS = 3;
+/** Largest save file an import reads (architecture 5.15). */
+export const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
 export type SlotId = 'auto' | '1' | '2' | '3';
 
 export interface SavePayload {
@@ -52,6 +55,13 @@ export interface LegacyRecord {
   createdAt: string;
   appVersion: string;
   payload: { campaign: CampaignState; battle?: { start: BattleState; commands: Command[] }; screen: string };
+}
+
+/** A manual slot was refused: Classic saves only automatically, and nothing is saved by hand during a battle. */
+export class SlotNotAllowedError extends Error {
+  constructor(readonly reason: 'classic' | 'in_battle') {
+    super(`slot_${reason}`);
+  }
 }
 
 export class CampaignLimitError extends Error {
@@ -225,6 +235,10 @@ export async function writeSave(
   payload: SavePayload,
   opts: WriteOptions,
 ): Promise<SaveRecord> {
+  if (slot !== 'auto') {
+    if (payload.campaign.settings.deathMode === 'classic') throw new SlotNotAllowedError('classic');
+    if (payload.battle) throw new SlotNotAllowedError('in_battle');
+  }
   const rec: SaveRecord = plain({
     format: SAVE_FORMAT,
     campaignId,
@@ -288,14 +302,24 @@ export function exportSave(rec: SaveRecord | LegacyRecord): string {
   return JSON.stringify({ format: 'hollow-crown-save', checksum: checksum(body), body });
 }
 
-/** Reads an exported save. Throws `format`, `checksum`, `legacy` (PoC save, not loadable) or `content`. */
+/** Reads an exported save. Throws `size`, `format`, `checksum`, `legacy` (PoC save, not loadable) or `content`. */
 export function importSave(text: string): SaveRecord {
-  const outer = JSON.parse(text) as { format?: string; checksum?: string; body?: string };
+  if (text.length > MAX_IMPORT_BYTES) throw new Error('size');
+  let outer: { format?: string; checksum?: string; body?: string };
+  try {
+    outer = JSON.parse(text) as typeof outer;
+  } catch {
+    throw new Error('format');
+  }
   if (outer.format !== 'hollow-crown-save' || typeof outer.body !== 'string') throw new Error('format');
   if (checksum(outer.body) !== outer.checksum) throw new Error('checksum');
-  const rec = JSON.parse(outer.body) as Partial<SaveRecord> & { version?: number };
+  let rec: Partial<SaveRecord> & { version?: number };
+  try {
+    rec = JSON.parse(outer.body) as typeof rec;
+  } catch {
+    throw new Error('format');
+  }
   if (rec.version === 1) throw new Error('legacy');
-  if (typeof rec.format !== 'number' || typeof rec.campaignId !== 'string' || !rec.payload?.campaign?.roster)
-    throw new Error('content');
+  if (!saveRecordSchema.safeParse(rec).success) throw new Error('content');
   return migrate(rec as SaveRecord);
 }

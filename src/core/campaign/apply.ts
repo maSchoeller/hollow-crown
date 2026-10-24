@@ -11,6 +11,7 @@ import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { locateItem, offerPrice, rerollCost, runeMerge, takeItem, upgradable, upgradeCost } from './camp';
 import { currentTier, finishBattle, merchantStock } from './campaign';
+import { replayBattle, restartKeep } from './restart';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
@@ -129,6 +130,14 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
       return c.available.includes(cmd.start.nodeId) ? null : 'node_unavailable';
+    case 'restartTurn':
+      if (!c.available.includes(cmd.start.nodeId)) return 'node_unavailable';
+      return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
+    case 'restartMission':
+      if (!c.available.includes(cmd.start.nodeId)) return 'node_unavailable';
+      // Classic is the honour mode: a mission may only be started over once it is lost (replayed, not trusted)
+      if (c.settings.deathMode === 'classic' && replayBattle(data, cmd.start, cmd.commands).outcome !== 'defeat') return 'restart_forbidden';
+      return null;
   }
 }
 
@@ -156,6 +165,10 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     for (const bc of cmd.commands) s = applyCommand(data, s, bc).state;
     const { campaign, result } = finishBattle(data, prev, s);
     return { campaign, events: [...resourceEvents(prev, campaign), { t: 'missionFinished', result }] };
+  }
+  if (cmd.type === 'restartTurn' || cmd.type === 'restartMission') {
+    const scope = cmd.type === 'restartTurn' ? 'turn' : 'mission';
+    return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope, keep: restartKeep(scope, cmd.commands) }] };
   }
   const c = clone(prev);
   const events: CampaignEvent[] = [];

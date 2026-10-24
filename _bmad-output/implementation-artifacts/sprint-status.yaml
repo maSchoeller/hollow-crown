@@ -51,8 +51,8 @@ development_status:
   1-2-speicherformat-2-mit-kampagnen: done  # Speicherformat 2 mit Kampagnen
   1-3-kampagnen-ansicht-und-neue-kampagne: review  # Kampagnen-Ansicht und Neue Kampagne
   1-4-kampagnen-commands-und-journal: review  # Kampagnen-Commands und Journal
-  1-5-speicherplaetze-und-neustart-je-tod-modus: backlog  # Speicherplätze und Neustart je Tod-Modus
-  1-6-verbluten-im-modus-standard: backlog  # Verbluten im Modus Standard
+  1-5-speicherplaetze-und-neustart-je-tod-modus: review  # Speicherplätze und Neustart je Tod-Modus
+  1-6-verbluten-im-modus-standard: review  # Verbluten im Modus Standard
   1-7-fehlerbericht-und-speicherschutz: review  # Fehlerbericht und Speicherschutz
   1-8-optionen-ende-und-hinweise-im-stil-b: review  # Optionen, Ende und Hinweise im Stil B (nachgetragen 2026-10-24)
   epic-1-retrospective: optional

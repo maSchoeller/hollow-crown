@@ -2,6 +2,7 @@ import type { Effect, EquipSlot, FlagValue, Stance, SupportRank } from '../defs'
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';
+import type { RestartScope } from './restart';
 
 /**
  * Commands are the only way to change a campaign between battles (concept/24-architecture §5.2).
@@ -25,7 +26,14 @@ export type CampaignCommand =
   /** effects of content (dialogue answers, rewards); the only way effects ever run */
   | { type: 'effects'; effects: Effect[] }
   /** a won or lost battle: start snapshot + full command log, replayed by the handler */
-  | { type: 'finishMission'; start: BattleState; commands: Command[] };
+  | { type: 'finishMission'; start: BattleState; commands: Command[] }
+  /**
+   * Restart the running battle at the start of the round / of the mission (replay of its log, so downs and deaths
+   * are undone too). The battle itself lives in the app session; the command carries it so the rules can check
+   * it and the journal can replay it. Classic: `restartTurn` never, `restartMission` only after a defeat.
+   */
+  | { type: 'restartTurn'; start: BattleState; commands: Command[] }
+  | { type: 'restartMission'; start: BattleState; commands: Command[] };
 
 export type CampaignError =
   | 'not_enough_gold'
@@ -42,6 +50,8 @@ export type CampaignError =
   | 'not_available'
   | 'convoy_full'
   | 'node_unavailable'
+  /** the death mode does not allow this restart (Classic: round never, mission only after a defeat) */
+  | 'restart_forbidden'
   /** an effect refers to something that cannot take it (undeclared flag or value, fallen companion ...) */
   | 'effect_invalid'
   /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, openQuest, setHome, recruit by lieutenant) */
@@ -63,7 +73,9 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
-  | { t: 'missionFinished'; result: BattleResult };
+  | { t: 'missionFinished'; result: BattleResult }
+  /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
+  | { t: 'battleRestarted'; scope: RestartScope; keep: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

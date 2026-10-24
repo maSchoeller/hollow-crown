@@ -11,7 +11,7 @@ import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
 import { campaign, data } from './state/session';
 import { runEffects, storyContext } from './state/flow';
-import { battle, restartBattle } from './state/battle';
+import { battle, canRestart, restartBattle } from './state/battle';
 import { fault, reportFault } from './state/fault';
 import { screen } from './state/screen';
 import { settings } from './state/settings';
@@ -27,15 +27,17 @@ function Defeat() {
       </div>
       <div class="tagline">{t('ui.defeat.text')}</div>
       <div class="title-menu">
-        {b && b.start.settings.deathMode !== 'classic' && (
-          <button class="btn primary big" onClick={() => restartBattle(true)}>
+        {b && canRestart('turn') && (
+          <button class="btn primary big" onClick={() => restartBattle('turn')}>
             {t('ui.battle.restartRound')}
           </button>
         )}
-        <button class="btn" onClick={() => restartBattle(false)}>
-          <Icon name="restart" />
-          {t('ui.battle.restartMission')}
-        </button>
+        {b && canRestart('mission') && (
+          <button class={`btn ${canRestart('turn') ? '' : 'primary big'}`} onClick={() => restartBattle('mission')}>
+            <Icon name="restart" />
+            {t('ui.battle.restartMission')}
+          </button>
+        )}
         <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
           <Icon name="home" />
           {t('ui.battle.toTitle')}

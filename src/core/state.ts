@@ -80,6 +80,8 @@ export interface BattleUnit extends UnitRecord {
   acted: boolean;
   moved: boolean;
   downed: boolean;
+  /** own phases spent downed (Standard: bleeds out at `balance.death.bleedOutTurns`) */
+  bleed: number;
   /** left the map: rescued, escaped, retreated (casual) or dead */
   gone?: 'rescued' | 'escaped' | 'retreated' | 'dead';
   status: Array<{ id: StatusId; turns: number }>;

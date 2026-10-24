@@ -178,6 +178,12 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
               <ElementIcon el={affinity} size={15} />
             </span>
           )}
+          {u.downed && !u.gone && (
+            <span class="hud-chip hud-chip--bleed">
+              <PulseMark />
+              {t('ui.hud.bleed', { n: Math.max(0, data.balance.death.bleedOutTurns - (u.bleed ?? 0)) })}
+            </span>
+          )}
           {u.status.map((x) => (
             <span class="hud-chip" key={x.id}>
               {t(`ui.status.${x.id}`)} {x.turns}
@@ -186,6 +192,15 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
         </div>
       </div>
     </div>
+  );
+}
+
+/** Pulse line of a downed unit (DESIGN.md `downed`). */
+function PulseMark() {
+  return (
+    <svg class="hud-pulse" viewBox="0 0 24 12" width="16" height="8" aria-hidden="true">
+      <path d="M1 7h5l2-5 3 9 3-7 2 3h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
   );
 }
 
