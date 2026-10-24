@@ -536,6 +536,7 @@ export const renderSchema = z.object({
     offHand: z.partialRecord(itemSchema.shape.kind, gearPiece),
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
+  assets: z.object({ keepUnused: z.number().int().min(0) }),
 });
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */

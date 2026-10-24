@@ -11,7 +11,7 @@ import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTextur
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
-import type { Team } from '../core';
+import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
 import { TEAM_RAMP, type UnitModel } from './models';
 

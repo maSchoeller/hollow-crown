@@ -3,8 +3,8 @@
  * diorama terrain, 3D props and figures (or pixel sprites), lights and shadows, and the playback of
  * core events. The public surface is what the battle screen uses; all game logic stays in src/core.
  */
-import { Engine } from '@babylonjs/core/Engines/engine';
-import { Scene } from '@babylonjs/core/scene';
+import type { Engine } from '@babylonjs/core/Engines/engine';
+import type { Scene } from '@babylonjs/core/scene';
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
@@ -26,13 +26,17 @@ import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../core';
-import { itemDef, modelId, unitFigureId } from '../core';
-import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from './camera';
-import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from './assets';
-import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from './terrain3d';
-import { loadPropMesh, loadUnitModel, releaseModels } from './models';
-import { ModelFigure, SpriteFigure, type Facing, type Figure, type FigureAnim } from './figures';
+import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../../core';
+import { itemDef, modelId, unitFigureId } from '../../core';
+import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
+import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
+import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
+import { loadPropMesh, loadUnitModel } from '../shared/models';
+import { ModelFigure, SpriteFigure, type Facing, type Figure, type FigureAnim } from '../shared/figures';
+import { applyLight } from '../shared/season';
+import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
+import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
+import { marchToTile } from './picking';
 
 export interface BoardHooks {
   onTap?(tile: Pos): void;
@@ -47,20 +51,8 @@ export interface BoardHooks {
   insets?(): Insets;
 }
 
-export interface Overlays {
-  move?: Pos[];
-  attack?: Pos[];
-  heal?: Pos[];
-  danger?: Pos[];
-  path?: Pos[];
-  targets?: Pos[];
-  cursor?: Pos | null;
-  ghost?: { uid: string; pos: Pos } | null;
-  goal?: Pos[];
-  reinforce?: Pos[];
-}
-
-export type Quality = 'low' | 'mid' | 'high';
+export type { Overlays } from './overlays';
+export type { Quality } from '../host';
 export type FigureStyle = '3d' | '2d';
 
 interface UnitView {
@@ -95,17 +87,6 @@ interface FxSprite {
 }
 
 const RING_COLOR: Record<Team, string> = { player: '#3d7be0', enemy: '#d9413a', other: '#3fa65a' };
-// overlay colours and opacities (same reading as the 2D board)
-const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pulse?: number }> = {
-  danger: { color: '#d9333f', alpha: 0.28, inset: 0 },
-  goal: { color: '#f2cc4d', alpha: 0.3, inset: 0, pulse: 0.15 },
-  move: { color: '#4080f2', alpha: 0.42, inset: 0.02 },
-  attack: { color: '#f24d4d', alpha: 0.38, inset: 0.02 },
-  heal: { color: '#59e680', alpha: 0.4, inset: 0.02 },
-  reinforce: { color: '#f2802e', alpha: 0.25, inset: 0.16, pulse: 0.2 },
-  path: { color: '#ffffff', alpha: 0.55, inset: 0.33 },
-  targets: { color: '#ffd959', alpha: 0.35, inset: 0.04, pulse: 0.35 },
-};
 const MAX_FIRES = 12;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 /** rAF with a timer fallback (rAF stops in background panes; animations must still finish). */
@@ -120,9 +101,13 @@ const schedule = (fn: () => void): void => {
   setTimeout(run, 50);
 };
 
-export class BoardView {
+export class BoardView implements HostedView {
   readonly engine: Engine;
   readonly scene: Scene;
+  private host: RenderHost;
+  private store: AssetStore;
+  /** removes the input listeners from the shared canvas */
+  private input = new AbortController();
   private camera: FreeCamera;
   private hooks: BoardHooks;
   private data: GameData;
@@ -159,7 +144,7 @@ export class BoardView {
   private units = new Map<string, UnitView>();
   private ghost: { uid: string; figure: Figure } | null = null;
   private overlays: Overlays = {};
-  private overlayMeshes: Array<{ mesh: Mesh; mat: StandardMaterial; alpha: number; pulse: number }> = [];
+  private overlayMeshes: OverlayMesh[] = [];
   private fx?: FxInfo;
   private fxTexture?: Texture;
   private fxSprites: FxSprite[] = [];
@@ -173,20 +158,24 @@ export class BoardView {
   private longFired = false;
   private pinchStart = 0;
   private zoomTween: { from: number; to: number; start: number } | null = null;
-  // frame cap: full rate while something moves, a lower one at rest (render.yaml board.fpsActive/fpsIdle)
-  private lastFrame = 0;
+  // the host caps the frame rate: full while something moves, lower at rest (render.yaml board.fpsActive/fpsIdle)
   private activeUntil = 0;
 
-  constructor(canvas: HTMLCanvasElement, floatLayer: HTMLDivElement, data: GameData, hooks: BoardHooks) {
-    this.canvas = canvas;
+  /** `slot`: empty element that takes the host's canvas (story 5.1: one engine and canvas for all scenes) */
+  constructor(slot: HTMLElement, floatLayer: HTMLDivElement, data: GameData, hooks: BoardHooks) {
+    this.host = renderHost(data);
+    this.host.mount(slot);
+    this.canvas = this.host.canvas;
     this.floatLayer = floatLayer;
     this.data = data;
     this.hooks = hooks;
-    this.engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true, antialias: true, adaptToDeviceRatio: false }, false);
-    this.scene = new Scene(this.engine);
+    this.engine = this.host.engine;
+    this.scene = this.host.scene;
+    this.store = this.host.store(this);
+    this.host.activate(this);
     this.scene.clearColor = new Color4(0.06, 0.07, 0.11, 1);
-    this.scene.skipPointerMovePicking = true;
     this.camera = new FreeCamera('cam', new Vector3(0, 30, -30), this.scene);
+    this.scene.activeCamera = this.camera;
     this.camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
     this.camera.minZ = 0.1;
     this.camera.maxZ = 400;
@@ -200,24 +189,27 @@ export class BoardView {
     this.bindInput();
     // dev tools and E2E tests (Playwright sets navigator.webdriver) inspect the board
     if (import.meta.env.DEV || navigator.webdriver) (window as unknown as { __board: BoardView }).__board = this;
-    window.addEventListener('resize', this.onResize);
   }
 
-  private onResize = () => {
-    this.engine.resize();
+  /** A dialogue over the board: `idle` draws at `board.fpsIdle`, `pause` not at all, `run` as usual (story 5.1). */
+  hold(mode: Hold): void {
+    this.host.hold(mode);
+  }
+
+  /** The host calls this when the canvas changed size. */
+  resize(): void {
     this.ppt = this.pptFor(this.step);
     this.clampCamera();
-  };
+  }
 
+  /** Leaves the stage: the host clears what the board built; the models stay in its cache for the next scene. */
   dispose(): void {
+    if (this.disposed) return;
     this.disposed = true;
-    window.removeEventListener('resize', this.onResize);
+    this.input.abort();
     for (const f of this.floaters) f.el.remove();
     for (const el of this.bleedLabels.values()) el.remove();
-    this.engine.stopRenderLoop();
-    releaseModels(this.scene);
-    this.scene.dispose();
-    this.engine.dispose();
+    this.host.release(this);
   }
 
   // ------------------------------------------------------------------ setup
@@ -236,18 +228,9 @@ export class BoardView {
     return t;
   }
 
-  /** Software WebGL (no GPU) cannot carry shadows and full resolution; it always gets the low level (D8). */
-  private softwareGl(): boolean {
-    const r = this.engine.getGlInfo().renderer ?? '';
-    return /swiftshader|llvmpipe|software|basic render/i.test(r);
-  }
-
   private applyQuality(): void {
-    const software = this.softwareGl();
-    if (software) this.quality = 'low';
+    this.quality = this.host.setQuality(this.quality);
     const q = this.data.render.quality[this.quality];
-    // software rendering also draws at half resolution to stay responsive
-    this.engine.setHardwareScalingLevel(software ? 2 : 1 / Math.min(window.devicePixelRatio || 1, q.maxDpr));
     this.shadows?.dispose();
     this.shadows = null;
     if (q.shadowMap > 0) {
@@ -259,7 +242,6 @@ export class BoardView {
       sg.darkness = 0.35;
       this.shadows = sg;
     }
-    this.engine.resize();
   }
 
   private castShadows(meshes: Mesh[]): void {
@@ -269,19 +251,7 @@ export class BoardView {
 
   private applyMapLight(): void {
     const map = this.data.maps[this.state.mapId]!;
-    const amb = map.ambient ?? { color: '#ffffff', intensity: 1 };
-    this.hemi.diffuse = Color3.FromHexString(amb.color);
-    this.hemi.groundColor = Color3.FromHexString(amb.color).scale(0.35);
-    this.hemi.intensity = amb.intensity * 0.6;
-    const sun = map.sun ?? { color: '#fff4e0', intensity: 1, azimuthDeg: 300, elevationDeg: 50 };
-    const az = (sun.azimuthDeg * Math.PI) / 180;
-    const el = (sun.elevationDeg * Math.PI) / 180;
-    // compass bearing: 0 = north (+Z), 90 = east (+X); the light travels away from the sun
-    this.sun.direction = new Vector3(-Math.sin(az) * Math.cos(el), -Math.sin(el), -Math.cos(az) * Math.cos(el));
-    this.sun.position = this.sun.direction.scale(-40);
-    this.sun.diffuse = Color3.FromHexString(sun.color);
-    this.sun.specular = new Color3(0.2, 0.2, 0.2);
-    this.sun.intensity = sun.intensity;
+    applyLight(this.hemi, this.sun, map.ambient, map.sun);
   }
 
   /** Loads assets and builds the board. Call once per battle. */
@@ -291,13 +261,12 @@ export class BoardView {
       this.seed = [...state.mapId].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
       this.applyQuality();
       this.applyMapLight();
-      this.textures = loadGroundTextures(this.scene);
+      this.textures = await loadGroundTextures(this.store);
       this.fx = await loadFx();
       if (this.fx) this.fxTexture = this.textureFromImage('fx', this.fx.image);
       await this.buildTerrain();
       this.fitCamera();
       // the terrain shows while the figures load (they load in parallel and appear together)
-      if (!this.disposed) this.engine.runRenderLoop(() => this.frame());
       await this.syncUnits(state, true);
     })();
     return this.readyPromise;
@@ -347,7 +316,7 @@ export class BoardView {
     let p = this.propTemplates.get(key);
     if (!p) {
       p = (async () => {
-        const m = await loadPropMesh(this.scene, pid, state, this.propMat);
+        const m = await loadPropMesh(this.store, pid, state, this.propMat);
         if (m) {
           m.isVisible = false;
           m.alwaysSelectAsActiveMesh = true;
@@ -543,7 +512,7 @@ export class BoardView {
       // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
       const models = (await loadManifest()).models?.units ?? [];
       const mid = modelId(u, models, this.data.classes);
-      const model = await loadUnitModel(this.scene, mid, u.team, name, this.gearOf(u));
+      const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u));
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
         return new ModelFigure(model, this.weaponOf(u)?.motion);
@@ -698,75 +667,7 @@ export class BoardView {
       o.mesh.dispose();
       o.mat.dispose();
     }
-    this.overlayMeshes = [];
-    const lists: Record<string, Pos[]> = {
-      danger: this.overlays.danger ?? [],
-      goal: this.overlays.goal ?? [],
-      move: this.overlays.move ?? [],
-      attack: this.overlays.attack ?? [],
-      heal: this.overlays.heal ?? [],
-      reinforce: this.overlays.reinforce ?? [],
-      path: this.overlays.path ?? [],
-      targets: this.overlays.targets ?? [],
-    };
-    let order = 0;
-    for (const [key, tiles] of Object.entries(lists)) {
-      order++;
-      if (!tiles.length) continue;
-      const spec = OVERLAY[key]!;
-      const p: number[] = [];
-      const idx: number[] = [];
-      for (const t of tiles) {
-        const h = this.tileTop(t) + 0.02 + order * 0.002;
-        const x0 = t[0] + spec.inset;
-        const x1 = t[0] + 1 - spec.inset;
-        const zn = -t[1] - spec.inset;
-        const zs = -t[1] - 1 + spec.inset;
-        const o = p.length / 3;
-        p.push(x0, h, zn, x1, h, zn, x1, h, zs, x0, h, zs);
-        idx.push(o, o + 1, o + 2, o, o + 2, o + 3);
-      }
-      this.overlayMeshes.push(this.overlayMesh(`overlay:${key}`, p, idx, spec.color, spec.alpha, spec.pulse ?? 0));
-    }
-    const c = this.overlays.cursor;
-    if (c) {
-      // gold corner frame on the tile
-      const h = this.tileTop(c) + 0.04;
-      const p: number[] = [];
-      const idx: number[] = [];
-      const bar = (x0: number, z0: number, x1: number, z1: number) => {
-        const o = p.length / 3;
-        p.push(x0, h, z0, x1, h, z0, x1, h, z1, x0, h, z1);
-        idx.push(o, o + 1, o + 2, o, o + 2, o + 3);
-      };
-      const [x, y] = c;
-      const t = 0.07;
-      const l = 0.3;
-      for (const [cx, cz, sx, sz] of [[x, -y, 1, -1], [x + 1, -y, -1, -1], [x, -y - 1, 1, 1], [x + 1, -y - 1, -1, 1]] as const) {
-        bar(cx, cz, cx + sx * l, cz + sz * t);
-        bar(cx, cz, cx + sx * t, cz + sz * l);
-      }
-      this.overlayMeshes.push(this.overlayMesh('overlay:cursor', p, idx, '#fff2bf', 0.7, 0.25));
-    }
-  }
-
-  private overlayMesh(name: string, p: number[], idx: number[], color: string, alpha: number, pulse: number) {
-    const mesh = new Mesh(name, this.scene);
-    const vd = new VertexData();
-    vd.positions = p;
-    vd.indices = idx;
-    vd.normals = p.map((_, i) => (i % 3 === 1 ? 1 : 0));
-    vd.applyToMesh(mesh);
-    const mat = new StandardMaterial(name, this.scene);
-    mat.disableLighting = true;
-    mat.emissiveColor = Color3.FromHexString(color);
-    mat.alpha = alpha;
-    mat.backFaceCulling = false;
-    mat.zOffset = -2;
-    mat.disableDepthWrite = true;
-    mesh.material = mat;
-    mesh.isPickable = false;
-    return { mesh, mat, alpha, pulse };
+    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p));
   }
 
   private async updateGhost(): Promise<void> {
@@ -934,36 +835,24 @@ export class BoardView {
     const sx = (clientX - r.left - r.width / 2) / this.ppt;
     const sy = (r.height / 2 - (clientY - r.top)) / this.ppt;
     const origin = new Vector3(this.camX + sx, 0, -this.camY).add(up.scale(sy));
-    const dy = -forward.y || 1;
-    // start above the highest terrain and walk down in small steps
-    let s = (origin.y - 3) / dy;
-    const ds = 0.02 / dy;
-    for (let i = 0; i < 300; i++, s += ds) {
-      const px = origin.x + forward.x * s;
-      const py = origin.y + forward.y * s;
-      const pz = origin.z + forward.z * s;
-      const tx = Math.floor(px);
-      const ty = Math.floor(-pz);
-      const top = this.terrain.topOf(tx, ty);
-      if (top !== null && py <= top) return [tx, ty];
-      if (py < -1.5) break;
-    }
-    return null;
+    const terrain = this.terrain;
+    return marchToTile(origin, forward, (x, y) => terrain.topOf(x, y));
   }
 
   // ------------------------------------------------------------------ input
 
   private bindInput(): void {
     const c = this.canvas;
+    const signal = this.input.signal;
     c.style.touchAction = 'none';
     c.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       this.hooks.onCancel?.();
-    });
+    }, { signal });
     c.addEventListener('wheel', (e) => {
       e.preventDefault();
       this.zoom(e.deltaY < 0 ? 1 : -1);
-    }, { passive: false });
+    }, { passive: false, signal });
     c.addEventListener('pointerdown', (e) => {
       if (e.button === 2) return;
       c.setPointerCapture(e.pointerId);
@@ -985,7 +874,7 @@ export class BoardView {
         this.pinchStart = Math.hypot(a!.x - b!.x, a!.y - b!.y);
         this.panMoved = true;
       }
-    });
+    }, { signal });
     c.addEventListener('pointermove', (e) => {
       const p = this.pointer.get(e.pointerId);
       if (!p) {
@@ -1015,7 +904,7 @@ export class BoardView {
         clearTimeout(this.longTimer);
       }
       if (this.panMoved) this.pan(dx, dy);
-    });
+    }, { signal });
     const up = (e: PointerEvent) => {
       const p = this.pointer.get(e.pointerId);
       this.pointer.delete(e.pointerId);
@@ -1026,11 +915,11 @@ export class BoardView {
         if (t) this.hooks.onTap?.(t);
       }
     };
-    c.addEventListener('pointerup', up);
+    c.addEventListener('pointerup', up, { signal });
     c.addEventListener('pointercancel', (e) => {
       this.pointer.delete(e.pointerId);
       clearTimeout(this.longTimer);
-    });
+    }, { signal });
   }
 
   private pan(dxCss: number, dyCss: number): void {
@@ -1047,14 +936,12 @@ export class BoardView {
 
   // ------------------------------------------------------------------ frame
 
-  private frame(): void {
+  busy(now: number): boolean {
+    return now < this.activeUntil || this.zoomTween !== null || this.fxSprites.length > 0 || this.floaters.length > 0 || this.shake > 0;
+  }
+
+  frame(now: number): void {
     if (this.disposed) return;
-    const now = performance.now();
-    const busy = now < this.activeUntil || this.zoomTween !== null || this.fxSprites.length > 0 || this.floaters.length > 0 || this.shake > 0;
-    const fps = busy ? this.data.render.board.fpsActive : this.data.render.board.fpsIdle;
-    // 2 ms slack so a 60 Hz display does not drop every other frame
-    if (now - this.lastFrame < 1000 / fps - 2) return;
-    this.lastFrame = now;
     this.updateCamera(now);
     this.terrain?.tick(now);
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);

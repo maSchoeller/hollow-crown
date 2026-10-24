@@ -729,6 +729,8 @@ export interface RenderDef {
   /** GA9: weapon model per equipped weapon group / off-hand item kind, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<ItemDef['kind'], GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
+  /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
+  assets: { keepUnused: number };
 }
 
 /** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */

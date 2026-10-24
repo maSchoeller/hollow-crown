@@ -20,7 +20,8 @@ import '@babylonjs/loaders/glTF/2.0/Extensions/EXT_meshopt_compression';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_texture_transform';
 import { MeshoptDecoder } from 'meshoptimizer/decoder';
-import type { GearPiece, Team } from '../core';
+import type { GearPiece, Team } from '../../core';
+import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 
 /** Team ramps of Hollow-64 (dark → light), the same the sprite shader swaps in (GA10). */
@@ -55,26 +56,31 @@ export function teamColours(mesh: Mesh, team: Team): void {
   mesh.hasVertexAlpha = false;
 }
 
-const containers = new Map<string, Promise<AssetContainer | null>>();
-function container(scene: Scene, path: string, materials = false): Promise<AssetContainer | null> {
-  const key = `${scene.uid}:${path}`;
-  let p = containers.get(key);
-  if (!p) {
-    // the board assigns its own materials; skipping the glTF ones avoids compiling PBR shaders.
-    // Textured figures (image-to-3D, concept/23-art-direction) need them loaded to reuse their base colour texture;
-    // the board shades in gamma space like the vertex colours, so the texture must not be decoded as sRGB.
-    p = LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: !materials, useSRGBBuffers: false } } }).catch(() => null);
-    containers.set(key, p);
-  }
-  return p;
-}
-
-/** Frees the model files loaded for a scene (call when the board is disposed). */
-export function releaseModels(scene: Scene): void {
-  for (const [key, p] of [...containers]) {
-    if (!key.startsWith(`${scene.uid}:`)) continue;
-    containers.delete(key);
-    void p.then((c) => c?.dispose());
+/**
+ * Loads a model file into a container of `scene` (the render host's stage; the host caches it, story 5.1). The board
+ * assigns its own materials; skipping the glTF ones avoids compiling PBR shaders. Textured figures (image-to-3D,
+ * concept/23-art-direction) need them loaded to reuse their base colour texture; the board shades in gamma space like
+ * the vertex colours, so the texture must not be decoded as sRGB.
+ */
+export async function loadContainer(scene: Scene, path: string, materials: boolean): Promise<AssetContainer | null> {
+  try {
+    const c = await LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: !materials, useSRGBBuffers: false } } });
+    // Babylon keeps container entities off the scene with one scene-wide flag; files loading in parallel clear it for
+    // each other, and some of a container's meshes and skeletons land in the scene lists anyway. Off with them: the
+    // host clears the stage between scenes and must not dispose what the cache holds.
+    // Cloning a skinned mesh prepares its source skeleton, which then makes its bone texture on the scene; made here,
+    // the texture belongs to the container as well.
+    for (const s of c.skeletons) {
+      const m = c.meshes.find((x) => x.skeleton === s);
+      if (!m) continue;
+      s.prepare(true);
+      const t = s.getTransformMatrixTexture(m);
+      if (t && !c.textures.includes(t)) c.textures.push(t);
+    }
+    c.removeAllFromScene();
+    return c;
+  } catch {
+    return null;
   }
 }
 
@@ -102,7 +108,7 @@ function figureMaterial(name: string, scene: Scene): StandardMaterial {
  * `socket_l` from tools/art/prepare_tripo_unit.py). Figures without sockets carry their weapon in the model.
  */
 async function attachGear(
-  scene: Scene,
+  store: AssetStore,
   root: TransformNode,
   gear: GearPiece[],
   team: Team,
@@ -114,9 +120,9 @@ async function attachGear(
   const grips: UnitModel['grips'] = [];
   for (const piece of gear) {
     const socket = sockets.find((n) => n.name.endsWith(piece.hand === 'right' ? ':socket_r' : ':socket_l')) as TransformNode | undefined;
-    const c = socket && (await container(scene, `models/weapons/${piece.model}.glb`));
+    const c = socket && (await store.container(`models/weapons/${piece.model}.glb`));
     if (!socket || !c || root.isDisposed()) continue;
-    const grip = new TransformNode(`${name}:${piece.model}:grip`, scene);
+    const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
     grip.parent = socket;
     grips.push({ node: grip, hold: ((piece.hold ?? 0) * Math.PI) / 180 });
     const inst = c.instantiateModelsToScene((n) => `${name}:${piece.model}:${n}`, false, { doNotInstantiate: true });
@@ -139,8 +145,9 @@ async function attachGear(
   return { meshes, grips };
 }
 
-export async function loadUnitModel(scene: Scene, id: string, team: Team, name: string, gear: GearPiece[] = []): Promise<UnitModel | null> {
-  const c = await container(scene, `models/units/${id}.glb`, true);
+export async function loadUnitModel(store: AssetStore, id: string, team: Team, name: string, gear: GearPiece[] = []): Promise<UnitModel | null> {
+  const { scene } = store;
+  const c = await store.container(`models/units/${id}.glb`, true);
   if (!c) return null;
   const inst = c.instantiateModelsToScene((n) => `${name}:${n}`, false, { doNotInstantiate: true });
   const root = new TransformNode(name, scene);
@@ -161,7 +168,7 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
       meshes.push(m);
     }
   const gearMaterial = figureMaterial(`${name}:gear`, scene);
-  const held = await attachGear(scene, root, gear, team, name, gearMaterial);
+  const held = await attachGear(store, root, gear, team, name, gearMaterial);
   meshes.push(...held.meshes);
   const anims: Record<string, AnimationGroup> = {};
   for (const g of inst.animationGroups) {
@@ -185,8 +192,8 @@ export async function loadUnitModel(scene: Scene, id: string, team: Team, name: 
 }
 
 /** One static mesh per prop state with baked transform and the player's colours on team cloth (forts, wagons). */
-export async function loadPropMesh(scene: Scene, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
-  const c = await container(scene, `models/props/${pid}_${state}.glb`);
+export async function loadPropMesh(store: AssetStore, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
+  const c = await store.container(`models/props/${pid}_${state}.glb`);
   if (!c) return null;
   const inst = c.instantiateModelsToScene((n) => `prop:${pid}_${state}:${n}`, false, { doNotInstantiate: true });
   const parts: Mesh[] = [];

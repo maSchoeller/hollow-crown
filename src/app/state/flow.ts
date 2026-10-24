@@ -36,7 +36,7 @@ import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
-import { loadManifest } from '../../render/assets';
+import { loadManifest } from '../../render/shared/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets, prefetchQuietly } from './loading';
 import { settings } from './settings';

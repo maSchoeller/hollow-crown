@@ -13,22 +13,18 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
-import type { BattleState, GameData, TerrainDef, TerrainSurface } from '../core';
-import { assetUrl } from './assets';
+import type { BattleState, GameData, TerrainDef, TerrainSurface } from '../../core';
+import type { AssetStore } from '../host';
 
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
 
 export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'planks', 'water_0', 'water_1', 'water_2', 'water_3'];
 
-export function loadGroundTextures(scene: Scene): GroundTextures {
-  const out: GroundTextures = {};
-  for (const name of GROUND_TEXTURES) {
-    const t = new Texture(assetUrl(`ground/${name}.png`), scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
-    t.anisotropicFilteringLevel = 8;
-    out[name] = t;
-  }
-  return out;
+/** The ground textures from the shared cache (loaded once for board and world map, story 5.1). */
+export async function loadGroundTextures(store: AssetStore): Promise<GroundTextures> {
+  const list = await Promise.all(GROUND_TEXTURES.map((name) => store.texture(`ground/${name}.png`)));
+  return Object.fromEntries(GROUND_TEXTURES.map((name, i) => [name, list[i]!]));
 }
 
 // ------------------------------------------------------------------ noise (deterministic, render only)
