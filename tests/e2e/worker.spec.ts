@@ -20,7 +20,7 @@ async function playFirstEnemyPhase(page: Page): Promise<string> {
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
-  await expect(page.locator('canvas.board-canvas')).toBeVisible();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible();
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
   await page.getByRole('button', { name: /End phase|Phase beenden/ }).click();
   await page.getByRole('button', { name: /Sure\?|Wirklich\?/ }).click();
