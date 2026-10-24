@@ -394,6 +394,8 @@ export interface ReinforcementDef {
 
 export interface MapDef {
   id: string;
+  /** act of the content folder the map lives in (`acts/actN/maps/`, set by the loader); picks the board's season */
+  act: number;
   nameKey: string;
   size: [number, number];
   fog: boolean;
@@ -671,6 +673,8 @@ export interface Balance {
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
+  /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
+  day: { resetHour: number; catchUp: number };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {
     /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */
@@ -767,9 +771,13 @@ export interface RenderDef {
     waterLevel: number;
     /** depth of the diorama's bottom below ground level, tiles */
     baseDepth: number;
+    /** water animation: ms per texture frame */
+    waterFrameMs: number;
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;
+    /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
+    decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
@@ -779,6 +787,69 @@ export interface RenderDef {
   /** GA9: weapon model per equipped weapon group / off-hand item kind, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<ItemDef['kind'], GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
+  /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
+  assets: { keepUnused: number };
+  /** the world map scene (story 5.2) */
+  world: {
+    tiltDeg: number;
+    /** visible columns on the shorter screen side: near, overview */
+    zoomSteps: number[];
+    zoomMs: number;
+    /** how much closer the camera goes on a chosen place */
+    focusZoom: number;
+    /** sea around the map */
+    skirt: { width: number; terrain: string };
+    miniatureScale: number;
+    /** height of a node's tip above the ground of its place, tiles */
+    pinHeight: number;
+    /**
+     * the calm water sheet over the painted sea floor: opacity, tint, tiles per repeat of the normal map, wave strength,
+     * drift in tiles per second (east, south)
+     */
+    water: { alpha: number; tint: string; normalScale: number; bump: number; drift: [number, number]; glow: number; reach: number; deep: string };
+    fog: { color: string; alpha: number; height: number };
+    /** falling ash flakes (act 1 dragon sign) per quality level */
+    ash: Record<'high' | 'mid' | 'low', number>;
+    /** landscape props: trees per region (weighted `<prop>_<state>`), dead trees around ash, rural life, bridge size */
+    scenery: {
+      trees: Record<string, Array<{ model: string; weight: number }>>;
+      deadTrees: { onAsh: number; nearAsh: number; model: string };
+      rural: { region: string; fieldModel: string; fenceModel: string; cornerModel: string; brokenModel: string; rocksModel: string; fields: [number, number]; radius: number; fenceChance: number; brokenChance: number; rocks: number; clearance: number };
+      bridgeScale: number;
+    };
+    /** light per season of a region */
+    seasons: Record<string, { ambient: { color: string; intensity: number }; sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number } }>;
+  };
+}
+
+/** One prop of a place's miniature, in tiles from the place's centre (x east, y south). */
+export interface MiniaturePart {
+  prop: string;
+  at: [number, number];
+  rot: number;
+  scale: number;
+}
+
+/** A place on the world map: a campaign node or the home, its miniature and variants (first whose conditions hold). */
+export interface WorldLocation {
+  node?: string;
+  home?: 'camp' | 'castle';
+  at: Pos;
+  model: string;
+  variants: Array<{ model: string; requires: Condition[] }>;
+}
+
+/** The world map of Valmora (content/world/valmora.yaml, story 5.2). */
+export interface WorldDef {
+  id: string;
+  legend: Record<string, string>;
+  /** rows of one character per tile */
+  tiles: string;
+  regions: Array<{ id: string; char: string; act: number; season: string }>;
+  regionGrid: string;
+  miniatures: Record<string, MiniaturePart[]>;
+  locations: WorldLocation[];
+  signs: Array<{ act: number; kind: 'ash'; areas: Array<[number, number, number, number]> }>;
 }
 
 /** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */
@@ -813,4 +884,5 @@ export interface GameData {
   /** chronicle pages of the acts (`acts/actN/chronicle.yaml`) */
   chronicle: Record<string, ChroniclePageDef>;
   campaign: CampaignDef;
+  world: WorldDef;
 }

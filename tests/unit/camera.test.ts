@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { centreOn, clampAxis, inFreeArea } from '../../src/render/camera';
+import { centreOn, clampAxis, inFreeArea } from '../../src/render/shared/camera';
 
 // Phone in portrait: 390 px wide view, 844 tall; top bar 60, bottom sheet 220 (world units = px here)
 const VIEW_H = 844;

@@ -57,7 +57,12 @@ export type CampaignCommand =
    * Classic only allows it after a defeat and does not trust the app: `lost` (start + log) is replayed to check.
    * Standard and Casual leave it out.
    */
-  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] } };
+  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] } }
+  /**
+   * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
+   * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
+   */
+  | { type: 'advanceDay'; day: number };
 
 export type CampaignError =
   | 'not_enough_gold'
@@ -85,7 +90,9 @@ export type CampaignError =
   /** this choice was answered before: answers are never taken back */
   | 'already_chosen'
   /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, setHome, recruit by lieutenant) */
-  | 'effect_unsupported';
+  | 'effect_unsupported'
+  /** a day number that is no whole number of days */
+  | 'invalid_day';
 
 /** What changed, for hints and banners in the UI (narrative: consequences are always shown). */
 export type CampaignEvent =
@@ -110,7 +117,9 @@ export type CampaignEvent =
   | { t: 'choiceMade'; scene: string; line: string; option: string; decision: boolean }
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
-  | { t: 'battleRestarted'; scope: RestartScope; keep: number };
+  | { t: 'battleRestarted'; scope: RestartScope; keep: number }
+  /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
+  | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;
