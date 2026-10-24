@@ -1,8 +1,0 @@
-id: dlg.ch02.outro
-background: bg_silverbrook_shrine
-music: camp
-lines:
-  - { speaker: liora, mood: neutral, side: right, key: dlg.ch02.outro.001 }
-  - { speaker: liora, mood: sad, side: right, key: dlg.ch02.outro.002 }
-  - { speaker: kael, mood: surprised, side: left, key: dlg.ch02.outro.003 }
-  - { speaker: liora, mood: neutral, side: right, key: dlg.ch02.outro.004 }

@@ -1,0 +1,15 @@
+id: scn.ch02.tutorial_talk
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und Kael … der Kerl mit dem Pflaumenmantel da drüben. Das ist doch Varek?"
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Varek. Wenn ich nah genug rankomme, rede ich mit ihm. Er hat nie für etwas gekämpft, das er nicht mochte."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Stellt mich neben ihn und wählt „Ansprechen“. Greift ihn bis dahin nicht an."

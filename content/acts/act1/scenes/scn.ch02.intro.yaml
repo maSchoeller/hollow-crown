@@ -1,0 +1,47 @@
+id: scn.ch02.intro
+background: bg_silverbrook_shrine
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Frühherbst. Nebel liegt über dem Silberbach. Am Schrein brennt ein einzelnes weißes Licht."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ihr kommt spät, Hauptmann Kael. Ich habe euch vor drei Tagen gesehen – in einem Traum aus Asche."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Du kennst meinen Namen."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich kenne auch den Namen der Frau, die mich holen will. Morra. Ihre Söldner stehen schon am Bach."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Morra … die verkauft ihre eigene Mutter, wenn der Preis stimmt."
+  - id: c01
+    choice:
+      - id: hold
+        stance: sober
+        text: "„Wir halten den Schrein, bis Morra aufgibt.“"
+        effects: [{ setFlag: ch02_hold }]
+      - id: question
+        stance: warm
+        text: "„Wer hat Morra bezahlt? Das will ich wissen.“"
+        effects: [{ setFlag: ch02_question }]
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Acht Runden, schätze ich. Dann wird ihr der Auftrag zu teuer."
+    requires: [{ flag: ch02_hold }]
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Eine gute Frage. Die Antwort wird euch nicht gefallen."
+    requires: [{ flag: ch02_question }]

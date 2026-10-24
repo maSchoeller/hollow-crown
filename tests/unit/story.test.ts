@@ -304,9 +304,11 @@ describe('schemas', () => {
 
 describe('content references (content:check)', () => {
   const problems = (d: GameData) => validateContent(d, locales).map((i) => `${i.file}: ${i.message}`);
+  const speech = (cond: unknown) => ({ id: 'x1', mood: 'neutral', text: 'x', requires: [cond] });
+  const choose = (e: unknown) => ({ id: 'x2', choice: [{ id: 'a', stance: 'warm', text: 'x', effects: [e] }, { id: 'b', stance: 'sober', text: 'y' }] });
   const withDialogue = (line: unknown): GameData => {
     const d = clone(data);
-    d.dialogues['dlg.prologue.intro']!.lines.push(line as never);
+    d.scenes['scn.prologue.intro']!.lines.push(line as never);
     return d;
   };
 
@@ -315,30 +317,30 @@ describe('content references (content:check)', () => {
   });
 
   it('an undeclared flag fails, in conditions, answers and map triggers', () => {
-    expect(problems(withDialogue({ key: 'dlg.prologue.intro.001', if: { flag: 'ghost' } }))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
-    expect(problems(withDialogue({ choice: [{ key: 'dlg.prologue.intro.c1', effects: [{ setFlag: 'ghost' }] }] }))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
+    expect(problems(withDialogue(speech({ flag: 'ghost' })))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
+    expect(problems(withDialogue(choose({ setFlag: 'ghost' })))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
     const d = clone(data);
     d.maps.prologue_caravan!.triggers.push({ id: 't_ghost', when: { type: 'turn_start', turn: 1, phase: 'player' }, then: [{ action: 'set_flag', flag: 'ghost' }] });
     expect(problems(d)).toContainEqual(expect.stringContaining('undeclared flag ghost'));
   });
 
   it('unknown companions, nodes, pairs, items and materials fail', () => {
-    const msgs = (cond: unknown) => problems(withDialogue({ key: 'dlg.prologue.intro.001', if: cond }));
+    const msgs = (cond: unknown) => problems(withDialogue(speech(cond)));
     expect(msgs({ alive: 'ghost' })).toContainEqual(expect.stringContaining('unknown companion ghost'));
     expect(msgs({ completed: 'm9_9' })).toContainEqual(expect.stringContaining('unknown node m9_9'));
     expect(msgs({ support: { pair: ['kael', 'tobin'], rank: 'C' } })).toContainEqual(expect.stringContaining('unknown support pair'));
     expect(msgs({ not: { any: [{ dead: 'ghost' }] } })).toContainEqual(expect.stringContaining('unknown companion ghost'));
-    const eff = (e: unknown) => problems(withDialogue({ choice: [{ key: 'dlg.prologue.intro.c1', effects: [e] }] }));
+    const eff = (e: unknown) => problems(withDialogue(choose(e)));
     expect(eff({ recruit: 'ghost' })).toContainEqual(expect.stringContaining('unknown companion ghost'));
     expect(eff({ item: { def: 'ghost' } })).toContainEqual(expect.stringContaining('unknown item ghost'));
     expect(eff({ material: { ghost: 1 } })).toContainEqual(expect.stringContaining('unknown material ghost'));
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
-    const cond = problems(withDialogue({ key: 'dlg.prologue.intro.001', if: { met: 'hask' } }));
+    const cond = problems(withDialogue(speech({ met: 'hask' })));
     expect(cond).toContainEqual(expect.stringContaining('condition met is not yet supported'));
     for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { openQuest: 'n1' }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
-      const m = problems(withDialogue({ choice: [{ key: 'dlg.prologue.intro.c1', effects: [e] }] }));
+      const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }
   });
@@ -382,11 +384,11 @@ describe('expectedLevel (story 4.1)', () => {
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
     expect(Object.keys(data.maps).sort()).toEqual(['ch01_varnhold', 'ch02_silverbrook', 'prologue_caravan']);
-    expect(Object.keys(data.dialogues).length).toBeGreaterThan(30);
+    expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();
-    expect(locales.de!['dlg.prologue.intro.001']).toBeTruthy();
-    expect(locales.en!['dlg.prologue.intro.001']).toBeTruthy();
+    expect(locales.de!['dlg.scn.prologue.intro.l01']).toBeTruthy();
+    expect(locales.en!['dlg.scn.prologue.intro.l01']).toBeTruthy();
     expect(locales.de!['item.iron_sword.name']).toBeTruthy();
   });
 

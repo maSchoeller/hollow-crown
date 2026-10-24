@@ -1,9 +1,0 @@
-id: dlg.support.brenna_kael.C
-background: bg_camp_night
-music: camp
-lines:
-  - { speaker: brenna, mood: happy, side: left, key: dlg.support.brenna_kael.C.001 }
-  - { speaker: kael, mood: neutral, side: right, key: dlg.support.brenna_kael.C.002 }
-  - { speaker: brenna, mood: neutral, side: left, key: dlg.support.brenna_kael.C.003 }
-  - { speaker: kael, mood: happy, side: right, key: dlg.support.brenna_kael.C.004 }
-  - { speaker: brenna, mood: happy, side: left, key: dlg.support.brenna_kael.C.005 }

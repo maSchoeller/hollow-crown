@@ -1,0 +1,28 @@
+id: scn.ch02.outro
+background: bg_silverbrook_shrine
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Morra zieht ab. Ihr habt mich gerettet, Aschenbanner. Und ich bezahle meine Schulden."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Die Krone ist nicht gestohlen worden, Hauptmann. Sie wurde … zurückgenommen. Mehr kann ich noch nicht sagen."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Zurückgenommen? Von wem?"
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Von dem, dem sie immer gehört hat. Lasst mich mit euch gehen."
+  - id: l04b
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "{avatar} – ich habe dich in meinem Traum gesehen. Du hast die Krone gehalten."

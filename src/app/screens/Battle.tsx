@@ -303,7 +303,7 @@ export function Battle() {
         break;
       case 'dialogue':
       case 'quote':
-        if (!data.dialogues[e.id]) break;
+        if (!data.scenes[e.id]) break;
         await new Promise<void>((resolve) => setDialogue({ id: e.id, done: resolve }));
         setDialogue(null);
         break;

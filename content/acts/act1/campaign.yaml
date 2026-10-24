@@ -17,9 +17,9 @@ startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
 nodes:
-  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01], pos: [81, 52], merchantTier: 0 }
-  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: dlg.ch02.intro, post: dlg.ch02.outro, next: [], pos: [43, 66], merchantTier: 2 }
+  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, next: [ch01], pos: [81, 52], merchantTier: 0 }
+  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, next: [ch02], pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, next: [], pos: [43, 66], merchantTier: 2 }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, leather_vest, leather_cap, wooden_shield, door_key]
@@ -36,12 +36,12 @@ supportPairs:
   - [liora, ysolde]
   - [avatar, liora]
 supportDialogues:
-  "avatar|kael": { C: dlg.support.avatar_kael.C, B: dlg.support.avatar_kael.B }
-  "brenna|kael": { C: dlg.support.brenna_kael.C, B: dlg.support.brenna_kael.B }
-  "brenna|tobin": { C: dlg.support.brenna_tobin.C }
-  "mira|tobin": { C: dlg.support.mira_tobin.C }
-  "brenna|varek": { C: dlg.support.brenna_varek.C }
-  "avatar|liora": { C: dlg.support.avatar_liora.C }
+  "avatar|kael": { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B }
+  "brenna|kael": { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B }
+  "brenna|tobin": { C: scn.support.brenna_tobin.C }
+  "mira|tobin": { C: scn.support.mira_tobin.C }
+  "brenna|varek": { C: scn.support.brenna_varek.C }
+  "avatar|liora": { C: scn.support.avatar_liora.C }
 scars:
   - { id: lame_leg, mods: { mov: -1 } }
   - { id: shaky_hand, mods: { hit: -10 } }

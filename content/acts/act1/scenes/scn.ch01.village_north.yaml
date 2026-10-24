@@ -1,0 +1,6 @@
+id: scn.ch01.village_north
+background: bg_varnhold_burning
+lines:
+  - id: l01
+    mood: neutral
+    text: "Eine alte Frau drückt Tobin einen Beutel in die Hand. „Für die Brücke. Bringt die Kinder rüber.“"

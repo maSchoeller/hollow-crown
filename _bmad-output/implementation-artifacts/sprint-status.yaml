@@ -87,7 +87,7 @@ development_status:
   4-1-content-je-akt-ablegen: done  # Content je Akt ablegen
   4-2-bedingungen-und-wirkungen: done  # Bedingungen und Wirkungen
   4-3-kampagnen-graph-eines-akts: backlog  # Kampagnen-Graph eines Akts
-  4-4-szenen-schema-mit-ersatzsprechern: backlog  # Szenen-Schema mit Ersatzsprechern
+  4-4-szenen-schema-mit-ersatzsprechern: review  # Szenen-Schema mit Ersatzsprechern
   4-5-szenen-im-neuen-stil: backlog  # Szenen im neuen Stil
   4-6-entscheidungen-und-folgen-karte: backlog  # Entscheidungen und Folgen-Karte
   4-7-chronik: backlog  # Chronik

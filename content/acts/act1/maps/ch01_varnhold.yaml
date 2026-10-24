@@ -42,9 +42,9 @@ lights:
   - { at: [14, 15], color: "#ffb35c", radius: 3 }
 
 objects:
-  - { id: v_north, type: village, at: [3, 6],  reward: { gold: 300, dialogue: dlg.ch01.village_north } }
-  - { id: v_east,  type: village, at: [15, 11], reward: { recruit: mira, dialogue: dlg.ch01.mira_village } }
-  - { id: v_west,  type: village, at: [1, 12], reward: { item: { def: javelin }, dialogue: dlg.ch01.village_west } }
+  - { id: v_north, type: village, at: [3, 6],  reward: { gold: 300, dialogue: scn.ch01.village_north } }
+  - { id: v_east,  type: village, at: [15, 11], reward: { recruit: mira, dialogue: scn.ch01.mira_village } }
+  - { id: v_west,  type: village, at: [1, 12], reward: { item: { def: javelin }, dialogue: scn.ch01.village_west } }
 
 initialEffects:
   - { effect: burning, tiles: [[5, 13], [6, 13]], turns: 3 }     # Brand in der Stadtmitte, breitet sich aus
@@ -69,7 +69,7 @@ units:
     items: [ { def: steel_axe }, { def: vulnerary } ]
     drops: [0]
     ai: { profile: guard }
-    quote: dlg.ch01.hask_battle
+    quote: scn.ch01.hask_battle
   - { id: e1, team: enemy, class: brigand,   sprite: brigand,   level: 2, at: [3, 8], items: [{ def: iron_axe }],   ai: { profile: aggressive } }
   - { id: e2, team: enemy, class: soldier,   sprite: soldier,   level: 2, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: e3, team: enemy, class: archer,    sprite: bandit_archer, nameKey: unit.bandit_archer.name, level: 2, at: [12, 7], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
@@ -105,23 +105,23 @@ triggers:
     once: true
     when: { type: turn_start, turn: 1, phase: player }
     then:
-      - { action: dialogue, id: dlg.ch01.tutorial_triangle }
+      - { action: dialogue, id: scn.ch01.tutorial_triangle }
   - id: t_fire
     once: true
     when: { type: unit_enters, team: player, area: { rect: [3, 11, 10, 14] } }
     then:
-      - { action: dialogue, id: dlg.ch01.tutorial_fire }
+      - { action: dialogue, id: scn.ch01.tutorial_fire }
   - id: t_ambush
     once: true
     when: { type: unit_enters, team: player, area: { rect: [0, 7, 15, 8] } }
     then:
-      - { action: dialogue, id: dlg.ch01.ambush }
+      - { action: dialogue, id: scn.ch01.ambush }
       - { action: set_ai, units: [e3, e4], profile: aggressive }
   - id: t_village_razed
     once: true
     when: { type: object_destroyed, object: v_east }
     then:
-      - { action: dialogue, id: dlg.ch01.mira_lost }   # Mira ist dann in V1 nicht rekrutierbar
+      - { action: dialogue, id: scn.ch01.mira_lost }   # Mira ist dann in V1 nicht rekrutierbar
 
 goldReward: 1000
 music: battle_a

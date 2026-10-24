@@ -1,0 +1,15 @@
+id: scn.prologue.tutorial_danger
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Tipp einen Gegner an: Das rote Feld zeigt, wie weit er in seiner Phase kommt."
+  - id: l01b
+    speaker: [kael]
+    mood: neutral
+    text: "Wer verwundet ist, bleibt draußen."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und nutzt die Bäume. Wer im Wald steht, wird seltener getroffen."

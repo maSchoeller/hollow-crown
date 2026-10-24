@@ -428,15 +428,45 @@ export interface FlagDef {
   season2?: boolean;
 }
 
-export type DialogueLine =
-  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: Condition | Condition[] }
-  | { choice: Array<{ key: string; effects?: Effect[] }> };
+/** Moods a scene line may carry (architecture §5.8). */
+export type Mood = 'neutral' | 'happy' | 'angry' | 'sad';
+export const MOODS: readonly Mood[] = ['neutral', 'happy', 'angry', 'sad'];
 
-export interface DialogueDef {
+/** One answer of a scene choice; its text key is `dlg.<scene>.<line>.<id>`. */
+export interface SceneOption {
+  id: string;
+  text: string;
+  stance: Stance;
+  effects?: Effect[];
+}
+
+/** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
+export interface SceneSpeech {
+  id: string;
+  /** replacement chain: the first companion still with the company speaks; avatar and kael always are */
+  speaker?: string[];
+  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/kael) */
+  fallback?: 'skip';
+  mood: Mood;
+  text: string;
+  requires?: Condition[];
+  /** extra line (key `….memorial`) after this one when the first figure of the chain has fallen */
+  memorial?: { speaker: string[]; text: string; mood: Mood };
+}
+
+export interface SceneChoice {
+  id: string;
+  choice: SceneOption[];
+  requires?: Condition[];
+}
+
+export type SceneLine = SceneSpeech | SceneChoice;
+
+export interface SceneDef {
   id: string;
   background?: string;
   music?: string;
-  lines: DialogueLine[];
+  lines: SceneLine[];
 }
 
 export interface CampaignNodeDef {
@@ -676,7 +706,7 @@ export interface GameData {
   rooms: Record<string, RoomDef>;
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
-  dialogues: Record<string, DialogueDef>;
+  scenes: Record<string, SceneDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
   campaign: CampaignDef;

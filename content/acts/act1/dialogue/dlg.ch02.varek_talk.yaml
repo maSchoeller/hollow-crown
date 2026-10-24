@@ -1,7 +1,0 @@
-id: dlg.ch02.varek_talk
-background: bg_silverbrook_shrine
-lines:
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.varek_talk.001 }
-  - { speaker: varek, mood: neutral, side: right, key: dlg.ch02.varek_talk.002 }
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.varek_talk.003 }
-  - { speaker: varek, mood: happy, side: right, key: dlg.ch02.varek_talk.004 }

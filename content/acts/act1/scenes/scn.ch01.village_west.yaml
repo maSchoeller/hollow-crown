@@ -1,0 +1,6 @@
+id: scn.ch01.village_west
+background: bg_varnhold_burning
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Schmied drückt euch einen Wurfspieß in die Hand. „Damit trefft ihr sie, bevor sie euch treffen.“"

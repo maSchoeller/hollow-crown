@@ -1,0 +1,7 @@
+id: scn.prologue.tutorial_heal
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Kael, du blutest! Nimm einen Heiltrank – unter „Item“, bevor du wartest."

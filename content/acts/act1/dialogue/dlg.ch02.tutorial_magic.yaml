@@ -1,5 +1,0 @@
-id: dlg.ch02.tutorial_magic
-lines:
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.tutorial_talk.001 }
-  - { speaker: liora, mood: neutral, side: right, key: dlg.ch02.tutorial_magic.001 }
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch02.tutorial_magic.002 }

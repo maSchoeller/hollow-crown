@@ -1,5 +1,6 @@
-import type { Area, Condition, Effect, FlagValue, GameData, ItemRef, MapDef, MapUnitDef, Pos, Reward } from '../core/defs';
+import { PERMANENT_COMPANIONS, type Area, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
+import { lineKey, memorialKey, optionKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { areaTiles } from '../core/util';
 import type { ContentIssue, Locales } from './load';
@@ -19,13 +20,19 @@ export function validateContent(
     for (const a of ref?.affixes ?? []) if (!data.affixes[a]) err(file, `${ctx}: unknown affix ${a}`);
     for (const r of ref?.runes ?? []) if (!data.runes[r]) err(file, `${ctx}: unknown rune ${r}`);
   };
+  /** scenes that play during a battle (triggers, quotes, talks, rewards): they must not ask for answers */
+  const battleScenes = new Set<string>();
   const dialogue = (file: string, id: string | undefined, ctx: string) => {
-    if (id && !data.dialogues[id]) err(file, `${ctx}: unknown dialogue ${id}`);
+    if (id && !data.scenes[id]) err(file, `${ctx}: unknown scene ${id}`);
+  };
+  const battleDialogue = (file: string, id: string | undefined, ctx: string) => {
+    if (id) battleScenes.add(id);
+    dialogue(file, id, ctx);
   };
   const reward = (file: string, r: Reward | undefined, ctx: string) => {
     if (!r) return;
     item(file, r.item, ctx);
-    dialogue(file, r.dialogue, ctx);
+    battleDialogue(file, r.dialogue, ctx);
     if (r.recruit && !data.chars[r.recruit]) err(file, `${ctx}: unknown recruit ${r.recruit}`);
     for (const m of Object.keys(r.material ?? {})) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
   };
@@ -108,7 +115,7 @@ export function validateContent(
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
-  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, dialogue, reward);
+  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward);
   const camp = data.campaign;
   if (camp) {
     for (const n of camp.nodes) {
@@ -146,13 +153,44 @@ export function validateContent(
   for (const map of Object.values(data.maps))
     for (const t of map.triggers)
       for (const a of t.then) if (a.action === 'set_flag') flag(`maps/${map.id}`, a.flag, `trigger ${t.id}`);
-  // dialogue conditions, effects and keys
-  for (const d of Object.values(data.dialogues)) {
-    for (const l of d.lines) {
-      if ('choice' in l) for (const ch of l.choice) effects(`dialogue/${d.id}`, ch.effects, ch.key);
-      else conditions(`dialogue/${d.id}`, l.if, l.key);
-      const keys = 'choice' in l ? l.choice.map((c) => c.key) : [l.key];
-      for (const k of keys) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`dialogue/${d.id}`, `missing ${lang} text ${k}`);
+  // scenes (architecture §5.8): speaker chains, conditions, effects, texts in both languages, box length
+  const MAX_BOX = 110;
+  const chain = (f: string, c: readonly string[], ctx: string, mustEnd: boolean) => {
+    for (const id of c) if (!data.chars[id] && !locales.de?.[`unit.${id}.name`]) err(f, `${ctx}: unknown speaker ${id}`);
+    if (mustEnd && !PERMANENT_COMPANIONS.includes(c[c.length - 1]!)) err(f, `${ctx}: speaker chain must end with avatar or kael (or the line needs fallback: skip)`);
+  };
+  const text = (f: string, key: string, de: string, ctx: string) => {
+    if (de.length > MAX_BOX) err(f, `${ctx}: de text longer than ${MAX_BOX} characters (${de.length})`);
+    const en = locales.en?.[key];
+    if (!en) err(f, `${ctx}: missing en text ${key}`);
+    else if (en.length > MAX_BOX) err(f, `${ctx}: en text longer than ${MAX_BOX} characters (${en.length})`);
+  };
+  for (const sc of Object.values(data.scenes)) {
+    const f = `scenes/${sc.id}`;
+    const seen = new Set<string>();
+    for (const l of sc.lines) {
+      const ctx = `${l.id}`;
+      if (seen.has(l.id)) err(f, `${ctx}: duplicate line id`);
+      seen.add(l.id);
+      conditions(f, l.requires, ctx);
+      if ('choice' in l) {
+        if (battleScenes.has(sc.id)) err(f, `${ctx}: scenes shown in a battle cannot have answers`);
+        const ids = new Set<string>();
+        for (const o of l.choice) {
+          if (ids.has(o.id)) err(f, `${ctx}: duplicate answer id ${o.id}`);
+          ids.add(o.id);
+          effects(f, o.effects, `${ctx}.${o.id}`);
+          text(f, optionKey(sc.id, l.id, o.id), o.text, `${ctx}.${o.id}`);
+        }
+        continue;
+      }
+      if (l.speaker) chain(f, l.speaker, ctx, l.fallback !== 'skip');
+      else if (l.memorial) err(f, `${ctx}: a memorial line needs a speaker chain`);
+      text(f, lineKey(sc.id, l.id), l.text, ctx);
+      if (l.memorial) {
+        chain(f, l.memorial.speaker, `${ctx}.memorial`, true);
+        text(f, memorialKey(sc.id, l.id), l.memorial.text, `${ctx}.memorial`);
+      }
     }
   }
   // i18n: names of all content + parity between DE and EN

@@ -1,0 +1,7 @@
+id: scn.ch01.mira_lost
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das Haus am Ostrand … sie haben es angezündet. Da war jemand drin. Wir kommen zu spät."

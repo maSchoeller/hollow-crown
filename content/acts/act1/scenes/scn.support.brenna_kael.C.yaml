@@ -1,0 +1,27 @@
+id: scn.support.brenna_kael.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Du grübelst wieder, Hauptmann. Man hört es bis zum Kochtopf."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Ich habe das Emblem nicht ganz abgekratzt. Man sieht noch die Lanze."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab dich nicht aus dem Kerker gekauft, damit du dich mit einem Stück Blech quälst."
+  - id: l04
+    speaker: [kael]
+    mood: happy
+    text: "Du hast mich für zwölf Silberstücke gekauft. Ein Schnäppchen, sagst du immer."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Und ich bereue keinen Heller. Jetzt iss."

@@ -1,7 +1,0 @@
-id: dlg.support.avatar_liora.C
-background: bg_camp_night
-music: camp
-lines:
-  - { speaker: liora, mood: neutral, side: right, key: dlg.support.avatar_liora.C.001 }
-  - { speaker: liora, mood: sad, side: right, key: dlg.support.avatar_liora.C.002 }
-  - { speaker: liora, mood: neutral, side: right, key: dlg.support.avatar_liora.C.003 }

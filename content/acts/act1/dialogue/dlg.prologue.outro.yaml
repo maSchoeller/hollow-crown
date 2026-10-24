@@ -1,8 +1,0 @@
-id: dlg.prologue.outro
-background: bg_caravan_road
-music: camp
-lines:
-  - { speaker: brenna, mood: happy, side: right, key: dlg.prologue.outro.001 }
-  - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.outro.002 }
-  - { speaker: tobin, mood: surprised, side: right, key: dlg.prologue.outro.003 }
-  - { speaker: kael, mood: sad, side: left, key: dlg.prologue.outro.004 }

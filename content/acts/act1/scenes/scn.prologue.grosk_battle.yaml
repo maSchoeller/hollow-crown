@@ -1,0 +1,7 @@
+id: scn.prologue.grosk_battle
+lines:
+  - id: l01
+    speaker: [grosk]
+    fallback: skip
+    mood: angry
+    text: "Söldner? Pah. Ich mach aus euren Knochen Würfel!"

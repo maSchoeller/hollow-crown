@@ -1,6 +1,0 @@
-id: dlg.ch01.mira_village
-background: bg_varnhold_burning
-lines:
-  - { speaker: mira, mood: angry, side: right, key: dlg.ch01.mira_village.001 }
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.mira_village.002 }
-  - { speaker: mira, mood: happy, side: right, key: dlg.ch01.mira_village.003 }

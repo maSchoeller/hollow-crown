@@ -403,6 +403,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
   ]),
 );
 export const conditionsSchema = z.union([conditionSchema, z.array(conditionSchema)]);
+const conditionsListSchema = z.array(conditionSchema);
 
 export const roomSchema = z.object({
   id: z.string(),
@@ -437,20 +438,33 @@ export const flagSchema = z.object({
   season2: z.boolean().optional(),
 });
 
-export const dialogueSchema = z.object({
+const chainSchema = z.array(z.string()).min(1).refine((c) => new Set(c).size === c.length, 'duplicate speaker in chain');
+const moodSchema = z.enum(['neutral', 'happy', 'angry', 'sad']);
+const lineId = z.string().regex(/^[a-z][a-z0-9_]*$/);
+
+/** Scene `acts/actN/scenes/<id>.yaml` (architecture §5.8); German text sits in the scene, English in the locale file. */
+export const sceneSchema = z.strictObject({
   id: z.string(),
   background: z.string().optional(),
   music: z.string().optional(),
   lines: z.array(
     z.union([
-      z.object({
-        speaker: z.string().optional(),
-        mood: z.string().optional(),
-        side: z.enum(['left', 'right']).optional(),
-        key: z.string(),
-        if: conditionsSchema.optional(),
+      z.strictObject({
+        id: lineId,
+        speaker: chainSchema.optional(),
+        fallback: z.literal('skip').optional(),
+        mood: moodSchema.default('neutral'),
+        text: z.string().min(1),
+        requires: conditionsListSchema.optional(),
+        memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),
-      z.object({ choice: z.array(z.object({ key: z.string(), effects: z.array(effectSchema).optional() })) }),
+      z.strictObject({
+        id: lineId,
+        requires: conditionsListSchema.optional(),
+        choice: z
+          .array(z.strictObject({ id: lineId, text: z.string().min(1), stance: z.enum(['warm', 'sober', 'defiant']), effects: z.array(effectSchema).optional() }))
+          .min(2),
+      }),
     ]),
   ),
 });

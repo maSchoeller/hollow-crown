@@ -1,0 +1,20 @@
+id: scn.support.avatar_kael.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Du schläfst nicht. Albträume?"
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Ich frage nur, weil ich sie auch habe. Seit der Nacht des Paktfestes."
+  - id: l03
+    speaker: [kael]
+    mood: sad
+    text: "Ich stand vor der Tür des Königs. Ich habe nichts gehört. Nichts. Und am Morgen war er tot."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Deshalb habe ich dich angeheuert. Jemand, der Muster sieht, wo ich nur Schatten sehe."

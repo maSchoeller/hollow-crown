@@ -1,0 +1,26 @@
+id: scn.ch02.varek_talk
+background: bg_silverbrook_shrine
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Varek. Seit wann entführst du Seherinnen?"
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Seit Morra im Voraus zahlt."
+  - id: l02b
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Aber, ehrlich gesagt … der Auftraggeber trägt eine goldene Maske. Das gefällt mir nicht."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Dann zahl ich dir das Doppelte. Später."
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Später. Mein Lieblingsbetrag. Na gut – die Würfel sagen: Aschenbanner."
