@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { failureStatus, formatBytes, installProgress, missingAssets, missionAssets, ratio } from './plan';
+import { failureStatus, formatBytes, gearModels, installProgress, missingAssets, missionAssets, placePath, ratio } from './plan';
 
 const models = ['kael', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
 const classes = { skirmisher: { art: 'mercenary' }, archer: {}, brigand: {} };
@@ -57,5 +57,48 @@ describe('numbers', () => {
   it('tells offline from failed', () => {
     expect(failureStatus(false)).toBe('offline');
     expect(failureStatus(true)).toBe('failed');
+  });
+});
+
+describe('placePath', () => {
+  it('a location lives in locations, a background keeps its folder', () => {
+    expect(placePath('varnhold')).toBe('locations/varnhold.webp');
+    expect(placePath('backgrounds/bg_caravan_road')).toBe('backgrounds/bg_caravan_road.webp');
+  });
+  it('the mission list names the background image', () => {
+    expect(missionAssets({ units: [], ...base, place: 'backgrounds/bg_varnhold_burning' })).toEqual(['backgrounds/bg_varnhold_burning.webp']);
+  });
+});
+
+describe('weapon models', () => {
+  const items = {
+    iron_sword: { weaponType: 'sword', kind: 'weapon' },
+    iron_bow: { weaponType: 'bow', kind: 'weapon' },
+    wooden_shield: { kind: 'shield' },
+    vulnerary: { kind: 'consumable' },
+  } as never;
+  const gear = {
+    weapons: { sword: { model: 'sword', hand: 'right' }, bow: { model: 'bow', hand: 'left' } },
+    offHand: { shield: { model: 'shield', hand: 'left' } },
+  } as never;
+  const weaponModels = ['sword', 'bow', 'shield', 'axe'];
+
+  it('maps equipped items to weapon models, off-hand included, each once', () => {
+    expect(gearModels(['iron_sword', 'wooden_shield', 'iron_sword', 'vulnerary', 'ghost'], items, gear).sort()).toEqual(['shield', 'sword']);
+  });
+  it('the mission plan adds the weapon files of the units with a model', () => {
+    const list = missionAssets({
+      units: [{ charId: 'kael', classId: 'captain', gearItems: ['iron_sword', 'wooden_shield'] }, { classId: 'brigand', gearItems: ['iron_bow'] }, { classId: 'archer', gearItems: ['iron_bow'] }],
+      ...base,
+      items,
+      gear,
+      weaponModels,
+    });
+    expect(list).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/kael.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
+  });
+  it('a unit without a model file (sprite figure) needs no weapon, and neither does a file the manifest lacks', () => {
+    expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels })).toEqual([`locations/${defaultPlace}.webp`]);
+    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels: ['bow'] })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
+    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
   });
 });
