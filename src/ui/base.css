@@ -186,3 +186,18 @@ h3 {
   width: min(720px, 100%);
   margin: 0 auto;
 }
+
+/* The render host's canvas (story 5.1): one for board and world map, moved into the slot of the screen showing a scene. */
+.hc-stage-slot {
+  position: absolute;
+  inset: 0;
+}
+.hc-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+  image-rendering: pixelated;
+}

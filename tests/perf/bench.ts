@@ -8,7 +8,7 @@ import { loadContent } from '../../src/content/browser';
 import { applyCommand, createBattle, newCampaign, startBattle } from '../../src/core';
 import { setLocales } from '../../src/i18n';
 import { loadPack } from '../../src/packs/load';
-import { BoardView } from '../../src/render/board';
+import { BoardView } from '../../src/render/board/board';
 import { BENCH_MAP_ID, benchMap } from './benchMap';
 
 export interface EnemyPhaseResult {
@@ -39,7 +39,7 @@ async function enemyPhase(opts: { quality?: 'low' | 'mid' | 'high'; figures?: '3
   const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   const s = startBattle(data, createBattle(data, c, 'perf', [])).state;
 
-  const board = new BoardView(document.getElementById('board') as HTMLCanvasElement, document.getElementById('float') as HTMLDivElement, data, {});
+  const board = new BoardView(document.getElementById('board') as HTMLDivElement, document.getElementById('float') as HTMLDivElement, data, {});
   board.quality = opts.quality ?? 'mid';
   board.figures = opts.figures ?? '3d';
   board.speed = opts.speed ?? 1;
