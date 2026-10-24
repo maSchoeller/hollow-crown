@@ -1,5 +1,5 @@
 /**
- * Line icon set for the UI (U21: no emoji). 24×24, stroke = currentColor, so icons take the text colour.
+ * Line icon set for actions, roles and navigation (U21: no emoji). Items are painted images (ItemImage in pieces.tsx). 24×24, stroke = currentColor, so icons take the text colour.
  * Shapes are deliberately simple; the pixel board keeps its own sprites.
  */
 import type { Element } from '../core';
@@ -57,21 +57,6 @@ const P: Record<string, string> = {
   star: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   scar: 'M5 19L19 5M8 9l2 2M12 13l2 2M10 7l2 2M14 11l2 2',
   fallen: 'M12 3v18M7 8h10',
-  // items
-  sword: 'M4 20l5-5M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',
-  lance: 'M4 20L18 6M15 3l6 0 0 6-3-3M7 14l3 3',
-  axe: 'M5 21L15 11M12 4c4 0 8 4 8 8l-4-1-3-3z',
-  bow: 'M6 3c8 2 12 8 12 18M6 3l12 18M4 8l4-1-1 4',
-  tome: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11',
-  shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
-  armor: 'M6 4l3 2h6l3-2 3 4-3 2v10H6V10L3 8z',
-  helm: 'M5 15a7 7 0 0 1 14 0v4H5zM12 8v11M5 15h14',
-  ring: 'M12 8a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM10 4h4l-2 4z',
-  potion: 'M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3',
-  key: 'M8 10a4 4 0 1 0 0 .1M12 12h9M17 12v3M20 12v2',
-  seal: 'M12 3a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM9 14l-2 7 5-3 5 3-2-7',
-  ore: 'M4 15l4-8 6-2 6 6-3 8H8z',
-  rune: 'M12 3l8 9-8 9-8-9zM12 8v8M9 11l3 2 3-2',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',

@@ -126,12 +126,12 @@ development_status:
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio
-  epic-8: backlog
+  epic-8: in-progress
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
   8-2-tripo-pipeline-vervollstaendigen: backlog  # Tripo-Pipeline vervollständigen
   8-3-brettfiguren-fuer-akt-1: backlog  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: backlog  # Porträts mit Stimmungen für Akt 1
-  8-5-item-bilder: backlog  # Item-Bilder
+  8-5-item-bilder: review  # Item-Bilder
   8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
   8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: backlog  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1

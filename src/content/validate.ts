@@ -7,7 +7,7 @@ export function validateContent(
   data: GameData,
   locales: Locales,
   spriteIds?: Set<string>,
-  /** ids with a painted image in art/items (content:check passes them) */
+  /** ids of the painted images in art/items (content:check passes them); every item needs one */
   itemImages?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
@@ -39,8 +39,9 @@ export function validateContent(
   for (const it of Object.values(data.items)) {
     if (it.grantsSkill && !data.skills[it.grantsSkill.skill]) err('items.yaml', `${it.id}: unknown skill ${it.grantsSkill.skill}`);
     if (it.setId && !data.sets[it.setId]) err('items.yaml', `${it.id}: unknown set ${it.setId}`);
-    // amounts are always symbol + number; a material's symbol is its painted image (concept/25-ux/DESIGN.md)
-    if (itemImages && it.kind === 'material' && !itemImages.has(it.id)) err('items.yaml', `${it.id}: material without image art/items/${it.id}.png`);
+    // every item (runes included) is shown as its painted image (concept/25-ux/DESIGN.md item-image, story 8.5)
+    const image = it.image ?? it.id;
+    if (itemImages && !itemImages.has(image)) err(it.kind === 'rune' ? 'runes.yaml' : 'items.yaml', `${it.id}: no image art/items/${image}.png`);
   }
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);

@@ -26,6 +26,7 @@ import {
   type BattleUnit,
   type Command,
   type GameEvent,
+  type ItemInstance,
   type Pos,
   type ReachNode,
   type Stats,
@@ -37,6 +38,7 @@ import { t } from '../../i18n';
 import { Dialogue } from '../../ui/Dialogue';
 import { Crest, ForecastView, HpBar, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
+import { ItemImage } from '../../ui/pieces';
 import { audio } from '../audio';
 import { battle, campaign, command, concludeBattle, data, pendingEvents, restartBattle, screen, settings, setFlag } from '../store';
 
@@ -90,7 +92,8 @@ export function Battle() {
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
+  const setToast = (text: string, item?: ItemInstance) => setToastState({ text, item });
   const [menu, setMenu] = useState(false);
   const [more, setMore] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -288,7 +291,7 @@ export function Battle() {
         break;
       case 'loot':
         audio.sfx('loot');
-        setToast(t(e.toConvoy ? 'ui.toast.lootConvoy' : 'ui.toast.loot', { item: itemName(data, e.item) }));
+        setToast(t(e.toConvoy ? 'ui.toast.lootConvoy' : 'ui.toast.loot', { item: itemName(data, e.item) }), e.item);
         break;
       case 'gold':
         audio.sfx('gold');
@@ -707,7 +710,7 @@ export function Battle() {
         </div>
         {!wide && <div class="bottom" ref={bottomRef}>{sheet}</div>}
         {banner && <div class={`banner ${banner.cls}`}>{banner.text}</div>}
-        {toast && <Toast text={toast} onDone={() => setToast(null)} />}
+        {toast && <Toast text={toast.text} lead={toast.item && <ItemImage data={data} item={toast.item} size={32} />} onDone={() => setToastState(null)} />}
       </div>
       {wide && <div class="side">{sheet}</div>}
 

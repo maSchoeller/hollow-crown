@@ -133,6 +133,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     price: r.price ?? 0,
     element: r.element,
     tags: ['convoyOnly'],
+    image: r.image,
   }));
   const data: GameData = {
     balance: balance as Balance,

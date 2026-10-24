@@ -40,6 +40,27 @@ beforeAll(() => {
   });
 });
 
+describe('item images (story 8.5)', () => {
+  const images = () => new Set(Object.values(data.items).map((i) => i.image ?? i.id));
+  it('accepts content where every item and rune has its image', () => {
+    const loaded = loadContentFromDisk();
+    expect(validateContent(loaded.data, loaded.locales, undefined, images())).toEqual([]);
+  });
+  it('reports an item and a rune without image', () => {
+    const loaded = loadContentFromDisk();
+    const set = images();
+    set.delete('iron_sword');
+    set.delete('fire_rune');
+    const msgs = validateContent(loaded.data, loaded.locales, undefined, set).map((i) => `${i.file}: ${i.message}`);
+    expect(msgs).toContain('items.yaml: iron_sword: no image art/items/iron_sword.png');
+    expect(msgs).toContain('runes.yaml: fire_rune_2: no image art/items/fire_rune.png');
+  });
+  it('tiered runes share the image of their element', () => {
+    expect(data.items.fire_rune_3!.image).toBe('fire_rune');
+    expect(data.runes.dark_rune_1!.image).toBe('dark_rune');
+  });
+});
+
 describe('rng', () => {
   it('is deterministic per seed', () => {
     const a = seedRng(42);

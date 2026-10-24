@@ -1,21 +1,21 @@
 # runes – Startwerte [C], aus concept/data-samples/affixes-runes-sets.yaml (concept/05).
 # Element-Runen: tier 1..3, Effekte siehe concept/05 §7
-- { id: fire_rune_1,  element: fire,  tier: 1, price: 400 }
-- { id: fire_rune_2,  element: fire,  tier: 2 }
-- { id: fire_rune_3,  element: fire,  tier: 3, terrainOnHit: ignite }
-- { id: wind_rune_1,  element: wind,  tier: 1, price: 400 }
-- { id: wind_rune_2,  element: wind,  tier: 2 }
-- { id: wind_rune_3,  element: wind,  tier: 3, statusOnHit: knockback }
-- { id: earth_rune_1, element: earth, tier: 1, price: 400 }
-- { id: earth_rune_2, element: earth, tier: 2 }
-- { id: earth_rune_3, element: earth, tier: 3 }
-- { id: water_rune_1, element: water, tier: 1, price: 400 }
-- { id: water_rune_2, element: water, tier: 2 }
-- { id: water_rune_3, element: water, tier: 3, terrainOnHit: extinguish }
-- { id: light_rune_1, element: light, tier: 1, price: 600 }
-- { id: light_rune_2, element: light, tier: 2 }
-- { id: light_rune_3, element: light, tier: 3, effectiveVs: [monster, undead] }
-- { id: dark_rune_1,  element: dark,  tier: 1 }            # V1: nur als Drop, kein Händler
+- { id: fire_rune_1,  element: fire,  tier: 1, price: 400, image: fire_rune }
+- { id: fire_rune_2,  element: fire,  tier: 2, image: fire_rune }
+- { id: fire_rune_3,  element: fire,  tier: 3, terrainOnHit: ignite, image: fire_rune }
+- { id: wind_rune_1,  element: wind,  tier: 1, price: 400, image: wind_rune }
+- { id: wind_rune_2,  element: wind,  tier: 2, image: wind_rune }
+- { id: wind_rune_3,  element: wind,  tier: 3, statusOnHit: knockback, image: wind_rune }
+- { id: earth_rune_1, element: earth, tier: 1, price: 400, image: earth_rune }
+- { id: earth_rune_2, element: earth, tier: 2, image: earth_rune }
+- { id: earth_rune_3, element: earth, tier: 3, image: earth_rune }
+- { id: water_rune_1, element: water, tier: 1, price: 400, image: water_rune }
+- { id: water_rune_2, element: water, tier: 2, image: water_rune }
+- { id: water_rune_3, element: water, tier: 3, terrainOnHit: extinguish, image: water_rune }
+- { id: light_rune_1, element: light, tier: 1, price: 600, image: light_rune }
+- { id: light_rune_2, element: light, tier: 2, image: light_rune }
+- { id: light_rune_3, element: light, tier: 3, effectiveVs: [monster, undead], image: light_rune }
+- { id: dark_rune_1,  element: dark,  tier: 1, image: dark_rune }            # V1: nur als Drop, kein Händler
 # Hilfs-Runen (zweiter Slot)
 - { id: precision_rune, utility: true, mods: { hit: 10 },             price: 500 }
 - { id: force_rune,     utility: true, mods: { might: 2, weight: 2 }, price: 600 }

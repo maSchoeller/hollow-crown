@@ -19,25 +19,13 @@ import {
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
 import { ElementIcon, Icon, TriMark } from './icons';
-import { Amount } from './pieces';
+import { Amount, ItemImage } from './pieces';
 import { asset } from './asset';
 
 export { asset };
 
 export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);
-}
-
-const KIND_ICON: Record<string, string> = {
-  sword: 'sword', lance: 'lance', axe: 'axe', bow: 'bow', anima: 'tome', light: 'tome', dark: 'tome', staff: 'staff', breath: 'fire',
-  shield: 'shield', armor: 'armor', accessory: 'ring', consumable: 'potion', key: 'key', seal: 'seal', material: 'ore', rune: 'rune', tome: 'tome',
-};
-/** Icon name for an item (weapon type first, then kind). */
-export function itemIcon(data: GameData, inst: ItemInstance | string): string {
-  const d = itemDef(data, inst);
-  if (d.weaponType) return KIND_ICON[d.weaponType] ?? 'star';
-  if (d.slot === 'head') return 'helm';
-  return KIND_ICON[d.kind] ?? 'star';
 }
 
 export function itemName(data: GameData, inst: ItemInstance): string {
@@ -140,7 +128,7 @@ export function UnitCard({ data, unit, state, right }: { data: GameData; unit: B
         <div class="unit-sub">
           {w ? (
             <>
-              <Icon name={itemIcon(data, w)} size={16} />
+              <ItemImage data={data} item={w} size={24} />
               {itemName(data, w)}
             </>
           ) : (
@@ -233,9 +221,7 @@ export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance
 export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: GameData; inst: ItemInstance; sub?: ComponentChildren; right?: ComponentChildren; selected?: boolean; onClick?: () => void }) {
   return (
     <div class={`item-row ${selected ? 'sel' : ''}`} onClick={onClick}>
-      <span class={`ico r-${rarityOf(data, inst)}`}>
-        <Icon name={itemIcon(data, inst)} />
-      </span>
+      <ItemImage data={data} item={inst} />
       <div style={{ minWidth: 0 }}>
         <span class={`r-${rarityOf(data, inst)}`}>{itemName(data, inst)}</span>
         {sub && <small>{sub}</small>}
@@ -257,6 +243,7 @@ export function ForecastView({ data, state, f }: { data: GameData; state: Battle
       <div style={{ minWidth: 0 }}>
         <div class="fc-name">{unitName(u)}</div>
         <div class="unit-sub">
+          {w && <ItemImage data={data} item={w} size={24} />}
           {w ? itemName(data, w) : '–'}
           <TriMark v={s.triangle} label={t(s.triangle > 0 ? 'ui.fc.advantage' : 'ui.fc.disadvantage')} />
           {s.effective && <span class="gold">{t('ui.effective')}</span>}
@@ -362,12 +349,18 @@ export function useNow(intervalMs: number): number {
   return n;
 }
 
-export function Toast({ text, onDone }: { text: string; onDone: () => void }) {
+/** Short notice; `lead` puts e.g. the looted item's image before the text. */
+export function Toast({ text, lead, onDone }: { text: string; lead?: ComponentChildren; onDone: () => void }) {
   useEffect(() => {
     const id = setTimeout(onDone, 2200);
     return () => clearTimeout(id);
   }, [text]);
-  return <div class="toast">{text}</div>;
+  return (
+    <div class={`toast ${lead ? 'has-lead' : ''}`}>
+      {lead}
+      {lead ? <span>{text}</span> : text}
+    </div>
+  );
 }
 
 export function useMemoOnce<T>(fn: () => T): T {

@@ -74,6 +74,8 @@ export interface ItemDef {
   cureStatus?: boolean;
   utility?: { createTerrain: string; rng: [number, number] };
   tags?: string[];
+  /** painted image art/items/<image>.png; defaults to the id (concept/25-ux/DESIGN.md item-image) */
+  image?: string;
 }
 
 export interface AffixMods {
@@ -106,6 +108,8 @@ export interface RuneDef {
   terrainOnHit?: 'ignite' | 'extinguish';
   statusOnHit?: StatusId;
   effectiveVs?: string[];
+  /** painted image art/items/<image>.png; defaults to the id */
+  image?: string;
 }
 
 export interface SetDef {

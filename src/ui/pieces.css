@@ -99,3 +99,98 @@
 .hc-amount.is-short {
   color: var(--hc-negative);
 }
+
+/* Item image (DESIGN.md item-image): painted image on a chip, frame and diamonds in the rarity colour, number at the bottom. */
+.hc-item-image {
+  --hc-item-size: 44px;
+  --hc-item-rarity: var(--hc-rarity-common);
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--hc-item-size);
+  height: var(--hc-item-size);
+  border: var(--hc-outline-small) solid var(--hc-item-rarity);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream-2);
+  vertical-align: middle;
+}
+.hc-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.hc-item-image.is-rare {
+  --hc-item-rarity: var(--hc-rarity-rare);
+}
+.hc-item-image.is-epic {
+  --hc-item-rarity: var(--hc-rarity-epic);
+}
+.hc-item-image.is-legendary {
+  --hc-item-rarity: var(--hc-rarity-legendary);
+}
+.hc-item-image.is-relic {
+  --hc-item-rarity: var(--hc-rarity-relic);
+  box-shadow: 0 0 0 2px var(--hc-rarity-relic-accent);
+}
+.hc-item-image.is-small {
+  border-radius: calc(var(--hc-r-chip) * 0.6);
+}
+.hc-item-image__gems {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: flex;
+  gap: 1px;
+}
+.hc-item-image__gems i {
+  width: 9px;
+  height: 9px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--hc-line);
+  background: var(--hc-item-rarity);
+  transform: rotate(45deg);
+}
+.hc-item-image.is-small .hc-item-image__gems {
+  top: -3px;
+  right: -3px;
+}
+.hc-item-image.is-small .hc-item-image__gems i {
+  width: 6px;
+  height: 6px;
+  border-width: 1px;
+}
+.hc-item-image__crown {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--hc-rarity-relic-accent);
+  stroke-width: 2.4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 0.6px var(--hc-line));
+}
+.hc-item-image__num {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 5px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* empty equipment slot: same chip, dashed, no image */
+.hc-item-image.is-empty {
+  border: var(--hc-outline-small) dashed var(--hc-soft);
+  background: transparent;
+  opacity: 0.6;
+}

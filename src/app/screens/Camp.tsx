@@ -23,7 +23,7 @@ import { activeSkillIds } from '../../core/rules/skills';
 import { t } from '../../i18n';
 import { asset, Crest, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
-import { Amount } from '../../ui/pieces';
+import { Amount, ItemImage } from '../../ui/pieces';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
 import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, saveSlot, screen, setFlag, startBattle } from '../store';
@@ -303,7 +303,7 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
               <ItemRow key={sl} data={data} inst={inst} sub={<><span class="slot-label">{t(`ui.slot.${sl}`)}</span> <ItemDetails data={data} inst={inst} /></>} right={<button class="btn small" onClick={() => apply({ type: 'unequip', uid: inst.uid })}>{t('ui.unequip')}</button>} />
             ) : (
               <div key={sl} class="item-row" style={{ opacity: 0.5 }}>
-                <span class="ico">·</span>
+                <span class="hc-item-image is-empty" aria-hidden="true" />
                 <span class="slot-label">{t(`ui.slot.${sl}`)}</span>
                 <span />
               </div>
@@ -520,18 +520,22 @@ function Enchanter({ apply }: { apply: Apply }) {
       </div>
       {selInst && (
         <div class="panel sheet col">
-          <b>{itemName(data, selInst)}</b>
+          <div class="row" style={{ gap: 10 }}>
+            <ItemImage data={data} item={selInst} />
+            <b>{itemName(data, selInst)}</b>
+          </div>
           {selInst.runes.map((r, i) =>
             r ? (
               <button key={i} class="btn small" onClick={() => apply({ type: 'removeRune', item: selInst.uid, index: i })}>
                 <Icon name="close" size={16} />
+                <ItemImage data={data} item={r} size={24} />
                 {t(`item.${r}.name`)}
               </button>
             ) : null,
           )}
           {runes.map((r) => (
             <button key={r.uid} class="btn small" onClick={() => apply({ type: 'insertRune', item: selInst.uid, rune: r.uid }, t('ui.camp.enchanted'))}>
-              <Icon name="rune" size={16} />
+              <ItemImage data={data} item={r} size={24} />
               {t(`item.${r.def}.name`)}
             </button>
           ))}
@@ -541,7 +545,7 @@ function Enchanter({ apply }: { apply: Apply }) {
       <div class="list">
         {[...new Set(runes.map((r) => r.def))].map((id) => (
           <div key={id} class="item-row">
-            <span class="ico"><Icon name="rune" /></span>
+            <ItemImage data={data} item={id} />
             <span>
               {t(`item.${id}.name`)} ×{runes.filter((r) => r.def === id).length}
             </span>
@@ -555,7 +559,7 @@ function Enchanter({ apply }: { apply: Apply }) {
       <div class="list">
         {buyable.map((r) => (
           <div key={r.id} class="item-row">
-            <span class="ico"><Icon name="rune" /></span>
+            <ItemImage data={data} item={r.id} />
             <span>{t(`item.${r.id}.name`)}</span>
             <button class="btn small" disabled={c.gold < (r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
               <Amount resource="gold" value={r.price ?? 0} short={c.gold < (r.price ?? 0)} />
@@ -587,6 +591,7 @@ function Healer({ apply }: { apply: Apply }) {
               </button>
               {herb && (
                 <button class="btn small ghost" onClick={() => apply({ type: 'healScar', unit: u.id, index: i, herb: true }, t('ui.camp.healed'))}>
+                  <ItemImage data={data} item={data.balance.economy.scarRemoval.altItem} size={24} />
                   {t('item.seers_herb.name')}
                 </button>
               )}

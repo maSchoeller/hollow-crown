@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import type { ComponentChildren } from 'preact';
 import { itemDef, type DeathMode, type Difficulty, type Element, type Reward } from '../../core';
 
 /** Placeholder until the player picks an affinity when the elements are introduced (U20). */
 const DEFAULT_AFFINITY: Element = 'wind';
 import { t } from '../../i18n';
-import { asset, Crest, itemName, Modal, unitName } from '../../ui/components';
+import { asset, Crest, itemName, Modal, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { Amount, PrimaryButton, SecondaryButton } from '../../ui/pieces';
+import { Amount, ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import {
   deleteCampaign,
   exportSave,
@@ -443,9 +444,9 @@ export function Options({ back }: { back: Screen }) {
 
 export function Result({ result }: { result: import('../../core').BattleResult }) {
   const c = campaign.value!;
-  const line = (icon: string, cls: string, text: string, key: string) => (
+  const line = (icon: string | ComponentChildren, cls: string, text: string, key: string) => (
     <div key={key} class={`row ${cls}`} style={{ minHeight: 36 }}>
-      <Icon name={icon} size={18} />
+      {typeof icon === 'string' ? <Icon name={icon} size={18} /> : icon}
       <span>{text}</span>
     </div>
   );
@@ -478,8 +479,11 @@ export function Result({ result }: { result: import('../../core').BattleResult }
             ))}
           </div>
           {result.items.map((i) => (
-            <div key={i.uid} class="row hair" style={{ minHeight: 40 }}>
-              {itemName(data, i)}
+            <div key={i.uid} class="row hair" style={{ minHeight: 56 }}>
+              <ItemImage data={data} item={i} />
+              <span class={`r-${rarityOf(data, i)}`} style={{ fontWeight: 600 }}>
+                {itemName(data, i)}
+              </span>
             </div>
           ))}
         </section>
@@ -497,7 +501,7 @@ export function Result({ result }: { result: import('../../core').BattleResult }
           ))}
           {result.recruited.map((id) => line('star', 'adv', t('ui.result.recruited', { name: t(`unit.${id}.name`) }), `r${id}`))}
           {(result.granted ?? []).map((g) =>
-            line('tome', 'adv', t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }), `g${g.item.uid}`),
+            line(<ItemImage data={data} item={g.item} size={28} />, 'adv', t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }), `g${g.item.uid}`),
           )}
           {result.scars.map((s) => line('scar', 'dis', `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}`, `s${s.id}`))}
           {result.fallen.map((f) => line('fallen', 'dis', t('ui.result.fallen', { name: unitName(f) }), `f${f.id}`))}
@@ -519,7 +523,12 @@ export function RewardAmounts({ reward: r }: { reward: Reward }) {
       {Object.entries(r.material ?? {}).map(([m, n]) => (
         <Amount key={m} material={itemDef(data, m)} value={n} />
       ))}
-      {r.item && <span>{t(`item.${r.item.def}.name`)}</span>}
+      {r.item && (
+        <span class="row" style={{ gap: 6 }}>
+          <ItemImage data={data} item={r.item.def} size={28} />
+          {t(`item.${r.item.def}.name`)}
+        </span>
+      )}
     </span>
   );
 }

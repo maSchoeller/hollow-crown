@@ -29,8 +29,9 @@
   --light: #9a7a10;
   --dark: #6a3fb5;
   --common: #65605a;
-  --rare: #2f64c8;
-  --epic: #7b4fc9;
+  /* item names; rarity never in team blue (DESIGN.md: rarity-*), legendary darker than the frame gold for legibility */
+  --rare: var(--hc-rarity-rare);
+  --epic: var(--hc-rarity-epic);
   --legendary: #a9740f;
   --cut: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
   --shield: polygon(0 0, 100% 0, 100% 64%, 50% 100%, 0 64%);
@@ -1254,10 +1255,10 @@ input[type='range'] {
 }
 .item-row {
   display: grid;
-  grid-template-columns: 36px 1fr auto;
+  grid-template-columns: 44px 1fr auto;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: 60px;
   padding: 8px 4px;
   border-bottom: 1px solid var(--line);
   cursor: pointer;
@@ -1470,6 +1471,16 @@ input[type='range'] {
   overflow: hidden;
   text-overflow: ellipsis;
   animation: toast 2.2s ease forwards;
+}
+.toast.has-lead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 8px 10px;
+}
+.toast.has-lead span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @keyframes toast {
   0% {

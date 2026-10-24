@@ -77,6 +77,8 @@ export const itemSchema = z.object({
   cureStatus: z.boolean().optional(),
   utility: z.object({ createTerrain: z.string(), rng: range }).optional(),
   tags: z.array(z.string()).optional(),
+  /** painted image art/items/<image>.png; defaults to the id */
+  image: z.string().optional(),
 });
 
 const affixMods = z
@@ -111,6 +113,8 @@ export const runeSchema = z.object({
   terrainOnHit: z.enum(['ignite', 'extinguish']).optional(),
   statusOnHit: statusId.optional(),
   effectiveVs: z.array(z.string()).optional(),
+  /** painted image art/items/<image>.png; defaults to the id */
+  image: z.string().optional(),
 });
 
 export const setSchema = z.object({
