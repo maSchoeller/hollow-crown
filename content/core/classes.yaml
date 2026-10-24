@@ -55,6 +55,7 @@
 # Soldat (PoC). GDD: Gepanzert, MOV 4 - offen (Story 2.2 Log): MOV 4 und Gepanzert brechen die PoC-Karten, daher Fuß/5
 - id: vanguard
   nameKey: class.vanguard.name
+  legacyIds: [soldier, fighter]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: vanguard
   tier: base
   roleGroup: melee
@@ -76,6 +77,7 @@
 # Söldner (PoC). GDD: MOV 6 - offen (Story 2.2 Log): MOV 6 drückt ch02 unter den Korridor, daher 5
 - id: skirmisher
   nameKey: class.skirmisher.name
+  legacyIds: [mercenary]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: skirmisher
   tier: base
   roleGroup: melee
@@ -97,6 +99,7 @@
 # Schütze (PoC)
 - id: marksman
   nameKey: class.marksman.name
+  legacyIds: [archer]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: marksman
   tier: base
   roleGroup: ranged
@@ -118,6 +121,7 @@
 # Magier (PoC)
 - id: elementalist
   nameKey: class.elementalist.name
+  legacyIds: [mage]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: elementalist
   tier: base
   roleGroup: ranged
@@ -139,6 +143,7 @@
 # Kleriker (PoC)
 - id: healer
   nameKey: class.healer.name
+  legacyIds: [cleric]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: healer
   tier: base
   roleGroup: support
@@ -205,6 +210,7 @@
 # Held (PoC) -> Duellant
 - id: duelist
   nameKey: class.duelist.name
+  legacyIds: [hero]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: skirmisher
   tier: pro
   roleGroup: melee
@@ -227,6 +233,7 @@
 # Hellebardier (PoC) -> Bollwerk
 - id: bulwark
   nameKey: class.bulwark.name
+  legacyIds: [halberdier]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: vanguard
   tier: pro
   roleGroup: melee
@@ -249,6 +256,7 @@
 # Krieger (PoC) -> Sturmbrecher
 - id: breaker
   nameKey: class.breaker.name
+  legacyIds: [warrior]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: vanguard
   tier: pro
   roleGroup: melee
@@ -271,6 +279,7 @@
 # Scharfschütze (PoC); longshot: +1 max. Reichweite mit Bögen
 - id: sharpshooter
   nameKey: class.sharpshooter.name
+  legacyIds: [sniper]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: marksman
   tier: pro
   roleGroup: ranged

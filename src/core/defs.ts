@@ -164,6 +164,8 @@ export interface ClassDef {
   classAction?: ClassAction;
   /** the two pro paths of a base role (ids of pro classes; undefined ids are defined with the academy) */
   proPaths: string[];
+  /** class ids this class replaced (saves written before story 2.2 still name them) */
+  legacyIds?: string[];
   tags: string[];
   skill?: string;
   base: Stats;

@@ -144,6 +144,7 @@ export const classSchema = z.object({
   weaponGroups: z.array(weaponGroup).min(1),
   classAction: z.object({ id: z.string(), kind: z.enum(['passive', 'active']), perMap: z.number().int().positive().optional() }).optional(),
   proPaths: z.array(z.string()).max(2).default([]),
+  legacyIds: z.array(z.string()).default([]),
   tags: z.array(z.string()),
   skill: z.string().optional(),
   base: statsSchema,

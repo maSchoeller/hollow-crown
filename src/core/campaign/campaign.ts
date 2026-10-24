@@ -60,6 +60,28 @@ export function normalizeCampaign(c: CampaignState): CampaignState {
   };
 }
 
+/** Old class id → its replacement, from `legacyIds` in classes.yaml. */
+function legacyClassIds(data: GameData): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const cls of Object.values(data.classes)) for (const old of cls.legacyIds ?? []) out.set(old, cls.id);
+  return out;
+}
+
+function renameClasses<T extends { classId: string }>(units: T[], map: Map<string, string>): T[] {
+  return units.map((u) => (map.has(u.classId) ? { ...u, classId: map.get(u.classId)! } : u));
+}
+
+/** Saves written before story 2.2 name the old weapon classes (`mercenary` …); they map onto the roles that replaced them. */
+export function renameLegacyClasses(data: GameData, c: CampaignState): CampaignState {
+  const map = legacyClassIds(data);
+  return { ...c, roster: renameClasses(c.roster, map), tavern: renameClasses(c.tavern, map) };
+}
+
+/** Same for a saved battle's start state (the command log refers to units by id and replays unchanged). */
+export function renameLegacyBattleClasses(data: GameData, s: BattleState): BattleState {
+  return { ...s, units: renameClasses(s.units, legacyClassIds(data)) };
+}
+
 export interface UnitResult {
   id: string;
   nameKey: string;

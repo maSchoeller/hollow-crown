@@ -12,6 +12,8 @@ import {
   newCampaign,
   newItem,
   promotionTargets,
+  renameLegacyBattleClasses,
+  renameLegacyClasses,
   usableStaves,
   usableWeapons,
   WEAPON_GROUPS,
@@ -213,5 +215,33 @@ describe('PoC figures and maps after the remap', () => {
       const cls = data.classes[ch.class]!;
       for (const r of ch.items) expect(groupAllowed(cls, data.items[r.def]!), `${ch.id}:${r.def}`).toBe(true);
     }
+  });
+});
+
+describe('saves from before the role model', () => {
+  it('maps old class ids onto the roles that replaced them', () => {
+    const old: CampaignState = {
+      ...base,
+      roster: base.roster.map((u, i) => (i === 0 ? { ...u, classId: 'mercenary' } : u)),
+      tavern: [{ ...base.roster[0]!, id: 'merc1', classId: 'cleric' }],
+    };
+    const c = renameLegacyClasses(data, old);
+    expect(c.roster[0]!.classId).toBe('skirmisher');
+    expect(c.roster.slice(1)).toEqual(base.roster.slice(1));
+    expect(c.tavern[0]!.classId).toBe('healer');
+  });
+
+  it('maps them in a saved battle start too and leaves current ids alone', () => {
+    const s = beginBattle(data, base, data.campaign.start, base.roster.map((u) => u.id)).state;
+    const old = { ...s, units: s.units.map((u, i) => (i === 0 ? { ...u, classId: 'soldier' } : u)) };
+    const renamed = renameLegacyBattleClasses(data, old);
+    expect(renamed.units[0]!.classId).toBe('vanguard');
+    expect(renamed.units.slice(1)).toEqual(s.units.slice(1));
+  });
+
+  it('every legacy id is unused by a current class and names one replacement', () => {
+    const all = Object.values(data.classes).flatMap((c) => c.legacyIds ?? []);
+    expect(new Set(all).size).toBe(all.length);
+    for (const id of all) expect(data.classes[id]).toBeUndefined();
   });
 });
