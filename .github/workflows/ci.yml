@@ -48,3 +48,24 @@ jobs:
         with:
           name: playwright-report
           path: test-results
+
+  # Leistungsmessung (Story 7.5): Gegnerphase der großen Schlacht und Kaltstart mit Referenzprofil. Meldet
+  # Überschreitungen als Warnung und im Job-Summary; die Freigabe (Story 9.14) läuft mit PERF_STRICT=1 auf echter GPU.
+  perf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Performance run (Pixel 6a, iPhone 12 profiles)
+        run: pnpm perf
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: perf-report
+          path: test-results/perf
