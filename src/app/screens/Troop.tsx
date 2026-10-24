@@ -24,6 +24,7 @@ import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Secondar
 import { audio } from '../audio';
 import { campaign, campaignCommand, data } from '../state/session';
 import { screen } from '../state/screen';
+import { EquipView } from './Equip';
 import { UnitBust, UnitHead } from './unitArt';
 import '../../ui/troop.css';
 
@@ -42,7 +43,7 @@ export function Troop() {
   const back = () => (screen.value = { name: 'camp' });
   const shown = c.roster.filter((u) => filter === 'all' || roleOf(u) === filter);
   const unit = sel ? c.roster.find((u) => u.id === sel) : undefined;
-  if (unit) return <Figure unit={unit} units={shown.some((u) => u.id === unit.id) ? shown.map((u) => u.id) : c.roster.map((u) => u.id)} onSelect={setSel} onBack={() => setSel(null)} />;
+  if (unit) return <FigureFlow unit={unit} units={shown.some((u) => u.id === unit.id) ? shown.map((u) => u.id) : c.roster.map((u) => u.id)} onSelect={setSel} onBack={() => setSel(null)} />;
   const mercs = c.roster.filter(isMercenary).length;
   return (
     <div class="hc-view">
@@ -114,6 +115,13 @@ function Mate({ unit, onOpen }: { unit: UnitRecord; onOpen: () => void }) {
       </small>
     </button>
   );
+}
+
+/** The figure view with its equip list: a tap on a place opens the list for it (not in `readOnly`). */
+export function FigureFlow({ unit, units, onSelect, onBack, readOnly }: { unit: UnitRecord; units: string[]; onSelect: (id: string) => void; onBack: () => void; readOnly?: boolean }) {
+  const [eq, setEq] = useState<{ slot: EquipSlot | 'bag'; index: number; key: string } | null>(null);
+  if (eq && !readOnly) return <EquipView unit={unit} slot={eq.slot} index={eq.index} onBack={() => setEq(null)} />;
+  return <Figure unit={unit} units={units} onSelect={onSelect} onBack={onBack} readOnly={readOnly} onSlot={(slot, index) => setEq({ slot, index, key: slot === 'bag' ? `bag${index}` : slot })} />;
 }
 
 const SWIPE_PX = 56;
