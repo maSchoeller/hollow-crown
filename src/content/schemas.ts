@@ -577,6 +577,19 @@ export const balanceSchema = z.object({
   }),
   loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
+  simulation: z.object({
+    armySize: z.number().int().min(1),
+    levelTolerance: z.number().min(0),
+    corridors: z.record(
+      z.enum(['easy', 'normal', 'hard']),
+      z.object({ winMin: z.number().optional(), winMax: z.number().optional(), downsMin: z.number().optional(), downsMax: z.number().optional() }),
+    ),
+    gold: z.object({
+      perNode: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      perAct: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      sideShare: z.tuple([z.number(), z.number()]),
+    }),
+  }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

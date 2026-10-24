@@ -114,7 +114,7 @@ development_status:
   6-5-stufendeckel-und-ep-regeln: review  # Stufendeckel und EP-Regeln
   6-6-missionsergebnis: review  # Missionsergebnis
   6-7-abschied-von-gefallenen: review  # Abschied von Gefallenen
-  6-8-wirtschaftskurve-und-verkettete-simulation: backlog  # Wirtschaftskurve und verkettete Simulation
+  6-8-wirtschaftskurve-und-verkettete-simulation: review  # Wirtschaftskurve und verkettete Simulation
   6-9-die-paktwacht-als-heimat: backlog  # Die Paktwacht als Heimat
   epic-6-retrospective: optional
 
