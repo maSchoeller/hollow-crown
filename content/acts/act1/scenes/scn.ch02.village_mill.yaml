@@ -1,0 +1,6 @@
+id: scn.ch02.village_mill
+background: bg_silverbrook_shrine
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Müller schiebt euch einen Heiltrank zu. „Für die Seherin. Sie hat meinen Sohn gesund gebetet.“"

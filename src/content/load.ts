@@ -1,11 +1,11 @@
 import type { z } from 'zod';
+import { sceneTexts } from '../core/campaign/scene';
 import type {
   AffixDef,
   Balance,
   CampaignDef,
   CharDef,
   ClassDef,
-  DialogueDef,
   FlagDef,
   GameData,
   ItemDef,
@@ -14,6 +14,7 @@ import type {
   RenderDef,
   RoomDef,
   RuneDef,
+  SceneDef,
   SetDef,
   SkillDef,
   TerrainDef,
@@ -24,7 +25,7 @@ import {
   campaignSchema,
   charSchema,
   classSchema,
-  dialogueSchema,
+  sceneSchema,
   flagSchema,
   itemSchema,
   mapSchema,
@@ -114,21 +115,27 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const maps: Record<string, MapDef> = {};
-  const dialogues: Record<string, DialogueDef> = {};
+  const scenes: Record<string, SceneDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
       const m = parseOne<MapDef>(p, raw, mapSchema, issues);
       if (m) maps[m.id] = m;
-    } else if (/^acts\/[^/]+\/dialogue\//.test(p)) {
-      const d = parseOne<DialogueDef>(p, raw, dialogueSchema, issues);
-      if (d) dialogues[d.id] = d;
+    } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
+      const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
+      if (d) scenes[d.id] = d;
+    } else if (/^locales\/[a-z]+\//.test(p)) {
+      // content/locales/<lang>/<act>.dialogue.yaml: the English (or other) texts of scenes
+      const lang = p.split('/')[1]!;
+      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
     } else if (/^(core|acts\/[^/]+)\/locales\//.test(p)) {
       const lang = p.slice(p.lastIndexOf('/') + 1).split('.')[0]!;
       locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
     }
   }
+  // the German text sits in the scene itself
+  for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,
@@ -154,7 +161,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     rooms: byId(rooms),
     terrain: byId(terrain),
     maps,
-    dialogues,
+    scenes,
     flags: byId(flagList),
     campaign: campaign as CampaignDef,
   };

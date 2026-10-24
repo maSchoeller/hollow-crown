@@ -1,0 +1,29 @@
+id: scn.support.mira_tobin.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Dein Hut sitzt schief. Schon wieder."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: angry
+    text: "Der sitzt genau richtig! So schützt er das linke Ohr."
+  - id: l03
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Und das rechte? Egal. Willst du lernen, wie man mit einem Bogen trifft?"
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Du würdest mir das zeigen?"
+  - id: l05
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Morgen früh. Bevor die Vögel wach sind. Verschlaf, und ich nehme deinen Hut als Zielscheibe."

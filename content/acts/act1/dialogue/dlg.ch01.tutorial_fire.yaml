@@ -1,4 +1,0 @@
-id: dlg.ch01.tutorial_fire
-lines:
-  - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.tutorial_fire.001 }
-  - { speaker: tobin, mood: neutral, side: right, key: dlg.ch01.tutorial_fire.003 }

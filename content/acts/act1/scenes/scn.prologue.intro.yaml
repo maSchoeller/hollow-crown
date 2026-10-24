@@ -1,0 +1,65 @@
+id: scn.prologue.intro
+background: bg_caravan_road
+music: title
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "(Eine Stimme, fern wie ein Traum.) Dreihundert Jahre lang schliefen die Drachen unter dem Berg."
+  - id: l01b
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Dreihundert Jahre lang trug jeder König die Glutkrone."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "In der Nacht des Paktfestes erlosch die Glut. Der König starb. Und die Krone … war fort."
+  - id: l03
+    mood: neutral
+    text: "Spätsommer. Eine Handelsstraße in den Grenzmarken, zwei Tagesreisen vor Aurenhall."
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Hauptmann! Der Neue ist wach! Ich hab ihm gesagt, dass wir die beste Söldnerkompanie in ganz Valmora sind."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Die beste, die noch übrig ist, Tobin. Das ist ein Unterschied."
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Du bist also {avatar}. Die Akademie hat dich empfohlen – und dann aus ihren Büchern gestrichen. Warum?"
+  - id: c01
+    choice:
+      - id: honest
+        stance: warm
+        text: "„Ich erinnere mich nicht. Das ist die Wahrheit.“"
+        effects: [{ setFlag: avatar_honest }]
+      - id: proud
+        stance: defiant
+        text: "„Vielleicht war ich zu gut für sie.“"
+        effects: [{ setFlag: avatar_proud }]
+  - id: l07
+    speaker: [kael]
+    mood: neutral
+    text: "Hm. Ehrlich, wenigstens. Das ist mehr, als die meisten bieten."
+    requires: [{ flag: avatar_honest }]
+  - id: l08
+    speaker: [kael]
+    mood: happy
+    text: "Bescheiden ist was anderes. Gut. Bescheidene Strategen hatten wir schon – die sind alle tot."
+    requires: [{ flag: avatar_proud }]
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Kael! Staub auf der Straße, Norden. Viele. Keine Händler."
+  - id: l10
+    speaker: [kael]
+    mood: angry
+    text: "Banditen. Aschenbanner – an die Wagen! {avatar}, zeig mir, was du kannst."

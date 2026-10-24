@@ -1,0 +1,19 @@
+id: scn.support.avatar_liora.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du siehst mich an, als wüsstest du nicht, ob du mir glauben sollst."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "In meinem Traum hattest du keine Augen für die Krone. Nur für den Berg dahinter."
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß nicht, was es bedeutet. Aber ich weiß, dass du es herausfinden wirst."

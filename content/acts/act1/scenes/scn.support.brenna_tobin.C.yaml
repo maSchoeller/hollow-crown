@@ -1,0 +1,24 @@
+id: scn.support.brenna_tobin.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Brenna! Bring mir den Trick bei, wo du die Axt wirfst und sie zurückkommt!"
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Sie kommt nicht zurück, Kleiner. Ich hole sie. Das ist der Trick."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Oh. Aber Helden in den Liedern …"
+  - id: l04
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Helden in den Liedern sterben jung, Tobin. Ich will, dass du alt wirst. Also: Schild hoch."

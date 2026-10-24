@@ -1,0 +1,24 @@
+id: scn.support.brenna_varek.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Ich behalte dich im Auge, Würfelmann."
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Nur eins? Ich bin geschmeichelt."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Gestern hast du für Morra gekämpft. Heute für uns. Und morgen?"
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Morgen für den, der mir nicht in den Rücken fällt. Bisher führt ihr."

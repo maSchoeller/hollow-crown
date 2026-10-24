@@ -1,0 +1,7 @@
+id: scn.ch02.morra_battle
+lines:
+  - id: l01
+    speaker: [morra]
+    fallback: skip
+    mood: neutral
+    text: "Nichts Persönliches, Kael. Nur ein Auftrag. Aber ich erfülle meine Aufträge."

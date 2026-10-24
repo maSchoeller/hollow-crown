@@ -97,7 +97,7 @@ function Screens() {
     else if (sc.name === 'worldmap') audio.music('worldmap');
     else if (sc.name === 'result' || sc.name === 'camp') audio.music('camp');
     else if (sc.name === 'dialogue') {
-      const cue = data.dialogues[sc.id]?.music;
+      const cue = data.scenes[sc.id]?.music;
       if (cue) audio.music(cue);
     }
   }, [sc.name, sc.name === 'dialogue' ? sc.id : '']);

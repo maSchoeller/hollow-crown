@@ -1,0 +1,22 @@
+id: scn.prologue.outro
+background: bg_caravan_road
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Nicht schlecht für den ersten Tag. Du hast keinen von uns verheizt."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Der Händler spricht von Unruhen in der Hauptstadt. Und von Rauch über Varnhold."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Varnhold? Da hat meine Tante einen Laden!"
+  - id: l04
+    speaker: [kael]
+    mood: sad
+    text: "Dann reiten wir. {avatar} – willkommen im Aschenbanner."

@@ -1,0 +1,18 @@
+id: scn.support.brenna_kael.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Wenn wir je nach Aurenhall zurückgehen … erkennen sie dich?"
+  - id: l02
+    speaker: [kael]
+    mood: sad
+    text: "Sie werden mich erkennen. Als den Wächter, der versagt hat."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Dann sollen sie erst mal an mir vorbei. Und an meiner Axt."

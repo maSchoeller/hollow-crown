@@ -16,7 +16,7 @@ const all = found.filter((i) => !warnings.includes(i));
 for (const w of warnings) console.warn(`! ${w.file}: ${w.message} (placeholder)`);
 const counts = {
   maps: Object.keys(data.maps).length,
-  dialogues: Object.keys(data.dialogues).length,
+  scenes: Object.keys(data.scenes).length,
   items: Object.keys(data.items).length,
   classes: Object.keys(data.classes).length,
   de: Object.keys(locales.de ?? {}).length,
