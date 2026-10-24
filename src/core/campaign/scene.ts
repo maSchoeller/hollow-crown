@@ -102,6 +102,15 @@ export function sceneTexts(scene: SceneDef): Record<string, string> {
 export const sceneSeen = (seen: readonly string[], id: string): boolean => seen.includes(id);
 
 /**
+ * Where Skip goes from line `from`: the index of the first choice at or after it (its effects must always run), or
+ * `-1` when no choice follows and the scene may end at once. Pure.
+ */
+export function skipTarget(lines: readonly ResolvedLine[], from: number): number {
+  for (let i = Math.max(0, from); i < lines.length; i++) if (lines[i]!.kind === 'choice') return i;
+  return -1;
+}
+
+/**
  * Splits a text into speech-bubble pages of at most `maxChars` characters, cut at spaces (a bubble holds two lines).
  * A word longer than the limit stays whole. Pure.
  */

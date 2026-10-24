@@ -172,6 +172,13 @@ describe('content:check for scenes', () => {
     expect(run((d) => ((d.scenes[scene.id]!.lines[1] as { speaker: string[] }).speaker = ['brenna', 'tobin']))).toEqual([]); // fallback: skip
     expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { memorial: { speaker: string[] } }).memorial.speaker = ['tobin']))).toContainEqual(expect.stringContaining('l01.memorial: speaker chain must end'));
   });
+  it('enemy and lieutenant chains need no fallback, mixed chains still do', () => {
+    const lineAt = (d: GameData) => d.scenes[scene.id]!.lines[0] as { speaker: string[]; memorial?: unknown };
+    expect(run((d) => ((lineAt(d).speaker = ['hask']), delete lineAt(d).memorial))).toEqual([]);
+    expect(run((d) => ((lineAt(d).speaker = ['hask', 'morra']), delete lineAt(d).memorial))).toEqual([]);
+    expect(run((d) => ((lineAt(d).speaker = ['hask', 'brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or kael'));
+    expect(run((d) => ((lineAt(d).speaker = ['brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or kael'));
+  });
   it('a missing English text fails', () => {
     expect(run((_d, l) => delete l.en![optionKey(scene.id, 'c01', 'b')])).toContainEqual(expect.stringContaining('missing en text dlg.scn.test.one.c01.b'));
     expect(run((_d, l) => delete l.en![memorialKey(scene.id, 'l01')])).toContainEqual(expect.stringContaining('missing en text'));

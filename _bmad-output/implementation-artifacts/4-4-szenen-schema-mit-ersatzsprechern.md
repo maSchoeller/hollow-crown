@@ -37,7 +37,7 @@ damit Permadeath nie eine Szene zerbricht.
 
 1. Stimmung `surprised` (PoC, 8 Zeilen) fiel auf `neutral`; soll die Liste um `surprised` wachsen?
 2. Stimmungswerte der sechs PoC-Antworten (Haltung) sind von mir zugeordnet.
-3. Sollen Sprecher aus Gegnern/NPCs ohne `fallback: skip` erlaubt sein? Heute: Kette muss mit Avatar/Kael enden, sonst `fallback: skip`, auch bei Gegnern.
+3. ~~Sprecher aus Gegnern/NPCs ohne `fallback: skip`?~~ Entschieden 2026-10-24: Gegner und Leutnants (Team enemy auf Karten oder Figur mit Kennzeichen `enemy`) sind von der Pflicht ausgenommen; sie gilt nur für Ketten, deren Sprecher endgültig sterben können (`validate.ts`, Test in `scene.test.ts`).
 
 ### Project Structure Notes
 

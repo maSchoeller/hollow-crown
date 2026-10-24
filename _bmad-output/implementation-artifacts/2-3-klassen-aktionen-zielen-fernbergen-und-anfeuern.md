@@ -28,7 +28,7 @@ damit jede Rolle eine eigene Antwort auf die Lage hat.
 ## Dev Notes
 
 - Zielen setzt voraus: `!unit.moved` und Zielfeld = aktuelles Feld. Ein vorheriger `move`-Befehl (auch auf das eigene Feld) sperrt es.
-- Fernbergen zeigt auch Nachbarn (Distanz 1–2); der Kontext-Band „Bergen“ bleibt für Nachbarn bestehen.
+- Fernbergen gilt nur für Niedergestreckte in genau `classActions.farRescue.range` (2) Feldern (entschieden 2026-10-24); Nachbarn bergt der Kontext-Band „Bergen“.
 - Anfeuern: Ziele sind aktive Verbündete im Nachbarfeld, die noch nicht gehandelt haben; ein Ziel trägt höchstens einen Anfeuern-Buff. Der Buff läuft über das bestehende `Buff`-Modell (`mov`, `hit`), `untilPhase` = Team des Ziels.
 - KI und Autoplay (Simulator) setzen Klassen-Aktionen nicht ein; die Sim-Werte sind daher unverändert.
 - Es gibt keinen Spielmann auf den PoC-Karten und keine Dolch-/Laute-Items; Anfeuern ist nur mit Fixtures getestet.
@@ -38,7 +38,7 @@ damit jede Rolle eine eigene Antwort auf die Lage hat.
 ### Offene Fragen für den Produktinhaber
 
 - Soll Zielen auch nach einem Warten-Zug auf demselben Feld (Befehl `move` auf das eigene Feld) möglich sein? Umgesetzt: nein (konservativ).
-- Soll Fernbergen auch Nachbarn bergen (ist umgesetzt, dann doppelt zu „Bergen“) oder nur Distanz 2?
+- ~~Soll Fernbergen auch Nachbarn bergen?~~ Entschieden 2026-10-24: nur Distanz 2, Nachbarn mit normalem Bergen.
 - Soll der Spielmann-Buff auch für den Spielmann selbst oder über die Gegnerphase gelten? Umgesetzt: nur Verbündete, bis Ende der Spielerphase.
 
 ## Dev Agent Record

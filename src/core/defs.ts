@@ -507,7 +507,7 @@ export interface CampaignNodeDef {
   post?: string;
   next: string[];
   pos: Pos;
-  /** place image shown while the mission loads (`locations/<place>`); default: the camp on the road */
+  /** place image shown while the mission loads: a location (`locations/<place>`) or a background as `backgrounds/<id>`; default: the camp on the road */
   place?: string;
   merchantTier: number;
   /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */

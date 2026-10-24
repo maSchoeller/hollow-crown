@@ -191,6 +191,12 @@ describe('Fernbergen (Heiler)', () => {
     expect(events.some((e) => e.t === 'exp' && e.unit === h.uid)).toBe(true);
   });
 
+  it('an adjacent downed ally is rescued by normal Bergen, not Fernbergen', () => {
+    const { s, h, down } = scene(1);
+    expect(availableActions(data, s, h, h.pos!).find((o) => o.kind === 'farRescue')).toBeUndefined();
+    expect(availableActions(data, s, h, h.pos!).find((o) => o.kind === 'rescue')?.targets).toEqual([down.uid]);
+  });
+
   it('does not reach 3 tiles, but can move first and then rescue', () => {
     const { s, h, down, x0, y } = scene(3);
     expect(availableActions(data, s, h, h.pos!).find((o) => o.kind === 'farRescue')).toBeUndefined();

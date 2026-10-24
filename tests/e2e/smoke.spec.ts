@@ -1,4 +1,12 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+/** Skip halts at the first answer of the intro scene; pick one, then skip the rest (decision 2026-10-24). */
+async function skipIntro(page: Page): Promise<void> {
+  const skip = page.getByRole('button', { name: /Skip|Überspringen/ });
+  await skip.click();
+  await page.locator('.vn-option').first().click();
+  await skip.click();
+}
 
 /** Title → campaigns → new campaign → prologue dialogue → battle (no preparation: deployment is fixed) → enemy phase (concept/13 §6.1, shortened). */
 test('new game reaches the prologue battle and survives a round', async ({ page }) => {
@@ -6,8 +14,8 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
-  // prologue intro dialogue → skip; the prologue has no choice of units, so the battle starts at once
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
+  // prologue intro dialogue → skip to the answer, choose, skip on; the prologue has no choice of units, so the battle starts at once
+  await skipIntro(page);
   await expect(page.locator('canvas.board-canvas')).toBeVisible();
   // turn-1 tutorial dialogue
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
@@ -27,7 +35,7 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
+  await skipIntro(page);
   // turn-1 lesson; the board loads slowly under software WebGL when several projects run in parallel
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
   const box = (await page.locator('canvas.board-canvas').boundingBox())!;
@@ -62,7 +70,7 @@ test('autosave restores the running battle after reload (concept/13 §6.8)', asy
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
+  await skipIntro(page);
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
   await page.reload();
   await page.getByRole('button', { name: /Continue|Fortsetzen/ }).click();

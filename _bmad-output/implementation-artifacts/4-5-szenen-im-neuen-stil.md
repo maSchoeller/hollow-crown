@@ -30,14 +30,14 @@ damit mir die Truppe ans Herz wächst.
 
 - **Schichten:** `src/ui` darf weder `app` noch `render` importieren (ESLint); die Komponenten bekommen Auto, Halbfiguren und Gesehen als Props, `app/screens/Scene.tsx` verdrahtet sie.
 - **Gesehen:** Eine Szene zählt als gesehen, wenn sie zu Ende lief oder übersprungen wurde (`onSeen` vor `onDone`). `seen` wird beim Öffnen festgehalten, damit die Marke nicht mitten in der Szene umspringt. Im Kampf läuft `markSceneSeen` direkt als Kampagnen-Command (ein Vermerk, kein Story-Zustand); ein Neustart der Runde vergisst ihn nicht.
-- **Überspringen:** Beendet wie im PoC jede Szene (auch ungesehene; der Rauchtest klickt es so). Offene Antworten werden dabei nicht gewertet; Story 4.6 sperrt Überspringen bei Entscheidungen. Gesehene Szenen zeigen ein Häkchen.
-- **Sprechblase:** Seiten zu `bubbleMaxChars` Zeichen, geschnitten an Leerzeichen, CSS klemmt zusätzlich auf 2 Zeilen; jede Seite blockiert bis Tipp oder `bubbleAutoMs`. Alle Szenen-Zeilen des Inhalts passen in höchstens 2 Seiten (Test). Die Kamera fährt zum Sprecher, bevor die Blase erscheint. Kein Name in der Blase (nur zwei Zeilen Text).
+- **Überspringen (entschieden 2026-10-24):** Spult die Zeilen vor und hält an der ersten Antwortzeile (`skipTarget`, reine Funktion in `scene.ts`); nach der Wahl lässt sich erneut überspringen, bis zur nächsten Antwort. Szenen ohne weitere Antwort enden sofort. Gesehene Szenen folgen derselben Regel (die Wirkungen einer Antwort laufen immer). Der Rauchtest wählt eine Antwort, wenn Überspringen anhält. Gesehene Szenen zeigen ein Häkchen.
+- **Sprechblase:** Seiten zu `bubbleMaxChars` Zeichen, geschnitten an Leerzeichen, CSS klemmt zusätzlich auf 2 Zeilen; jede Seite blockiert bis Tipp oder `bubbleAutoMs`. Alle Szenen-Zeilen des Inhalts passen in höchstens 2 Seiten (Test). Die Kamera fährt zum Sprecher, bevor die Blase erscheint. Am oberen Rand der Blase sitzt eine kleine Namens-Pille (Farben wie das Szenen-Namensschild über `speakerTeam`, entschieden 2026-10-24); der Text bleibt bei höchstens zwei Zeilen.
 - **Halbfiguren:** Neue, größere Ausgabe `halves/` (640 px, ~2,2 MB für 46 Figuren, bei Bedarf geladen); die 150-px-`busts/` der Truppenansicht blieben unverändert. Avatar → `rhen_a|b`. Ohne Halbfigur: altes Porträt.
 
 ### Offene Fragen an den Produktinhaber
 
-1. Soll Überspringen nur für gesehene Szenen gelten (VN-Gepflogenheit)? Heute: immer möglich, wie im PoC (und im Rauchtest).
-2. Soll die Sprechblase den Namen des Sprechers tragen? Heute nicht (höchstens zwei Zeilen).
+1. ~~Überspringen nur für gesehene Szenen?~~ Entschieden 2026-10-24: immer möglich, hält aber an der ersten Antwort.
+2. ~~Name in der Sprechblase?~~ Entschieden 2026-10-24: kleine Namens-Pille am Blasenrand.
 3. Bei Szenen mit mehreren Sprechern, Antworten oder Sprechern abseits des Bretts im Kampf: heute Szene als Overlay statt Blase. Passt das?
 4. Fehlende Stimmungs-Halbfiguren (siehe unten) – die Stimme fällt bis dahin auf neutral zurück.
 

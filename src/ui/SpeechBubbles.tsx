@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { bubblePages, resolveScene, type ConditionContext, type GameData } from '../core';
+import { bubblePages, resolveScene, speakerTeam, type ConditionContext, type GameData } from '../core';
 import { t } from '../i18n';
 import { SceneTools } from './SceneTools';
 import './Dialogue.css';
@@ -96,6 +96,7 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, auto, onA
           role="status"
           style={{ left: `${pos.x + shift}px`, top: `${pos.y}px`, '--bubble-tail': `calc(50% - ${shift}px)` }}
         >
+          <span class={`bubble__name bubble__name--${speakerTeam(data, page.speaker)}`}>{page.speaker === 'avatar' ? t('unit.avatar.name') : t(`unit.${page.speaker}.name`)}</span>
           <span class="bubble__text">{page.text}</span>
         </div>
       )}

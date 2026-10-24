@@ -12,6 +12,8 @@ import {
   flattenQueued,
   type AvatarSettings,
   type BattleSettings,
+  type BattleState,
+  type BattleUnit,
   type ConditionContext,
   type Effect,
   type MapUnitDef,
@@ -35,7 +37,7 @@ import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
 import { loadManifest } from '../../render/assets';
-import { missionAssets, type ModelSource } from '../loading/plan';
+import { missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets } from './loading';
 
 bindLive(() => ({
@@ -72,7 +74,44 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
   else go();
 }
 
-const defSource = (d: MapUnitDef): ModelSource => ({ portrait: d.portrait ?? d.char, sprite: d.sprite ?? d.char, classId: d.class });
+const defSource = (d: MapUnitDef): MissionUnit => ({
+  portrait: d.portrait ?? d.char,
+  sprite: d.sprite ?? d.char,
+  classId: d.class,
+  gearItems: d.items.map((i) => i.def),
+});
+
+/** A unit on the board as the loading plan sees it: its figure and the weapons it has in hand. */
+const battleSource = (u: BattleUnit): MissionUnit => ({
+  portrait: u.portrait,
+  sprite: u.sprite,
+  charId: u.charId,
+  classId: u.classId,
+  gearItems: [u.equip.mainHand?.def, u.equip.offHand?.def].filter((x): x is string => !!x),
+});
+
+/**
+ * Makes sure the on-demand files of a battle are there (place image, figures and their weapon models), with the
+ * loading screen when something is missing. Resolves `false` when the player left it with the back stone.
+ */
+async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], back: Screen): Promise<boolean> {
+  const node = nodeDef(nodeId);
+  const map = data.maps[node.map]!;
+  const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
+  const manifest = await loadManifest().catch(() => ({}) as Awaited<ReturnType<typeof loadManifest>>);
+  const place = placePath(node.place ?? data.campaign.defaultPlace);
+  const paths = missionAssets({
+    units: [...units.map(battleSource), ...later.map(defSource)],
+    models: manifest.models?.units,
+    weaponModels: manifest.models?.weapons,
+    items: data.items,
+    gear: data.render.gear,
+    classes: data.classes,
+    place: node.place,
+    defaultPlace: data.campaign.defaultPlace,
+  });
+  return ensureMissionAssets({ node: nodeId, place, paths, back });
+}
 
 /**
  * Starts the battle of a node with the chosen units. Places and unit models load on demand (decision 2026-10-24); when
@@ -80,13 +119,8 @@ const defSource = (d: MapUnitDef): ModelSource => ({ portrait: d.portrait ?? d.c
  * `back` is where the loading screen's back stone leads.
  */
 export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
-  const node = nodeDef(nodeId);
-  const map = data.maps[node.map]!;
   const start = createBattle(data, campaign.value!, nodeId, deploy);
-  const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
-  const models = (await loadManifest()).models?.units;
-  const paths = missionAssets({ units: [...start.units, ...later.map(defSource)], models, classes: data.classes, place: node.place, defaultPlace: data.campaign.defaultPlace });
-  if (!(await ensureMissionAssets({ node: nodeId, place: paths.find((p) => p.startsWith('locations/'))!, paths, back }))) return;
+  if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
   pendingEvents.value = startBattle(nodeId, deploy);
 }
 
@@ -130,11 +164,28 @@ export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): vo
       throw e;
     }
     battle.value = { start: p.battle.start, state: s, log: [...p.battle.commands], effects: p.battle.effects ?? [] };
-    screen.value = { name: 'battle' };
+    void showRestoredBattle(s);
   } else {
     battle.value = null;
     screen.value = { name: 'worldmap' }; // the world map is the hub (story 5.3), also on "Continue"
   }
+}
+
+/**
+ * A restored running battle goes through the same loading as a new one (story 7.6): the board only shows once its place
+ * image, figures and weapon models are there. Leaving the loading screen drops the restored battle (the save stays).
+ */
+async function showRestoredBattle(s: BattleState): Promise<void> {
+  const mine = battle.value;
+  let ok = true;
+  try {
+    ok = await ensureBattleAssets(s.nodeId, s.units, { name: 'title' });
+  } catch (e) {
+    log.warn('core', 'loading the assets of a restored battle failed', e);
+  }
+  if (battle.value !== mine) return; // something else took over while loading
+  if (ok) screen.value = { name: 'battle' };
+  else battle.value = null;
 }
 
 /** Battle ended: apply results, show outro and result screen. */
