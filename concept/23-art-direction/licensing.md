@@ -125,13 +125,13 @@ Bewertung: **erlaubt** (ohne Bedingung), **mit Bedingungen**, **nicht erlaubt**.
 
 ### 3.3 Tripo (Bild-zu-3D)
 
-**Verwendung:** Brettfiguren als GLB (`art/models/source/*_board_tripo.glb` → `art/models/units/*.glb`), Rig und Animationen im Tripo-Dienst (`art-direction.md` §4.6, `art/mockups/tripo-test-2026-10/README.md`). Danach Aufbereitung in Blender (`tools/art/prepare_tripo_unit.py`).
+**Verwendung:** Brettfiguren als GLB (`art/models/source/*_board_tripo.glb` → `art/models/units/*.glb`), Rig und Animationen im Tripo-Dienst (`art-direction.md` §4.6). Danach Aufbereitung in Blender (`tools/art/prepare_tripo_unit.py`).
 
 - Terms (Auszug laut Suchtreffer, Abschnitt 5, Q12 [S]): **Free-Nutzer**: Tripo „retains all rights“ an Eingaben und Ausgaben, einschließlich der Rechte zu nutzen, zu kopieren, zu verändern, zu veröffentlichen, zu lizenzieren und daraus Erlöse zu erzielen (Abschnitt 5.2.1). **Zahlende Nutzer**: sie halten alle Rechte an Eingaben und Ausgaben, einschließlich kommerzieller Nutzung, Änderung, Verbreitung und Lizenzierung (5.2.2); sie räumen Tripo eine begrenzte, weltweite Lizenz zum Hosten und Anzeigen ein. Tripo verwendet Ein-/Ausgaben zahlender Nutzer laut Hilfeseite **nicht** für das Training; für Free-Nutzer gibt es diese Zusage nicht (Q13 [S]).
 - **Widerspruch:** Die Preis- und Blogseiten sagen, Free-Modelle seien öffentlich unter **CC BY 4.0** und damit mit Namensnennung kommerziell nutzbar (Q13 [S]). Die Terms selbst erwähnen CC BY nicht. Eine dritte Quelle sagt, Free sei nur nicht-kommerziell. **Dem Terms-Text ist zu folgen; Free-Ausgaben nicht ausliefern.**
 - **Rückwirkung bei Upgrade:** nicht belegt. Mehrere Tripo-Seiten sagen nur, es gelte die **zum Zeitpunkt der Erzeugung gültige** Fassung; eine Marketingseite behauptet, maßgeblich sei ein aktives Pro-Abo bei der Erzeugung (Q13 [S]). → Vorsicht: **was im Free-Tarif entstand, nicht ausliefern.**
 - **Betrifft das Repo konkret:**
-  - `art/models/source/kael_tripo.glb` und Bilder in `art/mockups/tripo-test-2026-10/`: **Free-Tarif, in der Tripo-Galerie öffentlich** (README dort). Nicht ausliefern. Das ausgelieferte Kael-Modell stammt aus dem späteren Weg (`kael_board_tripo.glb`).
+  - `art/models/source/kael_tripo.glb`, der erste Turnaround `art/turnarounds/kael/` und die Bilder in `art/mockups/tripo-test-2026-10/`: **Free-Tarif, in der Tripo-Galerie öffentlich**. Nicht ausgeliefert und am 2026-10-24 aus dem Repo entfernt (A4 erledigt, nur noch in der Git-Historie). Das ausgelieferte Kael-Modell stammt aus dem späteren Weg (`kael_board_tripo.glb`).
   - Beim zweiten und dritten Durchgang steht „0 Credits (Testversion)“ bzw. „letzte kostenlose Testrunde“ für den **Smart-Mesh-Schritt**. Ob dieser Schritt unter den Rechten eines **zahlenden** Nutzers lief, ist aus dem Repo nicht ersichtlich (**Frage F3**, Tripo-Support, F9).
 - **Eingaben:** Die Turnarounds (Eingabebilder) stammen aus ChatGPT. Tripo erhält daran eine Lizenz (siehe oben). Die Rechtekette ist also OpenAI → Produktinhaber → Tripo → Produktinhaber.
 - **Kündigung:** Die Terms-Auszüge sagen dazu nichts; nicht belegt (L2).
@@ -200,7 +200,7 @@ Vorschläge für den Produktinhaber; sie ändern nichts am Stand von GA26.
 | A1 | **Nur unter bezahltem Tarif erzeugen und nur solche Ausgaben ausliefern.** ElevenLabs: mindestens Starter, für Studio Games Enterprise Music, sobald die Indie-Grenzen reißen. Tripo: Pro mit Datenschutz „Privat“. ChatGPT: Tarif dokumentieren (Wortlaut zuerst prüfen). Vor jedem Batch den Tarif nachweisen, bei ElevenLabs mit `python tools/audio/elevenlabs.py status`, Ergebnis ins Prompt-Protokoll. |
 | A2 | **Prompt-Protokoll als Herkunftsnachweis.** Jede Datei in `art/prompts/<id>.md` bekommt zusätzlich: Dienst und Modellversion, **Tarif und Konto zum Erzeugungsdatum**, Prompt, Referenzen mit Quelle, Iterationen, **Ablageort der unveränderten Originaldatei**, **menschlicher Anteil** (Retusche, Übermalen, Blender-Arbeit; Verweis auf Commit). Für Audio und 3D gilt dasselbe, auch für die Mockup-READMEs (`characters-s1`, `locations-s1`, `style-2026-10`). |
 | A3 | **Originale unverändert aufbewahren** (Git LFS bzw. `audio-src`), einschließlich Metadaten (C2PA, Provenance). Die Laufzeitformate (WebP, Opus) sind abgeleitet. |
-| A4 | **Free-Reste aussondern.** Ausgaben aus Free-Tarifen (ElevenLabs, Tripo, ChatGPT falls zutreffend) nicht ausliefern; neu erzeugen. Kaels erster Tripo-Test (`kael_tripo.glb`) als „nicht ausliefern“ markieren. Free-Audio in der öffentlichen Web-Demo braucht **Namensnennung** („elevenlabs.io“, „Eleven Music“), solange sie dort läuft (Q5, Q7). |
+| A4 | **Free-Reste aussondern.** Ausgaben aus Free-Tarifen (ElevenLabs, Tripo, ChatGPT falls zutreffend) nicht ausliefern; neu erzeugen. Kaels erster Tripo-Test (`kael_tripo.glb`) ist deshalb aus dem Repo entfernt (2026-10-24). Free-Audio in der öffentlichen Web-Demo braucht **Namensnennung** („elevenlabs.io“, „Eleven Music“), solange sie dort läuft (Q5, Q7). |
 | A5 | **Terms archivieren.** Zum Erzeugungsdatum PDF oder Screenshot der gültigen Bedingungen je Dienst ablegen (außerhalb des Git-Verlaufs oder in LFS). Zusagen des Supports (F9) ebenfalls. |
 | A6 | **Vor dem Release neu prüfen.** ElevenLabs hat seine Texte am 2026-10-09 aktualisiert, Apple am 2026-10-16. Bedingungen ändern sich. |
 
@@ -268,7 +268,7 @@ Mündlich im Chat gemacht, ohne Rechnung und ohne Datumsangaben; nicht von mir g
 
 Abgleich mit dem Repo und Folgen:
 
-- **Kaels erster Tripo-Test** entstand laut `art/mockups/tripo-test-2026-10/README.md` im kostenlosen Tarif und liegt öffentlich in der Galerie. Das ist mit der Angabe vereinbar, solange `kael_tripo.glb` nicht ausgeliefert wird (A4). Er ist in den Dateien als Test dokumentiert, nicht als Produktivasset.
+- **Kaels erster Tripo-Test** (`kael_tripo.glb`, `art/mockups/tripo-test-2026-10/`) entstand im kostenlosen Tarif und liegt öffentlich in der Galerie. Er wurde nie ausgeliefert und ist am 2026-10-24 aus dem Repo entfernt (A4); das ist mit der Angabe vereinbar.
 - **Smart-Mesh-Runden „Testversion“** (zweiter und dritter Tripo-Durchgang): Die Angabe deckt sie ab, wenn sie im Pro-Konto liefen. Eine Bestätigung des Tripo-Supports bleibt sinnvoll (F3, F9).
 - **ElevenLabs Pro** erfüllt die Tarifvoraussetzung für SFX und Musik. Offen bleiben „Individual Use Only“ (F5) und die Studio-Game-Grenze (A10).
 - **Nachweis:** Rechnungen mit Datum je Dienst archivieren (A5). Sie belegen, dass der Tarif zum Zeitpunkt der Erzeugung lief; das Prompt-Protokoll (A2) hält das Erzeugungsdatum fest.

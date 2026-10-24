@@ -3,7 +3,7 @@
 - **Dateien:** `art/turnarounds/kael_board/sheet.png` (1536 × 1024, Original); daraus `front.png`, `side.png`, `back.png` (je 1024 × 1024, Hintergrund `#E2E4E3`)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Chats „Create simplified turnaround image“ (Stufe 1) und „Redraw Character Turnaround“ (Stufe 2)
-- **Referenz:** `art/turnarounds/kael/sheet.png` (Porträt-Turnaround)
+- **Referenz:** der erste Kael-Porträt-Turnaround (`art/turnarounds/kael/sheet.png`, am 2026-10-24 aus dem Repo entfernt, nur noch in der Git-Historie)
 - **Zweck:** Eingabe für Tripo Smart-Mesh (Multi-View vorn / rechts / hinten), siehe `concept/23-art-direction/art-direction.md` §4.6
 - **Iterationen:** 2 Stufen
 

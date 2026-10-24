@@ -13,7 +13,7 @@ Maßgeblich ist seit 2026-10-23 `concept/23-art-direction/art-direction.md` (Rou
 | Porträts aller Figuren (Round-Chibi, Moodboard-Stand) | `art/mockups/characters-s1/<id>.png` |
 | Orte und Dialog-Hintergründe (Kandidaten) | `art/mockups/locations-s1/` |
 | Stil-Leitreferenz | `art/mockups/style-2026-10/round_chibi_kael.png` |
-| Brettfigur Kael (Tripo) und Ingame-Probe | `art/models/source/kael_board_tripo.glb`, `art/turnarounds/kael*/`, `art/mockups/tripo-test-2026-10/` |
+| Brettfigur Kael (Tripo) | `art/models/source/kael_board_tripo.glb`, `art/turnarounds/kael_board/` |
 
 **Veraltet** (Proof of Concept, vom Spiel bis zur Umstellung in Epic E7 noch geladen, nicht als Referenz verwenden; die Anime-Porträts `portraits/` sind gelöscht, Dialoge zeigen nur noch die Halbfiguren aus `mockups/characters-s1/`): `backgrounds/` (PoC-Hintergründe), `models/units/*.glb` außer Kael aus Tripo (Blender-Skriptfiguren, abgelöst durch Bild-zu-3D), `sprites/` (2D-Pixel, D4, nicht weiterentwickelt), sowie die entfernten, nur noch in der Git-Historie liegenden Altbestände `tiles/`, `concept/art/` (Anime-Sheets, Pixel-Beweis), `art/mockups/style-3d-2026-10/` (abgelehnte Stilprobe).
 
