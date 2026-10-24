@@ -50,16 +50,16 @@ units:
     drops: [1]
     ai: { profile: guard }
     quote: scn.prologue.grosk_battle
-  # Nur eine Gegnerart (Axt-Banditen) und keine Fernkämpfer: Der Prolog lehrt Bewegen, Angreifen,
-  # Kampfvorschau, Gefahrenzone und Deckung. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
-  - { id: p_e1, team: enemy, class: brigand, level: 1, at: [3, 4], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: p_e2, team: enemy, class: brigand, level: 1, at: [8, 3], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: p_e3, team: enemy, class: brigand, level: 1, at: [7, 2], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Nur Nahkampf-Gegner, keine Fernkämpfer (Produktinhaber 2026-10-24): Axt-Banditen, Schwert-Plänkler und Lanzen-Vorkämpfer.
+  # Der Prolog lehrt Bewegen, Angreifen, Kampfvorschau, Gefahrenzone und Deckung. Das Waffendreieck ist hier noch aus
+  # (campaign.yaml mechanics). Ausgelegt auf die NFR12-Korridore (siehe Story 2.2, Neubalance).
+  - { id: p_e1, team: enemy, class: skirmisher, level: 1, at: [3, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: p_e2, team: enemy, class: skirmisher, level: 2, at: [8, 3], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: p_e3, team: enemy, class: vanguard, level: 2, at: [7, 2], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: p_e4, team: enemy, class: brigand, level: 2, at: [9, 6], sprite: brigand, items: [{ def: hand_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: p_e5, team: enemy, class: brigand, level: 2, at: [2, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: p_e5, team: enemy, class: brigand, level: 1, at: [2, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal] }
 pairs: []
 reinforcements:
-  # Schwer: Ein Nachzügler fällt der Karawane in den Rücken.
   - turn: 3
     phase: enemy
     announce: true
@@ -89,4 +89,4 @@ triggers:
       - { action: dialogue, id: scn.prologue.tutorial_heal }
 goldReward: 300
 music: battle_a
-devNote: "Kompakte Tutorialkarte. Grosk bewacht die Festung im Norden, die Karawane steht in der Mitte der Straße. Leicht: 3 Banditen + Grosk; Normal: +1; Schwer: +1 und Rückenangriff in Runde 3."
+devNote: "Kompakte Tutorialkarte. Grosk bewacht die Festung im Norden, die Karawane steht in der Mitte der Straße. Leicht: Plänkler, Bandit, Bandit + Grosk; Normal: + Lanzen-Vorkämpfer (hält) und Bandit am Westrand; Schwer: Lanzen-Vorkämpfer ohne Westrand-Bandit, dafür Rückenangriff in Runde 3 (Gegnerwerte +15 %)."
