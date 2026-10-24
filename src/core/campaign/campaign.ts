@@ -79,7 +79,11 @@ export function renameLegacyClasses(data: GameData, c: CampaignState): CampaignS
   return { ...c, roster: renameClasses(c.roster, map), tavern: renameClasses(c.tavern, map) };
 }
 
-/** Same for a saved battle's start state (the command log refers to units by id and replays unchanged). */
+/**
+ * Same for a saved battle's start state. The command log refers to units by id, but the new classes differ in skills and
+ * movement (fighter → vanguard, …), so an old log may no longer replay: `restore` (app/state/flow.ts) then reports the
+ * rejected command as a fault and the player lands on the fault screen instead of a half-restored battle.
+ */
 export function renameLegacyBattleClasses(data: GameData, s: BattleState): BattleState {
   return { ...s, units: renameClasses(s.units, legacyClassIds(data)) };
 }

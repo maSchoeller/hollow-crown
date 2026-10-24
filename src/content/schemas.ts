@@ -479,6 +479,7 @@ export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
   start: z.string(),
   startGold: z.number(),
+  defaultPlace: z.string(),
   startConvoy: z.array(itemRefSchema).default([]),
   nodes: z.array(
     z.object({
@@ -572,6 +573,7 @@ export const balanceSchema = z.object({
     bubbleAutoMs: z.number().int().min(500),
     bubbleMaxChars: z.number().int().min(20),
   }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

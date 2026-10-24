@@ -3,38 +3,33 @@
  * and the numbers the stones show. No DOM, no cache access: `state/loading.ts` and `state/prepare.ts` do the I/O.
  */
 
-/** Place image of a mission without its own (`CampaignNodeDef.place`). */
-export const DEFAULT_PLACE = 'lager_unterwegs';
+import { modelId, type FigureSource } from '../../core';
+
+/** Classes' figure fields, as `GameData.classes` has them. */
+type Classes = Parameters<typeof modelId>[2];
 
 /** The fields of a battle unit (or a map definition) that decide which 3D model shows it. */
-export interface ModelSource {
-  portrait?: string;
-  sprite?: string;
-  charId?: string;
-  classId?: string;
-}
-
-/** Same choice as the board: a figure per chosen portrait where one exists (avatar_a / avatar_b), else the unit's own. */
-export function unitModelId(u: ModelSource, models: readonly string[]): string {
-  const own = u.sprite ?? u.charId ?? u.classId ?? '';
-  return u.portrait && models.includes(u.portrait) ? u.portrait : own;
-}
+export type ModelSource = FigureSource;
 
 export interface MissionAssetInput {
   /** units on the board at the start and those arriving later (reinforcements, spawns) */
   units: readonly ModelSource[];
   /** model ids the manifest lists (`manifest.models.units`); without it figures are drawn as sprites and need no file */
   models: readonly string[] | undefined;
+  /** `GameData.classes`: the class names the figure of generic units */
+  classes: Classes;
   /** `CampaignNodeDef.place` */
   place?: string;
+  /** place image of a mission without its own (`CampaignDef.defaultPlace`) */
+  defaultPlace: string;
 }
 
 /** Paths below `public/assets` that load on demand and that a mission needs: its place image and its unit models. */
-export function missionAssets({ units, models, place }: MissionAssetInput): string[] {
-  const out = new Set<string>([`locations/${place ?? DEFAULT_PLACE}.webp`]);
+export function missionAssets({ units, models, classes, place, defaultPlace }: MissionAssetInput): string[] {
+  const out = new Set<string>([`locations/${place ?? defaultPlace}.webp`]);
   if (models) {
     for (const u of units) {
-      const id = unitModelId(u, models);
+      const id = modelId(u, models, classes);
       if (id && models.includes(id)) out.add(`models/units/${id}.glb`);
     }
   }
@@ -58,10 +53,12 @@ export function installProgress(cached: number, total: number): number {
   return ratio(cached, total);
 }
 
-/** "12,4 MB" / "12.4 MB" / "830 KB"; sizes below 1 MB in whole KB. */
-export function formatBytes(bytes: number, locale: string): string {
-  if (bytes >= 1024 * 1024) return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(bytes / (1024 * 1024))} MB`;
-  return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(Math.max(1, Math.round(bytes / 1024)))} KB`;
+/** A size as a number in the locale's format plus the unit's locale key: "12,4" + MB, or "830" + KB below 1 MB (whole KB). */
+export function formatBytes(bytes: number, locale: string): { n: string; unitKey: 'ui.size.mb' | 'ui.size.kb' } {
+  if (bytes >= 1024 * 1024) {
+    return { n: new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(bytes / (1024 * 1024)), unitKey: 'ui.size.mb' };
+  }
+  return { n: new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(Math.max(1, Math.round(bytes / 1024))), unitKey: 'ui.size.kb' };
 }
 
 /** What the loading screen can be in (the stone's sentence follows from it). */

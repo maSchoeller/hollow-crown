@@ -1,5 +1,5 @@
 /* Mission result and defeat (concept/25-ux/mockups/08-ergebnis-abschied.html, story 6.6). Style B. */
-@import './tokens.css';
+@import '../../ui/tokens.css';
 
 .res-view {
   justify-content: flex-start;

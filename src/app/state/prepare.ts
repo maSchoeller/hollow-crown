@@ -74,6 +74,18 @@ export function initPrepare(): void {
   }, PENDING_MS);
 }
 
+/** The worker of a first install, or null: with an active worker this is no first install (a waiting one is an update). */
+export function firstInstallWorker<T>(reg: { active?: unknown; installing?: T | null; waiting?: T | null }): T | null {
+  if (reg.active) return null;
+  return reg.installing ?? reg.waiting ?? null;
+}
+
+/** Registration failed: nothing will install, so the screens must not keep waiting. */
+export function abandonPrepare(): void {
+  polling++;
+  set({ phase: 'off' });
+}
+
 let polling = 0;
 let tracked: ServiceWorker | null = null;
 
@@ -83,10 +95,10 @@ export function watchFirstInstall(reg: ServiceWorkerRegistration | undefined): v
     if (prepare.value.phase === 'pending') set({ phase: 'off' });
     return;
   }
-  const sw = reg.installing ?? reg.waiting;
+  const sw = firstInstallWorker(reg);
   if (!sw) {
-    // already active (e.g. a forced reload) or nothing is installing: no first download to show
-    if (reg.active || prepare.value.phase === 'pending') set({ phase: 'off' });
+    // already active (e.g. a hard reload with an update waiting) or nothing is installing: no first download to show
+    set({ phase: 'off' });
     return;
   }
   track(reg, sw);

@@ -4,8 +4,10 @@
  * flow (`flow.ts`) decides which files and what happens afterwards.
  */
 import { signal } from '@preact/signals';
+import { ON_DEMAND_CACHE } from '../loading/cacheName';
 import { failureStatus, missingAssets, type MissionLoadStatus } from '../loading/plan';
 import { screen, type Screen } from './screen';
+import { data } from './session';
 
 export interface MissionLoad {
   node: string;
@@ -36,11 +38,25 @@ let run = 0;
 let retryNow: (() => void) | null = null;
 let finish: ((ok: boolean) => void) | null = null;
 
-/** Fetches one file completely, so the service worker's runtime cache keeps it. */
+/**
+ * Fetches one file completely. A page the service worker controls lets its runtime cache keep the file; on the very
+ * first session the page is not controlled yet (no `clientsClaim`), so the file goes into the same cache from here.
+ * A request that hangs longer than `balance.loading.fetchTimeoutMs` fails, which shows the retry.
+ */
 async function fetchFile(path: string): Promise<void> {
-  const res = await fetch(urlOf(path));
+  const url = urlOf(path);
+  const res = await fetch(url, { signal: AbortSignal.timeout(data.balance.loading.fetchTimeoutMs) });
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${path}`);
-  await res.arrayBuffer();
+  if (typeof caches !== 'undefined' && !navigator.serviceWorker?.controller) {
+    try {
+      await (await caches.open(ON_DEMAND_CACHE)).put(url, res);
+    } catch {
+      // e.g. quota: the file is in memory of this session only; a body that broke off fails below the same way
+      await res.arrayBuffer().catch(() => undefined);
+    }
+  } else {
+    await res.arrayBuffer();
+  }
   arrived.add(path);
 }
 

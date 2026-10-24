@@ -42,6 +42,27 @@ beforeAll(() => {
   });
 });
 
+describe('place images and recruit dialogues', () => {
+  const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
+  const places = () => new Set([data.campaign.defaultPlace, ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : []))]);
+  it('accepts the shipped places', () => {
+    expect(msgs(data, places())).toEqual([]);
+  });
+  it('reports a node place and a default place without an image', () => {
+    const d = structuredClone(data);
+    d.campaign.nodes[0]!.place = 'nowhere';
+    d.campaign.defaultPlace = 'also_nowhere';
+    const out = msgs(d, places().add('lager_unterwegs'));
+    expect(out).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
+    expect(out).toContain('campaign.yaml: defaultPlace: no place image art/mockups/locations-s1/also_nowhere.png');
+  });
+  it('reports a character recruit dialogue that is no scene', () => {
+    const d = structuredClone(data);
+    d.chars.liora!.recruit = { chapter: 'ch02', by: 'any', dialogue: 'scn.ghost' };
+    expect(msgs(d)).toContainEqual(expect.stringContaining('liora recruit.dialogue: unknown scene scn.ghost'));
+  });
+});
+
 describe('item images (story 8.5)', () => {
   const images = () => new Set(Object.values(data.items).map((i) => i.image ?? i.id));
   it('accepts content where every item and rune has its image', () => {

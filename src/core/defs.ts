@@ -537,6 +537,8 @@ export interface RoomDef {
 export interface CampaignDef {
   /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
   act: number;
+  /** place image of a node without its own `place` (`locations/<defaultPlace>.webp`) */
+  defaultPlace: string;
   nodes: CampaignNodeDef[];
   /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
   mechanics: Partial<Record<Mechanic, string>>;
@@ -646,6 +648,8 @@ export interface Balance {
     /** speech bubble: characters per page (two lines) */
     bubbleMaxChars: number;
   };
+  /** loading of on-demand files before a mission */
+  loading: { fetchTimeoutMs: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */

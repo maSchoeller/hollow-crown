@@ -27,7 +27,7 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../core';
-import { itemDef } from '../core';
+import { itemDef, modelId, unitFigureId } from '../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from './camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from './assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from './terrain3d';
@@ -511,7 +511,7 @@ export class BoardView {
   // ------------------------------------------------------------------ units
 
   private unitSpriteId(u: BattleUnit): string {
-    return u.sprite ?? u.charId ?? u.classId;
+    return unitFigureId(u, this.data.classes);
   }
 
   /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
@@ -542,7 +542,7 @@ export class BoardView {
     if (this.figures === '3d') {
       // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
       const models = (await loadManifest()).models?.units ?? [];
-      const mid = u.portrait && models.includes(u.portrait) ? u.portrait : id;
+      const mid = modelId(u, models, this.data.classes);
       const model = await loadUnitModel(this.scene, mid, u.team, name, this.gearOf(u));
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);

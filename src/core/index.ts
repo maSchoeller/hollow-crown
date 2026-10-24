@@ -6,6 +6,7 @@ export * from './events';
 export * from './rng';
 export * from './util';
 export * from './loot';
+export * from './figure';
 export * from './rules/items';
 export * from './rules/skills';
 export * from './rules/stats';

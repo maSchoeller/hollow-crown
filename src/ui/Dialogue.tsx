@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { resolveScene, type ConditionContext, type Effect, type FlagValue, type GameData, type ResolvedLine } from '../core';
+import { resolveScene, speakerTeam, type ConditionContext, type Effect, type FlagValue, type GameData, type ResolvedLine } from '../core';
 import { t } from '../i18n';
 import { asset, Modal } from './components';
 import { figureId, halfUrl, pickHalf } from './halfFigure';
 import { Icon } from './icons';
 import { SceneTools } from './SceneTools';
 import './Dialogue.css';
-
-const ENEMIES = new Set(['grosk', 'hask', 'morra']);
-const OTHERS = new Set(['liora']);
 
 export interface DialogueProps {
   data: GameData;
@@ -130,7 +127,7 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false,
   const speakerSide = speaking ? (sides[speaking] ?? 'right') : 'left';
   const choice = line.kind === 'choice' ? (line as Choice) : undefined;
   const history = lines.slice(0, idx).filter((l): l is Line => l.kind === 'line');
-  const teamOf = (sp: string) => (ENEMIES.has(sp) ? 'enemy' : OTHERS.has(sp) ? 'other' : 'player');
+  const teamOf = (sp: string) => speakerTeam(data, sp);
 
   return (
     <div class={`vn ${overlay ? 'vn--overlay' : ''}`} onClick={advance}>

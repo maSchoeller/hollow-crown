@@ -1,4 +1,4 @@
-import type { Effect, GameData, Mood, SceneDef, SceneLine, SceneSpeech, Stance } from '../defs';
+import type { Effect, GameData, Mood, Team, SceneDef, SceneLine, SceneSpeech, Stance } from '../defs';
 import { PERMANENT_COMPANIONS } from '../defs';
 import { evalConditions, type ConditionContext } from './conditions';
 
@@ -22,6 +22,26 @@ export type ResolvedLine =
 /** Whether a companion can speak: avatar and kael always, everyone else unless fallen or gone (an NPC who never joined can). */
 export function canSpeak(ctx: ConditionContext, id: string): boolean {
   return PERMANENT_COMPANIONS.includes(id) || !(ctx.fallen.includes(id) || ctx.left.includes(id));
+}
+
+const speakerTeams = new WeakMap<GameData, Map<string, Team>>();
+
+/**
+ * Team a scene speaker stands on: the team of the first map unit that carries the id (or is the character), so enemy
+ * lieutenants and neutral figures are marked in the dialogue from the map data. Everyone else is on the player's side.
+ */
+export function speakerTeam(data: GameData, speaker: string): Team {
+  let teams = speakerTeams.get(data);
+  if (!teams) {
+    teams = new Map();
+    for (const map of Object.values(data.maps)) {
+      const spawned = map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])));
+      const all = [...map.units, ...map.reinforcements.flatMap((r) => r.units), ...spawned];
+      for (const u of all) for (const key of [u.id, u.char]) if (key && !teams.has(key)) teams.set(key, u.team);
+    }
+    speakerTeams.set(data, teams);
+  }
+  return teams.get(speaker) ?? 'player';
 }
 
 /** The first figure of the chain who can speak, `undefined` when nobody can. */
