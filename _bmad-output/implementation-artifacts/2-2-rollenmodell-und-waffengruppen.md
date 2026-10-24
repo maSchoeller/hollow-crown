@@ -97,3 +97,24 @@ Korridor Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte: alle drei Siegqu
 
   Zwischenstand mit den GDD-Werten ohne Kartenänderung: prologue 100 %, ch01 2 %, ch02 1 von 50 Läufen erreicht.
 - **Nicht im Korridor:** Der Prolog liegt bei Normal mit 0,04 Niedergestreckten unter 0,4. Er ist die Tutorialkarte (nur Axt-Banditen, keine Fernkämpfer); höhere Stufen oder zwei zusätzliche Banditen ließen die Quote bei 96 % und 0,04–0,08, weil Niedergestreckte fast nur den Avatar betreffen. Offen für den Produktinhaber, ob der Prolog vom Korridor ausgenommen wird.
+
+### Neubalance Prolog, Produktinhaber 2026-10-24: „Prolog im Korridor, nur Nahkampf-Gegner“
+
+Nur `content/acts/act1/maps/prologue_caravan.yaml` geändert (keine Klassenwerte, kein Code, kein `balance.yaml`). Gegner jetzt Nahkampf-Mischung statt nur Axt-Banditen, weiterhin keine Fernkämpfer.
+
+- `p_e1`: Bandit Stufe 1 → Plänkler (Schwert) Stufe 1, aggressiv (alle Schwierigkeiten); er läuft MOV 6 und bindet Brenna früh.
+- `p_e2`: Bandit Stufe 1 → Plänkler (Schwert) Stufe 2, aggressiv.
+- `p_e3`: Bandit (hält) → Vorkämpfer (Eisenlanze) Stufe 2, aggressiv; Normal und Schwer.
+- `p_e5`: bleibt Axt-Bandit, jetzt Stufe 1 und nur Normal (vorher nur Schwer, Stufe 2).
+- Schwer: Nachzügler in Runde 3 bleibt; das Gegnerplus von +15 % macht die Karte dort ohne `p_e5` schwer genug.
+- Grosk, `p_e4`, Trigger, Szenen und Nebenziele („Niemand fällt“, „Sieg in höchstens 7 Runden“) unverändert.
+
+Messung (`pnpm sim prologue_caravan --runs 50`, verkettet, standard; Seed 1, in Klammern Seed 200):
+
+| Schwierigkeit | Korridor | vorher | nachher |
+|---|---|---|---|
+| Leicht | ≥ 95 %, ≤ 0,5 | 100 % / 0,00 | 100 % / 0,00 (100 % / 0,00) |
+| Normal | 75–100 %, 0,4–1,3 | 100 % / 0,04 | 94 % / 0,70 (92 % / 0,50) |
+| Schwer | 30–70 % | 62 % / 0,54 | 40 % / 1,34 (54 % / 1,06) |
+
+Alle drei Korridore sind erreicht. Damit ist die offene Frage „Prolog vom Korridor ausnehmen?“ erledigt.
