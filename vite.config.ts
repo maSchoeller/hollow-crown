@@ -3,6 +3,7 @@ import { defineConfig, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
+import { ON_DEMAND_CACHE } from './src/app/loading/cacheName.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 /** Compiles content YAML to JSON modules at build time (content is validated by Zod at load). */
@@ -71,7 +72,7 @@ export default defineConfig({
           {
             urlPattern: new RegExp(`/assets/(${RUNTIME_CACHED.join('|')})/`),
             handler: 'CacheFirst',
-            options: { cacheName: 'hc-on-demand', expiration: { maxEntries: 400 } },
+            options: { cacheName: ON_DEMAND_CACHE, expiration: { maxEntries: 400 } },
           },
         ],
         manifestTransforms: [(entries) => precacheInfo(entries)],

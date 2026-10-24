@@ -94,6 +94,9 @@ scene:
   typeTickMs: 16
   bubbleAutoMs: 2500
   bubbleMaxChars: 64
+# loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
+loading:
+  fetchTimeoutMs: 30000
 rally: { radius: 2, damage: 2, hit: 10 }
 # Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
 classActions:

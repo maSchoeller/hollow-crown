@@ -15,6 +15,7 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "types": ["vite/client", "vite-plugin-pwa/client", "node"],
+    "allowImportingTsExtensions": true,
     "noEmit": true
   },
   "include": ["src", "tools", "tests", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"]
