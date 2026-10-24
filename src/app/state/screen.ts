@@ -12,6 +12,7 @@ export type Screen =
   | { name: 'worldmap' }
   | { name: 'dialogue'; id: string; next: () => void }
   | { name: 'prep'; node: string; from?: From }
+  | { name: 'loading' }
   | { name: 'battle' }
   | { name: 'result'; result: BattleResult }
   | { name: 'defeat' }

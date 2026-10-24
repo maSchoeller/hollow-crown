@@ -1,0 +1,58 @@
+/* Loading displays (story 7.6): the first-start stone and the loading screen before a mission. Style B. */
+@import '../../ui/tokens.css';
+
+.ld {
+  justify-content: flex-end;
+  align-items: center;
+  background: #15141a;
+  color: var(--hc-line);
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+.ld--prepare {
+  justify-content: center;
+}
+.ld-stone {
+  display: grid;
+  gap: 10px;
+  width: min(340px, 100%);
+  margin-bottom: 8vh;
+  text-align: center;
+}
+.ld--prepare .ld-stone {
+  margin-bottom: 0;
+}
+.ld-stone__kicker {
+  font-family: var(--hc-font-label);
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.ld-stone__title {
+  font-family: var(--hc-font-name);
+  font-size: var(--hc-size-name);
+  line-height: 1.15;
+}
+.ld-stone__sub {
+  color: var(--hc-soft);
+}
+.ld-stone__warn {
+  color: var(--hc-negative);
+}
+.ld-bar {
+  height: 12px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 999px;
+  background: var(--hc-cream-2);
+  overflow: hidden;
+}
+.ld-bar > i {
+  display: block;
+  height: 100%;
+  background: var(--hc-ember);
+  border-radius: 999px;
+  transition: width 200ms ease-out;
+}

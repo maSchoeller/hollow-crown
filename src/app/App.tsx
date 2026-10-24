@@ -9,13 +9,16 @@ import { Troop } from './screens/Troop';
 import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
 import { WorldMap } from './screens/WorldMap';
+import { MissionLoading, PrepareScreen } from './screens/Loading';
 import { campaign, data } from './state/session';
-import { runEffects, storyContext } from './state/flow';
+import { nodeDef, runEffects, storyContext } from './state/flow';
+import { missionLoad } from './state/loading';
+import { prepare } from './state/prepare';
 import { battle } from './state/battle';
 import { fault, reportFault } from './state/fault';
 import { screen } from './state/screen';
 import { settings } from './state/settings';
-import { lang } from '../i18n';
+import { lang, t } from '../i18n';
 
 /** Keeps the screen awake during play where supported (concept/09 §5 option). */
 function useWakeLock(): void {
@@ -49,7 +52,7 @@ export function App() {
   }, [renderError, failed]);
   return (
     <>
-      {!renderError && <Screens />}
+      {!renderError && (prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
       <SaveNotices />
       {failed && <FaultScreen />}
     </>
@@ -92,6 +95,8 @@ function Screens() {
       );
     case 'prep':
       return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
+    case 'loading':
+      return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':

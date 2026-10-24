@@ -6,6 +6,7 @@ import {
   CoreInvariantError,
   applyCommand,
   conditionContext,
+  createBattle,
   queuedFlags,
   validateEffects,
   flattenQueued,
@@ -13,6 +14,7 @@ import {
   type BattleSettings,
   type ConditionContext,
   type Effect,
+  type MapUnitDef,
 } from '../../core';
 import type { SaveRecord, SlotId } from '../../persistence/save';
 import {
@@ -30,8 +32,11 @@ import {
 import { battle, canRestart, command, pendingEvents, restartBattle, startBattle } from './battle';
 import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
-import { screen, type From } from './screen';
+import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
+import { loadManifest } from '../../render/assets';
+import { missionAssets, type ModelSource } from '../loading/plan';
+import { ensureMissionAssets } from './loading';
 
 bindLive(() => ({
   where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
@@ -61,10 +66,28 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
   const choice = campaign.value!.roster.length > map.deploy.max;
   const go = () => {
     if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
-    else pendingEvents.value = startBattle(nodeId, defaultDeploy(nodeId));
+    else void beginMission(nodeId, defaultDeploy(nodeId), opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' });
   };
   if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
   else go();
+}
+
+const defSource = (d: MapUnitDef): ModelSource => ({ portrait: d.portrait ?? d.char, sprite: d.sprite ?? d.char, classId: d.class });
+
+/**
+ * Starts the battle of a node with the chosen units. Places and unit models load on demand (decision 2026-10-24); when
+ * some are not cached yet, the loading screen shows until they are there (story 7.6), then the battle starts by itself.
+ * `back` is where the loading screen's back stone leads.
+ */
+export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
+  const node = nodeDef(nodeId);
+  const map = data.maps[node.map]!;
+  const start = createBattle(data, campaign.value!, nodeId, deploy);
+  const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
+  const models = (await loadManifest()).models?.units;
+  const paths = missionAssets({ units: [...start.units, ...later.map(defSource)], models, place: node.place });
+  if (!(await ensureMissionAssets({ node: nodeId, place: paths.find((p) => p.startsWith('locations/'))!, paths, back }))) return;
+  pendingEvents.value = startBattle(nodeId, deploy);
 }
 
 /** Starts a new campaign and plays its first node. Resolves `false` when the campaign limit is reached. */

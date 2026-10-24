@@ -1,0 +1,112 @@
+/**
+ * Loading before a mission (story 7.6): fetches the on-demand files a mission needs (place image, unit models) that are
+ * not in the cache yet, and tells the loading screen how far it is. Knows nothing of campaigns or battles; the mission
+ * flow (`flow.ts`) decides which files and what happens afterwards.
+ */
+import { signal } from '@preact/signals';
+import { failureStatus, missingAssets, type MissionLoadStatus } from '../loading/plan';
+import { screen, type Screen } from './screen';
+
+export interface MissionLoad {
+  node: string;
+  /** `locations/<place>.webp` of the loading screen */
+  place: string;
+  total: number;
+  done: number;
+  status: MissionLoadStatus;
+}
+
+/** The running mission load, `null` when none is shown. */
+export const missionLoad = signal<MissionLoad | null>(null);
+
+const PARALLEL = 3;
+/** Files that arrived in this session; also answers for browsers without a Cache API (dev server, plain http). */
+const arrived = new Set<string>();
+
+const urlOf = (path: string): string => `${import.meta.env.BASE_URL}assets/${path}`;
+
+/** Whether the file is in any cache of the service worker (or has been fetched in this session). */
+export async function isCached(path: string): Promise<boolean> {
+  if (arrived.has(path)) return true;
+  if (typeof caches === 'undefined') return false;
+  return (await caches.match(urlOf(path))) !== undefined;
+}
+
+let run = 0;
+let retryNow: (() => void) | null = null;
+let finish: ((ok: boolean) => void) | null = null;
+
+/** Fetches one file completely, so the service worker's runtime cache keeps it. */
+async function fetchFile(path: string): Promise<void> {
+  const res = await fetch(urlOf(path));
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${path}`);
+  await res.arrayBuffer();
+  arrived.add(path);
+}
+
+/**
+ * Makes sure the files are there. Everything cached: resolves `true` at once and shows nothing. Otherwise the loading
+ * screen appears and the promise resolves `true` when all files have arrived (a failed round waits for a retry: the
+ * button, or the browser coming back online) or `false` when the player leaves with the back stone (`back` is shown then).
+ */
+export async function ensureMissionAssets(opts: { node: string; place: string; paths: readonly string[]; back: Screen }): Promise<boolean> {
+  const missing = await missingAssets(opts.paths, isCached);
+  if (missing.length === 0) return true;
+  const mine = ++run;
+  const alive = () => run === mine && missionLoad.value !== null;
+  missionLoad.value = { node: opts.node, place: opts.place, total: missing.length, done: 0, status: 'loading' };
+  screen.value = { name: 'loading' };
+  const onOnline = () => retryNow?.();
+  window.addEventListener('online', onOnline);
+  const leave = (ok: boolean) => {
+    window.removeEventListener('online', onOnline);
+    retryNow = null;
+    finish = null;
+    missionLoad.value = null;
+    if (!ok) screen.value = opts.back;
+    return ok;
+  };
+  return new Promise<boolean>((resolve) => {
+    finish = (ok) => resolve(leave(ok));
+    const round = async () => {
+      let todo = missing.filter((p) => !arrived.has(p));
+      let failed = false;
+      missionLoad.value = { ...missionLoad.value!, total: missing.length, done: missing.length - todo.length, status: 'loading' };
+      const queue = [...todo];
+      const worker = async () => {
+        for (let p = queue.shift(); p !== undefined && alive(); p = queue.shift()) {
+          try {
+            await fetchFile(p);
+            if (alive()) missionLoad.value = { ...missionLoad.value!, done: missionLoad.value!.done + 1 };
+          } catch {
+            failed = true;
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(PARALLEL, queue.length) }, worker));
+      if (!alive()) return;
+      todo = missing.filter((p) => !arrived.has(p));
+      if (!failed && todo.length === 0) {
+        resolve(leave(true));
+        return;
+      }
+      missionLoad.value = { ...missionLoad.value!, status: failureStatus(navigator.onLine) };
+      retryNow = () => {
+        retryNow = null;
+        void round();
+      };
+    };
+    void round();
+  });
+}
+
+/** "Erneut versuchen" on the loading screen. */
+export function retryMissionLoad(): void {
+  retryNow?.();
+}
+
+/** The back stone of the loading screen: stops loading and returns to where the mission was started from. */
+export function cancelMissionLoad(): void {
+  run++;
+  finish?.(false);
+}
