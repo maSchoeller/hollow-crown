@@ -14,6 +14,7 @@ import { nodeShort } from '../campaignInfo';
 import { playNode } from '../state/flow';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
+import { SaveSheet } from './SaveSheet';
 import './WorldMap.css';
 
 /** How far the map zooms in on a chosen node, and where on the screen (share of the height) it comes to rest above the card. */
@@ -21,9 +22,9 @@ const ZOOM = 1.12;
 const REST_Y = 0.3;
 /** Pointer travel (px) after which a press counts as a drag and not as a tap. */
 const DRAG_THRESHOLD = 6;
-/** Share of the release speed that is kept per frame while the map glides on after a drag. */
 /** Fastest glide (px per frame) after a drag. */
 const MAX_GLIDE = 24;
+/** Share of the release speed that is kept per frame while the map glides on after a drag. */
 const INERTIA_DECAY = 0.92;
 
 /** Icon of the goal chip per victory type. */
@@ -37,6 +38,7 @@ export function WorldMap() {
   const shown = nodes.filter((n) => c.completed.includes(n.id) || c.available.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<Loaded>('loading');
   const pan = useRef<HTMLDivElement>(null);
@@ -220,6 +222,14 @@ export function WorldMap() {
         <Wallet data={data} gold={c.gold} materials={c.materials} />
         {menu && (
           <Piece class="wm-menu">
+            <SecondaryButton
+              onClick={() => {
+                setMenu(false);
+                setSaving(true);
+              }}
+            >
+              {t('ui.save.title')}
+            </SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'worldmap' } })}>{t('ui.options')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
           </Piece>
@@ -261,6 +271,7 @@ export function WorldMap() {
           </>
         )}
       </div>
+      {saving && <SaveSheet onClose={() => setSaving(false)} onToast={setToast} />}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
     </div>
   );

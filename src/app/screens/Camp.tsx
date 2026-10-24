@@ -10,17 +10,13 @@ import { asset } from '../../ui/asset';
 import { Toast, UnitCard } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
-import { listSaves, type SaveRecord } from '../../persistence/save';
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
-import { nodeDef, playNode } from '../state/flow';
 import { pendingEvents, startBattle } from '../state/battle';
 import { screen, type From } from '../state/screen';
-import { campaign, campaignCommand, campaignId, data, saveSlot } from '../state/session';
-import { downloadSave, SlotPicker } from './Menus';
+import { campaign, campaignCommand, data } from '../state/session';
 import { FigureFlow } from './Troop';
-import { Room, RoomPanel, type Apply } from './Rooms';
-import { SecondaryButton } from '../../ui/pieces';
+import { Room, type Apply } from './Rooms';
 import '../../ui/camp.css';
 
 /** Why a station is locked: the first condition that fails, in the player's words. */
@@ -32,8 +28,8 @@ function lockReason(unmet?: Condition): string {
 
 /**
  * The camp, the "home" place of the world map (story 5.3): HUD with the purse, the diorama, the stations, and the bar to
- * troop, deployment, map and save. "Set out" lives on the node card of the map; deployment and saving stay here until the
- * product owner decides where they go (story file 5-3).
+ * troop and map. "Set out" and deployment live on the node card of the map, saving in the map's round menu (product owner
+ * 2026-10-24).
  */
 export function Camp({ tab }: { tab?: string }) {
   const c = campaign.value!;
@@ -54,7 +50,6 @@ export function Camp({ tab }: { tab?: string }) {
   const rooms = homeRooms(data, c);
   const last = c.completed[c.completed.length - 1];
   const talks = availableSupportTalks(data, c).length;
-  const next = c.available[0] ? nodeDef(c.available[0]) : null;
   const room: RoomDef | undefined = open ? (data.rooms[open] ?? undefined) : undefined;
   const close = () => setOpen(null);
   return (
@@ -78,9 +73,7 @@ export function Camp({ tab }: { tab?: string }) {
         <Wallet data={data} gold={c.gold} materials={c.materials} />
       </div>
       <div class="hm__spacer" />
-      {open === 'save' ? (
-        <SavePanel onClose={close} onToast={setToast} />
-      ) : room ? (
+      {room ? (
         <Room key={room.id} room={room} apply={apply} onClose={close} />
       ) : (
         <div class="hm__stack">
@@ -115,75 +108,15 @@ export function Camp({ tab }: { tab?: string }) {
               <Icon name="company" size={26} />
               {t('ui.troop.title')}
             </button>
-            <button type="button" disabled={!next} onClick={() => next && playNode(next.id, { prep: true, from: 'camp' })}>
-              <Icon name="swap" size={26} />
-              {t('ui.hub.prep')}
-            </button>
             <button type="button" onClick={() => (screen.value = { name: 'worldmap' })}>
               <Icon name="map" size={26} />
               {t('ui.map.title')}
-            </button>
-            <button type="button" onClick={() => setOpen('save')}>
-              <Icon name="save" size={26} />
-              {t('ui.camp.save')}
             </button>
           </nav>
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
     </div>
-  );
-}
-
-function SavePanel({ onClose, onToast }: { onClose: () => void; onToast: (s: string) => void }) {
-  const [saves, setSaves] = useState<SaveRecord[]>([]);
-  const [picker, setPicker] = useState(false);
-  const classic = campaign.value?.settings.deathMode === 'classic';
-  const refresh = () => void (campaignId.value ? listSaves(campaignId.value).then(setSaves) : setSaves([]));
-  useEffect(refresh, []);
-  const auto = saves.find((s) => s.slot === 'auto');
-  return (
-    <RoomPanel title={t('ui.save.title')} desc={t('ui.battle.autosaved')} onClose={onClose}>
-      {classic ? (
-        <p class="muted">{t('ui.save.classic')}</p>
-      ) : (
-        <SecondaryButton onClick={() => setPicker(true)}>
-          <Icon name="save" size={18} /> {t('ui.save.title')}
-        </SecondaryButton>
-      )}
-      {saves
-        .filter((s) => s.slot !== 'auto')
-        .map((s) => (
-          <SecondaryButton key={s.slot} onClick={() => downloadSave(s)}>
-            <Icon name="download" size={18} /> {t('ui.save.export')} {t('ui.save.slot')} {s.slot}
-          </SecondaryButton>
-        ))}
-      {auto && (
-        <SecondaryButton onClick={() => downloadSave(auto)}>
-          <Icon name="download" size={18} /> {t('ui.save.export')} ({t('ui.save.auto')})
-        </SecondaryButton>
-      )}
-      {picker && (
-        <SlotPicker
-          save
-          saves={saves}
-          onClose={() => setPicker(false)}
-          onPick={(slot) => {
-            void saveSlot(slot).then(
-              () => {
-                setPicker(false);
-                refresh();
-                onToast(t('ui.save.done'));
-              },
-              () => {
-                setPicker(false);
-                onToast(t('ui.save.failed'));
-              },
-            );
-          }}
-        />
-      )}
-    </RoomPanel>
   );
 }
 

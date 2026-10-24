@@ -51,3 +51,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* save sheet from the world map menu (SaveSheet.tsx) */
+.save-sheet {
+  display: grid;
+  gap: var(--hc-gap);
+}
+
+.save-sheet .hc-btn > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
