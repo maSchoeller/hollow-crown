@@ -93,7 +93,7 @@ scene:
   typeCharsPerTick: 2
   typeTickMs: 16
   bubbleAutoMs: 2500
-  bubbleMaxChars: 64
+  bubbleMaxChars: 56
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000

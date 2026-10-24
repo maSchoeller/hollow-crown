@@ -243,7 +243,9 @@
 }
 .bubble {
   position: absolute;
-  max-width: min(260px, 74%);
+  /* max-content: an absolute box left of the middle would otherwise shrink to the space right of its anchor */
+  width: max-content;
+  max-width: min(260px, 74vw);
   padding: 12px 12px 9px;
   background: var(--hc-cream);
   color: var(--hc-line);

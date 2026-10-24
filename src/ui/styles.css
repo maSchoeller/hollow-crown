@@ -537,18 +537,6 @@ input[type='text']:focus {
 .gold {
   color: var(--ember-ink);
 }
-.bubble {
-  position: absolute;
-  z-index: 35;
-  max-width: 260px;
-  padding: 8px 12px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 15px;
-  transform: translate(-50%, -100%);
-  clip-path: var(--cut);
-}
-
 /* ---------- responsive: modals and the camp body on tablet and desktop (battle panels: hud.css) ---------- */
 @media (min-width: 600px) {
   .modal-back {
