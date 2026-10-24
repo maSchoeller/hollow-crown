@@ -7,6 +7,7 @@ import {
   type ActionOption,
   type BattleState,
   type BattleUnit,
+  type ClassPreview,
   type Forecast,
   type GameData,
   type ItemInstance,
@@ -262,16 +263,16 @@ export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?:
 
 /** Role symbol of a class for the dimmed class slot until the role model brings real class actions (story 2.2/2.3). */
 const ROLE_ICON: Record<string, string> = {
-  fighter: 'shield',
-  soldier: 'shield',
-  mercenary: 'blade',
+  vanguard: 'shield',
+  skirmisher: 'blade',
   captain: 'rally',
-  archer: 'bow',
-  mage: 'fire',
-  cleric: 'healer',
+  marksman: 'bow',
+  elementalist: 'fire',
+  healer: 'healer',
   tactician: 'target',
 };
-export const roleIcon = (classId: string): string => ROLE_ICON[classId] ?? 'star';
+/** Role symbol by the class's role, so pro classes show the icon of their base role. */
+export const roleIcon = (role: string): string => ROLE_ICON[role] ?? 'star';
 
 export function DockAction({
   icon,
@@ -329,7 +330,18 @@ export function HintPill({ children, reason }: { children: ComponentChildren; re
  * Combat forecast in style B: both sides with medallion, weapon and chips (triangle, element, effective), the numbers
  * of the resolution (core `forecast`, never a copy), HP after, and tandem/guard/status as chips.
  */
-export function ForecastCard({ data, state, f }: { data: GameData; state: BattleState; f: Forecast }) {
+export function ForecastCard({
+  data,
+  state,
+  f,
+  aim,
+}: {
+  data: GameData;
+  state: BattleState;
+  f: Forecast;
+  /** class action Zielen: its bonuses are shown as a chip, the numbers in `f` already contain them */
+  aim?: { hit: number; rangeBonus: number };
+}) {
   const a = state.units.find((u) => u.uid === f.attacker.uid)!;
   const d = state.units.find((u) => u.uid === f.defender.uid)!;
   const aw = f.attacker.weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === f.attacker.weaponUid) : undefined;
@@ -419,6 +431,12 @@ export function ForecastCard({ data, state, f }: { data: GameData; state: Battle
         </div>
       </div>
       <div class="hud-chips hud-fc__notes">
+        {aim && (
+          <span class="hud-chip is-gold">
+            <Icon name="aim" size={14} />
+            {t('ui.action.aim')}: {t('ui.fc.aim', { range: aim.rangeBonus, hit: aim.hit })}
+          </span>
+        )}
         {f.attacker.status
           .filter((x) => x.chance > 0)
           .map((x) => (
@@ -437,6 +455,38 @@ export function ForecastCard({ data, state, f }: { data: GameData; state: Battle
           </span>
         )}
       </div>
+    </div>
+  );
+}
+
+/** Preview of Fernbergen and Anfeuern: who is affected and what changes, from the numbers of the resolution. */
+export function ClassPreviewCard({ data, state, p }: { data: GameData; state: BattleState; p: ClassPreview }) {
+  if (p.kind === 'aim') return null;
+  const target = state.units.find((u) => u.uid === p.target)!;
+  const base = computeStats(data, target);
+  return (
+    <div class="hc-piece hud-fc">
+      <div class="hud-fc__head">
+        <Medallion u={target} hp={target.hp} max={base.maxHp} size={52} level={false} />
+        <div class="hud-fc__id">
+          <span class="hud-name hud-name--small">{unitName(target)}</span>
+          <span class="hud-chips">
+            {p.kind === 'cheer' ? (
+              <>
+                <span class="hud-chip is-adv">
+                  +{p.mov} {t('ui.stat.mov')}
+                </span>
+                <span class="hud-chip is-adv">
+                  +{p.hit} {t('ui.hit')}
+                </span>
+              </>
+            ) : (
+              <span class="hud-chip is-adv">{t('ui.preview.farRescue', { n: p.distance })}</span>
+            )}
+          </span>
+        </div>
+      </div>
+      <p class="hud-sub">{p.kind === 'cheer' ? t('ui.preview.cheer') : t('ui.preview.farRescueText')}</p>
     </div>
   );
 }

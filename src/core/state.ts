@@ -154,6 +154,8 @@ export interface BattleState {
     bossKilledWith?: string;
   };
   outcome: 'victory' | 'defeat' | null;
+  /** why the battle was lost: a unit id (a unit that had to survive fell) or 'turns' (turn limit); missing in old saves */
+  defeatReason?: string;
   settings: BattleSettings;
   convoy: ItemInstance[];
   goldGained: number;
@@ -200,6 +202,8 @@ export interface CampaignState {
   stance: Record<Stance, number>;
   /** collected chronicle pages */
   chronicle: string[];
+  /** ids of the scenes the player has seen to the end (or skipped): a seen scene can be skipped whole (story 4.5) */
+  scenesSeen: string[];
   completed: string[];
   /** node ids available on the world map */
   available: string[];

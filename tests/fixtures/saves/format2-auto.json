@@ -203,7 +203,7 @@
      "id": "brenna",
      "charId": "brenna",
      "nameKey": "unit.brenna.name",
-     "classId": "fighter",
+     "classId": "vanguard",
      "level": 3,
      "exp": 0,
      "stats": {
@@ -293,7 +293,7 @@
      "id": "tobin",
      "charId": "tobin",
      "nameKey": "unit.tobin.name",
-     "classId": "soldier",
+     "classId": "vanguard",
      "level": 1,
      "exp": 0,
      "stats": {
@@ -393,7 +393,15 @@
    ],
    "gold": 500,
    "materials": {},
-   "flags": [],
+   "flags": {},
+   "left": [],
+   "stance": {
+    "warm": 0,
+    "sober": 0,
+    "defiant": 0
+   },
+   "chronicle": [],
+   "scenesSeen": [],
    "completed": [],
    "available": [
     "prologue"
@@ -429,7 +437,12 @@
     }
    },
    "nextUid": 16,
-   "offers": []
+   "offers": [],
+   "home": {
+    "kind": "camp",
+    "rooms": {}
+   },
+   "tavern": []
   },
   "battle": {
    "start": {
@@ -684,6 +697,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -800,6 +814,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -812,7 +827,7 @@
       "id": "brenna",
       "charId": "brenna",
       "nameKey": "unit.brenna.name",
-      "classId": "fighter",
+      "classId": "vanguard",
       "level": 3,
       "exp": 0,
       "stats": {
@@ -911,6 +926,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -923,7 +939,7 @@
       "id": "tobin",
       "charId": "tobin",
       "nameKey": "unit.tobin.name",
-      "classId": "soldier",
+      "classId": "vanguard",
       "level": 1,
       "exp": 0,
       "stats": {
@@ -1015,6 +1031,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1109,6 +1126,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1119,7 +1137,7 @@
       "generic": true,
       "fromRoster": false,
       "boss": true,
-      "quote": "dlg.prologue.grosk_battle",
+      "quote": "scn.prologue.grosk_battle",
       "ai": {
        "profile": "guard"
       }
@@ -1200,6 +1218,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1287,6 +1306,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1374,6 +1394,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1470,6 +1491,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1561,6 +1583,7 @@
       "acted": false,
       "moved": false,
       "downed": false,
+      "bleed": 0,
       "status": [],
       "buffs": [],
       "usedPerMap": {},
@@ -1680,7 +1703,7 @@
      "unit": "brenna",
      "to": [
       4,
-      6
+      7
      ],
      "action": {
       "kind": "wait"
@@ -1715,21 +1738,21 @@
      "type": "act",
      "unit": "kael",
      "to": [
-      9,
-      10
+      8,
+      8
      ],
      "action": {
       "kind": "attack",
-      "target": "p_e4",
-      "weapon": "i4"
+      "target": "p_e2",
+      "weapon": "i3"
      }
     },
     {
      "type": "act",
      "unit": "brenna",
      "to": [
-      2,
-      6
+      4,
+      5
      ],
      "action": {
       "kind": "attack",
@@ -1742,7 +1765,7 @@
      "unit": "tobin",
      "to": [
       7,
-      7
+      3
      ],
      "action": {
       "kind": "wait"
@@ -1755,13 +1778,11 @@
      "type": "act",
      "unit": "avatar",
      "to": [
-      8,
-      11
+      9,
+      9
      ],
      "action": {
-      "kind": "attack",
-      "target": "p_e4",
-      "weapon": "i1"
+      "kind": "wait"
      }
     }
    ],

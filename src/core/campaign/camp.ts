@@ -1,5 +1,6 @@
 import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
 import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
+import { promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
 import { pendingRank } from '../rules/supports';
@@ -154,7 +155,7 @@ export function upgradePreview(data: GameData, inst: ItemInstance): Array<{ key:
 
 /** A unit may be promoted: level reached and the class has a promotion (the seal is checked by the command). */
 export function canPromote(data: GameData, u: UnitRecord): boolean {
-  return u.level >= data.balance.levels.promoteFrom && (data.classes[u.classId]?.promotesTo.length ?? 0) > 0;
+  return u.level >= data.balance.levels.promoteFrom && promotionTargets(data, u.classId).length > 0;
 }
 
 /** Experience bar of a unit: gained / needed for the next level; `full` at the top level. */

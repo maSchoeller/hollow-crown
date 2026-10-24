@@ -6,13 +6,17 @@ import {
   CoreInvariantError,
   applyCommand,
   conditionContext,
+  createBattle,
   queuedFlags,
   validateEffects,
   flattenQueued,
   type AvatarSettings,
   type BattleSettings,
+  type BattleState,
+  type BattleUnit,
   type ConditionContext,
   type Effect,
+  type MapUnitDef,
 } from '../../core';
 import type { SaveRecord, SlotId } from '../../persistence/save';
 import {
@@ -30,8 +34,12 @@ import {
 import { battle, canRestart, command, pendingEvents, restartBattle, startBattle } from './battle';
 import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
-import { screen, type From } from './screen';
+import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
+import { loadManifest } from '../../render/assets';
+import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
+import { ensureMissionAssets, prefetchQuietly } from './loading';
+import { settings } from './settings';
 
 bindLive(() => ({
   where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
@@ -61,10 +69,66 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
   const choice = campaign.value!.roster.length > map.deploy.max;
   const go = () => {
     if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
-    else pendingEvents.value = startBattle(nodeId, defaultDeploy(nodeId));
+    else void beginMission(nodeId, defaultDeploy(nodeId), opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' });
   };
   if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
   else go();
+}
+
+const defSource = (d: MapUnitDef): MissionUnit => ({
+  portrait: d.portrait ?? d.char,
+  sprite: d.sprite ?? d.char,
+  classId: d.class,
+  gearItems: d.items.map((i) => i.def),
+});
+
+/** A unit on the board as the loading plan sees it: its figure and the weapons it has in hand. */
+const battleSource = (u: BattleUnit): MissionUnit => ({
+  portrait: u.portrait,
+  sprite: u.sprite,
+  charId: u.charId,
+  classId: u.classId,
+  gearItems: [u.equip.mainHand?.def, u.equip.offHand?.def].filter((x): x is string => !!x),
+});
+
+/**
+ * Makes sure the on-demand files of a battle are there (place image, figures and their weapon models), with the
+ * loading screen when something is missing. Resolves `false` when the player left it with the back stone.
+ */
+async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], back: Screen): Promise<boolean> {
+  const node = nodeDef(nodeId);
+  const map = data.maps[node.map]!;
+  const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
+  const manifest = await loadManifest().catch(() => ({}) as Awaited<ReturnType<typeof loadManifest>>);
+  const place = placePath(node.place ?? data.campaign.defaultPlace);
+  const paths = missionAssets({
+    units: [...units.map(battleSource), ...later.map(defSource)],
+    models: manifest.models?.units,
+    figures: settings.value.figures,
+    sprites: manifest.units,
+    music: manifest.audio,
+    weaponModels: manifest.models?.weapons,
+    items: data.items,
+    gear: data.render.gear,
+    classes: data.classes,
+    place: node.place,
+    defaultPlace: data.campaign.defaultPlace,
+  });
+  const ok = await ensureMissionAssets({ node: nodeId, place, paths, back });
+  // camp and world map music come after the battle: fetch it in the background while the player is busy
+  if (ok) prefetchQuietly(laterMusicAssets(manifest.audio));
+  return ok;
+}
+
+/**
+ * Starts the battle of a node with the chosen units. Places and unit models load on demand (decision 2026-10-24); when
+ * some are not cached yet, the loading screen shows until they are there (story 7.6), then the battle starts by itself.
+ * `back` is where the loading screen's back stone leads.
+ */
+export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
+  const start = createBattle(data, campaign.value!, nodeId, deploy);
+  if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
+  pendingEvents.value = startBattle(nodeId, deploy);
 }
 
 /** Starts a new campaign and plays its first node. Resolves `false` when the campaign limit is reached. */
@@ -107,11 +171,28 @@ export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): vo
       throw e;
     }
     battle.value = { start: p.battle.start, state: s, log: [...p.battle.commands], effects: p.battle.effects ?? [] };
-    screen.value = { name: 'battle' };
+    void showRestoredBattle(s);
   } else {
     battle.value = null;
     screen.value = { name: 'worldmap' }; // the world map is the hub (story 5.3), also on "Continue"
   }
+}
+
+/**
+ * A restored running battle goes through the same loading as a new one (story 7.6): the board only shows once its place
+ * image, figures and weapon models are there. Leaving the loading screen drops the restored battle (the save stays).
+ */
+async function showRestoredBattle(s: BattleState): Promise<void> {
+  const mine = battle.value;
+  let ok = true;
+  try {
+    ok = await ensureBattleAssets(s.nodeId, s.units, { name: 'title' });
+  } catch (e) {
+    log.warn('core', 'loading the assets of a restored battle failed', e);
+  }
+  if (battle.value !== mine) return; // something else took over while loading
+  if (ok) screen.value = { name: 'battle' };
+  else battle.value = null;
 }
 
 /** Battle ended: apply results, show outro and result screen. */
@@ -141,6 +222,14 @@ export function storyContext(): ConditionContext {
   // flags set by answers earlier in this battle count although they are only queued (see `runEffects`)
   const b = inBattle();
   return conditionContext(data, campaign.value, b ? queuedFlags(b.effects) : {});
+}
+
+/** Whether the running campaign has seen scene `id` (a scene read before is shown as skippable whole). */
+export const isSceneSeen = (id: string): boolean => campaign.value?.scenesSeen.includes(id) ?? false;
+
+/** Records that scene `id` was seen to the end or skipped (idempotent; a record only, no story state). */
+export function markSceneSeen(id: string): void {
+  if (!isSceneSeen(id)) campaignCommand({ type: 'markSceneSeen', scene: id });
 }
 
 function inBattle() {

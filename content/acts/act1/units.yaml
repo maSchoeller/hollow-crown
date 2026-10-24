@@ -29,7 +29,7 @@
 
 - id: brenna
   nameKey: unit.brenna.name
-  class: fighter
+  class: vanguard
   level: 3
   affinity: fire
   personalSkill: veteran_grit
@@ -41,7 +41,7 @@
 
 - id: tobin
   nameKey: unit.tobin.name
-  class: soldier
+  class: vanguard
   level: 1
   affinity: wind
   personalSkill: underdog
@@ -53,7 +53,7 @@
 
 - id: mira
   nameKey: unit.mira.name
-  class: archer
+  class: marksman
   level: 3
   affinity: wind
   personalSkill: poacher
@@ -65,7 +65,7 @@
 
 - id: liora
   nameKey: unit.liora.name
-  class: cleric
+  class: healer
   level: 3
   affinity: light
   personalSkill: foresight
@@ -78,26 +78,26 @@
 
 - id: varek
   nameKey: unit.varek.name
-  class: mercenary
+  class: skirmisher
   level: 5
   affinity: dark
   personalSkill: gamblers_luck
   base:   { hp: 21, str: 7, mag: 0, skl: 10, spd: 10, lck: 2, def: 4, res: 2 }
   growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
   items: [ { def: steel_sword }, { def: slim_sword }, { def: leather_vest } ]
-  recruit: { chapter: ch02, by: [kael], dialogue: dlg.ch02.varek_talk }   # startet als Gegner
+  recruit: { chapter: ch02, by: [kael], dialogue: scn.ch02.varek_talk }   # startet als Gegner
   supports: [brenna]
   joins: ch02
 
 - id: ysolde
   nameKey: unit.ysolde.name
-  class: mage
+  class: elementalist
   level: 5
   affinity: fire
   personalSkill: prodigy
   base:   { hp: 17, str: 0, mag: 9, skl: 6, spd: 7, lck: 3, def: 2, res: 6 }
   growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
   items: [ { def: ember }, { def: gust } ]
-  recruit: { chapter: ch03, by: any, condition: door_opened, dialogue: dlg.ch03.ysolde_cell }
+  recruit: { chapter: ch03, by: any, condition: door_opened, dialogue: scn.ch03.ysolde_cell }
   supports: [liora]
   joins: ch03

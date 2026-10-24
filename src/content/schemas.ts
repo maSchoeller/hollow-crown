@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/defs';
-import { PERMANENT_COMPANIONS } from '../core/defs';
+import { PERMANENT_COMPANIONS, WEAPON_GROUPS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -9,7 +9,8 @@ const statMods = z
   .object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat, mov: stat })
   .partial();
 const element = z.enum(['fire', 'wind', 'earth', 'water', 'light', 'dark']);
-const weaponType = z.enum(['sword', 'lance', 'axe', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
+const weaponType = z.enum(['sword', 'lance', 'axe', 'dagger', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
+const weaponGroup = z.enum(WEAPON_GROUPS);
 const moveType = z.enum(['foot', 'armored', 'mounted', 'flier', 'monster']);
 const statusId = z.enum(['burning', 'wet', 'slowed', 'knockback']);
 const rarity = z.enum(['common', 'rare', 'epic', 'legendary']);
@@ -34,6 +35,7 @@ export const itemSchema = z.object({
   kind: z.enum(['weapon', 'tome', 'staff', 'shield', 'armor', 'accessory', 'consumable', 'key', 'seal', 'material', 'rune']),
   slot: z.enum(['mainHand', 'offHand', 'head', 'body', 'accessory', 'bag']),
   weaponType: weaponType.optional(),
+  group: weaponGroup.optional(),
   damageType: z.enum(['physical', 'magical']).optional(),
   element: element.optional(),
   mt: z.number().optional(),
@@ -134,21 +136,25 @@ export const setSchema = z.object({
 
 export const classSchema = z.object({
   id: z.string(),
-  tier: z.enum(['base', 'advanced', 'unique']),
+  role: z.string(),
+  tier: z.enum(['base', 'pro', 'unique']),
   roleGroup: z.enum(['melee', 'ranged', 'support']),
   moveType,
   mov: z.number().int(),
-  weapons: z.array(weaponType),
+  weaponGroups: z.array(weaponGroup).min(1),
+  classAction: z.object({ id: z.string(), kind: z.enum(['passive', 'active']), perMap: z.number().int().positive().optional() }).optional(),
+  proPaths: z.array(z.string()).max(2).default([]),
+  legacyIds: z.array(z.string()).default([]),
   tags: z.array(z.string()),
   skill: z.string().optional(),
   base: statsSchema,
   growth: statsSchema,
   growthMod: partialStats,
   caps: statsSchema,
-  promotesTo: z.array(z.string()).default([]),
   promotionBonus: partialStats.optional(),
   playable: z.boolean(),
   sprite: z.string().optional(),
+  art: z.string().optional(),
 });
 
 export const charSchema = z.object({
@@ -403,6 +409,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
   ]),
 );
 export const conditionsSchema = z.union([conditionSchema, z.array(conditionSchema)]);
+const conditionsListSchema = z.array(conditionSchema);
 
 export const roomSchema = z.object({
   id: z.string(),
@@ -437,20 +444,33 @@ export const flagSchema = z.object({
   season2: z.boolean().optional(),
 });
 
-export const dialogueSchema = z.object({
+const chainSchema = z.array(z.string()).min(1).refine((c) => new Set(c).size === c.length, 'duplicate speaker in chain');
+const moodSchema = z.enum(['neutral', 'happy', 'angry', 'sad']);
+const lineId = z.string().regex(/^[a-z][a-z0-9_]*$/);
+
+/** Scene `acts/actN/scenes/<id>.yaml` (architecture §5.8); German text sits in the scene, English in the locale file. */
+export const sceneSchema = z.strictObject({
   id: z.string(),
   background: z.string().optional(),
   music: z.string().optional(),
   lines: z.array(
     z.union([
-      z.object({
-        speaker: z.string().optional(),
-        mood: z.string().optional(),
-        side: z.enum(['left', 'right']).optional(),
-        key: z.string(),
-        if: conditionsSchema.optional(),
+      z.strictObject({
+        id: lineId,
+        speaker: chainSchema.optional(),
+        fallback: z.literal('skip').optional(),
+        mood: moodSchema.default('neutral'),
+        text: z.string().min(1),
+        requires: conditionsListSchema.optional(),
+        memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),
-      z.object({ choice: z.array(z.object({ key: z.string(), effects: z.array(effectSchema).optional() })) }),
+      z.strictObject({
+        id: lineId,
+        requires: conditionsListSchema.optional(),
+        choice: z
+          .array(z.strictObject({ id: lineId, text: z.string().min(1), stance: z.enum(['warm', 'sober', 'defiant']), effects: z.array(effectSchema).optional() }))
+          .min(2),
+      }),
     ]),
   ),
 });
@@ -459,6 +479,7 @@ export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
   start: z.string(),
   startGold: z.number(),
+  defaultPlace: z.string(),
   startConvoy: z.array(itemRefSchema).default([]),
   nodes: z.array(
     z.object({
@@ -469,6 +490,7 @@ export const campaignSchema = z.object({
       post: z.string().optional(),
       next: z.array(z.string()),
       pos,
+      place: z.string().optional(),
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
@@ -543,8 +565,22 @@ export const balanceSchema = z.object({
   levels: z.record(z.string(), z.number()),
   skills: z.record(z.string(), z.number()),
   death: z.record(z.string(), z.number()),
+  scene: z.strictObject({
+    autoBaseMs: z.number().int().min(0),
+    autoPerCharMs: z.number().int().min(0),
+    typeCharsPerTick: z.number().int().min(1),
+    typeTickMs: z.number().int().min(1),
+    bubbleAutoMs: z.number().int().min(500),
+    bubbleMaxChars: z.number().int().min(20),
+  }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
+  classActions: z.object({
+    aim: z.object({ rangeBonus: z.number().int().min(0), hit: z.number() }),
+    farRescue: z.object({ range: z.number().int().min(1) }),
+    cheer: z.object({ mov: z.number().int(), hit: z.number() }),
+  }),
   bag: z.object({ size: z.number().int() }),
   economy: z.looseObject({
     rarityAffixes: z.record(z.string(), z.number()),

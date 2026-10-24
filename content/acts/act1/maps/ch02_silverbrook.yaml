@@ -42,8 +42,8 @@ sun: { color: "#fff4e0", intensity: 1.15, azimuthDeg: 300, elevationDeg: 50 }   
 lights:
   - { at: [9, 2], color: "#fff1c4", radius: 3 }
 objects:
-  - { id: v_mill, type: village, at: [11, 12], reward: { item: { def: vulnerary }, dialogue: dlg.ch02.village_mill } }
-  - { id: v_herb, type: village, at: [3, 15], reward: { item: { def: water_rune_1 }, dialogue: dlg.ch02.village_herb } }
+  - { id: v_mill, type: village, at: [11, 12], reward: { item: { def: vulnerary }, dialogue: scn.ch02.village_mill } }
+  - { id: v_herb, type: village, at: [3, 15], reward: { item: { def: water_rune_1 }, dialogue: scn.ch02.village_herb } }
 initialEffects: []
 deploy:
   max: 6
@@ -52,12 +52,12 @@ deploy:
 # Neue Mechaniken: Magie (Rhens Glut-Folio, gegnerische Magierin, Lioras Heilstab) und Anwerben
 # durch Ansprechen (Kael → Varek). Element-Kreis und Unterstützungen folgen später (campaign.yaml mechanics).
 units:
-  - { char: liora, id: liora, team: other, class: cleric, level: 3, at: [9, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }], ai: { profile: hold } }
+  - { char: liora, id: liora, team: other, class: healer, level: 3, at: [9, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }], ai: { profile: hold } }
   - id: morra
     nameKey: unit.morra.name
     team: enemy
-    class: mercenary
-    level: 6
+    class: skirmisher
+    level: 5
     at: [5, 3]
     boss: true
     sprite: morra
@@ -65,45 +65,45 @@ units:
     items: [ { def: steel_sword }, { def: vulnerary } ]
     drops: [1]
     ai: { profile: trigger, radius: 2, then: aggressive }
-    quote: dlg.ch02.morra_battle
+    quote: scn.ch02.morra_battle
   - id: varek
     char: varek
     team: enemy
-    class: mercenary
+    class: skirmisher
     level: 5
     at: [13, 5]
     items: []
-    ai: { profile: trigger, radius: 2, then: aggressive }
-    recruit: { by: [kael], dialogue: dlg.ch02.varek_talk }
-  - { id: m1, team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [4, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m2, team: enemy, class: archer, sprite: archer, level: 3, at: [13, 13], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: m3, team: enemy, class: fighter, sprite: fighter, level: 3, at: [5, 10], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: m4, team: enemy, class: soldier, sprite: soldier, level: 3, at: [8, 9], items: [{ def: iron_lance }], ai: { profile: hold } }
-  - { id: m5, team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [12, 9], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m6, team: enemy, class: mage, sprite: mage, level: 3, at: [11, 5], items: [{ def: ember }], ai: { profile: hold }, difficulty: [normal, hard] }   # Lehrstück Magie: steht, trifft auf 1–2 Felder
-  - { id: m6e, team: enemy, class: mage, sprite: mage, level: 3, at: [12, 4], items: [{ def: ember }], ai: { profile: hold }, difficulty: [easy] }   # Leicht: ein Feld abseits des Schrein-Wegs
+    ai: { profile: hold }
+    recruit: { by: [kael], dialogue: scn.ch02.varek_talk }
+  - { id: m1, team: enemy, class: brigand, sprite: brigand, level: 2, at: [4, 12], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m2, team: enemy, class: marksman, sprite: archer, level: 2, at: [13, 13], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: m3, team: enemy, class: vanguard, sprite: fighter, level: 2, at: [5, 10], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m4, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [8, 9], items: [{ def: iron_lance }], ai: { profile: hold } }
+  - { id: m5, team: enemy, class: brigand, sprite: brigand, level: 2, at: [12, 9], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m6, team: enemy, class: elementalist, sprite: mage, level: 2, at: [11, 5], items: [{ def: ember }], ai: { profile: hold }, difficulty: [normal, hard] }   # Lehrstück Magie: steht, trifft auf 1–2 Felder
+  - { id: m6e, team: enemy, class: elementalist, sprite: mage, level: 3, at: [12, 4], items: [{ def: ember }], ai: { profile: hold }, difficulty: [easy] }   # Leicht: ein Feld abseits des Schrein-Wegs
 pairs: []
 reinforcements:
   - turn: 3
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: mercenary, sprite: mercenary, level: 2, at: [2, 6], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { team: enemy, class: fighter, sprite: fighter, level: 2, at: [15, 6], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { team: enemy, class: brigand, sprite: brigand, level: 2, at: [2, 6], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { team: enemy, class: vanguard, sprite: fighter, level: 2, at: [15, 6], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: archer, sprite: archer, level: 3, at: [0, 10], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal] }   # Normal: Flanke statt Schrein
-      - { team: enemy, class: archer, sprite: archer, level: 3, at: [0, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { team: enemy, class: mercenary, sprite: mercenary, level: 3, at: [17, 2], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: marksman, sprite: archer, level: 3, at: [0, 10], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal] }   # Normal: Flanke statt Schrein
+      - { team: enemy, class: marksman, sprite: archer, level: 3, at: [0, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [17, 2], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   - turn: 7
     phase: enemy
     announce: true
     units:
-      - { team: enemy, class: fighter, sprite: fighter, level: 4, at: [2, 17], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-      - { team: enemy, class: soldier, sprite: soldier, level: 4, at: [15, 17], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { team: enemy, class: mage, sprite: mage, level: 4, at: [17, 2], items: [{ def: ember }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: vanguard, sprite: fighter, level: 3, at: [2, 17], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 17], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { team: enemy, class: elementalist, sprite: mage, level: 3, at: [17, 2], items: [{ def: ember }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: defend, unit: liora, turns: 8 }
   defeat:
@@ -118,20 +118,20 @@ triggers:
   - id: t_intro
     when: { type: turn_start, turn: 1, phase: player }
     then:
-      - { action: dialogue, id: dlg.ch02.tutorial_magic }
+      - { action: dialogue, id: scn.ch02.tutorial_magic }
   - id: t_varek_hint
     once: true
     when: { type: unit_enters, team: player, area: { rect: [8, 5, 15, 11] } }
     then:
-      - { action: dialogue, id: dlg.ch02.tutorial_talk }
+      - { action: dialogue, id: scn.ch02.tutorial_talk }
   - id: t_varek_near
     when: { type: unit_enters, unit: kael, area: { rect: [10, 3, 15, 9] } }
     then:
-      - { action: dialogue, id: dlg.ch02.varek_spotted }
+      - { action: dialogue, id: scn.ch02.varek_spotted }
   - id: t_reinforce
     when: { type: turn_start, turn: 3, phase: enemy }
     then:
-      - { action: dialogue, id: dlg.ch02.reinforcements }
+      - { action: dialogue, id: scn.ch02.reinforcements }
 goldReward: 1200
 music: battle_a
 devNote: >

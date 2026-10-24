@@ -6,6 +6,7 @@ import {
   applyCommand,
   computeStats,
   dist,
+  groupAllowed,
   itemDef,
   nearConvoy,
   ruleOn,
@@ -100,7 +101,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
           <Medallion u={u} hp={hp} max={st.maxHp} size={92} />
           <div class="bp-info__id">
             <span class="bp-role">
-              <Icon name={roleIcon(u.classId)} size={15} />
+              <Icon name={roleIcon(data.classes[u.classId]!.role)} size={15} />
               {t(`class.${u.classId}.name`)}
               <i>
                 {t('ui.lv')} {u.level}
@@ -145,7 +146,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
           {items.length === 0 && <div class="bp-empty">{t('ui.unarmed')}</div>}
           {items.map(({ inst, slot }) => {
             const d = itemDef(data, inst);
-            const canSwap = canEdit && slot === 'bag' && d.slot === 'mainHand' && !!d.weaponType && data.classes[u.classId]!.weapons.includes(d.weaponType);
+            const canSwap = canEdit && slot === 'bag' && d.slot === 'mainHand' && !!d.weaponType && groupAllowed(data.classes[u.classId]!, d);
             return (
               <ItemLine
                 key={inst.uid}

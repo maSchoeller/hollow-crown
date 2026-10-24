@@ -1,8 +1,0 @@
-id: dlg.support.brenna_tobin.C
-background: bg_camp_night
-music: camp
-lines:
-  - { speaker: tobin, mood: happy, side: right, key: dlg.support.brenna_tobin.C.001 }
-  - { speaker: brenna, mood: happy, side: left, key: dlg.support.brenna_tobin.C.002 }
-  - { speaker: tobin, mood: neutral, side: right, key: dlg.support.brenna_tobin.C.003 }
-  - { speaker: brenna, mood: sad, side: left, key: dlg.support.brenna_tobin.C.004 }

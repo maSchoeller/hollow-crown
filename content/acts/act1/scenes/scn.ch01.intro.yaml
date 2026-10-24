@@ -1,0 +1,47 @@
+id: scn.ch01.intro
+background: bg_varnhold_burning
+music: tense
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Hauptmann! Die Stadt brennt – und die Leute sagen, der König ist tot!"
+  - id: l02
+    speaker: [kael]
+    mood: angry
+    text: "Tot? Aldric war gesund wie ein Ochse, als ich ihn zuletzt bewacht habe."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Marodeure nutzen die Nachricht schneller als jeder Herold."
+  - id: l03b
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Wir müssen über die Brücke, bevor sie sie einreißen."
+  - id: l04
+    speaker: [kael]
+    mood: sad
+    text: "{avatar}. Du wolltest beweisen, dass du mehr kannst als Karten lesen. Jetzt ist die Gelegenheit."
+  - id: c01
+    choice:
+      - id: cautious
+        stance: sober
+        text: "„Wir bleiben zusammen und meiden das Feuer.“"
+        effects: [{ setFlag: avatar_cautious }]
+      - id: bold
+        stance: defiant
+        text: "„Wir schlagen eine Schneise mitten hindurch.“"
+        effects: [{ setFlag: avatar_bold }]
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Vorsichtig. Gut. Tote Söldner kassieren keinen Sold."
+    requires: [{ flag: avatar_cautious }]
+  - id: l06
+    speaker: [kael]
+    mood: happy
+    text: "Mutig. Hoffen wir, dass das Feuer das auch so sieht."
+    requires: [{ flag: avatar_bold }]

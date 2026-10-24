@@ -9,7 +9,17 @@ export type StatMods = Partial<Record<StatKey | 'mov', number>>;
 
 export const ELEMENTS = ['fire', 'wind', 'earth', 'water', 'light', 'dark'] as const;
 export type Element = (typeof ELEMENTS)[number];
-export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow' | 'anima' | 'light' | 'dark' | 'staff' | 'breath';
+export type WeaponType = 'sword' | 'lance' | 'axe' | 'dagger' | 'bow' | 'anima' | 'light' | 'dark' | 'staff' | 'breath';
+/**
+ * Weapon group of an item (items.md §4): what a role may carry. `weaponType` stays the rules type of a weapon
+ * (triangle, ranged/melee); the group decides who may equip it, so shields, foci and lutes have a group, too.
+ */
+export const WEAPON_GROUPS = [
+  'sword', 'lance', 'axe', 'dagger', 'bow', 'light_bow', 'anima', 'light', 'dark', 'staff', 'shield', 'focus', 'lute', 'breath',
+] as const;
+export type WeaponGroup = (typeof WEAPON_GROUPS)[number];
+/** The seven core roles plus the two single roles of the main characters (GDD Rollenklassen). */
+export const CORE_ROLES = ['vanguard', 'skirmisher', 'marksman', 'elementalist', 'healer', 'scout', 'minstrel', 'tactician', 'captain'] as const;
 export type MoveType = 'foot' | 'armored' | 'mounted' | 'flier' | 'monster';
 export type Team = 'player' | 'enemy' | 'other';
 export type StatusId = 'burning' | 'wet' | 'slowed' | 'knockback';
@@ -56,6 +66,8 @@ export interface ItemDef {
   kind: 'weapon' | 'tome' | 'staff' | 'shield' | 'armor' | 'accessory' | 'consumable' | 'key' | 'seal' | 'material' | 'rune';
   slot: ItemSlot;
   weaponType?: WeaponType;
+  /** weapon group: required for weapons, tomes, staves and shields; foci and lutes are accessories with a group */
+  group?: WeaponGroup;
   damageType?: 'physical' | 'magical';
   element?: Element;
   mt?: number;
@@ -130,23 +142,41 @@ export interface SetDef {
 export type RoleGroup = 'melee' | 'ranged' | 'support';
 export const ROLE_GROUPS: readonly RoleGroup[] = ['melee', 'ranged', 'support'];
 
+/** Class action of a role (GDD Rollenklassen). Only data here; the actions themselves arrive with Epic 2. */
+export interface ClassAction {
+  id: string;
+  /** passive rules need no button; active ones replace the action of the turn */
+  kind: 'passive' | 'active';
+  /** limited uses per map (Befehl, Sammelruf) */
+  perMap?: number;
+}
+
+/** A class is a role (GDD): movement, allowed weapon groups, class action, growth. Weapons and skills come from gear. */
 export interface ClassDef {
   id: string;
-  tier: 'base' | 'advanced' | 'unique';
+  /** core role (vanguard …), `tactician`, `captain` or an enemy type; pro classes name the role they promote from */
+  role: string;
+  tier: 'base' | 'pro' | 'unique';
   roleGroup: RoleGroup;
   moveType: MoveType;
   mov: number;
-  weapons: WeaponType[];
+  weaponGroups: WeaponGroup[];
+  classAction?: ClassAction;
+  /** the two pro paths of a base role (ids of pro classes; undefined ids are defined with the academy) */
+  proPaths: string[];
+  /** class ids this class replaced (saves written before story 2.2 still name them) */
+  legacyIds?: string[];
   tags: string[];
   skill?: string;
   base: Stats;
   growth: Stats;
   growthMod: Partial<Stats>;
   caps: Stats;
-  promotesTo: string[];
   promotionBonus?: Partial<Stats>;
   playable: boolean;
   sprite?: string;
+  /** portrait id for generic units: art class_<art> (defaults to the class id) */
+  art?: string;
 }
 
 export interface ItemRef {
@@ -428,15 +458,45 @@ export interface FlagDef {
   season2?: boolean;
 }
 
-export type DialogueLine =
-  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: Condition | Condition[] }
-  | { choice: Array<{ key: string; effects?: Effect[] }> };
+/** Moods a scene line may carry (architecture §5.8). */
+export type Mood = 'neutral' | 'happy' | 'angry' | 'sad';
+export const MOODS: readonly Mood[] = ['neutral', 'happy', 'angry', 'sad'];
 
-export interface DialogueDef {
+/** One answer of a scene choice; its text key is `dlg.<scene>.<line>.<id>`. */
+export interface SceneOption {
+  id: string;
+  text: string;
+  stance: Stance;
+  effects?: Effect[];
+}
+
+/** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
+export interface SceneSpeech {
+  id: string;
+  /** replacement chain: the first companion still with the company speaks; avatar and kael always are */
+  speaker?: string[];
+  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/kael) */
+  fallback?: 'skip';
+  mood: Mood;
+  text: string;
+  requires?: Condition[];
+  /** extra line (key `….memorial`) after this one when the first figure of the chain has fallen */
+  memorial?: { speaker: string[]; text: string; mood: Mood };
+}
+
+export interface SceneChoice {
+  id: string;
+  choice: SceneOption[];
+  requires?: Condition[];
+}
+
+export type SceneLine = SceneSpeech | SceneChoice;
+
+export interface SceneDef {
   id: string;
   background?: string;
   music?: string;
-  lines: DialogueLine[];
+  lines: SceneLine[];
 }
 
 export interface CampaignNodeDef {
@@ -447,6 +507,8 @@ export interface CampaignNodeDef {
   post?: string;
   next: string[];
   pos: Pos;
+  /** place image shown while the mission loads: a location (`locations/<place>`) or a background as `backgrounds/<id>`; default: the camp on the road */
+  place?: string;
   merchantTier: number;
   /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */
   expectedLevel: number;
@@ -475,6 +537,8 @@ export interface RoomDef {
 export interface CampaignDef {
   /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
   act: number;
+  /** place image of a node without its own `place` (`locations/<defaultPlace>.webp`) */
+  defaultPlace: string;
   nodes: CampaignNodeDef[];
   /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
   mechanics: Partial<Record<Mechanic, string>>;
@@ -571,8 +635,25 @@ export interface Balance {
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
+  /** timing and size of scenes and speech bubbles (story 4.5) */
+  scene: {
+    /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */
+    autoBaseMs: number;
+    autoPerCharMs: number;
+    /** typewriter: characters shown per tick */
+    typeCharsPerTick: number;
+    typeTickMs: number;
+    /** speech bubble: how long it stays in auto mode */
+    bubbleAutoMs: number;
+    /** speech bubble: characters per page (two lines) */
+    bubbleMaxChars: number;
+  };
+  /** loading of on-demand files before a mission */
+  loading: { fetchTimeoutMs: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
+  /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */
+  classActions: { aim: { rangeBonus: number; hit: number }; farRescue: { range: number }; cheer: { mov: number; hit: number } };
   bag: { size: number };
   economy: {
     sellRatio: number;
@@ -674,7 +755,7 @@ export interface GameData {
   rooms: Record<string, RoomDef>;
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
-  dialogues: Record<string, DialogueDef>;
+  scenes: Record<string, SceneDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
   campaign: CampaignDef;

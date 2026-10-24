@@ -60,7 +60,7 @@ describe('equip list and comparison (story 6.2)', () => {
     c.convoy.push(newItem(c, 'iron_sword', data), newItem(c, 'hand_axe', data), newItem(c, 'leather_cap', data));
     const list = equipCandidates(data, c, unit(c, 'brenna'), 'mainHand');
     const sword = list.find((x) => x.inst.def === 'iron_sword')!;
-    expect(sword.error).toBe('weapon_type');
+    expect(sword.error).toBe('weapon_group');
     expect(list.find((x) => x.inst.def === 'hand_axe')!.error).toBeNull();
     expect(list.some((x) => x.inst.def === 'leather_cap')).toBe(false);
     // her own spare axe sits in the bag and is offered too

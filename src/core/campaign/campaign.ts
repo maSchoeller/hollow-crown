@@ -28,6 +28,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     left: [],
     stance: { warm: 0, sober: 0, defiant: 0 },
     chronicle: [],
+    scenesSeen: [],
     completed: [],
     available: [data.campaign.start],
     supports: {},
@@ -47,7 +48,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
 
 /** Fills fields a saved campaign may lack (architecture §8.7: new persisted fields get a default on load). */
 export function normalizeCampaign(c: CampaignState): CampaignState {
-  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[] };
+  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[]; scenesSeen?: string[] };
   return {
     ...c,
     // format 2 as the PoC wrote it kept a list of flag names
@@ -55,9 +56,36 @@ export function normalizeCampaign(c: CampaignState): CampaignState {
     left: old.left ?? [],
     stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
     chronicle: old.chronicle ?? [],
+    scenesSeen: old.scenesSeen ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
   };
+}
+
+/** Old class id → its replacement, from `legacyIds` in classes.yaml. */
+function legacyClassIds(data: GameData): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const cls of Object.values(data.classes)) for (const old of cls.legacyIds ?? []) out.set(old, cls.id);
+  return out;
+}
+
+function renameClasses<T extends { classId: string }>(units: T[], map: Map<string, string>): T[] {
+  return units.map((u) => (map.has(u.classId) ? { ...u, classId: map.get(u.classId)! } : u));
+}
+
+/** Saves written before story 2.2 name the old weapon classes (`mercenary` …); they map onto the roles that replaced them. */
+export function renameLegacyClasses(data: GameData, c: CampaignState): CampaignState {
+  const map = legacyClassIds(data);
+  return { ...c, roster: renameClasses(c.roster, map), tavern: renameClasses(c.tavern, map) };
+}
+
+/**
+ * Same for a saved battle's start state. The command log refers to units by id, but the new classes differ in skills and
+ * movement (fighter → vanguard, …), so an old log may no longer replay: `restore` (app/state/flow.ts) then reports the
+ * rejected command as a fault and the player lands on the fault screen instead of a half-restored battle.
+ */
+export function renameLegacyBattleClasses(data: GameData, s: BattleState): BattleState {
+  return { ...s, units: renameClasses(s.units, legacyClassIds(data)) };
 }
 
 export interface UnitResult {
@@ -68,6 +96,19 @@ export interface UnitResult {
   levelAfter: number;
   exp: number;
   mastered: string[];
+  portrait?: string;
+  classId?: string;
+}
+
+/** Bounty for a lieutenant driven off in a mission, and the grudge it leaves (Epic 3 fills this; empty until then). */
+export interface BountyResult {
+  id: string;
+  nameKey: string;
+  name?: string;
+  portrait?: string;
+  gold: number;
+  /** grudge level after this mission */
+  grudge: number;
 }
 
 export interface BattleResult {
@@ -79,7 +120,9 @@ export interface BattleResult {
   materials: Record<string, number>;
   items: ItemInstance[];
   units: UnitResult[];
-  fallen: Array<{ id: string; nameKey: string; name?: string }>;
+  fallen: Array<{ id: string; nameKey: string; name?: string; portrait?: string; classId?: string }>;
+  /** lieutenants driven off (bounty + new grudge); empty while there are none */
+  bounty: BountyResult[];
   scars: Array<{ id: string; scar: string }>;
   recruited: string[];
   supportsReady: string[];
@@ -152,6 +195,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     items: [],
     units: [],
     fallen: [],
+    bounty: [],
     scars: [],
     recruited: [],
     supportsReady: [],
@@ -173,7 +217,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (dies) {
       c.roster = c.roster.filter((r) => r.id !== u.id);
       c.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, node: s.nodeId });
-      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name });
+      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, portrait: u.portrait, classId: u.classId });
       c.convoy.push(...allItems(u));
       continue;
     }
@@ -214,6 +258,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       levelBefore: before?.level ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
+      portrait: u.portrait,
+      classId: u.classId,
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
     });
   }

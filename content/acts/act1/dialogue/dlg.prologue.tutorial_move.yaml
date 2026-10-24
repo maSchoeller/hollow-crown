@@ -1,4 +1,0 @@
-id: dlg.prologue.tutorial_move
-lines:
-  - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.tutorial_move.001 }
-  - { speaker: brenna, mood: neutral, side: right, key: dlg.prologue.tutorial_move.002 }

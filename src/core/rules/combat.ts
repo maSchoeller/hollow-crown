@@ -31,6 +31,11 @@ export interface SideForecast {
   skills: string[];
 }
 
+/** Extra numbers of the attacker for one attack (class action Zielen); the same object feeds forecast and resolution. */
+export interface AttackMods {
+  hit?: number;
+}
+
 export interface Forecast {
   attacker: SideForecast;
   defender: SideForecast;
@@ -95,6 +100,7 @@ function calcSide(
   oppWeapon: ItemInstance | undefined,
   initiator: boolean,
   distance: number,
+  extraHit = 0,
 ): SideCalc {
   const b = data.balance;
   const wp = weapon && itemDef(data, weapon).mt !== undefined ? weaponProfile(data, weapon) : undefined;
@@ -150,7 +156,8 @@ function calcSide(
       Math.floor(stats.stats.lck / b.combat.hitPerLckDivisor) +
       tri * b.triangle.hit +
       stats.hit +
-      myBonus.hit;
+      myBonus.hit +
+      extraHit;
     const avoid = b.combat.avoidPerAs * oppStats.as + oppStats.stats.lck + terrAvoid + oppStats.avoid + oppBonus.avoid;
     hit = clamp(hitRaw - avoid, 0, 100);
     const critRaw = wp.crit + Math.floor(stats.stats.skl / b.combat.critPerSklDivisor) + stats.crit + myBonus.crit;
@@ -233,6 +240,7 @@ export function forecast(
   weaponUid?: string,
   fromPos?: Pos,
   ownPhase = true,
+  mods?: AttackMods,
 ): Forecast {
   const a = getUnit(s, attackerUid);
   const d = getUnit(s, defenderUid);
@@ -245,7 +253,7 @@ export function forecast(
   const savedPos = a.pos;
   a.pos = aPos;
   try {
-    const ac = calcSide(data, s, a, aPos, d, dPos, aWeapon, dWeapon, true, distance);
+    const ac = calcSide(data, s, a, aPos, d, dPos, aWeapon, dWeapon, true, distance, mods?.hit ?? 0);
     const dc = calcSide(data, s, d, dPos, a, aPos, dWeapon, aWeapon, false, distance);
     ac.side.canStrike = !!ac.wp;
     let dCan = !!dc.wp && !d.downed && active(d);
@@ -364,12 +372,13 @@ export function resolveAttack(
   defenderUid: string,
   weaponUid: string | undefined,
   events: GameEvent[],
+  mods?: AttackMods,
 ): void {
   const a = getUnit(s, attackerUid);
   const d = getUnit(s, defenderUid);
   if (weaponUid) equipWeapon(data, a, weaponUid, events);
   const ownPhase = a.team === s.phase;
-  const f = forecast(data, s, a.uid, d.uid, a.equip.mainHand?.uid, undefined, ownPhase);
+  const f = forecast(data, s, a.uid, d.uid, a.equip.mainHand?.uid, undefined, ownPhase, mods);
   const aWp = a.equip.mainHand ? weaponProfile(data, a.equip.mainHand) : undefined;
   const dWp = d.equip.mainHand ? weaponProfile(data, d.equip.mainHand) : undefined;
   const aProcs = computeStats(data, a, { state: s, opponent: d, initiator: true, distance: f.distance }, 'combat_attack').skills.procs;

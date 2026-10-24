@@ -12,7 +12,7 @@ import { addSupportPoints, adjacentPartners } from '../rules/supports';
 import { activeSkillIds } from '../rules/skills';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clone, getUnit, neighbors, onMap, pairKey, posKey, samePos } from '../util';
-import { attackTargets, availableActions, hasKey, itemTargets, nearConvoy, staffTargets } from './actions';
+import { aimTargets, attackTargets, availableActions, CHEER_BUFF, hasKey, itemTargets, nearConvoy, staffTargets } from './actions';
 import type { Action, Command, CommandError } from './commands';
 import { newItem } from './create';
 import { afterUnitMoved, beginPhase, checkObjectives, freeTileNear, mapOf, runTriggers, spawnUnits } from './objectives';
@@ -37,7 +37,8 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
   const opt = opts.find((o) => o.kind === a.kind);
   if (!opt) return 'not_allowed';
   switch (a.kind) {
-    case 'attack': {
+    case 'attack':
+    case 'aim': {
       const ws = opt.weapons?.[a.target];
       if (!ws) return 'invalid_target';
       if (a.weapon && !ws.includes(a.weapon)) return 'out_of_range';
@@ -45,6 +46,8 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
     }
     case 'staff':
     case 'rescue':
+    case 'farRescue':
+    case 'cheer':
     case 'talk':
     case 'command':
       return opt.targets?.includes(a.target) ? null : 'invalid_target';
@@ -204,6 +207,17 @@ function useChargeRolled(data: GameData, s: BattleState, u: BattleUnit, inst: It
   useCharge(data, u, inst);
 }
 
+/** Bergen: the downed unit leaves the map as rescued; shared by `rescue` (adjacent) and `farRescue` (class action). */
+function doRescue(data: GameData, s: BattleState, u: BattleUnit, t: BattleUnit, events: GameEvent[]): void {
+  const b = data.balance;
+  t.gone = 'rescued';
+  t.downed = false;
+  events.push({ t: 'rescued', unit: t.uid, by: u.uid });
+  grantExp(data, u, b.experience.rescueOrTalk, s.rng, events);
+  const gained = addSupportPoints(data, s.supports, pairKey(u.id, t.id), b.supports.pointsTandemHealRescue);
+  if (gained) events.push({ t: 'support', a: u.uid, b: t.uid, points: gained });
+}
+
 function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, events: GameEvent[]): void {
   const b = data.balance;
   switch (a.kind) {
@@ -217,6 +231,17 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
         events.push({ t: 'quote', unit: target.uid, id: target.quote });
       }
       resolveAttack(data, s, u.uid, target.uid, weapon, events);
+      break;
+    }
+    case 'aim': {
+      const target = getUnit(s, a.target);
+      const weapon = a.weapon ?? aimTargets(data, s, u, u.pos!)[a.target]?.[0];
+      events.push({ t: 'classAction', unit: u.uid, action: 'aim', target: target.uid });
+      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
+        s.firedTriggers.push(`quote:${target.uid}`);
+        events.push({ t: 'quote', unit: target.uid, id: target.quote });
+      }
+      resolveAttack(data, s, u.uid, target.uid, weapon, events, { hit: b.classActions.aim.hit });
       break;
     }
     case 'staff': {
@@ -297,14 +322,17 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       runTriggers(data, s, { kind: 'action', unit: u }, events);
       break;
     }
-    case 'rescue': {
+    case 'farRescue':
+      events.push({ t: 'classAction', unit: u.uid, action: 'farRescue', target: a.target });
+      doRescue(data, s, u, getUnit(s, a.target), events);
+      break;
+    case 'rescue':
+      doRescue(data, s, u, getUnit(s, a.target), events);
+      break;
+    case 'cheer': {
       const t = getUnit(s, a.target);
-      t.gone = 'rescued';
-      t.downed = false;
-      events.push({ t: 'rescued', unit: t.uid, by: u.uid });
-      grantExp(data, u, b.experience.rescueOrTalk, s.rng, events);
-      const gained = addSupportPoints(data, s.supports, pairKey(u.id, t.id), b.supports.pointsTandemHealRescue);
-      if (gained) events.push({ t: 'support', a: u.uid, b: t.uid, points: gained });
+      t.buffs.push({ source: CHEER_BUFF, mov: b.classActions.cheer.mov, hit: b.classActions.cheer.hit, untilTurn: s.turn, untilPhase: t.team });
+      events.push({ t: 'classAction', unit: u.uid, action: 'cheer', target: t.uid });
       break;
     }
     case 'talk': {

@@ -51,6 +51,8 @@ export type GameEvent =
   | { t: 'exhausted'; unit: string }
   | { t: 'refreshed'; unit: string; by: string }
   | { t: 'rally'; unit: string; affected: string[] }
+  /** a class action of story 2.3 was used (`target` = the rescued or cheered unit, or the aimed-at foe) */
+  | { t: 'classAction'; unit: string; action: 'aim' | 'farRescue' | 'cheer'; target: string }
   | { t: 'support'; a: string; b: string; points: number }
   | { t: 'itemUsed'; unit: string; item: string; target?: string }
   | { t: 'equipped'; unit: string; item: string }

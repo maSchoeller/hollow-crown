@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import { registerSW } from 'virtual:pwa-register';
+import { abandonPrepare, watchFirstInstall } from './state/prepare';
 
 export type UpdateStatus = 'idle' | 'checking' | 'available' | 'current' | 'error';
 
@@ -15,7 +16,9 @@ export function initUpdates(): void {
     immediate: true,
     onRegisteredSW: (_url, reg) => {
       registration = reg;
+      watchFirstInstall(reg);
     },
+    onRegisterError: () => abandonPrepare(),
     onNeedRefresh: () => {
       updateStatus.value = 'available';
     },

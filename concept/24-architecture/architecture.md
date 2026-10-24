@@ -309,7 +309,7 @@ lines:
 - **Auflösung im Kern:** `resolveScene(data, ctx, sceneId, lang?) → ResolvedLine[]` wählt Sprecher, filtert `requires`, fügt Gedenkzeilen ein. Rein und getestet; die UI zeigt nur an. Gilt auch für Sprechblasen im Kampf (Kontext aus `BattleState`).
 - **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`.
 - **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
-- Die PoC-Dialoge (`content/dialogue/*.yaml`) werden beim Bau von Akt 1 in das neue Format überführt; danach entfällt das alte Schema.
+- Die PoC-Dialoge sind seit Story 4.4 ins neue Format überführt (`content/acts/act1/scenes/`, IDs `scn.<…>`); das alte Schema entfällt.
 
 ### 5.9 Story-Zustand: Flags, Haltung, Chronik, Epilog (AR10)
 

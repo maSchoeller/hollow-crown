@@ -9,14 +9,18 @@ const spriteDir = join(process.cwd(), 'art', 'sprites', 'units');
 const sprites = existsSync(spriteDir) ? new Set(readdirSync(spriteDir)) : undefined;
 const itemDir = join(process.cwd(), 'art', 'items');
 const itemImages = new Set(existsSync(itemDir) ? readdirSync(itemDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4)) : []);
-const found = [...issues, ...validateContent(data, locales, sprites, itemImages)];
+const placeDir = join(process.cwd(), 'art', 'mockups', 'locations-s1');
+const placeImages = existsSync(placeDir) ? new Set(readdirSync(placeDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))) : undefined;
+const bgDir = join(process.cwd(), 'art', 'backgrounds');
+const backgroundImages = existsSync(bgDir) ? new Set(readdirSync(bgDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))) : undefined;
+const found = [...issues, ...validateContent(data, locales, sprites, itemImages, placeImages, backgroundImages)];
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite'));
 const all = found.filter((i) => !warnings.includes(i));
 for (const w of warnings) console.warn(`! ${w.file}: ${w.message} (placeholder)`);
 const counts = {
   maps: Object.keys(data.maps).length,
-  dialogues: Object.keys(data.dialogues).length,
+  scenes: Object.keys(data.scenes).length,
   items: Object.keys(data.items).length,
   classes: Object.keys(data.classes).length,
   de: Object.keys(locales.de ?? {}).length,

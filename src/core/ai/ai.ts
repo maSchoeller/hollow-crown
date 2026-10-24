@@ -82,7 +82,7 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
         const e = expectedDamage(f);
         let score = e.dealt + w.killChanceWeight * e.killChance - w.counterWeight * e.taken;
         const tCls = data.classes[t.classId]!;
-        if (tCls.weapons.includes('staff') || tCls.weapons.includes('anima')) score += w.healerBonus;
+        if (tCls.weaponGroups.includes('staff') || tCls.weaponGroups.includes('anima')) score += w.healerBonus;
         if (t.hp <= Math.min(...hostileUnits(s, u).filter(active).map((o) => o.hp))) score += w.lowestHpBonus;
         if (objectiveUnit && (t.id === objectiveUnit || t.uid === objectiveUnit)) score += w.objectiveBonus;
         if (t.downed) score = diff.aiFinishDowned === 'prefer' ? score + w.objectiveBonus : -1000 + score;
@@ -158,7 +158,7 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     case 'hold':
     case 'guard': {
       plan = attackPlans(data, s, u, here)[0] ?? null;
-      if (!plan && data.classes[u.classId]!.weapons.includes('staff')) plan = healPlan(data, s, u, here);
+      if (!plan && data.classes[u.classId]!.weaponGroups.includes('staff')) plan = healPlan(data, s, u, here);
       return act(plan);
     }
     case 'support': {

@@ -43,11 +43,16 @@ SHELL_LOCATIONS = {'lager_unterwegs'}
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
 # head crop of the 1254 px portraits: square from the top; 160 px is a 52 px medallion at 3x
 HEAD_CROP = (230, 0, 1030, 800)
+# portraits drawn with a bigger head need a wider square (may reach above the canvas: transparent there)
+HEAD_CROP_BY_ID = {'brenna': (80, -120, 1180, 980), 'mira': (80, -120, 1180, 980)}
 AVATAR_PX = 160
 # battle medallion: 78 px on the HUD, 56 px in the forecast; 112 px at q70 is ~4.5 KB per head
 HEAD_PX = 112
 # half figure of the troop view (the whole 1254 px image, 150 px at q60 is ~5 KB per figure)
 BUST_PX = 150
+# half figure of a scene (story 4.5): large, full-height beside the dialogue box; 640 px at q60 is ~40 KB
+HALF_PX = 640
+HALF_MOODS = ('happy', 'angry', 'sad')
 # 44 px item image at 3x device pixels
 ITEM_PX = 192 if HIGH else 132
 
@@ -241,7 +246,7 @@ def build_heads():
         pid, ext = os.path.splitext(f)
         if ext != '.png' or pid not in wanted:
             continue
-        im = Image.open(os.path.join(base, f)).convert('RGBA').crop(HEAD_CROP)
+        im = Image.open(os.path.join(base, f)).convert('RGBA').crop(HEAD_CROP_BY_ID.get(pid, HEAD_CROP))
         if pid in AVATAR_LOOKS:
             im.resize((AVATAR_PX, AVATAR_PX), Image.LANCZOS).save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=85, method=6)
         else:
@@ -266,6 +271,25 @@ def build_busts():
         im.thumbnail((BUST_PX, BUST_PX), Image.LANCZOS)
         im.save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=60, alpha_quality=60, method=6)
         result.append(pid)
+    return result
+
+
+def build_halves():
+    """Half figures for scenes → public/assets/halves/<id>.webp, mood variants as <id>_<mood>.png (happy, angry, sad).
+    Every character image of characters-s1 gets one (speakers include enemies); a missing mood falls back to neutral in the app."""
+    base = os.path.join(ART, 'mockups', 'characters-s1')
+    result = []
+    if not os.path.isdir(base):
+        return result
+    dst = ensure(os.path.join(OUT, 'halves'))
+    for f in sorted(os.listdir(base)):
+        stem, ext = os.path.splitext(f)
+        if ext != '.png' or stem == 'overview':
+            continue
+        im = Image.open(os.path.join(base, f)).convert('RGBA')
+        im.thumbnail((HALF_PX, HALF_PX), Image.LANCZOS)
+        im.save(os.path.join(dst, stem + '.webp'), 'WEBP', quality=60, alpha_quality=60, method=6)
+        result.append(stem)
     return result
 
 
@@ -301,6 +325,7 @@ def main():
         'items': build_items(),
         'avatars': build_heads(),
         'busts': build_busts(),
+        'halves': build_halves(),
         'locations': build_locations(),
         'world': build_world(),
     }

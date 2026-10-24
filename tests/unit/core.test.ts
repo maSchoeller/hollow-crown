@@ -42,6 +42,48 @@ beforeAll(() => {
   });
 });
 
+describe('place images and recruit dialogues', () => {
+  const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
+  const places = () => new Set([data.campaign.defaultPlace, ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : []))]);
+  it('accepts the shipped places', () => {
+    expect(msgs(data, places())).toEqual([]);
+  });
+  it('reports a node place and a default place without an image', () => {
+    const d = structuredClone(data);
+    d.campaign.nodes[0]!.place = 'nowhere';
+    d.campaign.defaultPlace = 'also_nowhere';
+    const out = msgs(d, places().add('lager_unterwegs'));
+    expect(out).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
+    expect(out).toContain('campaign.yaml: defaultPlace: no place image art/mockups/locations-s1/also_nowhere.png');
+  });
+  it('reports a character recruit dialogue that is no scene', () => {
+    const d = structuredClone(data);
+    d.chars.liora!.recruit = { chapter: 'ch02', by: 'any', dialogue: 'scn.ghost' };
+    expect(msgs(d)).toContainEqual(expect.stringContaining('liora recruit.dialogue: unknown scene scn.ghost'));
+  });
+});
+
+describe('place images of campaign nodes (story 7.6)', () => {
+  const run = (place: string, bgs: string[]) => {
+    const loaded = loadContentFromDisk();
+    loaded.data.campaign.nodes[0]!.place = place;
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'lager_unterwegs']), new Set([...bgs, 'bg_caravan_road', 'bg_varnhold_burning', 'bg_silverbrook_shrine'])).map((i) => `${i.file}: ${i.message}`);
+  };
+  it('accepts a location and a background as place', () => {
+    expect(run('varnhold', [])).toEqual([]);
+    expect(run('backgrounds/bg_caravan_road', ['bg_caravan_road'])).toEqual([]);
+  });
+  it('reports a missing location or background', () => {
+    expect(run('nowhere', [])).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
+    expect(run('backgrounds/bg_none', [])).toContain('campaign.yaml: prologue place: no background image art/backgrounds/bg_none.png');
+  });
+  it('the shipped missions use the backgrounds of their chapters', () => {
+    const loaded = loadContentFromDisk();
+    const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
+    expect(places).toEqual({ prologue: 'backgrounds/bg_caravan_road', ch01: 'backgrounds/bg_varnhold_burning', ch02: 'backgrounds/bg_silverbrook_shrine' });
+  });
+});
+
 describe('item images (story 8.5)', () => {
   const images = () => new Set(Object.values(data.items).map((i) => i.image ?? i.id));
   it('accepts content where every item and rune has its image', () => {
@@ -211,7 +253,7 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
     expect(ruleOn(s, 'triangle')).toBe(false);
     const kael = getUnit(s, 'kael');
-    const foe = s.units.find((u) => u.id === 'p_e1')!;
+    const foe = s.units.find((u) => u.id === 'p_e4')!; // axe bandit: lance (Kael) beats axe
     const near = { ...s, units: s.units.map((u) => (u.uid === foe.uid ? { ...u, pos: [kael.pos![0], kael.pos![1] - 1] as [number, number] } : u)) };
     expect(forecast(data, near, 'kael', foe.uid).attacker.triangle).toBe(0);
     expect(forecast(data, { ...near, locked: [] }, 'kael', foe.uid).attacker.triangle).toBe(1);
@@ -221,7 +263,9 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
       beginBattle(data, { ...campaign, settings: { ...campaign.settings, difficulty: d } }, 'prologue', campaign.roster.map((u) => u.id)).state;
     const foes = (s: BattleState) => s.units.filter((u) => u.team === 'enemy').length;
     expect(foes(at('easy'))).toBeLessThan(foes(at('normal')));
-    expect(foes(at('normal'))).toBeLessThan(foes(at('hard')));
+    // Hard keeps the starting count of normal (the extra western bandit is normal-only) and adds the ambush reinforcement in round 3.
+    expect(foes(at('normal'))).toBeGreaterThanOrEqual(foes(at('hard')));
+    expect(data.maps.prologue_caravan!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
   });
   it('hands the avatar a tome after chapter 1', () => {
     expect(campaign.roster.find((u) => u.id === 'avatar')!.equip.mainHand?.def).toBe('iron_sword');

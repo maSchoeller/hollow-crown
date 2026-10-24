@@ -95,13 +95,17 @@ export function grantSp(data: GameData, u: UnitRecord & { uid?: string }, amount
 
 export function loadoutSlots(data: GameData, u: UnitRecord): number {
   const cls = data.classes[u.classId]!;
-  return cls.tier === 'advanced' ? data.balance.skills.loadoutAdvanced : data.balance.skills.loadoutBase;
+  return cls.tier === 'pro' ? data.balance.skills.loadoutAdvanced : data.balance.skills.loadoutBase;
+}
+
+/** Pro classes a unit of `classId` can be promoted to: the role's pro paths that exist in the content. */
+export function promotionTargets(data: GameData, classId: string): string[] {
+  return (data.classes[classId]?.proPaths ?? []).filter((id) => !!data.classes[id]);
 }
 
 /** Class promotion with a seal (concept/04 §4). Mutates the unit. */
 export function promote(data: GameData, u: UnitRecord, classId: string): Partial<Stats> {
-  const cls = data.classes[u.classId]!;
-  if (!cls.promotesTo.includes(classId)) throw new CoreInvariantError('invalid_promotion', { from: u.classId, to: classId });
+  if (!promotionTargets(data, u.classId).includes(classId)) throw new CoreInvariantError('invalid_promotion', { from: u.classId, to: classId });
   const target = data.classes[classId]!;
   const bonus = target.promotionBonus ?? {};
   for (const k of STAT_KEYS) {

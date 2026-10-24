@@ -27,7 +27,7 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../core';
-import { itemDef } from '../core';
+import { itemDef, modelId, unitFigureId } from '../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from './camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from './assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from './terrain3d';
@@ -511,7 +511,7 @@ export class BoardView {
   // ------------------------------------------------------------------ units
 
   private unitSpriteId(u: BattleUnit): string {
-    return u.sprite ?? u.charId ?? u.classId;
+    return unitFigureId(u, this.data.classes);
   }
 
   /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
@@ -542,7 +542,7 @@ export class BoardView {
     if (this.figures === '3d') {
       // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
       const models = (await loadManifest()).models?.units ?? [];
-      const mid = u.portrait && models.includes(u.portrait) ? u.portrait : id;
+      const mid = modelId(u, models, this.data.classes);
       const model = await loadUnitModel(this.scene, mid, u.team, name, this.gearOf(u));
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
@@ -640,6 +640,13 @@ export class BoardView {
       this.bleedLabels.set(uid, el);
     }
     el.innerHTML = `<svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 7h5l2-5 3 9 3-7 2 3h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${left}</b>`;
+  }
+
+  /** Point above the head of unit `uid` in CSS px relative to the canvas (speech bubbles); `null` when it is not on the board. */
+  headScreen(uid: string): { x: number; y: number } | null {
+    const v = this.units.get(uid);
+    if (!v) return null;
+    return this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.05, -(v.y + v.offY + 0.5)));
   }
 
   private placeBleedLabels(): void {

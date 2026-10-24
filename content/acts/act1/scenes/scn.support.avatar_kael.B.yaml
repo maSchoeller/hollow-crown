@@ -1,0 +1,16 @@
+id: scn.support.avatar_kael.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Deine Karte von Varnhold … du hast die Brandrichtung vorhergesagt. Auf drei Felder genau."
+  - id: l02
+    speaker: [kael]
+    mood: happy
+    text: "Die Akademie war dumm, dich gehen zu lassen. Oder sie hatte Angst vor dir."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Was es auch ist – du gehörst jetzt zum Aschenbanner. Das bedeutet: Wir lassen niemanden zurück."

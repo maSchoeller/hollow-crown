@@ -85,7 +85,24 @@ death:
   scarsUntilInstantDeath: 2
   # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)
   bleedOutTurns: 3
+# scenes (story 4.5): auto mode waits autoBaseMs + autoPerCharMs per character; a speech bubble in battle waits
+# bubbleAutoMs (UX: 2.5 s) and holds at most bubbleMaxChars characters per page (two lines)
+scene:
+  autoBaseMs: 1200
+  autoPerCharMs: 45
+  typeCharsPerTick: 2
+  typeTickMs: 16
+  bubbleAutoMs: 2500
+  bubbleMaxChars: 56
+# loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
+loading:
+  fetchTimeoutMs: 30000
 rally: { radius: 2, damage: 2, hit: 10 }
+# Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
+classActions:
+  aim: { rangeBonus: 1, hit: 15 }
+  farRescue: { range: 2 }
+  cheer: { mov: 1, hit: 10 }
 bag: { size: 3 }
 fog:
   baseVision: 3
@@ -113,12 +130,12 @@ economy:
     levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread
     names: [merc.name.1, merc.name.2, merc.name.3, merc.name.4, merc.name.5, merc.name.6, merc.name.7, merc.name.8, merc.name.9, merc.name.10, merc.name.11, merc.name.12]
     classes:
-      - { class: mercenary, items: [iron_sword, leather_vest] }
-      - { class: soldier,   items: [iron_lance, leather_vest] }
-      - { class: fighter,   items: [iron_axe, leather_cap] }
-      - { class: archer,    items: [iron_bow, leather_vest] }
-      - { class: mage,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
-      - { class: cleric,    items: [heal_staff], requires: [{ completed: ch01 }] }
+      - { class: skirmisher, items: [iron_sword, leather_vest] }
+      - { class: vanguard,   items: [iron_lance, leather_vest] }
+      - { class: vanguard,   items: [iron_axe, leather_cap] }
+      - { class: marksman,    items: [iron_bow, leather_vest] }
+      - { class: elementalist,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
+      - { class: healer,    items: [heal_staff], requires: [{ completed: ch01 }] }
   convoySize: 200
   rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
   rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }

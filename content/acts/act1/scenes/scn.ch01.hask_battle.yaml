@@ -1,0 +1,7 @@
+id: scn.ch01.hask_battle
+lines:
+  - id: l01
+    speaker: [hask]
+    fallback: skip
+    mood: happy
+    text: "Brennt schön, nicht wahr? Bald brennt ihr mit!"

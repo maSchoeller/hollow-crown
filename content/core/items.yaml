@@ -3,45 +3,50 @@
 # Runen-Slots: Default nach Seltenheit (common 1, sonst 2), Rüstung (body) 1, sonst 0.
 
 # --- Schwerter ---
-- { id: iron_sword,  kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 5,  hit: 90,  crit: 0, rng: [1,1], wt: 5,  rarity: common, price: 400 }
-- { id: steel_sword, kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 8,  hit: 75,  crit: 0, rng: [1,1], wt: 10, rarity: common, price: 900, grantsSkill: { skill: vantage, masteryCost: 40 } }
-- { id: slim_sword,  kind: weapon, slot: mainHand, weaponType: sword, damageType: physical, mt: 3,  hit: 100, crit: 5, rng: [1,1], wt: 2,  rarity: common, price: 550, grantsSkill: { skill: pass, masteryCost: 30 } }
+- { id: iron_sword,  kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 5,  hit: 90,  crit: 0, rng: [1,1], wt: 5,  rarity: common, price: 400 }
+- { id: steel_sword, kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 8,  hit: 75,  crit: 0, rng: [1,1], wt: 10, rarity: common, price: 900, grantsSkill: { skill: vantage, masteryCost: 40 } }
+- { id: slim_sword,  kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 3,  hit: 100, crit: 5, rng: [1,1], wt: 2,  rarity: common, price: 550, grantsSkill: { skill: pass, masteryCost: 30 } }
 
 # --- Lanzen ---
-- { id: iron_lance,  kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7,  rarity: common, price: 450 }
-- { id: steel_lance, kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [1,1], wt: 12, rarity: common, price: 1000 }
-- { id: javelin,     kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 4, hit: 65, crit: 0, rng: [1,2], wt: 9,  rarity: common, price: 700 }
-- { id: horseslayer, kind: weapon, slot: mainHand, weaponType: lance, damageType: physical, mt: 6, hit: 70, crit: 0, rng: [1,1], wt: 11, rarity: rare,   price: 1300, effectiveVs: [mounted] }
+- { id: iron_lance,  kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7,  rarity: common, price: 450 }
+- { id: steel_lance, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [1,1], wt: 12, rarity: common, price: 1000 }
+- { id: javelin,     kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 4, hit: 65, crit: 0, rng: [1,2], wt: 9,  rarity: common, price: 700 }
+- { id: horseslayer, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 70, crit: 0, rng: [1,1], wt: 11, rarity: rare,   price: 1300, effectiveVs: [mounted] }
 
 # --- Äxte ---
-- { id: iron_axe,  kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 8,  hit: 70, crit: 0, rng: [1,1], wt: 9,  rarity: common, price: 450 }
-- { id: steel_axe, kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 11, hit: 60, crit: 0, rng: [1,1], wt: 14, rarity: common, price: 1000, grantsSkill: { skill: momentum, masteryCost: 25 } }
-- { id: hand_axe,  kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 6,  hit: 60, crit: 0, rng: [1,2], wt: 11, rarity: common, price: 700 }
-- { id: hammer,    kind: weapon, slot: mainHand, weaponType: axe, damageType: physical, mt: 10, hit: 55, crit: 0, rng: [1,1], wt: 15, rarity: rare,   price: 1300, effectiveVs: [armored], twoHanded: true }
+- { id: iron_axe,  kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 8,  hit: 70, crit: 0, rng: [1,1], wt: 9,  rarity: common, price: 450 }
+- { id: steel_axe, kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 11, hit: 60, crit: 0, rng: [1,1], wt: 14, rarity: common, price: 1000, grantsSkill: { skill: momentum, masteryCost: 25 } }
+- { id: hand_axe,  kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 6,  hit: 60, crit: 0, rng: [1,2], wt: 11, rarity: common, price: 700 }
+- { id: hammer,    kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 10, hit: 55, crit: 0, rng: [1,1], wt: 15, rarity: rare,   price: 1300, effectiveVs: [armored], twoHanded: true }
+
+# --- Dolche (außerhalb des Dreiecks, leicht, hoher Krit; Werte [C] aus Eisenschwert/Schmalschwert abgeleitet) ---
+- { id: iron_dagger, kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 4, hit: 85, crit: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
 
 # --- Bögen (immer effektiv gegen flier) ---
-- { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
-- { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
-- { id: longbow,   kind: weapon, slot: mainHand, weaponType: bow, damageType: physical, mt: 5, hit: 65, crit: 0, rng: [2,3], wt: 9, rarity: rare,   price: 1500, twoHanded: true, effectiveVs: [flier], grantsSkill: { skill: precision, masteryCost: 35 } }
+- { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
+- { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
+- { id: hunting_bow, kind: weapon, slot: mainHand, weaponType: bow, group: light_bow, damageType: physical, mt: 4, hit: 90, crit: 0, rng: [2,2], wt: 3, rarity: common, price: 450, twoHanded: true, effectiveVs: [flier] }   # leichter Bogen (Späher), [C] aus iron_bow
+- { id: longbow,   kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 5, hit: 65, crit: 0, rng: [2,3], wt: 9, rarity: rare,   price: 1500, twoHanded: true, effectiveVs: [flier], grantsSkill: { skill: precision, masteryCost: 35 } }
 
 # --- Zauber (anima = 4 Elemente, light) ---
-- { id: ember,      kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: fire,  mt: 5, hit: 90,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 500, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite }
-- { id: gust,       kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: wind,  mt: 3, hit: 100, crit: 5, rng: [1,2], wt: 2, rarity: common, price: 500, statusOnHit: { status: knockback, chance: 100 } }
-- { id: rockfall,   kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: earth, mt: 7, hit: 75,  crit: 0, rng: [1,2], wt: 7, rarity: common, price: 650, statusOnHit: { status: slowed, chance: 50 } }
-- { id: surge,      kind: tome, slot: mainHand, weaponType: anima, damageType: magical, element: water, mt: 4, hit: 85,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 550, statusOnHit: { status: wet, chance: 100 }, terrainOnHit: extinguish }
-- { id: stone_wall, kind: tome, slot: mainHand, weaponType: anima, element: earth, utility: { createTerrain: rockwall, rng: [1,3] }, wt: 5, rarity: rare, price: 1200 }   # kein Schaden
-- { id: shine,      kind: tome, slot: mainHand, weaponType: light, damageType: magical, element: light, mt: 4, hit: 95,  crit: 5, rng: [1,2], wt: 3, rarity: common, price: 600, effectiveVs: [monster, undead] }
+- { id: ember,      kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: fire,  mt: 5, hit: 90,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 500, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite }
+- { id: gust,       kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: wind,  mt: 3, hit: 100, crit: 5, rng: [1,2], wt: 2, rarity: common, price: 500, statusOnHit: { status: knockback, chance: 100 } }
+- { id: rockfall,   kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: earth, mt: 7, hit: 75,  crit: 0, rng: [1,2], wt: 7, rarity: common, price: 650, statusOnHit: { status: slowed, chance: 50 } }
+- { id: surge,      kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: water, mt: 4, hit: 85,  crit: 0, rng: [1,2], wt: 4, rarity: common, price: 550, statusOnHit: { status: wet, chance: 100 }, terrainOnHit: extinguish }
+- { id: stone_wall, kind: tome, slot: mainHand, weaponType: anima, group: anima, element: earth, utility: { createTerrain: rockwall, rng: [1,3] }, wt: 5, rarity: rare, price: 1200 }   # kein Schaden
+- { id: shine,      kind: tome, slot: mainHand, weaponType: light, group: light, damageType: magical, element: light, mt: 4, hit: 95,  crit: 5, rng: [1,2], wt: 3, rarity: common, price: 600, effectiveVs: [monster, undead] }
 
 # --- Stäbe (Heilung = Wert + MAG) ---
-- { id: heal_staff,   kind: staff, slot: mainHand, weaponType: staff, heal: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
-- { id: mend_staff,   kind: staff, slot: mainHand, weaponType: staff, heal: 20, rng: [1,1], wt: 5, rarity: common, price: 900 }
-- { id: remedy_staff, kind: staff, slot: mainHand, weaponType: staff, cureStatus: true, heal: 5, rng: [1,2], wt: 3, rarity: rare, price: 1000 }
+- { id: heal_staff,   kind: staff, slot: mainHand, weaponType: staff, group: staff, heal: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
+- { id: mend_staff,   kind: staff, slot: mainHand, weaponType: staff, group: staff, heal: 20, rng: [1,1], wt: 5, rarity: common, price: 900 }
+- { id: remedy_staff, kind: staff, slot: mainHand, weaponType: staff, group: staff, cureStatus: true, heal: 5, rng: [1,2], wt: 3, rarity: rare, price: 1000 }
 
 # --- Schilde / Nebenhand ---
-- { id: wooden_shield, kind: shield, slot: offHand, statMods: { def: 2 }, wt: 4,  rarity: common, price: 300 }
-- { id: iron_shield,   kind: shield, slot: offHand, statMods: { def: 4 }, wt: 7,  rarity: common, price: 700, setId: ashen_watch, grantsSkill: { skill: shield_wall, masteryCost: 20 } }
-- { id: tower_shield,  kind: shield, slot: offHand, statMods: { def: 6, mov: -1 }, wt: 10, rarity: rare, price: 1200 }
-- { id: ember_focus,   kind: accessory, slot: offHand, statMods: { mag: 1 }, wt: 1, rarity: common, price: 600, setId: ember_garb }
+- { id: wooden_shield, kind: shield, slot: offHand, group: shield, statMods: { def: 2 }, wt: 4,  rarity: common, price: 300 }
+- { id: iron_shield,   kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7,  rarity: common, price: 700, setId: ashen_watch, grantsSkill: { skill: shield_wall, masteryCost: 20 } }
+- { id: tower_shield,  kind: shield, slot: offHand, group: shield, statMods: { def: 6, mov: -1 }, wt: 10, rarity: rare, price: 1200 }
+- { id: travel_lute,   kind: accessory, slot: offHand, group: lute, statMods: { lck: 2 }, wt: 2, rarity: common, price: 400 }   # Basis-Laute (Spielmann), [C]; Anfeuern-Bonus folgt mit der Laute-Regel
+- { id: ember_focus,   kind: accessory, slot: offHand, group: focus, statMods: { mag: 1 }, wt: 1, rarity: common, price: 600, setId: ember_garb }
 
 # --- Kopf ---
 - { id: leather_cap, kind: armor, slot: head, statMods: { def: 1 }, wt: 1, rarity: common, price: 200 }
@@ -67,6 +72,7 @@
   kind: weapon
   slot: mainHand
   weaponType: sword
+  group: sword
   damageType: physical
   element: fire
   mt: 10
@@ -83,6 +89,7 @@
   kind: weapon
   slot: mainHand
   weaponType: bow
+  group: bow
   damageType: physical
   element: light
   mt: 8
@@ -98,7 +105,7 @@
   tags: [unsellable]
 
 # --- Monster-Waffe (nicht für Spieler) ---
-- { id: drake_breath, kind: weapon, slot: mainHand, weaponType: breath, damageType: magical, element: fire, mt: 9, hit: 80, crit: 0, rng: [1,2], wt: 0, rarity: common, price: 0, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite, tags: [monsterOnly] }
+- { id: drake_breath, kind: weapon, slot: mainHand, weaponType: breath, group: breath, damageType: magical, element: fire, mt: 9, hit: 80, crit: 0, rng: [1,2], wt: 0, rarity: common, price: 0, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite, tags: [monsterOnly] }
 
 # --- Beutel / Verbrauch ---
 - { id: vulnerary,      kind: consumable, slot: bag, use: { heal: 10 }, charges: 3, refillAfterMission: true, wt: 0, rarity: common, price: 300 }

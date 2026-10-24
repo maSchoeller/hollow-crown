@@ -1,53 +1,24 @@
 import { useEffect, useErrorBoundary } from 'preact/hooks';
-import { t } from '../i18n';
-import { asset } from '../ui/components';
-import { Dialogue } from '../ui/Dialogue';
-import { Icon } from '../ui/icons';
+import { Scene } from './screens/Scene';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
 import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
-import { Options, Result, Title } from './screens/Menus';
+import { Options, Title } from './screens/Menus';
+import { Defeat, Result } from './screens/Result';
 import { WorldMap } from './screens/WorldMap';
-import { campaign, data } from './state/session';
-import { runEffects, storyContext } from './state/flow';
-import { battle, canRestart, restartBattle } from './state/battle';
+import { MissionLoading, PrepareScreen } from './screens/Loading';
+import { data } from './state/session';
+import { nodeDef } from './state/flow';
+import { missionLoad } from './state/loading';
+import { prepare } from './state/prepare';
+import { battle } from './state/battle';
 import { fault, reportFault } from './state/fault';
 import { screen } from './state/screen';
 import { settings } from './state/settings';
-import { lang } from '../i18n';
-
-function Defeat() {
-  const b = battle.value;
-  return (
-    <div class="screen title-screen" style={{ justifyContent: 'center' }}>
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_varnhold_burning.webp')})` }} />
-      <div class="logo" style={{ fontSize: 'clamp(40px, 11vw, 64px)' }}>
-        {t('ui.defeat.title')}
-      </div>
-      <div class="tagline">{t('ui.defeat.text')}</div>
-      <div class="title-menu">
-        {b && canRestart('turn') && (
-          <button class="btn primary big" onClick={() => restartBattle('turn')}>
-            {t('ui.battle.restartRound')}
-          </button>
-        )}
-        {b && canRestart('mission') && (
-          <button class={`btn ${canRestart('turn') ? '' : 'primary big'}`} onClick={() => restartBattle('mission')}>
-            <Icon name="restart" />
-            {t('ui.battle.restartMission')}
-          </button>
-        )}
-        <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
-          <Icon name="home" />
-          {t('ui.battle.toTitle')}
-        </button>
-      </div>
-    </div>
-  );
-}
+import { lang, t } from '../i18n';
 
 /** Keeps the screen awake during play where supported (concept/09 §5 option). */
 function useWakeLock(): void {
@@ -81,7 +52,7 @@ export function App() {
   }, [renderError, failed]);
   return (
     <>
-      {!renderError && <Screens />}
+      {!renderError && (prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
       <SaveNotices />
       {failed && <FaultScreen />}
     </>
@@ -97,7 +68,7 @@ function Screens() {
     else if (sc.name === 'worldmap') audio.music('worldmap');
     else if (sc.name === 'result' || sc.name === 'camp') audio.music('camp');
     else if (sc.name === 'dialogue') {
-      const cue = data.dialogues[sc.id]?.music;
+      const cue = data.scenes[sc.id]?.music;
       if (cue) audio.music(cue);
     }
   }, [sc.name, sc.name === 'dialogue' ? sc.id : '']);
@@ -112,18 +83,12 @@ function Screens() {
       return <WorldMap />;
     case 'dialogue':
       return (
-        <Dialogue
-          key={sc.id}
-          data={data}
-          id={sc.id}
-          ctx={storyContext()}
-          avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
-          onEffects={runEffects}
-          onDone={sc.next}
-        />
+        <Scene key={sc.id} id={sc.id} onDone={sc.next} />
       );
     case 'prep':
       return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
+    case 'loading':
+      return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':

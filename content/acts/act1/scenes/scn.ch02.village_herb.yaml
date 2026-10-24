@@ -1,0 +1,6 @@
+id: scn.ch02.village_herb
+background: bg_silverbrook_shrine
+lines:
+  - id: l01
+    mood: neutral
+    text: "Eine Kräuterfrau gibt euch eine Rune, kühl wie Bachwasser. „Wasser löscht Feuer. Vergesst das nicht.“"
