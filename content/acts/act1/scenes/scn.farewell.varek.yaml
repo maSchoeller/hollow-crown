@@ -1,0 +1,13 @@
+# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.varek
+lines:
+  - id: last
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Wenigstens … sterbe ich nicht als Verräter. Sagt das meinen Brüdern."
+  - id: grief_brenna
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Er hat nie gelacht. Und trotzdem fehlt mir jetzt einer, der nicht lacht."

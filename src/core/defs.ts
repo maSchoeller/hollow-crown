@@ -654,6 +654,8 @@ export interface Balance {
   };
   /** loading of on-demand files before a mission */
   loading: { fetchTimeoutMs: number };
+  /** farewell card after a death (story 6.7): the button stays locked this long */
+  farewell: { lockMs: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */

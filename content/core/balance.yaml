@@ -94,6 +94,9 @@ scene:
   typeTickMs: 16
   bubbleAutoMs: 2500
   bubbleMaxChars: 56
+# farewell card after a death (story 6.7, UX: the first 2 s cannot be skipped)
+farewell:
+  lockMs: 2000
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000

@@ -1,0 +1,23 @@
+# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.brenna
+lines:
+  - id: last
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Erzählt den anderen … den Witz mit dem Esel. Den hab ich nie zu Ende gebracht."
+  - id: grief_kael
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Sie stand immer vorn. Jetzt steht da keiner mehr."
+  - id: grief_tobin
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Sie hat mir gezeigt, wie man einen Schild hält. Ich halte ihn jetzt für sie."
+  - id: grief_varek
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Ich hab über ihre Witze nie gelacht. Ich wünschte, ich hätte es getan."

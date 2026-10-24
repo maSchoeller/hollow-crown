@@ -15,6 +15,7 @@ export type Screen =
   | { name: 'loading' }
   | { name: 'battle' }
   | { name: 'result'; result: BattleResult }
+  | { name: 'farewell'; result: BattleResult; index: number }
   | { name: 'defeat' }
   | { name: 'camp'; tab?: string }
   | { name: 'troop'; unit?: string; from?: From }
