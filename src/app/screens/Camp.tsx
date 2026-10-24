@@ -12,7 +12,7 @@ import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
-import { pendingEvents, startBattle } from '../state/battle';
+import { beginMission } from '../state/flow';
 import { screen, type From } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { FigureFlow } from './Troop';
@@ -179,7 +179,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
         <button
           class="btn primary"
           onClick={() => {
-            pendingEvents.value = startBattle(node, chosen);
+            void beginMission(node, chosen, screen.value);
           }}
         >
           {t('ui.prep.start')}

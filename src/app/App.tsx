@@ -11,8 +11,11 @@ import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
 import { Options, Result, Title } from './screens/Menus';
 import { WorldMap } from './screens/WorldMap';
+import { MissionLoading, PrepareScreen } from './screens/Loading';
 import { campaign, data } from './state/session';
-import { runEffects, storyContext } from './state/flow';
+import { nodeDef, runEffects, storyContext } from './state/flow';
+import { missionLoad } from './state/loading';
+import { prepare } from './state/prepare';
 import { battle, canRestart, restartBattle } from './state/battle';
 import { fault, reportFault } from './state/fault';
 import { screen } from './state/screen';
@@ -81,7 +84,7 @@ export function App() {
   }, [renderError, failed]);
   return (
     <>
-      {!renderError && <Screens />}
+      {!renderError && (prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
       <SaveNotices />
       {failed && <FaultScreen />}
     </>
@@ -124,6 +127,8 @@ function Screens() {
       );
     case 'prep':
       return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
+    case 'loading':
+      return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':

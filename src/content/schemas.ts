@@ -469,6 +469,7 @@ export const campaignSchema = z.object({
       post: z.string().optional(),
       next: z.array(z.string()),
       pos,
+      place: z.string().optional(),
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
