@@ -25,48 +25,77 @@ export function initUpdates(): void {
   });
 }
 
-/** Asks the server for a newer version; resolves into `available`, `current` or `error`. */
+/** The service worker registration; `getRegistration` covers a check that runs before the plugin reports it. */
+async function currentRegistration(): Promise<ServiceWorkerRegistration | undefined> {
+  return registration ?? (await navigator.serviceWorker?.getRegistration());
+}
+
+/** Resolves once a worker that is still downloading its files has either finished installing or failed. */
+function settled(worker: ServiceWorker): Promise<void> {
+  return new Promise((resolve) => {
+    const done = () => {
+      if (worker.state === 'installing') return;
+      worker.removeEventListener('statechange', done);
+      resolve();
+    };
+    worker.addEventListener('statechange', done);
+    done();
+  });
+}
+
+/**
+ * Asks the server for a newer version; resolves into `available`, `current` or `error`.
+ * `available` means a version is installed and waiting: a version that is still downloading counts as `checking`, as
+ * the install button could not activate it yet (the app would reload into the old version and offer it again).
+ */
 export async function checkForUpdate(): Promise<void> {
   if (updateStatus.value === 'available' || updateStatus.value === 'installing') return;
-  if (!registration) {
-    updateStatus.value = 'current';
-    return;
-  }
   updateStatus.value = 'checking';
   try {
-    await registration.update();
-    // onNeedRefresh may have fired while the check ran.
-    if (updateStatus.value === 'checking') {
-      updateStatus.value = registration.installing || registration.waiting ? 'available' : 'current';
+    const reg = await currentRegistration();
+    if (reg) {
+      if (!reg.waiting) {
+        await reg.update();
+        if (reg.installing) await settled(reg.installing);
+      }
+      // onNeedRefresh may have fired while the check ran.
+      if (updateStatus.value !== 'checking') return;
+      updateStatus.value = reg.waiting ? 'available' : 'current';
+    } else {
+      updateStatus.value = 'current';
     }
   } catch {
-    updateStatus.value = 'error';
+    if (updateStatus.value === 'checking') updateStatus.value = 'error';
   }
 }
 
-/** Longest wait for the new version to take over before the app reloads anyway. */
+/** Longest wait for the new version to take over before the app gives up on the install. */
 const INSTALL_TIMEOUT_MS = 8000;
 
 /**
  * Activates the waiting version and reloads the app; `installing` shows the loading screen until the reload happens.
  * The reload does not rely on the plugin's own `controlling` handler (it stays silent for a version found by a manual
- * check): the new worker taking control, or the timeout, reloads the page.
+ * check): the new worker taking control reloads the page. If it has not taken over after the timeout, the version is
+ * still waiting and the button comes back: a reload would only start the old version again.
  */
 export function installUpdate(): void {
   if (!applyUpdate || updateStatus.value === 'installing') return;
   updateStatus.value = 'installing';
-  let reloaded = false;
+  let finished = false;
   const reload = () => {
-    if (reloaded) return;
-    reloaded = true;
+    if (finished) return;
+    finished = true;
     window.location.reload();
   };
+  const fail = () => {
+    if (finished) return;
+    finished = true;
+    navigator.serviceWorker.removeEventListener('controllerchange', reload);
+    updateStatus.value = 'available';
+  };
   navigator.serviceWorker.addEventListener('controllerchange', reload, { once: true });
-  window.setTimeout(reload, INSTALL_TIMEOUT_MS);
+  window.setTimeout(() => (registration?.waiting ? fail() : reload()), INSTALL_TIMEOUT_MS);
   applyUpdate(true)
     .then(() => registration?.waiting?.postMessage({ type: 'SKIP_WAITING' }))
-    .catch(() => {
-      reloaded = true;
-      updateStatus.value = 'available';
-    });
+    .catch(fail);
 }
