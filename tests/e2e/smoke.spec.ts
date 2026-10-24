@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-/** New game → prologue dialogue → battle (no preparation: deployment is fixed) → enemy phase (concept/13 §6.1, shortened). */
+/** Title → campaigns → new campaign → prologue dialogue → battle (no preparation: deployment is fixed) → enemy phase (concept/13 §6.1, shortened). */
 test('new game reaches the prologue battle and survives a round', async ({ page }) => {
   await page.goto('./');
-  await page.getByRole('button', { name: /New Game|Neues Spiel/ }).click();
+  await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
+  await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   // prologue intro dialogue → skip; the prologue has no choice of units, so the battle starts at once
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
@@ -23,7 +24,8 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
 
 test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)', async ({ page }) => {
   await page.goto('./');
-  await page.getByRole('button', { name: /New Game|Neues Spiel/ }).click();
+  await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
+  await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
   // turn-1 lesson; the board loads slowly under software WebGL when several projects run in parallel
@@ -57,7 +59,8 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
 
 test('autosave restores the running battle after reload (concept/13 §6.8)', async ({ page }) => {
   await page.goto('./');
-  await page.getByRole('button', { name: /New Game|Neues Spiel/ }).click();
+  await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
+  await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click();
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });

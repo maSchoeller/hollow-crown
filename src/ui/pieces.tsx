@@ -3,6 +3,7 @@ import type { ComponentChildren, JSX } from 'preact';
 import { instanceRarity, itemDef, type GameData, type ItemDef, type ItemInstance, type Rarity } from '../core';
 import { asset } from './asset';
 import { lang, t } from '../i18n';
+import { Icon } from './icons';
 import './pieces.css';
 
 type Div = JSX.HTMLAttributes<HTMLDivElement>;
@@ -39,6 +40,21 @@ export const PrimaryButton = (p: ButtonProps) => <StoneButton variant="hc-btn--p
 export const SecondaryButton = (p: ButtonProps) => <StoneButton variant="hc-btn--secondary" {...p} />;
 /** Grey pill without ember; only for farewell and remembrance. */
 export const QuietButton = (p: ButtonProps) => <StoneButton variant="hc-btn--quiet" {...p} />;
+
+/** Header of a full-screen view: round back stone and a title pill with an optional note at its right edge (mockup 07). */
+export function ScreenHead({ title, aside, onBack }: { title: ComponentChildren; aside?: ComponentChildren; onBack: () => void }) {
+  return (
+    <header class="hc-head">
+      <button type="button" class="hc-head__back" onClick={onBack} aria-label={t('ui.back')}>
+        <Icon name="back" size={22} />
+      </button>
+      <h1 class="hc-head__title">
+        <b>{title}</b>
+        {aside !== undefined && <span>{aside}</span>}
+      </h1>
+    </header>
+  );
+}
 
 export type Resource = 'gold' | 'exp' | 'emberSpark';
 

@@ -370,13 +370,6 @@ h3 {
   align-items: center;
   gap: 4px 12px;
 }
-.campaigns-menu {
-  display: grid;
-  gap: 12px;
-}
-.campaigns-menu .hc-btn {
-  width: 100%;
-}
 .link-btn {
   background: none;
   border: 0;

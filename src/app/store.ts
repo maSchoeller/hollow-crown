@@ -43,6 +43,7 @@ const contentVersion = contentVersionOf(data);
 
 export type Screen =
   | { name: 'title' }
+  | { name: 'campaigns' }
   | { name: 'newGame' }
   | { name: 'worldmap' }
   | { name: 'dialogue'; id: string; next: () => void }
@@ -253,6 +254,17 @@ export async function loadSlot(slot: SlotId, id = campaignId.value): Promise<boo
   if (!rec) return false;
   restore(rec);
   return true;
+}
+
+/** Deletes a campaign with all its saves; when it is the active one, the app forgets it too. */
+export async function removeCampaign(id: string): Promise<void> {
+  await Promise.all([saver.flush().catch(() => undefined), journal.flush().catch(() => undefined)]);
+  await deleteCampaign(id);
+  if (campaignId.value === id) {
+    campaignId.value = null;
+    campaign.value = null;
+    battle.value = null;
+  }
 }
 
 /** Auto-save of the most recently played campaign that has one ("Continue"). */

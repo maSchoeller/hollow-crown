@@ -6,7 +6,8 @@ import { Icon } from '../ui/icons';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
-import { EndScreen, NewGame, Options, Result, Title, WorldMap } from './screens/Menus';
+import { Campaigns, NewCampaign } from './screens/Campaigns';
+import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
 import { battle, campaign, data, restartBattle, screen, setFlag, settings } from './store';
 import { lang } from '../i18n';
 
@@ -66,7 +67,7 @@ export function App() {
   useWakeLock();
   const sc = screen.value;
   useEffect(() => {
-    if (sc.name === 'title' || sc.name === 'newGame') audio.music('title');
+    if (sc.name === 'title' || sc.name === 'campaigns' || sc.name === 'newGame') audio.music('title');
     else if (sc.name === 'worldmap') audio.music('worldmap');
     else if (sc.name === 'result' || sc.name === 'camp') audio.music('camp');
     else if (sc.name === 'dialogue') {
@@ -77,8 +78,10 @@ export function App() {
   switch (sc.name) {
     case 'title':
       return <Title />;
+    case 'campaigns':
+      return <Campaigns />;
     case 'newGame':
-      return <NewGame />;
+      return <NewCampaign />;
     case 'worldmap':
       return <WorldMap />;
     case 'dialogue':

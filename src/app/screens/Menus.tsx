@@ -1,31 +1,16 @@
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
-import { itemDef, type DeathMode, type Difficulty, type Element, type Reward } from '../../core';
-
-/** Placeholder until the player picks an affinity when the elements are introduced (U20). */
-const DEFAULT_AFFINITY: Element = 'wind';
+import { itemDef, type Reward } from '../../core';
 import { t } from '../../i18n';
-import { asset, Crest, itemName, Modal, rarityOf, unitName } from '../../ui/components';
+import { asset, itemName, Modal, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
 import { Amount, ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
-import {
-  deleteCampaign,
-  exportSave,
-  importSave,
-  listCampaigns,
-  listSaves,
-  metaFromCampaign,
-  readSave,
-  type CampaignMeta,
-  type SaveRecord,
-  type SlotId,
-} from '../../persistence/save';
+import { exportSave, type LegacyRecord, type SaveRecord, type SlotId } from '../../persistence/save';
+import { resumeText, slotSummary } from '../campaignInfo';
 import {
   campaign,
-  campaignId,
   data,
-  importRecord,
   latestAutoSave,
   loadSlot,
   nodeDef,
@@ -33,48 +18,18 @@ import {
   playNode,
   screen,
   settings,
-  startNewGame,
   updateSettings,
   type Screen,
 } from '../store';
 
-/** Where a save resumes, for the "Continue" button: in a battle, before the next mission, or done. */
-function resumeText(rec: SaveRecord): string {
-  const c = rec.payload.campaign;
-  const short = (id: string) => t(nodeDef(id).titleKey).split('–')[0]!.trim();
-  const where = rec.payload.battle
-    ? t('ui.title.where.battle', { node: short(rec.payload.battle.start.nodeId) })
-    : c.available[0]
-      ? t('ui.title.where.before', { node: short(c.available[0]) })
-      : t('ui.title.where.end');
-  return t('ui.title.resume', { name: c.avatar.name, act: metaFromCampaign(c).act, where });
-}
-
 /** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
-  const [saves, setSaves] = useState<SaveRecord[]>([]);
   const [auto, setAuto] = useState<SaveRecord | undefined>();
-  const [menu, setMenu] = useState(false);
-  const [load, setLoad] = useState(false);
-  const [err, setErr] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     void latestAutoSave()
-      .then(async (rec) => {
-        setAuto(rec);
-        setSaves(rec ? await listSaves(rec.campaignId) : []);
-      })
-      .catch(() => setSaves([]));
+      .then(setAuto)
+      .catch(() => setAuto(undefined));
   }, []);
-  const onImport = async (f: File | undefined) => {
-    if (!f) return;
-    setMenu(false);
-    try {
-      if (!(await importRecord(importSave(await f.text())))) setErr(t('ui.campaign.limit.text'));
-    } catch (e) {
-      setErr(t(e instanceof Error && e.message === 'legacy' ? 'ui.title.importLegacy' : 'ui.title.importFailed'));
-    }
-  };
   const Campaigns = auto ? SecondaryButton : PrimaryButton;
   return (
     <div class="screen title-screen">
@@ -91,29 +46,14 @@ export function Title() {
             {t('ui.title.continue')}
           </PrimaryButton>
         )}
-        <Campaigns onClick={() => setMenu(true)}>{t('ui.title.campaigns')}</Campaigns>
+        <Campaigns onClick={() => (screen.value = { name: 'campaigns' })}>{t('ui.title.campaigns')}</Campaigns>
         <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>{t('ui.options')}</SecondaryButton>
-        {err && <div class="dis">{err}</div>}
         {saveDbBlocked.value && <div class="dis">{t('ui.title.closeOtherTabs')}</div>}
-        <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
         <div class="title-foot">
           {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
           <UpdateLink />
         </div>
       </div>
-      {/* interim campaign menu until the campaign view (story 1.3) */}
-      {menu && (
-        <Modal title={t('ui.title.campaigns')} onClose={() => setMenu(false)}>
-          <div class="campaigns-menu">
-            <PrimaryButton onClick={() => (screen.value = { name: 'newGame' })}>{t('ui.title.new')}</PrimaryButton>
-            <SecondaryButton disabled={saves.filter((s) => s.slot !== 'auto').length === 0} onClick={() => setLoad(true)}>
-              {t('ui.title.load')}
-            </SecondaryButton>
-            <SecondaryButton onClick={() => fileRef.current?.click()}>{t('ui.title.import')}</SecondaryButton>
-          </div>
-        </Modal>
-      )}
-      {load && auto && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s, auto.campaignId)} onClose={() => setLoad(false)} />}
     </div>
   );
 }
@@ -158,147 +98,13 @@ export function SlotPicker({ saves, onPick, onClose, save }: { saves: SaveRecord
   );
 }
 
-function slotSummary(rec: SaveRecord): string {
-  const c = rec.payload.campaign;
-  const last = c.completed[c.completed.length - 1];
-  return last ? t(nodeDef(last).titleKey).split('–')[0]!.trim() : t('ui.save.start');
-}
-
-export function downloadSave(rec: SaveRecord): void {
+export function downloadSave(rec: SaveRecord | LegacyRecord): void {
   const blob = new Blob([exportSave(rec)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `hollow-crown-${rec.slot}-${rec.createdAt.slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-}
-
-export async function exportCurrent(): Promise<void> {
-  const id = campaignId.value;
-  const rec = id ? await readSave(id, 'auto') : undefined;
-  if (rec) downloadSave(rec);
-}
-
-const PORTRAITS = ['avatar_a', 'avatar_b'];
-
-/** New game (U20): only name, portrait and difficulty up front; pronouns and death mode under "more". Affinity comes with the elements. */
-export function NewGame() {
-  const [name, setName] = useState('Rhen');
-  const [pronoun, setPronoun] = useState<'she' | 'he' | 'they'>('they');
-  const [portrait, setPortrait] = useState(PORTRAITS[0]!);
-  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  const [deathMode, setDeathMode] = useState<DeathMode>('standard');
-  const [more, setMore] = useState(false);
-  const [limit, setLimit] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const opt = <T extends string>(val: T, cur: T, set: (v: T) => void, label: string, sub?: string) => (
-    <button key={val} class={`choice ${val === cur ? 'on' : ''}`} onClick={() => set(val)} aria-pressed={val === cur}>
-      {label}
-      {sub && <small>{sub}</small>}
-    </button>
-  );
-  return (
-    <div class="screen">
-      <div class="screen-narrow col" style={{ gap: 20 }}>
-        <div class="page-head">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: 'title' })} aria-label={t('ui.back')}>
-            <Icon name="back" />
-          </button>
-          <div class="titles">
-            <h2>{t('ui.new.title')}</h2>
-          </div>
-        </div>
-        <div class="field">
-          <label for="hc-name">{t('ui.new.name')}</label>
-          <input id="hc-name" type="text" value={name} maxLength={14} onInput={(e) => setName((e.target as HTMLInputElement).value)} />
-        </div>
-        <div class="field">
-          <span class="lbl">{t('ui.new.portrait')}</span>
-          <div class="choice-row">
-            {PORTRAITS.map((p) => (
-              <button key={p} class={`choice ${p === portrait ? 'on' : ''}`} onClick={() => setPortrait(p)} aria-pressed={p === portrait} style={{ display: 'grid', placeItems: 'center', padding: 10 }}>
-                <Crest id={p} name={name} w={84} h={98} />
-              </button>
-            ))}
-          </div>
-        </div>
-        <div class="field">
-          <span class="lbl">{t('ui.new.difficulty')}</span>
-          <div class="choice-row">
-            {(['easy', 'normal', 'hard'] as const).map((d) => opt(d, difficulty, setDifficulty, t(`ui.difficulty.${d}`), t(`ui.difficulty.${d}.desc`)))}
-          </div>
-        </div>
-        <button class="linkish" style={{ alignSelf: 'flex-start' }} aria-expanded={more} onClick={() => setMore(!more)}>
-          {more ? t('ui.new.less') : t('ui.new.more')}
-        </button>
-        {more && (
-          <>
-            <div class="field">
-              <span class="lbl">{t('ui.new.pronoun')}</span>
-              <div class="choice-row">
-                {opt('she', pronoun, setPronoun, t('ui.pronoun.she.label'))}
-                {opt('he', pronoun, setPronoun, t('ui.pronoun.he.label'))}
-                {opt('they', pronoun, setPronoun, t('ui.pronoun.they.label'))}
-              </div>
-            </div>
-            <div class="field">
-              <span class="lbl">{t('ui.new.deathMode')}</span>
-              <div class="choice-row">
-                {(['classic', 'standard', 'casual'] as const).map((d) => opt(d, deathMode, setDeathMode, t(`ui.death.${d}`), t(`ui.death.${d}.desc`)))}
-              </div>
-            </div>
-          </>
-        )}
-        <button
-          class="btn primary big"
-          disabled={!name.trim()}
-          onClick={() => {
-            setFailed(false);
-            void startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY })
-              .then((ok) => setLimit(!ok))
-              .catch(() => setFailed(true));
-          }}
-        >
-          {t('ui.new.start')}
-        </button>
-        {failed && <div class="dis">{t('ui.save.failed')}</div>}
-      </div>
-      {limit && <CampaignLimit onClose={() => setLimit(false)} />}
-    </div>
-  );
-}
-
-/**
- * At most three campaigns (concept/24-architecture §5.15): asks to delete one, with confirmation.
- * Interim dialog until the campaign view (story 1.3) takes over.
- */
-function CampaignLimit({ onClose }: { onClose: () => void }) {
-  const [list, setList] = useState<CampaignMeta[]>([]);
-  const [confirm, setConfirm] = useState<string | null>(null);
-  const refresh = () => void listCampaigns().then(setList);
-  useEffect(refresh, []);
-  const remove = async (id: string) => {
-    await deleteCampaign(id);
-    setConfirm(null);
-    onClose();
-  };
-  return (
-    <Modal title={t('ui.campaign.limit.title')} onClose={onClose}>
-      <div class="col">
-        <div class="muted">{t('ui.campaign.limit.text')}</div>
-        {list.map((m) => (
-          <div key={m.id} class="row" style={{ justifyContent: 'space-between', gap: 8 }}>
-            <span>
-              {m.name} · {t(`ui.death.${m.deathMode}`)} · {new Date(m.updatedAt).toLocaleString()}
-            </span>
-            <button class={`btn small ${confirm === m.id ? 'danger' : 'ghost'}`} onClick={() => (confirm === m.id ? void remove(m.id) : setConfirm(m.id))}>
-              {confirm === m.id ? t('ui.campaign.deleteConfirm') : t('ui.campaign.delete')}
-            </button>
-          </div>
-        ))}
-      </div>
-    </Modal>
-  );
 }
 
 export function WorldMap() {

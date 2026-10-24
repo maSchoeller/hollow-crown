@@ -8,6 +8,7 @@ python tools/art/build.py [--quality mid|high]
 - Portraits: WebP q85, 768 px high (high: 1152 px).
 - Backgrounds: WebP q80, 1920×1080 (high: 2560×1440).
 - Item images: WebP q85, 132 px square (high: 192 px).
+- Avatar heads (art/mockups/characters-s1/rhen_a|b.png): round-chibi head crop, WebP q85, 160 px square (campaign view, new-campaign form).
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
@@ -32,6 +33,11 @@ BG_SIZE = (2560, 1440) if HIGH else (1920, 1080)
 LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # only the places the app shell shows; the others ship with the act packages (Epic 7, initial-download budget)
 SHELL_LOCATIONS = {'lager_unterwegs'}
+# the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
+AVATAR_LOOKS = ('rhen_a', 'rhen_b')
+# head crop of the 1254 px portraits: square from the top, 160 px is a 52 px medallion at 3x
+AVATAR_CROP = (230, 0, 1030, 800)
+AVATAR_PX = 160
 # 44 px item image at 3x device pixels
 ITEM_PX = 192 if HIGH else 132
 
@@ -148,6 +154,21 @@ def build_locations():
     return result
 
 
+def build_avatars():
+    """Round-chibi avatar portraits → head crops public/assets/avatars/<id>.webp (clipped round by the UI)."""
+    base = os.path.join(ART, 'mockups', 'characters-s1')
+    result = []
+    dst = ensure(os.path.join(OUT, 'avatars'))
+    for pid in AVATAR_LOOKS:
+        f = os.path.join(base, pid + '.png')
+        if not os.path.isfile(f):
+            continue
+        im = Image.open(f).convert('RGBA').crop(AVATAR_CROP).resize((AVATAR_PX, AVATAR_PX), Image.LANCZOS)
+        im.save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=85, method=6)
+        result.append(pid)
+    return result
+
+
 def build_items():
     """art/items/<id>.png (painted item images, 512 px) → public/assets/items/<id>.webp at ITEM_PX (DESIGN.md item-image)."""
     base = os.path.join(ART, 'items')
@@ -178,6 +199,7 @@ def main():
         'portraits': build_portraits(),
         'backgrounds': build_backgrounds(),
         'items': build_items(),
+        'avatars': build_avatars(),
         'locations': build_locations(),
     }
     audio_src = os.path.join(ROOT, 'audio-src', 'build')
