@@ -23,6 +23,7 @@
     "art:build": "python tools/art/build.py",
     "art:icons": "python tools/art/icons.py",
     "art:tripo": "python tools/art/tripo_units.py",
+    "art:silhouettes": "python tools/art/silhouettes.py",
     "format": "prettier --write ."
   },
   "dependencies": {
