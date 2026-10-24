@@ -16,7 +16,7 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { log } from '../log';
 import { nodeShort } from '../campaignInfo';
-import { playNode } from '../state/flow';
+import { advanceToToday, playNode } from '../state/flow';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
 import { settings } from '../state/settings';
@@ -58,6 +58,18 @@ export function WorldMap() {
   const view = useRef<WorldView | null>(null);
   const [regions, setRegions] = useState<Array<{ id: string; at: [number, number]; h: number }>>([]);
   useEffect(() => audio.music('worldmap'), []);
+
+  // a new day (story 5.4): on opening the map and when the app comes back to it; new day packets show a short hint
+  useEffect(() => {
+    const check = () => {
+      if (document.visibilityState !== 'visible') return;
+      const e = advanceToToday();
+      if (e && e.packets.length) setToast(t('ui.map.newDay', { n: e.haunts, time: `${data.balance.day.resetHour}:00` }));
+    };
+    check();
+    document.addEventListener('visibilitychange', check);
+    return () => document.removeEventListener('visibilitychange', check);
+  }, []);
 
   const world = data.world;
   const homeKind = data.campaign.home;

@@ -41,6 +41,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     offers: [],
     home: { kind: data.campaign.home, rooms: {} },
     tavern: [],
+    day: { last: null, pending: [] },
   };
   for (const def of Object.values(data.chars)) {
     if (def.joins !== 'prologue') continue;
@@ -84,6 +85,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     choices: old.choices ?? {},
     decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
+    day: c.day ?? { last: null, pending: [] },
   };
   noteRoles(data, out);
   return out;

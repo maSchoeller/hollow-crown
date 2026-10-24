@@ -359,3 +359,11 @@
   gap: 8px;
 }
 
+
+/* hints on the map may take two lines (the new-day hint of story 5.4 names the haunts and the next day change) */
+.wm .toast {
+  width: max-content;
+  white-space: normal;
+  text-align: center;
+  border-radius: var(--hc-r-card-inner);
+}

@@ -231,6 +231,18 @@ export interface CampaignState {
   home: HomeState;
   /** mercenaries the tavern offers for the current chapter (finished company records, id `merc<n>`) */
   tavern: UnitRecord[];
+  /**
+   * the day change (story 5.4, architecture §5.6): `last` = the newest day number the app sent (null before the first),
+   * `pending` = day packets not yet turned into haunts (the generator of story 5.5 takes them)
+   */
+  day: { last: number | null; pending: number[] };
+  /** lieutenants the company has met (AR5; Epic 3 adds grudge, target, routs …); absent until the first meeting */
+  lieutenants?: Record<string, LieutenantState>;
+}
+
+/** What the campaign knows about one lieutenant (Epic 3 extends it). */
+export interface LieutenantState {
+  met: boolean;
 }
 
 export type MapLookup = (id: string) => MapDef;

@@ -667,6 +667,8 @@ export interface Balance {
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
+  /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
+  day: { resetHour: number; catchUp: number };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {
     /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */

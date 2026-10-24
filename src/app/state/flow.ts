@@ -17,6 +17,7 @@ import {
   type BattleState,
   type BattleUnit,
   type ConditionContext,
+  type CampaignEvent,
   type Effect,
   type MapUnitDef,
   type ResolvedOption,
@@ -49,6 +50,7 @@ import { loadManifest } from '../../render/shared/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets, prefetchQuietly } from './loading';
 import { settings } from './settings';
+import { dayNumber } from '../day';
 
 bindLive(() => ({
   where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
@@ -286,6 +288,20 @@ export function answeredIn(id: string): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(campaign.value?.choices ?? {})) if (k.startsWith(`${id}#`)) out[k.slice(id.length + 1)] = v;
   return out;
+}
+
+/**
+ * Sends `advanceDay` when a new day began since the last one the campaign knows (story 5.4): on opening the world map and
+ * when the app comes back to it. Returns the `dayAdvanced` event, or null when the day is not new (nothing is journaled).
+ */
+export function advanceToToday(now = Date.now()): Extract<CampaignEvent, { t: 'dayAdvanced' }> | null {
+  const c = campaign.value;
+  if (!c) return null;
+  const day = dayNumber(now, data.balance.day.resetHour);
+  if (c.day.last !== null && day <= c.day.last) return null;
+  const r = campaignCommand({ type: 'advanceDay', day });
+  if (!r.ok) return null;
+  return (r.events.find((e) => e.t === 'dayAdvanced') as Extract<CampaignEvent, { t: 'dayAdvanced' }> | undefined) ?? null;
 }
 
 /** Dev helper: lets the simulator play the current battle (manual testing only). */

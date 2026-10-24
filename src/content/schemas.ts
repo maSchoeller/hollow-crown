@@ -634,6 +634,7 @@ export const balanceSchema = z.object({
   levels: z.record(z.string(), z.number()),
   skills: z.record(z.string(), z.number()),
   death: z.record(z.string(), z.number()),
+  day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
   scene: z.strictObject({
     autoBaseMs: z.number().int().min(0),
     autoPerCharMs: z.number().int().min(0),

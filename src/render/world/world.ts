@@ -150,6 +150,8 @@ export class WorldView implements HostedView {
     this.buildAsh(act);
     this.wake();
     const missing = await this.props.place(await this.propGroups(ctx, seed));
+    // shaders compile in the background; until they are, the scene would draw an empty sea (the hub shows its stone)
+    if (!this.disposed) await this.scene.whenReadyAsync();
     this.wake();
     return missing;
   }
