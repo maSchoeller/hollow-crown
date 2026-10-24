@@ -32,6 +32,8 @@ export default tseslint.config(
   layer('content', ['render', 'ui', 'app', 'input', 'persistence']),
   layer('render', ['ui', 'app', 'persistence']),
   layer('ui', ['render', 'app']),
+  // architecture §3: worker ← core, content; it loads pack content through virtual:hc-packs, never through src/packs
+  layer('worker', ['render', 'ui', 'app', 'input', 'persistence', 'i18n', 'platform', 'packs'], ['@babylonjs/*', 'preact', '@preact/*']),
   {
     files: ['src/core/**/*.ts'],
     rules: {
