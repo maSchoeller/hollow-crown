@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { packsPlugin } from './tools/build/packs-plugin.ts';
+import { CONTENT_HASHED } from './tools/build/precache.ts';
 
 const packs = packsPlugin();
 
@@ -73,6 +74,7 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
+          dontCacheBustURLsMatching: CONTENT_HASHED,
           runtimeCaching: [
             {
               /*

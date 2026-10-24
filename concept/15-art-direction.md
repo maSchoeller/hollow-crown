@@ -2,7 +2,7 @@
 
 > **Abgelöst** durch `23-art-direction/art-direction.md` (2026-10-23). Dieses Dokument bleibt als Herleitung; übernommen wurden Elementfarben, Effekt-Liste, Gelände-IDs und Lesbarkeitsregeln.
 
-> Ergebnis der Grilling-Session vom 2026-10-22. Entscheidungen stehen in `01-decisions.md` (Abschnitt „Grafik & Audio“). Pipeline und Formate: `16-asset-pipeline.md`. Audio: `17-audio.md`. Beispiele: `concept/art/`.
+> Ergebnis der Grilling-Session vom 2026-10-22. Entscheidungen stehen in `01-decisions.md` (Abschnitt „Grafik & Audio“). Pipeline und Formate: `16-asset-pipeline.md`. Audio: `17-audio.md`. Beispiele (`concept/art/`) sind am 2026-10-24 aus dem Repo entfernt, nur noch in der Git-Historie.
 
 ## 1. Leitbild
 
@@ -63,7 +63,7 @@ Dazu ein **Bodenring** (Ellipse, 2 px Linie, 60 % Deckkraft) in Teamfarbe unter 
 - Pro Figur maximal **16 Farben** plus die 4-stufige Team-Rampe.
 - Umrisse: **farbige Außenlinie** (dunkelste Stufe der angrenzenden Rampe), kein reines Schwarz. Innenlinien nur, wo Formen sonst verschwimmen.
 - Lichtrichtung in allen Sprites: **von oben links**. Die dynamische Lichtschicht ergänzt das, ersetzt es nicht.
-- Datei: `art/palette/hollow-64.hex` (Entwurf in `concept/art/palette/`).
+- Datei: `art/palette/hollow-64.hex` (der frühere Entwurf unter `concept/art/palette/` ist entfernt).
 
 ## 4. Welt & Kapitel-Farbskript (Akt 1)
 

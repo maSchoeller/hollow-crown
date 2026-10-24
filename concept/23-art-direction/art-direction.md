@@ -214,7 +214,7 @@ FE-Set aus GA8/D13 auf jedem Rumpf: Idle (atmen, gelegentlich blinzeln), Laufen,
 
 ### 4.6 Produktion (Bild-zu-3D) [A]
 
-Erprobt an Kael, Ergebnis in `art/mockups/tripo-test-2026-10/`.
+Erprobt an Kael (Free-Tarif-Probe, Dateien am 2026-10-24 aus dem Repo entfernt; Ergebnis im Entscheidungslog).
 
 Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewusst vereinfachte Fassung derselben Figur. [A]
 

@@ -7,7 +7,7 @@ Beauftragt vom Produktinhaber am 2026-10-24: (1) je eine Basiswaffe für die Waf
 - **Modellversion:** ChatGPT-Bildgenerierung; die Oberfläche nennt keine Versionsnummer (Modus „Medium“)
 - **Datum:** 2026-10-24, 16:02–16:25; zwei Chats (Brenna, Mira), gleichzeitig in eigenen Tabs
 - **Originale (A3):** ChatGPT lieferte alle Bilder im Zielformat (1254 × 1254, RGBA, echter Alphakanal). Die Dateien `art/mockups/characters-s1/{brenna,mira}*.png` sind die **unveränderten Originale** (byte-gleich mit dem Download, Git LFS), wie in `moods_2026-10-24.md`.
-- **Abgelöste Fassungen (A3):** die bisherigen Neutralbilder (Moodboard 2026-10-23) und ihre Stimmungen (`moods_2026-10-24.md`) liegen unverändert in `art/mockups/characters-s1/source/superseded_2026-10-24/` (`brenna.png`, `brenna_angry.png`, `brenna_happy.png`, `brenna_sad.png`, `mira.png`, `mira_angry.png`, `mira_happy.png`). Sie werden nicht mehr ausgeliefert; `tools/art/build.py` liest nur die oberste Ebene von `characters-s1/`.
+- **Abgelöste Fassungen (A3):** die bisherigen Neutralbilder (Moodboard 2026-10-23) und ihre Stimmungen (`moods_2026-10-24.md`) lagen unverändert in `art/mockups/characters-s1/source/superseded_2026-10-24/` (`brenna.png`, `brenna_angry.png`, `brenna_happy.png`, `brenna_sad.png`, `mira.png`, `mira_angry.png`, `mira_happy.png`) und sind am 2026-10-24 aus dem Arbeitsbaum entfernt; die Originale bleiben in der Git-Historie (Git LFS). Sie wurden nicht mehr ausgeliefert; `tools/art/build.py` liest nur die oberste Ebene von `characters-s1/`.
 - **Menschlicher Anteil (A2):** Prompt, Auswahl, Abnahme und Korrekturanweisung; keine Nachbearbeitung, kein Zuschnitt, keine Übermalung
 - **A7:** Prompts ohne Namen geschützter Werke, Marken oder Künstler
 

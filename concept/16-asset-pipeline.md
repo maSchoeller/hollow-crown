@@ -221,7 +221,6 @@ Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optio
 *.flac         filter=lfs diff=lfs merge=lfs -text
 *.mp3          filter=lfs diff=lfs merge=lfs -text
 art/**/*.png   filter=lfs diff=lfs merge=lfs -text
-concept/art/**/*.png filter=lfs diff=lfs merge=lfs -text
 ```
 
 `public/assets/` ist generiert und wird **nicht** eingecheckt (`.gitignore`). Die CI baut es mit `pnpm art:build` aus `art/`. `*.blend1` (Blender-Backups) kommt in `.gitignore`.
@@ -230,7 +229,7 @@ concept/art/**/*.png filter=lfs diff=lfs merge=lfs -text
 
 | # | Art-Meilenstein | Ergebnis | Benötigt für |
 |---|---|---|---|
-| A0 | Pipeline-Beweis | Palette Hollow-64, Render-Setup, `pixelize`, Kael idle/walk/attack, Varnhold-Ausschnitt (Beispiel in `concept/art/`) | M2 (Sprite-Format fix) |
+| A0 | Pipeline-Beweis | Palette Hollow-64, Render-Setup, `pixelize`, Kael idle/walk/attack, Varnhold-Ausschnitt (Beispiel am 2026-10-24 aus dem Repo entfernt, abrufbar in der Git-Historie unter `concept/art/`) | M2 (Sprite-Format fix) |
 | A1 | Prolog komplett | Tileset Sommer, Requisiten Karawane, 4 Helden + Bandit + Grosk, Porträts ×6 Stimmungen, 2 Hintergründe, Cut-ins Kael/Brenna | M3 |
 | A2 | UI-Kit | Icons, Rahmen, Schriften, Kampfvorschau, Dialogfenster, Lager | M4/M5 |
 | A3 | Kapitel 1–2 | Brand/Asche, Schrein, Mira, Liora, Varek, Hask, Morra, Lichtschicht | M6 |
@@ -239,7 +238,7 @@ concept/art/**/*.png filter=lfs diff=lfs merge=lfs -text
 
 ### 12.1 Erkenntnisse aus dem Pipeline-Beweis A0 (2026-10-22)
 
-Beispiel und Skripte: `concept/art/pipeline/`, Ergebnisse in `concept/art/sprites/`, Blender-Datei `concept/art/blender/hc_pixel_proof.blend`.
+Beispiel und Skripte (`concept/art/pipeline/`, Ergebnisse in `concept/art/sprites/`, Blender-Datei `concept/art/blender/hc_pixel_proof.blend`) sind am 2026-10-24 aus dem Repo entfernt und nur noch in der Git-Historie abrufbar.
 
 | Erkenntnis | Konsequenz |
 |---|---|

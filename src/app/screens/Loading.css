@@ -56,3 +56,22 @@
   border-radius: 999px;
   transition: width 200ms ease-out;
 }
+/* no known progress: a segment runs back and forth */
+.ld-bar--busy > i {
+  width: 35%;
+  animation: ld-busy 1.2s ease-in-out infinite alternate;
+}
+@keyframes ld-busy {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(185%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ld-bar--busy > i {
+    width: 100%;
+    animation: none;
+  }
+}
