@@ -92,3 +92,23 @@ Claude Opus 5.5 (claude-opus-5-5)
 - `art/world/*` (neu), `art/prompts/world_topography.md` (neu)
 - `tests/unit/world-layout.test.ts` (neu)
 - `concept/23-art-direction/{art-direction,decision-log}.md`, `concept/24-architecture/decision-log.md`, `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+## Zweite Änderung (2026-10-24): flaches Bild statt 3D-Szene
+
+**Gültig ist dieser Abschnitt; die Akzeptanzkriterien und Notizen oben beschreiben den abgelösten 3D-Stand.** Der Produktinhaber hat die Weltkarte auf ein flaches, gemaltes Bild zurückgestellt (Entscheidung in `concept/23-art-direction/decision-log.md`).
+
+### Akzeptanzkriterien (neu)
+
+1. **Inhalt:** `content/world/valmora.yaml` mit `image`, `size`, `regions` (Akt, Ort des Namens), `fog` (Nebelkanten je Akt) und `places` (35 Orte plus Heimat als Prozentpositionen, Beschriftung, Art; `node` bindet einen Knoten). `content:check` prüft Knoten und Heimat, 90 px Mindestabstand und Regionsnamen.
+2. **Bild:** `art/world/map_flat_v1.png` (ChatGPT, `art/prompts/world_map.md`) → `public/assets/world/valmora.webp` über `tools/art/build.py`, auf Abruf geladen. Keine Gebäude, Wege oder Schrift im Bild.
+3. **Karte:** `WorldMap.tsx` verschiebt das Bild per CSS-Transform (Ziehen mit Nachgleiten, Pinch und Mausrad für 2 Zoomstufen, Werte in `render.yaml worldMap`); Steine, Wege und Regionsnamen sind HTML darüber; die Sicht-Rechnung steht rein in `worldMapView.ts`.
+4. **Nebel:** Regionen späterer Akte als der aktuelle liegen unter einem Nebelverlauf von oben, ihr Name steht darüber.
+5. **Hub unverändert (5.3):** Tipp auf einen Knoten zoomt leicht heran und bringt ihn über die Karte, Tipp daneben schließt, Ziehen verschiebt; das Bild darf oben und unten über den Rand hinaus, damit Orte am Rand unter dem HUD hervorkommen.
+6. **Später optional:** Varianten, Drachenzeichen, kleine 3D-Aufsätze (Burg, Lager) auf den Lichtungen.
+
+### Umgesetzt
+
+- Entfernt: `src/render/world/`, `src/render/shared/props.ts`, `tests/unit/world-layout.test.ts`, `tools/art/{world,world_height,blender_world}.py`, `pnpm art:world`, die 3D-Dateien in `art/world/`, `gridRows`, `render.world` (Wasser, Nebel, Asche, Jahreszeiten, Landschaft), `propModels` in `validateContent`.
+- Neu: `src/app/screens/worldMapView.ts`, `tests/unit/world-map.test.ts`, `tools/art/world_guide.py` (Layout-Skizze und Abstandsprüfung für künftige Bildläufe), `art/world/{map_flat_v1.png,map_guide.png,map_layout.json,map_placed_v1.json}`.
+- Verschoben: die Bäume je Akt von `render.world.scenery.trees` nach `render.board.trees` (nur das Brett nutzt sie).
+- Die Kampagne hat noch drei Knoten (`prologue` → Platz P, `ch01` → 1-1, `ch02` → 1-2); die übrigen 32 Plätze warten auf ihre Knoten in den späteren Stories.

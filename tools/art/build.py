@@ -12,7 +12,7 @@ python tools/art/build.py [--quality mid|high]
   in content/acts/*/units.yaml or a map (the rest ships with the act packages; initial-download budget).
 - Busts (same characters): the whole half figure, WebP q60, 150 px, only the joining story characters, for the figure view of the troop.
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
-- World map terrain (art/world/, made by `pnpm art:world`): glb, splat maps and heights → public/assets/world/; loads on demand
+- World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture → public/assets/world/valmora.webp; loads on demand
   when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
@@ -143,19 +143,16 @@ def build_locations():
     return result
 
 
+WORLD_MAP = 'map_flat_v1.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map.md)
+
+
 def build_world():
-    """The world map terrain from Blender (story 5.2, `pnpm art:world`) → public/assets/world/: valmora.glb, the painted
-    ground (WebP) and the heights for the game; loads on demand (folder world/ is not precached)."""
-    src = os.path.join(ART, 'world')
-    names = ['valmora.glb', 'valmora_albedo.png', 'valmora_heights_game.json']
-    if not all(os.path.isfile(os.path.join(src, n)) for n in names):
+    """The flat world map (story 5.2) → public/assets/world/valmora.webp; loads on demand (folder world/ is not precached)."""
+    src = os.path.join(ART, 'world', WORLD_MAP)
+    if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
-    shutil.copy2(os.path.join(src, 'valmora.glb'), os.path.join(dst, 'valmora.glb'))
-    shutil.copy2(os.path.join(src, 'valmora_heights_game.json'), os.path.join(dst, 'valmora_heights.json'))
-    if os.path.isfile(os.path.join(src, 'water_normal.png')):
-        shutil.copy2(os.path.join(src, 'water_normal.png'), os.path.join(dst, 'water_normal.png'))
-    Image.open(os.path.join(src, 'valmora_albedo.png')).convert('RGB').save(os.path.join(dst, 'valmora_ground.webp'), 'WEBP', quality=82, method=6)
+    Image.open(src).convert('RGB').save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=88, method=6)
     return ['valmora']
 
 

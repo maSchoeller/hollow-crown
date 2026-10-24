@@ -16,8 +16,12 @@ board:
   waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe
   sceneryPropsLow: 3                      # D8: auf „Niedrig“ nur Bäume/Felsen bis so viele Felder um die Karte
+  # Baummodelle (<prop>_<state>) je Akt mit Gewicht: Akt 2 Herbst, Akt 3 Winter; Akt 1 (Spätsommer) nimmt die Bäume des Manifests
+  trees:
+    2: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: tree_c, weight: 1 }]
+    3: [{ model: snowfir_a, weight: 5 }, { model: tree_c, weight: 1 }]
   # Niedrige Deko auf freien Gras-/Flachlandfeldern ohne Requisite, Objekt, Einheit oder Aufstellfeld: Wahrscheinlichkeit je Feld
-  # auf der Karte (map) und in der Landschaft darum (scenery), Größenbereich; Bäume wählt die Jahreszeit des Akts (world.scenery.trees)
+  # auf der Karte (map) und in der Landschaft darum (scenery), Größenbereich; Bäume wählt die Jahreszeit des Akts (trees)
   decor:
     bushes: { model: bush_a, map: 0.05, scenery: 0.1, scale: [0.7, 0.95] }
     stones: { model: rocks_small, map: 0.04, scenery: 0.07, scale: [0.75, 1.1] }
@@ -54,48 +58,9 @@ quality:
 assets:
   keepUnused: 80
 
-# Story 5.2: Weltkarte als 3D-Szene (concept/23-art-direction §6). Kamera wie auf dem Brett, aber steiler und mit 2 Zoomstufen
-# (sichtbare Spalten auf der kürzeren Bildschirmseite: Nah, Übersicht); focusZoom = so viel näher beim Tipp auf einen Ort.
-# skirt = Meer rund um die Karte (Felder, Gelände), miniatureScale = Größe der Orts-Requisiten gegenüber dem Brett,
-# fog = Nebel über Regionen späterer Akte ({colors.fog}, Deckkraft, Höhe über dem Boden in Feldern),
-# ash = fallende Ascheflocken (Drachenzeichen Akt 1) je Qualitätsstufe, seasons = Licht je Jahreszeit einer Region (§2.4).
-world:
-  tiltDeg: 42
-  zoomSteps: [9, 15]
+# Story 5.2: flache Weltkarte (concept/23-art-direction §6): das gemalte Bild `art/world/map_flat_v1.png` mit den Orten darauf.
+# zoomSteps = Breite des Bildes als Vielfaches der Bildschirmbreite (Übersicht, Nah); focusZoom = so viel näher beim Tipp auf einen Ort.
+worldMap:
+  zoomSteps: [1.6, 2.4]
   zoomMs: 260
   focusZoom: 1.12
-  skirt: { width: 5, terrain: river }
-  miniatureScale: 0.85
-  # Wasser der Weltkarte: eine Fläche mit langsam treibender Wellen-Normalmap über dem gemalten Meeresboden
-  # alpha = Deckkraft, tint = Wasserfarbe, normalScale = Felder je Kachelung der Normalmap, bump = Wellenstärke,
-  # drift = Felder pro Sekunde (Ost, Süd)
-  # Wasser: alpha/tint über dem gemalten Meeresboden, glow = Eigenlicht (Wellen werden nicht grau), normalScale = Felder je
-  # Wiederholung der Wellenkarte, bump = Wellenstärke, drift = Felder je Sekunde (Ost, Süd), reach = so weit reicht das Meer
-  # nach Süden und Westen über den Rand, deep = Farbe des offenen Meers dahinter
-  water: { alpha: 0.45, tint: "#4fb3d4", glow: 0.25, normalScale: 10, bump: 0.35, drift: [0.12, 0.07], reach: 60, deep: "#0d5a92" }
-  pinHeight: 1.9         # Spitze eines Knotens (Weltkarten-Stein) so viele Felder über dem Boden des Orts
-  fog: { color: "#e0e5ef", alpha: 0.86, height: 1.4 }
-  ash: { high: 260, mid: 140, low: 0 }
-  # Landschaft der Weltkarte: trees = Baummodelle (<prop>_<state>) je Region mit Gewicht, andere Regionen nehmen die Sommerbäume
-  # des Manifests; deadTrees = Wahrscheinlichkeit je Feld für abgestorbene Bäume auf Ascheflächen und auf Nachbarfeldern;
-  # rural = Landleben im Grenzland (Region ruralRegion): um Dorffelder fields Felder (min–max) in radius Feldern, je Feldseite
-  # mit fenceChance ein Zaun (Eckstück cornerModel, wo zwei Seiten zusammentreffen; brokenChance = Anteil kaputter
-  # Zaunstücke, brokenModel), rocks = Wahrscheinlichkeit kleiner Steine je Gras-/Flachlandfeld, clearance = Abstand zu Orten;
-  # bridgeScale = Größe der Brücke auf dem Brückenfeld
-  scenery:
-    trees:
-      eisenmark: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: tree_c, weight: 1 }]
-      aurenhall: [{ model: snowfir_a, weight: 5 }, { model: tree_c, weight: 1 }]
-    deadTrees: { onAsh: 0.3, nearAsh: 0.15, model: deadtree_a }
-    rural: { region: borderland, fieldModel: field_idle, fenceModel: fence_idle, cornerModel: fence_corner, brokenModel: fence_broken, rocksModel: rocks_small, fields: [1, 3], radius: 2, fenceChance: 0.45, brokenChance: 0.15, rocks: 0.035, clearance: 1 }
-    bridgeScale: 0.7
-  seasons:
-    late_summer:
-      ambient: { color: "#fff1d9", intensity: 1.05 }
-      sun: { color: "#fff0c9", intensity: 1.0, azimuthDeg: 210, elevationDeg: 52 }
-    autumn:
-      ambient: { color: "#ffe3c4", intensity: 0.95 }
-      sun: { color: "#ffd2a0", intensity: 0.95, azimuthDeg: 230, elevationDeg: 38 }
-    winter:
-      ambient: { color: "#e6eefc", intensity: 1.0 }
-      sun: { color: "#f4f6ff", intensity: 0.9, azimuthDeg: 200, elevationDeg: 28 }
