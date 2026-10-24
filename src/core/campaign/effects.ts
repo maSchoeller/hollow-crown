@@ -7,7 +7,7 @@ import { soleKey } from './conditions';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
-export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid', 'openQuest', 'setHome'];
+export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid', 'setHome'];
 
 const arg = (e: Effect): unknown => (e as unknown as Record<string, unknown>)[soleKey(e)];
 
@@ -78,6 +78,9 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
       case 'item':
         if (!data.items[(v as { def: string }).def]) return 'unknown_item';
         break;
+      case 'openQuest':
+        if (data.campaign.nodes.find((n) => n.id === v)?.kind !== 'side') return 'effect_invalid';
+        break;
       case 'stance':
       case 'chronicle':
         break;
@@ -139,6 +142,12 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
       case 'stance':
         c.stance[v as Stance] += 1;
         events.push({ t: 'stanceGained', stance: v as Stance });
+        break;
+      case 'openQuest':
+        if (!c.quests.includes(v as string)) {
+          c.quests.push(v as string);
+          events.push({ t: 'questOpened', node: v as string });
+        }
         break;
       case 'chronicle':
         if (!c.chronicle.includes(v as string)) {

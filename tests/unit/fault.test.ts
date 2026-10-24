@@ -12,6 +12,7 @@ import {
   type BattleState,
   type CampaignState,
   type GameData,
+  firstNode,
 } from '../../src/core';
 
 let data: GameData;
@@ -26,7 +27,7 @@ beforeAll(() => {
     portrait: 'avatar_a',
     affinity: 'wind',
   });
-  battle = beginBattle(data, campaign, data.campaign.start, ['kael']).state;
+  battle = beginBattle(data, campaign, firstNode(data).id, ['kael']).state;
 });
 
 describe('CoreInvariantError', () => {

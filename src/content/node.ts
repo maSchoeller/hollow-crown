@@ -13,9 +13,14 @@ function walk(dir: string, out: string[] = []): string[] {
   return out;
 }
 
-export function loadContentFromDisk(root = process.cwd()): LoadedContent {
+/** The parsed YAML documents of content/, keyed like the browser loader (`content/<path>`). */
+export function readContentFiles(root = process.cwd()): Record<string, unknown> {
   const dir = join(root, 'content');
   const files: Record<string, unknown> = {};
   for (const p of walk(dir)) files[`content/${relative(dir, p).split('\\').join('/')}`] = parse(readFileSync(p, 'utf8'));
-  return buildContent(files);
+  return files;
+}
+
+export function loadContentFromDisk(root = process.cwd()): LoadedContent {
+  return buildContent(readContentFiles(root));
 }

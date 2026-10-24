@@ -15,7 +15,8 @@ const campaignState = z.looseObject({
   gold: z.number(),
   materials: z.record(z.string(), z.number()),
   completed: z.array(z.string()),
-  available: z.array(z.string()),
+  // saves from before story 4.3 stored the available nodes; the graph works them out now
+  available: z.array(z.string()).optional(),
   flags: z.unknown().optional(),
 });
 

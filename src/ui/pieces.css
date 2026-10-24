@@ -520,3 +520,26 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* Black mark with an ember diamond: "Entscheidung · hat Folgen", "Folgen" (DESIGN.md Entscheidungs-Marke) */
+.hc-kick {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 12px;
+  background: var(--hc-line);
+  color: var(--hc-cream);
+  border-radius: 999px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hc-kick > i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--hc-ember);
+  transform: rotate(45deg);
+}

@@ -36,9 +36,24 @@ export function adjacencyBonus(data: GameData, s: BattleState, unit: BattleUnit,
   return { hit: Math.min(hit, b.adjacencyBonusCap.hit), avoid: Math.min(avoid, b.adjacencyBonusCap.avoid), crit };
 }
 
-/** Next rank whose threshold the points have reached but which is not unlocked yet. */
-export function pendingRank(data: GameData, st: SupportState): SupportRank | null {
+/**
+ * Highest rank a pair can reach (story 4.9): S only for the core pairs of `supports.yaml`, A for the other fixed
+ * pairs. Pairs a map defines for a battle (enemy pairs) are not fixed pairs and keep S.
+ */
+export function maxRank(data: GameData, key: string): SupportRank {
+  const def = data.supports[key];
+  return !def || def.core ? 'S' : 'A';
+}
+
+/** The rank after `st.rank`, if the pair can still reach one. */
+function nextRank(data: GameData, st: SupportState, key?: string): SupportRank | undefined {
   const next = SUPPORT_RANKS[rankIndex(st.rank) + 1];
+  return next && (key === undefined || rankIndex(next) <= rankIndex(maxRank(data, key))) ? next : undefined;
+}
+
+/** Next rank whose threshold the points have reached but which is not unlocked yet (with `key`: within the pair's highest rank). */
+export function pendingRank(data: GameData, st: SupportState, key?: string): SupportRank | null {
+  const next = nextRank(data, st, key);
   if (!next) return null;
   return st.points >= data.balance.supports.thresholds[next] ? next : null;
 }
@@ -50,7 +65,7 @@ export function pendingRank(data: GameData, st: SupportState): SupportRank | nul
 export function addSupportPoints(data: GameData, supports: Record<string, SupportState>, key: string, pts: number): number {
   const st = supports[key];
   if (!st) return 0;
-  const next = SUPPORT_RANKS[rankIndex(st.rank) + 1];
+  const next = nextRank(data, st, key);
   const cap = next ? data.balance.supports.thresholds[next] : st.points;
   const before = st.points;
   st.points = Math.min(cap, st.points + pts);
