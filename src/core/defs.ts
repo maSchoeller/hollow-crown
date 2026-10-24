@@ -684,8 +684,8 @@ export interface Balance {
     /** speech bubble: characters per page (two lines) */
     bubbleMaxChars: number;
   };
-  /** loading of on-demand files before a mission */
-  loading: { fetchTimeoutMs: number };
+  /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
+  loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
   chronicle: { seasonPages: number };
   /** farewell card after a death (story 6.7): the button stays locked this long */

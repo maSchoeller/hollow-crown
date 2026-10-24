@@ -600,7 +600,7 @@ export const balanceSchema = z.object({
     bubbleAutoMs: z.number().int().min(500),
     bubbleMaxChars: z.number().int().min(20),
   }),
-  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
   chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
   simulation: z.object({

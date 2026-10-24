@@ -120,12 +120,13 @@ development_status:
 
   # Epic 7: Akt-Pakete und Offline
   epic-7: in-progress
-  7-1-pakete-im-build: backlog  # Pakete im Build
-  7-2-hintergrund-download-und-offline: backlog  # Hintergrund-Download und Offline
+  7-1-pakete-im-build: review  # Pakete im Build
+  7-2-hintergrund-download-und-offline: review  # Hintergrund-Download und Offline
   7-3-ende-eines-veroeffentlichten-akts: backlog  # Ende eines veröffentlichten Akts
-  7-4-stabile-ids-und-release-ablauf: backlog  # Stabile IDs und Release-Ablauf
-  7-5-leistung-messen: backlog  # Leistung messen
+  7-4-stabile-ids-und-release-ablauf: review  # Stabile IDs und Release-Ablauf
+  7-5-leistung-messen: review  # Leistung messen
   7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: review  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
+  7-7-grosse-schlachten-fluessig: backlog  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio

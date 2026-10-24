@@ -1,0 +1,53 @@
+/* Act pack displays on the world map (story 7.2, mockup 07): progress ring stone and "Wird noch geladen …". Style B. */
+@import '../../ui/tokens.css';
+
+.pk-ring {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 999px;
+  max-width: 100%;
+}
+.pk-ring__ring {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: var(--hc-outline) solid var(--hc-line);
+  background: conic-gradient(var(--hc-ember) 0 var(--pk-pct, 0%), var(--hc-cream-2) 0 100%);
+  transition: background 200ms ease-out;
+}
+.pk-ring__ring > i {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: var(--hc-outline) solid var(--hc-line);
+  background: var(--hc-cream);
+}
+.pk-ring__text {
+  min-width: 0;
+}
+.pk-ring__text b {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-size: 14px;
+  line-height: 1.1;
+}
+.pk-ring__text span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hc-soft);
+}
+.pk-wait {
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: var(--hc-outline) solid var(--hc-line);
+  background: var(--hc-cream-2);
+  color: var(--hc-soft);
+  font-family: var(--hc-font-label);
+  text-align: center;
+}
