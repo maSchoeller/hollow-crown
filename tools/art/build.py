@@ -12,7 +12,7 @@ python tools/art/build.py [--quality mid|high]
   in content/acts/*/units.yaml or a map (the rest ships with the act packages; initial-download budget).
 - Busts (same characters): the whole half figure, WebP q60, 150 px, only the joining story characters, for the figure view of the troop.
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
-- World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture → public/assets/world/valmora.webp; loads on demand
+- World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture, doubled to 2048 px wide → public/assets/world/valmora.webp; loads on demand
   when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
@@ -23,7 +23,7 @@ import re
 import shutil
 import sys
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ground  # noqa: E402
@@ -144,6 +144,7 @@ def build_locations():
 
 
 WORLD_MAP = 'map_flat_v1.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map.md)
+WORLD_WIDTH = 2048  # shipped width: the 1024 px source is doubled (Lanczos + unsharp mask), so the near zoom stays crisp on dense screens
 
 
 def build_world():
@@ -152,7 +153,11 @@ def build_world():
     if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
-    Image.open(src).convert('RGB').save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=88, method=6)
+    im = Image.open(src).convert('RGB')
+    if im.width < WORLD_WIDTH:
+        im = im.resize((WORLD_WIDTH, round(im.height * WORLD_WIDTH / im.width)), Image.LANCZOS)
+        im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=70, threshold=2))
+    im.save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=84, method=6)
     return ['valmora']
 
 

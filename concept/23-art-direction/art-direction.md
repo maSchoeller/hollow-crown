@@ -301,7 +301,8 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 - **35 Orte plus Heimat** auf gemalten Lichtungen (`art/world/map_placed_v1.json`, Plan in `art/world/map_layout.json`): 25 Story-Missionen (Prolog + 8, 8, 8) und 10 Nebenquests (3, 3, 4), Mindestabstand 100 px im Quellbild. Aurenhall (3-1, 3-5, 3-6, N7, N10) und die Paktwacht (Heimat, 1-6 bis 1-8) sind Gruppen von Lichtungen nebeneinander.
 - **Steine:** Story-Missionen als Kreis mit Beschriftung (P, 1-1 …), Nebenquests als goldene Raute (N1 …), die Heimat mit Lager-Symbol; erledigte Orte klein und grau. Kamera: verschiebbar mit Nachgleiten, 2 Zoomstufen, Tipp auf einen Ort zoomt leicht heran.
 - **Später optional:** kleine Aufsätze auf den Lichtungen (Burg, Lager, verbranntes Dorf als Variante), Drachenzeichen je Akt (Asche, Risse, Schatten) als Ebenen, Heimsuchungen und Aufträge als Wimpel bzw. Steckbrief-Symbole, Leutnants als kleine Figuren mit Groll-Wimpel.
-- **Offen:** Das Bild ist 1024 px breit; für Handys mit hoher Pixeldichte wäre Hochskalieren auf 2048 × 3072 der nächste Schritt. Die Lichtungen wirken ohne Marker wie gleichförmige Sandflecken.
+- **Schärfe:** Der Build verdoppelt das 1024-px-Bild auf 2048 × 3072 (Lanczos plus leichte Schärfung, WebP 1,4 MB, auf Abruf); das bringt knackigere Kanten, aber keine neuen Details.
+- **Offen:** Die Lichtungen wirken ohne Marker wie gleichförmige Sandflecken.
 
 ## 7. Heimat-Burg [A]
 
