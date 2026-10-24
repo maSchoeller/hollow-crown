@@ -23,9 +23,11 @@ import { loadContent } from '../../content/browser';
 import { setAvatar, setLocales } from '../../i18n';
 import { createAutoSaver, createPlayClock } from '../../persistence/autosave';
 import { createJournalWriter, needsUpdateCheckpoint, type CheckpointReason } from '../../persistence/journal';
+import { log } from '../log';
 import {
   CampaignLimitError,
   contentVersionOf,
+  APP_VERSION,
   createCampaign,
   deleteCampaign,
   listCampaigns,
@@ -36,11 +38,13 @@ import {
   type SaveRecord,
   type SlotId,
 } from '../../persistence/save';
+import { guarded } from './fault';
+import { afterFirstSave, devSaveFailure, noteSaveResult } from './protection';
 
 const loaded = loadContent();
 export const data: GameData = loaded.data;
 setLocales(loaded.locales);
-const contentVersion = contentVersionOf(data);
+export const contentVersion = contentVersionOf(data);
 
 export const campaign = signal<CampaignState | null>(null);
 /** id of the active campaign in the save database (format 2); lives outside CampaignState */
@@ -77,19 +81,49 @@ function turnStartIndex(log: Command[]): number {
   return log.map((c) => c.type).lastIndexOf('endPhase') + 1;
 }
 
-/** Queues the auto-save of the active campaign; the snapshot is taken now, the write happens later. */
-export function autosave(where: SavePayload['screen']): void {
-  const c = campaign.value;
-  const id = campaignId.value;
-  if (!c || !id) return;
+function snapshotPayload(c: CampaignState, where: SavePayload['screen']): SavePayload {
   const b = where === 'battle' ? live().battle : null;
-  const payload: SavePayload = {
+  return {
     campaign: c,
     screen: where,
     battle: b ? { start: b.start, commands: b.commands, turnStartIndex: turnStartIndex(b.commands) } : undefined,
   };
+}
+
+/** The active campaign as a save record, built now and not read from the database (export when saving fails). */
+export function currentSaveRecord(): SaveRecord | null {
+  const c = campaign.value;
+  const id = campaignId.value;
+  if (!c || !id) return null;
+  return {
+    format: 2,
+    campaignId: id,
+    slot: 'auto',
+    createdAt: nowIso(),
+    appVersion: APP_VERSION,
+    contentVersion,
+    payload: snapshotPayload(c, live().where),
+  };
+}
+
+/**
+ * Queues the auto-save of the active campaign; the snapshot is taken now, the write happens later. A failed
+ * write raises the "saving failed" banner; the next commit tries again (§5.15).
+ */
+export function autosave(where: SavePayload['screen']): void {
+  const c = campaign.value;
+  const id = campaignId.value;
+  if (!c || !id) return;
+  const payload = snapshotPayload(c, where);
   saver.schedule(async () => {
-    await writeSave(id, 'auto', payload, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
+    try {
+      if (import.meta.env.DEV && devSaveFailure.on) throw new Error('simulated save failure');
+      await writeSave(id, 'auto', payload, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
+      noteSaveResult();
+      afterFirstSave();
+    } catch (e) {
+      noteSaveResult(e);
+    }
   });
 }
 
@@ -122,7 +156,7 @@ function showCampaign(c: CampaignState): void {
   setAvatar(c.avatar.name, c.avatar.pronoun);
 }
 
-const journal = createJournalWriter();
+const journal = createJournalWriter((e) => log.warn('save', 'journal write failed', e));
 
 /** Full campaign state into the journal; replays of this campaign start here. */
 function checkpoint(id: string, c: CampaignState, reason: CheckpointReason): void {
@@ -151,7 +185,8 @@ export function campaignCommand(cmd: CampaignCommand): CampaignCommandResult {
   if (!c) return { ok: false, error: 'not_available' };
   const error = validateCampaign(data, c, cmd);
   if (error) return { ok: false, error };
-  const r = applyCampaign(data, c, cmd);
+  const r = guarded(() => applyCampaign(data, c, cmd), null);
+  if (!r) return { ok: false, error: 'not_available' }; // invariant violated: the fault screen takes over
   showCampaign(r.campaign);
   const id = campaignId.value;
   if (id) void journal.append(id, { kind: 'command', cmd });

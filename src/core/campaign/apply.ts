@@ -1,3 +1,4 @@
+import { CoreInvariantError } from '../errors';
 import type { GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
@@ -149,7 +150,7 @@ function resourceEvents(before: CampaignState, after: CampaignState): CampaignEv
  */
 export function applyCampaign(data: GameData, prev: CampaignState, cmd: CampaignCommand): CampaignApplyResult {
   const err = validateCampaign(data, prev, cmd);
-  if (err) throw new Error(`invalid campaign command ${cmd.type}: ${err}`);
+  if (err) throw new CoreInvariantError('invalid_campaign_command', { command: cmd.type, reason: err });
   if (cmd.type === 'finishMission') {
     let s = cmd.start;
     for (const bc of cmd.commands) s = applyCommand(data, s, bc).state;

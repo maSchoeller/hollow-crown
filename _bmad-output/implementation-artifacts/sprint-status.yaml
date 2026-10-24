@@ -53,7 +53,7 @@ development_status:
   1-4-kampagnen-commands-und-journal: review  # Kampagnen-Commands und Journal
   1-5-speicherplaetze-und-neustart-je-tod-modus: backlog  # Speicherplätze und Neustart je Tod-Modus
   1-6-verbluten-im-modus-standard: backlog  # Verbluten im Modus Standard
-  1-7-fehlerbericht-und-speicherschutz: backlog  # Fehlerbericht und Speicherschutz
+  1-7-fehlerbericht-und-speicherschutz: review  # Fehlerbericht und Speicherschutz
   1-8-optionen-ende-und-hinweise-im-stil-b: review  # Optionen, Ende und Hinweise im Stil B (nachgetragen 2026-10-24)
   epic-1-retrospective: optional
 
@@ -68,8 +68,7 @@ development_status:
   2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: backlog  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
   2-8-gegnerphase-im-web-worker: backlog  # Gegnerphase im Web Worker
   2-9-gegnertypen-von-akt-1: backlog  # Gegnertypen von Akt 1
-  2-10-kampf-overlays-im-stil-b: review  # Kampf-Overlays im Stil B
-  2-10-kampf-overlays-im-stil-b: backlog  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
+  2-10-kampf-overlays-im-stil-b: review  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
 
   # Epic 3: Leutnants

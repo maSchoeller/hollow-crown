@@ -1,10 +1,11 @@
+import { CoreInvariantError } from '../errors';
 import type { AffixDef, Element, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
 import type { ItemInstance, UnitRecord } from '../state';
 
 export function itemDef(data: GameData, inst: ItemInstance | string): ItemDef {
   const id = typeof inst === 'string' ? inst : inst.def;
   const d = data.items[id];
-  if (!d) throw new Error(`unknown item ${id}`);
+  if (!d) throw new CoreInvariantError('unknown_item', { id });
   return d;
 }
 
