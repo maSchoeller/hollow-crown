@@ -1265,6 +1265,26 @@ damit große Schlachten Spaß machen.
 **Dann** schreibt er Frame-Zeiten (Ziel 60 FPS, NFR1) und Kaltstartzeit (< 5 s, NFR2) als Bericht
 **Und** die Messung läuft in CI und meldet Überschreitungen; 9.14 nutzt sie für die Freigabe.
 
+### Story 7.6: Ladeanzeige beim ersten Start und vor Missionen
+
+Als Spieler
+möchte ich sehen, wenn das Spiel etwas herunterlädt, und wissen, wie lange es dauert,
+damit ich nicht vor einem leeren Bildschirm warte und weiß, wann ich offline spielen kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** der erste Start der App (Service Worker installiert den ersten Download)
+**Wenn** die Dateien geladen werden
+**Dann** zeigt ein Stein „Spiel wird vorbereitet · Größe · danach offline spielbar“ mit Fortschritt; ohne Klick, danach erscheint der Titel
+**Und** bricht die Verbindung ab, sagt der Stein es in einem Satz und versucht es erneut.
+
+**Angenommen** eine Mission oder Szene, deren Bilder oder Modelle (bei Bedarf geladen: Orte, Halbfiguren, Weltkarte, Einheiten-Modelle) noch nicht im Cache liegen
+**Wenn** der Spieler sie startet
+**Dann** erscheint ein Ladebildschirm mit Missionsname, Ortsbild und Fortschritt, bis alles da ist, und die Mission startet danach von selbst
+**Und** liegt alles im Cache, erscheint kein Ladebildschirm; offline ohne fehlende Dateien wird gespielt, offline mit fehlenden Dateien steht ein Satz mit „Erneut versuchen“.
+
+_Nachgetragen 2026-10-24: Entscheidung Produktinhaber (UX-Log), Anlass: große Bilder werden bei Bedarf geladen. Ergänzt 7.2 (Akt-Pakete im Hintergrund, Fortschrittsring)._
+
 ## Epic 8: Chibi-Stil, Item-Bilder und Audio
 
 Spieler sehen und hören Akt 1 im Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen. Bilder per ChatGPT über Claude in Chrome mit Prompt und Abnahme in `art/prompts/`.

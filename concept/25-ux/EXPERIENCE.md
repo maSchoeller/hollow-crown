@@ -92,6 +92,8 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Abschieds-Karte | je Gefallenem nach dem Ergebnis; die ersten 2 s nicht überspringbar |
 | Kampagnen-Zeile | Tipp lädt den Auto-Save; Speicherplätze einzeln ladbar (nicht in Klassik); Langdruck: Löschen mit Rückfrage |
 | Fortschrittsring | nur sichtbar, solange ein Akt-Paket lädt; Tipp zeigt Größe und Hinweis „danach offline spielbar“ |
+| Erster Start | lädt ohne Klick; Stein „Spiel wird vorbereitet · Größe · danach offline spielbar“ mit Fortschritt, danach Titel (Entscheidung 2026-10-24) |
+| Ladebildschirm | vor einer Mission oder Szene, deren Bilder oder Modelle noch fehlen: Stein mit Missionsname, Ortsbild und Fortschritt; erscheint nicht, wenn alles im Cache liegt; nie Laden ohne Rückmeldung |
 
 ## State Patterns
 
