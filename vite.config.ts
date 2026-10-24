@@ -17,6 +17,9 @@ function yamlPlugin(): Plugin {
 
 const base = process.env.BASE_PATH ?? '/';
 
+/** public/assets folders not precached: places, half figures and the world map load on demand (decision 2026-10-24). */
+const ON_DEMAND_ASSETS = ['locations', 'busts', 'world'];
+
 export default defineConfig({
   base,
   plugins: [
@@ -44,6 +47,15 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
+        // large pictures load when first shown and stay cached (initial-download budget, tools/check-bundle-size.mjs)
+        globIgnores: ON_DEMAND_ASSETS.map((d) => `assets/${d}/**`),
+        runtimeCaching: [
+          {
+            urlPattern: new RegExp(`/assets/(${ON_DEMAND_ASSETS.join('|')})/`),
+            handler: 'CacheFirst',
+            options: { cacheName: 'hc-on-demand', expiration: { maxEntries: 400 } },
+          },
+        ],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         navigateFallback: 'index.html',
       },
