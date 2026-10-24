@@ -3,6 +3,7 @@
  * dialogue → battle → result, story conditions and effects. Also wires the auto-save to the live app state.
  */
 import {
+  CoreInvariantError,
   applyCommand,
   conditionContext,
   type AvatarSettings,
@@ -13,6 +14,7 @@ import {
 import type { SaveRecord, SlotId } from '../../persistence/save';
 import {
   adoptRecord,
+  autosave,
   bindLive,
   campaign,
   campaignCommand,
@@ -23,6 +25,8 @@ import {
   storeImportedRecord,
 } from './session';
 import { battle, command, pendingEvents, startBattle } from './battle';
+import { fault, reportFault } from './fault';
+import { devResetHint, devSaveFailure } from './protection';
 import { screen } from './screen';
 
 bindLive(() => ({
@@ -91,7 +95,13 @@ export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): vo
   const p = adoptRecord(rec, reason);
   if (p.battle) {
     let s = p.battle.start;
-    for (const cmd of p.battle.commands) s = applyCommand(data, s, cmd).state;
+    try {
+      for (const cmd of p.battle.commands) s = applyCommand(data, s, cmd).state;
+    } catch (e) {
+      // the saved battle no longer replays; surface it, let the caller decide (recovery shows the fault screen again)
+      reportFault(e);
+      throw e;
+    }
     battle.value = { start: p.battle.start, state: s, log: [...p.battle.commands] };
     screen.value = { name: 'battle' };
   } else {
@@ -109,7 +119,10 @@ export function concludeBattle(): void {
   }
   battle.value = null;
   const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log });
-  if (!r.ok) throw new Error(`finishMission rejected: ${r.error}`);
+  if (!r.ok) {
+    if (fault.value !== null) return; // invariant violated while applying: the fault screen takes over
+    throw new Error(`finishMission rejected: ${r.error}`);
+  }
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
   const node = nodeDef(b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
@@ -139,6 +152,18 @@ if (import.meta.env.DEV) {
       campaign,
       battle,
       screen,
+      /** fault screen: an invalid battle command hits applyCommand's invariant check (or a plain fault outside battle) */
+      crash: () =>
+        battle.value
+          ? command({ type: 'move', unit: 'nobody', to: [0, 0] })
+          : reportFault(new CoreInvariantError('dev_test', { note: 'triggered with __hc.crash()' })),
+      /** save-failed banner: `failSaves(true)` makes auto-saves fail until `failSaves(false)` */
+      failSaves: (on = true) => {
+        devSaveFailure.on = on;
+        if (campaign.value) autosave(battle.value ? 'battle' : 'camp');
+      },
+      /** home-screen hint again, as after a first save */
+      showHomeHint: devResetHint,
     };
   });
 }

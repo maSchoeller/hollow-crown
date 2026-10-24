@@ -1,3 +1,4 @@
+import { CoreInvariantError } from '../errors';
 import { STAT_KEYS, type GameData, type StatKey, type Stats } from '../defs';
 import type { GameEvent } from '../events';
 import { nextFloat, type RngState } from '../rng';
@@ -100,7 +101,7 @@ export function loadoutSlots(data: GameData, u: UnitRecord): number {
 /** Class promotion with a seal (concept/04 §4). Mutates the unit. */
 export function promote(data: GameData, u: UnitRecord, classId: string): Partial<Stats> {
   const cls = data.classes[u.classId]!;
-  if (!cls.promotesTo.includes(classId)) throw new Error(`${u.classId} cannot promote to ${classId}`);
+  if (!cls.promotesTo.includes(classId)) throw new CoreInvariantError('invalid_promotion', { from: u.classId, to: classId });
   const target = data.classes[classId]!;
   const bonus = target.promotionBonus ?? {};
   for (const k of STAT_KEYS) {

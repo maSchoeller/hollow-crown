@@ -1,3 +1,4 @@
+import { CoreInvariantError } from '../errors';
 import type { Element, GameData, Pos, StatusId } from '../defs';
 import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
@@ -299,7 +300,7 @@ export function forecast(
 export function equipWeapon(data: GameData, u: BattleUnit, weaponUid: string, events: GameEvent[]): void {
   if (u.equip.mainHand?.uid === weaponUid) return;
   const idx = u.bag.findIndex((i) => i.uid === weaponUid);
-  if (idx < 0) throw new Error('weapon not carried');
+  if (idx < 0) throw new CoreInvariantError('weapon_not_carried', { weaponUid });
   const w = u.bag[idx]!;
   u.bag.splice(idx, 1);
   if (u.equip.mainHand) u.bag.push(u.equip.mainHand);

@@ -2,6 +2,7 @@
 import { signal } from '@preact/signals';
 import { applyCommand, beginBattle, type BattleState, type Command, type GameEvent } from '../../core';
 import { autosave, campaign, data } from './session';
+import { guarded } from './fault';
 import { screen } from './screen';
 
 export interface BattleSession {
@@ -26,7 +27,8 @@ export function startBattle(nodeId: string, deploy: string[]): GameEvent[] {
 /** Executes a player command. Returns events for the board to play. */
 export function command(cmd: Command): GameEvent[] {
   const b = battle.value!;
-  const r = applyCommand(data, b.state, cmd);
+  const r = guarded(() => applyCommand(data, b.state, cmd), null);
+  if (!r) return []; // invariant violated: the fault screen takes over, the battle stays as it was
   battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
   autosave('battle');
   return r.events;

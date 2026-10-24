@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/hooks';
+import { useEffect, useErrorBoundary } from 'preact/hooks';
 import { t } from '../i18n';
 import { asset } from '../ui/components';
 import { Dialogue } from '../ui/Dialogue';
@@ -6,11 +6,13 @@ import { Icon } from '../ui/icons';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
+import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
 import { campaign, data } from './state/session';
 import { runEffects, storyContext } from './state/flow';
 import { battle, restartBattle } from './state/battle';
+import { fault, reportFault } from './state/fault';
 import { screen } from './state/screen';
 import { settings } from './state/settings';
 import { lang } from '../i18n';
@@ -66,7 +68,23 @@ function useWakeLock(): void {
   }, []);
 }
 
+/** Root: the screens, the save notices, and the fault screen over everything (render errors end up there too). */
 export function App() {
+  const [renderError, resetRenderError] = useErrorBoundary(reportFault);
+  const failed = fault.value !== null;
+  useEffect(() => {
+    if (renderError && !failed) resetRenderError();
+  }, [renderError, failed]);
+  return (
+    <>
+      {!renderError && <Screens />}
+      <SaveNotices />
+      {failed && <FaultScreen />}
+    </>
+  );
+}
+
+function Screens() {
   void lang.value; // re-render on language change
   useWakeLock();
   const sc = screen.value;
