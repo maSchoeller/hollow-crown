@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/defs';
-import { PERMANENT_COMPANIONS } from '../core/defs';
+import { PERMANENT_COMPANIONS, WEAPON_GROUPS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -10,6 +10,7 @@ const statMods = z
   .partial();
 const element = z.enum(['fire', 'wind', 'earth', 'water', 'light', 'dark']);
 const weaponType = z.enum(['sword', 'lance', 'axe', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
+const weaponGroup = z.enum(WEAPON_GROUPS);
 const moveType = z.enum(['foot', 'armored', 'mounted', 'flier', 'monster']);
 const statusId = z.enum(['burning', 'wet', 'slowed', 'knockback']);
 const rarity = z.enum(['common', 'rare', 'epic', 'legendary']);
@@ -34,6 +35,7 @@ export const itemSchema = z.object({
   kind: z.enum(['weapon', 'tome', 'staff', 'shield', 'armor', 'accessory', 'consumable', 'key', 'seal', 'material', 'rune']),
   slot: z.enum(['mainHand', 'offHand', 'head', 'body', 'accessory', 'bag']),
   weaponType: weaponType.optional(),
+  group: weaponGroup.optional(),
   damageType: z.enum(['physical', 'magical']).optional(),
   element: element.optional(),
   mt: z.number().optional(),
@@ -134,21 +136,24 @@ export const setSchema = z.object({
 
 export const classSchema = z.object({
   id: z.string(),
-  tier: z.enum(['base', 'advanced', 'unique']),
+  role: z.string(),
+  tier: z.enum(['base', 'pro', 'unique']),
   roleGroup: z.enum(['melee', 'ranged', 'support']),
   moveType,
   mov: z.number().int(),
-  weapons: z.array(weaponType),
+  weaponGroups: z.array(weaponGroup).min(1),
+  classAction: z.object({ id: z.string(), kind: z.enum(['passive', 'active']), perMap: z.number().int().positive().optional() }).optional(),
+  proPaths: z.array(z.string()).max(2).default([]),
   tags: z.array(z.string()),
   skill: z.string().optional(),
   base: statsSchema,
   growth: statsSchema,
   growthMod: partialStats,
   caps: statsSchema,
-  promotesTo: z.array(z.string()).default([]),
   promotionBonus: partialStats.optional(),
   playable: z.boolean(),
   sprite: z.string().optional(),
+  art: z.string().optional(),
 });
 
 export const charSchema = z.object({

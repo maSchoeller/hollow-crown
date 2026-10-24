@@ -9,6 +9,7 @@ import {
   isMercenary,
   itemDef,
   loadoutSlots,
+  promotionTargets,
   ROLE_GROUPS,
   supportTalksOf,
   type CampaignCommand,
@@ -333,7 +334,7 @@ export function Figure({
         </span>
         {promoting && (
           <div class="trp-pick">
-            {data.classes[unit.classId]!.promotesTo.map((cl) => (
+            {promotionTargets(data, unit.classId).map((cl) => (
               <SecondaryButton
                 key={cl}
                 onClick={() => {

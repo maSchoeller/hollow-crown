@@ -628,7 +628,7 @@ export function Battle() {
         />
         <DockAction
           variant="class"
-          icon={classOpts.length ? classOpts[0]!.kind : roleIcon(u.classId)}
+          icon={classOpts.length ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
           label={classOne ? t(`ui.action.${classOne.kind}`) : t('ui.hud.classSlot')}
           dim={!classOpts.length}
           onClick={classOne ? () => void doAction(classOne) : classOpts.length ? () => setClassPick(true) : ask(t(placed ? 'ui.hud.noClass' : 'ui.hud.pickTile'))}

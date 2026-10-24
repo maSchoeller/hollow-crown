@@ -109,7 +109,7 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
 
 export function effectiveLevel(data: GameData, u: UnitRecord): number {
   const cls = data.classes[u.classId];
-  return u.level + (cls?.tier === 'advanced' ? data.balance.experience.advancedLevelOffset : 0);
+  return u.level + (cls?.tier === 'pro' ? data.balance.experience.advancedLevelOffset : 0);
 }
 
 export interface SkillTotals {

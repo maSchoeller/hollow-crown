@@ -2,14 +2,15 @@
 import { useEffect, useState } from 'preact/hooks';
 import { asset } from '../../ui/asset';
 import { avatarHead } from '../campaignInfo';
+import { data } from '../state/session';
 import '../../ui/troop.css';
 
 /**
  * Id of the character image: the avatar maps to its look, everyone else to the unit id; units without their own picture
- * (generic enemies, tavern mercenaries) show the portrait of their class (class_<class>, art/mockups/characters-s1).
+ * (generic enemies, tavern mercenaries) show the portrait of their class (class_<art of the class>, art/mockups/characters-s1).
  */
 export const artId = (portrait?: string, classId?: string): string | undefined =>
-  portrait ? (portrait.startsWith('avatar_') ? avatarHead(portrait) : portrait) : classId ? `class_${classId}` : undefined;
+  portrait ? (portrait.startsWith('avatar_') ? avatarHead(portrait) : portrait) : classId ? `class_${data.classes[classId]?.art ?? classId}` : undefined;
 
 function Img({ dir, id, name, class: cls }: { dir: 'avatars' | 'busts'; id?: string; name: string; class: string }) {
   const [failed, setFailed] = useState(false);

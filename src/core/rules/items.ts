@@ -1,5 +1,5 @@
 import { CoreInvariantError } from '../errors';
-import type { AffixDef, Element, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
+import type { AffixDef, ClassDef, Element, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
 import type { ItemInstance, UnitRecord } from '../state';
 
 export function itemDef(data: GameData, inst: ItemInstance | string): ItemDef {
@@ -166,7 +166,7 @@ export function armorAffinity(data: GameData, unit: UnitRecord): Element | undef
 
 export type EquipError =
   | 'wrong_slot'
-  | 'weapon_type'
+  | 'weapon_group'
   | 'two_handed'
   | 'heavy_armor'
   | 'duplicate_accessory'
@@ -177,6 +177,11 @@ export function slotFits(d: ItemDef, slot: EquipSlot | 'bag'): boolean {
   if (slot === 'bag') return true;
   if (slot === 'accessory1' || slot === 'accessory2') return d.slot === 'accessory';
   return d.slot === slot;
+}
+
+/** Whether the role of `cls` may carry `d`: an item with a weapon group needs that group in the role's list. */
+export function groupAllowed(cls: ClassDef, d: ItemDef): boolean {
+  return !d.group || cls.weaponGroups.includes(d.group);
 }
 
 /** Checks whether `unit` may hold `inst` in `slot` (class weapons, two-handed, armor class …). */
@@ -193,7 +198,7 @@ export function canEquip(
   if (!slotFits(d, slot)) return 'wrong_slot';
   const cls = data.classes[unit.classId]!;
   if (d.tags?.includes('monsterOnly') && !cls.tags.includes('monster')) return 'monster_only';
-  if (slot === 'mainHand' && d.weaponType && !cls.weapons.includes(d.weaponType)) return 'weapon_type';
+  if ((slot === 'mainHand' || slot === 'offHand') && !groupAllowed(cls, d)) return 'weapon_group';
   if (slot === 'offHand') {
     const main = unit.equip.mainHand;
     if (main && itemDef(data, main).twoHanded) return 'two_handed';
@@ -218,7 +223,7 @@ export function usableWeapons(data: GameData, unit: UnitRecord): ItemInstance[] 
   const list = [unit.equip.mainHand, ...unit.bag].filter((i): i is ItemInstance => !!i);
   return list.filter((i) => {
     const d = itemDef(data, i);
-    return isWeapon(d) && !!d.weaponType && cls.weapons.includes(d.weaponType) && (d.mt !== undefined || !!d.damageType);
+    return isWeapon(d) && !!d.weaponType && groupAllowed(cls, d) && (d.mt !== undefined || !!d.damageType);
   });
 }
 
@@ -227,7 +232,7 @@ export function usableStaves(data: GameData, unit: UnitRecord): ItemInstance[] {
   const list = [unit.equip.mainHand, ...unit.bag].filter((i): i is ItemInstance => !!i);
   return list.filter((i) => {
     const d = itemDef(data, i);
-    return isStaff(d) && cls.weapons.includes('staff');
+    return isStaff(d) && groupAllowed(cls, d);
   });
 }
 

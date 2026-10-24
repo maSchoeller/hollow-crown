@@ -60,7 +60,7 @@ development_status:
   # Epic 2: Rollenklassen und neues Kampf-HUD
   epic-2: in-progress
   2-1-kampf-hud-in-stil-b: done  # Kampf-HUD in Stil B
-  2-2-rollenmodell-und-waffengruppen: backlog  # Rollenmodell und Waffengruppen
+  2-2-rollenmodell-und-waffengruppen: review  # Rollenmodell und Waffengruppen
   2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: backlog  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
   2-4-halten-und-nachsetzen: backlog  # Halten und Nachsetzen
   2-5-wirken-der-elementaristen: backlog  # Wirken der Elementaristen
