@@ -77,11 +77,11 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 |---|---|
 | Haupttaste | eine je Ansicht; nennt Ziel und ggf. Preis; gesperrt grau mit Grund darunter |
 | Dock-Aktion | vier feste Plätze: Angriff, Klassen-Aktion, Item, Warten. Nicht mögliche Aktionen gedimmt, nie versteckt |
-| Klassen-Aktion | fester Platz neben Angriff; Zähler zeigt Restnutzungen (1×/Karte); Tipp öffnet die Zielauswahl mit Vorschau wie beim Angriff |
+| Klassen-Aktion | fester Platz neben Angriff; Zähler zeigt Restnutzungen (1×/Karte); Tipp öffnet die Zielauswahl mit Vorschau wie beim Angriff. Passive Rollen (Vorkämpfer: Halten, Plänkler: Nachsetzen): Rollen-Symbol als Zustand (bereit/aktiv), nicht auslösbar, Tipp erklärt die Regel mit Vorschau |
 | Kontext-Band | erscheint über der Einheitenkarte, sobald Bergen, Ansprechen, Besuchen oder Öffnen auf dem Zielfeld möglich ist; ein Tipp führt die Aktion aus; das Dock bleibt unverändert |
 | Leerlauf-Dock | Gefahr (Umschalter), Nächste (nächste bereite Einheit), Phase beenden (zeigt bereite Einheiten, fragt nach, solange welche bereit sind) |
 | Kampfvorschau | öffnet beim Tipp auf ein Ziel; zweiter Tipp auf dasselbe Ziel oder „Angreifen“ bestätigt; zeigt „flieht“ statt 0 TP bei Leutnants |
-| Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); schließt mit Zurück oder Tipp daneben |
+| Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
 | Sprechblase | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
 | Raumstein | Tipp öffnet das Raum-Panel; Ausbau-Band erscheint nur, wenn Gefährte und Gold reichen; sonst nennt die Stufe, was fehlt |
@@ -201,7 +201,7 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 1. Um 7:10 öffnet sie die App. Der Tageswechsel war um 4:00; der Hinweis meldet „Neuer Tag: 3 Heimsuchungen“.
 2. Ein roter Knoten zeigt Morras Gesicht mit „NEU“. Die Karte sagt: Truhenjagd, Groll 2 gegen Mira, Kopfgeld ● 600, bleibt offen.
 3. Sie spielt sie in 15 Minuten; das Ergebnis zeigt ● +400 Gold, eine Eisenerz-Raute und 60 % EP.
-4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber die Burg hat einen grünen Pfeil: Der Schmied lässt sich ausbauen. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang.
+4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber die Burg hat einen grünen Pfeil: In der Taverne wartet ein neues Söldner-Angebot. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang. (Die Burg ist seit 1-6 Heimat; ihre Räume lassen sich erst ab Akt 2 ausbauen.)
 
 ## Offene Punkte
 
@@ -209,4 +209,4 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 - **Item-Bilder:** In den Mockups stehen Platzhalter; die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
 - **Chronik, Aufstellung, Optionen, Steckbrief-Liste:** spine-only; Mockups bei Bedarf in der Umsetzung.
 - **Logo:** im Titel-Mockup nur angedeutet; Auswahl zwischen den Kandidaten aus Art Direction §5.5.
-- **Umsetzung:** `src/ui/styles.css` (U21) wird in Epic E7 auf die Tokens aus `DESIGN.md` umgestellt.
+- **Umsetzung:** `src/ui/styles.css` (U21) wird in Story 1.1 auf die Tokens aus `DESIGN.md` umgestellt.

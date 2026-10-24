@@ -171,7 +171,7 @@ Jede Rolle bzw. jeder Gegnertyp hat ein **gemeinsames Skelett mit gemeinsamen An
 | Spielmann | Federhut bzw. Mütze, Instrument auf dem Rücken | Dolch, Laute |
 | Taktiker (Rhen) | langer Mantel, Kartentasche | Schwert, Zauberbuch |
 | Hauptmann (Kael) | Umhang, großes Schulterstück links | Schwert, Lanze |
-| Gegnertypen | Bandit (Kopftuch, Fellweste), Wolfsreiter (Wolf, eigener Rumpf), Ritter (Vollrüstung, eckiger Schild), Pegasus- und Wyvernreiter (Reittier, großer Rahmen), Glut-Fanatiker (Kapuzenrobe, Flammenkrone), Untote (zerrissenes Tuch, Lichtaugen), Drache (eigenes Modell) | |
+| Gegnertypen | Bandit (Kopftuch, Fellweste), Wolfsreiter (in Akt 1 zu Fuß mit Wolfsfell; Reittier erst nach dem MVP), Ritter (Vollrüstung, eckiger Schild), Pegasus- und Wyvernreiter (Reittier, großer Rahmen), Glut-Fanatiker (Kapuzenrobe, Flammenkrone), Untote (zerrissenes Tuch, Lichtaugen), Drache (eigenes Modell) | |
 
 - **Profi-Wege** bekommen auf dem Rumpf **ein** neues Großteil (z. B. Bollwerk: Turmschild; Scharfschütze: Langbogen + Federhut; Bischof: Mitra).
 - **Ausgerüstete Waffenart** als eigenes Modellteil in der Hand (GA9); gezeigt wird die Waffengruppe, nicht das einzelne Item.
@@ -363,7 +363,7 @@ Startschätzung zur Planung der Epics. [C]
 
 | Asset | Umfang |
 |---|---|
-| 3D-Figuren (Tripo) | rund 35 Story-Figuren, rund 16 generische Gegner (Typ × Fraktion), 3 Reittiere, 2 Drachen; je ein Turnaround |
+| 3D-Figuren (Tripo) | rund 35 Story-Figuren, rund 16 generische Gegner (Typ × Fraktion), 3 Reittiere (nach dem MVP), 2 Drachen; je ein Turnaround |
 | Skelette und Animationen | 9 Rollen (7 Rollen + Taktiker + Hauptmann), rund 8 Gegnertypen, Reittiere und Drachen eigens |
 | Porträts | rund 18 Kernfiguren × 4 Stimmungen + rund 20 Nebenfiguren × 1 ≈ 90 Bilder |
 | Dialog-Hintergründe | rund 26 (14 aus dem Moodboard + Varianten; neu durch 8/8/8: Gewölbe der Paktwacht, Kontor am Silbermeer, Pass ins Gebirge, Pachthof, Gauklerlager, Unterstadt) |

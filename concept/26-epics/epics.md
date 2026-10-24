@@ -4,6 +4,7 @@ stepsCompleted: [1, 2, 3, 4]
 status: final
 created: 2026-10-23
 updated: 2026-10-23
+readiness: concept/26-epics/implementation-readiness-report-2026-10-23.md (Auflösung der Befunde in Abschnitt 9)
 source: BMAD-Workflow gds-create-epics-and-stories
 decisions: concept/26-epics/decision-log.md
 inputDocuments:
@@ -110,7 +111,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 **Spielstände und Auslieferung (GDD Technical, Architektur)**
 
 - FR56 (geändert): Auto-Save nach jeder Aktion; bis zu 3 Kampagnen je Gerät; Standard/Casual mit 3 Speicherplätzen je Kampagne, Klassik nur Auto-Save; Export/Import; Import überschreibt.
-- FR57 (neu): Ein Spielstand trägt über Akt-Releases und in Staffel 2 (Entscheidungen, Überlebende, Ende).
+- FR57 (neu): Ein Spielstand trägt über Akt-Releases; Staffel 2 übernimmt nur die Staffel-Zusammenfassung (Entscheidungen, Überlebende, Ende).
 - FR58 (neu): Akt-Pakete laden im Hintergrund und sind danach offline spielbar; Missionen eines fehlenden Pakets sind sichtbar, aber gesperrt; „Akt n erscheint bald“ am Ende eines veröffentlichten Akts.
 - FR59 (neu): Proof-of-Concept-Spielstände werden erkannt und als nicht kompatibel gezeigt, Export bleibt möglich.
 
@@ -137,7 +138,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 - NFR12: Simulationskorridore je Story-Mission: Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 - NFR13: Kein Täglich-Druck: Heimsuchungen ohne Ablaufdatum, Story und Nebenquests brauchen sie nicht.
 - NFR14: Nemesis-Leitplanken: keine prozedurale Erzeugung von Gegnern oder Persönlichkeiten, keine Rangordnung unter Gegnern, keine Beförderung durch Spielerniederlagen.
-- NFR15: Nichts kommerziell veröffentlichen, solange GA26 (Lizenzen) offen ist.
+- NFR15: KI-Assets nur nach den Auflagen aus `concept/23-art-direction/licensing.md` §6 (GA26 seit 2026-10-24 geklärt).
 - NFR16: Spielzeit Staffel 1 30–35 Stunden auf Normal.
 
 ### Additional Requirements
@@ -251,7 +252,7 @@ Spieler verwalten ihre Truppe, rüsten aus, handeln und versorgen im Lager und a
 
 ### Epic 7: Akt-Pakete und Offline
 Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
-**FRs covered:** FR57 (Release-Ablauf), FR58 · AR15, AR19, AR23 · NFR2, NFR8 · UX-DR18
+**FRs covered:** FR57 (Release-Ablauf), FR58 · AR15, AR19, AR23 · NFR1, NFR2, NFR8 · UX-DR18
 
 ### Epic 8: Chibi-Stil, Item-Bilder und Audio
 Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen.
@@ -270,10 +271,10 @@ Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronf
 **FRs covered:** FR17 (Akt 2), FR61, FR63
 
 ### Epic 12: Akt 3 „Krone“ und Staffelende – grob
-Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2.
+Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2.
 **FRs covered:** FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
 
-**Reihenfolge:** 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Jedes Epic baut nur auf den vorherigen auf; Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus.
+**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
 
 <!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
 
@@ -291,7 +292,7 @@ damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.
 
 **Angenommen** die Tokens aus `concept/25-ux/DESIGN.md` (Farben, Typografie, Rundungen, Abstände)
 **Wenn** die App startet
-**Dann** stehen sie als CSS-Variablen in `src/ui/` bereit und Fraunces ist als Namensschrift eingebunden (einzige neue Abhängigkeit: Schriftpaket)
+**Dann** stehen sie als CSS-Variablen in `src/ui/` bereit und Fraunces ist als Namensschrift eingebunden (einzige neue Abhängigkeit: Schriftpaket); die PoC-Schriften (Cinzel, Grenze Gotisch, Nunito Sans, Silkscreen) entfallen, es bleiben Barlow, Barlow Condensed und Fraunces
 **Und** es gibt wiederverwendbare Preact-Komponenten `Piece`, `PrimaryButton`, `SecondaryButton`, `QuietButton` mit Druckzustand (Unterkante 4 → 1 px).
 
 **Angenommen** ein Betrag an Gold, Material, EP oder Glutfunken
@@ -350,6 +351,11 @@ damit ich in Sekunden weiß, wo ich stehe, und schnell ins Spiel komme.
 **Dann** steht er als graue Zeile „Spielstand aus dem Proof of Concept · nicht mehr kompatibel“ mit „Exportieren“
 **Und** er lässt sich nicht laden.
 
+**Angenommen** eine Kampagne in einem beliebigen Tod-Modus
+**Wenn** der Spieler in der Kampagnen-Ansicht exportiert oder importiert
+**Dann** exportiert jede Zeile ihre Kampagne als Datei, und „Importieren“ liest eine Datei ein, die die Kampagne gleicher ID überschreibt oder einen freien Platz belegt (FR56)
+**Und** sind drei Plätze belegt und die ID ist neu, verlangt der Import zuerst das Löschen einer Kampagne; für Klassik gelten zusätzlich die Regeln aus Story 1.5.
+
 ### Story 1.4: Kampagnen-Commands und Journal
 
 Als Spieler
@@ -392,7 +398,7 @@ damit Klassik streng bleibt und die anderen Modi Fehler verzeihen.
 **Und** `validateCampaign` lehnt in Klassik `restartTurn` immer und `restartMission` außer nach einer Niederlage ab.
 
 **Angenommen** Klassik
-**Wenn** der Spieler exportiert oder importiert
+**Wenn** der Spieler exportiert oder importiert (Export/Import aller Modi: Story 1.3)
 **Dann** ist Export jederzeit außerhalb des Kampfs möglich und Import nur aus der Kampagnen-Ansicht; er überschreibt die Kampagne gleicher ID (Ehrensystem, AR18)
 **Und** ein Import prüft Größe (≤ 5 MB), Prüfsumme und Schema und nennt Fehler in einem Satz.
 
@@ -452,7 +458,7 @@ damit ich Ziel, Einheit und Aktionen auf einen Blick erfasse.
 **Angenommen** die bestehenden Kampfregeln (FR1–FR3, FR6, FR9, FR10)
 **Wenn** der Kampfbildschirm neu gebaut ist
 **Dann** zeigt er oben die Rundenpille mit Hauptziel und darunter Nebenziel-Pillen, unten die Einheitenkarte (Medaillon mit TP-Ring, Name, Rolle, TP, Waffen-Chip) und das Dock mit vier festen Plätzen: Angriff, Klassen-Aktion, Item, Warten (Mockup 02)
-**Und** nicht mögliche Aktionen sind gedimmt, nie versteckt.
+**Und** nicht mögliche Aktionen sind gedimmt, nie versteckt; bei passiven Rollen (Vorkämpfer: Halten, Plänkler: Nachsetzen) zeigt der Platz „Klassen-Aktion“ das Rollen-Symbol als Zustand (bereit/aktiv), ist nicht auslösbar, und Tippen erklärt die Regel mit Vorschau.
 
 **Angenommen** keine Einheit ist gewählt
 **Wenn** die Spielerphase läuft
@@ -597,14 +603,14 @@ damit es sich auf dem Handy nie hakelig anfühlt.
 ### Story 2.9: Gegnertypen von Akt 1
 
 Als Spieler
-möchte ich in Akt 1 unterscheidbare Gegner (Banditen, Wolfsreiter, Söldner) erleben,
+möchte ich in Akt 1 unterscheidbare Gegner (Banditen, Wolfsreiter zu Fuß, Söldner) erleben,
 damit Kämpfe abwechslungsreich bleiben.
 
 **Akzeptanzkriterien:**
 
 **Angenommen** die Gegnerklassen von Akt 1 im Rollenschema
 **Wenn** sie auf Karten stehen
-**Dann** haben Wolfsreiter den Bewegungstyp beritten und Effektivität gegen sie greift (z. B. Pferdetöter); Banditen und Söldner unterscheiden sich in Waffen und KI-Profil
+**Dann** sind Wolfsreiter in Akt 1 Fußtruppen mit Wolfsfell (kein Reittier, keine Beritten-Effektivität; Vierbeiner und Reittiere erst nach dem MVP); Banditen, Wolfsreiter und Söldner unterscheiden sich in Waffen und KI-Profil
 **Und** ihre Werte stehen in Content-YAML und sind per `pnpm sim` geprüft.
 
 ## Epic 3: Leutnants
@@ -645,7 +651,7 @@ damit sich nichts beliebig anfühlt.
 **Angenommen** die Kampfvorschau gegen einen Leutnant
 **Wenn** der Angriff ihn auf 0 TP bringen würde
 **Dann** zeigt sie „flieht“ statt 0 (Mockup 01/02)
-**Und** das Brett spielt Rückwärtssprung, Rauchwölkchen und fallenden Wimpel, dazu eine Fluchtzeile als Sprechblase.
+**Und** das Brett spielt Rückwärtssprung, Rauchwölkchen und fallenden Wimpel, dazu eine Fluchtzeile als Sprechblase (Zeilen-Content über das Szenen-Schema aus Story 4.4).
 
 ### Story 3.3: Groll und Groll-Ziel
 
@@ -658,7 +664,7 @@ damit die Welt sich an meine Truppe erinnert.
 **Angenommen** ein Leutnant ist geflohen
 **Wenn** die Mission gewonnen ist
 **Dann** erhöht `finishBattle` in `c.lieutenants[id]` `routs`, setzt `grudge = min(3, grudge + 1)` und `target` auf den Vertreiber
-**Und** die Wirkung `grudge: { lt, delta: -1 }` senkt den Groll (für Entscheidungen, Epic 4).
+**Und** die Wirkung `grudge: { lt, delta: -1 }` senkt den Groll (für Entscheidungen; Wirkungssprache aus Story 4.2, Epic 4 läuft vorher).
 
 **Angenommen** ein Leutnant mit Groll-Ziel steht auf der Karte
 **Wenn** die KI Ziele bewertet
@@ -701,8 +707,26 @@ damit ich planen kann, wer ihn stellt.
 
 **Angenommen** ein Leutnant im Kampf
 **Wenn** der Spieler ihn lange drückt
-**Dann** öffnet der Steckbrief: Medaillon mit Goldring, Groll-Kerben, Name und Rolle, Groll-Ziel, Fluchtregel, Kopfgeld, Begegnungen und Vertreibungen, Groll-Fähigkeiten (gesperrte gestrichelt) (Mockup 02)
+**Dann** zeigt das Brett seine Gefahrenzone, und zugleich öffnet der Steckbrief: Medaillon mit Goldring, Groll-Kerben, Name und Rolle, Groll-Ziel, Fluchtregel, Kopfgeld, Begegnungen und Vertreibungen, Groll-Fähigkeiten (gesperrte gestrichelt) (Mockup 02)
 **Und** dieselbe Ansicht gibt es als Liste aller bekannten Leutnants, erreichbar über das Menü (ab Epic 5 über die Leiste „Steckbriefe“).
+
+### Story 3.7: Seitenwechsel
+
+Als Spieler
+möchte ich, dass ein Leutnant nach meiner Entscheidung zu meiner Truppe wechselt,
+damit Entscheidungen Feinde zu Gefährten machen können (FR25).
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Entscheidung mit der Wirkung `recruit: { lt }` (Grosk, Sable, Mael; Wirkungssprache aus Story 4.2)
+**Wenn** sie angewendet wird
+**Dann** wird der Leutnant zum Gefährten mit Rolle, Stufe (mitwachsende Stärke aus 3.4 ohne Groll) und Startausrüstung inklusive Signatur-Item, setzt das Flag `joined_<lt>` und meldet `companionJoined`
+**Und** er erscheint in keiner Heimsuchung und keiner Finale-Aufstellung mehr; Groll gegen ihn und von ihm verfällt.
+
+**Angenommen** das Armee-Limit ist voll
+**Wenn** ein Beitritt per Entscheidung oder Ansprechen ansteht
+**Dann** findet er trotzdem statt, und der Spieler muss vor der nächsten Mission einen Söldner entlassen
+**Und** Tests decken Wechsel, Ausschluss aus Heimsuchungen und das volle Limit ab.
 
 ## Epic 4: Akt-Struktur, Szenen und Entscheidungen
 
@@ -720,6 +744,11 @@ damit Akte einzeln wachsen und später als Pakete ausgeliefert werden können.
 **Wenn** die Story umgesetzt ist
 **Dann** liegen Regeln, UI-Texte und Werte in `content/core/`, Akt-Inhalte in `content/acts/act1/` (Kampagne, Karten, Leutnants, Dialoge); Browser-Loader, Node-Loader, `content:check` und `pnpm sim` finden alles
 **Und** das Spiel verhält sich unverändert (E2E-Smoke-Test grün).
+
+**Angenommen** die Story-Knoten in `content/acts/actN/campaign.yaml`
+**Wenn** `content:check` läuft
+**Dann** trägt jeder Story-Knoten `expectedLevel` (erwartete effektive Armee-Stufe nach GDD, Akt 1: 1 → 9, Finale 10), und die Kurve fällt innerhalb eines Akts nicht ab
+**Und** Gegnerstufen (5.5, 5.6), Heimsuchungs-Deckel und die Simulation (6.8) lesen nur dieses Feld.
 
 ### Story 4.2: Bedingungen und Wirkungen
 
@@ -1034,12 +1063,12 @@ damit ich Gold sinnvoll einsetze.
 
 **Angenommen** der Händler
 **Wenn** der Spieler ihn öffnet
-**Dann** sieht er Börse, Kaufen/Verkaufen, Sortiment nach Ausrüstungs-Tier des Akts, Angebot des Tages und jeden Preis als Münze + Zahl; die Haupttaste nennt den Betrag; „Für wen?“ zeigt, wer das Item führen kann
+**Dann** sieht er Börse, Kaufen/Verkaufen, Sortiment nach Ausrüstungs-Tier des Akts (das Angebot des Tages kommt erst mit Händler-Stufe 3, Epic 10) und jeden Preis als Münze + Zahl; die Haupttaste nennt den Betrag; „Für wen?“ zeigt, wer das Item führen kann
 **Und** Preisänderungen aus Entscheidungen (`priceMod`) und Dorfhilfe (`villageAid`) wirken sichtbar.
 
 **Angenommen** Schmied, Heiler und Taverne
 **Wenn** der Spieler sie nutzt
-**Dann** gelten Kosten und Grenzen aus `balance.yaml` (Aufwerten bis +3 auf Stufe 1, Narbe heilen, Söldner 600 + 150 × Stufe, 3 Angebote) und das Armee-Limit 20 Gefährten + 6 Söldner.
+**Dann** gelten Kosten und Grenzen aus `balance.yaml` (Aufwerten bis +3 auf Stufe 1, Narbe heilen, Söldner 600 + 150 × Stufe, 3 Angebote) und das Armee-Limit 20 Gefährten + 6 Söldner (Beitritt über Entscheidung oder Ansprechen bei vollem Limit: Story 3.7).
 
 ### Story 6.5: Stufendeckel und EP-Regeln
 
@@ -1182,6 +1211,19 @@ damit ich Akt für Akt mit derselben Truppe weiterspiele.
 **Wenn** ein Akt veröffentlicht wird
 **Dann** schreibt es alle veröffentlichten IDs in `content/released-ids.json`; `content:check` scheitert, wenn eine gesperrte ID fehlt und nicht in `content/renames.yaml` steht
 **Und** jede Save-Migration hat einen Fixture-Spielstand und einen Test; der Release-Ablauf (`released: true`, `content:lock`, Migration, Pull Request) steht in `AGENTS.md`.
+
+### Story 7.5: Leistung messen
+
+Als Spieler
+möchte ich, dass das Spiel auf meinem Handy flüssig läuft und schnell startet,
+damit große Schlachten Spaß machen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Playwright-Lauf mit Referenzprofil (Pixel 6a / iPhone 12, gedrosselte CPU und Netz)
+**Wenn** er eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten) und einen Kaltstart misst
+**Dann** schreibt er Frame-Zeiten (Ziel 60 FPS, NFR1) und Kaltstartzeit (< 5 s, NFR2) als Bericht
+**Und** die Messung läuft in CI und meldet Überschreitungen; 9.14 nutzt sie für die Freigabe.
 
 ## Epic 8: Chibi-Stil, Item-Bilder und Audio
 
@@ -1493,7 +1535,7 @@ damit die Kernhypothese geprüft wird.
 **Angenommen** alle Stories von Epic 1–9
 **Wenn** `pnpm sim --campaign act1` auf allen Schwierigkeiten läuft
 **Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 passt zu 30–35 Stunden für die Staffel
-**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu die Burg als Heimat und die Gedenksteine) liegt vor (`gds-playtest-plan`).
+**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind mit Story 7.5 auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu die Burg als Heimat und die Gedenksteine) liegt vor (`gds-playtest-plan`).
 
 ## Epic 10: Die Burg ausbauen (ab Akt 2) – grob
 
@@ -1697,7 +1739,7 @@ damit Akt 2 eine eigene Welt hat.
 
 ## Epic 12: Akt 3 „Krone“ und Staffelende – grob
 
-Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2. Vor Akt 3 verfeinern.
+Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2. Vor Akt 3 verfeinern.
 
 ### Story 12.1: Paket, Region und Gegner von Akt 3
 
@@ -1810,5 +1852,6 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 - **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
 - **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
 - **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager, Burg auf Stufe 1 ab 1-6) und Epic 10 (Burg-Ausbau ab Akt 2) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
-- **Offen:** Epics 10–12 sind grob und werden vor dem jeweiligen Akt mit `gds-create-story` verfeinert; Lizenzfrage GA26 bleibt offen (NFR15).
-- **Nächster Schritt:** `gds-check-implementation-readiness`, danach `gds-sprint-planning` mit diesem Dokument als Epics-Quelle (`concept/26-epics/epics.md`).
+- **Offen:** Epics 10–12 sind grob und werden vor dem jeweiligen Akt mit `gds-create-story` verfeinert; bis dahin bleiben sie im Sprint-Status `backlog`. Lizenzfrage GA26: siehe `concept/23-art-direction/licensing.md`.
+- **Readiness (2026-10-23):** Befunde des Readiness-Checks mit dem Produktinhaber geklärt (Decision-Log); neu sind Story 3.7 und 7.5, mit der Course Correction 8/8/8 damit 108 Stories.
+- **Nächster Schritt:** Umsetzung nach `_bmad-output/implementation-artifacts/sprint-status.yaml`, Story für Story mit `gds-create-story` und `gds-dev-story`.
