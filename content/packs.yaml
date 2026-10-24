@@ -1,0 +1,66 @@
+# Content- und Asset-Pakete (concept/24-architecture/architecture.md §5.14, Story 7.1).
+#
+# Eine Datei gehört zum ersten Paket, dessen Globs passen; was kein Paket nennt, gehört zu core.
+#   content: Pfade relativ zu content/ (YAML), werden zum virtuellen Modul virtual:hc-pack/<id>
+#   assets:  Pfade relativ zu public/assets/ (Ausgabe von pnpm art:build)
+# Nur Pakete mit released: true kommen in den Build; Dateien unveröffentlichter Pakete fehlen dort ganz.
+# load: precache = Service Worker beim Installieren; background = direkt nach dem Start, sobald der Akt erreicht ist;
+#       voice = nur die gewählte Sprache, nach dem Akt-Paket.
+# budgetMb: Transfergröße (gzip, Bilder und Audio wie sie sind); core bricht den Build ab, die übrigen warnen.
+packs:
+  - id: core
+    released: true
+    load: precache
+    act: 1
+    budgetMb: 15
+    content:
+      - core/**
+      - world/**
+      - home/**
+      - acts/act1/campaign.yaml
+      - acts/act1/units.yaml
+      - acts/act1/flags.yaml
+      - acts/act1/maps/prologue_*.yaml
+      - acts/act1/scenes/scn.prologue.*.yaml
+      # enthält auch die englischen Prolog-Zeilen; ohne sie zeigte der Prolog auf Englisch nur Schlüssel
+      - locales/en/act1.dialogue.yaml
+
+  - id: act1
+    released: true
+    load: background
+    act: 1
+    budgetMb: 40
+    content:
+      - acts/act1/**
+      - locales/*/act1.*
+    # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
+    assets:
+      - locations/**
+      - busts/**
+      - halves/**
+      - world/**
+      - sprites/**
+      - items/**
+      - models/**
+      - audio/battle_player.*
+      - audio/battle_enemy.*
+      - audio/camp.*
+      - audio/worldmap.*
+
+  - id: voice.act1.de
+    released: false
+    load: voice
+    act: 1
+    lang: de
+    budgetMb: 15
+    assets:
+      - audio/voice/act1/de/**
+
+  - id: voice.act1.en
+    released: false
+    load: voice
+    act: 1
+    lang: en
+    budgetMb: 15
+    assets:
+      - audio/voice/act1/en/**

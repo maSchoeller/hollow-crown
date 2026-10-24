@@ -5,6 +5,9 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
 import { ON_DEMAND_CACHE, ON_DEMAND_MUSIC } from './src/app/loading/cacheName.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { packsPlugin } from './tools/build/packs-plugin.ts';
+
+const packs = packsPlugin();
 
 /** Compiles content YAML to JSON modules at build time (content is validated by Zod at load). */
 function yamlPlugin(): Plugin {
@@ -23,6 +26,8 @@ const base = process.env.BASE_PATH ?? '/';
  * public/assets folders not precached (decision 2026-10-24): places, half figures and the world map, then (PO decision
  * "mehr nachladen statt Budget erhöhen") sprite sheets (a fallback for the 2D setting and units without a model) and
  * item images (menus show the frame until the picture is there). Music tracks follow by name (`ON_DEMAND_MUSIC`).
+ * Since story 7.1 these belong to the pack act1 (content/packs.yaml); the precache leaves out every file of a pack other
+ * than core (`packs.nonCorePaths()`), this list only feeds the runtime cache.
  */
 const ON_DEMAND_ASSETS = ['locations', 'busts', 'halves', 'world', 'sprites', 'items'];
 
@@ -46,6 +51,7 @@ function precacheInfo<E extends { size: number }>(entries: E[]): { manifest: E[]
 export default defineConfig({
   base,
   plugins: [
+    packs,
     yamlPlugin(),
     preact(),
     VitePWA({
@@ -70,8 +76,6 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
-        // large pictures load when first shown and stay cached (initial-download budget, tools/check-bundle-size.mjs)
-        globIgnores: [...ON_DEMAND_ASSETS.map((d) => `assets/${d}/**`), ...ON_DEMAND_MUSIC.map((m) => `assets/audio/${m}.mp3`)],
         runtimeCaching: [
           {
             urlPattern: new RegExp(`/assets/((${RUNTIME_CACHED.join('|')})/|audio/(${ON_DEMAND_MUSIC.join('|')})[.]mp3)`),
@@ -79,7 +83,8 @@ export default defineConfig({
             options: { cacheName: ON_DEMAND_CACHE, expiration: { maxEntries: 1000 } },
           },
         ],
-        manifestTransforms: [(entries) => precacheInfo(entries)],
+        // only core is precached; the other packs load in the background (story 7.2) or when first shown
+        manifestTransforms: [(entries) => precacheInfo(entries.filter((e) => !packs.nonCorePaths().has(e.url)))],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         navigateFallback: 'index.html',
       },

@@ -1,12 +1,12 @@
-/** Browser-side content: YAML is compiled to JSON modules at build time (vite.config.ts). */
+/** Browser-side content: each pack's YAML arrives as one JSON module from the packs plugin (tools/build/packs-plugin.ts). */
+import core from 'virtual:hc-pack/core';
+import act1 from 'virtual:hc-pack/act1';
 import { buildContent, type LoadedContent } from './load';
-
-const files = import.meta.glob('/content/**/*.yaml', { eager: true, import: 'default' }) as Record<string, unknown>;
 
 let cached: LoadedContent | null = null;
 export function loadContent(): LoadedContent {
   if (!cached) {
-    cached = buildContent(files);
+    cached = buildContent({ ...core, ...act1 });
     if (cached.issues.length) console.warn('[content]', cached.issues);
   }
   return cached;

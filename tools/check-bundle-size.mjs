@@ -14,9 +14,11 @@ import { join, relative, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parse } from 'yaml';
 
-const BUDGET = 15 * 1024 * 1024;
-const TARGET = 12 * 1024 * 1024;
 const dist = join(process.cwd(), 'dist');
+// packs.json is written by the packs plugin (tools/build/packs-plugin.ts); core's budget comes from content/packs.yaml
+const manifest = JSON.parse(readFileSync(join(dist, 'packs.json'), 'utf8'));
+const BUDGET = (manifest.packs.find((p) => p.id === 'core')?.budgetMb ?? 15) * 1024 * 1024;
+const TARGET = 12 * 1024 * 1024;
 const content = (f) => parse(readFileSync(join(process.cwd(), 'content', f), 'utf8'));
 const act = 'acts/act1';
 
@@ -97,7 +99,17 @@ console.log(`precache: ${counts.precache} files, ${mb(sum.precache)} MB; first m
 console.log(`on demand, not counted: ${counts.onDemand} files, ${mb(sum.onDemand)} MB`);
 console.log(`bundle: first download ${mb(total)} MB (budget ${mb(BUDGET)} MB, target ${mb(TARGET)} MB)`);
 if (total > TARGET) console.warn(`warning: over the ${mb(TARGET)} MB target`);
+
+// the other packs against their budgets from content/packs.yaml (story 7.1): a warning, not a failure
+for (const pack of manifest.packs) {
+  if (pack.id === 'core') continue;
+  const size = pack.files.reduce((n, f) => n + transfer(f.path), 0);
+  const budget = pack.budgetMb * 1024 * 1024;
+  console.log(`pack ${pack.id}: ${pack.files.length} files, ${mb(size)} MB (budget ${mb(budget)} MB)`);
+  if (size > budget) console.warn(`warning: pack ${pack.id} over its budget`);
+}
+
 if (total > BUDGET) {
-  console.error('✗ first download over budget');
+  console.error('✗ first download (pack core) over budget');
   process.exit(1);
 }
