@@ -1,0 +1,69 @@
+id: scn.support.fenn_mira.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Du hältst die Wache, Fenn? Freiwillig? Wer hat dich gezwungen?"
+  - id: l02
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Keiner! Ich seh nachts besser als jeder von euch. Das liegt am Handwerk."
+  - id: l03
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Am Handwerk, aus dem man dich geworfen hat. Mit sehr viel Ruhm, hast du gesagt."
+  - id: l04
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Ich hab nie behauptet, es war ein Ruhm! Das hast du erfunden."
+  - id: l05
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Dann war es kein Ruhm. Was war es denn?"
+  - id: l06
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Eine Sache mit einem Kind. Ich sollte es bestehlen. Es ging um … na ja. Ums Bestehlen."
+  - id: l07
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und du hast es getan."
+  - id: l08
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Nein. Ich hab hingesehen, und dann war meine Hand plötzlich wieder in meiner eigenen Tasche."
+  - id: l09
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Sag das keinem, ja? Sonst bin ich für die Leute nur der Weichling, der …"
+  - id: l10
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich sag nichts. Wer erzählt schon gern, warum er gegangen ist?"
+  - id: l11
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Du hast gewildert, weil sie gehungert haben?"
+  - id: l12
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab gewildert, weil ich schießen konnte. Das mit dem Hunger kam hinzu. Gute Nacht, Fenn."
+  - id: l13
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Gute Nacht. Und, Mira … das mit dem Hunger glaub ich dir trotzdem."

@@ -296,7 +296,7 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 6. Weltkarte [A]
 
-- **Echte 3D-Szene** aus denselben Bausteinen wie die Kampfkarte, nur kleiner skaliert: Valmora mit Drachengebirge im Norden, Silbermeer im Westen, Grenzmarken im Osten, Aurenhall in der Mitte. Vorbild für Aufteilung und Farben: `weltkarte_valmora.png`.
+- **Echte 3D-Szene mit eigener Topografie** (Produktinhaber 2026-10-24): Valmora als ein in Blender gebautes Gelände (`pnpm art:world`, `tools/art/world_height.py` + `blender_world.py`) mit gemalter Bodentextur, statt aus den Felderblöcken der Kampfkarte; Requisiten (Bäume, Häuser, Orts-Miniaturen) bleiben dieselben wie auf dem Brett. Valmora mit Drachengebirge (zusammenhängende, gezackte Bergketten mit Schnee) im Norden, Silbermeer mit Steilküste und Felsnadeln im Westen, Eisenmark als Tafelland mit Felswänden und Canyon, Grenzland als Hügelland mit Felskuppen im Süden und Osten. Vorbilder: `weltkarte_valmora.png` und die Designbilder `art/world/concept_*.jpg` (`art/prompts/world_topography.md`). Kachelraster 56 × 40 (`content/world/valmora.yaml`) für Orte, Regionen, Wege; Platz für 12–14 Orte je Akt.
 - **Jahreszeit live:** Die drei Regionen tragen die Jahreszeit ihres Akts; schreitet die Staffel fort, wechselt die Grundstimmung der ganzen Karte.
 - **Orte als Miniaturen:** jeder gespielte Ort als kleines 3D-Diorama mit höchstens 2 Varianten (z. B. Dorf gerettet/verbrannt, Hungerlager Siedlung/Ödnis).
 - **Drachenzeichen je Akt** als zusätzliche Ebenen: Akt 1 Asche (Partikel, graue Flecken), Akt 2 Risse (glühende Spalten im Boden), Akt 3 Schatten (Drachensilhouetten ziehen über die Karte).

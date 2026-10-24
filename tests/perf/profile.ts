@@ -16,4 +16,6 @@ export const TARGETS = {
   droppedFrameMs: 25,
   /** NFR2: cold start of the installed app until the title answers */
   coldStartMs: 5000,
+  /** NFR3: the enemy phase takes at most this long per enemy unit (`pnpm bench:ai`, story 2.8) */
+  aiMsPerUnit: 300,
 } as const;

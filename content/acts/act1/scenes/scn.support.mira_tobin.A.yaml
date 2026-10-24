@@ -1,0 +1,74 @@
+id: scn.support.mira_tobin.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Du sollst schlafen. Deine Wache ist erst später."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ich konnte nicht. Das Gewölbe geht mir nicht aus dem Kopf. Junge Könige, Mira, in Stein gebettet."
+  - id: l03
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich war dabei. Es waren Gräber, kein Festmahl."
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Aber so jung! Die Lieder sagen ja, Helden sterben jung, und dann liegen sie vielleicht auch da und …"
+  - id: l05
+    speaker: [mira]
+    fallback: skip
+    mood: angry
+    text: "Hör auf damit."
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Womit?"
+  - id: l07
+    speaker: [mira]
+    fallback: skip
+    mood: angry
+    text: "Mit dem Lied. Wer hat dich gefragt, ob du eines werden willst?"
+  - id: l08
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ich dachte, du findest es lächerlich."
+  - id: l09
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Tue ich. Lächerlich lebt länger."
+  - id: l10
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Als Morras Leute kamen, habe ich dich zweimal verloren. Im Gedränge. Ich zähle sonst nicht mit."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Du hast mich gesucht?"
+  - id: l12
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe nach dem Ziel gesucht, das am lautesten schreit. War nicht schwer."
+  - id: l13
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Du hast mich nie ausgelacht, wenn es zählte. Nur sonst. Das weiß ich."
+  - id: l14
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Geh deine Wache machen. Und lauf nicht vor dem Banner her."

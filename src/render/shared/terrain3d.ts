@@ -13,22 +13,18 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
-import type { BattleState, GameData, TerrainDef, TerrainSurface } from '../core';
-import { assetUrl } from './assets';
+import type { BattleState, GameData, TerrainDef, TerrainSurface } from '../../core';
+import type { AssetStore } from '../host';
 
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
 
 export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'planks', 'water_0', 'water_1', 'water_2', 'water_3'];
 
-export function loadGroundTextures(scene: Scene): GroundTextures {
-  const out: GroundTextures = {};
-  for (const name of GROUND_TEXTURES) {
-    const t = new Texture(assetUrl(`ground/${name}.png`), scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
-    t.anisotropicFilteringLevel = 8;
-    out[name] = t;
-  }
-  return out;
+/** The ground textures from the shared cache (loaded once for board and world map, story 5.1). */
+export async function loadGroundTextures(store: AssetStore): Promise<GroundTextures> {
+  const list = await Promise.all(GROUND_TEXTURES.map((name) => store.texture(`ground/${name}.png`)));
+  return Object.fromEntries(GROUND_TEXTURES.map((name, i) => [name, list[i]!]));
 }
 
 // ------------------------------------------------------------------ noise (deterministic, render only)
@@ -56,6 +52,9 @@ function vnoise(x: number, y: number, seed: number): number {
 }
 
 // ------------------------------------------------------------------ terrain grid
+
+/** What the terrain needs of a map: its size and tiles (a battle state; the world map's layout has the same shape). */
+export type TerrainSource = Pick<BattleState, 'width' | 'height' | 'terrain' | 'timers'>;
 
 /** Terrain ids of map + scenery skirt, row-major, (W + 2·skirt) × (H + 2·skirt). */
 export interface TerrainGrid {
@@ -400,7 +399,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height;
     },
     tick: (now) => {
-      const f = Math.floor(now / 160) % waterFrames.length;
+      const f = Math.floor(now / board.waterFrameMs) % waterFrames.length;
       if (f !== frame) {
         frame = f;
         waterMat.diffuseTexture = waterFrames[f]!;

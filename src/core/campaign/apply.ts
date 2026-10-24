@@ -1,3 +1,4 @@
+import { advanceDay } from './day';
 import { CoreInvariantError } from '../errors';
 import type { GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
@@ -143,6 +144,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'restartTurn':
       if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
+    case 'advanceDay':
+      return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
     case 'restartMission':
       if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       // Classic is the honour mode: a mission may only be started over once it is lost (replayed, not trusted)
@@ -357,6 +360,9 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     }
     case 'effects':
       applyEffects(data, c, cmd.effects, events);
+      break;
+    case 'advanceDay':
+      advanceDay(data, c, cmd.day, events);
       break;
   }
   noteRoles(data, c);

@@ -1,23 +1,23 @@
-# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
 id: scn.farewell.brenna
 lines:
   - id: last
     speaker: [brenna]
     fallback: skip
     mood: sad
-    text: "Erzählt den anderen … den Witz mit dem Esel. Den hab ich nie zu Ende gebracht."
+    text: "Der Esel, der … den Rest kennt ihr. Erzählt ihn schlecht, Küken."
   - id: grief_kael
     speaker: [kael]
     fallback: skip
     mood: sad
-    text: "Sie stand immer vorn. Jetzt steht da keiner mehr."
+    text: "Zwölf Jahre hat sie geredet. Jetzt hör ich hin, und da ist nichts."
   - id: grief_tobin
     speaker: [tobin]
     fallback: skip
     mood: sad
-    text: "Sie hat mir gezeigt, wie man einen Schild hält. Ich halte ihn jetzt für sie."
+    text: "Alt und langweilig, hast du gesagt. Ich geb mir Mühe, Brenna."
   - id: grief_varek
     speaker: [varek]
     fallback: skip
     mood: sad
-    text: "Ich hab über ihre Witze nie gelacht. Ich wünschte, ich hätte es getan."
+    text: "Sie hörte jedes Mal am Klang, dass ich schummle. Ich wäre gern noch erwischt worden."

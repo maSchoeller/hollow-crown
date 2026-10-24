@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.ysolde
+lines:
+  - id: battle_start
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Hypothese: Wir gewinnen. Prüfen wir."
+  - id: crit
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Wie berechnet."
+  - id: downed
+    speaker: [ysolde]
+    fallback: skip
+    mood: sad
+    text: "Unvorhergesehen … eine Variable …"
+  - id: rescued
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Dein Eingriff war messbar hilfreich."
+  - id: level_up
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Messbarer Fortschritt."
+  - id: ember
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Faszinierend! Reproduzierbar!"

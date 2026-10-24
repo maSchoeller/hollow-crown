@@ -16,7 +16,7 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   // prologue intro dialogue → skip to the answer, choose, skip on; the prologue has no choice of units, so the battle starts at once
   await skipIntro(page);
-  await expect(page.locator('canvas.board-canvas')).toBeVisible();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible();
   // turn-1 tutorial dialogue
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
   // units are still ready, so ending the phase asks once more
@@ -38,7 +38,7 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   await skipIntro(page);
   // turn-1 lesson; the board loads slowly under software WebGL when several projects run in parallel
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
-  const box = (await page.locator('canvas.board-canvas').boundingBox())!;
+  const box = (await page.locator('canvas.hc-stage').boundingBox())!;
   // drag the map upwards as far as it goes, i.e. towards its southern edge
   const x = box.x + box.width / 2;
   const y = box.y + box.height * 0.4;
@@ -51,7 +51,7 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   const view = await page.evaluate(() => {
     // screenOf takes ground coordinates in tiles (x east, y south)
     const board = (window as unknown as { __board: { screenOf(x: number, y: number): { y: number }; state: { height: number } } }).__board;
-    const canvas = document.querySelector('canvas.board-canvas')!.getBoundingClientRect();
+    const canvas = document.querySelector('canvas.hc-stage')!.getBoundingClientRect();
     const top = document.querySelector('.hud-top')!.getBoundingClientRect();
     const sheet = document.querySelector('.battle .hud-bottom')?.getBoundingClientRect();
     const mapTop = board.screenOf(0, 0).y;
@@ -74,6 +74,6 @@ test('autosave restores the running battle after reload (concept/13 §6.8)', asy
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
   await page.reload();
   await page.getByRole('button', { name: /Continue|Fortsetzen/ }).click();
-  await expect(page.locator('canvas.board-canvas')).toBeVisible();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible();
   await expect(page.getByRole('button', { name: /End phase|Phase beenden/ })).toBeVisible();
 });

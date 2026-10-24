@@ -1,0 +1,79 @@
+id: scn.support.avatar_liora.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß, was du Kael gesagt hast. Ich wollte nicht so tun, als wüsste ich nichts."
+  - id: l02
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Dann weißt du auch, wer den Auftrag bei Osric Dunn angenommen hat."
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du. Ja."
+  - id: l04
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Du sitzt trotzdem hier."
+  - id: l05
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Wo sollte ich sonst sitzen? Das Feuer ist hier."
+  - id: l06
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Mach es mir nicht leicht."
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Vergeben kann Kael, nicht ich. Ich sehe dich nur nicht anders als gestern. Ehrlicher, vielleicht."
+  - id: l08
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Das ist mehr, als ich erwartet habe."
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Als ich klein war und etwas zerbrochen hatte, kam Halvard mit Brot zu mir."
+  - id: l10
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Er sagte: Eine Schuld wiegt weniger, wenn eine zweite Hand darunterliegt. Vergeben hatte er schon."
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe ihm geglaubt. Ich glaube ihm immer noch."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Er hat dich gut erzogen."
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Er hat es versucht. Sein Brot war besser als seine Predigten."
+  - id: l14
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Die zweite Hand. Wenn du sie anbietest, nehme ich sie."
+  - id: l15
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Sie liegt schon da."

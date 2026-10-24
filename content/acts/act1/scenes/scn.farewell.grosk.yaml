@@ -1,0 +1,13 @@
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.grosk
+lines:
+  - id: last
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Ich hab vorn gestanden. Gern. Jetzt steht ihr."
+  - id: grief_tobin
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "„Bart“, habt Ihr gesagt. Ich wusste, dass es ein Lächeln war, Grosk."

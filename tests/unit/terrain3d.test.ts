@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BattleState } from '../../src/core';
 import { loadContentFromDisk } from '../../src/content/node';
-import { splatFactors, terrainGrid } from '../../src/render/terrain3d';
+import { splatFactors, terrainGrid } from '../../src/render/shared/terrain3d';
 
 const { data } = loadContentFromDisk();
 

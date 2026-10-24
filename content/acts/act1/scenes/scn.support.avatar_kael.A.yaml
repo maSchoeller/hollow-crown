@@ -1,0 +1,79 @@
+id: scn.support.avatar_kael.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Das Schwert ist scharf. Du wetzt es seit einer halben Stunde."
+  - id: l02
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Weiß ich."
+  - id: l03
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Als du mir damals alles gesagt hast, hast du gedacht, ich schicke dich fort."
+  - id: l04
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Ich hätte es verstanden."
+  - id: l05
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich auch. Deshalb nicht."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Zwölf Jahre her. Grenzkrieg. Ein Kommandant, adlig, der einen Sieg brauchte."
+  - id: l07
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Wir waren das, was man dafür hergibt."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich habe ihn nicht aufgehalten. Ich bin zurückgekommen. Die meisten nicht."
+  - id: l09
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Du hast dem Kommandanten geglaubt. Ich habe Dunn geglaubt."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ja."
+  - id: l11
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Meine liegen zwölf Jahre zurück. Deine ein paar Wochen. Gewogen habe ich sie nie."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und wenn wir sie zusammenlegen?"
+  - id: l13
+    speaker: [kael]
+    fallback: skip
+    mood: happy
+    text: "Dann schlafen wir zu zweit schlecht."
+  - id: l14
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Immerhin hat man Gesellschaft."
+  - id: l15
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Gib den Stein her."

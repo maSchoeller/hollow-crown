@@ -6,14 +6,59 @@ lines:
     speaker: [liora]
     fallback: skip
     mood: neutral
-    text: "Du siehst mich an, als wüsstest du nicht, ob du mir glauben sollst."
+    text: "Ich rolle Verbände auf, das beruhigt mich. Stört es, wenn ich mich zu deiner Wache setze?"
   - id: l02
-    speaker: [liora]
+    speaker: [avatar]
     fallback: skip
-    mood: sad
-    text: "In meinem Traum hattest du keine Augen für die Krone. Nur für den Berg dahinter."
+    mood: neutral
+    text: "Die Nacht ist lang. Ein Feuer mehr schadet nicht."
   - id: l03
     speaker: [liora]
     fallback: skip
+    mood: happy
+    text: "Die Truppe spart Worte, ich habe es gemerkt. Darf ich dir trotzdem etwas erzählen?"
+  - id: l04
+    speaker: [avatar]
+    fallback: skip
     mood: neutral
-    text: "Ich weiß nicht, was es bedeutet. Aber ich weiß, dass du es herausfinden wirst."
+    text: "Seltsam sind wir hier alle. Erzähl."
+  - id: l05
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich träume manchmal Dinge, bevor sie geschehen. Schon vor Wochen habe ich von dir geträumt."
+  - id: l06
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Von mir. Und was habe ich getan?"
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du standest vor der Krone und hast sie nicht angesehen. Nur den Berg dahinter."
+  - id: l08
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Ein Traum ist ein Traum. Ich sehe hier keinen Berg."
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich auch nicht. Ich weiß nicht, was es bedeutet. Ich erzähle nur, was ich sah."
+  - id: l10
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und wenn es nichts bedeutet?"
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Dann habe ich einen schlechten Traum losgeworden und eine Nacht lang jemanden gehabt, der zuhört."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Bleib sitzen. Der Berg kann warten."

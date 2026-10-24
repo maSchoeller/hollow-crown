@@ -236,12 +236,13 @@ worldRegion: borderland
 ```ts
 // src/app/day.ts – einzige Stelle mit Wanduhr für die Kampagne
 export function dayNumber(now = Date.now(), resetHour = 4): number {
-  const d = new Date(now - resetHour * 3_600_000);            // vor 04:00 zählt zum Vortag
-  return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86_400_000);
+  const d = new Date(now);
+  const date = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86_400_000);
+  return d.getHours() < resetHour ? date - 1 : date;           // vor 04:00 zählt zum Vortag
 }
 ```
 
-Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day: dayNumber() }`. Sommerzeit ändert nichts, weil nur das lokale Datum zählt.
+Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day: dayNumber() }`. Sommerzeit ändert nichts, weil nur lokales Datum und lokale Stunde zählen (nicht „Zeitstempel − 4 h“, das verschiebt den Wechsel in den Umstellungsnächten um eine Stunde).
 
 **Kern (`src/core/campaign/haunts.ts`):**
 
@@ -355,17 +356,30 @@ src/render/
 
 ### 5.13 KI im Web Worker (AR14) [A]
 
-- `src/worker/core.worker.ts` lädt dieselben Content-Pakete wie die App und beantwortet Anfragen mit dem reinen Kern:
+- `src/worker/protocol.ts` definiert Anfrage und Antwort; `src/worker/core.worker.ts` lädt dieselben Content-Pakete wie die App und beantwortet Anfragen mit dem reinen Kern:
 
 ```ts
-type WorkerRequest  = { id: number; kind: 'apply'; packs: PackId[]; state: BattleState; command: Command };
-type WorkerResponse = { id: number; ok: true; state: BattleState; events: GameEvent[] }
-                    | { id: number; ok: false; error: string };
+export interface WorkerRequest {
+  id: number;
+  kind: 'apply';
+  packs: string[];
+  state: BattleState;
+  command: Command;
+}
+
+export type WorkerResponse =
+  | { id: number; ok: true; state: BattleState; events: GameEvent[] }
+  | { id: number; ok: false; error: string; code?: string; details?: Record<string, unknown> };
 ```
 
+- Der Worker holt die Pakete einer Anfrage über `loaders` aus `virtual:hc-packs`, nicht über `src/packs`; Anfragen laufen nacheinander.
+- `handleRequest(data, req)` in `src/worker/handle.ts` ist die eine Rechenfunktion für Worker und Rückfall; sie läuft über `applyCommand`.
 - Die App schickt `endPhase` (und damit Gegner- und Dritte-Partei-Phase) an den Worker, Spielerzüge rechnet der Hauptthread direkt. Das Log enthält weiter nur Spieler-Commands; Replays laufen mit oder ohne Worker identisch (Test).
+- `ok: false` mit `code` ist eine Regelverletzung (`CoreInvariantError`) und führt zum Fehlerbildschirm. Ohne `code` ist es ein Fehler des Workers; die App rechnet dieselbe Anfrage auf dem Hauptthread.
+- Rückfall auf den Hauptthread bei Absturz, `messageerror`, Start-Fehler oder Zeitüberschreitung (30 s, `WORKER_TIMEOUT_MS`). Der Worker wird dann beendet, und die Sitzung bleibt auf dem Hauptthread.
+- Die Antwort wird verworfen, wenn der Schlacht-Zustand inzwischen ersetzt wurde (Neustart, Weltkarte, Laden).
 - Ein Worker für die ganze Sitzung (`src/app/coreWorker.ts`), eine Anfrage gleichzeitig; Fallback auf synchrone Ausführung, wenn `Worker` fehlt (Tests, alte Browser).
-- Benchmark in CI: `pnpm bench:ai` misst die Gegnerphase der größten Schlacht in Node; Budget 300 ms je Gegnereinheit.
+- Benchmark in CI: `pnpm bench:ai` (`tools/bench-ai.ts`) misst die Gegnerphase in Node auf der Referenzschlacht `tests/perf/benchMap.ts` und meldet zusätzlich `ch02_silverbrook`. Budget 300 ms je Gegnereinheit (`TARGETS.aiMsPerUnit`); nur die Referenzschlacht lässt den CI-Schritt scheitern.
 
 ### 5.14 Content- und Asset-Pakete (AR15, AR23) [A]
 

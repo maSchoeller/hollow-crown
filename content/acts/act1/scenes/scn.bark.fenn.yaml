@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.fenn
+lines:
+  - id: battle_start
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Ich bin schon hinter euch! Äh, vor euch!"
+  - id: crit
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Hab ich nicht gesagt? Meisterstück!"
+  - id: downed
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Autsch! Das kriegt ihr zurück. Später."
+  - id: rescued
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Gerettet! Hatte alles im Griff!"
+  - id: level_up
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Wieder einen Dietrich schlauer!"
+  - id: ember
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Funkelt schöner als jedes Silber!"

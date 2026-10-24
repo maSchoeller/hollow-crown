@@ -19,6 +19,11 @@
         height: 100%;
         touch-action: none;
       }
+      #board canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
       #float {
         position: fixed;
         inset: 0;
@@ -27,7 +32,8 @@
     </style>
   </head>
   <body>
-    <canvas id="board" class="board-canvas"></canvas>
+    <!-- slot for the render host's canvas (story 5.1) -->
+    <div id="board"></div>
     <div id="float"></div>
     <script type="module" src="./bench.ts"></script>
   </body>

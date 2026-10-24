@@ -66,7 +66,7 @@ development_status:
   2-5-wirken-der-elementaristen: backlog  # Wirken der Elementaristen
   2-6-nebel-des-krieges-oeffnen-und-stehlen: backlog  # Nebel des Krieges, Öffnen und Stehlen
   2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: backlog  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
-  2-8-gegnerphase-im-web-worker: backlog  # Gegnerphase im Web Worker
+  2-8-gegnerphase-im-web-worker: review  # Gegnerphase im Web Worker
   2-9-gegnertypen-von-akt-1: backlog  # Gegnertypen von Akt 1
   2-10-kampf-overlays-im-stil-b: done  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
@@ -97,10 +97,10 @@ development_status:
 
   # Epic 5: Weltkarte und Heimsuchungen
   epic-5: in-progress
-  5-1-szenen-host-und-geteilter-asset-cache: backlog  # Szenen-Host und geteilter Asset-Cache
-  5-2-die-weltkarte-als-3d-szene: backlog  # Die Weltkarte als 3D-Szene
+  5-1-szenen-host-und-geteilter-asset-cache: review  # Szenen-Host und geteilter Asset-Cache
+  5-2-die-weltkarte-als-3d-szene: review  # Die Weltkarte als 3D-Szene
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
-  5-4-tageswechsel: backlog  # Tageswechsel
+  5-4-tageswechsel: review  # Tageswechsel
   5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator
   5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
@@ -140,6 +140,7 @@ development_status:
   8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: ready-for-dev  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
+  8-10-verdeckte-figuren-bleiben-sichtbar: review  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
   epic-8-retrospective: optional
 
   # Epic 9: Akt 1 „Asche“ (MVP)
@@ -156,7 +157,7 @@ development_status:
   9-10-nebenquest-n1-der-ring-von-varnhold: backlog  # Nebenquest N1 „Der Ring von Varnhold“
   9-11-nebenquest-n2-der-letzte-wachturm: backlog  # Nebenquest N2 „Der letzte Wachturm“
   9-12-nebenquest-n3-das-erbe: backlog  # Nebenquest N3 „Das Erbe“
-  9-13-supports-und-barks-von-akt-1: backlog  # Supports und Barks von Akt 1
+  9-13-supports-und-barks-von-akt-1: review  # Supports und Barks von Akt 1
   9-14-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
   epic-9-retrospective: optional
 

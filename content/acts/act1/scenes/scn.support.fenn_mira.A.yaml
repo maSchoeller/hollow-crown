@@ -1,0 +1,69 @@
+id: scn.support.fenn_mira.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Der Ring wollte mich zurück, Mira. Im Tausch gegen alles, was sie über den Makler wissen wollten."
+  - id: l02
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich saß dabei. Du gegen ein bisschen Wissen. Für einen Gauner ein ordentlicher Preis."
+  - id: l03
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Und keiner hat gefragt, ob ich will! Ich hätte mich selbst hingestellt, wenn es so …"
+  - id: l04
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Hättest du? Du gehst doch bei jedem Lärm als Erster in Deckung."
+  - id: l05
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Stimmt. Aber ihr habt mich nicht hingeschickt. Keiner von euch. Warum?"
+  - id: l06
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Warum liefert man einen aus, den man neben sich schlafen lässt? Fragst du das im Ernst?"
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Beim Ring ging das anders. Da zählt, wer was mitbringt. Treue gibt es dort nur auf Zeit."
+  - id: l08
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Dann hat euer Ring ein Wort namens Ehre benutzt, ohne zu wissen, was es kostet."
+  - id: l09
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Ehre unter Gaunern! Das Lied kenne ich. Meistens singt es einer, der gleich den Geldbeutel zieht."
+  - id: l10
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Dann sing es nicht mehr. Ich hab mein Dorf nicht verraten, du kein Kind. Mir reicht das."
+  - id: l11
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Ist das jetzt Ehre? Oder bist du bloß müde?"
+  - id: l12
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Beides. Iss deine Suppe, bevor Brenna sie dir wegnimmt."
+  - id: l13
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Die gehört mir! Ehrlich gewonnen, mit meinem ganzen Fingerspitzengefühl!"
