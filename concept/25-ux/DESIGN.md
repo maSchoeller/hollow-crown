@@ -281,8 +281,10 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Leiste** | vier Steine unten (Weltkarte/Heimat, Truppe, Steckbriefe, Chronik) im Raster des Docks |
 | **Raumstein** (`room-stone`) | quadratischer Stein mit Raum-Icon, Name, Stufe als drei Punkte; grüner Pfeil = ausbaubar, Glut-Zahl = Neues; gesperrt gestrichelt |
 | **Raum-Panel** | Stein mit Kopf (Raum-Icon, Name, Stufe, Wirkung), Ausbau-Band in Grün, Liste, zwei Tasten |
+| **Overlay-Blatt** (`Sheet`) | Stein über dem Schleier (45 %) mit Kopf wie der Bildschirmkopf (runder Schließen-Stein, Titelpille), scrollendem Körper und Tastenreihe; Esc oder Tipp daneben schließt. Trägt Einheiten-Info, Ziele, Kampfmenü, Aktions- und Item-Auswahl, Tausch, Konvoi |
 | **Item-Zeile** | Item-Bild (`item-image`), Name, Werte, rechts Vergleich (grün/rot) oder Preis; gewählt mit Glutrand |
 | **Item-Bild** (`item-image`) | gemaltes Bild im Stil der Porträts (`art/items/`), Rahmen in Seltenheitsfarbe, Seltenheits-Rauten oben rechts (Relikt: hohle Krone, Rahmen mit Glutorange-Akzent), Zahl unten (Aufwertung, Ladungen) |
+| **Item-Chip** (`item-chip`) | Pille mit Item-Bild und Name, z. B. Waffen-Chip der Einheitenkarte und der Kampfvorschau: **ein einziger Rahmen**. Das Bild darin hat keinen eigenen Rahmen (`ItemImage bare`), die Pille nimmt die Seltenheitsfarbe als Rand und trägt die Rauten an ihrer Ecke. Bilder ohne Namen (Listenzeile, Ausrüstungsplatz) behalten den Rahmen des Item-Bilds |
 | **Währung** (`currency`) | Symbol + Zahl in `{typography.number}`; nie Wort, nie nackte Zahl |
 | **Namensschild** (`nametag`) | Glut-Pille am Rand der Dialogbox, auf der Seite des Sprechers |
 | **Entscheidungs-Marke** | schwarze Pille „Entscheidung · hat Folgen“ mit Glutraute |

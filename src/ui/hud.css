@@ -340,21 +340,6 @@
   line-height: 1.35;
   white-space: nowrap;
 }
-.hud-chip--weapon {
-  min-width: 0;
-  padding-left: 3px;
-}
-.hud-chip--weapon .hc-item-image {
-  flex: none;
-}
-.hud-chip__name {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.hud-chip--weapon .hc-item-image {
-  margin: -3px 0;
-}
 .hud-chip.is-adv {
   background: var(--hc-team-player-soft);
   color: var(--hc-team-player);

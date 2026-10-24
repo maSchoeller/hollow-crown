@@ -122,17 +122,41 @@ type ItemImageProps = {
   rarity?: Rarity | 'relic';
   /** accessible name when no item name stands beside the image */
   label?: string;
+  /** no frame, diamonds or number: only the picture, for use inside an ItemChip (one frame per item, DESIGN.md) */
+  bare?: boolean;
   class?: string;
 };
+
+function rarityOfItem(data: GameData, item: ItemInstance | string, rarity?: Rarity | 'relic'): Rarity | 'relic' {
+  return rarity ?? instanceRarity(data, itemDef(data, item).id, typeof item === 'string' ? 0 : item.affixes.length);
+}
+
+function Gems({ r }: { r: Rarity | 'relic' }) {
+  if (r === 'relic')
+    return (
+      <span class="hc-item-image__gems">
+        <svg viewBox="0 0 24 24" class="hc-item-image__crown">
+          <path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" />
+        </svg>
+      </span>
+    );
+  return GEMS[r] > 0 ? (
+    <span class="hc-item-image__gems">
+      {Array.from({ length: GEMS[r] }, (_, i) => (
+        <i key={i} />
+      ))}
+    </span>
+  ) : null;
+}
 
 /**
  * Painted item image (DESIGN.md item-image): frame and diamonds in the rarity colour, number at the bottom
  * (upgrade +n, else charges n/m for multi-use items, else the rune tier). Rarity as in loot: instanceRarity.
  */
-export function ItemImage({ data, item, size = 44, rarity, label, class: cls }: ItemImageProps) {
+export function ItemImage({ data, item, size = 44, rarity, label, bare, class: cls }: ItemImageProps) {
   const d = itemDef(data, item);
   const inst = typeof item === 'string' ? undefined : item;
-  const r = rarity ?? instanceRarity(data, d.id, inst?.affixes.length ?? 0);
+  const r = rarityOfItem(data, item, rarity);
   const tier = data.runes[d.id]?.tier;
   const num =
     inst && inst.upgrade > 0
@@ -145,29 +169,30 @@ export function ItemImage({ data, item, size = 44, rarity, label, class: cls }: 
   const small = size < 36;
   return (
     <span
-      class={`hc-item-image is-${r} ${small ? 'is-small' : ''} ${cls ?? ''}`}
+      class={`hc-item-image is-${r} ${small ? 'is-small' : ''} ${bare ? 'is-bare' : ''} ${cls ?? ''}`}
       style={{ '--hc-item-size': `${size}px` }}
       role={label ? 'img' : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : 'true'}
     >
       <img src={itemImageSrc(d)} alt="" draggable={false} />
-      {r === 'relic' ? (
-        <span class="hc-item-image__gems">
-          <svg viewBox="0 0 24 24" class="hc-item-image__crown">
-            <path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z" />
-          </svg>
-        </span>
-      ) : (
-        GEMS[r] > 0 && (
-          <span class="hc-item-image__gems">
-            {Array.from({ length: GEMS[r] }, (_, i) => (
-              <i key={i} />
-            ))}
-          </span>
-        )
-      )}
-      {num && !small && <span class="hc-item-image__num">{num}</span>}
+      {!bare && <Gems r={r} />}
+      {num && !small && !bare && <span class="hc-item-image__num">{num}</span>}
+    </span>
+  );
+}
+
+/**
+ * Pill with image and name (DESIGN.md Item-Chip): the rarity colour sits on the pill's border and the diamonds on its
+ * corner; the image inside has no frame of its own, so an item never shows two frames.
+ */
+export function ItemChip({ data, item, name, size = 22, rarity, class: cls }: { data: GameData; item: ItemInstance | string; name: string; size?: number; rarity?: Rarity | 'relic'; class?: string }) {
+  const r = rarityOfItem(data, item, rarity);
+  return (
+    <span class={`hc-item-chip is-${r} ${cls ?? ''}`}>
+      <ItemImage data={data} item={item} size={size} rarity={r} bare />
+      <span class="hc-item-chip__name">{name}</span>
+      <Gems r={r} />
     </span>
   );
 }

@@ -1034,28 +1034,6 @@ input[type='range'] {
     opacity: 0;
   }
 }
-.levelup {
-  position: absolute;
-  left: 50%;
-  top: 30%;
-  transform: translateX(-50%);
-  z-index: 45;
-  padding: 20px 22px;
-  min-width: 290px;
-  text-align: center;
-  background: var(--surface);
-  border-top: 2px solid var(--ember);
-}
-.levelup .gains {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px 14px;
-  margin-top: 12px;
-}
-.levelup .up {
-  color: var(--blue);
-  font-weight: 700;
-}
 .bubble {
   position: absolute;
   z-index: 35;
