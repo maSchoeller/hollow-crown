@@ -8,6 +8,7 @@ import {
   applyCampaign,
   newCampaign,
   normalizeCampaign,
+  turnStartIndex,
   validateCampaign,
   type AvatarSettings,
   type BattleSettings,
@@ -31,6 +32,7 @@ import {
   listCampaigns,
   readSave,
   setSaveDbBlockedHandler,
+  SlotNotAllowedError,
   writeSave,
   type SavePayload,
   type SaveRecord,
@@ -72,11 +74,6 @@ const takePlaytime = (): number => playClock.take();
 export const saveDbBlocked = signal(false);
 setSaveDbBlockedHandler(() => (saveDbBlocked.value = true));
 
-/** Log length at the start of the current round (replay target of "restart round"). */
-function turnStartIndex(log: Command[]): number {
-  return log.map((c) => c.type).lastIndexOf('endPhase') + 1;
-}
-
 /** Queues the auto-save of the active campaign; the snapshot is taken now, the write happens later. */
 export function autosave(where: SavePayload['screen']): void {
   const c = campaign.value;
@@ -110,10 +107,12 @@ if (typeof document !== 'undefined') {
   window.addEventListener('pagehide', () => void flushAutosave());
 }
 
+/** Saves a manual slot (Standard, Casual; out of battle only). Throws `SlotNotAllowedError` otherwise. */
 export async function saveSlot(slot: SlotId): Promise<void> {
   const c = campaign.value;
   const id = campaignId.value;
   if (!c || !id) return;
+  if (live().battle) throw new SlotNotAllowedError('in_battle');
   await writeSave(id, slot, { campaign: c, screen: 'camp' }, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
 }
 

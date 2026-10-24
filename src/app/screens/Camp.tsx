@@ -658,14 +658,19 @@ function Campfire({ apply }: { apply: Apply }) {
 function SavePanel({ onToast }: { onToast: (s: string) => void }) {
   const [saves, setSaves] = useState<SaveRecord[]>([]);
   const [picker, setPicker] = useState(false);
+  const classic = campaign.value?.settings.deathMode === 'classic';
   const refresh = () => void (campaignId.value ? listSaves(campaignId.value).then(setSaves) : setSaves([]));
   useEffect(refresh, []);
   return (
     <div class="col">
-      <button class="btn" onClick={() => setPicker(true)}>
-        <Icon name="save" />
-        {t('ui.save.title')}
-      </button>
+      {classic ? (
+        <div class="muted" style={{ fontSize: 13 }}>{t('ui.save.classic')}</div>
+      ) : (
+        <button class="btn" onClick={() => setPicker(true)}>
+          <Icon name="save" />
+          {t('ui.save.title')}
+        </button>
+      )}
       {saves.filter((s) => s.slot !== 'auto').map((s) => (
         <button key={s.slot} class="btn ghost" onClick={() => downloadSave(s)}>
           <Icon name="download" />
@@ -684,11 +689,17 @@ function SavePanel({ onToast }: { onToast: (s: string) => void }) {
           saves={saves}
           onClose={() => setPicker(false)}
           onPick={(slot) => {
-            void saveSlot(slot).then(() => {
-              setPicker(false);
-              refresh();
-              onToast(t('ui.save.done'));
-            });
+            void saveSlot(slot).then(
+              () => {
+                setPicker(false);
+                refresh();
+                onToast(t('ui.save.done'));
+              },
+              () => {
+                setPicker(false);
+                onToast(t('ui.save.failed'));
+              },
+            );
           }}
         />
       )}

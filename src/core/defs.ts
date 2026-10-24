@@ -536,7 +536,7 @@ export interface Balance {
   growth: { smoothingLower: number; smoothingUpper: number; minOneStatPerLevel: boolean };
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
-  death: { scarsUntilInstantDeath: number };
+  death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   bag: { size: number };

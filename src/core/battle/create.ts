@@ -97,6 +97,7 @@ export function battleUnitFromRecord(data: GameData, rec: UnitRecord, team: Batt
     acted: false,
     moved: false,
     downed: false,
+    bleed: 0,
     status: [],
     buffs: [],
     usedPerMap: {},

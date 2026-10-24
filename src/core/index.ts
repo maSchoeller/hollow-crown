@@ -24,6 +24,7 @@ export * from './campaign/campaign';
 export * from './campaign/camp';
 export * from './campaign/commands';
 export * from './campaign/apply';
+export * from './campaign/restart';
 export * from './campaign/conditions';
 export * from './campaign/effects';
 export * from './ai/autoplay';

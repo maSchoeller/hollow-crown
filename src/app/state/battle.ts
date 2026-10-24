@@ -1,7 +1,17 @@
 /** The running battle: session signal, player commands, restart. Mission flow around it lives in flow.ts. */
 import { signal } from '@preact/signals';
-import { applyCommand, beginBattle, type BattleState, type Command, type GameEvent } from '../../core';
-import { autosave, campaign, data } from './session';
+import {
+  applyCommand,
+  beginBattle,
+  replayBattle,
+  validateCampaign,
+  type BattleState,
+  type CampaignCommand,
+  type Command,
+  type GameEvent,
+  type RestartScope,
+} from '../../core';
+import { autosave, campaign, campaignCommand, data } from './session';
 import { screen } from './screen';
 
 export interface BattleSession {
@@ -32,18 +42,33 @@ export function command(cmd: Command): GameEvent[] {
   return r.events;
 }
 
-/** Restart the current round (Standard/Casual) or the whole mission. */
-export function restartBattle(fromRound: boolean): void {
+function restartCommand(scope: RestartScope): CampaignCommand | null {
   const b = battle.value;
-  if (!b) return;
-  let log = b.log;
-  if (fromRound) {
-    const last = log.map((c) => c.type).lastIndexOf('endPhase');
-    log = last >= 0 ? log.slice(0, last + 1) : [];
-  } else log = [];
-  let s = b.start;
-  for (const cmd of log) s = applyCommand(data, s, cmd).state;
-  battle.value = { start: b.start, state: s, log };
+  if (!b) return null;
+  return { type: scope === 'turn' ? 'restartTurn' : 'restartMission', start: b.start, commands: b.log };
+}
+
+/** Whether the death mode lets the player restart the running battle this way (Classic: no round, mission only after a defeat). */
+export function canRestart(scope: RestartScope): boolean {
+  const c = campaign.value;
+  const cmd = restartCommand(scope);
+  return !!c && !!cmd && validateCampaign(data, c, cmd) === null;
+}
+
+/**
+ * Restarts the running battle at the start of the round or of the mission: a campaign command (validated per
+ * death mode, journaled), then a replay of the kept part of the log. Returns false when the rules refuse.
+ */
+export function restartBattle(scope: RestartScope): boolean {
+  const b = battle.value;
+  const cmd = restartCommand(scope);
+  if (!b || !cmd) return false;
+  const r = campaignCommand(cmd);
+  if (!r.ok) return false;
+  const restarted = r.events.find((e) => e.t === 'battleRestarted');
+  const log = b.log.slice(0, restarted?.t === 'battleRestarted' ? restarted.keep : 0);
+  battle.value = { start: b.start, state: replayBattle(data, b.start, log), log };
   screen.value = { name: 'battle' };
   autosave('battle');
+  return true;
 }

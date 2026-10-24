@@ -42,7 +42,7 @@ import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, data } from '../state/session';
 import { concludeBattle, runEffects, storyContext } from '../state/flow';
-import { battle, command, pendingEvents, restartBattle } from '../state/battle';
+import { battle, canRestart, command, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import {
@@ -818,16 +818,18 @@ export function Battle() {
               <Icon name="gear" />
               {t('ui.options')}
             </button>
-            {s.settings.deathMode !== 'classic' && (
-              <button class="btn" onClick={() => { setMenu(false); restartBattle(true); remount(); }}>
+            {canRestart('turn') && (
+              <button class="btn" onClick={() => { setMenu(false); restartBattle('turn'); remount(); }}>
                 <Icon name="rewind" />
                 {t('ui.battle.restartRound')}
               </button>
             )}
-            <button class="btn" onClick={() => { setMenu(false); restartBattle(false); remount(); }}>
-              <Icon name="restart" />
-              {t('ui.battle.restartMission')}
-            </button>
+            {canRestart('mission') && (
+              <button class="btn" onClick={() => { setMenu(false); restartBattle('mission'); remount(); }}>
+                <Icon name="restart" />
+                {t('ui.battle.restartMission')}
+              </button>
+            )}
             <button class="btn ghost" onClick={() => (screen.value = { name: 'title' })}>
               <Icon name="home" />
               {t('ui.battle.toTitle')}

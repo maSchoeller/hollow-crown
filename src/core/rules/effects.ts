@@ -105,6 +105,7 @@ export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: 
     events.push({ t: 'died', unit: u.uid });
   } else if (mode === 'standard') {
     u.downed = true;
+    u.bleed = 0;
     events.push({ t: 'downed', unit: u.uid });
   } else {
     u.gone = 'retreated';
@@ -162,8 +163,24 @@ export function tickTerrain(data: GameData, s: BattleState, events: GameEvent[])
   for (const p of spread) igniteTile(data, s, p, 'spread', events);
 }
 
+/** Downed units count their own phases; at `bleedOutTurns` they die unless rescued before (GDD, Verbluten). */
+function bleedOut(data: GameData, s: BattleState, team: Team, events: GameEvent[]): void {
+  const max = data.balance.death.bleedOutTurns;
+  for (const u of s.units) {
+    if (u.team !== team || !u.downed || u.gone) continue;
+    u.bleed = (u.bleed ?? 0) + 1;
+    events.push({ t: 'bleed', unit: u.uid, turns: u.bleed, max });
+    if (u.bleed >= max) {
+      u.downed = false;
+      u.gone = 'dead';
+      events.push({ t: 'died', unit: u.uid });
+    }
+  }
+}
+
 /** Start of a team's phase: burn damage, terrain healing, renewal, standing in fire. */
 export function startOfPhase(data: GameData, s: BattleState, team: Team, events: GameEvent[]): void {
+  bleedOut(data, s, team, events);
   for (const u of s.units) {
     if (u.team !== team || !onMap(u) || u.downed) continue;
     const st = computeStats(data, u, { state: s });
