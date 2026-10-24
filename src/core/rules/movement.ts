@@ -3,6 +3,7 @@ import type { GameData, Pos } from '../defs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
+import { classActionId } from './roles';
 import { computeStats } from './stats';
 
 export function terrainDef(data: GameData, s: BattleState, p: Pos) {
@@ -27,13 +28,36 @@ export interface ReachNode {
   pos: Pos;
 }
 
-/** Dijkstra over the grid. Allies can be passed, hostile units (also downed ones) block. */
+/**
+ * Halten (Vorkämpfer, story 2.4): the neighbour tiles of every active unit hostile to `team` whose class action is `hold`.
+ * A unit of `team` that enters one of them ends its move there. Derived from the state, never stored.
+ */
+export function holdZone(data: GameData, s: BattleState, team: BattleUnit['team']): Set<string> {
+  const out = new Set<string>();
+  for (const o of s.units) {
+    if (!active(o) || !o.pos || !isHostile(o.team, team) || classActionId(data, o, s) !== 'hold') continue;
+    for (const n of neighbors(o.pos)) out.add(posKey(n));
+  }
+  return out;
+}
+
+/** The unit's movement points standing on `from` (default: where it is), buffs such as Anfeuern included. */
+export function moveBudget(data: GameData, s: BattleState, unit: BattleUnit, from?: Pos): number {
+  return computeStats(data, unit, { state: s, pos: from ?? unit.pos ?? undefined }).mov;
+}
+
+/**
+ * Dijkstra over the grid. Allies can be passed, hostile units (also downed ones) block. Entering a tile of a hostile
+ * hold zone ends the move there: the tile is reachable (normal cost) but nothing is explored behind it, and an occupied
+ * one is neither passed nor entered. A unit that starts inside a zone moves freely; only entering counts.
+ */
 export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from?: Pos, mov?: number): Map<string, ReachNode> {
   const start = from ?? unit.pos;
   const out = new Map<string, ReachNode>();
   if (!start) return out;
   const st = computeStats(data, unit, { state: s, pos: start });
   const budget = mov ?? st.mov;
+  const hold = holdZone(data, s, unit.team);
   const overrides = st.skills.terrainCost;
   const pass = st.skills.moveThroughEnemies;
   out.set(posKey(start), { cost: 0, prev: null, pos: start });
@@ -49,23 +73,31 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
       const occ = unitAt(s, n);
       if (occ && occ.uid !== unit.uid && isHostile(occ.team, unit.team) && !pass) continue;
       const k = posKey(n);
+      const held = hold.has(k);
+      if (held && occ && occ.uid !== unit.uid) continue;
       const prev = out.get(k);
       if (prev && prev.cost <= total) continue;
       const node = { cost: total, prev: posKey(cur.pos), pos: n };
       out.set(k, node);
-      open.push(node);
+      if (!held) open.push(node);
     }
   }
   return out;
 }
 
-/** Tiles the unit may end its move on (not occupied by another unit). */
 /** What the player may still walk this turn: the unit's own tile once it has moved (trade, convoy), otherwise its full reach. */
 export function reachNow(data: GameData, s: BattleState, unit: BattleUnit): Map<string, ReachNode> {
   if (!unit.moved || !unit.pos) return reachable(data, s, unit);
   return new Map([[posKey(unit.pos), { cost: 0, prev: null, pos: unit.pos }]]);
 }
 
+/** Nachsetzen (story 2.4): what the skirmisher may still walk right after its attack; null when the possibility is not open for it. */
+export function pursueReach(data: GameData, s: BattleState, unit: BattleUnit): Map<string, ReachNode> | null {
+  if (!s.pursue || s.pursue.unit !== unit.uid || !unit.pos || !active(unit)) return null;
+  return reachable(data, s, unit, unit.pos, s.pursue.left);
+}
+
+/** Tiles the unit may end its move on (not occupied by another unit). */
 export function destinations(s: BattleState, unit: BattleUnit, reach: Map<string, ReachNode>): Pos[] {
   const out: Pos[] = [];
   for (const node of reach.values()) {

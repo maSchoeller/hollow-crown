@@ -1,13 +1,16 @@
 import type { GameData, Pos } from '../defs';
 import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/items';
 import { forecast, type Forecast } from '../rules/combat';
-import { tilesInRange, weaponRange } from '../rules/movement';
+import { classActionId } from '../rules/roles';
+import { moveBudget, reachable, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds } from '../rules/skills';
-import type { BattleState, BattleUnit, UnitRecord } from '../state';
-import { active, dist, inArea, isAlly, isHostile, neighbors, onMap, samePos, unitAt } from '../util';
+import type { BattleState, BattleUnit } from '../state';
+import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
 import type { Action } from './commands';
 import { mapOf } from './objectives';
+
+export { classActionId };
 
 export interface ActionOption {
   kind: Action['kind'] | 'trade' | 'convoy';
@@ -26,16 +29,6 @@ export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boo
   if (!activeSkillIds(data, u).includes(skillId)) return false;
   const sk = data.skills[skillId]!;
   return (u.usedPerMap[skillId] ?? 0) < (sk.usesPerMap ?? Infinity);
-}
-
-/**
- * Id of the unit's class action (`aim`, `far_rescue`, `inspire`, ...), if its class has one. With a battle state, a role
- * no companion has brought along yet (`lockedRoles`, story 4.3) has none.
- */
-export function classActionId(data: GameData, u: BattleUnit | UnitRecord, s?: { lockedRoles?: string[] }): string | undefined {
-  const cls = data.classes[u.classId];
-  if (cls && s?.lockedRoles?.includes(cls.role)) return undefined;
-  return cls?.classAction?.id;
 }
 
 export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {
@@ -127,6 +120,29 @@ export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos:
     }
     case 'cheer':
       return { kind: 'cheer', target: a.target, mov: cfg.cheer.mov, hit: cfg.cheer.hit };
+    default:
+      return null;
+  }
+}
+
+/**
+ * Nachsetzen: the movement a skirmisher has left after fighting from `to`: its MOV there (buffs such as Anfeuern count)
+ * minus what the walk to `to` costs, or what it has already walked this phase when it stays. Shared by the preview and `applyCommand`.
+ */
+export function pursueRest(data: GameData, s: BattleState, u: BattleUnit, to: Pos): number {
+  const spent = samePos(u.pos, to) ? (u.moved ? (u.moveSpent ?? 0) : 0) : (reachable(data, s, u).get(posKey(to))?.cost ?? 0);
+  return Math.max(0, moveBudget(data, s, u, to) - spent);
+}
+
+/** Preview of the passive roles in the dock (story 2.4): Halten shows the zone around the tile, Nachsetzen the rest left after fighting there. */
+export type PassivePreview = { kind: 'hold'; tiles: Pos[] } | { kind: 'pursue'; left: number };
+
+export function passivePreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): PassivePreview | null {
+  switch (classActionId(data, u, s)) {
+    case 'hold':
+      return { kind: 'hold', tiles: neighbors(pos).filter((p) => inBounds(s, p)) };
+    case 'pursue':
+      return { kind: 'pursue', left: pursueRest(data, s, u, pos) };
     default:
       return null;
   }

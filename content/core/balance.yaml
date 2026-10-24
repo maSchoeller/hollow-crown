@@ -129,10 +129,12 @@ loading:
   packRetryMaxMs: 60000
 rally: { radius: 2, damage: 2, hit: 10 }
 # Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
+# Halten (Story 2.4): die KI umgeht eine Haltezone, wenn der Umweg in Bewegungskosten höchstens detourMax länger ist als der kürzeste Weg ohne Rücksicht auf Haltezonen
 classActions:
   aim: { rangeBonus: 1, hit: 15 }
   farRescue: { range: 2 }
   cheer: { mov: 1, hit: 10 }
+  hold: { detourMax: 2 }
 bag: { size: 3 }
 fog:
   baseVision: 3

@@ -702,8 +702,13 @@ export interface Balance {
   };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
-  /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */
-  classActions: { aim: { rangeBonus: number; hit: number }; farRescue: { range: number }; cheer: { mov: number; hit: number } };
+  /** numbers of the class actions: Zielen, Fernbergen, Anfeuern (story 2.3) and the AI's detour limit around hold zones (story 2.4) */
+  classActions: {
+    aim: { rangeBonus: number; hit: number };
+    farRescue: { range: number };
+    cheer: { mov: number; hit: number };
+    hold: { detourMax: number };
+  };
   bag: { size: number };
   economy: {
     sellRatio: number;

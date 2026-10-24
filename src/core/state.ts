@@ -80,6 +80,8 @@ export interface BattleUnit extends UnitRecord {
   hp: number;
   acted: boolean;
   moved: boolean;
+  /** movement cost of this phase's walk (set by every move; only meaningful while `moved`): Nachsetzen counts it off MOV */
+  moveSpent?: number;
   downed: boolean;
   /** own phases spent downed (Standard: bleeds out at `balance.death.bleedOutTurns`) */
   bleed: number;
@@ -168,6 +170,11 @@ export interface BattleState {
   avatarName: string;
   /** mechanics not introduced yet at this point of the campaign (missing in old saves = none locked) */
   locked?: Mechanic[];
+  /**
+   * Nachsetzen (story 2.4): set by the attack of a skirmisher, with the movement it has left; the next command of any kind
+   * clears it. Plain JSON, so the replay needs nothing besides the command log.
+   */
+  pursue?: { unit: string; left: number };
   /** core roles whose class action is not introduced yet (`lockedRoles`; missing in old saves = none locked) */
   lockedRoles?: string[];
 }

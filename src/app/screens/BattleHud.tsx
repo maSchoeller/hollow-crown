@@ -9,6 +9,7 @@ import {
   type BattleUnit,
   type ClassPreview,
   type Forecast,
+  type PassivePreview,
   type GameData,
   type ItemInstance,
   type SideObjectiveDef,
@@ -281,6 +282,7 @@ export function DockAction({
   variant,
   dim,
   on,
+  state,
   onClick,
 }: {
   icon: string;
@@ -290,12 +292,14 @@ export function DockAction({
   /** impossible right now: dimmed, never hidden; a tap still answers with the reason */
   dim?: boolean;
   on?: boolean;
+  /** passive role: the symbol shows a state (`ready` / `active`) instead of a button; a tap explains the rule */
+  state?: 'ready' | 'active';
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
-      class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''}`}
+      class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''} ${state ? `is-state ${state === 'active' ? 'is-active' : ''}` : ''}`}
       aria-disabled={dim || undefined}
       aria-pressed={on}
       onClick={onClick}
@@ -487,6 +491,22 @@ export function ClassPreviewCard({ data, state, p }: { data: GameData; state: Ba
         </div>
       </div>
       <p class="hud-sub">{p.kind === 'cheer' ? t('ui.preview.cheer') : t('ui.preview.farRescueText')}</p>
+    </div>
+  );
+}
+
+/** Rule card of a passive role (Halten, Nachsetzen): the rule in words and what it means on the tile the unit would stand on. */
+export function PassiveRuleCard({ p }: { p: PassivePreview }) {
+  return (
+    <div class="hc-piece hud-fc">
+      <div class="hud-fc__head">
+        <Icon name={p.kind === 'hold' ? 'shield' : 'blade'} size={34} />
+        <span class="hud-name hud-name--small">{t(`ui.passive.${p.kind}.name`)}</span>
+        <span class="hud-chips">
+          <span class="hud-chip is-adv">{p.kind === 'hold' ? t('ui.passive.hold.zone', { n: p.tiles.length }) : t('ui.passive.pursue.left', { n: p.left })}</span>
+        </span>
+      </div>
+      <p class="hud-sub">{t(`ui.passive.${p.kind}.rule`)}</p>
     </div>
   );
 }

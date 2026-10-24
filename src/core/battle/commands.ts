@@ -29,6 +29,8 @@ export interface TradeOp {
 export type Command =
   | { type: 'move'; unit: string; to: Pos }
   | { type: 'act'; unit: string; to: Pos; action: Action }
+  /** Nachsetzen (story 2.4): right after a skirmisher's attack, walk on with the rest of the movement */
+  | { type: 'pursue'; unit: string; to: Pos }
   | { type: 'trade'; unit: string; with: string; ops: TradeOp[] }
   | { type: 'equip'; unit: string; item: string; slot: EquipSlot | 'bag' }
   | { type: 'convoy'; unit: string; take?: string; put?: string; slot?: EquipSlot | 'bag' }
@@ -52,4 +54,5 @@ export type CommandError =
   | 'cannot_equip'
   | 'bag_full'
   | 'not_adjacent'
-  | 'not_allowed';
+  | 'not_allowed'
+  | 'no_pursue';

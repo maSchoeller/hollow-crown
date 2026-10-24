@@ -551,6 +551,20 @@
 .hud-act.is-on {
   background: #f8d9d4;
 }
+/* passive role (Halten, Nachsetzen): the role symbol as a state, not a button that fires; a tap explains the rule */
+.hud-act.is-state {
+  box-shadow: none;
+  border-style: dashed;
+  background: var(--hc-cream);
+}
+.hud-act.is-state:active {
+  transform: none;
+  box-shadow: none;
+}
+.hud-act.is-state.is-active {
+  border-style: solid;
+  background: var(--hc-team-player-soft);
+}
 /* impossible: dimmed, never hidden; the tap still answers with the reason */
 .hud-act.is-dim {
   opacity: 0.45;

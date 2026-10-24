@@ -5,14 +5,14 @@ import { roll1 } from '../rng';
 import { resolveAttack } from '../rules/combat';
 import { applyStatus, damageUnit, endOfPhase, extinguishTile, igniteTile, startOfPhase, tickTerrain } from '../rules/effects';
 import { canEquip, itemDef, isRune, weaponProfile } from '../rules/items';
-import { pathTo, reachable } from '../rules/movement';
+import { destinations, pathTo, pursueReach, reachable } from '../rules/movement';
 import { grantExp } from '../rules/progression';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
 import { activeSkillIds } from '../rules/skills';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clone, getUnit, neighbors, onMap, pairKey, posKey, samePos } from '../util';
-import { aimTargets, attackTargets, availableActions, CHEER_BUFF, hasKey, itemTargets, nearConvoy, staffTargets } from './actions';
+import { aimTargets, attackTargets, availableActions, CHEER_BUFF, classActionId, hasKey, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
 import type { Action, Command, CommandError } from './commands';
 import { newItem } from './create';
 import { afterUnitMoved, beginPhase, checkObjectives, freeTileNear, mapOf, runTriggers, spawnUnits } from './objectives';
@@ -71,6 +71,13 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
   const u = s.units.find((x) => x.uid === cmd.unit);
   if (!u || !active(u)) return 'unknown_unit';
   if (u.team !== s.phase) return 'not_your_phase';
+  if (cmd.type === 'pursue') {
+    // Nachsetzen is the one command a unit that has acted may still get (story 2.4)
+    const reach = pursueReach(data, s, u);
+    if (!reach) return 'no_pursue';
+    if (!reach.has(posKey(cmd.to)) || samePos(u.pos, cmd.to)) return 'unreachable';
+    return s.units.some((o) => o.uid !== u.uid && onMap(o) && samePos(o.pos, cmd.to)) ? 'occupied' : null;
+  }
   if (u.acted) return 'unit_exhausted';
   switch (cmd.type) {
     case 'move':
@@ -104,6 +111,9 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
   if (err) throw new CoreInvariantError('invalid_command', { command: cmd.type, reason: err });
   const s = clone(prev);
   const events: GameEvent[] = [];
+  // any command ends the chance to pursue; an attack of a skirmisher below opens it again
+  delete s.pursue;
+  let pursueLeft = 0;
   switch (cmd.type) {
     case 'move': {
       const u = getUnit(s, cmd.unit);
@@ -113,11 +123,16 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
     }
     case 'act': {
       const u = getUnit(s, cmd.unit);
+      if (cmd.action.kind === 'attack' && classActionId(data, u, s) === 'pursue') pursueLeft = pursueRest(data, s, u, cmd.to);
       doMove(data, s, u, cmd.to, events);
       if (active(u) && !s.outcome) doAction(data, s, u, cmd.action, events);
       finishUnit(data, s, u, events);
+      if (!active(u)) pursueLeft = 0;
       break;
     }
+    case 'pursue':
+      doMove(data, s, getUnit(s, cmd.unit), cmd.to, events, prev.pursue!.left);
+      break;
     case 'equip':
       doEquip(data, getUnit(s, cmd.unit), cmd.item, cmd.slot, events);
       break;
@@ -132,12 +147,22 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
       break;
   }
   checkObjectives(data, s, events);
+  if (pursueLeft > 0 && !s.outcome) openPursue(data, s, getUnit(s, (cmd as Extract<Command, { type: 'act' }>).unit), pursueLeft);
   return { state: s, events };
 }
 
-function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[]): void {
+/** Nachsetzen: remembers the rest for the skirmisher that just attacked, unless there is nowhere left to go. */
+function openPursue(data: GameData, s: BattleState, u: BattleUnit, left: number): void {
+  s.pursue = { unit: u.uid, left };
+  const reach = pursueReach(data, s, u);
+  if (!reach || !destinations(s, u, reach).some((p) => !samePos(p, u.pos))) delete s.pursue;
+}
+
+function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number): void {
   if (!u.pos || samePos(u.pos, to)) return;
-  const path = pathTo(reachable(data, s, u), to);
+  const reach = reachable(data, s, u, u.pos, mov);
+  const path = pathTo(reach, to);
+  u.moveSpent = reach.get(posKey(to))?.cost ?? 0;
   u.pos = [to[0], to[1]];
   u.moved = true;
   events.push({ t: 'moved', unit: u.uid, path });

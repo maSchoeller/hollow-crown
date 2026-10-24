@@ -5,7 +5,7 @@ import { applyAct } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { expectedDamage, forecast } from '../rules/combat';
-import { moveCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
 import type { BattleState, BattleUnit } from '../state';
@@ -17,14 +17,18 @@ interface Plan {
   score: number;
 }
 
-/** Multi-source distance field (movement cost, ignoring units) – used to walk towards goals. */
-function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[]): Map<string, number> {
+/**
+ * Multi-source distance field (movement cost, ignoring units) – used to walk towards goals. With `avoid` (hold zone tiles,
+ * story 2.4) a tile of the set is never passed through: it may start a way (the unit stands there) or end one (a goal).
+ */
+function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], avoid?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
   const open: Array<[Pos, number]> = goals.filter((g) => inBounds(s, g)).map((g) => [g, 0]);
   for (const [g] of open) out.set(posKey(g), 0);
   while (open.length) {
     open.sort((a, b) => a[1] - b[1]);
     const [p, c] = open.shift()!;
+    if (avoid && c > 0 && avoid.has(posKey(p))) continue;
     for (const n of neighbors(p)) {
       // cost of stepping from n into p (symmetric enough for grids)
       const step = moveCost(data, s, u, p);
@@ -44,14 +48,62 @@ function hostileUnits(s: BattleState, u: BattleUnit): BattleUnit[] {
   return s.units.filter((o) => onMap(o) && isHostile(o.team, u.team));
 }
 
+/** The goal tile the field leads to from `from` (follows the falling values down to 0). */
+function descendToGoal(field: Map<string, number>, from: Pos): Pos | null {
+  let p = from;
+  let v = field.get(posKey(p));
+  while (v !== undefined && v > 0) {
+    let next: Pos | null = null;
+    let nv = v;
+    for (const n of neighbors(p)) {
+      const w = field.get(posKey(n));
+      if (w !== undefined && w < nv) {
+        next = n;
+        nv = w;
+      }
+    }
+    if (!next) return null;
+    p = next;
+    v = nv;
+  }
+  return v === 0 ? p : null;
+}
+
+/**
+ * Halten (story 2.4): if a way around the hold zones of hostile vanguards costs at most `classActions.hold.detourMax` more
+ * movement than the shortest way to the same goal tile, the AI takes the way around (returned field, with the hold tiles
+ * it must not stop on); otherwise it walks in and is stopped there.
+ */
+function detourAround(data: GameData, s: BattleState, u: BattleUnit, field: Map<string, number>, hold: Set<string>): { field: Map<string, number>; skip: Set<string> } | null {
+  const here = field.get(posKey(u.pos!));
+  const goal = here === undefined ? null : descendToGoal(field, u.pos!);
+  if (here === undefined || !goal) return null;
+  const around = distanceField(data, s, u, [goal], hold);
+  const way = around.get(posKey(u.pos!));
+  if (way === undefined || way - here > data.balance.classActions.hold.detourMax) return null;
+  const skip = new Set(hold);
+  skip.delete(posKey(goal));
+  return { field: around, skip };
+}
+
 export function bestApproach(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[]): Pos | null {
   if (!goals.length || !u.pos) return null;
-  const field = distanceField(data, s, u, goals);
+  let field = distanceField(data, s, u, goals);
   const reach = reachable(data, s, u);
+  const hold = holdZone(data, s, u.team);
+  let skip: Set<string> | undefined;
+  if (hold.size) {
+    const detour = detourAround(data, s, u, field, hold);
+    if (detour) {
+      field = detour.field;
+      skip = detour.skip;
+    }
+  }
   let best: Pos | null = null;
   let bestVal = Infinity;
   let bestCost = Infinity;
   for (const p of destinations(s, u, reach)) {
+    if (skip?.has(posKey(p))) continue;
     const v = field.get(posKey(p)) ?? Infinity;
     const c = reach.get(posKey(p))!.cost;
     if (v < bestVal || (v === bestVal && c < bestCost)) {
