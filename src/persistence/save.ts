@@ -88,7 +88,8 @@ export function setSaveDbBlockedHandler(fn: () => void): void {
 }
 
 let dbp: Promise<IDBPDatabase> | null = null;
-function db(): Promise<IDBPDatabase> {
+/** The save database connection (shared with the journal). */
+export function saveDb(): Promise<IDBPDatabase> {
   dbp ??= openDB(DB_NAME, DB_VERSION, {
     upgrade(d, oldVersion, _newVersion, tx) {
       // a failed move must not leave a v2 database without the PoC saves
@@ -170,7 +171,7 @@ export interface NewCampaignMeta {
 
 /** Registers a campaign. Throws `CampaignLimitError` when three exist and `id` is not one of them. */
 export async function createCampaign({ campaign, now, contentVersion, id }: NewCampaignMeta): Promise<CampaignMeta> {
-  const tx = (await db()).transaction('campaigns', 'readwrite');
+  const tx = (await saveDb()).transaction('campaigns', 'readwrite');
   const store = tx.objectStore('campaigns');
   const all = (await store.getAll()) as CampaignMeta[];
   const existing = id ? all.find((m) => m.id === id) : undefined;
@@ -194,13 +195,13 @@ export async function createCampaign({ campaign, now, contentVersion, id }: NewC
 
 /** Campaigns, most recently played first. */
 export async function listCampaigns(): Promise<CampaignMeta[]> {
-  const all = (await (await db()).getAll('campaigns')) as CampaignMeta[];
+  const all = (await (await saveDb()).getAll('campaigns')) as CampaignMeta[];
   return all.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
 /** Removes a campaign with all its saves and journal entries. */
 export async function deleteCampaign(id: string): Promise<void> {
-  const tx = (await db()).transaction(['campaigns', 'saves', 'journal'], 'readwrite');
+  const tx = (await saveDb()).transaction(['campaigns', 'saves', 'journal'], 'readwrite');
   const range = IDBKeyRange.bound([id], [id, []]);
   await Promise.all([
     tx.objectStore('campaigns').delete(id),
@@ -233,7 +234,7 @@ export async function writeSave(
     contentVersion: opts.contentVersion,
     payload,
   });
-  const tx = (await db()).transaction(['campaigns', 'saves'], 'readwrite');
+  const tx = (await saveDb()).transaction(['campaigns', 'saves'], 'readwrite');
   const meta = (await tx.objectStore('campaigns').get(campaignId)) as CampaignMeta | undefined;
   if (!meta) {
     tx.abort();
@@ -252,22 +253,22 @@ export async function writeSave(
 }
 
 export async function readSave(campaignId: string, slot: SlotId): Promise<SaveRecord | undefined> {
-  const r = (await (await db()).get('saves', [campaignId, slot])) as SaveRecord | undefined;
+  const r = (await (await saveDb()).get('saves', [campaignId, slot])) as SaveRecord | undefined;
   return r ? migrate(r) : undefined;
 }
 
 export async function listSaves(campaignId: string): Promise<SaveRecord[]> {
   const range = IDBKeyRange.bound([campaignId], [campaignId, []]);
-  return ((await (await db()).getAll('saves', range)) as SaveRecord[]).map(migrate);
+  return ((await (await saveDb()).getAll('saves', range)) as SaveRecord[]).map(migrate);
 }
 
 export async function deleteSave(campaignId: string, slot: SlotId): Promise<void> {
-  await (await db()).delete('saves', [campaignId, slot]);
+  await (await saveDb()).delete('saves', [campaignId, slot]);
 }
 
 /** PoC saves found at the upgrade to v2. */
 export async function listLegacy(): Promise<LegacyRecord[]> {
-  return (await (await db()).getAll('legacy')) as LegacyRecord[];
+  return (await (await saveDb()).getAll('legacy')) as LegacyRecord[];
 }
 
 /** FNV-1a over a string, hex. */

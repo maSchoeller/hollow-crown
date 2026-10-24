@@ -1,33 +1,20 @@
 import { useEffect, useState } from 'preact/hooks';
 import {
   availableSupportTalks,
-  buy,
-  buyOffer,
   canEquip,
   computeStats,
   currentTier,
-  equipItem,
-  insertRune,
   itemDef,
   loadoutSlots,
   locateItem,
   merchantStock,
-  mergeRunes,
   offerPrice,
-  removeRune,
-  removeScar,
-  rerollAffix,
   rerollCost,
   runeSlotCount,
-  sell,
   sellPrice,
-  setLoadout,
   STAT_KEYS,
-  unequip,
-  unlockSupport,
-  upgrade,
   upgradeCost,
-  type CampResult,
+  type CampaignCommand,
   type EquipSlot,
   type ItemInstance,
   type UnitRecord,
@@ -38,7 +25,7 @@ import { asset, Crest, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, 
 import { Icon } from '../../ui/icons';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
-import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, saveSlot, screen, setCampaign, setFlag, startBattle } from '../store';
+import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, saveSlot, screen, setFlag, startBattle } from '../store';
 import { downloadSave, SlotPicker } from './Menus';
 import { audio } from '../audio';
 
@@ -70,9 +57,9 @@ export function Camp({ tab: initial }: { tab?: string }) {
   const [toast, setToast] = useState<string | null>(null);
   const talks = availableSupportTalks(data, c);
   useEffect(() => audio.music('camp'), []);
-  const apply = (r: CampResult, okText?: string) => {
+  const apply = (cmd: CampaignCommand, okText?: string) => {
+    const r = campaignCommand(cmd);
     if (r.ok) {
-      setCampaign(r.campaign);
       audio.sfx('confirm');
       if (okText) setToast(okText);
     } else {
@@ -217,7 +204,7 @@ export function Camp({ tab: initial }: { tab?: string }) {
   );
 }
 
-type Apply = (r: CampResult, okText?: string) => void;
+type Apply = (cmd: CampaignCommand, okText?: string) => void;
 
 function Company({ apply }: { apply: Apply }) {
   const c = campaign.value!;
@@ -313,7 +300,7 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
           {SLOTS.map((sl) => {
             const inst = unit.equip[sl];
             return inst ? (
-              <ItemRow key={sl} data={data} inst={inst} sub={<><span class="slot-label">{t(`ui.slot.${sl}`)}</span> <ItemDetails data={data} inst={inst} /></>} right={<button class="btn small" onClick={() => apply(unequip(c, inst.uid))}>{t('ui.unequip')}</button>} />
+              <ItemRow key={sl} data={data} inst={inst} sub={<><span class="slot-label">{t(`ui.slot.${sl}`)}</span> <ItemDetails data={data} inst={inst} /></>} right={<button class="btn small" onClick={() => apply({ type: 'unequip', uid: inst.uid })}>{t('ui.unequip')}</button>} />
             ) : (
               <div key={sl} class="item-row" style={{ opacity: 0.5 }}>
                 <span class="ico">·</span>
@@ -323,7 +310,7 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
             );
           })}
           {unit.bag.map((inst) => (
-            <ItemRow key={inst.uid} data={data} inst={inst} sub={<><span class="slot-label">{t('ui.slot.bag')}</span> <ItemDetails data={data} inst={inst} /></>} right={<button class="btn small" onClick={() => apply(unequip(c, inst.uid))}>{t('ui.unequip')}</button>} />
+            <ItemRow key={inst.uid} data={data} inst={inst} sub={<><span class="slot-label">{t('ui.slot.bag')}</span> <ItemDetails data={data} inst={inst} /></>} right={<button class="btn small" onClick={() => apply({ type: 'unequip', uid: inst.uid })}>{t('ui.unequip')}</button>} />
           ))}
         </div>
       </div>
@@ -350,7 +337,7 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
             {unit.mastered.map((sk) => {
               const on = unit.loadout.includes(sk);
               return (
-                <button key={sk} class={`btn small ${on ? 'primary' : ''}`} onClick={() => apply(setLoadout(data, c, unit.id, on ? unit.loadout.filter((x) => x !== sk) : [...unit.loadout, sk]))}>
+                <button key={sk} class={`btn small ${on ? 'primary' : ''}`} onClick={() => apply({ type: 'setLoadout', unit: unit.id, skills: on ? unit.loadout.filter((x) => x !== sk) : [...unit.loadout, sk] })}>
                   {t(`skill.${sk}.name`)}
                 </button>
               );
@@ -377,11 +364,11 @@ export function Inventory({ unit, apply, onBack }: { unit: UnitRecord; apply: Ap
                     pick === inst.uid ? (
                       <div class="col" style={{ gap: 4 }}>
                         {slot && (
-                          <button class="btn small primary" onClick={(e) => { e.stopPropagation(); setPick(null); apply(equipItem(data, c, unit.id, inst.uid, slot)); }}>
+                          <button class="btn small primary" onClick={(e) => { e.stopPropagation(); setPick(null); apply({ type: 'equip', unit: unit.id, uid: inst.uid, slot }); }}>
                             {t('ui.equip')}
                           </button>
                         )}
-                        <button class="btn small" disabled={unit.bag.length >= data.balance.bag.size} onClick={(e) => { e.stopPropagation(); setPick(null); apply(equipItem(data, c, unit.id, inst.uid, 'bag')); }}>
+                        <button class="btn small" disabled={unit.bag.length >= data.balance.bag.size} onClick={(e) => { e.stopPropagation(); setPick(null); apply({ type: 'equip', unit: unit.id, uid: inst.uid, slot: 'bag' }); }}>
                           {t('ui.toBag')}
                         </button>
                       </div>
@@ -422,7 +409,7 @@ function Convoy({ apply }: { apply: Apply }) {
           sub={sel === inst.uid ? <ItemDetails data={data} inst={inst} /> : undefined}
           right={
             sellPrice(data, inst) > 0 ? (
-              <button class="btn small" onClick={(e) => { e.stopPropagation(); apply(sell(data, c, inst.uid), t('ui.camp.sold')); }}>
+              <button class="btn small" onClick={(e) => { e.stopPropagation(); apply({ type: 'sell', uid: inst.uid }, t('ui.camp.sold')); }}>
                 {t('ui.sell')} <span class="num gold">{sellPrice(data, inst)}</span>
               </button>
             ) : null
@@ -443,7 +430,7 @@ function Merchant({ apply }: { apply: Apply }) {
           <h3>{t('ui.camp.offers')}</h3>
           <div class="list">
             {c.offers.map((o) => (
-              <ItemRow key={o.uid} data={data} inst={o} sub={<ItemDetails data={data} inst={o} />} right={<button class="btn small primary" onClick={() => apply(buyOffer(data, c, o.uid), t('ui.camp.bought'))}>{offerPrice(data, o)}</button>} />
+              <ItemRow key={o.uid} data={data} inst={o} sub={<ItemDetails data={data} inst={o} />} right={<button class="btn small primary" onClick={() => apply({ type: 'buyOffer', uid: o.uid }, t('ui.camp.bought'))}>{offerPrice(data, o)}</button>} />
             ))}
           </div>
         </>
@@ -452,7 +439,7 @@ function Merchant({ apply }: { apply: Apply }) {
       <div class="list">
         {stock.map((id) => {
           const inst: ItemInstance = { uid: `shop-${id}`, def: id, upgrade: 0, affixes: [], runes: [] };
-          return <ItemRow key={id} data={data} inst={inst} sub={<ItemDetails data={data} inst={inst} />} right={<button class="btn small" disabled={c.gold < itemDef(data, id).price} onClick={() => apply(buy(data, c, id), t('ui.camp.bought'))}>{itemDef(data, id).price}</button>} />;
+          return <ItemRow key={id} data={data} inst={inst} sub={<ItemDetails data={data} inst={inst} />} right={<button class="btn small" disabled={c.gold < itemDef(data, id).price} onClick={() => apply({ type: 'buy', item: id }, t('ui.camp.bought'))}>{itemDef(data, id).price}</button>} />;
         })}
       </div>
     </div>
@@ -468,7 +455,6 @@ function allGear(): Array<{ inst: ItemInstance; owner?: UnitRecord }> {
 }
 
 function Smith({ apply }: { apply: Apply }) {
-  const c = campaign.value!;
   const gear = allGear().filter(({ inst }) => ['weapon', 'tome', 'armor', 'shield'].includes(itemDef(data, inst).kind));
   return (
     <div class="list">
@@ -488,11 +474,11 @@ function Smith({ apply }: { apply: Apply }) {
             }
             right={
               <div class="col" style={{ gap: 4 }}>
-                <button class="btn small" disabled={!cost} onClick={() => apply(upgrade(data, c, inst.uid), t('ui.camp.upgraded'))}>
+                <button class="btn small" disabled={!cost} onClick={() => apply({ type: 'upgrade', uid: inst.uid }, t('ui.camp.upgraded'))}>
                   <Icon name="smith" size={16} />+{inst.upgrade + 1}
                 </button>
                 {inst.affixes.map((a, i) => (
-                  <button key={a} class="btn small ghost" onClick={() => apply(rerollAffix(data, c, inst.uid, i), t('ui.camp.rerolled'))}>
+                  <button key={a} class="btn small ghost" onClick={() => apply({ type: 'reroll', uid: inst.uid, index: i }, t('ui.camp.rerolled'))}>
                     <Icon name="restart" size={16} />
                     {t(`affix.${a}`)} ({rr.gold})
                   </button>
@@ -527,14 +513,14 @@ function Enchanter({ apply }: { apply: Apply }) {
           <b>{itemName(data, selInst)}</b>
           {selInst.runes.map((r, i) =>
             r ? (
-              <button key={i} class="btn small" onClick={() => apply(removeRune(data, c, selInst.uid, i))}>
+              <button key={i} class="btn small" onClick={() => apply({ type: 'removeRune', item: selInst.uid, index: i })}>
                 <Icon name="close" size={16} />
                 {t(`item.${r}.name`)}
               </button>
             ) : null,
           )}
           {runes.map((r) => (
-            <button key={r.uid} class="btn small" onClick={() => apply(insertRune(data, c, selInst.uid, r.uid), t('ui.camp.enchanted'))}>
+            <button key={r.uid} class="btn small" onClick={() => apply({ type: 'insertRune', item: selInst.uid, rune: r.uid }, t('ui.camp.enchanted'))}>
               <Icon name="rune" size={16} />
               {t(`item.${r.def}.name`)}
             </button>
@@ -549,7 +535,7 @@ function Enchanter({ apply }: { apply: Apply }) {
             <span>
               {t(`item.${id}.name`)} ×{runes.filter((r) => r.def === id).length}
             </span>
-            <button class="btn small ghost" disabled={runes.filter((r) => r.def === id).length < data.balance.economy.runeMerge.count} onClick={() => apply(mergeRunes(data, c, id), t('ui.camp.merged'))}>
+            <button class="btn small ghost" disabled={runes.filter((r) => r.def === id).length < data.balance.economy.runeMerge.count} onClick={() => apply({ type: 'mergeRunes', rune: id }, t('ui.camp.merged'))}>
               {t('ui.camp.merge')}
             </button>
           </div>
@@ -561,7 +547,7 @@ function Enchanter({ apply }: { apply: Apply }) {
           <div key={r.id} class="item-row">
             <span class="ico"><Icon name="rune" /></span>
             <span>{t(`item.${r.id}.name`)}</span>
-            <button class="btn small" disabled={c.gold < (r.price ?? 0)} onClick={() => apply(buy(data, c, r.id), t('ui.camp.bought'))}>
+            <button class="btn small" disabled={c.gold < (r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
               {r.price}
             </button>
           </div>
@@ -586,11 +572,11 @@ function Healer({ apply }: { apply: Apply }) {
               {unitName(u)}: {t(`scar.${sc}`)}
             </span>
             <div class="col" style={{ gap: 4 }}>
-              <button class="btn small" onClick={() => apply(removeScar(data, c, u.id, i), t('ui.camp.healed'))}>
+              <button class="btn small" onClick={() => apply({ type: 'healScar', unit: u.id, index: i }, t('ui.camp.healed'))}>
                 {data.balance.economy.scarRemoval.gold}
               </button>
               {herb && (
-                <button class="btn small ghost" onClick={() => apply(removeScar(data, c, u.id, i, true), t('ui.camp.healed'))}>
+                <button class="btn small ghost" onClick={() => apply({ type: 'healScar', unit: u.id, index: i, herb: true }, t('ui.camp.healed'))}>
                   {t('item.seers_herb.name')}
                 </button>
               )}
@@ -641,7 +627,7 @@ function Campfire({ apply }: { apply: Apply }) {
           avatarPortrait={c.avatar.portrait}
           onFlag={setFlag}
           onDone={() => {
-            apply(unlockSupport(data, campaign.value!, talk.key), t('ui.camp.bond'));
+            apply({ type: 'unlockSupport', pair: talk.key }, t('ui.camp.bond'));
             setTalk(null);
           }}
         />
@@ -704,7 +690,10 @@ export function Prep({ node }: { node: string }) {
   });
   const [inv, setInv] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const apply: Apply = (r) => (r.ok ? setCampaign(r.campaign) : setToast(t(`ui.camp.err.${r.error}`)));
+  const apply: Apply = (cmd) => {
+    const r = campaignCommand(cmd);
+    if (!r.ok) setToast(t(`ui.camp.err.${r.error}`));
+  };
   const invUnit = inv ? c.roster.find((r) => r.id === inv) : null;
   return (
     <div class="screen" style={{ gap: 10 }}>

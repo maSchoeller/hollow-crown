@@ -1,14 +1,18 @@
 /** App state: screens, campaign, running battle, settings. Connects core, persistence and UI. */
 import { signal } from '@preact/signals';
 import {
+  applyCampaign,
   applyCommand,
   beginBattle,
-  finishBattle,
   newCampaign,
+  validateCampaign,
   type AvatarSettings,
   type BattleResult,
   type BattleSettings,
   type BattleState,
+  type CampaignCommand,
+  type CampaignError,
+  type CampaignEvent,
   type CampaignState,
   type Command,
   type GameData,
@@ -17,6 +21,7 @@ import {
 import { loadContent } from '../content/browser';
 import { lang, setAvatar, setLocales, type Lang } from '../i18n';
 import { createAutoSaver, createPlayClock } from '../persistence/autosave';
+import { createJournalWriter, needsUpdateCheckpoint, type CheckpointReason } from '../persistence/journal';
 import {
   CampaignLimitError,
   contentVersionOf,
@@ -171,9 +176,49 @@ export async function saveSlot(slot: SlotId): Promise<void> {
   await writeSave(id, slot, { campaign: c, screen: 'camp' }, { now: nowIso(), contentVersion, playtimeDeltaMs: takePlaytime() });
 }
 
-function applyCampaign(c: CampaignState): void {
+function showCampaign(c: CampaignState): void {
   campaign.value = c;
   setAvatar(c.avatar.name, c.avatar.pronoun);
+}
+
+const journal = createJournalWriter();
+
+/** Full campaign state into the journal; replays of this campaign start here. */
+function checkpoint(id: string, c: CampaignState, reason: CheckpointReason): void {
+  void journal.append(id, { kind: 'checkpoint', reason, contentVersion, campaign: c });
+}
+
+/** Checkpoint after loading: `update` when the last one came from another app or content version. */
+function checkpointOnLoad(id: string, c: CampaignState): void {
+  void journal
+    .flush()
+    .then(() => needsUpdateCheckpoint(id, contentVersion))
+    .then(
+      (update) => checkpoint(id, c, update ? 'update' : 'load'),
+      () => checkpoint(id, c, 'load'),
+    );
+}
+
+const resumeScreen = (): SavePayload['screen'] =>
+  battle.value ? 'battle' : screen.value.name === 'worldmap' ? 'worldmap' : 'camp';
+
+export type CampaignCommandResult = { ok: true; events: CampaignEvent[] } | { ok: false; error: CampaignError };
+
+/**
+ * The only way to change the campaign outside a battle (concept/24-architecture §5.2): validate, apply,
+ * append to the journal, auto-save.
+ */
+export function campaignCommand(cmd: CampaignCommand): CampaignCommandResult {
+  const c = campaign.value;
+  if (!c) return { ok: false, error: 'not_available' };
+  const error = validateCampaign(data, c, cmd);
+  if (error) return { ok: false, error };
+  const r = applyCampaign(data, c, cmd);
+  showCampaign(r.campaign);
+  const id = campaignId.value;
+  if (id) void journal.append(id, { kind: 'command', cmd });
+  autosave(resumeScreen());
+  return { ok: true, events: r.events };
 }
 
 /**
@@ -191,7 +236,8 @@ export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSet
     throw e;
   }
   await saver.flush();
-  applyCampaign(c);
+  showCampaign(c);
+  checkpoint(campaignId.value!, c, 'new');
   battle.value = null;
   playClock.reset();
   autosave('worldmap');
@@ -238,15 +284,17 @@ export async function importRecord(rec: SaveRecord): Promise<boolean> {
     if (isNew) await deleteCampaign(rec.campaignId).catch(() => undefined);
     throw e;
   }
-  restore(rec);
+  restore(rec, 'import');
   return true;
 }
 
-export function restore(rec: SaveRecord): void {
+export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): void {
   const p = rec.payload;
   campaignId.value = rec.campaignId;
   playClock.reset();
-  applyCampaign(p.campaign);
+  showCampaign(p.campaign);
+  if (reason === 'import') checkpoint(rec.campaignId, p.campaign, 'import');
+  else checkpointOnLoad(rec.campaignId, p.campaign);
   if (p.battle) {
     let s = p.battle.start;
     for (const cmd of p.battle.commands) s = applyCommand(data, s, cmd).state;
@@ -324,30 +372,23 @@ export function restartBattle(fromRound: boolean): void {
 /** Battle ended: apply results, show outro and result screen. */
 export function concludeBattle(): void {
   const b = battle.value!;
-  const c = campaign.value!;
   if (b.state.outcome !== 'victory') {
     screen.value = { name: 'defeat' };
     return;
   }
-  const { campaign: next, result } = finishBattle(data, c, b.state);
-  applyCampaign(next);
   battle.value = null;
-  autosave('camp');
+  const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log });
+  if (!r.ok) throw new Error(`finishMission rejected: ${r.error}`);
+  const result = r.events.find((e) => e.t === 'missionFinished')!.result;
   const node = nodeDef(b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
   if (node.post) screen.value = { name: 'dialogue', id: node.post, next: toResult };
   else toResult();
 }
 
-export function setCampaign(c: CampaignState): void {
-  applyCampaign(c);
-  autosave('camp');
-}
-
 export function setFlag(flag: string): void {
-  const c = campaign.value;
-  // battle state stays untouched so replays remain pure; choices only happen outside battles
-  if (c && !c.flags.includes(flag)) campaign.value = { ...c, flags: [...c.flags, flag] };
+  // battle state stays untouched so battle replays remain pure; the flag goes through the campaign journal
+  campaignCommand({ type: 'setFlag', flag });
 }
 
 /** Dev helper: lets the simulator play the current battle (manual testing only). */
