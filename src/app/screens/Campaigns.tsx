@@ -5,7 +5,7 @@ import type { DeathMode, Difficulty, Element } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Icon } from '../../ui/icons';
-import { PrimaryButton, Piece, ScreenHead, SecondaryButton } from '../../ui/pieces';
+import { PrimaryButton, Piece, ScreenHead, SecondaryButton, Segment } from '../../ui/pieces';
 import {
   importSave,
   listCampaigns,
@@ -314,18 +314,6 @@ export function Campaigns() {
           <SecondaryButton onClick={() => setConfirm(null)}>{t('ui.cancel')}</SecondaryButton>
         </Dialog>
       )}
-    </div>
-  );
-}
-
-function Segment<T extends string>({ value, options, onChange }: { value: T; options: Array<[T, string]>; onChange: (v: T) => void }) {
-  return (
-    <div class="hc-seg" style={{ '--hc-seg-count': String(options.length) }}>
-      {options.map(([v, label]) => (
-        <button key={v} type="button" aria-pressed={v === value} onClick={() => onChange(v)}>
-          {label}
-        </button>
-      ))}
     </div>
   );
 }

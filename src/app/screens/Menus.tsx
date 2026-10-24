@@ -5,13 +5,16 @@ import { t } from '../../i18n';
 import { asset, itemName, Modal, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { Amount, ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
+import { Amount, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Segment } from '../../ui/pieces';
 import { exportSave, type LegacyRecord, type SaveRecord, type SlotId } from '../../persistence/save';
 import { resumeText, slotSummary } from '../campaignInfo';
 import { campaign, data, latestAutoSave, saveDbBlocked } from '../state/session';
 import { loadSlot, nodeDef, playNode } from '../state/flow';
 import { screen, type Screen } from '../state/screen';
-import { settings, updateSettings } from '../state/settings';
+import { settings, updateSettings, type Settings } from '../state/settings';
+import '../../ui/title.css';
+import '../../ui/options.css';
+import '../../ui/end.css';
 
 /** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
@@ -39,9 +42,15 @@ export function Title() {
         )}
         <Campaigns onClick={() => (screen.value = { name: 'campaigns' })}>{t('ui.title.campaigns')}</Campaigns>
         <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>{t('ui.options')}</SecondaryButton>
-        {saveDbBlocked.value && <div class="dis">{t('ui.title.closeOtherTabs')}</div>}
+        {saveDbBlocked.value && (
+          <Piece class="title-note" role="alert">
+            {t('ui.title.closeOtherTabs')}
+          </Piece>
+        )}
         <div class="title-foot">
-          {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
+          <span class="title-foot__version">
+            {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
+          </span>
           <UpdateLink />
         </div>
       </div>
@@ -56,13 +65,13 @@ function UpdateLink() {
   }, []);
   if (status === 'available') {
     return (
-      <button class="btn small update-btn" onClick={installUpdate}>
-        <Icon name="download" /> {t('ui.update.install')}
+      <button type="button" class="title-foot__btn is-update" onClick={installUpdate}>
+        <Icon name="download" size={16} /> {t('ui.update.install')}
       </button>
     );
   }
   return (
-    <button class="link-btn" disabled={status === 'checking'} onClick={() => void checkForUpdate()}>
+    <button type="button" class="title-foot__btn" disabled={status === 'checking'} onClick={() => void checkForUpdate()}>
       {t(`ui.update.${status === 'idle' ? 'check' : status}`)}
     </button>
   );
@@ -172,68 +181,56 @@ export function WorldMap() {
   );
 }
 
+const ON_OFF = (): Array<[boolean, string]> => [
+  [true, t('ui.on')],
+  [false, t('ui.off')],
+];
+const SPEEDS = (): Array<[1 | 2 | 3, string]> => [
+  [1, '1x'],
+  [2, '2x'],
+  [3, t('ui.opt.skip')],
+];
+
+/** Options in style B: stones with segment switches and sliders over the blurred camp scene; every change applies and persists at once. */
 export function Options({ back }: { back: Screen }) {
   const s = settings.value;
-  const seg = <K extends keyof typeof s>(k: K, vals: Array<[(typeof s)[K], string]>) => (
-    <div class="choice-row">
-      {vals.map(([v, label]) => (
-        <button key={String(v)} class={`choice ${s[k] === v ? 'on' : ''}`} aria-pressed={s[k] === v} onClick={() => updateSettings({ [k]: v } as Partial<typeof s>)}>
-          {label}
-        </button>
-      ))}
+  const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => updateSettings({ [k]: v } as Partial<Settings>);
+  const seg = <K extends keyof Settings>(label: string, k: K, options: Array<[Settings[K], string]>) => (
+    <div class="opt-row" role="group" aria-label={label}>
+      <span class="opt-row__label">{label}</span>
+      <Segment value={s[k]} options={options} onChange={set(k)} />
+    </div>
+  );
+  const slider = (label: string, k: 'music' | 'sfx') => (
+    <div class="opt-row">
+      <label class="opt-row__label" for={`opt-${k}`}>
+        {label}
+        <span>{Math.round(s[k] * 100)} %</span>
+      </label>
+      <input id={`opt-${k}`} class="hc-slider" type="range" min={0} max={1} step={0.05} value={s[k]} style={{ '--hc-fill': `${s[k] * 100}%` }} onInput={(e) => set(k)(Number((e.target as HTMLInputElement).value))} />
     </div>
   );
   return (
-    <div class="screen">
-      <div class="screen-narrow col" style={{ gap: 14 }}>
-        <div class="page-head">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = back)} aria-label={t('ui.back')}>
-            <Icon name="back" />
-          </button>
-          <div class="titles">
-            <h2>{t('ui.options')}</h2>
-          </div>
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.lang')}</label>
-          {seg('lang', [['de', 'Deutsch'], ['en', 'English']])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.speed')}</label>
-          {seg('speed', [[1, '1x'], [2, '2x'], [3, t('ui.opt.skip')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.enemySpeed')}</label>
-          {seg('enemySpeed', [[1, '1x'], [2, '2x'], [3, t('ui.opt.skip')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.danger')}</label>
-          {seg('dangerDefault', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.quality')}</label>
-          {seg('quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.figures')}</label>
-          {seg('figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.shake')}</label>
-          {seg('shake', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.music')}</label>
-          <input type="range" min={0} max={1} step={0.05} value={s.music} onInput={(e) => updateSettings({ music: Number((e.target as HTMLInputElement).value) })} />
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.sfx')}</label>
-          <input type="range" min={0} max={1} step={0.05} value={s.sfx} onInput={(e) => updateSettings({ sfx: Number((e.target as HTMLInputElement).value) })} />
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.keepAwake')}</label>
-          {seg('keepAwake', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
+    <div class="screen options-screen">
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
+      <div class="options">
+        <ScreenHead title={t('ui.options')} onBack={() => (screen.value = back)} />
+        <Piece class="options__stone">
+          {seg(t('ui.opt.lang'), 'lang', [['de', 'Deutsch'], ['en', 'English']])}
+          {seg(t('ui.opt.speed'), 'speed', SPEEDS())}
+          {seg(t('ui.opt.enemySpeed'), 'enemySpeed', SPEEDS())}
+          {seg(t('ui.opt.danger'), 'dangerDefault', ON_OFF())}
+        </Piece>
+        <Piece class="options__stone">
+          {seg(t('ui.opt.quality'), 'quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
+          {seg(t('ui.opt.figures'), 'figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
+          {seg(t('ui.opt.shake'), 'shake', ON_OFF())}
+        </Piece>
+        <Piece class="options__stone">
+          {slider(t('ui.opt.music'), 'music')}
+          {slider(t('ui.opt.sfx'), 'sfx')}
+          {seg(t('ui.opt.keepAwake'), 'keepAwake', ON_OFF())}
+        </Piece>
       </div>
     </div>
   );
@@ -330,22 +327,20 @@ export function RewardAmounts({ reward: r }: { reward: Reward }) {
   );
 }
 
+/** End of the available content: a stone over the blurred shrine, "Camp" as the one primary action. */
 export function EndScreen() {
   return (
-    <div class="screen title-screen" style={{ justifyContent: 'center' }}>
+    <div class="screen end-screen">
       <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_silverbrook_shrine.webp')})` }} />
-      <div class="logo" style={{ fontSize: 'clamp(28px, 8vw, 48px)' }}>
-        {t('ui.end.title')}
-      </div>
-      <div class="tagline">{t('ui.end.text')}</div>
-      <div class="title-menu">
-        <button class="btn primary big" onClick={() => (screen.value = { name: 'camp' })}>
-          {t('ui.camp.title')}
-        </button>
-        <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
-          {t('ui.end.toTitle')}
-        </button>
-      </div>
+      <Piece class="end">
+        <span class="end__crown" aria-hidden="true">
+          ♛
+        </span>
+        <h1 class="end__title">{t('ui.end.title')}</h1>
+        <p class="end__text">{t('ui.end.text')}</p>
+        <PrimaryButton onClick={() => (screen.value = { name: 'camp' })}>{t('ui.camp.title')}</PrimaryButton>
+        <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
+      </Piece>
     </div>
   );
 }
