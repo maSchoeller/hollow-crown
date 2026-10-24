@@ -129,6 +129,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     }
     case 'hire':
       return hireError(data, c, cmd.offer);
+    case 'markSceneSeen':
+      return data.scenes[cmd.scene] ? null : 'not_available';
     case 'effects':
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
@@ -308,6 +310,12 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       events.push({ t: 'supportUnlocked', pair: cmd.pair, rank });
       break;
     }
+    case 'markSceneSeen':
+      if (!c.scenesSeen.includes(cmd.scene)) {
+        c.scenesSeen.push(cmd.scene);
+        events.push({ t: 'sceneSeen', scene: cmd.scene });
+      }
+      break;
     case 'setLoadout': {
       const u = c.roster.find((r) => r.id === cmd.unit)!;
       const valid = [...new Set(cmd.skills)].filter((s) => u.mastered.includes(s));

@@ -633,6 +633,19 @@ export interface Balance {
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
+  /** timing and size of scenes and speech bubbles (story 4.5) */
+  scene: {
+    /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */
+    autoBaseMs: number;
+    autoPerCharMs: number;
+    /** typewriter: characters shown per tick */
+    typeCharsPerTick: number;
+    typeTickMs: number;
+    /** speech bubble: how long it stays in auto mode */
+    bubbleAutoMs: number;
+    /** speech bubble: characters per page (two lines) */
+    bubbleMaxChars: number;
+  };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   bag: { size: number };

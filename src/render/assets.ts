@@ -33,6 +33,8 @@ export interface Manifest {
   ground?: string[];
   portraits: Record<string, string[]>;
   backgrounds: string[];
+  /** stems of the scene half figures (`halves/<stem>.webp`, mood variants `<id>_<mood>`) */
+  halves?: string[];
   audio?: string[];
 }
 

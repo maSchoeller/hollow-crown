@@ -642,6 +642,13 @@ export class BoardView {
     el.innerHTML = `<svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 7h5l2-5 3 9 3-7 2 3h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${left}</b>`;
   }
 
+  /** Point above the head of unit `uid` in CSS px relative to the canvas (speech bubbles); `null` when it is not on the board. */
+  headScreen(uid: string): { x: number; y: number } | null {
+    const v = this.units.get(uid);
+    if (!v) return null;
+    return this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.05, -(v.y + v.offY + 0.5)));
+  }
+
   private placeBleedLabels(): void {
     for (const [uid, el] of this.bleedLabels) {
       const v = this.units.get(uid);

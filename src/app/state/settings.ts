@@ -15,6 +15,8 @@ export interface Settings {
   sfx: number;
   keepAwake: boolean;
   shake: boolean;
+  /** scenes advance on their own (the Auto pill of a scene) */
+  dialogueAuto: boolean;
 }
 
 const SETTINGS_KEY = 'hc.settings';
@@ -31,6 +33,7 @@ function loadSettings(): Settings {
     sfx: 0.8,
     keepAwake: true,
     shake: true,
+    dialogueAuto: false,
   };
   try {
     return { ...def, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') as Partial<Settings>) };

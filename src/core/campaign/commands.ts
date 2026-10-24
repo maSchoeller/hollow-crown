@@ -35,6 +35,8 @@ export type CampaignCommand =
   | { type: 'promote'; unit: string; classId: string }
   /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
   | { type: 'hire'; offer: string }
+  /** the player saw scene `scene` to the end or skipped it (a record, not story state; idempotent) */
+  | { type: 'markSceneSeen'; scene: string }
   /** effects of content (dialogue answers, rewards); the only way effects ever run */
   | { type: 'effects'; effects: Effect[] }
   /**
@@ -95,6 +97,7 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
+  | { t: 'sceneSeen'; scene: string }
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number };
