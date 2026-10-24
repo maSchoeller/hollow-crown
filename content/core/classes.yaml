@@ -4,6 +4,7 @@
 - id: tactician
   nameKey: class.tactician.name
   tier: unique
+  roleGroup: support
   moveType: foot
   mov: 5
   weapons: [sword, anima]
@@ -20,6 +21,7 @@
 - id: captain
   nameKey: class.captain.name
   tier: unique
+  roleGroup: melee
   moveType: foot
   mov: 5
   weapons: [sword, lance]
@@ -36,6 +38,7 @@
 - id: mercenary
   nameKey: class.mercenary.name
   tier: base
+  roleGroup: melee
   moveType: foot
   mov: 5
   weapons: [sword]
@@ -52,6 +55,7 @@
 - id: soldier
   nameKey: class.soldier.name
   tier: base
+  roleGroup: melee
   moveType: foot
   mov: 5
   weapons: [lance]
@@ -68,6 +72,7 @@
 - id: fighter
   nameKey: class.fighter.name
   tier: base
+  roleGroup: melee
   moveType: foot
   mov: 5
   weapons: [axe]
@@ -84,6 +89,7 @@
 - id: archer
   nameKey: class.archer.name
   tier: base
+  roleGroup: ranged
   moveType: foot
   mov: 5
   weapons: [bow]
@@ -100,6 +106,7 @@
 - id: mage
   nameKey: class.mage.name
   tier: base
+  roleGroup: ranged
   moveType: foot
   mov: 5
   weapons: [anima]
@@ -116,6 +123,7 @@
 - id: cleric
   nameKey: class.cleric.name
   tier: base
+  roleGroup: support
   moveType: foot
   mov: 5
   weapons: [staff, light]
@@ -133,6 +141,7 @@
 - id: hero
   nameKey: class.hero.name
   tier: advanced
+  roleGroup: melee
   moveType: foot
   mov: 6
   weapons: [sword, axe]
@@ -149,6 +158,7 @@
 - id: halberdier
   nameKey: class.halberdier.name
   tier: advanced
+  roleGroup: melee
   moveType: foot
   mov: 6
   weapons: [lance]
@@ -165,6 +175,7 @@
 - id: warrior
   nameKey: class.warrior.name
   tier: advanced
+  roleGroup: melee
   moveType: foot
   mov: 6
   weapons: [axe, bow]
@@ -181,6 +192,7 @@
 - id: sniper
   nameKey: class.sniper.name
   tier: advanced
+  roleGroup: ranged
   moveType: foot
   mov: 6
   weapons: [bow]
@@ -197,6 +209,7 @@
 - id: sage
   nameKey: class.sage.name
   tier: advanced
+  roleGroup: ranged
   moveType: foot
   mov: 6
   weapons: [anima, staff]
@@ -213,6 +226,7 @@
 - id: bishop
   nameKey: class.bishop.name
   tier: advanced
+  roleGroup: support
   moveType: foot
   mov: 6
   weapons: [staff, light]
@@ -234,6 +248,7 @@
 - id: brigand
   nameKey: class.brigand.name
   tier: base
+  roleGroup: melee
   moveType: foot
   mov: 5
   weapons: [axe]
@@ -250,6 +265,7 @@
 - id: knight
   nameKey: class.knight.name
   tier: base
+  roleGroup: melee
   moveType: armored
   mov: 4
   weapons: [lance]
@@ -266,6 +282,7 @@
 - id: pegasus_knight
   nameKey: class.pegasus_knight.name
   tier: base
+  roleGroup: melee
   moveType: flier
   mov: 7
   weapons: [lance]
@@ -281,6 +298,7 @@
 - id: drake_young
   nameKey: class.drake_young.name
   tier: unique
+  roleGroup: melee
   moveType: flier
   mov: 6
   weapons: [breath]   # Monster-Waffe, nur für Monster

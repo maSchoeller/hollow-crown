@@ -181,7 +181,8 @@ export function StatsGrid({ data, unit, state }: { data: GameData; unit: BattleU
   );
 }
 
-export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance }) {
+/** Value line of an item as short parts ("Mt 9", "Tr 70" ...), shared by details and item lines. */
+export function itemParts(data: GameData, inst: ItemInstance): string[] {
   const d = itemDef(data, inst);
   const parts: string[] = [];
   if (d.mt !== undefined) {
@@ -198,6 +199,12 @@ export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance
     if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${d.charges}`);
     if (d.element) parts.push(t(`ui.element.${d.element}`));
   }
+  return parts;
+}
+
+export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance }) {
+  const d = itemDef(data, inst);
+  const parts = itemParts(data, inst);
   const slots = runeSlotCount(data, inst);
   return (
     <div class="col" style={{ gap: 4, fontSize: 14 }}>
@@ -227,6 +234,56 @@ export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: G
       </div>
       <div>{right}</div>
     </div>
+  );
+}
+
+/**
+ * One line of a list in style B (equipment list, convoy, merchant, smith): image, name with values, the right
+ * side for the comparison or the price. A tap selects; `dim` greys it out (the reason stands in `sub`).
+ */
+export function ItemLine({
+  data,
+  inst,
+  sub,
+  side,
+  tag,
+  selected,
+  current,
+  dim,
+  onClick,
+}: {
+  data: GameData;
+  inst: ItemInstance;
+  /** replaces the value line (e.g. the reason an item cannot be used) */
+  sub?: ComponentChildren;
+  side?: ComponentChildren;
+  /** small black pill behind the name ("equipped") */
+  tag?: string;
+  selected?: boolean;
+  current?: boolean;
+  dim?: boolean;
+  onClick?: () => void;
+}) {
+  const d = itemDef(data, inst);
+  const values = [...itemParts(data, inst), ...(d.grantsSkill ? [t('ui.item.teaches', { skill: t(`skill.${d.grantsSkill.skill}.name`) })] : [])];
+  return (
+    <button
+      type="button"
+      class={`hc-line-item ${selected ? 'is-sel' : ''} ${current ? 'is-current' : ''} ${dim ? 'is-dim' : ''}`}
+      aria-pressed={selected}
+      aria-disabled={dim}
+      onClick={dim ? undefined : onClick}
+    >
+      <ItemImage data={data} item={inst} />
+      <span style={{ minWidth: 0 }}>
+        <span class="hc-line-item__name">
+          {itemName(data, inst)}
+          {tag && <span class="hc-tag">{tag}</span>}
+        </span>
+        <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
+      </span>
+      <span class="hc-line-item__side">{side}</span>
+    </button>
   );
 }
 

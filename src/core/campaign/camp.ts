@@ -73,4 +73,23 @@ export function availableSupportTalks(data: GameData, c: CampaignState): Array<{
   return out;
 }
 
+/** Mercenaries are the company members without a story character (hired in the tavern). */
+export const isMercenary = (u: UnitRecord): boolean => !u.charId;
+
+/** A unit may be promoted: level reached and the class has a promotion (the seal is checked by the command). */
+export function canPromote(data: GameData, u: UnitRecord): boolean {
+  return u.level >= data.balance.levels.promoteFrom && (data.classes[u.classId]?.promotesTo.length ?? 0) > 0;
+}
+
+/** Experience bar of a unit: gained / needed for the next level; `full` at the top level. */
+export function expProgress(data: GameData, u: UnitRecord): { exp: number; need: number; full: boolean } {
+  const need = data.balance.experience.levelUpAt;
+  return { exp: u.exp, need, full: u.level >= data.balance.levels.max };
+}
+
+/** Pairs of the unit with a conversation ready at the campfire. */
+export function supportTalksOf(data: GameData, c: CampaignState, unitId: string): number {
+  return availableSupportTalks(data, c).filter((x) => x.key.split('|').includes(unitId)).length;
+}
+
 export { SUPPORT_RANKS };

@@ -170,7 +170,7 @@ export function Camp({ tab: initial }: { tab?: string }) {
               const open = isOpen(k, c);
               const at = unlockNode(k);
               return (
-                <button key={k} class="fac" disabled={!open} onClick={() => setTab(k)}>
+                <button key={k} class="fac" disabled={!open} onClick={() => (k === 'company' ? (screen.value = { name: 'troop' }) : setTab(k))}>
                   <span class="ico">
                     <Icon name={open ? FAC_ICON[k] : 'lock'} size={19} />
                   </span>

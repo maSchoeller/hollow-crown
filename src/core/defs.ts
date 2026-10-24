@@ -126,9 +126,14 @@ export interface SetDef {
   bonuses: Array<{ count: number; mods: { stats?: StatMods; grantSkill?: string; statusChanceBonus?: { element: Element; value: number } } }>;
 }
 
+/** Role group of a class: the filter of the troop view (concept/25-ux mockup 06). */
+export type RoleGroup = 'melee' | 'ranged' | 'support';
+export const ROLE_GROUPS: readonly RoleGroup[] = ['melee', 'ranged', 'support'];
+
 export interface ClassDef {
   id: string;
   tier: 'base' | 'advanced' | 'unique';
+  roleGroup: RoleGroup;
   moveType: MoveType;
   mov: number;
   weapons: WeaponType[];

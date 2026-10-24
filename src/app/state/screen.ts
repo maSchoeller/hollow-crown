@@ -13,6 +13,7 @@ export type Screen =
   | { name: 'result'; result: BattleResult }
   | { name: 'defeat' }
   | { name: 'camp'; tab?: string }
+  | { name: 'troop'; unit?: string }
   | { name: 'options'; back: Screen }
   | { name: 'end' };
 

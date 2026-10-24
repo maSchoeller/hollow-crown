@@ -135,6 +135,7 @@ export const setSchema = z.object({
 export const classSchema = z.object({
   id: z.string(),
   tier: z.enum(['base', 'advanced', 'unique']),
+  roleGroup: z.enum(['melee', 'ranged', 'support']),
   moveType,
   mov: z.number().int(),
   weapons: z.array(weaponType),

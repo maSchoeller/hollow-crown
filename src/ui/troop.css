@@ -1,0 +1,311 @@
+/* Troop and figure view (concept/25-ux/mockups/06-truppe.html, style B). Heads and busts are shared with the camp rooms. */
+@import './tokens.css';
+
+/* round head (medallion without a ring) */
+.trp-head {
+  --trp-head-size: 44px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--trp-head-size);
+  height: var(--trp-head-size);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  background: #cfe0f7;
+  overflow: hidden;
+  box-shadow: 0 3px 0 var(--hc-line);
+}
+.trp-head__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trp-head__img--initial,
+.trp-bust--initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  color: var(--hc-soft);
+}
+.trp-head__img--initial {
+  font-size: calc(var(--trp-head-size) * 0.45);
+}
+
+/* troop grid */
+.trp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 8px;
+  align-content: start;
+}
+.trp-mate {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.trp-mate:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+  border-radius: var(--hc-r-chip);
+}
+.trp-mate:active .trp-head {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.trp-mate b {
+  font-family: var(--hc-font-name);
+  font-size: 15px;
+  line-height: 1.05;
+}
+.trp-mate small {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.trp-empty {
+  grid-column: 1 / -1;
+  padding: 18px 0;
+  text-align: center;
+  color: var(--hc-soft);
+}
+
+/* badges: can promote, conversations ready, scar */
+.trp-flags {
+  position: absolute;
+  top: -4px;
+  right: 2px;
+  display: flex;
+  gap: 2px;
+}
+.trp-flag {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 3px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  color: #fff;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1;
+}
+.trp-flag--promote {
+  background: var(--hc-ember);
+}
+.trp-flag--talk {
+  background: var(--hc-team-other);
+}
+.trp-flag--scar {
+  background: var(--hc-downed);
+}
+.trp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.trp-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* figure */
+.trp-fig {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  touch-action: pan-y;
+}
+.trp-fig__top {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 8px;
+  align-items: end;
+}
+.trp-bust {
+  display: block;
+  width: 126px;
+  height: 126px;
+  margin: -6px 0 -8px -10px;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.trp-bust--initial {
+  font-size: 56px;
+}
+.trp-fig__name {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+}
+.trp-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+  padding: 0 9px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+.trp-exp {
+  display: grid;
+  gap: 2px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.trp-exp__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.trp-bar {
+  height: 8px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  overflow: hidden;
+}
+.trp-bar i {
+  display: block;
+  height: 100%;
+  background: var(--hc-ember);
+}
+.trp-bar--load i {
+  background: #8a6a3c;
+}
+.trp-bar--load.is-over i {
+  background: var(--hc-negative);
+}
+.trp-bar--skill i {
+  background: var(--hc-positive);
+}
+.trp-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 8px 6px;
+  border-radius: var(--hc-r-card-inner);
+  background: var(--hc-cream-2);
+}
+.trp-stat {
+  display: grid;
+  justify-items: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  line-height: 1.05;
+}
+.trp-stat small {
+  font-size: 11px;
+  color: var(--hc-soft);
+  letter-spacing: 0.06em;
+}
+.trp-stat span {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.trp-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 8px;
+}
+.trp-slot {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hc-soft);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.05;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.trp-slot:disabled {
+  cursor: default;
+}
+.trp-slot.is-sel .hc-item-image {
+  box-shadow: 0 0 0 3px var(--hc-ember);
+}
+.trp-slot:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+  border-radius: var(--hc-r-chip);
+}
+.trp-load {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+.trp-load .is-over {
+  color: var(--hc-negative);
+}
+.trp-skill {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+.trp-skill b {
+  font-family: var(--hc-font-label);
+  font-size: 14px;
+}
+.trp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+}
+.trp-scar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-mourn-quiet);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+}
+.trp-pick {
+  display: grid;
+  gap: 8px;
+}
