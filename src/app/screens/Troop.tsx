@@ -238,7 +238,7 @@ export function Figure({
             </span>
             <div class="trp-exp">
               <div class="trp-exp__row">
-                <span>{exp.full ? t('ui.figure.maxLevel') : promotable ? t('ui.figure.promoteReady') : t('ui.figure.exp')}</span>
+                <span>{exp.capped ? t('ui.figure.levelCapped', { level: exp.cap, act: exp.act }) : exp.full ? t('ui.figure.maxLevel') : promotable ? t('ui.figure.promoteReady') : t('ui.figure.exp')}</span>
                 {!exp.full && (
                   <span>
                     <Amount resource="exp" value={exp.exp} /> / {exp.need}

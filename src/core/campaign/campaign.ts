@@ -5,7 +5,7 @@ import { sideObjectiveDone } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
 import { allItems, itemDef } from '../rules/items';
-import { grantSp } from '../rules/progression';
+import { grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone, pairKey } from '../util';
 import { conditionContext, evalConditions } from './conditions';
@@ -95,6 +95,8 @@ export interface UnitResult {
   levelBefore: number;
   levelAfter: number;
   exp: number;
+  /** stands at the act's level cap after the mission (further EP were forfeited) */
+  capped?: boolean;
   mastered: string[];
   portrait?: string;
   classId?: string;
@@ -258,6 +260,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       levelBefore: before?.level ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
+      capped: u.level >= levelCap(data) && levelCap(data) < data.balance.levels.max,
       portrait: u.portrait,
       classId: u.classId,
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),

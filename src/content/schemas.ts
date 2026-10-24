@@ -269,6 +269,7 @@ export const mapUnitSchema = z.object({
   level: z.number().int(),
   at: pos,
   boss: z.boolean().optional(),
+  lieutenant: z.string().optional(),
   nameKey: z.string().optional(),
   sprite: z.string().optional(),
   portrait: z.string().optional(),
@@ -477,6 +478,7 @@ export const sceneSchema = z.strictObject({
 
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
+  levelCap: z.number().int().min(1).optional(),
   start: z.string(),
   startGold: z.number(),
   defaultPlace: z.string(),

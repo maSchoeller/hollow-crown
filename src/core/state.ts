@@ -91,6 +91,7 @@ export interface BattleUnit extends UnitRecord {
   freeUsed: { trade?: boolean; convoy?: boolean; swap?: boolean };
   ai?: AiState;
   boss?: boolean;
+  lieutenant?: string;
   dropUids: string[];
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };

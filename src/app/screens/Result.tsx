@@ -105,6 +105,11 @@ function Company({ v }: { v: MissionResultView }) {
             <UnitHead portrait={f.portrait} classId={f.classId} name={unitName(f)} size={48} />
             <span class="res-unit__name">{unitName(f)}</span>
             {f.fallen ? <span class="res-unit__tag">{t('ui.result.fallenTag')}</span> : <Amount resource="exp" value={f.exp} signed />}
+            {f.capped && (
+              <span class="res-unit__tag res-unit__tag--cap" title={t('ui.result.cappedHint')}>
+                {t('ui.result.capped')}
+              </span>
+            )}
           </div>
         ))}
       </div>

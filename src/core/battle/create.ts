@@ -156,6 +156,7 @@ export function battleUnitFromMap(
   u.generic = !char;
   u.fromRoster = false;
   u.boss = def.boss;
+  if (def.lieutenant) u.lieutenant = def.lieutenant;
   u.quote = def.quote;
   u.recruit = def.recruit ?? (char?.recruit ? { by: char.recruit.by, dialogue: char.recruit.dialogue } : undefined);
   u.ignoreForRout = def.ignoreForRout;

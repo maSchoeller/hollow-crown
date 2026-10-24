@@ -15,6 +15,8 @@ export interface ResultFigure {
   levelBefore: number;
   levelAfter: number;
   leveledUp: boolean;
+  /** at the act's level cap: the screen says so instead of counting EP into nothing */
+  capped: boolean;
 }
 
 /** What the result screen draws after a won mission; the screen only lays it out (story 6.6). */
@@ -47,6 +49,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     levelBefore: u.levelBefore,
     levelAfter: u.levelAfter,
     leveledUp: u.levelAfter > u.levelBefore,
+    capped: !!u.capped,
   }));
   const fallen: ResultFigure[] = result.fallen.map((f) => ({
     id: f.id,
@@ -59,6 +62,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     levelBefore: 0,
     levelAfter: 0,
     leveledUp: false,
+    capped: false,
   }));
   return {
     nodeId: result.nodeId,

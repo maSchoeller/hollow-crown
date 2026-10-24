@@ -303,6 +303,8 @@ export interface MapUnitDef {
   level: number;
   at: Pos;
   boss?: boolean;
+  /** lieutenant id (Epic 3): flees at 0 HP and counts like a boss for EP */
+  lieutenant?: string;
   nameKey?: string;
   sprite?: string;
   portrait?: string;
@@ -546,6 +548,8 @@ export interface CampaignDef {
   home: HomeKind;
   /** position of the home on the world map, percent of width and height */
   homePos: Pos;
+  /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
+  levelCap?: number;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];
