@@ -4,7 +4,7 @@ import { loadContentFromDisk } from '../../src/content/node';
 import type { Locales } from '../../src/content/load';
 import { sceneSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
-import { clone, conditionContext, lineKey, memorialKey, optionKey, resolveScene, sceneTexts, type ConditionContext, type GameData, type SceneDef } from '../../src/core';
+import { clone, conditionContext, lineKey, memorialKey, optionKey, resolveScene, sceneTexts, speakerTeam, type ConditionContext, type GameData, type SceneDef } from '../../src/core';
 
 let data: GameData;
 let locales: Locales;
@@ -44,6 +44,18 @@ const withScene = (): GameData => {
   d.scenes[scene.id] = clone(scene);
   return d;
 };
+
+describe('speakerTeam', () => {
+  it('reads the side of a speaker from the map units', () => {
+    expect(speakerTeam(data, 'grosk')).toBe('enemy');
+    expect(speakerTeam(data, 'hask')).toBe('enemy');
+    expect(speakerTeam(data, 'morra')).toBe('enemy');
+    expect(speakerTeam(data, 'liora')).toBe('other');
+  });
+  it('puts everyone else on the player side', () => {
+    for (const id of ['avatar', 'kael', 'brenna', 'nobody']) expect(speakerTeam(data, id)).toBe('player');
+  });
+});
 
 describe('resolveScene', () => {
   it('the first living speaker of the chain speaks', () => {

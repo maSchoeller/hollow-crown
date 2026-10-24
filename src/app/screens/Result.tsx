@@ -13,7 +13,7 @@ import { nodeDef } from '../state/flow';
 import { campaign, data } from '../state/session';
 import { screen } from '../state/screen';
 import { UnitHead } from './unitArt';
-import '../../ui/result.css';
+import './Result.css';
 
 /** Reward of a side objective: amounts as symbol + number, items by image and name. */
 function RewardAmounts({ reward: r }: { reward: Reward }) {

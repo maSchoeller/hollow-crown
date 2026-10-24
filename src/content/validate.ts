@@ -14,6 +14,8 @@ export function validateContent(
   spriteIds?: Set<string>,
   /** ids of the painted images in art/items (content:check passes them); every item needs one */
   itemImages?: Set<string>,
+  /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` must have one */
+  placeImages?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -123,6 +125,8 @@ export function validateContent(
   }
   for (const ch of Object.values(data.chars)) {
     if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
+    // chapters that are not built yet (ch03 ff.) may name scenes that are still to be written
+    if (ch.recruit && data.campaign?.nodes.some((n) => n.id === ch.recruit!.chapter)) battleDialogue('units.yaml', ch.recruit.dialogue, `${ch.id} recruit.dialogue`);
     if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);
     ch.items.forEach((r) => {
       item('units.yaml', r, ch.id);
@@ -144,7 +148,12 @@ export function validateContent(
   for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward);
   const camp = data.campaign;
   if (camp) {
+    const place = (id: string, ctx: string) => {
+      if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
+    };
+    place(camp.defaultPlace, 'defaultPlace');
     for (const n of camp.nodes) {
+      if (n.place) place(n.place, `${n.id} place`);
       if (!data.maps[n.map]) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
       dialogue('campaign.yaml', n.pre, n.id);
       dialogue('campaign.yaml', n.post, n.id);
