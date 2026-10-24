@@ -173,6 +173,9 @@ export function Battle() {
       if (ev.length && alive) {
         await board.play(ev, battle.value!.state);
       }
+      const opening = openingBark.current;
+      openingBark.current = null;
+      if (opening && alive) await playBark(opening);
       if (alive) {
         setPhaseView(null);
         setBusy(false);
@@ -372,12 +375,16 @@ export function Battle() {
       default:
         break;
     }
-    // combat bark (story 9.13): presentation only, skipped in skip mode
+    // combat bark (story 9.13): presentation only, skipped in skip mode; the opening bark waits until the start events
+    // (intro and tutorial dialogues) have played
     const b = boardRef.current?.skip ? null : barkFor(data, s, e);
-    if (b) {
-      await new Promise<void>((resolve) => setBark({ b, done: resolve }));
-      setBark(null);
-    }
+    if (b?.line === 'battle_start') openingBark.current = b;
+    else if (b) await playBark(b);
+  };
+  const openingBark = useRef<Bark | null>(null);
+  const playBark = async (b: Bark) => {
+    await new Promise<void>((resolve) => setBark({ b, done: resolve }));
+    setBark(null);
   };
 
   // --------------------------------------------------------------- input handling

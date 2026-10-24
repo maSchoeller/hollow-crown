@@ -11,7 +11,7 @@ export interface SpeechBubblesProps {
   /** screen point (px, relative to this layer) above the head of `speaker`'s figure; `null` when it is not on the board */
   anchorOf: (speaker: string) => Promise<{ x: number; y: number } | null>;
   seen?: boolean;
-  /** play only these lines of the scene (a bark); the scene is not marked seen and has no skip/auto pills */
+  /** play only these lines of the scene (a bark); the scene is not marked seen, has no skip/auto pills and advances on its own */
   only?: string[];
   onSeen?: (id: string) => void;
   auto: boolean;
@@ -70,8 +70,9 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, only, aut
     };
   }, [idx]);
 
+  // a bark never waits for a tap: it blocks only briefly, also outside auto mode (story 9.13, UX "Sprechblase blockiert kurz")
   useEffect(() => {
-    if (!auto || !pos) return;
+    if ((!auto && !only) || !pos) return;
     const timer = setTimeout(() => setIdx((i) => i + 1), cfg.bubbleAutoMs);
     return () => clearTimeout(timer);
   }, [auto, pos, idx]);
