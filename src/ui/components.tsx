@@ -1,6 +1,7 @@
 /** Presentational UI pieces (no app state, no renderer). */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
+import './notices.css';
 import {
   computeStats,
   itemDef,

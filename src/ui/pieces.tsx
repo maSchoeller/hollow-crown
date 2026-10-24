@@ -56,6 +56,19 @@ export function ScreenHead({ title, aside, onBack }: { title: ComponentChildren;
   );
 }
 
+/** Segment switch (2-4 choices in one pill); the chosen one is filled. */
+export function Segment<T extends string | number | boolean>({ value, options, onChange, label }: { value: T; options: Array<[T, ComponentChildren]>; onChange: (v: T) => void; label?: string }) {
+  return (
+    <div class="hc-seg" role="group" aria-label={label} style={{ '--hc-seg-count': String(options.length) }}>
+      {options.map(([v, text]) => (
+        <button key={String(v)} type="button" aria-pressed={v === value} onClick={() => onChange(v)}>
+          {text}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export type Resource = 'gold' | 'exp' | 'emberSpark';
 
 /** Vector symbols where no painted image exists (DESIGN.md: Gold = coin, EXP = green star). */
