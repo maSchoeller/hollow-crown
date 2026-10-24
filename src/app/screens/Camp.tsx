@@ -7,7 +7,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { availableSupportTalks, homeRooms, type CampaignCommand, type Condition, type RoomDef } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
-import { Toast, UnitCard } from '../../ui/components';
+import { Toast, unitName, UnitCard } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
@@ -16,6 +16,7 @@ import { beginMission } from '../state/flow';
 import { screen, type From } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { FigureFlow } from './Troop';
+import { UnitHead } from './unitArt';
 import { Room, type Apply } from './Rooms';
 import '../../ui/camp.css';
 
@@ -157,6 +158,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
                 <UnitCard
                   data={data}
                   unit={r}
+                  art={<UnitHead portrait={r.portrait} classId={r.classId} name={unitName(r)} size={56} />}
                   right={
                     <div class="col" style={{ gap: 4 }}>
                       <button

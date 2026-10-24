@@ -42,33 +42,6 @@ export function rarityOf(data: GameData, inst: ItemInstance): string {
   return instanceRarity(data, inst.def, inst.affixes.length);
 }
 
-export function Portrait({ id, name, size = 56, full = false, mood = 'neutral', class: cls = '', w, h }: { id?: string; name: string; size?: number; full?: boolean; mood?: string; class?: string; w?: number; h?: number }) {
-  const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [id]);
-  return (
-    <div class={`portrait ${full ? 'full' : ''} ${cls}`} style={full ? undefined : { width: w ?? size, height: h ?? size }}>
-      {id && !failed ? (
-        <img src={asset(`portraits/${id}/${mood}.webp`)} alt="" draggable={false} onError={(e) => {
-          const img = e.currentTarget as HTMLImageElement;
-          if (mood !== 'neutral' && !img.src.endsWith('neutral.webp')) img.src = asset(`portraits/${id}/neutral.webp`);
-          else setFailed(true);
-        }} />
-      ) : (
-        <div class="initial">{name.slice(0, 1)}</div>
-      )}
-    </div>
-  );
-}
-
-/** Portrait in a coat-of-arms shield with the team colour as its rim (U21). */
-export function Crest({ id, name, w = 54, h = 64, team = 'player' }: { id?: string; name: string; w?: number; h?: number; team?: Team }) {
-  return (
-    <div class={`crest ${team === 'enemy' ? 'enemy' : team === 'other' ? 'other' : ''}`} style={{ width: w, height: h }}>
-      <Portrait id={id} name={name} w={w - 4} h={h - 4} />
-    </div>
-  );
-}
-
 export function HpBar({ hp, max, preview, enemy, team }: { hp: number; max: number; preview?: number; enemy?: boolean; team?: Team }) {
   const pct = Math.max(0, Math.min(100, (hp / Math.max(1, max)) * 100));
   const pv = preview !== undefined ? Math.max(0, Math.min(100, (preview / Math.max(1, max)) * 100)) : undefined;
@@ -101,14 +74,15 @@ export function Modal({ title, onClose, children, wide }: { title?: ComponentChi
   );
 }
 
-export function UnitCard({ data, unit, state, right }: { data: GameData; unit: BattleUnit | UnitRecord; state?: BattleState; right?: ComponentChildren }) {
+/** Unit line of the preparation: `art` is the round head (the caller owns the picture, this file knows no app state). */
+export function UnitCard({ data, unit, state, art, right }: { data: GameData; unit: BattleUnit | UnitRecord; state?: BattleState; art?: ComponentChildren; right?: ComponentChildren }) {
   const st = computeStats(data, unit, state ? { state } : {});
   const bu = 'hp' in unit ? (unit as BattleUnit) : undefined;
   const hp = bu ? bu.hp : st.maxHp;
   const w = unit.equip.mainHand;
   return (
     <div class="unit-card">
-      <Crest id={unit.portrait} name={unitName(unit)} team={bu?.team} />
+      {art}
       <div class="col" style={{ gap: 6, minWidth: 0 }}>
         <div class="row" style={{ gap: 10, alignItems: 'baseline' }}>
           <span class="unit-name">{unitName(unit)}</span>

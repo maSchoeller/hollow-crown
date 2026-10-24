@@ -42,15 +42,15 @@ function setFlags(effects: readonly Effect[]): Record<string, FlagValue> {
   return out;
 }
 
-/** Half figure of a speaker (mood variant, else neutral; else the old portrait). Speaker bright, listeners dimmed. */
-function Figure({ speaker, mood, avatarPortrait, portraitId, side, active, halves }: { halves?: ReadonlySet<string> | null; speaker: string; mood: string; avatarPortrait: string; portraitId: string; side: Side; active: boolean }) {
+/** Half figure of a speaker (mood variant, else neutral; none without a picture, never an older style). Speaker bright, listeners dimmed. */
+function Figure({ speaker, mood, avatarPortrait, side, active, halves }: { halves?: ReadonlySet<string> | null; speaker: string; mood: string; avatarPortrait: string; side: Side; active: boolean }) {
   const stem = pickHalf(figureId(speaker, avatarPortrait), mood, halves);
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [stem]);
-  const src = stem && !failed ? halfUrl(stem) : asset(`portraits/${portraitId}/neutral.webp`);
+  if (!stem || failed) return null;
   return (
     <div class={`vn-fig vn-fig--${side} ${active ? 'is-speaker' : 'is-listener'}`}>
-      <img src={src} alt="" draggable={false} onError={(e) => (stem && !failed ? setFailed(true) : ((e.currentTarget as HTMLImageElement).style.display = 'none'))} />
+      <img src={halfUrl(stem)} alt="" draggable={false} onError={() => setFailed(true)} />
     </div>
   );
 }
@@ -127,7 +127,6 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false,
     if (shown < text.length) return setShown(text.length);
     setIdx(idx + 1);
   };
-  const portraitOf = (sp: string) => (sp === 'avatar' ? avatarPortrait : (data.chars[sp]?.portrait ?? sp));
   const nameOf = (sp: string) => (sp === 'avatar' ? t('unit.avatar.name') : t(`unit.${sp}.name`));
   const speaking = line.kind === 'line' ? line.speaker : undefined;
   const speakerSide = speaking ? (sides[speaking] ?? 'right') : 'left';
@@ -144,7 +143,7 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false,
           const l = stage[side];
           if (!l?.speaker) return null;
           return (
-            <Figure key={side + l.speaker} speaker={l.speaker} mood={l.mood} avatarPortrait={avatarPortrait} portraitId={portraitOf(l.speaker)} side={side} active={!speaking || l.speaker === speaking} halves={halves} />
+            <Figure key={side + l.speaker} speaker={l.speaker} mood={l.mood} avatarPortrait={avatarPortrait} side={side} active={!speaking || l.speaker === speaking} halves={halves} />
           );
         })}
       </div>

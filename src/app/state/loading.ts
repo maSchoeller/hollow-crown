@@ -4,6 +4,7 @@
  * flow (`flow.ts`) decides which files and what happens afterwards.
  */
 import { signal } from '@preact/signals';
+import { asset } from '../../ui/asset';
 import { ON_DEMAND_CACHE } from '../loading/cacheName';
 import { failureStatus, missingAssets, type MissionLoadStatus } from '../loading/plan';
 import { screen, type Screen } from './screen';
@@ -25,7 +26,8 @@ const PARALLEL = 3;
 /** Files that arrived in this session; also answers for browsers without a Cache API (dev server, plain http). */
 const arrived = new Set<string>();
 
-const urlOf = (path: string): string => `${import.meta.env.BASE_URL}assets/${path}`;
+/** The same URL the pictures are requested with (`asset` adds the revision), or the cache would not find them. */
+const urlOf = asset;
 
 /** Whether the file is in any cache of the service worker (or has been fetched in this session). */
 export async function isCached(path: string): Promise<boolean> {

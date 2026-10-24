@@ -145,53 +145,6 @@ input[type='text']:focus {
   text-underline-offset: 3px;
 }
 
-/* ---------- portraits ---------- */
-.portrait {
-  position: relative;
-  overflow: hidden;
-  background: var(--tone-2);
-  flex: 0 0 auto;
-}
-.portrait img {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: 230%;
-  transform: translateX(-50%);
-  image-rendering: auto;
-}
-.portrait.full img {
-  height: 100%;
-}
-.portrait .initial {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--hc-font-name);
-  font-size: 28px;
-  color: var(--ink);
-}
-.portrait.cut {
-  clip-path: var(--cut);
-}
-/* shield frame: team colour ring around the clipped face */
-.crest {
-  flex: 0 0 auto;
-  clip-path: var(--shield);
-  padding: 2px;
-  background: var(--blue);
-}
-.crest.enemy {
-  background: var(--red);
-}
-.crest.other {
-  background: var(--green);
-}
-.crest .portrait {
-  clip-path: var(--shield);
-}
-
 /* ---------- battle ---------- */
 .battle {
   position: absolute;
