@@ -81,20 +81,49 @@ async function upgrade(d: IDBPDatabase, oldVersion: number, tx: Tx): Promise<voi
   for (const r of old) await tx.objectStore(legacy.name).put(r);
 }
 
+let onBlocked: () => void = () => console.warn('save database upgrade blocked by another tab');
+/** Called when an older tab (e.g. the PoC build) keeps the upgrade to v2 waiting; the app shows a hint. */
+export function setSaveDbBlockedHandler(fn: () => void): void {
+  onBlocked = fn;
+}
+
 let dbp: Promise<IDBPDatabase> | null = null;
 function db(): Promise<IDBPDatabase> {
   dbp ??= openDB(DB_NAME, DB_VERSION, {
     upgrade(d, oldVersion, _newVersion, tx) {
       // a failed move must not leave a v2 database without the PoC saves
-      upgrade(d, oldVersion, tx as unknown as Tx).catch(() => tx.abort());
+      upgrade(d, oldVersion, tx as unknown as Tx).catch(() => {
+        try {
+          tx.abort();
+        } catch {
+          /* already aborted by the failed request */
+        }
+      });
+    },
+    blocked() {
+      onBlocked();
     },
     // a newer version opened in another tab: let it upgrade, reconnect on the next access
     blocking(_cur, _next, event) {
       (event.target as IDBDatabase).close();
       dbp = null;
     },
+  }).catch((e: unknown) => {
+    // retry on the next access instead of failing until reload
+    dbp = null;
+    throw e;
   });
   return dbp;
+}
+
+/** `crypto.randomUUID` only exists in secure contexts (not on http://<LAN-IP> during phone tests). */
+function newId(): string {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  b[6] = (b[6]! & 0x0f) | 0x40;
+  b[8] = (b[8]! & 0x3f) | 0x80;
+  const h = [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
 /** Closes the connection (tests, or before deleting the database). */
@@ -151,7 +180,7 @@ export async function createCampaign({ campaign, now, contentVersion, id }: NewC
     throw new CampaignLimitError();
   }
   const meta: CampaignMeta = {
-    id: id ?? crypto.randomUUID(),
+    id: id ?? newId(),
     ...metaFromCampaign(campaign),
     playtimeMs: existing?.playtimeMs ?? 0,
     contentVersion,

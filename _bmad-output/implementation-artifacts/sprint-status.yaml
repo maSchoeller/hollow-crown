@@ -48,7 +48,7 @@ development_status:
   # Epic 1: Kampagnen und Spielstände
   epic-1: in-progress
   1-1-neue-oberflaeche-steine-tokens-und-waehrung: backlog  # Neue Oberfläche – Steine, Tokens und Währung
-  1-2-speicherformat-2-mit-kampagnen: review  # Speicherformat 2 mit Kampagnen
+  1-2-speicherformat-2-mit-kampagnen: done  # Speicherformat 2 mit Kampagnen
   1-3-kampagnen-ansicht-und-neue-kampagne: backlog  # Kampagnen-Ansicht und Neue Kampagne
   1-4-kampagnen-commands-und-journal: backlog  # Kampagnen-Commands und Journal
   1-5-speicherplaetze-und-neustart-je-tod-modus: backlog  # Speicherplätze und Neustart je Tod-Modus

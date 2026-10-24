@@ -16,13 +16,15 @@ import {
 } from '../core';
 import { loadContent } from '../content/browser';
 import { lang, setAvatar, setLocales, type Lang } from '../i18n';
-import { createAutoSaver } from '../persistence/autosave';
+import { createAutoSaver, createPlayClock } from '../persistence/autosave';
 import {
   CampaignLimitError,
   contentVersionOf,
   createCampaign,
+  deleteCampaign,
   listCampaigns,
   readSave,
+  setSaveDbBlockedHandler,
   writeSave,
   type SavePayload,
   type SaveRecord,
@@ -114,13 +116,15 @@ const nowIso = (): string => new Date().toISOString();
 
 const saver = createAutoSaver();
 /** play time is counted while the page is visible */
-let playClock = performance.now();
-function takePlaytime(): number {
-  const now = performance.now();
-  const d = document.visibilityState === 'visible' ? now - playClock : 0;
-  playClock = now;
-  return d;
-}
+const playClock = createPlayClock(
+  () => performance.now(),
+  () => document.visibilityState === 'visible',
+);
+const takePlaytime = (): number => playClock.take();
+
+/** true while an older tab keeps the save database from upgrading (title shows a hint) */
+export const saveDbBlocked = signal(false);
+setSaveDbBlockedHandler(() => (saveDbBlocked.value = true));
 
 /** Log length at the start of the current round (replay target of "restart round"). */
 function turnStartIndex(log: Command[]): number {
@@ -150,8 +154,12 @@ export function flushAutosave(): Promise<void> {
 
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') void flushAutosave();
-    else playClock = performance.now();
+    if (document.visibilityState === 'hidden') {
+      playClock.hide();
+      // always write on the way out, so play time survives the app being killed in the background
+      autosave(battle.value ? 'battle' : screen.value.name === 'worldmap' ? 'worldmap' : 'camp');
+      void flushAutosave();
+    } else playClock.show();
   });
   window.addEventListener('pagehide', () => void flushAutosave());
 }
@@ -185,7 +193,7 @@ export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSet
   await saver.flush();
   applyCampaign(c);
   battle.value = null;
-  playClock = performance.now();
+  playClock.reset();
   autosave('worldmap');
   playNode(data.campaign.start);
   return true;
@@ -201,10 +209,13 @@ export async function loadSlot(slot: SlotId, id = campaignId.value): Promise<boo
   return true;
 }
 
-/** Auto-save of the most recently played campaign ("Continue"). */
+/** Auto-save of the most recently played campaign that has one ("Continue"). */
 export async function latestAutoSave(): Promise<SaveRecord | undefined> {
-  const [last] = await listCampaigns();
-  return last ? readSave(last.id, 'auto') : undefined;
+  for (const m of await listCampaigns()) {
+    const rec = await readSave(m.id, 'auto');
+    if (rec) return rec;
+  }
+  return undefined;
 }
 
 /**
@@ -212,13 +223,21 @@ export async function latestAutoSave(): Promise<SaveRecord | undefined> {
  * Resolves `false` when that would exceed three campaigns.
  */
 export async function importRecord(rec: SaveRecord): Promise<boolean> {
+  await saver.flush();
+  const isNew = !(await listCampaigns()).some((m) => m.id === rec.campaignId);
   try {
     await createCampaign({ campaign: rec.payload.campaign, now: nowIso(), contentVersion, id: rec.campaignId });
   } catch (e) {
     if (e instanceof CampaignLimitError) return false;
     throw e;
   }
-  await writeSave(rec.campaignId, 'auto', rec.payload, { now: nowIso(), contentVersion });
+  try {
+    await writeSave(rec.campaignId, 'auto', rec.payload, { now: nowIso(), contentVersion });
+  } catch (e) {
+    // no campaign without a save: it would hide "Continue" and take one of the three places
+    if (isNew) await deleteCampaign(rec.campaignId).catch(() => undefined);
+    throw e;
+  }
   restore(rec);
   return true;
 }
@@ -226,7 +245,7 @@ export async function importRecord(rec: SaveRecord): Promise<boolean> {
 export function restore(rec: SaveRecord): void {
   const p = rec.payload;
   campaignId.value = rec.campaignId;
-  playClock = performance.now();
+  playClock.reset();
   applyCampaign(p.campaign);
   if (p.battle) {
     let s = p.battle.start;

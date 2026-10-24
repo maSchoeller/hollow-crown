@@ -44,3 +44,44 @@ export function createAutoSaver(
     },
   };
 }
+
+export interface PlayClock {
+  /** Play time since the last call, including visible time banked before the page was hidden. */
+  take(): number;
+  /** Page went to the background: bank the visible time so far. */
+  hide(): void;
+  /** Page is visible again. */
+  show(): void;
+  /** Another campaign is active: drop banked time. */
+  reset(): void;
+}
+
+/** Counts play time only while the page is visible (campaign meta `playtimeMs`). */
+export function createPlayClock(now: () => number, visible: () => boolean): PlayClock {
+  let since = now();
+  let banked = 0;
+  let hidden = false;
+  return {
+    take() {
+      const t = now();
+      const d = banked + (!hidden && visible() ? t - since : 0);
+      banked = 0;
+      since = t;
+      return d;
+    },
+    hide() {
+      const t = now();
+      if (!hidden) banked += t - since;
+      hidden = true;
+      since = t;
+    },
+    show() {
+      hidden = false;
+      since = now();
+    },
+    reset() {
+      banked = 0;
+      since = now();
+    },
+  };
+}

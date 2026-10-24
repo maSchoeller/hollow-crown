@@ -1,6 +1,6 @@
 # Story 1.2: Speicherformat 2 mit Kampagnen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -80,9 +80,23 @@ Claude Opus 5.5 (claude-opus-5-5)
 - Meta: `name` = Avatar-Name (eigener Kampagnenname kommt ggf. mit Story 1.3), `act` fest 1 bis Epic 4, Spielzeit zählt sichtbare Zeit zwischen Saves.
 - Auto-Save: `createAutoSaver` fasst Schreibwünsche zusammen (nur letzter Stand, nie zwei Schreibvorgänge gleichzeitig); `visibilitychange → hidden` und `pagehide` schreiben sofort.
 - Import: Format-1-Datei wird mit eigenem Hinweis abgelehnt; Format 2 überschreibt die Kampagne gleicher ID oder legt sie an (Limit gilt). Größenlimit und Zod-Prüfung folgen in Story 1.5.
-- Zweiter offener Tab mit älterer Version: `blocking` schließt die Verbindung, damit das Upgrade nicht hängt.
+- Andere Tabs: Eine neuere Version in einem anderen Tab löst `blocking` aus, und die Verbindung wird geschlossen. Hält ein älterer Tab (z. B. der PoC) das Upgrade auf, meldet `blocked` das, und der Titel zeigt „anderen Tab schließen“.
 - Lösch-Dialog ist eine Zwischenlösung in `Menus.tsx` (bestehendes `Modal`), bis Story 1.3 die Kampagnen-Ansicht baut.
 - Neue Dev-Abhängigkeit `fake-indexeddb` (nur Tests).
+
+### Review Follow-ups (gds-code-review, 2026-10-24)
+
+Ergebnis: nichts Schwerwiegendes; kein Weg verliert Spielstände, AC 1–8 erfüllt. Behoben:
+
+- [x] Spielzeit ging beim Wechsel in den Hintergrund verloren: `createPlayClock` (in `autosave.ts`, getestet) bewahrt die sichtbare Zeit; beim Wechsel in den Hintergrund wird immer ein Auto-Save geschrieben (im Browser geprüft: 3 s gezählt).
+- [x] Upgrade blockiert durch offenen PoC-Tab: `blocked`-Handler, Hinweis auf dem Titel.
+- [x] Fehlgeschlagenes Öffnen der Datenbank blieb bis zum Neuladen kaputt: Promise wird verworfen, nächster Zugriff versucht es neu; „Neues Spiel“ zeigt einen Fehler statt nichts zu tun; `tx.abort()` nach bereits abgebrochener Transaktion abgefangen.
+- [x] „Fortsetzen“ verschwand, wenn die neueste Kampagne keinen Auto-Save hatte: `latestAutoSave` sucht weiter; ein Import ohne Auto-Save entfernt die neu angelegte Kampagne wieder.
+- [x] Import wartete nicht auf ausstehende Schreibvorgänge: `importRecord` ruft zuerst `flush`.
+- [x] `crypto.randomUUID` fehlt außerhalb sicherer Kontexte (Handy-Test über LAN-IP): Ersatz über `crypto.getRandomValues`.
+- [x] Determinismus-Test prüft jetzt Replay nach Export/Import gegen das Live-Replay und dass der Start nicht verändert wird.
+
+Bleibt bewusst: Größenlimit und Zod-Prüfung beim Import (Story 1.5); Verdrahtung in `store.ts` ohne Unit-Test (Browser-Prüfung).
 
 ### File List
 
@@ -91,7 +105,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 - `src/app/store.ts`
 - `src/app/screens/Menus.tsx`
 - `src/app/screens/Camp.tsx`
-- `content/locales/de.yaml`, `content/locales/en.yaml` (5 neue Schlüssel)
+- `content/locales/de.yaml`, `content/locales/en.yaml` (7 neue Schlüssel)
 - `tests/unit/save.test.ts` (neu)
 - `tests/fixtures/saves/format1-auto.json`, `format2-auto.json`, `generate.ts` (neu)
 - `package.json`, `pnpm-lock.yaml` (`fake-indexeddb`)

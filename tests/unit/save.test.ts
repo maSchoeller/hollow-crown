@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { applyCommand, type CampaignState } from '../../src/core';
-import { createAutoSaver } from '../../src/persistence/autosave';
+import { createAutoSaver, createPlayClock } from '../../src/persistence/autosave';
 import {
   CampaignLimitError,
   closeSaveDb,
@@ -148,9 +148,15 @@ describe('save format 2 (concept/24 §5.15)', () => {
     expect(b.turnStartIndex).toBeGreaterThan(0);
     expect(b.turnStartIndex).toBeLessThan(b.commands.length);
     expect(b.commands[b.turnStartIndex - 1]!.type).toBe('endPhase');
-    const replay = (n: number) => b.commands.slice(0, n).reduce((s, cmd) => applyCommand(data, s, cmd).state, b.start);
-    expect(replay(b.commands.length)).toEqual(replay(b.commands.length));
-    expect(replay(b.turnStartIndex).turn).toBeGreaterThan(b.start.turn);
+    const replay = (from: typeof b, n: number) =>
+      from.commands.slice(0, n).reduce((s, cmd) => applyCommand(data, s, cmd).state, from.start);
+    const startBefore = structuredClone(b.start);
+    const live = replay(b, b.commands.length);
+    expect(b.start).toEqual(startBefore); // replay never mutates the saved start
+    // a save that went through export/import replays to exactly the same state
+    const loaded = importSave(exportSave(format2)).payload.battle!;
+    expect(replay(loaded, loaded.commands.length)).toEqual(live);
+    expect(replay(b, b.turnStartIndex).turn).toBeGreaterThan(b.start.turn);
   });
 });
 
@@ -193,5 +199,57 @@ describe('auto-saver', () => {
     await saver.flush();
     expect(errors).toHaveLength(1);
     expect(ok).toBe(true);
+  });
+});
+
+describe('play clock', () => {
+  const setup = () => {
+    let t = 0;
+    let vis = true;
+    const clock = createPlayClock(
+      () => t,
+      () => vis,
+    );
+    return {
+      clock,
+      tick: (ms: number) => (t += ms),
+      setVisible: (v: boolean) => (vis = v),
+    };
+  };
+
+  it('counts visible time between saves', () => {
+    const { clock, tick } = setup();
+    tick(1000);
+    expect(clock.take()).toBe(1000);
+    tick(250);
+    expect(clock.take()).toBe(250);
+  });
+
+  it('keeps the visible time before going to the background for the flush write', () => {
+    const { clock, tick, setVisible } = setup();
+    tick(5000);
+    setVisible(false);
+    clock.hide();
+    clock.hide(); // a second hidden event adds nothing
+    tick(60_000);
+    expect(clock.take()).toBe(5000);
+    tick(60_000);
+    expect(clock.take()).toBe(0); // background time never counts
+    setVisible(true);
+    clock.show();
+    tick(700);
+    expect(clock.take()).toBe(700);
+  });
+
+  it('drops banked time when another campaign becomes active', () => {
+    const { clock, tick, setVisible } = setup();
+    tick(3000);
+    setVisible(false);
+    clock.hide();
+    setVisible(true);
+    clock.show();
+    clock.reset();
+    tick(100);
+    expect(clock.take()).toBe(100);
   });
 });

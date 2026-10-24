@@ -16,6 +16,7 @@ import {
   latestAutoSave,
   loadSlot,
   nodeDef,
+  saveDbBlocked,
   playNode,
   screen,
   settings,
@@ -72,6 +73,7 @@ export function Title() {
           </button>
         </div>
         {err && <div class="dis">{err}</div>}
+        {saveDbBlocked.value && <div class="dis">{t('ui.title.closeOtherTabs')}</div>}
         <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
         <div class="title-foot">
           {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
@@ -155,6 +157,7 @@ export function NewGame() {
   const [deathMode, setDeathMode] = useState<DeathMode>('standard');
   const [more, setMore] = useState(false);
   const [limit, setLimit] = useState(false);
+  const [failed, setFailed] = useState(false);
   const opt = <T extends string>(val: T, cur: T, set: (v: T) => void, label: string, sub?: string) => (
     <button key={val} class={`choice ${val === cur ? 'on' : ''}`} onClick={() => set(val)} aria-pressed={val === cur}>
       {label}
@@ -217,11 +220,15 @@ export function NewGame() {
           class="btn primary big"
           disabled={!name.trim()}
           onClick={() => {
-            void startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY }).then((ok) => setLimit(!ok));
+            setFailed(false);
+            void startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY })
+              .then((ok) => setLimit(!ok))
+              .catch(() => setFailed(true));
           }}
         >
           {t('ui.new.start')}
         </button>
+        {failed && <div class="dis">{t('ui.save.failed')}</div>}
       </div>
       {limit && <CampaignLimit onClose={() => setLimit(false)} />}
     </div>
