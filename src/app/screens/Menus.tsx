@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import type { DeathMode, Difficulty, Element } from '../../core';
+import { itemDef, type DeathMode, type Difficulty, type Element, type Reward } from '../../core';
 
 /** Placeholder until the player picks an affinity when the elements are introduced (U20). */
 const DEFAULT_AFFINITY: Element = 'wind';
@@ -7,7 +7,19 @@ import { t } from '../../i18n';
 import { asset, Crest, itemName, Modal, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { deleteCampaign, exportSave, importSave, listCampaigns, listSaves, readSave, type CampaignMeta, type SaveRecord, type SlotId } from '../../persistence/save';
+import { Amount, PrimaryButton, SecondaryButton } from '../../ui/pieces';
+import {
+  deleteCampaign,
+  exportSave,
+  importSave,
+  listCampaigns,
+  listSaves,
+  metaFromCampaign,
+  readSave,
+  type CampaignMeta,
+  type SaveRecord,
+  type SlotId,
+} from '../../persistence/save';
 import {
   campaign,
   campaignId,
@@ -25,9 +37,23 @@ import {
   type Screen,
 } from '../store';
 
+/** Where a save resumes, for the "Continue" button: in a battle, before the next mission, or done. */
+function resumeText(rec: SaveRecord): string {
+  const c = rec.payload.campaign;
+  const short = (id: string) => t(nodeDef(id).titleKey).split('–')[0]!.trim();
+  const where = rec.payload.battle
+    ? t('ui.title.where.battle', { node: short(rec.payload.battle.start.nodeId) })
+    : c.available[0]
+      ? t('ui.title.where.before', { node: short(c.available[0]) })
+      : t('ui.title.where.end');
+  return t('ui.title.resume', { name: c.avatar.name, act: metaFromCampaign(c).act, where });
+}
+
+/** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
   const [saves, setSaves] = useState<SaveRecord[]>([]);
   const [auto, setAuto] = useState<SaveRecord | undefined>();
+  const [menu, setMenu] = useState(false);
   const [load, setLoad] = useState(false);
   const [err, setErr] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -41,37 +67,31 @@ export function Title() {
   }, []);
   const onImport = async (f: File | undefined) => {
     if (!f) return;
+    setMenu(false);
     try {
       if (!(await importRecord(importSave(await f.text())))) setErr(t('ui.campaign.limit.text'));
     } catch (e) {
       setErr(t(e instanceof Error && e.message === 'legacy' ? 'ui.title.importLegacy' : 'ui.title.importFailed'));
     }
   };
+  const Campaigns = auto ? SecondaryButton : PrimaryButton;
   return (
     <div class="screen title-screen">
       <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
-      <div class="logo">Hollow Crown</div>
-      <div class="tagline">{t('ui.title.tagline')}</div>
+      <h1 class="title-logo">
+        H<span class="crown">♛</span>llow
+        <br />
+        Crown
+        <small>{t('ui.title.season')}</small>
+      </h1>
       <div class="title-menu">
         {auto && (
-          <button class="btn primary big" onClick={() => void loadSlot('auto', auto.campaignId)}>
+          <PrimaryButton sub={resumeText(auto)} onClick={() => void loadSlot('auto', auto.campaignId)}>
             {t('ui.title.continue')}
-          </button>
+          </PrimaryButton>
         )}
-        <button class={`btn ${auto ? '' : 'primary big'}`} onClick={() => (screen.value = { name: 'newGame' })}>
-          {t('ui.title.new')}
-        </button>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8 }}>
-          <button class="btn small" disabled={saves.filter((s) => s.slot !== 'auto').length === 0} onClick={() => setLoad(true)}>
-            {t('ui.title.load')}
-          </button>
-          <button class="btn small" onClick={() => fileRef.current?.click()}>
-            {t('ui.title.import')}
-          </button>
-          <button class="btn small" onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>
-            {t('ui.options')}
-          </button>
-        </div>
+        <Campaigns onClick={() => setMenu(true)}>{t('ui.title.campaigns')}</Campaigns>
+        <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>{t('ui.options')}</SecondaryButton>
         {err && <div class="dis">{err}</div>}
         {saveDbBlocked.value && <div class="dis">{t('ui.title.closeOtherTabs')}</div>}
         <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
@@ -80,6 +100,18 @@ export function Title() {
           <UpdateLink />
         </div>
       </div>
+      {/* interim campaign menu until the campaign view (story 1.3) */}
+      {menu && (
+        <Modal title={t('ui.title.campaigns')} onClose={() => setMenu(false)}>
+          <div class="campaigns-menu">
+            <PrimaryButton onClick={() => (screen.value = { name: 'newGame' })}>{t('ui.title.new')}</PrimaryButton>
+            <SecondaryButton disabled={saves.filter((s) => s.slot !== 'auto').length === 0} onClick={() => setLoad(true)}>
+              {t('ui.title.load')}
+            </SecondaryButton>
+            <SecondaryButton onClick={() => fileRef.current?.click()}>{t('ui.title.import')}</SecondaryButton>
+          </div>
+        </Modal>
+      )}
       {load && auto && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s, auto.campaignId)} onClose={() => setLoad(false)} />}
     </div>
   );
@@ -284,8 +316,7 @@ export function WorldMap() {
           <h2>{t('ui.world.title')}</h2>
         </div>
         <span class="hub-gold" style={{ padding: 0 }}>
-          <Icon name="gold" size={18} />
-          {c.gold}
+          <Amount resource="gold" value={c.gold} />
         </span>
       </div>
       <div class="worldmap">
@@ -434,20 +465,16 @@ export function Result({ result }: { result: import('../../core').BattleResult }
                 <Icon name={s.done ? 'check' : 'cross'} size={18} />
               </span>
               <span class="grow">{t(`ui.side.${s.type}`, { turns: s.turns ?? 0 })}</span>
-              <span class="muted">{rewardText(s.reward)}</span>
+              <RewardAmounts reward={s.reward} />
             </div>
           ))}
         </section>
         <section class="col" style={{ gap: 4 }}>
           <h3>{t('ui.result.loot')}</h3>
           <div class="row hair" style={{ minHeight: 44, flexWrap: 'wrap' }}>
-            <span class="hub-gold" style={{ padding: 0 }}>
-              <Icon name="gold" size={18} />+{result.gold}
-            </span>
+            <Amount resource="gold" value={result.gold} signed />
             {Object.entries(result.materials).map(([m, n]) => (
-              <span key={m} class="muted">
-                {t(`item.${m}.name`)} ×{n}
-              </span>
+              <Amount key={m} material={itemDef(data, m)} value={n} signed />
             ))}
           </div>
           {result.items.map((i) => (
@@ -465,7 +492,7 @@ export function Result({ result }: { result: import('../../core').BattleResult }
                 {t('ui.lv')} {u.levelBefore}
                 {u.levelAfter > u.levelBefore ? ` → ${u.levelAfter}` : ''}
               </span>
-              <span class="muted">+{u.exp} {t('ui.stat.exp')}</span>
+              <Amount resource="exp" value={u.exp} signed />
             </div>
           ))}
           {result.recruited.map((id) => line('star', 'adv', t('ui.result.recruited', { name: t(`unit.${id}.name`) }), `r${id}`))}
@@ -484,12 +511,17 @@ export function Result({ result }: { result: import('../../core').BattleResult }
   );
 }
 
-export function rewardText(r: import('../../core').Reward): string {
-  const parts: string[] = [];
-  if (r.gold) parts.push(`${r.gold} ${t('ui.gold')}`);
-  if (r.item) parts.push(t(`item.${r.item.def}.name`));
-  for (const [m, n] of Object.entries(r.material ?? {})) parts.push(`${t(`item.${m}.name`)} ×${n}`);
-  return parts.join(', ');
+/** Reward of a side objective: amounts as symbol + number, items by name. */
+export function RewardAmounts({ reward: r }: { reward: Reward }) {
+  return (
+    <span class="row muted" style={{ gap: 8, flexWrap: 'wrap' }}>
+      {r.gold ? <Amount resource="gold" value={r.gold} /> : null}
+      {Object.entries(r.material ?? {}).map(([m, n]) => (
+        <Amount key={m} material={itemDef(data, m)} value={n} />
+      ))}
+      {r.item && <span>{t(`item.${r.item.def}.name`)}</span>}
+    </span>
+  );
 }
 
 export function EndScreen() {

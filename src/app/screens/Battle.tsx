@@ -127,6 +127,7 @@ export function Battle() {
     boardRef.current = board;
     board.quality = settings.value.quality;
     board.figures = settings.value.figures;
+    board.shakeEnabled = settings.value.shake && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
     void (async () => {
       await board.load(battle.value!.state);

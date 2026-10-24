@@ -1,11 +1,10 @@
 /* UI style U21 – "B hell, Wappen & Banner", studio version: bone ground, ink, one ember accent,
    bevelled corners, hairlines and tonal fills, no drop shadows, no gradients. */
-@import '@fontsource/grenze-gotisch/600.css';
+@import './tokens.css';
 @import '@fontsource/barlow/500.css';
 @import '@fontsource/barlow/600.css';
 @import '@fontsource/barlow-condensed/600.css';
 @import '@fontsource/barlow-condensed/700.css';
-@import '@fontsource/silkscreen/400.css';
 
 :root {
   --bg: #f3eee4;
@@ -91,7 +90,7 @@ button {
 }
 .title-font,
 .display {
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-weight: 600;
 }
 .lbl {
@@ -219,7 +218,7 @@ h3 {
 }
 h1,
 h2 {
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   letter-spacing: 0.01em;
 }
 h1 {
@@ -298,14 +297,14 @@ h3 {
 
 /* ---------- title ---------- */
 .title-screen {
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
   gap: 10px;
   background: #15141a;
 }
 .logo {
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-weight: 600;
   font-size: clamp(48px, 14vw, 84px);
   line-height: 0.95;
@@ -318,24 +317,64 @@ h3 {
   margin: 0 auto 14px;
   font-size: 16px;
 }
-.title-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: min(360px, 100%);
-  margin-bottom: 6vh;
+/* title screen in style B (concept/25-ux/mockups/07-start-kampagnen.html) */
+.title-logo {
+  margin: 13vh 0 0;
+  text-transform: uppercase;
+  color: var(--hc-cream);
+  font-family: var(--hc-font-name);
+  font-weight: 900;
+  font-size: clamp(44px, 13vw, 72px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-shadow: 0 3px 0 var(--hc-line), 0 0 18px rgba(0, 0, 0, 0.35);
 }
-.title-menu .btn:not(.primary):not([disabled]) {
-  background: rgba(250, 247, 240, 0.9);
+.title-logo .crown {
+  color: var(--hc-gold);
+}
+.title-logo small {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hc-cream-2);
+  text-shadow: 0 2px 0 var(--hc-line);
+}
+.title-menu {
+  display: grid;
+  gap: 12px;
+  width: min(360px, 100%);
+  padding-inline: 12px;
+  margin-bottom: calc(18px + var(--safe-bottom));
+}
+.title-menu .hc-btn {
+  width: 100%;
+}
+.title-menu .dis {
+  color: var(--hc-cream);
+  text-shadow: 0 1px 0 var(--hc-line);
 }
 .title-foot {
-  color: #cfc8ba;
+  color: var(--hc-cream-2);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
   font-size: 12px;
+  text-shadow: 0 1px 0 var(--hc-line);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 4px 12px;
+}
+.campaigns-menu {
+  display: grid;
+  gap: 12px;
+}
+.campaigns-menu .hc-btn {
+  width: 100%;
 }
 .link-btn {
   background: none;
@@ -455,7 +494,7 @@ input[type='range'] {
   inset: 0;
   display: grid;
   place-items: center;
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-size: 28px;
   color: var(--ink);
 }
@@ -605,7 +644,7 @@ input[type='range'] {
   padding: 5px 16px 7px;
   background: var(--ember);
   color: var(--ink);
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-size: 19px;
   line-height: 1;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
@@ -685,8 +724,10 @@ input[type='range'] {
   position: absolute;
   left: 0;
   top: 0;
-  font-family: 'Silkscreen', monospace;
-  font-size: 22px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 24px;
   color: #fff;
   text-shadow: 0 2px 0 #1a1625, 2px 0 0 #1a1625, -2px 0 0 #1a1625, 0 -2px 0 #1a1625;
   white-space: nowrap;
@@ -930,7 +971,7 @@ input[type='range'] {
   align-items: center;
 }
 .unit-name {
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-size: 24px;
   line-height: 1;
 }
@@ -1003,7 +1044,7 @@ input[type='range'] {
   text-align: right;
 }
 .fc-who .fc-name {
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-size: 22px;
   line-height: 1;
 }
@@ -1082,7 +1123,7 @@ input[type='range'] {
   z-index: 30;
   text-align: center;
   padding: 16px 0 18px;
-  font-family: 'Grenze Gotisch', serif;
+  font-family: var(--hc-font-name);
   font-size: 34px;
   letter-spacing: 0.04em;
   color: #fff;
@@ -1545,4 +1586,11 @@ input[type='range'] {
 }
 .vn.overlay .vn-tools {
   top: calc(76px + var(--safe-top));
+}
+
+/* reduced motion: no wobbling (bobbing hints, camera shake); pressing a stone stays as feedback */
+@media (prefers-reduced-motion: reduce) {
+  .vn-next {
+    animation: none;
+  }
 }

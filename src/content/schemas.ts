@@ -53,6 +53,9 @@ export const itemSchema = z.object({
   price: z.number(),
   charges: z.number().optional(),
   refillAfterMission: z.boolean().optional(),
+  symbol: z
+    .object({ shape: z.enum(['diamond', 'crescent', 'hexagon', 'drop']), color: z.string().regex(/^#[0-9a-fA-F]{6}$/) })
+    .optional(),
   use: z
     .object({
       heal: z.number(),

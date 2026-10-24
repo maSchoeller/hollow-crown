@@ -19,6 +19,7 @@ import {
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
 import { ElementIcon, Icon, TriMark } from './icons';
+import { Amount } from './pieces';
 
 export const asset = (p: string): string => `${import.meta.env.BASE_URL}assets/${p}`;
 
@@ -184,7 +185,9 @@ export function StatsGrid({ data, unit, state }: { data: GameData; unit: BattleU
       </div>
       <div class="stat">
         <span class="muted">{t('ui.stat.exp')}</span>
-        <b>{unit.exp}</b>
+        <b>
+          <Amount resource="exp" value={unit.exp} />
+        </b>
       </div>
     </div>
   );

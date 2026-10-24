@@ -23,6 +23,7 @@ import { activeSkillIds } from '../../core/rules/skills';
 import { t } from '../../i18n';
 import { asset, Crest, ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
+import { Amount } from '../../ui/pieces';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
 import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, saveSlot, screen, setFlag, startBattle } from '../store';
@@ -69,8 +70,7 @@ export function Camp({ tab: initial }: { tab?: string }) {
   };
   const gold = (
     <div class="panel hub-gold">
-      <Icon name="gold" size={18} />
-      {c.gold}
+      <Amount resource="gold" value={c.gold} />
     </div>
   );
 
@@ -87,16 +87,16 @@ export function Camp({ tab: initial }: { tab?: string }) {
               <h2>{t(`ui.camp.${tab}`)}</h2>
             </div>
             <span class="hub-gold" style={{ padding: 0 }}>
-              <Icon name="gold" size={18} />
-              {c.gold}
+              <Amount resource="gold" value={c.gold} />
             </span>
           </div>
           {Object.values(c.materials).some((n) => n > 0) && (
-            <div class="muted" style={{ fontSize: 13 }}>
+            <div class="row" style={{ gap: 12, flexWrap: 'wrap' }}>
               {Object.entries(c.materials)
                 .filter(([, n]) => n > 0)
-                .map(([m, n]) => `${t(`item.${m}.name`)} ${n}`)
-                .join(' · ')}
+                .map(([m, n]) => (
+                  <Amount key={m} material={itemDef(data, m)} value={n} />
+                ))}
             </div>
           )}
           <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
@@ -410,7 +410,7 @@ function Convoy({ apply }: { apply: Apply }) {
           right={
             sellPrice(data, inst) > 0 ? (
               <button class="btn small" onClick={(e) => { e.stopPropagation(); apply({ type: 'sell', uid: inst.uid }, t('ui.camp.sold')); }}>
-                {t('ui.sell')} <span class="num gold">{sellPrice(data, inst)}</span>
+                {t('ui.sell')} <Amount resource="gold" value={sellPrice(data, inst)} />
               </button>
             ) : null
           }
@@ -430,7 +430,7 @@ function Merchant({ apply }: { apply: Apply }) {
           <h3>{t('ui.camp.offers')}</h3>
           <div class="list">
             {c.offers.map((o) => (
-              <ItemRow key={o.uid} data={data} inst={o} sub={<ItemDetails data={data} inst={o} />} right={<button class="btn small primary" onClick={() => apply({ type: 'buyOffer', uid: o.uid }, t('ui.camp.bought'))}>{offerPrice(data, o)}</button>} />
+              <ItemRow key={o.uid} data={data} inst={o} sub={<ItemDetails data={data} inst={o} />} right={<button class="btn small primary" onClick={() => apply({ type: 'buyOffer', uid: o.uid }, t('ui.camp.bought'))}><Amount resource="gold" value={offerPrice(data, o)} /></button>} />
             ))}
           </div>
         </>
@@ -439,7 +439,7 @@ function Merchant({ apply }: { apply: Apply }) {
       <div class="list">
         {stock.map((id) => {
           const inst: ItemInstance = { uid: `shop-${id}`, def: id, upgrade: 0, affixes: [], runes: [] };
-          return <ItemRow key={id} data={data} inst={inst} sub={<ItemDetails data={data} inst={inst} />} right={<button class="btn small" disabled={c.gold < itemDef(data, id).price} onClick={() => apply({ type: 'buy', item: id }, t('ui.camp.bought'))}>{itemDef(data, id).price}</button>} />;
+          return <ItemRow key={id} data={data} inst={inst} sub={<ItemDetails data={data} inst={inst} />} right={<button class="btn small" disabled={c.gold < itemDef(data, id).price} onClick={() => apply({ type: 'buy', item: id }, t('ui.camp.bought'))}><Amount resource="gold" value={itemDef(data, id).price} short={c.gold < itemDef(data, id).price} /></button>} />;
         })}
       </div>
     </div>
@@ -469,7 +469,17 @@ function Smith({ apply }: { apply: Apply }) {
             inst={inst}
             sub={
               <>
-                {owner ? unitName(owner) : t('ui.convoy')} · {cost ? `${t('ui.camp.upgradeCost')}: ${cost.gold} + ${Object.entries(cost.materials).map(([m, n]) => `${t(`item.${m}.name`)} ${n}`).join(', ')}` : t('ui.camp.maxed')}
+                {owner ? unitName(owner) : t('ui.convoy')} ·{' '}
+                {cost ? (
+                  <span class="row" style={{ display: 'inline-flex', gap: 8 }}>
+                    {t('ui.camp.upgradeCost')}: <Amount resource="gold" value={cost.gold} />
+                    {Object.entries(cost.materials).map(([m, n]) => (
+                      <Amount key={m} material={itemDef(data, m)} value={n} />
+                    ))}
+                  </span>
+                ) : (
+                  t('ui.camp.maxed')
+                )}
               </>
             }
             right={
@@ -480,7 +490,7 @@ function Smith({ apply }: { apply: Apply }) {
                 {inst.affixes.map((a, i) => (
                   <button key={a} class="btn small ghost" onClick={() => apply({ type: 'reroll', uid: inst.uid, index: i }, t('ui.camp.rerolled'))}>
                     <Icon name="restart" size={16} />
-                    {t(`affix.${a}`)} ({rr.gold})
+                    {t(`affix.${a}`)} <Amount resource="gold" value={rr.gold} /> <Amount material={itemDef(data, 'arcane_dust')} value={rr.dust} />
                   </button>
                 ))}
               </div>
@@ -548,7 +558,7 @@ function Enchanter({ apply }: { apply: Apply }) {
             <span class="ico"><Icon name="rune" /></span>
             <span>{t(`item.${r.id}.name`)}</span>
             <button class="btn small" disabled={c.gold < (r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
-              {r.price}
+              <Amount resource="gold" value={r.price ?? 0} short={c.gold < (r.price ?? 0)} />
             </button>
           </div>
         ))}
@@ -573,7 +583,7 @@ function Healer({ apply }: { apply: Apply }) {
             </span>
             <div class="col" style={{ gap: 4 }}>
               <button class="btn small" onClick={() => apply({ type: 'healScar', unit: u.id, index: i }, t('ui.camp.healed'))}>
-                {data.balance.economy.scarRemoval.gold}
+                <Amount resource="gold" value={data.balance.economy.scarRemoval.gold} />
               </button>
               {herb && (
                 <button class="btn small ghost" onClick={() => apply({ type: 'healScar', unit: u.id, index: i, herb: true }, t('ui.camp.healed'))}>

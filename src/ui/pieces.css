@@ -1,0 +1,93 @@
+/* Building blocks of style B (concept/25-ux/DESIGN.md §Components): stones, buttons, amounts. */
+@import './tokens.css';
+
+.hc-piece {
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line), var(--hc-soft-shadow);
+  padding: var(--hc-piece-padding);
+}
+
+.hc-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: var(--hc-touch-min);
+  padding: 9px 18px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+  transition: transform 60ms ease-out, box-shadow 60ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+.hc-btn small {
+  font-family: var(--hc-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.hc-btn--primary {
+  background: var(--hc-ember);
+  color: #fff;
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-ember-dark), 0 var(--hc-press-depth) 0 2px var(--hc-line);
+}
+.hc-btn--quiet {
+  background: var(--hc-mourn-quiet);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-soft);
+  border-color: var(--hc-soft);
+}
+/* pressed: bottom edge 4 → 1 px, the stone sinks by 3 px (kept with reduced motion: it is feedback, not motion) */
+.hc-btn:active:not(:disabled),
+.hc-btn.is-pressed {
+  transform: translateY(calc(var(--hc-press-depth) - 1px));
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hc-btn--primary:active:not(:disabled),
+.hc-btn--primary.is-pressed {
+  box-shadow: 0 1px 0 var(--hc-ember-dark), 0 1px 0 2px var(--hc-line);
+}
+.hc-btn--quiet:active:not(:disabled) {
+  box-shadow: 0 1px 0 var(--hc-soft);
+}
+.hc-btn:disabled {
+  cursor: default;
+  background: var(--hc-cream-2);
+  color: var(--hc-soft);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+}
+.hc-btn:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+
+.hc-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-number);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+.hc-amount svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+.hc-amount.is-short {
+  color: var(--hc-negative);
+}

@@ -134,6 +134,8 @@ export class BoardView {
   skip = false;
   quality: Quality = 'mid';
   figures: FigureStyle = '3d';
+  /** camera shake on critical hits (option "shake", off with prefers-reduced-motion) */
+  shakeEnabled = true;
 
   // camera: ground point at the screen centre (tiles, y = south) and CSS px per tile
   private camX = 0;
@@ -1212,7 +1214,7 @@ export class BoardView {
             this.spawnFx(e.crit ? 'hit_star_crit' : 'hit_spark', dp[0], dp[1]);
             d.flash = 1;
             this.setAnim(d, 'hit');
-            if (e.crit) {
+            if (e.crit && this.shakeEnabled) {
               this.shake = 0.12;
               setTimeout(() => (this.shake = 0), 220 / this.speed);
             }

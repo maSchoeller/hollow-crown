@@ -33,6 +33,8 @@ export function validateContent(data: GameData, locales: Locales, spriteIds?: Se
   for (const it of Object.values(data.items)) {
     if (it.grantsSkill && !data.skills[it.grantsSkill.skill]) err('items.yaml', `${it.id}: unknown skill ${it.grantsSkill.skill}`);
     if (it.setId && !data.sets[it.setId]) err('items.yaml', `${it.id}: unknown set ${it.setId}`);
+    // amounts are always symbol + number (concept/25-ux/DESIGN.md)
+    if (it.kind === 'material' && !it.symbol) err('items.yaml', `${it.id}: material without symbol`);
   }
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);

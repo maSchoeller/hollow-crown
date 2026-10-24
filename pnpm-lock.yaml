@@ -23,16 +23,7 @@ importers:
       '@fontsource/barlow-condensed':
         specifier: ^5.3.0
         version: 5.3.0
-      '@fontsource/cinzel':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/grenze-gotisch':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/nunito-sans':
-        specifier: ^5.3.0
-        version: 5.3.0
-      '@fontsource/silkscreen':
+      '@fontsource/fraunces':
         specifier: ^5.3.0
         version: 5.3.0
       '@preact/signals':
@@ -858,17 +849,8 @@ packages:
   '@fontsource/barlow@5.3.0':
     resolution: {integrity: sha512-tGR0y6QObRtKv71MOth44222+mdNFM/ZWFWDV1VLzNbG4oK9PNRlyJzmkck4vHAi9ibHBXgt4SlY51amFP55CA==}
 
-  '@fontsource/cinzel@5.3.0':
-    resolution: {integrity: sha512-KEOYTsrRppW0uRIPWBDPrQgunCS6f8u4nzZxYRBfo9SCknKojLYjK7B0ZoVmJhyVLefz271ZQRF9EOpHZlfhRw==}
-
-  '@fontsource/grenze-gotisch@5.3.0':
-    resolution: {integrity: sha512-hIgb3TJWnwjiaf8FWMYfPe5PvHHnSv+VYUJI40Fj0KhjWhBhBl4LTsGrkr4MSjo6mG+znR2tBz5L++4wkEgI1A==}
-
-  '@fontsource/nunito-sans@5.3.0':
-    resolution: {integrity: sha512-CctNhebQ2YYJUwVMCAkHexQg7yedfz9s8JzaETALyc9QIQuDFRlNTWXux9H5PsNLgptPkrzRDomAdLJt1sDFpQ==}
-
-  '@fontsource/silkscreen@5.3.0':
-    resolution: {integrity: sha512-M1NQ3LQH0LFNvyFPd/piHEGMImPPtpLglNnLC6Vdcq9kL0jNIOtTQmksAWCc4enbDnw1OnIpZtjNEfRqYm/QmA==}
+  '@fontsource/fraunces@5.3.0':
+    resolution: {integrity: sha512-LEHTOBiZufQzAvnAe2rZ8ZknbDS28Q9kzwb0L+gZJEmjLGr8hhZ/5NuHXwDuHBWhVXYoiGGXmrb0H6Ko/RrHTg==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -3630,13 +3612,7 @@ snapshots:
 
   '@fontsource/barlow@5.3.0': {}
 
-  '@fontsource/cinzel@5.3.0': {}
-
-  '@fontsource/grenze-gotisch@5.3.0': {}
-
-  '@fontsource/nunito-sans@5.3.0': {}
-
-  '@fontsource/silkscreen@5.3.0': {}
+  '@fontsource/fraunces@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:
