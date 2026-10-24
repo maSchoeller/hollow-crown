@@ -3,6 +3,7 @@ import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { nodeLinks } from '../core/campaign/graph';
+import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles } from '../core/util';
@@ -52,6 +53,9 @@ export function validateContent(
     if (def.values ? !def.values.includes(value as string | number) : value !== true)
       err(file, `${ctx}: flag ${name} cannot have the value ${String(value)}`);
   };
+  const page = (file: string, id: string, ctx: string) => {
+    if (!data.chronicle[id]) err(file, `${ctx}: unknown chronicle page ${id} (acts/*/chronicle.yaml)`);
+  };
   const companion = (file: string, id: string, ctx: string) => {
     if (!data.chars[id]) err(file, `${ctx}: unknown companion ${id}`);
   };
@@ -76,6 +80,9 @@ export function validateContent(
         if (!data.campaign?.supportPairs.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) err(file, `${ctx}: unknown support pair ${a}|${b}`);
         return;
       }
+      case 'chronicle':
+        if (Array.isArray(v)) for (const id of v as string[]) page(file, id, ctx);
+        return;
       case 'any':
         for (const x of v as Condition[]) condition(file, x, ctx);
         return;
@@ -104,6 +111,7 @@ export function validateContent(
       else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
       else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
       else if (key === 'item') item(file, v as ItemRef, ctx);
+      else if (key === 'chronicle') page(file, v as string, ctx);
       else if (key === 'openQuest') {
         openedQuests.push(v as string);
         if (data.campaign?.nodes.find((n) => n.id === v)?.kind !== 'side') err(file, `${ctx}: openQuest ${v as string} is not a side quest`);
@@ -288,6 +296,10 @@ export function validateContent(
   for (const n of camp?.nodes ?? []) need.push(n.titleKey);
   if (camp) need.push(`act.${camp.act}.name`, `act.${camp.act}.season`);
   for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
+  // chronicle pages: English texts, and no more pages than the season has (narrative: 12)
+  for (const p of Object.values(data.chronicle)) need.push(pageTitleKey(p.id), pageTextKey(p.id));
+  if (Object.keys(data.chronicle).length > data.balance.chronicle.seasonPages)
+    err('chronicle.yaml', `${Object.keys(data.chronicle).length} chronicle pages, the season has ${data.balance.chronicle.seasonPages}`);
   for (const k of need) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`locales/${lang}`, `missing key ${k}`);
   const de = Object.keys(locales.de ?? {});
   const en = new Set(Object.keys(locales.en ?? {}));

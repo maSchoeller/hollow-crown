@@ -317,7 +317,7 @@ lines:
 - **Flag-Register** `content/acts/actN/flags.yaml`: `id`, erlaubte Werte, `kind: decision|story|quest|battle`, `season2: true|false`. Undeklarierte Flags lehnt `content:check` ab.
 - `CampaignState.flags` wird `Record<string, string | number | true>` (heute `string[]`). Kampf-Trigger `set_flag` setzen weiter boolesche Flags, nur aus dem Register.
 - **Haltung:** `c.stance = { warm, sober, defiant }` (Zähler für warm, nüchtern, trotzig); `dominantStance(c)` entscheidet einen Gleichstand in der festen Reihenfolge warm > sober > defiant.
-- **Chronik:** `c.chronicle: string[]` (12 Seiten).
+- **Chronik:** `c.chronicle: string[]` (12 Seiten). **Stand (Story 4.7):** Seiten-Register `content/acts/actN/chronicle.yaml`, `balance.chronicle.seasonPages`; die Ansicht `chronicleView` zeigt je Akt die Entscheidungen (`c.decisions`, Story 4.6) und die gefundenen Seiten.
 - **Epilog-Mosaik:** `content/acts/act3/epilogue.yaml` mit Kacheln je Gefährte und Region; jede Kachel hat Varianten mit `requires` (lebt/gefallen/gegangen + Wendung). Die erste passende Variante gewinnt; `content:check` prüft, dass jede Kachel eine Variante ohne Bedingung als letzte hat.
 
 ### 5.10 Heimat: Lager und Burg (AR11)

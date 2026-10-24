@@ -1,10 +1,12 @@
 import type { z } from 'zod';
+import { chronicleTexts } from '../core/campaign/chronicle';
 import { sceneTexts } from '../core/campaign/scene';
 import type {
   AffixDef,
   Balance,
   CampaignDef,
   CharDef,
+  ChroniclePageDef,
   ClassDef,
   FlagDef,
   GameData,
@@ -24,6 +26,7 @@ import {
   balanceSchema,
   campaignSchema,
   charSchema,
+  chroniclePageSchema,
   classSchema,
   sceneSchema,
   flagSchema,
@@ -116,12 +119,16 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
+  const chronicle: Record<string, ChroniclePageDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
       const m = parseOne<MapDef>(p, raw, mapSchema, issues);
       if (m) maps[m.id] = m;
+    } else if (/^acts\/act\d+\/chronicle\.yaml$/.test(p)) {
+      const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
+      for (const page of parseList<Omit<ChroniclePageDef, 'act'>>(p, raw ?? [], chroniclePageSchema, issues)) chronicle[page.id] = { ...page, act };
     } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
       const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
       if (d) scenes[d.id] = d;
@@ -136,6 +143,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   }
   // the German text sits in the scene itself
   for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
+  // and in the chronicle page
+  for (const pg of Object.values(chronicle)) locales.de = { ...(locales.de ?? {}), ...chronicleTexts(pg) };
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,
@@ -163,6 +172,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     maps,
     scenes,
     flags: byId(flagList),
+    chronicle,
     campaign: campaign as CampaignDef,
   };
   return { data, locales, issues };

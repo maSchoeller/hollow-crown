@@ -241,6 +241,7 @@ export function WorldMap() {
             >
               {t('ui.save.title')}
             </SecondaryButton>
+            <SecondaryButton onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>{t('ui.chronicle.title')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'worldmap' } })}>{t('ui.options')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
           </Piece>
@@ -274,7 +275,7 @@ export function WorldMap() {
                 <Icon name="wanted" size={26} />
                 {t('ui.map.wanted')}
               </button>
-              <button type="button" class="is-dim" aria-disabled="true" onClick={() => setToast(t('ui.map.soon.chronicle'))}>
+              <button type="button" onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>
                 <Icon name="log" size={26} />
                 {t('ui.map.chronicle')}
               </button>

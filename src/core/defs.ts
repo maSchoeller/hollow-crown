@@ -450,6 +450,14 @@ export type Effect =
   | { setHome: HomeKind };
 
 /** Entry of the flag register `acts/actN/flags.yaml` (architecture §5.9); content may only use declared flags. */
+/** A chronicle page: found through the effect `chronicle`, read in the chronicle; texts `chronicle.<id>.title|text`. */
+export interface ChroniclePageDef {
+  id: string;
+  act: number;
+  title: string;
+  text: string;
+}
+
 export interface FlagDef {
   id: string;
   kind: 'decision' | 'story' | 'quest' | 'battle';
@@ -661,6 +669,8 @@ export interface Balance {
   };
   /** loading of on-demand files before a mission */
   loading: { fetchTimeoutMs: number };
+  /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
+  chronicle: { seasonPages: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */
@@ -769,5 +779,7 @@ export interface GameData {
   scenes: Record<string, SceneDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
+  /** chronicle pages of the acts (`acts/actN/chronicle.yaml`) */
+  chronicle: Record<string, ChroniclePageDef>;
   campaign: CampaignDef;
 }

@@ -51,6 +51,9 @@ beforeAll(() => {
   locales = loaded.locales;
   data.flags.e01 = { id: 'e01', kind: 'decision', values: ['home', 'stay'], season2: true };
   data.scenes['scn.test.decision'] = decisionScene();
+  data.chronicle.page_a1_1 = { id: 'page_a1_1', act: 1, title: 'Die erste Seite', text: 'Ein König starb jung.' };
+  locales.en = { ...locales.en, 'chronicle.page_a1_1.title': 'The first page', 'chronicle.page_a1_1.text': 'A king died young.' };
+  locales.de = { ...locales.de, 'chronicle.page_a1_1.title': 'Die erste Seite', 'chronicle.page_a1_1.text': 'Ein König starb jung.' };
 });
 
 describe('resolveScene marks decisions', () => {

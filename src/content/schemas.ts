@@ -484,6 +484,9 @@ export const sceneSchema = z.strictObject({
   ),
 });
 
+/** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
+export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0-9_]+$/), title: z.string().min(1), text: z.string().min(1) });
+
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
   startGold: z.number(),
@@ -586,6 +589,7 @@ export const balanceSchema = z.object({
     bubbleMaxChars: z.number().int().min(20),
   }),
   loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
+  chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

@@ -22,6 +22,8 @@ import {
   type ResolvedOption,
   type SceneDef,
   type FlagDef,
+  type ChroniclePageDef,
+  chronicleTexts,
   sceneTexts,
 } from '../../core';
 import type { SaveRecord, SlotId } from '../../persistence/save';
@@ -325,6 +327,13 @@ if (import.meta.env.DEV) {
         addTexts('de', sceneTexts(scene));
         addTexts('en', sceneTexts(scene));
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+      },
+      /** registers a chronicle page at run time (texts as German and English) and finds it: `devPage({ id, act, title, text })` */
+      devPage: (page: ChroniclePageDef) => {
+        data.chronicle[page.id] = page;
+        addTexts('de', chronicleTexts(page));
+        addTexts('en', chronicleTexts(page));
+        runEffects([{ chronicle: page.id }]);
       },
     };
   });
