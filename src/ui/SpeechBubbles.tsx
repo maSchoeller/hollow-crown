@@ -39,7 +39,7 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, only, spe
       resolveScene(data, ctx, id).flatMap((l) =>
         l.kind === 'line' && l.speaker && (!only || only.includes(l.line)) ? bubblePages(t(l.key), cfg.bubbleMaxChars).map((text, i) => ({ uid: `${l.uid}.${i}`, speaker: l.speaker!, text })) : [],
       ),
-    [data, id, only],
+    [data, id, only?.join()],
   );
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
