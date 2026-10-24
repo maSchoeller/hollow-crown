@@ -271,7 +271,7 @@ export async function storeImportedRecord(rec: SaveRecord): Promise<boolean> {
 /** Makes a save record the active campaign (journal checkpoint, play clock) and returns its normalized payload. */
 export function adoptRecord(rec: SaveRecord, reason: 'load' | 'import'): SavePayload {
   // saves from before a field existed get its default (architecture §8.7)
-  const p = { ...rec.payload, campaign: renameLegacyClasses(data, normalizeCampaign(rec.payload.campaign)) };
+  const p = { ...rec.payload, campaign: renameLegacyClasses(data, normalizeCampaign(data, rec.payload.campaign)) };
   if (p.battle) p.battle = { ...p.battle, start: renameLegacyBattleClasses(data, p.battle.start) };
   campaignId.value = rec.campaignId;
   playClock.reset();

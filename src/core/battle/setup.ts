@@ -2,7 +2,7 @@ import type { GameData, Pos } from '../defs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
-import { lockedMechanics } from '../campaign/campaign';
+import { lockedMechanics, lockedRoles } from '../campaign/graph';
 import { battleUnitFromMap, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 
@@ -57,7 +57,8 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     flags: Object.keys(c.flags),
     nextUid: c.nextUid,
     avatarName: c.avatar.name,
-    locked: lockedMechanics(data, nodeId),
+    locked: lockedMechanics(data, c),
+    lockedRoles: lockedRoles(data, c),
   };
   const forced = map.deploy.forced;
   const chosen = [...forced.filter((id) => c.roster.some((r) => r.id === id)), ...deployIds.filter((id) => !forced.includes(id))];

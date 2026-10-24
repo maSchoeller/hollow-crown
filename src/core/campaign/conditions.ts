@@ -15,7 +15,7 @@ export interface ConditionContext {
   fallen: readonly string[];
   left: readonly string[];
   completed: readonly string[];
-  /** completed story missions of this act (every campaign node is a story mission until story 4.3 adds side quests) */
+  /** completed story missions of this act (side quests do not count) */
   storyCount: number;
   supports: Readonly<Record<string, { rank: SupportRank | null }>>;
   stance: Readonly<Record<Stance, number>>;
@@ -47,7 +47,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
     fallen: c.fallen.map((f) => f.id),
     left: c.left,
     completed: c.completed,
-    storyCount: c.completed.filter((id) => data.campaign.nodes.some((n) => n.id === id)).length,
+    storyCount: c.completed.filter((id) => data.campaign.nodes.some((n) => n.id === id && n.kind === 'story')).length,
     supports: c.supports,
     stance: c.stance,
     chronicle: c.chronicle,

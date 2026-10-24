@@ -123,7 +123,7 @@ describe('the camp rooms (story 6.3)', () => {
 
   it('c.home starts as the camp of the act with no room levels', () => {
     expect(base.home).toEqual({ kind: 'camp', rooms: {} });
-    expect(normalizeCampaign({ ...clone(base), home: undefined } as unknown as CampaignState).home).toEqual({ kind: 'camp', rooms: {} });
+    expect(normalizeCampaign(data, { ...clone(base), home: undefined } as unknown as CampaignState).home).toEqual({ kind: 'camp', rooms: {} });
   });
 
   it('shows the six stations of act 1, in order, without the enchanter', () => {
@@ -155,7 +155,6 @@ describe('smith, tavern and army limits (story 6.4)', () => {
   const fresh = () => {
     const c = clone(base);
     c.completed = ['prologue', 'ch01'];
-    c.available = ['ch02'];
     c.gold = 10000;
     return c;
   };
@@ -196,7 +195,7 @@ describe('smith, tavern and army limits (story 6.4)', () => {
       expect(Object.keys(u.equip).length).toBeGreaterThan(0);
     }
     const early = clone(base);
-    early.available = ['ch01'];
+    early.completed = ['prologue'];
     for (let i = 0; i < 20; i++) {
       refreshTavern(data, early);
       expect(early.tavern.every((u) => u.classId !== 'mage' && u.classId !== 'cleric')).toBe(true);

@@ -466,18 +466,36 @@ export const sceneSchema = z.strictObject({
       }),
       z.strictObject({
         id: lineId,
+        title: z.string().min(1).optional(),
         requires: conditionsListSchema.optional(),
         choice: z
-          .array(z.strictObject({ id: lineId, text: z.string().min(1), stance: z.enum(['warm', 'sober', 'defiant']), effects: z.array(effectSchema).optional() }))
+          .array(
+            z.strictObject({
+              id: lineId,
+              text: z.string().min(1),
+              stance: z.enum(['warm', 'sober', 'defiant']),
+              effects: z.array(effectSchema).optional(),
+              summary: z.string().min(1).optional(),
+            }),
+          )
           .min(2),
       }),
     ]),
   ),
 });
 
+/** A fixed support pair of an act (`acts/actN/supports.yaml`, story 4.9): `core` pairs reach S, the others stop at A. */
+export const supportPairSchema = z.strictObject({
+  pair: z.tuple([z.string(), z.string()]),
+  core: z.boolean().default(false),
+  talks: z.strictObject({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial().default({}),
+});
+
+/** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
+export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0-9_]+$/), title: z.string().min(1), text: z.string().min(1) });
+
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
-  start: z.string(),
   startGold: z.number(),
   defaultPlace: z.string(),
   startConvoy: z.array(itemRefSchema).default([]),
@@ -488,7 +506,11 @@ export const campaignSchema = z.object({
       titleKey: z.string(),
       pre: z.string().optional(),
       post: z.string().optional(),
-      next: z.array(z.string()),
+      kind: z.enum(['story', 'side']).default('story'),
+      fixed: z.enum(['first', 'finale']).optional(),
+      requires: conditionsListSchema.optional(),
+      memorialIf: conditionSchema.optional(),
+      memorial: z.object({ pre: z.string().optional(), post: z.string().optional() }).optional(),
       pos,
       place: z.string().optional(),
       merchantTier: z.number().int(),
@@ -496,12 +518,10 @@ export const campaignSchema = z.object({
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
     }),
   ),
-  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.string()).default({}),
+  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
   homePos: pos.default([50, 50]),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
-  supportPairs: z.array(z.tuple([z.string(), z.string()])),
-  supportDialogues: z.record(z.string(), z.object({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial()),
   scars: z.array(
     z.object({
       id: z.string(),
@@ -603,7 +623,12 @@ export const balanceSchema = z.object({
     carryBonus: z.record(z.string(), z.number()),
     movPenalty: z.array(z.object({ overload: z.number(), mov: z.number() })),
   }),
-  supports: z.looseObject({ thresholds: z.record(z.string(), z.number()) }),
+  supports: z.looseObject({
+    thresholds: z.record(z.string(), z.number()),
+    campfireMaxRank: z.array(z.enum(['C', 'B', 'A', 'S'])).min(1),
+    seasonPairs: z.number().int().min(1),
+    corePairs: z.number().int().min(0),
+  }),
   experience: z.record(z.string(), z.number()),
   growth: z.record(z.string(), z.union([z.number(), z.boolean()])),
   levels: z.record(z.string(), z.number()),
@@ -618,6 +643,7 @@ export const balanceSchema = z.object({
     bubbleMaxChars: z.number().int().min(20),
   }),
   loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
+  chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

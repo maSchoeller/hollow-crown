@@ -1,4 +1,4 @@
-import type { Effect, GameData, Mood, Team, SceneDef, SceneLine, SceneSpeech, Stance } from '../defs';
+import type { Effect, GameData, Mood, Team, SceneChoice, SceneDef, SceneLine, SceneOption, SceneSpeech, Stance } from '../defs';
 import { PERMANENT_COMPANIONS } from '../defs';
 import { evalConditions, type ConditionContext } from './conditions';
 
@@ -6,18 +6,26 @@ import { evalConditions, type ConditionContext } from './conditions';
 export const lineKey = (scene: string, line: string): string => `dlg.${scene}.${line}`;
 export const memorialKey = (scene: string, line: string): string => `${lineKey(scene, line)}.memorial`;
 export const optionKey = (scene: string, line: string, option: string): string => `${lineKey(scene, line)}.${option}`;
+/** name of a decision (the choice line's `title`) */
+export const decisionTitleKey = (scene: string, line: string): string => `${lineKey(scene, line)}.title`;
+/** title of the consequence card of an answer (`summary`) */
+export const summaryKey = (scene: string, line: string, option: string): string => `${optionKey(scene, line, option)}.summary`;
+/** key of a choice in `CampaignState.choices` */
+export const choiceKey = (scene: string, line: string): string => `${scene}#${line}`;
 
 export interface ResolvedOption {
   id: string;
   key: string;
   stance: Stance;
   effects: Effect[];
+  /** consequence card title (decisions only) */
+  summaryKey?: string;
 }
 
 /** A line the player gets to see, or the choice that follows. `uid` is unique within the scene. */
 export type ResolvedLine =
   | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean }
-  | { kind: 'choice'; uid: string; line: string; options: ResolvedOption[] };
+  | { kind: 'choice'; uid: string; line: string; options: ResolvedOption[]; decision: boolean; titleKey?: string };
 
 /** Whether a companion can speak: avatar and kael always, everyone else unless fallen or gone (an NPC who never joined can). */
 export function canSpeak(ctx: ConditionContext, id: string): boolean {
@@ -78,7 +86,15 @@ export function resolveScene(data: GameData, ctx: ConditionContext, sceneId: str
         kind: 'choice',
         uid: l.id,
         line: l.id,
-        options: l.choice.map((o) => ({ id: o.id, key: optionKey(scene.id, l.id, o.id), stance: o.stance, effects: o.effects ?? [] })),
+        decision: !!l.title,
+        titleKey: l.title ? decisionTitleKey(scene.id, l.id) : undefined,
+        options: l.choice.map((o) => ({
+          id: o.id,
+          key: optionKey(scene.id, l.id, o.id),
+          stance: o.stance,
+          effects: o.effects ?? [],
+          summaryKey: o.summary ? summaryKey(scene.id, l.id, o.id) : undefined,
+        })),
       });
     else resolveSpeech(scene, l, ctx, out);
   }
@@ -89,7 +105,13 @@ export function resolveScene(data: GameData, ctx: ConditionContext, sceneId: str
 export function sceneTexts(scene: SceneDef): Record<string, string> {
   const out: Record<string, string> = {};
   for (const l of scene.lines) {
-    if ('choice' in l) for (const o of l.choice) out[optionKey(scene.id, l.id, o.id)] = o.text;
+    if ('choice' in l) {
+      if (l.title) out[decisionTitleKey(scene.id, l.id)] = l.title;
+      for (const o of l.choice) {
+        out[optionKey(scene.id, l.id, o.id)] = o.text;
+        if (o.summary) out[summaryKey(scene.id, l.id, o.id)] = o.summary;
+      }
+    }
     else {
       out[lineKey(scene.id, l.id)] = l.text;
       if (l.memorial) out[memorialKey(scene.id, l.id)] = l.memorial.text;
@@ -102,12 +124,21 @@ export function sceneTexts(scene: SceneDef): Record<string, string> {
 export const sceneSeen = (seen: readonly string[], id: string): boolean => seen.includes(id);
 
 /**
- * Where Skip goes from line `from`: the index of the first choice at or after it (its effects must always run), or
- * `-1` when no choice follows and the scene may end at once. Pure.
+ * Where Skip goes from line `from`: the index of the first open choice at or after it (its effects must always run), or
+ * `-1` when no choice follows and the scene may end at once. A choice answered before (`answered`: its line ids) is
+ * not asked again, so Skip runs past it. Pure.
  */
-export function skipTarget(lines: readonly ResolvedLine[], from: number): number {
-  for (let i = Math.max(0, from); i < lines.length; i++) if (lines[i]!.kind === 'choice') return i;
+export function skipTarget(lines: readonly ResolvedLine[], from: number, answered: readonly string[] = []): number {
+  for (let i = Math.max(0, from); i < lines.length; i++) if (lines[i]!.kind === 'choice' && !answered.includes(lines[i]!.line)) return i;
   return -1;
+}
+
+/** The choice line `line` of scene `scene` and its answer `option`, or `null` when one of them does not exist. */
+export function findChoice(data: GameData, scene: string, line: string, option: string): { choice: SceneChoice; option: SceneOption } | null {
+  const l = data.scenes[scene]?.lines.find((x) => x.id === line);
+  if (!l || !('choice' in l)) return null;
+  const o = l.choice.find((x) => x.id === option);
+  return o ? { choice: l, option: o } : null;
 }
 
 /**

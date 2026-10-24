@@ -1,0 +1,77 @@
+/* Consequence card (concept/25-ux/DESIGN.md consequence-card, mockup 05): stone over the veil, "Folgen" mark, one line per effect. */
+.cq-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: calc(16px + var(--safe-top)) 14px calc(16px + var(--safe-bottom));
+  background: var(--hc-veil);
+}
+.cq-card {
+  display: grid;
+  gap: 12px;
+  width: min(420px, 100%);
+  padding: 22px 16px 16px;
+  color: var(--hc-line);
+}
+.cq-card__kick {
+  justify-self: center;
+  margin-top: -34px;
+}
+.cq-card__title {
+  margin: 0;
+  color: var(--hc-line);
+  letter-spacing: normal;
+  text-transform: none;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.15;
+  text-align: center;
+}
+.cq-card__lines {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cq-line {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
+  align-items: center;
+  font-size: var(--hc-size-body);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.cq-line__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  background: var(--hc-cream-2);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+}
+.cq-line__icon .trp-head {
+  --trp-head-size: 40px;
+  border: 0;
+  box-shadow: none;
+}
+.cq-line__img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.cq-line--leave .cq-line__icon img {
+  filter: grayscale(0.6);
+}
+.cq-line__text b {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-size: var(--hc-size-number);
+}

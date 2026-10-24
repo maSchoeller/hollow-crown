@@ -11,6 +11,10 @@ const missing = new Set<string>();
 export function setLocales(l: Record<string, Record<string, string>>): void {
   dicts = l;
 }
+/** Adds texts to one language (dev helper: scenes registered at run time). */
+export function addTexts(l: string, texts: Record<string, string>): void {
+  dicts[l] = { ...(dicts[l] ?? {}), ...texts };
+}
 export function setAvatar(name: string, pronoun: 'she' | 'he' | 'they'): void {
   avatar = { name, pronoun };
 }

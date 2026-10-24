@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { conditionContext, type Pos } from '../../core';
 import { t } from '../../i18n';
+import { availableNodes, nodeLinks } from '../../core';
 import { WorldView } from '../../render/world/world';
 import { locationOf } from '../../render/world/layout';
 import { Toast } from '../../ui/components';
@@ -44,7 +45,8 @@ type Loaded = 'loading' | 'ready' | 'failed';
 export function WorldMap() {
   const c = campaign.value!;
   const nodes = data.campaign.nodes;
-  const shown = nodes.filter((n) => c.completed.includes(n.id) || c.available.includes(n.id));
+  const open = availableNodes(data, c).map((n) => n.id);
+  const shown = nodes.filter((n) => c.completed.includes(n.id) || open.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -94,7 +96,7 @@ export function WorldMap() {
         setRegions(v.regionLabels());
         setLoaded('ready');
         // first view: the next mission (or the home) in the middle
-        const first = shown.find((n) => c.available.includes(n.id));
+        const first = shown.find((n) => open.includes(n.id));
         const p = (first && at(first.id)) ?? homeAt;
         v.focus(p[0] + 0.5, p[1] + 0.5, START_Y, { smooth: false });
       })
@@ -199,7 +201,7 @@ export function WorldMap() {
     else view.current?.release();
   };
   const node = sel ? nodes.find((n) => n.id === sel)! : null;
-  const ended = c.available.length === 0;
+  const ended = open.length === 0;
   /** data attributes that pin an element over tile `p`, `lift` tiles above the ground */
   const over = (p: Pos, lift = pin) => ({ 'data-x': p[0] + 0.5, 'data-y': p[1] + 0.5, 'data-h': (view.current?.groundAt(p[0], p[1]) ?? 0) + lift });
   const ends = (p: Pos) => `${p[0] + 0.5},${p[1] + 0.5},${view.current?.groundAt(p[0], p[1]) ?? 0}`;
@@ -227,17 +229,17 @@ export function WorldMap() {
         <div ref={stage} class="hc-stage-slot" />
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" aria-hidden="true">
-            {shown.flatMap((n) =>
-              n.next
-                .map((id) => shown.find((m) => m.id === id))
-                .filter((m) => !!m && at(n.id) && at(m.id))
-                .map((m) => (
-                  <g key={n.id + m!.id}>
-                    <line data-a={ends(at(n.id)!)} data-b={ends(at(m!.id)!)} class="wm__path wm__path--edge" />
-                    <line data-a={ends(at(n.id)!)} data-b={ends(at(m!.id)!)} class="wm__path" />
-                  </g>
-                )),
-            )}
+            {nodeLinks(data).flatMap(([from, to]) => {
+              const a = shown.some((x) => x.id === from) && at(from);
+              const b = shown.some((x) => x.id === to) && at(to);
+              if (!a || !b) return [];
+              return [
+                <g key={from + to}>
+                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path wm__path--edge" />
+                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path" />
+                </g>,
+              ];
+            })}
           </svg>
           {regions.map((r) => (
             <div key={r.id} class="wm-region" data-x={r.at[0]} data-y={r.at[1]} data-h={r.h} aria-hidden="true">
@@ -310,6 +312,7 @@ export function WorldMap() {
             >
               {t('ui.save.title')}
             </SecondaryButton>
+            <SecondaryButton onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>{t('ui.chronicle.title')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'worldmap' } })}>{t('ui.options')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
           </Piece>
@@ -343,7 +346,7 @@ export function WorldMap() {
                 <Icon name="wanted" size={26} />
                 {t('ui.map.wanted')}
               </button>
-              <button type="button" class="is-dim" aria-disabled="true" onClick={() => setToast(t('ui.map.soon.chronicle'))}>
+              <button type="button" onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>
                 <Icon name="log" size={26} />
                 {t('ui.map.chronicle')}
               </button>

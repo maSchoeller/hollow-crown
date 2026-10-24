@@ -12,6 +12,7 @@ import {
   getUnit,
   levelUp,
   lockedMechanics,
+  availableNodes,
   newCampaign,
   ruleOn,
   nextFloat,
@@ -236,24 +237,25 @@ describe('battle', () => {
     const { campaign: c, result } = finishBattle(data, campaign, state);
     expect(result.outcome).toBe('victory');
     expect(c.completed).toContain('prologue');
-    expect(c.available).toEqual(['ch01']);
+    expect(availableNodes(data, c).map((n) => n.id)).toEqual(['ch01']);
     expect(c.gold).toBeGreaterThan(campaign.gold);
   });
 });
 
 describe('step-by-step mechanics (concept/06 §10)', () => {
-  it('unlocks the triangle in chapter 1 and magic in chapter 2', () => {
-    expect(lockedMechanics(data, 'prologue')).toEqual(expect.arrayContaining(['triangle', 'magic', 'elements', 'supports']));
-    expect(lockedMechanics(data, 'ch01')).not.toContain('triangle');
-    expect(lockedMechanics(data, 'ch01')).toContain('magic');
-    expect(lockedMechanics(data, 'ch02')).not.toContain('magic');
-    expect(lockedMechanics(data, 'ch02')).toContain('elements');
+  it('unlocks the triangle after 1 story mission and magic after 2', () => {
+    const at = (...completed: string[]) => lockedMechanics(data, { ...campaign, completed });
+    expect(at()).toEqual(expect.arrayContaining(['triangle', 'magic', 'elements', 'supports']));
+    expect(at('prologue')).not.toContain('triangle');
+    expect(at('prologue')).toContain('magic');
+    expect(at('prologue', 'ch01')).not.toContain('magic');
+    expect(at('prologue', 'ch01')).toContain('elements');
   });
   it('ignores the triangle while it is locked, in forecast and resolution alike', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
     expect(ruleOn(s, 'triangle')).toBe(false);
     const kael = getUnit(s, 'kael');
-    const foe = s.units.find((u) => u.id === 'p_e1')!;
+    const foe = s.units.find((u) => u.id === 'p_e4')!; // axe bandit: lance (Kael) beats axe
     const near = { ...s, units: s.units.map((u) => (u.uid === foe.uid ? { ...u, pos: [kael.pos![0], kael.pos![1] - 1] as [number, number] } : u)) };
     expect(forecast(data, near, 'kael', foe.uid).attacker.triangle).toBe(0);
     expect(forecast(data, { ...near, locked: [] }, 'kael', foe.uid).attacker.triangle).toBe(1);
@@ -263,7 +265,9 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
       beginBattle(data, { ...campaign, settings: { ...campaign.settings, difficulty: d } }, 'prologue', campaign.roster.map((u) => u.id)).state;
     const foes = (s: BattleState) => s.units.filter((u) => u.team === 'enemy').length;
     expect(foes(at('easy'))).toBeLessThan(foes(at('normal')));
-    expect(foes(at('normal'))).toBeLessThan(foes(at('hard')));
+    // Hard keeps the starting count of normal (the extra western bandit is normal-only) and adds the ambush reinforcement in round 3.
+    expect(foes(at('normal'))).toBeGreaterThanOrEqual(foes(at('hard')));
+    expect(data.maps.prologue_caravan!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
   });
   it('hands the avatar a tome after chapter 1', () => {
     expect(campaign.roster.find((u) => u.id === 'avatar')!.equip.mainHand?.def).toBe('iron_sword');
