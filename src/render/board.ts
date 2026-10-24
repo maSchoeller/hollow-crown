@@ -134,6 +134,8 @@ export class BoardView {
   skip = false;
   quality: Quality = 'mid';
   figures: FigureStyle = '3d';
+  /** camera shake on critical hits (option "shake", off with prefers-reduced-motion) */
+  shakeEnabled = true;
 
   // camera: ground point at the screen centre (tiles, y = south) and CSS px per tile
   private camX = 0;
@@ -162,6 +164,8 @@ export class BoardView {
   private fxTexture?: Texture;
   private fxSprites: FxSprite[] = [];
   private floaters: Array<{ el: HTMLDivElement; x: number; y: number; h: number; start: number; dur: number }> = [];
+  /** bleed-out counters over downed units (phases left), kept in sync by `syncUnits` and the `downed`/`bleed` events */
+  private bleedLabels = new Map<string, HTMLDivElement>();
   private readyPromise: Promise<void> | null = null;
   private pointer = new Map<number, { x: number; y: number; sx: number; sy: number }>();
   private panMoved = false;
@@ -209,6 +213,7 @@ export class BoardView {
     this.disposed = true;
     window.removeEventListener('resize', this.onResize);
     for (const f of this.floaters) f.el.remove();
+    for (const el of this.bleedLabels.values()) el.remove();
     this.engine.stopRenderLoop();
     releaseModels(this.scene);
     this.scene.dispose();
@@ -616,6 +621,34 @@ export class BoardView {
       this.setAnim(v, u.downed ? 'downed' : 'idle');
     }
     for (const [uid, v] of [...this.units]) if (!seen.has(uid)) this.removeUnit(v);
+    for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone ? u.bleed ?? 0 : null);
+  }
+
+  /** Counter of phases a downed unit has left (pulse symbol + number, DESIGN.md `downed`); `null` removes it. */
+  private setBleedLabel(uid: string, bled: number | null): void {
+    const left = bled === null ? null : Math.max(0, this.data.balance.death.bleedOutTurns - bled);
+    let el = this.bleedLabels.get(uid);
+    if (left === null || !this.units.has(uid)) {
+      el?.remove();
+      this.bleedLabels.delete(uid);
+      return;
+    }
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'hc-bleed';
+      this.floatLayer.appendChild(el);
+      this.bleedLabels.set(uid, el);
+    }
+    el.innerHTML = `<svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 7h5l2-5 3 9 3-7 2 3h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${left}</b>`;
+  }
+
+  private placeBleedLabels(): void {
+    for (const [uid, el] of this.bleedLabels) {
+      const v = this.units.get(uid);
+      if (!v) continue;
+      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.05, -(v.y + v.offY + 0.5)));
+      el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
+    }
   }
 
   private removeUnit(v: UnitView): void {
@@ -1025,6 +1058,7 @@ export class BoardView {
     this.updateFx(now);
     this.scene.render();
     this.updateFloaters(now);
+    this.placeBleedLabels();
   }
 
   private placeUnit(v: UnitView, now: number): void {
@@ -1212,7 +1246,7 @@ export class BoardView {
             this.spawnFx(e.crit ? 'hit_star_crit' : 'hit_spark', dp[0], dp[1]);
             d.flash = 1;
             this.setAnim(d, 'hit');
-            if (e.crit) {
+            if (e.crit && this.shakeEnabled) {
               this.shake = 0.12;
               setTimeout(() => (this.shake = 0), 220 / this.speed);
             }
@@ -1291,16 +1325,23 @@ export class BoardView {
             v.downed = true;
             v.desat = 1;
             this.setAnim(v, 'downed');
+            this.setBleedLabel(e.unit, 0);
           }
           await this.hooks.onEvent?.(e);
           await this.wait(350);
           break;
         }
+        case 'bleed':
+          this.setBleedLabel(e.unit, e.turns);
+          await this.hooks.onEvent?.(e);
+          await this.wait(250);
+          break;
         case 'died':
         case 'retreated':
         case 'rescued':
         case 'escaped': {
           const v = this.units.get(e.unit);
+          this.setBleedLabel(e.unit, null);
           if (v) {
             if (e.t === 'died') this.spawnFx('smoke', Math.round(v.x), Math.round(v.y));
             await this.tween(e.t === 'died' ? 500 : 300, (t) => {

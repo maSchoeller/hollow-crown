@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/hooks';
+import { useEffect, useErrorBoundary } from 'preact/hooks';
 import { t } from '../i18n';
 import { asset } from '../ui/components';
 import { Dialogue } from '../ui/Dialogue';
@@ -6,8 +6,17 @@ import { Icon } from '../ui/icons';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
-import { EndScreen, NewGame, Options, Result, Title, WorldMap } from './screens/Menus';
-import { battle, campaign, data, restartBattle, screen, setFlag, settings } from './store';
+import { FaultScreen, SaveNotices } from './screens/Fault';
+import { Campaigns, NewCampaign } from './screens/Campaigns';
+import { Troop } from './screens/Troop';
+import { Options, Result, Title } from './screens/Menus';
+import { WorldMap } from './screens/WorldMap';
+import { campaign, data } from './state/session';
+import { runEffects, storyContext } from './state/flow';
+import { battle, canRestart, restartBattle } from './state/battle';
+import { fault, reportFault } from './state/fault';
+import { screen } from './state/screen';
+import { settings } from './state/settings';
 import { lang } from '../i18n';
 
 function Defeat() {
@@ -20,15 +29,17 @@ function Defeat() {
       </div>
       <div class="tagline">{t('ui.defeat.text')}</div>
       <div class="title-menu">
-        {b && b.start.settings.deathMode !== 'classic' && (
-          <button class="btn primary big" onClick={() => restartBattle(true)}>
+        {b && canRestart('turn') && (
+          <button class="btn primary big" onClick={() => restartBattle('turn')}>
             {t('ui.battle.restartRound')}
           </button>
         )}
-        <button class="btn" onClick={() => restartBattle(false)}>
-          <Icon name="restart" />
-          {t('ui.battle.restartMission')}
-        </button>
+        {b && canRestart('mission') && (
+          <button class={`btn ${canRestart('turn') ? '' : 'primary big'}`} onClick={() => restartBattle('mission')}>
+            <Icon name="restart" />
+            {t('ui.battle.restartMission')}
+          </button>
+        )}
         <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
           <Icon name="home" />
           {t('ui.battle.toTitle')}
@@ -61,12 +72,28 @@ function useWakeLock(): void {
   }, []);
 }
 
+/** Root: the screens, the save notices, and the fault screen over everything (render errors end up there too). */
 export function App() {
+  const [renderError, resetRenderError] = useErrorBoundary(reportFault);
+  const failed = fault.value !== null;
+  useEffect(() => {
+    if (renderError && !failed) resetRenderError();
+  }, [renderError, failed]);
+  return (
+    <>
+      {!renderError && <Screens />}
+      <SaveNotices />
+      {failed && <FaultScreen />}
+    </>
+  );
+}
+
+function Screens() {
   void lang.value; // re-render on language change
   useWakeLock();
   const sc = screen.value;
   useEffect(() => {
-    if (sc.name === 'title' || sc.name === 'newGame') audio.music('title');
+    if (sc.name === 'title' || sc.name === 'campaigns' || sc.name === 'newGame') audio.music('title');
     else if (sc.name === 'worldmap') audio.music('worldmap');
     else if (sc.name === 'result' || sc.name === 'camp') audio.music('camp');
     else if (sc.name === 'dialogue') {
@@ -77,8 +104,10 @@ export function App() {
   switch (sc.name) {
     case 'title':
       return <Title />;
+    case 'campaigns':
+      return <Campaigns />;
     case 'newGame':
-      return <NewGame />;
+      return <NewCampaign />;
     case 'worldmap':
       return <WorldMap />;
     case 'dialogue':
@@ -87,14 +116,14 @@ export function App() {
           key={sc.id}
           data={data}
           id={sc.id}
-          flags={campaign.value?.flags ?? []}
+          ctx={storyContext()}
           avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
-          onFlag={setFlag}
+          onEffects={runEffects}
           onDone={sc.next}
         />
       );
     case 'prep':
-      return <Prep node={sc.node} />;
+      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
     case 'battle':
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':
@@ -103,9 +132,9 @@ export function App() {
       return <Defeat />;
     case 'camp':
       return <Camp tab={sc.tab} />;
+    case 'troop':
+      return <Troop from={sc.from} />;
     case 'options':
       return <Options back={sc.back} />;
-    case 'end':
-      return <EndScreen />;
   }
 }

@@ -54,7 +54,7 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     materialsGained: {},
     itemsGained: [],
     supports: clone(c.supports),
-    flags: [...c.flags],
+    flags: Object.keys(c.flags),
     nextUid: c.nextUid,
     avatarName: c.avatar.name,
     locked: lockedMechanics(data, nodeId),

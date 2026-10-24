@@ -1,0 +1,188 @@
+/* Base: reset, root variables, typography and the generic screen frame. Not tied to one screen;
+   stays when styles.css is gone (with tokens.css, pieces.css and the per-screen files). */
+/* UI style U21 – "B hell, Wappen & Banner", studio version: bone ground, ink, one ember accent,
+   bevelled corners, hairlines and tonal fills, no drop shadows, no gradients. */
+@import './tokens.css';
+@import '@fontsource/barlow/500.css';
+@import '@fontsource/barlow/600.css';
+@import '@fontsource/barlow-condensed/600.css';
+@import '@fontsource/barlow-condensed/700.css';
+
+:root {
+  --bg: #f3eee4;
+  --surface: #faf7f0;
+  --glass: rgba(250, 247, 240, 0.92);
+  --tone: #e9e3d6;
+  --tone-2: #ddd5c4;
+  --ink: #1f1e24;
+  --text: #1f1e24;
+  --muted: #65605a;
+  --line: rgba(31, 30, 36, 0.12);
+  --line-2: rgba(31, 30, 36, 0.2);
+  --ember: #e8743b;
+  --ember-ink: #b44c18;
+  --blue: #2f64c8;
+  --red: #b83a2e;
+  --green: #2e7d46;
+  --fire: #c9471f;
+  --wind: #2e7d46;
+  --earth: #8a5a22;
+  --water: #1f6fb0;
+  --light: #9a7a10;
+  --dark: #6a3fb5;
+  --common: #65605a;
+  /* item names; rarity never in team blue (DESIGN.md: rarity-*), legendary darker than the frame gold for legibility */
+  --rare: var(--hc-rarity-rare);
+  --epic: var(--hc-rarity-epic);
+  --legendary: #a9740f;
+  --cut: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  --shield: polygon(0 0, 100% 0, 100% 64%, 50% 100%, 0 64%);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sheet-shadow: 0 -10px 30px rgba(31, 30, 36, 0.14);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* screens and the battle are absolute with inset 0: anchor them to #app, not to the initial viewport */
+#app {
+  position: relative;
+}
+/* iOS home-screen app: 100% stops short of the rounded corners (status bar and home indicator),
+   the large viewport unit covers the whole display */
+@media (display-mode: standalone) {
+  html,
+  body,
+  #app {
+    height: 100lvh;
+  }
+  .screen-bg,
+  .screen > .screen-bg {
+    bottom: auto;
+    height: 100lvh;
+  }
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+.icon {
+  flex: 0 0 auto;
+  display: block;
+}
+.num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.title-font,
+.display {
+  font-family: var(--hc-font-name);
+  font-weight: 600;
+}
+.lbl {
+  font: 700 11.5px 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(14px + var(--safe-top)) 16px calc(14px + var(--safe-bottom));
+  overflow: auto;
+  background: var(--bg);
+}
+.screen-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.screen-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(21, 20, 26, 0.35);
+}
+.screen > * {
+  position: relative;
+}
+/* fixed: the image always fills the whole viewport, also while a screen scrolls */
+.screen > .screen-bg {
+  position: fixed;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+}
+h1,
+h2 {
+  font-family: var(--hc-font-name);
+  letter-spacing: 0.01em;
+}
+h1 {
+  font-size: 34px;
+  line-height: 1.05;
+}
+h2 {
+  font-size: 26px;
+  line-height: 1.1;
+}
+h3 {
+  font: 700 12.5px 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.muted {
+  color: var(--muted);
+}
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.grow {
+  flex: 1;
+}
+.spacer {
+  flex: 1;
+}
+.hair {
+  border-top: 1px solid var(--line);
+}
+.screen-narrow {
+  width: min(720px, 100%);
+  margin: 0 auto;
+}

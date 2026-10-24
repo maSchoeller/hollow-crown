@@ -1,6 +1,6 @@
 import type { GameData, Mechanic, Reward, SideObjectiveDef, Stats } from '../defs';
 import type { GameEvent } from '../events';
-import { newItem, recordFromChar, autoEquip } from '../battle/create';
+import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
 import { sideObjectiveDone } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
@@ -8,6 +8,7 @@ import { allItems, itemDef } from '../rules/items';
 import { grantSp } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone, pairKey } from '../util';
+import { conditionContext, evalConditions } from './conditions';
 
 export const SAVE_VERSION = 1;
 
@@ -23,12 +24,17 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     convoy: [],
     gold: data.campaign.startGold,
     materials: {},
-    flags: [],
+    flags: {},
+    left: [],
+    stance: { warm: 0, sober: 0, defiant: 0 },
+    chronicle: [],
     completed: [],
     available: [data.campaign.start],
     supports: {},
     nextUid: 1,
     offers: [],
+    home: { kind: data.campaign.home, rooms: {} },
+    tavern: [],
   };
   for (const def of Object.values(data.chars)) {
     if (def.joins !== 'prologue') continue;
@@ -37,6 +43,21 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
   for (const ref of data.campaign.startConvoy) c.convoy.push(newItem(c, ref, data));
   for (const [a, b] of data.campaign.supportPairs) c.supports[pairKey(a, b)] = { points: 0, rank: null };
   return c;
+}
+
+/** Fills fields a saved campaign may lack (architecture §8.7: new persisted fields get a default on load). */
+export function normalizeCampaign(c: CampaignState): CampaignState {
+  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[] };
+  return {
+    ...c,
+    // format 2 as the PoC wrote it kept a list of flag names
+    flags: Array.isArray(old.flags) ? Object.fromEntries((old.flags as string[]).map((f) => [f, true as const])) : c.flags,
+    left: old.left ?? [],
+    stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
+    chronicle: old.chronicle ?? [],
+    home: c.home ?? { kind: 'camp', rooms: {} },
+    tavern: c.tavern ?? [],
+  };
 }
 
 export interface UnitResult {
@@ -233,14 +254,52 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       return next && st.points >= data.balance.supports.thresholds[next] && !!data.campaign.supportDialogues[key]?.[next];
     })
     .map(([k]) => k);
-  for (const f of s.flags) if (!c.flags.includes(f)) c.flags.push(f);
+  for (const f of s.flags) c.flags[f] ??= true;
   if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
   c.available = [...node.next];
   c.rng = rng;
   refreshOffers(data, c, node.merchantTier);
+  refreshTavern(data, c);
   // dead units' gear in the convoy gets refilled as well
   refill(data, c.convoy);
   return { campaign: c, result };
+}
+
+/** Tavern offers of a chapter (story 6.4): `tavernOffersPerChapter` mercenaries near the level of the next mission. */
+export function refreshTavern(data: GameData, c: CampaignState): void {
+  const tav = data.balance.economy.tavern;
+  const ctx = conditionContext(data, c);
+  const classes = tav.classes.filter((k) => evalConditions(ctx, k.requires));
+  const next = data.campaign.nodes.find((n) => n.id === c.available[0]);
+  const expected = next?.expectedLevel ?? Math.max(1, ...c.roster.map((u) => u.level));
+  c.tavern = [];
+  if (!classes.length) return;
+  for (let i = 0; i < data.balance.economy.tavernOffersPerChapter; i++) {
+    const kind = pick(c.rng, classes);
+    const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
+    const cls = data.classes[kind.class]!;
+    const zero = { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 };
+    const rec: UnitRecord = {
+      id: `merc${c.nextUid++}`,
+      nameKey: pick(c.rng, tav.names),
+      classId: kind.class,
+      level,
+      exp: 0,
+      stats: genericStats(data, kind.class, level, 0),
+      growth: clone(cls.growth),
+      gained: { ...zero },
+      expected: { ...zero },
+      flags: [],
+      equip: {},
+      bag: [],
+      scars: [],
+      mastered: [],
+      loadout: [],
+      sp: {},
+    };
+    autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
+    c.tavern.push(rec);
+  }
 }
 
 /** Merchant special offers: 1–2 affixed items per chapter (concept/07 §1). */

@@ -16,6 +16,8 @@ import {
   ruleOn,
   nextFloat,
   reachable,
+  sideObjectiveDone,
+  sideObjectiveProgress,
   seedRng,
   triangleOf,
   weaponProfile,
@@ -40,6 +42,27 @@ beforeAll(() => {
   });
 });
 
+describe('item images (story 8.5)', () => {
+  const images = () => new Set(Object.values(data.items).map((i) => i.image ?? i.id));
+  it('accepts content where every item and rune has its image', () => {
+    const loaded = loadContentFromDisk();
+    expect(validateContent(loaded.data, loaded.locales, undefined, images())).toEqual([]);
+  });
+  it('reports an item and a rune without image', () => {
+    const loaded = loadContentFromDisk();
+    const set = images();
+    set.delete('iron_sword');
+    set.delete('fire_rune');
+    const msgs = validateContent(loaded.data, loaded.locales, undefined, set).map((i) => `${i.file}: ${i.message}`);
+    expect(msgs).toContain('items.yaml: iron_sword: no image art/items/iron_sword.png');
+    expect(msgs).toContain('runes.yaml: fire_rune_2: no image art/items/fire_rune.png');
+  });
+  it('tiered runes share the image of their element', () => {
+    expect(data.items.fire_rune_3!.image).toBe('fire_rune');
+    expect(data.runes.dark_rune_1!.image).toBe('dark_rune');
+  });
+});
+
 describe('rng', () => {
   it('is deterministic per seed', () => {
     const a = seedRng(42);
@@ -49,6 +72,23 @@ describe('rng', () => {
     expect(xs).toEqual(ys);
     expect(xs.every((x) => x >= 0 && x < 1)).toBe(true);
     expect(seedRng(1)).not.toEqual(seedRng(2));
+  });
+});
+
+describe('side objective progress (story 2.1)', () => {
+  it('counts villages for the HUD pill and agrees with the done check', () => {
+    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'visit_villages')!;
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 0, total: 3 });
+    expect(sideObjectiveDone(data, s, o)).toBe(false);
+    s.stats.villagesVisited.push('v_north', 'v_east', 'v_west');
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 3, total: 3 });
+    expect(sideObjectiveDone(data, s, o)).toBe(true);
+  });
+  it('has no count for objectives that are not about counting', () => {
+    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'turn_limit')!;
+    expect(sideObjectiveProgress(data, s, o)).toBeUndefined();
   });
 });
 

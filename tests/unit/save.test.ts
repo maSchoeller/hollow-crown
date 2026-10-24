@@ -90,7 +90,7 @@ describe('save format 2 (concept/24 §5.15)', () => {
     await writeSave(
       meta.id,
       '1',
-      { campaign: { ...format2.payload.campaign, completed: ['prologue'] }, screen: 'camp' },
+      { campaign: { ...format2.payload.campaign, settings: { difficulty: 'hard', deathMode: 'standard' }, completed: ['prologue'] }, screen: 'camp' },
       opts('2026-10-23T12:00:00.000Z', 500),
     );
     const [m] = await listCampaigns();

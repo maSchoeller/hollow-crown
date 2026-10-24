@@ -84,6 +84,18 @@ export function sideObjectiveDone(data: GameData, s: BattleState, o: SideObjecti
   return false;
 }
 
+/** "have of total" for side objectives that count something (villages, chests); the HUD shows it as "0/1". */
+export function sideObjectiveProgress(data: GameData, s: BattleState, o: SideObjectiveDef): { have: number; total: number } | undefined {
+  const map = mapOf(data, s);
+  const count = (type: 'village' | 'chest', done: string[]) => {
+    const ids = map.objects.filter((x) => x.type === type).map((x) => x.id);
+    return { have: ids.filter((id) => done.includes(id)).length, total: ids.length };
+  };
+  if (o.type === 'visit_villages') return count('village', s.stats.villagesVisited);
+  if (o.type === 'open_chests') return count('chest', s.stats.chestsOpened);
+  return undefined;
+}
+
 /** Spawns map-defined units near their position if the tile is taken. */
 export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], reinforcement: boolean, events: GameEvent[]): void {
   const pct = data.balance.difficulty[s.settings.difficulty].enemyStatPercent;

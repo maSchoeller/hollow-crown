@@ -1,6 +1,7 @@
 /** Presentational UI pieces (no app state, no renderer). */
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
+import './notices.css';
 import {
   computeStats,
   itemDef,
@@ -10,7 +11,6 @@ import {
   weaponProfile,
   type BattleState,
   type BattleUnit,
-  type Forecast,
   type GameData,
   type ItemInstance,
   type Team,
@@ -18,24 +18,14 @@ import {
 } from '../core';
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
-import { ElementIcon, Icon, TriMark } from './icons';
+import { ElementIcon, Icon } from './icons';
+import { Amount, ItemImage } from './pieces';
+import { asset } from './asset';
 
-export const asset = (p: string): string => `${import.meta.env.BASE_URL}assets/${p}`;
+export { asset };
 
 export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);
-}
-
-const KIND_ICON: Record<string, string> = {
-  sword: 'sword', lance: 'lance', axe: 'axe', bow: 'bow', anima: 'tome', light: 'tome', dark: 'tome', staff: 'staff', breath: 'fire',
-  shield: 'shield', armor: 'armor', accessory: 'ring', consumable: 'potion', key: 'key', seal: 'seal', material: 'ore', rune: 'rune', tome: 'tome',
-};
-/** Icon name for an item (weapon type first, then kind). */
-export function itemIcon(data: GameData, inst: ItemInstance | string): string {
-  const d = itemDef(data, inst);
-  if (d.weaponType) return KIND_ICON[d.weaponType] ?? 'star';
-  if (d.slot === 'head') return 'helm';
-  return KIND_ICON[d.kind] ?? 'star';
 }
 
 export function itemName(data: GameData, inst: ItemInstance): string {
@@ -138,7 +128,7 @@ export function UnitCard({ data, unit, state, right }: { data: GameData; unit: B
         <div class="unit-sub">
           {w ? (
             <>
-              <Icon name={itemIcon(data, w)} size={16} />
+              <ItemImage data={data} item={w} size={24} />
               {itemName(data, w)}
             </>
           ) : (
@@ -184,13 +174,16 @@ export function StatsGrid({ data, unit, state }: { data: GameData; unit: BattleU
       </div>
       <div class="stat">
         <span class="muted">{t('ui.stat.exp')}</span>
-        <b>{unit.exp}</b>
+        <b>
+          <Amount resource="exp" value={unit.exp} />
+        </b>
       </div>
     </div>
   );
 }
 
-export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance }) {
+/** Value line of an item as short parts ("Mt 9", "Tr 70" ...), shared by details and item lines. */
+export function itemParts(data: GameData, inst: ItemInstance): string[] {
   const d = itemDef(data, inst);
   const parts: string[] = [];
   if (d.mt !== undefined) {
@@ -207,6 +200,12 @@ export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance
     if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${d.charges}`);
     if (d.element) parts.push(t(`ui.element.${d.element}`));
   }
+  return parts;
+}
+
+export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance }) {
+  const d = itemDef(data, inst);
+  const parts = itemParts(data, inst);
   const slots = runeSlotCount(data, inst);
   return (
     <div class="col" style={{ gap: 4, fontSize: 14 }}>
@@ -229,9 +228,7 @@ export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance
 export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: GameData; inst: ItemInstance; sub?: ComponentChildren; right?: ComponentChildren; selected?: boolean; onClick?: () => void }) {
   return (
     <div class={`item-row ${selected ? 'sel' : ''}`} onClick={onClick}>
-      <span class={`ico r-${rarityOf(data, inst)}`}>
-        <Icon name={itemIcon(data, inst)} />
-      </span>
+      <ItemImage data={data} item={inst} />
       <div style={{ minWidth: 0 }}>
         <span class={`r-${rarityOf(data, inst)}`}>{itemName(data, inst)}</span>
         {sub && <small>{sub}</small>}
@@ -241,111 +238,53 @@ export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: G
   );
 }
 
-/** Combat forecast as a duel card (U20/U21): names with crests, big numbers, HP after. Same numbers as the resolution. */
-export function ForecastView({ data, state, f }: { data: GameData; state: BattleState; f: Forecast }) {
-  const a = state.units.find((u) => u.uid === f.attacker.uid)!;
-  const d = state.units.find((u) => u.uid === f.defender.uid)!;
-  const aw = f.attacker.weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === f.attacker.weaponUid) : undefined;
-  const dw = d.equip.mainHand;
-  const who = (s: Forecast['attacker'], u: BattleUnit, w: ItemInstance | undefined, right: boolean) => (
-    <div class={`fc-who ${right ? 'right' : ''}`}>
-      <Crest id={u.portrait} name={unitName(u)} w={48} h={56} team={u.team} />
-      <div style={{ minWidth: 0 }}>
-        <div class="fc-name">{unitName(u)}</div>
-        <div class="unit-sub">
-          {w ? itemName(data, w) : '–'}
-          <TriMark v={s.triangle} label={t(s.triangle > 0 ? 'ui.fc.advantage' : 'ui.fc.disadvantage')} />
-          {s.effective && <span class="gold">{t('ui.effective')}</span>}
-        </div>
-      </div>
-    </div>
-  );
-  const val = (s: Forecast['attacker'], k: 'dmg' | 'hit' | 'crit') => {
-    if (!s.canStrike) return <span class="fc-val muted">–</span>;
-    if (k === 'dmg')
-      return (
-        <span class="fc-val">
-          {s.damage}
-          {s.strikes > 1 && <small class="mult">×{s.strikes}</small>}
-        </span>
-      );
-    return (
-      <span class="fc-val">
-        {k === 'hit' ? s.hit : s.crit}
-        <small>%</small>
-      </span>
-    );
-  };
-  const elem = (s: Forecast['attacker']) =>
-    s.element ? (
-      <span class={`fc-val ${s.elementMult > 1 ? 'adv' : s.elementMult < 1 ? 'dis' : ''}`} style={{ fontSize: 18 }}>
-        <ElementIcon el={s.element} /> {s.elementMult !== 1 ? `${s.elementMult > 1 ? '+' : ''}${Math.round((s.elementMult - 1) * 100)}%` : ''}
-      </span>
-    ) : (
-      <span />
-    );
-  const hpCell = (s: Forecast['attacker'], u: BattleUnit, after: number) => (
-    <div class="fc-hp">
-      <span class="hp-num">
-        {s.hpBefore} → {after}
-      </span>
-      <HpBar hp={s.hpBefore} max={s.maxHp} preview={after} team={u.team} />
-    </div>
-  );
-  const tandem = f.tandem ? state.units.find((u) => u.uid === f.tandem!.uid) : undefined;
-  const guard = f.guard ? state.units.find((u) => u.uid === f.guard!.uid) : undefined;
+/**
+ * One line of a list in style B (equipment list, convoy, merchant, smith): image, name with values, the right
+ * side for the comparison or the price. A tap selects; `dim` greys it out (the reason stands in `sub`).
+ */
+export function ItemLine({
+  data,
+  inst,
+  sub,
+  side,
+  tag,
+  selected,
+  current,
+  dim,
+  onClick,
+}: {
+  data: GameData;
+  inst: ItemInstance;
+  /** replaces the value line (e.g. the reason an item cannot be used) */
+  sub?: ComponentChildren;
+  side?: ComponentChildren;
+  /** small black pill behind the name ("equipped") */
+  tag?: string;
+  selected?: boolean;
+  current?: boolean;
+  dim?: boolean;
+  onClick?: () => void;
+}) {
+  const d = itemDef(data, inst);
+  const values = [...itemParts(data, inst), ...(d.grantsSkill ? [t('ui.item.teaches', { skill: t(`skill.${d.grantsSkill.skill}.name`) })] : [])];
   return (
-    <div class="forecast">
-      <div class="fc-head">
-        {who(f.attacker, a, aw, false)}
-        <span class="lbl" style={{ color: 'var(--ink)' }}>{t('ui.fc.vs')}</span>
-        {who(f.defender, d, dw, true)}
-      </div>
-      <div class="fc-table">
-        <div class="fc-row">
-          {val(f.attacker, 'dmg')}
-          <span class="lbl">{t('ui.dmg')}</span>
-          {val(f.defender, 'dmg')}
-        </div>
-        <div class="fc-row">
-          {val(f.attacker, 'hit')}
-          <span class="lbl">{t('ui.hit')}</span>
-          {val(f.defender, 'hit')}
-        </div>
-        <div class="fc-row">
-          {val(f.attacker, 'crit')}
-          <span class="lbl">{t('ui.crit')}</span>
-          {val(f.defender, 'crit')}
-        </div>
-        {ruleOn(state, 'elements') && (f.attacker.element || f.defender.element) && (
-          <div class="fc-row">
-            {elem(f.attacker)}
-            <span class="lbl">{t('ui.element')}</span>
-            {elem(f.defender)}
-          </div>
-        )}
-        <div class="fc-row">
-          {hpCell(f.attacker, a, f.attackerHpAfter)}
-          <span class="lbl">{t('ui.fc.hpAfter')}</span>
-          {hpCell(f.defender, d, f.defenderHpAfter)}
-        </div>
-      </div>
-      {f.attacker.status.filter((x) => x.chance > 0).map((x) => (
-        <div class="fc-note" key={x.status}>
-          {t(`ui.status.${x.status}`)}: {x.chance}%
-        </div>
-      ))}
-      {tandem && (
-        <div class="fc-note">
-          {t('ui.tandem')}: {unitName(tandem)} ({f.tandem!.damage} · {f.tandem!.hit}%)
-        </div>
-      )}
-      {guard && (
-        <div class="fc-note">
-          {t('ui.guard')}: {unitName(guard)} {f.guard!.chance}%
-        </div>
-      )}
-    </div>
+    <button
+      type="button"
+      class={`hc-line-item ${selected ? 'is-sel' : ''} ${current ? 'is-current' : ''} ${dim ? 'is-dim' : ''}`}
+      aria-pressed={selected}
+      aria-disabled={dim}
+      onClick={dim ? undefined : onClick}
+    >
+      <ItemImage data={data} item={inst} />
+      <span style={{ minWidth: 0 }}>
+        <span class="hc-line-item__name">
+          {itemName(data, inst)}
+          {tag && <span class="hc-tag">{tag}</span>}
+        </span>
+        <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
+      </span>
+      <span class="hc-line-item__side">{side}</span>
+    </button>
   );
 }
 
@@ -358,12 +297,18 @@ export function useNow(intervalMs: number): number {
   return n;
 }
 
-export function Toast({ text, onDone }: { text: string; onDone: () => void }) {
+/** Short notice; `lead` puts e.g. the looted item's image before the text. */
+export function Toast({ text, lead, onDone }: { text: string; lead?: ComponentChildren; onDone: () => void }) {
   useEffect(() => {
     const id = setTimeout(onDone, 2200);
     return () => clearTimeout(id);
   }, [text]);
-  return <div class="toast">{text}</div>;
+  return (
+    <div class={`toast ${lead ? 'has-lead' : ''}`}>
+      {lead}
+      {lead ? <span>{text}</span> : text}
+    </div>
+  );
 }
 
 export function useMemoOnce<T>(fn: () => T): T {

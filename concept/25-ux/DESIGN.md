@@ -3,7 +3,7 @@ name: Hollow Crown – Staffel 1
 description: Spielzeug-Diorama-UI für ein Taktik-RPG im Hochformat; runde Spielsteine mit Chibi-Kontur über einer hellen 3D-Welt.
 status: final
 created: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-24
 sources:
   - concept/20-game-brief/brief.md
   - concept/21-gdd/gdd.md
@@ -163,10 +163,10 @@ components:
     rounded: '{rounded.stone}'
     size: 50px
   currency:
-    gold: 'Münze {colors.gold}'
-    ore: 'Raute {colors.material-ore}'
-    exp: 'Stern {colors.positive}'
-    ember-spark: 'Funke {colors.ember}'
+    gold: 'gemaltes Item-Bild (art/items/gold.png)'
+    ore: 'gemaltes Item-Bild (art/items/iron_ore.png)'
+    exp: 'gemaltes Item-Bild (art/items/exp.png)'
+    ember-spark: 'gemaltes Item-Bild (art/items/ember_spark.png)'
     typography: '{typography.number}'
   consequence-card:
     marker: 'schwarze Pille {colors.line} mit Glutraute'
@@ -216,7 +216,7 @@ Referenz ist das Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png`. V
 
 **Kontrast:** `{colors.line}` auf `{colors.cream}` ≈ 13 : 1, `{colors.soft}` auf `{colors.cream}` ≈ 5 : 1, Weiß auf `{colors.ember}` ≈ 3 : 1 (nur für fette Labels ab 16 px). Teamfarben, Glutorange und Positiv/Negativ stehen nie allein: immer zusammen mit Form, Symbol oder Text.
 
-**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, Eisenerz = graue Raute, EP = grüner Stern, Glutfunke = Glut-Funke; jedes weitere Material (Mondstahl, Drachenschuppe, Arkanstaub) bekommt eine eigene Form und Farbe, bevor es im Spiel erscheint.
+**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, EP = grüner Stern, Glutfunke und jedes Material zeigen ihr gemaltes Item-Bild aus `art/items/` (`gold`, `exp`, `ember_spark`, Material-id) (Eisenerz, Mondstahl, Drachenschuppe, Arkanstaub …). Ein Material ohne Bild erscheint nicht im Spiel (`content:check`).
 
 ## Typography
 
@@ -281,8 +281,10 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Leiste** | vier Steine unten (Weltkarte/Heimat, Truppe, Steckbriefe, Chronik) im Raster des Docks |
 | **Raumstein** (`room-stone`) | quadratischer Stein mit Raum-Icon, Name, Stufe als drei Punkte; grüner Pfeil = ausbaubar, Glut-Zahl = Neues; gesperrt gestrichelt |
 | **Raum-Panel** | Stein mit Kopf (Raum-Icon, Name, Stufe, Wirkung), Ausbau-Band in Grün, Liste, zwei Tasten |
+| **Overlay-Blatt** (`Sheet`) | Stein über dem Schleier (45 %) mit Kopf wie der Bildschirmkopf (runder Schließen-Stein, Titelpille), scrollendem Körper und Tastenreihe; Esc oder Tipp daneben schließt. Trägt Einheiten-Info, Ziele, Kampfmenü, Aktions- und Item-Auswahl, Tausch, Konvoi |
 | **Item-Zeile** | Item-Bild (`item-image`), Name, Werte, rechts Vergleich (grün/rot) oder Preis; gewählt mit Glutrand |
 | **Item-Bild** (`item-image`) | gemaltes Bild im Stil der Porträts (`art/items/`), Rahmen in Seltenheitsfarbe, Seltenheits-Rauten oben rechts (Relikt: hohle Krone, Rahmen mit Glutorange-Akzent), Zahl unten (Aufwertung, Ladungen) |
+| **Item-Chip** (`item-chip`) | Pille mit Item-Bild und Name, z. B. Waffen-Chip der Einheitenkarte und der Kampfvorschau: **ein einziger Rahmen**. Das Bild darin hat keinen eigenen Rahmen (`ItemImage bare`), die Pille nimmt die Seltenheitsfarbe als Rand und trägt die Rauten an ihrer Ecke. Bilder ohne Namen (Listenzeile, Ausrüstungsplatz) behalten den Rahmen des Item-Bilds |
 | **Währung** (`currency`) | Symbol + Zahl in `{typography.number}`; nie Wort, nie nackte Zahl |
 | **Namensschild** (`nametag`) | Glut-Pille am Rand der Dialogbox, auf der Seite des Sprechers |
 | **Entscheidungs-Marke** | schwarze Pille „Entscheidung · hat Folgen“ mit Glutraute |

@@ -1,3 +1,4 @@
+import { CoreInvariantError } from '../errors';
 import type { GameData, Pos, Reward } from '../defs';
 import type { GameEvent } from '../events';
 import { roll1 } from '../rng';
@@ -97,7 +98,7 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
 /** Applies a validated command to a copy of the state and returns the new state and its events. */
 export function applyCommand(data: GameData, prev: BattleState, cmd: Command): ApplyResult {
   const err = validate(data, prev, cmd);
-  if (err) throw new Error(`invalid command ${cmd.type}: ${err}`);
+  if (err) throw new CoreInvariantError('invalid_command', { command: cmd.type, reason: err });
   const s = clone(prev);
   const events: GameEvent[] = [];
   switch (cmd.type) {

@@ -1,0 +1,11 @@
+# Räume der Heimat (Architektur §5.10, Story 6.3). Reihenfolge = Anzeige. Namen: room.<id>.name, Kurztext: room.<id>.desc.
+# homes: camp = wanderndes Lager (Akt 1), castle = Burg (ab Mission 1-6). requires = Bedingungen (Architektur §5.3), UND.
+# Sind sie nicht erfüllt, steht die Station gestrichelt da, mit der ersten offenen Bedingung als Grund (Freischaltung aus U20).
+- { id: convoy,    function: convoy,    icon: convoy,    fromAct: 1, homes: [camp, castle], requires: [] }
+- { id: merchant,  function: merchant,  icon: merchant,  fromAct: 1, homes: [camp, castle], requires: [] }
+- { id: smith,     function: smith,     icon: smith,     fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }] }
+- { id: healer,    function: healer,    icon: healer,    fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }] }
+- { id: tavern,    function: tavern,    icon: tavern,    fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }] }
+- { id: campfire,  function: campfire,  icon: campfire,  fromAct: 1, homes: [camp, castle], requires: [{ completed: ch02 }] }
+# Verzauberer (Runen): Raum ab Akt 2, Geschichte in Epic 10 (10.5); das Panel funktioniert schon
+- { id: enchanter, function: enchanter, icon: enchanter, fromAct: 2, homes: [castle], requires: [] }

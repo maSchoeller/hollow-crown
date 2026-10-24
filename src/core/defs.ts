@@ -23,6 +23,14 @@ export type Mechanic = 'triangle' | 'magic' | 'elements' | 'supports';
 export type DeathMode = 'classic' | 'standard' | 'casual';
 export type SupportRank = 'C' | 'B' | 'A' | 'S';
 export const SUPPORT_RANKS: readonly SupportRank[] = ['C', 'B', 'A', 'S'];
+/** Value of a story flag in `CampaignState.flags` (architecture §5.9); `true` = plainly set. */
+export type FlagValue = string | number | true;
+/** The avatar's stance profile counters (architecture §5.9); a tie is decided warm > sober > defiant. */
+export type Stance = 'warm' | 'sober' | 'defiant';
+export const STANCES: readonly Stance[] = ['warm', 'sober', 'defiant'];
+export type HomeKind = 'camp' | 'castle';
+/** Companions the story never lets join or leave (the schema forbids `recruit`/`leave` for them). */
+export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'kael'];
 export type Pos = [number, number];
 
 export interface ItemUse {
@@ -74,6 +82,8 @@ export interface ItemDef {
   cureStatus?: boolean;
   utility?: { createTerrain: string; rng: [number, number] };
   tags?: string[];
+  /** painted image art/items/<image>.png; defaults to the id (concept/25-ux/DESIGN.md item-image) */
+  image?: string;
 }
 
 export interface AffixMods {
@@ -106,6 +116,8 @@ export interface RuneDef {
   terrainOnHit?: 'ignite' | 'extinguish';
   statusOnHit?: StatusId;
   effectiveVs?: string[];
+  /** painted image art/items/<image>.png; defaults to the id */
+  image?: string;
 }
 
 export interface SetDef {
@@ -114,9 +126,14 @@ export interface SetDef {
   bonuses: Array<{ count: number; mods: { stats?: StatMods; grantSkill?: string; statusChanceBonus?: { element: Element; value: number } } }>;
 }
 
+/** Role group of a class: the filter of the troop view (concept/25-ux mockup 06). */
+export type RoleGroup = 'melee' | 'ranged' | 'support';
+export const ROLE_GROUPS: readonly RoleGroup[] = ['melee', 'ranged', 'support'];
+
 export interface ClassDef {
   id: string;
   tier: 'base' | 'advanced' | 'unique';
+  roleGroup: RoleGroup;
   moveType: MoveType;
   mov: number;
   weapons: WeaponType[];
@@ -367,9 +384,53 @@ export interface MapDef {
   devNote?: string;
 }
 
+/**
+ * One condition language for every "if" in content (architecture §5.3): an object with exactly one key.
+ * A list of conditions means AND. Evaluation never changes anything (`campaign/conditions.ts`).
+ */
+export type Condition =
+  | { flag: string | Record<string, FlagValue> }
+  | { alive: string }
+  | { dead: string }
+  | { left: string }
+  | { completed: string }
+  | { storyCount: { min?: number; max?: number } }
+  | { act: number }
+  | { support: { pair: [string, string]; rank: SupportRank } }
+  | { stance: Stance }
+  | { met: string }
+  | { chronicle: { min: number } | string[] }
+  | { any: Condition[] }
+  | { not: Condition };
+
+/** One "then" of content (architecture §5.3): an object with exactly one key; runs only inside a campaign command. */
+export type Effect =
+  | { setFlag: string | Record<string, FlagValue> }
+  | { recruit: string | { lt: string } }
+  | { leave: string }
+  | { grudge: { lt: string; delta: number } }
+  | { gold: number }
+  | { material: Record<string, number> }
+  | { item: ItemRef }
+  | { priceMod: { pct: number; act: number } }
+  | { villageAid: true }
+  | { openQuest: string }
+  | { stance: Stance }
+  | { chronicle: string }
+  | { setHome: HomeKind };
+
+/** Entry of the flag register `acts/actN/flags.yaml` (architecture §5.9); content may only use declared flags. */
+export interface FlagDef {
+  id: string;
+  kind: 'decision' | 'story' | 'quest' | 'battle';
+  /** allowed values; none = a plain on/off flag */
+  values?: Array<string | number>;
+  season2?: boolean;
+}
+
 export type DialogueLine =
-  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: { flag?: string; notFlag?: string } }
-  | { choice: Array<{ key: string; setFlag?: string }> };
+  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: Condition | Condition[] }
+  | { choice: Array<{ key: string; effects?: Effect[] }> };
 
 export interface DialogueDef {
   id: string;
@@ -387,16 +448,40 @@ export interface CampaignNodeDef {
   next: string[];
   pos: Pos;
   merchantTier: number;
+  /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */
+  expectedLevel: number;
   /** items handed to company members when the node is won (e.g. the avatar's first tome) */
   grants?: Array<{ unit: string; item: ItemRef }>;
 }
 
+/**
+ * A room of the home (camp station or castle room, architecture §5.10). Name and description come from the
+ * locales (`room.<id>.name|desc`). A station is listed when its act has been reached and shown open when `requires`
+ * holds, otherwise locked with the first condition that fails as the reason.
+ */
+export interface RoomDef {
+  id: string;
+  /** what the room does; the UI opens the matching panel */
+  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'enchanter';
+  /** line icon of the room stone (icons.tsx) */
+  icon: string;
+  /** first act in which the room exists */
+  fromAct: number;
+  /** homes the room belongs to */
+  homes: HomeKind[];
+  requires: Condition[];
+}
+
 export interface CampaignDef {
+  /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
+  act: number;
   nodes: CampaignNodeDef[];
   /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
   mechanics: Partial<Record<Mechanic, string>>;
-  /** camp facility → node after whose victory it opens ('start' = from the beginning); UI only */
-  facilities: Record<string, string>;
+  /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
+  home: HomeKind;
+  /** position of the home on the world map, percent of width and height */
+  homePos: Pos;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];
@@ -404,6 +489,15 @@ export interface CampaignDef {
   supportPairs: Array<[string, string]>;
   supportDialogues: Record<string, Partial<Record<SupportRank, string>>>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
+}
+
+/** What the tavern offers (`balance.yaml` economy.tavern): hireable classes with their kit, names, level spread. */
+export interface TavernDef {
+  /** an offer's level lies between the expected level of the next mission minus `levelSpread` and that level */
+  levelSpread: number;
+  /** name keys of generated mercenaries (locales) */
+  names: string[];
+  classes: Array<{ class: string; items: string[]; requires?: Condition[] }>;
 }
 
 export interface Balance {
@@ -476,7 +570,7 @@ export interface Balance {
   growth: { smoothingLower: number; smoothingUpper: number; minOneStatPerLevel: boolean };
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
-  death: { scarsUntilInstantDeath: number };
+  death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   bag: { size: number };
@@ -491,6 +585,13 @@ export interface Balance {
     potionUpgrade: Array<{ gold: number; heal: number }>;
     tavernOffersPerChapter: number;
     armyLimit: number;
+    /** mercenaries on top of the `armyLimit` companions (GDD: 20 + 6) */
+    mercenaryLimit: number;
+    /** highest upgrade the smith reaches per room level (index 0 = level 1, the camp) */
+    smithMaxUpgrade: number[];
+    /** smith level from which affixes can be rerolled */
+    rerollFromSmithLevel: number;
+    tavern: TavernDef;
     convoySize: number;
     rarityAffixes: Record<Rarity, number>;
     rarityRuneSlots: Record<Rarity, number>;
@@ -569,8 +670,12 @@ export interface GameData {
   affixes: Record<string, AffixDef>;
   runes: Record<string, RuneDef>;
   sets: Record<string, SetDef>;
+  /** home rooms in display order (`content/core/rooms.yaml`) */
+  rooms: Record<string, RoomDef>;
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
   dialogues: Record<string, DialogueDef>;
+  /** flag register of the acts */
+  flags: Record<string, FlagDef>;
   campaign: CampaignDef;
 }

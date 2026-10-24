@@ -1,0 +1,137 @@
+# Startwerte [C] – alle Konstanten des Regelkerns. Siehe concept/03, 04, 05, 07.
+# Quelle: concept/data-samples/balance.yaml, ergänzt um statusOf, rally, bag, ai, rarity*.
+combat:
+  hitPerSkl: 2
+  hitPerLckDivisor: 2
+  avoidPerAs: 2
+  critPerSklDivisor: 2
+  critMultiplier: 3
+  doubleAttackThreshold: 4
+  effectiveMightMultiplier: 3
+  twoRnHit: true
+triangle:
+  hit: 15
+  damage: 1
+  beats: { sword: axe, axe: lance, lance: sword }
+element:
+  cycle: { fire: wind, wind: earth, earth: water, water: fire }   # Schlüssel schlägt Wert
+  opposed: [[light, dark]]
+  advantage: 1.2
+  disadvantage: 0.8
+  sameElement: 0.8
+  maxBonusPercent: 40
+  lightEffectiveVs: [monster, undead]
+  darkBonusVs: [holy]
+  statusOf: { fire: burning, water: wet, earth: slowed, wind: knockback }
+status:
+  durationRounds: 2
+  burnPercentMaxHp: 10
+  wetSpdPenalty: 3
+  slowMovPenalty: 1
+  knockbackBlockedDamage: 2
+  rune2StatusChance: 30
+  rune3StatusChance: 50
+terrainEffects:
+  burningDuration: 2
+  burningEnterDamage: 5
+  burningSpreadChance: 25
+  rockwallDuration: 2
+  windFogClearRadius: 2
+weight:
+  carryBonus: { foot: 4, armored: 8, mounted: 6, flier: 2, monster: 10 }
+  movPenalty: [{ overload: 5, mov: 1 }, { overload: 10, mov: 2 }]
+supports:
+  thresholds: { C: 10, B: 25, A: 45, S: 70 }
+  adjacencyBonus:
+    C: { hit: 5 }
+    B: { hit: 5, avoid: 5 }
+    A: { hit: 10, avoid: 10 }
+    S: { hit: 15, avoid: 10, crit: 5 }
+  adjacencyBonusCap: { hit: 20, avoid: 20 }
+  pointsAdjacentEnd: 1
+  pointsTandemHealRescue: 2
+  tandemMinRank: B
+  tandemDamagePercent: 50
+  guardChance: { A: 20, S: 30 }
+  griefHitPenalty: 10
+  griefMissions: 3
+experience:
+  levelUpAt: 100
+  advancedLevelOffset: 15
+  combatBase: 10
+  combatMin: 1
+  combatMax: 30
+  killBase: 30
+  killPerLevelDiff: 3
+  killMin: 10
+  killMax: 100
+  bossBonus: 20
+  heal: 12
+  healExtraTarget: 3
+  rescueOrTalk: 10
+growth:
+  smoothingLower: 1.0
+  smoothingUpper: 1.5
+  minOneStatPerLevel: true
+levels:
+  max: 20
+  promoteFrom: 10
+skills:
+  spPerCombat: 1
+  spPerMissionEnd: 5
+  loadoutBase: 4
+  loadoutAdvanced: 5
+death:
+  scarsUntilInstantDeath: 2
+  # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)
+  bleedOutTurns: 3
+rally: { radius: 2, damage: 2, hit: 10 }
+bag: { size: 3 }
+fog:
+  baseVision: 3
+  visionBonus: { archer: 2, thief: 2, flier: 1 }
+economy:
+  sellRatio: 0.5
+  upgradeCost:
+    - { level: 1, gold: 300,  materials: { iron_ore: 2 } }
+    - { level: 2, gold: 600,  materials: { iron_ore: 3 } }
+    - { level: 3, gold: 1000, materials: { moonsteel: 2 } }
+    - { level: 4, gold: 1600, materials: { moonsteel: 3 } }
+    - { level: 5, gold: 2500, materials: { dragon_scale: 1 } }
+  upgradePerLevel: { weaponMight: 1, weaponHit: 3, armorDefOrRes: 1 }
+  rerollAffix: { gold: 500, arcane_dust: 2, epicGold: 800, epicArcaneDust: 3 }
+  runeMerge: { count: 3, goldPerTier: 200 }
+  recruitCost: { base: 600, perLevel: 150 }
+  scarRemoval: { gold: 2500, altItem: seers_herb }
+  potionUpgrade: [{ gold: 400, heal: 5 }, { gold: 900, heal: 5 }]
+  tavernOffersPerChapter: 3
+  armyLimit: 20
+  mercenaryLimit: 6                      # zusätzlich zu den 20 Gefährten (GDD Armee-Limit)
+  smithMaxUpgrade: [3, 4, 5]             # höchste Aufwertung je Schmied-Stufe (Lager = Stufe 1)
+  rerollFromSmithLevel: 3                # Affix neu würfeln ab Schmied-Stufe
+  tavern:
+    levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread
+    names: [merc.name.1, merc.name.2, merc.name.3, merc.name.4, merc.name.5, merc.name.6, merc.name.7, merc.name.8, merc.name.9, merc.name.10, merc.name.11, merc.name.12]
+    classes:
+      - { class: mercenary, items: [iron_sword, leather_vest] }
+      - { class: soldier,   items: [iron_lance, leather_vest] }
+      - { class: fighter,   items: [iron_axe, leather_cap] }
+      - { class: archer,    items: [iron_bow, leather_vest] }
+      - { class: mage,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
+      - { class: cleric,    items: [heal_staff], requires: [{ completed: ch01 }] }
+  convoySize: 200
+  rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
+  rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }
+difficulty:
+  easy:   { enemyStatPercent: -15, aiFinishDowned: never,    enemyAffixes: false }
+  normal: { enemyStatPercent: 0,   aiFinishDowned: fallback, enemyAffixes: false }
+  hard:   { enemyStatPercent: 15,  aiFinishDowned: prefer,   enemyAffixes: true, aiDangerAware: true, ambushReinforcements: true }
+ai:
+  killChanceWeight: 50
+  counterWeight: 0.5
+  healerBonus: 10
+  lowestHpBonus: 5
+  objectiveBonus: 30
+  dangerPerAttacker: 5
+  supportHealBelowPercent: 70
+  selfHealBelowPercent: 40

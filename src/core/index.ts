@@ -1,4 +1,5 @@
 /** Public surface of the rules core. Pure TypeScript – no DOM, no Babylon, no wall clock, no Math.random. */
+export * from './errors';
 export * from './defs';
 export * from './state';
 export * from './events';
@@ -22,4 +23,9 @@ export * from './battle/setup';
 export * from './ai/ai';
 export * from './campaign/campaign';
 export * from './campaign/camp';
+export * from './campaign/commands';
+export * from './campaign/apply';
+export * from './campaign/restart';
+export * from './campaign/conditions';
+export * from './campaign/effects';
 export * from './ai/autoplay';

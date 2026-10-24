@@ -10,7 +10,7 @@
  *   Victory and defeat fade the battle music out and hold the next track until they have finished.
  */
 import { effect } from '@preact/signals';
-import { settings } from './store';
+import { settings } from './state/settings';
 
 const BASE = `${import.meta.env.BASE_URL}assets/audio/`;
 

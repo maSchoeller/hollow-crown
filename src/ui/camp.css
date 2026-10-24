@@ -1,0 +1,371 @@
+/* The camp (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1"): diorama on top, stations as room stones below,
+   the room panel over the blurred view. Style B. */
+@import './tokens.css';
+
+.hm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  padding: calc(var(--hc-hud-top) + env(safe-area-inset-top, 0px)) var(--hc-hud-edge) calc(var(--hc-hud-top) + env(safe-area-inset-bottom, 0px));
+  background: #403020;
+  color: var(--hc-line);
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+.hm__scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 68%;
+  object-fit: cover;
+  transition: filter 160ms ease-out;
+}
+/* a room open: the whole view is the blurred camp */
+.hm.has-room .hm__scene {
+  height: 100%;
+  filter: blur(4px) saturate(0.8) brightness(0.8);
+  transform: scale(1.04);
+}
+.hm > :not(.hm__scene) {
+  position: relative;
+  width: min(560px, 100%);
+  margin-inline: auto;
+}
+.hm__hud {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.hm__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.hm-act {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 5px;
+  border-radius: var(--hc-r-pill);
+}
+.hm-act__badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-ember);
+  color: #fff;
+}
+.hm-act small {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.hm-act b {
+  display: block;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.1;
+}
+.hm__spacer {
+  flex: 1;
+  min-height: 0;
+}
+.hm__stack {
+  display: grid;
+  gap: 10px;
+}
+
+/* stations */
+.hm-rooms {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 6px;
+  padding: 10px;
+}
+.hm-rooms__title {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 4px;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 18px;
+}
+.hm-rooms__title span {
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  color: var(--hc-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hm-room {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.05;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.hm-room__stone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-stone);
+  background: var(--hc-cream-2);
+  box-shadow: 0 3px 0 var(--hc-line);
+}
+.hm-room:active:not(.is-locked) .hm-room__stone {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hm-room:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+  border-radius: var(--hc-r-chip);
+}
+.hm-room.is-locked {
+  cursor: default;
+}
+.hm-room.is-locked .hm-room__stone {
+  border-style: dashed;
+  box-shadow: none;
+  opacity: 0.5;
+}
+.hm-room.is-locked > span:not(.hm-room__stone) {
+  opacity: 0.7;
+}
+.hm-room small {
+  max-width: 100%;
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: 10.5px;
+  line-height: 1.1;
+  color: var(--hc-soft);
+}
+.hm-dot {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-ember);
+  color: #fff;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* navigation bar: four stones in the grid of the dock */
+.hm-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+.hm-nav button {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  padding: 8px 2px 6px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-action);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.hm-nav button:active {
+  transform: translateY(calc(var(--hc-press-depth) - 1px));
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hm-nav button:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+
+/* room panel */
+.hm-panel {
+  display: grid;
+  gap: 10px;
+  max-height: calc(100dvh - 190px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.hm-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hm-panel__head .hm-room__stone {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--hc-r-chip);
+  box-shadow: none;
+  flex: none;
+}
+.hm-panel__head h2 {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+}
+.hm-panel__head p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.hm-panel__close {
+  margin-left: auto;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+  cursor: pointer;
+}
+.hm-panel__body {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-height: 0;
+  overflow: auto;
+}
+.hm-hint {
+  margin: 0;
+  padding: 4px 4px 6px;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.hm-none {
+  padding: 14px 4px;
+  color: var(--hc-soft);
+}
+.hm-cost {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 6px 4px 2px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+}
+.hm-who {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream-2);
+}
+.hm-who__one {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+}
+.hm-upbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-card-inner);
+  background: var(--hc-positive-soft);
+  font-size: 12px;
+}
+.hm-subhead {
+  padding: 8px 4px 2px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.hm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px;
+}
+.hm-bond {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 2px 6px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+}
+.hm-bond b {
+  color: var(--hc-ember-dark);
+}
+/* two heads side by side (a conversation) */
+.hm-pair {
+  display: flex;
+}
+.hm-pair .trp-head + .trp-head {
+  margin-left: -10px;
+}
+.hm-offer {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+.hm-stat-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--hc-soft);
+}

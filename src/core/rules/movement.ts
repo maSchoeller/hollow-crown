@@ -1,3 +1,4 @@
+import { CoreInvariantError } from '../errors';
 import type { GameData, Pos } from '../defs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
@@ -7,7 +8,7 @@ import { computeStats } from './stats';
 export function terrainDef(data: GameData, s: BattleState, p: Pos) {
   const id = terrainAt(s, p);
   const t = data.terrain[id];
-  if (!t) throw new Error(`unknown terrain ${id}`);
+  if (!t) throw new CoreInvariantError('unknown_terrain', { id });
   return t;
 }
 

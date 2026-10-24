@@ -6,11 +6,13 @@ import type {
   CharDef,
   ClassDef,
   DialogueDef,
+  FlagDef,
   GameData,
   ItemDef,
   MapDef,
   Rarity,
   RenderDef,
+  RoomDef,
   RuneDef,
   SetDef,
   SkillDef,
@@ -23,9 +25,11 @@ import {
   charSchema,
   classSchema,
   dialogueSchema,
+  flagSchema,
   itemSchema,
   mapSchema,
   renderSchema,
+  roomSchema,
   runeSchema,
   setSchema,
   skillSchema,
@@ -45,7 +49,7 @@ export interface LoadedContent {
   issues: ContentIssue[];
 }
 
-/** Normalises a glob/file path to "maps/x.yaml" relative to the content root. */
+/** Normalises a glob/file path to "acts/act1/maps/x.yaml" relative to the content root. */
 export function contentPath(p: string): string {
   const n = p.replace(/\\/g, '/');
   const i = n.lastIndexOf('content/');
@@ -96,30 +100,32 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     if (!key) issues.push({ file: p, message: 'missing file' });
     return key ? files[key] : undefined;
   };
-  const balance = parseOne<Balance>('balance.yaml', get('balance.yaml'), balanceSchema, issues);
-  const render = parseOne<RenderDef>('render.yaml', get('render.yaml'), renderSchema, issues);
-  const classes = parseList<ClassDef>('classes.yaml', get('classes.yaml'), classSchema, issues);
-  const chars = parseList<CharDef>('units.yaml', get('units.yaml'), charSchema, issues);
-  const items = parseList<ItemDef>('items.yaml', get('items.yaml'), itemSchema, issues);
-  const skills = parseList<SkillDef>('skills.yaml', get('skills.yaml'), skillSchema, issues);
-  const affixes = parseList<AffixDef>('affixes.yaml', get('affixes.yaml'), affixSchema, issues);
-  const runes = parseList<RuneDef>('runes.yaml', get('runes.yaml'), runeSchema, issues);
-  const sets = parseList<SetDef>('sets.yaml', get('sets.yaml'), setSchema, issues);
-  const terrain = parseList<TerrainDef>('terrain.yaml', get('terrain.yaml'), terrainSchema, issues);
-  const campaign = parseOne<CampaignDef>('campaign.yaml', get('campaign.yaml'), campaignSchema, issues);
+  const balance = parseOne<Balance>('balance.yaml', get('core/balance.yaml'), balanceSchema, issues);
+  const render = parseOne<RenderDef>('render.yaml', get('core/render.yaml'), renderSchema, issues);
+  const classes = parseList<ClassDef>('classes.yaml', get('core/classes.yaml'), classSchema, issues);
+  const chars = parseList<CharDef>('units.yaml', get('acts/act1/units.yaml'), charSchema, issues);
+  const items = parseList<ItemDef>('items.yaml', get('core/items.yaml'), itemSchema, issues);
+  const skills = parseList<SkillDef>('skills.yaml', get('core/skills.yaml'), skillSchema, issues);
+  const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
+  const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
+  const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
+  const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
+  const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
+  const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
+  const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const maps: Record<string, MapDef> = {};
   const dialogues: Record<string, DialogueDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
-    if (p.startsWith('maps/')) {
+    if (/^acts\/[^/]+\/maps\//.test(p)) {
       const m = parseOne<MapDef>(p, raw, mapSchema, issues);
       if (m) maps[m.id] = m;
-    } else if (p.startsWith('dialogue/')) {
+    } else if (/^acts\/[^/]+\/dialogue\//.test(p)) {
       const d = parseOne<DialogueDef>(p, raw, dialogueSchema, issues);
       if (d) dialogues[d.id] = d;
-    } else if (p.startsWith('locales/')) {
-      const lang = p.slice('locales/'.length).split('.')[0]!;
+    } else if (/^(core|acts\/[^/]+)\/locales\//.test(p)) {
+      const lang = p.slice(p.lastIndexOf('/') + 1).split('.')[0]!;
       locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
     }
   }
@@ -133,6 +139,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     price: r.price ?? 0,
     element: r.element,
     tags: ['convoyOnly'],
+    image: r.image,
   }));
   const data: GameData = {
     balance: balance as Balance,
@@ -144,9 +151,11 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     affixes: byId(affixes),
     runes: byId(runes),
     sets: byId(sets),
+    rooms: byId(rooms),
     terrain: byId(terrain),
     maps,
     dialogues,
+    flags: byId(flagList),
     campaign: campaign as CampaignDef,
   };
   return { data, locales, issues };

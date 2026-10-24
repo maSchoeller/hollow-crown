@@ -1,5 +1,5 @@
 /**
- * Line icon set for the UI (U21: no emoji). 24×24, stroke = currentColor, so icons take the text colour.
+ * Line icon set for actions, roles and navigation (U21: no emoji). Items are painted images (ItemImage in pieces.tsx). 24×24, stroke = currentColor, so icons take the text colour.
  * Shapes are deliberately simple; the pixel board keeps its own sprites.
  */
 import type { Element } from '../core';
@@ -20,6 +20,8 @@ const P: Record<string, string> = {
   rewind: 'M11 7l-6 5 6 5zM19 7l-6 5 6 5z',
   skip: 'M5 6l7 6-7 6zM13 6l7 6-7 6z',
   log: 'M6 4h12v16H6zM9 8h6M9 12h6M9 16h4',
+  box: 'M4 7h16v13H4zM4 7l2-3h12l2 3M10 11h4',
+  more: 'M5 12h.01M12 12h.01M19 12h.01',
   save: 'M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6',
   download: 'M12 4v11M7 10l5 5 5-5M5 20h14',
   map: 'M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2zM9 4v14M15 6v14',
@@ -27,7 +29,7 @@ const P: Record<string, string> = {
   attack: 'M4 20l6-6M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',
   item: 'M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3',
   trade: 'M4 8h13l-3-3M20 16H7l3 3',
-  wait: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2',
+  wait: 'M6 3h12M6 21h12M7 3c0 5 10 6 10 9s-10 4-10 9M17 3c0 5-10 6-10 9s10 4 10 9',
   talk: 'M4 5h16v10H10l-4 4v-4H4z',
   visit: 'M4 11l8-7 8 7M6 10v10h12V10M10 20v-5h4v5',
   chest: 'M4 9h16v10H4zM4 9l2-4h12l2 4M11 12h2v3h-2z',
@@ -39,10 +41,16 @@ const P: Record<string, string> = {
   rally: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',
+  wanted: 'M5 3h14v18H5zM12 7.5a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4zM8 17h8',
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
+  // roles (class-action slot of the battle dock)
+  shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
+  blade: 'M5 19l4-1 10-10-3-3L6 15zM14 6l3 3M4 20l1-3',
+  bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   danger: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   target: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
   next: 'M5 12h12M13 6l6 6-6 6',
+  end: 'M6 5l7 7-7 7M13 5l7 7-7 7',
   ai: 'M9 4h6v3h3v6h-3v3H9v-3H6V7h3zM10 10h.01M14 10h.01',
   // camp
   camp: 'M3 20L12 4l9 16zM12 4v16M9 20l3-5 3 5',
@@ -51,27 +59,13 @@ const P: Record<string, string> = {
   smith: 'M3 10h12l3-3h3v4l-3 1v2H8l-2 3H3z',
   enchanter: 'M12 3l3 6-3 12-3-12zM6 9h12',
   healer: 'M12 4v16M4 12h16',
+  tavern: 'M5 6h11v13H5zM16 9h2.5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H16M8 9v7M12 9v7',
   campfire: 'M12 4c2 3 4 4.5 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-2-1-4 0-7zM5 20l14-3M5 17l14 3',
   bag: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2',
   gold: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z',
   star: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   scar: 'M5 19L19 5M8 9l2 2M12 13l2 2M10 7l2 2M14 11l2 2',
   fallen: 'M12 3v18M7 8h10',
-  // items
-  sword: 'M4 20l5-5M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',
-  lance: 'M4 20L18 6M15 3l6 0 0 6-3-3M7 14l3 3',
-  axe: 'M5 21L15 11M12 4c4 0 8 4 8 8l-4-1-3-3z',
-  bow: 'M6 3c8 2 12 8 12 18M6 3l12 18M4 8l4-1-1 4',
-  tome: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11',
-  shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
-  armor: 'M6 4l3 2h6l3-2 3 4-3 2v10H6V10L3 8z',
-  helm: 'M5 15a7 7 0 0 1 14 0v4H5zM12 8v11M5 15h14',
-  ring: 'M12 8a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM10 4h4l-2 4z',
-  potion: 'M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3',
-  key: 'M8 10a4 4 0 1 0 0 .1M12 12h9M17 12v3M20 12v2',
-  seal: 'M12 3a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM9 14l-2 7 5-3 5 3-2-7',
-  ore: 'M4 15l4-8 6-2 6 6-3 8H8z',
-  rune: 'M12 3l8 9-8 9-8-9zM12 8v8M9 11l3 2 3-2',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',

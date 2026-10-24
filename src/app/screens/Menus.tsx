@@ -1,87 +1,77 @@
-import { useEffect, useRef, useState } from 'preact/hooks';
-import type { DeathMode, Difficulty, Element } from '../../core';
-
-/** Placeholder until the player picks an affinity when the elements are introduced (U20). */
-const DEFAULT_AFFINITY: Element = 'wind';
+import { useEffect, useState } from 'preact/hooks';
+import type { ComponentChildren } from 'preact';
+import { itemDef, type Reward } from '../../core';
 import { t } from '../../i18n';
-import { asset, Crest, itemName, Modal, unitName } from '../../ui/components';
+import { asset, itemName, Modal, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { deleteCampaign, exportSave, importSave, listCampaigns, listSaves, readSave, type CampaignMeta, type SaveRecord, type SlotId } from '../../persistence/save';
-import {
-  campaign,
-  campaignId,
-  data,
-  importRecord,
-  latestAutoSave,
-  loadSlot,
-  nodeDef,
-  saveDbBlocked,
-  playNode,
-  screen,
-  settings,
-  startNewGame,
-  updateSettings,
-  type Screen,
-} from '../store';
+import { Amount, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Segment } from '../../ui/pieces';
+import { exportSave, type LegacyRecord, type SaveRecord, type SlotId } from '../../persistence/save';
+import { resumeText, slotSummary } from '../campaignInfo';
+import { campaign, data, latestAutoSave, saveDbBlocked } from '../state/session';
+import { loadSlot, nodeDef } from '../state/flow';
+import { screen, type Screen } from '../state/screen';
+import { settings, updateSettings, type Settings } from '../state/settings';
+import '../../ui/title.css';
+import '../../ui/options.css';
 
+/** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
-  const [saves, setSaves] = useState<SaveRecord[]>([]);
   const [auto, setAuto] = useState<SaveRecord | undefined>();
-  const [load, setLoad] = useState(false);
-  const [err, setErr] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     void latestAutoSave()
-      .then(async (rec) => {
-        setAuto(rec);
-        setSaves(rec ? await listSaves(rec.campaignId) : []);
-      })
-      .catch(() => setSaves([]));
+      .then(setAuto)
+      .catch(() => setAuto(undefined));
   }, []);
-  const onImport = async (f: File | undefined) => {
-    if (!f) return;
-    try {
-      if (!(await importRecord(importSave(await f.text())))) setErr(t('ui.campaign.limit.text'));
-    } catch (e) {
-      setErr(t(e instanceof Error && e.message === 'legacy' ? 'ui.title.importLegacy' : 'ui.title.importFailed'));
-    }
-  };
+  const Campaigns = auto ? SecondaryButton : PrimaryButton;
   return (
     <div class="screen title-screen">
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
-      <div class="logo">Hollow Crown</div>
-      <div class="tagline">{t('ui.title.tagline')}</div>
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
+      <TitleLogo />
       <div class="title-menu">
         {auto && (
-          <button class="btn primary big" onClick={() => void loadSlot('auto', auto.campaignId)}>
+          <PrimaryButton sub={resumeText(auto)} onClick={() => void loadSlot('auto', auto.campaignId)}>
             {t('ui.title.continue')}
-          </button>
+          </PrimaryButton>
         )}
-        <button class={`btn ${auto ? '' : 'primary big'}`} onClick={() => (screen.value = { name: 'newGame' })}>
-          {t('ui.title.new')}
-        </button>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8 }}>
-          <button class="btn small" disabled={saves.filter((s) => s.slot !== 'auto').length === 0} onClick={() => setLoad(true)}>
-            {t('ui.title.load')}
-          </button>
-          <button class="btn small" onClick={() => fileRef.current?.click()}>
-            {t('ui.title.import')}
-          </button>
-          <button class="btn small" onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>
-            {t('ui.options')}
-          </button>
-        </div>
-        {err && <div class="dis">{err}</div>}
-        {saveDbBlocked.value && <div class="dis">{t('ui.title.closeOtherTabs')}</div>}
-        <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={(e) => void onImport((e.target as HTMLInputElement).files?.[0])} />
+        <Campaigns onClick={() => (screen.value = { name: 'campaigns' })}>{t('ui.title.campaigns')}</Campaigns>
+        <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>{t('ui.options')}</SecondaryButton>
+        {saveDbBlocked.value && (
+          <Piece class="title-note" role="alert">
+            {t('ui.title.closeOtherTabs')}
+          </Piece>
+        )}
         <div class="title-foot">
-          {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
+          <span class="title-foot__version">
+            {t('ui.title.version')} {(import.meta.env.VITE_APP_VERSION ?? '0.1.0').slice(0, 7)}
+          </span>
           <UpdateLink />
         </div>
       </div>
-      {load && auto && <SlotPicker saves={saves} onPick={(s) => void loadSlot(s, auto.campaignId)} onClose={() => setLoad(false)} />}
     </div>
+  );
+}
+
+/** The game's name from the locale, over two lines, with a crown in place of the first "o" of the first word. */
+function TitleLogo() {
+  const name = t('ui.title.logo');
+  const [first = '', ...rest] = name.split(' ');
+  const o = first.indexOf('o');
+  return (
+    <h1 class="title-logo" aria-label={name}>
+      {o < 0 ? (
+        first
+      ) : (
+        <>
+          {first.slice(0, o)}
+          <span class="crown">♛</span>
+          {first.slice(o + 1)}
+        </>
+      )}
+      <br />
+      {rest.join(' ')}
+      <small>{t('ui.title.season')}</small>
+    </h1>
   );
 }
 
@@ -92,13 +82,13 @@ function UpdateLink() {
   }, []);
   if (status === 'available') {
     return (
-      <button class="btn small update-btn" onClick={installUpdate}>
-        <Icon name="download" /> {t('ui.update.install')}
+      <button type="button" class="title-foot__btn is-update" onClick={installUpdate}>
+        <Icon name="download" size={16} /> {t('ui.update.install')}
       </button>
     );
   }
   return (
-    <button class="link-btn" disabled={status === 'checking'} onClick={() => void checkForUpdate()}>
+    <button type="button" class="title-foot__btn" disabled={status === 'checking'} onClick={() => void checkForUpdate()}>
       {t(`ui.update.${status === 'idle' ? 'check' : status}`)}
     </button>
   );
@@ -125,13 +115,7 @@ export function SlotPicker({ saves, onPick, onClose, save }: { saves: SaveRecord
   );
 }
 
-function slotSummary(rec: SaveRecord): string {
-  const c = rec.payload.campaign;
-  const last = c.completed[c.completed.length - 1];
-  return last ? t(nodeDef(last).titleKey).split('–')[0]!.trim() : t('ui.save.start');
-}
-
-export function downloadSave(rec: SaveRecord): void {
+export function downloadSave(rec: SaveRecord | LegacyRecord): void {
   const blob = new Blob([exportSave(rec)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -140,271 +124,56 @@ export function downloadSave(rec: SaveRecord): void {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-export async function exportCurrent(): Promise<void> {
-  const id = campaignId.value;
-  const rec = id ? await readSave(id, 'auto') : undefined;
-  if (rec) downloadSave(rec);
-}
+const ON_OFF = (): Array<[boolean, string]> => [
+  [true, t('ui.on')],
+  [false, t('ui.off')],
+];
+const SPEEDS = (): Array<[1 | 2 | 3, string]> => [
+  [1, '1x'],
+  [2, '2x'],
+  [3, t('ui.opt.skip')],
+];
 
-const PORTRAITS = ['avatar_a', 'avatar_b'];
-
-/** New game (U20): only name, portrait and difficulty up front; pronouns and death mode under "more". Affinity comes with the elements. */
-export function NewGame() {
-  const [name, setName] = useState('Rhen');
-  const [pronoun, setPronoun] = useState<'she' | 'he' | 'they'>('they');
-  const [portrait, setPortrait] = useState(PORTRAITS[0]!);
-  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  const [deathMode, setDeathMode] = useState<DeathMode>('standard');
-  const [more, setMore] = useState(false);
-  const [limit, setLimit] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const opt = <T extends string>(val: T, cur: T, set: (v: T) => void, label: string, sub?: string) => (
-    <button key={val} class={`choice ${val === cur ? 'on' : ''}`} onClick={() => set(val)} aria-pressed={val === cur}>
-      {label}
-      {sub && <small>{sub}</small>}
-    </button>
-  );
-  return (
-    <div class="screen">
-      <div class="screen-narrow col" style={{ gap: 20 }}>
-        <div class="page-head">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: 'title' })} aria-label={t('ui.back')}>
-            <Icon name="back" />
-          </button>
-          <div class="titles">
-            <h2>{t('ui.new.title')}</h2>
-          </div>
-        </div>
-        <div class="field">
-          <label for="hc-name">{t('ui.new.name')}</label>
-          <input id="hc-name" type="text" value={name} maxLength={14} onInput={(e) => setName((e.target as HTMLInputElement).value)} />
-        </div>
-        <div class="field">
-          <span class="lbl">{t('ui.new.portrait')}</span>
-          <div class="choice-row">
-            {PORTRAITS.map((p) => (
-              <button key={p} class={`choice ${p === portrait ? 'on' : ''}`} onClick={() => setPortrait(p)} aria-pressed={p === portrait} style={{ display: 'grid', placeItems: 'center', padding: 10 }}>
-                <Crest id={p} name={name} w={84} h={98} />
-              </button>
-            ))}
-          </div>
-        </div>
-        <div class="field">
-          <span class="lbl">{t('ui.new.difficulty')}</span>
-          <div class="choice-row">
-            {(['easy', 'normal', 'hard'] as const).map((d) => opt(d, difficulty, setDifficulty, t(`ui.difficulty.${d}`), t(`ui.difficulty.${d}.desc`)))}
-          </div>
-        </div>
-        <button class="linkish" style={{ alignSelf: 'flex-start' }} aria-expanded={more} onClick={() => setMore(!more)}>
-          {more ? t('ui.new.less') : t('ui.new.more')}
-        </button>
-        {more && (
-          <>
-            <div class="field">
-              <span class="lbl">{t('ui.new.pronoun')}</span>
-              <div class="choice-row">
-                {opt('she', pronoun, setPronoun, t('ui.pronoun.she.label'))}
-                {opt('he', pronoun, setPronoun, t('ui.pronoun.he.label'))}
-                {opt('they', pronoun, setPronoun, t('ui.pronoun.they.label'))}
-              </div>
-            </div>
-            <div class="field">
-              <span class="lbl">{t('ui.new.deathMode')}</span>
-              <div class="choice-row">
-                {(['classic', 'standard', 'casual'] as const).map((d) => opt(d, deathMode, setDeathMode, t(`ui.death.${d}`), t(`ui.death.${d}.desc`)))}
-              </div>
-            </div>
-          </>
-        )}
-        <button
-          class="btn primary big"
-          disabled={!name.trim()}
-          onClick={() => {
-            setFailed(false);
-            void startNewGame({ difficulty, deathMode }, { name: name.trim(), pronoun, portrait, affinity: DEFAULT_AFFINITY })
-              .then((ok) => setLimit(!ok))
-              .catch(() => setFailed(true));
-          }}
-        >
-          {t('ui.new.start')}
-        </button>
-        {failed && <div class="dis">{t('ui.save.failed')}</div>}
-      </div>
-      {limit && <CampaignLimit onClose={() => setLimit(false)} />}
-    </div>
-  );
-}
-
-/**
- * At most three campaigns (concept/24-architecture §5.15): asks to delete one, with confirmation.
- * Interim dialog until the campaign view (story 1.3) takes over.
- */
-function CampaignLimit({ onClose }: { onClose: () => void }) {
-  const [list, setList] = useState<CampaignMeta[]>([]);
-  const [confirm, setConfirm] = useState<string | null>(null);
-  const refresh = () => void listCampaigns().then(setList);
-  useEffect(refresh, []);
-  const remove = async (id: string) => {
-    await deleteCampaign(id);
-    setConfirm(null);
-    onClose();
-  };
-  return (
-    <Modal title={t('ui.campaign.limit.title')} onClose={onClose}>
-      <div class="col">
-        <div class="muted">{t('ui.campaign.limit.text')}</div>
-        {list.map((m) => (
-          <div key={m.id} class="row" style={{ justifyContent: 'space-between', gap: 8 }}>
-            <span>
-              {m.name} · {t(`ui.death.${m.deathMode}`)} · {new Date(m.updatedAt).toLocaleString()}
-            </span>
-            <button class={`btn small ${confirm === m.id ? 'danger' : 'ghost'}`} onClick={() => (confirm === m.id ? void remove(m.id) : setConfirm(m.id))}>
-              {confirm === m.id ? t('ui.campaign.deleteConfirm') : t('ui.campaign.delete')}
-            </button>
-          </div>
-        ))}
-      </div>
-    </Modal>
-  );
-}
-
-export function WorldMap() {
-  const c = campaign.value!;
-  const [sel, setSel] = useState<string | null>(c.available[0] ?? null);
-  const nodes = data.campaign.nodes;
-  const node = sel ? nodeDef(sel) : null;
-  return (
-    <div class="screen" style={{ gap: 10 }}>
-      <div class="page-head">
-        <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: 'camp' })} aria-label={t('ui.camp.title')}>
-          <Icon name="back" />
-        </button>
-        <div class="titles">
-          <span class="lbl">{t('ui.camp.title')}</span>
-          <h2>{t('ui.world.title')}</h2>
-        </div>
-        <span class="hub-gold" style={{ padding: 0 }}>
-          <Icon name="gold" size={18} />
-          {c.gold}
-        </span>
-      </div>
-      <div class="worldmap">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path d="M8,30 C25,10 45,18 60,8 S92,20 94,40 S80,80 60,90 S20,92 10,70 Z" fill="rgba(110,140,90,0.18)" stroke="rgba(90,60,30,0.35)" stroke-width="0.4" />
-          <path d="M70,5 L82,12 L76,22 L88,30" fill="none" stroke="rgba(80,60,40,0.4)" stroke-width="0.6" stroke-dasharray="1 1" />
-          {nodes.map((n) =>
-            n.next.map((nx) => {
-              const m = nodes.find((x) => x.id === nx);
-              return m ? <line key={n.id + nx} x1={n.pos[0]} y1={n.pos[1]} x2={m.pos[0]} y2={m.pos[1]} stroke="#3b2420" stroke-width="0.7" stroke-dasharray="1.5 1.2" /> : null;
-            }),
-          )}
-        </svg>
-        {nodes.map((n, i) => {
-          const done = c.completed.includes(n.id);
-          const avail = c.available.includes(n.id);
-          return (
-            <div key={n.id}>
-              <div
-                class={`node ${done ? 'done' : ''} ${avail ? 'next' : ''} ${!done && !avail ? 'locked' : ''}`}
-                style={{ left: `${n.pos[0]}%`, top: `${n.pos[1]}%` }}
-                onClick={() => setSel(n.id)}
-              >
-                <span>{i === 0 ? 'P' : i}</span>
-              </div>
-              <div class="node-label" style={{ left: `${n.pos[0]}%`, top: `${n.pos[1]}%` }}>
-                {t(`map.${n.map}.name`)}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      {node && (
-        <div class="panel solid sheet col">
-          <h3>{t(node.titleKey)}</h3>
-          <div class="muted">{t(`ui.world.goal.${data.maps[node.map]!.objectives.victory.type}`)}</div>
-          {c.available.includes(node.id) ? (
-            <button class="btn primary" onClick={() => playNode(node.id)}>
-              {t('ui.world.go')}
-            </button>
-          ) : c.completed.includes(node.id) ? (
-            <div class="muted">{t('ui.world.done')}</div>
-          ) : (
-            <div class="muted">{t('ui.world.locked')}</div>
-          )}
-        </div>
-      )}
-      {c.available.length === 0 && (
-        <div class="panel solid sheet">
-          <h3>{t('ui.world.endTitle')}</h3>
-          <div class="muted">{t('ui.world.endText')}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
+/** Options in style B: stones with segment switches and sliders over the blurred camp scene; every change applies and persists at once. */
 export function Options({ back }: { back: Screen }) {
   const s = settings.value;
-  const seg = <K extends keyof typeof s>(k: K, vals: Array<[(typeof s)[K], string]>) => (
-    <div class="choice-row">
-      {vals.map(([v, label]) => (
-        <button key={String(v)} class={`choice ${s[k] === v ? 'on' : ''}`} aria-pressed={s[k] === v} onClick={() => updateSettings({ [k]: v } as Partial<typeof s>)}>
-          {label}
-        </button>
-      ))}
+  const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => updateSettings({ [k]: v } as Partial<Settings>);
+  const seg = <K extends keyof Settings>(label: string, k: K, options: Array<[Settings[K], string]>) => (
+    <div class="opt-row" role="group" aria-label={label}>
+      <span class="opt-row__label">{label}</span>
+      <Segment value={s[k]} options={options} onChange={set(k)} />
+    </div>
+  );
+  const slider = (label: string, k: 'music' | 'sfx') => (
+    <div class="opt-row">
+      <label class="opt-row__label" for={`opt-${k}`}>
+        {label}
+        <span>{Math.round(s[k] * 100)} %</span>
+      </label>
+      <input id={`opt-${k}`} class="hc-slider" type="range" min={0} max={1} step={0.05} value={s[k]} style={{ '--hc-fill': `${s[k] * 100}%` }} onInput={(e) => set(k)(Number((e.target as HTMLInputElement).value))} />
     </div>
   );
   return (
-    <div class="screen">
-      <div class="screen-narrow col" style={{ gap: 14 }}>
-        <div class="page-head">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = back)} aria-label={t('ui.back')}>
-            <Icon name="back" />
-          </button>
-          <div class="titles">
-            <h2>{t('ui.options')}</h2>
-          </div>
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.lang')}</label>
-          {seg('lang', [['de', 'Deutsch'], ['en', 'English']])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.speed')}</label>
-          {seg('speed', [[1, '1x'], [2, '2x'], [3, t('ui.opt.skip')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.enemySpeed')}</label>
-          {seg('enemySpeed', [[1, '1x'], [2, '2x'], [3, t('ui.opt.skip')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.danger')}</label>
-          {seg('dangerDefault', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.quality')}</label>
-          {seg('quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.figures')}</label>
-          {seg('figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.shake')}</label>
-          {seg('shake', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.music')}</label>
-          <input type="range" min={0} max={1} step={0.05} value={s.music} onInput={(e) => updateSettings({ music: Number((e.target as HTMLInputElement).value) })} />
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.sfx')}</label>
-          <input type="range" min={0} max={1} step={0.05} value={s.sfx} onInput={(e) => updateSettings({ sfx: Number((e.target as HTMLInputElement).value) })} />
-        </div>
-        <div class="field">
-          <label>{t('ui.opt.keepAwake')}</label>
-          {seg('keepAwake', [[true, t('ui.on')], [false, t('ui.off')]])}
-        </div>
+    <div class="screen options-screen">
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
+      <div class="options">
+        <ScreenHead title={t('ui.options')} onBack={() => (screen.value = back)} />
+        <Piece class="options__stone">
+          {seg(t('ui.opt.lang'), 'lang', [['de', 'Deutsch'], ['en', 'English']])}
+          {seg(t('ui.opt.speed'), 'speed', SPEEDS())}
+          {seg(t('ui.opt.enemySpeed'), 'enemySpeed', SPEEDS())}
+          {seg(t('ui.opt.danger'), 'dangerDefault', ON_OFF())}
+        </Piece>
+        <Piece class="options__stone">
+          {seg(t('ui.opt.quality'), 'quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
+          {seg(t('ui.opt.figures'), 'figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
+          {seg(t('ui.opt.shake'), 'shake', ON_OFF())}
+        </Piece>
+        <Piece class="options__stone">
+          {slider(t('ui.opt.music'), 'music')}
+          {slider(t('ui.opt.sfx'), 'sfx')}
+          {seg(t('ui.opt.keepAwake'), 'keepAwake', ON_OFF())}
+        </Piece>
       </div>
     </div>
   );
@@ -412,9 +181,9 @@ export function Options({ back }: { back: Screen }) {
 
 export function Result({ result }: { result: import('../../core').BattleResult }) {
   const c = campaign.value!;
-  const line = (icon: string, cls: string, text: string, key: string) => (
+  const line = (icon: string | ComponentChildren, cls: string, text: string, key: string) => (
     <div key={key} class={`row ${cls}`} style={{ minHeight: 36 }}>
-      <Icon name={icon} size={18} />
+      {typeof icon === 'string' ? <Icon name={icon} size={18} /> : icon}
       <span>{text}</span>
     </div>
   );
@@ -434,25 +203,24 @@ export function Result({ result }: { result: import('../../core').BattleResult }
                 <Icon name={s.done ? 'check' : 'cross'} size={18} />
               </span>
               <span class="grow">{t(`ui.side.${s.type}`, { turns: s.turns ?? 0 })}</span>
-              <span class="muted">{rewardText(s.reward)}</span>
+              <RewardAmounts reward={s.reward} />
             </div>
           ))}
         </section>
         <section class="col" style={{ gap: 4 }}>
           <h3>{t('ui.result.loot')}</h3>
           <div class="row hair" style={{ minHeight: 44, flexWrap: 'wrap' }}>
-            <span class="hub-gold" style={{ padding: 0 }}>
-              <Icon name="gold" size={18} />+{result.gold}
-            </span>
+            <Amount resource="gold" value={result.gold} signed />
             {Object.entries(result.materials).map(([m, n]) => (
-              <span key={m} class="muted">
-                {t(`item.${m}.name`)} ×{n}
-              </span>
+              <Amount key={m} material={itemDef(data, m)} value={n} signed />
             ))}
           </div>
           {result.items.map((i) => (
-            <div key={i.uid} class="row hair" style={{ minHeight: 40 }}>
-              {itemName(data, i)}
+            <div key={i.uid} class="row hair" style={{ minHeight: 56 }}>
+              <ItemImage data={data} item={i} />
+              <span class={`r-${rarityOf(data, i)}`} style={{ fontWeight: 600 }}>
+                {itemName(data, i)}
+              </span>
             </div>
           ))}
         </section>
@@ -465,18 +233,18 @@ export function Result({ result }: { result: import('../../core').BattleResult }
                 {t('ui.lv')} {u.levelBefore}
                 {u.levelAfter > u.levelBefore ? ` → ${u.levelAfter}` : ''}
               </span>
-              <span class="muted">+{u.exp} {t('ui.stat.exp')}</span>
+              <Amount resource="exp" value={u.exp} signed />
             </div>
           ))}
           {result.recruited.map((id) => line('star', 'adv', t('ui.result.recruited', { name: t(`unit.${id}.name`) }), `r${id}`))}
           {(result.granted ?? []).map((g) =>
-            line('tome', 'adv', t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }), `g${g.item.uid}`),
+            line(<ItemImage data={data} item={g.item} size={28} />, 'adv', t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }), `g${g.item.uid}`),
           )}
           {result.scars.map((s) => line('scar', 'dis', `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}`, `s${s.id}`))}
           {result.fallen.map((f) => line('fallen', 'dis', t('ui.result.fallen', { name: unitName(f) }), `f${f.id}`))}
           {result.supportsReady.length > 0 && line('campfire', 'gold', t('ui.result.supports'), 'sup')}
         </section>
-        <button class="btn primary big" onClick={() => (screen.value = c.available.length ? { name: 'camp' } : { name: 'end' })}>
+        <button class="btn primary big" onClick={() => (screen.value = { name: 'worldmap' })}>
           {t('ui.result.continue')}
         </button>
       </div>
@@ -484,30 +252,20 @@ export function Result({ result }: { result: import('../../core').BattleResult }
   );
 }
 
-export function rewardText(r: import('../../core').Reward): string {
-  const parts: string[] = [];
-  if (r.gold) parts.push(`${r.gold} ${t('ui.gold')}`);
-  if (r.item) parts.push(t(`item.${r.item.def}.name`));
-  for (const [m, n] of Object.entries(r.material ?? {})) parts.push(`${t(`item.${m}.name`)} ×${n}`);
-  return parts.join(', ');
-}
-
-export function EndScreen() {
+/** Reward of a side objective: amounts as symbol + number, items by name. */
+export function RewardAmounts({ reward: r }: { reward: Reward }) {
   return (
-    <div class="screen title-screen" style={{ justifyContent: 'center' }}>
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_silverbrook_shrine.webp')})` }} />
-      <div class="logo" style={{ fontSize: 'clamp(28px, 8vw, 48px)' }}>
-        {t('ui.end.title')}
-      </div>
-      <div class="tagline">{t('ui.end.text')}</div>
-      <div class="title-menu">
-        <button class="btn primary big" onClick={() => (screen.value = { name: 'camp' })}>
-          {t('ui.camp.title')}
-        </button>
-        <button class="btn" onClick={() => (screen.value = { name: 'title' })}>
-          {t('ui.end.toTitle')}
-        </button>
-      </div>
-    </div>
+    <span class="row muted" style={{ gap: 8, flexWrap: 'wrap' }}>
+      {r.gold ? <Amount resource="gold" value={r.gold} /> : null}
+      {Object.entries(r.material ?? {}).map(([m, n]) => (
+        <Amount key={m} material={itemDef(data, m)} value={n} />
+      ))}
+      {r.item && (
+        <span class="row" style={{ gap: 6 }}>
+          <ItemImage data={data} item={r.item.def} size={28} />
+          {t(`item.${r.item.def}.name`)}
+        </span>
+      )}
+    </span>
   );
 }

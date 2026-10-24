@@ -182,7 +182,7 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 - UX-DR11: Gedächtnishalle entsättigt bis auf Glutorange, Gedenksteine mit Ort und Rolle, Zitat, Lektion vererben.
 - UX-DR12: Szenen als Halbfiguren (Sprecher hell, Zuhörer gedämpft), Namensschild als Glut-Pille, Dialogbox unten, Log/Auto/Überspringen oben rechts.
 - UX-DR13: Entscheidung mit Marke „Entscheidung · hat Folgen“, zwei Taps (markieren, bestätigen); Folgen-Karte mit einer Zeile je Wirkung und Chronik-Eintrag; Dialog-Log mit eigener Wahl.
-- UX-DR14: Truppe als Medaillon-Raster mit Rollenfilter und Marken (Aufstieg, Gespräche, Narbe); Figur mit Halbfigur, 10 Werten, 8 Plätzen, Last- und Meisterungsbalken; Wischen wechselt die Figur.
+- UX-DR14: Truppe als Medaillon-Raster mit Rollenfilter und Marken (Aufstieg, Gespräche, Narbe); Figur mit Halbfigur, 10 Werten, 6 Ausrüstungs- und 3 Beutelplätzen, Last- und Meisterungsbalken; Wischen wechselt die Figur.
 - UX-DR15: Ausrüsten und Raumlisten mit Item-Zeilen (Bild, Werte, Vergleich grün/rot oder Preis), Unpassendes gedimmt mit Grund; Händler mit Börse und Betrag auf der Haupttaste.
 - UX-DR16: Item-Bilder als gemalte Bilder im Porträt-Stil (ChatGPT) mit Seltenheits-Raute und Zahl.
 - UX-DR17: Titel mit einer Haupttaste „Fortsetzen“; Kampagnen-Plätze mit Modus-Marke, Stand, Spielzeit, Speicherplätzen; PoC-Zeile; Neue Kampagne auf einer Seite (Name, Aussehen + Pronomen, Schwierigkeit, Tod-Modus mit Erklärung).
@@ -297,8 +297,8 @@ damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.
 
 **Angenommen** ein Betrag an Gold, Material, EP oder Glutfunken
 **Wenn** die UI ihn anzeigt
-**Dann** rendert die Komponente `Amount` immer Symbol + Zahl (Münze, Erz-Raute, Stern, Funke) mit tabellarischen Ziffern
-**Und** ein Material ohne festgelegtes Symbol lässt `pnpm content:check` scheitern.
+**Dann** rendert die Komponente `Amount` immer Symbol + Zahl (Münze, Stern; Materialien und Glutfunke mit ihrem gemalten Item-Bild) mit tabellarischen Ziffern
+**Und** ein Material ohne Bild in `art/items/` lässt `pnpm content:check` scheitern.
 
 **Angenommen** der Titelbildschirm
 **Wenn** er neu gebaut ist
@@ -442,6 +442,26 @@ damit eine lange Kampagne nicht an einem Absturz oder an gelöschten Websitedate
 **Wenn** die App nicht als Home-Bildschirm-App läuft
 **Dann** ruft sie `navigator.storage.persist()` auf und zeigt einmal den Hinweis „Zum Home-Bildschirm hinzufügen, damit dein Spielstand sicher bleibt“
 **Und** schlägt ein Speichern fehl, erscheint ein Banner mit Export-Angebot; der nächste Commit versucht es erneut.
+
+### Story 1.8: Optionen, Ende und Hinweise im Stil B
+
+Als Spieler
+möchte ich, dass auch Einstellungen, Hinweise und das Ende des bisherigen Inhalts wie der Rest des Spiels aussehen,
+damit nirgends noch der alte Prototyp durchscheint.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Optionen (Sprache, Tempo, Gegnertempo, Gefahr, Qualität, Figuren, Wackeln, Musik, Effekte, Bildschirm wach)
+**Wenn** der Spieler sie vom Titel, aus dem Kampfmenü oder aus der Heimat öffnet
+**Dann** erscheinen sie als Steine mit Segment-Schaltern und Reglern im Stil B (`ScreenHead`, Tokens aus DESIGN.md), über der weichgezeichneten Szene
+**Und** jede Änderung wirkt sofort und bleibt gespeichert.
+
+**Angenommen** der Endbildschirm nach der letzten verfügbaren Mission sowie die kurzen Hinweise (Toast) und Banner
+**Wenn** sie erscheinen
+**Dann** nutzen sie Steine, Pillen und Schriften aus Stil B; Titel-Rahmen und Update-Hinweis der Versionszeile ebenso
+**Und** danach sind die PoC-Klassen dieser Ansichten aus `styles.css` entfernt.
+
+_Nachgetragen 2026-10-24: Lücke aus der Bestandsaufnahme der PoC-Ansichten, von keiner Story abgedeckt._
 
 ## Epic 2: Rollenklassen und neues Kampf-HUD
 
@@ -612,6 +632,26 @@ damit Kämpfe abwechslungsreich bleiben.
 **Wenn** sie auf Karten stehen
 **Dann** sind Wolfsreiter in Akt 1 Fußtruppen mit Wolfsfell (kein Reittier, keine Beritten-Effektivität; Vierbeiner und Reittiere erst nach dem MVP); Banditen, Wolfsreiter und Söldner unterscheiden sich in Waffen und KI-Profil
 **Und** ihre Werte stehen in Content-YAML und sind per `pnpm sim` geprüft.
+
+### Story 2.10: Kampf-Overlays im Stil B
+
+Als Spieler
+möchte ich alle Fenster im Kampf im selben Stil wie das HUD sehen,
+damit Infos zu Gegnern und eigenen Figuren, Tausch und Konvoi sofort lesbar sind.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Gegner oder eine eigene Einheit auf dem Brett
+**Wenn** der Spieler sie antippt bzw. die Einheitenkarte öffnet
+**Dann** zeigt die Einheiten-Info im Stil B Medaillon mit TP-Ring, Name, Klasse/Rolle, Stufe, Werte, Ausrüstung mit Item-Bildern, Fähigkeiten und bei Gegnern das KI-Verhalten; eigene Einheiten bieten Ausrüsten, solange sie handeln können (Steckbriefe der Leutnants bleiben Story 3.6, die volle Figur Story 6.1)
+**Und** sie erscheint als Stein über einem Schleier und schließt mit Esc oder Tipp daneben.
+
+**Angenommen** Ziele-Panel, Kampfmenü (Optionen, Runde neu, Mission neu, zum Titel), Auswahl der Klassen-Aktion, Item-Liste, Tausch, Konvoi und der Stufenaufstieg im Kampf
+**Wenn** sie geöffnet werden
+**Dann** folgen sie dem Panel-Muster aus DESIGN.md (Stein, Liste mit Item-Bildern, eine Glut-Haupttaste, Beträge als Symbol + Zahl), Funktionen bleiben unverändert
+**Und** der alte `Modal`-Look und die PoC-Klassen dieser Ansichten sind entfernt.
+
+_Nachgetragen 2026-10-24: Lücke aus der Bestandsaufnahme der PoC-Ansichten; 2.1 hatte nur HUD, Dock und Vorschau umgebaut._
 
 ## Epic 3: Leutnants
 
@@ -1016,7 +1056,7 @@ damit ich weiß, wer bereit ist und wer etwas braucht.
 
 **Angenommen** eine Figur
 **Wenn** der Spieler sie öffnet
-**Dann** sieht er Halbfigur, Rolle und Stufe, EP-Balken, 10 Werte, 8 Ausrüstungsplätze (Zahl = Aufwertung oder Ladungen, Raute = Seltenheit), Last und Meisterung; Wischen wechselt die Figur
+**Dann** sieht er Halbfigur, Rolle und Stufe, EP-Balken, 10 Werte, 6 Ausrüstungs- und 3 Beutelplätze (Zahl = Aufwertung oder Ladungen, Raute = Seltenheit), Last und Meisterung; Wischen wechselt die Figur
 **Und** die Ansicht ist auch aus der Einheitenkarte im Kampf per Langdruck erreichbar (nur lesend).
 
 ### Story 6.2: Ausrüsten mit Vergleich
@@ -1224,6 +1264,26 @@ damit große Schlachten Spaß machen.
 **Wenn** er eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten) und einen Kaltstart misst
 **Dann** schreibt er Frame-Zeiten (Ziel 60 FPS, NFR1) und Kaltstartzeit (< 5 s, NFR2) als Bericht
 **Und** die Messung läuft in CI und meldet Überschreitungen; 9.14 nutzt sie für die Freigabe.
+
+### Story 7.6: Ladeanzeige beim ersten Start und vor Missionen
+
+Als Spieler
+möchte ich sehen, wenn das Spiel etwas herunterlädt, und wissen, wie lange es dauert,
+damit ich nicht vor einem leeren Bildschirm warte und weiß, wann ich offline spielen kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** der erste Start der App (Service Worker installiert den ersten Download)
+**Wenn** die Dateien geladen werden
+**Dann** zeigt ein Stein „Spiel wird vorbereitet · Größe · danach offline spielbar“ mit Fortschritt; ohne Klick, danach erscheint der Titel
+**Und** bricht die Verbindung ab, sagt der Stein es in einem Satz und versucht es erneut.
+
+**Angenommen** eine Mission oder Szene, deren Bilder oder Modelle (bei Bedarf geladen: Orte, Halbfiguren, Weltkarte, Einheiten-Modelle) noch nicht im Cache liegen
+**Wenn** der Spieler sie startet
+**Dann** erscheint ein Ladebildschirm mit Missionsname, Ortsbild und Fortschritt, bis alles da ist, und die Mission startet danach von selbst
+**Und** liegt alles im Cache, erscheint kein Ladebildschirm; offline ohne fehlende Dateien wird gespielt, offline mit fehlenden Dateien steht ein Satz mit „Erneut versuchen“.
+
+_Nachgetragen 2026-10-24: Entscheidung Produktinhaber (UX-Log), Anlass: große Bilder werden bei Bedarf geladen. Ergänzt 7.2 (Akt-Pakete im Hintergrund, Fortschrittsring)._
 
 ## Epic 8: Chibi-Stil, Item-Bilder und Audio
 

@@ -47,18 +47,19 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: Kampagnen und Spielstände
   epic-1: in-progress
-  1-1-neue-oberflaeche-steine-tokens-und-waehrung: backlog  # Neue Oberfläche – Steine, Tokens und Währung
+  1-1-neue-oberflaeche-steine-tokens-und-waehrung: review  # Neue Oberfläche – Steine, Tokens und Währung
   1-2-speicherformat-2-mit-kampagnen: done  # Speicherformat 2 mit Kampagnen
-  1-3-kampagnen-ansicht-und-neue-kampagne: backlog  # Kampagnen-Ansicht und Neue Kampagne
-  1-4-kampagnen-commands-und-journal: backlog  # Kampagnen-Commands und Journal
-  1-5-speicherplaetze-und-neustart-je-tod-modus: backlog  # Speicherplätze und Neustart je Tod-Modus
-  1-6-verbluten-im-modus-standard: backlog  # Verbluten im Modus Standard
-  1-7-fehlerbericht-und-speicherschutz: backlog  # Fehlerbericht und Speicherschutz
+  1-3-kampagnen-ansicht-und-neue-kampagne: review  # Kampagnen-Ansicht und Neue Kampagne
+  1-4-kampagnen-commands-und-journal: review  # Kampagnen-Commands und Journal
+  1-5-speicherplaetze-und-neustart-je-tod-modus: review  # Speicherplätze und Neustart je Tod-Modus
+  1-6-verbluten-im-modus-standard: review  # Verbluten im Modus Standard
+  1-7-fehlerbericht-und-speicherschutz: review  # Fehlerbericht und Speicherschutz
+  1-8-optionen-ende-und-hinweise-im-stil-b: review  # Optionen, Ende und Hinweise im Stil B (nachgetragen 2026-10-24)
   epic-1-retrospective: optional
 
   # Epic 2: Rollenklassen und neues Kampf-HUD
-  epic-2: backlog
-  2-1-kampf-hud-in-stil-b: backlog  # Kampf-HUD in Stil B
+  epic-2: in-progress
+  2-1-kampf-hud-in-stil-b: review  # Kampf-HUD in Stil B
   2-2-rollenmodell-und-waffengruppen: backlog  # Rollenmodell und Waffengruppen
   2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: backlog  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
   2-4-halten-und-nachsetzen: backlog  # Halten und Nachsetzen
@@ -67,6 +68,7 @@ development_status:
   2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: backlog  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
   2-8-gegnerphase-im-web-worker: backlog  # Gegnerphase im Web Worker
   2-9-gegnertypen-von-akt-1: backlog  # Gegnertypen von Akt 1
+  2-10-kampf-overlays-im-stil-b: review  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
 
   # Epic 3: Leutnants
@@ -81,9 +83,9 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Akt-Struktur, Szenen und Entscheidungen
-  epic-4: backlog
-  4-1-content-je-akt-ablegen: backlog  # Content je Akt ablegen
-  4-2-bedingungen-und-wirkungen: backlog  # Bedingungen und Wirkungen
+  epic-4: in-progress
+  4-1-content-je-akt-ablegen: review  # Content je Akt ablegen
+  4-2-bedingungen-und-wirkungen: review  # Bedingungen und Wirkungen
   4-3-kampagnen-graph-eines-akts: backlog  # Kampagnen-Graph eines Akts
   4-4-szenen-schema-mit-ersatzsprechern: backlog  # Szenen-Schema mit Ersatzsprechern
   4-5-szenen-im-neuen-stil: backlog  # Szenen im neuen Stil
@@ -94,21 +96,21 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Weltkarte und Heimsuchungen
-  epic-5: backlog
+  epic-5: in-progress
   5-1-szenen-host-und-geteilter-asset-cache: backlog  # Szenen-Host und geteilter Asset-Cache
   5-2-die-weltkarte-als-3d-szene: backlog  # Die Weltkarte als 3D-Szene
-  5-3-weltkarte-als-hub: backlog  # Weltkarte als Hub
+  5-3-weltkarte-als-hub: review  # Weltkarte als Hub
   5-4-tageswechsel: backlog  # Tageswechsel
   5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator
   5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
 
   # Epic 6: Truppe, Fortschritt und Lager
-  epic-6: backlog
-  6-1-truppe-und-figur: backlog  # Truppe und Figur
-  6-2-ausruesten-mit-vergleich: backlog  # Ausrüsten mit Vergleich
-  6-3-das-lager-in-akt-1: backlog  # Das Lager in Akt 1
-  6-4-haendler-schmied-heiler-und-taverne: backlog  # Händler, Schmied, Heiler und Taverne
+  epic-6: in-progress
+  6-1-truppe-und-figur: review  # Truppe und Figur
+  6-2-ausruesten-mit-vergleich: review  # Ausrüsten mit Vergleich
+  6-3-das-lager-in-akt-1: review  # Das Lager in Akt 1
+  6-4-haendler-schmied-heiler-und-taverne: review  # Händler, Schmied, Heiler und Taverne
   6-5-stufendeckel-und-ep-regeln: backlog  # Stufendeckel und EP-Regeln
   6-6-missionsergebnis: backlog  # Missionsergebnis
   6-7-abschied-von-gefallenen: backlog  # Abschied von Gefallenen
@@ -123,15 +125,16 @@ development_status:
   7-3-ende-eines-veroeffentlichten-akts: backlog  # Ende eines veröffentlichten Akts
   7-4-stabile-ids-und-release-ablauf: backlog  # Stabile IDs und Release-Ablauf
   7-5-leistung-messen: backlog  # Leistung messen
+  7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: backlog  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio
-  epic-8: backlog
+  epic-8: in-progress
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
   8-2-tripo-pipeline-vervollstaendigen: backlog  # Tripo-Pipeline vervollständigen
   8-3-brettfiguren-fuer-akt-1: backlog  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: backlog  # Porträts mit Stimmungen für Akt 1
-  8-5-item-bilder: backlog  # Item-Bilder
+  8-5-item-bilder: review  # Item-Bilder
   8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
   8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: backlog  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1

@@ -3,18 +3,24 @@
  * campaigns, an auto slot + 3 manual slots each, a command journal and the untouched PoC saves (`legacy`).
  */
 import { openDB, type IDBPDatabase, type IDBPTransaction } from 'idb';
-import type { BattleState, CampaignState, Command, DeathMode, Difficulty } from '../core';
+import { saveRecordSchema } from './schema';
+import type { BattleState, CampaignState, Command, DeathMode, Difficulty, QueuedEffects } from '../core';
 
 export const SAVE_FORMAT = 2;
 export const DB_NAME = 'hollow-crown';
 export const DB_VERSION = 2;
 export const MAX_CAMPAIGNS = 3;
+/** Largest save file an import reads (architecture 5.15). */
+export const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
 export type SlotId = 'auto' | '1' | '2' | '3';
 
 export interface SavePayload {
   campaign: CampaignState;
-  /** running battle: start snapshot + command log (replayed on load); `turnStartIndex` = log length at the current round's start */
-  battle?: { start: BattleState; commands: Command[]; turnStartIndex: number };
+  /**
+   * running battle: start snapshot + command log (replayed on load); `turnStartIndex` = log length at the current round's start;
+   * `effects` = dialogue effects queued during the battle, applied by `finishMission` (absent in older saves = none)
+   */
+  battle?: { start: BattleState; commands: Command[]; turnStartIndex: number; effects?: QueuedEffects[] };
   /** where to resume */
   screen: 'worldmap' | 'camp' | 'battle';
 }
@@ -54,6 +60,13 @@ export interface LegacyRecord {
   payload: { campaign: CampaignState; battle?: { start: BattleState; commands: Command[] }; screen: string };
 }
 
+/** A manual slot was refused: Classic saves only automatically, and nothing is saved by hand during a battle. */
+export class SlotNotAllowedError extends Error {
+  constructor(readonly reason: 'classic' | 'in_battle') {
+    super(`slot_${reason}`);
+  }
+}
+
 export class CampaignLimitError extends Error {
   constructor() {
     super('campaign_limit');
@@ -88,7 +101,8 @@ export function setSaveDbBlockedHandler(fn: () => void): void {
 }
 
 let dbp: Promise<IDBPDatabase> | null = null;
-function db(): Promise<IDBPDatabase> {
+/** The save database connection (shared with the journal). */
+export function saveDb(): Promise<IDBPDatabase> {
   dbp ??= openDB(DB_NAME, DB_VERSION, {
     upgrade(d, oldVersion, _newVersion, tx) {
       // a failed move must not leave a v2 database without the PoC saves
@@ -170,7 +184,7 @@ export interface NewCampaignMeta {
 
 /** Registers a campaign. Throws `CampaignLimitError` when three exist and `id` is not one of them. */
 export async function createCampaign({ campaign, now, contentVersion, id }: NewCampaignMeta): Promise<CampaignMeta> {
-  const tx = (await db()).transaction('campaigns', 'readwrite');
+  const tx = (await saveDb()).transaction('campaigns', 'readwrite');
   const store = tx.objectStore('campaigns');
   const all = (await store.getAll()) as CampaignMeta[];
   const existing = id ? all.find((m) => m.id === id) : undefined;
@@ -194,13 +208,13 @@ export async function createCampaign({ campaign, now, contentVersion, id }: NewC
 
 /** Campaigns, most recently played first. */
 export async function listCampaigns(): Promise<CampaignMeta[]> {
-  const all = (await (await db()).getAll('campaigns')) as CampaignMeta[];
+  const all = (await (await saveDb()).getAll('campaigns')) as CampaignMeta[];
   return all.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
 /** Removes a campaign with all its saves and journal entries. */
 export async function deleteCampaign(id: string): Promise<void> {
-  const tx = (await db()).transaction(['campaigns', 'saves', 'journal'], 'readwrite');
+  const tx = (await saveDb()).transaction(['campaigns', 'saves', 'journal'], 'readwrite');
   const range = IDBKeyRange.bound([id], [id, []]);
   await Promise.all([
     tx.objectStore('campaigns').delete(id),
@@ -224,6 +238,10 @@ export async function writeSave(
   payload: SavePayload,
   opts: WriteOptions,
 ): Promise<SaveRecord> {
+  if (slot !== 'auto') {
+    if (payload.campaign.settings.deathMode === 'classic') throw new SlotNotAllowedError('classic');
+    if (payload.battle) throw new SlotNotAllowedError('in_battle');
+  }
   const rec: SaveRecord = plain({
     format: SAVE_FORMAT,
     campaignId,
@@ -233,7 +251,7 @@ export async function writeSave(
     contentVersion: opts.contentVersion,
     payload,
   });
-  const tx = (await db()).transaction(['campaigns', 'saves'], 'readwrite');
+  const tx = (await saveDb()).transaction(['campaigns', 'saves'], 'readwrite');
   const meta = (await tx.objectStore('campaigns').get(campaignId)) as CampaignMeta | undefined;
   if (!meta) {
     tx.abort();
@@ -252,22 +270,22 @@ export async function writeSave(
 }
 
 export async function readSave(campaignId: string, slot: SlotId): Promise<SaveRecord | undefined> {
-  const r = (await (await db()).get('saves', [campaignId, slot])) as SaveRecord | undefined;
+  const r = (await (await saveDb()).get('saves', [campaignId, slot])) as SaveRecord | undefined;
   return r ? migrate(r) : undefined;
 }
 
 export async function listSaves(campaignId: string): Promise<SaveRecord[]> {
   const range = IDBKeyRange.bound([campaignId], [campaignId, []]);
-  return ((await (await db()).getAll('saves', range)) as SaveRecord[]).map(migrate);
+  return ((await (await saveDb()).getAll('saves', range)) as SaveRecord[]).map(migrate);
 }
 
 export async function deleteSave(campaignId: string, slot: SlotId): Promise<void> {
-  await (await db()).delete('saves', [campaignId, slot]);
+  await (await saveDb()).delete('saves', [campaignId, slot]);
 }
 
 /** PoC saves found at the upgrade to v2. */
 export async function listLegacy(): Promise<LegacyRecord[]> {
-  return (await (await db()).getAll('legacy')) as LegacyRecord[];
+  return (await (await saveDb()).getAll('legacy')) as LegacyRecord[];
 }
 
 /** FNV-1a over a string, hex. */
@@ -287,14 +305,24 @@ export function exportSave(rec: SaveRecord | LegacyRecord): string {
   return JSON.stringify({ format: 'hollow-crown-save', checksum: checksum(body), body });
 }
 
-/** Reads an exported save. Throws `format`, `checksum`, `legacy` (PoC save, not loadable) or `content`. */
+/** Reads an exported save. Throws `size`, `format`, `checksum`, `legacy` (PoC save, not loadable) or `content`. */
 export function importSave(text: string): SaveRecord {
-  const outer = JSON.parse(text) as { format?: string; checksum?: string; body?: string };
+  if (text.length > MAX_IMPORT_BYTES) throw new Error('size');
+  let outer: { format?: string; checksum?: string; body?: string };
+  try {
+    outer = JSON.parse(text) as typeof outer;
+  } catch {
+    throw new Error('format');
+  }
   if (outer.format !== 'hollow-crown-save' || typeof outer.body !== 'string') throw new Error('format');
   if (checksum(outer.body) !== outer.checksum) throw new Error('checksum');
-  const rec = JSON.parse(outer.body) as Partial<SaveRecord> & { version?: number };
+  let rec: Partial<SaveRecord> & { version?: number };
+  try {
+    rec = JSON.parse(outer.body) as typeof rec;
+  } catch {
+    throw new Error('format');
+  }
   if (rec.version === 1) throw new Error('legacy');
-  if (typeof rec.format !== 'number' || typeof rec.campaignId !== 'string' || !rec.payload?.campaign?.roster)
-    throw new Error('content');
+  if (!saveRecordSchema.safeParse(rec).success) throw new Error('content');
   return migrate(rec as SaveRecord);
 }

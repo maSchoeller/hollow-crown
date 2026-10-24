@@ -1,0 +1,83 @@
+/*
+ * Design tokens, style B "Spielzeug-Diorama" (concept/25-ux/DESIGN.md front matter).
+ * Prefix --hc- keeps them apart from the PoC variables in styles.css until the screens move over.
+ */
+@import '@fontsource/fraunces/600.css';
+@import '@fontsource/fraunces/600-italic.css';
+@import '@fontsource/fraunces/700.css';
+@import '@fontsource/fraunces/900.css';
+
+:root {
+  /* colors */
+  --hc-cream: #fff8ec;
+  --hc-cream-2: #f4e9d6;
+  --hc-line: #3b2a20;
+  --hc-soft: #7a6553;
+  --hc-ember: #e8743b;
+  --hc-ember-dark: #b44c18;
+  --hc-team-player: #2f64c8;
+  --hc-team-player-soft: #e7efff;
+  --hc-team-enemy: #b83a2e;
+  --hc-team-enemy-soft: #fdeee9;
+  --hc-team-other: #3fa65a;
+  --hc-downed: #8a8d96;
+  --hc-gold: #d9a931;
+  --hc-lieutenant: #8a6a10;
+  --hc-positive: #2f8a4c;
+  --hc-positive-soft: #e9f6ec;
+  --hc-negative: #b83a2e;
+  --hc-offer-soft: #fff1d6;
+  --hc-selection-soft: #fdf0e3;
+  --hc-mourn: #f3efe8;
+  --hc-mourn-quiet: #e9e6e1;
+  --hc-fog: #e0e5ef;
+  --hc-material-ore: #8b9bb0;
+  --hc-rarity-common: #9a9488;
+  --hc-rarity-rare: #1f9e94;
+  --hc-rarity-epic: #7a4cc2;
+  --hc-rarity-legendary: #d9a931;
+  --hc-rarity-relic: #d9a931;
+  --hc-rarity-relic-accent: #e8743b;
+  --hc-element-fire: #f2603a;
+  --hc-element-wind: #7bd389;
+  --hc-element-earth: #b9874b;
+  --hc-element-water: #4aa8e8;
+  --hc-element-light: #f7d96b;
+  --hc-element-dark: #8e5bd9;
+
+  /* typography */
+  --hc-font-name: 'Fraunces', Georgia, serif;
+  --hc-font-body: 'Barlow', system-ui, sans-serif;
+  --hc-font-label: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --hc-size-name: 24px;
+  --hc-size-name-small: 16px;
+  --hc-size-body: 14px;
+  --hc-size-dialogue: 17px;
+  --hc-size-label: 13px;
+  --hc-size-caps: 11px;
+  --hc-size-number: 15px;
+  --hc-size-quote: 16px;
+
+  /* shapes */
+  --hc-r-piece: 18px;
+  --hc-r-action: 16px;
+  --hc-r-stone: 16px;
+  --hc-r-card-inner: 12px;
+  --hc-r-chip: 12px;
+  --hc-r-pill: 9999px;
+
+  /* spacing */
+  --hc-hud-edge: 10px;
+  --hc-hud-top: 12px;
+  --hc-gap: 8px;
+  --hc-gap-tight: 6px;
+  --hc-piece-padding: 12px;
+  --hc-touch-min: 44px;
+  --hc-outline: 2.5px;
+  --hc-outline-small: 2px;
+  --hc-press-depth: 4px;
+
+  /* elevation */
+  --hc-soft-shadow: 0 10px 20px rgba(40, 28, 20, 0.28);
+  --hc-veil: rgba(59, 42, 32, 0.45);
+}

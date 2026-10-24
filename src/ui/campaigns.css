@@ -1,0 +1,375 @@
+/* Campaign view and new-campaign form (concept/25-ux/mockups/07-start-kampagnen.html, style B). */
+@import './tokens.css';
+
+.camps-screen .screen-bg {
+  filter: blur(6px) saturate(0.7) brightness(0.8);
+  transform: scale(1.08);
+}
+.camps {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(560px, 100%);
+  margin: 0 auto;
+}
+.camps__list {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding-bottom: 6px;
+}
+.camps__note {
+  padding: 8px 14px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream);
+  color: var(--hc-negative);
+  font-weight: 600;
+  font-size: var(--hc-size-body);
+}
+.camps__import {
+  width: 100%;
+}
+
+/* campaign row */
+.camp {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+}
+.camp__main {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.camp__main:focus-visible,
+.camp__more:focus-visible,
+.camp__snap:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+.camp__medallion {
+  width: 56px;
+  height: 56px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  overflow: hidden;
+  background: #cfe0f7;
+}
+.camp__medallion img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.camp__name {
+  display: block;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+}
+.camp__mode {
+  display: inline-flex;
+  align-items: center;
+  margin: 4px 0;
+  padding: 0 7px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.camp__mode.is-classic {
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+.camp__stand {
+  display: block;
+  color: var(--hc-soft);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.camp__more {
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: var(--hc-touch-min);
+  height: var(--hc-touch-min);
+  margin: -6px -6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--hc-line);
+  cursor: pointer;
+}
+.camp__snaps {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+}
+.camp__snap {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 10px;
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+  font: 600 11px/1.2 var(--hc-font-body);
+  text-align: left;
+}
+button.camp__snap {
+  cursor: pointer;
+}
+.camp__snap b {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+}
+.camp__snap.is-empty {
+  border-style: dashed;
+  background: transparent;
+  color: var(--hc-soft);
+}
+
+/* "new campaign" row and PoC save row */
+.camp-new {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 60px;
+  padding: 14px;
+  border: var(--hc-outline) dashed var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  background: rgba(255, 248, 236, 0.75);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+.camp-new:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+.camp-legacy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ece7df;
+  color: var(--hc-soft);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-soft), var(--hc-soft-shadow);
+  border-color: var(--hc-soft);
+}
+.camp-legacy b {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-size: 13px;
+  color: var(--hc-line);
+}
+.camp-legacy .icon {
+  flex: none;
+}
+.camp-legacy__text {
+  flex: 1;
+  min-width: 0;
+}
+.hc-chip-btn {
+  flex: none;
+  min-height: 28px;
+  padding: 1px 10px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hc-chip-btn:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+
+/* dialogs (delete confirmation, full places, row menu) */
+.screen > .camp-dialog-back {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--hc-veil);
+}
+.camp-dialog {
+  width: min(380px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  display: grid;
+  gap: 12px;
+}
+.camp-dialog h2 {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.1;
+}
+.camp-dialog p {
+  margin: 0;
+  color: var(--hc-soft);
+  font-size: var(--hc-size-body);
+  font-weight: 600;
+}
+.camp-dialog .hc-btn {
+  width: 100%;
+}
+.hc-btn.hc-btn--danger {
+  background: var(--hc-negative);
+  color: #fff;
+}
+
+/* new-campaign form */
+.camp-form {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 14px 12px;
+}
+.camp-form__field {
+  display: grid;
+  gap: 6px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.camp-form__label {
+  padding: 0;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+input.hc-input[type='text'] {
+  min-height: 46px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 12px;
+  clip-path: none;
+  box-shadow: none;
+  background: #fff;
+  color: var(--hc-line);
+  padding: 7px 12px;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 19px;
+}
+input.hc-input[type='text']:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+.camp-form__faces {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 3px;
+}
+.camp-form__face {
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  overflow: hidden;
+  background: #cfe0f7;
+  cursor: pointer;
+}
+.camp-form__face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.camp-form__face[aria-pressed='true'] {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5.5px var(--hc-ember);
+}
+.camp-form__face:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 6px;
+}
+.camp-form__hint {
+  color: var(--hc-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.camp-form__modes {
+  display: grid;
+  gap: 7px;
+}
+.camp-form__mode {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 14px;
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+  text-align: left;
+  font: 600 12px/1.3 var(--hc-font-body);
+  cursor: pointer;
+}
+.camp-form__mode b {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--hc-font-name);
+  font-size: 16px;
+}
+.camp-form__mode b span {
+  font-family: var(--hc-font-label);
+  font-size: 11px;
+  color: var(--hc-soft);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.camp-form__mode[aria-pressed='true'] {
+  background: var(--hc-selection-soft);
+  box-shadow: 0 0 0 3px var(--hc-ember);
+}
+.camp-form__mode:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 4px;
+}
+.camp-form__go {
+  width: 100%;
+  margin-top: auto;
+}

@@ -1,0 +1,369 @@
+/* The world map (concept/25-ux/mockups/03-weltkarte.html, story 5.3): painted map you pan, nodes on it, HUD stones over it. Style B. */
+@import '../../ui/tokens.css';
+
+.wm {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #3a8fc0;
+  color: var(--hc-line);
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+
+/* the map: wider than the screen, it scrolls by finger; it is a quarter taller than the screen so low nodes can rise above the card */
+.wm__pan {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  container-type: size;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  touch-action: none; /* the drag is handled in WorldMap.tsx (pointer events), not by the browser */
+  cursor: grab;
+}
+.wm__pan.is-dragging,
+.wm__pan.is-dragging .wm-node {
+  cursor: grabbing;
+}
+.wm__pan::-webkit-scrollbar {
+  display: none;
+}
+.wm__world {
+  --wm-h: max(125cqh, calc(100cqw / 1.7768));
+  position: relative;
+  height: var(--wm-h);
+  width: calc(var(--wm-h) * 1.7768);
+  transition: transform 300ms ease-out;
+}
+.wm__world.is-zoomed {
+  transform: scale(var(--wm-zoom, 1.12));
+}
+.wm__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.wm__paths {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.wm__path {
+  stroke: var(--hc-cream);
+  stroke-width: 3;
+  stroke-dasharray: 7 6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.wm__path--edge {
+  stroke: var(--hc-line);
+  stroke-width: 6;
+  stroke-dasharray: none;
+  opacity: 0.45;
+}
+
+.wm__loading {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(300px, calc(100% - 2 * var(--hc-hud-edge)));
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* nodes: round stone with a point and a place label (DESIGN.md map-node) */
+.wm-node {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: translate(-50%, -100%);
+  color: var(--hc-line);
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.wm-node__head {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  box-shadow: 0 3px 0 var(--hc-line);
+  font-size: 17px;
+}
+.wm-node__tail {
+  width: 0;
+  height: 0;
+  margin-top: -1px;
+  border: 7px solid transparent;
+  border-top: 10px solid var(--hc-line);
+  border-bottom: 0;
+}
+.wm-node__label {
+  position: absolute;
+  top: 100%;
+  margin-top: 2px;
+  padding: 0 8px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.wm-node--story .wm-node__head {
+  background: var(--hc-ember);
+  color: #fff;
+}
+.wm-node--home .wm-node__head {
+  background: var(--hc-cream);
+}
+.wm-node--done .wm-node__head {
+  width: 32px;
+  height: 32px;
+  background: var(--hc-cream-2);
+  color: var(--hc-soft);
+  font-size: 13px;
+}
+.wm-node.is-sel .wm-node__head {
+  box-shadow: 0 0 0 4px #fff, 0 0 0 6.5px var(--hc-line), 0 5px 0 4px var(--hc-line);
+}
+.wm-node:focus-visible .wm-node__head {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 5px;
+}
+
+/* HUD */
+.wm__hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  width: min(560px, 100%);
+  margin-inline: auto;
+  padding: calc(var(--hc-hud-top) + env(safe-area-inset-top, 0px)) var(--hc-hud-edge) 0;
+  pointer-events: none;
+}
+.wm__hud > * {
+  pointer-events: auto;
+}
+.wm__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.wm-act {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 5px;
+  border-radius: var(--hc-r-pill);
+}
+.wm-act__badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-ember);
+  color: #fff;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 19px;
+}
+.wm-act small {
+  display: block;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.wm-act b {
+  display: block;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.1;
+}
+.wm__round {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line), var(--hc-soft-shadow);
+  cursor: pointer;
+}
+.wm__round:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+.wm-menu {
+  position: absolute;
+  top: calc(var(--hc-hud-top) + env(safe-area-inset-top, 0px) + 54px);
+  right: var(--hc-hud-edge);
+  display: grid;
+  gap: 8px;
+  min-width: 190px;
+}
+
+/* bottom: the bar of four stones, or the card of a node */
+.wm__bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 10px;
+  width: min(560px, 100%);
+  margin-inline: auto;
+  padding: 0 var(--hc-hud-edge) calc(var(--hc-hud-top) + env(safe-area-inset-bottom, 0px));
+}
+.wm-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+.wm-nav button {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  padding: 8px 2px 6px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-action);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.wm-nav button:active {
+  transform: translateY(calc(var(--hc-press-depth) - 1px));
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.wm-nav button:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+/* not built yet: dimmed, a tap says why */
+.wm-nav button.is-dim {
+  border-style: dashed;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.wm-end {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.wm-end b {
+  font-family: var(--hc-font-name);
+  font-size: 18px;
+  line-height: 1.15;
+}
+.wm-end p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--hc-soft);
+}
+.wm-end__crown {
+  font-size: 24px;
+  color: var(--hc-gold);
+}
+.wm-end .hc-btn {
+  width: 100%;
+}
+
+/* node card */
+.wm-card {
+  display: grid;
+  gap: 10px;
+}
+.wm-card__kicker {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+}
+.wm-card__title {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 23px;
+  line-height: 1.05;
+}
+.wm-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 9px 1px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+.wm-card__reward {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  font-size: 13px;
+}
+.wm-card__done {
+  margin: 0;
+  color: var(--hc-soft);
+}
+.wm-card__buttons {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm__world {
+    transition: none;
+  }
+}

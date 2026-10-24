@@ -66,3 +66,19 @@ Befunde aus der Sichtung:
 | `slim_sword` | dunkler Stab | „medium grey iron … NOT dark“, goldener Bügelkorb | lesbar ✓ |
 | `pact_warden_shield_1`, `_2` | spitzere Schildform als `_3` | `_3` als fünfte Referenz, „keep EXACTLY its outline“ | Form wie `_3` ✓ |
 | `pact_blade_1`, `_2` | Stufen kaum unterscheidbar | `_3` als fünfte Referenz; Stufe 1 „absolutely NO glow“, Stufe 2 Runen klar glühend, Schneide nicht | drei Stufen unterscheidbar ✓ |
+## Erledigt: fehlende Icons (2026-10-24, siehe `missing_2026-10-24.md`)
+
+Vom Produktinhaber beauftragt, Erzeugung sobald wieder ChatGPT-Kontingent da ist (ab 01:00). Bis dahin nutzen die Items vorläufig ein ähnliches Bild über das Feld `image` in `content/items.yaml` (Story 8.5); nach dem Erzeugen `image` entfernen bzw. auf die neue id setzen.
+
+| id | Item | vorläufig | Wunsch |
+|---|---|---|---|
+| `drake_breath` | Drachenatem (Feuer-Atemwaffe nur für Drachen/Monster, `monsterOnly`) | `dragon_scale` | eigenes Icon, z. B. Feuerstoß aus einem Drachenmaul |
+| `promotion_seal` | Beförderungssiegel | `chronicle_page` | eigenes Icon: Siegel/Abzeichen für den Klassenaufstieg |
+| `gold` | Gold-Münze (Ressourcen-Symbol) | Vektor-Münze | gemaltes Icon, Entscheidung Produktinhaber 2026-10-24 |
+| `exp` | EP-Stern (Ressourcen-Symbol) | Vektor-Stern | gemaltes Icon, grüner Stern, Entscheidung Produktinhaber 2026-10-24 |
+
+Danach in `Amount` (`src/ui/pieces.tsx`) die Vektor-Symbole durch die Bilder ersetzen.
+
+### Porträts generischer Gegner (Entscheidung Produktinhaber 2026-10-24)
+
+Je Gegnerklasse ein Round-Chibi-Porträt im Stil von `art/mockups/characters-s1/` (gleiche Kopfgröße, freigestellt), ablegen als `art/mockups/characters-s1/class_<id>.png`. Bis dahin zeigt das Medaillon den Anfangsbuchstaben. Klassen auf den Karten von Akt 1 (Stand heute): `archer`, `brigand`, `cleric`, `fighter`, `mage`, `mercenary`, `soldier`; die Gegnertypen aus Story 2.9 (Banditen, Wolfsreiter zu Fuß, Söldner) kommen dazu.

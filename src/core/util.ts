@@ -1,3 +1,4 @@
+import { CoreInvariantError } from './errors';
 import type { Area, Difficulty, Mechanic, Pos, Team } from './defs';
 import type { BattleState, BattleUnit } from './state';
 
@@ -52,7 +53,7 @@ export function unitAt(s: BattleState, p: Pos): BattleUnit | undefined {
 }
 export function getUnit(s: BattleState, uid: string): BattleUnit {
   const u = s.units.find((x) => x.uid === uid);
-  if (!u) throw new Error(`unknown unit ${uid}`);
+  if (!u) throw new CoreInvariantError('unknown_unit', { uid });
   return u;
 }
 /** Finds a unit by uid or by its character/record id (map data refers to ids). */

@@ -1,32 +1,16 @@
-import { SUPPORT_RANKS, type EquipSlot, type GameData, type SupportRank } from '../defs';
-import { newItem } from '../battle/create';
-import { rollAffixes } from '../loot';
-import { canEquip, itemCategory, itemDef, isRune, runeSlotCount, sellPrice } from '../rules/items';
-import { loadoutSlots, promote } from '../rules/progression';
+import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
+import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { activeSkillIds } from '../rules/skills';
+import { computeStats } from '../rules/stats';
 import { pendingRank } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
-import { currentTier, merchantStock } from './campaign';
+import { conditionContext, evalCondition } from './conditions';
 
-export type CampError =
-  | 'not_enough_gold'
-  | 'not_enough_materials'
-  | 'unknown_item'
-  | 'unknown_unit'
-  | 'max_level'
-  | 'not_upgradable'
-  | 'not_for_sale'
-  | 'cannot_equip'
-  | 'bag_full'
-  | 'no_slot'
-  | 'not_available'
-  | 'convoy_full';
-
-export type CampResult = { ok: true; campaign: CampaignState } | { ok: false; error: CampError };
-
-const ok = (campaign: CampaignState): CampResult => ({ ok: true, campaign });
-const fail = (error: CampError): CampResult => ({ ok: false, error });
+/**
+ * Camp helpers shared by the campaign command handlers (`apply.ts`) and the UI: lookups, costs and
+ * previews. The UI shows what the handler will charge by calling the same functions.
+ */
 
 /** Where an item currently is: convoy or a unit's slot/bag. */
 export function locateItem(c: CampaignState, uid: string): { inst: ItemInstance; owner?: UnitRecord; slot?: EquipSlot | 'bag' } | null {
@@ -40,7 +24,8 @@ export function locateItem(c: CampaignState, uid: string): { inst: ItemInstance;
   return null;
 }
 
-function takeItem(c: CampaignState, uid: string): ItemInstance | null {
+/** Removes an item from wherever it is (mutates `c`). */
+export function takeItem(c: CampaignState, uid: string): ItemInstance | null {
   const loc = locateItem(c, uid);
   if (!loc) return null;
   if (!loc.owner) c.convoy = c.convoy.filter((i) => i.uid !== uid);
@@ -49,85 +34,11 @@ function takeItem(c: CampaignState, uid: string): ItemInstance | null {
   return loc.inst;
 }
 
-export function buy(data: GameData, c0: CampaignState, defId: string): CampResult {
-  const stock = merchantStock(data, currentTier(data, c0));
-  const runeForSale = data.runes[defId]?.price !== undefined && (data.runes[defId]?.tier ?? 0) <= 1;
-  if (!stock.includes(defId) && !runeForSale) return fail('not_for_sale');
-  const price = itemDef(data, defId).price;
-  if (c0.gold < price) return fail('not_enough_gold');
-  if (c0.convoy.length >= data.balance.economy.convoySize) return fail('convoy_full');
-  const c = clone(c0);
-  c.gold -= price;
-  c.convoy.push(newItem(c, defId, data));
-  return ok(c);
-}
-
-export function buyOffer(data: GameData, c0: CampaignState, uid: string): CampResult {
-  const offer = c0.offers.find((o) => o.uid === uid);
-  if (!offer) return fail('not_for_sale');
-  const price = offerPrice(data, offer);
-  if (c0.gold < price) return fail('not_enough_gold');
-  const c = clone(c0);
-  c.gold -= price;
-  c.offers = c.offers.filter((o) => o.uid !== uid);
-  c.convoy.push(clone(offer));
-  return ok(c);
-}
-
 export function offerPrice(data: GameData, inst: ItemInstance): number {
   return Math.floor(itemDef(data, inst).price * (1 + 0.5 * inst.affixes.length));
 }
 
-export function sell(data: GameData, c0: CampaignState, uid: string): CampResult {
-  const loc = locateItem(c0, uid);
-  if (!loc) return fail('unknown_item');
-  const price = sellPrice(data, loc.inst);
-  if (price <= 0) return fail('not_for_sale');
-  const c = clone(c0);
-  takeItem(c, uid);
-  c.gold += price;
-  return ok(c);
-}
-
-/** Moves an item (from convoy or any unit) into a unit's slot; the displaced item goes to the convoy. */
-export function equipItem(data: GameData, c0: CampaignState, unitId: string, uid: string, slot: EquipSlot | 'bag'): CampResult {
-  const c = clone(c0);
-  const u = c.roster.find((r) => r.id === unitId);
-  if (!u) return fail('unknown_unit');
-  const loc = locateItem(c, uid);
-  if (!loc) return fail('unknown_item');
-  if (slot !== 'bag') {
-    const err = canEquip(data, u, loc.inst, slot, activeSkillIds(data, u));
-    if (err && err !== 'two_handed') return fail('cannot_equip');
-  } else if (u.bag.length >= data.balance.bag.size && loc.owner !== u) return fail('bag_full');
-  const inst = takeItem(c, uid)!;
-  if (slot === 'bag') {
-    u.bag.push(inst);
-    return ok(c);
-  }
-  const old = u.equip[slot];
-  u.equip[slot] = inst;
-  if (old) c.convoy.push(old);
-  if (slot === 'mainHand' && itemDef(data, inst).twoHanded && u.equip.offHand) {
-    c.convoy.push(u.equip.offHand);
-    delete u.equip.offHand;
-  }
-  if (slot === 'offHand' && u.equip.mainHand && itemDef(data, u.equip.mainHand).twoHanded) {
-    c.convoy.push(u.equip.mainHand);
-    delete u.equip.mainHand;
-  }
-  return ok(c);
-}
-
-export function unequip(c0: CampaignState, uid: string): CampResult {
-  const c = clone(c0);
-  const inst = takeItem(c, uid);
-  if (!inst) return fail('unknown_item');
-  c.convoy.push(inst);
-  return ok(c);
-}
-
-function upgradable(data: GameData, inst: ItemInstance): boolean {
+export function upgradable(data: GameData, inst: ItemInstance): boolean {
   const cat = itemCategory(itemDef(data, inst));
   return cat === 'weapon' || cat === 'armor' || cat === 'shield';
 }
@@ -136,107 +47,20 @@ export function upgradeCost(data: GameData, inst: ItemInstance) {
   return data.balance.economy.upgradeCost.find((x) => x.level === inst.upgrade + 1);
 }
 
-export function upgrade(data: GameData, c0: CampaignState, uid: string): CampResult {
-  const loc = locateItem(c0, uid);
-  if (!loc) return fail('unknown_item');
-  if (!upgradable(data, loc.inst)) return fail('not_upgradable');
-  const cost = upgradeCost(data, loc.inst);
-  if (!cost) return fail('max_level');
-  if (c0.gold < cost.gold) return fail('not_enough_gold');
-  for (const [m, n] of Object.entries(cost.materials)) if ((c0.materials[m] ?? 0) < n) return fail('not_enough_materials');
-  const c = clone(c0);
-  c.gold -= cost.gold;
-  for (const [m, n] of Object.entries(cost.materials)) c.materials[m] = (c.materials[m] ?? 0) - n;
-  locateItem(c, uid)!.inst.upgrade += 1;
-  return ok(c);
-}
-
 export function rerollCost(data: GameData, inst: ItemInstance) {
   const r = data.balance.economy.rerollAffix;
   const epic = inst.affixes.length >= 2;
   return { gold: epic ? r.epicGold : r.gold, dust: epic ? r.epicArcaneDust : r.arcane_dust };
 }
 
-export function rerollAffix(data: GameData, c0: CampaignState, uid: string, index: number): CampResult {
-  const loc = locateItem(c0, uid);
-  if (!loc || !loc.inst.affixes[index]) return fail('unknown_item');
-  const cost = rerollCost(data, loc.inst);
-  if (c0.gold < cost.gold) return fail('not_enough_gold');
-  if ((c0.materials.arcane_dust ?? 0) < cost.dust) return fail('not_enough_materials');
-  const c = clone(c0);
-  const inst = locateItem(c, uid)!.inst;
-  const [next] = rollAffixes(data, c.rng, inst.def, 'rare', inst.affixes);
-  if (!next) return fail('not_available');
-  inst.affixes[index] = next;
-  c.gold -= cost.gold;
-  c.materials.arcane_dust = (c.materials.arcane_dust ?? 0) - cost.dust;
-  return ok(c);
-}
-
-export function insertRune(data: GameData, c0: CampaignState, itemUid: string, runeUid: string): CampResult {
-  const c = clone(c0);
-  const loc = locateItem(c, itemUid);
-  const rune = c.convoy.find((i) => i.uid === runeUid);
-  if (!loc || !rune || !isRune(data, rune)) return fail('unknown_item');
-  const rdef = data.runes[rune.def]!;
-  const slots = runeSlotCount(data, loc.inst);
-  const runes = [...loc.inst.runes];
-  while (runes.length < slots) runes.push(null);
-  const hasElement = runes.some((r) => r && data.runes[r]?.element);
-  if (rdef.element && hasElement) return fail('no_slot');
-  const idx = runes.findIndex((r) => r === null);
-  if (idx < 0) return fail('no_slot');
-  const d = itemDef(data, loc.inst);
-  if (d.slot === 'body' && !rdef.element) return fail('no_slot');
-  runes[idx] = rune.def;
-  loc.inst.runes = runes;
-  c.convoy = c.convoy.filter((i) => i.uid !== runeUid);
-  return ok(c);
-}
-
-export function removeRune(data: GameData, c0: CampaignState, itemUid: string, index: number): CampResult {
-  const c = clone(c0);
-  const loc = locateItem(c, itemUid);
-  const id = loc?.inst.runes[index];
-  if (!loc || !id) return fail('unknown_item');
-  loc.inst.runes[index] = null;
-  c.convoy.push(newItem(c, id, data));
-  return ok(c);
-}
-
-export function mergeRunes(data: GameData, c0: CampaignState, runeId: string): CampResult {
+/** Next rune tier and the gold it costs to merge `runeId` into it; null when the rune cannot be merged. */
+export function runeMerge(data: GameData, runeId: string): { next: RuneDef; gold: number; count: number } | null {
   const r = data.runes[runeId];
-  if (!r?.element || !r.tier) return fail('unknown_item');
+  if (!r?.element || !r.tier) return null;
   const next = Object.values(data.runes).find((x) => x.element === r.element && x.tier === (r.tier ?? 0) + 1);
-  if (!next) return fail('max_level');
+  if (!next) return null;
   const m = data.balance.economy.runeMerge;
-  const have = c0.convoy.filter((i) => i.def === runeId);
-  if (have.length < m.count) return fail('not_enough_materials');
-  const gold = m.goldPerTier * r.tier;
-  if (c0.gold < gold) return fail('not_enough_gold');
-  const c = clone(c0);
-  const remove = new Set(have.slice(0, m.count).map((i) => i.uid));
-  c.convoy = c.convoy.filter((i) => !remove.has(i.uid));
-  c.convoy.push(newItem(c, next.id, data));
-  c.gold -= gold;
-  return ok(c);
-}
-
-export function removeScar(data: GameData, c0: CampaignState, unitId: string, scarIndex: number, useHerb = false): CampResult {
-  const c = clone(c0);
-  const u = c.roster.find((r) => r.id === unitId);
-  if (!u || !u.scars[scarIndex]) return fail('unknown_unit');
-  const cfg = data.balance.economy.scarRemoval;
-  if (useHerb) {
-    const herb = c.convoy.find((i) => i.def === cfg.altItem);
-    if (!herb) return fail('not_enough_materials');
-    c.convoy = c.convoy.filter((i) => i.uid !== herb.uid);
-  } else {
-    if (c.gold < cfg.gold) return fail('not_enough_gold');
-    c.gold -= cfg.gold;
-  }
-  u.scars.splice(scarIndex, 1);
-  return ok(c);
+  return { next, gold: m.goldPerTier * r.tier, count: m.count };
 }
 
 /** Support conversations that can be watched at the campfire. */
@@ -253,37 +77,189 @@ export function availableSupportTalks(data: GameData, c: CampaignState): Array<{
   return out;
 }
 
-export function unlockSupport(data: GameData, c0: CampaignState, key: string): CampResult {
-  const st = c0.supports[key];
-  if (!st) return fail('not_available');
-  const rank = pendingRank(data, st);
-  if (!rank || rank === 'S') return fail('not_available');
-  const c = clone(c0);
-  c.supports[key]!.rank = rank;
-  return ok(c);
+/** Level of a room of the home; camp stations and rooms not built yet are level 1. */
+export const roomLevel = (c: CampaignState, id: string): number => c.home.rooms[id] ?? 1;
+
+/** A room of the current home with its state: open, or locked by the first condition that fails. */
+export interface RoomStatus {
+  room: RoomDef;
+  open: boolean;
+  /** first unfulfilled `requires` condition (for the reason shown on a locked stone) */
+  unmet?: Condition;
 }
 
-export function setLoadout(data: GameData, c0: CampaignState, unitId: string, skills: string[]): CampResult {
-  const c = clone(c0);
-  const u = c.roster.find((r) => r.id === unitId);
-  if (!u) return fail('unknown_unit');
-  const valid = [...new Set(skills)].filter((s) => u.mastered.includes(s));
-  u.loadout = valid.slice(0, loadoutSlots(data, u));
-  return ok(c);
+/**
+ * The rooms of the current home in display order (story 6.3): those that belong to `c.home.kind` and exist in
+ * the act reached. Replaces the unlock list of the PoC (`facilities`); `requires` is evaluated like every condition.
+ */
+export function homeRooms(data: GameData, c: CampaignState): RoomStatus[] {
+  const ctx = conditionContext(data, c);
+  return Object.values(data.rooms)
+    .filter((r) => r.homes.includes(c.home.kind) && r.fromAct <= ctx.act)
+    .map((room) => {
+      const unmet = room.requires.find((x) => !evalCondition(ctx, x));
+      return { room, open: !unmet, unmet };
+    });
 }
 
-export function promoteUnit(data: GameData, c0: CampaignState, unitId: string, classId: string): CampResult {
-  const c = clone(c0);
-  const u = c.roster.find((r) => r.id === unitId);
-  if (!u) return fail('unknown_unit');
-  if (u.level < data.balance.levels.promoteFrom) return fail('not_available');
-  const sealIdx = c.convoy.findIndex((i) => itemDef(data, i).use?.promote);
-  const bagSeal = u.bag.findIndex((i) => itemDef(data, i).use?.promote);
-  if (sealIdx < 0 && bagSeal < 0) return fail('not_enough_materials');
-  if (sealIdx >= 0) c.convoy.splice(sealIdx, 1);
-  else u.bag.splice(bagSeal, 1);
-  promote(data, u, classId);
-  return ok(c);
+/** Mercenaries are the company members without a story character (hired in the tavern). */
+export const isMercenary = (u: UnitRecord): boolean => !u.charId;
+
+/** Company members counted against the limits: story companions and hired mercenaries. */
+export function armyCount(c: CampaignState): { companions: number; mercenaries: number } {
+  const mercenaries = c.roster.filter(isMercenary).length;
+  return { companions: c.roster.length - mercenaries, mercenaries };
+}
+
+/** Gold a mercenary of this level costs in the tavern (balance.yaml `recruitCost`). */
+export function hireCost(data: GameData, level: number): number {
+  const r = data.balance.economy.recruitCost;
+  return r.base + r.perLevel * level;
+}
+
+/** Why a mercenary cannot be hired now, or null. Companions join through the story and ignore the mercenary limit. */
+export function hireError(data: GameData, c: CampaignState, offerId: string): 'not_available' | 'army_full' | 'not_enough_gold' | null {
+  const offer = c.tavern.find((u) => u.id === offerId);
+  if (!offer) return 'not_available';
+  if (armyCount(c).mercenaries >= data.balance.economy.mercenaryLimit) return 'army_full';
+  return c.gold < hireCost(data, offer.level) ? 'not_enough_gold' : null;
+}
+
+/** Highest upgrade the smith of this home reaches (rooms.yaml level via `balance.economy.smithMaxUpgrade`). */
+export function upgradeLimit(data: GameData, c: CampaignState): number {
+  const caps = data.balance.economy.smithMaxUpgrade;
+  return caps[Math.min(roomLevel(c, 'smith'), caps.length) - 1]!;
+}
+
+/** The smith rerolls affixes from `rerollFromSmithLevel` on. */
+export const rerollAllowed = (data: GameData, c: CampaignState): boolean => roomLevel(c, 'smith') >= data.balance.economy.rerollFromSmithLevel;
+
+/** What one more upgrade level adds (same functions as in battle), for the smith's list. */
+export function upgradePreview(data: GameData, inst: ItemInstance): Array<{ key: 'mt' | 'hit' | 'def' | 'res'; delta: number }> {
+  const next = { ...inst, upgrade: inst.upgrade + 1 };
+  const out: Array<{ key: 'mt' | 'hit' | 'def' | 'res'; delta: number }> = [];
+  if (isWeapon(itemDef(data, inst))) {
+    const a = weaponProfile(data, next);
+    const b = weaponProfile(data, inst);
+    if (a.might !== b.might) out.push({ key: 'mt', delta: a.might - b.might });
+    if (a.hit !== b.hit) out.push({ key: 'hit', delta: a.hit - b.hit });
+  } else {
+    const a = itemStatMods(data, next);
+    const b = itemStatMods(data, inst);
+    if ((a.def ?? 0) !== (b.def ?? 0)) out.push({ key: 'def', delta: (a.def ?? 0) - (b.def ?? 0) });
+    if ((a.res ?? 0) !== (b.res ?? 0)) out.push({ key: 'res', delta: (a.res ?? 0) - (b.res ?? 0) });
+  }
+  return out;
+}
+
+/** A unit may be promoted: level reached and the class has a promotion (the seal is checked by the command). */
+export function canPromote(data: GameData, u: UnitRecord): boolean {
+  return u.level >= data.balance.levels.promoteFrom && (data.classes[u.classId]?.promotesTo.length ?? 0) > 0;
+}
+
+/** Experience bar of a unit: gained / needed for the next level; `full` at the top level. */
+export function expProgress(data: GameData, u: UnitRecord): { exp: number; need: number; full: boolean } {
+  const need = data.balance.experience.levelUpAt;
+  return { exp: u.exp, need, full: u.level >= data.balance.levels.max };
+}
+
+/** Pairs of the unit with a conversation ready at the campfire. */
+export function supportTalksOf(data: GameData, c: CampaignState, unitId: string): number {
+  return availableSupportTalks(data, c).filter((x) => x.key.split('|').includes(unitId)).length;
+}
+
+/** What the equip list shows for a place: where the item is now and whether the unit may hold it there. */
+export interface EquipCandidate {
+  inst: ItemInstance;
+  where: 'convoy' | 'bag';
+  /** null = may be equipped (`two_handed` counts as allowed: the other hand goes to the convoy) */
+  error: EquipError | null;
+}
+
+/**
+ * Items for one place of a unit, from its bag and the convoy (story 6.2). Items of the wrong kind for the place
+ * are left out; items the role may not hold stay in the list with the reason in `error`.
+ */
+export function equipCandidates(data: GameData, c: CampaignState, unit: UnitRecord, slot: EquipSlot | 'bag'): EquipCandidate[] {
+  const skills = activeSkillIds(data, unit);
+  const out: EquipCandidate[] = [];
+  const consider = (inst: ItemInstance, where: 'convoy' | 'bag') => {
+    const d = itemDef(data, inst);
+    if (slot === 'bag') {
+      if (where === 'bag' || d.tags?.includes('convoyOnly')) return;
+      out.push({ inst, where, error: unit.bag.length >= data.balance.bag.size ? 'bag_full' : null });
+      return;
+    }
+    if (d.tags?.includes('convoyOnly') || !slotFits(d, slot)) return;
+    const err = canEquip(data, unit, inst, slot, skills);
+    out.push({ inst, where, error: err === 'two_handed' ? null : err });
+  };
+  for (const i of unit.bag) consider(i, 'bag');
+  for (const i of c.convoy) consider(i, 'convoy');
+  return out;
+}
+
+/** One changed value of an equip preview; `better` decides the colour (green/red). */
+export interface EquipDelta {
+  key: 'mt' | 'hit' | 'crit' | 'rng' | 'wt' | 'hp' | 'str' | 'mag' | 'skl' | 'spd' | 'lck' | 'def' | 'res' | 'mov' | 'avoid' | 'load';
+  delta: number;
+  better: boolean;
+}
+
+/**
+ * What changes when `inst` goes into `slot` of `unit`: the same formulas as the battle (`computeStats`,
+ * `weaponProfile`), shown green/red against what is worn now. Empty for a bag place.
+ */
+export function equipPreview(data: GameData, unit: UnitRecord, inst: ItemInstance, slot: EquipSlot | 'bag'): EquipDelta[] {
+  if (slot === 'bag') return [];
+  const after = clone(unit);
+  after.bag = after.bag.filter((i) => i.uid !== inst.uid);
+  after.equip[slot] = clone(inst);
+  const d = itemDef(data, inst);
+  if (slot === 'mainHand' && d.twoHanded) delete after.equip.offHand;
+  if (slot === 'offHand' && after.equip.mainHand && itemDef(data, after.equip.mainHand).twoHanded) delete after.equip.mainHand;
+  const out: EquipDelta[] = [];
+  const push = (key: EquipDelta['key'], delta: number, lowerIsBetter = false) => {
+    if (delta) out.push({ key, delta, better: lowerIsBetter ? delta < 0 : delta > 0 });
+  };
+  const cur = unit.equip[slot];
+  const weaponSlot = slot === 'mainHand' && isWeapon(d);
+  if (weaponSlot) {
+    const a = weaponProfile(data, inst);
+    const b = cur && isWeapon(itemDef(data, cur)) ? weaponProfile(data, cur) : null;
+    push('mt', a.might - (b?.might ?? 0));
+    push('hit', a.hit - (b?.hit ?? 0));
+    push('crit', a.crit - (b?.crit ?? 0));
+    push('rng', a.range[1] - (b?.range[1] ?? 1));
+    push('wt', a.weight - (b?.weight ?? 0), true);
+  }
+  const s0 = computeStats(data, unit);
+  const s1 = computeStats(data, after);
+  push('hp', s1.maxHp - s0.maxHp);
+  for (const k of ['str', 'mag', 'skl', 'spd', 'lck', 'def', 'res'] as const) push(k, s1.stats[k] - s0.stats[k]);
+  push('mov', s1.mov - s0.mov);
+  push('avoid', s1.avoid - s0.avoid);
+  if (!weaponSlot) {
+    push('hit', s1.hit - s0.hit);
+    push('crit', s1.crit - s0.crit);
+  }
+  push('load', s1.load - s0.load, true);
+  return out;
+}
+
+/** Company members who can hold an item in some place (the merchant's "For whom?"). */
+export function usableBy(data: GameData, c: CampaignState, defId: string): UnitRecord[] {
+  const d = itemDef(data, defId);
+  if (d.slot === 'bag') return c.roster;
+  const slots: EquipSlot[] = d.slot === 'accessory' ? ['accessory1', 'accessory2'] : [d.slot as EquipSlot];
+  const probe: ItemInstance = { uid: 'probe', def: defId, upgrade: 0, affixes: [], runes: [] };
+  return c.roster.filter((u) => {
+    const skills = activeSkillIds(data, u);
+    return slots.some((sl) => {
+      const err = canEquip(data, u, probe, sl, skills);
+      return !err || err === 'two_handed' || err === 'duplicate_accessory';
+    });
+  });
 }
 
 export { SUPPORT_RANKS };

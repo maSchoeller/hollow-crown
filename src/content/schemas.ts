@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import type { Condition, Effect } from '../core/defs';
+import { PERMANENT_COMPANIONS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -77,6 +79,8 @@ export const itemSchema = z.object({
   cureStatus: z.boolean().optional(),
   utility: z.object({ createTerrain: z.string(), rng: range }).optional(),
   tags: z.array(z.string()).optional(),
+  /** painted image art/items/<image>.png; defaults to the id */
+  image: z.string().optional(),
 });
 
 const affixMods = z
@@ -111,6 +115,8 @@ export const runeSchema = z.object({
   terrainOnHit: z.enum(['ignite', 'extinguish']).optional(),
   statusOnHit: statusId.optional(),
   effectiveVs: z.array(z.string()).optional(),
+  /** painted image art/items/<image>.png; defaults to the id */
+  image: z.string().optional(),
 });
 
 export const setSchema = z.object({
@@ -129,6 +135,7 @@ export const setSchema = z.object({
 export const classSchema = z.object({
   id: z.string(),
   tier: z.enum(['base', 'advanced', 'unique']),
+  roleGroup: z.enum(['melee', 'ranged', 'support']),
   moveType,
   mov: z.number().int(),
   weapons: z.array(weaponType),
@@ -363,6 +370,73 @@ export const mapSchema = z.object({
   devNote: z.string().optional(),
 });
 
+// --- conditions and effects (architecture §5.3): an object with exactly one key; a list of conditions means AND ---
+const flagValue = z.union([z.string(), z.number(), z.literal(true)]);
+const flagRef = z.union([
+  z.string().min(1),
+  z.record(z.string(), flagValue).refine((r) => Object.keys(r).length === 1, 'exactly one flag'),
+]);
+const companion = z.string().min(1);
+/** `recruit`/`leave` never apply to the avatar or Kael. */
+const movableCompanion = companion.refine((id) => !PERMANENT_COMPANIONS.includes(id), 'avatar and kael never join or leave');
+const stance = z.enum(['warm', 'sober', 'defiant']);
+
+export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
+  z.union([
+    z.strictObject({ flag: flagRef }),
+    z.strictObject({ alive: companion }),
+    z.strictObject({ dead: companion }),
+    z.strictObject({ left: companion }),
+    z.strictObject({ completed: z.string().min(1) }),
+    z.strictObject({
+      storyCount: z
+        .strictObject({ min: z.number().int().min(0).optional(), max: z.number().int().min(0).optional() })
+        .refine((r) => r.min !== undefined || r.max !== undefined, 'min or max'),
+    }),
+    z.strictObject({ act: z.number().int().min(1) }),
+    z.strictObject({ support: z.strictObject({ pair: z.tuple([companion, companion]), rank }) }),
+    z.strictObject({ stance }),
+    z.strictObject({ met: z.string().min(1) }),
+    z.strictObject({ chronicle: z.union([z.strictObject({ min: z.number().int().min(1) }), z.array(z.string().min(1)).min(1)]) }),
+    z.strictObject({ any: z.array(conditionSchema).min(1) }),
+    z.strictObject({ not: conditionSchema }),
+  ]),
+);
+export const conditionsSchema = z.union([conditionSchema, z.array(conditionSchema)]);
+
+export const roomSchema = z.object({
+  id: z.string(),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'enchanter']),
+  icon: z.string(),
+  fromAct: z.number().int().min(1).default(1),
+  homes: z.array(z.enum(['camp', 'castle'])).min(1),
+  requires: z.array(conditionSchema).default([]),
+});
+
+export const effectSchema: z.ZodType<Effect> = z.union([
+  z.strictObject({ setFlag: flagRef }),
+  z.strictObject({ recruit: z.union([movableCompanion, z.strictObject({ lt: z.string().min(1) })]) }),
+  z.strictObject({ leave: movableCompanion }),
+  z.strictObject({ grudge: z.strictObject({ lt: z.string().min(1), delta: z.number().int() }) }),
+  z.strictObject({ gold: z.number().int() }),
+  z.strictObject({ material: z.record(z.string(), z.number().int()) }),
+  z.strictObject({ item: itemRefSchema }),
+  z.strictObject({ priceMod: z.strictObject({ pct: z.number(), act: z.number().int().min(1) }) }),
+  z.strictObject({ villageAid: z.literal(true) }),
+  z.strictObject({ openQuest: z.string().min(1) }),
+  z.strictObject({ stance }),
+  z.strictObject({ chronicle: z.string().min(1) }),
+  z.strictObject({ setHome: z.enum(['camp', 'castle']) }),
+]);
+
+/** Flag register `acts/actN/flags.yaml` (architecture §5.9). */
+export const flagSchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+  kind: z.enum(['decision', 'story', 'quest', 'battle']),
+  values: z.array(z.union([z.string(), z.number()])).min(1).optional(),
+  season2: z.boolean().optional(),
+});
+
 export const dialogueSchema = z.object({
   id: z.string(),
   background: z.string().optional(),
@@ -374,14 +448,15 @@ export const dialogueSchema = z.object({
         mood: z.string().optional(),
         side: z.enum(['left', 'right']).optional(),
         key: z.string(),
-        if: z.object({ flag: z.string().optional(), notFlag: z.string().optional() }).optional(),
+        if: conditionsSchema.optional(),
       }),
-      z.object({ choice: z.array(z.object({ key: z.string(), setFlag: z.string().optional() })) }),
+      z.object({ choice: z.array(z.object({ key: z.string(), effects: z.array(effectSchema).optional() })) }),
     ]),
   ),
 });
 
 export const campaignSchema = z.object({
+  act: z.number().int().min(1).default(1),
   start: z.string(),
   startGold: z.number(),
   startConvoy: z.array(itemRefSchema).default([]),
@@ -395,11 +470,13 @@ export const campaignSchema = z.object({
       next: z.array(z.string()),
       pos,
       merchantTier: z.number().int(),
+      expectedLevel: z.number().int().min(1),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
     }),
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.string()).default({}),
-  facilities: z.record(z.string(), z.string()).default({}),
+  home: z.enum(['camp', 'castle']).default('camp'),
+  homePos: pos.default([50, 50]),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
   supportPairs: z.array(z.tuple([z.string(), z.string()])),
   supportDialogues: z.record(z.string(), z.object({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial()),
@@ -469,7 +546,18 @@ export const balanceSchema = z.object({
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   bag: z.object({ size: z.number().int() }),
-  economy: z.looseObject({ rarityAffixes: z.record(z.string(), z.number()), rarityRuneSlots: z.record(z.string(), z.number()) }),
+  economy: z.looseObject({
+    rarityAffixes: z.record(z.string(), z.number()),
+    rarityRuneSlots: z.record(z.string(), z.number()),
+    mercenaryLimit: z.number().int().min(0),
+    smithMaxUpgrade: z.array(z.number().int().min(0)).min(1),
+    rerollFromSmithLevel: z.number().int().min(1),
+    tavern: z.object({
+      levelSpread: z.number().int().min(0),
+      names: z.array(z.string()).min(1),
+      classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
+    }),
+  }),
   difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number() })),
   ai: z.record(z.string(), z.number()),
 });

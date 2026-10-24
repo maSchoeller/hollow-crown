@@ -4,9 +4,12 @@ import type {
   Difficulty,
   Element,
   EquipSlot,
+  FlagValue,
+  HomeKind,
   MapDef,
   Mechanic,
   Pos,
+  Stance,
   Stats,
   StatusId,
   SupportRank,
@@ -78,6 +81,8 @@ export interface BattleUnit extends UnitRecord {
   acted: boolean;
   moved: boolean;
   downed: boolean;
+  /** own phases spent downed (Standard: bleeds out at `balance.death.bleedOutTurns`) */
+  bleed: number;
   /** left the map: rescued, escaped, retreated (casual) or dead */
   gone?: 'rescued' | 'escaped' | 'retreated' | 'dead';
   status: Array<{ id: StatusId; turns: number }>;
@@ -169,6 +174,13 @@ export interface AvatarSettings {
   affinity: Element;
 }
 
+/** Where the company lives: the camp of act 1 or the castle, and the level of each built room (architecture §5.10). */
+export interface HomeState {
+  kind: HomeKind;
+  /** room id → level; a room that is not listed has level 1 (camp stations have no levels yet) */
+  rooms: Record<string, number>;
+}
+
 export interface CampaignState {
   version: number;
   seed: number;
@@ -180,7 +192,14 @@ export interface CampaignState {
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;
-  flags: string[];
+  /** story flags with their value (architecture §5.9) */
+  flags: Record<string, FlagValue>;
+  /** companions that left the company (effect `leave`) */
+  left: string[];
+  /** counters of the avatar's stance profile */
+  stance: Record<Stance, number>;
+  /** collected chronicle pages */
+  chronicle: string[];
   completed: string[];
   /** node ids available on the world map */
   available: string[];
@@ -188,6 +207,10 @@ export interface CampaignState {
   nextUid: number;
   /** merchant special offers for the current chapter */
   offers: ItemInstance[];
+  /** the company's home: `c.home = { kind: 'camp', rooms }` (story 6.3) */
+  home: HomeState;
+  /** mercenaries the tavern offers for the current chapter (finished company records, id `merc<n>`) */
+  tavern: UnitRecord[];
 }
 
 export type MapLookup = (id: string) => MapDef;
