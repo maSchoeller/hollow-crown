@@ -108,7 +108,7 @@ function Mate({ unit, onOpen }: { unit: UnitRecord; onOpen: () => void }) {
           )}
         </span>
       )}
-      <UnitHead portrait={unit.portrait} name={unitName(unit)} size={70} />
+      <UnitHead portrait={unit.portrait} classId={unit.classId} name={unitName(unit)} size={70} />
       <b>{unitName(unit)}</b>
       <small>
         {t(`class.${unit.classId}.name`)} · {unit.level}
@@ -228,7 +228,7 @@ export function Figure({
         onPointerCancel={() => (start.current = null)}
       >
         <div class="trp-fig__top">
-          <UnitBust portrait={unit.portrait} name={name} />
+          <UnitBust portrait={unit.portrait} classId={unit.classId} name={name} />
           <div>
             <h2 class="trp-fig__name">{name}</h2>
             <span class="trp-role">

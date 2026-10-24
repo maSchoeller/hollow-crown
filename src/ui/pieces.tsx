@@ -93,24 +93,11 @@ export function Tabs<T extends string>({ value, options, onChange, label }: { va
 
 export type Resource = 'gold' | 'exp' | 'emberSpark';
 
-/** Vector symbols where no painted image exists (DESIGN.md: Gold = coin, EXP = green star). */
-const VECTOR: Record<'gold' | 'exp', { path: string; color: string }> = {
-  gold: { path: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18Z', color: 'var(--hc-gold)' },
-  exp: { path: 'M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6 6.6 19.5l1.1-6.1L3.2 9.2l6.1-.8Z', color: 'var(--hc-positive)' },
-};
+/** Painted images (art/items) of the resources (DESIGN.md: Gold = coin, EXP = green star, ember spark); materials use their own. */
+const RESOURCE_IMAGE: Record<Resource, string> = { gold: 'gold', exp: 'exp', emberSpark: 'ember_spark' };
 
-/** Painted images (art/items) for ember sparks and every material. */
-const IMAGE: Record<'emberSpark', string> = { emberSpark: 'ember_spark' };
-
-function Symbol({ resource, image }: { resource?: 'gold' | 'exp'; image?: string }) {
-  if (image) return <img src={itemImageSrc(image)} alt="" aria-hidden="true" draggable={false} />;
-  const v = VECTOR[resource!];
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d={v.path} fill={v.color} stroke="var(--hc-line)" stroke-width="2" stroke-linejoin="round" />
-      {resource === 'gold' && <circle cx="12" cy="12" r="4.5" fill="none" stroke="var(--hc-line)" stroke-width="1.6" />}
-    </svg>
-  );
+function Symbol({ image }: { image: string }) {
+  return <img src={itemImageSrc(image)} alt="" aria-hidden="true" draggable={false} />;
 }
 
 const fmt = (n: number) => n.toLocaleString(lang.value === 'de' ? 'de-DE' : 'en-US');
@@ -126,14 +113,14 @@ type AmountProps = {
 
 /**
  * Every amount is symbol + number with tabular digits, never a word or a bare number (DESIGN.md §Währung).
- * Materials show their painted image (art/items/<id>.png, required by content:check).
+ * Every symbol is a painted image (art/items/<id>.png): gold, EXP, ember spark and each material (content:check).
  */
 export function Amount({ value, signed, short, class: cls, resource, material }: AmountProps) {
   const name = resource ? t(`ui.resource.${resource}`) : t(`item.${material.id}.name`);
   const text = `${signed && value > 0 ? '+' : ''}${fmt(value)}`;
   return (
     <span class={`hc-amount ${short ? 'is-short' : ''} ${cls ?? ''}`} aria-label={`${text} ${name}`} title={name}>
-      {resource === 'emberSpark' ? <Symbol image={IMAGE.emberSpark} /> : resource ? <Symbol resource={resource} /> : <Symbol image={material.image ?? material.id} />}
+      <Symbol image={resource ? RESOURCE_IMAGE[resource] : (material.image ?? material.id)} />
       <span aria-hidden="true">{text}</span>
     </span>
   );

@@ -217,7 +217,7 @@ function Who({ defId }: { defId: string }) {
     <div class="hm-who" aria-label={t('ui.room.merchant.who')}>
       {list.map((u) => (
         <span key={u.id} class="hm-who__one">
-          <UnitHead portrait={u.portrait} name={unitName(u)} size={40} />
+          <UnitHead portrait={u.portrait} classId={u.classId} name={unitName(u)} size={40} />
           {unitName(u)}
         </span>
       ))}
@@ -311,7 +311,7 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
 function PersonLine({ unit, name, sub, side, selected, onClick, extra }: { unit?: UnitRecord; name: string; sub?: ComponentChildren; side?: ComponentChildren; selected?: boolean; onClick?: () => void; extra?: ComponentChildren }) {
   return (
     <button type="button" class={`hc-line-item ${selected ? 'is-sel' : ''}`} aria-pressed={selected} onClick={onClick}>
-      {extra ?? <UnitHead portrait={unit?.portrait} name={unit ? unitName(unit) : name} size={40} />}
+      {extra ?? <UnitHead portrait={unit?.portrait} classId={unit?.classId} name={unit ? unitName(unit) : name} size={40} />}
       <span style={{ minWidth: 0 }}>
         <span class="hc-line-item__name">{name}</span>
         <span class="hc-line-item__sub">{sub}</span>

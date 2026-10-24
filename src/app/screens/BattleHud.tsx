@@ -19,24 +19,21 @@ import { ElementIcon, Icon, TriMark } from '../../ui/icons';
 import { itemName, unitName } from '../../ui/components';
 import { asset } from '../../ui/asset';
 import { ItemChip } from '../../ui/pieces';
-import { avatarHead } from '../campaignInfo';
+import { artId } from './unitArt';
 import '../../ui/hud.css';
 
 const teamClass = (team: Team) => (team === 'enemy' ? 'is-enemy' : team === 'other' ? 'is-other' : 'is-player');
 
-/** Id of the round head image (public/assets/avatars): the avatar maps to its look, everyone else to the unit id. */
-const headOf = (portrait?: string) => (portrait ? (portrait.startsWith('avatar_') ? avatarHead(portrait) : portrait) : undefined);
-
 // ------------------------------------------------------------------ medallion
 
 /** Starts loading the heads of a battle's units so medallions do not pop in when a unit is selected. */
-export function preloadHeads(units: Array<{ portrait?: string }>): void {
-  for (const id of new Set(units.map((u) => headOf(u.portrait)))) if (id) new Image().src = asset(`avatars/${id}.webp`);
+export function preloadHeads(units: Array<{ portrait?: string; classId?: string }>): void {
+  for (const id of new Set(units.map((u) => artId(u.portrait, u.classId)))) if (id) new Image().src = asset(`avatars/${id}.webp`);
 }
 
 /** Round head image; falls back to the initial when a character has no head yet. */
-export function Head({ portrait, name, class: cls = '' }: { portrait?: string; name: string; class?: string }) {
-  const id = headOf(portrait);
+export function Head({ portrait, classId, name, class: cls = '' }: { portrait?: string; classId?: string; name: string; class?: string }) {
+  const id = artId(portrait, classId);
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [id]);
   if (!id || failed) return <span class={`hud-head hud-head--initial ${cls}`}>{name.slice(0, 1)}</span>;
@@ -52,7 +49,7 @@ export function Medallion({ u, hp, max, size = 78, level = true }: { u: BattleUn
       style={{ '--hud-size': `${size}px`, '--hud-hp': `${pct}%` }}
     >
       <span class="hud-medal__face">
-        <Head portrait={u.portrait} name={unitName(u)} />
+        <Head portrait={u.portrait} classId={u.classId} name={unitName(u)} />
       </span>
       {level && (
         <span class="hud-medal__lv">
@@ -251,7 +248,7 @@ export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?:
   const title = person ? (target ? t(`ui.ctx.${kind}`, { name }) : t(`ui.action.${kind}`)) : t(`ui.ctx.${kind}`);
   return (
     <button type="button" class="hc-piece hud-ctx" onClick={onGo}>
-      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} name={name} /> : <Icon name={kind} size={22} />}</span>
+      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} classId={target.classId} name={name} /> : <Icon name={kind} size={22} />}</span>
       <span class="hud-ctx__text">
         <b>{title}</b>
         {kind === 'rescue' && <small>{t('ui.ctx.rescueSub')}</small>}

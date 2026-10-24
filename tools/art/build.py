@@ -194,6 +194,25 @@ def content_unit_ids():
     return ids
 
 
+def class_portrait_ids():
+    """Class portraits `class_<class>` for units without their own picture (generic enemies, tavern mercenaries):
+    every `class:` value in the act maps and in content/core/balance.yaml (tavern classes)."""
+    pat = re.compile(r'(?<![a-z0-9_])class:[ \t]*([a-z0-9_]+)')
+    content = os.path.join(ROOT, 'content')
+    files = [os.path.join(content, 'core', 'balance.yaml')]
+    acts = os.path.join(content, 'acts')
+    for act in sorted(os.listdir(acts)):
+        maps = os.path.join(acts, act, 'maps')
+        if os.path.isdir(maps):
+            files += [os.path.join(maps, f) for f in sorted(os.listdir(maps)) if f.endswith('.yaml')]
+    ids = set()
+    for path in files:
+        if os.path.isfile(path):
+            with open(path, encoding='utf-8') as f:
+                ids.update('class_' + c for c in pat.findall(f.read()))
+    return ids
+
+
 def companion_ids():
     """Story characters that join the company (units.yaml entries with `joins`): the troop view shows only these."""
     ids = set()
@@ -217,7 +236,7 @@ def build_heads():
     if not os.path.isdir(base):
         return result
     dst = ensure(os.path.join(OUT, 'avatars'))
-    wanted = content_unit_ids() | set(AVATAR_LOOKS)
+    wanted = content_unit_ids() | class_portrait_ids() | set(AVATAR_LOOKS)
     for f in sorted(os.listdir(base)):
         pid, ext = os.path.splitext(f)
         if ext != '.png' or pid not in wanted:
@@ -238,7 +257,7 @@ def build_busts():
     if not os.path.isdir(base):
         return result
     dst = ensure(os.path.join(OUT, 'busts'))
-    wanted = companion_ids() | set(AVATAR_LOOKS)
+    wanted = companion_ids() | class_portrait_ids() | set(AVATAR_LOOKS)
     for f in sorted(os.listdir(base)):
         pid, ext = os.path.splitext(f)
         if ext != '.png' or pid not in wanted:

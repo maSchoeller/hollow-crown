@@ -66,7 +66,7 @@ Befunde aus der Sichtung:
 | `slim_sword` | dunkler Stab | „medium grey iron … NOT dark“, goldener Bügelkorb | lesbar ✓ |
 | `pact_warden_shield_1`, `_2` | spitzere Schildform als `_3` | `_3` als fünfte Referenz, „keep EXACTLY its outline“ | Form wie `_3` ✓ |
 | `pact_blade_1`, `_2` | Stufen kaum unterscheidbar | `_3` als fünfte Referenz; Stufe 1 „absolutely NO glow“, Stufe 2 Runen klar glühend, Schneide nicht | drei Stufen unterscheidbar ✓ |
-## Offen: fehlende Icons (Stand 2026-10-24)
+## Erledigt: fehlende Icons (2026-10-24, siehe `missing_2026-10-24.md`)
 
 Vom Produktinhaber beauftragt, Erzeugung sobald wieder ChatGPT-Kontingent da ist (ab 01:00). Bis dahin nutzen die Items vorläufig ein ähnliches Bild über das Feld `image` in `content/items.yaml` (Story 8.5); nach dem Erzeugen `image` entfernen bzw. auf die neue id setzen.
 

@@ -4,8 +4,12 @@ import { asset } from '../../ui/asset';
 import { avatarHead } from '../campaignInfo';
 import '../../ui/troop.css';
 
-/** Id of the character image: the avatar maps to its look, everyone else to the unit id; hired mercenaries have none. */
-export const artId = (portrait?: string): string | undefined => (portrait ? (portrait.startsWith('avatar_') ? avatarHead(portrait) : portrait) : undefined);
+/**
+ * Id of the character image: the avatar maps to its look, everyone else to the unit id; units without their own picture
+ * (generic enemies, tavern mercenaries) show the portrait of their class (class_<class>, art/mockups/characters-s1).
+ */
+export const artId = (portrait?: string, classId?: string): string | undefined =>
+  portrait ? (portrait.startsWith('avatar_') ? avatarHead(portrait) : portrait) : classId ? `class_${classId}` : undefined;
 
 function Img({ dir, id, name, class: cls }: { dir: 'avatars' | 'busts'; id?: string; name: string; class: string }) {
   const [failed, setFailed] = useState(false);
@@ -15,15 +19,15 @@ function Img({ dir, id, name, class: cls }: { dir: 'avatars' | 'busts'; id?: str
 }
 
 /** Round head; `size` is the edge length in px. */
-export function UnitHead({ portrait, name, size = 44 }: { portrait?: string; name: string; size?: number }) {
+export function UnitHead({ portrait, classId, name, size = 44 }: { portrait?: string; classId?: string; name: string; size?: number }) {
   return (
     <span class="trp-head" style={{ '--trp-head-size': `${size}px` }}>
-      <Img dir="avatars" id={artId(portrait)} name={name} class="trp-head__img" />
+      <Img dir="avatars" id={artId(portrait, classId)} name={name} class="trp-head__img" />
     </span>
   );
 }
 
 /** Half figure for the figure view. */
-export function UnitBust({ portrait, name }: { portrait?: string; name: string }) {
-  return <Img dir="busts" id={artId(portrait)} name={name} class="trp-bust" />;
+export function UnitBust({ portrait, classId, name }: { portrait?: string; classId?: string; name: string }) {
+  return <Img dir="busts" id={artId(portrait, classId)} name={name} class="trp-bust" />;
 }

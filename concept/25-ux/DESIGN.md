@@ -163,9 +163,9 @@ components:
     rounded: '{rounded.stone}'
     size: 50px
   currency:
-    gold: 'Münze {colors.gold}'
+    gold: 'gemaltes Item-Bild (art/items/gold.png)'
     ore: 'gemaltes Item-Bild (art/items/iron_ore.png)'
-    exp: 'Stern {colors.positive}'
+    exp: 'gemaltes Item-Bild (art/items/exp.png)'
     ember-spark: 'gemaltes Item-Bild (art/items/ember_spark.png)'
     typography: '{typography.number}'
   consequence-card:
@@ -216,7 +216,7 @@ Referenz ist das Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png`. V
 
 **Kontrast:** `{colors.line}` auf `{colors.cream}` ≈ 13 : 1, `{colors.soft}` auf `{colors.cream}` ≈ 5 : 1, Weiß auf `{colors.ember}` ≈ 3 : 1 (nur für fette Labels ab 16 px). Teamfarben, Glutorange und Positiv/Negativ stehen nie allein: immer zusammen mit Form, Symbol oder Text.
 
-**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, EP = grüner Stern (beide Vektor); Glutfunke und jedes Material zeigen ihr gemaltes Item-Bild aus `art/items/` (Eisenerz, Mondstahl, Drachenschuppe, Arkanstaub …). Ein Material ohne Bild erscheint nicht im Spiel (`content:check`).
+**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, EP = grüner Stern, Glutfunke und jedes Material zeigen ihr gemaltes Item-Bild aus `art/items/` (`gold`, `exp`, `ember_spark`, Material-id) (Eisenerz, Mondstahl, Drachenschuppe, Arkanstaub …). Ein Material ohne Bild erscheint nicht im Spiel (`content:check`).
 
 ## Typography
 

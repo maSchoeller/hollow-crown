@@ -143,11 +143,6 @@
   line-height: 1;
   white-space: nowrap;
 }
-.hc-amount svg {
-  width: 1.1em;
-  height: 1.1em;
-  flex: none;
-}
 /* painted images carry their own outline and need a little more room to read */
 .hc-amount img {
   width: 1.5em;

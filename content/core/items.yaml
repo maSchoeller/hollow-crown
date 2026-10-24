@@ -98,7 +98,7 @@
   tags: [unsellable]
 
 # --- Monster-Waffe (nicht für Spieler) ---
-- { id: drake_breath, kind: weapon, slot: mainHand, weaponType: breath, damageType: magical, element: fire, mt: 9, hit: 80, crit: 0, rng: [1,2], wt: 0, rarity: common, price: 0, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite, tags: [monsterOnly], image: dragon_scale }   # Interim-Bild bis eigenes Bild (Story 8.5)
+- { id: drake_breath, kind: weapon, slot: mainHand, weaponType: breath, damageType: magical, element: fire, mt: 9, hit: 80, crit: 0, rng: [1,2], wt: 0, rarity: common, price: 0, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite, tags: [monsterOnly] }
 
 # --- Beutel / Verbrauch ---
 - { id: vulnerary,      kind: consumable, slot: bag, use: { heal: 10 }, charges: 3, refillAfterMission: true, wt: 0, rarity: common, price: 300 }
@@ -107,7 +107,7 @@
 - { id: fire_bomb,      kind: consumable, slot: bag, use: { damage: 8, element: fire, rng: [1,2], status: burning, terrain: ignite }, charges: 1, wt: 0, rarity: common, price: 400 }
 - { id: haste_scroll,   kind: consumable, slot: bag, use: { target: ally, rng: [0,1], statMods: { mov: 2 }, duration: round }, charges: 1, wt: 0, rarity: rare, price: 800 }
 - { id: torch,          kind: consumable, slot: bag, use: { vision: 4, duration: 3 }, charges: 1, wt: 0, rarity: common, price: 150 }
-- { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000, image: chronicle_page }   # Interim-Bild (Story 8.5)
+- { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000 }
 - { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
 
 # --- Materialien (nur Konvoi) ---
