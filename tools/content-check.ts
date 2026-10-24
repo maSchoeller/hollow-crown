@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 import { loadContentFromDisk, contentFiles } from '../src/content/node';
 import { checkPacks, parsePacks, type PackDef } from '../src/content/packs';
+import { checkLockedIds, collectIds, releasedIdsSchema, renamesSchema, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
 
 const { data, locales, issues } = loadContentFromDisk();
@@ -23,7 +24,22 @@ try {
 } catch (e) {
   packIssues.push({ file: 'packs.yaml', message: e instanceof Error ? e.message : String(e) });
 }
-const found = [...issues, ...packIssues, ...validateContent(data, locales, sprites, itemImages, placeImages, backgroundImages)];
+// stable IDs (story 7.4): only once a release has locked them with pnpm content:lock
+const lockFile = join(process.cwd(), 'content', 'released-ids.json');
+const renamesFile = join(process.cwd(), 'content', 'renames.yaml');
+const idIssues: { file: string; message: string }[] = [];
+let lockedCount = 0;
+try {
+  const renames: Renames = existsSync(renamesFile) ? renamesSchema.parse(parse(readFileSync(renamesFile, 'utf8')) ?? {}) : {};
+  if (existsSync(lockFile)) {
+    const locked = releasedIdsSchema.parse(JSON.parse(readFileSync(lockFile, 'utf8')));
+    lockedCount = Object.values(locked.ids).reduce((n, l) => n + l.length, 0);
+    idIssues.push(...checkLockedIds(locked, collectIds(data), renames));
+  }
+} catch (e) {
+  idIssues.push({ file: 'released-ids.json / renames.yaml', message: e instanceof Error ? e.message : String(e) });
+}
+const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, locales, sprites, itemImages, placeImages, backgroundImages)];
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite'));
 const all = found.filter((i) => !warnings.includes(i));
@@ -36,6 +52,7 @@ const counts = {
   de: Object.keys(locales.de ?? {}).length,
   en: Object.keys(locales.en ?? {}).length,
   packs: packs.length,
+  lockedIds: lockedCount,
 };
 console.log('content:', JSON.stringify(counts));
 if (all.length) {

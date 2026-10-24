@@ -6,6 +6,9 @@ import { z } from 'zod';
 
 export const CORE_PACK = 'core';
 
+/** YAML in content/ that describes the content instead of being content (packs, ID renames of story 7.4). */
+export const META_FILES: readonly string[] = ['packs.yaml', 'renames.yaml'];
+
 export const packLoadSchema = z.enum(['precache', 'background', 'voice']);
 export type PackLoad = z.infer<typeof packLoadSchema>;
 

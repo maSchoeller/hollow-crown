@@ -15,6 +15,7 @@ import { parse } from 'yaml';
 import {
   CORE_PACK,
   groupByPack,
+  META_FILES,
   packModuleId,
   packOf,
   parsePacks,
@@ -46,9 +47,9 @@ export function readPacks(root: string): PackDef[] {
   return parsePacks(parse(readFileSync(join(root, 'content', 'packs.yaml'), 'utf8')));
 }
 
-/** Content YAML files (relative to content/) by pack id; `packs.yaml` itself belongs to none. */
+/** Content YAML files (relative to content/) by pack id; `packs.yaml` and `renames.yaml` belong to none. */
 export function contentByPack(root: string, packs: readonly PackDef[]): Map<string, string[]> {
-  const files = walk(join(root, 'content')).filter((p) => /\.ya?ml$/.test(p) && p !== 'packs.yaml');
+  const files = walk(join(root, 'content')).filter((p) => /\.ya?ml$/.test(p) && !META_FILES.includes(p));
   return groupByPack(packs, files, 'content');
 }
 
