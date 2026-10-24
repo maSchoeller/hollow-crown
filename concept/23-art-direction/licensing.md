@@ -2,7 +2,7 @@
 
 > **Keine Rechtsberatung.** Dieses Dokument ist eine Recherche eines KI-Assistenten, kein Rechtsgutachten. Es wurde nicht von einer Anwältin oder einem Anwalt geprüft. Allgemeine Geschäftsbedingungen und Gesetzeslage können sich ändern, und mehrere Quellen waren nicht abrufbar (siehe §1). Verbindlich sind allein die Verträge, die der Produktinhaber tatsächlich abgeschlossen hat, und die Auskunft einer fachkundigen Person.
 >
-> **Status:** Recherche abgeschlossen, **Entscheidung offen**. GA26/O5 und NFR15 bleiben unverändert: **nichts kommerziell veröffentlichen**, bis der Produktinhaber GA26 freigibt. Dieses Dokument entscheidet nichts; es bereitet die Entscheidung vor (§8).
+> **Status:** **Geklärt** – der Produktinhaber hat GA26/O5 am 2026-10-24 als geklärt erklärt; die Veröffentlichungssperre (NFR15) ist aufgehoben. Die Auflagen für die Pipeline (§6, A1–A14) und die Kennzeichnungspflichten (§6a) gelten weiter. Die Recherche unten bleibt als Grundlage.
 >
 > **Stand der Recherche:** 2026-10-23. Alle Abrufdaten in §10 sind dieser Tag.
 

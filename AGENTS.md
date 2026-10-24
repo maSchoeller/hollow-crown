@@ -10,7 +10,7 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 - Nie auf `main` committen oder pushen, nie force-pushen; auf einem Branch arbeiten, Merge nur per Pull Request.
 - Neue Entscheidungen ins zuständige BMAD-Artefakt unter `concept/` und dessen `.decision-log.md` eintragen, nie in `concept/01-decisions.md` – das ist seit 2026-10-23 eingefroren.
 - Offene Punkte (O1–O5 in `01-decisions.md`, „Offene Fragen“ im Game Brief) nicht stillschweigend entscheiden; nachfragen.
-- Nichts kommerziell veröffentlichen, solange die Lizenzfrage der KI-Assets (GA26) offen ist.
+- KI-Assets nur nach den Auflagen in `concept/23-art-direction/licensing.md` §6 erzeugen und ausliefern (GA26 ist seit 2026-10-24 geklärt).
 
 ## Wo was liegt
 

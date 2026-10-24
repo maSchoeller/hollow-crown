@@ -89,8 +89,8 @@ Der Proof of Concept (Prolog, Kap. 1–2) hat Kampfgefühl und Bedienung bestät
 | Tod-Modus | Runde neu starten | Mission neu starten | Spielstände |
 |---|---|---|---|
 | Klassik | nein | nur nach Niederlage | 1 pro Kampagne; Export nur als Backup, Import überschreibt |
-| Standard | ja | jederzeit | 3 Slots, Export/Import |
-| Casual | ja | jederzeit | 3 Slots, Export/Import |
+| Standard | ja | jederzeit | Auto-Save + 3 Plätze, Export/Import |
+| Casual | ja | jederzeit | Auto-Save + 3 Plätze, Export/Import |
 
 - **Staffel:** endet mit dem Finale von Akt 3 und dem Epilog-Mosaik.
 
@@ -174,7 +174,7 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 
 ### Einheitentypen und Klassen
 
-Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsreiter, Söldner; Akt 2 Eisenmark-Truppen, Ritter, Pegasusritter, Ballisten; Akt 3 Glut-Orden, Untote in Ruinen, Drachen. Rund 10 Gegnertypen.
+Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsreiter (zu Fuß mit Wolfsfell; Reittiere und Vierbeiner erst nach dem MVP), Söldner; Akt 2 Eisenmark-Truppen, Ritter, Pegasusritter, Ballisten; Akt 3 Glut-Orden, Untote in Ruinen, Drachen. Rund 10 Gegnertypen.
 
 ### Aktionsökonomie
 
@@ -280,7 +280,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - **Heimsuchungen:**
   - Takt: einmal pro Kalendertag 1–3 bereits gespielte Karten, reproduzierbar aus dem Datum. Verpasste Tage stauen sich bis maximal 3 Tagespakete; höchstens 6 offen. Der Tageswechsel zählt nur vorwärts; eine zurückgestellte Uhr erzeugt nichts Neues, eine vorgestellte höchstens den Stau von 3 Paketen.
   - Inhalt: eine Ziel-Variante (boss, defend, rout als Banditennest, escort, treasure), mindestens ein Leutnant aus einem bereits erreichten Akt, Gegner auf Armee-Stufe.
-  - Belohnung: Gold 40 % einer Story-Mission des aktuellen Akts, Kopfgeld, Material, 60 % EP. Ab der 4. Heimsuchung seit der letzten Story-Mission halbieren sich Gold und Kopfgeld. Keine Glutfunken.
+  - Belohnung: Gold 40 % des Mittelwerts der Story-Missionen des aktuellen Akts, Kopfgeld, Material, 60 % EP. Ab der 4. Heimsuchung seit der letzten Story-Mission halbieren sich Gold und Kopfgeld. Keine Glutfunken.
   - Deckel „aufholen, nicht überholen“: Liegt eine Einheit über der erwarteten Armee-Stufe der nächsten Story-Mission, erhält sie 50 % der Heimsuchungs-EP.
 
 ### NPC und Dialog
@@ -288,7 +288,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - Visual-Novel-Dialoge vor und nach Missionen, Sprechblasen auf der Karte (Leutnants, Bosse, Ansprechen).
 - Auswahlantworten nur außerhalb des Kampfs, damit Kämpfe reproduzierbar bleiben.
 - **Supports:** 25 feste Paare (jeder Gefährte 2–3 Partner), Gespräche C/B/A am Lagerfeuer (75 Gespräche), S-Rang nur für 6 Kernpaare. Punkte: +1 bei benachbartem Zugende, +2 bei Tandem, Heilen oder Bergen; Schwellen C 10, B 25, A 45, S 70.
-- **Rekrutierung:** Story-Gefährten über Handlung, Ansprechen im Kampf, Entscheidungen und Nebenquests; Taverne für Söldner (Ersatzbank, vor allem im Modus Klassik). Armee-Limit 20 Story-Gefährten + 6 Söldner `[ASSUMPTION]`.
+- **Rekrutierung:** Story-Gefährten über Handlung, Ansprechen im Kampf, Entscheidungen und Nebenquests; Taverne für Söldner (Ersatzbank, vor allem im Modus Klassik). Armee-Limit 20 Story-Gefährten + 6 Söldner `[ASSUMPTION]`. Ist das Limit voll, findet ein Beitritt über Handlung, Entscheidung oder Ansprechen trotzdem statt; vor der nächsten Mission muss ein Söldner gehen.
 
 ### Kampfsystem
 
@@ -325,7 +325,7 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 
 ### Schwierigkeitskurve
 
-- Leicht/Normal/Schwer: Gegnerwerte −15/0/+15 %; Schwer mit 1 Gegner-Affix je Elite und Hinterhalten; Aufstellung je Schwierigkeit; nur absenkbar. Tod-Modus unabhängig wählbar.
+- Leicht/Normal/Schwer: Gegnerwerte −15/0/+15 %; Schwer mit 1 Gegner-Affix je Elite und Hinterhalten; Aufstellung je Schwierigkeit; nur absenkbar, in den Optionen der Kampagne. Tod-Modus unabhängig wählbar.
 - Zielkorridore je Story-Mission (Simulation über die verkettete Kampagne): Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 - Gegnerstufe = erwartete effektive Armee-Stufe der Mission + Akt-Zuschlag (+0/+1/+2) `[ASSUMPTION]`; große Schlachten am oberen Rand des Korridors.
 
@@ -385,22 +385,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ## Development Epics
 
-Zusammenfassung; Details in `epics.md`.
-
-| # | Epic | Liefert | Säule | Release |
-|---|---|---|---|---|
-| E1 | Rollenklassen | Klassenmodell als Rolle, Klassen-Aktionen, Waffengruppen, Profi-Wege | Ausrüstung, Lesbar | Akt 1 |
-| E2 | Leutnants | Flucht bei 0 TP, Groll, Kopfgeld, Steckbriefe | Lesbar, Jeder zählt | Akt 1 |
-| E3 | Weltkarte & Heimsuchungen | 3D-Weltkarte, Knoten, Tagespakete, Deckel | Kernloop | Akt 1 |
-| E4 | Kampagne, Entscheidungen, Supports | Akt-Struktur, gestaffelte Regeln, Missionszustände, Entscheidungen, Epilog-Mosaik, 25 feste Paare | Jeder zählt | Akt 1 (Basis) |
-| E5 | Fortschritt & Wirtschaft | Stufendeckel, Glutfunke, Aufstieg, EP- und Goldkurve, Verbluten, Speicherregeln | Ausrüstung, Jeder zählt | Akt 1 / Akt 2 |
-| E6 | Heimat | Lager und Burg auf Stufe 1 (Akt 1), Burg mit 11 Räumen und Stufen (Akt 2) | Jeder zählt | Akt 1 / Akt 2 |
-| E7 | Chibi-Stil & Audio | Figuren, Porträts, Weltkarte im neuen Stil; Musik, Teilvertonung | Ton | Akt 1 |
-| E8 | Content Akt 1 | Prolog + 8 Missionen, 3 Nebenquests, 4 Leutnants, Burg erobern und halten | alle | Akt 1 (MVP) |
-| E9 | Content Akt 2 | 7 Missionen inkl. großer Schlacht, 2 Nebenquests, 4 Leutnants | alle | Akt 2 |
-| E10 | Content Akt 3 | 6 Missionen inkl. 2 großer Schlachten, 3 Nebenquests, 4 Leutnants, Drachen, Epilog | alle | Akt 3 |
-
-Reihenfolge: E1, E2, E4 → E3, E5, E6 (Lager) → E7 → E8 → MVP-Release; danach E6 (Burg), E9 → E10.
+Die Epics und Stories stehen in `concept/26-epics/epics.md` (Epic 1–12; Sprint-Status in `_bmad-output/implementation-artifacts/sprint-status.yaml`). Die frühere Zählung E1–E10 dieses Abschnitts ist abgelöst; „E1–E12“ bezeichnet in GDD und Narrative die Entscheidungen.
 
 ## Success Metrics
 
@@ -444,7 +429,7 @@ Reihenfolge: E1, E2, E4 → E3, E5, E6 (Lager) → E7 → E8 → MVP-Release; da
 - Die Narrative-Etappe liefert Figuren, Leutnants, Entscheidungen, Nebenquest-Inhalte und Epilog-Kacheln.
 - Die Art-Direction-Etappe liefert den Chibi-Stil und klärt D1–D16 (Diorama, Licht, Farbe).
 - Die Architektur-Etappe regelt Tageswechsel, Akt-Pakete, Spielstand-Übertrag und Klassik-Speicherregeln technisch.
-- Offener Punkt aus dem Proof of Concept: O5/GA26 (Lizenzen). O1 und O2 sind hier entschieden.
+- O5/GA26 (Lizenzen) ist geklärt (`concept/23-art-direction/licensing.md`, Produktinhaber 2026-10-24). O1 und O2 sind hier entschieden.
 
 ### Annahmen-Index
 

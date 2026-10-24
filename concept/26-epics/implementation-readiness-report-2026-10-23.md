@@ -362,9 +362,9 @@ Alle Befunde wurden mit dem Produktinhaber per Fragetool geklärt; Einträge im 
 | Klassen-Aktion passiv | Zustand mit Info | 2.1, EXPERIENCE |
 | Langdruck Leutnant | Steckbrief plus Gefahrenzone | 3.6, EXPERIENCE |
 | Angebot des Tages | erst Händler-Stufe 3 | 6.4 |
-| Staffel 2 | alles trägt weiter | Decision-Log (AR20 bleibt gültig) |
+| Staffel 2 | nur die Entscheidungen tragen weiter (korrigiert 2026-10-24) | AR20, FR57, Epic 12 |
 | Wolfsreiter | zu Fuß, Vierbeiner nach dem MVP | 2.9 |
 | Kleinkram G2, G5, G6, Schriften, Slots, Spielzeit, Epics 10–12, D2 | Vorschläge übernommen; Spielzeit folgt 8/8/8 (Staffel 30–35 Stunden) | Decision-Log, 1.1, 3.7, 9.14, Sprint-Status |
-| O4, O5/GA26, Nemesis-Patent | laut Produktinhaber geklärt (`licensing.md`) | – |
+| O4, O5/GA26, Nemesis-Patent | laut Produktinhaber geklärt; Sperre aufgehoben (2026-10-24) | `AGENTS.md`, `licensing.md`, NFR15 |
 
 **Neues Urteil: READY** für Epic 1 und die MVP-Epics. Offen sind nur Nachträge in GDD und Art Direction, die die dort arbeitenden Sessions übernehmen.

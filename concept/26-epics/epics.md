@@ -111,7 +111,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 **Spielstände und Auslieferung (GDD Technical, Architektur)**
 
 - FR56 (geändert): Auto-Save nach jeder Aktion; bis zu 3 Kampagnen je Gerät; Standard/Casual mit 3 Speicherplätzen je Kampagne, Klassik nur Auto-Save; Export/Import; Import überschreibt.
-- FR57 (neu): Ein Spielstand trägt über Akt-Releases und in Staffel 2 (Entscheidungen, Überlebende, Ende).
+- FR57 (neu): Ein Spielstand trägt über Akt-Releases; Staffel 2 übernimmt nur die Staffel-Zusammenfassung (Entscheidungen, Überlebende, Ende).
 - FR58 (neu): Akt-Pakete laden im Hintergrund und sind danach offline spielbar; Missionen eines fehlenden Pakets sind sichtbar, aber gesperrt; „Akt n erscheint bald“ am Ende eines veröffentlichten Akts.
 - FR59 (neu): Proof-of-Concept-Spielstände werden erkannt und als nicht kompatibel gezeigt, Export bleibt möglich.
 
@@ -138,7 +138,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 - NFR12: Simulationskorridore je Story-Mission: Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 - NFR13: Kein Täglich-Druck: Heimsuchungen ohne Ablaufdatum, Story und Nebenquests brauchen sie nicht.
 - NFR14: Nemesis-Leitplanken: keine prozedurale Erzeugung von Gegnern oder Persönlichkeiten, keine Rangordnung unter Gegnern, keine Beförderung durch Spielerniederlagen.
-- NFR15: Nichts kommerziell veröffentlichen, solange GA26 (Lizenzen) offen ist.
+- NFR15: KI-Assets nur nach den Auflagen aus `concept/23-art-direction/licensing.md` §6 (GA26 seit 2026-10-24 geklärt).
 - NFR16: Spielzeit Staffel 1 30–35 Stunden auf Normal.
 
 ### Additional Requirements
@@ -271,7 +271,7 @@ Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronf
 **FRs covered:** FR17 (Akt 2), FR61, FR63
 
 ### Epic 12: Akt 3 „Krone“ und Staffelende – grob
-Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2.
+Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2.
 **FRs covered:** FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
 
 **Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
@@ -1739,7 +1739,7 @@ damit Akt 2 eine eigene Welt hat.
 
 ## Epic 12: Akt 3 „Krone“ und Staffelende – grob
 
-Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihren Spielstand mit in Staffel 2. Vor Akt 3 verfeinern.
+Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2. Vor Akt 3 verfeinern.
 
 ### Story 12.1: Paket, Region und Gegner von Akt 3
 

@@ -61,7 +61,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 
 ### 2.3 Komplexitätstreiber und neuartige Konzepte
 
-1. **Lange Kampagne über mehrere Releases:** Ein Spielstand lebt von Akt 1 bis in Staffel 2. IDs, Flags und Speicherformat müssen über Jahre stabil bleiben (AR19, AR20).
+1. **Lange Kampagne über mehrere Releases:** Ein Spielstand lebt von Akt 1 bis zum Staffelende; Staffel 2 liest nur die Staffel-Zusammenfassung. IDs, Flags und Speicherformat müssen über die Akt-Releases stabil bleiben (AR19, AR20).
 2. **Zeit im deterministischen Kern:** Heimsuchungen hängen am Kalendertag, der Kern darf keine Uhr lesen (AR6).
 3. **Permadeath trifft verzweigte Story:** Jede Zeile eines Gefährten braucht eine Ersatzkette; Bedingungen über Leben, Flags, Haltung und Supports (AR3, AR9).
 4. **Wiederkehrende Feinde ohne Nemesis-Patent:** feste Leutnant-Liste, nur Zahlen skalieren, nichts wird prozedural erzeugt (AR5).
@@ -109,7 +109,7 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 | AR17 | Migration | PoC-Spielstände: **sauberer Schnitt**, erkannt und exportierbar, nicht ladbar | Epic 1 | **A** |
 | AR18 | Klassik | **Ehrensystem:** Export außerhalb des Kampfs, Import nur vom Titelbildschirm, überschreibt | Epic 1 | **A** |
 | AR19 | Stabilität | Content-IDs sind nach einem Release gesperrt (`content/released-ids.json`), Umbenennen nur mit Migration | Epic 7, alle Content-Epics | C |
-| AR20 | Staffel 2 | Derselbe Spielstand trägt weiter; zusätzlich Staffel-Zusammenfassung im Spielstand und als eigener Export | Epic 4, 12 | C |
+| AR20 | Staffel 2 | Staffel 2 startet neu und liest nur die Staffel-Zusammenfassung (Ende, Haltung, Überlebende, Entscheidungen) aus dem Spielstand oder dem eigenen Export | Epic 4, 12 | C |
 | AR21 | Speicherschutz | `navigator.storage.persist()`, Installationshinweis, Backup-Erinnerung | Epic 1 | C |
 | AR22 | Fehler | Kern meldet Spielerfehler per `validate`, Invarianten per Ausnahme; App fängt, bietet Fehlerbericht, lädt den letzten Auto-Save | Epic 1 | C |
 | AR23 | Release | Veröffentlichte Akte stehen in `content/packs.yaml` (`released`); unveröffentlichte Pakete kommen nicht in den Build | Epic 7, 9, 11, 12 | C |
@@ -399,7 +399,7 @@ type WorkerResponse = { id: number; ok: true; state: BattleState; events: GameEv
 - **Export:** JSON mit Prüfsumme, mit `CompressionStream('gzip')` komprimiert, wo verfügbar. Import: Größenlimit 5 MB, Zod-Validierung, Migrationen, dann Prüfung, ob die nötigen Pakete im Build sind.
 - **PoC-Stände (Format 1) [A]:** werden beim ersten Start mit Format 2 in `legacy` verschoben, im Laden-Dialog als „Proof of Concept, nicht mehr kompatibel“ gezeigt und lassen sich exportieren. Keine Migration.
 - **Migrationen ab Format 2:** `migrations[n]` nur für Spielstände aus veröffentlichten Akt-Releases, jede mit Fixture-Spielstand in `tests/fixtures/saves/` und Test.
-- **Staffel 2 (AR20):** Derselbe Spielstand trägt weiter. Bei der Wahl E12 schreibt `choose` zusätzlich `c.archive.s1 = { ending, stance, survivors, fallen, departed, flags (nur `season2: true`) }`; die Abschlussszene bietet den Export dieser Zusammenfassung als eigene Datei an.
+- **Staffel 2 (AR20, geändert 2026-10-24):** Staffel 2 startet neu und übernimmt nur die Entscheidungen samt Zusammenfassung; Truppe, Ausrüstung und Burg tragen nicht weiter. Bei der Wahl E12 schreibt `choose` zusätzlich `c.archive.s1 = { ending, stance, survivors, fallen, departed, flags (nur `season2: true`) }`; die Abschlussszene bietet den Export dieser Zusammenfassung als eigene Datei an.
 - **Speicherschutz (AR21):** Beim ersten Speichern `navigator.storage.persist()`; ist die App nicht installiert, Hinweis auf „Zum Home-Bildschirm“ (Safari löscht Daten nicht installierter Seiten nach 7 Tagen ohne Besuch); nach jedem Akt-Finale Backup-Erinnerung.
 - **Schreiben:** Auto-Save asynchron nach jedem Commit, ohne die Eingabe zu blockieren; bei `visibilitychange → hidden` wird der letzte Stand sofort geschrieben.
 
