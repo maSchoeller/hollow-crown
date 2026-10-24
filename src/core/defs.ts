@@ -633,6 +633,8 @@ export interface Balance {
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
+  /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */
+  classActions: { aim: { rangeBonus: number; hit: number }; farRescue: { range: number }; cheer: { mov: number; hit: number } };
   bag: { size: number };
   economy: {
     sellRatio: number;

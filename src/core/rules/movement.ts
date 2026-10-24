@@ -93,13 +93,13 @@ export function tilesInRange(s: BattleState, from: Pos, range: [number, number])
   return out;
 }
 
-/** Attack range of a weapon for a unit, including skill range bonuses (longshot). */
-export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string): [number, number] {
+/** Attack range of a weapon for a unit, including skill range bonuses (longshot) and `extraRange` (Zielen). */
+export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string, extraRange = 0): [number, number] {
   const inst = [unit.equip.mainHand, ...unit.bag].find((i) => i?.uid === weaponUid);
   if (!inst) return [1, 1];
   const wp = weaponProfile(data, inst);
   const st = computeStats(data, unit, { state: s, ownWeapon: wp });
-  return [wp.range[0], wp.range[1] + st.skills.rangeBonus];
+  return [wp.range[0], wp.range[1] + st.skills.rangeBonus + extraRange];
 }
 
 /** Union of min/max range over all usable weapons (or staves). */

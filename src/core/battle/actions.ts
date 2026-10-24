@@ -1,9 +1,10 @@
 import type { GameData, Pos } from '../defs';
 import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/items';
+import { forecast, type Forecast } from '../rules/combat';
 import { tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds } from '../rules/skills';
-import type { BattleState, BattleUnit } from '../state';
+import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { active, dist, inArea, isAlly, isHostile, neighbors, onMap, samePos, unitAt } from '../util';
 import type { Action } from './commands';
 import { mapOf } from './objectives';
@@ -27,11 +28,16 @@ export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boo
   return (u.usedPerMap[skillId] ?? 0) < (sk.usesPerMap ?? Infinity);
 }
 
-export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Record<string, string[]> {
+/** Id of the unit's class action (`aim`, `far_rescue`, `inspire`, ...), if its class has one. */
+export function classActionId(data: GameData, u: BattleUnit | UnitRecord): string | undefined {
+  return data.classes[u.classId]?.classAction?.id;
+}
+
+export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   const finishAllowed = true;
   for (const w of usableWeapons(data, u)) {
-    const r = weaponRange(data, s, u, w.uid);
+    const r = weaponRange(data, s, u, w.uid, extraRange);
     for (const t of tilesInRange(s, pos, r)) {
       const o = unitAt(s, t);
       if (!o || !onMap(o) || !isHostile(o.team, u.team)) continue;
@@ -66,6 +72,59 @@ export function nearConvoy(s: BattleState, u: BattleUnit, pos: Pos): boolean {
   if (u.team !== 'player') return false;
   if (u.flags.includes('convoyAccess')) return true;
   return adjacentUnits(s, pos, u).some((o) => o.flags.includes('convoyAccess') && active(o) && o.team === 'player');
+}
+
+/**
+ * Zielen (Schütze): only a unit that has not moved and stays on its tile; it attacks with +range and +hit.
+ * Returns the weapons per target with the extended range, empty when not possible.
+ */
+export function aimTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Record<string, string[]> {
+  if (classActionId(data, u) !== 'aim' || u.moved || !u.pos || !samePos(u.pos, pos)) return {};
+  return attackTargets(data, s, u, pos, data.balance.classActions.aim.rangeBonus);
+}
+
+/** Fernbergen (Heiler): downed allies up to `range` tiles away (adjacent ones too), rescued like normal Bergen. */
+export function farRescueTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
+  if (classActionId(data, u) !== 'far_rescue' || u.team !== 'player') return [];
+  const range = data.balance.classActions.farRescue.range;
+  return s.units
+    .filter((o) => o.uid !== u.uid && onMap(o) && o.downed && o.team === u.team && dist(o.pos!, pos) <= range)
+    .map((o) => o.uid);
+}
+
+/** Anfeuern (Spielmann): adjacent allies that have not acted and are not cheered already. */
+export function cheerTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
+  if (classActionId(data, u) !== 'inspire') return [];
+  return adjacentUnits(s, pos, u)
+    .filter((o) => active(o) && o.team === u.team && !o.acted && !o.buffs.some((b) => b.source === CHEER_BUFF))
+    .map((o) => o.uid);
+}
+
+/** `source` of the buff Anfeuern puts on its target. */
+export const CHEER_BUFF = 'cheer';
+
+/** Preview of a class action, built from the numbers of the resolution (`forecast`, `balance.classActions`). */
+export type ClassPreview =
+  | { kind: 'aim'; forecast: Forecast; hit: number; rangeBonus: number }
+  | { kind: 'farRescue'; target: string; distance: number }
+  | { kind: 'cheer'; target: string; mov: number; hit: number };
+
+export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, a: Action): ClassPreview | null {
+  const cfg = data.balance.classActions;
+  switch (a.kind) {
+    case 'aim': {
+      const weapon = a.weapon ?? aimTargets(data, s, u, pos)[a.target]?.[0];
+      return { kind: 'aim', forecast: forecast(data, s, u.uid, a.target, weapon, pos, true, { hit: cfg.aim.hit }), hit: cfg.aim.hit, rangeBonus: cfg.aim.rangeBonus };
+    }
+    case 'farRescue': {
+      const t = s.units.find((o) => o.uid === a.target);
+      return t?.pos ? { kind: 'farRescue', target: t.uid, distance: dist(t.pos, pos) } : null;
+    }
+    case 'cheer':
+      return { kind: 'cheer', target: a.target, mov: cfg.cheer.mov, hit: cfg.cheer.hit };
+    default:
+      return null;
+  }
 }
 
 /** All actions the unit could take from `pos` (UI action bar and AI share this). */
@@ -117,6 +176,12 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
       if (t.length) out.push({ kind: 'command', targets: t.map((o) => o.uid) });
     } else if (sk.area) out.push({ kind: 'rally' });
   }
+  const aim = aimTargets(data, s, u, pos);
+  if (Object.keys(aim).length) out.push({ kind: 'aim', targets: Object.keys(aim), weapons: aim });
+  const far = farRescueTargets(data, s, u, pos);
+  if (far.length) out.push({ kind: 'farRescue', targets: far });
+  const cheer = cheerTargets(data, s, u, pos);
+  if (cheer.length) out.push({ kind: 'cheer', targets: cheer });
   out.push({ kind: 'wait' });
   return out;
 }

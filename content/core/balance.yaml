@@ -86,6 +86,11 @@ death:
   # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)
   bleedOutTurns: 3
 rally: { radius: 2, damage: 2, hit: 10 }
+# Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
+classActions:
+  aim: { rangeBonus: 1, hit: 15 }
+  farRescue: { range: 2 }
+  cheer: { mov: 1, hit: 10 }
 bag: { size: 3 }
 fog:
   baseVision: 3
