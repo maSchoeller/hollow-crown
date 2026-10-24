@@ -9,7 +9,7 @@ import { activeSkillIds } from '../rules/skills';
 import { pendingRank } from '../rules/supports';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { locateItem, offerPrice, rerollCost, runeMerge, takeItem, upgradable, upgradeCost } from './camp';
+import { hireCost, hireError, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock } from './campaign';
 import { replayBattle, restartKeep } from './restart';
 import { applyEffects, validateEffects } from './effects';
@@ -67,7 +67,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!loc) return 'unknown_item';
       if (!upgradable(data, loc.inst)) return 'not_upgradable';
       const cost = upgradeCost(data, loc.inst);
-      if (!cost) return 'max_level';
+      if (!cost || loc.inst.upgrade >= upgradeLimit(data, c)) return 'max_level';
       if (c.gold < cost.gold) return 'not_enough_gold';
       for (const [m, n] of Object.entries(cost.materials)) if ((c.materials[m] ?? 0) < n) return 'not_enough_materials';
       return null;
@@ -75,6 +75,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'reroll': {
       const loc = locateItem(c, cmd.uid);
       if (!loc || !loc.inst.affixes[cmd.index]) return 'unknown_item';
+      if (!rerollAllowed(data, c)) return 'not_available';
       const cost = rerollCost(data, loc.inst);
       if (c.gold < cost.gold) return 'not_enough_gold';
       if ((c.materials.arcane_dust ?? 0) < cost.dust) return 'not_enough_materials';
@@ -126,6 +127,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!data.classes[u.classId]?.promotesTo.includes(cmd.classId) || !data.classes[cmd.classId]) return 'unknown_class';
       return sealOf(data, c, cmd.unit) ? null : 'not_enough_materials';
     }
+    case 'hire':
+      return hireError(data, c, cmd.offer);
     case 'effects':
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
@@ -308,6 +311,14 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       lost(used!.uid, used!.def);
       promote(data, u, cmd.classId);
       events.push({ t: 'promoted', unit: u.id, classId: cmd.classId });
+      break;
+    }
+    case 'hire': {
+      const rec = c.tavern.find((u) => u.id === cmd.offer)!;
+      c.gold -= hireCost(data, rec.level);
+      c.tavern = c.tavern.filter((u) => u.id !== cmd.offer);
+      c.roster.push(rec);
+      events.push({ t: 'unitJoined', unit: rec.id });
       break;
     }
     case 'effects':

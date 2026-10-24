@@ -69,6 +69,28 @@ export function Segment<T extends string | number | boolean>({ value, options, o
   );
 }
 
+/** Blurred home behind a full-screen view (DESIGN.md: views lie over the home, never over an empty area). */
+export function Backdrop({ image = 'locations/lager_unterwegs' }: { image?: string }) {
+  return (
+    <div class="hc-backdrop" aria-hidden="true">
+      <img src={asset(`${image}.webp`)} alt="" draggable={false} />
+    </div>
+  );
+}
+
+/** Filter chips / tabs; the chosen one is dark. */
+export function Tabs<T extends string>({ value, options, onChange, label }: { value: T; options: Array<{ id: T; label: string }>; onChange: (v: T) => void; label?: string }) {
+  return (
+    <div class="hc-tabs" role="tablist" aria-label={label}>
+      {options.map((o) => (
+        <button key={o.id} type="button" role="tab" aria-selected={o.id === value} class={`hc-tab ${o.id === value ? 'is-on' : ''}`} onClick={() => onChange(o.id)}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export type Resource = 'gold' | 'exp' | 'emberSpark';
 
 /** Vector symbols where no painted image exists (DESIGN.md: Gold = coin, EXP = green star). */
@@ -113,6 +135,20 @@ export function Amount({ value, signed, short, class: cls, resource, material }:
     <span class={`hc-amount ${short ? 'is-short' : ''} ${cls ?? ''}`} aria-label={`${text} ${name}`} title={name}>
       {resource === 'emberSpark' ? <Symbol image={IMAGE.emberSpark} /> : resource ? <Symbol resource={resource} /> : <Symbol image={material.image ?? material.id} />}
       <span aria-hidden="true">{text}</span>
+    </span>
+  );
+}
+
+/** Purse of the company: gold and every material it owns, each as symbol + number. */
+export function Wallet({ data, gold, materials }: { data: GameData; gold: number; materials: Record<string, number> }) {
+  return (
+    <span class="hc-wallet">
+      <Amount resource="gold" value={gold} />
+      {Object.entries(materials)
+        .filter(([, n]) => n > 0)
+        .map(([id, n]) => (
+          <Amount key={id} material={itemDef(data, id)} value={n} />
+        ))}
     </span>
   );
 }

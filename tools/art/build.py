@@ -11,6 +11,7 @@ python tools/art/build.py [--quality mid|high]
 - Heads (art/mockups/characters-s1/<id>.png): round-chibi head crop for the medallions of the battle HUD and the campaign view.
   The two avatar looks rhen_a|b: WebP q85, 160 px square. Other characters: WebP q70, 112 px square, only those that appear as units
   in content/acts/*/units.yaml or a map (the rest ships with the act packages; initial-download budget).
+- Busts (same characters): the whole half figure, WebP q60, 150 px, only the joining story characters, for the figure view of the troop.
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
@@ -43,6 +44,8 @@ HEAD_CROP = (230, 0, 1030, 800)
 AVATAR_PX = 160
 # battle medallion: 78 px on the HUD, 56 px in the forecast; 112 px at q70 is ~4.5 KB per head
 HEAD_PX = 112
+# half figure of the troop view (the whole 1254 px image, 150 px at q60 is ~5 KB per figure)
+BUST_PX = 150
 # 44 px item image at 3x device pixels
 ITEM_PX = 192 if HIGH else 132
 
@@ -179,6 +182,22 @@ def content_unit_ids():
     return ids
 
 
+def companion_ids():
+    """Story characters that join the company (units.yaml entries with `joins`): the troop view shows only these."""
+    ids = set()
+    path = os.path.join(ROOT, 'content', 'acts')
+    for act in sorted(os.listdir(path)):
+        units = os.path.join(path, act, 'units.yaml')
+        if not os.path.isfile(units):
+            continue
+        with open(units, encoding='utf-8') as f:
+            for block in re.split(r'(?m)^(?=- id:)', f.read().replace(chr(13), '')):
+                m = re.search(r'- id:\s*([a-z0-9_]+)', block)
+                if m and re.search(r'^\s+joins:', block, re.M):
+                    ids.add(m.group(1))
+    return ids
+
+
 def build_heads():
     """Round-chibi portraits → head crops public/assets/avatars/<id>.webp (clipped round by the UI); ids = unit ids."""
     base = os.path.join(ART, 'mockups', 'characters-s1')
@@ -195,7 +214,26 @@ def build_heads():
         if pid in AVATAR_LOOKS:
             im.resize((AVATAR_PX, AVATAR_PX), Image.LANCZOS).save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=85, method=6)
         else:
-            im.resize((HEAD_PX, HEAD_PX), Image.LANCZOS).save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=70, alpha_quality=60, method=6)
+            im.resize((HEAD_PX, HEAD_PX), Image.LANCZOS).save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=70, alpha_quality=70, method=6)
+        result.append(pid)
+    return result
+
+
+def build_busts():
+    """Round-chibi half figures → public/assets/busts/<id>.webp for the figure view of the troop (same ids as the heads)."""
+    base = os.path.join(ART, 'mockups', 'characters-s1')
+    result = []
+    if not os.path.isdir(base):
+        return result
+    dst = ensure(os.path.join(OUT, 'busts'))
+    wanted = companion_ids() | set(AVATAR_LOOKS)
+    for f in sorted(os.listdir(base)):
+        pid, ext = os.path.splitext(f)
+        if ext != '.png' or pid not in wanted:
+            continue
+        im = Image.open(os.path.join(base, f)).convert('RGBA')
+        im.thumbnail((BUST_PX, BUST_PX), Image.LANCZOS)
+        im.save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=60, alpha_quality=60, method=6)
         result.append(pid)
     return result
 
@@ -231,6 +269,7 @@ def main():
         'backgrounds': build_backgrounds(),
         'items': build_items(),
         'avatars': build_heads(),
+        'busts': build_busts(),
         'locations': build_locations(),
     }
     audio_src = os.path.join(ROOT, 'audio-src', 'build')

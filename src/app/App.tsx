@@ -8,6 +8,7 @@ import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
 import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
+import { Troop } from './screens/Troop';
 import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
 import { campaign, data } from './state/session';
 import { runEffects, storyContext } from './state/flow';
@@ -130,6 +131,8 @@ function Screens() {
       return <Defeat />;
     case 'camp':
       return <Camp tab={sc.tab} />;
+    case 'troop':
+      return <Troop />;
     case 'options':
       return <Options back={sc.back} />;
     case 'end':

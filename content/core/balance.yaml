@@ -106,6 +106,19 @@ economy:
   potionUpgrade: [{ gold: 400, heal: 5 }, { gold: 900, heal: 5 }]
   tavernOffersPerChapter: 3
   armyLimit: 20
+  mercenaryLimit: 6                      # zusätzlich zu den 20 Gefährten (GDD Armee-Limit)
+  smithMaxUpgrade: [3, 4, 5]             # höchste Aufwertung je Schmied-Stufe (Lager = Stufe 1)
+  rerollFromSmithLevel: 3                # Affix neu würfeln ab Schmied-Stufe
+  tavern:
+    levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread
+    names: [merc.name.1, merc.name.2, merc.name.3, merc.name.4, merc.name.5, merc.name.6, merc.name.7, merc.name.8, merc.name.9, merc.name.10, merc.name.11, merc.name.12]
+    classes:
+      - { class: mercenary, items: [iron_sword, leather_vest] }
+      - { class: soldier,   items: [iron_lance, leather_vest] }
+      - { class: fighter,   items: [iron_axe, leather_cap] }
+      - { class: archer,    items: [iron_bow, leather_vest] }
+      - { class: mage,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
+      - { class: cleric,    items: [heal_staff], requires: [{ completed: ch01 }] }
   convoySize: 200
   rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
   rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }

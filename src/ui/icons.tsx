@@ -58,6 +58,7 @@ const P: Record<string, string> = {
   smith: 'M3 10h12l3-3h3v4l-3 1v2H8l-2 3H3z',
   enchanter: 'M12 3l3 6-3 12-3-12zM6 9h12',
   healer: 'M12 4v16M4 12h16',
+  tavern: 'M5 6h11v13H5zM16 9h2.5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H16M8 9v7M12 9v7',
   campfire: 'M12 4c2 3 4 4.5 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-2-1-4 0-7zM5 20l14-3M5 17l14 3',
   bag: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2',
   gold: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z',

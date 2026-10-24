@@ -143,6 +143,9 @@ describe('campaign commands', () => {
     const c = rich({ gold: 5000, materials: { arcane_dust: 5 }, items: ['iron_sword'] });
     const inst = c.convoy.at(-1)!;
     inst.affixes = [Object.keys(data.affixes)[0]!];
+    // the camp smith (level 1) cannot reroll; from the configured level on it can
+    expect(validateCampaign(data, c, { type: 'reroll', uid: inst.uid, index: 0 })).toBe('not_available');
+    c.home.rooms.smith = data.balance.economy.rerollFromSmithLevel;
     const cost = rerollCost(data, inst);
     const r = run(c, { type: 'reroll', uid: inst.uid, index: 0 });
     expect(r.campaign.rng).not.toEqual(c.rng);

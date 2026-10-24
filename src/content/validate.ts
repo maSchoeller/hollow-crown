@@ -88,6 +88,11 @@ export function validateContent(
   for (const c of Object.values(data.classes)) {
     if (c.skill && !data.skills[c.skill]) err('classes.yaml', `${c.id}: unknown skill ${c.skill}`);
   }
+  for (const k of data.balance.economy.tavern.classes) {
+    if (!data.classes[k.class]) err('balance.yaml', `tavern: unknown class ${k.class}`);
+    for (const id of k.items) item('balance.yaml', { def: id }, `tavern ${k.class}`);
+    conditions('balance.yaml', k.requires, `tavern ${k.class}.requires`);
+  }
   for (const ch of Object.values(data.chars)) {
     if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
     if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);
@@ -120,7 +125,7 @@ export function validateContent(
         item('campaign.yaml', g.item, `${n.id} grants`);
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
-    for (const [f, conds] of Object.entries(camp.facilities)) conditions('campaign.yaml', conds, `facilities.${f}`);
+    for (const r of Object.values(data.rooms)) conditions('rooms.yaml', r.requires, `${r.id}.requires`);
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order nor along `next`
     let top = 0;
     for (const n of camp.nodes) {
@@ -157,6 +162,8 @@ export function validateContent(
   for (const t of Object.values(data.terrain)) need.push(`terrain.${t.id}`);
   for (const m of Object.values(data.maps)) need.push(m.nameKey);
   for (const ch of Object.values(data.chars)) need.push(`unit.${ch.id}.name`);
+  need.push(...data.balance.economy.tavern.names);
+  for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`);
   for (const n of camp?.nodes ?? []) need.push(n.titleKey);
   for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
   for (const k of need) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`locales/${lang}`, `missing key ${k}`);

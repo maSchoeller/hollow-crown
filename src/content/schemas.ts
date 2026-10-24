@@ -135,6 +135,7 @@ export const setSchema = z.object({
 export const classSchema = z.object({
   id: z.string(),
   tier: z.enum(['base', 'advanced', 'unique']),
+  roleGroup: z.enum(['melee', 'ranged', 'support']),
   moveType,
   mov: z.number().int(),
   weapons: z.array(weaponType),
@@ -403,6 +404,15 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
 );
 export const conditionsSchema = z.union([conditionSchema, z.array(conditionSchema)]);
 
+export const roomSchema = z.object({
+  id: z.string(),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'enchanter']),
+  icon: z.string(),
+  fromAct: z.number().int().min(1).default(1),
+  homes: z.array(z.enum(['camp', 'castle'])).min(1),
+  requires: z.array(conditionSchema).default([]),
+});
+
 export const effectSchema: z.ZodType<Effect> = z.union([
   z.strictObject({ setFlag: flagRef }),
   z.strictObject({ recruit: z.union([movableCompanion, z.strictObject({ lt: z.string().min(1) })]) }),
@@ -465,7 +475,7 @@ export const campaignSchema = z.object({
     }),
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.string()).default({}),
-  facilities: z.record(z.string(), z.array(conditionSchema)).default({}),
+  home: z.enum(['camp', 'castle']).default('camp'),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
   supportPairs: z.array(z.tuple([z.string(), z.string()])),
   supportDialogues: z.record(z.string(), z.object({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial()),
@@ -535,7 +545,18 @@ export const balanceSchema = z.object({
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   bag: z.object({ size: z.number().int() }),
-  economy: z.looseObject({ rarityAffixes: z.record(z.string(), z.number()), rarityRuneSlots: z.record(z.string(), z.number()) }),
+  economy: z.looseObject({
+    rarityAffixes: z.record(z.string(), z.number()),
+    rarityRuneSlots: z.record(z.string(), z.number()),
+    mercenaryLimit: z.number().int().min(0),
+    smithMaxUpgrade: z.array(z.number().int().min(0)).min(1),
+    rerollFromSmithLevel: z.number().int().min(1),
+    tavern: z.object({
+      levelSpread: z.number().int().min(0),
+      names: z.array(z.string()).min(1),
+      classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
+    }),
+  }),
   difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number() })),
   ai: z.record(z.string(), z.number()),
 });

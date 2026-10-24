@@ -126,9 +126,14 @@ export interface SetDef {
   bonuses: Array<{ count: number; mods: { stats?: StatMods; grantSkill?: string; statusChanceBonus?: { element: Element; value: number } } }>;
 }
 
+/** Role group of a class: the filter of the troop view (concept/25-ux mockup 06). */
+export type RoleGroup = 'melee' | 'ranged' | 'support';
+export const ROLE_GROUPS: readonly RoleGroup[] = ['melee', 'ranged', 'support'];
+
 export interface ClassDef {
   id: string;
   tier: 'base' | 'advanced' | 'unique';
+  roleGroup: RoleGroup;
   moveType: MoveType;
   mov: number;
   weapons: WeaponType[];
@@ -449,14 +454,32 @@ export interface CampaignNodeDef {
   grants?: Array<{ unit: string; item: ItemRef }>;
 }
 
+/**
+ * A room of the home (camp station or castle room, architecture §5.10). Name and description come from the
+ * locales (`room.<id>.name|desc`). A station is listed when its act has been reached and shown open when `requires`
+ * holds, otherwise locked with the first condition that fails as the reason.
+ */
+export interface RoomDef {
+  id: string;
+  /** what the room does; the UI opens the matching panel */
+  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'enchanter';
+  /** line icon of the room stone (icons.tsx) */
+  icon: string;
+  /** first act in which the room exists */
+  fromAct: number;
+  /** homes the room belongs to */
+  homes: HomeKind[];
+  requires: Condition[];
+}
+
 export interface CampaignDef {
   /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
   act: number;
   nodes: CampaignNodeDef[];
   /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
   mechanics: Partial<Record<Mechanic, string>>;
-  /** camp facility → conditions (AND) under which it is open; none = from the beginning; UI only */
-  facilities: Record<string, Condition[]>;
+  /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
+  home: HomeKind;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];
@@ -464,6 +487,15 @@ export interface CampaignDef {
   supportPairs: Array<[string, string]>;
   supportDialogues: Record<string, Partial<Record<SupportRank, string>>>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
+}
+
+/** What the tavern offers (`balance.yaml` economy.tavern): hireable classes with their kit, names, level spread. */
+export interface TavernDef {
+  /** an offer's level lies between the expected level of the next mission minus `levelSpread` and that level */
+  levelSpread: number;
+  /** name keys of generated mercenaries (locales) */
+  names: string[];
+  classes: Array<{ class: string; items: string[]; requires?: Condition[] }>;
 }
 
 export interface Balance {
@@ -551,6 +583,13 @@ export interface Balance {
     potionUpgrade: Array<{ gold: number; heal: number }>;
     tavernOffersPerChapter: number;
     armyLimit: number;
+    /** mercenaries on top of the `armyLimit` companions (GDD: 20 + 6) */
+    mercenaryLimit: number;
+    /** highest upgrade the smith reaches per room level (index 0 = level 1, the camp) */
+    smithMaxUpgrade: number[];
+    /** smith level from which affixes can be rerolled */
+    rerollFromSmithLevel: number;
+    tavern: TavernDef;
     convoySize: number;
     rarityAffixes: Record<Rarity, number>;
     rarityRuneSlots: Record<Rarity, number>;
@@ -629,6 +668,8 @@ export interface GameData {
   affixes: Record<string, AffixDef>;
   runes: Record<string, RuneDef>;
   sets: Record<string, SetDef>;
+  /** home rooms in display order (`content/core/rooms.yaml`) */
+  rooms: Record<string, RoomDef>;
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
   dialogues: Record<string, DialogueDef>;

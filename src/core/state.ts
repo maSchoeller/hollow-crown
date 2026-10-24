@@ -5,6 +5,7 @@ import type {
   Element,
   EquipSlot,
   FlagValue,
+  HomeKind,
   MapDef,
   Mechanic,
   Pos,
@@ -173,6 +174,13 @@ export interface AvatarSettings {
   affinity: Element;
 }
 
+/** Where the company lives: the camp of act 1 or the castle, and the level of each built room (architecture §5.10). */
+export interface HomeState {
+  kind: HomeKind;
+  /** room id → level; a room that is not listed has level 1 (camp stations have no levels yet) */
+  rooms: Record<string, number>;
+}
+
 export interface CampaignState {
   version: number;
   seed: number;
@@ -199,6 +207,10 @@ export interface CampaignState {
   nextUid: number;
   /** merchant special offers for the current chapter */
   offers: ItemInstance[];
+  /** the company's home: `c.home = { kind: 'camp', rooms }` (story 6.3) */
+  home: HomeState;
+  /** mercenaries the tavern offers for the current chapter (finished company records, id `merc<n>`) */
+  tavern: UnitRecord[];
 }
 
 export type MapLookup = (id: string) => MapDef;
