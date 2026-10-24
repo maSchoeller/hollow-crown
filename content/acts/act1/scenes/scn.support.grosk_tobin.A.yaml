@@ -51,7 +51,7 @@ lines:
     speaker: [tobin]
     fallback: skip
     mood: neutral
-    text: "Ja. Aber das ist es doch, was Ihr tut. Und es klingt in keinem Lied so. Es ist viel leiser."
+    text: "Ja. Aber das ist es doch, was Ihr tut. Was du tust. Und es klingt in keinem Lied so leise."
   - id: l11
     speaker: [grosk]
     fallback: skip
@@ -61,7 +61,7 @@ lines:
     speaker: [tobin]
     fallback: skip
     mood: happy
-    text: "Dann lerne ich eben leise. Fangt Ihr bitte nicht an, mir vorzugehen, wenn ich das übe."
+    text: "Dann lerne ich eben leise. Fang bitte nicht an, mir vorzugehen, wenn ich das übe."
   - id: l13
     speaker: [grosk]
     fallback: skip
