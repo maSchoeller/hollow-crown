@@ -1,3 +1,4 @@
+import { barkFor, type Bark } from '../battle/barks';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   active,
@@ -109,6 +110,7 @@ export function Battle() {
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
+  const [bark, setBark] = useState<{ b: Bark; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
   const setToast = (text: string, item?: ItemInstance) => setToastState({ text, item });
@@ -365,6 +367,12 @@ export function Battle() {
         break;
       default:
         break;
+    }
+    // combat bark (story 9.13): presentation only, skipped in skip mode
+    const b = boardRef.current?.skip ? null : barkFor(data, s, e);
+    if (b) {
+      await new Promise<void>((resolve) => setBark({ b, done: resolve }));
+      setBark(null);
     }
   };
 
@@ -834,6 +842,20 @@ export function Battle() {
               return board.headScreen(u.uid);
             }}
             onDone={dialogue.done}
+          />
+        )}
+        {bark && (
+          <SceneBubbles
+            id={bark.b.scene}
+            only={[bark.b.line]}
+            anchorOf={async () => {
+              const u = s.units.find((x) => x.uid === bark.b.anchor);
+              const board = boardRef.current;
+              if (!u?.pos || !board) return null;
+              await board.centerOn(u.pos);
+              return board.headScreen(u.uid);
+            }}
+            onDone={bark.done}
           />
         )}
         <div class="hud-top" ref={topRef}>

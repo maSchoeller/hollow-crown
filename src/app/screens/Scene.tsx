@@ -38,7 +38,7 @@ export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; 
   );
 }
 
-/** Battle scene as speech bubbles; `anchorOf` gives the point above a speaker's head. */
-export function SceneBubbles({ id, anchorOf, onDone }: { id: string; anchorOf: (speaker: string) => Promise<{ x: number; y: number } | null>; onDone: () => void }) {
-  return <SpeechBubbles data={data} id={id} ctx={storyContext()} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} anchorOf={anchorOf} onDone={onDone} />;
+/** Battle scene as speech bubbles; `anchorOf` gives the point above a speaker's head; `only` plays just those lines (a bark, never marked seen). */
+export function SceneBubbles({ id, only, anchorOf, onDone }: { id: string; only?: string[]; anchorOf: (speaker: string) => Promise<{ x: number; y: number } | null>; onDone: () => void }) {
+  return <SpeechBubbles data={data} id={id} only={only} ctx={storyContext()} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} anchorOf={anchorOf} onDone={onDone} />;
 }
