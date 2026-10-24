@@ -43,6 +43,8 @@ SHELL_LOCATIONS = {'lager_unterwegs'}
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
 # head crop of the 1254 px portraits: square from the top; 160 px is a 52 px medallion at 3x
 HEAD_CROP = (230, 0, 1030, 800)
+# portraits drawn with a bigger head need a wider square (may reach above the canvas: transparent there)
+HEAD_CROP_BY_ID = {'brenna': (80, -120, 1180, 980), 'mira': (80, -120, 1180, 980)}
 AVATAR_PX = 160
 # battle medallion: 78 px on the HUD, 56 px in the forecast; 112 px at q70 is ~4.5 KB per head
 HEAD_PX = 112
@@ -244,7 +246,7 @@ def build_heads():
         pid, ext = os.path.splitext(f)
         if ext != '.png' or pid not in wanted:
             continue
-        im = Image.open(os.path.join(base, f)).convert('RGBA').crop(HEAD_CROP)
+        im = Image.open(os.path.join(base, f)).convert('RGBA').crop(HEAD_CROP_BY_ID.get(pid, HEAD_CROP))
         if pid in AVATAR_LOOKS:
             im.resize((AVATAR_PX, AVATAR_PX), Image.LANCZOS).save(os.path.join(dst, pid + '.webp'), 'WEBP', quality=85, method=6)
         else:
