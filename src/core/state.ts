@@ -154,6 +154,8 @@ export interface BattleState {
     bossKilledWith?: string;
   };
   outcome: 'victory' | 'defeat' | null;
+  /** why the battle was lost: a unit id (a unit that had to survive fell) or 'turns' (turn limit); missing in old saves */
+  defeatReason?: string;
   settings: BattleSettings;
   convoy: ItemInstance[];
   goldGained: number;

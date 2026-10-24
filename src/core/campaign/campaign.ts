@@ -68,6 +68,19 @@ export interface UnitResult {
   levelAfter: number;
   exp: number;
   mastered: string[];
+  portrait?: string;
+  classId?: string;
+}
+
+/** Bounty for a lieutenant driven off in a mission, and the grudge it leaves (Epic 3 fills this; empty until then). */
+export interface BountyResult {
+  id: string;
+  nameKey: string;
+  name?: string;
+  portrait?: string;
+  gold: number;
+  /** grudge level after this mission */
+  grudge: number;
 }
 
 export interface BattleResult {
@@ -79,7 +92,9 @@ export interface BattleResult {
   materials: Record<string, number>;
   items: ItemInstance[];
   units: UnitResult[];
-  fallen: Array<{ id: string; nameKey: string; name?: string }>;
+  fallen: Array<{ id: string; nameKey: string; name?: string; portrait?: string; classId?: string }>;
+  /** lieutenants driven off (bounty + new grudge); empty while there are none */
+  bounty: BountyResult[];
   scars: Array<{ id: string; scar: string }>;
   recruited: string[];
   supportsReady: string[];
@@ -152,6 +167,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     items: [],
     units: [],
     fallen: [],
+    bounty: [],
     scars: [],
     recruited: [],
     supportsReady: [],
@@ -173,7 +189,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (dies) {
       c.roster = c.roster.filter((r) => r.id !== u.id);
       c.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, node: s.nodeId });
-      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name });
+      result.fallen.push({ id: u.id, nameKey: u.nameKey, name: u.name, portrait: u.portrait, classId: u.classId });
       c.convoy.push(...allItems(u));
       continue;
     }
@@ -214,6 +230,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       levelBefore: before?.level ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
+      portrait: u.portrait,
+      classId: u.classId,
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
     });
   }

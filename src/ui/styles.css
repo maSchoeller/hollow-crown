@@ -115,21 +115,6 @@
   transform: rotate(45deg);
 }
 
-/* ---------- defeat screen frame (title frame lives in title.css) ---------- */
-.logo {
-  font-family: var(--hc-font-name);
-  font-weight: 600;
-  font-size: clamp(48px, 14vw, 84px);
-  line-height: 0.95;
-  color: var(--surface);
-  letter-spacing: 0.02em;
-}
-.tagline {
-  color: #e9e3d6;
-  max-width: 420px;
-  margin: 0 auto 14px;
-  font-size: 16px;
-}
 /* ---------- forms ---------- */
 input[type='text'] {
   min-height: 50px;

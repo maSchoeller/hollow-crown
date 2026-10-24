@@ -1,0 +1,220 @@
+/* Mission result and defeat (concept/25-ux/mockups/08-ergebnis-abschied.html, story 6.6). Style B. */
+@import './tokens.css';
+
+.res-view {
+  justify-content: flex-start;
+}
+
+/* victory / defeat pill */
+.res-pill {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 24px;
+  border-radius: var(--hc-r-pill);
+  text-align: center;
+  width: auto !important;
+}
+.res-pill b {
+  font-family: var(--hc-font-name);
+  font-size: 26px;
+  line-height: 1;
+}
+.res-pill span {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.res-pill--win {
+  background: var(--hc-ember);
+  color: #fff;
+}
+.res-pill--lost {
+  background: var(--hc-mourn-quiet);
+  color: var(--hc-line);
+}
+
+/* body stone with sections */
+.res-body {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.res-sec {
+  display: grid;
+  gap: 6px;
+}
+.res-sec__title {
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.res-loot,
+.res-reward {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.res-loot {
+  font-size: 17px;
+}
+.res-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.res-item__name {
+  font-weight: 700;
+}
+.res-reward__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* driven-off lieutenant */
+.res-lt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 12px;
+  background: var(--hc-team-enemy-soft);
+  font-size: 13px;
+}
+.res-lt__text {
+  flex: 1;
+  min-width: 0;
+}
+.res-lt__text b {
+  font-family: var(--hc-font-name);
+  margin-right: 4px;
+}
+
+/* side objectives */
+.res-side {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 13px;
+}
+.res-side__mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--hc-line);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+}
+.res-side.is-done .res-side__mark {
+  background: var(--hc-positive);
+  color: #fff;
+}
+.res-side.is-open {
+  color: var(--hc-soft);
+}
+.res-side.is-open .res-side__mark {
+  background: var(--hc-cream-2);
+}
+.res-side__text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* company: head, name, EP; the fallen are grey */
+.res-units {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px 8px;
+}
+.res-unit {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+}
+.res-unit__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.res-unit__lv {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  z-index: 1;
+  padding: 0 5px;
+  border: 2px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-positive);
+  color: #fff;
+  font-size: 10px;
+}
+.res-unit.is-fallen .trp-head {
+  filter: grayscale(1);
+  background: #d8d4cc;
+}
+.res-unit.is-fallen {
+  color: var(--hc-downed);
+}
+
+/* notes: recruited, granted, scars */
+.res-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.res-note.is-good {
+  color: var(--hc-positive);
+}
+.res-note.is-bad {
+  color: var(--hc-negative);
+}
+.res-note.is-gold {
+  color: var(--hc-lieutenant);
+}
+
+/* defeat */
+.res-view--defeat .res-why {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+  background: var(--hc-mourn);
+}
+.res-why__reason {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.25;
+}
+.res-why__hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--hc-soft);
+}
+.res-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+}
+.res-actions .hc-btn,
+.res-view > .hc-btn {
+  width: 100%;
+}
