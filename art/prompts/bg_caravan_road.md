@@ -3,7 +3,7 @@
 - **Datei:** `art/backgrounds/bg_caravan_road.png` (2560 × 1440, RGB)
 - **Datum:** 2026-10-22
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome
-- **Referenzen:** `concept/art/characters/src/bg_varnhold_burning.png` als Stilreferenz angehängt
+- **Referenzen:** `art/backgrounds/source/bg_varnhold_burning.png` als Stilreferenz angehängt
 - **Iterationen:** 1
 - **Rohbild:** 1672 × 941 (größtes Querformat, das ChatGPT liefert)
 
@@ -13,7 +13,7 @@
 
 ## Nachbearbeitung
 
-Mittig auf 16:9 zugeschnitten, mit Lanczos auf 2560 × 1440 hochskaliert, Sättigung −12 %, Gaußscher Weichzeichner 0,8 px (laut `concept/art/characters/prompts.md` kommen Hintergründe zu scharf und zu gesättigt).
+Mittig auf 16:9 zugeschnitten, mit Lanczos auf 2560 × 1440 hochskaliert, Sättigung −12 %, Gaußscher Weichzeichner 0,8 px (ChatGPT-Hintergründe kommen zu scharf und zu gesättigt, siehe `bg_varnhold_burning.md`).
 
 ## Abnahme
 
