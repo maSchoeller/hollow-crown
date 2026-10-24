@@ -59,7 +59,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 
 ### Completion Notes List
 
-- Offen für den Produktinhaber: NFR1 wird unter dem Referenzprofil weit verfehlt; wer untersucht die Leistung des Bretts (eigene Story?).
+- Entschieden 2026-10-24 (Produktinhaber): NFR1 bekommt eine eigene Story 7.7 „Große Schlachten flüssig“.
 
 ### File List
 

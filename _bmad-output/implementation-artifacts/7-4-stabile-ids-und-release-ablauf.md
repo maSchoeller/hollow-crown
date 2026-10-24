@@ -47,7 +47,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 
 ### Completion Notes List
 
-- Offen für den Produktinhaber: Zeitpunkt der ersten Sperre (Vorschlag: mit dem MVP-Release, Story 9.14).
+- Entschieden 2026-10-24 (Produktinhaber): erste Sperre beim MVP-Release (Story 9.14).
 
 ### File List
 

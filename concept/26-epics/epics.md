@@ -1285,6 +1285,21 @@ damit ich nicht vor einem leeren Bildschirm warte und weiß, wann ich offline sp
 
 _Nachgetragen 2026-10-24: Entscheidung Produktinhaber (UX-Log), Anlass: große Bilder werden bei Bedarf geladen. Ergänzt 7.2 (Akt-Pakete im Hintergrund, Fortschrittsring)._
 
+### Story 7.7: Große Schlachten flüssig
+
+Als Spieler
+möchte ich, dass auch die größte Schlacht auf meinem Handy flüssig läuft,
+damit die Gegnerphase nicht ruckelt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Messung aus 7.5 (`pnpm perf`, Referenzschlacht 24×32 mit 40 Einheiten)
+**Wenn** die Ursache der niedrigen Bildrate untersucht ist (Profil von CPU und GPU über die Gegnerphase)
+**Dann** sind die größten Kosten benannt und behoben, und die Gegnerphase erreicht unter dem Referenzprofil 60 FPS (NFR1)
+**Und** der Bericht von `pnpm perf` zeigt Vorher und Nachher.
+
+_Nachgetragen 2026-10-24: Entscheidung Produktinhaber. Anlass: Die erste Messung (7.5) ergab 10–13 FPS mit GPU bei 4× gedrosselter CPU._
+
 ## Epic 8: Chibi-Stil, Item-Bilder und Audio
 
 Spieler sehen und hören Akt 1 im Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen. Bilder per ChatGPT über Claude in Chrome mit Prompt und Abnahme in `art/prompts/`.
