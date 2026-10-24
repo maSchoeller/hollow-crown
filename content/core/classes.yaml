@@ -37,7 +37,7 @@
   roleGroup: melee
   moveType: foot
   mov: 5
-  weaponGroups: [sword, lance]
+  weaponGroups: [sword, lance, shield]
   classAction: { id: rally, kind: active, perMap: 1 }
   proPaths: [banner_lord]
   tags: []
@@ -52,15 +52,15 @@
 
 # --- Die sieben Kernrollen ---
 
-# Soldat (PoC). GDD: Gepanzert, MOV 4 - offen (Story 2.2 Log): MOV 4 und Gepanzert brechen die PoC-Karten, daher Fuß/5
+# Soldat (PoC). GDD: Gepanzert, MOV 4 (Produktinhaber 2026-10-24); die PoC-Karten sind darauf neu balanciert
 - id: vanguard
   nameKey: class.vanguard.name
   legacyIds: [soldier, fighter]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
   role: vanguard
   tier: base
   roleGroup: melee
-  moveType: foot
-  mov: 5
+  moveType: armored
+  mov: 4
   weaponGroups: [lance, axe, shield]
   classAction: { id: hold, kind: passive }
   proPaths: [bulwark, breaker]
@@ -74,7 +74,7 @@
   art: soldier
   v1: true
 
-# Söldner (PoC). GDD: MOV 6 - offen (Story 2.2 Log): MOV 6 drückt ch02 unter den Korridor, daher 5
+# Söldner (PoC). GDD: Fuß, MOV 6 (Produktinhaber 2026-10-24)
 - id: skirmisher
   nameKey: class.skirmisher.name
   legacyIds: [mercenary]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
@@ -82,7 +82,7 @@
   tier: base
   roleGroup: melee
   moveType: foot
-  mov: 5
+  mov: 6
   weaponGroups: [sword, dagger]
   classAction: { id: pursue, kind: passive }
   proPaths: [blade_dancer, duelist]

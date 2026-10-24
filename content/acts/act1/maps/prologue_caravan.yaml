@@ -59,13 +59,12 @@ units:
   - { id: p_e5, team: enemy, class: brigand, level: 2, at: [2, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements:
-  # Schwer: Zwei Nachzügler fallen der Karawane in den Rücken.
+  # Schwer: Ein Nachzügler fällt der Karawane in den Rücken.
   - turn: 3
     phase: enemy
     announce: true
     units:
       - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [1, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { team: enemy, class: brigand, sprite: brigand, level: 1, at: [10, 11], items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: rout }
   defeat:
