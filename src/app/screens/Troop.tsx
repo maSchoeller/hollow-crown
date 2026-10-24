@@ -358,7 +358,7 @@ export function Figure({
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
-      {ember && !toast && <Toast text={`“${t(ember)}”`} lead={<UnitHead portrait={data.chars[barkChar(unit)]?.portrait ?? unit.id} name={unitName(unit)} size={32} />} onDone={() => setEmber(null)} />}
+      {ember && !toast && <Toast text={t('ui.farewell.quote', { text: t(ember) })} lead={<UnitHead portrait={data.chars[barkChar(unit)]?.portrait ?? unit.id} name={unitName(unit)} size={32} />} onDone={() => setEmber(null)} />}
     </div>
   );
 }
