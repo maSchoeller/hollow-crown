@@ -35,7 +35,7 @@ import {
   type Team,
 } from '../../core';
 import { mapOf } from '../../core/battle/objectives';
-import { BoardView } from '../../render/board';
+import { BoardView } from '../../render/board/board';
 import { t } from '../../i18n';
 import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
@@ -106,7 +106,7 @@ type ClassKind = 'aim' | 'farRescue' | 'cheer';
 export function Battle() {
   const session = battle.value!;
   const s = session.state;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const floatRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -151,14 +151,14 @@ export function Battle() {
 
   // --------------------------------------------------------------- board lifecycle
   useEffect(() => {
-    const board = new BoardView(canvasRef.current!, floatRef.current!, data, {
+    const board = new BoardView(stageRef.current!, floatRef.current!, data, {
       onTap: (p) => tapRef.current(p),
       onLongPress: (p) => longRef.current(p),
       onCancel: () => cancelRef.current(),
       onEvent: (e) => eventRef.current(e),
       onUnitHp: (uid, v) => setHp((h) => ({ ...h, [uid]: v })),
       insets: () => {
-        const c = canvasRef.current?.getBoundingClientRect();
+        const c = stageRef.current?.getBoundingClientRect();
         if (!c) return { top: 0, right: 0, bottom: 0, left: 0 };
         const top = topRef.current?.getBoundingClientRect();
         const bottom = bottomRef.current?.getBoundingClientRect();
@@ -194,6 +194,10 @@ export function Battle() {
       board.dispose();
     };
   }, []);
+
+  // a visual-novel dialogue covers the board: it only needs the idle frame rate (speech bubbles follow the camera)
+  const overlayDialogue = !!dialogue && !dialogue.bubble;
+  useEffect(() => boardRef.current?.hold(overlayDialogue ? 'idle' : 'run'), [overlayDialogue]);
 
   // the bottom sheet changes height with the selection (and leaves in landscape); keep the map clear of the HUD
   useEffect(() => {
@@ -926,7 +930,7 @@ export function Battle() {
         </div>
       )}
       <div class="board-wrap">
-        <canvas ref={canvasRef} class="board-canvas" />
+        <div ref={stageRef} class="hc-stage-slot" />
         <div ref={floatRef} class="float-layer" />
         {dialogue?.bubble && (
           <SceneBubbles

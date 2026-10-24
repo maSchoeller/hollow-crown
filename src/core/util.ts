@@ -67,3 +67,11 @@ export function sum(list: readonly number[]): number {
   return t;
 }
 export const clamp = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v));
+
+/** Rows of a block string grid (one character per tile, world map and ASCII maps); blank lines and outer spaces dropped. */
+export function gridRows(block: string): string[] {
+  return block
+    .split('\n')
+    .map((r) => r.trim())
+    .filter((r) => r.length > 0);
+}

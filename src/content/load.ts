@@ -14,6 +14,7 @@ import type {
   MapDef,
   Rarity,
   RenderDef,
+  WorldDef,
   RoomDef,
   RuneDef,
   SceneDef,
@@ -27,6 +28,7 @@ import {
   affixSchema,
   balanceSchema,
   campaignSchema,
+  worldSchema,
   charSchema,
   chroniclePageSchema,
   classSchema,
@@ -120,8 +122,9 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
-      const m = parseOne<MapDef>(p, raw, mapSchema, issues);
-      if (m) maps[m.id] = m;
+      const m = parseOne<Omit<MapDef, 'act'>>(p, raw, mapSchema, issues);
+      // the act of the folder (acts/act2/maps/…) decides the season of the board
+      if (m) maps[m.id] = { ...m, act: Number(/^acts\/act(\d+)\//.exec(p)?.[1] ?? 1) };
     } else if (/^acts\/act\d+\/supports\.yaml$/.test(p)) {
       for (const sp of parseList<Omit<SupportPairDef, 'key'>>(p, raw ?? [], supportPairSchema, issues)) {
         const key = pairKey(sp.pair[0], sp.pair[1]);
@@ -186,6 +189,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
+  const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
@@ -217,6 +221,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     supports,
     chronicle,
     campaign: campaign as CampaignDef,
+    world: world as WorldDef,
   };
   return { data, locales, issues };
 }

@@ -92,6 +92,11 @@ death:
   bleedOutTurns: 3
 # scenes (story 4.5): auto mode waits autoBaseMs + autoPerCharMs per character; a speech bubble in battle waits
 # bubbleAutoMs (UX: 2.5 s) and holds at most bubbleMaxChars characters per page (two lines)
+# Tageswechsel (Story 5.4, architecture §5.6): neuer Tag um resetHour Uhr Ortszeit; wer länger weg war, bekommt höchstens
+# catchUp Tagespakete nach (zurückgestellte Uhr bringt nichts)
+day:
+  resetHour: 4
+  catchUp: 3
 scene:
   autoBaseMs: 1200
   autoPerCharMs: 45

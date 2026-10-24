@@ -258,7 +258,20 @@ Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und
 Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen.
 **FRs covered:** FR42, FR63 (Teil) · UX-DR16
 
-### Epic 9: Akt 1 „Asche“ (MVP)
+#### Story 8.10: Verdeckte Figuren bleiben sichtbar
+
+Als Spieler
+möchte ich jede Figur sehen, auch wenn sie hinter oder in einem Haus, Turm, einer Ruine oder einem Baum steht,
+damit ich keine Einheit übersehe.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kamera des Bretts (Neigung `camera.tiltDeg`, Blick von Süden) und eine Requisite, die eine Figur auf demselben Feld oder auf Feldern nördlich davon um mindestens `board.fade.cover` Felder ihrer Höhe verdeckt
+**Wenn** eine Einheit (Spieler oder Gegner) dort steht, hinzieht oder beim Aufstellen dort landet
+**Dann** wird die Requisite halbdurchsichtig („schleierhaft“, Deckkraft `board.fade.alpha` in `render.yaml`), die Figur bleibt erkennbar
+**Und** verlässt die Einheit das Feld, ist die Requisite sofort wieder deckend; neu berechnet wird nur, wenn sich ein Feld einer Einheit ändert, nie jedes Bild.
+
+## Epic 9: Akt 1 „Asche“ (MVP)
 Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
 **FRs covered:** FR55, FR60, FR63
 
