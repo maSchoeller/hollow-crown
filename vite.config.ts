@@ -3,7 +3,7 @@ import { defineConfig, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
-import { ON_DEMAND_CACHE } from './src/app/loading/cacheName.ts';
+import { ON_DEMAND_CACHE, ON_DEMAND_MUSIC } from './src/app/loading/cacheName.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 /** Compiles content YAML to JSON modules at build time (content is validated by Zod at load). */
@@ -19,8 +19,12 @@ function yamlPlugin(): Plugin {
 
 const base = process.env.BASE_PATH ?? '/';
 
-/** public/assets folders not precached: places, half figures and the world map load on demand (decision 2026-10-24). */
-const ON_DEMAND_ASSETS = ['locations', 'busts', 'halves', 'world'];
+/**
+ * public/assets folders not precached (decision 2026-10-24): places, half figures and the world map, then (PO decision
+ * "mehr nachladen statt Budget erhöhen") sprite sheets (a fallback for the 2D setting and units without a model) and
+ * item images (menus show the frame until the picture is there). Music tracks follow by name (`ON_DEMAND_MUSIC`).
+ */
+const ON_DEMAND_ASSETS = ['locations', 'busts', 'halves', 'world', 'sprites', 'items'];
 
 /** Unit models are not in the glob either; they join the runtime cache so a mission's models stay available offline (story 7.6). */
 const RUNTIME_CACHED = [...ON_DEMAND_ASSETS, 'models'];
@@ -67,12 +71,12 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
         // large pictures load when first shown and stay cached (initial-download budget, tools/check-bundle-size.mjs)
-        globIgnores: ON_DEMAND_ASSETS.map((d) => `assets/${d}/**`),
+        globIgnores: [...ON_DEMAND_ASSETS.map((d) => `assets/${d}/**`), ...ON_DEMAND_MUSIC.map((m) => `assets/audio/${m}.mp3`)],
         runtimeCaching: [
           {
-            urlPattern: new RegExp(`/assets/(${RUNTIME_CACHED.join('|')})/`),
+            urlPattern: new RegExp(`/assets/((${RUNTIME_CACHED.join('|')})/|audio/(${ON_DEMAND_MUSIC.join('|')})[.]mp3)`),
             handler: 'CacheFirst',
-            options: { cacheName: ON_DEMAND_CACHE, expiration: { maxEntries: 400 } },
+            options: { cacheName: ON_DEMAND_CACHE, expiration: { maxEntries: 1000 } },
           },
         ],
         manifestTransforms: [(entries) => precacheInfo(entries)],
