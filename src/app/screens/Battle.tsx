@@ -12,7 +12,7 @@ import {
   itemTargets,
   pathTo,
   posKey,
-  reachable,
+  reachNow,
   resolveScene,
   samePos,
   tilesInRange,
@@ -200,7 +200,7 @@ export function Battle() {
   const reachCache = useMemo(() => new Map<string, Map<string, ReachNode>>(), [s]);
   const reachOf = (u: BattleUnit) => {
     let r = reachCache.get(u.uid);
-    if (!r) reachCache.set(u.uid, (r = reachable(data, s, u)));
+    if (!r) reachCache.set(u.uid, (r = reachNow(data, s, u)));
     return r;
   };
   const dangerTiles = useMemo(() => {

@@ -60,6 +60,12 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
 }
 
 /** Tiles the unit may end its move on (not occupied by another unit). */
+/** What the player may still walk this turn: the unit's own tile once it has moved (trade, convoy), otherwise its full reach. */
+export function reachNow(data: GameData, s: BattleState, unit: BattleUnit): Map<string, ReachNode> {
+  if (!unit.moved || !unit.pos) return reachable(data, s, unit);
+  return new Map([[posKey(unit.pos), { cost: 0, prev: null, pos: unit.pos }]]);
+}
+
 export function destinations(s: BattleState, unit: BattleUnit, reach: Map<string, ReachNode>): Pos[] {
   const out: Pos[] = [];
   for (const node of reach.values()) {

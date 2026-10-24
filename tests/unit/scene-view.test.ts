@@ -1,4 +1,6 @@
 /** Scenes in the new style (story 4.5): seen record, speech-bubble pages, half-figure choice, timing values. */
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { applyCampaign, bubblePages, newCampaign, normalizeCampaign, replayCampaign, sceneSeen, validateCampaign, type CampaignState, type GameData } from '../../src/core';
@@ -63,6 +65,16 @@ describe('half figures', () => {
   it('maps the avatar to its look', () => {
     expect(figureId('avatar', 'avatar_a')).toBe('rhen_a');
     expect(figureId('kael', 'avatar_b')).toBe('kael');
+  });
+  it('has a picture for every speaker of the scenes, so no dialogue shows an empty stage', () => {
+    const dir = fileURLToPath(new URL('../../art/mockups/characters-s1/', import.meta.url));
+    const has = (stem: string) => existsSync(`${dir}${stem}.png`);
+    const speakers = new Set<string>();
+    for (const scene of Object.values(data.scenes))
+      for (const l of scene.lines) if ('speaker' in l) for (const sp of l.speaker ?? []) speakers.add(sp === 'avatar' ? figureId(sp, 'avatar_a') : sp);
+    expect(speakers.size).toBeGreaterThan(0);
+    expect(figureId('avatar', 'avatar_b')).toBe('rhen_b');
+    for (const stem of ['rhen_a', 'rhen_b', ...speakers]) expect(has(stem), `art/mockups/characters-s1/${stem}.png`).toBe(true);
   });
 });
 
