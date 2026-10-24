@@ -4,7 +4,7 @@
  */
 import { openDB, type IDBPDatabase, type IDBPTransaction } from 'idb';
 import { saveRecordSchema } from './schema';
-import type { BattleState, CampaignState, Command, DeathMode, Difficulty } from '../core';
+import type { BattleState, CampaignState, Command, DeathMode, Difficulty, QueuedEffects } from '../core';
 
 export const SAVE_FORMAT = 2;
 export const DB_NAME = 'hollow-crown';
@@ -16,8 +16,11 @@ export type SlotId = 'auto' | '1' | '2' | '3';
 
 export interface SavePayload {
   campaign: CampaignState;
-  /** running battle: start snapshot + command log (replayed on load); `turnStartIndex` = log length at the current round's start */
-  battle?: { start: BattleState; commands: Command[]; turnStartIndex: number };
+  /**
+   * running battle: start snapshot + command log (replayed on load); `turnStartIndex` = log length at the current round's start;
+   * `effects` = dialogue effects queued during the battle, applied by `finishMission` (absent in older saves = none)
+   */
+  battle?: { start: BattleState; commands: Command[]; turnStartIndex: number; effects?: QueuedEffects[] };
   /** where to resume */
   screen: 'worldmap' | 'camp' | 'battle';
 }

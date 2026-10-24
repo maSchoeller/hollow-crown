@@ -2,6 +2,7 @@ import type { GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import type { BattleState } from '../state';
+import type { QueuedEffects } from './commands';
 
 /** What a restart goes back to: the start of the current round or the start of the mission. */
 export type RestartScope = 'turn' | 'mission';
@@ -21,4 +22,9 @@ export function replayBattle(data: GameData, start: BattleState, commands: reado
   let s = start;
   for (const cmd of commands) s = applyCommand(data, s, cmd).state;
   return s;
+}
+
+/** The queued dialogue effects that survive a restart keeping the first `keep` commands: those fired within the kept part. */
+export function keepQueued(queued: readonly QueuedEffects[], keep: number): QueuedEffects[] {
+  return queued.filter((q) => q.at <= keep);
 }

@@ -19,6 +19,7 @@ import {
   type CampaignState,
   type Command,
   type GameData,
+  type QueuedEffects,
 } from '../../core';
 import { loadContent } from '../../content/browser';
 import { setAvatar, setLocales } from '../../i18n';
@@ -57,7 +58,7 @@ export interface LiveSnapshot {
   /** where a restore should land */
   where: SavePayload['screen'];
   /** the running battle (start state and command log), if any */
-  battle: { start: BattleState; commands: Command[] } | null;
+  battle: { start: BattleState; commands: Command[]; effects: QueuedEffects[] } | null;
 }
 let live: () => LiveSnapshot = () => ({ where: 'camp', battle: null });
 export function bindLive(source: () => LiveSnapshot): void {
@@ -83,7 +84,7 @@ function snapshotPayload(c: CampaignState, where: SavePayload['screen']): SavePa
   return {
     campaign: c,
     screen: where,
-    battle: b ? { start: b.start, commands: b.commands, turnStartIndex: turnStartIndex(b.commands) } : undefined,
+    battle: b ? { start: b.start, commands: b.commands, turnStartIndex: turnStartIndex(b.commands), effects: b.effects } : undefined,
   };
 }
 

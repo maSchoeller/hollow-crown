@@ -35,6 +35,8 @@ export const saveRecordSchema = z.looseObject({
         start: battleState,
         commands: z.array(z.looseObject({ type: z.string() })),
         turnStartIndex: z.number().int().min(0),
+        // dialogue effects waiting for the end of the battle; saves from before this field have none
+        effects: z.array(z.looseObject({ at: z.number().int().min(0), effects: z.array(z.looseObject({})) })).default([]),
       })
       .optional(),
     screen: z.enum(['worldmap', 'camp', 'battle']),

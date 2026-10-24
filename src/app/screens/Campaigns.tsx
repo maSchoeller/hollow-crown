@@ -321,7 +321,7 @@ export function Campaigns() {
 
 /** New campaign on one page: name, look with pronoun, difficulty, death mode (Standard preselected). */
 export function NewCampaign() {
-  const [name, setName] = useState('Rhen');
+  const [name, setName] = useState(() => t('ui.new.defaultName'));
   const [look, setLook] = useState<(typeof AVATAR_LOOKS)[number]['portrait']>(AVATAR_LOOKS[0].portrait);
   const [pronoun, setPronoun] = useState<'she' | 'he' | 'they'>('they');
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');

@@ -22,6 +22,8 @@ const ZOOM = 1.12;
 const REST_Y = 0.3;
 /** Pointer travel (px) after which a press counts as a drag and not as a tap. */
 const DRAG_THRESHOLD = 6;
+/** how long the click after a drag is swallowed at most (ms) */
+const SWALLOW_MS = 350;
 /** Fastest glide (px per frame) after a drag. */
 const MAX_GLIDE = 24;
 /** Share of the release speed that is kept per frame while the map glides on after a drag. */
@@ -50,16 +52,20 @@ export function WorldMap() {
   }, []);
 
   // drag panning (mouse, touch, pen): a press only becomes a drag after DRAG_THRESHOLD, so taps on nodes still click
-  const drag = useRef({ id: -1, x: 0, y: 0, left: 0, top: 0, active: false, vx: 0, vy: 0, t: 0, swallow: false, raf: 0 });
+  const drag = useRef({ id: -1, x: 0, y: 0, left: 0, top: 0, active: false, vx: 0, vy: 0, t: 0, swallow: false, swallowTimer: 0, raf: 0 });
   const stopGlide = () => {
     cancelAnimationFrame(drag.current.raf);
     drag.current.raf = 0;
   };
-  useEffect(() => stopGlide, []);
+  useEffect(() => () => {
+    stopGlide();
+    clearTimeout(drag.current.swallowTimer);
+  }, []);
   const onDown = (e: PointerEvent) => {
     const p = pan.current;
     if (!p || (e.pointerType === 'mouse' && e.button !== 0) || drag.current.id !== -1) return;
     stopGlide();
+    clearTimeout(drag.current.swallowTimer); // a new touch ends the swallowing of the last drag's click
     Object.assign(drag.current, { id: e.pointerId, x: e.clientX, y: e.clientY, left: p.scrollLeft, top: p.scrollTop, active: false, vx: 0, vy: 0, t: e.timeStamp, swallow: false });
   };
   const onMove = (e: PointerEvent) => {
@@ -92,8 +98,11 @@ export function WorldMap() {
     if (!d.active) return;
     d.active = false;
     if (e.type === 'pointerup') {
-      d.swallow = true; // the click that follows a real drag is not a tap
-      setTimeout(() => (d.swallow = false), 0);
+      // the click that follows a real drag is not a tap; touch browsers may send it late, so it stays
+      // swallowed until the next pointerdown or 350 ms, whichever comes first
+      d.swallow = true;
+      clearTimeout(d.swallowTimer);
+      d.swallowTimer = window.setTimeout(() => (d.swallow = false), SWALLOW_MS);
     }
     if (e.timeStamp - d.t > 80) return; // held still before release: no glide
     const step = () => {

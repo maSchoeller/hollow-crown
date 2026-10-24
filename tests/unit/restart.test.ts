@@ -5,6 +5,7 @@ import {
   applyCommand,
   beginBattle,
   clone,
+  keepQueued,
   newCampaign,
   replayBattle,
   restartKeep,
@@ -59,33 +60,35 @@ describe('restartTurn / restartMission (story 1.5)', () => {
   it('are allowed in Standard and Casual and tell how much of the log to keep', () => {
     for (const mode of ['standard', 'casual'] as const) {
       const c = campaignOf(mode);
-      const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
+      const node = data.campaign.start;
       const commands: Command[] = [{ type: 'endPhase' }, { type: 'endPhase' }];
-      const turn = applyCampaign(data, c, { type: 'restartTurn', start, commands });
+      const turn = applyCampaign(data, c, { type: 'restartTurn', node, keep: restartKeep('turn', commands) });
       expect(turn.events).toEqual([{ t: 'battleRestarted', scope: 'turn', keep: 2 }]);
       expect(turn.campaign).toEqual(c);
-      const mission = applyCampaign(data, c, { type: 'restartMission', start, commands });
+      const mission = applyCampaign(data, c, { type: 'restartMission', node });
       expect(mission.events).toEqual([{ t: 'battleRestarted', scope: 'mission', keep: 0 }]);
     }
   });
 
   it('Classic refuses restartTurn always and restartMission unless the battle is lost', () => {
     const c = campaignOf('classic');
-    const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
-    expect(validateCampaign(data, c, { type: 'restartTurn', start, commands: [] })).toBe('restart_forbidden');
-    expect(validateCampaign(data, c, { type: 'restartMission', start, commands: [] })).toBe('restart_forbidden');
+    const node = data.campaign.start;
+    const start = beginBattle(data, c, node, c.roster.map((r) => r.id)).state;
+    expect(validateCampaign(data, c, { type: 'restartTurn', node, keep: 0 })).toBe('restart_forbidden');
+    expect(validateCampaign(data, c, { type: 'restartMission', node })).toBe('restart_forbidden');
+    expect(validateCampaign(data, c, { type: 'restartMission', node, lost: { start, commands: [] } })).toBe('restart_forbidden');
     const lost = lostBattle(c);
     expect(lost.state.outcome).toBe('defeat');
-    expect(validateCampaign(data, c, { type: 'restartTurn', start: lost.start, commands: lost.log })).toBe('restart_forbidden');
-    expect(validateCampaign(data, c, { type: 'restartMission', start: lost.start, commands: lost.log })).toBeNull();
-    expect(() => applyCampaign(data, c, { type: 'restartTurn', start, commands: [] })).toThrow();
+    expect(validateCampaign(data, c, { type: 'restartTurn', node, keep: 0 })).toBe('restart_forbidden');
+    expect(validateCampaign(data, c, { type: 'restartMission', node, lost: { start: lost.start, commands: lost.log } })).toBeNull();
+    expect(() => applyCampaign(data, c, { type: 'restartTurn', node, keep: 0 })).toThrow();
   });
 
   it('refuse a battle of a node that is not available', () => {
     const c = campaignOf('standard');
-    const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
     const off = { ...clone(c), available: [] };
-    expect(validateCampaign(data, off, { type: 'restartTurn', start, commands: [] })).toBe('node_unavailable');
+    expect(validateCampaign(data, off, { type: 'restartTurn', node: data.campaign.start, keep: 0 })).toBe('node_unavailable');
+    expect(validateCampaign(data, off, { type: 'restartMission', node: data.campaign.start })).toBe('node_unavailable');
   });
 
   it('a restart undoes downs and deaths by replaying the shorter log', () => {
@@ -95,6 +98,20 @@ describe('restartTurn / restartMission (story 1.5)', () => {
     expect(back).toEqual(lost.start);
     expect(back.outcome).toBeNull();
     expect(back.units.every((u) => !u.downed && !u.gone)).toBe(true);
+  });
+});
+
+describe('dialogue effects queued in a battle and restarts', () => {
+  const q = (at: number) => ({ at, effects: [{ setFlag: 'ch02_hold' }] });
+  it('a restart keeps the effects fired within the kept part of the log and drops the rest', () => {
+    const queue = [q(0), q(3), q(5), q(8)];
+    expect(keepQueued(queue, 5).map((x) => x.at)).toEqual([0, 3, 5]);
+    // restart mission: only what fired before the first command (the opening dialogue) stays
+    expect(keepQueued(queue, restartKeep('mission', [])).map((x) => x.at)).toEqual([0]);
+    // restart round: the log up to and including the last endPhase stays
+    const log = [{ type: 'move' }, { type: 'endPhase' }, { type: 'move' }, { type: 'move' }] as Command[];
+    expect(keepQueued([q(1), q(2), q(4)], restartKeep('turn', log)).map((x) => x.at)).toEqual([1, 2]);
+    expect(keepQueued([], 0)).toEqual([]);
   });
 });
 
@@ -113,6 +130,14 @@ describe('manual slots and import (story 1.5)', () => {
     standard.settings.deathMode = 'standard';
     await expect(writeSave(meta.id, '2', { campaign: standard, screen: 'camp' }, o)).resolves.toBeDefined();
     await expect(writeSave(meta.id, '3', { ...format2.payload, campaign: standard }, o)).rejects.toMatchObject({ reason: 'in_battle' });
+  });
+
+  it('a saved battle carries its queued dialogue effects; older saves have none', () => {
+    const withQueue = { ...format2, payload: { ...format2.payload, battle: { ...format2.payload.battle!, effects: [{ at: 2, effects: [{ setFlag: 'ch02_hold' }] }] } } };
+    expect(importSave(exportSave(withQueue)).payload.battle!.effects).toEqual([{ at: 2, effects: [{ setFlag: 'ch02_hold' }] }]);
+    expect(importSave(exportSave(format2)).payload.battle!.effects).toBeUndefined();
+    const broken = { ...format2, payload: { ...format2.payload, battle: { ...format2.payload.battle!, effects: [{ at: -1, effects: [] }] } } };
+    expect(() => importSave(exportSave(broken as unknown as SaveRecord))).toThrow('content');
   });
 
   it('import refuses oversize files, shape errors and tampering with a one-word reason', () => {

@@ -6,6 +6,9 @@ import {
   CoreInvariantError,
   applyCommand,
   conditionContext,
+  queuedFlags,
+  validateEffects,
+  flattenQueued,
   type AvatarSettings,
   type BattleSettings,
   type ConditionContext,
@@ -24,14 +27,15 @@ import {
   readSlot,
   storeImportedRecord,
 } from './session';
-import { battle, command, pendingEvents, startBattle } from './battle';
+import { battle, canRestart, command, pendingEvents, restartBattle, startBattle } from './battle';
 import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From } from './screen';
+import { log } from '../log';
 
 bindLive(() => ({
   where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
-  battle: battle.value ? { start: battle.value.start, commands: battle.value.log } : null,
+  battle: battle.value ? { start: battle.value.start, commands: battle.value.log, effects: battle.value.effects } : null,
 }));
 
 export function nodeDef(id: string) {
@@ -102,7 +106,7 @@ export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): vo
       reportFault(e);
       throw e;
     }
-    battle.value = { start: p.battle.start, state: s, log: [...p.battle.commands] };
+    battle.value = { start: p.battle.start, state: s, log: [...p.battle.commands], effects: p.battle.effects ?? [] };
     screen.value = { name: 'battle' };
   } else {
     battle.value = null;
@@ -117,12 +121,14 @@ export function concludeBattle(): void {
     screen.value = { name: 'defeat' };
     return;
   }
-  battle.value = null;
-  const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log });
+  const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log, effects: b.effects });
   if (!r.ok) {
-    if (fault.value !== null) return; // invariant violated while applying: the fault screen takes over
-    throw new Error(`finishMission rejected: ${r.error}`);
+    // the battle stays as it is; the fault screen takes over (an invariant violation has reported itself already)
+    if (fault.value === null) reportFault(new CoreInvariantError('finish_mission_rejected', { node: b.state.nodeId, reason: r.error }));
+    return;
   }
+  battle.value = null;
+  autosave('worldmap'); // campaignCommand saved while the battle was still running; the finished one must not be resumable
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
   const node = nodeDef(b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
@@ -132,12 +138,35 @@ export function concludeBattle(): void {
 
 /** What conditions in dialogues and the camp read: the running campaign (or an empty story). */
 export function storyContext(): ConditionContext {
-  return conditionContext(data, campaign.value);
+  // flags set by answers earlier in this battle count although they are only queued (see `runEffects`)
+  const b = inBattle();
+  return conditionContext(data, campaign.value, b ? queuedFlags(b.effects) : {});
 }
 
+function inBattle() {
+  return screen.value.name === 'battle' ? battle.value : null;
+}
+
+/**
+ * Effects of a dialogue answer. Outside a battle they run at once through the campaign journal. During a battle they
+ * wait in the battle session (with the number of commands played so far) and run with `finishMission`: a restart
+ * drops the ones that fired in the discarded part, a defeat drops all (architecture §5.3). Battle state stays untouched.
+ */
 export function runEffects(effects: Effect[]): void {
-  // battle state stays untouched so battle replays remain pure; effects go through the campaign journal
-  campaignCommand({ type: 'effects', effects });
+  const b = inBattle();
+  if (!b) {
+    campaignCommand({ type: 'effects', effects });
+    return;
+  }
+  const c = campaign.value;
+  // like an immediate run, an answer the rules refuse is dropped now, so it cannot stop the mission from finishing later
+  const error = c ? validateEffects(data, c, [...flattenQueued(b.effects), ...effects]) : 'not_available';
+  if (error) {
+    log.warn('core', `dialogue effects refused: ${error}`, effects);
+    return;
+  }
+  battle.value = { ...b, effects: [...b.effects, { at: b.log.length, effects }] };
+  autosave('battle');
 }
 
 /** Dev helper: lets the simulator play the current battle (manual testing only). */
@@ -152,6 +181,11 @@ if (import.meta.env.DEV) {
       campaign,
       battle,
       screen,
+      /** answers a dialogue as the player would: `runEffects([{ setFlag: 'ch02_hold' }])`, queued during a battle */
+      runEffects,
+      storyContext,
+      restartBattle,
+      canRestart,
       /** fault screen: an invalid battle command hits applyCommand's invariant check (or a plain fault outside battle) */
       crash: () =>
         battle.value

@@ -11,7 +11,7 @@ import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { hireCost, hireError, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock } from './campaign';
-import { replayBattle, restartKeep } from './restart';
+import { replayBattle } from './restart';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
@@ -132,14 +132,18 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'effects':
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
+      // queued dialogue effects are checked when they are applied, against the state after the battle
       return c.available.includes(cmd.start.nodeId) ? null : 'node_unavailable';
     case 'restartTurn':
-      if (!c.available.includes(cmd.start.nodeId)) return 'node_unavailable';
+      if (!c.available.includes(cmd.node)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
     case 'restartMission':
-      if (!c.available.includes(cmd.start.nodeId)) return 'node_unavailable';
+      if (!c.available.includes(cmd.node)) return 'node_unavailable';
       // Classic is the honour mode: a mission may only be started over once it is lost (replayed, not trusted)
-      if (c.settings.deathMode === 'classic' && replayBattle(data, cmd.start, cmd.commands).outcome !== 'defeat') return 'restart_forbidden';
+      if (c.settings.deathMode === 'classic') {
+        if (!cmd.lost || cmd.lost.start.nodeId !== cmd.node) return 'restart_forbidden';
+        if (replayBattle(data, cmd.lost.start, cmd.lost.commands).outcome !== 'defeat') return 'restart_forbidden';
+      }
       return null;
   }
 }
@@ -166,13 +170,20 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
   if (cmd.type === 'finishMission') {
     let s = cmd.start;
     for (const bc of cmd.commands) s = applyCommand(data, s, bc).state;
-    const { campaign, result } = finishBattle(data, prev, s);
-    return { campaign, events: [...resourceEvents(prev, campaign), { t: 'missionFinished', result }] };
+    const { campaign: after, result } = finishBattle(data, prev, s);
+    // dialogue effects queued during the battle count only when it was won (a lost battle leaves the campaign as it
+    // was). They run after the battle result, so items land in the convoy finishBattle rebuilt; each dialogue's group
+    // is checked against the state after the battle and skipped when it no longer fits (e.g. `leave` of a unit that fell).
+    let campaign = after;
+    const effectEvents: CampaignEvent[] = [];
+    if (s.outcome === 'victory' && cmd.effects?.length) {
+      campaign = clone(after);
+      for (const q of cmd.effects) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
+    }
+    return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };
   }
-  if (cmd.type === 'restartTurn' || cmd.type === 'restartMission') {
-    const scope = cmd.type === 'restartTurn' ? 'turn' : 'mission';
-    return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope, keep: restartKeep(scope, cmd.commands) }] };
-  }
+  if (cmd.type === 'restartTurn') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'turn', keep: cmd.keep }] };
+  if (cmd.type === 'restartMission') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'mission', keep: 0 }] };
   const c = clone(prev);
   const events: CampaignEvent[] = [];
   const gained = (uid: string, def: string) => events.push({ t: 'itemGained', uid, def });

@@ -4,7 +4,7 @@ import { allItems } from '../rules/items';
 import type { CampaignState } from '../state';
 import { addToRoster } from './campaign';
 import { soleKey } from './conditions';
-import type { CampaignError, CampaignEvent } from './commands';
+import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
 export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid', 'openQuest', 'setHome'];
@@ -16,6 +16,22 @@ export function flagEntry(v: string | Record<string, FlagValue>): [string, FlagV
   if (typeof v === 'string') return [v, true];
   const k = soleKey(v);
   return [k, v[k]!];
+}
+
+/** The queued effects of a battle as one list, in the order the dialogues fired. */
+export function flattenQueued(queued: readonly QueuedEffects[] | undefined): Effect[] {
+  return (queued ?? []).flatMap((q) => q.effects);
+}
+
+/** Flags the queued effects will set; conditions during the battle read them as if they were already set. */
+export function queuedFlags(queued: readonly QueuedEffects[] | undefined): Record<string, FlagValue> {
+  const flags: Record<string, FlagValue> = {};
+  for (const e of flattenQueued(queued)) {
+    if (soleKey(e) !== 'setFlag') continue;
+    const [name, value] = flagEntry(arg(e) as string | Record<string, FlagValue>);
+    flags[name] = value;
+  }
+  return flags;
 }
 
 /**

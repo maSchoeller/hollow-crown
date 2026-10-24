@@ -27,12 +27,7 @@ export function Title() {
   return (
     <div class="screen title-screen">
       <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
-      <h1 class="title-logo">
-        H<span class="crown">♛</span>llow
-        <br />
-        Crown
-        <small>{t('ui.title.season')}</small>
-      </h1>
+      <TitleLogo />
       <div class="title-menu">
         {auto && (
           <PrimaryButton sub={resumeText(auto)} onClick={() => void loadSlot('auto', auto.campaignId)}>
@@ -54,6 +49,29 @@ export function Title() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** The game's name from the locale, over two lines, with a crown in place of the first "o" of the first word. */
+function TitleLogo() {
+  const name = t('ui.title.logo');
+  const [first = '', ...rest] = name.split(' ');
+  const o = first.indexOf('o');
+  return (
+    <h1 class="title-logo" aria-label={name}>
+      {o < 0 ? (
+        first
+      ) : (
+        <>
+          {first.slice(0, o)}
+          <span class="crown">♛</span>
+          {first.slice(o + 1)}
+        </>
+      )}
+      <br />
+      {rest.join(' ')}
+      <small>{t('ui.title.season')}</small>
+    </h1>
   );
 }
 

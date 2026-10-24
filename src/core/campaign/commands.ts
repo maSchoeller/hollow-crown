@@ -5,6 +5,16 @@ import type { BattleResult } from './campaign';
 import type { RestartScope } from './restart';
 
 /**
+ * Effects of a dialogue answer given during a battle. They wait in the battle session and run with
+ * `finishMission` (victory only); `at` = number of battle commands applied when the dialogue fired, so a
+ * restart that keeps the first `keep` commands keeps exactly the entries with `at <= keep`.
+ */
+export interface QueuedEffects {
+  at: number;
+  effects: Effect[];
+}
+
+/**
  * Commands are the only way to change a campaign between battles (concept/24-architecture §5.2).
  * Plain JSON: every applied command goes into the journal, start state + journal replays the campaign.
  */
@@ -27,15 +37,23 @@ export type CampaignCommand =
   | { type: 'hire'; offer: string }
   /** effects of content (dialogue answers, rewards); the only way effects ever run */
   | { type: 'effects'; effects: Effect[] }
-  /** a won or lost battle: start snapshot + full command log, replayed by the handler */
-  | { type: 'finishMission'; start: BattleState; commands: Command[] }
   /**
-   * Restart the running battle at the start of the round / of the mission (replay of its log, so downs and deaths
-   * are undone too). The battle itself lives in the app session; the command carries it so the rules can check
-   * it and the journal can replay it. Classic: `restartTurn` never, `restartMission` only after a defeat.
+   * a won or lost battle: start snapshot + full command log, replayed by the handler; `effects` are the dialogue
+   * effects queued during the battle (absent in older journals): applied in order before the result on a
+   * victory, dropped on a defeat
    */
-  | { type: 'restartTurn'; start: BattleState; commands: Command[] }
-  | { type: 'restartMission'; start: BattleState; commands: Command[] };
+  | { type: 'finishMission'; start: BattleState; commands: Command[]; effects?: QueuedEffects[] }
+  /**
+   * Restart the running battle at the start of the round / of the mission (the app replays the kept part of its log,
+   * so downs and deaths are undone too). The battle lives in the app session; the command carries only what the rules
+   * need: the node and, for the round, how many commands are kept. Classic: `restartTurn` never.
+   */
+  | { type: 'restartTurn'; node: string; keep: number }
+  /**
+   * Classic only allows it after a defeat and does not trust the app: `lost` (start + log) is replayed to check.
+   * Standard and Casual leave it out.
+   */
+  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] } };
 
 export type CampaignError =
   | 'not_enough_gold'
