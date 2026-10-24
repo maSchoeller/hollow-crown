@@ -9,7 +9,7 @@ export type StatMods = Partial<Record<StatKey | 'mov', number>>;
 
 export const ELEMENTS = ['fire', 'wind', 'earth', 'water', 'light', 'dark'] as const;
 export type Element = (typeof ELEMENTS)[number];
-export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow' | 'anima' | 'light' | 'dark' | 'staff' | 'breath';
+export type WeaponType = 'sword' | 'lance' | 'axe' | 'dagger' | 'bow' | 'anima' | 'light' | 'dark' | 'staff' | 'breath';
 /**
  * Weapon group of an item (items.md §4): what a role may carry. `weaponType` stays the rules type of a weapon
  * (triangle, ranged/melee); the group decides who may equip it, so shields, foci and lutes have a group, too.

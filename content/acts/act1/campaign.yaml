@@ -24,7 +24,7 @@ nodes:
   - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, next: [], place: backgrounds/bg_silverbrook_shrine, pos: [43, 66], merchantTier: 2 }
 merchant:
   - tier: 0
-    items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, leather_vest, leather_cap, wooden_shield, door_key]
+    items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]
   - tier: 1
     items: [javelin, hand_axe, steel_sword, chainmail, iron_helm, ember, remedy_salve, heal_staff, mage_robe]
   - tier: 2

@@ -9,7 +9,7 @@ const statMods = z
   .object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat, mov: stat })
   .partial();
 const element = z.enum(['fire', 'wind', 'earth', 'water', 'light', 'dark']);
-const weaponType = z.enum(['sword', 'lance', 'axe', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
+const weaponType = z.enum(['sword', 'lance', 'axe', 'dagger', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
 const weaponGroup = z.enum(WEAPON_GROUPS);
 const moveType = z.enum(['foot', 'armored', 'mounted', 'flier', 'monster']);
 const statusId = z.enum(['burning', 'wet', 'slowed', 'knockback']);
