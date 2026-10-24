@@ -78,7 +78,7 @@ export type CampaignError =
   | 'restart_forbidden'
   /** an effect refers to something that cannot take it (undeclared flag or value, fallen companion ...) */
   | 'effect_invalid'
-  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, openQuest, setHome, recruit by lieutenant) */
+  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, setHome, recruit by lieutenant) */
   | 'effect_unsupported';
 
 /** What changed, for hints and banners in the UI (narrative: consequences are always shown). */
@@ -97,6 +97,8 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
+  /** a side quest became available (effect `openQuest`) */
+  | { t: 'questOpened'; node: string }
   | { t: 'sceneSeen'; scene: string }
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */

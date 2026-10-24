@@ -31,4 +31,5 @@ export * from './campaign/restart';
 export * from './campaign/conditions';
 export * from './campaign/effects';
 export * from './campaign/scene';
+export * from './campaign/graph';
 export * from './ai/autoplay';

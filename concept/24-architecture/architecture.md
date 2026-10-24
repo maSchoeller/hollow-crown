@@ -190,7 +190,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 
 - Auswertung: `evalCondition(ctx, cond): boolean` und `applyEffects(c, effects, events)` in `src/core/campaign/conditions.ts` bzw. `effects.ts`. `ctx` ist eine schmale Sicht (`flags`, `roster`, `fallen`, `left`, `completed`, `supports`, `stance`, `lieutenants`, `chronicle`), damit dieselbe Funktion in Kampf und Kampagne läuft.
 - Zod-Schema `conditionSchema`/`effectSchema` in `src/content/schemas.ts`; `content:check` prüft alle Referenzen (Gefährte, Knoten, Flag, Leutnant, Paar) gegen das Register.
-- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `openQuest`, `setHome`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross.
+- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `openQuest`, `setHome`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross. **Story 4.3:** `openQuest` ist umgesetzt (`c.quests`, Event `questOpened`, nur Nebenquest-Knoten).
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 
@@ -216,7 +216,8 @@ worldRegion: borderland
 
 - `fixed: first` ist nur ohne erledigte Story-Knoten des Akts verfügbar, `fixed: finale` erst nach allen anderen; Akt 1 bildet die feste Folge ab der Eroberung (1-6 → 1-7 → 1-8) und Akt 3 die ab der Krönung über `requires` ab.
 - Story-Knoten sind nach dem Abschluss nicht wiederholbar; Nebenquests bleiben über Akte offen; ein gefallener Auslöser schaltet die Gedenk-Variante (`memorialIf`) statt die Quest zu sperren.
-- **Gestaffelte Regeln:** `lockedMechanics` zählt künftig `storyCount` statt Knotenpositionen. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`).
+- **Gestaffelte Regeln:** `lockedMechanics(data, c)` zählt `storyCount` (nur `kind: story`) statt Knotenpositionen; `mechanics` nennt je Regel die Zahl. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`, `BattleState.lockedRoles`).
+- **Stand (Story 4.3):** umgesetzt in `src/core/campaign/graph.ts` (`availableNodes`, `isAvailable`, `nodeScenes`, `lockedMechanics`, `lockedRoles`, `nodeLinks`). Knoten: `kind` (Standard `story`), `fixed`, `requires`, `memorialIf` mit `memorial: { pre?, post? }` (Gedenk-Szenen). Eine Nebenquest öffnet sich über `openQuest` oder eigene, nicht leere `requires`; ohne beides lehnt `content:check` sie ab. Der Akt-Übergang (`act + 1`, `actReached`) folgt mit Akt 2.
 - **Akt-Übergang:** Nach dem Akt-Finale setzt `finishMission` `act + 1` und meldet `actReached`. Fehlt das Paket des nächsten Akts im Build (AR23), zeigt die Weltkarte „Akt 2 erscheint bald“. Heimsuchungen, Nebenquests, Supports und Heimat laufen weiter.
 
 ### 5.5 Leutnants (AR5)

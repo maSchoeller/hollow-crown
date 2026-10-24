@@ -505,7 +505,15 @@ export interface CampaignNodeDef {
   titleKey: string;
   pre?: string;
   post?: string;
-  next: string[];
+  /** story mission (counts for `storyCount`, act structure) or side quest */
+  kind: 'story' | 'side';
+  /** `first`: the act's opening mission, alone available until it is done; `finale`: opens after all other story nodes */
+  fixed?: 'first' | 'finale';
+  /** conditions under which the node is available (a side quest also opens through the effect `openQuest`) */
+  requires?: Condition[];
+  /** when this holds (the quest's trigger has fallen …), `memorial` replaces the node's scenes */
+  memorialIf?: Condition;
+  memorial?: { pre?: string; post?: string };
   pos: Pos;
   /** place image shown while the mission loads: a location (`locations/<place>`) or a background as `backgrounds/<id>`; default: the camp on the road */
   place?: string;
@@ -540,13 +548,12 @@ export interface CampaignDef {
   /** place image of a node without its own `place` (`locations/<defaultPlace>.webp`) */
   defaultPlace: string;
   nodes: CampaignNodeDef[];
-  /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
-  mechanics: Partial<Record<Mechanic, string>>;
+  /** mechanic → completed story missions of the act from which it applies; unlisted mechanics are always on */
+  mechanics: Partial<Record<Mechanic, number>>;
   /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
   home: HomeKind;
   /** position of the home on the world map, percent of width and height */
   homePos: Pos;
-  start: string;
   startGold: number;
   startConvoy: ItemRef[];
   merchant: Array<{ tier: number; items: string[] }>;

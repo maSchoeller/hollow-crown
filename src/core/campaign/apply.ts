@@ -10,8 +10,9 @@ import { pendingRank } from '../rules/supports';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { hireCost, hireError, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
-import { currentTier, finishBattle, merchantStock } from './campaign';
+import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
+import { isAvailable, noteRoles } from './graph';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
@@ -135,12 +136,12 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
       // queued dialogue effects are checked when they are applied, against the state after the battle
-      return c.available.includes(cmd.start.nodeId) ? null : 'node_unavailable';
+      return isAvailable(data, c, cmd.start.nodeId) ? null : 'node_unavailable';
     case 'restartTurn':
-      if (!c.available.includes(cmd.node)) return 'node_unavailable';
+      if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
     case 'restartMission':
-      if (!c.available.includes(cmd.node)) return 'node_unavailable';
+      if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       // Classic is the honour mode: a mission may only be started over once it is lost (replayed, not trusted)
       if (c.settings.deathMode === 'classic') {
         if (!cmd.lost || cmd.lost.start.nodeId !== cmd.node) return 'restart_forbidden';
@@ -344,12 +345,13 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       applyEffects(data, c, cmd.effects, events);
       break;
   }
+  noteRoles(data, c);
   return { campaign: c, events: [...resourceEvents(prev, c), ...events] };
 }
 
-/** Rebuilds a campaign from a checkpoint and the commands applied after it (journal replay). */
+/** Rebuilds a campaign from a checkpoint and the commands applied after it (journal replay; old checkpoints get their defaults). */
 export function replayCampaign(data: GameData, start: CampaignState, commands: readonly CampaignCommand[]): CampaignState {
-  let c = start;
+  let c = normalizeCampaign(data, start);
   for (const cmd of commands) c = applyCampaign(data, c, cmd).campaign;
   return c;
 }

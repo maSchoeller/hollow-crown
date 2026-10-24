@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { applyCampaign, replayCampaign, type CampaignCommand, type GameData } from '../../src/core';
+import { applyCampaign, normalizeCampaign, replayCampaign, type CampaignCommand, type GameData } from '../../src/core';
 import {
   appendJournal,
   createJournalWriter,
@@ -55,7 +55,7 @@ describe('journal', () => {
       { type: 'effects', effects: [{ setFlag: 'avatar_proud' }] },
       { type: 'buy', item: 'iron_sword' },
     ];
-    let live = start;
+    let live = normalizeCampaign(data, start); // the app normalises a loaded save before it plays on
     await appendJournal(id, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: live });
     for (const cmd of cmds) {
       live = applyCampaign(data, live, cmd).campaign;

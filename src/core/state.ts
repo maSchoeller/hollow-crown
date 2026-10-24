@@ -167,6 +167,8 @@ export interface BattleState {
   avatarName: string;
   /** mechanics not introduced yet at this point of the campaign (missing in old saves = none locked) */
   locked?: Mechanic[];
+  /** core roles whose class action is not introduced yet (`lockedRoles`; missing in old saves = none locked) */
+  lockedRoles?: string[];
 }
 
 export interface AvatarSettings {
@@ -205,8 +207,10 @@ export interface CampaignState {
   /** ids of the scenes the player has seen to the end (or skipped): a seen scene can be skipped whole (story 4.5) */
   scenesSeen: string[];
   completed: string[];
-  /** node ids available on the world map */
-  available: string[];
+  /** side quests opened by the effect `openQuest` (the graph works out what is available: `availableNodes`) */
+  quests: string[];
+  /** roles a company member has brought along; a core role's class action works from then on (architecture §5.4) */
+  rolesSeen: string[];
   supports: Record<string, SupportState>;
   nextUid: number;
   /** merchant special offers for the current chapter */

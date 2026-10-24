@@ -1,4 +1,4 @@
-import type { GameData, Mechanic, Reward, SideObjectiveDef, Stats } from '../defs';
+import type { GameData, Reward, SideObjectiveDef, Stats } from '../defs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
 import { sideObjectiveDone } from '../battle/objectives';
@@ -9,6 +9,7 @@ import { grantSp } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone, pairKey } from '../util';
 import { conditionContext, evalConditions } from './conditions';
+import { availableNodes, noteRoles } from './graph';
 
 export const SAVE_VERSION = 1;
 
@@ -30,7 +31,8 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     chronicle: [],
     scenesSeen: [],
     completed: [],
-    available: [data.campaign.start],
+    quests: [],
+    rolesSeen: [],
     supports: {},
     nextUid: 1,
     offers: [],
@@ -41,16 +43,28 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     if (def.joins !== 'prologue') continue;
     c.roster.push(recordFromChar(data, def, c, avatar));
   }
+  noteRoles(data, c);
   for (const ref of data.campaign.startConvoy) c.convoy.push(newItem(c, ref, data));
   for (const [a, b] of data.campaign.supportPairs) c.supports[pairKey(a, b)] = { points: 0, rank: null };
   return c;
 }
 
 /** Fills fields a saved campaign may lack (architecture §8.7: new persisted fields get a default on load). */
-export function normalizeCampaign(c: CampaignState): CampaignState {
-  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[]; scenesSeen?: string[] };
-  return {
-    ...c,
+export function normalizeCampaign(data: GameData, c: CampaignState): CampaignState {
+  const old = c as unknown as {
+    flags: unknown;
+    left?: string[];
+    stance?: CampaignState['stance'];
+    chronicle?: string[];
+    scenesSeen?: string[];
+    quests?: string[];
+    rolesSeen?: string[];
+    available?: string[];
+  };
+  // story 4.3: the graph replaces the stored list of available nodes
+  const { available: _available, ...rest } = old as unknown as CampaignState & { available?: string[] };
+  const out: CampaignState = {
+    ...rest,
     // format 2 as the PoC wrote it kept a list of flag names
     flags: Array.isArray(old.flags) ? Object.fromEntries((old.flags as string[]).map((f) => [f, true as const])) : c.flags,
     left: old.left ?? [],
@@ -59,7 +73,11 @@ export function normalizeCampaign(c: CampaignState): CampaignState {
     scenesSeen: old.scenesSeen ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
+    quests: old.quests ?? [],
+    rolesSeen: [...(old.rolesSeen ?? [])],
   };
+  noteRoles(data, out);
+  return out;
 }
 
 /** Old class id → its replacement, from `legacyIds` in classes.yaml. */
@@ -128,18 +146,6 @@ export interface BattleResult {
   supportsReady: string[];
   /** items handed to company members by the node (campaign.yaml `grants`) */
   granted: Array<{ id: string; item: ItemInstance }>;
-}
-
-/**
- * Mechanics not yet introduced at a node (concept/06 §10, gestaffelte Einführung). A mechanic applies from
- * its node in campaign.yaml `mechanics` onwards; if that node is not part of the campaign yet, it is locked.
- */
-export function lockedMechanics(data: GameData, nodeId: string): Mechanic[] {
-  const order = data.campaign.nodes.map((n) => n.id);
-  const here = order.indexOf(nodeId);
-  return (Object.entries(data.campaign.mechanics) as Array<[Mechanic, string]>)
-    .filter(([, from]) => here < 0 || order.indexOf(from) < 0 || here < order.indexOf(from))
-    .map(([m]) => m);
 }
 
 function refill(data: GameData, items: ItemInstance[]): void {
@@ -302,7 +308,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     .map(([k]) => k);
   for (const f of s.flags) c.flags[f] ??= true;
   if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
-  c.available = [...node.next];
+  noteRoles(data, c);
   c.rng = rng;
   refreshOffers(data, c, node.merchantTier);
   refreshTavern(data, c);
@@ -316,7 +322,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
   const tav = data.balance.economy.tavern;
   const ctx = conditionContext(data, c);
   const classes = tav.classes.filter((k) => evalConditions(ctx, k.requires));
-  const next = data.campaign.nodes.find((n) => n.id === c.available[0]);
+  const next = availableNodes(data, c).find((n) => n.kind === 'story') ?? availableNodes(data, c)[0];
   const expected = next?.expectedLevel ?? Math.max(1, ...c.roster.map((u) => u.level));
   c.tavern = [];
   if (!classes.length) return;

@@ -5,6 +5,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
+import { availableNodes, nodeLinks } from '../../core';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -37,7 +38,8 @@ type Loaded = 'loading' | 'ready' | 'failed';
 export function WorldMap() {
   const c = campaign.value!;
   const nodes = data.campaign.nodes;
-  const shown = nodes.filter((n) => c.completed.includes(n.id) || c.available.includes(n.id));
+  const open = availableNodes(data, c).map((n) => n.id);
+  const shown = nodes.filter((n) => c.completed.includes(n.id) || open.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -125,7 +127,7 @@ export function WorldMap() {
   };
   // first view: the next mission (or the home) in the middle
   useLayoutEffect(() => {
-    const first = shown.find((n) => c.available.includes(n.id));
+    const first = shown.find((n) => open.includes(n.id));
     bring(first ? first.pos : data.campaign.homePos, 0.42, false);
   }, []);
 
@@ -138,7 +140,7 @@ export function WorldMap() {
   const node = sel ? nodes.find((n) => n.id === sel)! : null;
   const homeKind = data.campaign.home;
   const home = data.campaign.homePos;
-  const ended = c.available.length === 0;
+  const ended = open.length === 0;
 
   return (
     <div class="wm">
@@ -163,17 +165,17 @@ export function WorldMap() {
         >
           <img ref={img} class="wm__img" src={asset('world/valmora.webp')} alt="" draggable={false} onLoad={() => setLoaded('ready')} onError={() => setLoaded('failed')} />
           <svg class="wm__paths" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {shown.flatMap((n) =>
-              n.next
-                .map((id) => shown.find((m) => m.id === id))
-                .filter((m) => !!m)
-                .map((m) => (
-                  <g key={n.id + m!.id}>
-                    <line x1={n.pos[0]} y1={n.pos[1]} x2={m!.pos[0]} y2={m!.pos[1]} class="wm__path wm__path--edge" />
-                    <line x1={n.pos[0]} y1={n.pos[1]} x2={m!.pos[0]} y2={m!.pos[1]} class="wm__path" />
-                  </g>
-                )),
-            )}
+            {nodeLinks(data).flatMap(([from, to]) => {
+              const n = shown.find((x) => x.id === from);
+              const m = shown.find((x) => x.id === to);
+              if (!n || !m) return [];
+              return [
+                <g key={n.id + m.id}>
+                  <line x1={n.pos[0]} y1={n.pos[1]} x2={m.pos[0]} y2={m.pos[1]} class="wm__path wm__path--edge" />
+                  <line x1={n.pos[0]} y1={n.pos[1]} x2={m.pos[0]} y2={m.pos[1]} class="wm__path" />
+                </g>,
+              ];
+            })}
           </svg>
           {/* the home is a place on the map as well (a tent in the camp, a castle later) */}
           <button

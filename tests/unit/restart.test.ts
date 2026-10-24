@@ -16,6 +16,7 @@ import {
   type Command,
   type DeathMode,
   type GameData,
+  firstNode,
 } from '../../src/core';
 import { exportSave, importSave, MAX_IMPORT_BYTES, SlotNotAllowedError, writeSave, closeSaveDb, createCampaign, type SaveRecord } from '../../src/persistence/save';
 import 'fake-indexeddb/auto';
@@ -33,7 +34,7 @@ beforeAll(() => {
 
 /** Player idles until the enemy wins (or the cap); returns start and log. */
 function lostBattle(c: CampaignState): { start: BattleState; log: Command[]; state: BattleState } {
-  const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
+  const start = beginBattle(data, c, firstNode(data).id, c.roster.map((r) => r.id)).state;
   let state = start;
   const log: Command[] = [];
   for (let i = 0; i < 60 && !state.outcome; i++) {
@@ -60,7 +61,7 @@ describe('restartTurn / restartMission (story 1.5)', () => {
   it('are allowed in Standard and Casual and tell how much of the log to keep', () => {
     for (const mode of ['standard', 'casual'] as const) {
       const c = campaignOf(mode);
-      const node = data.campaign.start;
+      const node = firstNode(data).id;
       const commands: Command[] = [{ type: 'endPhase' }, { type: 'endPhase' }];
       const turn = applyCampaign(data, c, { type: 'restartTurn', node, keep: restartKeep('turn', commands) });
       expect(turn.events).toEqual([{ t: 'battleRestarted', scope: 'turn', keep: 2 }]);
@@ -72,7 +73,7 @@ describe('restartTurn / restartMission (story 1.5)', () => {
 
   it('Classic refuses restartTurn always and restartMission unless the battle is lost', () => {
     const c = campaignOf('classic');
-    const node = data.campaign.start;
+    const node = firstNode(data).id;
     const start = beginBattle(data, c, node, c.roster.map((r) => r.id)).state;
     expect(validateCampaign(data, c, { type: 'restartTurn', node, keep: 0 })).toBe('restart_forbidden');
     expect(validateCampaign(data, c, { type: 'restartMission', node })).toBe('restart_forbidden');
@@ -86,9 +87,9 @@ describe('restartTurn / restartMission (story 1.5)', () => {
 
   it('refuse a battle of a node that is not available', () => {
     const c = campaignOf('standard');
-    const off = { ...clone(c), available: [] };
-    expect(validateCampaign(data, off, { type: 'restartTurn', node: data.campaign.start, keep: 0 })).toBe('node_unavailable');
-    expect(validateCampaign(data, off, { type: 'restartMission', node: data.campaign.start })).toBe('node_unavailable');
+    const off = { ...clone(c), completed: [firstNode(data).id] }; // a story node is not played twice
+    expect(validateCampaign(data, off, { type: 'restartTurn', node: firstNode(data).id, keep: 0 })).toBe('node_unavailable');
+    expect(validateCampaign(data, off, { type: 'restartMission', node: firstNode(data).id })).toBe('node_unavailable');
   });
 
   it('a restart undoes downs and deaths by replaying the shorter log', () => {

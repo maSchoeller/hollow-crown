@@ -12,6 +12,7 @@ import {
   getUnit,
   levelUp,
   lockedMechanics,
+  availableNodes,
   newCampaign,
   ruleOn,
   nextFloat,
@@ -236,18 +237,19 @@ describe('battle', () => {
     const { campaign: c, result } = finishBattle(data, campaign, state);
     expect(result.outcome).toBe('victory');
     expect(c.completed).toContain('prologue');
-    expect(c.available).toEqual(['ch01']);
+    expect(availableNodes(data, c).map((n) => n.id)).toEqual(['ch01']);
     expect(c.gold).toBeGreaterThan(campaign.gold);
   });
 });
 
 describe('step-by-step mechanics (concept/06 §10)', () => {
-  it('unlocks the triangle in chapter 1 and magic in chapter 2', () => {
-    expect(lockedMechanics(data, 'prologue')).toEqual(expect.arrayContaining(['triangle', 'magic', 'elements', 'supports']));
-    expect(lockedMechanics(data, 'ch01')).not.toContain('triangle');
-    expect(lockedMechanics(data, 'ch01')).toContain('magic');
-    expect(lockedMechanics(data, 'ch02')).not.toContain('magic');
-    expect(lockedMechanics(data, 'ch02')).toContain('elements');
+  it('unlocks the triangle after 1 story mission and magic after 2', () => {
+    const at = (...completed: string[]) => lockedMechanics(data, { ...campaign, completed });
+    expect(at()).toEqual(expect.arrayContaining(['triangle', 'magic', 'elements', 'supports']));
+    expect(at('prologue')).not.toContain('triangle');
+    expect(at('prologue')).toContain('magic');
+    expect(at('prologue', 'ch01')).not.toContain('magic');
+    expect(at('prologue', 'ch01')).toContain('elements');
   });
   it('ignores the triangle while it is locked, in forecast and resolution alike', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;

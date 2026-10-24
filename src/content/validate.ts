@@ -1,7 +1,8 @@
-import { PERMANENT_COMPANIONS, type Area, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
+import { PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { lineKey, memorialKey, optionKey, speakerTeam } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
+import { nodeLinks } from '../core/campaign/graph';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles } from '../core/util';
@@ -85,6 +86,8 @@ export function validateContent(
   const conditions = (file: string, conds: Condition | Condition[] | undefined, ctx: string) => {
     if (conds) for (const x of Array.isArray(conds) ? conds : [conds]) condition(file, x, ctx);
   };
+  /** side quests some effect opens (`openQuest`) */
+  const openedQuests: string[] = [];
   const effects = (file: string, list: Effect[] | undefined, ctx: string) => {
     for (const e of list ?? []) {
       const key = soleKey(e);
@@ -94,6 +97,10 @@ export function validateContent(
       else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
       else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
       else if (key === 'item') item(file, v as ItemRef, ctx);
+      else if (key === 'openQuest') {
+        openedQuests.push(v as string);
+        if (data.campaign?.nodes.find((n) => n.id === v)?.kind !== 'side') err(file, `${ctx}: openQuest ${v as string} is not a side quest`);
+      }
       else if (key === 'material') for (const m of Object.keys(v as Record<string, number>)) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
     }
   };
@@ -162,28 +169,41 @@ export function validateContent(
       if (!data.maps[n.map]) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
       dialogue('campaign.yaml', n.pre, n.id);
       dialogue('campaign.yaml', n.post, n.id);
-      for (const nx of n.next) if (!camp.nodes.some((x) => x.id === nx)) err('campaign.yaml', `${n.id}: unknown next ${nx}`);
+      conditions('campaign.yaml', n.requires, `${n.id}.requires`);
+      if (n.memorialIf) {
+        conditions('campaign.yaml', n.memorialIf, `${n.id}.memorialIf`);
+        if (n.kind !== 'side') err('campaign.yaml', `${n.id}: memorialIf belongs to side quests`);
+        if (!n.memorial?.pre && !n.memorial?.post) err('campaign.yaml', `${n.id}: memorialIf needs a memorial scene (memorial.pre or memorial.post)`);
+      } else if (n.memorial) err('campaign.yaml', `${n.id}: memorial scenes need memorialIf`);
+      dialogue('campaign.yaml', n.memorial?.pre, `${n.id} memorial`);
+      dialogue('campaign.yaml', n.memorial?.post, `${n.id} memorial`);
+      if (n.fixed && n.kind !== 'story') err('campaign.yaml', `${n.id}: only story nodes can be fixed`);
+      if (n.fixed === 'first' && n.requires?.length) err('campaign.yaml', `${n.id}: the fixed first node has no requires`);
       if (n.pos.some((v) => v < 0 || v > 100)) err('campaign.yaml', `${n.id}: pos must lie within 0-100 percent`);
     }
     if (camp.homePos.some((v) => v < 0 || v > 100)) err('campaign.yaml', 'homePos must lie within 0-100 percent');
     for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
-    for (const [m, from] of Object.entries(camp.mechanics))
-      if (!camp.nodes.some((n) => n.id === from) && !/^ch\d+$/.test(from)) err('campaign.yaml', `mechanics.${m}: unknown node ${from}`);
+    const firsts = camp.nodes.filter((n) => n.fixed === 'first');
+    if (firsts.length !== 1) err('campaign.yaml', `exactly one node must be fixed: first (found ${firsts.length})`);
+    if (camp.nodes.filter((n) => n.fixed === 'finale').length > 1) err('campaign.yaml', 'at most one node can be fixed: finale');
     for (const n of camp.nodes)
       for (const g of n.grants ?? []) {
         item('campaign.yaml', g.item, `${n.id} grants`);
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
     for (const r of Object.values(data.rooms)) conditions('rooms.yaml', r.requires, `${r.id}.requires`);
-    // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order nor along `next`
+    // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
+    // nodes nor along a `completed` requirement
     let top = 0;
     for (const n of camp.nodes) {
+      if (n.kind !== 'story') continue;
       if (n.expectedLevel < top) err('campaign.yaml', `${n.id}: expectedLevel ${n.expectedLevel} falls below ${top} of an earlier node`);
       top = Math.max(top, n.expectedLevel);
-      for (const nx of n.next) {
-        const to = camp.nodes.find((x) => x.id === nx);
-        if (to && to.expectedLevel < n.expectedLevel) err('campaign.yaml', `${n.id}: next ${nx} has a lower expectedLevel (${to.expectedLevel} < ${n.expectedLevel})`);
-      }
+    }
+    for (const [from, to] of nodeLinks(data)) {
+      const a = camp.nodes.find((x) => x.id === from);
+      const b = camp.nodes.find((x) => x.id === to);
+      if (a && b && a.kind === 'story' && b.expectedLevel < a.expectedLevel) err('campaign.yaml', `${to}: lower expectedLevel than ${from} it requires (${b.expectedLevel} < ${a.expectedLevel})`);
     }
     validateMechanics(data, err);
     for (const [k, v] of Object.entries(camp.supportDialogues))
@@ -235,6 +255,9 @@ export function validateContent(
       }
     }
   }
+  // a side quest opens through its own requires or an openQuest somewhere in the content
+  for (const n of camp?.nodes ?? [])
+    if (n.kind === 'side' && !n.requires?.length && !openedQuests.includes(n.id)) err('campaign.yaml', `${n.id}: side quest without requires that no openQuest opens`);
   // i18n: names of all content + parity between DE and EN
   const need: string[] = [];
   for (const c of Object.values(data.classes)) need.push(`class.${c.id}.name`);
@@ -268,25 +291,45 @@ export function validateContent(
 function validateMechanics(data: GameData, err: (f: string, m: string) => void): void {
   const camp = data.campaign;
   const from = camp.mechanics.magic;
-  if (!from) return;
-  const order = camp.nodes.map((n) => n.id);
-  const until = order.indexOf(from) < 0 ? order.length : order.indexOf(from);
+  if (from === undefined) return;
   const magical = (r: ItemRef) => data.items[r.def]?.damageType === 'magical';
-  for (const n of camp.nodes.slice(0, until)) {
+  const early = camp.nodes.filter((n) => minStoryCount(data, n) < from);
+  for (const n of early) {
     const map = data.maps[n.map];
     if (!map) continue;
     for (const u of allUnits(map))
-      if (u.items.some(magical)) err(`maps/${map.id}`, `${u.id ?? u.class}: tome before magic is introduced (${from})`);
+      if (u.items.some(magical)) err(`maps/${map.id}`, `${u.id ?? u.class}: tome before magic is introduced (${from} story missions)`);
     for (const o of map.objects)
-      for (const r of [o.reward?.item, o.contents?.item]) if (r && magical(r)) err(`maps/${map.id}`, `${o.id}: tome before ${from}`);
+      for (const r of [o.reward?.item, o.contents?.item]) if (r && magical(r)) err(`maps/${map.id}`, `${o.id}: tome before magic (${from} story missions)`);
     for (const ch of Object.values(data.chars))
-      if (ch.joins === n.id && ch.items.some(magical)) err('units.yaml', `${ch.id}: joins with a tome before ${from}`);
+      if (ch.joins === n.id && ch.items.some(magical)) err('units.yaml', `${ch.id}: joins with a tome before magic (${from} story missions)`);
   }
-  // the shop before node i sells the tiers of nodes < i
-  const shopTier = Math.max(-1, ...camp.nodes.slice(0, Math.max(0, until - 1)).map((n) => n.merchantTier));
+  // the shop sells the tiers of completed nodes: those that can be done while a magic-less mission still lies ahead
+  const shopTier = Math.max(-1, ...early.filter((n) => n.kind === 'story' && minStoryCount(data, n) + 1 < from).map((n) => n.merchantTier));
   for (const m of camp.merchant)
     if (m.tier <= shopTier)
-      for (const id of m.items) if (data.items[id]?.damageType === 'magical') err('campaign.yaml', `merchant tier ${m.tier}: tome ${id} before ${from}`);
+      for (const id of m.items) if (data.items[id]?.damageType === 'magical') err('campaign.yaml', `merchant tier ${m.tier}: tome ${id} before magic (${from} story missions)`);
+}
+
+/**
+ * The fewest completed story missions of the act a node can start with: 0 for the fixed first node, all others for the
+ * finale, else the story nodes its `completed` requirements need (transitively).
+ */
+export function minStoryCount(data: GameData, node: CampaignNodeDef): number {
+  const nodes = data.campaign.nodes;
+  if (node.fixed === 'first') return 0;
+  if (node.fixed === 'finale') return nodes.filter((n) => n.kind === 'story' && n.id !== node.id).length;
+  const need = new Set<string>();
+  const walk = (n: CampaignNodeDef) => {
+    for (const r of n.requires ?? []) {
+      if (!('completed' in r) || need.has(r.completed)) continue;
+      need.add(r.completed);
+      const dep = nodes.find((x) => x.id === r.completed);
+      if (dep) walk(dep);
+    }
+  };
+  walk(node);
+  return nodes.filter((n) => n.kind === 'story' && need.has(n.id)).length;
 }
 
 function allUnits(m: MapDef): MapUnitDef[] {

@@ -6,6 +6,8 @@ import {
   CoreInvariantError,
   applyCommand,
   conditionContext,
+  firstNode,
+  nodeScenes,
   createBattle,
   queuedFlags,
   validateEffects,
@@ -71,7 +73,8 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
     if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
     else void beginMission(nodeId, defaultDeploy(nodeId), opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' });
   };
-  if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
+  const { pre } = nodeScenes(data, campaign.value, nodeId);
+  if (pre) screen.value = { name: 'dialogue', id: pre, next: go };
   else go();
 }
 
@@ -135,7 +138,7 @@ export async function beginMission(nodeId: string, deploy: string[], back: Scree
 export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSettings): Promise<boolean> {
   if (!(await createNewCampaign(settingsIn, avatar))) return false;
   battle.value = null;
-  playNode(data.campaign.start);
+  playNode(firstNode(data).id);
   return true;
 }
 
@@ -202,6 +205,7 @@ export function concludeBattle(): void {
     screen.value = { name: 'defeat' };
     return;
   }
+  const before = campaign.value;
   const r = campaignCommand({ type: 'finishMission', start: b.start, commands: b.log, effects: b.effects });
   if (!r.ok) {
     // the battle stays as it is; the fault screen takes over (an invariant violation has reported itself already)
@@ -211,9 +215,10 @@ export function concludeBattle(): void {
   battle.value = null;
   autosave('worldmap'); // campaignCommand saved while the battle was still running; the finished one must not be resumable
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
-  const node = nodeDef(b.state.nodeId);
+  // the memorial variant is decided before the battle's deaths count (the trigger fell before the quest, not in it)
+  const { post } = nodeScenes(data, before, b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
-  if (node.post) screen.value = { name: 'dialogue', id: node.post, next: toResult };
+  if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
   else toResult();
 }
 

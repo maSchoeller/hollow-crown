@@ -24,6 +24,7 @@ import {
   type CampaignState,
   type GameData,
   type UnitRecord,
+  firstNode,
 } from '../../src/core';
 
 let data: GameData;
@@ -241,14 +242,14 @@ describe('saves from before the role model', () => {
   });
 
   it('a saved battle whose log no longer fits throws an invariant error instead of drifting on', () => {
-    const s = beginBattle(data, base, data.campaign.start, base.roster.map((u) => u.id)).state;
+    const s = beginBattle(data, base, firstNode(data).id, base.roster.map((u) => u.id)).state;
     const unit = s.units.find((u) => u.team === 'player')!;
     const stale: Command = { type: 'move', unit: unit.uid, to: [99, 99] };
     expect(() => applyCommand(data, renameLegacyBattleClasses(data, s), stale)).toThrow(CoreInvariantError);
   });
 
   it('maps them in a saved battle start too and leaves current ids alone', () => {
-    const s = beginBattle(data, base, data.campaign.start, base.roster.map((u) => u.id)).state;
+    const s = beginBattle(data, base, firstNode(data).id, base.roster.map((u) => u.id)).state;
     const old = { ...s, units: s.units.map((u, i) => (i === 0 ? { ...u, classId: 'soldier' } : u)) };
     const renamed = renameLegacyBattleClasses(data, old);
     expect(renamed.units[0]!.classId).toBe('vanguard');
