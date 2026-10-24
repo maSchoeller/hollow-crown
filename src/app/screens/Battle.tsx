@@ -234,9 +234,9 @@ export function Battle() {
     const reinforce = mapOf(data, s)
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
-    // hold zones of hostile vanguards in danger mode (marked with the pulsing frame: the board has no hatching yet)
+    // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
-    const base = { danger: dangerTiles, goal, reinforce: [...reinforce, ...hold] };
+    const base = { danger: dangerTiles, goal, reinforce, hold };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
     if (mode.k === 'pursue') {
@@ -273,7 +273,7 @@ export function Battle() {
     if (mode.k === 'passive') {
       const pre = passivePreview(data, s, u, to);
       const zone = pre?.kind === 'hold' ? pre.tiles : [];
-      return board.setOverlays({ ...base, reinforce: [...base.reinforce, ...zone], path, ghost, cursor: to });
+      return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
   }, [mode, s, dangerTiles, tileInfo]);

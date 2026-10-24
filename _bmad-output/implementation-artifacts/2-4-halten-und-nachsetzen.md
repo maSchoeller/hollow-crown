@@ -98,23 +98,23 @@ Die Fragen waren weder im GDD (Z. 133–138, 183, 190) noch in der Architektur (
 - **KI-Pfadsuche:** `bestApproach` (Signatur unverändert) kennt die Haltezonen. Es berechnet ein Umgehungs-Feld (`distanceField(…, avoid)`, Haltefelder werden nicht durchquert) zu dem Ziel-Standfeld, zu dem der kürzeste Weg ohne Rücksicht auf Haltezonen führt. Ist der Umweg in Bewegungskosten höchstens `classActions.hold.detourMax` (2, `balance.yaml`) länger, nimmt die KI das Umgehungs-Feld und endet nicht auf einem Haltefeld; sonst läuft sie hinein und bleibt dort stehen. Angriffspläne wählen Standfelder wie bisher aus den erreichbaren Zielen; ein Haltefeld ist ein normales Endfeld.
 - **Vorschau:** `pursueRest` (Rest der MOV; `applyCommand` und Vorschau rufen dieselbe Funktion) und `passivePreview` (Haltezone bzw. Rest) in `battle/actions.ts`; `pursueReach` in `movement.ts` liefert die Nachsetz-Felder für UI und `validate`. `classActionId` wohnt jetzt in `src/core/rules/roles.ts` (Import-Zyklus mit `movement.ts` vermieden) und wird weiter aus `battle/actions` exportiert.
 - **UI:** Der Klassen-Platz zeigt für Vorkämpfer und Plänkler das Rollen-Symbol als Zustand „bereit“ (gestrichelter Rahmen, nicht gedimmt, `DockAction state`); ein Tipp öffnet die Regelkarte (`PassiveRuleCard`) mit Vorschau (Haltezone auf dem Brett bzw. Rest nach dem Angriff). Nach dem Angriff eines Plänklers mit Rest öffnet sich der Nachsetz-Modus: blaue Felder, Pfad und Geisterfigur, Haupttaste „Nachsetzen“, Taste „Fertig“ (verwirft die Möglichkeit ohne Command; das Phasenende läuft dann wie nach der letzten Aktion). Die Auto-Phasenende-Prüfung wartet, solange `pursue` offen ist; die Auswahl einer anderen Einheit lässt die Möglichkeit los. Der Modus öffnet sich auch nach dem Laden eines Spielstands mit offenem `pursue`. Der Zustand „aktiv“ erscheint als Rollen-Symbol im Hinweis des Nachsetz-Modus. Texte in `de.yaml`/`en.yaml` (`ui.passive.*`, `ui.pursue.*`).
-- **Haltezonen im Gefahr-Modus (Abweichung):** Die Overlay-Schnittstelle von `src/render/board.ts` kennt keine Schraffur und keine eigene Liste für Haltezonen (die Datei gehört einer anderen Session). Die Zonen feindlicher Vorkämpfer werden deshalb über die vorhandene Liste `reinforce` gezeigt (orange, pulsierender Rahmen). **Offen:** echte Schraffur braucht eine neue Overlay-Liste `hold` in `board.ts`.
+- **Haltezonen im Gefahr-Modus:** Entscheidung des Produktinhabers (2026-10-24): eigene Overlay-Liste `hold` mit Schraffur in `src/render/board/overlays.ts` (diagonale Streifen, violett); `Battle.tsx` nutzt sie für die Zonen feindlicher Vorkämpfer im Gefahr-Modus und für die Vorschau der Haltezone eines eigenen Vorkämpfers. Der Zustand „aktiv“ des Plänklers bleibt als Rollen-Symbol im Hinweis des Nachsetz-Modus (bestätigt).
 - **Nicht visuell geprüft:** Die Oberfläche wurde typgeprüft und gelintet, aber nicht im Browser angesehen (kein Screenshot).
 - **Tests:** `tests/unit/hold-pursue.test.ts` (32 Tests): Haltezone, Halten für beide Teams/Flieger/Profi-Wege/gesperrte Rolle, Start im Haltefeld, besetztes Haltefeld, KI-Umweg 2 umgangen / 3 hinein / Korridor, Nachsetzen (Rest, Stand, Buffs, frühere `move`-Bewegung, Ziel fällt, nur Plänkler und `attack`, Plänkler niedergestreckt, eingekesselt, Ende durch `endPhase`/`equip`/anderes Command, Halten beim Nachsetzen, KI nutzt es nicht, Replay, Vorschau). `class-actions.test.ts` kennt `hold` in `classActions`.
 - **Prüfungen:** `pnpm lint` grün, `pnpm content:check` grün, `pnpm build` grün (Bundle 10,69 MB von 15 MB). `pnpm test`: 405/405 grün; bei hoher Last der Maschine (mehrere parallele Sessions) laufen einzelne Dateien in das 5-s-Standard-Timeout, mit `--testTimeout=120000 --hookTimeout=120000 --maxWorkers=3` ist alles grün.
 
-### Simulation (`pnpm sim <map> --runs 50 --difficulty …`, Standard-Tod-Modus)
+### Simulation (`pnpm sim <map> --runs 50 --difficulty …`, Standard-Tod-Modus, vor 2.4 → nach 2.4 inklusive Prolog-Nachjustierung)
 
 | Karte | Stufe | vorher: Sieg / Niedergestreckte | nachher: Sieg / Niedergestreckte |
 | --- | --- | --- | --- |
-| prologue_caravan | normal | 94 % / 0,70 | 92 % / 0,16 |
+| prologue_caravan | normal | 94 % / 0,70 | 96 % / 0,48 |
 | prologue_caravan | schwer | 40 % / 1,34 | 46 % / 1,06 |
-| ch01_varnhold | normal | 77 % / 0,36 | 85 % / 0,37 |
+| ch01_varnhold | normal | 77 % / 0,36 | 81 % / 0,21 |
 | ch01_varnhold | schwer | 35 % / 1,00 | 48 % / 0,91 |
-| ch02_silverbrook | normal | 89 % / 0,56 | 90 % / 0,79 |
+| ch02_silverbrook | normal | 89 % / 0,56 | 82 % / 0,69 |
 | ch02_silverbrook | schwer | 29 % / 0,00 | 27 % / 0,36 |
 
-Korridore (GDD): Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte, Schwer 30–70 % Sieg. Vorher innen, nachher außen: **prologue_caravan normal, Niedergestreckte 0,70 → 0,16** (unter 0,4; Sieg 92 % ist innen). Vorher schon außen: ch01 normal Niedergestreckte 0,36 → 0,37 (knapp unter 0,4); ch02 schwer Sieg 29 % → 27 % (unter 30 %). Balance-Werte wurden nicht gedreht, `detourMax` blieb 2. KI-Laufzeit: ch01 schwer im Leerlauf 785 ms/Lauf (20 Läufe) gegen 919 ms/Lauf vorher, keine Verschlechterung.
+Korridore (GDD): Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte, Schwer 30–70 % Sieg. Zwischenstand nur mit Halten (Prolog unverändert): Prolog normal 92 % / 0,16, schwer 46 % / 1,06; ch01 normal 85 % / 0,37, schwer 48 % / 0,91; ch02 normal 90 % / 0,79, schwer 27 % / 0,36. Halten hatte die Niedergestreckten im Prolog (Normal) von 0,70 auf 0,16 gedrückt. **Nachjustierung (Entscheidung des Produktinhabers):** in `content/acts/act1/maps/prologue_caravan.yaml` ist der nur auf Normal vorhandene Westrand-Bandit `p_e5` jetzt angriffslustig (`aggressive` statt `trigger`), steht auf (2,5) und trägt eine Handaxt statt der Eisenaxt; Schwer ist unberührt (46 % / 1,06 wie zuvor). Ein stärkerer Bandit (Eisenaxt, Stufe 2–3) brachte den Prolog zwar in den Korridor, drückte aber über die verkettete Kampagne ch01 und ch02 Normal unter 75 % (67 % und 73 %). Nach der Nachjustierung liegen alle Normal-Siege ≥ 75 %, die Niedergestreckten im Prolog (0,48) und in ch02 (0,69) im Korridor; ch01 normal liegt mit 0,21 unter 0,4, wie schon vor 2.4 (0,36). ch02 schwer liegt mit 27 % unter 30 % (vorher 29 %). Gegengeprüft mit den Seeds 1, 101, 201 (Eisenaxt-Variante 0,42–0,48), die gewählte Variante mit Seed 1.
 
 ### Schnittstellen und Hinweise für Story 2.8 (Worker)
 
@@ -127,6 +127,7 @@ Korridore (GDD): Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte, Schwer 3
 
 - `_bmad-output/implementation-artifacts/2-4-halten-und-nachsetzen.md`
 - `concept/21-gdd/decision-log.md`
+- `content/acts/act1/maps/prologue_caravan.yaml`
 - `content/core/balance.yaml`
 - `content/core/locales/de.yaml`
 - `content/core/locales/en.yaml`
@@ -141,6 +142,7 @@ Korridore (GDD): Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte, Schwer 3
 - `src/core/rules/movement.ts`
 - `src/core/rules/roles.ts` (neu)
 - `src/core/state.ts`
+- `src/render/board/overlays.ts`
 - `src/ui/hud.css`
 - `tests/unit/class-actions.test.ts`
 - `tests/unit/hold-pursue.test.ts` (neu)
