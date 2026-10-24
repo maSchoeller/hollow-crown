@@ -172,6 +172,10 @@
 .res-unit.is-fallen {
   color: var(--hc-downed);
 }
+.res-unit__tag--cap {
+  font-size: 11px;
+  color: var(--hc-ember-dark);
+}
 
 /* notes: recruited, granted, scars */
 .res-note {

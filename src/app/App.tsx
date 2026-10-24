@@ -9,6 +9,7 @@ import { Troop } from './screens/Troop';
 import { Chronicle } from './screens/Chronicle';
 import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
+import { Farewell } from './screens/Farewell';
 import { WorldMap } from './screens/WorldMap';
 import { MissionLoading, PrepareScreen } from './screens/Loading';
 import { data } from './state/session';
@@ -94,6 +95,8 @@ function Screens() {
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':
       return <Result result={sc.result} />;
+    case 'farewell':
+      return <Farewell result={sc.result} index={sc.index} />;
     case 'defeat':
       return <Defeat />;
     case 'camp':

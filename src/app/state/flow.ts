@@ -48,7 +48,8 @@ import { log } from '../log';
 import { addTexts } from '../../i18n';
 import { loadManifest } from '../../render/shared/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
-import { ensureMissionAssets, prefetchQuietly } from './loading';
+import { ensureMissionAssets, ensureMissionPack, prefetchQuietly } from './loading';
+import { packNeededFor } from './packs';
 import { settings } from './settings';
 import { dayNumber } from '../day';
 
@@ -76,6 +77,15 @@ export function defaultDeploy(nodeId: string): string[] {
  */
 export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
   const node = nodeDef(nodeId);
+  // map and dialogues of later missions come with their act pack (story 7.2): wait for it on the loading screen
+  const pack = packNeededFor(node);
+  if (pack) {
+    const back: Screen = opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+    void ensureMissionPack({ node: nodeId, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back }).then((ok) => {
+      if (ok) playNode(nodeId, opts);
+    });
+    return;
+  }
   const map = data.maps[node.map]!;
   const choice = campaign.value!.roster.length > map.deploy.max;
   const go = () => {
@@ -151,10 +161,23 @@ export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSet
   return true;
 }
 
+/**
+ * Before a save with a running battle is restored: the battle's act pack must be registered, or the map to replay on is
+ * missing (story 7.2). Shows the loading screen while it loads; resolves `false` when the player left it.
+ */
+export async function ensureRecordContent(rec: SaveRecord): Promise<boolean> {
+  const nodeId = rec.payload.battle?.start.nodeId;
+  const node = nodeId ? data.campaign.nodes.find((n) => n.id === nodeId) : undefined;
+  const pack = node ? packNeededFor(node) : null;
+  if (!node || !pack) return true;
+  return ensureMissionPack({ node: node.id, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back: { name: 'title' } });
+}
+
 /** Restores a slot of a campaign (default: the active one): replays a running battle's command log (concept/13 acceptance 8). */
 export async function loadSlot(slot: SlotId, id?: string | null): Promise<boolean> {
   const rec = await readSlot(slot, id);
   if (!rec) return false;
+  if (!(await ensureRecordContent(rec))) return true;
   restore(rec);
   return true;
 }
@@ -162,6 +185,7 @@ export async function loadSlot(slot: SlotId, id?: string | null): Promise<boolea
 /** Imports an exported save and makes it the active campaign. Resolves `false` when that would exceed three campaigns. */
 export async function importRecord(rec: SaveRecord): Promise<boolean> {
   if (!(await storeImportedRecord(rec))) return false;
+  if (!(await ensureRecordContent(rec))) return true;
   restore(rec, 'import');
   return true;
 }

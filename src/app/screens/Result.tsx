@@ -3,7 +3,7 @@
  * lieutenants, side objectives and EP per figure with the fallen grey; and the defeat screen with its restarts.
  * What to show comes from the core (`missionResultView`, `defeatSentence`); this file only lays it out.
  */
-import { defeatSentence, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
+import { defeatSentence, farewellView, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
 import { t } from '../../i18n';
 import { itemName, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -105,6 +105,11 @@ function Company({ v }: { v: MissionResultView }) {
             <UnitHead portrait={f.portrait} classId={f.classId} name={unitName(f)} size={48} />
             <span class="res-unit__name">{unitName(f)}</span>
             {f.fallen ? <span class="res-unit__tag">{t('ui.result.fallenTag')}</span> : <Amount resource="exp" value={f.exp} signed />}
+            {f.capped && (
+              <span class="res-unit__tag res-unit__tag--cap" title={t('ui.result.cappedHint')}>
+                {t('ui.result.capped')}
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -140,6 +145,8 @@ function Notes({ v }: { v: MissionResultView }) {
 
 export function Result({ result }: { result: BattleResult }) {
   const v = missionResultView(result);
+  // the fallen are not left behind: "continue" leads into their farewell first (story 6.7)
+  const farewell = farewellView(data, result).length > 0;
   return (
     <div class="hc-view res-view">
       <Backdrop />
@@ -154,7 +161,9 @@ export function Result({ result }: { result: BattleResult }) {
         <Company v={v} />
         <Notes v={v} />
       </Piece>
-      <PrimaryButton onClick={() => (screen.value = { name: 'worldmap' })}>{t('ui.result.continue')}</PrimaryButton>
+      <PrimaryButton onClick={() => (screen.value = farewell ? { name: 'farewell', result, index: 0 } : { name: 'worldmap' })}>
+        {t(farewell ? 'ui.result.toFarewell' : 'ui.result.continue')}
+      </PrimaryButton>
     </div>
   );
 }

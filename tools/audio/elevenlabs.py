@@ -40,6 +40,8 @@ SFX = {
     'levelup': ('Short triumphant level up fanfare, brass and bells, fantasy RPG, joyful', 2.0),
     'downed': ('Character collapses, armor clatter on the ground followed by a slow heartbeat, dramatic', 1.6),
     'death': ('Dull heavy thud followed by a sad fading low string tone, dramatic, cinematic', 2.0),
+    # farewell card (story 6.7): one bell toll for each fallen companion; generated with the audio story
+    'bell': ('Single distant church bell toll, deep and solemn, long natural decay, quiet, mournful, no music', 4.0),
     'recruit': ('Warm hopeful harp flourish with a soft choir swell, fantasy ally joins, short', 2.0),
     'loot': ('Picking up an item, leather pouch rustle with a small metallic clink, satisfying', 0.6),
     'gold': ('Handful of gold coins clinking into a pouch, bright, satisfying', 0.8),

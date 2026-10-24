@@ -5,7 +5,7 @@ import { log } from '../log';
 import { assembleReport, type BugReport } from '../report';
 import { battle } from './battle';
 import { clearFault, fault } from './fault';
-import { loadSlot, restore } from './flow';
+import { ensureRecordContent, loadSlot, restore } from './flow';
 import { campaign, campaignId, contentVersion, currentSaveRecord, latestAutoSave } from './session';
 import { settings } from './settings';
 
@@ -70,7 +70,7 @@ export async function reloadLastAutoSave(): Promise<boolean> {
     let ok = campaignId.value ? await loadSlot('auto') : false;
     if (!ok) {
       const rec = await latestAutoSave();
-      if (rec) {
+      if (rec && (await ensureRecordContent(rec))) {
         restore(rec);
         ok = true;
       }

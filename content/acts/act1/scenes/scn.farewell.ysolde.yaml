@@ -1,0 +1,13 @@
+# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.ysolde
+lines:
+  - id: last
+    speaker: [ysolde]
+    fallback: skip
+    mood: sad
+    text: "Das Feuer war immer in mir. Jetzt geht es aus. Es ist so still."
+  - id: grief_liora
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich konnte sie nicht heilen. Ich, ausgerechnet ich."

@@ -17,6 +17,8 @@ import { audio } from '../audio';
 import { log } from '../log';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playNode } from '../state/flow';
+import { packNeededFor } from '../state/packs';
+import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
 import { settings } from '../state/settings';
@@ -314,6 +316,7 @@ export function WorldMap() {
           </button>
         </div>
         <Wallet data={data} gold={c.gold} materials={c.materials} />
+        <PackRing />
         {menu && (
           <Piece class="wm-menu">
             <SecondaryButton
@@ -376,7 +379,18 @@ export function WorldMap() {
 function NodeCard({ id }: { id: string }) {
   const c = campaign.value!;
   const n = data.campaign.nodes.find((x) => x.id === id)!;
-  const map = data.maps[n.map]!;
+  // a mission of an act pack that is still loading is visible, but starts only afterwards (story 7.2)
+  const pack = packNeededFor(n);
+  const map = data.maps[n.map];
+  if (pack || !map) {
+    return (
+      <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
+        <div class="wm-card__kicker">{t('ui.map.kicker', { node: nodeShort(id) })}</div>
+        <h2 class="wm-card__title">{t(`map.${n.map}.name`)}</h2>
+        <PackWait pack={pack ?? ''} />
+      </Piece>
+    );
+  }
   const done = c.completed.includes(id);
   const goal = map.objectives.victory.type;
   return (

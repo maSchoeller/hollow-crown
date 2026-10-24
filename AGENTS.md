@@ -27,6 +27,15 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 - `pnpm art:build` braucht Python mit Pillow und numpy.
 - Node ≥ 22, pnpm 10 (`packageManager` in `package.json`).
 
+## Akt-Release
+
+1. Paket in `content/packs.yaml` auf `released: true` (nur veröffentlichte Pakete kommen in den Build).
+2. `pnpm content:lock` sperrt alle IDs der veröffentlichten Pakete in `content/released-ids.json`. Danach scheitert `content:check`, wenn eine gesperrte ID fehlt; umbenennen nur mit Eintrag `alt: neu` in `content/renames.yaml`.
+3. Ändert sich das Speicherformat oder eine gesperrte ID, braucht es eine Migration in `src/persistence/save.ts` (`migrations`, Umbenennungen über `renamedId`) und einen Fixture-Spielstand `tests/fixtures/saves/format<n>-*.json` aus dem vorigen Release; `tests/unit/migrations.test.ts` verlangt beides.
+4. Alle Prüfungen grün, Pull Request gegen `main`; nach dem Merge bekommen Spieler die Update-Abfrage.
+
+Während der Entwicklung nicht sperren: `released-ids.json` entsteht erst beim ersten echten Release (MVP).
+
 ## Konventionen
 
 - `src/core` hält Regeln als Commands und Events, der State ist Plain-JSON und serialisierbar; Babylon, Preact, DOM, `Math.random` und `Date.now` sperrt ESLint dort bereits.

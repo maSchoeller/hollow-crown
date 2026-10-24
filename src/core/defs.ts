@@ -303,6 +303,8 @@ export interface MapUnitDef {
   level: number;
   at: Pos;
   boss?: boolean;
+  /** lieutenant id (Epic 3): flees at 0 HP and counts like a boss for EP */
+  lieutenant?: string;
   nameKey?: string;
   sprite?: string;
   portrait?: string;
@@ -576,6 +578,8 @@ export interface CampaignDef {
   home: HomeKind;
   /** position of the home on the world map, percent of width and height */
   homePos: Pos;
+  /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
+  levelCap?: number;
   startGold: number;
   startConvoy: ItemRef[];
   merchant: Array<{ tier: number; items: string[] }>;
@@ -682,10 +686,22 @@ export interface Balance {
     /** speech bubble: characters per page (two lines) */
     bubbleMaxChars: number;
   };
-  /** loading of on-demand files before a mission */
-  loading: { fetchTimeoutMs: number };
+  /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
+  loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
   chronicle: { seasonPages: number };
+  /** farewell card after a death (story 6.7): the button stays locked this long */
+  farewell: { lockMs: number };
+  /** targets of the chained act simulation (story 6.8, `pnpm sim --campaign`): NFR12 corridors, GDD gold curve */
+  simulation: {
+    /** the army level is the average effective level of this many strongest units */
+    armySize: number;
+    /** army level further than this from a node's `expectedLevel` is marked */
+    levelTolerance: number;
+    corridors: Record<Difficulty, { winMin?: number; winMax?: number; downsMin?: number; downsMax?: number }>;
+    /** gold per story mission without side objectives [min, max]: by node id, else by act; side objectives' gold as share of the map reward */
+    gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
+  };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */

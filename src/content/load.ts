@@ -101,28 +101,19 @@ const byId = <T extends { id: string }>(list: T[]): Record<string, T> => Object.
 
 const RUNE_RARITY: Record<number, Rarity> = { 1: 'common', 2: 'rare', 3: 'epic' };
 
-/** Builds GameData from parsed YAML documents keyed by path (browser: import.meta.glob, Node: fs). */
-export function buildContent(files: Record<string, unknown>): LoadedContent {
-  const issues: ContentIssue[] = [];
-  const get = (p: string) => {
-    const key = Object.keys(files).find((k) => contentPath(k) === p);
-    if (!key) issues.push({ file: p, message: 'missing file' });
-    return key ? files[key] : undefined;
-  };
-  const balance = parseOne<Balance>('balance.yaml', get('core/balance.yaml'), balanceSchema, issues);
-  const render = parseOne<RenderDef>('render.yaml', get('core/render.yaml'), renderSchema, issues);
-  const classes = parseList<ClassDef>('classes.yaml', get('core/classes.yaml'), classSchema, issues);
-  const chars = parseList<CharDef>('units.yaml', get('acts/act1/units.yaml'), charSchema, issues);
-  const items = parseList<ItemDef>('items.yaml', get('core/items.yaml'), itemSchema, issues);
-  const skills = parseList<SkillDef>('skills.yaml', get('core/skills.yaml'), skillSchema, issues);
-  const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
-  const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
-  const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
-  const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
-  const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
-  const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
-  const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
-  const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
+interface PackParts {
+  maps: Record<string, MapDef>;
+  scenes: Record<string, SceneDef>;
+  chronicle: Record<string, ChroniclePageDef>;
+  supports: Record<string, SupportPairDef>;
+  locales: Locales;
+}
+
+/**
+ * Maps, scenes, chronicle pages, support pairs and texts of a set of YAML documents (also the parts a pack other than
+ * core adds, story 7.2). The German text of a scene or chronicle page comes from the page itself.
+ */
+function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]): PackParts {
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
   const chronicle: Record<string, ChroniclePageDef> = {};
@@ -154,10 +145,51 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
       locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
     }
   }
-  // the German text sits in the scene itself
+  // the German text sits in the scene and the chronicle page itself
   for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
-  // and in the chronicle page
   for (const pg of Object.values(chronicle)) locales.de = { ...(locales.de ?? {}), ...chronicleTexts(pg) };
+  return { maps, scenes, chronicle, supports, locales };
+}
+
+/**
+ * Adds the maps, scenes, chronicle pages, support pairs and texts of a pack to already loaded content, in place: modules that hold `data` or the
+ * locale tables see the new entries without reloading (story 7.2). Returns the problems of the pack's files.
+ */
+export function mergePackContent(loaded: LoadedContent, files: Record<string, unknown>): ContentIssue[] {
+  const issues: ContentIssue[] = [];
+  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
+  Object.assign(loaded.data.maps, maps);
+  Object.assign(loaded.data.scenes, scenes);
+  Object.assign(loaded.data.chronicle, chronicle);
+  Object.assign(loaded.data.supports, supports);
+  for (const [lang, table] of Object.entries(locales)) loaded.locales[lang] = Object.assign(loaded.locales[lang] ?? {}, table);
+  loaded.issues.push(...issues);
+  return issues;
+}
+
+/** Builds GameData from parsed YAML documents keyed by path (browser: import.meta.glob, Node: fs). */
+export function buildContent(files: Record<string, unknown>): LoadedContent {
+  const issues: ContentIssue[] = [];
+  const get = (p: string) => {
+    const key = Object.keys(files).find((k) => contentPath(k) === p);
+    if (!key) issues.push({ file: p, message: 'missing file' });
+    return key ? files[key] : undefined;
+  };
+  const balance = parseOne<Balance>('balance.yaml', get('core/balance.yaml'), balanceSchema, issues);
+  const render = parseOne<RenderDef>('render.yaml', get('core/render.yaml'), renderSchema, issues);
+  const classes = parseList<ClassDef>('classes.yaml', get('core/classes.yaml'), classSchema, issues);
+  const chars = parseList<CharDef>('units.yaml', get('acts/act1/units.yaml'), charSchema, issues);
+  const items = parseList<ItemDef>('items.yaml', get('core/items.yaml'), itemSchema, issues);
+  const skills = parseList<SkillDef>('skills.yaml', get('core/skills.yaml'), skillSchema, issues);
+  const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
+  const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
+  const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
+  const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
+  const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
+  const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
+  const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
+  const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
+  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,

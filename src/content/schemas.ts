@@ -269,6 +269,7 @@ export const mapUnitSchema = z.object({
   level: z.number().int(),
   at: pos,
   boss: z.boolean().optional(),
+  lieutenant: z.string().optional(),
   nameKey: z.string().optional(),
   sprite: z.string().optional(),
   portrait: z.string().optional(),
@@ -496,6 +497,7 @@ export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0
 
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
+  levelCap: z.number().int().min(1).optional(),
   startGold: z.number(),
   defaultPlace: z.string(),
   startConvoy: z.array(itemRefSchema).default([]),
@@ -643,8 +645,22 @@ export const balanceSchema = z.object({
     bubbleAutoMs: z.number().int().min(500),
     bubbleMaxChars: z.number().int().min(20),
   }),
-  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
   chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
+  farewell: z.object({ lockMs: z.number().int().min(0) }),
+  simulation: z.object({
+    armySize: z.number().int().min(1),
+    levelTolerance: z.number().min(0),
+    corridors: z.record(
+      z.enum(['easy', 'normal', 'hard']),
+      z.object({ winMin: z.number().optional(), winMax: z.number().optional(), downsMin: z.number().optional(), downsMax: z.number().optional() }),
+    ),
+    gold: z.object({
+      perNode: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      perAct: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      sideShare: z.tuple([z.number(), z.number()]),
+    }),
+  }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

@@ -91,6 +91,7 @@ export interface BattleUnit extends UnitRecord {
   freeUsed: { trade?: boolean; convoy?: boolean; swap?: boolean };
   ai?: AiState;
   boss?: boolean;
+  lieutenant?: string;
   dropUids: string[];
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };
@@ -200,7 +201,8 @@ export interface CampaignState {
   settings: BattleSettings;
   avatar: AvatarSettings;
   roster: UnitRecord[];
-  fallen: Array<{ id: string; nameKey: string; name?: string; node: string }>;
+  /** the fallen, for their memorial stones (story 6.7; mercenaries get one too) */
+  fallen: Array<{ id: string; nameKey: string; name?: string; node: string; classId?: string; portrait?: string; mercenary?: true }>;
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;
