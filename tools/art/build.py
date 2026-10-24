@@ -10,7 +10,7 @@ python tools/art/build.py [--quality mid|high]
 - Item images: WebP q85, 132 px square (high: 192 px).
 - Heads (art/mockups/characters-s1/<id>.png): round-chibi head crop for the medallions of the battle HUD and the campaign view.
   The two avatar looks rhen_a|b: WebP q85, 160 px square. Other characters: WebP q70, 112 px square, only those that appear as units
-  in content/units.yaml or a map (the rest ships with the act packages; initial-download budget).
+  in content/acts/*/units.yaml or a map (the rest ships with the act packages; initial-download budget).
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
@@ -160,12 +160,18 @@ def build_locations():
 
 
 def content_unit_ids():
-    """Ids a board unit can have: every id/char/portrait value in content/units.yaml and content/maps (no YAML library needed)."""
+    """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed)."""
     pat = re.compile(r'(?<![a-z0-9_])(?:id|char|portrait):[ 	]*([a-z0-9_]+)')
     content = os.path.join(ROOT, 'content')
-    files = [os.path.join(content, 'units.yaml')]
-    maps = os.path.join(content, 'maps')
-    files += [os.path.join(maps, f) for f in sorted(os.listdir(maps)) if f.endswith('.yaml')]
+    acts = os.path.join(content, 'acts')
+    files = []
+    for act in sorted(os.listdir(acts)):
+        units = os.path.join(acts, act, 'units.yaml')
+        if os.path.isfile(units):
+            files.append(units)
+        maps = os.path.join(acts, act, 'maps')
+        if os.path.isdir(maps):
+            files += [os.path.join(maps, f) for f in sorted(os.listdir(maps)) if f.endswith('.yaml')]
     ids = set()
     for path in files:
         with open(path, encoding='utf-8') as f:

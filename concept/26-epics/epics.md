@@ -443,6 +443,26 @@ damit eine lange Kampagne nicht an einem Absturz oder an gelöschten Websitedate
 **Dann** ruft sie `navigator.storage.persist()` auf und zeigt einmal den Hinweis „Zum Home-Bildschirm hinzufügen, damit dein Spielstand sicher bleibt“
 **Und** schlägt ein Speichern fehl, erscheint ein Banner mit Export-Angebot; der nächste Commit versucht es erneut.
 
+### Story 1.8: Optionen, Ende und Hinweise im Stil B
+
+Als Spieler
+möchte ich, dass auch Einstellungen, Hinweise und das Ende des bisherigen Inhalts wie der Rest des Spiels aussehen,
+damit nirgends noch der alte Prototyp durchscheint.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Optionen (Sprache, Tempo, Gegnertempo, Gefahr, Qualität, Figuren, Wackeln, Musik, Effekte, Bildschirm wach)
+**Wenn** der Spieler sie vom Titel, aus dem Kampfmenü oder aus der Heimat öffnet
+**Dann** erscheinen sie als Steine mit Segment-Schaltern und Reglern im Stil B (`ScreenHead`, Tokens aus DESIGN.md), über der weichgezeichneten Szene
+**Und** jede Änderung wirkt sofort und bleibt gespeichert.
+
+**Angenommen** der Endbildschirm nach der letzten verfügbaren Mission sowie die kurzen Hinweise (Toast) und Banner
+**Wenn** sie erscheinen
+**Dann** nutzen sie Steine, Pillen und Schriften aus Stil B; Titel-Rahmen und Update-Hinweis der Versionszeile ebenso
+**Und** danach sind die PoC-Klassen dieser Ansichten aus `styles.css` entfernt.
+
+_Nachgetragen 2026-10-24: Lücke aus der Bestandsaufnahme der PoC-Ansichten, von keiner Story abgedeckt._
+
 ## Epic 2: Rollenklassen und neues Kampf-HUD
 
 Spieler kämpfen mit Rollen statt Waffenklassen; jede Rolle hat eine Klassen-Aktion auf festem Platz im neuen HUD (Stil B). Die Gegnerphase rechnet im Web Worker.
@@ -612,6 +632,26 @@ damit Kämpfe abwechslungsreich bleiben.
 **Wenn** sie auf Karten stehen
 **Dann** sind Wolfsreiter in Akt 1 Fußtruppen mit Wolfsfell (kein Reittier, keine Beritten-Effektivität; Vierbeiner und Reittiere erst nach dem MVP); Banditen, Wolfsreiter und Söldner unterscheiden sich in Waffen und KI-Profil
 **Und** ihre Werte stehen in Content-YAML und sind per `pnpm sim` geprüft.
+
+### Story 2.10: Kampf-Overlays im Stil B
+
+Als Spieler
+möchte ich alle Fenster im Kampf im selben Stil wie das HUD sehen,
+damit Infos zu Gegnern und eigenen Figuren, Tausch und Konvoi sofort lesbar sind.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Gegner oder eine eigene Einheit auf dem Brett
+**Wenn** der Spieler sie antippt bzw. die Einheitenkarte öffnet
+**Dann** zeigt die Einheiten-Info im Stil B Medaillon mit TP-Ring, Name, Klasse/Rolle, Stufe, Werte, Ausrüstung mit Item-Bildern, Fähigkeiten und bei Gegnern das KI-Verhalten; eigene Einheiten bieten Ausrüsten, solange sie handeln können (Steckbriefe der Leutnants bleiben Story 3.6, die volle Figur Story 6.1)
+**Und** sie erscheint als Stein über einem Schleier und schließt mit Esc oder Tipp daneben.
+
+**Angenommen** Ziele-Panel, Kampfmenü (Optionen, Runde neu, Mission neu, zum Titel), Auswahl der Klassen-Aktion, Item-Liste, Tausch, Konvoi und der Stufenaufstieg im Kampf
+**Wenn** sie geöffnet werden
+**Dann** folgen sie dem Panel-Muster aus DESIGN.md (Stein, Liste mit Item-Bildern, eine Glut-Haupttaste, Beträge als Symbol + Zahl), Funktionen bleiben unverändert
+**Und** der alte `Modal`-Look und die PoC-Klassen dieser Ansichten sind entfernt.
+
+_Nachgetragen 2026-10-24: Lücke aus der Bestandsaufnahme der PoC-Ansichten; 2.1 hatte nur HUD, Dock und Vorschau umgebaut._
 
 ## Epic 3: Leutnants
 

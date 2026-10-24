@@ -23,6 +23,14 @@ export type Mechanic = 'triangle' | 'magic' | 'elements' | 'supports';
 export type DeathMode = 'classic' | 'standard' | 'casual';
 export type SupportRank = 'C' | 'B' | 'A' | 'S';
 export const SUPPORT_RANKS: readonly SupportRank[] = ['C', 'B', 'A', 'S'];
+/** Value of a story flag in `CampaignState.flags` (architecture §5.9); `true` = plainly set. */
+export type FlagValue = string | number | true;
+/** The avatar's stance profile counters (architecture §5.9); a tie is decided warm > sober > defiant. */
+export type Stance = 'warm' | 'sober' | 'defiant';
+export const STANCES: readonly Stance[] = ['warm', 'sober', 'defiant'];
+export type HomeKind = 'camp' | 'castle';
+/** Companions the story never lets join or leave (the schema forbids `recruit`/`leave` for them). */
+export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'kael'];
 export type Pos = [number, number];
 
 export interface ItemUse {
@@ -371,9 +379,53 @@ export interface MapDef {
   devNote?: string;
 }
 
+/**
+ * One condition language for every "if" in content (architecture §5.3): an object with exactly one key.
+ * A list of conditions means AND. Evaluation never changes anything (`campaign/conditions.ts`).
+ */
+export type Condition =
+  | { flag: string | Record<string, FlagValue> }
+  | { alive: string }
+  | { dead: string }
+  | { left: string }
+  | { completed: string }
+  | { storyCount: { min?: number; max?: number } }
+  | { act: number }
+  | { support: { pair: [string, string]; rank: SupportRank } }
+  | { stance: Stance }
+  | { met: string }
+  | { chronicle: { min: number } | string[] }
+  | { any: Condition[] }
+  | { not: Condition };
+
+/** One "then" of content (architecture §5.3): an object with exactly one key; runs only inside a campaign command. */
+export type Effect =
+  | { setFlag: string | Record<string, FlagValue> }
+  | { recruit: string | { lt: string } }
+  | { leave: string }
+  | { grudge: { lt: string; delta: number } }
+  | { gold: number }
+  | { material: Record<string, number> }
+  | { item: ItemRef }
+  | { priceMod: { pct: number; act: number } }
+  | { villageAid: true }
+  | { openQuest: string }
+  | { stance: Stance }
+  | { chronicle: string }
+  | { setHome: HomeKind };
+
+/** Entry of the flag register `acts/actN/flags.yaml` (architecture §5.9); content may only use declared flags. */
+export interface FlagDef {
+  id: string;
+  kind: 'decision' | 'story' | 'quest' | 'battle';
+  /** allowed values; none = a plain on/off flag */
+  values?: Array<string | number>;
+  season2?: boolean;
+}
+
 export type DialogueLine =
-  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: { flag?: string; notFlag?: string } }
-  | { choice: Array<{ key: string; setFlag?: string }> };
+  | { speaker?: string; mood?: string; side?: 'left' | 'right'; key: string; if?: Condition | Condition[] }
+  | { choice: Array<{ key: string; effects?: Effect[] }> };
 
 export interface DialogueDef {
   id: string;
@@ -391,16 +443,20 @@ export interface CampaignNodeDef {
   next: string[];
   pos: Pos;
   merchantTier: number;
+  /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */
+  expectedLevel: number;
   /** items handed to company members when the node is won (e.g. the avatar's first tome) */
   grants?: Array<{ unit: string; item: ItemRef }>;
 }
 
 export interface CampaignDef {
+  /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
+  act: number;
   nodes: CampaignNodeDef[];
   /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
   mechanics: Partial<Record<Mechanic, string>>;
-  /** camp facility → node after whose victory it opens ('start' = from the beginning); UI only */
-  facilities: Record<string, string>;
+  /** camp facility → conditions (AND) under which it is open; none = from the beginning; UI only */
+  facilities: Record<string, Condition[]>;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];
@@ -576,5 +632,7 @@ export interface GameData {
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
   dialogues: Record<string, DialogueDef>;
+  /** flag register of the acts */
+  flags: Record<string, FlagDef>;
   campaign: CampaignDef;
 }

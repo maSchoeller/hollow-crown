@@ -4,7 +4,9 @@ import {
   applyCampaign,
   applyCommand,
   beginBattle,
+  conditionContext,
   newCampaign,
+  normalizeCampaign,
   validateCampaign,
   type AvatarSettings,
   type BattleResult,
@@ -15,6 +17,8 @@ import {
   type CampaignEvent,
   type CampaignState,
   type Command,
+  type ConditionContext,
+  type Effect,
   type GameData,
   type GameEvent,
 } from '../core';
@@ -301,7 +305,8 @@ export async function importRecord(rec: SaveRecord): Promise<boolean> {
 }
 
 export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): void {
-  const p = rec.payload;
+  // saves from before a field existed get its default (architecture §8.7)
+  const p = { ...rec.payload, campaign: normalizeCampaign(rec.payload.campaign) };
   campaignId.value = rec.campaignId;
   playClock.reset();
   showCampaign(p.campaign);
@@ -398,9 +403,14 @@ export function concludeBattle(): void {
   else toResult();
 }
 
-export function setFlag(flag: string): void {
-  // battle state stays untouched so battle replays remain pure; the flag goes through the campaign journal
-  campaignCommand({ type: 'setFlag', flag });
+/** What conditions in dialogues and the camp read: the running campaign (or an empty story). */
+export function storyContext(): ConditionContext {
+  return conditionContext(data, campaign.value);
+}
+
+export function runEffects(effects: Effect[]): void {
+  // battle state stays untouched so battle replays remain pure; effects go through the campaign journal
+  campaignCommand({ type: 'effects', effects });
 }
 
 /** Dev helper: lets the simulator play the current battle (manual testing only). */

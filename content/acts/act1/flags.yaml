@@ -1,0 +1,9 @@
+# Flag-Register Akt 1 (Architektur §5.9): Inhalte dürfen nur deklarierte Flags setzen und prüfen (pnpm content:check).
+# kind: decision | story | quest | battle; values: erlaubte Werte, ohne Angabe ein einfaches An/Aus; season2: wirkt in Staffel 2 weiter.
+# Die Antworten der Einstiegsszenen färben die Gespräche des Prologs und der Kapitel 1–2 (Vorläufer der Entscheidungen e01–e12).
+- { id: avatar_honest, kind: story, season2: false }
+- { id: avatar_proud, kind: story, season2: false }
+- { id: avatar_cautious, kind: story, season2: false }
+- { id: avatar_bold, kind: story, season2: false }
+- { id: ch02_hold, kind: story, season2: false }
+- { id: ch02_question, kind: story, season2: false }

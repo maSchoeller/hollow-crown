@@ -9,8 +9,8 @@ lines:
   - { speaker: brenna, mood: happy, side: right, key: dlg.prologue.intro.005 }
   - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.intro.006 }
   - choice:
-      - { key: dlg.prologue.intro.c1, setFlag: avatar_honest }
-      - { key: dlg.prologue.intro.c2, setFlag: avatar_proud }
+      - { key: dlg.prologue.intro.c1, effects: [{ setFlag: avatar_honest }] }
+      - { key: dlg.prologue.intro.c2, effects: [{ setFlag: avatar_proud }] }
   - { speaker: kael, mood: neutral, side: left, key: dlg.prologue.intro.007, if: { flag: avatar_honest } }
   - { speaker: kael, mood: happy, side: left, key: dlg.prologue.intro.008, if: { flag: avatar_proud } }
   - { speaker: brenna, mood: surprised, side: right, key: dlg.prologue.intro.009 }

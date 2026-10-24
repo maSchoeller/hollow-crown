@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import type { DialogueLine, GameData } from '../core';
+import { evalConditions, type ConditionContext, type DialogueLine, type Effect, type FlagValue, type GameData } from '../core';
 import { t } from '../i18n';
 import { asset, Modal } from './components';
 import { Icon } from './icons';
@@ -10,10 +10,10 @@ const OTHERS = new Set(['liora']);
 export interface DialogueProps {
   data: GameData;
   id: string;
-  flags: string[];
+  ctx: ConditionContext;
   avatarPortrait: string;
   overlay?: boolean;
-  onFlag: (flag: string) => void;
+  onEffects: (effects: Effect[]) => void;
   onDone: () => void;
   onLine?: (speaker?: string, mood?: string) => void;
 }
@@ -22,21 +22,19 @@ type Line = Extract<DialogueLine, { key: string }>;
 type Choice = Extract<DialogueLine, { choice: unknown }>;
 
 /** Visual-novel dialogue: background, two portraits, name tag, tap to continue, choices, log, skip (concept/08 §7). */
-export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onDone, onLine }: DialogueProps) {
+export function Dialogue({ data, id, ctx, avatarPortrait, overlay, onEffects, onDone, onLine }: DialogueProps) {
   const def = data.dialogues[id];
   const [idx, setIdx] = useState(0);
-  const [local, setLocal] = useState<string[]>([]);
+  const [local, setLocal] = useState<Record<string, FlagValue>>({});
   const [shown, setShown] = useState(0);
   const [log, setLog] = useState(false);
-  const allFlags = useMemo(() => [...flags, ...local], [flags, local]);
+  // answers given in this scene count at once, before the campaign state has caught up
+  const now = useMemo(() => ({ ...ctx, flags: { ...ctx.flags, ...local } }), [ctx, local]);
   const lines = def?.lines ?? [];
 
   // skip lines whose condition does not hold
   const visible = (l: DialogueLine) => {
-    if ('choice' in l) return true;
-    if (l.if?.flag && !allFlags.includes(l.if.flag)) return false;
-    if (l.if?.notFlag && allFlags.includes(l.if.notFlag)) return false;
-    return true;
+    return 'choice' in l || evalConditions(now, l.if);
   };
   let cur = idx;
   while (cur < lines.length && !visible(lines[cur]!)) cur++;
@@ -65,7 +63,7 @@ export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onD
       if ('key' in l && l.speaker && visible(l)) st[l.side === 'left' ? 'left' : 'right'] = l;
     }
     return st;
-  }, [cur, allFlags]);
+  }, [cur, now]);
 
   if (!def || !line) return null;
   const advance = () => {
@@ -114,9 +112,10 @@ export function Dialogue({ data, id, flags, avatarPortrait, overlay, onFlag, onD
                 key={c.key}
                 class="btn"
                 onClick={() => {
-                  if (c.setFlag) {
-                    onFlag(c.setFlag);
-                    setLocal((l) => [...l, c.setFlag!]);
+                  if (c.effects?.length) {
+                    onEffects(c.effects);
+                    const set = c.effects.flatMap((e) => ('setFlag' in e ? [e.setFlag] : []));
+                    setLocal((l) => Object.assign({ ...l }, ...set.map((f) => (typeof f === 'string' ? { [f]: true } : f))));
                   }
                   setIdx(cur + 1);
                 }}

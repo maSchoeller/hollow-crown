@@ -23,7 +23,10 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     convoy: [],
     gold: data.campaign.startGold,
     materials: {},
-    flags: [],
+    flags: {},
+    left: [],
+    stance: { warm: 0, sober: 0, defiant: 0 },
+    chronicle: [],
     completed: [],
     available: [data.campaign.start],
     supports: {},
@@ -37,6 +40,19 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
   for (const ref of data.campaign.startConvoy) c.convoy.push(newItem(c, ref, data));
   for (const [a, b] of data.campaign.supportPairs) c.supports[pairKey(a, b)] = { points: 0, rank: null };
   return c;
+}
+
+/** Fills fields a saved campaign may lack (architecture §8.7: new persisted fields get a default on load). */
+export function normalizeCampaign(c: CampaignState): CampaignState {
+  const old = c as unknown as { flags: unknown; left?: string[]; stance?: CampaignState['stance']; chronicle?: string[] };
+  return {
+    ...c,
+    // format 2 as the PoC wrote it kept a list of flag names
+    flags: Array.isArray(old.flags) ? Object.fromEntries((old.flags as string[]).map((f) => [f, true as const])) : c.flags,
+    left: old.left ?? [],
+    stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
+    chronicle: old.chronicle ?? [],
+  };
 }
 
 export interface UnitResult {
@@ -233,7 +249,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       return next && st.points >= data.balance.supports.thresholds[next] && !!data.campaign.supportDialogues[key]?.[next];
     })
     .map(([k]) => k);
-  for (const f of s.flags) if (!c.flags.includes(f)) c.flags.push(f);
+  for (const f of s.flags) c.flags[f] ??= true;
   if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
   c.available = [...node.next];
   c.rng = rng;

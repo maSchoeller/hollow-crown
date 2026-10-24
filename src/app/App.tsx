@@ -8,7 +8,7 @@ import { Battle } from './screens/Battle';
 import { Camp, Prep } from './screens/Camp';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
-import { battle, campaign, data, restartBattle, screen, setFlag, settings } from './store';
+import { battle, campaign, data, restartBattle, runEffects, screen, settings, storyContext } from './store';
 import { lang } from '../i18n';
 
 function Defeat() {
@@ -90,9 +90,9 @@ export function App() {
           key={sc.id}
           data={data}
           id={sc.id}
-          flags={campaign.value?.flags ?? []}
+          ctx={storyContext()}
           avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
-          onFlag={setFlag}
+          onEffects={runEffects}
           onDone={sc.next}
         />
       );

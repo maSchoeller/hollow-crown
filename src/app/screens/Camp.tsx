@@ -2,8 +2,10 @@ import { useEffect, useState } from 'preact/hooks';
 import {
   availableSupportTalks,
   canEquip,
+  conditionContext,
   computeStats,
   currentTier,
+  evalConditions,
   itemDef,
   loadoutSlots,
   locateItem,
@@ -15,6 +17,7 @@ import {
   STAT_KEYS,
   upgradeCost,
   type CampaignCommand,
+  type CampaignState,
   type EquipSlot,
   type ItemInstance,
   type UnitRecord,
@@ -26,7 +29,7 @@ import { Icon } from '../../ui/icons';
 import { Amount, ItemImage } from '../../ui/pieces';
 import { Dialogue } from '../../ui/Dialogue';
 import { listSaves, type SaveRecord } from '../../persistence/save';
-import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, saveSlot, screen, setFlag, startBattle } from '../store';
+import { campaign, campaignId, data, nodeDef, pendingEvents, playNode, campaignCommand, runEffects, saveSlot, screen, startBattle, storyContext } from '../store';
 import { downloadSave, SlotPicker } from './Menus';
 import { audio } from '../audio';
 
@@ -37,15 +40,13 @@ const FAC_ICON: Record<Tab, string> = {
   company: 'company', convoy: 'convoy', merchant: 'merchant', smith: 'smith', enchanter: 'enchanter', healer: 'healer', campfire: 'campfire', save: 'save',
 };
 
-/** Node after which a camp facility opens (campaign.yaml `facilities`; 'start' or missing = always). */
+/** Node a camp facility waits for: the `completed` condition of campaign.yaml `facilities` (none = open from the start). */
 function unlockNode(tab: Tab): string | undefined {
-  const at = data.campaign.facilities[tab];
-  return at && at !== 'start' ? at : undefined;
+  const cond = data.campaign.facilities[tab]?.find((x): x is { completed: string } => 'completed' in x);
+  return cond?.completed;
 }
-const isOpen = (tab: Tab, done: string[]) => {
-  const at = unlockNode(tab);
-  return !at || done.includes(at);
-};
+/** Open when all conditions of campaign.yaml `facilities` hold (architecture §5.3). */
+const isOpen = (tab: Tab, c: CampaignState) => evalConditions(conditionContext(data, c), data.campaign.facilities[tab]);
 const shortTitle = (nodeId: string) => {
   const n = data.campaign.nodes.find((x) => x.id === nodeId);
   return n ? t(n.titleKey).split('–')[0]!.trim() : t('ui.hub.later');
@@ -163,7 +164,7 @@ export function Camp({ tab: initial }: { tab?: string }) {
           )}
           <div class="col" style={{ gap: 0 }}>
             {FACILITIES.map((k) => {
-              const open = isOpen(k, c.completed);
+              const open = isOpen(k, c);
               const at = unlockNode(k);
               return (
                 <button key={k} class="fac" disabled={!open} onClick={() => setTab(k)}>
@@ -638,9 +639,9 @@ function Campfire({ apply }: { apply: Apply }) {
         <Dialogue
           data={data}
           id={talk.dialogue}
-          flags={c.flags}
+          ctx={storyContext()}
           avatarPortrait={c.avatar.portrait}
-          onFlag={setFlag}
+          onEffects={runEffects}
           onDone={() => {
             apply({ type: 'unlockSupport', pair: talk.key }, t('ui.camp.bond'));
             setTalk(null);

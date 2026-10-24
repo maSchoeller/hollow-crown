@@ -1,4 +1,5 @@
-# Kampagne V1, erster Wurf: Prolog + Kapitel 1–2 (concept/11 §7, concept/08 §4). Startwerte [C].
+# Akt 1 (Paket act1), Kampagne V1, erster Wurf: Prolog + Kapitel 1–2 (concept/11 §7, concept/08 §4). Startwerte [C].
+act: 1
 start: prologue
 # Gestaffelte Einführung (concept/06 §10): Mechanik → erster Knoten, in dem sie gilt. Davor ist sie aus.
 # Kapitel 3 ist noch nicht gebaut; bis dahin bleiben Elemente und Unterstützungen aus.
@@ -7,23 +8,23 @@ mechanics:
   magic: ch02
   elements: ch03
   supports: ch03
-# Lager-Einrichtungen öffnen sich nach dem Sieg im genannten Knoten (U20). start = von Anfang an.
+# Lager-Einrichtungen: offen, wenn alle Bedingungen gelten (Bedingungssprache, Architektur §5.3); leere Liste = von Anfang an (U20).
 facilities:
-  company: start
-  convoy: start
-  merchant: start
-  smith: ch01
-  healer: ch01
-  campfire: ch02
-  enchanter: ch03
+  company: []
+  convoy: []
+  merchant: []
+  smith: [{ completed: ch01 }]
+  healer: [{ completed: ch01 }]
+  campfire: [{ completed: ch02 }]
+  enchanter: [{ completed: ch03 }]
 startGold: 500
 startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
 nodes:
-  - { id: prologue, map: prologue_caravan, titleKey: node.prologue.title, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01], pos: [62, 70], merchantTier: 0 }
-  - { id: ch01, map: ch01_varnhold, titleKey: node.ch01.title, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], pos: [48, 52], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, map: ch02_silverbrook, titleKey: node.ch02.title, pre: dlg.ch02.intro, post: dlg.ch02.outro, next: [], pos: [32, 38], merchantTier: 2 }
+  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01], pos: [62, 70], merchantTier: 0 }
+  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], pos: [48, 52], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: dlg.ch02.intro, post: dlg.ch02.outro, next: [], pos: [32, 38], merchantTier: 2 }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, leather_vest, leather_cap, wooden_shield, door_key]

@@ -12,16 +12,17 @@ import { parse } from 'yaml';
 const BUDGET = 15 * 1024 * 1024;
 const dist = join(process.cwd(), 'dist');
 const content = (f) => parse(readFileSync(join(process.cwd(), 'content', f), 'utf8'));
+const act = 'acts/act1';
 
 const prologue = new Set();
-const campaign = content('campaign.yaml');
+const campaign = content(`${act}/campaign.yaml`);
 const start = campaign.nodes?.find((n) => n.id === campaign.start);
-for (const c of content('units.yaml')) {
+for (const c of content(`${act}/units.yaml`)) {
   if (c.joins !== campaign.start) continue;
   prologue.add(c.sprite ?? c.id);
   if (c.flags?.includes('avatar')) for (const p of ['avatar_a', 'avatar_b']) prologue.add(p);
 }
-const map = start && content(`maps/${start.map}.yaml`);
+const map = start && content(`${act}/maps/${start.map}.yaml`);
 const mapUnits = [...(map?.units ?? []), ...(map?.reinforcements ?? []).flatMap((r) => r.units ?? [])];
 for (const u of mapUnits) prologue.add(u.sprite ?? u.id ?? u.class);
 const later = (p) => {

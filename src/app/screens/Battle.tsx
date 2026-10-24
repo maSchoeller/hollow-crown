@@ -40,7 +40,7 @@ import { ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unit
 import { Icon } from '../../ui/icons';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
-import { battle, campaign, command, concludeBattle, data, pendingEvents, restartBattle, screen, settings, setFlag, updateSettings } from '../store';
+import { battle, campaign, command, concludeBattle, data, pendingEvents, restartBattle, runEffects, screen, settings, storyContext, updateSettings } from '../store';
 import {
   BackPill,
   CONTEXT_ORDER,
@@ -849,10 +849,10 @@ export function Battle() {
         <Dialogue
           data={data}
           id={dialogue.id}
-          flags={campaign.value?.flags ?? []}
+          ctx={storyContext()}
           avatarPortrait={campaign.value?.avatar.portrait ?? 'avatar_a'}
           overlay
-          onFlag={setFlag}
+          onEffects={runEffects}
           onDone={dialogue.done}
         />
       )}

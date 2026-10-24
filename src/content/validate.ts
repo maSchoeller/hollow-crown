@@ -1,4 +1,6 @@
-import type { Area, GameData, ItemRef, MapDef, MapUnitDef, Pos, Reward } from '../core/defs';
+import type { Area, Condition, Effect, FlagValue, GameData, ItemRef, MapDef, MapUnitDef, Pos, Reward } from '../core/defs';
+import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
+import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { areaTiles } from '../core/util';
 import type { ContentIssue, Locales } from './load';
 
@@ -26,6 +28,61 @@ export function validateContent(
     dialogue(file, r.dialogue, ctx);
     if (r.recruit && !data.chars[r.recruit]) err(file, `${ctx}: unknown recruit ${r.recruit}`);
     for (const m of Object.keys(r.material ?? {})) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
+  };
+  // conditions and effects (architecture §5.3): every reference must exist, unfinished keys are refused
+  const nodeKnown = (id: string) => !!data.campaign?.nodes.some((n) => n.id === id) || /^ch\d+$/.test(id);
+  const flag = (file: string, ref: string | Record<string, FlagValue>, ctx: string) => {
+    const [name, value] = flagEntry(ref);
+    const def = data.flags[name];
+    if (!def) return void err(file, `${ctx}: undeclared flag ${name} (acts/*/flags.yaml)`);
+    if (def.values ? !def.values.includes(value as string | number) : value !== true)
+      err(file, `${ctx}: flag ${name} cannot have the value ${String(value)}`);
+  };
+  const companion = (file: string, id: string, ctx: string) => {
+    if (!data.chars[id]) err(file, `${ctx}: unknown companion ${id}`);
+  };
+  const condition = (file: string, cond: Condition, ctx: string): void => {
+    const key = soleKey(cond);
+    const v = (cond as unknown as Record<string, unknown>)[key];
+    if (UNSUPPORTED_CONDITIONS.includes(key)) return void err(file, `${ctx}: condition ${key} is not yet supported`);
+    switch (key) {
+      case 'flag':
+        return flag(file, v as string | Record<string, FlagValue>, ctx);
+      case 'alive':
+      case 'dead':
+      case 'left':
+        return companion(file, v as string, ctx);
+      case 'completed':
+        if (!nodeKnown(v as string)) err(file, `${ctx}: unknown node ${v as string}`);
+        return;
+      case 'support': {
+        const [a, b] = (v as { pair: [string, string] }).pair;
+        companion(file, a, ctx);
+        companion(file, b, ctx);
+        if (!data.campaign?.supportPairs.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) err(file, `${ctx}: unknown support pair ${a}|${b}`);
+        return;
+      }
+      case 'any':
+        for (const x of v as Condition[]) condition(file, x, ctx);
+        return;
+      case 'not':
+        return condition(file, v as Condition, ctx);
+    }
+  };
+  const conditions = (file: string, conds: Condition | Condition[] | undefined, ctx: string) => {
+    if (conds) for (const x of Array.isArray(conds) ? conds : [conds]) condition(file, x, ctx);
+  };
+  const effects = (file: string, list: Effect[] | undefined, ctx: string) => {
+    for (const e of list ?? []) {
+      const key = soleKey(e);
+      const v = (e as unknown as Record<string, unknown>)[key];
+      if (UNSUPPORTED_EFFECTS.includes(key) || (key === 'recruit' && typeof v !== 'string'))
+        err(file, `${ctx}: effect ${key} is not yet supported`);
+      else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
+      else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
+      else if (key === 'item') item(file, v as ItemRef, ctx);
+      else if (key === 'material') for (const m of Object.keys(v as Record<string, number>)) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
+    }
   };
 
   for (const c of Object.values(data.classes)) {
@@ -63,15 +120,30 @@ export function validateContent(
         item('campaign.yaml', g.item, `${n.id} grants`);
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
-    for (const [f, at] of Object.entries(camp.facilities))
-      if (at !== 'start' && !camp.nodes.some((n) => n.id === at) && !/^ch\d+$/.test(at)) err('campaign.yaml', `facilities.${f}: unknown node ${at}`);
+    for (const [f, conds] of Object.entries(camp.facilities)) conditions('campaign.yaml', conds, `facilities.${f}`);
+    // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order nor along `next`
+    let top = 0;
+    for (const n of camp.nodes) {
+      if (n.expectedLevel < top) err('campaign.yaml', `${n.id}: expectedLevel ${n.expectedLevel} falls below ${top} of an earlier node`);
+      top = Math.max(top, n.expectedLevel);
+      for (const nx of n.next) {
+        const to = camp.nodes.find((x) => x.id === nx);
+        if (to && to.expectedLevel < n.expectedLevel) err('campaign.yaml', `${n.id}: next ${nx} has a lower expectedLevel (${to.expectedLevel} < ${n.expectedLevel})`);
+      }
+    }
     validateMechanics(data, err);
     for (const [k, v] of Object.entries(camp.supportDialogues))
       for (const d of Object.values(v)) dialogue('campaign.yaml', d, `support ${k}`);
   }
-  // dialogue keys
+  // map triggers set flags of the register
+  for (const map of Object.values(data.maps))
+    for (const t of map.triggers)
+      for (const a of t.then) if (a.action === 'set_flag') flag(`maps/${map.id}`, a.flag, `trigger ${t.id}`);
+  // dialogue conditions, effects and keys
   for (const d of Object.values(data.dialogues)) {
     for (const l of d.lines) {
+      if ('choice' in l) for (const ch of l.choice) effects(`dialogue/${d.id}`, ch.effects, ch.key);
+      else conditions(`dialogue/${d.id}`, l.if, l.key);
       const keys = 'choice' in l ? l.choice.map((c) => c.key) : [l.key];
       for (const k of keys) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`dialogue/${d.id}`, `missing ${lang} text ${k}`);
     }

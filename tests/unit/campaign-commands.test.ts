@@ -233,11 +233,11 @@ describe('campaign commands', () => {
     expect(run(bagged, { type: 'promote', unit: u.id, classId: target }).campaign.roster.find((x) => x.id === u.id)!.bag.some((i) => i.def === 'promotion_seal')).toBe(false);
   });
 
-  it('setFlag is idempotent', () => {
-    const r = run(rich(), { type: 'setFlag', flag: 'spared_bandit' });
-    expect(r.campaign.flags).toContain('spared_bandit');
-    expect(r.events).toEqual([{ t: 'flagSet', flag: 'spared_bandit' }]);
-    expect(run(r.campaign, { type: 'setFlag', flag: 'spared_bandit' }).events).toEqual([]);
+  it('setFlag effect is idempotent', () => {
+    const r = run(rich(), { type: 'effects', effects: [{ setFlag: 'avatar_honest' }] });
+    expect(r.campaign.flags).toEqual({ avatar_honest: true });
+    expect(r.events).toEqual([{ t: 'flagSet', flag: 'avatar_honest', value: true }]);
+    expect(run(r.campaign, { type: 'effects', effects: [{ setFlag: 'avatar_honest' }] }).events).toEqual([]);
   });
 
   it('finishMission replays the battle log and applies the result', () => {
@@ -261,7 +261,7 @@ describe('journal replay', () => {
       journal.push(JSON.parse(JSON.stringify(cmd)) as CampaignCommand);
     };
     exec({ type: 'buy', item: 'iron_sword' });
-    exec({ type: 'setFlag', flag: 'met_the_stranger' });
+    exec({ type: 'effects', effects: [{ setFlag: 'ch02_hold' }] });
     const start = beginBattle(data, c, data.campaign.start, c.roster.map((r) => r.id)).state;
     exec({ type: 'finishMission', start, commands: autoplay(data, start).log });
     exec({ type: 'equip', unit: c.roster[0]!.id, uid: c.convoy.find((i) => i.def === 'iron_sword')!.uid, slot: 'bag' });

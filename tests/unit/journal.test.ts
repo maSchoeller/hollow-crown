@@ -37,9 +37,9 @@ describe('journal', () => {
     const b = await campaignId();
     const w = createJournalWriter();
     void w.append(a, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: start });
-    void w.append(a, { kind: 'command', cmd: { type: 'setFlag', flag: 'x' } });
+    void w.append(a, { kind: 'command', cmd: { type: 'effects', effects: [{ setFlag: 'x' }] } });
     void w.append(b, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: start });
-    void w.append(a, { kind: 'command', cmd: { type: 'setFlag', flag: 'y' } });
+    void w.append(a, { kind: 'command', cmd: { type: 'effects', effects: [{ setFlag: 'y' }] } });
     await w.flush();
     const ja = await readJournal(a);
     expect(ja.map((e) => e.seq)).toEqual([0, 1, 2]);
@@ -52,7 +52,7 @@ describe('journal', () => {
   it('replays from the last checkpoint to the live state', async () => {
     const id = await campaignId();
     const cmds: CampaignCommand[] = [
-      { type: 'setFlag', flag: 'before' },
+      { type: 'effects', effects: [{ setFlag: 'avatar_proud' }] },
       { type: 'buy', item: 'iron_sword' },
     ];
     let live = start;
@@ -63,7 +63,7 @@ describe('journal', () => {
     }
     // an app update: checkpoint, then more commands
     await appendJournal(id, { kind: 'checkpoint', reason: 'update', contentVersion: 'cv2', campaign: live });
-    const after: CampaignCommand = { type: 'setFlag', flag: 'after' };
+    const after: CampaignCommand = { type: 'effects', effects: [{ setFlag: 'avatar_bold' }] };
     live = applyCampaign(data, live, after).campaign;
     await appendJournal(id, { kind: 'command', cmd: after });
 
@@ -85,14 +85,14 @@ describe('journal', () => {
     const id = await campaignId();
     const errors: unknown[] = [];
     const w = createJournalWriter((e) => errors.push(e));
-    void w.append(id, { kind: 'command', cmd: { type: 'setFlag', flag: 'ok' } });
+    void w.append(id, { kind: 'command', cmd: { type: 'effects', effects: [{ setFlag: 'ok' }] } });
     // not serialisable → the write fails
-    void w.append(id, { kind: 'command', cmd: { type: 'setFlag', flag: 1n as unknown as string } });
-    void w.append(id, { kind: 'command', cmd: { type: 'setFlag', flag: 'later' } });
+    void w.append(id, { kind: 'command', cmd: { type: 'effects', effects: [{ setFlag: 1n as unknown as string }] } });
+    void w.append(id, { kind: 'command', cmd: { type: 'effects', effects: [{ setFlag: 'later' }] } });
     await w.flush();
     expect((await readJournal(id)).map((e) => e.kind === 'command' && e.cmd)).toEqual([
-      { type: 'setFlag', flag: 'ok' },
-      { type: 'setFlag', flag: 'later' },
+      { type: 'effects', effects: [{ setFlag: 'ok' }] },
+      { type: 'effects', effects: [{ setFlag: 'later' }] },
     ]);
     expect(errors).toHaveLength(1);
   });

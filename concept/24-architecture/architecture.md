@@ -190,6 +190,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 
 - Auswertung: `evalCondition(ctx, cond): boolean` und `applyEffects(c, effects, events)` in `src/core/campaign/conditions.ts` bzw. `effects.ts`. `ctx` ist eine schmale Sicht (`flags`, `roster`, `fallen`, `left`, `completed`, `supports`, `stance`, `lieutenants`, `chronicle`), damit dieselbe Funktion in Kampf und Kampagne läuft.
 - Zod-Schema `conditionSchema`/`effectSchema` in `src/content/schemas.ts`; `content:check` prüft alle Referenzen (Gefährte, Knoten, Flag, Leutnant, Paar) gegen das Register.
+- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `openQuest`, `setHome`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross.
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 

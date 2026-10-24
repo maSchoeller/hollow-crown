@@ -31,7 +31,7 @@ pnpm content:check  # YAML-Validierung, Referenzen, DE/EN
 pnpm sim ch01_varnhold --runs 50   # KI gegen KI fürs Balancing
 ```
 
-Struktur: `src/core` (reiner Regelkern, deterministisch), `src/content` (YAML + Zod), `src/render` (Babylon.js, 48-px-Pixel-Brett), `src/ui` + `src/app` (Preact), `content/` (Spieldaten), `art/` (Asset-Quellen, Git LFS).
+Struktur: `src/core` (reiner Regelkern, deterministisch), `src/content` (YAML + Zod), `src/render` (Babylon.js, 48-px-Pixel-Brett), `src/ui` + `src/app` (Preact), `content/core/` (Regeln, Werte, UI-Texte) und `content/acts/actN/` (Akt-Inhalte), `art/` (Asset-Quellen, Git LFS).
 
 ## Tech
 

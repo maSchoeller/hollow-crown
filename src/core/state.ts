@@ -4,9 +4,11 @@ import type {
   Difficulty,
   Element,
   EquipSlot,
+  FlagValue,
   MapDef,
   Mechanic,
   Pos,
+  Stance,
   Stats,
   StatusId,
   SupportRank,
@@ -180,7 +182,14 @@ export interface CampaignState {
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;
-  flags: string[];
+  /** story flags with their value (architecture §5.9) */
+  flags: Record<string, FlagValue>;
+  /** companions that left the company (effect `leave`) */
+  left: string[];
+  /** counters of the avatar's stance profile */
+  stance: Record<Stance, number>;
+  /** collected chronicle pages */
+  chronicle: string[];
   completed: string[];
   /** node ids available on the world map */
   available: string[];

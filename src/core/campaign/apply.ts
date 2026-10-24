@@ -10,6 +10,7 @@ import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { locateItem, offerPrice, rerollCost, runeMerge, takeItem, upgradable, upgradeCost } from './camp';
 import { currentTier, finishBattle, merchantStock } from './campaign';
+import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
@@ -123,8 +124,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!data.classes[u.classId]?.promotesTo.includes(cmd.classId) || !data.classes[cmd.classId]) return 'unknown_class';
       return sealOf(data, c, cmd.unit) ? null : 'not_enough_materials';
     }
-    case 'setFlag':
-      return null;
+    case 'effects':
+      return validateEffects(data, c, cmd.effects);
     case 'finishMission':
       return c.available.includes(cmd.start.nodeId) ? null : 'node_unavailable';
   }
@@ -295,11 +296,8 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       events.push({ t: 'promoted', unit: u.id, classId: cmd.classId });
       break;
     }
-    case 'setFlag':
-      if (!c.flags.includes(cmd.flag)) {
-        c.flags.push(cmd.flag);
-        events.push({ t: 'flagSet', flag: cmd.flag });
-      }
+    case 'effects':
+      applyEffects(data, c, cmd.effects, events);
       break;
   }
   return { campaign: c, events: [...resourceEvents(prev, c), ...events] };
