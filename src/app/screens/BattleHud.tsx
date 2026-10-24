@@ -18,7 +18,7 @@ import { t } from '../../i18n';
 import { ElementIcon, Icon, TriMark } from '../../ui/icons';
 import { itemName, unitName } from '../../ui/components';
 import { asset } from '../../ui/asset';
-import { ItemImage } from '../../ui/pieces';
+import { ItemChip } from '../../ui/pieces';
 import { avatarHead } from '../campaignInfo';
 import '../../ui/hud.css';
 
@@ -191,10 +191,7 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
 
 function WeaponChip({ data, item }: { data: GameData; item?: ItemInstance }) {
   return item ? (
-    <span class="hud-chip hud-chip--weapon">
-      <ItemImage data={data} item={item} size={22} />
-      <span class="hud-chip__name">{itemName(data, item)}</span>
-    </span>
+    <ItemChip data={data} item={item} name={itemName(data, item)} />
   ) : (
     <span class="hud-chip">{t('ui.unarmed')}</span>
   );

@@ -1,0 +1,53 @@
+/* Overlay sheet in style B (concept/25-ux/DESIGN.md): veil, header (round close stone + title pill), stone body, button row. */
+.hc-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: calc(var(--hc-hud-top) + var(--safe-top)) var(--hc-hud-edge) calc(var(--hc-hud-edge) + var(--safe-bottom));
+  background: var(--hc-veil);
+}
+.hc-sheet {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--hc-gap);
+  width: min(520px, 100%);
+  max-height: 100%;
+  color: var(--hc-line);
+}
+.hc-sheet.is-wide {
+  width: min(760px, 100%);
+}
+.hc-sheet__body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px;
+  background: var(--hc-cream);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line), var(--hc-soft-shadow);
+}
+.hc-sheet__foot {
+  display: flex;
+  gap: var(--hc-gap);
+}
+.hc-sheet__foot > * {
+  flex: 1;
+}
+@media (min-width: 700px) {
+  .hc-veil {
+    align-items: center;
+  }
+}
+
+.hc-sheet__head .hc-head__title b,
+.hc-sheet__head .hc-head__title span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

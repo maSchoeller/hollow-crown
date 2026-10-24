@@ -2,16 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   active,
   onDifficulty,
-  applyCommand,
   availableActions,
   combinedRange,
   dangerZone,
   destinations,
-  dist,
   forecast,
   itemDef,
   itemTargets,
-  nearConvoy,
   pathTo,
   posKey,
   reachable,
@@ -31,13 +28,11 @@ import {
   type Stats,
   type Team,
 } from '../../core';
-import { activeSkillIds } from '../../core/rules/skills';
-import { mapOf, sideObjectiveDone } from '../../core/battle/objectives';
+import { mapOf } from '../../core/battle/objectives';
 import { BoardView } from '../../render/board';
 import { t } from '../../i18n';
 import { Dialogue } from '../../ui/Dialogue';
-import { ItemDetails, ItemRow, itemName, Modal, StatsGrid, Toast, UnitCard, unitName } from '../../ui/components';
-import { Icon } from '../../ui/icons';
+import { itemName, Toast, unitName } from '../../ui/components';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, data } from '../state/session';
@@ -64,6 +59,7 @@ import {
   TurnPill,
   UnitCardB,
 } from './BattleHud';
+import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, TradeSheet, UnitInfo } from './BattlePanels';
 
 export { pendingEvents };
 
@@ -86,9 +82,6 @@ function useWide(): boolean {
   return wide;
 }
 
-const AI_TEXT: Record<string, string> = {
-  aggressive: 'ui.ai.aggressive', hold: 'ui.ai.hold', guard: 'ui.ai.guard', trigger: 'ui.ai.trigger', hunt: 'ui.ai.hunt', raider: 'ui.ai.raider', flee: 'ui.ai.flee', support: 'ui.ai.support',
-};
 
 /** Class slot of the dock: skill actions the PoC classes bring along; real role actions arrive with stories 2.2/2.3. */
 const CLASS_KINDS: ActionOption['kind'][] = ['staff', 'command', 'rally'];
@@ -790,64 +783,41 @@ export function Battle() {
       {wide && <div class="side">{sheet}</div>}
 
       {classPick && (
-        <Modal title={t('ui.hud.classSlot')} onClose={() => setClassPick(false)}>
-          <div class="col">
-            {classOpts.map((o) => (
-              <button
-                key={o.kind}
-                class="btn"
-                style={{ justifyContent: 'flex-start' }}
-                onClick={() => {
-                  setClassPick(false);
-                  void doAction(o);
-                }}
-              >
-                <Icon name={o.kind} />
-                {t(`ui.action.${o.kind}`)}
-              </button>
-            ))}
-          </div>
-        </Modal>
+        <ClassPick
+          options={classOpts}
+          onClose={() => setClassPick(false)}
+          onPick={(o) => {
+            setClassPick(false);
+            void doAction(o);
+          }}
+        />
       )}
       {infoUnit && <UnitInfo u={infoUnit} s={s} onClose={() => setInfo(null)} onEquip={(item, slot) => void run({ type: 'equip', unit: infoUnit.uid, item, slot })} canEdit={playerTurn && infoUnit.team === 'player' && !infoUnit.acted} />}
       {objectives && <ObjectivesPanel s={s} onClose={() => setObjectives(false)} />}
       {menu && (
-        <Modal title={t('ui.menu')} onClose={() => setMenu(false)}>
-          <div class="col">
-            <button class="btn" onClick={() => { setMenu(false); screen.value = { name: 'options', back: { name: 'battle' } }; }}>
-              <Icon name="gear" />
-              {t('ui.options')}
-            </button>
-            {s.settings.deathMode !== 'classic' && (
-              <button class="btn" onClick={() => { setMenu(false); restartBattle(true); remount(); }}>
-                <Icon name="rewind" />
-                {t('ui.battle.restartRound')}
-              </button>
-            )}
-            <button class="btn" onClick={() => { setMenu(false); restartBattle(false); remount(); }}>
-              <Icon name="restart" />
-              {t('ui.battle.restartMission')}
-            </button>
-            <button class="btn ghost" onClick={() => (screen.value = { name: 'title' })}>
-              <Icon name="home" />
-              {t('ui.battle.toTitle')}
-            </button>
-            <div class="muted" style={{ fontSize: 13 }}>{t('ui.battle.autosaved')}</div>
-          </div>
-        </Modal>
+        <BattleMenu
+          s={s}
+          onClose={() => setMenu(false)}
+          onOptions={() => {
+            setMenu(false);
+            screen.value = { name: 'options', back: { name: 'battle' } };
+          }}
+          onRestartRound={() => {
+            setMenu(false);
+            restartBattle(true);
+            remount();
+          }}
+          onRestartMission={() => {
+            setMenu(false);
+            restartBattle(false);
+            remount();
+          }}
+          onTitle={() => (screen.value = { name: 'title' })}
+        />
       )}
-      {items && (
-        <Modal title={t('ui.action.item')} onClose={() => setItems(null)}>
-          <div class="list">
-            {items.list.map((uid) => {
-              const inst = unit(items.uid).bag.find((i) => i.uid === uid)!;
-              return <ItemRow key={uid} data={data} inst={inst} sub={<ItemDetails data={data} inst={inst} />} onClick={() => useItem(uid)} />;
-            })}
-          </div>
-        </Modal>
-      )}
-      {trade && <TradeModal s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
-      {convoy && <ConvoyModal s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
+      {items && <ItemPick u={unit(items.uid)} list={items.list} onPick={useItem} onClose={() => setItems(null)} />}
+      {trade && <TradeSheet s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
+      {convoy && <ConvoySheet s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
       {levelUp && <LevelUpPopup u={unit(levelUp.uid)} gains={levelUp.gains} level={levelUp.level} onDone={levelUp.done} />}
       {dialogue && (
         <Dialogue
@@ -878,199 +848,6 @@ function tilesInRect(r: [number, number, number, number]): Pos[] {
   const out: Pos[] = [];
   for (let y = Math.min(r[1], r[3]); y <= Math.max(r[1], r[3]); y++) for (let x = Math.min(r[0], r[2]); x <= Math.max(r[0], r[2]); x++) out.push([x, y]);
   return out;
-}
-
-function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s: BattleState; onClose: () => void; onEquip: (item: string, slot: 'mainHand' | 'bag') => void; canEdit: boolean }) {
-  const skills = activeSkillIds(data, u);
-  const all = [
-    ...(['mainHand', 'offHand', 'head', 'body', 'accessory1', 'accessory2'] as const).flatMap((sl) => (u.equip[sl] ? [{ inst: u.equip[sl]!, slot: sl as string }] : [])),
-    ...u.bag.map((i) => ({ inst: i, slot: 'bag' })),
-  ];
-  return (
-    <Modal title={unitName(u)} onClose={onClose}>
-      <div class="col" style={{ gap: 12 }}>
-        <UnitCard data={data} unit={u} state={s} />
-        <StatsGrid data={data} unit={u} state={s} />
-        {u.ai && u.team !== 'player' && (
-          <div class="row muted">
-            <Icon name="ai" size={18} />
-            {t(AI_TEXT[u.ai.profile] ?? 'ui.ai.aggressive')}
-          </div>
-        )}
-        <div>
-          <h3>{t('ui.inventory')}</h3>
-          <div class="list">
-            {all.map(({ inst, slot }) => {
-              const d = itemDef(data, inst);
-              const canSwap = canEdit && slot === 'bag' && d.slot === 'mainHand' && !!d.weaponType && data.classes[u.classId]!.weapons.includes(d.weaponType);
-              return (
-                <ItemRow
-                  key={inst.uid}
-                  data={data}
-                  inst={inst}
-                  sub={
-                    <>
-                      <span class="slot-label">{t(`ui.slot.${slot}`)}</span> <ItemDetails data={data} inst={inst} />
-                    </>
-                  }
-                  right={canSwap ? <button class="btn small" onClick={() => onEquip(inst.uid, 'mainHand')}>{t('ui.equip')}</button> : null}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <h3>{t('ui.skills')}</h3>
-          {skills.map((id) => (
-            <div key={id}>
-              <b>{t(`skill.${id}.name`)}</b> <span class="muted">– {t(`skill.${id}.desc`)}</span>
-            </div>
-          ))}
-          {u.scars.map((sc) => (
-            <div key={sc} class="row dis">
-              <Icon name="scar" size={16} />
-              {t(`scar.${sc}`)}
-            </div>
-          ))}
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
-function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () => void }) {
-  const map = mapOf(data, s);
-  const v = map.objectives.victory;
-  return (
-    <Modal title={t(map.nameKey)} onClose={onClose}>
-      <div class="col">
-        <div>
-          <b class="gold">{t('ui.obj.victory')}:</b> {t(`ui.world.goal.${v.type}`, { turns: 'turns' in v ? v.turns : 0 })}
-          {(v.type === 'defend' || v.type === 'survive') && <span class="muted"> ({t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })})</span>}
-        </div>
-        <div>
-          <b class="dis">{t('ui.obj.defeat')}:</b>{' '}
-          {map.objectives.defeat
-            .map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(`unit.${d.unit}.name`) }) : t('ui.obj.turnLimit', { turns: d.turns })))
-            .join(' · ')}
-        </div>
-        <h3>{t('ui.obj.side')}</h3>
-        {map.objectives.side.map((o) => (
-          <div key={o.id} class="row">
-            <span class={sideObjectiveDone(data, s, o) ? 'adv' : 'muted'}>
-              <Icon name={sideObjectiveDone(data, s, o) ? 'check' : 'target'} size={18} />
-            </span>
-            <span class="grow">{t(`ui.side.${o.type}`, { turns: o.turns ?? 0 })}</span>
-          </div>
-        ))}
-      </div>
-    </Modal>
-  );
-}
-
-function LevelUpPopup({ u, gains, level, onDone }: { u: BattleUnit; gains: Partial<Stats>; level: number; onDone: () => void }) {
-  useEffect(() => {
-    const id = setTimeout(onDone, 2400);
-    return () => clearTimeout(id);
-  }, []);
-  return (
-    <div class="modal-back" style={{ alignItems: 'center', background: 'rgba(8,10,20,0.35)' }} onClick={onDone}>
-      <div class="panel levelup">
-        <h2>{t('ui.levelUp')}</h2>
-        <div>
-          {unitName(u)} · {t('ui.lv')} <span class="num">{level}</span>
-        </div>
-        <div class="gains">
-          {(['hp', 'str', 'mag', 'skl', 'spd', 'lck', 'def', 'res'] as const).map((k) => (
-            <div key={k} class={gains[k] ? 'up' : 'muted'}>
-              {t(`ui.stat.${k}`)} <span class="num">{u.stats[k]}</span> {gains[k] ? `+${gains[k]}` : ''}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TradeModal({ s, a, b, onClose, onCommit }: { s: BattleState; a: string; b: string; onClose: () => void; onCommit: (cmd: Command) => void }) {
-  const ua = s.units.find((u) => u.uid === a)!;
-  const partners = s.units.filter((u) => u.team === 'player' && active(u) && u.uid !== a && u.pos && ua.pos && dist(u.pos, ua.pos) === 1);
-  const [with_, setWith] = useState(b);
-  const [ops, setOps] = useState<Array<{ item: string; to: string; slot: 'bag' }>>([]);
-  const preview = useMemo(() => {
-    try {
-      return applyCommand(data, s, { type: 'trade', unit: a, with: with_, ops }).state;
-    } catch {
-      return s;
-    }
-  }, [ops, with_]);
-  const pa = preview.units.find((u) => u.uid === a)!;
-  const pb = preview.units.find((u) => u.uid === with_)!;
-  const col = (u: BattleUnit, other: BattleUnit) => (
-    <div class="col grow" style={{ minWidth: 0 }}>
-      <b>{unitName(u)}</b>
-      {[...Object.values(u.equip).filter((i): i is NonNullable<typeof i> => !!i), ...u.bag].map((inst) => (
-        <ItemRow key={inst.uid} data={data} inst={inst} onClick={() => setOps((o) => [...o, { item: inst.uid, to: other.uid, slot: 'bag' }])} right={<span class="muted">⇄</span>} />
-      ))}
-      <div class="muted" style={{ fontSize: 12 }}>
-        {t('ui.bag')} {u.bag.length}/{data.balance.bag.size}
-      </div>
-    </div>
-  );
-  return (
-    <Modal title={t('ui.action.trade')} onClose={onClose} wide>
-      {partners.length > 1 && (
-        <div class="tabs" style={{ marginBottom: 8 }}>
-          {partners.map((p) => (
-            <div key={p.uid} class={`tab ${p.uid === with_ ? 'on' : ''}`} onClick={() => { setWith(p.uid); setOps([]); }}>
-              {unitName(p)}
-            </div>
-          ))}
-        </div>
-      )}
-      <div class="row" style={{ alignItems: 'flex-start' }}>
-        {col(pa, pb)}
-        {col(pb, pa)}
-      </div>
-      <div class="row" style={{ marginTop: 10 }}>
-        <button class="btn grow" onClick={() => setOps([])}>
-          {t('ui.reset')}
-        </button>
-        <button class="btn primary grow" disabled={!ops.length} onClick={() => onCommit({ type: 'trade', unit: a, with: with_, ops })}>
-          {t('ui.done')}
-        </button>
-      </div>
-    </Modal>
-  );
-}
-
-function ConvoyModal({ s, uid, onClose, onCommit }: { s: BattleState; uid: string; onClose: () => void; onCommit: (cmd: Command) => void }) {
-  const u = s.units.find((x) => x.uid === uid)!;
-  const [take, setTake] = useState<string | undefined>();
-  const [put, setPut] = useState<string | undefined>();
-  if (!u.pos || !nearConvoy(s, u, u.pos)) return null;
-  return (
-    <Modal title={t('ui.action.convoy')} onClose={onClose} wide>
-      <div class="muted" style={{ marginBottom: 8 }}>{t('ui.convoy.hint')}</div>
-      <div class="row" style={{ alignItems: 'flex-start' }}>
-        <div class="col grow" style={{ minWidth: 0 }}>
-          <b>{unitName(u)}</b>
-          {[...Object.values(u.equip).filter((i): i is NonNullable<typeof i> => !!i), ...u.bag].map((inst) => (
-            <ItemRow key={inst.uid} data={data} inst={inst} selected={put === inst.uid} onClick={() => setPut(put === inst.uid ? undefined : inst.uid)} />
-          ))}
-        </div>
-        <div class="col grow" style={{ minWidth: 0, maxHeight: 320, overflow: 'auto' }}>
-          <b>{t('ui.convoy')}</b>
-          {s.convoy.filter((i) => !itemDef(data, i).tags?.includes('convoyOnly')).map((inst) => (
-            <ItemRow key={inst.uid} data={data} inst={inst} selected={take === inst.uid} onClick={() => setTake(take === inst.uid ? undefined : inst.uid)} />
-          ))}
-        </div>
-      </div>
-      <button class="btn primary" style={{ marginTop: 10, width: '100%' }} disabled={!take && !put} onClick={() => onCommit({ type: 'convoy', unit: uid, take, put })}>
-        {t('ui.done')}
-      </button>
-    </Modal>
-  );
 }
 
 export { weaponRange };

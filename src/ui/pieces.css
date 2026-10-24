@@ -286,3 +286,57 @@
   outline: 3px solid var(--hc-ember);
   outline-offset: -5px;
 }
+
+/* Item image without own frame, used inside an item chip */
+.hc-item-image.is-bare {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Item chip (DESIGN.md Item-Chip): one frame - the pill takes the rarity colour, diamonds on its corner */
+.hc-item-chip {
+  --hc-item-rarity: var(--hc-rarity-common);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  padding: 1px 10px 1px 4px;
+  border: var(--hc-outline-small) solid var(--hc-item-rarity);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.hc-item-chip.is-rare {
+  --hc-item-rarity: var(--hc-rarity-rare);
+}
+.hc-item-chip.is-epic {
+  --hc-item-rarity: var(--hc-rarity-epic);
+}
+.hc-item-chip.is-legendary {
+  --hc-item-rarity: var(--hc-rarity-legendary);
+}
+.hc-item-chip.is-relic {
+  --hc-item-rarity: var(--hc-rarity-relic);
+  box-shadow: 0 0 0 2px var(--hc-rarity-relic-accent);
+}
+.hc-item-chip .hc-item-image {
+  margin: -3px 0;
+}
+.hc-item-chip__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hc-item-chip > .hc-item-image__gems {
+  top: -5px;
+  right: 2px;
+}
