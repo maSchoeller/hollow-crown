@@ -8,6 +8,7 @@ import {
   expProgress,
   isMercenary,
   itemDef,
+  lineKey,
   loadoutSlots,
   promotionTargets,
   ROLE_GROUPS,
@@ -23,6 +24,7 @@ import { Toast, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
+import { barkChar, barkScene, hasBark } from '../battle/barks';
 import { campaign, campaignCommand, data } from '../state/session';
 import { screen, type From } from '../state/screen';
 import { EquipView } from './Equip';
@@ -151,6 +153,8 @@ export function Figure({
 }) {
   const c = campaign.value!;
   const [toast, setToast] = useState<string | null>(null);
+  /** the companion's ember line after a promotion (story 9.13), shown as a quote toast */
+  const [ember, setEmber] = useState<string | null>(null);
   const [promoting, setPromoting] = useState(false);
   const start = useRef<{ x: number; y: number } | null>(null);
   const pos = units.indexOf(unit.id);
@@ -339,7 +343,7 @@ export function Figure({
                 key={cl}
                 onClick={() => {
                   setPromoting(false);
-                  apply({ type: 'promote', unit: unit.id, classId: cl });
+                  if (apply({ type: 'promote', unit: unit.id, classId: cl }) && hasBark(data, barkChar(unit), 'ember')) setEmber(lineKey(barkScene(barkChar(unit)), 'ember'));
                 }}
               >
                 {t(`class.${cl}.name`)}
@@ -354,6 +358,7 @@ export function Figure({
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
+      {ember && !toast && <Toast text={t('ui.farewell.quote', { text: t(ember) })} lead={<UnitHead portrait={data.chars[barkChar(unit)]?.portrait ?? unit.id} name={unitName(unit)} size={32} />} onDone={() => setEmber(null)} />}
     </div>
   );
 }

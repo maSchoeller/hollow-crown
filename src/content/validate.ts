@@ -7,6 +7,7 @@ import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles, gridRows, pairKey } from '../core/util';
+import { BARK_LINES } from './barkLines';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -306,6 +307,8 @@ export function validateContent(
   for (const sc of Object.values(data.scenes)) {
     const f = `scenes/${sc.id}`;
     const seen = new Set<string>();
+    // barks (story 9.13): only the six moments, one bubble page each in both languages
+    const bark = sc.id.startsWith('scn.bark.');
     for (const l of sc.lines) {
       const ctx = `${l.id}`;
       if (seen.has(l.id)) err(f, `${ctx}: duplicate line id`);
@@ -333,6 +336,13 @@ export function validateContent(
       }
       if (l.speaker) chain(f, l.speaker, ctx, l.fallback !== 'skip');
       else if (l.memorial) err(f, `${ctx}: a memorial line needs a speaker chain`);
+      if (bark) {
+        if (!(BARK_LINES as readonly string[]).includes(l.id)) err(f, `${ctx}: bark line id must be one of ${BARK_LINES.join(', ')}`);
+        const max = data.balance.scene.bubbleMaxChars;
+        const en = locales.en?.[lineKey(sc.id, l.id)];
+        if (l.text.length > max) err(f, `${ctx}: de bark longer than ${max} characters (${l.text.length})`);
+        if (en && en.length > max) err(f, `${ctx}: en bark longer than ${max} characters (${en.length})`);
+      }
       text(f, lineKey(sc.id, l.id), l.text, ctx);
       if (l.memorial) {
         chain(f, l.memorial.speaker, `${ctx}.memorial`, true);

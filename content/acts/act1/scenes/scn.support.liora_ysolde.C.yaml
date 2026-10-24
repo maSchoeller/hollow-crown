@@ -1,0 +1,69 @@
+id: scn.support.liora_ysolde.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Drei Fingerbreit höher als in Aurenhall. Gleiche Formel, gleiche Mühe. Das ist kein Zufall."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du redest mit dem Feuer?"
+  - id: l03
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Ich messe es. Je näher am Gebirge, desto stärker die Glut. Dreimal belegt!"
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "„Das Licht ist die Glut der Krone.“ So haben sie es mir beigebracht. Ohne Zahlen."
+  - id: l05
+    speaker: [ysolde]
+    fallback: skip
+    mood: angry
+    text: "Der Spruch behauptet nur. Er erklärt nichts. Eine Messung ist kein Frevel."
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Für den Tempel schon, wenn sie etwas misst, das er nicht erlaubt hat."
+  - id: l07
+    speaker: [ysolde]
+    fallback: skip
+    mood: angry
+    text: "Du verteidigst ihn also."
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich widerspreche dir. Das ist etwas anderes. Auch wenn ich nicht weiß, wem zuerst."
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Neulich schlossen sich Wunden unter meinen Händen schneller als sonst. Ich nannte es Gnade."
+  - id: l10
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Wo genau? Wann? Sag mir alles, ich brauche jeden Punkt!"
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich zitiere den Tempel und du willst Tabellen. Wir werden uns nie einig."
+  - id: l12
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Müssen wir nicht. Nur genau sein."
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich habe nie nachgesehen, ob es wirklich Gnade war. Man tut das nicht."

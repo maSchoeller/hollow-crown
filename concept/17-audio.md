@@ -40,6 +40,8 @@ Der **Erzähler** für das Prolog-Intro ist Liora (Vision) aus dem Off, damit wi
 
 ## 3. Barks (Kampf-Ausrufe)
 
+> **Stand 2026-10-24 (Entscheidung des Produktinhabers, Story 9.13):** Vorerst gelten die 6 Ereignisse der Narrative (Kampfbeginn, Krit, niedergestreckt, Dank fürs Bergen, Stufenaufstieg, Glutfunke) statt der 18-Zeilen-Tabelle unten. Die Bark-Texte liegen als Szenen `scn.bark.<charId>` in `content/acts/act1/scenes/` (eine Zeile je Ereignis, Englisch unter `dlg.scn.bark.<charId>.<Zeile>`); die Auslöser sind Darstellung in `src/app/battle/barks.ts`, nicht im Kern. Die Tabelle bleibt als Rahmen für die Vertonung.
+
 Pro Story-Figur sind das **18 Zeilen pro Sprache**, meist 1–5 Wörter. Kurze Zeilen kosten wenig, und spätere Textänderungen sind billig.
 
 | Ereignis | Anzahl | Beispiel Kael (DE / EN) |

@@ -6,13 +6,64 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: neutral
-    text: "Wenn wir je nach Aurenhall zurückgehen … erkennen sie dich?"
+    text: "Gib her. Das Banner. Du nähst, als wolltest du es bestrafen."
   - id: l02
     speaker: [kael]
+    fallback: skip
     mood: sad
-    text: "Sie werden mich erkennen. Als den Wächter, der versagt hat."
+    text: "Gerrit hat den Faden immer selbst gewählt. Ich weiß nicht mal, welchen."
   - id: l03
     speaker: [brenna]
     fallback: skip
-    mood: angry
-    text: "Dann sollen sie erst mal an mir vorbei. Und an meiner Axt."
+    mood: neutral
+    text: "Den braunen. Hat er geschworen, hält besser. Stimmt nicht, aber er hat's geschworen."
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich hätte bei ihm sein müssen."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Du warst bei uns. Das ist auch eine Stelle, an der man sein muss."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich hab die Karte, den Sold, die Wache. Und jetzt auch noch …"
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Die Wache übernehm ich. Die Karte morgen, die Münzen auch."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Das ist zu viel für eine."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Es ist weniger als das, was du schleppst. Setz dich einfach hin, Kael."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "…"
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Und wenn du dich gleich nicht hinlegst, erzähl ich dir noch einen Witz."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: happy
+    text: "Das ist eine Drohung."
+  - id: l13
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Ein Versprechen. Das gilt, solange du wach bist."

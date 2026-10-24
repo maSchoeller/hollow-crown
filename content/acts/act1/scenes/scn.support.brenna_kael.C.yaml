@@ -6,22 +6,59 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: happy
-    text: "Du grübelst wieder, Hauptmann. Man hört es bis zum Kochtopf."
+    text: "Was macht eine Axt, wenn sie müde ist, Hauptmann? Sie haut sich aufs Ohr!"
   - id: l02
     speaker: [kael]
+    fallback: skip
     mood: neutral
-    text: "Ich habe das Emblem nicht ganz abgekratzt. Man sieht noch die Lanze."
+    text: "Gestern war es eine Schaufel."
   - id: l03
     speaker: [brenna]
     fallback: skip
-    mood: neutral
-    text: "Ich hab dich nicht aus dem Kerker gekauft, damit du dich mit einem Stück Blech quälst."
+    mood: happy
+    text: "Die hat sich zur Ruhe gesetzt. Du lachst nie. Das ist kein Mangel am Witz."
   - id: l04
     speaker: [kael]
-    mood: happy
-    text: "Du hast mich für zwölf Silberstücke gekauft. Ein Schnäppchen, sagst du immer."
+    fallback: skip
+    mood: neutral
+    text: "Ich lache, wenn es einen Grund gibt."
   - id: l05
     speaker: [brenna]
     fallback: skip
+    mood: neutral
+    text: "Du hast auch nicht gelacht, als ich damals ans erste Feuer kam. Nur genickt."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Du hast genug geredet für zwei."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und du hast nie gefragt, warum ich allein kam. Kein einziges Mal."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Wolltest du es erzählen?"
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Nein."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
     mood: happy
-    text: "Und ich bereue keinen Heller. Jetzt iss."
+    text: "Siehst du."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Zwölf Jahre, und es ist immer noch dieselbe Nicht-Frage."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Sie hat sich bewährt. Gib mir den Löffel, der Eintopf brennt an."

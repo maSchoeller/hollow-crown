@@ -1,0 +1,69 @@
+id: scn.support.avatar_liora.S
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Ich habe wieder geträumt. Keine Sorge, diesmal ohne Berg."
+  - id: l02
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Ohne Krone auch?"
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Ohne Krone. Du saßt nur an einem Feuer. So wie jetzt."
+  - id: l04
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Klingt harmlos."
+  - id: l05
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich war froh darin. Das ist das Seltsame. Ich musste nichts deuten."
+  - id: l06
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und was sagt der Tempel dazu?"
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Dem Tempel fällt dazu nichts ein. Mir schon."
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Als Morra kam, habe ich nach dir gesucht. Vor allen anderen. Das wollte ich dich wissen lassen."
+  - id: l09
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Ich bin froh, dass du es sagst."
+  - id: l10
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe dich auch gesucht. Nur nicht laut."
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Dann sagen wir es jetzt beide leise."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Ich habe mich in dich verliebt, Liora. Irgendwann zwischen Berg und Feuer."
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Ich dich auch. Der Tee wird kalt."

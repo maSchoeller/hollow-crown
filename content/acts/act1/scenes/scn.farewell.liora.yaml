@@ -1,18 +1,18 @@
-# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
 id: scn.farewell.liora
 lines:
   - id: last
     speaker: [liora]
     fallback: skip
     mood: sad
-    text: "Ich habe so viele Wunden geschlossen. Diese hier … lasst offen. Es ist gut."
-  - id: grief_ysolde
-    speaker: [ysolde]
-    fallback: skip
-    mood: sad
-    text: "Sie hat mich gelehrt, dass Licht nicht nur brennt. Wer lehrt mich das jetzt?"
+    text: "Es ist nicht dunkel. Nur still. Ihr seid noch bei mir."
   - id: grief_avatar
     speaker: [avatar]
     fallback: skip
     mood: sad
-    text: "Sie hat nie gefragt, wer es verdient, geheilt zu werden. Nur, wer es braucht."
+    text: "Du hast Verbände gerollt, neben meiner Wache. Ich lasse den Platz frei, Liora."
+  - id: grief_ysolde
+    speaker: [ysolde]
+    fallback: skip
+    mood: sad
+    text: "Sie wollte nie nachsehen, ob es Gnade war. Ich hätte ihr gern Tabellen vorgelesen."
