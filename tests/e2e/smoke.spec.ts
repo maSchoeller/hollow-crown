@@ -16,7 +16,7 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
   await page.getByRole('button', { name: /Sure\?|Wirklich\?/ }).click();
   // enemy phase plays, then the turn-2 tutorial appears
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 60_000 });
-  await expect(page.locator('.topbar')).toContainText('2');
+  await expect(page.locator('.hud-top')).toContainText('2');
   // no horizontal page scroll on phones (concept/13 §6.1)
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
@@ -44,8 +44,8 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
     // screenOf takes ground coordinates in tiles (x east, y south)
     const board = (window as unknown as { __board: { screenOf(x: number, y: number): { y: number }; state: { height: number } } }).__board;
     const canvas = document.querySelector('canvas.board-canvas')!.getBoundingClientRect();
-    const top = document.querySelector('.topbar')!.getBoundingClientRect();
-    const sheet = document.querySelector('.battle .bottom')?.getBoundingClientRect();
+    const top = document.querySelector('.hud-top')!.getBoundingClientRect();
+    const sheet = document.querySelector('.battle .hud-bottom')?.getBoundingClientRect();
     const mapTop = board.screenOf(0, 0).y;
     const mapBottom = board.screenOf(0, board.state.height).y;
     const sheetTop = (sheet ? sheet.top : canvas.bottom) - canvas.top;

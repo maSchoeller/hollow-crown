@@ -10,7 +10,6 @@ import {
   weaponProfile,
   type BattleState,
   type BattleUnit,
-  type Forecast,
   type GameData,
   type ItemInstance,
   type Team,
@@ -18,7 +17,7 @@ import {
 } from '../core';
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
-import { ElementIcon, Icon, TriMark } from './icons';
+import { ElementIcon, Icon } from './icons';
 import { Amount, ItemImage } from './pieces';
 import { asset } from './asset';
 
@@ -227,115 +226,6 @@ export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: G
         {sub && <small>{sub}</small>}
       </div>
       <div>{right}</div>
-    </div>
-  );
-}
-
-/** Combat forecast as a duel card (U20/U21): names with crests, big numbers, HP after. Same numbers as the resolution. */
-export function ForecastView({ data, state, f }: { data: GameData; state: BattleState; f: Forecast }) {
-  const a = state.units.find((u) => u.uid === f.attacker.uid)!;
-  const d = state.units.find((u) => u.uid === f.defender.uid)!;
-  const aw = f.attacker.weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === f.attacker.weaponUid) : undefined;
-  const dw = d.equip.mainHand;
-  const who = (s: Forecast['attacker'], u: BattleUnit, w: ItemInstance | undefined, right: boolean) => (
-    <div class={`fc-who ${right ? 'right' : ''}`}>
-      <Crest id={u.portrait} name={unitName(u)} w={48} h={56} team={u.team} />
-      <div style={{ minWidth: 0 }}>
-        <div class="fc-name">{unitName(u)}</div>
-        <div class="unit-sub">
-          {w && <ItemImage data={data} item={w} size={24} />}
-          {w ? itemName(data, w) : '–'}
-          <TriMark v={s.triangle} label={t(s.triangle > 0 ? 'ui.fc.advantage' : 'ui.fc.disadvantage')} />
-          {s.effective && <span class="gold">{t('ui.effective')}</span>}
-        </div>
-      </div>
-    </div>
-  );
-  const val = (s: Forecast['attacker'], k: 'dmg' | 'hit' | 'crit') => {
-    if (!s.canStrike) return <span class="fc-val muted">–</span>;
-    if (k === 'dmg')
-      return (
-        <span class="fc-val">
-          {s.damage}
-          {s.strikes > 1 && <small class="mult">×{s.strikes}</small>}
-        </span>
-      );
-    return (
-      <span class="fc-val">
-        {k === 'hit' ? s.hit : s.crit}
-        <small>%</small>
-      </span>
-    );
-  };
-  const elem = (s: Forecast['attacker']) =>
-    s.element ? (
-      <span class={`fc-val ${s.elementMult > 1 ? 'adv' : s.elementMult < 1 ? 'dis' : ''}`} style={{ fontSize: 18 }}>
-        <ElementIcon el={s.element} /> {s.elementMult !== 1 ? `${s.elementMult > 1 ? '+' : ''}${Math.round((s.elementMult - 1) * 100)}%` : ''}
-      </span>
-    ) : (
-      <span />
-    );
-  const hpCell = (s: Forecast['attacker'], u: BattleUnit, after: number) => (
-    <div class="fc-hp">
-      <span class="hp-num">
-        {s.hpBefore} → {after}
-      </span>
-      <HpBar hp={s.hpBefore} max={s.maxHp} preview={after} team={u.team} />
-    </div>
-  );
-  const tandem = f.tandem ? state.units.find((u) => u.uid === f.tandem!.uid) : undefined;
-  const guard = f.guard ? state.units.find((u) => u.uid === f.guard!.uid) : undefined;
-  return (
-    <div class="forecast">
-      <div class="fc-head">
-        {who(f.attacker, a, aw, false)}
-        <span class="lbl" style={{ color: 'var(--ink)' }}>{t('ui.fc.vs')}</span>
-        {who(f.defender, d, dw, true)}
-      </div>
-      <div class="fc-table">
-        <div class="fc-row">
-          {val(f.attacker, 'dmg')}
-          <span class="lbl">{t('ui.dmg')}</span>
-          {val(f.defender, 'dmg')}
-        </div>
-        <div class="fc-row">
-          {val(f.attacker, 'hit')}
-          <span class="lbl">{t('ui.hit')}</span>
-          {val(f.defender, 'hit')}
-        </div>
-        <div class="fc-row">
-          {val(f.attacker, 'crit')}
-          <span class="lbl">{t('ui.crit')}</span>
-          {val(f.defender, 'crit')}
-        </div>
-        {ruleOn(state, 'elements') && (f.attacker.element || f.defender.element) && (
-          <div class="fc-row">
-            {elem(f.attacker)}
-            <span class="lbl">{t('ui.element')}</span>
-            {elem(f.defender)}
-          </div>
-        )}
-        <div class="fc-row">
-          {hpCell(f.attacker, a, f.attackerHpAfter)}
-          <span class="lbl">{t('ui.fc.hpAfter')}</span>
-          {hpCell(f.defender, d, f.defenderHpAfter)}
-        </div>
-      </div>
-      {f.attacker.status.filter((x) => x.chance > 0).map((x) => (
-        <div class="fc-note" key={x.status}>
-          {t(`ui.status.${x.status}`)}: {x.chance}%
-        </div>
-      ))}
-      {tandem && (
-        <div class="fc-note">
-          {t('ui.tandem')}: {unitName(tandem)} ({f.tandem!.damage} · {f.tandem!.hit}%)
-        </div>
-      )}
-      {guard && (
-        <div class="fc-note">
-          {t('ui.guard')}: {unitName(guard)} {f.guard!.chance}%
-        </div>
-      )}
     </div>
   );
 }

@@ -1,0 +1,774 @@
+/* Battle HUD in style B (concept/25-ux/DESIGN.md, mockup 02-kampf.html). Stones from pieces.css; tokens --hc-*. */
+.battle {
+  --hud-player: var(--hc-team-player);
+  --hud-enemy: var(--hc-team-enemy);
+  --hud-other: var(--hc-team-other);
+}
+.hud-sheet button,
+.hud-top button,
+.hud-roster button,
+.hud-speed button {
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- top: round pill, menu stone, goal pills ---------- */
+.hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: grid;
+  gap: 9px;
+  padding: calc(var(--hc-hud-top) + var(--safe-top)) var(--hc-hud-edge) 0;
+  pointer-events: none;
+}
+.hud-top > * {
+  pointer-events: auto;
+}
+.hud-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--hc-gap);
+  max-width: 520px;
+}
+.hud-badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  background: var(--hc-ember);
+  color: #fff;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+}
+.hud-turn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 5px;
+  border-radius: var(--hc-r-pill);
+  text-align: left;
+  cursor: pointer;
+}
+.hud-turn__text {
+  display: grid;
+  min-width: 0;
+}
+.hud-l1 {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hc-team-player);
+  line-height: 1.2;
+}
+.hud-l1.is-enemy {
+  color: var(--hc-team-enemy);
+}
+.hud-l1.is-other {
+  color: var(--hc-positive);
+}
+.hud-fc .hud-l1,
+.hud-roster .hud-l1 {
+  color: var(--hc-soft);
+  text-align: center;
+}
+.hud-l2 {
+  font-family: var(--hc-font-body);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hud-l2__more {
+  font-weight: 600;
+  color: var(--hc-soft);
+}
+.hud-round {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.hud-round:active,
+.hud-turn:active,
+.hud-ctx:active,
+.hud-back:active {
+  transform: translateY(calc(var(--hc-press-depth) - 1px));
+  box-shadow: 0 1px 0 var(--hc-line), var(--hc-soft-shadow);
+}
+.hud-goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 520px;
+}
+.hud-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 2px 10px 2px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 3px 0 var(--hc-line);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hud-goal > span:not(.hud-goal__count) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hud-goal__count {
+  color: var(--hc-soft);
+  font-family: var(--hc-font-label);
+  font-variant-numeric: tabular-nums;
+}
+.hud-goal.is-done {
+  background: var(--hc-positive-soft);
+  color: var(--hc-positive);
+}
+.hud-goal.is-failed {
+  background: var(--hc-team-enemy-soft);
+  color: var(--hc-team-enemy);
+}
+/* scenes (dialogue) hide the HUD completely (EXPERIENCE.md HUD & Diegetic UI) */
+.battle.in-scene .hud-top,
+.battle.in-scene .hud-bottom,
+.battle.in-scene .hud-speed,
+.battle.in-scene .side {
+  visibility: hidden;
+}
+/* enemy / third-party phase: coloured pill with the big title instead of the bar */
+.hud-phase {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 20px 6px 8px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-team-enemy);
+  color: #fff;
+  pointer-events: none;
+}
+.hud-phase.is-other {
+  background: var(--hc-team-other);
+}
+.hud-phase.is-player {
+  background: var(--hc-team-player);
+}
+.hud-phase .hud-badge {
+  background: var(--hc-cream);
+  color: var(--hc-team-enemy);
+}
+.hud-phase.is-other .hud-badge {
+  color: var(--hc-positive);
+}
+.hud-phase.is-player .hud-badge {
+  color: var(--hc-team-player);
+}
+.hud-phase__title {
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* speed of the enemy phase, bottom right (thumb) */
+.hud-speed {
+  position: absolute;
+  right: var(--hc-hud-edge);
+  bottom: calc(var(--hc-hud-edge) + var(--safe-bottom));
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--hc-r-pill);
+}
+.hud-speed button {
+  min-height: 36px;
+  padding: 3px 12px;
+  border: 0;
+  border-radius: var(--hc-r-pill);
+  background: transparent;
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.hud-speed button.is-on {
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+
+/* ---------- bottom: context bands, unit card, dock ---------- */
+.hud-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  padding: 0 var(--hc-hud-edge) calc(var(--hc-hud-edge) + var(--safe-bottom));
+  pointer-events: none;
+}
+.hud-bottom > * {
+  pointer-events: auto;
+}
+.hud-sheet {
+  display: grid;
+  gap: 9px;
+}
+.hud-sheet:empty {
+  display: none;
+}
+.hud-row {
+  display: flex;
+  align-items: center;
+  gap: var(--hc-gap);
+  min-width: 0;
+}
+.hud-back {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--hc-r-pill);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.hud-hint {
+  padding: 6px 14px;
+  border-radius: var(--hc-r-pill);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.25;
+  background: var(--hc-cream-2);
+}
+.hud-hint.is-reason {
+  background: var(--hc-offer-soft);
+}
+
+.hud-unit {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px 10px 10px;
+}
+.hud-unit.is-click {
+  cursor: pointer;
+}
+.hud-unit__body {
+  min-width: 0;
+}
+.hud-unit__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.hud-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: var(--hc-size-name);
+  line-height: 1.05;
+}
+.hud-name--small {
+  font-size: 17px;
+}
+.hud-hp {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-number);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hud-sub {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--hc-soft);
+}
+.hud-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 1px 9px 1px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.hud-chip--weapon {
+  min-width: 0;
+  padding-left: 3px;
+}
+.hud-chip--weapon .hc-item-image {
+  flex: none;
+}
+.hud-chip__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hud-chip--weapon .hc-item-image {
+  margin: -3px 0;
+}
+.hud-chip.is-adv {
+  background: var(--hc-team-player-soft);
+  color: var(--hc-team-player);
+}
+.hud-chip.is-dis {
+  background: var(--hc-team-enemy-soft);
+  color: var(--hc-team-enemy);
+}
+.hud-chip.is-gold {
+  background: var(--hc-offer-soft);
+  color: var(--hc-lieutenant);
+}
+.hud-terrain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+}
+.hud-terrain .hud-name {
+  flex: none;
+}
+.hud-terrain .hud-chips {
+  margin: 0;
+}
+
+/* medallion: round head, HP ring in the team colour, level pill at the bottom */
+.hud-medal {
+  --hud-size: 78px;
+  --hud-team: var(--hud-player);
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--hud-size);
+  height: var(--hud-size);
+  padding: calc(var(--hud-size) * 0.064);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  background: conic-gradient(var(--hud-team) 0 var(--hud-hp, 100%), rgba(59, 42, 32, 0.18) 0 100%);
+}
+.hud-medal.is-enemy {
+  --hud-team: var(--hud-enemy);
+}
+.hud-medal.is-other {
+  --hud-team: var(--hud-other);
+}
+.hud-medal__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-team-player-soft);
+}
+.is-enemy > .hud-medal__face {
+  background: var(--hc-team-enemy-soft);
+}
+.is-other > .hud-medal__face {
+  background: var(--hc-positive-soft);
+}
+.hud-head {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hud-head--initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--hc-line);
+}
+.hud-medal__lv {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 7px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.hud-medal.is-down {
+  background: conic-gradient(var(--hc-downed) 0 0%, rgba(59, 42, 32, 0.18) 0 100%);
+}
+.hud-medal.is-down .hud-head {
+  filter: grayscale(1) brightness(1.05);
+}
+/* spent: desaturated, dashed ring */
+.hud-medal.is-spent {
+  border-style: dashed;
+}
+.hud-medal.is-spent .hud-head {
+  filter: saturate(0.35);
+}
+
+/* context band: green pill above the card */
+.hud-ctx {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px 8px 8px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-positive-soft);
+  text-align: left;
+  cursor: pointer;
+}
+.hud-ctx__mini {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+}
+.hud-ctx__mini .hud-head:not(.hud-head--initial) {
+  filter: grayscale(1);
+}
+.hud-ctx__text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.hud-ctx__text b {
+  font-family: var(--hc-font-label);
+  font-size: 16px;
+  line-height: 1.15;
+}
+.hud-ctx__text small {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.hud-ctx__go {
+  flex: none;
+  padding: 3px 12px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-positive);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* dock: four fixed slots (or three in idle) */
+.hud-dock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+.hud-dock.is-three {
+  grid-template-columns: 1fr 1fr 1.5fr;
+}
+.hud-act {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1px;
+  min-height: 62px;
+  padding: 8px 2px 6px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-action);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 60ms ease-out, box-shadow 60ms ease-out;
+}
+.hud-act small {
+  font-family: var(--hc-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+.hud-act:active {
+  transform: translateY(calc(var(--hc-press-depth) - 1px));
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hud-act.is-primary {
+  background: var(--hc-ember);
+  color: #fff;
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-ember-dark), 0 var(--hc-press-depth) 0 2px var(--hc-line);
+}
+.hud-act.is-primary:active {
+  box-shadow: 0 1px 0 var(--hc-ember-dark), 0 1px 0 2px var(--hc-line);
+}
+.hud-act.is-class {
+  background: var(--hc-team-player-soft);
+}
+.hud-act.is-on {
+  background: #f8d9d4;
+}
+/* impossible: dimmed, never hidden; the tap still answers with the reason */
+.hud-act.is-dim {
+  opacity: 0.45;
+  filter: saturate(0.5);
+  cursor: default;
+}
+.hud-act.is-dim:active {
+  transform: none;
+  box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line);
+}
+.hud-act:focus-visible,
+.hud-ctx:focus-visible,
+.hud-back:focus-visible,
+.hud-goal:focus-visible,
+.hud-turn:focus-visible,
+.hud-round:focus-visible,
+.hud-speed button:focus-visible,
+.hud-roster__row:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+.hud-confirm {
+  display: grid;
+  grid-template-columns: 1fr 1.7fr;
+  gap: 7px;
+}
+.hud-confirm.has-swap {
+  grid-template-columns: 1fr 1fr 1.6fr;
+}
+.hud-confirm .hc-btn {
+  width: 100%;
+}
+
+/* ---------- forecast ---------- */
+.hud-fc {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+.hud-fc__head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+}
+.hud-fc__who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.hud-fc__who.is-right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.hud-fc__who.is-right .hud-chips {
+  justify-content: flex-end;
+}
+.hud-fc__id {
+  min-width: 0;
+  display: grid;
+}
+.hud-fc__who .hud-name {
+  flex: none;
+}
+.hud-fc__table {
+  display: grid;
+  background: var(--hc-cream-2);
+  border-radius: var(--hc-r-card-inner);
+  padding: 2px 12px;
+}
+.hud-fc__row {
+  display: grid;
+  grid-template-columns: 1fr 76px 1fr;
+  align-items: center;
+  min-height: 38px;
+}
+.hud-fc__row + .hud-fc__row {
+  border-top: 1.5px solid rgba(59, 42, 32, 0.14);
+}
+.hud-fc__row > :first-child {
+  text-align: left;
+}
+.hud-fc__row > :last-child {
+  text-align: right;
+}
+.hud-fc__val {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.hud-fc__val small {
+  font-size: 15px;
+}
+.hud-fc__val.is-none {
+  color: var(--hc-soft);
+}
+.hud-fc__mult {
+  margin-left: 3px;
+  color: var(--hc-ember-dark);
+}
+.hud-fc__hp {
+  display: grid;
+  gap: 4px;
+}
+.hud-fc__row > :last-child.hud-fc__hp {
+  justify-items: end;
+}
+.hud-fc__hp .hud-bar {
+  width: 100%;
+}
+.hud-bar {
+  --hud-team: var(--hud-player);
+  position: relative;
+  height: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+}
+.hud-bar.is-enemy {
+  --hud-team: var(--hud-enemy);
+}
+.hud-bar.is-other {
+  --hud-team: var(--hud-other);
+}
+.hud-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+.hud-bar__loss {
+  background: var(--hc-ember);
+  opacity: 0.55;
+}
+.hud-bar__keep {
+  z-index: 1;
+  background: var(--hud-team);
+}
+.hud-fc__notes {
+  margin-top: 0;
+  justify-content: center;
+}
+.hud-fc__notes:empty {
+  display: none;
+}
+
+/* ---------- roster (left panel from 1024 px) ---------- */
+.hud-roster {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.hud-roster h3 {
+  margin: 0 0 2px;
+  text-align: left;
+}
+.hud-roster__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 10px 6px 6px;
+  border-radius: var(--hc-r-pill);
+  text-align: left;
+  cursor: pointer;
+}
+.hud-roster__text {
+  display: grid;
+  min-width: 0;
+}
+
+/* ---------- tablet and desktop (EXPERIENCE.md Responsive): side column 320 px from 600, panels from 1024 ---------- */
+.side-left {
+  display: none !important;
+}
+@media (min-width: 600px) {
+  .battle.has-side {
+    grid-template-columns: 1fr 320px;
+  }
+  .battle .side {
+    position: relative;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: calc(12px + var(--safe-top)) 12px calc(12px + var(--safe-bottom));
+    overflow: auto;
+    background: var(--hc-cream-2);
+    border-left: var(--hc-outline) solid var(--hc-line);
+  }
+  .battle .side .hud-sheet {
+    margin-top: auto;
+  }
+}
+@media (min-width: 1024px) {
+  .battle.has-side {
+    grid-template-columns: 280px 1fr 320px;
+  }
+  .battle .side-left {
+    display: flex !important;
+    border-left: none;
+    border-right: var(--hc-outline) solid var(--hc-line);
+  }
+}

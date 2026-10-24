@@ -29,7 +29,7 @@ const P: Record<string, string> = {
   attack: 'M4 20l6-6M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',
   item: 'M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3',
   trade: 'M4 8h13l-3-3M20 16H7l3 3',
-  wait: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 8v4l3 2',
+  wait: 'M6 3h12M6 21h12M7 3c0 5 10 6 10 9s-10 4-10 9M17 3c0 5-10 6-10 9s10 4 10 9',
   talk: 'M4 5h16v10H10l-4 4v-4H4z',
   visit: 'M4 11l8-7 8 7M6 10v10h12V10M10 20v-5h4v5',
   chest: 'M4 9h16v10H4zM4 9l2-4h12l2 4M11 12h2v3h-2z',
@@ -42,9 +42,14 @@ const P: Record<string, string> = {
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
+  // roles (class-action slot of the battle dock)
+  shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
+  blade: 'M5 19l4-1 10-10-3-3L6 15zM14 6l3 3M4 20l1-3',
+  bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   danger: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   target: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
   next: 'M5 12h12M13 6l6 6-6 6',
+  end: 'M6 5l7 7-7 7M13 5l7 7-7 7',
   ai: 'M9 4h6v3h3v6h-3v3H9v-3H6V7h3zM10 10h.01M14 10h.01',
   // camp
   camp: 'M3 20L12 4l9 16zM12 4v16M9 20l3-5 3 5',

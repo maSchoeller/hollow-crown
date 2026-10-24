@@ -16,6 +16,8 @@ import {
   ruleOn,
   nextFloat,
   reachable,
+  sideObjectiveDone,
+  sideObjectiveProgress,
   seedRng,
   triangleOf,
   weaponProfile,
@@ -70,6 +72,23 @@ describe('rng', () => {
     expect(xs).toEqual(ys);
     expect(xs.every((x) => x >= 0 && x < 1)).toBe(true);
     expect(seedRng(1)).not.toEqual(seedRng(2));
+  });
+});
+
+describe('side objective progress (story 2.1)', () => {
+  it('counts villages for the HUD pill and agrees with the done check', () => {
+    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'visit_villages')!;
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 0, total: 3 });
+    expect(sideObjectiveDone(data, s, o)).toBe(false);
+    s.stats.villagesVisited.push('v_north', 'v_east', 'v_west');
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 3, total: 3 });
+    expect(sideObjectiveDone(data, s, o)).toBe(true);
+  });
+  it('has no count for objectives that are not about counting', () => {
+    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'turn_limit')!;
+    expect(sideObjectiveProgress(data, s, o)).toBeUndefined();
   });
 });
 
