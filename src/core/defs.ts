@@ -783,6 +783,8 @@ export interface RenderDef {
     fpsIdle: number;
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
+    /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */
+    fade: { alpha: number; cover: number; figureWidth: number };
   };
   /** GA9: weapon model per equipped weapon group / off-hand item kind, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<ItemDef['kind'], GearPiece>> };

@@ -24,6 +24,10 @@ board:
   fpsActive: 60                           # D8: Bildrate, solange sich etwas bewegt (auch auf 120-Hz-Displays)
   fpsIdle: 30                             # Bildrate in Ruhe (nur Idle-Animationen, Wasser, Feuer): spart Akku
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
+  # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten
+  # Requisite, cover = so viele Felder der Figurenhöhe muss sie verdecken (aus Kameraneigung und Modellmaßen berechnet),
+  # figureWidth = halbe Breite der Figur in Feldern für die seitliche Überdeckung
+  fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3 }
 
 # GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
 # Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel

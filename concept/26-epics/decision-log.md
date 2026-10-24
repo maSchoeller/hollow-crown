@@ -40,3 +40,4 @@
 | 2026-10-24 | GDD und Art Direction nachgezogen (Slots, Wolfsreiter zu Fuß, Heimsuchungs-Gold, Armee-Limit, Schwierigkeit, Development Epics); Brief bleibt unverändert | Produktinhaber, Fragetool |
 | 2026-10-24 | **GA26/O5 geklärt:** Veröffentlichungssperre aufgehoben (`AGENTS.md`, `licensing.md`, NFR15); die Auflagen der Pipeline (§6) gelten weiter | Produktinhaber, Fragetool |
 | 2026-10-24 | Import-Größenlimit und Zod-Prüfung bleiben bei Story 1.5, der Lösch-Dialog bleibt Zwischenlösung bis Story 1.3 | Produktinhaber, Fragetool |
+| 2026-10-24 | Neue Story 8.10 „Verdeckte Figuren bleiben sichtbar“ in Epic 8 (Darstellung des Bretts, neben 8.6), nicht in Epic 5 (Weltkarte); die Verdeckung folgt aus Kameraneigung und Modellmaßen, Deckkraft und Mindestverdeckung in `render.yaml` (`board.fade`); gilt für jede Requisite, die eine Figur genug verdeckt | Produktinhaber-Wunsch („schleierhaft“), Einordnung Assistent [C] |
