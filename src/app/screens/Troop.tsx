@@ -23,7 +23,7 @@ import { Icon } from '../../ui/icons';
 import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, campaignCommand, data } from '../state/session';
-import { screen } from '../state/screen';
+import { screen, type From } from '../state/screen';
 import { EquipView } from './Equip';
 import { UnitBust, UnitHead } from './unitArt';
 import '../../ui/troop.css';
@@ -34,13 +34,13 @@ const ROLE_ICON: Record<RoleGroup, string> = { melee: 'blade', ranged: 'bow', su
 const roleOf = (u: UnitRecord): RoleGroup => data.classes[u.classId]?.roleGroup ?? 'melee';
 
 /** The troop: every companion and mercenary (the fallen rest in the hall of memory, not here). */
-export function Troop() {
+export function Troop({ from = 'worldmap' }: { from?: From }) {
   const c = campaign.value!;
   const sc = screen.value;
   const [filter, setFilter] = useState<Filter>('all');
   const [sel, setSel] = useState<string | null>(sc.name === 'troop' ? (sc.unit ?? null) : null);
   useEffect(() => audio.music('camp'), []);
-  const back = () => (screen.value = { name: 'camp' });
+  const back = () => (screen.value = { name: from });
   const shown = c.roster.filter((u) => filter === 'all' || roleOf(u) === filter);
   const unit = sel ? c.roster.find((u) => u.id === sel) : undefined;
   if (unit) return <FigureFlow unit={unit} units={shown.some((u) => u.id === unit.id) ? shown.map((u) => u.id) : c.roster.map((u) => u.id)} onSelect={setSel} onBack={() => setSel(null)} />;

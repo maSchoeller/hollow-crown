@@ -10,14 +10,16 @@ mechanics:
   supports: ch03
 # Wo die Truppe zu Beginn des Akts lebt; die Räume stehen in content/core/rooms.yaml (U20 Freischaltung dort als requires).
 home: camp
+# Wo Knoten und Heimat auf der gemalten Weltkarte liegen (art/mockups/locations-s1/weltkarte_valmora.png): Prozent von Breite und Höhe
+homePos: [52, 79]
 startGold: 500
 startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
 nodes:
-  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01], pos: [62, 70], merchantTier: 0 }
-  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], pos: [48, 52], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: dlg.ch02.intro, post: dlg.ch02.outro, next: [], pos: [32, 38], merchantTier: 2 }
+  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01], pos: [81, 52], merchantTier: 0 }
+  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: dlg.ch02.intro, post: dlg.ch02.outro, next: [], pos: [43, 66], merchantTier: 2 }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, leather_vest, leather_cap, wooden_shield, door_key]

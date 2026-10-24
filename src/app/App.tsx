@@ -9,7 +9,8 @@ import { Camp, Prep } from './screens/Camp';
 import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
-import { EndScreen, Options, Result, Title, WorldMap } from './screens/Menus';
+import { Options, Result, Title } from './screens/Menus';
+import { WorldMap } from './screens/WorldMap';
 import { campaign, data } from './state/session';
 import { runEffects, storyContext } from './state/flow';
 import { battle, canRestart, restartBattle } from './state/battle';
@@ -122,7 +123,7 @@ function Screens() {
         />
       );
     case 'prep':
-      return <Prep node={sc.node} />;
+      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
     case 'battle':
       return battle.value ? <Battle /> : <WorldMap />;
     case 'result':
@@ -132,10 +133,8 @@ function Screens() {
     case 'camp':
       return <Camp tab={sc.tab} />;
     case 'troop':
-      return <Troop />;
+      return <Troop from={sc.from} />;
     case 'options':
       return <Options back={sc.back} />;
-    case 'end':
-      return <EndScreen />;
   }
 }

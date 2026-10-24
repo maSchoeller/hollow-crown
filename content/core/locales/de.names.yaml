@@ -1,4 +1,6 @@
 # Names of classes, items, skills, affixes, terrain, units, maps (i18n keys, concept/10 §7).
+act.1.name: "Asche"
+act.1.season: "Spätsommer"
 affix.accurate: "Genau"
 affix.dragonslayer: "des Drachentöters"
 affix.featherlight: "Federleicht"

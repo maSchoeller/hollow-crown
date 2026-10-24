@@ -116,7 +116,9 @@ export function validateContent(
       dialogue('campaign.yaml', n.pre, n.id);
       dialogue('campaign.yaml', n.post, n.id);
       for (const nx of n.next) if (!camp.nodes.some((x) => x.id === nx)) err('campaign.yaml', `${n.id}: unknown next ${nx}`);
+      if (n.pos.some((v) => v < 0 || v > 100)) err('campaign.yaml', `${n.id}: pos must lie within 0-100 percent`);
     }
+    if (camp.homePos.some((v) => v < 0 || v > 100)) err('campaign.yaml', 'homePos must lie within 0-100 percent');
     for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
     for (const [m, from] of Object.entries(camp.mechanics))
       if (!camp.nodes.some((n) => n.id === from) && !/^ch\d+$/.test(from)) err('campaign.yaml', `mechanics.${m}: unknown node ${from}`);
@@ -165,6 +167,7 @@ export function validateContent(
   need.push(...data.balance.economy.tavern.names);
   for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`);
   for (const n of camp?.nodes ?? []) need.push(n.titleKey);
+  if (camp) need.push(`act.${camp.act}.name`, `act.${camp.act}.season`);
   for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
   for (const k of need) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`locales/${lang}`, `missing key ${k}`);
   const de = Object.keys(locales.de ?? {});

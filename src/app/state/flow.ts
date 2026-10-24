@@ -27,10 +27,10 @@ import {
 import { battle, command, pendingEvents, startBattle } from './battle';
 import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
-import { screen } from './screen';
+import { screen, type From } from './screen';
 
 bindLive(() => ({
-  where: battle.value ? 'battle' : screen.value.name === 'worldmap' ? 'worldmap' : 'camp',
+  where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
   battle: battle.value ? { start: battle.value.start, commands: battle.value.log } : null,
 }));
 
@@ -48,15 +48,15 @@ export function defaultDeploy(nodeId: string): string[] {
 }
 
 /**
- * War camp → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
- * there is a real choice (more company members than deployment slots).
+ * World map → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
+ * there is a real choice (more company members than deployment slots); `from` is where its back stone leads.
  */
-export function playNode(nodeId: string, opts: { prep?: boolean } = {}): void {
+export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
   const node = nodeDef(nodeId);
   const map = data.maps[node.map]!;
   const choice = campaign.value!.roster.length > map.deploy.max;
   const go = () => {
-    if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId };
+    if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
     else pendingEvents.value = startBattle(nodeId, defaultDeploy(nodeId));
   };
   if (node.pre) screen.value = { name: 'dialogue', id: node.pre, next: go };
@@ -106,7 +106,7 @@ export function restore(rec: SaveRecord, reason: 'load' | 'import' = 'load'): vo
     screen.value = { name: 'battle' };
   } else {
     battle.value = null;
-    screen.value = { name: 'camp' };
+    screen.value = { name: 'worldmap' }; // the world map is the hub (story 5.3), also on "Continue"
   }
 }
 

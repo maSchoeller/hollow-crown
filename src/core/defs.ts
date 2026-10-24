@@ -480,6 +480,8 @@ export interface CampaignDef {
   mechanics: Partial<Record<Mechanic, string>>;
   /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
   home: HomeKind;
+  /** position of the home on the world map, percent of width and height */
+  homePos: Pos;
   start: string;
   startGold: number;
   startConvoy: ItemRef[];

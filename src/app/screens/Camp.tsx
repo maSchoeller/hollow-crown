@@ -9,13 +9,13 @@ import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast, UnitCard } from '../../ui/components';
 import { Icon } from '../../ui/icons';
-import { Piece, PrimaryButton, Wallet } from '../../ui/pieces';
+import { Piece, Wallet } from '../../ui/pieces';
 import { listSaves, type SaveRecord } from '../../persistence/save';
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { nodeDef, playNode } from '../state/flow';
 import { pendingEvents, startBattle } from '../state/battle';
-import { screen } from '../state/screen';
+import { screen, type From } from '../state/screen';
 import { campaign, campaignCommand, campaignId, data, saveSlot } from '../state/session';
 import { downloadSave, SlotPicker } from './Menus';
 import { FigureFlow } from './Troop';
@@ -30,7 +30,11 @@ function lockReason(unmet?: Condition): string {
   return t('ui.room.locked');
 }
 
-/** The camp: HUD with the purse, the diorama, stations, "set out", and the bar to troop, deployment, map and save. */
+/**
+ * The camp, the "home" place of the world map (story 5.3): HUD with the purse, the diorama, the stations, and the bar to
+ * troop, deployment, map and save. "Set out" lives on the node card of the map; deployment and saving stay here until the
+ * product owner decides where they go (story file 5-3).
+ */
 export function Camp({ tab }: { tab?: string }) {
   const c = campaign.value!;
   const [open, setOpen] = useState<string | null>(tab ?? null);
@@ -106,28 +110,18 @@ export function Camp({ tab }: { tab?: string }) {
               );
             })}
           </Piece>
-          {next ? (
-            <PrimaryButton sub={nodeShort(next.id)} onClick={() => playNode(next.id)}>
-              {t('ui.hub.setOut')}
-            </PrimaryButton>
-          ) : (
-            <Piece style={{ textAlign: 'center' }}>
-              <b>{t('ui.world.endTitle')}</b>
-              <div style={{ color: 'var(--hc-soft)' }}>{t('ui.world.endText')}</div>
-            </Piece>
-          )}
           <nav class="hm-nav">
-            <button type="button" onClick={() => (screen.value = { name: 'troop' })}>
+            <button type="button" onClick={() => (screen.value = { name: 'troop', from: 'camp' })}>
               <Icon name="company" size={26} />
               {t('ui.troop.title')}
             </button>
-            <button type="button" disabled={!next} onClick={() => next && playNode(next.id, { prep: true })}>
+            <button type="button" disabled={!next} onClick={() => next && playNode(next.id, { prep: true, from: 'camp' })}>
               <Icon name="swap" size={26} />
               {t('ui.hub.prep')}
             </button>
             <button type="button" onClick={() => (screen.value = { name: 'worldmap' })}>
               <Icon name="map" size={26} />
-              {t('ui.world.title')}
+              {t('ui.map.title')}
             </button>
             <button type="button" onClick={() => setOpen('save')}>
               <Icon name="save" size={26} />
@@ -194,7 +188,7 @@ function SavePanel({ onClose, onToast }: { onClose: () => void; onToast: (s: str
 }
 
 /** Preparation before a mission: choose units (forced ones fixed), check equipment, start. */
-export function Prep({ node }: { node: string }) {
+export function Prep({ node, from }: { node: string; from: From }) {
   const c = campaign.value!;
   const nd = data.campaign.nodes.find((n) => n.id === node)!;
   const map = data.maps[nd.map]!;
@@ -211,7 +205,7 @@ export function Prep({ node }: { node: string }) {
     <div class="screen" style={{ gap: 10 }}>
       <div class="screen-narrow col" style={{ gap: 10 }}>
         <div class="row">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: 'camp' })} aria-label={t('ui.back')}>
+          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: from })} aria-label={t('ui.back')}>
             <Icon name="back" />
           </button>
           <h2 class="grow">{t('ui.prep.title')}</h2>

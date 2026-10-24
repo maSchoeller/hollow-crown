@@ -41,6 +41,7 @@ const P: Record<string, string> = {
   rally: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',
+  wanted: 'M5 3h14v18H5zM12 7.5a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4zM8 17h8',
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
   // roles (class-action slot of the battle dock)
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',

@@ -13,6 +13,8 @@ python tools/art/build.py [--quality mid|high]
   in content/acts/*/units.yaml or a map (the rest ships with the act packages; initial-download budget).
 - Busts (same characters): the whole half figure, WebP q60, 150 px, only the joining story characters, for the figure view of the troop.
 - Season 1 locations (art/mockups/locations-s1): only those the app shell shows, WebP q75, 1280×720 (high: 1920×1080).
+- World map (art/mockups/locations-s1/weltkarte_valmora.png): WebP q72 at full size → public/assets/world/valmora.webp; loads on demand
+  when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow.
 """
@@ -162,6 +164,16 @@ def build_locations():
     return result
 
 
+def build_world():
+    """The painted map of Valmora (the hub's background until the 3D scene of story 5.2) → public/assets/world/valmora.webp."""
+    src = os.path.join(ART, 'mockups', 'locations-s1', 'weltkarte_valmora.png')
+    if not os.path.isfile(src):
+        return []
+    dst = ensure(os.path.join(OUT, 'world'))
+    Image.open(src).convert('RGB').save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=72, method=6)
+    return ['valmora']
+
+
 def content_unit_ids():
     """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed)."""
     pat = re.compile(r'(?<![a-z0-9_])(?:id|char|portrait):[ 	]*([a-z0-9_]+)')
@@ -271,6 +283,7 @@ def main():
         'avatars': build_heads(),
         'busts': build_busts(),
         'locations': build_locations(),
+        'world': build_world(),
     }
     audio_src = os.path.join(ROOT, 'audio-src', 'build')
     if os.path.isdir(audio_src):

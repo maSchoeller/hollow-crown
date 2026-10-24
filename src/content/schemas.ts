@@ -476,6 +476,7 @@ export const campaignSchema = z.object({
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.string()).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
+  homePos: pos.default([50, 50]),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
   supportPairs: z.array(z.tuple([z.string(), z.string()])),
   supportDialogues: z.record(z.string(), z.object({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial()),

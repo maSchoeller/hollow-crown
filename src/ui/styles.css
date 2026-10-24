@@ -207,56 +207,6 @@ input[type='text']:focus {
   clip-path: var(--shield);
 }
 
-/* ---------- world map ---------- */
-.worldmap {
-  position: relative;
-  flex: 1;
-  min-height: 260px;
-  overflow: hidden;
-  clip-path: var(--cut);
-  background: #ebe1c9;
-}
-.worldmap svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.node {
-  position: absolute;
-  transform: translate(-50%, -50%) rotate(45deg);
-  width: 34px;
-  height: 34px;
-  background: var(--ember);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  font: 700 15px 'Barlow Condensed', sans-serif;
-  border: 0;
-}
-.node > span {
-  transform: rotate(-45deg);
-}
-.node.done {
-  background: var(--ink);
-  color: var(--surface);
-}
-.node.locked {
-  background: var(--tone-2);
-  pointer-events: none;
-}
-.node-label {
-  position: absolute;
-  transform: translate(-50%, 26px);
-  color: var(--ink);
-  font: 700 12px 'Barlow Condensed', sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 /* ---------- dialogue (visual novel) ---------- */
 .vn {
   position: absolute;
@@ -723,18 +673,6 @@ input[type='text']:focus {
   transform: rotate(45deg);
 }
 
-/* ---------- purse pill (result screen) ---------- */
-.hub-gold {
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 700 18px 'Barlow Condensed', sans-serif;
-  font-variant-numeric: tabular-nums;
-}
-.hub-gold .icon {
-  color: #b68320;
-}
 .gold {
   color: var(--ember-ink);
 }
