@@ -1,0 +1,74 @@
+id: scn.support.brenna_kael.S
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du stehst da seit einer Weile. Die Axt wird nicht schärfer davon."
+  - id: l02
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich muss dir etwas sagen."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du sagst nie „ich muss“. Du sagst „so“ oder „nein“."
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich hab es zwölf Jahre lang nicht gesagt. Dachte, ich hätte kein Recht."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Kael …"
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich liebe dich, Brenna. Das ist alles. Mehr hab ich nicht vorbereitet."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "…"
+  - id: l08
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Gewusst hab ich es. Gehofft auch. Das ist nicht dasselbe."
+  - id: l09
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß."
+  - id: l10
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Ich hab keinen Witz. Zum ersten Mal seit Jahren nicht einen."
+  - id: l11
+    speaker: [kael]
+    fallback: skip
+    mood: happy
+    text: "Dann spar ihn dir auf."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Wenn ich einen finde, ist er schlecht."
+  - id: l13
+    speaker: [kael]
+    fallback: skip
+    mood: happy
+    text: "Er ist immer schlecht."
+  - id: l14
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Sitz. Hier. Das Feuer hat noch Holz."

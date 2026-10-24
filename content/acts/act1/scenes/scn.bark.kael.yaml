@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.kael
+lines:
+  - id: battle_start
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Los."
+  - id: crit
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Sitzt."
+  - id: downed
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Nicht jetzt …"
+  - id: rescued
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich steh in deiner Schuld."
+  - id: level_up
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Weiter."
+  - id: ember
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Es brennt. Ich halte es."

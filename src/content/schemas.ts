@@ -573,6 +573,7 @@ export const renderSchema = z.object({
     waterFrameMs: z.number().positive(),
     lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
     figureScale: z.number().positive(),
+    fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0) }),
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     sceneryPropsLow: z.number().int().min(0),

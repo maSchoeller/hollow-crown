@@ -37,6 +37,7 @@ import { pickWeighted, treeSetOfAct } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
+import { fadeRule, hidesFigure, type PropBox } from './fade';
 
 export interface BoardHooks {
   onTap?(tile: Pos): void;
@@ -84,6 +85,16 @@ interface FxSprite {
   anim: string;
   start: number;
   loop: boolean;
+}
+
+/** Instances of one prop template; those hiding a unit move into its see-through twin (story 8.10). */
+interface PropSet {
+  tpl: Mesh;
+  shadow: boolean;
+  mats: Float32Array;
+  cols: Float32Array;
+  boxes: PropBox[];
+  faded: Uint8Array;
 }
 
 const RING_COLOR: Record<Team, string> = { player: '#3d7be0', enemy: '#d9413a', other: '#3fa65a' };
@@ -139,6 +150,14 @@ export class BoardView implements HostedView {
   private propMat: StandardMaterial;
   private propTemplates = new Map<string, Promise<Mesh | null>>();
   private propMeshes: Mesh[] = [];
+  private propSets: PropSet[] = [];
+  /** see-through twin per prop template and material (story 8.10) */
+  private propTwins = new Map<Mesh, Mesh>();
+  private fadeMats = new Map<StandardMaterial, StandardMaterial>();
+  /** height and footprint radius of a template's model */
+  private propSizes = new Map<Mesh, { top: number; r: number }>();
+  /** unit tiles the fade was last worked out for; '' forces a new pass */
+  private fadeKey = '';
   private fires: ParticleSystem[] = [];
   private flameTexture: DynamicTexture;
   private units = new Map<string, UnitView>();
@@ -301,12 +320,13 @@ export class BoardView implements HostedView {
     if (!this.disposed) this.buildFires();
   }
 
-  /** The same prop for scenery outside the map: shares the geometry, casts no shadow. */
+  /** The same prop for scenery outside the map: casts no shadow. Own geometry: Babylon keeps thin-instance buffers on the geometry. */
   private sceneryTemplate(key: string, tpl: Mesh): Mesh {
     const name = `${tpl.name}:scenery`;
     let m = this.scene.getMeshByName(name) as Mesh | null;
     if (!m) {
       m = tpl.clone(name, null, true)!;
+      m.makeGeometryUnique();
       m.isVisible = false;
       m.alwaysSelectAsActiveMesh = true;
       void key;
@@ -360,6 +380,7 @@ export class BoardView implements HostedView {
 
   private async buildProps(): Promise<void> {
     for (const m of this.propMeshes) m.thinInstanceCount = 0;
+    const sets: PropSet[] = [];
     const s = this.state;
     const grid = this.terrain!.grid;
     type Place = { x: number; y: number; h: number; rot: number; scale: number; dim: boolean };
@@ -454,13 +475,135 @@ export class BoardView implements HostedView {
         const f = p.dim ? 0.5 : 1;
         cols.set([f, f, f * 1.06, 1], k * 4);
       });
-      tpl.isVisible = true;
-      tpl.thinInstanceSetBuffer('matrix', mats, 16, true);
-      tpl.thinInstanceSetBuffer('color', cols, 4, true);
-      tpl.thinInstanceRefreshBoundingInfo();
+      const size = this.propSize(base);
+      const boxes = list.map((p) => ({ x: p.x + 0.5, y: p.y + 0.5, r: size.r * p.scale, top: p.h + size.top * p.scale }));
+      sets.push({ tpl, shadow: kind !== 'scenery', mats, cols, boxes, faded: new Uint8Array(list.length) });
       if (!this.propMeshes.includes(tpl)) this.propMeshes.push(tpl);
     }
+    this.propSets = sets;
+    for (const set of sets) this.writeProps(set);
     for (const m of this.propMeshes) if (!m.thinInstanceCount) m.isVisible = false;
+    this.fadeKey = '';
+    this.updateFade();
+  }
+
+  /** Height and footprint radius of a template (its vertices are baked with the origin on the ground). */
+  private propSize(tpl: Mesh): { top: number; r: number } {
+    let size = this.propSizes.get(tpl);
+    if (!size) {
+      const pos = tpl.getVerticesData('position') ?? [];
+      let top = 0;
+      let r = 0;
+      for (let i = 0; i < pos.length; i += 3) {
+        top = Math.max(top, pos[i + 1]!);
+        r = Math.max(r, Math.abs(pos[i]!), Math.abs(pos[i + 2]!));
+      }
+      size = { top, r };
+      this.propSizes.set(tpl, size);
+    }
+    return size;
+  }
+
+  /** The see-through twin of a template: alpha-blended copy of its material, own geometry like `sceneryTemplate`. */
+  private fadeTwin(set: PropSet): Mesh {
+    let twin = this.propTwins.get(set.tpl);
+    if (twin) return twin;
+    twin = set.tpl.clone(`${set.tpl.name}:fade`, null, true)!;
+    twin.makeGeometryUnique();
+    twin.thinInstanceCount = 0;
+    twin.isVisible = false;
+    twin.isPickable = false;
+    twin.alwaysSelectAsActiveMesh = true;
+    twin.receiveShadows = true;
+    const src = set.tpl.material as StandardMaterial;
+    let mat = this.fadeMats.get(src);
+    if (!mat) {
+      mat = new StandardMaterial(`${src.name}:fade`, this.scene);
+      mat.specularColor = src.specularColor.clone();
+      mat.backFaceCulling = src.backFaceCulling;
+      mat.maxSimultaneousLights = src.maxSimultaneousLights;
+      mat.diffuseTexture = src.diffuseTexture; // shared with the opaque material, owned by the model file
+      mat.alpha = this.data.render.board.fade.alpha;
+      mat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
+      // depth first: only the front surface blends, the prop reads as one veil instead of a tangle of inner faces
+      mat.needDepthPrePass = true;
+      this.fadeMats.set(src, mat);
+    }
+    twin.material = mat;
+    if (set.shadow) this.castShadows([twin]);
+    this.propTwins.set(set.tpl, twin);
+    this.propMeshes.push(twin);
+    return twin;
+  }
+
+  /** Splits a template's instances by `faded` between the template and its twin. */
+  private writeProps(set: PropSet): void {
+    const n = set.boxes.length;
+    let f = 0;
+    for (let k = 0; k < n; k++) f += set.faded[k]!;
+    const fill = (m: Mesh, mats: Float32Array, cols: Float32Array) => {
+      m.isVisible = mats.length > 0;
+      if (!mats.length) {
+        m.thinInstanceCount = 0;
+        return;
+      }
+      m.thinInstanceSetBuffer('matrix', mats, 16, true);
+      m.thinInstanceSetBuffer('color', cols, 4, true);
+      m.thinInstanceRefreshBoundingInfo();
+    };
+    if (!f) {
+      fill(set.tpl, set.mats, set.cols);
+      const twin = this.propTwins.get(set.tpl);
+      if (twin) fill(twin, new Float32Array(0), new Float32Array(0));
+      return;
+    }
+    const split = (want: number) => {
+      const count = want ? f : n - f;
+      const mats = new Float32Array(count * 16);
+      const cols = new Float32Array(count * 4);
+      let j = 0;
+      for (let k = 0; k < n; k++) {
+        if (set.faded[k] !== want) continue;
+        mats.set(set.mats.subarray(k * 16, k * 16 + 16), j * 16);
+        cols.set(set.cols.subarray(k * 4, k * 4 + 4), j * 4);
+        j++;
+      }
+      return [mats, cols] as const;
+    };
+    fill(set.tpl, ...split(0));
+    fill(this.fadeTwin(set), ...split(1));
+  }
+
+  /**
+   * Story 8.10: props in front of or on a unit's tile turn see-through. Runs every frame but works only when a unit
+   * reached another tile (moves, enemy phase, deployment), appeared or left.
+   */
+  private updateFade(): void {
+    if (!this.terrain || !this.state) return;
+    let key = '';
+    const spots: Array<{ x: number; y: number; h: number }> = [];
+    for (const v of this.units.values()) {
+      if (!v.visible) continue;
+      const tx = Math.round(v.x + v.offX);
+      const ty = Math.round(v.y + v.offY);
+      key += `${tx},${ty};`;
+      spots.push({ x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) });
+    }
+    if (key === this.fadeKey) return;
+    this.fadeKey = key;
+    const { cover, figureWidth } = this.data.render.board.fade;
+    const rule = fadeRule(this.data.render.camera.tiltDeg, cover, figureWidth);
+    for (const set of this.propSets) {
+      let changed = false;
+      set.boxes.forEach((b, k) => {
+        const hide = spots.some((f) => hidesFigure(b, f, rule)) ? 1 : 0;
+        if (set.faded[k] !== hide) {
+          set.faded[k] = hide;
+          changed = true;
+        }
+      });
+      if (changed) this.writeProps(set);
+    }
   }
 
   private buildFires(): void {
@@ -980,6 +1123,7 @@ export class BoardView implements HostedView {
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);
     for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
     for (const v of this.units.values()) this.placeUnit(v, now);
+    this.updateFade();
     if (this.ghost) this.ghost.figure.tick(now, this.speed);
     this.pointLights.forEach((l, k) => (l.intensity = 0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08));
     this.updateFx(now);

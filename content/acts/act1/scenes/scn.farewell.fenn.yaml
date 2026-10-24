@@ -1,0 +1,13 @@
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+id: scn.farewell.fenn
+lines:
+  - id: last
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Die Dietriche … nehmt sie. Elf Stück. Ich hab sie gezählt, falls ihr fragt."
+  - id: grief_mira
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Er gab jeden Beutel zurück, wenn ich es sagte. Jetzt sage ich es zu niemandem."

@@ -1,0 +1,69 @@
+id: scn.support.brenna_tobin.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Setz dich. Nein, nicht dahin, hierher, ins Licht. Gib mir den Wams, der Riss ist wieder auf."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Das ist doch nur ein Kratzer. Auf der Mauer, bei der Verteidigung, da hab ich kaum …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Du hast allein vor den Zinnen gestanden, Tobin. Vor allen! Mit der Lanze wie ein, wie ein Bannerträger!"
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Es hat gewirkt! Morras Leute haben gezögert, ich hab's genau gesehen!"
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Asche und Glut, es geht nicht ums Zögern! Du denkst im Kampf nicht, du singst!"
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Du hast gesagt, ein Held ist, wer vorangeht."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Hab ich nie. Das stand in deinem Lied."
+  - id: l08
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Als du nicht zurückgekommen bist, bis alles still war, da, da hab ich den Faden dreimal verloren."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Du hast Angst gehabt."
+  - id: l10
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Ich hab einmal ein Zuhause verloren. Das reicht mir. Ich verliere nicht noch eins."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Ich bin nicht weg. Ich gehe auch nicht. Aber ich weiß nicht, wie man vorsichtig ist."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Dann lernst du's. Mit mir neben dir. Und jetzt halt still, sonst stech ich dich."
+  - id: l13
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Die Nadel ist ja noch kleiner als das Loch."

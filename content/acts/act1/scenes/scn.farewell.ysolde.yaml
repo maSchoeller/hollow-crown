@@ -1,13 +1,13 @@
-# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
 id: scn.farewell.ysolde
 lines:
   - id: last
     speaker: [ysolde]
     fallback: skip
     mood: sad
-    text: "Das Feuer war immer in mir. Jetzt geht es aus. Es ist so still."
+    text: "Die Messreihe ist nicht abgeschlossen. Führt sie weiter. Genau, bitte."
   - id: grief_liora
     speaker: [liora]
     fallback: skip
     mood: sad
-    text: "Ich konnte sie nicht heilen. Ich, ausgerechnet ich."
+    text: "Sie wollte jeden Punkt notiert haben. Ich schreibe jetzt auf. Genau, Ysolde."

@@ -1,3 +1,4 @@
+import { barkFor, type Bark } from '../battle/barks';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   active,
@@ -39,7 +40,7 @@ import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
-import { battle, canRestart, command, pendingEvents, restartBattle } from '../state/battle';
+import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import {
@@ -109,6 +110,7 @@ export function Battle() {
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
+  const [bark, setBark] = useState<{ b: Bark; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
   const setToast = (text: string, item?: ItemInstance) => setToastState({ text, item });
@@ -171,6 +173,9 @@ export function Battle() {
       if (ev.length && alive) {
         await board.play(ev, battle.value!.state);
       }
+      const opening = openingBark.current;
+      openingBark.current = null;
+      if (opening && alive) await playBark(opening);
       if (alive) {
         setPhaseView(null);
         setBusy(false);
@@ -276,11 +281,19 @@ export function Battle() {
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;
     board.skip = sp === 3;
-    let events: GameEvent[];
+    let events: GameEvent[] | null;
     try {
-      events = command(cmd);
+      // the enemy phase is computed in the core worker, player commands directly (architecture §5.13)
+      events = enemy ? await commandOffThread(cmd) : command(cmd);
     } catch (e) {
       console.error(e);
+      setPhaseView(null);
+      setBusy(false);
+      return;
+    }
+    if (!events) {
+      // the battle was left or restarted while the worker computed; the answer was dropped
+      setPhaseView(null);
       setBusy(false);
       return;
     }
@@ -370,6 +383,16 @@ export function Battle() {
       default:
         break;
     }
+    // combat bark (story 9.13): presentation only, skipped in skip mode; the opening bark waits until the start events
+    // (intro and tutorial dialogues) have played
+    const b = boardRef.current?.skip ? null : barkFor(data, s, e);
+    if (b?.line === 'battle_start') openingBark.current = b;
+    else if (b) await playBark(b);
+  };
+  const openingBark = useRef<Bark | null>(null);
+  const playBark = async (b: Bark) => {
+    await new Promise<void>((resolve) => setBark({ b, done: resolve }));
+    setBark(null);
   };
 
   // --------------------------------------------------------------- input handling
@@ -838,6 +861,20 @@ export function Battle() {
               return board.headScreen(u.uid);
             }}
             onDone={dialogue.done}
+          />
+        )}
+        {bark && (
+          <SceneBubbles
+            id={bark.b.scene}
+            only={[bark.b.line]}
+            anchorOf={async () => {
+              const u = s.units.find((x) => x.uid === bark.b.anchor);
+              const board = boardRef.current;
+              if (!u?.pos || !board) return null;
+              await board.centerOn(u.pos);
+              return board.headScreen(u.uid);
+            }}
+            onDone={bark.done}
           />
         )}
         <div class="hud-top" ref={topRef}>

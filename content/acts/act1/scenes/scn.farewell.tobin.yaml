@@ -1,18 +1,23 @@
-# Abschied (Story 6.7): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
+# Abschied (Story 9.13): letzte Zeile beim Tod und Trauerzeilen der Support-Partner
 id: scn.farewell.tobin
 lines:
   - id: last
     speaker: [tobin]
     fallback: skip
     mood: sad
-    text: "Ich hab die Linie gehalten, oder? Sagt mir, dass ich sie gehalten hab."
+    text: "Sagt keinem, dass ich Angst hatte. Sagt, es war ein leiser Tag."
   - id: grief_brenna
     speaker: [brenna]
     fallback: skip
     mood: sad
-    text: "Der Junge hätte einer der Besten werden können. Kein Witz heute."
+    text: "Tiefer die Lanze, Küken. Ich sag es jetzt dem Wind. Vielleicht hört er zu."
   - id: grief_mira
     speaker: [mira]
     fallback: skip
     mood: sad
-    text: "Er hat versprochen, mir das Dorf wieder aufbauen zu helfen."
+    text: "Er hat nie den richtigen Baum getroffen. Jetzt fehlt mir jemand, den ich korrigiere."
+  - id: grief_grosk
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Er stand im Rauch. Ich sagte, setz dich. Jetzt sitzt da keiner mehr."

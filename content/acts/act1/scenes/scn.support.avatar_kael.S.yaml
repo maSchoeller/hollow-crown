@@ -1,0 +1,84 @@
+id: scn.support.avatar_kael.S
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Den Steckbrief faltest du heute schon zum dritten Mal."
+  - id: l02
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Er wird nicht glatter."
+  - id: l03
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Was steht darauf, das du noch nicht kennst?"
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Die Summe. Sie reicht für alle."
+  - id: l05
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Man könnte die Kompanie auflösen. Jedem Gold geben und eine Straße weg von hier."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich habe darüber nachgedacht. Mehr als einmal. Nachts."
+  - id: l07
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und du wärst dann wo?"
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Weg. Das war der Teil, der mich nicht gestört hat."
+  - id: l09
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Mich stört er. Du gehst nicht. Das ist keine Bitte."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe es nicht getan."
+  - id: l11
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Du hast es gesagt. Das reicht mir für heute."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ich bin müde."
+  - id: l13
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Dann leg dich hin. Ich halte die Wache. Und dich auch."
+  - id: l14
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß nicht, wie das geht."
+  - id: l15
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Du schließt die Augen. Den Rest mache ich."
+  - id: l16
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Weck mich beim Morgengrauen. Oder gar nicht."
