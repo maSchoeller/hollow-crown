@@ -3,6 +3,7 @@
  * and the enchanter. Every action is one campaign command and needs at most two taps: choose, then the main button.
  */
 import { useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import {
   armyCount,
@@ -446,15 +447,18 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
             </b>
           </div>
         ))}
-      {talk && (
-        <Scene
-          id={talk.dialogue}
-          onDone={() => {
-            apply({ type: 'unlockSupport', pair: talk.key }, t('ui.camp.bond'));
-            setTalk(null);
-          }}
-        />
-      )}
+      {/* the talk plays full screen like the scenes between missions, not inside the panel (story 9.13) */}
+      {talk &&
+        createPortal(
+          <Scene
+            id={talk.dialogue}
+            onDone={() => {
+              apply({ type: 'unlockSupport', pair: talk.key }, t('ui.camp.bond'));
+              setTalk(null);
+            }}
+          />,
+          document.body,
+        )}
     </RoomPanel>
   );
 }

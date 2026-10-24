@@ -1,6 +1,6 @@
 # Story 9.13: Supports und Barks von Akt 1
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -18,20 +18,20 @@ damit Beziehungen wachsen.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Klärung mit dem Produktinhaber (Fragen-Tool), je Paar gebündelt (AC 1)
-- [ ] T2 Gespräche schreiben (AC 1): je Paar ein Sonnet-Subagent, Kontrolle gegen Narrative (Figur, Ton, Wissensstand), Humanizer-Regeln
-  - [ ] Kael × Rhen C/B/A/S, Kael × Brenna C/B/A/S, Brenna × Tobin C/B/A/S, Liora × Rhen C/B/A/S
-  - [ ] Brenna × Varek C/B/A, Tobin × Mira C/B/A, Liora × Ysolde C/B/A, Mira × Fenn C/B/A, Tobin × Grosk C/B/A
-- [ ] T3 `supports.yaml`: `talks` der 7 Paare vollständig (AC 2)
-- [ ] T4 Abschiedsszenen `scn.farewell.*` neu: brenna, tobin, mira, liora, varek, ysolde, dazu fenn und grosk; Trauerzeilen je Partner inkl. Kael und Avatar (AC 4)
-- [ ] T5 Barks (AC 3)
-  - [ ] Content: Szene `scn.bark.<charId>` je Gefährte mit den Zeilen `battle_start`, `crit`, `downed`, `rescued`, `level_up`, `ember` (Muster wie `scn.farewell.*`)
-  - [ ] Auslöser in der App (nicht im Kern, 17-audio §1): Kampfbeginn (erste Spielerphase, ein eingesetzter Gefährte), Krit eines Gefährten, niedergestreckt, geborgen (der Geborgene dankt), Stufenaufstieg; Glutfunke beim Aufstieg mit Glutfunke
-  - [ ] Anzeige über die vorhandenen Sprechblasen (`SceneBubbles`), nur eine Zeile; übersprungen im Überspringen-Modus
-  - [ ] `content:check`: Bark-Zeile ≤ `bubbleMaxChars`
-- [ ] T6 Englisch für alle neuen Zeilen, gleiche Schlüssel (`dlg.<scene>.<line>`) (AC 1, 3, 4)
-- [ ] T7 Tests für die Bark-Auswahl; Prüfungen grün; Screenshots (AC 5)
-- [ ] T8 Entscheidungen ins Decision-Log der Narrative bzw. Architektur; `17-audio.md` §3 auf die 6 Ereignisse der Narrative verweisen
+- [x] T1 Klärung mit dem Produktinhaber (Fragen-Tool), je Paar gebündelt (AC 1)
+- [x] T2 Gespräche schreiben (AC 1): je Paar ein Sonnet-Subagent, Kontrolle gegen Narrative (Figur, Ton, Wissensstand), Humanizer-Regeln
+  - [x] Kael × Rhen C/B/A/S, Kael × Brenna C/B/A/S, Brenna × Tobin C/B/A/S, Liora × Rhen C/B/A/S
+  - [x] Brenna × Varek C/B/A, Tobin × Mira C/B/A, Liora × Ysolde C/B/A, Mira × Fenn C/B/A, Tobin × Grosk C/B/A
+- [x] T3 `supports.yaml`: `talks` der 7 Paare vollständig (AC 2)
+- [x] T4 Abschiedsszenen `scn.farewell.*` neu: brenna, tobin, mira, liora, varek, ysolde, dazu fenn und grosk; Trauerzeilen je Partner inkl. Kael und Avatar (AC 4)
+- [x] T5 Barks (AC 3)
+  - [x] Content: Szene `scn.bark.<charId>` je Gefährte mit den Zeilen `battle_start`, `crit`, `downed`, `rescued`, `level_up`, `ember` (Muster wie `scn.farewell.*`)
+  - [x] Auslöser in der App (nicht im Kern, 17-audio §1): Kampfbeginn (erste Spielerphase, ein eingesetzter Gefährte), Krit eines Gefährten, niedergestreckt, geborgen (der Geborgene dankt), Stufenaufstieg; Glutfunke beim Aufstieg mit Glutfunke
+  - [x] Anzeige über die vorhandenen Sprechblasen (`SceneBubbles`), nur eine Zeile; übersprungen im Überspringen-Modus
+  - [x] `content:check`: Bark-Zeile ≤ `bubbleMaxChars`
+- [x] T6 Englisch für alle neuen Zeilen, gleiche Schlüssel (`dlg.<scene>.<line>`) (AC 1, 3, 4)
+- [x] T7 Tests für die Bark-Auswahl; Prüfungen grün; Screenshots (AC 5)
+- [x] T8 Entscheidungen ins Decision-Log der Narrative bzw. Architektur; `17-audio.md` §3 auf die 6 Ereignisse der Narrative verweisen
 
 ## Dev Notes
 
@@ -73,5 +73,19 @@ Claude Opus 5.5 (Kontrolle), Sonnet (Gespräche), Haiku (Schlüssel, Abgleich, P
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created
+- Klärung mit dem Produktinhaber in fünf Fragerunden (Grundsatz, Paare, Barks); Ergebnisse im Decision-Log der Narrative (2026-10-24).
+- 31 Gespräche (DE, je 11–16 Boxen) von Sonnet-Subagenten nach Schreib-Brief, je Paar vom Kontrolleur gegen Figuren, Ton und Wissensstand geprüft und nachgebessert (u. a. keine neuen Fakten zu Kaels Grenzkrieg, Brenna trägt nicht Gerrits Banner, Tobin wechselt bei Grosk in A vom Ihr ins Du). Englisch mit Haiku, stichprobenhaft geprüft.
+- Mira × Fenn und Tobin × Grosk: Szenen fertig, Eintrag in `supports.yaml` folgt mit den Beitritten von Fenn und Grosk (9.1, 9.5). `unit.fenn.name` ergänzt, damit Fenn als Sprecher gilt.
+- Barks: Darstellung in `src/app/battle/barks.ts`, Haken am Ende des Event-Handlers in Battle.tsx (verträglich mit dem Nebel-Filter aus 2.6), Sprechblase spielt nur eine Zeile, wird nicht als gesehen markiert. Geborgene sprechen über dem Kopf des Bergenden (der Geborgene verlässt das Brett). Nach einem Neustart der Schlacht kommt kein Kampfbeginn-Bark (Neustart spielt keine Start-Events).
+- Glutfunke: Zitat-Toast mit Kopf der Figur im Figuren-Screen nach dem Aufstieg (`ui.farewell.quote`).
+- Lagerfeuer-Gespräche laufen jetzt im Vollbild mit Halbfiguren wie die Szenen zwischen den Missionen (Produktinhaber 2026-10-24); vorher klemmte die Szene im Raum-Panel. `Rooms.tsx` rendert sie per Portal in `document.body`.
+- Im Browser geprüft (375×812, Deutsch, nach `pnpm art:build`): Kampfbeginn-Bark (Mira, Tobin), Lagerfeuer mit „Gespräch bereit“, Gespräch Brenna × Kael B im Vollbild mit beiden Figuren, danach Rang B und zurück am Lagerfeuer.
 
 ### File List
+
+- Neu: `content/acts/act1/scenes/scn.support.{avatar_kael,brenna_kael,brenna_tobin,avatar_liora}.{C,B,A,S}.yaml`, `scn.support.{brenna_varek,mira_tobin,liora_ysolde,fenn_mira,grosk_tobin}.{C,B,A}.yaml` (bestehende C/B ersetzt), `scn.bark.{kael,brenna,tobin,mira,fenn,liora,varek,ysolde,grosk}.yaml`, `scn.farewell.{fenn,grosk}.yaml`
+- Neu geschrieben: `scn.farewell.{brenna,tobin,mira,liora,varek,ysolde}.yaml`
+- `content/acts/act1/supports.yaml`, `content/locales/en/act1.dialogue.yaml`, `content/core/locales/{de,en}.names.yaml`
+- Neu: `src/app/battle/barks.ts`, `src/content/barkLines.ts`, `tests/unit/barks.test.ts`
+- `src/app/screens/{Battle,Scene,Troop,Rooms}.tsx`, `src/ui/SpeechBubbles.tsx`, `src/content/validate.ts`, `tests/unit/supports-pairs.test.ts`
+- Doku: `concept/22-narrative/decision-log.md`, `concept/24-architecture/decision-log.md`, `concept/17-audio.md`
