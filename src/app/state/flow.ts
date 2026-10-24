@@ -19,6 +19,10 @@ import {
   type ConditionContext,
   type Effect,
   type MapUnitDef,
+  type ResolvedOption,
+  type SceneDef,
+  type FlagDef,
+  sceneTexts,
 } from '../../core';
 import type { SaveRecord, SlotId } from '../../persistence/save';
 import {
@@ -38,6 +42,7 @@ import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
+import { addTexts } from '../../i18n';
 import { loadManifest } from '../../render/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets, prefetchQuietly } from './loading';
@@ -263,6 +268,24 @@ export function runEffects(effects: Effect[]): void {
   autosave('battle');
 }
 
+/**
+ * The player's answer to a choice (story 4.6). Outside a battle it is the campaign command `choose` (effects, stance,
+ * the decision in the chronicle). Battle scenes have no answers (content:check); should one ever come up, only its
+ * effects wait for the end of the battle as before.
+ */
+export function chooseAnswer(scene: string, line: string, option: ResolvedOption): void {
+  if (inBattle()) return runEffects(option.effects);
+  const r = campaignCommand({ type: 'choose', scene, line, option: option.id });
+  if (!r.ok) log.warn('core', `answer refused: ${r.error}`, { scene, line, option: option.id });
+}
+
+/** Answers given before in scene `id`: line id → option id (a choice is never asked twice). */
+export function answeredIn(id: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(campaign.value?.choices ?? {})) if (k.startsWith(`${id}#`)) out[k.slice(id.length + 1)] = v;
+  return out;
+}
+
 /** Dev helper: lets the simulator play the current battle (manual testing only). */
 if (import.meta.env.DEV) {
   void import('../../core/ai/autoplay').then(({ autoCommand }) => {
@@ -292,6 +315,17 @@ if (import.meta.env.DEV) {
       },
       /** home-screen hint again, as after a first save */
       showHomeHint: devResetHint,
+      /**
+       * plays a scene registered at run time (decisions and consequence card without story content): `devScene(scene,
+       * flags)` adds the scene, its flags and its German texts (also as English), then shows it over the world map
+       */
+      devScene: (scene: SceneDef, flags: FlagDef[] = []) => {
+        data.scenes[scene.id] = scene;
+        for (const f of flags) data.flags[f.id] = f;
+        addTexts('de', sceneTexts(scene));
+        addTexts('en', sceneTexts(scene));
+        screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+      },
     };
   });
 }

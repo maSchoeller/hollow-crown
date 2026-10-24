@@ -468,6 +468,8 @@ export interface SceneOption {
   text: string;
   stance: Stance;
   effects?: Effect[];
+  /** title of the consequence card of a decision (`dlg.<scene>.<line>.<option>.summary`) */
+  summary?: string;
 }
 
 /** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
@@ -486,6 +488,8 @@ export interface SceneSpeech {
 
 export interface SceneChoice {
   id: string;
+  /** a choice with a title is a decision (marked, two taps, consequence card, chronicle): `dlg.<scene>.<line>.title` */
+  title?: string;
   choice: SceneOption[];
   requires?: Condition[];
 }

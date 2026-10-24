@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { skipTarget, type ResolvedLine } from '../../src/core';
 
 const line = (uid: string): ResolvedLine => ({ kind: 'line', uid, line: uid, key: uid, mood: 'neutral', memorial: false });
-const choice = (uid: string): ResolvedLine => ({ kind: 'choice', uid, line: uid, options: [] });
+const choice = (uid: string): ResolvedLine => ({ kind: 'choice', uid, line: uid, options: [], decision: false });
 
 describe('skipTarget', () => {
   it('halts at the first choice after the current line', () => {
@@ -22,5 +22,10 @@ describe('skipTarget', () => {
     expect(skipTarget([line('a'), line('b')], 0)).toBe(-1);
     expect(skipTarget([line('a'), choice('c1'), line('b')], 2)).toBe(-1);
     expect(skipTarget([], 0)).toBe(-1);
+  });
+  it('runs past a choice answered before (story 4.6: answers are never asked twice)', () => {
+    const lines = [line('a'), choice('c1'), line('d'), choice('c2')];
+    expect(skipTarget(lines, 0, ['c1'])).toBe(3);
+    expect(skipTarget(lines, 0, ['c1', 'c2'])).toBe(-1);
   });
 });

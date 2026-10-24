@@ -466,9 +466,18 @@ export const sceneSchema = z.strictObject({
       }),
       z.strictObject({
         id: lineId,
+        title: z.string().min(1).optional(),
         requires: conditionsListSchema.optional(),
         choice: z
-          .array(z.strictObject({ id: lineId, text: z.string().min(1), stance: z.enum(['warm', 'sober', 'defiant']), effects: z.array(effectSchema).optional() }))
+          .array(
+            z.strictObject({
+              id: lineId,
+              text: z.string().min(1),
+              stance: z.enum(['warm', 'sober', 'defiant']),
+              effects: z.array(effectSchema).optional(),
+              summary: z.string().min(1).optional(),
+            }),
+          )
           .min(2),
       }),
     ]),

@@ -1,6 +1,6 @@
 import { PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
-import { lineKey, memorialKey, optionKey, speakerTeam } from '../core/campaign/scene';
+import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { nodeLinks } from '../core/campaign/graph';
 import { CORE_ROLES } from '../core/defs';
@@ -85,6 +85,13 @@ export function validateContent(
   };
   const conditions = (file: string, conds: Condition | Condition[] | undefined, ctx: string) => {
     if (conds) for (const x of Array.isArray(conds) ? conds : [conds]) condition(file, x, ctx);
+  };
+  /** an effect that only colours the story: stance points and flags of kind `story` */
+  const mereFlavour = (e: Effect) => {
+    const key = soleKey(e);
+    if (key === 'stance') return true;
+    if (key !== 'setFlag') return false;
+    return data.flags[flagEntry((e as { setFlag: string | Record<string, FlagValue> }).setFlag)[0]]?.kind === 'story';
   };
   /** side quests some effect opens (`openQuest`) */
   const openedQuests: string[] = [];
@@ -240,10 +247,19 @@ export function validateContent(
         const ids = new Set<string>();
         for (const o of l.choice) {
           if (ids.has(o.id)) err(f, `${ctx}: duplicate answer id ${o.id}`);
+          if (o.id === 'title') err(f, `${ctx}: answer id title is reserved for the decision title`);
           ids.add(o.id);
           effects(f, o.effects, `${ctx}.${o.id}`);
           text(f, optionKey(sc.id, l.id, o.id), o.text, `${ctx}.${o.id}`);
+          // only the decisions have mechanical consequences (narrative): anything beyond stance and story flags needs a title
+          if (!l.title && (o.effects ?? []).some((e) => !mereFlavour(e))) err(f, `${ctx}.${o.id}: an answer with consequences belongs to a decision (title)`);
+          if (o.summary && !l.title) err(f, `${ctx}.${o.id}: summary belongs to a decision (title)`);
+          if (l.title) {
+            if (!o.summary) err(f, `${ctx}.${o.id}: a decision answer needs a summary (consequence card title)`);
+            else text(f, summaryKey(sc.id, l.id, o.id), o.summary, `${ctx}.${o.id}.summary`);
+          }
         }
+        if (l.title) text(f, decisionTitleKey(sc.id, l.id), l.title, `${ctx}.title`);
         continue;
       }
       if (l.speaker) chain(f, l.speaker, ctx, l.fallback !== 'skip');

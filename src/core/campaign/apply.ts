@@ -13,6 +13,7 @@ import { hireCost, hireError, locateItem, offerPrice, rerollAllowed, rerollCost,
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
 import { isAvailable, noteRoles } from './graph';
+import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
@@ -132,6 +133,12 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return hireError(data, c, cmd.offer);
     case 'markSceneSeen':
       return data.scenes[cmd.scene] ? null : 'not_available';
+    case 'choose': {
+      const found = findChoice(data, cmd.scene, cmd.line, cmd.option);
+      if (!found) return 'unknown_choice';
+      if (c.choices[choiceKey(cmd.scene, cmd.line)] !== undefined) return 'already_chosen';
+      return validateEffects(data, c, found.option.effects ?? []);
+    }
     case 'effects':
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
@@ -339,6 +346,17 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       c.tavern = c.tavern.filter((u) => u.id !== cmd.offer);
       c.roster.push(rec);
       events.push({ t: 'unitJoined', unit: rec.id });
+      break;
+    }
+    case 'choose': {
+      const { choice, option } = findChoice(data, cmd.scene, cmd.line, cmd.option)!;
+      const decision = !!choice.title;
+      c.choices[choiceKey(cmd.scene, cmd.line)] = cmd.option;
+      if (decision) c.decisions.push({ act: data.campaign.act, scene: cmd.scene, line: cmd.line, option: cmd.option });
+      events.push({ t: 'choiceMade', scene: cmd.scene, line: cmd.line, option: cmd.option, decision });
+      c.stance[option.stance] += 1;
+      events.push({ t: 'stanceGained', stance: option.stance });
+      applyEffects(data, c, option.effects ?? [], events);
       break;
     }
     case 'effects':

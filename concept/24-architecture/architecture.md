@@ -308,7 +308,7 @@ lines:
 
 - **Schlüssel** entstehen automatisch: `dlg.<sceneId>.<lineId>`, `….memorial`, `….<optionId>`. EN steht in `content/locales/en/act1.dialogue.yaml` unter diesen Schlüsseln. UI-Texte bleiben in `content/locales/{de,en}.yaml` (AGENTS.md: kein sichtbarer Text im Code).
 - **Auflösung im Kern:** `resolveScene(data, ctx, sceneId, lang?) → ResolvedLine[]` wählt Sprecher, filtert `requires`, fügt Gedenkzeilen ein. Rein und getestet; die UI zeigt nur an. Gilt auch für Sprechblasen im Kampf (Kontext aus `BattleState`).
-- **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`.
+- **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`. **Stand (Story 4.6):** Eine Antwort-Zeile mit `title` ist eine Entscheidung (Marke, zwei Tipps, Folgen-Karte, Eintrag in `c.decisions`); jede ihrer Antworten trägt `summary`. `choose` zählt die Haltung jeder Antwort und merkt sie in `c.choices`, eine Wahl wird nie zweimal gefragt.
 - **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
 - Die PoC-Dialoge sind seit Story 4.4 ins neue Format überführt (`content/acts/act1/scenes/`, IDs `scn.<…>`); das alte Schema entfällt.
 

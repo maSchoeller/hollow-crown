@@ -29,6 +29,8 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     left: [],
     stance: { warm: 0, sober: 0, defiant: 0 },
     chronicle: [],
+    choices: {},
+    decisions: [],
     scenesSeen: [],
     completed: [],
     quests: [],
@@ -60,6 +62,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
+    choices?: Record<string, string>;
+    decisions?: CampaignState['decisions'];
   };
   // story 4.3: the graph replaces the stored list of available nodes
   const { available: _available, ...rest } = old as unknown as CampaignState & { available?: string[] };
@@ -74,6 +78,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     quests: old.quests ?? [],
+    choices: old.choices ?? {},
+    decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
   };
   noteRoles(data, out);

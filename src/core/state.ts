@@ -185,6 +185,14 @@ export interface HomeState {
   rooms: Record<string, number>;
 }
 
+/** A decision as the chronicle keeps it: act, scene, choice line and the chosen answer. */
+export interface DecisionRecord {
+  act: number;
+  scene: string;
+  line: string;
+  option: string;
+}
+
 export interface CampaignState {
   version: number;
   seed: number;
@@ -204,6 +212,10 @@ export interface CampaignState {
   stance: Record<Stance, number>;
   /** collected chronicle pages */
   chronicle: string[];
+  /** every answer given: `<scene>#<line>` → option id; a choice is never asked twice (story 4.6) */
+  choices: Record<string, string>;
+  /** decisions in the order they were made: the chronicle's record of them (story 4.6/4.7) */
+  decisions: DecisionRecord[];
   /** ids of the scenes the player has seen to the end (or skipped): a seen scene can be skipped whole (story 4.5) */
   scenesSeen: string[];
   completed: string[];
