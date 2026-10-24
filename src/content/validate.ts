@@ -1,6 +1,6 @@
 import { PERMANENT_COMPANIONS, type Area, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
-import { lineKey, memorialKey, optionKey } from '../core/campaign/scene';
+import { lineKey, memorialKey, optionKey, speakerTeam } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
@@ -16,6 +16,8 @@ export function validateContent(
   itemImages?: Set<string>,
   /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` must have one */
   placeImages?: Set<string>,
+  /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
+  backgroundImages?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -149,7 +151,10 @@ export function validateContent(
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {
-      if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
+      if (id.startsWith('backgrounds/')) {
+        const bg = id.slice('backgrounds/'.length);
+        if (backgroundImages && !backgroundImages.has(bg)) err('campaign.yaml', `${ctx}: no background image art/backgrounds/${bg}.png`);
+      } else if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
     };
     place(camp.defaultPlace, 'defaultPlace');
     for (const n of camp.nodes) {
@@ -190,9 +195,11 @@ export function validateContent(
       for (const a of t.then) if (a.action === 'set_flag') flag(`maps/${map.id}`, a.flag, `trigger ${t.id}`);
   // scenes (architecture §5.8): speaker chains, conditions, effects, texts in both languages, box length
   const MAX_BOX = 110;
+  // enemies and lieutenants cannot die for good in the story sense, so their chains need no fallback (decision 2026-10-24)
+  const isEnemy = (id: string) => speakerTeam(data, id) === 'enemy' || !!data.chars[id]?.flags.includes('enemy');
   const chain = (f: string, c: readonly string[], ctx: string, mustEnd: boolean) => {
     for (const id of c) if (!data.chars[id] && !locales.de?.[`unit.${id}.name`]) err(f, `${ctx}: unknown speaker ${id}`);
-    if (mustEnd && !PERMANENT_COMPANIONS.includes(c[c.length - 1]!)) err(f, `${ctx}: speaker chain must end with avatar or kael (or the line needs fallback: skip)`);
+    if (mustEnd && !c.every(isEnemy) && !PERMANENT_COMPANIONS.includes(c[c.length - 1]!)) err(f, `${ctx}: speaker chain must end with avatar or kael (or the line needs fallback: skip)`);
   };
   const text = (f: string, key: string, de: string, ctx: string) => {
     if (de.length > MAX_BOX) err(f, `${ctx}: de text longer than ${MAX_BOX} characters (${de.length})`);
