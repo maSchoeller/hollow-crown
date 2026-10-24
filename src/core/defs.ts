@@ -769,6 +769,8 @@ export interface RenderDef {
     waterLevel: number;
     /** depth of the diorama's bottom below ground level, tiles */
     baseDepth: number;
+    /** water animation: ms per texture frame */
+    waterFrameMs: number;
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;

@@ -13,6 +13,7 @@ board:
   skirtDim: 0.45
   waterLevel: -0.1
   baseDepth: 0.8
+  waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe
   sceneryPropsLow: 3                      # D8: auf „Niedrig“ nur Bäume/Felsen bis so viele Felder um die Karte
   fpsActive: 60                           # D8: Bildrate, solange sich etwas bewegt (auch auf 120-Hz-Displays)

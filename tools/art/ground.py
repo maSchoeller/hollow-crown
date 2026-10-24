@@ -5,6 +5,10 @@ python tools/art/ground.py <out_dir>      (also called by build.py)
 Every texture is 256 × 256, tiles seamlessly and is generated deterministically from hash noise:
 a height field gets coloured, then lit from the north-west (soft baked relief). Ground textures span
 2 × 2 board tiles, side textures 1 × 1. Requires NumPy and Pillow.
+
+When the painted ChatGPT sheets exist in art/ground/refs/ (sheet1/2/3, each a 2 × 2 grid), the textures are
+cropped from them instead (made seamless by an offset blend, brightness unified, water animated by a calm
+cross-fade); the procedural generators below stay as the fallback for any missing sheet.
 """
 import os
 import sys
@@ -265,10 +269,102 @@ TEXTURES = {
 }
 
 
+# ---- painted sheets (art/ground/refs) ------------------------------------------------------------------------
+REFS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "art", "ground", "refs")
+SHEETS = {
+    "sheet1_grass_dirt_road_sand.png": ("grass", "dirt", "road", "sand"),
+    "sheet2_ash_riverbed_stone_planks.png": ("ash", "riverbed", "stone", "planks"),
+    "sheet3_wall_earth_rock_water.png": ("wall", "earth_side", "rock_side", "water"),
+}
+CROP_MARGIN = 10        # px dropped inside every quadrant edge (border artefacts)
+TARGET_LUMA = 118.0     # brightness the textures are pulled towards
+LUMA_PULL = 0.55        # 0 = keep each texture's own brightness, 1 = all equal
+LUMA_KEEP = {"ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
+SEAM_BAND = 0.5         # blend zone next to the borders (share of the size; 0.5 = whole half, least smearing of structure)
+FRAME_SHIFT = S // 16   # water: the shifted twin the frames cross-fade to
+
+
+def _quadrants(img):
+    """Splits a 2 × 2 sheet at its white gap and returns the four crops (TL, TR, BL, BR)."""
+    a = np.asarray(img.convert("RGB")).astype(np.int32)
+    white = a.min(axis=2) > 235
+    n = a.shape[0]
+    mid = n // 2
+    cols = [i for i in range(mid - 40, mid + 40) if white[:, i].mean() > 0.9]
+    rows = [i for i in range(mid - 40, mid + 40) if white[i, :].mean() > 0.9]
+    c0, c1 = (min(cols), max(cols) + 1) if cols else (mid, mid)
+    r0, r1 = (min(rows), max(rows) + 1) if rows else (mid, mid)
+    m = CROP_MARGIN
+    out = []
+    for ys, ye in ((0, r0), (r1, n)):
+        for xs, xe in ((0, c0), (c1, n)):
+            out.append(img.convert("RGB").crop((xs + m, ys + m, xe - m, ye - m)))
+    return out
+
+
+def _square(img):
+    w, h = img.size
+    k = min(w, h)
+    return img.crop(((w - k) // 2, (h - k) // 2, (w - k) // 2 + k, (h - k) // 2 + k))
+
+
+def make_seamless(img):
+    """Offset blend: the half-shifted copy is seamless at the borders, the original in the middle; a smooth
+    cross-shaped weight (1 in the middle, 0 on the borders) mixes them, so no visible seam is left."""
+    a = np.asarray(img, dtype=np.float64)
+    n = a.shape[0]
+    t = (np.arange(n) + 0.5) / n
+    d = np.clip(np.minimum(t, 1 - t) / SEAM_BAND, 0, 1)
+    tent = d * d * (3 - 2 * d)             # 0 on the borders, 1 from SEAM_BAND inwards: little ghosting
+    w = np.minimum(tent[:, None], tent[None, :])
+    shifted = np.roll(a, (n // 2, n // 2), axis=(0, 1))
+    out = a * w[..., None] + shifted * (1 - w[..., None])
+    return out
+
+
+def unify(arr, name):
+    luma = arr @ np.array([0.299, 0.587, 0.114])
+    pull = LUMA_PULL * (1 - LUMA_KEEP.get(name, 0.0))
+    goal = luma.mean() + (TARGET_LUMA - luma.mean()) * pull
+    return np.clip(arr * (goal / max(luma.mean(), 1.0)), 0, 255)
+
+
+def _finish(arr):
+    img = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
+    return img.resize((S, S), Image.LANCZOS)
+
+
+def painted_textures():
+    """name -> 256 × 256 image for every texture the sheets provide ({} when none exist)."""
+    out = {}
+    for fname, names in SHEETS.items():
+        path = os.path.join(REFS, fname)
+        if not os.path.isfile(path):
+            continue
+        try:
+            quads = _quadrants(Image.open(path))
+        except Exception:  # LFS pointer or unreadable file: fall back to procedural
+            continue
+        for name, quad in zip(names, quads):
+            q = _square(quad).resize((512, 512), Image.LANCZOS)   # normalise before blending
+            base = unify(make_seamless(q), name)
+            if name == "water":
+                base_img = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8), "RGB").resize((S, S), Image.LANCZOS)
+                b = np.asarray(base_img, dtype=np.float64)
+                twin = np.roll(b, (FRAME_SHIFT, FRAME_SHIFT // 2), axis=(0, 1))
+                for k in range(4):
+                    f = (1 - np.cos(2 * np.pi * k / 4)) / 2     # 0, .5, 1, .5: loops smoothly
+                    out[f"water_{k}"] = Image.fromarray(np.clip(b * (1 - f) + twin * f, 0, 255).astype(np.uint8), "RGB")
+            else:
+                out[name] = _finish(base)
+    return out
+
+
 def build(out):
     os.makedirs(out, exist_ok=True)
+    painted = painted_textures()
     for name, fn in TEXTURES.items():
-        fn().save(os.path.join(out, f"{name}.png"), optimize=True)
+        (painted[name] if name in painted else fn()).save(os.path.join(out, f"{name}.png"), optimize=True)
     return list(TEXTURES)
 
 

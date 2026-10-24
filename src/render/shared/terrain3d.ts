@@ -399,7 +399,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height;
     },
     tick: (now) => {
-      const f = Math.floor(now / 160) % waterFrames.length;
+      const f = Math.floor(now / board.waterFrameMs) % waterFrames.length;
       if (f !== frame) {
         frame = f;
         waterMat.diffuseTexture = waterFrames[f]!;
