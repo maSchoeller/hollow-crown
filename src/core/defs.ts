@@ -394,6 +394,8 @@ export interface ReinforcementDef {
 
 export interface MapDef {
   id: string;
+  /** act of the content folder the map lives in (`acts/actN/maps/`, set by the loader); picks the board's season */
+  act: number;
   nameKey: string;
   size: [number, number];
   fog: boolean;
@@ -774,6 +776,8 @@ export interface RenderDef {
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;
+    /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
+    decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
@@ -810,7 +814,7 @@ export interface RenderDef {
     scenery: {
       trees: Record<string, Array<{ model: string; weight: number }>>;
       deadTrees: { onAsh: number; nearAsh: number; model: string };
-      rural: { region: string; fieldModel: string; fenceModel: string; rocksModel: string; fields: [number, number]; radius: number; fenceChance: number; rocks: number; clearance: number };
+      rural: { region: string; fieldModel: string; fenceModel: string; cornerModel: string; brokenModel: string; rocksModel: string; fields: [number, number]; radius: number; fenceChance: number; brokenChance: number; rocks: number; clearance: number };
       bridgeScale: number;
     };
     /** light per season of a region */

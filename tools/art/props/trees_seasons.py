@@ -2,7 +2,7 @@
 
     "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe" -b --factory-startup -P tools/art/props/trees_seasons.py [-- ids]
 
-- autumn_a: autumn broadleaf, short trunk with root flares, crown of three big faceted clumps, orange-red with yellow facets
+- autumn_a: autumn broadleaf, short trunk with root flares, crown of three big faceted clumps and a fourth at the back (full from above), orange-red with yellow facets
 - autumn_b: autumn birch, slim white trunk with dark marks and small side branches, five golden-yellow clumps
 - snowfir_a: snowy fir, four stacked dark-green cone tiers each under a thick soft snow cap, white tip, short trunk
 - deadtree_a: bare dead tree, twisted grey-brown trunk with root flares and four short curved branches
@@ -166,8 +166,11 @@ def autumn_a():
     parts.append(with_mat(trunk, bark))
     parts.append(with_mat(branch('b1', (-0.02, 0, 0.3), (-0.2, -0.02, 0.46), 0.034, 0.017), bark))
     parts.append(with_mat(branch('b2', (0.02, 0, 0.28), (0.19, -0.01, 0.44), 0.032, 0.016), bark))
-    for i, (c, r) in enumerate((((-0.2, -0.04, 0.62), 0.225), ((0.2, -0.02, 0.6), 0.22), ((0.0, 0.07, 0.83), 0.24))):
+    for i, (c, r) in enumerate((((-0.2, -0.04, 0.62), 0.225), ((0.2, -0.02, 0.6), 0.22), ((0.0, 0.01, 0.83), 0.24))):
         parts.append(with_mat(clump(f'c{i}', c, r, rng, spikes=0.08), leaf))
+    # fourth clump at the back (north), so the crown reads full from above; built last so the others keep their shape
+    parts.append(with_mat(branch('b3', (0.0, 0.01, 0.34), (0.04, 0.17, 0.56), 0.03, 0.015), bark))
+    parts.append(with_mat(clump('c3', (0.04, 0.215, 0.7), 0.19, rng, spikes=0.08), leaf))
     obj = join(parts, 'autumn_a')
     finish(obj, 'autumn_a')
 

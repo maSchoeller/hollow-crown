@@ -122,8 +122,9 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
-      const m = parseOne<MapDef>(p, raw, mapSchema, issues);
-      if (m) maps[m.id] = m;
+      const m = parseOne<Omit<MapDef, 'act'>>(p, raw, mapSchema, issues);
+      // the act of the folder (acts/act2/maps/…) decides the season of the board
+      if (m) maps[m.id] = { ...m, act: Number(/^acts\/act(\d+)\//.exec(p)?.[1] ?? 1) };
     } else if (/^acts\/act\d+\/supports\.yaml$/.test(p)) {
       for (const sp of parseList<Omit<SupportPairDef, 'key'>>(p, raw ?? [], supportPairSchema, issues)) {
         const key = pairKey(sp.pair[0], sp.pair[1]);

@@ -565,6 +565,8 @@ export const worldSchema = z.object({
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
 const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
+
 export const renderSchema = z.object({
   camera: z.object({
     tiltDeg: z.number().min(0).max(80),
@@ -583,6 +585,7 @@ export const renderSchema = z.object({
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     sceneryPropsLow: z.number().int().min(0),
+    decor: z.object({ bushes: decorSchema, stones: decorSchema }),
   }),
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
@@ -617,10 +620,13 @@ export const renderSchema = z.object({
         region: z.string(),
         fieldModel: z.string(),
         fenceModel: z.string(),
+        cornerModel: z.string(),
+        brokenModel: z.string(),
         rocksModel: z.string(),
         fields: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
         radius: z.number().int().min(1),
         fenceChance: z.number().min(0).max(1),
+        brokenChance: z.number().min(0).max(1),
         rocks: z.number().min(0).max(1),
         clearance: z.number().int().min(0),
       }),

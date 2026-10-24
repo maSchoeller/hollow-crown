@@ -16,6 +16,11 @@ board:
   waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe
   sceneryPropsLow: 3                      # D8: auf „Niedrig“ nur Bäume/Felsen bis so viele Felder um die Karte
+  # Niedrige Deko auf freien Gras-/Flachlandfeldern ohne Requisite, Objekt, Einheit oder Aufstellfeld: Wahrscheinlichkeit je Feld
+  # auf der Karte (map) und in der Landschaft darum (scenery), Größenbereich; Bäume wählt die Jahreszeit des Akts (world.scenery.trees)
+  decor:
+    bushes: { model: bush_a, map: 0.05, scenery: 0.1, scale: [0.7, 0.95] }
+    stones: { model: rocks_small, map: 0.04, scenery: 0.07, scale: [0.75, 1.1] }
   fpsActive: 60                           # D8: Bildrate, solange sich etwas bewegt (auch auf 120-Hz-Displays)
   fpsIdle: 30                             # Bildrate in Ruhe (nur Idle-Animationen, Wasser, Feuer): spart Akku
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
@@ -74,14 +79,15 @@ world:
   # Landschaft der Weltkarte: trees = Baummodelle (<prop>_<state>) je Region mit Gewicht, andere Regionen nehmen die Sommerbäume
   # des Manifests; deadTrees = Wahrscheinlichkeit je Feld für abgestorbene Bäume auf Ascheflächen und auf Nachbarfeldern;
   # rural = Landleben im Grenzland (Region ruralRegion): um Dorffelder fields Felder (min–max) in radius Feldern, je Feldseite
-  # mit fenceChance ein Zaun, rocks = Wahrscheinlichkeit kleiner Steine je Gras-/Flachlandfeld, clearance = Abstand zu Orten;
+  # mit fenceChance ein Zaun (Eckstück cornerModel, wo zwei Seiten zusammentreffen; brokenChance = Anteil kaputter
+  # Zaunstücke, brokenModel), rocks = Wahrscheinlichkeit kleiner Steine je Gras-/Flachlandfeld, clearance = Abstand zu Orten;
   # bridgeScale = Größe der Brücke auf dem Brückenfeld
   scenery:
     trees:
       eisenmark: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: tree_c, weight: 1 }]
       aurenhall: [{ model: snowfir_a, weight: 5 }, { model: tree_c, weight: 1 }]
     deadTrees: { onAsh: 0.3, nearAsh: 0.15, model: deadtree_a }
-    rural: { region: borderland, fieldModel: field_idle, fenceModel: fence_idle, rocksModel: rocks_small, fields: [1, 3], radius: 2, fenceChance: 0.45, rocks: 0.035, clearance: 1 }
+    rural: { region: borderland, fieldModel: field_idle, fenceModel: fence_idle, cornerModel: fence_corner, brokenModel: fence_broken, rocksModel: rocks_small, fields: [1, 3], radius: 2, fenceChance: 0.45, brokenChance: 0.15, rocks: 0.035, clearance: 1 }
     bridgeScale: 0.7
   seasons:
     late_summer:

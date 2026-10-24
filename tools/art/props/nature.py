@@ -8,6 +8,8 @@
 - field_idle: square wheat patch (about 0.9 x 0.9, knee high): four rows of golden wheat running north-south with
   spiky ear tops and painted stalks, dark furrows between them, thin earthen rim
 - fence_idle: rustic fence segment along x (about 0.95 long): three faceted posts with chamfered tops, two rails
+- fence_corner: L corner of the same fence: post at the tile centre, arms along +x and +y out to the tile edge
+- fence_broken: fence_idle damaged: east post leaning out, upper east rail snapped and fallen to the ground
 
 Writes art/models/props/<id>.glb and art/props/previews/<id>.png. Fixed seeds, so the output is deterministic.
 """
@@ -18,7 +20,7 @@ import sys
 
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Euler, Vector
 
 sys.path.insert(0, os.path.dirname(__file__))
 from common import finish, join, mesh_object, reset  # noqa: E402
@@ -67,7 +69,9 @@ def paint(name, stops, z=None, wz=0.0, wn=0.35, noise=0.1, nscale=6.0, stretch=(
     """Painted gradient material: ramp over (height share + facet-towards-light share + soft noise).
     moss: (stops, nz_min, nz_max, scale, seed) paints moss patches on upward facing facets (normal z between the
           limits fades the moss in, broken up by blotchy noise);
-    streaks: (scale, dark, axis) darkens thin bands across `axis` (wheat stalks, wood grain)."""
+    streaks: (scale, dark, axis[, distortion[, fade]]) darkens thin bands across `axis` (wheat stalks, wood grain);
+             distortion (default 0.6) wobbles them, low values keep them straight; fade = (z0, z1) lets the bands die out
+             between these heights (stalks below, plain ears on top)."""
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     n, L = m.node_tree.nodes, m.node_tree.links
@@ -116,7 +120,9 @@ def paint(name, stops, z=None, wz=0.0, wn=0.35, noise=0.1, nscale=6.0, stretch=(
     L.new(cl.outputs['Result'], ramp.inputs['Fac'])
     col = ramp.outputs['Color']
     if streaks:
-        scale, dark, axis = streaks
+        scale, dark, axis = streaks[:3]
+        distortion = streaks[3] if len(streaks) > 3 else 0.6
+        fade = streaks[4] if len(streaks) > 4 else None
         mp = n.new('ShaderNodeMapping')
         # bands vary across the axis only: squash the streak axis to zero, wobble a little with noise
         mp.inputs['Scale'].default_value = tuple(0.0 if a == axis else 1.0 for a in 'xyz')
@@ -126,7 +132,7 @@ def paint(name, stops, z=None, wz=0.0, wn=0.35, noise=0.1, nscale=6.0, stretch=(
         wav.bands_direction = 'DIAGONAL'
         wav.wave_profile = 'SIN'
         wav.inputs['Scale'].default_value = scale
-        wav.inputs['Distortion'].default_value = 0.6
+        wav.inputs['Distortion'].default_value = distortion
         wav.inputs['Detail'].default_value = 1.0
         L.new(mp.outputs['Vector'], wav.inputs['Vector'])
         mr = n.new('ShaderNodeMapRange')
@@ -135,6 +141,16 @@ def paint(name, stops, z=None, wz=0.0, wn=0.35, noise=0.1, nscale=6.0, stretch=(
         mr.inputs['To Min'].default_value = dark
         mr.inputs['To Max'].default_value = 1.0
         L.new(wav.outputs['Fac'], mr.inputs['Value'])
+        if fade:
+            # the darkest band value rises from `dark` to 1 between the fade heights
+            spz = n.new('ShaderNodeSeparateXYZ')
+            L.new(geo.outputs['Position'], spz.inputs[0])
+            fz = n.new('ShaderNodeMapRange')
+            fz.inputs['From Min'].default_value, fz.inputs['From Max'].default_value = fade
+            fz.inputs['To Min'].default_value = dark
+            fz.inputs['To Max'].default_value = 1.0
+            L.new(spz.outputs['Z'], fz.inputs['Value'])
+            L.new(fz.outputs['Result'], mr.inputs['To Min'])
         sc = n.new('ShaderNodeVectorMath')
         sc.operation = 'SCALE'
         L.new(col, sc.inputs[0])
@@ -301,7 +317,7 @@ def field_idle():
     reset()
     rng = random.Random(503)
     wheat = paint('wheat', WHEAT, z=(0.04, 0.22), wz=0.8, wn=0.5, noise=0.1, nscale=10, seed=4.0, bias=-0.27,
-                  streaks=(45.0, 0.55, 'z'))
+                  streaks=(16.0, 0.55, 'z', 0.15, (0.12, 0.2)))
     earth = paint('earth', EARTH, wn=0.5, noise=0.12, nscale=14, seed=5.0, bias=0.15)
     furrow = paint('furrow', FURROW, wn=0.2, noise=0.25, nscale=18, seed=6.0, bias=0.2)
     half, rim_h, top = 0.45, 0.035, 0.04
@@ -346,15 +362,15 @@ def field_idle():
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
         parts.append(with_mat(mesh_object(f'row{r}', bm), wheat))
     obj = join(parts, 'field_idle')
-    finish(obj, 'field_idle')
+    finish(obj, 'field_idle', size=512)  # 512 px so the painted stalks survive the bake
 
 
-def post(name, x, h, r, rng, mat, segs=6):
+def post(name, x, h, r, rng, mat, segs=6, y=0.0):
     """Fence post: faceted prism with a chamfered top."""
     off = rng.uniform(0, math.pi)
 
     def ring(z, rr):
-        return [(x + math.cos(off + 2 * math.pi * i / segs) * rr, math.sin(off + 2 * math.pi * i / segs) * rr, z)
+        return [(x + math.cos(off + 2 * math.pi * i / segs) * rr, y + math.sin(off + 2 * math.pi * i / segs) * rr, z)
                 for i in range(segs)]
     lean = rng.uniform(-0.01, 0.01)
     top = [(px + lean, py, pz) for px, py, pz in ring(h, r * 0.62)]
@@ -389,8 +405,108 @@ def fence_idle():
     finish(obj, 'fence_idle')
 
 
+def fence_mats():
+    wood_post = paint('post', WOOD, z=(0.0, 0.42), wz=0.25, wn=0.55, noise=0.12, nscale=10, stretch=(4, 4, 0.6),
+                      seed=7.0, bias=-0.05, streaks=(70.0, 0.75, 'z'))
+    wood_rail = paint('rail', WOOD, wn=0.55, noise=0.12, nscale=10, stretch=(0.6, 4, 4), seed=8.0, bias=0.05,
+                      streaks=(80.0, 0.78, 'x'))
+    return wood_post, wood_rail
+
+
+def plank(name, a, b, hw, hh, mat, rng=None, jag=0.0):
+    """Rail beam from a to b (any direction, its width side kept level); jag > 0 splinters the b end: its four corners
+    end at different lengths and the end face closes in a spike (a snapped rail)."""
+    a, b = Vector(a), Vector(b)
+    ax = (b - a).normalized()
+    side = ax.cross(Vector((0, 0, 1)))
+    side = side.normalized() if side.length > 1e-6 else Vector((0, 1, 0))
+    up = side.cross(ax).normalized()
+    corners = [(-1, -1), (1, -1), (1, 1), (-1, 1)]
+    ring_a = [a + side * sx * hw + up * sy * hh for sx, sy in corners]
+    ring_b = [b + side * sx * hw + up * sy * hh + (ax * rng.uniform(-jag, jag) if jag else Vector()) for sx, sy in corners]
+    if not jag:
+        # bottom quad 0-3 = a end, top quad 4-7 = b end: hexa wants matching winding, which these rings have
+        return hexa(name, ring_a + ring_b, mat)
+    tip = b + ax * jag * 1.6 + side * rng.uniform(-0.5, 0.5) * hw + up * rng.uniform(-0.5, 0.5) * hh
+    return loft(name, [ring_a, ring_b, [tip]], mat)
+
+
+def lean_post(name, x, h, r, rng, mat, tilt, y=0.0):
+    """Fence post tipped over around its foot by the euler `tilt` (radians)."""
+    obj = post(name, 0.0, h, r, rng, mat)
+    e = Euler(tilt)
+    for v in obj.data.vertices:
+        p = v.co.copy()
+        p.rotate(e)
+        v.co = p + Vector((x, y, 0.0))
+        v.co.z = max(v.co.z, 0.0)  # the foot stays on the ground
+    return obj
+
+
+RAIL_Z = (0.15, 0.29)        # rail heights of every fence piece (so pieces line up across tiles)
+RAIL_HW, RAIL_HH, RAIL_OFF = 0.018, 0.024, -0.012
+
+
+def fence_corner():
+    """L corner: a post at the tile centre, arms along +x and +y with posts at 0.4 (where a straight segment would
+    have its end posts) and rails running out to the tile edge, so straight segments on the next tiles meet it.
+    The rail ends cross through the corner post and stick out a little on its outer side (log-cabin style)."""
+    reset()
+    rng = random.Random(505)
+    wood_post, wood_rail = fence_mats()
+    parts = [post('post_c', 0.0, 0.43 + rng.uniform(-0.01, 0.01), 0.05, rng, wood_post),
+             post('post_x', 0.4, 0.42 + rng.uniform(-0.015, 0.015), 0.048, rng, wood_post),
+             post('post_y', 0.0, 0.42 + rng.uniform(-0.015, 0.015), 0.048, rng, wood_post, y=0.4)]
+    for j, z in enumerate(RAIL_Z):
+        za, zb = z + rng.uniform(-0.01, 0.01), z + rng.uniform(-0.01, 0.01)
+        parts.append(plank(f'railx{j}', (-0.075, RAIL_OFF, za), (0.475, RAIL_OFF, zb), RAIL_HW, RAIL_HH, wood_rail))
+        za, zb = z + rng.uniform(-0.01, 0.01), z + rng.uniform(-0.01, 0.01)
+        parts.append(plank(f'raily{j}', (RAIL_OFF, -0.075, za), (RAIL_OFF, 0.475, zb), RAIL_HW, RAIL_HH, wood_rail))
+    obj = join(parts, 'fence_corner')
+    finish(obj, 'fence_corner')
+
+
+def fence_broken():
+    """Straight segment like fence_idle, damaged: the east post leans out (east and a little forward), the upper east rail
+    snapped at the leaning post and fell, its broken end on the ground; a splintered stub still hangs on the post."""
+    reset()
+    rng = random.Random(506)
+    wood_post, wood_rail = fence_mats()
+    tilt = (math.radians(8), math.radians(14), 0.0)       # around x (leans forward, -y) and y (leans east, +x)
+    parts = [post('post0', -0.4, 0.42 + rng.uniform(-0.015, 0.015), 0.048, rng, wood_post),
+             post('post1', 0.0, 0.42 + rng.uniform(-0.015, 0.015), 0.048, rng, wood_post),
+             lean_post('post2', 0.4, 0.41, 0.048, rng, wood_post, tilt)]
+
+    def on_post2(z):
+        """Where the leaning post's axis is at height z (before tilt), plus the rail's offset to the front."""
+        p = Vector((0.0, 0.0, z))
+        p.rotate(Euler(tilt))
+        return Vector((0.4, RAIL_OFF, 0.0)) + p
+    # west half intact (both rails), as on fence_idle
+    for j, z in enumerate(RAIL_Z):
+        parts.append(plank(f'railw{j}', (-0.475, RAIL_OFF, z + rng.uniform(-0.01, 0.01)),
+                           (0.01, RAIL_OFF, z + rng.uniform(-0.012, 0.012)), RAIL_HW, RAIL_HH, wood_rail))
+    # lower east rail still spans to the leaning post (pulled along with it), sticking out past it
+    lo = on_post2(RAIL_Z[0])
+    a = Vector((-0.01, RAIL_OFF, RAIL_Z[0] + rng.uniform(-0.01, 0.01)))
+    d = (lo - a).normalized()
+    parts.append(plank('raile0', a, lo + d * 0.05, RAIL_HW, RAIL_HH, wood_rail))
+    # upper east rail: snapped near the leaning post; the long piece hangs from the middle post down to the ground
+    fallen = plank('raile1', (-0.01, RAIL_OFF, RAIL_Z[1] + 0.005), (0.34, -0.13, 0.042), RAIL_HW, RAIL_HH,
+                   wood_rail, rng, jag=0.03)
+    for v in fallen.data.vertices:  # the splintered end rests on the ground, not in it
+        v.co.z = max(v.co.z, 0.0)
+    parts.append(fallen)
+    # splintered stub left on the leaning post (short, pointing back west)
+    hi = on_post2(RAIL_Z[1] - 0.02)
+    parts.append(plank('stub', hi + Vector((0.035, 0.0, 0.006)), hi + Vector((-0.07, 0.0, -0.014)), RAIL_HW, RAIL_HH,
+                       wood_rail, rng, jag=0.025))
+    obj = join(parts, 'fence_broken')
+    finish(obj, 'fence_broken')
+
+
 if __name__ == '__main__':
     only = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
-    for fn in (rock_idle, rocks_small, field_idle, fence_idle):
+    for fn in (rock_idle, rocks_small, field_idle, fence_idle, fence_corner, fence_broken):
         if not only or fn.__name__ in only:
             fn()

@@ -32,6 +32,7 @@ import { assetUrl, loadManifest } from '../shared/assets';
 import { clampAxis } from '../shared/camera';
 import { PropLayer, type PropPlace } from '../shared/props';
 import { applyLight } from '../shared/season';
+import { pickWeighted, planFence } from '../shared/scenery';
 import { hash3 } from '../shared/terrain3d';
 import { fogCorners, fogLabels, heightSampler, locationModel, worldLayout, type HeightField, type WorldLayout } from './layout';
 
@@ -51,6 +52,8 @@ export interface WorldHooks {
 
 /** Share of the free view the map may be pushed past its edge: places at the rim can still rise above the node card. */
 const CLAMP_MARGIN = 0.5;
+/** longest wait for shader compilation before the map shows anyway */
+const READY_WAIT_MS = 4000;
 
 /** Landscape props by terrain prop (the board's look, D12); trees pick one of the manifest's tree models. */
 const PROP_STATE: Record<string, string> = { rock: 'rock_idle', house: 'house_intact', fort: 'fort_idle', ruins: 'ruins_idle', shrine: 'shrine_idle', wagon: 'wagon_idle' };
@@ -152,7 +155,8 @@ export class WorldView implements HostedView {
     this.wake();
     const missing = await this.props.place(await this.propGroups(ctx, seed));
     // shaders compile in the background; until they are, the scene would draw an empty sea (the hub shows its stone)
-    if (!this.disposed) await this.scene.whenReadyAsync();
+    // (bounded: one stray unready entity must not keep the stone up for good)
+    if (!this.disposed) await Promise.race([this.scene.whenReadyAsync(), new Promise((r) => setTimeout(r, READY_WAIT_MS))]);
     this.wake();
     return missing;
   }
@@ -312,8 +316,7 @@ export class WorldView implements HostedView {
         const mix = sc.trees[layout.region[y * W + x] ?? ''];
         if (def.prop === 'tree' && mix) {
           // weighted pick from the region's tree set (autumn in Eisenmark, snow firs in Aurenhall)
-          let t = (((r >>> 20) % 1000) / 1000) * mix.reduce((a, m) => a + m.weight, 0);
-          const pick = mix.find((m) => (t -= m.weight) < 0) ?? mix[0]!;
+          const pick = pickWeighted(mix, ((r >>> 20) % 1000) / 1000);
           put(pick.model, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
         } else if (def.prop === 'tree') put(`tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
         else if (def.prop === 'rock' || def.prop === 'rockwall') put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: 1.05 });
@@ -361,14 +364,17 @@ export class WorldView implements HostedView {
         for (const [fx, fy] of fields) taken.add(fy * W + fx);
         for (const [fx, fy, f] of fields) {
           put(rural.fieldModel, { x: fx + 0.5, z: -fy - 0.5, h: this.groundAt(fx + 0.5, fy + 0.5), rot: ((f >>> 8) % 4) * (Math.PI / 2), scale: 1, shade: shadeAt(fx, fy) });
-          // a fence on some sides, along the field's edge
-          const sides: Array<[number, number]> = [[0, -1], [0, 1], [-1, 0], [1, 0]];
-          sides.forEach(([sx, sy], i) => {
-            if ((hash3(fx, fy, seed + 43 + i) & 0xffff) / 0x10000 >= rural.fenceChance) return;
-            const ex = fx + 0.5 + sx * 0.5;
-            const ey = fy + 0.5 + sy * 0.5;
-            put(rural.fenceModel, { x: ex, z: -ey, h: this.groundAt(ex, ey), rot: sx ? Math.PI / 2 : 0, scale: 1, shade: shadeAt(fx, fy) });
-          });
+          // a fence on some sides along the field's edge; corners where two sides meet, some pieces broken
+          const present = [0, 1, 2, 3].map((i) => (hash3(fx, fy, seed + 43 + i) & 0xffff) / 0x10000 < rural.fenceChance);
+          const broken = [0, 1, 2, 3].map((i) => (hash3(fx, fy, seed + 51 + i) & 0xffff) / 0x10000 < rural.brokenChance);
+          for (const piece of planFence(present, broken)) {
+            const ex = fx + 0.5 + piece.dx;
+            const ey = fy + 0.5 - piece.dz;
+            const model = piece.kind === 'corner' ? rural.cornerModel : piece.kind === 'broken' ? rural.brokenModel : rural.fenceModel;
+            // a broken piece sometimes faces the other way, so its leaning end is not always on the same side
+            const turn = piece.kind === 'broken' && (hash3(Math.round(ex * 4), Math.round(ey * 4), seed + 59) & 0x100) !== 0 ? Math.PI : 0;
+            put(model, { x: ex, z: -ey, h: this.groundAt(ex, ey), rot: piece.rot + turn, scale: 1, stretch: piece.stretch, shade: shadeAt(fx, fy) });
+          }
         }
       }
     return taken;

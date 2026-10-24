@@ -17,6 +17,8 @@ export interface PropPlace {
   h: number;
   rot: number;
   scale: number;
+  /** extra length factor along the model's own x axis (default 1) */
+  stretch?: number;
   /** brightness 0–1 (vertex colour of the instance) */
   shade?: number;
 }
@@ -67,7 +69,7 @@ export class PropLayer {
       const mats = new Float32Array(list.length * 16);
       const cols = new Float32Array(list.length * 4);
       list.forEach((p, k) => {
-        Matrix.Compose(new Vector3(p.scale, p.scale, p.scale), Quaternion.RotationAxis(Vector3.Up(), p.rot), new Vector3(p.x, p.h, p.z)).copyToArray(mats, k * 16);
+        Matrix.Compose(new Vector3(p.scale * (p.stretch ?? 1), p.scale, p.scale), Quaternion.RotationAxis(Vector3.Up(), p.rot), new Vector3(p.x, p.h, p.z)).copyToArray(mats, k * 16);
         const f = p.shade ?? 1;
         cols.set([f, f, f * 1.06, 1], k * 4);
       });

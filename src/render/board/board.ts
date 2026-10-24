@@ -33,6 +33,7 @@ import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type Terr
 import { loadPropMesh, loadUnitModel } from '../shared/models';
 import { ModelFigure, SpriteFigure, type Facing, type Figure, type FigureAnim } from '../shared/figures';
 import { applyLight } from '../shared/season';
+import { pickWeighted, treeSetOfAct } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
@@ -262,8 +263,11 @@ export class BoardView implements HostedView {
       this.applyMapLight();
       this.textures = await loadGroundTextures(this.store);
       this.fx = await loadFx();
+      // the player may leave before the assets arrive: a disposed board builds nothing into the next view's stage
+      if (this.disposed) return;
       if (this.fx) this.fxTexture = this.textureFromImage('fx', this.fx.image);
       await this.buildTerrain();
+      if (this.disposed) return;
       this.fitCamera();
       // the terrain shows while the figures load (they load in parallel and appear together)
       await this.syncUnits(state, true);
@@ -294,7 +298,7 @@ export class BoardView implements HostedView {
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
     await this.buildProps();
-    this.buildFires();
+    if (!this.disposed) this.buildFires();
   }
 
   /** The same prop for scenery outside the map: shares the geometry, casts no shadow. */
@@ -367,21 +371,47 @@ export class BoardView implements HostedView {
     };
     const manifest = await loadManifest();
     const trees = manifest.models?.props.tree ?? ['a'];
+    // trees of the season of the act the map belongs to (summer: the manifest's plain trees)
+    const map = this.data.maps[s.mapId]!;
+    const treeSet = treeSetOfAct(this.data, map.act);
+    // tiles that must stay clear: objects, units, deploy slots and reinforcements
+    const reserved = new Set<string>();
+    for (const o of s.objects) reserved.add(`${o.at[0]},${o.at[1]}`);
+    for (const u of [...map.units, ...map.reinforcements.flatMap((rf) => rf.units)]) reserved.add(`${u.at[0]},${u.at[1]}`);
+    for (const p of map.deploy.slots) reserved.add(`${p[0]},${p[1]}`);
+    const decor = this.data.render.board.decor;
     for (let gy = 0; gy < grid.h; gy++)
       for (let gx = 0; gx < grid.w; gx++) {
         const def = grid.at(gx, gy)!;
-        if (!def.prop || def.prop === 'bridge') continue;
+        const isOpen = def.id === 'grass' || def.id === 'plain';
+        if ((!def.prop && !isOpen) || def.prop === 'bridge') continue;
         const x = gx - grid.skirt;
         const y = gy - grid.skirt;
         if (this.quality === 'low' && !grid.inMap(gx, gy)) {
           const away = Math.max(-x - 1, x - s.width, -y - 1, y - s.height) + 1;
           if (away > this.data.render.board.sceneryPropsLow) continue;
         }
+        if (!def.prop) {
+          // low decoration on free ground: one roll per tile, bushes first, then small stones; a corner of the tile, the unit keeps the centre
+          const inMap = grid.inMap(gx, gy);
+          if (inMap && reserved.has(`${x},${y}`)) continue;
+          const d = hash3(gx, gy, this.seed + 61);
+          const roll = (d & 0xffff) / 0x10000;
+          const pb = inMap ? decor.bushes.map : decor.bushes.scenery;
+          const ps = inMap ? decor.stones.map : decor.stones.scenery;
+          const kind = roll < pb ? decor.bushes : roll < pb + ps ? decor.stones : null;
+          if (!kind) continue;
+          const [lo, hi] = kind.scale;
+          const ox = ((d >>> 16) & 1 ? 1 : -1) * (0.2 + ((d >>> 17) % 10) / 100);
+          const oy = ((d >>> 21) & 1 ? 1 : -1) * (0.2 + ((d >>> 22) % 10) / 100);
+          put(`${kind.model}`, { x: x + ox, y: y + oy, h: def.height, rot: ((d >>> 8) % 360) * (Math.PI / 180), scale: lo + (((d >>> 4) % 100) / 100) * (hi - lo), dim: !inMap });
+          continue;
+        }
         const r = hash3(gx, gy, this.seed + 5);
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
         switch (def.prop) {
           case 'tree':
-            put(`tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+            put(treeSet ? pickWeighted(treeSet, ((r >>> 20) % 1000) / 1000).model : `tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
             break;
           case 'rock':
           case 'rockwall':
@@ -555,6 +585,10 @@ export class BoardView implements HostedView {
       }
       if (!v) {
         const figure = await (fresh.get(u.uid) ?? this.makeFigure(u, `unit:${u.uid}:${u.team}`));
+        if (this.disposed) {
+          for (const f of fresh.values()) void f.then((g) => g.dispose());
+          return;
+        }
         this.castShadows(figure.casters);
         v = {
           uid: u.uid,

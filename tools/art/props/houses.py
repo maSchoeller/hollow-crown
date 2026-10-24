@@ -5,8 +5,9 @@
 - house_intact: whitewashed cottage with dark timber frame, thick red-brown tile roof (ridge east-west), stone
   chimney on the north slope, lit windows, wooden door on the south front, stone base, bushes at the corners
 - house_visited: same house, door swung open with warm light inside, lantern by the door, shutters and a flower box
-- house_razed: same footprint burnt out: broken sooty walls, charred posts, collapsed roof beams, tiles and stones
-  scattered around (smoke comes from the game, not the model)
+- house_razed: same footprint burnt out: broken sooty masonry walls with stepped, stony edges, window holes and a
+  breach where the door was, charred posts, collapsed roof beams crossing the room, heaps of stones and red roof tiles
+  inside and against the walls (smoke comes from the game, not the model)
 - farm_idle: farmstead about 1.6 x 0.9 tiles (long side east-west): farmhouse with a thick straw thatch and an
   eyebrow dormer, joined wooden barn with a lower thatch, round haystack, bit of fence, barrels
 
@@ -501,79 +502,145 @@ def house_visited():
     house('visited')
 
 
+def stepped(u0, u1, steps, rng, z0=BASE_Z):
+    """Wall outline (u, z) from u0 to u1: flat bottom, top made of steps [(u_end, height), ...] left to right with
+    small random nicks, so the broken top reads as courses of masonry that fell away block by block."""
+    pts = [(u0, z0), (u1, z0)]
+    top = []
+    u = u0
+    for k, (ue, h) in enumerate(steps):
+        ue = u1 if k == len(steps) - 1 else ue
+        top += [(u, h + rng.uniform(-0.008, 0.008)), (ue, h + rng.uniform(-0.008, 0.008))]
+        u = ue
+    return pts + top[::-1]
+
+
+def razed_wall(name, face, at, u0, u1, steps, mat, rng, t=0.045):
+    """Broken wall slab on a side: face 'y-' / 'y+' (south / north, u = x) or 'x-' / 'x+' (west / east, u = y)."""
+    pro = stepped(u0, u1, steps, rng)
+    axis = 'y' if face[0] == 'y' else 'x'
+    d0, d1 = (at, at + t) if face[1] == '-' else (at - t, at)
+    return prism(name, pro, axis, d0, d1, mat)
+
+
+def edge_stones(name, face, at, pts, mat, rng, t=0.045):
+    """Loose masonry blocks sitting proud on the broken top of a wall (u, z) and jutting out of its ends."""
+    parts = []
+    for i, (u, z) in enumerate(pts):
+        sx, sz = rng.uniform(0.045, 0.07), rng.uniform(0.03, 0.045)
+        depth = t + rng.uniform(0.006, 0.02)
+        mid = at + (t / 2 if face[1] == '-' else -t / 2)
+        c = (u, mid, z) if face[0] == 'y' else (mid, u, z)
+        s = (sx, depth, sz) if face[0] == 'y' else (depth, sx, sz)
+        parts.append(box(f'{name}{i}', c, s, mat, rot=(rng.uniform(-0.15, 0.15), rng.uniform(-0.15, 0.15),
+                                                             rng.uniform(-0.2, 0.2)), skip=('-z',)))
+    return parts
+
+
 def house_razed():
     reset()
     M = Mats()
     rng = random.Random(31)
+    t = 0.045
+    # burnt plaster over rubble masonry: sooty ramp (dark towards the broken tops) with stone joints showing through
+    wall = paint('masonry', [(0.0, lin(150, 136, 114)), (0.3, lin(184, 172, 150)), (0.55, lin(128, 114, 98)),
+                             (0.8, lin(60, 52, 46)), (1.0, lin(30, 26, 24))], z=(0.07, 0.46), wz=0.8, wn=0.2,
+                 noise=0.22, nscale=9, seed=14.0, bias=0.0, pattern=('stones', 12.0, 0.1, 0.42))
+    # rubble heaps: crushed stone and brick-red tile shards (noise picks the colour), rubble joints over it
+    heap_mat = paint('heap', [(0.0, lin(48, 42, 38)), (0.3, lin(92, 84, 76)), (0.48, lin(136, 126, 114)),
+                              (0.56, lin(150, 62, 40)), (0.64, lin(178, 78, 50)), (0.72, lin(128, 118, 106)),
+                              (1.0, lin(176, 166, 152))],
+                     wn=0.5, noise=0.5, nscale=22, seed=17.0, bias=-0.05, pattern=('stones', 30.0, 0.12, 0.5))
+    block = paint('block', [(0.0, lin(96, 86, 74)), (0.5, lin(146, 134, 116)), (1.0, lin(188, 176, 156))], wn=0.6,
+                  noise=0.15, nscale=20, seed=18.0, bias=-0.05)
     parts = [box('base', (0, 0, BASE_Z / 2), (2 * W + 0.05, 2 * D + 0.05, BASE_Z), M.stone, skip=('-z',)),
              box('debris', (0, 0, BASE_Z + 0.02), (2 * W - 0.06, 2 * D - 0.06, 0.05), M.ash, skip=('-z',))]
-    t = 0.045
-    # broken wall slabs with jagged tops
-    front_l = [(-W, BASE_Z), (-0.03, BASE_Z), (-0.03, 0.15), (-0.06, 0.25), (-0.1, 0.36), (-0.2, 0.38),
-               (-0.27, 0.42), (-W, 0.39)]
-    front_r = [(0.19, BASE_Z), (W, BASE_Z), (W, 0.34), (0.31, 0.3), (0.27, 0.35), (0.22, 0.22), (0.19, 0.2)]
-    back = [(-W, BASE_Z), (W, BASE_Z), (W, 0.36), (0.22, 0.43), (0.06, 0.33), (-0.1, 0.4), (-0.24, 0.3), (-W, 0.35)]
-    # west gable broken through north of the window (a breach down to knee height)
-    west = [(-D, BASE_Z), (0.08, BASE_Z), (0.08, 0.17), (0.1, 0.26), (0.06, 0.4), (0.02, 0.5), (-0.06, 0.44),
-            (-0.13, 0.41), (-0.19, 0.29), (-D, 0.33)]
-    west_b = [(0.16, BASE_Z), (D, BASE_Z), (D, 0.4), (0.2, 0.45), (0.17, 0.3), (0.15, 0.2)]
-    east = [(-D, BASE_Z), (D, BASE_Z), (D, 0.31), (0.12, 0.37), (0.02, 0.25), (-0.1, 0.31), (-D, 0.27)]
-    parts.append(prism('wfl', front_l, 'y', -D, -D + t, M.sooty))
-    parts.append(prism('wfr', front_r, 'y', -D, -D + t, M.sooty))
-    parts.append(prism('wb', back, 'y', D - t, D, M.sooty))
-    parts.append(prism('ww', west, 'x', -W, -W + t, M.sooty))
-    parts.append(prism('wwb', west_b, 'x', -W, -W + t, M.sooty))
-    parts.append(prism('wwlow', [(0.08, BASE_Z), (0.16, BASE_Z), (0.16, 0.13), (0.12, 0.15), (0.08, 0.12)], 'x', -W,
-                       -W + t, M.sooty))
-    parts.append(prism('we', east, 'x', W - t, W, M.sooty))
-    # charred window frames with dark holes
-    parts += window('y', -D, -0.17, 0.25, 0.12, 0.11, M, 'fwin', glass=M.soot, frame=M.char, bars=False)
-    parts += window('x-', -W, 0.0, 0.25, 0.09, 0.09, M, 'gwin', glass=M.soot, frame=M.char, bars=False)
-    # charred corner and door posts at broken heights
-    for i, (x, y, h) in enumerate(((-W - 0.004, -D - 0.004, 0.44), (W + 0.004, -D - 0.004, 0.37),
-                                   (-W - 0.004, D + 0.004, 0.5), (W + 0.004, D + 0.004, 0.41),
-                                   (0.03, -D - 0.004, 0.31), (0.17, -D - 0.004, 0.25))):
-        parts.append(box(f'post{i}', (x, y, (BASE_Z + h) / 2), (0.04, 0.04, h - BASE_Z), M.char, skip=('-z',),
+    # broken masonry walls: stepped tops, a window hole in the front and the west gable, a breach where the door was
+    # front (south): tall west end, window hole (sill 0.19, lintel above), breach at the door down to knee height
+    parts.append(razed_wall('wf', 'y-', -D, -W, W, [(-0.27, 0.42), (-0.2, 0.38), (-0.1, 0.35), (-0.06, 0.3),
+                                                     (-0.02, 0.22), (0.03, 0.14), (0.13, 0.1), (0.19, 0.19),
+                                                     (0.25, 0.27), (0.3, 0.35), (W, 0.31)], wall, rng))
+    # back (north): mostly standing, ragged top with one deep notch
+    parts.append(razed_wall('wb', 'y+', D, -W, W, [(-0.26, 0.34), (-0.16, 0.42), (-0.08, 0.36), (0.0, 0.23),
+                                                    (0.07, 0.27), (0.16, 0.38), (0.26, 0.44), (W, 0.37)], wall, rng))
+    # west gable: window hole south of the middle, the gable point broken off in steps
+    parts.append(razed_wall('ww', 'x-', -W, -D, D, [(-0.17, 0.35), (-0.1, 0.38), (0.05, 0.16), (0.09, 0.3),
+                                                     (0.14, 0.47), (0.2, 0.42), (D, 0.37)], wall, rng))
+    # east gable: fallen low, a stump at the north corner
+    parts.append(razed_wall('we', 'x+', W, -D, D, [(-0.17, 0.29), (-0.07, 0.2), (0.05, 0.14), (0.14, 0.24),
+                                                    (D, 0.36)], wall, rng))
+    # loose stones on the broken edges (u, z): where steps drop and at the ends
+    parts += edge_stones('esf', 'y-', -D, [(-0.3, 0.43), (-0.08, 0.36), (-0.03, 0.31), (0.01, 0.23), (0.16, 0.12),
+                                           (0.22, 0.2), (0.28, 0.29)], block, rng)
+    parts += edge_stones('esb', 'y+', D, [(-0.2, 0.44), (0.03, 0.25), (0.22, 0.46)], block, rng)
+    parts += edge_stones('esw', 'x-', -W, [(-0.12, 0.39), (0.0, 0.17), (0.07, 0.31), (0.12, 0.48)], block, rng)
+    parts += edge_stones('ese', 'x+', W, [(-0.12, 0.31), (0.0, 0.16), (0.2, 0.38)], block, rng)
+    # burnt-out windows: charred frame and cross, black hole behind
+    parts += window('y', -D, -0.17, 0.25, 0.12, 0.11, M, 'fwin', glass=M.soot, frame=M.char)
+    parts += window('x-', -W, -0.15, 0.24, 0.09, 0.09, M, 'gwin', glass=M.soot, frame=M.char)
+    # charred corner posts at broken heights
+    for i, (x, y, h) in enumerate(((-W - 0.004, -D - 0.004, 0.43), (W + 0.004, -D - 0.004, 0.3),
+                                   (-W - 0.004, D + 0.004, 0.46), (W + 0.004, D + 0.004, 0.4),
+                                   (0.02, -D - 0.004, 0.3))):
+        parts.append(box(f'post{i}', (x, y, (BASE_Z + h) / 2), (0.036, 0.036, h - BASE_Z), M.char, skip=('-z',),
                          rot=(0, 0, rng.uniform(-0.1, 0.1))))
-    # collapsed roof beams, criss-crossing, some sticking up
-    for i, (a, b, w) in enumerate((((-0.3, -0.15, 0.1), (0.15, 0.18, 0.52), 0.04),
-                                   ((0.3, -0.1, 0.09), (-0.1, 0.2, 0.47), 0.04),
-                                   ((-0.36, 0.17, 0.37), (0.28, -0.12, 0.13), 0.038),
-                                   ((-0.2, -0.2, 0.1), (0.03, 0.06, 0.6), 0.036),
-                                   ((0.08, -0.2, 0.1), (0.34, 0.15, 0.41), 0.036),
-                                   ((-0.38, -0.04, 0.33), (0.38, 0.03, 0.29), 0.04),
-                                   ((-0.15, 0.2, 0.09), (0.25, 0.22, 0.38), 0.034),
-                                   ((-0.28, 0.0, 0.12), (-0.05, -0.22, 0.4), 0.032))):
+    # collapsed roof: rafters fallen into the room, crossing each other, ends resting on the wall tops or sticking up
+    for i, (a, b, w) in enumerate((((-0.34, -0.2, 0.12), (0.12, 0.24, 0.47), 0.045),
+                                   ((0.33, -0.16, 0.1), (-0.14, 0.25, 0.45), 0.045),
+                                   ((-0.38, 0.12, 0.4), (0.37, -0.1, 0.17), 0.042),
+                                   ((-0.2, -0.22, 0.12), (0.1, 0.18, 0.44), 0.04),
+                                   ((0.06, -0.2, 0.12), (0.36, 0.18, 0.46), 0.04),
+                                   ((-0.4, -0.04, 0.36), (0.4, 0.06, 0.3), 0.045),
+                                   ((-0.22, 0.24, 0.1), (0.3, 0.24, 0.4), 0.038))):
         parts.append(beam(f'beam{i}', a, b, w, M.char, roll=rng.uniform(0, 1)))
-    # rubble: roof tiles and stones, piled along the walls (more at the collapsed middle front) and inside
-    def scatter(n, inside):
+    # rubble heaps of masonry and roof tiles: in the room and against the walls outside; (x, y, rx, ry, height)
+    heaps = ((0.0, 0.0, 0.25, 0.17, 0.2), (-0.26, -0.33, 0.14, 0.07, 0.1), (0.07, -0.32, 0.16, 0.08, 0.13),
+             (0.39, -0.06, 0.07, 0.2, 0.11), (-0.39, 0.14, 0.07, 0.18, 0.09), (0.26, 0.33, 0.14, 0.07, 0.08),
+             (0.37, -0.32, 0.08, 0.07, 0.07))
+    for i, (x, y, rx, ry, h) in enumerate(heaps):
+        z0 = BASE_Z + 0.03 if abs(x) < W and abs(y) < D else 0.0
+        bm = bmesh.new()
+        bmesh.ops.create_icosphere(bm, subdivisions=1, radius=1.0)
+        for v in bm.verts:
+            d = 1.0 + rng.uniform(-0.22, 0.22)
+            v.co = Vector((x + v.co.x * rx * d, y + v.co.y * ry * d, max(z0 + v.co.z * h * d, z0)))
+        parts.append(with_mat(mesh_object(f'heap{i}', bm), heap_mat))
+
+    def surface(x, y):
+        """Height of the heaps / floor under (x, y)."""
+        inside = abs(x) < W - 0.02 and abs(y) < D - 0.02
+        z = BASE_Z + 0.045 if inside else 0.0
+        for hx, hy, rx, ry, h in heaps:
+            q = 1 - ((x - hx) / rx) ** 2 - ((y - hy) / ry) ** 2
+            if q > 0:
+                z0 = BASE_Z + 0.03 if abs(hx) < W and abs(hy) < D else 0.0
+                z = max(z, z0 + h * math.sqrt(q) * 1.05)
+        return z
+
+    def on_heaps(n, spread=1.0):
         pts = []
         while len(pts) < n:
-            if inside:
-                x, y = rng.uniform(-W + 0.06, W - 0.06), rng.uniform(-D + 0.06, D - 0.06)
-                z = BASE_Z + 0.05
-            else:
-                x, y = rng.uniform(-0.43, 0.43), rng.uniform(-0.39, 0.39)
-                ox, oy = max(abs(x) - (W + 0.025), 0), max(abs(y) - (D + 0.025), 0)
-                if (ox == 0 and oy == 0) or math.hypot(ox, oy) > 0.09:
-                    continue
-                z = 0.0
-            pts.append((x, y, z))
+            hx, hy, rx, ry, h = (rng.choices(heaps, weights=[hp[2] * hp[3] for hp in heaps])[0] if rng.random() < 0.85
+                                 else (0, 0, 0.42, 0.38, 0))
+            a, r = rng.uniform(0, 2 * math.pi), math.sqrt(rng.random()) * spread
+            x, y = hx + math.cos(a) * rx * r, hy + math.sin(a) * ry * r
+            if abs(x) > 0.43 or abs(y) > 0.38:
+                continue
+            # keep pieces out of the wall slabs
+            if W - 0.06 < abs(x) < W + 0.03 and abs(y) < D + 0.02 or D - 0.06 < abs(y) < D + 0.03 and abs(x) < W + 0.02:
+                continue
+            pts.append((x, y, surface(x, y)))
         return pts
-    for i, (x, y, z) in enumerate(scatter(34, False) + scatter(14, True)):
-        h = z + rng.uniform(0.008, 0.045)
-        parts.append(box(f'rt{i}', (x, y, h), (0.065, 0.05, 0.018), rng.choice(M.tiles),
-                         rot=(rng.uniform(-0.6, 0.6), rng.uniform(-0.6, 0.6), rng.uniform(0, math.pi)), skip=('-z',)))
-    for i, (x, y, z) in enumerate(scatter(26, False) + scatter(4, True)):
-        r = rng.uniform(0.022, 0.04)
-        parts.append(octa(f'st{i}', (x, y, z + r * 0.4), r, M.rubble, rng, squash=0.7))
-    # front gap: a low heap of tiles and stones where the middle of the front wall fell
-    for i in range(7):
-        x = rng.uniform(-0.04, 0.05)
-        parts.append(box(f'gap{i}', (x, -D + rng.uniform(-0.04, 0.04), BASE_Z + rng.uniform(0.0, 0.04)),
-                         (0.06, 0.045, 0.016), rng.choice(M.tiles),
-                         rot=(rng.uniform(-0.8, 0.8), rng.uniform(-0.8, 0.8), rng.uniform(0, math.pi))))
+    for i, (x, y, z) in enumerate(on_heaps(48)):
+        parts.append(box(f'rt{i}', (x, y, z + 0.006), (rng.uniform(0.055, 0.075), rng.uniform(0.04, 0.055), 0.02),
+                         rng.choice(M.tiles), rot=(rng.uniform(-0.7, 0.7), rng.uniform(-0.7, 0.7), rng.uniform(0, math.pi)),
+                         skip=('-z',)))
+    for i, (x, y, z) in enumerate(on_heaps(18)):
+        r = rng.uniform(0.025, 0.045)
+        parts.append(octa(f'st{i}', (x, y, z + r * 0.3), r, M.rubble, rng, squash=0.75))
     obj = join(parts, 'house_razed')
+    for v in obj.data.vertices:  # tumbled pieces rest on the ground, not in it
+        v.co.z = max(v.co.z, 0.0)
     finish(obj, 'house_razed', size=512)
 
 
