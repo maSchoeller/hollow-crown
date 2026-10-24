@@ -22,6 +22,7 @@ export * from './battle/apply';
 export * from './battle/setup';
 export * from './ai/ai';
 export * from './campaign/campaign';
+export * from './campaign/resultView';
 export * from './campaign/camp';
 export * from './campaign/commands';
 export * from './campaign/apply';

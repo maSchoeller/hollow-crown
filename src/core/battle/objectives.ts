@@ -12,6 +12,7 @@ export function mapOf(data: GameData, s: BattleState): MapDef {
 function endBattle(s: BattleState, outcome: 'victory' | 'defeat', events: GameEvent[], reason?: string): void {
   if (s.outcome) return;
   s.outcome = outcome;
+  if (outcome === 'defeat' && reason) s.defeatReason = reason;
   events.push({ t: 'battleEnd', outcome, reason });
 }
 

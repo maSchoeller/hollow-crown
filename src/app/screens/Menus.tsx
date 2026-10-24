@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'preact/hooks';
-import type { ComponentChildren } from 'preact';
-import { itemDef, type Reward } from '../../core';
 import { t } from '../../i18n';
-import { asset, itemName, Modal, rarityOf, unitName } from '../../ui/components';
+import { asset, Modal } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { checkForUpdate, installUpdate, updateStatus } from '../update';
-import { Amount, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Segment } from '../../ui/pieces';
+import { Piece, PrimaryButton, ScreenHead, SecondaryButton, Segment } from '../../ui/pieces';
 import { exportSave, type LegacyRecord, type SaveRecord, type SlotId } from '../../persistence/save';
 import { resumeText, slotSummary } from '../campaignInfo';
-import { campaign, data, latestAutoSave, saveDbBlocked } from '../state/session';
-import { loadSlot, nodeDef } from '../state/flow';
+import { latestAutoSave, saveDbBlocked } from '../state/session';
+import { loadSlot } from '../state/flow';
 import { screen, type Screen } from '../state/screen';
 import { settings, updateSettings, type Settings } from '../state/settings';
 import '../../ui/title.css';
@@ -176,96 +174,5 @@ export function Options({ back }: { back: Screen }) {
         </Piece>
       </div>
     </div>
-  );
-}
-
-export function Result({ result }: { result: import('../../core').BattleResult }) {
-  const c = campaign.value!;
-  const line = (icon: string | ComponentChildren, cls: string, text: string, key: string) => (
-    <div key={key} class={`row ${cls}`} style={{ minHeight: 36 }}>
-      {typeof icon === 'string' ? <Icon name={icon} size={18} /> : icon}
-      <span>{text}</span>
-    </div>
-  );
-  return (
-    <div class="screen">
-      <div class="screen-narrow col" style={{ gap: 18 }}>
-        <div class="col" style={{ gap: 4 }}>
-          <span class="lbl gold">{t(nodeDef(result.nodeId).titleKey)}</span>
-          <h1>{t('ui.result.victory')}</h1>
-          <span class="muted">{t('ui.result.turns', { count: result.turns })}</span>
-        </div>
-        <section class="col edge" style={{ paddingTop: 16, gap: 4 }}>
-          <h3>{t('ui.result.objectives')}</h3>
-          {result.side.map((s) => (
-            <div key={s.id} class="row hair" style={{ minHeight: 44 }}>
-              <span class={s.done ? 'adv' : 'muted'}>
-                <Icon name={s.done ? 'check' : 'cross'} size={18} />
-              </span>
-              <span class="grow">{t(`ui.side.${s.type}`, { turns: s.turns ?? 0 })}</span>
-              <RewardAmounts reward={s.reward} />
-            </div>
-          ))}
-        </section>
-        <section class="col" style={{ gap: 4 }}>
-          <h3>{t('ui.result.loot')}</h3>
-          <div class="row hair" style={{ minHeight: 44, flexWrap: 'wrap' }}>
-            <Amount resource="gold" value={result.gold} signed />
-            {Object.entries(result.materials).map(([m, n]) => (
-              <Amount key={m} material={itemDef(data, m)} value={n} signed />
-            ))}
-          </div>
-          {result.items.map((i) => (
-            <div key={i.uid} class="row hair" style={{ minHeight: 56 }}>
-              <ItemImage data={data} item={i} />
-              <span class={`r-${rarityOf(data, i)}`} style={{ fontWeight: 600 }}>
-                {itemName(data, i)}
-              </span>
-            </div>
-          ))}
-        </section>
-        <section class="col" style={{ gap: 4 }}>
-          <h3>{t('ui.result.company')}</h3>
-          {result.units.map((u) => (
-            <div key={u.id} class="row hair" style={{ minHeight: 44 }}>
-              <span class="grow" style={{ fontWeight: 600 }}>{unitName(u)}</span>
-              <span class="num">
-                {t('ui.lv')} {u.levelBefore}
-                {u.levelAfter > u.levelBefore ? ` → ${u.levelAfter}` : ''}
-              </span>
-              <Amount resource="exp" value={u.exp} signed />
-            </div>
-          ))}
-          {result.recruited.map((id) => line('star', 'adv', t('ui.result.recruited', { name: t(`unit.${id}.name`) }), `r${id}`))}
-          {(result.granted ?? []).map((g) =>
-            line(<ItemImage data={data} item={g.item} size={28} />, 'adv', t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }), `g${g.item.uid}`),
-          )}
-          {result.scars.map((s) => line('scar', 'dis', `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}`, `s${s.id}`))}
-          {result.fallen.map((f) => line('fallen', 'dis', t('ui.result.fallen', { name: unitName(f) }), `f${f.id}`))}
-          {result.supportsReady.length > 0 && line('campfire', 'gold', t('ui.result.supports'), 'sup')}
-        </section>
-        <button class="btn primary big" onClick={() => (screen.value = { name: 'worldmap' })}>
-          {t('ui.result.continue')}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/** Reward of a side objective: amounts as symbol + number, items by name. */
-export function RewardAmounts({ reward: r }: { reward: Reward }) {
-  return (
-    <span class="row muted" style={{ gap: 8, flexWrap: 'wrap' }}>
-      {r.gold ? <Amount resource="gold" value={r.gold} /> : null}
-      {Object.entries(r.material ?? {}).map(([m, n]) => (
-        <Amount key={m} material={itemDef(data, m)} value={n} />
-      ))}
-      {r.item && (
-        <span class="row" style={{ gap: 6 }}>
-          <ItemImage data={data} item={r.item.def} size={28} />
-          {t(`item.${r.item.def}.name`)}
-        </span>
-      )}
-    </span>
   );
 }

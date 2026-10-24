@@ -113,6 +113,7 @@ export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: 
   }
   if (mustSurvive && !s.outcome) {
     s.outcome = 'defeat';
+    s.defeatReason = u.id;
     events.push({ t: 'battleEnd', outcome: 'defeat', reason: u.id });
   }
 }
