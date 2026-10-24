@@ -55,6 +55,11 @@ supports:
   guardChance: { A: 20, S: 30 }
   griefHitPenalty: 10
   griefMissions: 3
+  # highest rank the campfire unlocks, by its level (story 4.9): the camp of act 1 = level 1 → C and B; A and S come with the castle (Epic 10)
+  campfireMaxRank: [B, A, S]
+  # fixed pairs of the season and how many of them reach S (GDD Supports, narrative "Die 25 Support-Paare")
+  seasonPairs: 25
+  corePairs: 6
 experience:
   levelUpAt: 100
   advancedLevelOffset: 15

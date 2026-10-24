@@ -30,21 +30,6 @@ merchant:
     items: [javelin, hand_axe, steel_sword, chainmail, iron_helm, ember, remedy_salve, heal_staff, mage_robe]
   - tier: 2
     items: [steel_lance, steel_axe, steel_bow, iron_shield, fire_bomb, gust, surge, rockfall, shine, mend_staff, slim_sword, ashen_badge, mage_hood]
-supportPairs:
-  - [kael, avatar]
-  - [kael, brenna]
-  - [brenna, tobin]
-  - [tobin, mira]
-  - [brenna, varek]
-  - [liora, ysolde]
-  - [avatar, liora]
-supportDialogues:
-  "avatar|kael": { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B }
-  "brenna|kael": { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B }
-  "brenna|tobin": { C: scn.support.brenna_tobin.C }
-  "mira|tobin": { C: scn.support.mira_tobin.C }
-  "brenna|varek": { C: scn.support.brenna_varek.C }
-  "avatar|liora": { C: scn.support.avatar_liora.C }
 scars:
   - { id: lame_leg, mods: { mov: -1 } }
   - { id: shaky_hand, mods: { hit: -10 } }

@@ -450,6 +450,16 @@ export type Effect =
   | { setHome: HomeKind };
 
 /** Entry of the flag register `acts/actN/flags.yaml` (architecture §5.9); content may only use declared flags. */
+/** A fixed support pair (story 4.9): the two companions, whether it is one of the core pairs that reach S, the talk per rank. */
+export interface SupportPairDef {
+  /** `pairKey(a, b)` */
+  key: string;
+  pair: [string, string];
+  core: boolean;
+  /** scene of the campfire talk that unlocks each rank */
+  talks: Partial<Record<SupportRank, string>>;
+}
+
 /** A chronicle page: found through the effect `chronicle`, read in the chronicle; texts `chronicle.<id>.title|text`. */
 export interface ChroniclePageDef {
   id: string;
@@ -569,8 +579,6 @@ export interface CampaignDef {
   startGold: number;
   startConvoy: ItemRef[];
   merchant: Array<{ tier: number; items: string[] }>;
-  supportPairs: Array<[string, string]>;
-  supportDialogues: Record<string, Partial<Record<SupportRank, string>>>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
 }
 
@@ -634,6 +642,11 @@ export interface Balance {
     guardChance: Partial<Record<SupportRank, number>>;
     griefHitPenalty: number;
     griefMissions: number;
+    /** highest rank the campfire unlocks, by its level (index 0 = level 1) */
+    campfireMaxRank: SupportRank[];
+    /** fixed pairs of the season, and how many of them are core pairs that reach S */
+    seasonPairs: number;
+    corePairs: number;
   };
   experience: {
     levelUpAt: number;
@@ -779,6 +792,8 @@ export interface GameData {
   scenes: Record<string, SceneDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
+  /** fixed support pairs of the acts by `pairKey` (`acts/actN/supports.yaml`) */
+  supports: Record<string, SupportPairDef>;
   /** chronicle pages of the acts (`acts/actN/chronicle.yaml`) */
   chronicle: Record<string, ChroniclePageDef>;
   campaign: CampaignDef;

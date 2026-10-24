@@ -92,7 +92,7 @@ development_status:
   4-6-entscheidungen-und-folgen-karte: review  # Entscheidungen und Folgen-Karte
   4-7-chronik: review  # Chronik
   4-8-neue-missionsziele-escort-und-treasure: backlog  # Neue Missionsziele escort und treasure
-  4-9-feste-support-paare: backlog  # Feste Support-Paare
+  4-9-feste-support-paare: review  # Feste Support-Paare
   epic-4-retrospective: optional
 
   # Epic 5: Weltkarte und Heimsuchungen

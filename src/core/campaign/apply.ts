@@ -6,10 +6,9 @@ import { rollAffixes } from '../loot';
 import { canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
 import { loadoutSlots, promote, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
-import { pendingRank } from '../rules/supports';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { hireCost, hireError, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
 import { isAvailable, noteRoles } from './graph';
@@ -115,11 +114,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (cmd.herb) return c.convoy.some((i) => i.def === cfg.altItem) ? null : 'not_enough_materials';
       return c.gold < cfg.gold ? 'not_enough_gold' : null;
     }
-    case 'unlockSupport': {
-      const st = c.supports[cmd.pair];
-      const rank = st && pendingRank(data, st);
-      return !rank || rank === 'S' ? 'not_available' : null;
-    }
+    case 'unlockSupport':
+      return unlockableRank(data, c, cmd.pair) ? null : 'not_available';
     case 'setLoadout':
       return c.roster.some((r) => r.id === cmd.unit) ? null : 'unknown_unit';
     case 'promote': {
@@ -313,7 +309,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       break;
     }
     case 'unlockSupport': {
-      const rank = pendingRank(data, c.supports[cmd.pair]!)!;
+      const rank = unlockableRank(data, c, cmd.pair)!;
       c.supports[cmd.pair]!.rank = rank;
       events.push({ t: 'supportUnlocked', pair: cmd.pair, rank });
       break;

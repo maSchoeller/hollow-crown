@@ -7,9 +7,10 @@ import { nextInt, pick, seedRng } from '../rng';
 import { allItems, itemDef } from '../rules/items';
 import { grantSp } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
-import { clone, pairKey } from '../util';
+import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, noteRoles } from './graph';
+import { availableSupportTalks } from './camp';
 
 export const SAVE_VERSION = 1;
 
@@ -47,7 +48,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
   }
   noteRoles(data, c);
   for (const ref of data.campaign.startConvoy) c.convoy.push(newItem(c, ref, data));
-  for (const [a, b] of data.campaign.supportPairs) c.supports[pairKey(a, b)] = { points: 0, rank: null };
+  for (const key of Object.keys(data.supports)) c.supports[key] = { points: 0, rank: null };
   return c;
 }
 
@@ -77,6 +78,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     scenesSeen: old.scenesSeen ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
+    // pairs of content added since the save (a later act) start empty
+    supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
     quests: old.quests ?? [],
     choices: old.choices ?? {},
     decisions: old.decisions ?? [],
@@ -306,12 +309,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     const st = s.supports[key];
     if (st) c.supports[key] = clone(st);
   }
-  result.supportsReady = Object.entries(c.supports)
-    .filter(([key, st]) => {
-      const next = (['C', 'B', 'A'] as const)[st.rank ? ['C', 'B', 'A'].indexOf(st.rank) + 1 : 0];
-      return next && st.points >= data.balance.supports.thresholds[next] && !!data.campaign.supportDialogues[key]?.[next];
-    })
-    .map(([k]) => k);
+  result.supportsReady = availableSupportTalks(data, c).map((x) => x.key);
   for (const f of s.flags) c.flags[f] ??= true;
   if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
   noteRoles(data, c);

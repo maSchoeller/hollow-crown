@@ -326,6 +326,7 @@ lines:
 - `c.home = { kind: 'camp' | 'castle', rooms: Record<roomId, level> }`. Raumfunktionen prüfen `roomLevel(c, id)`; es gibt keine verstreuten `if (act >= 2)`.
 - Der Wechsel vom Lager zur Burg geschieht mitten in Akt 1 über die Wirkung `setHome` an Knoten `m1_6`. Ausbau ab Akt 2 steht in den Daten: Stufe 2 und 3 tragen `requires: [{ act: 2 }]`, Verzauberer, Akademie, Werkstatt und Übungsplatz `fromAct: 2`; die Gedächtnishalle hat `fromAct: 1` (Gedenksteine), ihre Lektionen schaltet `unlocks` erst ab Akt 2 frei.
 - Jede Interaktion ist genau ein Kampagnen-Command (≤ 2 Taps, GDD).
+- **Supports (Story 4.9):** feste Paare je Akt in `content/acts/actN/supports.yaml` (`core` = S-Kernpaar); das Lagerfeuer schaltet Ränge bis `balance.supports.campfireMaxRank[Stufe − 1]` frei (Lager: B).
 - Darstellung: Raum-Anker im Burg-Modell (`home.yaml`: Anker → Raum, Ausbauteile je Stufe, Platz für Gefährten-Gegenstände).
 
 ### 5.11 Fortschritt und Wirtschaft

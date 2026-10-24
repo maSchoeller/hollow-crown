@@ -19,8 +19,10 @@ import type {
   SceneDef,
   SetDef,
   SkillDef,
+  SupportPairDef,
   TerrainDef,
 } from '../core/defs';
+import { pairKey } from '../core/util';
 import {
   affixSchema,
   balanceSchema,
@@ -29,6 +31,7 @@ import {
   chroniclePageSchema,
   classSchema,
   sceneSchema,
+  supportPairSchema,
   flagSchema,
   itemSchema,
   mapSchema,
@@ -120,12 +123,19 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
   const chronicle: Record<string, ChroniclePageDef> = {};
+  const supports: Record<string, SupportPairDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
     if (/^acts\/[^/]+\/maps\//.test(p)) {
       const m = parseOne<MapDef>(p, raw, mapSchema, issues);
       if (m) maps[m.id] = m;
+    } else if (/^acts\/act\d+\/supports\.yaml$/.test(p)) {
+      for (const sp of parseList<Omit<SupportPairDef, 'key'>>(p, raw ?? [], supportPairSchema, issues)) {
+        const key = pairKey(sp.pair[0], sp.pair[1]);
+        if (supports[key]) issues.push({ file: p, message: `support pair ${key} is listed twice` });
+        supports[key] = { ...sp, key };
+      }
     } else if (/^acts\/act\d+\/chronicle\.yaml$/.test(p)) {
       const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
       for (const page of parseList<Omit<ChroniclePageDef, 'act'>>(p, raw ?? [], chroniclePageSchema, issues)) chronicle[page.id] = { ...page, act };
@@ -172,6 +182,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     maps,
     scenes,
     flags: byId(flagList),
+    supports,
     chronicle,
     campaign: campaign as CampaignDef,
   };

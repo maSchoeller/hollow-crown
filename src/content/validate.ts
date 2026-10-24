@@ -6,7 +6,7 @@ import { nodeLinks } from '../core/campaign/graph';
 import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
-import { areaTiles } from '../core/util';
+import { areaTiles, pairKey } from '../core/util';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -77,7 +77,7 @@ export function validateContent(
         const [a, b] = (v as { pair: [string, string] }).pair;
         companion(file, a, ctx);
         companion(file, b, ctx);
-        if (!data.campaign?.supportPairs.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) err(file, `${ctx}: unknown support pair ${a}|${b}`);
+        if (!data.supports[pairKey(a, b)]) err(file, `${ctx}: unknown support pair ${a}|${b}`);
         return;
       }
       case 'chronicle':
@@ -221,8 +221,19 @@ export function validateContent(
       if (a && b && a.kind === 'story' && b.expectedLevel < a.expectedLevel) err('campaign.yaml', `${to}: lower expectedLevel than ${from} it requires (${b.expectedLevel} < ${a.expectedLevel})`);
     }
     validateMechanics(data, err);
-    for (const [k, v] of Object.entries(camp.supportDialogues))
-      for (const d of Object.values(v)) dialogue('campaign.yaml', d, `support ${k}`);
+  }
+  // fixed support pairs (story 4.9): known companions, S only for core pairs, as many as the season has
+  {
+    const pairs = Object.values(data.supports);
+    for (const p of pairs) {
+      for (const id of p.pair) companion('supports.yaml', id, `pair ${p.key}`);
+      if (p.pair[0] === p.pair[1]) err('supports.yaml', `pair ${p.key}: a companion cannot be its own partner`);
+      if (p.talks.S && !p.core) err('supports.yaml', `pair ${p.key}: only core pairs reach S`);
+      for (const [rank, id] of Object.entries(p.talks)) dialogue('supports.yaml', id, `pair ${p.key} talk ${rank}`);
+    }
+    const s = data.balance.supports;
+    if (pairs.length > s.seasonPairs) err('supports.yaml', `${pairs.length} support pairs, the season has ${s.seasonPairs}`);
+    if (pairs.filter((p) => p.core).length > s.corePairs) err('supports.yaml', `${pairs.filter((p) => p.core).length} core pairs, the season has ${s.corePairs}`);
   }
   // map triggers set flags of the register
   for (const map of Object.values(data.maps))

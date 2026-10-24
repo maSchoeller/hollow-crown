@@ -1,0 +1,11 @@
+# Feste Support-Paare, die in Akt 1 entstehen (Story 4.9, Narrative „Die 25 Support-Paare“, GDD Supports).
+# Ein Paar steht im Akt, in dem sein später beitretender Gefährte dazukommt. core: true = Kernpaar (★), erreicht S; alle anderen enden bei A.
+# talks: Szene des Lagerfeuer-Gesprächs, das den Rang freischaltet. Fehlende Gespräche (A, S, weitere C/B) kommen mit Epic 9 und 10.
+# Schwellen und Lagerfeuer-Ränge: content/core/balance.yaml supports.
+- { pair: [kael, avatar], core: true, talks: { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B } }      # Waffenbrüder
+- { pair: [kael, brenna], core: true, talks: { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B } }      # alte Liebe, nie ausgesprochen
+- { pair: [brenna, tobin], core: true, talks: { C: scn.support.brenna_tobin.C } }                                 # Ziehmutter
+- { pair: [liora, avatar], core: true, talks: { C: scn.support.avatar_liora.C } }                                 # Vision und Schuld
+- { pair: [brenna, varek], talks: { C: scn.support.brenna_varek.C } }                                             # Misstrauen gegenüber dem Deserteur
+- { pair: [tobin, mira], talks: { C: scn.support.mira_tobin.C } }                                                 # Bogenunterricht, Kabbelei
+- { pair: [liora, ysolde] }                                                                                       # Glaube gegen Wissen, die Chronik
