@@ -19,6 +19,12 @@ import './WorldMap.css';
 /** How far the map zooms in on a chosen node, and where on the screen (share of the height) it comes to rest above the card. */
 const ZOOM = 1.12;
 const REST_Y = 0.3;
+/** Pointer travel (px) after which a press counts as a drag and not as a tap. */
+const DRAG_THRESHOLD = 6;
+/** Share of the release speed that is kept per frame while the map glides on after a drag. */
+/** Fastest glide (px per frame) after a drag. */
+const MAX_GLIDE = 24;
+const INERTIA_DECAY = 0.92;
 
 /** Icon of the goal chip per victory type. */
 const GOAL_ICON: Record<string, string> = { rout: 'attack', boss: 'attack', reach: 'target', seize: 'seize', defend: 'shield', survive: 'wait', escape: 'escape' };
@@ -40,6 +46,64 @@ export function WorldMap() {
   useEffect(() => {
     if (img.current?.complete && img.current.naturalWidth > 0) setLoaded('ready');
   }, []);
+
+  // drag panning (mouse, touch, pen): a press only becomes a drag after DRAG_THRESHOLD, so taps on nodes still click
+  const drag = useRef({ id: -1, x: 0, y: 0, left: 0, top: 0, active: false, vx: 0, vy: 0, t: 0, swallow: false, raf: 0 });
+  const stopGlide = () => {
+    cancelAnimationFrame(drag.current.raf);
+    drag.current.raf = 0;
+  };
+  useEffect(() => stopGlide, []);
+  const onDown = (e: PointerEvent) => {
+    const p = pan.current;
+    if (!p || (e.pointerType === 'mouse' && e.button !== 0) || drag.current.id !== -1) return;
+    stopGlide();
+    Object.assign(drag.current, { id: e.pointerId, x: e.clientX, y: e.clientY, left: p.scrollLeft, top: p.scrollTop, active: false, vx: 0, vy: 0, t: e.timeStamp, swallow: false });
+  };
+  const onMove = (e: PointerEvent) => {
+    const p = pan.current;
+    const d = drag.current;
+    if (!p || e.pointerId !== d.id) return;
+    const dx = e.clientX - d.x;
+    const dy = e.clientY - d.y;
+    if (!d.active) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      d.active = true;
+      p.setPointerCapture(e.pointerId);
+      p.classList.add('is-dragging');
+    }
+    const beforeX = p.scrollLeft;
+    const beforeY = p.scrollTop;
+    p.scrollLeft = d.left - dx; // the browser clamps to the map edges
+    p.scrollTop = d.top - dy;
+    const dt = Math.max(8, e.timeStamp - d.t);
+    d.vx = Math.max(-MAX_GLIDE, Math.min(MAX_GLIDE, 0.8 * d.vx + 0.2 * ((p.scrollLeft - beforeX) / dt) * 16));
+    d.vy = Math.max(-MAX_GLIDE, Math.min(MAX_GLIDE, 0.8 * d.vy + 0.2 * ((p.scrollTop - beforeY) / dt) * 16));
+    d.t = e.timeStamp;
+  };
+  const onUp = (e: PointerEvent) => {
+    const p = pan.current;
+    const d = drag.current;
+    if (!p || e.pointerId !== d.id) return;
+    d.id = -1;
+    p.classList.remove('is-dragging');
+    if (!d.active) return;
+    d.active = false;
+    if (e.type === 'pointerup') {
+      d.swallow = true; // the click that follows a real drag is not a tap
+      setTimeout(() => (d.swallow = false), 0);
+    }
+    if (e.timeStamp - d.t > 80) return; // held still before release: no glide
+    const step = () => {
+      d.vx *= INERTIA_DECAY;
+      d.vy *= INERTIA_DECAY;
+      if (Math.abs(d.vx) < 0.3 && Math.abs(d.vy) < 0.3) return void (d.raf = 0);
+      p.scrollLeft += d.vx;
+      p.scrollTop += d.vy;
+      d.raf = requestAnimationFrame(step);
+    };
+    d.raf = requestAnimationFrame(step);
+  };
 
   /** Scrolls the map so that a point (percent) sits in the middle horizontally and at `y` of the height. */
   const bring = (pos: [number, number], y: number, smooth: boolean) => {
@@ -67,7 +131,20 @@ export function WorldMap() {
 
   return (
     <div class="wm">
-      <div class="wm__pan" ref={pan} onClick={() => choose(null)}>
+      <div
+        class="wm__pan"
+        ref={pan}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        onClickCapture={(e) => {
+          if (!drag.current.swallow) return;
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+        onClick={() => choose(null)}
+      >
         <div
           class={`wm__world ${node ? 'is-zoomed' : ''}`}
           ref={world}

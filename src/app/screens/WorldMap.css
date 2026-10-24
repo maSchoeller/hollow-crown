@@ -21,6 +21,12 @@
   container-type: size;
   overscroll-behavior: contain;
   scrollbar-width: none;
+  touch-action: none; /* the drag is handled in WorldMap.tsx (pointer events), not by the browser */
+  cursor: grab;
+}
+.wm__pan.is-dragging,
+.wm__pan.is-dragging .wm-node {
+  cursor: grabbing;
 }
 .wm__pan::-webkit-scrollbar {
   display: none;
