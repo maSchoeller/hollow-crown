@@ -74,12 +74,7 @@ export interface ItemDef {
   cureStatus?: boolean;
   utility?: { createTerrain: string; rng: [number, number] };
   tags?: string[];
-  /** materials: fixed symbol for amounts (concept/25-ux/DESIGN.md, content:check requires it) */
-  symbol?: { shape: MaterialShape; color: string };
 }
-
-/** Symbol shapes of materials; gold, EXP and ember sparks have fixed symbols in the UI. */
-export type MaterialShape = 'diamond' | 'crescent' | 'hexagon' | 'drop';
 
 export interface AffixMods {
   stats?: StatMods;

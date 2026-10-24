@@ -7,7 +7,9 @@ import { validateContent } from '../src/content/validate';
 const { data, locales, issues } = loadContentFromDisk();
 const spriteDir = join(process.cwd(), 'art', 'sprites', 'units');
 const sprites = existsSync(spriteDir) ? new Set(readdirSync(spriteDir)) : undefined;
-const found = [...issues, ...validateContent(data, locales, sprites)];
+const itemDir = join(process.cwd(), 'art', 'items');
+const itemImages = new Set(existsSync(itemDir) ? readdirSync(itemDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4)) : []);
+const found = [...issues, ...validateContent(data, locales, sprites, itemImages)];
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite'));
 const all = found.filter((i) => !warnings.includes(i));

@@ -111,7 +111,7 @@
 - { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
 
 # --- Materialien (nur Konvoi) ---
-- { id: iron_ore,     kind: material, slot: bag, wt: 0, rarity: common,    price: 100, tags: [convoyOnly], symbol: { shape: diamond, color: '#8B9BB0' } }
-- { id: moonsteel,    kind: material, slot: bag, wt: 0, rarity: rare,      price: 400, tags: [convoyOnly], symbol: { shape: crescent, color: '#B7C7E0' } }
-- { id: dragon_scale, kind: material, slot: bag, wt: 0, rarity: epic,      price: 0,   tags: [convoyOnly], symbol: { shape: hexagon, color: '#6E8B3D' } }
-- { id: arcane_dust,  kind: material, slot: bag, wt: 0, rarity: common,    price: 150, tags: [convoyOnly], symbol: { shape: drop, color: '#9C7BD1' } }
+- { id: iron_ore,     kind: material, slot: bag, wt: 0, rarity: common,    price: 100, tags: [convoyOnly] }
+- { id: moonsteel,    kind: material, slot: bag, wt: 0, rarity: rare,      price: 400, tags: [convoyOnly] }
+- { id: dragon_scale, kind: material, slot: bag, wt: 0, rarity: epic,      price: 0,   tags: [convoyOnly] }
+- { id: arcane_dust,  kind: material, slot: bag, wt: 0, rarity: common,    price: 150, tags: [convoyOnly] }

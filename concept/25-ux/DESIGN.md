@@ -3,7 +3,7 @@ name: Hollow Crown – Staffel 1
 description: Spielzeug-Diorama-UI für ein Taktik-RPG im Hochformat; runde Spielsteine mit Chibi-Kontur über einer hellen 3D-Welt.
 status: final
 created: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-24
 sources:
   - concept/20-game-brief/brief.md
   - concept/21-gdd/gdd.md
@@ -164,9 +164,9 @@ components:
     size: 50px
   currency:
     gold: 'Münze {colors.gold}'
-    ore: 'Raute {colors.material-ore}'
+    ore: 'gemaltes Item-Bild (art/items/iron_ore.png)'
     exp: 'Stern {colors.positive}'
-    ember-spark: 'Funke {colors.ember}'
+    ember-spark: 'gemaltes Item-Bild (art/items/ember_spark.png)'
     typography: '{typography.number}'
   consequence-card:
     marker: 'schwarze Pille {colors.line} mit Glutraute'
@@ -216,7 +216,7 @@ Referenz ist das Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png`. V
 
 **Kontrast:** `{colors.line}` auf `{colors.cream}` ≈ 13 : 1, `{colors.soft}` auf `{colors.cream}` ≈ 5 : 1, Weiß auf `{colors.ember}` ≈ 3 : 1 (nur für fette Labels ab 16 px). Teamfarben, Glutorange und Positiv/Negativ stehen nie allein: immer zusammen mit Form, Symbol oder Text.
 
-**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, Eisenerz = graue Raute, EP = grüner Stern, Glutfunke = Glut-Funke; jedes weitere Material (Mondstahl, Drachenschuppe, Arkanstaub) bekommt eine eigene Form und Farbe, bevor es im Spiel erscheint.
+**Ressourcen haben feste Symbole** (Entscheidung Produktinhaber): Gold = Münze, EP = grüner Stern (beide Vektor); Glutfunke und jedes Material zeigen ihr gemaltes Item-Bild aus `art/items/` (Eisenerz, Mondstahl, Drachenschuppe, Arkanstaub …). Ein Material ohne Bild erscheint nicht im Spiel (`content:check`).
 
 ## Typography
 

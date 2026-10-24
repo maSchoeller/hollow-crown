@@ -3,7 +3,13 @@ import { areaTiles } from '../core/util';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
-export function validateContent(data: GameData, locales: Locales, spriteIds?: Set<string>): ContentIssue[] {
+export function validateContent(
+  data: GameData,
+  locales: Locales,
+  spriteIds?: Set<string>,
+  /** ids with a painted image in art/items (content:check passes them) */
+  itemImages?: Set<string>,
+): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
   const item = (file: string, ref: ItemRef | undefined, ctx: string) => {
@@ -33,8 +39,8 @@ export function validateContent(data: GameData, locales: Locales, spriteIds?: Se
   for (const it of Object.values(data.items)) {
     if (it.grantsSkill && !data.skills[it.grantsSkill.skill]) err('items.yaml', `${it.id}: unknown skill ${it.grantsSkill.skill}`);
     if (it.setId && !data.sets[it.setId]) err('items.yaml', `${it.id}: unknown set ${it.setId}`);
-    // amounts are always symbol + number (concept/25-ux/DESIGN.md)
-    if (it.kind === 'material' && !it.symbol) err('items.yaml', `${it.id}: material without symbol`);
+    // amounts are always symbol + number; a material's symbol is its painted image (concept/25-ux/DESIGN.md)
+    if (itemImages && it.kind === 'material' && !itemImages.has(it.id)) err('items.yaml', `${it.id}: material without image art/items/${it.id}.png`);
   }
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);

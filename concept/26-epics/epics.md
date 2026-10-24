@@ -297,8 +297,8 @@ damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.
 
 **Angenommen** ein Betrag an Gold, Material, EP oder Glutfunken
 **Wenn** die UI ihn anzeigt
-**Dann** rendert die Komponente `Amount` immer Symbol + Zahl (Münze, Erz-Raute, Stern, Funke) mit tabellarischen Ziffern
-**Und** ein Material ohne festgelegtes Symbol lässt `pnpm content:check` scheitern.
+**Dann** rendert die Komponente `Amount` immer Symbol + Zahl (Münze, Stern; Materialien und Glutfunke mit ihrem gemalten Item-Bild) mit tabellarischen Ziffern
+**Und** ein Material ohne Bild in `art/items/` lässt `pnpm content:check` scheitern.
 
 **Angenommen** der Titelbildschirm
 **Wenn** er neu gebaut ist

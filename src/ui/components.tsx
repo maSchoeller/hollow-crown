@@ -20,8 +20,9 @@ import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
 import { ElementIcon, Icon, TriMark } from './icons';
 import { Amount } from './pieces';
+import { asset } from './asset';
 
-export const asset = (p: string): string => `${import.meta.env.BASE_URL}assets/${p}`;
+export { asset };
 
 export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);

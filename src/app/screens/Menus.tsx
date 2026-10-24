@@ -77,7 +77,7 @@ export function Title() {
   const Campaigns = auto ? SecondaryButton : PrimaryButton;
   return (
     <div class="screen title-screen">
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('backgrounds/bg_camp_night.webp')})` }} />
+      <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
       <h1 class="title-logo">
         H<span class="crown">♛</span>llow
         <br />

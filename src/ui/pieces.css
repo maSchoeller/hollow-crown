@@ -88,6 +88,14 @@
   height: 1.1em;
   flex: none;
 }
+/* painted images carry their own outline and need a little more room to read */
+.hc-amount img {
+  width: 1.5em;
+  height: 1.5em;
+  margin: -0.2em 0;
+  object-fit: contain;
+  flex: none;
+}
 .hc-amount.is-short {
   color: var(--hc-negative);
 }

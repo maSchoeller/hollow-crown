@@ -1,6 +1,7 @@
 /** Building blocks of style B (concept/25-ux/DESIGN.md): stone, buttons with a pressable bottom edge, amounts. */
 import type { ComponentChildren, JSX } from 'preact';
-import type { ItemDef, MaterialShape } from '../core';
+import type { ItemDef } from '../core';
+import { asset } from './asset';
 import { lang, t } from '../i18n';
 import './pieces.css';
 
@@ -41,30 +42,22 @@ export const QuietButton = (p: ButtonProps) => <StoneButton variant="hc-btn--qui
 
 export type Resource = 'gold' | 'exp' | 'emberSpark';
 
-/** Fixed resource symbols (DESIGN.md: Gold = coin, EXP = green star, ember spark = spark). */
-const RESOURCE_SYMBOL: Record<Resource, { shape: SymbolShape; color: string }> = {
-  gold: { shape: 'coin', color: 'var(--hc-gold)' },
-  exp: { shape: 'star', color: 'var(--hc-positive)' },
-  emberSpark: { shape: 'spark', color: 'var(--hc-ember)' },
+/** Vector symbols where no painted image exists (DESIGN.md: Gold = coin, EXP = green star). */
+const VECTOR: Record<'gold' | 'exp', { path: string; color: string }> = {
+  gold: { path: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18Z', color: 'var(--hc-gold)' },
+  exp: { path: 'M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6 6.6 19.5l1.1-6.1L3.2 9.2l6.1-.8Z', color: 'var(--hc-positive)' },
 };
 
-type SymbolShape = MaterialShape | 'coin' | 'star' | 'spark';
+/** Painted images (art/items) for ember sparks and every material. */
+const IMAGE: Record<'emberSpark', string> = { emberSpark: 'ember_spark' };
 
-const PATHS: Record<SymbolShape, string> = {
-  coin: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18Z',
-  diamond: 'M12 2.5 20 12 12 21.5 4 12Z',
-  star: 'M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6 6.6 19.5l1.1-6.1L3.2 9.2l6.1-.8Z',
-  spark: 'M12 2c.9 4.6 2.4 6.6 7 8-4.6 1.4-6.1 3.4-7 12-.9-8.6-2.4-10.6-7-12 4.6-1.4 6.1-3.4 7-8Z',
-  crescent: 'M15.5 3.2A9 9 0 1 0 20.8 15 7.2 7.2 0 0 1 15.5 3.2Z',
-  hexagon: 'M12 2.5 20.2 7.2v9.6L12 21.5 3.8 16.8V7.2Z',
-  drop: 'M12 2.5c4 5 6.5 8.6 6.5 12a6.5 6.5 0 0 1-13 0c0-3.4 2.5-7 6.5-12Z',
-};
-
-function Symbol({ shape, color }: { shape: SymbolShape; color: string }) {
+function Symbol({ resource, image }: { resource?: 'gold' | 'exp'; image?: string }) {
+  if (image) return <img src={asset(`items/${image}.webp`)} alt="" aria-hidden="true" draggable={false} />;
+  const v = VECTOR[resource!];
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d={PATHS[shape]} fill={color} stroke="var(--hc-line)" stroke-width="2" stroke-linejoin="round" />
-      {shape === 'coin' && <circle cx="12" cy="12" r="4.5" fill="none" stroke="var(--hc-line)" stroke-width="1.6" />}
+      <path d={v.path} fill={v.color} stroke="var(--hc-line)" stroke-width="2" stroke-linejoin="round" />
+      {resource === 'gold' && <circle cx="12" cy="12" r="4.5" fill="none" stroke="var(--hc-line)" stroke-width="1.6" />}
     </svg>
   );
 }
@@ -82,15 +75,14 @@ type AmountProps = {
 
 /**
  * Every amount is symbol + number with tabular digits, never a word or a bare number (DESIGN.md §Währung).
- * Materials bring their symbol from items.yaml (`symbol`, required by content:check).
+ * Materials show their painted image (art/items/<id>.png, required by content:check).
  */
 export function Amount({ value, signed, short, class: cls, resource, material }: AmountProps) {
-  const sym = resource ? RESOURCE_SYMBOL[resource] : material.symbol!;
   const name = resource ? t(`ui.resource.${resource}`) : t(`item.${material.id}.name`);
   const text = `${signed && value > 0 ? '+' : ''}${fmt(value)}`;
   return (
     <span class={`hc-amount ${short ? 'is-short' : ''} ${cls ?? ''}`} aria-label={`${text} ${name}`} title={name}>
-      <Symbol shape={sym.shape} color={sym.color} />
+      {resource === 'emberSpark' ? <Symbol image={IMAGE.emberSpark} /> : resource ? <Symbol resource={resource} /> : <Symbol image={material.id} />}
       <span aria-hidden="true">{text}</span>
     </span>
   );
