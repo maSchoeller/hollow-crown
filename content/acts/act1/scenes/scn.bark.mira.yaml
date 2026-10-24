@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.mira
+lines:
+  - id: battle_start
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Wer zuerst? Ich frage nur."
+  - id: crit
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Was habt Ihr erwartet?"
+  - id: downed
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Wer hat da gezielt?"
+  - id: rescued
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Hab ich um Hilfe gebeten? … Danke."
+  - id: level_up
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Besser. Wurde Zeit."
+  - id: ember
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und was kostet das? Es kostet immer."
