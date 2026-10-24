@@ -31,7 +31,6 @@ export interface Manifest {
   models?: { units: string[]; props: Record<string, string[]>; weapons?: string[] };
   /** painted ground textures of the 3D board (tools/art/ground.py) */
   ground?: string[];
-  portraits: Record<string, string[]>;
   backgrounds: string[];
   /** stems of the scene half figures (`halves/<stem>.webp`, mood variants `<id>_<mood>`) */
   halves?: string[];
@@ -69,7 +68,7 @@ async function loadJson<T>(url: string): Promise<T | undefined> {
 let manifestPromise: Promise<Manifest> | null = null;
 export function loadManifest(): Promise<Manifest> {
   manifestPromise ??= loadJson<Manifest>(assetUrl('manifest.json')).then(
-    (m) => m ?? { tileSize: TILE, fx: false, units: {}, portraits: {}, backgrounds: [] },
+    (m) => m ?? { tileSize: TILE, fx: false, units: {}, backgrounds: [] },
   );
   return manifestPromise;
 }

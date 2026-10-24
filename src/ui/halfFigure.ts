@@ -1,6 +1,6 @@
 /**
  * Half figures of scenes (`halves/<id>.webp`, `halves/<id>_<mood>.webp`, built by `pnpm art:build`). A mood variant
- * that is not built falls back to the neutral figure; a speaker without any half figure falls back to the old portrait.
+ * that is not built falls back to the neutral figure; a speaker without any half figure is shown without a picture.
  */
 import { asset } from './asset';
 
@@ -10,7 +10,7 @@ export function figureId(speaker: string, avatarPortrait: string): string {
 }
 
 /**
- * The stem of the half figure to show, or `null` when the speaker has none (the caller shows the old portrait).
+ * The stem of the half figure to show, or `null` when the speaker has none (the caller shows no figure).
  * `built` = stems of the manifest (`kael`, `kael_sad` ...); without a manifest the neutral figure is tried.
  */
 export function pickHalf(id: string, mood: string, built: ReadonlySet<string> | null | undefined): string | null {
