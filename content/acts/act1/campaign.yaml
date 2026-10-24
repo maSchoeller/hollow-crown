@@ -8,15 +8,8 @@ mechanics:
   magic: ch02
   elements: ch03
   supports: ch03
-# Lager-Einrichtungen: offen, wenn alle Bedingungen gelten (Bedingungssprache, Architektur §5.3); leere Liste = von Anfang an (U20).
-facilities:
-  company: []
-  convoy: []
-  merchant: []
-  smith: [{ completed: ch01 }]
-  healer: [{ completed: ch01 }]
-  campfire: [{ completed: ch02 }]
-  enchanter: [{ completed: ch03 }]
+# Wo die Truppe zu Beginn des Akts lebt; die Räume stehen in content/core/rooms.yaml (U20 Freischaltung dort als requires).
+home: camp
 startGold: 500
 startConvoy:
   - { def: vulnerary }

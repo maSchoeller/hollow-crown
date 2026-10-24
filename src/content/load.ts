@@ -12,6 +12,7 @@ import type {
   MapDef,
   Rarity,
   RenderDef,
+  RoomDef,
   RuneDef,
   SetDef,
   SkillDef,
@@ -28,6 +29,7 @@ import {
   itemSchema,
   mapSchema,
   renderSchema,
+  roomSchema,
   runeSchema,
   setSchema,
   skillSchema,
@@ -107,6 +109,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
   const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
   const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
+  const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
@@ -148,6 +151,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     affixes: byId(affixes),
     runes: byId(runes),
     sets: byId(sets),
+    rooms: byId(rooms),
     terrain: byId(terrain),
     maps,
     dialogues,

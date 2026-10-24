@@ -1,10 +1,11 @@
-import { SUPPORT_RANKS, type EquipSlot, type GameData, type RuneDef, type SupportRank } from '../defs';
-import { canEquip, isWeapon, itemCategory, itemDef, slotFits, weaponProfile, type EquipError } from '../rules/items';
+import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
+import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
 import { pendingRank } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
+import { conditionContext, evalCondition } from './conditions';
 
 /**
  * Camp helpers shared by the campaign command handlers (`apply.ts`) and the UI: lookups, costs and
@@ -76,8 +77,80 @@ export function availableSupportTalks(data: GameData, c: CampaignState): Array<{
   return out;
 }
 
+/** Level of a room of the home; camp stations and rooms not built yet are level 1. */
+export const roomLevel = (c: CampaignState, id: string): number => c.home.rooms[id] ?? 1;
+
+/** A room of the current home with its state: open, or locked by the first condition that fails. */
+export interface RoomStatus {
+  room: RoomDef;
+  open: boolean;
+  /** first unfulfilled `requires` condition (for the reason shown on a locked stone) */
+  unmet?: Condition;
+}
+
+/**
+ * The rooms of the current home in display order (story 6.3): those that belong to `c.home.kind` and exist in
+ * the act reached. Replaces the unlock list of the PoC (`facilities`); `requires` is evaluated like every condition.
+ */
+export function homeRooms(data: GameData, c: CampaignState): RoomStatus[] {
+  const ctx = conditionContext(data, c);
+  return Object.values(data.rooms)
+    .filter((r) => r.homes.includes(c.home.kind) && r.fromAct <= ctx.act)
+    .map((room) => {
+      const unmet = room.requires.find((x) => !evalCondition(ctx, x));
+      return { room, open: !unmet, unmet };
+    });
+}
+
 /** Mercenaries are the company members without a story character (hired in the tavern). */
 export const isMercenary = (u: UnitRecord): boolean => !u.charId;
+
+/** Company members counted against the limits: story companions and hired mercenaries. */
+export function armyCount(c: CampaignState): { companions: number; mercenaries: number } {
+  const mercenaries = c.roster.filter(isMercenary).length;
+  return { companions: c.roster.length - mercenaries, mercenaries };
+}
+
+/** Gold a mercenary of this level costs in the tavern (balance.yaml `recruitCost`). */
+export function hireCost(data: GameData, level: number): number {
+  const r = data.balance.economy.recruitCost;
+  return r.base + r.perLevel * level;
+}
+
+/** Why a mercenary cannot be hired now, or null. Companions join through the story and ignore the mercenary limit. */
+export function hireError(data: GameData, c: CampaignState, offerId: string): 'not_available' | 'army_full' | 'not_enough_gold' | null {
+  const offer = c.tavern.find((u) => u.id === offerId);
+  if (!offer) return 'not_available';
+  if (armyCount(c).mercenaries >= data.balance.economy.mercenaryLimit) return 'army_full';
+  return c.gold < hireCost(data, offer.level) ? 'not_enough_gold' : null;
+}
+
+/** Highest upgrade the smith of this home reaches (rooms.yaml level via `balance.economy.smithMaxUpgrade`). */
+export function upgradeLimit(data: GameData, c: CampaignState): number {
+  const caps = data.balance.economy.smithMaxUpgrade;
+  return caps[Math.min(roomLevel(c, 'smith'), caps.length) - 1]!;
+}
+
+/** The smith rerolls affixes from `rerollFromSmithLevel` on. */
+export const rerollAllowed = (data: GameData, c: CampaignState): boolean => roomLevel(c, 'smith') >= data.balance.economy.rerollFromSmithLevel;
+
+/** What one more upgrade level adds (same functions as in battle), for the smith's list. */
+export function upgradePreview(data: GameData, inst: ItemInstance): Array<{ key: 'mt' | 'hit' | 'def' | 'res'; delta: number }> {
+  const next = { ...inst, upgrade: inst.upgrade + 1 };
+  const out: Array<{ key: 'mt' | 'hit' | 'def' | 'res'; delta: number }> = [];
+  if (isWeapon(itemDef(data, inst))) {
+    const a = weaponProfile(data, next);
+    const b = weaponProfile(data, inst);
+    if (a.might !== b.might) out.push({ key: 'mt', delta: a.might - b.might });
+    if (a.hit !== b.hit) out.push({ key: 'hit', delta: a.hit - b.hit });
+  } else {
+    const a = itemStatMods(data, next);
+    const b = itemStatMods(data, inst);
+    if ((a.def ?? 0) !== (b.def ?? 0)) out.push({ key: 'def', delta: (a.def ?? 0) - (b.def ?? 0) });
+    if ((a.res ?? 0) !== (b.res ?? 0)) out.push({ key: 'res', delta: (a.res ?? 0) - (b.res ?? 0) });
+  }
+  return out;
+}
 
 /** A unit may be promoted: level reached and the class has a promotion (the seal is checked by the command). */
 export function canPromote(data: GameData, u: UnitRecord): boolean {

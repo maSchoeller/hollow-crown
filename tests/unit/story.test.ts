@@ -343,10 +343,10 @@ describe('content references (content:check)', () => {
     }
   });
 
-  it('facility conditions are checked', () => {
+  it('room conditions are checked', () => {
     const d = clone(data);
-    d.campaign.facilities.smith = [{ completed: 'm9_9' }];
-    expect(problems(d)).toContainEqual(expect.stringContaining('facilities.smith: unknown node m9_9'));
+    d.rooms.smith!.requires = [{ completed: 'm9_9' }];
+    expect(problems(d)).toContainEqual(expect.stringContaining('smith.requires: unknown node m9_9'));
   });
 });
 

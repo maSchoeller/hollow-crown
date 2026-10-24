@@ -22,6 +22,8 @@ export type CampaignCommand =
   | { type: 'unlockSupport'; pair: string }
   | { type: 'setLoadout'; unit: string; skills: string[] }
   | { type: 'promote'; unit: string; classId: string }
+  /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
+  | { type: 'hire'; offer: string }
   /** effects of content (dialogue answers, rewards); the only way effects ever run */
   | { type: 'effects'; effects: Effect[] }
   /** a won or lost battle: start snapshot + full command log, replayed by the handler */
@@ -41,6 +43,8 @@ export type CampaignError =
   | 'no_slot'
   | 'not_available'
   | 'convoy_full'
+  /** the company is at its limit (companions or mercenaries) */
+  | 'army_full'
   | 'node_unavailable'
   /** an effect refers to something that cannot take it (undeclared flag or value, fallen companion ...) */
   | 'effect_invalid'

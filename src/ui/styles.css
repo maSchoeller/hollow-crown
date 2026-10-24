@@ -885,23 +885,7 @@ input[type='range'] {
   transform: rotate(45deg);
 }
 
-/* ---------- war camp (hub) ---------- */
-.hub-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-.hub-title {
-  padding: 10px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.hub-title .display {
-  font-size: 30px;
-  line-height: 1;
-}
+/* ---------- purse pill (result screen) ---------- */
 .hub-gold {
   padding: 10px 14px;
   display: flex;
@@ -912,82 +896,6 @@ input[type='range'] {
 }
 .hub-gold .icon {
   color: #b68320;
-}
-.hub-body {
-  margin: 150px -16px calc(-14px - var(--safe-bottom));
-  padding: 24px 18px calc(24px + var(--safe-bottom));
-  background: var(--glass);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  box-shadow: var(--sheet-shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-}
-.mission {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.mission .display {
-  font-size: 28px;
-  line-height: 1.05;
-}
-.mission-actions {
-  display: grid;
-  grid-template-columns: 1.8fr 1fr;
-  gap: 8px;
-}
-.fac {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: 58px;
-  width: 100%;
-  border: 0;
-  border-top: 1px solid var(--line);
-  background: transparent;
-  padding: 0 4px;
-  text-align: left;
-  color: var(--ink);
-  font: 600 17px 'Barlow', sans-serif;
-  cursor: pointer;
-}
-.fac:not([disabled]):hover {
-  background: rgba(31, 30, 36, 0.03);
-}
-.fac .ico {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  background: var(--tone);
-  clip-path: var(--cut);
-  display: grid;
-  place-items: center;
-}
-.fac .meta {
-  margin-left: auto;
-  font: 500 14px 'Barlow', sans-serif;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.fac[disabled] {
-  color: #8a847a;
-  cursor: default;
-}
-.fac[disabled] .ico {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--line-2);
-}
-.hub-foot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--muted);
 }
 .gold {
   color: var(--ember-ink);
@@ -1072,11 +980,6 @@ input[type='range'] {
 @media (min-width: 600px) {
   .modal-back {
     align-items: center;
-  }
-  .hub-body {
-    margin-left: 0;
-    margin-right: 0;
-    clip-path: var(--cut);
   }
 }
 .list > .panel + .panel,
