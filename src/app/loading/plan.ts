@@ -3,7 +3,7 @@
  * and the numbers the stones show. No DOM, no cache access: `state/loading.ts` and `state/prepare.ts` do the I/O.
  */
 
-import { modelId, type FigureSource, type GameData } from '../../core';
+import { modelId, unitFigureId, type FigureSource, type GameData } from '../../core';
 
 /** Classes' figure fields, as `GameData.classes` has them. */
 type Classes = Parameters<typeof modelId>[2];
@@ -15,7 +15,7 @@ export type ModelSource = FigureSource;
 export type MissionUnit = ModelSource & { gearItems?: readonly string[] };
 
 /** `GameData.items` as far as the gear rules read it. */
-type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind'>>;
+type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'image'>>;
 type Gear = GameData['render']['gear'];
 
 export interface MissionAssetInput {
@@ -26,8 +26,14 @@ export interface MissionAssetInput {
   /** `GameData.items` and `GameData.render.gear`: which weapon model a weapon group or off-hand item shows */
   items?: GearItems;
   gear?: Gear;
-  /** model ids the manifest lists (`manifest.models.units`); without it figures are drawn as sprites and need no file */
+  /** model ids the manifest lists (`manifest.models.units`); without it figures are drawn as sprites */
   models: readonly string[] | undefined;
+  /** the figure setting: `2d` draws every unit as a sprite sheet and needs no model files (default `3d`) */
+  figures?: '3d' | '2d';
+  /** sprite sheets the manifest lists (`manifest.units`, with their normal map flag): a unit without a model file shows one */
+  sprites?: Readonly<Record<string, { normal?: boolean }>>;
+  /** music and sound ids the manifest lists (`manifest.audio`); the battle tracks are only needed when listed */
+  music?: readonly string[];
   /** `GameData.classes`: the class names the figure of generic units */
   classes: Classes;
   /** `CampaignNodeDef.place` */
@@ -44,6 +50,24 @@ export function placePath(place: string): string {
   return `${place.startsWith('backgrounds/') ? place : `locations/${place}`}.webp`;
 }
 
+/** Music tracks that are not in the first download (vite.config.ts `ON_DEMAND_MUSIC`): the battle pair loads with the mission, the rest in the background. */
+export const BATTLE_MUSIC = ['battle_player', 'battle_enemy'] as const;
+export const LATER_MUSIC = ['camp', 'worldmap'] as const;
+
+const musicPath = (id: string): string => `audio/${id}.mp3`;
+
+/** Paths of the tracks the camp, result and world map play after a mission; fetched quietly while the battle runs. */
+export function laterMusicAssets(music: readonly string[] | undefined): string[] {
+  return music ? LATER_MUSIC.filter((id) => music.includes(id)).map(musicPath) : [];
+}
+
+/** Item images (`items/<image>.webp`) of the given items, as the battle HUD and the unit cards show them. */
+export function itemImages(itemIds: readonly string[], items: GearItems): string[] {
+  const out = new Set<string>();
+  for (const id of itemIds) if (items[id]) out.add(`items/${items[id].image ?? id}.webp`);
+  return [...out];
+}
+
 /** Weapon library models (`models/weapons/<model>.glb`) the items show on a figure: weapon group in the main hand, off-hand kind. */
 export function gearModels(itemIds: readonly string[], items: GearItems, gear: Gear): string[] {
   const out = new Set<string>();
@@ -58,17 +82,30 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
   return [...out];
 }
 
-/** Paths below `public/assets` that load on demand and that a mission needs: its place image, unit models and their weapon models. */
-export function missionAssets({ units, models, classes, place, defaultPlace, weaponModels, items, gear }: MissionAssetInput): string[] {
+/**
+ * Paths below `public/assets` that load on demand and that a mission needs: its place image, the battle music, the
+ * figures (3D models and their weapon models, or sprite sheets for the 2D setting and units without a model) and the
+ * images of the gear they hold.
+ */
+export function missionAssets({ units, models, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
   const out = new Set<string>([placePath(place ?? defaultPlace)]);
-  if (models) {
-    for (const u of units) {
-      const id = modelId(u, models, classes);
-      if (!id || !models.includes(id)) continue;
-      out.add(`models/units/${id}.glb`);
+  if (music) for (const id of BATTLE_MUSIC) if (music.includes(id)) out.add(musicPath(id));
+  const use3d = figures !== '2d' && models !== undefined;
+  for (const u of units) {
+    const mid = use3d ? modelId(u, models, classes) : '';
+    if (use3d && mid && models.includes(mid)) {
+      out.add(`models/units/${mid}.glb`);
       if (items && gear && weaponModels && u.gearItems)
         for (const w of gearModels(u.gearItems, items, gear)) if (weaponModels.includes(w)) out.add(`models/weapons/${w}.glb`);
+    } else {
+      const sid = unitFigureId(u, classes);
+      const sheet = sprites?.[sid];
+      if (sheet) {
+        out.add(`sprites/units/${sid}/sheet.png`);
+        if (sheet.normal) out.add(`sprites/units/${sid}/normal.png`);
+      }
     }
+    if (items && u.gearItems) for (const f of itemImages(u.gearItems, items)) out.add(f);
   }
   return [...out].sort();
 }

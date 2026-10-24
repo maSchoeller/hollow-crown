@@ -37,8 +37,9 @@ import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
 import { loadManifest } from '../../render/assets';
-import { missionAssets, placePath, type MissionUnit } from '../loading/plan';
-import { ensureMissionAssets } from './loading';
+import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
+import { ensureMissionAssets, prefetchQuietly } from './loading';
+import { settings } from './settings';
 
 bindLive(() => ({
   where: battle.value ? 'battle' : screen.value.name === 'camp' ? 'camp' : 'worldmap',
@@ -103,6 +104,9 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
   const paths = missionAssets({
     units: [...units.map(battleSource), ...later.map(defSource)],
     models: manifest.models?.units,
+    figures: settings.value.figures,
+    sprites: manifest.units,
+    music: manifest.audio,
     weaponModels: manifest.models?.weapons,
     items: data.items,
     gear: data.render.gear,
@@ -110,7 +114,10 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
     place: node.place,
     defaultPlace: data.campaign.defaultPlace,
   });
-  return ensureMissionAssets({ node: nodeId, place, paths, back });
+  const ok = await ensureMissionAssets({ node: nodeId, place, paths, back });
+  // camp and world map music come after the battle: fetch it in the background while the player is busy
+  if (ok) prefetchQuietly(laterMusicAssets(manifest.audio));
+  return ok;
 }
 
 /**

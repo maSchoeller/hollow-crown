@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { failureStatus, formatBytes, gearModels, installProgress, missingAssets, missionAssets, placePath, ratio } from './plan';
+import { ON_DEMAND_MUSIC } from './cacheName';
+import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
 
 const models = ['kael', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
 const classes = { skirmisher: { art: 'mercenary' }, archer: {}, brigand: {} };
@@ -25,6 +26,46 @@ describe('missionAssets', () => {
   });
   it('needs no models when the manifest has none (sprite figures)', () => {
     expect(missionAssets({ units: [{ classId: 'brigand' }], ...base, models: undefined })).toEqual([`locations/${defaultPlace}.webp`]);
+  });
+});
+
+const noImages = (p: string) => !p.startsWith('items/');
+
+describe('on-demand music, sprites and item images', () => {
+  const audio = ['title', 'tap', 'battle_player', 'battle_enemy', 'camp', 'worldmap'];
+  it('keeps the build list and the plan in step', () => {
+    expect([...BATTLE_MUSIC, ...LATER_MUSIC].sort()).toEqual([...ON_DEMAND_MUSIC].sort());
+  });
+  it('adds the battle music only when the manifest lists it', () => {
+    expect(missionAssets({ units: [], ...base, music: audio })).toEqual(['audio/battle_enemy.mp3', 'audio/battle_player.mp3', `locations/${defaultPlace}.webp`]);
+    expect(missionAssets({ units: [], ...base, music: ['title'] })).toEqual([`locations/${defaultPlace}.webp`]);
+    expect(missionAssets({ units: [], ...base })).toEqual([`locations/${defaultPlace}.webp`]);
+  });
+  it('leaves camp and world map music to the background fetch', () => {
+    expect(laterMusicAssets(audio)).toEqual(['audio/camp.mp3', 'audio/worldmap.mp3']);
+    expect(laterMusicAssets(['camp'])).toEqual(['audio/camp.mp3']);
+    expect(laterMusicAssets(undefined)).toEqual([]);
+  });
+  const sprites = { kael: { normal: true }, archer: {}, ghost: {} };
+  it('needs the sprite sheet of a unit that has no model file', () => {
+    expect(missionAssets({ units: [{ classId: 'archer' }, { charId: 'kael', classId: 'captain' }], ...base, sprites })).toEqual([
+      `locations/${defaultPlace}.webp`,
+      'models/units/kael.glb',
+      'sprites/units/archer/sheet.png',
+    ]);
+    expect(missionAssets({ units: [{ classId: 'unknown' }], ...base, sprites })).toEqual([`locations/${defaultPlace}.webp`]);
+  });
+  it('takes sprite sheets (with normal map) instead of models in the 2D setting', () => {
+    expect(missionAssets({ units: [{ charId: 'kael', classId: 'captain' }], ...base, sprites, figures: '2d' })).toEqual([
+      `locations/${defaultPlace}.webp`,
+      'sprites/units/kael/normal.png',
+      'sprites/units/kael/sheet.png',
+    ]);
+  });
+  it('lists the images of the gear the units hold', () => {
+    const items = { sword: { kind: 'weapon' as const, image: 'blade' }, ring: { kind: 'accessory' as const } };
+    expect(itemImages(['sword', 'ring', 'missing'], items)).toEqual(['items/blade.webp', 'items/ring.webp']);
+    expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['sword'] }], ...base, items })).toContain('items/blade.webp');
   });
 });
 
@@ -94,11 +135,11 @@ describe('weapon models', () => {
       gear,
       weaponModels,
     });
-    expect(list).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/kael.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
+    expect(list.filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/kael.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
   });
   it('a unit without a model file (sprite figure) needs no weapon, and neither does a file the manifest lacks', () => {
-    expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels })).toEqual([`locations/${defaultPlace}.webp`]);
-    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels: ['bow'] })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
-    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
+    expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`]);
+    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels: ['bow'] }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
+    expect(missionAssets({ units: [{ classId: 'brigand', gearItems: ['iron_sword'] }], ...base }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb']);
   });
 });

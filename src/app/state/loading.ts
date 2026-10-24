@@ -61,6 +61,22 @@ async function fetchFile(path: string): Promise<void> {
 }
 
 /**
+ * Fetches files nobody waits for (music of the next screens) one after the other, without any display; failures are
+ * ignored, the file then loads when it is first needed.
+ */
+export function prefetchQuietly(paths: readonly string[]): void {
+  void (async () => {
+    for (const p of await missingAssets(paths, isCached)) {
+      try {
+        await fetchFile(p);
+      } catch {
+        return;
+      }
+    }
+  })();
+}
+
+/**
  * Makes sure the files are there. Everything cached: resolves `true` at once and shows nothing. Otherwise the loading
  * screen appears and the promise resolves `true` when all files have arrived (a failed round waits for a retry: the
  * button, or the browser coming back online) or `false` when the player leaves with the back stone (`back` is shown then).
