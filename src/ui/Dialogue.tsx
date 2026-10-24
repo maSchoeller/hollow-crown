@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { resolveScene, speakerTeam, type ConditionContext, type Effect, type FlagValue, type GameData, type ResolvedLine } from '../core';
+import { resolveScene, skipTarget, speakerTeam, type ConditionContext, type Effect, type FlagValue, type GameData, type ResolvedLine } from '../core';
 import { t } from '../i18n';
 import { asset, Modal } from './components';
 import { figureId, halfUrl, pickHalf } from './halfFigure';
@@ -116,6 +116,12 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false,
   }, [idx, lines, sides]);
 
   if (!def || !line) return null;
+  // Skip runs through the lines but halts at the first answer (its effects must always run); no answer ahead ends the scene
+  const skip = () => {
+    const to = skipTarget(lines, idx);
+    if (to < 0) finish();
+    else if (to !== idx) setIdx(to);
+  };
   const advance = () => {
     if (line.kind === 'choice') return;
     if (shown < text.length) return setShown(text.length);
@@ -142,7 +148,7 @@ export function Dialogue({ data, id, ctx, avatarPortrait, overlay, seen = false,
           );
         })}
       </div>
-      <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onLog={() => setLog(true)} onSkip={finish} />
+      <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onLog={() => setLog(true)} onSkip={skip} />
       <div class="vn-box" onClick={(e) => choice && e.stopPropagation()}>
         {speaking && <span class={`vn-name vn-name--${speakerSide} vn-name--${teamOf(speaking)}`}>{nameOf(speaking)}</span>}
         {choice ? (
