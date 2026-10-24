@@ -83,12 +83,12 @@ export function aimTargets(data: GameData, s: BattleState, u: BattleUnit, pos: P
   return attackTargets(data, s, u, pos, data.balance.classActions.aim.rangeBonus);
 }
 
-/** Fernbergen (Heiler): downed allies up to `range` tiles away (adjacent ones too), rescued like normal Bergen. */
+/** Fernbergen (Heiler): downed allies exactly `range` tiles away, rescued like normal Bergen; adjacent ones use normal Bergen. */
 export function farRescueTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
   if (classActionId(data, u) !== 'far_rescue' || u.team !== 'player') return [];
   const range = data.balance.classActions.farRescue.range;
   return s.units
-    .filter((o) => o.uid !== u.uid && onMap(o) && o.downed && o.team === u.team && dist(o.pos!, pos) <= range)
+    .filter((o) => o.uid !== u.uid && onMap(o) && o.downed && o.team === u.team && dist(o.pos!, pos) === range)
     .map((o) => o.uid);
 }
 
