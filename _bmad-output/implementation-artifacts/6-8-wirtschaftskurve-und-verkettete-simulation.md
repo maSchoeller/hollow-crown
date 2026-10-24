@@ -47,27 +47,28 @@ Claude Opus 5.5
 - Szenen-Wirkungen (Antworten, Beitritte per Szene) spielt die Simulation nicht. Heimsuchungen: `--haunts` meldet „noch nicht im Spiel“ (Story 5.6).
 - Ändern an Werten war nicht Teil der Story; die Markierungen gehen an Balance/Produktinhaber (siehe unten).
 
-#### Simulation `pnpm sim --campaign act1 --runs 50` (Seed 1, Tod-Modus Standard), Stand dieses Branches
+#### Simulation `pnpm sim --campaign act1 --runs 50` (Seed 1, Tod-Modus Standard)
 
-Normal (47,7 s):
+Stand: dieser Branch nach Merge von `main` (7e18ab5, Prolog-Balance aus PR #27) und Trauer ab Rang C. Sieg und Niedergestreckte zählen den ersten Versuch; ↓/↑ = unter/über Korridor bzw. Kurve.
 
-| Mission | Sieg | Niedergestr. | Gold | davon Nebenziele | Armee-Stufe | erwartet | Tote | markiert |
-|---|---|---|---|---|---|---|---|---|
-| prologue | 100 % | 0,04 ↓ | 500 | 200 ↑ | 1,5 | 1 | 0,04 | downs, side |
-| ch01 | 100 % | 0,44 | 1 582 | 360 | 1,7 | 2 | 0,44 | – |
-| ch02 | 76 % | 0,78 | 1 690 | 490 | 2,7 | 3 | 0,80 | – |
+| Schwierigkeit | Mission | Sieg | Niedergestr. | Gold | davon Nebenziele | Armee-Stufe | erwartet | Tote | markiert |
+|---|---|---|---|---|---|---|---|---|---|
+| Normal | prologue | 94 % | 0,70 | 432 | 132 ↑ | 1,5 | 1 | 0,60 | side |
+| Normal | ch01 | 96 % | 0,26 ↓ | 1 396 | 180 | 1,5 | 2 | 0,22 | downs |
+| Normal | ch02 | 92 % | 0,36 ↓ | 1 690 | 490 | 2,5 | 3 | 0,34 | downs |
+| Leicht | prologue | 100 % | 0,00 | 500 | 200 ↑ | 1,5 | 1 | 0,00 | side |
+| Leicht | ch01 | 100 % | 0,00 | 1 000 | 0 | 1,7 | 2 | 0,00 | – |
+| Leicht | ch02 | 100 % | 0,00 | 1 700 | 500 | 2,0 | 3 | 0,00 | – |
+| Schwer | prologue | 40 % | 1,34 | 300 | 0 ↑ | 1,5 | 1 | 0,83 | side |
+| Schwer | ch01 | 69 % | 0,63 | 1 293 | 67 | 1,6 | 2 | 0,42 | – |
+| Schwer | ch02 | 44 % | 0,09 | 1 662 | 462 | 3,1 | 3 | 0,33 | – |
 
-50/50 Läufe beendet, Endgold 2 988, End-Armee-Stufe 3,6; Heimat je Lauf: Heilen 0, Kaufen 1 020, Aufwerten 264.
-
-Leicht (15,0 s): prologue 100 % / 0,00 / 500 (side ↑); ch01 100 % / 0,00 / 1 000; ch02 100 % / 0,00 / 1 700. 50/50 beendet, Endgold 2 488, Armee 3,2.
-
-Schwer (96,6 s): prologue 62 % / 0,54 / 344 (side ↑); ch01 78 % ↑ / 1,28 / 1 467; ch02 47 % / 0,13 / 1 634 (45 von 50 erreicht). 38/50 beendet, Endgold 3 250, Armee 3,6.
+Ende des Akts: Normal 50/50 Läufe beendet, Endgold 3 040, Armee 3,6 (Heimat je Lauf: Kaufen 720, Aufwerten 258); Leicht 50/50, 2 200, 3,1; Schwer 39/50, 3 231, 3,7. Laufzeit 61 s / 29 s / 136 s.
 
 Auffälligkeiten (nur markiert, nicht geändert):
-- Prolog Normal: 0,04 Niedergestreckte liegt unter dem Korridor 0,4–1,3 (zu leicht).
-- Prolog: Nebenziel-Gold 200 auf 300 Kartenbelohnung = 67 % (GDD 30–50 %); Gesamtgold 500.
-- Schwer ch01: 78 % Sieg über dem Korridor 30–70 %.
-- Armee-Stufe liegt innerhalb ±1 der erwarteten Stufe; Gold von ch01/ch02 ohne Nebenziele (~1 200) in der Kurve.
+- Normal ch01 (0,26) und ch02 (0,36) liegen mit den Niedergestreckten knapp unter dem Korridor 0,4–1,3: verkettet, mit Heil-Items und Aufwertungen, ist die Truppe stärker als in der Einzelkarten-Simulation.
+- Prolog: Nebenziel-Gold 200 auf 300 Kartenbelohnung = 67 % (GDD 30–50 %). Die Markierung „side“ gilt dem Angebot der Karte, nicht dem erspielten Gold.
+- Gold ohne Nebenziele: Prolog 300, ch01/ch02 ~1 200 – in der GDD-Kurve. Armee-Stufe innerhalb ±1 der erwarteten Stufe.
 
 ### File List
 
