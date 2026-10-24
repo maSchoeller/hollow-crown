@@ -6,6 +6,7 @@ import { Camp, Prep } from './screens/Camp';
 import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
+import { Chronicle } from './screens/Chronicle';
 import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
 import { Farewell } from './screens/Farewell';
@@ -102,6 +103,8 @@ function Screens() {
       return <Camp tab={sc.tab} />;
     case 'troop':
       return <Troop from={sc.from} />;
+    case 'chronicle':
+      return <Chronicle from={sc.from} />;
     case 'options':
       return <Options back={sc.back} />;
   }

@@ -1,15 +1,16 @@
 # Akt 1 (Paket act1), Kampagne V1, erster Wurf: Prolog + Kapitel 1–2 (concept/11 §7, concept/08 §4). Startwerte [C].
+# Knoten (Architektur §5.4): kind story|side (Standard story), fixed first|finale, requires (Bedingungen), memorialIf + memorial { pre, post }.
+# Verfügbar ist, was availableNodes ausrechnet: erst nur fixed: first, dann alles mit erfüllten requires, das Finale nach allen anderen Story-Knoten.
 act: 1
-start: prologue
 # Stufendeckel des Akts (GDD Figurensystem): EP darüber verfallen
 levelCap: 10
-# Gestaffelte Einführung (concept/06 §10): Mechanik → erster Knoten, in dem sie gilt. Davor ist sie aus.
+# Gestaffelte Einführung (GDD, Architektur §5.4): Mechanik → Zahl abgeschlossener Story-Missionen des Akts, ab der sie gilt.
 # Kapitel 3 ist noch nicht gebaut; bis dahin bleiben Elemente und Unterstützungen aus.
 mechanics:
-  triangle: ch01
-  magic: ch02
-  elements: ch03
-  supports: ch03
+  triangle: 1
+  magic: 2
+  elements: 3
+  supports: 3
 # Wo die Truppe zu Beginn des Akts lebt; die Räume stehen in content/core/rooms.yaml (U20 Freischaltung dort als requires).
 home: camp
 # Wo Knoten und Heimat auf der gemalten Weltkarte liegen (art/mockups/locations-s1/weltkarte_valmora.png): Prozent von Breite und Höhe
@@ -21,9 +22,9 @@ startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
 nodes:
-  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, next: [ch01], place: backgrounds/bg_caravan_road, pos: [81, 52], merchantTier: 0 }
-  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, next: [ch02], place: backgrounds/bg_varnhold_burning, pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, next: [], place: backgrounds/bg_silverbrook_shrine, pos: [43, 66], merchantTier: 2 }
+  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, fixed: first, place: backgrounds/bg_caravan_road, pos: [81, 52], merchantTier: 0 }
+  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, requires: [{ completed: prologue }], place: backgrounds/bg_varnhold_burning, pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: ch01 }], place: backgrounds/bg_silverbrook_shrine, pos: [43, 66], merchantTier: 2 }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]
@@ -31,21 +32,6 @@ merchant:
     items: [javelin, hand_axe, steel_sword, chainmail, iron_helm, ember, remedy_salve, heal_staff, mage_robe]
   - tier: 2
     items: [steel_lance, steel_axe, steel_bow, iron_shield, fire_bomb, gust, surge, rockfall, shine, mend_staff, slim_sword, ashen_badge, mage_hood]
-supportPairs:
-  - [kael, avatar]
-  - [kael, brenna]
-  - [brenna, tobin]
-  - [tobin, mira]
-  - [brenna, varek]
-  - [liora, ysolde]
-  - [avatar, liora]
-supportDialogues:
-  "avatar|kael": { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B }
-  "brenna|kael": { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B }
-  "brenna|tobin": { C: scn.support.brenna_tobin.C }
-  "mira|tobin": { C: scn.support.mira_tobin.C }
-  "brenna|varek": { C: scn.support.brenna_varek.C }
-  "avatar|liora": { C: scn.support.avatar_liora.C }
 scars:
   - { id: lame_leg, mods: { mov: -1 } }
   - { id: shaky_hand, mods: { hit: -10 } }

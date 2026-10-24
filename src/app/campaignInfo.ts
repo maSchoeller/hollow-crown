@@ -2,7 +2,9 @@
 import { t } from '../i18n';
 import { metaFromCampaign, type SaveRecord } from '../persistence/save';
 import { ageParts, playtimeParts } from '../ui/format';
+import { availableNodes, normalizeCampaign } from '../core';
 import { nodeDef } from './state/flow';
+import { data } from './state/session';
 
 /**
  * The two avatar looks of the new-campaign form (art/mockups/characters-s1/rhen_a|b.png). `portrait` is the id
@@ -30,7 +32,8 @@ export function nodeShort(id: string): string {
 export function resumeWhere(rec: SaveRecord): string {
   const c = rec.payload.campaign;
   if (rec.payload.battle) return t('ui.title.where.battle', { node: nodeShort(rec.payload.battle.start.nodeId) });
-  return c.available[0] ? t('ui.title.where.before', { node: nodeShort(c.available[0]) }) : t('ui.title.where.end');
+  const next = availableNodes(data, normalizeCampaign(data, c))[0];
+  return next ? t('ui.title.where.before', { node: nodeShort(next.id) }) : t('ui.title.where.end');
 }
 
 /** "Continue" line of the title screen. */

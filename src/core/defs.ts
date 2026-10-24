@@ -452,6 +452,24 @@ export type Effect =
   | { setHome: HomeKind };
 
 /** Entry of the flag register `acts/actN/flags.yaml` (architecture §5.9); content may only use declared flags. */
+/** A fixed support pair (story 4.9): the two companions, whether it is one of the core pairs that reach S, the talk per rank. */
+export interface SupportPairDef {
+  /** `pairKey(a, b)` */
+  key: string;
+  pair: [string, string];
+  core: boolean;
+  /** scene of the campfire talk that unlocks each rank */
+  talks: Partial<Record<SupportRank, string>>;
+}
+
+/** A chronicle page: found through the effect `chronicle`, read in the chronicle; texts `chronicle.<id>.title|text`. */
+export interface ChroniclePageDef {
+  id: string;
+  act: number;
+  title: string;
+  text: string;
+}
+
 export interface FlagDef {
   id: string;
   kind: 'decision' | 'story' | 'quest' | 'battle';
@@ -470,6 +488,8 @@ export interface SceneOption {
   text: string;
   stance: Stance;
   effects?: Effect[];
+  /** title of the consequence card of a decision (`dlg.<scene>.<line>.<option>.summary`) */
+  summary?: string;
 }
 
 /** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
@@ -488,6 +508,8 @@ export interface SceneSpeech {
 
 export interface SceneChoice {
   id: string;
+  /** a choice with a title is a decision (marked, two taps, consequence card, chronicle): `dlg.<scene>.<line>.title` */
+  title?: string;
   choice: SceneOption[];
   requires?: Condition[];
 }
@@ -507,7 +529,15 @@ export interface CampaignNodeDef {
   titleKey: string;
   pre?: string;
   post?: string;
-  next: string[];
+  /** story mission (counts for `storyCount`, act structure) or side quest */
+  kind: 'story' | 'side';
+  /** `first`: the act's opening mission, alone available until it is done; `finale`: opens after all other story nodes */
+  fixed?: 'first' | 'finale';
+  /** conditions under which the node is available (a side quest also opens through the effect `openQuest`) */
+  requires?: Condition[];
+  /** when this holds (the quest's trigger has fallen …), `memorial` replaces the node's scenes */
+  memorialIf?: Condition;
+  memorial?: { pre?: string; post?: string };
   pos: Pos;
   /** place image shown while the mission loads: a location (`locations/<place>`) or a background as `backgrounds/<id>`; default: the camp on the road */
   place?: string;
@@ -542,20 +572,17 @@ export interface CampaignDef {
   /** place image of a node without its own `place` (`locations/<defaultPlace>.webp`) */
   defaultPlace: string;
   nodes: CampaignNodeDef[];
-  /** mechanic → first node where it applies; earlier nodes play without it. Unlisted mechanics are always on. */
-  mechanics: Partial<Record<Mechanic, string>>;
+  /** mechanic → completed story missions of the act from which it applies; unlisted mechanics are always on */
+  mechanics: Partial<Record<Mechanic, number>>;
   /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
   home: HomeKind;
   /** position of the home on the world map, percent of width and height */
   homePos: Pos;
   /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
   levelCap?: number;
-  start: string;
   startGold: number;
   startConvoy: ItemRef[];
   merchant: Array<{ tier: number; items: string[] }>;
-  supportPairs: Array<[string, string]>;
-  supportDialogues: Record<string, Partial<Record<SupportRank, string>>>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
 }
 
@@ -619,6 +646,11 @@ export interface Balance {
     guardChance: Partial<Record<SupportRank, number>>;
     griefHitPenalty: number;
     griefMissions: number;
+    /** highest rank the campfire unlocks, by its level (index 0 = level 1) */
+    campfireMaxRank: SupportRank[];
+    /** fixed pairs of the season, and how many of them are core pairs that reach S */
+    seasonPairs: number;
+    corePairs: number;
   };
   experience: {
     levelUpAt: number;
@@ -654,6 +686,8 @@ export interface Balance {
   };
   /** loading of on-demand files before a mission */
   loading: { fetchTimeoutMs: number };
+  /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
+  chronicle: { seasonPages: number };
   /** farewell card after a death (story 6.7): the button stays locked this long */
   farewell: { lockMs: number };
   /** targets of the chained act simulation (story 6.8, `pnpm sim --campaign`): NFR12 corridors, GDD gold curve */
@@ -774,5 +808,9 @@ export interface GameData {
   scenes: Record<string, SceneDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
+  /** fixed support pairs of the acts by `pairKey` (`acts/actN/supports.yaml`) */
+  supports: Record<string, SupportPairDef>;
+  /** chronicle pages of the acts (`acts/actN/chronicle.yaml`) */
+  chronicle: Record<string, ChroniclePageDef>;
   campaign: CampaignDef;
 }

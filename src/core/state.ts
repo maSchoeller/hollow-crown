@@ -168,6 +168,8 @@ export interface BattleState {
   avatarName: string;
   /** mechanics not introduced yet at this point of the campaign (missing in old saves = none locked) */
   locked?: Mechanic[];
+  /** core roles whose class action is not introduced yet (`lockedRoles`; missing in old saves = none locked) */
+  lockedRoles?: string[];
 }
 
 export interface AvatarSettings {
@@ -182,6 +184,14 @@ export interface HomeState {
   kind: HomeKind;
   /** room id → level; a room that is not listed has level 1 (camp stations have no levels yet) */
   rooms: Record<string, number>;
+}
+
+/** A decision as the chronicle keeps it: act, scene, choice line and the chosen answer. */
+export interface DecisionRecord {
+  act: number;
+  scene: string;
+  line: string;
+  option: string;
 }
 
 export interface CampaignState {
@@ -204,11 +214,17 @@ export interface CampaignState {
   stance: Record<Stance, number>;
   /** collected chronicle pages */
   chronicle: string[];
+  /** every answer given: `<scene>#<line>` → option id; a choice is never asked twice (story 4.6) */
+  choices: Record<string, string>;
+  /** decisions in the order they were made: the chronicle's record of them (story 4.6/4.7) */
+  decisions: DecisionRecord[];
   /** ids of the scenes the player has seen to the end (or skipped): a seen scene can be skipped whole (story 4.5) */
   scenesSeen: string[];
   completed: string[];
-  /** node ids available on the world map */
-  available: string[];
+  /** side quests opened by the effect `openQuest` (the graph works out what is available: `availableNodes`) */
+  quests: string[];
+  /** roles a company member has brought along; a core role's class action works from then on (architecture §5.4) */
+  rolesSeen: string[];
   supports: Record<string, SupportState>;
   nextUid: number;
   /** merchant special offers for the current chapter */

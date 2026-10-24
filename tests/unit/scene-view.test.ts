@@ -30,7 +30,7 @@ describe('markSceneSeen', () => {
     const replayed = replayCampaign(data, base, [{ type: 'markSceneSeen', scene: id }]);
     expect(replayed.scenesSeen).toEqual([id]);
     const { scenesSeen: _gone, ...old } = base;
-    expect(normalizeCampaign(old as unknown as CampaignState).scenesSeen).toEqual([]);
+    expect(normalizeCampaign(data, old as unknown as CampaignState).scenesSeen).toEqual([]);
   });
 });
 

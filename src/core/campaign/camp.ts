@@ -3,7 +3,7 @@ import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weap
 import { levelCap, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
-import { pendingRank } from '../rules/supports';
+import { pendingRank, rankIndex } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalCondition } from './conditions';
@@ -64,18 +64,35 @@ export function runeMerge(data: GameData, runeId: string): { next: RuneDef; gold
   return { next, gold: m.goldPerTier * r.tier, count: m.count };
 }
 
-/** Support conversations that can be watched at the campfire. */
+/** Highest rank the campfire of the home unlocks (story 4.9): `balance.supports.campfireMaxRank` by campfire level. */
+export function campfireMaxRank(data: GameData, c: CampaignState): SupportRank {
+  const ranks = data.balance.supports.campfireMaxRank;
+  return ranks[Math.min(ranks.length, Math.max(1, roomLevel(c, 'campfire'))) - 1]!;
+}
+
+/**
+ * The rank pair `key` can unlock at the campfire now, or null: points at the threshold, within the pair's highest rank
+ * (S only for core pairs) and what the campfire allows. Shared by the campfire, the troop mark and `unlockSupport`.
+ */
+export function unlockableRank(data: GameData, c: CampaignState, key: string): SupportRank | null {
+  const st = c.supports[key];
+  const rank = st ? pendingRank(data, st, key) : null;
+  return rank && rankIndex(rank) <= rankIndex(campfireMaxRank(data, c)) ? rank : null;
+}
+
+/** The talk waiting at the campfire for pair `key`: both companions in the company, a rank to unlock and its scene. */
+export function supportTalk(data: GameData, c: CampaignState, key: string): { key: string; rank: SupportRank; dialogue: string } | null {
+  if (!key.split('|').every((id) => c.roster.some((r) => r.id === id))) return null;
+  const rank = unlockableRank(data, c, key);
+  const dialogue = rank ? data.supports[key]?.talks[rank] : undefined;
+  return rank && dialogue ? { key, rank, dialogue } : null;
+}
+
+/** Support conversations that can be watched at the campfire ("Gespräche bereit"). */
 export function availableSupportTalks(data: GameData, c: CampaignState): Array<{ key: string; rank: SupportRank; dialogue: string }> {
-  const out: Array<{ key: string; rank: SupportRank; dialogue: string }> = [];
-  for (const [key, st] of Object.entries(c.supports)) {
-    const [a, b] = key.split('|') as [string, string];
-    if (!c.roster.some((r) => r.id === a) || !c.roster.some((r) => r.id === b)) continue;
-    const rank = pendingRank(data, st);
-    if (!rank) continue;
-    const dialogue = data.campaign.supportDialogues[key]?.[rank];
-    if (dialogue) out.push({ key, rank, dialogue });
-  }
-  return out;
+  return Object.keys(c.supports)
+    .map((key) => supportTalk(data, c, key))
+    .filter((x): x is { key: string; rank: SupportRank; dialogue: string } => !!x);
 }
 
 /** Level of a room of the home; camp stations and rooms not built yet are level 1. */

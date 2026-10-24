@@ -4,10 +4,16 @@ import { Dialogue } from '../../ui/Dialogue';
 import { SpeechBubbles } from '../../ui/SpeechBubbles';
 import { halfFigures, loadHalfFigures } from '../state/halves';
 import { data, campaign } from '../state/session';
-import { isSceneSeen, markSceneSeen, runEffects, storyContext } from '../state/flow';
+import { answeredIn, chooseAnswer, isSceneSeen, markSceneSeen, storyContext } from '../state/flow';
 import { settings, updateSettings } from '../state/settings';
+import { t } from '../../i18n';
+import { UnitHead } from './unitArt';
 
 const avatarOf = (): string => campaign.value?.avatar.portrait ?? 'avatar_a';
+/** Round head of a company member (consequence card). */
+const head = (unit: string) => (
+  <UnitHead portrait={unit === 'avatar' ? avatarOf() : (data.chars[unit]?.portrait ?? unit)} name={t(unit === 'avatar' ? 'unit.avatar.name' : `unit.${unit}.name`)} size={40} />
+);
 const autoProps = () => ({ auto: settings.value.dialogueAuto, onAuto: () => updateSettings({ dialogueAuto: !settings.value.dialogueAuto }) });
 
 /** Visual-novel scene; `overlay` lets the battle show through (scene with several speakers or answers during a battle). */
@@ -24,7 +30,9 @@ export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; 
       halves={halfFigures.value}
       {...autoProps()}
       onSeen={markSceneSeen}
-      onEffects={runEffects}
+      onChoose={(line, option) => chooseAnswer(id, line, option)}
+      answered={answeredIn(id)}
+      head={head}
       onDone={onDone}
     />
   );
