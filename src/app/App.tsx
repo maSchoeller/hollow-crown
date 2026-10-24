@@ -11,7 +11,8 @@ import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
 import { Farewell } from './screens/Farewell';
 import { WorldMap } from './screens/WorldMap';
-import { MissionLoading, PrepareScreen } from './screens/Loading';
+import { MissionLoading, PrepareScreen, UpdateScreen } from './screens/Loading';
+import { updateStatus } from './update';
 import { data } from './state/session';
 import { nodeDef } from './state/flow';
 import { missionLoad } from './state/loading';
@@ -54,7 +55,7 @@ export function App() {
   }, [renderError, failed]);
   return (
     <>
-      {!renderError && (prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
+      {!renderError && (updateStatus.value === 'installing' ? <UpdateScreen /> : prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
       <SaveNotices />
       {failed && <FaultScreen />}
     </>

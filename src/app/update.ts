@@ -2,7 +2,7 @@ import { signal } from '@preact/signals';
 import { registerSW } from 'virtual:pwa-register';
 import { abandonPrepare, watchFirstInstall } from './state/prepare';
 
-export type UpdateStatus = 'idle' | 'checking' | 'available' | 'current' | 'error';
+export type UpdateStatus = 'idle' | 'checking' | 'available' | 'installing' | 'current' | 'error';
 
 export const updateStatus = signal<UpdateStatus>('idle');
 
@@ -20,14 +20,14 @@ export function initUpdates(): void {
     },
     onRegisterError: () => abandonPrepare(),
     onNeedRefresh: () => {
-      updateStatus.value = 'available';
+      if (updateStatus.value !== 'installing') updateStatus.value = 'available';
     },
   });
 }
 
 /** Asks the server for a newer version; resolves into `available`, `current` or `error`. */
 export async function checkForUpdate(): Promise<void> {
-  if (updateStatus.value === 'available') return;
+  if (updateStatus.value === 'available' || updateStatus.value === 'installing') return;
   if (!registration) {
     updateStatus.value = 'current';
     return;
@@ -44,7 +44,11 @@ export async function checkForUpdate(): Promise<void> {
   }
 }
 
-/** Activates the waiting version and reloads the app. */
+/** Activates the waiting version and reloads the app; `installing` shows the loading screen until the reload happens. */
 export function installUpdate(): void {
-  void applyUpdate?.(true);
+  if (!applyUpdate || updateStatus.value === 'installing') return;
+  updateStatus.value = 'installing';
+  applyUpdate(true).catch(() => {
+    updateStatus.value = 'available';
+  });
 }

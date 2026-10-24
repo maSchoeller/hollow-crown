@@ -34,6 +34,21 @@ export function PrepareScreen() {
   );
 }
 
+/** Shown while a new version is activated; the app reloads by itself when it is done. */
+export function UpdateScreen() {
+  return (
+    <div class="screen ld ld--prepare">
+      <Piece class="ld-stone" role="status" aria-live="polite">
+        <b class="ld-stone__title">{t('ui.update.installing')}</b>
+        <span class="ld-stone__sub">{t('ui.update.installingSub')}</span>
+        <div class="ld-bar ld-bar--busy" role="progressbar" aria-label={t('ui.update.installing')}>
+          <i />
+        </div>
+      </Piece>
+    </div>
+  );
+}
+
 /** Before a mission whose images or models are not in the cache: mission name, place image and progress, then it starts by itself. */
 export function MissionLoading({ title }: { title: string }) {
   const m = missionLoad.value;
