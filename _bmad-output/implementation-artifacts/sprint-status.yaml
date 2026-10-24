@@ -121,7 +121,7 @@ development_status:
   # Epic 7: Akt-Pakete und Offline
   epic-7: in-progress
   7-1-pakete-im-build: review  # Pakete im Build
-  7-2-hintergrund-download-und-offline: backlog  # Hintergrund-Download und Offline
+  7-2-hintergrund-download-und-offline: review  # Hintergrund-Download und Offline
   7-3-ende-eines-veroeffentlichten-akts: backlog  # Ende eines veröffentlichten Akts
   7-4-stabile-ids-und-release-ablauf: backlog  # Stabile IDs und Release-Ablauf
   7-5-leistung-messen: backlog  # Leistung messen

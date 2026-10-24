@@ -648,8 +648,8 @@ export interface Balance {
     /** speech bubble: characters per page (two lines) */
     bubbleMaxChars: number;
   };
-  /** loading of on-demand files before a mission */
-  loading: { fetchTimeoutMs: number };
+  /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
+  loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
   fog: { baseVision: number; visionBonus: Record<string, number> };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */

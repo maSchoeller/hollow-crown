@@ -3,7 +3,6 @@ import { defineConfig, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
-import { ON_DEMAND_CACHE, ON_DEMAND_MUSIC } from './src/app/loading/cacheName.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { packsPlugin } from './tools/build/packs-plugin.ts';
 
@@ -21,18 +20,6 @@ function yamlPlugin(): Plugin {
 }
 
 const base = process.env.BASE_PATH ?? '/';
-
-/**
- * public/assets folders not precached (decision 2026-10-24): places, half figures and the world map, then (PO decision
- * "mehr nachladen statt Budget erhöhen") sprite sheets (a fallback for the 2D setting and units without a model) and
- * item images (menus show the frame until the picture is there). Music tracks follow by name (`ON_DEMAND_MUSIC`).
- * Since story 7.1 these belong to the pack act1 (content/packs.yaml); the precache leaves out every file of a pack other
- * than core (`packs.nonCorePaths()`), this list only feeds the runtime cache.
- */
-const ON_DEMAND_ASSETS = ['locations', 'busts', 'halves', 'world', 'sprites', 'items'];
-
-/** Unit models are not in the glob either; they join the runtime cache so a mission's models stay available offline (story 7.6). */
-const RUNTIME_CACHED = [...ON_DEMAND_ASSETS, 'models'];
 
 /**
  * Writes `precache-info.json` (file count and bytes of the first download) next to the service worker, for the stone
@@ -78,9 +65,26 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp(`/assets/((${RUNTIME_CACHED.join('|')})/|audio/(${ON_DEMAND_MUSIC.join('|')})[.]mp3)`),
-            handler: 'CacheFirst',
-            options: { cacheName: ON_DEMAND_CACHE, expiration: { maxEntries: 1000 } },
+            /*
+             * Everything under assets/ that is not precached: the files of the other packs (act1: places, half figures,
+             * world map, sprites, item images, models, music; the pack's content chunk). Cache first across all caches,
+             * so a pack cache `hc-pack-<id>-<hash>` (story 7.2) answers as well as the on-demand cache. A miss is fetched
+             * and kept in `hc-on-demand` (ON_DEMAND_CACHE in src/app/loading/cacheName.ts, story 7.6), except requests
+             * of the pack download (header x-hc-pack), which the pack cache keeps. The functions are copied into sw.js
+             * as source text: they must not use anything from this file. `ignoreVary`: files are stored under their URL
+             * alone, while a module import sends an Origin header that a `Vary` answer would otherwise compare.
+             */
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.includes('/assets/'),
+            handler: async ({ request }) => {
+              const hit = await caches.match(request, { ignoreVary: true });
+              if (hit) return hit;
+              const res = await fetch(request);
+              if (res.ok && !request.headers.has('x-hc-pack')) {
+                const cache = await caches.open('hc-on-demand');
+                await cache.put(request, res.clone());
+              }
+              return res;
+            },
           },
         ],
         // only core is precached; the other packs load in the background (story 7.2) or when first shown

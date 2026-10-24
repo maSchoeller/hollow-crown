@@ -24,6 +24,9 @@ packs:
       - acts/act1/scenes/scn.prologue.*.yaml
       # enthält auch die englischen Prolog-Zeilen; ohne sie zeigte der Prolog auf Englisch nur Schlüssel
       - locales/en/act1.dialogue.yaml
+    # Hintergrund von Titel und Kampagnen-Liste; sonst stünde der erste Start grau da, bis act1 geladen ist
+    assets:
+      - locations/lager_unterwegs.webp
 
   - id: act1
     released: true

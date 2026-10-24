@@ -93,6 +93,49 @@ const byId = <T extends { id: string }>(list: T[]): Record<string, T> => Object.
 
 const RUNE_RARITY: Record<number, Rarity> = { 1: 'common', 2: 'rare', 3: 'epic' };
 
+/**
+ * Maps, scenes and texts of a set of YAML documents (the parts a pack other than core adds, story 7.2). The German
+ * text of a scene comes from the scene itself.
+ */
+function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]): { maps: Record<string, MapDef>; scenes: Record<string, SceneDef>; locales: Locales } {
+  const maps: Record<string, MapDef> = {};
+  const scenes: Record<string, SceneDef> = {};
+  const locales: Locales = {};
+  for (const [k, raw] of Object.entries(files)) {
+    const p = contentPath(k);
+    if (/^acts\/[^/]+\/maps\//.test(p)) {
+      const m = parseOne<MapDef>(p, raw, mapSchema, issues);
+      if (m) maps[m.id] = m;
+    } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
+      const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
+      if (d) scenes[d.id] = d;
+    } else if (/^locales\/[a-z]+\//.test(p)) {
+      // content/locales/<lang>/<act>.dialogue.yaml: the English (or other) texts of scenes
+      const lang = p.split('/')[1]!;
+      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
+    } else if (/^(core|acts\/[^/]+)\/locales\//.test(p)) {
+      const lang = p.slice(p.lastIndexOf('/') + 1).split('.')[0]!;
+      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
+    }
+  }
+  for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
+  return { maps, scenes, locales };
+}
+
+/**
+ * Adds the maps, scenes and texts of a pack to already loaded content, in place: modules that hold `data` or the
+ * locale tables see the new entries without reloading (story 7.2). Returns the problems of the pack's files.
+ */
+export function mergePackContent(loaded: LoadedContent, files: Record<string, unknown>): ContentIssue[] {
+  const issues: ContentIssue[] = [];
+  const { maps, scenes, locales } = parsePackFiles(files, issues);
+  Object.assign(loaded.data.maps, maps);
+  Object.assign(loaded.data.scenes, scenes);
+  for (const [lang, table] of Object.entries(locales)) loaded.locales[lang] = Object.assign(loaded.locales[lang] ?? {}, table);
+  loaded.issues.push(...issues);
+  return issues;
+}
+
 /** Builds GameData from parsed YAML documents keyed by path (browser: import.meta.glob, Node: fs). */
 export function buildContent(files: Record<string, unknown>): LoadedContent {
   const issues: ContentIssue[] = [];
@@ -114,28 +157,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
-  const maps: Record<string, MapDef> = {};
-  const scenes: Record<string, SceneDef> = {};
-  const locales: Locales = {};
-  for (const [k, raw] of Object.entries(files)) {
-    const p = contentPath(k);
-    if (/^acts\/[^/]+\/maps\//.test(p)) {
-      const m = parseOne<MapDef>(p, raw, mapSchema, issues);
-      if (m) maps[m.id] = m;
-    } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
-      const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
-      if (d) scenes[d.id] = d;
-    } else if (/^locales\/[a-z]+\//.test(p)) {
-      // content/locales/<lang>/<act>.dialogue.yaml: the English (or other) texts of scenes
-      const lang = p.split('/')[1]!;
-      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
-    } else if (/^(core|acts\/[^/]+)\/locales\//.test(p)) {
-      const lang = p.slice(p.lastIndexOf('/') + 1).split('.')[0]!;
-      locales[lang] = { ...(locales[lang] ?? {}), ...flatten(raw) };
-    }
-  }
-  // the German text sits in the scene itself
-  for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
+  const { maps, scenes, locales } = parsePackFiles(files, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,

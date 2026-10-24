@@ -573,7 +573,7 @@ export const balanceSchema = z.object({
     bubbleAutoMs: z.number().int().min(500),
     bubbleMaxChars: z.number().int().min(20),
   }),
-  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000) }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
   fog: z.looseObject({}),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({
