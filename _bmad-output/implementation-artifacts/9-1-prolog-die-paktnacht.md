@@ -1,6 +1,6 @@
 # Story 9.1: Prolog „Die Paktnacht“
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -28,7 +28,7 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 - [x] T7 Offene Punkte der Steuerung geklärt (kein `min`, Tafeln über `panel`), Sim-Korridor abgestimmt (AC 6)
 - [x] T9 Kartenfeld `noDeath` (Produktinhaber 2026-10-25): Niedergestreckte sterben/verbluten im Prolog nicht und kehren zurück; Rhen und Kael ausgenommen (Niederlage wie zuvor); Schema, Kern, KI, HUD, Tests, Sim
 - [x] T10 Bilder (PR #45): Szenenhintergrund und Tafel „Alarm im Glutdom“ `paktnacht_glutdom`, Knoten-Ort `paktnacht_glutdom`; Gerrits Grab `lager_unterwegs` ohne Tafel (kein eigenes Grabbild, eine Tafel gleich dem Hintergrund würde nur die Halbfiguren verdecken); Tafel-Bild löst Ortsnamen wie `background` auf (`locations/<id>.webp`, Manifest `locations`); Tempelwachen mit Modell/Porträt `temple_guard`/`class_temple_guard`; Nachtlicht (Umgebung #5a70b0 · 0,6, Mond #8fa8ee · 0,4, Kohlebecken Radius 4)
-- [ ] T8 Screenshots der Karte und der Szenen (Karte geprüft per Screenshot; Szenenbilder offen)
+- [x] T8 Screenshots der Karte und der Szenen (Hochformat 375×812, im Browser angespielt bis Sieg, 2026-10-25)
 
 ## Dev Notes
 

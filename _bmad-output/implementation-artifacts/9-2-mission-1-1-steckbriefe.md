@@ -1,6 +1,6 @@
 # Story 9.2: Mission 1-1 „Steckbriefe“
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -28,7 +28,7 @@ damit der Antrieb „Sündenbock“ greift.
 - [x] T6 Sim-Abstimmung der Gegnerstufen und Zielverhalten (AC 7)
 - [x] T7 Fenns Beitritt als Knoten-Wirkung (`effects: [{ recruit: fenn }]` an `m1_1`, Architektur §5.4)
 - [x] T9 Bild `varnhold` (Ort und Szenenhintergründe, PR #45); Mittagslicht gedämpft (Umgebung #e9e9e6 · 0,75, Sonne #fff4e2 · 0,85); Stadtrand mit neuem Gelände `building` (Requisite `house`, nicht besuchbar) [C], Karren (`wagon`), Zäunen (`fence`) und Ständen, drei Gassen und Südzugang frei
-- [ ] T8 Screenshots der Karte und der Szenen (Karte geprüft per Screenshot; Szenenbilder offen)
+- [x] T8 Screenshots der Karte und der Szenen (Hochformat 375×812, im Browser angespielt bis Sieg, 2026-10-25)
 
 ## Dev Notes
 
