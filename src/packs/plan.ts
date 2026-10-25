@@ -7,7 +7,17 @@ import type { BuiltPack, PackFile, PackLoad } from '../content/packs';
 /** Prefix of the caches that hold whole packs; the service worker answers from them first. */
 export const PACK_CACHE_PREFIX = 'hc-pack-';
 
-export const packCacheName = (id: string, hash: string): string => `${PACK_CACHE_PREFIX}${id}-${hash}`;
+/**
+ * Suffix of every pack cache name. Raise it when caches written by an older client cannot be trusted: before g2 the
+ * download copied older files from `hc-on-demand` or the previous pack cache instead of fetching them, so a cache of
+ * that time holds outdated bytes under a current hash. Caches without the suffix are replaced and never reused.
+ */
+export const CACHE_GENERATION = 'g2';
+
+export const packCacheName = (id: string, hash: string): string => `${PACK_CACHE_PREFIX}${id}-${hash}${CACHE_GENERATION}`;
+
+/** Whether a pack cache was written by a client whose downloads can be trusted (see `CACHE_GENERATION`). */
+export const isTrustedCache = (name: string): boolean => name.endsWith(CACHE_GENERATION);
 
 /** Pack id of a pack cache name, or null for other caches (`hc-pack-act1-ab12` → `act1`; ids may contain dots). */
 export function packIdOfCache(name: string): string | null {

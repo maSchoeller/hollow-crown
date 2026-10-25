@@ -17,11 +17,29 @@ export function initUpdates(): void {
     onRegisteredSW: (_url, reg) => {
       registration = reg;
       watchFirstInstall(reg);
+      if (reg) watchReturn(reg);
     },
     onRegisterError: () => abandonPrepare(),
     onNeedRefresh: () => {
       if (updateStatus.value !== 'installing') updateStatus.value = 'available';
     },
+  });
+}
+
+/** Shortest pause between two background update checks. */
+const RECHECK_MS = 30 * 60 * 1000;
+
+/**
+ * An installed PWA stays alive in the background for days and registers its worker only once at launch, so a new version
+ * would go unnoticed. Whenever the player comes back to the app, the server is asked again (at most every 30 minutes);
+ * a version found this way waits and shows up as `available` through `onNeedRefresh`.
+ */
+function watchReturn(reg: ServiceWorkerRegistration): void {
+  let last = Date.now();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible' || Date.now() - last < RECHECK_MS) return;
+    last = Date.now();
+    void reg.update().catch(() => undefined);
   });
 }
 
