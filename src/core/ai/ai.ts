@@ -140,6 +140,7 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
         if (tCls.weaponGroups.includes('staff') || tCls.weaponGroups.includes('anima')) score += w.healerBonus;
         if (t.hp <= Math.min(...hostileUnits(s, u).filter(active).map((o) => o.hp))) score += w.lowestHpBonus;
         if (objectiveUnit && (t.id === objectiveUnit || t.uid === objectiveUnit)) score += w.objectiveBonus;
+        if (u.lieutenant && (u.grudge ?? 0) >= 1 && u.grudgeTarget && t.id === u.grudgeTarget) score += w.grudgeTargetBonus;
         if (t.downed) score = diff.aiFinishDowned === 'prefer' ? score + w.objectiveBonus : -1000 + score;
         const terr = data.terrain[terrainAt(s, pos)];
         score += ((terr?.def ?? 0) + (terr?.avoid ?? 0) / 10) * 0.5;

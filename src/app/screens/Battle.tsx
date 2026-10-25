@@ -18,6 +18,7 @@ import {
   holdZone,
   itemDef,
   itemTargets,
+  longPressView,
   passivePreview,
   pathTo,
   posKey,
@@ -28,6 +29,7 @@ import {
   stealBlock,
   tilesInRange,
   unitAt,
+  wantedView,
   visibleState,
   visibleTiles,
   weaponRange,
@@ -52,10 +54,13 @@ import { goalLine, goalStand } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
-import { data } from '../state/session';
+import { ltBarks } from '../battle/ltLines';
+import { campaign, data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
+import { wantedUid } from '../state/wanted';
+import { WantedDock } from './Wanted';
 import { settings, updateSettings } from '../state/settings';
 import {
   BackPill,
@@ -132,6 +137,13 @@ export function Battle() {
   const [danger, setDanger] = useState(settings.value.dangerDefault);
   const [watch, setWatch] = useState<string[]>([]);
   const [info, setInfo] = useState<string | null>(null);
+  /** the wanted poster of a lieutenant is open (story 3.6); it shows his danger zone, too */
+  const wanted = wantedUid.value;
+  const setWanted = (uid: string | null) => (wantedUid.value = uid);
+  useEffect(() => {
+    if (wanted) setWatch((w) => (w.includes(wanted) ? w : [...w, wanted]));
+  }, [wanted]);
+  useEffect(() => () => setWanted(null), []);
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
@@ -204,6 +216,8 @@ export function Battle() {
       const opening = openingBark.current;
       openingBark.current = null;
       if (opening && alive && settings.value.speed !== 3) await playBark(opening);
+      if (alive) await playLieutenantLines(battle.value!.state.turn === 1);
+      ltReady.current = true;
       if (alive) {
         setPhaseView(null);
         setBusy(false);
@@ -453,8 +467,17 @@ export function Battle() {
     const b = boardRef.current?.skip ? null : barkFor(data, s, e);
     if (b?.line === 'battle_start') openingBark.current = b;
     else if (b) await playBark(b);
+    if (ltReady.current && ((e.t === 'phase' && e.phase === 'player') || e.t === 'spawned')) await playLieutenantLines(true);
   };
   const openingBark = useRef<Bark | null>(null);
+  /** opening lines of the enemy lieutenants (story 3.3): who has spoken, and whether the start events are through */
+  const ltSpoken = useRef(new Set<string>());
+  const ltReady = useRef(false);
+  const playLieutenantLines = async (play: boolean) => {
+    const st = battle.value!.state;
+    const skip = !play || boardRef.current?.skip || settings.value.speed === 3;
+    for (const b of ltBarks(data, campaign.value, st, ltSpoken.current, !skip)) await playBark(b);
+  };
   const barkSeq = useRef(0);
   const playBark = async (b: Bark) => {
     await new Promise<void>((resolve) => setBark({ b, seq: ++barkSeq.current, done: resolve }));
@@ -574,6 +597,7 @@ export function Battle() {
   longRef.current = (p: Pos) => {
     const at = unitAt(s, p);
     if (at) {
+      if (longPressView(data, at) === 'wanted') return setWanted(at.uid);
       setInfo(at.uid);
       if (at.team === 'enemy') setWatch((w) => (w.includes(at.uid) ? w.filter((x) => x !== at.uid) : [...w, at.uid]));
     } else setTileInfo(p);
@@ -582,6 +606,7 @@ export function Battle() {
   const cancelRef = useRef<() => void>(() => undefined);
   cancelRef.current = () => {
     audio.sfx('cancel');
+    if (wanted) return setWanted(null);
     if (info) return setInfo(null);
     switch (mode.k) {
       case 'cast':
@@ -790,6 +815,8 @@ export function Battle() {
   // --------------------------------------------------------------- render
   const selUnit = mode.k !== 'idle' ? unit(mode.uid) : null;
   const infoUnit = info ? s.units.find((u) => u.uid === info) : null;
+  const wantedUnit = wanted ? s.units.find((u) => u.uid === wanted) : null;
+  const wantedPoster = wantedUnit?.lieutenant ? wantedView(data, campaign.value!, wantedUnit.lieutenant, wantedUnit) : null;
   const options = mode.k === 'moved' ? availableActions(data, s, unit(mode.uid), mode.to) : [];
   const aimPre =
     mode.k === 'forecast' && mode.aim
@@ -1078,6 +1105,7 @@ export function Battle() {
             id={bark.b.scene}
             key={bark.seq}
             only={[bark.b.line]}
+            params={bark.b.params}
             speed={boardRef.current?.speed ?? 1}
             anchorOf={async () => {
               const u = s.units.find((x) => x.uid === bark.b.anchor);
@@ -1124,6 +1152,7 @@ export function Battle() {
         />
       )}
       {infoUnit && <UnitInfo u={infoUnit} s={s} onClose={() => setInfo(null)} onEquip={(item, slot) => void run({ type: 'equip', unit: infoUnit.uid, item, slot })} canEdit={playerTurn && infoUnit.team === 'player' && !infoUnit.acted} />}
+      {wantedUnit && wantedPoster && <WantedDock v={wantedPoster} onClose={() => setWanted(null)} />}
       {objectives && <ObjectivesPanel s={s} onClose={() => setObjectives(false)} />}
       {menu && (
         <BattleMenu

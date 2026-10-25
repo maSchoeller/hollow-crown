@@ -104,6 +104,8 @@ const fmt = (n: number) => n.toLocaleString(lang.value === 'de' ? 'de-DE' : 'en-
 
 type AmountProps = {
   value: number;
+  /** upper end of a range: shows "value–max" (e.g. "1–2" material per bounty) */
+  max?: number;
   /** show "+" for gains */
   signed?: boolean;
   /** marks an amount the player cannot pay */
@@ -115,9 +117,9 @@ type AmountProps = {
  * Every amount is symbol + number with tabular digits, never a word or a bare number (DESIGN.md §Währung).
  * Every symbol is a painted image (art/items/<id>.png): gold, EXP, ember spark and each material (content:check).
  */
-export function Amount({ value, signed, short, class: cls, resource, material }: AmountProps) {
+export function Amount({ value, max, signed, short, class: cls, resource, material }: AmountProps) {
   const name = resource ? t(`ui.resource.${resource}`) : t(`item.${material.id}.name`);
-  const text = `${signed && value > 0 ? '+' : ''}${fmt(value)}`;
+  const text = `${signed && value > 0 ? '+' : ''}${fmt(value)}${max !== undefined && max !== value ? `–${fmt(max)}` : ''}`;
   return (
     <span class={`hc-amount ${short ? 'is-short' : ''} ${cls ?? ''}`} aria-label={`${text} ${name}`} title={name}>
       <Symbol image={resource ? RESOURCE_IMAGE[resource] : (material.image ?? material.id)} />

@@ -130,6 +130,15 @@ Passend zu Signaturteil und Rolle der Leutnants (Art Direction §4.3). Die Narra
 | 3 | Hauptmann Torvald | **Letzte Mauer** (`last_wall`) | Schild (Turmschild) |
 | 3 | Wächterin Eluned | **Porzellan** (`porcelain`) | Dolch |
 
+**Akt 1 umgesetzt (Story 3.1, `content/core/items.yaml`):** Seltenheit `legendary`, Preis der Stahlwaffe der Gruppe (1 000, Kinderhand 1 200). Die Werte sind die der Eisenwaffe der Gruppe plus ein Effekt:
+
+| Item | Werte wie | Effekt |
+|---|---|---|
+| `tinder` Zunder (Hask) | `iron_axe` (Mt 8, Tr 70, Gew 9) | Element Feuer, 30 % Brand |
+| `bounty` Kopfgeld (Morra) | `iron_bow` (Mt 6, Tr 85, Rw 2, Gew 5) | Krit +15 |
+| `wolf_fang` Wolfszahn (Ulvric) | `iron_lance` (Mt 6, Tr 80, Gew 7) | Fähigkeit Wolfslauf (meisterbar, 40 SP) |
+| `little_hands` Kinderhand (Grosk) | `iron_shield` (VER +4, Gew 7) | Fähigkeit Erneuerung (meisterbar, 45 SP) |
+
 ### 6.4 Legendäre Waffen (5, handplatziert)
 
 | Akt | Waffe | Gruppe | Fundort |

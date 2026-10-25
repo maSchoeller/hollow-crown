@@ -79,7 +79,7 @@ describe('missionResultView (story 6.6)', () => {
 
   it('has no bounty while there are no lieutenants, and passes fake bounty data through', () => {
     expect(missionResultView(fake()).bounty).toEqual([]);
-    const b = { id: 'hask', nameKey: 'unit.hask.name', gold: 400, grudge: 2 };
+    const b = { id: 'hask', nameKey: 'unit.hask.name', gold: 400, grudge: 2, material: { id: 'iron_ore', count: 1 }, signature: { uid: 'i1', def: 'tinder', upgrade: 0, affixes: [], runes: [] } };
     expect(missionResultView(fake({ bounty: [b] })).bounty).toEqual([b]);
     // results of older code paths without the field stay readable
     const old = fake();

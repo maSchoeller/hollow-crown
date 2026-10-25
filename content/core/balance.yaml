@@ -196,6 +196,7 @@ ai:
   dangerPerAttacker: 5
   supportHealBelowPercent: 70
   selfHealBelowPercent: 40
+  grudgeTargetBonus: 20
   # Wirken der gegnerischen Elementaristen (Story 2.5): Spieler-Einheiten minus eigene im Brand-Ausbreitungsbereich (mindestens), Felswall nur bei mindestens so viel längerem Spielerweg zum Ziel, kein Wirken bei Kill-Chance des besten Angriffs ab so viel Prozent
   castMinTargets: 2
   castWallDetour: 3
@@ -203,3 +204,11 @@ ai:
   # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
   followRadius: 4
   followDanger: 100
+# Leutnants (Story 3.5): Kopfgeld je Vertreibung = goldPerLevel x (Groll vor dieser Vertreibung + 1) Gold + min..max Material des Akts;
+# Signatur-Item mit chance je Vertreibung, garantiert ab der guaranteedRout-ten, je Leutnant nur einmal. materialByAct: Akt -> Material-ID.
+lieutenant:
+  bounty:
+    goldPerLevel: 200
+    materials: { min: 1, max: 2 }
+    materialByAct: { 1: iron_ore }
+  signature: { chance: 0.1, guaranteedRout: 4 }

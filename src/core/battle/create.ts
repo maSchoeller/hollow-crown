@@ -150,6 +150,13 @@ export function battleUnitFromMap(
   if (def.nameKey) rec.nameKey = def.nameKey;
   if (def.sprite) rec.sprite = def.sprite;
   if (def.portrait) rec.portrait = def.portrait;
+  // a lieutenant gives name, figure and portrait where the map sets none (story 3.1; the class is resolved by the loader)
+  const lt = def.lieutenant ? data.lieutenants?.[def.lieutenant] : undefined;
+  if (lt) {
+    if (!def.nameKey) rec.nameKey = lt.nameKey;
+    if (!def.sprite) rec.sprite = lt.model;
+    if (!def.portrait) rec.portrait = lt.portrait;
+  }
   const u = battleUnitFromRecord(data, rec, def.team, def.at);
   u.uid = def.id ?? uid;
   u.id = def.char ?? def.id ?? uid;

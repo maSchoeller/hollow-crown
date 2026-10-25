@@ -262,7 +262,7 @@ export interface SkillEffect {
 
 export interface SkillDef {
   id: string;
-  source: 'class' | 'personal' | 'item';
+  source: 'class' | 'personal' | 'item' | 'grudge';
   trigger: SkillTrigger;
   condition?: SkillCondition;
   effect: SkillEffect;
@@ -472,6 +472,33 @@ export interface SupportPairDef {
   core: boolean;
   /** scene of the campfire talk that unlocks each rank */
   talks: Partial<Record<SupportRank, string>>;
+}
+
+/**
+ * An enemy lieutenant of an act (story 3.1, `acts/actN/lieutenants.yaml`): comes back until he is beaten for good.
+ * Texts: name `nameKey`, title `titleKey`, faction `faction.<faction>.name`; lines in the scene `scene` (`scn.lt.<id>`).
+ */
+export interface LieutenantDef {
+  id: string;
+  /** act of the file's folder (derived by the loader) */
+  act: number;
+  nameKey: string;
+  /** character image id (art/mockups/characters-s1/<id>.png) */
+  portrait: string;
+  /** figure of the board (art/models/units/<model>.glb); a map unit takes it as `sprite` */
+  model: string;
+  class: string;
+  /** free label without a register; display name `faction.<faction>.name` */
+  faction: string;
+  signatureItem: string;
+  /** skills of the grudge steps 1, 2, 3 (source `grudge`); only content until story 3.4 unlocks them */
+  grudgeSkills: [string, string, string];
+  /** title for the profile card (story 3.6) */
+  titleKey: string;
+  /** scene with the lines, `scn.lt.<id>` */
+  scene: string;
+  /** can change sides (story 3.7); the scene then also holds the line `join` */
+  joins?: boolean;
 }
 
 /** A chronicle page: found through the effect `chronicle`, read in the chronicle; texts `chronicle.<id>.title|text`. */
@@ -817,6 +844,8 @@ export interface Balance {
     dangerPerAttacker: number;
     supportHealBelowPercent: number;
     selfHealBelowPercent: number;
+    /** score bonus for the grudge target of a lieutenant (story 3.3) */
+    grudgeTargetBonus: number;
     /** Wirken of enemy elementalists (story 2.5) */
     castMinTargets: number;
     castWallDetour: number;
@@ -825,6 +854,23 @@ export interface Balance {
     followRadius: number;
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
+  };
+  /** bounty and signature drop of the lieutenants (story 3.5) */
+  lieutenant: {
+    bounty: {
+      /** gold per grudge level: `goldPerLevel x (grudge before the rout + 1)` */
+      goldPerLevel: number;
+      /** material of the act per rout, an amount from min to max */
+      materials: { min: number; max: number };
+      /** act number (as text) -> material id */
+      materialByAct: Record<string, string>;
+    };
+    signature: {
+      /** chance per rout (0-1) */
+      chance: number;
+      /** the rout (counted after this one) at which the item falls for sure, when it has not fallen yet */
+      guaranteedRout: number;
+    };
   };
 }
 
@@ -947,4 +993,6 @@ export interface GameData {
   home: Record<HomeKind, HomeViewDef>;
   campaign: CampaignDef;
   world: WorldDef;
+  /** enemy lieutenants of the acts (`acts/actN/lieutenants.yaml`, story 3.1) */
+  lieutenants: Record<string, LieutenantDef>;
 }

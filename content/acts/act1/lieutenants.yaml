@@ -1,0 +1,47 @@
+# Die vier Leutnants von Akt 1 (Story 3.1). Narrative: "Leutnants (12, je Akt ein Lager)"; Werte laut Entscheidung des Produktinhabers 2026-10-25.
+# grudgeSkills = Groll 1, 2, 3 (Quelle grudge in core/skills.yaml); Zeilen in scenes/scn.lt.<id>.yaml; Titel (titleKey) in den Locales.
+# Ulvric ist vorläufig vanguard, bis die Wolfsreiter-Klasse (Story 2.9) existiert: dann hier umstellen.
+- id: hask
+  nameKey: unit.hask.name
+  portrait: hask
+  model: hask
+  class: brigand
+  faction: border_bands
+  signatureItem: tinder
+  grudgeSkills: [brute_blow, brand_mark, fire_eats_all]
+  titleKey: lt.hask.title
+  scene: scn.lt.hask
+
+- id: morra
+  nameKey: unit.morra.name
+  portrait: morra
+  model: morra
+  class: marksman
+  faction: border_bands
+  signatureItem: bounty
+  grudgeSkills: [rear_sight, far_shot, bounty_eye]
+  titleKey: lt.morra.title
+  scene: scn.lt.morra
+
+- id: ulvric
+  nameKey: unit.ulvric.name
+  portrait: ulvric
+  model: ulvric
+  class: vanguard
+  faction: border_bands
+  signatureItem: wolf_fang
+  grudgeSkills: [wolf_run, pack, breakthrough]
+  titleKey: lt.ulvric.title
+  scene: scn.lt.ulvric
+
+- id: grosk
+  nameKey: unit.grosk.name
+  portrait: grosk
+  model: grosk
+  class: vanguard
+  faction: border_bands
+  signatureItem: little_hands
+  grudgeSkills: [bulwark, tough, endure]
+  titleKey: lt.grosk.title
+  scene: scn.lt.grosk
+  joins: true

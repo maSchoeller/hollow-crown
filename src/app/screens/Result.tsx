@@ -54,6 +54,21 @@ function Spoils({ v }: { v: MissionResultView }) {
   );
 }
 
+/** Grudge after the mission: wanted symbol + number, and one white notch per level (the shape carries the meaning). */
+function Grudge({ value }: { value: number }) {
+  return (
+    <span class="res-grudge" role="img" aria-label={t('ui.result.grudge', { grudge: value })} title={t('ui.result.grudge', { grudge: value })}>
+      <Icon name="wanted" size={16} />
+      <span aria-hidden="true">{value}</span>
+      <span class="res-grudge__notches" aria-hidden="true">
+        {Array.from({ length: value }, (_, i) => (
+          <i key={i} />
+        ))}
+      </span>
+    </span>
+  );
+}
+
 function Bounty({ v }: { v: MissionResultView }) {
   if (!v.bounty.length) return null;
   return (
@@ -63,10 +78,23 @@ function Bounty({ v }: { v: MissionResultView }) {
         <div key={b.id} class="res-lt">
           <UnitHead portrait={b.portrait} name={unitName(b)} size={40} />
           <span class="res-lt__text">
-            <b>{unitName(b)}</b>
-            {t('ui.result.bountyLine', { grudge: b.grudge })}
+            <span class="res-lt__head">
+              <b>{unitName(b)}</b>
+              {t('ui.result.bountyLine')}
+              <Grudge value={b.grudge} />
+            </span>
+            <span class="res-lt__pay">
+              <Amount resource="gold" value={b.gold} signed />
+              {b.material && <Amount material={itemDef(data, b.material.id)} value={b.material.count} signed />}
+            </span>
+            {b.signature && (
+              <span class="res-lt__sig">
+                <ItemImage data={data} item={b.signature} size={32} />
+                <span class={`res-item__name r-${rarityOf(data, b.signature)}`}>{itemName(data, b.signature)}</span>
+                <span class="res-lt__sigtag">{t('ui.result.signature')}</span>
+              </span>
+            )}
           </span>
-          <Amount resource="gold" value={b.gold} signed />
         </div>
       ))}
     </section>

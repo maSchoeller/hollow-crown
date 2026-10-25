@@ -44,6 +44,7 @@ const ids = (over: Partial<IdSets> = {}): IdSets => ({
   flags: [],
   rooms: [],
   scenes: [],
+  lieutenants: [],
   ...over,
 });
 const lock = (over: Partial<IdSets>): ReleasedIds => ({ lockedAt: '2026-10-24', packs: ['core'], ids: ids(over) });

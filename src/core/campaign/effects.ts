@@ -4,10 +4,11 @@ import { allItems } from '../rules/items';
 import type { CampaignState } from '../state';
 import { addToRoster } from './campaign';
 import { soleKey } from './conditions';
+import { clampGrudge, lieutenantState } from './lieutenants';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
-export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid'];
+export const UNSUPPORTED_EFFECTS: readonly string[] = ['priceMod', 'villageAid'];
 
 const arg = (e: Effect): unknown => (e as unknown as Record<string, unknown>)[soleKey(e)];
 
@@ -63,6 +64,9 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
       case 'leave':
         if (!roster.has(v as string)) return 'unknown_unit';
         roster.delete(v as string);
+        break;
+      case 'grudge':
+        if (!data.lieutenants?.[(v as { lt: string }).lt]) return 'unknown_unit';
         break;
       case 'gold':
         gold += v as number;
@@ -129,6 +133,16 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
         c.roster = c.roster.filter((r) => r.id !== id);
         if (!c.left.includes(id)) c.left.push(id);
         events.push({ t: 'unitLeft', unit: id });
+        break;
+      }
+      case 'grudge': {
+        const { lt, delta } = v as { lt: string; delta: number };
+        const st = lieutenantState(c, lt);
+        const grudge = clampGrudge(st.grudge + delta);
+        if (grudge !== st.grudge) {
+          (c.lieutenants ??= {})[lt] = { ...st, grudge };
+          events.push({ t: 'grudgeChanged', lt, grudge });
+        }
         break;
       }
       case 'gold':

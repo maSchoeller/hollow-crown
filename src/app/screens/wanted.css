@@ -1,0 +1,253 @@
+/* Wanted posters (story 3.6): profile stone, list, and the dock over the board. Style B, tokens from tokens.css. */
+
+/* ---- round face and golden ring medallion ---- */
+.wt-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.wt-face--initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  color: var(--hc-line);
+}
+.wt-medal {
+  --wt-size: 84px;
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--wt-size);
+  height: var(--wt-size);
+  padding: calc(var(--wt-size) * 0.064);
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  /* team ring in red, gold edge on the outside (the same double ring as on the board) */
+  background: var(--hc-team-enemy);
+  box-shadow: 0 0 0 calc(var(--wt-size) * 0.045) var(--hc-gold), 0 0 0 calc(var(--wt-size) * 0.045 + 2px) var(--hc-line);
+  margin: calc(var(--wt-size) * 0.05);
+}
+.wt-medal__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-team-enemy-soft);
+}
+.wt-medal__lv {
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 7px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* ---- grudge dots ---- */
+.wt-notches {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  flex: none;
+}
+.wt-notches i {
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+}
+.wt-notches i.is-on {
+  background: var(--hc-gold);
+}
+
+/* ---- the profile stone ---- */
+.wt-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px 12px 12px;
+}
+.wt-head {
+  display: grid;
+  grid-template-columns: 94px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.wt-head .wt-medal {
+  justify-self: center;
+}
+.wt-head__text {
+  min-width: 0;
+}
+.wt-tag {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-lieutenant);
+}
+.wt-name {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.15;
+}
+.wt-title {
+  font-size: 13px;
+  color: var(--hc-soft);
+}
+
+.wt-target {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.wt-target__mini {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-team-player-soft);
+}
+.wt-target.is-fallen .wt-target__mini {
+  filter: grayscale(1);
+}
+.wt-target.is-none {
+  color: var(--hc-soft);
+}
+
+.wt-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream-2);
+  font-size: 13px;
+}
+.wt-facts dt {
+  align-self: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.wt-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+.wt-facts__pay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+}
+
+.wt-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wt-skill {
+  padding: 2px 9px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+/* locked: dashed and faded, the label says "Grudge n" (not only grey) */
+.wt-skill.is-locked {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+/* ---- dock over the board ---- */
+.wt-dock {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: var(--hc-hud-top) var(--hc-hud-edge) calc(var(--hc-hud-edge) + env(safe-area-inset-bottom, 0px));
+}
+.wt-dock__col {
+  display: grid;
+  gap: 8px;
+  width: min(520px, 100%);
+  max-height: 100%;
+  color: var(--hc-line);
+}
+.wt-back {
+  justify-self: stretch;
+}
+
+/* ---- list ---- */
+.wt-list {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+.wt-empty {
+  margin: 0;
+  color: var(--hc-soft);
+}
+.wt-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 56px;
+  padding: 8px 12px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.wt-row:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+.wt-row__text {
+  display: grid;
+  min-width: 0;
+}
+.wt-row__target {
+  font-size: 13px;
+  font-weight: 600;
+}

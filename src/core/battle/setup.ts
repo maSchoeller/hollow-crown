@@ -72,7 +72,13 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited
     const uid = def.id ?? def.char ?? `m${i}`;
-    s.units.push(battleUnitFromMap(data, def, s, def.team === 'enemy' ? pct : 0, uid));
+    const unit = battleUnitFromMap(data, def, s, def.team === 'enemy' ? pct : 0, uid);
+    const lt = unit.lieutenant ? c.lieutenants?.[unit.lieutenant] : undefined;
+    if (lt) {
+      unit.grudge = lt.grudge;
+      if (lt.target) unit.grudgeTarget = lt.target;
+    }
+    s.units.push(unit);
   });
   for (const p of map.pairs) {
     s.supports[pairKey(p.a, p.b)] = { points: data.balance.supports.thresholds[p.rank], rank: p.rank };

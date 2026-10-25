@@ -6,8 +6,8 @@
 import { z } from 'zod';
 import type { GameData } from '../core/defs';
 
-/** Kinds of IDs a save refers to. Lieutenants join when Epic 3 adds them to the content. */
-export const ID_KINDS = ['chars', 'classes', 'items', 'skills', 'affixes', 'sets', 'nodes', 'maps', 'flags', 'rooms', 'scenes'] as const;
+/** Kinds of IDs a save refers to (lieutenants since story 3.1). */
+export const ID_KINDS = ['chars', 'classes', 'items', 'skills', 'affixes', 'sets', 'nodes', 'maps', 'flags', 'rooms', 'scenes', 'lieutenants'] as const;
 export type IdKind = (typeof ID_KINDS)[number];
 
 export type IdSets = Record<IdKind, string[]>;
@@ -49,6 +49,7 @@ export function collectIds(data: GameData, released: { maps: (id: string) => boo
     flags: sorted(Object.keys(data.flags)),
     rooms: sorted(Object.keys(data.rooms)),
     scenes: sorted(Object.keys(data.scenes).filter(released.scenes)),
+    lieutenants: sorted(Object.keys(data.lieutenants ?? {})),
   };
 }
 

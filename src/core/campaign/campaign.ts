@@ -12,6 +12,7 @@ import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, noteRoles } from './graph';
 import { availableSupportTalks } from './camp';
+import { applyLieutenantOutcome, lieutenantState, payBounties } from './lieutenants';
 
 export const SAVE_VERSION = 1;
 
@@ -90,6 +91,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
+    // story 3.3: lieutenants of older saves hold only `met`
+    ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),
   };
   noteRoles(data, out);
   return out;
@@ -154,9 +157,14 @@ export interface BountyResult {
   nameKey: string;
   name?: string;
   portrait?: string;
+  /** paid in gold; not part of `BattleResult.gold` (loot and bounty are shown apart) */
   gold: number;
   /** grudge level after this mission */
   grudge: number;
+  /** material of the act paid with it (not part of `BattleResult.materials`) */
+  material?: { id: string; count: number };
+  /** his signature item, when it fell (already in the convoy; not part of `BattleResult.items`) */
+  signature?: ItemInstance;
 }
 
 export interface BattleResult {
@@ -321,6 +329,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       f.grief.push({ id: rec.id, missions: rec.grief });
     }
   }
+  // lieutenants: met, encounters, and the grudge of those driven off (story 3.3)
+  const lieutenantOutcomes = applyLieutenantOutcome(data, c, s);
   // side objectives
   for (const o of map.objectives.side) {
     const done = sideObjectiveDone(data, s, o);
@@ -356,6 +366,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   for (const f of s.flags) c.flags[f] ??= true;
   if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
   noteRoles(data, c);
+  // bounty and signature drop of the lieutenants driven off: the last draws from the battle RNG (story 3.5)
+  result.bounty = payBounties(data, c, s, lieutenantOutcomes, rng);
   c.rng = rng;
   refreshOffers(data, c, node.merchantTier);
   refreshTavern(data, c);

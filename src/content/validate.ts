@@ -9,6 +9,7 @@ import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles, pairKey } from '../core/util';
 import { BARK_LINES } from './barkLines';
+import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -20,6 +21,8 @@ export function validateContent(
   itemImages?: Set<string>,
   /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` and scene `background` must have one */
   placeImages?: Set<string>,
+  /** portraits and figure models of the lieutenants (content:check passes them; a missing file is a warning) */
+  lieutenantFiles?: LieutenantFiles,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -128,6 +131,9 @@ export function validateContent(
         if (!data.supports[pairKey(a, b)]) err(file, `${ctx}: unknown support pair ${a}|${b}`);
         return;
       }
+      case 'met':
+        if (!data.lieutenants[v as string]) err(file, `${ctx}: unknown lieutenant ${v as string}`);
+        return;
       case 'chronicle':
         if (Array.isArray(v)) for (const id of v as string[]) page(file, id, ctx);
         return;
@@ -158,7 +164,9 @@ export function validateContent(
         err(file, `${ctx}: effect ${key} is not yet supported`);
       else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
       else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
-      else if (key === 'item') item(file, v as ItemRef, ctx);
+      else if (key === 'grudge') {
+        if (!data.lieutenants[(v as { lt: string }).lt]) err(file, `${ctx}: unknown lieutenant ${(v as { lt: string }).lt}`);
+      } else if (key === 'item') item(file, v as ItemRef, ctx);
       else if (key === 'chronicle') page(file, v as string, ctx);
       else if (key === 'openQuest') {
         openedQuests.push(v as string);
@@ -291,6 +299,7 @@ export function validateContent(
     if (pairs.length > s.seasonPairs) err('supports.yaml', `${pairs.length} support pairs, the season has ${s.seasonPairs}`);
     if (pairs.filter((p) => p.core).length > s.corePairs) err('supports.yaml', `${pairs.filter((p) => p.core).length} core pairs, the season has ${s.corePairs}`);
   }
+  validateLieutenants(data, locales, err, lieutenantFiles);
   // map triggers set flags of the register
   for (const map of Object.values(data.maps))
     for (const t of map.triggers)

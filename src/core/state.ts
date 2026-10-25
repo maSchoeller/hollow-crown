@@ -86,7 +86,7 @@ export interface BattleUnit extends UnitRecord {
   /** own phases spent downed (Standard: bleeds out at `balance.death.bleedOutTurns`) */
   bleed: number;
   /** left the map: rescued, escaped, retreated (casual) or dead */
-  gone?: 'rescued' | 'escaped' | 'retreated' | 'dead';
+  gone?: 'rescued' | 'escaped' | 'retreated' | 'dead' | 'fled';
   status: Array<{ id: StatusId; turns: number }>;
   buffs: Buff[];
   usedPerMap: Record<string, number>;
@@ -94,6 +94,12 @@ export interface BattleUnit extends UnitRecord {
   ai?: AiState;
   boss?: boolean;
   lieutenant?: string;
+  /** grudge of a lieutenant against the company, 0-3 (story 3.1: always unset; story 3.3 takes it from the campaign) */
+  grudge?: number;
+  /** unit id of the grudge target (story 3.3) */
+  grudgeTarget?: string;
+  /** uid of the unit that drove a lieutenant off (`gone: 'fled'`); set by story 3.2 */
+  fledBy?: string;
   dropUids: string[];
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };
@@ -256,9 +262,20 @@ export interface CampaignState {
   lieutenants?: Record<string, LieutenantState>;
 }
 
-/** What the campaign knows about one lieutenant (Epic 3 extends it). */
+/** What the campaign knows about one lieutenant (story 3.3, architecture §5.5). */
 export interface LieutenantState {
+  /** the company has won a mission against him */
   met: boolean;
+  /** missions won with him on the map */
+  encounters: number;
+  /** 0-3 notches */
+  grudge: number;
+  /** roster id of the unit that drove him off last; stays after that unit has fallen */
+  target?: string;
+  /** times he was driven off */
+  routs: number;
+  /** his signature item has fallen (story 3.5); it falls once per lieutenant */
+  signatureDropped: boolean;
 }
 
 export type MapLookup = (id: string) => MapDef;

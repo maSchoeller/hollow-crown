@@ -14,7 +14,9 @@ import type {
   HomeKind,
   HomeViewDef,
   ItemDef,
+  LieutenantDef,
   MapDef,
+  MapUnitDef,
   MemorialDef,
   Rarity,
   RenderDef,
@@ -41,6 +43,7 @@ import {
   flagSchema,
   homeSchema,
   itemSchema,
+  lieutenantSchema,
   mapSchema,
   memorialSchema,
   renderSchema,
@@ -113,7 +116,28 @@ interface PackParts {
   chronicle: Record<string, ChroniclePageDef>;
   memorials: Record<string, MemorialDef>;
   supports: Record<string, SupportPairDef>;
+  lieutenants: Record<string, LieutenantDef>;
   locales: Locales;
+}
+
+/** Units of a map in every place the file can name them (placed, reinforcements, spawned by a trigger). */
+function mapUnits(m: MapDef): MapUnitDef[] {
+  return [
+    ...m.units,
+    ...m.reinforcements.flatMap((r) => r.units),
+    ...m.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : []))),
+  ];
+}
+
+/** A unit with `lieutenant:` and no class of its own gets the class of the lieutenant (story 3.1; the map's own value wins). */
+function resolveLieutenantClasses(maps: Record<string, MapDef>, lieutenants: Record<string, LieutenantDef>, issues: ContentIssue[]): void {
+  for (const m of Object.values(maps))
+    for (const u of mapUnits(m)) {
+      if (u.class) continue;
+      const lt = u.lieutenant ? lieutenants[u.lieutenant] : undefined;
+      if (lt) u.class = lt.class;
+      else issues.push({ file: `maps/${m.id}`, message: `${u.id ?? 'unit'}: class is required unless the unit names a known lieutenant` });
+    }
 }
 
 /**
@@ -126,6 +150,7 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   const chronicle: Record<string, ChroniclePageDef> = {};
   const memorials: Record<string, MemorialDef> = {};
   const supports: Record<string, SupportPairDef> = {};
+  const lieutenants: Record<string, LieutenantDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
     const p = contentPath(k);
@@ -138,6 +163,12 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
         const key = pairKey(sp.pair[0], sp.pair[1]);
         if (supports[key]) issues.push({ file: p, message: `support pair ${key} is listed twice` });
         supports[key] = { ...sp, key };
+      }
+    } else if (/^acts\/act\d+\/lieutenants\.yaml$/.test(p)) {
+      const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
+      for (const lt of parseList<Omit<LieutenantDef, 'act'>>(p, raw ?? [], lieutenantSchema, issues)) {
+        if (lieutenants[lt.id]) issues.push({ file: p, message: `lieutenant ${lt.id} is listed twice` });
+        lieutenants[lt.id] = { ...lt, act };
       }
     } else if (/^acts\/act\d+\/chronicle\.yaml$/.test(p)) {
       const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
@@ -161,7 +192,7 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
   for (const pg of Object.values(chronicle)) locales.de = { ...(locales.de ?? {}), ...chronicleTexts(pg) };
   for (const m of Object.values(memorials)) locales.de = { ...(locales.de ?? {}), ...memorialTexts(m) };
-  return { maps, scenes, chronicle, memorials, supports, locales };
+  return { maps, scenes, chronicle, memorials, supports, lieutenants, locales };
 }
 
 /**
@@ -170,12 +201,14 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
  */
 export function mergePackContent(loaded: LoadedContent, files: Record<string, unknown>): ContentIssue[] {
   const issues: ContentIssue[] = [];
-  const { maps, scenes, chronicle, memorials, supports, locales } = parsePackFiles(files, issues);
+  const { maps, scenes, chronicle, memorials, supports, lieutenants, locales } = parsePackFiles(files, issues);
+  resolveLieutenantClasses(maps, { ...loaded.data.lieutenants, ...lieutenants }, issues);
   Object.assign(loaded.data.maps, maps);
   Object.assign(loaded.data.scenes, scenes);
   Object.assign(loaded.data.chronicle, chronicle);
   Object.assign(loaded.data.memorials, memorials);
   Object.assign(loaded.data.supports, supports);
+  Object.assign((loaded.data.lieutenants ??= {}), lieutenants);
   for (const [lang, table] of Object.entries(locales)) loaded.locales[lang] = Object.assign(loaded.locales[lang] ?? {}, table);
   loaded.issues.push(...issues);
   return issues;
@@ -204,7 +237,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);
-  const { maps, scenes, chronicle, memorials, supports, locales } = parsePackFiles(files, issues);
+  const { maps, scenes, chronicle, memorials, supports, lieutenants, locales } = parsePackFiles(files, issues);
+  resolveLieutenantClasses(maps, lieutenants, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,
@@ -238,6 +272,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     home: home as Record<HomeKind, HomeViewDef>,
     campaign: campaign as CampaignDef,
     world: world as WorldDef,
+    lieutenants,
   };
   return { data, locales, issues };
 }
