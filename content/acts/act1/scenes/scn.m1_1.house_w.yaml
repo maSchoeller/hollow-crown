@@ -1,0 +1,6 @@
+id: scn.m1_1.house_w
+background: bg_varnhold_market
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Schmied nickt. „Die Zettel kleben seit gestern früh überall. Euer Gold nehm ich trotzdem lieber.“"

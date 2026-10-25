@@ -60,8 +60,23 @@
   base:   { hp: 18, str: 5, mag: 1, skl: 8, spd: 8, lck: 4, def: 3, res: 2 }
   growth: { hp: 60, str: 40, mag: 10, skl: 60, spd: 55, lck: 35, def: 20, res: 25 }
   items: [ { def: iron_bow }, { def: leather_cap } ]
-  supports: [tobin]
+  supports: [tobin, fenn]
   joins: ch01              # Dorf [11,11] besuchen
+
+- id: fenn
+  nameKey: unit.fenn.name
+  class: scout
+  level: 2
+  # OFFEN: Affinität steht in keinem Konzeptdokument; wind ist ein Startwert [C] wie bei Mira und Tobin (flink, Straßenkind)
+  affinity: wind
+  # OFFEN: kein passender persönlicher Skill in skills.yaml (Narrative: Großmaul mit weichem Kern, Späher); personalSkill folgt mit dem Skill-Entwurf
+  # Werte [C]: schnell, glücklich, zerbrechlich (Narrative: Großmaul mit weichem Kern); Wachstum wird zum growthMod der Klasse addiert
+  base:   { hp: 16, str: 4, mag: 0, skl: 6, spd: 9, lck: 7, def: 2, res: 2 }
+  growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
+  items: [ { def: iron_dagger }, { def: leather_cap } ]
+  supports: [mira]
+  # OFFEN: Beitritt nach dem Sieg in 1-1 (Szene scn.m1_1.outro). Eine Szene kann ohne Entscheidung keine Wirkung auslösen (sceneSchema: Antworten mit Wirkung nur in Entscheidungen, mindestens 2 Antworten); node.grants kennt nur Items. Bis die Steuerung den Mechanismus festlegt, tritt Fenn nicht in die Truppe ein.
+  joins: m1_1
 
 - id: liora
   nameKey: unit.liora.name

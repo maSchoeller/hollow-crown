@@ -19,7 +19,7 @@ if (campaignArg) {
   runCampaign(campaignArg);
   process.exit(0);
 }
-const mapId = args.find((a) => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) ?? 'prologue_caravan';
+const mapId = args.find((a) => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) ?? 'prologue_paktnacht';
 const node = data.campaign.nodes.find((n) => n.map === mapId || n.id === mapId);
 if (!node) throw new Error(`no campaign node for ${mapId}`);
 const runs = Number(opt('runs', '50'));

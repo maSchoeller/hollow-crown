@@ -22,9 +22,9 @@ fog:
 # vorgesehen und erscheinen erst, wenn ihr Knoten angelegt ist. Lage: art/world/map_placed_v1.json.
 places:
   - { id: prologue, label: "P", act: 1, kind: story, at: [77.15, 94.08], node: prologue }
-  - { id: m1_1, label: "1-1", act: 1, kind: story, at: [59.57, 89.32], node: ch01 }
-  - { id: m1_2, label: "1-2", act: 1, kind: story, at: [39.26, 91.15], node: ch02 }
-  - { id: m1_3, label: "1-3", act: 1, kind: story, at: [61.04, 80.08] }
+  - { id: m1_1, label: "1-1", act: 1, kind: story, at: [59.57, 89.32], node: m1_1 }
+  - { id: m1_2, label: "1-2", act: 1, kind: story, at: [39.26, 91.15], node: ch01 }   # Brücke: der PoC-Knoten ch01 liegt vorläufig auf 1-2, bis Story 9.3 ihn ersetzt
+  - { id: m1_3, label: "1-3", act: 1, kind: story, at: [61.04, 80.08], node: ch02 }   # Brücke: der PoC-Knoten ch02 liegt vorläufig auf 1-3, bis Story 9.4 ihn ersetzt
   - { id: m1_4, label: "1-4", act: 1, kind: story, at: [76.17, 73.44] }
   - { id: m1_5, label: "1-5", act: 1, kind: story, at: [27.83, 76.17] }
   - { id: m1_6, label: "1-6", act: 1, kind: story, at: [37.4, 70.64] }

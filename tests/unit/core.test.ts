@@ -81,7 +81,7 @@ describe('place images of campaign nodes (story 7.6)', () => {
   it('the shipped missions use the backgrounds of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'backgrounds/bg_caravan_road', ch01: 'backgrounds/bg_varnhold_burning', ch02: 'backgrounds/bg_silverbrook_shrine' });
+    expect(places).toEqual({ prologue: 'backgrounds/bg_camp_night', m1_1: 'backgrounds/bg_caravan_road', ch01: 'backgrounds/bg_varnhold_burning', ch02: 'backgrounds/bg_silverbrook_shrine' });
   });
 });
 
@@ -197,7 +197,7 @@ describe('battle', () => {
   });
   it('creates the prologue with deployed units and enemies', () => {
     expect(start.units.filter((u) => u.team === 'player')).toHaveLength(4);
-    expect(start.units.some((u) => u.id === 'grosk' && u.boss)).toBe(true);
+    expect(start.units.filter((u) => u.team === 'enemy').every((u) => u.nameKey === 'unit.temple_guard.name' && !u.boss && !u.lieutenant)).toBe(true);
     expect(start.phase).toBe('player');
   });
   it('movement range respects terrain and units', () => {
@@ -237,7 +237,7 @@ describe('battle', () => {
     const { campaign: c, result } = finishBattle(data, campaign, state);
     expect(result.outcome).toBe('victory');
     expect(c.completed).toContain('prologue');
-    expect(availableNodes(data, c).map((n) => n.id)).toEqual(['ch01']);
+    expect(availableNodes(data, c).map((n) => n.id)).toEqual(['m1_1']);
     expect(c.gold).toBeGreaterThan(campaign.gold);
   });
 });
@@ -255,24 +255,23 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
     expect(ruleOn(s, 'triangle')).toBe(false);
     const kael = getUnit(s, 'kael');
-    const foe = s.units.find((u) => u.id === 'p_e4')!; // axe bandit: lance (Kael) beats axe
+    const foe = s.units.find((u) => u.id === 'tg2')!; // lance guard: sword (Kael) loses against lance
     const near = { ...s, units: s.units.map((u) => (u.uid === foe.uid ? { ...u, pos: [kael.pos![0], kael.pos![1] - 1] as [number, number] } : u)) };
     expect(forecast(data, near, 'kael', foe.uid).attacker.triangle).toBe(0);
-    expect(forecast(data, { ...near, locked: [] }, 'kael', foe.uid).attacker.triangle).toBe(1);
+    expect(forecast(data, { ...near, locked: [] }, 'kael', foe.uid).attacker.triangle).toBe(-1);
   });
   it('places units and reinforcements per difficulty', () => {
     const at = (d: 'easy' | 'normal' | 'hard') =>
       beginBattle(data, { ...campaign, settings: { ...campaign.settings, difficulty: d } }, 'prologue', campaign.roster.map((u) => u.id)).state;
     const foes = (s: BattleState) => s.units.filter((u) => u.team === 'enemy').length;
-    expect(foes(at('easy'))).toBeLessThan(foes(at('normal')));
-    // Hard keeps the starting count of normal (the extra western bandit is normal-only) and adds the ambush reinforcement in round 3.
-    expect(foes(at('normal'))).toBeGreaterThanOrEqual(foes(at('hard')));
-    expect(data.maps.prologue_caravan!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
+    // Product owner 2026-10-24: easy 4, normal 5, hard 6 temple guards, and Hard adds the announced side-gate reinforcement in round 3.
+    expect([foes(at('easy')), foes(at('normal')), foes(at('hard'))]).toEqual([4, 5, 6]);
+    expect(data.maps.prologue_paktnacht!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
   });
   it('hands the avatar a tome after chapter 1', () => {
     expect(campaign.roster.find((u) => u.id === 'avatar')!.equip.mainHand?.def).toBe('iron_sword');
     let c = campaign;
-    for (const node of ['prologue', 'ch01']) {
+    for (const node of ['prologue', 'm1_1', 'ch01']) {
       const { state } = autoplay(data, beginBattle(data, c, node, c.roster.map((u) => u.id)).state);
       expect(state.outcome).toBe('victory');
       const r = finishBattle(data, c, state);

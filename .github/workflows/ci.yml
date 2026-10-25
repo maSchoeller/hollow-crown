@@ -27,7 +27,7 @@ jobs:
       - name: Unit tests (incl. replay determinism, core coverage ratchet)
         run: pnpm test:coverage
       - name: Balancing smoke (KI vs. KI)
-        run: pnpm sim prologue_caravan --runs 5
+        run: pnpm sim prologue_paktnacht --runs 5
       - name: Enemy phase budget (NFR3, 300 ms per enemy unit, blocks)
         run: pnpm bench:ai
 

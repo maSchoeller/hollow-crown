@@ -51,7 +51,7 @@ export function benchMapRaw(): unknown {
   }
   return {
     id: BENCH_MAP_ID,
-    nameKey: 'map.prologue_caravan.name',
+    nameKey: 'map.prologue_paktnacht.name',
     size: [w, h],
     fog: false,
     legend: { '.': 'plain', ',': 'grass', _: 'road', T: 'forest' },

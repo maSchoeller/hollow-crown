@@ -1,22 +1,43 @@
+# Prolog, Szene nach der Karte. Schlüsselgespräch 2 „Gerrits Grab“ (Narrative: ganze Truppe, Lagerfeuer, erste Gedenkszene, Trauer, leise)
+# mit der Tafel „Gerrits Grab“. Humor setzt in Trauerszenen nie ein (Narrative, Dialogue Style).
 id: scn.prologue.outro
-background: bg_caravan_road
+background: bg_gerrit_grave
 music: camp
 lines:
   - id: l01
-    speaker: [brenna]
-    fallback: skip
-    mood: happy
-    text: "Nicht schlecht für den ersten Tag. Du hast keinen von uns verheizt."
+    mood: sad
+    text: "Eine Nacht später. Ein Waldrand südlich von Aurenhall. Am Feuer ein frisches Grab und ein Banner."
   - id: l02
-    speaker: [kael]
-    mood: neutral
-    text: "Der Händler spricht von Unruhen in der Hauptstadt. Und von Rauch über Varnhold."
-  - id: l03
     speaker: [tobin]
     fallback: skip
-    mood: neutral
-    text: "Varnhold? Da hat meine Tante einen Laden!"
+    mood: sad
+    text: "Er hat uns die Tür gehalten. Ich hab mich noch umgedreht. Ich hätte … ich hätte nicht …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Dreißig Jahre hat er das Ding getragen. Und er hat es nicht losgelassen. Bis zuletzt nicht."
   - id: l04
     speaker: [kael]
     mood: sad
-    text: "Dann reiten wir. {avatar} – willkommen im Aschenbanner."
+    text: "Gerrit hat dieses Banner getragen, seit es eins gibt."
+  - id: l05
+    speaker: [avatar]
+    mood: sad
+    text: "Ich weiß nicht, was ich sagen soll."
+  - id: l06
+    speaker: [kael]
+    mood: sad
+    text: "Dann sag nichts. Bleib einfach hier."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Die Wache übernehme ich. Schlaft, Küken. Heute Nacht bleibt er bei uns."
+  - id: l08
+    mood: sad
+    text: "Niemand spricht. In der Ferne läuten die Glocken von Aurenhall, als wäre nichts geschehen."
+  - id: l09
+    speaker: [kael]
+    mood: neutral
+    text: "Morgen ziehen wir zur Grenze, nach Varnhold. Dort suchen sie uns zuletzt."

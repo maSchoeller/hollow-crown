@@ -1,0 +1,11 @@
+id: scn.m1_1.posters
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das … das sind wir. Gezeichnet. Mit Bart. Ich habe gar keinen Bart!"
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "„Gesucht für den Mord am König.“ Das Kopfgeld ist größer als der Sold einer ganzen Kompanie."
