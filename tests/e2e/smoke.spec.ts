@@ -8,6 +8,11 @@ async function skipIntro(page: Page): Promise<void> {
   await skip.click();
 }
 
+/** The board loads on software WebGL, which is CPU-bound; the turn-1 lesson only shows once it stands, so wait for it generously (no fixed sleep: the click goes as soon as Skip exists). */
+async function skipTutorial(page: Page, timeout = 60_000): Promise<void> {
+  await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout });
+}
+
 /** Title → campaigns → new campaign → prologue dialogue → battle (no preparation: deployment is fixed) → enemy phase (concept/13 §6.1, shortened). */
 test('new game reaches the prologue battle and survives a round', async ({ page }) => {
   await page.goto('./');
@@ -18,7 +23,7 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
   await skipIntro(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
   // turn-1 tutorial dialogue
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
+  await skipTutorial(page);
   // units are still ready, so ending the phase asks once more
   await page.getByRole('button', { name: /End phase|Phase beenden/ }).click();
   await page.getByRole('button', { name: /Sure\?|Wirklich\?/ }).click();
@@ -36,8 +41,7 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
-  // turn-1 lesson; the board loads slowly under software WebGL when several projects run in parallel
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
+  await skipTutorial(page);
   const box = (await page.locator('canvas.hc-stage').boundingBox())!;
   // drag the map upwards as far as it goes, i.e. towards its southern edge
   const x = box.x + box.width / 2;
@@ -71,7 +75,7 @@ test('autosave restores the running battle after reload (concept/13 §6.8)', asy
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
-  await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 15_000 });
+  await skipTutorial(page);
   await page.reload();
   await page.getByRole('button', { name: /Continue|Fortsetzen/ }).click();
   await expect(page.locator('canvas.hc-stage')).toBeVisible();

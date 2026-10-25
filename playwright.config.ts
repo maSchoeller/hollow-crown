@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const port = 4173;
+// other checkouts run the suite too and `--strictPort` would collide: E2E_PORT picks another one
+const port = Number(process.env.E2E_PORT ?? 4173);
 export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 120_000,
