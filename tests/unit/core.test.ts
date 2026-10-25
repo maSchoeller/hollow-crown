@@ -68,7 +68,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);
@@ -79,7 +79,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   it('reports a scene backdrop without a place image', () => {
     const loaded = loadContentFromDisk();
     loaded.data.scenes['scn.ch01.intro']!.background = 'nowhere';
-    const out = validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs'])).map((i) => `${i.file}: ${i.message}`);
+    const out = validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktnacht_glutdom'])).map((i) => `${i.file}: ${i.message}`);
     expect(out).toContain('scenes/scn.ch01.intro: background: no place image art/mockups/locations-s1/nowhere.png');
   });
   it('the shipped missions use the places of their chapters', () => {
