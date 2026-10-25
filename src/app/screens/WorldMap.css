@@ -1,11 +1,12 @@
-/* The world map (concept/25-ux/mockups/03-weltkarte.html, story 5.3): painted map you pan, nodes on it, HUD stones over it. Style B. */
+/* The world map (concept/25-ux/mockups/03-weltkarte.html, stories 5.2 and 5.3): flat painted map you pan and zoom, nodes on it, HUD stones over it. Style B. */
 @import '../../ui/tokens.css';
 
 .wm {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #3a8fc0;
+  /* behind the picture's edges (it may be pushed past them, see PAD in WorldMap.tsx): snow and fog above, forest below */
+  background: linear-gradient(to bottom, var(--hc-fog) 50%, #3b5f2c 50%);
   color: var(--hc-line);
   font-family: var(--hc-font-body);
   font-weight: 600;
@@ -13,7 +14,7 @@
   line-height: 1.35;
 }
 
-/* the map: the 3D scene of the render host (story 5.2) under a layer of HTML pieces that follow their places */
+/* the map: the painted picture (moved by a transform from WorldMap.tsx) under a layer of HTML pieces that follow their places */
 .wm__pan {
   position: absolute;
   inset: 0;
@@ -24,6 +25,34 @@
 .wm__pan.is-dragging,
 .wm__pan.is-dragging .wm-node {
   cursor: grabbing;
+}
+.wm__picture {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none;
+}
+.wm__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* fog over the regions of later acts (DESIGN.md fog): opaque at the top, fading out at the edge of the current region */
+.wm__fog {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--hc-fog) 94%, transparent) 0%,
+    color-mix(in srgb, var(--hc-fog) 90%, transparent) 70%,
+    transparent 100%
+  );
 }
 .wm__world {
   position: absolute;
@@ -102,6 +131,9 @@
   box-shadow: 0 3px 0 var(--hc-line);
   font-size: 17px;
 }
+.wm-node__head b {
+  font: inherit;
+}
 .wm-node__tail {
   width: 0;
   height: 0;
@@ -126,6 +158,23 @@
 .wm-node--story .wm-node__head {
   background: var(--hc-ember);
   color: #fff;
+}
+/* side quests: a diamond in gold instead of the ember circle */
+.wm-node--side .wm-node__head {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 7px;
+  border-radius: 8px;
+  transform: rotate(45deg);
+  font-size: 14px;
+}
+.wm-node--side:not(.wm-node--done) .wm-node__head {
+  background: var(--hc-gold);
+  color: var(--hc-line);
+}
+.wm-node--side .wm-node__head b {
+  display: block;
+  transform: rotate(-45deg);
 }
 .wm-node--home .wm-node__head {
   background: var(--hc-cream);

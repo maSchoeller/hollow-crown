@@ -1,0 +1,69 @@
+id: scn.support.avatar_liora.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du hast die Suppe stehen lassen. Das ist die dritte Nacht."
+  - id: l02
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Ich esse später."
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das sagst du jede Nacht. Der Tempel hatte dafür einen Spruch."
+  - id: l04
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Natürlich hatte er den."
+  - id: l05
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "„Schuld ist Glut: Wer sie verbirgt, trägt sie, bis sie brennt.“ Als Kind fand ich das schön."
+  - id: l06
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und jetzt?"
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Jetzt frage ich mich, wer entschieden hat, dass man Glut allein tragen muss."
+  - id: l08
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Warum fragst du mich das?"
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du hältst die Schale, als wäre sie heiß. Sie ist längst kalt."
+  - id: l10
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Ich bin müde, mehr nicht."
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das glaube ich dir. Den Rest lasse ich dir."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Danke."
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Iss. Kalt ist die Suppe fade. Warm wäre sie immerhin fade und warm."

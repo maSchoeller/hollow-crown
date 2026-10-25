@@ -4,17 +4,61 @@ music: camp
 lines:
   - id: l01
     speaker: [kael]
+    fallback: skip
     mood: neutral
-    text: "Du schläfst nicht. Albträume?"
+    text: "Zweite Wache ist meine. Du kannst schlafen gehen."
   - id: l02
-    speaker: [kael]
+    speaker: [avatar]
+    fallback: skip
     mood: neutral
-    text: "Ich frage nur, weil ich sie auch habe. Seit der Nacht des Paktfestes."
+    text: "Kann ich nicht. Ich sitze lieber hier, wenn das erlaubt ist."
   - id: l03
     speaker: [kael]
-    mood: sad
-    text: "Ich stand vor der Tür des Königs. Ich habe nichts gehört. Nichts. Und am Morgen war er tot."
+    fallback: skip
+    mood: neutral
+    text: "Erlaubt."
   - id: l04
     speaker: [kael]
+    fallback: skip
     mood: neutral
-    text: "Deshalb habe ich dich angeheuert. Jemand, der Muster sieht, wo ich nur Schatten sehe."
+    text: "Von der Akademie in eine Kompanie wie unsere. Das ist ein Abstieg."
+  - id: l05
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Man hat mich hinausgeworfen. Spielschulden. Das weißt du."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Den Rauswurf kenne ich. Nicht, warum ausgerechnet wir."
+  - id: l07
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Euer Sold kam pünktlich. Das ist selten."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Das war die Antwort auf eine andere Frage."
+  - id: l09
+    speaker: [avatar]
+    fallback: skip
+    mood: sad
+    text: "Es gab Leute, die nicht warten wollten. Und ihr hattet Arbeit."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Und sonst nichts."
+  - id: l11
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Reichst du mir mal das Holz?"
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Hier. Ich frage heute nicht noch einmal."

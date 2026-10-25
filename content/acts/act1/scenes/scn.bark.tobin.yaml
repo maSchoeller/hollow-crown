@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.tobin
+lines:
+  - id: battle_start
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Für Ehre und Ruhm! Äh, vorwärts!"
+  - id: crit
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Das kommt ins Lied!"
+  - id: downed
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Der Held … ruht … nur kurz …"
+  - id: rescued
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Mein Retter! Äh, Gefährte! Beides!"
+  - id: level_up
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Man schreibt meinen Namen größer!"
+  - id: ember
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Die Glut! Wie in den alten Sagen!"

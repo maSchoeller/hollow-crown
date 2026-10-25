@@ -1,0 +1,74 @@
+id: scn.support.grosk_tobin.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Grosk, kann ich Euch was fragen? Ich zähl schon eine Weile. Ihr steht immer einen Schritt vor mir."
+  - id: l02
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Zufall."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: angry
+    text: "Seit dem Hungerlager jedes Mal! Das ist kein Zufall, das ist, das ist ein Schild mit Bart!"
+  - id: l04
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Im Lager waren Kinder. Ich habe vor ihnen gestanden. Jeden Tag."
+  - id: l05
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Gewohnheit. Die Beine tun es von allein."
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Ich bin siebzehn. Das ist kein Kind mehr. Fast."
+  - id: l07
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Fast."
+  - id: l08
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ich wollte ein Held werden, Grosk. Mit Lied und Schwert und allem. Nicht dass jemand …"
+  - id: l09
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Dass jemand auf dich aufpasst."
+  - id: l10
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ja. Aber das ist es doch, was Ihr tut. Was du tust. Und es klingt in keinem Lied so leise."
+  - id: l11
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Leiser ist besser. Lieder machen Lärm."
+  - id: l12
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Dann lerne ich eben leise. Fang bitte nicht an, mir vorzugehen, wenn ich das übe."
+  - id: l13
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Nein."
+  - id: l14
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Vielleicht ein bisschen."

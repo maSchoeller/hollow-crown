@@ -5,20 +5,55 @@ lines:
   - id: l01
     speaker: [brenna]
     fallback: skip
-    mood: angry
-    text: "Ich behalte dich im Auge, Würfelmann."
+    mood: neutral
+    text: "Das sind gezinkte Würfel, Küken. Ich seh's am Klang."
   - id: l02
     speaker: [varek]
     fallback: skip
     mood: happy
-    text: "Nur eins? Ich bin geschmeichelt."
+    text: "Gezinkt? Die sind ehrlich. Ich bin es, der etwas nachhilft."
   - id: l03
     speaker: [brenna]
     fallback: skip
-    mood: neutral
-    text: "Gestern hast du für Morra gekämpft. Heute für uns. Und morgen?"
+    mood: angry
+    text: "Witzig. Setz dich trotzdem nicht neben den Proviant."
   - id: l04
     speaker: [varek]
     fallback: skip
     mood: neutral
-    text: "Morgen für den, der mir nicht in den Rücken fällt. Bisher führt ihr."
+    text: "Ihr traut mir nicht. Gut so, ich würde mir auch nicht trauen."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Wer einmal das Heer verlässt, verlässt auch eine Handvoll Gesetzlose, wenn's brenzlig wird."
+  - id: l06
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Rechnerisch ist ein Haufen Gesetzloser das bessere Blatt. Weniger Papierkram."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Ich hab Kinder gesehen, die auf so ein Lächeln hereingefallen sind. Ich bin kein Kind."
+  - id: l08
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Nein. Du bist die, die mit dem Löffel in der Hand die Truppe zusammenhält."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und mit dem Löffel hau ich auch zu. Merk dir das."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Gemerkt. Setz ruhig auf mich, Brenna. Die Quote ist schlecht, die Auszahlung gut."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ich setz auf gar nichts. Ich schau zu. Und jetzt rück die Würfel raus."

@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.brenna
+lines:
+  - id: battle_start
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Küken, hinter mich! Die Axt hat Durst!"
+  - id: crit
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Da fliegen die Späne!"
+  - id: downed
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Küken … ich lieg nur kurz …"
+  - id: rescued
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Danke, Küken. Du bist ein Schatz!"
+  - id: level_up
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Ein Jahr älter, kein Jahr müder!"
+  - id: ember
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Das brennt! Ich dachte, es sei der Eintopf."

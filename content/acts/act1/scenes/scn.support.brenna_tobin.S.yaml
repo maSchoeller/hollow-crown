@@ -1,0 +1,74 @@
+id: scn.support.brenna_tobin.S
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du bist spät dran, Küken. Der Eintopf ist kalt, die Wache wechselt gleich."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ich wollte erst nachsehen, ob die Mauer im Westen hält. Ich bleib auch in Rufweite, versprochen."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Du hast das Wort „Rufweite“ gesagt. Wer hat dir das beigebracht?"
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Eine alte Frau mit einer Axt. Sie meint es nur gut."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Setz dich. Ich hab was für dich. Es ist nichts Besonderes, schau nicht so."
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ein Schildriemen? Der ist ja ganz abgegriffen."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Der war an meinem ersten Schild. Ich hab ihn mitgenommen, als ich gegangen bin. Mehr hatte ich nicht."
+  - id: l08
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das kann ich nicht nehmen. Das ist, du hast doch sonst nichts aus der Zeit."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Eben. Deshalb gebe ich ihn dir. Bring ihn nur heil zurück, wenn du alt bist."
+  - id: l10
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Brenna. Du bist keine Ziehmutter. Das war nie das richtige Wort."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Zu Hause wartet keiner auf mich. Du bist meine Familie."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Du Dummkopf. Das hab ich seit Jahren nicht mehr gehört. Jetzt hab ich was im Auge, Rauch."
+  - id: l13
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Es ist kein Feuer in der Nähe."
+  - id: l14
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Dann ist es Rübe. Geh essen."

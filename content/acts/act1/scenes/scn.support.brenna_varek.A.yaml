@@ -1,0 +1,69 @@
+id: scn.support.brenna_varek.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du hast beim Tor gestanden, als es eng wurde. Ich hab's gesehen."
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Alle haben beim Tor gestanden. Ich hab nur schöner dabei ausgesehen."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du hättest über die Mauer gehen können. Niemand hätte dich gesucht."
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Doch. Ihr. Mit einem Kochlöffel."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Mit dem großen. Der Kleine ist für Küken, die mir leidtun."
+  - id: l06
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab nicht gewettet, Brenna. Falls du das denkst. Ich bin geblieben."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Weiß ich. Man kann beim Wetten nicht so schlecht zielen, wie du's getan hast."
+  - id: l08
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Das war Absicht. Ich wollte, dass es nach Glück aussieht."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Hier. Dein Platz am Feuer. Der mit dem Wind im Rücken."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Das ist Kaels Platz."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Kael sitzt, wo ich ihn hinschicke. Und du bist jetzt eins von meinen Küken."
+  - id: l12
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Ich muss dir irgendwann sagen, warum ich ging."
+  - id: l13
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Wenn du willst. Nicht, weil ich's brauche. Rück mal, ich hab kalte Füße."

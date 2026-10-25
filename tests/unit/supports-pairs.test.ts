@@ -38,7 +38,7 @@ describe('supports.yaml', () => {
   it('holds the seven pairs of act 1, four of them core pairs (narrative)', () => {
     expect(Object.keys(data.supports).sort()).toEqual(['avatar|kael', 'avatar|liora', 'brenna|kael', 'brenna|tobin', 'brenna|varek', 'liora|ysolde', 'mira|tobin']);
     expect(Object.values(data.supports).filter((p) => p.core).map((p) => p.key).sort()).toEqual(['avatar|kael', 'avatar|liora', 'brenna|kael', 'brenna|tobin']);
-    expect(data.supports['avatar|kael']!.talks).toEqual({ C: 'scn.support.avatar_kael.C', B: 'scn.support.avatar_kael.B' });
+    expect(data.supports['avatar|kael']!.talks).toEqual({ C: 'scn.support.avatar_kael.C', B: 'scn.support.avatar_kael.B', A: 'scn.support.avatar_kael.A', S: 'scn.support.avatar_kael.S' });
   });
 
   it('a new campaign starts every pair at zero; pairs added later get an entry when a save loads', () => {
@@ -103,7 +103,7 @@ describe('the campfire of act 1 allows C and B', () => {
     expect(campfireMaxRank(data, c)).toBe('S');
   });
 
-  it('a talk is ready at C and B, not at A in the camp', () => {
+  it('a talk is ready at C and B, A only with campfire level 2', () => {
     expect(supportTalk(data, at('brenna|kael', th().C, null), 'brenna|kael')).toEqual({ key: 'brenna|kael', rank: 'C', dialogue: 'scn.support.brenna_kael.C' });
     expect(supportTalk(data, at('brenna|kael', th().B, 'C'), 'brenna|kael')).toEqual({ key: 'brenna|kael', rank: 'B', dialogue: 'scn.support.brenna_kael.B' });
     const a = at('brenna|kael', th().A, 'B');
@@ -111,7 +111,7 @@ describe('the campfire of act 1 allows C and B', () => {
     expect(supportTalk(data, a, 'brenna|kael')).toBeNull();
     a.home.rooms.campfire = 2;
     expect(unlockableRank(data, a, 'brenna|kael')).toBe('A');
-    expect(supportTalk(data, a, 'brenna|kael')).toBeNull(); // no A talk written yet
+    expect(supportTalk(data, a, 'brenna|kael')).toEqual({ key: 'brenna|kael', rank: 'A', dialogue: 'scn.support.brenna_kael.A' }); // story 9.13
   });
 
   it('no talk without both companions in the company or without a scene', () => {

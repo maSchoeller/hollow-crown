@@ -6,7 +6,8 @@ import { nodeLinks } from '../core/campaign/graph';
 import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
-import { areaTiles, gridRows, pairKey } from '../core/util';
+import { areaTiles, pairKey } from '../core/util';
+import { BARK_LINES } from './barkLines';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -20,8 +21,6 @@ export function validateContent(
   placeImages?: Set<string>,
   /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
   backgroundImages?: Set<string>,
-  /** prop models `<prop>_<state>` in art/models/props (content:check passes them): miniatures of the world map use them */
-  propModels?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -61,52 +60,36 @@ export function validateContent(
   const companion = (file: string, id: string, ctx: string) => {
     if (!data.chars[id]) err(file, `${ctx}: unknown companion ${id}`);
   };
-  /** The world map (story 5.2): grid shape and legend, regions, every node and the home placed, miniatures, signs. */
+  /** The flat world map (story 5.2): regions with their names, every node and the home placed once, spacing of the places. */
   const worldChecks = (camp: GameData['campaign']): void => {
     const w = data.world;
     const f = 'world/valmora.yaml';
     if (!w) return;
-    const rows = gridRows(w.tiles);
-    const width = rows[0]?.length ?? 0;
-    if (!rows.length) err(f, 'tiles: empty');
-    rows.forEach((r, y) => {
-      if (r.length !== width) err(f, `tiles row ${y}: ${r.length} tiles, expected ${width}`);
-      for (const ch of new Set(r)) if (!w.legend[ch]) err(f, `tiles row ${y}: "${ch}" is not in the legend`);
-    });
-    for (const [ch, id] of Object.entries(w.legend)) if (!data.terrain[id]) err(f, `legend "${ch}": unknown terrain ${id}`);
-    if (!data.terrain[data.render.world.skirt.terrain]) err('render.yaml', `world.skirt: unknown terrain ${data.render.world.skirt.terrain}`);
-    const regionRows = gridRows(w.regionGrid);
-    const chars = new Set(w.regions.map((r) => r.char));
-    if (regionRows.length !== rows.length) err(f, `regionGrid: ${regionRows.length} rows, expected ${rows.length}`);
-    regionRows.forEach((r, y) => {
-      if (r.length !== width) err(f, `regionGrid row ${y}: ${r.length} tiles, expected ${width}`);
-      for (const ch of new Set(r)) if (ch !== '.' && !chars.has(ch)) err(f, `regionGrid row ${y}: "${ch}" is no region`);
-    });
-    for (const r of w.regions) {
-      if (!data.render.world.seasons[r.season]) err(f, `region ${r.id}: no light for season ${r.season} (render.yaml world.seasons)`);
-      for (const lang of ['de', 'en']) if (!locales[lang]?.[`world.region.${r.id}`]) err(`locales/${lang}`, `missing key world.region.${r.id}`);
-    }
-    const inGrid = (x: number, y: number) => x >= 0 && y >= 0 && x < width && y < rows.length;
-    for (const [id, parts] of Object.entries(w.miniatures))
-      for (const p of parts) {
-        if (!/^[a-z0-9]+_[a-z0-9]+$/.test(p.prop)) err(f, `miniature ${id}: prop ${p.prop} must read <prop>_<state>`);
-        else if (propModels && !propModels.has(p.prop)) err(f, `miniature ${id}: no model art/models/props/${p.prop}.glb`);
-      }
+    const acts = new Set(w.regions.map((r) => r.act));
+    for (const r of w.regions) for (const lang of ['de', 'en']) if (!locales[lang]?.[`world.region.${r.id}`]) err(`locales/${lang}`, `missing key world.region.${r.id}`);
+    for (const e of w.fog) if (!acts.has(e.act)) err(f, `fog: no region for act ${e.act}`);
     const seen = new Set<string>();
-    for (const l of w.locations) {
-      const name = l.node ?? `home ${l.home}`;
-      if (seen.has(name)) err(f, `${name}: placed twice`);
-      seen.add(name);
-      if (l.node && !camp.nodes.some((n) => n.id === l.node)) err(f, `location: unknown node ${l.node}`);
-      if (!inGrid(l.at[0], l.at[1])) err(f, `${name}: at ${l.at.join(',')} lies outside the map`);
-      else if (data.terrain[w.legend[rows[l.at[1]]![l.at[0]]!] ?? '']?.water) err(f, `${name}: stands in water`);
-      for (const m of [l.model, ...l.variants.map((v) => v.model)]) if (!w.miniatures[m]) err(f, `${name}: unknown miniature ${m}`);
-      l.variants.forEach((v, i) => conditions(f, v.requires, `${name} variant ${i + 1}`));
+    const bound = new Set<string>();
+    let homes = 0;
+    for (const p of w.places) {
+      if (seen.has(p.id)) err(f, `${p.id}: placed twice`);
+      seen.add(p.id);
+      if (!acts.has(p.act)) err(f, `${p.id}: no region for act ${p.act}`);
+      if (p.kind === 'home') homes++;
+      if (p.node) {
+        if (!camp.nodes.some((n) => n.id === p.node)) err(f, `${p.id}: unknown node ${p.node}`);
+        if (bound.has(p.node)) err(f, `node ${p.node} is placed twice`);
+        bound.add(p.node);
+        if (p.kind === 'home') err(f, `${p.id}: the home has no node`);
+      }
     }
-    for (const n of camp.nodes) if (!seen.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
-    if (!seen.has(`home ${camp.home}`)) err(f, `home ${camp.home} has no place on the world map`);
-    for (const s of w.signs)
-      for (const [x, y, sw, sh] of s.areas) if (!inGrid(x, y) || !inGrid(x + sw - 1, y + sh - 1)) err(f, `sign act ${s.act}: area ${x},${y},${sw},${sh} leaves the map`);
+    for (const n of camp.nodes) if (!bound.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
+    if (homes !== 1) err(f, `${homes} home places, expected 1`);
+    // stones must not touch: at least 90 px apart in the picture
+    const [pw, ph] = w.size;
+    for (const [i, a] of w.places.entries())
+      for (const b of w.places.slice(i + 1))
+        if (Math.hypot(((a.at[0] - b.at[0]) * pw) / 100, ((a.at[1] - b.at[1]) * ph) / 100) < 90) err(f, `${a.id} and ${b.id} are less than 90 px apart`);
   };
   const condition = (file: string, cond: Condition, ctx: string): void => {
     const key = soleKey(cond);
@@ -306,6 +289,8 @@ export function validateContent(
   for (const sc of Object.values(data.scenes)) {
     const f = `scenes/${sc.id}`;
     const seen = new Set<string>();
+    // barks (story 9.13): only the six moments, one bubble page each in both languages
+    const bark = sc.id.startsWith('scn.bark.');
     for (const l of sc.lines) {
       const ctx = `${l.id}`;
       if (seen.has(l.id)) err(f, `${ctx}: duplicate line id`);
@@ -313,6 +298,7 @@ export function validateContent(
       conditions(f, l.requires, ctx);
       if ('choice' in l) {
         if (battleScenes.has(sc.id)) err(f, `${ctx}: scenes shown in a battle cannot have answers`);
+        if (bark) err(f, `${ctx}: a bark scene has no answers`);
         const ids = new Set<string>();
         for (const o of l.choice) {
           if (ids.has(o.id)) err(f, `${ctx}: duplicate answer id ${o.id}`);
@@ -333,6 +319,16 @@ export function validateContent(
       }
       if (l.speaker) chain(f, l.speaker, ctx, l.fallback !== 'skip');
       else if (l.memorial) err(f, `${ctx}: a memorial line needs a speaker chain`);
+      if (bark) {
+        const who = sc.id.slice('scn.bark.'.length);
+        if (!data.chars[who] && !locales.de?.[`unit.${who}.name`]) err(f, `${ctx}: bark scene for unknown character ${who}`);
+        if (l.speaker?.length !== 1 || l.speaker[0] !== who) err(f, `${ctx}: bark speaker chain must be exactly [${who}]`);
+        if (!(BARK_LINES as readonly string[]).includes(l.id)) err(f, `${ctx}: bark line id must be one of ${BARK_LINES.join(', ')}`);
+        const max = data.balance.scene.bubbleMaxChars;
+        const en = locales.en?.[lineKey(sc.id, l.id)];
+        if (l.text.length > max) err(f, `${ctx}: de bark longer than ${max} characters (${l.text.length})`);
+        if (en && en.length > max) err(f, `${ctx}: en bark longer than ${max} characters (${en.length})`);
+      }
       text(f, lineKey(sc.id, l.id), l.text, ctx);
       if (l.memorial) {
         chain(f, l.memorial.speaker, `${ctx}.memorial`, true);

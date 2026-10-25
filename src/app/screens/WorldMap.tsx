@@ -1,33 +1,34 @@
 /**
- * The world map, the hub of the campaign (concept/25-ux/mockups/03-weltkarte.html, stories 5.2 and 5.3): Valmora as a
- * 3D scene of the render host (`render/world`) with the nodes of the act on top (places from `content/world/valmora.yaml`),
- * the act pill, the purse, the round menu, the bar of four stones, and the node card with "Aufstellung" and "Aufbrechen".
- * Nodes, paths and region names are HTML over the canvas; the scene moves them after every frame.
+ * The world map, the hub of the campaign (concept/25-ux/mockups/03-weltkarte.html, stories 5.2 and 5.3): Valmora as a flat
+ * painted picture you pan and zoom, the stones of the nodes on it (places from `content/world/valmora.yaml`), the act pill,
+ * the purse, the round menu, the bar of four stones, and the node card with "Aufstellung" and "Aufbrechen".
+ * The picture moves by CSS transform; stones, paths and region names are HTML over it that follow their places.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { conditionContext, type Pos } from '../../core';
 import { t } from '../../i18n';
 import { availableNodes, nodeLinks } from '../../core';
-import { WorldView } from '../../render/world/world';
-import { locationOf } from '../../render/world/layout';
+import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
-import { log } from '../log';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playNode } from '../state/flow';
 import { packNeededFor } from '../state/packs';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
-import { settings } from '../state/settings';
 import { SaveSheet } from './SaveSheet';
+import { clampView, focusView, fogTop, placeOf, screenOf, stepScale, zoomAround, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
 const REST_Y = 0.3;
 const START_Y = 0.42;
+/** The picture may be pushed this far past its top and bottom edge (px): out from under the HUD pills and the bar of stones. */
+const PAD = { top: 80, bottom: 64 };
+/** While a node card is open the picture may come up to the card's top edge, so places at the south edge can rise above it. */
+const CARD_PAD = { top: 80, bottom: 200 };
 /** Spread of two fingers (ratio) that switches the zoom step. */
 const PINCH_STEP = 1.3;
 /** Pointer travel (px) after which a press counts as a drag and not as a tap. */
@@ -55,10 +56,8 @@ export function WorldMap() {
   const [toast, setToast] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<Loaded>('loading');
   const pan = useRef<HTMLDivElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
+  const picture = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
-  const view = useRef<WorldView | null>(null);
-  const [regions, setRegions] = useState<Array<{ id: string; at: [number, number]; h: number }>>([]);
   useEffect(() => audio.music('worldmap'), []);
 
   // a new day (story 5.4): on opening the map and when the app comes back to it; new day packets show a short hint
@@ -74,53 +73,81 @@ export function WorldMap() {
   }, []);
 
   const world = data.world;
-  const homeKind = data.campaign.home;
-  const homeAt = (locationOf(world, { home: homeKind }) ?? world.locations[0]!).at;
-  const at = (id: string): Pos | null => locationOf(world, { node: id })?.at ?? null;
-  const pin = data.render.world.pinHeight;
+  const conf = data.render.worldMap;
+  const size = world.size;
+  const home = placeOf(world, { home: true }) ?? world.places[0]!;
+  const placeById = (id: string) => placeOf(world, { node: id });
+  const fog = fogTop(world, data.campaign.act);
 
-  // the scene: built once per visit; every frame puts the HTML pieces over their places (data-x/-y/-h in tiles)
+  // the view: where the picture lies (offset and scale) and the zoom step; every change puts the HTML pieces over their places
+  const view = useRef<MapView>({ x: 0, y: 0, s: 1 });
+  const step = useRef(0);
+  const tween = useRef(0);
+  const chosen = useRef<string | null>(null);
+  const pad = () => (chosen.current ? CARD_PAD : PAD);
+  const screenSize = (): Screen => ({ w: pan.current?.clientWidth ?? 1, h: pan.current?.clientHeight ?? 1 });
+  const apply = () => {
+    const v = view.current;
+    if (picture.current) picture.current.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`;
+    const root = layer.current;
+    if (!root) return;
+    for (const el of root.querySelectorAll<HTMLElement>('[data-x]')) {
+      const [x, y] = screenOf(v, size, [Number(el.dataset.x), Number(el.dataset.y)]);
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+    }
+    for (const line of root.querySelectorAll<SVGLineElement>('line[data-a]')) {
+      const [ax, ay] = screenOf(v, size, line.dataset.a!.split(',').map(Number) as [number, number]);
+      const [bx, by] = screenOf(v, size, line.dataset.b!.split(',').map(Number) as [number, number]);
+      line.setAttribute('x1', String(ax));
+      line.setAttribute('y1', String(ay));
+      line.setAttribute('x2', String(bx));
+      line.setAttribute('y2', String(by));
+    }
+  };
+  const stopTween = () => {
+    cancelAnimationFrame(tween.current);
+    tween.current = 0;
+  };
+  const set = (v: MapView) => {
+    stopTween();
+    view.current = clampView(v, screenSize(), size, pad());
+    apply();
+  };
+  /** glide to a view in `zoomMs` (ease out) */
+  const glide = (to: MapView) => {
+    stopTween();
+    const from = view.current;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const k = conf.zoomMs <= 0 ? 1 : Math.min(1, (now - start) / conf.zoomMs);
+      const e = 1 - (1 - k) ** 3;
+      view.current = { x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e, s: from.s + (to.s - from.s) * e };
+      apply();
+      tween.current = k < 1 ? requestAnimationFrame(tick) : 0;
+    };
+    tween.current = requestAnimationFrame(tick);
+  };
+  const scaleOfStep = (i: number, focus = 1) => stepScale(screenSize(), size, conf.zoomSteps, i, focus);
+  /** switches the zoom step around the middle of the screen */
+  const zoom = (dir: 1 | -1) => {
+    const next = Math.min(conf.zoomSteps.length - 1, Math.max(0, step.current + dir));
+    if (next === step.current) return;
+    step.current = next;
+    const scr = screenSize();
+    glide(zoomAround(view.current, scr, size, scaleOfStep(next), [scr.w / 2, scr.h / 2], pad()));
+  };
+
+  // first view: the next mission (or the home) in the middle; the picture follows the screen when it is resized
   useEffect(() => {
-    const v = new WorldView(stage.current!, data, {
-      onFrame: () => {
-        const root = layer.current;
-        if (!root) return;
-        for (const el of root.querySelectorAll<HTMLElement>('[data-x]')) {
-          const p = v.screenOf(Number(el.dataset.x), Number(el.dataset.y), Number(el.dataset.h));
-          el.style.left = `${p.x}px`;
-          el.style.top = `${p.y}px`;
-        }
-        for (const line of root.querySelectorAll<SVGLineElement>('line[data-a]')) {
-          const [ax, ay, ah] = line.dataset.a!.split(',').map(Number) as [number, number, number];
-          const [bx, by, bh] = line.dataset.b!.split(',').map(Number) as [number, number, number];
-          const p = v.screenOf(ax, ay, ah);
-          const q = v.screenOf(bx, by, bh);
-          line.setAttribute('x1', String(p.x));
-          line.setAttribute('y1', String(p.y));
-          line.setAttribute('x2', String(q.x));
-          line.setAttribute('y2', String(q.y));
-        }
-      },
-    });
-    view.current = v;
-    v.quality = settings.value.quality;
-    v.load(data.campaign.act, conditionContext(data, campaign.value))
-      .then((missing) => {
-        if (missing.length) log.warn('render', 'world map: prop models missing', missing);
-        setRegions(v.regionLabels());
-        setLoaded('ready');
-        // first view: the next mission (or the home) in the middle
-        const first = shown.find((n) => open.includes(n.id));
-        const p = (first && at(first.id)) ?? homeAt;
-        v.focus(p[0] + 0.5, p[1] + 0.5, START_Y, { smooth: false });
-      })
-      .catch((e: unknown) => {
-        log.warn('render', 'world map failed', String(e));
-        setLoaded('failed');
-      });
+    const first = shown.find((n) => open.includes(n.id));
+    const p = (first && placeById(first.id)) ?? home;
+    set(focusView(screenSize(), size, scaleOfStep(0), p.at, [0.5, START_Y], pad()));
+    const ro = new ResizeObserver(() => set({ ...view.current, s: scaleOfStep(step.current) }));
+    ro.observe(pan.current!);
     return () => {
-      view.current = null;
-      v.dispose();
+      ro.disconnect();
+      stopTween();
     };
   }, []);
 
@@ -129,6 +156,7 @@ export function WorldMap() {
   const drag = useRef({ id: -1, x: 0, y: 0, sx: 0, sy: 0, active: false, vx: 0, vy: 0, t: 0, swallow: false, swallowTimer: 0, raf: 0 });
   const fingers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef(0);
+  const panBy = (dx: number, dy: number) => set({ ...view.current, x: view.current.x + dx, y: view.current.y + dy });
   const stopGlide = () => {
     cancelAnimationFrame(drag.current.raf);
     drag.current.raf = 0;
@@ -147,6 +175,7 @@ export function WorldMap() {
     if (fingers.current.size === 2) pinch.current = spread();
     if (drag.current.id !== -1) return;
     stopGlide();
+    stopTween();
     clearTimeout(drag.current.swallowTimer); // a new touch ends the swallowing of the last drag's click
     Object.assign(drag.current, { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, active: false, vx: 0, vy: 0, t: e.timeStamp, swallow: false });
   };
@@ -158,7 +187,7 @@ export function WorldMap() {
     if (fingers.current.size === 2 && pinch.current > 0) {
       const k = spread() / pinch.current;
       if (k > PINCH_STEP || k < 1 / PINCH_STEP) {
-        view.current?.zoom(k > 1 ? 1 : -1);
+        zoom(k > 1 ? 1 : -1);
         pinch.current = spread();
       }
     }
@@ -173,7 +202,7 @@ export function WorldMap() {
     }
     d.x = e.clientX;
     d.y = e.clientY;
-    view.current?.pan(dx, dy);
+    panBy(dx, dy);
     const dt = Math.max(8, e.timeStamp - d.t);
     d.vx = Math.max(-MAX_GLIDE, Math.min(MAX_GLIDE, 0.8 * d.vx + 0.2 * (dx / dt) * 16));
     d.vy = Math.max(-MAX_GLIDE, Math.min(MAX_GLIDE, 0.8 * d.vy + 0.2 * (dy / dt) * 16));
@@ -197,28 +226,31 @@ export function WorldMap() {
       d.swallowTimer = window.setTimeout(() => (d.swallow = false), SWALLOW_MS);
     }
     if (e.timeStamp - d.t > 80) return; // held still before release: no glide
-    const step = () => {
+    const stepGlide = () => {
       d.vx *= INERTIA_DECAY;
       d.vy *= INERTIA_DECAY;
       if (Math.abs(d.vx) < 0.3 && Math.abs(d.vy) < 0.3) return void (d.raf = 0);
-      view.current?.pan(d.vx, d.vy);
-      d.raf = requestAnimationFrame(step);
+      panBy(d.vx, d.vy);
+      d.raf = requestAnimationFrame(stepGlide);
     };
-    d.raf = requestAnimationFrame(step);
+    d.raf = requestAnimationFrame(stepGlide);
   };
 
+  /** A chosen node comes a little closer and rests above the card; choosing nothing lets the view go back to its zoom step. */
   const choose = (id: string | null) => {
     setMenu(false);
     setSel(id);
-    const p = id ? at(id) : null;
-    if (p) view.current?.focus(p[0] + 0.5, p[1] + 0.5, REST_Y, { close: true });
-    else view.current?.release();
+    chosen.current = id;
+    const scr = screenSize();
+    const p = id ? placeById(id) : null;
+    if (p) glide(focusView(scr, size, scaleOfStep(step.current, conf.focusZoom), p.at, [0.5, REST_Y], pad()));
+    else glide(zoomAround(view.current, scr, size, scaleOfStep(step.current), [scr.w / 2, scr.h * REST_Y], pad()));
   };
   const node = sel ? nodes.find((n) => n.id === sel)! : null;
   const ended = open.length === 0;
-  /** data attributes that pin an element over tile `p`, `lift` tiles above the ground */
-  const over = (p: Pos, lift = pin) => ({ 'data-x': p[0] + 0.5, 'data-y': p[1] + 0.5, 'data-h': (view.current?.groundAt(p[0], p[1]) ?? 0) + lift });
-  const ends = (p: Pos) => `${p[0] + 0.5},${p[1] + 0.5},${view.current?.groundAt(p[0], p[1]) ?? 0}`;
+  /** data attributes that pin an element over a place (percent of the picture) */
+  const over = (at: readonly [number, number]) => ({ 'data-x': at[0], 'data-y': at[1] });
+  const ends = (at: readonly [number, number]) => `${at[0]},${at[1]}`;
 
   return (
     <div class="wm">
@@ -231,7 +263,7 @@ export function WorldMap() {
         onPointerCancel={onUp}
         onWheel={(e) => {
           e.preventDefault();
-          view.current?.zoom(e.deltaY < 0 ? 1 : -1);
+          zoom(e.deltaY < 0 ? 1 : -1);
         }}
         onClickCapture={(e) => {
           if (!drag.current.swallow) return;
@@ -240,56 +272,72 @@ export function WorldMap() {
         }}
         onClick={() => choose(null)}
       >
-        <div ref={stage} class="hc-stage-slot" />
+        <div class="wm__picture" ref={picture} style={{ width: `${size[0]}px`, height: `${size[1]}px` }}>
+          <img
+            class="wm__img"
+            src={assetUrl(`world/${world.image}.webp`)}
+            width={size[0]}
+            height={size[1]}
+            alt=""
+            draggable={false}
+            onLoad={() => setLoaded('ready')}
+            onError={() => setLoaded('failed')}
+          />
+          {fog !== null && <div class="wm__fog" style={{ height: `${fog}%` }} />}
+        </div>
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" aria-hidden="true">
             {nodeLinks(data).flatMap(([from, to]) => {
-              const a = shown.some((x) => x.id === from) && at(from);
-              const b = shown.some((x) => x.id === to) && at(to);
+              const a = shown.some((x) => x.id === from) && placeById(from);
+              const b = shown.some((x) => x.id === to) && placeById(to);
               if (!a || !b) return [];
               return [
                 <g key={from + to}>
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path wm__path--edge" />
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path" />
+                  <line data-a={ends(a.at)} data-b={ends(b.at)} class="wm__path wm__path--edge" />
+                  <line data-a={ends(a.at)} data-b={ends(b.at)} class="wm__path" />
                 </g>,
               ];
             })}
           </svg>
-          {regions.map((r) => (
-            <div key={r.id} class="wm-region" data-x={r.at[0]} data-y={r.at[1]} data-h={r.h} aria-hidden="true">
-              {t(`world.region.${r.id}`)}
-            </div>
-          ))}
+          {fog !== null &&
+            world.regions
+              .filter((r) => r.act > data.campaign.act)
+              .map((r) => (
+                <div key={r.id} class="wm-region" {...over(r.at)} aria-hidden="true">
+                  {t(`world.region.${r.id}`)}
+                </div>
+              ))}
           {/* the home is a place on the map as well (a tent in the camp, a castle later) */}
           <button
             type="button"
             class="wm-node wm-node--home"
-            {...over(homeAt)}
-            aria-label={t(`home.${homeKind}.title`)}
+            {...over(home.at)}
+            aria-label={t(`home.${data.campaign.home}.title`)}
             onClick={(e) => (e.stopPropagation(), (screen.value = { name: 'camp' }))}
           >
             <span class="wm-node__head">
               <Icon name="camp" size={22} />
             </span>
             <i class="wm-node__tail" />
-            <span class="wm-node__label">{t(`home.${homeKind}.title`)}</span>
+            <span class="wm-node__label">{t(`home.${data.campaign.home}.title`)}</span>
           </button>
           {shown.map((n) => {
             const done = c.completed.includes(n.id);
-            const idx = nodes.indexOf(n);
-            const p = at(n.id);
+            const p = placeById(n.id);
             if (!p) return null;
             return (
               <button
                 key={n.id}
                 type="button"
-                class={`wm-node ${done ? 'wm-node--done' : 'wm-node--story'} ${sel === n.id ? 'is-sel' : ''}`}
-                {...over(p)}
+                class={`wm-node ${done ? 'wm-node--done' : 'wm-node--story'} ${n.kind === 'side' ? 'wm-node--side' : ''} ${sel === n.id ? 'is-sel' : ''}`}
+                {...over(p.at)}
                 aria-label={t(n.titleKey)}
                 aria-pressed={sel === n.id}
                 onClick={(e) => (e.stopPropagation(), choose(n.id))}
               >
-                <span class="wm-node__head">{idx === 0 ? 'P' : idx}</span>
+                <span class="wm-node__head">
+                  <b>{p.label}</b>
+                </span>
                 <i class="wm-node__tail" />
                 {!done && <span class="wm-node__label">{t(`map.${n.map}.name`)}</span>}
               </button>

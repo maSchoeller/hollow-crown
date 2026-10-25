@@ -157,7 +157,7 @@ development_status:
   9-10-nebenquest-n1-der-ring-von-varnhold: backlog  # Nebenquest N1 „Der Ring von Varnhold“
   9-11-nebenquest-n2-der-letzte-wachturm: backlog  # Nebenquest N2 „Der letzte Wachturm“
   9-12-nebenquest-n3-das-erbe: backlog  # Nebenquest N3 „Das Erbe“
-  9-13-supports-und-barks-von-akt-1: backlog  # Supports und Barks von Akt 1
+  9-13-supports-und-barks-von-akt-1: done  # Supports und Barks von Akt 1
   9-14-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
   epic-9-retrospective: optional
 

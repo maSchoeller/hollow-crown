@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.varek
+lines:
+  - id: battle_start
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Die Würfel liegen. Setzen wir!"
+  - id: crit
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Doppelte Sechs!"
+  - id: downed
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Verlorener Einsatz … schlecht gewürfelt."
+  - id: rescued
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Du hast meinen Einsatz gerettet."
+  - id: level_up
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Das Blatt wird besser."
+  - id: ember
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Alles auf Glut!"

@@ -1,0 +1,74 @@
+id: scn.support.brenna_tobin.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du schälst die Rübe, als hättest du was gegen sie. Dünner, Küken, wir haben nicht so viele."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Mein Vater hat gesagt, wer so schält, ist zu nichts nütze. Und auf dem Hof …"
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Ach, egal. Er hat mich ja enterbt. Dann muss ich nicht mehr gut schälen."
+  - id: l04
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Weil du die Pacht nicht wolltest."
+  - id: l05
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Weil ich nicht ewig Rüben ziehen will. Das hat er nicht verstanden. Hast du auch einen Vater, Brenna?"
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Hatte. Eine Familie, einen Bruder. Die haben mich vor die Tür gesetzt."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Wegen was? Was hast du getan?"
+  - id: l08
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Etwas, das mein Bruder getan hat. Ich hab's auf mich genommen. Mehr gibt's dazu nicht."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Du bist nie wütend darauf. Ich bin es noch jeden Tag."
+  - id: l10
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Doch. Ich lass es nur nicht in den Eintopf fallen. Der schmeckt schon schlecht genug."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Der schmeckt nach Rübe. Nach meiner Rübe."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Dann weiß ich, wo die Wut hin ist. Gib her, ich rühre. Du hast hier eine neue Sorte Leute, Küken."
+  - id: l13
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Die uns keiner vor die Tür setzt."
+  - id: l14
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Hat noch keiner versucht. Wär auch zu viel Arbeit, bei dem Haufen."
