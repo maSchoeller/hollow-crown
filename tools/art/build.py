@@ -199,9 +199,19 @@ def content_unit_ids():
 
 def class_portrait_ids():
     """Class portraits `class_<class>` for units without their own picture (generic enemies, tavern mercenaries):
-    every `class:` value in the act maps and in content/core/balance.yaml (tavern classes)."""
+    every `class:` value in the act maps and in content/core/balance.yaml (tavern classes). The UI looks up
+    `class_<art ?? classId>` (`art:` in content/core/classes.yaml), so the id is translated through that map."""
     pat = re.compile(r'(?<![a-z0-9_])class:[ \t]*([a-z0-9_]+)')
     content = os.path.join(ROOT, 'content')
+    art_of = {}
+    classes = os.path.join(content, 'core', 'classes.yaml')
+    if os.path.isfile(classes):
+        with open(classes, encoding='utf-8') as f:
+            for block in re.split(r'(?m)^(?=- id:)', f.read().replace(chr(13), '')):
+                m = re.match(r'- id:\s*([a-z0-9_]+)', block)
+                a = re.search(r'(?m)^\s+art:\s*([a-z0-9_]+)', block)
+                if m and a:
+                    art_of[m.group(1)] = a.group(1)
     files = [os.path.join(content, 'core', 'balance.yaml')]
     acts = os.path.join(content, 'acts')
     for act in sorted(os.listdir(acts)):
@@ -212,7 +222,9 @@ def class_portrait_ids():
     for path in files:
         if os.path.isfile(path):
             with open(path, encoding='utf-8') as f:
-                ids.update('class_' + c for c in pat.findall(f.read()))
+                for c in pat.findall(f.read()):
+                    ids.add('class_' + c)  # raw id kept; build only emits ids that have a source PNG
+                    ids.add('class_' + art_of.get(c, c))
     return ids
 
 
