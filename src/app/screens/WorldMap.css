@@ -331,30 +331,6 @@
   opacity: 0.6;
 }
 
-.wm-end {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-  text-align: center;
-}
-.wm-end b {
-  font-family: var(--hc-font-name);
-  font-size: 18px;
-  line-height: 1.15;
-}
-.wm-end p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--hc-soft);
-}
-.wm-end__crown {
-  font-size: 24px;
-  color: var(--hc-gold);
-}
-.wm-end .hc-btn {
-  width: 100%;
-}
-
 /* node card */
 .wm-card {
   display: grid;
@@ -415,4 +391,29 @@
   white-space: normal;
   text-align: center;
   border-radius: var(--hc-r-card-inner);
+}
+
+/* "Akt n erscheint bald" (story 7.3, mockup 07 .soon): a stone in the fog over the region of the next act, instead of its name */
+.wm__world .wm-soon {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: min(260px, 70vw);
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  text-align: center;
+  background: color-mix(in srgb, var(--hc-cream) 94%, transparent);
+  pointer-events: none;
+}
+.wm-soon b {
+  font-family: var(--hc-font-name);
+  font-size: 18px;
+  line-height: 1.15;
+}
+.wm-soon span {
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.backup-sheet {
+  margin: 0;
 }

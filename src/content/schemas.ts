@@ -415,11 +415,14 @@ const conditionsListSchema = z.array(conditionSchema);
 
 export const roomSchema = z.object({
   id: z.string(),
-  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'enchanter']),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter']),
   icon: z.string(),
   fromAct: z.number().int().min(1).default(1),
   homes: z.array(z.enum(['camp', 'castle'])).min(1),
   requires: z.array(conditionSchema).default([]),
+  // level 2 and 3 of a castle room: one entry each, in order
+  levels: z.array(z.strictObject({ requires: z.array(conditionSchema).default([]) })).max(2).default([]),
+  unlocks: z.array(z.strictObject({ id: z.string().regex(/^[a-z][a-z0-9_]*$/), requires: z.array(conditionSchema).default([]) })).default([]),
 });
 
 export const effectSchema: z.ZodType<Effect> = z.union([
@@ -511,6 +514,24 @@ export const lieutenantSchema = z.strictObject({
 /** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
 export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0-9_]+$/), title: z.string().min(1), text: z.string().min(1) });
 
+/** Fixed memorial stones of an act (`acts/actN/memorials.yaml`, story 6.9): German text here, English in the act's locale file. */
+export const memorialSchema = z.strictObject({
+  id: z.string().regex(/^[a-z0-9_]+$/),
+  portrait: z.string().regex(/^[a-z0-9_]+$/),
+  name: z.string().min(1),
+  place: z.string().min(1),
+  role: z.string().min(1),
+  quote: z.string().min(1).optional(),
+  requires: z.array(conditionSchema).default([]),
+});
+
+/** What the home shows on top (`content/home/home.yaml`, story 6.9): the picture and where each room's stone sits on it. */
+const homeViewSchema = z.strictObject({
+  image: z.string().regex(/^[a-z0-9_]+$/),
+  anchors: z.array(z.strictObject({ room: z.string(), at: z.tuple([z.number().min(0).max(100), z.number().min(0).max(100)]) })).default([]),
+});
+export const homeSchema = z.strictObject({ camp: homeViewSchema, castle: homeViewSchema });
+
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
   levelCap: z.number().int().min(1).optional(),
@@ -534,6 +555,7 @@ export const campaignSchema = z.object({
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
+      effects: z.array(effectSchema).optional(),
     }),
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),

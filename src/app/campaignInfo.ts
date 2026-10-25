@@ -4,7 +4,7 @@ import { metaFromCampaign, type SaveRecord } from '../persistence/save';
 import { ageParts, playtimeParts } from '../ui/format';
 import { availableNodes, normalizeCampaign } from '../core';
 import { nodeDef } from './state/flow';
-import { data } from './state/session';
+import { campaign, data } from './state/session';
 
 /**
  * The two avatar looks of the new-campaign form (art/mockups/characters-s1/rhen_a|b.png). `portrait` is the id
@@ -18,6 +18,9 @@ export const AVATAR_LOOKS = [
 
 /** Medallion image id for a stored avatar portrait; unknown ids fall back to the first look. */
 export const avatarHead = (portrait: string): string => (AVATAR_LOOKS.find((l) => l.portrait === portrait) ?? AVATAR_LOOKS[0]).head;
+
+/** Place image behind the full-screen views: the picture of the current home (`content/home/home.yaml`), the camp without a campaign. */
+export const homeBackdrop = (): string => `locations/${data.home[campaign.value?.home.kind ?? data.campaign.home].image}`;
 
 /** "Mission 1-3" of a node, without the title behind the dash. */
 export function nodeShort(id: string): string {

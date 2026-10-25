@@ -1,4 +1,4 @@
-import type { Effect, EquipSlot, FlagValue, Stance, SupportRank } from '../defs';
+import type { Effect, EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';
@@ -62,7 +62,9 @@ export type CampaignCommand =
    * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
    * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
    */
-  | { type: 'advanceDay'; day: number };
+  | { type: 'advanceDay'; day: number }
+  /** the backup reminder of act `act` was shown (exported or put off); once per act, after its finale (story 7.3, AR21; idempotent) */
+  | { type: 'markBackupReminded'; act: number };
 
 export type CampaignError =
   | 'not_enough_gold'
@@ -89,7 +91,7 @@ export type CampaignError =
   | 'unknown_choice'
   /** this choice was answered before: answers are never taken back */
   | 'already_chosen'
-  /** the effect's state or rules do not exist yet (priceMod, villageAid, setHome, recruit by lieutenant) */
+  /** the effect's state or rules do not exist yet (priceMod, villageAid, recruit by lieutenant) */
   | 'effect_unsupported'
   /** a day number that is no whole number of days */
   | 'invalid_day';
@@ -110,6 +112,8 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
+  /** the company moved (effect `setHome`); the rooms keep their levels */
+  | { t: 'homeChanged'; home: HomeKind }
   /** a side quest became available (effect `openQuest`) */
   | { t: 'questOpened'; node: string }
   | { t: 'sceneSeen'; scene: string }
@@ -121,7 +125,9 @@ export type CampaignEvent =
   /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
   | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
   /** the grudge of a lieutenant changed (effect `grudge`); `grudge` = the new value */
-  | { t: 'grudgeChanged'; lt: string; grudge: number };
+  | { t: 'grudgeChanged'; lt: string; grudge: number }
+  /** the backup reminder of an act was noted (story 7.3) */
+  | { t: 'backupReminded'; act: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

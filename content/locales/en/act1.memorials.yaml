@@ -1,0 +1,8 @@
+# English texts of the fixed memorial stones (acts/act1/memorials.yaml, story 6.9).
+memorial:
+  gerrit:
+    name: "Gerrit"
+    place: "Night of the Pact"
+    role: "Banner bearer"
+    # [C] provisional until story 9.1
+    quote: "As long as the banner stands, the company is home."

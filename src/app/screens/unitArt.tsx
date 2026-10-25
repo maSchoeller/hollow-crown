@@ -28,6 +28,11 @@ export function UnitHead({ portrait, classId, name, size = 44 }: { portrait?: st
   );
 }
 
+/** Picture on a memorial stone (story 6.9): the head image, the initial where there is none; the stone's shape and grey are CSS. */
+export function StoneImage({ portrait, classId, name }: { portrait?: string; classId?: string; name: string }) {
+  return <Img dir="avatars" id={artId(portrait, classId)} name={name} class="hm-grave__img" />;
+}
+
 /** Half figure for the figure view. */
 export function UnitBust({ portrait, classId, name }: { portrait?: string; classId?: string; name: string }) {
   return <Img dir="busts" id={artId(portrait, classId)} name={name} class="trp-bust" />;

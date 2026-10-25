@@ -31,7 +31,7 @@ export interface FarewellCard {
   grief: FarewellGrief[];
 }
 
-const hasLine = (data: GameData, scene: string, line: string): boolean =>
+export const hasLine = (data: GameData, scene: string, line: string): boolean =>
   !!data.scenes[scene]?.lines.some((l) => l.id === line && 'text' in l);
 
 /** Farewell cards for everyone who fell in a won mission, in the order they are listed in the result. */
