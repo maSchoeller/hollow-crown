@@ -1,0 +1,74 @@
+# Mission 1-1, Szene nach der Karte: Fenn tritt bei (Gaunersprache, prahlt, übertreibt, weicher Kern); neues Ziel: Wer hat uns angeheuert?
+# Der Beitritt selbst ist die Knotenwirkung `recruit: fenn` an m1_1 (campaign.yaml), nicht Teil der Szene.
+id: scn.m1_1.outro
+background: varnhold
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Jäger liegen oder laufen. Der Markt ist leer, nur ein Zettel flattert an der Wand."
+  - id: l02
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "He, he, nicht schießen! Ich bin auf eurer Seite. Seit etwa zehn Herzschlägen."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und wer bist du, Küken?"
+  - id: l04
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Fenn. Bester Dieb von Varnhold. Na ja, zweitbester. Der beste sitzt im Turm, und nicht wegen mir."
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Du hast vom Dach aus zugesehen."
+  - id: l06
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Zugesehen? Ich hab euch die Hälfte der Jäger ausgespäht! Gut, die Hälfte von der Hälfte."
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "So viele Zettel druckt man nicht über Nacht. Das war vorbereitet. Lange vorher."
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Dann wusste jemand vorher, was in der Paktnacht geschehen würde."
+  - id: l09
+    speaker: [avatar]
+    mood: sad
+    text: "Jemand, der uns den Auftrag gegeben hat."
+  - id: l10
+    speaker: [kael]
+    mood: neutral
+    text: "Wer hat uns angeheuert? Das ist ab jetzt unsere Frage."
+  - id: l11
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Ich kenn jede Gasse bis Aurenhall und jeden Hehler. Nehmt mich mit! Billig. Na gut: teuer, aber gut."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Gib Tobin den Beutel zurück, Küken. Den in deiner linken Hand."
+  - id: l13
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Welchen Beutel? Der war eh leer!"
+  - id: l14
+    speaker: [kael]
+    mood: neutral
+    text: "Willkommen im Aschenbanner, Fenn."
+  - id: l15
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Ihr nehmt mich einfach so? Ohne Bürgen? Das … hat noch keiner gemacht."

@@ -9,13 +9,14 @@ import { validateContent } from '../src/content/validate';
 
 const { data, locales, issues } = loadContentFromDisk();
 const spriteDir = join(process.cwd(), 'art', 'sprites', 'units');
-const sprites = existsSync(spriteDir) ? new Set(readdirSync(spriteDir)) : undefined;
+// a board figure is a sprite sheet folder or a 3D model (art/models/units/<id>.glb)
+const modelDir = join(process.cwd(), 'art', 'models', 'units');
+const sprites = existsSync(spriteDir) ? new Set([...readdirSync(spriteDir), ...(existsSync(modelDir) ? readdirSync(modelDir).filter((f) => f.endsWith('.glb')).map((f) => f.slice(0, -4)) : [])]) : undefined;
 const itemDir = join(process.cwd(), 'art', 'items');
 const itemImages = new Set(existsSync(itemDir) ? readdirSync(itemDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4)) : []);
 const placeDir = join(process.cwd(), 'art', 'mockups', 'locations-s1');
 const placeImages = existsSync(placeDir) ? new Set(readdirSync(placeDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))) : undefined;
 const portraitDir = join(process.cwd(), 'art', 'mockups', 'characters-s1');
-const modelDir = join(process.cwd(), 'art', 'models', 'units');
 const stems = (dir: string, ext: string) => (existsSync(dir) ? new Set(readdirSync(dir).filter((f) => f.endsWith(ext)).map((f) => f.slice(0, -ext.length))) : undefined);
 const lieutenantFiles = { portraits: stems(portraitDir, '.png'), models: stems(modelDir, '.glb') };
 let packs: PackDef[] = [];

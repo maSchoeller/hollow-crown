@@ -399,10 +399,15 @@
     "defiant": 0
    },
    "chronicle": [],
+   "choices": {},
+   "decisions": [],
    "scenesSeen": [],
    "completed": [],
-   "available": [
-    "prologue"
+   "quests": [],
+   "rolesSeen": [
+    "tactician",
+    "captain",
+    "vanguard"
    ],
    "supports": {
     "avatar|kael": {
@@ -417,7 +422,7 @@
      "points": 0,
      "rank": null
     },
-    "mira|tobin": {
+    "avatar|liora": {
      "points": 0,
      "rank": null
     },
@@ -425,11 +430,15 @@
      "points": 0,
      "rank": null
     },
+    "mira|tobin": {
+     "points": 0,
+     "rank": null
+    },
     "liora|ysolde": {
      "points": 0,
      "rank": null
     },
-    "avatar|liora": {
+    "fenn|mira": {
      "points": 0,
      "rank": null
     }
@@ -440,7 +449,11 @@
     "kind": "camp",
     "rooms": {}
    },
-   "tavern": []
+   "tavern": [],
+   "day": {
+    "last": null,
+    "pending": []
+   }
   },
   "screen": "worldmap"
  }

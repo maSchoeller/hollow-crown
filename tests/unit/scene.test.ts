@@ -47,7 +47,8 @@ const withScene = (): GameData => {
 
 describe('speakerTeam', () => {
   it('reads the side of a speaker from the map units', () => {
-    expect(speakerTeam(data, 'grosk')).toBe('enemy');
+    expect(speakerTeam(data, 'bh_leader')).toBe('enemy');
+    expect(speakerTeam(data, 'tg1')).toBe('enemy');
     expect(speakerTeam(data, 'hask')).toBe('enemy');
     expect(speakerTeam(data, 'morra')).toBe('enemy');
     expect(speakerTeam(data, 'liora')).toBe('other');
@@ -189,7 +190,7 @@ describe('content:check for scenes', () => {
     expect(run((d) => ((d.scenes[scene.id]!.lines[1] as { id: string }).id = 'l01'))).toContainEqual(expect.stringContaining('duplicate line id'));
   });
   it('answers are not allowed in scenes that play during a battle', () => {
-    const msgs = run((d) => d.maps.prologue_caravan!.triggers[0]!.then.push({ action: 'dialogue', id: scene.id }));
+    const msgs = run((d) => d.maps.prologue_paktnacht!.triggers[0]!.then.push({ action: 'dialogue', id: scene.id }));
     expect(msgs).toContainEqual(expect.stringContaining('scenes shown in a battle cannot have answers'));
     expect(run((d) => (d.campaign.nodes[0]!.pre = scene.id))).toEqual([]); // before a mission is fine
   });

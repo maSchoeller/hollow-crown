@@ -320,7 +320,7 @@ describe('content references (content:check)', () => {
     expect(problems(withDialogue(speech({ flag: 'ghost' })))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
     expect(problems(withDialogue(choose({ setFlag: 'ghost' })))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
     const d = clone(data);
-    d.maps.prologue_caravan!.triggers.push({ id: 't_ghost', when: { type: 'turn_start', turn: 1, phase: 'player' }, then: [{ action: 'set_flag', flag: 'ghost' }] });
+    d.maps.prologue_paktnacht!.triggers.push({ id: 't_ghost', when: { type: 'turn_start', turn: 1, phase: 'player' }, then: [{ action: 'set_flag', flag: 'ghost' }] });
     expect(problems(d)).toContainEqual(expect.stringContaining('undeclared flag ghost'));
   });
 
@@ -382,7 +382,7 @@ describe('expectedLevel (story 4.1)', () => {
 
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
-    expect(Object.keys(data.maps).sort()).toEqual(['ch01_varnhold', 'ch02_silverbrook', 'prologue_caravan']);
+    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['ch01_varnhold', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();

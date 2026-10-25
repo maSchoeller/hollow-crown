@@ -35,8 +35,8 @@ beforeAll(() => {
 });
 
 describe('supports.yaml', () => {
-  it('holds the seven pairs of act 1, four of them core pairs (narrative)', () => {
-    expect(Object.keys(data.supports).sort()).toEqual(['avatar|kael', 'avatar|liora', 'brenna|kael', 'brenna|tobin', 'brenna|varek', 'liora|ysolde', 'mira|tobin']);
+  it('holds the eight pairs of act 1, four of them core pairs (narrative)', () => {
+    expect(Object.keys(data.supports).sort()).toEqual(['avatar|kael', 'avatar|liora', 'brenna|kael', 'brenna|tobin', 'brenna|varek', 'fenn|mira', 'liora|ysolde', 'mira|tobin']);
     expect(Object.values(data.supports).filter((p) => p.core).map((p) => p.key).sort()).toEqual(['avatar|kael', 'avatar|liora', 'brenna|kael', 'brenna|tobin']);
     expect(data.supports['avatar|kael']!.talks).toEqual({ C: 'scn.support.avatar_kael.C', B: 'scn.support.avatar_kael.B', A: 'scn.support.avatar_kael.A', S: 'scn.support.avatar_kael.S' });
   });
@@ -162,7 +162,7 @@ describe('content:check of the pairs', () => {
       problems((d) => {
         for (let i = 0; i < 20; i++) d.supports[`kael|x${i}`] = { key: `kael|x${i}`, pair: ['kael', 'kael'], core: false, talks: {} };
       }),
-    ).toEqual(expect.arrayContaining([expect.stringContaining('27 support pairs, the season has 25'), expect.stringContaining('cannot be its own partner')]));
+    ).toEqual(expect.arrayContaining([expect.stringContaining('28 support pairs, the season has 25'), expect.stringContaining('cannot be its own partner')]));
   });
 
   it('a support condition needs a known pair', () => {

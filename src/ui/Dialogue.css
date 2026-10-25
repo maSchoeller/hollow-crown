@@ -28,6 +28,13 @@
   filter: blur(2.5px) saturate(0.8);
   transform: scale(1.04);
 }
+.vn-panel {
+  position: absolute;
+  inset: 0;
+  /* illustration panel: the picture itself, sharp and in full colour, over the scene background */
+  background-size: cover;
+  background-position: center;
+}
 .vn-shade {
   position: absolute;
   inset: 0;
@@ -40,6 +47,11 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  transition: opacity 0.25s;
+}
+/* while an illustration panel is shown the panel stands alone: the half figures fade out, box and name tag stay */
+.vn-stage--hidden {
+  opacity: 0;
 }
 /* the half figure is cut at the waist: it stands low enough that the dialogue box covers the cut, and fades out
    towards it so no hard edge shows beside the box */

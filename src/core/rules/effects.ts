@@ -101,6 +101,22 @@ export function damageUnit(
   return false;
 }
 
+/**
+ * Map flag `noDeath` (tutorial): downed player units never die in this battle, no matter the death mode; they stay
+ * downed and return after the mission. Exempt are units whose death loses the battle (`unit_dies` defeat objectives,
+ * `mustSurvive`): for them everything stays as before.
+ */
+export function deathless(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  const map = data.maps[s.mapId];
+  if (!map?.noDeath || u.team !== 'player' || u.flags.includes('mustSurvive')) return false;
+  return !map.objectives.defeat.some((d) => d.type === 'unit_dies' && (d.unit === u.id || d.unit === u.uid));
+}
+
+/** Whether a downed unit runs a bleed-out countdown (HUD, board label); false on `noDeath` maps for the deathless. */
+export function bleedsOut(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  return !deathless(data, s, u);
+}
+
 /** 0 HP handling by death mode (concept/03 §9). */
 export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   u.hp = 0;
@@ -113,6 +129,16 @@ export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: 
   }
   const mustSurvive = u.flags.includes('mustSurvive');
   const mode = s.settings.deathMode;
+  if (deathless(data, s, u)) {
+    // tutorial map: stays downed whatever happens (no bleed-out, no finishing blow)
+    if (!u.downed) {
+      s.stats.downs += 1;
+      u.downed = true;
+      u.bleed = 0;
+      events.push({ t: 'downed', unit: u.uid });
+    }
+    return;
+  }
   s.stats.downs += 1;
   if (u.downed) {
     u.gone = 'dead';
@@ -191,7 +217,7 @@ export function tickTerrain(data: GameData, s: BattleState, events: GameEvent[])
 function bleedOut(data: GameData, s: BattleState, team: Team, events: GameEvent[]): void {
   const max = data.balance.death.bleedOutTurns;
   for (const u of s.units) {
-    if (u.team !== team || !u.downed || u.gone) continue;
+    if (u.team !== team || !u.downed || u.gone || deathless(data, s, u)) continue;
     u.bleed = (u.bleed ?? 0) + 1;
     events.push({ t: 'bleed', unit: u.uid, turns: u.bleed, max });
     if (u.bleed >= max) {

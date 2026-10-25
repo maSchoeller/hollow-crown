@@ -1,0 +1,6 @@
+id: scn.m1_1.house_ne
+background: varnhold
+lines:
+  - id: l01
+    mood: neutral
+    text: "Eine Kräuterfrau drückt Tobin einen Trank in die Hand. „Die Zettel brachte ein Fremder.“"
