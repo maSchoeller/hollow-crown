@@ -126,7 +126,8 @@ development_status:
   7-4-stabile-ids-und-release-ablauf: review  # Stabile IDs und Release-Ablauf
   7-5-leistung-messen: review  # Leistung messen
   7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: review  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
-  7-7-grosse-schlachten-fluessig: backlog  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
+  7-7-grosse-schlachten-fluessig: review  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
+  7-8-grosse-schlachten-ohne-ruckler: backlog  # Große Schlachten ohne Ruckler (nachgetragen 2026-10-25, NFR1, Rest aus 7.7)
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio

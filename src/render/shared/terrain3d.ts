@@ -149,6 +149,9 @@ class Geo {
     m.receiveShadows = true;
     m.isPickable = false;
     m.freezeWorldMatrix();
+    // static: always drawn, bounding box not kept in step (story 7.7)
+    m.alwaysSelectAsActiveMesh = true;
+    m.doNotSyncBoundingInfo = true;
     return m;
   }
 }

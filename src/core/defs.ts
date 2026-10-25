@@ -803,6 +803,10 @@ export interface RenderDef {
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
+    /** story 7.7: figures doing nothing update their skeleton this often (Hz); acting ones at the frame rate */
+    idleHz: number;
+    /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
+    precompileMs: number;
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
     /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */

@@ -3,6 +3,8 @@
  * The board places `node`; figures only animate and tint themselves.
  */
 import type { Scene } from '@babylonjs/core/scene';
+import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup';
+import type { Skeleton } from '@babylonjs/core/Bones/skeleton';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
@@ -13,7 +15,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
-import { TEAM_RAMP, type UnitModel } from './models';
+import { figureMaterial, sharedFigureMaterial, TEAM_RAMP, tintMaterial, type UnitModel } from './models';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
 /** Screen-relative direction for sprites; 3D models turn instead. */
@@ -21,37 +23,61 @@ export type Facing = 's' | 'n' | 'e' | 'w';
 
 export interface Figure {
   node: TransformNode;
-  /** meshes that cast shadows */
-  casters: Mesh[];
   play(anim: FigureAnim, facing: Facing, speed: number): void;
-  /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1 */
+  /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1; writes only when a value changed */
   tint(desat: number, flash: number, alpha: number): void;
-  tick(now: number, speed: number): void;
+  /** `onScreen`: false while the figure is outside the view and switched off, so nothing about its skeleton is worked out */
+  tick(now: number, speed: number, onScreen?: boolean): void;
   dispose(): void;
 }
 
 const YAW: Record<Facing, number> = { s: Math.PI, n: 0, e: Math.PI / 2, w: -Math.PI / 2 };
 
-function tintMaterial(m: StandardMaterial, desat: number, flash: number, alpha: number): void {
-  const k = 1 - desat * 0.45;
-  m.diffuseColor.set(k, k, k * 1.04);
-  m.emissiveColor.set(flash * 0.8, flash * 0.8, flash * 0.8);
-  m.alpha = alpha;
-}
+/**
+ * Story 7.7: a figure that stands or lies still has its skeleton updated only `idleHz` times a second (offset per figure,
+ * so the updates spread over the frames), one that walks, strikes or is hit at every frame. Babylon would otherwise step
+ * the idle loop, move the bone nodes and rebuild the bone texture of every figure each frame. The idle group stays on its
+ * start but paused; at each update the board jumps it to the frame the loop has reached.
+ */
+const DOWNED_HOLD_FRAMES = 3;
 
 export class ModelFigure implements Figure {
   readonly node: TransformNode;
-  readonly casters: Mesh[];
   private current: FigureAnim | null = null;
+  private tintKey = '';
+  /** own materials while the figure flashes or fades (one per mesh group); at rest it wears the scene's shared ones */
+  private own: StandardMaterial[] | null = null;
+  /** the idle group while the skeleton is throttled; null: at full rate or holding a still pose */
+  private idle: AnimationGroup | null = null;
+  private idleSpeed = 1;
+  private slow = false;
+  private idleT0 = 0;
+  private nextDue = 0;
+  private hold = 0;
+  private period: number;
+  /** while throttled: the skeletons that have a new pose and still wait to be prepared (the figure may be off screen) */
+  private needs = new Set<Skeleton>();
 
   /** `motion`: the weapon group's own animations (`attack_<motion>` …) win over the defaults, if the figure has them */
   constructor(
     private model: UnitModel,
     private motion?: string,
+    idleHz = 10,
   ) {
     this.node = new TransformNode(`${model.root.name}:place`, model.root.getScene());
     model.root.parent = this.node;
-    this.casters = model.meshes;
+    this.period = 1000 / idleHz;
+    // a hash of the name staggers the figures' update times
+    let h = 0;
+    for (const ch of model.root.name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    this.nextDue = (h % 1000) / 1000 * this.period;
+    for (const sk of model.skeletons) {
+      const prepare = sk.prepare.bind(sk);
+      // the scene prepares every active skeleton each frame; a throttled figure skips the frames in between and keeps its bone texture
+      sk.prepare = (dontCheckFrameId?: boolean) => {
+        if (!this.slow || this.needs.delete(sk)) prepare(dontCheckFrameId);
+      };
+    }
   }
 
   play(anim: FigureAnim, facing: Facing, speed: number): void {
@@ -62,23 +88,92 @@ export class ModelFigure implements Figure {
     if (this.current === anim && anim !== 'attack' && anim !== 'hit') return;
     for (const o of Object.values(this.model.anims)) if (o !== g) o.stop();
     this.current = anim;
+    this.idle = null;
+    this.slow = false;
+    this.needs.clear();
     if (anim === 'downed') {
       g.start(false, 1, g.to, g.to);
+      // the pose is set in a frame or two; after that nothing about the skeleton changes
+      this.slow = true;
+      this.hold = DOWNED_HOLD_FRAMES;
+      this.expect();
       return;
     }
-    g.start(anim === 'idle' || anim === 'walk', speed, g.from, g.to);
+    if (anim === 'idle') {
+      g.start(true, speed, g.from, g.to);
+      g.pause();
+      g.goToFrame(g.from);
+      this.idle = g;
+      this.slow = true;
+      this.idleT0 = performance.now();
+      this.idleSpeed = speed;
+      this.nextDue = 0;
+      this.expect();
+      return;
+    }
+    g.start(anim === 'walk', speed, g.from, g.to);
+  }
+
+  private expect(): void {
+    for (const sk of this.model.skeletons) this.needs.add(sk);
   }
 
   tint(desat: number, flash: number, alpha: number): void {
-    for (const m of this.model.materials) {
+    const key = `${desat}|${flash}|${alpha}`;
+    if (key === this.tintKey) return;
+    this.tintKey = key;
+    const at = this.model;
+    if (flash === 0 && alpha >= 0.999) {
+      // at rest: the scene's shared material of this desaturation
+      at.groups.forEach((g) => {
+        const m = sharedFigureMaterial(at.shared, at.root.getScene(), g.texture, desat);
+        for (const mesh of g.meshes) mesh.material = m;
+      });
+      this.releaseOwn();
+      return;
+    }
+    // flash, fade or ghost: own materials for as long as it lasts
+    this.own ??= at.groups.map((g, i) => figureMaterial(`${at.root.name}:tint${i}`, at.root.getScene(), g.texture));
+    at.groups.forEach((g, i) => {
+      const m = this.own![i]!;
       tintMaterial(m, desat, flash, alpha);
       m.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHABLEND : StandardMaterial.MATERIAL_OPAQUE;
+      for (const mesh of g.meshes) mesh.material = m;
+    });
+  }
+
+  private releaseOwn(): void {
+    if (!this.own) return;
+    for (const m of this.own) m.dispose(false, false);
+    this.own = null;
+  }
+
+  tick(now: number, _speed = 1, onScreen = true): void {
+    if (!this.slow) return;
+    if (!onScreen) {
+      // out of view: no pose is worked out; the first frame back in view gets the current one at once
+      this.nextDue = 0;
+      return;
+    }
+    if (this.idle) {
+      if (now < this.nextDue) return;
+      this.nextDue = now + this.period;
+      const g = this.idle;
+      const fps = g.targetedAnimations[0]?.animation.framePerSecond ?? 60;
+      const len = g.to - g.from;
+      if (len > 0) g.goToFrame(g.from + (((((now - this.idleT0) / 1000) * fps * this.idleSpeed) % len) + len) % len);
+      this.expect();
+      return;
+    }
+    // a still pose (downed): the animation sets it within a frame or two, then the skeleton is left alone
+    if (this.hold > 0) {
+      this.hold--;
+      this.expect();
     }
   }
 
-  tick(): void {}
-
   dispose(): void {
+    this.releaseOwn();
     this.model.dispose();
     this.node.dispose();
   }
@@ -113,7 +208,6 @@ const ROW_OF: Record<FigureAnim, string> = { idle: 'idle_s', walk: 'walk', attac
 
 export class SpriteFigure implements Figure {
   readonly node: TransformNode;
-  readonly casters: Mesh[];
   private plane: Mesh;
   private material: StandardMaterial;
   private texture: DynamicTexture;
@@ -147,7 +241,6 @@ export class SpriteFigure implements Figure {
     this.material.backFaceCulling = false;
     this.material.zOffset = -2;
     this.plane.material = this.material;
-    this.casters = [this.plane];
   }
 
   play(anim: FigureAnim, facing: Facing, _speed: number): void {
@@ -160,7 +253,12 @@ export class SpriteFigure implements Figure {
     this.flip = facing === 'w' && row.endsWith('_e');
   }
 
+  private tintKey = '';
+
   tint(desat: number, flash: number, alpha: number): void {
+    const key = `${desat}|${flash}|${alpha}`;
+    if (key === this.tintKey) return;
+    this.tintKey = key;
     tintMaterial(this.material, desat, flash, alpha);
     this.material.emissiveColor.addInPlace(new Color3(0.3, 0.3, 0.3));
     this.material.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHATESTANDBLEND : StandardMaterial.MATERIAL_ALPHATEST;
