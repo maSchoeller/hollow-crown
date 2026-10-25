@@ -11,6 +11,7 @@ import {
   forecast,
   itemDef,
   itemTargets,
+  longPressView,
   pathTo,
   posKey,
   reachNow,
@@ -18,6 +19,7 @@ import {
   samePos,
   tilesInRange,
   unitAt,
+  wantedView,
   weaponRange,
   type Action,
   type ActionOption,
@@ -43,6 +45,8 @@ import { campaign, data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
+import { wantedUid } from '../state/wanted';
+import { WantedDock } from './Wanted';
 import { settings, updateSettings } from '../state/settings';
 import {
   BackPill,
@@ -108,6 +112,13 @@ export function Battle() {
   const [danger, setDanger] = useState(settings.value.dangerDefault);
   const [watch, setWatch] = useState<string[]>([]);
   const [info, setInfo] = useState<string | null>(null);
+  /** the wanted poster of a lieutenant is open (story 3.6); it shows his danger zone, too */
+  const wanted = wantedUid.value;
+  const setWanted = (uid: string | null) => (wantedUid.value = uid);
+  useEffect(() => {
+    if (wanted) setWatch((w) => (w.includes(wanted) ? w : [...w, wanted]));
+  }, [wanted]);
+  useEffect(() => () => setWanted(null), []);
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
@@ -501,6 +512,7 @@ export function Battle() {
   longRef.current = (p: Pos) => {
     const at = unitAt(s, p);
     if (at) {
+      if (longPressView(data, at) === 'wanted') return setWanted(at.uid);
       setInfo(at.uid);
       if (at.team === 'enemy') setWatch((w) => (w.includes(at.uid) ? w.filter((x) => x !== at.uid) : [...w, at.uid]));
     } else setTileInfo(p);
@@ -509,6 +521,7 @@ export function Battle() {
   const cancelRef = useRef<() => void>(() => undefined);
   cancelRef.current = () => {
     audio.sfx('cancel');
+    if (wanted) return setWanted(null);
     if (info) return setInfo(null);
     switch (mode.k) {
       case 'forecast':
@@ -668,6 +681,8 @@ export function Battle() {
   // --------------------------------------------------------------- render
   const selUnit = mode.k !== 'idle' ? unit(mode.uid) : null;
   const infoUnit = info ? s.units.find((u) => u.uid === info) : null;
+  const wantedUnit = wanted ? s.units.find((u) => u.uid === wanted) : null;
+  const wantedPoster = wantedUnit?.lieutenant ? wantedView(data, campaign.value!, wantedUnit.lieutenant, wantedUnit) : null;
   const options = mode.k === 'moved' ? availableActions(data, s, unit(mode.uid), mode.to) : [];
   const aimPre =
     mode.k === 'forecast' && mode.aim
@@ -928,6 +943,7 @@ export function Battle() {
         />
       )}
       {infoUnit && <UnitInfo u={infoUnit} s={s} onClose={() => setInfo(null)} onEquip={(item, slot) => void run({ type: 'equip', unit: infoUnit.uid, item, slot })} canEdit={playerTurn && infoUnit.team === 'player' && !infoUnit.acted} />}
+      {wantedUnit && wantedPoster && <WantedDock v={wantedPoster} onClose={() => setWanted(null)} />}
       {objectives && <ObjectivesPanel s={s} onClose={() => setObjectives(false)} />}
       {menu && (
         <BattleMenu

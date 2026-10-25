@@ -54,6 +54,7 @@ import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '..
 import { ensureMissionAssets, ensureMissionPack, prefetchQuietly } from './loading';
 import { packNeededFor } from './packs';
 import { settings } from './settings';
+import { wantedUid } from './wanted';
 import { dayNumber } from '../day';
 
 bindLive(() => ({
@@ -443,6 +444,36 @@ if (import.meta.env.DEV) {
         u.grudge = grudge;
         if (target) u.grudgeTarget = target;
         battle.value = { ...b, state: st };
+      },
+      /**
+       * opens the wanted poster over the test battle as the long press on a lieutenant would (story 3.6), with his danger zone:
+       * `devWantedBattle('hask', 1, 'kael')` (id, grudge 0-3, target id; see `devLieutenant`). Close it with Back or a tap beside.
+       */
+      devWantedBattle: async (id = 'hask', grudge = 1, target = 'kael') => {
+        await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);
+        const u = battle.value?.state.units.find((x) => x.lieutenant === id);
+        if (u) wantedUid.value = u.uid;
+      },
+      /**
+       * shows the list of the wanted posters with lieutenants the company has met (story 3.6):
+       * `devWantedList()` = Hask (grudge 2, target Kael) and Morra (no grudge yet); or
+       * `devWantedList([['hask', 2, 'kael'], ['ulvric', 3, 'fenn', true]])` (id, grudge, target id, true = the target has fallen).
+       * Starts an unsaved campaign when none is open; tap an entry for the poster.
+       */
+      devWantedList: (list: Array<[string, number?, string?, boolean?]> = [['hask', 2, 'kael'], ['morra', 0]]) => {
+        campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        const c = clone(campaign.value);
+        c.lieutenants ??= {};
+        for (const [id, grudge = 0, target = 'kael', fallen = false] of list) {
+          c.lieutenants[id] = { met: true, encounters: grudge + 1, grudge, routs: grudge, signatureDropped: false, ...(grudge > 0 ? { target } : {}) };
+          if (fallen && !c.fallen.some((f) => f.id === target)) {
+            const rec = c.roster.find((r) => r.id === target);
+            c.roster = c.roster.filter((r) => r.id !== target);
+            c.fallen.push({ id: target, nameKey: rec?.nameKey ?? `unit.${target}.name`, ...(rec?.name ? { name: rec.name } : {}), node: 'prologue' });
+          }
+        }
+        campaign.value = c;
+        screen.value = { name: 'wanted', from: 'worldmap' };
       },
     };
   });

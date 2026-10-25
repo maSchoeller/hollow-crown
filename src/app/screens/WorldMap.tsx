@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { availableNodes, nodeLinks } from '../../core';
+import { availableNodes, nodeLinks, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -49,6 +49,7 @@ export function WorldMap() {
   const c = campaign.value!;
   const nodes = data.campaign.nodes;
   const open = availableNodes(data, c).map((n) => n.id);
+  const knowsWanted = wantedList(data, c).length > 0;
   const shown = nodes.filter((n) => c.completed.includes(n.id) || open.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
@@ -405,7 +406,12 @@ export function WorldMap() {
                 <Icon name="company" size={26} />
                 {t('ui.troop.title')}
               </button>
-              <button type="button" class="is-dim" aria-disabled="true" onClick={() => setToast(t('ui.map.soon.wanted'))}>
+              <button
+                type="button"
+                class={knowsWanted ? '' : 'is-dim'}
+                aria-disabled={knowsWanted ? undefined : 'true'}
+                onClick={() => (knowsWanted ? (screen.value = { name: 'wanted', from: 'worldmap' }) : setToast(t('ui.map.soon.wanted')))}
+              >
                 <Icon name="wanted" size={26} />
                 {t('ui.map.wanted')}
               </button>
