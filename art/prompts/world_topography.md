@@ -1,5 +1,7 @@
 # world_topography – Designbilder der Weltkarte (Topografie)
 
+> **Veraltet (2026-10-24):** Die 3D-Weltkarte mit Blender-Gelände wurde durch ein flaches Bild ersetzt, siehe `world_map.md`. Dieses Blatt bleibt als Verlauf; `art:world`, `world_height.py` und `blender_world.py` gibt es nicht mehr.
+
 - **Dateien:** `art/world/concept_oblique_screen.jpg`, `art/world/concept_relief_screen.jpg` (Bildschirmfotos der Bildansicht in ChatGPT, 1568 × 765; die Originale liegen im ChatGPT-Verlauf „Fantasy Terrain Design“ und wurden nicht heruntergeladen)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif Plus, Konto maschoeller), gesteuert über Claude in Chrome

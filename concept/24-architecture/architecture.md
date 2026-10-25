@@ -102,7 +102,7 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 | AR10 | Story-Zustand | Flag-Register je Akt; Entscheidungen, Haltung, Chronik und Epilog datengetrieben | Epic 4 | C |
 | AR11 | Heimat | Räume als Daten (`rooms.yaml`), Ausbau und Nutzung als Kampagnen-Commands | Epic 6, 10 | C |
 | AR12 | Rendering | Eine Babylon-Engine, ein Canvas, drei Szenen-Module; immer nur eine Szene aktiv, geteilter Asset-Cache | Epic 5, 6, 8, 10 | C |
-| AR13 | Weltkarte | Weltkarte als Kachelraster in YAML, gebaut mit `terrain3d`; Orte als Miniatur-Modelle mit Varianten | Epic 5, 8 | C |
+| AR13 | Weltkarte | Weltkarte als flaches gemaltes Bild (Hochformat 2:3) mit Orten als Prozentpositionen in YAML; Steine, Wege und Nebel als HTML darüber; Varianten und 3D-Aufsätze später optional (geändert 2026-10-24, ersetzt Kachelraster und 3D-Szene) | Epic 5, 8 | C |
 | AR14 | KI | **Gegnerphase im Web Worker von Anfang an**; der Worker führt `applyCommand` des reinen Kerns aus | Epic 2 | **A** |
 | AR15 | Auslieferung | Pakete `core` (Shell + Regeln + Prolog), `act1`, `act2`, `act3`, Stimmen je Sprache getrennt; **Hintergrund-Download**, offline gecacht | Epic 7, 9, 11, 12 | **A** |
 | AR16 | Speichern | Format 2: **bis zu 3 Kampagnen**, je Auto-Save; Standard/Casual + 3 Snapshots je Kampagne; Klassik nur Auto-Save; Journal getrennt | Epic 1 | **A** |
@@ -345,13 +345,12 @@ src/render/
   host.ts          Engine, Canvas, Qualitätsstufe, FPS-Deckel, aktive Szene wechseln
   shared/          terrain3d.ts, models.ts, figures.ts, assets.ts, camera.ts, season.ts (Jahreszeit/Tageszeit/Wetter aus render.yaml)
   board/           Kampfkarte (heute board.ts, aufgeteilt in scene, overlays, playback, picking)
-  world/           Weltkarte: Kachelraster, Orts-Miniaturen, Nebel je Region, Drachenzeichen, Wimpel
   home/            Lager/Burg: Diorama-Modell, Raum-Anker, Ausbauteile, Gefährten-Gegenstände
 ```
 
 - **Eine Szene aktiv:** Beim Wechsel wird die alte Szene entsorgt (`dispose`), Modelle bleiben im **geteilten Asset-Cache** (glTF als `AssetContainer`, Referenzzählung), damit der Wechsel Brett ↔ Weltkarte nicht neu lädt. Während einer Visual-Novel-Szene läuft der Canvas mit `board.fpsIdle` oder pausiert.
 - **Jede Szene hat dieselbe kleine Schnittstelle** wie heute das Brett: `load`, `play(events)`, `setOverlays`, `centerOn`, `relayout`, `quality`, `dispose`. Der Kern kennt keine Szene.
-- **Weltkarte** (`content/world/valmora.yaml`): gröberes Kachelraster im Kartenformat (ASCII + Legende) mit `regions` (Akt, Jahreszeit), `locations` (Knoten-ID → Feld, Modell, Varianten mit `requires`), Kamera mit 2 Zoomstufen. Gebaut mit `terrain3d`, dieselben Bodentexturen und Requisiten.
+- **Weltkarte** (`content/world/valmora.yaml`, seit 2026-10-24 **keine 3D-Szene mehr**): ein flaches gemaltes Bild im Hochformat (`public/assets/world/valmora.webp`, 1024 × 1536) in einem verschiebbaren Bereich (CSS-Transform, 2 Zoomstufen aus `render.yaml worldMap`). Die Datei nennt `image`, `size`, `regions` (Akt, Ort des Namens), `fog` (bis wohin der Nebel früherer Akte reicht) und `places` (Platz im Plan der 35 Orte plus Heimat: Beschriftung, Art Kreis/Raute/Heimat, Prozentposition auf dem Bild, optional der Knoten der Kampagne). Steine, Wege und Regionsnamen sind HTML über dem Bild; die reine Sicht-Rechnung steht in `src/app/screens/worldMapView.ts`. Kleine 3D-Aufsätze (Burg, Lager) sind später optional. Die Weltkarte braucht damit keinen Szenen-Host.
 - **Figuren:** Tripo-Modelle nach Art Direction §4.6; Teamtuch über Vertex-Alpha-Maske (wie heute), Leutnant-Markierungen und Verblutungs-Zähler als Overlays. 2D-Sprites bleiben als Option, werden nicht weiterentwickelt.
 
 ### 5.13 KI im Web Worker (AR14) [A]
