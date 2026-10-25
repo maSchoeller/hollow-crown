@@ -1,0 +1,42 @@
+{
+ "note": "Ausgangswerte vor Story 7.7 (Median von 3 Läufen, Code von Branch claude/7-7-large-battles-smooth vor jeder Änderung an src/, GPU Intel UHD 630 über ANGLE/D3D11, erhoben 2026-10-24; der Rechner war durch parallele Sitzungen stark ausgelastet, die Wanduhr-Werte sind deshalb schlechter als in der Analyse – ohne Drosselung lag derselbe Stand bei 50–53 FPS und 16,5–17,1 ms Thread-CPU je Frame)",
+ "gpu": true,
+ "devices": {
+  "iphone12": {
+   "2": {
+    "avgFps": 12.2,
+    "p95Ms": 133.3,
+    "maxMs": 1149.9,
+    "dropped": 0.989,
+    "drawCallsAvg": 118,
+    "threadMsPerFrame": 23.1
+   },
+   "4": {
+    "avgFps": 2.7,
+    "p95Ms": 683.2,
+    "maxMs": 2766.5,
+    "dropped": 1,
+    "drawCallsAvg": 117,
+    "threadMsPerFrame": 37.5
+   }
+  },
+  "pixel6a": {
+   "2": {
+    "avgFps": 10.8,
+    "p95Ms": 149.9,
+    "maxMs": 1050,
+    "dropped": 0.975,
+    "drawCallsAvg": 117,
+    "threadMsPerFrame": 26.5
+   },
+   "4": {
+    "avgFps": 4.3,
+    "p95Ms": 366.7,
+    "maxMs": 4066.5,
+    "dropped": 1,
+    "drawCallsAvg": 117,
+    "threadMsPerFrame": 39
+   }
+  }
+ }
+}

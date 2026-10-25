@@ -598,6 +598,8 @@ export const renderSchema = z.object({
     fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0) }),
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
+    idleHz: z.number().positive(),
+    precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
     trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
     decor: z.object({ bushes: decorSchema, stones: decorSchema }),

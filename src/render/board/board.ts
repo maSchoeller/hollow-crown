@@ -11,7 +11,6 @@ import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
-import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
@@ -20,6 +19,7 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
+import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
 import { ParticleSystem } from '@babylonjs/core/Particles/particleSystem';
 import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import '@babylonjs/core/Particles/particleSystemComponent';
@@ -38,6 +38,7 @@ import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, 
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
+import { RingLayer } from './rings';
 
 export interface BoardHooks {
   onTap?(tile: Pos): void;
@@ -63,7 +64,6 @@ interface UnitView {
   /** weapon models on the figure's hands (GA9); a change rebuilds the figure */
   gear: string;
   figure: Figure;
-  ring: Mesh;
   /** tile position (float while moving) and a small offset for lunges/knockback, tiles */
   x: number;
   y: number;
@@ -99,6 +99,8 @@ interface PropSet {
 
 const RING_COLOR: Record<Team, string> = { player: '#3d7be0', enemy: '#d9413a', other: '#3fa65a' };
 const MAX_FIRES = 12;
+/** a figure this many tiles beyond the edge of the view is still worked out (it may step in next frame); farther ones are switched off */
+const OFFSCREEN_TILES = 1.5;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 /** rAF with a timer fallback (rAF stops in background panes; animations must still finish). */
 const schedule = (fn: () => void): void => {
@@ -140,6 +142,7 @@ export class BoardView implements HostedView {
   private step = 1;
   private shake = 0;
 
+  private rings: RingLayer;
   private hemi: HemisphericLight;
   private sun: DirectionalLight;
   private shadows: ShadowGenerator | null = null;
@@ -201,6 +204,7 @@ export class BoardView implements HostedView {
     this.camera.inputs.clear();
     this.hemi = new HemisphericLight('ambient', new Vector3(0.2, 1, -0.3), this.scene);
     this.sun = new DirectionalLight('sun', new Vector3(0.5, -1, 0.4), this.scene);
+    this.rings = new RingLayer(this.scene, RING_COLOR);
     this.propMat = new StandardMaterial('props', this.scene);
     this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
     this.propMat.backFaceCulling = false;
@@ -259,6 +263,8 @@ export class BoardView implements HostedView {
       sg.bias = 0.002;
       sg.normalBias = 0.02;
       sg.darkness = 0.35;
+      // story 7.7: terrain and props cast a shadow that is drawn once and again only when they are rebuilt; units cast none
+      sg.getShadowMap()!.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
       this.shadows = sg;
     }
   }
@@ -266,6 +272,19 @@ export class BoardView implements HostedView {
   private castShadows(meshes: Mesh[]): void {
     if (!this.shadows) return;
     for (const m of meshes) this.shadows.addShadowCaster(m, true);
+  }
+
+  /**
+   * Draws the static shadow map anew on the next frame; call whenever terrain or props were rebuilt. The sun's frustum
+   * follows the casters for that pass only and is then kept, so the lookup in later frames matches the map even when a
+   * template's bounding box changes (props fading in and out).
+   */
+  private refreshShadows(): void {
+    const map = this.shadows?.getShadowMap();
+    if (!map) return;
+    this.sun.autoUpdateExtends = true;
+    map.onAfterRenderObservable.addOnce(() => (this.sun.autoUpdateExtends = false));
+    map.resetRefreshCounter();
   }
 
   private applyMapLight(): void {
@@ -290,8 +309,23 @@ export class BoardView implements HostedView {
       this.fitCamera();
       // the terrain shows while the figures load (they load in parallel and appear together)
       await this.syncUnits(state, true);
+      await this.precompile();
     })();
     return this.readyPromise;
+  }
+
+  /**
+   * Compiles every shader the battle will draw with before the first frame of play: all meshes now in the scene (figures,
+   * terrain, props, rings, fires) and the effect sprites. A variant first met during the enemy phase would stall that frame
+   * (story 7.7). `board.precompileMs` bounds the wait, so a texture that never arrives cannot hold the board back.
+   */
+  private async precompile(): Promise<void> {
+    if (this.disposed) return;
+    const fx = this.makeFx(Object.keys(this.fx?.anims ?? {})[0] ?? '', 0, 0, false);
+    const jobs: Promise<unknown>[] = [this.scene.whenReadyAsync()];
+    if (fx) jobs.push(fx.mat.forceCompilationAsync(fx.mesh).catch(() => undefined));
+    await Promise.race([Promise.all(jobs), sleep(this.data.render.board.precompileMs)]);
+    if (fx) this.disposeFx(fx);
   }
 
   private textureFromImage(name: string, img: HTMLImageElement | HTMLCanvasElement): DynamicTexture {
@@ -485,6 +519,7 @@ export class BoardView implements HostedView {
     for (const m of this.propMeshes) if (!m.thinInstanceCount) m.isVisible = false;
     this.fadeKey = '';
     this.updateFade();
+    this.refreshShadows();
   }
 
   /** Height and footprint radius of a template (its vertices are baked with the origin on the ground). */
@@ -687,25 +722,12 @@ export class BoardView implements HostedView {
       const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u));
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
-        return new ModelFigure(model, this.weaponOf(u)?.motion);
+        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz);
       }
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
     const sheet = await loadUnitSheet(id, { classId: u.classId, weapon });
     return new SpriteFigure(this.scene, sheet, u.team, name);
-  }
-
-  private makeRing(uid: string, team: Team): Mesh {
-    const ring = CreateDisc(`ring:${uid}`, { radius: 0.36, tessellation: 32 }, this.scene);
-    ring.rotation.x = Math.PI / 2;
-    ring.isPickable = false;
-    const m = new StandardMaterial(`ring:${uid}`, this.scene);
-    m.disableLighting = true;
-    m.emissiveColor = Color3.FromHexString(RING_COLOR[team]);
-    m.alpha = 0.5;
-    m.zOffset = -1;
-    ring.material = m;
-    return ring;
   }
 
   async syncUnits(state: BattleState, _instant = false): Promise<void> {
@@ -732,14 +754,12 @@ export class BoardView implements HostedView {
           for (const f of fresh.values()) void f.then((g) => g.dispose());
           return;
         }
-        this.castShadows(figure.casters);
         v = {
           uid: u.uid,
           team: u.team,
           sprite: this.unitSpriteId(u),
           gear: this.gearKey(u),
           figure,
-          ring: this.makeRing(u.uid, u.team),
           x: u.pos[0],
           y: u.pos[1],
           offX: 0,
@@ -754,6 +774,7 @@ export class BoardView implements HostedView {
           downed: false,
         };
         this.units.set(u.uid, v);
+        this.rings.add(u.uid, u.team);
       }
       v.x = u.pos[0];
       v.y = u.pos[1];
@@ -805,8 +826,7 @@ export class BoardView implements HostedView {
 
   private removeUnit(v: UnitView): void {
     v.figure.dispose();
-    v.ring.material?.dispose();
-    v.ring.dispose();
+    this.rings.remove(v.uid);
     this.units.delete(v.uid);
   }
 
@@ -970,6 +990,9 @@ export class BoardView implements HostedView {
     return { forward: new Vector3(0, -Math.cos(t), Math.sin(t)), up: new Vector3(0, Math.sin(t), Math.cos(t)) };
   }
 
+  /** the camera values the view was last set from; a frame with the same ones leaves the camera alone */
+  private cameraKey = '';
+
   private updateCamera(now: number): void {
     if (this.zoomTween) {
       const k = Math.min(1, (now - this.zoomTween.start) / Math.max(1, this.data.render.camera.zoomMs));
@@ -979,8 +1002,13 @@ export class BoardView implements HostedView {
       if (k >= 1) this.zoomTween = null;
     }
     const { w, h } = this.cssSize();
+    this.viewW = w;
+    this.viewH = h;
     const { forward } = this.basis();
     const jitter = this.shake ? (Math.random() - 0.5) * this.shake : 0;
+    const key = `${this.camX}|${this.camY}|${this.ppt}|${w}|${h}|${jitter}`;
+    if (key === this.cameraKey) return;
+    this.cameraKey = key;
     const target = new Vector3(this.camX + jitter, 0, -this.camY);
     this.camera.position.copyFrom(target.subtract(forward.scale(60)));
     this.camera.setTarget(target);
@@ -996,6 +1024,21 @@ export class BoardView implements HostedView {
     const { up } = this.basis();
     const rel = p.subtract(new Vector3(this.camX, 0, -this.camY));
     return { x: w / 2 + rel.x * this.ppt, y: h / 2 - Vector3.Dot(rel, up) * this.ppt };
+  }
+
+  /** the canvas size (CSS px) the camera was last set up for */
+  private viewW = 1;
+  private viewH = 1;
+
+  /** Is the world point (x east, y up, z north) in the view, with room for a figure around its feet? Cheaper than a projection. */
+  private onScreen(x: number, y: number, z: number): boolean {
+    const t = (this.data.render.camera.tiltDeg * Math.PI) / 180;
+    const rx = x - this.camX;
+    const rz = z + this.camY;
+    const sx = this.viewW / 2 + rx * this.ppt;
+    const sy = this.viewH / 2 - (y * Math.sin(t) + rz * Math.cos(t)) * this.ppt;
+    const m = this.ppt * OFFSCREEN_TILES;
+    return sx > -m && sx < this.viewW + m && sy > -m * 2 && sy < this.viewH + m;
   }
 
   /** Ground point of tile coordinates (x east, y south, in tiles) at height `h` → CSS px. */
@@ -1123,6 +1166,7 @@ export class BoardView implements HostedView {
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);
     for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
     for (const v of this.units.values()) this.placeUnit(v, now);
+    this.rings.flush();
     this.updateFade();
     if (this.ghost) this.ghost.figure.tick(now, this.speed);
     this.pointLights.forEach((l, k) => (l.intensity = 0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08));
@@ -1139,18 +1183,24 @@ export class BoardView implements HostedView {
     const ty = Math.min(Math.max(Math.round(y), 0), this.state.height - 1);
     const h = (this.terrain?.standOn(tx, ty) ?? 0) + v.lift;
     v.figure.node.position.set(x + 0.5, h, -y - 0.5);
-    v.figure.node.setEnabled(v.visible);
+    // a figure outside the view is switched off: the scene then skips its meshes, bones and nodes altogether (story 7.7)
+    const onScreen = this.onScreen(x + 0.5, h, -y - 0.5);
+    v.figure.node.setEnabled(v.visible && onScreen);
     v.figure.tint(v.desat, v.flash, v.alpha);
-    v.figure.tick(now, this.speed);
-    v.ring.position.set(x + 0.5, h + 0.025, -y - 0.5);
-    v.ring.setEnabled(v.visible && !v.downed && v.alpha > 0.5);
-    (v.ring.material as StandardMaterial).alpha = v.desat > 0.3 ? 0.25 : 0.5;
+    v.figure.tick(now, this.speed, onScreen);
+    this.rings.place(v.uid, x + 0.5, h + 0.025, -y - 0.5, v.visible && !v.downed && v.alpha > 0.5 ? (v.desat > 0.3 ? 0.25 : 0.5) : 0);
   }
 
   // ------------------------------------------------------------------ fx
 
   spawnFx(anim: string, tx: number, ty: number, loop = false): void {
-    if (this.skip || !this.fx?.anims[anim] || !this.fxTexture) return;
+    if (this.skip) return;
+    const f = this.makeFx(anim, tx, ty, loop);
+    if (f) this.fxSprites.push(f);
+  }
+
+  private makeFx(anim: string, tx: number, ty: number, loop: boolean): FxSprite | null {
+    if (!this.fx?.anims[anim] || !this.fxTexture) return null;
     const [cw, ch] = this.fx.cell;
     const mesh = CreatePlane(`fx:${anim}`, { width: cw / 48, height: ch / 48 }, this.scene);
     mesh.billboardMode = Mesh.BILLBOARDMODE_ALL;
@@ -1169,7 +1219,13 @@ export class BoardView implements HostedView {
     mat.zOffset = -4;
     mesh.material = mat;
     mesh.renderingGroupId = 1;
-    this.fxSprites.push({ mesh, mat, anim, start: performance.now(), loop });
+    return { mesh, mat, anim, start: performance.now(), loop };
+  }
+
+  private disposeFx(f: FxSprite): void {
+    f.mat.diffuseTexture?.dispose();
+    f.mat.dispose();
+    f.mesh.dispose();
   }
 
   private updateFx(now: number): void {
@@ -1179,9 +1235,7 @@ export class BoardView implements HostedView {
       const a = fx.anims[f.anim]!;
       const n = Math.floor(((now - f.start) / 1000) * a.fps * (this.speed > 1 ? 1.6 : 1));
       if (!f.loop && n >= a.frames) {
-        f.mat.diffuseTexture?.dispose();
-        f.mat.dispose();
-        f.mesh.dispose();
+        this.disposeFx(f);
         return false;
       }
       const col = f.loop ? n % a.frames : n;
