@@ -1,6 +1,6 @@
 # Story 3.2: Flucht bei 0 TP
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -22,21 +22,21 @@ damit sich nichts beliebig anfühlt.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Kern: Flucht (AC 1, 2)
-  - [ ] `knockOut` bekommt die Quelle des Schadens (Vertreiber) durchgereicht; Aufrufer in `combat.ts`, `cast.ts`, Status- und Geländeschaden prüfen
-  - [ ] Event `fled` in `events.ts`; `fled`-Zweig in `filterEvents` (AC 3)
-  - [ ] `objectives.ts` (`rout`, `boss`), `combat.ts` (`killed`, EP, Statistik), KI und `pursue` behandeln `fled` wie `dead`
-- [ ] T2 Vorschau (AC 4)
-  - [ ] Vorschau-Ergebnis um „flieht“ erweitern (gleicher Formelcode), HUD-Anzeige und Locales
-- [ ] T3 Brett (AC 5)
-  - [ ] Rückwärtssprung, Rauch, fallender Wimpel in `src/render/board/lieutenant.ts` und im Ereignis-Spieler
-- [ ] T4 Zeilen und Sicht (AC 6, 7)
-  - [ ] `ltFleeLine` im Kern, Haken in `ltLines.ts` und `Battle.tsx`
-  - [ ] `isVisibleToPlayer` an `vision.ts` hängen; Auslöser bei neuer Sicht und `spawned`
-- [ ] T5 Karten und Sim (AC 8)
-  - [ ] Feld `lieutenant:` auf beiden PoC-Karten, `pnpm sim` je Karte, Korridor prüfen
-- [ ] T6 Tests, Prüfungen, Screenshot (AC 9)
-  - [ ] Decision-Log (Architektur §5.5) nachtragen
+- [x] T1 Kern: Flucht (AC 1, 2)
+  - [x] `knockOut` bekommt die Quelle des Schadens (Vertreiber) durchgereicht; Aufrufer in `combat.ts`, `cast.ts`, Status- und Geländeschaden prüfen
+  - [x] Event `fled` in `events.ts`; `fled`-Zweig in `filterEvents` (AC 3)
+  - [x] `objectives.ts` (`rout`, `boss`), `combat.ts` (`killed`, EP, Statistik), KI und `pursue` behandeln `fled` wie `dead`
+- [x] T2 Vorschau (AC 4)
+  - [x] Vorschau-Ergebnis um „flieht“ erweitern (gleicher Formelcode), HUD-Anzeige und Locales
+- [x] T3 Brett (AC 5)
+  - [x] Rückwärtssprung, Rauch, fallender Wimpel in `src/render/board/lieutenant.ts` und im Ereignis-Spieler
+- [x] T4 Zeilen und Sicht (AC 6, 7)
+  - [x] `ltFleeLine` im Kern, Haken in `ltLines.ts` und `Battle.tsx`
+  - [x] `isVisibleToPlayer` an `vision.ts` hängen; Auslöser bei neuer Sicht und `spawned`
+- [x] T5 Karten und Sim (AC 8)
+  - [x] Feld `lieutenant:` auf beiden PoC-Karten, `pnpm sim` je Karte, Korridor prüfen
+- [x] T6 Tests, Prüfungen, Screenshot (AC 9)
+  - [x] Decision-Log (Architektur §5.5) nachtragen
 
 ## Dev Notes
 
@@ -101,8 +101,36 @@ damit sich nichts beliebig anfühlt.
 
 ### Agent Model Used
 
+Claude Sonnet 5.5
+
 ### Debug Log References
+
+- `pnpm lint`, `pnpm test` (732 grün), `pnpm content:check`, `pnpm build`, `pnpm test:coverage` grün; `pnpm test:e2e` nicht gelaufen.
+- Coverage `src/core` vorher/nachher: Statements 86,62 % -> 86,80 %, Branches 78,86 % -> 79,17 %, Functions 91,06 % -> 91,08 %, Lines 89,88 % -> 90,06 %.
+- Sim (50 Läufe, normal/standard) vor und nach dem Feld `lieutenant:` identisch: prologue_caravan Sieg 96 %, Verluste 0,48; ch01_varnhold Sieg 85 %, Verluste 0,54; ch02_silverbrook Sieg 85 %, Verluste 0,71 (Korridor normal: Sieg 0,75-1,0, Niedergestreckte 0,4-1,3: alle drin).
+- Dev-Helfer im Browser geprüft (keine Konsolenfehler, Leutnant `fled`, `fledBy` gesetzt).
 
 ### Completion Notes List
 
+- `knockOut` bekommt `by`; `damageUnit` ebenfalls (Gegenstand: der Nutzer). Brand-/Geländeschaden ohne Vertreiber.
+- Event `fled { unit, by? }`; `filterEvents` behandelt es wie `died`.
+- `combat.ts`: `fled` zählt als `killed` (EP, Boss-Waffe) und für den Brandschlag der Waffe; `Forecast.attackerFlees/defenderFlees`.
+- `isVisibleToPlayer` und `ltLinesDue` brauchen jetzt `data` (Signatur geändert, Tests der Story 3.3 angepasst); Battle.tsx prüft die Erstzeilen zusätzlich nach jedem Befehl.
+- Fluchtzeile: `ltFleeLine` im Kern, `fleeBark` in `ltLines.ts`, eigener `fleeSpoken`-Satz (getrennt von den Erstzeilen); keine der Fluchtzeilen nutzt `{target}`, der Vertreiber wird trotzdem als Parameter mitgegeben.
+- Brett: `fled`-Fall in `board.ts` (Sprung 320 ms + Ausblenden 160 ms, Rauch, Wimpel fällt per CSS); Hilfen in `lieutenant.ts`.
+- Ein „Kampfbericht“ als eigene Ansicht gibt es im Code nicht (nur die Vorschau); dort ist nichts zu ändern.
+- Dev-Helfer `__hc.devFlee(id, routs, target, 'attack' | 'preview')` (DEV).
+
 ### File List
+
+- `src/core/events.ts`, `src/core/rules/effects.ts`, `src/core/rules/combat.ts`, `src/core/rules/vision.ts`, `src/core/battle/objectives.ts`, `src/core/battle/apply.ts`, `src/core/campaign/lieutenants.ts`
+- `src/app/battle/ltLines.ts`, `src/app/screens/Battle.tsx`, `src/app/screens/BattleHud.tsx`, `src/app/state/devLieutenant.ts`, `src/app/state/flow.ts`
+- `src/render/board/board.ts`, `src/render/board/lieutenant.ts`, `src/render/board/pennant.css`, `src/ui/hud.css`, `src/ui/icons.tsx`
+- `content/core/locales/de.yaml`, `content/core/locales/en.yaml`, `content/acts/act1/maps/ch01_varnhold.yaml`, `content/acts/act1/maps/ch02_silverbrook.yaml` (nur `lieutenant:`)
+- `tests/unit/lieutenants-flee.test.ts` (neu), `tests/unit/lieutenants-grudge.test.ts` (Signatur)
+- `concept/24-architecture/decision-log.md`
+
+### Change Log
+
+- 2026-10-25: Story 3.2 umgesetzt (Flucht statt Tod bei 0 TP, Vorschau, Brett, Fluchtzeile, Sichtkontakt, PoC-Karten).
+- 2026-10-25 Kontrolleur: Darstellung im Browser geprüft (Dev-Helfer-Fehler behoben), Vorschau „flieht“ in einer Zeile, Flucht über die normale Bedienung mit Fluchtzeile; Checks grün (732 Tests), Sim im Korridor; Status review.

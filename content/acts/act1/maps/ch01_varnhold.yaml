@@ -64,6 +64,7 @@ units:
     level: 4
     at: [10, 3]
     boss: true
+    lieutenant: hask
     sprite: hask
     portrait: hask
     items: [ { def: steel_axe }, { def: vulnerary } ]

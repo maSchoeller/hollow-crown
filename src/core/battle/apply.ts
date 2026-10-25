@@ -379,7 +379,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
         target.status = [];
       }
       if (use.damage) {
-        damageUnit(data, s, target, use.damage, 'item', events);
+        damageUnit(data, s, target, use.damage, 'item', events, u.uid);
         if (use.status && active(target)) applyStatus(data, s, target, use.status, events);
         if (use.terrain === 'ignite' && target.pos) igniteTile(data, s, target.pos, 'ignite', events);
         if (use.terrain === 'extinguish' && target.pos) extinguishTile(s, target.pos, events);

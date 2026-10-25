@@ -39,7 +39,7 @@ import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays'
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
 import { RingLayer } from './rings';
-import { disposeGoldRing, GrudgeLine, makeGoldRing, makePennant, pennantNotches, setPennantNotches } from './lieutenant';
+import { disposeGoldRing, dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, fleeTarget, GrudgeLine, makeGoldRing, makePennant, pennantNotches, setPennantNotches } from './lieutenant';
 
 export interface BoardHooks {
   onTap?(tile: Pos): void;
@@ -1545,6 +1545,40 @@ export class BoardView implements HostedView {
           await this.hooks.onEvent?.(e);
           await this.wait(250);
           break;
+        case 'fled': {
+          // a lieutenant at 0 HP: backward jump away from the one who drove him off, smoke, the pennant falls, then he is gone;
+          // the flee line (UI hook) is spoken after the jump while he still stands there (story 3.2). Skip mode only settles it.
+          const v = this.units.get(e.unit);
+          this.setBleedLabel(e.unit, null);
+          if (v) {
+            const origin: Pos = [Math.round(v.x), Math.round(v.y)];
+            const by = e.by ? this.units.get(e.by) : undefined;
+            const from: Pos | null = by ? [Math.round(by.x), Math.round(by.y)] : null;
+            const to = fleeTarget(origin, from, this.state.width, this.state.height);
+            if (from) v.facing = this.facingOf(origin, from);
+            this.setAnim(v, 'idle');
+            const pennant = this.pennants.get(e.unit);
+            if (pennant && !this.skip) dropPennant(pennant, FLEE_JUMP_MS / this.speed);
+            this.spawnFx('smoke', origin[0], origin[1]);
+            await this.tween(FLEE_JUMP_MS, (t) => {
+              v.x = origin[0] + (to[0] - origin[0]) * t;
+              v.y = origin[1] + (to[1] - origin[1]) * t;
+              v.lift = fleeArc(t);
+            });
+            v.lift = 0;
+            pennant?.remove();
+            this.pennants.delete(e.unit);
+          }
+          await this.hooks.onEvent?.(e);
+          if (v) {
+            await this.tween(FLEE_FADE_MS, (t) => {
+              v.alpha = 1 - t;
+              v.desat = t;
+            });
+            v.visible = false;
+          }
+          break;
+        }
         case 'died':
         case 'retreated':
         case 'rescued':

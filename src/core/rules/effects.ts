@@ -90,21 +90,35 @@ export function damageUnit(
   amount: number,
   cause: 'burn' | 'fire' | 'item',
   events: GameEvent[],
+  by?: string,
 ): boolean {
   if (!onMap(u) || u.downed || amount <= 0) return false;
   u.hp = Math.max(0, u.hp - amount);
   events.push({ t: 'damage', unit: u.uid, amount, hpAfter: u.hp, cause });
   if (u.hp <= 0) {
-    knockOut(data, s, u, events);
+    knockOut(data, s, u, events, by);
     return true;
   }
   return false;
 }
 
-/** 0 HP handling by death mode (concept/03 §9). */
-export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
+/** A lieutenant of the enemy flees at 0 HP instead of dying (story 3.2); the forecast asks the same question. */
+export const fleesAtZero = (u: Pick<BattleUnit, 'team' | 'lieutenant'>): boolean => u.team === 'enemy' && !!u.lieutenant;
+
+/**
+ * 0 HP handling by death mode (concept/03 §9). `by` is the uid of the unit whose damage brought `u` down (story 3.2): a
+ * fleeing lieutenant remembers it as `fledBy`; absent for burn, fire and the like.
+ */
+export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[], by?: string): void {
   u.hp = 0;
   u.status = [];
+  if (fleesAtZero(u)) {
+    dropLoot(s, u, events);
+    u.gone = 'fled';
+    if (by) u.fledBy = by;
+    events.push({ t: 'fled', unit: u.uid, ...(by ? { by } : {}) });
+    return;
+  }
   if (u.team !== 'player') {
     dropLoot(s, u, events);
     u.gone = 'dead';

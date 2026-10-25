@@ -27,7 +27,7 @@ damit jede Begegnung fordernd bleibt.
   - [ ] Erwartungswert-Werte als gemeinsame Funktion mit `genericStats`
   - [ ] `createBattle`/`battleUnitFromMap` übergeben Stufe und Groll
 - [ ] T3 Ausrüstung (AC 3)
-  - [ ] Tier-Reihenfolge je Waffengruppe aus `items.yaml`, höchstes Tier deckelt; Signaturwaffe ausschließen
+  - [ ] Tier-Kette `lieutenant.scaling.tierUp` in `balance.yaml` (siehe Offene Fragen), ohne Eintrag Deckel; Signaturwaffe ausschließen
 - [ ] T4 Fähigkeiten (AC 4, 6)
   - [ ] `lieutenantSkills`, Einbindung in die Skill-Summen des Leutnants
 - [ ] T5 Tests, Sim, Prüfungen (AC 7)
@@ -63,7 +63,7 @@ damit jede Begegnung fordernd bleibt.
 
 ### Offene Fragen
 
-- Keine. Hat die Item-Daten-Struktur kein Tier-Feld, wird die Reihenfolge je Waffengruppe nach Preis gebildet und im Decision-Log festgehalten.
+- Keine. **Entscheidung Kontrolleur (technisch):** Die Items haben kein Tier-Feld, und eine Reihenfolge nach Preis wäre falsch (hand_axe 700 liegt zwischen iron_axe 450 und steel_axe 1000). Die Tier-Kette steht deshalb ausdrücklich in `balance.yaml` (z. B. `lieutenant.scaling.tierUp: { iron_axe: steel_axe, iron_lance: steel_lance, iron_bow: steel_bow, iron_sword: steel_sword, … }`); ohne Eintrag bleibt die Waffe (Deckel). `content:check` prüft die Kette (gleiche Gruppe, existierende Items). Im Architektur-Decision-Log festhalten.
 
 ### Project Structure Notes
 

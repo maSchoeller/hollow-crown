@@ -6,6 +6,8 @@ import type { BattleState, BattleUnit, CampaignState, LieutenantState } from '..
 import type { GameData } from '../defs';
 import { newItem } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
+import { fogOn, visibleTiles } from '../rules/vision';
+import { posKey } from '../util';
 import type { BountyResult } from './campaign';
 
 /** The grudge never goes above three notches (GDD: Groll 0-3). */
@@ -112,9 +114,13 @@ function driverId(s: BattleState, u: BattleUnit): string | undefined {
   return by && by.team === 'player' ? by.id : undefined;
 }
 
-/** Whether the player can see `unit` right now. No fog yet (story 2.6), so everything on the board is seen. */
-export function isVisibleToPlayer(_s: BattleState, _unit: BattleUnit): boolean {
-  return true;
+/**
+ * Whether the player can see `unit` right now (story 3.2): without fog always, under fog when the unit's tile is one
+ * the player's side sees (`vision.ts`). `seen` is the player's sight when the caller has it already.
+ */
+export function isVisibleToPlayer(data: GameData, s: BattleState, unit: BattleUnit, seen?: ReadonlySet<string>): boolean {
+  if (!fogOn(data, s)) return true;
+  return !!unit.pos && (seen ?? visibleTiles(data, s, 'player')).has(posKey(unit.pos));
 }
 
 /** The line a lieutenant speaks at first sight: the scene line id and the roster/fallen id of the grudge target. */
@@ -150,12 +156,26 @@ export interface LieutenantLineDue extends LieutenantLinePick {
  * (`spoken` = unit uids). The caller remembers who spoke, so each lieutenant speaks once per battle; units in
  * the order of the state.
  */
-export function ltLinesDue(c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>, s: BattleState, spoken: ReadonlySet<string>): LieutenantLineDue[] {
+export function ltLinesDue(
+  data: GameData,
+  c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>,
+  s: BattleState,
+  spoken: ReadonlySet<string>,
+): LieutenantLineDue[] {
   const out: LieutenantLineDue[] = [];
+  const seen = fogOn(data, s) ? visibleTiles(data, s, 'player') : undefined;
   for (const u of s.units) {
-    if (!u.lieutenant || spoken.has(u.uid) || u.team !== 'enemy' || !u.pos || u.gone || u.downed || !isVisibleToPlayer(s, u)) continue;
+    if (!u.lieutenant || spoken.has(u.uid) || u.team !== 'enemy' || !u.pos || u.gone || u.downed || !isVisibleToPlayer(data, s, u, seen)) continue;
     const pick = ltOpeningLine(c, u);
     if (pick) out.push({ ...pick, unit: u.uid, lieutenant: u.lieutenant });
   }
   return out;
+}
+
+/** The line a fleeing lieutenant speaks: by the routs he has suffered before this one, 0 -> `flee_1`, 1 -> `flee_2`, 2 -> `flee_3`, then again from the first. */
+export const FLEE_LINES = ['flee_1', 'flee_2', 'flee_3'] as const;
+
+export function ltFleeLine(c: Pick<CampaignState, 'lieutenants'>, lieutenantId: string): (typeof FLEE_LINES)[number] {
+  const routs = Math.max(0, Math.floor(lieutenantState(c, lieutenantId).routs));
+  return FLEE_LINES[routs % FLEE_LINES.length]!;
 }

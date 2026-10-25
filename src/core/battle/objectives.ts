@@ -33,7 +33,7 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       break;
     case 'boss': {
       const b = findUnit(s, v.unit);
-      if (!b || b.gone === 'dead' || b.team !== 'enemy') endBattle(s, 'victory', events);
+      if (!b || b.gone === 'dead' || b.gone === 'fled' || b.team !== 'enemy') endBattle(s, 'victory', events);
       break;
     }
     case 'reach': {

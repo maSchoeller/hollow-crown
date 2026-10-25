@@ -11,6 +11,8 @@ import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import './pennant.css';
 
+type Pos = readonly [number, number];
+
 /** Highest grudge step (GDD: three steps). */
 export const GRUDGE_MAX = 3;
 
@@ -107,4 +109,29 @@ export class GrudgeLine {
     this.material = null;
     this.last = '';
   }
+}
+
+/** Flight of a lieutenant at 0 HP (story 3.2): the backward jump, the falling pennant and the fade-out add up to under 600 ms at speed 1. */
+export const FLEE_JUMP_MS = 320;
+export const FLEE_FADE_MS = 160;
+
+/**
+ * The tile the fleeing lieutenant jumps to: one tile straight away from the unit that drove him off (along the longer
+ * axis; down the screen when there is none). Stays where he is when that tile lies off the board.
+ */
+export function fleeTarget(at: Pos, from: Pos | null, width: number, height: number): [number, number] {
+  const dx = from ? at[0] - from[0] : 0;
+  const dy = from ? at[1] - from[1] : 1;
+  const step: [number, number] = Math.abs(dx) >= Math.abs(dy) && dx !== 0 ? [Math.sign(dx), 0] : [0, Math.sign(dy) || 1];
+  const to: [number, number] = [at[0] + step[0], at[1] + step[1]];
+  return to[0] < 0 || to[1] < 0 || to[0] >= width || to[1] >= height ? [at[0], at[1]] : to;
+}
+
+/** Height of the jump's arc in tiles at `t` (0 to 1): a short bow, back on the ground at the end. */
+export const fleeArc = (t: number): number => Math.sin(Math.PI * Math.min(1, Math.max(0, t))) * 0.45;
+
+/** Lets the grudge pennant fall (CSS animation of `pennant.css`); `ms` is the duration at the current speed. */
+export function dropPennant(el: HTMLElement, ms: number): void {
+  el.style.setProperty('--hc-fall', `${Math.round(ms)}ms`);
+  el.classList.add('is-falling');
 }

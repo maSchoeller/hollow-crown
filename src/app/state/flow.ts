@@ -19,6 +19,9 @@ import {
   type BattleState,
   type BattleUnit,
   type ConditionContext,
+  type GameEvent,
+  filterEvents,
+  visibleState,
   type CampaignEvent,
   type Effect,
   type MapUnitDef,
@@ -50,7 +53,7 @@ import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
 import { addTexts } from '../../i18n';
 import { clone } from '../../core/util';
-import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, type DevLieutenant } from './devLieutenant';
+import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
 import { loadManifest } from '../../render/shared/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets, ensureMissionPack, prefetchQuietly } from './loading';
@@ -478,6 +481,37 @@ if (import.meta.env.DEV) {
         const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
         if (!campaign.value!.completed.includes(first.id)) campaign.value = { ...campaign.value!, completed: [...campaign.value!.completed, first.id] };
         (window as unknown as { __hc: { autoWin: () => void } }).__hc.autoWin();
+      },
+      /**
+       * story 3.2: opens the test battle (see `devLieutenant`) and drives a lieutenant off: `devFlee('hask', 0, 'kael')` (id, routs so far
+       * = grudge, target id). He has 1 HP, a company unit stands next to him. With `play = 'preview'` nothing more happens: select the
+       * company unit that stands next to him, tap Attack and the lieutenant; the forecast shows "flees"
+       * instead of 0. With `play = 'attack'` (default) the attack is played at once: backward jump, smoke, falling pennant and the flee
+       * line (`flee_<routs % 3 + 1>`) as a speech bubble.
+       */
+      devFlee: async (id = 'hask', grudge = 0, target = 'kael', play: 'attack' | 'preview' = 'attack') => {
+        await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);
+        const b = battle.value;
+        const setup = b && fleeSetup(data, b.state, id);
+        if (!b || !setup) return;
+        battle.value = { ...b, state: play === 'attack' ? setup.seeded : setup.prepared };
+        if (play !== 'attack') return;
+        type DevBoard = { play: (e: GameEvent[], s: BattleState, p?: readonly BattleUnit[]) => Promise<void>; units: Map<string, unknown>; disposed?: boolean; setState: (s: BattleState) => Promise<void> };
+        const lt = setup.seeded.units.find((u) => u.lieutenant === id)!;
+        // the board is built when the mission has loaded (slow on a weak machine): wait until it shows the lieutenant, then a moment for the opening lines
+        let board: DevBoard | undefined;
+        for (let i = 0; i < 300; i++) {
+          board = (window as unknown as { __board?: DevBoard }).__board;
+          if (board && !board.disposed && board.units.has(lt.uid)) break;
+          board = undefined;
+          await new Promise((r) => setTimeout(r, 200));
+        }
+        await board?.setState(setup.seeded); // the board shows the prepared state (the attacker next to him)
+        await new Promise((r) => setTimeout(r, 1500));
+        const before = battle.value!.state;
+        const events = command(setup.cmd);
+        const after = battle.value!.state;
+        if (board) await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
       },
       /** changes the grudge of a lieutenant in the running test battle: `devGrudge('hask', 3, 'brenna')` */
       devGrudge: (id: string, grudge: number, target?: string) => {

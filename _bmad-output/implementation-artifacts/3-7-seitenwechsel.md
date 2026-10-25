@@ -66,10 +66,10 @@ damit Entscheidungen Feinde zu Gefährten machen können (FR25).
 - **Nicht hier:** Heimsuchungen und ihre Auswahl (5.5/5.6; nur `activeLieutenants` im Kern bereitstellen), Missions-Content und die Entscheidung E3 (9.x), weitere Supports, weitere Karten, Flucht (3.2), Skalierung (3.4, wird nur genutzt).
 - **Abhängigkeiten:** 3.4 (Stufe), 3.3 (Zustand), 3.5 (Signatur-Items), 4.2 (Wirkungssprache), 4.9 (Support-Paare).
 
-### Offene Fragen (keine Produktentscheidung vorhanden; nicht stillschweigend entscheiden)
+### Geklärte Fragen (Produktinhaber 2026-10-25, Fragetool)
 
-1. **Steckbrief-Liste:** Wie erscheint ein beigetretener Leutnant in der Steckbrief-Liste (Story 3.6)? Optionen: verschwindet aus der Liste, bleibt als „Weggefährte“ ohne Groll und Kopfgeld, oder verweist auf die Gefährten-Karte. GDD, EXPERIENCE und Mockup 08 schweigen. Bis zur Antwort: aus der Liste der Gegner ausblenden, sonst nichts bauen.
-2. **Karte mit `lieutenant: grosk` nach dem Beitritt:** Was tut eine Karte, die diesen Leutnant als Gegner enthält, wenn er schon beigetreten ist (Wiederholung, spätere Karte)? Optionen: Einheit entfällt, wird generischer Gegner ohne Leutnant-Eigenschaften, oder Content-Check-Fehler. Die Quellen schweigen. Bis zur Antwort: Einheit bleibt im Kampf ohne Leutnant-Eigenschaften (keine Rolle, keine Zeilen, kein Kopfgeld).
+1. **Steckbrief-Liste:** Ein beigetretener Leutnant bleibt in der Liste mit Begegnungen und Vertreibungen, ohne Groll und Kopfgeld, mit der Marke „In der Truppe“ (Weggefährte); ein Tipp öffnet seine Figur in der Truppe.
+2. **Karte mit `lieutenant: grosk` nach dem Beitritt:** Die Karteneinheit entfällt beim Kampfaufbau (wie heute bereits rekrutierte Gefährten mit `char`); Narrative 1-8: „Grosk (falls nicht gewechselt)“.
 
 ### Project Structure Notes
 

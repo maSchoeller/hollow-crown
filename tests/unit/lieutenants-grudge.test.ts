@@ -202,9 +202,9 @@ describe('opening lines (AC 7)', () => {
 
   it('a lieutenant who is down, gone or off the board does not speak; everything on the board is seen without fog', () => {
     const s = { units: [lt({ uid: 'a' }), lt({ uid: 'b', downed: true }), lt({ uid: 'c', gone: 'fled' }), lt({ uid: 'd', pos: null }), lt({ uid: 'e', team: 'player' })] } as BattleState;
-    expect(isVisibleToPlayer(s, s.units[0]!)).toBe(true);
-    expect(ltLinesDue(camp(), s, new Set()).map((l) => l.unit)).toEqual(['a']);
-    expect(ltLinesDue(camp(), s, new Set(['a']))).toEqual([]);
+    expect(isVisibleToPlayer(data, s, s.units[0]!)).toBe(true);
+    expect(ltLinesDue(data, camp(), s, new Set()).map((l) => l.unit)).toEqual(['a']);
+    expect(ltLinesDue(data, camp(), s, new Set(['a']))).toEqual([]);
   });
 
   it('ltBarks marks speakers, names the target, and leaves the line out in skip mode', () => {
