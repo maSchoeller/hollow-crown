@@ -38,7 +38,8 @@ export type FlagValue = string | number | true;
 /** The avatar's stance profile counters (architecture §5.9); a tie is decided warm > sober > defiant. */
 export type Stance = 'warm' | 'sober' | 'defiant';
 export const STANCES: readonly Stance[] = ['warm', 'sober', 'defiant'];
-export type HomeKind = 'camp' | 'castle';
+export const HOME_KINDS = ['camp', 'castle'] as const;
+export type HomeKind = (typeof HOME_KINDS)[number];
 /** Companions the story never lets join or leave (the schema forbids `recruit`/`leave` for them). */
 export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'kael'];
 export type Pos = [number, number];
@@ -548,6 +549,8 @@ export interface CampaignNodeDef {
   expectedLevel: number;
   /** items handed to company members when the node is won (e.g. the avatar's first tome) */
   grants?: Array<{ unit: string; item: ItemRef }>;
+  /** effects applied when the node is won (node reward, architecture §5.3), e.g. `setHome: castle`; never on a defeat */
+  effects?: Effect[];
 }
 
 /**
@@ -558,13 +561,58 @@ export interface CampaignNodeDef {
 export interface RoomDef {
   id: string;
   /** what the room does; the UI opens the matching panel */
-  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'enchanter';
+  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'memorial' | 'enchanter';
   /** line icon of the room stone (icons.tsx) */
   icon: string;
   /** first act in which the room exists */
   fromAct: number;
   /** homes the room belongs to */
   homes: HomeKind[];
+  requires: Condition[];
+  /** what the next levels need, level 2 first (story 6.9): the build rules come with Epic 10; empty = no build-up */
+  levels: RoomLevelDef[];
+  /** things inside the room that open later (e.g. the lessons of the memorial hall) */
+  unlocks: RoomUnlockDef[];
+}
+
+/** Conditions of one build-up step of a room (level 2 and 3). */
+export interface RoomLevelDef {
+  requires: Condition[];
+}
+
+/** Something a room opens once its conditions hold; the name is `room.<room>.unlock.<id>`. */
+export interface RoomUnlockDef {
+  id: string;
+  requires: Condition[];
+}
+
+/** An anchor on the picture of a home: the room stone sits at `at` (percent of the visible picture). */
+export interface HomeAnchorDef {
+  room: string;
+  at: Pos;
+}
+
+/** Picture and room anchors of a kind of home (`content/home/home.yaml`, story 6.9). */
+export interface HomeViewDef {
+  /** place image `locations/<image>` */
+  image: string;
+  anchors: HomeAnchorDef[];
+}
+
+/**
+ * A fixed memorial stone of the act (`acts/actN/memorials.yaml`, story 6.9): a figure the story has taken before
+ * anyone of the company fell. Texts `memorial.<id>.name|place|role|quote` (German in the file, English in the locale file).
+ */
+export interface MemorialDef {
+  id: string;
+  act: number;
+  /** head image (`art/mockups/characters-s1/<portrait>.png`) */
+  portrait: string;
+  name: string;
+  place: string;
+  role: string;
+  quote?: string;
+  /** the stone stands once these hold */
   requires: Condition[];
 }
 
@@ -862,6 +910,10 @@ export interface GameData {
   supports: Record<string, SupportPairDef>;
   /** chronicle pages of the acts (`acts/actN/chronicle.yaml`) */
   chronicle: Record<string, ChroniclePageDef>;
+  /** fixed memorial stones of the acts (`acts/actN/memorials.yaml`) */
+  memorials: Record<string, MemorialDef>;
+  /** picture and room anchors per kind of home (`content/home/home.yaml`) */
+  home: Record<HomeKind, HomeViewDef>;
   campaign: CampaignDef;
   world: WorldDef;
 }

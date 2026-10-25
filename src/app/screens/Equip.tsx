@@ -6,6 +6,7 @@ import { ItemLine, itemName, Toast, unitName } from '../../ui/components';
 import { Backdrop, Piece, PrimaryButton, ScreenHead, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, campaignCommand, data } from '../state/session';
+import { homeBackdrop } from '../campaignInfo';
 
 /** Label of a changed value in the comparison. */
 const DELTA_LABEL: Record<EquipDelta['key'], string> = {
@@ -80,7 +81,7 @@ export function EquipView({ unit, slot, onBack }: { unit: UnitRecord; slot: Equi
   const fits = cands.filter((x) => !x.error).length;
   return (
     <div class="hc-view">
-      <Backdrop />
+      <Backdrop image={homeBackdrop()} />
       <ScreenHead title={t(`ui.slot.${slot}`)} aside={unitName(unit)} onBack={onBack} />
       <Piece class="hc-view__scroll col" style={{ gap: 4 }}>
         <div class="hc-title-row">

@@ -1,30 +1,34 @@
 /**
- * The camp of act 1 (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1", story 6.3): the diorama on top, the
- * stations as room stones below, a room opens as a panel over the blurred view. The rooms come from
- * `content/core/rooms.yaml` (`c.home`), their opening from `requires` per room.
+ * The home (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1" and Variante B, stories 6.3 and 6.9): the picture on top,
+ * the rooms as stones below, a room opens as a panel over the blurred view. The rooms come from `content/core/rooms.yaml`
+ * (`c.home`), their opening from `requires` per room; picture and anchors per kind of home from `content/home/home.yaml`.
+ * In the castle the room stones also sit on the picture (the anchors) and show their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { availableSupportTalks, homeRooms, type CampaignCommand, type Condition, type RoomDef } from '../../core';
+import { availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast, unitName, UnitCard } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
-import { nodeShort } from '../campaignInfo';
 import { beginMission } from '../state/flow';
 import { screen, type From } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { FigureFlow } from './Troop';
 import { UnitHead } from './unitArt';
-import { Room, type Apply } from './Rooms';
+import { lockReason, Room, type Apply } from './Rooms';
 import '../../ui/camp.css';
 
-/** Why a station is locked: the first condition that fails, in the player's words. */
-function lockReason(unmet?: Condition): string {
-  if (unmet && 'completed' in unmet) return t('ui.room.after', { node: nodeShort(unmet.completed) });
-  if (unmet && 'act' in unmet) return t('ui.room.fromAct', { n: unmet.act });
-  return t('ui.room.locked');
+/** Level of a castle room as dots (filled up to the level; three at most). */
+function Pips({ level, max }: { level: number; max: number }) {
+  return (
+    <span class="hm-pips" role="img" aria-label={t('ui.room.level', { n: level, max })}>
+      {Array.from({ length: max }, (_, i) => (
+        <i key={i} class={i < level ? '' : 'off'} />
+      ))}
+    </span>
+  );
 }
 
 /**
@@ -48,23 +52,44 @@ export function Camp({ tab }: { tab?: string }) {
     }
     return r.ok;
   };
+  const kind = c.home.kind;
+  const view = data.home[kind];
+  const castle = kind === 'castle';
   const rooms = homeRooms(data, c);
   const last = c.completed[c.completed.length - 1];
   const talks = availableSupportTalks(data, c).length;
   const room: RoomDef | undefined = open ? (data.rooms[open] ?? undefined) : undefined;
   const close = () => setOpen(null);
+  const mourn = room?.function === 'memorial';
+  /** a stone of the room list or of the picture: opens the room, or names why it is locked */
+  const tap = ({ room: r, open: isOpen, unmet }: RoomStatus) => (isOpen ? setOpen(r.id) : setToast(lockReason(unmet)));
   return (
-    <div class={`hm ${open ? 'has-room' : ''}`}>
-      <img class="hm__scene" src={asset('locations/lager_unterwegs.webp')} alt="" draggable={false} />
+    <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
+      <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
+      {castle && !room && (
+        <div class="hm__anchors">
+          {view.anchors.flatMap((a) => {
+            const st = rooms.find((x) => x.room.id === a.room);
+            if (!st) return [];
+            return [
+              <button key={a.room} type="button" class={`hm-anchor ${st.open ? '' : 'is-locked'}`} style={{ left: `${a.at[0]}%`, top: `${a.at[1]}%` }} aria-label={t(`room.${a.room}.name`)} onClick={() => tap(st)}>
+                <span class="hm-room__stone">
+                  <Icon name={st.open ? st.room.icon : 'lock'} size={22} />
+                </span>
+              </button>,
+            ];
+          })}
+        </div>
+      )}
       <div class="hm__hud">
         <div class="hm__top">
           <Piece class="hm-act">
             <span class="hm-act__badge">
-              <Icon name="camp" size={20} />
+              <Icon name={mourn ? 'stone' : castle ? 'castle' : 'camp'} size={20} />
             </span>
             <span>
-              <small>{t('ui.campaign.act', { act: data.campaign.act })}</small>
-              <b>{t('home.camp.name')}</b>
+              <small>{castle ? t('ui.map.act', { act: data.campaign.act, season: t(`act.${data.campaign.act}.season`) }) : t('ui.campaign.act', { act: data.campaign.act })}</small>
+              <b>{mourn ? t(`room.${room.id}.name`) : t(`home.${kind}.name`)}</b>
             </span>
           </Piece>
           <button type="button" class="hc-head__back" onClick={() => (screen.value = { name: 'options', back: { name: 'camp' } })} aria-label={t('ui.options')}>
@@ -80,10 +105,11 @@ export function Camp({ tab }: { tab?: string }) {
         <div class="hm__stack">
           <Piece class="hm-rooms">
             <div class="hm-rooms__title">
-              {t('home.camp.title')}
-              <span>{t('home.camp.later')}</span>
+              {t(`home.${kind}.title`)}
+              <span>{castle ? t('ui.home.rooms', { n: rooms.length }) : t('home.camp.later')}</span>
             </div>
-            {rooms.map(({ room: r, open: isOpen, unmet }) => {
+            {rooms.map((st) => {
+              const { room: r, open: isOpen, unmet } = st;
               const fresh = isOpen && !!last && r.requires.some((x) => 'completed' in x && x.completed === last);
               const count = r.function === 'campfire' ? talks : r.function === 'tavern' ? c.tavern.length : 0;
               return (
@@ -92,13 +118,14 @@ export function Camp({ tab }: { tab?: string }) {
                   type="button"
                   class={`hm-room ${isOpen ? '' : 'is-locked'}`}
                   aria-disabled={!isOpen}
-                  onClick={() => (isOpen ? setOpen(r.id) : setToast(lockReason(unmet)))}
+                  onClick={() => tap(st)}
                 >
                   <span class="hm-room__stone">
                     <Icon name={isOpen ? r.icon : 'lock'} size={26} />
                     {isOpen && (count > 0 || fresh) && <span class="hm-dot">{count > 0 ? count : '!'}</span>}
                   </span>
                   {t(`room.${r.id}.name`)}
+                  {castle && r.levels.length > 0 && <Pips level={roomLevel(c, r.id)} max={r.levels.length + 1} />}
                   {!isOpen && <small>{lockReason(unmet)}</small>}
                   {isOpen && r.function === 'campfire' && talks > 0 && <small class="hm-room__ready">{t('ui.troop.legend.talk')}</small>}
                 </button>

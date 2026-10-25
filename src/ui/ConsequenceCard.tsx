@@ -43,7 +43,7 @@ export function consequenceView(
     case 'villageAid':
       return { icon: <Icon name="healer" size={22} />, title: t('ui.consequence.villageAid.title'), desc: t('ui.consequence.villageAid.desc') };
     case 'home':
-      return { icon: <Icon name="camp" size={22} />, title: t('ui.consequence.home.title'), desc: t('ui.consequence.home.desc') };
+      return { icon: <Icon name={l.home === 'castle' ? 'castle' : 'camp'} size={22} />, title: t('ui.consequence.home.title'), desc: t('ui.consequence.home.desc') };
     case 'noted':
       return { icon: <Icon name="log" size={22} />, title: t('ui.consequence.noted.title'), desc: t('ui.consequence.noted.desc') };
   }

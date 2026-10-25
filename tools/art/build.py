@@ -35,8 +35,9 @@ HIGH = '--quality' in sys.argv and sys.argv[sys.argv.index('--quality') + 1] == 
 BG_SIZE = (2560, 1440) if HIGH else (1920, 1080)
 # season 1 places: portrait phones crop a landscape image, 1280 px is enough
 LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
-# only the places the app shell shows; the others ship with the act packages (Epic 7, initial-download budget)
-SHELL_LOCATIONS = {'lager_unterwegs'}
+# only the places the app shows itself (the camp, the castle ruin of the home, story 6.9); the others ship with the act packages
+# (Epic 7, initial-download budget). paktwacht_ruine belongs to pack act1 (locations/**), lager_unterwegs to core.
+SHELL_LOCATIONS = {'lager_unterwegs', 'paktwacht_ruine'}
 # the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
 # head crop of the 1254 px portraits: square from the top; 160 px is a 52 px medallion at 3x
@@ -162,7 +163,8 @@ def build_world():
 
 
 def content_unit_ids():
-    """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed)."""
+    """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed),
+    plus the portraits of the fixed memorial stones (content/acts/*/memorials.yaml, story 6.9)."""
     pat = re.compile(r'(?<![a-z0-9_])(?:id|char|portrait):[ 	]*([a-z0-9_]+)')
     content = os.path.join(ROOT, 'content')
     acts = os.path.join(content, 'acts')
@@ -174,6 +176,9 @@ def content_unit_ids():
         maps = os.path.join(acts, act, 'maps')
         if os.path.isdir(maps):
             files += [os.path.join(maps, f) for f in sorted(os.listdir(maps)) if f.endswith('.yaml')]
+        memorials = os.path.join(acts, act, 'memorials.yaml')
+        if os.path.isfile(memorials):
+            files.append(memorials)
     ids = set()
     for path in files:
         with open(path, encoding='utf-8') as f:

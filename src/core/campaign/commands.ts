@@ -1,4 +1,4 @@
-import type { Effect, EquipSlot, FlagValue, Stance, SupportRank } from '../defs';
+import type { Effect, EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';
@@ -89,7 +89,7 @@ export type CampaignError =
   | 'unknown_choice'
   /** this choice was answered before: answers are never taken back */
   | 'already_chosen'
-  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, setHome, recruit by lieutenant) */
+  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, recruit by lieutenant) */
   | 'effect_unsupported'
   /** a day number that is no whole number of days */
   | 'invalid_day';
@@ -110,6 +110,8 @@ export type CampaignEvent =
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
+  /** the company moved (effect `setHome`); the rooms keep their levels */
+  | { t: 'homeChanged'; home: HomeKind }
   /** a side quest became available (effect `openQuest`) */
   | { t: 'questOpened'; node: string }
   | { t: 'sceneSeen'; scene: string }

@@ -307,19 +307,19 @@ export function WorldMap() {
                   {t(`world.region.${r.id}`)}
                 </div>
               ))}
-          {/* the home is a place on the map as well (a tent in the camp, a castle later) */}
+          {/* the home is a place on the map as well: a tent in the camp, the castle after mission 1-6 */}
           <button
             type="button"
             class="wm-node wm-node--home"
             {...over(home.at)}
-            aria-label={t(`home.${data.campaign.home}.title`)}
+            aria-label={t(`home.${c.home.kind}.title`)}
             onClick={(e) => (e.stopPropagation(), (screen.value = { name: 'camp' }))}
           >
             <span class="wm-node__head">
-              <Icon name="camp" size={22} />
+              <Icon name={c.home.kind === 'castle' ? 'castle' : 'camp'} size={22} />
             </span>
             <i class="wm-node__tail" />
-            <span class="wm-node__label">{t(`home.${data.campaign.home}.title`)}</span>
+            <span class="wm-node__label">{t(`home.${c.home.kind}.title`)}</span>
           </button>
           {shown.map((n) => {
             const done = c.completed.includes(n.id);
