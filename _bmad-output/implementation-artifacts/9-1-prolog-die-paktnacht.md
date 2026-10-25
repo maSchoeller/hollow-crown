@@ -27,7 +27,8 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 - [x] T6 Heimsuchungs-Anker als Kommentarblock (3 Felder, Story 5.5 hat noch kein Schema)
 - [x] T7 Offene Punkte der Steuerung geklärt (kein `min`, Tafeln über `panel`), Sim-Korridor abgestimmt (AC 6)
 - [x] T9 Kartenfeld `noDeath` (Produktinhaber 2026-10-25): Niedergestreckte sterben/verbluten im Prolog nicht und kehren zurück; Rhen und Kael ausgenommen (Niederlage wie zuvor); Schema, Kern, KI, HUD, Tests, Sim
-- [ ] T8 Screenshots der Karte und der Szenen (Hintergründe `bg_glutdom_night`, `bg_gerrit_grave` kommen mit Story 8.7)
+- [x] T10 Bilder (PR #45): Szenenhintergrund und Tafel „Alarm im Glutdom“ `paktnacht_glutdom`, Knoten-Ort `paktnacht_glutdom`; Gerrits Grab `lager_unterwegs` ohne Tafel (kein eigenes Grabbild, eine Tafel gleich dem Hintergrund würde nur die Halbfiguren verdecken); Tafel-Bild löst Ortsnamen wie `background` auf (`locations/<id>.webp`, Manifest `locations`); Tempelwachen mit Modell/Porträt `temple_guard`/`class_temple_guard`; Nachtlicht (Umgebung #5a70b0 · 0,6, Mond #8fa8ee · 0,4, Kohlebecken Radius 4)
+- [ ] T8 Screenshots der Karte und der Szenen (Karte geprüft per Screenshot; Szenenbilder offen)
 
 ## Dev Notes
 
@@ -99,3 +100,4 @@ Claude Sonnet 5.5
 ### Change Log
 
 - 2026-10-25: kein `min` beim Fluchtziel, Tafeln über `panel`, Spielstand-Fixtures neu, Simulation abgestimmt (Produktinhaber-Entscheidungen).
+- 2026-10-25 (Merge main, PR #45/#47): Orte statt `bg_*`, Tafel über `locations`, Tempelwachen auf `temple_guard`, Nachtlicht, Nebenziel `s_fast` 9 Runden (Normal-Median 9). Sim nach dem Merge: Leicht 100 % / 0,00, Normal 98 % / 0,44, Schwer 48 % / 1,54 (Median 7 / 9 / 11 Runden).

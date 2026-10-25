@@ -27,7 +27,8 @@ damit der Antrieb „Sündenbock“ greift.
 - [x] T5 Tests auf den neuen Graphen umgestellt (siehe File List)
 - [x] T6 Sim-Abstimmung der Gegnerstufen und Zielverhalten (AC 7)
 - [x] T7 Fenns Beitritt als Knoten-Wirkung (`effects: [{ recruit: fenn }]` an `m1_1`, Architektur §5.4)
-- [ ] T8 Screenshots der Karte und der Szenen (Hintergrund `bg_varnhold_market` kommt mit Story 8.7)
+- [x] T9 Bild `varnhold` (Ort und Szenenhintergründe, PR #45); Mittagslicht gedämpft (Umgebung #e9e9e6 · 0,75, Sonne #fff4e2 · 0,85); Stadtrand mit neuem Gelände `building` (Requisite `house`, nicht besuchbar) [C], Karren (`wagon`), Zäunen (`fence`) und Ständen, drei Gassen und Südzugang frei
+- [ ] T8 Screenshots der Karte und der Szenen (Karte geprüft per Screenshot; Szenenbilder offen)
 
 ## Dev Notes
 
@@ -92,3 +93,4 @@ Claude Sonnet 5.5
 ### Change Log
 
 - 2026-10-25: Karte in `m1_1_steckbriefe` umbenannt, Fenn über Knoten-Wirkung, Simulation abgestimmt, Nebenziel-Belohnungen auf den GDD-Anteil gesenkt.
+- 2026-10-25 (Merge main): Ort `varnhold`, Stadtrand mit `building`/`wagon`/`fence`/Ständen, Licht gedämpft, Simulation neu abgestimmt (Stufen: Schwer-Varianten `*h` der Jäger +2, Normal: bh3 4 und bh4 4 ohne Hold-Anführer, bh5 mit Stahllanze, bh2 Stufe 2). Verkettet / frisch, 50 Läufe: Leicht 98 % / 0,04 · 98 % / 0,02; Normal 78 % / 0,41 · 76 % / 0,44; Schwer 50 % / 1,33 (nur 24 von 50 Läufen erreichen 1-1 verkettet) · 46 % / 1,52. Mediane Normal 7 Runden (`s_fast` 8 erreichbar).

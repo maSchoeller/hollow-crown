@@ -39,15 +39,15 @@ terrain: |
   ##,,.__.,,##
   ####EEEE####
 # Nacht: mondblaues Umgebungslicht, Mond als schwache Sonne, warme Punktlichter an den Kohlebecken (art-direction §2.5, Tageszeit night)
-ambient: { color: "#4a5e9a", intensity: 0.5 }
+ambient: { color: "#5a70b0", intensity: 0.6 }
 sun: { color: "#8fa8ee", intensity: 0.4, azimuthDeg: 120, elevationDeg: 50 }
 lights:
-  - { at: [3, 2], color: "#ffb35c", radius: 3 }
-  - { at: [8, 2], color: "#ffb35c", radius: 3 }
-  - { at: [4, 5], color: "#ffb35c", radius: 3 }
-  - { at: [7, 5], color: "#ffb35c", radius: 3 }
-  - { at: [4, 10], color: "#ffb35c", radius: 3 }
-  - { at: [7, 10], color: "#ffb35c", radius: 3 }
+  - { at: [3, 2], color: "#ffb35c", radius: 4 }
+  - { at: [8, 2], color: "#ffb35c", radius: 4 }
+  - { at: [4, 5], color: "#ffb35c", radius: 4 }
+  - { at: [7, 5], color: "#ffb35c", radius: 4 }
+  - { at: [4, 10], color: "#ffb35c", radius: 4 }
+  - { at: [7, 10], color: "#ffb35c", radius: 4 }
 objects: []
 initialEffects: []
 # Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
@@ -84,8 +84,8 @@ objectives:
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl per Simulation abgestimmt (Normal: Median 8 Runden bis zum Sieg)
-    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 100 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 9 Runden bis zum Sieg)
+    - { id: s_fast, type: turn_limit, turns: 9, reward: { gold: 100 } }
 triggers:
   # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
   - id: t_intro
