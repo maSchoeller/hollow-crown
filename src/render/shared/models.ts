@@ -5,6 +5,7 @@
 import type { Scene } from '@babylonjs/core/scene';
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup';
+import type { Skeleton } from '@babylonjs/core/Bones/skeleton';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
@@ -96,11 +97,15 @@ function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => str
   return inst;
 }
 
-/** A unit's 3D figure: animated node tree under `root`, its materials for tinting (figure, weapons). */
+/** A unit's 3D figure: animated node tree under `root`; its meshes sit in groups that share materials (body, weapons). */
 export interface UnitModel {
   root: TransformNode;
   meshes: Mesh[];
-  materials: StandardMaterial[];
+  /** mesh groups, each wearing one material at a time: the body (with the figure's base colour texture, if any) and the weapons */
+  groups: { meshes: Mesh[]; texture: BaseTexture | null }[];
+  /** the materials of resting figures, shared by all figures of the scene (`AssetStore.materials`) */
+  shared: Map<string, StandardMaterial>;
+  skeletons: Skeleton[];
   anims: Record<string, AnimationGroup>;
   /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
   grips: { node: TransformNode; hold: number }[];
@@ -108,10 +113,34 @@ export interface UnitModel {
 }
 
 /** Board material: matt, both faces (the image-to-3D meshes are not always closed). */
-function figureMaterial(name: string, scene: Scene): StandardMaterial {
+export function figureMaterial(name: string, scene: Scene, texture: BaseTexture | null = null): StandardMaterial {
   const m = new StandardMaterial(name, scene);
   m.specularColor = new Color3(0.06, 0.06, 0.06);
   m.backFaceCulling = false;
+  m.diffuseTexture = texture;
+  return m;
+}
+
+/** Desaturation (acted/downed) 0–1, white flash 0–1 and opacity 0–1 as material values. */
+export function tintMaterial(m: StandardMaterial, desat: number, flash: number, alpha: number): void {
+  const k = 1 - desat * 0.45;
+  m.diffuseColor.set(k, k, k * 1.04);
+  m.emissiveColor.set(flash * 0.8, flash * 0.8, flash * 0.8);
+  m.alpha = alpha;
+}
+
+/**
+ * The material of a figure at rest (opaque, no flash): one per base colour texture and desaturation for the whole scene
+ * instead of one per figure and hand. Team colours sit in the vertex colours, not in the material.
+ */
+export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene: Scene, texture: BaseTexture | null, desat: number): StandardMaterial {
+  const key = `${texture ? texture.uniqueId : 0}|${desat}`;
+  let m = cache.get(key);
+  if (!m) {
+    m = figureMaterial(`figure:${key}`, scene, texture);
+    tintMaterial(m, desat, 0, 1);
+    cache.set(key, m);
+  }
   return m;
 }
 
@@ -125,7 +154,6 @@ async function attachGear(
   gear: GearPiece[],
   team: Team,
   name: string,
-  material: StandardMaterial,
 ): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
   const sockets = root.getDescendants(false);
   const meshes: Mesh[] = [];
@@ -144,9 +172,11 @@ async function attachGear(
       for (const n of glRoot.getChildren()) (n as TransformNode).parent = grip;
       for (const m of glRoot.getChildMeshes(false).concat(grip.getChildMeshes(false))) {
         if (!(m instanceof Mesh) || !m.getTotalVertices() || meshes.includes(m) || !m.name.startsWith(`${name}:${piece.model}:`)) continue;
-        m.makeGeometryUnique();
-        teamColours(m, team);
-        m.material = material;
+        // the team's cloth colours are written into the vertex buffer: own geometry only where there are vertex colours
+        if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
+          m.makeGeometryUnique();
+          teamColours(m, team);
+        }
         m.isPickable = false;
         m.receiveShadows = true;
         meshes.push(m);
@@ -164,24 +194,27 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
   const inst = instantiate(c, scene, (n) => `${name}:${n}`);
   const root = new TransformNode(name, scene);
   for (const n of inst.rootNodes) n.parent = root;
-  const material = figureMaterial(`${name}:mat`, scene);
-  const meshes: Mesh[] = [];
+  const body: Mesh[] = [];
+  let texture: BaseTexture | null = null;
   for (const n of inst.rootNodes)
     for (const m of n.getChildMeshes(false)) {
       if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
-      m.makeGeometryUnique();
       // team cloth sits in vertex alpha (Blender figures: vertex colours; Tripo figures: white vertices over their
       // base colour map, the cloth in a neutral grey that the team ramp tints)
-      if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) teamColours(m, team);
-      material.diffuseTexture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
-      m.material = material;
+      if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
+        m.makeGeometryUnique();
+        teamColours(m, team);
+      }
+      texture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
       m.isPickable = false;
       m.receiveShadows = true;
-      meshes.push(m);
+      body.push(m);
     }
-  const gearMaterial = figureMaterial(`${name}:gear`, scene);
-  const held = await attachGear(store, root, gear, team, name, gearMaterial);
-  meshes.push(...held.meshes);
+  const held = await attachGear(store, root, gear, team, name);
+  // the figure's own PBR materials belong to the cached container; every mesh wears a board material from here on
+  const shared = store.materials;
+  for (const m of body) m.material = sharedFigureMaterial(shared, scene, texture, 0);
+  for (const m of held.meshes) m.material = sharedFigureMaterial(shared, scene, null, 0);
   const anims: Record<string, AnimationGroup> = {};
   for (const g of inst.animationGroups) {
     g.stop();
@@ -189,16 +222,20 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
   }
   return {
     root,
-    meshes,
-    materials: [material, gearMaterial],
+    meshes: [...body, ...held.meshes],
+    groups: [
+      { meshes: body, texture },
+      { meshes: held.meshes, texture: null },
+    ],
+    shared,
+    skeletons: inst.skeletons,
     anims,
     grips: held.grips,
     dispose: () => {
       for (const g of inst.animationGroups) g.dispose();
-      material.diffuseTexture = null; // shared with every instance of the model, owned by the container
-      root.dispose(false, true);
-      material.dispose();
-      gearMaterial.dispose();
+      // meshes, their geometry and skeletons are the figure's own; the materials and the textures are shared
+      root.dispose(false, false);
+      for (const k of inst.skeletons) k.dispose();
     },
   };
 }
