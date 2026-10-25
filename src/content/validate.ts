@@ -1,9 +1,10 @@
-import { MAX_PANEL_LINES, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
+import { HOME_KINDS, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { nodeLinks } from '../core/campaign/graph';
 import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
+import { memorialTexts } from '../core/campaign/memorial';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles, pairKey } from '../core/util';
@@ -17,10 +18,8 @@ export function validateContent(
   spriteIds?: Set<string>,
   /** ids of the painted images in art/items (content:check passes them); every item needs one */
   itemImages?: Set<string>,
-  /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` must have one */
+  /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` and scene `background` must have one */
   placeImages?: Set<string>,
-  /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
-  backgroundImages?: Set<string>,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -90,6 +89,23 @@ export function validateContent(
     for (const [i, a] of w.places.entries())
       for (const b of w.places.slice(i + 1))
         if (Math.hypot(((a.at[0] - b.at[0]) * pw) / 100, ((a.at[1] - b.at[1]) * ph) / 100) < 90) err(f, `${a.id} and ${b.id} are less than 90 px apart`);
+  };
+  /** Picture and room anchors of the homes (story 6.9): the image exists, every anchor names a room of that home, once. */
+  const homeChecks = (): void => {
+    const f = 'home/home.yaml';
+    for (const kind of HOME_KINDS) {
+      const view = data.home?.[kind];
+      if (!view) continue;
+      if (placeImages && !placeImages.has(view.image)) err(f, `${kind}: no place image art/mockups/locations-s1/${view.image}.png`);
+      const seen = new Set<string>();
+      for (const a of view.anchors) {
+        const room = data.rooms[a.room];
+        if (!room) err(f, `${kind}: anchor for unknown room ${a.room}`);
+        else if (!room.homes.includes(kind)) err(f, `${kind}: room ${a.room} does not belong to this home`);
+        if (seen.has(a.room)) err(f, `${kind}: room ${a.room} is anchored twice`);
+        seen.add(a.room);
+      }
+    }
   };
   const condition = (file: string, cond: Condition, ctx: string): void => {
     const key = soleKey(cond);
@@ -205,10 +221,7 @@ export function validateContent(
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {
-      if (id.startsWith('backgrounds/')) {
-        const bg = id.slice('backgrounds/'.length);
-        if (backgroundImages && !backgroundImages.has(bg)) err('campaign.yaml', `${ctx}: no background image art/backgrounds/${bg}.png`);
-      } else if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
+      if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
     };
     place(camp.defaultPlace, 'defaultPlace');
     for (const n of camp.nodes) {
@@ -239,7 +252,13 @@ export function validateContent(
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
     for (const n of camp.nodes) effects('campaign.yaml', n.effects, `${n.id} effects`);
-    for (const r of Object.values(data.rooms)) conditions('rooms.yaml', r.requires, `${r.id}.requires`);
+    for (const r of Object.values(data.rooms)) {
+      conditions('rooms.yaml', r.requires, `${r.id}.requires`);
+      r.levels.forEach((l, i) => conditions('rooms.yaml', l.requires, `${r.id}.levels[${i}].requires`));
+      for (const u of r.unlocks) conditions('rooms.yaml', u.requires, `${r.id}.unlocks.${u.id}.requires`);
+    }
+    homeChecks();
+    for (const m of Object.values(data.memorials)) conditions('memorials.yaml', m.requires, `${m.id}.requires`);
     worldChecks(camp);
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
     // nodes nor along a `completed` requirement
@@ -289,6 +308,8 @@ export function validateContent(
   };
   for (const sc of Object.values(data.scenes)) {
     const f = `scenes/${sc.id}`;
+    // the dialogue backdrop is a place image (story 8.7)
+    if (sc.background && placeImages && !placeImages.has(sc.background)) err(f, `background: no place image art/mockups/locations-s1/${sc.background}.png`);
     const seen = new Set<string>();
     // barks (story 9.13): only the six moments, one bubble page each in both languages
     const bark = sc.id.startsWith('scn.bark.');
@@ -306,6 +327,7 @@ export function validateContent(
           count++;
           if (count === MAX_PANEL_LINES + 1) err(f, `${l.id}: the panel of line ${open} lasts longer than ${MAX_PANEL_LINES} text lines (end it with panel: none)`);
         }
+        if (l.panel !== undefined && l.panel !== 'none' && placeImages && !placeImages.has(l.panel)) err(f, `${l.id}: panel: no place image art/mockups/locations-s1/${l.panel}.png`);
         if (bark && l.panel !== undefined) err(f, `${l.id}: a bark scene has no panel`);
       }
     }
@@ -367,7 +389,9 @@ export function validateContent(
   for (const m of Object.values(data.maps)) need.push(m.nameKey);
   for (const ch of Object.values(data.chars)) need.push(`unit.${ch.id}.name`);
   need.push(...data.balance.economy.tavern.names);
-  for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`);
+  for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`, ...r.unlocks.map((u) => `room.${r.id}.unlock.${u.id}`));
+  for (const m of Object.values(data.memorials)) need.push(...Object.keys(memorialTexts(m)));
+  for (const k of HOME_KINDS) need.push(`home.${k}.name`, `home.${k}.title`);
   for (const n of camp?.nodes ?? []) need.push(n.titleKey);
   if (camp) need.push(`act.${camp.act}.name`, `act.${camp.act}.season`);
   for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);

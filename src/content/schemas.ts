@@ -419,11 +419,14 @@ const conditionsListSchema = z.array(conditionSchema);
 
 export const roomSchema = z.object({
   id: z.string(),
-  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'enchanter']),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter']),
   icon: z.string(),
   fromAct: z.number().int().min(1).default(1),
   homes: z.array(z.enum(['camp', 'castle'])).min(1),
   requires: z.array(conditionSchema).default([]),
+  // level 2 and 3 of a castle room: one entry each, in order
+  levels: z.array(z.strictObject({ requires: z.array(conditionSchema).default([]) })).max(2).default([]),
+  unlocks: z.array(z.strictObject({ id: z.string().regex(/^[a-z][a-z0-9_]*$/), requires: z.array(conditionSchema).default([]) })).default([]),
 });
 
 export const effectSchema: z.ZodType<Effect> = z.union([
@@ -501,6 +504,24 @@ export const supportPairSchema = z.strictObject({
 
 /** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
 export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0-9_]+$/), title: z.string().min(1), text: z.string().min(1) });
+
+/** Fixed memorial stones of an act (`acts/actN/memorials.yaml`, story 6.9): German text here, English in the act's locale file. */
+export const memorialSchema = z.strictObject({
+  id: z.string().regex(/^[a-z0-9_]+$/),
+  portrait: z.string().regex(/^[a-z0-9_]+$/),
+  name: z.string().min(1),
+  place: z.string().min(1),
+  role: z.string().min(1),
+  quote: z.string().min(1).optional(),
+  requires: z.array(conditionSchema).default([]),
+});
+
+/** What the home shows on top (`content/home/home.yaml`, story 6.9): the picture and where each room's stone sits on it. */
+const homeViewSchema = z.strictObject({
+  image: z.string().regex(/^[a-z0-9_]+$/),
+  anchors: z.array(z.strictObject({ room: z.string(), at: z.tuple([z.number().min(0).max(100), z.number().min(0).max(100)]) })).default([]),
+});
+export const homeSchema = z.strictObject({ camp: homeViewSchema, castle: homeViewSchema });
 
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
@@ -584,13 +605,15 @@ export const renderSchema = z.object({
     fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0) }),
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
+    idleHz: z.number().positive(),
+    precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
     trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
     decor: z.object({ bushes: decorSchema, stones: decorSchema }),
   }),
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
-    offHand: z.partialRecord(itemSchema.shape.kind, gearPiece),
+    offHand: z.partialRecord(weaponGroup, gearPiece),
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
   assets: z.object({ keepUnused: z.number().int().min(0) }),

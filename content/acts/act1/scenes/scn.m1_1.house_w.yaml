@@ -1,5 +1,5 @@
 id: scn.m1_1.house_w
-background: bg_varnhold_market
+background: varnhold
 lines:
   - id: l01
     mood: neutral

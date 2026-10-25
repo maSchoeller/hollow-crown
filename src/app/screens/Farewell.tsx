@@ -11,6 +11,7 @@ import { Backdrop, Piece, QuietButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { nodeDef } from '../state/flow';
 import { data } from '../state/session';
+import { homeBackdrop } from '../campaignInfo';
 import { screen } from '../state/screen';
 import { UnitBust, UnitHead } from './unitArt';
 import './Farewell.css';
@@ -69,7 +70,7 @@ export function Farewell({ result, index }: { result: BattleResult; index: numbe
   const next = () => (screen.value = index + 1 < cards.length ? { name: 'farewell', result, index: index + 1 } : { name: 'worldmap' });
   return (
     <div class="hc-view fw-view" key={card.id}>
-      <Backdrop />
+      <Backdrop image={homeBackdrop()} />
       <div class="hc-view__fill fw-stage">
         <Card card={card} />
       </div>

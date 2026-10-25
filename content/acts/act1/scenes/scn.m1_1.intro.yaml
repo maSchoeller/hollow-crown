@@ -1,6 +1,6 @@
 # Mission 1-1, Szene vor der Karte: Ankunft in Varnhold, die Steckbriefe (Beat 3). Gerrits Verlust ist noch zu spüren, aber nicht schwer.
 id: scn.m1_1.intro
-background: bg_varnhold_market
+background: varnhold
 music: tense
 lines:
   - id: l01

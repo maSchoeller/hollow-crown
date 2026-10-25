@@ -11,6 +11,7 @@ import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, QuietButton, Seconda
 import { battle, canRestart, restartBattle } from '../state/battle';
 import { nodeDef } from '../state/flow';
 import { campaign, data } from '../state/session';
+import { homeBackdrop } from '../campaignInfo';
 import { screen } from '../state/screen';
 import { UnitHead } from './unitArt';
 import './Result.css';
@@ -128,6 +129,7 @@ function Notes({ v }: { v: MissionResultView }) {
       text: t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }),
     })),
     ...v.scars.map((s) => ({ key: `s${s.id}`, icon: 'scar', cls: 'is-bad', text: `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}` })),
+    ...(v.movedHome ? [{ key: 'home', icon: v.movedHome === 'castle' ? 'castle' : 'camp', cls: 'is-home', text: t('ui.result.newHome', { name: t(`home.${v.movedHome}.name`) }) }] : []),
     ...(v.supportsReady ? [{ key: 'sup', icon: 'campfire', cls: 'is-gold', text: t('ui.result.supports') }] : []),
   ];
   if (!lines.length) return null;
@@ -149,7 +151,7 @@ export function Result({ result }: { result: BattleResult }) {
   const farewell = farewellView(data, result).length > 0;
   return (
     <div class="hc-view res-view">
-      <Backdrop />
+      <Backdrop image={homeBackdrop()} />
       <Piece class="res-pill res-pill--win">
         <b>{t('ui.result.victory')}</b>
         <span>{t('ui.result.mission', { name: t(nodeDef(v.nodeId).titleKey), turns: t('ui.result.turns', { count: v.turns }) })}</span>
@@ -183,7 +185,7 @@ export function Defeat() {
   const MissionButton = turn ? SecondaryButton : PrimaryButton;
   return (
     <div class="hc-view res-view res-view--defeat">
-      <Backdrop image="backgrounds/bg_varnhold_burning" />
+      <Backdrop image="locations/lager_unterwegs" />
       <Piece class="res-pill res-pill--lost">
         <b>{t('ui.defeat.title')}</b>
       </Piece>

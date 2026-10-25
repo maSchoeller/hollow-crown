@@ -1,0 +1,17 @@
+# Bild und Raum-Anker je Heimat-Art (Architektur §5.10, Story 6.9). image = Ortsbild unter art/mockups/locations-s1.
+# Anker: { room, at: [x%, y%] }, Prozent des sichtbaren Bildausschnitts (Hochformat, Mitte des Bildes); der Stein sitzt dort.
+# Das Lager braucht keine Anker, die Stationen stehen unter dem Bild.
+camp:
+  image: lager_unterwegs
+  anchors: []
+castle:
+  image: paktwacht_ruine
+  # [C] Startwerte nach dem Bild paktwacht_ruine, vom Produktinhaber noch zu prüfen
+  anchors:
+    - { room: merchant, at: [17, 34] }   # linke Mauer neben dem Drachenpfeiler
+    - { room: smith, at: [83, 34] }      # rechte Mauer unter dem Turm
+    - { room: healer, at: [15, 54] }     # Blumenwiese links
+    - { room: memorial, at: [50, 48] }   # Torbogen mit der Bibliothek
+    - { room: tavern, at: [85, 54] }     # Trümmer rechts
+    - { room: convoy, at: [31, 76] }     # Weg vor dem Tor
+    - { room: campfire, at: [68, 76] }   # Grasfläche rechts des Weges

@@ -1,5 +1,5 @@
 id: scn.ch01.village_north
-background: bg_varnhold_burning
+background: erlbach
 lines:
   - id: l01
     mood: neutral

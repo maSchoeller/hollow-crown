@@ -1,4 +1,4 @@
-import type { Effect, GameData } from '../defs';
+import type { Effect, GameData, HomeKind } from '../defs';
 import type { BattleState, ItemInstance } from '../state';
 import { findUnit } from '../util';
 import type { BattleResult, BountyResult } from './campaign';
@@ -33,10 +33,19 @@ export interface MissionResultView {
   figures: ResultFigure[];
   recruited: string[];
   granted: BattleResult['granted'];
-  /** the node's own reward that took effect, for the consequence lines; empty when there was none */
+  /** the node's own reward that took effect (e.g. `setHome`), for the consequence lines; empty when there was none */
   effects: Effect[];
+  /** the home the company moved to with this mission (effect `setHome`), or null */
+  movedHome: HomeKind | null;
   scars: BattleResult['scars'];
   supportsReady: boolean;
+}
+
+/** The last `setHome` of a list of effects, or null. */
+export function movedHome(effects: readonly Effect[]): HomeKind | null {
+  let home: HomeKind | null = null;
+  for (const e of effects) if ('setHome' in e) home = e.setHome;
+  return home;
 }
 
 export function missionResultView(result: BattleResult): MissionResultView {
@@ -80,6 +89,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     recruited: result.recruited,
     granted: result.granted ?? [],
     effects: result.effects ?? [],
+    movedHome: movedHome(result.effects ?? []),
     scars: result.scars,
     supportsReady: result.supportsReady.length > 0,
   };

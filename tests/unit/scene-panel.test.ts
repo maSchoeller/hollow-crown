@@ -36,8 +36,8 @@ describe('panelAt', () => {
     expect(panelAt([], 0)).toBeUndefined();
   });
 
-  it('the prologue scenes show their panel on the alarm and at the grave, at most four boxes', () => {
-    for (const [id, bg] of [['scn.prologue.intro', 'bg_glutdom_night'], ['scn.prologue.outro', 'bg_gerrit_grave']] as const) {
+  it('the prologue scenes show their panel on the alarm (the grave scene has none), at most four boxes', () => {
+    for (const [id, bg] of [['scn.prologue.intro', 'paktnacht_glutdom']] as const) {
       const lines = resolveScene(data, ctx(), id);
       const shown = lines.map((_, i) => panelAt(lines, i));
       const n = shown.filter((p) => p === bg).length;
@@ -58,7 +58,7 @@ describe('content:check for panels', () => {
   };
   it('accepts a panel of four text lines and refuses a fifth', () => {
     const { d, texts } = prepared();
-    texts[0]!.panel = 'bg_gerrit_grave';
+    texts[0]!.panel = 'lager_unterwegs';
     texts[MAX_PANEL_LINES]!.panel = 'none';
     expect(problems(d)).toEqual([]);
     delete texts[MAX_PANEL_LINES]!.panel;
@@ -68,7 +68,7 @@ describe('content:check for panels', () => {
 
   it('counts to the end of the scene when a panel is never closed', () => {
     const { d, texts } = prepared();
-    texts[0]!.panel = 'bg_gerrit_grave';
+    texts[0]!.panel = 'lager_unterwegs';
     expect(texts.length).toBeGreaterThan(MAX_PANEL_LINES);
     expect(problems(d)).toContainEqual(expect.stringContaining('lasts longer'));
   });

@@ -1,5 +1,5 @@
-/* The camp (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1"): diorama on top, stations as room stones below,
-   the room panel over the blurred view. Style B. */
+/* The home (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1", Variante B, Gedächtnishalle): picture on top, rooms as stones
+   below, in the castle also on the picture, the room panel over the blurred view. Style B. */
 @import './tokens.css';
 
 .hm {
@@ -87,6 +87,8 @@
 .hm__spacer {
   flex: 1;
   min-height: 0;
+  /* the room anchors on the picture lie below this empty box */
+  pointer-events: none;
 }
 .hm__stack {
   display: grid;
@@ -229,10 +231,16 @@
 
 /* room panel */
 .hm-panel {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   max-height: calc(100dvh - 190px);
-  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.hm-panel > * {
+  flex: none;
+}
+.hm-panel > .hm-panel__body {
+  flex: 0 1 auto;
 }
 .hm-panel__head {
   display: flex;
@@ -372,4 +380,208 @@
   font-weight: 700;
   font-size: 12px;
   color: var(--hc-soft);
+}
+
+/* room anchors on the picture of the castle: the stones sit on their buildings (content/home/home.yaml) */
+.hm > .hm__anchors {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 68%;
+  margin: 0;
+  pointer-events: none;
+}
+.hm-anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.hm-anchor .hm-room__stone {
+  width: 44px;
+  height: 44px;
+}
+.hm-anchor:active:not(.is-locked) .hm-room__stone {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hm-anchor.is-locked {
+  cursor: default;
+}
+.hm-anchor.is-locked .hm-room__stone {
+  border-style: dashed;
+  box-shadow: none;
+  opacity: 0.6;
+}
+.hm-anchor:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+  border-radius: var(--hc-r-chip);
+}
+
+/* level of a castle room: dots, filled up to the level */
+.hm-pips {
+  display: inline-flex;
+  gap: 2px;
+}
+.hm-pips i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hc-line);
+}
+.hm-pips i.off {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--hc-line);
+}
+
+/* build-up band of a castle room: dashed while locked, with the reason */
+.hm-upband {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: var(--hc-outline-small) dashed var(--hc-soft);
+  border-radius: var(--hc-r-card-inner);
+  color: var(--hc-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.hm-upband b {
+  font-family: var(--hc-font-label);
+  font-size: 14px;
+  color: var(--hc-line);
+}
+.hm-upband span {
+  margin-left: auto;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+}
+
+/* memorial hall: desaturated, only the ember line stays (DESIGN.md Gedenken) */
+.hm.hm--mourn.has-room .hm__scene {
+  filter: blur(2px) saturate(0.25) brightness(0.85);
+}
+.hm--mourn .hm-act__badge {
+  background: var(--hc-downed);
+}
+.hm-panel.hm-panel--mourn {
+  background: var(--hc-mourn);
+}
+.hm-panel--mourn .hm-panel__head .hm-room__stone,
+.hm-panel--mourn .hm-panel__close {
+  background: var(--hc-mourn-quiet);
+}
+.hm-graves {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.hm-grave {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  padding: 4px 2px 6px;
+  border: 0;
+  border-radius: var(--hc-r-chip);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.hm-grave[aria-pressed='true'] {
+  background: var(--hc-mourn-quiet);
+}
+.hm-grave:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+/* a stone: round on top, flat at the bottom */
+.hm-grave__m {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50% 50% 14px 14px;
+  background: #d8d4cc;
+  box-shadow: 0 3px 0 var(--hc-line);
+}
+.hm-grave__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(0.95);
+}
+.hm-grave__img--initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--hc-soft);
+  filter: none;
+}
+.hm-grave b {
+  font-family: var(--hc-font-name);
+  font-size: 15px;
+  line-height: 1;
+}
+.hm-grave.is-mercenary b {
+  color: var(--hc-soft);
+}
+.hm-grave__s {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--hc-soft);
+}
+.hm-grave__ember {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--hc-ember);
+}
+.hm-quote {
+  margin: 0;
+  text-align: center;
+  font-family: var(--hc-font-name);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--hc-soft);
+}
+.hm-lesson {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--hc-r-card-inner);
+  background: var(--hc-mourn-quiet);
+  font-size: 13px;
+  font-weight: 600;
+}
+.hm-lesson.is-locked {
+  border: var(--hc-outline-small) dashed var(--hc-soft);
+  color: var(--hc-soft);
+}
+.hm-lesson.is-locked b {
+  color: var(--hc-soft);
+}
+.hm-lesson span {
+  margin-left: auto;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
 }

@@ -241,12 +241,11 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('grudge, priceMod, villageAid and setHome are refused until their state exists', () => {
+  it('grudge, priceMod and villageAid are refused until their state exists', () => {
     const unsupported: Effect[] = [
       { grudge: { lt: 'hask', delta: -1 } },
       { priceMod: { pct: -10, act: 2 } },
       { villageAid: true },
-      { setHome: 'castle' },
     ];
     for (const e of unsupported) {
       expect(validateCampaign(data, base, { type: 'effects', effects: [e] })).toBe('effect_unsupported');
@@ -339,7 +338,7 @@ describe('content references (content:check)', () => {
   it('keys that are not supported yet fail with a clear message', () => {
     const cond = problems(withDialogue(speech({ met: 'hask' })));
     expect(cond).toContainEqual(expect.stringContaining('condition met is not yet supported'));
-    for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
+    for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { recruit: { lt: 'hask' } }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }

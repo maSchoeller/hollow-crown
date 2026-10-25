@@ -7,6 +7,17 @@
 # load: precache = Service Worker beim Installieren; background = direkt nach dem Start, sobald der Akt erreicht ist;
 #       voice = nur die gewählte Sprache, nach dem Akt-Paket.
 # budgetMb: Transfergröße (gzip, Bilder und Audio wie sie sind); core bricht den Build ab, die übrigen warnen.
+# Budget je Brettfigur (art-direction §4.6), geprüft von tools/figure-budget.mjs (Build und pnpm art:tripo): zu große
+# Figuren erscheinen als Warnung, der Build bricht nicht ab. triangles = Dreiecke, texture = Kantenlänge der Grundfarb-
+# Textur in Pixeln, transferMb = Transfergröße (gzip). large = Ids großer Einheiten (Reittiere, Drachen), die das
+# largeFactor-Fache dürfen; bisher gibt es keine.
+figureBudget:
+  triangles: 7000
+  texture: 512
+  transferMb: 0.5
+  largeFactor: 2
+  large: []
+
 packs:
   - id: core
     released: true
@@ -23,13 +34,20 @@ packs:
       # Support-Paare und Chronik gelten über den ganzen Akt (Lager, Weltkarte), nicht nur in Missionen
       - acts/act1/supports.yaml
       - acts/act1/chronicle.yaml
+      # die Gedächtnishalle der Burg zeigt die festen Steine sofort, nicht erst wenn act1 im Hintergrund da ist
+      - acts/act1/memorials.yaml
+      - locales/en/act1.memorials.yaml
       - acts/act1/maps/prologue_*.yaml
       - acts/act1/scenes/scn.prologue.*.yaml
       # enthält auch die englischen Prolog-Zeilen; ohne sie zeigte der Prolog auf Englisch nur Schlüssel
       - locales/en/act1.dialogue.yaml
     # Hintergrund von Titel und Kampagnen-Liste; sonst stünde der erste Start grau da, bis act1 geladen ist
+    # Figuren des Prologs (Story 8.2): tools/art/model_packs.py legt jedes Einheitenmodell unter <Paket>/models/units/ ab
     assets:
       - locations/lager_unterwegs.webp
+      # Titelbild (art/title/title_act1.png, Story 8.7): der Titel wird beim Start gebraucht
+      - title/title_act1.webp
+      - core/**
 
   - id: act1
     released: true
@@ -41,6 +59,7 @@ packs:
       - locales/*/act1.*
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
+      - act1/**
       - locations/**
       - busts/**
       - halves/**
