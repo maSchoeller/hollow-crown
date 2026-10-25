@@ -116,6 +116,10 @@ Claude Sonnet 5.5
 
 Nachmessung: Sim unverändert (siehe oben), 495 Tests grün.
 
+### Browser-Fehler behoben (Flammen nach Wirken)
+
+Im Browser (390×844, ch01_varnhold) verschwanden nach dem Wirken alle Flammen, die neue erschien nie. Ursache: `BoardView.buildFires` rief `ParticleSystem.dispose()` auf; das gibt standardmäßig auch die Partikeltextur frei, und alle Flammen teilen `flameTexture`. Das erste Zeichnen klappte, jeder spätere Neubau (`terrain`-Event in `play`, Brandausbreitung/-ablauf, Felswall) legte Systeme mit zerstörter Textur an. Fix: `f.dispose(false)` in `src/render/board/board.ts`. Events, `filterEvents` und Zustand waren korrekt. Im Browser bestätigt: nach dem Wirken drei Flammen. Kein Unit-Test (reine Babylon-Darstellung).
+
 ### File List
 
 - content/core/balance.yaml, content/core/locales/de.yaml, content/core/locales/en.yaml

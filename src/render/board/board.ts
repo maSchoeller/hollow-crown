@@ -642,7 +642,8 @@ export class BoardView implements HostedView {
   }
 
   private buildFires(): void {
-    for (const f of this.fires) f.dispose();
+    // keep the texture: all flames share `flameTexture`, and a system disposes its texture by default
+    for (const f of this.fires) f.dispose(false);
     this.fires = [];
     for (const l of this.pointLights) l.dispose();
     this.pointLights = [];
