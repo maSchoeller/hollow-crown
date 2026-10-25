@@ -44,6 +44,14 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
   const all = Object.values(data.lieutenants ?? {});
   const perAct = new Map<number, number>();
   const maxChars = data.balance.scene.bubbleMaxChars;
+  // bounty material of the acts (story 3.5): must be a material item, and every act with lieutenants needs one
+  const byAct = data.balance.lieutenant.bounty.materialByAct;
+  for (const [act, id] of Object.entries(byAct)) {
+    const it = data.items[id];
+    if (!it) err('balance.yaml', `lieutenant.bounty.materialByAct ${act}: unknown item ${id}`);
+    else if (it.kind !== 'material') err('balance.yaml', `lieutenant.bounty.materialByAct ${act}: ${id} is no material`);
+  }
+  for (const lt of all) if (!byAct[String(lt.act)]) err('balance.yaml', `lieutenant.bounty.materialByAct: no material for act ${lt.act} (${lt.id})`);
   for (const lt of all) {
     perAct.set(lt.act, (perAct.get(lt.act) ?? 0) + 1);
     if (!data.classes[lt.class]) err(f, `${lt.id}: unknown class ${lt.class}`);

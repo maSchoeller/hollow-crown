@@ -4,6 +4,9 @@
  */
 import type { BattleState, BattleUnit, CampaignState, LieutenantState } from '../state';
 import type { GameData } from '../defs';
+import { newItem } from '../battle/create';
+import { nextFloat, nextInt, type RngState } from '../rng';
+import type { BountyResult } from './campaign';
 
 /** The grudge never goes above three notches (GDD: Groll 0-3). */
 export const GRUDGE_MAX = 3;
@@ -11,10 +14,13 @@ export const GRUDGE_MAX = 3;
 const GRUDGE_LINES = ['grudge_1', 'grudge_2', 'grudge_3'] as const;
 
 /** A lieutenant the company has not met. */
-export const newLieutenantState = (): LieutenantState => ({ met: false, encounters: 0, grudge: 0, routs: 0, signatureDropped: 0 });
+export const newLieutenantState = (): LieutenantState => ({ met: false, encounters: 0, grudge: 0, routs: 0, signatureDropped: false });
 
-/** The state of one lieutenant with defaults for whatever the campaign does not hold yet. */
-export const lieutenantState = (c: Pick<CampaignState, 'lieutenants'>, id: string): LieutenantState => ({ ...newLieutenantState(), ...c.lieutenants?.[id] });
+/** The state of one lieutenant with defaults for whatever the campaign does not hold yet (an older `signatureDropped` 0/1 becomes false/true). */
+export const lieutenantState = (c: Pick<CampaignState, 'lieutenants'>, id: string): LieutenantState => {
+  const raw = c.lieutenants?.[id];
+  return { ...newLieutenantState(), ...raw, signatureDropped: !!raw?.signatureDropped };
+};
 
 /** Keeps a grudge inside 0-3. */
 export const clampGrudge = (n: number): number => Math.max(0, Math.min(GRUDGE_MAX, n));
@@ -24,6 +30,8 @@ export interface LieutenantOutcome {
   id: string;
   /** driven off in this mission (`gone: 'fled'`) */
   routed: boolean;
+  /** the grudge before this rout raised it (the bounty is paid for this level) */
+  grudgeBefore: number;
   /** roster id of the unit that drove him off; absent when nobody or not a unit of the company */
   by?: string;
 }
@@ -42,6 +50,7 @@ export function applyLieutenantOutcome(data: GameData, c: CampaignState, s: Batt
     lt.encounters += 1;
     lt.met = true;
     const routed = u.gone === 'fled';
+    const grudgeBefore = lt.grudge;
     const by = routed ? driverId(s, u) : undefined;
     if (routed) {
       lt.routs += 1;
@@ -49,7 +58,50 @@ export function applyLieutenantOutcome(data: GameData, c: CampaignState, s: Batt
       if (by) lt.target = by;
     }
     (c.lieutenants ??= {})[u.lieutenant] = lt;
-    out.push({ id: u.lieutenant, routed, ...(by ? { by } : {}) });
+    out.push({ id: u.lieutenant, routed, grudgeBefore, ...(by ? { by } : {}) });
+  }
+  return out;
+}
+
+/** Gold bounty for driving a lieutenant off who held `grudgeBefore` notches before this rout: `goldPerLevel x (grudge + 1)`. Also shown on the wanted posters (story 3.6). */
+export const bountyGold = (data: GameData, grudgeBefore: number): number => data.balance.lieutenant.bounty.goldPerLevel * (clampGrudge(grudgeBefore) + 1);
+
+/**
+ * Pays the bounty of every lieutenant driven off (story 3.5) into `c` (a copy the caller owns): gold, one to two of the
+ * act's material, and his signature item when it falls (chance per rout, for sure at the rout number `guaranteedRout`,
+ * once per lieutenant). Call after `applyLieutenantOutcome` (the routs are counted already). Draws from `rng` in a fixed
+ * order: lieutenants in the order of `outcomes`; for each first the material amount, then the signature roll, both
+ * always. Nothing is drawn when nobody fled.
+ */
+export function payBounties(data: GameData, c: CampaignState, s: BattleState, outcomes: readonly LieutenantOutcome[], rng: RngState): BountyResult[] {
+  const cfg = data.balance.lieutenant;
+  const materialId = cfg.bounty.materialByAct[String(data.campaign.act)];
+  const out: BountyResult[] = [];
+  for (const o of outcomes) {
+    if (!o.routed) continue;
+    const u = s.units.find((x) => x.lieutenant === o.id);
+    const lt = lieutenantState(c, o.id);
+    const gold = bountyGold(data, o.grudgeBefore);
+    const { min, max } = cfg.bounty.materials;
+    const count = min + nextInt(rng, max - min + 1);
+    const roll = nextFloat(rng) < cfg.signature.chance;
+    const drop = !lt.signatureDropped && (roll || lt.routs >= cfg.signature.guaranteedRout);
+    c.gold += gold;
+    const res: BountyResult = { id: o.id, nameKey: u?.nameKey ?? `unit.${o.id}.name`, gold, grudge: lt.grudge };
+    if (u?.name) res.name = u.name;
+    if (u?.portrait) res.portrait = u.portrait;
+    if (materialId && count > 0) {
+      c.materials[materialId] = (c.materials[materialId] ?? 0) + count;
+      res.material = { id: materialId, count };
+    }
+    if (drop) {
+      const item = newItem(c, data.lieutenants[o.id]!.signatureItem, data);
+      c.convoy.push(item);
+      lt.signatureDropped = true;
+      (c.lieutenants ??= {})[o.id] = lt;
+      res.signature = item;
+    }
+    out.push(res);
   }
   return out;
 }

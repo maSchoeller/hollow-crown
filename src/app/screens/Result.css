@@ -91,6 +91,42 @@
 .res-lt__text {
   flex: 1;
   min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.res-lt__head,
+.res-lt__pay,
+.res-lt__sig {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.res-lt__sigtag {
+  font-size: 11px;
+  opacity: 0.7;
+}
+/* grudge after the mission: symbol + number + notches */
+.res-grudge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.res-grudge__notches {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 2px solid var(--hc-line);
+  border-radius: 4px 4px 8px 8px;
+  background: var(--hc-team-enemy);
+}
+.res-grudge__notches i {
+  display: block;
+  width: 3px;
+  height: 9px;
+  background: #fff;
 }
 .res-lt__text b {
   font-family: var(--hc-font-name);

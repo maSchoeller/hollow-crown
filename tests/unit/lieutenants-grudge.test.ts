@@ -56,7 +56,7 @@ function won(c: CampaignState, opts: { fledBy?: string; ltId?: string } = {}): B
 describe('after the mission (AC 3)', () => {
   it('counts a meeting and sets met, without a grudge for a lieutenant who stayed', () => {
     const lt = finishBattle(data, fresh(), won(fresh())).campaign.lieutenants!.hask!;
-    expect(lt).toEqual({ met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 });
+    expect(lt).toEqual({ met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false });
   });
 
   it('a rout raises the grudge and sets the driver as target; again and again up to 3; a new driver changes the target', () => {
@@ -118,7 +118,7 @@ describe('effect grudge and condition met (AC 4)', () => {
     const c = fresh();
     expect(evalCondition(conditionContext(data, c), { met: 'hask' })).toBe(false);
     expect(evalCondition(conditionContext(data, null), { met: 'hask' })).toBe(false);
-    c.lieutenants = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 } };
+    c.lieutenants = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } };
     expect(evalCondition(conditionContext(data, c), { met: 'hask' })).toBe(true);
   });
 
@@ -140,7 +140,7 @@ describe('save and set-up (AC 1, 6)', () => {
   it('fills the new fields of an older save that holds only met', () => {
     const c = fresh();
     c.lieutenants = { hask: { met: true } as never };
-    expect(normalizeCampaign(data, c).lieutenants!.hask).toEqual({ met: true, encounters: 0, grudge: 0, routs: 0, signatureDropped: 0 });
+    expect(normalizeCampaign(data, c).lieutenants!.hask).toEqual({ met: true, encounters: 0, grudge: 0, routs: 0, signatureDropped: false });
     expect(normalizeCampaign(data, fresh()).lieutenants).toBeUndefined();
   });
 
@@ -149,7 +149,7 @@ describe('save and set-up (AC 1, 6)', () => {
     d.maps.prologue_caravan!.units.push({ id: 'ltx', team: 'enemy', class: 'brigand', lieutenant: 'hask', level: 3, at: [1, 1], items: [] });
     d.maps.prologue_caravan!.units.push({ id: 'lty', team: 'enemy', class: 'marksman', lieutenant: 'morra', level: 3, at: [2, 1], items: [] });
     const c = fresh();
-    c.lieutenants = { hask: { met: true, encounters: 2, grudge: 2, target: 'brenna', routs: 2, signatureDropped: 0 } };
+    c.lieutenants = { hask: { met: true, encounters: 2, grudge: 2, target: 'brenna', routs: 2, signatureDropped: false } };
     const s = createBattle(d, c, 'prologue', c.roster.map((r) => r.id));
     expect(s.units.find((u) => u.uid === 'ltx')).toMatchObject({ grudge: 2, grudgeTarget: 'brenna' });
     expect(s.units.find((u) => u.uid === 'lty')!.grudge).toBeUndefined();
@@ -179,7 +179,7 @@ describe('AI (AC 5)', () => {
 
 describe('opening lines (AC 7)', () => {
   const lt = (over: Partial<BattleUnit> = {}): BattleUnit => ({ uid: 'u', id: 'hask', team: 'enemy', pos: [1, 1], lieutenant: 'hask', ...over }) as BattleUnit;
-  const known = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 } };
+  const known = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } };
   const camp = (lieutenants?: CampaignState['lieutenants']) =>
     ({ lieutenants, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
 
@@ -209,7 +209,7 @@ describe('opening lines (AC 7)', () => {
 
   it('ltBarks marks speakers, names the target, and leaves the line out in skip mode', () => {
     const c = fresh();
-    c.lieutenants = { hask: { met: true, encounters: 1, grudge: 2, target: 'brenna', routs: 1, signatureDropped: 0 } };
+    c.lieutenants = { hask: { met: true, encounters: 1, grudge: 2, target: 'brenna', routs: 1, signatureDropped: false } };
     const s = { units: [lt({ uid: 'a', grudge: 2, grudgeTarget: 'brenna' })] } as BattleState;
     const spoken = new Set<string>();
     const [bark] = ltBarks(data, c, s, spoken, true);

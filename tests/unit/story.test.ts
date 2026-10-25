@@ -146,7 +146,7 @@ describe('conditions (architecture §5.3)', () => {
 
   it('met holds once the company has met the lieutenant (story 3.3)', () => {
     expect(holds(base, { met: 'hask' })).toBe(false);
-    const met = { ...base, lieutenants: { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 } } };
+    const met = { ...base, lieutenants: { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } } };
     expect(holds(met, { met: 'hask' })).toBe(true);
     expect(holds(met, { met: 'morra' })).toBe(false);
   });

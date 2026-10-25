@@ -780,6 +780,23 @@ export interface Balance {
     /** score bonus for the grudge target of a lieutenant (story 3.3) */
     grudgeTargetBonus: number;
   };
+  /** bounty and signature drop of the lieutenants (story 3.5) */
+  lieutenant: {
+    bounty: {
+      /** gold per grudge level: `goldPerLevel x (grudge before the rout + 1)` */
+      goldPerLevel: number;
+      /** material of the act per rout, an amount from min to max */
+      materials: { min: number; max: number };
+      /** act number (as text) -> material id */
+      materialByAct: Record<string, string>;
+    };
+    signature: {
+      /** chance per rout (0-1) */
+      chance: number;
+      /** the rout (counted after this one) at which the item falls for sure, when it has not fallen yet */
+      guaranteedRout: number;
+    };
+  };
 }
 
 /** Presentation values of the battle board (content/render.yaml); never read by the rules. */

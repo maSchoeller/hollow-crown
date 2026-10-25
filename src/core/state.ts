@@ -260,8 +260,8 @@ export interface LieutenantState {
   target?: string;
   /** times he was driven off */
   routs: number;
-  /** signature items he has dropped (story 3.5) */
-  signatureDropped: number;
+  /** his signature item has fallen (story 3.5); it falls once per lieutenant */
+  signatureDropped: boolean;
 }
 
 export type MapLookup = (id: string) => MapDef;

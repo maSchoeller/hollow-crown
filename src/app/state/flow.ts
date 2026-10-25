@@ -396,7 +396,7 @@ if (import.meta.env.DEV) {
         const c = clone(campaign.value);
         c.lieutenants ??= {};
         for (const l of list) {
-          c.lieutenants[l.id] = { met: l.kind !== 'first', encounters: l.kind === 'first' ? 0 : 1, grudge: l.grudge, target: l.target, routs: l.grudge, signatureDropped: 0 };
+          c.lieutenants[l.id] = { met: l.kind !== 'first', encounters: l.kind === 'first' ? 0 : 1, grudge: l.grudge, target: l.target, routs: l.grudge, signatureDropped: false };
           if (l.kind === 'mock') {
             const rec = c.roster.find((r) => r.id === l.target);
             c.roster = c.roster.filter((r) => r.id !== l.target);
@@ -408,6 +408,30 @@ if (import.meta.env.DEV) {
         data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id));
         if (!data.campaign.nodes.some((n) => n.id === DEV_MAP_ID)) data.campaign.nodes.push(devLieutenantNode(first));
         await beginMission(DEV_MAP_ID, c.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
+      },
+      /**
+       * shows the result screen with a bounty (story 3.5): opens the test battle (see `devLieutenant`), has every lieutenant
+       * flee for the first company member and wins: `devBounty('hask', 1)` (grudge 1 before the rout: bounty 400), `devBounty('hask', 3)`
+       * (3 routs so far: the 4th drops the signature item for sure), `devBounty([['hask', 1], ['morra', 2]])` for two.
+       */
+      devBounty: async (spec: string | Array<[string, number?]>, grudge = 1) => {
+        const list = (typeof spec === 'string' ? [[spec, grudge]] : spec) as Array<[string, number?]>;
+        await (window as unknown as { __hc: { devLieutenant: (s: Array<[string, number?]>) => Promise<void> } }).__hc.devLieutenant(list);
+        const b = battle.value;
+        if (!b) return;
+        const flee = (st: typeof b.state) => {
+          const by = st.units.find((x) => x.team === 'player')!;
+          for (const u of st.units) if (u.lieutenant) Object.assign(u, { gone: 'fled', fledBy: by.uid, pos: null });
+        };
+        const start = clone(b.start);
+        const state = clone(b.state);
+        flee(start);
+        flee(state);
+        battle.value = { ...b, start, state };
+        // only the fixed first node is open while nothing is completed, so the test node could not be finished
+        const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
+        if (!campaign.value!.completed.includes(first.id)) campaign.value = { ...campaign.value!, completed: [...campaign.value!.completed, first.id] };
+        (window as unknown as { __hc: { autoWin: () => void } }).__hc.autoWin();
       },
       /** changes the grudge of a lieutenant in the running test battle: `devGrudge('hask', 3, 'brenna')` */
       devGrudge: (id: string, grudge: number, target?: string) => {
