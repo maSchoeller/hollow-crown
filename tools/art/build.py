@@ -15,7 +15,7 @@ python tools/art/build.py [--quality mid|high]
 - Season 1 locations (art/mockups/locations-s1): the act 1 places (lager_unterwegs = shell, dialogue backdrops of act 1), WebP q75,
   1280×720 (high: 1920×1080).
 - Title image (art/title/title_act1.png, 2:3): WebP q72, 1024×1536 → public/assets/title/title_act1.webp (pack core).
-- World map terrain (art/world/, made by `pnpm art:world`): glb, splat maps and heights → public/assets/world/; loads on demand
+- World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture, doubled to 2048 px wide → public/assets/world/valmora.webp; loads on demand
   when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow and PyYAML.
@@ -26,7 +26,7 @@ import re
 import shutil
 import sys
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ground  # noqa: E402
@@ -155,19 +155,21 @@ def build_title():
     return ['title_act1']
 
 
+WORLD_MAP = 'map_flat_v1.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map.md)
+WORLD_WIDTH = 2048  # shipped width: the 1024 px source is doubled (Lanczos + unsharp mask), so the near zoom stays crisp on dense screens
+
+
 def build_world():
-    """The world map terrain from Blender (story 5.2, `pnpm art:world`) → public/assets/world/: valmora.glb, the painted
-    ground (WebP) and the heights for the game; loads on demand (folder world/ is not precached)."""
-    src = os.path.join(ART, 'world')
-    names = ['valmora.glb', 'valmora_albedo.png', 'valmora_heights_game.json']
-    if not all(os.path.isfile(os.path.join(src, n)) for n in names):
+    """The flat world map (story 5.2) → public/assets/world/valmora.webp; loads on demand (folder world/ is not precached)."""
+    src = os.path.join(ART, 'world', WORLD_MAP)
+    if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
-    shutil.copy2(os.path.join(src, 'valmora.glb'), os.path.join(dst, 'valmora.glb'))
-    shutil.copy2(os.path.join(src, 'valmora_heights_game.json'), os.path.join(dst, 'valmora_heights.json'))
-    if os.path.isfile(os.path.join(src, 'water_normal.png')):
-        shutil.copy2(os.path.join(src, 'water_normal.png'), os.path.join(dst, 'water_normal.png'))
-    Image.open(os.path.join(src, 'valmora_albedo.png')).convert('RGB').save(os.path.join(dst, 'valmora_ground.webp'), 'WEBP', quality=82, method=6)
+    im = Image.open(src).convert('RGB')
+    if im.width < WORLD_WIDTH:
+        im = im.resize((WORLD_WIDTH, round(im.height * WORLD_WIDTH / im.width)), Image.LANCZOS)
+        im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=70, threshold=2))
+    im.save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=84, method=6)
     return ['valmora']
 
 

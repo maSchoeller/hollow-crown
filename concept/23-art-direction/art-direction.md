@@ -296,12 +296,13 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 6. Weltkarte [A]
 
-- **Echte 3D-Szene mit eigener Topografie** (Produktinhaber 2026-10-24): Valmora als ein in Blender gebautes Gelände (`pnpm art:world`, `tools/art/world_height.py` + `blender_world.py`) mit gemalter Bodentextur, statt aus den Felderblöcken der Kampfkarte; Requisiten (Bäume, Häuser, Orts-Miniaturen) bleiben dieselben wie auf dem Brett. Valmora mit Drachengebirge (zusammenhängende, gezackte Bergketten mit Schnee) im Norden, Silbermeer mit Steilküste und Felsnadeln im Westen, Eisenmark als Tafelland mit Felswänden und Canyon, Grenzland als Hügelland mit Felskuppen im Süden und Osten. Vorbilder: `weltkarte_valmora.png` und die Designbilder `art/world/concept_*.jpg` (`art/prompts/world_topography.md`). Kachelraster 56 × 40 (`content/world/valmora.yaml`) für Orte, Regionen, Wege; Platz für 12–14 Orte je Akt.
-- **Jahreszeit live:** Die drei Regionen tragen die Jahreszeit ihres Akts; schreitet die Staffel fort, wechselt die Grundstimmung der ganzen Karte.
-- **Orte als Miniaturen:** jeder gespielte Ort als kleines 3D-Diorama mit höchstens 2 Varianten (z. B. Dorf gerettet/verbrannt, Hungerlager Siedlung/Ödnis).
-- **Drachenzeichen je Akt** als zusätzliche Ebenen: Akt 1 Asche (Partikel, graue Flecken), Akt 2 Risse (glühende Spalten im Boden), Akt 3 Schatten (Drachensilhouetten ziehen über die Karte).
-- **Heimsuchungen und Aufträge** als Wimpel bzw. Steckbrief-Symbole auf den Orten; Leutnants als kleine Figuren mit Groll-Wimpel.
-- Kamera wie auf dem Brett, mit Schwenken und 2 Zoomstufen. [C]
+- **Flaches gemaltes Bild** (Produktinhaber 2026-10-24, löst die 3D-Szene vom 23./24.10. ab): `art/world/map_flat_v1.png`, Hochformat 2:3 (1024 × 1536), von ChatGPT nach der Layout-Skizze `art/world/map_guide.png` und dem Stil von `weltkarte_valmora.png` gemalt (`art/prompts/world_map.md`). Das Bild zeigt **keine Gebäude, Wege oder Schrift**; Orte, Wege, Nebel, Namen und Marker legt das Spiel als HTML darüber.
+- **Aufbau:** Reise von unten nach oben: Akt 1 Grenzland (Spätsommer, Felder und Wälder, Start unten rechts), Akt 2 Eisenmark (Herbst, Tafelland mit Canyon und großer Ebene in der Mitte), Akt 3 Aurenhall und Drachengebirge (Winter, oben). Silbermeer im Westen, ein Fluss vom Gebirge zur Südwestküste. Die Akt-Grenzen laufen als weiche Wellenbänder, damit der Nebel späterer Akte ein einfacher Verlauf von oben ist.
+- **35 Orte plus Heimat** auf gemalten Lichtungen (`art/world/map_placed_v1.json`, Plan in `art/world/map_layout.json`): 25 Story-Missionen (Prolog + 8, 8, 8) und 10 Nebenquests (3, 3, 4), Mindestabstand 100 px im Quellbild. Aurenhall (3-1, 3-5, 3-6, N7, N10) und die Paktwacht (Heimat, 1-6 bis 1-8) sind Gruppen von Lichtungen nebeneinander.
+- **Steine:** Story-Missionen als Kreis mit Beschriftung (P, 1-1 …), Nebenquests als goldene Raute (N1 …), die Heimat mit Lager-Symbol; erledigte Orte klein und grau. Kamera: verschiebbar mit Nachgleiten, 2 Zoomstufen, Tipp auf einen Ort zoomt leicht heran.
+- **Später optional:** kleine Aufsätze auf den Lichtungen (Burg, Lager, verbranntes Dorf als Variante), Drachenzeichen je Akt (Asche, Risse, Schatten) als Ebenen, Heimsuchungen und Aufträge als Wimpel bzw. Steckbrief-Symbole, Leutnants als kleine Figuren mit Groll-Wimpel.
+- **Schärfe:** Der Build verdoppelt das 1024-px-Bild auf 2048 × 3072 (Lanczos plus leichte Schärfung, WebP 1,4 MB, auf Abruf); das bringt knackigere Kanten, aber keine neuen Details.
+- **Offen:** Die Lichtungen wirken ohne Marker wie gleichförmige Sandflecken.
 
 ## 7. Heimat-Burg [A]
 

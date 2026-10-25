@@ -84,4 +84,22 @@ describe('combat barks (story 9.13)', () => {
     const en = { ...locales, en: { ...locales.en, [key]: 'y'.repeat(data.balance.scene.bubbleMaxChars + 1) } };
     expect(problems(data, en)).toContainEqual(expect.stringContaining('en bark longer than'));
   });
+
+  it('content:check: bark speaker chain, known character, no answers', () => {
+    const id = barkScene(speakers()[0]!.charId ?? speakers()[0]!.id);
+    const who = id.slice('scn.bark.'.length);
+    const problems = (d: GameData) => validateContent(d, locales).map((i) => i.message);
+    const other = clone(data);
+    (other.scenes[id]!.lines[0] as { speaker?: string[] }).speaker = ['avatar'];
+    expect(problems(other)).toContainEqual(expect.stringContaining(`bark speaker chain must be exactly [${who}]`));
+    const chain = clone(data);
+    (chain.scenes[id]!.lines[0] as { speaker?: string[] }).speaker = [who, 'avatar'];
+    expect(problems(chain)).toContainEqual(expect.stringContaining('bark speaker chain must be exactly'));
+    const unknown = clone(data);
+    unknown.scenes['scn.bark.nobody'] = { ...clone(unknown.scenes[id]!), id: 'scn.bark.nobody' };
+    expect(problems(unknown)).toContainEqual(expect.stringContaining('bark scene for unknown character nobody'));
+    const choice = clone(data);
+    choice.scenes[id]!.lines.push({ id: 'level_up', choice: [{ id: 'a', text: 'A', effects: [] }] } as never);
+    expect(problems(choice)).toContainEqual(expect.stringContaining('a bark scene has no answers'));
+  });
 });

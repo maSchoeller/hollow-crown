@@ -961,23 +961,24 @@ damit sich das Spiel wie ein Ganzes anfühlt.
 **Dann** rendert der Canvas mit `board.fpsIdle` oder pausiert
 **Und** die Zeichenaufrufe auf Kap. 1 (Mittel) steigen nicht gegenüber D17.
 
-### Story 5.2: Die Weltkarte als 3D-Szene
+### Story 5.2: Die Weltkarte als flaches Bild
 
 Als Spieler
-möchte ich Valmora als bespielte Miniaturlandschaft sehen,
-damit ich spüre, wo meine Truppe gewesen ist.
+möchte ich Valmora als gemalte Karte sehen, auf der meine Truppe von Akt zu Akt nach Norden zieht,
+damit ich spüre, wo sie gewesen ist.
+
+*(Geändert vom Produktinhaber, 2026-10-24: flaches Bild statt 3D-Szene; siehe `concept/23-art-direction/decision-log.md`.)*
 
 **Akzeptanzkriterien:**
 
-**Angenommen** `content/world/valmora.yaml` (Kachelraster mit Legende, Regionen mit Akt und Jahreszeit, Orte mit Knoten-ID, Feld, Modell und Varianten mit `requires`)
+**Angenommen** `content/world/valmora.yaml` (Bild, Regionen mit Akt und Ort des Namens, Nebelkanten je Akt, Orte als Prozentpositionen mit Beschriftung und Art, optional mit Knoten-ID)
 **Wenn** die Weltkarte geladen wird
-**Dann** baut `render/world/` sie mit `terrain3d` und denselben Bodentexturen und Requisiten wie das Brett; Regionen späterer Akte liegen unter Nebel mit Regionsname
-**Und** die Kamera hat 2 Zoomstufen und lässt sich verschieben.
+**Dann** zeigt sie das gemalte Hochformat-Bild (Akt 1 unten, Akt 2 Mitte, Akt 3 oben) mit den Steinen der Knoten darauf; Regionen späterer Akte liegen unter Nebel mit Regionsname
+**Und** die Karte hat 2 Zoomstufen und lässt sich verschieben; `content:check` prüft, dass jeder Knoten und die Heimat einen Ort haben und die Steine mindestens 90 px Abstand halten.
 
-**Angenommen** ein gespielter Ort mit Varianten (z. B. Erlbach gerettet/verbrannt)
-**Wenn** die Bedingungen einer Variante erfüllt sind
-**Dann** zeigt die Weltkarte diese Variante als Miniatur
-**Und** je Akt kommen Drachenzeichen als zusätzliche Ebene dazu (Akt 1 Asche).
+**Angenommen** ein Ort mit Varianten oder Drachenzeichen (z. B. Varnhold gerettet/verbrannt)
+**Wenn** diese Aufsätze gebaut sind
+**Dann** liegen sie als kleine Bilder oder Modelle auf der Lichtung (nicht Teil dieser Story; später optional).
 
 ### Story 5.3: Weltkarte als Hub
 
