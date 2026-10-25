@@ -244,11 +244,10 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('priceMod, villageAid and setHome are refused until their state exists', () => {
+  it('priceMod and villageAid are refused until their state exists', () => {
     const unsupported: Effect[] = [
       { priceMod: { pct: -10, act: 2 } },
       { villageAid: true },
-      { setHome: 'castle' },
     ];
     for (const e of unsupported) {
       expect(validateCampaign(data, base, { type: 'effects', effects: [e] })).toBe('effect_unsupported');
@@ -339,7 +338,7 @@ describe('content references (content:check)', () => {
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
-    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
+    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { recruit: { lt: 'hask' } }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }

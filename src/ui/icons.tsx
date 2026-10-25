@@ -74,6 +74,9 @@ const P: Record<string, string> = {
   star: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   scar: 'M5 19L19 5M8 9l2 2M12 13l2 2M10 7l2 2M14 11l2 2',
   fallen: 'M12 3v18M7 8h10',
+  // the castle of the home (act pill, world map) and the memorial stone (memorial hall), after mockup 04
+  castle: 'M4 21V8h3V5h3v3h4V5h3v3h3v13zM10 21v-5h4v5',
+  stone: 'M6 21V10a6 6 0 0 1 12 0v11zM4 21h16M12 9v6M9.5 11.5h5',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',

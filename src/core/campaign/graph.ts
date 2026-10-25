@@ -12,6 +12,14 @@ export function storyCount(data: GameData, completed: readonly string[]): number
   return data.campaign.nodes.filter((n) => n.kind === 'story' && completed.includes(n.id)).length;
 }
 
+/**
+ * The act is over: its `fixed: finale` node is completed (story 7.3). An act without a finale node is never over. The
+ * act number stays as it is; moving on to the next act is a matter of the build having its pack (architecture §5.4).
+ */
+export function actFinished(data: GameData, c: Pick<CampaignState, 'completed'>): boolean {
+  return data.campaign.nodes.some((n) => n.fixed === 'finale' && c.completed.includes(n.id));
+}
+
 /** Whether node `n` is open right now; see `availableNodes`. */
 function open(data: GameData, c: CampaignState, n: CampaignNodeDef, done: number): boolean {
   if (c.completed.includes(n.id)) return false;

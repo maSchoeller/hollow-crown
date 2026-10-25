@@ -62,6 +62,15 @@ describe('missionResultView (story 6.6)', () => {
     expect(v.gold).toBe(1120);
   });
 
+  it('names the home the company moved to (setHome), the last one wins; none without it', () => {
+    expect(missionResultView(fake()).movedHome).toBeNull();
+    expect(missionResultView(fake()).effects).toEqual([]);
+    const v = missionResultView(fake({ effects: [{ gold: 5 }, { setHome: 'castle' }] }));
+    expect(v.movedHome).toBe('castle');
+    expect(v.effects).toHaveLength(2);
+    expect(missionResultView(fake({ effects: [{ setHome: 'castle' }, { setHome: 'camp' }] })).movedHome).toBe('camp');
+  });
+
   it('keeps only materials that were gained and side objectives with their state', () => {
     const v = missionResultView(fake());
     expect(v.materials).toEqual([{ id: 'iron_ore', count: 2 }]);

@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { availableNodes, nodeLinks, wantedList } from '../../core';
+import { actFinished, availableNodes, nodeLinks, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -14,7 +14,8 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playNode } from '../state/flow';
-import { packNeededFor } from '../state/packs';
+import { nextActInBuild, packNeededFor } from '../state/packs';
+import { BackupSheet } from './BackupSheet';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
@@ -79,6 +80,10 @@ export function WorldMap() {
   const home = placeOf(world, { home: true }) ?? world.places[0]!;
   const placeById = (id: string) => placeOf(world, { node: id });
   const fog = fogTop(world, data.campaign.act);
+  // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
+  const finished = actFinished(data, c);
+  const backupDue = finished && !c.backupReminded.includes(data.campaign.act);
+  const soonAct = finished && !nextActInBuild() ? data.campaign.act + 1 : null;
 
   // the view: where the picture lies (offset and scale) and the zoom step; every change puts the HTML pieces over their places
   const view = useRef<MapView>({ x: 0, y: 0, s: 1 });
@@ -248,7 +253,6 @@ export function WorldMap() {
     else glide(zoomAround(view.current, scr, size, scaleOfStep(step.current), [scr.w / 2, scr.h * REST_Y], pad()));
   };
   const node = sel ? nodes.find((n) => n.id === sel)! : null;
-  const ended = open.length === 0;
   /** data attributes that pin an element over a place (percent of the picture) */
   const over = (at: readonly [number, number]) => ({ 'data-x': at[0], 'data-y': at[1] });
   const ends = (at: readonly [number, number]) => `${at[0]},${at[1]}`;
@@ -303,24 +307,31 @@ export function WorldMap() {
           {fog !== null &&
             world.regions
               .filter((r) => r.act > data.campaign.act)
-              .map((r) => (
-                <div key={r.id} class="wm-region" {...over(r.at)} aria-hidden="true">
-                  {t(`world.region.${r.id}`)}
-                </div>
-              ))}
-          {/* the home is a place on the map as well (a tent in the camp, a castle later) */}
+              .map((r) =>
+                r.act === soonAct ? (
+                  <Piece key={r.id} class="wm-soon" {...over(r.at)} role="status">
+                    <b>{t('ui.map.actSoon', { act: r.act, name: t(`act.${r.act}.name`) })}</b>
+                    <span>{t('ui.map.actSoonHint')}</span>
+                  </Piece>
+                ) : (
+                  <div key={r.id} class="wm-region" {...over(r.at)} aria-hidden="true">
+                    {t(`world.region.${r.id}`)}
+                  </div>
+                ),
+              )}
+          {/* the home is a place on the map as well: a tent in the camp, the castle after mission 1-6 */}
           <button
             type="button"
             class="wm-node wm-node--home"
             {...over(home.at)}
-            aria-label={t(`home.${data.campaign.home}.title`)}
+            aria-label={t(`home.${c.home.kind}.title`)}
             onClick={(e) => (e.stopPropagation(), (screen.value = { name: 'camp' }))}
           >
             <span class="wm-node__head">
-              <Icon name="camp" size={22} />
+              <Icon name={c.home.kind === 'castle' ? 'castle' : 'camp'} size={22} />
             </span>
             <i class="wm-node__tail" />
-            <span class="wm-node__label">{t(`home.${data.campaign.home}.title`)}</span>
+            <span class="wm-node__label">{t(`home.${c.home.kind}.title`)}</span>
           </button>
           {shown.map((n) => {
             const done = c.completed.includes(n.id);
@@ -387,16 +398,6 @@ export function WorldMap() {
           <NodeCard id={node.id} />
         ) : (
           <>
-            {ended && (
-              <Piece class="wm-end">
-                <span class="wm-end__crown" aria-hidden="true">
-                  ♛
-                </span>
-                <b>{t('ui.end.title')}</b>
-                <p>{t('ui.end.text')}</p>
-                <PrimaryButton onClick={() => (screen.value = { name: 'camp' })}>{t('ui.map.home')}</PrimaryButton>
-              </Piece>
-            )}
             <nav class="wm-nav">
               <button type="button" onClick={() => (screen.value = { name: 'camp' })}>
                 <Icon name="camp" size={26} />
@@ -423,6 +424,7 @@ export function WorldMap() {
           </>
         )}
       </div>
+      {backupDue && !saving && <BackupSheet />}
       {saving && <SaveSheet onClose={() => setSaving(false)} onToast={setToast} />}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
     </div>
