@@ -63,9 +63,12 @@ units:
   - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
   - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
-  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg3h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 2, then: aggressive }, difficulty: [hard] }
+  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg4h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 2, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal] }
+  - { id: tg5h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
   - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
 pairs: []
 # Hart: Verstärkung aus dem Seitentor im Osten (angekündigt), Runde 3
@@ -84,8 +87,8 @@ objectives:
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl per Simulation abgestimmt (Normal: Median 9 Runden bis zum Sieg)
-    - { id: s_fast, type: turn_limit, turns: 9, reward: { gold: 100 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 11 Runden bis zum Sieg)
+    - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 100 } }
 triggers:
   # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
   - id: t_intro

@@ -642,7 +642,8 @@ export class BoardView implements HostedView {
   }
 
   private buildFires(): void {
-    for (const f of this.fires) f.dispose();
+    // keep the texture: all flames share `flameTexture`, and a system disposes its texture by default
+    for (const f of this.fires) f.dispose(false);
     this.fires = [];
     for (const l of this.pointLights) l.dispose();
     this.pointLights = [];
@@ -826,6 +827,7 @@ export class BoardView implements HostedView {
   }
 
   private removeUnit(v: UnitView): void {
+    this.setBleedLabel(v.uid, null); // the counter goes with the figure (a unit that drops out of the fog while downed)
     v.figure.dispose();
     this.rings.remove(v.uid);
     this.units.delete(v.uid);
@@ -1318,7 +1320,7 @@ export class BoardView implements HostedView {
   // ------------------------------------------------------------------ event playback
 
   /** Plays core events as board animations, then syncs to the final state. */
-  async play(events: GameEvent[], finalState: BattleState): Promise<void> {
+  async play(events: GameEvent[], finalState: BattleState, pool?: readonly BattleUnit[]): Promise<void> {
     if (this.readyPromise) await this.readyPromise;
     for (const e of events) {
       if (this.disposed) return;
@@ -1488,7 +1490,10 @@ export class BoardView implements HostedView {
           break;
         }
         case 'spawned': {
-          const u = finalState.units.find((x) => x.uid === e.unit);
+          const final = finalState.units.find((x) => x.uid === e.unit) ?? pool?.find((x) => x.uid === e.unit);
+          // `e.at`: a foe coming out of the fog appears where it first comes into sight, `pool`: the units of the whole state, for foes
+          // the board is shown without but lets in for a moment (fog filter, story 2.6)
+          const u = final && e.at ? { ...final, pos: e.at } : final;
           if (u) {
             await this.syncUnits({ ...this.state, units: [...this.state.units.filter((x) => x.uid !== u.uid), u] });
             const v = this.units.get(u.uid);

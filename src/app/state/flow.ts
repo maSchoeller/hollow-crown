@@ -5,6 +5,7 @@
 import {
   CoreInvariantError,
   applyCommand,
+  beginBattle,
   conditionContext,
   firstNode,
   nodeScenes,
@@ -23,6 +24,7 @@ import {
   type ResolvedOption,
   type SceneDef,
   type FlagDef,
+  type MapDef,
   type ChroniclePageDef,
   chronicleTexts,
   sceneTexts,
@@ -355,6 +357,28 @@ if (import.meta.env.DEV) {
       failSaves: (on = true) => {
         devSaveFailure.on = on;
         if (campaign.value) autosave(battle.value ? 'battle' : 'camp');
+      },
+      /**
+       * plays a fixture map of `tests/fixtures/maps/<id>.yaml` (default `dev_fog`, story 2.6) with the loaded campaign's company:
+       * `await __hc.devMap()`. Saving is switched off for the battle (`failSaves`), so no real save is overwritten. The files are
+       * imported on demand and exist in the dev build only; a new fixture map is picked up by its file name.
+       */
+      devMap: async (id = 'dev_fog') => {
+        const c = campaign.value;
+        if (!c) throw new Error('load a campaign first');
+        const files = import.meta.glob('../../../tests/fixtures/maps/*.yaml');
+        const load = files[`../../../tests/fixtures/maps/${id}.yaml`];
+        if (!load) throw new Error(`no fixture map "${id}"; there are: ${Object.keys(files).map((f) => /([^/]+)\.yaml$/.exec(f)![1]).join(', ')}`);
+        const { mapSchema } = await import('../../content/schemas');
+        const raw = ((await load()) as { default: unknown }).default;
+        data.maps[id] = { ...mapSchema.parse(raw), act: 1 } as MapDef;
+        if (!data.campaign.nodes.some((n) => n.id === id)) data.campaign.nodes.push({ ...data.campaign.nodes[0]!, id, map: id, pre: undefined, post: undefined });
+        devSaveFailure.on = true;
+        const r = beginBattle(data, c, id, []);
+        r.state.lockedRoles = []; // every role's class action works on a fixture map
+        battle.value = { start: r.state, state: r.state, log: [], effects: [] };
+        pendingEvents.value = r.events;
+        screen.value = { name: 'battle' };
       },
       /** home-screen hint again, as after a first save */
       showHomeHint: devResetHint,

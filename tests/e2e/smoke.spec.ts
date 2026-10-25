@@ -39,16 +39,19 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   // turn-1 lesson; the board loads slowly under software WebGL when several projects run in parallel
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
   const box = (await page.locator('canvas.hc-stage').boundingBox())!;
-  // drag the map upwards as far as it goes, i.e. towards its southern edge
+  // drag the map upwards as far as it goes, i.e. towards its southern edge; the board fits its camera once its assets have
+  // loaded, which overrides an earlier drag (slow software WebGL in CI), so drag again until the pull has taken
   const x = box.x + box.width / 2;
   const y = box.y + box.height * 0.4;
-  for (let i = 0; i < 2; i++) {
-    await page.mouse.move(x, y);
-    await page.mouse.down();
-    await page.mouse.move(x, y - 1500, { steps: 4 });
-    await page.mouse.up();
-  }
-  const view = await page.evaluate(() => {
+  const pull = async () => {
+    for (let i = 0; i < 2; i++) {
+      await page.mouse.move(x, y);
+      await page.mouse.down();
+      await page.mouse.move(x, y - 1500, { steps: 4 });
+      await page.mouse.up();
+    }
+  };
+  const measure = () => page.evaluate(() => {
     // screenOf takes ground coordinates in tiles (x east, y south)
     const board = (window as unknown as { __board: { screenOf(x: number, y: number): { y: number }; state: { height: number } } }).__board;
     const canvas = document.querySelector('canvas.hc-stage')!.getBoundingClientRect();
@@ -59,6 +62,12 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
     const sheetTop = (sheet ? sheet.top : canvas.bottom) - canvas.top;
     return { mapBottom, mapHeight: mapBottom - mapTop, sheetTop, free: sheetTop - (top.bottom - canvas.top) };
   });
+  await expect.poll(async () => {
+    await pull();
+    const v = await measure();
+    return v.mapBottom < v.sheetTop;
+  }, { timeout: 60_000 }).toBe(true);
+  const view = await measure();
   // the southern edge sits above the bottom sheet …
   expect(view.mapBottom).toBeLessThan(view.sheetTop);
   // … and a map taller than the free area stops a quarter of that area above the sheet (render.yaml camera.margin)

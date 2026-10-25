@@ -1,13 +1,18 @@
 import type { GameData, Pos } from '../defs';
 import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/items';
 import { forecast, type Forecast } from '../rules/combat';
-import { tilesInRange, weaponRange } from '../rules/movement';
+import { castArea, castTargets, type CastArea } from '../rules/cast';
+import { classActionId } from '../rules/roles';
+import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
+import { moveBudget, reachable, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds } from '../rules/skills';
-import type { BattleState, BattleUnit, UnitRecord } from '../state';
-import { active, dist, inArea, isAlly, isHostile, neighbors, onMap, samePos, unitAt } from '../util';
+import type { BattleState, BattleUnit } from '../state';
+import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
 import type { Action } from './commands';
 import { mapOf } from './objectives';
+
+export { classActionId };
 
 export interface ActionOption {
   kind: Action['kind'] | 'trade' | 'convoy';
@@ -16,6 +21,12 @@ export interface ActionOption {
   weapons?: Record<string, string[]>;
   items?: string[];
   object?: string;
+  /** open: whether the object is a door or a chest */
+  objectType?: 'door' | 'chest';
+  /** steal: target uid → uids of the items that can be taken */
+  stealable?: Record<string, string[]>;
+  /** cast: the tiles Wirken can be aimed at */
+  tiles?: Pos[];
 }
 
 export function hasKey(data: GameData, u: BattleUnit): string | undefined {
@@ -26,16 +37,6 @@ export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boo
   if (!activeSkillIds(data, u).includes(skillId)) return false;
   const sk = data.skills[skillId]!;
   return (u.usedPerMap[skillId] ?? 0) < (sk.usesPerMap ?? Infinity);
-}
-
-/**
- * Id of the unit's class action (`aim`, `far_rescue`, `inspire`, ...), if its class has one. With a battle state, a role
- * no companion has brought along yet (`lockedRoles`, story 4.3) has none.
- */
-export function classActionId(data: GameData, u: BattleUnit | UnitRecord, s?: { lockedRoles?: string[] }): string | undefined {
-  const cls = data.classes[u.classId];
-  if (cls && s?.lockedRoles?.includes(cls.role)) return undefined;
-  return cls?.classAction?.id;
 }
 
 export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {
@@ -112,9 +113,14 @@ export const CHEER_BUFF = 'cheer';
 export type ClassPreview =
   | { kind: 'aim'; forecast: Forecast; hit: number; rangeBonus: number }
   | { kind: 'farRescue'; target: string; distance: number }
-  | { kind: 'cheer'; target: string; mov: number; hit: number };
+  | { kind: 'cheer'; target: string; mov: number; hit: number }
+  | { kind: 'cast'; area: CastArea }
+  | ({ kind: 'steal' } & StealPreview);
 
-export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, a: Action): ClassPreview | null {
+/** What `classPreview` can show: an action, or Stehlen before the item is chosen. */
+export type PreviewRequest = Action | { kind: 'steal'; target: string };
+
+export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, a: PreviewRequest): ClassPreview | null {
   const cfg = data.balance.classActions;
   switch (a.kind) {
     case 'aim': {
@@ -127,6 +133,37 @@ export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos:
     }
     case 'cheer':
       return { kind: 'cheer', target: a.target, mov: cfg.cheer.mov, hit: cfg.cheer.hit };
+    case 'cast': {
+      const area = castArea(data, s, u, a.at, pos);
+      return area ? { kind: 'cast', area } : null;
+    }
+    case 'steal': {
+      const p = stealPreview(data, s, u, a.target);
+      return p ? { kind: 'steal', ...p } : null;
+    }
+    default:
+      return null;
+  }
+}
+
+/**
+ * Nachsetzen: the movement a skirmisher has left after fighting from `to`: its MOV there (buffs such as Anfeuern count)
+ * minus what the walk to `to` costs, or what it has already walked this phase when it stays. Shared by the preview and `applyCommand`.
+ */
+export function pursueRest(data: GameData, s: BattleState, u: BattleUnit, to: Pos): number {
+  const spent = samePos(u.pos, to) ? (u.moved ? (u.moveSpent ?? 0) : 0) : (reachable(data, s, u).get(posKey(to))?.cost ?? 0);
+  return Math.max(0, moveBudget(data, s, u, to) - spent);
+}
+
+/** Preview of the passive roles in the dock (story 2.4): Halten shows the zone around the tile, Nachsetzen the rest left after fighting there. */
+export type PassivePreview = { kind: 'hold'; tiles: Pos[] } | { kind: 'pursue'; left: number };
+
+export function passivePreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): PassivePreview | null {
+  switch (classActionId(data, u, s)) {
+    case 'hold':
+      return { kind: 'hold', tiles: neighbors(pos).filter((p) => inBounds(s, p)) };
+    case 'pursue':
+      return { kind: 'pursue', left: pursueRest(data, s, u, pos) };
     default:
       return null;
   }
@@ -159,10 +196,14 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
   const objHere = s.objects.find((o) => samePos(o.at, pos));
   if (u.team === 'player') {
     if (objHere?.type === 'village' && objHere.state === 'closed') out.push({ kind: 'visit', object: objHere.id });
-    if (objHere?.type === 'chest' && objHere.state === 'closed' && hasKey(data, u))
+    // a scout opens doors and chests without a key (`open`); that covers the key actions for the same object
+    const free = openTargets(data, s, u, pos);
+    for (const o of free) out.push({ kind: 'open', object: o.id, objectType: o.type as 'door' | 'chest' });
+    const freeIds = new Set(free.map((o) => o.id));
+    if (objHere?.type === 'chest' && objHere.state === 'closed' && hasKey(data, u) && !freeIds.has(objHere.id))
       out.push({ kind: 'chest', object: objHere.id });
     const door = s.objects.find(
-      (o) => o.type === 'door' && o.state === 'closed' && neighbors(pos).some((p) => samePos(p, o.at)),
+      (o) => o.type === 'door' && o.state === 'closed' && !freeIds.has(o.id) && neighbors(pos).some((p) => samePos(p, o.at)),
     );
     if (door && hasKey(data, u)) out.push({ kind: 'door', object: door.id });
     const downed = adj.filter((o) => o.downed && o.team === 'player');
@@ -192,6 +233,10 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
   if (far.length) out.push({ kind: 'farRescue', targets: far });
   const cheer = cheerTargets(data, s, u, pos);
   if (cheer.length) out.push({ kind: 'cheer', targets: cheer });
+  const casts = castTargets(data, s, u, pos);
+  if (casts.length) out.push({ kind: 'cast', tiles: casts });
+  const steal = stealTargets(data, s, u, pos);
+  if (Object.keys(steal).length) out.push({ kind: 'steal', targets: Object.keys(steal), stealable: steal });
   out.push({ kind: 'wait' });
   return out;
 }

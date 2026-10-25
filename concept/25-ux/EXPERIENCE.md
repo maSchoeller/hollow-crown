@@ -117,8 +117,8 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners |
 | Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett, 2 auf der Weltkarte) |
 | Ziehen | Kamera verschieben |
-| Wischen | nächste Figur, nächste Epilog-Kachel |
-| PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone |
+| Wischen | nächste Figur, nächste Epilog-Kachel, nächstes Kontext-Band (Punkte-Anzeige darunter) |
+| PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone, F = vorderes Kontext-Band ausführen, Pfeiltasten = zwischen Kontext-Bändern |
 | Zurück | jede Ansicht hat einen Zurück-Stein; Abbrechen ist nie ein Verlust (außer nach bestätigter Aktion) |
 
 ## HUD & Diegetic UI

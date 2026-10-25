@@ -42,6 +42,10 @@ const P: Record<string, string> = {
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
   // class actions (story 2.3): reuse target / rescue / rally until dedicated glyphs exist
   aim: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
+  // Wirken: the role symbol of the elementalist (same glyph as `fire`)
+  cast: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
+  // Stehlen: the role symbol of the scout (a purse)
+  steal: 'M9 4h6l-1.5 3h-3zM9.5 7C6 10 4.5 13 4.5 16a3.5 3.5 0 0 0 3.5 3.5h8a3.5 3.5 0 0 0 3.5-3.5c0-3-1.5-6-5-9M12 11v5M10.5 12.5h2.5a1 1 0 0 1 0 2h-2a1 1 0 0 0 0 2H14',
   farRescue: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
   cheer: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',
@@ -49,7 +53,7 @@ const P: Record<string, string> = {
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
   // roles (class-action slot of the battle dock)
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
-  blade: 'M5 19l4-1 10-10-3-3L6 15zM14 6l3 3M4 20l1-3',
+  blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   danger: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   target: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',

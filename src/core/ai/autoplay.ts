@@ -1,10 +1,11 @@
 import type { GameData, Pos } from '../defs';
 import type { GameEvent } from '../events';
-import { availableActions, mustStayForRest } from '../battle/actions';
+import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
 import { destinations, reachable, threatTiles } from '../rules/movement';
+import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, dist, posKey } from '../util';
@@ -36,11 +37,16 @@ function approach(s: BattleState, u: BattleUnit, dests: Pos[], targets: Pos[], d
   return best;
 }
 
-/** A visit or talk this unit can do this turn without stepping into more than `maxDanger` threats. */
-function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], danger: Map<string, number>, maxDanger: number): Command | null {
+/** A visit or talk this unit can do this turn without stepping into more than `maxDanger` threats. `chests`: the chests of a treasure hunt it may open. */
+function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], danger: Map<string, number>, maxDanger: number, chests?: Set<string>): Command | null {
   for (const p of dests) {
     const d = danger.get(posKey(p)) ?? 0;
     for (const o of availableActions(data, s, u, p)) {
+      // story 4.8: a scout opens the chest from next to it, a unit with a key stands on it
+      if (chests && o.object && chests.has(o.object) && d <= maxDanger) {
+        if (o.kind === 'open') return { type: 'act', unit: u.uid, to: p, action: { kind: 'open', object: o.object } };
+        if (o.kind === 'chest') return { type: 'act', unit: u.uid, to: p, action: { kind: 'chest' } };
+      }
       if (o.kind === 'visit' && d <= maxDanger) return { type: 'act', unit: u.uid, to: p, action: { kind: 'visit' } };
       // talking turns the foe at once, so its own threat does not count
       if (o.kind === 'talk' && o.targets?.[0] && d <= maxDanger + 1)
@@ -64,6 +70,9 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const villages = s.objects.filter((o) => o.type === 'village' && o.state === 'closed').map((o) => o.at);
   const recruitable = (u: BattleUnit) =>
     enemies.filter((o) => o.recruit && (o.recruit.by === 'any' || o.recruit.by.includes(u.id))).map((o) => o.pos!);
+  // story 4.8: the chests of a treasure hunt still shut, and the escort NPC with the radius it follows within
+  const openable = v.type === 'treasure' ? new Set(v.chests.filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed'))) : undefined;
+  const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
@@ -85,7 +94,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
         return { type: 'act', unit: u.uid, to: onGoal, action };
       }
     }
-    const job = errand(data, s, u, dests, danger, vip ? 0 : 2);
+    const job = errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
     if (job) return job;
     const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
     if (hpPct < 50 && potion) {
@@ -106,7 +115,17 @@ export function autoCommand(data: GameData, s: BattleState): Command {
         .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted)
         .sort((a, b) => dist(a.pos!, p) - dist(b.pos!, p))[0]?.uid;
     const errands = [...villages.filter((p) => nearestTo(p) === u.uid), ...recruitable(u)];
-    const targets = isGoalUnit ? goal! : errands.length ? errands : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
+    // treasure: whoever can open a chest heads for the closest one still shut
+    const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
+    const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
+    if (npc && v.type === 'escort') {
+      // escort: walk to the exit but end the turn within the radius the NPC follows in; too far off, walk back to it
+      const radius = data.balance.ai.followRadius;
+      const close = dests.filter((p) => dist(p, npc.pos!) <= radius);
+      const lead = close.length ? approach(s, u, close, areaTiles(v.area), danger, vip || hpPct < 60 ? 0 : 1) : null;
+      const to = lead ?? approach(s, u, dests, [npc.pos!], danger, 1);
+      return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
+    }
     const maxDanger = errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
     const to = approach(s, u, dests, targets.length ? targets : [u.pos], danger, maxDanger);
     return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };

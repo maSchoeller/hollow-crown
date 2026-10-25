@@ -252,7 +252,7 @@ export const terrainSchema = z.object({
   water: z.boolean().default(false),
 });
 
-const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support']);
+const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support', 'follow']);
 const aiSchema = z.object({
   profile: aiProfile,
   radius: z.number().optional(),
@@ -300,6 +300,8 @@ const objective = z.discriminatedUnion('type', [
   z.object({ type: z.literal('defend'), unit: z.string(), turns: z.number().int() }),
   z.object({ type: z.literal('survive'), turns: z.number().int() }),
   z.object({ type: z.literal('escape'), area, min: z.number().int().optional() }),
+  z.object({ type: z.literal('escort'), unit: z.string(), area, join: z.boolean().optional() }),
+  z.object({ type: z.literal('treasure'), chests: z.array(z.string()).min(1), turns: z.number().int().min(1) }),
 ]);
 
 const triggerWhen = z.discriminatedUnion('type', [
@@ -681,12 +683,19 @@ export const balanceSchema = z.object({
       sideShare: z.tuple([z.number(), z.number()]),
     }),
   }),
-  fog: z.looseObject({}),
+  fog: z.object({
+    baseVision: z.number().int().min(1),
+    roleBonus: z.record(z.string(), z.number().int().min(0)),
+    moveTypeBonus: z.partialRecord(moveType, z.number().int().min(0)),
+    blockers: z.array(z.string()),
+  }),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({
     aim: z.object({ rangeBonus: z.number().int().min(0), hit: z.number() }),
     farRescue: z.object({ range: z.number().int().min(1) }),
     cheer: z.object({ mov: z.number().int(), hit: z.number() }),
+    hold: z.object({ detourMax: z.number().int().min(0) }),
+    cast: z.object({ waterRadius: z.number().int().min(0), fogDuration: z.number().int().min(1) }),
   }),
   bag: z.object({ size: z.number().int() }),
   economy: z.looseObject({

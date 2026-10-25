@@ -323,7 +323,7 @@ export interface MapUnitDef {
 }
 
 export interface AiDef {
-  profile: 'aggressive' | 'hold' | 'guard' | 'trigger' | 'hunt' | 'raider' | 'flee' | 'support';
+  profile: 'aggressive' | 'hold' | 'guard' | 'trigger' | 'hunt' | 'raider' | 'flee' | 'support' | 'follow';
   radius?: number;
   then?: AiDef['profile'];
   target?: string;
@@ -354,7 +354,11 @@ export type ObjectiveDef =
   | { type: 'seize'; area: Area }
   | { type: 'defend'; unit: string; turns: number }
   | { type: 'survive'; turns: number }
-  | { type: 'escape'; area: Area; min?: number };
+  | { type: 'escape'; area: Area; min?: number }
+  /** story 4.8: the third-party NPC `unit` (AI profile `follow`) walks into `area` and leaves the map there; it joins the company after the mission unless `join` is false. Its fall loses the mission. */
+  | { type: 'escort'; unit: string; area: Area; join?: boolean }
+  /** story 4.8: every chest of `chests` (object ids) is open within `turns` rounds (won up to the last player phase of round `turns`, lost at the start of the next) */
+  | { type: 'treasure'; chests: string[]; turns: number };
 
 export type DefeatDef = { type: 'unit_dies'; unit: string } | { type: 'turn_limit'; turns: number };
 
@@ -759,10 +763,18 @@ export interface Balance {
     /** gold per story mission without side objectives [min, max]: by node id, else by act; side objectives' gold as share of the map reward */
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
   };
-  fog: { baseVision: number; visionBonus: Record<string, number> };
+  /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
+  fog: { baseVision: number; roleBonus: Record<string, number>; moveTypeBonus: Partial<Record<MoveType, number>>; blockers: string[] };
   rally: { radius: number; damage: number; hit: number };
-  /** numbers of the active class actions (story 2.3): Zielen, Fernbergen, Anfeuern */
-  classActions: { aim: { rangeBonus: number; hit: number }; farRescue: { range: number }; cheer: { mov: number; hit: number } };
+  /** numbers of the class actions: Zielen, Fernbergen, Anfeuern (story 2.3) and the AI's detour limit around hold zones (story 2.4) */
+  classActions: {
+    aim: { rangeBonus: number; hit: number };
+    farRescue: { range: number };
+    cheer: { mov: number; hit: number };
+    hold: { detourMax: number };
+    /** Wirken (story 2.5): radius around the target that water puts out, rounds wind lifts fog */
+    cast: { waterRadius: number; fogDuration: number };
+  };
   bag: { size: number };
   economy: {
     sellRatio: number;
@@ -805,6 +817,14 @@ export interface Balance {
     dangerPerAttacker: number;
     supportHealBelowPercent: number;
     selfHealBelowPercent: number;
+    /** Wirken of enemy elementalists (story 2.5) */
+    castMinTargets: number;
+    castWallDetour: number;
+    castLethalChance: number;
+    /** profile `follow` (story 4.8): wakes when a player unit is this close and stays this close to one while it walks */
+    followRadius: number;
+    /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
+    followDanger: number;
   };
 }
 

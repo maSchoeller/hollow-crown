@@ -67,8 +67,9 @@ units:
   - { id: bh2h, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 5, at: [2, 4], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: bh3, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [11, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [easy, normal] }
   - { id: bh3h, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 5, at: [11, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: bh4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 4, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold } }
-  - { id: bh5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 3, at: [11, 9], sprite: soldier, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [easy, normal] }
+  - { id: bh4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 6, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold }, difficulty: [easy, normal] }
+  - { id: bh4h, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 4, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: bh5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 4, at: [11, 9], sprite: soldier, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [easy, normal] }
   - { id: bh5h, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 5, at: [11, 9], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
   - { id: bh6, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [normal, hard] }
   - { id: bh7, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 2, at: [9, 7], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
@@ -89,8 +90,8 @@ objectives:
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 200 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl per Simulation abgestimmt (Normal: Median 7 Runden bis zum Sieg), Belohnung Startwert [C]
-    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 100 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 9 Runden bis zum Sieg), Belohnung Startwert [C]
+    - { id: s_fast, type: turn_limit, turns: 9, reward: { gold: 100 } }
 triggers:
   - id: t_intro_triangle
     once: true
