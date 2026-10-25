@@ -1,9 +1,10 @@
 /**
  * The render host (story 5.1, concept/24-architecture §5.12): one engine and one canvas for the whole app, the quality
- * level, the frame cap and the scene that is showing. Only one scene is active (board, world map, later the home); the
- * one before is disposed. Babylon binds a loaded model file to the scene it was loaded into, so the host keeps a single
- * Babylon scene as the stage: each of our scenes builds its camera, lights and meshes on it, and when it goes the host
- * clears the stage except for the shared asset cache. Switching board ↔ world map therefore loads no model again.
+ * level, the frame cap and the scene that is showing. Only one scene is active (today the board; the home may follow
+ * later); the one before is disposed. The world map is a flat HTML picture, not a host scene. Babylon binds a loaded
+ * model file to the scene it was loaded into, so the host keeps a single Babylon scene as the stage: each of our scenes
+ * builds its camera, lights and meshes on it, and when it goes the host clears the stage except for the shared asset
+ * cache. Switching scenes therefore loads no model again.
  */
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';

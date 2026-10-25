@@ -47,7 +47,3 @@ export function t(key: string, params: Record<string, string | number> = {}): st
     return v === undefined ? m : typeof v === 'number' ? new Intl.NumberFormat(l).format(v) : v;
   });
 }
-
-export function fmt(n: number): string {
-  return new Intl.NumberFormat(lang.value).format(n);
-}

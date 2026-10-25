@@ -259,9 +259,7 @@ export function validateContent(
       dialogue('campaign.yaml', n.memorial?.post, `${n.id} memorial`);
       if (n.fixed && n.kind !== 'story') err('campaign.yaml', `${n.id}: only story nodes can be fixed`);
       if (n.fixed === 'first' && n.requires?.length) err('campaign.yaml', `${n.id}: the fixed first node has no requires`);
-      if (n.pos.some((v) => v < 0 || v > 100)) err('campaign.yaml', `${n.id}: pos must lie within 0-100 percent`);
     }
-    if (camp.homePos.some((v) => v < 0 || v > 100)) err('campaign.yaml', 'homePos must lie within 0-100 percent');
     for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
     const firsts = camp.nodes.filter((n) => n.fixed === 'first');
     if (firsts.length !== 1) err('campaign.yaml', `exactly one node must be fixed: first (found ${firsts.length})`);

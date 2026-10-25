@@ -62,7 +62,7 @@ quality:
   low: { maxDpr: 1, shadowMap: 0 }
 
 # Story 5.1: geteilter Asset-Cache des Szenen-Hosts. keepUnused = so viele Modelle/Texturen, die gerade keine Szene
-# benutzt, bleiben geladen (Wechsel Brett ↔ Weltkarte lädt nichts neu); darüber fallen die am längsten unbenutzten weg.
+# benutzt, bleiben geladen (ein Szenenwechsel lädt nichts neu); darüber fallen die am längsten unbenutzten weg.
 assets:
   keepUnused: 80
 

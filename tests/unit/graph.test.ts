@@ -34,7 +34,6 @@ const node = (id: string, extra: Partial<CampaignNodeDef>): CampaignNodeDef => (
   map: 'prologue_paktnacht',
   titleKey: 'node.prologue.title',
   kind: 'story',
-  pos: [50, 50],
   merchantTier: 0,
   expectedLevel: 1,
   ...extra,

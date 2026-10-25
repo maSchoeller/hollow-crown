@@ -419,8 +419,8 @@ if (import.meta.env.DEV) {
         let finale = data.campaign.nodes.find((n) => n.fixed === 'finale');
         if (!finale) {
           const first = firstNode(data);
-          const { map, titleKey, pos, merchantTier, expectedLevel } = first;
-          finale = { id: 'dev_finale', map, titleKey, kind: 'story', fixed: 'finale', pos, merchantTier, expectedLevel };
+          const { map, titleKey, merchantTier, expectedLevel } = first;
+          finale = { id: 'dev_finale', map, titleKey, kind: 'story', fixed: 'finale', merchantTier, expectedLevel };
           data.campaign.nodes.push(finale);
         }
         const id = finale.id;
