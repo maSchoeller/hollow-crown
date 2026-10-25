@@ -36,8 +36,22 @@ export function consequenceView(
       const node = data.campaign.nodes.find((n) => n.id === l.node);
       return { icon: <Icon name="map" size={22} />, title: t('ui.consequence.quest.title', { name: node ? t(node.titleKey) : l.node }), desc: t('ui.consequence.quest.desc') };
     }
-    case 'grudge':
-      return { icon: <Icon name="wanted" size={22} />, title: t('ui.consequence.grudge.title', { delta: l.delta }), desc: t('ui.consequence.grudge.desc') };
+    case 'grudge': {
+      // the lieutenant by name (no pronoun), the change as symbol + signed number, and which way he comes back (review R33)
+      const name = t(data.lieutenants?.[l.lt]?.nameKey ?? `unit.${l.lt}.name`);
+      const text = `${l.delta > 0 ? '+' : l.delta < 0 ? '−' : ''}${Math.abs(l.delta)}`;
+      return {
+        icon: <Icon name="wanted" size={22} />,
+        title: t('ui.consequence.grudge.title', { name }),
+        amount: (
+          <span class="cq-grudge" role="img" aria-label={t('ui.consequence.grudge.amount', { delta: text })} title={t('ui.consequence.grudge.amount', { delta: text })}>
+            <Icon name="wanted" size={16} />
+            <span aria-hidden="true">{text}</span>
+          </span>
+        ),
+        desc: l.delta === 0 ? '' : t(l.delta > 0 ? 'ui.consequence.grudge.up' : 'ui.consequence.grudge.down', { name }),
+      };
+    }
     case 'priceMod':
       return { icon: <Icon name="merchant" size={22} />, title: t('ui.consequence.priceMod.title', { pct: `${l.pct > 0 ? '+' : ''}${l.pct}` }), desc: t('ui.consequence.priceMod.desc', { act: l.act }) };
     case 'villageAid':

@@ -75,3 +75,17 @@
   font-family: var(--hc-font-label);
   font-size: var(--hc-size-number);
 }
+
+/* Grudge change of a lieutenant: wanted symbol + signed number, like the other amounts */
+.cq-grudge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 4px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-number);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
