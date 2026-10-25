@@ -176,6 +176,9 @@ export function validateContent(
     const c = data.classes[r];
     if (!c || c.role !== r || c.tier === 'pro') err('classes.yaml', `missing role ${r}`);
   }
+  // Nebel (story 2.6): bonuses name roles that exist, blockers name terrain that exists
+  for (const r of Object.keys(data.balance.fog.roleBonus)) if (!(CORE_ROLES as readonly string[]).includes(r)) err('balance.yaml', `fog.roleBonus: unknown role ${r}`);
+  for (const t of data.balance.fog.blockers) if (!data.terrain[t]) err('balance.yaml', `fog.blockers: unknown terrain ${t}`);
   for (const it of Object.values(data.items)) {
     // weapons, tomes, staves and shields carry a weapon group (items.md section 4)
     if (['weapon', 'tome', 'staff', 'shield'].includes(it.kind) && !it.group) err('items.yaml', `${it.id}: no weapon group`);
@@ -207,7 +210,7 @@ export function validateContent(
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
-  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward);
+  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward, locales);
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {
@@ -438,6 +441,7 @@ function validateMap(
   item: (f: string, r: ItemRef | undefined, c: string) => void,
   dialogue: (f: string, id: string | undefined, c: string) => void,
   reward: (f: string, r: Reward | undefined, c: string) => void,
+  locales: Locales,
 ): void {
   const f = `maps/${map.id}`;
   const [w, h] = map.size;
@@ -476,6 +480,8 @@ function validateMap(
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
   for (const o of map.objects) {
     if (!inside(o.at)) err(f, `${o.id}: out of bounds`);
+    // a door is terrain and object at once (story 2.6): it blocks the path and sight as `door` until opened
+    if (o.type === 'door' && inside(o.at) && terr(o.at)?.id !== 'door') err(f, `${o.id}: a door object needs the terrain "door" on its tile`);
     reward(f, o.reward, o.id);
     reward(f, o.contents, o.id);
   }
@@ -499,4 +505,97 @@ function validateMap(
     }
     if (!found) err(f, 'victory area not reachable on foot from the deploy area');
   }
+  if (v.type === 'escort') validateEscort(data, map, v, err, { inside, terr }, locales);
+  if (v.type === 'treasure') validateTreasure(data, map, v, err, { inside, terr });
+}
+
+type Terr = { inside: (p: Pos) => boolean; terr: (p: Pos) => { id: string; cost: Record<string, number | null> } | undefined };
+
+/**
+ * The tiles a unit of move type `mt` can reach from `from`, ignoring units (story 4.8). A closed door counts as passable
+ * (a scout or a key opens it); every other tile follows the move cost of the terrain.
+ */
+function walkable(from: Pos, mt: string, { inside, terr }: Terr): Set<string> {
+  const seen = new Set<string>();
+  const queue: Pos[] = [from];
+  while (queue.length) {
+    const p = queue.shift()!;
+    const k = `${p[0]},${p[1]}`;
+    if (seen.has(k) || !inside(p)) continue;
+    const t = terr(p);
+    if (!t || (t.cost[mt] === null && t.id !== 'door')) continue;
+    seen.add(k);
+    queue.push([p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]);
+  }
+  return seen;
+}
+
+/**
+ * `escort` (story 4.8): the NPC is a map unit of team `other` with profile `follow`, starts outside the exit, can walk to the
+ * exit with its own move type, and (unless `join: false`) is a character whose id is the unit id, so it can join afterwards.
+ * The deploy area must reach the NPC on foot, or the company never gets close enough to wake it.
+ */
+function validateEscort(
+  data: GameData,
+  map: MapDef,
+  v: Extract<MapDef['objectives']['victory'], { type: 'escort' }>,
+  err: (f: string, m: string) => void,
+  g: Terr,
+  locales: Locales,
+): void {
+  const f = `maps/${map.id}`;
+  const npc = allUnits(map).find((u) => u.id === v.unit);
+  if (!npc) return err(f, `escort: unit ${v.unit} not on the map`);
+  if (npc.team !== 'other') err(f, `escort: ${v.unit} must be team other`);
+  if (npc.ai?.profile !== 'follow') err(f, `escort: ${v.unit} needs the AI profile follow`);
+  if (v.join !== false && !data.chars[v.unit]) err(f, `escort: ${v.unit} joins afterwards, so it needs a character of the same id (or join: false)`);
+  // the goal sentence and the defeat line name the NPC (`unit.<id>.name`)
+  for (const lang of ['de', 'en']) if (!locales[lang]?.[`unit.${v.unit}.name`]) err(f, `escort: missing locale key unit.${v.unit}.name in ${lang}`);
+  const exit = areaTiles(v.area);
+  if (!exit.length || exit.some((p) => !g.inside(p))) err(f, 'escort: exit area empty or out of bounds');
+  if (exit.some((p) => p[0] === npc.at[0] && p[1] === npc.at[1])) err(f, `escort: ${v.unit} starts on the exit`);
+  const reach = walkable(npc.at, data.classes[npc.class]?.moveType ?? 'foot', g);
+  if (!exit.some((p) => reach.has(`${p[0]},${p[1]}`))) err(f, `escort: the exit is not reachable by ${v.unit} from its start`);
+  for (const s of map.deploy.slots) {
+    if (!walkable(s, 'foot', g).has(`${npc.at[0]},${npc.at[1]}`)) err(f, `escort: ${v.unit} not reachable on foot from deploy slot ${s}`);
+  }
+}
+
+/**
+ * `treasure` (story 4.8): the chests are distinct chest objects of the map, each reachable on foot from every deploy slot
+ * (doors count as passable), and the company can open them: the map brings an opener along, that is a player unit of the
+ * map, a forced deploy character, or an item a village hands out that is a scout (class action `open_steal`) or carries a
+ * key (an item whose `use.open` lists `chest`). The roster of the company is not known here, so a map that relies on a
+ * scout or key from the roster must still bring one itself.
+ */
+function validateTreasure(
+  data: GameData,
+  map: MapDef,
+  v: Extract<MapDef['objectives']['victory'], { type: 'treasure' }>,
+  err: (f: string, m: string) => void,
+  g: Terr,
+): void {
+  const f = `maps/${map.id}`;
+  if (new Set(v.chests).size !== v.chests.length) err(f, 'treasure: chest listed twice');
+  const reach = map.deploy.slots.map((s) => walkable(s, 'foot', g));
+  for (const id of v.chests) {
+    const o = map.objects.find((x) => x.id === id);
+    if (!o || o.type !== 'chest') {
+      err(f, `treasure: ${id} is no chest of the map`);
+      continue;
+    }
+    reach.forEach((r, i) => {
+      if (!r.has(`${o.at[0]},${o.at[1]}`)) err(f, `treasure: chest ${id} not reachable on foot from deploy slot ${map.deploy.slots[i]}`);
+    });
+  }
+  const key = (refs: ItemRef[]) => refs.some((r) => data.items[r.def]?.use?.open?.includes('chest'));
+  const scout = (cls: string) => data.classes[cls]?.classAction?.id === 'open_steal';
+  const opener =
+    map.units.some((u) => u.team === 'player' && (scout(u.class) || key(u.items))) ||
+    map.deploy.forced.some((id) => {
+      const c = data.chars[id];
+      return !!c && (scout(c.class) || key(c.items));
+    }) ||
+    map.objects.some((o) => o.type === 'village' && o.reward?.item && key([o.reward.item]));
+  if (!opener) err(f, 'treasure: no scout or key available (a player unit, a forced character or a village reward must bring one)');
 }

@@ -57,7 +57,7 @@ units:
   - { id: p_e2, team: enemy, class: skirmisher, level: 2, at: [8, 3], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
   - { id: p_e3, team: enemy, class: vanguard, level: 2, at: [7, 2], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: p_e4, team: enemy, class: brigand, level: 2, at: [9, 6], sprite: brigand, items: [{ def: hand_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: p_e5, team: enemy, class: brigand, level: 1, at: [2, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal] }
+  - { id: p_e5, team: enemy, class: brigand, level: 1, at: [2, 5], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: aggressive }, difficulty: [normal] }
 pairs: []
 reinforcements:
   - turn: 3

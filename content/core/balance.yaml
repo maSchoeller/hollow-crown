@@ -134,14 +134,23 @@ loading:
   packRetryMaxMs: 60000
 rally: { radius: 2, damage: 2, hit: 10 }
 # Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
+# Halten (Story 2.4): die KI umgeht eine Haltezone, wenn der Umweg in Bewegungskosten höchstens detourMax länger ist als der kürzeste Weg ohne Rücksicht auf Haltezonen
 classActions:
   aim: { rangeBonus: 1, hit: 15 }
   farRescue: { range: 2 }
   cheer: { mov: 1, hit: 10 }
+  hold: { detourMax: 2 }
+  # Wirken (Story 2.5): Reichweite = Waffenreichweite der Zauberwaffe; Brand-/Wall-Dauer in terrainEffects; waterRadius = Löschradius um das Zielfeld, fogDuration = Runden, die Wind den Nebel lichtet (Radius windFogClearRadius)
+  cast: { waterRadius: 1, fogDuration: 2 }
 bag: { size: 3 }
+# Nebel (Story 2.6): Sicht = Manhattan-Radius um jede eigene (und verbündete) Einheit mit Sichtlinie; baseVision + höchster Bonus
+# (Boni stapeln nicht): roleBonus nach Klassenrolle, moveTypeBonus nach Bewegungsart. blockers = Gelände, hinter dem die Sicht endet
+# (das Feld selbst bleibt sichtbar). Die Gegner-KI sieht alles; der Nebel gilt nur für Brett, UI, Vorschau und abgespielte Events der Spielerseite.
 fog:
   baseVision: 3
-  visionBonus: { archer: 2, thief: 2, flier: 1 }
+  roleBonus: { marksman: 2, scout: 2 }
+  moveTypeBonus: { flier: 1 }
+  blockers: [wall, door, rockwall]
 economy:
   sellRatio: 0.5
   upgradeCost:
@@ -188,6 +197,13 @@ ai:
   supportHealBelowPercent: 70
   selfHealBelowPercent: 40
   grudgeTargetBonus: 20
+  # Wirken der gegnerischen Elementaristen (Story 2.5): Spieler-Einheiten minus eigene im Brand-Ausbreitungsbereich (mindestens), Felswall nur bei mindestens so viel längerem Spielerweg zum Ziel, kein Wirken bei Kill-Chance des besten Angriffs ab so viel Prozent
+  castMinTargets: 2
+  castWallDetour: 3
+  castLethalChance: 100
+  # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
+  followRadius: 4
+  followDanger: 100
 # Leutnants (Story 3.5): Kopfgeld je Vertreibung = goldPerLevel x (Groll vor dieser Vertreibung + 1) Gold + min..max Material des Akts;
 # Signatur-Item mit chance je Vertreibung, garantiert ab der guaranteedRout-ten, je Leutnant nur einmal. materialByAct: Akt -> Material-ID.
 lieutenant:

@@ -14,6 +14,7 @@ import {
   type ActionOption,
   type BattleState,
   type BattleUnit,
+  type ClassPreview,
   type Command,
   type ItemInstance,
   type Stats,
@@ -23,6 +24,7 @@ import { mapOf, sideObjectiveDone } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
+import { goalLine, goalStand } from '../../ui/goalText';
 import { Sheet } from '../../ui/Sheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { data } from '../state/session';
@@ -190,15 +192,19 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
     <Sheet title={t(map.nameKey)} aside={t('ui.obj.title')} onClose={onClose}>
       <div class="bp-goal is-win">
         <small>{t('ui.obj.victory')}</small>
-        <b>{t(`ui.world.goal.${v.type}`, { turns: 'turns' in v ? v.turns : 0 })}</b>
+        <b>{goalLine(v)}</b>
         {(v.type === 'defend' || v.type === 'survive') && <span>{t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })}</span>}
+        {v.type === 'treasure' && <span>{goalStand(v, s)}</span>}
       </div>
       <div class="bp-goal is-lose">
         <small>{t('ui.obj.defeat')}</small>
         <b>
-          {map.objectives.defeat
-            .map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(`unit.${d.unit}.name`) }) : t('ui.obj.turnLimit', { turns: d.turns })))
-            .join(' · ')}
+          {[
+            ...map.objectives.defeat.map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(`unit.${d.unit}.name`) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
+            // the goal itself names the other defeats (story 4.8): the escorted NPC falls, the round limit of a treasure hunt passes
+            ...(v.type === 'escort' ? [t('ui.obj.dies', { name: t(`unit.${v.unit}.name`) })] : []),
+            ...(v.type === 'treasure' ? [t('ui.obj.turnLimit', { turns: v.turns })] : []),
+          ].join(' · ')}
         </b>
       </div>
       {map.objectives.side.length > 0 && (
@@ -295,6 +301,36 @@ export function ItemPick({ u, list, onPick, onClose }: { u: BattleUnit; list: st
           const inst = u.bag.find((i) => i.uid === uid)!;
           return <ItemLine key={uid} inst={inst} sub={<ItemDetails data={data} inst={inst} />} onClick={() => onPick(uid)} />;
         })}
+      </div>
+    </Sheet>
+  );
+}
+
+/** Stehlen (story 2.6): the bag of the foe next to the scout, one tap on an item takes it (an item for the convoy is marked). */
+export function StealPick({
+  p,
+  victim,
+  onPick,
+  onClose,
+}: {
+  p: Extract<ClassPreview, { kind: 'steal' }>;
+  victim: BattleUnit;
+  onPick: (uid: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Sheet title={t('ui.action.steal')} aside={unitName(victim)} onClose={onClose}>
+      <p class="bp-hint">{t(p.bagFull ? 'ui.steal.bagFull' : 'ui.steal.hint')}</p>
+      <div class="bp-lines">
+        {p.items.map(({ item, toConvoy }) => (
+          <ItemLine
+            key={item.uid}
+            inst={item}
+            sub={<ItemDetails data={data} inst={item} />}
+            right={toConvoy ? <Icon name="convoy" size={18} /> : undefined}
+            onClick={() => onPick(item.uid)}
+          />
+        ))}
       </div>
     </Sheet>
   );

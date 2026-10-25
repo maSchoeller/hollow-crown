@@ -35,9 +35,16 @@ export function setTerrain(s: BattleState, p: Pos, terrain: string): void {
   s.terrain[tileIndex(s, p)] = terrain;
 }
 
-export function igniteTile(data: GameData, s: BattleState, p: Pos, cause: 'ignite' | 'spread', events: GameEvent[]): boolean {
+/** `renew`: a tile that already burns gets its full duration again (Wirken, story 2.5). */
+export function igniteTile(data: GameData, s: BattleState, p: Pos, cause: 'ignite' | 'spread', events: GameEvent[], renew = false): boolean {
   if (!inBounds(s, p)) return false;
   const cur = terrainAt(s, p);
+  const burning = s.timers[posKey(p)];
+  if (renew && cur === 'burning' && burning?.kind === 'burning') {
+    burning.turns = data.balance.terrainEffects.burningDuration;
+    events.push({ t: 'terrain', at: p, terrain: 'burning', cause });
+    return true;
+  }
   if (!data.terrain[cur]?.flammable) return false;
   s.timers[posKey(p)] = { kind: 'burning', turns: data.balance.terrainEffects.burningDuration, revertTo: cur };
   setTerrain(s, p, 'burning');
@@ -58,7 +65,18 @@ export function extinguishTile(s: BattleState, p: Pos, events: GameEvent[]): boo
 export function raiseRockwall(data: GameData, s: BattleState, p: Pos, events: GameEvent[]): boolean {
   if (unitAt(s, p)) return false;
   const cur = terrainAt(s, p);
-  s.timers[posKey(p)] = { kind: 'rockwall', turns: data.balance.terrainEffects.rockwallDuration, revertTo: cur };
+  const key = posKey(p);
+  const old = s.timers[key];
+  if (cur === 'rockwall') {
+    // a second wall renews the first one; a wall without timer (not made by Wirken) stays as it is
+    if (old?.kind !== 'rockwall') return false;
+    old.turns = data.balance.terrainEffects.rockwallDuration;
+    events.push({ t: 'terrain', at: p, terrain: 'rockwall', cause: 'rockwall' });
+    return true;
+  }
+  // a wall on fire replaces the fire: the ground from before the fire comes back when the wall crumbles
+  const revertTo = cur === 'burning' ? (old?.revertTo ?? 'ash') : cur;
+  s.timers[key] = { kind: 'rockwall', turns: data.balance.terrainEffects.rockwallDuration, revertTo };
   setTerrain(s, p, 'rockwall');
   events.push({ t: 'terrain', at: p, terrain: 'rockwall', cause: 'rockwall' });
   return true;
@@ -162,6 +180,11 @@ export function tickTerrain(data: GameData, s: BattleState, events: GameEvent[])
     events.push({ t: 'terrain', at: [x, y], terrain: to, cause: t.kind === 'burning' ? 'burnout' : 'rockwall' });
   }
   for (const p of spread) igniteTile(data, s, p, 'spread', events);
+  if (s.fogLifted) {
+    for (const l of s.fogLifted) l.turns -= 1;
+    s.fogLifted = s.fogLifted.filter((l) => l.turns > 0);
+    if (!s.fogLifted.length) delete s.fogLifted;
+  }
 }
 
 /** Downed units count their own phases; at `bleedOutTurns` they die unless rescued before (GDD, Verbluten). */

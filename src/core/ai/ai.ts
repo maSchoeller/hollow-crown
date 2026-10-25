@@ -5,11 +5,12 @@ import { applyAct } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { expectedDamage, forecast } from '../rules/combat';
-import { moveCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, dist, getUnit, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt } from '../util';
+import { active, areaTiles, dist, getUnit, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, terrainAt, tileIndex } from '../util';
 
 interface Plan {
   to: Pos;
@@ -17,14 +18,18 @@ interface Plan {
   score: number;
 }
 
-/** Multi-source distance field (movement cost, ignoring units) – used to walk towards goals. */
-function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[]): Map<string, number> {
+/**
+ * Multi-source distance field (movement cost, ignoring units) – used to walk towards goals. With `avoid` (hold zone tiles,
+ * story 2.4) a tile of the set is never passed through: it may start a way (the unit stands there) or end one (a goal).
+ */
+function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], avoid?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
   const open: Array<[Pos, number]> = goals.filter((g) => inBounds(s, g)).map((g) => [g, 0]);
   for (const [g] of open) out.set(posKey(g), 0);
   while (open.length) {
     open.sort((a, b) => a[1] - b[1]);
     const [p, c] = open.shift()!;
+    if (avoid && c > 0 && avoid.has(posKey(p))) continue;
     for (const n of neighbors(p)) {
       // cost of stepping from n into p (symmetric enough for grids)
       const step = moveCost(data, s, u, p);
@@ -44,14 +49,62 @@ function hostileUnits(s: BattleState, u: BattleUnit): BattleUnit[] {
   return s.units.filter((o) => onMap(o) && isHostile(o.team, u.team));
 }
 
+/** The goal tile the field leads to from `from` (follows the falling values down to 0). */
+function descendToGoal(field: Map<string, number>, from: Pos): Pos | null {
+  let p = from;
+  let v = field.get(posKey(p));
+  while (v !== undefined && v > 0) {
+    let next: Pos | null = null;
+    let nv = v;
+    for (const n of neighbors(p)) {
+      const w = field.get(posKey(n));
+      if (w !== undefined && w < nv) {
+        next = n;
+        nv = w;
+      }
+    }
+    if (!next) return null;
+    p = next;
+    v = nv;
+  }
+  return v === 0 ? p : null;
+}
+
+/**
+ * Halten (story 2.4): if a way around the hold zones of hostile vanguards costs at most `classActions.hold.detourMax` more
+ * movement than the shortest way to the same goal tile, the AI takes the way around (returned field, with the hold tiles
+ * it must not stop on); otherwise it walks in and is stopped there.
+ */
+function detourAround(data: GameData, s: BattleState, u: BattleUnit, field: Map<string, number>, hold: Set<string>): { field: Map<string, number>; skip: Set<string> } | null {
+  const here = field.get(posKey(u.pos!));
+  const goal = here === undefined ? null : descendToGoal(field, u.pos!);
+  if (here === undefined || !goal) return null;
+  const around = distanceField(data, s, u, [goal], hold);
+  const way = around.get(posKey(u.pos!));
+  if (way === undefined || way - here > data.balance.classActions.hold.detourMax) return null;
+  const skip = new Set(hold);
+  skip.delete(posKey(goal));
+  return { field: around, skip };
+}
+
 export function bestApproach(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[]): Pos | null {
   if (!goals.length || !u.pos) return null;
-  const field = distanceField(data, s, u, goals);
+  let field = distanceField(data, s, u, goals);
   const reach = reachable(data, s, u);
+  const hold = holdZone(data, s, u.team);
+  let skip: Set<string> | undefined;
+  if (hold.size) {
+    const detour = detourAround(data, s, u, field, hold);
+    if (detour) {
+      field = detour.field;
+      skip = detour.skip;
+    }
+  }
   let best: Pos | null = null;
   let bestVal = Infinity;
   let bestCost = Infinity;
   for (const p of destinations(s, u, reach)) {
+    if (skip?.has(posKey(p))) continue;
     const v = field.get(posKey(p)) ?? Infinity;
     const c = reach.get(posKey(p))!.cost;
     if (v < bestVal || (v === bestVal && c < bestCost)) {
@@ -69,7 +122,8 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
   const w = data.balance.ai;
   const plans: Plan[] = [];
   const map = mapOf(data, s);
-  const objectiveUnit = map.objectives.victory.type === 'defend' ? map.objectives.victory.unit : undefined;
+  const victory = map.objectives.victory;
+  const objectiveUnit = victory.type === 'defend' || victory.type === 'escort' ? victory.unit : undefined;
   const danger = diff.aiDangerAware ? dangerMap(data, s, u) : undefined;
   for (const pos of origins) {
     const targets = attackTargets(data, s, u, pos);
@@ -97,6 +151,131 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
   plans.sort((a, b) => b.score - a.score || a.to[1] - b.to[1] || a.to[0] - b.to[0]);
   // fallback rule on Normal: finish downed units only if nothing else is attackable
   return plans;
+}
+
+/** Profiles whose elementalists may cast instead of attacking (story 2.5): all but flee, raider and support. */
+const CAST_PROFILES = new Set(['aggressive', 'hold', 'guard', 'hunt', 'trigger']);
+
+/** Goal tiles of the mission the player walks to (reach, seize, escape); none for rout, boss, defend and survive. */
+function goalTiles(data: GameData, s: BattleState): Pos[] {
+  const v = mapOf(data, s).objectives.victory;
+  return v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? areaTiles(v.area) : [];
+}
+
+/**
+ * Wirken of an enemy elementalist (story 2.5), only fire and earth. Fire: at least `ai.castMinTargets` more player units than
+ * own units in the spread area (target plus flammable neighbours). Earth: a wall that makes the way of a player unit to the
+ * goal at least `ai.castWallDetour` longer or blocks it (distance field with and without the wall, no goal tile = no wall).
+ * Never when the best attack would kill for sure (`ai.castLethalChance`). Returns null when casting does not pay.
+ */
+function castPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[]): Plan | null {
+  const w = data.balance.ai;
+  const { src } = castSource(data, s, u);
+  if (!src || (src.element !== 'fire' && src.element !== 'earth')) return null;
+  const attacks = attackPlans(data, s, u, origins);
+  const best = attacks.find((p) => p.score > -500) ?? attacks[0];
+  if (best && best.action.kind === 'attack') {
+    const e = expectedDamage(forecast(data, s, u.uid, best.action.target, best.action.weapon, best.to));
+    if (e.killChance * 100 >= w.castLethalChance) return null;
+  }
+  const foes = hostileUnits(s, u).filter(active);
+  const plans: Plan[] = [];
+  if (src.element === 'fire') {
+    const friends = s.units.filter((o) => active(o) && isAlly(o.team, u.team));
+    for (const pos of origins) {
+      for (const at of castTargets(data, s, u, pos)) {
+        const keys = new Set(fireArea(data, s, at).map(posKey));
+        const inside = (o: BattleUnit) => keys.has(posKey(o.uid === u.uid ? pos : o.pos!));
+        const net = foes.filter(inside).length - friends.filter(inside).length;
+        if (net >= w.castMinTargets) plans.push({ to: pos, action: { kind: 'cast', at }, score: net });
+      }
+    }
+  } else {
+    const goals = goalTiles(data, s);
+    if (!goals.length) return null;
+    // one goal field per movement type serves all player units of that type
+    const groups = new Map<string, { rep: BattleUnit; units: Array<{ u: BattleUnit; base: number }>; field: Map<string, number> }>();
+    for (const o of foes) {
+      const mt = data.classes[o.classId]!.moveType;
+      let g = groups.get(mt);
+      if (!g) groups.set(mt, (g = { rep: o, units: [], field: distanceField(data, s, o, goals) }));
+      const base = g.field.get(posKey(o.pos!));
+      if (base !== undefined) g.units.push({ u: o, base });
+    }
+    const live = [...groups.values()].filter((g) => g.units.length);
+    if (!live.length) return null;
+    const impact = new Map<string, number>();
+    const delta = (p: Pos): number => {
+      const k = posKey(p);
+      const known = impact.get(k);
+      if (known !== undefined) return known;
+      let out = 0;
+      // a wall only matters on a shortest way: manhattan distance to the tile plus its goal distance cannot beat the unit's own distance
+      const near = live.some((g) => g.field.has(k) && g.units.some((e) => dist(e.u.pos!, p) + g.field.get(k)! <= e.base));
+      if (near && !goals.some((g) => samePos(g, p)) && terrainAt(s, p) !== 'rockwall') {
+        const idx = tileIndex(s, p);
+        const was = s.terrain[idx]!;
+        s.terrain[idx] = 'rockwall';
+        try {
+          for (const g of live) {
+            const walled = distanceField(data, s, g.rep, goals);
+            for (const e of g.units) {
+              const d = walled.get(posKey(e.u.pos!));
+              out = Math.max(out, d === undefined ? 1000 : d - e.base);
+            }
+          }
+        } finally {
+          s.terrain[idx] = was;
+        }
+      }
+      impact.set(k, out);
+      return out;
+    };
+    for (const pos of origins) {
+      for (const at of castTargets(data, s, u, pos)) {
+        const d = delta(at);
+        if (d >= w.castWallDetour) plans.push({ to: pos, action: { kind: 'cast', at }, score: d });
+      }
+    }
+  }
+  const at = (p: Plan) => (p.action.kind === 'cast' ? p.action.at : p.to);
+  plans.sort((a, b) => b.score - a.score || a.to[1] - b.to[1] || a.to[0] - b.to[0] || at(a)[1] - at(b)[1] || at(a)[0] - at(b)[0]);
+  return plans[0] ?? null;
+}
+
+/** The exit of an escort goal (story 4.8); none for any other goal. */
+function exitTiles(data: GameData, s: BattleState): Pos[] {
+  const v = mapOf(data, s).objectives.victory;
+  return v.type === 'escort' ? areaTiles(v.area) : [];
+}
+
+/**
+ * Profile `follow` (story 4.8, escort NPC): stands still until a player unit is within `ai.followRadius`, then walks towards the
+ * exit of the escort goal, always ending within that radius of a player unit and avoiding tiles that foes threaten
+ * (`ai.followDanger` per foe on the path cost). It never attacks. Returns the tile to move to (null: stay).
+ */
+function followStep(data: GameData, s: BattleState, u: BattleUnit): Pos | null {
+  const w = data.balance.ai;
+  const radius = u.ai?.radius ?? w.followRadius;
+  const guards = s.units.filter((o) => o.team === 'player' && active(o) && o.pos);
+  const near = (p: Pos) => guards.some((g) => dist(g.pos!, p) <= radius);
+  if (!u.pos || !near(u.pos)) return null;
+  const goals = exitTiles(data, s);
+  if (!goals.length) return null;
+  const field = distanceField(data, s, u, goals);
+  const danger = dangerMap(data, s, u);
+  const cost = (p: Pos) => (field.get(posKey(p)) ?? Infinity) + w.followDanger * (danger.get(posKey(p)) ?? 0);
+  let best: Pos = u.pos;
+  let bestCost = cost(u.pos);
+  for (const p of destinations(s, u, reachable(data, s, u))) {
+    if (!near(p) && !goals.some((g) => samePos(g, p))) continue;
+    const c = cost(p);
+    if (c < bestCost) {
+      best = p;
+      bestCost = c;
+    }
+  }
+  return samePos(best, u.pos) ? null : best;
 }
 
 function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, number> {
@@ -154,6 +333,11 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
   if (potion && u.hp * 100 < computeStats(data, u).maxHp * data.balance.ai.selfHealBelowPercent) {
     return act({ to: u.pos, action: { kind: 'item', item: potion.uid }, score: 0 });
   }
+  if (CAST_PROFILES.has(profile)) {
+    // Wirken instead of attacking: hold-like profiles cast where they stand, the others from any tile they can reach
+    const cast = castPlan(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here);
+    if (cast) return act(cast);
+  }
   switch (profile) {
     case 'trigger':
     case 'hold':
@@ -195,6 +379,16 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
       const goals = ai.area ? areaTiles(ai.area) : [];
       const to = bestApproach(data, s, u, goals);
       if (to && ai.area && goals.some((g) => samePos(g, to))) {
+        applyAct(data, s, u, to, { kind: 'wait' }, events);
+        u.gone = 'escaped';
+        events.push({ t: 'escaped', unit: u.uid });
+        return;
+      }
+      return act(to ? { to, action: { kind: 'wait' }, score: 0 } : null);
+    }
+    case 'follow': {
+      const to = followStep(data, s, u);
+      if (to && exitTiles(data, s).some((g) => samePos(g, to))) {
         applyAct(data, s, u, to, { kind: 'wait' }, events);
         u.gone = 'escaped';
         events.push({ t: 'escaped', unit: u.uid });
