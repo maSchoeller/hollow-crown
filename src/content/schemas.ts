@@ -324,6 +324,11 @@ export const mapSchema = z.object({
   nameKey: z.string(),
   size: z.tuple([z.number().int().min(4), z.number().int().min(4)]),
   fog: z.boolean().default(false),
+  /**
+   * Tutorial map (Produktinhaber 2026-10-25): downed player units neither bleed out nor die, regardless of the death mode,
+   * and return after the mission. Units named in a `unit_dies` defeat objective (or flagged mustSurvive) are exempt: their death still loses.
+   */
+  noDeath: z.boolean().optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
   ambient: z.object({ color: z.string(), intensity: z.number() }).optional(),

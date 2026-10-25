@@ -402,6 +402,8 @@ export interface MapDef {
   nameKey: string;
   size: [number, number];
   fog: boolean;
+  /** tutorial map: downed player units never bleed out or die (except those whose death loses the battle); see `deathless` */
+  noDeath?: boolean;
   legend: Record<string, string>;
   terrain: string;
   ambient?: { color: string; intensity: number };

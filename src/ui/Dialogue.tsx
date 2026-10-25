@@ -197,7 +197,7 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
       {def.background && !overlay && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`backgrounds/${def.background}.webp`)})` }} />}
       {panel && !overlay && <div class="vn-panel" style={{ backgroundImage: `url(${asset(`backgrounds/${panel}.webp`)})` }} />}
       <div class="vn-shade" />
-      <div class="vn-stage">
+      <div class={`vn-stage ${panel && !overlay ? 'vn-stage--hidden' : ''}`}>
         {(['left', 'right'] as const).map((side) => {
           const l = stage[side];
           if (!l?.speaker) return null;

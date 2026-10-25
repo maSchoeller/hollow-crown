@@ -7,6 +7,9 @@ id: prologue_paktnacht
 nameKey: map.prologue_paktnacht.name
 size: [12, 16]
 fog: false
+# Produktinhaber 2026-10-25: Im Prolog verbluten und sterben Niedergestreckte nicht (egal welcher Todesmodus), sie bleiben liegen
+# und kehren nach der Mission zurück. Rhen und Kael (Niederlage bei Tod) sind ausgenommen: ihr Tod verliert die Mission wie zuvor.
+noDeath: true
 legend:
   ".": plain
   ",": grass

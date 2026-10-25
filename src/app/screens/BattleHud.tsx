@@ -15,6 +15,7 @@ import {
   type Team,
 } from '../../core';
 import { sideObjectiveDone, sideObjectiveProgress } from '../../core/battle/objectives';
+import { bleedsOut } from '../../core/rules/effects';
 import { t } from '../../i18n';
 import { ElementIcon, Icon, TriMark } from '../../ui/icons';
 import { itemName, unitName } from '../../ui/components';
@@ -176,7 +177,7 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
               <ElementIcon el={affinity} size={15} />
             </span>
           )}
-          {u.downed && !u.gone && (
+          {u.downed && !u.gone && bleedsOut(data, state, u) && (
             <span class="hud-chip hud-chip--bleed">
               <PulseMark />
               {t('ui.hud.bleed', { n: Math.max(0, data.balance.death.bleedOutTurns - (u.bleed ?? 0)) })}

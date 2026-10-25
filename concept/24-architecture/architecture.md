@@ -271,6 +271,8 @@ haunts:
 
 Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Erreichbarkeit (Pfad von jedem Einsatzfeld zum Ziel), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
 
+**Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Kael). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
+
 ### 5.7 Rollenklassen (AR8)
 
 - **Schema** (`classes.yaml`): `role` (Kernrolle, `tactician`, `captain` oder Gegnertyp), `tier: base|pro|unique`, `moveType`, `mov`, `weaponGroups[]`, `classAction`, `proPaths: [a, b]`, `growth`, `base`, `caps`. Items bekommen `group` (Waffengruppe); `canEquip` prüft `group ∈ weaponGroups`. Bestehendes `weapons: WeaponType[]` entfällt.
@@ -308,7 +310,7 @@ lines:
 ```
 
 - **Schlüssel** entstehen automatisch: `dlg.<sceneId>.<lineId>`, `….memorial`, `….<optionId>`. EN steht in `content/locales/en/act1.dialogue.yaml` unter diesen Schlüsseln. UI-Texte bleiben in `content/locales/{de,en}.yaml` (AGENTS.md: kein sichtbarer Text im Code).
-- **Illustrationstafel (`panel`):** optionales Feld einer Textzeile (Bild-ID aus `backgrounds/` oder `none`); ab dieser Zeile zeigt die Szene das Bild bildfüllend statt des Szenenhintergrunds, bis `panel: none`, die nächste Tafel oder das Szenenende kommt. Eine Tafel steht für 1–4 Textboxen (`content:check` lehnt mehr ab, `MAX_PANEL_LINES`); fehlt das Bild im Manifest, bleibt der Szenenhintergrund (`panelAt` im Kern, Anzeige in `Dialogue.tsx`).
+- **Illustrationstafel (`panel`):** optionales Feld einer Textzeile (Bild-ID aus `backgrounds/` oder `none`); ab dieser Zeile zeigt die Szene das Bild bildfüllend statt des Szenenhintergrunds, bis `panel: none`, die nächste Tafel oder das Szenenende kommt. Eine Tafel steht für 1–4 Textboxen (`content:check` lehnt mehr ab, `MAX_PANEL_LINES`); fehlt das Bild im Manifest, bleibt der Szenenhintergrund und die Halbfiguren bleiben (`panelAt` im Kern, Anzeige in `Dialogue.tsx`). Solange eine Tafel gezeigt wird, sind die Halbfiguren ausgeblendet (Textbox und Namensschild bleiben).
 - **Auflösung im Kern:** `resolveScene(data, ctx, sceneId, lang?) → ResolvedLine[]` wählt Sprecher, filtert `requires`, fügt Gedenkzeilen ein. Rein und getestet; die UI zeigt nur an. Gilt auch für Sprechblasen im Kampf (Kontext aus `BattleState`).
 - **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`. **Stand (Story 4.6):** Eine Antwort-Zeile mit `title` ist eine Entscheidung (Marke, zwei Tipps, Folgen-Karte, Eintrag in `c.decisions`); jede ihrer Antworten trägt `summary`. `choose` zählt die Haltung jeder Antwort und merkt sie in `c.choices`, eine Wahl wird nie zweimal gefragt.
 - **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.

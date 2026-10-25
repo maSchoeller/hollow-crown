@@ -26,6 +26,7 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 - [x] T5 Verweise nachgezogen: `tools/simulate.ts`, `tests/perf/benchMap.ts`, `.github/workflows/ci.yml`, Tests (siehe File List), Spielstand-Fixtures neu erzeugt
 - [x] T6 Heimsuchungs-Anker als Kommentarblock (3 Felder, Story 5.5 hat noch kein Schema)
 - [x] T7 Offene Punkte der Steuerung geklärt (kein `min`, Tafeln über `panel`), Sim-Korridor abgestimmt (AC 6)
+- [x] T9 Kartenfeld `noDeath` (Produktinhaber 2026-10-25): Niedergestreckte sterben/verbluten im Prolog nicht und kehren zurück; Rhen und Kael ausgenommen (Niederlage wie zuvor); Schema, Kern, KI, HUD, Tests, Sim
 - [ ] T8 Screenshots der Karte und der Szenen (Hintergründe `bg_glutdom_night`, `bg_gerrit_grave` kommen mit Story 8.7)
 
 ## Dev Notes
@@ -44,7 +45,8 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 - **Gelände:** `stall`, `brazier`, `well` sind unpassierbar außer für Flieger (Werte wie `wagon`), Startwerte [C]. `well` zeigt bis zu einem Brunnenmodell den Felsblock (`prop: rock`).
 - **Heimsuchungs-Anker:** `[5,8]`, `[4,13]`, `[5,1]` als Kommentar in der Karte (Story 5.5, noch ohne Schema).
 - **Entschieden (Produktinhaber 2026-10-25):** Fluchtziel ohne `min`; Illustrationstafeln über `panel`; Knoten-Wirkungen für Beitritte (9.2).
-- **OFFEN:** Halbfiguren stehen auch auf einer Tafel vor dem Bild (nicht festgelegt, ob die Tafel allein stehen soll). Die Bildnamen der Tafeln ändern sich mit der Art-Session (PR #45: Orts-Ids).
+- **Kein Tod im Prolog (Produktinhaber 2026-10-25):** `noDeath: true` auf der Karte. Niedergestreckte Gefährten verbluten und sterben nicht (egal welcher Todesmodus), bleiben liegen und sind nach der Mission wieder da (ohne Narbe, ohne Abschied). Rhen und Kael sind ausgenommen, weil ihr Tod die Mission verliert (`unit_dies`-Niederlage): sie verbluten wie zuvor. Gerrit (nur Szene) bleibt der einzige Tod des Prologs. Regel `deathless`/`bleedsOut` in `core/rules/effects.ts`; Entscheidung im Log von `concept/24-architecture`.
+- **Entschieden (Produktinhaber 2026-10-25):** Tafeln stehen allein, die Halbfiguren blenden aus, solange eine Tafel gezeigt wird (Textbox und Namensschild bleiben). **OFFEN:** Die Bildnamen der Tafeln ändern sich mit der Art-Session (PR #45: Orts-Ids).
 - **Grenzen:** `src/core/battle` und `src/core/ai` nicht angefasst (Fluchtregel läuft in einer anderen Session).
 
 ### Project Structure Notes
@@ -90,7 +92,8 @@ Claude Sonnet 5.5
 - Geändert: `content/acts/act1/scenes/scn.prologue.{intro,outro,tutorial_move,tutorial_danger}.yaml`, `content/acts/act1/campaign.yaml`, `content/core/terrain.yaml`, `content/core/locales/{de,en}.names.yaml`, `content/locales/en/act1.dialogue.yaml`
 - `tools/simulate.ts`, `tests/perf/benchMap.ts`, `.github/workflows/ci.yml`
 - Tests: `tests/unit/{core,camp,graph,migrations,packs,scene,story,supports-pairs,worker-replay}.test.ts`, `tests/fixtures/saves/format{1,2}-auto.json`
-- Neu: `tests/unit/{scene-panel,node-effects}.test.ts`, `src/app/state/backgrounds.ts`; geändert `src/core/campaign/scene.ts` (`panelAt`), `src/ui/Dialogue.{tsx,css}`, `src/content/{schemas,validate}.ts`, `tests/unit/escape.test.ts`, `tools/simulate.ts` (Median der Runden)
+- Neu: `tests/unit/{scene-panel,node-effects}.test.ts`, `src/app/state/backgrounds.ts`; geändert `src/core/campaign/scene.ts` (`panelAt`), `src/ui/Dialogue.{tsx,css}` (Halbfiguren aus bei Tafel), `src/content/{schemas,validate}.ts`, `tests/unit/escape.test.ts`, `tools/simulate.ts` (Median der Runden)
+- `noDeath`: `src/content/schemas.ts`, `src/core/{defs.ts,rules/effects.ts,campaign/campaign.ts,ai/ai.ts}`, `src/app/screens/BattleHud.tsx`, `src/render/board/board.ts`, Karte `prologue_paktnacht.yaml`, Tests `tests/unit/no-death.test.ts` (neu), `tests/unit/bleed.test.ts`; Doku `concept/24-architecture/{architecture,decision-log}.md`
 - Doku: `concept/22-narrative/decision-log.md`, `concept/24-architecture/architecture.md` (§5.8 `panel`)
 
 ### Change Log

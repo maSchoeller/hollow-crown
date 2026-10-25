@@ -4,6 +4,7 @@ import { attackTargets, staffTargets } from '../battle/actions';
 import { applyAct } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
+import { deathless } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
 import { moveCost, destinations, reachable, threatTiles } from '../rules/movement';
 import { computeStats } from '../rules/stats';
@@ -76,7 +77,7 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
     for (const [tid, weapons] of Object.entries(targets)) {
       if (onlyTarget && tid !== onlyTarget) continue;
       const t = getUnit(s, tid);
-      if (t.downed && diff.aiFinishDowned === 'never') continue;
+      if (t.downed && (diff.aiFinishDowned === 'never' || deathless(data, s, t))) continue; // nothing to finish on a noDeath map
       for (const wid of weapons) {
         const f = forecast(data, s, u.uid, tid, wid, pos);
         const e = expectedDamage(f);
