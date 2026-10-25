@@ -67,7 +67,7 @@ development_status:
   2-6-nebel-des-krieges-oeffnen-und-stehlen: review  # Nebel des Krieges, Öffnen und Stehlen
   2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: review  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
   2-8-gegnerphase-im-web-worker: review  # Gegnerphase im Web Worker
-  2-9-gegnertypen-von-akt-1: backlog  # Gegnertypen von Akt 1
+  2-9-gegnertypen-von-akt-1: review  # Gegnertypen von Akt 1
   2-10-kampf-overlays-im-stil-b: done  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
 

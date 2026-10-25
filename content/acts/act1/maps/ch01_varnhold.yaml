@@ -73,10 +73,10 @@ units:
   - { id: e1, team: enemy, class: brigand,   sprite: brigand,   level: 2, at: [3, 8], items: [{ def: iron_axe }],   ai: { profile: aggressive } }
   - { id: e2, team: enemy, class: vanguard,   sprite: soldier,   level: 2, at: [8, 9], items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: e3, team: enemy, class: marksman,    sprite: bandit_archer, nameKey: unit.bandit_archer.name, level: 3, at: [12, 7], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
-  - { id: e4, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [2, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: e4, team: enemy, class: wolf_rider, sprite: mercenary, level: 2, at: [2, 7], items: [{ def: iron_lance }], ai: { profile: aggressive } }   # Wolfsreiter (Platzhalter-Sprite)
   - { id: e5, team: enemy, class: vanguard,   sprite: soldier,   level: 3, at: [9, 4], items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: e6, team: enemy, class: brigand,   sprite: brigand,   level: 3, at: [4, 5], items: [{ def: iron_axe }],   ai: { profile: raider, target: v_east } }   # erreicht das Dorf in Gegnerphase 3
-  - { id: e7, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [12, 4], items: [{ def: iron_sword }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
+  - { id: e7, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [12, 4], items: [{ def: iron_sword }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: e8, team: enemy, class: brigand,   sprite: brigand,   level: 4, at: [13, 8], items: [{ def: hand_axe }],   ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
   - { id: e9, team: enemy, class: vanguard,   sprite: soldier,   level: 2, at: [8, 6], items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [normal, hard] }   # hält das Nordtor, damit die Straße kein Durchmarsch ist
 
