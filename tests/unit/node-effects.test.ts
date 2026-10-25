@@ -70,7 +70,7 @@ describe('node effects', () => {
       d.campaign.nodes.find((n) => n.id === 'm1_1')!.effects = effects as never;
       return validateContent(d, locales).map((i) => i.message);
     };
-    expect(problems([{ grudge: { lt: 'x', delta: 1 } }])).toContainEqual(expect.stringContaining('m1_1 effects: effect grudge is not yet supported'));
+    expect(problems([{ priceMod: { delta: 1 } }])).toContainEqual(expect.stringContaining('m1_1 effects: effect priceMod is not yet supported'));
     expect(problems([{ recruit: 'nobody' }])).toContainEqual(expect.stringContaining('m1_1 effects: unknown companion nobody'));
     expect(problems([{ setFlag: 'no_such_flag' }]).length).toBeGreaterThan(0);
     expect(problems([{ recruit: 'fenn' }])).toEqual([]);

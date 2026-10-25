@@ -146,8 +146,8 @@ describe('save and set-up (AC 1, 6)', () => {
 
   it('createBattle gives each lieutenant on the map his grudge and target from the campaign', () => {
     const d = clone(data);
-    d.maps.prologue_caravan!.units.push({ id: 'ltx', team: 'enemy', class: 'brigand', lieutenant: 'hask', level: 3, at: [1, 1], items: [] });
-    d.maps.prologue_caravan!.units.push({ id: 'lty', team: 'enemy', class: 'marksman', lieutenant: 'morra', level: 3, at: [2, 1], items: [] });
+    d.maps.prologue_paktnacht!.units.push({ id: 'ltx', team: 'enemy', class: 'brigand', lieutenant: 'hask', level: 3, at: [1, 1], items: [] });
+    d.maps.prologue_paktnacht!.units.push({ id: 'lty', team: 'enemy', class: 'marksman', lieutenant: 'morra', level: 3, at: [2, 1], items: [] });
     const c = fresh();
     c.lieutenants = { hask: { met: true, encounters: 2, grudge: 2, target: 'brenna', routs: 2, signatureDropped: false } };
     const s = createBattle(d, c, 'prologue', c.roster.map((r) => r.id));
