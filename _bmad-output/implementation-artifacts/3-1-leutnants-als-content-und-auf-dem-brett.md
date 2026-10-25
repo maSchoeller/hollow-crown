@@ -130,15 +130,15 @@ Kurzergebnis: Übrige ACs ohne Befund.
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | wird behoben im Fix-PR (folgt) |
-| R7 | S3 | EN „Border Bands“ vs „…of the Border Gangs“. Entscheidung: Border Bands. | en.names.yaml | wird behoben im Fix-PR (folgt) |
-| R8 | S3 | Derselbe Leutnant zweimal auf einer Karte (je Schwierigkeit) wird doppelt gezählt/bezahlt; content:check soll das ablehnen. | validateLieutenants.ts | wird behoben im Fix-PR (folgt) |
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | behoben in PR #55 |
+| R7 | S3 | EN „Border Bands“ vs „…of the Border Gangs“. Entscheidung: Border Bands. | en.names.yaml | behoben in PR #55 |
+| R8 | S3 | Derselbe Leutnant zweimal auf einer Karte (je Schwierigkeit) wird doppelt gezählt/bezahlt; content:check soll das ablehnen. | validateLieutenants.ts | behoben in PR #55 |
 | R14 | E | Karten-Klassen: Ulvric `vanguard` (m1_4/m1_6/m1_8) statt `wolf_rider`, Morra `skirmisher` (ch02) statt `marksman`. | Karten | an Level-Design (Epic 9) übergeben |
 | R19 | S3 | Hask-Formel nur in `mock`, „Asche und Glut!“ in flee_1 erlaubt. | scn.lt.hask | bleibt so (Entscheidung Produktinhaber 2026-10-25) |
 | R28 | S3 | Paket-Merge überschreibt gleiche Leutnant-ID still; Längenprüfung nimmt Avatar „Rhen“. | load.ts, validateLieutenants.ts | vermerkt, kein Handlungsbedarf |
 | R29 | E | Umbenennen einer Leutnant-ID braucht ab Release Migration an 4 Stellen (`c.lieutenants`, `joined_<id>`, Roster-ID, `target`) → Story 7.4. | – | offen für spätere Story |
 | R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
-| R34 | S3 | (QA) `brute_blow` heißt DE „Wucht“ wie `momentum` (Stahlaxt), gleiche Wirkung. Entscheidung: DE „Brecher“, Wirkung/Stapeln bleiben. | de.names.yaml:171 | wird behoben im Fix-PR (folgt) |
+| R34 | S3 | (QA) `brute_blow` heißt DE „Wucht“ wie `momentum` (Stahlaxt), gleiche Wirkung. Entscheidung: DE „Brecher“, Wirkung/Stapeln bleiben. | de.names.yaml:171 | behoben in PR #55 |
 
 Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
 

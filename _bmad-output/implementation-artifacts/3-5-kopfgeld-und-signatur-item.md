@@ -101,8 +101,8 @@ Querschnitt: Replays ok (Zufall nur aus Seed-RNG, Kopfgeld/Signatur-Reihenfolge 
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R5 | E→fix | Kopfgeld-Material aus Kampagnen-Akt statt Leutnant-Akt. Entscheidung: Akt des Leutnants. | lieutenants.ts payBounties, wanted.ts | wird behoben im Fix-PR (folgt) |
-| R13 | S3 | Decision-Log-Einträge zu 3.5 und 3.6 fehlen. | concept/*/decision-log | wird behoben im Fix-PR (folgt) |
+| R5 | E→fix | Kopfgeld-Material aus Kampagnen-Akt statt Leutnant-Akt. Entscheidung: Akt des Leutnants. | lieutenants.ts payBounties, wanted.ts | behoben in PR #55 |
+| R13 | S3 | Decision-Log-Einträge zu 3.5 und 3.6 fehlen. | concept/*/decision-log | behoben in PR #55 |
 | R16 | E | Besitzer der Leutnant-Signatur (items.md §3) fehlt. | – | offen für spätere Story |
 | R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
 | R32 | S3 | Sim-Zahlen nicht in der Story-Datei. | Story-Dateien | vermerkt, kein Handlungsbedarf |

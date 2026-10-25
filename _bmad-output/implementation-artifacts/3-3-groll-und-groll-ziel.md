@@ -123,12 +123,12 @@ Querschnitt: Migration nicht nötig (`normalizeCampaign`, Felder additiv, kein R
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | wird behoben im Fix-PR (folgt) |
-| R2 | E→fix | „Begegnet“ ohne Sichtkontakt. Entscheidung: nur bei Sicht oder Flucht. | lieutenants.ts applyLieutenantOutcome | wird behoben im Fix-PR (folgt) |
-| R6 | S3 | Eröffnungszeilen beim Wiedereinstieg (Runde > 1, „Runde neu“) stumm verbraucht. Entscheidung: beim nächsten Sichtkontakt nachholen. | Battle.tsx:219 | wird behoben im Fix-PR (folgt) |
-| R8 | S3 | Derselbe Leutnant zweimal auf einer Karte (je Schwierigkeit) wird doppelt gezählt/bezahlt; content:check soll das ablehnen. | validateLieutenants.ts | wird behoben im Fix-PR (folgt) |
-| R9 | S3 | `GRUDGE_MAX = 3` im Code (core + render) statt in balance.yaml. | lieutenants.ts:19, render/board/lieutenant.ts:17 | wird behoben im Fix-PR (folgt) |
-| R33 | S2 | (QA) Folgen-Karte bei `grudge`-Wirkung: fester Text „kommt schwächer zurück“ unabhängig vom Vorzeichen, Leutnant nicht genannt, delta ohne „+“. | ConsequenceCard.tsx:39, de/en.yaml:596 | wird behoben im Fix-PR (folgt) |
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | behoben in PR #55 |
+| R2 | E→fix | „Begegnet“ ohne Sichtkontakt. Entscheidung: nur bei Sicht oder Flucht. | lieutenants.ts applyLieutenantOutcome | behoben in PR #55 |
+| R6 | S3 | Eröffnungszeilen beim Wiedereinstieg (Runde > 1, „Runde neu“) stumm verbraucht. Entscheidung: beim nächsten Sichtkontakt nachholen. | Battle.tsx:219 | behoben in PR #55 |
+| R8 | S3 | Derselbe Leutnant zweimal auf einer Karte (je Schwierigkeit) wird doppelt gezählt/bezahlt; content:check soll das ablehnen. | validateLieutenants.ts | behoben in PR #55 |
+| R9 | S3 | `GRUDGE_MAX = 3` im Code (core + render) statt in balance.yaml. | lieutenants.ts:19, render/board/lieutenant.ts:17 | behoben in PR #55 |
+| R33 | S2 | (QA) Folgen-Karte bei `grudge`-Wirkung: fester Text „kommt schwächer zurück“ unabhängig vom Vorzeichen, Leutnant nicht genannt, delta ohne „+“. | ConsequenceCard.tsx:39, de/en.yaml:596 | behoben in PR #55 |
 
 Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
 

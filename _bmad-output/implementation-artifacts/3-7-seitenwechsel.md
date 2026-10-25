@@ -104,8 +104,8 @@ Kurzergebnis: Übrige ACs ohne Befund.
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | wird behoben im Fix-PR (folgt) |
-| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | wird behoben im Fix-PR (folgt) |
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | behoben in PR #55 |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | behoben in PR #55 |
 | R18 | E | `joined_grosk` `season2: true` gilt; Completion Note korrigieren. | flags.yaml | bleibt so (Entscheidung Produktinhaber 2026-10-25) |
 | R22 | S3 | `playNode`/`beginMission` kehren bei Überbelegung still zurück; Hinweis nur Weltkarte/Camp/Vorbereitung. Sperre nur in der App-Schicht. | flow.ts:90, :168 | vermerkt, kein Handlungsbedarf |
 | R23 | S3 | Entlassen ohne Rückfrage, unumkehrbar. | Rooms.tsx:398 | vermerkt, kein Handlungsbedarf |

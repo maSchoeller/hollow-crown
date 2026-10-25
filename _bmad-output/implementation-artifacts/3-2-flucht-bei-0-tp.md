@@ -107,8 +107,8 @@ Querschnitt: Replays ok (Zufall nur aus Seed-RNG), Vorschau = Auflösung ok (`fl
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R10 | S3 | Replay-Test prüft nur `not dead`, nicht `fled`. | lieutenants-flee.test.ts:308 | wird behoben im Fix-PR (folgt) |
-| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | wird behoben im Fix-PR (folgt) |
+| R10 | S3 | Replay-Test prüft nur `not dead`, nicht `fled`. | lieutenants-flee.test.ts:308 | behoben in PR #55 |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | behoben in PR #55 |
 | R17 | E | Vorschau „flieht“ ohne 0 bleibt; Mockup 01 / EXPERIENCE.md:182 angleichen (UX-Vermerk). | BattleHud.tsx:477 | bleibt so (Entscheidung Produktinhaber 2026-10-25) |
 | R25 | S3 | Icon `flee` identisch mit `escape`. | icons.tsx:41 | vermerkt, kein Handlungsbedarf |
 | R26 | S3 | `unit_dies`-Trigger und `protect_npc` ignorieren `fled` (AC 2 gewollt); kein Inhalt betroffen. | objectives.ts:102, :171 | vermerkt, kein Handlungsbedarf |

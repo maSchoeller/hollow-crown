@@ -97,9 +97,9 @@ Sim (50 Läufe, normal): ch01 (Hask) 93 %, ch02 (Morra) 85 %.
 
 | # | Schwere | Befund | Ort | Ergebnis |
 |---|---|---|---|---|
-| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | wird behoben im Fix-PR (folgt) |
-| R3 | S2 | Wolfslauf (`after_action`/`extraMove`) ohne Wirkung (auch `canto`). Entscheidung: jetzt umsetzen. | skills.yaml, src/core | wird behoben im Fix-PR (folgt) |
-| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | wird behoben im Fix-PR (folgt) |
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | behoben in PR #55 |
+| R3 | S2 | Wolfslauf (`after_action`/`extraMove`) ohne Wirkung (auch `canto`). Entscheidung: jetzt umsetzen. | skills.yaml, src/core | behoben in PR #55 |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | behoben in PR #55 |
 | R14 | E | Karten-Klassen: Ulvric `vanguard` (m1_4/m1_6/m1_8) statt `wolf_rider`, Morra `skirmisher` (ch02) statt `marksman`. | Karten | an Level-Design (Epic 9) übergeben |
 | R15 | E | „+1 Tier je Groll“ greift in Akt 1 nie (Kartenwaffen schon Stahl). Leutnant-Waffen auf Eisen setzen. | Karten | an Level-Design (Epic 9) übergeben |
 | R20 | S3 | AC 2: generische Gegner bleiben bei `floor` (Kontrolleur-Korrektur, Decision-Log); Story-Text sagt anderes. | create.ts genericStats | vermerkt, kein Handlungsbedarf |
