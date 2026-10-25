@@ -8,6 +8,8 @@ import { figureBudgetSchema, parsePacks } from '../../src/content/packs';
 import { checkFigures, imageSize, measureGlb, readFigureBudget } from '../../tools/figure-budget.mjs';
 
 const kael = join(process.cwd(), 'art', 'models', 'units', 'kael.glb');
+/** Checkouts without Git LFS (the CI check job) hold only a pointer text file instead of the model */
+const hasKael = readFileSync(kael).readUInt32LE(0) === 0x46546c67;
 
 describe('figure budget', () => {
   it('packs.yaml carries a valid figureBudget and still parses as packs', () => {
@@ -16,11 +18,11 @@ describe('figure budget', () => {
     expect(parsePacks(raw).length).toBeGreaterThan(0);
   });
 
-  it('counts the triangles and the texture of a packed figure (Kael: 6385, art-direction §4.6)', () => {
+  it.runIf(hasKael)('counts the triangles and the texture of a packed figure (Kael: 6385, art-direction §4.6)', () => {
     expect(measureGlb(readFileSync(kael))).toEqual({ triangles: 6385, texture: [512, 512] });
   });
 
-  it('flags a figure over a limit and lets large ids have the factor', () => {
+  it.runIf(hasKael)('flags a figure over a limit and lets large ids have the factor', () => {
     const budget = { ...readFigureBudget(), triangles: 6000, large: [] as string[] };
     expect(checkFigures([kael], budget).outliers.map((r: { why: string[] }) => r.why)).toEqual([['triangles > 6000']]);
     expect(checkFigures([kael], { ...budget, large: ['kael'] }).outliers).toEqual([]);
