@@ -1,0 +1,120 @@
+# Mission 1-8 – Die Heimat halten (Story 9.9, Akt-1-Finale). Dieselbe Burg wie m1_6_paktwacht, jetzt von innen gesehen: Mauern ausgebessert, Brüche
+# geschlossen, Haupttor im Süden, zwei Seitenpforten (West/Ost) im äußeren Hof. Die Truppe verteidigt den Verwalter im Bergfried 10 Runden lang
+# gegen drei Wellen aus drei Richtungen (Süden, dann West und Ost, dann alle zugleich). Layout-Platzhalter, Startwerte [C].
+# Tageszeit: Abend, dann Nacht. Wetter: Regen (art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: paktwacht_ruine (1-6/1-8).
+# Nach dem Sieg: 2 Glutfunken (inszeniert, Story 9.9) – nur Kommentar, noch nicht angebunden. Der Knoten wird später `fixed: finale` (nur Kommentar).
+# Rollen: Tore und Seitenpforten als Engstellen für Vorkämpfer (halten Nachbarfelder), Fort für Schützen.
+# Tor: Das Haupttor ist hier ein durchlässiges Torfeld (Platzhalter) – ein geschlossenes Tor (door) wäre für Gegner unpassierbar und der Verwalter unangreifbar;
+# Rammen/Zerstören von Toren gibt es noch nicht. OFFEN: Torregel.
+id: m1_8_paktwacht_halten
+nameKey: map.m1_8_paktwacht_halten.name
+size: [16, 20]
+fog: false
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "#": wall
+  "F": fort          # Wachposten im inneren Hof
+  "G": gate          # Tore (Haupttor Süd, Innentor Nord), durchlässig
+  "K": throne        # Thron im Bergfried (nur Kulisse hier)
+  "E": door_open     # Seitenpforten West (1,10) und Ost (14,10)
+#          x: 0123456789ABCDEF
+terrain: |
+  ^^^^########^^^^
+  ^^^^#......#^^^^
+  ^^^^#..KK..#^^^^
+  ^^^^#......#^^^^
+  ^^^^###GG###^^^^
+  ^^^^#.F..F.#^^^^
+  ^^^^#......#^^^^
+  ^^^^#......#^^^^
+  ^^^^##_.._##^^^^
+  _#............#_
+  _E............E_
+  _#............#_
+  _#............#_
+  ^^#####GG#####^^
+  ^,T,,,,__,,,,T,^
+  ^,,^^,,,,____,,^
+  ^,,,_________,,^
+  ^T,,___,,,,,,,T^
+  ,,,,___,,,,,,,,,
+  ,,,,____,,,,,,,,
+# Abend -> Nacht, Regen: tiefes, kaltes Violett-Blau, tiefe orange Restsonne, warme Fackeln an Toren und Hof
+ambient: { color: "#7e86b0", intensity: 0.75 }
+sun: { color: "#e8946a", intensity: 0.5, azimuthDeg: 250, elevationDeg: 10 }
+lights:
+  - { at: [7, 4], color: "#ffb35c", radius: 3 }
+  - { at: [8, 4], color: "#ffb35c", radius: 3 }
+  - { at: [7, 13], color: "#ffb35c", radius: 3 }
+  - { at: [8, 13], color: "#ffb35c", radius: 3 }
+  - { at: [3, 10], color: "#ffb35c", radius: 3 }
+  - { at: [12, 10], color: "#ffb35c", radius: 3 }
+  - { at: [7, 2], color: "#ffb35c", radius: 4 }
+objects: []
+initialEffects: []
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [8,10] Grund: der äußere Hof – hier wurde die Burg gehalten.
+#   [8,3] Grund: der Bergfried vor dem Thron – das Herz der Heimat.
+#   [8,16] Grund: die Serpentinenstraße, auf der die Banden anrückten.
+deploy:
+  max: 7
+  forced: [avatar, kael]
+  slots: [[6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12], [6, 12], [9, 12], [7, 10]]
+# Stufen um 9 [C] Stufe vorläufig, Abgleich per Simulation, sobald spielbar. Leutnant-Stufen sind Platzhalter (ab 3.4 rechnet createBattle).
+units:
+  # Zu verteidigende Figur im Bergfried. OFFEN: wer genau (Flüchtling, Verwalter?) – E4 ändert nur eine Szenenzeile.
+  - { id: steward, nameKey: unit.paktwacht_steward.name, team: other, class: healer, level: 3, at: [8, 3], items: [], ai: { profile: hold } }
+  # Welle 1 (Süden, ab Runde 1)
+  # Epic 3: flieht bei 0 TP (gone: fled), Groll, Kopfgeld
+  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 9, at: [8, 16], sprite: hask, portrait: hask, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+  - { id: w1a, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 9, at: [6, 16], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w1b, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 9, at: [10, 15], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w1c, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 9, at: [5, 17], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: w1d, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 9, at: [9, 17], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+pairs: []
+reinforcements:
+  # Welle 2 (Runde 4, angekündigt): West- und Ostpforte
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      # OFFEN (2.9): wolf_rider – Ulvric bis dahin vanguard mit Lanze. Epic 3: flieht bei 0 TP (gone: fled), Groll, Kopfgeld
+      - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, class: vanguard, level: 9, at: [0, 10], sprite: ulvric, portrait: ulvric, items: [{ def: steel_lance }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: vanguard, level: 9, at: [0, 11], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 9, at: [0, 9], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      # nur wenn Grosk nicht gewechselt (E3) – sonst fällt dieser Eintrag weg (Bedingung folgt mit Epic 3). Epic 3: flieht bei 0 TP (gone: fled), Groll, Kopfgeld
+      - { id: grosk, lieutenant: grosk, nameKey: unit.grosk.name, team: enemy, class: vanguard, level: 9, at: [15, 10], sprite: grosk, portrait: grosk, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 9, at: [15, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 9, at: [15, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Welle 3 (Runde 7, angekündigt): alle drei Seiten, Morra führt von Süden
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      # Morra flieht am Ende der Schlacht (Epic 3: gone: fled), Groll, Kopfgeld
+      - { id: morra, lieutenant: morra, nameKey: unit.morra.name, team: enemy, class: marksman, level: 10, at: [8, 18], sprite: morra, portrait: morra, items: [{ def: longbow }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 9, at: [6, 18], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 9, at: [10, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: skirmisher, level: 9, at: [0, 12], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 9, at: [15, 12], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 9, at: [7, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+objectives:
+  victory: { type: defend, unit: steward, turns: 10 }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: steward }
+  side:
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+    # OFFEN: zweites Nebenziel (kill_with gilt nur für Bosse; Leutnant-Ansprechen ist Story 2.7)
+triggers: []
+# Szenen (9.9): scn.m1_8.before (davor, eine Zeile je E4: Gerücht oder Ulvrics Wölfe), scn.m1_8.morra_flees nach Runde 10 (Morra flieht, Epic 3), scn.m1_8.sparks (2 Glutfunken).
+goldReward: 1500   # [C]
+music: battle_a
+devNote: >
+  16 × 20, dieselbe Burg wie m1_6_paktwacht von innen. Aufstellung im äußeren Hof, Verwalter im Bergfried (8,3). Welle 1 Süden (Runde 1), Welle 2 West/Ost (Runde 4),
+  Welle 3 alle Seiten (Runde 7). Leicht: 13 Gegner; Normal: 15; Schwer: 17. Morra flieht am Ende (Epic 3); 2 Glutfunken nach dem Sieg.

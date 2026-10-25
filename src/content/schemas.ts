@@ -326,6 +326,11 @@ export const mapSchema = z.object({
   nameKey: z.string(),
   size: z.tuple([z.number().int().min(4), z.number().int().min(4)]),
   fog: z.boolean().default(false),
+  /**
+   * Tutorial map (Produktinhaber 2026-10-25): downed player units neither bleed out nor die, regardless of the death mode,
+   * and return after the mission. Units named in a `unit_dies` defeat objective (or flagged mustSurvive) are exempt: their death still loses.
+   */
+  noDeath: z.boolean().optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
   ambient: z.object({ color: z.string(), intensity: z.number() }).optional(),
@@ -467,6 +472,8 @@ export const sceneSchema = z.strictObject({
         fallback: z.literal('skip').optional(),
         mood: moodSchema.default('neutral'),
         text: z.string().min(1),
+        /** illustration panel from this line on: a background id, or `none` to return to the scene background (architecture §5.8) */
+        panel: z.union([z.literal('none'), z.string().regex(/^[a-z0-9_]+$/)]).optional(),
         requires: conditionsListSchema.optional(),
         memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),

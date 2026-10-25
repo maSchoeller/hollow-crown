@@ -3,13 +3,12 @@ lines:
   - id: l01
     speaker: [kael]
     mood: neutral
-    text: "Tipp eine unserer Einheiten an. Blau ist, wohin sie laufen kann, Rot, was sie von dort angreifen kann."
+    text: "Raus durch das Tempeltor im Süden, alle vier. Ich gehe als Letzter."
   - id: l02
-    speaker: [brenna]
-    fallback: skip
+    speaker: [kael]
     mood: neutral
-    text: "Tipp ein Feld für die Vorschau, dann noch einmal zum Bestätigen."
-  - id: l02b
+    text: "Tipp eine Einheit an: Blau ist ihr Weg, Rot ihr Angriff. Tipp ein Feld für die Vorschau, dann nochmal."
+  - id: l03
     speaker: [brenna]
     fallback: skip
     mood: neutral

@@ -1,0 +1,6 @@
+id: scn.m1_1.house_nw
+background: varnhold
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Bäcker schiebt Brenna einen Beutel hin. „Ich glaub den Zetteln nicht. Mörder bringen keine Brote mit.“"

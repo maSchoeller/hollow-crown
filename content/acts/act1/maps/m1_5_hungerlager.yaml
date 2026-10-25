@@ -1,0 +1,130 @@
+# Mission 1-5 – Das Hungerlager (Story 9.6). Layout-Entwurf, kein Knoten, keine Szenen. Startwerte [C].
+# Ort: Lager der Hungernden in einem Talkessel; die Truppe sitzt auf einem Hügel mit Ruinen in der Mitte (Festungsfelder, Heilung).
+# Tageszeit: Abend, Wetter: Asche (Rauch, Elend; art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: „hungerlager“ (Story 8.x), nur Kommentar.
+# Ziel: 6 Runden standhalten (survive); danach redet Leutnant Grosk (Szene scn.m1_5.grosk_talk), er muss nicht besiegt werden.
+# Die Hungernden strömen aus dem Lager ringsum in Wellen (Runde 2 und 4) auf den Hügel. Varek wird durch Kael angesprochen (recruit).
+# Zelte des Lagers sind Gelände (stall), Kinder/Zivilisten als grüne Nicht-Ziele: OFFEN (kein neutraler Nichtkämpfer-Typ vorhanden).
+# Lehrstück: Hügel mit Festungsfeldern (Deckung/Heilung) als Rolle für Vorkämpfer, Ascheflächen und Zelte am Rand für Elementaristen (Feuer zündet die Zelte nicht: stall nicht brennbar).
+# OFFEN: Rolle der Wellen: Gegner sind Hungernde (Stufe 4 vorläufig [C], absichtlich schwächer als ihre Zahl); E3 „verschonen oder Kopfgeld“ folgt in der Szene danach.
+# OFFEN: Szene scn.m1_5.varek_talk (scn.ch02.varek_talk passt nicht: sie handelt von Morras Entführung); recruit ohne dialogue bis die Szene existiert.
+# OFFEN (2.9): Grosk als vanguard; Signaturwaffe Kinderhand (little_hands) fehlt in items.yaml → OFFEN (items.md §6.3).
+# PLATZHALTER: Stufen 4–6 [C], Szenen: scn.m1_5.intro, scn.m1_5.grosk_talk, scn.m1_5.varek_talk, scn.m1_5.outro.
+id: m1_5_hungerlager
+nameKey: map.m1_5_hungerlager.name
+size: [16, 16]
+fog: false
+legend:
+  ".": plain
+  ",": grass
+  "T": forest
+  "a": ash
+  "R": ruins
+  "F": fort          # Hügelkuppe (Festungsfeld: Deckung, Heilung)
+  "W": stall         # Zelt (Requisite tent)
+  "b": brazier       # Lagerfeuer (Requisite campfire)
+  "H": village       # Hütte (besuchbar)
+#          x: 0123456789ABCDEF
+terrain: |
+  TTT,,,,,,,,,,TTT
+  TTT,,,a,,,,,,TTT
+  ,,,,,W,,,,W,,,a,
+  ,,,W,,,,,,,,W,,,
+  ,,,,b......b,,,,
+  ,a,,.aaaaaa.,b,,
+  ,,,,.a.RR.a.,,,,
+  ,,W,.aRFFRa.,,,,
+  ,,,,.aRFFRa.,W,,
+  ,,b,.a....a.,,,,
+  ,,,,.aaaaaa.,,a,
+  ,,,,H......H,,,,
+  ,a,W,,,,,,,,W,,,
+  ,,,,,W,,b,W,,,,,
+  TTT,,,,,,a,,,TTT
+  TTT,,,,,,,,,,TTT
+# Abend, Ascheschleier: rotbraunes, schweres Licht, Sonne tief
+ambient: { color: "#c8a9a0", intensity: 0.75 }
+sun: { color: "#ff9a60", intensity: 0.8, azimuthDeg: 260, elevationDeg: 15 }
+lights:
+  - { at: [4, 4], color: "#ffb35c", radius: 3 }
+  - { at: [11, 4], color: "#ffb35c", radius: 3 }
+  - { at: [2, 9], color: "#ffb35c", radius: 3 }
+  - { at: [13, 5], color: "#ffb35c", radius: 3 }
+  - { at: [8, 13], color: "#ffb35c", radius: 3 }
+objects:
+  # Szenen scn.m1_5.hut_* folgen; Belohnungen [C]
+  - { id: v_w, type: village, at: [4, 11],  reward: { item: { def: remedy_salve } } }
+  - { id: v_e, type: village, at: [11, 11], reward: { gold: 200 } }
+initialEffects: []
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [8,8] Grund: der Hügel mit den Ruinen – hier hielt die Truppe stand.
+#   [8,2] Grund: das Hungerlager im Norden, Grosks Platz.
+#   [8,13] Grund: das südliche Lagerfeuer am Talausgang – Flüchtende kehren zurück.
+deploy:
+  max: 6
+  forced: [avatar, kael]
+  slots: [[7, 8], [8, 8], [7, 7], [8, 7], [7, 9], [8, 9], [6, 9], [9, 9]]
+# Epic 3: Grosk flieht nicht, er redet (Szene); Groll, Kopfgeld (E3). Kein quote. Hält sich im Norden (hold), kommt nach Runde 6 ins Gespräch.
+# Szene (9.6): scn.m1_5.grosk_talk bei Rundenbeginn 7 (survive endet nach Runde 6)
+units:
+  - id: grosk
+    nameKey: unit.grosk.name
+    team: enemy
+    class: vanguard
+    level: 6
+    at: [8, 3]
+    lieutenant: grosk
+    sprite: grosk
+    portrait: grosk
+    items: [ { def: iron_lance }, { def: vulnerary } ]
+    drops: [1]
+    ai: { profile: hold }
+  # Varek wie in ch02: startet als Gegner, hält, Kael spricht ihn an (recruit)
+  - id: varek
+    char: varek
+    team: enemy
+    class: skirmisher
+    level: 5
+    at: [13, 6]
+    items: []
+    ai: { profile: hold }
+    recruit: { by: [kael] }
+  - { id: h1, nameKey: unit.starving_raider.name, team: enemy, class: brigand,    sprite: brigand,       level: 4, at: [3, 4],  items: [{ def: hand_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h2, nameKey: unit.starving_raider.name, team: enemy, class: brigand,    sprite: brigand,       level: 4, at: [12, 4], items: [{ def: hand_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h3, nameKey: unit.starving_raider.name, team: enemy, class: vanguard,   sprite: soldier,       level: 4, at: [3, 8],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h4, nameKey: unit.starving_raider.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [12, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h5, nameKey: unit.starving_raider.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 4, at: [5, 12], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h6, nameKey: unit.starving_raider.name, team: enemy, class: brigand,    sprite: brigand,       level: 5, at: [9, 13], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h7, nameKey: unit.starving_raider.name, team: enemy, class: vanguard,   sprite: soldier,       level: 5, at: [6, 3],  items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: h8, nameKey: unit.starving_raider.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 5, at: [11, 13], items: [{ def: iron_bow }],  ai: { profile: aggressive }, difficulty: [hard] }
+pairs: []
+# Wellen aus dem Lager ringsum, angekündigt: Runde 2 und 4
+reinforcements:
+  - turn: 2
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.starving_raider.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [0, 6], items: [{ def: hand_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.starving_raider.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [15, 8], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.starving_raider.name, team: enemy, class: vanguard, sprite: soldier, level: 5, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.starving_raider.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [0, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.starving_raider.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [15, 12], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+objectives:
+  victory: { type: survive, turns: 6 }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+  side:
+    - { id: s_varek, type: recruit, unit: varek, reward: { gold: 300 } }
+    - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+triggers: []
+# Szene (9.6): scn.m1_5.intro bei Rundenbeginn 1; scn.m1_5.varek_spotted, wenn Kael nahe Varek kommt; scn.m1_5.grosk_talk nach Runde 6
+goldReward: 1200   # [C]
+music: battle_a
+devNote: >
+  Standhalten. 16 × 16: Hügel mit Ruinen und Festungsfeldern in der Mitte, Ascheringe, Zelte und Feuer des Lagers ringsum, zwei Hütten im
+  Süden. Gegner: Leicht 10, Normal 12, Schwer 14 (einschließlich Wellen Runde 2 und 4); Varek zählt nicht mit.

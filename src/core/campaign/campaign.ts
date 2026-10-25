@@ -4,6 +4,7 @@ import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/crea
 import { sideObjectiveDone } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
+import { deathless } from '../rules/effects';
 import { allItems, itemDef } from '../rules/items';
 import { grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
@@ -253,7 +254,9 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     const before = c0.roster.find((r) => r.id === u.id);
     const isNew = !before;
     if (isNew && (u.generic || !data.chars[u.id])) continue;
-    const dies = u.gone === 'dead' || (u.downed && !u.gone);
+    // downed at the end of the mission: dies, except on `noDeath` maps (tutorial) where it returns like a casualty
+    const spared = deathless(data, s, u);
+    const dies = u.gone === 'dead' || (u.downed && !u.gone && !spared);
     if (dies) {
       c.roster = c.roster.filter((r) => r.id !== u.id);
       const mercenary = !u.charId;
@@ -262,7 +265,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       c.convoy.push(...allItems(u));
       continue;
     }
-    if (u.gone === 'rescued' && s.settings.deathMode === 'standard') {
+    if (u.gone === 'rescued' && s.settings.deathMode === 'standard' && !map.noDeath) {
       const free = scarIds.filter((x) => !u.scars.includes(x));
       if (free.length) {
         const scar = pick(rng, free);

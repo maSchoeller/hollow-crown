@@ -28,7 +28,7 @@ describe('globToRegExp', () => {
     expect(matchesGlob('coreX/a.yaml', 'core/**')).toBe(false);
   });
   it('keeps * and ? within one segment and dots literal', () => {
-    expect(matchesGlob('acts/act1/maps/prologue_caravan.yaml', 'acts/act1/maps/prologue_*.yaml')).toBe(true);
+    expect(matchesGlob('acts/act1/maps/prologue_paktnacht.yaml', 'acts/act1/maps/prologue_*.yaml')).toBe(true);
     expect(matchesGlob('acts/act1/maps/sub/prologue_x.yaml', 'acts/act1/maps/prologue_*.yaml')).toBe(false);
     expect(matchesGlob('audio/camp.mp3', 'audio/camp.*')).toBe(true);
     expect(matchesGlob('audio/campXmp3', 'audio/camp.mp?')).toBe(false);
@@ -40,7 +40,7 @@ describe('globToRegExp', () => {
 describe('packOf', () => {
   const packs = [pack('core', { content: ['core/**', 'acts/act1/maps/prologue_*.yaml'] }), pack('act1', { content: ['acts/act1/**'], assets: ['models/**'] })];
   it('takes the first pack whose globs match', () => {
-    expect(packOf(packs, 'acts/act1/maps/prologue_caravan.yaml', 'content').id).toBe('core');
+    expect(packOf(packs, 'acts/act1/maps/prologue_paktnacht.yaml', 'content').id).toBe('core');
     expect(packOf(packs, 'acts/act1/maps/ch01_varnhold.yaml', 'content').id).toBe('act1');
   });
   it('gives everything unnamed to core', () => {
@@ -67,17 +67,17 @@ describe('parsePacks', () => {
 });
 
 describe('checkPacks', () => {
-  const campaign = { nodes: [{ id: 'prologue', map: 'prologue_caravan', pre: 'scn.prologue.intro', fixed: 'first' }] };
+  const campaign = { nodes: [{ id: 'prologue', map: 'prologue_paktnacht', pre: 'scn.prologue.intro', fixed: 'first' }] };
   it('accepts the real content', () => {
     const { data } = loadContentFromDisk();
     expect(checkPacks(realPacks, contentFiles(), data.campaign)).toEqual([]);
   });
   it('reports files in no pack and a first node outside core', () => {
     const packs = [pack('core', { content: ['core/**'] }), pack('act1', { content: ['acts/act1/**'] }), pack('voice.x', { load: 'voice' })];
-    const files = ['core/a.yaml', 'acts/act1/maps/prologue_caravan.yaml', 'acts/act1/scenes/scn.prologue.intro.yaml', 'acts/act2/x.yaml'];
+    const files = ['core/a.yaml', 'acts/act1/maps/prologue_paktnacht.yaml', 'acts/act1/scenes/scn.prologue.intro.yaml', 'acts/act2/x.yaml'];
     expect(checkPacks(packs, files, campaign).map((i) => i.message)).toEqual([
       'acts/act2/x.yaml is in no pack',
-      'map prologue_caravan of the first node must be in core',
+      'map prologue_paktnacht of the first node must be in core',
       'scene scn.prologue.intro of the first node must be in core',
       'voice pack voice.x needs a lang',
     ]);
@@ -87,10 +87,10 @@ describe('checkPacks', () => {
 describe('packs plugin helpers', () => {
   it('puts the prologue into core and the rest of act 1 into act1', () => {
     const byPack = contentByPack(process.cwd(), realPacks);
-    expect(byPack.get('core')).toContain('acts/act1/maps/prologue_caravan.yaml');
+    expect(byPack.get('core')).toContain('acts/act1/maps/prologue_paktnacht.yaml');
     expect(byPack.get('core')).toContain('core/balance.yaml');
     expect(byPack.get('act1')).toContain('acts/act1/maps/ch01_varnhold.yaml');
-    expect(byPack.get('act1')).not.toContain('acts/act1/maps/prologue_caravan.yaml');
+    expect(byPack.get('act1')).not.toContain('acts/act1/maps/prologue_paktnacht.yaml');
     expect([...byPack.values()].flat()).not.toContain('packs.yaml');
   });
   it('hashes a pack over its sorted files', () => {

@@ -50,7 +50,7 @@ describe('act 1 enemy classes', () => {
         for (const i of u.items) expect(data.items[i.def]!.effectiveVs ?? []).not.toContain('mounted');
       }
     }
-    expect(enemies('prologue_caravan').some((u) => u.class === 'wolf_rider')).toBe(false);
+    expect(enemies('prologue_paktnacht').some((u) => u.class === 'wolf_rider')).toBe(false);
   });
 
   it('content loading reports no issues', () => {

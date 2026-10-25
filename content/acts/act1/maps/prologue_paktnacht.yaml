@@ -1,0 +1,108 @@
+# Prolog – Die Paktnacht (Story 9.1). Äußerer Ring des Pakttempels Glutdom in Aurenhall, Nacht des Paktfestes: Der König ist tot,
+# die Tempelwachen wenden sich gegen die Söldner. Ziel: Flucht durch das Tempeltor im Süden, alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Kael zuletzt (escape).
+# Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf). Startwerte [C].
+# Produktinhaber 2026-10-24: nur Nahkampf-Gegner (Lanzen-Vorkämpfer, Schwert-Plänkler), keine Leutnants. Gerrit (Bannerträger, nicht
+# spielbar) steht nur in den Szenen, nicht auf der Karte.
+id: prologue_paktnacht
+nameKey: map.prologue_paktnacht.name
+size: [12, 16]
+fog: false
+# Produktinhaber 2026-10-25: Im Prolog verbluten und sterben Niedergestreckte nicht (egal welcher Todesmodus), sie bleiben liegen
+# und kehren nach der Mission zurück. Rhen und Kael (Niederlage bei Tod) sind ausgenommen: ihr Tod verliert die Mission wie zuvor.
+noDeath: true
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "#": wall          # Mauer und Säulen (einzelne Felder)
+  "D": door          # Glutdom, Tür geschlossen
+  "b": brazier       # Kohlebecken (Requisite campfire), Punktlichter siehe lights
+  "E": door_open     # Tempeltor = Ausgang (Ausgangsfelder: objectives.victory.area)
+#          x: 0123456789AB
+terrain: |
+  ^^##DDDD##^^
+  ,T#..__..#T,
+  ,,.b.__.b.,,
+  T,.#.__.#.,T
+  ,,..____..,,
+  T,,.b__b.,,T
+  ,,T..__..T,,
+  #,,.#__#.,,#
+  _,,..__..,,_
+  #,T..__..T,#
+  ,,,.b__b.,,,
+  T,,.____.,,T
+  ,,T..__..T,,
+  #,,.#__#.,,#
+  ##,,.__.,,##
+  ####EEEE####
+# Nacht: mondblaues Umgebungslicht, Mond als schwache Sonne, warme Punktlichter an den Kohlebecken (art-direction §2.5, Tageszeit night)
+ambient: { color: "#5a70b0", intensity: 0.6 }
+sun: { color: "#8fa8ee", intensity: 0.4, azimuthDeg: 120, elevationDeg: 50 }
+lights:
+  - { at: [3, 2], color: "#ffb35c", radius: 4 }
+  - { at: [8, 2], color: "#ffb35c", radius: 4 }
+  - { at: [4, 5], color: "#ffb35c", radius: 4 }
+  - { at: [7, 5], color: "#ffb35c", radius: 4 }
+  - { at: [4, 10], color: "#ffb35c", radius: 4 }
+  - { at: [7, 10], color: "#ffb35c", radius: 4 }
+objects: []
+initialEffects: []
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [5,8] Grund: Mitte des Hofes, Kreuzung der Straße mit den Seitentoren – hier laufen alle Wege zusammen.
+#   [4,13] Grund: Engstelle vor dem Tempeltor zwischen den Säulen – wer hier lauert, fängt jeden Flüchtenden ab.
+#   [5,1] Grund: Aufstellfeld vor der verschlossenen Glutdom-Tür – der Ort, an dem die Paktnacht begann.
+deploy:
+  max: 4
+  forced: [avatar, kael]
+  slots: [[5, 1], [6, 1], [4, 1], [7, 1], [5, 2], [6, 2]]
+units:
+  # Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle, das Modell trägt keine eingebaute Lanze): Lanzen-Vorkämpfer und Schwert-Plänkler. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
+  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg3h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 2, then: aggressive }, difficulty: [hard] }
+  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg4h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 2, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal] }
+  - { id: tg5h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
+pairs: []
+# Hart: Verstärkung aus dem Seitentor im Osten (angekündigt), Runde 3
+reinforcements:
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 1, at: [11, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+objectives:
+  # Siegt, sobald alle eigenen Einheiten, die noch stehen, das Tor verlassen haben; Kael als Letzter (Regel im Kern: mustStayForRest).
+  # Kein min: Niedergestreckte zählen nicht mit (Entscheidung Produktinhaber 2026-10-25).
+  victory: { type: escape, area: { rect: [4, 15, 7, 15] } }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+  side:
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 11 Runden bis zum Sieg)
+    - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 100 } }
+triggers:
+  # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
+  - id: t_intro
+    when: { type: turn_start, turn: 1, phase: player }
+    then:
+      - { action: dialogue, id: scn.prologue.tutorial_move }
+  - id: t_turn2
+    when: { type: turn_start, turn: 2, phase: player }
+    then:
+      - { action: dialogue, id: scn.prologue.tutorial_danger }
+  - id: t_heal
+    when: { type: hp_below, unit: kael, percent: 60 }
+    then:
+      - { action: dialogue, id: scn.prologue.tutorial_heal }
+goldReward: 300
+music: battle_a
+devNote: "Fluchtkarte 12 × 16, Nord nach Süd. Aufstellung vor der Glutdom-Tür, Hof mit Säulen und Kohlebecken, Gärten links und rechts, Seitentore (0,8) und (11,8), Tempeltor unten = Ausgang. Leicht: 4 Wachen; Normal: 5; Schwer: 6 plus Verstärkung aus dem Osttor in Runde 3."

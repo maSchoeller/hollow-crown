@@ -1,4 +1,4 @@
-import { HOME_KINDS, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
+import { HOME_KINDS, MAX_PANEL_LINES, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
@@ -316,6 +316,24 @@ export function validateContent(
     const seen = new Set<string>();
     // barks (story 9.13): only the six moments, one bubble page each in both languages
     const bark = sc.id.startsWith('scn.bark.');
+    // illustration panels: a panel lasts until `panel: none`, the next panel or the end of the scene, at most MAX_PANEL_LINES text lines
+    {
+      let open: string | null = null;
+      let count = 0;
+      for (const l of sc.lines) {
+        if ('choice' in l) continue;
+        if (l.panel !== undefined) {
+          open = l.panel === 'none' ? null : l.id;
+          count = 0;
+        }
+        if (open) {
+          count++;
+          if (count === MAX_PANEL_LINES + 1) err(f, `${l.id}: the panel of line ${open} lasts longer than ${MAX_PANEL_LINES} text lines (end it with panel: none)`);
+        }
+        if (l.panel !== undefined && l.panel !== 'none' && placeImages && !placeImages.has(l.panel)) err(f, `${l.id}: panel: no place image art/mockups/locations-s1/${l.panel}.png`);
+        if (bark && l.panel !== undefined) err(f, `${l.id}: a bark scene has no panel`);
+      }
+    }
     for (const l of sc.lines) {
       const ctx = `${l.id}`;
       if (seen.has(l.id)) err(f, `${ctx}: duplicate line id`);

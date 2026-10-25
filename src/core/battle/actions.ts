@@ -169,6 +169,11 @@ export function passivePreview(data: GameData, s: BattleState, u: BattleUnit, po
   }
 }
 
+/** Escape maps: the lord leaves last (concept/06 §5), i.e. not while another able player unit is still on the map. */
+export function mustStayForRest(s: BattleState, u: BattleUnit): boolean {
+  return u.flags.includes('lord') && s.units.some((o) => o !== u && o.team === 'player' && onMap(o) && !o.downed);
+}
+
 /** All actions the unit could take from `pos` (UI action bar and AI share this). */
 export function availableActions(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): ActionOption[] {
   const out: ActionOption[] = [];
@@ -212,7 +217,7 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
     if (nearConvoy(s, u, pos) && !u.freeUsed.convoy) out.push({ kind: 'convoy' });
     const v = map.objectives.victory;
     if (v.type === 'seize' && u.flags.includes('seizer') && inArea(v.area, pos)) out.push({ kind: 'seize' });
-    if (v.type === 'escape' && inArea(v.area, pos)) out.push({ kind: 'escape' });
+    if (v.type === 'escape' && inArea(v.area, pos) && !mustStayForRest(s, u)) out.push({ kind: 'escape' });
   }
   for (const id of activeSkillIds(data, u)) {
     const sk = data.skills[id]!;
