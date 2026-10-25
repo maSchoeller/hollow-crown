@@ -104,8 +104,11 @@ export type DefeatSentence =
 export function defeatSentence(data: GameData, s: BattleState): DefeatSentence {
   const reason = s.defeatReason;
   if (reason === 'turns') {
-    const limit = data.maps[s.mapId]?.objectives.defeat.find((d) => d.type === 'turn_limit');
-    return limit && limit.type === 'turn_limit' ? { kind: 'turns', turns: limit.turns } : { kind: 'generic' };
+    const o = data.maps[s.mapId]?.objectives;
+    const limit = o?.defeat.find((d) => d.type === 'turn_limit');
+    if (limit && limit.type === 'turn_limit') return { kind: 'turns', turns: limit.turns };
+    // the round limit of a treasure hunt (story 4.8) is part of the goal
+    return o?.victory.type === 'treasure' ? { kind: 'turns', turns: o.victory.turns } : { kind: 'generic' };
   }
   const u = reason ? findUnit(s, reason) : undefined;
   return u ? { kind: 'unit', nameKey: u.nameKey, name: u.name } : { kind: 'generic' };

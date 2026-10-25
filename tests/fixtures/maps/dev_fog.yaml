@@ -1,0 +1,48 @@
+# Entwicklerkarte für Nebel, Öffnen und Stehlen (Story 2.6). Gehört zu keinem Paket, steht in keinem Kampagnen-Graph und
+# kommt nicht in den Build: Tests laden sie über tests/fixtures/devFogMap.ts (wie tests/perf/benchMap.ts die Bench-Karte).
+#
+# Links der Hof (Spieler), rechts die Halle, die nur die Tür D betritt (Wand # ringsum); unten das freie Feld.
+#          x: 0123456789ABCD
+terrain: |
+  ##############
+  #....#.......#
+  #....D.......#
+  #..T.#.......#
+  #....#.......#
+  #....#########
+  #............#
+  #...T...,....#
+  ##############
+id: dev_fog
+nameKey: map.prologue_caravan.name
+size: [14, 9]
+fog: true
+legend:
+  ".": plain
+  ",": grass
+  "T": forest
+  "#": wall
+  "D": door
+objects:
+  - { id: dev_door, type: door, at: [5, 2] }
+  - { id: dev_chest, type: chest, at: [12, 4], contents: { gold: 120, item: { def: vulnerary } } }
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [] }
+units:
+  # Spieler: ein Späher an der Tür, ein Schütze und ein Vorkämpfer auf dem freien Feld
+  - { id: dev_scout, team: player, class: scout, level: 3, at: [4, 2], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 3, at: [2, 6], sprite: archer, items: [{ def: iron_bow }] }
+  - { id: dev_vanguard, team: player, class: vanguard, level: 3, at: [1, 3], sprite: soldier, items: [{ def: iron_lance }] }
+  # Gegner: der Wächter in der Halle (Beutel: Heiltrank), ein Plünderer auf dem Feld (Beutel: Heiltrank, Heilsalbe), ein Bogenschütze am Ostrand
+  - { id: dev_guard, team: enemy, class: brigand, level: 3, at: [9, 2], sprite: brigand, items: [{ def: iron_axe }, { def: vulnerary }], ai: { profile: hold } }
+  - { id: dev_looter, team: enemy, class: skirmisher, level: 3, at: [7, 6], sprite: mercenary, items: [{ def: iron_sword }, { def: vulnerary }, { def: remedy_salve }], ai: { profile: hold } }
+  - { id: dev_archer, team: enemy, class: marksman, level: 3, at: [12, 7], sprite: bandit_archer, items: [{ def: iron_bow }], ai: { profile: hold } }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: rout }
+  defeat:
+    - { type: unit_dies, unit: dev_vanguard }
+  side: []
+triggers: []
+goldReward: 0

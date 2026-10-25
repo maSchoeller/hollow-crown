@@ -364,6 +364,26 @@
   playable: false
   v1: true
 
+# Wolfsreiter (Akt 1): zu Fuß mit Wolfsfell, kein Reittier, keine Beritten-Effektivität (PO 2026-10-24).
+# Werte von `skirmisher` abgeleitet (leichter, schneller, Lanze statt Schwert); Wolfsfell ist nur Optik.
+- id: wolf_rider
+  nameKey: class.wolf_rider.name
+  role: wolf_rider
+  tier: base
+  roleGroup: melee
+  moveType: foot
+  mov: 6
+  weaponGroups: [lance]
+  proPaths: []
+  tags: []
+  base: { hp: 18, str: 5, mag: 0, skl: 6, spd: 8, lck: 2, def: 3, res: 1 }
+  growth: { hp: 75, str: 40, mag: 5, skl: 45, spd: 55, lck: 25, def: 20, res: 15 }
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 5, spd: 15, lck: 0, def: -5, res: 0 }
+  caps: { hp: 50, str: 22, mag: 12, skl: 25, spd: 26, lck: 25, def: 18, res: 15 }
+  playable: false
+  art: mercenary   # Platzhalter bis zur Grafik-Session (Wolfsfell-Modell)
+  v1: true
+
 - id: knight
   nameKey: class.knight.name
   role: knight

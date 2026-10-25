@@ -4,11 +4,12 @@ import { useEffect, useState } from 'preact/hooks';
 import {
   computeStats,
   ruleOn,
-  type ActionOption,
   type BattleState,
   type BattleUnit,
   type ClassPreview,
+  type ContextEntry,
   type Forecast,
+  type PassivePreview,
   type GameData,
   type ItemInstance,
   type SideObjectiveDef,
@@ -236,26 +237,106 @@ export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p:
 
 // ------------------------------------------------------------------ context band
 
-export type ContextKind = 'rescue' | 'talk' | 'visit' | 'chest' | 'door' | 'seize' | 'escape' | 'trade' | 'convoy';
-/** Order of the context bands above the unit card. */
-export const CONTEXT_ORDER: ContextKind[] = ['rescue', 'talk', 'visit', 'chest', 'door', 'seize', 'escape', 'trade', 'convoy'];
+/** Hint key on PC: F runs the front band (EXPERIENCE.md). */
+export const CONTEXT_KEY = 'F';
 
-/** Green band above the unit card for what the target tile allows besides fighting; one tap runs it (DESIGN.md context-band). */
-export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?: BattleUnit; onGo: () => void }) {
-  const kind = opt.kind as ContextKind;
+/** One green band: mini portrait or object symbol, action, reason and the green button; one tap runs it (DESIGN.md context-band). */
+export function ContextBand({ entry, target, onGo }: { entry: ContextEntry; target?: BattleUnit; onGo: () => void }) {
+  const opt = entry.option;
+  const kind = entry.kind;
   const name = target ? unitName(target) : '';
   const person = kind === 'rescue' || kind === 'talk' || kind === 'trade';
   // with several possible partners the band names the action only; the target is picked on the board
-  const title = person ? (target ? t(`ui.ctx.${kind}`, { name }) : t(`ui.action.${kind}`)) : t(`ui.ctx.${kind}`);
+  // Öffnen of a scout (story 2.6) names its object: the door or the chest
+  const what = kind === 'open' ? (opt.objectType ?? 'chest') : kind;
+  const title = person ? (target ? t(`ui.ctx.${kind}`, { name }) : t(`ui.action.${kind}`)) : t(`ui.ctx.${what}`);
+  const reason = entry.reason ? t(entry.reason.key, entry.reason.params) : '';
   return (
     <button type="button" class="hc-piece hud-ctx" onClick={onGo}>
-      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} classId={target.classId} name={name} /> : <Icon name={kind} size={22} />}</span>
+      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} classId={target.classId} name={name} /> : <Icon name={what} size={22} />}</span>
       <span class="hud-ctx__text">
         <b>{title}</b>
-        {kind === 'rescue' && <small>{t('ui.ctx.rescueSub')}</small>}
+        {reason && <small>{reason}</small>}
       </span>
-      <span class="hud-ctx__go">{t(`ui.action.${kind}`)}</span>
+      <span class="hud-ctx__go">
+        {t(`ui.action.${kind}`)}
+        <kbd class="hud-ctx__key" aria-hidden="true">
+          {CONTEXT_KEY}
+        </kbd>
+      </span>
     </button>
+  );
+}
+
+/** Swipe distance (px) that turns the band over. */
+const SWIPE = 36;
+
+/**
+ * The bands of the tile: the front one in full, the others a swipe (touch), an arrow key or a dot away; dots show the count.
+ * A drag never counts as a tap on the band.
+ */
+export function ContextBands({
+  entries,
+  index,
+  unitOf,
+  onIndex,
+  onGo,
+}: {
+  entries: ContextEntry[];
+  index: number;
+  unitOf: (uid: string) => BattleUnit | undefined;
+  onIndex: (i: number) => void;
+  onGo: (e: ContextEntry) => void;
+}) {
+  const [from, setFrom] = useState<{ x: number; y: number } | null>(null);
+  const [dragged, setDragged] = useState(false);
+  if (!entries.length) return null;
+  const e = entries[Math.min(index, entries.length - 1)]!;
+  const step = (d: number) => onIndex((index + d + entries.length) % entries.length);
+  const up = (ev: PointerEvent) => {
+    if (from && entries.length > 1) {
+      const dx = ev.clientX - from.x;
+      const dy = ev.clientY - from.y;
+      if (Math.abs(dx) >= SWIPE && Math.abs(dx) > Math.abs(dy)) {
+        setDragged(true);
+        step(dx < 0 ? 1 : -1);
+      }
+    }
+    setFrom(null);
+  };
+  return (
+    <div
+      class="hud-ctxs"
+      onPointerDown={(ev) => {
+        setDragged(false);
+        setFrom({ x: ev.clientX, y: ev.clientY });
+      }}
+      onPointerUp={up}
+      onPointerCancel={() => setFrom(null)}
+      onClickCapture={(ev) => {
+        if (dragged) {
+          ev.stopPropagation();
+          ev.preventDefault();
+          setDragged(false);
+        }
+      }}
+    >
+      <ContextBand key={e.id} entry={e} target={e.target ? unitOf(e.target) : undefined} onGo={() => onGo(e)} />
+      {entries.length > 1 && (
+        <div class="hud-ctxs__dots">
+          {entries.map((o, i) => (
+            <button
+              key={o.id}
+              type="button"
+              class={`hud-ctxs__dot ${i === index ? 'is-on' : ''}`}
+              aria-label={t('ui.ctx.page', { n: i + 1, m: entries.length })}
+              aria-current={i === index}
+              onClick={() => onIndex(i)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -269,6 +350,7 @@ const ROLE_ICON: Record<string, string> = {
   marksman: 'bow',
   elementalist: 'fire',
   healer: 'healer',
+  scout: 'steal',
   tactician: 'target',
 };
 /** Role symbol by the class's role, so pro classes show the icon of their base role. */
@@ -281,6 +363,7 @@ export function DockAction({
   variant,
   dim,
   on,
+  state,
   onClick,
 }: {
   icon: string;
@@ -290,12 +373,14 @@ export function DockAction({
   /** impossible right now: dimmed, never hidden; a tap still answers with the reason */
   dim?: boolean;
   on?: boolean;
+  /** passive role: the symbol shows a state (`ready` / `active`) instead of a button; a tap explains the rule */
+  state?: 'ready' | 'active';
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
-      class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''}`}
+      class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''} ${state ? `is-state ${state === 'active' ? 'is-active' : ''}` : ''}`}
       aria-disabled={dim || undefined}
       aria-pressed={on}
       onClick={onClick}
@@ -460,8 +545,31 @@ export function ForecastCard({
 }
 
 /** Preview of Fernbergen and Anfeuern: who is affected and what changes, from the numbers of the resolution. */
-export function ClassPreviewCard({ data, state, p }: { data: GameData; state: BattleState; p: ClassPreview }) {
-  if (p.kind === 'aim') return null;
+export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; state: BattleState; p: ClassPreview; caster?: BattleUnit }) {
+  if (p.kind === 'aim' || p.kind === 'steal') return null;
+  if (p.kind === 'cast') {
+    const a = p.area;
+    const team = caster?.team ?? 'player';
+    const hit = a.units.map((uid) => state.units.find((x) => x.uid === uid)!).filter(Boolean);
+    const foes = hit.filter((x) => (x.team === 'enemy') !== (team === 'enemy')).length;
+    return (
+      <div class="hc-piece hud-fc">
+        <div class="hud-fc__head">
+          <Icon name={a.element} size={34} />
+          <span class="hud-name hud-name--small">{t('ui.action.cast')}</span>
+          <span class="hud-chips">
+            <span class="hud-chip is-adv">{t('ui.preview.cast.turns', { n: a.turns })}</span>
+            {a.units.length > 0 && (
+              <span class="hud-chip">{t('ui.preview.cast.units', { foes, allies: hit.length - foes })}</span>
+            )}
+            {a.effect === 'extinguish' && a.extinguished > 0 && <span class="hud-chip is-adv">{t('ui.preview.cast.extinguished', { n: a.extinguished })}</span>}
+            {a.renews && <span class="hud-chip">{t('ui.preview.cast.renews')}</span>}
+          </span>
+        </div>
+        <p class="hud-sub">{t(`ui.preview.cast.${a.element}`, { r: a.radius, n: a.turns })}</p>
+      </div>
+    );
+  }
   const target = state.units.find((u) => u.uid === p.target)!;
   const base = computeStats(data, target);
   return (
@@ -487,6 +595,22 @@ export function ClassPreviewCard({ data, state, p }: { data: GameData; state: Ba
         </div>
       </div>
       <p class="hud-sub">{p.kind === 'cheer' ? t('ui.preview.cheer') : t('ui.preview.farRescueText')}</p>
+    </div>
+  );
+}
+
+/** Rule card of a passive role (Halten, Nachsetzen): the rule in words and what it means on the tile the unit would stand on. */
+export function PassiveRuleCard({ p }: { p: PassivePreview }) {
+  return (
+    <div class="hc-piece hud-fc">
+      <div class="hud-fc__head">
+        <Icon name={p.kind === 'hold' ? 'shield' : 'blade'} size={34} />
+        <span class="hud-name hud-name--small">{t(`ui.passive.${p.kind}.name`)}</span>
+        <span class="hud-chips">
+          <span class="hud-chip is-adv">{p.kind === 'hold' ? t('ui.passive.hold.zone', { n: p.tiles.length }) : t('ui.passive.pursue.left', { n: p.left })}</span>
+        </span>
+      </div>
+      <p class="hud-sub">{t(`ui.passive.${p.kind}.rule`)}</p>
     </div>
   );
 }

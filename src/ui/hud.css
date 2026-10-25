@@ -497,6 +497,72 @@
   font-size: 14px;
 }
 
+/* several context bands: the front one in full, dots below; swipe sideways (touch) or arrow keys turn them over */
+.hud-ctxs {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  touch-action: pan-y;
+}
+.hud-ctxs .hud-ctx {
+  min-height: 56px;
+  animation: hud-ctx-in 160ms ease-out;
+}
+@keyframes hud-ctx-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud-ctxs .hud-ctx {
+    animation: none;
+  }
+}
+.hud-ctxs__dots {
+  display: flex;
+  justify-content: center;
+}
+.hud-ctxs__dot {
+  position: relative;
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.hud-ctxs__dot::after {
+  content: '';
+  position: absolute;
+  inset: 6px 8px;
+  box-sizing: border-box;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+}
+.hud-ctxs__dot.is-on::after {
+  background: var(--hc-positive);
+}
+.hud-ctxs__dot:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 0;
+}
+.hud-ctx__key {
+  display: none;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.28);
+  font: inherit;
+  font-size: 11px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hud-ctx__key {
+    display: inline;
+  }
+}
+
 /* dock: four fixed slots (or three in idle) */
 .hud-dock {
   display: grid;
@@ -550,6 +616,20 @@
 }
 .hud-act.is-on {
   background: #f8d9d4;
+}
+/* passive role (Halten, Nachsetzen): the role symbol as a state, not a button that fires; a tap explains the rule */
+.hud-act.is-state {
+  box-shadow: none;
+  border-style: dashed;
+  background: var(--hc-cream);
+}
+.hud-act.is-state:active {
+  transform: none;
+  box-shadow: none;
+}
+.hud-act.is-state.is-active {
+  border-style: solid;
+  background: var(--hc-team-player-soft);
 }
 /* impossible: dimmed, never hidden; the tap still answers with the reason */
 .hud-act.is-dim {
