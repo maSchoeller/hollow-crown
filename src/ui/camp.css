@@ -369,6 +369,10 @@
 .hm-pair .trp-head + .trp-head {
   margin-left: -10px;
 }
+/* the stack is wider than the 44px head column of a line: the column grows with it so the text starts after the second head */
+.hc-line-item:has(> .hm-pair) {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
 .hm-offer {
   display: grid;
   grid-template-columns: 44px 1fr auto;

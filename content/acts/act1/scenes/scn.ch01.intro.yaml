@@ -6,16 +6,16 @@ lines:
     speaker: [tobin]
     fallback: skip
     mood: neutral
-    text: "Hauptmann! Die Stadt brennt – und die Leute sagen, der König ist tot!"
+    text: "Hauptmann! Die Stadt brennt – und seit der Paktnacht dreht das ganze Land durch!"
   - id: l02
     speaker: [kael]
     mood: angry
-    text: "Tot? Aldric war gesund wie ein Ochse, als ich ihn zuletzt bewacht habe."
+    text: "Aldric war gesund wie ein Ochse, als ich ihn bewacht habe. Und dann starb er vor unseren Augen."
   - id: l03
     speaker: [brenna]
     fallback: skip
     mood: neutral
-    text: "Marodeure nutzen die Nachricht schneller als jeder Herold."
+    text: "Marodeure nutzen das Chaos schneller als jeder Herold."
   - id: l03b
     speaker: [brenna]
     fallback: skip

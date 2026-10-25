@@ -14,13 +14,13 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playNode } from '../state/flow';
-import { nextActInBuild, packNeededFor } from '../state/packs';
+import { loadingActPack, nextActInBuild, packNeededFor } from '../state/packs';
 import { BackupSheet } from './BackupSheet';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
-import { clampView, focusView, fogTop, placeOf, screenOf, stepScale, zoomAround, type MapView, type Screen } from './worldMapView';
+import { clampView, focusView, fogTop, moreMissionsFollow, placeOf, screenOf, stepScale, zoomAround, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -67,7 +67,7 @@ export function WorldMap() {
     const check = () => {
       if (document.visibilityState !== 'visible') return;
       const e = advanceToToday();
-      if (e && e.packets.length) setToast(t('ui.map.newDay', { n: e.haunts, time: `${data.balance.day.resetHour}:00` }));
+      if (e && e.packets.length && e.haunts > 0) setToast(t('ui.map.newDay', { n: e.haunts, time: `${data.balance.day.resetHour}:00` }));
     };
     check();
     document.addEventListener('visibilitychange', check);
@@ -83,6 +83,7 @@ export function WorldMap() {
   // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
   const finished = actFinished(data, c);
   const backupDue = finished && !c.backupReminded.includes(data.campaign.act);
+  const waiting = moreMissionsFollow(open.length, finished, loadingActPack() !== null);
   const soonAct = finished && !nextActInBuild() ? data.campaign.act + 1 : null;
 
   // the view: where the picture lies (offset and scale) and the zoom step; every change puts the HTML pieces over their places
@@ -398,6 +399,12 @@ export function WorldMap() {
           <NodeCard id={node.id} />
         ) : (
           <>
+            {waiting && (
+              <Piece class="wm-more" role="status">
+                <b>{t('ui.map.moreMissions')}</b>
+                <span>{t('ui.map.moreMissionsHint')}</span>
+              </Piece>
+            )}
             <nav class="wm-nav">
               <button type="button" onClick={() => (screen.value = { name: 'camp' })}>
                 <Icon name="camp" size={26} />

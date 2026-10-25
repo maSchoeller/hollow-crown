@@ -1,6 +1,6 @@
 # Story 4.6: Entscheidungen und Folgen-Karte
 
-Status: review
+Status: done
 
 ## Story
 

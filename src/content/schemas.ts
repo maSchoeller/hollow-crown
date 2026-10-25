@@ -559,7 +559,6 @@ export const campaignSchema = z.object({
       requires: conditionsListSchema.optional(),
       memorialIf: conditionSchema.optional(),
       memorial: z.object({ pre: z.string().optional(), post: z.string().optional() }).optional(),
-      pos,
       place: z.string().optional(),
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1),
@@ -569,7 +568,6 @@ export const campaignSchema = z.object({
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
-  homePos: pos.default([50, 50]),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()) })),
   scars: z.array(
     z.object({

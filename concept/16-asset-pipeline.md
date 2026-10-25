@@ -195,12 +195,12 @@ Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optio
 
 | Paket | Inhalt | Budget (gzip/komprimiert) |
 |---|---|---|
-| **Shell + Prolog** (initialer Download) | Code, UI-Schriften und -Icons, Tiles Prolog, Einheiten Prolog, Porträts der 4 Prolog-Figuren, 2 Hintergründe, Musik Titel + Prolog-Kampf, SFX-Grundset | **< 15 MB** |
+| **Shell + Prolog** (initialer Download) | Code, UI-Schriften und -Icons, Tiles Prolog, Einheiten Prolog, Porträts der 4 Prolog-Figuren, 2 Hintergründe, Musik Titel + Prolog-Kampf, SFX-Grundset | **< 30 MB** (mit den Dateien der ersten Mission im Precache, erwartet ~11 MB) |
 | Kapitel-Paket je Kapitel | Tiles/Requisiten, neue Einheiten, Porträts, Hintergründe, Musik, Stimmen | 5–15 MB |
 | Akt 1 gesamt (Stufe Mittel) | | ca. 80–120 MB |
 
 - Kapitel-Pakete werden **beim Betreten der Weltkarte im Hintergrund vorgeladen** und vom Service Worker offline gecacht (Workbox, eigener Cache pro Paket).
-- CI prüft das Budget der Shell (Build schlägt fehl bei > 15 MB).
+- CI prüft das Budget der Shell (Build schlägt fehl bei > 30 MB; Entscheidung 2026-10-25, Architektur-Decision-Log).
 
 ## 10. Benennung
 
@@ -230,7 +230,7 @@ art/**/*.png   filter=lfs diff=lfs merge=lfs -text
 | # | Art-Meilenstein | Ergebnis | Benötigt für |
 |---|---|---|---|
 | A0 | Pipeline-Beweis | Palette Hollow-64, Render-Setup, `pixelize`, Kael idle/walk/attack, Varnhold-Ausschnitt (Beispiel am 2026-10-24 aus dem Repo entfernt, abrufbar in der Git-Historie unter `concept/art/`) | M2 (Sprite-Format fix) |
-| A1 | Prolog komplett | Tileset Sommer, Requisiten Karawane, 4 Helden + Bandit + Grosk, Porträts ×6 Stimmungen, 2 Hintergründe, Cut-ins Kael/Brenna | M3 |
+| A1 | Prolog komplett | Tileset Sommer, Requisiten Paktnacht (Glutdom, Lager unterwegs), 4 Helden + Tempelwache, Porträts ×6 Stimmungen, 2 Hintergründe, Cut-ins Kael/Brenna | M3 |
 | A2 | UI-Kit | Icons, Rahmen, Schriften, Kampfvorschau, Dialogfenster, Lager | M4/M5 |
 | A3 | Kapitel 1–2 | Brand/Asche, Schrein, Mira, Liora, Varek, Hask, Morra, Lichtschicht | M6 |
 | A4 | Kapitel 3–5 | Nacht/Regen, Festung, Nebel, Ysolde, Sable, Ulvric, Cassian, Pegasus, Jungdrache | M6 |

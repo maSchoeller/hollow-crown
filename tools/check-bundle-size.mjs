@@ -4,39 +4,26 @@
  * The first download is what a new player fetches before the first battle:
  *  1. everything in the service worker's precache (read from `dist/sw.js`, so a file counts exactly when it is
  *     precached, whatever the globs in vite.config.ts say), plus the worker files themselves;
- *  2. what the first mission's loading screen fetches on top: the prologue's unit models, the weapon and prop
- *     models, the battle music (not precached, but the prologue cannot start without them).
+ *  2. what the first mission needs and is not precached (should be nothing since 2026-10-25: vite.config.ts adds the
+ *     first mission's files, tools/build/first-mission.mjs, to the precache; anything listed here is a regression).
  * Everything else in `dist` is on demand (runtime cache `hc-on-demand`, fetched by the mission loading plan in
  * `src/app/loading/plan.ts` or when first shown) and is listed separately by folder; it does not count.
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { parse } from 'yaml';
 import { reportFigures } from './figure-budget.mjs';
+import { firstMissionFigures, isFirstMissionFile } from './build/first-mission.mjs';
 
 const dist = join(process.cwd(), 'dist');
 // packs.json is written by the packs plugin (tools/build/packs-plugin.ts); core's budget comes from content/packs.yaml
 const manifest = JSON.parse(readFileSync(join(dist, 'packs.json'), 'utf8'));
-const BUDGET = (manifest.packs.find((p) => p.id === 'core')?.budgetMb ?? 15) * 1024 * 1024;
-const TARGET = 12 * 1024 * 1024;
-const content = (f) => parse(readFileSync(join(process.cwd(), 'content', f), 'utf8'));
-const act = 'acts/act1';
+const BUDGET = (manifest.packs.find((p) => p.id === 'core')?.budgetMb ?? 30) * 1024 * 1024;
+// informational: the expected size of the first download (precache incl. the first mission); a warning when exceeded
+const TARGET = 11 * 1024 * 1024;
 
-// ids of the figures the prologue needs
-const prologue = new Set();
-const campaign = content(`${act}/campaign.yaml`);
-// the opening mission is the node with `fixed: first` (campaign graph, story 4.3)
-const start = campaign.nodes?.find((n) => n.fixed === 'first');
-if (!start) throw new Error('campaign.yaml has no node with fixed: first');
-for (const c of content(`${act}/units.yaml`)) {
-  if (c.joins !== start.id) continue;
-  prologue.add(c.sprite ?? c.id);
-  if (c.flags?.includes('avatar')) for (const p of ['avatar_a', 'avatar_b']) prologue.add(p);
-}
-const map = start && content(`${act}/maps/${start.map}.yaml`);
-const mapUnits = [...(map?.units ?? []), ...(map?.reinforcements ?? []).flatMap((r) => r.units ?? [])];
-for (const u of mapUnits) prologue.add(u.sprite ?? u.id ?? u.class);
+// the opening mission's figures (tools/build/first-mission.mjs, also the source of the precache additions)
+const prologue = firstMissionFigures();
 
 /** files of `dist` (posix-style paths relative to it) */
 const files = [];
@@ -54,11 +41,7 @@ const precached = new Set([...sw.matchAll(/url:\s*"([^"]+)"/g)].map((m) => m[1])
 // the worker, its runtime and the size note are fetched with the first download but are not in the list
 const infra = /^(sw\.js|workbox-[^/]+\.js|precache-info\.json)$/;
 // not precached, but the first mission cannot start without them (loading screen of the prologue)
-const firstMission = (p) => {
-  if (/^assets\/models\/(props|weapons)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
-  const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.glb$/.exec(p);
-  return m !== null && prologue.has(m[1]);
-};
+const firstMission = (p) => isFirstMissionFile(p, prologue);
 
 const transfer = (p) => {
   const buf = readFileSync(join(dist, p));

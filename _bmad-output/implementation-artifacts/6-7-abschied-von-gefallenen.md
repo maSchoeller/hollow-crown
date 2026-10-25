@@ -1,6 +1,6 @@
 # Story 6.7: Abschied von Gefallenen
 
-Status: review
+Status: done
 
 ## Story
 

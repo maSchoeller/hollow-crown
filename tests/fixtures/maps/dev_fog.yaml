@@ -14,7 +14,7 @@ terrain: |
   #...T...,....#
   ##############
 id: dev_fog
-nameKey: map.prologue_caravan.name
+nameKey: map.prologue_paktnacht.name
 size: [14, 9]
 fog: true
 legend:

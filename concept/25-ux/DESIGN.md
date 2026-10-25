@@ -245,7 +245,7 @@ Keine weiteren Schriften. Silkscreen und Cinzel aus dem PoC entfallen in der UI.
 
 Drei Ebenen:
 
-1. **Welt** (3D-Brett, Weltkarte, Burg, Szenenbild): darf weichgezeichnet und entsättigt werden, wenn etwas darüber liegt.
+1. **Welt** (3D-Brett, Burg, Weltkarte-Bild, Szenenbild): darf weichgezeichnet und entsättigt werden, wenn etwas darüber liegt.
 2. **Steine** (`{components.piece}`): harte Unterkante `{spacing.press-depth}` in `{colors.line}` plus weicher Schatten. Gedrückt: Unterkante 1 px, Stein 3 px tiefer.
 3. **Karten und Overlays** (Folgen-Karte, Abschied, Raum-Panel): über einem Schleier aus `{colors.line}` mit 45 % Deckkraft.
 

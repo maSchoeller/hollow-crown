@@ -71,7 +71,7 @@ Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verha
 - FR26 (neu, Course Correction 2026-10-23): 3 Akte mit 25 Story-Missionen (Prolog + 8 / 8 / 8); erste Mission je Akt fest, danach 2–3 parallel wählbar, Finale nach allen anderen; Akt 1 ab der Eroberung der Paktwacht (1-6 → 1-8) und Akt 3 ab der Krönung linear.
 - FR27 (neu): Missionszustände: Story nicht wiederholbar, Nebenquests über Akte offen mit Gedenk-Variante, Heimsuchungen erst nach der ersten Leutnant-Begegnung, max. 6 offen.
 - FR28 (geändert): Gestaffelte Regeln nach Zahl abgeschlossener Story-Missionen (Bewegung/Angriff → Dreieck → Magie → Elemente/Status/Runen/Supports); Klassen-Aktionen einer Rolle, sobald der erste Gefährte der Rolle beitritt; max. eine Lektion je Runde.
-- FR29 (neu): 3D-Weltkarte von Valmora mit 3 Regionen, Nebel je Akt, Orts-Miniaturen mit bis zu 2 Varianten, Drachenzeichen je Akt, Knoten Story/Nebenquest/Heimsuchung/Heimat.
+- FR29 (neu): Weltkarte von Valmora (flaches gemaltes Bild mit HTML-Steinen) mit 3 Regionen, Nebel je Akt, Drachenzeichen je Akt (später optional), Knoten Story/Nebenquest/Heimsuchung/Heimat.
 - FR30 (neu): Tageswechsel: einmal pro Kalendertag 1–3 Heimsuchungen auf gespielten Karten, reproduzierbar aus dem Datum; Stau bis 3 Tagespakete; Uhr zählt nur vorwärts.
 - FR31 (neu): Heimsuchungs-Varianten boss, defend, rout (Banditennest), escort, treasure mit mindestens einem Leutnant aus einem erreichten Akt und Gegnern auf Armee-Stufe.
 - FR32 (neu): Heimsuchungs-Belohnung 40 % Gold, Kopfgeld, Material, 60 % EP, keine Glutfunken; ab der 4. Heimsuchung seit der letzten Story-Mission Gold und Kopfgeld halbiert; über der erwarteten Armee-Stufe 50 % EP.
@@ -155,7 +155,7 @@ Aus `concept/24-architecture/architecture.md` (AR = Architekturentscheidung):
 - AR9: Szenen-Schema 2 (eine Datei je Szene, DE-Text inline, Sprecherketten, `memorial`, `choice` mit `effects`), Schlüssel automatisch, EN in `locales/en/<akt>.dialogue.yaml`; `resolveScene` im Kern; PoC-Dialoge werden überführt.
 - AR10: Flag-Register je Akt (`flags.yaml`), `CampaignState.flags` als Werte-Record, Haltung, Chronik, `epilogue.yaml`.
 - AR11: `rooms.yaml`, `c.home`, Raum-Commands.
-- AR12/AR13: Szenen-Host mit Brett, Weltkarte, Heimat; geteilter Asset-Cache; Weltkarte als Kachelraster `content/world/valmora.yaml` mit `terrain3d`.
+- AR12/AR13: Szenen-Host für das Brett (später ggf. die Heimat) mit geteiltem Asset-Cache; Weltkarte als flaches gemaltes Bild mit Orten als Prozentpositionen in `content/world/valmora.yaml`, Steine, Wege und Nebel als HTML darüber (keine 3D-Szene).
 - AR14: `src/worker/core.worker.ts` führt `applyCommand` für `endPhase` aus; synchroner Fallback; `pnpm bench:ai` in CI.
 - AR15/AR23: Content-Layout `content/core/` + `content/acts/actN/`, `content/packs.yaml` mit Globs und `released`, Vite-Plugin `virtual:hc-pack/<id>`, `packs.json`, Cache Storage je Paket, Service-Worker-Route, Stimmen je Sprache als eigenes Paket, Budgets in `check-bundle-size.mjs`.
 - AR16–AR18: IndexedDB Version 2 mit Stores `campaigns`, `saves`, `journal`, `legacy`; Neustart-Commands; Export mit `CompressionStream`, Import mit Größenlimit und Zod; Klassik als Ehrensystem.
@@ -243,7 +243,7 @@ Spieler erleben einen Akt mit teils freier Missionsreihenfolge, Szenen mit Halbf
 **FRs covered:** FR7, FR26–FR28, FR33 (Mechanik), FR34–FR38, FR40 · AR3, AR4, AR9, AR10, AR15 (Content-Layout) · UX-DR12, UX-DR13, UX-DR23 (Chronik)
 
 ### Epic 5: Weltkarte und Heimsuchungen
-Spieler wählen ihre nächste Mission auf einer 3D-Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen von Leutnants auf bekannten Karten.
+Spieler wählen ihre nächste Mission auf einer Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen von Leutnants auf bekannten Karten.
 **FRs covered:** FR29–FR32 · AR6, AR7, AR12, AR13 · UX-DR9, UX-DR18 (Teil)
 
 ### Epic 6: Truppe, Fortschritt und Lager
@@ -966,7 +966,7 @@ damit jeder seine eigene Geschichte in der Truppe hat.
 
 ## Epic 5: Weltkarte und Heimsuchungen
 
-Spieler wählen die nächste Mission auf einer 3D-Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen bekannter Leutnants auf bekannten Karten.
+Spieler wählen die nächste Mission auf einer Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen bekannter Leutnants auf bekannten Karten.
 
 ### Story 5.1: Szenen-Host und geteilter Asset-Cache
 
@@ -1225,6 +1225,23 @@ damit die Truppe schon in Akt 1 ein Zuhause hat und ihre Gefallenen einen Ort.
 **Angenommen** gefallene Gefährten und Söldner, darunter Gerrit aus dem Prolog
 **Wenn** der Spieler die Gedächtnishalle öffnet
 **Dann** stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), Gerrits Stein zuerst; Lektionen gibt es erst ab Akt 2 (Story 10.6) (UX-DR11 Teil).
+
+### Story 6.10: Aufstellung vor der Mission im Stil B
+
+Als Spieler
+möchte ich die Aufstellung vor einer Mission im selben Stil wie Truppe, Lager und Ergebnis sehen,
+damit der Weg von der Knoten-Karte in den Kampf nicht durch einen Bildschirm aus dem Prototyp bricht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Knoten-Karte der Weltkarte („Aufstellung“) oder mehr Gefährten als Plätze („Aufbrechen“)
+**Wenn** der Vorbereitungs-Screen (`prep`) erscheint
+**Dann** zeigt er Ziel, Plätze (x/y) und die Truppe als Steine im Stil B (DESIGN.md, Studio-Look): Porträt, Name, Klasse und Stufe ohne Umbruch, TP, Waffe, Pflicht-Figuren gesperrt mit Grund, Tasche/Ausrüsten wie heute, und „Kampf beginnen“ als Primär-Knopf
+**Und** die Funktion bleibt unverändert (Auswahl, Pflicht-Figuren, Ausrüsten, Start); Styles in einer eigenen CSS-Datei neben der Komponente, der Abschnitt in `src/ui/styles.css` entfällt.
+
+**Angenommen** ein Mockup in `concept/25-ux/mockups/` (fehlt noch, UX liefert es zuerst)
+**Wenn** die Story umgesetzt ist
+**Dann** passt der Screen bei 375 × 812 und am Desktop zum Mockup, alle Texte stehen in `de.yaml`/`en.yaml`.
 
 ## Epic 7: Akt-Pakete und Offline
 

@@ -1,5 +1,5 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-24
+# last_updated: 2026-10-25
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-24
+last_updated: 2026-10-25
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -60,13 +60,13 @@ development_status:
   # Epic 2: Rollenklassen und neues Kampf-HUD
   epic-2: in-progress
   2-1-kampf-hud-in-stil-b: done  # Kampf-HUD in Stil B
-  2-2-rollenmodell-und-waffengruppen: review  # Rollenmodell und Waffengruppen
-  2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: review  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
+  2-2-rollenmodell-und-waffengruppen: done  # Rollenmodell und Waffengruppen
+  2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: done  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
   2-4-halten-und-nachsetzen: done  # Halten und Nachsetzen
   2-5-wirken-der-elementaristen: done  # Wirken der Elementaristen
   2-6-nebel-des-krieges-oeffnen-und-stehlen: done  # Nebel des Krieges, Öffnen und Stehlen
   2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: done  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
-  2-8-gegnerphase-im-web-worker: review  # Gegnerphase im Web Worker
+  2-8-gegnerphase-im-web-worker: done  # Gegnerphase im Web Worker
   2-9-gegnertypen-von-akt-1: done  # Gegnertypen von Akt 1
   2-10-kampf-overlays-im-stil-b: done  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
@@ -86,11 +86,11 @@ development_status:
   epic-4: in-progress
   4-1-content-je-akt-ablegen: done  # Content je Akt ablegen
   4-2-bedingungen-und-wirkungen: done  # Bedingungen und Wirkungen
-  4-3-kampagnen-graph-eines-akts: review  # Kampagnen-Graph eines Akts
-  4-4-szenen-schema-mit-ersatzsprechern: review  # Szenen-Schema mit Ersatzsprechern
+  4-3-kampagnen-graph-eines-akts: done  # Kampagnen-Graph eines Akts
+  4-4-szenen-schema-mit-ersatzsprechern: done  # Szenen-Schema mit Ersatzsprechern
   4-5-szenen-im-neuen-stil: review  # Szenen im neuen Stil
-  4-6-entscheidungen-und-folgen-karte: review  # Entscheidungen und Folgen-Karte
-  4-7-chronik: review  # Chronik
+  4-6-entscheidungen-und-folgen-karte: done  # Entscheidungen und Folgen-Karte
+  4-7-chronik: done  # Chronik
   4-8-neue-missionsziele-escort-und-treasure: done  # Neue Missionsziele escort und treasure
   4-9-feste-support-paare: review  # Feste Support-Paare
   epic-4-retrospective: optional
@@ -98,9 +98,9 @@ development_status:
   # Epic 5: Weltkarte und Heimsuchungen
   epic-5: in-progress
   5-1-szenen-host-und-geteilter-asset-cache: review  # Szenen-Host und geteilter Asset-Cache
-  5-2-die-weltkarte-als-3d-szene: review  # Die Weltkarte als 3D-Szene
+  5-2-die-weltkarte-als-3d-szene: done  # Die Weltkarte als 3D-Szene
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
-  5-4-tageswechsel: review  # Tageswechsel
+  5-4-tageswechsel: done  # Tageswechsel
   5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator
   5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
@@ -111,21 +111,22 @@ development_status:
   6-2-ausruesten-mit-vergleich: done  # Ausrüsten mit Vergleich
   6-3-das-lager-in-akt-1: done  # Das Lager in Akt 1
   6-4-haendler-schmied-heiler-und-taverne: done  # Händler, Schmied, Heiler und Taverne
-  6-5-stufendeckel-und-ep-regeln: review  # Stufendeckel und EP-Regeln
-  6-6-missionsergebnis: review  # Missionsergebnis
-  6-7-abschied-von-gefallenen: review  # Abschied von Gefallenen
+  6-5-stufendeckel-und-ep-regeln: done  # Stufendeckel und EP-Regeln
+  6-6-missionsergebnis: done  # Missionsergebnis
+  6-7-abschied-von-gefallenen: done  # Abschied von Gefallenen
   6-8-wirtschaftskurve-und-verkettete-simulation: review  # Wirtschaftskurve und verkettete Simulation
   6-9-die-paktwacht-als-heimat: review  # Die Paktwacht als Heimat
+  6-10-aufstellung-vor-der-mission-im-stil-b: backlog  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
   epic-6-retrospective: optional
 
   # Epic 7: Akt-Pakete und Offline
   epic-7: in-progress
-  7-1-pakete-im-build: review  # Pakete im Build
-  7-2-hintergrund-download-und-offline: review  # Hintergrund-Download und Offline
-  7-3-ende-eines-veroeffentlichten-akts: review  # Ende eines veröffentlichten Akts
+  7-1-pakete-im-build: done  # Pakete im Build
+  7-2-hintergrund-download-und-offline: done  # Hintergrund-Download und Offline
+  7-3-ende-eines-veroeffentlichten-akts: done  # Ende eines veröffentlichten Akts
   7-4-stabile-ids-und-release-ablauf: review  # Stabile IDs und Release-Ablauf
-  7-5-leistung-messen: review  # Leistung messen
-  7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: review  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
+  7-5-leistung-messen: done  # Leistung messen
+  7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: done  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
   7-7-grosse-schlachten-fluessig: review  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
   7-8-grosse-schlachten-ohne-ruckler: backlog  # Große Schlachten ohne Ruckler (nachgetragen 2026-10-25, NFR1, Rest aus 7.7)
   epic-7-retrospective: optional
@@ -135,13 +136,13 @@ development_status:
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
   8-2-tripo-pipeline-vervollstaendigen: review  # Tripo-Pipeline vervollständigen
   8-3-brettfiguren-fuer-akt-1: review  # Brettfiguren für Akt 1
-  8-4-portraets-mit-stimmungen-fuer-akt-1: review  # Porträts mit Stimmungen für Akt 1
+  8-4-portraets-mit-stimmungen-fuer-akt-1: done  # Porträts mit Stimmungen für Akt 1
   8-5-item-bilder: done  # Item-Bilder
   8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
   8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: review  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
-  8-10-verdeckte-figuren-bleiben-sichtbar: review  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
+  8-10-verdeckte-figuren-bleiben-sichtbar: done  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
   epic-8-retrospective: optional
 
   # Epic 9: Akt 1 „Asche“ (MVP)

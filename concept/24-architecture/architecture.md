@@ -27,11 +27,11 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 
 - **Zwei Command-Ebenen** (AR2): Neben dem Kampf läuft auch die Kampagne (Weltkarte, Heimat, Händler, Entscheidungen, Tageswechsel) über Commands mit Log. Die ganze Kampagne ist abspielbar und simulierbar.
 - **Bedingungen und Wirkungen als Daten** (AR3): Eine kleine, gemeinsame Sprache für `requires` und `effects` trägt Kampagnen-Graph, Szenen, Entscheidungen, Nebenquests und Epilog-Mosaik.
-- **Akt-Pakete** (AR15): Shell + Prolog bleiben unter 15 MB; der Rest jedes Akts lädt im Hintergrund nach und ist danach offline verfügbar.
+- **Akt-Pakete** (AR15): Shell + Prolog (mit den Dateien der ersten Mission im Precache) bleiben unter 30 MB; der Rest jedes Akts lädt im Hintergrund nach und ist danach offline verfügbar.
 - **Speicherformat 2** (AR16–AR18): bis zu 3 Kampagnen je Gerät, Auto-Save nach jeder Aktion, in Standard/Casual 3 Snapshots je Kampagne, Klassik streng nach Ehrensystem; PoC-Spielstände werden nicht migriert.
 - **Tageswechsel um 04:00 Ortszeit** (AR6) als Command mit Tagesnummer; der Kern sieht nie eine Uhr. Heimsuchungen entstehen rein aus Seed, Tag und handgesetzten Ankern je Karte (AR7).
 - **Gegner-KI im Web Worker** von Anfang an (AR14); der Worker führt dieselben reinen Kernfunktionen aus.
-- **Eine Engine, drei 3D-Szenen** (AR12, AR13): Brett, Weltkarte und Heimat teilen Gelände-, Figuren- und Modellcode.
+- **Eine Engine, 3D-Szenen für Brett (und später ggf. Heimat)** (AR12): teilen Gelände-, Figuren- und Modellcode; die Weltkarte ist ein flaches Bild mit HTML-Steinen (AR13).
 
 **Bereit für:** `gds-create-epics-and-stories` mit einem neuen technischen Fundament-Epic **E0** vor E1 (siehe §9).
 
@@ -51,12 +51,12 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 | Fortschritt (Deckel, Glutfunke, Verbluten, Übungsplatz, Lektionen) | GDD RPG | teils PoC | mittel |
 | Speichern, Klassik-Regeln, Übertrag über Akt-Releases und in Staffel 2 | GDD Reproduzierbarkeit | PoC, neu gefasst | hoch |
 | Auslieferung in Akt-Paketen, offline | GDD Leistungsanforderungen | neu | hoch |
-| 3D-Szenen Weltkarte und Burg, Chibi-Figuren | Art Direction §4, §6, §7 | neu | mittel |
+| 3D-Szene Burg (Heimat), Chibi-Figuren; Weltkarte als flaches Bild | Art Direction §4, §6, §7 | neu | mittel |
 
 ### 2.2 Plattform und Rahmen
 
 - **Plattform:** 1. Handy-Browser im Hochformat (PWA), 2. Tablet/PC-Browser mit Maus, 3. später Capacitor. Kein Server, kein Konto, kein Netzwerkspiel; Netz nur für Auslieferung und Updates.
-- **Leistung:** 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten); Kaltstart < 5 s; Shell + Prolog < 15 MB (gzip); KI < 300 ms je Gegnereinheit.
+- **Leistung:** 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten); Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
 - **Team:** ein Entwickler mit KI-Agenten. Die Architektur muss vor allem verhindern, dass verschiedene Agenten dieselbe Sache unterschiedlich lösen.
 
 ### 2.3 Komplexitätstreiber und neuartige Konzepte
@@ -75,7 +75,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 |---|---|---|---|
 | Sprache | TypeScript (strict, `noUncheckedIndexedAccess`) | 6.0.3 | unverändert (T11) |
 | Build | Vite | 8.3.5 | + Paket-Plugin (AR15), + Worker-Bundle (AR14) |
-| 3D | `@babylonjs/core`, `loaders`, `materials` | 9.32.0 | Brett, Weltkarte, Heimat |
+| 3D | `@babylonjs/core`, `loaders`, `materials` | 9.32.0 | Brett, Heimat |
 | UI | Preact + `@preact/signals` | 10.29.8 / 2.11.3 | alle Screens, Visual Novel |
 | Daten | `yaml`, Zod | 2.9.1 / 4.6.7 | Content-Schemas, Save-Import |
 | Persistenz | `idb` | 8.0.4 | Speicherformat 2 |
@@ -101,7 +101,7 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 | AR9 | Dialog | Szenen-Schema 2: **deutscher Text in der Szene**, Sprecherketten, Bedingungen je Zeile, Auflösung im Kern | Epic 4, 9, 11, 12 | **A** / C |
 | AR10 | Story-Zustand | Flag-Register je Akt; Entscheidungen, Haltung, Chronik und Epilog datengetrieben | Epic 4 | C |
 | AR11 | Heimat | Räume als Daten (`rooms.yaml`), Ausbau und Nutzung als Kampagnen-Commands | Epic 6, 10 | C |
-| AR12 | Rendering | Eine Babylon-Engine, ein Canvas, drei Szenen-Module; immer nur eine Szene aktiv, geteilter Asset-Cache | Epic 5, 6, 8, 10 | C |
+| AR12 | Rendering | Eine Babylon-Engine, ein Canvas, Szenen-Module für Brett (und später ggf. Heimat); immer nur eine Szene aktiv, geteilter Asset-Cache | Epic 5, 6, 8, 10 | C |
 | AR13 | Weltkarte | Weltkarte als flaches gemaltes Bild (Hochformat 2:3) mit Orten als Prozentpositionen in YAML; Steine, Wege und Nebel als HTML darüber; Varianten und 3D-Aufsätze später optional (geändert 2026-10-24, ersetzt Kachelraster und 3D-Szene) | Epic 5, 8 | C |
 | AR14 | KI | **Gegnerphase im Web Worker von Anfang an**; der Worker führt `applyCommand` des reinen Kerns aus | Epic 2 | **A** |
 | AR15 | Auslieferung | Pakete `core` (Shell + Regeln + Prolog), `act1`, `act2`, `act3`, Stimmen je Sprache getrennt; **Hintergrund-Download**, offline gecacht | Epic 7, 9, 11, 12 | **A** |
@@ -289,7 +289,7 @@ Eine Szene je Datei unter `content/acts/actN/scenes/`. Deutscher Text steht in d
 ```yaml
 # content/acts/act1/scenes/scn.a1.m1_4.post.yaml
 id: scn.a1.m1_4.post
-background: bg_wolfsbau
+background: lager_unterwegs
 music: bgm_campfire
 lines:
   - id: l01
@@ -343,7 +343,7 @@ lines:
 - Übungsplatz, Lektionen der Gedächtnishalle, Händler-Sortiment je Tier, Kopfgeld: alles in `balance.yaml` bzw. `rooms.yaml`, Code liest nur.
 - **Simulation:** `pnpm sim --campaign act1` spielt den Akt verkettet (KI auf beiden Seiten, Heimat-Heuristik kauft und wertet auf) und prüft die Korridore je Story-Mission aus dem GDD.
 
-### 5.12 Rendering: eine Engine, drei Szenen (AR12, AR13)
+### 5.12 Rendering: eine Engine, Szenen für Brett und Heimat; Weltkarte flach (AR12, AR13)
 
 ```
 src/render/
@@ -353,7 +353,7 @@ src/render/
   home/            Lager/Burg: Diorama-Modell, Raum-Anker, Ausbauteile, Gefährten-Gegenstände
 ```
 
-- **Eine Szene aktiv:** Beim Wechsel wird die alte Szene entsorgt (`dispose`), Modelle bleiben im **geteilten Asset-Cache** (glTF als `AssetContainer`, Referenzzählung), damit der Wechsel Brett ↔ Weltkarte nicht neu lädt. Während einer Visual-Novel-Szene läuft der Canvas mit `board.fpsIdle` oder pausiert.
+- **Eine Szene aktiv:** Beim Wechsel wird die alte Szene entsorgt (`dispose`), Modelle bleiben im **geteilten Asset-Cache** (glTF als `AssetContainer`, Referenzzählung), damit der Wechsel Brett ↔ Heimat nicht neu lädt. Während einer Visual-Novel-Szene läuft der Canvas mit `board.fpsIdle` oder pausiert.
 - **Jede Szene hat dieselbe kleine Schnittstelle** wie heute das Brett: `load`, `play(events)`, `setOverlays`, `centerOn`, `relayout`, `quality`, `dispose`. Der Kern kennt keine Szene.
 - **Weltkarte** (`content/world/valmora.yaml`, seit 2026-10-24 **keine 3D-Szene mehr**): ein flaches gemaltes Bild im Hochformat (`public/assets/world/valmora.webp`, 1024 × 1536) in einem verschiebbaren Bereich (CSS-Transform, 2 Zoomstufen aus `render.yaml worldMap`). Die Datei nennt `image`, `size`, `regions` (Akt, Ort des Namens), `fog` (bis wohin der Nebel früherer Akte reicht) und `places` (Platz im Plan der 35 Orte plus Heimat: Beschriftung, Art Kreis/Raute/Heimat, Prozentposition auf dem Bild, optional der Knoten der Kampagne). Steine, Wege und Regionsnamen sind HTML über dem Bild; die reine Sicht-Rechnung steht in `src/app/screens/worldMapView.ts`. Kleine 3D-Aufsätze (Burg, Lager) sind später optional. Die Weltkarte braucht damit keinen Szenen-Host.
 - **Figuren:** Tripo-Modelle nach Art Direction §4.6; Teamtuch über Vertex-Alpha-Maske (wie heute), Leutnant-Markierungen und Verblutungs-Zähler als Overlays. 2D-Sprites bleiben als Option, werden nicht weiterentwickelt.
@@ -389,7 +389,7 @@ export type WorkerResponse =
 
 | Paket | Inhalt | Laden | Budget (Transfer, Startwert) |
 |---|---|---|---|
-| `core` | App-Shell, Regeln (`content/core/`), UI-Texte, Prolog-Karte und -Szenen, Prolog-Figuren, Grundtexturen Spätsommer | Precache beim Installieren | **< 15 MB** (Build bricht ab) |
+| `core` | App-Shell, Regeln (`content/core/`), UI-Texte, Prolog-Karte und -Szenen, Prolog-Figuren, Grundtexturen Spätsommer | Precache beim Installieren, einschließlich der Dateien der ersten Mission (Prolog-Modelle, Waffen-/Requisitenmodelle, Kampfmusik; `tools/build/first-mission.mjs`) | **< 30 MB** (Build bricht ab; Richtwert ~11 MB) |
 | `act1` | übrige Akt-1-Karten, Szenen, EN-Dialoge, Figuren, Porträts, Hintergründe, Musik | Hintergrund direkt nach dem ersten Start | ≤ 40 MB |
 | `act2`, `act3` | wie `act1`, dazu Herbst- bzw. Wintertexturen, Burg (act2), Drachen (act3) | Hintergrund, sobald der Vorakt erreicht ist | ≤ 40 MB je Akt |
 | `voice.<act>.<lang>` | vertonte Zeilen eines Akts in einer Sprache | nur die gewählte Sprache, nach dem Akt-Paket | ≤ 15 MB |
@@ -400,7 +400,7 @@ export type WorkerResponse =
 - **Sperre:** Ein Knoten ist startbar, wenn sein Paket vollständig geladen ist; sonst zeigt die Weltkarte den Ladezustand.
 - **Updates:** Neuer Hash → nur geänderte Dateien werden neu geholt, alte Caches werden nach Erfolg gelöscht. Die bestehende Update-Abfrage (`src/app/update.ts`) bleibt.
 - **Capacitor (später):** Pakete liegen der App bei; der Paket-Manager hat dafür die Quelle `bundled`.
-- `tools/check-bundle-size.mjs` misst `core` gegen 15 MB (Abbruch) und meldet die anderen Pakete gegen ihr Budget (Warnung).
+- `tools/check-bundle-size.mjs` misst `core` gegen 30 MB (Abbruch; Warnung über dem Richtwert 11 MB) und meldet die anderen Pakete gegen ihr Budget (Warnung).
 
 ### 5.15 Speichern, Format 2 (AR16–AR18, AR20, AR21) [A]
 
@@ -608,7 +608,7 @@ Ursprünglicher Vorschlag: ein technisches Fundament-Epic vor E1, danach die Rei
 | **E0 Fundament Staffel 1** (neu) | Content-Layout `core/` + `acts/`, Paket-Plugin und Paket-Manager, Speicherformat 2 mit Legacy und Journal, Kampagnen-Commands (Umbau `camp.ts`), Bedingungen/Wirkungen, Szenen-Schema 2, Flag-Register, Core-Worker, ID-Sperrliste, Fehlerbericht und Log | AR2, AR3, AR9, AR10, AR14–AR17, AR19, AR21–AR23 |
 | E1 Rollenklassen | Klassenschema, Waffengruppen, Klassen-Aktionen mit Vorschau, Halten in Pfadsuche und KI, Nachsetzen, Nebel-Sicht | AR8 |
 | E2 Leutnants | Leutnant-Content, Kampagnenzustand, Flucht in `apply`, Vorschau „flieht“, Skalierung in `createBattle`, Kopfgeld, Steckbrief | AR5 |
-| E3 Weltkarte & Heimsuchungen | Weltkarten-Szene, `advanceDay`, Heimsuchungs-Generator, Anker je Karte, Deckel | AR6, AR7, AR12, AR13 |
+| E3 Weltkarte & Heimsuchungen | Weltkarte (flaches Bild, HTML), `advanceDay`, Heimsuchungs-Generator, Anker je Karte, Deckel | AR6, AR7, AR12, AR13 |
 | E4 Kampagne, Entscheidungen, Supports | Kampagnen-Graph je Akt, `storyCount`, `choose`, Haltung, Chronik, Epilog-Mosaik, 25 Paare, Staffel-Zusammenfassung | AR3, AR4, AR10, AR20 |
 | E5 Fortschritt & Wirtschaft | Stufendeckel, Verbluten, Glutfunke, Neustart-Commands und Klassik-Regeln, Kampagnen-Sim | AR16, AR18 |
 | E6 Heimat | `rooms.yaml`, Raum-Commands, Lager- und Burg-Szene | AR11, AR12 |
@@ -620,7 +620,7 @@ Hinweis für die Story-Planung: Die E1-Story „Spielstände migrieren“ entfä
 ## 10. Leistung
 
 - **Brett:** Maßnahmen aus D17 bleiben (GPU-Skinning, Thin Instances, FPS-Deckel 60/30, Schattenkarte je Stufe). Große Schlachten: Figuren-Budget nach Art Direction §4.6, Animationen ≤ 0,5 MB je Figur, Landschafts-Requisiten auf „Niedrig“ begrenzt.
-- **Weltkarte/Burg:** gleiche Qualitätsstufen; nur die aktive Szene lebt (AR12).
+- **Burg:** gleiche Qualitätsstufen; nur die aktive Szene lebt (AR12). Die Weltkarte ist ein Bild und braucht keine Stufen.
 - **KI:** im Worker (AR14), Budget 300 ms je Gegnereinheit, `pnpm bench:ai` in CI.
 - **Laden:** Kaltstart lädt nur `core`; Content als JSON-Chunk statt YAML-Parsing zur Laufzeit (wie heute).
 - **Speichern:** Auto-Save asynchron; Journal append-only; keine Kopie des ganzen Journals in Spielständen.
@@ -682,7 +682,7 @@ pnpm content:lock              # IDs nach Release sperren (neu, Story 7.4)
 |---|---|
 | Rollenklassen, Klassen-Aktionen, Profi-Wege | AR8, §5.7 |
 | Leutnants: Flucht, Groll, Skalierung, Kopfgeld, Signatur | AR5, §5.5 |
-| Weltkarte, Regionen im Nebel, Miniaturen mit Varianten | AR12, AR13, §5.12 |
+| Weltkarte, Regionen im Nebel (Orts-Aufsätze mit Varianten später optional) | AR12, AR13, §5.12 |
 | Tageswechsel, Stau 3, max. 6 offen, Uhr nur vorwärts | AR6, §5.6 |
 | Heimsuchungs-Varianten, Belohnung, Deckel | AR7, §5.6 |
 | Freie Reihenfolge, feste erste Mission und Finale, Akt 3 linear | AR4, §5.4 |
@@ -694,7 +694,7 @@ pnpm content:lock              # IDs nach Release sperren (neu, Story 7.4)
 | Stufendeckel, Glutfunke, Verbluten, Übungsplatz, Lektionen | §5.11 |
 | Speicherregeln je Tod-Modus, Neustart setzt Tode zurück | AR16, AR18, §5.15 |
 | Spielstand über Akt-Releases und in Staffel 2 | AR19, AR20, §5.15, §5.16 |
-| 60 FPS, < 5 s, < 15 MB, offline, Qualitätsstufen | AR14, AR15, §10 |
+| 60 FPS, < 5 s, < 30 MB, offline, Qualitätsstufen | AR14, AR15, §10 |
 | Reproduzierbarkeit inkl. Affixe, Brand, Heimsuchungen | AR2, AR6, §6.4 |
 | Nemesis-Patent: keine prozedurale Erzeugung | AR5 |
 

@@ -1,6 +1,6 @@
 # Story 4.4: Szenen-Schema mit Ersatzsprechern
 
-Status: review
+Status: done
 
 ## Story
 

@@ -75,6 +75,7 @@ export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: Rng
   const room = (cap - u.level) * e.levelUpAt - u.exp;
   const counted = Math.min(amount, room);
   u.exp += counted;
+  u.levelAtExpStart ??= u.level;
   u.battleExp = (u.battleExp ?? 0) + counted;
   const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(u.exp, e.levelUpAt) };
   if (counted === room) ev.capped = true;

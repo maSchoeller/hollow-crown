@@ -1,6 +1,6 @@
 # Story 8.4: Porträts mit Stimmungen für Akt 1
 
-Status: review
+Status: done
 
 ## Story
 

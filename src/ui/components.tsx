@@ -7,7 +7,6 @@ import {
   itemDef,
   ruleOn,
   runeSlotCount,
-  STAT_KEYS,
   weaponProfile,
   type BattleState,
   type BattleUnit,
@@ -19,7 +18,7 @@ import {
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
 import { ElementIcon, Icon } from './icons';
-import { Amount, ItemImage } from './pieces';
+import { ItemImage } from './pieces';
 import { asset } from './asset';
 
 export { asset };
@@ -121,41 +120,6 @@ export function UnitCard({ data, unit, state, art, right }: { data: GameData; un
   );
 }
 
-export function StatsGrid({ data, unit, state }: { data: GameData; unit: BattleUnit | UnitRecord; state?: BattleState }) {
-  const st = computeStats(data, unit, state ? { state } : {});
-  const keys = [...STAT_KEYS];
-  return (
-    <div class="stats-grid">
-      {keys.map((k) => (
-        <div class="stat" key={k}>
-          <span class="muted">{t(`ui.stat.${k}`)}</span>
-          <b>{k === 'hp' ? st.maxHp : st.stats[k]}</b>
-        </div>
-      ))}
-      <div class="stat">
-        <span class="muted">{t('ui.stat.mov')}</span>
-        <b>{st.mov}</b>
-      </div>
-      <div class="stat">
-        <span class="muted">{t('ui.stat.as')}</span>
-        <b>{st.as}</b>
-      </div>
-      <div class="stat">
-        <span class="muted">{t('ui.stat.load')}</span>
-        <b>
-          {st.load}/{st.carry}
-        </b>
-      </div>
-      <div class="stat">
-        <span class="muted">{t('ui.stat.exp')}</span>
-        <b>
-          <Amount resource="exp" value={unit.exp} />
-        </b>
-      </div>
-    </div>
-  );
-}
-
 /** Value line of an item as short parts ("Mt 9", "Tr 70" ...), shared by details and item lines. */
 export function itemParts(data: GameData, inst: ItemInstance): string[] {
   const d = itemDef(data, inst);
@@ -195,19 +159,6 @@ export function ItemDetails({ data, inst }: { data: GameData; inst: ItemInstance
           <b>{t(`skill.${d.grantsSkill.skill}.name`)}</b> – <span class="muted">{t(`skill.${d.grantsSkill.skill}.desc`)}</span>
         </div>
       )}
-    </div>
-  );
-}
-
-export function ItemRow({ data, inst, sub, right, selected, onClick }: { data: GameData; inst: ItemInstance; sub?: ComponentChildren; right?: ComponentChildren; selected?: boolean; onClick?: () => void }) {
-  return (
-    <div class={`item-row ${selected ? 'sel' : ''}`} onClick={onClick}>
-      <ItemImage data={data} item={inst} />
-      <div style={{ minWidth: 0 }}>
-        <span class={`r-${rarityOf(data, inst)}`}>{itemName(data, inst)}</span>
-        {sub && <small>{sub}</small>}
-      </div>
-      <div>{right}</div>
     </div>
   );
 }

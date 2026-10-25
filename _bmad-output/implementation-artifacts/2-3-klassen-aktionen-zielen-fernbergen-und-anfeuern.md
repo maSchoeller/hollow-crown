@@ -1,6 +1,6 @@
 # Story 2.3: Klassen-Aktionen Zielen, Fernbergen und Anfeuern
 
-Status: review
+Status: done
 
 ## Story
 

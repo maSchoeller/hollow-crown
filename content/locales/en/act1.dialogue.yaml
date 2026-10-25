@@ -1,9 +1,9 @@
 # English texts of the act 1 scenes; keys = dlg.<scene>.<line>[.<answer>|.memorial] (architecture 5.8). German text sits in the scene files.
 dlg.scn.ch01.ambush.l01: "Ambush! They were waiting in the ruins!"
 dlg.scn.ch01.hask_battle.l01: "Burns pretty, doesn't it? Soon you'll burn with it!"
-dlg.scn.ch01.intro.l01: "Captain! The town's burning – and people say the king is dead!"
-dlg.scn.ch01.intro.l02: "Dead? Aldric was healthy as an ox when I last stood guard over him."
-dlg.scn.ch01.intro.l03: "Marauders spread news faster than any herald."
+dlg.scn.ch01.intro.l01: "Captain! The town's burning – and ever since the Pact Night the whole country has gone mad!"
+dlg.scn.ch01.intro.l02: "Aldric was healthy as an ox when I guarded him. And then he died before our eyes."
+dlg.scn.ch01.intro.l03: "Marauders exploit the chaos faster than any herald."
 dlg.scn.ch01.intro.l03b: "We need to cross that bridge before they tear it down."
 dlg.scn.ch01.intro.l04: "{avatar}. You wanted to prove you can do more than read maps. Here's your chance."
 dlg.scn.ch01.intro.c01.cautious: "\"We stay together and avoid the fire.\""

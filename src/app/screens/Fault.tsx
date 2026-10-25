@@ -2,7 +2,7 @@
  * "Etwas ist schiefgelaufen" (stone over a veil, style B) and the save-protection notices: the
  * save-failed banner and the one-time home-screen hint. Concept/24-architecture §5.15, §6.1.
  */
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { t } from '../../i18n';
 import { Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { fault } from '../state/fault';
@@ -55,39 +55,48 @@ export function FaultScreen() {
   );
 }
 
-/** Banner for a failed save and the home-screen hint; sits on top of every screen. */
+/** Banner for a failed save (top) and the home-screen hint (bottom); both sit above every screen. */
 export function SaveNotices() {
   const sc = screen.value.name;
   // the hint waits until the player is not in the middle of a fight or a scene
   const hint = homeHint.value && sc !== 'battle' && sc !== 'dialogue' && sc !== 'prep';
   const [exported, setExported] = useState(false);
+  // screens reserve room at the bottom while the hint is up, so it never covers a header or a primary button
+  useEffect(() => {
+    document.documentElement.classList.toggle('has-bottom-notice', hint);
+    return () => document.documentElement.classList.remove('has-bottom-notice');
+  }, [hint]);
   if (!saveFailed.value && !hint) return null;
   return (
-    <div class="hc-notices">
+    <>
       {saveFailed.value && (
-        <Piece class="hc-notice hc-notice--error" role="alert">
-          <div>
-            <b>{t('ui.save.bannerTitle')}</b>
-            <span>{t('ui.save.bannerText')}</span>
-          </div>
-          <SecondaryButton
-            onClick={() => {
-              exportCurrentSave();
-              setExported(true);
-            }}
-          >
-            {exported ? t('ui.save.done') : t('ui.save.bannerExport')}
-          </SecondaryButton>
-        </Piece>
+        <div class="hc-notices">
+          <Piece class="hc-notice hc-notice--error" role="alert">
+            <div>
+              <b>{t('ui.save.bannerTitle')}</b>
+              <span>{t('ui.save.bannerText')}</span>
+            </div>
+            <SecondaryButton
+              onClick={() => {
+                exportCurrentSave();
+                setExported(true);
+              }}
+            >
+              {exported ? t('ui.save.done') : t('ui.save.bannerExport')}
+            </SecondaryButton>
+          </Piece>
+        </div>
       )}
       {hint && (
-        <Piece class="hc-notice" role="status">
-          <div>
-            <span>{t('ui.storage.homeHint')}</span>
-          </div>
-          <SecondaryButton onClick={dismissHomeHint}>{t('ui.storage.homeHintOk')}</SecondaryButton>
-        </Piece>
+        <div class="hc-notices hc-notices--bottom">
+          <Piece class="hc-notice" role="status">
+            <div>
+              <span>{t('ui.storage.homeHint')}</span>
+            </div>
+            <SecondaryButton onClick={dismissHomeHint}>{t('ui.storage.homeHintOk')}</SecondaryButton>
+          </Piece>
+        </div>
       )}
-    </div>
+    </>
   );
 }

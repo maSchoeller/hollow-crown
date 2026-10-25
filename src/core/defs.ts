@@ -580,7 +580,6 @@ export interface CampaignNodeDef {
   /** when this holds (the quest's trigger has fallen …), `memorial` replaces the node's scenes */
   memorialIf?: Condition;
   memorial?: { pre?: string; post?: string };
-  pos: Pos;
   /** place image shown while the mission loads: a location (`locations/<place>`); default: the camp on the road */
   place?: string;
   merchantTier: number;
@@ -665,8 +664,6 @@ export interface CampaignDef {
   mechanics: Partial<Record<Mechanic, number>>;
   /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
   home: HomeKind;
-  /** position of the home on the world map, percent of width and height */
-  homePos: Pos;
   /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
   levelCap?: number;
   startGold: number;

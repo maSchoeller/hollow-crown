@@ -22,8 +22,8 @@ Quelle der Wahrheit für Grafik und Audio-Richtung von Staffel 1. Entscheidungen
 
 | Ebene | Was | Stil | Quelle |
 |---|---|---|---|
-| **Brett** | Kampfkarte, Weltkarte, Heimat-Burg | 3D-Diorama, Spielzeug-Look, Toon-Licht | Blender-Bauskripte → glTF, Bodentexturen per Skript |
-| **Figuren** | Einheiten auf Brett, Weltkarte und Burg | 3D-Round-Chibi, 2,5 Köpfe, gemalte Textur | Turnaround (ChatGPT) → Tripo (Bild-zu-3D) → Blender |
+| **Brett** | Kampfkarte, Heimat-Burg | 3D-Diorama, Spielzeug-Look, Toon-Licht | Blender-Bauskripte → glTF, Bodentexturen per Skript |
+| **Figuren** | Einheiten auf Brett und Burg | 3D-Round-Chibi, 2,5 Köpfe, gemalte Textur | Turnaround (ChatGPT) → Tripo (Bild-zu-3D) → Blender |
 | **Bildebene** | Porträts, Dialog-Hintergründe, Illustrationstafeln, Cut-ins, Key Art | Round-Chibi-Cartoon (Figuren), warm gemalter Cartoon (Orte) | ChatGPT über Claude in Chrome, Prompt in `art/prompts/` |
 | **UI** | HTML-Overlay | Studio-Look „B hell – Wappen & Banner“ (U21) | CSS/SVG |
 
@@ -370,7 +370,7 @@ Startschätzung zur Planung der Epics. [C]
 | Dialog-Hintergründe | rund 26 (14 aus dem Moodboard + Varianten; neu durch 8/8/8: Gewölbe der Paktwacht, Kontor am Silbermeer, Pass ins Gebirge, Pachthof, Gauklerlager, Unterstadt) |
 | Illustrationstafeln | 11 + 3 Akt-Karten + Titelbild |
 | Requisiten | rund 60 Modelle (davon Burg-Ausbauteile und Gefährten-Gegenstände rund 25) |
-| Weltkarte | 1 Szene, 3 Regionen, rund 15 Orts-Miniaturen mit Varianten |
+| Weltkarte | 1 flaches Bild (Hochformat 2:3), 3 Regionen; Orts-Aufsätze mit Varianten später optional (§6) |
 | Bodentexturen | 8 Bodenarten × 3 Jahreszeiten |
 | Item-Bilder | jedes Item (Waffen, Schilde, Rüstungen, Accessoires, Runen, Verbrauchsgüter, Glutfunke, Material) als gemaltes Bild im Round-Chibi-Cartoon-Stil per ChatGPT, quadratisch, freigestellt; Prompt in `art/prompts/`. 142 Bilder für Staffel 1; erzeugt sind 139 (60 Basiswaffen, 16 Signaturen, 5 Legendäre, 3 Relikte × 3 Stufen, 49 weitere Items), offen 3 neue Signaturen aus der Course Correction 8/8/8 (Erbstück, Letzter Vorhang, Turmfalke) (Regeln §5.6, Dateien `art/items/`) [A] |
 
@@ -404,7 +404,7 @@ Startschätzung zur Planung der Epics. [C]
 | GA1, GA2, GA5, GA7, GA10, GA12, GA14, GA16 | durch §1–§8 präzisiert bzw. abgelöst (B8: Round-Chibi statt Anime-Ebene) |
 | GA3, GA6 (Pixel-Sprites) | 2D-Sprites bleiben nur als umschaltbare Alternative (D4), werden aber nicht mehr weiterentwickelt [C] |
 | D1–D16 | Technik bleibt; Look nach §3, Figuren nach §4 |
-| Kartentisch auf Pergament (`15` §4) | abgelöst durch 3D-Weltkarte (§6) |
+| Kartentisch auf Pergament (`15` §4) | abgelöst durch die flache gemalte Weltkarte (§6) |
 | Kapitel-Farbskript (`15` §4) | abgelöst durch Jahreszeit je Akt + Tageszeit je Mission (§2.4, §2.5) |
 | 6 Porträt-Stimmungen (`15` §7.1) | abgelöst durch 4 Stimmungen (§5.1) |
 | `16-asset-pipeline.md` | gilt weiter für Formate, Budgets und Versionierung; der Figuren-Teil (Blender-Bauskripte) wird durch den Bild-zu-3D-Weg aus §4.6 ersetzt |
