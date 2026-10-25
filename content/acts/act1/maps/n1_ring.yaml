@@ -1,0 +1,94 @@
+# Nebenquest N1 – Der Ring von Varnhold (Story 9.10, Fenns Vergangenheit; Voraussetzung E2 „schützen“). Variante der Karte m1_1_steckbriefe:
+# derselbe Markt von Varnhold, aber nachts und mit Nebel; ein Haus (NO) ist das Lagerhaus, in dem der Ringmeister den Ring hütet. Startwerte [C].
+# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: varnhold (Nacht).
+# Ziel: Ringmeister besiegen (boss, kein Leutnant). Das Lagerhaus ist verschlossen (Tür 11,2; Schlüssel fällt bei einem Dieb, Späher öffnen ohne Schlüssel).
+# Rollen: Nebel + Gassen für Späher, Lagerhaustür als Engstelle für Vorkämpfer.
+# OFFEN: Belohnung Glutfunke und Signaturdolch (items.md §6.3) existieren noch nicht als Items/Effekte; bis dahin Gold in den Truhen.
+# Gedenk-Variante, falls Fenn gefallen ist: nur Szenen-/Belohnungsvariante (Story 9.10), hier nur Kommentar.
+id: n1_ring
+nameKey: map.n1_ring.name
+size: [14, 16]
+fog: true
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "#": wall          # Mauerstück und Lagerhaus
+  "H": village       # Haus (besuchbar)
+  "W": stall         # Marktstand (Requisite tent)
+  "o": well          # Brunnen (Felsblock-Platzhalter)
+  "D": door          # Lagerhaustür (verschlossen)
+#          x: 0123456789ABCD
+terrain: |
+  TT,##.__.#####
+  ,,.H..__.#...#
+  ,,....__.##D##
+  ,..___##___..,
+  ,.._W_____W_.,
+  ,.._________.,
+  ,H.____o___.H,
+  ,.._________.,
+  ,..__W____W_.,
+  ,,..______..,,
+  T,,..____..,,T
+  TT,,..__..,,TT
+  ,T,,..__..,,T,
+  ,,T,..__..,T,,
+  ,,,,..__..,,,,
+  ,,,,..__..,,,,
+# Nacht, Nebel: kaltes, graublaues Licht, Mond schwach, warme Lichter an Ständen, Brunnen und im Lagerhaus
+ambient: { color: "#7f8fb8", intensity: 0.6 }
+sun: { color: "#a9bff0", intensity: 0.45, azimuthDeg: 140, elevationDeg: 45 }
+lights:
+  - { at: [4, 4], color: "#ffb35c", radius: 3 }
+  - { at: [10, 4], color: "#ffb35c", radius: 3 }
+  - { at: [5, 8], color: "#ffb35c", radius: 3 }
+  - { at: [10, 8], color: "#ffb35c", radius: 3 }
+  - { at: [7, 6], color: "#ffb35c", radius: 3 }
+  - { at: [11, 1], color: "#ffb35c", radius: 3 }
+objects:
+  - { id: door_wh, type: door, at: [11, 2] }
+  # OFFEN: Ring = Signaturdolch + Glutfunke (kein Item/Effekt vorhanden); Gold als Platzhalter
+  - { id: c_ring, type: chest, at: [10, 1], contents: { gold: 500 } }
+  - { id: c_stock, type: chest, at: [12, 1], contents: { gold: 300, item: { def: vulnerary } } }
+  - { id: v_nw, type: village, at: [3, 1],  reward: { gold: 150 } }
+  - { id: v_w,  type: village, at: [1, 6],  reward: { item: { def: remedy_salve } } }
+  - { id: v_e,  type: village, at: [12, 6], reward: { gold: 150 } }
+initialEffects: []
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [11,3] Grund: vor dem Lagerhaus – hier hielt der Ringmeister sein Diebesgut.
+#   [7,6] Grund: der Brunnen auf dem Markt bei Nacht – Treffpunkt der Diebe.
+#   [6,13] Grund: die Südstraße, auf der die Truppe in die Stadt kam.
+deploy:
+  max: 5
+  forced: [avatar, kael]
+  slots: [[6, 15], [7, 15], [5, 15], [8, 15], [6, 14], [7, 14], [5, 14]]
+# Diebe: Plänkler (Schwert) und Späher (Dolch). Stufen um 5 [C] Stufe vorläufig, Abgleich per Simulation, sobald spielbar.
+units:
+  # Ringmeister: Anführer der Diebe, kein Leutnant. Hält sich im Lagerhaus.
+  - { id: ring_master, nameKey: unit.ring_master.name, team: enemy, class: skirmisher, level: 6, at: [11, 1], boss: true, sprite: mercenary, items: [{ def: steel_sword }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
+  - { id: t1, nameKey: unit.thief.name, team: enemy, class: scout, level: 5, at: [6, 1], sprite: mercenary, items: [{ def: iron_dagger }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: t2, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 5, at: [2, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: t3, nameKey: unit.thief.name, team: enemy, class: scout, level: 5, at: [11, 4], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: t4, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 5, at: [3, 8], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold } }
+  - { id: t5, nameKey: unit.thief.name, team: enemy, class: scout, level: 5, at: [11, 7], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: t6, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 5, at: [7, 10], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  - { id: t7, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 6, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: t8, nameKey: unit.thief.name, team: enemy, class: scout, level: 6, at: [9, 9], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: hold }, difficulty: [hard] }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: boss, unit: ring_master }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+  side:
+    - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
+    - { id: s_chests, type: open_chests, reward: { gold: 300 } }
+triggers: []
+# Szenen (9.10): scn.n1.intro (Fenns Vergangenheit) bei Runde 1; scn.n1.ring beim Fall des Ringmeisters; Gedenk-Variante bei gefallenem Fenn.
+goldReward: 600   # [C] Nebenquest
+music: battle_a
+devNote: >
+  14 × 16, Variante von m1_1_steckbriefe bei Nacht, Nebel an. Lagerhaus im Nordosten (Tür 11,2, zwei Truhen, Ringmeister im Inneren). Leicht: 5 Gegner; Normal: 7; Schwer: 9.

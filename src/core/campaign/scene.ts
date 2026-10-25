@@ -24,7 +24,7 @@ export interface ResolvedOption {
 
 /** A line the player gets to see, or the choice that follows. `uid` is unique within the scene. */
 export type ResolvedLine =
-  | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean }
+  | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean; panel?: string }
   | { kind: 'choice'; uid: string; line: string; options: ResolvedOption[]; decision: boolean; titleKey?: string };
 
 /** Whether a companion can speak: avatar and kael always, everyone else unless fallen or gone (an NPC who never joined can). */
@@ -59,11 +59,11 @@ export function pickSpeaker(ctx: ConditionContext, chain: readonly string[]): st
 
 function resolveSpeech(scene: SceneDef, l: SceneSpeech, ctx: ConditionContext, out: ResolvedLine[]): void {
   if (!l.speaker) {
-    out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), mood: l.mood, memorial: false });
+    out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}) });
     return;
   }
   const speaker = pickSpeaker(ctx, l.speaker);
-  if (speaker) out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), speaker, mood: l.mood, memorial: false });
+  if (speaker) out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), speaker, mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}) });
   // the first figure of the chain has fallen (gone for good is not a death): a memorial line follows
   if (l.memorial && ctx.fallen.includes(l.speaker[0]!)) {
     const m = pickSpeaker(ctx, l.memorial.speaker);
@@ -118,6 +118,18 @@ export function sceneTexts(scene: SceneDef): Record<string, string> {
     }
   }
   return out;
+}
+
+/**
+ * The illustration panel shown at line `idx`: the `panel` of the latest line up to there that sets one, `undefined` after
+ * `none` or before any panel (the scene background shows). Pure; the UI decides whether the picture exists.
+ */
+export function panelAt(lines: readonly ResolvedLine[], idx: number): string | undefined {
+  for (let i = Math.min(idx, lines.length - 1); i >= 0; i--) {
+    const l = lines[i]!;
+    if (l.kind === 'line' && l.panel !== undefined) return l.panel === 'none' ? undefined : l.panel;
+  }
+  return undefined;
 }
 
 /** Whether the player has seen scene `id` to the end (or skipped it). */

@@ -1,6 +1,6 @@
 import type { GameData, Pos } from '../defs';
 import type { GameEvent } from '../events';
-import { availableActions, hasKey } from '../battle/actions';
+import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
@@ -76,15 +76,23 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
-    const dests = destinations(s, u, reach);
+    let dests = destinations(s, u, reach);
     const vip = u.flags.includes('mustSurvive');
     const st = computeStats(data, u, { state: s });
     const hpPct = (u.hp * 100) / st.maxHp;
     const isGoalUnit =
       goal && (v.type !== 'reach' || !v.unit || v.unit === u.id) && (v.type !== 'seize' || u.flags.includes('seizer'));
+    // the lord leaves last: until then he walks up to the exit but keeps its tiles free for the others
+    if (isGoalUnit && v.type === 'escape' && mustStayForRest(s, u)) {
+      const exit = new Set(goal.map(posKey));
+      dests = dests.filter((p) => !exit.has(posKey(p)));
+    }
     if (isGoalUnit) {
       const onGoal = dests.find((p) => goal.some((g) => posKey(g) === posKey(p)));
-      if (onGoal) return { type: 'act', unit: u.uid, to: onGoal, action: v.type === 'seize' ? { kind: 'seize' } : { kind: 'wait' } };
+      if (onGoal) {
+        const action = v.type === 'seize' ? { kind: 'seize' as const } : v.type === 'escape' ? { kind: 'escape' as const } : { kind: 'wait' as const };
+        return { type: 'act', unit: u.uid, to: onGoal, action };
+      }
     }
     const job = errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
     if (job) return job;

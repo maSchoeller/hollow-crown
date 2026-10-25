@@ -50,7 +50,7 @@ describe('the worker protocol carries a battle (structured clone)', () => {
     expect(structuredClone(r.state)).toEqual(r.state);
   });
 
-  for (const map of ['prologue_caravan', 'ch01_varnhold', 'ch02_silverbrook']) {
+  for (const map of ['prologue_paktnacht', 'm1_1_steckbriefe', 'ch01_varnhold', 'ch02_silverbrook']) {
     it(`replays ${map} to the same state and events, enemy phases through handleRequest`, () => {
       const node = data.campaign.nodes.find((n) => n.map === map)!;
       const start = opening(node.id);

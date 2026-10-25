@@ -1,0 +1,15 @@
+id: scn.m1_1.tutorial_triangle
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Die Jäger tragen Äxte, Lanzen und Schwerter durcheinander."
+  - id: l01b
+    speaker: [kael]
+    mood: neutral
+    text: "Merkt euch: Schwert schlägt Axt, Axt schlägt Lanze, Lanze schlägt Schwert."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Grünes ▲ in der Vorschau heißt Vorteil, rotes ▼ Nachteil. Schaut hin, bevor ihr zuschlagt."

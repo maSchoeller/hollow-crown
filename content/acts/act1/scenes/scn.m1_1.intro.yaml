@@ -1,0 +1,56 @@
+# Mission 1-1, Szene vor der Karte: Ankunft in Varnhold, die Steckbriefe (Beat 3). Gerrits Verlust ist noch zu spüren, aber nicht schwer.
+id: scn.m1_1.intro
+background: varnhold
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Varnhold, Grenzstädtchen. Spätsommer, Mittag, Staub auf der Straße. Einige Tage nach der Paktnacht."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Varnhold! Ein Dach, eine Suppe, ein Bett, in dem keiner schnarcht. Ich meine … also …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Schon gut, Küken. Er hätte gelacht."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Wir kaufen Brot und Wasser und sind vor dem Abend wieder draußen."
+  - id: l05
+    speaker: [avatar]
+    mood: neutral
+    text: "Die Leute starren uns an."
+  - id: l06
+    mood: neutral
+    text: "An jeder Hauswand klebt derselbe Zettel: vier Gesichter und ein Satz. Gesucht für den Mord am König."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Lebend oder tot. Gefragt hat uns keiner."
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Ganz Valmora hält uns für die Mörder des Königs."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Wir waren's doch nicht, oder? Ich meine, wir wissen, dass wir's nicht waren."
+  - id: l10
+    speaker: [kael]
+    mood: neutral
+    text: "Wir wissen es. Die da draußen nicht."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Und die kommen schon. Aus den Gassen. Mit den Zetteln in der Hand."
+  - id: l12
+    speaker: [kael]
+    mood: angry
+    text: "Waffen bereit. Wir bleiben beisammen. {avatar}, ordne die Reihen."

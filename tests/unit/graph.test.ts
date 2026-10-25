@@ -31,7 +31,7 @@ let data: GameData;
 
 const node = (id: string, extra: Partial<CampaignNodeDef>): CampaignNodeDef => ({
   id,
-  map: 'prologue_caravan',
+  map: 'prologue_paktnacht',
   titleKey: 'node.prologue.title',
   kind: 'story',
   pos: [50, 50],
@@ -244,7 +244,7 @@ describe('content:check of the graph', () => {
   });
 
   it('expectedLevel never falls along a requirement', () => {
-    expect(problems((d) => (d.campaign.nodes[2]!.expectedLevel = 1))).toEqual(expect.arrayContaining([expect.stringContaining('lower expectedLevel than ch01')]));
+    expect(problems((d) => (d.campaign.nodes[3]!.expectedLevel = 1))).toEqual(expect.arrayContaining([expect.stringContaining('lower expectedLevel than ch01')]));
   });
 
   it('minStoryCount: what a node can start with at the least', () => {

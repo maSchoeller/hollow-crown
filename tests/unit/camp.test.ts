@@ -135,7 +135,7 @@ describe('the camp rooms (story 6.3)', () => {
     expect(open(base)).toEqual({ convoy: true, merchant: true, smith: false, healer: false, tavern: false, campfire: false });
     expect(homeRooms(data, base).find((r) => r.room.id === 'smith')!.unmet).toEqual({ completed: 'ch01' });
     const c = clone(base);
-    c.completed = ['prologue', 'ch01'];
+    c.completed = ['prologue', 'm1_1', 'ch01'];
     expect(open(c)).toMatchObject({ smith: true, healer: true, tavern: true, campfire: false });
     c.completed.push('ch02');
     expect(open(c).campfire).toBe(true);
@@ -154,7 +154,7 @@ describe('the camp rooms (story 6.3)', () => {
 describe('smith, tavern and army limits (story 6.4)', () => {
   const fresh = () => {
     const c = clone(base);
-    c.completed = ['prologue', 'ch01'];
+    c.completed = ['prologue', 'm1_1', 'ch01'];
     c.gold = 10000;
     return c;
   };

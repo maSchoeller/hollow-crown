@@ -41,6 +41,8 @@ const down = (s: BattleState, u: BattleUnit): GameEvent[] => {
 describe('bleed-out (story 1.6)', () => {
   beforeAll(() => {
     data = loadContentFromDisk().data;
+    // the prologue map is `noDeath` (tests/unit/no-death.test.ts); the generic bleed rules are checked without the flag
+    for (const m of Object.values(data.maps)) delete m.noDeath;
   });
 
   it('reads the countdown from balance.death.bleedOutTurns (3, GDD)', () => {

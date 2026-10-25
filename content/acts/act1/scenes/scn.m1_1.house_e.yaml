@@ -1,0 +1,6 @@
+id: scn.m1_1.house_e
+background: varnhold
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein altes Paar steckt euch ein Fläschchen zu. „Das Kopfgeld kauft uns nicht. Die Jäger draußen schon.“"

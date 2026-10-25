@@ -147,10 +147,10 @@ describe('lieutenant checks', () => {
 
   it('wants a known lieutenant on a map unit that names one', () => {
     const msgs = problems((d) => {
-      const map = d.maps.prologue_caravan!;
+      const map = d.maps.prologue_paktnacht!;
       map.units.push({ ...map.units[1]!, id: 'ghost', lieutenant: 'nobody' });
     });
-    expect(msgs).toContain('maps/prologue_caravan: ghost: unknown lieutenant nobody');
+    expect(msgs).toContain('maps/prologue_paktnacht: ghost: unknown lieutenant nobody');
   });
 });
 
@@ -158,7 +158,7 @@ describe('map units with lieutenant:', () => {
   const unit = (over: Record<string, unknown> = {}) => ({ id: 'lt_unit', team: 'enemy', lieutenant: 'hask', level: 3, at: [1, 1], items: [], ...over });
   const withUnit = (u: Record<string, unknown>) => {
     const files = readContentFiles();
-    const key = Object.keys(files).find((k) => k.endsWith('prologue_caravan.yaml'))!;
+    const key = Object.keys(files).find((k) => k.endsWith('prologue_paktnacht.yaml'))!;
     const map = files[key] as { units: unknown[] };
     map.units.push(u);
     return buildContent(files);
@@ -167,9 +167,9 @@ describe('map units with lieutenant:', () => {
   it('takes the class of the lieutenant when the map names none, and keeps the map class when it does', () => {
     const a = withUnit(unit());
     expect(a.issues).toEqual([]);
-    expect(a.data.maps.prologue_caravan!.units.find((u) => u.id === 'lt_unit')!.class).toBe('brigand');
+    expect(a.data.maps.prologue_paktnacht!.units.find((u) => u.id === 'lt_unit')!.class).toBe('brigand');
     const b = withUnit(unit({ class: 'vanguard' }));
-    expect(b.data.maps.prologue_caravan!.units.find((u) => u.id === 'lt_unit')!.class).toBe('vanguard');
+    expect(b.data.maps.prologue_paktnacht!.units.find((u) => u.id === 'lt_unit')!.class).toBe('vanguard');
   });
 
   it('reports a unit without class and without a known lieutenant', () => {

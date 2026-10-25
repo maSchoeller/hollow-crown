@@ -150,7 +150,9 @@ describe('knockOut (AC 1)', () => {
     expect(lt.foe.fledBy).toBe(lt.me);
     expect(plain.foe.gone).toBe('dead');
     expect(lt.exp).toBeDefined();
-    expect(lt.exp).toEqual(plain.exp);
+    // a lieutenant counts as boss-like for EP: the flight gives a kill's EP plus the boss bonus (the plain foe of the map is no boss)
+    const bonus = data.balance.experience.bossBonus;
+    expect(lt.exp).toEqual({ ...plain.exp, amount: (plain.exp as { amount: number }).amount + bonus, after: (plain.exp as { after: number }).after + bonus });
   });
 });
 

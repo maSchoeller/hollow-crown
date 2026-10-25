@@ -26,7 +26,7 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../../core';
-import { itemDef, modelId, unitFigureId } from '../../core';
+import { bleedsOut, itemDef, modelId, unitFigureId } from '../../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
@@ -800,7 +800,7 @@ export class BoardView implements HostedView {
       this.setAnim(v, u.downed ? 'downed' : 'idle');
     }
     for (const [uid, v] of [...this.units]) if (!seen.has(uid)) this.removeUnit(v);
-    for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone ? u.bleed ?? 0 : null);
+    for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone && bleedsOut(this.data, state, u) ? u.bleed ?? 0 : null);
     for (const u of state.units) this.setPennant(u);
     if (this.grudgeFor && !this.grudgeTargetView()) this.grudgeFor = null;
   }
@@ -1534,7 +1534,8 @@ export class BoardView implements HostedView {
             v.downed = true;
             v.desat = 1;
             this.setAnim(v, 'downed');
-            this.setBleedLabel(e.unit, 0);
+            const du = this.state?.units.find((x) => x.uid === e.unit);
+            if (!du || bleedsOut(this.data, this.state, du)) this.setBleedLabel(e.unit, 0);
           }
           await this.hooks.onEvent?.(e);
           await this.wait(350);

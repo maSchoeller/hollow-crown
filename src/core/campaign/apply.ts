@@ -199,6 +199,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       if (reward.length && validateEffects(data, campaign, reward) === null) {
         applyEffects(data, campaign, reward, effectEvents);
         result.effects = reward;
+        for (const e of reward) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
       }
     }
     return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };

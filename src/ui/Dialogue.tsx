@@ -2,6 +2,7 @@ import type { ComponentChildren } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
   consequenceLines,
+  panelAt,
   resolveScene,
   skipTarget,
   speakerTeam,
@@ -43,6 +44,8 @@ export interface DialogueProps {
   onAuto: () => void;
   /** stems of the built half figures (manifest), `null` while unknown */
   halves?: ReadonlySet<string> | null;
+  /** ids of the built backgrounds (manifest), `null` while unknown: a panel whose picture is not built is not shown */
+  backgrounds?: ReadonlySet<string> | null;
   onLine?: (speaker?: string, mood?: string) => void;
 }
 
@@ -78,7 +81,7 @@ function Figure({ speaker, mood, avatarPortrait, side, active, halves }: { halve
 }
 
 /** Visual-novel scene: blurred place, speaker as a bright half figure, listeners dimmed, glow-pill name tag, Log/Auto/Skip, tap to go on (mockup 05). */
-export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, onChoose, answered = NONE, head = noHead, onDone, onSeen, onLine }: DialogueProps) {
+export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, head = noHead, onDone, onSeen, onLine }: DialogueProps) {
   const def = data.scenes[id];
   // the story as the scene began: an answer that sends a companion away must not change who spoke the lines before it;
   // later lines follow the answer through the flags it sets (`local`)
@@ -97,6 +100,9 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   const now = useMemo(() => ({ ...ctx, flags: { ...ctx.flags, ...local } }), [ctx, local]);
   const lines = useMemo(() => (def ? resolveScene(data, now, id) : []), [data, now, id]);
   const line = lines[idx];
+  // illustration panel (scene line `panel`): shown full-screen once its picture is known to be built, else the scene background stays
+  const panelId = panelAt(lines, idx);
+  const panel = panelId && backgrounds?.has(panelId) ? panelId : undefined;
 
   const finish = () => {
     onSeen?.(id);
@@ -189,8 +195,9 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   return (
     <div class={`vn ${overlay ? 'vn--overlay' : ''}`} onClick={advance}>
       {def.background && !overlay && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`locations/${def.background}.webp`)})` }} />}
+      {panel && !overlay && <div class="vn-panel" style={{ backgroundImage: `url(${asset(`locations/${panel}.webp`)})` }} />}
       <div class="vn-shade" />
-      <div class="vn-stage">
+      <div class={`vn-stage ${panel && !overlay ? 'vn-stage--hidden' : ''}`}>
         {(['left', 'right'] as const).map((side) => {
           const l = stage[side];
           if (!l?.speaker) return null;

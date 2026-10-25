@@ -33,6 +33,8 @@ export interface Manifest {
   ground?: string[];
   /** stems of the scene half figures (`halves/<stem>.webp`, mood variants `<id>_<mood>`) */
   halves?: string[];
+  /** ids of the built place images (`locations/<id>.webp`): dialogue backdrops, panels and node places */
+  locations?: string[];
   audio?: string[];
 }
 
