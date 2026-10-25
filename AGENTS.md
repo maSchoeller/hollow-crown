@@ -24,7 +24,7 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 
 - Fertig ist eine Aufgabe erst, wenn `pnpm lint` (inkl. Typecheck), `pnpm test`, `pnpm content:check` und `pnpm build` grün sind; `build` bricht auch bei überschrittenem Bundle-Budget ab.
 - Balancing mit `pnpm sim <mapId> --runs 50` prüfen (weitere Optionen `--seed`, `--difficulty`, `--death` im Kopf von `tools/simulate.ts`).
-- `pnpm art:build` braucht Python mit Pillow und numpy.
+- `pnpm art:build` braucht Python 3.12+ mit den Paketen aus `pip install -r tools/art/requirements.txt` (Pillow, numpy, PyYAML).
 - Node ≥ 22, pnpm 10 (`packageManager` in `package.json`).
 
 ## Akt-Release

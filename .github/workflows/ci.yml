@@ -20,6 +20,14 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/art/requirements.txt
+      - run: pip install -r tools/art/requirements.txt
+      - name: Art tool imports (art:build needs these packages)
+        run: python tools/art/check_imports.py
       - name: Lint + typecheck
         run: pnpm lint
       - name: Content
