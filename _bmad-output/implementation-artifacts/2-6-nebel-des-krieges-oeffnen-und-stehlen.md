@@ -1,6 +1,6 @@
 # Story 2.6: Nebel des Krieges, Öffnen und Stehlen
 
-Status: review
+Status: done
 
 ## Story
 

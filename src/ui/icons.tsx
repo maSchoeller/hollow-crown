@@ -53,7 +53,7 @@ const P: Record<string, string> = {
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
   // roles (class-action slot of the battle dock)
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
-  blade: 'M5 19l4-1 10-10-3-3L6 15zM14 6l3 3M4 20l1-3',
+  blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   danger: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   target: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',

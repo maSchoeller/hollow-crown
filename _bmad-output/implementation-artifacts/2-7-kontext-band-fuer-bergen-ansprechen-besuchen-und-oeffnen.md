@@ -1,6 +1,6 @@
 # Story 2.7: Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
 
-Status: review
+Status: done
 
 ## Story
 

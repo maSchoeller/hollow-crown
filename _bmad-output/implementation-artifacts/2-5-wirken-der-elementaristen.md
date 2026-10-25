@@ -1,6 +1,6 @@
 # Story 2.5: Wirken der Elementaristen
 
-Status: review
+Status: done
 
 ## Story
 
