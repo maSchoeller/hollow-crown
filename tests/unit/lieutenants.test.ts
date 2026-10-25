@@ -139,7 +139,7 @@ describe('lieutenant checks', () => {
     const d = clone(data);
     const l = clone(locales);
     for (const lt of Object.values(d.lieutenants)) for (const lang of ['de', 'en']) l[lang]![lt.titleKey] = 'Title';
-    const out = validateContent(d, l, undefined, undefined, undefined, undefined, { portraits: new Set(['hask']), models: new Set(['hask']) }).map((i) => i.message);
+    const out = validateContent(d, l, undefined, undefined, undefined, { portraits: new Set(['hask']), models: new Set(['hask']) }).map((i) => i.message);
     expect(out).toContain('missing portrait morra (art/mockups/characters-s1/morra.png)');
     expect(out).toContain('missing model grosk (art/models/units/grosk.glb)');
     expect(out.some((m) => m.includes('hask') && m.startsWith('missing'))).toBe(false);

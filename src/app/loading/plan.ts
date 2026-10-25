@@ -3,7 +3,7 @@
  * and the numbers the stones show. No DOM, no cache access: `state/loading.ts` and `state/prepare.ts` do the I/O.
  */
 
-import { modelId, unitFigureId, type FigureSource, type GameData } from '../../core';
+import { modelId, unitFigureId, unitModelPath, type FigureSource, type GameData } from '../../core';
 
 /** Classes' figure fields, as `GameData.classes` has them. */
 type Classes = Parameters<typeof modelId>[2];
@@ -15,7 +15,7 @@ export type ModelSource = FigureSource;
 export type MissionUnit = ModelSource & { gearItems?: readonly string[] };
 
 /** `GameData.items` as far as the gear rules read it. */
-type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'image'>>;
+type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'group' | 'image'>>;
 type Gear = GameData['render']['gear'];
 
 export interface MissionAssetInput {
@@ -28,6 +28,8 @@ export interface MissionAssetInput {
   gear?: Gear;
   /** model ids the manifest lists (`manifest.models.units`); without it figures are drawn as sprites */
   models: readonly string[] | undefined;
+  /** pack folder per model id (`manifest.models.unitPacks`); a model without an entry lies in `models/units/` */
+  unitPacks?: Readonly<Record<string, string>>;
   /** the figure setting: `2d` draws every unit as a sprite sheet and needs no model files (default `3d`) */
   figures?: '3d' | '2d';
   /** sprite sheets the manifest lists (`manifest.units`, with their normal map flag): a unit without a model file shows one */
@@ -42,12 +44,9 @@ export interface MissionAssetInput {
   defaultPlace: string;
 }
 
-/**
- * File of a place image: `place` is a location (`locations/<place>.webp`), or a background as `backgrounds/<id>`
- * (`backgrounds/<id>.webp`, decision 2026-10-24).
- */
+/** File of a place image: `place` is a location (`locations/<place>.webp`). */
 export function placePath(place: string): string {
-  return `${place.startsWith('backgrounds/') ? place : `locations/${place}`}.webp`;
+  return `locations/${place}.webp`;
 }
 
 /** Music tracks that are not in the first download (vite.config.ts `ON_DEMAND_MUSIC`): the battle pair loads with the mission, the rest in the background. */
@@ -68,14 +67,14 @@ export function itemImages(itemIds: readonly string[], items: GearItems): string
   return [...out];
 }
 
-/** Weapon library models (`models/weapons/<model>.glb`) the items show on a figure: weapon group in the main hand, off-hand kind. */
+/** Weapon library models (`models/weapons/<model>.glb`) the items show on a figure: weapon group in the main hand, off-hand weapon group. */
 export function gearModels(itemIds: readonly string[], items: GearItems, gear: Gear): string[] {
   const out = new Set<string>();
   for (const id of itemIds) {
     const d = items[id];
     if (!d) continue;
     const weapon = d.weaponType && gear.weapons[d.weaponType];
-    const off = gear.offHand[d.kind];
+    const off = d.group && gear.offHand[d.group];
     if (weapon) out.add(weapon.model);
     if (off) out.add(off.model);
   }
@@ -87,14 +86,14 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
  * figures (3D models and their weapon models, or sprite sheets for the 2D setting and units without a model) and the
  * images of the gear they hold.
  */
-export function missionAssets({ units, models, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
+export function missionAssets({ units, models, unitPacks, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
   const out = new Set<string>([placePath(place ?? defaultPlace)]);
   if (music) for (const id of BATTLE_MUSIC) if (music.includes(id)) out.add(musicPath(id));
   const use3d = figures !== '2d' && models !== undefined;
   for (const u of units) {
     const mid = use3d ? modelId(u, models, classes) : '';
     if (use3d && mid && models.includes(mid)) {
-      out.add(`models/units/${mid}.glb`);
+      out.add(unitModelPath(mid, unitPacks));
       if (items && gear && weaponModels && u.gearItems)
         for (const w of gearModels(u.gearItems, items, gear)) if (weaponModels.includes(w)) out.add(`models/weapons/${w}.glb`);
     } else {

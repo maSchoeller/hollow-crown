@@ -568,7 +568,7 @@ export interface CampaignNodeDef {
   memorialIf?: Condition;
   memorial?: { pre?: string; post?: string };
   pos: Pos;
-  /** place image shown while the mission loads: a location (`locations/<place>`) or a background as `backgrounds/<id>`; default: the camp on the road */
+  /** place image shown while the mission loads: a location (`locations/<place>`); default: the camp on the road */
   place?: string;
   merchantTier: number;
   /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */
@@ -829,13 +829,17 @@ export interface RenderDef {
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
+    /** story 7.7: figures doing nothing update their skeleton this often (Hz); acting ones at the frame rate */
+    idleHz: number;
+    /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
+    precompileMs: number;
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
     /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */
     fade: { alpha: number; cover: number; figureWidth: number };
   };
-  /** GA9: weapon model per equipped weapon group / off-hand item kind, hung on a figure's hand socket */
-  gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<ItemDef['kind'], GearPiece>> };
+  /** GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket */
+  gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<WeaponGroup, GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
   /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
   assets: { keepUnused: number };

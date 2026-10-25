@@ -211,7 +211,7 @@ export function Defeat() {
   const MissionButton = turn ? SecondaryButton : PrimaryButton;
   return (
     <div class="hc-view res-view res-view--defeat">
-      <Backdrop image="backgrounds/bg_varnhold_burning" />
+      <Backdrop image="locations/lager_unterwegs" />
       <Piece class="res-pill res-pill--lost">
         <b>{t('ui.defeat.title')}</b>
       </Piece>

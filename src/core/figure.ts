@@ -24,3 +24,12 @@ export function unitFigureId(u: FigureSource, classes: ClassFigures): string {
 export function modelId(u: FigureSource, models: readonly string[], classes: ClassFigures): string {
   return u.portrait && models.includes(u.portrait) ? u.portrait : unitFigureId(u, classes);
 }
+
+/**
+ * Path below `assets/` of a unit model: in the folder of the pack of its first appearance (`manifest.models.unitPacks`,
+ * tools/art/model_packs.py, story 8.2), else `models/units/`.
+ */
+export function unitModelPath(id: string, unitPacks?: Readonly<Record<string, string>>): string {
+  const pack = unitPacks?.[id];
+  return pack ? `${pack}/models/units/${id}.glb` : `models/units/${id}.glb`;
+}

@@ -16,15 +16,15 @@ home: camp
 # Wo Knoten und Heimat auf der gemalten Weltkarte liegen (art/mockups/locations-s1/weltkarte_valmora.png): Prozent von Breite und Höhe
 homePos: [52, 79]
 startGold: 500
-# Ortsbild, das ein Knoten ohne eigenes place beim Laden zeigt (art/mockups/locations-s1); place eines Knotens: Ort oder Hintergrund als backgrounds/<id>
+# Ortsbild, das ein Knoten ohne eigenes place beim Laden zeigt (art/mockups/locations-s1); place eines Knotens: Ort (art/mockups/locations-s1/<id>.png)
 defaultPlace: lager_unterwegs
 startConvoy:
   - { def: vulnerary }
   - { def: iron_lance }
 nodes:
-  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, fixed: first, place: backgrounds/bg_caravan_road, pos: [81, 52], merchantTier: 0 }
-  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, requires: [{ completed: prologue }], place: backgrounds/bg_varnhold_burning, pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: ch01 }], place: backgrounds/bg_silverbrook_shrine, pos: [43, 66], merchantTier: 2 }
+  - { id: prologue, expectedLevel: 1, map: prologue_caravan, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, fixed: first, place: lager_unterwegs, pos: [81, 52], merchantTier: 0 }
+  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, requires: [{ completed: prologue }], place: erlbach, pos: [60, 42], merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: ch01 }], place: varnhold, pos: [43, 66], merchantTier: 2 }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]

@@ -126,18 +126,19 @@ development_status:
   7-4-stabile-ids-und-release-ablauf: review  # Stabile IDs und Release-Ablauf
   7-5-leistung-messen: review  # Leistung messen
   7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: review  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
-  7-7-grosse-schlachten-fluessig: backlog  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
+  7-7-grosse-schlachten-fluessig: review  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
+  7-8-grosse-schlachten-ohne-ruckler: backlog  # Große Schlachten ohne Ruckler (nachgetragen 2026-10-25, NFR1, Rest aus 7.7)
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio
   epic-8: in-progress
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
-  8-2-tripo-pipeline-vervollstaendigen: backlog  # Tripo-Pipeline vervollständigen
-  8-3-brettfiguren-fuer-akt-1: backlog  # Brettfiguren für Akt 1
-  8-4-portraets-mit-stimmungen-fuer-akt-1: backlog  # Porträts mit Stimmungen für Akt 1
+  8-2-tripo-pipeline-vervollstaendigen: review  # Tripo-Pipeline vervollständigen
+  8-3-brettfiguren-fuer-akt-1: review  # Brettfiguren für Akt 1
+  8-4-portraets-mit-stimmungen-fuer-akt-1: review  # Porträts mit Stimmungen für Akt 1
   8-5-item-bilder: done  # Item-Bilder
   8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
-  8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: backlog  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
+  8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: review  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
   8-10-verdeckte-figuren-bleiben-sichtbar: review  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
