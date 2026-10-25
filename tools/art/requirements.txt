@@ -1,0 +1,7 @@
+# Python packages for the asset tools (pnpm art:build and the other non-Blender scripts in tools/art).
+# Install: pip install -r tools/art/requirements.txt
+# The Blender scripts (blender_*.py, props/) get bpy, bmesh and mathutils from Blender itself, not from here.
+# tools/art/check_imports.py (CI) fails when a script imports a package that is missing here.
+Pillow>=12.1
+numpy>=2.4
+PyYAML>=6.0

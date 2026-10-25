@@ -18,7 +18,7 @@ Spielen: nach dem Merge auf `main` unter **https://maschoeller.github.io/hollow-
 
 ## Entwicklung
 
-Node 22+, pnpm 10, Python 3.12+ mit Pillow (nur für die Assets).
+Node 22+, pnpm 10, Python 3.12+ (nur für die Assets, Pakete per `pip install -r tools/art/requirements.txt`).
 
 ```bash
 pnpm install
