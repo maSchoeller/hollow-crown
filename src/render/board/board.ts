@@ -38,6 +38,7 @@ import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, 
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
+import { disposeGoldRing, GrudgeLine, makeGoldRing, makePennant, pennantNotches, setPennantNotches } from './lieutenant';
 
 export interface BoardHooks {
   onTap?(tile: Pos): void;
@@ -64,6 +65,8 @@ interface UnitView {
   gear: string;
   figure: Figure;
   ring: Mesh;
+  /** gold edge of a lieutenant's ring (story 3.1) */
+  gold?: Mesh;
   /** tile position (float while moving) and a small offset for lunges/knockback, tiles */
   x: number;
   y: number;
@@ -170,6 +173,11 @@ export class BoardView implements HostedView {
   private floaters: Array<{ el: HTMLDivElement; x: number; y: number; h: number; start: number; dur: number }> = [];
   /** bleed-out counters over downed units (phases left), kept in sync by `syncUnits` and the `downed`/`bleed` events */
   private bleedLabels = new Map<string, HTMLDivElement>();
+  /** grudge pennants over the lieutenants (story 3.1) */
+  private pennants = new Map<string, HTMLDivElement>();
+  /** uid of the lieutenant whose line to the grudge target is shown (set by a tap on him) */
+  private grudgeFor: string | null = null;
+  private grudgeLine?: GrudgeLine;
   private readyPromise: Promise<void> | null = null;
   private pointer = new Map<number, { x: number; y: number; sx: number; sy: number }>();
   private panMoved = false;
@@ -228,6 +236,8 @@ export class BoardView implements HostedView {
     this.input.abort();
     for (const f of this.floaters) f.el.remove();
     for (const el of this.bleedLabels.values()) el.remove();
+    for (const el of this.pennants.values()) el.remove();
+    this.grudgeLine?.clear();
     this.host.release(this);
   }
 
@@ -740,6 +750,7 @@ export class BoardView implements HostedView {
           gear: this.gearKey(u),
           figure,
           ring: this.makeRing(u.uid, u.team),
+          gold: u.lieutenant ? makeGoldRing(this.scene, u.uid) : undefined,
           x: u.pos[0],
           y: u.pos[1],
           offX: 0,
@@ -767,6 +778,66 @@ export class BoardView implements HostedView {
     }
     for (const [uid, v] of [...this.units]) if (!seen.has(uid)) this.removeUnit(v);
     for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone ? u.bleed ?? 0 : null);
+    for (const u of state.units) this.setPennant(u);
+    if (this.grudgeFor && !this.grudgeTargetView()) this.grudgeFor = null;
+  }
+
+  /** Grudge pennant over a lieutenant on the board (0-3 notches from `BattleUnit.grudge`); everyone else has none. */
+  private setPennant(u: BattleUnit): void {
+    let el = this.pennants.get(u.uid);
+    if (!u.lieutenant || u.gone || !this.units.has(u.uid)) {
+      el?.remove();
+      this.pennants.delete(u.uid);
+      return;
+    }
+    if (!el) {
+      el = makePennant();
+      this.floatLayer.appendChild(el);
+      this.pennants.set(u.uid, el);
+    }
+    setPennantNotches(el, pennantNotches(u.grudge));
+  }
+
+  private placePennants(): void {
+    for (const [uid, el] of this.pennants) {
+      const v = this.units.get(uid);
+      if (!v) continue;
+      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.2, -(v.y + v.offY + 0.5)));
+      el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
+      el.style.display = v.visible && v.alpha > 0.5 ? '' : 'none';
+    }
+  }
+
+  /** The target of the grudge of the lieutenant `grudgeFor`, when both stand on the board. */
+  private grudgeTargetView(): { from: UnitView; to: UnitView } | null {
+    if (!this.grudgeFor) return null;
+    const lt = this.state.units.find((u) => u.uid === this.grudgeFor);
+    if (!lt || lt.gone || !lt.grudgeTarget || (lt.grudge ?? 0) < 1) return null;
+    const target = this.state.units.find((u) => (u.uid === lt.grudgeTarget || u.id === lt.grudgeTarget) && !u.gone && u.pos);
+    const from = this.units.get(lt.uid);
+    const to = target ? this.units.get(target.uid) : undefined;
+    return from && to ? { from, to } : null;
+  }
+
+  /** A tap on a lieutenant with grudge 1 or more shows the thin line to his target; a tap anywhere else hides it. */
+  private pickGrudgeLine(tile: Pos): void {
+    const at = this.state?.units.find((u) => u.pos && !u.gone && u.pos[0] === tile[0] && u.pos[1] === tile[1]);
+    this.grudgeFor = at?.lieutenant && (at.grudge ?? 0) >= 1 && at.grudgeTarget ? at.uid : null;
+    this.wake();
+  }
+
+  private groundOf(v: UnitView): Vector3 {
+    const x = v.x + v.offX;
+    const y = v.y + v.offY;
+    const h = (this.terrain?.standOn(Math.min(Math.max(Math.round(x), 0), this.state.width - 1), Math.min(Math.max(Math.round(y), 0), this.state.height - 1)) ?? 0) + v.lift;
+    return new Vector3(x + 0.5, h + 0.12, -y - 0.5);
+  }
+
+  private updateGrudgeLine(): void {
+    const pair = this.grudgeTargetView();
+    if (!pair) return void this.grudgeLine?.clear();
+    this.grudgeLine ??= new GrudgeLine(this.scene);
+    this.grudgeLine.set(this.groundOf(pair.from), this.groundOf(pair.to));
   }
 
   /** Counter of phases a downed unit has left (pulse symbol + number, DESIGN.md `downed`); `null` removes it. */
@@ -807,6 +878,7 @@ export class BoardView implements HostedView {
     v.figure.dispose();
     v.ring.material?.dispose();
     v.ring.dispose();
+    if (v.gold) disposeGoldRing(v.gold);
     this.units.delete(v.uid);
   }
 
@@ -1088,7 +1160,10 @@ export class BoardView implements HostedView {
       if (!p || this.pointer.size > 0) return;
       if (!this.panMoved && !this.longFired) {
         const t = this.tileAt(e.clientX, e.clientY);
-        if (t) this.hooks.onTap?.(t);
+        if (t) {
+          this.pickGrudgeLine(t);
+          this.hooks.onTap?.(t);
+        }
       }
     };
     c.addEventListener('pointerup', up, { signal });
@@ -1124,12 +1199,14 @@ export class BoardView implements HostedView {
     for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
     for (const v of this.units.values()) this.placeUnit(v, now);
     this.updateFade();
+    this.updateGrudgeLine();
     if (this.ghost) this.ghost.figure.tick(now, this.speed);
     this.pointLights.forEach((l, k) => (l.intensity = 0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08));
     this.updateFx(now);
     this.scene.render();
     this.updateFloaters(now);
     this.placeBleedLabels();
+    this.placePennants();
   }
 
   private placeUnit(v: UnitView, now: number): void {
@@ -1145,6 +1222,10 @@ export class BoardView implements HostedView {
     v.ring.position.set(x + 0.5, h + 0.025, -y - 0.5);
     v.ring.setEnabled(v.visible && !v.downed && v.alpha > 0.5);
     (v.ring.material as StandardMaterial).alpha = v.desat > 0.3 ? 0.25 : 0.5;
+    if (v.gold) {
+      v.gold.position.set(x + 0.5, h + 0.03, -y - 0.5);
+      v.gold.setEnabled(v.ring.isEnabled(false));
+    }
   }
 
   // ------------------------------------------------------------------ fx

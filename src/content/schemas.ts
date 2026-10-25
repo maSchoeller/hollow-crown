@@ -199,7 +199,7 @@ const skillCondition = z
 
 export const skillSchema = z.object({
   id: z.string(),
-  source: z.enum(['class', 'personal', 'item']),
+  source: z.enum(['class', 'personal', 'item', 'grudge']),
   trigger: z.enum(['passive', 'on_attack', 'on_defend', 'on_hit', 'on_turn_start', 'action', 'after_action', 'on_lethal']),
   condition: skillCondition.optional(),
   effect: z
@@ -265,7 +265,8 @@ export const mapUnitSchema = z.object({
   id: z.string().optional(),
   char: z.string().optional(),
   team,
-  class: z.string(),
+  /** may be left out when `lieutenant` is set: the loader takes the class of the lieutenant (story 3.1) */
+  class: z.string().optional(),
   level: z.number().int(),
   at: pos,
   boss: z.boolean().optional(),
@@ -490,6 +491,21 @@ export const supportPairSchema = z.strictObject({
   pair: z.tuple([z.string(), z.string()]),
   core: z.boolean().default(false),
   talks: z.strictObject({ C: z.string(), B: z.string(), A: z.string(), S: z.string() }).partial().default({}),
+});
+
+/** An enemy lieutenant (`acts/actN/lieutenants.yaml`, story 3.1); the act comes from the folder. */
+export const lieutenantSchema = z.strictObject({
+  id: z.string().regex(/^[a-z0-9_]+$/),
+  nameKey: z.string().min(1),
+  portrait: z.string().min(1),
+  model: z.string().min(1),
+  class: z.string().min(1),
+  faction: z.string().regex(/^[a-z0-9_]+$/),
+  signatureItem: z.string().min(1),
+  grudgeSkills: z.tuple([z.string(), z.string(), z.string()]),
+  titleKey: z.string().min(1),
+  scene: z.string().min(1),
+  joins: z.boolean().optional(),
 });
 
 /** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */

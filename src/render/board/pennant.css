@@ -1,0 +1,23 @@
+/* Groll-Wimpel over a lieutenant on the board (story 3.1): red pennant, 0-3 white notches (concept/25-ux/DESIGN.md, mockup 02-kampf) */
+.hc-pennant {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-width: 14px;
+  min-height: 15px;
+  padding: 2px 5px;
+  background: var(--hc-team-enemy);
+  border: 2px solid var(--hc-line);
+  border-radius: 4px 4px 9px 9px;
+  pointer-events: none;
+}
+.hc-pennant i {
+  display: block;
+  width: 3px;
+  height: 9px;
+  background: #fff;
+}

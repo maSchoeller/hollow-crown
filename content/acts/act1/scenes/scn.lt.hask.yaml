@@ -1,0 +1,43 @@
+# Leutnant-Zeilen (Story 3.1): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott
+id: scn.lt.hask
+lines:
+  - id: first
+    speaker: [hask]
+    fallback: skip
+    mood: happy
+    text: "Feuer frisst alles. Euch auch."
+  - id: grudge_1
+    speaker: [hask]
+    fallback: skip
+    mood: angry
+    text: "{target}! Dich hab ich mir gemerkt."
+  - id: grudge_2
+    speaker: [hask]
+    fallback: skip
+    mood: angry
+    text: "{target}! Ich schulde dir eine Narbe."
+  - id: grudge_3
+    speaker: [hask]
+    fallback: skip
+    mood: angry
+    text: "{target}! Ich fackel dich bis auf die Knochen!"
+  - id: flee_1
+    speaker: [hask]
+    fallback: skip
+    mood: angry
+    text: "Asche und Glut! Ich brenne woanders weiter!"
+  - id: flee_2
+    speaker: [hask]
+    fallback: skip
+    mood: neutral
+    text: "Genug gespielt. Ich komme wieder."
+  - id: flee_3
+    speaker: [hask]
+    fallback: skip
+    mood: sad
+    text: "Das Feuer geht nicht aus. Ich auch nicht."
+  - id: mock
+    speaker: [hask]
+    fallback: skip
+    mood: happy
+    text: "{target} ist kalt. Feuer frisst alles!"

@@ -72,13 +72,13 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Leutnants
-  epic-3: backlog
-  3-1-leutnants-als-content-und-auf-dem-brett: backlog  # Leutnants als Content und auf dem Brett
+  epic-3: in-progress
+  3-1-leutnants-als-content-und-auf-dem-brett: review  # Leutnants als Content und auf dem Brett
   3-2-flucht-bei-0-tp: backlog  # Flucht bei 0 TP
-  3-3-groll-und-groll-ziel: backlog  # Groll und Groll-Ziel
+  3-3-groll-und-groll-ziel: ready-for-dev  # Groll und Groll-Ziel
   3-4-mitwachsende-staerke: backlog  # Mitwachsende Stärke
-  3-5-kopfgeld-und-signatur-item: backlog  # Kopfgeld und Signatur-Item
-  3-6-steckbriefe: backlog  # Steckbriefe
+  3-5-kopfgeld-und-signatur-item: ready-for-dev  # Kopfgeld und Signatur-Item
+  3-6-steckbriefe: ready-for-dev  # Steckbriefe
   3-7-seitenwechsel: backlog  # Seitenwechsel
   epic-3-retrospective: optional
 

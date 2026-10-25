@@ -92,6 +92,10 @@ export interface BattleUnit extends UnitRecord {
   ai?: AiState;
   boss?: boolean;
   lieutenant?: string;
+  /** grudge of a lieutenant against the company, 0-3 (story 3.1: always unset; story 3.3 takes it from the campaign) */
+  grudge?: number;
+  /** unit id of the grudge target (story 3.3) */
+  grudgeTarget?: string;
   dropUids: string[];
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };

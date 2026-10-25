@@ -8,6 +8,7 @@ import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles, pairKey } from '../core/util';
 import { BARK_LINES } from './barkLines';
+import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -21,6 +22,8 @@ export function validateContent(
   placeImages?: Set<string>,
   /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
   backgroundImages?: Set<string>,
+  /** portraits and figure models of the lieutenants (content:check passes them; a missing file is a warning) */
+  lieutenantFiles?: LieutenantFiles,
 ): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
@@ -268,6 +271,7 @@ export function validateContent(
     if (pairs.length > s.seasonPairs) err('supports.yaml', `${pairs.length} support pairs, the season has ${s.seasonPairs}`);
     if (pairs.filter((p) => p.core).length > s.corePairs) err('supports.yaml', `${pairs.filter((p) => p.core).length} core pairs, the season has ${s.corePairs}`);
   }
+  validateLieutenants(data, locales, err, lieutenantFiles);
   // map triggers set flags of the register
   for (const map of Object.values(data.maps))
     for (const t of map.triggers)
