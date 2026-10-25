@@ -87,6 +87,28 @@ damit jede Begegnung fordernd bleibt.
 - [Source: _bmad-output/implementation-artifacts/3-3-groll-und-groll-ziel.md]
 - [Source: _bmad-output/implementation-artifacts/3-5-kopfgeld-und-signatur-item.md]
 
+## Review (2026-10-25)
+
+Grundlage: Code-Review Epic 3 (Diff PR #48 + #52, Prüfschichten Blind Hunter, Edge Case Hunter, Acceptance Auditor, Querschnitt Replay/Vorschau/Migration/Worker, Simulation, Browser).
+
+Kurzergebnis: AC 2: Befund R20 (generische Gegner bleiben bei `floor`, Story-Text sagt anderes). AC 5: Befund R21 (Hask in ch01 bei 4 Einheiten Stufe 2 statt Karten-Stufe 4, gewollt). Übrige ACs ohne Befund.
+
+Sim (50 Läufe, normal): ch01 (Hask) 93 %, ch02 (Morra) 85 %.
+
+| # | Schwere | Befund | Ort | Ergebnis |
+|---|---|---|---|---|
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | wird behoben im Fix-PR (folgt) |
+| R3 | S2 | Wolfslauf (`after_action`/`extraMove`) ohne Wirkung (auch `canto`). Entscheidung: jetzt umsetzen. | skills.yaml, src/core | wird behoben im Fix-PR (folgt) |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | wird behoben im Fix-PR (folgt) |
+| R14 | E | Karten-Klassen: Ulvric `vanguard` (m1_4/m1_6/m1_8) statt `wolf_rider`, Morra `skirmisher` (ch02) statt `marksman`. | Karten | an Level-Design (Epic 9) übergeben |
+| R15 | E | „+1 Tier je Groll“ greift in Akt 1 nie (Kartenwaffen schon Stahl). Leutnant-Waffen auf Eisen setzen. | Karten | an Level-Design (Epic 9) übergeben |
+| R20 | S3 | AC 2: generische Gegner bleiben bei `floor` (Kontrolleur-Korrektur, Decision-Log); Story-Text sagt anderes. | create.ts genericStats | vermerkt, kein Handlungsbedarf |
+| R21 | S3 | Hask in ch01 bei 4 Einheiten Stufe 2 statt Karten-Stufe 4 (gewollt, AC 5). | – | vermerkt, kein Handlungsbedarf |
+| R32 | S3 | Sim-Zahlen nicht in der Story-Datei. | Story-Dateien | vermerkt, kein Handlungsbedarf |
+| R35 | S3 | (QA) Hask skaliert auf St. 5 trägt die Kartenwaffe Stahlaxt (Gew 14) bei Tragkraft 11 → Überlast; kommt aus der Kartenwaffe, löst sich mit R15. | ch01_varnhold.yaml:70 | an Level-Design (Epic 9) übergeben |
+
+Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+
 ## Dev Agent Record
 
 ### Agent Model Used

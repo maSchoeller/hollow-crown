@@ -97,6 +97,26 @@ damit sich nichts beliebig anfühlt.
 - [Source: _bmad-output/implementation-artifacts/2-4-halten-und-nachsetzen.md]
 - [Source: _bmad-output/implementation-artifacts/2-6-nebel-des-krieges-oeffnen-und-stehlen.md]
 
+## Review (2026-10-25)
+
+Grundlage: Code-Review Epic 3 (Diff PR #48 + #52, Prüfschichten Blind Hunter, Edge Case Hunter, Acceptance Auditor, Querschnitt Replay/Vorschau/Migration/Worker, Simulation, Browser).
+
+Kurzergebnis: AC 2: Befund R26 (`fled` in `unit_dies`/`protect_npc` gewollt, kein Inhalt betroffen). Übrige ACs ohne Befund.
+
+Querschnitt: Replays ok (Zufall nur aus Seed-RNG), Vorschau = Auflösung ok (`fleesAtZero` von Vorschau und Auflösung), Worker-KI ok (Flucht über `onMap`). Sim (50 Läufe, normal): ch01 (Hask) 93 %, ch02 (Morra) 85 %; die Sim meldet keine Flucht-Kennzahl.
+
+| # | Schwere | Befund | Ort | Ergebnis |
+|---|---|---|---|---|
+| R10 | S3 | Replay-Test prüft nur `not dead`, nicht `fled`. | lieutenants-flee.test.ts:308 | wird behoben im Fix-PR (folgt) |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | wird behoben im Fix-PR (folgt) |
+| R17 | E | Vorschau „flieht“ ohne 0 bleibt; Mockup 01 / EXPERIENCE.md:182 angleichen (UX-Vermerk). | BattleHud.tsx:477 | bleibt so (Entscheidung Produktinhaber 2026-10-25) |
+| R25 | S3 | Icon `flee` identisch mit `escape`. | icons.tsx:41 | vermerkt, kein Handlungsbedarf |
+| R26 | S3 | `unit_dies`-Trigger und `protect_npc` ignorieren `fled` (AC 2 gewollt); kein Inhalt betroffen. | objectives.ts:102, :171 | vermerkt, kein Handlungsbedarf |
+| R27 | S3 | Flucht-Sprungziel prüft nur Kartengrenzen (nur Optik). | render/board/lieutenant.ts fleeTarget | vermerkt, kein Handlungsbedarf |
+| R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
+
+Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+
 ## Dev Agent Record
 
 ### Agent Model Used

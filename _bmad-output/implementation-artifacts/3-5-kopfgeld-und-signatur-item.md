@@ -91,6 +91,24 @@ damit ein wiederkehrender Feind kein Frust ist.
 - [Source: concept/21-gdd/items.md#6.3 Leutnant-Signaturen]
 - [Source: _bmad-output/implementation-artifacts/6-6-missionsergebnis.md]
 
+## Review (2026-10-25)
+
+Grundlage: Code-Review Epic 3 (Diff PR #48 + #52, Prüfschichten Blind Hunter, Edge Case Hunter, Acceptance Auditor, Querschnitt Replay/Vorschau/Migration/Worker, Simulation, Browser).
+
+Kurzergebnis: Übrige ACs ohne Befund.
+
+Querschnitt: Replays ok (Zufall nur aus Seed-RNG, Kopfgeld/Signatur-Reihenfolge fest).
+
+| # | Schwere | Befund | Ort | Ergebnis |
+|---|---|---|---|---|
+| R5 | E→fix | Kopfgeld-Material aus Kampagnen-Akt statt Leutnant-Akt. Entscheidung: Akt des Leutnants. | lieutenants.ts payBounties, wanted.ts | wird behoben im Fix-PR (folgt) |
+| R13 | S3 | Decision-Log-Einträge zu 3.5 und 3.6 fehlen. | concept/*/decision-log | wird behoben im Fix-PR (folgt) |
+| R16 | E | Besitzer der Leutnant-Signatur (items.md §3) fehlt. | – | offen für spätere Story |
+| R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
+| R32 | S3 | Sim-Zahlen nicht in der Story-Datei. | Story-Dateien | vermerkt, kein Handlungsbedarf |
+
+Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+
 ## Dev Agent Record
 
 ### Agent Model Used

@@ -95,6 +95,23 @@ damit ich planen kann, wer ihn stellt.
 - [Source: concept/24-architecture/architecture.md#5.5 Leutnants (AR5)]
 - [Source: _bmad-output/implementation-artifacts/4-7-chronik.md] (Listen-Screen mit Zurück)
 
+## Review (2026-10-25)
+
+Grundlage: Code-Review Epic 3 (Diff PR #48 + #52, Prüfschichten Blind Hunter, Edge Case Hunter, Acceptance Auditor, Querschnitt Replay/Vorschau/Migration/Worker, Simulation, Browser).
+
+Kurzergebnis: Übrige ACs ohne Befund.
+
+| # | Schwere | Befund | Ort | Ergebnis |
+|---|---|---|---|---|
+| R2 | E→fix | „Begegnet“ ohne Sichtkontakt. Entscheidung: nur bei Sicht oder Flucht. | lieutenants.ts applyLieutenantOutcome | wird behoben im Fix-PR (folgt) |
+| R4 | S3 | Langdruck schaltet Gefahrenzone dauerhaft ein. Entscheidung: beim Schließen aus, außer sie war vorher an. | Battle.tsx:143, :613 | wird behoben im Fix-PR (folgt) |
+| R5 | E→fix | Kopfgeld-Material aus Kampagnen-Akt statt Leutnant-Akt. Entscheidung: Akt des Leutnants. | lieutenants.ts payBounties, wanted.ts | wird behoben im Fix-PR (folgt) |
+| R11 | S3 | `wantedView(data, campaign.value!, …)` ohne Kampagnen-Prüfung. | Battle.tsx:832 | wird behoben im Fix-PR (folgt) |
+| R13 | S3 | Decision-Log-Einträge zu 3.5 und 3.6 fehlen. | concept/*/decision-log | wird behoben im Fix-PR (folgt) |
+| R30 | S3 | Text `ui.wanted.target.alive` „wird bevorzugt angegriffen“ kippt das Subjekt (Mockup: „greift ihn bevorzugt an“). | de.yaml:640 | vermerkt, kein Handlungsbedarf |
+
+Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+
 ## Dev Agent Record
 
 ### Agent Model Used
