@@ -140,8 +140,13 @@ export function Battle() {
   /** the wanted poster of a lieutenant is open (story 3.6); it shows his danger zone, too */
   const wanted = wantedUid.value;
   const setWanted = (uid: string | null) => (wantedUid.value = uid);
+  const watchRef = useRef<string[]>(watch);
+  watchRef.current = watch;
+  // the zone goes on with the poster and off with it again, unless the player had switched it on for this unit before (review R4)
   useEffect(() => {
-    if (wanted) setWatch((w) => (w.includes(wanted) ? w : [...w, wanted]));
+    if (!wanted || watchRef.current.includes(wanted)) return;
+    setWatch((w) => (w.includes(wanted) ? w : [...w, wanted]));
+    return () => setWatch((w) => w.filter((x) => x !== wanted));
   }, [wanted]);
   useEffect(() => () => setWanted(null), []);
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
@@ -216,7 +221,11 @@ export function Battle() {
       const opening = openingBark.current;
       openingBark.current = null;
       if (opening && alive && settings.value.speed !== 3) await playBark(opening);
-      if (alive) await playLieutenantLines(battle.value!.state.turn === 1);
+      // a battle taken up again (later round, "restart round"): whoever the company had seen before has spoken his line already;
+      // the others speak at first sight (review R6). A state without `ltSeen` (older) keeps the old rule: nothing is played
+      const now = battle.value!.state;
+      if (now.turn > 1 && now.ltSeen) for (const u of now.units) if (u.lieutenant && now.ltSeen.includes(u.lieutenant)) ltSpoken.current.add(u.uid);
+      if (alive) await playLieutenantLines(now.turn === 1 || !!now.ltSeen);
       ltReady.current = true;
       if (alive) {
         setPhaseView(null);
@@ -829,7 +838,7 @@ export function Battle() {
   const selUnit = mode.k !== 'idle' ? unit(mode.uid) : null;
   const infoUnit = info ? s.units.find((u) => u.uid === info) : null;
   const wantedUnit = wanted ? s.units.find((u) => u.uid === wanted) : null;
-  const wantedPoster = wantedUnit?.lieutenant ? wantedView(data, campaign.value!, wantedUnit.lieutenant, wantedUnit) : null;
+  const wantedPoster = wantedUnit?.lieutenant && campaign.value ? wantedView(data, campaign.value, wantedUnit.lieutenant, wantedUnit) : null;
   const options = mode.k === 'moved' ? availableActions(data, s, unit(mode.uid), mode.to) : [];
   const aimPre =
     mode.k === 'forecast' && mode.aim
