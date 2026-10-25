@@ -323,7 +323,7 @@ export function Campaigns() {
 export function NewCampaign() {
   const [name, setName] = useState(() => t('ui.new.defaultName'));
   const [look, setLook] = useState<(typeof AVATAR_LOOKS)[number]['portrait']>(AVATAR_LOOKS[0].portrait);
-  const [pronoun, setPronoun] = useState<'she' | 'he' | 'they'>('they');
+  const [pronoun, setPronoun] = useState<'she' | 'he' | 'they'>('he');
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [deathMode, setDeathMode] = useState<DeathMode>('standard');
   const [place, setPlace] = useState(1);
@@ -378,7 +378,6 @@ export function NewCampaign() {
               options={[
                 ['she', t('ui.pronoun.she.label')],
                 ['he', t('ui.pronoun.he.label')],
-                ['they', t('ui.pronoun.they.label')],
               ]}
             />
           </fieldset>
