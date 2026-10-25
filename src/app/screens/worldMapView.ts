@@ -66,3 +66,9 @@ export function fogTop(world: WorldDef, act: number): number | null {
 export function placeOf(world: WorldDef, key: { node: string } | { home: true }): WorldPlace | undefined {
   return world.places.find((p) => ('node' in key ? p.node === key.node : p.kind === 'home'));
 }
+
+/**
+ * Whether the map should say "more missions follow": no node is open, the act is not finished, and no act pack is loading
+ * (a loading pack explains the quiet map by itself).
+ */
+export const moreMissionsFollow = (openNodes: number, actFinished: boolean, packLoading: boolean): boolean => openNodes === 0 && !actFinished && !packLoading;
