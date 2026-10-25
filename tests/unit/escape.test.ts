@@ -59,6 +59,12 @@ beforeAll(() => {
 });
 
 describe('escape objective', () => {
+  it('the prologue needs no minimum: everyone still standing leaves, Kael last', () => {
+    const v = base.maps.prologue_paktnacht!.objectives.victory;
+    expect(v.type).toBe('escape');
+    expect('min' in v ? v.min : undefined).toBeUndefined();
+  });
+
   it('does not offer escape to the lord while another able unit remains', () => {
     const { s, row } = arena();
     const exit = row[5]!;

@@ -2,6 +2,7 @@
 import { useEffect } from 'preact/hooks';
 import { Dialogue } from '../../ui/Dialogue';
 import { SpeechBubbles } from '../../ui/SpeechBubbles';
+import { builtBackgrounds, loadBuiltBackgrounds } from '../state/backgrounds';
 import { halfFigures, loadHalfFigures } from '../state/halves';
 import { data, campaign } from '../state/session';
 import { answeredIn, chooseAnswer, isSceneSeen, markSceneSeen, storyContext } from '../state/flow';
@@ -19,6 +20,7 @@ const autoProps = () => ({ auto: settings.value.dialogueAuto, onAuto: () => upda
 /** Visual-novel scene; `overlay` lets the battle show through (scene with several speakers or answers during a battle). */
 export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; onDone: () => void }) {
   useEffect(loadHalfFigures, []);
+  useEffect(loadBuiltBackgrounds, []);
   return (
     <Dialogue
       data={data}
@@ -28,6 +30,7 @@ export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; 
       overlay={overlay}
       seen={isSceneSeen(id)}
       halves={halfFigures.value}
+      backgrounds={builtBackgrounds.value}
       {...autoProps()}
       onSeen={markSceneSeen}
       onChoose={(line, option) => chooseAnswer(id, line, option)}

@@ -3,8 +3,8 @@
 # Neue Regel: Waffendreieck (campaign.yaml mechanics triangle: 1). Kein Leutnant. Fenn tritt nach dem Sieg bei (Szene scn.m1_1.outro). Startwerte [C].
 # Die Truppe kommt von Süden über die Straße; Markt mit Ständen, Brunnen und Steckbriefwand in der Mitte, Kopfgeldjäger aus drei Gassen
 # (Nord, West, Ost). Die Häuser am Rand sind besuchbar (Belohnung: Gold, kleine Gegenstände, ein Satz über die Steckbriefe).
-id: m1_1_varnhold
-nameKey: map.m1_1_varnhold.name
+id: m1_1_steckbriefe
+nameKey: map.m1_1_steckbriefe.name
 size: [14, 16]
 fog: false
 legend:
@@ -53,17 +53,17 @@ deploy:
   forced: [avatar, kael]
   slots: [[6, 15], [7, 15], [5, 15], [8, 15], [6, 14], [7, 14]]
 # Lektion: Waffendreieck. Axt, Lanze und Schwert gemischt, damit jede eigene Einheit ein „richtiges“ Ziel hat.
-# Gegnerstufen 3 (Anführer 4) liegen über expectedLevel 2, weil die verkettete Simulation die Truppe bei etwa Stufe 1,5 antreten lässt [C].
+# Gegnerstufen 2 bis 3 (Anführer 3) liegen um expectedLevel 2, abgestimmt per Simulation (Truppe tritt bei etwa Stufe 1,5 an) [C].
 # Kopfgeldjäger: freie Jäger, kein Leutnant; der Anführer (ohne Leutnant-Status) hält sich bei der Steckbriefwand.
 units:
-  - { id: bh_leader, nameKey: unit.bounty_leader.name, team: enemy, class: brigand, level: 4, at: [7, 2], sprite: brigand, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: bh_leader, nameKey: unit.bounty_leader.name, team: enemy, class: brigand, level: 3, at: [7, 2], sprite: brigand, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: bh1, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 3, at: [6, 1], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
   - { id: bh2, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 3, at: [2, 4], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: bh3, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [11, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: bh4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 3, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold } }
+  - { id: bh4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 2, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold } }
   - { id: bh5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 3, at: [11, 9], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: bh6, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: bh7, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 3, at: [9, 7], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: bh6, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 2, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: bh7, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 2, at: [9, 7], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
 pairs: []
 # Hart: Welle von hinten (Süden), Runde 3, angekündigt
 reinforcements:
@@ -79,10 +79,10 @@ objectives:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
   side:
-    - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
+    - { id: s_villages, type: visit_villages, reward: { gold: 200 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl und Belohnung: Startwerte [C], die Steuerung stimmt sie per Simulation ab
-    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 200 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 8 bis 9 Runden bis zum Sieg), Belohnung Startwert [C]
+    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 100 } }
 triggers:
   - id: t_intro_triangle
     once: true

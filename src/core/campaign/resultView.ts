@@ -1,4 +1,4 @@
-import type { GameData } from '../defs';
+import type { Effect, GameData } from '../defs';
 import type { BattleState, ItemInstance } from '../state';
 import { findUnit } from '../util';
 import type { BattleResult, BountyResult } from './campaign';
@@ -33,6 +33,8 @@ export interface MissionResultView {
   figures: ResultFigure[];
   recruited: string[];
   granted: BattleResult['granted'];
+  /** the node's own reward that took effect, for the consequence lines; empty when there was none */
+  effects: Effect[];
   scars: BattleResult['scars'];
   supportsReady: boolean;
 }
@@ -77,6 +79,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     figures: [...alive, ...fallen],
     recruited: result.recruited,
     granted: result.granted ?? [],
+    effects: result.effects ?? [],
     scars: result.scars,
     supportsReady: result.supportsReady.length > 0,
   };

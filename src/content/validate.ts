@@ -1,4 +1,4 @@
-import { PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
+import { MAX_PANEL_LINES, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
@@ -238,6 +238,7 @@ export function validateContent(
         item('campaign.yaml', g.item, `${n.id} grants`);
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
+    for (const n of camp.nodes) effects('campaign.yaml', n.effects, `${n.id} effects`);
     for (const r of Object.values(data.rooms)) conditions('rooms.yaml', r.requires, `${r.id}.requires`);
     worldChecks(camp);
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
@@ -291,6 +292,23 @@ export function validateContent(
     const seen = new Set<string>();
     // barks (story 9.13): only the six moments, one bubble page each in both languages
     const bark = sc.id.startsWith('scn.bark.');
+    // illustration panels: a panel lasts until `panel: none`, the next panel or the end of the scene, at most MAX_PANEL_LINES text lines
+    {
+      let open: string | null = null;
+      let count = 0;
+      for (const l of sc.lines) {
+        if ('choice' in l) continue;
+        if (l.panel !== undefined) {
+          open = l.panel === 'none' ? null : l.id;
+          count = 0;
+        }
+        if (open) {
+          count++;
+          if (count === MAX_PANEL_LINES + 1) err(f, `${l.id}: the panel of line ${open} lasts longer than ${MAX_PANEL_LINES} text lines (end it with panel: none)`);
+        }
+        if (bark && l.panel !== undefined) err(f, `${l.id}: a bark scene has no panel`);
+      }
+    }
     for (const l of sc.lines) {
       const ctx = `${l.id}`;
       if (seen.has(l.id)) err(f, `${ctx}: duplicate line id`);

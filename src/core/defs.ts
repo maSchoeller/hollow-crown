@@ -40,6 +40,9 @@ export type Stance = 'warm' | 'sober' | 'defiant';
 export const STANCES: readonly Stance[] = ['warm', 'sober', 'defiant'];
 export type HomeKind = 'camp' | 'castle';
 /** Companions the story never lets join or leave (the schema forbids `recruit`/`leave` for them). */
+/** A scene illustration panel stands for 1–4 text boxes (narrative); `content:check` refuses a longer one. */
+export const MAX_PANEL_LINES = 4;
+
 export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'kael'];
 export type Pos = [number, number];
 
@@ -503,6 +506,8 @@ export interface SceneSpeech {
   fallback?: 'skip';
   mood: Mood;
   text: string;
+  /** illustration panel from this line on (background id; replaces the scene background full-screen), `none` ends it; a panel stands for at most `MAX_PANEL_LINES` text lines */
+  panel?: string;
   requires?: Condition[];
   /** extra line (key `….memorial`) after this one when the first figure of the chain has fallen */
   memorial?: { speaker: string[]; text: string; mood: Mood };
@@ -548,6 +553,8 @@ export interface CampaignNodeDef {
   expectedLevel: number;
   /** items handed to company members when the node is won (e.g. the avatar's first tome) */
   grants?: Array<{ unit: string; item: ItemRef }>;
+  /** effects applied when the node is won (node reward, architecture §5.3), e.g. `recruit`; never on a defeat */
+  effects?: Effect[];
 }
 
 /**

@@ -1,5 +1,5 @@
 # Mission 1-1, Szene nach der Karte: Fenn tritt bei (Gaunersprache, prahlt, übertreibt, weicher Kern); neues Ziel: Wer hat uns angeheuert?
-# OFFEN: Der Beitritt als Spielwirkung (recruit) fehlt noch, eine Szene ohne Entscheidung kann keine Wirkung auslösen; siehe units.yaml (fenn).
+# Der Beitritt selbst ist die Knotenwirkung `recruit: fenn` an m1_1 (campaign.yaml), nicht Teil der Szene.
 id: scn.m1_1.outro
 background: bg_varnhold_market
 music: camp

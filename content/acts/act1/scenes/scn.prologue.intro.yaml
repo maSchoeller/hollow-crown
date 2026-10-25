@@ -1,7 +1,7 @@
 # Prolog, Szene vor der Karte. Schlüsselgespräch 1 „Die Wache am Ring“ (Narrative: Kael, Rhen, Gerrit, Brenna, Tobin; warm, Vorabend;
 # Familie zeigen, Rhens Vertrag andeuten), danach die Tafel „Die Paktnacht: Alarm im Glutdom“ (l17 ff.).
-# OFFEN: Szenen kennen nur einen Hintergrund (`background`); die Tafel „Alarm im Glutdom“ ist darum derselbe Hintergrund bg_glutdom_night
-# für die ganze Szene. Ein Hintergrundwechsel mitten in der Szene gibt es im Schema nicht.
+# Die Tafel „Alarm im Glutdom“ ist ein Illustrationsbild (`panel`, l17 bis l20, vier Textboxen); danach (`panel: none`) gilt wieder der Szenenhintergrund.
+# Platzhalter bis Story 8.7: bg_glutdom_night existiert noch nicht; fehlt das Bild, zeigt die Szene den Szenenhintergrund.
 id: scn.prologue.intro
 background: bg_glutdom_night
 music: title
@@ -97,6 +97,7 @@ lines:
     text: "Passt schon. Hier zählt, wer bleibt, wenn es brenzlig wird."
   # Tafel „Die Paktnacht: Alarm im Glutdom“
   - id: l17
+    panel: bg_glutdom_night
     mood: neutral
     text: "Da läutet im Glutdom eine Glocke, einmal, zu hoch und falsch. Hinter den Türen schreit jemand."
   - id: l18
@@ -113,6 +114,7 @@ lines:
     mood: angry
     text: "Der Ring ist hin. Bringt alle hier raus. Ich gebe euch den Rücken frei!"
   - id: l21
+    panel: none
     speaker: [kael]
     mood: angry
     text: "Alle zum Tempeltor im Süden. Niemand bleibt zurück. Ich gehe als Letzter. {avatar}, führ uns."

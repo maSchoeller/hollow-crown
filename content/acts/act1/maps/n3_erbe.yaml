@@ -1,0 +1,85 @@
+# Nebenquest N3 – Das Erbe (Story 9.12). Layout-Entwurf, kein Knoten, keine Szenen. Startwerte [C].
+# Variante von m1_2_erlbach (gleiche Geländebasis: Bach im Süden mit Brücke x=7 und Furten, Felder, Wald im Norden), statt der Dorfmitte der Pachthof von Tobins Vater.
+# Tageszeit: Mittag, Wetter: klar (art-direction §2.5, Feld folgt mit Story 8.6). Ziel: alle Gegner besiegen (rout).
+# Die Pachteintreiber des Grundherrn (Söldner) haben den Hof besetzt. Hofplatz mit Zaun, Eingang im Süden (x=7–8) als Engstelle.
+# Belohnung: Signaturlanze „Erbstück“ (kein Glutfunke). OFFEN: Item „Erbstück“ existiert nicht in items.yaml; hier nur als Kommentar.
+# Gedenk-Variante (Tobin gefallen): nur Kommentar, kein Kartenunterschied; Szene scn.n3.memorial statt scn.n3.outro.
+# OFFEN: Tobin als Pflichtfigur (Brief: forced avatar, kael); Story 9.12 setzt ihn voraus, die Aufstellung ist nicht entschieden.
+# PLATZHALTER: Stufen 6–7 [C], Szenen: scn.n3.intro, scn.n3.outro.
+id: n3_erbe
+nameKey: map.n3_erbe.name
+size: [16, 16]
+fog: false
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "~": river
+  "w": shallows      # Furt, nur Fußtruppen
+  "=": bridge
+  "H": village       # Wohnhaus/Scheune (besuchbar)
+  "A": farm          # Hofgebäude (Requisite farm)
+  "f": field
+  "x": fence
+#          x: 0123456789ABCDEF
+terrain: |
+  TTTTTTT,,TTTTTTT
+  TTTT,,,,,,,,TTTT
+  TT,,,,,,,,,,,,TT
+  ,,ffff,,,,ffff,,
+  ,,ffffx,,xffff,,
+  ,,,,,xxxxxx,,,,,
+  ,,,,,x,A,,x,,,,,
+  ,,,,,x,,,Hx,,,,,
+  ,,,,,x,,,,x,,,,,
+  ,,,,,xx__xx,,,,,
+  ,ffff,,__,,ffff,
+  ,ffff,,__,,ffff,
+  ~~~w~~~=~~~~w~~~
+  ~~~w~~~=~~~~w~~~
+  T,,,,,,_.,,,,,,T
+  TT,,,,,..,,,,,TT
+# Mittag, klar: Sonne hoch, neutral-warm
+ambient: { color: "#fff3d6", intensity: 1.0 }
+sun: { color: "#fff0cc", intensity: 1.2, azimuthDeg: 200, elevationDeg: 65 }
+lights: []
+objects:
+  - { id: v_home, type: village, at: [9, 7], reward: { gold: 300 } }   # Elternhaus; Szene scn.n3.home folgt (9.12)
+initialEffects: []
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [8,7] Grund: der Hofplatz – Tobins Elternhof, hierhin kommen die Eintreiber zurück.
+#   [7,11] Grund: der Weg vom Bach zum Hof.
+deploy:
+  max: 5
+  forced: [avatar, kael]
+  slots: [[7, 14], [8, 14], [6, 14], [9, 14], [7, 15], [8, 15], [6, 15]]
+# Pachteintreiber des Grundherrn (Söldner). Normal 7, Leicht 5, Schwer 9.
+units:
+  - { id: c1, nameKey: unit.rent_collector.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 6, at: [8, 7],  items: [{ def: steel_sword }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }   # Vogt der Eintreiber
+  - { id: c2, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 5, at: [6, 8],  items: [{ def: iron_lance }], ai: { profile: hold } }
+  - { id: c3, nameKey: unit.rent_collector.name, team: enemy, class: brigand,    sprite: brigand,       level: 5, at: [9, 8],  items: [{ def: iron_axe }],   ai: { profile: hold } }
+  - { id: c4, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 5, at: [7, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: c5, nameKey: unit.rent_collector.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 5, at: [3, 4],  items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: c6, nameKey: unit.rent_collector.name, team: enemy, class: brigand,    sprite: brigand,       level: 5, at: [12, 4], items: [{ def: iron_axe }],   ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: c7, nameKey: unit.rent_collector.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 5, at: [8, 3],  items: [{ def: iron_bow }],   ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: c8, nameKey: unit.rent_collector.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 6, at: [12, 10], items: [{ def: iron_bow }],  ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: c9, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 6, at: [3, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+pairs: []
+reinforcements: []
+objectives:
+  # Belohnung Erbstück (Signaturlanze): OFFEN, Item fehlt; vorläufig Gold
+  victory: { type: rout }
+  defeat:
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: avatar }
+  side:
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 200 } }   # [C] Startwert
+    - { id: s_home, type: visit_villages, reward: { gold: 200 } }
+triggers: []
+# Szene (9.12): scn.n3.intro bei Rundenbeginn 1; scn.n3.outro nach dem Sieg (Erbstück); Gedenk-Variante scn.n3.memorial, wenn Tobin gefallen
+goldReward: 700   # [C] Nebenquest kompakt
+music: battle_a
+devNote: >
+  Variante von m1_2_erlbach: Hofplatz mit Zaun statt Dorfmitte, Eingang im Süden als Engstelle, Felder an den Flanken. Leicht 5, Normal 7, Schwer 9 Gegner.

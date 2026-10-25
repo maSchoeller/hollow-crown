@@ -28,6 +28,13 @@
   filter: blur(2.5px) saturate(0.8);
   transform: scale(1.04);
 }
+.vn-panel {
+  position: absolute;
+  inset: 0;
+  /* illustration panel: the picture itself, sharp and in full colour, over the scene background */
+  background-size: cover;
+  background-position: center;
+}
 .vn-shade {
   position: absolute;
   inset: 0;

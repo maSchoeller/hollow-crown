@@ -1,10 +1,13 @@
 # Prolog, Szene nach der Karte. Schlüsselgespräch 2 „Gerrits Grab“ (Narrative: ganze Truppe, Lagerfeuer, erste Gedenkszene, Trauer, leise)
 # mit der Tafel „Gerrits Grab“. Humor setzt in Trauerszenen nie ein (Narrative, Dialogue Style).
+# Die Tafel „Gerrits Grab“ ist ein Illustrationsbild (`panel`, l01 bis l04, vier Textboxen); ab l05 gilt wieder der Szenenhintergrund.
+# Platzhalter bis Story 8.7: bg_gerrit_grave existiert noch nicht; fehlt das Bild, zeigt die Szene den Szenenhintergrund.
 id: scn.prologue.outro
 background: bg_gerrit_grave
 music: camp
 lines:
   - id: l01
+    panel: bg_gerrit_grave
     mood: sad
     text: "Eine Nacht später. Ein Waldrand südlich von Aurenhall. Am Feuer ein frisches Grab und ein Banner."
   - id: l02
@@ -22,6 +25,7 @@ lines:
     mood: sad
     text: "Gerrit hat dieses Banner getragen, seit es eins gibt."
   - id: l05
+    panel: none
     speaker: [avatar]
     mood: sad
     text: "Ich weiß nicht, was ich sagen soll."

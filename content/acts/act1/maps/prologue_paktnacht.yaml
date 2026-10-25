@@ -1,5 +1,5 @@
 # Prolog – Die Paktnacht (Story 9.1). Äußerer Ring des Pakttempels Glutdom in Aurenhall, Nacht des Paktfestes: Der König ist tot,
-# die Tempelwachen wenden sich gegen die Söldner. Ziel: Flucht durch das Tempeltor im Süden, alle vier, Kael als Letzter (escape).
+# die Tempelwachen wenden sich gegen die Söldner. Ziel: Flucht durch das Tempeltor im Süden, alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Kael zuletzt (escape).
 # Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf). Startwerte [C].
 # Produktinhaber 2026-10-24: nur Nahkampf-Gegner (Lanzen-Vorkämpfer, Schwert-Plänkler), keine Leutnants. Gerrit (Bannerträger, nicht
 # spielbar) steht nur in den Szenen, nicht auf der Karte.
@@ -58,32 +58,32 @@ deploy:
 units:
   # Tempelwachen: Lanzen-Vorkämpfer und Schwert-Plänkler. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
   # Platzhalter bis Story 8.3 (Tempelwache): sprite soldier (Lanze) und mercenary (Schwert).
-  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 1, at: [3, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 2, at: [8, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [3, 10], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [8, 11], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 1, at: [6, 13], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [5, 12], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
 pairs: []
 # Hart: Verstärkung aus dem Seitentor im Osten (angekündigt), Runde 3
 reinforcements:
-  - turn: 3
+  - turn: 4
     phase: enemy
     announce: true
     units:
       - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [11, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
-  # Alle vier müssen hinaus, Kael als Letzter (Regel im Kern: mustStayForRest).
-  # OFFEN: Mit min: 4 ist die Karte nicht mehr zu gewinnen, sobald eine der vier Einheiten fällt; Verlust gilt nur für Rhen und Kael,
-  # der Kampf liefe ohne Ende weiter (im Sim als Zeitüberschreitung sichtbar). Ohne min müssten alle Überlebenden hinaus. Entscheidung Produktinhaber.
-  victory: { type: escape, area: { rect: [4, 15, 7, 15] }, min: 4 }
+  # Siegt, sobald alle eigenen Einheiten, die noch stehen, das Tor verlassen haben; Kael als Letzter (Regel im Kern: mustStayForRest).
+  # Kein min: Niedergestreckte zählen nicht mit (Entscheidung Produktinhaber 2026-10-25).
+  victory: { type: escape, area: { rect: [4, 15, 7, 15] } }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # OFFEN: Rundenzahl nur ein Startwert, die Steuerung stimmt sie per Simulation ab
-    - { id: s_fast, type: turn_limit, turns: 7, reward: { gold: 200 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 8 Runden bis zum Sieg)
+    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 100 } }
 triggers:
   # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
   - id: t_intro

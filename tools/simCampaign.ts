@@ -5,6 +5,7 @@
  */
 import {
   applyCampaign,
+  applyEffects,
   availableNodes,
   autoplay,
   beginBattle,
@@ -93,6 +94,11 @@ function tryCmd(data: GameData, c: CampaignState, cmd: CampaignCommand): Campaig
 }
 
 /** Between missions: unlock ready supports, heal scars, buy one healing item per strong unit, then upgrade weapons. */
+/** The node's own reward (campaign.yaml `effects`, e.g. Fenn's recruit): `finishBattle` leaves it to the `finishMission` command, the simulations apply it here. */
+export function applyNodeRewards(data: GameData, c: CampaignState, nodeId: string): void {
+  applyEffects(data, c, data.campaign.nodes.find((n) => n.id === nodeId)?.effects ?? [], []);
+}
+
 export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent']): CampaignState {
   let c = c0;
   const pay = (key: keyof CampaignSim['spent'], before: number) => (spent[key] += before - c.gold);
@@ -182,6 +188,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         }
         if (state.outcome === 'victory') {
           won = finishBattle(data, from, state);
+          applyNodeRewards(data, won.campaign, id);
           won.campaign.seed = c.seed;
         }
       }

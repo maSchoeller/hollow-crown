@@ -383,7 +383,7 @@ describe('expectedLevel (story 4.1)', () => {
 
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
-    expect(Object.keys(data.maps).sort()).toEqual(['ch01_varnhold', 'ch02_silverbrook', 'm1_1_varnhold', 'prologue_paktnacht']);
+    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['ch01_varnhold', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();

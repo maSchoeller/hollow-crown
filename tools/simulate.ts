@@ -6,7 +6,7 @@
  */
 import { addToRoster, autoplay, beginBattle, finishBattle, newCampaign, type DeathMode, type Difficulty, type GameData } from '../src/core';
 import { loadContentFromDisk } from '../src/content/node';
-import { missionFlags, simulateCampaign, type MissionFlags } from './simCampaign';
+import { applyNodeRewards, missionFlags, simulateCampaign, type MissionFlags } from './simCampaign';
 
 const args = process.argv.slice(2);
 const opt = (name: string, def: string) => {
@@ -48,6 +48,7 @@ function campaignChained(d: GameData, seed: number, nodeId: string) {
     const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state);
     if (state.outcome !== 'victory') return null;
     c = finishBattle(d, c, state).campaign;
+    applyNodeRewards(d, c, n.id);
   }
   return c;
 }
@@ -55,6 +56,7 @@ function campaignChained(d: GameData, seed: number, nodeId: string) {
 const chained = !args.includes('--fresh');
 let wins = 0;
 let turns = 0;
+const winTurns: number[] = [];
 let losses = 0;
 let ms = 0;
 let played = 0;
@@ -73,6 +75,7 @@ for (let r = 0; r < runs; r++) {
   if (state.outcome === 'victory') {
     wins++;
     turns += state.turn;
+    winTurns.push(state.turn);
   }
   for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) {
     losses++;
@@ -90,7 +93,7 @@ for (let r = 0; r < runs; r++) {
   for (const r of state.stats.recruited) recruits[r] = (recruits[r] ?? 0) + 1;
 }
 console.log(`${node.id} (${mapId}) – ${played}/${runs} runs ${chained ? '(chained campaign)' : '(fresh roster)'}, ${difficulty}/${deathMode}`);
-console.log(`win rate ${((wins / Math.max(1, played)) * 100).toFixed(0)} %, avg turns ${(turns / Math.max(1, wins)).toFixed(1)}, avg losses ${(losses / Math.max(1, played)).toFixed(2)}, avg ${(ms / Math.max(1, played)).toFixed(0)} ms/run`);
+console.log(`win rate ${((wins / Math.max(1, played)) * 100).toFixed(0)} %, avg turns ${(turns / Math.max(1, wins)).toFixed(1)}, median turns ${[...winTurns].sort((a, b) => a - b)[Math.floor(winTurns.length / 2)] ?? '-'}, avg losses ${(losses / Math.max(1, played)).toFixed(2)}, avg ${(ms / Math.max(1, played)).toFixed(0)} ms/run`);
 console.log('downs/deaths:', JSON.stringify(causes));
 console.log(`villages/run ${(villages / Math.max(1, played)).toFixed(1)}, recruited: ${JSON.stringify(recruits)}`);
 

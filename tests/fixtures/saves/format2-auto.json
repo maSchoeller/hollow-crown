@@ -1564,7 +1564,7 @@
       "id": "tg6",
       "nameKey": "unit.temple_guard.name",
       "classId": "vanguard",
-      "level": 2,
+      "level": 1,
       "exp": 0,
       "stats": {
        "hp": 21,

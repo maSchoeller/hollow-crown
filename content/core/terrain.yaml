@@ -32,3 +32,8 @@
 - { id: brazier,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: campfire, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
 # Brunnen: kein eigenes Modell, bis dahin der Felsblock (prop rock). Platzhalter bis zum Brunnenmodell (Story 8.x, Art-Session).
 - { id: well,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: rock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
+# Feld, Zaun, Hof (Stories 9.3, 9.12): vorhandene Requisiten-Modelle field/fence/farm; Werte kopiert, [C].
+# Feld wie Gras (brennbar, begehbar); Zaun und Hof wie Marktstand (nur Flieger kommen drüber).
+- { id: field,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, prop: field, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
+- { id: fence,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: fence, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
+- { id: farm,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: farm,  cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }

@@ -462,6 +462,8 @@ export const sceneSchema = z.strictObject({
         fallback: z.literal('skip').optional(),
         mood: moodSchema.default('neutral'),
         text: z.string().min(1),
+        /** illustration panel from this line on: a background id, or `none` to return to the scene background (architecture §5.8) */
+        panel: z.union([z.literal('none'), z.string().regex(/^[a-z0-9_]+$/)]).optional(),
         requires: conditionsListSchema.optional(),
         memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),
@@ -518,6 +520,7 @@ export const campaignSchema = z.object({
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
+      effects: z.array(effectSchema).optional(),
     }),
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),

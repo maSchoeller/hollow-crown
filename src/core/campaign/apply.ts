@@ -185,9 +185,17 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     // is checked against the state after the battle and skipped when it no longer fits (e.g. `leave` of a unit that fell).
     let campaign = after;
     const effectEvents: CampaignEvent[] = [];
-    if (s.outcome === 'victory' && cmd.effects?.length) {
+    if (s.outcome === 'victory') {
       campaign = clone(after);
-      for (const q of cmd.effects) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
+      for (const q of cmd.effects ?? []) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
+      // the reward of the node itself (`effects` in campaign.yaml) comes last, as one list; the result carries it so the
+      // screens can name the consequences (a recruit is listed with the other recruits)
+      const reward = data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? [];
+      if (reward.length && validateEffects(data, campaign, reward) === null) {
+        applyEffects(data, campaign, reward, effectEvents);
+        result.effects = reward;
+        for (const e of reward) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
+      }
     }
     return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };
   }

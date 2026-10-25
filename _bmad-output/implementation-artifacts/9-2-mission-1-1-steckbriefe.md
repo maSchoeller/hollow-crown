@@ -10,23 +10,23 @@ damit der Antrieb „Sündenbock“ greift.
 
 ## Acceptance Criteria
 
-1. **Karte:** `m1_1_varnhold` (14 × 16, Varnhold, Mittag, klar), Ziel `rout`, neue Regel Waffendreieck (Lektion `scn.m1_1.tutorial_triangle`, drei Zeilen). Freie Kopfgeldjäger (nicht Morras Leute) mit Axt, Lanze und Schwert gemischt, ein Anführer ohne Leutnant-Status: Leicht 6, Normal 7 (mit Anführer), Schwer 8 plus eine Welle von hinten (Süden) in Runde 3.
+1. **Karte:** `m1_1_steckbriefe` (14 × 16, Varnhold, Mittag, klar), Ziel `rout`, neue Regel Waffendreieck (Lektion `scn.m1_1.tutorial_triangle`, drei Zeilen). Freie Kopfgeldjäger (nicht Morras Leute) mit Axt, Lanze und Schwert gemischt, ein Anführer ohne Leutnant-Status: Leicht 6, Normal 7 (mit Anführer), Schwer 8 plus eine Welle von hinten (Süden) in Runde 3 (Zahlen unverändert; Stufen und Profile per Simulation abgestimmt).
 2. **Knoten:** `m1_1`, `expectedLevel 2`, `requires: completed prologue`, `merchantTier 1`, Titel „Steckbriefe“ / „Wanted“. `ch01` verlangt jetzt `completed m1_1`; die PoC-Knoten `ch01` und `ch02` bleiben als Brücke im Graphen (Prolog → 1-1 → ch01 → ch02), Weltkarte: ch01 auf 1-2, ch02 auf 1-3, bis die Stories 9.3 und 9.4 sie ersetzen.
 3. **Szenen:** `scn.m1_1.intro` (Ankunft, Steckbriefe, Gerrit noch spürbar, nicht schwer) und `scn.m1_1.outro` (Fenn tritt bei, neues Ziel „Wer hat uns angeheuert?“), Stimmen laut Narrative, je Box ≤ 110 Zeichen, DE in der Szene, EN im Locale.
 4. **Fenn:** als Einheit in `units.yaml` (Späher, Stufe 2, Werte [C]), Support-Paar Mira × Fenn in `supports.yaml`.
-5. **Nebenziele:** `visit_villages` (vier Häuser mit kurzen Besuchsszenen), `no_downs`, `turn_limit` (Startwert 8 Runden [C]). `goldReward` 800 [C].
+5. **Nebenziele:** `visit_villages` (vier Häuser mit kurzen Besuchsszenen), `no_downs`, `turn_limit` (8 Runden, per Simulation abgestimmt). `goldReward` 800 [C].
 6. **Heimsuchungs-Anker:** drei Felder als Kommentarblock (Story 5.5, noch ohne Schema).
 7. **Prüfungen:** `pnpm content:check`, `pnpm lint`, `pnpm test`, `pnpm build` grün; `pnpm sim m1_1 --runs 50` liegt im Korridor (siehe Dev Agent Record).
 
 ## Tasks / Subtasks
 
-- [x] T1 Karte `m1_1_varnhold.yaml` mit Märkten, Ständen (`stall`), Brunnen (`well`), Steckbriefwand (Mauerstück), vier Häusern (AC 1, 5, 6)
+- [x] T1 Karte `m1_1_steckbriefe.yaml` mit Märkten, Ständen (`stall`), Brunnen (`well`), Steckbriefwand (Mauerstück), vier Häusern (AC 1, 5, 6)
 - [x] T2 Knoten `m1_1`, Graph, Weltkarte (`valmora.yaml`: m1_1 → m1_1, m1_2 → ch01, m1_3 → ch02) (AC 2)
 - [x] T3 Szenen `intro`, `outro`, `tutorial_triangle`, `posters`, vier Haus-Szenen; Englisch (AC 3)
 - [x] T4 Fenn in `units.yaml`, Paar in `supports.yaml`, `supports` bei Mira (AC 4)
 - [x] T5 Tests auf den neuen Graphen umgestellt (siehe File List)
 - [x] T6 Sim-Abstimmung der Gegnerstufen und Zielverhalten (AC 7)
-- [ ] T7 Fenns Beitritt als Spielwirkung (OFFEN, siehe Dev Notes)
+- [x] T7 Fenns Beitritt als Knoten-Wirkung (`effects: [{ recruit: fenn }]` an `m1_1`, Architektur §5.4)
 - [ ] T8 Screenshots der Karte und der Szenen (Hintergrund `bg_varnhold_market` kommt mit Story 8.7)
 
 ## Dev Notes
@@ -43,15 +43,15 @@ damit der Antrieb „Sündenbock“ greift.
 - **Unterschiede zu den Annahmen im Skizzentext:** Die Skizze der Karte war nicht maßstäblich (12 Spalten, 9 Zeilen); die Karte ist 14 × 16 neu gesetzt. Die Steckbriefwand sind zwei Mauerfelder (6,3) und (7,3) mit einer einmaligen Szene beim Betreten (`scn.m1_1.posters`).
 - **Ortsbild des Knotens:** `place` nennt `backgrounds/bg_caravan_road` (Platzhalter bis Story 8.7: `bg_varnhold_market`), weil `content:check` den Hintergrund prüft. Szenen-Hintergründe werden nicht geprüft; die Szenen nutzen `bg_varnhold_market`.
 - **OFFEN:**
-  1. **Fenns Beitritt als Spielwirkung.** Eine Szene kann ohne Entscheidung keine Wirkung auslösen (Antworten mit `recruit` brauchen einen Entscheidungs-Titel und mindestens zwei Antworten), `node.grants` kennt nur Items, ein Dorf-Beitritt (`reward.recruit`) liefe im Kampf und nicht danach. `Fenn` hat `joins: m1_1`, die Nachszene erzählt den Beitritt, die Wirkung fehlt (`# OFFEN` in `units.yaml`). Vorschläge: Wirkungen auf Szenenzeilen im Schema, oder `recruit` als Knoten-Wirkung nach dem Sieg.
+  1. **Fenns Beitritt** ist entschieden (Produktinhaber 2026-10-25): Knoten-Wirkung `recruit: fenn` an `m1_1`, bei Sieg angewendet (`finishMission`), der Ergebnis-Screen führt ihn bei den Beitritten; die Simulationen wenden die Knotenwirkung selbst an.
   2. `personalSkill` und Affinität von Fenn: kein passender Skill, keine Vorgabe im Konzept (`# OFFEN` in `units.yaml`; Affinität `wind` als Startwert [C]).
-  3. `turn_limit` (8 Runden), Belohnungen der Nebenziele und `goldReward` sind Startwerte [C].
+  3. Belohnungen der Nebenziele (Dörfer 200, schnell 100 Gold) und `goldReward` sind Startwerte [C]; `turn_limit` 8 Runden ist abgestimmt (Median Normal 8 bis 9).
   4. `ch01` zeigt in seiner Einführung die Mechanik Waffendreieck noch einmal (PoC unverändert), seine Einleitung behandelt die Nachricht vom Tod des Königs noch als Neuigkeit, was nach Prolog und 1-1 überholt ist.
 - **Folgen für Bestehendes:** Sprecher `grosk` steht nur noch in Szenen, nicht mehr als Karteneinheit (bisher im Prolog); sein Namensschild gilt damit bis Story 9.5 als Spielerseite.
 
 ### Project Structure Notes
 
-- Neu: `content/acts/act1/maps/m1_1_varnhold.yaml`, `content/acts/act1/scenes/scn.m1_1.{intro,outro,tutorial_triangle,posters,house_nw,house_ne,house_w,house_e}.yaml`.
+- Neu: `content/acts/act1/maps/m1_1_steckbriefe.yaml`, `content/acts/act1/scenes/scn.m1_1.{intro,outro,tutorial_triangle,posters,house_nw,house_ne,house_w,house_e}.yaml`.
 - Geändert: `content/acts/act1/{campaign,units,supports}.yaml`, `content/world/valmora.yaml`, `content/core/locales/{de,en}.names.yaml`, `content/locales/en/act1.dialogue.yaml`.
 
 ### Project Context Rules
@@ -73,8 +73,9 @@ Claude Sonnet 5.5
 
 ### Debug Log References
 
-- `pnpm sim m1_1 --runs 50` (verkettet, Standard-Tod): Leicht 100 % / 0,00; Normal 88 % / 0,43; Schwer nur 11 Läufe (die Kette verliert den Prolog auf Schwer in den meisten Läufen), davon 91 % / 0,82. Mit `--fresh`: Leicht 100 % / 0,00; Normal 54 % / 0,98; Schwer 60 % / 1,20. Kette über den Akt (`--campaign act1`, 30 Läufe, Normal) im Zwischenstand: 1-1 100 % / 0,23 und 87 % / 0,60 je nach Stufen.
-- Abstimmung: Gegnerstufen 3 (Anführer 4) statt 2, KI-Profile (`hold` für Gassenwächter, `trigger` für die Flanken); alle Ausreißer zu Schwer kamen von den beiden Flanken-Jägern, die sofort auf Rhen losgingen.
+- `pnpm sim m1_1 --runs 50`, Standard-Tod. **Verkettet:** Leicht 100 % / 0,02; Normal 69 % / 0,51 (49 Läufe); Schwer 0 % (nur 21 von 50 Läufen gewinnen den Prolog, danach stirbt Rhen in 20 von 21). **Mit `--fresh`** (volle Truppe): Leicht 100 % / 0,00; Normal 78 % / 0,64 (Median 8 Runden); Schwer 56 % / 1,24 (Median 15). Kette über den Akt (`--campaign act1 --runs 30`, Normal): Prolog 97 % / 0,40, 1-1 100 % / 0,17 (Downs unter dem Korridor), ch01 100 % / 0,40, ch02 83 % / 0,77.
+- Grenze: In der Kette fehlen nach dem Prolog oft Brenna und Tobin (Standard-Tod: Niedergestreckte scheiden aus); Rhen und Kael allein verlieren auf Schwer fast immer und auf Normal etwa jede dritte Kette. Das lässt sich über Gegnerstufen nicht beheben, ohne die volle Truppe (Korridor mit `--fresh`) zu leicht oder zu schwer zu machen (Anführer Stufe 4 und stärkerer Hold-Jäger: 40 bis 56 % Sieg bei voller Truppe).
+- Abstimmung: Gegnerstufen 2 bis 3 (Anführer 3), Flanken-Jäger bh2/bh3 greifen erst auf Radius 5 an, Hart-Jäger bh7 ist Wächter (Stufe 1), die Welle aus dem Süden (Stufe 2) bleibt in Runde 3. Nebenziele: Dörfer 200 und schnell 100 Gold (Anteil am Missionsgold im GDD-Korridor).
 
 ### Completion Notes List
 
@@ -82,7 +83,12 @@ Claude Sonnet 5.5
 
 ### File List
 
-- Neu: `content/acts/act1/maps/m1_1_varnhold.yaml`, `content/acts/act1/scenes/scn.m1_1.{intro,outro,tutorial_triangle,posters,house_nw,house_ne,house_w,house_e}.yaml`
+- Neu: `content/acts/act1/maps/m1_1_steckbriefe.yaml`, `content/acts/act1/scenes/scn.m1_1.{intro,outro,tutorial_triangle,posters,house_nw,house_ne,house_w,house_e}.yaml`
 - Geändert: `content/acts/act1/campaign.yaml`, `content/acts/act1/units.yaml`, `content/acts/act1/supports.yaml`, `content/world/valmora.yaml`, `content/core/locales/{de,en}.names.yaml`, `content/locales/en/act1.dialogue.yaml`
-- Tests: `tests/unit/{core,camp,graph,migrations,scene,story,supports-pairs,worker-replay}.test.ts`
-- Doku: `concept/22-narrative/decision-log.md`
+- Tests: `tests/unit/{core,camp,graph,migrations,scene,story,supports-pairs,worker-replay}.test.ts`, neu `tests/unit/node-effects.test.ts`
+- Knoten-Wirkungen: `src/content/{schemas,validate}.ts`, `src/core/defs.ts`, `src/core/campaign/{apply,campaign,resultView}.ts`, `tools/{simulate,simCampaign}.ts`; Karte umbenannt von `m1_1_varnhold`
+- Doku: `concept/22-narrative/decision-log.md`, `concept/24-architecture/architecture.md` (§5.4 Stand)
+
+### Change Log
+
+- 2026-10-25: Karte in `m1_1_steckbriefe` umbenannt, Fenn über Knoten-Wirkung, Simulation abgestimmt, Nebenziel-Belohnungen auf den GDD-Anteil gesenkt.

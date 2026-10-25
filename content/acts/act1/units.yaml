@@ -75,7 +75,7 @@
   growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
   items: [ { def: iron_dagger }, { def: leather_cap } ]
   supports: [mira]
-  # OFFEN: Beitritt nach dem Sieg in 1-1 (Szene scn.m1_1.outro). Eine Szene kann ohne Entscheidung keine Wirkung auslösen (sceneSchema: Antworten mit Wirkung nur in Entscheidungen, mindestens 2 Antworten); node.grants kennt nur Items. Bis die Steuerung den Mechanismus festlegt, tritt Fenn nicht in die Truppe ein.
+  # Beitritt: Knoten m1_1 (campaign.yaml, effects: recruit: fenn), Szene scn.m1_1.outro erzählt es
   joins: m1_1
 
 - id: liora
