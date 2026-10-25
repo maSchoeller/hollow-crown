@@ -1,6 +1,6 @@
 # Story 3.7: Seitenwechsel
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -22,20 +22,20 @@ damit Entscheidungen Feinde zu Gefährten machen können (FR25).
 
 ## Tasks / Subtasks
 
-- [ ] T1 Content: Grosk als Gefährte (AC 1)
-  - [ ] `units.yaml`, `flags.yaml` (`joined_grosk`), `supports.yaml` (Tobin × Grosk), Locales (Rollenzeile)
-- [ ] T2 Wirkung (AC 2, 3, 6)
-  - [ ] Schema der Wirkung (`recruit` als String oder `{ lt }`), `validateEffects`, `applyEffects`, `validate.ts`
-  - [ ] Stufen- und Wertberechnung über Story 3.4
-  - [ ] Event `companionJoined` in `CampaignEvent`
-- [ ] T3 Ausschluss und Groll (AC 4, 5)
-  - [ ] `isJoined`, `activeLieutenants`; Groll- und Ziel-Verfall; Beigetretene in Kopfgeld und Zeilen überspringen
-- [ ] T4 Limit (AC 7)
-  - [ ] `armyOverLimit`, Prüfung beim Missionsstart, Anzeige und Entlassen in `Rooms.tsx`
-- [ ] T5 Anzeige (AC 8)
-  - [ ] Folgen-Karte für `recruit: { lt }`
-- [ ] T6 Tests, Prüfungen, Screenshots (AC 9)
-  - [ ] `tests/unit/lieutenants-join.test.ts`, Decision-Log (Architektur §5.5)
+- [x] T1 Content: Grosk als Gefährte (AC 1)
+  - [x] `units.yaml`, `flags.yaml` (`joined_grosk`), `supports.yaml` (Tobin × Grosk), Locales (Rollenzeile)
+- [x] T2 Wirkung (AC 2, 3, 6)
+  - [x] Schema der Wirkung (`recruit` als String oder `{ lt }`), `validateEffects`, `applyEffects`, `validate.ts`
+  - [x] Stufen- und Wertberechnung über Story 3.4
+  - [x] Event `companionJoined` in `CampaignEvent`
+- [x] T3 Ausschluss und Groll (AC 4, 5)
+  - [x] `isJoined`, `activeLieutenants`; Groll- und Ziel-Verfall; Beigetretene in Kopfgeld und Zeilen überspringen
+- [x] T4 Limit (AC 7)
+  - [x] `armyOverLimit`, Prüfung beim Missionsstart, Anzeige und Entlassen in `Rooms.tsx`
+- [x] T5 Anzeige (AC 8)
+  - [x] Folgen-Karte für `recruit: { lt }`
+- [x] T6 Tests, Prüfungen, Screenshots (AC 9)
+  - [x] `tests/unit/lieutenants-join.test.ts`, Decision-Log (Architektur §5.5)
 
 ## Dev Notes
 
@@ -100,8 +100,40 @@ damit Entscheidungen Feinde zu Gefährten machen können (FR25).
 
 ### Agent Model Used
 
+Claude Sonnet 5.5
+
 ### Debug Log References
+
+- Erste `pnpm test`-Läufe unter Last: Zeitüberschreitungen (5 s) in `core`, `lieutenants`, `worker-replay`, `campaign-commands`; mit `--testTimeout=60000` alle grün.
+- Stolperstein: ein Node-Skript mit POSIX-Pfad (`/c/Users/...`) schrieb auf Windows nach `C:/c/Users/...`; das Zwischenverzeichnis `C:/c` blieb liegen (Löschen von der Sicherheitsprüfung abgelehnt, bitte von Hand entfernen).
 
 ### Completion Notes List
 
+- Grosk steht als Gefährte in `units.yaml` (`joins: lieutenant`, ein Platzhalter-Wert, damit `simulate`, `bench-ai` und Worker-Replay ihn nie vorab einsetzen); Skill `for_the_little_ones`, Flag `joined_grosk`, Support-Paar Tobin × Grosk (C/B/A, kein Kernpaar), Tobin führt `grosk` in `supports`. Ulvric ist jetzt `wolf_rider` (Wolfszahn und `pack` passen: Klasse trägt Lanzen, die Groll-Fähigkeiten sind klassenfrei).
+- `joinLieutenant` (`lieutenants.ts`) setzt Stufe, Erwartungswerte, Ausrüstung, Flag, Event und Groll-Verfall; `validateEffects`/`validate.ts` prüfen `recruit: { lt }` (unbekannt, ohne `joins`, ohne Gefährten-Definition, gefallen) und lehnen `recruit: <leutnant-id>` ab. Die Wachstumsrate für den Erwartungswert ist die tatsächliche (Figur + `growthMod` der Klasse), siehe Decision-Log.
+- Armee-Limit: `mercenaryRoom`, `armyOverLimit`, `dismissError`, Command `dismiss`; Missionsstart (`playNode`/`beginMission`), Weltkarten-Karte und Vorbereitung sperren mit `ui.army.over`; die Taverne zeigt die Überschreitung und listet die Söldner der Truppe mit „Entlassen“ (vorher gab es keine Entlassen-Aktion).
+- Steckbriefe: `WantedView.joined`, Liste und Karte mit Marke „In der Truppe“, Tipp öffnet die Figur in der Truppe. Folgen-Karte brauchte keine Änderung (`consequenceLines` und `head` kannten `recruit { lt }` schon; Name und Porträt über `data.chars.grosk`). Die Chronik trägt nur, was die Entscheidung ohnehin trägt.
+- Prüfungen: `pnpm lint`, `pnpm test` (781), `pnpm content:check`, `pnpm build` (Bundle 11,61 MB) grün; `pnpm test:e2e` nicht gelaufen. Coverage `src/core` vorher/nachher: Statements 86,99 -> 87,20, Branches 79,37 -> 79,63, Functions 91,35 -> 91,40, Lines 90,16 -> 90,33. `pnpm sim` (50 Läufe) identisch zum Stand davor: prologue_caravan 96 %, ch01_varnhold 81 %, ch02_silverbrook 92 % Siegquote (Korridor normal 0,75 bis 1,0).
+- Keine Speicher-Migration: Flag, Roster-Eintrag und Support-Paar sind additiv (`normalizeCampaign` ergänzt `grosk|tobin`).
+- Dev-Helfer `__hc.devJoin(view, full)` (nur DEV): `view` = `card` (Test-Entscheidung mit Folgen-Karte), `troop`, `wanted`, `map` (Weltkarte, Knoten `The Last Watch` antippen), `camp` (Lager mit Taverne, `prologue` und `ch01` als erledigt); `full = true` füllt die Truppe auf 20 Gefährten und 6 Söldner. Beispiel: `node tests/e2e/.shot-series.mjs "http://[::1]:5173/" <präfix> "__hc.devJoin('wanted')" 1 1500`.
+
+### Offene Fragen
+
+1. Armee-Limit: Gefährten über `armyLimit` verdrängen Söldnerplätze (20 + 6 sind eine Truppe, `mercenaryRoom`). Das ist die Lesart von „Beitritt ins volle Limit, ein Söldner muss gehen“; GDD und Taverne zeigten bisher zwei getrennte Zähler. Bitte bestätigen oder die andere Lesart nennen.
+2. Soll `joined_grosk` in Staffel 2 weiterwirken (`season2`)? Eingetragen ist `false`.
+3. Eine E3-Entscheidung gibt es im Content noch nicht (Epic 9); sie soll `recruit: { lt: grosk }` nutzen.
+
 ### File List
+
+- Neu: `tests/unit/lieutenants-join.test.ts`
+- Content: `content/acts/act1/{units,flags,supports,lieutenants}.yaml`, `content/core/skills.yaml`, `content/core/locales/{de,en}.yaml`, `content/core/locales/{de,en}.names.yaml`
+- Kern: `src/core/campaign/{lieutenants,effects,commands,camp,apply,wanted}.ts`, `src/core/battle/setup.ts`, `src/core/defs.ts`
+- Inhalt/Prüfung: `src/content/validate.ts`
+- App/UI: `src/app/state/flow.ts`, `src/app/screens/{Rooms,WorldMap,Camp,Wanted}.tsx`, `src/app/screens/{WorldMap,wanted}.css`, `src/ui/camp.css`
+- Tests geändert: `tests/unit/{story,supports-pairs,lieutenants-grudge}.test.ts`
+- Konzept: `concept/24-architecture/{architecture,decision-log}.md`
+
+### Change Log
+
+- 2026-10-25: Story 3.7 umgesetzt (Seitenwechsel, Grosk als Gefährte, Armee-Limit mit Entlassen, Steckbriefe, Ulvric als Wolfsreiter).
+- 2026-10-25 Kontrolleur: Produktinhaber bestätigt Armee-Limit als eine Truppe von 26 (Gefährten über 20 belegen Söldnerplätze) und `joined_grosk` mit season2: true (umgestellt). Erwartungswert mit Wachstum der Figur + growthMod der Klasse (wie echte Stufenaufstiege) akzeptiert. Status review.

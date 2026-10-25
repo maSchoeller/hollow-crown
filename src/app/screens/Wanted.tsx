@@ -89,31 +89,37 @@ export function WantedCard({ v, children }: { v: WantedView; children?: Componen
         <div class="wt-head__text">
           <div class="wt-tag">
             {t('ui.wanted.lieutenant')} · {t(`class.${v.classId}.name`)}
-            <Notches value={v.grudge} />
+            {v.joined ? <span class="wt-joined">{t('ui.wanted.joined')}</span> : <Notches value={v.grudge} />}
           </div>
           <h2 class="wt-name">{t(v.nameKey)}</h2>
           <div class="wt-title">{t(v.titleKey)}</div>
         </div>
       </div>
-      <TargetLine v={v} />
+      {!v.joined && <TargetLine v={v} />}
       <dl class="wt-facts">
-        <dt>{t('ui.wanted.fact.rule')}</dt>
-        <dd>{t(v.fleeRuleKey)}</dd>
-        <dt>{t('ui.wanted.fact.bounty')}</dt>
-        <dd class="wt-facts__pay">
-          <Amount resource="gold" value={v.bounty} />
-          {mat && v.material && <Amount material={mat} value={v.material.min} max={v.material.max} />}
-        </dd>
+        {!v.joined && (
+          <>
+            <dt>{t('ui.wanted.fact.rule')}</dt>
+            <dd>{t(v.fleeRuleKey)}</dd>
+            <dt>{t('ui.wanted.fact.bounty')}</dt>
+            <dd class="wt-facts__pay">
+              <Amount resource="gold" value={v.bounty} />
+              {mat && v.material && <Amount material={mat} value={v.material.min} max={v.material.max} />}
+            </dd>
+          </>
+        )}
         <dt>{t('ui.wanted.fact.met')}</dt>
         <dd>{v.encounters > 0 ? t('ui.wanted.met', { n: v.encounters, routs: v.routs }) : t('ui.wanted.metNever')}</dd>
       </dl>
-      <ul class="wt-skills" aria-label={t('ui.wanted.skills')}>
-        {v.skills.map((s) => (
-          <li key={s.id} class={`wt-skill ${s.free ? '' : 'is-locked'}`}>
-            {s.free ? t(`skill.${s.id}.name`) : t('ui.wanted.skillLocked', { n: s.grudge, name: t(`skill.${s.id}.name`) })}
-          </li>
-        ))}
-      </ul>
+      {!v.joined && (
+        <ul class="wt-skills" aria-label={t('ui.wanted.skills')}>
+          {v.skills.map((s) => (
+            <li key={s.id} class={`wt-skill ${s.free ? '' : 'is-locked'}`}>
+              {s.free ? t(`skill.${s.id}.name`) : t('ui.wanted.skillLocked', { n: s.grudge, name: t(`skill.${s.id}.name`) })}
+            </li>
+          ))}
+        </ul>
+      )}
       {children}
     </Piece>
   );
@@ -163,18 +169,19 @@ export function Wanted({ unit, from = 'worldmap' }: { unit?: string; from?: From
         <Piece class="hc-view__scroll wt-list">
           {list.length === 0 && <p class="wt-empty">{t('ui.wanted.empty')}</p>}
           {list.map((v) => (
-            <button key={v.id} type="button" class="wt-row" aria-label={t('ui.wanted.open', { name: t(v.nameKey) })} onClick={() => (screen.value = { name: 'wanted', unit: v.id, from })}>
+            <button key={v.id} type="button" class="wt-row" aria-label={t('ui.wanted.open', { name: t(v.nameKey) })} onClick={() => (screen.value = v.joined ? { name: 'troop', unit: v.id, from } : { name: 'wanted', unit: v.id, from })}>
               <Medal v={v} size={56} />
               <span class="wt-row__text">
                 <b class="wt-name">{t(v.nameKey)}</b>
                 <span class="wt-title">{t(v.titleKey)}</span>
-                {v.target.kind !== 'none' && (
+                {v.joined && <span class="wt-row__target">{t('ui.wanted.joinedHint')}</span>}
+                {!v.joined && v.target.kind !== 'none' && (
                   <span class="wt-row__target">
                     {t('ui.wanted.target.pre')} {targetName(v.target)} · {t(`ui.wanted.target.${v.target.kind}`)}
                   </span>
                 )}
               </span>
-              <Notches value={v.grudge} />
+              {v.joined ? <span class="wt-joined">{t('ui.wanted.joined')}</span> : <Notches value={v.grudge} />}
             </button>
           ))}
         </Piece>

@@ -198,6 +198,7 @@ export interface CharDef {
   items: ItemRef[];
   flags: string[];
   supports: string[];
+  /** node id of the chapter he joins in, `prologue` at the start, or `lieutenant`: he joins as a lieutenant through the effect `recruit: { lt }` (story 3.7) */
   joins: string;
   portrait?: string;
   sprite?: string;

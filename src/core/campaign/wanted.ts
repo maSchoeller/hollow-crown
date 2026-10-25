@@ -4,7 +4,7 @@
  */
 import type { BattleUnit, CampaignState } from '../state';
 import type { GameData } from '../defs';
-import { bountyGold, clampGrudge, lieutenantSkills, lieutenantState } from './lieutenants';
+import { bountyGold, clampGrudge, isJoined, lieutenantSkills, lieutenantState } from './lieutenants';
 
 /** Where the grudge points: nowhere, at a unit of the company, at one who has fallen, or at one who left. */
 export type WantedTarget =
@@ -42,6 +42,8 @@ export interface WantedView {
   skills: WantedSkill[];
   /** text key of what he does at 0 HP */
   fleeRuleKey: string;
+  /** he has joined the company (story 3.7): no grudge, no bounty, and his profile leads to his figure in the troop */
+  joined: boolean;
 }
 
 /** What the board knows of a lieutenant: his level and, in a battle, the grudge and target the unit carries. */
@@ -68,11 +70,12 @@ function targetOf(data: GameData, c: Pick<CampaignState, 'roster' | 'fallen'>, i
  * the campaign, which changes only after a won mission. With `unit` (on the board) the level, the grudge and the target
  * are those of the unit; without it they come from the campaign. The bounty is for the next rout.
  */
-export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>, ltId: string, unit?: WantedUnit): WantedView | null {
+export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>, ltId: string, unit?: WantedUnit): WantedView | null {
   const def = data.lieutenants?.[ltId];
   if (!def) return null;
   const st = lieutenantState(c, ltId);
-  const grudge = clampGrudge(unit ? (unit.grudge ?? st.grudge) : st.grudge);
+  const joined = isJoined(c, ltId);
+  const grudge = joined ? 0 : clampGrudge(unit ? (unit.grudge ?? st.grudge) : st.grudge);
   const targetId = unit ? (unit.grudgeTarget ?? st.target) : st.target;
   const cfg = data.balance.lieutenant.bounty;
   const materialId = cfg.materialByAct[String(data.campaign.act)];
@@ -92,13 +95,14 @@ export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' 
     ...(materialId && cfg.materials.max > 0 ? { material: { id: materialId, min: cfg.materials.min, max: cfg.materials.max } } : {}),
     skills: def.grudgeSkills.map((id, i) => ({ id, grudge: i + 1, free: lieutenantSkills(def, grudge).includes(id) })),
     fleeRuleKey: FLEE_RULE_KEY,
+    joined,
   };
 }
 
-/** The lieutenants the company has met, in the order of the content (the list of the wanted posters). */
-export function wantedList(data: GameData, c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>): WantedView[] {
+/** The lieutenants the company has met, in the order of the content (the list of the wanted posters). One who joined stays in it, marked, without grudge. */
+export function wantedList(data: GameData, c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>): WantedView[] {
   return Object.keys(data.lieutenants ?? {})
-    .filter((id) => lieutenantState(c, id).met)
+    .filter((id) => lieutenantState(c, id).met || isJoined(c, id))
     .map((id) => wantedView(data, c, id)!);
 }
 

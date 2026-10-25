@@ -5,6 +5,8 @@
 import {
   CoreInvariantError,
   applyCommand,
+  armyCount,
+  armyOverLimit,
   beginBattle,
   conditionContext,
   firstNode,
@@ -14,6 +16,7 @@ import {
   queuedFlags,
   validateEffects,
   flattenQueued,
+  type ArmyOver,
   type AvatarSettings,
   type BattleSettings,
   type BattleState,
@@ -84,7 +87,11 @@ export function defaultDeploy(nodeId: string): string[] {
  * World map → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
  * there is a real choice (more company members than deployment slots); `from` is where its back stone leads.
  */
+/** The company is over its limits (story 3.7): no mission starts until mercenaries have been dismissed. The screens show the same check. */
+export const armyBlocksMission = (): ArmyOver | null => (campaign.value ? armyOverLimit(data, campaign.value) : null);
+
 export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
+  if (armyBlocksMission()) return;
   const node = nodeDef(nodeId);
   // map and dialogues of later missions come with their act pack (story 7.2): wait for it on the loading screen
   const pack = packNeededFor(node);
@@ -158,6 +165,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
  * `back` is where the loading screen's back stone leads.
  */
 export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
+  if (armyBlocksMission()) return;
   const start = createBattle(data, campaign.value!, nodeId, deploy);
   if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
   pendingEvents.value = startBattle(nodeId, deploy);
@@ -419,6 +427,48 @@ if (import.meta.env.DEV) {
         if (!c.completed.includes(id)) campaign.value = { ...c, completed: [...c.completed, id] };
         battle.value = null;
         screen.value = { name: 'worldmap' };
+      },
+      /**
+       * a lieutenant changes sides (story 3.7): `devJoin(view, full)` with view `card` (default: plays a test decision whose answer is
+       * `recruit: { lt: grosk }` and shows the consequence card), `troop` (applies the effect, opens his figure), `wanted` (the list of
+       * wanted posters with the mark "In der Truppe"), `map` or `camp` (the world map with the army-limit notice and the locked buttons /
+       * the home with the tavern: open the tavern station to dismiss a mercenary). `full = true` first fills the company to its limits
+       * (20 companions, 6 mercenaries), so he joins into a full army. Starts an unsaved campaign when none is open; Grosk is met with grudge 2.
+       */
+      devJoin: (view: 'card' | 'troop' | 'wanted' | 'map' | 'camp' = 'card', full = false) => {
+        campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        const c = clone(campaign.value);
+        c.lieutenants = { ...c.lieutenants, grosk: { met: true, encounters: 2, grudge: 2, target: 'kael', routs: 2, signatureDropped: false } };
+        if (full) {
+          const proto = c.roster.find((r) => r.id === 'tobin') ?? c.roster[0]!;
+          let n = 0;
+          while (armyCount(c).companions < data.balance.economy.armyLimit) c.roster.push({ ...clone(proto), id: `stand${n}`, charId: `stand${n++}`, name: `Stand-in ${n}` });
+          const names = data.balance.economy.tavern.names;
+          for (let m = 0; armyCount(c).mercenaries < data.balance.economy.mercenaryLimit; m++) {
+            const { charId: _c, ...rest } = clone(proto);
+            c.roster.push({ ...rest, id: `merc${900 + m}`, nameKey: names[m % names.length]!, bag: [], equip: {} });
+          }
+        }
+        // the tavern opens after chapter 1: the camp view needs the first two nodes done
+        if (view === 'camp') for (const id of ['prologue', 'ch01']) if (!c.completed.includes(id)) c.completed.push(id);
+        campaign.value = c;
+        const join: Effect[] = [{ recruit: { lt: 'grosk' } }];
+        if (view === 'card') {
+          const scene: SceneDef = {
+            id: 'scn.dev.e3',
+            lines: [
+              { id: 'l01', speaker: ['kael'], mood: 'neutral', text: 'Der Riese will mit.' },
+              { id: 'c01', title: 'Grosk schliesst sich an', choice: [{ id: 'take', stance: 'warm', text: 'Komm mit uns.', summary: 'Grosk schliesst sich an', effects: join }, { id: 'no', stance: 'sober', text: 'Geh deiner Wege.', summary: 'Grosk bleibt zurueck' }] },
+            ],
+          };
+          data.scenes[scene.id] = scene;
+          addTexts('de', sceneTexts(scene));
+          addTexts('en', sceneTexts(scene));
+          screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+          return;
+        }
+        runEffects(join);
+        screen.value = view === 'troop' ? { name: 'troop', unit: 'grosk', from: 'worldmap' } : view === 'wanted' ? { name: 'wanted', from: 'worldmap' } : view === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
       },
       /** registers a chronicle page at run time (texts as German and English) and finds it: `devPage({ id, act, title, text })` */
       devPage: (page: ChroniclePageDef) => {

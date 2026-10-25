@@ -228,7 +228,7 @@ worldRegion: borderland
 - **Auf der Karte:** Map-Einheiten tragen `lieutenant: hask`. `createBattle` setzt Stufe = effektiver Durchschnitt der 6 stärksten Einheiten + `grudge`, Ausrüstungs-Tier + `grudge`, schaltet `grudgeSkills[0..grudge-1]` frei und gibt der KI das Groll-Ziel (+20).
 - **Flucht:** Fällt ein Leutnant auf 0 TP, setzt `apply` `gone: 'fled'` statt niedergestreckt/tot und meldet `fled{unit, by}`. Ziele `boss` und `rout` zählen `fled` als besiegt. `previewAttack` liefert `outcome: 'flees'`, die UI zeigt „flieht“.
 - **Nach der Mission:** `finishBattle` erhöht `routs`, setzt `grudge = min(3, grudge + 1)` und `target` auf den Vertreiber; Kopfgeld und Signatur-Drop laut `balance.yaml` (`lieutenant.bounty`, `lieutenant.signature`) aus dem Kampf-RNG. Stirbt das Ziel, bleibt `target` bis zur nächsten Vertreibung; die Szene wählt die Gedenk-Spottzeile über `{ dead: <target> }`.
-- **Seitenwechsel** (Grosk, Sable, Mael): Wirkung `recruit` + Flag `joined`; der Leutnant erscheint danach nicht mehr in Heimsuchungen.
+- **Seitenwechsel** (Grosk, Sable, Mael; Story 3.7): Wirkung `recruit: { lt }` macht den Leutnant zum Gefährten seiner `units.yaml`-Definition (Stufe aus der mitwachsenden Stärke ohne Groll), setzt das Flag `joined_<lt>` und meldet `companionJoined`; der Groll gegen ihn und von ihm verfällt. Heimsuchungen und Finale-Aufstellungen lesen `activeLieutenants(data, c)` (ohne Beigetretene). Ins volle Armee-Limit tritt er trotzdem ein; `armyOverLimit` sperrt den Missionsstart, bis Söldner entlassen sind.
 
 ### 5.6 Tageswechsel und Heimsuchungen (AR6, AR7)
 

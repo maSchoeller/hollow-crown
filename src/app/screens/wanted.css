@@ -72,6 +72,16 @@
 .wt-notches i.is-on {
   background: var(--hc-gold);
 }
+/* the mark of a lieutenant who joined the company (story 3.7): text and shape, not colour alone */
+.wt-joined {
+  flex: none;
+  padding: 2px 8px;
+  border: 1.5px solid var(--hc-gold);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
 
 /* ---- the profile stone ---- */
 .wt-card {

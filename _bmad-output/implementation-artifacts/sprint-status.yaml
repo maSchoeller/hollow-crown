@@ -79,7 +79,7 @@ development_status:
   3-4-mitwachsende-staerke: review  # Mitwachsende Stärke
   3-5-kopfgeld-und-signatur-item: review  # Kopfgeld und Signatur-Item
   3-6-steckbriefe: review  # Steckbriefe
-  3-7-seitenwechsel: ready-for-dev  # Seitenwechsel
+  3-7-seitenwechsel: review  # Seitenwechsel
   epic-3-retrospective: optional
 
   # Epic 4: Akt-Struktur, Szenen und Entscheidungen

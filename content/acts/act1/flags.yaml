@@ -7,3 +7,5 @@
 - { id: avatar_bold, kind: story, season2: false }
 - { id: ch02_hold, kind: story, season2: false }
 - { id: ch02_question, kind: story, season2: false }
+# Wer als Leutnant beitritt, setzt joined_<id> (Wirkung recruit { lt }, Story 3.7); Heimsuchungen und Finale-Aufstellungen lesen es über isJoined/activeLieutenants.
+- { id: joined_grosk, kind: story, season2: true }

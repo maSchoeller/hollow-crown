@@ -7,6 +7,9 @@ import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import {
   armyCount,
+  armyOverLimit,
+  isMercenary,
+  mercenaryRoom,
   availableSupportTalks,
   currentTier,
   hireCost,
@@ -392,25 +395,35 @@ export function TavernRoom({ room, apply, onClose }: { room: RoomDef; apply: App
   const chosen = c.tavern.find((u) => u.id === sel);
   const cost = chosen ? hireCost(data, chosen.level) : 0;
   const err = chosen ? hireError(data, c, chosen.id) : null;
-  const full = army.mercenaries >= data.balance.economy.mercenaryLimit;
+  const room_ = mercenaryRoom(data, c);
+  const full = army.mercenaries >= room_;
+  // a mercenary of the company chosen to let go (the way out of an over-full company, story 3.7)
+  const hired = c.roster.filter(isMercenary);
+  const letGo = hired.find((u) => u.id === sel);
+  const over = armyOverLimit(data, c);
   return (
     <RoomPanel
       room={room}
-      desc={t('ui.room.tavern.limit', { n: army.mercenaries, max: data.balance.economy.mercenaryLimit, c: army.companions, cmax: data.balance.economy.armyLimit })}
+      desc={t('ui.room.tavern.limit', { n: army.mercenaries, max: room_, c: army.companions, cmax: data.balance.economy.armyLimit })}
       onClose={onClose}
       actions={
-        <PrimaryButton disabled={!chosen || !!err} onClick={() => chosen && apply({ type: 'hire', offer: chosen.id }, t('ui.room.tavern.hired')) && setSel(null)}>
-          {chosen ? (
-            <>
-              {t('ui.room.tavern.hire')} · <Amount resource="gold" value={cost} short={c.gold < cost} />
-            </>
-          ) : (
-            t('ui.room.tavern.hire')
-          )}
-        </PrimaryButton>
+        letGo ? (
+          <PrimaryButton onClick={() => apply({ type: 'dismiss', unit: letGo.id }, t('ui.room.tavern.dismissed')) && setSel(null)}>{t('ui.room.tavern.dismiss')}</PrimaryButton>
+        ) : (
+          <PrimaryButton disabled={!chosen || !!err} onClick={() => chosen && apply({ type: 'hire', offer: chosen.id }, t('ui.room.tavern.hired')) && setSel(null)}>
+            {chosen ? (
+              <>
+                {t('ui.room.tavern.hire')} · <Amount resource="gold" value={cost} short={c.gold < cost} />
+              </>
+            ) : (
+              t('ui.room.tavern.hire')
+            )}
+          </PrimaryButton>
+        )
       }
     >
-      {full && <div class="hm-hint">{t('ui.room.tavern.full')}</div>}
+      {over && <div class="hm-hint is-warn" role="alert">{t('ui.army.over', { n: over.dismiss })}</div>}
+      {full && !over && <div class="hm-hint">{t('ui.room.tavern.full')}</div>}
       {c.tavern.map((u) => {
         const st = u.stats;
         return (
@@ -432,6 +445,17 @@ export function TavernRoom({ room, apply, onClose }: { room: RoomDef; apply: App
         );
       })}
       {c.tavern.length === 0 && <div class="hm-none">{t('ui.room.tavern.none')}</div>}
+      {hired.length > 0 && <div class="hm-subhead">{t('ui.room.tavern.mine')}</div>}
+      {hired.map((u) => (
+        <PersonLine
+          key={u.id}
+          unit={u}
+          name={`${unitName(u)} · ${t(`class.${u.classId}.name`)}`}
+          sub={`${t('ui.lv')} ${u.level}`}
+          selected={sel === u.id}
+          onClick={() => setSel(sel === u.id ? null : u.id)}
+        />
+      ))}
     </RoomPanel>
   );
 }

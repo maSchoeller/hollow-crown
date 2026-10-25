@@ -2,14 +2,18 @@
  * What the campaign remembers of a lieutenant (story 3.3, architecture §5.5): meetings, rout count and the grudge
  * against whoever drove him off; and which line he speaks at first sight. Pure: no Babylon, no DOM, no randomness.
  */
-import type { BattleState, BattleUnit, CampaignState, LieutenantState } from '../state';
-import type { GameData, ItemRef, LieutenantDef, MapUnitDef } from '../defs';
-import { newItem, roundDiv } from '../battle/create';
+import type { BattleState, BattleUnit, CampaignState, ItemInstance, LieutenantState } from '../state';
+import { STAT_KEYS, type GameData, type ItemRef, type LieutenantDef, type MapUnitDef } from '../defs';
+import { autoEquip, newItem, recordFromChar, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
+import { allItems } from '../rules/items';
+import { growthRate } from '../rules/progression';
 import { effectiveLevel } from '../rules/skills';
 import { fogOn, visibleTiles } from '../rules/vision';
 import { posKey } from '../util';
 import type { BountyResult } from './campaign';
+import { takeItem } from './camp';
+import type { CampaignEvent } from './commands';
 
 /** The grudge never goes above three notches (GDD: Groll 0-3). */
 export const GRUDGE_MAX = 3;
@@ -24,6 +28,19 @@ export const lieutenantState = (c: Pick<CampaignState, 'lieutenants'>, id: strin
   const raw = c.lieutenants?.[id];
   return { ...newLieutenantState(), ...raw, signatureDropped: !!raw?.signatureDropped };
 };
+
+/** The flag a lieutenant sets when he joins the company (story 3.7, `flags.yaml`). */
+export const joinedFlag = (lt: string): string => `joined_${lt}`;
+
+/** Whether the lieutenant has joined the company (story 3.7): from then on he is a companion, no longer a foe. */
+export const isJoined = (c: Pick<CampaignState, 'flags'>, lt: string): boolean => c.flags[joinedFlag(lt)] === true;
+
+/**
+ * The lieutenants still against the company: all of the act data without those who joined (story 3.7). Haunts (5.5/5.6)
+ * and finale line-ups read this list, never `data.lieutenants` directly. In the order of the content.
+ */
+export const activeLieutenants = (data: Pick<GameData, 'lieutenants'>, c: Pick<CampaignState, 'flags'>): LieutenantDef[] =>
+  Object.values(data.lieutenants ?? {}).filter((lt) => !isJoined(c, lt.id));
 
 /** Keeps a grudge inside 0-3. */
 export const clampGrudge = (n: number): number => Math.max(0, Math.min(GRUDGE_MAX, n));
@@ -89,6 +106,55 @@ export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' |
   };
 }
 
+/**
+ * A lieutenant joins the company (effect `recruit: { lt }`, story 3.7), mutating `c`, which the caller owns. He becomes a
+ * companion of his character definition: the level is the growing strength without grudge (`lieutenantLevel`, never
+ * below the level of the definition), the stats the expected values from the definition's base level (base + growth % x
+ * levels above it, commercial rounding, class caps), his gear the definition's items. When the company already holds his
+ * signature item (story 3.5) he takes that one instead of a second. The grudge against him and from him lapses, the flag
+ * `joined_<lt>` is set and `companionJoined` is reported (never `unitJoined`). A second call changes nothing.
+ */
+export function joinLieutenant(data: GameData, c: CampaignState, id: string, events: CampaignEvent[]): void {
+  const def = data.chars[id];
+  const lt = data.lieutenants?.[id];
+  if (!def || !lt || isJoined(c, id) || c.roster.some((r) => r.id === id)) return;
+  const level = Math.max(def.level, lieutenantLevel(data, c, 0));
+  // the signature item the company holds already (convoy, bag or hand) goes to him; otherwise a new one is made
+  const held: ItemInstance | undefined = [...c.convoy, ...c.roster.flatMap((u) => allItems(u))].find((i) => i.def === lt.signatureItem);
+  const kept = held ? takeItem(c, held.uid) : null;
+  const rec = recordFromChar(data, { ...def, items: [] }, c, c.avatar);
+  const left = autoEquip(data, rec, def.items.map((r) => (r.def === lt.signatureItem && kept ? kept : newItem(c, r, data))));
+  c.convoy.push(...left);
+  rec.level = level;
+  const steps = level - def.level;
+  const caps = data.classes[def.class]!.caps;
+  for (const k of STAT_KEYS) {
+    const rate = Math.max(0, growthRate(data, rec, k));
+    const gain = Math.min(roundDiv(rate * steps, 100), Math.max(0, caps[k] - def.base[k]));
+    rec.stats[k] = def.base[k] + gain;
+    rec.gained[k] = gain;
+    rec.expected[k] = (rate * steps) / 100;
+  }
+  c.roster.push(rec);
+  c.left = c.left.filter((x) => x !== id);
+  // the grudge lapses on both sides: his own, and the target of any other lieutenant's that was he
+  const lieutenants = (c.lieutenants ??= {});
+  const own = lieutenantState(c, id);
+  const had = own.grudge;
+  delete own.target;
+  own.grudge = 0;
+  lieutenants[id] = own;
+  for (const [other, st] of Object.entries(lieutenants)) {
+    if (other === id || st.target !== id) continue;
+    const { target: _gone, ...rest } = st;
+    lieutenants[other] = rest;
+  }
+  events.push({ t: 'companionJoined', unit: id });
+  if (had > 0) events.push({ t: 'grudgeChanged', lt: id, grudge: 0 });
+  c.flags[joinedFlag(id)] = true;
+  events.push({ t: 'flagSet', flag: joinedFlag(id), value: true });
+}
+
 /** One lieutenant after a won mission (story 3.5 hangs bounty and signature drop on this list). */
 export interface LieutenantOutcome {
   id: string;
@@ -109,7 +175,7 @@ export interface LieutenantOutcome {
 export function applyLieutenantOutcome(data: GameData, c: CampaignState, s: BattleState): LieutenantOutcome[] {
   const out: LieutenantOutcome[] = [];
   for (const u of s.units) {
-    if (!u.lieutenant || !data.lieutenants?.[u.lieutenant]) continue;
+    if (!u.lieutenant || !data.lieutenants?.[u.lieutenant] || isJoined(c, u.lieutenant)) continue;
     const lt = lieutenantState(c, u.lieutenant);
     lt.encounters += 1;
     lt.met = true;
@@ -142,7 +208,7 @@ export function payBounties(data: GameData, c: CampaignState, s: BattleState, ou
   const materialId = cfg.bounty.materialByAct[String(data.campaign.act)];
   const out: BountyResult[] = [];
   for (const o of outcomes) {
-    if (!o.routed) continue;
+    if (!o.routed || isJoined(c, o.id)) continue;
     const u = s.units.find((x) => x.lieutenant === o.id);
     const lt = lieutenantState(c, o.id);
     const gold = bountyGold(data, o.grudgeBefore);
@@ -196,8 +262,8 @@ export interface LieutenantLinePick {
  * the company: `grudge_<n>`. The target has fallen: `mock` (the grudge stays until the next rout sets a new target).
  * Met with no grudge, a grudge without a target, or a target who left the company: no line.
  */
-export function ltOpeningLine(c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>, unit: BattleUnit): LieutenantLinePick | null {
-  if (!unit.lieutenant) return null;
+export function ltOpeningLine(c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>, unit: BattleUnit): LieutenantLinePick | null {
+  if (!unit.lieutenant || isJoined(c, unit.lieutenant)) return null;
   if (!c.lieutenants?.[unit.lieutenant]?.met) return { line: 'first' };
   const grudge = unit.grudge ?? 0;
   const target = unit.grudgeTarget;
@@ -220,7 +286,7 @@ export interface LieutenantLineDue extends LieutenantLinePick {
  */
 export function ltLinesDue(
   data: GameData,
-  c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen'>,
+  c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>,
   s: BattleState,
   spoken: ReadonlySet<string>,
 ): LieutenantLineDue[] {

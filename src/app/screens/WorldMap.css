@@ -378,6 +378,11 @@
   margin: 0;
   color: var(--hc-soft);
 }
+.wm-card__warn {
+  margin: 0;
+  font-size: 13px;
+  color: var(--hc-ember-dark);
+}
 .wm-card__buttons {
   display: grid;
   grid-template-columns: 1fr 1.4fr;

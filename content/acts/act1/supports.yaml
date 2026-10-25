@@ -1,7 +1,7 @@
 # Feste Support-Paare, die in Akt 1 entstehen (Story 4.9, Narrative „Die 25 Support-Paare“, GDD Supports).
 # Ein Paar steht im Akt, in dem sein später beitretender Gefährte dazukommt. core: true = Kernpaar (★), erreicht S; alle anderen enden bei A.
 # talks: Szene des Lagerfeuer-Gesprächs, das den Rang freischaltet (Story 9.13: alle Ränge bis zum Höchstrang; A und S öffnet erst die Burg, Epic 10).
-# Mira × Fenn (scn.support.fenn_mira.*) und Tobin × Grosk (scn.support.grosk_tobin.*) sind geschrieben und kommen hierher, sobald Fenn und Grosk als Einheiten beitreten (Stories 9.1, 9.5).
+# Mira × Fenn (scn.support.fenn_mira.*) kommt hierher, sobald Fenn als Einheit beitritt (Story 9.1). Tobin × Grosk steht seit Story 3.7 hier; das Paar wirkt erst, wenn Grosk beigetreten ist (Wirkung recruit { lt: grosk }).
 # Schwellen und Lagerfeuer-Ränge: content/core/balance.yaml supports.
 - { pair: [kael, avatar], core: true, talks: { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B, A: scn.support.avatar_kael.A, S: scn.support.avatar_kael.S } }  # Waffenbrüder
 - { pair: [kael, brenna], core: true, talks: { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B, A: scn.support.brenna_kael.A, S: scn.support.brenna_kael.S } }  # alte Liebe, nie ausgesprochen
@@ -10,3 +10,4 @@
 - { pair: [brenna, varek], talks: { C: scn.support.brenna_varek.C, B: scn.support.brenna_varek.B, A: scn.support.brenna_varek.A } }  # Misstrauen gegenüber dem Deserteur
 - { pair: [tobin, mira], talks: { C: scn.support.mira_tobin.C, B: scn.support.mira_tobin.B, A: scn.support.mira_tobin.A } }  # Bogenunterricht, Kabbelei
 - { pair: [liora, ysolde], talks: { C: scn.support.liora_ysolde.C, B: scn.support.liora_ysolde.B, A: scn.support.liora_ysolde.A } }  # Glaube gegen Wissen, die Chronik
+- { pair: [tobin, grosk], talks: { C: scn.support.grosk_tobin.C, B: scn.support.grosk_tobin.B, A: scn.support.grosk_tobin.A } }  # der Riese und der Junge

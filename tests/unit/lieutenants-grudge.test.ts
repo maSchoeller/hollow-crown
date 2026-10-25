@@ -181,7 +181,7 @@ describe('opening lines (AC 7)', () => {
   const lt = (over: Partial<BattleUnit> = {}): BattleUnit => ({ uid: 'u', id: 'hask', team: 'enemy', pos: [1, 1], lieutenant: 'hask', ...over }) as BattleUnit;
   const known = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } };
   const camp = (lieutenants?: CampaignState['lieutenants']) =>
-    ({ lieutenants, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
+    ({ lieutenants, flags: {}, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
 
   it('not met: first; grudge and a living target: grudge_<n>; fallen target: mock; met without grudge: none', () => {
     expect(ltOpeningLine(camp(), lt())).toEqual({ line: 'first' });

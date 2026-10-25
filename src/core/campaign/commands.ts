@@ -35,6 +35,8 @@ export type CampaignCommand =
   | { type: 'promote'; unit: string; classId: string }
   /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
   | { type: 'hire'; offer: string }
+  /** let go of the hired mercenary `unit` (a record id `merc<n>` of `c.roster`); his gear goes to the convoy (story 3.7: the way out of an over-full company) */
+  | { type: 'dismiss'; unit: string }
   /** the player saw scene `scene` to the end or skipped it (a record, not story state; idempotent) */
   | { type: 'markSceneSeen'; scene: string }
   /** the answer `option` to choice line `line` of scene `scene`: runs its effects, counts its stance (story 4.6) */
@@ -91,7 +93,7 @@ export type CampaignError =
   | 'unknown_choice'
   /** this choice was answered before: answers are never taken back */
   | 'already_chosen'
-  /** the effect's state or rules do not exist yet (priceMod, villageAid, recruit by lieutenant) */
+  /** the effect's state or rules do not exist yet (priceMod, villageAid) */
   | 'effect_unsupported'
   /** a day number that is no whole number of days */
   | 'invalid_day';
@@ -109,6 +111,8 @@ export type CampaignEvent =
   | { t: 'supportUnlocked'; pair: string; rank: SupportRank }
   | { t: 'flagSet'; flag: string; value: FlagValue }
   | { t: 'unitJoined'; unit: string }
+  /** a lieutenant joined the company (effect `recruit: { lt }`, story 3.7); reported instead of `unitJoined` */
+  | { t: 'companionJoined'; unit: string }
   | { t: 'unitLeft'; unit: string }
   | { t: 'stanceGained'; stance: Stance }
   | { t: 'chronicleAdded'; page: string }
