@@ -1,4 +1,4 @@
-import type { Effect, FlagValue, GameData, Stance } from '../defs';
+import { HOME_KINDS, type Effect, type FlagValue, type GameData, type HomeKind, type Stance } from '../defs';
 import { newItem } from '../battle/create';
 import { allItems } from '../rules/items';
 import type { CampaignState } from '../state';
@@ -7,7 +7,7 @@ import { soleKey } from './conditions';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
-export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid', 'setHome'];
+export const UNSUPPORTED_EFFECTS: readonly string[] = ['grudge', 'priceMod', 'villageAid'];
 
 const arg = (e: Effect): unknown => (e as unknown as Record<string, unknown>)[soleKey(e)];
 
@@ -81,6 +81,10 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
       case 'openQuest':
         if (data.campaign.nodes.find((n) => n.id === v)?.kind !== 'side') return 'effect_invalid';
         break;
+      case 'setHome':
+        // moving to the home the company lives in already is no fault; an unknown kind is
+        if (!HOME_KINDS.includes(v as HomeKind)) return 'effect_invalid';
+        break;
       case 'stance':
       case 'chronicle':
         break;
@@ -153,6 +157,13 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
         if (!c.chronicle.includes(v as string)) {
           c.chronicle.push(v as string);
           events.push({ t: 'chronicleAdded', page: v as string });
+        }
+        break;
+      case 'setHome':
+        // the rooms keep their level: camp stations are level 1, the castle rooms start there too (architecture §5.10)
+        if (c.home.kind !== v) {
+          c.home.kind = v as HomeKind;
+          events.push({ t: 'homeChanged', home: v as HomeKind });
         }
         break;
       default:

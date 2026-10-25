@@ -190,6 +190,10 @@
 .res-note.is-bad {
   color: var(--hc-negative);
 }
+.res-note.is-home {
+  color: var(--hc-ember-dark);
+  font-weight: 700;
+}
 .res-note.is-gold {
   color: var(--hc-lieutenant);
 }

@@ -7,6 +7,7 @@ import { Icon } from '../../ui/icons';
 import { Backdrop, Piece, ScreenHead, Tabs } from '../../ui/pieces';
 import { Sheet } from '../../ui/Sheet';
 import { campaign, data } from '../state/session';
+import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
 import { UnitHead } from './unitArt';
 import './Chronicle.css';
@@ -30,7 +31,7 @@ export function Chronicle({ from = 'worldmap' }: { from?: From }) {
   return (
     <>
       <div class="hc-view">
-        <Backdrop />
+        <Backdrop image={homeBackdrop()} />
         <div class="col" style={{ gap: 8 }}>
           <ScreenHead
             title={t('ui.chronicle.title')}

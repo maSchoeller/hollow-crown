@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import { chronicleTexts } from '../core/campaign/chronicle';
+import { memorialTexts } from '../core/campaign/memorial';
 import { sceneTexts } from '../core/campaign/scene';
 import type {
   AffixDef,
@@ -10,8 +11,11 @@ import type {
   ClassDef,
   FlagDef,
   GameData,
+  HomeKind,
+  HomeViewDef,
   ItemDef,
   MapDef,
+  MemorialDef,
   Rarity,
   RenderDef,
   WorldDef,
@@ -35,8 +39,10 @@ import {
   sceneSchema,
   supportPairSchema,
   flagSchema,
+  homeSchema,
   itemSchema,
   mapSchema,
+  memorialSchema,
   renderSchema,
   roomSchema,
   runeSchema,
@@ -105,6 +111,7 @@ interface PackParts {
   maps: Record<string, MapDef>;
   scenes: Record<string, SceneDef>;
   chronicle: Record<string, ChroniclePageDef>;
+  memorials: Record<string, MemorialDef>;
   supports: Record<string, SupportPairDef>;
   locales: Locales;
 }
@@ -117,6 +124,7 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   const maps: Record<string, MapDef> = {};
   const scenes: Record<string, SceneDef> = {};
   const chronicle: Record<string, ChroniclePageDef> = {};
+  const memorials: Record<string, MemorialDef> = {};
   const supports: Record<string, SupportPairDef> = {};
   const locales: Locales = {};
   for (const [k, raw] of Object.entries(files)) {
@@ -134,6 +142,9 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
     } else if (/^acts\/act\d+\/chronicle\.yaml$/.test(p)) {
       const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
       for (const page of parseList<Omit<ChroniclePageDef, 'act'>>(p, raw ?? [], chroniclePageSchema, issues)) chronicle[page.id] = { ...page, act };
+    } else if (/^acts\/act\d+\/memorials\.yaml$/.test(p)) {
+      const act = Number(/^acts\/act(\d+)\//.exec(p)![1]);
+      for (const m of parseList<Omit<MemorialDef, 'act'>>(p, raw ?? [], memorialSchema, issues)) memorials[m.id] = { ...m, act };
     } else if (/^acts\/[^/]+\/scenes\//.test(p)) {
       const d = parseOne<SceneDef>(p, raw, sceneSchema, issues);
       if (d) scenes[d.id] = d;
@@ -149,7 +160,8 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
   // the German text sits in the scene and the chronicle page itself
   for (const sc of Object.values(scenes)) locales.de = { ...(locales.de ?? {}), ...sceneTexts(sc) };
   for (const pg of Object.values(chronicle)) locales.de = { ...(locales.de ?? {}), ...chronicleTexts(pg) };
-  return { maps, scenes, chronicle, supports, locales };
+  for (const m of Object.values(memorials)) locales.de = { ...(locales.de ?? {}), ...memorialTexts(m) };
+  return { maps, scenes, chronicle, memorials, supports, locales };
 }
 
 /**
@@ -158,10 +170,11 @@ function parsePackFiles(files: Record<string, unknown>, issues: ContentIssue[]):
  */
 export function mergePackContent(loaded: LoadedContent, files: Record<string, unknown>): ContentIssue[] {
   const issues: ContentIssue[] = [];
-  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
+  const { maps, scenes, chronicle, memorials, supports, locales } = parsePackFiles(files, issues);
   Object.assign(loaded.data.maps, maps);
   Object.assign(loaded.data.scenes, scenes);
   Object.assign(loaded.data.chronicle, chronicle);
+  Object.assign(loaded.data.memorials, memorials);
   Object.assign(loaded.data.supports, supports);
   for (const [lang, table] of Object.entries(locales)) loaded.locales[lang] = Object.assign(loaded.locales[lang] ?? {}, table);
   loaded.issues.push(...issues);
@@ -190,7 +203,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
-  const { maps, scenes, chronicle, supports, locales } = parsePackFiles(files, issues);
+  const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);
+  const { maps, scenes, chronicle, memorials, supports, locales } = parsePackFiles(files, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
   const runeItems: ItemDef[] = runes.map((r) => ({
     id: r.id,
@@ -220,6 +234,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     flags: byId(flagList),
     supports,
     chronicle,
+    memorials,
+    home: home as Record<HomeKind, HomeViewDef>,
     campaign: campaign as CampaignDef,
     world: world as WorldDef,
   };

@@ -12,7 +12,7 @@ import { clone } from '../util';
 import { hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
-import { isAvailable, noteRoles } from './graph';
+import { actFinished, isAvailable, noteRoles } from './graph';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
@@ -144,6 +144,9 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'restartTurn':
       if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
+    case 'markBackupReminded':
+      // only the running act, and only once its finale is done
+      return cmd.act === data.campaign.act && actFinished(data, c) ? null : 'not_available';
     case 'advanceDay':
       return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
     case 'restartMission':
@@ -185,9 +188,16 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     // is checked against the state after the battle and skipped when it no longer fits (e.g. `leave` of a unit that fell).
     let campaign = after;
     const effectEvents: CampaignEvent[] = [];
-    if (s.outcome === 'victory' && cmd.effects?.length) {
+    if (s.outcome === 'victory') {
       campaign = clone(after);
-      for (const q of cmd.effects) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
+      for (const q of cmd.effects ?? []) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
+      // the reward of the node itself (`effects` in campaign.yaml, e.g. the move to the castle) comes last, as one list;
+      // the result carries it so the screens can name the consequences
+      const reward = data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? [];
+      if (reward.length && validateEffects(data, campaign, reward) === null) {
+        applyEffects(data, campaign, reward, effectEvents);
+        result.effects = reward;
+      }
     }
     return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };
   }
@@ -360,6 +370,12 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     }
     case 'effects':
       applyEffects(data, c, cmd.effects, events);
+      break;
+    case 'markBackupReminded':
+      if (!c.backupReminded.includes(cmd.act)) {
+        c.backupReminded.push(cmd.act);
+        events.push({ t: 'backupReminded', act: cmd.act });
+      }
       break;
     case 'advanceDay':
       advanceDay(data, c, cmd.day, events);

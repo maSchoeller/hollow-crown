@@ -1,4 +1,4 @@
-import type { GameData, Reward, SideObjectiveDef, Stats } from '../defs';
+import type { Effect, GameData, Reward, SideObjectiveDef, Stats } from '../defs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
 import { sideObjectiveDone } from '../battle/objectives';
@@ -33,6 +33,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     choices: {},
     decisions: [],
     scenesSeen: [],
+    backupReminded: [],
     completed: [],
     quests: [],
     rolesSeen: [],
@@ -61,6 +62,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     stance?: CampaignState['stance'];
     chronicle?: string[];
     scenesSeen?: string[];
+    backupReminded?: number[];
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
@@ -77,6 +79,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
     chronicle: old.chronicle ?? [],
     scenesSeen: old.scenesSeen ?? [],
+    backupReminded: old.backupReminded ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     // pairs of content added since the save (a later act) start empty
@@ -172,6 +175,8 @@ export interface BattleResult {
   supportsReady: string[];
   /** items handed to company members by the node (campaign.yaml `grants`) */
   granted: Array<{ id: string; item: ItemInstance }>;
+  /** effects of the node's own reward that were applied (campaign.yaml `effects`, e.g. `setHome`); absent when there were none */
+  effects?: Effect[];
 }
 
 function refill(data: GameData, items: ItemInstance[]): void {

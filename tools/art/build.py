@@ -174,7 +174,8 @@ def build_world():
 
 
 def content_unit_ids():
-    """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed)."""
+    """Ids a board unit can have: every id/char/portrait value in content/acts/*/units.yaml and the act maps (no YAML library needed),
+    plus the portraits of the fixed memorial stones (content/acts/*/memorials.yaml, story 6.9)."""
     pat = re.compile(r'(?<![a-z0-9_])(?:id|char|portrait):[ 	]*([a-z0-9_]+)')
     content = os.path.join(ROOT, 'content')
     acts = os.path.join(content, 'acts')
@@ -186,6 +187,9 @@ def content_unit_ids():
         maps = os.path.join(acts, act, 'maps')
         if os.path.isdir(maps):
             files += [os.path.join(maps, f) for f in sorted(os.listdir(maps)) if f.endswith('.yaml')]
+        memorials = os.path.join(acts, act, 'memorials.yaml')
+        if os.path.isfile(memorials):
+            files.append(memorials)
     ids = set()
     for path in files:
         with open(path, encoding='utf-8') as f:
