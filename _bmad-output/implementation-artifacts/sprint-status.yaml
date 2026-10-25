@@ -133,7 +133,7 @@ development_status:
   epic-8: in-progress
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
   8-2-tripo-pipeline-vervollstaendigen: review  # Tripo-Pipeline vervollständigen
-  8-3-brettfiguren-fuer-akt-1: in-progress  # Brettfiguren für Akt 1
+  8-3-brettfiguren-fuer-akt-1: review  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: ready-for-dev  # Porträts mit Stimmungen für Akt 1
   8-5-item-bilder: done  # Item-Bilder
   8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett

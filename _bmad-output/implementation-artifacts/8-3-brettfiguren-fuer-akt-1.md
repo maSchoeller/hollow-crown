@@ -1,6 +1,6 @@
 # Story 8.3: Brettfiguren für Akt 1
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -22,25 +22,25 @@ damit Porträt und Figur zusammengehören.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Bestand prüfen (AC 1)
-  - [ ] Je Figur aus AC 1 prüfen, dass `art/models/source/<id>_board_tripo.glb` und `art/models/units/<id>.glb` vorhanden sind und im Spiel ankommen (`pnpm art:tripo`, `pnpm art:build`)
-  - [ ] Zuordnung Figur → Modell-id in den Unit- und Klassendaten gegen die Liste prüfen (Rhen: das gewählte Porträt wählt `avatar_a`/`avatar_b`)
-- [ ] T2 Wolfsreiter, Söldner, Tempelwache (AC 2, 6, 7)
-  - [ ] Generische Porträts `class_wolf_rider.png`, `class_mercenary.png` (neu passend zur Tripo-Figur), `class_temple_guard.png`; einige davon weiblich (Prompt-Protokoll gemeinsam mit Story 8.4)
-  - [ ] Brett-Turnaround nach `art/prompts/brenna_board_turnaround.md`: Teamtuch Magenta, keine Waffe; Wolfsreiter in Akt 1 zu Fuß mit Wolfsfell (Art Direction §4.2)
-  - [ ] Zerlegen mit `tools/art/split_turnaround.py`; Tripo: Smart-Mesh (Multi-View, 3 000 Quads, privat), Textur, Auto-Rig, Export `art/models/source/<id>_board_tripo.glb`; Exportnamen eindeutig (`hcx_<id>`), weil Tripo gleiche Standardnamen vergibt
-  - [ ] `pnpm art:tripo <id>`, Budget prüfen, im Spiel ansehen
-  - [ ] `art/prompts/<id>_board_turnaround.md` je Figur
-- [ ] T3 Einbindung (AC 3)
-  - [ ] `mercenary` ersetzt die Blender-Figur (`tools/art/export_models.py` überspringt Tripo-ids; prüfen, dass die Blender-Fassung nicht mehr gebaut wird)
-  - [ ] ids der neuen Modelle (Wolfsreiter, Tempelwache) für Story 2.9 und die Missionen aus Epic 9 im Abschlussvermerk festhalten; keine neuen Klassen oder Karten anlegen
-- [ ] T4 Silhouettentest und Signaturteile (AC 4, 5)
-  - [ ] Skript unter `tools/art/` rendert alle Akt-1-Figuren und -Gegner schwarz gefüllt in der Größe von Zoom „Mittel“ zu einem Blatt
-  - [ ] Durchsicht und Signaturteil-Prüfung je Figur nach Art Direction §4.3 in `art/prompts/silhouettes_act1.md`, Abweichungen benennen
-  - [ ] Nicht unterscheidbare Paare im Dokument vermerken und mit dem Produktinhaber abstimmen, nicht still umbauen
-- [ ] T5 Screenshot und Prüfungen (AC 8, 9)
-  - [ ] Screenshot der Figuren auf dem Brett im Hochformat
-  - [ ] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm art:build`, `pnpm build`; Eintrag im Entscheidungslog (Credits, Stand)
+- [x] T1 Bestand prüfen (AC 1)
+  - [x] Je Figur aus AC 1 prüfen, dass `art/models/source/<id>_board_tripo.glb` und `art/models/units/<id>.glb` vorhanden sind und im Spiel ankommen (`pnpm art:tripo`, `pnpm art:build`)
+  - [x] Zuordnung Figur → Modell-id in den Unit- und Klassendaten gegen die Liste prüfen (Rhen: das gewählte Porträt wählt `avatar_a`/`avatar_b`)
+- [x] T2 Wolfsreiter, Söldner, Tempelwache (AC 2, 6, 7)
+  - [x] Generische Porträts `class_wolf_rider.png`, `class_mercenary.png` (neu passend zur Tripo-Figur), `class_temple_guard.png`; einige davon weiblich (Prompt-Protokoll gemeinsam mit Story 8.4)
+  - [x] Brett-Turnaround nach `art/prompts/brenna_board_turnaround.md`: Teamtuch Magenta, keine Waffe; Wolfsreiter in Akt 1 zu Fuß mit Wolfsfell (Art Direction §4.2)
+  - [x] Zerlegen mit `tools/art/split_turnaround.py`; Tripo: Smart-Mesh (Multi-View, 3 000 Quads, privat), Textur, Auto-Rig, Export `art/models/source/<id>_board_tripo.glb`; Exportnamen eindeutig (`hcx_<id>`), weil Tripo gleiche Standardnamen vergibt
+  - [x] `pnpm art:tripo <id>`, Budget prüfen, im Spiel ansehen
+  - [x] `art/prompts/<id>_board_turnaround.md` je Figur
+- [x] T3 Einbindung (AC 3)
+  - [x] `mercenary` ersetzt die Blender-Figur (`tools/art/export_models.py` überspringt Tripo-ids; prüfen, dass die Blender-Fassung nicht mehr gebaut wird)
+  - [x] ids der neuen Modelle (Wolfsreiter, Tempelwache) für Story 2.9 und die Missionen aus Epic 9 im Abschlussvermerk festhalten; keine neuen Klassen oder Karten anlegen
+- [x] T4 Silhouettentest und Signaturteile (AC 4, 5)
+  - [x] Skript unter `tools/art/` rendert alle Akt-1-Figuren und -Gegner schwarz gefüllt in der Größe von Zoom „Mittel“ zu einem Blatt
+  - [x] Durchsicht und Signaturteil-Prüfung je Figur nach Art Direction §4.3 in `art/prompts/silhouettes_act1.md`, Abweichungen benennen
+  - [x] Nicht unterscheidbare Paare im Dokument vermerken und mit dem Produktinhaber abstimmen, nicht still umbauen
+- [x] T5 Screenshot und Prüfungen (AC 8, 9)
+  - [x] Screenshot der Figuren auf dem Brett im Hochformat
+  - [x] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm art:build`, `pnpm build`; Eintrag im Entscheidungslog (Credits, Stand)
 
 ## Dev Notes
 
@@ -71,8 +71,28 @@ damit Porträt und Figur zusammengehören.
 
 ### Agent Model Used
 
+Claude Opus 5.5 (Kontrolleur: Bilder per ChatGPT, Tripo über Claude in Chrome, Abnahme); Skripte Claude Sonnet (Subagenten)
+
 ### Debug Log References
+
+- Tripo: der erste Upload landete im Stapel-Modus (je Bild ein Modell, 300 Credits); vor dem Start verworfen und im Multi-View-Modus neu angelegt, keine Credits verbraucht
+- Ein zweiter Tripo-Tab blieb im Hintergrund hängen; die drei Figuren liefen danach nacheinander in einem Tab
 
 ### Completion Notes List
 
+- AC 1: alle Modelle vorhanden; nach dem Einbau von Flucht und Jubel (Story 8.2) mit `pnpm art:tripo` neu aufbereitet, keine Figur über Budget
+- AC 2: `wolf_rider` (Frau, 5 793 Dreiecke, ≈ 0,18 MB), `mercenary` (Mann, 6 341, ≈ 0,18 MB), `temple_guard` (Frau, 6 418, ≈ 0,20 MB); Porträts und Turnarounds per ChatGPT, Prompt-Protokolle `art/prompts/enemies_act1_2026-10-24.md` und `<id>_board_turnaround.md`; 420 Credits, Stand danach 745 (Entscheidungslog)
+- AC 3: `mercenary` ersetzt die Blender-Figur unter gleicher id (export_models.py überspringt Tripo-ids). **Für Story 2.9 und Epic 9:** Modell-ids `wolf_rider` (Wolfsreiter zu Fuß) und `temple_guard` (Tempelwache der Paktgarde); keine Klassen oder Karten angelegt. Fenn und Ulvric haben noch keine Ausrüstungsdaten, ihre Waffe am Brett fehlt bis zu ihren Missionen.
+- AC 4, 5: `pnpm art:silhouettes` (tools/art/silhouettes.py) schreibt `art/previews/silhouettes_act1.png` und `_large.png`; Durchsicht in `art/prompts/silhouettes_act1.md`. Schwache Paare Rhen/Kael, Brigant/Söldner, Wolfsreiterin/Ulvric; vom Produktinhaber am 2026-10-25 so abgenommen
+- AC 8: Screenshot der Figuren auf dem Brett im Hochformat im PR
+
 ### File List
+
+- art/mockups/characters-s1/class_wolf_rider.png, class_mercenary.png, class_temple_guard.png
+- art/turnarounds/{wolf_rider,mercenary,temple_guard}_board/{sheet,front,side,back}.png
+- art/models/source/{wolf_rider,mercenary,temple_guard}_board_tripo.glb
+- art/models/units/{wolf_rider,mercenary,temple_guard}.glb
+- art/prompts/enemies_act1_2026-10-24.md, {wolf_rider,mercenary,temple_guard}_board_turnaround.md, silhouettes_act1.md
+- tools/art/silhouettes.py, package.json (`art:silhouettes`), art/previews/silhouettes_act1.png, silhouettes_act1_large.png
+- concept/23-art-direction/decision-log.md
+- _bmad-output/implementation-artifacts/8-3-brettfiguren-fuer-akt-1.md, sprint-status.yaml
