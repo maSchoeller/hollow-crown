@@ -14,7 +14,7 @@ damit der Antrieb „Sündenbock“ greift.
 2. **Knoten:** `m1_1`, `expectedLevel 2`, `requires: completed prologue`, `merchantTier 1`, Titel „Steckbriefe“ / „Wanted“. `ch01` verlangt jetzt `completed m1_1`; die PoC-Knoten `ch01` und `ch02` bleiben als Brücke im Graphen (Prolog → 1-1 → ch01 → ch02), Weltkarte: ch01 auf 1-2, ch02 auf 1-3, bis die Stories 9.3 und 9.4 sie ersetzen.
 3. **Szenen:** `scn.m1_1.intro` (Ankunft, Steckbriefe, Gerrit noch spürbar, nicht schwer) und `scn.m1_1.outro` (Fenn tritt bei, neues Ziel „Wer hat uns angeheuert?“), Stimmen laut Narrative, je Box ≤ 110 Zeichen, DE in der Szene, EN im Locale.
 4. **Fenn:** als Einheit in `units.yaml` (Späher, Stufe 2, Werte [C]), Support-Paar Mira × Fenn in `supports.yaml`.
-5. **Nebenziele:** `visit_villages` (vier Häuser mit kurzen Besuchsszenen), `no_downs`, `turn_limit` (8 Runden, per Simulation abgestimmt). `goldReward` 800 [C].
+5. **Nebenziele:** `visit_villages` (vier Häuser mit kurzen Besuchsszenen), `no_downs`, `turn_limit` (9 Runden, per Simulation abgestimmt: Median Normal 9 nach dem Merge von #46). `goldReward` 800 [C].
 6. **Heimsuchungs-Anker:** drei Felder als Kommentarblock (Story 5.5, noch ohne Schema).
 7. **Prüfungen:** `pnpm content:check`, `pnpm lint`, `pnpm test`, `pnpm build` grün; `pnpm sim m1_1 --runs 50` liegt im Korridor (siehe Dev Agent Record).
 
@@ -46,7 +46,7 @@ damit der Antrieb „Sündenbock“ greift.
 - **OFFEN:**
   1. **Fenns Beitritt** ist entschieden (Produktinhaber 2026-10-25): Knoten-Wirkung `recruit: fenn` an `m1_1`, bei Sieg angewendet (`finishMission`), der Ergebnis-Screen führt ihn bei den Beitritten; die Simulationen wenden die Knotenwirkung selbst an.
   2. `personalSkill` und Affinität von Fenn: kein passender Skill, keine Vorgabe im Konzept (`# OFFEN` in `units.yaml`; Affinität `wind` als Startwert [C]).
-  3. Belohnungen der Nebenziele (Dörfer 200, schnell 100 Gold) und `goldReward` sind Startwerte [C]; `turn_limit` 8 Runden ist abgestimmt (Median Normal 8 bis 9).
+  3. Belohnungen der Nebenziele (Dörfer 200, schnell 100 Gold) und `goldReward` sind Startwerte [C]; `turn_limit` 9 Runden ist abgestimmt (Median Normal 9).
   4. `ch01` zeigt in seiner Einführung die Mechanik Waffendreieck noch einmal (PoC unverändert), seine Einleitung behandelt die Nachricht vom Tod des Königs noch als Neuigkeit, was nach Prolog und 1-1 überholt ist.
 - **Folgen für Bestehendes:** Sprecher `grosk` steht nur noch in Szenen, nicht mehr als Karteneinheit (bisher im Prolog); sein Namensschild gilt damit bis Story 9.5 als Spielerseite.
 

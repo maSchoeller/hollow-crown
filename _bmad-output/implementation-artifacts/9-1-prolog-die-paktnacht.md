@@ -14,7 +14,7 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 2. **Szenen:** `scn.prologue.intro` (Schlüsselgespräch 1 „Die Wache am Ring“, danach die Tafel „Die Paktnacht: Alarm im Glutdom“, Wahl `c01` mit den Flags `avatar_honest`/`avatar_proud` bleibt) und `scn.prologue.outro` (Schlüsselgespräch 2 „Gerrits Grab“, Tafel „Gerrits Grab“). Gerrit spricht nur in den Szenen und fällt auf der Flucht (erzählt in der Nachszene).
 3. **Beitritte:** Rhen, Kael, Brenna, Tobin (`joins: prologue`, unverändert).
 4. **Lektionen:** höchstens eine je Runde, höchstens drei Zeilen: Bewegung + Kampfvorschau + Ziel (Runde 1, `scn.prologue.tutorial_move`), Gefahrenzone + Deckung (Runde 2), Heiltrank (Kael < 60 %).
-5. **Nebenziele:** `no_downs` (Belohnung Heiltrank), `turn_limit` (8 Runden, 100 Gold, per Simulation abgestimmt). `goldReward` 300.
+5. **Nebenziele:** `no_downs` (Belohnung Heiltrank), `turn_limit` (11 Runden, 100 Gold, per Simulation abgestimmt: Median Normal 11 nach dem Merge von #46). `goldReward` 300.
 6. **Prüfungen:** `pnpm content:check`, `pnpm lint`, `pnpm test`, `pnpm build` grün; `pnpm sim prologue --runs 50` liegt im Korridor (siehe Dev Agent Record, abhängig von der Fluchtregel im Kern).
 
 ## Tasks / Subtasks
