@@ -60,6 +60,7 @@ units:
     level: 5
     at: [5, 3]
     boss: true
+    lieutenant: morra
     sprite: morra
     portrait: morra
     items: [ { def: steel_sword }, { def: vulnerary } ]

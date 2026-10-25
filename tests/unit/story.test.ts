@@ -205,7 +205,10 @@ describe('effects (architecture §5.3)', () => {
     const cmd = (effects: Effect[]) => validateCampaign(data, base, { type: 'effects', effects });
     expect(cmd([{ recruit: 'nobody' }])).toBe('unknown_unit');
     expect(cmd([{ leave: 'liora' }])).toBe('unknown_unit'); // not in the company
-    expect(cmd([{ recruit: { lt: 'hask' } }])).toBe('effect_unsupported');
+    // a lieutenant who does not join cannot change sides (story 3.7); the plain id of a lieutenant is no companion recruit
+    expect(cmd([{ recruit: { lt: 'hask' } }])).toBe('effect_invalid');
+    expect(cmd([{ recruit: { lt: 'nobody' } }])).toBe('unknown_unit');
+    expect(cmd([{ recruit: 'grosk' }])).toBe('effect_invalid');
     const dead = clone(base);
     dead.roster = dead.roster.filter((r) => r.id !== 'tobin');
     dead.fallen.push({ id: 'tobin', nameKey: 'unit.tobin.name', node: 'prologue' });
@@ -338,7 +341,7 @@ describe('content references (content:check)', () => {
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
-    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { recruit: { lt: 'hask' } }]) {
+    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }

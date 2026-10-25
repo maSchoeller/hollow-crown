@@ -5,6 +5,8 @@
 import {
   CoreInvariantError,
   applyCommand,
+  armyCount,
+  armyOverLimit,
   beginBattle,
   conditionContext,
   firstNode,
@@ -14,11 +16,15 @@ import {
   queuedFlags,
   validateEffects,
   flattenQueued,
+  type ArmyOver,
   type AvatarSettings,
   type BattleSettings,
   type BattleState,
   type BattleUnit,
   type ConditionContext,
+  type GameEvent,
+  filterEvents,
+  visibleState,
   type CampaignEvent,
   type Effect,
   type MapUnitDef,
@@ -50,7 +56,7 @@ import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
 import { addTexts } from '../../i18n';
 import { clone } from '../../core/util';
-import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, type DevLieutenant } from './devLieutenant';
+import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
 import { loadManifest } from '../../render/shared/assets';
 import { laterMusicAssets, missionAssets, placePath, type MissionUnit } from '../loading/plan';
 import { ensureMissionAssets, ensureMissionPack, prefetchQuietly } from './loading';
@@ -81,7 +87,11 @@ export function defaultDeploy(nodeId: string): string[] {
  * World map → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
  * there is a real choice (more company members than deployment slots); `from` is where its back stone leads.
  */
+/** The company is over its limits (story 3.7): no mission starts until mercenaries have been dismissed. The screens show the same check. */
+export const armyBlocksMission = (): ArmyOver | null => (campaign.value ? armyOverLimit(data, campaign.value) : null);
+
 export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
+  if (armyBlocksMission()) return;
   const node = nodeDef(nodeId);
   // map and dialogues of later missions come with their act pack (story 7.2): wait for it on the loading screen
   const pack = packNeededFor(node);
@@ -155,6 +165,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
  * `back` is where the loading screen's back stone leads.
  */
 export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
+  if (armyBlocksMission()) return;
   const start = createBattle(data, campaign.value!, nodeId, deploy);
   if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
   pendingEvents.value = startBattle(nodeId, deploy);
@@ -417,6 +428,48 @@ if (import.meta.env.DEV) {
         battle.value = null;
         screen.value = { name: 'worldmap' };
       },
+      /**
+       * a lieutenant changes sides (story 3.7): `devJoin(view, full)` with view `card` (default: plays a test decision whose answer is
+       * `recruit: { lt: grosk }` and shows the consequence card), `troop` (applies the effect, opens his figure), `wanted` (the list of
+       * wanted posters with the mark "In der Truppe"), `map` or `camp` (the world map with the army-limit notice and the locked buttons /
+       * the home with the tavern: open the tavern station to dismiss a mercenary). `full = true` first fills the company to its limits
+       * (20 companions, 6 mercenaries), so he joins into a full army. Starts an unsaved campaign when none is open; Grosk is met with grudge 2.
+       */
+      devJoin: (view: 'card' | 'troop' | 'wanted' | 'map' | 'camp' = 'card', full = false) => {
+        campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        const c = clone(campaign.value);
+        c.lieutenants = { ...c.lieutenants, grosk: { met: true, encounters: 2, grudge: 2, target: 'kael', routs: 2, signatureDropped: false } };
+        if (full) {
+          const proto = c.roster.find((r) => r.id === 'tobin') ?? c.roster[0]!;
+          let n = 0;
+          while (armyCount(c).companions < data.balance.economy.armyLimit) c.roster.push({ ...clone(proto), id: `stand${n}`, charId: `stand${n++}`, name: `Stand-in ${n}` });
+          const names = data.balance.economy.tavern.names;
+          for (let m = 0; armyCount(c).mercenaries < data.balance.economy.mercenaryLimit; m++) {
+            const { charId: _c, ...rest } = clone(proto);
+            c.roster.push({ ...rest, id: `merc${900 + m}`, nameKey: names[m % names.length]!, bag: [], equip: {} });
+          }
+        }
+        // the tavern opens after chapter 1: the camp view needs the first two nodes done
+        if (view === 'camp') for (const id of ['prologue', 'ch01']) if (!c.completed.includes(id)) c.completed.push(id);
+        campaign.value = c;
+        const join: Effect[] = [{ recruit: { lt: 'grosk' } }];
+        if (view === 'card') {
+          const scene: SceneDef = {
+            id: 'scn.dev.e3',
+            lines: [
+              { id: 'l01', speaker: ['kael'], mood: 'neutral', text: 'Der Riese will mit.' },
+              { id: 'c01', title: 'Grosk schliesst sich an', choice: [{ id: 'take', stance: 'warm', text: 'Komm mit uns.', summary: 'Grosk schliesst sich an', effects: join }, { id: 'no', stance: 'sober', text: 'Geh deiner Wege.', summary: 'Grosk bleibt zurueck' }] },
+            ],
+          };
+          data.scenes[scene.id] = scene;
+          addTexts('de', sceneTexts(scene));
+          addTexts('en', sceneTexts(scene));
+          screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+          return;
+        }
+        runEffects(join);
+        screen.value = view === 'troop' ? { name: 'troop', unit: 'grosk', from: 'worldmap' } : view === 'wanted' ? { name: 'wanted', from: 'worldmap' } : view === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+      },
       /** registers a chronicle page at run time (texts as German and English) and finds it: `devPage({ id, act, title, text })` */
       devPage: (page: ChroniclePageDef) => {
         data.chronicle[page.id] = page;
@@ -451,7 +504,7 @@ if (import.meta.env.DEV) {
         }
         campaign.value = c;
         const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
-        data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id));
+        data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id), data.maps);
         if (!data.campaign.nodes.some((n) => n.id === DEV_MAP_ID)) data.campaign.nodes.push(devLieutenantNode(first));
         await beginMission(DEV_MAP_ID, c.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
       },
@@ -478,6 +531,37 @@ if (import.meta.env.DEV) {
         const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
         if (!campaign.value!.completed.includes(first.id)) campaign.value = { ...campaign.value!, completed: [...campaign.value!.completed, first.id] };
         (window as unknown as { __hc: { autoWin: () => void } }).__hc.autoWin();
+      },
+      /**
+       * story 3.2: opens the test battle (see `devLieutenant`) and drives a lieutenant off: `devFlee('hask', 0, 'kael')` (id, routs so far
+       * = grudge, target id). He has 1 HP, a company unit stands next to him. With `play = 'preview'` nothing more happens: select the
+       * company unit that stands next to him, tap Attack and the lieutenant; the forecast shows "flees"
+       * instead of 0. With `play = 'attack'` (default) the attack is played at once: backward jump, smoke, falling pennant and the flee
+       * line (`flee_<routs % 3 + 1>`) as a speech bubble.
+       */
+      devFlee: async (id = 'hask', grudge = 0, target = 'kael', play: 'attack' | 'preview' = 'attack') => {
+        await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);
+        const b = battle.value;
+        const setup = b && fleeSetup(data, b.state, id);
+        if (!b || !setup) return;
+        battle.value = { ...b, state: play === 'attack' ? setup.seeded : setup.prepared };
+        if (play !== 'attack') return;
+        type DevBoard = { play: (e: GameEvent[], s: BattleState, p?: readonly BattleUnit[]) => Promise<void>; units: Map<string, unknown>; disposed?: boolean; setState: (s: BattleState) => Promise<void> };
+        const lt = setup.seeded.units.find((u) => u.lieutenant === id)!;
+        // the board is built when the mission has loaded (slow on a weak machine): wait until it shows the lieutenant, then a moment for the opening lines
+        let board: DevBoard | undefined;
+        for (let i = 0; i < 300; i++) {
+          board = (window as unknown as { __board?: DevBoard }).__board;
+          if (board && !board.disposed && board.units.has(lt.uid)) break;
+          board = undefined;
+          await new Promise((r) => setTimeout(r, 200));
+        }
+        await board?.setState(setup.seeded); // the board shows the prepared state (the attacker next to him)
+        await new Promise((r) => setTimeout(r, 1500));
+        const before = battle.value!.state;
+        const events = command(setup.cmd);
+        const after = battle.value!.state;
+        if (board) await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
       },
       /** changes the grudge of a lieutenant in the running test battle: `devGrudge('hask', 3, 'brenna')` */
       devGrudge: (id: string, grudge: number, target?: string) => {

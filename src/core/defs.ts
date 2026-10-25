@@ -201,6 +201,7 @@ export interface CharDef {
   items: ItemRef[];
   flags: string[];
   supports: string[];
+  /** node id of the chapter he joins in, `prologue` at the start, or `lieutenant`: he joins as a lieutenant through the effect `recruit: { lt }` (story 3.7) */
   joins: string;
   portrait?: string;
   sprite?: string;
@@ -855,8 +856,14 @@ export interface Balance {
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
   };
-  /** bounty and signature drop of the lieutenants (story 3.5) */
+  /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {
+    scaling: {
+      /** how many of the company's strongest units set the level of a lieutenant (GDD: 6) */
+      armySize: number;
+      /** weapon tier chain: item id -> the next tier in the same group; a weapon not listed stays (the cap) */
+      tierUp: Record<string, string>;
+    };
     bounty: {
       /** gold per grudge level: `goldPerLevel x (grudge before the rout + 1)` */
       goldPerLevel: number;

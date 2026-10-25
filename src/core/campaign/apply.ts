@@ -4,12 +4,12 @@ import type { GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
+import { allItems, canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
 import { loadoutSlots, promote, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { dismissError, hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
 import { actFinished, isAvailable, noteRoles } from './graph';
@@ -128,6 +128,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     }
     case 'hire':
       return hireError(data, c, cmd.offer);
+    case 'dismiss':
+      return dismissError(c, cmd.unit);
     case 'markSceneSeen':
       return data.scenes[cmd.scene] ? null : 'not_available';
     case 'choose': {
@@ -356,6 +358,14 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       c.tavern = c.tavern.filter((u) => u.id !== cmd.offer);
       c.roster.push(rec);
       events.push({ t: 'unitJoined', unit: rec.id });
+      break;
+    }
+    case 'dismiss': {
+      const u = c.roster.find((r) => r.id === cmd.unit)!;
+      // what he carried stays with the company, like a companion who leaves
+      c.convoy.push(...allItems(u));
+      c.roster = c.roster.filter((r) => r.id !== cmd.unit);
+      events.push({ t: 'unitLeft', unit: cmd.unit });
       break;
     }
     case 'choose': {

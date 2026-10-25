@@ -181,7 +181,7 @@ describe('opening lines (AC 7)', () => {
   const lt = (over: Partial<BattleUnit> = {}): BattleUnit => ({ uid: 'u', id: 'hask', team: 'enemy', pos: [1, 1], lieutenant: 'hask', ...over }) as BattleUnit;
   const known = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } };
   const camp = (lieutenants?: CampaignState['lieutenants']) =>
-    ({ lieutenants, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
+    ({ lieutenants, flags: {}, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
 
   it('not met: first; grudge and a living target: grudge_<n>; fallen target: mock; met without grudge: none', () => {
     expect(ltOpeningLine(camp(), lt())).toEqual({ line: 'first' });
@@ -202,9 +202,9 @@ describe('opening lines (AC 7)', () => {
 
   it('a lieutenant who is down, gone or off the board does not speak; everything on the board is seen without fog', () => {
     const s = { units: [lt({ uid: 'a' }), lt({ uid: 'b', downed: true }), lt({ uid: 'c', gone: 'fled' }), lt({ uid: 'd', pos: null }), lt({ uid: 'e', team: 'player' })] } as BattleState;
-    expect(isVisibleToPlayer(s, s.units[0]!)).toBe(true);
-    expect(ltLinesDue(camp(), s, new Set()).map((l) => l.unit)).toEqual(['a']);
-    expect(ltLinesDue(camp(), s, new Set(['a']))).toEqual([]);
+    expect(isVisibleToPlayer(data, s, s.units[0]!)).toBe(true);
+    expect(ltLinesDue(data, camp(), s, new Set()).map((l) => l.unit)).toEqual(['a']);
+    expect(ltLinesDue(data, camp(), s, new Set(['a']))).toEqual([]);
   });
 
   it('ltBarks marks speakers, names the target, and leaves the line out in skip mode', () => {

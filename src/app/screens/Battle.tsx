@@ -54,7 +54,7 @@ import { goalLine, goalStand } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
-import { ltBarks } from '../battle/ltLines';
+import { fleeBark, ltBarks } from '../battle/ltLines';
 import { campaign, data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
@@ -373,6 +373,8 @@ export function Battle() {
     }
     const after = battle.value!.state;
     await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
+    // a lieutenant who came into sight by this command speaks his opening line (story 3.2: under fog it waits for the sight)
+    if (ltReady.current && !battle.value!.state.outcome) await playLieutenantLines(true);
     board.skip = false;
     setHp({});
     setPhaseView(null);
@@ -456,6 +458,15 @@ export function Battle() {
       case 'died':
         audio.sfx('death');
         break;
+      case 'fled': {
+        audio.sfx('downed');
+        // the flee line after the jump (story 3.2); skip mode leaves it out
+        const st = battle.value!.state;
+        const play = !boardRef.current?.skip && settings.value.speed !== 3;
+        const line = fleeBark(data, campaign.value, st, e.unit, e.by, fleeSpoken.current, play);
+        if (line) await playBark(line);
+        break;
+      }
       case 'heal':
         audio.sfx('heal');
         break;
@@ -473,6 +484,8 @@ export function Battle() {
   /** opening lines of the enemy lieutenants (story 3.3): who has spoken, and whether the start events are through */
   const ltSpoken = useRef(new Set<string>());
   const ltReady = useRef(false);
+  /** lieutenants that have spoken their flee line (story 3.2) */
+  const fleeSpoken = useRef(new Set<string>());
   const playLieutenantLines = async (play: boolean) => {
     const st = battle.value!.state;
     const skip = !play || boardRef.current?.skip || settings.value.speed === 3;

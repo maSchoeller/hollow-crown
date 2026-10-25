@@ -4,7 +4,7 @@ import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clamp, dist, getUnit, inBounds, pairKey, ruleOn, terrainAt, unitAt } from '../util';
-import { applyStatus, extinguishTile, igniteTile, knockOut, setTerrain } from './effects';
+import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
 import { itemDef, weaponProfile, type WeaponProfile } from './items';
 import { moveCost, weaponRange } from './movement';
 import { combatExp, grantExp, grantSp } from './progression';
@@ -47,6 +47,9 @@ export interface Forecast {
   /** HP after if every strike hits (no crits) */
   attackerHpAfter: number;
   defenderHpAfter: number;
+  /** a lieutenant who would reach 0 HP flees instead of dying (story 3.2): the preview shows "flees" instead of 0 */
+  attackerFlees: boolean;
+  defenderFlees: boolean;
 }
 
 const TRIANGLE_TYPES = ['sword', 'axe', 'lance'];
@@ -298,6 +301,8 @@ export function forecast(
       guard,
       attackerHpAfter: aHp,
       defenderHpAfter: dHp,
+      attackerFlees: aHp <= 0 && fleesAtZero(a),
+      defenderFlees: dHp <= 0 && fleesAtZero(d),
     };
   } finally {
     a.pos = savedPos;
@@ -332,7 +337,7 @@ function knockback(data: GameData, s: BattleState, attacker: BattleUnit, target:
     target.hp = Math.max(0, target.hp - extra);
     events.push({ t: 'knockback', unit: target.uid, from, to: from, blocked: true });
     events.push({ t: 'damage', unit: target.uid, amount: extra, hpAfter: target.hp, cause: 'item' });
-    if (target.hp <= 0) knockOut(data, s, target, events);
+    if (target.hp <= 0) knockOut(data, s, target, events, attacker.uid);
   } else {
     target.pos = to;
     events.push({ t: 'knockback', unit: target.uid, from, to, blocked: false });
@@ -451,7 +456,7 @@ export function resolveAttack(
       if (me === a) landed.a = true;
       else landed.d = true;
     }
-    if (opp.hp <= 0) knockOut(data, s, opp, events);
+    if (opp.hp <= 0) knockOut(data, s, opp, events, me.uid);
   };
 
   const wasDowned = d.downed;
@@ -482,11 +487,11 @@ export function resolveAttack(
     const key = pairKey(a.id, p.id);
     const gained = addSupportPoints(data, s.supports, key, data.balance.supports.pointsTandemHealRescue);
     if (gained) events.push({ t: 'support', a: a.uid, b: p.uid, points: gained });
-    if (d.hp <= 0) knockOut(data, s, d, events);
+    if (d.hp <= 0) knockOut(data, s, d, events, p.uid);
   }
   if (landed.a && active(d)) applyOnHitEffects(data, s, a, d, f.attacker, aWp, events);
   if (landed.d && active(a)) applyOnHitEffects(data, s, d, a, f.defender, dWp, events);
-  if (landed.a && aWp?.terrainOnHit && d.gone === 'dead' && d.pos && ruleOn(s, 'elements')) {
+  if (landed.a && aWp?.terrainOnHit && (d.gone === 'dead' || d.gone === 'fled') && d.pos && ruleOn(s, 'elements')) {
     // a kill still sets the tile alight (fire spreading from the strike)
     if (aWp.terrainOnHit === 'ignite') igniteTile(data, s, d.pos, 'ignite', events);
   }
@@ -500,7 +505,7 @@ export function resolveAttack(
   ] as const) {
     grantSp(data, me, sp, events);
     if (me.team !== 'player' || !active(me)) continue;
-    const killed = foe.gone === 'dead' || (!wasDowned && foe.downed);
+    const killed = foe.gone === 'dead' || foe.gone === 'fled' || (!wasDowned && foe.downed);
     if (killed && foe.boss && me.equip.mainHand) {
       s.stats.bossKilledWith = itemDef(data, me.equip.mainHand).weaponType;
     }

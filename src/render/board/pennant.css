@@ -21,3 +21,25 @@
   height: 9px;
   background: #fff;
 }
+
+/* the pennant falls and fades when its lieutenant flees (story 3.2); own properties, so the placement transform stays untouched */
+.hc-pennant.is-falling {
+  animation: hc-pennant-fall var(--hc-fall, 320ms) ease-in forwards;
+}
+@keyframes hc-pennant-fall {
+  from {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  to {
+    translate: 5px 36px;
+    rotate: 28deg;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-pennant.is-falling {
+    animation-duration: 1ms;
+  }
+}

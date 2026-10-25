@@ -51,6 +51,16 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
     if (!it) err('balance.yaml', `lieutenant.bounty.materialByAct ${act}: unknown item ${id}`);
     else if (it.kind !== 'material') err('balance.yaml', `lieutenant.bounty.materialByAct ${act}: ${id} is no material`);
   }
+  // weapon tier chain (story 3.4): both items exist, the same weapon group, no step onto itself
+  for (const [from, to] of Object.entries(data.balance.lieutenant.scaling.tierUp)) {
+    const a = data.items[from];
+    const b = data.items[to];
+    if (!a) err('balance.yaml', `lieutenant.scaling.tierUp: unknown item ${from}`);
+    if (!b) err('balance.yaml', `lieutenant.scaling.tierUp: unknown item ${to}`);
+    if (!a || !b) continue;
+    if (from === to) err('balance.yaml', `lieutenant.scaling.tierUp: ${from} points at itself`);
+    if (!a.group || a.group !== b.group) err('balance.yaml', `lieutenant.scaling.tierUp: ${from} -> ${to} must stay in one weapon group (${a.group ?? 'none'} / ${b.group ?? 'none'})`);
+  }
   for (const lt of all) if (!byAct[String(lt.act)]) err('balance.yaml', `lieutenant.bounty.materialByAct: no material for act ${lt.act} (${lt.id})`);
   for (const lt of all) {
     perAct.set(lt.act, (perAct.get(lt.act) ?? 0) + 1);
@@ -102,5 +112,10 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
 
   // a map unit that names a lieutenant needs him in the content
   for (const m of Object.values(data.maps))
-    for (const u of allMapUnits(m)) if (u.lieutenant && !data.lieutenants?.[u.lieutenant]) err(`maps/${m.id}`, `${u.id ?? u.class}: unknown lieutenant ${u.lieutenant}`);
+    for (const u of allMapUnits(m)) {
+      if (!u.lieutenant) continue;
+      const lt = data.lieutenants?.[u.lieutenant];
+      if (!lt) err(`maps/${m.id}`, `${u.id ?? u.class}: unknown lieutenant ${u.lieutenant}`);
+      else if (u.items.some((r) => r.def === lt.signatureItem)) err(`maps/${m.id}`, `${u.id ?? u.class}: ${lt.id} never carries his signature item ${lt.signatureItem} (loot only)`);
+    }
 }

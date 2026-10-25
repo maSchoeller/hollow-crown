@@ -314,6 +314,11 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+.hud-hp.is-flees {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
 .hud-sub {
   font-weight: 600;
   font-size: 13px;

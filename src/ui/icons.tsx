@@ -38,6 +38,8 @@ const P: Record<string, string> = {
   rescue: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
   seize: 'M6 21V4M6 5h11l-2 4 2 4H6',
   escape: 'M14 4h5v16h-5M4 12h11M11 8l4 4-4 4',
+  // a lieutenant at 0 HP flees (story 3.2): the forecast shows this instead of 0
+  flee: 'M14 4h5v16h-5M4 12h11M11 8l4 4-4 4',
   rally: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   command: 'M5 12l4-4M5 12l4 4M5 12h9a5 5 0 0 1 5 5v1',
   // class actions (story 2.3): reuse target / rescue / rally until dedicated glyphs exist

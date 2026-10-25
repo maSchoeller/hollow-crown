@@ -293,6 +293,9 @@
   font-size: 12px;
   color: var(--hc-soft);
 }
+.hm-hint.is-warn {
+  color: var(--hc-ember-dark);
+}
 .hm-none {
   padding: 14px 4px;
   color: var(--hc-soft);

@@ -155,6 +155,40 @@ export function armyCount(c: CampaignState): { companions: number; mercenaries: 
   return { companions: c.roster.length - mercenaries, mercenaries };
 }
 
+/**
+ * Mercenary places now: the mercenary limit less the companions above their limit (the 20 + 6 places are one company, so a
+ * companion who joins into a full army takes a mercenary's place, story 3.7). Never below zero.
+ */
+export function mercenaryRoom(data: GameData, c: CampaignState): number {
+  const eco = data.balance.economy;
+  return Math.max(0, eco.mercenaryLimit - Math.max(0, armyCount(c).companions - eco.armyLimit));
+}
+
+/** How far the company is over its limits: `companions` above `armyLimit` (information), `dismiss` mercenaries who have to go. */
+export interface ArmyOver {
+  companions: number;
+  dismiss: number;
+}
+
+/**
+ * The company's excess, or `null` when it fits (story 3.7). A lieutenant joins even into a full army; before the next
+ * mission mercenaries have to go until the company fits again. Companions above their limit with no mercenary left to
+ * dismiss block nothing (there is nobody to let go). Pure: the mission start, the world map and the tavern all read this.
+ */
+export function armyOverLimit(data: GameData, c: CampaignState): ArmyOver | null {
+  const n = armyCount(c);
+  const dismiss = Math.max(0, n.mercenaries - mercenaryRoom(data, c));
+  if (dismiss === 0) return null;
+  return { companions: Math.max(0, n.companions - data.balance.economy.armyLimit), dismiss };
+}
+
+/** Why a mercenary cannot be dismissed, or null: he must be in the company and hired (a story companion never leaves this way). */
+export function dismissError(c: CampaignState, unitId: string): 'unknown_unit' | 'not_available' | null {
+  const u = c.roster.find((r) => r.id === unitId);
+  if (!u) return 'unknown_unit';
+  return isMercenary(u) ? null : 'not_available';
+}
+
 /** Gold a mercenary of this level costs in the tavern (balance.yaml `recruitCost`). */
 export function hireCost(data: GameData, level: number): number {
   const r = data.balance.economy.recruitCost;
@@ -165,7 +199,7 @@ export function hireCost(data: GameData, level: number): number {
 export function hireError(data: GameData, c: CampaignState, offerId: string): 'not_available' | 'army_full' | 'not_enough_gold' | null {
   const offer = c.tavern.find((u) => u.id === offerId);
   if (!offer) return 'not_available';
-  if (armyCount(c).mercenaries >= data.balance.economy.mercenaryLimit) return 'army_full';
+  if (armyCount(c).mercenaries >= mercenaryRoom(data, c)) return 'army_full';
   return c.gold < hireCost(data, offer.level) ? 'not_enough_gold' : null;
 }
 

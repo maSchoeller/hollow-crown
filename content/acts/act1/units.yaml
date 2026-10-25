@@ -48,7 +48,7 @@
   base:   { hp: 19, str: 5, mag: 0, skl: 4, spd: 6, lck: 6, def: 4, res: 1 }
   growth: { hp: 75, str: 50, mag: 5, skl: 45, spd: 50, lck: 55, def: 40, res: 20 }
   items: [ { def: iron_lance }, { def: wooden_shield }, { def: vulnerary } ]
-  supports: [brenna, mira]
+  supports: [brenna, mira, grosk]
   joins: prologue
 
 - id: mira
@@ -116,3 +116,14 @@
   recruit: { chapter: ch03, by: any, condition: door_opened, dialogue: scn.ch03.ysolde_cell }
   supports: [liora]
   joins: ch03
+- id: grosk
+  nameKey: unit.grosk.name
+  class: vanguard
+  level: 5
+  affinity: earth
+  personalSkill: for_the_little_ones
+  base:   { hp: 30, str: 9, mag: 0, skl: 5, spd: 3, lck: 3, def: 7, res: 1 }
+  growth: { hp: 90, str: 50, mag: 0, skl: 35, spd: 25, lck: 30, def: 40, res: 10 }
+  items: [ { def: iron_axe }, { def: little_hands }, { def: vulnerary } ]
+  supports: [tobin]
+  joins: lieutenant        # kein Kapitel: er tritt als Leutnant über die Wirkung recruit { lt: grosk } bei (Story 3.7, Entscheidung E3); Basis = Stufe 5, die Beitrittsstufe wächst mit der Truppe

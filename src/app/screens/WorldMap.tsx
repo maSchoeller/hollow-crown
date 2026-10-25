@@ -6,7 +6,7 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { actFinished, availableNodes, nodeLinks, wantedList } from '../../core';
+import { actFinished, armyOverLimit, availableNodes, nodeLinks, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -449,6 +449,8 @@ function NodeCard({ id }: { id: string }) {
   }
   const done = c.completed.includes(id);
   const goal = map.objectives.victory.type;
+  // a lieutenant who joined into a full company: mercenaries have to go before the next mission (story 3.7)
+  const over = armyOverLimit(data, c);
   return (
     <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
       <div class="wm-card__kicker">{t('ui.map.kicker', { node: nodeShort(id) })}</div>
@@ -472,9 +474,14 @@ function NodeCard({ id }: { id: string }) {
             <Amount resource="gold" value={map.goldReward} />
             {map.objectives.side.length > 0 && <span>{t('ui.map.side', { n: map.objectives.side.length })}</span>}
           </div>
+          {over && (
+            <p class="wm-card__warn" role="alert">
+              {t('ui.army.over', { n: over.dismiss })}
+            </p>
+          )}
           <div class="wm-card__buttons">
-            <SecondaryButton onClick={() => playNode(id, { prep: true, from: 'worldmap' })}>{t('ui.hub.prep')}</SecondaryButton>
-            <PrimaryButton onClick={() => playNode(id)}>{t('ui.hub.setOut')}</PrimaryButton>
+            <SecondaryButton disabled={!!over} onClick={() => playNode(id, { prep: true, from: 'worldmap' })}>{t('ui.hub.prep')}</SecondaryButton>
+            <PrimaryButton disabled={!!over} onClick={() => playNode(id)}>{t('ui.hub.setOut')}</PrimaryButton>
           </div>
         </>
       )}

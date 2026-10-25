@@ -3,6 +3,7 @@ import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
+import { isJoined, lieutenantUnit } from '../campaign/lieutenants';
 import { battleUnitFromMap, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 
@@ -71,8 +72,11 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
   onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited
+    if (def.lieutenant && isJoined(c, def.lieutenant)) return; // a lieutenant who joined the company stays off the board (story 3.7)
     const uid = def.id ?? def.char ?? `m${i}`;
-    const unit = battleUnitFromMap(data, def, s, def.team === 'enemy' ? pct : 0, uid);
+    // a lieutenant is scaled to the company and its grudge (story 3.4); everything else is built as the map says
+    const scaled = lieutenantUnit(data, c, def);
+    const unit = battleUnitFromMap(data, scaled.def, s, def.team === 'enemy' ? pct : 0, uid, scaled.skills);
     const lt = unit.lieutenant ? c.lieutenants?.[unit.lieutenant] : undefined;
     if (lt) {
       unit.grudge = lt.grudge;

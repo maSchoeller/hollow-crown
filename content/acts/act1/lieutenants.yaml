@@ -1,6 +1,6 @@
 # Die vier Leutnants von Akt 1 (Story 3.1). Narrative: "Leutnants (12, je Akt ein Lager)"; Werte laut Entscheidung des Produktinhabers 2026-10-25.
 # grudgeSkills = Groll 1, 2, 3 (Quelle grudge in core/skills.yaml); Zeilen in scenes/scn.lt.<id>.yaml; Titel (titleKey) in den Locales.
-# Ulvric ist vorläufig vanguard, bis die Wolfsreiter-Klasse (Story 2.9) existiert: dann hier umstellen.
+# Ulvric ist Wolfsreiter (Klasse wolf_rider, Story 2.9; Entscheidung des Produktinhabers aus 3.1, umgestellt in Story 3.7): Lanze passt zum Wolfszahn.
 - id: hask
   nameKey: unit.hask.name
   portrait: hask
@@ -27,7 +27,7 @@
   nameKey: unit.ulvric.name
   portrait: ulvric
   model: ulvric
-  class: vanguard
+  class: wolf_rider
   faction: border_bands
   signatureItem: wolf_fang
   grudgeSkills: [wolf_run, pack, breakthrough]

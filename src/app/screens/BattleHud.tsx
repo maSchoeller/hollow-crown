@@ -474,10 +474,17 @@ export function ForecastCard({
       </span>
     );
   };
-  const hpCell = (s: Forecast['attacker'], u: BattleUnit, after: number) => (
+  const hpCell = (s: Forecast['attacker'], u: BattleUnit, after: number, flees: boolean) => (
     <span class="hud-fc__hp">
-      <span class="hud-hp">
-        {s.hpBefore} → {after}
+      <span class={`hud-hp${flees ? ' is-flees' : ''}`}>
+        {s.hpBefore} →{' '}
+        {flees ? (
+          <>
+            <Icon name="flee" size={14} /> {t('ui.battle.preview.flees')}
+          </>
+        ) : (
+          after
+        )}
       </span>
       <span class={`hud-bar ${teamClass(u.team)}`}>
         <i class="hud-bar__keep" style={{ width: `${Math.max(0, Math.min(100, (after / Math.max(1, s.maxHp)) * 100))}%` }} />
@@ -511,9 +518,9 @@ export function ForecastCard({
           {val(f.defender, 'crit')}
         </div>
         <div class="hud-fc__row">
-          {hpCell(f.attacker, a, f.attackerHpAfter)}
+          {hpCell(f.attacker, a, f.attackerHpAfter, f.attackerFlees)}
           <span class="hud-l1">{t('ui.fc.hpAfter')}</span>
-          {hpCell(f.defender, d, f.defenderHpAfter)}
+          {hpCell(f.defender, d, f.defenderHpAfter, f.defenderFlees)}
         </div>
       </div>
       <div class="hud-chips hud-fc__notes">

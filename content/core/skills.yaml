@@ -23,6 +23,7 @@
 - { id: foresight,      source: personal, trigger: on_defend, condition: { attackerDamageType: magical }, effect: { avoidBonus: 15 } } # Liora
 - { id: gamblers_luck,  source: personal, trigger: passive,   effect: { critBonus: 10, hitBonus: -5 } }                                     # Varek
 - { id: prodigy,        source: personal, trigger: passive,   effect: { statusChanceBonus: 15 } }                                           # Ysolde
+- { id: for_the_little_ones, source: personal, trigger: on_attack, condition: { adjacentAllies: 1 }, effect: { hitBonus: 10, damageBonus: 2 } }   # Grosk
 
 # --- Item-Skills (meisterbar) ---
 - { id: shield_wall,  source: item, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }

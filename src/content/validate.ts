@@ -160,10 +160,19 @@ export function validateContent(
     for (const e of list ?? []) {
       const key = soleKey(e);
       const v = (e as unknown as Record<string, unknown>)[key];
-      if (UNSUPPORTED_EFFECTS.includes(key) || (key === 'recruit' && typeof v !== 'string'))
-        err(file, `${ctx}: effect ${key} is not yet supported`);
+      if (UNSUPPORTED_EFFECTS.includes(key)) err(file, `${ctx}: effect ${key} is not yet supported`);
       else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
-      else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
+      else if (key === 'recruit' && typeof v !== 'string') {
+        // a lieutenant who changes sides (story 3.7): he must be able to (`joins`) and have a companion definition of his id
+        const lt = (v as { lt: string }).lt;
+        const def = data.lieutenants[lt];
+        if (!def) err(file, `${ctx}: unknown lieutenant ${lt}`);
+        else if (!def.joins) err(file, `${ctx}: lieutenant ${lt} does not join (lieutenants.yaml joins is not set)`);
+        else if (!data.chars[lt]) err(file, `${ctx}: lieutenant ${lt} has no companion definition in units.yaml`);
+      } else if (key === 'recruit' || key === 'leave') {
+        companion(file, v as string, ctx);
+        if (key === 'recruit' && data.lieutenants[v as string]) err(file, `${ctx}: ${v as string} is a lieutenant, recruit him with recruit: { lt: ${v as string} }`);
+      }
       else if (key === 'grudge') {
         if (!data.lieutenants[(v as { lt: string }).lt]) err(file, `${ctx}: unknown lieutenant ${(v as { lt: string }).lt}`);
       } else if (key === 'item') item(file, v as ItemRef, ctx);

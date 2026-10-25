@@ -4,7 +4,7 @@ import { allItems } from '../rules/items';
 import type { CampaignState } from '../state';
 import { addToRoster } from './campaign';
 import { soleKey } from './conditions';
-import { clampGrudge, lieutenantState } from './lieutenants';
+import { clampGrudge, joinLieutenant, lieutenantState } from './lieutenants';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
@@ -55,10 +55,19 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
         break;
       }
       case 'recruit': {
-        if (typeof v !== 'string') return 'effect_unsupported';
-        if (!data.chars[v]) return 'unknown_unit';
-        if (c.fallen.some((f) => f.id === v)) return 'effect_invalid';
-        roster.add(v);
+        // `recruit: { lt }` brings a lieutenant over (story 3.7); a plain id is a companion, never a lieutenant
+        const lt = typeof v === 'string' ? undefined : (v as { lt: string }).lt;
+        const id = lt ?? (v as string);
+        if (lt !== undefined) {
+          const def = data.lieutenants?.[lt];
+          if (!def) return 'unknown_unit';
+          if (!def.joins || !data.chars[lt]) return 'effect_invalid';
+        } else {
+          if (!data.chars[id]) return 'unknown_unit';
+          if (data.lieutenants?.[id]) return 'effect_invalid';
+        }
+        if (c.fallen.some((f) => f.id === id)) return 'effect_invalid';
+        roster.add(id);
         break;
       }
       case 'leave':
@@ -117,7 +126,11 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
         break;
       }
       case 'recruit': {
-        const id = v as string;
+        if (typeof v !== 'string') {
+          joinLieutenant(data, c, (v as { lt: string }).lt, events);
+          break;
+        }
+        const id = v;
         c.left = c.left.filter((x) => x !== id);
         if (!c.roster.some((r) => r.id === id)) {
           addToRoster(data, c, id);

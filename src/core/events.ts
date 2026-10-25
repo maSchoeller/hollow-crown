@@ -32,6 +32,8 @@ export type GameEvent =
   /** a downed unit bleeds one more own phase; `turns` of `max`, at `max` it dies (a `died` event follows) */
   | { t: 'bleed'; unit: string; turns: number; max: number }
   | { t: 'died'; unit: string }
+  /** a lieutenant at 0 HP leaves the map instead of dying (story 3.2); `by`: the unit that drove him off, absent for burn or fire */
+  | { t: 'fled'; unit: string; by?: string }
   | { t: 'retreated'; unit: string }
   | { t: 'rescued'; unit: string; by: string }
   | { t: 'escaped'; unit: string }

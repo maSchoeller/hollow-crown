@@ -5,7 +5,7 @@
  * In the castle the room stones also sit on the picture (the anchors) and show their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { armyOverLimit, availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast, unitName, UnitCard } from '../../ui/components';
@@ -162,6 +162,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
     return list;
   });
   const [inv, setInv] = useState<string | null>(null);
+  const over = armyOverLimit(data, c);
   const invUnit = inv ? c.roster.find((r) => r.id === inv) : null;
   if (invUnit) return <FigureFlow unit={invUnit} units={c.roster.map((r) => r.id)} onSelect={setInv} onBack={() => setInv(null)} />;
   return (
@@ -207,8 +208,14 @@ export function Prep({ node, from }: { node: string; from: From }) {
             );
           })}
         </div>
+        {over && (
+          <div class="muted" role="alert" style={{ color: 'var(--hc-ember-dark)' }}>
+            {t('ui.army.over', { n: over.dismiss })}
+          </div>
+        )}
         <button
           class="btn primary"
+          disabled={!!over}
           onClick={() => {
             void beginMission(node, chosen, screen.value);
           }}
