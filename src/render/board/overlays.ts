@@ -22,6 +22,8 @@ export interface Overlays {
   reinforce?: Pos[];
   /** hold zones of vanguards (Halten, story 2.4): diagonal hatching */
   hold?: Pos[];
+  /** fields Wirken would change (story 2.5) */
+  cast?: Pos[];
 }
 
 export interface OverlayMesh {
@@ -41,6 +43,7 @@ const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pul
   heal: { color: '#59e680', alpha: 0.4, inset: 0.02 },
   reinforce: { color: '#f2802e', alpha: 0.25, inset: 0.16, pulse: 0.2 },
   hold: { color: '#8a2be2', alpha: 0.5, inset: 0 },
+  cast: { color: '#2ec4d6', alpha: 0.5, inset: 0.06, pulse: 0.2 },
   path: { color: '#ffffff', alpha: 0.55, inset: 0.33 },
   targets: { color: '#ffd959', alpha: 0.35, inset: 0.04, pulse: 0.35 },
 };
@@ -75,6 +78,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     heal: o.heal ?? [],
     reinforce: o.reinforce ?? [],
     hold: o.hold ?? [],
+    cast: o.cast ?? [],
     path: o.path ?? [],
     targets: o.targets ?? [],
   };

@@ -464,8 +464,31 @@ export function ForecastCard({
 }
 
 /** Preview of Fernbergen and Anfeuern: who is affected and what changes, from the numbers of the resolution. */
-export function ClassPreviewCard({ data, state, p }: { data: GameData; state: BattleState; p: ClassPreview }) {
+export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; state: BattleState; p: ClassPreview; caster?: BattleUnit }) {
   if (p.kind === 'aim') return null;
+  if (p.kind === 'cast') {
+    const a = p.area;
+    const team = caster?.team ?? 'player';
+    const hit = a.units.map((uid) => state.units.find((x) => x.uid === uid)!).filter(Boolean);
+    const foes = hit.filter((x) => (x.team === 'enemy') !== (team === 'enemy')).length;
+    return (
+      <div class="hc-piece hud-fc">
+        <div class="hud-fc__head">
+          <Icon name={a.element} size={34} />
+          <span class="hud-name hud-name--small">{t('ui.action.cast')}</span>
+          <span class="hud-chips">
+            <span class="hud-chip is-adv">{t('ui.preview.cast.turns', { n: a.turns })}</span>
+            {a.units.length > 0 && (
+              <span class="hud-chip">{t('ui.preview.cast.units', { foes, allies: hit.length - foes })}</span>
+            )}
+            {a.effect === 'extinguish' && a.extinguished > 0 && <span class="hud-chip is-adv">{t('ui.preview.cast.extinguished', { n: a.extinguished })}</span>}
+            {a.renews && <span class="hud-chip">{t('ui.preview.cast.renews')}</span>}
+          </span>
+        </div>
+        <p class="hud-sub">{t(`ui.preview.cast.${a.element}`, { r: a.radius, n: a.turns })}</p>
+      </div>
+    );
+  }
   const target = state.units.find((u) => u.uid === p.target)!;
   const base = computeStats(data, target);
   return (

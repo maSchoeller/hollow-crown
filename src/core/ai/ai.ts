@@ -6,10 +6,11 @@ import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { expectedDamage, forecast } from '../rules/combat';
 import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, dist, getUnit, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt } from '../util';
+import { active, areaTiles, dist, getUnit, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, terrainAt, tileIndex } from '../util';
 
 interface Plan {
   to: Pos;
@@ -150,6 +151,96 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
   return plans;
 }
 
+/** Profiles whose elementalists may cast instead of attacking (story 2.5): all but flee, raider and support. */
+const CAST_PROFILES = new Set(['aggressive', 'hold', 'guard', 'hunt', 'trigger']);
+
+/** Goal tiles of the mission the player walks to (reach, seize, escape); none for rout, boss, defend and survive. */
+function goalTiles(data: GameData, s: BattleState): Pos[] {
+  const v = mapOf(data, s).objectives.victory;
+  return v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? areaTiles(v.area) : [];
+}
+
+/**
+ * Wirken of an enemy elementalist (story 2.5), only fire and earth. Fire: at least `ai.castMinTargets` more player units than
+ * own units in the spread area (target plus flammable neighbours). Earth: a wall that makes the way of a player unit to the
+ * goal at least `ai.castWallDetour` longer or blocks it (distance field with and without the wall, no goal tile = no wall).
+ * Never when the best attack would kill for sure (`ai.castLethalChance`). Returns null when casting does not pay.
+ */
+function castPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[]): Plan | null {
+  const w = data.balance.ai;
+  const { src } = castSource(data, s, u);
+  if (!src || (src.element !== 'fire' && src.element !== 'earth')) return null;
+  const attacks = attackPlans(data, s, u, origins);
+  const best = attacks.find((p) => p.score > -500) ?? attacks[0];
+  if (best && best.action.kind === 'attack') {
+    const e = expectedDamage(forecast(data, s, u.uid, best.action.target, best.action.weapon, best.to));
+    if (e.killChance * 100 >= w.castLethalChance) return null;
+  }
+  const foes = hostileUnits(s, u).filter(active);
+  const plans: Plan[] = [];
+  if (src.element === 'fire') {
+    const friends = s.units.filter((o) => active(o) && isAlly(o.team, u.team));
+    for (const pos of origins) {
+      for (const at of castTargets(data, s, u, pos)) {
+        const keys = new Set(fireArea(data, s, at).map(posKey));
+        const inside = (o: BattleUnit) => keys.has(posKey(o.uid === u.uid ? pos : o.pos!));
+        const net = foes.filter(inside).length - friends.filter(inside).length;
+        if (net >= w.castMinTargets) plans.push({ to: pos, action: { kind: 'cast', at }, score: net });
+      }
+    }
+  } else {
+    const goals = goalTiles(data, s);
+    if (!goals.length) return null;
+    // one goal field per movement type serves all player units of that type
+    const groups = new Map<string, { rep: BattleUnit; units: Array<{ u: BattleUnit; base: number }>; field: Map<string, number> }>();
+    for (const o of foes) {
+      const mt = data.classes[o.classId]!.moveType;
+      let g = groups.get(mt);
+      if (!g) groups.set(mt, (g = { rep: o, units: [], field: distanceField(data, s, o, goals) }));
+      const base = g.field.get(posKey(o.pos!));
+      if (base !== undefined) g.units.push({ u: o, base });
+    }
+    const live = [...groups.values()].filter((g) => g.units.length);
+    if (!live.length) return null;
+    const impact = new Map<string, number>();
+    const delta = (p: Pos): number => {
+      const k = posKey(p);
+      const known = impact.get(k);
+      if (known !== undefined) return known;
+      let out = 0;
+      // a wall only matters on a shortest way: manhattan distance to the tile plus its goal distance cannot beat the unit's own distance
+      const near = live.some((g) => g.field.has(k) && g.units.some((e) => dist(e.u.pos!, p) + g.field.get(k)! <= e.base));
+      if (near && !goals.some((g) => samePos(g, p)) && terrainAt(s, p) !== 'rockwall') {
+        const idx = tileIndex(s, p);
+        const was = s.terrain[idx]!;
+        s.terrain[idx] = 'rockwall';
+        try {
+          for (const g of live) {
+            const walled = distanceField(data, s, g.rep, goals);
+            for (const e of g.units) {
+              const d = walled.get(posKey(e.u.pos!));
+              out = Math.max(out, d === undefined ? 1000 : d - e.base);
+            }
+          }
+        } finally {
+          s.terrain[idx] = was;
+        }
+      }
+      impact.set(k, out);
+      return out;
+    };
+    for (const pos of origins) {
+      for (const at of castTargets(data, s, u, pos)) {
+        const d = delta(at);
+        if (d >= w.castWallDetour) plans.push({ to: pos, action: { kind: 'cast', at }, score: d });
+      }
+    }
+  }
+  const at = (p: Plan) => (p.action.kind === 'cast' ? p.action.at : p.to);
+  plans.sort((a, b) => b.score - a.score || a.to[1] - b.to[1] || a.to[0] - b.to[0] || at(a)[1] - at(b)[1] || at(a)[0] - at(b)[0]);
+  return plans[0] ?? null;
+}
+
 function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, number> {
   const m = new Map<string, number>();
   for (const o of hostileUnits(s, u)) {
@@ -204,6 +295,11 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
   const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
   if (potion && u.hp * 100 < computeStats(data, u).maxHp * data.balance.ai.selfHealBelowPercent) {
     return act({ to: u.pos, action: { kind: 'item', item: potion.uid }, score: 0 });
+  }
+  if (CAST_PROFILES.has(profile)) {
+    // Wirken instead of attacking: hold-like profiles cast where they stand, the others from any tile they can reach
+    const cast = castPlan(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here);
+    if (cast) return act(cast);
   }
   switch (profile) {
     case 'trigger':

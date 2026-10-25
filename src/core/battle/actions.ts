@@ -1,6 +1,7 @@
 import type { GameData, Pos } from '../defs';
 import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/items';
 import { forecast, type Forecast } from '../rules/combat';
+import { castArea, castTargets, type CastArea } from '../rules/cast';
 import { classActionId } from '../rules/roles';
 import { moveBudget, reachable, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
@@ -19,6 +20,8 @@ export interface ActionOption {
   weapons?: Record<string, string[]>;
   items?: string[];
   object?: string;
+  /** cast: the tiles Wirken can be aimed at */
+  tiles?: Pos[];
 }
 
 export function hasKey(data: GameData, u: BattleUnit): string | undefined {
@@ -105,7 +108,8 @@ export const CHEER_BUFF = 'cheer';
 export type ClassPreview =
   | { kind: 'aim'; forecast: Forecast; hit: number; rangeBonus: number }
   | { kind: 'farRescue'; target: string; distance: number }
-  | { kind: 'cheer'; target: string; mov: number; hit: number };
+  | { kind: 'cheer'; target: string; mov: number; hit: number }
+  | { kind: 'cast'; area: CastArea };
 
 export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, a: Action): ClassPreview | null {
   const cfg = data.balance.classActions;
@@ -120,6 +124,10 @@ export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos:
     }
     case 'cheer':
       return { kind: 'cheer', target: a.target, mov: cfg.cheer.mov, hit: cfg.cheer.hit };
+    case 'cast': {
+      const area = castArea(data, s, u, a.at, pos);
+      return area ? { kind: 'cast', area } : null;
+    }
     default:
       return null;
   }
@@ -203,6 +211,8 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
   if (far.length) out.push({ kind: 'farRescue', targets: far });
   const cheer = cheerTargets(data, s, u, pos);
   if (cheer.length) out.push({ kind: 'cheer', targets: cheer });
+  const casts = castTargets(data, s, u, pos);
+  if (casts.length) out.push({ kind: 'cast', tiles: casts });
   out.push({ kind: 'wait' });
   return out;
 }

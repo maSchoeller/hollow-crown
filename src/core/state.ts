@@ -175,6 +175,11 @@ export interface BattleState {
    * clears it. Plain JSON, so the replay needs nothing besides the command log.
    */
   pursue?: { unit: string; left: number };
+  /**
+   * Wirken with wind (story 2.5): fog lifted for `team` on the tiles within `radius` of `at`, `turns` more round ends;
+   * Story 2.6 adds `liftedTiles(state, team)` to the team's vision. Missing = nothing lifted.
+   */
+  fogLifted?: Array<{ team: Team; at: Pos; radius: number; turns: number }>;
   /** core roles whose class action is not introduced yet (`lockedRoles`; missing in old saves = none locked) */
   lockedRoles?: string[];
 }

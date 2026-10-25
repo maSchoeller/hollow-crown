@@ -5,6 +5,7 @@ import { roll1 } from '../rng';
 import { resolveAttack } from '../rules/combat';
 import { applyStatus, damageUnit, endOfPhase, extinguishTile, igniteTile, startOfPhase, tickTerrain } from '../rules/effects';
 import { canEquip, itemDef, isRune, weaponProfile } from '../rules/items';
+import { resolveCast } from '../rules/cast';
 import { destinations, pathTo, pursueReach, reachable } from '../rules/movement';
 import { grantExp } from '../rules/progression';
 import { computeStats } from '../rules/stats';
@@ -58,6 +59,8 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
       if (!a.target && targets.length && !targets.includes(u.uid)) return 'invalid_target';
       return null;
     }
+    case 'cast':
+      return opt.tiles?.some((p) => samePos(p, a.at)) ? null : 'invalid_target';
     case 'door':
       return opt.object === a.object ? null : 'invalid_target';
     default:
@@ -360,6 +363,9 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       events.push({ t: 'classAction', unit: u.uid, action: 'cheer', target: t.uid });
       break;
     }
+    case 'cast':
+      resolveCast(data, s, u, a.at, events);
+      break;
     case 'talk': {
       const t = getUnit(s, a.target);
       if (t.recruit?.dialogue) events.push({ t: 'dialogue', id: t.recruit.dialogue });

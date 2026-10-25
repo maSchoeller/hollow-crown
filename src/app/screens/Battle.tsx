@@ -7,6 +7,7 @@ import {
   combinedRange,
   dangerZone,
   destinations,
+  castBlock,
   classPreview,
   forecast,
   holdZone,
@@ -83,7 +84,9 @@ type Mode =
   /** Nachsetzen right after an attack (story 2.4): `to` is the chosen tile, null until one is tapped */
   | { k: 'pursue'; uid: string; to: Pos | null }
   /** rule card of a passive role (Halten, Nachsetzen), reached by a tap on its dock slot */
-  | { k: 'passive'; uid: string; to: Pos };
+  | { k: 'passive'; uid: string; to: Pos }
+  /** Wirken (story 2.5): pick a field in range (`at` null), then the preview of the affected fields and the confirmation */
+  | { k: 'cast'; uid: string; to: Pos; at: Pos | null };
 
 function useWide(): boolean {
   const q = '(min-width: 600px)';
@@ -99,7 +102,7 @@ function useWide(): boolean {
 
 
 /** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
-const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'staff', 'command', 'rally'];
+const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'staff', 'command', 'rally'];
 /** Class actions with a preview and a confirmation before they run. */
 type ClassKind = 'aim' | 'farRescue' | 'cheer';
 
@@ -269,6 +272,11 @@ export function Battle() {
     }
     if (mode.k === 'target') {
       return board.setOverlays({ ...base, path, ghost, targets: mode.targets.map((id) => unit(id).pos!).filter(Boolean), cursor: to });
+    }
+    if (mode.k === 'cast') {
+      const tiles = availableActions(data, s, u, to).find((o) => o.kind === 'cast')?.tiles ?? [];
+      const pre = mode.at ? classPreview(data, s, u, to, { kind: 'cast', at: mode.at }) : null;
+      return board.setOverlays({ ...base, path, ghost, targets: tiles.filter((p) => !mode.at || !samePos(p, mode.at)), cast: pre?.kind === 'cast' ? pre.area.tiles : [], cursor: mode.at ?? to });
     }
     if (mode.k === 'passive') {
       const pre = passivePreview(data, s, u, to);
@@ -491,6 +499,12 @@ export function Battle() {
       }
       case 'passive':
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+      case 'cast': {
+        if (mode.at && samePos(p, mode.at)) return void confirmCast();
+        const tiles = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === 'cast')?.tiles ?? [];
+        if (tiles.some((c) => samePos(c, p))) return setMode({ ...mode, at: p });
+        return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+      }
       case 'classPreview': {
         if (at && at.uid === mode.target) return void confirmClassAction();
         setMode({ k: 'moved', uid: mode.uid, to: mode.to });
@@ -522,6 +536,8 @@ export function Battle() {
     audio.sfx('cancel');
     if (info) return setInfo(null);
     switch (mode.k) {
+      case 'cast':
+        return setMode(mode.at ? { ...mode, at: null } : { k: 'moved', uid: mode.uid, to: mode.to });
       case 'forecast':
       case 'classPreview':
       case 'passive':
@@ -546,6 +562,11 @@ export function Battle() {
   const confirmClassAction = async () => {
     if (mode.k !== 'classPreview') return;
     await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, target: mode.target } });
+  };
+
+  const confirmCast = async () => {
+    if (mode.k !== 'cast' || !mode.at) return;
+    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'cast', at: mode.at } });
   };
 
   // --------------------------------------------------------------- Nachsetzen
@@ -653,6 +674,8 @@ export function Battle() {
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind } as Action });
       case 'door':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'door', object: opt.object! } });
+      case 'cast':
+        return setMode({ k: 'cast', uid: u.uid, to: mode.to, at: null });
       case 'aim':
       case 'farRescue':
       case 'cheer': {
@@ -717,6 +740,7 @@ export function Battle() {
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
       : [];
   const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;
+  const castPre = mode.k === 'cast' && mode.at ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'cast', at: mode.at }) : null;
   const passivePre = mode.k === 'passive' ? passivePreview(data, s, unit(mode.uid), mode.to) : null;
   const readyCount = s.units.filter(selectable).length;
 
@@ -749,6 +773,9 @@ export function Battle() {
       if (mode.k === 'selected' && msg === t('ui.hud.pickTile')) return;
       setReason(msg);
     };
+    // Wirken dimmed: say why (no tome, light/dark, wind without fog, no valid field)
+    const block = placed && !classOpts.length ? castBlock(data, s, u, (mode as Extract<Mode, { k: 'moved' }>).to) : null;
+    const castReason = block ? t(`ui.cast.no.${block}`) : null;
     const classOne = classOpts.length === 1 ? classOpts[0]! : undefined;
     // passive role (Vorkämpfer: Halten, Plänkler: Nachsetzen): the role symbol shows a state; a tap explains the rule with a preview
     const passiveId = classOpts.length ? undefined : classActionId(data, u, s);
@@ -765,7 +792,7 @@ export function Battle() {
         />
         <DockAction
           variant="class"
-          icon={classOpts.length ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
+          icon={classOpts.length && classOpts[0]!.kind !== 'cast' ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
           label={passive ? t(`ui.passive.${passive}.name`) : classOne ? t(`ui.action.${classOne.kind}`) : t('ui.hud.classSlot')}
           sub={passive ? t('ui.passive.ready') : undefined}
           state={passive ? 'ready' : undefined}
@@ -777,7 +804,7 @@ export function Battle() {
                 ? () => void doAction(classOne)
                 : classOpts.length
                   ? () => setClassPick(true)
-                  : ask(t(placed ? 'ui.hud.noClass' : 'ui.hud.pickTile'))
+                  : ask(castReason ?? t(placed ? 'ui.hud.noClass' : 'ui.hud.pickTile'))
           }
         />
         <DockAction
@@ -874,6 +901,23 @@ export function Battle() {
             <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.back')}</SecondaryButton>
             <PrimaryButton onClick={() => cancelRef.current()}>{t('ui.passive.ok')}</PrimaryButton>
           </div>
+        </>
+      )}
+      {mode.k === 'cast' && selUnit && (
+        <>
+          {!castPre && (
+            <div class="hud-row">
+              {back}
+              <HintPill>{t('ui.pick.cast')}</HintPill>
+            </div>
+          )}
+          {castPre ? <ClassPreviewCard data={data} state={s} p={castPre} caster={selUnit} /> : card}
+          {castPre && (
+            <div class="hud-confirm">
+              <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.cancel')}</SecondaryButton>
+              <PrimaryButton onClick={() => void confirmCast()}>{t('ui.action.cast')}</PrimaryButton>
+            </div>
+          )}
         </>
       )}
       {mode.k === 'classPreview' && cls && (

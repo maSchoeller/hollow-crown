@@ -16,6 +16,8 @@ export type Action =
   | { kind: 'aim'; target: string; weapon?: string }
   | { kind: 'farRescue'; target: string }
   | { kind: 'cheer'; target: string }
+  /** Wirken (story 2.5): the tile must be in `castTargets` */
+  | { kind: 'cast'; at: Pos }
   | { kind: 'seize' }
   | { kind: 'escape' };
 

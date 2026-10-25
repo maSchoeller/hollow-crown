@@ -701,6 +701,7 @@ export const balanceSchema = z.object({
     farRescue: z.object({ range: z.number().int().min(1) }),
     cheer: z.object({ mov: z.number().int(), hit: z.number() }),
     hold: z.object({ detourMax: z.number().int().min(0) }),
+    cast: z.object({ waterRadius: z.number().int().min(0), fogDuration: z.number().int().min(1) }),
   }),
   bag: z.object({ size: z.number().int() }),
   economy: z.looseObject({

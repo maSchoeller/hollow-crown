@@ -53,6 +53,8 @@ export type GameEvent =
   | { t: 'rally'; unit: string; affected: string[] }
   /** a class action of story 2.3 was used (`target` = the rescued or cheered unit, or the aimed-at foe) */
   | { t: 'classAction'; unit: string; action: 'aim' | 'farRescue' | 'cheer'; target: string }
+  /** Wirken (story 2.5) on a tile; the effects follow as `terrain` and `status` events */
+  | { t: 'classAction'; unit: string; action: 'cast'; at: Pos; element: Element }
   | { t: 'support'; a: string; b: string; points: number }
   | { t: 'itemUsed'; unit: string; item: string; target?: string }
   | { t: 'equipped'; unit: string; item: string }

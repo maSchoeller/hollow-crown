@@ -140,6 +140,8 @@ classActions:
   farRescue: { range: 2 }
   cheer: { mov: 1, hit: 10 }
   hold: { detourMax: 2 }
+  # Wirken (Story 2.5): Reichweite = Waffenreichweite der Zauberwaffe; Brand-/Wall-Dauer in terrainEffects; waterRadius = Löschradius um das Zielfeld, fogDuration = Runden, die Wind den Nebel lichtet (Radius windFogClearRadius)
+  cast: { waterRadius: 1, fogDuration: 2 }
 bag: { size: 3 }
 fog:
   baseVision: 3
@@ -189,3 +191,7 @@ ai:
   dangerPerAttacker: 5
   supportHealBelowPercent: 70
   selfHealBelowPercent: 40
+  # Wirken der gegnerischen Elementaristen (Story 2.5): Spieler-Einheiten minus eigene im Brand-Ausbreitungsbereich (mindestens), Felswall nur bei mindestens so viel längerem Spielerweg zum Ziel, kein Wirken bei Kill-Chance des besten Angriffs ab so viel Prozent
+  castMinTargets: 2
+  castWallDetour: 3
+  castLethalChance: 100

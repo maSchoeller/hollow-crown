@@ -77,7 +77,7 @@ beforeAll(() => {
 
 describe('class action numbers come from balance.yaml', () => {
   it('has Zielen +1 range/+15 hit, Fernbergen 2 tiles, Anfeuern +1 MOV/+10 hit (GDD)', () => {
-    expect(data.balance.classActions).toEqual({ aim: { rangeBonus: 1, hit: 15 }, farRescue: { range: 2 }, cheer: { mov: 1, hit: 10 }, hold: { detourMax: 2 } });
+    expect(data.balance.classActions).toEqual({ aim: { rangeBonus: 1, hit: 15 }, farRescue: { range: 2 }, cheer: { mov: 1, hit: 10 }, hold: { detourMax: 2 }, cast: { waterRadius: 1, fogDuration: 2 } });
   });
   it('binds the actions to the right roles', () => {
     expect(data.classes.marksman!.classAction?.id).toBe('aim');

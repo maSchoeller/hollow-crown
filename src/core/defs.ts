@@ -712,6 +712,8 @@ export interface Balance {
     farRescue: { range: number };
     cheer: { mov: number; hit: number };
     hold: { detourMax: number };
+    /** Wirken (story 2.5): radius around the target that water puts out, rounds wind lifts fog */
+    cast: { waterRadius: number; fogDuration: number };
   };
   bag: { size: number };
   economy: {
@@ -755,6 +757,10 @@ export interface Balance {
     dangerPerAttacker: number;
     supportHealBelowPercent: number;
     selfHealBelowPercent: number;
+    /** Wirken of enemy elementalists (story 2.5) */
+    castMinTargets: number;
+    castWallDetour: number;
+    castLethalChance: number;
   };
 }
 
