@@ -1226,6 +1226,23 @@ damit die Truppe schon in Akt 1 ein Zuhause hat und ihre Gefallenen einen Ort.
 **Wenn** der Spieler die Gedächtnishalle öffnet
 **Dann** stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), Gerrits Stein zuerst; Lektionen gibt es erst ab Akt 2 (Story 10.6) (UX-DR11 Teil).
 
+### Story 6.10: Aufstellung vor der Mission im Stil B
+
+Als Spieler
+möchte ich die Aufstellung vor einer Mission im selben Stil wie Truppe, Lager und Ergebnis sehen,
+damit der Weg von der Knoten-Karte in den Kampf nicht durch einen Bildschirm aus dem Prototyp bricht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Knoten-Karte der Weltkarte („Aufstellung“) oder mehr Gefährten als Plätze („Aufbrechen“)
+**Wenn** der Vorbereitungs-Screen (`prep`) erscheint
+**Dann** zeigt er Ziel, Plätze (x/y) und die Truppe als Steine im Stil B (DESIGN.md, Studio-Look): Porträt, Name, Klasse und Stufe ohne Umbruch, TP, Waffe, Pflicht-Figuren gesperrt mit Grund, Tasche/Ausrüsten wie heute, und „Kampf beginnen“ als Primär-Knopf
+**Und** die Funktion bleibt unverändert (Auswahl, Pflicht-Figuren, Ausrüsten, Start); Styles in einer eigenen CSS-Datei neben der Komponente, der Abschnitt in `src/ui/styles.css` entfällt.
+
+**Angenommen** ein Mockup in `concept/25-ux/mockups/` (fehlt noch, UX liefert es zuerst)
+**Wenn** die Story umgesetzt ist
+**Dann** passt der Screen bei 375 × 812 und am Desktop zum Mockup, alle Texte stehen in `de.yaml`/`en.yaml`.
+
 ## Epic 7: Akt-Pakete und Offline
 
 Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
