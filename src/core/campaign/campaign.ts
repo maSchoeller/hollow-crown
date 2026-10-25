@@ -307,7 +307,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       id: u.id,
       nameKey: u.nameKey,
       name: u.name,
-      levelBefore: before?.level ?? u.level,
+      levelBefore: before?.level ?? u.levelAtExpStart ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
       capped: u.level >= levelCap(data) && levelCap(data) < data.balance.levels.max,
