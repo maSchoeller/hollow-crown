@@ -3,9 +3,10 @@
  * against whoever drove him off; and which line he speaks at first sight. Pure: no Babylon, no DOM, no randomness.
  */
 import type { BattleState, BattleUnit, CampaignState, LieutenantState } from '../state';
-import type { GameData } from '../defs';
-import { newItem } from '../battle/create';
+import type { GameData, ItemRef, LieutenantDef, MapUnitDef } from '../defs';
+import { newItem, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
+import { effectiveLevel } from '../rules/skills';
 import { fogOn, visibleTiles } from '../rules/vision';
 import { posKey } from '../util';
 import type { BountyResult } from './campaign';
@@ -26,6 +27,67 @@ export const lieutenantState = (c: Pick<CampaignState, 'lieutenants'>, id: strin
 
 /** Keeps a grudge inside 0-3. */
 export const clampGrudge = (n: number): number => Math.max(0, Math.min(GRUDGE_MAX, n));
+
+/**
+ * The level of a lieutenant (story 3.4, GDD Leutnants): the average of the effective levels of the strongest
+ * `lieutenant.scaling.armySize` units of the company (`c.roster`; a pro class counts +15), rounded commercially (x.5 up),
+ * plus the grudge. Fewer units than that: the average of those there are. Story 3.7 calls it with grudge 0 for a lieutenant who joins.
+ */
+export function lieutenantLevel(data: GameData, c: Pick<CampaignState, 'roster'>, grudge: number): number {
+  const top = c.roster
+    .map((u) => effectiveLevel(data, u))
+    .sort((a, b) => b - a)
+    .slice(0, Math.max(1, data.balance.lieutenant.scaling.armySize));
+  const avg = top.length ? roundDiv(top.reduce((a, b) => a + b, 0), top.length) : 1;
+  return Math.max(1, avg) + clampGrudge(grudge);
+}
+
+/** The grudge skills a lieutenant holds at `grudge`: the first `grudge` of his three (0: none, 3: all). */
+export const lieutenantSkills = (def: Pick<LieutenantDef, 'grudgeSkills'>, grudge: number): string[] => def.grudgeSkills.slice(0, clampGrudge(Math.floor(grudge)));
+
+/** A weapon `steps` tiers higher in its group along `lieutenant.scaling.tierUp`; where the chain ends, the last one stays. */
+export function tierUpItem(data: GameData, itemId: string, steps: number): string {
+  const chain = data.balance.lieutenant.scaling.tierUp;
+  let id = itemId;
+  for (let i = 0; i < steps; i++) {
+    const next = chain[id];
+    if (!next) break;
+    id = next;
+  }
+  return id;
+}
+
+/**
+ * The items a lieutenant carries into battle: those of his map unit, each weapon on the chain `grudge` tiers up, never
+ * his signature item (that is loot only, story 3.5). Items that are no weapon on the chain stay as they are. The list keeps
+ * its order so `drops` can be mapped; `kept` lists the positions in `refs` of the items that remain.
+ */
+export function lieutenantItems(data: GameData, def: Pick<LieutenantDef, 'signatureItem'>, refs: readonly ItemRef[], grudge: number): { items: ItemRef[]; kept: number[] } {
+  const items: ItemRef[] = [];
+  const kept: number[] = [];
+  refs.forEach((r, i) => {
+    if (r.def === def.signatureItem) return;
+    items.push({ ...r, def: tierUpItem(data, r.def, clampGrudge(grudge)) });
+    kept.push(i);
+  });
+  return { items, kept };
+}
+
+/**
+ * A map unit as the battle builds it: for a lieutenant (known in the content) the level from the company and his grudge,
+ * the tiered items and the grudge skills; the level on the map is ignored. Any other unit comes back unchanged.
+ */
+export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' | 'lieutenants'>, def: MapUnitDef): { def: MapUnitDef; skills: string[] } {
+  const lt = def.lieutenant ? data.lieutenants?.[def.lieutenant] : undefined;
+  if (!lt) return { def, skills: [] };
+  const grudge = lieutenantState(c, lt.id).grudge;
+  const { items, kept } = lieutenantItems(data, lt, def.items, grudge);
+  const drops = def.drops?.map((i) => kept.indexOf(i)).filter((i) => i >= 0);
+  return {
+    def: { ...def, level: lieutenantLevel(data, c, grudge), items, ...(drops ? { drops } : {}) },
+    skills: lieutenantSkills(lt, grudge),
+  };
+}
 
 /** One lieutenant after a won mission (story 3.5 hangs bounty and signature drop on this list). */
 export interface LieutenantOutcome {

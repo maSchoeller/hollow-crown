@@ -722,6 +722,7 @@ export const balanceSchema = z.object({
   difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number() })),
   ai: z.record(z.string(), z.number()),
   lieutenant: z.strictObject({
+    scaling: z.strictObject({ armySize: z.number().int().min(1), tierUp: z.record(z.string(), z.string()) }),
     bounty: z.strictObject({
       goldPerLevel: z.number().int().min(0),
       materials: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'materials: min above max'),

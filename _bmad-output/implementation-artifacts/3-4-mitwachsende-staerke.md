@@ -1,6 +1,6 @@
 # Story 3.4: Mitwachsende Stärke
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -20,18 +20,18 @@ damit jede Begegnung fordernd bleibt.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Balance (AC 1)
-  - [ ] `balance.yaml` `lieutenant.scaling`, `defs.ts` Typ, `balanceSchema`
-- [ ] T2 Stufe und Werte (AC 1, 2, 5)
-  - [ ] `lieutenantLevel` (kaufmännisch gerundet, `effectiveLevel`)
-  - [ ] Erwartungswert-Werte als gemeinsame Funktion mit `genericStats`
-  - [ ] `createBattle`/`battleUnitFromMap` übergeben Stufe und Groll
-- [ ] T3 Ausrüstung (AC 3)
-  - [ ] Tier-Kette `lieutenant.scaling.tierUp` in `balance.yaml` (siehe Offene Fragen), ohne Eintrag Deckel; Signaturwaffe ausschließen
-- [ ] T4 Fähigkeiten (AC 4, 6)
-  - [ ] `lieutenantSkills`, Einbindung in die Skill-Summen des Leutnants
-- [ ] T5 Tests, Sim, Prüfungen (AC 7)
-  - [ ] `tests/unit/lieutenants-scaling.test.ts`, Sim der Karten, Decision-Log
+- [x] T1 Balance (AC 1)
+  - [x] `balance.yaml` `lieutenant.scaling`, `defs.ts` Typ, `balanceSchema`
+- [x] T2 Stufe und Werte (AC 1, 2, 5)
+  - [x] `lieutenantLevel` (kaufmännisch gerundet, `effectiveLevel`)
+  - [x] Erwartungswert-Werte als gemeinsame Funktion mit `genericStats`
+  - [x] `createBattle`/`battleUnitFromMap` übergeben Stufe und Groll
+- [x] T3 Ausrüstung (AC 3)
+  - [x] Tier-Kette `lieutenant.scaling.tierUp` in `balance.yaml` (siehe Offene Fragen), ohne Eintrag Deckel; Signaturwaffe ausschließen
+- [x] T4 Fähigkeiten (AC 4, 6)
+  - [x] `lieutenantSkills`, Einbindung in die Skill-Summen des Leutnants
+- [x] T5 Tests, Sim, Prüfungen (AC 7)
+  - [x] `tests/unit/lieutenants-scaling.test.ts`, Sim der Karten, Decision-Log
 
 ## Dev Notes
 
@@ -91,8 +91,28 @@ damit jede Begegnung fordernd bleibt.
 
 ### Agent Model Used
 
+Claude Sonnet 5.5
+
 ### Debug Log References
+
+- Sim vor/nach (50 Läufe, normal/standard, verkettet): im Bericht an den Kontrolleur.
 
 ### Completion Notes List
 
+- Neues in `src/core/campaign/lieutenants.ts` (ohne Zyklus: `setup.ts` ruft es, `create.ts` kennt es nicht): `lieutenantLevel`, `lieutenantSkills`, `tierUpItem`, `lieutenantItems`, `lieutenantUnit`. `battleUnitFromMap` bekam den Parameter `grantSkills` (Fähigkeiten stehen in `mastered`/`loadout`, `skills.ts` bleibt unverändert). `genericStats` rechnet den Erwartungswert (`roundDiv`, kaufmännisch) für Leutnants, generische Gegner und Söldner gleich.
+- Armee = `c.roster` (Gefährten + Söldner, auch Nicht-Eingesetzte), wie die Simulation (`armyLevel`); GDD und Architektur nennen nur „Armee“, die Story sagt `c.roster`. 
+- Der Kern gab Leutnants nie die Signaturwaffe; das tat nur der Dev-Helfer `devLieutenantMap` (jetzt: Waffen der echten Karte). Der Kern lässt sie nun ausdrücklich weg, `content:check` lehnt sie an der Karteneinheit ab.
+- `balance.yaml`: `lieutenant.scaling.armySize: 6`, `tierUp` (Schwert, Lanze, Axt, Bogen: iron → steel). Hask (ch01) trägt schon `steel_axe`, Morra (ch02) `steel_sword`: am Ende der Kette, also kein Tier-Aufstieg in Akt 1.
+- `genericStats(..., rounding)`: Standard `'floor'` (generische Gegner und Söldner rechnen wie vorher), `'nearest'` (kaufmännisch gerundeter Erwartungswert) nutzt nur der Leutnant-Pfad in `battleUnitFromMap`. Korrektur des Kontrolleurs: die Rundung für alle Gegner war nicht beauftragt und brach ch01 aus dem Korridor.
+- **Entscheidung Kontrolleur:** „Armee“ = `c.roster` (es gibt kein Verletzten-System, das Einheiten ausnimmt).
+- Nicht ausgeführt: `pnpm test:e2e`, Screenshot.
+
 ### File List
+
+- neu: `tests/unit/lieutenants-scaling.test.ts`
+- geändert: `src/core/campaign/lieutenants.ts`, `src/core/campaign/wanted.ts`, `src/core/battle/{create,setup}.ts`, `src/core/defs.ts`, `src/content/{schemas,validateLieutenants}.ts`, `content/core/balance.yaml`, `src/app/state/{devLieutenant,flow}.ts`, `concept/24-architecture/decision-log.md`
+
+## Change Log
+
+- 2026-10-25: Story 3.4 umgesetzt (Stufe aus der Truppe, Erwartungswerte, Waffen-Tier, Groll-Fähigkeiten, Tier-Kette in `balance.yaml`).
+- 2026-10-25 Kontrolleur: globale Rundungsänderung für generische Gegner zurückgenommen (nur Leutnants runden kaufmännisch); Checks grün (757 Tests), Sim aller drei Karten im Korridor; Status review.

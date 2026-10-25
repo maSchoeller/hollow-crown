@@ -454,7 +454,7 @@ if (import.meta.env.DEV) {
         }
         campaign.value = c;
         const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
-        data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id));
+        data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id), data.maps);
         if (!data.campaign.nodes.some((n) => n.id === DEV_MAP_ID)) data.campaign.nodes.push(devLieutenantNode(first));
         await beginMission(DEV_MAP_ID, c.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
       },

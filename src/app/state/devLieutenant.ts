@@ -1,5 +1,5 @@
 /** Dev only: a test arena with lieutenants (story 3.1), opened by `__hc.devLieutenant` in flow.ts. Not part of the game. */
-import { applyCommand, seedRng, type BattleState, type CampaignNodeDef, type Command, type GameData, type LieutenantDef, type MapDef, type MapUnitDef, type Pos } from '../../core';
+import { applyCommand, seedRng, type BattleState, type CampaignNodeDef, type Command, type GameData, type ItemRef, type LieutenantDef, type MapDef, type MapUnitDef, type Pos } from '../../core';
 import { clone, inBounds, unitAt } from '../../core/util';
 
 export interface DevLieutenant {
@@ -12,8 +12,16 @@ export interface DevLieutenant {
 
 export const DEV_MAP_ID = 'dev_lieutenant';
 
-/** The prologue map with only the given lieutenants as enemies, in a row in front of the deploy area; they hold their ground. */
-export function devLieutenantMap(base: MapDef, lieutenants: Record<string, LieutenantDef>, ids: readonly string[]): MapDef {
+/**
+ * The prologue map with only the given lieutenants as enemies, in a row in front of the deploy area; they hold their ground.
+ * Each carries the weapons he has on the real maps (`maps`), never his signature item (story 3.4: that is loot only).
+ */
+export function devLieutenantMap(base: MapDef, lieutenants: Record<string, LieutenantDef>, ids: readonly string[], maps: Record<string, MapDef> = {}): MapDef {
+  const mapItems = (id: string, signature: string): ItemRef[] =>
+    Object.values(maps)
+      .flatMap((m) => m.units)
+      .find((u) => u.lieutenant === id)
+      ?.items.filter((r) => r.def !== signature) ?? [];
   const units: MapUnitDef[] = ids.map((id, i) => ({
     id: `dev_${id}`,
     team: 'enemy',
@@ -21,7 +29,7 @@ export function devLieutenantMap(base: MapDef, lieutenants: Record<string, Lieut
     lieutenant: id,
     level: 3,
     at: [3 + i * 3, 6],
-    items: [{ def: lieutenants[id]!.signatureItem }],
+    items: mapItems(id, lieutenants[id]!.signatureItem),
     ai: { profile: 'hold' },
   }));
   return { ...structuredClone(base), id: DEV_MAP_ID, units, reinforcements: [], triggers: [], objectives: { ...base.objectives, side: [] } };

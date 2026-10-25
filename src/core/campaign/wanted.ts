@@ -4,7 +4,7 @@
  */
 import type { BattleUnit, CampaignState } from '../state';
 import type { GameData } from '../defs';
-import { bountyGold, clampGrudge, lieutenantState } from './lieutenants';
+import { bountyGold, clampGrudge, lieutenantSkills, lieutenantState } from './lieutenants';
 
 /** Where the grudge points: nowhere, at a unit of the company, at one who has fallen, or at one who left. */
 export type WantedTarget =
@@ -90,7 +90,7 @@ export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' 
     met: st.met,
     bounty: bountyGold(data, grudge),
     ...(materialId && cfg.materials.max > 0 ? { material: { id: materialId, min: cfg.materials.min, max: cfg.materials.max } } : {}),
-    skills: def.grudgeSkills.map((id, i) => ({ id, grudge: i + 1, free: grudge >= i + 1 })),
+    skills: def.grudgeSkills.map((id, i) => ({ id, grudge: i + 1, free: lieutenantSkills(def, grudge).includes(id) })),
     fleeRuleKey: FLEE_RULE_KEY,
   };
 }

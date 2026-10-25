@@ -75,13 +75,22 @@ export function recordFromChar(data: GameData, def: CharDef, src: UidSource, ava
   return u;
 }
 
-/** Stats of a generic unit of a class at a level (average growth), scaled by difficulty. */
-export function genericStats(data: GameData, classId: string, level: number, statPercent: number): Stats {
+/** `n / d` rounded to the nearest whole number, halves up (commercial rounding); for `n >= 0`, `d > 0`. */
+export const roundDiv = (n: number, d: number): number => Math.floor((2 * n + d) / (2 * d));
+
+/**
+ * Stats of a generic unit of a class at a level (class base + growth % x levels above 1, no dice), scaled by the
+ * difficulty percent, capped by the class. 'floor' (default) rounds down as generic foes and mercenaries always did;
+ * 'nearest' is the expected value rounded commercially (halves up) that lieutenants get (story 3.4). One function for both,
+ * so they cannot drift apart.
+ */
+export function genericStats(data: GameData, classId: string, level: number, statPercent: number, rounding: 'floor' | 'nearest' = 'floor'): Stats {
+  const div = rounding === 'nearest' ? roundDiv : (n: number, d: number) => Math.floor(n / d);
   const cls = data.classes[classId]!;
   const out = zeroStats();
   for (const k of STAT_KEYS) {
-    const raw = cls.base[k] + Math.floor((cls.growth[k] * (level - 1)) / 100);
-    out[k] = Math.min(cls.caps[k], Math.max(0, Math.floor((raw * (100 + statPercent)) / 100)));
+    const raw = cls.base[k] + div(cls.growth[k] * Math.max(0, level - 1), 100);
+    out[k] = Math.min(cls.caps[k], Math.max(0, div(raw * (100 + statPercent), 100)));
   }
   return out;
 }
@@ -117,6 +126,8 @@ export function battleUnitFromMap(
   src: UidSource,
   statPercent: number,
   uid: string,
+  /** skills the unit masters from the start and has equipped (a lieutenant's grudge skills, story 3.4) */
+  grantSkills: readonly string[] = [],
 ): BattleUnit {
   const char = def.char ? data.chars[def.char] : undefined;
   const refs = def.items.length || !char ? def.items : char.items;
@@ -131,7 +142,7 @@ export function battleUnitFromMap(
       classId: def.class,
       level: def.level,
       exp: 0,
-      stats: genericStats(data, def.class, def.level, statPercent),
+      stats: genericStats(data, def.class, def.level, statPercent, def.lieutenant && data.lieutenants?.[def.lieutenant] ? 'nearest' : 'floor'),
       growth: clone(data.classes[def.class]!.growth),
       gained: zeroStats(),
       expected: zeroStats(),
@@ -147,6 +158,10 @@ export function battleUnitFromMap(
     };
   }
   autoEquip(data, rec, insts);
+  for (const sk of grantSkills) {
+    if (!rec.mastered.includes(sk)) rec.mastered.push(sk);
+    if (!rec.loadout.includes(sk)) rec.loadout.push(sk);
+  }
   if (def.nameKey) rec.nameKey = def.nameKey;
   if (def.sprite) rec.sprite = def.sprite;
   if (def.portrait) rec.portrait = def.portrait;
