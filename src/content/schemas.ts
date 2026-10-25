@@ -694,7 +694,12 @@ export const balanceSchema = z.object({
       sideShare: z.tuple([z.number(), z.number()]),
     }),
   }),
-  fog: z.looseObject({}),
+  fog: z.object({
+    baseVision: z.number().int().min(1),
+    roleBonus: z.record(z.string(), z.number().int().min(0)),
+    moveTypeBonus: z.partialRecord(moveType, z.number().int().min(0)),
+    blockers: z.array(z.string()),
+  }),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({
     aim: z.object({ rangeBonus: z.number().int().min(0), hit: z.number() }),

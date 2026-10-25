@@ -187,6 +187,9 @@ export function validateContent(
     const c = data.classes[r];
     if (!c || c.role !== r || c.tier === 'pro') err('classes.yaml', `missing role ${r}`);
   }
+  // Nebel (story 2.6): bonuses name roles that exist, blockers name terrain that exists
+  for (const r of Object.keys(data.balance.fog.roleBonus)) if (!(CORE_ROLES as readonly string[]).includes(r)) err('balance.yaml', `fog.roleBonus: unknown role ${r}`);
+  for (const t of data.balance.fog.blockers) if (!data.terrain[t]) err('balance.yaml', `fog.blockers: unknown terrain ${t}`);
   for (const it of Object.values(data.items)) {
     // weapons, tomes, staves and shields carry a weapon group (items.md section 4)
     if (['weapon', 'tome', 'staff', 'shield'].includes(it.kind) && !it.group) err('items.yaml', `${it.id}: no weapon group`);
@@ -474,6 +477,8 @@ function validateMap(
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
   for (const o of map.objects) {
     if (!inside(o.at)) err(f, `${o.id}: out of bounds`);
+    // a door is terrain and object at once (story 2.6): it blocks the path and sight as `door` until opened
+    if (o.type === 'door' && inside(o.at) && terr(o.at)?.id !== 'door') err(f, `${o.id}: a door object needs the terrain "door" on its tile`);
     reward(f, o.reward, o.id);
     reward(f, o.contents, o.id);
   }

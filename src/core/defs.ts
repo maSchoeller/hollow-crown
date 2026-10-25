@@ -704,7 +704,8 @@ export interface Balance {
     /** gold per story mission without side objectives [min, max]: by node id, else by act; side objectives' gold as share of the map reward */
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
   };
-  fog: { baseVision: number; visionBonus: Record<string, number> };
+  /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
+  fog: { baseVision: number; roleBonus: Record<string, number>; moveTypeBonus: Partial<Record<MoveType, number>>; blockers: string[] };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the class actions: Zielen, Fernbergen, Anfeuern (story 2.3) and the AI's detour limit around hold zones (story 2.4) */
   classActions: {

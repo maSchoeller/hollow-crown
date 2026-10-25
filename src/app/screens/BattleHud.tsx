@@ -237,9 +237,9 @@ export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p:
 
 // ------------------------------------------------------------------ context band
 
-export type ContextKind = 'rescue' | 'talk' | 'visit' | 'chest' | 'door' | 'seize' | 'escape' | 'trade' | 'convoy';
+export type ContextKind = 'rescue' | 'talk' | 'visit' | 'open' | 'chest' | 'door' | 'seize' | 'escape' | 'trade' | 'convoy';
 /** Order of the context bands above the unit card. */
-export const CONTEXT_ORDER: ContextKind[] = ['rescue', 'talk', 'visit', 'chest', 'door', 'seize', 'escape', 'trade', 'convoy'];
+export const CONTEXT_ORDER: ContextKind[] = ['rescue', 'talk', 'visit', 'open', 'chest', 'door', 'seize', 'escape', 'trade', 'convoy'];
 
 /** Green band above the unit card for what the target tile allows besides fighting; one tap runs it (DESIGN.md context-band). */
 export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?: BattleUnit; onGo: () => void }) {
@@ -247,10 +247,12 @@ export function ContextBand({ opt, target, onGo }: { opt: ActionOption; target?:
   const name = target ? unitName(target) : '';
   const person = kind === 'rescue' || kind === 'talk' || kind === 'trade';
   // with several possible partners the band names the action only; the target is picked on the board
-  const title = person ? (target ? t(`ui.ctx.${kind}`, { name }) : t(`ui.action.${kind}`)) : t(`ui.ctx.${kind}`);
+  // Öffnen of a scout (story 2.6) names its object: the door or the chest
+  const what = kind === 'open' ? (opt.objectType ?? 'chest') : kind;
+  const title = person ? (target ? t(`ui.ctx.${kind}`, { name }) : t(`ui.action.${kind}`)) : t(`ui.ctx.${what}`);
   return (
     <button type="button" class="hc-piece hud-ctx" onClick={onGo}>
-      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} classId={target.classId} name={name} /> : <Icon name={kind} size={22} />}</span>
+      <span class="hud-ctx__mini">{target ? <Head portrait={target.portrait} classId={target.classId} name={name} /> : <Icon name={what} size={22} />}</span>
       <span class="hud-ctx__text">
         <b>{title}</b>
         {kind === 'rescue' && <small>{t('ui.ctx.rescueSub')}</small>}
@@ -270,6 +272,7 @@ const ROLE_ICON: Record<string, string> = {
   marksman: 'bow',
   elementalist: 'fire',
   healer: 'healer',
+  scout: 'steal',
   tactician: 'target',
 };
 /** Role symbol by the class's role, so pro classes show the icon of their base role. */
@@ -465,7 +468,7 @@ export function ForecastCard({
 
 /** Preview of Fernbergen and Anfeuern: who is affected and what changes, from the numbers of the resolution. */
 export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; state: BattleState; p: ClassPreview; caster?: BattleUnit }) {
-  if (p.kind === 'aim') return null;
+  if (p.kind === 'aim' || p.kind === 'steal') return null;
   if (p.kind === 'cast') {
     const a = p.area;
     const team = caster?.team ?? 'player';

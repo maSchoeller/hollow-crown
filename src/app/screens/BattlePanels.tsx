@@ -14,6 +14,7 @@ import {
   type ActionOption,
   type BattleState,
   type BattleUnit,
+  type ClassPreview,
   type Command,
   type ItemInstance,
   type Stats,
@@ -295,6 +296,36 @@ export function ItemPick({ u, list, onPick, onClose }: { u: BattleUnit; list: st
           const inst = u.bag.find((i) => i.uid === uid)!;
           return <ItemLine key={uid} inst={inst} sub={<ItemDetails data={data} inst={inst} />} onClick={() => onPick(uid)} />;
         })}
+      </div>
+    </Sheet>
+  );
+}
+
+/** Stehlen (story 2.6): the bag of the foe next to the scout, one tap on an item takes it (an item for the convoy is marked). */
+export function StealPick({
+  p,
+  victim,
+  onPick,
+  onClose,
+}: {
+  p: Extract<ClassPreview, { kind: 'steal' }>;
+  victim: BattleUnit;
+  onPick: (uid: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Sheet title={t('ui.action.steal')} aside={unitName(victim)} onClose={onClose}>
+      <p class="bp-hint">{t(p.bagFull ? 'ui.steal.bagFull' : 'ui.steal.hint')}</p>
+      <div class="bp-lines">
+        {p.items.map(({ item, toConvoy }) => (
+          <ItemLine
+            key={item.uid}
+            inst={item}
+            sub={<ItemDetails data={data} inst={item} />}
+            right={toConvoy ? <Icon name="convoy" size={18} /> : undefined}
+            onClick={() => onPick(item.uid)}
+          />
+        ))}
       </div>
     </Sheet>
   );

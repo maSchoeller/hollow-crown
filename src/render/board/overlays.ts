@@ -24,6 +24,9 @@ export interface Overlays {
   hold?: Pos[];
   /** fields Wirken would change (story 2.5) */
   cast?: Pos[];
+  /** fields under fog (story 2.6): dark with a blue cast; `fogEdge` is the lighter fringe next to seen fields */
+  fog?: Pos[];
+  fogEdge?: Pos[];
 }
 
 export interface OverlayMesh {
@@ -36,6 +39,8 @@ export interface OverlayMesh {
 
 // overlay colours and opacities (same reading as the 2D board)
 const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pulse?: number }> = {
+  fog: { color: '#1a2440', alpha: 0.6, inset: 0 },
+  fogEdge: { color: '#1a2440', alpha: 0.3, inset: 0 },
   danger: { color: '#d9333f', alpha: 0.28, inset: 0 },
   goal: { color: '#f2cc4d', alpha: 0.3, inset: 0, pulse: 0.15 },
   move: { color: '#4080f2', alpha: 0.42, inset: 0.02 },
@@ -71,6 +76,8 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
 export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number): OverlayMesh[] {
   const out: OverlayMesh[] = [];
   const lists: Record<string, Pos[]> = {
+    fog: o.fog ?? [],
+    fogEdge: o.fogEdge ?? [],
     danger: o.danger ?? [],
     goal: o.goal ?? [],
     move: o.move ?? [],

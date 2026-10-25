@@ -9,6 +9,9 @@ import {
   destinations,
   castBlock,
   classPreview,
+  filterEvents,
+  fogBands,
+  fogOn,
   forecast,
   holdZone,
   itemDef,
@@ -20,8 +23,11 @@ import {
   reachNow,
   resolveScene,
   samePos,
+  stealBlock,
   tilesInRange,
   unitAt,
+  visibleState,
+  visibleTiles,
   weaponRange,
   type Action,
   type ActionOption,
@@ -69,7 +75,7 @@ import {
   TurnPill,
   UnitCardB,
 } from './BattleHud';
-import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, TradeSheet, UnitInfo } from './BattlePanels';
+import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 
 export { pendingEvents };
 
@@ -77,7 +83,7 @@ type Mode =
   | { k: 'idle' }
   | { k: 'selected'; uid: string }
   | { k: 'moved'; uid: string; to: Pos }
-  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item' | ClassKind; targets: string[]; item?: string }
+  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item' | 'steal' | ClassKind; targets: string[]; item?: string }
   | { k: 'forecast'; uid: string; to: Pos; target: string; weapon?: string; aim?: boolean }
   /** preview of Fernbergen / Anfeuern before it is confirmed */
   | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string }
@@ -86,7 +92,9 @@ type Mode =
   /** rule card of a passive role (Halten, Nachsetzen), reached by a tap on its dock slot */
   | { k: 'passive'; uid: string; to: Pos }
   /** Wirken (story 2.5): pick a field in range (`at` null), then the preview of the affected fields and the confirmation */
-  | { k: 'cast'; uid: string; to: Pos; at: Pos | null };
+  | { k: 'cast'; uid: string; to: Pos; at: Pos | null }
+  /** Stehlen (story 2.6): the bag of the chosen foe is shown, one tap on an item takes it */
+  | { k: 'steal'; uid: string; to: Pos; target: string };
 
 function useWide(): boolean {
   const q = '(min-width: 600px)';
@@ -102,13 +110,16 @@ function useWide(): boolean {
 
 
 /** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
-const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'staff', 'command', 'rally'];
+const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'steal', 'staff', 'command', 'rally'];
 /** Class actions with a preview and a confirmation before they run. */
 type ClassKind = 'aim' | 'farRescue' | 'cheer';
 
 export function Battle() {
   const session = battle.value!;
-  const s = session.state;
+  /** the state as the player's side sees it: on a fog map foes on unseen tiles are missing (story 2.6); `full` only for what the player may know anyway */
+  const full = session.state;
+  const fogged = fogOn(data, full);
+  const s = useMemo(() => visibleState(data, full, 'player'), [full]);
   const stageRef = useRef<HTMLDivElement>(null);
   const floatRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -180,11 +191,12 @@ export function Battle() {
     board.shakeEnabled = settings.value.shake && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
     void (async () => {
-      await board.load(battle.value!.state);
+      const st0 = battle.value!.state;
+      await board.load(visibleState(data, st0, 'player'));
       const ev = pendingEvents.value;
       pendingEvents.value = [];
       if (ev.length && alive) {
-        await board.play(ev, battle.value!.state);
+        await board.play(filterEvents(data, st0, ev, 'player'), visibleState(data, st0, 'player'), st0.units);
       }
       if (alive) {
         setPhaseView(null);
@@ -224,6 +236,9 @@ export function Battle() {
     return [...set].map((k) => k.split(',').map(Number) as Pos);
   }, [s, danger, watch]);
 
+  /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
+  const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
+
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
@@ -234,12 +249,13 @@ export function Battle() {
       }
       return [];
     })();
-    const reinforce = mapOf(data, s)
+    // the player does not know the reinforcements of a fog map
+    const reinforce = fogged ? [] : mapOf(data, s)
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
-    const base = { danger: dangerTiles, goal, reinforce, hold };
+    const base = { danger: dangerTiles, goal, reinforce, hold, fog: fogTiles.fog, fogEdge: fogTiles.edge };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
     if (mode.k === 'pursue') {
@@ -301,11 +317,20 @@ export function Battle() {
   // --------------------------------------------------------------- command execution
   const run = async (cmd: Command) => {
     const board = boardRef.current!;
+    // on a fog map the plan may lead through a foe the player does not see: the command carries the planned way, and the core
+    // stops the unit in front of the foe (Hinterhalt)
+    if (fogged && (cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue') && !cmd.path) {
+      const u = unit(cmd.unit);
+      const reach = cmd.type === 'pursue' ? pursueReach(data, s, u) : reachOf(u);
+      const path = reach && !samePos(u.pos, cmd.to) ? pathTo(reach, cmd.to) : [];
+      if (path.length > 1) cmd = { ...cmd, path };
+    }
     setBusy(true);
     setMode({ k: 'idle' });
     setInfo(null);
     setTileInfo(null);
     const enemy = cmd.type === 'endPhase';
+    const before = battle.value!.state;
     if (enemy) setPhaseView({ phase: 'enemy', turn: s.turn });
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;
@@ -326,7 +351,8 @@ export function Battle() {
       setBusy(false);
       return;
     }
-    await board.play(events, battle.value!.state);
+    const after = battle.value!.state;
+    await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
     board.skip = false;
     setHp({});
     setPhaseView(null);
@@ -381,6 +407,10 @@ export function Battle() {
         break;
       case 'strike':
         audio.sfx(!e.hit ? 'miss' : e.crit ? 'crit' : e.magic ? `magic_${e.element ?? 'light'}` : 'hit');
+        break;
+      case 'ambush':
+        audio.sfx('downed');
+        setToast(t('ui.toast.ambush', { name: unitName(unit(e.by) ?? { nameKey: 'class.brigand.name' }) }));
         break;
       case 'mastered':
         setToast(t('ui.toast.mastered', { skill: t(`skill.${e.skill}.name`) }));
@@ -481,6 +511,7 @@ export function Battle() {
         }
         if (mode.action === 'farRescue' || mode.action === 'cheer')
           return setMode({ k: 'classPreview', uid: mode.uid, to: mode.to, action: mode.action, target: at.uid });
+        if (mode.action === 'steal') return setMode({ k: 'steal', uid: mode.uid, to: mode.to, target: at.uid });
         const action: Action =
           mode.action === 'item' ? { kind: 'item', item: mode.item!, target: at.uid } : ({ kind: mode.action, target: at.uid } as Action);
         void run({ type: 'act', unit: mode.uid, to: mode.to, action });
@@ -541,6 +572,7 @@ export function Battle() {
       case 'forecast':
       case 'classPreview':
       case 'passive':
+      case 'steal':
       case 'target':
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       case 'pursue':
@@ -643,7 +675,7 @@ export function Battle() {
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp) return;
-    const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info;
+    const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info || mode.k === 'steal';
     if (e.key === 'Escape') escape();
     else if (modal) return;
     else if (e.key === 'd' || e.key === 'D') setDanger((d) => !d);
@@ -674,6 +706,14 @@ export function Battle() {
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind } as Action });
       case 'door':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'door', object: opt.object! } });
+      case 'open':
+        return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'open', object: opt.object! } });
+      case 'steal': {
+        // the bag of the foe is the preview; with several foes next to the tile the player picks one on the board first
+        const targets = opt.targets ?? [];
+        if (targets.length === 1) return setMode({ k: 'steal', uid: u.uid, to: mode.to, target: targets[0]! });
+        return setMode({ k: 'target', uid: u.uid, to: mode.to, action: 'steal', targets });
+      }
       case 'cast':
         return setMode({ k: 'cast', uid: u.uid, to: mode.to, at: null });
       case 'aim':
@@ -740,16 +780,20 @@ export function Battle() {
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
       : [];
   const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;
+  const classPre = mode.k === 'steal' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'steal', target: mode.target }) : null;
   const castPre = mode.k === 'cast' && mode.at ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'cast', at: mode.at }) : null;
   const passivePre = mode.k === 'passive' ? passivePreview(data, s, unit(mode.uid), mode.to) : null;
   const readyCount = s.units.filter(selectable).length;
 
   const map = mapOf(data, s);
   const victory = map.objectives.victory;
-  const enemiesLeft = s.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
+  // how many foes are left is not known under fog
+  const enemiesLeft = full.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
   const goalProgress =
     victory.type === 'rout'
-      ? t('ui.hud.left', { n: enemiesLeft })
+      ? fogged
+        ? ''
+        : t('ui.hud.left', { n: enemiesLeft })
       : victory.type === 'defend' || victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
@@ -763,7 +807,8 @@ export function Battle() {
   const itemOpt = options.find((o) => o.kind === 'item');
   const classOpts = CLASS_KINDS.map((k) => options.find((o) => o.kind === k)).filter((o): o is ActionOption => !!o);
   const waitOpt = options.find((o) => o.kind === 'wait');
-  const contextOpts = CONTEXT_ORDER.map((k) => options.find((o) => o.kind === k)).filter((o): o is ActionOption => !!o);
+  // `open` can offer several objects (a door and a chest next to a scout); every other kind appears once
+  const contextOpts = CONTEXT_ORDER.flatMap((k) => (k === 'open' ? options.filter((o) => o.kind === k) : [options.find((o) => o.kind === k)])).filter((o): o is ActionOption => !!o);
 
   /** Dock with its four fixed slots: Attack, Class action, Item, Wait. Impossible ones are dimmed; a tap says why. */
   const dock = (u: BattleUnit) => {
@@ -775,7 +820,8 @@ export function Battle() {
     };
     // Wirken dimmed: say why (no tome, light/dark, wind without fog, no valid field)
     const block = placed && !classOpts.length ? castBlock(data, s, u, (mode as Extract<Mode, { k: 'moved' }>).to) : null;
-    const castReason = block ? t(`ui.cast.no.${block}`) : null;
+    const scoutBlock = placed && !classOpts.length ? stealBlock(data, s, u, (mode as Extract<Mode, { k: 'moved' }>).to) : null;
+    const castReason = block ? t(`ui.cast.no.${block}`) : scoutBlock ? t(`ui.steal.no.${scoutBlock}`) : null;
     const classOne = classOpts.length === 1 ? classOpts[0]! : undefined;
     // passive role (Vorkämpfer: Halten, Plänkler: Nachsetzen): the role symbol shows a state; a tap explains the rule with a preview
     const passiveId = classOpts.length ? undefined : classActionId(data, u, s);
@@ -1062,6 +1108,14 @@ export function Battle() {
         />
       )}
       {items && <ItemPick u={unit(items.uid)} list={items.list} onPick={useItem} onClose={() => setItems(null)} />}
+      {mode.k === 'steal' && classPre?.kind === 'steal' && (
+        <StealPick
+          p={classPre}
+          victim={unit(mode.target)}
+          onPick={(item) => void run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'steal', target: mode.target, item } })}
+          onClose={() => cancelRef.current()}
+        />
+      )}
       {trade && <TradeSheet s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
       {convoy && <ConvoySheet s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
       {levelUp && <LevelUpPopup u={unit(levelUp.uid)} gains={levelUp.gains} level={levelUp.level} onDone={levelUp.done} />}

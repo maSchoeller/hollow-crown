@@ -4,14 +4,15 @@ import type { GameEvent } from '../events';
 import { roll1 } from '../rng';
 import { resolveAttack } from '../rules/combat';
 import { applyStatus, damageUnit, endOfPhase, extinguishTile, igniteTile, startOfPhase, tickTerrain } from '../rules/effects';
-import { canEquip, itemDef, isRune, weaponProfile } from '../rules/items';
+import { canEquip, itemDef, weaponProfile } from '../rules/items';
 import { resolveCast } from '../rules/cast';
-import { destinations, pathTo, pursueReach, reachable } from '../rules/movement';
+import { goesToConvoy } from '../rules/scout';
+import { destinations, pathTo, pursueReach, reachable, walkPath, type Walk } from '../rules/movement';
 import { grantExp } from '../rules/progression';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
 import { activeSkillIds } from '../rules/skills';
-import type { BattleState, BattleUnit, ItemInstance } from '../state';
+import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, clone, getUnit, neighbors, onMap, pairKey, posKey, samePos } from '../util';
 import { aimTargets, attackTargets, availableActions, CHEER_BUFF, classActionId, hasKey, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
 import type { Action, Command, CommandError } from './commands';
@@ -31,6 +32,12 @@ function moveValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos): Comm
   if (!reach.has(posKey(to))) return 'unreachable';
   if (s.units.some((o) => o.uid !== u.uid && onMap(o) && samePos(o.pos, to))) return 'occupied';
   return null;
+}
+
+/** The walk of a command that carries its planned `path` (story 2.6): an error when it is no legal walk, else the walk (cut short by a hidden foe or not). */
+function pathWalk(data: GameData, s: BattleState, u: BattleUnit, to: Pos, path: Pos[], mov?: number): Walk | CommandError {
+  const w = walkPath(data, s, u, path, mov);
+  return !w || !samePos(path[path.length - 1], to) ? 'unreachable' : w;
 }
 
 function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: Action): CommandError | null {
@@ -63,6 +70,10 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
       return opt.tiles?.some((p) => samePos(p, a.at)) ? null : 'invalid_target';
     case 'door':
       return opt.object === a.object ? null : 'invalid_target';
+    case 'open':
+      return opts.some((o) => o.kind === 'open' && o.object === a.object) ? null : 'invalid_target';
+    case 'steal':
+      return opt.stealable?.[a.target]?.includes(a.item) ? null : 'invalid_target';
     default:
       return null;
   }
@@ -78,6 +89,10 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
     // Nachsetzen is the one command a unit that has acted may still get (story 2.4)
     const reach = pursueReach(data, s, u);
     if (!reach) return 'no_pursue';
+    if (cmd.path) {
+      const w = pathWalk(data, s, u, cmd.to, cmd.path, s.pursue?.left);
+      return typeof w === 'string' ? w : null;
+    }
     if (!reach.has(posKey(cmd.to)) || samePos(u.pos, cmd.to)) return 'unreachable';
     return s.units.some((o) => o.uid !== u.uid && onMap(o) && samePos(o.pos, cmd.to)) ? 'occupied' : null;
   }
@@ -85,9 +100,21 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
   switch (cmd.type) {
     case 'move':
       if (u.moved) return 'already_moved';
+      if (cmd.path) {
+        const w = pathWalk(data, s, u, cmd.to, cmd.path);
+        return typeof w === 'string' ? w : null;
+      }
       return moveValid(data, s, u, cmd.to);
-    case 'act':
+    case 'act': {
+      if (cmd.path && !samePos(u.pos, cmd.to)) {
+        if (u.moved) return 'already_moved';
+        const w = pathWalk(data, s, u, cmd.to, cmd.path);
+        if (typeof w === 'string') return w;
+        // stopped by a foe: the action does not happen, so it is not checked
+        return w.cut ? null : actionValid(data, s, u, cmd.to, cmd.action);
+      }
       return moveValid(data, s, u, cmd.to) ?? actionValid(data, s, u, cmd.to, cmd.action);
+    }
     case 'equip': {
       const inst = [...Object.values(u.equip), ...u.bag].find((i) => i?.uid === cmd.item);
       if (!inst) return 'invalid_target';
@@ -120,22 +147,33 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
   switch (cmd.type) {
     case 'move': {
       const u = getUnit(s, cmd.unit);
-      doMove(data, s, u, cmd.to, events);
+      const w = cmd.path && !samePos(u.pos, cmd.to) ? (walkPath(data, s, u, cmd.path) ?? undefined) : undefined;
+      doMove(data, s, u, cmd.to, events, undefined, w);
       u.moved = true;
+      if (w?.cut) {
+        ambush(u, w, events);
+        finishUnit(data, s, u, events);
+      }
       break;
     }
     case 'act': {
       const u = getUnit(s, cmd.unit);
-      if (cmd.action.kind === 'attack' && classActionId(data, u, s) === 'pursue') pursueLeft = pursueRest(data, s, u, cmd.to);
-      doMove(data, s, u, cmd.to, events);
-      if (active(u) && !s.outcome) doAction(data, s, u, cmd.action, events);
+      const w = cmd.path && !samePos(u.pos, cmd.to) ? (walkPath(data, s, u, cmd.path) ?? undefined) : undefined;
+      if (!w?.cut && cmd.action.kind === 'attack' && classActionId(data, u, s) === 'pursue') pursueLeft = pursueRest(data, s, u, cmd.to);
+      doMove(data, s, u, cmd.to, events, undefined, w);
+      if (w?.cut) ambush(u, w, events);
+      else if (active(u) && !s.outcome) doAction(data, s, u, cmd.action, events);
       finishUnit(data, s, u, events);
       if (!active(u)) pursueLeft = 0;
       break;
     }
-    case 'pursue':
-      doMove(data, s, getUnit(s, cmd.unit), cmd.to, events, prev.pursue!.left);
+    case 'pursue': {
+      const u = getUnit(s, cmd.unit);
+      const w = cmd.path ? (walkPath(data, s, u, cmd.path, prev.pursue!.left) ?? undefined) : undefined;
+      doMove(data, s, u, cmd.to, events, prev.pursue!.left, w);
+      if (w?.cut) ambush(u, w, events);
       break;
+    }
     case 'equip':
       doEquip(data, getUnit(s, cmd.unit), cmd.item, cmd.slot, events);
       break;
@@ -161,11 +199,29 @@ function openPursue(data: GameData, s: BattleState, u: BattleUnit, left: number)
   if (!reach || !destinations(s, u, reach).some((p) => !samePos(p, u.pos))) delete s.pursue;
 }
 
-function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number): void {
-  if (!u.pos || samePos(u.pos, to)) return;
-  const reach = reachable(data, s, u, u.pos, mov);
-  const path = pathTo(reach, to);
-  u.moveSpent = reach.get(posKey(to))?.cost ?? 0;
+/** Hinterhalt: the walk was stopped by a foe the player did not see (the unit stands where the walk ended). */
+function ambush(u: BattleUnit, w: Walk, events: GameEvent[]): void {
+  events.push({ t: 'ambush', unit: u.uid, by: w.cut!.by, at: [u.pos![0], u.pos![1]] });
+}
+
+/** `walked`: the walk along the player's planned path (it may end before `to`); without it the core finds the way. */
+function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number, walked?: Walk): void {
+  if (!u.pos) return;
+  let path: Pos[];
+  if (walked) {
+    path = walked.tiles;
+    to = path[path.length - 1]!;
+    if (samePos(u.pos, to)) {
+      u.moved = true;
+      return;
+    }
+    u.moveSpent = walked.cost;
+  } else {
+    if (samePos(u.pos, to)) return;
+    const reach = reachable(data, s, u, u.pos, mov);
+    path = pathTo(reach, to);
+    u.moveSpent = reach.get(posKey(to))?.cost ?? 0;
+  }
   u.pos = [to[0], to[1]];
   u.moved = true;
   events.push({ t: 'moved', unit: u.uid, path });
@@ -182,8 +238,7 @@ function pickUpLoot(data: GameData, s: BattleState, u: BattleUnit, events: GameE
 }
 
 export function giveItem(data: GameData, s: BattleState, u: BattleUnit, item: ItemInstance, events: GameEvent[]): void {
-  const d = itemDef(data, item);
-  const toConvoy = u.bag.length >= data.balance.bag.size || !!d.tags?.includes('convoyOnly') || isRune(data, item);
+  const toConvoy = goesToConvoy(data, u, item);
   if (toConvoy) s.convoy.push(item);
   else u.bag.push(item);
   s.itemsGained.push(item);
@@ -244,6 +299,21 @@ function doRescue(data: GameData, s: BattleState, u: BattleUnit, t: BattleUnit, 
   grantExp(data, u, b.experience.rescueOrTalk, s.rng, events);
   const gained = addSupportPoints(data, s.supports, pairKey(u.id, t.id), b.supports.pointsTandemHealRescue);
   if (gained) events.push({ t: 'support', a: u.uid, b: t.uid, points: gained });
+}
+
+/** Opens a chest (its contents go to `u`) or a door (the terrain turns into an open door); the key and its charge are the caller's business. */
+function openObject(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectState, events: GameEvent[]): void {
+  obj.state = 'open';
+  if (obj.type === 'chest') {
+    s.stats.chestsOpened.push(obj.id);
+    events.push({ t: 'opened', unit: u.uid, object: obj.id });
+    grantReward(data, s, u, mapOf(data, s).objects.find((o) => o.id === obj.id)?.contents, events);
+    return;
+  }
+  s.terrain[obj.at[1] * s.width + obj.at[0]] = 'door_open';
+  events.push({ t: 'opened', unit: u.uid, object: obj.id });
+  events.push({ t: 'terrain', at: obj.at, terrain: 'door_open', cause: 'raze' });
+  runTriggers(data, s, { kind: 'action', unit: u }, events);
 }
 
 function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, events: GameEvent[]): void {
@@ -331,23 +401,27 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
     }
     case 'chest': {
       const obj = s.objects.find((o) => samePos(o.at, u.pos) && o.type === 'chest')!;
-      const key = u.bag.find((i) => i.uid === hasKey(data, u))!;
-      useCharge(data, u, key);
-      obj.state = 'open';
-      s.stats.chestsOpened.push(obj.id);
-      events.push({ t: 'opened', unit: u.uid, object: obj.id });
-      grantReward(data, s, u, mapOf(data, s).objects.find((o) => o.id === obj.id)?.contents, events);
+      useCharge(data, u, u.bag.find((i) => i.uid === hasKey(data, u))!);
+      openObject(data, s, u, obj, events);
       break;
     }
     case 'door': {
       const obj = s.objects.find((o) => o.id === a.object)!;
-      const key = u.bag.find((i) => i.uid === hasKey(data, u))!;
-      useCharge(data, u, key);
-      obj.state = 'open';
-      s.terrain[obj.at[1] * s.width + obj.at[0]] = 'door_open';
-      events.push({ t: 'opened', unit: u.uid, object: obj.id });
-      events.push({ t: 'terrain', at: obj.at, terrain: 'door_open', cause: 'raze' });
-      runTriggers(data, s, { kind: 'action', unit: u }, events);
+      useCharge(data, u, u.bag.find((i) => i.uid === hasKey(data, u))!);
+      openObject(data, s, u, obj, events);
+      break;
+    }
+    case 'open':
+      // the scout needs no key and uses no charge
+      openObject(data, s, u, s.objects.find((o) => o.id === a.object)!, events);
+      break;
+    case 'steal': {
+      const target = getUnit(s, a.target);
+      const item = target.bag.find((i) => i.uid === a.item)!;
+      target.bag = target.bag.filter((i) => i.uid !== item.uid);
+      target.dropUids = target.dropUids.filter((uid) => uid !== item.uid);
+      events.push({ t: 'stolen', unit: u.uid, target: target.uid, item });
+      giveItem(data, s, u, item, events);
       break;
     }
     case 'farRescue':

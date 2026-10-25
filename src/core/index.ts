@@ -14,6 +14,8 @@ export * from './rules/movement';
 export * from './rules/combat';
 export * from './rules/effects';
 export * from './rules/cast';
+export * from './rules/scout';
+export * from './rules/vision';
 export * from './rules/progression';
 export * from './rules/supports';
 export * from './battle/commands';

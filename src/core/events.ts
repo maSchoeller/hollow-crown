@@ -4,6 +4,8 @@ import type { ItemInstance } from './state';
 /** Events produced by the core. The renderer plays them as animations; the UI reads the new state. */
 export type GameEvent =
   | { t: 'moved'; unit: string; path: Pos[] }
+  /** Hinterhalt (story 2.6): `unit` was stopped on `at` by the foe `by`, which it had not seen; its turn is over */
+  | { t: 'ambush'; unit: string; by: string; at: Pos }
   | { t: 'combat'; attacker: string; defender: string; weapon?: string }
   | {
       t: 'strike';
@@ -42,11 +44,14 @@ export type GameEvent =
   | { t: 'material'; id: string; amount: number }
   | { t: 'visited'; unit: string; object: string }
   | { t: 'opened'; unit: string; object: string }
+  /** Stehlen (story 2.6): `unit` took `item` from the bag of `target`; a `loot` event follows (bag or convoy) */
+  | { t: 'stolen'; unit: string; target: string; item: ItemInstance }
   | { t: 'razed'; unit: string; object: string }
   | { t: 'recruited'; unit: string; by?: string }
   | { t: 'dialogue'; id: string }
   | { t: 'quote'; unit: string; id: string }
-  | { t: 'spawned'; unit: string; reinforcement: boolean }
+  /** `at`: only set by the fog filter (`filterEvents`, story 2.6) for a foe that comes out of the fog: it appears on that tile */
+  | { t: 'spawned'; unit: string; reinforcement: boolean; at?: Pos }
   | { t: 'phase'; phase: Team; turn: number }
   | { t: 'exhausted'; unit: string }
   | { t: 'refreshed'; unit: string; by: string }

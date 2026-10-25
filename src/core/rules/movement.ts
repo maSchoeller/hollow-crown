@@ -1,7 +1,7 @@
 import { CoreInvariantError } from '../errors';
 import type { GameData, Pos } from '../defs';
 import type { BattleState, BattleUnit } from '../state';
-import { active, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
+import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
 import { classActionId } from './roles';
 import { computeStats } from './stats';
@@ -83,6 +83,66 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
     }
   }
   return out;
+}
+
+/** A walk along a planned path (`walkPath`): the tiles really walked, their cost, and the foe that stopped it short, if any. */
+export interface Walk {
+  tiles: Pos[];
+  cost: number;
+  /** Hinterhalt (story 2.6): the walk ended before the end of the path because a foe stood in the way (`by`: its uid) */
+  cut: { by: string } | null;
+}
+
+/**
+ * Walks `unit` along the path the player planned (the UI plans it on what the player sees, so on a fog map it may lead through
+ * a foe it does not see). The state alone decides what happens: the unit stops on the last free tile before a foe that
+ * blocks the path or before a tile it may not pass (a hold zone it would enter on its way on, a tile a hostile hold
+ * zone covers and an ally occupies), and `cut` names the foe. Returns null when the path is not a legal walk: it does not start
+ * on the unit, a step is not to a neighbour, a tile is impassable, the cost exceeds the movement (`mov`, default the unit's), or the
+ * end of an uncut walk is occupied. Replays need nothing but the command.
+ */
+export function walkPath(data: GameData, s: BattleState, unit: BattleUnit, path: Pos[], mov?: number): Walk | null {
+  const start = unit.pos;
+  if (!start || !path.length || !samePos(path[0], start)) return null;
+  const st = computeStats(data, unit, { state: s, pos: start });
+  const budget = mov ?? st.mov;
+  const hold = holdZone(data, s, unit.team);
+  const pass = st.skills.moveThroughEnemies;
+  const tiles: Pos[] = [start];
+  const costs: number[] = [0];
+  let total = 0;
+  let cut: Walk['cut'] = null;
+  const holder = (p: Pos) =>
+    s.units.find((o) => active(o) && o.pos && isHostile(o.team, unit.team) && classActionId(data, o, s) === 'hold' && dist(o.pos, p) === 1)?.uid ?? '';
+  for (let i = 1; i < path.length && !cut; i++) {
+    const p = path[i]!;
+    if (dist(tiles[tiles.length - 1]!, p) !== 1 || !inBounds(s, p)) return null;
+    const c = moveCost(data, s, unit, p, st.skills.terrainCost);
+    if (c === null || total + c > budget) return null;
+    const occ = unitAt(s, p);
+    const foe = occ && occ.uid !== unit.uid && isHostile(occ.team, unit.team) && !pass;
+    const held = hold.has(posKey(p));
+    if (foe) {
+      cut = { by: occ!.uid };
+      break;
+    }
+    if (held && occ && occ.uid !== unit.uid) {
+      cut = { by: holder(p) };
+      break;
+    }
+    total += c;
+    tiles.push(p);
+    costs.push(total);
+    // entering a hold zone ends the walk there (the same rule as in `reachable`); it only counts as a cut when the path went on
+    if (held && i < path.length - 1) cut = { by: holder(p) };
+  }
+  // the unit ends on a free tile: back up over tiles allies stand on
+  while (tiles.length > 1 && unitAt(s, tiles[tiles.length - 1]!)?.uid !== undefined && unitAt(s, tiles[tiles.length - 1]!)!.uid !== unit.uid) {
+    if (!cut) return null;
+    tiles.pop();
+    costs.pop();
+  }
+  return { tiles, cost: costs[costs.length - 1]!, cut };
 }
 
 /** What the player may still walk this turn: the unit's own tile once it has moved (trade, convoy), otherwise its full reach. */
