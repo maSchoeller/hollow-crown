@@ -39,8 +39,8 @@ terrain: |
   ##,,.__.,,##
   ####EEEE####
 # Nacht: mondblaues Umgebungslicht, Mond als schwache Sonne, warme Punktlichter an den Kohlebecken (art-direction §2.5, Tageszeit night)
-ambient: { color: "#8aa0d6", intensity: 0.8 }
-sun: { color: "#a9bff0", intensity: 0.7, azimuthDeg: 120, elevationDeg: 50 }
+ambient: { color: "#4a5e9a", intensity: 0.5 }
+sun: { color: "#8fa8ee", intensity: 0.4, azimuthDeg: 120, elevationDeg: 50 }
 lights:
   - { at: [3, 2], color: "#ffb35c", radius: 3 }
   - { at: [8, 2], color: "#ffb35c", radius: 3 }
@@ -59,15 +59,14 @@ deploy:
   forced: [avatar, kael]
   slots: [[5, 1], [6, 1], [4, 1], [7, 1], [5, 2], [6, 2]]
 units:
-  # Tempelwachen: Lanzen-Vorkämpfer und Schwert-Plänkler. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
-  # Platzhalter bis Story 8.3 (Tempelwache): sprite soldier (Lanze) und mercenary (Schwert).
-  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
-  - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
-  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
-  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
+  # Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle, das Modell trägt keine eingebaute Lanze): Lanzen-Vorkämpfer und Schwert-Plänkler. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
+  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
+  - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
 pairs: []
 # Hart: Verstärkung aus dem Seitentor im Osten (angekündigt), Runde 3
 reinforcements:
@@ -75,7 +74,7 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [11, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 1, at: [11, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   # Siegt, sobald alle eigenen Einheiten, die noch stehen, das Tor verlassen haben; Kael als Letzter (Regel im Kern: mustStayForRest).
   # Kein min: Niedergestreckte zählen nicht mit (Entscheidung Produktinhaber 2026-10-25).

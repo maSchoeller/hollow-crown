@@ -37,3 +37,5 @@
 - { id: field,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, prop: field, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
 - { id: fence,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: fence, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
 - { id: farm,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: farm,  cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
+# Wohnhaus als Kulisse (Story 9.2): Requisite house ohne Objekt (house_intact), nicht besuchbar, nur Flieger kommen drüber. Startwerte [C].
+- { id: building, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: house, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }

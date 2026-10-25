@@ -15,28 +15,31 @@ legend:
   "#": wall          # Mauerstück; (6,3) und (7,3) sind die Steckbriefwand
   "H": village       # Haus (besuchbar)
   "W": stall         # Marktstand (Requisite tent)
+  "B": building      # Wohnhaus, nicht besuchbar und nicht betretbar (Requisite house, ohne Objekt: house_intact); Stadtrand
+  "C": wagon         # Karren/Wagen am Rand (nur Flieger kommen drüber)
+  "F": fence         # Zaun am Südrand
   "o": well          # Brunnen; kein eigenes Modell, bis dahin der Felsblock (Platzhalter, siehe terrain.yaml)
 #          x: 0123456789ABCD
 terrain: |
-  TT,##.__.##,TT
-  ,,.H..__..H.,,
-  ,,....__....,,
-  ,..___##___..,
+  TTB##.__.##BTT
+  BB.H..__..H.BB
+  BB....__....BB
+  B..___##___..B
   ,.._W_____W_.,
-  ,.._________.,
-  ,H.____o___.H,
-  ,.._________.,
-  ,..__W____W_.,
-  ,,..______..,,
-  T,,..____..,,T
-  TT,,..__..,,TT
-  ,T,,..__..,,T,
+  B.._________.B
+  BH.____o___.HB
+  B.._________.B
+  ,C.__W____W_C,
+  BB..______..BB
+  T,W..____..W,T
+  TTB,..__..,BTT
+  ,T,C..__..C,T,
   ,,T,..__..,T,,
-  ,,,,..__..,,,,
-  ,,,,..__..,,,,
-# Mittag, klar: Sonne hoch, neutral-warm (art-direction §2.5)
-ambient: { color: "#fff3d6", intensity: 1.0 }
-sun: { color: "#fff0cc", intensity: 1.2, azimuthDeg: 200, elevationDeg: 65 }
+  ,,FF..__..FF,,
+  BB,,..__..,,BB
+# Mittag, klar: Sonne hoch, neutral-warm, gedämpft (vorher überbelichtet, art-direction §2.5/§3)
+ambient: { color: "#f2ead8", intensity: 0.78 }
+sun: { color: "#fff0d6", intensity: 0.95, azimuthDeg: 200, elevationDeg: 65 }
 lights: []
 objects:
   - { id: v_nw, type: village, at: [3, 1],  reward: { gold: 200, dialogue: scn.m1_1.house_nw } }
