@@ -124,7 +124,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 ## HUD & Diegetic UI
 
 - **Nicht diegetisch** (Overlay): Rundenpille, Ziel-Pillen, Einheitenkarte, Dock, Leiste, Panels.
-- **Diegetisch** (in der 3D-Welt): Bodenringe in Teamfarbe, Groll-Wimpel, Verblutungs-Zähler über der Figur, Markierungen auf Feldhöhe, Orts-Miniaturen und Nebel der Weltkarte, Ausbauteile und Gefährten-Gegenstände in der Burg.
+- **Diegetisch** (in der 3D-Welt): Bodenringe in Teamfarbe, Groll-Wimpel, Verblutungs-Zähler über der Figur, Markierungen auf Feldhöhe, Ausbauteile und Gefährten-Gegenstände in der Burg. Der Nebel der Weltkarte ist ein Verlauf über dem Bild, nicht diegetisch in 3D.
 - **Rangfolge:** Teamfarbe und TP der gewählten Einheit, dann Ziel, dann alles andere. In der Gegnerphase verschwinden Dock und Einheitenkarte; Phasen-Pille und Tempo bleiben. In Szenen verschwindet das HUD ganz.
 - Markierungen und UI werden nie vom Szenenlicht gefärbt (Art Direction §2.5).
 

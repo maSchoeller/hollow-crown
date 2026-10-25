@@ -2,6 +2,8 @@
 
 Status: review
 
+> **Hinweis (2026-10-25):** Gültig sind die Akzeptanzkriterien im Abschnitt „Zweite Änderung (2026-10-24): flaches Bild statt 3D-Szene“ unten; die ursprünglichen Kriterien oben (3D-Szene, Kachelraster, Miniaturen) sind überholt. Der Dateiname bleibt wegen der Sprint-Status-Schlüssel.
+
 ## Story
 
 Als Spieler
@@ -111,4 +113,4 @@ Claude Opus 5.5 (claude-opus-5-5)
 - Entfernt: `src/render/world/`, `src/render/shared/props.ts`, `tests/unit/world-layout.test.ts`, `tools/art/{world,world_height,blender_world}.py`, `pnpm art:world`, die 3D-Dateien in `art/world/`, `gridRows`, `render.world` (Wasser, Nebel, Asche, Jahreszeiten, Landschaft), `propModels` in `validateContent`.
 - Neu: `src/app/screens/worldMapView.ts`, `tests/unit/world-map.test.ts`, `tools/art/world_guide.py` (Layout-Skizze und Abstandsprüfung für künftige Bildläufe), `art/world/{map_flat_v1.png,map_guide.png,map_layout.json,map_placed_v1.json}`.
 - Verschoben: die Bäume je Akt von `render.world.scenery.trees` nach `render.board.trees` (nur das Brett nutzt sie).
-- Die Kampagne hat noch drei Knoten (`prologue` → Platz P, `ch01` → 1-1, `ch02` → 1-2); die übrigen 32 Plätze warten auf ihre Knoten in den späteren Stories.
+- `valmora.yaml` bindet `prologue` → P, `m1_1` → 1-1, `ch01` → 1-2, `ch02` → 1-3 (Brücken-Knoten bis Story 9.3/9.4); die übrigen 32 Plätze warten auf ihre Knoten in den späteren Stories.
