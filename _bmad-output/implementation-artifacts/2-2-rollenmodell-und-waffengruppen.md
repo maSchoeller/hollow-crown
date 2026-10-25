@@ -1,6 +1,6 @@
 # Story 2.2: Rollenmodell und Waffengruppen
 
-Status: review
+Status: done
 
 ## Story
 

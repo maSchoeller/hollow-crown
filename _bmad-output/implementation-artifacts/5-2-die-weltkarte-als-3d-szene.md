@@ -1,6 +1,6 @@
 # Story 5.2: Die Weltkarte als 3D-Szene
 
-Status: review
+Status: done
 
 > **Hinweis (2026-10-25):** Gültig sind die Akzeptanzkriterien im Abschnitt „Zweite Änderung (2026-10-24): flaches Bild statt 3D-Szene“ unten; die ursprünglichen Kriterien oben (3D-Szene, Kachelraster, Miniaturen) sind überholt. Der Dateiname bleibt wegen der Sprint-Status-Schlüssel.
 

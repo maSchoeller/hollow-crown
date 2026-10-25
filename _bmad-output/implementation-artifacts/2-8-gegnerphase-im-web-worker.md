@@ -1,6 +1,6 @@
 # Story 2.8: Gegnerphase im Web Worker
 
-Status: review
+Status: done
 
 ## Story
 

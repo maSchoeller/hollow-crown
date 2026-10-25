@@ -1,6 +1,6 @@
 # Story 7.5: Leistung messen
 
-Status: review
+Status: done
 
 ## Story
 
