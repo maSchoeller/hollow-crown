@@ -1,6 +1,6 @@
 # Story 6.6: Missionsergebnis
 
-Status: review
+Status: done
 
 ## Story
 

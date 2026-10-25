@@ -49,6 +49,22 @@
   justify-items: center;
   pointer-events: none;
 }
+.hc-notices--bottom {
+  top: auto;
+  bottom: calc(var(--safe-bottom, 0px) + var(--hc-hud-top));
+}
+/* while the bottom hint is up, screens keep their content (and primary buttons) clear of it */
+:root.has-bottom-notice {
+  --hc-notice-reserve: 64px;
+}
+:root.has-bottom-notice .hc-view,
+:root.has-bottom-notice .hm,
+:root.has-bottom-notice .screen {
+  padding-bottom: calc(var(--hc-hud-top) + var(--safe-bottom, 0px) + var(--hc-notice-reserve));
+}
+:root.has-bottom-notice .wm__bottom {
+  padding-bottom: calc(var(--hc-hud-top) + var(--safe-bottom, 0px) + var(--hc-notice-reserve));
+}
 .hc-notice {
   pointer-events: auto;
   width: min(420px, 100%);

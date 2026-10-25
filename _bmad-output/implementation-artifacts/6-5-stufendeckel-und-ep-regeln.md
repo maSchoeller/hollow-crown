@@ -1,6 +1,6 @@
 # Story 6.5: Stufendeckel und EP-Regeln
 
-Status: review
+Status: done
 
 ## Story
 

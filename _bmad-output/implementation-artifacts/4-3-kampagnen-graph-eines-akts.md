@@ -1,6 +1,6 @@
 # Story 4.3: Kampagnen-Graph eines Akts
 
-Status: review
+Status: done
 
 ## Story
 

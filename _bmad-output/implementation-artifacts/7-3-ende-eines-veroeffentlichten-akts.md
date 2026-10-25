@@ -1,6 +1,6 @@
 # Story 7.3: Ende eines veröffentlichten Akts
 
-Status: review
+Status: done
 
 ## Story
 

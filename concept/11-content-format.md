@@ -145,8 +145,8 @@ Text liegt in `locales/de.yaml` / `locales/en.yaml` unter denselben Schlüsseln.
 
 ```yaml
 nodes:
-  - { id: prologue, map: prologue_caravan, pre: dlg.prologue.intro, post: dlg.prologue.outro, next: [ch01] }
-  - { id: ch01, map: ch01_varnhold, pre: dlg.ch01.intro, post: dlg.ch01.outro, next: [ch02], skirmishesAfter: 1 }
+  - { id: prologue, map: prologue_paktnacht, pre: dlg.prologue.intro, post: dlg.prologue.outro, fixed: first }
+  - { id: ch01, map: ch01_varnhold, pre: dlg.ch01.intro, post: dlg.ch01.outro, requires: [{ completed: m1_1 }], skirmishesAfter: 1 }
   # … requires: { route: crown } für spätere Routen
 skirmishPool:
   maps: [skirmish_field, skirmish_ruins, ch01_varnhold, ch02_silverbrook]

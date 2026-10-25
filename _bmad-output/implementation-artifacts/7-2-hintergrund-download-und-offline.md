@@ -1,6 +1,6 @@
 # Story 7.2: Hintergrund-Download und Offline
 
-Status: review
+Status: done
 
 ## Story
 

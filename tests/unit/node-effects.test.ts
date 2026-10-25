@@ -59,7 +59,7 @@ describe('node effects', () => {
 
   it('is part of the node schema', () => {
     const raw = { act: 1, startGold: 0, defaultPlace: 'x', nodes: [], merchant: [], scars: [] };
-    const node = { id: 'a', map: 'm', titleKey: 'k', pos: [1, 1], merchantTier: 0, expectedLevel: 1 };
+    const node = { id: 'a', map: 'm', titleKey: 'k', merchantTier: 0, expectedLevel: 1 };
     expect(campaignSchema.safeParse({ ...raw, nodes: [{ ...node, effects: [{ recruit: 'fenn' }] }] }).success).toBe(true);
     expect(campaignSchema.safeParse({ ...raw, nodes: [{ ...node, effects: [{ nonsense: 1 }] }] }).success).toBe(false);
   });

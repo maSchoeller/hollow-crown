@@ -23,7 +23,8 @@ packs:
     released: true
     load: precache
     act: 1
-    budgetMb: 15
+    # 30 MB seit 2026-10-25 (vorher 15): der Precache enthält auch die Dateien der ersten Mission, damit eine neue Kampagne offline startet
+    budgetMb: 30
     content:
       - core/**
       - world/**

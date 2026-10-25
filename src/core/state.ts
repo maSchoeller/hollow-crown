@@ -113,6 +113,8 @@ export interface BattleUnit extends UnitRecord {
   startPos?: Pos;
   /** exp/levels gained this battle (result screen) */
   battleExp?: number;
+  /** level before the first EXP of this battle counted; lets the result show the level-up of units that joined mid-battle */
+  levelAtExpStart?: number;
   scarGained?: string;
 }
 

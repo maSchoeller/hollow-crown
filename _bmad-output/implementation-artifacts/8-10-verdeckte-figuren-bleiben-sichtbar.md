@@ -1,6 +1,6 @@
 # Story 8.10: Verdeckte Figuren bleiben sichtbar
 
-Status: review
+Status: done
 
 ## Story
 

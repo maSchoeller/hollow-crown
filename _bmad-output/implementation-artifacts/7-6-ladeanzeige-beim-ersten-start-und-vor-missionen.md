@@ -1,6 +1,6 @@
 # Story 7.6: Ladeanzeige beim ersten Start und vor Missionen
 
-Status: review
+Status: done
 
 ## Story
 

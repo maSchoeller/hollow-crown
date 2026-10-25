@@ -419,6 +419,23 @@
   font-size: 12px;
   color: var(--hc-soft);
 }
+/* "Weitere Missionen folgen": no mission open and the act not over; a calm stone above the bar */
+.wm-more {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  text-align: center;
+  pointer-events: none;
+}
+.wm-more b {
+  font-family: var(--hc-font-name);
+  font-size: 18px;
+  line-height: 1.15;
+}
+.wm-more span {
+  font-size: 12px;
+  color: var(--hc-soft);
+}
 .backup-sheet {
   margin: 0;
 }

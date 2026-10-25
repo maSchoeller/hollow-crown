@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { WorldDef } from '../../src/core';
 import { loadContentFromDisk } from '../../src/content/node';
 import { validateContent } from '../../src/content/validate';
-import { clampView, coverScale, focusView, fogTop, placeOf, screenOf, stepScale, zoomAround } from '../../src/app/screens/worldMapView';
+import { clampView, coverScale, focusView, fogTop, moreMissionsFollow, placeOf, screenOf, stepScale, zoomAround } from '../../src/app/screens/worldMapView';
 
 const { data, locales } = loadContentFromDisk();
 const size = [1024, 1536] as const;
@@ -98,5 +98,14 @@ describe('world map content', () => {
     const noName = { de: { ...locales.de }, en: { ...locales.en } };
     delete noName.en!['world.region.eisenmark'];
     expect(validateContent(data, noName).map((i) => i.message)).toContain('missing key world.region.eisenmark');
+  });
+});
+
+describe('"more missions follow" hint', () => {
+  it('shows only with no open node, an unfinished act and no pack loading', () => {
+    expect(moreMissionsFollow(0, false, false)).toBe(true);
+    expect(moreMissionsFollow(1, false, false)).toBe(false);
+    expect(moreMissionsFollow(0, true, false)).toBe(false);
+    expect(moreMissionsFollow(0, false, true)).toBe(false);
   });
 });

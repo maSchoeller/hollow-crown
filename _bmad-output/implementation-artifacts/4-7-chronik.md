@@ -1,6 +1,6 @@
 # Story 4.7: Chronik
 
-Status: review
+Status: done
 
 ## Story
 
