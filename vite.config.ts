@@ -96,13 +96,17 @@ export default defineConfig(({ mode }) => {
                * of the pack download (header x-hc-pack), which the pack cache keeps. The functions are copied into sw.js
                * as source text: they must not use anything from this file. `ignoreVary`: files are stored under their URL
                * alone, while a module import sends an Origin header that a `Vary` answer would otherwise compare.
+               * The pack download (header x-hc-pack) skips the caches and always asks the network: the files keep plain
+               * names, so an older copy in `hc-on-demand` or in the cache of the previous pack version would otherwise
+               * be copied into the new pack cache and an update would never deliver changed files.
                */
               urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.includes('/assets/'),
               handler: async ({ request }) => {
+                if (request.headers.has('x-hc-pack')) return fetch(request);
                 const hit = await caches.match(request, { ignoreVary: true });
                 if (hit) return hit;
                 const res = await fetch(request);
-                if (res.ok && !request.headers.has('x-hc-pack')) {
+                if (res.ok) {
                   const cache = await caches.open('hc-on-demand');
                   await cache.put(request, res.clone());
                 }

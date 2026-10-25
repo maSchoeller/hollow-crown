@@ -4,22 +4,28 @@ import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { ON_DEMAND_MUSIC } from '../app/loading/cacheName';
 import { packOf, parsePacks } from '../content/packs';
-import { backoffMs, byteRatio, duePacks, packBytes, packCacheName, packIdOfCache, planDownload, staleCaches } from './plan';
+import { backoffMs, byteRatio, duePacks, isTrustedCache, packBytes, packCacheName, packIdOfCache, planDownload, staleCaches } from './plan';
 
 const f = (path: string, hash: string, size = 10) => ({ path, hash, size });
 
 describe('pack caches', () => {
   it('names a cache by pack and hash and reads the pack back', () => {
-    expect(packCacheName('act1', 'ab12')).toBe('hc-pack-act1-ab12');
-    expect(packIdOfCache('hc-pack-act1-ab12')).toBe('act1');
-    expect(packIdOfCache('hc-pack-voice.act1.de-ff')).toBe('voice.act1.de');
+    expect(packCacheName('act1', 'ab12')).toBe('hc-pack-act1-ab12g2');
+    expect(packIdOfCache('hc-pack-act1-ab12g2')).toBe('act1');
+    expect(packIdOfCache('hc-pack-voice.act1.de-ffg2')).toBe('voice.act1.de');
     expect(packIdOfCache('hc-on-demand')).toBeNull();
     expect(packIdOfCache('hc-pack-nohash')).toBeNull();
   });
   it('finds older versions of the same pack only', () => {
-    const names = ['hc-pack-act1-old', 'hc-pack-act1-new', 'hc-pack-act2-x', 'workbox-precache-v2', 'hc-on-demand'];
-    expect(staleCaches(names, 'act1', 'new')).toEqual(['hc-pack-act1-old']);
+    const names = ['hc-pack-act1-oldg2', 'hc-pack-act1-newg2', 'hc-pack-act2-xg2', 'workbox-precache-v2', 'hc-on-demand'];
+    expect(staleCaches(names, 'act1', 'new')).toEqual(['hc-pack-act1-oldg2']);
     expect(staleCaches(names, 'act2', 'x')).toEqual([]);
+  });
+  it('replaces caches of an older generation and never trusts them', () => {
+    const names = ['hc-pack-act1-ab12', 'hc-pack-act1-ab12g2'];
+    expect(staleCaches(names, 'act1', 'ab12')).toEqual(['hc-pack-act1-ab12']);
+    expect(isTrustedCache('hc-pack-act1-ab12')).toBe(false);
+    expect(isTrustedCache(packCacheName('act1', 'ab12'))).toBe(true);
   });
 });
 

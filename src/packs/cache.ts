@@ -4,7 +4,8 @@
  * first (vite.config.ts), so pages and the content import read these files offline.
  */
 import type { BuiltPack, PackFile } from '../content/packs';
-import { packCacheName, planDownload, staleCaches } from './plan';
+import { ON_DEMAND_CACHE } from '../app/loading/cacheName';
+import { isTrustedCache, packCacheName, planDownload, staleCaches } from './plan';
 
 /** Header that tells the service worker not to copy the response into the on-demand cache (the pack cache keeps it). */
 export const PACK_REQUEST_HEADER = 'x-hc-pack';
@@ -61,7 +62,7 @@ export async function downloadPack(pack: BuiltPack, opts: PackDownloadOptions): 
   const have = new Set(keys.map((r) => new URL(r.url).pathname.slice(new URL(opts.base, location.href).pathname.length)));
   const stale = staleCaches(await caches.keys(), pack.id, pack.hash);
   let old: { cache: Cache; files: PackFile[] } | null = null;
-  for (const s of stale) {
+  for (const s of stale.filter(isTrustedCache)) {
     const files = await markerOf(s, opts.base, pack.id);
     if (files) {
       old = { cache: await caches.open(s), files };
@@ -99,7 +100,8 @@ export async function downloadPack(pack: BuiltPack, opts: PackDownloadOptions): 
     for (let f = queue.shift(); f !== undefined && !opts.signal?.aborted; f = queue.shift()) {
       try {
         const url = fileUrl(opts.base, f.path);
-        const res = await fetch(url, { headers: { [PACK_REQUEST_HEADER]: pack.id }, signal: AbortSignal.timeout(opts.timeoutMs) });
+        // no-cache: the browser's HTTP cache must revalidate, files under assets/ keep plain names across versions
+        const res = await fetch(url, { headers: { [PACK_REQUEST_HEADER]: pack.id }, cache: 'no-cache', signal: AbortSignal.timeout(opts.timeoutMs) });
         if (!res.ok) throw new Error(`HTTP ${res.status} for ${f.path}`);
         await cache.put(url, res);
         step(f);
@@ -114,4 +116,15 @@ export async function downloadPack(pack: BuiltPack, opts: PackDownloadOptions): 
 
   await cache.put(markerUrl(opts.base, pack.id), new Response(JSON.stringify(pack), { headers: { 'content-type': 'application/json' } }));
   for (const s of stale) await caches.delete(s);
+  await dropOnDemandCopies(pack, opts.base);
+}
+
+/**
+ * The pack cache is the authority for its files. Copies in the on-demand cache (fetched one by one before the pack was
+ * there, or by an older build) are older than the pack cache and would win the service worker's lookup, so they go.
+ */
+async function dropOnDemandCopies(pack: BuiltPack, base: string): Promise<void> {
+  if (!(await caches.has(ON_DEMAND_CACHE))) return;
+  const onDemand = await caches.open(ON_DEMAND_CACHE);
+  await Promise.all(pack.files.map((f) => onDemand.delete(fileUrl(base, f.path), { ignoreVary: true })));
 }
