@@ -1,6 +1,6 @@
 # Story 9.13: Supports und Barks von Akt 1
 
-Status: review
+Status: done
 
 ## Story
 
@@ -80,6 +80,12 @@ Claude Opus 5.5 (Kontrolle), Sonnet (Gespräche), Haiku (Schlüssel, Abgleich, P
 - Glutfunke: Zitat-Toast mit Kopf der Figur im Figuren-Screen nach dem Aufstieg (`ui.farewell.quote`).
 - Lagerfeuer-Gespräche laufen jetzt im Vollbild mit Halbfiguren wie die Szenen zwischen den Missionen (Produktinhaber 2026-10-24); vorher klemmte die Szene im Raum-Panel. `Rooms.tsx` rendert sie per Portal in `document.body`.
 - Im Browser geprüft (375×812, Deutsch, nach `pnpm art:build`): Kampfbeginn-Bark (Mira, Tobin), Lagerfeuer mit „Gespräch bereit“, Gespräch Brenna × Kael B im Vollbild mit beiden Figuren, danach Rang B und zurück am Lagerfeuer.
+
+### Review (2026-10-25, gds-code-review: Blind Hunter, Edge Case Hunter, Acceptance Auditor)
+
+- Akzeptanzkriterien 1–4 erfüllt (Skript-Prüfung aller Szenen, Längen, Barks, Abschiede, EN-Schlüssel), AC 5 per Screenshots; keine Verstöße gegen AGENTS.md.
+- Behoben: Barks folgen dem Kampftempo; der Kampfbeginn-Bark entfällt im Überspringen-Modus; der Glutfunke-Toast behält Kopf und Name der beförderten Figur auch nach einem Wisch; Tastatur ruht während eines Barks; Bark-Sprechblase je Bark neu aufgebaut; `content:check` prüft bei Barks Sprecher `[charId]`, bekannte Figur und keine Antworten.
+- Bewusst gelassen: Ember erscheint als Zitat-Toast und der Geborgene spricht über dem Bergenden (Produktinhaber bzw. Decision-Log); Barks laufen auch ohne Auto weiter (Decision-Log). Offen, niedrig: Während eines Krit-Barks bleibt die Treffer-Animation stehen; das Vollbild-Gespräch per Portal liegt außerhalb von `#app` (auf iOS-PWA am Gerät prüfen).
 
 ### File List
 

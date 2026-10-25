@@ -316,6 +316,7 @@ export function validateContent(
       conditions(f, l.requires, ctx);
       if ('choice' in l) {
         if (battleScenes.has(sc.id)) err(f, `${ctx}: scenes shown in a battle cannot have answers`);
+        if (bark) err(f, `${ctx}: a bark scene has no answers`);
         const ids = new Set<string>();
         for (const o of l.choice) {
           if (ids.has(o.id)) err(f, `${ctx}: duplicate answer id ${o.id}`);
@@ -337,6 +338,9 @@ export function validateContent(
       if (l.speaker) chain(f, l.speaker, ctx, l.fallback !== 'skip');
       else if (l.memorial) err(f, `${ctx}: a memorial line needs a speaker chain`);
       if (bark) {
+        const who = sc.id.slice('scn.bark.'.length);
+        if (!data.chars[who] && !locales.de?.[`unit.${who}.name`]) err(f, `${ctx}: bark scene for unknown character ${who}`);
+        if (l.speaker?.length !== 1 || l.speaker[0] !== who) err(f, `${ctx}: bark speaker chain must be exactly [${who}]`);
         if (!(BARK_LINES as readonly string[]).includes(l.id)) err(f, `${ctx}: bark line id must be one of ${BARK_LINES.join(', ')}`);
         const max = data.balance.scene.bubbleMaxChars;
         const en = locales.en?.[lineKey(sc.id, l.id)];
