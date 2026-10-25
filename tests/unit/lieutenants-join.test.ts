@@ -214,7 +214,7 @@ describe('exclusion (AC 4)', () => {
     expect(out.campaign.gold).toBe(gold + out.result.gold);
     expect(out.campaign.lieutenants!.grosk).toMatchObject({ grudge: 0, routs: 0 });
     const unit = { lieutenant: 'grosk' } as never;
-    expect(ltOpeningLine(c, unit)).toBeNull();
+    expect(ltOpeningLine(data, c, unit)).toBeNull();
     // an enemy lieutenant who did not join still pays
     const foe = fresh();
     expect(finishBattle(data, foe, wonWithGrosk(foe)).result.bounty).toHaveLength(1);
@@ -250,7 +250,7 @@ describe('the grudge lapses (AC 5)', () => {
     expect(r.events).toContainEqual({ t: 'grudgeChanged', lt: 'grosk', grudge: 0 });
     // with no target the opening line of hask picks nothing
     const hask = { lieutenant: 'hask', grudge: 1 } as never;
-    expect(ltOpeningLine(r.campaign, hask)).toBeNull();
+    expect(ltOpeningLine(data, r.campaign, hask)).toBeNull();
   });
 });
 

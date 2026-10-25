@@ -17,6 +17,7 @@ import { active, clone, getUnit, neighbors, onMap, pairKey, posKey, samePos } fr
 import { aimTargets, attackTargets, availableActions, CHEER_BUFF, classActionId, hasKey, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
 import type { Action, Command, CommandError } from './commands';
 import { newItem } from './create';
+import { noteLieutenantSight } from './lieutenantSight';
 import { afterUnitMoved, beginPhase, checkObjectives, freeTileNear, mapOf, runTriggers, spawnUnits } from './objectives';
 import { runAiPhase } from '../ai/ai';
 
@@ -188,6 +189,7 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
       break;
   }
   checkObjectives(data, s, events);
+  noteLieutenantSight(data, s);
   if (pursueLeft > 0 && !s.outcome) openPursue(data, s, getUnit(s, (cmd as Extract<Command, { type: 'act' }>).unit), pursueLeft);
   return { state: s, events };
 }
@@ -227,6 +229,7 @@ function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: 
   events.push({ t: 'moved', unit: u.uid, path });
   pickUpLoot(data, s, u, events);
   afterUnitMoved(data, s, u, events);
+  noteLieutenantSight(data, s);
 }
 
 function pickUpLoot(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
@@ -632,6 +635,7 @@ export function startBattle(data: GameData, s: BattleState): ApplyResult {
   const st = clone(s);
   const events: GameEvent[] = [];
   beginPhase(data, st, 'player', events);
+  noteLieutenantSight(data, st);
   return { state: st, events };
 }
 

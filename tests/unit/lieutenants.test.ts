@@ -208,8 +208,8 @@ describe('map units with lieutenant:', () => {
 
 describe('pennant notches', () => {
   it('shows 0 to 3 notches for the grudge, none for a lieutenant without one', () => {
-    expect([undefined, 0, 1, 2, 3].map(pennantNotches)).toEqual([0, 0, 1, 2, 3]);
-    expect([-1, 4, 9, 2.7, NaN].map(pennantNotches)).toEqual([0, 3, 3, 2, 0]);
+    expect([undefined, 0, 1, 2, 3].map((g) => pennantNotches(g, 3))).toEqual([0, 0, 1, 2, 3]);
+    expect([-1, 4, 9, 2.7, NaN].map((g) => pennantNotches(g, 3))).toEqual([0, 3, 3, 2, 0]);
   });
 });
 

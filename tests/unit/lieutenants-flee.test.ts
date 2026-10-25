@@ -306,14 +306,19 @@ describe('after the mission (AC 9)', () => {
 });
 
 describe('replay (AC 9)', () => {
-  it('a battle with a lieutenant replays to the same state, and the lieutenant is never dead', () => {
+  it('a battle with a lieutenant replays to the same state, and he flees (never dies)', () => {
     const c = fresh();
     const start = beginBattle(data, c, 'prologue', c.roster.map((r) => r.id)).state;
     const foe = start.units.find((u) => u.team === 'enemy')!;
     foe.lieutenant = 'hask';
-    const run = autoplay(data, start, 600);
-    expect(replayBattle(data, start, run.log)).toEqual(run.state);
-    expect(run.state.units.find((u) => u.uid === foe.uid)!.gone).not.toBe('dead');
+    // the prepared attack drives him off for sure (a seed in which it does), then the battle plays on to its end
+    const setup = fleeSetup(data, start, 'hask');
+    expect(setup).not.toBeNull();
+    const hit = applyCommand(data, clone(setup!.seeded), setup!.cmd);
+    expect(hit.state.units.find((u) => u.uid === foe.uid)!.gone).toBe('fled');
+    const run = autoplay(data, hit.state, 600);
+    expect(replayBattle(data, setup!.seeded, [setup!.cmd, ...run.log])).toEqual(run.state);
+    expect(run.state.units.find((u) => u.uid === foe.uid)!.gone).toBe('fled');
   });
 });
 

@@ -38,7 +38,7 @@ beforeAll(() => {
 });
 
 /** A won prologue with an enemy lieutenant on the map; `fledBy` = he was driven off by that roster unit. */
-function won(c: CampaignState, opts: { fledBy?: string; ltId?: string } = {}): BattleState {
+function won(c: CampaignState, opts: { fledBy?: string; ltId?: string; seen?: boolean } = {}): BattleState {
   const s = beginBattle(data, c, 'prologue', c.roster.map((r) => r.id)).state;
   const lt = clone(s.units.find((u) => u.team === 'enemy')!);
   lt.uid = 'lt1';
@@ -49,6 +49,8 @@ function won(c: CampaignState, opts: { fledBy?: string; ltId?: string } = {}): B
     lt.pos = null;
   }
   s.units.push(lt);
+  // the company saw him (the core keeps the list while the battle runs, review R2)
+  if (opts.seen ?? true) s.ltSeen = [lt.lieutenant];
   s.outcome = 'victory';
   return s;
 }
@@ -184,20 +186,20 @@ describe('opening lines (AC 7)', () => {
     ({ lieutenants, flags: {}, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
 
   it('not met: first; grudge and a living target: grudge_<n>; fallen target: mock; met without grudge: none', () => {
-    expect(ltOpeningLine(camp(), lt())).toEqual({ line: 'first' });
-    expect(ltOpeningLine(camp(known), lt({ grudge: 2, grudgeTarget: 'kael' }))).toEqual({ line: 'grudge_2', target: 'kael' });
-    expect(ltOpeningLine(camp(known), lt({ grudge: 3, grudgeTarget: 'kael' }))!.line).toBe('grudge_3');
-    expect(ltOpeningLine(camp(known), lt({ grudge: 1, grudgeTarget: 'fenn' }))).toEqual({ line: 'mock', target: 'fenn' });
-    expect(ltOpeningLine(camp(known), lt())).toBeNull();
-    expect(ltOpeningLine(camp(known), lt({ grudge: 0, grudgeTarget: 'kael' }))).toBeNull();
+    expect(ltOpeningLine(data, camp(), lt())).toEqual({ line: 'first' });
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 2, grudgeTarget: 'kael' }))).toEqual({ line: 'grudge_2', target: 'kael' });
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 3, grudgeTarget: 'kael' }))!.line).toBe('grudge_3');
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 1, grudgeTarget: 'fenn' }))).toEqual({ line: 'mock', target: 'fenn' });
+    expect(ltOpeningLine(data, camp(known), lt())).toBeNull();
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 0, grudgeTarget: 'kael' }))).toBeNull();
   });
 
   it('grudge without target, a target who left, and a plain unit give no line', () => {
-    expect(ltOpeningLine(camp(known), lt({ grudge: 2 }))).toBeNull();
-    expect(ltOpeningLine(camp(known), lt({ grudge: 2, grudgeTarget: 'gone_away' }))).toBeNull();
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 2 }))).toBeNull();
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 2, grudgeTarget: 'gone_away' }))).toBeNull();
     const left = { ...camp(known), left: ['brenna'] } as CampaignState;
-    expect(ltOpeningLine(left, lt({ grudge: 2, grudgeTarget: 'brenna' }))).toBeNull();
-    expect(ltOpeningLine(camp(), lt({ lieutenant: undefined }))).toBeNull();
+    expect(ltOpeningLine(data, left, lt({ grudge: 2, grudgeTarget: 'brenna' }))).toBeNull();
+    expect(ltOpeningLine(data, camp(), lt({ lieutenant: undefined }))).toBeNull();
   });
 
   it('a lieutenant who is down, gone or off the board does not speak; everything on the board is seen without fog', () => {

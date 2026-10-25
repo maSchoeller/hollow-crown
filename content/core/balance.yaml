@@ -209,6 +209,7 @@ ai:
 # Leutnants (Story 3.5): Kopfgeld je Vertreibung = goldPerLevel x (Groll vor dieser Vertreibung + 1) Gold + min..max Material des Akts;
 # Signatur-Item mit chance je Vertreibung, garantiert ab der guaranteedRout-ten, je Leutnant nur einmal. materialByAct: Akt -> Material-ID.
 lieutenant:
+  grudge: { max: 3 }   # Groll 0-3; je Stufe eine Groll-Fähigkeit und eine Zeile grudge_<n> (content:check prüft)
   scaling:
     armySize: 6
     tierUp: { iron_sword: steel_sword, iron_lance: steel_lance, iron_axe: steel_axe, iron_bow: steel_bow }

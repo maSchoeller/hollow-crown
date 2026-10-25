@@ -4,7 +4,7 @@
  */
 import type { BattleUnit, CampaignState } from '../state';
 import type { GameData } from '../defs';
-import { bountyGold, clampGrudge, isJoined, lieutenantSkills, lieutenantState } from './lieutenants';
+import { bountyGold, bountyMaterialId, clampGrudge, isJoined, lieutenantSkills, lieutenantState } from './lieutenants';
 
 /** Where the grudge points: nowhere, at a unit of the company, at one who has fallen, or at one who left. */
 export type WantedTarget =
@@ -75,10 +75,10 @@ export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' 
   if (!def) return null;
   const st = lieutenantState(c, ltId);
   const joined = isJoined(c, ltId);
-  const grudge = joined ? 0 : clampGrudge(unit ? (unit.grudge ?? st.grudge) : st.grudge);
+  const grudge = joined ? 0 : clampGrudge(data, unit ? (unit.grudge ?? st.grudge) : st.grudge);
   const targetId = unit ? (unit.grudgeTarget ?? st.target) : st.target;
   const cfg = data.balance.lieutenant.bounty;
-  const materialId = cfg.materialByAct[String(data.campaign.act)];
+  const materialId = bountyMaterialId(data, ltId);
   return {
     id: ltId,
     nameKey: def.nameKey,
@@ -93,7 +93,7 @@ export function wantedView(data: GameData, c: Pick<CampaignState, 'lieutenants' 
     met: st.met,
     bounty: bountyGold(data, grudge),
     ...(materialId && cfg.materials.max > 0 ? { material: { id: materialId, min: cfg.materials.min, max: cfg.materials.max } } : {}),
-    skills: def.grudgeSkills.map((id, i) => ({ id, grudge: i + 1, free: lieutenantSkills(def, grudge).includes(id) })),
+    skills: def.grudgeSkills.map((id, i) => ({ id, grudge: i + 1, free: lieutenantSkills(data, def, grudge).includes(id) })),
     fleeRuleKey: FLEE_RULE_KEY,
     joined,
   };

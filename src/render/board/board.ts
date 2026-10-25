@@ -818,7 +818,7 @@ export class BoardView implements HostedView {
       this.floatLayer.appendChild(el);
       this.pennants.set(u.uid, el);
     }
-    setPennantNotches(el, pennantNotches(u.grudge));
+    setPennantNotches(el, pennantNotches(u.grudge, this.data.balance.lieutenant.grudge.max));
   }
 
   private placePennants(): void {

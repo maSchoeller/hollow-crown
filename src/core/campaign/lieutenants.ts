@@ -2,23 +2,24 @@
  * What the campaign remembers of a lieutenant (story 3.3, architecture §5.5): meetings, rout count and the grudge
  * against whoever drove him off; and which line he speaks at first sight. Pure: no Babylon, no DOM, no randomness.
  */
-import type { BattleState, BattleUnit, CampaignState, ItemInstance, LieutenantState } from '../state';
-import { STAT_KEYS, type GameData, type ItemRef, type LieutenantDef, type MapUnitDef } from '../defs';
+import type { BattleState, BattleUnit, CampaignState, ItemInstance, LieutenantPlan, LieutenantState } from '../state';
+import { STAT_KEYS, type Difficulty, type GameData, type ItemRef, type LieutenantDef, type MapDef, type MapUnitDef } from '../defs';
 import { autoEquip, newItem, recordFromChar, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
 import { allItems } from '../rules/items';
 import { growthRate } from '../rules/progression';
 import { effectiveLevel } from '../rules/skills';
 import { fogOn, visibleTiles } from '../rules/vision';
-import { posKey } from '../util';
+import { onDifficulty, posKey } from '../util';
 import type { BountyResult } from './campaign';
 import { takeItem } from './camp';
 import type { CampaignEvent } from './commands';
 
-/** The grudge never goes above three notches (GDD: Groll 0-3). */
-export const GRUDGE_MAX = 3;
+/** The highest grudge (GDD: Groll 0-3), from `balance.lieutenant.grudge.max`. */
+export const grudgeMax = (data: Pick<GameData, 'balance'>): number => data.balance.lieutenant.grudge.max;
 
-const GRUDGE_LINES = ['grudge_1', 'grudge_2', 'grudge_3'] as const;
+/** The line of a grudge step: 1 -> `grudge_1` and so on (`content:check` keeps the lines at `grudgeMax`). */
+const grudgeLine = (step: number): LieutenantLinePick['line'] => `grudge_${step}` as LieutenantLinePick['line'];
 
 /** A lieutenant the company has not met. */
 export const newLieutenantState = (): LieutenantState => ({ met: false, encounters: 0, grudge: 0, routs: 0, signatureDropped: false });
@@ -43,7 +44,7 @@ export const activeLieutenants = (data: Pick<GameData, 'lieutenants'>, c: Pick<C
   Object.values(data.lieutenants ?? {}).filter((lt) => !isJoined(c, lt.id));
 
 /** Keeps a grudge inside 0-3. */
-export const clampGrudge = (n: number): number => Math.max(0, Math.min(GRUDGE_MAX, n));
+export const clampGrudge = (data: Pick<GameData, 'balance'>, n: number): number => Math.max(0, Math.min(grudgeMax(data), n));
 
 /**
  * The level of a lieutenant (story 3.4, GDD Leutnants): the average of the effective levels of the strongest
@@ -56,11 +57,11 @@ export function lieutenantLevel(data: GameData, c: Pick<CampaignState, 'roster'>
     .sort((a, b) => b - a)
     .slice(0, Math.max(1, data.balance.lieutenant.scaling.armySize));
   const avg = top.length ? roundDiv(top.reduce((a, b) => a + b, 0), top.length) : 1;
-  return Math.max(1, avg) + clampGrudge(grudge);
+  return Math.max(1, avg) + clampGrudge(data, grudge);
 }
 
 /** The grudge skills a lieutenant holds at `grudge`: the first `grudge` of his three (0: none, 3: all). */
-export const lieutenantSkills = (def: Pick<LieutenantDef, 'grudgeSkills'>, grudge: number): string[] => def.grudgeSkills.slice(0, clampGrudge(Math.floor(grudge)));
+export const lieutenantSkills = (data: Pick<GameData, 'balance'>, def: Pick<LieutenantDef, 'grudgeSkills'>, grudge: number): string[] => def.grudgeSkills.slice(0, clampGrudge(data, Math.floor(grudge)));
 
 /** A weapon `steps` tiers higher in its group along `lieutenant.scaling.tierUp`; where the chain ends, the last one stays. */
 export function tierUpItem(data: GameData, itemId: string, steps: number): string {
@@ -84,7 +85,7 @@ export function lieutenantItems(data: GameData, def: Pick<LieutenantDef, 'signat
   const kept: number[] = [];
   refs.forEach((r, i) => {
     if (r.def === def.signatureItem) return;
-    items.push({ ...r, def: tierUpItem(data, r.def, clampGrudge(grudge)) });
+    items.push({ ...r, def: tierUpItem(data, r.def, clampGrudge(data, grudge)) });
     kept.push(i);
   });
   return { items, kept };
@@ -102,8 +103,39 @@ export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' |
   const drops = def.drops?.map((i) => kept.indexOf(i)).filter((i) => i >= 0);
   return {
     def: { ...def, level: lieutenantLevel(data, c, grudge), items, ...(drops ? { drops } : {}) },
-    skills: lieutenantSkills(lt, grudge),
+    skills: lieutenantSkills(data, lt, grudge),
   };
+}
+
+/** Every unit definition of a map that is on the board at `difficulty`: line-up, reinforcements and the spawns of triggers. */
+function mapUnitDefs(map: Pick<MapDef, 'units' | 'reinforcements' | 'triggers'>, difficulty: Difficulty): MapUnitDef[] {
+  const out = [...onDifficulty(map.units, difficulty)];
+  for (const r of map.reinforcements) out.push(...onDifficulty(r.units, difficulty));
+  for (const t of map.triggers) for (const a of t.then) if (a.action === 'spawn') out.push(...onDifficulty(a.units, difficulty));
+  return out;
+}
+
+/**
+ * The plan of every lieutenant on the map (review R1): what `lieutenantUnit` makes of him, for the line-up, the reinforcements
+ * and the trigger spawns alike. Lieutenants who joined the company are not in it. One lieutenant appears once per map and
+ * difficulty (`content:check`); should a map name him twice, the first definition counts.
+ */
+export function planLieutenants(data: GameData, c: Pick<CampaignState, 'roster' | 'lieutenants' | 'flags'>, map: Pick<MapDef, 'units' | 'reinforcements' | 'triggers'>, difficulty: Difficulty): Record<string, LieutenantPlan> {
+  const plan: Record<string, LieutenantPlan> = {};
+  for (const def of mapUnitDefs(map, difficulty)) {
+    const id = def.lieutenant;
+    if (!id || !data.lieutenants?.[id] || isJoined(c, id) || plan[id]) continue;
+    const scaled = lieutenantUnit(data, c, def);
+    const st = c.lieutenants?.[id];
+    plan[id] = {
+      level: scaled.def.level,
+      items: scaled.def.items,
+      ...(scaled.def.drops ? { drops: scaled.def.drops } : {}),
+      skills: scaled.skills,
+      ...(st ? { grudge: st.grudge, ...(st.target ? { target: st.target } : {}) } : {}),
+    };
+  }
+  return plan;
 }
 
 /**
@@ -167,24 +199,27 @@ export interface LieutenantOutcome {
 }
 
 /**
- * Applies the lieutenants of a won mission to `c`, which the caller has already copied: every lieutenant on the map
- * counts one more `encounters` and is `met`; one who fled also counts a rout, raises the grudge by one (up to three)
- * and points it at the unit that drove him off. A driver who is no unit of the company (an allied NPC) leaves the
+ * Applies the lieutenants of a won mission to `c`, which the caller has already copied: every lieutenant the company met in
+ * the mission (it saw him on the board, `s.ltSeen`, or drove him off) counts one more `encounters` and is `met`; one who fled
+ * also counts a rout, raises the grudge by one (up to three) and points it at the unit that drove him off. A lieutenant on
+ * the map the company never saw is left as he was. A driver who is no unit of the company (an allied NPC) leaves the
  * target as it was. A defeat never gets here.
  */
 export function applyLieutenantOutcome(data: GameData, c: CampaignState, s: BattleState): LieutenantOutcome[] {
   const out: LieutenantOutcome[] = [];
+  const seen = new Set(s.ltSeen ?? []);
   for (const u of s.units) {
     if (!u.lieutenant || !data.lieutenants?.[u.lieutenant] || isJoined(c, u.lieutenant)) continue;
+    const routed = u.gone === 'fled';
+    if (!routed && !seen.has(u.lieutenant)) continue;
     const lt = lieutenantState(c, u.lieutenant);
     lt.encounters += 1;
     lt.met = true;
-    const routed = u.gone === 'fled';
     const grudgeBefore = lt.grudge;
     const by = routed ? driverId(s, u) : undefined;
     if (routed) {
       lt.routs += 1;
-      lt.grudge = clampGrudge(lt.grudge + 1);
+      lt.grudge = clampGrudge(data, lt.grudge + 1);
       if (by) lt.target = by;
     }
     (c.lieutenants ??= {})[u.lieutenant] = lt;
@@ -193,8 +228,14 @@ export function applyLieutenantOutcome(data: GameData, c: CampaignState, s: Batt
   return out;
 }
 
+/** The material a rout of lieutenant `id` pays: that of the act he belongs to (review R5), not the act the campaign is in. */
+export const bountyMaterialId = (data: GameData, id: string): string | undefined => {
+  const act = data.lieutenants?.[id]?.act;
+  return act === undefined ? undefined : data.balance.lieutenant.bounty.materialByAct[String(act)];
+};
+
 /** Gold bounty for driving a lieutenant off who held `grudgeBefore` notches before this rout: `goldPerLevel x (grudge + 1)`. Also shown on the wanted posters (story 3.6). */
-export const bountyGold = (data: GameData, grudgeBefore: number): number => data.balance.lieutenant.bounty.goldPerLevel * (clampGrudge(grudgeBefore) + 1);
+export const bountyGold = (data: GameData, grudgeBefore: number): number => data.balance.lieutenant.bounty.goldPerLevel * (clampGrudge(data, grudgeBefore) + 1);
 
 /**
  * Pays the bounty of every lieutenant driven off (story 3.5) into `c` (a copy the caller owns): gold, one to two of the
@@ -205,10 +246,10 @@ export const bountyGold = (data: GameData, grudgeBefore: number): number => data
  */
 export function payBounties(data: GameData, c: CampaignState, s: BattleState, outcomes: readonly LieutenantOutcome[], rng: RngState): BountyResult[] {
   const cfg = data.balance.lieutenant;
-  const materialId = cfg.bounty.materialByAct[String(data.campaign.act)];
   const out: BountyResult[] = [];
   for (const o of outcomes) {
     if (!o.routed || isJoined(c, o.id)) continue;
+    const materialId = bountyMaterialId(data, o.id);
     const u = s.units.find((x) => x.lieutenant === o.id);
     const lt = lieutenantState(c, o.id);
     const gold = bountyGold(data, o.grudgeBefore);
@@ -262,13 +303,13 @@ export interface LieutenantLinePick {
  * the company: `grudge_<n>`. The target has fallen: `mock` (the grudge stays until the next rout sets a new target).
  * Met with no grudge, a grudge without a target, or a target who left the company: no line.
  */
-export function ltOpeningLine(c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>, unit: BattleUnit): LieutenantLinePick | null {
+export function ltOpeningLine(data: Pick<GameData, 'balance'>, c: Pick<CampaignState, 'lieutenants' | 'roster' | 'fallen' | 'flags'>, unit: BattleUnit): LieutenantLinePick | null {
   if (!unit.lieutenant || isJoined(c, unit.lieutenant)) return null;
   if (!c.lieutenants?.[unit.lieutenant]?.met) return { line: 'first' };
   const grudge = unit.grudge ?? 0;
   const target = unit.grudgeTarget;
   if (grudge < 1 || !target) return null;
-  if (c.roster.some((r) => r.id === target)) return { line: GRUDGE_LINES[clampGrudge(grudge) - 1]!, target };
+  if (c.roster.some((r) => r.id === target)) return { line: grudgeLine(clampGrudge(data, grudge)), target };
   if (c.fallen.some((f) => f.id === target)) return { line: 'mock', target };
   return null;
 }
@@ -294,7 +335,7 @@ export function ltLinesDue(
   const seen = fogOn(data, s) ? visibleTiles(data, s, 'player') : undefined;
   for (const u of s.units) {
     if (!u.lieutenant || spoken.has(u.uid) || u.team !== 'enemy' || !u.pos || u.gone || u.downed || !isVisibleToPlayer(data, s, u, seen)) continue;
-    const pick = ltOpeningLine(c, u);
+    const pick = ltOpeningLine(data, c, u);
     if (pick) out.push({ ...pick, unit: u.uid, lieutenant: u.lieutenant });
   }
   return out;
