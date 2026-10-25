@@ -11,6 +11,7 @@ import {
   classPreview,
   filterEvents,
   fogBands,
+  contextEntries,
   fogOn,
   forecast,
   holdZone,
@@ -56,8 +57,7 @@ import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import {
   BackPill,
-  CONTEXT_ORDER,
-  ContextBand,
+  ContextBands,
   Dock,
   DockAction,
   ClassPreviewCard,
@@ -671,7 +671,8 @@ export function Battle() {
     cancelRef.current();
   };
 
-  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone
+  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone, F front band, arrows between bands
+  const ctxRef = useRef({ n: 0, go: () => undefined as void, step: (_d: number) => undefined as void });
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp) return;
@@ -680,7 +681,11 @@ export function Battle() {
     else if (modal) return;
     else if (e.key === 'd' || e.key === 'D') setDanger((d) => !d);
     else if (e.key === 'e' || e.key === 'E') endPhase();
-    else if (e.key === ' ' && playerTurn) {
+    else if (mode.k === 'moved' && ctxRef.current.n > 0 && (e.key === 'f' || e.key === 'F')) ctxRef.current.go();
+    else if (mode.k === 'moved' && ctxRef.current.n > 1 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      e.preventDefault();
+      ctxRef.current.step(e.key === 'ArrowRight' ? 1 : -1);
+    } else if (e.key === ' ' && playerTurn) {
       e.preventDefault();
       nextUnit();
     }
@@ -807,8 +812,17 @@ export function Battle() {
   const itemOpt = options.find((o) => o.kind === 'item');
   const classOpts = CLASS_KINDS.map((k) => options.find((o) => o.kind === k)).filter((o): o is ActionOption => !!o);
   const waitOpt = options.find((o) => o.kind === 'wait');
-  // `open` can offer several objects (a door and a chest next to a scout); every other kind appears once
-  const contextOpts = CONTEXT_ORDER.flatMap((k) => (k === 'open' ? options.filter((o) => o.kind === k) : [options.find((o) => o.kind === k)])).filter((o): o is ActionOption => !!o);
+  // context bands (story 2.7): one per target, most urgent first; the front one runs on a tap or F, the others a swipe or arrow key away
+  const ctxEntries = mode.k === 'moved' ? contextEntries(data, s, options) : [];
+  const ctxSig = mode.k === 'moved' ? `${mode.uid}@${posKey(mode.to)}:${ctxEntries.map((e) => e.id).join(',')}` : '';
+  const [ctxSel, setCtxSel] = useState({ sig: '', i: 0 });
+  const ctxIdx = ctxSel.sig === ctxSig ? Math.min(ctxSel.i, Math.max(0, ctxEntries.length - 1)) : 0;
+  const setCtxIdx = (i: number) => setCtxSel({ sig: ctxSig, i });
+  ctxRef.current = {
+    n: ctxEntries.length,
+    go: () => void doAction(ctxEntries[ctxIdx]!.option),
+    step: (d) => setCtxIdx((ctxIdx + d + ctxEntries.length) % ctxEntries.length),
+  };
 
   /** Dock with its four fixed slots: Attack, Class action, Item, Wait. Impossible ones are dimmed; a tap says why. */
   const dock = (u: BattleUnit) => {
@@ -910,9 +924,7 @@ export function Battle() {
       {mode.k === 'moved' && selUnit && (
         <>
           {back}
-          {contextOpts.map((o) => (
-            <ContextBand key={o.kind} opt={o} target={o.targets?.length === 1 ? unit(o.targets[0]!) : undefined} onGo={() => void doAction(o)} />
-          ))}
+          <ContextBands entries={ctxEntries} index={ctxIdx} unitOf={(uid) => s.units.find((x) => x.uid === uid)} onIndex={setCtxIdx} onGo={(e) => void doAction(e.option)} />
           {card}
           {dock(selUnit)}
         </>

@@ -21,6 +21,7 @@ export * from './rules/supports';
 export * from './battle/commands';
 export * from './battle/create';
 export * from './battle/actions';
+export * from './battle/contextBand';
 export * from './battle/objectives';
 export * from './battle/apply';
 export * from './battle/setup';

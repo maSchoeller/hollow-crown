@@ -497,6 +497,72 @@
   font-size: 14px;
 }
 
+/* several context bands: the front one in full, dots below; swipe sideways (touch) or arrow keys turn them over */
+.hud-ctxs {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  touch-action: pan-y;
+}
+.hud-ctxs .hud-ctx {
+  min-height: 56px;
+  animation: hud-ctx-in 160ms ease-out;
+}
+@keyframes hud-ctx-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud-ctxs .hud-ctx {
+    animation: none;
+  }
+}
+.hud-ctxs__dots {
+  display: flex;
+  justify-content: center;
+}
+.hud-ctxs__dot {
+  position: relative;
+  width: 28px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.hud-ctxs__dot::after {
+  content: '';
+  position: absolute;
+  inset: 6px 8px;
+  box-sizing: border-box;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+}
+.hud-ctxs__dot.is-on::after {
+  background: var(--hc-positive);
+}
+.hud-ctxs__dot:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 0;
+}
+.hud-ctx__key {
+  display: none;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.28);
+  font: inherit;
+  font-size: 11px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hud-ctx__key {
+    display: inline;
+  }
+}
+
 /* dock: four fixed slots (or three in idle) */
 .hud-dock {
   display: grid;
