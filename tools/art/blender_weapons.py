@@ -2,7 +2,7 @@
 
 blender -b --factory-startup --python tools/art/blender_weapons.py -- [<out_dir>] [<id> ...]
 
-One small glTF per weapon group: sword, lance, axe, bow, book, staff, shield (art/models/weapons/<id>.glb). The
+One small glTF per weapon group: sword, dagger, lance, axe, bow, book, staff, shield, lute (art/models/weapons/<id>.glb). The
 renderer hangs them on a figure's hand socket at runtime (src/render/models.ts), chosen by the equipped weapon's
 group (content/render.yaml `weapons`), instead of baking a weapon into every figure.
 
@@ -134,6 +134,14 @@ def sword():
     blade(0.066, 0.36, 0.066, 0.02, 0.06, STEEL)
 
 
+def dagger():
+    # a short chunky blade in the sword's grip (a quick stab reads at board size only when the blade stays stubby)
+    cylinder((0, 0, -0.035), (0, 0, 0.03), 0.016, LEATHER)
+    sphere((0, 0, -0.05), 0.022, GOLD)
+    box((0, 0, 0.04), (0.1, 0.03, 0.022), GOLD, bevel=0.007)
+    blade(0.05, 0.17, 0.06, 0.022, 0.05, STEEL)
+
+
 def lance():
     first = len(parts)
     cylinder((0, 0, -0.26), (0, 0, 0.5), 0.017, WOOD)
@@ -202,7 +210,27 @@ def shield():
         sphere(c + x * 0.02 * s, 0.035, STEEL, scale=(0.6, 1, 1))
 
 
-WEAPONS = {"sword": sword, "lance": lance, "axe": axe, "bow": bow, "book": book, "staff": staff, "shield": shield}
+def lute():
+    # held by the neck in the left fist, the neck along the grip axis, the pear-shaped body out in front with its flat
+    # sides facing outward / inward (like the shield, so it reads from the side), the head bent back behind the fist
+    def bout(z, r, sy, sz):
+        me = bm_mesh(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=8, v_segments=6, radius=r,
+                                                           matrix=Matrix.Translation((0, 0, z)) @ Matrix.Diagonal((0.55, sy, sz, 1))))
+        add(me, WOOD_LIGHT, smooth=True)
+    bout(0.27, 0.1, 1.0, 1.15)  # lower bout
+    bout(0.17, 0.07, 0.95, 1.0)  # upper bout
+    cylinder((0, 0, -0.03), (0, 0, 0.3), 0.017, WOOD, segs=8)  # neck, through the body
+    cylinder((0.0, 0, 0.1), (0.0, 0, 0.2), 0.02, STEEL_DARK, segs=8)  # fretboard
+    for s in (-1, 1):
+        cylinder((0.055 * s, 0, 0.27), (0.066 * s, 0, 0.27), 0.032, GOLD, segs=8)  # sound hole rosette on both faces
+    cylinder((0, 0, -0.03), (0, -0.04, -0.09), 0.019, WOOD, segs=8)  # head bent back
+    for s in (-1, 1):
+        cylinder((0.022 * s, -0.04, -0.09), (0.04 * s, -0.04, -0.09), 0.011, GOLD, segs=5)  # tuning pegs
+    box((0.03, 0, 0.17), (0.005, 0.012, 0.28), STRING)  # strings along the neck and over the body
+
+
+WEAPONS = {"sword": sword, "dagger": dagger, "lance": lance, "axe": axe, "bow": bow, "book": book, "staff": staff,
+           "shield": shield, "lute": lute}
 
 
 def vertex_material():

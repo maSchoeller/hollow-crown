@@ -126,6 +126,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
   const paths = missionAssets({
     units: [...units.map(battleSource), ...later.map(defSource)],
     models: manifest.models?.units,
+    unitPacks: manifest.models?.unitPacks,
     figures: settings.value.figures,
     sprites: manifest.units,
     music: manifest.audio,

@@ -221,7 +221,7 @@ Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewuss
 1. **Porträt-Turnaround** per ChatGPT aus dem freigegebenen Porträt: vorn, Seite, hinten, A-Pose, gleiche Größe, grauer Grund (`art/turnarounds/<id>/`, Prompt in `art/prompts/<id>_turnaround.md`).
 2. **Brett-Turnaround** per ChatGPT aus dem Porträt-Turnaround, stark vereinfacht: große Farbflächen, glatte Rüstung ohne Dellen, wenige große Haarsträhnen, höchstens zwei Gürtel, eine Schattenstufe, etwas dickere Outline; **ohne Waffe und ohne Scheide**; das **Teamtuch flach in Magenta (#FF00FF)** als Schlüsselfarbe (`art/turnarounds/<id>_board/`, Prompt-Vorlage `art/prompts/kael_board_turnaround.md`). Die Seitenansicht geht in das Tripo-Feld, dessen Seite sie geometrisch zeigt (Blick nach rechts = rechte Seite).
 3. **Tripo** (Pro, Datenschutz „Privat“): Smart-Mesh P2.0 aus Multi-View, Quad, 3 000 Polygone, dann „Textur“. Ergebnis Kael: 3 772 Quads.
-4. **Rig** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett, Export GLB mit Skelett (ohne Animationen) nach `art/models/source/<id>_board_tripo.glb`. Die Animationen kommen aus der **Bibliothek** (Kaels Export `art/models/source/kael_board_tripo.glb`): idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen (Presets), attack = KI „one-handed sword slash“, attack_cast = Preset Zauberspruch, attack_shoot / attack_chop / attack_thrust = KI-Animationen Bogenschuss, Axthieb, Speerstoß. Neue Bibliotheks-Animationen entstehen an Kaels Rig und werden „an Ort und Stelle“ mit exportiert.
+4. **Rig** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett, Export GLB mit Skelett (ohne Animationen) nach `art/models/source/<id>_board_tripo.glb`. Die Animationen kommen aus der **Bibliothek** (Kaels Export `art/models/source/kael_board_tripo.glb`): idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen (Presets), attack = KI „one-handed sword slash“, attack_cast = Preset Zauberspruch, attack_shoot / attack_chop / attack_thrust = KI-Animationen Bogenschuss, Axthieb, Speerstoß, flee (Flucht, Leutnants) und cheer (Jubel, Sieg und Stufenaufstieg) = KI-Animationen „Fearful Retreat Pose“ und „Happy Victory Cheer“ in der zweiten Bibliotheksdatei `kael_anims_flee_cheer.glb`. Neue Bibliotheks-Animationen entstehen an Kaels Rig und werden „an Ort und Stelle“ mit exportiert.
 5. **Aufbereitung** mit `pnpm art:tripo` (`tools/art/tripo_units.py` → `prepare_tripo_unit.py`, braucht Blender): Füße auf den Boden, Blick nach Süden, Höhe wie die bisherigen Figuren, Ränder der UV-Inseln auffüllen, nur Grundfarbe; Magenta → Teamtuch (Textur neutral, Vertex-Alpha mit Team-Schlüssel K2); fehlende Animationen ruheposen-relativ aus der Bibliothek übertragen, mit 12 fps und nur Rotationen neu abtasten, Angriffe und Treffer auf 0,5 s takten (Aufprall bei 0,25 s); Hand-Sockel `socket_r`/`socket_l`. Ergebnis `art/models/units/<id>.glb`, das `pnpm art:build` wie die Blender-Figuren übernimmt.
 6. **Waffen** (GA9): eigene kleine Modelle je Waffengruppe (`tools/art/blender_weapons.py` → `art/models/weapons/`), zur Laufzeit an den Hand-Sockel gehängt; Zuordnung Waffengruppe → Modell, Hand, Angriffsbewegung und Ruhehaltung in `content/render.yaml` `gear`. **Offen:** Reittiere und Vierbeiner; eigene Ruhehaltung des Bogens; Kapitelpakete fürs Größenbudget.
 
@@ -257,7 +257,7 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 
 ### 5.5 Key Art, Logo, App-Icon
 
-- **Logo:** „HOLLOW CROWN“ in einer freundlichen, weicheren Serifenschrift (Kandidaten SIL OFL: Fraunces, Alegreya SC); das O von HOLLOW ist die gesprungene hohle Goldkrone mit Glut aus dem App-Icon (U22). [A]
+- **Logo:** „HOLLOW CROWN“ in einer freundlichen, weicheren Serifenschrift (Schrift: **Fraunces**, SIL OFL, gewählt am 2026-10-25 nach Vergleich mit Alegreya SC); das O von HOLLOW ist die gesprungene hohle Goldkrone mit Glut aus dem App-Icon (U22). [A]
 - **Titelbild:** Kael und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
 - **Akt-Karten:** je Akt ein Vollbild zum Aktbeginn im Stil der Illustrationstafeln.
 
@@ -391,7 +391,7 @@ Startschätzung zur Planung der Epics. [C]
 
 - **Lizenzen (GA26/O5):** kommerzielle Nutzungsrechte von ChatGPT-Bildern und ElevenLabs bleiben offen; nichts kommerziell veröffentlichen.
 - **Kamerawinkel (D2):** 35° vs. 40–50° weiter im Playtest.
-- **Logo-Schrift:** Auswahl zwischen den Kandidaten bei der Umsetzung.
+- **Logo-Schrift:** entschieden am 2026-10-25: Fraunces (Entscheidungslog).
 - **Casting** der neuen Figuren in `17-audio.md` (Stimmbilder für 20 Gefährten und 12 Leutnants).
 - **Figuren:** Rig, Animationen und Teamtuch-Maske für Tripo-Figuren (§4.6); Feinabgleich von Licht, Toon-Look und Outline mit der Karte.
 - **Datenschutz:** Kaels erstes HD-Modell liegt öffentlich in der Tripo-Galerie (kostenloser Tarif); ggf. dort auf privat stellen oder löschen.

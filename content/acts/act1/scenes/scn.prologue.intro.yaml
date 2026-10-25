@@ -1,5 +1,5 @@
 id: scn.prologue.intro
-background: bg_caravan_road
+background: lager_unterwegs
 music: title
 lines:
   - id: l01

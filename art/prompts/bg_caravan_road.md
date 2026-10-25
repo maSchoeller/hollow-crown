@@ -1,5 +1,7 @@
 # bg_caravan_road – Karawane auf der Straße (Prolog)
 
+> Abgelöst 2026-10-25 durch art/mockups/locations-s1/ (Story 8.7)
+
 - **Datei:** `art/backgrounds/bg_caravan_road.png` (2560 × 1440, RGB)
 - **Datum:** 2026-10-22
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome

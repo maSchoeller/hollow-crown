@@ -1,7 +1,7 @@
 """Hollow Crown – prepare a Tripo image-to-3D figure for the battle board (concept/23-art-direction §4.6).
 
 blender -b --factory-startup --python tools/art/prepare_tripo_unit.py -- <in.glb> <out.glb> [--height 0.8] [--tex 512] [--faces 6000]
-                                                                             [--anims <library.glb>]
+                                                                             [--anims <library.glb> [--anims <more.glb> ...]]
 
 Feet on z = 0, centred on the tile, facing south (Blender -Y, glTF +Z) and scaled to the board height of the
 Blender figures (1 glTF unit = 1 tile, figureScale in content/render.yaml applies on top). Keeps only the base
@@ -12,8 +12,8 @@ Static figures: --faces decimates the mesh to about that many triangles.
 Rigged figures (Tripo auto-rig, Mixamo skeleton, presets exported "in place"): the Tripo presets and AI animations
 are mapped by keyword to the board's animations and retimed to its sprite timing (src/render/assets.ts UNIT_ROWS):
 attack (and attack_<motion> per weapon group) = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
-keep their length. --anims fills the animations the export lacks from another Tripo export (same Mixamo bone names),
-transferred relative to each rig's rest pose (retarget()); a new figure then needs only the Tripo auto-rig.
+keep their length. --anims (repeatable; the first file wins on a name clash) fills the animations the export lacks from other Tripo exports
+(same Mixamo bone names), transferred relative to each rig's rest pose (retarget()); a new figure then needs only the Tripo auto-rig.
 Hand sockets (sockets()) carry the weapon layer (GA9): the renderer attaches the equipped weapon group at runtime.
 Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
@@ -29,7 +29,7 @@ src, dst = argv[0], argv[1]
 height = float(argv[argv.index("--height") + 1]) if "--height" in argv else 0.8
 tex = int(argv[argv.index("--tex") + 1]) if "--tex" in argv else 512
 faces = int(argv[argv.index("--faces") + 1]) if "--faces" in argv else 0
-anims = argv[argv.index("--anims") + 1] if "--anims" in argv else None
+anims = [argv[i + 1] for i, a in enumerate(argv) if a == "--anims"]
 
 FPS = 12  # board animations are sampled at the sprite rate; halves the animation data
 # Tripo preset (English action name prefix) -> board animation
@@ -39,6 +39,9 @@ REQUIRED = set(PRESETS.values())
 # Optional: without one the renderer plays the sword's attack. AI animations are named after their prompt.
 PRESETS.update({"bow shot": "attack_shoot", "axe chop": "attack_chop", "spear thrust": "attack_thrust",
                 "cast_a_spell": "attack_cast"})
+# further optional animations that keep their own length: flee (lieutenants), cheer (victory, level-up); AI animations named after their prompt
+EXTRAS = {"retreat": "flee", "victory cheer": "cheer"}
+PRESETS.update(EXTRAS)
 DOWNWARD = {"attack_chop"}  # impact at the fastest downward hand movement
 ATTACK_HALF = 6  # source frames (at FPS) on each side of the impact; squeezed into 3 frames (0.25 s) each
 SKIP = ("Thumb", "Index", "Middle", "Ring", "Pinky")  # finger bones: not readable at board size, never keyed
@@ -146,23 +149,24 @@ def retarget(lib, target, action, name):
 
 
 own, library, hit_at = (board_actions([arm]) if arm else {}), {}, {}
-if anims and arm is not None:
+for anims_file in (anims if arm is not None else []):
     before, before_actions = set(bpy.data.objects), set(bpy.data.actions)
-    bpy.ops.import_scene.gltf(filepath=anims)
+    bpy.ops.import_scene.gltf(filepath=anims_file)
     lib_objs = [o for o in bpy.data.objects if o not in before]
     lib_arm = next((o for o in lib_objs if o.type == "ARMATURE"), None)
     if lib_arm is None:
-        raise SystemExit(f"{anims}: no armature")
+        raise SystemExit(f"{anims_file}: no armature")
     for board, act in board_actions(lib_objs).items():
-        if board.startswith("attack") and board not in own:
+        if board in own or board in library:  # the figure's own Tripo animations win, then the first library file
+            continue
+        if board.startswith("attack"):
             hit_at[board] = impact_frame(lib_arm, act, board in DOWNWARD)  # a property of the animation; on another rig the hand's peaks shift
-        if board not in own:  # the figure's own Tripo animations win over the library's
-            library[board] = retarget(lib_arm, arm, act, f"{board}_library")
+        library[board] = retarget(lib_arm, arm, act, f"{board}_library")
     for o in lib_objs:
         bpy.data.objects.remove(o)
     for act in set(bpy.data.actions) - before_actions - set(library.values()):
         bpy.data.actions.remove(act)
-    print(f"[hc] animations from {os.path.basename(anims)}: {', '.join(sorted(library)) or 'none'}", flush=True)
+    print(f"[hc] animations from {os.path.basename(anims_file)}: {', '.join(sorted(library)) or 'none'}", flush=True)
 
 if arm is None:
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
@@ -265,6 +269,8 @@ if arm:
         t0, t1 = max(a0, hit - ATTACK_HALF), min(a1, hit + ATTACK_HALF)
         keep[name] = bake(found[name], name, t0, t1, FPS // 2 + 1)
         print(f"[hc] {name} impact at source frame {hit}, window {t0:.0f}–{t1:.0f}", flush=True)
+    for name in sorted(set(EXTRAS.values()) & set(found)):  # own length, no retiming
+        keep[name] = bake(found[name], name, *found[name].frame_range, span(found[name]))
     for act in list(bpy.data.actions):
         if act not in keep.values():
             bpy.data.actions.remove(act)

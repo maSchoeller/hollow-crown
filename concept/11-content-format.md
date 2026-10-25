@@ -130,7 +130,7 @@ Skill-Effekte werden als **kleine, kombinierbare Effekt-Bausteine** modelliert (
 
 ```yaml
 id: dlg.ch01.intro
-background: bg_varnhold_burning
+background: erlbach
 lines:
   - { speaker: kael,   mood: angry,  side: left,  key: dlg.ch01.intro.001 }
   - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.intro.002 }
