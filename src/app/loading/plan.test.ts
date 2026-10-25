@@ -1,3 +1,4 @@
+import { unitModelPath } from '../../core';
 import { describe, expect, it } from 'vitest';
 import { ON_DEMAND_MUSIC } from './cacheName';
 import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
@@ -23,6 +24,17 @@ describe('missionAssets', () => {
   });
   it('draws a hired tavern mercenary with the figure its class names', () => {
     expect(missionAssets({ units: [{ classId: 'skirmisher' }], ...base })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/mercenary.glb']);
+  });
+  it('puts a model in the folder of the pack it ships in (manifest unitPacks), else in models/units', () => {
+    const unitPacks = { kael: 'core', brigand: 'act1' };
+    expect(missionAssets({ units: [{ charId: 'kael', classId: 'captain' }, { classId: 'brigand' }, { classId: 'skirmisher' }], ...base, unitPacks, place: 'p' })).toEqual([
+      'core/models/units/kael.glb',
+      'locations/p.webp',
+      'act1/models/units/brigand.glb',
+      'models/units/mercenary.glb',
+    ].sort());
+    expect(unitModelPath('kael', unitPacks)).toBe('core/models/units/kael.glb');
+    expect(unitModelPath('kael')).toBe('models/units/kael.glb');
   });
   it('needs no models when the manifest has none (sprite figures)', () => {
     expect(missionAssets({ units: [{ classId: 'brigand' }], ...base, models: undefined })).toEqual([`locations/${defaultPlace}.webp`]);
@@ -102,12 +114,11 @@ describe('numbers', () => {
 });
 
 describe('placePath', () => {
-  it('a location lives in locations, a background keeps its folder', () => {
+  it('a place image lives in locations', () => {
     expect(placePath('varnhold')).toBe('locations/varnhold.webp');
-    expect(placePath('backgrounds/bg_caravan_road')).toBe('backgrounds/bg_caravan_road.webp');
   });
-  it('the mission list names the background image', () => {
-    expect(missionAssets({ units: [], ...base, place: 'backgrounds/bg_varnhold_burning' })).toEqual(['backgrounds/bg_varnhold_burning.webp']);
+  it('the mission list names the place image', () => {
+    expect(missionAssets({ units: [], ...base, place: 'erlbach' })).toEqual(['locations/erlbach.webp']);
   });
 });
 
@@ -115,17 +126,20 @@ describe('weapon models', () => {
   const items = {
     iron_sword: { weaponType: 'sword', kind: 'weapon' },
     iron_bow: { weaponType: 'bow', kind: 'weapon' },
-    wooden_shield: { kind: 'shield' },
+    wooden_shield: { kind: 'shield', group: 'shield' },
+    travel_lute: { kind: 'accessory', group: 'lute' },
+    ember_focus: { kind: 'accessory', group: 'focus' },
     vulnerary: { kind: 'consumable' },
   } as never;
   const gear = {
     weapons: { sword: { model: 'sword', hand: 'right' }, bow: { model: 'bow', hand: 'left' } },
-    offHand: { shield: { model: 'shield', hand: 'left' } },
+    offHand: { shield: { model: 'shield', hand: 'left' }, lute: { model: 'lute', hand: 'left' } },
   } as never;
   const weaponModels = ['sword', 'bow', 'shield', 'axe'];
 
   it('maps equipped items to weapon models, off-hand included, each once', () => {
     expect(gearModels(['iron_sword', 'wooden_shield', 'iron_sword', 'vulnerary', 'ghost'], items, gear).sort()).toEqual(['shield', 'sword']);
+    expect(gearModels(['travel_lute', 'ember_focus'], items, gear)).toEqual(['lute']);
   });
   it('the mission plan adds the weapon files of the units with a model', () => {
     const list = missionAssets({

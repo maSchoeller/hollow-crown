@@ -6,32 +6,51 @@
   align-items: center;
   text-align: center;
   gap: 10px;
-  background: #15141a;
+  background: var(--title-sky);
+  --title-sky: #04154b; /* mean colour of the top rows of art/title/title_act1.png */
+  --title-grass: #231f16; /* and of its bottom rows */
 }
-.title-logo {
-  margin: 13vh 0 0;
-  text-transform: uppercase;
-  color: var(--hc-cream);
-  font-family: var(--hc-font-name);
-  font-weight: 900;
-  font-size: clamp(44px, 13vw, 72px);
-  line-height: 0.9;
-  letter-spacing: 0.02em;
-  text-shadow: 0 3px 0 var(--hc-line), 0 0 18px rgba(0, 0, 0, 0.35);
+.title-screen .logo {
+  margin: 6vh 0 0;
 }
-.title-logo .crown {
-  color: var(--hc-gold);
+/* sky above, dark grass below; the image sits between them and fades into both */
+.title-screen .title-bg {
+  background: linear-gradient(to bottom, var(--title-sky) 45%, var(--title-grass) 66%);
 }
-.title-logo small {
-  display: block;
-  margin-top: 10px;
-  font-family: var(--hc-font-label);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--hc-cream-2);
-  text-shadow: 0 2px 0 var(--hc-line);
+.title-screen .title-bg::after {
+  display: none;
+}
+.title-screen .logo,
+.title-screen .title-menu {
+  z-index: 1;
+}
+/* the art fills the space between logo and menu; its picture sits on the menu and reaches up behind the logo (nothing is cut off at the sides) */
+.title-art {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+.title-art::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 150vw;
+  aspect-ratio: 2 / 3;
+  transform: translateX(-50%);
+  background: var(--title-img) center / 100% 100% no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+}
+/* wide windows: the picture keeps its shape and also fades out at the sides */
+@media (min-aspect-ratio: 2 / 3) {
+  .title-art::before {
+    height: min(150vw, 80vh);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent), linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent), linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
 }
 .title-menu {
   display: grid;

@@ -64,24 +64,28 @@ describe('place images and recruit dialogues', () => {
   });
 });
 
-describe('place images of campaign nodes (story 7.6)', () => {
-  const run = (place: string, bgs: string[]) => {
+describe('place images of campaign nodes (story 7.6) and scene backdrops (story 8.7)', () => {
+  const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'lager_unterwegs', 'paktwacht_ruine']), new Set([...bgs, 'bg_caravan_road', 'bg_varnhold_burning', 'bg_silverbrook_shrine'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine'])).map((i) => `${i.file}: ${i.message}`);
   };
-  it('accepts a location and a background as place', () => {
-    expect(run('varnhold', [])).toEqual([]);
-    expect(run('backgrounds/bg_caravan_road', ['bg_caravan_road'])).toEqual([]);
+  it('accepts a location as place', () => {
+    expect(run('varnhold')).toEqual([]);
   });
-  it('reports a missing location or background', () => {
-    expect(run('nowhere', [])).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
-    expect(run('backgrounds/bg_none', [])).toContain('campaign.yaml: prologue place: no background image art/backgrounds/bg_none.png');
+  it('reports a missing location', () => {
+    expect(run('nowhere')).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
   });
-  it('the shipped missions use the backgrounds of their chapters', () => {
+  it('reports a scene backdrop without a place image', () => {
+    const loaded = loadContentFromDisk();
+    loaded.data.scenes['scn.ch01.intro']!.background = 'nowhere';
+    const out = validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs'])).map((i) => `${i.file}: ${i.message}`);
+    expect(out).toContain('scenes/scn.ch01.intro: background: no place image art/mockups/locations-s1/nowhere.png');
+  });
+  it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'backgrounds/bg_caravan_road', ch01: 'backgrounds/bg_varnhold_burning', ch02: 'backgrounds/bg_silverbrook_shrine' });
+    expect(places).toEqual({ prologue: 'lager_unterwegs', ch01: 'erlbach', ch02: 'varnhold' });
   });
 });
 

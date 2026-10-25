@@ -25,6 +25,7 @@
     "art:icons": "python tools/art/icons.py",
     "art:props": "python tools/art/props/run.py",
     "art:tripo": "python tools/art/tripo_units.py",
+    "art:silhouettes": "python tools/art/silhouettes.py",
     "format": "prettier --write ."
   },
   "dependencies": {

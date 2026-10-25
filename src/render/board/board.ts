@@ -702,7 +702,8 @@ export class BoardView implements HostedView {
     const out: GearPiece[] = [];
     const w = this.weaponOf(u);
     if (w) out.push(w);
-    const off = u.equip.offHand && offHand[itemDef(this.data, u.equip.offHand).kind];
+    const group = u.equip.offHand && itemDef(this.data, u.equip.offHand).group;
+    const off = group && offHand[group];
     if (off && !out.some((p) => p.hand === off.hand)) out.push(off);
     return out;
   }
@@ -717,9 +718,9 @@ export class BoardView implements HostedView {
     const id = this.unitSpriteId(u);
     if (this.figures === '3d') {
       // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
-      const models = (await loadManifest()).models?.units ?? [];
-      const mid = modelId(u, models, this.data.classes);
-      const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u));
+      const manifestModels = (await loadManifest()).models;
+      const mid = modelId(u, manifestModels?.units ?? [], this.data.classes);
+      const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u), manifestModels?.unitPacks);
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
         return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz);

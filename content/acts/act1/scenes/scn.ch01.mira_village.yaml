@@ -1,5 +1,5 @@
 id: scn.ch01.mira_village
-background: bg_varnhold_burning
+background: erlbach
 lines:
   - id: l01
     speaker: [mira]

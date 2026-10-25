@@ -4,18 +4,19 @@ Quellen für alle Spielgrafiken. `pnpm art:build` kopiert die fertigen Sheets na
 
 **Raster: 48 px pro Feld** (Entscheidung GA4b in `concept/01-decisions.md`, ersetzt 32 px).
 
-## Aktueller Stand und veraltete Quellen
+## Aktueller Stand
 
-Maßgeblich ist seit 2026-10-23 `concept/23-art-direction/art-direction.md` (Round-Chibi, B8). Für neue Arbeit, Mockups und Referenzen nur diese Quellen nutzen:
+Maßgeblich ist seit 2026-10-23 `concept/23-art-direction/art-direction.md` (Round-Chibi, B8). Für neue Arbeit, Mockups und Referenzen diese Quellen nutzen:
 
 | Aktuell | Wo |
 |---|---|
-| Porträts aller Figuren (Round-Chibi, Moodboard-Stand) | `art/mockups/characters-s1/<id>.png` |
-| Orte und Dialog-Hintergründe (Kandidaten) | `art/mockups/locations-s1/` |
+| Porträts aller Figuren, final für Akt 1 mit vier Stimmungen der Kernfiguren (Story 8.4) | `art/mockups/characters-s1/<id>.png`, `<id>_<mood>.png` |
+| Dialog-Hintergründe (Akt 1 final, Story 8.7; spätere Akte noch Kandidaten) | `art/mockups/locations-s1/` |
+| Titelbild | `art/title/title_act1.png` |
 | Stil-Leitreferenz | `art/mockups/style-2026-10/round_chibi_kael.png` |
-| Brettfigur Kael (Tripo) | `art/models/source/kael_board_tripo.glb`, `art/turnarounds/kael_board/` |
+| Brettfiguren (Tripo) | `art/models/source/<id>_board_tripo.glb`, `art/turnarounds/<id>_board/`; aufbereitet `art/models/units/<id>.glb` (`pnpm art:tripo`) |
 
-**Veraltet** (Proof of Concept, vom Spiel bis zur Umstellung in Epic E7 noch geladen, nicht als Referenz verwenden; die Anime-Porträts `portraits/` sind gelöscht, Dialoge zeigen nur noch die Halbfiguren aus `mockups/characters-s1/`): `backgrounds/` (PoC-Hintergründe), `models/units/*.glb` außer Kael aus Tripo (Blender-Skriptfiguren, abgelöst durch Bild-zu-3D), `sprites/` (2D-Pixel, D4, nicht weiterentwickelt), sowie die entfernten, nur noch in der Git-Historie liegenden Altbestände `tiles/`, `concept/art/` (Anime-Sheets, Pixel-Beweis), `art/mockups/style-3d-2026-10/` (abgelehnte Stilprobe).
+Nur noch für die Alternative der 2D-Darstellung (D4, nicht weiterentwickelt): `sprites/`. Die übrigen Blender-Skriptfiguren unter `models/units/` (Schütze, Magier, Kämpfer, `avatar`) bleiben, bis sie durch Tripo-Figuren ersetzt werden. Nur noch in der Git-Historie: die Anime-Porträts `portraits/`, die PoC-Hintergründe `backgrounds/`, `tiles/`, `concept/art/` (Anime-Sheets, Pixel-Beweis) und `art/mockups/style-3d-2026-10/` (abgelehnte Stilprobe).
 
 ## Ordner
 
@@ -27,7 +28,8 @@ Maßgeblich ist seit 2026-10-23 `concept/23-art-direction/art-direction.md` (Rou
 | `models/units/<id>.glb` | 3D-Figuren fürs 3D-Brett (D4): ein Mesh pro Gelenk, Animationen `idle`, `walk`, `attack`, `hit`, `downed` | `tools/art/export_models.py` + Blender |
 | `models/props/<id>_<zustand>.glb` | 3D-Requisiten (D5), ein statisches Mesh pro Zustand (`tree_a`, `house_razed`, `chest_open` …) | `tools/art/export_models.py` + Blender |
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
-| `backgrounds/<id>.png` | VN-Hintergründe 2560 × 1440 (Sicherheitszone mittlere 810 px) | ChatGPT |
+| `mockups/locations-s1/<id>.png` | Orte und VN-Hintergründe von Akt 1 (16:9, 1672 × 941, Sicherheitszone mittleres Drittel, unteres Drittel ruhig); `pnpm art:build` baut `public/assets/locations/<id>.webp`, Szenen und `place` nennen die Ort-Id (Story 8.7) | ChatGPT |
+| `title/title_act1.png` | Titelbild 1024 × 1536 (2:3); `pnpm art:build` baut `public/assets/title/title_act1.webp` (Paket core) | ChatGPT |
 | `icon/icon.png` | App-Icon-Master 1254 × 1254 (Favicon, PWA-Icons, Apple-Touch); `pnpm art:icons` schreibt `public/icons/` (eingecheckt) | ChatGPT |
 | `prompts/<asset>.md` | Prompt, Referenzen, Datum | Hand |
 
