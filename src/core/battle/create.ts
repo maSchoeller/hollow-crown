@@ -1,7 +1,7 @@
 import { STAT_KEYS, type CharDef, type EquipSlot, type GameData, type ItemRef, type MapUnitDef, type Pos, type Stats } from '../defs';
 import { canEquip, itemDef } from '../rules/items';
 import { computeStats } from '../rules/stats';
-import type { AvatarSettings, BattleUnit, ItemInstance, UnitRecord } from '../state';
+import type { AvatarSettings, BattleUnit, ItemInstance, LieutenantPlan, UnitRecord } from '../state';
 import { clone } from '../util';
 
 export interface UidSource {
@@ -117,6 +117,21 @@ export function battleUnitFromRecord(data: GameData, rec: UnitRecord, team: Batt
   };
   u.hp = computeStats(data, u).maxHp;
   return u;
+}
+
+/**
+ * A map unit as the battle builds it from the plan of its lieutenant (review R1): the scaled level, tiered items, grudge skills,
+ * grudge and target. Without a plan the unit is built as the map says.
+ */
+export function battleUnitFromPlan(data: GameData, def: MapUnitDef, src: UidSource, statPercent: number, uid: string, plan?: LieutenantPlan): BattleUnit {
+  if (!plan) return battleUnitFromMap(data, def, src, statPercent, uid);
+  const scaled: MapUnitDef = { ...def, level: plan.level, items: plan.items.map((r) => ({ ...r })) };
+  if (plan.drops) scaled.drops = [...plan.drops];
+  else delete scaled.drops;
+  const unit = battleUnitFromMap(data, scaled, src, statPercent, uid, plan.skills);
+  if (plan.grudge !== undefined) unit.grudge = plan.grudge;
+  if (plan.target) unit.grudgeTarget = plan.target;
+  return unit;
 }
 
 /** Creates a map-defined unit (enemy, NPC, story character on the enemy side). */

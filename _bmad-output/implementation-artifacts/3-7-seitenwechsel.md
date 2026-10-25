@@ -1,6 +1,6 @@
 # Story 3.7: Seitenwechsel
 
-Status: review
+Status: done
 
 ## Story
 
@@ -95,6 +95,24 @@ damit Entscheidungen Feinde zu Gefährten machen können (FR25).
 - [Source: _bmad-output/implementation-artifacts/3-4-mitwachsende-staerke.md]
 - [Source: _bmad-output/implementation-artifacts/3-5-kopfgeld-und-signatur-item.md]
 - [Source: _bmad-output/implementation-artifacts/4-2-bedingungen-und-wirkungen.md]
+
+## Review (2026-10-25)
+
+Grundlage: Code-Review Epic 3 (Diff PR #48 + #52, Prüfschichten Blind Hunter, Edge Case Hunter, Acceptance Auditor, Querschnitt Replay/Vorschau/Migration/Worker, Simulation, Browser).
+
+Kurzergebnis: Übrige ACs ohne Befund.
+
+| # | Schwere | Befund | Ort | Ergebnis |
+|---|---|---|---|---|
+| R1 | S2 | Leutnants aus Verstärkung/Trigger-`spawn` ohne Skalierung, Groll, Groll-Skills, Ziel; beigetretener Grosk spawnt in m1_8 als Feind mit uid `grosk`. Entscheidung: gleich aufbauen (createBattle rechnet vorab, State trägt es). | objectives.ts:121 vs setup.ts:72 | behoben in PR #55 |
+| R12 | S2 | `pnpm test:e2e` in 3.2/3.4/3.7 nicht gelaufen (AC verlangt es). | – | behoben in PR #55 |
+| R18 | E | `joined_grosk` `season2: true` gilt; Completion Note korrigieren. | flags.yaml | bleibt so (Entscheidung Produktinhaber 2026-10-25) |
+| R22 | S3 | `playNode`/`beginMission` kehren bei Überbelegung still zurück; Hinweis nur Weltkarte/Camp/Vorbereitung. Sperre nur in der App-Schicht. | flow.ts:90, :168 | vermerkt, kein Handlungsbedarf |
+| R23 | S3 | Entlassen ohne Rückfrage, unumkehrbar. | Rooms.tsx:398 | vermerkt, kein Handlungsbedarf |
+| R24 | S3 | Signatur-Item wird einer anderen Einheit beim Beitritt still aus der Hand genommen (laut Decision-Log gewollt). | lieutenants.ts:123 | vermerkt, kein Handlungsbedarf |
+| R29 | E | Umbenennen einer Leutnant-ID braucht ab Release Migration an 4 Stellen (`c.lieutenants`, `joined_<id>`, Roster-ID, `target`) → Story 7.4. | – | offen für spätere Story |
+
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

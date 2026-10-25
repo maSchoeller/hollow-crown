@@ -3,8 +3,8 @@ import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
-import { isJoined, lieutenantUnit } from '../campaign/lieutenants';
-import { battleUnitFromMap, battleUnitFromRecord } from './create';
+import { isJoined, planLieutenants } from '../campaign/lieutenants';
+import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 
 export function parseTerrain(data: GameData, mapId: string): string[] {
@@ -60,6 +60,8 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     avatarName: c.avatar.name,
     locked: lockedMechanics(data, c),
     lockedRoles: lockedRoles(data, c),
+    // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1)
+    lieutenantPlan: planLieutenants(data, c, map, c.settings.difficulty),
   };
   const forced = map.deploy.forced;
   const chosen = [...forced.filter((id) => c.roster.some((r) => r.id === id)), ...deployIds.filter((id) => !forced.includes(id))];
@@ -75,13 +77,8 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     if (def.lieutenant && isJoined(c, def.lieutenant)) return; // a lieutenant who joined the company stays off the board (story 3.7)
     const uid = def.id ?? def.char ?? `m${i}`;
     // a lieutenant is scaled to the company and its grudge (story 3.4); everything else is built as the map says
-    const scaled = lieutenantUnit(data, c, def);
-    const unit = battleUnitFromMap(data, scaled.def, s, def.team === 'enemy' ? pct : 0, uid, scaled.skills);
-    const lt = unit.lieutenant ? c.lieutenants?.[unit.lieutenant] : undefined;
-    if (lt) {
-      unit.grudge = lt.grudge;
-      if (lt.target) unit.grudgeTarget = lt.target;
-    }
+    const plan = def.lieutenant ? s.lieutenantPlan![def.lieutenant] : undefined;
+    const unit = battleUnitFromPlan(data, def, s, def.team === 'enemy' ? pct : 0, uid, plan);
     s.units.push(unit);
   });
   for (const p of map.pairs) {

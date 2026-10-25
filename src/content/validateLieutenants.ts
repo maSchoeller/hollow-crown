@@ -1,7 +1,7 @@
 /** Cross-reference checks of the lieutenants (story 3.1): references, scene lines in both languages, map units that name one. */
 import type { GameData, MapDef, MapUnitDef } from '../core/defs';
 import { lineKey } from '../core/campaign/scene';
-import { fillTarget, lieutenantLineIds, TARGET_PLACEHOLDER } from './lieutenantLines';
+import { fillTarget, lieutenantLineIds, LIEUTENANT_LINES, TARGET_PLACEHOLDER } from './lieutenantLines';
 import type { Locales } from './load';
 
 /** At most this many lieutenants per act (GDD: four lieutenants, one camp each). */
@@ -61,6 +61,11 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
     if (from === to) err('balance.yaml', `lieutenant.scaling.tierUp: ${from} points at itself`);
     if (!a.group || a.group !== b.group) err('balance.yaml', `lieutenant.scaling.tierUp: ${from} -> ${to} must stay in one weapon group (${a.group ?? 'none'} / ${b.group ?? 'none'})`);
   }
+  // the grudge goes 0..max: one grudge skill and one `grudge_<n>` line per step (review R9)
+  const gmax = data.balance.lieutenant.grudge.max;
+  const grudgeLines = LIEUTENANT_LINES.filter((l) => /^grudge_\d+$/.test(l)).length;
+  if (grudgeLines !== gmax) err('balance.yaml', `lieutenant.grudge.max is ${gmax}, but there are ${grudgeLines} grudge_<n> lines (lieutenantLines.ts)`);
+  for (const lt of all) if (lt.grudgeSkills.length !== gmax) err('lieutenants.yaml', `${lt.id}: ${lt.grudgeSkills.length} grudge skills, lieutenant.grudge.max is ${gmax}`);
   for (const lt of all) if (!byAct[String(lt.act)]) err('balance.yaml', `lieutenant.bounty.materialByAct: no material for act ${lt.act} (${lt.id})`);
   for (const lt of all) {
     perAct.set(lt.act, (perAct.get(lt.act) ?? 0) + 1);
@@ -71,7 +76,7 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
       if (!sk) err(f, `${lt.id}: unknown grudge skill ${s} (step ${i + 1})`);
       else if (sk.source !== 'grudge') err(f, `${lt.id}: skill ${s} must have the source grudge`);
     });
-    if (new Set(lt.grudgeSkills).size !== 3) err(f, `${lt.id}: the three grudge skills must differ`);
+    if (new Set(lt.grudgeSkills).size !== lt.grudgeSkills.length) err(f, `${lt.id}: the grudge skills must differ`);
     if (!locales.de?.[lt.nameKey] || !locales.en?.[lt.nameKey]) err(f, `${lt.id}: missing name key ${lt.nameKey}`);
     for (const lang of ['de', 'en']) {
       if (!locales[lang]?.[lt.titleKey]) err(`locales/${lang}`, `missing key ${lt.titleKey}`);
@@ -109,6 +114,14 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
     }
   }
   for (const [act, n] of perAct) if (n > MAX_LIEUTENANTS_PER_ACT) err(f, `act ${act}: ${n} lieutenants, at most ${MAX_LIEUTENANTS_PER_ACT}`);
+
+  // a lieutenant stands on a map once per difficulty: line-up, reinforcements and trigger spawns together (review R8)
+  for (const m of Object.values(data.maps))
+    for (const d of ['easy', 'normal', 'hard'] as const) {
+      const count = new Map<string, number>();
+      for (const u of allMapUnits(m)) if (u.lieutenant && (!u.difficulty || u.difficulty.includes(d))) count.set(u.lieutenant, (count.get(u.lieutenant) ?? 0) + 1);
+      for (const [id, n] of count) if (n > 1) err(`maps/${m.id}`, `${id}: ${n} units on difficulty ${d}, a lieutenant appears at most once per map and difficulty`);
+    }
 
   // a map unit that names a lieutenant needs him in the content
   for (const m of Object.values(data.maps))

@@ -6,6 +6,7 @@ import type {
   EquipSlot,
   FlagValue,
   HomeKind,
+  ItemRef,
   MapDef,
   Mechanic,
   Pos,
@@ -190,6 +191,27 @@ export interface BattleState {
   fogLifted?: Array<{ team: Team; at: Pos; radius: number; turns: number }>;
   /** core roles whose class action is not introduced yet (`lockedRoles`; missing in old saves = none locked) */
   lockedRoles?: string[];
+  /**
+   * How each lieutenant of the map is built (review R1): `createBattle` works it out from the campaign for every lieutenant unit
+   * of the map (line-up, reinforcements, trigger spawns), so a lieutenant who arrives later is the same as one who starts on the
+   * board, and `applyCommand` needs no campaign. A lieutenant missing from the plan has joined the company and does not spawn.
+   * Missing in old states = build the unit as the map says.
+   */
+  lieutenantPlan?: Record<string, LieutenantPlan>;
+  /** ids of the lieutenants the company has seen in this battle (review R2; `noteLieutenantSight`); missing = none yet */
+  ltSeen?: string[];
+}
+
+/** The scaling of one lieutenant for one battle (review R1): level, tiered items, grudge skills, grudge and its target. */
+export interface LieutenantPlan {
+  level: number;
+  items: ItemRef[];
+  /** positions in `items` of the items that drop, when the map unit names drops */
+  drops?: number[];
+  skills: string[];
+  /** set where the campaign holds a record of him */
+  grudge?: number;
+  target?: string;
 }
 
 export interface AvatarSettings {

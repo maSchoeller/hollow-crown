@@ -855,6 +855,8 @@ export interface Balance {
   };
   /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {
+    /** the grudge goes from 0 to `max` (GDD: 3); one grudge skill and one `grudge_<n>` line per step */
+    grudge: { max: number };
     scaling: {
       /** how many of the company's strongest units set the level of a lieutenant (GDD: 6) */
       armySize: number;

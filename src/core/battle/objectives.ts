@@ -3,7 +3,8 @@ import type { GameEvent } from '../events';
 import { burningTileHit } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
 import { active, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
-import { battleUnitFromMap } from './create';
+import { battleUnitFromPlan } from './create';
+import { noteLieutenantSight } from './lieutenantSight';
 
 export function mapOf(data: GameData, s: BattleState): MapDef {
   return data.maps[s.mapId]!;
@@ -121,16 +122,21 @@ export function sideObjectiveProgress(data: GameData, s: BattleState, o: SideObj
 export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], reinforcement: boolean, events: GameEvent[]): void {
   const pct = data.balance.difficulty[s.settings.difficulty].enemyStatPercent;
   for (const def of onDifficulty(defs, s.settings.difficulty)) {
+    // a lieutenant is built from the plan of the battle start; one who joined the company is not in it and stays off the board
+    const known = !!def.lieutenant && !!data.lieutenants?.[def.lieutenant];
+    const plan = known && s.lieutenantPlan ? s.lieutenantPlan[def.lieutenant!] : undefined;
+    if (known && s.lieutenantPlan && !plan) continue;
     const at = freeTileNear(s, def.at);
     if (!at) continue;
     const uid = def.id ?? `r${s.nextUid++}`;
-    const u = battleUnitFromMap(data, { ...def, at }, s, def.team === 'enemy' ? pct : 0, uid);
+    const u = battleUnitFromPlan(data, { ...def, at }, s, def.team === 'enemy' ? pct : 0, uid, plan);
     if (def.team === s.phase && !(reinforcement && data.balance.difficulty[s.settings.difficulty].ambushReinforcements)) {
       u.acted = true;
     }
     s.units.push(u);
     events.push({ t: 'spawned', unit: u.uid, reinforcement });
   }
+  noteLieutenantSight(data, s);
 }
 
 export function freeTileNear(s: BattleState, p: Pos): Pos | null {

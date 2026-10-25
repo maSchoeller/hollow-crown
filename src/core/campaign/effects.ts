@@ -151,7 +151,7 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
       case 'grudge': {
         const { lt, delta } = v as { lt: string; delta: number };
         const st = lieutenantState(c, lt);
-        const grudge = clampGrudge(st.grudge + delta);
+        const grudge = clampGrudge(data, st.grudge + delta);
         if (grudge !== st.grudge) {
           (c.lieutenants ??= {})[lt] = { ...st, grudge };
           events.push({ t: 'grudgeChanged', lt, grudge });

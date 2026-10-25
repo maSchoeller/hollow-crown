@@ -13,16 +13,13 @@ import './pennant.css';
 
 type Pos = readonly [number, number];
 
-/** Highest grudge step (GDD: three steps). */
-export const GRUDGE_MAX = 3;
-
 /** Gold of the lieutenant ring and the line (DESIGN.md `gold`). */
 const GOLD = '#d9a931';
 
-/** Notches on the pennant for a grudge value: whole numbers from 0 to 3, anything else counts as 0 or 3. */
-export function pennantNotches(grudge: number | undefined): number {
+/** Notches on the pennant for a grudge value: whole numbers from 0 to `max` (`balance.lieutenant.grudge.max`), anything else counts as 0 or `max`. */
+export function pennantNotches(grudge: number | undefined, max: number): number {
   if (grudge === undefined || !Number.isFinite(grudge)) return 0;
-  return Math.min(GRUDGE_MAX, Math.max(0, Math.floor(grudge)));
+  return Math.min(max, Math.max(0, Math.floor(grudge)));
 }
 
 /** The pennant element over a lieutenant: one white bar per notch (the shape carries the meaning, not only the colour). */

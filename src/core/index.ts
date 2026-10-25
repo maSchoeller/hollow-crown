@@ -23,6 +23,7 @@ export * from './battle/create';
 export * from './battle/actions';
 export * from './battle/contextBand';
 export * from './battle/objectives';
+export * from './battle/lieutenantSight';
 export * from './battle/apply';
 export * from './battle/setup';
 export * from './ai/ai';

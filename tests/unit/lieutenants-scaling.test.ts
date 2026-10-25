@@ -95,11 +95,11 @@ describe('lieutenantLevel', () => {
 describe('lieutenantSkills', () => {
   it('unlocks one more grudge skill per notch, in order', () => {
     const hask = data.lieutenants.hask!;
-    expect(lieutenantSkills(hask, 0)).toEqual([]);
-    expect(lieutenantSkills(hask, 1)).toEqual(['brute_blow']);
-    expect(lieutenantSkills(hask, 2)).toEqual(['brute_blow', 'brand_mark']);
-    expect(lieutenantSkills(hask, 3)).toEqual(['brute_blow', 'brand_mark', 'fire_eats_all']);
-    expect(lieutenantSkills(hask, 7)).toEqual(hask.grudgeSkills);
+    expect(lieutenantSkills(data, hask, 0)).toEqual([]);
+    expect(lieutenantSkills(data, hask, 1)).toEqual(['brute_blow']);
+    expect(lieutenantSkills(data, hask, 2)).toEqual(['brute_blow', 'brand_mark']);
+    expect(lieutenantSkills(data, hask, 3)).toEqual(['brute_blow', 'brand_mark', 'fire_eats_all']);
+    expect(lieutenantSkills(data, hask, 7)).toEqual(hask.grudgeSkills);
   });
 
   it('agrees with the locked and free skills of the profile card', () => {
@@ -108,7 +108,7 @@ describe('lieutenantSkills', () => {
         const c = fresh();
         c.lieutenants = { [lt.id]: { met: true, encounters: 1, grudge: g, routs: g, signatureDropped: false } };
         const free = wantedView(data, c, lt.id)!.skills.filter((s) => s.free).map((s) => s.id);
-        expect(free).toEqual(lieutenantSkills(lt, g));
+        expect(free).toEqual(lieutenantSkills(data, lt, g));
       }
     }
   });
