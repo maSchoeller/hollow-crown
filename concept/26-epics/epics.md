@@ -254,7 +254,32 @@ Spieler verwalten ihre Truppe, rüsten aus, handeln und versorgen im Lager und a
 Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.
 **FRs covered:** FR57 (Release-Ablauf), FR58 · AR15, AR19, AR23 · NFR1, NFR2, NFR8 · UX-DR18
 
-### Epic 8: Chibi-Stil, Item-Bilder und Audio
+#### Story 7.8: Große Schlachten ohne Ruckler
+
+Als Spieler
+möchte ich, dass die größte Schlacht auch auf einem schwächeren Handy ohne Hänger läuft,
+damit die Gegnerphase gleichmäßig flüssig bleibt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Messung aus 7.5/7.7 (`PERF_GPU=1 pnpm perf`, Referenzschlacht 24×32, Vorher-Werte in `tests/perf/baseline.json`)
+**Wenn** die Gegnerphase mit 2× und 4× gedrosselter CPU läuft
+**Dann** erreicht sie 60 FPS bei 2× und 30 FPS bei 4× auf beiden Geräteprofilen (NFR1, Zielmaß aus 7.7)
+**Und** der Bericht zeigt Vorher (Stand nach 7.7) und Nachher.
+
+**Angenommen** eine Figur kommt während einer Kamerafahrt neu ins Bild, oder der Speicher wird aufgeräumt (GC)
+**Wenn** das in der Gegnerphase passiert
+**Dann** entstehen keine einzelnen Frames über 100 ms mehr (heute 300–470 ms bei 2×)
+**Und** die Ursachen (erstes Zeichnen eingeschalteter Figuren, Speicherbereinigung) sind im Story-Log benannt.
+
+**Angenommen** die Figuren-Pipeline (`tools/art`, Tripo-Rigs nach Art Direction §4.6)
+**Wenn** Figuren für das Brett gebaut werden
+**Dann** haben ihre Rigs nur so viele Gelenke, wie die Animationen brauchen, und Idle, Gehen, Angriff und Treffer laufen als gebackene Vertex-Animation-Texturen statt als Skelett im Hauptthread
+**Und** die Optik bleibt gleich (Screenshots vorher/nachher, Abnahme Produktinhaber).
+
+_Nachgetragen 2026-10-25: Entscheidung Produktinhaber bei der Abnahme von 7.7 (erreicht: 58,8 FPS bei 2×, 28,9–34,8 FPS bei 4×). Grenzt an Epic 8 (Figuren-Pipeline): abstimmen mit dem Grafik-Strang._
+
+## Epic 8: Chibi-Stil, Item-Bilder und Audio
 Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen.
 **FRs covered:** FR42, FR63 (Teil) · UX-DR16
 
