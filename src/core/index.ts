@@ -40,4 +40,5 @@ export * from './campaign/day';
 export * from './campaign/graph';
 export * from './campaign/consequences';
 export * from './campaign/chronicle';
+export * from './campaign/memorial';
 export * from './ai/autoplay';

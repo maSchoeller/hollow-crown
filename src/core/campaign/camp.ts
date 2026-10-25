@@ -120,6 +120,32 @@ export function homeRooms(data: GameData, c: CampaignState): RoomStatus[] {
     });
 }
 
+/** The next build-up step of a room: its level and the first condition that is still open (none: it could be built). */
+export interface RoomUpgrade {
+  level: number;
+  unmet?: Condition;
+}
+
+/**
+ * The next level of a room of the current home from the data (`levels` of rooms.yaml, level 2 first), or null at the top
+ * or when the room has no build-up. Story 6.9 only shows it; the build command comes with Epic 10.
+ */
+export function nextRoomLevel(data: GameData, c: CampaignState, room: RoomDef): RoomUpgrade | null {
+  const level = roomLevel(c, room.id);
+  const step = room.levels[level - 1];
+  if (!step) return null;
+  return { level: level + 1, unmet: step.requires.find((x) => !evalCondition(conditionContext(data, c), x)) };
+}
+
+/** What a room opens later (the lessons of the memorial hall): each entry open, or locked by its first open condition. */
+export function roomUnlocks(data: GameData, c: CampaignState, room: RoomDef): Array<{ id: string; open: boolean; unmet?: Condition }> {
+  const ctx = conditionContext(data, c);
+  return room.unlocks.map((u) => {
+    const unmet = u.requires.find((x) => !evalCondition(ctx, x));
+    return { id: u.id, open: !unmet, unmet };
+  });
+}
+
 /** Mercenaries are the company members without a story character (hired in the tavern). */
 export const isMercenary = (u: UnitRecord): boolean => !u.charId;
 

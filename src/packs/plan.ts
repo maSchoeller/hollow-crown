@@ -59,6 +59,14 @@ export function duePacks<P extends PackMeta>(packs: readonly P[], reachedAct: nu
   return [...acts, ...voice];
 }
 
+/**
+ * Whether the build holds the content pack of act `act` (story 7.3: without the next act's pack the campaign stays at its
+ * act). Voice packs do not count: they carry no missions.
+ */
+export function hasPackForAct(packs: readonly Pick<PackMeta, 'act' | 'load'>[], act: number): boolean {
+  return packs.some((p) => p.act === act && p.load !== 'voice');
+}
+
 /** Delay before retry number `attempt` (1, 2, …): doubles from `baseMs` up to `maxMs`. */
 export function backoffMs(attempt: number, baseMs: number, maxMs: number): number {
   return Math.min(maxMs, baseMs * 2 ** Math.max(0, attempt - 1));

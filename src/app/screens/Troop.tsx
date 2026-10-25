@@ -26,6 +26,7 @@ import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Secondar
 import { audio } from '../audio';
 import { barkChar, barkScene, hasBark } from '../battle/barks';
 import { campaign, campaignCommand, data } from '../state/session';
+import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
 import { EquipView } from './Equip';
 import { UnitBust, UnitHead } from './unitArt';
@@ -50,7 +51,7 @@ export function Troop({ from = 'worldmap' }: { from?: From }) {
   const mercs = c.roster.filter(isMercenary).length;
   return (
     <div class="hc-view">
-      <Backdrop />
+      <Backdrop image={homeBackdrop()} />
       <div class="col" style={{ gap: 8 }}>
         <ScreenHead title={t('ui.troop.title')} aside={t('ui.troop.count', { n: c.roster.length - mercs, m: mercs })} onBack={back} />
         <Tabs
@@ -204,7 +205,7 @@ export function Figure({
   const sp = Object.entries(unit.sp);
   return (
     <div class="hc-view">
-      <Backdrop />
+      <Backdrop image={homeBackdrop()} />
       <ScreenHead
         title={name}
         onBack={onBack}

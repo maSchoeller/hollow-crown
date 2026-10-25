@@ -45,7 +45,7 @@ beforeAll(() => {
 
 describe('place images and recruit dialogues', () => {
   const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
-  const places = () => new Set([data.campaign.defaultPlace, ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : []))]);
+  const places = () => new Set([data.campaign.defaultPlace, ...Object.values(data.home).map((h) => h.image), ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : []))]);
   it('accepts the shipped places', () => {
     expect(msgs(data, places())).toEqual([]);
   });
@@ -68,7 +68,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);

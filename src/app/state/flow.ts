@@ -393,6 +393,26 @@ if (import.meta.env.DEV) {
         addTexts('en', sceneTexts(scene));
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
       },
+      /**
+       * the end of the act without Level-Design (story 7.3): adds a `fixed: finale` node to the running content when the act has
+       * none (run time only, no file), marks the finale as done and shows the world map with the backup sheet and, without a
+       * pack of the next act in the build, the "coming soon" stone
+       */
+      devActEnd: () => {
+        const c = campaign.value;
+        if (!c) return;
+        let finale = data.campaign.nodes.find((n) => n.fixed === 'finale');
+        if (!finale) {
+          const first = firstNode(data);
+          const { map, titleKey, pos, merchantTier, expectedLevel } = first;
+          finale = { id: 'dev_finale', map, titleKey, kind: 'story', fixed: 'finale', pos, merchantTier, expectedLevel };
+          data.campaign.nodes.push(finale);
+        }
+        const id = finale.id;
+        if (!c.completed.includes(id)) campaign.value = { ...c, completed: [...c.completed, id] };
+        battle.value = null;
+        screen.value = { name: 'worldmap' };
+      },
       /** registers a chronicle page at run time (texts as German and English) and finds it: `devPage({ id, act, title, text })` */
       devPage: (page: ChroniclePageDef) => {
         data.chronicle[page.id] = page;

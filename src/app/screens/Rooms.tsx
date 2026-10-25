@@ -13,9 +13,12 @@ import {
   hireError,
   itemDef,
   locateItem,
+  memorialStones,
   merchantStock,
+  nextRoomLevel,
   rerollAllowed,
   rerollCost,
+  roomUnlocks,
   runeMerge,
   runeSlotCount,
   sellPrice,
@@ -26,26 +29,51 @@ import {
   usableBy,
   STAT_KEYS,
   type CampaignCommand,
+  type Condition,
   type ItemInstance,
+  type MemorialStone,
   type RoomDef,
   type UnitRecord,
 } from '../../core';
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { ItemLine, itemName, unitName } from '../../ui/components';
-import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton, Tabs } from '../../ui/pieces';
+import { Amount, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton, Tabs } from '../../ui/pieces';
+import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
 import { campaign, data } from '../state/session';
-import { UnitHead } from './unitArt';
+import { StoneImage, UnitHead } from './unitArt';
 import '../../ui/camp.css';
 
 export type Apply = (cmd: CampaignCommand, okText?: string) => boolean;
 
+/** Why a station is locked: the first condition that fails, in the player's words. */
+export function lockReason(unmet?: Condition): string {
+  if (unmet && 'completed' in unmet) return t('ui.room.after', { node: nodeShort(unmet.completed) });
+  if (unmet && 'act' in unmet) return t('ui.room.fromAct', { n: unmet.act });
+  return t('ui.room.locked');
+}
+
+/** The build-up band at the top of a castle room's panel (story 6.9): dashed while its conditions are open, with the reason. */
+function UpgradeBand({ room }: { room: RoomDef }) {
+  const c = campaign.value!;
+  const up = c.home.kind === 'castle' ? nextRoomLevel(data, c, room) : null;
+  // the build command itself comes with Epic 10: until then only a locked step is shown
+  if (!up?.unmet) return null;
+  return (
+    <div class="hm-upband is-locked">
+      <Icon name="lock" size={16} />
+      <b>{t('ui.room.upgradeTo', { n: up.level })}</b>
+      <span>{lockReason(up.unmet)}</span>
+    </div>
+  );
+}
+
 /** Panel of a room: head with icon, name and short text, the list, the buttons (the close stone replaces "Back"). */
-export function RoomPanel({ room, title, desc, onClose, actions, children }: { room?: RoomDef; title?: string; desc?: string; onClose: () => void; actions?: ComponentChildren; children: ComponentChildren }) {
+export function RoomPanel({ room, title, desc, tone, onClose, actions, children }: { room?: RoomDef; title?: string; desc?: string; tone?: 'mourn'; onClose: () => void; actions?: ComponentChildren; children: ComponentChildren }) {
   const id = room?.id ?? '';
   return (
-    <Piece class="hm-panel" role="dialog" aria-label={title ?? t(`room.${id}.name`)}>
+    <Piece class={`hm-panel ${tone === 'mourn' ? 'hm-panel--mourn' : ''}`} role="dialog" aria-label={title ?? t(`room.${id}.name`)}>
       <div class="hm-panel__head">
         <span class="hm-room__stone">
           <Icon name={room?.icon ?? 'save'} size={26} />
@@ -58,6 +86,7 @@ export function RoomPanel({ room, title, desc, onClose, actions, children }: { r
           <Icon name="close" size={18} />
         </button>
       </div>
+      {room && <UpgradeBand room={room} />}
       <div class="hm-panel__body">{children}</div>
       {actions && <div class="hc-btns">{actions}</div>}
     </Piece>
@@ -525,6 +554,58 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
   );
 }
 
+// ---------------------------------------------------------------- memorial hall
+
+/** One memorial stone: round at the top, flat at the bottom, grey; name, place and role under it (mockup 04, story 6.9). */
+function Grave({ stone, selected, onSelect }: { stone: MemorialStone; selected: boolean; onSelect: () => void }) {
+  const name = unitName({ name: stone.name, nameKey: stone.nameKey });
+  const place = stone.placeKey ? t(stone.placeKey) : t('ui.memorial.fell', { place: stone.node ? nodeShort(stone.node) : '' });
+  const role = stone.roleKey ? t(stone.roleKey) : stone.classId ? t(`class.${stone.classId}.name`) : '';
+  return (
+    <button type="button" class={`hm-grave ${stone.mercenary ? 'is-mercenary' : ''}`} aria-pressed={selected} onClick={onSelect}>
+      <span class="hm-grave__m">
+        <StoneImage portrait={stone.mercenary ? undefined : stone.portrait} classId={stone.mercenary ? undefined : stone.classId} name={name} />
+      </span>
+      <b>{name}</b>
+      <span class="hm-grave__s">
+        {place}
+        <br />
+        {stone.mercenary ? t('ui.memorial.mercenary', { role }) : role}
+      </span>
+      <span class="hm-grave__ember" aria-hidden="true" />
+    </button>
+  );
+}
+
+/**
+ * Memorial hall (story 6.9, UX-DR11 part): the fixed stones of the act first, then the fallen in the order they fell,
+ * mercenaries too. The quote under the stones belongs to the chosen one. The lessons stay locked until act 2 (Story 10.6).
+ */
+export function MemorialRoom({ room, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
+  const c = campaign.value!;
+  const stones = memorialStones(data, c);
+  const [sel, setSel] = useState<string | null>(null);
+  const cur = stones.find((s) => s.key === sel) ?? stones[0];
+  return (
+    <RoomPanel room={room} tone="mourn" onClose={onClose} actions={<QuietButton onClick={onClose}>{t('ui.back')}</QuietButton>}>
+      {stones.length === 0 && <div class="hm-none">{t('ui.memorial.none')}</div>}
+      <div class="hm-graves" role="group" aria-label={t('ui.memorial.stones')}>
+        {stones.map((s) => (
+          <Grave key={s.key} stone={s} selected={s.key === cur?.key} onSelect={() => setSel(s.key)} />
+        ))}
+      </div>
+      {cur?.quoteKey && <p class="hm-quote">{t('ui.memorial.quote', { text: t(cur.quoteKey), name: unitName({ name: cur.name, nameKey: cur.nameKey }) })}</p>}
+      {roomUnlocks(data, c, room).map((u) => (
+        <div key={u.id} class={`hm-lesson ${u.open ? '' : 'is-locked'}`}>
+          <Icon name={u.open ? 'forward' : 'lock'} size={18} />
+          <b>{t(`room.${room.id}.unlock.${u.id}`)}</b>
+          {!u.open && <span>{lockReason(u.unmet)}</span>}
+        </div>
+      ))}
+    </RoomPanel>
+  );
+}
+
 /** Dispatch by room function. */
 export function Room({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
   switch (room.function) {
@@ -540,6 +621,8 @@ export function Room({ room, apply, onClose }: { room: RoomDef; apply: Apply; on
       return <TavernRoom room={room} apply={apply} onClose={onClose} />;
     case 'campfire':
       return <CampfireRoom room={room} apply={apply} onClose={onClose} />;
+    case 'memorial':
+      return <MemorialRoom room={room} apply={apply} onClose={onClose} />;
     case 'enchanter':
       return <EnchanterRoom room={room} apply={apply} onClose={onClose} />;
   }
