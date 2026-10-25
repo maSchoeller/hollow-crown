@@ -62,12 +62,12 @@ development_status:
   2-1-kampf-hud-in-stil-b: done  # Kampf-HUD in Stil B
   2-2-rollenmodell-und-waffengruppen: review  # Rollenmodell und Waffengruppen
   2-3-klassen-aktionen-zielen-fernbergen-und-anfeuern: review  # Klassen-Aktionen Zielen, Fernbergen und Anfeuern
-  2-4-halten-und-nachsetzen: review  # Halten und Nachsetzen
-  2-5-wirken-der-elementaristen: review  # Wirken der Elementaristen
-  2-6-nebel-des-krieges-oeffnen-und-stehlen: review  # Nebel des Krieges, Öffnen und Stehlen
-  2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: review  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
+  2-4-halten-und-nachsetzen: done  # Halten und Nachsetzen
+  2-5-wirken-der-elementaristen: done  # Wirken der Elementaristen
+  2-6-nebel-des-krieges-oeffnen-und-stehlen: done  # Nebel des Krieges, Öffnen und Stehlen
+  2-7-kontext-band-fuer-bergen-ansprechen-besuchen-und-oeffnen: done  # Kontext-Band für Bergen, Ansprechen, Besuchen und Öffnen
   2-8-gegnerphase-im-web-worker: review  # Gegnerphase im Web Worker
-  2-9-gegnertypen-von-akt-1: review  # Gegnertypen von Akt 1
+  2-9-gegnertypen-von-akt-1: done  # Gegnertypen von Akt 1
   2-10-kampf-overlays-im-stil-b: done  # Kampf-Overlays im Stil B (nachgetragen 2026-10-24)
   epic-2-retrospective: optional
 
@@ -91,7 +91,7 @@ development_status:
   4-5-szenen-im-neuen-stil: review  # Szenen im neuen Stil
   4-6-entscheidungen-und-folgen-karte: review  # Entscheidungen und Folgen-Karte
   4-7-chronik: review  # Chronik
-  4-8-neue-missionsziele-escort-und-treasure: review  # Neue Missionsziele escort und treasure
+  4-8-neue-missionsziele-escort-und-treasure: done  # Neue Missionsziele escort und treasure
   4-9-feste-support-paare: review  # Feste Support-Paare
   epic-4-retrospective: optional
 

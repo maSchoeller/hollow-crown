@@ -1,6 +1,6 @@
 # Story 2.4: Halten und Nachsetzen
 
-Status: review
+Status: done
 
 ## Story
 

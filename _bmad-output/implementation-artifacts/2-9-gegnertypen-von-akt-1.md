@@ -1,6 +1,6 @@
 # Story 2.9: Gegnertypen von Akt 1
 
-Status: review
+Status: done
 
 ## Story
 

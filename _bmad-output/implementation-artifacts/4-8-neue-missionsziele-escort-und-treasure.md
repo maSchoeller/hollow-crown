@@ -1,6 +1,6 @@
 # Story 4.8: Neue Missionsziele escort und treasure
 
-Status: review
+Status: done
 
 ## Story
 
