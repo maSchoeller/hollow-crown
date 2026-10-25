@@ -115,6 +115,9 @@ export function validateContent(
         if (!data.supports[pairKey(a, b)]) err(file, `${ctx}: unknown support pair ${a}|${b}`);
         return;
       }
+      case 'met':
+        if (!data.lieutenants[v as string]) err(file, `${ctx}: unknown lieutenant ${v as string}`);
+        return;
       case 'chronicle':
         if (Array.isArray(v)) for (const id of v as string[]) page(file, id, ctx);
         return;
@@ -145,7 +148,9 @@ export function validateContent(
         err(file, `${ctx}: effect ${key} is not yet supported`);
       else if (key === 'setFlag') flag(file, v as string | Record<string, FlagValue>, ctx);
       else if (key === 'recruit' || key === 'leave') companion(file, v as string, ctx);
-      else if (key === 'item') item(file, v as ItemRef, ctx);
+      else if (key === 'grudge') {
+        if (!data.lieutenants[(v as { lt: string }).lt]) err(file, `${ctx}: unknown lieutenant ${(v as { lt: string }).lt}`);
+      } else if (key === 'item') item(file, v as ItemRef, ctx);
       else if (key === 'chronicle') page(file, v as string, ctx);
       else if (key === 'openQuest') {
         openedQuests.push(v as string);

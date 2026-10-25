@@ -11,6 +11,7 @@ import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, noteRoles } from './graph';
 import { availableSupportTalks } from './camp';
+import { applyLieutenantOutcome, lieutenantState } from './lieutenants';
 
 export const SAVE_VERSION = 1;
 
@@ -86,6 +87,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
+    // story 3.3: lieutenants of older saves hold only `met`
+    ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),
   };
   noteRoles(data, out);
   return out;
@@ -310,6 +313,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       f.grief.push({ id: rec.id, missions: rec.grief });
     }
   }
+  // lieutenants: met, encounters, and the grudge of those driven off (story 3.3)
+  applyLieutenantOutcome(data, c, s);
   // side objectives
   for (const o of map.objectives.side) {
     const done = sideObjectiveDone(data, s, o);

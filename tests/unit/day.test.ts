@@ -5,7 +5,7 @@ import { dayNumber } from '../../src/app/day';
 
 const { data } = loadContentFromDisk();
 const fresh = (): CampaignState => newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' } as never, { name: 'Rhen', portrait: 'avatar_a' } as never);
-const met = (c: CampaignState): CampaignState => ({ ...c, lieutenants: { hask: { met: true } } });
+const met = (c: CampaignState): CampaignState => ({ ...c, lieutenants: { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 } } });
 const advance = (c: CampaignState, day: number) => applyCampaign(data, c, { type: 'advanceDay', day });
 
 describe('day change in the core (story 5.4)', () => {

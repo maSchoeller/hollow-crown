@@ -75,7 +75,7 @@ development_status:
   epic-3: in-progress
   3-1-leutnants-als-content-und-auf-dem-brett: review  # Leutnants als Content und auf dem Brett
   3-2-flucht-bei-0-tp: backlog  # Flucht bei 0 TP
-  3-3-groll-und-groll-ziel: ready-for-dev  # Groll und Groll-Ziel
+  3-3-groll-und-groll-ziel: review  # Groll und Groll-Ziel
   3-4-mitwachsende-staerke: backlog  # Mitwachsende Stärke
   3-5-kopfgeld-und-signatur-item: ready-for-dev  # Kopfgeld und Signatur-Item
   3-6-steckbriefe: ready-for-dev  # Steckbriefe

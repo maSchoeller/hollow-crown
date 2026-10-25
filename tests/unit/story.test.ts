@@ -144,8 +144,11 @@ describe('conditions (architecture §5.3)', () => {
     expect(evalConditions(ctxOf(c), yes)).toBe(true);
   });
 
-  it('met is not supported yet and says so', () => {
-    expect(() => holds(base, { met: 'hask' })).toThrow(/not yet supported: met/);
+  it('met holds once the company has met the lieutenant (story 3.3)', () => {
+    expect(holds(base, { met: 'hask' })).toBe(false);
+    const met = { ...base, lieutenants: { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: 0 } } };
+    expect(holds(met, { met: 'hask' })).toBe(true);
+    expect(holds(met, { met: 'morra' })).toBe(false);
   });
 
   it('never changes anything', () => {
@@ -241,9 +244,8 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('grudge, priceMod, villageAid and setHome are refused until their state exists', () => {
+  it('priceMod, villageAid and setHome are refused until their state exists', () => {
     const unsupported: Effect[] = [
-      { grudge: { lt: 'hask', delta: -1 } },
       { priceMod: { pct: -10, act: 2 } },
       { villageAid: true },
       { setHome: 'castle' },
@@ -337,9 +339,7 @@ describe('content references (content:check)', () => {
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
-    const cond = problems(withDialogue(speech({ met: 'hask' })));
-    expect(cond).toContainEqual(expect.stringContaining('condition met is not yet supported'));
-    for (const e of [{ grudge: { lt: 'hask', delta: -1 } }, { priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
+    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }, { setHome: 'castle' }, { recruit: { lt: 'hask' } }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }

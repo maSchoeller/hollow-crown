@@ -379,28 +379,35 @@ if (import.meta.env.DEV) {
         runEffects([{ chronicle: page.id }]);
       },
       /**
-       * opens a test battle with lieutenants on the prologue's ground (story 3.1) and sets their grudge:
-       * `devLieutenant('hask', 2)` or `devLieutenant([['hask', 0], ['morra', 2, 'kael']])` (id, grudge 0-3, target unit id, default kael);
-       * starts an unsaved campaign when none is open. Tap a lieutenant with grudge 1+ to see the line to his target.
+       * opens a test battle with lieutenants on the prologue's ground (stories 3.1, 3.3) and sets what the campaign knows of them:
+       * `devLieutenant('hask', 2)` or `devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'kael', 'first'], ['ulvric', 1, 'fenn', 'mock']])`
+       * (id, grudge 0-3, target id, default kael; kind `first` = not met yet, `grudge` = met with the grudge, `mock` = the target has fallen;
+       * default kind: `grudge` for grudge 1+, else `first`). Each lieutenant speaks his line as a bubble when the first player phase begins.
+       * Starts an unsaved campaign when none is open. Tap a lieutenant with grudge 1+ to see the line to his target.
        */
-      devLieutenant: async (spec: string | Array<[string, number?, string?]>, grudge = 0, target = 'kael') => {
-        const list: DevLieutenant[] = (typeof spec === 'string' ? [[spec, grudge, target] as [string, number?, string?]] : spec).map(([id, g = 0, t = 'kael']) => ({ id, grudge: g, target: t }));
+      devLieutenant: async (spec: string | Array<[string, number?, string?, ('first' | 'grudge' | 'mock')?]>, grudge = 0, target = 'kael', kind?: 'first' | 'grudge' | 'mock') => {
+        const list: Array<DevLieutenant & { kind: 'first' | 'grudge' | 'mock' }> = (typeof spec === 'string' ? [[spec, grudge, target, kind] as [string, number?, string?, ('first' | 'grudge' | 'mock')?]] : spec).map(([id, g = 0, t = 'kael', k]) => ({
+          id,
+          grudge: g,
+          target: t,
+          kind: k ?? (g > 0 ? 'grudge' : 'first'),
+        }));
         campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        const c = clone(campaign.value);
+        c.lieutenants ??= {};
+        for (const l of list) {
+          c.lieutenants[l.id] = { met: l.kind !== 'first', encounters: l.kind === 'first' ? 0 : 1, grudge: l.grudge, target: l.target, routs: l.grudge, signatureDropped: 0 };
+          if (l.kind === 'mock') {
+            const rec = c.roster.find((r) => r.id === l.target);
+            c.roster = c.roster.filter((r) => r.id !== l.target);
+            if (!c.fallen.some((f) => f.id === l.target)) c.fallen.push({ id: l.target, nameKey: rec?.nameKey ?? `unit.${l.target}.name`, ...(rec?.name ? { name: rec.name } : {}), node: 'prologue' });
+          }
+        }
+        campaign.value = c;
         const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
         data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id));
         if (!data.campaign.nodes.some((n) => n.id === DEV_MAP_ID)) data.campaign.nodes.push(devLieutenantNode(first));
-        await beginMission(DEV_MAP_ID, campaign.value.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
-        const b = battle.value;
-        if (!b) return;
-        const st = clone(b.state);
-        for (const l of list) {
-          const u = st.units.find((x) => x.lieutenant === l.id);
-          if (u) {
-            u.grudge = l.grudge;
-            u.grudgeTarget = l.target;
-          }
-        }
-        battle.value = { ...b, start: st, state: st };
+        await beginMission(DEV_MAP_ID, c.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
       },
       /** changes the grudge of a lieutenant in the running test battle: `devGrudge('hask', 3, 'brenna')` */
       devGrudge: (id: string, grudge: number, target?: string) => {

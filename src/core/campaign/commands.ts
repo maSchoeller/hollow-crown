@@ -89,7 +89,7 @@ export type CampaignError =
   | 'unknown_choice'
   /** this choice was answered before: answers are never taken back */
   | 'already_chosen'
-  /** the effect's state or rules do not exist yet (grudge, priceMod, villageAid, setHome, recruit by lieutenant) */
+  /** the effect's state or rules do not exist yet (priceMod, villageAid, setHome, recruit by lieutenant) */
   | 'effect_unsupported'
   /** a day number that is no whole number of days */
   | 'invalid_day';
@@ -119,7 +119,9 @@ export type CampaignEvent =
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number }
   /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
-  | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number };
+  | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
+  /** the grudge of a lieutenant changed (effect `grudge`); `grudge` = the new value */
+  | { t: 'grudgeChanged'; lt: string; grudge: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

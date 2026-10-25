@@ -36,4 +36,5 @@ export * from './campaign/day';
 export * from './campaign/graph';
 export * from './campaign/consequences';
 export * from './campaign/chronicle';
+export * from './campaign/lieutenants';
 export * from './ai/autoplay';

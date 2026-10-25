@@ -13,6 +13,8 @@ export interface SpeechBubblesProps {
   seen?: boolean;
   /** play only these lines of the scene (a bark); the scene is not marked seen, has no skip/auto pills and advances on its own */
   only?: string[];
+  /** values for placeholders in the lines (`{target}`) */
+  params?: Record<string, string>;
   /** board speed (barks only): the auto-advance time is divided by it */
   speed?: number;
   onSeen?: (id: string) => void;
@@ -32,14 +34,14 @@ interface Page {
  * Battle scene as speech bubbles at the speakers' heads (trigger, lieutenant quote). Blocks the board until a tap, or
  * `balance.scene.bubbleAutoMs` in auto mode. Only for scenes without choices where every speaker stands on the board.
  */
-export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, only, speed = 1, auto, onAuto, onSeen, onDone }: SpeechBubblesProps) {
+export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, only, params, speed = 1, auto, onAuto, onSeen, onDone }: SpeechBubblesProps) {
   const cfg = data.balance.scene;
   const pages = useMemo<Page[]>(
     () =>
       resolveScene(data, ctx, id).flatMap((l) =>
-        l.kind === 'line' && l.speaker && (!only || only.includes(l.line)) ? bubblePages(t(l.key), cfg.bubbleMaxChars).map((text, i) => ({ uid: `${l.uid}.${i}`, speaker: l.speaker!, text })) : [],
+        l.kind === 'line' && l.speaker && (!only || only.includes(l.line)) ? bubblePages(t(l.key, params), cfg.bubbleMaxChars).map((text, i) => ({ uid: `${l.uid}.${i}`, speaker: l.speaker!, text })) : [],
       ),
-    [data, id, only?.join()],
+    [data, id, only?.join(), JSON.stringify(params ?? {})],
   );
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);

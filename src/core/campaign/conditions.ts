@@ -1,6 +1,6 @@
 import type { Condition, FlagValue, GameData, Stance, SupportRank } from '../defs';
 import { STANCES, SUPPORT_RANKS } from '../defs';
-import type { CampaignState } from '../state';
+import type { CampaignState, LieutenantState } from '../state';
 import { pairKey } from '../util';
 
 /**
@@ -20,10 +20,12 @@ export interface ConditionContext {
   supports: Readonly<Record<string, { rank: SupportRank | null }>>;
   stance: Readonly<Record<Stance, number>>;
   chronicle: readonly string[];
+  /** what the company knows of each lieutenant it has met (story 3.3) */
+  lieutenants: Readonly<Record<string, LieutenantState>>;
 }
 
 /** Condition keys whose state does not exist yet; `content:check` rejects them, `evalCondition` throws. */
-export const UNSUPPORTED_CONDITIONS: readonly string[] = ['met'];
+export const UNSUPPORTED_CONDITIONS: readonly string[] = [];
 
 /** Context of a campaign; `null` (no campaign running, e.g. a loose dialogue) is an empty story. */
 export function conditionContext(data: GameData, c: CampaignState | null, extraFlags: Record<string, FlagValue> = {}): ConditionContext {
@@ -39,6 +41,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
       supports: {},
       stance: { warm: 0, sober: 0, defiant: 0 },
       chronicle: [],
+      lieutenants: {},
     };
   return {
     act: data.campaign.act,
@@ -51,6 +54,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
     supports: c.supports,
     stance: c.stance,
     chronicle: c.chronicle,
+    lieutenants: c.lieutenants ?? {},
   };
 }
 
@@ -104,6 +108,8 @@ export function evalCondition(ctx: ConditionContext, cond: Condition): boolean {
       return dominantStance(ctx.stance) === v;
     case 'chronicle':
       return Array.isArray(v) ? (v as string[]).every((p) => ctx.chronicle.includes(p)) : ctx.chronicle.length >= (v as { min: number }).min;
+    case 'met':
+      return ctx.lieutenants[v as string]?.met === true;
     case 'any':
       return (v as Condition[]).some((x) => evalCondition(ctx, x));
     case 'not':

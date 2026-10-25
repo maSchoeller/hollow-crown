@@ -4,6 +4,7 @@
  * scene `scn.bark.<charId>` (one line per moment), English under `dlg.scn.bark.<charId>.<line>`.
  */
 import { BARK_LINES, type BarkLine } from '../../content/barkLines';
+import type { LieutenantLine } from '../../content/lieutenantLines';
 import type { BattleState, BattleUnit, GameData, GameEvent } from '../../core';
 
 export { BARK_LINES, type BarkLine };
@@ -16,7 +17,10 @@ export interface Bark {
   /** unit whose head the bubble sits above: the speaker, or the rescuer when the rescued unit has left the board */
   anchor: string;
   scene: string;
-  line: BarkLine;
+  /** a companion bark, or an opening line of a lieutenant (`ltLines.ts`, story 3.3) */
+  line: BarkLine | LieutenantLine;
+  /** values for placeholders of the line, e.g. `{ target }` */
+  params?: Record<string, string>;
 }
 
 /** The character a unit speaks as (companions carry their id, story characters a `charId`). */

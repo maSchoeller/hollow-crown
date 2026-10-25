@@ -187,3 +187,4 @@ ai:
   dangerPerAttacker: 5
   supportHealBelowPercent: 70
   selfHealBelowPercent: 40
+  grudgeTargetBonus: 20

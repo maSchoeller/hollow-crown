@@ -38,7 +38,8 @@ import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
-import { data } from '../state/session';
+import { ltBarks } from '../battle/ltLines';
+import { campaign, data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
@@ -176,6 +177,8 @@ export function Battle() {
       const opening = openingBark.current;
       openingBark.current = null;
       if (opening && alive && settings.value.speed !== 3) await playBark(opening);
+      if (alive) await playLieutenantLines(battle.value!.state.turn === 1);
+      ltReady.current = true;
       if (alive) {
         setPhaseView(null);
         setBusy(false);
@@ -388,8 +391,17 @@ export function Battle() {
     const b = boardRef.current?.skip ? null : barkFor(data, s, e);
     if (b?.line === 'battle_start') openingBark.current = b;
     else if (b) await playBark(b);
+    if (ltReady.current && ((e.t === 'phase' && e.phase === 'player') || e.t === 'spawned')) await playLieutenantLines(true);
   };
   const openingBark = useRef<Bark | null>(null);
+  /** opening lines of the enemy lieutenants (story 3.3): who has spoken, and whether the start events are through */
+  const ltSpoken = useRef(new Set<string>());
+  const ltReady = useRef(false);
+  const playLieutenantLines = async (play: boolean) => {
+    const st = battle.value!.state;
+    const skip = !play || boardRef.current?.skip || settings.value.speed === 3;
+    for (const b of ltBarks(data, campaign.value, st, ltSpoken.current, !skip)) await playBark(b);
+  };
   const barkSeq = useRef(0);
   const playBark = async (b: Bark) => {
     await new Promise<void>((resolve) => setBark({ b, seq: ++barkSeq.current, done: resolve }));
@@ -869,6 +881,7 @@ export function Battle() {
             id={bark.b.scene}
             key={bark.seq}
             only={[bark.b.line]}
+            params={bark.b.params}
             speed={boardRef.current?.speed ?? 1}
             anchorOf={async () => {
               const u = s.units.find((x) => x.uid === bark.b.anchor);

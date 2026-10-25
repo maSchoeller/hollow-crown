@@ -777,6 +777,8 @@ export interface Balance {
     dangerPerAttacker: number;
     supportHealBelowPercent: number;
     selfHealBelowPercent: number;
+    /** score bonus for the grudge target of a lieutenant (story 3.3) */
+    grudgeTargetBonus: number;
   };
 }
 
