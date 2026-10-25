@@ -33,6 +33,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     choices: {},
     decisions: [],
     scenesSeen: [],
+    backupReminded: [],
     completed: [],
     quests: [],
     rolesSeen: [],
@@ -61,6 +62,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     stance?: CampaignState['stance'];
     chronicle?: string[];
     scenesSeen?: string[];
+    backupReminded?: number[];
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
@@ -77,6 +79,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     stance: old.stance ?? { warm: 0, sober: 0, defiant: 0 },
     chronicle: old.chronicle ?? [],
     scenesSeen: old.scenesSeen ?? [],
+    backupReminded: old.backupReminded ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     // pairs of content added since the save (a later act) start empty

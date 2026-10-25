@@ -12,7 +12,7 @@ import { clone } from '../util';
 import { hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
-import { isAvailable, noteRoles } from './graph';
+import { actFinished, isAvailable, noteRoles } from './graph';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
@@ -144,6 +144,9 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'restartTurn':
       if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
+    case 'markBackupReminded':
+      // only the running act, and only once its finale is done
+      return cmd.act === data.campaign.act && actFinished(data, c) ? null : 'not_available';
     case 'advanceDay':
       return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
     case 'restartMission':
@@ -367,6 +370,12 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     }
     case 'effects':
       applyEffects(data, c, cmd.effects, events);
+      break;
+    case 'markBackupReminded':
+      if (!c.backupReminded.includes(cmd.act)) {
+        c.backupReminded.push(cmd.act);
+        events.push({ t: 'backupReminded', act: cmd.act });
+      }
       break;
     case 'advanceDay':
       advanceDay(data, c, cmd.day, events);

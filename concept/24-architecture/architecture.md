@@ -219,6 +219,7 @@ worldRegion: borderland
 - **Gestaffelte Regeln:** `lockedMechanics(data, c)` zählt `storyCount` (nur `kind: story`) statt Knotenpositionen; `mechanics` nennt je Regel die Zahl. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`, `BattleState.lockedRoles`).
 - **Stand (Story 4.3):** umgesetzt in `src/core/campaign/graph.ts` (`availableNodes`, `isAvailable`, `nodeScenes`, `lockedMechanics`, `lockedRoles`, `nodeLinks`). Knoten: `kind` (Standard `story`), `fixed`, `requires`, `memorialIf` mit `memorial: { pre?, post? }` (Gedenk-Szenen). Eine Nebenquest öffnet sich über `openQuest` oder eigene, nicht leere `requires`; ohne beides lehnt `content:check` sie ab. Der Akt-Übergang (`act + 1`, `actReached`) folgt mit Akt 2.
 - **Akt-Übergang:** Nach dem Akt-Finale setzt `finishMission` `act + 1` und meldet `actReached`. Fehlt das Paket des nächsten Akts im Build (AR23), zeigt die Weltkarte „Akt 2 erscheint bald“. Heimsuchungen, Nebenquests, Supports und Heimat laufen weiter.
+- **Stand (Story 7.3):** Akt-Ende ist `actFinished(data, c)` (Finale-Knoten erledigt). Ohne Paket des nächsten Akts im Build (`virtual:hc-packs`, `hasPackForAct`) bleibt der Akt bei n: kein `act + 1`, kein `actReached` (das baut Akt 2); die Weltkarte zeigt den Stein „erscheint bald“ im Nebel der Region n + 1. Backup-Erinnerung: `c.backupReminded: number[]` (Akte), gesetzt durch das Command `markBackupReminded`, einmal je Akt als Blatt auf der Weltkarte; Format 2 bleibt.
 
 ### 5.5 Leutnants (AR5)
 

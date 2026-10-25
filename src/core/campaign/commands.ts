@@ -62,7 +62,9 @@ export type CampaignCommand =
    * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
    * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
    */
-  | { type: 'advanceDay'; day: number };
+  | { type: 'advanceDay'; day: number }
+  /** the backup reminder of act `act` was shown (exported or put off); once per act, after its finale (story 7.3, AR21; idempotent) */
+  | { type: 'markBackupReminded'; act: number };
 
 export type CampaignError =
   | 'not_enough_gold'
@@ -121,7 +123,9 @@ export type CampaignEvent =
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number }
   /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
-  | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number };
+  | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
+  /** the backup reminder of an act was noted (story 7.3) */
+  | { t: 'backupReminded'; act: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

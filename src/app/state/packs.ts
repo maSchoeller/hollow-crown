@@ -10,7 +10,7 @@ import { isPackRegistered, packOfMap, packOfScene } from '../../content/browser'
 import type { PacksManifest } from '../../content/packs';
 import { downloadPack, hasCacheApi, isPackComplete } from '../../packs/cache';
 import { fetchPacksManifest, loadPack } from '../../packs/load';
-import { backoffMs, duePacks } from '../../packs/plan';
+import { backoffMs, duePacks, hasPackForAct } from '../../packs/plan';
 import { log } from '../log';
 import { prepare } from './prepare';
 import { data } from './session';
@@ -144,6 +144,9 @@ function afterPrepare(): Promise<void> {
     });
   });
 }
+
+/** Whether this build has a pack for the act after the campaign's (story 7.3); false = the next act is "coming soon". */
+export const nextActInBuild = (): boolean => hasPackForAct(packList, data.campaign.act + 1);
 
 /** Starts the background download of every pack the campaign has reached (call once at start-up). */
 export async function startPacks(): Promise<void> {
