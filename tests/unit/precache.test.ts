@@ -20,7 +20,6 @@ describe('CONTENT_HASHED (precache entries without a revision)', () => {
       'assets/fx/fx.json',
       'assets/audio/title.mp3',
       'assets/avatars/kael.webp',
-      'assets/backgrounds/bg_camp_night.webp',
       'assets/locations/lager_unterwegs.webp',
       'assets/ground/water_0.png',
       'index.html',

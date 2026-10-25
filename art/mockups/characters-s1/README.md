@@ -1,6 +1,6 @@
-# Figuren-Moodboard Staffel 1
+# Porträts Staffel 1
 
-Porträts aller Figuren aus `concept/22-narrative/narrative.md` (Schritt 4, Entwurf), damit der Produktinhaber prüfen kann, ob die Figuren tragen. **Status: Moodboard**, nicht final abgenommen; finale Porträts mit Stimmungen folgen in der Art-Direction-Etappe.
+Porträts aller Figuren aus `concept/22-narrative/narrative.md`, entstanden als Moodboard (2026-10-23). **Status (2026-10-25, Story 8.4): final für Akt 1.** Die Porträts der Figuren mit Tripo-Brettfigur bleiben, weil Porträt und Figur zusammengehören; die Kernfiguren von Akt 1 haben alle vier Stimmungen (`<id>_happy`, `_angry`, `_sad`; Prompts und Abnahme in `art/prompts/moods_2026-10-24.md` und `moods_act1_2026-10-24.md`). Neu sind Osric Dunn (`osric.png`), König Aldric IV. (`aldric.png`), die Gegnerklassen Wolfsreiterin, Söldner und Tempelwache (`enemies_act1_2026-10-24.md`) sowie Soldatin, Schützin und Klerikerin als Frauen (`moods_act1_2026-10-24.md`). Figuren späterer Akte bleiben auf Moodboard-Stand, bis ihr Akt gebaut wird.
 
 - **Dateien:** `art/mockups/characters-s1/<id>.png` (1254 × 1254, RGBA, transparent); Übersicht `overview.png`
 - **Datum:** 2026-10-23

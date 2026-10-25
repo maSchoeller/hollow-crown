@@ -586,7 +586,7 @@ export const renderSchema = z.object({
   }),
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
-    offHand: z.partialRecord(itemSchema.shape.kind, gearPiece),
+    offHand: z.partialRecord(weaponGroup, gearPiece),
   }),
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
   assets: z.object({ keepUnused: z.number().int().min(0) }),

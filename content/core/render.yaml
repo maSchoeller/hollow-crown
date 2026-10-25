@@ -43,6 +43,7 @@ board:
 gear:
   weapons:
     sword: { model: sword, hand: right }
+    dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
     lance: { model: lance, hand: right, motion: thrust, hold: -125 }
     axe: { model: axe, hand: right, motion: chop }
     bow: { model: bow, hand: left, motion: shoot }
@@ -52,6 +53,7 @@ gear:
     staff: { model: staff, hand: right, motion: cast }
   offHand:
     shield: { model: shield, hand: left }
+    lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
 
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:

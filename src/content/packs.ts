@@ -29,8 +29,17 @@ export const packDefSchema = z.object({
 });
 export type PackDef = z.infer<typeof packDefSchema>;
 
+/** Model budget per board figure (art-direction §4.6); checked by tools/figure-budget.mjs, large ids get `largeFactor` times as much */
+export const figureBudgetSchema = z.object({
+  triangles: z.number().int().positive(),
+  texture: z.number().int().positive(),
+  transferMb: z.number().positive(),
+  largeFactor: z.number().positive(),
+  large: z.array(z.string()),
+});
+
 export const packsFileSchema = z
-  .object({ packs: z.array(packDefSchema).min(1) })
+  .object({ figureBudget: figureBudgetSchema.optional(), packs: z.array(packDefSchema).min(1) })
   .refine((f) => f.packs[0]?.id === CORE_PACK && f.packs[0].released && f.packs[0].load === 'precache', {
     message: 'the first pack must be core (released, precache)',
   })
