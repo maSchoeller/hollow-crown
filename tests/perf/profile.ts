@@ -1,17 +1,24 @@
 /**
- * Reference profile and targets of the performance run (story 7.5, NFR1, NFR2). Desktop Chromium imitates the reference
- * phones by throttling: the CPU slowdown follows the usual mobile setting of Lighthouse, the network a good 4G line.
- * Real devices are measured by hand per act release (architecture §10); these numbers make regressions visible.
+ * Reference profile and targets of the performance run (story 7.5, NFR1, NFR2; story 7.7). Desktop Chromium imitates the
+ * reference phones by throttling: the CPU slowdown follows the usual mobile setting of Lighthouse, the network a good 4G
+ * line. Real devices are measured by hand per act release (architecture §10); these numbers make regressions visible.
  */
 export const PROFILE = {
-  /** CPU slowdown factor (Emulation.setCPUThrottlingRate) */
+  /** CPU slowdown of the cold start and the first visit (Emulation.setCPUThrottlingRate, NFR2) */
   cpuSlowdown: 4,
+  /**
+   * Enemy phase of the large battle at two throttling levels with the FPS target of each (story 7.7, NFR1). Both targets
+   * are the same budget of about 8.3 ms thread CPU per frame without throttling (60 FPS at 2×, 30 FPS at 4×).
+   * `PERF_STAGES=1,2,4` adds levels without a target (1× shows the CPU cost per frame the least disturbed by the host).
+   */
+  stages: [
+    { cpuSlowdown: 2, fps: 60 },
+    { cpuSlowdown: 4, fps: 30 },
+  ] as ReadonlyArray<{ cpuSlowdown: number; fps: number | null }>,
   network: { latencyMs: 60, downloadKbps: 9000, uploadKbps: 1500 },
 } as const;
 
 export const TARGETS = {
-  /** NFR1: 60 FPS over a complete enemy phase of the large battle */
-  fps: 60,
   /** a frame slower than this counts as dropped (1.5 frames at 60 FPS) */
   droppedFrameMs: 25,
   /** NFR2: cold start of the installed app until the title answers */

@@ -27,6 +27,8 @@ board:
     stones: { model: rocks_small, map: 0.04, scenery: 0.07, scale: [0.75, 1.1] }
   fpsActive: 60                           # D8: Bildrate, solange sich etwas bewegt (auch auf 120-Hz-Displays)
   fpsIdle: 30                             # Bildrate in Ruhe (nur Idle-Animationen, Wasser, Feuer): spart Akku
+  idleHz: 10                              # Story 7.7: Skelett-Rate der Figuren, die nichts tun (Idle, gefallen); wer geht, kämpft oder getroffen wird, läuft mit voller Bildrate
+  precompileMs: 8000                      # Story 7.7: so lange wartet das Brett beim Laden höchstens auf das Vorkompilieren der Shader
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
   # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten
   # Requisite, cover = so viele Felder der Figurenhöhe muss sie verdecken (aus Kameraneigung und Modellmaßen berechnet),

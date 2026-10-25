@@ -60,6 +60,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 ### Completion Notes List
 
 - Entschieden 2026-10-24 (Produktinhaber): NFR1 bekommt eine eigene Story 7.7 „Große Schlachten flüssig“.
+- Umgesetzt in Story 7.7 (Messung bei CPU 2× und 4×, Thread-CPU je Frame, Vorher/Nachher aus `tests/perf/baseline.json`); Ergebnis und Entscheidungen: `concept/24-architecture/decision-log.md`, Eintrag „Große Schlachten flüssig (Story 7.7)“.
 
 ### File List
 

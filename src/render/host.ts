@@ -10,6 +10,7 @@ import { Scene } from '@babylonjs/core/scene';
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { GameData } from '../core';
 import { assetUrl } from './shared/assets';
 import { RefCache } from './shared/cache';
@@ -41,6 +42,8 @@ export interface AssetStore {
   container(path: string, materials?: boolean): Promise<AssetContainer | null>;
   /** a painted texture by asset path (ground, tiling, mipmapped), created on the stage once */
   texture(path: string): Promise<Texture>;
+  /** materials the scene shares between its figures (story 7.7), keyed by the scene; they go with the stage clear */
+  materials: Map<string, StandardMaterial>;
 }
 
 export class RenderHost {
@@ -100,6 +103,7 @@ export class RenderHost {
   store(holder: object): AssetStore {
     return {
       scene: this.scene,
+      materials: new Map(),
       container: (path, materials = false) => this.models.use(`${materials ? 'm' : '-'}:${path}`, holder),
       texture: (path) => this.textures.use(path, holder),
     };
