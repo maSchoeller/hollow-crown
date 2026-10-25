@@ -195,12 +195,12 @@ Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optio
 
 | Paket | Inhalt | Budget (gzip/komprimiert) |
 |---|---|---|
-| **Shell + Prolog** (initialer Download) | Code, UI-Schriften und -Icons, Tiles Prolog, Einheiten Prolog, Porträts der 4 Prolog-Figuren, 2 Hintergründe, Musik Titel + Prolog-Kampf, SFX-Grundset | **< 15 MB** |
+| **Shell + Prolog** (initialer Download) | Code, UI-Schriften und -Icons, Tiles Prolog, Einheiten Prolog, Porträts der 4 Prolog-Figuren, 2 Hintergründe, Musik Titel + Prolog-Kampf, SFX-Grundset | **< 30 MB** (mit den Dateien der ersten Mission im Precache, erwartet ~11 MB) |
 | Kapitel-Paket je Kapitel | Tiles/Requisiten, neue Einheiten, Porträts, Hintergründe, Musik, Stimmen | 5–15 MB |
 | Akt 1 gesamt (Stufe Mittel) | | ca. 80–120 MB |
 
 - Kapitel-Pakete werden **beim Betreten der Weltkarte im Hintergrund vorgeladen** und vom Service Worker offline gecacht (Workbox, eigener Cache pro Paket).
-- CI prüft das Budget der Shell (Build schlägt fehl bei > 15 MB).
+- CI prüft das Budget der Shell (Build schlägt fehl bei > 30 MB; Entscheidung 2026-10-25, Architektur-Decision-Log).
 
 ## 10. Benennung
 

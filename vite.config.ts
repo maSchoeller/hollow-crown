@@ -3,9 +3,11 @@ import { defineConfig, type Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { parse } from 'yaml';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { packsPlugin } from './tools/build/packs-plugin.ts';
 import { CONTENT_HASHED } from './tools/build/precache.ts';
+import { firstMissionFiles } from './tools/build/first-mission.mjs';
 
 const packs = packsPlugin();
 
@@ -114,13 +116,24 @@ export default defineConfig(({ mode }) => {
               },
             },
           ],
-          // only core is precached; the other packs load in the background (story 7.2) or when first shown
+          /*
+           * Only core is precached; the other packs load in the background (story 7.2) or when first shown. Added to
+           * it: the first mission's files (tools/build/first-mission.mjs: prologue unit models, weapon and prop models,
+           * battle music), so that a new campaign starts offline right after the first load, even when the act pack
+           * is not complete yet. Decision 2026-10-25, budget 30 MB. These files keep plain names, hence a revision.
+           */
           manifestTransforms: [
             (entries) =>
-              precacheInfo(
-                outDir,
-                entries.filter((e) => !packs.nonCorePaths().has(e.url)),
-              ),
+              precacheInfo(outDir, [
+                ...entries.filter((e) => !packs.nonCorePaths().has(e.url)),
+                ...firstMissionFiles(outDir)
+                  .filter((p) => !entries.some((e) => e.url === p && !packs.nonCorePaths().has(p)))
+                  .map((p) => ({
+                    url: p,
+                    size: statSync(`${outDir}/${p}`).size,
+                    revision: createHash('md5').update(readFileSync(`${outDir}/${p}`)).digest('hex'),
+                  })),
+              ]),
           ],
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           navigateFallback: 'index.html',

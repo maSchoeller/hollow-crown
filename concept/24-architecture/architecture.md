@@ -27,7 +27,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 
 - **Zwei Command-Ebenen** (AR2): Neben dem Kampf läuft auch die Kampagne (Weltkarte, Heimat, Händler, Entscheidungen, Tageswechsel) über Commands mit Log. Die ganze Kampagne ist abspielbar und simulierbar.
 - **Bedingungen und Wirkungen als Daten** (AR3): Eine kleine, gemeinsame Sprache für `requires` und `effects` trägt Kampagnen-Graph, Szenen, Entscheidungen, Nebenquests und Epilog-Mosaik.
-- **Akt-Pakete** (AR15): Shell + Prolog bleiben unter 15 MB; der Rest jedes Akts lädt im Hintergrund nach und ist danach offline verfügbar.
+- **Akt-Pakete** (AR15): Shell + Prolog (mit den Dateien der ersten Mission im Precache) bleiben unter 30 MB; der Rest jedes Akts lädt im Hintergrund nach und ist danach offline verfügbar.
 - **Speicherformat 2** (AR16–AR18): bis zu 3 Kampagnen je Gerät, Auto-Save nach jeder Aktion, in Standard/Casual 3 Snapshots je Kampagne, Klassik streng nach Ehrensystem; PoC-Spielstände werden nicht migriert.
 - **Tageswechsel um 04:00 Ortszeit** (AR6) als Command mit Tagesnummer; der Kern sieht nie eine Uhr. Heimsuchungen entstehen rein aus Seed, Tag und handgesetzten Ankern je Karte (AR7).
 - **Gegner-KI im Web Worker** von Anfang an (AR14); der Worker führt dieselben reinen Kernfunktionen aus.
@@ -56,7 +56,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 ### 2.2 Plattform und Rahmen
 
 - **Plattform:** 1. Handy-Browser im Hochformat (PWA), 2. Tablet/PC-Browser mit Maus, 3. später Capacitor. Kein Server, kein Konto, kein Netzwerkspiel; Netz nur für Auslieferung und Updates.
-- **Leistung:** 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten); Kaltstart < 5 s; Shell + Prolog < 15 MB (gzip); KI < 300 ms je Gegnereinheit.
+- **Leistung:** 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten); Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
 - **Team:** ein Entwickler mit KI-Agenten. Die Architektur muss vor allem verhindern, dass verschiedene Agenten dieselbe Sache unterschiedlich lösen.
 
 ### 2.3 Komplexitätstreiber und neuartige Konzepte
@@ -389,7 +389,7 @@ export type WorkerResponse =
 
 | Paket | Inhalt | Laden | Budget (Transfer, Startwert) |
 |---|---|---|---|
-| `core` | App-Shell, Regeln (`content/core/`), UI-Texte, Prolog-Karte und -Szenen, Prolog-Figuren, Grundtexturen Spätsommer | Precache beim Installieren | **< 15 MB** (Build bricht ab) |
+| `core` | App-Shell, Regeln (`content/core/`), UI-Texte, Prolog-Karte und -Szenen, Prolog-Figuren, Grundtexturen Spätsommer | Precache beim Installieren, einschließlich der Dateien der ersten Mission (Prolog-Modelle, Waffen-/Requisitenmodelle, Kampfmusik; `tools/build/first-mission.mjs`) | **< 30 MB** (Build bricht ab; Richtwert ~11 MB) |
 | `act1` | übrige Akt-1-Karten, Szenen, EN-Dialoge, Figuren, Porträts, Hintergründe, Musik | Hintergrund direkt nach dem ersten Start | ≤ 40 MB |
 | `act2`, `act3` | wie `act1`, dazu Herbst- bzw. Wintertexturen, Burg (act2), Drachen (act3) | Hintergrund, sobald der Vorakt erreicht ist | ≤ 40 MB je Akt |
 | `voice.<act>.<lang>` | vertonte Zeilen eines Akts in einer Sprache | nur die gewählte Sprache, nach dem Akt-Paket | ≤ 15 MB |
@@ -400,7 +400,7 @@ export type WorkerResponse =
 - **Sperre:** Ein Knoten ist startbar, wenn sein Paket vollständig geladen ist; sonst zeigt die Weltkarte den Ladezustand.
 - **Updates:** Neuer Hash → nur geänderte Dateien werden neu geholt, alte Caches werden nach Erfolg gelöscht. Die bestehende Update-Abfrage (`src/app/update.ts`) bleibt.
 - **Capacitor (später):** Pakete liegen der App bei; der Paket-Manager hat dafür die Quelle `bundled`.
-- `tools/check-bundle-size.mjs` misst `core` gegen 15 MB (Abbruch) und meldet die anderen Pakete gegen ihr Budget (Warnung).
+- `tools/check-bundle-size.mjs` misst `core` gegen 30 MB (Abbruch; Warnung über dem Richtwert 11 MB) und meldet die anderen Pakete gegen ihr Budget (Warnung).
 
 ### 5.15 Speichern, Format 2 (AR16–AR18, AR20, AR21) [A]
 
@@ -694,7 +694,7 @@ pnpm content:lock              # IDs nach Release sperren (neu, Story 7.4)
 | Stufendeckel, Glutfunke, Verbluten, Übungsplatz, Lektionen | §5.11 |
 | Speicherregeln je Tod-Modus, Neustart setzt Tode zurück | AR16, AR18, §5.15 |
 | Spielstand über Akt-Releases und in Staffel 2 | AR19, AR20, §5.15, §5.16 |
-| 60 FPS, < 5 s, < 15 MB, offline, Qualitätsstufen | AR14, AR15, §10 |
+| 60 FPS, < 5 s, < 30 MB, offline, Qualitätsstufen | AR14, AR15, §10 |
 | Reproduzierbarkeit inkl. Affixe, Brand, Heimsuchungen | AR2, AR6, §6.4 |
 | Nemesis-Patent: keine prozedurale Erzeugung | AR5 |
 
