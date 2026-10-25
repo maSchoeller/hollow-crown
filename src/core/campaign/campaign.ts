@@ -253,7 +253,10 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   c.convoy = clone(s.convoy);
   c.nextUid = s.nextUid;
   const scarIds = data.campaign.scars.map((x) => x.id);
-  const playerUnits = s.units.filter((u) => u.team === 'player' || (u.team === 'other' && !u.generic && u.gone !== 'dead'));
+  // an escorted NPC joins like any third-party character, unless the goal says `join: false` (story 4.8)
+  const victory = map.objectives.victory;
+  const stays = victory.type === 'escort' && victory.join === false ? victory.unit : undefined;
+  const playerUnits = s.units.filter((u) => u.team === 'player' || (u.team === 'other' && !u.generic && u.gone !== 'dead' && u.id !== stays));
   for (const u of playerUnits) {
     const before = c0.roster.find((r) => r.id === u.id);
     const isNew = !before;

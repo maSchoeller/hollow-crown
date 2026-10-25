@@ -1,0 +1,43 @@
+# Entwicklerkarte für das Missionsziel „escort“ (Story 4.8). Gehört zu keinem Paket, steht in keinem Kampagnen-Graph und kommt
+# nicht in den Build: Tests laden sie über tests/fixtures/devObjectiveMaps.ts, im Browser startet sie `await __hc.devMap('dev_escort')`.
+#
+# Liora (Dritte Partei, Profil follow) wartet links, bis die Kompanie bei ihr steht, und zieht dann mit ihr zum Ausgang rechts
+# (Feld 12..13 × 3..5). Mauerreste lassen in der Mitte nur Lücken; drei Gegner halten die Strecke.
+#          x: 0123456789ABCD
+terrain: |
+  ..............
+  ..T...........
+  ....#.....T...
+  ....#..##.....
+  .T..........T.
+  ....#..##.....
+  ....#.....T...
+  ..T...........
+  ..............
+id: dev_escort
+nameKey: map.prologue_caravan.name
+size: [14, 9]
+fog: false
+legend:
+  ".": plain
+  "T": forest
+  "#": wall
+objects: []
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [[0, 3], [0, 4], [0, 5]] }
+units:
+  - { id: dev_vanguard, team: player, class: vanguard, level: 3, at: [1, 3], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 3, at: [1, 5], sprite: archer, items: [{ def: iron_bow }] }
+  - { id: dev_scout, team: player, class: scout, level: 3, at: [0, 4], sprite: mercenary, items: [{ def: iron_dagger }] }
+  - { char: liora, id: liora, team: other, class: healer, level: 3, at: [2, 4], items: [{ def: heal_staff }], ai: { profile: follow } }
+  - { id: dev_brigand_n, team: enemy, class: brigand, level: 2, at: [9, 2], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold } }
+  - { id: dev_brigand_s, team: enemy, class: brigand, level: 2, at: [9, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold } }
+  - { id: dev_archer, team: enemy, class: marksman, level: 2, at: [11, 4], sprite: bandit_archer, items: [{ def: iron_bow }], ai: { profile: hold } }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: escort, unit: liora, area: { rect: [12, 3, 13, 5] } }
+  defeat: []
+  side: []
+triggers: []
+goldReward: 0

@@ -55,7 +55,27 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
     }
     case 'seize':
       break; // resolved by the seize action
+    case 'escort': {
+      // story 4.8: the NPC leaves the map on the exit (profile `follow`); its fall (downed counts, it is not a player) loses
+      const npc = findUnit(s, v.unit);
+      if (!npc) break; // not on the map yet (spawned later)
+      if (npc.gone === 'dead' || npc.downed) return endBattle(s, 'defeat', events, v.unit);
+      if (npc.gone === 'escaped' || (onMap(npc) && inArea(v.area, npc.pos!))) endBattle(s, 'victory', events);
+      break;
+    }
+    case 'treasure': {
+      const { have, total } = chestProgress(s, v.chests);
+      if (have >= total) endBattle(s, 'victory', events);
+      else if (phaseStart && s.turn > v.turns) endBattle(s, 'defeat', events, 'turns');
+      break;
+    }
   }
+}
+
+/** "have of total" for the chests of a `treasure` goal: open means recovered (story 4.8); a missing object counts as not recovered. */
+export function chestProgress(s: BattleState, chests: string[]): { have: number; total: number } {
+  const have = chests.filter((id) => s.objects.some((o) => o.id === id && o.state === 'open')).length;
+  return { have, total: chests.length };
 }
 
 export function sideObjectiveDone(data: GameData, s: BattleState, o: SideObjectiveDef): boolean {

@@ -4,22 +4,34 @@ import {
   active,
   onDifficulty,
   availableActions,
+  classActionId,
   combinedRange,
   dangerZone,
   destinations,
+  castBlock,
   classPreview,
+  filterEvents,
+  fogBands,
+  contextEntries,
+  fogOn,
   forecast,
+  holdZone,
   itemDef,
   itemTargets,
   longPressView,
+  passivePreview,
   pathTo,
   posKey,
+  pursueReach,
   reachNow,
   resolveScene,
   samePos,
+  stealBlock,
   tilesInRange,
   unitAt,
   wantedView,
+  visibleState,
+  visibleTiles,
   weaponRange,
   type Action,
   type ActionOption,
@@ -38,6 +50,8 @@ import { BoardView } from '../../render/board/board';
 import { t } from '../../i18n';
 import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
+import { goalLine, goalStand } from '../../ui/goalText';
+import { Icon } from '../../ui/icons';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { ltBarks } from '../battle/ltLines';
@@ -50,8 +64,7 @@ import { WantedDock } from './Wanted';
 import { settings, updateSettings } from '../state/settings';
 import {
   BackPill,
-  CONTEXT_ORDER,
-  ContextBand,
+  ContextBands,
   Dock,
   DockAction,
   ClassPreviewCard,
@@ -59,6 +72,7 @@ import {
   GoalPills,
   HintPill,
   MenuStone,
+  PassiveRuleCard,
   PhasePill,
   preloadHeads,
   RosterPanel,
@@ -68,7 +82,7 @@ import {
   TurnPill,
   UnitCardB,
 } from './BattleHud';
-import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, TradeSheet, UnitInfo } from './BattlePanels';
+import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 
 export { pendingEvents };
 
@@ -76,10 +90,18 @@ type Mode =
   | { k: 'idle' }
   | { k: 'selected'; uid: string }
   | { k: 'moved'; uid: string; to: Pos }
-  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item' | ClassKind; targets: string[]; item?: string }
+  | { k: 'target'; uid: string; to: Pos; action: 'attack' | 'staff' | 'talk' | 'rescue' | 'command' | 'item' | 'steal' | ClassKind; targets: string[]; item?: string }
   | { k: 'forecast'; uid: string; to: Pos; target: string; weapon?: string; aim?: boolean }
   /** preview of Fernbergen / Anfeuern before it is confirmed */
-  | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string };
+  | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string }
+  /** Nachsetzen right after an attack (story 2.4): `to` is the chosen tile, null until one is tapped */
+  | { k: 'pursue'; uid: string; to: Pos | null }
+  /** rule card of a passive role (Halten, Nachsetzen), reached by a tap on its dock slot */
+  | { k: 'passive'; uid: string; to: Pos }
+  /** Wirken (story 2.5): pick a field in range (`at` null), then the preview of the affected fields and the confirmation */
+  | { k: 'cast'; uid: string; to: Pos; at: Pos | null }
+  /** Stehlen (story 2.6): the bag of the chosen foe is shown, one tap on an item takes it */
+  | { k: 'steal'; uid: string; to: Pos; target: string };
 
 function useWide(): boolean {
   const q = '(min-width: 600px)';
@@ -95,13 +117,16 @@ function useWide(): boolean {
 
 
 /** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
-const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'staff', 'command', 'rally'];
+const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'steal', 'staff', 'command', 'rally'];
 /** Class actions with a preview and a confirmation before they run. */
 type ClassKind = 'aim' | 'farRescue' | 'cheer';
 
 export function Battle() {
   const session = battle.value!;
-  const s = session.state;
+  /** the state as the player's side sees it: on a fog map foes on unseen tiles are missing (story 2.6); `full` only for what the player may know anyway */
+  const full = session.state;
+  const fogged = fogOn(data, full);
+  const s = useMemo(() => visibleState(data, full, 'player'), [full]);
   const stageRef = useRef<HTMLDivElement>(null);
   const floatRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -138,6 +163,8 @@ export function Battle() {
   const [convoy, setConvoy] = useState<string | null>(null);
   const [items, setItems] = useState<{ uid: string; to: Pos; list: string[] } | null>(null);
   const [hp, setHp] = useState<Record<string, number>>({});
+  /** the Nachsetzen chance the player let go (key of `s.pursue` and the turn); the core keeps it until the next command */
+  const [pursueDone, setPursueDone] = useState<string | null>(null);
   const wide = useWide();
 
   const unit = (uid: string) => s.units.find((u) => u.uid === uid)!;
@@ -179,11 +206,12 @@ export function Battle() {
     board.shakeEnabled = settings.value.shake && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
     void (async () => {
-      await board.load(battle.value!.state);
+      const st0 = battle.value!.state;
+      await board.load(visibleState(data, st0, 'player'));
       const ev = pendingEvents.value;
       pendingEvents.value = [];
       if (ev.length && alive) {
-        await board.play(ev, battle.value!.state);
+        await board.play(filterEvents(data, st0, ev, 'player'), visibleState(data, st0, 'player'), st0.units);
       }
       const opening = openingBark.current;
       openingBark.current = null;
@@ -228,22 +256,35 @@ export function Battle() {
     return [...set].map((k) => k.split(',').map(Number) as Pos);
   }, [s, danger, watch]);
 
+  /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
+  const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
+
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
     const goal = (() => {
       const v = mapOf(data, s).objectives.victory;
-      if (v.type === 'reach' || v.type === 'seize' || v.type === 'escape') {
+      if (v.type === 'reach' || v.type === 'seize' || v.type === 'escape' || v.type === 'escort') {
         return 'rect' in v.area ? tilesInRect(v.area.rect) : v.area.tiles;
       }
       return [];
     })();
-    const reinforce = mapOf(data, s)
+    // the player does not know the reinforcements of a fog map
+    const reinforce = fogged ? [] : mapOf(data, s)
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
-    const base = { danger: dangerTiles, goal, reinforce };
+    // hold zones of hostile vanguards in danger mode (hatched)
+    const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
+    const base = { danger: dangerTiles, goal, reinforce, hold, fog: fogTiles.fog, fogEdge: fogTiles.edge };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
+    if (mode.k === 'pursue') {
+      const rest = pursueReach(data, s, u);
+      if (!rest) return board.setOverlays({ ...base, cursor: tileInfo });
+      const to = mode.to;
+      const tiles = destinations(s, u, rest).filter((d) => !samePos(d, u.pos));
+      return board.setOverlays({ ...base, move: tiles, path: to ? pathTo(rest, to) : [], ghost: to ? { uid: u.uid, pos: to } : null, cursor: to ?? u.pos });
+    }
     const reach = reachOf(u);
     const dests = destinations(s, u, reach);
     if (mode.k === 'selected') {
@@ -268,11 +309,21 @@ export function Battle() {
     if (mode.k === 'target') {
       return board.setOverlays({ ...base, path, ghost, targets: mode.targets.map((id) => unit(id).pos!).filter(Boolean), cursor: to });
     }
+    if (mode.k === 'cast') {
+      const tiles = availableActions(data, s, u, to).find((o) => o.kind === 'cast')?.tiles ?? [];
+      const pre = mode.at ? classPreview(data, s, u, to, { kind: 'cast', at: mode.at }) : null;
+      return board.setOverlays({ ...base, path, ghost, targets: tiles.filter((p) => !mode.at || !samePos(p, mode.at)), cast: pre?.kind === 'cast' ? pre.area.tiles : [], cursor: mode.at ?? to });
+    }
+    if (mode.k === 'passive') {
+      const pre = passivePreview(data, s, u, to);
+      const zone = pre?.kind === 'hold' ? pre.tiles : [];
+      return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
+    }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
   }, [mode, s, dangerTiles, tileInfo]);
 
   // the HUD grows when a unit is selected; bring the unit (or the chosen tile) out from under it
-  const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.to;
+  const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.k === 'pursue' ? (mode.to ?? unit(mode.uid).pos) : mode.to;
   const focusKey = focus ? `${mode.k === 'selected' ? mode.uid : ''}:${focus[0]},${focus[1]}` : '';
   useEffect(() => {
     const board = boardRef.current;
@@ -286,11 +337,20 @@ export function Battle() {
   // --------------------------------------------------------------- command execution
   const run = async (cmd: Command) => {
     const board = boardRef.current!;
+    // on a fog map the plan may lead through a foe the player does not see: the command carries the planned way, and the core
+    // stops the unit in front of the foe (Hinterhalt)
+    if (fogged && (cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue') && !cmd.path) {
+      const u = unit(cmd.unit);
+      const reach = cmd.type === 'pursue' ? pursueReach(data, s, u) : reachOf(u);
+      const path = reach && !samePos(u.pos, cmd.to) ? pathTo(reach, cmd.to) : [];
+      if (path.length > 1) cmd = { ...cmd, path };
+    }
     setBusy(true);
     setMode({ k: 'idle' });
     setInfo(null);
     setTileInfo(null);
     const enemy = cmd.type === 'endPhase';
+    const before = battle.value!.state;
     if (enemy) setPhaseView({ phase: 'enemy', turn: s.turn });
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;
@@ -311,7 +371,8 @@ export function Battle() {
       setBusy(false);
       return;
     }
-    await board.play(events, battle.value!.state);
+    const after = battle.value!.state;
+    await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
     board.skip = false;
     setHp({});
     setPhaseView(null);
@@ -323,8 +384,8 @@ export function Battle() {
       concludeBattle();
       return;
     }
-    // auto end of phase when every unit has acted
-    if (st.phase === 'player' && !st.units.some((u) => u.team === 'player' && active(u) && !u.acted)) {
+    // auto end of phase when every unit has acted – not while a skirmisher may still pursue
+    if (st.phase === 'player' && !st.pursue && !st.units.some((u) => u.team === 'player' && active(u) && !u.acted)) {
       setTimeout(() => void run({ type: 'endPhase' }), 350);
     }
   };
@@ -366,6 +427,10 @@ export function Battle() {
         break;
       case 'strike':
         audio.sfx(!e.hit ? 'miss' : e.crit ? 'crit' : e.magic ? `magic_${e.element ?? 'light'}` : 'hit');
+        break;
+      case 'ambush':
+        audio.sfx('downed');
+        setToast(t('ui.toast.ambush', { name: unitName(unit(e.by) ?? { nameKey: 'class.brigand.name' }) }));
         break;
       case 'mastered':
         setToast(t('ui.toast.mastered', { skill: t(`skill.${e.skill}.name`) }));
@@ -486,10 +551,30 @@ export function Battle() {
         }
         if (mode.action === 'farRescue' || mode.action === 'cheer')
           return setMode({ k: 'classPreview', uid: mode.uid, to: mode.to, action: mode.action, target: at.uid });
+        if (mode.action === 'steal') return setMode({ k: 'steal', uid: mode.uid, to: mode.to, target: at.uid });
         const action: Action =
           mode.action === 'item' ? { kind: 'item', item: mode.item!, target: at.uid } : ({ kind: mode.action, target: at.uid } as Action);
         void run({ type: 'act', unit: mode.uid, to: mode.to, action });
         return;
+      }
+      case 'pursue': {
+        const u = unit(mode.uid);
+        const rest = pursueReach(data, s, u);
+        if (mode.to && samePos(p, mode.to)) return void confirmPursue();
+        if (rest && !samePos(p, u.pos) && destinations(s, u, rest).some((d) => samePos(d, p))) return setMode({ k: 'pursue', uid: u.uid, to: p });
+        if (selectable(at)) {
+          leavePursue();
+          setMode({ k: 'selected', uid: at!.uid });
+        }
+        return;
+      }
+      case 'passive':
+        return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+      case 'cast': {
+        if (mode.at && samePos(p, mode.at)) return void confirmCast();
+        const tiles = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === 'cast')?.tiles ?? [];
+        if (tiles.some((c) => samePos(c, p))) return setMode({ ...mode, at: p });
+        return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       }
       case 'classPreview': {
         if (at && at.uid === mode.target) return void confirmClassAction();
@@ -524,10 +609,16 @@ export function Battle() {
     if (wanted) return setWanted(null);
     if (info) return setInfo(null);
     switch (mode.k) {
+      case 'cast':
+        return setMode(mode.at ? { ...mode, at: null } : { k: 'moved', uid: mode.uid, to: mode.to });
       case 'forecast':
       case 'classPreview':
+      case 'passive':
+      case 'steal':
       case 'target':
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+      case 'pursue':
+        return finishPursue();
       case 'moved':
         return setMode({ k: 'selected', uid: mode.uid });
       case 'selected':
@@ -547,10 +638,38 @@ export function Battle() {
     await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, target: mode.target } });
   };
 
+  const confirmCast = async () => {
+    if (mode.k !== 'cast' || !mode.at) return;
+    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'cast', at: mode.at } });
+  };
+
+  // --------------------------------------------------------------- Nachsetzen
+  const pursueKey = s.pursue ? `${s.turn}:${s.pursue.unit}:${s.pursue.left}` : null;
+  const pursueOpen = !!s.pursue && s.phase === 'player' && !s.outcome && pursueDone !== pursueKey;
+  /** Lets the open chance go without a command (the next command of any kind would end it anyway). */
+  const leavePursue = () => {
+    if (pursueOpen) setPursueDone(pursueKey);
+  };
+  /** "Fertig": the player does not pursue; when nothing else is ready the phase ends as it would after the last action. */
+  const finishPursue = () => {
+    leavePursue();
+    setMode({ k: 'idle' });
+    if (!s.units.some(selectable)) setTimeout(() => void run({ type: 'endPhase' }), 350);
+  };
+  const confirmPursue = async () => {
+    if (mode.k !== 'pursue' || !mode.to) return;
+    await run({ type: 'pursue', unit: mode.uid, to: mode.to });
+  };
+  // the chance opens by itself after the attack (and after a reload of a saved battle)
+  useEffect(() => {
+    if (pursueOpen && !busy && mode.k === 'idle') setMode({ k: 'pursue', uid: s.pursue!.unit, to: null });
+  }, [pursueOpen, busy, mode.k]);
+
   /** Selects the next unit that has not acted yet and centres the camera on it. */
   const nextUnit = () => {
     const ready = s.units.filter(selectable);
     if (!ready.length) return;
+    leavePursue();
     const cur = mode.k !== 'idle' ? ready.findIndex((u) => u.uid === mode.uid) : -1;
     const next = ready[(cur + 1) % ready.length]!;
     audio.sfx('tap');
@@ -594,16 +713,21 @@ export function Battle() {
     cancelRef.current();
   };
 
-  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone
+  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone, F front band, arrows between bands
+  const ctxRef = useRef({ n: 0, go: () => undefined as void, step: (_d: number) => undefined as void });
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp || bark) return;
-    const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info;
+    const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info || mode.k === 'steal';
     if (e.key === 'Escape') escape();
     else if (modal) return;
     else if (e.key === 'd' || e.key === 'D') setDanger((d) => !d);
     else if (e.key === 'e' || e.key === 'E') endPhase();
-    else if (e.key === ' ' && playerTurn) {
+    else if (mode.k === 'moved' && ctxRef.current.n > 0 && (e.key === 'f' || e.key === 'F')) ctxRef.current.go();
+    else if (mode.k === 'moved' && ctxRef.current.n > 1 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      e.preventDefault();
+      ctxRef.current.step(e.key === 'ArrowRight' ? 1 : -1);
+    } else if (e.key === ' ' && playerTurn) {
       e.preventDefault();
       nextUnit();
     }
@@ -629,6 +753,16 @@ export function Battle() {
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind } as Action });
       case 'door':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'door', object: opt.object! } });
+      case 'open':
+        return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'open', object: opt.object! } });
+      case 'steal': {
+        // the bag of the foe is the preview; with several foes next to the tile the player picks one on the board first
+        const targets = opt.targets ?? [];
+        if (targets.length === 1) return setMode({ k: 'steal', uid: u.uid, to: mode.to, target: targets[0]! });
+        return setMode({ k: 'target', uid: u.uid, to: mode.to, action: 'steal', targets });
+      }
+      case 'cast':
+        return setMode({ k: 'cast', uid: u.uid, to: mode.to, at: null });
       case 'aim':
       case 'farRescue':
       case 'cheer': {
@@ -695,18 +829,25 @@ export function Battle() {
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
       : [];
   const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;
+  const classPre = mode.k === 'steal' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'steal', target: mode.target }) : null;
+  const castPre = mode.k === 'cast' && mode.at ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'cast', at: mode.at }) : null;
+  const passivePre = mode.k === 'passive' ? passivePreview(data, s, unit(mode.uid), mode.to) : null;
   const readyCount = s.units.filter(selectable).length;
 
   const map = mapOf(data, s);
   const victory = map.objectives.victory;
-  const enemiesLeft = s.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
+  // how many foes are left is not known under fog
+  const enemiesLeft = full.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
   const goalProgress =
     victory.type === 'rout'
-      ? t('ui.hud.left', { n: enemiesLeft })
+      ? fogged
+        ? ''
+        : t('ui.hud.left', { n: enemiesLeft })
       : victory.type === 'defend' || victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
-  const goalText = t(`ui.world.goal.${victory.type}`, { turns: 'turns' in victory ? victory.turns : 0 }).replace(/\.$/, '');
+  // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)
+  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory).replace(/\.$/, '');
 
   const shownPhase = phaseView?.phase ?? s.phase;
   const shownTurn = phaseView?.turn ?? s.turn;
@@ -716,7 +857,17 @@ export function Battle() {
   const itemOpt = options.find((o) => o.kind === 'item');
   const classOpts = CLASS_KINDS.map((k) => options.find((o) => o.kind === k)).filter((o): o is ActionOption => !!o);
   const waitOpt = options.find((o) => o.kind === 'wait');
-  const contextOpts = CONTEXT_ORDER.map((k) => options.find((o) => o.kind === k)).filter((o): o is ActionOption => !!o);
+  // context bands (story 2.7): one per target, most urgent first; the front one runs on a tap or F, the others a swipe or arrow key away
+  const ctxEntries = mode.k === 'moved' ? contextEntries(data, s, options) : [];
+  const ctxSig = mode.k === 'moved' ? `${mode.uid}@${posKey(mode.to)}:${ctxEntries.map((e) => e.id).join(',')}` : '';
+  const [ctxSel, setCtxSel] = useState({ sig: '', i: 0 });
+  const ctxIdx = ctxSel.sig === ctxSig ? Math.min(ctxSel.i, Math.max(0, ctxEntries.length - 1)) : 0;
+  const setCtxIdx = (i: number) => setCtxSel({ sig: ctxSig, i });
+  ctxRef.current = {
+    n: ctxEntries.length,
+    go: () => void doAction(ctxEntries[ctxIdx]!.option),
+    step: (d) => setCtxIdx((ctxIdx + d + ctxEntries.length) % ctxEntries.length),
+  };
 
   /** Dock with its four fixed slots: Attack, Class action, Item, Wait. Impossible ones are dimmed; a tap says why. */
   const dock = (u: BattleUnit) => {
@@ -726,7 +877,14 @@ export function Battle() {
       if (mode.k === 'selected' && msg === t('ui.hud.pickTile')) return;
       setReason(msg);
     };
+    // Wirken dimmed: say why (no tome, light/dark, wind without fog, no valid field)
+    const block = placed && !classOpts.length ? castBlock(data, s, u, (mode as Extract<Mode, { k: 'moved' }>).to) : null;
+    const scoutBlock = placed && !classOpts.length ? stealBlock(data, s, u, (mode as Extract<Mode, { k: 'moved' }>).to) : null;
+    const castReason = block ? t(`ui.cast.no.${block}`) : scoutBlock ? t(`ui.steal.no.${scoutBlock}`) : null;
     const classOne = classOpts.length === 1 ? classOpts[0]! : undefined;
+    // passive role (Vorkämpfer: Halten, Plänkler: Nachsetzen): the role symbol shows a state; a tap explains the rule with a preview
+    const passiveId = classOpts.length ? undefined : classActionId(data, u, s);
+    const passive = passiveId && data.classes[u.classId]?.classAction?.kind === 'passive' ? passiveId : undefined;
     return (
       <Dock>
         <DockAction
@@ -739,10 +897,20 @@ export function Battle() {
         />
         <DockAction
           variant="class"
-          icon={classOpts.length ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
-          label={classOne ? t(`ui.action.${classOne.kind}`) : t('ui.hud.classSlot')}
-          dim={!classOpts.length}
-          onClick={classOne ? () => void doAction(classOne) : classOpts.length ? () => setClassPick(true) : ask(t(placed ? 'ui.hud.noClass' : 'ui.hud.pickTile'))}
+          icon={classOpts.length && classOpts[0]!.kind !== 'cast' ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
+          label={passive ? t(`ui.passive.${passive}.name`) : classOne ? t(`ui.action.${classOne.kind}`) : t('ui.hud.classSlot')}
+          sub={passive ? t('ui.passive.ready') : undefined}
+          state={passive ? 'ready' : undefined}
+          dim={!classOpts.length && !passive}
+          onClick={
+            passive
+              ? () => setMode({ k: 'passive', uid: u.uid, to: mode.k === 'moved' ? mode.to : u.pos! })
+              : classOne
+                ? () => void doAction(classOne)
+                : classOpts.length
+                  ? () => setClassPick(true)
+                  : ask(castReason ?? t(placed ? 'ui.hud.noClass' : 'ui.hud.pickTile'))
+          }
         />
         <DockAction
           icon="item"
@@ -801,9 +969,7 @@ export function Battle() {
       {mode.k === 'moved' && selUnit && (
         <>
           {back}
-          {contextOpts.map((o) => (
-            <ContextBand key={o.kind} opt={o} target={o.targets?.length === 1 ? unit(o.targets[0]!) : undefined} onGo={() => void doAction(o)} />
-          ))}
+          <ContextBands entries={ctxEntries} index={ctxIdx} unitOf={(uid) => s.units.find((x) => x.uid === uid)} onIndex={setCtxIdx} onGo={(e) => void doAction(e.option)} />
           {card}
           {dock(selUnit)}
         </>
@@ -815,6 +981,46 @@ export function Battle() {
             <HintPill>{t(`ui.pick.${mode.action}`)}</HintPill>
           </div>
           {card}
+        </>
+      )}
+      {mode.k === 'pursue' && selUnit && (
+        <>
+          <HintPill>
+            <Icon name="blade" size={16} /> {t('ui.pursue.hint', { n: s.pursue?.left ?? 0 })}
+          </HintPill>
+          {card}
+          <div class="hud-confirm">
+            <SecondaryButton onClick={finishPursue}>{t('ui.pursue.done')}</SecondaryButton>
+            <PrimaryButton disabled={!mode.to} onClick={() => void confirmPursue()}>
+              {t('ui.pursue.go')}
+            </PrimaryButton>
+          </div>
+        </>
+      )}
+      {mode.k === 'passive' && selUnit && passivePre && (
+        <>
+          <PassiveRuleCard p={passivePre} />
+          <div class="hud-confirm">
+            <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.back')}</SecondaryButton>
+            <PrimaryButton onClick={() => cancelRef.current()}>{t('ui.passive.ok')}</PrimaryButton>
+          </div>
+        </>
+      )}
+      {mode.k === 'cast' && selUnit && (
+        <>
+          {!castPre && (
+            <div class="hud-row">
+              {back}
+              <HintPill>{t('ui.pick.cast')}</HintPill>
+            </div>
+          )}
+          {castPre ? <ClassPreviewCard data={data} state={s} p={castPre} caster={selUnit} /> : card}
+          {castPre && (
+            <div class="hud-confirm">
+              <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.cancel')}</SecondaryButton>
+              <PrimaryButton onClick={() => void confirmCast()}>{t('ui.action.cast')}</PrimaryButton>
+            </div>
+          )}
         </>
       )}
       {mode.k === 'classPreview' && cls && (
@@ -869,7 +1075,10 @@ export function Battle() {
             s={s}
             hp={hp}
             onPick={(u) => {
-              if (selectable(u) && playerTurn) setMode({ k: 'selected', uid: u.uid });
+              if (selectable(u) && playerTurn) {
+                leavePursue();
+                setMode({ k: 'selected', uid: u.uid });
+              }
               void boardRef.current?.centerOn(u.pos!);
             }}
           />
@@ -974,6 +1183,14 @@ export function Battle() {
         />
       )}
       {items && <ItemPick u={unit(items.uid)} list={items.list} onPick={useItem} onClose={() => setItems(null)} />}
+      {mode.k === 'steal' && classPre?.kind === 'steal' && (
+        <StealPick
+          p={classPre}
+          victim={unit(mode.target)}
+          onPick={(item) => void run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: 'steal', target: mode.target, item } })}
+          onClose={() => cancelRef.current()}
+        />
+      )}
       {trade && <TradeSheet s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
       {convoy && <ConvoySheet s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
       {levelUp && <LevelUpPopup u={unit(levelUp.uid)} gains={levelUp.gains} level={levelUp.level} onDone={levelUp.done} />}

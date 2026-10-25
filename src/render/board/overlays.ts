@@ -20,6 +20,13 @@ export interface Overlays {
   ghost?: { uid: string; pos: Pos } | null;
   goal?: Pos[];
   reinforce?: Pos[];
+  /** hold zones of vanguards (Halten, story 2.4): diagonal hatching */
+  hold?: Pos[];
+  /** fields Wirken would change (story 2.5) */
+  cast?: Pos[];
+  /** fields under fog (story 2.6): dark with a blue cast; `fogEdge` is the lighter fringe next to seen fields */
+  fog?: Pos[];
+  fogEdge?: Pos[];
 }
 
 export interface OverlayMesh {
@@ -32,12 +39,16 @@ export interface OverlayMesh {
 
 // overlay colours and opacities (same reading as the 2D board)
 const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pulse?: number }> = {
+  fog: { color: '#1a2440', alpha: 0.6, inset: 0 },
+  fogEdge: { color: '#1a2440', alpha: 0.3, inset: 0 },
   danger: { color: '#d9333f', alpha: 0.28, inset: 0 },
   goal: { color: '#f2cc4d', alpha: 0.3, inset: 0, pulse: 0.15 },
   move: { color: '#4080f2', alpha: 0.42, inset: 0.02 },
   attack: { color: '#f24d4d', alpha: 0.38, inset: 0.02 },
   heal: { color: '#59e680', alpha: 0.4, inset: 0.02 },
   reinforce: { color: '#f2802e', alpha: 0.25, inset: 0.16, pulse: 0.2 },
+  hold: { color: '#8a2be2', alpha: 0.5, inset: 0 },
+  cast: { color: '#2ec4d6', alpha: 0.5, inset: 0.06, pulse: 0.2 },
   path: { color: '#ffffff', alpha: 0.55, inset: 0.33 },
   targets: { color: '#ffd959', alpha: 0.35, inset: 0.04, pulse: 0.35 },
 };
@@ -65,12 +76,16 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
 export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number): OverlayMesh[] {
   const out: OverlayMesh[] = [];
   const lists: Record<string, Pos[]> = {
+    fog: o.fog ?? [],
+    fogEdge: o.fogEdge ?? [],
     danger: o.danger ?? [],
     goal: o.goal ?? [],
     move: o.move ?? [],
     attack: o.attack ?? [],
     heal: o.heal ?? [],
     reinforce: o.reinforce ?? [],
+    hold: o.hold ?? [],
+    cast: o.cast ?? [],
     path: o.path ?? [],
     targets: o.targets ?? [],
   };
@@ -83,6 +98,20 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     const idx: number[] = [];
     for (const t of tiles) {
       const h = top(t) + 0.02 + order * 0.002;
+      if (key === 'hold') {
+        // diagonal stripes inside the tile (u right, v down)
+        const w = 0.05;
+        for (const d of [-0.6, -0.3, 0, 0.3, 0.6]) {
+          const a = d >= 0 ? [d, 0] : [0, -d];
+          const b = d >= 0 ? [1, 1 - d] : [1 + d, 1];
+          const k = p.length / 3;
+          for (const [u, v] of [[a[0]! - w, a[1]! + w], [a[0]! + w, a[1]! - w], [b[0]! + w, b[1]! - w], [b[0]! - w, b[1]! + w]] as const) {
+            p.push(t[0] + Math.min(1, Math.max(0, u)), h, -t[1] - Math.min(1, Math.max(0, v)));
+          }
+          idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
+        }
+        continue;
+      }
       const x0 = t[0] + spec.inset;
       const x1 = t[0] + 1 - spec.inset;
       const zn = -t[1] - spec.inset;

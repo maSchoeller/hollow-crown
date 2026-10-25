@@ -42,7 +42,7 @@ const MAX_GLIDE = 24;
 const INERTIA_DECAY = 0.92;
 
 /** Icon of the goal chip per victory type. */
-const GOAL_ICON: Record<string, string> = { rout: 'attack', boss: 'attack', reach: 'target', seize: 'seize', defend: 'shield', survive: 'wait', escape: 'escape' };
+const GOAL_ICON: Record<string, string> = { rout: 'attack', boss: 'attack', reach: 'target', seize: 'seize', defend: 'shield', survive: 'wait', escape: 'escape', escort: 'escape', treasure: 'chest' };
 
 type Loaded = 'loading' | 'ready' | 'failed';
 
