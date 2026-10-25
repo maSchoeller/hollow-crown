@@ -677,9 +677,12 @@
 }
 .hud-fc__head {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 6px;
+}
+.hud-fc__head > .hud-l1 {
+  white-space: nowrap;
 }
 .hud-fc__who {
   display: flex;
@@ -695,11 +698,15 @@
   justify-content: flex-end;
 }
 .hud-fc__id {
+  flex: 1 1 0;
   min-width: 0;
   display: grid;
 }
+/* the name cuts off with an ellipsis inside its own column (.hud-name already clips) */
 .hud-fc__who .hud-name {
   flex: none;
+  display: block;
+  max-width: 100%;
 }
 .hud-fc__table {
   display: grid;

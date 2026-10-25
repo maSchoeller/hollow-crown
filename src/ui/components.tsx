@@ -7,7 +7,6 @@ import {
   itemDef,
   ruleOn,
   runeSlotCount,
-  STAT_KEYS,
   weaponProfile,
   type BattleState,
   type BattleUnit,
@@ -19,7 +18,7 @@ import {
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
 import { ElementIcon, Icon } from './icons';
-import { Amount, ItemImage } from './pieces';
+import { ItemImage } from './pieces';
 import { asset } from './asset';
 
 export { asset };

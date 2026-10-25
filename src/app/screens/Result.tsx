@@ -3,7 +3,7 @@
  * lieutenants, side objectives and EP per figure with the fallen grey; and the defeat screen with its restarts.
  * What to show comes from the core (`missionResultView`, `defeatSentence`); this file only lays it out.
  */
-import { defeatSentence, farewellView, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
+import { defeatSentence, farewellView, homeRooms, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
 import { t } from '../../i18n';
 import { itemName, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -148,6 +148,8 @@ function Company({ v }: { v: MissionResultView }) {
 
 function Notes({ v }: { v: MissionResultView }) {
   const c = campaign.value!;
+  // the hint only helps when the campfire can be entered: its room may still be locked (rooms.yaml `requires`)
+  const campfireOpen = homeRooms(data, c).some((r) => r.room.function === 'campfire' && r.open);
   const lines: Array<{ key: string; icon: string; cls: string; text: string }> = [
     ...v.recruited.map((id) => ({ key: `r${id}`, icon: 'star', cls: 'is-good', text: t('ui.result.recruited', { name: t(`unit.${id}.name`) }) })),
     ...v.granted.map((g) => ({
@@ -158,7 +160,7 @@ function Notes({ v }: { v: MissionResultView }) {
     })),
     ...v.scars.map((s) => ({ key: `s${s.id}`, icon: 'scar', cls: 'is-bad', text: `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}` })),
     ...(v.movedHome ? [{ key: 'home', icon: v.movedHome === 'castle' ? 'castle' : 'camp', cls: 'is-home', text: t('ui.result.newHome', { name: t(`home.${v.movedHome}.name`) }) }] : []),
-    ...(v.supportsReady ? [{ key: 'sup', icon: 'campfire', cls: 'is-gold', text: t('ui.result.supports') }] : []),
+    ...(v.supportsReady && campfireOpen ? [{ key: 'sup', icon: 'campfire', cls: 'is-gold', text: t('ui.result.supports') }] : []),
   ];
   if (!lines.length) return null;
   return (
