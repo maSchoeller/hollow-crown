@@ -44,12 +44,9 @@ export interface MissionAssetInput {
   defaultPlace: string;
 }
 
-/**
- * File of a place image: `place` is a location (`locations/<place>.webp`), or a background as `backgrounds/<id>`
- * (`backgrounds/<id>.webp`, decision 2026-10-24).
- */
+/** File of a place image: `place` is a location (`locations/<place>.webp`). */
 export function placePath(place: string): string {
-  return `${place.startsWith('backgrounds/') ? place : `locations/${place}`}.webp`;
+  return `locations/${place}.webp`;
 }
 
 /** Music tracks that are not in the first download (vite.config.ts `ON_DEMAND_MUSIC`): the battle pair loads with the mission, the rest in the background. */

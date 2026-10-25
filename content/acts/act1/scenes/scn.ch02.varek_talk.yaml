@@ -1,5 +1,5 @@
 id: scn.ch02.varek_talk
-background: bg_silverbrook_shrine
+background: varnhold
 lines:
   - id: l01
     speaker: [kael]

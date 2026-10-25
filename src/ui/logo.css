@@ -1,0 +1,97 @@
+/* Wordmark "Hollow Crown" with the hand-built crown as the O (story 8.7): src/ui/Logo.tsx. */
+@import './tokens.css';
+
+.logo {
+  --logo-font: var(--hc-font-name);
+  --logo-weight: 900;
+  --logo-outline: 0.13em;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--hc-cream);
+  font-family: var(--logo-font);
+  font-weight: var(--logo-weight);
+  font-size: clamp(44px, 13vw, 72px);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  /* thick soft outline behind the fill, like the crown's */
+  paint-order: stroke fill;
+  -webkit-text-stroke: var(--logo-outline) var(--hc-line);
+  text-shadow: 0 0.05em 0.12em rgba(0, 0, 0, 0.45);
+}
+.logo small {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hc-cream-2);
+  -webkit-text-stroke: 0;
+  text-shadow: 0 2px 0 var(--hc-line);
+}
+
+.crown-o {
+  display: inline-block;
+  width: 1.04em;
+  height: 1.08em;
+  /* the crown stands on the baseline and its points reach above the capitals */
+  vertical-align: -0.08em;
+  margin-inline: 0.02em;
+  overflow: visible;
+}
+.crown-o__line {
+  stroke: var(--hc-line);
+  stroke-width: 5.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.crown-o__gold {
+  fill: var(--hc-gold);
+}
+.crown-o__hollow {
+  fill: #6e2a12;
+}
+.crown-o__ember {
+  fill: var(--hc-ember);
+  opacity: 0.8;
+}
+.crown-o__spark {
+  fill: #ffc474;
+}
+.crown-o__shine {
+  fill: none;
+  stroke: #f3d77f;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.crown-o__gleam {
+  fill: var(--hc-cream);
+  opacity: 0.9;
+}
+.crown-o__crack-glow,
+.crown-o__crack-line,
+.crown-o__crack,
+.crown-o__crack-core {
+  fill: none;
+  stroke-linejoin: miter;
+  stroke-linecap: round;
+}
+.crown-o__crack-glow {
+  stroke: var(--hc-ember);
+  stroke-width: 9;
+  opacity: 0.3;
+}
+.crown-o__crack-line {
+  stroke: var(--hc-line);
+  stroke-width: 6;
+}
+.crown-o__crack {
+  stroke: var(--hc-ember);
+  stroke-width: 3.2;
+}
+.crown-o__crack-core {
+  stroke: #ffd28a;
+  stroke-width: 1.2;
+}

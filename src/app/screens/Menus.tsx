@@ -10,6 +10,7 @@ import { latestAutoSave, saveDbBlocked } from '../state/session';
 import { loadSlot } from '../state/flow';
 import { screen, type Screen } from '../state/screen';
 import { settings, updateSettings, type Settings } from '../state/settings';
+import { Logo } from '../../ui/Logo';
 import '../../ui/title.css';
 import '../../ui/options.css';
 
@@ -24,8 +25,9 @@ export function Title() {
   const Campaigns = auto ? SecondaryButton : PrimaryButton;
   return (
     <div class="screen title-screen">
-      <div class="screen-bg" style={{ backgroundImage: `url(${asset('locations/lager_unterwegs.webp')})` }} />
-      <TitleLogo />
+      <div class="screen-bg title-bg" />
+      <Logo />
+      <div class="title-art" style={`--title-img:url(${asset('title/title_act1.webp')})`} aria-hidden="true" />
       <div class="title-menu">
         {auto && (
           <PrimaryButton sub={resumeText(auto)} onClick={() => void loadSlot('auto', auto.campaignId)}>
@@ -47,29 +49,6 @@ export function Title() {
         </div>
       </div>
     </div>
-  );
-}
-
-/** The game's name from the locale, over two lines, with a crown in place of the first "o" of the first word. */
-function TitleLogo() {
-  const name = t('ui.title.logo');
-  const [first = '', ...rest] = name.split(' ');
-  const o = first.indexOf('o');
-  return (
-    <h1 class="title-logo" aria-label={name}>
-      {o < 0 ? (
-        first
-      ) : (
-        <>
-          {first.slice(0, o)}
-          <span class="crown">♛</span>
-          {first.slice(o + 1)}
-        </>
-      )}
-      <br />
-      {rest.join(' ')}
-      <small>{t('ui.title.season')}</small>
-    </h1>
   );
 }
 

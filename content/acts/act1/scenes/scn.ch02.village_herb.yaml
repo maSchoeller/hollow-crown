@@ -1,5 +1,5 @@
 id: scn.ch02.village_herb
-background: bg_silverbrook_shrine
+background: varnhold
 lines:
   - id: l01
     mood: neutral

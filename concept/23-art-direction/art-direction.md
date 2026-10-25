@@ -257,7 +257,7 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 
 ### 5.5 Key Art, Logo, App-Icon
 
-- **Logo:** „HOLLOW CROWN“ in einer freundlichen, weicheren Serifenschrift (Kandidaten SIL OFL: Fraunces, Alegreya SC); das O von HOLLOW ist die gesprungene hohle Goldkrone mit Glut aus dem App-Icon (U22). [A]
+- **Logo:** „HOLLOW CROWN“ in einer freundlichen, weicheren Serifenschrift (Schrift: **Fraunces**, SIL OFL, gewählt am 2026-10-25 nach Vergleich mit Alegreya SC); das O von HOLLOW ist die gesprungene hohle Goldkrone mit Glut aus dem App-Icon (U22). [A]
 - **Titelbild:** Kael und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
 - **Akt-Karten:** je Akt ein Vollbild zum Aktbeginn im Stil der Illustrationstafeln.
 
@@ -390,7 +390,7 @@ Startschätzung zur Planung der Epics. [C]
 
 - **Lizenzen (GA26/O5):** kommerzielle Nutzungsrechte von ChatGPT-Bildern und ElevenLabs bleiben offen; nichts kommerziell veröffentlichen.
 - **Kamerawinkel (D2):** 35° vs. 40–50° weiter im Playtest.
-- **Logo-Schrift:** Auswahl zwischen den Kandidaten bei der Umsetzung.
+- **Logo-Schrift:** entschieden am 2026-10-25: Fraunces (Entscheidungslog).
 - **Casting** der neuen Figuren in `17-audio.md` (Stimmbilder für 20 Gefährten und 12 Leutnants).
 - **Figuren:** Rig, Animationen und Teamtuch-Maske für Tripo-Figuren (§4.6); Feinabgleich von Licht, Toon-Look und Outline mit der Karte.
 - **Datenschutz:** Kaels erstes HD-Modell liegt öffentlich in der Tripo-Galerie (kostenloser Tarif); ggf. dort auf privat stellen oder löschen.

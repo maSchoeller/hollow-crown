@@ -114,12 +114,11 @@ describe('numbers', () => {
 });
 
 describe('placePath', () => {
-  it('a location lives in locations, a background keeps its folder', () => {
+  it('a place image lives in locations', () => {
     expect(placePath('varnhold')).toBe('locations/varnhold.webp');
-    expect(placePath('backgrounds/bg_caravan_road')).toBe('backgrounds/bg_caravan_road.webp');
   });
-  it('the mission list names the background image', () => {
-    expect(missionAssets({ units: [], ...base, place: 'backgrounds/bg_varnhold_burning' })).toEqual(['backgrounds/bg_varnhold_burning.webp']);
+  it('the mission list names the place image', () => {
+    expect(missionAssets({ units: [], ...base, place: 'erlbach' })).toEqual(['locations/erlbach.webp']);
   });
 });
 

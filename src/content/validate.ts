@@ -17,10 +17,8 @@ export function validateContent(
   spriteIds?: Set<string>,
   /** ids of the painted images in art/items (content:check passes them); every item needs one */
   itemImages?: Set<string>,
-  /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` must have one */
+  /** ids of the place images (art/mockups/locations-s1, source files; content:check passes them): every `place` and scene `background` must have one */
   placeImages?: Set<string>,
-  /** ids of the background images (art/backgrounds, source files): a `place` may name one as `backgrounds/<id>` */
-  backgroundImages?: Set<string>,
   /** prop models `<prop>_<state>` in art/models/props (content:check passes them): miniatures of the world map use them */
   propModels?: Set<string>,
 ): ContentIssue[] {
@@ -223,10 +221,7 @@ export function validateContent(
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {
-      if (id.startsWith('backgrounds/')) {
-        const bg = id.slice('backgrounds/'.length);
-        if (backgroundImages && !backgroundImages.has(bg)) err('campaign.yaml', `${ctx}: no background image art/backgrounds/${bg}.png`);
-      } else if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
+      if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
     };
     place(camp.defaultPlace, 'defaultPlace');
     for (const n of camp.nodes) {
@@ -306,6 +301,8 @@ export function validateContent(
   };
   for (const sc of Object.values(data.scenes)) {
     const f = `scenes/${sc.id}`;
+    // the dialogue backdrop is a place image (story 8.7)
+    if (sc.background && placeImages && !placeImages.has(sc.background)) err(f, `background: no place image art/mockups/locations-s1/${sc.background}.png`);
     const seen = new Set<string>();
     // barks (story 9.13): only the six moments, one bubble page each in both languages
     const bark = sc.id.startsWith('scn.bark.');

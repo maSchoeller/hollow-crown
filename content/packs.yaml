@@ -42,6 +42,8 @@ packs:
     # Figuren des Prologs (Story 8.2): tools/art/model_packs.py legt jedes Einheitenmodell unter <Paket>/models/units/ ab
     assets:
       - locations/lager_unterwegs.webp
+      # Titelbild (art/title/title_act1.png, Story 8.7): der Titel wird beim Start gebraucht
+      - title/title_act1.webp
       - core/**
 
   - id: act1
