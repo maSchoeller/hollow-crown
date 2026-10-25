@@ -1,6 +1,6 @@
 # Story 3.3: Groll und Groll-Ziel
 
-Status: review
+Status: done
 
 ## Story
 
@@ -130,7 +130,7 @@ Querschnitt: Migration nicht nötig (`normalizeCampaign`, Felder additiv, kein R
 | R9 | S3 | `GRUDGE_MAX = 3` im Code (core + render) statt in balance.yaml. | lieutenants.ts:19, render/board/lieutenant.ts:17 | behoben in PR #55 |
 | R33 | S2 | (QA) Folgen-Karte bei `grudge`-Wirkung: fester Text „kommt schwächer zurück“ unabhängig vom Vorzeichen, Leutnant nicht genannt, delta ohne „+“. | ConsequenceCard.tsx:39, de/en.yaml:596 | behoben in PR #55 |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

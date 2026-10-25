@@ -1,6 +1,6 @@
 # Story 3.5: Kopfgeld und Signatur-Item
 
-Status: review
+Status: done
 
 ## Story
 
@@ -107,7 +107,7 @@ Querschnitt: Replays ok (Zufall nur aus Seed-RNG, Kopfgeld/Signatur-Reihenfolge 
 | R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
 | R32 | S3 | Sim-Zahlen nicht in der Story-Datei. | Story-Dateien | vermerkt, kein Handlungsbedarf |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

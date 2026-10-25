@@ -1,6 +1,6 @@
 # Story 3.1: Leutnants als Content und auf dem Brett
 
-Status: review
+Status: done
 
 ## Story
 
@@ -140,7 +140,7 @@ Kurzergebnis: Übrige ACs ohne Befund.
 | R31 | S3 | Story-Texte veraltet (3.1 Ulvric vanguard, 3.2 `kills`, 3.5 Sim-Zeile „kein Leutnant auf den Karten“). | Story-Dateien | vermerkt, kein Handlungsbedarf |
 | R34 | S3 | (QA) `brute_blow` heißt DE „Wucht“ wie `momentum` (Stahlaxt), gleiche Wirkung. Entscheidung: DE „Brecher“, Wirkung/Stapeln bleiben. | de.names.yaml:171 | behoben in PR #55 |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

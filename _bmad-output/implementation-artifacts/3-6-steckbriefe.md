@@ -1,6 +1,6 @@
 # Story 3.6: Steckbriefe
 
-Status: review
+Status: done
 
 ## Story
 
@@ -110,7 +110,7 @@ Kurzergebnis: Übrige ACs ohne Befund.
 | R13 | S3 | Decision-Log-Einträge zu 3.5 und 3.6 fehlen. | concept/*/decision-log | behoben in PR #55 |
 | R30 | S3 | Text `ui.wanted.target.alive` „wird bevorzugt angegriffen“ kippt das Subjekt (Mockup: „greift ihn bevorzugt an“). | de.yaml:640 | vermerkt, kein Handlungsbedarf |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

@@ -1,6 +1,6 @@
 # Story 3.7: Seitenwechsel
 
-Status: review
+Status: done
 
 ## Story
 
@@ -112,7 +112,7 @@ Kurzergebnis: Übrige ACs ohne Befund.
 | R24 | S3 | Signatur-Item wird einer anderen Einheit beim Beitritt still aus der Hand genommen (laut Decision-Log gewollt). | lieutenants.ts:123 | vermerkt, kein Handlungsbedarf |
 | R29 | E | Umbenennen einer Leutnant-ID braucht ab Release Migration an 4 Stellen (`c.lieutenants`, `joined_<id>`, Roster-ID, `target`) → Story 7.4. | – | offen für spätere Story |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

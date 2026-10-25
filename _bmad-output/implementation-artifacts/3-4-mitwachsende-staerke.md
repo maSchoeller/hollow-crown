@@ -1,6 +1,6 @@
 # Story 3.4: Mitwachsende Stärke
 
-Status: review
+Status: done
 
 ## Story
 
@@ -107,7 +107,7 @@ Sim (50 Läufe, normal): ch01 (Hask) 93 %, ch02 (Morra) 85 %.
 | R32 | S3 | Sim-Zahlen nicht in der Story-Datei. | Story-Dateien | vermerkt, kein Handlungsbedarf |
 | R35 | S3 | (QA) Hask skaliert auf St. 5 trägt die Kartenwaffe Stahlaxt (Gew 14) bei Tragkraft 11 → Überlast; kommt aus der Kartenwaffe, löst sich mit R15. | ch01_varnhold.yaml:70 | an Level-Design (Epic 9) übergeben |
 
-Empfehlung und Entscheidung über `done`: siehe unten (folgt nach dem Fix-PR).
+Empfehlung: `done` nach Merge von PR #55. Entscheidung Produktinhaber 2026-10-25: `done`.
 
 ## Dev Agent Record
 

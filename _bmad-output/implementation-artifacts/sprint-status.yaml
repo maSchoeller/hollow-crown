@@ -1,5 +1,5 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-24
+# last_updated: 2026-10-25
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-24
+last_updated: 2026-10-25
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -72,14 +72,14 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Leutnants
-  epic-3: in-progress
-  3-1-leutnants-als-content-und-auf-dem-brett: review  # Leutnants als Content und auf dem Brett
-  3-2-flucht-bei-0-tp: review  # Flucht bei 0 TP
-  3-3-groll-und-groll-ziel: review  # Groll und Groll-Ziel
-  3-4-mitwachsende-staerke: review  # Mitwachsende Stärke
-  3-5-kopfgeld-und-signatur-item: review  # Kopfgeld und Signatur-Item
-  3-6-steckbriefe: review  # Steckbriefe
-  3-7-seitenwechsel: review  # Seitenwechsel
+  epic-3: done
+  3-1-leutnants-als-content-und-auf-dem-brett: done  # Leutnants als Content und auf dem Brett
+  3-2-flucht-bei-0-tp: done  # Flucht bei 0 TP
+  3-3-groll-und-groll-ziel: done  # Groll und Groll-Ziel
+  3-4-mitwachsende-staerke: done  # Mitwachsende Stärke
+  3-5-kopfgeld-und-signatur-item: done  # Kopfgeld und Signatur-Item
+  3-6-steckbriefe: done  # Steckbriefe
+  3-7-seitenwechsel: done  # Seitenwechsel
   epic-3-retrospective: optional
 
   # Epic 4: Akt-Struktur, Szenen und Entscheidungen
