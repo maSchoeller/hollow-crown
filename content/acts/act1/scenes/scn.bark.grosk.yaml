@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.grosk
+lines:
+  - id: battle_start
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Ich steh vorn."
+  - id: crit
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hm. Gut."
+  - id: downed
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Nicht … jetzt."
+  - id: rescued
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Danke."
+  - id: level_up
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Stärker."
+  - id: ember
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Heiß."

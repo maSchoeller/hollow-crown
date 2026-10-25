@@ -1,0 +1,69 @@
+id: scn.support.fenn_mira.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Siehst du den Beutel an meinem Gürtel, Mira? Gehörte vorhin noch Brenna. Sie hat nichts gemerkt!"
+  - id: l02
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Brenna hat dir den Beutel eben zurückgereicht. Mit einem Griff am Ohr. Das habe ich gesehen."
+  - id: l03
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Das war ein Missverständnis! Ich hab ihn mir bloß geliehen, so von Hand zu Hand, ganz fein."
+  - id: l04
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Wie viele Dietriche hast du eigentlich da drin? Oder zählt man bei euch nicht?"
+  - id: l05
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Elf. Und die schönste Sorte, die kriegt jedes Schloss in Varnhold auf. Jedes! Selbst das vom Zöllner!"
+  - id: l06
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und warum sitzt du dann hier am Feuer und nicht in einem fremden Kornspeicher?"
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Das ist eine lange Geschichte. Mit viel Ruhm. Vielleicht erzähl ich sie mal."
+  - id: l08
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ich frag ja nur. Wer so gut ist, den wirft man nicht einfach raus. Oder bist du nur gut im Erzählen?"
+  - id: l09
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Du hast gut reden, Bogenfrau! Du schießt dem Grafen sein Wild und nennst das Handwerk."
+  - id: l10
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Der Hirsch gehörte keinem Besseren als mir, sobald er vor meinem Pfeil stand."
+  - id: l11
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Ha! Das sagt ein Dieb auch. Dann sind wir wohl vom gleichen Schlag, wir Gesetzlosen."
+  - id: l12
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Vom gleichen Schlag. Gib mir den Beutel zurück, den du Brenna eben wieder geklaut hast."
+  - id: l13
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Woher … na gut. Hier. Aber nur, weil du es bist."

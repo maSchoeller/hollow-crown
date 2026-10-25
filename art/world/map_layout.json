@@ -1,0 +1,507 @@
+{
+  "_": "Layout der flachen Weltkarte von Valmora (Hochformat 2:3). Koordinaten in Einheiten 0-100 (x) und 0-150 (y), (0,0) oben links; eine Einheit = 10,24 px im 1024 x 1536 Bild. Quelle fuer art/prompts/world_map.md und tools/art/world_guide.py; die Positionen auf dem abgenommenen Bild stehen in map_placed_v1.json und in content/world/valmora.yaml.",
+  "size": [
+    100,
+    150
+  ],
+  "minSpacing": 10,
+  "coast": [
+    [
+      13,
+      0
+    ],
+    [
+      12,
+      15
+    ],
+    [
+      10,
+      30
+    ],
+    [
+      14,
+      42
+    ],
+    [
+      9,
+      55
+    ],
+    [
+      13,
+      66
+    ],
+    [
+      8,
+      78
+    ],
+    [
+      15,
+      90
+    ],
+    [
+      16,
+      100
+    ],
+    [
+      18,
+      110
+    ],
+    [
+      20,
+      120
+    ],
+    [
+      24,
+      130
+    ],
+    [
+      28,
+      140
+    ],
+    [
+      32,
+      150
+    ]
+  ],
+  "river": [
+    [
+      66,
+      12
+    ],
+    [
+      60,
+      26
+    ],
+    [
+      54,
+      40
+    ],
+    [
+      46,
+      54
+    ],
+    [
+      42,
+      66
+    ],
+    [
+      34,
+      76
+    ],
+    [
+      26,
+      84
+    ],
+    [
+      20,
+      92
+    ],
+    [
+      16,
+      100
+    ]
+  ],
+  "bands": {
+    "winterToAutumn": 48,
+    "autumnToSummer": 98,
+    "wave": 4
+  },
+  "places": [
+    {
+      "id": "prologue",
+      "label": "P",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        78,
+        141
+      ],
+      "note": "Karawanenstrasse im Grenzland, Startpunkt"
+    },
+    {
+      "id": "m1_1",
+      "label": "1-1",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        60,
+        134
+      ],
+      "note": "Varnhold, Grenzstaedtchen"
+    },
+    {
+      "id": "n1",
+      "label": "N1",
+      "act": 1,
+      "kind": "side",
+      "at": [
+        74,
+        126
+      ],
+      "note": "Der Ring von Varnhold"
+    },
+    {
+      "id": "m1_2",
+      "label": "1-2",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        40,
+        138
+      ],
+      "note": "Erlbach, Dorf in Feldern und Wald"
+    },
+    {
+      "id": "n3",
+      "label": "N3",
+      "act": 1,
+      "kind": "side",
+      "at": [
+        38,
+        124
+      ],
+      "note": "Das Erbe, Tobins Pachthof bei Erlbach"
+    },
+    {
+      "id": "m1_3",
+      "label": "1-3",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        60,
+        122
+      ],
+      "note": "Der Fremde mit dem Siegel, Strassenkreuzung"
+    },
+    {
+      "id": "m1_4",
+      "label": "1-4",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        76,
+        110
+      ],
+      "note": "Die Spur des Maklers, Waldlager der Wolfsreiter"
+    },
+    {
+      "id": "m1_5",
+      "label": "1-5",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        30,
+        114
+      ],
+      "note": "Das Hungerlager am Fluss"
+    },
+    {
+      "id": "n2",
+      "label": "N2",
+      "act": 1,
+      "kind": "side",
+      "at": [
+        92,
+        106
+      ],
+      "note": "Der letzte Wachturm der Paktwaechter, Huegel im Osten"
+    },
+    {
+      "id": "m1_6",
+      "label": "1-6",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        38,
+        106
+      ],
+      "note": "Die Paktwacht (Burgruine), Eroberung"
+    },
+    {
+      "id": "m1_7",
+      "label": "1-7",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        50,
+        114
+      ],
+      "note": "Unter der Paktwacht, Gewoelbe"
+    },
+    {
+      "id": "m1_8",
+      "label": "1-8",
+      "act": 1,
+      "kind": "story",
+      "at": [
+        62,
+        104
+      ],
+      "note": "Die Heimat halten, Paktwacht (Finale Akt 1)"
+    },
+    {
+      "id": "home",
+      "label": "H",
+      "act": 1,
+      "kind": "home",
+      "at": [
+        50,
+        104
+      ],
+      "note": "Heimat: Lager, ab 1-6 die Paktwacht"
+    },
+    {
+      "id": "m2_1",
+      "label": "2-1",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        52,
+        90
+      ],
+      "note": "Wind ueber der Eisenmark"
+    },
+    {
+      "id": "m2_2",
+      "label": "2-2",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        44,
+        76
+      ],
+      "note": "Das Siegel im Salzpass (Passweg)"
+    },
+    {
+      "id": "m2_3",
+      "label": "2-3",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        36,
+        64
+      ],
+      "note": "Die verstossene Leibwache"
+    },
+    {
+      "id": "m2_4",
+      "label": "2-4",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        84,
+        74
+      ],
+      "note": "Der Wyvernhorst (Felsnadeln)"
+    },
+    {
+      "id": "m2_5",
+      "label": "2-5",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        68,
+        88
+      ],
+      "note": "Die Brandschneise, Dorf am Brandhang"
+    },
+    {
+      "id": "m2_6",
+      "label": "2-6",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        32,
+        90
+      ],
+      "note": "Gold fuer Banditen"
+    },
+    {
+      "id": "m2_7",
+      "label": "2-7",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        18,
+        72
+      ],
+      "note": "Das Kontor am Silbermeer (Kueste)"
+    },
+    {
+      "id": "m2_8",
+      "label": "2-8",
+      "act": 2,
+      "kind": "story",
+      "at": [
+        58,
+        62
+      ],
+      "note": "Kronfeld, weite Ebene (grosse Schlacht)"
+    },
+    {
+      "id": "n4",
+      "label": "N4",
+      "act": 2,
+      "kind": "side",
+      "at": [
+        88,
+        56
+      ],
+      "note": "Der Clan im Schnee, Hochtal"
+    },
+    {
+      "id": "n5",
+      "label": "N5",
+      "act": 2,
+      "kind": "side",
+      "at": [
+        86,
+        92
+      ],
+      "note": "Glut unter dem Berg, Branns Mine"
+    },
+    {
+      "id": "n6",
+      "label": "N6",
+      "act": 2,
+      "kind": "side",
+      "at": [
+        24,
+        100
+      ],
+      "note": "Die Gauklertruppe, Wagen an der Strasse"
+    },
+    {
+      "id": "m3_1",
+      "label": "3-1",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        20,
+        40
+      ],
+      "note": "Winter ueber Aurenhall (Palast)"
+    },
+    {
+      "id": "m3_2",
+      "label": "3-2",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        70,
+        44
+      ],
+      "note": "Das verbotene Lied"
+    },
+    {
+      "id": "m3_3",
+      "label": "3-3",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        84,
+        32
+      ],
+      "note": "Die Einsiedlerin, Huette im Wald"
+    },
+    {
+      "id": "m3_4",
+      "label": "3-4",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        66,
+        32
+      ],
+      "note": "Der Zweifler"
+    },
+    {
+      "id": "m3_5",
+      "label": "3-5",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        32,
+        30
+      ],
+      "note": "Die Kroenung, Glutdom in Aurenhall"
+    },
+    {
+      "id": "m3_6",
+      "label": "3-6",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        44,
+        40
+      ],
+      "note": "Drachen ueber der Stadt (grosse Schlacht)"
+    },
+    {
+      "id": "m3_7",
+      "label": "3-7",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        52,
+        18
+      ],
+      "note": "Der Weg ins Gebirge, Pass"
+    },
+    {
+      "id": "m3_8",
+      "label": "3-8",
+      "act": 3,
+      "kind": "story",
+      "at": [
+        58,
+        8
+      ],
+      "note": "Urtempel und Vhaelyras Hort (Finale)"
+    },
+    {
+      "id": "n7",
+      "label": "N7",
+      "act": 3,
+      "kind": "side",
+      "at": [
+        22,
+        24
+      ],
+      "note": "Verwiesen, Akademie in Aurenhall"
+    },
+    {
+      "id": "n8",
+      "label": "N8",
+      "act": 3,
+      "kind": "side",
+      "at": [
+        90,
+        44
+      ],
+      "note": "Brennas Bruder"
+    },
+    {
+      "id": "n9",
+      "label": "N9",
+      "act": 3,
+      "kind": "side",
+      "at": [
+        80,
+        14
+      ],
+      "note": "Das Grab Aldrics I."
+    },
+    {
+      "id": "n10",
+      "label": "N10",
+      "act": 3,
+      "kind": "side",
+      "at": [
+        30,
+        46
+      ],
+      "note": "Die Unterstadt von Aurenhall"
+    }
+  ]
+}

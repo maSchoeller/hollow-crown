@@ -1,5 +1,5 @@
 /**
- * Landscape choices shared by the world map and the battle board: the tree set of a season and the weighted pick from it.
+ * Landscape choices of the battle board: the tree set of a season, the weighted pick from it and the fences around fields.
  * Pure (no Babylon), so it is unit tested.
  */
 import type { GameData } from '../../core/defs';
@@ -10,12 +10,11 @@ export interface TreeChoice {
 }
 
 /**
- * Tree set of an act: the `render.world.scenery.trees` entry of the act's region (autumn in Eisenmark, snow firs in
- * Aurenhall). Acts whose region has no entry (the summer borderland) get null: they use the manifest's plain trees.
+ * Tree set of an act: the `render.board.trees` entry of the act (autumn in act 2, snow firs in act 3). Acts without an
+ * entry (the summer borderland) get null: they use the manifest's plain trees.
  */
-export function treeSetOfAct(data: Pick<GameData, 'world' | 'render'>, act: number | undefined): TreeChoice[] | null {
-  const region = data.world.regions.find((r) => r.act === act);
-  return (region && data.render.world.scenery.trees[region.id]) || null;
+export function treeSetOfAct(data: Pick<GameData, 'render'>, act: number | undefined): TreeChoice[] | null {
+  return (act !== undefined && data.render.board.trees[act]) || null;
 }
 
 /** Weighted pick from a tree set; roll in [0, 1). */

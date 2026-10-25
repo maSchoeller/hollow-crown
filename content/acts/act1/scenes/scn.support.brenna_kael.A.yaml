@@ -1,0 +1,74 @@
+id: scn.support.brenna_kael.A
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Der Steckbrief ist inzwischen mürbe, Hauptmann. Du liest ihn, als stünde was Neues drauf."
+  - id: l02
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Es steht dasselbe drauf. Eine Zahl. Sie wäre für jeden von euch ein neues Leben."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Für jeden von uns. Und wer liefert den Hauptmann ab?"
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe nichts gesagt."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Eben. Das ist es. Seit Tagen sagst du nichts, und es riecht nach Abschied."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ohne die Truppe jagt sie keiner mehr. Das Banner kostet euch mehr, als es einbringt."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ah. Du zählst. Ich dachte, das tue ich in dieser Truppe."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Brenna."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß, wie es ist, Schuld für andere zu tragen. Gerettet hat es nie jemanden."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Ihr habt eine Burg. Ich bitte dich nicht, mitzukommen."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Wenn du gehst, geh ich mit. Such dir aus, ob du's mir vorher sagst."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "…"
+  - id: l13
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich bleibe. Heute."
+  - id: l14
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Heute reicht mir. Morgen frag ich noch mal."

@@ -790,6 +790,8 @@ export interface RenderDef {
     sceneryPropsLow: number;
     /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
     decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
+    /** trees per act (weighted `<prop>_<state>`); an act without an entry uses the manifest's plain trees */
+    trees: Record<string, Array<{ model: string; weight: number }>>;
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
@@ -803,67 +805,42 @@ export interface RenderDef {
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
   /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
   assets: { keepUnused: number };
-  /** the world map scene (story 5.2) */
-  world: {
-    tiltDeg: number;
-    /** visible columns on the shorter screen side: near, overview */
+  /** the flat world map (story 5.2): zoom of the picture and the camera glide */
+  worldMap: {
+    /** width of the picture as a multiple of the screen width: overview, near */
     zoomSteps: number[];
     zoomMs: number;
-    /** how much closer the camera goes on a chosen place */
+    /** how much closer the map goes on a chosen place */
     focusZoom: number;
-    /** sea around the map */
-    skirt: { width: number; terrain: string };
-    miniatureScale: number;
-    /** height of a node's tip above the ground of its place, tiles */
-    pinHeight: number;
-    /**
-     * the calm water sheet over the painted sea floor: opacity, tint, tiles per repeat of the normal map, wave strength,
-     * drift in tiles per second (east, south)
-     */
-    water: { alpha: number; tint: string; normalScale: number; bump: number; drift: [number, number]; glow: number; reach: number; deep: string };
-    fog: { color: string; alpha: number; height: number };
-    /** falling ash flakes (act 1 dragon sign) per quality level */
-    ash: Record<'high' | 'mid' | 'low', number>;
-    /** landscape props: trees per region (weighted `<prop>_<state>`), dead trees around ash, rural life, bridge size */
-    scenery: {
-      trees: Record<string, Array<{ model: string; weight: number }>>;
-      deadTrees: { onAsh: number; nearAsh: number; model: string };
-      rural: { region: string; fieldModel: string; fenceModel: string; cornerModel: string; brokenModel: string; rocksModel: string; fields: [number, number]; radius: number; fenceChance: number; brokenChance: number; rocks: number; clearance: number };
-      bridgeScale: number;
-    };
-    /** light per season of a region */
-    seasons: Record<string, { ambient: { color: string; intensity: number }; sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number } }>;
   };
 }
 
-/** One prop of a place's miniature, in tiles from the place's centre (x east, y south). */
-export interface MiniaturePart {
-  prop: string;
+/** A place on the flat world map: a stone for a campaign node (or the home) on the painted picture. */
+export interface WorldPlace {
+  /** slot of the plan: `prologue`, `m1_1` … `m3_8`, `n1` … `n10`, `home` */
+  id: string;
+  /** short text on the stone: P, 1-1, N1 */
+  label: string;
+  act: number;
+  kind: 'story' | 'side' | 'home';
+  /** position in percent of the picture's width and height */
   at: [number, number];
-  rot: number;
-  scale: number;
-}
-
-/** A place on the world map: a campaign node or the home, its miniature and variants (first whose conditions hold). */
-export interface WorldLocation {
+  /** campaign node placed here; a slot without a node is planned for a later act */
   node?: string;
-  home?: 'camp' | 'castle';
-  at: Pos;
-  model: string;
-  variants: Array<{ model: string; requires: Condition[] }>;
 }
 
-/** The world map of Valmora (content/world/valmora.yaml, story 5.2). */
+/** The flat world map of Valmora (content/world/valmora.yaml, story 5.2). */
 export interface WorldDef {
   id: string;
-  legend: Record<string, string>;
-  /** rows of one character per tile */
-  tiles: string;
-  regions: Array<{ id: string; char: string; act: number; season: string }>;
-  regionGrid: string;
-  miniatures: Record<string, MiniaturePart[]>;
-  locations: WorldLocation[];
-  signs: Array<{ act: number; kind: 'ash'; areas: Array<[number, number, number, number]> }>;
+  /** painted picture, `public/assets/world/<image>.webp` */
+  image: string;
+  /** pixel size of the picture (its aspect ratio) */
+  size: [number, number];
+  /** regions with the place of their name; the region of a later act than the current one lies under fog */
+  regions: Array<{ id: string; act: number; at: [number, number] }>;
+  /** the region of `act` ends at `y` percent of the height: the fog of an earlier act reaches down to there */
+  fog: Array<{ act: number; y: number }>;
+  places: WorldPlace[];
 }
 
 /** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */

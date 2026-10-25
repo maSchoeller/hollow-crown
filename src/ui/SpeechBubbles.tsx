@@ -11,6 +11,10 @@ export interface SpeechBubblesProps {
   /** screen point (px, relative to this layer) above the head of `speaker`'s figure; `null` when it is not on the board */
   anchorOf: (speaker: string) => Promise<{ x: number; y: number } | null>;
   seen?: boolean;
+  /** play only these lines of the scene (a bark); the scene is not marked seen, has no skip/auto pills and advances on its own */
+  only?: string[];
+  /** board speed (barks only): the auto-advance time is divided by it */
+  speed?: number;
   onSeen?: (id: string) => void;
   auto: boolean;
   onAuto: () => void;
@@ -28,14 +32,14 @@ interface Page {
  * Battle scene as speech bubbles at the speakers' heads (trigger, lieutenant quote). Blocks the board until a tap, or
  * `balance.scene.bubbleAutoMs` in auto mode. Only for scenes without choices where every speaker stands on the board.
  */
-export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, auto, onAuto, onSeen, onDone }: SpeechBubblesProps) {
+export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, only, speed = 1, auto, onAuto, onSeen, onDone }: SpeechBubblesProps) {
   const cfg = data.balance.scene;
   const pages = useMemo<Page[]>(
     () =>
       resolveScene(data, ctx, id).flatMap((l) =>
-        l.kind === 'line' && l.speaker ? bubblePages(t(l.key), cfg.bubbleMaxChars).map((text, i) => ({ uid: `${l.uid}.${i}`, speaker: l.speaker!, text })) : [],
+        l.kind === 'line' && l.speaker && (!only || only.includes(l.line)) ? bubblePages(t(l.key), cfg.bubbleMaxChars).map((text, i) => ({ uid: `${l.uid}.${i}`, speaker: l.speaker!, text })) : [],
       ),
-    [data, id],
+    [data, id, only?.join()],
   );
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
@@ -46,7 +50,7 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, auto, onA
   const page = pages[idx];
 
   const finish = () => {
-    onSeen?.(id);
+    if (!only) onSeen?.(id);
     onDone();
   };
   useEffect(() => {
@@ -68,9 +72,10 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, auto, onA
     };
   }, [idx]);
 
+  // a bark never waits for a tap: it blocks only briefly, also outside auto mode (story 9.13, UX "Sprechblase blockiert kurz")
   useEffect(() => {
-    if (!auto || !pos) return;
-    const timer = setTimeout(() => setIdx((i) => i + 1), cfg.bubbleAutoMs);
+    if ((!auto && !only) || !pos) return;
+    const timer = setTimeout(() => setIdx((i) => i + 1), only ? cfg.bubbleAutoMs / speed : cfg.bubbleAutoMs);
     return () => clearTimeout(timer);
   }, [auto, pos, idx]);
 
@@ -87,7 +92,7 @@ export function SpeechBubbles({ data, id, ctx, anchorOf, seen = false, auto, onA
   const next = () => setIdx(idx + 1);
   return (
     <div class="bubble-layer" ref={layer} onClick={next}>
-      <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onSkip={finish} />
+      {!only && <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onSkip={finish} />}
       {pos && (
         <div
           key={page.uid}

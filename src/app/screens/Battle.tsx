@@ -1,3 +1,4 @@
+import { barkFor, type Bark } from '../battle/barks';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import {
   active,
@@ -133,6 +134,7 @@ export function Battle() {
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
+  const [bark, setBark] = useState<{ b: Bark; seq: number; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
   const setToast = (text: string, item?: ItemInstance) => setToastState({ text, item });
@@ -198,6 +200,9 @@ export function Battle() {
       if (ev.length && alive) {
         await board.play(filterEvents(data, st0, ev, 'player'), visibleState(data, st0, 'player'), st0.units);
       }
+      const opening = openingBark.current;
+      openingBark.current = null;
+      if (opening && alive && settings.value.speed !== 3) await playBark(opening);
       if (alive) {
         setPhaseView(null);
         setBusy(false);
@@ -442,6 +447,17 @@ export function Battle() {
       default:
         break;
     }
+    // combat bark (story 9.13): presentation only, skipped in skip mode; the opening bark waits until the start events
+    // (intro and tutorial dialogues) have played
+    const b = boardRef.current?.skip ? null : barkFor(data, s, e);
+    if (b?.line === 'battle_start') openingBark.current = b;
+    else if (b) await playBark(b);
+  };
+  const openingBark = useRef<Bark | null>(null);
+  const barkSeq = useRef(0);
+  const playBark = async (b: Bark) => {
+    await new Promise<void>((resolve) => setBark({ b, seq: ++barkSeq.current, done: resolve }));
+    setBark(null);
   };
 
   // --------------------------------------------------------------- input handling
@@ -675,7 +691,7 @@ export function Battle() {
   const ctxRef = useRef({ n: 0, go: () => undefined as void, step: (_d: number) => undefined as void });
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp || bark) return;
     const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info || mode.k === 'steal';
     if (e.key === 'Escape') escape();
     else if (modal) return;
@@ -1053,6 +1069,22 @@ export function Battle() {
               return board.headScreen(u.uid);
             }}
             onDone={dialogue.done}
+          />
+        )}
+        {bark && (
+          <SceneBubbles
+            id={bark.b.scene}
+            key={bark.seq}
+            only={[bark.b.line]}
+            speed={boardRef.current?.speed ?? 1}
+            anchorOf={async () => {
+              const u = s.units.find((x) => x.uid === bark.b.anchor);
+              const board = boardRef.current;
+              if (!u?.pos || !board) return null;
+              await board.centerOn(u.pos);
+              return board.headScreen(u.uid);
+            }}
+            onDone={bark.done}
           />
         )}
         <div class="hud-top" ref={topRef}>

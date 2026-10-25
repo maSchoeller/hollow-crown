@@ -1,0 +1,69 @@
+id: scn.support.brenna_varek.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Dein Hauptmann sitzt immer mit dem Rücken zur Wand. Hat er schon im Heer gemacht."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Im Heer. Du kennst Kael aus dem Heer."
+  - id: l03
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Kennen ist zu viel gesagt. Man hat sich gesehen. Man hat über ihn geredet."
+  - id: l04
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Das hast du bisher nicht erwähnt. Wann wolltest du es sagen, Würfelmann?"
+  - id: l05
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Wenn es etwas einbringt. Jetzt bringt es nur Ärger, also: spät."
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Dann bring noch mehr Ärger. Warum bist du gegangen?"
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Die Verpflegung. Das Lied der Feldwebel. Such dir was aus."
+  - id: l08
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ich frag nicht nach Ausreden. Ich frag nach dem Grund."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Brenna. Die Würfel liegen schlecht, wenn man sie nur nach einem Wurf …"
+  - id: l10
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Du weichst aus. Du kannst es, du bist gut darin. Aber deine Hand zittert."
+  - id: l11
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Ich hab zugesehen. Länger, als man sollte. Und dann … nein. Lass es."
+  - id: l12
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Ich lass es. Heute."
+  - id: l13
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Heute ist ein guter Tag, um nichts zu erzählen. Gibst du mir noch Suppe?"

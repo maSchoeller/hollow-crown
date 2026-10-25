@@ -3,14 +3,72 @@ background: bg_camp_night
 music: camp
 lines:
   - id: l01
-    speaker: [kael]
+    speaker: [avatar]
+    fallback: skip
     mood: neutral
-    text: "Deine Karte von Varnhold … du hast die Brandrichtung vorhergesagt. Auf drei Felder genau."
+    text: "Auf der Wachliste steht heute zweimal dein Name."
   - id: l02
     speaker: [kael]
-    mood: happy
-    text: "Die Akademie war dumm, dich gehen zu lassen. Oder sie hatte Angst vor dir."
-  - id: l03
-    speaker: [kael]
+    fallback: skip
     mood: neutral
-    text: "Was es auch ist – du gehörst jetzt zum Aschenbanner. Das bedeutet: Wir lassen niemanden zurück."
+    text: "Es fehlt einer. Irgendwer muss."
+  - id: l03
+    speaker: [avatar]
+    fallback: skip
+    mood: angry
+    text: "Ich weiß, wer fehlt."
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Sein Platz am Feuer. Keiner setzt sich dorthin. Ich auch nicht."
+  - id: l05
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Wir sitzen alle daneben und tun, als wäre da nichts."
+  - id: l06
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Mhm."
+  - id: l07
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Gib mir die zweite Wache. Heute und morgen."
+  - id: l08
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Du bist nicht eingeteilt."
+  - id: l09
+    speaker: [avatar]
+    fallback: skip
+    mood: happy
+    text: "Deshalb frage ich."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab das im Griff."
+  - id: l11
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Man sieht es dir an den Augen an."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Zweite Wache. Wenn sich was regt, weckst du Brenna."
+  - id: l13
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Und dich?"
+  - id: l14
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Mich auch. Ich bleibe noch sitzen. Neben dem Platz, nicht darauf."

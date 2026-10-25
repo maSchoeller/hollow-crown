@@ -3,27 +3,62 @@ background: bg_camp_night
 music: camp
 lines:
   - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Mira! Bring mir das Bogenschießen bei. Ein Held trifft aus tausend Schritt, und der Feind sinkt, ehe er …"
+  - id: l02
     speaker: [mira]
     fallback: skip
     mood: happy
-    text: "Dein Hut sitzt schief. Schon wieder."
-  - id: l02
+    text: "Ehe er was? Tausend Schritt. Du triffst ja nicht mal das Feuer."
+  - id: l03
     speaker: [tobin]
     fallback: skip
     mood: angry
-    text: "Der sitzt genau richtig! So schützt er das linke Ohr."
-  - id: l03
+    text: "Das Feuer ist riesig! Das ist ein unfairer Maßstab, wirklich, das ist … Ach, bring es mir einfach bei."
+  - id: l04
     speaker: [mira]
     fallback: skip
-    mood: happy
-    text: "Und das rechte? Egal. Willst du lernen, wie man mit einem Bogen trifft?"
-  - id: l04
+    mood: neutral
+    text: "Mit der Lanze reicht Mut. Der Bogen will Geduld. Hast du die?"
+  - id: l05
     speaker: [tobin]
     fallback: skip
     mood: neutral
-    text: "Du würdest mir das zeigen?"
-  - id: l05
+    text: "Ich habe Mut für zwei. Gleicht sich das nicht aus?"
+  - id: l06
     speaker: [mira]
     fallback: skip
     mood: neutral
-    text: "Morgen früh. Bevor die Vögel wach sind. Verschlaf, und ich nehme deinen Hut als Zielscheibe."
+    text: "Nein. Gib her. Nicht so, du hältst ihn wie einen Besen."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Der Arm zittert. In den Liedern zittert der Arm nie."
+  - id: l08
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "In den Liedern spannt auch keiner aus dem Handgelenk. Schulter. Ausatmen, dann loslassen."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Getroffen! Habe ich getroffen?"
+  - id: l10
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Einen Baum. Nur nicht den, den du wolltest. Das ist mehr als gestern."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Das kommt ins Lied! „Der Schütze, der den Wald …“ Was reimt sich auf Wald?"
+  - id: l12
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Kalt. Spann noch mal, bevor du dichtest."

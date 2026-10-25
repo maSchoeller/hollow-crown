@@ -1,0 +1,74 @@
+id: scn.support.liora_ysolde.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Du hast Wache, nicht ich. Ich habe dreimal nachgezählt."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich schlafe schlecht. Seit Tagen derselbe Traum, ein Raum ohne Tür."
+  - id: l03
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Bedeutet das etwas?"
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Bei mir meistens. Nur weiß ich selten, was."
+  - id: l05
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Man hat mir die Wahl gelassen: Widerruf oder Tor. Ein Wort hätte genügt."
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Welches?"
+  - id: l07
+    speaker: [ysolde]
+    fallback: skip
+    mood: angry
+    text: "„Irrtum“. Es war aber keiner. Ich hatte es gemessen, immer wieder."
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich habe nur gefragt, warum junge Könige so selten alt werden. Eine Frage, Ysolde."
+  - id: l09
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Meine war eine Messreihe. Beides haben sie als Angriff gelesen."
+  - id: l10
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich dachte, du wärst das Gegenteil von mir. Du glaubst nur, was du zählst."
+  - id: l11
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Und du nur, was man dir sagt. So dachte ich. Wir fragen beide, scheint es."
+  - id: l12
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Zwei Ketzerinnen am Feuer. Ich hatte mir mehr Gesellschaft gewünscht."
+  - id: l13
+    speaker: [ysolde]
+    fallback: skip
+    mood: happy
+    text: "Setz dich. Die zweite Hälfte der Wache übernehme ich. Rechne nicht nach."
+  - id: l14
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Ich habe schon gerechnet."

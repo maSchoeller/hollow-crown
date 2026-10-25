@@ -6,19 +6,64 @@ lines:
     speaker: [tobin]
     fallback: skip
     mood: happy
-    text: "Brenna! Bring mir den Trick bei, wo du die Axt wirfst und sie zurückkommt!"
+    text: "Brenna! Zeig mir den Trick, wo du die Axt wirfst und sie von allein zurückkommt!"
   - id: l02
     speaker: [brenna]
     fallback: skip
     mood: happy
-    text: "Sie kommt nicht zurück, Kleiner. Ich hole sie. Das ist der Trick."
+    text: "Sie kommt nicht zurück, Küken. Ich hole sie. Das ist der ganze Trick."
   - id: l03
     speaker: [tobin]
     fallback: skip
     mood: neutral
-    text: "Oh. Aber Helden in den Liedern …"
+    text: "Oh. Aber in den Liedern fliegt die Axt immer …"
   - id: l04
     speaker: [brenna]
     fallback: skip
+    mood: neutral
+    text: "In den Liedern wetzt auch keiner die Klinge am Abend. Gib mal den Stein her."
+  - id: l05
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ich kann es auch ohne Stein! Ich bin zum Helden bestimmt, das spüre ich im ganzen Arm!"
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Du spürst den Arm, weil du seit zwei Stunden die Lanze falsch hältst. Tiefer. Nein, tiefer."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "So? Hm. Sagen wir, Held ist ein Beruf wie, wie, Holzfäller. Mit besseren Liedern."
+  - id: l08
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Holzfäller leben länger. Aber der Wortwitz ist von mir, den klaust du nicht."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Die Helden in den Liedern, die kommen am Ende nie heim, oder? Mir fällt gerade keiner ein."
+  - id: l10
+    speaker: [brenna]
+    fallback: skip
     mood: sad
-    text: "Helden in den Liedern sterben jung, Tobin. Ich will, dass du alt wirst. Also: Schild hoch."
+    text: "Die sterben jung, Tobin. Alle. Deshalb haben sie so schöne Lieder."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Ich will, dass du alt wirst. Alt und langweilig und mit schlechtem Rücken."
+  - id: l12
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Das ist ein furchtbares Ziel."
+  - id: l13
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ist es. Schild hoch, Küken. Noch einmal von vorn."

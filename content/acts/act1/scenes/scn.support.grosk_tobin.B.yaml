@@ -1,0 +1,64 @@
+id: scn.support.grosk_tobin.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Grosk, war es schlimm in der Schlacht? Ich meine, wart Ihr mal in einer richtigen? Mit Bannern?"
+  - id: l02
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Im Heer. Viele Jahre."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Im Heer! Dann seid Ihr ein Held! Ein echter, mit Narben und, und Liedern!"
+  - id: l04
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Keine Lieder."
+  - id: l05
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Aber, aber warum wart Ihr dann, na ja. Im Grenzland. Bei den Banditen."
+  - id: l06
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Sie haben mich entlassen. Invalide. Mein Körper taugte nicht mehr. Das war alles."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Und davor? Wart Ihr da nicht wenigstens, also, ruhmreich?"
+  - id: l08
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Wir haben gemacht, was befohlen war. Und gehofft, dass die Suppe warm bleibt."
+  - id: l09
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Die Lieder lügen, Tobin. Die singen nur, wer nicht dabei war."
+  - id: l10
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Mein Vater sagt das auch. Er sagt es über alles, was nicht Weizen ist."
+  - id: l11
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Dein Vater hat nicht ganz unrecht."
+  - id: l12
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Das dürft Ihr ihm nie erzählen. Nie. Bitte reicht mir noch den Lappen für die Lanze."

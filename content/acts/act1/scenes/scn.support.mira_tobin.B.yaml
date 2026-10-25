@@ -1,0 +1,69 @@
+id: scn.support.mira_tobin.B
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Du stehst im Licht. Ich leime hier Federn, keine Heldenlieder."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ich schaue nur zu! Warum brauchst du so viele Pfeile?"
+  - id: l03
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Weil Pfeile im Wald bleiben. Weißt du, was ein Winter an Pfeilen frisst?"
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Du hast für das ganze Dorf gejagt, oder? Und dafür haben sie dich verbannt."
+  - id: l05
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Der Wald gehörte nicht uns. Satt geworden sind trotzdem alle. Wer fragt da nach dem Wald?"
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Aber Erlbach wollte dich zurück. Und du bist hier. Bei gesuchten Königsmördern!"
+  - id: l07
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Ja. Frag nicht, warum. Oder frag, aber ich frage zurück: Warum bist du hier?"
+  - id: l08
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Ich sollte den Pachthof übernehmen. Ich wollte nicht. Da hat mein Vater mich enterbt. Ganz förmlich."
+  - id: l09
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und was war so schlimm am Hof?"
+  - id: l10
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Nichts. Das ist es ja. Man pflügt, man zahlt die Pacht, und der Pachtherr kennt dich nur aus dem Zinsbuch."
+  - id: l11
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Dein Name steht jetzt auf mehr Steckbriefen als in jedem Zinsbuch."
+  - id: l12
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Stimmt! Das ist … Moment, das ist gar nicht schlecht."
+  - id: l13
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Hier. Die ist gerade geworden. Verlier sie nicht."

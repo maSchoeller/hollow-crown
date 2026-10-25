@@ -1,0 +1,64 @@
+id: scn.support.grosk_tobin.C
+background: bg_camp_night
+music: camp
+lines:
+  - id: l01
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Grosk! Darf ich, also, Ihr seid doch der Banditenführer, nicht wahr?"
+  - id: l02
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Gewesen."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Gewesen! Das klingt wie aus einem Lied! Der Schrecken des Grenzlands, der, der …"
+  - id: l04
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hunger. Das war der Schrecken. Iss was."
+  - id: l05
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Hab ich schon. Zweimal. Ich kann nicht essen, wenn ich Euch ansehe. Ihr seid so, so groß."
+  - id: l06
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Dann sieh woanders hin."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Wollte ich ja. Aber dann sehe ich das orange Stoffstück. Das tragt Ihr wie wir."
+  - id: l08
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hm."
+  - id: l09
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ich hab die Lanze gewählt, weil man damit Abstand hält. Von Riesen zum Beispiel."
+  - id: l10
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Schlau."
+  - id: l11
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Habt Ihr gerade gelächelt? Oder war das der Bart?"
+  - id: l12
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Bart. Setz dich. Du stehst im Rauch."

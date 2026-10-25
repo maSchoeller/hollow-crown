@@ -1,0 +1,33 @@
+# Barks (Story 9.13): kurze Kampfsprüche als Sprechblase
+id: scn.bark.liora
+lines:
+  - id: battle_start
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das Licht gehe uns voran."
+  - id: crit
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das Licht fand sein Ziel."
+  - id: downed
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Die Glut … sinkt …"
+  - id: rescued
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du hast mich aus dem Dunkel geholt."
+  - id: level_up
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Die Flamme wächst, still und stetig."
+  - id: ember
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Die Glut ruft. Ich antworte."
