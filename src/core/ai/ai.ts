@@ -1,7 +1,7 @@
 import type { GameData, Pos, Team } from '../defs';
 import type { GameEvent } from '../events';
 import { attackTargets, staffTargets } from '../battle/actions';
-import { applyAct } from '../battle/apply';
+import { applyAct, moveAfterAction } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless } from '../rules/effects';
@@ -10,6 +10,7 @@ import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rul
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
+import { afterActionMove } from '../rules/skills';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, dist, getUnit, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, terrainAt, tileIndex } from '../util';
 
@@ -288,6 +289,31 @@ function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, n
   return m;
 }
 
+/**
+ * Wolfslauf / Weiterziehen for the AI (review R3): hit and run. After a real action the unit walks on up to its fixed number of
+ * fields to the reachable tile that the fewest player units threaten; it stays where it is unless a tile is strictly safer than
+ * its own. Ties go to the shorter walk, then to the lower tile key, so the choice is fixed (no randomness).
+ */
+function retreatAfterAction(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
+  const fields = afterActionMove(data, u);
+  if (fields <= 0 || !active(u) || !u.pos || s.outcome) return;
+  const danger = dangerMap(data, s, u);
+  const reach = reachable(data, s, u, u.pos, fields);
+  let best: { to: Pos; danger: number; cost: number } | null = null;
+  let bestDanger = danger.get(posKey(u.pos)) ?? 0;
+  for (const to of destinations(s, u, reach)) {
+    if (samePos(to, u.pos)) continue;
+    const d = danger.get(posKey(to)) ?? 0;
+    const cost = reach.get(posKey(to))?.cost ?? 0;
+    const better = d < bestDanger || (best !== null && d === bestDanger && (cost < best.cost || (cost === best.cost && posKey(to) < posKey(best.to))));
+    if (better) {
+      best = { to, danger: d, cost };
+      bestDanger = d;
+    }
+  }
+  if (best) moveAfterAction(data, s, u, best.to, fields, events);
+}
+
 function healPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[]): Plan | null {
   const below = data.balance.ai.supportHealBelowPercent;
   let best: Plan | null = null;
@@ -329,6 +355,7 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     events.push({ t: 'aiTurn', unit: u.uid });
     if (p) applyAct(data, s, u, p.to, p.action, events);
     else applyAct(data, s, u, u.pos!, { kind: 'wait' }, events);
+    if (p && p.action.kind !== 'wait') retreatAfterAction(data, s, u, events);
   };
   const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
   if (potion && u.hp * 100 < computeStats(data, u).maxHp * data.balance.ai.selfHealBelowPercent) {

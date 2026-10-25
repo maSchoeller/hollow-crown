@@ -37,6 +37,19 @@ export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
   return [...ids].filter((id) => !!data.skills[id]);
 }
 
+/**
+ * Wolfslauf / Weiterziehen (review R3): the fields a unit may walk on after a real action (not after waiting), the highest
+ * `extraMove` of its active `after_action` skills; 0 without one. A fixed number of fields, not the rest of the movement.
+ */
+export function afterActionMove(data: GameData, unit: UnitRecord): number {
+  let best = 0;
+  for (const id of activeSkillIds(data, unit)) {
+    const sk = data.skills[id]!;
+    if (sk.trigger === 'after_action') best = Math.max(best, sk.effect.extraMove ?? 0);
+  }
+  return best;
+}
+
 export interface SkillCtx {
   state?: BattleState;
   unit: UnitRecord | BattleUnit;

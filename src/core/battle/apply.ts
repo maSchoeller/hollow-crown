@@ -11,7 +11,7 @@ import { destinations, pathTo, pursueReach, reachable, walkPath, type Walk } fro
 import { grantExp } from '../rules/progression';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
-import { activeSkillIds } from '../rules/skills';
+import { activeSkillIds, afterActionMove } from '../rules/skills';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, clone, getUnit, neighbors, onMap, pairKey, posKey, samePos } from '../util';
 import { aimTargets, attackTargets, availableActions, CHEER_BUFF, classActionId, hasKey, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
@@ -161,11 +161,13 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
       const u = getUnit(s, cmd.unit);
       const w = cmd.path && !samePos(u.pos, cmd.to) ? (walkPath(data, s, u, cmd.path) ?? undefined) : undefined;
       if (!w?.cut && cmd.action.kind === 'attack' && classActionId(data, u, s) === 'pursue') pursueLeft = pursueRest(data, s, u, cmd.to);
+      // Wolfslauf / Weiterziehen: after a real action a fixed number of fields more; with Nachsetzen the higher of the two (review R3)
+      const afterAction = !w?.cut && cmd.action.kind !== 'wait' ? afterActionMove(data, u) : 0;
       doMove(data, s, u, cmd.to, events, undefined, w);
       if (w?.cut) ambush(u, w, events);
       else if (active(u) && !s.outcome) doAction(data, s, u, cmd.action, events);
       finishUnit(data, s, u, events);
-      if (!active(u)) pursueLeft = 0;
+      pursueLeft = active(u) ? Math.max(pursueLeft, afterAction) : 0;
       break;
     }
     case 'pursue': {
@@ -199,6 +201,12 @@ function openPursue(data: GameData, s: BattleState, u: BattleUnit, left: number)
   s.pursue = { unit: u.uid, left };
   const reach = pursueReach(data, s, u);
   if (!reach || !destinations(s, u, reach).some((p) => !samePos(p, u.pos))) delete s.pursue;
+}
+
+/** The walk of the enemy AI after its action (Wolfslauf, review R3): the same move as `pursue`, limited to `fields`. */
+export function moveAfterAction(data: GameData, s: BattleState, u: BattleUnit, to: Pos, fields: number, events: GameEvent[]): void {
+  doMove(data, s, u, to, events, fields);
+  checkObjectives(data, s, events);
 }
 
 /** Hinterhalt: the walk was stopped by a foe the player did not see (the unit stands where the walk ended). */
