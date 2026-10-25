@@ -252,7 +252,7 @@ export const terrainSchema = z.object({
   water: z.boolean().default(false),
 });
 
-const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support']);
+const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support', 'follow']);
 const aiSchema = z.object({
   profile: aiProfile,
   radius: z.number().optional(),
@@ -300,6 +300,8 @@ const objective = z.discriminatedUnion('type', [
   z.object({ type: z.literal('defend'), unit: z.string(), turns: z.number().int() }),
   z.object({ type: z.literal('survive'), turns: z.number().int() }),
   z.object({ type: z.literal('escape'), area, min: z.number().int().optional() }),
+  z.object({ type: z.literal('escort'), unit: z.string(), area, join: z.boolean().optional() }),
+  z.object({ type: z.literal('treasure'), chests: z.array(z.string()).min(1), turns: z.number().int().min(1) }),
 ]);
 
 const triggerWhen = z.discriminatedUnion('type', [

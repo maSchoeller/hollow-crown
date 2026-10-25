@@ -319,7 +319,7 @@ export interface MapUnitDef {
 }
 
 export interface AiDef {
-  profile: 'aggressive' | 'hold' | 'guard' | 'trigger' | 'hunt' | 'raider' | 'flee' | 'support';
+  profile: 'aggressive' | 'hold' | 'guard' | 'trigger' | 'hunt' | 'raider' | 'flee' | 'support' | 'follow';
   radius?: number;
   then?: AiDef['profile'];
   target?: string;
@@ -350,7 +350,11 @@ export type ObjectiveDef =
   | { type: 'seize'; area: Area }
   | { type: 'defend'; unit: string; turns: number }
   | { type: 'survive'; turns: number }
-  | { type: 'escape'; area: Area; min?: number };
+  | { type: 'escape'; area: Area; min?: number }
+  /** story 4.8: the third-party NPC `unit` (AI profile `follow`) walks into `area` and leaves the map there; it joins the company after the mission unless `join` is false. Its fall loses the mission. */
+  | { type: 'escort'; unit: string; area: Area; join?: boolean }
+  /** story 4.8: every chest of `chests` (object ids) is open within `turns` rounds (won up to the last player phase of round `turns`, lost at the start of the next) */
+  | { type: 'treasure'; chests: string[]; turns: number };
 
 export type DefeatDef = { type: 'unit_dies'; unit: string } | { type: 'turn_limit'; turns: number };
 
@@ -762,6 +766,10 @@ export interface Balance {
     castMinTargets: number;
     castWallDetour: number;
     castLethalChance: number;
+    /** profile `follow` (story 4.8): wakes when a player unit is this close and stays this close to one while it walks */
+    followRadius: number;
+    /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
+    followDanger: number;
   };
 }
 

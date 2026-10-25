@@ -122,7 +122,8 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
   const w = data.balance.ai;
   const plans: Plan[] = [];
   const map = mapOf(data, s);
-  const objectiveUnit = map.objectives.victory.type === 'defend' ? map.objectives.victory.unit : undefined;
+  const victory = map.objectives.victory;
+  const objectiveUnit = victory.type === 'defend' || victory.type === 'escort' ? victory.unit : undefined;
   const danger = diff.aiDangerAware ? dangerMap(data, s, u) : undefined;
   for (const pos of origins) {
     const targets = attackTargets(data, s, u, pos);
@@ -241,6 +242,41 @@ function castPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[])
   return plans[0] ?? null;
 }
 
+/** The exit of an escort goal (story 4.8); none for any other goal. */
+function exitTiles(data: GameData, s: BattleState): Pos[] {
+  const v = mapOf(data, s).objectives.victory;
+  return v.type === 'escort' ? areaTiles(v.area) : [];
+}
+
+/**
+ * Profile `follow` (story 4.8, escort NPC): stands still until a player unit is within `ai.followRadius`, then walks towards the
+ * exit of the escort goal, always ending within that radius of a player unit and avoiding tiles that foes threaten
+ * (`ai.followDanger` per foe on the path cost). It never attacks. Returns the tile to move to (null: stay).
+ */
+function followStep(data: GameData, s: BattleState, u: BattleUnit): Pos | null {
+  const w = data.balance.ai;
+  const radius = u.ai?.radius ?? w.followRadius;
+  const guards = s.units.filter((o) => o.team === 'player' && active(o) && o.pos);
+  const near = (p: Pos) => guards.some((g) => dist(g.pos!, p) <= radius);
+  if (!u.pos || !near(u.pos)) return null;
+  const goals = exitTiles(data, s);
+  if (!goals.length) return null;
+  const field = distanceField(data, s, u, goals);
+  const danger = dangerMap(data, s, u);
+  const cost = (p: Pos) => (field.get(posKey(p)) ?? Infinity) + w.followDanger * (danger.get(posKey(p)) ?? 0);
+  let best: Pos = u.pos;
+  let bestCost = cost(u.pos);
+  for (const p of destinations(s, u, reachable(data, s, u))) {
+    if (!near(p) && !goals.some((g) => samePos(g, p))) continue;
+    const c = cost(p);
+    if (c < bestCost) {
+      best = p;
+      bestCost = c;
+    }
+  }
+  return samePos(best, u.pos) ? null : best;
+}
+
 function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, number> {
   const m = new Map<string, number>();
   for (const o of hostileUnits(s, u)) {
@@ -342,6 +378,16 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
       const goals = ai.area ? areaTiles(ai.area) : [];
       const to = bestApproach(data, s, u, goals);
       if (to && ai.area && goals.some((g) => samePos(g, to))) {
+        applyAct(data, s, u, to, { kind: 'wait' }, events);
+        u.gone = 'escaped';
+        events.push({ t: 'escaped', unit: u.uid });
+        return;
+      }
+      return act(to ? { to, action: { kind: 'wait' }, score: 0 } : null);
+    }
+    case 'follow': {
+      const to = followStep(data, s, u);
+      if (to && exitTiles(data, s).some((g) => samePos(g, to))) {
         applyAct(data, s, u, to, { kind: 'wait' }, events);
         u.gone = 'escaped';
         events.push({ t: 'escaped', unit: u.uid });

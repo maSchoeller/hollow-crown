@@ -48,6 +48,7 @@ import { BoardView } from '../../render/board/board';
 import { t } from '../../i18n';
 import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
+import { goalLine, goalStand } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
 import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
@@ -249,7 +250,7 @@ export function Battle() {
     if (!board) return;
     const goal = (() => {
       const v = mapOf(data, s).objectives.victory;
-      if (v.type === 'reach' || v.type === 'seize' || v.type === 'escape') {
+      if (v.type === 'reach' || v.type === 'seize' || v.type === 'escape' || v.type === 'escort') {
         return 'rect' in v.area ? tilesInRect(v.area.rect) : v.area.tiles;
       }
       return [];
@@ -818,7 +819,8 @@ export function Battle() {
       : victory.type === 'defend' || victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
-  const goalText = t(`ui.world.goal.${victory.type}`, { turns: 'turns' in victory ? victory.turns : 0 }).replace(/\.$/, '');
+  // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)
+  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory).replace(/\.$/, '');
 
   const shownPhase = phaseView?.phase ?? s.phase;
   const shownTurn = phaseView?.turn ?? s.turn;

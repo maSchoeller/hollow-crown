@@ -1,0 +1,47 @@
+# Entwicklerkarte für das Missionsziel „treasure“ (Story 4.8). Gehört zu keinem Paket, steht in keinem Kampagnen-Graph und kommt
+# nicht in den Build: Tests laden sie über tests/fixtures/devObjectiveMaps.ts, im Browser startet sie `await __hc.devMap('dev_treasure')`.
+#
+# Vier Truhen in 10 Runden. Der Späher öffnet ohne Schlüssel von einem Nachbarfeld, der Vorkämpfer hat zwei Schlüssel (er muss
+# auf der Truhe stehen). Eine fünfte Truhe (dev_chest_extra) gehört nicht zum Ziel: sie bleibt dem Nebenziel.
+#          x: 0123456789ABCD
+terrain: |
+  ..............
+  ..T.......T...
+  ....#.....#...
+  ....#..T..#...
+  .T..........T.
+  ....#..T..#...
+  ....#.....#...
+  ..T.......T...
+  ..............
+id: dev_treasure
+nameKey: map.prologue_caravan.name
+size: [14, 9]
+fog: false
+legend:
+  ".": plain
+  "T": forest
+  "#": wall
+objects:
+  - { id: dev_chest_a, type: chest, at: [3, 1], contents: { gold: 50 } }
+  - { id: dev_chest_b, type: chest, at: [12, 1], contents: { gold: 50 } }
+  - { id: dev_chest_c, type: chest, at: [7, 4], contents: { item: { def: vulnerary } } }
+  - { id: dev_chest_d, type: chest, at: [12, 7], contents: { gold: 80 } }
+  - { id: dev_chest_extra, type: chest, at: [3, 7], contents: { gold: 20 } }
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [[0, 3], [0, 4], [0, 5]] }
+units:
+  - { id: dev_scout, team: player, class: scout, level: 3, at: [1, 4], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
+  - { id: dev_vanguard, team: player, class: vanguard, level: 3, at: [1, 3], sprite: soldier, items: [{ def: iron_lance }, { def: door_key }, { def: door_key }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 3, at: [1, 5], sprite: archer, items: [{ def: iron_bow }] }
+  - { id: dev_brigand, team: enemy, class: brigand, level: 2, at: [10, 4], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: hold } }
+  - { id: dev_archer, team: enemy, class: marksman, level: 2, at: [11, 6], sprite: bandit_archer, items: [{ def: iron_bow }], ai: { profile: hold } }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: treasure, chests: [dev_chest_a, dev_chest_b, dev_chest_c, dev_chest_d], turns: 10 }
+  defeat: []
+  side:
+    - { id: dev_all, type: open_chests, reward: { gold: 100 } }
+triggers: []
+goldReward: 0

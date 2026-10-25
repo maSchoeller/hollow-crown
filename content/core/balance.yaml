@@ -200,3 +200,6 @@ ai:
   castMinTargets: 2
   castWallDetour: 3
   castLethalChance: 100
+  # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
+  followRadius: 4
+  followDanger: 100

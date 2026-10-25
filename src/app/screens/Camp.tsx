@@ -8,6 +8,7 @@ import { availableSupportTalks, homeRooms, type CampaignCommand, type Condition,
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast, unitName, UnitCard } from '../../ui/components';
+import { goalLine } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
@@ -147,7 +148,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
         </div>
         <div class="panel sheet">
           <h3>{t(nd.titleKey)}</h3>
-          <div class="muted">{t(`ui.world.goal.${map.objectives.victory.type}`, { turns: 'turns' in map.objectives.victory ? map.objectives.victory.turns : 0 })}</div>
+          <div class="muted">{goalLine(map.objectives.victory)}</div>
           <div class="muted">{t('ui.prep.count', { n: chosen.length, max: map.deploy.max })}</div>
         </div>
         <div class="list">
