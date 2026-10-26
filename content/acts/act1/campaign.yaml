@@ -28,6 +28,8 @@ nodes:
   # Mission 1-6: Eroberung der Paktwacht, danach die Burg als Heimat und Entscheidung E4. expectedLevel/merchantTier: technische Startwerte, final per Simulation.
   # Übergang: wird m1_2–m1_5, sobald 9.3–9.6 auf main sind (Produktinhaber 2026-10-26)
   - { id: m1_6, expectedLevel: 7, map: m1_6_paktwacht, titleKey: node.m1_6.title, pre: scn.m1_6.intro, post: scn.m1_6.outro, requires: [{ completed: ch02 }], place: paktwacht_ruine, merchantTier: 2, effects: [{ setHome: castle }] }
+  # Mission 1-7: Gewölbe unter der Paktwacht (treasure), danach das Finale (Story 9.9). expectedLevel/merchantTier laut Produktinhaber 2026-10-26; Wirkung bei Sieg: die versiegelte Chronik
+  - { id: m1_7, expectedLevel: 8, map: m1_7_gewoelbe, titleKey: node.m1_7.title, pre: scn.m1_7.intro, post: scn.m1_7.outro, requires: [{ completed: m1_6 }], place: paktwacht_gewoelbe, merchantTier: 2, effects: [{ setFlag: wardens_chronicle }] }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]

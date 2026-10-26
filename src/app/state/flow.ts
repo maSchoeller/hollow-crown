@@ -14,6 +14,7 @@ import {
   createBattle,
   newCampaign,
   addToRoster,
+  levelUp,
   queuedFlags,
   validateEffects,
   flattenQueued,
@@ -411,7 +412,7 @@ if (import.meta.env.DEV) {
       },
       /**
        * plays any story node on a throwaway campaign, never the player's slot (saving is switched off, QA note B22): the nodes before it in
-       * campaign.yaml count as completed and everyone who has joined by then is in the company. `await __hc.devNode('m1_6')` opens the
+       * campaign.yaml count as completed and everyone who has joined by then is in the company, raised to the node's `expectedLevel`. `await __hc.devNode('m1_6')` opens the
        * pre scene, then the battle; win it with `__hc.autoWin()`. Second argument: difficulty (default `normal`).
        */
       devNode: async (nodeId: string, difficulty: BattleSettings['difficulty'] = 'normal') => {
@@ -425,6 +426,8 @@ if (import.meta.env.DEV) {
           const j = order.indexOf(ch.joins);
           if (j >= 0 && j < idx) addToRoster(data, c, ch.id);
         }
+        // everyone is as strong as an army that played its way here would be: raised to the node's expectedLevel with the game's own level-up
+        for (const u of c.roster) while (u.level < nodes[idx]!.expectedLevel) levelUp(data, u, c.rng);
         c.completed = order.slice(0, idx);
         campaign.value = c;
         battle.value = null;

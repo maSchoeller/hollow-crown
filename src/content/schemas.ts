@@ -682,7 +682,10 @@ export const balanceSchema = z.object({
     bubbleMaxChars: z.number().int().min(20),
   }),
   loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
-  chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
+  chronicle: z.strictObject({
+    seasonPages: z.number().int().min(1),
+    sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1) })).default([]),
+  }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
   simulation: z.object({
     armySize: z.number().int().min(1),

@@ -8,7 +8,7 @@ import { destinations, reachable, threatTiles } from '../rules/movement';
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, dist, posKey } from '../util';
+import { active, areaTiles, dist, inBounds, neighbors, posKey } from '../util';
 import { attackPlans } from './ai';
 
 function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
@@ -21,13 +21,45 @@ function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
   return m;
 }
 
-function approach(s: BattleState, u: BattleUnit, dests: Pos[], targets: Pos[], danger: Map<string, number>, maxDanger: number): Pos {
+/**
+ * Steps to the closest target around walls (story 9.8, treasure hunts in rooms): breadth-first from the targets over every tile a foot unit
+ * could ever stand on; closed doors count as open because the hunt opens them. Straight-line distance gets stuck behind a wall.
+ */
+function walkDistances(data: GameData, s: BattleState, targets: Pos[]): Map<string, number> {
+  const out = new Map<string, number>();
+  const queue: Pos[] = [];
+  for (const t of targets) {
+    out.set(posKey(t), 0);
+    queue.push(t);
+  }
+  for (let i = 0; i < queue.length; i++) {
+    const c = queue[i]!;
+    for (const n of neighbors(c)) {
+      if (!inBounds(s, n) || out.has(posKey(n))) continue;
+      const terrain = s.terrain[n[1] * s.width + n[0]]!;
+      if (terrain !== 'door' && data.terrain[terrain]?.cost.foot == null) continue;
+      out.set(posKey(n), out.get(posKey(c))! + 1);
+      queue.push(n);
+    }
+  }
+  return out;
+}
+
+function approach(
+  s: BattleState,
+  u: BattleUnit,
+  dests: Pos[],
+  targets: Pos[],
+  danger: Map<string, number>,
+  maxDanger: number,
+  walk?: Map<string, number>,
+): Pos {
   let best = u.pos!;
   let bestScore = Infinity;
   for (const p of dests) {
     const d = danger.get(posKey(p)) ?? 0;
     if (d > maxDanger) continue;
-    const near = Math.min(...targets.map((t) => dist(p, t)), 999);
+    const near = walk ? (walk.get(posKey(p)) ?? 999) : Math.min(...targets.map((t) => dist(p, t)), 999);
     const score = near * 10 + d;
     if (score < bestScore) {
       best = p;
@@ -46,6 +78,8 @@ function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], dan
       if (chests && o.object && chests.has(o.object) && d <= maxDanger) {
         if (o.kind === 'open') return { type: 'act', unit: u.uid, to: p, action: { kind: 'open', object: o.object } };
         if (o.kind === 'chest') return { type: 'act', unit: u.uid, to: p, action: { kind: 'chest' } };
+        // story 9.8: a closed door is a lock of the hunt as well (a scout opens it from next to it, a unit with a key from next to it)
+        if (o.kind === 'door') return { type: 'act', unit: u.uid, to: p, action: { kind: 'door', object: o.object } };
       }
       if (o.kind === 'visit' && d <= maxDanger) return { type: 'act', unit: u.uid, to: p, action: { kind: 'visit' } };
       // talking turns the foe at once, so its own threat does not count
@@ -71,7 +105,10 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const recruitable = (u: BattleUnit) =>
     enemies.filter((o) => o.recruit && (o.recruit.by === 'any' || o.recruit.by.includes(u.id))).map((o) => o.pos!);
   // story 4.8: the chests of a treasure hunt still shut, and the escort NPC with the radius it follows within
-  const openable = v.type === 'treasure' ? new Set(v.chests.filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed'))) : undefined;
+  const openable =
+    v.type === 'treasure'
+      ? new Set([...v.chests, ...s.objects.filter((o) => o.type === 'door').map((o) => o.id)].filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed')))
+      : undefined;
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
@@ -110,11 +147,14 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     if (plan && !(isGoalUnit && plan.score < 30)) return { type: 'act', unit: u.uid, to: plan.to, action: plan.action };
     const ward = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
     // the unit closest to an unvisited village heads there; a unit that can recruit seeks its target
-    const nearestTo = (p: Pos) =>
+    const nearestTo = (p: Pos, needsRoom = false) =>
       s.units
-        .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted)
+        .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && (!needsRoom || o.bag.length < data.balance.bag.size))
         .sort((a, b) => dist(a.pos!, p) - dist(b.pos!, p))[0]?.uid;
-    const errands = [...villages.filter((p) => nearestTo(p) === u.uid), ...recruitable(u)];
+    // treasure (story 9.8): a key dropped by a foe lies on the ground until somebody steps on it; the closest unit with room in its bag fetches it
+    // (a full bag sends the pick-up to the convoy, out of reach during the battle)
+    const keyLoot = openable ? s.loot.filter((l) => itemDef(data, l.item).use?.open).map((l) => l.at) : [];
+    const errands = [...villages.filter((p) => nearestTo(p) === u.uid), ...keyLoot.filter((p) => nearestTo(p, true) === u.uid), ...recruitable(u)];
     // treasure: whoever can open a chest heads for the closest one still shut
     const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
     const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
@@ -127,7 +167,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
     }
     const maxDanger = errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
-    const to = approach(s, u, dests, targets.length ? targets : [u.pos], danger, maxDanger);
+    const to = approach(s, u, dests, targets.length ? targets : [u.pos], danger, maxDanger, openable && targets.length ? walkDistances(data, s, targets) : undefined);
     return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
   }
   return { type: 'endPhase' };

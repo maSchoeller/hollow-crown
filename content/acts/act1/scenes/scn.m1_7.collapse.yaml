@@ -1,0 +1,15 @@
+# Mission 1-7, Karten-Szene in Runde 2 (Trigger t_collapse): Beben und Einsturzwarnung, die Frist von 14 Runden (Ziel treasure, objectives.victory.turns).
+id: scn.m1_7.collapse
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Beben! Staub rieselt, irgendwo bricht Gestein. Aus dem eingestürzten Gang dringen neue Stimmen."
+  - id: l02
+    speaker: [kael]
+    mood: angry
+    text: "Die Decke gibt nach. Vierzehn Runden, dann ist alles verschüttet."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Holt raus, was ihr tragen könnt, Küken. Und lasst euch nicht von hinten erwischen!"

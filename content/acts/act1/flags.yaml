@@ -11,3 +11,5 @@
 - { id: joined_grosk, kind: story, season2: true }
 # E4 (Mission 1-6): die Paktwacht – shelter = Flüchtlinge aufgenommen (Dorfhilfe in Akt 2), secret = geheim gehalten (Händlerpreise −10 % in Akt 2); 1-8 liest es
 - { id: e04, kind: decision, values: [shelter, secret], season2: true }
+# Mission 1-7: die versiegelte Chronik der Wächter ist geborgen und liegt im Burgarchiv (Knotenwirkung bei Sieg); Akt 2 (Beat 10) entziffert sie. Gibt einen Chronik-Eintrag (balance.yaml chronicle.sealed), keine Seite.
+- { id: wardens_chronicle, kind: story, season2: true }

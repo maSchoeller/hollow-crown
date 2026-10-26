@@ -775,7 +775,11 @@ export interface Balance {
   /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
   loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
-  chronicle: { seasonPages: number };
+  chronicle: {
+    seasonPages: number;
+    /** entries the chronicle shows once their story flag is set; they are no pages and do not count towards `seasonPages` (story 9.8) */
+    sealed: Array<{ flag: string; act: number }>;
+  };
   /** farewell card after a death (story 6.7): the button stays locked this long */
   farewell: { lockMs: number };
   /** targets of the chained act simulation (story 6.8, `pnpm sim --campaign`): NFR12 corridors, GDD gold curve */

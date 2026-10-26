@@ -54,7 +54,7 @@ describe('stable IDs (architecture §5.16)', () => {
     const { data } = loadContentFromDisk();
     const got = collectIds(data);
     expect(got.chars).toContain('kael');
-    expect(got.nodes).toEqual(['ch01', 'ch02', 'm1_1', 'm1_6', 'prologue']);
+    expect(got.nodes).toEqual(['ch01', 'ch02', 'm1_1', 'm1_6', 'm1_7', 'prologue']);
     expect(got.scenes).toContain('scn.prologue.intro');
     expect(collectIds(data, { maps: (m) => m.startsWith('prologue'), scenes: () => false }).maps).toEqual(['prologue_paktnacht']);
   });

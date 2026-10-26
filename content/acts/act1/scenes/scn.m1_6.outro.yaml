@@ -8,7 +8,7 @@ music: camp
 lines:
   # Tafel 4 „Das Banner auf der Ruine“
   - id: l01
-    panel: paktwacht_ruine
+    panel: paktwacht_banner
     mood: neutral
     text: "Der Rauch zieht ab. Auf dem höchsten Turm der Paktwacht flattert das Banner des Aschenbanners."
   - id: l02
@@ -52,27 +52,35 @@ lines:
     speaker: [avatar]
     mood: happy
     text: "Heimat. Das Wort klingt noch fremd. Ich gewöhne mich gern daran."
-  # der Verwalter (ohne Sprecherbild: Es gibt noch kein Porträt für ihn, daher als Erzählung mit wörtlicher Rede)
+  # der Verwalter
   - id: l11
     mood: neutral
     text: "Ein grauhaariger Mann tritt aus dem Schatten des Tors und verneigt sich vor Kael."
   - id: l12
+    speaker: [paktwacht_steward]
+    fallback: skip
     mood: neutral
-    text: "„Ich bin der Verwalter. All die Jahre habe ich die Schlüssel dieser Mauern gehütet, Hauptmann.“"
+    text: "Ich bin der Verwalter. All die Jahre habe ich die Schlüssel dieser Mauern gehütet, Hauptmann."
   - id: l13
+    speaker: [paktwacht_steward]
+    fallback: skip
     mood: sad
-    text: "„Hask sperrte mich in den Keller, doch die Schlüssel bekam er nicht. Nun gehören sie Euch.“"
+    text: "Hask sperrte mich in den Keller, doch die Schlüssel bekam er nicht. Nun gehören sie Euch."
   - id: l14
     speaker: [kael]
     mood: neutral
     text: "Behalt sie. Du kennst die Mauern, wir nicht."
   - id: l15
+    speaker: [paktwacht_steward]
+    fallback: skip
     mood: happy
-    text: "„Dann sorge ich dafür, dass sie stehen bleiben. Was immer kommt.“"
+    text: "Dann sorge ich dafür, dass sie stehen bleiben. Was immer kommt."
   # Entscheidung E4
   - id: l16
+    speaker: [paktwacht_steward]
+    fallback: skip
     mood: neutral
-    text: "„Unten am Hang warten Familien aus dem Grenzland. Sie sahen das Banner und bitten um Obdach.“"
+    text: "Unten am Hang warten Familien aus dem Grenzland. Sie sahen das Banner und bitten um Obdach."
   - id: l17
     speaker: [brenna]
     fallback: skip

@@ -1,0 +1,20 @@
+# Mission 1-7, Karten-Szene beim Öffnen der Chronik-Truhe c_chronicle (6,14): die Chronik der Wächter wird versiegelt gefunden und bleibt versiegelt (Siegel, kein Entziffern).
+# Die Chronik ist kein Gegenstand; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg. Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen.
+id: scn.m1_7.chronicle
+lines:
+  - id: l01
+    mood: neutral
+    text: "In einer Nische ruht ein schwerer Band. Rotes Wachs und das Siegel der Wächter halten ihn verschlossen."
+  - id: l02
+    speaker: [ysolde, liora, avatar]
+    mood: happy
+    text: "Das Siegel der Paktwächter, unversehrt! Wer es bricht, zerstört den Text. Das gehört in ein Archiv."
+  - id: l03
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Verschlossen? Mit einer Nadel wäre das … schon gut, Kael. Ich fasse nichts an."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Wir brechen kein Siegel. Die Chronik kommt ins Burgarchiv."

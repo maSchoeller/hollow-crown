@@ -84,7 +84,7 @@ describe('node m1_6 and decision E4', () => {
     expect(node.map).toBe('m1_6_paktwacht');
     const afterCh02 = { ...base, completed: ['prologue', 'm1_1', 'ch01', 'ch02'] };
     expect(availableNodes(data, afterCh02).map((n) => n.id)).toEqual(['m1_6']);
-    expect(availableNodes(data, { ...afterCh02, completed: [...afterCh02.completed, 'm1_6'] })).toEqual([]);
+    expect(availableNodes(data, { ...afterCh02, completed: [...afterCh02.completed, 'm1_6'] }).map((n) => n.id)).toEqual(['m1_7']);
     expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'ch01'] }).map((n) => n.id)).not.toContain('m1_6');
   });
 

@@ -41,7 +41,7 @@ beforeAll(() => {
 describe('chronicleView', () => {
   it('shows the current act even before anything happened', () => {
     const v = chronicleView(data, fresh());
-    expect(v).toEqual({ acts: [{ act: 1, decisions: [], pages: [] }], found: 0, total: 12 });
+    expect(v).toEqual({ acts: [{ act: 1, decisions: [], pages: [], sealed: [] }], found: 0, total: 12 });
     expect(v.total).toBe(data.balance.chronicle.seasonPages);
   });
 
@@ -53,6 +53,7 @@ describe('chronicleView', () => {
       {
         act: 1,
         pages: ['p_a1_1'],
+        sealed: [],
         decisions: [
           {
             scene: scene.id,
