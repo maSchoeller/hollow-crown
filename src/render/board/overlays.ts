@@ -62,6 +62,7 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
   vd.applyToMesh(mesh);
   const mat = new StandardMaterial(name, scene);
   mat.disableLighting = true;
+  mat.fogEnabled = false; // markings stay legible in mist (art-direction 2.5)
   mat.emissiveColor = Color3.FromHexString(color);
   mat.alpha = alpha;
   mat.backFaceCulling = false;

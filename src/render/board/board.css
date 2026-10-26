@@ -1,0 +1,4 @@
+/* Damage number of a critical hit (story 8.6): `--hc-num-scale` times the normal size (render.yaml look.fx.crit.numberScale), set by the board. */
+.hc-float-crit {
+  font-size: calc(24px * var(--hc-num-scale, 1.4));
+}

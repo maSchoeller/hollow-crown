@@ -15,7 +15,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
-import { figureMaterial, sharedFigureMaterial, TEAM_RAMP, tintMaterial, type UnitModel } from './models';
+import { figureMaterial, sharedFigureMaterial, tintMaterial, type UnitModel } from './models';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
 /** Screen-relative direction for sprites; 3D models turn instead. */
@@ -126,14 +126,14 @@ export class ModelFigure implements Figure {
     if (flash === 0 && alpha >= 0.999) {
       // at rest: the scene's shared material of this desaturation
       at.groups.forEach((g) => {
-        const m = sharedFigureMaterial(at.shared, at.root.getScene(), g.texture, desat);
+        const m = sharedFigureMaterial(at.shared, at.root.getScene(), at.look, g.texture, desat);
         for (const mesh of g.meshes) mesh.material = m;
       });
       this.releaseOwn();
       return;
     }
     // flash, fade or ghost: own materials for as long as it lasts
-    this.own ??= at.groups.map((g, i) => figureMaterial(`${at.root.name}:tint${i}`, at.root.getScene(), g.texture));
+    this.own ??= at.groups.map((g, i) => figureMaterial(`${at.root.name}:tint${i}`, at.root.getScene(), at.look, g.texture));
     at.groups.forEach((g, i) => {
       const m = this.own![i]!;
       tintMaterial(m, desat, flash, alpha);
@@ -180,7 +180,7 @@ export class ModelFigure implements Figure {
 }
 
 /** Sheet with team cloth recoloured on a canvas (no custom shader needed). */
-function teamSheet(scene: Scene, sheet: Sheet, team: Team): DynamicTexture {
+function teamSheet(scene: Scene, sheet: Sheet, team: Team, rampHex: readonly string[]): DynamicTexture {
   const w = sheet.image.width;
   const h = sheet.image.height;
   const t = new DynamicTexture(`sheet:${sheet.id}:${team}`, { width: w, height: h }, scene, false, Texture.NEAREST_SAMPLINGMODE);
@@ -190,7 +190,7 @@ function teamSheet(scene: Scene, sheet: Sheet, team: Team): DynamicTexture {
   g.drawImage(sheet.image, 0, 0);
   const img = g.getImageData(0, 0, w, h);
   const key = [0x40, 0x80, 0xc0, 0xff];
-  const ramp = TEAM_RAMP[team].map((c) => [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]);
+  const ramp = rampHex.map((c) => [parseInt(c.slice(-6, -4), 16), parseInt(c.slice(-4, -2), 16), parseInt(c.slice(-2), 16)]);
   for (let i = 0; i < img.data.length; i += 4) {
     if (img.data[i + 1] !== 0 || img.data[i] !== img.data[i + 2]) continue;
     const k = key.indexOf(img.data[i]!);
@@ -219,6 +219,7 @@ export class SpriteFigure implements Figure {
     scene: Scene,
     private sheet: Sheet,
     team: Team,
+    ramp: readonly string[],
     name: string,
   ) {
     this.node = new TransformNode(`${name}:place`, scene);
@@ -229,7 +230,7 @@ export class SpriteFigure implements Figure {
     this.plane.parent = this.node;
     this.plane.billboardMode = Mesh.BILLBOARDMODE_ALL;
     this.plane.isPickable = false;
-    this.texture = teamSheet(scene, sheet, team);
+    this.texture = teamSheet(scene, sheet, team, ramp);
     this.texture.uScale = cw / sheet.image.width;
     this.texture.vScale = ch / sheet.image.height;
     this.material = new StandardMaterial(`${name}:spriteMat`, scene);

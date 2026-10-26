@@ -12,6 +12,7 @@ import { hauntEnemyCount, hauntPlaces } from '../core/campaign/haunts';
 import { standableTiles } from '../core/battle/hauntMap';
 import { BARK_LINES } from './barkLines';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
+import { validateStatusIcons, validateWeather } from './validateLook';
 import type { ContentIssue, Locales } from './load';
 
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
@@ -25,6 +26,8 @@ export function validateContent(
   placeImages?: Set<string>,
   /** portraits and figure models of the lieutenants (content:check passes them; a missing file is a warning) */
   lieutenantFiles?: LieutenantFiles,
+  /** ids of the status icons in art/status/source (content:check passes them) */
+  statusImages?: Set<string>,
 ): ContentIssue[] {
   // the maps of haunts (`haunt~…`) are made at play time from a story map and are no content of their own
   if (Object.keys(data.maps).some((id) => id.startsWith('haunt~'))) data = { ...data, maps: Object.fromEntries(Object.entries(data.maps).filter(([id]) => !id.startsWith('haunt~'))) };
@@ -242,6 +245,7 @@ export function validateContent(
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
   for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward, locales);
+  issues.push(...validateWeather(data), ...validateStatusIcons(data, statusImages));
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {

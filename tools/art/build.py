@@ -14,6 +14,8 @@ python tools/art/build.py [--quality mid|high]
 - Busts (same characters): the whole half figure, WebP q60, 150 px, only the joining story characters, for the figure view of the troop.
 - Season 1 locations (art/mockups/locations-s1): the act 1 places (lager_unterwegs = shell, dialogue backdrops of act 1), WebP q75,
   1280×720 (high: 1920×1080).
+- Status icons (art/status/source/<id>.png, painted in ChatGPT, story 8.6): WebP q85, 96 px square → public/assets/core/status/<id>.webp.
+  Exception to the rule "new assets go into act1" (product owner 2026-10-26): the icons are a few KB and the prologue shows them, too.
 - Title image (art/title/title_act1.png, 2:3): WebP q72, 1024×1536 → public/assets/title/title_act1.webp (pack core).
 - World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture, doubled to 2048 px wide → public/assets/world/valmora.webp; loads on demand
   when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
@@ -58,6 +60,8 @@ HALF_PX = 640
 HALF_MOODS = ('happy', 'angry', 'sad')
 # 44 px item image at 3x device pixels
 ITEM_PX = 192 if HIGH else 132
+# status icon over a figure: 26 CSS px, 96 px is sharp at 3x (render.yaml look.fx.status.sizePx)
+STATUS_PX = 96
 
 
 def ensure(p):
@@ -319,6 +323,23 @@ def build_items():
     return result
 
 
+def build_status():
+    """art/status/source/<id>.png (painted status icons, 1254 px, real alpha) → public/assets/core/status/<id>.webp at STATUS_PX.
+    They ship in the pack core (see the module docstring)."""
+    base = os.path.join(ART, 'status', 'source')
+    result = []
+    if not os.path.isdir(base):
+        return result
+    dst = ensure(os.path.join(OUT, 'core', 'status'))
+    for f in sorted(os.listdir(base)):
+        if not f.endswith('.png'):
+            continue
+        im = Image.open(os.path.join(base, f)).convert('RGBA').resize((STATUS_PX, STATUS_PX), Image.LANCZOS)
+        im.save(os.path.join(dst, f[:-4] + '.webp'), 'WEBP', quality=85, alpha_quality=90, method=6)
+        result.append(f[:-4])
+    return result
+
+
 def main():
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
@@ -331,6 +352,7 @@ def main():
         'models': build_models(),
         'ground': ground.build(os.path.join(OUT, 'ground')),
         'items': build_items(),
+        'status': build_status(),
         'avatars': build_heads(),
         'busts': build_busts(),
         'halves': build_halves(),
