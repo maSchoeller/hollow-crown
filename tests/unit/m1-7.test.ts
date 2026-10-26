@@ -30,7 +30,8 @@ describe('node m1_7', () => {
     expect(node.requires).toEqual([{ completed: 'm1_6' }]);
     expect(node.effects).toEqual([{ setFlag: 'wardens_chronicle' }]);
     expect(availableNodes(data, base).map((n) => n.id)).toEqual(['m1_7']);
-    expect(availableNodes(data, { ...base, completed: [...base.completed, 'm1_7'] })).toEqual([]);
+    // the finale follows (story 9.9): the only node open after 1-7
+    expect(availableNodes(data, { ...base, completed: [...base.completed, 'm1_7'] }).map((n) => n.id)).toEqual(['m1_8']);
     expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'ch01', 'ch02'] }).map((n) => n.id)).not.toContain('m1_7');
   });
 

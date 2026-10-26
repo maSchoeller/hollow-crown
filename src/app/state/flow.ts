@@ -9,6 +9,7 @@ import {
   armyOverLimit,
   beginBattle,
   conditionContext,
+  consequenceLines,
   firstNode,
   nodeScenes,
   createBattle,
@@ -271,7 +272,9 @@ export function concludeBattle(): void {
   // the memorial variant is decided before the battle's deaths count (the trigger fell before the quest, not in it)
   const { post } = nodeScenes(data, before, b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
-  if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
+  // what the node gave (items, gold ...) for a scene line with `moment: reward`
+  const rewards = consequenceLines(result.effects ?? []).filter((l) => l.kind !== 'noted');
+  if (post) screen.value = { name: 'dialogue', id: post, next: toResult, ...(rewards.length ? { rewards } : {}) };
   else toResult();
 }
 

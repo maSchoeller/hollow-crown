@@ -1,6 +1,6 @@
 # Story 9.9: Mission 1-8 „Die Heimat halten“ (Finale)
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -26,17 +26,17 @@ damit Akt 1 mit etwas endet, das der Truppe gehört.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Karte `m1_8_paktwacht_halten.yaml`: Klassen `wolf_rider`, Kommentare „OFFEN/Epic 3“ bereinigen, Verwalter prüfen, `devNote` (AC 1, 2, 3)
-- [ ] T2 Knoten `m1_8` (`fixed: finale`, `requires`, `effects`), `node.m1_8.title` in `content/core/locales/{de,en}.names.yaml`, `node: m1_8` in `valmora.yaml` (AC 8)
-- [ ] T3 Item `ember_spark` in `items.yaml` + Namen DE/EN, Abstimmung mit der Nebenquest-Session (AC 7)
-- [ ] T4 Szenen `scn.m1_8.intro` (zwei E4-Zeilen), `scn.m1_8.morra_flees`, `scn.m1_8.outro` (Tafel); Englisch im Locale (AC 5, 6, 4)
-- [ ] T5 Morras Flucht am Ende (Mechanik nach OFFEN 3) (AC 4)
-- [ ] T6 Funkenmoment und Karte „2 × Glutfunke“ (UI, Texte `ui.*`, Ton: Funkenknistern per ElevenLabs bzw. vorhandener Klang) (AC 7)
-- [ ] T7 Torregel und Gegner-Zugang zum Bergfried prüfen (AC 1, OFFEN 1)
-- [ ] T8 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Grosk, Kette (AC 11)
-- [ ] T9 Unit-Tests und E2E (AC 12)
-- [ ] T10 Screenshots (AC 13)
-- [ ] T11 Verwalter-Zeile in `scn.m1_6.outro` mit Story 9.7 abstimmen (AC 2)
+- [x] T1 Karte `m1_8_paktwacht_halten.yaml`: Klassen `wolf_rider`, Kommentare „OFFEN/Epic 3“ bereinigen, Verwalter prüfen, `devNote` (AC 1, 2, 3)
+- [x] T2 Knoten `m1_8` (`fixed: finale`, `requires`, `effects`), `node.m1_8.title` in `content/core/locales/{de,en}.names.yaml`, `node: m1_8` in `valmora.yaml` (AC 8)
+- [x] T3 Item `ember_spark` in `items.yaml` + Namen DE/EN, Abstimmung mit der Nebenquest-Session (AC 7)
+- [x] T4 Szenen `scn.m1_8.intro` (zwei E4-Zeilen), `scn.m1_8.morra_flees`, `scn.m1_8.outro` (Tafel); Englisch im Locale (AC 5, 6, 4)
+- [x] T5 Morras Flucht am Ende (Mechanik nach OFFEN 3) (AC 4)
+- [x] T6 Funkenmoment und Karte „2 × Glutfunke“ (UI, Texte `ui.*`, Ton: Funkenknistern per ElevenLabs bzw. vorhandener Klang) (AC 7)
+- [x] T7 Torregel und Gegner-Zugang zum Bergfried prüfen (AC 1, OFFEN 1)
+- [x] T8 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Grosk, Kette (AC 11)
+- [x] T9 Unit-Tests und E2E (AC 12)
+- [ ] T10 Screenshots (AC 13): nicht erstellt (Ablauf im Browser geprüft, siehe Dev Agent Record)
+- [x] T11 Verwalter-Zeile in `scn.m1_6.outro` mit Story 9.7 abstimmen (AC 2)
 
 ## Dev Notes
 
@@ -54,7 +54,17 @@ damit Akt 1 mit etwas endet, das der Truppe gehört.
   - Item-Art: Architektur §5.11 nennt den Glutfunken ein Item `kind: promotion`; `defs.ts:70` kennt `seal` (PoC `promotion_seal`, `items.yaml:117`, Preis 3 000, `use: { promote: true, minLevel: 10 }`), `promotion` fehlt. OFFEN 8.
   - `fixed: finale`: öffnet sich nach allen übrigen Story-Knoten; `actFinished(data, c)` = Knoten `fixed: finale` erledigt, Hinweis auf der Weltkarte nur ohne Paket von Akt n+1 (`WorldMap.tsx:84-87`, `nextActInBuild()` in `src/app/state/packs.ts:149`).
 - **Vorschläge der Story-Autorin (nicht entschieden):** `expectedLevel 10` (Finale der GDD-Kurve „1 → 9 (Finale 10)“); Sprecherkette für die E4-Zeilen: Gerücht `[fenn, brenna, rhen]`, Wölfe `[mira, fenn, rhen]` (mit Ersatzsprechern; nur Rhen und Kael sind garantiert am Leben); `place: paktwacht_ruine` wie im Layout.
-- **OFFEN:**
+- **Entscheidungen des Produktinhabers 2026-10-26 (umgesetzt in dieser Story; sie beantworten die OFFEN-Punkte unten):**
+  - **Verwalter (OFFEN 2):** Einheit `steward` heilt: bleibt im Bergfried (8,3), `ai: hold` mit Heilstab (`heal_staff`), keine Waffe. Brettfigur wie der Dorfälteste in 1-2: keine `sprite`-Angabe, es gilt die Figur der Klasse `healer` (`art: cleric`, kein Modell, Platzhalter). Porträt/Halbfigur: Sprecher `paktwacht_steward` (`fallback: skip`).
+  - **Tor (OFFEN 1) und Heimsuchung (OFFEN 7):** Torfelder bleiben durchlässig (keine Tor-TP, kein Zerstören); keine Heimsuchungs-Anker im Finale.
+  - **Leutnants:** Hask (Welle 1), Ulvric (Welle 2, Klasse `wolf_rider`, die Klasse kommt vom Leutnant), Grosk (Welle 2, nur wenn nicht beigetreten, Flag `joined_grosk`), Morra führt (Welle 3, Runde 7). Eisenwaffen auf der Karte. Alle mit Leutnant-Mechanik.
+  - **Morras Ende (OFFEN 3):** Zu Beginn von Runde 10 ruft Morra den Rückzug (Zeile als Blase über ihr, Szene `scn.m1_8.morra_retreat`, Trigger `t_morra_retreat`) und zieht mit dem vorhandenen Profil `flee` zum Südrand ab; sie zählt dann wie geschlagen (Groll, Kopfgeld). Fällt sie vorher auf 0 TP, flieht sie wie jeder Leutnant.
+  - **Szene davor:** `scn.m1_8.intro`, Regen, Abend; genau eine Zeile je E4-Ausgang (`{ flag: { e04: shelter } }` bzw. `secret`), ohne Flag keine von beiden. Der Verwalter spricht.
+  - **Szene danach (OFFEN 4, 11):** `scn.m1_8.outro` (Morra fort, die Heimat hielt, Beat 7b), dann Tafel `glutfunken` und der Moment: zwei Funken steigen auf, danach die Karte „2 × Glutfunke“; die Gegenstände liegen im Konvoi.
+  - **Item (OFFEN 8):** `ember_spark` (Glutfunke / Ember spark), Slot bag, Tag `convoyOnly`, Preis 3 000; der Aufstieg bleibt Story 10.2, `promotion_seal` bleibt unberührt.
+  - **Knoten (OFFEN 5, 6):** `m1_8` `fixed: finale`, `requires: [{ completed: m1_7 }]`, `expectedLevel 9` (Deckel 10), `merchantTier 2`, `place: paktwacht_heimat`. Weltkarte: `node: m1_8` in `valmora.yaml`.
+  - **Nebenziele (OFFEN 9):** `s_clean` bleibt; ein zweites ist OFFEN, weil kein vorhandener Typ passt (`kill_with` gilt nur für Bosse, Leutnant-Ansprechen ist Story 2.7).
+- **OFFEN (Stand der Story-Autorin; Antworten siehe oben, Rest ist im Dev Agent Record vermerkt):**
   1. **Torregel:** Das Haupttor ist ein durchlässiges Torfeld (Platzhalter); ein geschlossenes Tor (`door`) wäre für Gegner unpassierbar und der Verwalter unangreifbar, Rammen/Zerstören gibt es nicht. Wie wird das Tor in der Schlacht behandelt (Torfeld bleibt durchlässig, Torfeld als Engstelle, späteres Zerstören)? Dazu fehlt der GDD-Satz zum „Verteidigungsfeld“ (siehe oben).
   2. **Verwalter:** Klasse `healer` im Layout (es gibt kein Kleriker-/Heiler-Modell unter `art/models/units`), keine `sprite`-Angabe, Stufe 3, `items: []`; welches Modell, ob er heilt oder nur Schutzziel ist, Werte/TP des NPCs (Überlebbarkeit), `ai: hold`.
   3. **Morras Flucht am Ende:** Wann und wie (Sieg-Auslöser `defend` endet zu Beginn von Runde 11; Morra tritt erst in Runde 7 auf): ein Trigger vor dem Siegestext, eine Szene nach dem Sieg ohne Karten-Event, oder Regel „Leutnants fliehen bei Sieg“ (Kern, `gone: 'fled'`).
@@ -95,10 +105,63 @@ damit Akt 1 mit etwas endet, das der Truppe gehört.
 
 ### Agent Model Used
 
+Claude Sonnet 5.5 (Claude Code), 2026-10-26
+
 ### Debug Log References
+
+- Ablauf im Dev-Server geprüft (`await __hc.devNode('m1_8', 'easy')`, 375 × 812): Szene davor → Vorbereitung („Schutzziel Verwalter: 10 Runden halten.“) → Kampf → `__hc.autoWin()` → `scn.m1_8.outro` → Skip hält am Funkenmoment (Tafel `glutfunken`, Funken) → Tippen öffnet die Karte „2 × Glutfunke“ → letzte Zeile → Ergebnis → Weltkarte „Akt 2 „Glut“ erscheint bald“ (dazu die einmalige Sicherungs-Erinnerung). Nicht im Browser geprüft: Morras Rückzug in Runde 10 und die beiden E4-Zeilen (nur Unit-Tests).
+- Screenshots (AC 13) wurden nicht abgelegt; der Ablauf ist wie beschrieben durchgespielt.
 
 ### Completion Notes List
 
+**Technische Entscheidungen (innerhalb bestehender Muster):**
+
+1. **Item `ember_spark`:** `kind: seal` (das Schema kennt kein `promotion`, Architektur §5.11 nennt es), kein `use`/`promote` (Story 10.2), Tag `convoyOnly`, Seltenheit `rare`, Preis 3 000, Bild `art/items/ember_spark.png` (vorhanden, `content:check` prüft es). Die Nebenquest-Session kann dieselbe ID verwenden.
+2. **Zwei Glutfunken = zwei Knoten-Wirkungen `item`** (`effects`, nur bei Sieg) statt `grants`: `grants` ist an eine Einheit gebunden, `effects` stehen in `BattleResult.effects`, aus denen die Karte entsteht. Die Konsequenz-Zeile `item` hat jetzt `amount` (gleiche Gegenstände in Folge werden eine Zeile; DE/EN `ui.consequence.itemCount.title` „{n} × {name}“).
+3. **Funkenmoment:** neue optionale Szenenzeile `moment: reward` (Schema, `SceneSpeech`, `ResolvedLine`). `concludeBattle` gibt der Post-Szene die Karten-Zeilen der Knoten-Wirkungen mit (`Screen.dialogue.rewards`); `Dialogue` lässt bei dieser Zeile zwei Funken aufsteigen (CSS, 1,4 s, bei `prefers-reduced-motion` stehend) und öffnet beim Weitertippen die Karte („Aus der Glut“, Kicker „Erhalten“; `ConsequenceCard` bekam `mark`). Auto-Modus öffnet die Karte ebenfalls; Skip hält an dieser Zeile an (die Gegenstände liegen schon im Konvoi, die Karte soll nie übersprungen werden). Ohne `rewards` ist die Zeile eine gewöhnliche. Tonhaken: Kommentar in `Sparks` (Funkenknistern kommt mit der Audio-Story). Nur `src/ui` und `src/app`, nichts in `src/render`.
+4. **Morras Rückzug:** neue optionale Angabe `onBoard` an der Trigger-Aktion `dialogue` (die Zeile spielt nur, solange die Einheit auf der Karte steht; sonst riefe Morra aus dem Off, wenn sie schon geflohen ist). Die Zeile ist die Ein-Zeilen-Szene `scn.m1_8.morra_retreat`; Karten-Szenen, deren Sprecher alle auf dem Brett stehen, spielen ohnehin als Blase (kein neues Barks-System nötig). `set_ai` stellt Morra auf `flee`; ihr `ai.area` ist der Südrand `[0,17,15,19]`.
+5. **Kern-Änderung `flee` (`src/core/ai/ai.ts`):** ein Leutnant, der so das Gebiet erreicht, gilt als geschlagen (`gone: 'fled'` + Ereignis `fled`, wie bei 0 TP) statt `escaped`: nur so zählen Groll und Kopfgeld (`applyLieutenantOutcome` kennt nur `fled`), und die Flucht-Zeile aus `scn.lt.morra` spielt beim Verlassen. Wer schon im Gebiet steht, verlässt es sofort. Alle anderen Einheiten bleiben bei `escaped`.
+6. **Hintergrund beider Szenen `paktwacht_heimat`** (die Story nannte für die Szene davor `paktwacht_ruine`; laut Produktinhaber ist die Burg jetzt Heimat). Das Bild ist ein Herbsttag, der Text sagt Abend und Regen: Grafik-Frage, siehe Offen.
+7. **Verwalter:** Stufe 8 (Tuning), `heal_staff`, `ai: hold` (die KI heilt Verbündete in Reichweite 1, ohne sich zu bewegen), keine `sprite`-Angabe wie der Dorfälteste in 1-2 (Figur der Klasse `healer`, `art: cleric`, es gibt kein Modell; `content:check` prüft `sprite` nur, wenn sie angegeben ist). Unit-Test: er heilt Kael neben sich und bleibt im Bergfried.
+8. **Fund und Korrektur:** der Zieltext „Beschütze Liora für {turns} Runden.“ stand fest in `ui.world.goal.defend` (Vorbereitung, Zielblatt, Kampf-Pille) und hätte beim Verwalter „Liora“ gesagt. `goalLine(v, units)` nimmt den Namen jetzt aus den Einheiten der Karte; Text neutral „Schutzziel {name}: {turns} Runden halten.“ / „Protect {name}: hold for {turns} turns.“ (ohne Artikel, weil „Verwalter“ ohne Artikel steht). 1-2 und 1-3 profitieren mit.
+9. **Bestehende Tests, die den Knoten kannten:** `core.test.ts` (Orte; Platzhalter-Orte mit `glutfunken`), `migrations.test.ts` (Knoten-IDs), `m1-7.test.ts` (nach 1-7 ist das Finale offen); `lieutenants-review.test.ts` spielte die m1_8-Karte über den ersten Knoten (Hilfsgriff `M18`) und nimmt jetzt den echten Knoten mit einem Heer der Stufe 9 (`strong`), weil ein frisches Zwei-Mann-Heer den Verwalter vor Runde 4 verliert.
+10. **E2E (`tests/e2e/finale.spec.ts`):** Produktionsweg ohne Dev-Helfer. Die Spezifikation baut aus dem Inhalt auf der Platte einen exportierten Spielstand (Heer der Stufe 9, Finale vom Simulator-Spieler bis zum Beginn von Runde 10) und importiert ihn über die Kampagnen-Liste (Datei-Eingabe). Dann Phase beenden, Sieg, Szene bis zum Funkenmoment (Tafel `glutfunken`, `.vn-sparks`), Karte „2 × Ember spark/Glutfunke“, Ergebnis, Weltkarte „coming soon/erscheint bald“. Läuft nur im Projekt `iphone13` (lang, Software-WebGL). Kein `__board`- oder Dev-Hook nötig.
+11. Nichts committet. Die Entscheidungen stehen in dieser Story; `concept/…/.decision-log.md` wurde nicht angefasst.
+
+**Simulation** (Karte nach dem Tuning: generische Gegner Stufe 7, Verwalter Stufe 8, Leutnant-Stufen rechnet `createBattle`; Gegnerzahl 13/15/17). Zwei Messungen, weil die Zwischenkette Prolog → 1-1 → ch01 → ch02 → 1-6 → 1-7 → 1-8 nur ein Heer der Stufe 4–5 liefert, 1-8 aber für Stufe 9 (`expectedLevel`) gedacht ist:
+
+| `pnpm sim m1_8 --runs 50` (Kette) | erreicht | Sieg | Niedergestreckte/Lauf | Korridor |
+|---|---|---|---|---|
+| Leicht | 49/50 | 96 % | 0,51 | Sieg ≥ 0,95 ok; Niedergestreckte ≤ 0,5 knapp daneben |
+| Normal | 14/50 | 36 % | 0,86 | Sieg 0,75–1,0 daneben (Heer Stufe 5,5) |
+| Schwer | 0/50 | – | – | die Kette verliert vorher |
+
+| Heer der Stufe 9 (sieben Gefährten, 30–40 Läufe) | Sieg | Niedergestreckte | Korridor |
+|---|---|---|---|
+| Leicht | 0,97 | 0,28 | ok |
+| Normal | 0,93 | 0,80 | ok (0,75–1,0 / 0,4–1,3) |
+| Schwer | 0,03 | 1,23 | **daneben (0,30–0,70)** |
+
+Mit und ohne Grosk (Flag `joined_grosk`, Heer Stufe 9, 30 Läufe), Sieg: Leicht 0,97 / 0,97, Normal 0,97 / 1,00, Schwer 0,03 / 0,00. E4 hat keinen Einfluss auf die Karte. `pnpm sim --campaign act1 --runs 20` (Normal): 1-8 erreicht von 8 von 20, Sieg 50 % (unter dem Korridor), Niedergestreckte 1,13, Gold 1 500, Heer 5,5 (erwartet 9); 1-7 liegt in der Zwischenkette weit daneben (Sieg 40 %, Gold 3 450), fertig 7/20.
+
+**Warum Schwer nicht erreichbar ist (Befund):** der Simulator-Spieler (`autoCommand`) sammelt sich bei `defend` auf dem Schutzziel statt die Tore zu halten; auf Schwer (+15 % Werte, Affixe, sofort handelnde Verstärkung) fällt der Verwalter dann in Runde 6–7 immer. Auch ohne alle Leutnants und mit Gegnerstufe 6 bleibt Schwer bei 0,21; Verwalter-Stufen über 9 und andere Standorte (8,1 / 8,2) ändern nichts. Das ist eine Frage des Spieler-Modells im Simulator (ein `defend`-Verhalten, das die Tore hält), nicht der Karte. Es zu ändern verschiebt auch ch02 und 1-2, deshalb hier nicht angefasst.
+
+**Offen / Rückfragen:**
+
+- Schwer liegt außerhalb des Korridors (siehe Befund); Normal und Leicht sind es mit der Zwischenkette wegen des Heeres der Stufe 4–5. Nach 1-2 bis 1-5 und einem `defend`-Spielermodell neu abstimmen; die Gegnerstufen (7, Verwalter 8) sind auf Stufe 9 des Heeres gemessen.
+- Zweites Nebenziel: OFFEN (kein passender Typ).
+- Grafik: der Hintergrund `paktwacht_heimat` ist ein Herbsttag; Abend, Regen und Nacht der Szene davor und die Karten-Stimmung passen nicht dazu. Gleiches gilt für den Verwalter: kein Brettmodell (Platzhalterfigur der Klasse `healer`).
+- Zielsatz „Schutzziel {name}: …“ ist neu formuliert (Artikel-frei); Wortlaut bitte absegnen.
+- Grosk wird in der Szene davor nicht genannt (er kommt nur, wenn er nicht beigetreten ist).
+- Der Erfolg der Weltkarten-Meldung hängt am Paketstand: ohne Paket für Akt 2 erscheint „erscheint bald“; mit Paket läuft die Fortsetzung wie bisher (nicht gebaut).
+
 ### File List
 
+Inhalt: `content/acts/act1/maps/m1_8_paktwacht_halten.yaml`, `content/acts/act1/campaign.yaml`, `content/acts/act1/scenes/scn.m1_8.{intro,morra_retreat,outro}.yaml` (neu), `content/core/items.yaml`, `content/core/locales/{de,en}.names.yaml`, `content/core/locales/{de,en}.yaml`, `content/locales/en/act1.dialogue.yaml`, `content/world/valmora.yaml`.
+Kern, App, UI: `src/core/ai/ai.ts`, `src/core/battle/objectives.ts`, `src/core/campaign/consequences.ts`, `src/core/campaign/scene.ts`, `src/core/defs.ts`, `src/content/schemas.ts`, `src/app/App.tsx`, `src/app/state/{flow,screen}.ts`, `src/app/screens/{Scene,Battle,BattlePanels,Camp}.tsx`, `src/ui/{Dialogue.tsx,Dialogue.css,ConsequenceCard.tsx,goalText.ts}`.
+Tests: `tests/unit/m1-8.test.ts` (neu), `tests/e2e/finale.spec.ts` (neu), `tests/unit/{core,lieutenants-review,m1-7,migrations}.test.ts`.
+Story: diese Datei, `sprint-status.yaml` (nur die Zeile 9-9).
+
 ### Change Log
+
+- 2026-10-26: Mission 1-8 spielbar (Karte, Knoten `fixed: finale`, Szenen, Morras Rückzug, Item `ember_spark`, Funkenmoment mit Karte „2 × Glutfunke“), Akt-Ende; Befund und Korrektur des Zieltextes `defend`.

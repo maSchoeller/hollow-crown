@@ -382,7 +382,8 @@ export type TriggerWhen =
   | { type: 'hp_below'; unit: string; percent: number };
 
 export type TriggerAction =
-  | { action: 'dialogue'; id: string }
+  /** `onBoard`: plays only while this unit still stands on the map (a lieutenant's call must not come from one who has left) */
+  | { action: 'dialogue'; id: string; onBoard?: string }
   | { action: 'set_ai'; units: string[]; profile: AiDef['profile'] }
   | { action: 'spawn'; units: MapUnitDef[] }
   | { action: 'set_flag'; flag: string };
@@ -543,6 +544,11 @@ export interface SceneSpeech {
   text: string;
   /** illustration panel from this line on (background id; replaces the scene background full-screen), `none` ends it; a panel stands for at most `MAX_PANEL_LINES` text lines */
   panel?: string;
+  /**
+   * `reward`: the moment of the node's reward (story 9.9): sparks rise over the line, and when the player goes on, the card with the items
+   * the won node gave (`BattleResult.effects`) opens. The line is shown as it is when the scene has no reward to show.
+   */
+  moment?: 'reward';
   requires?: Condition[];
   /** extra line (key `….memorial`) after this one when the first figure of the chain has fallen */
   memorial?: { speaker: string[]; text: string; mood: Mood };

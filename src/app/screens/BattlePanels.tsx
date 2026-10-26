@@ -192,7 +192,7 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
     <Sheet title={t(map.nameKey)} aside={t('ui.obj.title')} onClose={onClose}>
       <div class="bp-goal is-win">
         <small>{t('ui.obj.victory')}</small>
-        <b>{goalLine(v)}</b>
+        <b>{goalLine(v, s.units)}</b>
         {(v.type === 'defend' || v.type === 'survive') && <span>{t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })}</span>}
         {v.type === 'treasure' && <span>{goalStand(v, s)}</span>}
       </div>

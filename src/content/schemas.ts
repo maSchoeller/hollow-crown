@@ -316,7 +316,7 @@ const triggerWhen = z.discriminatedUnion('type', [
 ]);
 
 const triggerAction = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('dialogue'), id: z.string() }),
+  z.object({ action: z.literal('dialogue'), id: z.string(), onBoard: z.string().optional() }),
   z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
@@ -475,6 +475,8 @@ export const sceneSchema = z.strictObject({
         text: z.string().min(1),
         /** illustration panel from this line on: a background id, or `none` to return to the scene background (architecture §5.8) */
         panel: z.union([z.literal('none'), z.string().regex(/^[a-z0-9_]+$/)]).optional(),
+        /** the moment of the node's reward (sparks, then the reward card) after this line, see `SceneSpeech.moment` */
+        moment: z.literal('reward').optional(),
         requires: conditionsListSchema.optional(),
         memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),

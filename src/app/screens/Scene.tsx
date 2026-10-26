@@ -1,5 +1,6 @@
 /** Scenes wired to the app: story context, effects, seen record, auto mode and the built half figures. */
 import { useEffect } from 'preact/hooks';
+import type { ConsequenceLine } from '../../core';
 import { Dialogue } from '../../ui/Dialogue';
 import { SpeechBubbles } from '../../ui/SpeechBubbles';
 import { builtBackgrounds, loadBuiltBackgrounds } from '../state/backgrounds';
@@ -18,7 +19,7 @@ const head = (unit: string) => (
 const autoProps = () => ({ auto: settings.value.dialogueAuto, onAuto: () => updateSettings({ dialogueAuto: !settings.value.dialogueAuto }) });
 
 /** Visual-novel scene; `overlay` lets the battle show through (scene with several speakers or answers during a battle). */
-export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; onDone: () => void }) {
+export function Scene({ id, overlay, rewards, onDone }: { id: string; overlay?: boolean; rewards?: ConsequenceLine[]; onDone: () => void }) {
   useEffect(loadHalfFigures, []);
   useEffect(loadBuiltBackgrounds, []);
   return (
@@ -28,6 +29,7 @@ export function Scene({ id, overlay, onDone }: { id: string; overlay?: boolean; 
       ctx={storyContext()}
       avatarPortrait={avatarOf()}
       overlay={overlay}
+      rewards={rewards}
       seen={isSceneSeen(id)}
       halves={halfFigures.value}
       backgrounds={builtBackgrounds.value}
