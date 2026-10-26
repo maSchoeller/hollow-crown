@@ -35,6 +35,71 @@ board:
   # figureWidth = halbe Breite der Figur in Feldern für die seitliche Überdeckung
   fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3 }
 
+# Story 8.6: Licht und Wetter (Art Direction §2.1, §2.4, §2.5, §8). Startwerte [C], am Bildschirm eingestellt.
+# Eine Karte ohne timeOfDay und weather sieht aus wie bisher; Farben als Hex.
+look:
+  # Teamfarben §2.1: ui = Bodenring und Markierungsfarbe, ramp = Tuch dunkel -> hell (K0..K3); das Tuch ist ungelit
+  teams:
+    player: { ui: "#2F64C8", ramp: ["#1E3F86", "#2F64C8", "#5C8EE6", "#A9C6F4"] }
+    enemy:  { ui: "#B83A2E", ramp: ["#7A2219", "#B83A2E", "#DB6A5C", "#F2B2A8"] }
+    other:  { ui: "#3FA65A", ramp: ["#25693A", "#3FA65A", "#74C98A", "#BFE6C9"] }
+  # Helligkeit einer Figur am Mittag (Anteil ihrer Grundfarbe), auf die sich figureFloor bezieht: Untergrenze = figureFloor * figureReference * Grundfarbe
+  figureReference: 0.85
+  # Grau der neutralen Textur unter dem Teamtuch der Bild-zu-3D-Figuren (tools/art/prepare_tripo_unit.py CLOTH_GREY)
+  clothGrey: 0.85
+  # Tuchschluessel K0..K3 der Figuren -> Stufe der Teamrampe (Entscheidung 2026-10-26): die Bild-zu-3D-Figuren tragen K2, das Tuch soll aber in der UI-Farbe (K1) stehen wie der Ring
+  clothSteps: [0, 1, 1, 3]
+  # Tageszeit: Basis fuer ambient und sun; ambient/sun der Karte ueberschreiben sie Feld fuer Feld (nach der Jahreszeit).
+  # azimuthDeg: 0 = Norden (+Z), 90 = Osten; sky = Himmel (Szenenhintergrund); figureFloor = Untergrenze der Figuren (§2.5, nicht der Landschaft);
+  # rim = Randlicht der Figuren (strength 0 = aus); pointBoost = Faktor auf die Punktlichter (Karten-lights und Feuer)
+  timeOfDay:
+    morning: { ambient: { color: "#dce6f4", intensity: 0.95 }, sun: { color: "#cfe0ff", intensity: 1.0,  azimuthDeg: 90,  elevationDeg: 20 }, sky: "#a9c4e8", figureFloor: 0.85, rim: { color: "#ffffff", strength: 0 }, pointBoost: 1.0 }
+    noon:    { ambient: { color: "#fff6e6", intensity: 0.75 }, sun: { color: "#fff4e0", intensity: 0.8,  azimuthDeg: 180, elevationDeg: 68 }, sky: "#8fc0ee", figureFloor: 1.0,  rim: { color: "#ffffff", strength: 0 }, pointBoost: 1.0 }
+    evening: { ambient: { color: "#e6c9c4", intensity: 0.95 }, sun: { color: "#ff9a50", intensity: 1.2,  azimuthDeg: 270, elevationDeg: 14 }, sky: "#7b5f9e", figureFloor: 0.8,  rim: { color: "#ffffff", strength: 0 }, pointBoost: 1.0 }
+    night:   { ambient: { color: "#3a4a7a", intensity: 0.45 }, sun: { color: "#9fb4ff", intensity: 0.4,  azimuthDeg: 120, elevationDeg: 40 }, sky: "#0f1428", figureFloor: 0.6,  rim: { color: "#8fb0ff", strength: 0.35 }, pointBoost: 1.5 }
+  # Wetter: acts = Akte, in denen es vorkommt (content:check meldet andere als Fehler); grade = Licht/Himmel (gilt auf allen Stufen):
+  # ambientScale * Umgebungsstaerke, der Himmel nimmt den Farbton von sky zu skyMix an und behaelt die Helligkeit der Tageszeit.
+  # particles = Zahl je Qualitaetsstufe (low 0, mid die Haelfte von high), wet = Glanz des Bodens (auch auf low), puddles nicht auf low,
+  # mist = Szenennebel (auch auf low; near/far = Tiefe in Feldern um den Kamerapunkt), ground = Bodennebel-Ebenen (nicht auf low)
+  weather:
+    clear: { acts: [1, 2, 3] }
+    rain:
+      acts: [1, 2]
+      grade: { ambientScale: 0.9, sky: "#8b98a8", skyMix: 0.6 }
+      particles: { high: 600, mid: 300, low: 0, fallSpeed: 14, size: 0.02, length: 0.5, color: "#cfe3f5", alpha: 0.5 }
+      wet: { specular: 0.3, power: 28 }
+      puddles: { count: 0, alpha: 0.4, color: "#9fb4c8" }
+    fog:
+      acts: [1, 2]
+      grade: { ambientScale: 0.95, sky: "#c4cdd2", skyMix: 0.6 }
+      mist: { color: "#c9d2d8", near: -4, far: 16 }
+      ground: { layers: 1, height: 0.22, alpha: 0.28, driftSpeed: 0.05, color: "#dfe5e8" }
+    ash:
+      acts: [1, 3]
+      grade: { ambientScale: 0.92, sky: "#8d8a90", skyMix: 0.5 }
+      particles: { high: 260, mid: 130, low: 0, fallSpeed: 0.9, size: 0.1, color: "#5b5a5e", alpha: 0.9, emberShare: 0.1 }
+    snow:
+      acts: [3]
+      grade: { ambientScale: 1.0, sky: "#cfd8e4", skyMix: 0.5 }
+      particles: { high: 320, mid: 160, low: 0, fallSpeed: 1.1, size: 0.11, color: "#ffffff", alpha: 0.95 }
+  # Jahreszeit je Akt (§2.4), ueber jeder Tageszeit (nur mit timeOfDay): tint wird zu strength in Licht und Himmel gemischt,
+  # sunElevationOffsetDeg verschiebt die Sonnenhoehe (Sommer hoeher, Winter flacher)
+  season:
+    1: { tint: "#ffd89a", strength: 0.12, sunElevationOffsetDeg: 6 }   # Spaetsommer: warm-golden
+    2: { tint: "#f0a870", strength: 0.1,  sunElevationOffsetDeg: 0 }   # Herbst
+    3: { tint: "#d8e6ff", strength: 0.12, sunElevationOffsetDeg: -8 }  # Winter
+  # Effekte, Zeiten in ms bei 1x (bei 2x und in der Gegnerphase durch die Geschwindigkeit geteilt)
+  fx:
+    # Krit: Band gleitet ein (cutInInMs), steht (cutInHoldMs, bis zum Treffer), gleitet aus (cutInOutMs, ab dem Treffer, laeuft in den Freeze);
+    # Freeze (freezeMs: Figuren und Effekte stehen), dann Stern, Wackeln (shakeMs, Staerke shake), Rueckstoss des Ziels (recoilMs),
+    # Rueckweg (returnMs), Pause (settleMs). Summe = Treffer + freeze + recoil + return + settle <= 600 (Test)
+    crit: { cutInInMs: 120, cutInHoldMs: 130, cutInOutMs: 60, freezeMs: 80, shakeMs: 140, shake: 0.12, recoilMs: 120, returnMs: 70, settleMs: 30, numberScale: 2 }
+    # Tod in Asche: Flockenstoss ashMs, Verblassen fadeMs nach oben (rise Felder), kurzes Wackeln; flakes = Zahl Aschenflocken je Qualitaet, embers davon Glutpunkte
+    death: { ashMs: 560, fadeMs: 500, rise: 0.35, shakeMs: 100, shake: 0.06, flakes: { high: 40, mid: 24, low: 12 }, embers: 6, colour: "#5b5a5e", emberColour: "#ff9a3c" }
+    # Statussymbol ueber der Figur: Ein-/Ausblenden und Kantenlaenge in CSS-px
+    # feet = Sprite-Effekt (art/fx) am Fuss der Figur, wenn der Status eintritt (§8: Flamme, Tropfen, Erdklumpen)
+    status: { fadeMs: 150, sizePx: 24, feet: { burning: flame, wet: water_burst, slowed: earth_spikes } }
+
 # GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
 # Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel
 # der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die

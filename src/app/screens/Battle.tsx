@@ -46,9 +46,13 @@ import {
   type Team,
 } from '../../core';
 import { mapOf } from '../../core/battle/objectives';
-import { BoardView } from '../../render/board/board';
+import { BoardView, type CutInEvent } from '../../render/board/board';
 import { t } from '../../i18n';
 import { Scene, SceneBubbles } from './Scene';
+import { CutIn, type CutInShown } from './CutIn';
+import { cutInLineColour, cutInName, cutInPortrait } from '../battle/cutIn';
+import { halfFigures, loadHalfFigures } from '../state/halves';
+import { artId } from './unitArt';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { goalLine, goalStand } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
@@ -154,6 +158,9 @@ export function Battle() {
   useEffect(() => () => setWanted(null), []);
   const [tileInfo, setTileInfo] = useState<Pos | null>(null);
   const [banner, setBanner] = useState<{ text: string; cls: string } | null>(null);
+  /** the cut-in band of a critical hit (story 8.6) */
+  const [cutIn, setCutIn] = useState<CutInShown | null>(null);
+  const cutSeq = useRef(0);
   const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
   const [bark, setBark] = useState<{ b: Bark; seq: number; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
@@ -187,6 +194,7 @@ export function Battle() {
   };
 
   // --------------------------------------------------------------- board lifecycle
+  useEffect(loadHalfFigures, []);
   useEffect(() => {
     const board = new BoardView(stageRef.current!, floatRef.current!, data, {
       onTap: (p) => tapRef.current(p),
@@ -194,6 +202,7 @@ export function Battle() {
       onCancel: () => cancelRef.current(),
       onEvent: (e) => eventRef.current(e),
       onUnitHp: (uid, v) => setHp((h) => ({ ...h, [uid]: v })),
+      onCutIn: (c) => cutInRef.current(c),
       insets: () => {
         const c = stageRef.current?.getBoundingClientRect();
         if (!c) return { top: 0, right: 0, bottom: 0, left: 0 };
@@ -417,6 +426,24 @@ export function Battle() {
         resolve();
       }, ms / (boardRef.current?.speed ?? 1));
     });
+
+  /** Builds the band of a critical hit from the attacker: portrait `angry` (letter medallion without one), name of the skill or weapon, speed line colour. */
+  const cutInRef = useRef<(c: CutInEvent) => void>(() => undefined);
+  cutInRef.current = (c) => {
+    const u = battle.value!.state.units.find((x) => x.uid === c.unit);
+    if (!u) return;
+    const name = unitName(u);
+    setCutIn({
+      seq: ++cutSeq.current,
+      team: u.team,
+      name: cutInName(c.skill, u.equip.mainHand, { skill: (id) => t(`skill.${id}.name`), item: (i) => itemName(data, i) }),
+      portrait: cutInPortrait(artId(u.portrait, u.classId), halfFigures.value, name),
+      line: cutInLineColour(data, c.element, u.team),
+      inMs: c.inMs,
+      holdMs: c.holdMs,
+      outMs: c.outMs,
+    });
+  };
 
   const eventRef = useRef<(e: GameEvent) => Promise<void> | void>(() => undefined);
   eventRef.current = async (e: GameEvent) => {
@@ -1176,6 +1203,7 @@ export function Battle() {
             </Piece>
           </div>
         )}
+        {cutIn && <CutIn cut={cutIn} onDone={() => setCutIn((c) => (c?.seq === cutIn.seq ? null : c))} />}
         {banner && <div class={`banner ${banner.cls}`}>{banner.text}</div>}
         {toast && <Toast text={toast.text} lead={toast.item && <ItemImage data={data} item={toast.item} size={32} />} onDone={() => setToastState(null)} />}
       </div>

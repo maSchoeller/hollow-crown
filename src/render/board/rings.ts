@@ -45,6 +45,7 @@ class TeamRings {
     this.mesh.alphaIndex = -1;
     const m = new StandardMaterial(`rings:${team}`, scene);
     m.disableLighting = true;
+    m.fogEnabled = false; // legibility rule (art-direction 2.5): rings are never tinted by scene light or mist
     m.emissiveColor = Color3.FromHexString(colour);
     m.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
     m.zOffset = -1;

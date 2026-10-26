@@ -23,6 +23,11 @@ export const CORE_ROLES = ['vanguard', 'skirmisher', 'marksman', 'elementalist',
 export type MoveType = 'foot' | 'armored' | 'mounted' | 'flier' | 'monster';
 export type Team = 'player' | 'enemy' | 'other';
 export type StatusId = 'burning' | 'wet' | 'slowed' | 'knockback';
+/** Time of day and weather of a battle map (story 8.6, art-direction §2.5); render only, the rules never read them. */
+export const TIMES_OF_DAY = ['morning', 'noon', 'evening', 'night'] as const;
+export type TimeOfDay = (typeof TIMES_OF_DAY)[number];
+export const WEATHERS = ['clear', 'rain', 'fog', 'ash', 'snow'] as const;
+export type Weather = (typeof WEATHERS)[number];
 export type ItemSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory' | 'bag';
 export type EquipSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory1' | 'accessory2';
 export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head', 'body', 'accessory1', 'accessory2'];
@@ -412,10 +417,15 @@ export interface MapDef {
   noDeath?: boolean;
   legend: Record<string, string>;
   terrain: string;
-  ambient?: { color: string; intensity: number };
+  /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
+  ambient?: { color?: string; intensity?: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;
-  /** directional light of the 3D board (render only, D7); compass bearing the light comes from, elevation above the horizon */
-  sun?: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number };
+  /** directional light of the 3D board (render only, D7); compass bearing the light comes from, elevation above the horizon; each field alone may override the preset */
+  sun?: { color?: string; intensity?: number; azimuthDeg?: number; elevationDeg?: number };
+  /** story 8.6: light preset of the time of day (content/core/render.yaml look.timeOfDay); absent: the map's own light, exactly as before */
+  timeOfDay?: TimeOfDay;
+  /** story 8.6: weather (look.weather says which acts have which); absent = clear */
+  weather?: Weather;
   objects: MapObjectDef[];
   initialEffects: Array<{ effect: 'burning'; tiles: Pos[]; turns: number }>;
   deploy: { max: number; forced: string[]; slots: Pos[] };
@@ -919,6 +929,8 @@ export interface RenderDef {
     /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */
     fade: { alpha: number; cover: number; figureWidth: number };
   };
+  /** story 8.6: team colours, light by time of day, weather, season per act and the timing of the strike effects */
+  look: LookDef;
   /** GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<WeaponGroup, GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
@@ -931,6 +943,59 @@ export interface RenderDef {
     zoomMs: number;
     /** how much closer the map goes on a chosen place */
     focusZoom: number;
+  };
+}
+
+/** Light of a time of day or a season: colour, strength and (sun) the direction. */
+export interface TimeOfDayDef {
+  ambient: { color: string; intensity: number };
+  sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number };
+  /** background colour of the scene (sky beyond the landscape) */
+  sky: string;
+  /** a figure is never darker than this share of its noon rendering (art-direction §2.5); the landscape may be */
+  figureFloor: number;
+  /** rim light on figures; strength 0 = off */
+  rim: { color: string; strength: number };
+  /** factor on the strength of point lights (torches, fires, windows) */
+  pointBoost: number;
+}
+
+/** Weather: acts it may appear in (content:check), grade of light and sky, and the parts that make it. */
+export interface WeatherDef {
+  acts: number[];
+  /** `ambientScale` multiplies the ambient strength; the sky takes the hue of `sky` at `skyMix`, keeping the brightness of the time of day */
+  grade?: { ambientScale: number; sky: string; skyMix: number };
+  /** falling particles per quality level (low 0) */
+  particles?: { high: number; mid: number; low: number; fallSpeed: number; size: number; length?: number; color: string; alpha: number; emberShare?: number };
+  /** wet shine of the ground: specular strength and power of the terrain materials */
+  wet?: { specular: number; power: number };
+  puddles?: { count: number; alpha: number; color: string };
+  /** scene mist (kept on `low`): linear fog from `near` to `far` tiles of depth around the camera target */
+  mist?: { color: string; near: number; far: number };
+  /** drifting fog layers just above the blocks (not on `low`) */
+  ground?: { layers: number; height: number; alpha: number; driftSpeed: number; color: string };
+}
+
+export interface LookDef {
+  /** team colours (art-direction §2.1): `ui` = ring and marking colour, `ramp` = cloth dark → light (K0..K3) */
+  teams: Record<Team, { ui: string; ramp: [string, string, string, string] }>;
+  /** brightness of a figure at noon that the floors of `timeOfDay[..].figureFloor` refer to (share of its albedo) */
+  figureReference: number;
+  /** grey of the neutral texture under the team cloth of image-to-3D figures (tools/art/prepare_tripo_unit.py) */
+  clothGrey: number;
+  /** ramp step the cloth key K0..K3 of a figure is drawn in (K2 of image-to-3D figures -> K1, the UI colour) */
+  clothSteps: [number, number, number, number];
+  timeOfDay: Record<TimeOfDay, TimeOfDayDef>;
+  weather: Record<Weather, WeatherDef>;
+  /** season per act (art-direction §2.4), above every time of day: tint of light and sky, offset of the sun's height */
+  season: Record<string, { tint: string; strength: number; sunElevationOffsetDeg: number }>;
+  fx: {
+    /** critical hit (story 8.6): times in ms at 1x, counted from the start of the attack */
+    crit: { cutInInMs: number; cutInHoldMs: number; cutInOutMs: number; freezeMs: number; shakeMs: number; shake: number; recoilMs: number; returnMs: number; settleMs: number; numberScale: number };
+    /** death in ash */
+    death: { ashMs: number; fadeMs: number; rise: number; shakeMs: number; shake: number; flakes: Record<'high' | 'mid' | 'low', number>; embers: number; colour: string; emberColour: string };
+    /** status icon over a figure: fade in/out ms and the size in CSS px */
+    status: { fadeMs: number; sizePx: number; feet: Record<string, string> };
   };
 }
 
