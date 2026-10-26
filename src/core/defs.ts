@@ -240,6 +240,8 @@ export interface SkillCondition {
   weaponType?: WeaponType;
   attackerNoElement?: boolean;
   notEffective?: boolean;
+  /** an ally of the bearer lies downed on the field within this many tiles (Erbstück, story 9.12) */
+  allyDownedWithin?: number;
 }
 
 export interface SkillEffect {

@@ -1,6 +1,6 @@
 import type { GameData, Pos, SkillCondition, SkillDef, StatMods, StatKey } from '../defs';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
-import { active, dist, isAlly, neighbors, samePos, terrainAt, unitAt } from '../util';
+import { active, dist, isAlly, neighbors, onMap, samePos, terrainAt, unitAt } from '../util';
 import type { WeaponProfile } from './items';
 import { itemDef } from './items';
 
@@ -117,6 +117,12 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
   if (c.weaponType !== undefined && ctx.ownWeapon?.weaponType !== c.weaponType) return false;
   if (c.attackerNoElement && ctx.opponentWeapon?.element) return false;
   if (c.notEffective && ctx.opponentEffective) return false;
+  if (c.allyDownedWithin !== undefined) {
+    // Erbstück: an ally of the bearer lies downed (still on the map) within reach; the formula of the fight reads it, so the preview shows it
+    if (!s || !bu || !pos) return false;
+    const range = c.allyDownedWithin;
+    if (!s.units.some((o) => o.uid !== bu.uid && o.downed && onMap(o) && isAlly(o.team, bu.team) && dist(o.pos!, pos) <= range)) return false;
+  }
   return true;
 }
 

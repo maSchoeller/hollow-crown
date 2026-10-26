@@ -1,15 +1,17 @@
-# Nebenquest N3 – Das Erbe (Story 9.12). Layout-Entwurf, kein Knoten, keine Szenen. Startwerte [C].
+# Nebenquest N3 – Das Erbe (Story 9.12). Startwerte [C].
 # Variante von m1_2_erlbach (gleiche Geländebasis: Bach im Süden mit Brücke x=7 und Furten, Felder, Wald im Norden), statt der Dorfmitte der Pachthof von Tobins Vater.
-# Tageszeit: Mittag, Wetter: klar (art-direction §2.5, Feld folgt mit Story 8.6). Ziel: alle Gegner besiegen (rout).
+# Tageszeit: Mittag, Wetter: klar (art-direction §2.5, Felder timeOfDay/weather). Ziel: alle Gegner besiegen (rout).
 # Die Pachteintreiber des Grundherrn (Söldner) haben den Hof besetzt. Hofplatz mit Zaun, Eingang im Süden (x=7–8) als Engstelle.
-# Belohnung: Signaturlanze „Erbstück“ (kein Glutfunke). OFFEN: Item „Erbstück“ existiert nicht in items.yaml; hier nur als Kommentar.
-# Gedenk-Variante (Tobin gefallen): nur Kommentar, kein Kartenunterschied; Szene scn.n3.memorial statt scn.n3.outro.
-# OFFEN: Tobin als Pflichtfigur (Brief: forced avatar, kael); Story 9.12 setzt ihn voraus, die Aufstellung ist nicht entschieden.
-# PLATZHALTER: Stufen 6–7 [C], Szenen: scn.n3.intro, scn.n3.outro.
+# Belohnung: Signaturlanze „Erbstück“ (heirloom) bei Sieg als Knotenwirkung in den Konvoi, kein Glutfunke (campaign.yaml n3 effects).
+# Gedenk-Variante (Tobin gefallen, memorialIf): kein Kartenunterschied, volle Belohnung, Szenen scn.n3.memorial_intro/outro statt intro/outro.
+# Tobin ist Pflichtfigur (Produktinhaber 2026-10-26): forced avatar, kael, tobin; ist er gefallen, filtert die Aufstellung ihn (forced ∩ Truppe) weg.
+# Stufen 5–6 [C] Platzhalter, Abgleich per Simulation.
 id: n3_erbe
 nameKey: map.n3_erbe.name
 size: [16, 16]
 fog: false
+timeOfDay: noon
+weather: clear
 legend:
   ".": plain
   ",": grass
@@ -40,19 +42,16 @@ terrain: |
   ~~~w~~~=~~~~w~~~
   T,,,,,,_.,,,,,,T
   TT,,,,,..,,,,,TT
-# Mittag, klar: Sonne hoch, neutral-warm
-ambient: { color: "#fff3d6", intensity: 1.0 }
-sun: { color: "#fff0cc", intensity: 1.2, azimuthDeg: 200, elevationDeg: 65 }
 lights: []
 objects:
-  - { id: v_home, type: village, at: [9, 7], reward: { gold: 300 } }   # Elternhaus; Szene scn.n3.home folgt (9.12)
+  - { id: v_home, type: village, at: [9, 7], reward: { gold: 300, dialogue: scn.n3.home } }   # Elternhaus; Szene scn.n3.home (Dorfbelohnung)
 initialEffects: []
 # Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
 #   [8,7] Grund: der Hofplatz – Tobins Elternhof, hierhin kommen die Eintreiber zurück.
 #   [7,11] Grund: der Weg vom Bach zum Hof.
 deploy:
   max: 5
-  forced: [avatar, kael]
+  forced: [avatar, kael, tobin]
   slots: [[7, 14], [8, 14], [6, 14], [9, 14], [7, 15], [8, 15], [6, 15]]
 # Pachteintreiber des Grundherrn (Söldner). Normal 7, Leicht 5, Schwer 9.
 units:
@@ -68,7 +67,6 @@ units:
 pairs: []
 reinforcements: []
 objectives:
-  # Belohnung Erbstück (Signaturlanze): OFFEN, Item fehlt; vorläufig Gold
   victory: { type: rout }
   defeat:
     - { type: unit_dies, unit: kael }
@@ -78,7 +76,7 @@ objectives:
     - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 200 } }   # [C] Startwert
     - { id: s_home, type: visit_villages, reward: { gold: 200 } }
 triggers: []
-# Szene (9.12): scn.n3.intro bei Rundenbeginn 1; scn.n3.outro nach dem Sieg (Erbstück); Gedenk-Variante scn.n3.memorial, wenn Tobin gefallen
+# Szenen (9.12): scn.n3.intro / scn.n3.outro (Knoten pre/post, Erbstück als Knotenwirkung); Gedenk-Varianten über den Knoten; scn.n3.home beim Elternhaus (9,7)
 goldReward: 700   # [C] Nebenquest kompakt
 music: battle_a
 devNote: >

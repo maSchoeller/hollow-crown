@@ -156,3 +156,11 @@ describe('what the node reward put into the convoy and the chronicle (side quest
     expect(data.items.ember_spark!.kind).toBe('seal');
   });
 });
+
+describe('the result of side quest N3', () => {
+  it('names the Heirloom under "received" and no ember spark', () => {
+    const n3 = data.campaign.nodes.find((n) => n.id === 'n3')!;
+    const v = missionResultView(fake({ nodeId: 'n3', effects: n3.effects ?? [] }));
+    expect(v.received).toEqual([{ kind: 'item', id: 'heirloom', count: 1 }]);
+  });
+});

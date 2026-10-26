@@ -86,7 +86,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_4: 'wolfslager', m1_5: 'hungerlager', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat', n1: 'varnhold_nacht', n2: 'wachturm' });
+    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_4: 'wolfslager', m1_5: 'hungerlager', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat', n1: 'varnhold_nacht', n2: 'wachturm', n3: 'erlbach' });
   });
 });
 

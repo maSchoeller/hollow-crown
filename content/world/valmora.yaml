@@ -33,7 +33,7 @@ places:
 
   - { id: n1, label: "N1", act: 1, kind: side, at: [74.71, 83.46], node: n1 }   # Karte: n1_ring (Layout, Story 9.10)
   - { id: n2, label: "N2", act: 1, kind: side, at: [93.26, 70.51], node: n2 }   # Karte: n2_wachturm (Layout, Story 9.11)
-  - { id: n3, label: "N3", act: 1, kind: side, at: [37.6, 82.36] }   # Karte: n3_erbe (Layout, Story 9.12)
+  - { id: n3, label: "N3", act: 1, kind: side, at: [37.6, 82.36], node: n3 }   # Karte: n3_erbe (Layout, Story 9.12)
   - { id: home, label: "H", act: 1, kind: home, at: [50.59, 68.49] }
   - { id: m2_1, label: "2-1", act: 2, kind: story, at: [57.81, 42.64] }
   - { id: m2_2, label: "2-2", act: 2, kind: story, at: [44.73, 52.41] }

@@ -1,0 +1,41 @@
+# Nebenquest N3 „Das Erbe“ (Story 9.12), Szene vor der Karte: Tobin kehrt auf den Pachthof seines Vaters zurück (Tobin: Heldensagen-Pathos, verhaspelt sich; Brenna als Ziehmutter). Gedenk-Variante: scn.n3.memorial_intro.
+id: scn.n3.intro
+background: erlbach
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Mittag auf dem Land. Felder, ein Bach, ein Zaun um einen Hof. Er gehört dem Grundherrn, nicht der Familie."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das ist er. Der Hof meines Vaters. Ich meine, der Hof, den ich nicht haben wollte. Ich meine …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Du verhaspelst dich, Küken. Es ist dein Zuhause. Du darfst das sagen."
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ein Held kehrt heim, wenn die Heimat ruft! Sie ruft nicht, sie schreit eher. Das zählt auch!"
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Pachteintreiber. Söldner des Grundherrn, die den Hof besetzt halten."
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Vater hat nie eine Pacht versäumt. Er sagte, ein Mann schuldet niemandem etwas. Auch mir nicht."
+  - id: l07
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Dann sagen wir den Eintreibern, dass die Pacht heute in Prügeln fällig ist. Das ist ein Zahlungsmittel."
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Waffen bereit. Tobin, du führst uns zum Hoftor."

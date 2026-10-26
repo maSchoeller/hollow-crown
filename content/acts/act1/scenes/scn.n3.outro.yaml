@@ -1,0 +1,30 @@
+# Nebenquest N3, Szene nach der Karte: das Erbstück. Belohnung selbst: Knotenwirkung (campaign.yaml). Kein Glutfunke. Gedenk-Variante: scn.n3.memorial_outro.
+id: scn.n3.outro
+background: erlbach
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Eintreiber sind fort. Auf dem Hof ist es still. Der Vater ist nicht da."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Er hängt noch dort. Über dem Herd. Das Erbstück."
+  - id: l03
+    mood: neutral
+    text: "Über dem Herd hängt eine alte Lanze: Schaft aus Esche, die Spitze aus einem Pflugblatt, eine Ähre darin."
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: neutral
+    text: "Helden sterben jung, sagt man. Großvater sagte: Dann lass dich nicht allein finden."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Du bist nicht allein, Küken. Das ist der Witz an einer Kompanie. Naja. Nicht der gute."
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Nimm sie mit. Und lass das Tor offen für deinen Vater."

@@ -195,6 +195,7 @@ const skillCondition = z
     weaponType,
     attackerNoElement: z.boolean(),
     notEffective: z.boolean(),
+    allyDownedWithin: z.number().int().min(1),
   })
   .partial();
 
