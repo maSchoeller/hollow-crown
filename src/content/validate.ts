@@ -274,6 +274,11 @@ export function validateContent(
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
     for (const n of camp.nodes) effects('campaign.yaml', n.effects, `${n.id} effects`);
+    for (const n of camp.nodes)
+      (n.effectsIf ?? []).forEach((g, i) => {
+        conditions('campaign.yaml', g.requires, `${n.id} effectsIf[${i}].requires`);
+        effects('campaign.yaml', g.effects, `${n.id} effectsIf[${i}]`);
+      });
     for (const r of Object.values(data.rooms)) {
       conditions('rooms.yaml', r.requires, `${r.id}.requires`);
       r.levels.forEach((l, i) => conditions('rooms.yaml', l.requires, `${r.id}.levels[${i}].requires`));

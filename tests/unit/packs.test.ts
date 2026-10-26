@@ -41,7 +41,7 @@ describe('packOf', () => {
   const packs = [pack('core', { content: ['core/**', 'acts/act1/maps/prologue_*.yaml'] }), pack('act1', { content: ['acts/act1/**'], assets: ['models/**'] })];
   it('takes the first pack whose globs match', () => {
     expect(packOf(packs, 'acts/act1/maps/prologue_paktnacht.yaml', 'content').id).toBe('core');
-    expect(packOf(packs, 'acts/act1/maps/ch01_varnhold.yaml', 'content').id).toBe('act1');
+    expect(packOf(packs, 'acts/act1/maps/m1_2_erlbach.yaml', 'content').id).toBe('act1');
   });
   it('gives everything unnamed to core', () => {
     expect(packOf(packs, 'avatars/kael.webp', 'assets').id).toBe('core');
@@ -89,7 +89,7 @@ describe('packs plugin helpers', () => {
     const byPack = contentByPack(process.cwd(), realPacks);
     expect(byPack.get('core')).toContain('acts/act1/maps/prologue_paktnacht.yaml');
     expect(byPack.get('core')).toContain('core/balance.yaml');
-    expect(byPack.get('act1')).toContain('acts/act1/maps/ch01_varnhold.yaml');
+    expect(byPack.get('act1')).toContain('acts/act1/maps/m1_2_erlbach.yaml');
     expect(byPack.get('act1')).not.toContain('acts/act1/maps/prologue_paktnacht.yaml');
     expect([...byPack.values()].flat()).not.toContain('packs.yaml');
   });

@@ -180,6 +180,7 @@ economy:
   recruitCost: { base: 600, perLevel: 150 }
   scarRemoval: { gold: 2500, altItem: seers_herb }
   potionUpgrade: [{ gold: 400, heal: 5 }, { gold: 900, heal: 5 }]
+  villageAid: { healCharges: 1 }           # Wirkung villageAid (E1 Dorfhilfe): +1 Ladung je Heiltrank (use.heal) bis zum Ende des Akts
   tavernOffersPerChapter: 3
   armyLimit: 20
   mercenaryLimit: 6                      # zusätzlich zu den 20 Gefährten (GDD Armee-Limit)
@@ -193,8 +194,8 @@ economy:
       - { class: vanguard,   items: [iron_lance, leather_vest] }
       - { class: vanguard,   items: [iron_axe, leather_cap] }
       - { class: marksman,    items: [iron_bow, leather_vest] }
-      - { class: elementalist,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
-      - { class: healer,    items: [heal_staff], requires: [{ completed: ch01 }] }
+      - { class: elementalist,      items: [ember], requires: [{ storyCount: { min: 3 } }] }       # ab der 3. Story-Mission (wie bisher nach Kapitel 1)
+      - { class: healer,    items: [heal_staff], requires: [{ storyCount: { min: 3 } }] }
   convoySize: 200
   rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
   rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }
@@ -218,6 +219,7 @@ ai:
   castLethalChance: 100
   # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
   followRadius: 4
+  wardGuardRadius: 8     # Autoplay (Simulation): bei defend trifft die Truppe Gegner innerhalb dieses Abstands vom Schutzbefohlenen, statt Besuche zu erledigen
   followDanger: 100
 # Leutnants (Story 3.4): Stufe = kaufmännisch gerundeter Durchschnitt der effektiven Stufen der armySize stärksten Einheiten der Truppe + Groll;
 # Waffe(n) der Karteneinheit je Groll eine Stufe höher entlang tierUp (gleiche Waffengruppe, Eintrag fehlt = Deckel); die Signaturwaffe trägt er nie.

@@ -1,11 +1,11 @@
-import type { Effect, GameData, Reward, SideObjectiveDef, Stats } from '../defs';
+import type { Effect, GameData, Reward, SideObjectiveDef, Stats, WeaponType } from '../defs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
-import { sideObjectiveDone } from '../battle/objectives';
+import { sideObjectiveDone, sideSubject } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
 import { deathless } from '../rules/effects';
-import { allItems, itemDef } from '../rules/items';
+import { allItems, itemDef, maxCharges } from '../rules/items';
 import { expPercent, grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
@@ -38,6 +38,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     decisions: [],
     scenesSeen: [],
     backupReminded: [],
+    villageAid: null,
     completed: [],
     quests: [],
     rolesSeen: [],
@@ -87,6 +88,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     chronicle: old.chronicle ?? [],
     scenesSeen: old.scenesSeen ?? [],
     backupReminded: old.backupReminded ?? [],
+    villageAid: (c as Partial<CampaignState>).villageAid ?? null,
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     // pairs of content added since the save (a later act) start empty
@@ -180,7 +182,7 @@ export interface BattleResult {
   outcome: 'victory' | 'defeat';
   nodeId: string;
   turns: number;
-  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward; turns?: number }>;
+  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward; turns?: number; nameKey?: string; weaponType?: WeaponType }>;
   gold: number;
   materials: Record<string, number>;
   items: ItemInstance[];
@@ -199,10 +201,10 @@ export interface BattleResult {
   haunt?: { id: string; variant: string; halved: boolean; catchUp: boolean };
 }
 
-function refill(data: GameData, items: ItemInstance[]): void {
+function refill(data: GameData, villageAid: number | null, items: ItemInstance[]): void {
   for (const i of items) {
     const d = itemDef(data, i);
-    if (d.refillAfterMission && d.charges) i.charges = d.charges;
+    if (d.refillAfterMission && d.charges) i.charges = maxCharges(data, villageAid, d);
   }
 }
 
@@ -296,7 +298,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (u.pos || u.gone === 'rescued' || u.gone === 'escaped' || u.gone === 'retreated') {
       grantSp(data, u, data.balance.skills.spPerMissionEnd, events);
     }
-    refill(data, allItems(u));
+    refill(data, c.villageAid, allItems(u));
     if (u.grief && u.grief > 0) u.grief -= 1;
     const rec = toRecord(u);
     if (u.team === 'other') {
@@ -346,7 +348,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   // side objectives
   for (const o of map.objectives.side) {
     const done = sideObjectiveDone(data, s, o);
-    result.side.push({ id: o.id, type: o.type, done, reward: o.reward, turns: o.turns });
+    result.side.push({ id: o.id, type: o.type, done, reward: o.reward, turns: o.turns, ...sideSubject(map, o) });
     if (!done) continue;
     if (o.reward.gold) s.goldGained += o.reward.gold;
     for (const [id, n] of Object.entries(o.reward.material ?? {})) s.materialsGained[id] = (s.materialsGained[id] ?? 0) + n;
@@ -411,7 +413,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     refreshTavern(data, c);
   }
   // dead units' gear in the convoy gets refilled as well
-  refill(data, c.convoy);
+  refill(data, c.villageAid, c.convoy);
   return { campaign: c, result };
 }
 

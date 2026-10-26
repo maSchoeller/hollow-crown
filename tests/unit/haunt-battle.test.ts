@@ -190,7 +190,8 @@ describe('haunt reward (story 5.6)', () => {
     const c = campaignWith(data, 'prologue_paktnacht', 'rout');
     const s = createHauntBattle(data, c, 'h1_0', ids(c));
     const u = s.units.find((x) => x.team === 'player')!;
-    expect(s.hauntLevel).toBe(2);
+    // the expected level of the next story node (after the prologue and 1-1: node m1_2)
+    expect(s.hauntLevel).toBe(data.campaign.nodes.find((n) => n.id === 'm1_2')!.expectedLevel);
     expect(expPercent(data, s, u)).toBe(60);
     u.level = 5;
     expect(expPercent(data, s, u)).toBe(30);
@@ -296,8 +297,8 @@ describe('goal text of haunts', () => {
       lang.value = l;
       const civ = locales[l]!['unit.civilian.name']!;
       for (const [map, variant] of [['m1_1_steckbriefe', 'defend'], ['m1_1_steckbriefe', 'escort']] as const) {
-        const v = d.maps[hauntMapIdFor(d, map, variant)]!.objectives.victory;
-        const line = goalLine(v);
+        const hm = d.maps[hauntMapIdFor(d, map, variant)]!;
+        const line = goalLine(hm.objectives.victory, hm);
         expect(line).toContain(civ);
         expect(line).not.toMatch(/Liora/);
       }

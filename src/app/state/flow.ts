@@ -18,6 +18,7 @@ import {
   metLieutenant,
   nodeScenes,
   createBattle,
+  withoutLeavers,
   newCampaign,
   queuedFlags,
   validateEffects,
@@ -318,7 +319,8 @@ export function concludeBattle(): void {
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
   // the memorial variant is decided before the battle's deaths count (the trigger fell before the quest, not in it)
   const { post } = b.state.hauntId ? ({} as { post?: string }) : nodeScenes(data, before, b.state.nodeId);
-  const toResult = () => (screen.value = { name: 'result', result });
+  // whoever left in the scene after the mission (an answer with `leave`) is no longer in the company: not a new member, no level-up line
+  const toResult = () => (screen.value = { name: 'result', result: withoutLeavers(result, campaign.value) });
   if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
   else toResult();
 }
@@ -537,8 +539,8 @@ if (import.meta.env.DEV) {
             c.roster.push({ ...rest, id: `merc${900 + m}`, nameKey: names[m % names.length]!, bag: [], equip: {} });
           }
         }
-        // the tavern opens after chapter 1: the camp view needs the first two nodes done
-        if (view === 'camp') for (const id of ['prologue', 'ch01']) if (!c.completed.includes(id)) c.completed.push(id);
+        // the tavern opens after the third story mission: the camp view needs the first three nodes done
+        if (view === 'camp') for (const id of ['prologue', 'm1_1', 'm1_2']) if (!c.completed.includes(id)) c.completed.push(id);
         campaign.value = c;
         const join: Effect[] = [{ recruit: { lt: 'grosk' } }];
         if (view === 'card') {

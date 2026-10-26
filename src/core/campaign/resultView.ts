@@ -1,5 +1,5 @@
 import type { Effect, GameData, HomeKind } from '../defs';
-import type { BattleState, ItemInstance } from '../state';
+import type { BattleState, CampaignState, ItemInstance } from '../state';
 import { findUnit } from '../util';
 import type { BattleResult, BountyResult } from './campaign';
 
@@ -115,4 +115,12 @@ export function defeatSentence(data: GameData, s: BattleState): DefeatSentence {
   }
   const u = reason ? findUnit(s, reason) : undefined;
   return u ? { kind: 'unit', nameKey: u.nameKey, name: u.name } : { kind: 'generic' };
+}
+
+/** The result without the companions who left the company in the scene after the mission (`recruited` and their unit lines). */
+export function withoutLeavers(result: BattleResult, c: CampaignState | null): BattleResult {
+  if (!c) return result;
+  const gone = new Set(result.recruited.filter((id) => !c.roster.some((r) => r.id === id)));
+  if (!gone.size) return result;
+  return { ...result, recruited: result.recruited.filter((id) => !gone.has(id)), units: result.units.filter((u) => !gone.has(u.id)) };
 }

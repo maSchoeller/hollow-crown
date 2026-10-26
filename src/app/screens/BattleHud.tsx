@@ -15,11 +15,12 @@ import {
   type SideObjectiveDef,
   type Team,
 } from '../../core';
-import { sideObjectiveDone, sideObjectiveProgress } from '../../core/battle/objectives';
+import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideSubject } from '../../core/battle/objectives';
 import { bleedsOut } from '../../core/rules/effects';
 import { t } from '../../i18n';
 import { ElementIcon, Icon, TriMark } from '../../ui/icons';
 import { itemName, unitName } from '../../ui/components';
+import { sideLine } from '../../ui/goalText';
 import { asset } from '../../ui/asset';
 import { ItemChip } from '../../ui/pieces';
 import { artId } from './unitArt';
@@ -122,7 +123,7 @@ export function GoalPills({ data, s, side, onClick }: { data: GameData; s: Battl
         return (
           <button key={o.id} type="button" class={`hud-goal ${done ? 'is-done' : failed ? 'is-failed' : ''}`} onClick={onClick}>
             <Icon name={done ? 'check' : failed ? 'cross' : (SIDE_ICON[o.type] ?? 'target')} size={15} />
-            <span>{t(`ui.side.${o.type}`, { turns: o.turns ?? 0 })}</span>
+            <span>{sideLine({ ...o, ...sideSubject(mapOf(data, s), o) })}</span>
             {p && (
               <span class="hud-goal__count">
                 {p.have}/{p.total}

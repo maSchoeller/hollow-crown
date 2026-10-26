@@ -207,7 +207,7 @@ describe('haunt generator (story 5.5)', () => {
       const pool = data.hauntPools[1]!.factions.border_bands!;
       expect(c.haunts.length).toBeGreaterThan(0);
       for (const h of c.haunts) {
-        expect(h.level).toBe(data.campaign.nodes.find((n) => n.id === 'ch01')!.expectedLevel);
+        expect(h.level).toBe(data.campaign.nodes.find((n) => n.id === 'm1_2')!.expectedLevel);
         for (const e of h.enemies.filter((x) => !x.lieutenant)) {
           const t = pool.find((p) => p.class === e.class && p.sprite === e.sprite)!;
           expect(t).toBeDefined();

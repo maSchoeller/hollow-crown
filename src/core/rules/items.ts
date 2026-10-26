@@ -9,6 +9,26 @@ export function itemDef(data: GameData, inst: ItemInstance | string): ItemDef {
   return d;
 }
 
+/**
+ * Charges an item holds when full (`charges` in items.yaml). With village aid (effect `villageAid`, decision E1) of the act
+ * the company is in, every healing potion (`use.heal`) holds `balance.economy.villageAid.healCharges` more until the act ends.
+ */
+export function maxCharges(data: GameData, villageAid: number | null | undefined, d: ItemDef): number {
+  const base = d.charges ?? 0;
+  return d.use?.heal && base > 0 && villageAid === data.campaign.act ? base + data.balance.economy.villageAid.healCharges : base;
+}
+
+/** Sets the charges of full healing potions to what village aid allows (a bonus potion past the aid's act drops back). */
+export function applyVillageAid(data: GameData, villageAid: number | null | undefined, items: ItemInstance[]): void {
+  for (const i of items) {
+    const d = itemDef(data, i);
+    if (!d.use?.heal || !d.charges) continue;
+    const max = maxCharges(data, villageAid, d);
+    const cur = i.charges ?? d.charges;
+    if (cur >= d.charges && cur !== max) i.charges = max;
+  }
+}
+
 export const isWeapon = (d: ItemDef): boolean => d.slot === 'mainHand' && (d.kind === 'weapon' || d.kind === 'tome');
 export const isStaff = (d: ItemDef): boolean => d.kind === 'staff';
 export const isRune = (data: GameData, inst: ItemInstance): boolean => !!data.runes[inst.def];

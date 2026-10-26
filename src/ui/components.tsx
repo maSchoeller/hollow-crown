@@ -70,7 +70,7 @@ export function itemParts(data: GameData, inst: ItemInstance): string[] {
     for (const [k, v] of Object.entries(d.statMods ?? {})) parts.push(`${t(`ui.stat.${k}`)} ${v! > 0 ? '+' : ''}${v}`);
     if (d.wt) parts.push(`${t('ui.wt')} ${d.wt}`);
     if (d.use?.heal) parts.push(`${t('ui.heal')} ${d.use.heal}`);
-    if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${d.charges}`);
+    if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${Math.max(d.charges, inst.charges ?? 0)}`);
     if (d.element) parts.push(t(`ui.element.${d.element}`));
   }
   return parts;

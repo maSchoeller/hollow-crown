@@ -15,6 +15,7 @@ import { replayBattle } from './restart';
 import { actFinished, isAvailable, noteRoles } from './graph';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
+import { conditionContext, evalConditions } from './conditions';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
@@ -207,6 +208,14 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
         applyEffects(data, campaign, reward, effectEvents);
         result.effects = reward;
         for (const e of reward) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
+      }
+      // conditional node rewards (`effectsIf`): a group runs when its conditions hold after the battle, so flags set by the map's
+      // triggers count (e.g. Mira joins unless her house burned down)
+      for (const g of data.campaign.nodes.find((n) => n.id === s.nodeId)?.effectsIf ?? []) {
+        if (!evalConditions(conditionContext(data, campaign), g.requires) || validateEffects(data, campaign, g.effects) !== null) continue;
+        applyEffects(data, campaign, g.effects, effectEvents);
+        result.effects = [...(result.effects ?? []), ...g.effects];
+        for (const e of g.effects) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
       }
     }
     return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };

@@ -295,6 +295,8 @@ export interface CampaignState {
   hauntsSinceStory: number;
   /** acts whose backup reminder was shown after the finale (story 7.3, AR21): it comes once per act */
   backupReminded: number[];
+  /** the act whose healing potions carry a charge more (effect `villageAid`, decision E1); null = no village aid */
+  villageAid: number | null;
   /** lieutenants the company has met (AR5; Epic 3 adds grudge, target, routs …); absent until the first meeting */
   lieutenants?: Record<string, LieutenantState>;
 }

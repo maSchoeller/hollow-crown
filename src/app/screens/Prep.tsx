@@ -103,7 +103,7 @@ export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: 
       <Piece class="prp-info">
         <div class="prp-info__kicker">{t(h ? 'ui.map.haunt.kicker' : 'ui.map.kicker', { node: nodeShort(node) })}</div>
         <h2 class="prp-info__title">{t(`map.${nd.map}.name`)}</h2>
-        <p class="prp-info__goal">{goalLine(map.objectives.victory)}</p>
+        <p class="prp-info__goal">{goalLine(map.objectives.victory, map)}</p>
         <div class="prp-info__tags">
           <span class={`prp-tag ${full ? 'is-full' : ''}`}>
             <Icon name="company" size={15} />
