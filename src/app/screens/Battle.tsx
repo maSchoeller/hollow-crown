@@ -52,7 +52,8 @@ import { Scene, SceneBubbles } from './Scene';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { goalLine, goalStand } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
-import { ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
+import { ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
+import './Loading.css';
 import { audio } from '../audio';
 import { fleeBark, ltBarks } from '../battle/ltLines';
 import { campaign, data } from '../state/session';
@@ -134,6 +135,8 @@ export function Battle() {
   const boardRef = useRef<BoardView | null>(null);
   const [mode, setMode] = useState<Mode>({ k: 'idle' });
   const [busy, setBusy] = useState(true);
+  /** the board is still being built: a cover says so, because nothing on the map reacts yet */
+  const [loading, setLoading] = useState(true);
   const [danger, setDanger] = useState(settings.value.dangerDefault);
   const [watch, setWatch] = useState<string[]>([]);
   const [info, setInfo] = useState<string | null>(null);
@@ -212,7 +215,11 @@ export function Battle() {
     let alive = true;
     void (async () => {
       const st0 = battle.value!.state;
-      await board.load(visibleState(data, st0, 'player'));
+      try {
+        await board.load(visibleState(data, st0, 'player'));
+      } finally {
+        if (alive) setLoading(false);
+      }
       const ev = pendingEvents.value;
       pendingEvents.value = [];
       if (ev.length && alive) {
@@ -1158,6 +1165,17 @@ export function Battle() {
           </div>
         )}
         {otherPhase && <SpeedControl value={enemySpeed} onChange={setEnemySpeed} />}
+        {loading && (
+          <div class="ld-cover">
+            <Piece class="ld-stone" role="status" aria-live="polite">
+              <b class="ld-stone__title">{t('ui.loading.board')}</b>
+              <span class="ld-stone__sub">{t('ui.loading.boardSub')}</span>
+              <div class="ld-bar ld-bar--busy" role="progressbar" aria-label={t('ui.loading.board')}>
+                <i />
+              </div>
+            </Piece>
+          </div>
+        )}
         {banner && <div class={`banner ${banner.cls}`}>{banner.text}</div>}
         {toast && <Toast text={toast.text} lead={toast.item && <ItemImage data={data} item={toast.item} size={32} />} onDone={() => setToastState(null)} />}
       </div>
