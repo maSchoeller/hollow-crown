@@ -40,8 +40,8 @@ describe('act 1 enemy classes', () => {
     expect(locales.en!['class.wolf_rider.name']).toBeTruthy();
   });
 
-  it('puts wolf riders on ch01 and ch02 with aggressive profiles and a lance, never mounted-effective gear', () => {
-    for (const id of ['ch01_varnhold', 'ch02_silverbrook']) {
+  it('puts wolf riders on ch02 with aggressive profiles and a lance, never mounted-effective gear', () => {
+    for (const id of ['ch02_silverbrook']) {
       const riders = enemies(id).filter((u) => u.class === 'wolf_rider');
       expect(riders.length, id).toBeGreaterThan(0);
       for (const u of riders) {

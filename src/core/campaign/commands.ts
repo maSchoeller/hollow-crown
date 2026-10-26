@@ -1,4 +1,4 @@
-import type { Effect, EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
+import type { Effect, EquipSlot, FlagValue, HauntVariant, HomeKind, Stance, SupportRank } from '../defs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';
@@ -54,17 +54,19 @@ export type CampaignCommand =
    * so downs and deaths are undone too). The battle lives in the app session; the command carries only what the rules
    * need: the node and, for the round, how many commands are kept. Classic: `restartTurn` never.
    */
-  | { type: 'restartTurn'; node: string; keep: number }
+  | { type: 'restartTurn'; node: string; keep: number; haunt?: string }
   /**
    * Classic only allows it after a defeat and does not trust the app: `lost` (start + log) is replayed to check.
    * Standard and Casual leave it out.
    */
-  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] } }
+  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] }; haunt?: string }
   /**
    * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
    * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
    */
   | { type: 'advanceDay'; day: number }
+  /** the player opened the card of haunt `id` on the world map: its "new" mark goes (story 5.6; idempotent) */
+  | { type: 'seeHaunt'; id: string }
   /** the backup reminder of act `act` was shown (exported or put off); once per act, after its finale (story 7.3, AR21; idempotent) */
   | { type: 'markBackupReminded'; act: number };
 
@@ -126,8 +128,12 @@ export type CampaignEvent =
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number }
-  /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
+  /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5) */
   | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
+  /** a haunt arose on a known map (story 5.5) */
+  | { t: 'hauntSpawned'; id: string; map: string; variant: HauntVariant; lt: string }
+  /** an open haunt lapsed because more than `balance.haunt.maxOpen` were open (story 5.5) */
+  | { t: 'hauntExpired'; id: string }
   /** the grudge of a lieutenant changed (effect `grudge`); `grudge` = the new value */
   | { t: 'grudgeChanged'; lt: string; grudge: number }
   /** the backup reminder of an act was noted (story 7.3) */

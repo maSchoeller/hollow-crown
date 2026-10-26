@@ -252,6 +252,8 @@ export interface TerrainView {
   standOn(x: number, y: number): number;
   /** advances the water animation */
   tick(now: number): void;
+  /** wet shine of the ground (rain, story 8.6): specular strength and power of the block materials; null restores them */
+  setWet(wet: { specular: number; power: number } | null): void;
   dispose(): void;
 }
 
@@ -311,6 +313,8 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
 
   const meshes: Mesh[] = [];
   const casters: Mesh[] = [];
+  /** the block materials that shine when wet, with the specular values they were made with */
+  const wetMats: Array<{ m: StandardMaterial | MixMaterial; colour: Color3; power: number }> = [];
   const [mix1, mix2] = splatTextures(scene, grid, seed);
   const mix = new MixMaterial('terrain-tops', scene);
   mix.mixTexture1 = mix1;
@@ -332,6 +336,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
     if (!m) return;
     meshes.push(m);
     if (cast) casters.push(m);
+    if (name !== 'terrain-water' && !wetMats.some((w) => w.m === mat)) wetMats.push({ m: mat, colour: mat.specularColor.clone(), power: mat.specularPower });
   };
   const std = (name: string, t: string) => {
     const m = material(scene, name, tex[t]);
@@ -400,6 +405,17 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       if (!def) return 0;
       if (def.prop === 'bridge') return 0.02;
       return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height;
+    },
+    setWet: (wet) => {
+      for (const w of wetMats) {
+        if (wet) {
+          w.m.specularColor = new Color3(wet.specular, wet.specular, wet.specular);
+          w.m.specularPower = wet.power;
+        } else {
+          w.m.specularColor = w.colour.clone();
+          w.m.specularPower = w.power;
+        }
+      }
     },
     tick: (now) => {
       const f = Math.floor(now / board.waterFrameMs) % waterFrames.length;

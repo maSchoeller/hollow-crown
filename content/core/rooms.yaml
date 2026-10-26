@@ -4,10 +4,10 @@
 # Sind sie nicht erfüllt, steht die Station gestrichelt da, mit der ersten offenen Bedingung als Grund (Freischaltung aus U20).
 - { id: convoy,    function: convoy,    icon: convoy,    fromAct: 1, homes: [camp, castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
 - { id: merchant,  function: merchant,  icon: merchant,  fromAct: 1, homes: [camp, castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: smith,     function: smith,     icon: smith,     fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: healer,    function: healer,    icon: healer,    fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: tavern,    function: tavern,    icon: tavern,    fromAct: 1, homes: [camp, castle], requires: [{ completed: ch01 }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: campfire,  function: campfire,  icon: campfire,  fromAct: 1, homes: [camp, castle], requires: [{ completed: ch02 }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+- { id: smith,     function: smith,     icon: smith,     fromAct: 1, homes: [camp, castle], requires: [{ storyCount: { min: 3 } }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+- { id: healer,    function: healer,    icon: healer,    fromAct: 1, homes: [camp, castle], requires: [{ storyCount: { min: 3 } }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+- { id: tavern,    function: tavern,    icon: tavern,    fromAct: 1, homes: [camp, castle], requires: [{ storyCount: { min: 3 } }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+- { id: campfire,  function: campfire,  icon: campfire,  fromAct: 1, homes: [camp, castle], requires: [{ storyCount: { min: 4 } }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
 # Gedächtnishalle: Gedenksteine ab Akt 1, die Lektionen (Story 10.6) erst ab Akt 2
 - { id: memorial,  function: memorial,  icon: stone,     fromAct: 1, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }], unlocks: [{ id: lessons, requires: [{ act: 2 }] }] }
 # Verzauberer (Runen): Raum ab Akt 2, Geschichte in Epic 10 (10.5); das Panel funktioniert schon

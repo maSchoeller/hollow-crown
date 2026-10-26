@@ -12,7 +12,8 @@ export type Screen =
   | { name: 'worldmap' }
   /** `rewards`: what the won node gave, for a scene line with `moment: reward` (the post scene of a mission) */
   | { name: 'dialogue'; id: string; next: () => void; rewards?: ConsequenceLine[] }
-  | { name: 'prep'; node: string; from?: From }
+  /** `haunt`: the preparation of a haunt (story 5.6); `node` is the story node of its map */
+  | { name: 'prep'; node: string; from?: From; haunt?: string }
   | { name: 'loading' }
   | { name: 'battle' }
   | { name: 'result'; result: BattleResult }

@@ -7,6 +7,10 @@ lines:
   - id: l01
     mood: neutral
     text: "Die Jäger liegen oder laufen. Der Markt ist leer, nur ein Zettel flattert an der Wand."
+  - id: l01b
+    speaker: [avatar]
+    mood: neutral
+    text: "Einer der Jäger trug ein Glutbuch. Ich kenne die Formeln von der Akademie. Ich nehme es mit."
   - id: l02
     speaker: [fenn]
     fallback: skip

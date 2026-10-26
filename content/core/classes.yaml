@@ -437,3 +437,23 @@
   caps: { hp: 90, str: 30, mag: 30, skl: 25, spd: 22, lck: 20, def: 28, res: 25 }
   playable: false
   v1: true
+
+# Zivilist (Story 9.3, PO 2026-10-26): Nichtkämpfer ohne Waffe (weaponGroups leer) – Dorfälteste und später Kinder. Er kann nicht
+# angreifen, hat keine Klassen-Aktion und tritt nie der Truppe bei (playable: false). Werte [C]: schwach, langsam.
+- id: civilian
+  nameKey: class.civilian.name
+  role: civilian
+  tier: base
+  roleGroup: support
+  moveType: foot
+  mov: 4
+  weaponGroups: []
+  proPaths: []
+  tags: [noncombatant]
+  base: { hp: 44, str: 0, mag: 0, skl: 0, spd: 2, lck: 0, def: 4, res: 0 }
+  growth: { hp: 40, str: 0, mag: 0, skl: 0, spd: 10, lck: 0, def: 5, res: 0 }
+  growthMod: { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 }
+  caps: { hp: 60, str: 0, mag: 0, skl: 0, spd: 8, lck: 5, def: 8, res: 5 }
+  playable: false
+  art: villager_elder   # Figur art/models/units/villager_elder.glb (Porträt des Zivilisten steht in den Karteneinheiten: portrait)
+  v1: true

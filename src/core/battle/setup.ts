@@ -1,21 +1,15 @@
-import type { GameData, Pos } from '../defs';
+import type { GameData, MapDef, Pos } from '../defs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
+import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
-import { topUpCharges } from '../campaign/aid';
-import { allItems } from '../rules/items';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
+import { parseTerrain } from './terrain';
 
-export function parseTerrain(data: GameData, mapId: string): string[] {
-  const map = data.maps[mapId]!;
-  const rows = map.terrain.replace(/\r/g, '').split('\n').filter((r) => r.length > 0);
-  const out: string[] = [];
-  for (const row of rows) for (const ch of row) out.push(map.legend[ch]!);
-  return out;
-}
+export { parseTerrain };
 
 /** Units that must / can be deployed for a node. */
 export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
@@ -31,10 +25,20 @@ export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
 export function createBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: string[]): BattleState {
   const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
   const map = data.maps[node.map]!;
+  const seed = (c.seed * 31 + c.completed.length * 7919 + node.id.length * 131) >>> 0;
+  // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1)
+  const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, map, c.settings.difficulty));
+  deployPlayers(data, c, s, map, deployIds);
+  placeMapUnits(data, c, s, map.units);
+  finishSetup(data, s, map);
+  return s;
+}
+
+/** The empty battle on `map`: terrain, objects, campaign settings and the plan of its lieutenants; no units yet. Shared by story nodes and haunts. */
+export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, nodeId: string, seed: number, lieutenantPlan: BattleState['lieutenantPlan']): BattleState {
   const [w, h] = map.size;
   const objects: ObjectState[] = map.objects.map((o) => ({ id: o.id, type: o.type, at: [o.at[0], o.at[1]] as Pos, state: 'closed' }));
-  const seed = (c.seed * 31 + c.completed.length * 7919 + node.id.length * 131) >>> 0;
-  const s: BattleState = {
+  return {
     mapId: map.id,
     nodeId,
     turn: 1,
@@ -62,22 +66,28 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     avatarName: c.avatar.name,
     locked: lockedMechanics(data, c),
     lockedRoles: lockedRoles(data, c),
-    // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1)
-    lieutenantPlan: planLieutenants(data, c, map, c.settings.difficulty),
+    lieutenantPlan,
   };
+}
+
+/** The company on the deploy slots of `map`: forced units first, then the chosen ones, up to the map's limit. */
+export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, map: MapDef, deployIds: string[]): void {
   const forced = map.deploy.forced;
   const chosen = [...forced.filter((id) => c.roster.some((r) => r.id === id)), ...deployIds.filter((id) => !forced.includes(id))];
   const slots = map.deploy.slots;
   chosen.slice(0, Math.min(map.deploy.max, slots.length)).forEach((id, i) => {
     const rec = c.roster.find((r) => r.id === id);
     if (!rec) return;
-    s.units.push(battleUnitFromRecord(data, rec, 'player', slots[i]!));
+    const unit = battleUnitFromRecord(data, rec, 'player', slots[i]!);
+    applyVillageAid(data, c.villageAid, unit.bag);
+    s.units.push(unit);
   });
-  // Village aid of the running act reaches potions that were filled before the act began
-  topUpCharges(data, c, s.convoy);
-  for (const u of s.units) if (u.team === 'player') topUpCharges(data, c, allItems(u));
+}
+
+/** The map's own units on the board at the campaign's difficulty (a recruited character and a lieutenant who joined stay off). */
+export function placeMapUnits(data: GameData, c: CampaignState, s: BattleState, defs: MapDef['units']): void {
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
-  onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {
+  onDifficulty(defs, c.settings.difficulty).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited
     if (def.lieutenant && isJoined(c, def.lieutenant)) return; // a lieutenant who joined the company stays off the board (story 3.7)
     const uid = def.id ?? def.char ?? `m${i}`;
@@ -86,6 +96,11 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     const unit = battleUnitFromPlan(data, def, s, def.team === 'enemy' ? pct : 0, uid, plan);
     s.units.push(unit);
   });
+}
+
+/** Support pairs the map starts with, and its burning tiles. */
+export function finishSetup(data: GameData, s: BattleState, map: MapDef): void {
+  const w = map.size[0];
   for (const p of map.pairs) {
     s.supports[pairKey(p.a, p.b)] = { points: data.balance.supports.thresholds[p.rank], rank: p.rank };
   }
@@ -96,7 +111,6 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
       s.terrain[idx] = 'burning';
     }
   }
-  return s;
 }
 
 /** Creates the battle and plays the opening events. */

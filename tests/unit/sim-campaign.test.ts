@@ -10,8 +10,8 @@ beforeAll(() => {
 });
 
 const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
-  node: 'ch01',
-  map: 'ch01_varnhold',
+  node: 'm1_2',
+  map: 'm1_2_erlbach',
   expectedLevel: 2,
   reached: 10,
   wins: 9,

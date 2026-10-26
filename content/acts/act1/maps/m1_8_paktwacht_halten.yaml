@@ -46,8 +46,9 @@ terrain: |
   ,,,,___,,,,,,,,,
   ,,,,____,,,,,,,,
 # Abend -> Nacht, Regen: tiefes, kaltes Violett-Blau, tiefe orange Restsonne, warme Fackeln an Toren und Hof
-ambient: { color: "#7e86b0", intensity: 0.75 }
-sun: { color: "#e8946a", intensity: 0.5, azimuthDeg: 250, elevationDeg: 10 }
+# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
+timeOfDay: evening
+weather: rain
 lights:
   - { at: [7, 4], color: "#ffb35c", radius: 3 }
   - { at: [8, 4], color: "#ffb35c", radius: 3 }

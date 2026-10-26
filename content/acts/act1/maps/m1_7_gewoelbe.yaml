@@ -37,8 +37,9 @@ terrain: |
   #####....#####
   ##############
 # Nacht, innen: dunkles, kaltes Umgebungslicht, schwacher Schein von oben, warme Punktlichter an den Fackeln
-ambient: { color: "#6b6a8c", intensity: 0.55 }
-sun: { color: "#8a90b8", intensity: 0.2, azimuthDeg: 160, elevationDeg: 60 }
+# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
+timeOfDay: night
+weather: fog
 lights:
   - { at: [1, 1], color: "#ffb35c", radius: 4 }
   - { at: [12, 1], color: "#ffb35c", radius: 4 }
@@ -58,24 +59,24 @@ objects:
   # die versiegelte Chronik ist kein Gegenstand: die Truhe enthält nichts; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg (campaign.yaml)
   - { id: c_chronicle, type: chest, at: [6, 14] }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5; das Feld wird ignoriert, bis das Schema auf main ist). Höchstens einer je Variante; nur Felder, die ohne Schlüssel erreichbar sind
+# Heimsuchungs-Anker (Story 5.5). Höchstens einer je Variante; nur Felder, die ohne Schlüssel erreichbar sind
 # (Halle, Westkammer, Mittelgang; Türen sind kein begehbares Gelände). Der Gruftsaal hinter der Tür (7,10) bleibt deshalb ohne Anker.
 haunts:
   # Grund: der Mittelgang unter der Burg – alles Plündern läuft hier durch.
   - variant: rout
     target: { at: [7, 7] }
-    enemySpawn: { rect: [6, 5, 7, 6] }
+    enemySpawn: { rect: [1, 5, 4, 8] }
     deploy: { rect: [4, 1, 9, 2] }
   # Grund: der eingestürzte Gang in der Halle – ein Loch, durch das immer wieder jemand kommt; ein Zivilist sucht hier Schutz.
   - variant: defend
     target: { at: [11, 2] }
-    enemySpawn: { rect: [13, 2, 13, 3] }
+    enemySpawn: { rect: [3, 3, 13, 3] }
     deploy: { rect: [4, 1, 9, 2] }
     turns: 8
   # Grund: die Westkammer mit den Gräbern junger Könige – Beutegut, das die Plünderer noch nicht fanden.
   - variant: treasure
     target: { at: [2, 7] }
-    enemySpawn: { rect: [6, 5, 7, 6] }
+    enemySpawn: { rect: [6, 5, 7, 9] }
     deploy: { rect: [4, 1, 9, 2] }
     chests: [[1, 8], [4, 5]]
     turns: 10

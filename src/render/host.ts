@@ -16,6 +16,7 @@ import type { GameData } from '../core';
 import { assetUrl } from './shared/assets';
 import { RefCache } from './shared/cache';
 import { loadContainer } from './shared/models';
+import { newFigureLook, type FigureLook } from './shared/figurePlugin';
 
 export type Quality = 'low' | 'mid' | 'high';
 
@@ -45,6 +46,8 @@ export interface AssetStore {
   texture(path: string): Promise<Texture>;
   /** materials the scene shares between its figures (story 7.7), keyed by the scene; they go with the stage clear */
   materials: Map<string, StandardMaterial>;
+  /** story 8.6: team ramps and the plug-in values of the scene's figures; the board sets the floor and rim light from its look */
+  figureLook: FigureLook;
 }
 
 export class RenderHost {
@@ -105,6 +108,7 @@ export class RenderHost {
     return {
       scene: this.scene,
       materials: new Map(),
+      figureLook: newFigureLook(this.data.render.look),
       container: (path, materials = false) => this.models.use(`${materials ? 'm' : '-'}:${path}`, holder),
       texture: (path) => this.textures.use(path, holder),
     };
@@ -185,6 +189,7 @@ export class RenderHost {
     for (const m of [...s.multiMaterials]) m.dispose(false, false);
     for (const t of [...s.textures]) if (!this.kept.has(t)) t.dispose();
     s.activeCamera = null;
+    s.fogMode = Scene.FOGMODE_NONE;
   }
 }
 

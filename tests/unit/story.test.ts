@@ -80,7 +80,7 @@ describe('conditions (architecture §5.3)', () => {
     expect(holds(c, { completed: 'prologue' })).toBe(false);
     expect(holds(c, { storyCount: { min: 0 } })).toBe(true);
     expect(holds(c, { storyCount: { min: 1 } })).toBe(false);
-    c.completed.push('prologue', 'ch01');
+    c.completed.push('prologue', 'm1_1');
     expect(holds(c, { completed: 'prologue' })).toBe(true);
     expect(holds(c, { completed: 'ch02' })).toBe(false);
     expect(holds(c, { storyCount: { min: 2 } })).toBe(true);
@@ -251,7 +251,7 @@ describe('effects (architecture §5.3)', () => {
     expect(validateCampaign(data, base, { type: 'effects', effects })).toBeNull();
     const c = applyCampaign(data, base, { type: 'effects', effects }).campaign;
     expect(c.priceMods).toEqual([{ pct: -10, act: 2 }]);
-    expect(c.villageAid).toEqual([2]);
+    expect(c.villageAid).toBe(2);
     expect(base.priceMods).toEqual([]);
     expect(validateCampaign(data, base, { type: 'effects', effects: [{ priceMod: { pct: -100, act: 2 } }] })).toBe('effect_invalid');
   });
@@ -381,7 +381,7 @@ describe('expectedLevel (story 4.1)', () => {
 
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
-    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['ch01_varnhold', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
+    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['m1_2_erlbach', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();

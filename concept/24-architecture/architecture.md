@@ -182,7 +182,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 | `grudge` | `{ grudge: { lt: hask, delta: -1 } }`, begrenzt auf 0–3 |
 | `gold`, `material`, `item` | Belohnungen |
 | `priceMod` | `{ priceMod: { pct: -10, act: 2 } }` |
-| `villageAid` | Heiltrank +1 Ladung für einen Akt |
+| `villageAid` | `{ villageAid: { act: 1 } }`: Heiltrank +1 Ladung (Wert `balance.economy.villageAid.healCharges`) für den Akt `act` |
 | `openQuest` | Nebenquest-Knoten wird verfügbar |
 | `stance` | `{ stance: warm }` zählt für das Haltungsprofil |
 | `chronicle` | Chronik-Seite erhalten |
@@ -190,7 +190,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 
 - Auswertung: `evalCondition(ctx, cond): boolean` und `applyEffects(c, effects, events)` in `src/core/campaign/conditions.ts` bzw. `effects.ts`. `ctx` ist eine schmale Sicht (`flags`, `roster`, `fallen`, `left`, `completed`, `supports`, `stance`, `lieutenants`, `chronicle`), damit dieselbe Funktion in Kampf und Kampagne läuft.
 - Zod-Schema `conditionSchema`/`effectSchema` in `src/content/schemas.ts`; `content:check` prüft alle Referenzen (Gefährte, Knoten, Flag, Leutnant, Paar) gegen das Register.
-- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `villageAid`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross. **Story 4.3:** `openQuest` ist umgesetzt (`c.quests`, Event `questOpened`, nur Nebenquest-Knoten). **Story 6.9:** `setHome` ist umgesetzt (`c.home.kind`, Räume behalten ihre Stufe, Event `homeChanged`; ein unbekannter Wert ist `effect_invalid`, derselbe Wert wie bisher kein Fehler). Knoten tragen ein optionales Feld `effects` (Knoten-Belohnung): `finishMission` wendet es nach den im Kampf aufgelaufenen Dialog-Wirkungen an, nur beim Sieg, mit derselben Funktion `applyEffects`; was die Regeln danach ablehnen, entfällt, die Mission endet trotzdem. Die angewendete Liste steht in `BattleResult.effects`, die Events davor in der Ereignisliste.
+- **Stand (Story 4.2):** umgesetzt sind alle Bedingungen außer `met` und die Wirkungen `setFlag`, `recruit` (Gefährte), `leave`, `gold`, `material`, `item`, `stance`, `chronicle`. Schema und Tabellen gelten vollständig; `grudge`, `priceMod`, `recruit: { lt }` und `met` lehnt `content:check` mit „not yet supported“ ab, bis der Zustand dazu existiert (Epic 3, 5, 6, Story 4.3). Wirkungen laufen im Command `effects { effects }`; `leave` legt die Ausrüstung des Gefährten in den Tross. **Story 9.3:** `villageAid: { act }` ist umgesetzt (`c.villageAid`, Heiltränke mit `use.heal` fassen im Akt `act` eine Ladung mehr, Auffüllen nach jeder Mission inklusive); die Klasse `civilian` (ohne Waffe) ist der Nichtkämpfer für `defend`-Ziele. **Story 4.3:** `openQuest` ist umgesetzt (`c.quests`, Event `questOpened`, nur Nebenquest-Knoten). **Story 6.9:** `setHome` ist umgesetzt (`c.home.kind`, Räume behalten ihre Stufe, Event `homeChanged`; ein unbekannter Wert ist `effect_invalid`, derselbe Wert wie bisher kein Fehler). Knoten tragen ein optionales Feld `effects` (Knoten-Belohnung): `finishMission` wendet es nach den im Kampf aufgelaufenen Dialog-Wirkungen an, nur beim Sieg, mit derselben Funktion `applyEffects`; was die Regeln danach ablehnen, entfällt, die Mission endet trotzdem. Die angewendete Liste steht in `BattleResult.effects`, die Events davor in der Ereignisliste.
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 
@@ -247,30 +247,38 @@ Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day:
 
 **Kern (`src/core/campaign/haunts.ts`):**
 
-- `c.day = { last, pending }`. Ist `day ≤ last`, passiert nichts (zurückgestellte Uhr erzeugt nichts). Sonst entstehen Tagespakete für höchstens die letzten 3 Tage bis `day`, dann `last = day`.
-- Kein Paket vor der ersten Leutnant-Begegnung (`met` irgendeines Leutnants).
-- Je Tagespaket `d`: `rng = seedRng(hash32(c.seed, d))`, 1–3 Heimsuchungen auf **abgeschlossenen Story-Karten mit Ankern**, die gerade nicht heimgesucht sind; Variante aus den Ankern der Karte (nicht dieselbe wie zuletzt); Leutnant aus bereits erreichten Akten, nicht gewechselt. Mehr als 6 offen → die älteste verfällt (`hauntExpired`).
-- Gegner aus den Pools des Akts (`content/acts/actN/haunts.yaml`: Gegnertyp × Fraktion × Anteil), Stufe = erwartete Armee-Stufe, Ausrüstungs-Tier des Akts.
-- Belohnung und Deckel aus `balance.yaml` (`haunt.goldPct 40`, `expPct 60`, `catchUpExpPct 50`, `halveFromNth 4`); keine Glutfunken.
+- `c.day = { last, pending }`. Ist `day ≤ last`, passiert nichts (zurückgestellte Uhr erzeugt nichts). Sonst entstehen Tagespakete für höchstens die letzten 3 Tage bis `day`, dann `last = day`. `pending` wird seit Story 5.5 nicht mehr gefüllt (die Pakete werden direkt zu Heimsuchungen).
+- Kein Paket vor der ersten Leutnant-Begegnung (`met` irgendeines Leutnants): bis dahin ändert `advanceDay` nichts, auch nicht `last` (bleibt `null`), und meldet kein Ereignis. So bringt die **erste Begegnung sofort** ein Paket für den laufenden Tag (die App schickt `advanceDay` beim Öffnen der Weltkarte nach der Mission; Produktinhaber 2026-10-26).
+- Je Tagespaket `d`: `rng = seedRng(hash32(c.seed, d))`, `n` = 1–3 (`balance.haunt.perDay`), begrenzt durch die Kandidaten: **abgeschlossene Story-Karten mit Ankern**, die gerade nicht heimgesucht sind (je Karte höchstens eine offene Heimsuchung); Variante aus den Ankern der Karte (nicht `c.hauntLast[map]`, außer es gibt nur einen Anker); Leutnant aus `activeLieutenants` (nicht gewechselt), bereits getroffen (`met`), aus erreichten Akten (`def.act ≤ data.campaign.act`); derselbe Leutnant darf mehrere offene Heimsuchungen führen (Produktinhaber 2026-10-26). Mehr als `maxOpen` (6) offen → die älteste verfällt (`hauntExpired`). Ereignisse: `hauntSpawned { id, map, variant, lt }` je Heimsuchung, `dayAdvanced.haunts` = ihre Zahl.
+- Gegner entstehen mit der Heimsuchung und stehen im State (`c.haunts[].enemies`: Klasse, Sprite, Name, Stufe, Items, Feld; der Leutnant-Eintrag besteht nur aus `lieutenant` und `at`, Story 5.6 baut ihn zur Spielzeit wie `createBattle`): Plätze (`max` des Ankers, sonst `deploy.max`) + `extraEnemies` (2) inkl. Leutnant, leicht −1, schwer +1; Klassen nach `share` aus dem Pool der Fraktion des Leutnants (`content/acts/actN/haunts.yaml`, Ausrüstungs-Tier des Akts = die Items der Pool-Einträge); Stufe = erwartete Armee-Stufe (`expectedLevel` des nächsten verfügbaren Story-Knotens, sonst des zuletzt abgeschlossenen), Felder per RNG aus den begehbaren Feldern von `enemySpawn`. Der Leutnant steht bei boss/rout/treasure auf `target`, bei defend/escort in `enemySpawn`. defend/escort verwenden den generischen Zivilisten des Pools (`civilian`), treasure den Inhalt `chestLoot`.
+- Belohnung und Deckel aus `balance.yaml` (`haunt.goldPct 40`, `expPct 60`, `catchUpExpPct 50`, `halveFromNth 4`, `material 1–2` Akt-Material); keine Glutfunken. Spielen und Belohnen: Story 5.6 (unten).
+
+**Heimsuchung spielen (Story 5.6):**
+
+- **Karte des Kampfes:** `buildHauntMap`/`hauntMap` (`core/battle/hauntMap.ts`) leitet aus Story-Karte, Variante und Leutnant eine `MapDef` ab (Gelände, Licht, Effekte der Story-Karte; Einsatzfelder und Plätze des Ankers; Siegziel je Variante; Niederlage bei Tod von Avatar/Kael, bei defend/escort auch des Zivilisten; keine Nebenziele, keine Häuser-Belohnungen, Truhen nur die des Ankers) und legt sie unter `haunt~<map>~<variante>~<leutnant>` in `data.maps` ab. `BattleState.mapId` trägt diese Id, so finden Regeln, KI und Brett Ziele und Gelände wie auf jeder Karte; `applyCommand` ruft `ensureHauntMap`, damit auch der Kern-Worker und ein wiederhergestellter Spielstand die Karte aus der Id neu bauen. `content:check` ignoriert diese Karten.
+- **Kampf:** `createHauntBattle(data, c, hauntId, deployIds)` (`core/battle/hauntBattle.ts`) baut über dasselbe Gerüst wie `createBattle` (`battleSkeleton`, `deployPlayers`, `placeMapUnits`, `finishSetup` in `setup.ts`); die gespeicherten Gegner kommen als Kartenfiguren (Profil `trigger`, Radius `balance.haunt.triggerRadius.enemy`; der Zivilist auf der Stufe der Heimsuchung), der Leutnant aus der Vorlage seiner ersten Story-Karte (Waffen, Drops) über `planLieutenants` (Stufe, Groll, Waffenstufe, Groll-Fähigkeiten, Begegnungszeile wie dort), er wartet am Ort (`trigger`, `triggerRadius.lieutenant`). `BattleState.hauntId`/`hauntLevel`; `nodeId` ist der Story-Knoten der Karte (Name, Ort, Händlerstufe). Seed aus Kampagnen-Seed und Heimsuchungs-Id. Truhenjagd ohne Späher: je Truhe ein `door_key` im Beutel der Einheiten.
+- **Belohnung** (`finishBattle`): Gold = `hauntGold` (`goldPct` % des Mittelwerts von `goldReward` der Story-Karten des Akts, gerundet) plus Truhenfunde; ab der `halveFromNth`-ten Heimsuchung seit der letzten Story-Mission (`hauntsSinceStory >= halveFromNth − 1` vor dem Zählen) Gold und Kopfgeld-Gold halbiert; Material `haunt.material` des Akt-Materials des Leutnants zusätzlich zum Kopfgeld; EP über `expPercent` (`expPct`, für Einheiten über `hauntLevel` davon `catchUpExpPct`; Stufe zu Beginn des Kampfes) in `grantExp`. Folgen: Heimsuchung verschwindet, `hauntLast`, `hauntsSinceStory + 1`, nicht in `c.completed`, kein Händler-/Tavernen-Wechsel; Story-Sieg setzt `hauntsSinceStory = 0`; Niederlage oder Abbruch lässt sie offen. `restartTurn`/`restartMission` tragen `haunt`, `finishMission` prüft `start.hauntId`.
+- **App:** roter Stein am Ort des Story-Knotens (`valmora.yaml`), Porträt des Leutnants, „NEU“ bis zum Öffnen der Karte (`seeHaunt`); `playHaunt`/`beginHaunt` in `state/flow.ts`; keine Szenen davor und danach. Test-Haken: `__hc.devHaunt(map, variante)` (DEV) und `__hcTest` (`navigator.webdriver`) für die E2E-Tests.
 
 **Anker je Karte [A]:**
 
+Optionaler Abschnitt `haunts:` der Karten-YAML (`mapSchema`, Typ `HauntAnchor`), höchstens ein Anker je Variante und Karte:
+
 ```yaml
-# Abschnitt in content/acts/act1/maps/m1_2_erlbach.yaml
 haunts:
-  - variant: defend
-    target: { object: v_mill }            # zu schützendes Dorf
-    enemySpawn: { rect: [0, 0, 15, 2] }
-    deploy: { rect: [6, 10, 10, 13] }
-    turns: 8
-  - variant: treasure
-    chests: [[2, 3], [13, 4], [7, 1]]
-    enemySpawn: { rect: [0, 0, 15, 3] }
-    deploy: { rect: [5, 12, 11, 15] }
-    turns: 10
+  - variant: defend              # boss | rout | defend | escort | treasure
+    target: { at: [8, 6] }       # boss, rout, treasure: Feld des Leutnants · defend: Zivilist · escort: Startfeld des Zivilisten
+    enemySpawn: { rect: [0, 0, 15, 2] }   # area ({ rect } | { tiles }); darin stehen die Gegner (bei defend/escort auch der Leutnant)
+    deploy: { rect: [6, 13, 9, 15] }      # area, Einsatzfelder
+    max: 5                       # optional, Plätze; Standard deploy.max der Karte
+    turns: 8                     # Pflicht bei defend und treasure, optional bei escort, sonst nicht erlaubt
+    exit: { rect: [6, 15, 8, 15] }        # nur und Pflicht bei escort
+    chests: [[2, 3], [13, 4]]    # nur und Pflicht bei treasure (≥ 1), Felder statt Kartenobjekte
 ```
 
-Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Erreichbarkeit (Pfad von jedem Einsatzfeld zum Ziel), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
+`target` und `chests` müssen begehbare Felder ohne Kartenobjekt sein und dürfen nicht in `deploy`/`enemySpawn` liegen (ein Brunnen oder eine Säule als Ziel ist ein Fehler). Gegner-Pools, Zivilist und Truhen-Inhalt je Akt in `content/acts/actN/haunts.yaml` (Paket des Akts, Schema `hauntPoolsSchema`, `GameData.hauntPools[act]`).
+
+Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
 
 **Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Kael). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
 

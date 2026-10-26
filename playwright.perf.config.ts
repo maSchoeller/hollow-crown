@@ -1,7 +1,8 @@
 /** Performance run (story 7.5): `pnpm perf` builds with `--mode perf` and runs tests/perf against dist-perf. */
 import { defineConfig, devices } from '@playwright/test';
 
-const port = 4175;
+// other checkouts run the perf suite too: PERF_PORT picks another port
+const port = Number(process.env.PERF_PORT ?? 4175);
 export default defineConfig({
   testDir: 'tests/perf',
   testMatch: /\.spec\.ts$/,

@@ -101,8 +101,8 @@ development_status:
   5-2-die-weltkarte-als-3d-szene: done  # Die Weltkarte als 3D-Szene
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
   5-4-tageswechsel: done  # Tageswechsel
-  5-5-heimsuchungs-anker-und-generator: backlog  # Heimsuchungs-Anker und Generator
-  5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
+  5-5-heimsuchungs-anker-und-generator: review  # Heimsuchungs-Anker und Generator
+  5-6-heimsuchungen-spielen-und-belohnen: review  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
 
   # Epic 6: Truppe, Fortschritt und Lager
@@ -116,7 +116,7 @@ development_status:
   6-7-abschied-von-gefallenen: done  # Abschied von Gefallenen
   6-8-wirtschaftskurve-und-verkettete-simulation: review  # Wirtschaftskurve und verkettete Simulation
   6-9-die-paktwacht-als-heimat: review  # Die Paktwacht als Heimat
-  6-10-aufstellung-vor-der-mission-im-stil-b: backlog  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
+  6-10-aufstellung-vor-der-mission-im-stil-b: review  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
   epic-6-retrospective: optional
 
   # Epic 7: Akt-Pakete und Offline
@@ -138,7 +138,7 @@ development_status:
   8-3-brettfiguren-fuer-akt-1: review  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: done  # Porträts mit Stimmungen für Akt 1
   8-5-item-bilder: done  # Item-Bilder
-  8-6-licht-wetter-und-effekte-auf-dem-brett: backlog  # Licht, Wetter und Effekte auf dem Brett
+  8-6-licht-wetter-und-effekte-auf-dem-brett: review  # Licht, Wetter und Effekte auf dem Brett
   8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: review  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
@@ -149,7 +149,7 @@ development_status:
   epic-9: backlog
   9-1-prolog-die-paktnacht: review  # Prolog „Die Paktnacht“
   9-2-mission-1-1-steckbriefe: review  # Mission 1-1 „Steckbriefe“
-  9-3-mission-1-2-asche-ueber-erlbach-und-entscheidung-e1: backlog  # Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
+  9-3-mission-1-2-asche-ueber-erlbach-und-entscheidung-e1: review  # Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
   9-4-mission-1-3-der-fremde-mit-dem-siegel: backlog  # Mission 1-3 „Der Fremde mit dem Siegel“
   9-5-mission-1-4-die-spur-des-maklers-und-entscheidung-e2: backlog  # Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
   9-6-mission-1-5-das-hungerlager-und-entscheidung-e3: backlog  # Mission 1-5 „Das Hungerlager“ und Entscheidung E3

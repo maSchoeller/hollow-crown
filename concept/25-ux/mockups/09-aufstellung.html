@@ -1,0 +1,554 @@
+<meta charset="utf-8">
+<title>Hollow Crown Aufstellung</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap">
+<style>
+/* Schritt 9: Aufstellung vor der Mission (Story 6.10). Stil B, Einheitenkarten als Steinzeilen über der weichgezeichneten Weltkarte.
+   Beträge/Werte wie überall: TP als Zahl, Waffe als Item-Chip mit gemaltem Bild (Rahmen = Seltenheit, hier alle Gewöhnlich). */
+:root {
+  --page: #ece8df; --fg: #1f1e24; --muted: #625c55; --rule: rgba(31, 30, 36, 0.14); --accent: #c85f2b;
+  --f-body: 'Barlow', system-ui, sans-serif; --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-name: 'Fraunces', Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; } }
+:root[data-theme="dark"] { --page: #19181c; --fg: #eeeae2; --muted: #a59e94; --rule: rgba(238, 234, 226, 0.14); --accent: #ec8a55; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.intro { display: grid; gap: 10px; max-width: 78ch; margin-bottom: 24px; }
+.eyebrow { font-family: var(--f-label); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; color: var(--accent); }
+h1 { font-family: var(--f-label); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h2.sec { font-family: var(--f-label); font-weight: 700; font-size: 20px; margin: 40px 0 14px; }
+p { margin: 0; } .intro p { color: var(--muted); }
+.intro ul { margin: 0; padding-left: 1.2em; color: var(--muted); display: grid; gap: 3px; }
+.phones { display: flex; flex-wrap: wrap; gap: 26px; }
+.cap { font-family: var(--f-label); font-weight: 700; font-size: 14px; margin-top: 10px; }
+.note { font-size: 13px; color: var(--muted); max-width: 34ch; }
+.note.wide-note { max-width: 90ch; }
+
+.phone { width: 330px; max-width: 100%; }
+.screen { position: relative; width: 100%; aspect-ratio: 390 / 844; border-radius: 34px; overflow: hidden; border: 8px solid #101014; background: #403020; }
+.screen > img.bg, .frame > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(6px) saturate(.7) brightness(.8); transform: scale(1.08); }
+svg.i { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.fill { position: absolute; left: 10px; right: 10px; top: 12px; bottom: 12px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 10px; }
+
+.B { --cream: #fff8ec; --cream-2: #f4e9d6; --line: #3b2a20; --soft: #7a6553; --ember: #e8743b; --ember-d: #b44c18; --blue: #2f64c8; --blue-soft: #e7efff; --red: #b83a2e; --green: #2f8a4c; --gold: #d9a931; color: var(--line); font-weight: 600; }
+.B .piece { background: var(--cream); border: 2.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 0 var(--line), 0 10px 20px rgba(40, 28, 20, .28); }
+/* Kopf: ScreenHead */
+.B .head { display: flex; align-items: center; gap: 8px; }
+.B .back { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.B .title { flex: 1; display: flex; align-items: center; gap: 8px; padding: 6px 16px; min-height: 44px; border-radius: 999px; }
+.B .title b { font-family: var(--f-name); font-size: 18px; }
+/* Missions-Stein oben (wie die Knoten-Karte in 03-weltkarte) */
+.B .info { padding: 8px 12px 10px; display: grid; gap: 3px; }
+.B .kicker { font-family: var(--f-label); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-d); }
+.B .info h3 { margin: 0; font-family: var(--f-name); font-weight: 700; font-size: 20px; line-height: 1.05; }
+.B .goal { font-size: 13px; color: var(--soft); }
+.B .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.B .tag { display: inline-flex; align-items: center; gap: 5px; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; padding: 1px 9px 1px 6px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.B .tag.full { background: var(--line); color: var(--cream); }
+.B .hint { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--soft); margin-top: 2px; }
+/* Liste der Einheitenkarten */
+.B .list { display: grid; gap: 7px; align-content: start; overflow: hidden; padding-bottom: 6px; }
+.B .unit { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 6px 8px; border-radius: 16px; }
+.B .unit.off { opacity: .62; background: var(--cream-2); }
+.B .medal { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--line); padding: 2.5px; background: conic-gradient(var(--blue) 0 100%, rgba(59, 42, 32, .18) 0 100%); }
+.B .medal span { display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 2px solid var(--line); background: var(--blue-soft); }
+.B .medal img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.B .txt { min-width: 0; display: grid; gap: 1px; }
+.B .l1 { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; }
+.B .l1 b { font-family: var(--f-name); font-size: 16px; line-height: 1.1; }
+.B .tp { font-family: var(--f-label); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.B .l2 { font-family: var(--f-label); font-weight: 700; font-size: 12px; color: var(--soft); white-space: nowrap; letter-spacing: .02em; }
+.B .l3 { margin-top: 1px; }
+.B .chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 0 9px 0 3px; border: 2px solid #9a9488; border-radius: 999px; background: var(--cream-2); font-size: 12px; font-weight: 700; line-height: 1.35; white-space: nowrap; }
+.B .unit.off .chip { background: var(--cream); }
+.B .chip img { width: 20px; height: 20px; margin: -2px 0; object-fit: contain; display: block; }
+.B .why { grid-column: 1 / -1; display: flex; align-items: center; gap: 5px; margin-top: -1px; padding-top: 3px; border-top: 2px dashed rgba(59, 42, 32, .22); font-size: 11.5px; color: var(--soft); }
+/* Schaltstein rechts: Haken / Plus / Schloss, daneben der Taschen-Knopf */
+.B .acts { display: flex; align-items: center; gap: 5px; }
+.B .tog, .B .bagb { width: 38px; height: 38px; border-radius: 50%; border: 2.5px solid var(--line); display: grid; place-items: center; flex: none; }
+.B .tog.on, .B .tog.lock { background: var(--line); color: var(--cream); box-shadow: 0 3px 0 rgba(59, 42, 32, .55); }
+.B .tog.add { background: var(--cream); box-shadow: 0 3px 0 var(--line); }
+.B .tog.add.dis { background: transparent; border-style: dashed; border-color: var(--soft); box-shadow: none; color: var(--soft); opacity: .7; }
+.B .bagb { background: var(--cream); box-shadow: 0 3px 0 var(--line); }
+.B .unit.off .bagb { background: var(--cream-2); }
+/* Unten genau eine Glut-Taste, gesperrt grau mit Grund darunter */
+.B .bottom { display: grid; gap: 6px; }
+.B .btn { border-radius: 999px; border: 2.5px solid var(--line); padding: 11px 8px; text-align: center; font-family: var(--f-label); font-weight: 700; font-size: 17px; background: var(--cream); box-shadow: 0 4px 0 var(--line); }
+.B .btn.primary { background: var(--ember); color: #fff; box-shadow: 0 4px 0 var(--ember-d), 0 4px 0 2px var(--line); }
+.B .btn.primary.off { background: var(--cream-2); color: var(--soft); box-shadow: 0 4px 0 var(--line); }
+.B .toast { position: absolute; left: 14px; right: 14px; bottom: 74px; display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--cream); font-size: 12px; line-height: 1.25; z-index: 2; }
+.B .toast .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--line); color: var(--cream); display: grid; place-items: center; flex: none; }
+.B .why-off { text-align: center; font-size: 12px; line-height: 1.25; color: var(--ember-d); background: var(--cream); border: 2px solid var(--line); border-radius: 12px; padding: 3px 10px; }
+
+/* Breite Rahmen (Tablet 600–1023, PC ab 1024), EXPERIENCE.md Responsive */
+.scroll { overflow-x: auto; padding-bottom: 8px; }
+.frame { position: relative; overflow: hidden; border-radius: 18px; border: 8px solid #101014; background: #403020; }
+.frame.tablet { width: 880px; height: 560px; }
+.frame.pc { width: 1120px; height: 640px; }
+.frame .cols { position: absolute; inset: 0; display: grid; }
+.frame.tablet .cols { grid-template-columns: 1fr 320px; }
+.frame.pc .cols { grid-template-columns: 360px 1fr; gap: 24px; padding: 20px 24px; }
+.frame .left { display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; padding: 12px 10px; align-content: start; min-height: 0; }
+.frame.pc .left { padding: 0; }
+.frame .left .bottom { align-self: end; }
+.frame .side { background: var(--cream-2); border-left: 2.5px solid var(--line); padding: 12px; display: grid; align-content: start; gap: 8px; overflow: hidden; }
+.frame .roster { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; align-content: start; align-self: start; }
+.frame .roster .unit { box-shadow: 0 3px 0 var(--line); }
+.frame .roster h4 { grid-column: 1 / -1; margin: 0 0 2px; font-family: var(--f-name); font-size: 18px; display: flex; justify-content: space-between; align-items: baseline; }
+.frame .roster h4 span { font-family: var(--f-label); font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; }
+.frame .side h4 { margin: 0; font-family: var(--f-name); font-size: 18px; display: flex; justify-content: space-between; align-items: baseline; }
+.frame .side h4 span { font-family: var(--f-label); font-size: 12px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></symbol>
+  <symbol id="i-people2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.8 3.1-6.5 7-6.5s7 2.7 7 6.5"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">UX Staffel 1 · Schritt 9 · Aufstellung vor der Mission</span>
+    <h1>Wer zieht in die Mission mit?</h1>
+    <p>Die Aufstellung (Knoten-Karte „Aufstellung“, oder automatisch, wenn die Truppe größer ist als die Plätze) im Stil der übrigen Vollbild-Ansichten: weichgezeichnete Weltkarte dahinter, Kopf mit Zurück-Stein und Titelpille, oben der Missions-Stein, darunter je Gefährte eine Einheitenkarte, unten genau eine Glut-Taste. Beispiel: Mission 1-1 mit 4 Plätzen, 2 Pflicht-Figuren (Rhen und Kael) und 6 Gefährten.</p>
+    <ul>
+      <li><b>Reihenfolge fest:</b> Pflicht-Figuren oben, dann die Truppe in der Reihenfolge der Truppe. Beim Wählen springt nichts; abgewählte Karten sind gedimmt und tragen ein Plus.</li>
+      <li><b>Schaltstein:</b> Haken (dunkel) = dabei, Plus = frei wählbar, Schloss = Pflicht in dieser Mission (ein fester Grundtext für alle Karten). Der Taschen-Knopf öffnet die Figur mit Ausrüstung wie in 06.</li>
+      <li><b>TP</b> als Zahl und als voller Ring um das Medaillon (außerhalb des Kampfes sind alle bei voller Gesundheit, ein Balken zeigte nichts Neues).</li>
+    </ul>
+  </header>
+
+  <div class="phones">
+    <!-- 1 voll -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/world.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i" style="width:22px;height:22px"><use href="#i-back"/></svg></div><div class="piece title"><b>Aufstellung</b></div></div>
+          <div class="piece info">
+            <div class="kicker">Story-Mission 1-1</div>
+            <h3>Steckbriefe in Varnhold</h3>
+            <p class="goal">Besiege alle Gegner.</p>
+            <div class="tags"><span class="tag full"><svg class="i" style="width:15px;height:15px"><use href="#i-people2"/></svg>4/4 Plätze</span><span class="tag">Stufe ≈ 2</span></div>
+            
+          </div>
+          <div class="list">
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/rhen_a_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Rhen</b><span class="tp">22 TP</span></div>
+                <div class="l2">Taktiker · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_sword.webp" alt="">Eisenschwert</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/kael_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Kael</b><span class="tp">28 TP</span></div>
+                <div class="l2">Hauptmann · St. 4</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_lance.webp" alt="">Eisenlanze</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/brenna_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Brenna</b><span class="tp">31 TP</span></div>
+                <div class="l2">Vorkämpfer · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/steel_axe.webp" alt="">Stahlaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/tobin_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Tobin</b><span class="tp">20 TP</span></div>
+                <div class="l2">Schütze · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_bow.webp" alt="">Eisenbogen</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/fenn_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Fenn</b><span class="tp">21 TP</span></div>
+                <div class="l2">Späher · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/javelin.webp" alt="">Wurfspeer</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/varek_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Varek</b><span class="tp">24 TP</span></div>
+                <div class="l2">Plänkler · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/hand_axe.webp" alt="">Handaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+          </div>
+          <div class="piece toast" role="status"><span class="dot"><svg class="i" style="width:16px;height:16px"><use href="#i-plus"/></svg></span>Alle Plätze besetzt. Nimm zuerst jemanden heraus.</div>
+          <div class="bottom">
+            <div class="btn primary">Kampf beginnen</div>
+            
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Voll: 4 von 4 Plätzen, Tipp auf ein gesperrtes Plus</div>
+      <p class="note">Zustand beim Öffnen: Pflicht-Figuren, dann die ersten Gefährten bis zum Limit. Die Plätze-Pille wird dunkel, die Plus-Steine der übrigen sind gestrichelt. Ein Tipp darauf macht nichts am Zustand, zeigt aber den Hinweis (Toast) mit dem Weg („erst jemanden heraus“). Die Liste scrollt, Kopf, Missions-Stein und Taste bleiben stehen.</p>
+    </div>
+
+    <!-- 2 Platz frei -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/world.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i" style="width:22px;height:22px"><use href="#i-back"/></svg></div><div class="piece title"><b>Aufstellung</b></div></div>
+          <div class="piece info">
+            <div class="kicker">Story-Mission 1-1</div>
+            <h3>Steckbriefe in Varnhold</h3>
+            <p class="goal">Besiege alle Gegner.</p>
+            <div class="tags"><span class="tag"><svg class="i" style="width:15px;height:15px"><use href="#i-people2"/></svg>3/4 Plätze</span><span class="tag">Stufe ≈ 2</span></div>
+            
+          </div>
+          <div class="list">
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/rhen_a_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Rhen</b><span class="tp">22 TP</span></div>
+                <div class="l2">Taktiker · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_sword.webp" alt="">Eisenschwert</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/kael_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Kael</b><span class="tp">28 TP</span></div>
+                <div class="l2">Hauptmann · St. 4</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_lance.webp" alt="">Eisenlanze</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/brenna_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Brenna</b><span class="tp">31 TP</span></div>
+                <div class="l2">Vorkämpfer · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/steel_axe.webp" alt="">Stahlaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/tobin_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Tobin</b><span class="tp">20 TP</span></div>
+                <div class="l2">Schütze · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_bow.webp" alt="">Eisenbogen</span></div>
+              </div>
+              <div class="acts"><span class="tog add"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/fenn_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Fenn</b><span class="tp">21 TP</span></div>
+                <div class="l2">Späher · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/javelin.webp" alt="">Wurfspeer</span></div>
+              </div>
+              <div class="acts"><span class="tog add"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/varek_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Varek</b><span class="tp">24 TP</span></div>
+                <div class="l2">Plänkler · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/hand_axe.webp" alt="">Handaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog add"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+          </div>
+          
+          <div class="bottom">
+            <div class="btn primary">Kampf beginnen</div>
+            
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Ein Platz frei: 3 von 4</div>
+      <p class="note">Tobin wurde abgewählt: Karte gedimmt, Plus statt Haken. Die Plus-Steine der anderen sind jetzt tippbar. Alles bleibt an seinem Platz, nur Haken und Dimmung wechseln.</p>
+    </div>
+
+    <!-- 3 zu groß -->
+    <div>
+      <div class="phone B"><div class="screen"><img class="bg" src="assets/world.jpg" alt="">
+        <div class="fill">
+          <div class="head"><div class="piece back"><svg class="i" style="width:22px;height:22px"><use href="#i-back"/></svg></div><div class="piece title"><b>Aufstellung</b></div></div>
+          <div class="piece info">
+            <div class="kicker">Story-Mission 1-1</div>
+            <h3>Steckbriefe in Varnhold</h3>
+            <p class="goal">Besiege alle Gegner.</p>
+            <div class="tags"><span class="tag full"><svg class="i" style="width:15px;height:15px"><use href="#i-people2"/></svg>4/4 Plätze</span><span class="tag">Stufe ≈ 2</span></div>
+            
+          </div>
+          <div class="list">
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/rhen_a_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Rhen</b><span class="tp">22 TP</span></div>
+                <div class="l2">Taktiker · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_sword.webp" alt="">Eisenschwert</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/kael_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Kael</b><span class="tp">28 TP</span></div>
+                <div class="l2">Hauptmann · St. 4</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_lance.webp" alt="">Eisenlanze</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/brenna_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Brenna</b><span class="tp">31 TP</span></div>
+                <div class="l2">Vorkämpfer · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/steel_axe.webp" alt="">Stahlaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/tobin_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Tobin</b><span class="tp">20 TP</span></div>
+                <div class="l2">Schütze · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_bow.webp" alt="">Eisenbogen</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/fenn_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Fenn</b><span class="tp">21 TP</span></div>
+                <div class="l2">Späher · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/javelin.webp" alt="">Wurfspeer</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/varek_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Varek</b><span class="tp">24 TP</span></div>
+                <div class="l2">Plänkler · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/hand_axe.webp" alt="">Handaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+          </div>
+          
+          <div class="bottom">
+            <div class="btn primary off">Kampf beginnen</div>
+            <p class="why-off" role="alert">Die Truppe ist zu groß. Entlasse in der Taverne Söldner (2), bevor ihr aufbrecht.</p>
+          </div>
+        </div>
+      </div></div>
+      <div class="cap">Truppe zu groß</div>
+      <p class="note">Liegt die Truppe über dem Söldner-Limit, ist „Kampf beginnen“ grau und gesperrt, der Grund steht darunter (Satz wie in der Knoten-Karte). Die Knoten-Karte der Weltkarte sperrt „Aufstellung“ und „Aufbrechen“ in diesem Fall schon vorher.</p>
+    </div>
+  </div>
+
+  <h2 class="sec">Breitere Bildschirme</h2>
+  <div class="scroll">
+    <div class="frame tablet B">
+      <img class="bg" src="assets/world.jpg" alt="">
+      <div class="cols">
+        <div class="left">
+          <div class="head"><div class="piece back"><svg class="i" style="width:22px;height:22px"><use href="#i-back"/></svg></div><div class="piece title"><b>Aufstellung</b></div></div>
+          <div class="piece info">
+            <div class="kicker">Story-Mission 1-1</div>
+            <h3>Steckbriefe in Varnhold</h3>
+            <p class="goal">Besiege alle Gegner.</p>
+            <div class="tags"><span class="tag full"><svg class="i" style="width:15px;height:15px"><use href="#i-people2"/></svg>4/4 Plätze</span><span class="tag">Stufe ≈ 2</span></div>
+            
+          </div>
+          <span></span>
+          <div class="bottom"><div class="btn primary">Kampf beginnen</div></div>
+        </div>
+        <aside class="side">
+          <h4>Truppe <span>6 Gefährten</span></h4>
+          <div class="piece unit on">
+              <div class="medal"><span><img src="assets/rhen_a_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Rhen</b><span class="tp">22 TP</span></div>
+                <div class="l2">Taktiker · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_sword.webp" alt="">Eisenschwert</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/kael_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Kael</b><span class="tp">28 TP</span></div>
+                <div class="l2">Hauptmann · St. 4</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_lance.webp" alt="">Eisenlanze</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/brenna_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Brenna</b><span class="tp">31 TP</span></div>
+                <div class="l2">Vorkämpfer · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/steel_axe.webp" alt="">Stahlaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/tobin_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Tobin</b><span class="tp">20 TP</span></div>
+                <div class="l2">Schütze · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_bow.webp" alt="">Eisenbogen</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/fenn_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Fenn</b><span class="tp">21 TP</span></div>
+                <div class="l2">Späher · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/javelin.webp" alt="">Wurfspeer</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/varek_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Varek</b><span class="tp">24 TP</span></div>
+                <div class="l2">Plänkler · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/hand_axe.webp" alt="">Handaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Tablet und Handy quer (600–1023 px)</div>
+  <p class="note wide-note">Seitenleiste rechts mit 320 px (wie im Kampf): die Einheitenkarten in einer Spalte, scrollbar. Links bleibt die weichgezeichnete Weltkarte mit Kopf, Missions-Stein und der Glut-Taste, damit der Daumen sie ohne Scrollen erreicht.</p>
+
+  <div class="scroll" style="margin-top: 26px">
+    <div class="frame pc B">
+      <img class="bg" src="assets/world.jpg" alt="">
+      <div class="cols">
+        <div class="left">
+          <div class="head"><div class="piece back"><svg class="i" style="width:22px;height:22px"><use href="#i-back"/></svg></div><div class="piece title"><b>Aufstellung</b></div></div>
+          <div class="piece info">
+            <div class="kicker">Story-Mission 1-1</div>
+            <h3>Steckbriefe in Varnhold</h3>
+            <p class="goal">Besiege alle Gegner.</p>
+            <div class="tags"><span class="tag full"><svg class="i" style="width:15px;height:15px"><use href="#i-people2"/></svg>4/4 Plätze</span><span class="tag">Stufe ≈ 2</span></div>
+            
+          </div>
+          <span></span>
+          <div class="bottom"><div class="btn primary">Kampf beginnen</div></div>
+        </div>
+        <div class="piece roster">
+          <h4>Truppe <span>6 Gefährten</span></h4>
+          <div class="piece unit on">
+              <div class="medal"><span><img src="assets/rhen_a_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Rhen</b><span class="tp">22 TP</span></div>
+                <div class="l2">Taktiker · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_sword.webp" alt="">Eisenschwert</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/kael_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Kael</b><span class="tp">28 TP</span></div>
+                <div class="l2">Hauptmann · St. 4</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_lance.webp" alt="">Eisenlanze</span></div>
+              </div>
+              <div class="acts"><span class="tog lock" role="img" aria-label="Pflicht"><svg class="i" style="width:20px;height:20px"><use href="#i-lock"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              <div class="why"><svg class="i" style="width:13px;height:13px"><use href="#i-lock"/></svg>Pflicht in dieser Mission</div>
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/brenna_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Brenna</b><span class="tp">31 TP</span></div>
+                <div class="l2">Vorkämpfer · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/steel_axe.webp" alt="">Stahlaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit on">
+              <div class="medal"><span><img src="assets/tobin_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Tobin</b><span class="tp">20 TP</span></div>
+                <div class="l2">Schütze · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/iron_bow.webp" alt="">Eisenbogen</span></div>
+              </div>
+              <div class="acts"><span class="tog on"><svg class="i" style="width:20px;height:20px"><use href="#i-check"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/fenn_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Fenn</b><span class="tp">21 TP</span></div>
+                <div class="l2">Späher · St. 2</div>
+                <div class="l3"><span class="chip"><img src="assets/items/javelin.webp" alt="">Wurfspeer</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+            <div class="piece unit off">
+              <div class="medal"><span><img src="assets/varek_head.webp" alt=""></span></div>
+              <div class="txt">
+                <div class="l1"><b>Varek</b><span class="tp">24 TP</span></div>
+                <div class="l2">Plänkler · St. 3</div>
+                <div class="l3"><span class="chip"><img src="assets/items/hand_axe.webp" alt="">Handaxt</span></div>
+              </div>
+              <div class="acts"><span class="tog add dis"><svg class="i" style="width:20px;height:20px"><use href="#i-plus"/></svg></span><span class="bagb"><svg class="i" style="width:20px;height:20px"><use href="#i-bag"/></svg></span></div>
+              
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">PC (ab 1024 px)</div>
+  <p class="note wide-note">Zwei Spalten: links Kopf, Missions-Stein und Taste (360 px), rechts die Truppe als Stein mit zwei Spalten Einheitenkarten, sodass sechs Gefährten ohne Scrollen passen; bei mehr scrollt der Stein. Hover hebt eine Karte an, Rechtsklick oder Esc geht zurück, Enter beginnt den Kampf. Die Karten sind dieselben wie am Handy.</p>
+</div>

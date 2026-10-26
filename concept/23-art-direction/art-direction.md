@@ -82,7 +82,7 @@ Die Jahreszeit legt Vegetation, Grundpalette und Sonnenstand fest. Jede Karte ge
 
 ### 2.5 Tageszeit und Wetter (je Mission) [A]
 
-Jede Karten-YAML wählt `timeOfDay` und `weather` aus festen Listen; die Werte (Sonnenfarbe, Richtung, Umgebungslicht, Nebel) stehen in `content/render.yaml`. [C]
+Jede Karten-YAML wählt `timeOfDay` und `weather` aus festen Listen; die Werte (Sonnenfarbe, Richtung, Umgebungslicht, Nebel) stehen in `content/core/render.yaml` (Block `look`). [C]
 
 | `timeOfDay` | Licht | Untergrenze Helligkeit |
 |---|---|---|
@@ -253,7 +253,7 @@ Rund 11 Vollbild-Standbilder laut Narrative (Cutscenes), Round-Chibi-Figuren vor
 
 ### 5.4 Cut-ins [A]
 
-Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales Band (ca. 35 % Bildschirmhöhe) ins Bild: Porträt in Stimmung `angry`, Speedlines in Elementfarbe bzw. Fraktionsfarbe, Skillname. Dauer 0,9 s (1×) bzw. 0,5 s (2×), bei Überspringen aus. Keine eigenen Action-Illustrationen.
+Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales Band (ca. 35 % Bildschirmhöhe) ins Bild: Porträt in Stimmung `angry`, Speedlines in Elementfarbe bzw. Fraktionsfarbe, Skillname. Die Krit-Folge dauert bei 1× insgesamt 550 ms (Entscheidung Produktinhaber 2026-10-26, löst 0,9 s / 0,5 s ab; Zeiten in `content/core/render.yaml look.fx.crit`), bei 2× und in der Gegnerphase kürzer (nach `settings.speed` bzw. `enemySpeed`), bei Überspringen aus. Ohne Porträt zeigt das Band ein Buchstaben-Medaillon, die Speedlines nutzen ohne Element die helle Stufe der Teamfarbe. Keine eigenen Action-Illustrationen.
 
 ### 5.5 Key Art, Logo, App-Icon
 

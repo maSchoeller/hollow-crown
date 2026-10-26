@@ -35,7 +35,7 @@ let data: GameData;
 let locales: ReturnType<typeof loadContentFromDisk>['locales'];
 let base: CampaignState;
 
-const STORY = ['prologue', 'm1_1', 'ch01', 'ch02', 'm1_6', 'm1_7'];
+const STORY = ['prologue', 'm1_1', 'm1_2', 'ch02', 'm1_6', 'm1_7'];
 const NODE = 'm1_8';
 
 beforeAll(() => {
@@ -320,8 +320,8 @@ describe('goal line of a defence', () => {
   it('names the unit to protect from the map, not a fixed one (the steward of 1-8, Liora in 1-3)', () => {
     addTexts('de', locales.de ?? {});
     const steward = data.maps['m1_8_paktwacht_halten']!;
-    expect(goalLine(steward.objectives.victory, steward.units)).toBe('Schutzziel Verwalter: 10 Runden halten.');
+    expect(goalLine(steward.objectives.victory, steward)).toBe('Beschütze Verwalter für 10 Runden.');
     const liora = data.maps['ch02_silverbrook']!;
-    expect(goalLine(liora.objectives.victory, liora.units)).toContain('Liora');
+    expect(goalLine(liora.objectives.victory, liora)).toContain('Liora');
   });
 });

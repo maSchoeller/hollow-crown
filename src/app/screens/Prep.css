@@ -1,0 +1,380 @@
+/* Deployment before a mission (story 6.10, concept/25-ux/mockups/09-aufstellung.html). Prefix prp-. */
+
+/* phone: head, mission stone, scrolling list of unit cards, one button; the head, stone and button stay put */
+.prp > .prp-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  padding: 0 2px 8px;
+}
+.prp-list__head {
+  display: none;
+}
+
+/* mission stone (same marks as the node card of the world map) */
+.prp-info {
+  display: grid;
+  gap: 3px;
+  padding: 8px 12px 10px;
+}
+.prp-info__kicker {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+}
+.prp-info__title {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.05;
+}
+.prp-info__goal {
+  margin: 0;
+  font-size: 13px;
+  color: var(--hc-soft);
+}
+.prp-info__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.prp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 9px 1px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.prp-tag.is-full {
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+
+/* unit card: stone row */
+.prp-unit {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 16px;
+}
+.prp-unit.is-off {
+  opacity: 0.62;
+  background: var(--hc-cream-2);
+}
+.prp-medal {
+  display: block;
+  width: 42px;
+  height: 42px;
+  box-sizing: border-box;
+  padding: 2.5px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  /* full HP ring in team blue: outside a battle everyone stands at full health */
+  background: conic-gradient(var(--hc-team-player) 0 100%, rgba(59, 42, 32, 0.18) 0 100%);
+}
+.prp-medal .trp-head {
+  width: 100%;
+  height: 100%;
+  border-width: var(--hc-outline-small);
+  box-shadow: none;
+  background: var(--hc-team-player-soft);
+}
+.prp-unit__txt {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+.prp-unit__l1 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+.prp-unit__l1 b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--hc-font-name);
+  font-size: 16px;
+  line-height: 1.1;
+}
+.prp-unit__hp {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.prp-unit__l2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--hc-soft);
+}
+.prp-unit__l3 {
+  margin-top: 1px;
+  min-width: 0;
+}
+.prp-unit.is-off .hc-item-chip,
+.prp-unit.is-off .prp-unarmed {
+  background: var(--hc-cream);
+}
+.prp-unarmed {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border: var(--hc-outline-small) solid var(--hc-rarity-common);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  color: var(--hc-soft);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.prp-unit__why {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: -1px;
+  padding-top: 3px;
+  border-top: 2px dashed rgba(59, 42, 32, 0.22);
+  font-size: 11.5px;
+  color: var(--hc-soft);
+}
+
+/* switch stone (check = along, plus = free, lock = required) and bag button; 38 px stone, 44 px hit area */
+.prp-unit__acts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.prp-tog,
+.prp-bag {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 3px 0 var(--hc-line);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.prp-tog::before,
+.prp-bag::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+}
+.prp-tog:active:not(.is-lock),
+.prp-bag:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.prp-tog.is-on,
+.prp-tog.is-lock {
+  background: var(--hc-line);
+  color: var(--hc-cream);
+  box-shadow: 0 3px 0 rgba(59, 42, 32, 0.55);
+}
+.prp-tog.is-lock {
+  cursor: default;
+}
+/* all places taken: the plus is dashed and quiet, a tap still answers with a hint */
+.prp-tog.is-full {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--hc-soft);
+  box-shadow: none;
+  color: var(--hc-soft);
+  opacity: 0.7;
+}
+.prp-unit.is-off .prp-bag {
+  background: var(--hc-cream-2);
+}
+.prp-tog:focus-visible,
+.prp-bag:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 3px;
+}
+
+/* bottom: one ember button; locked grey with the reason beneath */
+.prp-bottom {
+  display: grid;
+  gap: 6px;
+}
+.prp-bottom .hc-btn {
+  width: 100%;
+}
+.prp-over {
+  margin: 0;
+  padding: 3px 10px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 12px;
+  background: var(--hc-cream);
+  color: var(--hc-ember-dark);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* hint when all places are taken: sits over the bottom of the view */
+.prp.hc-view > .toast {
+  position: absolute;
+  margin: 0;
+  top: auto;
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: min(420px, calc(100% - 28px));
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: left;
+  white-space: normal;
+}
+.prp-toast__dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+
+/* 600-1023 px: side panel on the right (320 px, one column), the blurred map with head, stone and button on the left */
+@media (min-width: 600px) {
+  .prp.hc-view {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 10px 0;
+    padding: calc(var(--hc-hud-top) + env(safe-area-inset-top, 0px)) 0 calc(var(--hc-hud-top) + env(safe-area-inset-bottom, 0px));
+  }
+  .prp.hc-view > :where(:not(.hc-backdrop, .toast)) {
+    width: auto;
+    margin-inline: 0;
+  }
+  .prp.hc-view > .prp__head,
+  .prp.hc-view > .prp-info,
+  .prp.hc-view > .prp-bottom {
+    grid-column: 1;
+    margin-inline: var(--hc-hud-edge);
+  }
+  .prp__head {
+    grid-row: 1;
+  }
+  .prp-info {
+    grid-row: 2;
+    align-self: start;
+  }
+  .prp-bottom {
+    grid-row: 4;
+    align-self: end;
+  }
+  .prp.hc-view > .prp-list {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-top: calc(-1 * (var(--hc-hud-top) + env(safe-area-inset-top, 0px)));
+    margin-bottom: calc(-1 * (var(--hc-hud-top) + env(safe-area-inset-bottom, 0px)));
+    padding: 12px;
+    gap: 8px;
+    background: var(--hc-cream-2);
+    border-left: var(--hc-outline) solid var(--hc-line);
+  }
+  .prp-list__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 0;
+    font-family: var(--hc-font-name);
+    font-size: 18px;
+  }
+  .prp-list__head span {
+    font-family: var(--hc-font-label);
+    font-size: 12px;
+    color: var(--hc-soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .prp.hc-view > .toast {
+    left: calc((100% - 320px) / 2);
+  }
+}
+
+/* from 1024 px: head, stone and button left (360 px), the company right as one stone with two columns of cards */
+@media (min-width: 1024px) {
+  .prp.hc-view {
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 10px 24px;
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 24px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .prp.hc-view > .prp__head,
+  .prp.hc-view > .prp-info,
+  .prp.hc-view > .prp-bottom {
+    margin-inline: 0;
+  }
+  .prp.hc-view > .prp-list {
+    margin: 0;
+    align-self: start;
+    max-height: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    padding: 14px;
+    background: var(--hc-cream);
+    border: var(--hc-outline) solid var(--hc-line);
+    border-radius: var(--hc-r-piece);
+    box-shadow: 0 var(--hc-press-depth) 0 var(--hc-line), var(--hc-soft-shadow);
+  }
+  .prp-list__head {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+  }
+  .prp-list .prp-unit {
+    box-shadow: 0 3px 0 var(--hc-line);
+  }
+  .prp.hc-view > .toast {
+    left: calc(24px + 180px);
+    max-width: 330px;
+  }
+}
+@media (min-width: 1024px) and (hover: hover) {
+  .prp-unit {
+    transition: transform 80ms ease-out;
+  }
+  .prp-unit:hover {
+    transform: translateY(-2px);
+  }
+}

@@ -2,7 +2,8 @@ import { useEffect, useErrorBoundary } from 'preact/hooks';
 import { Scene } from './screens/Scene';
 import { audio } from './audio';
 import { Battle } from './screens/Battle';
-import { Camp, Prep } from './screens/Camp';
+import { Camp } from './screens/Camp';
+import { Prep } from './screens/Prep';
 import { FaultScreen, SaveNotices } from './screens/Fault';
 import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
@@ -90,7 +91,7 @@ function Screens() {
         <Scene key={sc.id} id={sc.id} rewards={sc.rewards} onDone={sc.next} />
       );
     case 'prep':
-      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
+      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} haunt={sc.haunt} />;
     case 'loading':
       return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':

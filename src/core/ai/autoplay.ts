@@ -151,13 +151,16 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       s.units
         .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && (!needsRoom || o.bag.length < data.balance.bag.size))
         .sort((a, b) => dist(a.pos!, p) - dist(b.pos!, p))[0]?.uid;
+    // defend: while a foe is within `ai.wardGuardRadius` of the ward, the company meets it there instead of running errands
+    const guarding = !!ward && enemies.some((o) => dist(o.pos!, ward.pos!) <= data.balance.ai.wardGuardRadius);
     // treasure (story 9.8): a key dropped by a foe lies on the ground until somebody steps on it; the closest unit with room in its bag fetches it
     // (a full bag sends the pick-up to the convoy, out of reach during the battle)
     const keyLoot = openable ? s.loot.filter((l) => itemDef(data, l.item).use?.open).map((l) => l.at) : [];
-    const errands = [...villages.filter((p) => nearestTo(p) === u.uid), ...keyLoot.filter((p) => nearestTo(p, true) === u.uid), ...recruitable(u)];
+    const errands = guarding ? [] : [...villages.filter((p) => nearestTo(p) === u.uid), ...keyLoot.filter((p) => nearestTo(p, true) === u.uid), ...recruitable(u)];
     // treasure: whoever can open a chest heads for the closest one still shut
     const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
-    const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
+    const nearWard = guarding ? [...enemies].sort((a, b) => dist(a.pos!, ward!.pos!) - dist(b.pos!, ward!.pos!)).map((o) => o.pos!) : [];
+    const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : nearWard.length ? [ward!.pos!] : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
     if (npc && v.type === 'escort') {
       // escort: walk to the exit but end the turn within the radius the NPC follows in; too far off, walk back to it
       const radius = data.balance.ai.followRadius;
@@ -166,7 +169,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       const to = lead ?? approach(s, u, dests, [npc.pos!], danger, 1);
       return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
     }
-    const maxDanger = errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
+    const maxDanger = guarding && hpPct >= 60 ? (vip ? 1 : 2) : errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
     const to = approach(s, u, dests, targets.length ? targets : [u.pos], danger, maxDanger, openable && targets.length ? walkDistances(data, s, targets) : undefined);
     return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
   }

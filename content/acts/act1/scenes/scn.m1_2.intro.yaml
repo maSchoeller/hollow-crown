@@ -1,0 +1,42 @@
+# Mission 1-2, Szene vor der Karte: Rauch über Erlbach, Hasks Marodeure brennen die Felder. Die Truppe ist als Königsmörder gesucht
+# (Steckbriefe aus 1-1) und hilft trotzdem; Kael: alle heimbringen. Kurze Lektion: Marodeure zerstören Häuser, ein Besuch rettet sie.
+id: scn.m1_2.intro
+background: erlbach
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Erlbach, ein Dorf am Bach im Grenzland. Nachmittag, Spätsommer. Über den Feldern hängt Rauch."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: angry
+    text: "Hauptmann, die Felder brennen! Da sind Leute im Dorf, wir müssen … wir müssen sofort …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Das ist Hasks Bande. Der zündet an, was er nicht tragen kann."
+  - id: l04
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Nur zur Erinnerung: Wir hängen auf jedem Zettel. Wer hier hilft, rettet Leute, die uns baumeln sehen wollen."
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Das Dorf hat keinen Zettel gedruckt. Wir bringen heim, wen wir erreichen."
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Die Marodeure reißen Häuser nieder. Besucht eines, bevor sie es erreichen, dann ist es gerettet."
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Die Hütte am Ostrand, außerhalb des Zauns: Da wohnt wer. Ich rieche Wildbret."
+  - id: l08
+    speaker: [kael]
+    mood: angry
+    text: "Der Älteste steht auf der Dorfstraße und will nicht weichen. Haltet ihn am Leben, bis sie abziehen."

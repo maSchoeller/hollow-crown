@@ -44,17 +44,18 @@ terrain: |
   ,,,,___,,,,,,,,,
   ,,,,____,,,,,,,,
 # Morgen, klar: tiefe, warme Sonne aus Osten, kühles Umgebungslicht
-ambient: { color: "#f6e6c8", intensity: 0.95 }
-sun: { color: "#ffd9a0", intensity: 1.1, azimuthDeg: 100, elevationDeg: 35 }
+# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
+timeOfDay: morning
+weather: clear
 lights: []
 objects: []
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5; das Feld wird ignoriert, bis das Schema auf main ist). Höchstens einer je Variante.
+# Heimsuchungs-Anker (Story 5.5). Höchstens einer je Variante.
 haunts:
   # Grund: der innere Hof vor dem Thronsaal – hier hielt Hask die Burg, später treibt es ihn zurück.
   - variant: boss
     target: { at: [8, 6] }
-    enemySpawn: { rect: [5, 7, 10, 7] }
+    enemySpawn: { rect: [5, 7, 10, 8] }
     deploy: { rect: [6, 9, 9, 11] }
   # Grund: der äußere Hof – Treffpunkt aller Wege durch die Mauerbrüche.
   - variant: rout
@@ -63,9 +64,9 @@ haunts:
     deploy: { rect: [6, 14, 9, 15] }
   # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat.
   - variant: escort
-    target: { at: [8, 16] }
+    target: { at: [8, 15] }
     exit: { rect: [4, 16, 12, 16] }
-    enemySpawn: { rect: [0, 14, 15, 15] }
+    enemySpawn: { rect: [0, 13, 15, 14] }
     deploy: { rect: [6, 18, 9, 19] }
     turns: 8
 deploy:

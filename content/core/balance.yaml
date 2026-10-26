@@ -97,6 +97,21 @@ death:
 day:
   resetHour: 4
   catchUp: 3
+# Heimsuchungen (Story 5.5, Architektur §5.6): Wiederkehr-Aufgaben auf bekannten Story-Karten gegen Leutnants. Startwerte [C].
+# perDay: Heimsuchungen je Tagespaket; maxOpen: mehr offene -> die älteste verfällt; extraEnemies: Gegner = Plätze + 2 inkl. Leutnant
+# (leicht -1, schwer +1); goldPct/expPct: Belohnung in % der Story-Karte, catchUpExpPct: EP-Anteil über der erwarteten Stufe;
+# halveFromNth: ab der n-ten Heimsuchung seit der letzten Story-Mission halbe Belohnung; material: Akt-Material je Heimsuchung (Story 5.6)
+haunt:
+  perDay: { min: 1, max: 3 }
+  maxOpen: 6
+  extraEnemies: 2
+  goldPct: 40
+  expPct: 60
+  catchUpExpPct: 50
+  halveFromNth: 4
+  material: { min: 1, max: 2 }
+  # Gegner warten (Profil trigger), bis die Truppe so nah kommt (Story-Karten: 3-5); der Leutnant hat seinen eigenen Radius [C]
+  triggerRadius: { enemy: 4, lieutenant: 5 }
 scene:
   autoBaseMs: 1200
   autoPerCharMs: 45
@@ -147,8 +162,6 @@ classActions:
   # Wirken (Story 2.5): Reichweite = Waffenreichweite der Zauberwaffe; Brand-/Wall-Dauer in terrainEffects; waterRadius = Löschradius um das Zielfeld, fogDuration = Runden, die Wind den Nebel lichtet (Radius windFogClearRadius)
   cast: { waterRadius: 1, fogDuration: 2 }
 bag: { size: 3 }
-# Dorfhilfe (Wirkung villageAid, Entscheidung E4): in einem Akt mit Dorfhilfe fasst `item` so viele Ladungen und füllt sich darauf auf
-villageAid: { item: vulnerary, charges: 4 }
 # Nebel (Story 2.6): Sicht = Manhattan-Radius um jede eigene (und verbündete) Einheit mit Sichtlinie; baseVision + höchster Bonus
 # (Boni stapeln nicht): roleBonus nach Klassenrolle, moveTypeBonus nach Bewegungsart. blockers = Gelände, hinter dem die Sicht endet
 # (das Feld selbst bleibt sichtbar). Die Gegner-KI sieht alles; der Nebel gilt nur für Brett, UI, Vorschau und abgespielte Events der Spielerseite.
@@ -171,6 +184,7 @@ economy:
   recruitCost: { base: 600, perLevel: 150 }
   scarRemoval: { gold: 2500, altItem: seers_herb }
   potionUpgrade: [{ gold: 400, heal: 5 }, { gold: 900, heal: 5 }]
+  villageAid: { healCharges: 1 }           # Wirkung villageAid (E1 Dorfhilfe): +1 Ladung je Heiltrank (use.heal) bis zum Ende des Akts
   tavernOffersPerChapter: 3
   armyLimit: 20
   mercenaryLimit: 6                      # zusätzlich zu den 20 Gefährten (GDD Armee-Limit)
@@ -184,8 +198,8 @@ economy:
       - { class: vanguard,   items: [iron_lance, leather_vest] }
       - { class: vanguard,   items: [iron_axe, leather_cap] }
       - { class: marksman,    items: [iron_bow, leather_vest] }
-      - { class: elementalist,      items: [ember], requires: [{ completed: ch01 }] }       # Magie gilt ab Kapitel 2
-      - { class: healer,    items: [heal_staff], requires: [{ completed: ch01 }] }
+      - { class: elementalist,      items: [ember], requires: [{ storyCount: { min: 3 } }] }       # ab der 3. Story-Mission (wie bisher nach Kapitel 1)
+      - { class: healer,    items: [heal_staff], requires: [{ storyCount: { min: 3 } }] }
   convoySize: 200
   rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
   rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }
@@ -209,6 +223,7 @@ ai:
   castLethalChance: 100
   # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
   followRadius: 4
+  wardGuardRadius: 8     # Autoplay (Simulation): bei defend trifft die Truppe Gegner innerhalb dieses Abstands vom Schutzbefohlenen, statt Besuche zu erledigen
   followDanger: 100
 # Leutnants (Story 3.4): Stufe = kaufmännisch gerundeter Durchschnitt der effektiven Stufen der armySize stärksten Einheiten der Truppe + Groll;
 # Waffe(n) der Karteneinheit je Groll eine Stufe höher entlang tierUp (gleiche Waffengruppe, Eintrag fehlt = Deckel); die Signaturwaffe trägt er nie.

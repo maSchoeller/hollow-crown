@@ -61,7 +61,7 @@
   growth: { hp: 60, str: 40, mag: 10, skl: 60, spd: 55, lck: 35, def: 20, res: 25 }
   items: [ { def: iron_bow }, { def: leather_cap } ]
   supports: [tobin, fenn]
-  joins: ch01              # Dorf [11,11] besuchen
+  joins: m1_2              # Beitritt: Haus am Ostrand [13,7] im Kampf besuchen, bevor es zerstört wird (Karte m1_2_erlbach, Entscheidung E1 danach)
 
 - id: fenn
   nameKey: unit.fenn.name

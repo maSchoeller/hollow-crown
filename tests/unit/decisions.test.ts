@@ -49,7 +49,7 @@ beforeAll(() => {
   const loaded = loadContentFromDisk();
   data = loaded.data;
   locales = loaded.locales;
-  data.flags.e01 = { id: 'e01', kind: 'decision', values: ['home', 'stay'], season2: true };
+  data.flags.e01 = { id: 'e01', kind: 'decision', values: ['home', 'stay', ...(data.flags.e01?.values ?? [])], season2: true };
   data.scenes['scn.test.decision'] = decisionScene();
   data.chronicle.page_a1_1 = { id: 'page_a1_1', act: 1, title: 'Die erste Seite', text: 'Ein König starb jung.' };
   locales.en = { ...locales.en, 'chronicle.page_a1_1.title': 'The first page', 'chronicle.page_a1_1.text': 'A king died young.' };
@@ -118,7 +118,7 @@ describe('command choose', () => {
   it('refuses an answer whose effects cannot run (Mira has fallen)', () => {
     const c = fresh();
     c.roster = c.roster.filter((u) => u.id !== 'mira');
-    c.fallen.push({ id: 'mira', nameKey: 'unit.mira.name', node: 'ch01' });
+    c.fallen.push({ id: 'mira', nameKey: 'unit.mira.name', node: 'm1_2' });
     expect(validateCampaign(data, c, cmd('home'))).toBe('unknown_unit');
   });
 

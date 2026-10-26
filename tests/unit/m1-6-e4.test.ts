@@ -1,11 +1,11 @@
-/** Story 9.7: effects priceMod and villageAid (rules, state), node m1_6 (setHome, reachability) and decision E4. */
+/** Story 9.7: effect priceMod (rules, state), the villageAid answer of E4 in act 2, node m1_6 (setHome, reachability) and decision E4. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import {
   applyCampaign,
   availableNodes,
-  chargeCap,
   consequenceLines,
+  maxCharges,
   newCampaign,
   normalizeCampaign,
   shopPrice,
@@ -48,32 +48,22 @@ describe('priceMod', () => {
   });
 });
 
-describe('villageAid', () => {
-  it('raises the potion to the cap of balance.yaml in its act only', () => {
+describe('villageAid in act 2 (rules: tests/unit/village-aid.test.ts)', () => {
+  it('the aid granted for act 2 raises the healing potion only while the running act is 2', () => {
     const c = applyCampaign(data, base, { type: 'effects', effects: [{ villageAid: { act: 2 } }] }).campaign;
-    expect(data.balance.villageAid).toEqual({ item: 'vulnerary', charges: 4 });
-    expect(chargeCap(data2, c, 'vulnerary')).toBe(4);
-    expect(chargeCap(data, c, 'vulnerary')).toBe(3);
-    expect(chargeCap(data2, base, 'vulnerary')).toBe(3);
-    expect(chargeCap(data2, c, 'remedy_salve')).toBe(2);
+    const potion = data.items.vulnerary!;
+    const bonus = data.balance.economy.villageAid.healCharges;
+    expect(c.villageAid).toBe(2);
+    expect(maxCharges(data2, c.villageAid, potion)).toBe(potion.charges! + bonus);
+    expect(maxCharges(data, c.villageAid, potion)).toBe(potion.charges);
   });
 
-  it('a purchase in the aid act holds the raised charges', () => {
-    const c = { ...applyCampaign(data, base, { type: 'effects', effects: [{ villageAid: { act: 2 } }] }).campaign, gold: 1000 };
-    const bought = applyCampaign(data2, c, { type: 'buy', item: 'vulnerary' }).campaign;
-    expect(bought.convoy.at(-1)!.charges).toBe(4);
-    expect(applyCampaign(data, c, { type: 'buy', item: 'vulnerary' }).campaign.convoy.at(-1)!.charges).toBe(3);
-  });
-
-  it('is saved and loaded with the campaign; older saves get the defaults', () => {
-    const c = applyCampaign(data, base, { type: 'effects', effects: [{ villageAid: { act: 2 } }, { priceMod: { pct: -10, act: 2 } }] }).campaign;
+  it('priceMod is saved and loaded with the campaign; older saves get no price changes', () => {
+    const c = applyCampaign(data, base, { type: 'effects', effects: [{ priceMod: { pct: -10, act: 2 } }] }).campaign;
     const loaded = normalizeCampaign(data, JSON.parse(JSON.stringify(c)));
-    expect(loaded.villageAid).toEqual([2]);
     expect(loaded.priceMods).toEqual([{ pct: -10, act: 2 }]);
-    const { priceMods: _p, villageAid: _v, ...old } = c;
-    const fresh = normalizeCampaign(data, old as unknown as CampaignState);
-    expect(fresh.villageAid).toEqual([]);
-    expect(fresh.priceMods).toEqual([]);
+    const { priceMods: _p, ...old } = c;
+    expect(normalizeCampaign(data, old as unknown as CampaignState).priceMods).toEqual([]);
   });
 });
 
@@ -82,16 +72,16 @@ describe('node m1_6 and decision E4', () => {
     const node = data.campaign.nodes.find((n) => n.id === 'm1_6')!;
     expect(node.effects).toEqual([{ setHome: 'castle' }]);
     expect(node.map).toBe('m1_6_paktwacht');
-    const afterCh02 = { ...base, completed: ['prologue', 'm1_1', 'ch01', 'ch02'] };
+    const afterCh02 = { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'ch02'] };
     expect(availableNodes(data, afterCh02).map((n) => n.id)).toEqual(['m1_6']);
     expect(availableNodes(data, { ...afterCh02, completed: [...afterCh02.completed, 'm1_6'] }).map((n) => n.id)).toEqual(['m1_7']);
-    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'ch01'] }).map((n) => n.id)).not.toContain('m1_6');
+    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2'] }).map((n) => n.id)).not.toContain('m1_6');
   });
 
   it('"shelter" sets the flag and Village aid for act 2; the card names both', () => {
     const c = choose(base, 'shelter');
     expect(c.flags.e04).toBe('shelter');
-    expect(c.villageAid).toEqual([2]);
+    expect(c.villageAid).toBe(2);
     expect(c.priceMods).toEqual([]);
     expect(c.stance.warm).toBe(1);
     expect(c.decisions.at(-1)).toMatchObject({ scene: 'scn.m1_6.outro', line: 'l19', option: 'shelter' });
@@ -104,7 +94,7 @@ describe('node m1_6 and decision E4', () => {
     const c = choose(base, 'secret');
     expect(c.flags.e04).toBe('secret');
     expect(c.priceMods).toEqual([{ pct: -10, act: 2 }]);
-    expect(c.villageAid).toEqual([]);
+    expect(c.villageAid).toBeNull();
     expect(c.stance.sober).toBe(1);
     const line = data.scenes['scn.m1_6.outro']!.lines.find((l) => l.id === 'l19')!;
     const opt = 'choice' in line ? line.choice.find((o) => o.id === 'secret')! : null;

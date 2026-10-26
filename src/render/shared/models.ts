@@ -25,13 +25,7 @@ import { MeshoptDecoder } from 'meshoptimizer/decoder';
 import { unitModelPath, type GearPiece, type Team } from '../../core';
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
-
-/** Team ramps of Hollow-64 (dark → light), the same the sprite shader swaps in (GA10). */
-export const TEAM_RAMP: Record<Team, string[]> = {
-  player: ['16285a', '2a52b0', '3d7be0', '8fbaf5'],
-  enemy: ['4a1018', '9e2a2a', 'd9413a', 'f59a8a'],
-  other: ['123a24', '2a7a3e', '3fa65a', '9be08f'],
-};
+import { FigurePlugin, type FigureLook } from './figurePlugin';
 
 // Image-to-3D figures are meshopt-compressed (tools/art/tripo_units.py). Babylon looks for a global decoder that it would
 // otherwise fetch from its CDN; the bundled one keeps the game offline, an empty script satisfies the loader.
@@ -39,19 +33,24 @@ export const TEAM_RAMP: Record<Team, string[]> = {
 MeshoptCompression.Configuration = { decoder: { url: 'data:text/javascript,' } };
 
 const toGamma = (c: number) => (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
-const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255];
+const hexRgb = (h: string): [number, number, number] => [parseInt(h.slice(-6, -4), 16) / 255, parseInt(h.slice(-4, -2), 16) / 255, parseInt(h.slice(-2), 16) / 255];
 
-/** Rewrites a mesh's vertex colours to gamma space with team cloth in the team's ramp (alpha = (k + 1) / 8 marks key k). */
-export function teamColours(mesh: Mesh, team: Team): void {
+/**
+ * Rewrites a mesh's vertex colours to gamma space with team cloth in the team's ramp (`ramp` = four hex colours, dark → light).
+ * The cloth keeps its key in the vertex alpha (alpha = (k + 1) / 8 marks key k; other vertices get 1): the figure material's
+ * plug-in (figurePlugin.ts) reads it to draw the cloth unlit. The mesh stays opaque (`hasVertexAlpha` off).
+ */
+export function teamColours(mesh: Mesh, ramp: readonly string[]): void {
   const src = mesh.getVerticesData(VertexBuffer.ColorKind);
   if (!src) return;
-  const ramp = TEAM_RAMP[team].map(hexRgb);
+  const colours = ramp.map(hexRgb);
   const out = new Float32Array(src.length);
   for (let i = 0; i < src.length; i += 4) {
     const a = src[i + 3]!;
     if (a < 0.9) {
-      const c = ramp[Math.min(3, Math.max(0, Math.round(a * 8) - 1))]!;
-      out.set([c[0], c[1], c[2], 1], i);
+      const k = Math.min(3, Math.max(0, Math.round(a * 8) - 1));
+      const c = colours[k]!;
+      out.set([c[0], c[1], c[2], (k + 1) / 8], i);
     } else out.set([toGamma(src[i]!), toGamma(src[i + 1]!), toGamma(src[i + 2]!), 1], i);
   }
   mesh.setVerticesData(VertexBuffer.ColorKind, out, false, 4);
@@ -105,6 +104,8 @@ export interface UnitModel {
   groups: { meshes: Mesh[]; texture: BaseTexture | null }[];
   /** the materials of resting figures, shared by all figures of the scene (`AssetStore.materials`) */
   shared: Map<string, StandardMaterial>;
+  /** the plug-in values of the scene's figure materials (`AssetStore.figureLook`) */
+  look: FigureLook;
   skeletons: Skeleton[];
   anims: Record<string, AnimationGroup>;
   /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
@@ -112,12 +113,13 @@ export interface UnitModel {
   dispose(): void;
 }
 
-/** Board material: matt, both faces (the image-to-3D meshes are not always closed). */
-export function figureMaterial(name: string, scene: Scene, texture: BaseTexture | null = null): StandardMaterial {
+/** Board material: matt, both faces (the image-to-3D meshes are not always closed); the plug-in draws cloth unlit, floor and rim light. */
+export function figureMaterial(name: string, scene: Scene, look: FigureLook, texture: BaseTexture | null = null): StandardMaterial {
   const m = new StandardMaterial(name, scene);
   m.specularColor = new Color3(0.06, 0.06, 0.06);
   m.backFaceCulling = false;
   m.diffuseTexture = texture;
+  new FigurePlugin(m, look);
   return m;
 }
 
@@ -133,11 +135,11 @@ export function tintMaterial(m: StandardMaterial, desat: number, flash: number, 
  * The material of a figure at rest (opaque, no flash): one per base colour texture and desaturation for the whole scene
  * instead of one per figure and hand. Team colours sit in the vertex colours, not in the material.
  */
-export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene: Scene, texture: BaseTexture | null, desat: number): StandardMaterial {
+export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene: Scene, look: FigureLook, texture: BaseTexture | null, desat: number): StandardMaterial {
   const key = `${texture ? texture.uniqueId : 0}|${desat}`;
   let m = cache.get(key);
   if (!m) {
-    m = figureMaterial(`figure:${key}`, scene, texture);
+    m = figureMaterial(`figure:${key}`, scene, look, texture);
     tintMaterial(m, desat, 0, 1);
     cache.set(key, m);
   }
@@ -152,7 +154,7 @@ async function attachGear(
   store: AssetStore,
   root: TransformNode,
   gear: GearPiece[],
-  team: Team,
+  ramp: readonly string[],
   name: string,
 ): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
   const sockets = root.getDescendants(false);
@@ -175,7 +177,7 @@ async function attachGear(
         // the team's cloth colours are written into the vertex buffer: own geometry only where there are vertex colours
         if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
           m.makeGeometryUnique();
-          teamColours(m, team);
+          teamColours(m, ramp);
         }
         m.isPickable = false;
         m.receiveShadows = true;
@@ -189,6 +191,7 @@ async function attachGear(
 
 export async function loadUnitModel(store: AssetStore, id: string, team: Team, name: string, gear: GearPiece[] = [], unitPacks?: Readonly<Record<string, string>>): Promise<UnitModel | null> {
   const { scene } = store;
+  const ramp = store.figureLook.teams[team];
   const c = await store.container(unitModelPath(id, unitPacks), true);
   if (!c) return null;
   const inst = instantiate(c, scene, (n) => `${name}:${n}`);
@@ -203,18 +206,19 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
       // base colour map, the cloth in a neutral grey that the team ramp tints)
       if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
         m.makeGeometryUnique();
-        teamColours(m, team);
+        teamColours(m, ramp);
       }
       texture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
       m.isPickable = false;
       m.receiveShadows = true;
       body.push(m);
     }
-  const held = await attachGear(store, root, gear, team, name);
+  const held = await attachGear(store, root, gear, ramp, name);
   // the figure's own PBR materials belong to the cached container; every mesh wears a board material from here on
   const shared = store.materials;
-  for (const m of body) m.material = sharedFigureMaterial(shared, scene, texture, 0);
-  for (const m of held.meshes) m.material = sharedFigureMaterial(shared, scene, null, 0);
+  const look = store.figureLook;
+  for (const m of body) m.material = sharedFigureMaterial(shared, scene, look, texture, 0);
+  for (const m of held.meshes) m.material = sharedFigureMaterial(shared, scene, look, null, 0);
   const anims: Record<string, AnimationGroup> = {};
   for (const g of inst.animationGroups) {
     g.stop();
@@ -228,6 +232,7 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
       { meshes: held.meshes, texture: null },
     ],
     shared,
+    look,
     skeletons: inst.skeletons,
     anims,
     grips: held.grips,
@@ -260,7 +265,7 @@ export async function loadPropMesh(store: AssetStore, pid: string, state: string
       m.setParent(null);
       m.bakeCurrentTransformIntoVertices();
       texture ??= (m.material as PBRMaterial | null)?.albedoTexture ?? null;
-      teamColours(m, 'player');
+      teamColours(m, store.figureLook.teams.player);
       parts.push(m);
     }
   // the glTF material belongs to the shared container (instances do not clone it): keep it for the next scene

@@ -52,7 +52,7 @@ beforeAll(() => {
     node('b', { requires: [{ completed: 'a' }], expectedLevel: 2 }),
     node('c', { requires: [{ completed: 'a' }], expectedLevel: 2 }),
     node('z', { fixed: 'finale', expectedLevel: 4 }),
-    node('s1', { kind: 'side', requires: [{ flag: 'avatar_honest' }], memorialIf: { dead: 'mira' }, post: 'scn.ch01.outro', memorial: { post: 'scn.ch02.outro' } }),
+    node('s1', { kind: 'side', requires: [{ flag: 'avatar_honest' }], memorialIf: { dead: 'mira' }, post: 'scn.m1_2.outro', memorial: { post: 'scn.ch02.outro' } }),
     node('s2', { kind: 'side' }),
   ];
   data.campaign.mechanics = { triangle: 1, magic: 2, elements: 3, supports: 3 };
@@ -127,7 +127,7 @@ describe('availableNodes', () => {
 describe('memorial variant (memorialIf)', () => {
   it('plays the memorial scene when the quest trigger has fallen', () => {
     const c = fresh();
-    expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.ch01.outro' });
+    expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.m1_2.outro' });
     c.fallen.push({ id: 'mira', nameKey: 'unit.mira.name', node: 'a' });
     expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.ch02.outro' });
     expect(nodeScenes(data, c, 'a')).toEqual({ pre: 'scn.prologue.intro', post: 'scn.prologue.outro' });
@@ -153,7 +153,7 @@ describe('staged rules count story missions (GDD)', () => {
     const c = fresh();
     expect(beginBattle(real, c, 'prologue', ['kael']).state.locked).toContain('triangle');
     c.completed = ['prologue'];
-    expect(beginBattle(real, c, 'ch01', ['kael']).state.locked).not.toContain('triangle');
+    expect(beginBattle(real, c, 'm1_2', ['kael']).state.locked).not.toContain('triangle');
   });
 });
 
@@ -236,14 +236,14 @@ describe('content:check of the graph', () => {
     expect(problems((d) => (d.campaign.nodes[1]!.memorialIf = { dead: 'mira' }))).toEqual(
       expect.arrayContaining([expect.stringContaining('memorialIf belongs to side quests'), expect.stringContaining('needs a memorial scene')]),
     );
-    expect(problems((d) => (d.campaign.nodes[1]!.memorial = { post: 'scn.ch01.outro' }))).toContainEqual(expect.stringContaining('memorial scenes need memorialIf'));
+    expect(problems((d) => (d.campaign.nodes[1]!.memorial = { post: 'scn.m1_2.outro' }))).toContainEqual(expect.stringContaining('memorial scenes need memorialIf'));
     expect(problems((d) => d.campaign.nodes.push(node('lonely', { kind: 'side' })))).toContainEqual(expect.stringContaining('side quest without requires'));
-    expect(problems((d) => d.campaign.nodes.push(node('fx', { kind: 'side', fixed: 'finale', requires: [{ completed: 'ch01' }] })))).toContainEqual(expect.stringContaining('only story nodes can be fixed'));
-    expect(problems((d) => (d.campaign.nodes[0]!.requires = [{ completed: 'ch01' }]))).toContainEqual(expect.stringContaining('fixed first node has no requires'));
+    expect(problems((d) => d.campaign.nodes.push(node('fx', { kind: 'side', fixed: 'finale', requires: [{ completed: 'm1_1' }] })))).toContainEqual(expect.stringContaining('only story nodes can be fixed'));
+    expect(problems((d) => (d.campaign.nodes[0]!.requires = [{ completed: 'm1_1' }]))).toContainEqual(expect.stringContaining('fixed first node has no requires'));
   });
 
   it('expectedLevel never falls along a requirement', () => {
-    expect(problems((d) => (d.campaign.nodes[3]!.expectedLevel = 1))).toEqual(expect.arrayContaining([expect.stringContaining('lower expectedLevel than ch01')]));
+    expect(problems((d) => (d.campaign.nodes[2]!.expectedLevel = 1))).toEqual(expect.arrayContaining([expect.stringContaining('lower expectedLevel than m1_1')]));
   });
 
   it('minStoryCount: what a node can start with at the least', () => {

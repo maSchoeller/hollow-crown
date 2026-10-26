@@ -3,21 +3,15 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import './notices.css';
 import {
-  computeStats,
   itemDef,
-  ruleOn,
   runeSlotCount,
   weaponProfile,
-  type BattleState,
-  type BattleUnit,
   type GameData,
   type ItemInstance,
-  type Team,
-  type UnitRecord,
 } from '../core';
 import { t } from '../i18n';
 import { instanceRarity } from '../core/loot';
-import { ElementIcon, Icon } from './icons';
+import { Icon } from './icons';
 import { ItemImage } from './pieces';
 import { asset } from './asset';
 
@@ -41,18 +35,6 @@ export function rarityOf(data: GameData, inst: ItemInstance): string {
   return instanceRarity(data, inst.def, inst.affixes.length);
 }
 
-export function HpBar({ hp, max, preview, enemy, team }: { hp: number; max: number; preview?: number; enemy?: boolean; team?: Team }) {
-  const pct = Math.max(0, Math.min(100, (hp / Math.max(1, max)) * 100));
-  const pv = preview !== undefined ? Math.max(0, Math.min(100, (preview / Math.max(1, max)) * 100)) : undefined;
-  const cls = enemy || team === 'enemy' ? 'enemy' : team === 'other' ? 'other' : '';
-  return (
-    <div class={`hpbar ${cls}`}>
-      {pv !== undefined && pv < pct && <b style={{ width: `${pct}%` }} />}
-      <i style={{ width: `${pv !== undefined ? Math.min(pv, pct) : pct}%` }} />
-    </div>
-  );
-}
-
 export function Modal({ title, onClose, children, wide }: { title?: ComponentChildren; onClose?: () => void; children: ComponentChildren; wide?: boolean }) {
   return (
     <div class="modal-back" onClick={(e) => e.target === e.currentTarget && onClose?.()}>
@@ -73,53 +55,6 @@ export function Modal({ title, onClose, children, wide }: { title?: ComponentChi
   );
 }
 
-/** Unit line of the preparation: `art` is the round head (the caller owns the picture, this file knows no app state). */
-export function UnitCard({ data, unit, state, art, right }: { data: GameData; unit: BattleUnit | UnitRecord; state?: BattleState; art?: ComponentChildren; right?: ComponentChildren }) {
-  const st = computeStats(data, unit, state ? { state } : {});
-  const bu = 'hp' in unit ? (unit as BattleUnit) : undefined;
-  const hp = bu ? bu.hp : st.maxHp;
-  const w = unit.equip.mainHand;
-  return (
-    <div class="unit-card">
-      {art}
-      <div class="col" style={{ gap: 6, minWidth: 0 }}>
-        <div class="row" style={{ gap: 10, alignItems: 'baseline' }}>
-          <span class="unit-name">{unitName(unit)}</span>
-          <span class="lbl">
-            {t(`class.${unit.classId}.name`)} · {t('ui.lv')} {unit.level}
-          </span>
-        </div>
-        <div class="row" style={{ gap: 10 }}>
-          <div class="grow">
-            <HpBar hp={hp} max={st.maxHp} team={bu?.team} />
-          </div>
-          <span class="hp-num">
-            {hp}
-            <small>/{st.maxHp}</small>
-          </span>
-        </div>
-        <div class="unit-sub">
-          {w ? (
-            <>
-              <ItemImage data={data} item={w} size={24} />
-              {itemName(data, w)}
-            </>
-          ) : (
-            <span>{t('ui.unarmed')}</span>
-          )}
-          {st.affinity && state && ruleOn(state, 'elements') && <ElementIcon el={st.affinity} />}
-          {bu?.status.map((s) => (
-            <span class="tag" key={s.id}>
-              {t(`ui.status.${s.id}`)} {s.turns}
-            </span>
-          ))}
-        </div>
-      </div>
-      {right}
-    </div>
-  );
-}
-
 /** Value line of an item as short parts ("Mt 9", "Tr 70" ...), shared by details and item lines. */
 export function itemParts(data: GameData, inst: ItemInstance): string[] {
   const d = itemDef(data, inst);
@@ -135,7 +70,7 @@ export function itemParts(data: GameData, inst: ItemInstance): string[] {
     for (const [k, v] of Object.entries(d.statMods ?? {})) parts.push(`${t(`ui.stat.${k}`)} ${v! > 0 ? '+' : ''}${v}`);
     if (d.wt) parts.push(`${t('ui.wt')} ${d.wt}`);
     if (d.use?.heal) parts.push(`${t('ui.heal')} ${d.use.heal}`);
-    if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${d.charges}`);
+    if (d.charges) parts.push(`${t('ui.charges')} ${inst.charges ?? d.charges}/${Math.max(d.charges, inst.charges ?? 0)}`);
     if (d.element) parts.push(t(`ui.element.${d.element}`));
   }
   return parts;

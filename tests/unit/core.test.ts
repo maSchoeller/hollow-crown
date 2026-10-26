@@ -78,14 +78,14 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   });
   it('reports a scene backdrop without a place image', () => {
     const loaded = loadContentFromDisk();
-    loaded.data.scenes['scn.ch01.intro']!.background = 'nowhere';
+    loaded.data.scenes['scn.m1_2.intro']!.background = 'nowhere';
     const out = validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktnacht_glutdom'])).map((i) => `${i.file}: ${i.message}`);
-    expect(out).toContain('scenes/scn.ch01.intro: background: no place image art/mockups/locations-s1/nowhere.png');
+    expect(out).toContain('scenes/scn.m1_2.intro: background: no place image art/mockups/locations-s1/nowhere.png');
   });
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', ch01: 'erlbach', ch02: 'varnhold', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat' });
+    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', ch02: 'varnhold', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat' });
   });
 });
 
@@ -124,16 +124,16 @@ describe('rng', () => {
 
 describe('side objective progress (story 2.1)', () => {
   it('counts villages for the HUD pill and agrees with the done check', () => {
-    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const s = beginBattle(data, campaign, 'm1_2', campaign.roster.map((u) => u.id)).state;
     const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'visit_villages')!;
-    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 0, total: 3 });
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 0, total: 5 });
     expect(sideObjectiveDone(data, s, o)).toBe(false);
-    s.stats.villagesVisited.push('v_north', 'v_east', 'v_west');
-    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 3, total: 3 });
+    s.stats.villagesVisited.push('v_elder', 'v_n1', 'v_n2', 'v_w', 'v_e');
+    expect(sideObjectiveProgress(data, s, o)).toEqual({ have: 5, total: 5 });
     expect(sideObjectiveDone(data, s, o)).toBe(true);
   });
   it('has no count for objectives that are not about counting', () => {
-    const s = beginBattle(data, campaign, 'ch01', campaign.roster.map((u) => u.id)).state;
+    const s = beginBattle(data, campaign, 'm1_1', campaign.roster.map((u) => u.id)).state;
     const o = data.maps[s.mapId]!.objectives.side.find((x) => x.type === 'turn_limit')!;
     expect(sideObjectiveProgress(data, s, o)).toBeUndefined();
   });
@@ -252,8 +252,8 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
     expect(at()).toEqual(expect.arrayContaining(['triangle', 'magic', 'elements', 'supports']));
     expect(at('prologue')).not.toContain('triangle');
     expect(at('prologue')).toContain('magic');
-    expect(at('prologue', 'ch01')).not.toContain('magic');
-    expect(at('prologue', 'ch01')).toContain('elements');
+    expect(at('prologue', 'm1_1')).not.toContain('magic');
+    expect(at('prologue', 'm1_1')).toContain('elements');
   });
   it('ignores the triangle while it is locked, in forecast and resolution alike', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
@@ -272,18 +272,18 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
     expect([foes(at('easy')), foes(at('normal')), foes(at('hard'))]).toEqual([4, 5, 6]);
     expect(data.maps.prologue_paktnacht!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
   });
-  it('hands the avatar a tome after chapter 1', () => {
+  it('hands the avatar a tome after the second story mission', () => {
     expect(campaign.roster.find((u) => u.id === 'avatar')!.equip.mainHand?.def).toBe('iron_sword');
     // easy difficulty and the first seed whose chain autoplay wins: the test is about the node grants, not the combat
     const chain = (seed: number) => {
       let c = newCampaign(data, seed, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
       let granted: string[] = [];
-      for (const node of ['prologue', 'm1_1', 'ch01']) {
+      for (const node of ['prologue', 'm1_1']) {
         const { state } = autoplay(data, beginBattle(data, c, node, c.roster.map((u) => u.id)).state);
         if (state.outcome !== 'victory') return null;
         const r = finishBattle(data, c, state);
         c = r.campaign;
-        if (node === 'ch01') granted = r.result.granted.map((g) => g.item.def);
+        if (node === 'm1_1') granted = r.result.granted.map((g) => g.item.def);
       }
       return { c, granted };
     };

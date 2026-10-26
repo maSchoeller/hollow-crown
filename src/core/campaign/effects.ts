@@ -193,11 +193,10 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
       case 'priceMod':
         c.priceMods.push({ pct: (v as { pct: number }).pct, act: (v as { act: number }).act });
         break;
-      case 'villageAid': {
-        const act = (v as { act: number }).act;
-        if (!c.villageAid.includes(act)) c.villageAid.push(act);
+      case 'villageAid':
+        // healing potions hold a charge more during act `act` (balance.economy.villageAid); a later aid replaces it
+        c.villageAid = (v as { act: number }).act;
         break;
-      }
       case 'setHome':
         // the rooms keep their level: camp stations are level 1, the castle rooms start there too (architecture §5.10)
         if (c.home.kind !== v) {

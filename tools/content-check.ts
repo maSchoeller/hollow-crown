@@ -14,6 +14,8 @@ const modelDir = join(process.cwd(), 'art', 'models', 'units');
 const sprites = existsSync(spriteDir) ? new Set([...readdirSync(spriteDir), ...(existsSync(modelDir) ? readdirSync(modelDir).filter((f) => f.endsWith('.glb')).map((f) => f.slice(0, -4)) : [])]) : undefined;
 const itemDir = join(process.cwd(), 'art', 'items');
 const itemImages = new Set(existsSync(itemDir) ? readdirSync(itemDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4)) : []);
+const statusDir = join(process.cwd(), 'art', 'status', 'source');
+const statusImages = existsSync(statusDir) ? new Set(readdirSync(statusDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))) : undefined;
 const placeDir = join(process.cwd(), 'art', 'mockups', 'locations-s1');
 const placeImages = existsSync(placeDir) ? new Set(readdirSync(placeDir).filter((f) => f.endsWith('.png')).map((f) => f.slice(0, -4))) : undefined;
 const portraitDir = join(process.cwd(), 'art', 'mockups', 'characters-s1');
@@ -42,7 +44,7 @@ try {
 } catch (e) {
   idIssues.push({ file: 'released-ids.json / renames.yaml', message: e instanceof Error ? e.message : String(e) });
 }
-const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, locales, sprites, itemImages, placeImages, lieutenantFiles)];
+const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, locales, sprites, itemImages, placeImages, lieutenantFiles, statusImages)];
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite') || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing portrait')) || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing model')));
 const all = found.filter((i) => !warnings.includes(i));

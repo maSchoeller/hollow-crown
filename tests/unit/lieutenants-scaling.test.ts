@@ -136,14 +136,14 @@ describe('weapon tiers', () => {
   });
 });
 
-/** The ch01 battle with Hask after `change` was applied to a copy of the map, built from a company of the given levels. */
+/** The m1_2 battle with Hask after `change` was applied to a copy of the map, built from a company of the given levels. */
 function varnhold(levels: number[], grudge: number, change?: (m: MapDef) => void) {
-  const d = change ? { ...data, maps: { ...data.maps, ch01_varnhold: clone(data.maps.ch01_varnhold!) } } : data;
-  if (change) change(d.maps.ch01_varnhold!);
+  const d = change ? { ...data, maps: { ...data.maps, m1_2_erlbach: clone(data.maps.m1_2_erlbach!) } } : data;
+  if (change) change(d.maps.m1_2_erlbach!);
   const c = fresh();
   c.roster = company(levels).roster;
   c.lieutenants = { hask: { met: true, encounters: 1, grudge, routs: grudge, signatureDropped: false } };
-  const s = createBattle(d, c, 'ch01', c.roster.slice(0, 4).map((u) => u.id));
+  const s = createBattle(d, c, 'm1_2', c.roster.slice(0, 4).map((u) => u.id));
   return { s, c, hask: s.units.find((u) => u.lieutenant === 'hask') as BattleUnit };
 }
 
@@ -207,7 +207,7 @@ describe('the lieutenant on the board', () => {
 
   it('leaves other enemies at the level of the map', () => {
     const { s } = varnhold([9, 9, 9], 3);
-    expect(s.units.find((u) => u.uid === 'e1')!.level).toBe(2);
+    expect(s.units.find((u) => u.uid === 'r4')!.level).toBe(3);
   });
 
   it('does not depend on the order of the roster', () => {
@@ -266,6 +266,6 @@ describe('content check of the chain', () => {
   });
 
   it('refuses a signature item on a map unit of the lieutenant', () => {
-    expect(problems((d) => haskOf(d.maps.ch01_varnhold!).items.push({ def: 'tinder' }))).toMatch(/never carries his signature item tinder/);
+    expect(problems((d) => haskOf(d.maps.m1_2_erlbach!).items.push({ def: 'tinder' }))).toMatch(/never carries his signature item tinder/);
   });
 });

@@ -1,4 +1,4 @@
-# Akt 1 (Paket act1), Kampagne V1: Prolog, Mission 1-1 und die PoC-Kapitel 1–2 als Brücke (concept/11 §7, concept/08 §4). Startwerte [C].
+# Akt 1 (Paket act1), Kampagne V1: Prolog, Missionen 1-1 und 1-2 und das PoC-Kapitel 2 als Brücke (concept/11 §7, concept/08 §4). Startwerte [C].
 # Knoten (Architektur §5.4): kind story|side (Standard story), fixed first|finale, requires (Bedingungen), memorialIf + memorial { pre, post }.
 # Verfügbar ist, was availableNodes ausrechnet: erst nur fixed: first, dann alles mit erfüllten requires, das Finale nach allen anderen Story-Knoten.
 act: 1
@@ -21,13 +21,15 @@ startConvoy:
   - { def: iron_lance }
 nodes:
   - { id: prologue, expectedLevel: 1, map: prologue_paktnacht, titleKey: node.prologue.title, pre: scn.prologue.intro, post: scn.prologue.outro, fixed: first, place: paktnacht_glutdom, merchantTier: 0 }
-  - { id: m1_1, expectedLevel: 2, map: m1_1_steckbriefe, titleKey: node.m1_1.title, pre: scn.m1_1.intro, post: scn.m1_1.outro, requires: [{ completed: prologue }], place: varnhold, merchantTier: 1, effects: [{ recruit: fenn }] }
-  # Brücke bis Story 9.3/9.4: die PoC-Knoten ch01 und ch02 bleiben nach 1-1 im Graphen, bis 1-2 und 1-3 sie ersetzen
-  - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, requires: [{ completed: m1_1 }], place: erlbach, merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
-  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: ch01 }], place: varnhold, merchantTier: 2 }
+  # Glutbuch (Ember) für Rhen nach der 2. Story-Mission: mit ihr wird die Magie frei (mechanics magic: 2)
+  - { id: m1_1, expectedLevel: 2, map: m1_1_steckbriefe, titleKey: node.m1_1.title, pre: scn.m1_1.intro, post: scn.m1_1.outro, requires: [{ completed: prologue }], place: varnhold, merchantTier: 1, effects: [{ recruit: fenn }], grants: [{ unit: avatar, item: { def: ember } }] }
+  # 1-2: Mira tritt nach dem Sieg bei, wenn ihr Haus nicht abgebrannt ist (Battle-Flag mira_house_razed, gesetzt vom Karten-Trigger); wer es im Kampf besucht hat, ist schon dabei
+  - { id: m1_2, expectedLevel: 3, map: m1_2_erlbach, titleKey: node.m1_2.title, pre: scn.m1_2.intro, post: scn.m1_2.outro, requires: [{ completed: m1_1 }], place: erlbach, merchantTier: 1, effectsIf: [{ requires: [{ not: { flag: mira_house_razed } }], effects: [{ recruit: mira }] }] }
+  # Brücke bis Story 9.4: der PoC-Knoten ch02 bleibt nach 1-1 im Graphen, bis 1-3 ihn ersetzt
+  - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: m1_1 }], place: varnhold, merchantTier: 2 }
   # Mission 1-6: Eroberung der Paktwacht, danach die Burg als Heimat und Entscheidung E4. expectedLevel/merchantTier: technische Startwerte, final per Simulation.
-  # Übergang: wird m1_2–m1_5, sobald 9.3–9.6 auf main sind (Produktinhaber 2026-10-26)
-  - { id: m1_6, expectedLevel: 7, map: m1_6_paktwacht, titleKey: node.m1_6.title, pre: scn.m1_6.intro, post: scn.m1_6.outro, requires: [{ completed: ch02 }], place: paktwacht_ruine, merchantTier: 2, effects: [{ setHome: castle }] }
+  # Übergang: m1_3–m1_5 kommen dazu, sobald 9.4–9.6 auf main sind (Produktinhaber 2026-10-26: m1_6 verlangt m1_2–m1_5)
+  - { id: m1_6, expectedLevel: 7, map: m1_6_paktwacht, titleKey: node.m1_6.title, pre: scn.m1_6.intro, post: scn.m1_6.outro, requires: [{ completed: m1_2 }, { completed: ch02 }], place: paktwacht_ruine, merchantTier: 2, effects: [{ setHome: castle }] }
   # Mission 1-7: Gewölbe unter der Paktwacht (treasure), danach das Finale (Story 9.9). expectedLevel/merchantTier laut Produktinhaber 2026-10-26; Wirkung bei Sieg: die versiegelte Chronik
   - { id: m1_7, expectedLevel: 8, map: m1_7_gewoelbe, titleKey: node.m1_7.title, pre: scn.m1_7.intro, post: scn.m1_7.outro, requires: [{ completed: m1_6 }], place: paktwacht_gewoelbe, merchantTier: 2, effects: [{ setFlag: wardens_chronicle }] }
   # Mission 1-8: das Finale des Akts (fixed: finale, öffnet nach allen übrigen Story-Knoten). Die Burg ist Heimat (place paktwacht_heimat). expectedLevel/merchantTier laut Produktinhaber 2026-10-26.

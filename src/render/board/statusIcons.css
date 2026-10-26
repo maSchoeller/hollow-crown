@@ -1,0 +1,30 @@
+/* Status icons over a unit on the board (story 8.6): a row of painted round-chibi symbols at the right of the head. */
+.hc-status {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  pointer-events: none;
+}
+.hc-status__icon {
+  display: block;
+  width: var(--hc-status-size, 26px);
+  height: var(--hc-status-size, 26px);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--hc-status-fade, 150ms) ease-out,
+    transform var(--hc-status-fade, 150ms) ease-out;
+}
+.hc-status__icon.is-shown {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-status__icon {
+    transition: opacity var(--hc-status-fade, 150ms) linear;
+    transform: none;
+  }
+}

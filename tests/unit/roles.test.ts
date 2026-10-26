@@ -98,10 +98,10 @@ describe('role model in classes.yaml', () => {
     expect(data.classes.healer!.base).toMatchObject({ mag: 4, res: 6 });
   });
 
-  it('the schema rejects a class without weapon groups and unknown groups', () => {
+  it('the schema accepts a class without weapon groups (civilian) and rejects unknown groups', () => {
     const ok = { ...data.classes.vanguard!, proPaths: ['a', 'b'] };
     expect(classSchema.safeParse(ok).success).toBe(true);
-    expect(classSchema.safeParse({ ...ok, weaponGroups: [] }).success).toBe(false);
+    expect(classSchema.safeParse({ ...ok, weaponGroups: [] }).success).toBe(true); // a civilian carries no weapon
     expect(classSchema.safeParse({ ...ok, weaponGroups: ['spoon'] }).success).toBe(false);
     expect(classSchema.safeParse({ ...ok, tier: 'advanced' }).success).toBe(false);
     expect(classSchema.safeParse({ ...ok, proPaths: ['a', 'b', 'c'] }).success).toBe(false);

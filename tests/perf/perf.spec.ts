@@ -14,6 +14,8 @@ import type { EnemyPhaseResult, PreparedBattle } from './bench';
 
 const OUT = join(process.cwd(), 'test-results', 'perf');
 const RUNS = Math.max(1, Number(process.env.PERF_RUNS) || 3);
+/** the bench battle: quality `mid` (what the budget is measured on); `PERF_LOOK=night,rain` gives it a time of day and weather (story 8.6) */
+const BENCH_OPTIONS = { quality: 'mid', figures: '3d', look: process.env.PERF_LOOK };
 
 /** Throttling levels of the enemy phase: the profile's, or `PERF_STAGES` (a list of CPU slowdowns). */
 function stages(): Array<{ cpuSlowdown: number; fps: number | null }> {
@@ -53,7 +55,7 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number): Promise<{ ru
   await setCpu(cdp, rate);
   await page.goto('./tests/perf/bench.html');
   await page.waitForFunction(() => document.body.dataset.ready === '1');
-  const prepared = (await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.prepare({ quality: 'mid', figures: '3d' }))) as PreparedBattle;
+  const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), BENCH_OPTIONS)) as PreparedBattle;
   expect(prepared.units).toBe(40);
   const cpu0 = await threadTime(cdp);
   const r = (await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.enemyPhase())) as EnemyPhaseResult;

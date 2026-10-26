@@ -1,0 +1,6 @@
+id: scn.m1_2.house_n2
+background: erlbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Eine Kräuterfrau schiebt euch einen Tiegel zu. „Gegen Gift und Brand. Beides bringen die da draußen mit.“"

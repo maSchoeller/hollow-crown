@@ -1,19 +1,20 @@
-import type { Effect, GameData, Reward, SideObjectiveDef, Stats } from '../defs';
+import type { Effect, GameData, Reward, SideObjectiveDef, Stats, WeaponType } from '../defs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
-import { sideObjectiveDone } from '../battle/objectives';
+import { sideObjectiveDone, sideSubject } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
 import { deathless } from '../rules/effects';
-import { allItems, itemDef } from '../rules/items';
-import { grantSp, levelCap } from '../rules/progression';
+import { allItems, itemDef, maxCharges } from '../rules/items';
+import { expPercent, grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, noteRoles } from './graph';
 import { availableSupportTalks } from './camp';
-import { chargeCap } from './aid';
-import { applyLieutenantOutcome, lieutenantState, payBounties } from './lieutenants';
+import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
+import { hauntGold, hauntHalved } from './haunts';
+import { parseHauntMapId } from '../battle/hauntMap';
 
 export const SAVE_VERSION = 1;
 
@@ -38,7 +39,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     scenesSeen: [],
     backupReminded: [],
     priceMods: [],
-    villageAid: [],
+    villageAid: null,
     completed: [],
     quests: [],
     rolesSeen: [],
@@ -48,6 +49,9 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     home: { kind: data.campaign.home, rooms: {} },
     tavern: [],
     day: { last: null, pending: [] },
+    haunts: [],
+    hauntLast: {},
+    hauntsSinceStory: 0,
   };
   for (const def of Object.values(data.chars)) {
     if (def.joins !== 'prologue') continue;
@@ -69,7 +73,6 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     scenesSeen?: string[];
     backupReminded?: number[];
     priceMods?: CampaignState['priceMods'];
-    villageAid?: number[];
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
@@ -88,7 +91,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     scenesSeen: old.scenesSeen ?? [],
     backupReminded: old.backupReminded ?? [],
     priceMods: old.priceMods ?? [],
-    villageAid: old.villageAid ?? [],
+    villageAid: (c as Partial<CampaignState>).villageAid ?? null,
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     // pairs of content added since the save (a later act) start empty
@@ -98,6 +101,10 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
+    // story 5.5
+    haunts: c.haunts ?? [],
+    hauntLast: c.hauntLast ?? {},
+    hauntsSinceStory: c.hauntsSinceStory ?? 0,
     // story 3.3: lieutenants of older saves hold only `met`
     ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),
   };
@@ -178,7 +185,7 @@ export interface BattleResult {
   outcome: 'victory' | 'defeat';
   nodeId: string;
   turns: number;
-  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward; turns?: number }>;
+  side: Array<{ id: string; type: SideObjectiveDef['type']; done: boolean; reward: Reward; turns?: number; nameKey?: string; weaponType?: WeaponType }>;
   gold: number;
   materials: Record<string, number>;
   items: ItemInstance[];
@@ -193,12 +200,14 @@ export interface BattleResult {
   granted: Array<{ id: string; item: ItemInstance }>;
   /** effects of the node's own reward that were applied (campaign.yaml `effects`, e.g. `setHome`); absent when there were none */
   effects?: Effect[];
+  /** set when the battle was a haunt (story 5.6): gold and bounty were halved, units above the expected level earned fewer EP */
+  haunt?: { id: string; variant: string; halved: boolean; catchUp: boolean };
 }
 
-function refill(data: GameData, c: CampaignState, items: ItemInstance[]): void {
+function refill(data: GameData, villageAid: number | null, items: ItemInstance[]): void {
   for (const i of items) {
     const d = itemDef(data, i);
-    if (d.refillAfterMission && d.charges) i.charges = chargeCap(data, c, i.def);
+    if (d.refillAfterMission && d.charges) i.charges = maxCharges(data, villageAid, d);
   }
 }
 
@@ -238,6 +247,7 @@ function toRecord(u: BattleUnit): UnitRecord {
 export function finishBattle(data: GameData, c0: CampaignState, s: BattleState): { campaign: CampaignState; result: BattleResult } {
   const node = data.campaign.nodes.find((n) => n.id === s.nodeId)!;
   const map = data.maps[s.mapId]!;
+  const haunt = s.hauntId ? c0.haunts.find((h) => h.id === s.hauntId) : undefined;
   const result: BattleResult = {
     outcome: s.outcome === 'victory' ? 'victory' : 'defeat',
     nodeId: s.nodeId,
@@ -291,7 +301,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (u.pos || u.gone === 'rescued' || u.gone === 'escaped' || u.gone === 'retreated') {
       grantSp(data, u, data.balance.skills.spPerMissionEnd, events);
     }
-    refill(data, c, allItems(u));
+    refill(data, c.villageAid, allItems(u));
     if (u.grief && u.grief > 0) u.grief -= 1;
     const rec = toRecord(u);
     if (u.team === 'other') {
@@ -341,7 +351,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   // side objectives
   for (const o of map.objectives.side) {
     const done = sideObjectiveDone(data, s, o);
-    result.side.push({ id: o.id, type: o.type, done, reward: o.reward, turns: o.turns });
+    result.side.push({ id: o.id, type: o.type, done, reward: o.reward, turns: o.turns, ...sideSubject(map, o) });
     if (!done) continue;
     if (o.reward.gold) s.goldGained += o.reward.gold;
     for (const [id, n] of Object.entries(o.reward.material ?? {})) s.materialsGained[id] = (s.materialsGained[id] ?? 0) + n;
@@ -351,18 +361,21 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       result.items.push(inst);
     }
   }
-  for (const g of node.grants ?? []) {
+  for (const g of s.hauntId ? [] : (node.grants ?? [])) {
     const rec = c.roster.find((r) => r.id === g.unit);
     const inst = newItem(c, g.item, data);
     if (rec) c.convoy.push(...autoEquip(data, rec, [inst]));
     else c.convoy.push(inst);
     result.granted.push({ id: g.unit, item: inst });
   }
-  const gold = map.goldReward + s.goldGained;
+  // a haunt pays a share of the story maps' gold, halved from the `halveFromNth`-th since the last story mission (story 5.6)
+  const halved = !!s.hauntId && hauntHalved(data, c0);
+  const base = s.hauntId ? (halved ? Math.round(hauntGold(data) / 2) : hauntGold(data)) : map.goldReward;
+  const gold = base + s.goldGained;
   c.gold += gold;
   result.gold = gold;
   for (const [id, n] of Object.entries(s.materialsGained)) c.materials[id] = (c.materials[id] ?? 0) + n;
-  result.materials = s.materialsGained;
+  result.materials = { ...s.materialsGained };
   result.items.push(...s.itemsGained);
   // supports: keep only company pairs
   for (const key of Object.keys(c.supports)) {
@@ -371,15 +384,39 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   }
   result.supportsReady = availableSupportTalks(data, c).map((x) => x.key);
   for (const f of s.flags) c.flags[f] ??= true;
-  if (!c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
+  if (!s.hauntId && !c.completed.includes(s.nodeId)) c.completed.push(s.nodeId);
   noteRoles(data, c);
   // bounty and signature drop of the lieutenants driven off: the last draws from the battle RNG (story 3.5)
-  result.bounty = payBounties(data, c, s, lieutenantOutcomes, rng);
+  result.bounty = payBounties(data, c, s, lieutenantOutcomes, rng, halved ? 50 : 100);
+  if (s.hauntId) {
+    // the haunt's own share of the act's material, then its consequences: it is gone, the variant is noted, the count goes up
+    const cfg = data.balance.haunt;
+    const mat = haunt ? bountyMaterialId(data, haunt.lt) : undefined;
+    const count = cfg.material.min + nextInt(rng, cfg.material.max - cfg.material.min + 1);
+    if (mat && count > 0) {
+      c.materials[mat] = (c.materials[mat] ?? 0) + count;
+      result.materials[mat] = (result.materials[mat] ?? 0) + count;
+    }
+    c.haunts = c.haunts.filter((h) => h.id !== s.hauntId);
+    const where = parseHauntMapId(s.mapId);
+    if (where) c.hauntLast[where.map] = where.variant;
+    c.hauntsSinceStory += 1;
+    result.haunt = {
+      id: s.hauntId,
+      variant: where?.variant ?? '',
+      halved,
+      catchUp: s.units.some((u) => u.team === 'player' && (u.battleExp ?? 0) > 0 && expPercent(data, s, u) < cfg.expPct),
+    };
+  } else {
+    c.hauntsSinceStory = 0;
+  }
   c.rng = rng;
-  refreshOffers(data, c, node.merchantTier);
-  refreshTavern(data, c);
+  if (!s.hauntId) {
+    refreshOffers(data, c, node.merchantTier);
+    refreshTavern(data, c);
+  }
   // dead units' gear in the convoy gets refilled as well
-  refill(data, c, c.convoy);
+  refill(data, c.villageAid, c.convoy);
   return { campaign: c, result };
 }
 

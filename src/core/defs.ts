@@ -23,6 +23,11 @@ export const CORE_ROLES = ['vanguard', 'skirmisher', 'marksman', 'elementalist',
 export type MoveType = 'foot' | 'armored' | 'mounted' | 'flier' | 'monster';
 export type Team = 'player' | 'enemy' | 'other';
 export type StatusId = 'burning' | 'wet' | 'slowed' | 'knockback';
+/** Time of day and weather of a battle map (story 8.6, art-direction §2.5); render only, the rules never read them. */
+export const TIMES_OF_DAY = ['morning', 'noon', 'evening', 'night'] as const;
+export type TimeOfDay = (typeof TIMES_OF_DAY)[number];
+export const WEATHERS = ['clear', 'rain', 'fog', 'ash', 'snow'] as const;
+export type Weather = (typeof WEATHERS)[number];
 export type ItemSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory' | 'bag';
 export type EquipSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory1' | 'accessory2';
 export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head', 'body', 'accessory1', 'accessory2'];
@@ -413,10 +418,15 @@ export interface MapDef {
   noDeath?: boolean;
   legend: Record<string, string>;
   terrain: string;
-  ambient?: { color: string; intensity: number };
+  /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
+  ambient?: { color?: string; intensity?: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;
-  /** directional light of the 3D board (render only, D7); compass bearing the light comes from, elevation above the horizon */
-  sun?: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number };
+  /** directional light of the 3D board (render only, D7); compass bearing the light comes from, elevation above the horizon; each field alone may override the preset */
+  sun?: { color?: string; intensity?: number; azimuthDeg?: number; elevationDeg?: number };
+  /** story 8.6: light preset of the time of day (content/core/render.yaml look.timeOfDay); absent: the map's own light, exactly as before */
+  timeOfDay?: TimeOfDay;
+  /** story 8.6: weather (look.weather says which acts have which); absent = clear */
+  weather?: Weather;
   objects: MapObjectDef[];
   initialEffects: Array<{ effect: 'burning'; tiles: Pos[]; turns: number }>;
   deploy: { max: number; forced: string[]; slots: Pos[] };
@@ -426,8 +436,61 @@ export interface MapDef {
   objectives: { victory: ObjectiveDef; defeat: DefeatDef[]; side: SideObjectiveDef[] };
   triggers: TriggerDef[];
   goldReward: number;
+  /** haunt anchors (story 5.5, architecture §5.6): at most one per variant; maps without any are never haunted */
+  haunts?: HauntAnchor[];
   music?: string;
   devNote?: string;
+}
+
+/** The kinds of haunt (story 5.5): a repeat task on a known map against a lieutenant. */
+export const HAUNT_VARIANTS = ['boss', 'rout', 'defend', 'escort', 'treasure'] as const;
+export type HauntVariant = (typeof HAUNT_VARIANTS)[number];
+
+/**
+ * Where and how a map can be haunted (story 5.5, `haunts:` in the map file). `target.at` = tile of the lieutenant (boss, rout,
+ * treasure), of the civilian (defend) or the civilian's start (escort). `deploy` and `enemySpawn` are areas; `max` = places
+ * (default `deploy.max` of the map). `turns` is required for defend and treasure and optional for escort, `exit` and `chests`
+ * belong to escort and treasure only.
+ */
+export interface HauntAnchor {
+  variant: HauntVariant;
+  target: { at: Pos };
+  enemySpawn: Area;
+  deploy: Area;
+  max?: number;
+  turns?: number;
+  exit?: Area;
+  chests?: Pos[];
+}
+
+/** One enemy type of a faction in a haunt pool (`acts/actN/haunts.yaml`): `share` is its part in percent, the shares of a faction add up to 100. */
+export interface HauntEnemyType {
+  class: string;
+  sprite: string;
+  nameKey: string;
+  /** equipment tier of the act: the items the enemy carries */
+  items: ItemRef[];
+  share: number;
+}
+
+/** A treasure chest's content in a haunt: gold or an item (each chest takes one entry). */
+export interface HauntChestLoot {
+  gold?: number;
+  item?: ItemRef;
+}
+
+/**
+ * The enemies of the haunts of an act (story 5.5): a pool per faction of the act's lieutenants, the generic civilian for
+ * defend and escort and the content of the chests of treasure. Starting values [C].
+ */
+export interface HauntPoolsDef {
+  /** act of the file's folder (derived by the loader) */
+  act: number;
+  /** faction (`LieutenantDef.faction`) -> its enemy types */
+  factions: Record<string, HauntEnemyType[]>;
+  /** the person to defend or escort: a map unit of team `other` */
+  civilian: { class: string; sprite?: string; portrait?: string; nameKey: string };
+  chestLoot: HauntChestLoot[];
 }
 
 /**
@@ -595,6 +658,8 @@ export interface CampaignNodeDef {
   grants?: Array<{ unit: string; item: ItemRef }>;
   /** effects applied when the node is won (node reward, architecture §5.3), e.g. `recruit`; never on a defeat */
   effects?: Effect[];
+  /** like `effects`, but each group only when its conditions hold after the battle (e.g. a battle flag was not set) */
+  effectsIf?: Array<{ requires: Condition[]; effects: Effect[] }>;
 }
 
 /**
@@ -765,6 +830,26 @@ export interface Balance {
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
   day: { resetHour: number; catchUp: number };
+  /** haunts (story 5.5): how many appear, how many stay open, how many foes; the reward values are for story 5.6 */
+  haunt: {
+    /** haunts per day packet */
+    perDay: { min: number; max: number };
+    /** more than this open: the oldest one lapses */
+    maxOpen: number;
+    /** foes = places + this, the lieutenant included (easy -1, hard +1 as on story maps) */
+    extraEnemies: number;
+    /** reward in percent of the story map: gold, experience */
+    goldPct: number;
+    expPct: number;
+    /** experience in percent when the company is above the map's expected level */
+    catchUpExpPct: number;
+    /** from the n-th haunt cleared since the last story mission the reward is halved */
+    halveFromNth: number;
+    /** material of the act (`lieutenant.bounty.materialByAct`) per cleared haunt, an amount from min to max */
+    material: { min: number; max: number };
+    /** the enemies of a haunt wait (profile `trigger`) until the company comes this close, then attack; the lieutenant has his own radius (story maps use 3-5) */
+    triggerRadius: { enemy: number; lieutenant: number };
+  };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {
     /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */
@@ -811,8 +896,6 @@ export interface Balance {
     cast: { waterRadius: number; fogDuration: number };
   };
   bag: { size: number };
-  /** effect `villageAid`: in an act the aid was granted for, `item` holds `charges` charges (and refills to them) */
-  villageAid: { item: string; charges: number };
   economy: {
     sellRatio: number;
     upgradeCost: Array<{ level: number; gold: number; materials: Record<string, number> }>;
@@ -822,6 +905,8 @@ export interface Balance {
     recruitCost: { base: number; perLevel: number };
     scarRemoval: { gold: number; altItem: string };
     potionUpgrade: Array<{ gold: number; heal: number }>;
+    /** effect `villageAid` (E1): extra charges of every healing potion (`use.heal`) until the end of the act */
+    villageAid: { healCharges: number };
     tavernOffersPerChapter: number;
     armyLimit: number;
     /** mercenaries on top of the `armyLimit` companions (GDD: 20 + 6) */
@@ -864,6 +949,7 @@ export interface Balance {
     followRadius: number;
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
+    wardGuardRadius: number;
   };
   /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {
@@ -931,6 +1017,8 @@ export interface RenderDef {
     /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */
     fade: { alpha: number; cover: number; figureWidth: number };
   };
+  /** story 8.6: team colours, light by time of day, weather, season per act and the timing of the strike effects */
+  look: LookDef;
   /** GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<WeaponGroup, GearPiece>> };
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
@@ -943,6 +1031,59 @@ export interface RenderDef {
     zoomMs: number;
     /** how much closer the map goes on a chosen place */
     focusZoom: number;
+  };
+}
+
+/** Light of a time of day or a season: colour, strength and (sun) the direction. */
+export interface TimeOfDayDef {
+  ambient: { color: string; intensity: number };
+  sun: { color: string; intensity: number; azimuthDeg: number; elevationDeg: number };
+  /** background colour of the scene (sky beyond the landscape) */
+  sky: string;
+  /** a figure is never darker than this share of its noon rendering (art-direction §2.5); the landscape may be */
+  figureFloor: number;
+  /** rim light on figures; strength 0 = off */
+  rim: { color: string; strength: number };
+  /** factor on the strength of point lights (torches, fires, windows) */
+  pointBoost: number;
+}
+
+/** Weather: acts it may appear in (content:check), grade of light and sky, and the parts that make it. */
+export interface WeatherDef {
+  acts: number[];
+  /** `ambientScale` multiplies the ambient strength; the sky takes the hue of `sky` at `skyMix`, keeping the brightness of the time of day */
+  grade?: { ambientScale: number; sky: string; skyMix: number };
+  /** falling particles per quality level (low 0) */
+  particles?: { high: number; mid: number; low: number; fallSpeed: number; size: number; length?: number; color: string; alpha: number; emberShare?: number };
+  /** wet shine of the ground: specular strength and power of the terrain materials */
+  wet?: { specular: number; power: number };
+  puddles?: { count: number; alpha: number; color: string };
+  /** scene mist (kept on `low`): linear fog from `near` to `far` tiles of depth around the camera target */
+  mist?: { color: string; near: number; far: number };
+  /** drifting fog layers just above the blocks (not on `low`) */
+  ground?: { layers: number; height: number; alpha: number; driftSpeed: number; color: string };
+}
+
+export interface LookDef {
+  /** team colours (art-direction §2.1): `ui` = ring and marking colour, `ramp` = cloth dark → light (K0..K3) */
+  teams: Record<Team, { ui: string; ramp: [string, string, string, string] }>;
+  /** brightness of a figure at noon that the floors of `timeOfDay[..].figureFloor` refer to (share of its albedo) */
+  figureReference: number;
+  /** grey of the neutral texture under the team cloth of image-to-3D figures (tools/art/prepare_tripo_unit.py) */
+  clothGrey: number;
+  /** ramp step the cloth key K0..K3 of a figure is drawn in (K2 of image-to-3D figures -> K1, the UI colour) */
+  clothSteps: [number, number, number, number];
+  timeOfDay: Record<TimeOfDay, TimeOfDayDef>;
+  weather: Record<Weather, WeatherDef>;
+  /** season per act (art-direction §2.4), above every time of day: tint of light and sky, offset of the sun's height */
+  season: Record<string, { tint: string; strength: number; sunElevationOffsetDeg: number }>;
+  fx: {
+    /** critical hit (story 8.6): times in ms at 1x, counted from the start of the attack */
+    crit: { cutInInMs: number; cutInHoldMs: number; cutInOutMs: number; freezeMs: number; shakeMs: number; shake: number; recoilMs: number; returnMs: number; settleMs: number; numberScale: number };
+    /** death in ash */
+    death: { ashMs: number; fadeMs: number; rise: number; shakeMs: number; shake: number; flakes: Record<'high' | 'mid' | 'low', number>; embers: number; colour: string; emberColour: string };
+    /** status icon over a figure: fade in/out ms and the size in CSS px */
+    status: { fadeMs: number; sizePx: number; feet: Record<string, string> };
   };
 }
 
@@ -1013,4 +1154,6 @@ export interface GameData {
   world: WorldDef;
   /** enemy lieutenants of the acts (`acts/actN/lieutenants.yaml`, story 3.1) */
   lieutenants: Record<string, LieutenantDef>;
+  /** enemy pools of the haunts by act (`acts/actN/haunts.yaml`, story 5.5) */
+  hauntPools: Record<number, HauntPoolsDef>;
 }
