@@ -54,17 +54,19 @@ export type CampaignCommand =
    * so downs and deaths are undone too). The battle lives in the app session; the command carries only what the rules
    * need: the node and, for the round, how many commands are kept. Classic: `restartTurn` never.
    */
-  | { type: 'restartTurn'; node: string; keep: number }
+  | { type: 'restartTurn'; node: string; keep: number; haunt?: string }
   /**
    * Classic only allows it after a defeat and does not trust the app: `lost` (start + log) is replayed to check.
    * Standard and Casual leave it out.
    */
-  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] } }
+  | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] }; haunt?: string }
   /**
    * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
    * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
    */
   | { type: 'advanceDay'; day: number }
+  /** the player opened the card of haunt `id` on the world map: its "new" mark goes (story 5.6; idempotent) */
+  | { type: 'seeHaunt'; id: string }
   /** the backup reminder of act `act` was shown (exported or put off); once per act, after its finale (story 7.3, AR21; idempotent) */
   | { type: 'markBackupReminded'; act: number };
 

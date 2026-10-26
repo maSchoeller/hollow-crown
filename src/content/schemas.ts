@@ -729,6 +729,7 @@ export const balanceSchema = z.object({
     catchUpExpPct: z.number().min(0),
     halveFromNth: z.number().int().min(1),
     material: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'material: min above max'),
+    triggerRadius: z.strictObject({ enemy: z.number().int().min(1), lieutenant: z.number().int().min(1) }),
   }),
   scene: z.strictObject({
     autoBaseMs: z.number().int().min(0),

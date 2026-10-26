@@ -10,7 +10,7 @@ factions:
     - { class: marksman,   sprite: bandit_archer, nameKey: unit.marauder.name, items: [{ def: iron_bow }],   share: 20 }
 # Der Mensch, den defend und escort schützen: wie der Dorfälteste in 1-2 die Klasse healer als Platzhalter für „Zivilist“;
 # ein Modell gibt es noch nicht (OFFEN, wie beim Dorfältesten), daher ohne sprite.
-civilian: { class: healer, nameKey: unit.haunt_civilian.name }
+civilian: { class: healer, nameKey: unit.civilian.name }
 # Inhalt der Truhen bei treasure: Einträge (Gold oder Gegenstand); wie sie auf die Truhen kommen, legt Story 5.6 fest
 chestLoot:
   - { gold: 150 }

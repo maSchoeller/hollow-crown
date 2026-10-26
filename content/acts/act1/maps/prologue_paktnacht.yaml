@@ -56,8 +56,8 @@ haunts:
   # (rout), die Truppe kommt vom Tempeltor im Süden, seine Leute stehen im nördlichen Hof.
   - variant: rout
     target: { at: [5, 8] }
-    enemySpawn: { rect: [2, 3, 9, 6] }
-    deploy: { rect: [3, 14, 8, 14] }
+    enemySpawn: { rect: [2, 1, 9, 4] }
+    deploy: { rect: [3, 12, 8, 12] }
   # Grund: Engstelle vor dem Tempeltor zwischen den Säulen – wer hier lauert, fängt jeden Flüchtenden ab. (Das Feld [4,13] ist eine
   # Säule; der Leutnant steht auf der Straße zwischen den Säulen, [5,13].) Die Truppe kommt von der Glutdom-Tür im Norden.
   - variant: boss

@@ -7,7 +7,7 @@ import type { Difficulty, GameData, HauntAnchor, HauntEnemyType, HauntVariant, L
 import type { CampaignState, HauntEnemy, HauntState } from '../state';
 import { hash32, nextInt, pick, seedRng, type RngState } from '../rng';
 import { areaTiles, clone, posKey } from '../util';
-import { parseTerrain } from '../battle/setup';
+import { standableTiles } from '../battle/hauntMap';
 import { availableNodes } from './graph';
 import type { CampaignEvent } from './commands';
 import { activeLieutenants, lieutenantState } from './lieutenants';
@@ -20,21 +20,6 @@ export function hauntEnemyCount(data: Pick<GameData, 'balance'>, places: number,
 
 /** The places of a haunt: the anchor's `max`, else `deploy.max` of the map. */
 export const hauntPlaces = (map: Pick<MapDef, 'deploy'>, anchor: Pick<HauntAnchor, 'max'>): number => anchor.max ?? map.deploy.max;
-
-/**
- * The tiles of `area` a unit of move type `moveType` can stand on (the terrain lets it in, no object on it, a closed door
- * is no place to stand). Shared with `content:check`.
- */
-export function standableTiles(data: GameData, map: MapDef, area: HauntAnchor['enemySpawn'], moveType: string): Pos[] {
-  const [w, h] = map.size;
-  const terrain = parseTerrain(data, map.id);
-  const objects = new Set(map.objects.map((o) => posKey(o.at)));
-  return areaTiles(area).filter((p) => {
-    if (p[0] < 0 || p[1] < 0 || p[0] >= w || p[1] >= h) return false;
-    const t = data.terrain[terrain[p[1]! * w + p[0]!]!];
-    return !!t && t.id !== 'door' && t.cost[moveType as keyof typeof t.cost] !== null && !objects.has(posKey(p));
-  });
-}
 
 /** The army level the haunts are made for: the expected level of the next story node to play, else that of the last one done. */
 export function hauntLevel(data: GameData, c: CampaignState): number {
@@ -91,6 +76,13 @@ function variantsFor(map: MapDef, last: string | undefined): HauntAnchor[] {
   return other.length ? other : all;
 }
 
+/** One haunt on `map` at `anchor` against `lt`: the enemies are made now and stay as they are. Null when the spawn area holds no place for the lieutenant. */
+export function makeHaunt(data: GameData, c: CampaignState, map: MapDef, anchor: HauntAnchor, lt: LieutenantDef, id: string, day: number, rng: RngState): HauntState | null {
+  const level = hauntLevel(data, c);
+  const enemies = makeEnemies(data, c, map, anchor, lt, data.hauntPools[lt.act]!.factions[lt.faction]!, level, rng);
+  return enemies.length ? { id, day, map: map.id, variant: anchor.variant, lt: lt.id, level, enemies, new: true } : null;
+}
+
 /**
  * The haunts of day packet `day` (appended to `c.haunts`, a copy): 1-3 (`haunt.perDay`) on completed story maps with an
  * anchor that are not haunted right now, each map once, a variant other than the last played there, against a lieutenant
@@ -108,7 +100,6 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
     if (!maps.includes(map)) maps.push(map);
   }
   const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= data.campaign.act && data.hauntPools?.[lt.act]?.factions[lt.faction]?.length);
-  const level = hauntLevel(data, c);
   let made = 0;
   for (let i = 0; i < n; i++) {
     const free = maps.filter((m) => !taken.has(m.id));
@@ -116,10 +107,8 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
     const map = pick(rng, free);
     const anchor = pick(rng, variantsFor(map, c.hauntLast[map.id]));
     const lt = pick(rng, lieutenants);
-    const types = data.hauntPools[lt.act]!.factions[lt.faction]!;
-    const enemies = makeEnemies(data, c, map, anchor, lt, types, level, rng);
-    if (!enemies.length) continue;
-    const haunt: HauntState = { id: `h${day}_${i}`, day, map: map.id, variant: anchor.variant, lt: lt.id, level, enemies, new: true };
+    const haunt = makeHaunt(data, c, map, anchor, lt, `h${day}_${i}`, day, rng);
+    if (!haunt) continue;
     taken.add(map.id);
     c.haunts.push(haunt);
     events.push({ t: 'hauntSpawned', id: haunt.id, map: haunt.map, variant: haunt.variant as HauntVariant, lt: haunt.lt });
@@ -132,3 +121,13 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
   }
   return made;
 }
+
+/** The gold of a haunt before the halving: `haunt.goldPct` percent of the mean `goldReward` of the story maps of the act, rounded. */
+export function hauntGold(data: GameData): number {
+  const maps = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => data.maps[n.map]).filter((m): m is MapDef => !!m);
+  const mean = maps.length ? maps.reduce((a, m) => a + m.goldReward, 0) / maps.length : 0;
+  return Math.round((mean * data.balance.haunt.goldPct) / 100);
+}
+
+/** Whether the haunt now won pays half gold and half bounty: it is the `haunt.halveFromNth`-th or a later one since the last story mission. */
+export const hauntHalved = (data: GameData, c: Pick<CampaignState, 'hauntsSinceStory'>): boolean => c.hauntsSinceStory >= data.balance.haunt.halveFromNth - 1;

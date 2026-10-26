@@ -110,6 +110,8 @@ haunt:
   catchUpExpPct: 50
   halveFromNth: 4
   material: { min: 1, max: 2 }
+  # Gegner warten (Profil trigger), bis die Truppe so nah kommt (Story-Karten: 3-5); der Leutnant hat seinen eigenen Radius [C]
+  triggerRadius: { enemy: 4, lieutenant: 5 }
 scene:
   autoBaseMs: 1200
   autoPerCharMs: 45

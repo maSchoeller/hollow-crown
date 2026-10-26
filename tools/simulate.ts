@@ -1,10 +1,12 @@
 /**
  * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--fresh]
+ * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
+ * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
  */
-import { addToRoster, autoplay, beginBattle, finishBattle, newCampaign, type DeathMode, type Difficulty, type GameData } from '../src/core';
+import { addToRoster, autoplay, beginBattle, createHauntBattle, finishBattle, hauntLevel, makeHaunt, newCampaign, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty, type GameData } from '../src/core';
 import { loadContentFromDisk } from '../src/content/node';
 import { applyNodeRewards, missionFlags, simulateCampaign, type MissionFlags } from './simCampaign';
 
@@ -51,6 +53,11 @@ function campaignChained(d: GameData, seed: number, nodeId: string) {
     applyNodeRewards(d, c, n.id);
   }
   return c;
+}
+
+if (args.includes('--haunt')) {
+  runHaunt(opt('haunt', ''));
+  process.exit(0);
 }
 
 const chained = !args.includes('--fresh');
@@ -108,7 +115,6 @@ function runCampaign(act: string) {
   const per = (n: number, d: number) => n / Math.max(1, d);
   const mark = (f: MissionFlags, k: keyof MissionFlags) => (f[k] ? (f[k] === 'low' ? ' ↓' : ' ↑') : '');
   console.log(`${act} chained – ${runs} runs, ${difficulty}/${deathMode}, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
-  if (haunts) console.log('haunts: not in the game yet (story 5.6), played without');
   const rows = sim.missions.map((m) => {
     const f = missionFlags(data, m, difficulty);
     return {
@@ -129,5 +135,71 @@ function runCampaign(act: string) {
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
       `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}`,
   );
+  if (haunts) {
+    const h = sim.haunts;
+    console.log(
+      `haunts (one day per story mission, all open haunts played once): ${per(h.played, runs).toFixed(1)} per run, won ${(per(h.won, h.played) * 100).toFixed(0)} %, ` +
+        `gold ${per(h.gold, runs).toFixed(0)} per run, fallen ${per(h.fallen, runs).toFixed(2)} per run`,
+    );
+  }
   console.log('↓/↑ = below/above the NFR12 corridor, the GDD gold curve (gold without side objectives; side gold share of the map reward) or the expected army level');
+}
+
+/**
+ * Plays one haunt anchor (story 5.6): the army of the chained campaign after the anchor's story map (so at the level the
+ * campaign has there) against the lieutenant `--lt`, `--runs` times; compares win rate and downs with the normal corridor.
+ */
+function runHaunt(spec: string) {
+  const [mapId, variant] = spec.split(':');
+  const map = data.maps[mapId ?? ''];
+  const anchor = map?.haunts?.find((a) => a.variant === variant);
+  const story = map && storyNodeOf(data, map.id);
+  if (!map || !anchor || !story) throw new Error(`no haunt anchor ${spec} (use <mapId>:<variant>, e.g. prologue_paktnacht:rout)`);
+  const ltId = opt('lt', 'hask');
+  const lt = data.lieutenants[ltId];
+  if (!lt) throw new Error(`unknown lieutenant ${ltId}`);
+  const order = data.campaign.nodes.map((n) => n.id);
+  // the army after the story node: the chain up to the node that follows it (or all of them)
+  const after = order[order.indexOf(story.id) + 1];
+  let wins = 0;
+  let played = 0;
+  let downs = 0;
+  let fled = 0;
+  const winTurns: number[] = [];
+  const causes: Record<string, number> = {};
+  let armyLevel = 0;
+  let expected = 0;
+  for (let r = 0; r < runs; r++) {
+    const c = after ? campaignChained(data, seed0 + r, after) : campaignChained(data, seed0 + r, '');
+    if (!c) continue;
+    played++;
+    c.lieutenants = { ...c.lieutenants, [ltId]: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false, ...c.lieutenants?.[ltId] } };
+    const h = makeHaunt(data, c, map, anchor, lt, 'sim', 1, seedRng(seed0 + r));
+    if (!h) throw new Error('the spawn area holds no place for the lieutenant');
+    c.haunts = [h];
+    expected = hauntLevel(data, c);
+    armyLevel += c.roster.length ? c.roster.reduce((a, u) => a + u.level, 0) / c.roster.length : 0;
+    const start = createHauntBattle(data, c, h.id, c.roster.map((u) => u.id));
+    const { state } = autoplay(data, startBattle(data, start).state);
+    if (state.outcome === 'victory') {
+      wins++;
+      winTurns.push(state.turn);
+    } else {
+      const key = `outcome:${state.outcome ?? 'timeout'}${state.defeatReason ? `:${state.defeatReason}` : ''}`;
+      causes[key] = (causes[key] ?? 0) + 1;
+    }
+    for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) downs++;
+    if (state.units.some((u) => u.lieutenant && u.gone === 'fled')) fled++;
+  }
+  const corridor = data.balance.simulation.corridors[difficulty];
+  const win = wins / Math.max(1, played);
+  const down = downs / Math.max(1, played);
+  const inRange = (v: number, lo?: number, hi?: number) => (lo !== undefined && v < lo ? 'below' : hi !== undefined && v > hi ? 'above' : 'in');
+  console.log(`haunt ${spec} vs ${ltId} – ${played}/${runs} runs (chained army after ${story.id}, avg level ${(armyLevel / Math.max(1, played)).toFixed(1)}, expected ${expected}), ${difficulty}/${deathMode}`);
+  console.log(
+    `win rate ${(win * 100).toFixed(0)} % (corridor ${corridor?.winMin ?? '-'}-${corridor?.winMax ?? '-'}: ${inRange(win, corridor?.winMin, corridor?.winMax)}), ` +
+      `avg downs ${down.toFixed(2)} (corridor ${corridor?.downsMin ?? '-'}-${corridor?.downsMax ?? '-'}: ${inRange(down, corridor?.downsMin, corridor?.downsMax)}), ` +
+      `median turns ${[...winTurns].sort((a, b) => a - b)[Math.floor(winTurns.length / 2)] ?? '-'}, lieutenant fled in ${fled} runs`,
+  );
+  if (Object.keys(causes).length) console.log('lost:', JSON.stringify(causes));
 }

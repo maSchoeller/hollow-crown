@@ -829,6 +829,8 @@ export interface Balance {
     halveFromNth: number;
     /** material of the act (`lieutenant.bounty.materialByAct`) per cleared haunt, an amount from min to max */
     material: { min: number; max: number };
+    /** the enemies of a haunt wait (profile `trigger`) until the company comes this close, then attack; the lieutenant has his own radius (story maps use 3-5) */
+    triggerRadius: { enemy: number; lieutenant: number };
   };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {

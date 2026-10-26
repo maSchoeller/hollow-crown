@@ -145,7 +145,12 @@ export interface BattleSettings {
 
 export interface BattleState {
   mapId: string;
+  /** the campaign node; of a haunt the story node of its map (story 5.6) */
   nodeId: string;
+  /** set when the battle is a haunt (story 5.6): its id in `c.haunts` */
+  hauntId?: string;
+  /** haunt only: the expected army level of the next story mission; units above it earn a part of the haunt EP (`haunt.catchUpExpPct`) */
+  hauntLevel?: number;
   turn: number;
   phase: Team;
   rng: RngState;

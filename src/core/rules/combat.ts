@@ -7,7 +7,7 @@ import { active, clamp, dist, getUnit, inBounds, pairKey, ruleOn, terrainAt, uni
 import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
 import { itemDef, weaponProfile, type WeaponProfile } from './items';
 import { moveCost, weaponRange } from './movement';
-import { combatExp, grantExp, grantSp } from './progression';
+import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
 import { adjacencyBonus, adjacentPartners, addSupportPoints, rankIndex } from './supports';
 import { setBonuses } from './skills';
@@ -509,7 +509,7 @@ export function resolveAttack(
     if (killed && foe.boss && me.equip.mainHand) {
       s.stats.bossKilledWith = itemDef(data, me.equip.mainHand).weaponType;
     }
-    grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events);
+    grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events, expPercent(data, s, me));
   }
 }
 

@@ -102,7 +102,7 @@ development_status:
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
   5-4-tageswechsel: done  # Tageswechsel
   5-5-heimsuchungs-anker-und-generator: review  # Heimsuchungs-Anker und Generator
-  5-6-heimsuchungen-spielen-und-belohnen: backlog  # Heimsuchungen spielen und belohnen
+  5-6-heimsuchungen-spielen-und-belohnen: review  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
 
   # Epic 6: Truppe, Fortschritt und Lager

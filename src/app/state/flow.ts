@@ -9,7 +9,12 @@ import {
   armyOverLimit,
   beginBattle,
   conditionContext,
+  createHauntBattle,
   firstNode,
+  hauntMap,
+  makeHaunt,
+  seedRng,
+  storyNodeOf,
   metLieutenant,
   nodeScenes,
   createBattle,
@@ -134,10 +139,11 @@ const battleSource = (u: BattleUnit): MissionUnit => ({
  * Makes sure the on-demand files of a battle are there (place image, figures and their weapon models), with the
  * loading screen when something is missing. Resolves `false` when the player left it with the back stone.
  */
-async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], back: Screen): Promise<boolean> {
+async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], back: Screen, haunt = false): Promise<boolean> {
   const node = nodeDef(nodeId);
   const map = data.maps[node.map]!;
-  const later = [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
+  // a haunt has no reinforcements or trigger spawns: its units are all on the board
+  const later = haunt ? [] : [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
   const manifest = await loadManifest().catch(() => ({}) as Awaited<ReturnType<typeof loadManifest>>);
   const place = placePath(node.place ?? data.campaign.defaultPlace);
   const paths = missionAssets({
@@ -170,6 +176,49 @@ export async function beginMission(nodeId: string, deploy: string[], back: Scree
   const start = createBattle(data, campaign.value!, nodeId, deploy);
   if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
   pendingEvents.value = startBattle(nodeId, deploy);
+}
+
+/** Default deployment of a haunt: forced units first, then the company in roster order up to the places of its anchor. */
+export function defaultHauntDeploy(hauntId: string): string[] {
+  const c = campaign.value!;
+  const h = c.haunts.find((x) => x.id === hauntId)!;
+  const map = hauntMap(data, h.map, h.variant, h.lt);
+  const list = map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id));
+  for (const r of c.roster) if (list.length < map.deploy.max && !list.includes(r.id)) list.push(r.id);
+  return list;
+}
+
+/**
+ * World map → battle of a haunt (story 5.6): the same way as a story node (act pack, deployment, loading, battle, result), but
+ * without scenes before or after. The preparation screen appears when asked for or when the company is larger than the places.
+ */
+export function playHaunt(hauntId: string, opts: { prep?: boolean; from?: From } = {}): void {
+  if (armyBlocksMission()) return;
+  const h = campaign.value?.haunts.find((x) => x.id === hauntId);
+  const node = h && storyNodeOf(data, h.map);
+  if (!h || !node) return;
+  const back: Screen = opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+  const pack = packNeededFor(node);
+  if (pack) {
+    void ensureMissionPack({ node: node.id, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back }).then((ok) => {
+      if (ok) playHaunt(hauntId, opts);
+    });
+    return;
+  }
+  const choice = campaign.value!.roster.length > hauntMap(data, h.map, h.variant, h.lt).deploy.max;
+  if (opts.prep || choice) screen.value = { name: 'prep', node: node.id, from: opts.from, haunt: hauntId };
+  else void beginHaunt(hauntId, defaultHauntDeploy(hauntId), back);
+}
+
+/** Starts the battle of a haunt with the chosen units; loads what is missing first, like `beginMission`. */
+export async function beginHaunt(hauntId: string, deploy: string[], back: Screen): Promise<void> {
+  if (armyBlocksMission()) return;
+  const c = campaign.value!;
+  const h = c.haunts.find((x) => x.id === hauntId);
+  if (!h) return;
+  const start = createHauntBattle(data, c, hauntId, deploy);
+  if (!(await ensureBattleAssets(start.nodeId, start.units, back, true))) return;
+  pendingEvents.value = startBattle(start.nodeId, deploy, hauntId);
 }
 
 /** Starts a new campaign and plays its first node. Resolves `false` when the campaign limit is reached. */
@@ -241,7 +290,7 @@ async function showRestoredBattle(s: BattleState): Promise<void> {
   const mine = battle.value;
   let ok = true;
   try {
-    ok = await ensureBattleAssets(s.nodeId, s.units, { name: 'title' });
+    ok = await ensureBattleAssets(s.nodeId, s.units, { name: 'title' }, !!s.hauntId);
   } catch (e) {
     log.warn('core', 'loading the assets of a restored battle failed', e);
   }
@@ -268,7 +317,7 @@ export function concludeBattle(): void {
   autosave('worldmap'); // campaignCommand saved while the battle was still running; the finished one must not be resumable
   const result = r.events.find((e) => e.t === 'missionFinished')!.result;
   // the memorial variant is decided before the battle's deaths count (the trigger fell before the quest, not in it)
-  const { post } = nodeScenes(data, before, b.state.nodeId);
+  const { post } = b.state.hauntId ? ({} as { post?: string }) : nodeScenes(data, before, b.state.nodeId);
   const toResult = () => (screen.value = { name: 'result', result });
   if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
   else toResult();
@@ -349,15 +398,51 @@ export function advanceToToday(now = Date.now()): Extract<CampaignEvent, { t: 'd
   return (r.events.find((e) => e.t === 'dayAdvanced') as Extract<CampaignEvent, { t: 'dayAdvanced' }> | undefined) ?? null;
 }
 
+/**
+ * Puts a haunt on the world map for testing (story 5.6): `devHaunt('m1_1_steckbriefe', 'escort', 'hask')`. Opens an unsaved campaign when none is
+ * open, marks the story nodes up to the map's as done, lets the lieutenant have been met and shows the world map with the haunt.
+ */
+function devHaunt(mapId = 'prologue_paktnacht', variant = 'rout', ltId = 'hask'): string | null {
+  campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+  const c = clone(campaign.value);
+  const map = data.maps[mapId];
+  const anchor = map?.haunts?.find((a) => a.variant === variant);
+  const lt = data.lieutenants[ltId];
+  const node = storyNodeOf(data, mapId);
+  if (!map || !anchor || !lt || !node) return null;
+  const upto = data.campaign.nodes.findIndex((n) => n.id === node.id);
+  for (const n of data.campaign.nodes.slice(0, upto + 1)) if (n.kind === 'story' && !c.completed.includes(n.id)) c.completed.push(n.id);
+  c.lieutenants = { ...c.lieutenants, [ltId]: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false, ...c.lieutenants?.[ltId] } };
+  const id = `dev${c.haunts.length}_${mapId}`;
+  const h = makeHaunt(data, c, map, anchor, lt, id, c.day.last ?? 0, seedRng(c.seed + c.haunts.length));
+  if (!h) return null;
+  c.haunts = [...c.haunts.filter((x) => x.map !== mapId), h];
+  campaign.value = c;
+  battle.value = null;
+  screen.value = { name: 'worldmap' };
+  return id;
+}
+
+/** Plays the running battle to its end with the simulator's player side and concludes it (manual and browser testing). */
+function winBattle(autoCommand: (d: typeof data, s: BattleState) => Parameters<typeof command>[0]): void {
+  for (let i = 0; i < 3000 && battle.value && !battle.value.state.outcome; i++) command(autoCommand(data, battle.value.state));
+  concludeBattle();
+}
+
+/** Hooks for the browser tests: the production build has no dev helpers, but Playwright sets `navigator.webdriver` (like `__board`). */
+if (typeof navigator !== 'undefined' && navigator.webdriver) {
+  void import('../../core/ai/autoplay').then(({ autoCommand }) => {
+    (window as unknown as { __hcTest: unknown }).__hcTest = { devHaunt, autoWin: () => winBattle(autoCommand) };
+  });
+}
+
 /** Dev helper: lets the simulator play the current battle (manual testing only). */
 if (import.meta.env.DEV) {
   void import('../../core/ai/autoplay').then(({ autoCommand }) => {
     (window as unknown as { __hc: unknown }).__hc = {
       autoStep: () => command(autoCommand(data, battle.value!.state)),
-      autoWin: () => {
-        for (let i = 0; i < 3000 && battle.value && !battle.value.state.outcome; i++) command(autoCommand(data, battle.value.state));
-        concludeBattle();
-      },
+      autoWin: () => winBattle(autoCommand),
+      devHaunt,
       campaign,
       battle,
       screen,

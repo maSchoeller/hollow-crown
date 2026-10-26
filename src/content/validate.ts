@@ -8,7 +8,8 @@ import { memorialTexts } from '../core/campaign/memorial';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
 import { areaTiles, pairKey, posKey } from '../core/util';
-import { hauntEnemyCount, hauntPlaces, standableTiles } from '../core/campaign/haunts';
+import { hauntEnemyCount, hauntPlaces } from '../core/campaign/haunts';
+import { standableTiles } from '../core/battle/hauntMap';
 import { BARK_LINES } from './barkLines';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import type { ContentIssue, Locales } from './load';
@@ -25,6 +26,8 @@ export function validateContent(
   /** portraits and figure models of the lieutenants (content:check passes them; a missing file is a warning) */
   lieutenantFiles?: LieutenantFiles,
 ): ContentIssue[] {
+  // the maps of haunts (`haunt~…`) are made at play time from a story map and are no content of their own
+  if (Object.keys(data.maps).some((id) => id.startsWith('haunt~'))) data = { ...data, maps: Object.fromEntries(Object.entries(data.maps).filter(([id]) => !id.startsWith('haunt~'))) };
   const issues: ContentIssue[] = [];
   const err = (file: string, message: string) => issues.push({ file, message });
   const item = (file: string, ref: ItemRef | undefined, ctx: string) => {
@@ -749,6 +752,8 @@ function validateHauntPools(data: GameData, locales: Locales, err: (f: string, m
     if (!data.classes[civ.class]) err(f, `act ${act} civilian: unknown class ${civ.class}`);
     spriteOk(`act ${act} civilian`, civ.sprite);
     nameOk(`act ${act} civilian`, civ.nameKey);
+    // the goal text of defend and escort names the civilian by the unit id (`unit.civilian.name`)
+    nameOk(`act ${act} civilian`, 'unit.civilian.name');
     for (const loot of pools.chestLoot) if (loot.item) itemOk(`act ${act} chestLoot`, loot.item);
   }
   // every faction of a lieutenant has a pool in the act of the lieutenant

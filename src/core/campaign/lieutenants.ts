@@ -240,11 +240,11 @@ export const bountyGold = (data: GameData, grudgeBefore: number): number => data
 /**
  * Pays the bounty of every lieutenant driven off (story 3.5) into `c` (a copy the caller owns): gold, one to two of the
  * act's material, and his signature item when it falls (chance per rout, for sure at the rout number `guaranteedRout`,
- * once per lieutenant). Call after `applyLieutenantOutcome` (the routs are counted already). Draws from `rng` in a fixed
+ * once per lieutenant); `goldPercent` scales the gold only. Call after `applyLieutenantOutcome` (the routs are counted already). Draws from `rng` in a fixed
  * order: lieutenants in the order of `outcomes`; for each first the material amount, then the signature roll, both
  * always. Nothing is drawn when nobody fled.
  */
-export function payBounties(data: GameData, c: CampaignState, s: BattleState, outcomes: readonly LieutenantOutcome[], rng: RngState): BountyResult[] {
+export function payBounties(data: GameData, c: CampaignState, s: BattleState, outcomes: readonly LieutenantOutcome[], rng: RngState, goldPercent = 100): BountyResult[] {
   const cfg = data.balance.lieutenant;
   const out: BountyResult[] = [];
   for (const o of outcomes) {
@@ -252,7 +252,8 @@ export function payBounties(data: GameData, c: CampaignState, s: BattleState, ou
     const materialId = bountyMaterialId(data, o.id);
     const u = s.units.find((x) => x.lieutenant === o.id);
     const lt = lieutenantState(c, o.id);
-    const gold = bountyGold(data, o.grudgeBefore);
+    // a haunt after the `haunt.halveFromNth`-th since the last story mission pays half the gold (story 5.6)
+    const gold = Math.round((bountyGold(data, o.grudgeBefore) * goldPercent) / 100);
     const { min, max } = cfg.bounty.materials;
     const count = min + nextInt(rng, max - min + 1);
     const roll = nextFloat(rng) < cfg.signature.chance;

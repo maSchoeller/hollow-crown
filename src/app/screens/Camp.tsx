@@ -5,7 +5,7 @@
  * In the castle the room stones also sit on the picture (the anchors) and show their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { armyOverLimit, availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { armyOverLimit, availableSupportTalks, hauntMap, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast, unitName, UnitCard } from '../../ui/components';
@@ -13,7 +13,7 @@ import { goalLine } from '../../ui/goalText';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
-import { beginMission } from '../state/flow';
+import { beginHaunt, beginMission } from '../state/flow';
 import { screen, type From } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { FigureFlow } from './Troop';
@@ -151,10 +151,12 @@ export function Camp({ tab }: { tab?: string }) {
 }
 
 /** Preparation before a mission: choose units (forced ones fixed), check equipment, start. */
-export function Prep({ node, from }: { node: string; from: From }) {
+export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: string }) {
   const c = campaign.value!;
   const nd = data.campaign.nodes.find((n) => n.id === node)!;
-  const map = data.maps[nd.map]!;
+  // a haunt (story 5.6) prepares on its own map: the deploy fields and places of its anchor
+  const h = haunt ? c.haunts.find((x) => x.id === haunt) : undefined;
+  const map = h ? hauntMap(data, h.map, h.variant, h.lt) : data.maps[nd.map]!;
   const forced = map.deploy.forced;
   const [chosen, setChosen] = useState<string[]>(() => {
     const list = [...forced.filter((id) => c.roster.some((r) => r.id === id))];
@@ -217,7 +219,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
           class="btn primary"
           disabled={!!over}
           onClick={() => {
-            void beginMission(node, chosen, screen.value);
+            void (h ? beginHaunt(h.id, chosen, screen.value) : beginMission(node, chosen, screen.value));
           }}
         >
           {t('ui.prep.start')}

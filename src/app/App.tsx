@@ -90,7 +90,7 @@ function Screens() {
         <Scene key={sc.id} id={sc.id} onDone={sc.next} />
       );
     case 'prep':
-      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} />;
+      return <Prep node={sc.node} from={sc.from ?? 'worldmap'} haunt={sc.haunt} />;
     case 'loading':
       return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':
