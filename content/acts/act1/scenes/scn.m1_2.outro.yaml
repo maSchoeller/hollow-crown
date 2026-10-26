@@ -1,0 +1,92 @@
+# Mission 1-2, Szene nach der Karte mit Entscheidung E1 (Narrative „Entscheidungen“): Erlbach bietet Mira die Heimkehr an – Verbannung
+# aufgehoben. `keep`: Mira bleibt in der Truppe. `release`: Mira geht heim (leave) und Erlbach hilft (villageAid: +1 Ladung je Heiltrank
+# für Akt 1). Ohne Mira (Haus zerstört oder nie besucht) entfällt E1: kurzer Abschluss. Der Dorfälteste ist keine Figur, er spricht als Erzähltext.
+id: scn.m1_2.outro
+background: erlbach
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Marodeure ziehen sich in den Wald zurück. Die Felder rauchen noch, aber Erlbach steht."
+  - id: l02
+    mood: neutral
+    text: "Der Älteste verneigt sich vor der Truppe. „Man nennt euch Mörder. Ich sah heute etwas anderes.“"
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Wir haben nur getan, was getan werden musste."
+  # Mira ist in der Truppe: E1
+  - id: m01
+    requires: [{ alive: mira }]
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Schön gesagt. Wo war der Älteste, als ihr mich vor zwei Wintern an den Zaun gestellt habt?"
+  - id: m02
+    requires: [{ alive: mira }]
+    mood: sad
+    text: "Der Älteste senkt den Kopf. „Wir haben Unrecht getan. Du hast uns satt gemacht, und wir haben dich verjagt.“"
+  - id: m03
+    requires: [{ alive: mira }]
+    mood: neutral
+    text: "„Die Verbannung ist aufgehoben. Komm heim, Mira. Dein Dorf steht in deiner Schuld.“"
+  - id: m04
+    requires: [{ alive: mira }]
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Heim? Und was sagst du, Aschenbanner? Gehöre ich dorthin, oder gehöre ich zu euch?"
+  - id: c01
+    requires: [{ alive: mira }]
+    title: "Erlbach bietet Mira die Heimkehr an"
+    choice:
+      - id: keep
+        stance: sober
+        text: "„Bleib bei uns, Mira. Wir brauchen deinen Bogen.“"
+        summary: "Mira bleibt bei der Truppe"
+        effects: [{ setFlag: { e01: keep } }]
+      - id: release
+        stance: warm
+        text: "„Geh heim, Mira. Das Dorf will dich zurück.“"
+        summary: "Mira kehrt heim, Erlbach hilft"
+        effects: [{ setFlag: { e01: release } }, { leave: mira }, { villageAid: { act: 1 } }]
+  - id: k01
+    requires: [{ flag: { e01: keep } }]
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Mein Bogen, nicht ich. Schon klar. Ich komme trotzdem mit, ihr Zettelgesichter."
+  - id: k02
+    requires: [{ flag: { e01: keep } }]
+    mood: neutral
+    text: "Der Älteste nickt langsam. „Dann soll es so sein. Erlbach vergisst nicht, wer ihm geholfen hat.“"
+  - id: r01
+    requires: [{ flag: { e01: release } }]
+    speaker: [mira]
+    fallback: skip
+    mood: sad
+    text: "Heim. Ein seltsames Wort. Schießt nicht daneben ohne mich, ja?"
+  - id: r02
+    requires: [{ flag: { e01: release } }]
+    mood: happy
+    text: "Die Dörfler füllen eure Wagen mit Brot und Verbandzeug. Die Heiltränke der Truppe reichen nun weiter."
+  # Ohne Mira: E1 entfällt
+  - id: n01
+    requires: [{ not: { alive: mira } }]
+    mood: sad
+    text: "Der Älteste blickt zum Ostrand. „Die Wildererin … wir hätten sie nie verjagen sollen.“"
+  - id: n02
+    requires: [{ not: { alive: mira } }]
+    speaker: [kael]
+    mood: neutral
+    text: "Der Wald hat sie. Wir können nur hoffen, dass er gütiger ist als dieses Dorf."
+  # Abschluss: Hask und der Weg weiter
+  - id: z01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Hask hat sich unsere Gesichter gemerkt, Küken. Solche Männer kommen wieder."
+  - id: z02
+    speaker: [kael]
+    mood: neutral
+    text: "Dann sind wir bereit. Wer die Zettel druckt, sitzt nicht in Erlbach. Weiter."

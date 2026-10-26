@@ -869,7 +869,7 @@ export function Battle() {
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
   // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)
-  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory).replace(/\.$/, '');
+  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory, map).replace(/\.$/, '');
 
   const shownPhase = phaseView?.phase ?? s.phase;
   const shownTurn = phaseView?.turn ?? s.turn;

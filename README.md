@@ -28,7 +28,7 @@ pnpm test           # Vitest (Kern, Replays)
 pnpm test:e2e       # Playwright (iPhone 13, Pixel 7, iPad quer, Desktop)
 pnpm lint           # ESLint (inkl. Schichtenregeln) + Typecheck
 pnpm content:check  # YAML-Validierung, Referenzen, DE/EN
-pnpm sim ch01_varnhold --runs 50   # KI gegen KI fürs Balancing
+pnpm sim m1_2 --runs 50   # KI gegen KI fürs Balancing
 ```
 
 Struktur: `src/core` (reiner Regelkern, deterministisch), `src/content` (YAML + Zod), `src/render` (Babylon.js, 48-px-Pixel-Brett), `src/ui` + `src/app` (Preact), `content/core/` (Regeln, Werte, UI-Texte) und `content/acts/actN/` (Akt-Inhalte), `art/` (Asset-Quellen, Git LFS).

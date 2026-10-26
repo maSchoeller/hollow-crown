@@ -29,7 +29,7 @@ describe('splat factors (D6)', () => {
 });
 
 describe('terrain grid', () => {
-  const map = data.maps.ch01_varnhold!;
+  const map = data.maps.m1_2_erlbach!;
   const rows = map.terrain.trim().split('\n');
   const terrain = rows.flatMap((r) => [...r].map((c) => map.legend[c]!));
   const state = { mapId: map.id, width: map.size[0], height: map.size[1], terrain, timers: {} } as unknown as BattleState;

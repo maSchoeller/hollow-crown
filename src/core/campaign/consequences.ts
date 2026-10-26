@@ -14,7 +14,7 @@ export type ConsequenceLine =
   | { kind: 'quest'; node: string }
   | { kind: 'grudge'; lt: string; delta: number }
   | { kind: 'priceMod'; pct: number; act: number }
-  | { kind: 'villageAid' }
+  | { kind: 'villageAid'; act: number }
   | { kind: 'home'; home: string }
   /** the decision itself is written into the chronicle (always the last line) */
   | { kind: 'noted' };
@@ -62,7 +62,7 @@ export function consequenceLines(effects: readonly Effect[]): ConsequenceLine[] 
         break;
       }
       case 'villageAid':
-        out.push({ kind: 'villageAid' });
+        out.push({ kind: 'villageAid', act: (v as { act: number }).act });
         break;
       case 'setHome':
         out.push({ kind: 'home', home: v as string });

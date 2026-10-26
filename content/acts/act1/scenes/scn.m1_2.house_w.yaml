@@ -1,0 +1,6 @@
+id: scn.m1_2.house_w
+background: erlbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Fischer drückt euch seine Ersparnisse in die Hand. „Die Brücke hält, wenn ihr sie haltet.“"

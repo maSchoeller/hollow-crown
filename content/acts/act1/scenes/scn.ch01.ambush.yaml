@@ -1,7 +1,0 @@
-id: scn.ch01.ambush
-lines:
-  - id: l01
-    speaker: [brenna]
-    fallback: skip
-    mood: angry
-    text: "Hinterhalt! Sie haben in den Ruinen gewartet!"

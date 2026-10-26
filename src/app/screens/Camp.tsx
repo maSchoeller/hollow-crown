@@ -176,7 +176,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
         </div>
         <div class="panel sheet">
           <h3>{t(nd.titleKey)}</h3>
-          <div class="muted">{goalLine(map.objectives.victory)}</div>
+          <div class="muted">{goalLine(map.objectives.victory, map)}</div>
           <div class="muted">{t('ui.prep.count', { n: chosen.length, max: map.deploy.max })}</div>
         </div>
         <div class="list">

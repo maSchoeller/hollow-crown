@@ -13,8 +13,8 @@ beforeAll(() => {
 describe('result of a unit recruited mid-battle', () => {
   it('shows the level-up of a companion who joined through a village', () => {
     const c = { ...base, roster: base.roster.filter((r) => r.id !== 'mira') };
-    let s = beginBattle(data, c, 'ch01', c.roster.map((r) => r.id)).state;
-    const village = s.objects.find((o) => o.id === 'v_east')!;
+    let s = beginBattle(data, c, 'm1_2', c.roster.map((r) => r.id)).state;
+    const village = s.objects.find((o) => o.id === 'v_e')!;
     const visitor = s.units.find((u) => u.team === 'player' && u.pos)!;
     visitor.pos = [village.at[0], village.at[1]];
     s = applyCommand(data, s, { type: 'act', unit: visitor.uid, to: village.at, action: { kind: 'visit' } }).state;

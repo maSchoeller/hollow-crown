@@ -20,11 +20,11 @@ import {
   type Stats,
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
-import { mapOf, sideObjectiveDone } from '../../core/battle/objectives';
+import { mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
-import { goalLine, goalStand } from '../../ui/goalText';
+import { goalLine, goalStand, sideLine } from '../../ui/goalText';
 import { Sheet } from '../../ui/Sheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { data } from '../state/session';
@@ -192,7 +192,7 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
     <Sheet title={t(map.nameKey)} aside={t('ui.obj.title')} onClose={onClose}>
       <div class="bp-goal is-win">
         <small>{t('ui.obj.victory')}</small>
-        <b>{goalLine(v)}</b>
+        <b>{goalLine(v, map)}</b>
         {(v.type === 'defend' || v.type === 'survive') && <span>{t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })}</span>}
         {v.type === 'treasure' && <span>{goalStand(v, s)}</span>}
       </div>
@@ -200,9 +200,9 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
         <small>{t('ui.obj.defeat')}</small>
         <b>
           {[
-            ...map.objectives.defeat.map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(`unit.${d.unit}.name`) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
+            ...map.objectives.defeat.map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(mapUnitNameKey(map, d.unit)) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
             // the goal itself names the other defeats (story 4.8): the escorted NPC falls, the round limit of a treasure hunt passes
-            ...(v.type === 'escort' ? [t('ui.obj.dies', { name: t(`unit.${v.unit}.name`) })] : []),
+            ...(v.type === 'escort' ? [t('ui.obj.dies', { name: t(mapUnitNameKey(map, v.unit)) })] : []),
             ...(v.type === 'treasure' ? [t('ui.obj.turnLimit', { turns: v.turns })] : []),
           ].join(' · ')}
         </b>
@@ -217,7 +217,7 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
                 <span class="bp-side__mark">
                   <Icon name={done ? 'check' : 'target'} size={16} />
                 </span>
-                <span>{t(`ui.side.${o.type}`, { turns: o.turns ?? 0 })}</span>
+                <span>{sideLine({ ...o, ...sideSubject(map, o) })}</span>
               </div>
             );
           })}

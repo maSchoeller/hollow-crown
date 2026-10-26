@@ -1,0 +1,6 @@
+id: scn.m1_2.house_elder
+background: erlbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Frau des Ältesten reicht euch ein Fläschchen. „Er steht draußen auf der Straße und will nicht weichen.“"

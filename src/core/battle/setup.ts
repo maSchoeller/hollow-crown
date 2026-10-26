@@ -1,6 +1,7 @@
 import type { GameData, Pos } from '../defs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
+import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
@@ -69,7 +70,9 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   chosen.slice(0, Math.min(map.deploy.max, slots.length)).forEach((id, i) => {
     const rec = c.roster.find((r) => r.id === id);
     if (!rec) return;
-    s.units.push(battleUnitFromRecord(data, rec, 'player', slots[i]!));
+    const unit = battleUnitFromRecord(data, rec, 'player', slots[i]!);
+    applyVillageAid(data, c.villageAid, unit.bag);
+    s.units.push(unit);
   });
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
   onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {

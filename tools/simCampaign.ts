@@ -9,8 +9,10 @@ import {
   availableNodes,
   autoplay,
   beginBattle,
+  conditionContext,
   currentTier,
   effectiveLevel,
+  evalConditions,
   finishBattle,
   itemCategory,
   itemDef,
@@ -96,7 +98,9 @@ function tryCmd(data: GameData, c: CampaignState, cmd: CampaignCommand): Campaig
 /** Between missions: unlock ready supports, heal scars, buy one healing item per strong unit, then upgrade weapons. */
 /** The node's own reward (campaign.yaml `effects`, e.g. Fenn's recruit): `finishBattle` leaves it to the `finishMission` command, the simulations apply it here. */
 export function applyNodeRewards(data: GameData, c: CampaignState, nodeId: string): void {
-  applyEffects(data, c, data.campaign.nodes.find((n) => n.id === nodeId)?.effects ?? [], []);
+  const node = data.campaign.nodes.find((n) => n.id === nodeId);
+  applyEffects(data, c, node?.effects ?? [], []);
+  for (const g of node?.effectsIf ?? []) if (evalConditions(conditionContext(data, c), g.requires)) applyEffects(data, c, g.effects, []);
 }
 
 export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent']): CampaignState {

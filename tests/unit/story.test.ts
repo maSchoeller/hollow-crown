@@ -81,7 +81,7 @@ describe('conditions (architecture §5.3)', () => {
     expect(holds(c, { completed: 'prologue' })).toBe(false);
     expect(holds(c, { storyCount: { min: 0 } })).toBe(true);
     expect(holds(c, { storyCount: { min: 1 } })).toBe(false);
-    c.completed.push('prologue', 'ch01');
+    c.completed.push('prologue', 'm1_1');
     expect(holds(c, { completed: 'prologue' })).toBe(true);
     expect(holds(c, { completed: 'ch02' })).toBe(false);
     expect(holds(c, { storyCount: { min: 2 } })).toBe(true);
@@ -247,11 +247,8 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('priceMod and villageAid are refused until their state exists', () => {
-    const unsupported: Effect[] = [
-      { priceMod: { pct: -10, act: 2 } },
-      { villageAid: true },
-    ];
+  it('priceMod is refused until its state exists', () => {
+    const unsupported: Effect[] = [{ priceMod: { pct: -10, act: 2 } }];
     for (const e of unsupported) {
       expect(validateCampaign(data, base, { type: 'effects', effects: [e] })).toBe('effect_unsupported');
       expect(() => applyEffects(data, clone(base), [e], [])).toThrow(/not yet supported/);
@@ -341,7 +338,7 @@ describe('content references (content:check)', () => {
   });
 
   it('keys that are not supported yet fail with a clear message', () => {
-    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }]) {
+    for (const e of [{ priceMod: { pct: 1, act: 2 } }]) {
       const m = problems(withDialogue(choose(e)));
       expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
     }
@@ -385,7 +382,7 @@ describe('expectedLevel (story 4.1)', () => {
 
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
-    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['ch01_varnhold', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
+    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['m1_2_erlbach', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();

@@ -1,4 +1,4 @@
-import type { GameData, MapDef, MapUnitDef, Pos, SideObjectiveDef, Team, TriggerDef } from '../defs';
+import type { GameData, MapDef, MapUnitDef, Pos, SideObjectiveDef, Team, TriggerDef, WeaponType } from '../defs';
 import type { GameEvent } from '../events';
 import { burningTileHit } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
@@ -77,6 +77,17 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
 export function chestProgress(s: BattleState, chests: string[]): { have: number; total: number } {
   const have = chests.filter((id) => s.objects.some((o) => o.id === id && o.state === 'open')).length;
   return { have, total: chests.length };
+}
+
+/** Name key of a unit of the map by its id (map `nameKey`, else the character's name, else `unit.<id>.name`), for goal texts that name someone. */
+export function mapUnitNameKey(map: MapDef, id: string): string {
+  const def = map.units.find((u) => u.id === id);
+  return def?.nameKey ?? `unit.${def?.char ?? id}.name`;
+}
+
+/** What a side objective's text names: the unit (`recruit`, `protect_npc`) as name key and the weapon group (`kill_with`). */
+export function sideSubject(map: MapDef, o: SideObjectiveDef): { nameKey?: string; weaponType?: WeaponType } {
+  return { ...(o.unit ? { nameKey: mapUnitNameKey(map, o.unit) } : {}), ...(o.weaponType ? { weaponType: o.weaponType } : {}) };
 }
 
 export function sideObjectiveDone(data: GameData, s: BattleState, o: SideObjectiveDef): boolean {

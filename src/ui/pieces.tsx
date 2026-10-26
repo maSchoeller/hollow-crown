@@ -200,7 +200,7 @@ export function ItemImage({ data, item, size = 44, rarity, label, bare, class: c
     inst && inst.upgrade > 0
       ? `+${inst.upgrade}`
       : d.charges && d.charges > 1
-        ? `${inst?.charges ?? d.charges}/${d.charges}`
+        ? `${inst?.charges ?? d.charges}/${Math.max(d.charges, inst?.charges ?? 0)}`
         : tier !== undefined
           ? String(tier)
           : undefined;

@@ -1,0 +1,16 @@
+# Mission 1-2, das Haus am Ostrand (v_e) ist zerstört: Mira verschwindet im Wald und tritt in Akt 1 nicht mehr bei, E1 entfällt.
+id: scn.m1_2.mira_lost
+background: erlbach
+lines:
+  - id: l01
+    mood: sad
+    text: "Die Hütte am Ostrand brennt. Eine Gestalt mit Bogen verschwindet zwischen den Bäumen."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Da hat jemand gewohnt! Wir waren zu langsam. Wir hätten schneller laufen müssen."
+  - id: l03
+    speaker: [kael]
+    mood: sad
+    text: "Den Wald holen wir nicht mehr ein. Halten wir, was wir noch halten können."

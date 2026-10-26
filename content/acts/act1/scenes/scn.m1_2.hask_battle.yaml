@@ -1,0 +1,8 @@
+# Mission 1-2: Hask, erste Begegnung (Kampfzeile, eine Box). Er kennt die Steckbriefe; seine Formel „Feuer frisst alles“ steht in scn.lt.hask.
+id: scn.m1_2.hask_battle
+lines:
+  - id: l01
+    speaker: [hask]
+    fallback: skip
+    mood: happy
+    text: "Die Königsmörder! Das Kopfgeld brennt mir schon ein Loch in die Tasche!"

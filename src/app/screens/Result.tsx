@@ -5,6 +5,7 @@
  */
 import { defeatSentence, farewellView, homeRooms, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
 import { t } from '../../i18n';
+import { sideLine } from '../../ui/goalText';
 import { itemName, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton } from '../../ui/pieces';
@@ -111,7 +112,7 @@ function Sides({ v }: { v: MissionResultView }) {
           <span class="res-side__mark" role="img" aria-label={t(s.done ? 'ui.result.sideDone' : 'ui.result.sideOpen')}>
             {s.done ? '✓' : '–'}
           </span>
-          <span class="res-side__text">{t(`ui.side.${s.type}`, { turns: s.turns ?? 0 })}</span>
+          <span class="res-side__text">{sideLine(s)}</span>
           {s.done && <RewardAmounts reward={s.reward} />}
         </div>
       ))}

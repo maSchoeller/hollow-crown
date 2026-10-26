@@ -8,7 +8,7 @@ import { clampGrudge, joinLieutenant, lieutenantState } from './lieutenants';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
-export const UNSUPPORTED_EFFECTS: readonly string[] = ['priceMod', 'villageAid'];
+export const UNSUPPORTED_EFFECTS: readonly string[] = ['priceMod'];
 
 const arg = (e: Effect): unknown => (e as unknown as Record<string, unknown>)[soleKey(e)];
 
@@ -100,6 +100,7 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
         break;
       case 'stance':
       case 'chronicle':
+      case 'villageAid':
         break;
       default:
         return 'effect_unsupported';
@@ -185,6 +186,10 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
           c.chronicle.push(v as string);
           events.push({ t: 'chronicleAdded', page: v as string });
         }
+        break;
+      case 'villageAid':
+        // healing potions hold a charge more during act `act` (balance.economy.villageAid); a later aid replaces it
+        c.villageAid = (v as { act: number }).act;
         break;
       case 'setHome':
         // the rooms keep their level: camp stations are level 1, the castle rooms start there too (architecture §5.10)

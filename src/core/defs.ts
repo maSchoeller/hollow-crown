@@ -458,7 +458,7 @@ export type Effect =
   | { material: Record<string, number> }
   | { item: ItemRef }
   | { priceMod: { pct: number; act: number } }
-  | { villageAid: true }
+  | { villageAid: { act: number } }
   | { openQuest: string }
   | { stance: Stance }
   | { chronicle: string }
@@ -589,6 +589,8 @@ export interface CampaignNodeDef {
   grants?: Array<{ unit: string; item: ItemRef }>;
   /** effects applied when the node is won (node reward, architecture §5.3), e.g. `recruit`; never on a defeat */
   effects?: Effect[];
+  /** like `effects`, but each group only when its conditions hold after the battle (e.g. a battle flag was not set) */
+  effectsIf?: Array<{ requires: Condition[]; effects: Effect[] }>;
 }
 
 /**
@@ -810,6 +812,8 @@ export interface Balance {
     recruitCost: { base: number; perLevel: number };
     scarRemoval: { gold: number; altItem: string };
     potionUpgrade: Array<{ gold: number; heal: number }>;
+    /** effect `villageAid` (E1): extra charges of every healing potion (`use.heal`) until the end of the act */
+    villageAid: { healCharges: number };
     tavernOffersPerChapter: number;
     armyLimit: number;
     /** mercenaries on top of the `armyLimit` companions (GDD: 20 + 6) */
@@ -852,6 +856,7 @@ export interface Balance {
     followRadius: number;
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
+    wardGuardRadius: number;
   };
   /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {

@@ -85,7 +85,7 @@ describe('the effect (AC 2, 3, 6)', () => {
     expect(validateCampaign(data, c, { type: 'effects', effects: [{ recruit: { lt: 'hask' } }] })).toBe('effect_invalid');
     expect(validateCampaign(data, c, { type: 'effects', effects: [{ recruit: 'grosk' }] })).toBe('effect_invalid');
     const dead = clone(c);
-    dead.fallen.push({ id: 'grosk', nameKey: 'unit.grosk.name', node: 'ch01' });
+    dead.fallen.push({ id: 'grosk', nameKey: 'unit.grosk.name', node: 'm1_2' });
     expect(validateCampaign(data, dead, { type: 'effects', effects: JOIN })).toBe('effect_invalid');
   });
 
@@ -222,11 +222,11 @@ describe('exclusion (AC 4)', () => {
 
   it('a map unit of a joined lieutenant is not built', () => {
     const d = clone(data);
-    const node = d.campaign.nodes.find((n) => n.id === 'ch01')!;
+    const node = d.campaign.nodes.find((n) => n.id === 'm1_2')!;
     const map = d.maps[node.map]!;
     const hask = map.units.find((u) => u.lieutenant === 'hask')!;
     map.units.push({ ...hask, id: 'grosk_unit', lieutenant: 'grosk' });
-    const count = (c: CampaignState, who: string) => createBattle(d, c, 'ch01', c.roster.map((r) => r.id)).units.filter((u) => u.lieutenant === who).length;
+    const count = (c: CampaignState, who: string) => createBattle(d, c, 'm1_2', c.roster.map((r) => r.id)).units.filter((u) => u.lieutenant === who).length;
     const c = fresh();
     expect(count(c, 'grosk')).toBe(1);
     const after = join(c).campaign;

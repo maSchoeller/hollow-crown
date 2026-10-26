@@ -1,0 +1,6 @@
+id: scn.m1_2.house_n1
+background: erlbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Bauer wirft Tobin einen Beutel zu. „Euren Zettel kenne ich. Wer meinen Hof rettet, ist kein Mörder.“"

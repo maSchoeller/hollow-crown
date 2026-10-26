@@ -9,3 +9,11 @@
 - { id: ch02_question, kind: story, season2: false }
 # Wer als Leutnant beitritt, setzt joined_<id> (Wirkung recruit { lt }, Story 3.7); Heimsuchungen und Finale-Aufstellungen lesen es über isJoined/activeLieutenants.
 - { id: joined_grosk, kind: story, season2: true }
+# E1 (Mission 1-2): Erlbach bietet Mira die Heimkehr an – keep = Mira bleibt, release = Mira geht heim und Erlbach hilft (villageAid)
+- { id: e01, kind: decision, values: [keep, release], season2: false }
+# Mission 1-2: Miras Haus ist abgebrannt (Karten-Trigger object_destroyed); dann tritt sie nicht bei und E1 entfällt
+- { id: mira_house_razed, kind: battle, season2: false }
+# E2 (vor Mission 1-4): Der Diebesring will Fenn zurück – protect = schützen (öffnet N1), hand_over = ausliefern (1-4 leichter, Fenn geht)
+- { id: e02, kind: decision, values: [protect, hand_over], season2: false }
+# E3 (nach Mission 1-5): das Hungerlager – spare = verschonen (Grosk tritt bei, Hask-Groll −1), bounty = Kopfgeld (+600 Gold)
+- { id: e03, kind: decision, values: [spare, bounty], season2: false }

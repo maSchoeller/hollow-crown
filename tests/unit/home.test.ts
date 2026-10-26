@@ -172,7 +172,7 @@ describe('the rooms of the castle (story 6.9)', () => {
 
 describe('memorial stones (story 6.9)', () => {
   const fall = (c: CampaignState, id: string, extra: Partial<CampaignState['fallen'][number]> = {}) =>
-    c.fallen.push({ id, nameKey: `unit.${id}.name`, node: 'ch01', classId: 'fighter', portrait: id, ...extra });
+    c.fallen.push({ id, nameKey: `unit.${id}.name`, node: 'm1_2', classId: 'fighter', portrait: id, ...extra });
 
   it('Gerrit stands once the prologue is done, before everyone who fell', () => {
     expect(memorialStones(data, base)).toEqual([]);
@@ -191,7 +191,7 @@ describe('memorial stones (story 6.9)', () => {
     fall(c, 'mira', { node: 'ch02' });
     const stones = memorialStones(data, c);
     expect(stones.map((s) => s.key)).toEqual(['fixed:gerrit', 'fallen:fenn', 'fallen:merc7', 'fallen:mira']);
-    expect(stones[1]).toMatchObject({ kind: 'fallen', node: 'ch01', classId: 'fighter', mercenary: false, quoteKey: 'dlg.scn.farewell.fenn.last' });
+    expect(stones[1]).toMatchObject({ kind: 'fallen', node: 'm1_2', classId: 'fighter', mercenary: false, quoteKey: 'dlg.scn.farewell.fenn.last' });
     // a mercenary has no quote, however the scene might read
     expect(stones[2]).toMatchObject({ mercenary: true, name: 'Wulf' });
     expect(stones[2]!.quoteKey).toBeUndefined();

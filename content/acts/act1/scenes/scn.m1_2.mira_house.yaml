@@ -1,0 +1,37 @@
+# Mission 1-2, Besuch des Hauses am Ostrand (v_e): Mira trifft die Truppe, misstraut ihr (Königsmörder-Steckbriefe) und tritt bei.
+# Der Beitritt selbst ist die Belohnung `recruit: mira` des Hauses (Karte). Mira: spitz, sarkastisch, Fragen statt Antworten.
+id: scn.m1_2.mira_house
+background: erlbach
+lines:
+  - id: l01
+    speaker: [mira]
+    fallback: skip
+    mood: angry
+    text: "Noch ein Schritt und du hast einen Pfeil im Knie. Gehört ihr zu Hasks Bande?"
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Aschenbanner. Hasks Leute brennen euer Dorf nieder. Wir halten sie auf."
+  - id: l03
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Aschenbanner? Sind das nicht die vier Gesichter auf den Zetteln? Die Königsmörder?"
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Wir waren es nicht. Glaub es oder lass es."
+  - id: l05
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und wer zahlt euch dafür, ein Dorf zu retten, das nicht zahlen kann?"
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Niemand. Deshalb tun wir es."
+  - id: l07
+    speaker: [mira]
+    fallback: skip
+    mood: happy
+    text: "Na gut. Ein Bogen mehr schadet euch nicht. Ich bin Mira – ausgerechnet dieses Dorf verteidige ich."
