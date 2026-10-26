@@ -87,33 +87,51 @@ export async function checkForUpdate(): Promise<void> {
   }
 }
 
-/** Longest wait for the new version to take over before the app gives up on the install. */
+/** Longest wait for the new version to take over before the button comes back; the takeover is still awaited after it. */
 const INSTALL_TIMEOUT_MS = 8000;
+
+let takeoverListener: (() => void) | undefined;
+let installTimer: number | undefined;
+
+/** Reloads once when the new worker takes control; a repeated call keeps the single listener instead of stacking one. */
+function reloadOnTakeover(): void {
+  if (takeoverListener) return;
+  takeoverListener = () => {
+    stopWaitingForTakeover();
+    window.location.reload();
+  };
+  navigator.serviceWorker.addEventListener('controllerchange', takeoverListener);
+}
+
+function stopWaitingForTakeover(): void {
+  if (takeoverListener) navigator.serviceWorker.removeEventListener('controllerchange', takeoverListener);
+  takeoverListener = undefined;
+  window.clearTimeout(installTimer);
+  installTimer = undefined;
+}
 
 /**
  * Activates the waiting version and reloads the app; `installing` shows the loading screen until the reload happens.
  * The reload does not rely on the plugin's own `controlling` handler (it stays silent for a version found by a manual
  * check): the new worker taking control reloads the page. If it has not taken over after the timeout, the version is
- * still waiting and the button comes back: a reload would only start the old version again.
+ * still waiting and the button comes back, but the listener stays: a worker that activates late still reloads the app
+ * (a second click sends SKIP_WAITING again and restarts the timeout without adding a second listener). Only a rejected
+ * `applyUpdate` gives the listener up.
  */
 export function installUpdate(): void {
   if (!applyUpdate || updateStatus.value === 'installing') return;
   updateStatus.value = 'installing';
-  let finished = false;
-  const reload = () => {
-    if (finished) return;
-    finished = true;
-    window.location.reload();
-  };
-  const fail = () => {
-    if (finished) return;
-    finished = true;
-    navigator.serviceWorker.removeEventListener('controllerchange', reload);
-    updateStatus.value = 'available';
-  };
-  navigator.serviceWorker.addEventListener('controllerchange', reload, { once: true });
-  window.setTimeout(() => (registration?.waiting ? fail() : reload()), INSTALL_TIMEOUT_MS);
+  reloadOnTakeover();
+  window.clearTimeout(installTimer);
+  installTimer = window.setTimeout(() => {
+    installTimer = undefined;
+    if (registration?.waiting) updateStatus.value = 'available';
+    else window.location.reload();
+  }, INSTALL_TIMEOUT_MS);
   applyUpdate(true)
     .then(() => registration?.waiting?.postMessage({ type: 'SKIP_WAITING' }))
-    .catch(fail);
+    .catch(() => {
+      stopWaitingForTakeover();
+      updateStatus.value = 'available';
+    });
 }

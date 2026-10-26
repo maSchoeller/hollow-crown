@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 type Listener = () => void;
 
@@ -83,5 +83,109 @@ describe('checkForUpdate', () => {
     const { checkForUpdate, updateStatus } = await load();
     await checkForUpdate();
     expect(updateStatus.value).toBe('error');
+  });
+});
+
+describe('installUpdate', () => {
+  let controllerListeners: Set<Listener>;
+  let reload: ReturnType<typeof vi.fn>;
+  let post: ReturnType<typeof vi.fn>;
+  let applyUpdate: () => Promise<void>;
+
+  async function loadInstalling() {
+    vi.resetModules();
+    controllerListeners = new Set();
+    reload = vi.fn();
+    post = vi.fn();
+    reg = { update: async () => {}, waiting: { postMessage: post } };
+    vi.useFakeTimers();
+    vi.stubGlobal('document', { addEventListener: () => {} });
+    vi.stubGlobal('window', { location: { reload }, setTimeout, clearTimeout });
+    vi.stubGlobal('navigator', {
+      serviceWorker: {
+        getRegistration: async () => reg,
+        addEventListener: (_: string, l: Listener) => controllerListeners.add(l),
+        removeEventListener: (_: string, l: Listener) => controllerListeners.delete(l),
+      },
+    });
+    vi.doMock('virtual:pwa-register', () => ({
+      registerSW: (opts: { onRegisteredSW: (url: string, r: unknown) => void }) => {
+        opts.onRegisteredSW('', reg);
+        return () => applyUpdate();
+      },
+    }));
+    vi.doMock('../../src/app/state/prepare', () => ({ abandonPrepare: () => {}, watchFirstInstall: () => {} }));
+    const mod = await import('../../src/app/update');
+    mod.initUpdates();
+    return mod;
+  }
+
+  const takeover = () => [...controllerListeners].forEach((l) => l());
+
+  beforeEach(() => {
+    applyUpdate = async () => {};
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it('reloads when the new worker takes over in time', async () => {
+    const { installUpdate, updateStatus } = await loadInstalling();
+    installUpdate();
+    expect(updateStatus.value).toBe('installing');
+    await vi.advanceTimersByTimeAsync(100);
+    expect(post).toHaveBeenCalledWith({ type: 'SKIP_WAITING' });
+    takeover();
+    expect(reload).toHaveBeenCalledTimes(1);
+  });
+
+  it('offers the button again after the timeout but still reloads when the worker activates late', async () => {
+    const { installUpdate, updateStatus } = await loadInstalling();
+    installUpdate();
+    await vi.advanceTimersByTimeAsync(8000);
+    expect(updateStatus.value).toBe('available');
+    expect(reload).not.toHaveBeenCalled();
+    takeover();
+    expect(reload).toHaveBeenCalledTimes(1);
+    expect(controllerListeners.size).toBe(0);
+  });
+
+  it('does not stack a second listener on a click after the timeout', async () => {
+    const { installUpdate, updateStatus } = await loadInstalling();
+    installUpdate();
+    await vi.advanceTimersByTimeAsync(8000);
+    installUpdate();
+    expect(updateStatus.value).toBe('installing');
+    expect(controllerListeners.size).toBe(1);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(post).toHaveBeenCalledTimes(2);
+    takeover();
+    expect(reload).toHaveBeenCalledTimes(1);
+  });
+
+  it('restarts the timeout on the second click', async () => {
+    const { installUpdate, updateStatus } = await loadInstalling();
+    installUpdate();
+    await vi.advanceTimersByTimeAsync(8000);
+    installUpdate();
+    await vi.advanceTimersByTimeAsync(7000);
+    expect(updateStatus.value).toBe('installing');
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(updateStatus.value).toBe('available');
+  });
+
+  it('gives up the listener when applying the update is rejected', async () => {
+    applyUpdate = async () => {
+      throw new Error('no');
+    };
+    const { installUpdate, updateStatus } = await loadInstalling();
+    installUpdate();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(updateStatus.value).toBe('available');
+    expect(controllerListeners.size).toBe(0);
+    await vi.advanceTimersByTimeAsync(8000);
+    expect(reload).not.toHaveBeenCalled();
   });
 });
