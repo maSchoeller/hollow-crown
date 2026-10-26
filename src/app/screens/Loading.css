@@ -24,6 +24,25 @@
 .ld--prepare .ld-stone {
   margin-bottom: 0;
 }
+/* over the board while it is built: takes the taps, so nothing seems broken */
+.ld-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background: rgba(21, 20, 26, 0.88);
+  color: var(--hc-line);
+  font-family: var(--hc-font-body);
+  font-weight: 600;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+.ld-cover .ld-stone {
+  margin-bottom: 0;
+}
 .ld-stone__kicker {
   font-family: var(--hc-font-label);
   font-size: var(--hc-size-caps);
