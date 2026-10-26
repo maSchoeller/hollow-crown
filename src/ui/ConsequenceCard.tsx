@@ -55,7 +55,7 @@ export function consequenceView(
     case 'priceMod':
       return { icon: <Icon name="merchant" size={22} />, title: t('ui.consequence.priceMod.title', { pct: `${l.pct > 0 ? '+' : ''}${l.pct}` }), desc: t('ui.consequence.priceMod.desc', { act: l.act }) };
     case 'villageAid':
-      return { icon: <Icon name="healer" size={22} />, title: t('ui.consequence.villageAid.title'), desc: t('ui.consequence.villageAid.desc') };
+      return { icon: <Icon name="healer" size={22} />, title: t('ui.consequence.villageAid.title'), desc: t('ui.consequence.villageAid.desc', { act: l.act }) };
     case 'home':
       return { icon: <Icon name={l.home === 'castle' ? 'castle' : 'camp'} size={22} />, title: t('ui.consequence.home.title'), desc: t('ui.consequence.home.desc') };
     case 'noted':

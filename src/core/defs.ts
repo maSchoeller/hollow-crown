@@ -458,7 +458,7 @@ export type Effect =
   | { material: Record<string, number> }
   | { item: ItemRef }
   | { priceMod: { pct: number; act: number } }
-  | { villageAid: true }
+  | { villageAid: { act: number } }
   | { openQuest: string }
   | { stance: Stance }
   | { chronicle: string }
@@ -801,6 +801,8 @@ export interface Balance {
     cast: { waterRadius: number; fogDuration: number };
   };
   bag: { size: number };
+  /** effect `villageAid`: in an act the aid was granted for, `item` holds `charges` charges (and refills to them) */
+  villageAid: { item: string; charges: number };
   economy: {
     sellRatio: number;
     upgradeCost: Array<{ level: number; gold: number; materials: Record<string, number> }>;

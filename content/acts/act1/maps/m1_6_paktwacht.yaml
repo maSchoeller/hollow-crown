@@ -4,8 +4,8 @@
 # Aufbau (Nord oben): Thronsaal (Thron 7–8,2) -> Burgtor (7–8,4) -> innerer Hof mit zwei Wachposten (Fort) -> Durchbruch (6–9,8) -> äußerer Hof
 # mit Mauerbrüchen (Ruinen bei 4,13 und 11,13) -> Tor (7–8,13) -> Hang mit Serpentinenstraße -> Fuß des Hangs im Süden (Aufstellung).
 # Rollen: Engstellen (Tore, Durchbruch) für Vorkämpfer; Gras am Hang brennt (Elementaristen); Hang und Wald für Ulvrics Reiter.
-# Nach dem Sieg: # Effekt (Story 6.9): setHome: castle (nur Kommentar, noch nicht angebunden); Tafel „Das Banner auf der Ruine“, Gespräch
-# „Eine Burg für Niemande“; E4 (Flüchtlinge aufnehmen oder geheim halten) fällt danach in der Szene – hier nur Kommentar.
+# Nach dem Sieg (campaign.yaml, Knoten m1_6): Knotenwirkung setHome: castle; Szene scn.m1_6.outro mit Tafel „Das Banner auf der Ruine“,
+# Gespräch „Eine Burg für Niemande“ und E4 (Flüchtlinge aufnehmen oder geheim halten).
 id: m1_6_paktwacht
 nameKey: map.m1_6_paktwacht.name
 size: [16, 20]
@@ -49,34 +49,46 @@ sun: { color: "#ffd9a0", intensity: 1.1, azimuthDeg: 100, elevationDeg: 35 }
 lights: []
 objects: []
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
-#   [8,6] Grund: der innere Hof vor dem Thronsaal – hier hielt Hask die Burg, später treibt es ihn zurück.
-#   [8,10] Grund: der äußere Hof – Treffpunkt aller Wege durch die Mauerbrüche.
-#   [8,16] Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat.
+# Heimsuchungs-Anker (Story 5.5; das Feld wird ignoriert, bis das Schema auf main ist). Höchstens einer je Variante.
+haunts:
+  # Grund: der innere Hof vor dem Thronsaal – hier hielt Hask die Burg, später treibt es ihn zurück.
+  - variant: boss
+    target: { at: [8, 6] }
+    enemySpawn: { rect: [5, 7, 10, 7] }
+    deploy: { rect: [6, 9, 9, 11] }
+  # Grund: der äußere Hof – Treffpunkt aller Wege durch die Mauerbrüche.
+  - variant: rout
+    target: { at: [8, 10] }
+    enemySpawn: { rect: [2, 11, 13, 12] }
+    deploy: { rect: [6, 14, 9, 15] }
+  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat.
+  - variant: escort
+    target: { at: [8, 16] }
+    exit: { rect: [4, 16, 12, 16] }
+    enemySpawn: { rect: [0, 14, 15, 15] }
+    deploy: { rect: [6, 18, 9, 19] }
+    turns: 8
 deploy:
   max: 7
   forced: [avatar, kael]
   slots: [[6, 19], [7, 19], [8, 19], [9, 19], [5, 18], [6, 18], [7, 18], [8, 18], [9, 18]]
-# Gegner: Placeholder-Stufen um Stufe 7 [C] Stufe vorläufig, Abgleich per Simulation, sobald spielbar.
-# Leutnants (Epic 3 noch nicht gebaut): normale Karteneinheit mit `lieutenant`.
+# Gegner: Stufen [C], per Simulation abgestimmt (Story 9.7). Leutnants (Hask, Ulvric): Stufe und Klasse kommen aus `lieutenant`
+# (flieht bei 0 TP, Groll, Kopfgeld); ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35).
 units:
-  # Epic 3: flieht bei 0 TP (gone: fled), Groll, Kopfgeld
-  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 8, at: [8, 6], sprite: hask, portrait: hask, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: guard, radius: 3 } }   # Signaturaxt gibt es noch nicht (items.md §6.3): OFFEN
-  # Epic 3: flieht bei 0 TP (gone: fled), Groll, Kopfgeld
-  # OFFEN (2.9): wolf_rider – Ulvric bis dahin vanguard mit Lanze
-  - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, class: vanguard, level: 7, at: [11, 16], sprite: ulvric, portrait: ulvric, items: [{ def: steel_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive } }
-  # Ulvrics Reiter am Hang. OFFEN (2.9): wolf_rider (bis dahin vanguard mit Lanze)
-  - { id: rider1, nameKey: unit.wolf_rider.name, team: enemy, class: vanguard, level: 6, at: [2, 15], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: rider2, nameKey: unit.wolf_rider.name, team: enemy, class: vanguard, level: 6, at: [13, 14], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: mk1, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [6, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: inner1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 7, at: [7, 3], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold } }
+  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 8, at: [8, 6], sprite: hask, portrait: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: guard, radius: 3 } }   # Signaturwaffe: OFFEN (items.md §6.3)
+  - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 7, at: [11, 16], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive } }
+  # Ulvrics Wolfsreiter am Hang
+  - { id: rider1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [2, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: rider2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [13, 14], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: mk1, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [6, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: inner1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [7, 3], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: outer1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [5, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: br1, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [10, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
   - { id: br2, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [3, 11], sprite: brigand, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: mk2, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [9, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: br3, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [8, 12], sprite: brigand, items: [{ def: steel_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: outer2, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 7, at: [11, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: rider3, nameKey: unit.wolf_rider.name, team: enemy, class: vanguard, level: 6, at: [7, 15], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: mk2, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [9, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: br3, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [8, 12], sprite: brigand, items: [{ def: steel_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: outer2, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [11, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: rider3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [7, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements: []
 objectives:
@@ -89,9 +101,10 @@ objectives:
     # Rundenzahl und Belohnung: Startwerte [C], die Steuerung stimmt sie per Simulation ab
     - { id: s_fast, type: turn_limit, turns: 12, reward: { gold: 400 } }
 triggers: []
-# Szenen (9.7): scn.m1_6.banner (Tafel „Das Banner auf der Ruine“) bei Sieg; scn.m1_6.home („Eine Burg für Niemande“) danach; E4 dort.
+# Szenen (Knoten m1_6): scn.m1_6.intro vorher; scn.m1_6.outro nachher (Tafel „Das Banner auf der Ruine“, Gespräch „Eine Burg für Niemande“, E4).
 goldReward: 1100   # [C]
 music: battle_a
 devNote: >
   16 × 20: Ruine auf dem Hügel. Aufstellung am Hangfuß (Süd), Serpentinenstraße, äußerer Hof mit Mauerbrüchen, innerer Hof (Hask), Thronsaal.
+  Ulvric und seine Wolfsreiter (Klasse wolf_rider) flankieren am Hang; Kael ergreift den Thron (seize).
   Leicht: 9 Gegner; Normal: 11 (Hask, Ulvric, zwei weitere Reiter); Schwer: 13. Keine Verstärkung.

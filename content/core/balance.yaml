@@ -143,6 +143,8 @@ classActions:
   # Wirken (Story 2.5): Reichweite = Waffenreichweite der Zauberwaffe; Brand-/Wall-Dauer in terrainEffects; waterRadius = Löschradius um das Zielfeld, fogDuration = Runden, die Wind den Nebel lichtet (Radius windFogClearRadius)
   cast: { waterRadius: 1, fogDuration: 2 }
 bag: { size: 3 }
+# Dorfhilfe (Wirkung villageAid, Entscheidung E4): in einem Akt mit Dorfhilfe fasst `item` so viele Ladungen und füllt sich darauf auf
+villageAid: { item: vulnerary, charges: 4 }
 # Nebel (Story 2.6): Sicht = Manhattan-Radius um jede eigene (und verbündete) Einheit mit Sichtlinie; baseVision + höchster Bonus
 # (Boni stapeln nicht): roleBonus nach Klassenrolle, moveTypeBonus nach Bewegungsart. blockers = Gelände, hinter dem die Sicht endet
 # (das Feld selbst bleibt sichtbar). Die Gegner-KI sieht alles; der Nebel gilt nur für Brett, UI, Vorschau und abgespielte Events der Spielerseite.

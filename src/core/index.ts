@@ -31,6 +31,7 @@ export * from './campaign/campaign';
 export * from './campaign/resultView';
 export * from './campaign/farewellView';
 export * from './campaign/camp';
+export * from './campaign/aid';
 export * from './campaign/commands';
 export * from './campaign/apply';
 export * from './campaign/restart';

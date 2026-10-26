@@ -441,7 +441,7 @@ export const effectSchema: z.ZodType<Effect> = z.union([
   z.strictObject({ material: z.record(z.string(), z.number().int()) }),
   z.strictObject({ item: itemRefSchema }),
   z.strictObject({ priceMod: z.strictObject({ pct: z.number(), act: z.number().int().min(1) }) }),
-  z.strictObject({ villageAid: z.literal(true) }),
+  z.strictObject({ villageAid: z.strictObject({ act: z.number().int().min(1) }) }),
   z.strictObject({ openQuest: z.string().min(1) }),
   z.strictObject({ stance }),
   z.strictObject({ chronicle: z.string().min(1) }),
@@ -712,6 +712,7 @@ export const balanceSchema = z.object({
     cast: z.object({ waterRadius: z.number().int().min(0), fogDuration: z.number().int().min(1) }),
   }),
   bag: z.object({ size: z.number().int() }),
+  villageAid: z.strictObject({ item: z.string().min(1), charges: z.number().int().min(1) }),
   economy: z.looseObject({
     rarityAffixes: z.record(z.string(), z.number()),
     rarityRuneSlots: z.record(z.string(), z.number()),

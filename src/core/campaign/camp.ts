@@ -6,6 +6,7 @@ import { computeStats } from '../rules/stats';
 import { pendingRank, rankIndex } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
+import { shopPrice } from './aid';
 import { conditionContext, evalCondition } from './conditions';
 
 /**
@@ -35,8 +36,8 @@ export function takeItem(c: CampaignState, uid: string): ItemInstance | null {
   return loc.inst;
 }
 
-export function offerPrice(data: GameData, inst: ItemInstance): number {
-  return Math.floor(itemDef(data, inst).price * (1 + 0.5 * inst.affixes.length));
+export function offerPrice(data: GameData, inst: ItemInstance, c: CampaignState): number {
+  return shopPrice(data, c, Math.floor(itemDef(data, inst).price * (1 + 0.5 * inst.affixes.length)));
 }
 
 export function upgradable(data: GameData, inst: ItemInstance): boolean {

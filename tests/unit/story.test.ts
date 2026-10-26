@@ -8,7 +8,6 @@ import { conditionSchema, effectSchema, campaignSchema } from '../../src/content
 import { validateContent } from '../../src/content/validate';
 import {
   applyCampaign,
-  applyEffects,
   clone,
   conditionContext,
   dominantStance,
@@ -247,15 +246,14 @@ describe('effects (architecture §5.3)', () => {
     expect(dominantStance(s.campaign.stance)).toBe('warm');
   });
 
-  it('priceMod and villageAid are refused until their state exists', () => {
-    const unsupported: Effect[] = [
-      { priceMod: { pct: -10, act: 2 } },
-      { villageAid: true },
-    ];
-    for (const e of unsupported) {
-      expect(validateCampaign(data, base, { type: 'effects', effects: [e] })).toBe('effect_unsupported');
-      expect(() => applyEffects(data, clone(base), [e], [])).toThrow(/not yet supported/);
-    }
+  it('priceMod and villageAid are recorded in the campaign state', () => {
+    const effects: Effect[] = [{ priceMod: { pct: -10, act: 2 } }, { villageAid: { act: 2 } }, { villageAid: { act: 2 } }];
+    expect(validateCampaign(data, base, { type: 'effects', effects })).toBeNull();
+    const c = applyCampaign(data, base, { type: 'effects', effects }).campaign;
+    expect(c.priceMods).toEqual([{ pct: -10, act: 2 }]);
+    expect(c.villageAid).toEqual([2]);
+    expect(base.priceMods).toEqual([]);
+    expect(validateCampaign(data, base, { type: 'effects', effects: [{ priceMod: { pct: -100, act: 2 } }] })).toBe('effect_invalid');
   });
 
   it('effects change the campaign only inside a command (the input stays untouched)', () => {
@@ -340,11 +338,9 @@ describe('content references (content:check)', () => {
     expect(eff({ openQuest: 'ch01' })).toContainEqual(expect.stringContaining('openQuest ch01 is not a side quest'));
   });
 
-  it('keys that are not supported yet fail with a clear message', () => {
-    for (const e of [{ priceMod: { pct: 1, act: 2 } }, { villageAid: true }]) {
-      const m = problems(withDialogue(choose(e)));
-      expect(m).toContainEqual(expect.stringContaining(`effect ${Object.keys(e)[0]!} is not yet supported`));
-    }
+  it('priceMod and villageAid pass content:check; the old villageAid: true form does not', () => {
+    for (const e of [{ priceMod: { pct: -10, act: 2 } }, { villageAid: { act: 2 } }]) expect(problems(withDialogue(choose(e))).filter((m) => /not yet supported|effect/.test(m) && !/missing en text|belongs to a decision/.test(m))).toEqual([]);
+    expect(effectSchema.safeParse({ villageAid: true }).success).toBe(false);
   });
 
   it('room conditions are checked', () => {

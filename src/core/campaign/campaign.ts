@@ -12,6 +12,7 @@ import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, noteRoles } from './graph';
 import { availableSupportTalks } from './camp';
+import { chargeCap } from './aid';
 import { applyLieutenantOutcome, lieutenantState, payBounties } from './lieutenants';
 
 export const SAVE_VERSION = 1;
@@ -36,6 +37,8 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     decisions: [],
     scenesSeen: [],
     backupReminded: [],
+    priceMods: [],
+    villageAid: [],
     completed: [],
     quests: [],
     rolesSeen: [],
@@ -65,6 +68,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     chronicle?: string[];
     scenesSeen?: string[];
     backupReminded?: number[];
+    priceMods?: CampaignState['priceMods'];
+    villageAid?: number[];
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
@@ -82,6 +87,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     chronicle: old.chronicle ?? [],
     scenesSeen: old.scenesSeen ?? [],
     backupReminded: old.backupReminded ?? [],
+    priceMods: old.priceMods ?? [],
+    villageAid: old.villageAid ?? [],
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],
     // pairs of content added since the save (a later act) start empty
@@ -188,10 +195,10 @@ export interface BattleResult {
   effects?: Effect[];
 }
 
-function refill(data: GameData, items: ItemInstance[]): void {
+function refill(data: GameData, c: CampaignState, items: ItemInstance[]): void {
   for (const i of items) {
     const d = itemDef(data, i);
-    if (d.refillAfterMission && d.charges) i.charges = d.charges;
+    if (d.refillAfterMission && d.charges) i.charges = chargeCap(data, c, i.def);
   }
 }
 
@@ -284,7 +291,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (u.pos || u.gone === 'rescued' || u.gone === 'escaped' || u.gone === 'retreated') {
       grantSp(data, u, data.balance.skills.spPerMissionEnd, events);
     }
-    refill(data, allItems(u));
+    refill(data, c, allItems(u));
     if (u.grief && u.grief > 0) u.grief -= 1;
     const rec = toRecord(u);
     if (u.team === 'other') {
@@ -372,7 +379,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   refreshOffers(data, c, node.merchantTier);
   refreshTavern(data, c);
   // dead units' gear in the convoy gets refilled as well
-  refill(data, c.convoy);
+  refill(data, c, c.convoy);
   return { campaign: c, result };
 }
 

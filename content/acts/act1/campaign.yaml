@@ -25,6 +25,9 @@ nodes:
   # Brücke bis Story 9.3/9.4: die PoC-Knoten ch01 und ch02 bleiben nach 1-1 im Graphen, bis 1-2 und 1-3 sie ersetzen
   - { id: ch01, expectedLevel: 2, map: ch01_varnhold, titleKey: node.ch01.title, pre: scn.ch01.intro, post: scn.ch01.outro, requires: [{ completed: m1_1 }], place: erlbach, merchantTier: 1, grants: [{ unit: avatar, item: { def: ember } }] }
   - { id: ch02, expectedLevel: 3, map: ch02_silverbrook, titleKey: node.ch02.title, pre: scn.ch02.intro, post: scn.ch02.outro, requires: [{ completed: ch01 }], place: varnhold, merchantTier: 2 }
+  # Mission 1-6: Eroberung der Paktwacht, danach die Burg als Heimat und Entscheidung E4. expectedLevel/merchantTier: technische Startwerte, final per Simulation.
+  # Übergang: wird m1_2–m1_5, sobald 9.3–9.6 auf main sind (Produktinhaber 2026-10-26)
+  - { id: m1_6, expectedLevel: 7, map: m1_6_paktwacht, titleKey: node.m1_6.title, pre: scn.m1_6.intro, post: scn.m1_6.outro, requires: [{ completed: ch02 }], place: paktwacht_ruine, merchantTier: 2, effects: [{ setHome: castle }] }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]

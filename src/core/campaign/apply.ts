@@ -10,6 +10,7 @@ import { activeSkillIds } from '../rules/skills';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { dismissError, hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { chargeCap, shopPrice } from './aid';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
 import { actFinished, isAvailable, noteRoles } from './graph';
@@ -21,7 +22,7 @@ function buyPrice(data: GameData, c: CampaignState, defId: string): number | nul
   const stock = merchantStock(data, currentTier(data, c));
   const runeForSale = data.runes[defId]?.price !== undefined && (data.runes[defId]?.tier ?? 0) <= 1;
   if (!stock.includes(defId) && !runeForSale) return null;
-  return itemDef(data, defId).price;
+  return shopPrice(data, c, itemDef(data, defId).price);
 }
 
 /** Seal used for a promotion: convoy first, then the unit's bag. */
@@ -46,7 +47,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'buyOffer': {
       const offer = c.offers.find((o) => o.uid === cmd.uid);
       if (!offer) return 'not_for_sale';
-      return c.gold < offerPrice(data, offer) ? 'not_enough_gold' : null;
+      return c.gold < offerPrice(data, offer, c) ? 'not_enough_gold' : null;
     }
     case 'sell': {
       const loc = locateItem(c, cmd.uid);
@@ -214,13 +215,14 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     case 'buy': {
       c.gold -= buyPrice(data, c, cmd.item)!;
       const inst = newItem(c, cmd.item, data);
+      if (inst.charges) inst.charges = chargeCap(data, c, inst.def);
       c.convoy.push(inst);
       gained(inst.uid, inst.def);
       break;
     }
     case 'buyOffer': {
       const offer = c.offers.find((o) => o.uid === cmd.uid)!;
-      c.gold -= offerPrice(data, offer);
+      c.gold -= offerPrice(data, offer, c);
       c.offers = c.offers.filter((o) => o.uid !== cmd.uid);
       c.convoy.push(offer);
       gained(offer.uid, offer.def);

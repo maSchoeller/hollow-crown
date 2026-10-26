@@ -280,6 +280,10 @@ export interface CampaignState {
    * `pending` = day packets not yet turned into haunts (the generator of story 5.5 takes them)
    */
   day: { last: number | null; pending: number[] };
+  /** merchant price changes of decisions (effect `priceMod`): `pct` percent on every purchase while the act is `act` */
+  priceMods: Array<{ pct: number; act: number }>;
+  /** acts with Village aid (effect `villageAid`): healing potions hold one more charge in that act */
+  villageAid: number[];
   /** acts whose backup reminder was shown after the finale (story 7.3, AR21): it comes once per act */
   backupReminded: number[];
   /** lieutenants the company has met (AR5; Epic 3 adds grudge, target, routs …); absent until the first meeting */

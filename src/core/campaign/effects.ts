@@ -8,7 +8,7 @@ import { clampGrudge, joinLieutenant, lieutenantState } from './lieutenants';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
-export const UNSUPPORTED_EFFECTS: readonly string[] = ['priceMod', 'villageAid'];
+export const UNSUPPORTED_EFFECTS: readonly string[] = [];
 
 const arg = (e: Effect): unknown => (e as unknown as Record<string, unknown>)[soleKey(e)];
 
@@ -98,6 +98,10 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
         // moving to the home the company lives in already is no fault; an unknown kind is
         if (!HOME_KINDS.includes(v as HomeKind)) return 'effect_invalid';
         break;
+      case 'priceMod':
+        if (!Number.isFinite((v as { pct: number }).pct) || (v as { pct: number }).pct <= -100) return 'effect_invalid';
+        break;
+      case 'villageAid':
       case 'stance':
       case 'chronicle':
         break;
@@ -186,6 +190,14 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
           events.push({ t: 'chronicleAdded', page: v as string });
         }
         break;
+      case 'priceMod':
+        c.priceMods.push({ pct: (v as { pct: number }).pct, act: (v as { act: number }).act });
+        break;
+      case 'villageAid': {
+        const act = (v as { act: number }).act;
+        if (!c.villageAid.includes(act)) c.villageAid.push(act);
+        break;
+      }
       case 'setHome':
         // the rooms keep their level: camp stations are level 1, the castle rooms start there too (architecture §5.10)
         if (c.home.kind !== v) {

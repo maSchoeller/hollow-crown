@@ -2,6 +2,8 @@ import type { GameData, Pos } from '../defs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
+import { topUpCharges } from '../campaign/aid';
+import { allItems } from '../rules/items';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
@@ -71,6 +73,9 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
     if (!rec) return;
     s.units.push(battleUnitFromRecord(data, rec, 'player', slots[i]!));
   });
+  // Village aid of the running act reaches potions that were filled before the act began
+  topUpCharges(data, c, s.convoy);
+  for (const u of s.units) if (u.team === 'player') topUpCharges(data, c, allItems(u));
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
   onDifficulty(map.units, c.settings.difficulty).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited

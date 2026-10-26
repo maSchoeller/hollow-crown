@@ -1,0 +1,97 @@
+# Mission 1-6, Szene nach dem Sieg (ein Knoten hat nur ein `post`): Tafel 4 „Das Banner auf der Ruine“, Gespräch „Eine Burg für Niemande“
+# (Kael + Truppe, Stolz/Aufbruch), Einführung des Verwalters (Ausgedachtes: siehe Story 9.7, Dev Notes) und Entscheidung E4.
+# Die Burg als Heimat ist die Knotenwirkung `setHome: castle` an m1_6 (campaign.yaml), nicht Teil der Szene.
+# Hintergrund = Gespräch (bewohnte Burg); die Tafel zeigt die Ruine.
+id: scn.m1_6.outro
+background: paktwacht_heimat
+music: camp
+lines:
+  # Tafel 4 „Das Banner auf der Ruine“
+  - id: l01
+    panel: paktwacht_ruine
+    mood: neutral
+    text: "Der Rauch zieht ab. Auf dem höchsten Turm der Paktwacht flattert das Banner des Aschenbanners."
+  - id: l02
+    mood: neutral
+    text: "Die Mauern sind schwarz vom Brand, das Tor hängt schief. Doch die Ruine steht."
+  - id: l03
+    mood: happy
+    text: "Zum ersten Mal seit der Paktnacht hat die Truppe ein Dach, das ihr gehört."
+  # Gespräch „Eine Burg für Niemande“
+  - id: l04
+    panel: none
+    speaker: [kael]
+    mood: happy
+    text: "Mauern, Dach, Tor. Und keiner, der uns hier vertreibt. Das ist jetzt unser Haus."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Ein Haufen Niemande mit einer Burg, Küken! Die Welt wird Augen machen."
+  - id: l06
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Die Ballade von der Burg der – der Niemande! Die Reime fehlen noch, aber das Pathos steht!"
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Ich habe schon die Schatzkammer gefunden. Leer, aber mit Schloss! Man muss klein anfangen."
+  - id: l08
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und wer hält die Mauer, wenn Hask zurückkommt? Oder fragt sich das nur eine von uns?"
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Ein Haus, das niemandem gehört, kann jedem gehören. So lehrt es der Tempel. Heute glaube ich es."
+  - id: l10
+    speaker: [avatar]
+    mood: happy
+    text: "Heimat. Das Wort klingt noch fremd. Ich gewöhne mich gern daran."
+  # der Verwalter (ohne Sprecherbild: Es gibt noch kein Porträt für ihn, daher als Erzählung mit wörtlicher Rede)
+  - id: l11
+    mood: neutral
+    text: "Ein grauhaariger Mann tritt aus dem Schatten des Tors und verneigt sich vor Kael."
+  - id: l12
+    mood: neutral
+    text: "„Ich bin der Verwalter. All die Jahre habe ich die Schlüssel dieser Mauern gehütet, Hauptmann.“"
+  - id: l13
+    mood: sad
+    text: "„Hask sperrte mich in den Keller, doch die Schlüssel bekam er nicht. Nun gehören sie Euch.“"
+  - id: l14
+    speaker: [kael]
+    mood: neutral
+    text: "Behalt sie. Du kennst die Mauern, wir nicht."
+  - id: l15
+    mood: happy
+    text: "„Dann sorge ich dafür, dass sie stehen bleiben. Was immer kommt.“"
+  # Entscheidung E4
+  - id: l16
+    mood: neutral
+    text: "„Unten am Hang warten Familien aus dem Grenzland. Sie sahen das Banner und bitten um Obdach.“"
+  - id: l17
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Je mehr Leute wissen, wo wir wohnen, desto mehr Besuch kriegen wir. Meist mit Fackeln."
+  - id: l18
+    speaker: [kael]
+    mood: neutral
+    text: "Es ist deine Burg, {avatar}. Du entscheidest."
+  - id: l19
+    title: "Die Paktwacht: Flüchtlinge oder Geheimnis"
+    choice:
+      - id: shelter
+        stance: warm
+        text: "„Öffnet das Tor. Wer Obdach sucht, bekommt es.“"
+        summary: "Flüchtlinge aufgenommen"
+        effects: [{ setFlag: { e04: shelter } }, { villageAid: { act: 2 } }]
+      - id: secret
+        stance: sober
+        text: "„Das Tor bleibt zu. Niemand erfährt, wo wir wohnen.“"
+        summary: "Die Burg bleibt geheim"
+        effects: [{ setFlag: { e04: secret } }, { priceMod: { pct: -10, act: 2 } }]

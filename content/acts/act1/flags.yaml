@@ -9,3 +9,5 @@
 - { id: ch02_question, kind: story, season2: false }
 # Wer als Leutnant beitritt, setzt joined_<id> (Wirkung recruit { lt }, Story 3.7); Heimsuchungen und Finale-Aufstellungen lesen es über isJoined/activeLieutenants.
 - { id: joined_grosk, kind: story, season2: true }
+# E4 (Mission 1-6): die Paktwacht – shelter = Flüchtlinge aufgenommen (Dorfhilfe in Akt 2), secret = geheim gehalten (Händlerpreise −10 % in Akt 2); 1-8 liest es
+- { id: e04, kind: decision, values: [shelter, secret], season2: true }
