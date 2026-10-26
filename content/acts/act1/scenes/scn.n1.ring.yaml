@@ -1,0 +1,31 @@
+# Nebenquest N1, Szene beim Fall des Ringmeisters (Karte n1_ring, Trigger unit_dies ring_master). Läuft in der Schlacht, ohne Antworten.
+# Zeilen m01/m02 nur, wenn Fenn gefallen ist (Gedenk-Variante): dann kein Witz, kein Fenn-Sprecher.
+id: scn.n1.ring
+lines:
+  - id: l01
+    mood: angry
+    requires: [{ alive: fenn }]
+    text: "Der Ringmeister: „Der verlorene Sohn. Du hättest bleiben sollen, Fenn. Der Ring vergisst nichts.“"
+  - id: l02
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Der Ring vergisst nichts? Ihr habt vergessen, die Hintertür abzusperren. Zwölf Mal!"
+  - id: l03
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Meine Elster, Meister. Her damit."
+  - id: l04
+    mood: sad
+    requires: [{ alive: fenn }]
+    text: "Der Ringmeister sinkt zurück: „Nimm sie. Der Dolch hat nie mir gehört.“"
+  - id: m01
+    mood: angry
+    requires: [{ dead: fenn }]
+    text: "Der Ringmeister: „Ein Dolch. Wegen eines Dolches stürmt ihr mein Haus.“"
+  - id: m02
+    speaker: [mira, brenna, kael]
+    mood: sad
+    requires: [{ dead: fenn }]
+    text: "Er gehörte einem von uns. Das ist alles, was Ihr wissen müsst."

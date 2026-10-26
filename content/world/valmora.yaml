@@ -30,7 +30,7 @@ places:
   - { id: m1_6, label: "1-6", act: 1, kind: story, at: [37.4, 70.64] }   # Karte: m1_6_paktwacht (Layout, Story 9.7)
   - { id: m1_7, label: "1-7", act: 1, kind: story, at: [49.8, 75.85] }   # Karte: m1_7_gewoelbe (Layout, Story 9.8)
   - { id: m1_8, label: "1-8", act: 1, kind: story, at: [62.5, 68.68] }   # Karte: m1_8_paktwacht_halten (Layout, Story 9.9)
-  - { id: n1, label: "N1", act: 1, kind: side, at: [74.71, 83.46] }   # Karte: n1_ring (Layout, Story 9.10)
+  - { id: n1, label: "N1", act: 1, kind: side, at: [74.71, 83.46], node: n1 }   # Karte: n1_ring (Layout, Story 9.10)
   - { id: n2, label: "N2", act: 1, kind: side, at: [93.26, 70.51] }   # Karte: n2_wachturm (Layout, Story 9.11)
   - { id: n3, label: "N3", act: 1, kind: side, at: [37.6, 82.36] }   # Karte: n3_erbe (Layout, Story 9.12)
   - { id: home, label: "H", act: 1, kind: home, at: [50.59, 68.49] }

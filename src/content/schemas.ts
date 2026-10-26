@@ -225,6 +225,7 @@ export const skillSchema = z.object({
       bagChargeSaveChance: z.number(),
       refreshAction: z.boolean(),
       allowArmorClass: z.string(),
+      stealEquipped: z.boolean(),
       until: z.string(),
     })
     .partial(),

@@ -1,0 +1,20 @@
+# Nebenquest N1, Gedenk-Variante vor der Karte (Fenn ist gefallen; memorialIf in campaign.yaml). Ersatzsprecher-Kette, kein Humor.
+id: scn.n1.memorial_intro
+background: varnhold
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Varnhold bei Nacht. Nebel in den Gassen. Fenn kannte hier jeden Stein. Er ist nicht mehr bei uns."
+  - id: l02
+    speaker: [mira, brenna, kael]
+    mood: sad
+    text: "Er hat einmal erzählt, wo der Ring seinen Dolch hielt. Im Lagerhaus, hinter der verschlossenen Tür."
+  - id: l03
+    speaker: [brenna, kael]
+    mood: sad
+    text: "Elster hieß er. Der Ring nahm ihn Fenn ab, als sie ihn rauswarfen. Er hat nie aufgehört, davon zu reden."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Dann holen wir ihn heim. Waffen bereit. Wir bleiben beisammen."

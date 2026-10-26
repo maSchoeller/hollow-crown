@@ -263,6 +263,8 @@ export interface SkillEffect {
   bagChargeSaveChance?: number;
   refreshAction?: boolean;
   allowArmorClass?: string;
+  /** Stehlen also takes equipped items of the foe (Elster, story 9.10) */
+  stealEquipped?: boolean;
   until?: string;
 }
 

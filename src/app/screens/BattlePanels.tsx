@@ -320,12 +320,13 @@ export function StealPick({
 }) {
   return (
     <Sheet title={t('ui.action.steal')} aside={unitName(victim)} onClose={onClose}>
-      <p class="bp-hint">{t(p.bagFull ? 'ui.steal.bagFull' : 'ui.steal.hint')}</p>
+      <p class="bp-hint">{t(p.bagFull ? 'ui.steal.bagFull' : p.takesEquipped ? 'ui.steal.hintEquipped' : 'ui.steal.hint')}</p>
       <div class="bp-lines">
-        {p.items.map(({ item, toConvoy }) => (
+        {p.items.map(({ item, toConvoy, equipped }) => (
           <ItemLine
             key={item.uid}
             inst={item}
+            label={equipped ? t('ui.steal.inHand') : undefined}
             sub={<ItemDetails data={data} inst={item} />}
             right={toConvoy ? <Icon name="convoy" size={18} /> : undefined}
             onClick={() => onPick(item.uid)}

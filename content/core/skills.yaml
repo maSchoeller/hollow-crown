@@ -56,3 +56,6 @@
 - { id: bulwark,        source: grudge, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }
 - { id: tough,          source: grudge, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { def: 3 } } }
 - { id: endure,         source: grudge, trigger: on_turn_start, effect: { healPercent: 10 } }
+
+# --- Item-Skills der Gefährten-Signaturen (items.md §6.2; Story 9.10) ---
+- { id: long_fingers, source: item, trigger: passive, effect: { stealEquipped: true } }   # Elster (Fenn): Stehlen nimmt auch, was der Gegner in der Hand hält
