@@ -137,7 +137,6 @@ objectives:
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    - { id: s_bow, type: kill_with, weaponType: bow, reward: { gold: 200 } }   # Nebenziel und Belohnung: Startwerte [C]
 triggers:
   # Miras Haus brennt: sie flieht in den Wald, tritt in Akt 1 nicht mehr bei, E1 entfällt (Nachszene prüft `alive: mira`)
   - id: t_mira_lost

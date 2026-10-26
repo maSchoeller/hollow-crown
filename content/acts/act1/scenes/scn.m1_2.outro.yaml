@@ -9,8 +9,10 @@ lines:
     mood: neutral
     text: "Die Marodeure ziehen sich in den Wald zurück. Die Felder rauchen noch, aber Erlbach steht."
   - id: l02
+    speaker: [villager_elder]
+    fallback: skip
     mood: neutral
-    text: "Der Älteste verneigt sich vor der Truppe. „Man nennt euch Mörder. Ich sah heute etwas anderes.“"
+    text: "Man nennt euch Mörder. Ich sah heute etwas anderes."
   - id: l03
     speaker: [kael]
     mood: neutral
@@ -24,12 +26,16 @@ lines:
     text: "Schön gesagt. Wo war der Älteste, als ihr mich vor zwei Wintern an den Zaun gestellt habt?"
   - id: m02
     requires: [{ alive: mira }]
+    speaker: [villager_elder]
+    fallback: skip
     mood: sad
-    text: "Der Älteste senkt den Kopf. „Wir haben Unrecht getan. Du hast uns satt gemacht, und wir haben dich verjagt.“"
+    text: "Wir haben Unrecht getan. Du hast uns satt gemacht, und wir haben dich verjagt."
   - id: m03
     requires: [{ alive: mira }]
+    speaker: [villager_elder]
+    fallback: skip
     mood: neutral
-    text: "„Die Verbannung ist aufgehoben. Komm heim, Mira. Dein Dorf steht in deiner Schuld.“"
+    text: "Die Verbannung ist aufgehoben. Komm heim, Mira. Dein Dorf steht in deiner Schuld."
   - id: m04
     requires: [{ alive: mira }]
     speaker: [mira]
@@ -58,8 +64,10 @@ lines:
     text: "Mein Bogen, nicht ich. Schon klar. Ich komme trotzdem mit, ihr Zettelgesichter."
   - id: k02
     requires: [{ flag: { e01: keep } }]
+    speaker: [villager_elder]
+    fallback: skip
     mood: neutral
-    text: "Der Älteste nickt langsam. „Dann soll es so sein. Erlbach vergisst nicht, wer ihm geholfen hat.“"
+    text: "Dann soll es so sein. Erlbach vergisst nicht, wer ihm geholfen hat."
   - id: r01
     requires: [{ flag: { e01: release } }]
     speaker: [mira]
@@ -73,8 +81,10 @@ lines:
   # Ohne Mira: E1 entfällt
   - id: n01
     requires: [{ not: { alive: mira } }]
+    speaker: [villager_elder]
+    fallback: skip
     mood: sad
-    text: "Der Älteste blickt zum Ostrand. „Die Wildererin … wir hätten sie nie verjagen sollen.“"
+    text: "Die Wildererin … wir hätten sie nie verjagen sollen."
   - id: n02
     requires: [{ not: { alive: mira } }]
     speaker: [kael]
