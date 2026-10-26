@@ -45,6 +45,9 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     home: { kind: data.campaign.home, rooms: {} },
     tavern: [],
     day: { last: null, pending: [] },
+    haunts: [],
+    hauntLast: {},
+    hauntsSinceStory: 0,
   };
   for (const def of Object.values(data.chars)) {
     if (def.joins !== 'prologue') continue;
@@ -91,6 +94,10 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     decisions: old.decisions ?? [],
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
+    // story 5.5
+    haunts: c.haunts ?? [],
+    hauntLast: c.hauntLast ?? {},
+    hauntsSinceStory: c.hauntsSinceStory ?? 0,
     // story 3.3: lieutenants of older saves hold only `met`
     ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),
   };

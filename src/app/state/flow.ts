@@ -10,6 +10,7 @@ import {
   beginBattle,
   conditionContext,
   firstNode,
+  metLieutenant,
   nodeScenes,
   createBattle,
   newCampaign,
@@ -341,6 +342,8 @@ export function advanceToToday(now = Date.now()): Extract<CampaignEvent, { t: 'd
   if (!c) return null;
   const day = dayNumber(now, data.balance.day.resetHour);
   if (c.day.last !== null && day <= c.day.last) return null;
+  // before the first lieutenant is met the core keeps the day open (the first meeting brings a packet at once): nothing to send yet
+  if (!metLieutenant(c)) return null;
   const r = campaignCommand({ type: 'advanceDay', day });
   if (!r.ok) return null;
   return (r.events.find((e) => e.t === 'dayAdvanced') as Extract<CampaignEvent, { t: 'dayAdvanced' }> | undefined) ?? null;

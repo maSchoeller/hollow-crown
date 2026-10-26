@@ -38,6 +38,7 @@ export * from './campaign/conditions';
 export * from './campaign/effects';
 export * from './campaign/scene';
 export * from './campaign/day';
+export * from './campaign/haunts';
 export * from './campaign/graph';
 export * from './campaign/consequences';
 export * from './campaign/chronicle';

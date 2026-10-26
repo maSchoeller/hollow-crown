@@ -1,4 +1,4 @@
-import type { Effect, EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
+import type { Effect, EquipSlot, FlagValue, HauntVariant, HomeKind, Stance, SupportRank } from '../defs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';
@@ -126,8 +126,12 @@ export type CampaignEvent =
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number }
-  /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5 fills them) */
+  /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5) */
   | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
+  /** a haunt arose on a known map (story 5.5) */
+  | { t: 'hauntSpawned'; id: string; map: string; variant: HauntVariant; lt: string }
+  /** an open haunt lapsed because more than `balance.haunt.maxOpen` were open (story 5.5) */
+  | { t: 'hauntExpired'; id: string }
   /** the grudge of a lieutenant changed (effect `grudge`); `grudge` = the new value */
   | { t: 'grudgeChanged'; lt: string; grudge: number }
   /** the backup reminder of an act was noted (story 7.3) */
