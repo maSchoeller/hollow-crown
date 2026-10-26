@@ -270,6 +270,7 @@ function grantReward(data: GameData, s: BattleState, u: BattleUnit, r: Reward | 
     events.push({ t: 'material', id, amount: n });
   }
   if (r.item) giveItem(data, s, u, newItem(s, r.item, data), events);
+  if (r.chronicle && !(s.stats.pages ?? []).includes(r.chronicle)) (s.stats.pages ??= []).push(r.chronicle);
   if (r.recruit) {
     const def = data.chars[r.recruit];
     if (def && u.pos) {

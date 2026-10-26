@@ -59,3 +59,6 @@
 
 # --- Item-Skills der Gefährten-Signaturen (items.md §6.2; Story 9.10) ---
 - { id: long_fingers, source: item, trigger: passive, effect: { stealEquipped: true } }   # Elster (Fenn): Stehlen nimmt auch, was der Gegner in der Hand hält
+
+# --- Relikt Schild der Paktwächter (Story 9.11): Schutz für Nachbarn, solange der Träger steht (Aura, Stufe 1) ---
+- { id: warden_ward, source: item, trigger: passive, aura: { radius: 1 }, effect: { stats: { def: 2 } } }   # Verbündete auf Nachbarfeldern des Trägers: +2 VER [C]

@@ -1,6 +1,6 @@
 import { advanceDay } from './day';
 import { CoreInvariantError } from '../errors';
-import type { GameData } from '../defs';
+import type { Effect, GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
@@ -204,9 +204,15 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       // the reward of the node itself (`effects` in campaign.yaml, e.g. the move to the castle) comes last, as one list;
       // the result carries it so the screens can name the consequences
       const reward = s.hauntId ? [] : (data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? []);
+      // chronicle pages found in chests of this battle go through the same effect, so `chronicleAdded` fires and the result names them
+      const pages: Effect[] = s.hauntId ? [] : (s.stats.pages ?? []).map((page) => ({ chronicle: page }));
+      if (pages.length) {
+        applyEffects(data, campaign, pages, effectEvents);
+        result.effects = pages;
+      }
       if (reward.length && validateEffects(data, campaign, reward) === null) {
         applyEffects(data, campaign, reward, effectEvents);
-        result.effects = reward;
+        result.effects = [...(result.effects ?? []), ...reward];
         for (const e of reward) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
       }
       // conditional node rewards (`effectsIf`): a group runs when its conditions hold after the battle, so flags set by the map's

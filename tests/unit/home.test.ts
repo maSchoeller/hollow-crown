@@ -213,7 +213,7 @@ describe('memorial stones (story 6.9)', () => {
 });
 
 describe('content:check of the home, the rooms and the memorial stones (story 6.9)', () => {
-  const places = new Set(['lager_unterwegs', 'paktwacht_ruine', 'varnhold']);
+  const places = new Set(['lager_unterwegs', 'paktwacht_ruine', 'varnhold', 'wachturm']);
   const check = (d: GameData, p: Set<string> | undefined = places) => validateContent(d, locales, undefined, undefined, p).map((i) => `${i.file}: ${i.message}`);
 
   it('accepts the shipped content', () => {

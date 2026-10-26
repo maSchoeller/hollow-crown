@@ -93,7 +93,7 @@ describe('chronicle pages as content', () => {
   });
 
   it('the loader takes pages from acts/actN/chronicle.yaml, with the act from the path and German texts', () => {
-    expect(loadContentFromDisk().data.chronicle).toEqual({}); // act 1 has no pages yet (Epic 9)
+    expect(Object.keys(loadContentFromDisk().data.chronicle)).toEqual(['a1_watchtower']); // the pages of act 1 arrive with its missions (Epic 9); N2 brings the first
     const built = buildContent({ ...readContentFiles(), 'content/acts/act2/chronicle.yaml': [{ id: 'p_x', title: 'Titel', text: 'Text' }] });
     expect(built.data.chronicle.p_x).toEqual({ id: 'p_x', act: 2, title: 'Titel', text: 'Text' });
     expect(built.locales.de?.['chronicle.p_x.text']).toBe('Text');

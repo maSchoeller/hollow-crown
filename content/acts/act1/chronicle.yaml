@@ -1,4 +1,7 @@
 # Chronik-Seiten der Paktwächter in Akt 1 (Story 4.7, Narrative „Found Documents“: 4 je Akt, 12 in Staffel 1).
 # Je Seite: id, title, text (Deutsch); Englisch in content/locales/en/act1.chronicle.yaml unter chronicle.<id>.title|text.
 # Gefunden wird eine Seite über die Wirkung { chronicle: <id> }. Die Seiten selbst kommen mit den Missionen von Akt 1 (Epic 9).
-[]
+# N2 „Der letzte Wachturm“ (Story 9.11): Akt-1-Schwerpunkt „dass die Könige jung starben und wie oft“, verfasst vom Wächter am Turm.
+- id: a1_watchtower
+  title: "Der Turm zählt"
+  text: "Paktnacht im Herbst. Der König stieg mit der Glutkrone zum Altar, aufrecht und lachend. Noch vor dem Winter war er tot, nicht viel älter als vierzig. Es ist der dritte König, den ich in diesem Turm begraben höre, und keiner ist alt geworden. Man nennt das Ehre. Ich nenne es zählen, und ich zähle weiter."

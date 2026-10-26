@@ -50,6 +50,7 @@ export function validateContent(
   const reward = (file: string, r: Reward | undefined, ctx: string) => {
     if (!r) return;
     item(file, r.item, ctx);
+    if (r.chronicle) page(file, r.chronicle, ctx);
     battleDialogue(file, r.dialogue, ctx);
     if (r.recruit && !data.chars[r.recruit]) err(file, `${ctx}: unknown recruit ${r.recruit}`);
     for (const m of Object.keys(r.material ?? {})) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
@@ -552,7 +553,10 @@ function validateMap(
     reward(f, o.contents, o.id);
   }
   for (const t of map.triggers) for (const a of t.then) if (a.action === 'dialogue') dialogue(f, a.id, t.id);
-  for (const s of map.objectives.side) reward(f, s.reward, s.id);
+  for (const s of map.objectives.side) {
+    reward(f, s.reward, s.id);
+    if (s.reward.chronicle) err(f, `${s.id}: a side objective cannot pay a chronicle page (chests and villages can)`);
+  }
   // reachability of reach/seize/escape goals for a foot unit from the deploy area (ignoring units)
   const v = map.objectives.victory;
   const goalArea: Area | undefined = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? v.area : undefined;
