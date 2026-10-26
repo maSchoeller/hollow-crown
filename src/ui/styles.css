@@ -155,59 +155,6 @@ input[type='text']:focus {
 .sheet {
   padding: 12px 14px;
 }
-.unit-card {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
-  align-items: center;
-}
-.unit-name {
-  font-family: var(--hc-font-name);
-  font-size: 24px;
-  line-height: 1;
-}
-.unit-sub {
-  font-size: 14px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.hpbar {
-  position: relative;
-  height: 6px;
-  background: var(--line);
-  overflow: hidden;
-}
-.hpbar > i {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--blue);
-  transition: width 0.25s;
-}
-.hpbar.enemy > i {
-  background: var(--red);
-}
-.hpbar.other > i {
-  background: var(--green);
-}
-.hpbar > b {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--ember);
-  opacity: 0.55;
-}
-.hp-num {
-  font: 700 16px 'Barlow Condensed', sans-serif;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.hp-num small {
-  color: var(--muted);
-  font-size: 16px;
-}
-
 .adv {
   color: var(--blue);
 }

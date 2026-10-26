@@ -45,7 +45,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Händler, Konvoi, Verzauberer, Akademie, Werkstatt | Raumstein | gleiche Listen-Muster wie Ausrüsten | `mockups/06-truppe.html` |
 | Steckbriefe | Leiste | alle Leutnants mit Groll, Ziel, Begegnungen | `mockups/02-kampf.html` (Einzelansicht) |
 | Chronik | Leiste | Entscheidungen, Folgen, Chronik-Seiten | – (spine-only) |
-| Aufstellung | Knoten-Karte | Einsatzplätze besetzen (nur wenn Truppe > Plätze) | – (spine-only, Bestand U20) |
+| Aufstellung | Knoten-Karte („Aufstellung“, von selbst bei Truppe > Plätze) | Einsatzplätze besetzen, Pflicht-Figuren gesperrt, Ausrüsten über die Tasche | `mockups/09-aufstellung.html` |
 | Kampf | Aufbrechen | Brett, HUD, Vorschau, Gegnerphase | `mockups/02-kampf.html` |
 | Szene | vor/nach Missionen, Trigger, Lagerfeuer | Dialog, Entscheidung, Folgen | `mockups/05-szenen.html` |
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene | `mockups/08-ergebnis-abschied.html` |
@@ -209,6 +209,6 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 
 - **Burg in 3D:** Der obere Teil der Heimat (Diorama, Raum-Anker, Ausbauteile) wird neu geprüft, sobald die 3D-Burg steht; Raumsteine, Panels und ≤ 2 Taps bleiben.
 - **Item-Bilder:** In den Mockups stehen Platzhalter; die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
-- **Chronik, Aufstellung, Optionen, Steckbrief-Liste:** spine-only; Mockups bei Bedarf in der Umsetzung.
+- **Chronik, Optionen, Steckbrief-Liste:** spine-only; Mockups bei Bedarf in der Umsetzung.
 - **Logo:** im Titel-Mockup nur angedeutet; Auswahl zwischen den Kandidaten aus Art Direction §5.5.
 - **Umsetzung:** `src/ui/styles.css` (U21) wird in Story 1.1 auf die Tokens aus `DESIGN.md` umgestellt.

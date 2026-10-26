@@ -5,19 +5,15 @@
  * In the castle the room stones also sit on the picture (the anchors) and show their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { armyOverLimit, availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
-import { Toast, unitName, UnitCard } from '../../ui/components';
-import { goalLine } from '../../ui/goalText';
+import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Piece, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
-import { beginMission } from '../state/flow';
-import { screen, type From } from '../state/screen';
+import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
-import { FigureFlow } from './Troop';
-import { UnitHead } from './unitArt';
 import { lockReason, Room, type Apply } from './Rooms';
 import '../../ui/camp.css';
 
@@ -146,83 +142,6 @@ export function Camp({ tab }: { tab?: string }) {
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
-    </div>
-  );
-}
-
-/** Preparation before a mission: choose units (forced ones fixed), check equipment, start. */
-export function Prep({ node, from }: { node: string; from: From }) {
-  const c = campaign.value!;
-  const nd = data.campaign.nodes.find((n) => n.id === node)!;
-  const map = data.maps[nd.map]!;
-  const forced = map.deploy.forced;
-  const [chosen, setChosen] = useState<string[]>(() => {
-    const list = [...forced.filter((id) => c.roster.some((r) => r.id === id))];
-    for (const r of c.roster) if (list.length < map.deploy.max && !list.includes(r.id)) list.push(r.id);
-    return list;
-  });
-  const [inv, setInv] = useState<string | null>(null);
-  const over = armyOverLimit(data, c);
-  const invUnit = inv ? c.roster.find((r) => r.id === inv) : null;
-  if (invUnit) return <FigureFlow unit={invUnit} units={c.roster.map((r) => r.id)} onSelect={setInv} onBack={() => setInv(null)} />;
-  return (
-    <div class="screen" style={{ gap: 10 }}>
-      <div class="screen-narrow col" style={{ gap: 10 }}>
-        <div class="row">
-          <button class="btn small ghost icon-only" onClick={() => (screen.value = { name: from })} aria-label={t('ui.back')}>
-            <Icon name="back" />
-          </button>
-          <h2 class="grow">{t('ui.prep.title')}</h2>
-        </div>
-        <div class="panel sheet">
-          <h3>{t(nd.titleKey)}</h3>
-          <div class="muted">{goalLine(map.objectives.victory)}</div>
-          <div class="muted">{t('ui.prep.count', { n: chosen.length, max: map.deploy.max })}</div>
-        </div>
-        <div class="list">
-          {c.roster.map((r) => {
-            const on = chosen.includes(r.id);
-            const locked = forced.includes(r.id);
-            return (
-              <div key={r.id} class="panel sheet" style={{ opacity: on ? 1 : 0.6 }}>
-                <UnitCard
-                  data={data}
-                  unit={r}
-                  art={<UnitHead portrait={r.portrait} classId={r.classId} name={unitName(r)} size={56} />}
-                  right={
-                    <div class="col" style={{ gap: 4 }}>
-                      <button
-                        class={`btn small ${on ? 'primary' : ''}`}
-                        disabled={locked || (!on && chosen.length >= map.deploy.max)}
-                        onClick={() => setChosen(on ? chosen.filter((x) => x !== r.id) : [...chosen, r.id])}
-                      >
-                        <Icon name={locked ? 'lock' : on ? 'check' : 'plus'} size={18} />
-                      </button>
-                      <button class="btn small ghost icon-only" onClick={() => setInv(r.id)} aria-label={t('ui.inventory')}>
-                        <Icon name="bag" size={18} />
-                      </button>
-                    </div>
-                  }
-                />
-              </div>
-            );
-          })}
-        </div>
-        {over && (
-          <div class="muted" role="alert" style={{ color: 'var(--hc-ember-dark)' }}>
-            {t('ui.army.over', { n: over.dismiss })}
-          </div>
-        )}
-        <button
-          class="btn primary"
-          disabled={!!over}
-          onClick={() => {
-            void beginMission(node, chosen, screen.value);
-          }}
-        >
-          {t('ui.prep.start')}
-        </button>
-      </div>
     </div>
   );
 }
