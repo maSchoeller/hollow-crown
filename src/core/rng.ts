@@ -19,6 +19,15 @@ export function seedRng(seed: number): RngState {
   return st;
 }
 
+/** Deterministic 32-bit hash of two integers (e.g. campaign seed and day number) to seed a separate stream with `seedRng`. */
+export function hash32(a: number, b: number): number {
+  let h = Math.imul((a ^ 0x9e3779b9) | 0, 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13) ^ (b | 0), 0xc2b2ae35);
+  h ^= h >>> 16;
+  h = Math.imul(h, 0x85ebca6b);
+  return (h ^ (h >>> 13)) >>> 0;
+}
+
 /** Advances the state in place and returns a float in [0, 1). */
 export function nextFloat(st: RngState): number {
   let [a, b, c, d] = st;

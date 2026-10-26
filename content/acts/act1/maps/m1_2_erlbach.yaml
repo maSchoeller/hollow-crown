@@ -67,7 +67,7 @@ haunts:
   # Grund: die Dorfstraße vor dem Haus des Ältesten – hier hat die Truppe Erlbach gehalten, hier kehrt Hasks Groll zurück.
   - variant: defend
     target: { at: [8, 6] }
-    enemySpawn: { rect: [7, 0, 8, 1] }
+    enemySpawn: { rect: [5, 0, 10, 1] }
     deploy: { rect: [5, 14, 9, 15] }
     turns: 8
   # Grund: die Brücke über den Bach – Hinterhalt an der Engstelle auf dem Rückweg.
@@ -78,7 +78,7 @@ haunts:
   # Grund: der Waldweg im Norden, auf dem die Marodeure kamen.
   - variant: boss
     target: { at: [8, 1] }
-    enemySpawn: { rect: [9, 2, 11, 2] }
+    enemySpawn: { rect: [9, 2, 12, 3] }
     deploy: { rect: [5, 14, 9, 15] }
 # Marodeure: Axt/Lanze/Schwert/Bogen gemischt. Hask kommt über die Straße.
 # Epic 3: Hask flieht bei 0 TP (gone: fled), Groll, Kopfgeld, Signaturwaffe Zunder (tinder). Seine Kartenwaffe ist Eisen (iron_axe), damit

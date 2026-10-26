@@ -11,7 +11,8 @@ export type Screen =
   | { name: 'newGame' }
   | { name: 'worldmap' }
   | { name: 'dialogue'; id: string; next: () => void }
-  | { name: 'prep'; node: string; from?: From }
+  /** `haunt`: the preparation of a haunt (story 5.6); `node` is the story node of its map */
+  | { name: 'prep'; node: string; from?: From; haunt?: string }
   | { name: 'loading' }
   | { name: 'battle' }
   | { name: 'result'; result: BattleResult }
