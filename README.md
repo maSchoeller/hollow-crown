@@ -58,9 +58,9 @@ Eine kleine Söldnertruppe aus Außenseitern gerät in einen Krieg, der nicht ih
     <td width="33%"><img src="docs/readme/loc_salzpass.jpg" alt="Der Salzpass"><br><sub>Salzpass</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/readme/loc_lager_unterwegs.jpg" alt="Nachtlager der Truppe"><br><sub>Lager unterwegs</sub></td>
-    <td><img src="docs/readme/loc_paktnacht_glutdom.jpg" alt="Der Glutdom in der Paktnacht"><br><sub>Glutdom</sub></td>
-    <td><img src="docs/readme/loc_urtempel_drachenhort.jpg" alt="Der Drachenhort im Urtempel"><br><sub>Urtempel, Drachenhort</sub></td>
+    <td><img src="docs/readme/loc_lager_unterwegs.jpg" alt="Nachtlager der Truppe"><br><sub>Lager unterwegs (Heimat in Akt 1)</sub></td>
+    <td><img src="docs/readme/loc_paktnacht_glutdom.jpg" alt="Der Glutdom, Pakttempel in Aurenhall, in der Paktnacht"><br><sub>Glutdom in Aurenhall</sub></td>
+    <td><img src="docs/readme/loc_urtempel_drachenhort.jpg" alt="Urtempel und Vhaelyras Hort im Drachengebirge"><br><sub>Urtempel und Vhaelyras Hort</sub></td>
   </tr>
 </table>
 
