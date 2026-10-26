@@ -425,8 +425,61 @@ export interface MapDef {
   objectives: { victory: ObjectiveDef; defeat: DefeatDef[]; side: SideObjectiveDef[] };
   triggers: TriggerDef[];
   goldReward: number;
+  /** haunt anchors (story 5.5, architecture §5.6): at most one per variant; maps without any are never haunted */
+  haunts?: HauntAnchor[];
   music?: string;
   devNote?: string;
+}
+
+/** The kinds of haunt (story 5.5): a repeat task on a known map against a lieutenant. */
+export const HAUNT_VARIANTS = ['boss', 'rout', 'defend', 'escort', 'treasure'] as const;
+export type HauntVariant = (typeof HAUNT_VARIANTS)[number];
+
+/**
+ * Where and how a map can be haunted (story 5.5, `haunts:` in the map file). `target.at` = tile of the lieutenant (boss, rout,
+ * treasure), of the civilian (defend) or the civilian's start (escort). `deploy` and `enemySpawn` are areas; `max` = places
+ * (default `deploy.max` of the map). `turns` is required for defend and treasure and optional for escort, `exit` and `chests`
+ * belong to escort and treasure only.
+ */
+export interface HauntAnchor {
+  variant: HauntVariant;
+  target: { at: Pos };
+  enemySpawn: Area;
+  deploy: Area;
+  max?: number;
+  turns?: number;
+  exit?: Area;
+  chests?: Pos[];
+}
+
+/** One enemy type of a faction in a haunt pool (`acts/actN/haunts.yaml`): `share` is its part in percent, the shares of a faction add up to 100. */
+export interface HauntEnemyType {
+  class: string;
+  sprite: string;
+  nameKey: string;
+  /** equipment tier of the act: the items the enemy carries */
+  items: ItemRef[];
+  share: number;
+}
+
+/** A treasure chest's content in a haunt: gold or an item (each chest takes one entry). */
+export interface HauntChestLoot {
+  gold?: number;
+  item?: ItemRef;
+}
+
+/**
+ * The enemies of the haunts of an act (story 5.5): a pool per faction of the act's lieutenants, the generic civilian for
+ * defend and escort and the content of the chests of treasure. Starting values [C].
+ */
+export interface HauntPoolsDef {
+  /** act of the file's folder (derived by the loader) */
+  act: number;
+  /** faction (`LieutenantDef.faction`) -> its enemy types */
+  factions: Record<string, HauntEnemyType[]>;
+  /** the person to defend or escort: a map unit of team `other` */
+  civilian: { class: string; sprite?: string; portrait?: string; nameKey: string };
+  chestLoot: HauntChestLoot[];
 }
 
 /**
@@ -759,6 +812,26 @@ export interface Balance {
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
   day: { resetHour: number; catchUp: number };
+  /** haunts (story 5.5): how many appear, how many stay open, how many foes; the reward values are for story 5.6 */
+  haunt: {
+    /** haunts per day packet */
+    perDay: { min: number; max: number };
+    /** more than this open: the oldest one lapses */
+    maxOpen: number;
+    /** foes = places + this, the lieutenant included (easy -1, hard +1 as on story maps) */
+    extraEnemies: number;
+    /** reward in percent of the story map: gold, experience */
+    goldPct: number;
+    expPct: number;
+    /** experience in percent when the company is above the map's expected level */
+    catchUpExpPct: number;
+    /** from the n-th haunt cleared since the last story mission the reward is halved */
+    halveFromNth: number;
+    /** material of the act (`lieutenant.bounty.materialByAct`) per cleared haunt, an amount from min to max */
+    material: { min: number; max: number };
+    /** the enemies of a haunt wait (profile `trigger`) until the company comes this close, then attack; the lieutenant has his own radius (story maps use 3-5) */
+    triggerRadius: { enemy: number; lieutenant: number };
+  };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {
     /** auto mode: pause after a line is shown, plus `autoPerCharMs` per character */
@@ -1001,4 +1074,6 @@ export interface GameData {
   world: WorldDef;
   /** enemy lieutenants of the acts (`acts/actN/lieutenants.yaml`, story 3.1) */
   lieutenants: Record<string, LieutenantDef>;
+  /** enemy pools of the haunts by act (`acts/actN/haunts.yaml`, story 5.5) */
+  hauntPools: Record<number, HauntPoolsDef>;
 }

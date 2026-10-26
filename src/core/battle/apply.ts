@@ -8,7 +8,8 @@ import { canEquip, itemDef, weaponProfile } from '../rules/items';
 import { resolveCast } from '../rules/cast';
 import { goesToConvoy } from '../rules/scout';
 import { destinations, pathTo, pursueReach, reachable, walkPath, type Walk } from '../rules/movement';
-import { grantExp } from '../rules/progression';
+import { expPercent, grantExp } from '../rules/progression';
+import { ensureHauntMap } from './hauntMap';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
 import { activeSkillIds, afterActionMove } from '../rules/skills';
@@ -138,6 +139,7 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
 
 /** Applies a validated command to a copy of the state and returns the new state and its events. */
 export function applyCommand(data: GameData, prev: BattleState, cmd: Command): ApplyResult {
+  ensureHauntMap(data, prev.mapId); // a haunt's map is made from its id when the state comes from a save or the worker (story 5.6)
   const err = validate(data, prev, cmd);
   if (err) throw new CoreInvariantError('invalid_command', { command: cmd.type, reason: err });
   const s = clone(prev);
@@ -307,7 +309,7 @@ function doRescue(data: GameData, s: BattleState, u: BattleUnit, t: BattleUnit, 
   t.gone = 'rescued';
   t.downed = false;
   events.push({ t: 'rescued', unit: t.uid, by: u.uid });
-  grantExp(data, u, b.experience.rescueOrTalk, s.rng, events);
+  grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u));
   const gained = addSupportPoints(data, s.supports, pairKey(u.id, t.id), b.supports.pointsTandemHealRescue);
   if (gained) events.push({ t: 'support', a: u.uid, b: t.uid, points: gained });
 }
@@ -369,7 +371,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
         for (const x of target.status) events.push({ t: 'status', unit: target.uid, status: x.id, on: false });
         target.status = [];
       }
-      if (u.team === 'player') grantExp(data, u, b.experience.heal, s.rng, events);
+      if (u.team === 'player') grantExp(data, u, b.experience.heal, s.rng, events, expPercent(data, s, u));
       const gained = addSupportPoints(data, s.supports, pairKey(u.id, target.id), b.supports.pointsTandemHealRescue);
       if (gained) events.push({ t: 'support', a: u.uid, b: target.uid, points: gained });
       break;
@@ -461,7 +463,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       t.dropUids = [];
       s.stats.recruited.push(t.id);
       events.push({ t: 'recruited', unit: t.uid, by: u.uid });
-      grantExp(data, u, b.experience.rescueOrTalk, s.rng, events);
+      grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u));
       runTriggers(data, s, { kind: 'action', unit: u }, events);
       break;
     }

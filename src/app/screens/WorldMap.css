@@ -194,6 +194,51 @@
   outline-offset: 5px;
 }
 
+/* haunts (story 5.6): a red stone with the lieutenant's face beside the story stone of its map, with the NEU mark while unseen */
+.wm-node--haunt {
+  margin-left: 40px;
+}
+.wm-node--haunt .wm-node__head {
+  overflow: hidden;
+  background: var(--hc-team-enemy);
+  border-color: var(--hc-line);
+}
+.wm-node--haunt .wm-node__tail {
+  border-top-color: var(--hc-line);
+}
+.wm-node__new {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+  padding: 0 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-team-enemy);
+  font-family: var(--hc-font-label);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+}
+.wm-card--haunt .wm-card__kicker {
+  color: var(--hc-team-enemy);
+}
+.wm-haunt-lt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wm-haunt-lt span {
+  display: grid;
+  line-height: 1.2;
+}
+.wm-haunt-lt small {
+  color: var(--hc-soft);
+  font-size: 12px;
+}
+
 /* HUD */
 .wm__hud {
   position: absolute;
