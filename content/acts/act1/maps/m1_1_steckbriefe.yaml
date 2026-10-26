@@ -47,10 +47,28 @@ objects:
   - { id: v_w,  type: village, at: [1, 6],  reward: { gold: 200, dialogue: scn.m1_1.house_w } }
   - { id: v_e,  type: village, at: [12, 6], reward: { item: { def: remedy_salve }, dialogue: scn.m1_1.house_e } }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
-#   [7,6] Grund: der Brunnen auf dem Marktplatz – hier hängen die Steckbriefe, hier trifft man Leute aus allen Gassen.
-#   [6,1] Grund: die Nordgasse – von hier kamen die Kopfgeldjäger, später kommt wieder jemand.
-#   [6,13] Grund: die Südstraße, auf der die Truppe in die Stadt kam – ein Hinterhalt auf dem Rückweg.
+# Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
+haunts:
+  # Grund: der Brunnen auf dem Marktplatz – hier hängen die Steckbriefe, hier trifft man Leute aus allen Gassen. (Der Brunnen [7,6] ist
+  # ein Hindernis; der Zivilist steht im Südteil des Marktes auf [7,10], die Truppe bei ihm.) Die Angreifer kommen aus der Nordgasse.
+  - variant: defend
+    target: { at: [7, 10] }
+    enemySpawn: { rect: [5, 0, 8, 1] }
+    deploy: { rect: [4, 12, 9, 12] }
+    turns: 6
+  # Grund: die Nordgasse – von hier kamen die Kopfgeldjäger, später kommt wieder jemand. Der Leutnant wartet in der Gasse, die Truppe
+  # kommt von der Südstraße.
+  - variant: boss
+    target: { at: [6, 1] }
+    enemySpawn: { rect: [3, 2, 10, 3] }
+    deploy: { rect: [5, 13, 8, 14] }
+  # Grund: die Südstraße, auf der die Truppe in die Stadt kam – ein Hinterhalt auf dem Rückweg. Ein Zivilist hängt auf der Südstraße fest
+  # und soll durch die Nordgasse aus der Stadt gebracht werden; die Jäger fallen aus der Westgasse ein.
+  - variant: escort
+    target: { at: [6, 12] }
+    enemySpawn: { rect: [0, 3, 2, 5] }
+    deploy: { rect: [4, 14, 9, 14] }
+    exit: { rect: [5, 0, 8, 0] }
 deploy:
   max: 4
   forced: [avatar, kael]

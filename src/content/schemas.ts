@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/defs';
-import { PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
+import { HAUNT_VARIANTS, PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -322,6 +322,30 @@ const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
 ]);
 
+/**
+ * A haunt anchor of a map (story 5.5, `haunts:`): which fields each variant needs is checked here, whether they lie on the
+ * map and can be reached by `content:check`.
+ */
+export const hauntAnchorSchema = z
+  .strictObject({
+    variant: z.enum(HAUNT_VARIANTS),
+    target: z.strictObject({ at: pos }),
+    enemySpawn: area,
+    deploy: area,
+    max: z.number().int().min(1).optional(),
+    turns: z.number().int().min(1).optional(),
+    exit: area.optional(),
+    chests: z.array(pos).min(1).optional(),
+  })
+  .superRefine((a, ctx) => {
+    const need = (ok: boolean, key: string, message: string) => ok || ctx.addIssue({ code: 'custom', path: [key], message });
+    const timed = a.variant === 'defend' || a.variant === 'treasure';
+    need(!timed || a.turns !== undefined, 'turns', `${a.variant} needs turns`);
+    need(timed || a.variant === 'escort' || a.turns === undefined, 'turns', `${a.variant} has no turn limit`);
+    need(a.variant === 'escort' ? a.exit !== undefined : a.exit === undefined, 'exit', 'exit belongs to escort only, and escort needs it');
+    need(a.variant === 'treasure' ? a.chests !== undefined : a.chests === undefined, 'chests', 'chests belong to treasure only, and treasure needs them');
+  });
+
 export const mapSchema = z.object({
   id: z.string(),
   nameKey: z.string(),
@@ -384,6 +408,7 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
+  haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
 });
@@ -521,6 +546,28 @@ export const lieutenantSchema = z.strictObject({
   titleKey: z.string().min(1),
   scene: z.string().min(1),
   joins: z.boolean().optional(),
+});
+
+/** The enemy pools of the haunts of an act (`acts/actN/haunts.yaml`, story 5.5); the act comes from the folder. */
+export const hauntPoolsSchema = z.strictObject({
+  factions: z.record(
+    z.string().regex(/^[a-z0-9_]+$/),
+    z
+      .array(
+        z.strictObject({
+          class: z.string().min(1),
+          sprite: z.string().min(1),
+          nameKey: z.string().min(1),
+          items: z.array(itemRefSchema),
+          share: z.number().int().min(1).max(100),
+        }),
+      )
+      .min(1),
+  ),
+  civilian: z.strictObject({ class: z.string().min(1), sprite: z.string().min(1).optional(), portrait: z.string().min(1).optional(), nameKey: z.string().min(1) }),
+  chestLoot: z
+    .array(z.strictObject({ gold: z.number().int().min(1).optional(), item: itemRefSchema.optional() }).refine((l) => (l.gold === undefined) !== (l.item === undefined), 'exactly one of gold or item'))
+    .min(1),
 });
 
 /** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
@@ -716,6 +763,17 @@ export const balanceSchema = z.object({
   skills: z.record(z.string(), z.number()),
   death: z.record(z.string(), z.number()),
   day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
+  haunt: z.strictObject({
+    perDay: z.strictObject({ min: z.number().int().min(1), max: z.number().int().min(1) }).refine((p) => p.min <= p.max, 'perDay: min above max'),
+    maxOpen: z.number().int().min(1),
+    extraEnemies: z.number().int().min(0),
+    goldPct: z.number().min(0),
+    expPct: z.number().min(0),
+    catchUpExpPct: z.number().min(0),
+    halveFromNth: z.number().int().min(1),
+    material: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'material: min above max'),
+    triggerRadius: z.strictObject({ enemy: z.number().int().min(1), lieutenant: z.number().int().min(1) }),
+  }),
   scene: z.strictObject({
     autoBaseMs: z.number().int().min(0),
     autoPerCharMs: z.number().int().min(0),

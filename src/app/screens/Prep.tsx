@@ -4,7 +4,7 @@
  * come first and stay; the others switch with a tap. Nothing moves when a card switches (fixed order, fixed height).
  */
 import { useState } from 'preact/hooks';
-import { armyOverLimit, computeStats, type UnitRecord } from '../../core';
+import { armyOverLimit, computeStats, hauntMap, type UnitRecord } from '../../core';
 import { t } from '../../i18n';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { goalLine } from '../../ui/goalText';
@@ -13,7 +13,7 @@ import { Backdrop, ItemChip, Piece, PrimaryButton, ScreenHead } from '../../ui/p
 import { nodeShort } from '../campaignInfo';
 import { deployOrder, toggleDeploy } from '../prepDeploy';
 import { audio } from '../audio';
-import { beginMission, defaultDeploy } from '../state/flow';
+import { beginHaunt, beginMission, defaultDeploy, defaultHauntDeploy } from '../state/flow';
 import { screen, type From } from '../state/screen';
 import { campaign, data } from '../state/session';
 import { FigureFlow } from './Troop';
@@ -72,13 +72,15 @@ function UnitRow({ unit, on, locked, full, onToggle, onBag }: { unit: UnitRecord
 }
 
 /** Preparation before a mission: choose units (required ones fixed), check equipment, start. */
-export function Prep({ node, from }: { node: string; from: From }) {
+export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: string }) {
   const c = campaign.value!;
   const nd = data.campaign.nodes.find((n) => n.id === node)!;
-  const map = data.maps[nd.map]!;
+  // a haunt (story 5.6) prepares on its own map: the deploy fields and places of its anchor
+  const h = haunt ? c.haunts.find((x) => x.id === haunt) : undefined;
+  const map = h ? hauntMap(data, h.map, h.variant, h.lt) : data.maps[nd.map]!;
   const forced = map.deploy.forced;
   const max = map.deploy.max;
-  const [chosen, setChosen] = useState<string[]>(() => defaultDeploy(node));
+  const [chosen, setChosen] = useState<string[]>(() => (h ? defaultHauntDeploy(h.id) : defaultDeploy(node)));
   const [inv, setInv] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const over = armyOverLimit(data, c);
@@ -99,7 +101,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
         <ScreenHead title={t('ui.prep.title')} onBack={() => (screen.value = { name: from })} />
       </div>
       <Piece class="prp-info">
-        <div class="prp-info__kicker">{t('ui.map.kicker', { node: nodeShort(node) })}</div>
+        <div class="prp-info__kicker">{t(h ? 'ui.map.haunt.kicker' : 'ui.map.kicker', { node: nodeShort(node) })}</div>
         <h2 class="prp-info__title">{t(`map.${nd.map}.name`)}</h2>
         <p class="prp-info__goal">{goalLine(map.objectives.victory)}</p>
         <div class="prp-info__tags">
@@ -107,7 +109,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
             <Icon name="company" size={15} />
             {t('ui.prep.places', { n: chosen.length, max })}
           </span>
-          <span class="prp-tag">{t('ui.map.level', { n: nd.expectedLevel })}</span>
+          <span class="prp-tag">{t('ui.map.level', { n: h ? h.level : nd.expectedLevel })}</span>
         </div>
       </Piece>
       <div class="prp-list">
@@ -123,7 +125,7 @@ export function Prep({ node, from }: { node: string; from: From }) {
         <PrimaryButton
           disabled={!!over}
           onClick={() => {
-            void beginMission(node, chosen, screen.value);
+            void (h ? beginHaunt(h.id, chosen, screen.value) : beginMission(node, chosen, screen.value));
           }}
         >
           {t('ui.prep.start')}

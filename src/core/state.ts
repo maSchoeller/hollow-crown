@@ -5,6 +5,7 @@ import type {
   Element,
   EquipSlot,
   FlagValue,
+  HauntVariant,
   HomeKind,
   ItemRef,
   MapDef,
@@ -144,7 +145,12 @@ export interface BattleSettings {
 
 export interface BattleState {
   mapId: string;
+  /** the campaign node; of a haunt the story node of its map (story 5.6) */
   nodeId: string;
+  /** set when the battle is a haunt (story 5.6): its id in `c.haunts` */
+  hauntId?: string;
+  /** haunt only: the expected army level of the next story mission; units above it earn a part of the haunt EP (`haunt.catchUpExpPct`) */
+  hauntLevel?: number;
   turn: number;
   phase: Team;
   rng: RngState;
@@ -276,14 +282,51 @@ export interface CampaignState {
   /** mercenaries the tavern offers for the current chapter (finished company records, id `merc<n>`) */
   tavern: UnitRecord[];
   /**
-   * the day change (story 5.4, architecture §5.6): `last` = the newest day number the app sent (null before the first),
-   * `pending` = day packets not yet turned into haunts (the generator of story 5.5 takes them)
+   * the day change (story 5.4, architecture §5.6): `last` = the newest day number the app sent (null until the first
+   * lieutenant is met, so the first meeting brings a packet at once); `pending` is unused since story 5.5 turns the packets
+   * into haunts directly (kept for saves)
    */
   day: { last: number | null; pending: number[] };
+  /** open haunts, oldest first (story 5.5); more than `balance.haunt.maxOpen` and the oldest lapses */
+  haunts: HauntState[];
+  /** map id -> variant of the haunt played there last (story 5.6 writes it; the generator avoids it) */
+  hauntLast: Record<string, string>;
+  /** haunts cleared since the last story mission (story 5.6: the reward halves from `balance.haunt.halveFromNth`) */
+  hauntsSinceStory: number;
   /** acts whose backup reminder was shown after the finale (story 7.3, AR21): it comes once per act */
   backupReminded: number[];
   /** lieutenants the company has met (AR5; Epic 3 adds grudge, target, routs …); absent until the first meeting */
   lieutenants?: Record<string, LieutenantState>;
+}
+
+/**
+ * An enemy of a haunt, made when the haunt arises and kept so that playing and replaying agree (story 5.5). The lieutenant's
+ * entry holds only `lieutenant` and `at`: he is built at play time (level with grudge, kit of his class) like in `createBattle`.
+ */
+export interface HauntEnemy {
+  at: Pos;
+  /** set on the lieutenant of the haunt; then the fields below are absent */
+  lieutenant?: string;
+  class?: string;
+  sprite?: string;
+  nameKey?: string;
+  level?: number;
+  items?: ItemRef[];
+}
+
+/** An open haunt on a known map (story 5.5, architecture §5.6). `new` = the player has not looked at it yet. */
+export interface HauntState {
+  id: string;
+  /** day number of the packet that made it */
+  day: number;
+  map: string;
+  variant: HauntVariant;
+  /** the lieutenant it is against */
+  lt: string;
+  /** expected army level when it arose */
+  level: number;
+  enemies: HauntEnemy[];
+  new: boolean;
 }
 
 /** What the campaign knows about one lieutenant (story 3.3, architecture §5.5). */
