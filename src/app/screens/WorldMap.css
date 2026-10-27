@@ -159,7 +159,7 @@
   background: var(--hc-ember);
   color: #fff;
 }
-/* side quests: a diamond in gold instead of the ember circle */
+/* side quests: a green diamond with "!" instead of the ember circle (DESIGN.md map-node) */
 .wm-node--side .wm-node__head {
   width: 34px;
   height: 34px;
@@ -169,8 +169,8 @@
   font-size: 14px;
 }
 .wm-node--side:not(.wm-node--done) .wm-node__head {
-  background: var(--hc-gold);
-  color: var(--hc-line);
+  background: var(--hc-team-other);
+  color: #fff;
 }
 .wm-node--side .wm-node__head b {
   display: block;

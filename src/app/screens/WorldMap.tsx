@@ -363,7 +363,7 @@ export function WorldMap() {
                 onClick={(e) => (e.stopPropagation(), choose(n.id))}
               >
                 <span class="wm-node__head">
-                  <b>{p.label}</b>
+                  <b>{n.kind === 'side' && !done ? '!' : p.label}</b>
                 </span>
                 <i class="wm-node__tail" />
                 {!done && <span class="wm-node__label">{t(`map.${n.map}.name`)}</span>}
@@ -488,7 +488,7 @@ function NodeCard({ id }: { id: string }) {
   if (pack || !map) {
     return (
       <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
-        <div class="wm-card__kicker">{t('ui.map.kicker', { node: nodeShort(id) })}</div>
+        <div class="wm-card__kicker">{t(n.kind === 'side' ? 'ui.map.side.kicker' : 'ui.map.kicker', { node: nodeShort(id) })}</div>
         <h2 class="wm-card__title">{t(`map.${n.map}.name`)}</h2>
         <PackWait pack={pack ?? ''} />
       </Piece>
@@ -500,7 +500,7 @@ function NodeCard({ id }: { id: string }) {
   const over = armyOverLimit(data, c);
   return (
     <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
-      <div class="wm-card__kicker">{t('ui.map.kicker', { node: nodeShort(id) })}</div>
+      <div class="wm-card__kicker">{t(n.kind === 'side' ? 'ui.map.side.kicker' : 'ui.map.kicker', { node: nodeShort(id) })}</div>
       <h2 class="wm-card__title">{t(`map.${n.map}.name`)}</h2>
       <div class="wm-card__tags">
         <span class="wm-tag">
