@@ -63,10 +63,10 @@ haunts:
     enemySpawn: { rect: [3, 2, 10, 3] }
     deploy: { rect: [5, 13, 8, 14] }
   # Grund: die Südstraße, auf der die Truppe in die Stadt kam – ein Hinterhalt auf dem Rückweg. Ein Zivilist hängt auf der Südstraße fest
-  # und soll durch die Nordgasse aus der Stadt gebracht werden; die Jäger fallen aus der Westgasse ein.
+  # und soll durch die Nordgasse aus der Stadt gebracht werden; die Jäger fallen aus der Westgasse ein (Einsatzfeld [0,7,3,10] am Südwestrand des Marktes; die Simulation vom 2026-10-27 hielt den Anker so im Siegkorridor, weiter nördlich traf der Hinterhalt die Truppe zu früh und zu hart).
   - variant: escort
     target: { at: [6, 12] }
-    enemySpawn: { rect: [0, 3, 2, 5] }
+    enemySpawn: { rect: [0, 7, 3, 10] }
     deploy: { rect: [4, 14, 9, 14] }
     exit: { rect: [5, 0, 8, 0] }
 deploy:

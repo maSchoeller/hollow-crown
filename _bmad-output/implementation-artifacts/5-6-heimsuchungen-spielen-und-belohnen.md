@@ -53,14 +53,14 @@ Claude Sonnet 5.5
 
 | Anker | Läufe | Sieg | Korridor | ø Niedergestreckte | Korridor | Leutnant flieht |
 |---|---|---|---|---|---|---|
-| prologue_paktnacht:rout | 49 | 84 % | drin | 0,18 | darunter | 49 |
-| prologue_paktnacht:boss | 49 | 86 % | drin | 0,20 | darunter | 42 |
+| prologue_paktnacht:rout | 49 | 76 % | drin | 0,33 | darunter | 49 |
+| prologue_paktnacht:boss | 49 | 86 % | drin | 0,22 | darunter | 42 |
 | prologue_paktnacht:defend | 49 | 100 % | drin | 0,00 | darunter | 0 |
-| m1_1_steckbriefe:defend | 44 | 80 % | drin | 0,45 | drin | 43 |
-| m1_1_steckbriefe:boss | 44 | 98 % | drin | 0,16 | darunter | 43 |
-| m1_1_steckbriefe:escort | 44 | 77 % | drin | 0,20 | darunter | 35 |
+| m1_1_steckbriefe:defend | 44 | 89 % | drin | 0,41 | drin | 42 |
+| m1_1_steckbriefe:boss | 44 | 77 % | drin | 0,34 | darunter | 34 |
+| m1_1_steckbriefe:escort | 44 | 89 % | drin | 0,18 | darunter | 42 |
 
-  Endstand nach Verschieben der Anker durch den Produktinhaber-Auftrag 2026-10-26 (nur `haunts:` der Karten Prolog und 1-1, kein Generator- oder Balance-Code): Prolog rout Einsatzfelder [3,12,8,12] (vorher [3,14,8,14]), Gegnerfeld [2,1,9,4]; 1-1 defend Zivilist [7,10], Einsatzfelder [4,12,9,12], Gegnerfeld [5,0,8,1], `turns` 6; 1-1 escort Zivilist [6,12], Einsatzfelder [4,14,9,14]. Zwischenstände: vorher rout 59 %, 1-1 defend 0 %, escort 55 %.   (Weniger als 50 Läufe: die verkettete Kampagne scheitert vorher in einzelnen Läufen, wie bei `pnpm sim <map>`.) Alle sechs Anker liegen im Normal-Korridor für den Sieg (75–100 %); knapp sind 1-1 escort (77 %) und defend (80 %), bei 44 Läufen schwanken sie um einige Punkte. `pnpm sim --campaign act1 --haunts` spielt je Story-Mission einen Tag und alle dann offenen Heimsuchungen (10 Läufe: ø 3,1 Heimsuchungen je Lauf, 52 % gewonnen, ø 528 Gold je Lauf).
+  Endstand nach Verschieben der Anker durch den Produktinhaber-Auftrag 2026-10-26 (nur `haunts:` der Karten Prolog und 1-1, kein Generator- oder Balance-Code): Prolog rout Einsatzfelder [3,12,8,12] (vorher [3,14,8,14]), Gegnerfeld [2,1,9,4]; 1-1 defend Zivilist [7,10], Einsatzfelder [4,12,9,12], Gegnerfeld [5,0,8,1], `turns` 6; 1-1 escort Zivilist [6,12], Einsatzfelder [4,14,9,14], Gegnerfeld [0,7,3,10] (vorher [0,3,2,5]; Stand 2026-10-27 mit Klasse civilian/villager_elder und dem Merge von Story 9.3/8.6: das alte Feld gab 70 %, daher nach Südwesten verschoben). Zwischenstände: vorher rout 59 %, 1-1 defend 0 %, escort 55 %.   (Weniger als 50 Läufe: die verkettete Kampagne scheitert vorher in einzelnen Läufen, wie bei `pnpm sim <map>`.) Alle sechs Anker liegen im Normal-Korridor für den Sieg (75–100 %); knapp sind 1-1 escort (77 %) und defend (80 %), bei 44 Läufen schwanken sie um einige Punkte. `pnpm sim --campaign act1 --haunts` spielt je Story-Mission einen Tag und alle dann offenen Heimsuchungen (10 Läufe: ø 3,1 Heimsuchungen je Lauf, 52 % gewonnen, ø 528 Gold je Lauf).
 
 ### Completion Notes List
 
