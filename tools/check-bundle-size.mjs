@@ -12,6 +12,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { parse } from 'yaml';
 import { reportFigures } from './figure-budget.mjs';
 import { firstMissionFigures, isFirstMissionFile } from './build/first-mission.mjs';
 
@@ -19,8 +20,8 @@ const dist = join(process.cwd(), 'dist');
 // packs.json is written by the packs plugin (tools/build/packs-plugin.ts); core's budget comes from content/packs.yaml
 const manifest = JSON.parse(readFileSync(join(dist, 'packs.json'), 'utf8'));
 const BUDGET = (manifest.packs.find((p) => p.id === 'core')?.budgetMb ?? 30) * 1024 * 1024;
-// informational: the expected size of the first download (precache incl. the first mission); a warning when exceeded
-const TARGET = 11 * 1024 * 1024;
+// informational: the expected size of the first download (precache incl. the first mission); a warning when exceeded (`firstDownloadTargetMb` of content/packs.yaml)
+const TARGET = (parse(readFileSync(join(process.cwd(), 'content', 'packs.yaml'), 'utf8')).firstDownloadTargetMb ?? 11) * 1024 * 1024;
 
 // the opening mission's figures (tools/build/first-mission.mjs, also the source of the precache additions)
 const prologue = firstMissionFigures();
@@ -45,8 +46,8 @@ const firstMission = (p) => isFirstMissionFile(p, prologue);
 
 const transfer = (p) => {
   const buf = readFileSync(join(dist, p));
-  // already compressed formats count as-is
-  return /\.(png|webp|jpg|mp3|webm|m4a|woff2?)$/.test(p) ? buf.length : gzipSync(buf).length;
+  // already compressed formats count as-is (.vat: a gzip stream, tools/art/bake_vat.py)
+  return /\.(png|webp|jpg|mp3|webm|m4a|woff2?|vat)$/.test(p) ? buf.length : gzipSync(buf).length;
 };
 
 const groupOf = (p) => {

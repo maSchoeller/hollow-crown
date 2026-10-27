@@ -3,6 +3,10 @@
  * CPU throttling level of profile.ts in `PERF_RUNS` runs (default 3, each on a freshly loaded page; the report takes the
  * median) and the cold start (NFR2). Writes test-results/perf/<device>.json; the config's teardown (report-summary.ts)
  * joins them into report.md. Exceedances are reported, not failed, unless PERF_STRICT=1 (release check, story 9.14).
+ * Every frame over 100 ms in any run is an exceedance (story 7.8; GPU only), and the bench traces frames over 50 ms with their cause.
+ * `PERF_WARM=0|1|2` sets how much of the shader warm-up runs at load (overrides `board.warm` of render.yaml; the default 2 is the shipped behaviour).
+ * `PERF_VATWORKER=0` keeps the baked animations' work on the main thread (compare with the workers).
+ * `PERF_VAT=0|1` overrides `board.vat`: 0 = every figure plays its skeleton (the path before the baked animation of story 7.8).
  * `PERF_STAGES=1,2,4` overrides the throttling levels (levels without a target are only reported).
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -15,7 +19,9 @@ import type { EnemyPhaseResult, PreparedBattle } from './bench';
 const OUT = join(process.cwd(), 'test-results', 'perf');
 const RUNS = Math.max(1, Number(process.env.PERF_RUNS) || 3);
 /** the bench battle: quality `mid` (what the budget is measured on); `PERF_LOOK=night,rain` gives it a time of day and weather (story 8.6) */
-const BENCH_OPTIONS = { quality: 'mid', figures: '3d', look: process.env.PERF_LOOK };
+const BENCH_OPTIONS = { quality: 'mid', figures: '3d', look: process.env.PERF_LOOK, warm: process.env.PERF_WARM === undefined ? undefined : Number(process.env.PERF_WARM),
+  vat: process.env.PERF_VAT === undefined ? undefined : process.env.PERF_VAT !== '0',
+  vatWorker: process.env.PERF_VATWORKER === undefined ? undefined : process.env.PERF_VATWORKER !== '0' };
 
 /** Throttling levels of the enemy phase: the profile's, or `PERF_STAGES` (a list of CPU slowdowns). */
 function stages(): Array<{ cpuSlowdown: number; fps: number | null }> {
@@ -48,7 +54,7 @@ async function threadTime(cdp: CDPSession): Promise<number> {
   return metrics.find((m) => m.name === 'ThreadTime')?.value ?? 0;
 }
 
-type Bench = { prepare(o: object): Promise<PreparedBattle>; enemyPhase(): Promise<EnemyPhaseResult> };
+type Bench = { prepare(o: object): Promise<PreparedBattle>; startEnemyPhase(): Promise<{ aiMs: number }>; enemyPhase(): Promise<EnemyPhaseResult> };
 
 /** One run: loads the bench page, the battle, and plays the enemy phase under `rate`× CPU throttling. */
 async function phaseRun(page: Page, cdp: CDPSession, rate: number): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number }> {
@@ -57,6 +63,8 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number): Promise<{ ru
   await page.waitForFunction(() => document.body.dataset.ready === '1');
   const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), BENCH_OPTIONS)) as PreparedBattle;
   expect(prepared.units).toBe(40);
+  // the AI's working-out is a stall of its own (NFR3), not a frame of the playback: it is timed apart and left out of the thread time
+  await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.startEnemyPhase());
   const cpu0 = await threadTime(cdp);
   const r = (await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.enemyPhase())) as EnemyPhaseResult;
   const cpu1 = await threadTime(cdp);
@@ -71,6 +79,18 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number): Promise<{ ru
     drawCallsMax: dc.length ? Math.max(...dc) : null,
     threadMsPerFrame: r.drawCalls.length ? Math.round(((cpu1 - cpu0) * 1000 * 10) / r.drawCalls.length) / 10 : null,
     newEffects: r.newEffects,
+    spikes: r.spikes,
+    aiMs: Math.round(r.aiMs),
+    loadMs: Math.round(prepared.loadMs),
+    vatModels: prepared.vat.models,
+    vatMs: prepared.vat.ms,
+    vatKb: prepared.vat.kb,
+    vatWorkerMs: prepared.vat.workerMs,
+    vatByWorker: prepared.vat.byWorker,
+    gcEvents: r.gcEvents,
+    gcFreedKb: r.gcFreedKb,
+    layoutMs: r.layoutMs,
+    newEffectInfo: r.newEffectInfo,
   };
   return { run, prepared, events: r.events };
 }

@@ -26,6 +26,7 @@ Nur noch für die Alternative der 2D-Darstellung (D4, nicht weiterentwickelt): `
 | `sprites/units/<id>/` | Figuren-Sheets (`sheet.key.png`, `sheet.normal.png`, `sheet.json`) | `tools/art/` + Blender |
 | `sprites/props/<id>/` | Requisiten (Bäume, Häuser, Festung, Truhe …), gleiches Format, nur Zeile `idle_s` bzw. Zustände | `tools/art/` + Blender |
 | `models/units/<id>.glb` | 3D-Figuren fürs 3D-Brett (D4): ein Mesh pro Gelenk, Animationen `idle`, `walk`, `attack`, `hit`, `downed` | `tools/art/export_models.py` + Blender |
+| `models/units/<id>.vat` | Gebackene Animation der Tripo-Figuren (Story 7.8): 60 Bilder/s, lokale Pose je Zeile (22 Gelenk-Quaternionen Half + Hips-Translation), gzip-Strom, Git LFS | `tools/art/bake_vat.py` (über `pnpm art:tripo`) |
 | `models/props/<id>_<zustand>.glb` | 3D-Requisiten (D5), ein statisches Mesh pro Zustand (`tree_a`, `house_razed`, `chest_open` …) | `tools/art/export_models.py` + Blender |
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
 | `mockups/locations-s1/<id>.png` | Orte und VN-Hintergründe von Akt 1 (16:9, 1672 × 941, Sicherheitszone mittleres Drittel, unteres Drittel ruhig); `pnpm art:build` baut `public/assets/locations/<id>.webp`, Szenen und `place` nennen die Ort-Id (Story 8.7) | ChatGPT |

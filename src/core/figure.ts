@@ -33,3 +33,8 @@ export function unitModelPath(id: string, unitPacks?: Readonly<Record<string, st
   const pack = unitPacks?.[id];
   return pack ? `${pack}/models/units/${id}.glb` : `models/units/${id}.glb`;
 }
+
+/** Path below `assets/` of the baked animation file of a unit model (story 7.8, tools/art/bake_vat.py): beside the model, in its pack. */
+export function unitVatPath(id: string, unitPacks?: Readonly<Record<string, string>>): string {
+  return unitModelPath(id, unitPacks).replace(/\.glb$/, '.vat');
+}

@@ -28,6 +28,9 @@ board:
   fpsActive: 60                           # D8: Bildrate, solange sich etwas bewegt (auch auf 120-Hz-Displays)
   fpsIdle: 30                             # Bildrate in Ruhe (nur Idle-Animationen, Wasser, Feuer): spart Akku
   idleHz: 10                              # Story 7.7: Skelett-Rate der Figuren, die nichts tun (Idle, gefallen); wer geht, kämpft oder getroffen wird, läuft mit voller Bildrate
+  vat: true                               # Story 7.8: Figuren mit .vat-Datei (Bild-zu-3D) laufen als gebackene Vertex-Animation statt als Skelett; false = Skelettpfad (Messvergleich)
+  warm: 2                                 # Story 7.8: wie viel beim Laden vorgewärmt wird: 0 = nur Vorkompilieren, 1 = + Blitz-/Verblass-Varianten und Requisiten-Zwillinge, 2 = + Aufwärm-Zeichnen
+  tintPool: 24                            # Story 7.8: so viele Blitz-/Verblassen-Materialien je (Textur, Fall) bleiben für die nächsten Treffer erhalten, statt je Treffer neu erzeugt zu werden
   precompileMs: 8000                      # Story 7.7: so lange wartet das Brett beim Laden höchstens auf das Vorkompilieren der Shader
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
   # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten

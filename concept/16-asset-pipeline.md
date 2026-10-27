@@ -179,6 +179,10 @@ Der **Treffer-Frame** der Angriffsanimation wird im Manifest markiert. Der Rende
 - **Bloom:** Babylon `DefaultRenderingPipeline` nur auf Stufe Hoch, Schwelle hoch, nur Feuer/Magie überschreiten sie.
 - Render-on-demand bleibt (`10` §5). Animationen (Idle, Wasser, Feuer) laufen mit **10–12 fps Takt**, nicht 60 fps, damit der Akku geschont wird.
 
+### 7.1 Gebackene Vertex-Animation (Story 7.8)
+
+Tripo-Brettfiguren (22 Gelenke) bekommen beim Bau (`pnpm art:tripo`, `tools/art/bake_vat.py`) neben der GLB eine `<id>.vat`: alle Clips mit 60 Bildern/s, lokale Pose je Zeile, gzip-komprimiert. Zur Laufzeit erzeugt ein Web Worker per Vorwärtskinematik die Matrix-Textur für Babylons `BakedVertexAnimationManager`; Waffen-Sockets kommen aus derselben Rechnung. Die `.vat` zählt zum Figurenbudget (≤ 0,5 MB Transfer mit Modell, `tools/figure-budget.mjs`) und liegt im selben Paket wie die GLB. Blender-Figuren bleiben auf dem Skelettpfad.
+
 ## 8. Qualitätsstufen
 
 Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optionen änderbar.

@@ -97,8 +97,22 @@ class TeamRings {
       const hidden = s.alpha <= 0;
       // translation matrix, or a zero scale that draws nothing
       const k = hidden ? 0 : 1;
-      this.matrices.set([k, 0, 0, 0, 0, k, 0, 0, 0, 0, k, 0, s.x, s.y, s.z, 1], i * 16);
-      this.colours.set([1, 1, 1, s.alpha], i * 4);
+      // written by index: no array literal per slot and frame (story 7.8); the unset cells stay 0 from the buffer's start
+      const m = this.matrices;
+      const o = i * 16;
+      m[o] = k;
+      m[o + 5] = k;
+      m[o + 10] = k;
+      m[o + 12] = s.x;
+      m[o + 13] = s.y;
+      m[o + 14] = s.z;
+      m[o + 15] = 1;
+      const c = this.colours;
+      const q = i * 4;
+      c[q] = 1;
+      c[q + 1] = 1;
+      c[q + 2] = 1;
+      c[q + 3] = s.alpha;
     });
     this.mesh.thinInstanceCount = n;
     this.mesh.isVisible = n > 0;

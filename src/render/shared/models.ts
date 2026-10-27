@@ -14,6 +14,11 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
 import type { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Constants } from '@babylonjs/core/Engines/constants';
+import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { BakedVertexAnimationManager } from '@babylonjs/core/BakedVertexAnimation/bakedVertexAnimationManager';
 import { MeshoptCompression } from '@babylonjs/core/Meshes/Compression/meshoptCompression';
 import '@babylonjs/core/Animations/animatable';
 import '@babylonjs/loaders/glTF/glTFFileLoader';
@@ -26,6 +31,8 @@ import { unitModelPath, type GearPiece, type Team } from '../../core';
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 import { FigurePlugin, type FigureLook } from './figurePlugin';
+import type { VatData } from './vat';
+import type { VatHandle } from './vatLoader';
 
 // Image-to-3D figures are meshopt-compressed (tools/art/tripo_units.py). Babylon looks for a global decoder that it would
 // otherwise fetch from its CDN; the bundled one keeps the game offline, an empty script satisfies the loader.
@@ -104,13 +111,47 @@ export interface UnitModel {
   groups: { meshes: Mesh[]; texture: BaseTexture | null }[];
   /** the materials of resting figures, shared by all figures of the scene (`AssetStore.materials`) */
   shared: Map<string, StandardMaterial>;
+  /** the scene's pool of tint materials (`AssetStore.tintPool`) */
+  tintPool: Map<string, StandardMaterial[]>;
   /** the plug-in values of the scene's figure materials (`AssetStore.figureLook`) */
   look: FigureLook;
   skeletons: Skeleton[];
   anims: Record<string, AnimationGroup>;
   /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
   grips: { node: TransformNode; hold: number }[];
+  /**
+   * Story 7.8: the figure plays a baked animation (`.vat`) instead of a skeleton: its body mesh draws the rows of the model's
+   * texture the figure picks, the hand sockets (weapons) follow the table of the file. Set: `skeletons` and `anims` are empty.
+   */
+  vat?: {
+    entry: VatEntry;
+    manager: BakedVertexAnimationManager;
+    /** the sockets that carry a weapon, with their index in `entry.data.sockets` */
+    sockets: { index: number; node: TransformNode }[];
+  };
   dispose(): void;
+}
+
+/** Baked animation textures the board made (story 7.8), read by the perf bench: models, main thread time of the texture upload (ms; the forward kinematics run in workers), texture bytes. */
+export const vatBuild = { models: 0, ms: 0, bytes: 0 };
+
+/**
+ * What the scene holds per model with a baked animation (`AssetStore.vatModels`): the file, its texture (one for all figures of
+ * the model), the hand sockets' row table, the body mesh to clone per team and the nodes above the joints.
+ */
+export interface VatEntry {
+  data: VatData;
+  texture: RawTexture;
+  /** per row and socket: position (x y z), rotation (x y z w) below the armature */
+  sockets: Float32Array;
+  /** the skinned body of the container (joint indices and weights, no animation of its own) */
+  source: Mesh;
+  /** the base colour texture of the body's glTF material */
+  baseTexture: BaseTexture | null;
+  /** per team: the body with its cloth colours, geometry shared by all figures of the team (they only differ in tint and row) */
+  bodies: Map<Team, Mesh>;
+  /** the nodes between the scene and the joints (glTF root, armature), outermost first, with their local transforms */
+  chain: { name: string; position: Vector3; rotation: Quaternion; scaling: Vector3 }[];
 }
 
 /** Board material: matt, both faces (the image-to-3D meshes are not always closed); the plug-in draws cloth unlit, floor and rim light. */
@@ -129,6 +170,30 @@ export function tintMaterial(m: StandardMaterial, desat: number, flash: number, 
   m.diffuseColor.set(k, k, k * 1.04);
   m.emissiveColor.set(flash * 0.8, flash * 0.8, flash * 0.8);
   m.alpha = alpha;
+}
+
+/**
+ * Story 7.8: the tint materials of figures that flash, fade or stand as a ghost come from a pool instead of one new set per hit.
+ * Two cases per base texture: opaque (flash) and alpha blended (fade, ghost); each is its own shader variant, so the board
+ * compiles both in advance (`takeTint`/`giveTint` with the pool of `AssetStore.tintPool`).
+ */
+export const tintKey = (texture: BaseTexture | null, blend: boolean): string => `${texture ? texture.uniqueId : 0}|${blend ? 'blend' : 'opaque'}`;
+
+export function takeTint(pool: Map<string, StandardMaterial[]>, scene: Scene, look: FigureLook, texture: BaseTexture | null, blend: boolean): StandardMaterial {
+  const key = tintKey(texture, blend);
+  const m = pool.get(key)?.pop() ?? figureMaterial(`figure:tint:${key}`, scene, look, texture);
+  m.transparencyMode = blend ? StandardMaterial.MATERIAL_ALPHABLEND : StandardMaterial.MATERIAL_OPAQUE;
+  return m;
+}
+
+/** Gives a tint material back; beyond `max` per case it is disposed (the texture stays, it belongs to the container). */
+export function giveTint(pool: Map<string, StandardMaterial[]>, texture: BaseTexture | null, blend: boolean, m: StandardMaterial, max: number): void {
+  const key = tintKey(texture, blend);
+  const list = pool.get(key) ?? [];
+  if (list.length < max) {
+    list.push(m);
+    pool.set(key, list);
+  } else m.dispose(false, false);
 }
 
 /**
@@ -156,12 +221,14 @@ async function attachGear(
   gear: GearPiece[],
   ramp: readonly string[],
   name: string,
+  /** the node of a hand's socket, if the figure has one (a figure on baked animation makes it when the first weapon asks) */
+  socketOf: (hand: GearPiece['hand']) => TransformNode | undefined = (hand) =>
+    root.getDescendants(false).find((n) => n.name.endsWith(hand === 'right' ? ':socket_r' : ':socket_l')) as TransformNode | undefined,
 ): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
-  const sockets = root.getDescendants(false);
   const meshes: Mesh[] = [];
   const grips: UnitModel['grips'] = [];
   for (const piece of gear) {
-    const socket = sockets.find((n) => n.name.endsWith(piece.hand === 'right' ? ':socket_r' : ':socket_l')) as TransformNode | undefined;
+    const socket = socketOf(piece.hand);
     const c = socket && (await store.container(`models/weapons/${piece.model}.glb`));
     if (!socket || !c || root.isDisposed()) continue;
     const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
@@ -189,11 +256,149 @@ async function attachGear(
   return { meshes, grips };
 }
 
-export async function loadUnitModel(store: AssetStore, id: string, team: Team, name: string, gear: GearPiece[] = [], unitPacks?: Readonly<Record<string, string>>): Promise<UnitModel | null> {
+/**
+ * The baked animation of a model (story 7.8), made once per scene: the matrix texture from the file's local poses by forward
+ * kinematics (a column of the texture per joint index of the model's skin), the socket table, the shared skeleton that only
+ * gives the vertices their joint attributes. Null if the file does not fit the model or the device (the figure then plays its skeleton).
+ */
+async function vatEntry(store: AssetStore, c: AssetContainer, handle: VatHandle): Promise<VatEntry | null> {
+  const vat = handle.data;
+  const skeleton = c.skeletons[0];
+  const source = skeleton && (c.meshes.find((m) => m instanceof Mesh && m.skeleton === skeleton && m.getTotalVertices() > 0) as Mesh | undefined);
+  if (!skeleton || !source || c.skeletons.length !== 1) return null;
+  const slotOf = vat.names.map((n) => skeleton.bones.find((b) => b.name === n)?.getIndex() ?? -1);
+  if (slotOf.some((i) => i < 0) || new Set(slotOf).size !== slotOf.length) return null;
+  const slots = Math.max(...slotOf) + 1;
+  const engine = store.scene.getEngine();
+  if (vat.rows > engine.getCaps().maxTextureSize || slots * 4 > engine.getCaps().maxTextureSize) return null;
+  // the joints sit below one node (the armature) that also carries the body mesh: the sockets and the body go below its copy
+  const anchor = skeleton.bones.find((b) => !b.getParent())?.getTransformNode()?.parent ?? null;
+  if (!anchor || source.parent !== anchor) return null;
+  const chain: VatEntry['chain'] = [];
+  for (let n = anchor as TransformNode | null; n; n = n.parent as TransformNode | null) {
+    chain.unshift({ name: n.name, position: n.position.clone(), rotation: (n.rotationQuaternion ?? Quaternion.FromEulerVector(n.rotation)).clone(), scaling: n.scaling.clone() });
+  }
+  // the loaded model's inverse binds (not the file's): gltfpack folded the quantization of the positions into them
+  const ibm = new Float32Array(vat.names.length * 16);
+  vat.names.forEach((n, j) => ibm.set(skeleton.bones.find((b) => b.name === n)!.getAbsoluteInverseBindMatrix().m, j * 16));
+  // the forward kinematics run in a worker (vatLoader.ts); here only the upload takes main thread time
+  const rows = await handle.build(ibm, slotOf, slots);
+  const t0 = performance.now();
+  // half floats: half the memory and upload of single precision, within a few 1e-4 board units of the float sampling (tools/art/bake_vat.py checks this)
+  const texture = RawTexture.CreateRGBATexture(rows.half, slots * 4, vat.rows, store.scene, false, false, Texture.NEAREST_SAMPLINGMODE, Constants.TEXTURETYPE_HALF_FLOAT);
+  texture.name = `vat:${source.name}`;
+  // the vertices keep their joint indices and weights; the skeleton only tells the shader how many influences they carry. Its
+  // matrices are never needed again, so the scene's per-frame call to prepare it is cut off
+  skeleton.prepare = () => undefined;
+  vatBuild.models++;
+  vatBuild.ms += performance.now() - t0;
+  vatBuild.bytes += rows.half.byteLength;
+  const baseTexture = (source.material as PBRMaterial | null)?.albedoTexture ?? null;
+  return { data: vat, texture, sockets: rows.sockets, source, baseTexture, bodies: new Map(), chain };
+}
+
+/** A figure on baked animation: copies of the nodes above the joints, a body clone that shares its geometry with the team's, sockets for the weapons. */
+async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name: string, gear: GearPiece[]): Promise<UnitModel | null> {
   const { scene } = store;
   const ramp = store.figureLook.teams[team];
+  let tpl = entry.bodies.get(team);
+  if (!tpl) {
+    tpl = entry.source.clone(`vat:${entry.source.name}:${team}`, null, true)!;
+    tpl.parent = null;
+    tpl.makeGeometryUnique();
+    teamColours(tpl, ramp);
+    tpl.setEnabled(false);
+    entry.bodies.set(team, tpl);
+  }
+  const root = new TransformNode(name, scene);
+  let anchor: TransformNode = root;
+  for (const n of entry.chain) {
+    const node = new TransformNode(`${name}:${n.name}`, scene);
+    node.position.copyFrom(n.position);
+    node.rotationQuaternion = n.rotation.clone();
+    node.scaling.copyFrom(n.scaling);
+    node.parent = anchor;
+    anchor = node;
+  }
+  const body = tpl.clone(`${name}:body`, anchor, true)!;
+  body.setEnabled(true);
+  body.isPickable = false;
+  body.receiveShadows = true;
+  const manager = new BakedVertexAnimationManager(scene);
+  manager.texture = entry.texture;
+  manager.animationParameters.set(0, 0, 0, 1);
+  body.bakedVertexAnimationManager = manager;
+  const sockets: NonNullable<UnitModel['vat']>['sockets'] = [];
+  const socketOf = (hand: GearPiece['hand']): TransformNode | undefined => {
+    const index = entry.data.sockets.findIndex((k) => k.name === (hand === 'right' ? 'socket_r' : 'socket_l'));
+    if (index < 0) return undefined;
+    const have = sockets.find((k) => k.index === index);
+    if (have) return have.node;
+    const def = entry.data.sockets[index]!;
+    const node = new TransformNode(`${name}:${def.name}`, scene);
+    node.parent = anchor;
+    node.rotationQuaternion = Quaternion.Identity();
+    node.scaling.set(def.s[0], def.s[1], def.s[2]);
+    sockets.push({ index, node });
+    return node;
+  };
+  const held = await attachGear(store, root, gear, ramp, name, socketOf);
+  if (root.isDisposed()) return null;
+  const shared = store.materials;
+  const look = store.figureLook;
+  body.material = sharedFigureMaterial(shared, scene, look, entry.baseTexture, 0);
+  for (const m of held.meshes) m.material = sharedFigureMaterial(shared, scene, look, null, 0);
+  return {
+    root,
+    meshes: [body, ...held.meshes],
+    groups: [
+      { meshes: [body], texture: entry.baseTexture },
+      { meshes: held.meshes, texture: null },
+    ],
+    shared,
+    tintPool: store.tintPool,
+    look,
+    skeletons: [],
+    anims: {},
+    grips: held.grips,
+    vat: { entry, manager, sockets },
+    dispose: () => {
+      manager.dispose(false);
+      // the body clone's geometry belongs to the team's template, the texture and the materials to the scene
+      root.dispose(false, false);
+    },
+  };
+}
+
+/**
+ * Loads a unit's 3D figure. With `vatPath` (the model's baked animation file, if the manifest lists one and `board.vat` allows it)
+ * the figure plays it as vertex animation; if that cannot be read or does not fit the model it falls back to the skeleton.
+ */
+export async function loadUnitModel(
+  store: AssetStore,
+  id: string,
+  team: Team,
+  name: string,
+  gear: GearPiece[] = [],
+  unitPacks?: Readonly<Record<string, string>>,
+  vatPath?: string,
+): Promise<UnitModel | null> {
+  const { scene } = store;
+  const ramp = store.figureLook.teams[team];
+  // the baked animation's file is fetched and read by a worker while the model file loads
+  const vatLoading = vatPath ? store.vat(vatPath) : null;
   const c = await store.container(unitModelPath(id, unitPacks), true);
   if (!c) return null;
+  if (vatLoading) {
+    const key = unitModelPath(id, unitPacks);
+    let entry = store.vatModels.get(key);
+    if (!entry) {
+      entry = vatLoading.then((vat) => (vat ? vatEntry(store, c, vat) : null)).catch(() => null);
+      store.vatModels.set(key, entry);
+    }
+    const e = await entry;
+    if (e) return loadVatUnit(store, e, team, name, gear);
+  }
   const inst = instantiate(c, scene, (n) => `${name}:${n}`);
   const root = new TransformNode(name, scene);
   for (const n of inst.rootNodes) n.parent = root;
@@ -232,6 +437,7 @@ export async function loadUnitModel(store: AssetStore, id: string, team: Team, n
       { meshes: held.meshes, texture: null },
     ],
     shared,
+    tintPool: store.tintPool,
     look,
     skeletons: inst.skeletons,
     anims,

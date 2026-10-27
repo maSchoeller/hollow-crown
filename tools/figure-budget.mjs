@@ -6,6 +6,9 @@
  *
  *   node tools/figure-budget.mjs [<dir or .glb> ...]        default: every dist/assets/<pack>/models/units
  *
+ * A figure's transfer is its model plus the baked animation file beside it (`<id>.vat`, story 7.8, tools/art/bake_vat.py), which is
+ * a gzip stream already and counts as it is.
+ *
  * Everything is read from the glTF JSON chunk: accessor counts are there even with meshopt compression, and gltfpack
  * leaves the images (PNG/JPEG/WebP in a bufferView) untouched, so their headers give the texture size.
  */
@@ -87,7 +90,7 @@ export function measureGlb(buf) {
   return { triangles, texture };
 }
 
-/** Measures `files` and returns { rows, outliers }; a row is { id, triangles, texture, bytes, large, why[] } */
+/** Measures `files` and returns { rows, outliers }; a row is { id, triangles, texture, bytes (model gzip + .vat), vatBytes, large, why[] } */
 export function checkFigures(files, budget = readFigureBudget()) {
   const rows = files.map((f) => {
     const buf = readFileSync(f);
@@ -95,12 +98,14 @@ export function checkFigures(files, budget = readFigureBudget()) {
     const large = budget.large.includes(id);
     const k = large ? budget.largeFactor : 1;
     const { triangles, texture } = measureGlb(buf);
-    const bytes = gzipSync(buf).length;
+    const vat = f.replace(/\.glb$/, '.vat');
+    const vatBytes = existsSync(vat) ? statSync(vat).size : 0;
+    const bytes = gzipSync(buf).length + vatBytes;
     const why = [];
     if (triangles > budget.triangles * k) why.push(`triangles > ${budget.triangles * k}`);
     if (texture && (texture[0] > budget.texture * k || texture[1] > budget.texture * k)) why.push(`texture > ${budget.texture * k}`);
     if (bytes > budget.transferMb * k * 1024 * 1024) why.push(`transfer > ${budget.transferMb * k} MB`);
-    return { id, triangles, texture, bytes, large, why };
+    return { id, triangles, texture, bytes, vatBytes, large, why };
   });
   return { rows, outliers: rows.filter((r) => r.why.length) };
 }

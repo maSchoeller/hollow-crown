@@ -13,9 +13,11 @@ import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTextur
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Matrix } from '@babylonjs/core/Maths/math.vector';
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
-import { figureMaterial, sharedFigureMaterial, tintMaterial, type UnitModel } from './models';
+import { giveTint, sharedFigureMaterial, takeTint, tintMaterial, type UnitModel } from './models';
+import { clipRow, type VatClip } from './vat';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
 /** Screen-relative direction for sprites; 3D models turn instead. */
@@ -26,7 +28,10 @@ export interface Figure {
   play(anim: FigureAnim, facing: Facing, speed: number): void;
   /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1; writes only when a value changed */
   tint(desat: number, flash: number, alpha: number): void;
-  /** `onScreen`: false while the figure is outside the view and switched off, so nothing about its skeleton is worked out */
+  /**
+   * `now`: the animation clock in ms (it stops while the board freezes a critical hit); `onScreen`: false while the figure is
+   * outside the view and switched off, so nothing about its skeleton or its baked row is worked out
+   */
   tick(now: number, speed: number, onScreen?: boolean): void;
   dispose(): void;
 }
@@ -38,15 +43,22 @@ const YAW: Record<Facing, number> = { s: Math.PI, n: 0, e: Math.PI / 2, w: -Math
  * so the updates spread over the frames), one that walks, strikes or is hit at every frame. Babylon would otherwise step
  * the idle loop, move the bone nodes and rebuild the bone texture of every figure each frame. The idle group stays on its
  * start but paused; at each update the board jumps it to the frame the loop has reached.
+ *
+ * Story 7.8: a figure with a baked animation (`UnitModel.vat`) has no skeleton to update: it picks the row of its clip from the
+ * animation clock and tells the shader (which row of the model's texture its mesh draws) and its weapon sockets; idle runs at the
+ * full frame rate then. Figures without a baked file (the Blender figures) keep the throttled skeleton path above.
  */
 const DOWNED_HOLD_FRAMES = 3;
 
 export class ModelFigure implements Figure {
   readonly node: TransformNode;
   private current: FigureAnim | null = null;
-  private tintKey = '';
-  /** own materials while the figure flashes or fades (one per mesh group); at rest it wears the scene's shared ones */
-  private own: StandardMaterial[] | null = null;
+  /** the tint last applied; three numbers are compared instead of building a key string for each figure and frame (story 7.8) */
+  private tDesat = -1;
+  private tFlash = -1;
+  private tAlpha = -1;
+  /** materials from the scene's pool while the figure flashes or fades (one per mesh group, opaque or blended); at rest it wears the scene's shared ones */
+  private own: { mats: StandardMaterial[]; blend: boolean } | null = null;
   /** the idle group while the skeleton is throttled; null: at full rate or holding a still pose */
   private idle: AnimationGroup | null = null;
   private idleSpeed = 1;
@@ -57,12 +69,20 @@ export class ModelFigure implements Figure {
   private period: number;
   /** while throttled: the skeletons that have a new pose and still wait to be prepared (the figure may be off screen) */
   private needs = new Set<Skeleton>();
+  /** baked animation: the clip playing, its start on the animation clock, its rate, the row shown now (-1: none yet) and the clock's last reading */
+  private clip: VatClip | null = null;
+  private clipStart = 0;
+  private clipSpeed = 1;
+  private row = -1;
+  private clock = 0;
 
   /** `motion`: the weapon group's own animations (`attack_<motion>` …) win over the defaults, if the figure has them */
   constructor(
     private model: UnitModel,
     private motion?: string,
     idleHz = 10,
+    /** tint materials kept per texture and case for the next hit (render.yaml board.tintPool) */
+    private poolMax = 24,
   ) {
     this.node = new TransformNode(`${model.root.name}:place`, model.root.getScene());
     model.root.parent = this.node;
@@ -83,6 +103,10 @@ export class ModelFigure implements Figure {
   play(anim: FigureAnim, facing: Facing, speed: number): void {
     this.model.root.rotation.y = YAW[facing];
     for (const g of this.model.grips) g.node.rotation.x = anim === 'attack' ? 0 : g.hold;
+    if (this.model.vat) {
+      this.playBaked(anim, speed);
+      return;
+    }
     const g = (this.motion && this.model.anims[`${anim}_${this.motion}`]) || this.model.anims[anim] || this.model.anims.idle;
     if (!g) return;
     if (this.current === anim && anim !== 'attack' && anim !== 'hit') return;
@@ -114,14 +138,45 @@ export class ModelFigure implements Figure {
     g.start(anim === 'walk', speed, g.from, g.to);
   }
 
+  /** the clip of the baked file for an animation: the weapon group's own (`attack_chop` …), else the default, else idle */
+  private playBaked(anim: FigureAnim, speed: number): void {
+    const clips = this.model.vat!.entry.data.clips;
+    const clip = (this.motion && clips.get(`${anim}_${this.motion}`)) || clips.get(anim) || clips.get('idle');
+    if (!clip) return;
+    if (this.current === anim && anim !== 'attack' && anim !== 'hit') return;
+    this.current = anim;
+    this.clip = clip;
+    // the clip starts at the next frame's time, as the engine's animations do (they begin with the next animation step), not at the last one's
+    this.clipStart = NaN;
+    this.clipSpeed = speed;
+    this.show(clipRow(clip, 0, this.model.vat!.entry.data.fps));
+  }
+
+  /** shows a row of the model's texture on this figure's body and puts the hand sockets where the file has them for it */
+  private show(row: number): void {
+    if (row === this.row) return;
+    this.row = row;
+    const vat = this.model.vat!;
+    const p = vat.manager.animationParameters;
+    p.x = p.y = row;
+    const table = vat.entry.sockets;
+    const count = vat.entry.data.sockets.length;
+    for (const k of vat.sockets) {
+      const o = (row * count + k.index) * 7;
+      k.node.position.set(table[o]!, table[o + 1]!, table[o + 2]!);
+      k.node.rotationQuaternion!.set(table[o + 3]!, table[o + 4]!, table[o + 5]!, table[o + 6]!);
+    }
+  }
+
   private expect(): void {
     for (const sk of this.model.skeletons) this.needs.add(sk);
   }
 
   tint(desat: number, flash: number, alpha: number): void {
-    const key = `${desat}|${flash}|${alpha}`;
-    if (key === this.tintKey) return;
-    this.tintKey = key;
+    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha) return;
+    this.tDesat = desat;
+    this.tFlash = flash;
+    this.tAlpha = alpha;
     const at = this.model;
     if (flash === 0 && alpha >= 0.999) {
       // at rest: the scene's shared material of this desaturation
@@ -132,23 +187,61 @@ export class ModelFigure implements Figure {
       this.releaseOwn();
       return;
     }
-    // flash, fade or ghost: own materials for as long as it lasts
-    this.own ??= at.groups.map((g, i) => figureMaterial(`${at.root.name}:tint${i}`, at.root.getScene(), at.look, g.texture));
+    // flash, fade or ghost: pooled materials for as long as it lasts (the case, opaque or blended, is a shader variant of its own)
+    const blend = alpha < 0.99;
+    if (this.own && this.own.blend !== blend) this.releaseOwn();
+    const scene = at.root.getScene();
+    const own = (this.own ??= { blend, mats: at.groups.map((g) => takeTint(at.tintPool, scene, at.look, g.texture, blend)) });
     at.groups.forEach((g, i) => {
-      const m = this.own![i]!;
+      const m = own.mats[i]!;
       tintMaterial(m, desat, flash, alpha);
-      m.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHABLEND : StandardMaterial.MATERIAL_OPAQUE;
       for (const mesh of g.meshes) mesh.material = m;
     });
   }
 
   private releaseOwn(): void {
-    if (!this.own) return;
-    for (const m of this.own) m.dispose(false, false);
+    const own = this.own;
+    if (!own) return;
     this.own = null;
+    this.model.groups.forEach((g, i) => giveTint(this.model.tintPool, g.texture, own.blend, own.mats[i]!, this.poolMax));
+  }
+
+  /**
+   * Compiles the two tint variants (flash: opaque, fade/ghost: blended) of each distinct mesh group of this figure, so the first
+   * hit starts no shader (story 7.8). `seen` skips what another figure of the scene did already: the variant depends on the
+   * base texture, the skeleton and the vertex data of the mesh.
+   */
+  warmTints(seen: Set<string>): Promise<unknown>[] {
+    const at = this.model;
+    const scene = at.root.getScene();
+    const jobs: Promise<unknown>[] = [];
+    for (const g of at.groups) {
+      const mesh = g.meshes[0];
+      if (!mesh) continue;
+      const sig = `${g.texture ? g.texture.uniqueId : 0}|${mesh.skeleton ? mesh.skeleton.bones.length : 0}|${mesh.numBoneInfluencers}|${mesh.isVerticesDataPresent(VertexBuffer.ColorKind) ? 1 : 0}|${mesh.bakedVertexAnimationManager ? 1 : 0}`;
+      for (const blend of [false, true]) {
+        const key = `${sig}|${blend ? 1 : 0}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const m = takeTint(at.tintPool, scene, at.look, g.texture, blend);
+        jobs.push(
+          m
+            .forceCompilationAsync(mesh)
+            .catch(() => undefined)
+            .then(() => giveTint(at.tintPool, g.texture, blend, m, this.poolMax)),
+        );
+      }
+    }
+    return jobs;
   }
 
   tick(now: number, _speed = 1, onScreen = true): void {
+    this.clock = now;
+    if (this.model.vat) {
+      if (Number.isNaN(this.clipStart)) this.clipStart = now;
+      if (onScreen && this.clip) this.show(clipRow(this.clip, (now - this.clipStart) / 1000, this.model.vat.entry.data.fps, this.clipSpeed));
+      return;
+    }
     if (!this.slow) return;
     if (!onScreen) {
       // out of view: no pose is worked out; the first frame back in view gets the current one at once
@@ -177,6 +270,14 @@ export class ModelFigure implements Figure {
     this.model.dispose();
     this.node.dispose();
   }
+}
+
+/** Compiles the tint variants of all 3D figures in the list (story 7.8); resolves when the shaders are linked. */
+export async function warmTints(figures: Iterable<Figure>): Promise<void> {
+  const seen = new Set<string>();
+  const jobs: Promise<unknown>[] = [];
+  for (const f of figures) if (f instanceof ModelFigure) jobs.push(...f.warmTints(seen));
+  await Promise.all(jobs);
 }
 
 /** Sheet with team cloth recoloured on a canvas (no custom shader needed). */
@@ -254,12 +355,15 @@ export class SpriteFigure implements Figure {
     this.flip = facing === 'w' && row.endsWith('_e');
   }
 
-  private tintKey = '';
+  private tDesat = -1;
+  private tFlash = -1;
+  private tAlpha = -1;
 
   tint(desat: number, flash: number, alpha: number): void {
-    const key = `${desat}|${flash}|${alpha}`;
-    if (key === this.tintKey) return;
-    this.tintKey = key;
+    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha) return;
+    this.tDesat = desat;
+    this.tFlash = flash;
+    this.tAlpha = alpha;
     tintMaterial(this.material, desat, flash, alpha);
     this.material.emissiveColor.addInPlace(new Color3(0.3, 0.3, 0.3));
     this.material.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHATESTANDBLEND : StandardMaterial.MATERIAL_ALPHATEST;
