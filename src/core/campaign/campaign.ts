@@ -434,10 +434,13 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
     const kind = pick(c.rng, classes);
     const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
     const cls = data.classes[kind.class]!;
+    // two offers (or an offer and a hired mercenary) never share a name while the list has names left
+    const taken = new Set([...c.tavern, ...c.roster].map((u) => u.nameKey));
+    const freeNames = tav.names.filter((n) => !taken.has(n));
     const zero = { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 };
     const rec: UnitRecord = {
       id: `merc${c.nextUid++}`,
-      nameKey: pick(c.rng, tav.names),
+      nameKey: pick(c.rng, freeNames.length ? freeNames : tav.names),
       classId: kind.class,
       level,
       exp: 0,
