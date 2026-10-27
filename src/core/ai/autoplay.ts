@@ -4,30 +4,97 @@ import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
-import { destinations, reachable, threatTiles } from '../rules/movement';
+import { destinations, moveCost, reachable, threatTiles } from '../rules/movement';
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, dist, posKey } from '../util';
-import { attackPlans } from './ai';
+import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos } from '../util';
+import { attackPlans, bestApproach } from './ai';
 
 function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
   const m = new Map<string, number>();
   for (const o of s.units) {
     if (o.team !== 'enemy' || !active(o)) continue;
-    const hold = o.ai && (o.ai.profile === 'hold' || o.ai.profile === 'guard' || (o.ai.profile === 'trigger' && !o.ai.awake));
+    const hold = staysPut(o);
     for (const k of threatTiles(data, s, o, !!hold)) m.set(k, (m.get(k) ?? 0) + 1);
   }
   return m;
 }
 
-function approach(s: BattleState, u: BattleUnit, dests: Pos[], targets: Pos[], danger: Map<string, number>, maxDanger: number): Pos {
+/**
+ * Movement-cost distance of every tile to the nearest goal (units ignored), so a fence or a wall is walked around, not
+ * stared at. With `doorsOpen` the closed doors count as floor: the field shows the way once somebody has opened them.
+ */
+function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], doorsOpen: boolean): Map<string, number> {
+  const out = new Map<string, number>();
+  const over = doorsOpen ? { door: 1 } : undefined;
+  const buckets: Pos[][] = [];
+  for (const g of goals) {
+    if (!inBounds(s, g)) continue;
+    out.set(posKey(g), 0);
+    (buckets[0] ??= []).push(g);
+  }
+  for (let c = 0; c < buckets.length; c++) {
+    for (const p of buckets[c] ?? []) {
+      if (out.get(posKey(p)) !== c) continue;
+      const total = c + Math.max(1, moveCost(data, s, u, p, over) ?? 1);
+      for (const n of neighbors(p)) {
+        if (moveCost(data, s, u, n, over) === null) continue;
+        const k = posKey(n);
+        if ((out.get(k) ?? Infinity) <= total) continue;
+        out.set(k, total);
+        (buckets[total] ??= []).push(n);
+      }
+    }
+  }
+  return out;
+}
+
+/** The closed door the way along `field` (doors counted as floor) runs into first, starting at `from`; null when it meets none. */
+function doorOnTheWay(s: BattleState, field: Map<string, number>, from: Pos): { id: string; at: Pos } | null {
+  let p = from;
+  let v = field.get(posKey(p));
+  while (v !== undefined && v > 0) {
+    const door = s.objects.find((o) => o.type === 'door' && o.state === 'closed' && samePos(o.at, p));
+    if (door) return { id: door.id, at: door.at };
+    let next: Pos | null = null;
+    let nv = v;
+    for (const n of neighbors(p)) {
+      const w = field.get(posKey(n));
+      if (w !== undefined && w < nv) {
+        next = n;
+        nv = w;
+      }
+    }
+    if (!next) return null;
+    p = next;
+    v = nv;
+  }
+  return null;
+}
+
+/** Foes that stay where they are until somebody comes close (hold, guard, a trigger not yet awake). */
+const staysPut = (o: BattleUnit): boolean => !!o.ai && (o.ai.profile === 'hold' || o.ai.profile === 'guard' || (o.ai.profile === 'trigger' && !o.ai.awake));
+
+/**
+ * The foe will do nothing next phase: it stays put (hold, guard, a trigger not yet awake), or it would move but has no attack
+ * to make and no tile that brings it closer (e.g. a foe fenced off from the player it wants to reach).
+ */
+function idleFoe(data: GameData, s: BattleState, o: BattleUnit): boolean {
+  if (staysPut(o)) return true;
+  if (attackPlans(data, s, o, destinations(s, o, reachable(data, s, o))).length) return false;
+  const goals = s.units.filter((p) => p.team === 'player' && active(p) && p.pos).flatMap((p) => neighbors(p.pos!));
+  return !bestApproach(data, s, o, goals);
+}
+
+function approach(s: BattleState, u: BattleUnit, dests: Pos[], targets: Pos[], danger: Map<string, number>, maxDanger: number, field?: Map<string, number>): Pos {
   let best = u.pos!;
   let bestScore = Infinity;
   for (const p of dests) {
     const d = danger.get(posKey(p)) ?? 0;
     if (d > maxDanger) continue;
-    const near = Math.min(...targets.map((t) => dist(p, t)), 999);
+    const manhattan = Math.min(...targets.map((t) => dist(p, t)), 999);
+    const near = field ? (field.get(posKey(p)) ?? 500 + manhattan) : manhattan;
     const score = near * 10 + d;
     if (score < bestScore) {
       best = p;
@@ -129,8 +196,48 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       const to = lead ?? approach(s, u, dests, [npc.pos!], danger, 1);
       return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
     }
-    const maxDanger = guarding && hpPct >= 60 ? (vip ? 1 : 2) : errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
-    const to = approach(s, u, dests, targets.length ? targets : [u.pos], danger, maxDanger);
+    let maxDanger = guarding && hpPct >= 60 ? (vip ? 1 : 2) : errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
+    let aim = targets.length ? targets : [u.pos];
+    let field: Map<string, number> | undefined;
+    const hunting = !isGoalUnit && !errands.length && !keys.length && !ward;
+    // siege: the foes that are left never come and the victory needs them down; whoever is healthy takes the risk of their reach
+    const siege = hunting && enemies.length > 0 && (v.type === 'rout' || v.type === 'boss') && enemies.every((o) => idleFoe(data, s, o));
+    if (siege) {
+      if (!vip && hpPct >= 60) maxDanger = Infinity;
+      field = walkField(data, s, u, aim, false);
+    }
+    if (targets.length && s.objects.some((o) => o.type === 'door' && o.state === 'closed') && !walkField(data, s, u, targets, false).has(posKey(u.pos))) {
+      // nothing the unit heads for is reachable on foot: a closed door may be in the way
+      const open = walkField(data, s, u, targets, true);
+      const door = open.has(posKey(u.pos)) ? doorOnTheWay(s, open, u.pos) : null;
+      if (door) {
+        const canOpen = (o: BattleUnit) => isScout(data, s, o) || !!hasKey(data, o);
+        const company = s.units.some((o) => o.team === 'player' && active(o) && o.pos && canOpen(o));
+        const keyAt = s.loot.filter((l) => itemDef(data, l.item).use?.open).map((l) => l.at);
+        if (canOpen(u)) {
+          for (const p of dests) {
+            if ((danger.get(posKey(p)) ?? 0) > maxDanger) continue;
+            const o = availableActions(data, s, u, p).find((a) => (a.kind === 'open' || a.kind === 'door') && a.object === door.id);
+            if (o) return { type: 'act', unit: u.uid, to: p, action: o.kind === 'open' ? { kind: 'open', object: door.id } : { kind: 'door', object: door.id } };
+          }
+          aim = [door.at];
+          field = walkField(data, s, u, aim, false);
+        } else if (!company && keyAt.length) {
+          // a key lies on the ground (a thief dropped it): somebody picks it up
+          aim = keyAt;
+          field = walkField(data, s, u, aim, false);
+        } else {
+          // the others gather in front of the door and leave the tiles next to it to the one who opens it
+          field = open;
+          if (company) {
+            const next = new Set(neighbors(door.at).map(posKey));
+            const rest = dests.filter((p) => !next.has(posKey(p)));
+            if (rest.length) dests = rest;
+          }
+        }
+      }
+    }
+    const to = approach(s, u, dests, aim, danger, maxDanger, field);
     return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
   }
   return { type: 'endPhase' };
