@@ -15,7 +15,8 @@ import type { StandardMaterial } from '@babylonjs/core/Materials/standardMateria
 import type { GameData } from '../core';
 import { assetUrl } from './shared/assets';
 import { RefCache } from './shared/cache';
-import { loadContainer } from './shared/models';
+import { loadContainer, type VatEntry } from './shared/models';
+import { loadVat, type VatHandle } from './shared/vatLoader';
 import { newFigureLook, type FigureLook } from './shared/figurePlugin';
 
 export type Quality = 'low' | 'mid' | 'high';
@@ -42,10 +43,16 @@ export interface AssetStore {
   scene: Scene;
   /** a model file (`models/…glb`); `materials` keeps the glTF materials (textured image-to-3D figures) */
   container(path: string, materials?: boolean): Promise<AssetContainer | null>;
+  /** the baked animation file of a model (`models/units/<id>.vat`, story 7.8), read once and parsed; null if it cannot be read (the figure then plays its skeleton) */
+  vat(path: string): Promise<VatHandle | null>;
+  /** story 7.8: what the scene made of a model's baked animation (texture, sockets, team bodies), per model file; they go with the stage clear */
+  vatModels: Map<string, Promise<VatEntry | null>>;
   /** a painted texture by asset path (ground, tiling, mipmapped), created on the stage once */
   texture(path: string): Promise<Texture>;
   /** materials the scene shares between its figures (story 7.7), keyed by the scene; they go with the stage clear */
   materials: Map<string, StandardMaterial>;
+  /** story 7.8: tint materials (flash, fade, ghost) of finished hits waiting for the next one, per base texture and case (`tintMaterial` in models.ts) */
+  tintPool: Map<string, StandardMaterial[]>;
   /** story 8.6: team ramps and the plug-in values of the scene's figures; the board sets the floor and rim light from its look */
   figureLook: FigureLook;
 }
@@ -57,6 +64,7 @@ export class RenderHost {
   readonly scene: Scene;
   private models: RefCache<AssetContainer | null>;
   private textures: RefCache<Texture>;
+  private vats: RefCache<VatHandle | null>;
   /** loaded cached textures: they live in the stage's texture list but survive a scene switch */
   private kept = new Set<BaseTexture>();
   private view: HostedView | null = null;
@@ -74,6 +82,18 @@ export class RenderHost {
     this.models = new RefCache(
       (key) => loadContainer(this.scene, key.slice(2), key.startsWith('m:')),
       (c) => c?.dispose(),
+      keep,
+    );
+    this.vats = new RefCache(
+      async (path) => {
+        try {
+          const r = await fetch(assetUrl(path));
+          return r.ok ? await loadVat(await r.arrayBuffer()) : null;
+        } catch {
+          return null;
+        }
+      },
+      () => undefined,
       keep,
     );
     this.textures = new RefCache(
@@ -108,8 +128,11 @@ export class RenderHost {
     return {
       scene: this.scene,
       materials: new Map(),
+      tintPool: new Map(),
+      vatModels: new Map(),
       figureLook: newFigureLook(this.data.render.look),
       container: (path, materials = false) => this.models.use(`${materials ? 'm' : '-'}:${path}`, holder),
+      vat: (path) => this.vats.use(path, holder),
       texture: (path) => this.textures.use(path, holder),
     };
   }
@@ -151,6 +174,7 @@ export class RenderHost {
     }
     this.clearStage();
     this.models.release(view);
+    this.vats.release(view);
     this.textures.release(view);
   }
 

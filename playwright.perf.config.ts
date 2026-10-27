@@ -13,7 +13,8 @@ export default defineConfig({
     baseURL: `http://localhost:${port}/`,
     trace: 'off',
     // PERF_GPU=1: draw with the machine's GPU instead of SwiftShader (headless Chromium's default), for local runs
-    ...(process.env.PERF_GPU === '1' ? { launchOptions: { args: ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=default'] } } : {}),
+    // precise memory info: the frame trace of the bench (story 7.8) reads the JS heap to tell a garbage collection
+    launchOptions: { args: ['--enable-precise-memory-info', ...(process.env.PERF_GPU === '1' ? ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=default'] : [])] },
   },
   webServer: { command: `pnpm exec vite preview --outDir dist-perf --port ${port} --strictPort`, port, reuseExistingServer: !process.env.CI },
   projects: [

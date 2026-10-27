@@ -1,41 +1,63 @@
 {
- "note": "Ausgangswerte vor Story 7.7 (Median von 3 Läufen, Code von Branch claude/7-7-large-battles-smooth vor jeder Änderung an src/, GPU Intel UHD 630 über ANGLE/D3D11, erhoben 2026-10-24; der Rechner war durch parallele Sitzungen stark ausgelastet, die Wanduhr-Werte sind deshalb schlechter als in der Analyse – ohne Drosselung lag derselbe Stand bei 50–53 FPS und 16,5–17,1 ms Thread-CPU je Frame)",
+ "note": "Ausgangswerte vor Story 7.8, nach Story 8.6 (Median, GPU, Renderer ANGLE (Intel, Intel(R) UHD Graphics 630 (0x00003E9B) Direct3D11 vs_5_0 ps_5_0, D3D11), erhoben 2026-10-27, 3 Läufe). Quellstand = origin/main (fd46675) mit dem Messwerkzeug von 7.8 und der Besetzung der Referenzschlacht aus Image-to-3D-Figuren (Brigand, Soldat, Banditenbogenschütze, Söldner; Tobin, Varek, Mira, Liora); Rechner im Mittel zu 55 % ausgelastet (Spitzen 85 %). Ersetzt die Baseline mit den Blender-Bogenschützen und den Dieb-Sprites (A3, 30 % Last).",
  "gpu": true,
  "devices": {
   "iphone12": {
+   "1": {
+    "avgFps": 60,
+    "p95Ms": 16.8,
+    "maxMs": 33.4,
+    "maxAllMs": 50,
+    "dropped": 0.001,
+    "drawCallsAvg": 52,
+    "threadMsPerFrame": 4.6
+   },
    "2": {
-    "avgFps": 12.2,
-    "p95Ms": 133.3,
-    "maxMs": 1149.9,
-    "dropped": 0.989,
-    "drawCallsAvg": 118,
-    "threadMsPerFrame": 23.1
+    "avgFps": 59.3,
+    "p95Ms": 16.8,
+    "maxMs": 100,
+    "maxAllMs": 116.6,
+    "dropped": 0.007,
+    "drawCallsAvg": 52,
+    "threadMsPerFrame": 6.7
    },
    "4": {
-    "avgFps": 2.7,
-    "p95Ms": 683.2,
-    "maxMs": 2766.5,
-    "dropped": 1,
-    "drawCallsAvg": 117,
-    "threadMsPerFrame": 37.5
+    "avgFps": 30,
+    "p95Ms": 50,
+    "maxMs": 216.7,
+    "maxAllMs": 233.4,
+    "dropped": 0.822,
+    "drawCallsAvg": 51,
+    "threadMsPerFrame": 7.7
    }
   },
   "pixel6a": {
+   "1": {
+    "avgFps": 60,
+    "p95Ms": 16.7,
+    "maxMs": 16.8,
+    "maxAllMs": 33.4,
+    "dropped": 0,
+    "drawCallsAvg": 52,
+    "threadMsPerFrame": 4.1
+   },
    "2": {
-    "avgFps": 10.8,
-    "p95Ms": 149.9,
-    "maxMs": 1050,
-    "dropped": 0.975,
-    "drawCallsAvg": 117,
-    "threadMsPerFrame": 26.5
+    "avgFps": 59.7,
+    "p95Ms": 16.7,
+    "maxMs": 100.1,
+    "maxAllMs": 116.7,
+    "dropped": 0.001,
+    "drawCallsAvg": 52,
+    "threadMsPerFrame": 5.9
    },
    "4": {
-    "avgFps": 4.3,
-    "p95Ms": 366.7,
-    "maxMs": 4066.5,
-    "dropped": 1,
-    "drawCallsAvg": 117,
-    "threadMsPerFrame": 39
+    "avgFps": 29.1,
+    "p95Ms": 50,
+    "maxMs": 216.6,
+    "maxAllMs": 283.3,
+    "dropped": 0.862,
+    "drawCallsAvg": 51,
+    "threadMsPerFrame": 7.8
    }
   }
  }
