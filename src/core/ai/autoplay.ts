@@ -1,6 +1,6 @@
 import type { GameData, Pos } from '../defs';
 import type { GameEvent } from '../events';
-import { availableActions, hasKey, mustStayForRest, nearConvoy } from '../battle/actions';
+import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
@@ -199,7 +199,7 @@ export function treasurePlan(data: GameData, s: BattleState, openable: Set<strin
   // openers left over (more keys than locks) head for the closest lock all the same
   for (const p of pairs) if (!lock.has(p.uid)) lock.set(p.uid, p.at);
   const keys = s.loot.filter((l) => itemDef(data, l.item).use?.open);
-  const fetchers = units.filter((o) => !o.acted && o.bag.length < data.balance.bag.size);
+  const fetchers = units.filter((o) => !o.acted);
   const fetched = new Set<number>();
   // keys already in the company's bags count first: loot is only fetched while the charges in hand fall short of the locks still shut
   const inHand = units.reduce((n, o) => n + (isScout(data, s, o) ? locks.length : o.bag.reduce((m, i) => m + (itemDef(data, i).use?.open ? (i.charges ?? 1) : 0), 0)), 0);
@@ -276,14 +276,6 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && !o.flags.includes('mustSurvive'))
       .sort((a, b) => dist(a.pos!, spot) - dist(b.pos!, spot) || (a.uid < b.uid ? -1 : 1))[0]?.uid;
   })();
-  // treasure: a full bag cannot take up a key (it would go to the convoy), so whoever stands at the convoy puts spare gear in it
-  if (openable?.size) {
-    for (const u of s.units) {
-      if (u.team !== 'player' || !active(u) || !u.pos || u.acted || u.freeUsed.convoy || u.bag.length < data.balance.bag.size || !nearConvoy(s, u, u.pos)) continue;
-      const spare = u.bag.find((i) => ['weapon', 'armor', 'shield', 'accessory', 'material'].includes(itemDef(data, i).kind));
-      if (spare) return { type: 'convoy', unit: u.uid, put: spare.uid };
-    }
-  }
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
@@ -347,9 +339,9 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     if (plan && !(isGoalUnit && plan.score < 30)) return { type: 'act', unit: u.uid, to: plan.to, action: plan.action };
     const ward = defended;
     // the unit closest to an unvisited village heads there; a unit that can recruit seeks its target
-    const nearestTo = (p: Pos, needsRoom = false) =>
+    const nearestTo = (p: Pos) =>
       s.units
-        .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && (!needsRoom || o.bag.length < data.balance.bag.size))
+        .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted)
         .sort((a, b) => dist(a.pos!, p) - dist(b.pos!, p))[0]?.uid;
     // defend: while a foe is within `ai.wardGuardRadius` of the ward, the company meets it there instead of running errands
     const guarding = !!ward && enemies.some((o) => dist(o.pos!, ward.pos!) <= data.balance.ai.wardGuardRadius);
@@ -359,7 +351,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const fetchAt = plan0?.loot.get(u.uid);
     const errands = guarding
       ? []
-      : [...villages.filter((p) => nearestTo(p) === u.uid), ...(plan0 ? (fetchAt ? [fetchAt] : []) : keyLoot.filter((p) => nearestTo(p, true) === u.uid)), ...recruitable(u)];
+      : [...villages.filter((p) => nearestTo(p) === u.uid), ...(plan0 ? (fetchAt ? [fetchAt] : []) : keyLoot.filter((p) => nearestTo(p) === u.uid)), ...recruitable(u)];
     // treasure: whoever can open a chest heads for the lock the allocation gave it
     const lockAt = plan0?.lock.get(u.uid);
     const keys = lockAt ? [lockAt] : [];

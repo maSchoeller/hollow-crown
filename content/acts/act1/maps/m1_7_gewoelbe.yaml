@@ -49,7 +49,7 @@ objects:
   # Schlüssel (Produktinhaber 2026-10-26): Türen und Truhen brauchen je einen Schlüssel (door_key, eine Ladung) oder einen Späher. Die Mission ist auch ohne Späher lösbar:
   # Gebraucht werden 7 Ladungen (2 Türen, 5 Truhen). Alle Plünderer tragen Schlüssel und lassen sie fallen (l2 und l4 je zwei, alle anderen einer):
   # Leicht 8, Normal 10, Schwer 12 Schlüssel, also mehr als Schlösser. Eine Truhe in der offenen Westkammer (c_west) gibt zusätzlich einen Schlüssel zurück.
-  # Ein Schlüssel, der in eine volle Tasche (balance.yaml bag.size) fällt, wandert in den Konvoi und ist im Kampf nicht mehr erreichbar.
+  # Schlüssel belegen keinen Taschenplatz (Schlüsselbund, Entscheidung 2026-10-27): gleichartige Schlüssel stapeln als ein Beutel-Eintrag, eine volle Tasche nimmt sie trotzdem auf.
   - { id: door_east, type: door, at: [8, 7] }
   - { id: door_crypt, type: door, at: [7, 10] }
   - { id: c_west, type: chest, at: [3, 8], contents: { gold: 100, item: { def: door_key } } }

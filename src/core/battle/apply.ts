@@ -4,7 +4,7 @@ import type { GameEvent } from '../events';
 import { roll1 } from '../rng';
 import { resolveAttack } from '../rules/combat';
 import { applyStatus, damageUnit, endOfPhase, extinguishTile, igniteTile, startOfPhase, tickTerrain } from '../rules/effects';
-import { canEquip, itemDef, weaponProfile } from '../rules/items';
+import { addToBag, bagIsFull, canEquip, itemDef, weaponProfile } from '../rules/items';
 import { resolveCast } from '../rules/cast';
 import { goesToConvoy } from '../rules/scout';
 import { destinations, pathTo, pursueReach, reachable, walkPath, type Walk } from '../rules/movement';
@@ -253,7 +253,7 @@ function pickUpLoot(data: GameData, s: BattleState, u: BattleUnit, events: GameE
 export function giveItem(data: GameData, s: BattleState, u: BattleUnit, item: ItemInstance, events: GameEvent[]): void {
   const toConvoy = goesToConvoy(data, u, item);
   if (toConvoy) s.convoy.push(item);
-  else u.bag.push(item);
+  else addToBag(data, u.bag, item);
   s.itemsGained.push(item);
   events.push({ t: 'loot', unit: u.uid, item, toConvoy });
 }
@@ -552,8 +552,8 @@ function findInventory(u: BattleUnit, uid: string): { inst: ItemInstance; remove
 /** Puts an item into a slot of a unit; a displaced item goes to the bag (or is returned). */
 function place(data: GameData, u: BattleUnit, inst: ItemInstance, slot: Parameters<typeof canEquip>[3]): ItemInstance | null {
   if (slot === 'bag') {
-    if (u.bag.length >= data.balance.bag.size) return inst;
-    u.bag.push(inst);
+    if (bagIsFull(data, u.bag, inst)) return inst;
+    addToBag(data, u.bag, inst);
     return null;
   }
   const old = u.equip[slot];
@@ -561,11 +561,11 @@ function place(data: GameData, u: BattleUnit, inst: ItemInstance, slot: Paramete
   if (slot === 'mainHand' && itemDef(data, inst).twoHanded && u.equip.offHand) {
     const off = u.equip.offHand;
     delete u.equip.offHand;
-    if (u.bag.length < data.balance.bag.size) u.bag.push(off);
+    if (!bagIsFull(data, u.bag, off)) addToBag(data, u.bag, off);
     else return off;
   }
   if (old) {
-    if (u.bag.length < data.balance.bag.size) u.bag.push(old);
+    if (!bagIsFull(data, u.bag, old)) addToBag(data, u.bag, old);
     else return old;
   }
   return null;
@@ -576,7 +576,7 @@ function doEquip(data: GameData, u: BattleUnit, item: string, slot: Parameters<t
   if (!found) return;
   found.remove();
   const rest = place(data, u, found.inst, slot);
-  if (rest) u.bag.push(rest); // bag overflow is tolerated for a swap (one item can be over the limit)
+  if (rest) addToBag(data, u.bag, rest); // bag overflow is tolerated for a swap (one item can be over the limit)
   events.push({ t: 'equipped', unit: u.uid, item });
 }
 
@@ -590,10 +590,10 @@ function doTrade(data: GameData, s: BattleState, cmd: Extract<Command, { type: '
     if (!from) continue;
     const to = op.to === a.uid ? a : b;
     if (op.slot !== 'bag' && canEquip(data, to, from.inst, op.slot, activeSkillIds(data, to))) continue;
-    if (op.slot === 'bag' && to.bag.length >= data.balance.bag.size) continue;
+    if (op.slot === 'bag' && bagIsFull(data, to.bag, from.inst)) continue;
     from.remove();
     const rest = place(data, to, from.inst, op.slot);
-    if (rest) (to === a ? b : a).bag.push(rest);
+    if (rest) addToBag(data, (to === a ? b : a).bag, rest);
   }
   events.push({ t: 'equipped', unit: a.uid, item: 'trade' });
 }

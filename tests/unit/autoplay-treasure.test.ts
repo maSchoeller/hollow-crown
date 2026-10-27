@@ -58,7 +58,7 @@ describe('treasurePlan', () => {
     expect(plan.lock.get(a.uid)).not.toEqual(plan.lock.get(b.uid));
   });
 
-  it('sends a key on the ground to the unit with room that is closest by foot', () => {
+  it('sends a key on the ground to the unit that is closest by foot, a full bag or not (keys take no bag place)', () => {
     const s = hunt();
     const near = place(data, s, 'player', 'vanguard', [7, 3], 'iron_lance'); // straight-line close, behind the wall
     const far = place(data, s, 'player', 'vanguard', [3, 5], 'iron_lance');
@@ -66,9 +66,9 @@ describe('treasurePlan', () => {
     for (let i = 0; i < data.balance.bag.size; i++) full.bag.push(newItem(s, 'vulnerary', data));
     s.loot.push({ at: [5, 4], item: newItem(s, 'door_key', data) });
     const plan = treasurePlan(data, s, new Set(['west', 'east']));
-    expect(plan.loot.get(far.uid)).toEqual([5, 4]);
+    expect(plan.loot.get(full.uid)).toEqual([5, 4]);
     expect(plan.loot.has(near.uid)).toBe(false);
-    expect(plan.loot.has(full.uid)).toBe(false);
+    expect(plan.loot.has(far.uid)).toBe(false);
   });
 });
 
@@ -84,13 +84,12 @@ describe('autoplay on a treasure hunt', () => {
     for (const o of end.objects) expect(Math.abs(at[0] - o.at[0]) + Math.abs(at[1] - o.at[1])).toBeGreaterThan(1);
   });
 
-  it('puts spare gear into the convoy when the bag is full and the convoy is at hand', () => {
+  it('no longer empties a full bag into the convoy to make room for a key', () => {
     const s = hunt();
     const kael = place(data, s, 'player', 'vanguard', [1, 10], 'iron_lance');
     kael.flags.push('convoyAccess');
     kael.bag.push(newItem(s, 'iron_sword', data), newItem(s, 'vulnerary', data), newItem(s, 'vulnerary', data));
     const cmd = autoCommand(data, s);
-    expect(cmd).toMatchObject({ type: 'convoy', unit: kael.uid, put: kael.bag[0]!.uid });
-    expect(applyCommand(data, s, cmd).state.units.find((x) => x.uid === kael.uid)!.bag).toHaveLength(2);
+    expect(cmd.type).not.toBe('convoy');
   });
 });

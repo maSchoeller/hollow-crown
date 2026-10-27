@@ -30,6 +30,44 @@ export function applyVillageAid(data: GameData, villageAid: number | null | unde
   }
 }
 
+/**
+ * Keys (items with `use.open`) take no bag place: they stack as one bag entry per kind whose `charges` count the keys, so a
+ * full bag never sends a found key to the convoy (decision 2026-10-27, key ring).
+ */
+export const isKey = (data: GameData, inst: ItemInstance | string): boolean => !!data.items[typeof inst === 'string' ? inst : inst.def]?.use?.open;
+
+/** Bag places in use: every entry but the keys. */
+export function bagUsed(data: GameData, bag: ItemInstance[]): number {
+  return bag.reduce((n, i) => n + (isKey(data, i) ? 0 : 1), 0);
+}
+
+/** Whether `bag` has no place left for `item` (a key always fits). */
+export function bagIsFull(data: GameData, bag: ItemInstance[], item?: ItemInstance): boolean {
+  if (item && isKey(data, item)) return false;
+  return bagUsed(data, bag) >= data.balance.bag.size;
+}
+
+/** Puts an item into a bag; a key joins the stack of its kind (charges add up). */
+export function addToBag(data: GameData, bag: ItemInstance[], inst: ItemInstance): void {
+  if (isKey(data, inst)) {
+    const stack = bag.find((i) => i.def === inst.def && i.uid !== inst.uid);
+    if (stack) {
+      stack.charges = (stack.charges ?? 1) + (inst.charges ?? 1);
+      return;
+    }
+  }
+  bag.push(inst);
+}
+
+/** Merges loose keys of one kind into one stack (old saves held one entry per key). Returns the bag as is when nothing merges. */
+export function stackKeys(data: GameData, bag: ItemInstance[]): ItemInstance[] {
+  const keys = bag.filter((i) => isKey(data, i));
+  if (keys.length === new Set(keys.map((i) => i.def)).size) return bag;
+  const out: ItemInstance[] = [];
+  for (const i of bag) addToBag(data, out, { ...i });
+  return out;
+}
+
 export const isWeapon = (d: ItemDef): boolean => d.slot === 'mainHand' && (d.kind === 'weapon' || d.kind === 'tome');
 export const isStaff = (d: ItemDef): boolean => d.kind === 'staff';
 export const isRune = (data: GameData, inst: ItemInstance): boolean => !!data.runes[inst.def];

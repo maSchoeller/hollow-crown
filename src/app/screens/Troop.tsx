@@ -19,6 +19,7 @@ import {
   type UnitRecord,
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
+import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
 import { Toast, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -186,9 +187,11 @@ export function Figure({
   const name = unitName(unit);
   const group = roleOf(unit);
   const loadCap = Math.max(1, st.carry);
-  const slots: Array<{ key: string; slot: EquipSlot | 'bag'; index: number; label: string; item?: (typeof unit.bag)[number] }> = [
+  const slots: Array<{ key: string; slot: EquipSlot | 'bag'; index: number; label: string; item?: (typeof unit.bag)[number]; fixed?: boolean }> = [
     ...EQUIP_SLOTS.map((s, i) => ({ key: s, slot: s as EquipSlot | 'bag', index: i, label: t(`ui.slot.${s}`), item: unit.equip[s] })),
-    ...Array.from({ length: data.balance.bag.size }, (_, i) => ({ key: `bag${i}`, slot: 'bag' as const, index: i, label: t('ui.slot.bag'), item: unit.bag[i] })),
+    ...Array.from({ length: data.balance.bag.size }, (_, i) => ({ key: `bag${i}`, slot: 'bag' as const, index: i, label: t('ui.slot.bag'), item: unit.bag.filter((b) => !isKey(data, b))[i] })),
+    // keys take no bag place (key ring): their stack sits in a slot of its own
+    ...unit.bag.filter((b) => isKey(data, b)).map((item, i) => ({ key: `keys${i}`, slot: 'bag' as const, index: data.balance.bag.size + i, label: t('ui.slot.keys'), item, fixed: true })),
   ];
   const statCells: Array<[string, number]> = [
     ['hp', st.maxHp],
@@ -270,7 +273,7 @@ export function Figure({
               key={s.key}
               type="button"
               class={`trp-slot ${selectedSlot === s.key ? 'is-sel' : ''}`}
-              disabled={!onSlot || readOnly}
+              disabled={!onSlot || readOnly || s.fixed}
               onClick={() => onSlot?.(s.slot, s.index)}
               aria-label={s.item ? `${s.label}: ${t(`item.${s.item.def}.name`)}` : `${s.label}: ${t('ui.figure.empty')}`}
             >
