@@ -324,6 +324,8 @@ export interface MapUnitDef {
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };
   ignoreForRout?: boolean;
+  /** no foe ever targets this unit (children in the camp of mission 1-5, Story 9.6): not by the AI, not by attacks or damaging items */
+  untargetable?: boolean;
   /** unit only appears on these difficulties (default: all) */
   difficulty?: Difficulty[];
   /**
@@ -522,6 +524,7 @@ export type Effect =
   | { recruit: string | { lt: string } }
   | { leave: string }
   | { grudge: { lt: string; delta: number } }
+  | { meet: { lt: string } }
   | { gold: number }
   | { material: Record<string, number> }
   | { item: ItemRef }

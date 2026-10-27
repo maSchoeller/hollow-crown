@@ -281,6 +281,7 @@ export const mapUnitSchema = z.object({
   quote: z.string().optional(),
   recruit: z.object({ by: z.union([z.array(z.string()), z.literal('any')]), dialogue: z.string().optional() }).optional(),
   ignoreForRout: z.boolean().optional(),
+  untargetable: z.boolean().optional(),
   difficulty: z.array(z.enum(['easy', 'normal', 'hard'])).optional(),
   /** conditions against the campaign at the creation of the battle (story 9.5); `conditionSchema` is defined further down */
   requires: z.array(z.lazy(() => conditionSchema)).optional(),
@@ -468,6 +469,7 @@ export const effectSchema: z.ZodType<Effect> = z.union([
   z.strictObject({ recruit: z.union([movableCompanion, z.strictObject({ lt: z.string().min(1) })]) }),
   z.strictObject({ leave: movableCompanion }),
   z.strictObject({ grudge: z.strictObject({ lt: z.string().min(1), delta: z.number().int() }) }),
+  z.strictObject({ meet: z.strictObject({ lt: z.string().min(1) }) }),
   z.strictObject({ gold: z.number().int() }),
   z.strictObject({ material: z.record(z.string(), z.number().int()) }),
   z.strictObject({ item: itemRefSchema }),

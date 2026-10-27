@@ -69,7 +69,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom', 'silberbach', 'wolfslager', 'rhen_confession'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom', 'silberbach', 'wolfslager', 'hungerlager', 'rhen_confession'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);
@@ -86,7 +86,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_4: 'wolfslager' });
+    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_4: 'wolfslager', m1_5: 'hungerlager' });
   });
 });
 

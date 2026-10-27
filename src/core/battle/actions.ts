@@ -46,7 +46,7 @@ export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos
     const r = weaponRange(data, s, u, w.uid, extraRange);
     for (const t of tilesInRange(s, pos, r)) {
       const o = unitAt(s, t);
-      if (!o || !onMap(o) || !isHostile(o.team, u.team)) continue;
+      if (!o || !onMap(o) || !isHostile(o.team, u.team) || o.untargetable) continue;
       if (o.downed && !finishAllowed) continue;
       (out[o.uid] ??= []).push(w.uid);
     }
@@ -249,7 +249,7 @@ export function itemTargets(data: GameData, s: BattleState, u: BattleUnit, pos: 
   if (use.damage) {
     const r = use.rng ?? [1, 1];
     return s.units
-      .filter((o) => active(o) && isHostile(o.team, u.team) && o.pos && dist(o.pos, pos) >= r[0] && dist(o.pos, pos) <= r[1])
+      .filter((o) => active(o) && isHostile(o.team, u.team) && !o.untargetable && o.pos && dist(o.pos, pos) >= r[0] && dist(o.pos, pos) <= r[1])
       .map((o) => o.uid);
   }
   if (use.target === 'ally') {

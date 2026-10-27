@@ -75,6 +75,7 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
         roster.delete(v as string);
         break;
       case 'grudge':
+      case 'meet':
         if (!data.lieutenants?.[(v as { lt: string }).lt]) return 'unknown_unit';
         break;
       case 'gold':
@@ -157,6 +158,13 @@ export function applyEffects(data: GameData, c: CampaignState, effects: readonly
           (c.lieutenants ??= {})[lt] = { ...st, grudge };
           events.push({ t: 'grudgeChanged', lt, grudge });
         }
+        break;
+      }
+      case 'meet': {
+        // the company met the lieutenant outside a battle (a scene): he counts as met (wanted poster, haunts, finale); once only
+        const lt = (v as { lt: string }).lt;
+        const st = lieutenantState(c, lt);
+        if (!st.met) (c.lieutenants ??= {})[lt] = { ...st, met: true, encounters: Math.max(1, st.encounters) };
         break;
       }
       case 'gold':

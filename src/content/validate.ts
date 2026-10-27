@@ -180,7 +180,7 @@ export function validateContent(
         companion(file, v as string, ctx);
         if (key === 'recruit' && data.lieutenants[v as string]) err(file, `${ctx}: ${v as string} is a lieutenant, recruit him with recruit: { lt: ${v as string} }`);
       }
-      else if (key === 'grudge') {
+      else if (key === 'grudge' || key === 'meet') {
         if (!data.lieutenants[(v as { lt: string }).lt]) err(file, `${ctx}: unknown lieutenant ${(v as { lt: string }).lt}`);
       } else if (key === 'item') item(file, v as ItemRef, ctx);
       else if (key === 'chronicle') page(file, v as string, ctx);
