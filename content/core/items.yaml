@@ -136,3 +136,4 @@
 
 # --- Relikte (items.md §5; Story 9.11): Schild der Paktwächter, Stufe 1 schlafend. Werte wie der Eisenschild, unverkäuflich; Erwachen (Stufen 2/3, Bilder _2/_3) folgt in einer späteren Story ---
 - { id: pact_warden_shield, kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7, rarity: legendary, price: 0, tags: [unsellable], image: pact_warden_shield_1, grantsSkill: { skill: warden_ward, masteryCost: 45 } }   # Relikt Akt 1 (N2)
+- { id: heirloom, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7, rarity: legendary, price: 1000, grantsSkill: { skill: young_heroes, masteryCost: 40 } }   # Tobin: Erbstück (N3), +Mt neben einem Niedergestreckten

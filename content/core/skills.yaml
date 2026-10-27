@@ -62,3 +62,6 @@
 
 # --- Relikt Schild der Paktwächter (Story 9.11): Schutz für Nachbarn, solange der Träger steht (Aura, Stufe 1) ---
 - { id: warden_ward, source: item, trigger: passive, aura: { radius: 1 }, effect: { stats: { def: 2 } } }   # Verbündete auf Nachbarfeldern des Trägers: +2 VER [C]
+
+# --- Item-Skill der Signatur Erbstück (Story 9.12) ---
+- { id: young_heroes, source: item, trigger: passive, condition: { allyDownedWithin: 2 }, effect: { damageBonus: 3 } }   # Erbstück (Tobin): „Helden sterben jung“ – +3 Schaden, solange ein Verbündeter in Reichweite 2 niedergestreckt ist [C]

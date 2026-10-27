@@ -1,0 +1,20 @@
+# Nebenquest N3, Gedenk-Variante nach der Karte (Tobin ist gefallen): das Erbstück geht in den Konvoi (volle Belohnung, Produktinhaber 2026-10-26). Kein Humor.
+id: scn.n3.memorial_outro
+background: erlbach
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Die Eintreiber sind fort. Über der Feuerstelle hängt eine alte Lanze mit einer Ähre auf der Spitze."
+  - id: l02
+    speaker: [brenna, kael, avatar]
+    mood: sad
+    text: "Das Erbstück. Helden sterben jung, sagte er. Er sagte es immer wie ein Versprechen."
+  - id: l03
+    speaker: [brenna, kael, avatar]
+    mood: sad
+    text: "Ich hätte es ihm verbieten sollen."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Sie bleibt in der Kompanie. Und einer von uns trägt sie für ihn."

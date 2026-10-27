@@ -1,0 +1,20 @@
+# Nebenquest N3, Gedenk-Variante vor der Karte (Tobin ist gefallen; memorialIf in campaign.yaml). Brenna als Ziehmutter, Ersatzsprecher-Kette, kein Humor.
+id: scn.n3.memorial_intro
+background: erlbach
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Mittag auf dem Land. Felder, ein Bach, ein Zaun um einen Hof. Tobin hat oft von hier erzählt."
+  - id: l02
+    speaker: [brenna, kael, avatar]
+    mood: sad
+    text: "Er wollte nie die Pacht übernehmen. Und doch hat er jeden Abend von diesem Hof geredet."
+  - id: l03
+    speaker: [brenna, kael, avatar]
+    mood: sad
+    text: "Pachteintreiber halten ihn besetzt. Wir holen den Hof zurück. Für ihn."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Waffen bereit. Wir bleiben beisammen."

@@ -1,0 +1,18 @@
+# Nebenquest N3, Szene beim Besuch des Elternhauses (Karte n3_erbe, Dorfbelohnung `dialogue`). Läuft in der Schlacht, ohne Antworten. Zeile m01 nur, wenn Tobin gefallen ist.
+id: scn.n3.home
+lines:
+  - id: h01
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Hier am Tisch sagte Vater immer: Ein Pächter bleibt. Ich bin gegangen. Und der Tisch steht noch."
+  - id: h02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Er steht, weil er sich gehalten hat. Wie jemand, den ich kenne."
+  - id: m01
+    speaker: [brenna, kael, avatar]
+    requires: [{ dead: tobin }]
+    mood: sad
+    text: "Hier am Tisch saß er als Kind. Das Haus erinnert sich an ihn, auch wenn es keiner sagt."
