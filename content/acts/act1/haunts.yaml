@@ -8,9 +8,8 @@ factions:
     - { class: skirmisher, sprite: mercenary,     nameKey: unit.marauder.name, items: [{ def: iron_sword }], share: 20 }
     - { class: vanguard,   sprite: soldier,       nameKey: unit.marauder.name, items: [{ def: iron_lance }], share: 20 }
     - { class: marksman,   sprite: bandit_archer, nameKey: unit.marauder.name, items: [{ def: iron_bow }],   share: 20 }
-# Der Mensch, den defend und escort schützen: wie der Dorfälteste in 1-2 die Klasse healer als Platzhalter für „Zivilist“;
-# ein Modell gibt es noch nicht (OFFEN, wie beim Dorfältesten), daher ohne sprite.
-civilian: { class: healer, nameKey: unit.civilian.name }
+# Der Mensch, den defend und escort schützen: wie der Dorfälteste in 1-2 ein Zivilist (Klasse civilian, Nichtkämpfer), Figur und Porträt villager_elder.
+civilian: { class: civilian, sprite: villager_elder, portrait: villager_elder, nameKey: unit.civilian.name }
 # Inhalt der Truhen bei treasure: Einträge (Gold oder Gegenstand); wie sie auf die Truhen kommen, legt Story 5.6 fest
 chestLoot:
   - { gold: 150 }
