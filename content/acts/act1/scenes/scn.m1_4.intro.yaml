@@ -45,8 +45,7 @@ lines:
         stance: warm
         text: "„Fenn gehört zu uns. Das Lager finden wir auch ohne euch.“"
         summary: "Fenn bleibt bei der Truppe"
-        # N1 (Session Nebenquests): { openQuest: n1 } wird dort nachgetragen, sobald der Knoten n1 existiert
-        effects: [{ setFlag: { e02: protect } }]
+        effects: [{ setFlag: { e02: protect } }, { openQuest: n1 }]
       - id: hand_over
         stance: sober
         text: "„Nehmt ihn. Und zeigt uns den Hintereingang.“"
