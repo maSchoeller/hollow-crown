@@ -405,8 +405,7 @@ export function advanceToToday(now = Date.now()): Extract<CampaignEvent, { t: 'd
  * open, marks the story nodes up to the map's as done, lets the lieutenant have been met and shows the world map with the haunt.
  */
 function devHaunt(mapId = 'prologue_paktnacht', variant = 'rout', ltId = 'hask'): string | null {
-  // easy: the prologue company (level 1) against a level-2 haunt is a coin flip on normal; a test battle must not hinge on dice
-  campaign.value ??= newCampaign(data, 1, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+  campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   const c = clone(campaign.value);
   const map = data.maps[mapId];
   const anchor = map?.haunts?.find((a) => a.variant === variant);
