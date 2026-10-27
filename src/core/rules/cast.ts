@@ -34,7 +34,7 @@ const isCastElement = (e: Element | undefined): e is CastElement => !!e && (CAST
 export function castSource(data: GameData, s: BattleState, u: BattleUnit): { src?: CastSource; block?: CastBlock } {
   const w = u.equip.mainHand;
   if (!w || itemDef(data, w).kind !== 'tome') return { block: 'tome' };
-  const element = weaponProfile(data, w).element;
+  const element = weaponProfile(data, w, s).element;
   if (!isCastElement(element)) return { block: 'element' };
   if (element === 'wind' && !data.maps[s.mapId]?.fog) return { block: 'fog' };
   // a tome with `utility.rng` (stone_wall) casts that far, any other the range of its weapon

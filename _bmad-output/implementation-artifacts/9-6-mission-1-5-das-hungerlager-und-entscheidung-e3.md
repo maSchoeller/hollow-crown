@@ -81,3 +81,4 @@ Claude Sonnet 5.5
 ### Change Log
 
 - 2026-10-27: Story 9.6 umgesetzt (Mission 1-5 mit Varek, Kindern und Grosk im Outro, E3 mit der neuen Wirkung `meet`, Karteneinheiten-Feld `untargetable`).
+- 2026-10-27: Nacharbeit (Produktinhaber): `status` und `runes` sind gestaffelte Mechaniken (`campaign.yaml` `mechanics`, je ab der 3. Story-Mission, unabhängig von der Reihenfolge); `untargetable`-Einheiten nehmen auch keinen Schaden durch Brennen, brennende Felder, Bomben oder Rückstoß (`damageUnit`). Tests `staged-status-runes.test.ts`, `untargetable.test.ts`.

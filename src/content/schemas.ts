@@ -622,7 +622,7 @@ export const campaignSchema = z.object({
       effectsIf: z.array(z.strictObject({ requires: z.array(conditionSchema).min(1), effects: z.array(effectSchema).min(1) })).optional(),
     }),
   ),
-  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),
+  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'status', 'runes', 'supports']), z.number().int().min(0)).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()), storyCount: z.number().int().min(1).optional() })),
   scars: z.array(

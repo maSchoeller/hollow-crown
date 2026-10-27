@@ -34,7 +34,7 @@ export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head',
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary';
 export type Difficulty = 'easy' | 'normal' | 'hard';
 /** Rules that the campaign introduces step by step (campaign.yaml `mechanics`). */
-export type Mechanic = 'triangle' | 'magic' | 'elements' | 'supports';
+export type Mechanic = 'triangle' | 'magic' | 'elements' | 'status' | 'runes' | 'supports';
 export type DeathMode = 'classic' | 'standard' | 'casual';
 export type SupportRank = 'C' | 'B' | 'A' | 'S';
 export const SUPPORT_RANKS: readonly SupportRank[] = ['C', 'B', 'A', 'S'];

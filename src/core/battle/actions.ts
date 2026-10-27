@@ -58,7 +58,7 @@ export function staffTargets(data: GameData, s: BattleState, u: BattleUnit, pos:
   const out = new Set<string>();
   for (const st of usableStaves(data, u)) {
     const d = itemDef(data, st);
-    for (const t of tilesInRange(s, pos, weaponProfile(data, st).range)) {
+    for (const t of tilesInRange(s, pos, weaponProfile(data, st, s).range)) {
       const o = unitAt(s, t);
       if (!o || !active(o) || !isAlly(o.team, u.team) || o.uid === u.uid) continue;
       const hurt = o.hp < computeStats(data, o).maxHp;

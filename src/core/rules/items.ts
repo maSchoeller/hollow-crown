@@ -1,6 +1,7 @@
 import { CoreInvariantError } from '../errors';
-import type { AffixDef, ClassDef, Element, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
+import type { AffixDef, ClassDef, Element, Mechanic, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
 import type { ItemInstance, UnitRecord } from '../state';
+import { ruleOn } from '../util';
 
 export function itemDef(data: GameData, inst: ItemInstance | string): ItemDef {
   const id = typeof inst === 'string' ? inst : inst.def;
@@ -41,7 +42,11 @@ export function itemCategory(d: ItemDef): AffixDef['appliesTo'][number] | null {
   return null;
 }
 
-function runes(data: GameData, inst: ItemInstance): RuneDef[] {
+/** Battle state (or anything with `locked`): while the `runes` mechanic is not introduced yet, set runes have no effect. */
+type RuleCtx = { locked?: Mechanic[] };
+
+function runes(data: GameData, inst: ItemInstance, s?: RuleCtx): RuneDef[] {
+  if (s && !ruleOn(s, 'runes')) return [];
   return inst.runes.filter((r): r is string => !!r).map((r) => data.runes[r]!).filter(Boolean);
 }
 function affixes(data: GameData, inst: ItemInstance): AffixDef[] {
@@ -58,10 +63,10 @@ export function runeSlotCount(data: GameData, inst: ItemInstance): number {
 }
 
 /** Element of the weapon: built-in element or element rune. */
-export function itemElement(data: GameData, inst: ItemInstance): Element | undefined {
+export function itemElement(data: GameData, inst: ItemInstance, s?: RuleCtx): Element | undefined {
   const d = itemDef(data, inst);
   if (d.element) return d.element;
-  return runes(data, inst).find((r) => r.element)?.element;
+  return runes(data, inst, s).find((r) => r.element)?.element;
 }
 
 export interface WeaponProfile {
@@ -79,7 +84,7 @@ export interface WeaponProfile {
   damageVsTag: Array<{ tag: string; bonus: number }>;
 }
 
-export function weaponProfile(data: GameData, inst: ItemInstance): WeaponProfile {
+export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): WeaponProfile {
   const d = itemDef(data, inst);
   const b = data.balance;
   let might = d.mt ?? 0;
@@ -104,7 +109,7 @@ export function weaponProfile(data: GameData, inst: ItemInstance): WeaponProfile
     if (a.mods.damageVsTag) damageVsTag.push(a.mods.damageVsTag);
   }
   let element = d.element;
-  for (const r of runes(data, inst)) {
+  for (const r of runes(data, inst, s)) {
     if (r.utility) {
       might += r.mods?.might ?? 0;
       weight += r.mods?.weight ?? 0;
@@ -140,12 +145,12 @@ export function weaponProfile(data: GameData, inst: ItemInstance): WeaponProfile
   };
 }
 
-export function itemWeight(data: GameData, inst: ItemInstance): number {
+export function itemWeight(data: GameData, inst: ItemInstance, s?: RuleCtx): number {
   const d = itemDef(data, inst);
-  if (isWeapon(d)) return weaponProfile(data, inst).weight;
+  if (isWeapon(d)) return weaponProfile(data, inst, s).weight;
   let w = d.wt;
   for (const a of affixes(data, inst)) w += a.mods.weight ?? 0;
-  for (const r of runes(data, inst)) w += r.mods?.weight ?? 0;
+  for (const r of runes(data, inst, s)) w += r.mods?.weight ?? 0;
   return Math.max(0, w);
 }
 
@@ -178,10 +183,10 @@ export function itemStatMods(data: GameData, inst: ItemInstance): StatMods & { h
 }
 
 /** Element given to the wearer by body armor (built-in or armor rune). */
-export function armorAffinity(data: GameData, unit: UnitRecord): Element | undefined {
+export function armorAffinity(data: GameData, unit: UnitRecord, s?: RuleCtx): Element | undefined {
   const body = unit.equip.body;
   if (!body) return undefined;
-  return itemElement(data, body);
+  return itemElement(data, body, s);
 }
 
 export type EquipError =

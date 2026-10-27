@@ -106,8 +106,8 @@ function calcSide(
   extraHit = 0,
 ): SideCalc {
   const b = data.balance;
-  const wp = weapon && itemDef(data, weapon).mt !== undefined ? weaponProfile(data, weapon) : undefined;
-  const owp = oppWeapon && itemDef(data, oppWeapon).mt !== undefined ? weaponProfile(data, oppWeapon) : undefined;
+  const wp = weapon && itemDef(data, weapon).mt !== undefined ? weaponProfile(data, weapon, s) : undefined;
+  const owp = oppWeapon && itemDef(data, oppWeapon).mt !== undefined ? weaponProfile(data, oppWeapon, s) : undefined;
   const oppTags = data.classes[opp.classId]?.tags ?? [];
   const myTags = data.classes[me.classId]?.tags ?? [];
   const effective = !!wp && wp.effectiveVs.some((t) => oppTags.includes(t));
@@ -170,7 +170,7 @@ function calcSide(
   const setStatus = setBonuses(data, me)
     .map((m) => m.statusChanceBonus)
     .filter((x): x is NonNullable<typeof x> => !!x);
-  const status = (elements ? (wp?.statusOnHit ?? []) : []).map((x) => {
+  const status = (elements && ruleOn(s, 'status') ? (wp?.statusOnHit ?? []) : []).map((x) => {
     const el = Object.entries(b.element.statusOf).find(([, st]) => st === x.status)?.[0];
     const setB = setStatus.filter((sb) => sb.element === el).reduce((t, sb) => t + sb.value, 0);
     const immune = oppStats.affinity && el === oppStats.affinity;
@@ -332,7 +332,9 @@ function knockback(data: GameData, s: BattleState, attacker: BattleUnit, target:
   const to: Pos = [target.pos[0] + dx, target.pos[1] + dy];
   const from: Pos = [target.pos[0], target.pos[1]];
   const blocked = !inBounds(s, to) || !!unitAt(s, to) || moveCost(data, s, target, to) === null;
-  if (blocked) {
+  if (blocked && target.untargetable) {
+    events.push({ t: 'knockback', unit: target.uid, from, to: from, blocked: true });
+  } else if (blocked) {
     const extra = data.balance.status.knockbackBlockedDamage;
     target.hp = Math.max(0, target.hp - extra);
     events.push({ t: 'knockback', unit: target.uid, from, to: from, blocked: true });
@@ -384,8 +386,8 @@ export function resolveAttack(
   if (weaponUid) equipWeapon(data, a, weaponUid, events);
   const ownPhase = a.team === s.phase;
   const f = forecast(data, s, a.uid, d.uid, a.equip.mainHand?.uid, undefined, ownPhase, mods);
-  const aWp = a.equip.mainHand ? weaponProfile(data, a.equip.mainHand) : undefined;
-  const dWp = d.equip.mainHand ? weaponProfile(data, d.equip.mainHand) : undefined;
+  const aWp = a.equip.mainHand ? weaponProfile(data, a.equip.mainHand, s) : undefined;
+  const dWp = d.equip.mainHand ? weaponProfile(data, d.equip.mainHand, s) : undefined;
   const aProcs = computeStats(data, a, { state: s, opponent: d, initiator: true, distance: f.distance }, 'combat_attack').skills.procs;
   const dProcs = computeStats(data, d, { state: s, opponent: a, initiator: false, distance: f.distance }, 'combat_defend').skills.procs;
   events.push({ t: 'combat', attacker: a.uid, defender: d.uid, weapon: a.equip.mainHand?.uid });

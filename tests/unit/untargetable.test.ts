@@ -1,7 +1,7 @@
 /** Map units with `untargetable` (story 9.6): the children of the hunger camp (mission 1-5) are never attacked by a foe. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { attackTargets, createBattle, itemTargets, newCampaign, runAiPhase, type BattleState, type GameData, type GameEvent } from '../../src/core';
+import { attackTargets, burningTileHit, createBattle, damageUnit, startOfPhase, itemTargets, newCampaign, runAiPhase, type BattleState, type GameData, type GameEvent } from '../../src/core';
 
 let data: GameData;
 
@@ -60,5 +60,36 @@ describe('untargetable children in mission 1-5', () => {
     }
     expect(kids.map((k) => k.hp)).toEqual(full);
     expect(kids.every((k) => !k.downed && k.gone === undefined)).toBe(true);
+  });
+});
+
+describe('untargetable units take no damage without an attack either (fire, burn, bombs)', () => {
+  const child = (s: BattleState) => s.units.find((u) => u.id === 'child1')!;
+
+  it('damageUnit leaves them alone', () => {
+    const s = battle();
+    const k = child(s);
+    const full = k.hp;
+    const events: GameEvent[] = [];
+    expect(damageUnit(data, s, k, 99, 'fire', events)).toBe(false);
+    expect(damageUnit(data, s, k, 99, 'burn', events)).toBe(false);
+    expect(k.hp).toBe(full);
+    expect(events).toEqual([]);
+    k.untargetable = false;
+    expect(damageUnit(data, s, k, 1, 'fire', events)).toBe(false);
+    expect(k.hp).toBe(full - 1);
+  });
+
+  it('standing in a burning field and with the burning status costs nothing at the start of a phase', () => {
+    const s = battle();
+    const k = child(s);
+    const full = k.hp;
+    s.terrain[k.pos![1] * s.width + k.pos![0]] = 'burning';
+    k.status.push({ id: 'burning', turns: 2 });
+    const events: GameEvent[] = [];
+    startOfPhase(data, s, k.team, events);
+    burningTileHit(data, s, k, events);
+    expect(k.hp).toBe(full);
+    expect(events.filter((e) => e.t === 'damage')).toEqual([]);
   });
 });
