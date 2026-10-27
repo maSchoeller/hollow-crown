@@ -89,3 +89,34 @@ test('deployment: required units stay, places are counted, a full company gives 
   await page.getByRole('button', { name: /Begin battle|Kampf beginnen/ }).click();
   await expect(page.locator('canvas.hc-stage')).toBeVisible({ timeout: 90_000 });
 });
+
+test('leaving a running mission (story 1.9): the menu asks first, then the world map shows and the mission can be started again', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'one project is enough');
+  test.setTimeout(360_000);
+  await openPrep(page);
+  await page.getByRole('button', { name: /Begin battle|Kampf beginnen/ }).click();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible({ timeout: 90_000 });
+
+  // the battle opens with dialogue and a loading cover: skip and wait until the board is free
+  const menu = page.getByRole('button', { name: /^(Menu|Menü)$/ });
+  const skip = page.getByRole('button', { name: /Skip|Überspringen/ });
+  await expect(async () => {
+    if (await skip.isVisible()) await skip.click();
+    await expect(skip).toBeHidden({ timeout: 3_000 });
+    await expect(page.locator('.ld-cover')).toHaveCount(0, { timeout: 3_000 });
+  }).toPass({ timeout: 200_000 });
+
+  const leave = page.getByRole('button', { name: /^(Leave mission|Mission verlassen)$/ });
+  // asked first: cancelling keeps the battle
+  await menu.click();
+  await leave.click();
+  await expect(page.getByRole('dialog')).toContainText(/campaign stays unchanged|Kampagne bleibt unverändert/);
+  await page.getByRole('button', { name: /^(Cancel|Abbrechen)$/ }).click();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible();
+
+  // confirmed (cancel went back to the menu): the world map shows, mission 1-1 is open again
+  await leave.click();
+  await leave.click();
+  await expect(page.locator('canvas.hc-stage')).toHaveCount(0);
+  await expect(page.locator('button.wm-node--story[aria-label]').filter({ hasText: '1-1' })).toBeVisible();
+});

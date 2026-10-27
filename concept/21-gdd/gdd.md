@@ -92,6 +92,8 @@ Der Proof of Concept (Prolog, Kap. 1–2) hat Kampfgefühl und Bedienung bestät
 | Standard | ja | jederzeit | Auto-Save + 3 Plätze, Export/Import |
 | Casual | ja | jederzeit | Auto-Save + 3 Plätze, Export/Import |
 
+- **Mission verlassen** (Rückkehr zur Weltkarte, Kampf verworfen, Kampagne unverändert): in Standard und Casual jederzeit, in Klassik nur vor der ersten Aktion (Story 1.9).
+
 - **Staffel:** endet mit dem Finale von Akt 3 und dem Epilog-Mosaik.
 
 ## Game Mechanics

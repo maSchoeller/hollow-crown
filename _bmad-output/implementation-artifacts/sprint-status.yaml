@@ -1,5 +1,5 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-25
+# last_updated: 2026-10-27
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-25
+last_updated: 2026-10-27
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -55,6 +55,7 @@ development_status:
   1-6-verbluten-im-modus-standard: done  # Verbluten im Modus Standard
   1-7-fehlerbericht-und-speicherschutz: done  # Fehlerbericht und Speicherschutz
   1-8-optionen-ende-und-hinweise-im-stil-b: done  # Optionen, Ende und Hinweise im Stil B (nachgetragen 2026-10-24)
+  1-9-mission-verlassen-und-zur-weltkarte: review  # Mission verlassen und zur Weltkarte (nachgetragen 2026-10-27)
   epic-1-retrospective: optional
 
   # Epic 2: Rollenklassen und neues Kampf-HUD

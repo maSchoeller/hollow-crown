@@ -163,6 +163,10 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
         if (replayBattle(data, cmd.lost.start, cmd.lost.commands).outcome !== 'defeat') return 'restart_forbidden';
       }
       return null;
+    case 'abandonMission':
+      if (!startable(c, data, cmd.node, cmd.haunt)) return 'node_unavailable';
+      // Classic: no way back once the first action was given
+      return c.settings.deathMode === 'classic' && cmd.commands.length > 0 ? 'abandon_forbidden' : null;
   }
 }
 
@@ -229,6 +233,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
   }
   if (cmd.type === 'restartTurn') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'turn', keep: cmd.keep }] };
   if (cmd.type === 'restartMission') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'mission', keep: 0 }] };
+  if (cmd.type === 'abandonMission') return { campaign: clone(prev), events: [{ t: 'battleAbandoned' }] };
   const c = clone(prev);
   const events: CampaignEvent[] = [];
   const gained = (uid: string, def: string) => events.push({ t: 'itemGained', uid, def });

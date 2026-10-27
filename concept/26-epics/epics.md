@@ -501,6 +501,32 @@ damit nirgends noch der alte Prototyp durchscheint.
 
 _Nachgetragen 2026-10-24: Lücke aus der Bestandsaufnahme der PoC-Ansichten, von keiner Story abgedeckt._
 
+### Story 1.9: Mission verlassen und zur Weltkarte
+
+Als Spieler
+möchte ich eine laufende Mission verlassen und zur Weltkarte zurückkehren,
+damit ich Truppe, Aufstellung und Ausrüstung ändern und die Mission neu beginnen kann, ohne den Kampf zu Ende zu spielen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Kampf läuft im Modus Standard oder Casual
+**Wenn** der Spieler im Kampfmenü „Mission verlassen“ wählt und die Rückfrage bestätigt
+**Dann** wird der Kampf verworfen und die Weltkarte erscheint, jederzeit, auch mitten im Kampf
+**Und** die Kampagne ist unverändert wie vor dem Missionsstart (Beute, EP, Verbrauchsgüter und Verluste zählen erst mit `finishMission`)
+**Und** der Kampf-Auto-Save ist ersetzt, der abgebrochene Kampf lässt sich nicht fortsetzen.
+
+**Angenommen** ein Kampf läuft im Modus Klassik
+**Wenn** noch keine Aktion gegeben wurde (das Befehls-Log des Kampfs ist leer)
+**Dann** bietet das Kampfmenü „Mission verlassen“ an
+**Aber** sobald die erste Aktion gegeben ist, fehlt der Eintrag und `validateCampaign` lehnt `abandonMission` mit `abandon_forbidden` ab.
+
+**Angenommen** der Spieler öffnet die Rückfrage
+**Wenn** er „Abbrechen“ wählt
+**Dann** läuft der Kampf unverändert weiter
+**Und** der Text sagt klar: Der Kampf wird abgebrochen, der Fortschritt dieses Kampfs geht verloren, die Kampagne bleibt unverändert.
+
+_Nachgetragen 2026-10-27, Wunsch des Produktinhabers. Der Weg über die Aufstellung hat bereits einen Zurück-Button; der Niederlage-Bildschirm bleibt unverändert._
+
 ## Epic 2: Rollenklassen und neues Kampf-HUD
 
 Spieler kämpfen mit Rollen statt Waffenklassen; jede Rolle hat eine Klassen-Aktion auf festem Platz im neuen HUD (Stil B). Die Gegnerphase rechnet im Web Worker.

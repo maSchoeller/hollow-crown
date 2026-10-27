@@ -102,6 +102,41 @@ describe('restartTurn / restartMission (story 1.5)', () => {
   });
 });
 
+describe('abandonMission (story 1.9)', () => {
+  const node = () => firstNode(data).id;
+  const played: Command[] = [{ type: 'endPhase' }, { type: 'endPhase' }];
+
+  it('is allowed at any time in Standard and Casual and leaves the campaign untouched', () => {
+    for (const mode of ['standard', 'casual'] as const) {
+      const c = campaignOf(mode);
+      const before = clone(c);
+      for (const commands of [[], played]) {
+        const cmd = { type: 'abandonMission', node: node(), commands } as const;
+        expect(validateCampaign(data, c, cmd)).toBeNull();
+        const r = applyCampaign(data, c, cmd);
+        expect(r.events).toEqual([{ t: 'battleAbandoned' }]);
+        expect(r.campaign).toEqual(before);
+      }
+      expect(c).toEqual(before);
+    }
+  });
+
+  it('Classic allows it only before the first action', () => {
+    const c = campaignOf('classic');
+    expect(validateCampaign(data, c, { type: 'abandonMission', node: node(), commands: [] })).toBeNull();
+    expect(applyCampaign(data, c, { type: 'abandonMission', node: node(), commands: [] }).campaign).toEqual(c);
+    expect(validateCampaign(data, c, { type: 'abandonMission', node: node(), commands: played })).toBe('abandon_forbidden');
+    expect(() => applyCampaign(data, c, { type: 'abandonMission', node: node(), commands: played })).toThrow();
+  });
+
+  it('refuses a node that is not available or unknown', () => {
+    const c = campaignOf('standard');
+    const off = { ...clone(c), completed: [node()] };
+    expect(validateCampaign(data, off, { type: 'abandonMission', node: node(), commands: [] })).toBe('node_unavailable');
+    expect(validateCampaign(data, c, { type: 'abandonMission', node: 'no_such_node', commands: [] })).toBe('node_unavailable');
+  });
+});
+
 describe('dialogue effects queued in a battle and restarts', () => {
   const q = (at: number) => ({ at, effects: [{ setFlag: 'avatar_bold' }] });
   it('a restart keeps the effects fired within the kept part of the log and drops the rest', () => {

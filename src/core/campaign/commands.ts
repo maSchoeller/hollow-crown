@@ -61,6 +61,12 @@ export type CampaignCommand =
    */
   | { type: 'restartMission'; node: string; lost?: { start: BattleState; commands: Command[] }; haunt?: string }
   /**
+   * Leave the running mission for the world map (story 1.9). The battle is discarded, the campaign stays as it was before the
+   * mission started (loot, XP, consumables and losses only count at `finishMission`). `commands` is the battle's log so far:
+   * Classic allows it only while the log is empty (before the first action); Standard and Casual at any time.
+   */
+  | { type: 'abandonMission'; node: string; commands: Command[]; haunt?: string }
+  /**
    * A new day began (story 5.4): `day` is the app's day number (local date, change at `balance.day.resetHour`). The core
    * never reads a clock; it only counts forwards (architecture §5.6, ADR-2).
    */
@@ -89,6 +95,8 @@ export type CampaignError =
   | 'node_unavailable'
   /** the death mode does not allow this restart (Classic: round never, mission only after a defeat) */
   | 'restart_forbidden'
+  /** Classic: leaving a mission is only possible before the first action */
+  | 'abandon_forbidden'
   /** an effect refers to something that cannot take it (undeclared flag or value, fallen companion ...) */
   | 'effect_invalid'
   /** scene, choice line or answer does not exist */
@@ -128,6 +136,8 @@ export type CampaignEvent =
   | { t: 'missionFinished'; result: BattleResult }
   /** a battle restart was accepted: keep the first `keep` commands of the log and replay them from `start` */
   | { t: 'battleRestarted'; scope: RestartScope; keep: number }
+  /** the running battle was given up for the world map; the campaign is unchanged (story 1.9) */
+  | { t: 'battleAbandoned' }
   /** the day moved on; `packets` = days that brought a day packet, `haunts` = haunts they made (story 5.5) */
   | { t: 'dayAdvanced'; day: number; packets: number[]; haunts: number }
   /** a haunt arose on a known map (story 5.5) */
