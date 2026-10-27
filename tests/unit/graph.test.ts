@@ -52,7 +52,7 @@ beforeAll(() => {
     node('b', { requires: [{ completed: 'a' }], expectedLevel: 2 }),
     node('c', { requires: [{ completed: 'a' }], expectedLevel: 2 }),
     node('z', { fixed: 'finale', expectedLevel: 4 }),
-    node('s1', { kind: 'side', requires: [{ flag: 'avatar_honest' }], memorialIf: { dead: 'mira' }, post: 'scn.m1_2.outro', memorial: { post: 'scn.ch02.outro' } }),
+    node('s1', { kind: 'side', requires: [{ flag: 'avatar_honest' }], memorialIf: { dead: 'mira' }, post: 'scn.m1_2.outro', memorial: { post: 'scn.m1_3.outro' } }),
     node('s2', { kind: 'side' }),
   ];
   data.campaign.mechanics = { triangle: 1, magic: 2, elements: 3, supports: 3 };
@@ -129,7 +129,7 @@ describe('memorial variant (memorialIf)', () => {
     const c = fresh();
     expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.m1_2.outro' });
     c.fallen.push({ id: 'mira', nameKey: 'unit.mira.name', node: 'a' });
-    expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.ch02.outro' });
+    expect(nodeScenes(data, c, 's1')).toEqual({ pre: undefined, post: 'scn.m1_3.outro' });
     expect(nodeScenes(data, c, 'a')).toEqual({ pre: 'scn.prologue.intro', post: 'scn.prologue.outro' });
     expect(nodeScenes(data, c, 'nope')).toEqual({});
   });

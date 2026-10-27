@@ -10,7 +10,7 @@ import { expPercent, grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
-import { availableNodes, noteRoles } from './graph';
+import { availableNodes, noteRoles, storyCount } from './graph';
 import { availableSupportTalks } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
@@ -302,7 +302,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (u.grief && u.grief > 0) u.grief -= 1;
     const rec = toRecord(u);
     if (u.team === 'other') {
-      // NPC allies with a story character join after the mission (e.g. Liora)
+      // NPC allies with a story character join after the mission (e.g. Liora), exactly once: a replay finds her in the roster already
+      if (!isNew) continue;
       const def = data.chars[u.id]!;
       const fresh = recordFromChar(data, def, c);
       fresh.equip = rec.equip;
@@ -409,7 +410,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   }
   c.rng = rng;
   if (!s.hauntId) {
-    refreshOffers(data, c, node.merchantTier);
+    refreshOffers(data, c, currentTier(data, c));
     refreshTavern(data, c);
   }
   // dead units' gear in the convoy gets refilled as well
@@ -477,12 +478,15 @@ export function merchantStock(data: GameData, tier: number): string[] {
   return [...out];
 }
 
+/** The shop tier: the highest `merchantTier` of the finished nodes, or a tier whose `storyCount` of finished story missions is reached. */
 export function currentTier(data: GameData, c: CampaignState): number {
   let t = 0;
   for (const id of c.completed) {
     const n = data.campaign.nodes.find((x) => x.id === id);
     if (n) t = Math.max(t, n.merchantTier);
   }
+  const done = storyCount(data, c.completed);
+  for (const m of data.campaign.merchant) if (m.storyCount !== undefined && done >= m.storyCount) t = Math.max(t, m.tier);
   return t;
 }
 

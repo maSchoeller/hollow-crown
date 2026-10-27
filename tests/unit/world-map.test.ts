@@ -90,8 +90,8 @@ describe('world map content', () => {
 
   it('content:check accepts the shipped map and refuses a node without a place, two stones too close and a missing region name', () => {
     expect(validateContent(data, locales).filter((i) => i.file.startsWith('world'))).toEqual([]);
-    const without = { ...data, world: { ...world, places: world.places.filter((p) => p.node !== 'ch02') } };
-    expect(validateContent(without, locales).map((i) => i.message)).toContain('node ch02 has no place on the world map');
+    const without = { ...data, world: { ...world, places: world.places.filter((p) => p.node !== 'm1_3') } };
+    expect(validateContent(without, locales).map((i) => i.message)).toContain('node m1_3 has no place on the world map');
     const first = world.places[0]!;
     const crowded: WorldDef = { ...world, places: world.places.map((p, i) => (i === 1 ? { ...p, at: [first.at[0] + 1, first.at[1]] } : p)) };
     expect(validateContent({ ...data, world: crowded }, locales).map((i) => i.message).some((m) => /less than 90 px apart/.test(m))).toBe(true);

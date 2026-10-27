@@ -1,7 +1,0 @@
-id: scn.ch02.reinforcements
-lines:
-  - id: l01
-    speaker: [liora]
-    fallback: skip
-    mood: neutral
-    text: "Mehr kommen. Von Westen und Osten – ich sehe ihre Schatten im Nebel."

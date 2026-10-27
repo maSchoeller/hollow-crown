@@ -188,7 +188,7 @@ describe('memorial stones (story 6.9)', () => {
     c.completed.push('prologue');
     fall(c, 'fenn');
     fall(c, 'merc7', { nameKey: 'merc.name.5', name: 'Wulf', mercenary: true, portrait: undefined });
-    fall(c, 'mira', { node: 'ch02' });
+    fall(c, 'mira', { node: 'm1_3' });
     const stones = memorialStones(data, c);
     expect(stones.map((s) => s.key)).toEqual(['fixed:gerrit', 'fallen:fenn', 'fallen:merc7', 'fallen:mira']);
     expect(stones[1]).toMatchObject({ kind: 'fallen', node: 'm1_2', classId: 'fighter', mercenary: false, quoteKey: 'dlg.scn.farewell.fenn.last' });

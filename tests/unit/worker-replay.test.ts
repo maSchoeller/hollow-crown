@@ -50,7 +50,7 @@ describe('the worker protocol carries a battle (structured clone)', () => {
     expect(structuredClone(r.state)).toEqual(r.state);
   });
 
-  for (const map of ['prologue_paktnacht', 'm1_1_steckbriefe', 'm1_2_erlbach', 'ch02_silverbrook']) {
+  for (const map of ['prologue_paktnacht', 'm1_1_steckbriefe', 'm1_2_erlbach', 'm1_3_silberbach']) {
     it(`replays ${map} to the same state and events, enemy phases through handleRequest`, () => {
       const node = data.campaign.nodes.find((n) => n.map === map)!;
       const start = opening(node.id);
@@ -169,7 +169,7 @@ describe('core worker client (src/app/coreWorker.ts) with the real worker module
   it('loads the pack of the battle (act 1 maps) inside the worker before it answers', async () => {
     const c = await loadClient();
     c.browser.registerPackContent('act1', await c.packs.loaders.act1!());
-    const node = data.campaign.nodes.find((n) => n.map === 'ch02_silverbrook')!;
+    const node = data.campaign.nodes.find((n) => n.map === 'm1_3_silberbach')!;
     const s = opening(node.id);
     const expected = applyCommand(data, s, { type: 'endPhase' });
     expect(await c.client.applyCommandInWorker(data, s, { type: 'endPhase' })).toEqual(expected);

@@ -265,7 +265,7 @@ describe('campaign commands', () => {
 describe('finishMission with dialogue effects queued during the battle', () => {
   const start = () => beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
   const queue = [
-    { at: 0, effects: [{ setFlag: 'ch02_hold' }, { gold: 7 }] },
+    { at: 0, effects: [{ setFlag: 'avatar_bold' }, { gold: 7 }] },
     { at: 2, effects: [{ stance: 'warm' as const }, { chronicle: 'p_test' }] },
   ];
   /** The player idles until the enemy wins. */
@@ -287,11 +287,11 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     const played = autoplay(data, s0);
     const plain = run(base, { type: 'finishMission', start: s0, commands: played.log });
     const r = run(base, { type: 'finishMission', start: s0, commands: played.log, effects: queue });
-    expect(r.campaign.flags.ch02_hold).toBe(true);
+    expect(r.campaign.flags.avatar_bold).toBe(true);
     expect(r.campaign.gold).toBe(plain.campaign.gold + 7);
     expect(r.campaign.stance.warm).toBe(base.stance.warm + 1);
     expect(r.campaign.chronicle.filter((p) => p === 'p_test')).toHaveLength(1);
-    expect(r.events.filter((e) => e.t === 'flagSet')).toEqual([{ t: 'flagSet', flag: 'ch02_hold', value: true }]);
+    expect(r.events.filter((e) => e.t === 'flagSet')).toEqual([{ t: 'flagSet', flag: 'avatar_bold', value: true }]);
     expect(r.events.filter((e) => e.t === 'stanceGained')).toHaveLength(1);
     expect(r.events.at(-1)!.t).toBe('missionFinished');
     expect(r.campaign.completed).toContain(firstNode(data).id);
@@ -332,7 +332,7 @@ describe('finishMission with dialogue effects queued during the battle', () => {
 
   it('flags in the queue are visible to conditions during the battle', () => {
     expect(queuedFlags([])).toEqual({});
-    expect(queuedFlags(queue)).toEqual({ ch02_hold: true });
+    expect(queuedFlags(queue)).toEqual({ avatar_bold: true });
     expect(queuedFlags([{ at: 1, effects: [{ setFlag: { e02: 'protect' } }] }])).toEqual({ e02: 'protect' });
   });
 
@@ -346,7 +346,7 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     expect(JSON.stringify(replayed)).toBe(JSON.stringify(direct));
     // a journal entry written before the queue existed still replays
     const old = JSON.parse(JSON.stringify({ ...cmd, effects: undefined })) as CampaignCommand;
-    expect(replayCampaign(data, base, [old]).flags.ch02_hold).toBeUndefined();
+    expect(replayCampaign(data, base, [old]).flags.avatar_bold).toBeUndefined();
   });
 });
 
@@ -359,7 +359,7 @@ describe('journal replay', () => {
       journal.push(JSON.parse(JSON.stringify(cmd)) as CampaignCommand);
     };
     exec({ type: 'buy', item: 'iron_sword' });
-    exec({ type: 'effects', effects: [{ setFlag: 'ch02_hold' }] });
+    exec({ type: 'effects', effects: [{ setFlag: 'avatar_bold' }] });
     const start = beginBattle(data, c, firstNode(data).id, c.roster.map((r) => r.id)).state;
     exec({ type: 'finishMission', start, commands: autoplay(data, start).log });
     exec({ type: 'equip', unit: c.roster[0]!.id, uid: c.convoy.find((i) => i.def === 'iron_sword')!.uid, slot: 'bag' });

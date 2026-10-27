@@ -1,5 +1,5 @@
 # Mission 1-4 – Die Spur des Maklers (Story 9.5). Layout-Entwurf, kein Knoten, keine Szenen. Startwerte [C].
-# Ort: Lager der Wolfsreiter auf einer Waldlichtung. Tageszeit: Nacht, Wetter: klar (Lagerfeuer als Kohlebecken, art-direction §2.5, Feld folgt mit Story 8.6).
+# Ort: Lager der Wolfsreiter auf einer Waldlichtung. Tageszeit: Nacht, Wetter: klar (Lagerfeuer als Kohlebecken, art-direction §2.5; Felder timeOfDay/weather).
 # Ziel: Boss Osric Dunn besiegen (boss). Er hat sich im Zelt am Nordende verschanzt. Leutnant Ulvric führt die Wolfsreiter.
 # Ysolde sitzt im Käfig im Nordosten: Tür (geschlossen, Schlüssel oder Späher/Dietrich), danach Ansprechen = Anwerben (recruit).
 # Kriegsnebel an (Nachtwald): Späher sehen weiter; die offene Lichtung begünstigt die Reiter, die Waldränder geben Fußtruppen Deckung.
@@ -43,9 +43,9 @@ terrain: |
   TTTTTT,__,TTTTTT
   TTTTTT,__,TTTTTT
   TTTTTT,__,TTTTTT
-# Nacht, klar: Mond kalt blau, Kohlebecken warm
-ambient: { color: "#3a4a7a", intensity: 0.55 }
-sun: { color: "#9fb4ff", intensity: 0.45, azimuthDeg: 120, elevationDeg: 40 }
+# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+timeOfDay: night
+weather: clear
 lights:
   - { at: [7, 4], color: "#ffb35c", radius: 3 }
   - { at: [9, 4], color: "#ffb35c", radius: 3 }

@@ -449,7 +449,7 @@ if (import.meta.env.DEV) {
       campaign,
       battle,
       screen,
-      /** answers a dialogue as the player would: `runEffects([{ setFlag: 'ch02_hold' }])`, queued during a battle */
+      /** answers a dialogue as the player would: `runEffects([{ setFlag: 'avatar_bold' }])`, queued during a battle */
       runEffects,
       storyContext,
       restartBattle,
