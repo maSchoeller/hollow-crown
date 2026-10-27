@@ -14,6 +14,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import type { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
+import type { Material } from '@babylonjs/core/Materials/material';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
@@ -132,6 +133,10 @@ interface PropSet {
 /** distance of the camera from its target along the view axis, tiles */
 const CAM_DIST = 60;
 const MAX_FIRES = 12;
+/** Materials that stay frozen while the board stands: the props (shared, glTF and see-through) and the opaque terrain layers; not water, veil, rings, figures */
+const STATIC_MATERIAL = /^(props$|prop:|terrain-(caps|earth|rock|wall|decks|rails)$)/;
+/** Frames between a change of lights, fog, shadows or meshes and the next freeze of the static materials */
+const FREEZE_FRAMES = 12;
 /** a figure this many tiles beyond the edge of the view is still worked out (it may step in next frame); farther ones are switched off */
 const OFFSCREEN_TILES = 1.5;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -212,6 +217,9 @@ export class BoardView implements HostedView {
   private propSizes = new Map<Mesh, { top: number; r: number }>();
   /** a unit moved to another tile, appeared, left or changed its visibility since the fade was last worked out (story 7.8: no key string per frame) */
   private fadeDirty = true;
+  /** Frames until the static materials freeze again (0 = frozen or nothing to do), see `thawStatic` */
+  private freezeIn = 0;
+  private frozen: Material[] = [];
   private fires: ParticleSystem[] = [];
   private flameTexture: DynamicTexture;
   private units = new Map<string, UnitView>();
@@ -322,6 +330,7 @@ export class BoardView implements HostedView {
   }
 
   private applyQuality(): void {
+    this.thawStatic();
     this.quality = this.host.setQuality(this.quality);
     const q = this.data.render.quality[this.quality];
     this.shadows?.dispose();
@@ -386,6 +395,7 @@ export class BoardView implements HostedView {
 
   /** Light, sky and the figures' floor and rim light from the map's look (story 8.6); a map without time of day and weather looks as before. */
   private applyMapLight(): void {
+    this.thawStatic();
     const look = resolveLook(this.data.render, this.lookMap());
     this.look = look;
     applyLight(this.hemi, this.sun, look.ambient, look.sun);
@@ -399,6 +409,7 @@ export class BoardView implements HostedView {
 
   /** (Re)builds the weather for the current quality: particles, mist, wet shine, puddles. */
   private applyWeather(): void {
+    this.thawStatic();
     const plan = weatherPlan(this.look.weatherDef, this.quality);
     this.weather.apply(this.look, plan, this.terrain!, [this.state.width, this.state.height], this.seed, this.sun);
     this.camSet.x = NaN;
@@ -461,6 +472,21 @@ export class BoardView implements HostedView {
     if (warm >= 1) for (const set of this.propSets) this.writeProps(set);
   }
 
+  /**
+   * A template without instances costs the frame nothing: switched off it skips the world matrix, the active-mesh test and the
+   * readiness check (story 8.11: the variants and the twins doubled the templates, +2 ms of thread time per frame at 4x).
+   */
+  private idleProp(m: Mesh): void {
+    m.isVisible = false;
+    m.setEnabled(false);
+  }
+
+  /** The templates sit at the origin (the instances carry the transforms): their world matrix never changes, so it is not recomputed each frame. */
+  private freezeProp(m: Mesh): Mesh {
+    m.freezeWorldMatrix();
+    return m;
+  }
+
   /** Makes the twin of every prop template and gives it one instance, so that its shader variants (with instances) can compile and draw. */
   private showTwins(): Mesh[] {
     const twins: Mesh[] = [];
@@ -468,6 +494,7 @@ export class BoardView implements HostedView {
       if (!set.boxes.length) continue;
       const twin = this.fadeTwin(set);
       twin.isVisible = true;
+      twin.setEnabled(true);
       twin.thinInstanceSetBuffer('matrix', set.mats.slice(0, 16), 16, true);
       twin.thinInstanceSetBuffer('color', set.cols.slice(0, 4), 4, true);
       twins.push(twin);
@@ -521,6 +548,7 @@ export class BoardView implements HostedView {
   }
 
   private async buildTerrain(): Promise<void> {
+    this.thawStatic();
     this.terrain?.dispose();
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
@@ -538,6 +566,7 @@ export class BoardView implements HostedView {
       m.makeGeometryUnique();
       m.isVisible = false;
       m.alwaysSelectAsActiveMesh = true;
+      this.freezeProp(m);
       void key;
     }
     return m;
@@ -552,6 +581,7 @@ export class BoardView implements HostedView {
         if (m) {
           m.isVisible = false;
           m.alwaysSelectAsActiveMesh = true;
+          this.freezeProp(m);
           this.castShadows([m]);
         }
         return m ?? this.boxProp(pid, state);
@@ -588,6 +618,7 @@ export class BoardView implements HostedView {
   }
 
   private async buildProps(): Promise<void> {
+    this.thawStatic();
     for (const m of this.propMeshes) m.thinInstanceCount = 0;
     const sets: PropSet[] = [];
     const s = this.state;
@@ -709,10 +740,27 @@ export class BoardView implements HostedView {
     }
     this.propSets = sets;
     for (const set of sets) this.writeProps(set);
-    for (const m of this.propMeshes) if (!m.thinInstanceCount) m.isVisible = false;
+    for (const m of this.propMeshes) if (!m.thinInstanceCount) this.idleProp(m);
     this.fadeDirty = true;
     this.updateFade();
     this.refreshShadows();
+  }
+
+  /**
+   * The materials of the terrain and the props never change their shader once the board stands (same lights, fog and shadows,
+   * no alpha animation): frozen, Babylon skips their per-frame readiness test and define hashing, a quarter of the frame's thread
+   * time at 4x (story 7.8 AC 11). Whatever changes lights, fog, shadows or the meshes thaws them (`thawStatic`); `frame` freezes
+   * them again a few frames later, when the new effects are ready.
+   */
+  private thawStatic(): void {
+    for (const m of this.frozen) m.unfreeze();
+    this.frozen = [];
+    this.freezeIn = FREEZE_FRAMES;
+  }
+
+  private freezeStatic(): void {
+    this.frozen = this.scene.materials.filter((m) => STATIC_MATERIAL.test(m.name));
+    for (const m of this.frozen) m.freeze();
   }
 
   /** Height and footprint radius of a template (its vertices are baked with the origin on the ground). */
@@ -744,6 +792,7 @@ export class BoardView implements HostedView {
     twin.isVisible = false;
     twin.isPickable = false;
     twin.alwaysSelectAsActiveMesh = true;
+    this.freezeProp(twin);
     twin.receiveShadows = true;
     const src = set.tpl.material as StandardMaterial;
     let mat = this.fadeMats.get(src);
@@ -773,6 +822,7 @@ export class BoardView implements HostedView {
     for (let k = 0; k < n; k++) f += set.faded[k]!;
     const fill = (m: Mesh, mats: Float32Array, cols: Float32Array) => {
       m.isVisible = mats.length > 0;
+      m.setEnabled(mats.length > 0);
       if (!mats.length) {
         m.thinInstanceCount = 0;
         // without the colour buffer the mesh carries no instance attribute: a readiness check of the scene compiles it without
@@ -817,19 +867,25 @@ export class BoardView implements HostedView {
   private updateFade(): void {
     if (!this.terrain || !this.state || !this.fadeDirty) return;
     this.fadeDirty = false;
-    const spots: Array<{ x: number; y: number; h: number }> = [];
+    // the figures by column of their tile: a prop only asks the columns within its reach (about three), not every figure
+    const columns = new Map<number, Array<{ x: number; y: number; h: number }>>();
     for (const v of this.units.values()) {
       if (!v.visible) continue;
       const tx = Math.round(v.x + v.offX);
       const ty = Math.round(v.y + v.offY);
-      spots.push({ x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) });
+      const column = columns.get(tx);
+      const spot = { x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) };
+      if (column) column.push(spot);
+      else columns.set(tx, [spot]);
     }
     const { cover, figureWidth } = this.data.render.board.fade;
     const rule = fadeRule(this.data.render.camera.tiltDeg, cover, figureWidth);
     for (const set of this.propSets) {
       let changed = false;
       set.boxes.forEach((b, k) => {
-        const hide = spots.some((f) => hidesFigure(b, f, rule)) ? 1 : 0;
+        const reach = b.r + rule.figureWidth;
+        let hide = 0;
+        for (let c = Math.floor(b.x - reach); c <= Math.floor(b.x + reach) && !hide; c++) if (columns.get(c)?.some((f) => hidesFigure(b, f, rule))) hide = 1;
         if (set.faded[k] !== hide) {
           set.faded[k] = hide;
           changed = true;
@@ -840,6 +896,7 @@ export class BoardView implements HostedView {
   }
 
   private buildFires(): void {
+    this.thawStatic();
     // keep the texture: all flames share `flameTexture`, and a system disposes its texture by default
     for (const f of this.fires) f.dispose(false);
     this.fires = [];
@@ -1579,6 +1636,7 @@ export class BoardView implements HostedView {
     for (const v of this.units.values()) this.placeUnit(v, this.animClock);
     this.rings.flush();
     this.updateFade();
+    if (this.freezeIn > 0 && --this.freezeIn === 0) this.freezeStatic();
     this.updateGrudgeLine();
     if (this.ghost) this.ghost.figure.tick(this.animClock, this.speed);
     const boost = this.look.pointBoost;

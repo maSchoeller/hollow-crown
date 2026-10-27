@@ -40,20 +40,22 @@ test('a tap on the house goal marks the houses of mission 1-1, a second tap clea
     }, { timeout: 60_000 })
     .toBe(true);
 
+  // a lesson bubble or the loading cover may sit over the pill: skip lessons and retry until the tap lands
+  const tap = () =>
+    expect
+      .poll(async () => {
+        const skip = page.getByRole('button', { name: /Skip|Überspringen/ });
+        if (await skip.count()) await skip.first().click({ timeout: 2000 }).catch(() => undefined);
+        return pill.click({ timeout: 2000 }).then(() => true, () => false);
+      }, { timeout: 90_000, intervals: [500] })
+      .toBe(true);
+
   await expect(pill).toHaveAttribute('aria-pressed', 'false');
   expect(await marks()).toBe(0);
-  await pill.click();
+  await tap();
   await expect(pill).toHaveAttribute('aria-pressed', 'true');
   expect(await marks()).toBe(4);
-  // a lesson of the turn may come up meanwhile and hides the HUD: skip it before the second tap
-  await expect
-    .poll(async () => {
-      const skip = page.getByRole('button', { name: /Skip|Überspringen/ });
-      if (await skip.count()) await skip.first().click({ timeout: 2000 }).catch(() => undefined);
-      return pill.isVisible();
-    }, { timeout: 60_000 })
-    .toBe(true);
-  await pill.click();
+  await tap();
   await expect(pill).toHaveAttribute('aria-pressed', 'false');
   expect(await marks()).toBe(0);
 });
