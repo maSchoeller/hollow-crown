@@ -50,3 +50,15 @@ Claude Sonnet 5.5
 - Inhalte: `content/core/items.yaml` (`pact_warden_shield`), `content/core/skills.yaml` (`warden_ward`), `content/core/locales/{de,en}.names.yaml`, `content/acts/act1/campaign.yaml` (Knoten n2), `content/acts/act1/chronicle.yaml`, `content/locales/en/act1.chronicle.yaml` (neu), `content/world/valmora.yaml` (n2), `content/acts/act1/maps/n2_wachturm.yaml`, `content/acts/act1/scenes/scn.n2.{intro,outro,page,relic}.yaml`, `content/locales/en/act1.dialogue.yaml`
 - Tests: neu `tests/unit/warden-shield.test.ts`
 - Doku: `concept/21-gdd/decision-log.md`, `concept/22-narrative/decision-log.md`
+
+### Nachtrag 2026-10-27 (Entscheidung Produktinhaber)
+
+Das Eroberungsfeld (`seize`, Kael) liegt jetzt im Turminneren `[6, 1, 7, 1]`, hinter den Wachen e1 (6,2) und e2 (7,2); das Turmtor (6–7,3) bleibt Engstelle. Vorher erreichte Kael das Tor in 2 Runden, bevor gekämpft wurde. `seize` verlangt kein bestimmtes Terrain, nur Kael (Flag `seizer`) auf einem Feld der Area; die Felder (6–7,1) sind Boden. Sim (`pnpm sim n2_wachturm --runs 50`, Standard, verkettet), vorher / nachher:
+
+| Schwierigkeit | erreichte Läufe | Sieg | Runden (Ø) | Niedergestreckte (Ø) |
+|---|---|---|---|---|
+| Leicht | 50 / 50 | 100 % / 100 % | 2,0 / 3,5 | 0,04 / 0,08 |
+| Normal | 43 / 43 | 100 % / 100 % | 2,1 / 4,9 | 0,16 / 0,28 |
+| Schwer | 9 / 9 | 100 % / 100 % | 4,9 / 6,9 | 0,67 / 0,89 |
+
+Gegnerstufen unverändert [C]; Normal liegt knapp unter dem Korridor der Niedergestreckten (0,4–1,3), der Autoplay-Bot rennt am Gefecht vorbei, Schwer ist mit 9 Läufen nur informativ.
