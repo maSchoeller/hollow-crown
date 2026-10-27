@@ -1,0 +1,6 @@
+id: scn.m1_3.house_hut
+background: silberbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein alter Köhler legt Tobin Münzen in die Hand. „Den Nebel kennen nur wir. Geht, bevor er sich hebt.“"

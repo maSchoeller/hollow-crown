@@ -739,7 +739,8 @@ export interface CampaignDef {
   levelCap?: number;
   startGold: number;
   startConvoy: ItemRef[];
-  merchant: Array<{ tier: number; items: string[] }>;
+  /** `storyCount`: the tier also opens once that many story missions of the act are done, whichever they are (besides the `merchantTier` of the nodes) */
+  merchant: Array<{ tier: number; items: string[]; storyCount?: number }>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
 }
 

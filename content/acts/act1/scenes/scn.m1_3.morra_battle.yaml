@@ -1,0 +1,8 @@
+# Mission 1-3: Morra, erste Begegnung (Kampfzeile, eine Box). Erkennungsformel: das Kopfgeld in Gold (Narrative, Leutnants).
+id: scn.m1_3.morra_battle
+lines:
+  - id: l01
+    speaker: [morra]
+    fallback: skip
+    mood: neutral
+    text: "Kopfgeld in Gold, Kael. Für euch alle und obendrauf für die Heilerin. Ich zähle nach."

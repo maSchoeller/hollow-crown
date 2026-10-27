@@ -19,6 +19,8 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await page.goto('./');
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
+  // easy: a fresh prologue company (level 1) against a level-2 haunt wins only about every second seed on normal
+  await page.getByRole('button', { name: /^(Easy|Leicht)$/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();

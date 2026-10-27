@@ -82,7 +82,7 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 9, at: [0, 10], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+      - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 9, at: [0, 10], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 7, at: [0, 11], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [0, 9], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
       # nur wenn Grosk nicht gewechselt (E3): ein beigetretener Leutnant (Flag joined_grosk) spawnt nicht (createBattle legt den Plan vorab an, spawnUnits lässt ihn weg)

@@ -1,7 +1,0 @@
-id: scn.ch02.varek_spotted
-lines:
-  - id: l01
-    speaker: [varek]
-    fallback: skip
-    mood: happy
-    text: "Na sieh an. Kael vom Aschenbanner. Willst du würfeln oder fechten?"

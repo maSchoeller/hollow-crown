@@ -2,7 +2,7 @@
  * pnpm bench:ai [--runs 10] [--warmup 3] [--rounds 6]
  * Budget check for the enemy phase (NFR3, story 2.8, architecture §5.13): `applyCommand(endPhase)` on the reference
  * battle of the performance run (tests/perf/benchMap.ts, 24×32, 28 enemies) must take at most `TARGETS.aiMsPerUnit` per
- * enemy unit; the slowest measurement counts. `ch02_silverbrook` (the largest map in the content) is reported too.
+ * enemy unit; the slowest measurement counts. `m1_3_silberbach` (an escort map, the largest map in the content) is reported too.
  * Each run plays several rounds with an idle player, so the enemy walks up, meets the player and attacks. Exit code 1
  * when the reference battle is over budget. Runs in Node on the CI runner, the same function the worker calls.
  */
@@ -82,7 +82,7 @@ function measure(nodeId: string, mapId: string): Result {
 }
 
 const reference = measure('perf', BENCH_MAP_ID);
-const silverbrook = data.campaign.nodes.find((n) => n.map === 'ch02_silverbrook');
+const silverbrook = data.campaign.nodes.find((n) => n.map === 'm1_3_silberbach');
 const results = [reference, ...(silverbrook ? [measure(silverbrook.id, silverbrook.map)] : [])];
 console.log(`enemy phase per enemy unit, ${runs} runs after ${warmup} warm-up, up to ${rounds} rounds each (budget ${TARGETS.aiMsPerUnit} ms):`);
 console.table(results);
