@@ -282,6 +282,8 @@ export const mapUnitSchema = z.object({
   recruit: z.object({ by: z.union([z.array(z.string()), z.literal('any')]), dialogue: z.string().optional() }).optional(),
   ignoreForRout: z.boolean().optional(),
   difficulty: z.array(z.enum(['easy', 'normal', 'hard'])).optional(),
+  /** conditions against the campaign at the creation of the battle (story 9.5); `conditionSchema` is defined further down */
+  requires: z.array(z.lazy(() => conditionSchema)).optional(),
 });
 
 const reward = z

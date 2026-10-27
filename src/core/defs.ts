@@ -326,6 +326,11 @@ export interface MapUnitDef {
   ignoreForRout?: boolean;
   /** unit only appears on these difficulties (default: all) */
   difficulty?: Difficulty[];
+  /**
+   * unit only appears when all these conditions hold against the campaign at the creation of the battle (story 9.5; only
+   * for the line-up `units` of a map, not for reinforcements, trigger spawns or lieutenants)
+   */
+  requires?: Condition[];
 }
 
 export interface AiDef {

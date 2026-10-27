@@ -4,6 +4,7 @@ import type { BattleState, CampaignState, ObjectState } from '../state';
 import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
+import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
@@ -84,10 +85,13 @@ export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, 
   });
 }
 
-/** The map's own units on the board at the campaign's difficulty (a recruited character and a lieutenant who joined stay off). */
+/**
+ * The map's own units on the board at the campaign's difficulty and story (a recruited character and a lieutenant who joined stay off;
+ * a unit with `requires` only appears when they hold, story 9.5).
+ */
 export function placeMapUnits(data: GameData, c: CampaignState, s: BattleState, defs: MapDef['units']): void {
   const pct = data.balance.difficulty[c.settings.difficulty].enemyStatPercent;
-  onDifficulty(defs, c.settings.difficulty).forEach((def, i) => {
+  onConditions(conditionContext(data, c), onDifficulty(defs, c.settings.difficulty)).forEach((def, i) => {
     if (def.char && c.roster.some((r) => r.id === def.char)) return; // already recruited
     if (def.lieutenant && isJoined(c, def.lieutenant)) return; // a lieutenant who joined the company stays off the board (story 3.7)
     const uid = def.id ?? def.char ?? `m${i}`;

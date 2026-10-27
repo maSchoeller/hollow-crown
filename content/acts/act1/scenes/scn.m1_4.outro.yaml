@@ -1,0 +1,96 @@
+# Mission 1-4, Szene nach der Karte. Teil 1: Osric Dunn, im Kampf nur besiegt, will den Auftraggeber nennen; ein Armbrustbolzen aus dem Wald trifft ihn mitten
+# im Satz, der Schütze entkommt ungesehen. Doppeldeutig: der Hüter (Halvard) bleibt unsichtbar und wird nicht genannt (Narrative Beat 5: „Der Hüter räumt hinter sich auf“).
+# Teil 2: Schlüsselgespräch 3 „Rhens Geständnis“ am Feuer (Rhen, Kael), Tafel 3 `rhen_confession`: Rhen hat den Vertrag der Paktnacht von Dunn geholt.
+# Kaels Reaktion hängt an der vorherrschenden Haltung (warm, sober, defiant; ohne Punkte gilt sober). Die Tafel steht genau vier Textboxen lang
+# (g02, g03, g04 und Kaels Haltungszeile), danach `panel: none` (g05). Die drei Haltungszeilen nennen die Tafel je noch einmal (dasselbe Bild), weil
+# content:check alle Zeilen zählt, auch die, von denen nur eine gezeigt wird. Keine Entscheidung in dieser Szene.
+id: scn.m1_4.outro
+background: wolfslager
+music: camp
+lines:
+  - id: o01
+    mood: neutral
+    text: "Die Wolfsreiter sind geflohen oder gefesselt. Dunn sinkt gegen die Zeltstange, die Hand an der Seite."
+  - id: o02
+    speaker: [osric]
+    fallback: skip
+    mood: sad
+    text: "Genug. Ihr wollt den Namen. Der Mann, der mich bezahlt hat, hat die Paktnacht –"
+  - id: o03
+    mood: sad
+    text: "Ein Schnappen aus dem Wald. Ein Armbrustbolzen trifft Dunn in die Brust, mitten im Satz."
+  - id: o04
+    speaker: [kael]
+    mood: angry
+    text: "In Deckung! Im Wald, links!"
+  - id: o05
+    speaker: [fenn, mira]
+    fallback: skip
+    mood: neutral
+    text: "Ein Schatten zwischen den Kiefern, dann nichts mehr. Wer immer das war, kennt diesen Wald."
+  - id: o06
+    mood: sad
+    text: "Dunn ist tot. Wer den Bolzen schoss, bleibt im Dunkel."
+  - id: o07
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Verbrannt noch eins. Wer ihn so schnell zum Schweigen bringt, fürchtet, was er sagen wollte."
+  - id: o08
+    requires: [{ alive: ysolde }]
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Ein Bolzen auf zwanzig Schritt, durch Rauch und Zeltstoff. Das war kein Zufall, das war Handwerk."
+  - id: o09
+    requires: [{ completed: m1_3 }]
+    speaker: [kael]
+    mood: sad
+    text: "Halvard sagte, Männer wie Dunn leben nicht lange. Er hatte recht."
+  # Rhens Geständnis am Feuer
+  - id: g01
+    mood: neutral
+    text: "Später. Das Feuer brennt klein, die Truppe schläft. Nur Kael und {avatar} sitzen noch wach."
+  - id: g02
+    panel: rhen_confession
+    mood: neutral
+    text: "{avatar} dreht eine Münze in den Fingern: ein Rest vom Vorschuss der Paktnacht. Kael setzt sich dazu."
+  - id: g03
+    speaker: [avatar]
+    mood: sad
+    text: "Ich habe ihn geholt, Kael. Den Auftrag. Von Dunn. Die Schulden aus Aurenhall hatten mich eingeholt."
+  - id: g04
+    speaker: [avatar]
+    mood: sad
+    text: "Gerrit ist tot, weil ich unterschrieben habe. Der Auftraggeber zahlte im Voraus, und ich fragte nicht."
+  - id: kw
+    requires: [{ stance: warm }]
+    panel: rhen_confession
+    speaker: [kael]
+    mood: sad
+    text: "Du hast Gerrit nicht getötet. Wir haben alle gelesen und nicht gefragt. Du trägst das nicht allein."
+  - id: ks
+    requires: [{ not: { stance: warm } }, { not: { stance: defiant } }]
+    panel: rhen_confession
+    speaker: [kael]
+    mood: neutral
+    text: "Das hättest du früher sagen müssen. Aber jetzt weiß ich es. Wir finden den, der dahintersteht."
+  - id: kd
+    requires: [{ stance: defiant }]
+    panel: rhen_confession
+    speaker: [kael]
+    mood: angry
+    text: "Du hättest es mir sagen müssen. Noch einmal verschweigst du nichts, oder du gehst."
+  - id: g05
+    panel: none
+    speaker: [avatar]
+    mood: sad
+    text: "Ich wollte es allein tragen. Es wird zu schwer."
+  - id: g06
+    speaker: [kael]
+    mood: neutral
+    text: "Dann trag es mit uns. Wer uns benutzt hat, hat noch Namen, die wir nicht kennen."
+  - id: g07
+    panel: none
+    mood: neutral
+    text: "Am Morgen bricht die Truppe auf. Dunns Spur ist kalt, aber nicht tot: Jemand hatte Angst vor seinem Schweigen."

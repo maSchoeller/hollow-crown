@@ -244,7 +244,7 @@ export function validateContent(
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
-  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward, locales);
+  for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward, locales, conditions);
   issues.push(...validateWeather(data), ...validateStatusIcons(data, statusImages));
   const camp = data.campaign;
   if (camp) {
@@ -508,6 +508,7 @@ function validateMap(
   dialogue: (f: string, id: string | undefined, c: string) => void,
   reward: (f: string, r: Reward | undefined, c: string) => void,
   locales: Locales,
+  conditions: (f: string, conds: Condition[] | undefined, ctx: string) => void,
 ): void {
   const f = `maps/${map.id}`;
   const [w, h] = map.size;
@@ -540,8 +541,28 @@ function validateMap(
     dialogue(f, u.recruit?.dialogue, ctx);
     for (const d of u.drops ?? []) if (d >= u.items.length) err(f, `${ctx}: drop index ${d} out of range`);
   };
-  map.units.forEach((u, i) => checkUnit(u, u.id ?? `unit ${i}`));
-  map.reinforcements.forEach((r, i) => r.units.forEach((u, j) => checkUnit(u, `reinforcement ${i}.${j}`)));
+  map.units.forEach((u, i) => {
+    const ctx = u.id ?? `unit ${i}`;
+    checkUnit(u, ctx);
+    // a unit with `requires` (story 9.5) is left out at the creation of the battle: nothing may depend on it
+    if (u.requires) {
+      conditions(f, u.requires, `${ctx}.requires`);
+      if (u.lieutenant) err(f, `${ctx}: a lieutenant cannot have requires (his plan is made for the whole map)`);
+      const ids = [u.id, u.char].filter((x): x is string => !!x);
+      const v = map.objectives.victory;
+      if (v.type === 'boss' && ids.includes(v.unit)) err(f, `${ctx}: the boss of the victory goal cannot have requires`);
+      for (const o of map.objectives.side) if (o.unit && ids.includes(o.unit)) err(f, `${ctx}: the unit of side objective ${o.id} cannot have requires`);
+      for (const other of map.units) if (other.ai?.target && ids.includes(other.ai.target)) err(f, `${ctx}: ${other.id ?? 'a unit'} targets it (ai.target) but it can be left out`);
+    }
+  });
+  map.reinforcements.forEach((r, i) =>
+    r.units.forEach((u, j) => {
+      checkUnit(u, `reinforcement ${i}.${j}`);
+      if (u.requires) err(f, `reinforcement ${i}.${j}: requires is only for the line-up units of a map`);
+    }),
+  );
+  for (const t of map.triggers)
+    for (const a of t.then) if (a.action === 'spawn') for (const u of a.units) if (u.requires) err(f, `${t.id}: requires is only for the line-up units of a map`);
   if (map.deploy.slots.length < map.deploy.max) err(f, 'deploy.slots < deploy.max');
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
   for (const o of map.objects) {

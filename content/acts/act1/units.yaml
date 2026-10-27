@@ -113,9 +113,9 @@
   base:   { hp: 17, str: 0, mag: 9, skl: 6, spd: 7, lck: 3, def: 2, res: 6 }
   growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
   items: [ { def: ember }, { def: gust } ]
-  recruit: { chapter: ch03, by: any, condition: door_opened, dialogue: scn.ch03.ysolde_cell }
+  # Beitritt: Mission 1-4 (Karte m1_4_wolfslager): Käfigtür öffnen, dann spricht {avatar} sie an (recruit der Kartenfigur, Szene scn.m1_4.ysolde_talk)
   supports: [liora]
-  joins: ch03
+  joins: m1_4
 - id: grosk
   nameKey: unit.grosk.name
   class: vanguard

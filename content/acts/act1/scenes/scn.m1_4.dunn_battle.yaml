@@ -1,0 +1,8 @@
+# Mission 1-4: Osric Dunn, erste Begegnung im Zelt (Kampfzeile, eine Box). Der Makler weiß mehr, als er sagt, und will es nicht für sich behalten.
+id: scn.m1_4.dunn_battle
+lines:
+  - id: l01
+    speaker: [osric]
+    fallback: skip
+    mood: angry
+    text: "Ihr wart nie zum Überleben bestimmt. Was ich weiß, nehme ich mit ins Grab!"
