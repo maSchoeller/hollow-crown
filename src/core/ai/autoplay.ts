@@ -1,6 +1,6 @@
 import type { GameData, Pos } from '../defs';
 import type { GameEvent } from '../events';
-import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
+import { availableActions, hasKey, mustStayForRest, nearConvoy } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
@@ -168,6 +168,61 @@ function holdLine(data: GameData, s: BattleState, ward: BattleUnit | undefined, 
   return { posts, cut: line.cut, inside: line.inside };
 }
 
+/**
+ * Treasure hunt (story 9.8): who goes to which lock, who fetches which key. Greedy by walking distance around walls, stable order
+ * (shortest way first, ties by unit id), each lock has at most one opener and each key at most one fetcher.
+ * `lock`: unit uid -> the closest shut lock no other opener is closer to. `loot`: unit uid -> the key on the ground it fetches
+ * (the unit with room in its bag that is closest by foot; those without a key themselves first).
+ */
+export function treasurePlan(data: GameData, s: BattleState, openable: Set<string>): { lock: Map<string, Pos>; loot: Map<string, Pos> } {
+  const lock = new Map<string, Pos>();
+  const loot = new Map<string, Pos>();
+  const units = s.units.filter((o) => o.team === 'player' && active(o) && o.pos);
+  const canOpen = (o: BattleUnit) => isScout(data, s, o) || !!hasKey(data, o);
+  const locks = s.objects.filter((o) => openable.has(o.id));
+  const pairs: Array<{ d: number; uid: string; id: string; at: Pos }> = [];
+  for (const l of locks) {
+    const field = walkDistances(data, s, [l.at]);
+    for (const u of units) {
+      const d = canOpen(u) ? field.get(posKey(u.pos!)) : undefined;
+      if (d !== undefined) pairs.push({ d, uid: u.uid, id: l.id, at: l.at });
+    }
+  }
+  const order = (a: { d: number; uid: string; id: string }, b: { d: number; uid: string; id: string }) =>
+    a.d - b.d || (a.uid < b.uid ? -1 : a.uid > b.uid ? 1 : a.id < b.id ? -1 : 1);
+  const takenLocks = new Set<string>();
+  for (const p of pairs.sort(order)) {
+    if (lock.has(p.uid) || takenLocks.has(p.id)) continue;
+    lock.set(p.uid, p.at);
+    takenLocks.add(p.id);
+  }
+  // openers left over (more keys than locks) head for the closest lock all the same
+  for (const p of pairs) if (!lock.has(p.uid)) lock.set(p.uid, p.at);
+  const keys = s.loot.filter((l) => itemDef(data, l.item).use?.open);
+  const fetchers = units.filter((o) => !o.acted && o.bag.length < data.balance.bag.size);
+  const fetched = new Set<number>();
+  // keys already in the company's bags count first: loot is only fetched while the charges in hand fall short of the locks still shut
+  const inHand = units.reduce((n, o) => n + (isScout(data, s, o) ? locks.length : o.bag.reduce((m, i) => m + (itemDef(data, i).use?.open ? (i.charges ?? 1) : 0), 0)), 0);
+  let need = locks.length - inHand;
+  for (const round of [false, true]) {
+    const found: Array<{ d: number; uid: string; id: string; i: number }> = [];
+    keys.forEach((k, i) => {
+      const field = walkDistances(data, s, [k.at]);
+      for (const u of fetchers) {
+        const d = canOpen(u) === round ? field.get(posKey(u.pos!)) : undefined;
+        if (d !== undefined) found.push({ d, uid: u.uid, id: String(i), i });
+      }
+    });
+    for (const p of found.sort(order)) {
+      if ((round && need <= 0) || loot.has(p.uid) || fetched.has(p.i)) continue;
+      need--;
+      loot.set(p.uid, keys[p.i]!.at);
+      fetched.add(p.i);
+    }
+  }
+  return { lock, loot };
+}
+
 /** A visit or talk this unit can do this turn without stepping into more than `maxDanger` threats. `chests`: the chests of a treasure hunt it may open. */
 function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], danger: Map<string, number>, maxDanger: number, chests?: Set<string>): Command | null {
   for (const p of dests) {
@@ -211,6 +266,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
   const line = holdLine(data, s, defended, enemies);
+  const plan0 = openable?.size ? treasurePlan(data, s, openable) : undefined;
   // downed allies of the company: a careful player carries them off before they bleed out (Standard death mode)
   const downedAllies = s.units.filter((o) => o.team === 'player' && o.downed && o.pos && !o.gone);
   const rescuer = (() => {
@@ -220,6 +276,14 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && !o.flags.includes('mustSurvive'))
       .sort((a, b) => dist(a.pos!, spot) - dist(b.pos!, spot) || (a.uid < b.uid ? -1 : 1))[0]?.uid;
   })();
+  // treasure: a full bag cannot take up a key (it would go to the convoy), so whoever stands at the convoy puts spare gear in it
+  if (openable?.size) {
+    for (const u of s.units) {
+      if (u.team !== 'player' || !active(u) || !u.pos || u.acted || u.freeUsed.convoy || u.bag.length < data.balance.bag.size || !nearConvoy(s, u, u.pos)) continue;
+      const spare = u.bag.find((i) => ['weapon', 'armor', 'shield', 'accessory', 'material'].includes(itemDef(data, i).kind));
+      if (spare) return { type: 'convoy', unit: u.uid, put: spare.uid };
+    }
+  }
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
@@ -292,12 +356,19 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     // treasure (story 9.8): a key dropped by a foe lies on the ground until somebody steps on it; the closest unit with room in its bag fetches it
     // (a full bag sends the pick-up to the convoy, out of reach during the battle)
     const keyLoot = openable ? s.loot.filter((l) => itemDef(data, l.item).use?.open).map((l) => l.at) : [];
-    const errands = guarding ? [] : [...villages.filter((p) => nearestTo(p) === u.uid), ...keyLoot.filter((p) => nearestTo(p, true) === u.uid), ...recruitable(u)];
-    // treasure: whoever can open a chest heads for the closest one still shut
-    const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
+    const fetchAt = plan0?.loot.get(u.uid);
+    const errands = guarding
+      ? []
+      : [...villages.filter((p) => nearestTo(p) === u.uid), ...(plan0 ? (fetchAt ? [fetchAt] : []) : keyLoot.filter((p) => nearestTo(p, true) === u.uid)), ...recruitable(u)];
+    // treasure: whoever can open a chest heads for the lock the allocation gave it
+    const lockAt = plan0?.lock.get(u.uid);
+    const keys = lockAt ? [lockAt] : [];
     const nearWard = guarding ? [...enemies].sort((a, b) => dist(a.pos!, ward!.pos!) - dist(b.pos!, ward!.pos!)).map((o) => o.pos!) : [];
     // one healthy unit (the closest) walks to a downed ally when nothing more urgent calls
     const fetch = rescuer === u.uid && hpPct >= 60 ? downedAllies.map((o) => o.pos!) : [];
+    // treasure, no foe left: whoever has no key, no room and no errand walks on towards the locks and keys still open, but not onto the tiles next to a lock
+    const treasureIdle = openable ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
+    const idleHunt = !!openable && !enemies.length && treasureIdle.length > 0;
     const targets = isGoalUnit
       ? goal!
       : errands.length
@@ -310,7 +381,9 @@ export function autoCommand(data: GameData, s: BattleState): Command {
               ? fetch
               : ward
                 ? [ward.pos!]
-                : enemies.map((o) => o.pos!);
+                : idleHunt
+                  ? treasureIdle
+                  : enemies.map((o) => o.pos!);
     if (line) {
       // the line: a holder walks to its tile, everybody else stands as close behind the line as it can (a tile of the line is for its holder)
       const reserved = new Set(line.cut.map(posKey));
@@ -371,6 +444,11 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     }
     // treasure hunts in rooms (story 9.8): steps around walls, closed doors counted open
     field ??= openable && targets.length ? walkDistances(data, s, targets) : undefined;
+    if (idleHunt && !isGoalUnit && !errands.length && !keys.length && !ward) {
+      const blocked = new Set([...treasureIdle, ...keyLoot, ...treasureIdle.flatMap(neighbors)].map(posKey));
+      const rest = dests.filter((p) => !blocked.has(posKey(p)));
+      if (rest.length) dests = rest;
+    }
     const to = approach(s, u, dests, aim, danger, maxDanger, field);
     return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
   }
