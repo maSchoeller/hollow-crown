@@ -35,12 +35,30 @@ export interface MissionResultView {
   granted: BattleResult['granted'];
   /** the node's own reward that took effect (e.g. `setHome`), for the consequence lines; empty when there was none */
   effects: Effect[];
+  /** what the node's own reward put into the convoy and the chronicle (the screen names it, the ember spark gets its own line) */
+  received: ReceivedLine[];
   /** the home the company moved to with this mission (effect `setHome`), or null */
   movedHome: HomeKind | null;
   scars: BattleResult['scars'];
   supportsReady: boolean;
   /** set after a haunt (story 5.6): the screen names it and says when the gold was halved or EP were capped */
   haunt: BattleResult['haunt'] | null;
+}
+
+/** One thing the mission's own reward put into the convoy or the chronicle: an item (several of one kind counted together) or a chronicle page. */
+export type ReceivedLine = { kind: 'item'; id: string; count: number } | { kind: 'page'; id: string };
+
+/** The items and chronicle pages among the applied effects, in order, equal items summed (e.g. the two ember sparks of the finale: "2 ×"). */
+export function receivedLines(effects: readonly Effect[]): ReceivedLine[] {
+  const out: ReceivedLine[] = [];
+  for (const e of effects) {
+    if ('item' in e) {
+      const same = out.find((l): l is Extract<ReceivedLine, { kind: 'item' }> => l.kind === 'item' && l.id === e.item.def);
+      if (same) same.count += 1;
+      else out.push({ kind: 'item', id: e.item.def, count: 1 });
+    } else if ('chronicle' in e) out.push({ kind: 'page', id: e.chronicle });
+  }
+  return out;
 }
 
 /** The last `setHome` of a list of effects, or null. */
@@ -91,6 +109,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     recruited: result.recruited,
     granted: result.granted ?? [],
     effects: result.effects ?? [],
+    received: receivedLines(result.effects ?? []),
     movedHome: movedHome(result.effects ?? []),
     scars: result.scars,
     supportsReady: result.supportsReady.length > 0,

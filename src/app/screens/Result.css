@@ -72,6 +72,15 @@
 .res-item__name {
   font-weight: 700;
 }
+.res-item--spark {
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--hc-ember) 14%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hc-ember);
+}
+.res-item--spark .res-item__name {
+  color: var(--hc-ember-dark);
+}
 .res-reward__item {
   display: inline-flex;
   align-items: center;
