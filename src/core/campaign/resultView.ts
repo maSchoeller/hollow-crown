@@ -39,6 +39,8 @@ export interface MissionResultView {
   movedHome: HomeKind | null;
   scars: BattleResult['scars'];
   supportsReady: boolean;
+  /** set after a haunt (story 5.6): the screen names it and says when the gold was halved or EP were capped */
+  haunt: BattleResult['haunt'] | null;
 }
 
 /** The last `setHome` of a list of effects, or null. */
@@ -92,6 +94,7 @@ export function missionResultView(result: BattleResult): MissionResultView {
     movedHome: movedHome(result.effects ?? []),
     scars: result.scars,
     supportsReady: result.supportsReady.length > 0,
+    haunt: result.haunt ?? null,
   };
 }
 

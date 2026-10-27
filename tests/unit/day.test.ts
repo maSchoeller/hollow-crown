@@ -11,25 +11,34 @@ const advance = (c: CampaignState, day: number) => applyCampaign(data, c, { type
 describe('day change in the core (story 5.4)', () => {
   it('starts without a day and fills it in for old saves', () => {
     expect(fresh().day).toEqual({ last: null, pending: [] });
-    const { day: _day, ...old } = fresh();
-    expect(normalizeCampaign(data, old as CampaignState).day).toEqual({ last: null, pending: [] });
+    const { day: _day, haunts: _haunts, hauntLast: _last, hauntsSinceStory: _since, ...old } = fresh();
+    const norm = normalizeCampaign(data, old as CampaignState);
+    expect(norm.day).toEqual({ last: null, pending: [] });
+    // story 5.5: haunt fields of older saves get their defaults
+    expect([norm.haunts, norm.hauntLast, norm.hauntsSinceStory]).toEqual([[], {}, 0]);
   });
 
-  it('makes no day packet before the first lieutenant, but moves the day on', () => {
+  it('keeps the day open before the first lieutenant (the first meeting then brings a packet at once)', () => {
     const r = advance(fresh(), 100);
-    expect(r.campaign.day).toEqual({ last: 100, pending: [] });
-    expect(r.events).toContainEqual({ t: 'dayAdvanced', day: 100, packets: [], haunts: 0 });
+    expect(r.campaign.day).toEqual({ last: null, pending: [] });
+    expect(r.events.filter((e) => e.t === 'dayAdvanced')).toEqual([]);
+    // the meeting happens on day 100: today's packet comes with the next advanceDay
+    const r2 = advance(met(r.campaign), 100);
+    expect(r2.campaign.day.last).toBe(100);
+    expect(r2.events).toContainEqual(expect.objectContaining({ t: 'dayAdvanced', day: 100, packets: [100] }));
   });
 
   it('brings one packet per new day, at most catchUp for days away', () => {
     expect(data.balance.day.catchUp).toBe(3);
-    let c = advance(met(fresh()), 100).campaign;
-    expect(c.day.pending).toEqual([100]);
-    c = advance(c, 101).campaign;
-    expect(c.day.pending).toEqual([100, 101]);
+    const packets = (r: ReturnType<typeof advance>) => r.events.flatMap((e) => (e.t === 'dayAdvanced' ? e.packets : []));
+    let r = advance(met(fresh()), 100);
+    expect(packets(r)).toEqual([100]);
+    r = advance(r.campaign, 101);
+    expect(packets(r)).toEqual([101]);
     // a week away: only the last three days
-    c = advance(c, 108).campaign;
-    expect(c.day).toEqual({ last: 108, pending: [100, 101, 106, 107, 108] });
+    r = advance(r.campaign, 108);
+    expect(packets(r)).toEqual([106, 107, 108]);
+    expect(r.campaign.day.last).toBe(108);
   });
 
   it('does nothing when the clock goes back or stays (a turned-back clock brings nothing)', () => {

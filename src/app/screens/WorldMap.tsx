@@ -6,20 +6,21 @@
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { actFinished, armyOverLimit, availableNodes, nodeLinks, wantedList } from '../../core';
+import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/pieces';
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
-import { advanceToToday, playNode } from '../state/flow';
+import { advanceToToday, playHaunt, playNode } from '../state/flow';
 import { loadingActPack, nextActInBuild, packNeededFor } from '../state/packs';
 import { BackupSheet } from './BackupSheet';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
-import { campaign, data } from '../state/session';
+import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
+import { UnitHead } from './unitArt';
 import { clampView, focusView, fogTop, moreMissionsFollow, placeOf, screenOf, stepScale, zoomAround, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
@@ -45,6 +46,9 @@ const INERTIA_DECAY = 0.92;
 const GOAL_ICON: Record<string, string> = { rout: 'attack', boss: 'attack', reach: 'target', seize: 'seize', defend: 'shield', survive: 'wait', escape: 'escape', escort: 'escape', treasure: 'chest' };
 
 type Loaded = 'loading' | 'ready' | 'failed';
+
+/** A chosen haunt is `haunt:<id>` in the selection (a node is its plain id). */
+const HAUNT = 'haunt:';
 
 export function WorldMap() {
   const c = campaign.value!;
@@ -78,7 +82,13 @@ export function WorldMap() {
   const conf = data.render.worldMap;
   const size = world.size;
   const home = placeOf(world, { home: true }) ?? world.places[0]!;
-  const placeById = (id: string) => placeOf(world, { node: id });
+  /** the place of a node, or of the story node of a haunt's map (`haunt:<id>`) */
+  const placeById = (id: string) => {
+    if (!id.startsWith(HAUNT)) return placeOf(world, { node: id });
+    const h = c.haunts.find((x) => x.id === id.slice(HAUNT.length));
+    const n = h && storyNodeOf(data, h.map);
+    return n ? placeOf(world, { node: n.id }) : undefined;
+  };
   const fog = fogTop(world, data.campaign.act);
   // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
   const finished = actFinished(data, c);
@@ -248,12 +258,16 @@ export function WorldMap() {
     setMenu(false);
     setSel(id);
     chosen.current = id;
+    // opening the card of a haunt takes its NEU mark (story 5.6)
+    const seen = id?.startsWith(HAUNT) ? c.haunts.find((h) => h.id === id.slice(HAUNT.length)) : undefined;
+    if (seen?.new) campaignCommand({ type: 'seeHaunt', id: seen.id });
     const scr = screenSize();
     const p = id ? placeById(id) : null;
     if (p) glide(focusView(scr, size, scaleOfStep(step.current, conf.focusZoom), p.at, [0.5, REST_Y], pad()));
     else glide(zoomAround(view.current, scr, size, scaleOfStep(step.current), [scr.w / 2, scr.h * REST_Y], pad()));
   };
-  const node = sel ? nodes.find((n) => n.id === sel)! : null;
+  const node = sel && !sel.startsWith(HAUNT) ? nodes.find((n) => n.id === sel)! : null;
+  const haunt = sel?.startsWith(HAUNT) ? c.haunts.find((h) => h.id === sel.slice(HAUNT.length)) : undefined;
   /** data attributes that pin an element over a place (percent of the picture) */
   const over = (at: readonly [number, number]) => ({ 'data-x': at[0], 'data-y': at[1] });
   const ends = (at: readonly [number, number]) => `${at[0]},${at[1]}`;
@@ -356,6 +370,30 @@ export function WorldMap() {
               </button>
             );
           })}
+          {/* haunts: red stones with the face of their lieutenant beside the story stone of their map (DESIGN.md map-node) */}
+          {c.haunts.map((h) => {
+            const key = `${HAUNT}${h.id}`;
+            const p = placeById(key);
+            const lt = data.lieutenants[h.lt];
+            if (!p || !lt) return null;
+            return (
+              <button
+                key={key}
+                type="button"
+                class={`wm-node wm-node--haunt ${sel === key ? 'is-sel' : ''}`}
+                {...over(p.at)}
+                aria-label={t('ui.map.haunt.stone', { name: t(lt.nameKey), place: t(`map.${h.map}.name`) })}
+                aria-pressed={sel === key}
+                onClick={(e) => (e.stopPropagation(), choose(key))}
+              >
+                <span class="wm-node__head">
+                  <UnitHead portrait={lt.portrait} classId={lt.class} name={t(lt.nameKey)} size={38} />
+                </span>
+                {h.new && <i class="wm-node__new">{t('ui.map.haunt.new')}</i>}
+                <i class="wm-node__tail" />
+              </button>
+            );
+          })}
         </div>
       </div>
       {loaded !== 'ready' && (
@@ -395,7 +433,9 @@ export function WorldMap() {
         )}
       </div>
       <div class="wm__bottom">
-        {node ? (
+        {haunt ? (
+          <HauntCard id={haunt.id} />
+        ) : node ? (
           <NodeCard id={node.id} />
         ) : (
           <>
@@ -492,6 +532,70 @@ function NodeCard({ id }: { id: string }) {
           </div>
         </>
       )}
+    </Piece>
+  );
+}
+
+/**
+ * The card of a chosen haunt (story 5.6): where, the goal of its variant, the places, the lieutenant who flees at 0 HP and the
+ * reward as symbol + number (the gold is halved from the 4th haunt since the last story mission). No countdown, no expiry.
+ */
+function HauntCard({ id }: { id: string }) {
+  const c = campaign.value!;
+  const h = c.haunts.find((x) => x.id === id)!;
+  const node = storyNodeOf(data, h.map)!;
+  const pack = packNeededFor(node);
+  const base = data.maps[h.map];
+  if (pack || !base) {
+    return (
+      <Piece class="wm-card" onClick={(e) => e.stopPropagation()}>
+        <div class="wm-card__kicker">{t('ui.map.haunt.kicker', { node: nodeShort(node.id) })}</div>
+        <h2 class="wm-card__title">{t(`map.${h.map}.name`)}</h2>
+        <PackWait pack={pack ?? ''} />
+      </Piece>
+    );
+  }
+  const map = hauntMap(data, h.map, h.variant, h.lt);
+  const goal = map.objectives.victory;
+  const lt = data.lieutenants[h.lt]!;
+  const gold = hauntGold(data);
+  const material = bountyMaterialId(data, h.lt);
+  const over = armyOverLimit(data, c);
+  const turns = 'turns' in goal ? goal.turns : 0;
+  return (
+    <Piece class="wm-card wm-card--haunt" onClick={(e) => e.stopPropagation()}>
+      <div class="wm-card__kicker">{t('ui.map.haunt.kicker', { node: nodeShort(node.id) })}</div>
+      <h2 class="wm-card__title">{t(`map.${h.map}.name`)}</h2>
+      <div class="wm-card__tags">
+        <span class="wm-tag">
+          <Icon name={GOAL_ICON[goal.type] ?? 'target'} size={15} />
+          {t(`ui.map.haunt.goal.${h.variant}`, { n: turns })}
+        </span>
+        <span class="wm-tag">
+          <Icon name="company" size={15} />
+          {t('ui.map.places', { n: map.deploy.max })}
+        </span>
+      </div>
+      <div class="wm-haunt-lt">
+        <UnitHead portrait={lt.portrait} classId={lt.class} name={t(lt.nameKey)} size={36} />
+        <span>
+          <b>{t(lt.nameKey)}</b>
+          <small>{t('ui.map.haunt.flees')}</small>
+        </span>
+      </div>
+      <div class="wm-card__reward">
+        <Amount resource="gold" value={hauntHalved(data, c) ? Math.round(gold / 2) : gold} />
+        {material && <Amount material={itemDef(data, material)} value={data.balance.haunt.material.min} max={data.balance.haunt.material.max} />}
+      </div>
+      {over && (
+        <p class="wm-card__warn" role="alert">
+          {t('ui.army.over', { n: over.dismiss })}
+        </p>
+      )}
+      <div class="wm-card__buttons">
+        <SecondaryButton disabled={!!over} onClick={() => playHaunt(id, { prep: true, from: 'worldmap' })}>{t('ui.hub.prep')}</SecondaryButton>
+        <PrimaryButton disabled={!!over} onClick={() => playHaunt(id)}>{t('ui.hub.setOut')}</PrimaryButton>
+      </div>
     </Piece>
   );
 }

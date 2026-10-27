@@ -25,7 +25,7 @@ import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { BattleState, BattleUnit, GameData, GameEvent, GearPiece, Pos, Team } from '../../core';
+import type { BattleState, BattleUnit, Element, GameData, GameEvent, GearPiece, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
 import { bleedsOut, itemDef, modelId, unitFigureId } from '../../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
@@ -33,12 +33,19 @@ import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type Terr
 import { loadPropMesh, loadUnitModel } from '../shared/models';
 import { ModelFigure, SpriteFigure, type Facing, type Figure, type FigureAnim } from '../shared/figures';
 import { applyLight } from '../shared/season';
+import { lookOverride, resolveLook, weatherPlan, type ResolvedLook } from '../shared/look';
+import { t } from '../../i18n';
 import { pickWeighted, treeSetOfAct } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
 import { RingLayer } from './rings';
+import { WeatherView } from './weather';
+import { AshBurst } from './ash';
+import { StatusIcons, iconsOf } from './statusIcons';
+import { critTimeline } from './critTimeline';
+import './board.css';
 import { disposeGoldRing, dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, fleeTarget, GrudgeLine, makeGoldRing, makePennant, pennantNotches, setPennantNotches } from './lieutenant';
 
 export interface BoardHooks {
@@ -52,6 +59,20 @@ export interface BoardHooks {
   onUnitHp?(uid: string, hp: number): void;
   /** HUD covering the canvas edges, CSS px (camera keeps the map clear of it) */
   insets?(): Insets;
+  /** a critical hit begins (story 8.6): the UI slides its band over the board; times in real ms, the board keeps its own count */
+  onCutIn?(c: CutInEvent): void;
+}
+
+/** What the UI needs to draw the cut-in band of a critical hit. */
+export interface CutInEvent {
+  /** the attacker */
+  unit: string;
+  element?: Element;
+  /** the skill that fired, if any (else the UI names the weapon) */
+  skill?: string;
+  inMs: number;
+  holdMs: number;
+  outMs: number;
 }
 
 export type { Overlays } from './overlays';
@@ -100,7 +121,8 @@ interface PropSet {
   faded: Uint8Array;
 }
 
-const RING_COLOR: Record<Team, string> = { player: '#3d7be0', enemy: '#d9413a', other: '#3fa65a' };
+/** distance of the camera from its target along the view axis, tiles */
+const CAM_DIST = 60;
 const MAX_FIRES = 12;
 /** a figure this many tiles beyond the edge of the view is still worked out (it may step in next frame); farther ones are switched off */
 const OFFSCREEN_TILES = 1.5;
@@ -135,8 +157,18 @@ export class BoardView implements HostedView {
   skip = false;
   quality: Quality = 'mid';
   figures: FigureStyle = '3d';
-  /** camera shake on critical hits (option "shake", off with prefers-reduced-motion) */
+  /** camera shake on critical hits and deaths (option "shake", off with prefers-reduced-motion) */
   shakeEnabled = true;
+  /** what the map looks like: light, sky, figure floor and rim, weather (story 8.6) */
+  private look!: ResolvedLook;
+  private weather: WeatherView;
+  private ash: AshBurst | null = null;
+  private statusIcons: StatusIcons;
+  /** statuses shown per unit; the `status` events change them as they play, a sync sets them from the state */
+  private statuses = new Map<string, Set<StatusId>>();
+  /** while everything stands still for a critical hit's freeze: the time it stopped at */
+  private frozenAt: number | null = null;
+  private shakeEnd = 0;
 
   // camera: ground point at the screen centre (tiles, y = south) and CSS px per tile
   private camX = 0;
@@ -203,7 +235,6 @@ export class BoardView implements HostedView {
     this.scene = this.host.scene;
     this.store = this.host.store(this);
     this.host.activate(this);
-    this.scene.clearColor = new Color4(0.06, 0.07, 0.11, 1);
     this.camera = new FreeCamera('cam', new Vector3(0, 30, -30), this.scene);
     this.scene.activeCamera = this.camera;
     this.camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
@@ -212,7 +243,10 @@ export class BoardView implements HostedView {
     this.camera.inputs.clear();
     this.hemi = new HemisphericLight('ambient', new Vector3(0.2, 1, -0.3), this.scene);
     this.sun = new DirectionalLight('sun', new Vector3(0.5, -1, 0.4), this.scene);
-    this.rings = new RingLayer(this.scene, RING_COLOR);
+    const teams = data.render.look.teams;
+    this.rings = new RingLayer(this.scene, { player: teams.player.ui, enemy: teams.enemy.ui, other: teams.other.ui });
+    this.weather = new WeatherView(this.scene, CAM_DIST);
+    this.statusIcons = new StatusIcons(floatLayer, data.render.look.fx.status.fadeMs, data.render.look.fx.status.sizePx);
     this.propMat = new StandardMaterial('props', this.scene);
     this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
     this.propMat.backFaceCulling = false;
@@ -241,7 +275,11 @@ export class BoardView implements HostedView {
     for (const f of this.floaters) f.el.remove();
     for (const el of this.bleedLabels.values()) el.remove();
     for (const el of this.pennants.values()) el.remove();
+    this.statusIcons.dispose();
+    this.weather.dispose();
+    this.ash?.dispose();
     this.grudgeLine?.clear();
+    this.scene.animationTimeScale = 1;
     this.host.release(this);
   }
 
@@ -297,9 +335,51 @@ export class BoardView implements HostedView {
     map.resetRefreshCounter();
   }
 
-  private applyMapLight(): void {
+  /** The map as it is shown: its own time of day and weather, or those of `?look=` (dev build and `?debug` only). */
+  private lookMap() {
     const map = this.data.maps[this.state.mapId]!;
-    applyLight(this.hemi, this.sun, map.ambient, map.sun);
+    const o = this.lookSwitch ?? (typeof location === 'undefined' ? {} : lookOverride(location.search, import.meta.env.DEV));
+    // a time of day tried out through `?look=` or the console shows the pure preset: the map's own ambient and sun would hide it
+    const tried = !!o.timeOfDay;
+    return {
+      act: map.act,
+      ambient: tried ? undefined : map.ambient,
+      sun: tried ? undefined : map.sun,
+      timeOfDay: this.lookSwitch ? o.timeOfDay : (o.timeOfDay ?? map.timeOfDay),
+      weather: this.lookSwitch ? o.weather : (o.weather ?? map.weather),
+    };
+  }
+
+  /** Time of day and weather chosen on the console (`__board.setLook('night', 'rain')`, acceptance and tuning); none = the map's plain light. */
+  private lookSwitch: { timeOfDay?: TimeOfDay; weather?: Weather } | null = null;
+
+  /** Dev tool: shows the board with another time of day and weather at once, without reloading. */
+  setLook(timeOfDay?: TimeOfDay, weather?: Weather): void {
+    this.lookSwitch = { timeOfDay, weather };
+    this.applyMapLight();
+    this.applyWeather();
+    this.refreshShadows();
+    this.wake(1500);
+  }
+
+  /** Light, sky and the figures' floor and rim light from the map's look (story 8.6); a map without time of day and weather looks as before. */
+  private applyMapLight(): void {
+    const look = resolveLook(this.data.render, this.lookMap());
+    this.look = look;
+    applyLight(this.hemi, this.sun, look.ambient, look.sun);
+    const sky = Color3.FromHexString(look.sky);
+    this.scene.clearColor = new Color4(sky.r, sky.g, sky.b, 1);
+    const fl = this.store.figureLook;
+    fl.floor = look.figureFloor;
+    const rim = Color3.FromHexString(look.rim.color);
+    fl.rim = [rim.r, rim.g, rim.b, look.rim.strength];
+  }
+
+  /** (Re)builds the weather for the current quality: particles, mist, wet shine, puddles. */
+  private applyWeather(): void {
+    const plan = weatherPlan(this.look.weatherDef, this.quality);
+    this.weather.apply(this.look, plan, this.terrain!, [this.state.width, this.state.height], this.seed, this.sun);
+    this.cameraKey = '';
   }
 
   /** Loads assets and builds the board. Call once per battle. */
@@ -316,6 +396,8 @@ export class BoardView implements HostedView {
       if (this.fx) this.fxTexture = this.textureFromImage('fx', this.fx.image);
       await this.buildTerrain();
       if (this.disposed) return;
+      this.applyWeather();
+      this.ash = new AshBurst(this.scene, this.data.render.look.fx.death, this.quality);
       this.fitCamera();
       // the terrain shows while the figures load (they load in parallel and appear together)
       await this.syncUnits(state, true);
@@ -334,6 +416,13 @@ export class BoardView implements HostedView {
     const fx = this.makeFx(Object.keys(this.fx?.anims ?? {})[0] ?? '', 0, 0, false);
     const jobs: Promise<unknown>[] = [this.scene.whenReadyAsync()];
     if (fx) jobs.push(fx.mat.forceCompilationAsync(fx.mesh).catch(() => undefined));
+    // the weather's particles and the death's ash compile their shaders on first use otherwise (story 8.6)
+    jobs.push(
+      new Promise<void>((resolve) => {
+        const poll = () => (this.disposed || (this.weather.ready() && (this.ash?.ready() ?? true)) ? resolve() : void setTimeout(poll, 30));
+        poll();
+      }),
+    );
     await Promise.race([Promise.all(jobs), sleep(this.data.render.board.precompileMs)]);
     if (fx) this.disposeFx(fx);
   }
@@ -360,6 +449,7 @@ export class BoardView implements HostedView {
     this.terrain?.dispose();
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
+    this.weather.terrainChanged(this.terrain);
     await this.buildProps();
     if (!this.disposed) this.buildFires();
   }
@@ -739,7 +829,7 @@ export class BoardView implements HostedView {
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
     const sheet = await loadUnitSheet(id, { classId: u.classId, weapon });
-    return new SpriteFigure(this.scene, sheet, u.team, name);
+    return new SpriteFigure(this.scene, sheet, u.team, this.data.render.look.teams[u.team].ramp, name);
   }
 
   async syncUnits(state: BattleState, _instant = false): Promise<void> {
@@ -802,6 +892,7 @@ export class BoardView implements HostedView {
     for (const [uid, v] of [...this.units]) if (!seen.has(uid)) this.removeUnit(v);
     for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone && bleedsOut(this.data, state, u) ? u.bleed ?? 0 : null);
     for (const u of state.units) this.setPennant(u);
+    for (const u of state.units) this.setStatuses(u);
     if (this.grudgeFor && !this.grudgeTargetView()) this.grudgeFor = null;
   }
 
@@ -863,6 +954,37 @@ export class BoardView implements HostedView {
     this.grudgeLine.set(this.groundOf(pair.from), this.groundOf(pair.to));
   }
 
+  /** Status icons of a unit from its state (story 8.6); a unit that left the board shows none. */
+  private setStatuses(u: BattleUnit): void {
+    if (!u.pos || u.gone || !this.units.has(u.uid)) {
+      this.statuses.delete(u.uid);
+      this.statusIcons.drop(u.uid);
+      return;
+    }
+    this.statuses.set(u.uid, new Set(u.status.map((s) => s.id)));
+    this.statusIcons.set(u.uid, iconsOf(u.status));
+  }
+
+  /** A `status` event switches one icon on or off while the events play. */
+  private flipStatus(uid: string, id: StatusId, on: boolean): void {
+    const set = this.statuses.get(uid) ?? new Set<StatusId>();
+    if (on) set.add(id);
+    else set.delete(id);
+    this.statuses.set(uid, set);
+    if (this.units.has(uid)) this.statusIcons.set(uid, iconsOf([...set].map((s) => ({ id: s }))));
+  }
+
+  private placeStatusIcons(): void {
+    for (const uid of this.statusIcons.uids()) {
+      const v = this.units.get(uid);
+      if (!v) continue;
+      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 0.95, -(v.y + v.offY + 0.5)));
+      // a lieutenant's pennant hangs over his head: the icons sit beside it
+      const lt = this.pennants.has(uid);
+      this.statusIcons.place(uid, lt ? p.x + this.ppt * 0.28 : p.x, p.y, v.visible && !v.downed && v.alpha > 0.5, !lt);
+    }
+  }
+
   /** Counter of phases a downed unit has left (pulse symbol + number, DESIGN.md `downed`); `null` removes it. */
   private setBleedLabel(uid: string, bled: number | null): void {
     const left = bled === null ? null : Math.max(0, this.data.balance.death.bleedOutTurns - bled);
@@ -899,6 +1021,8 @@ export class BoardView implements HostedView {
 
   private removeUnit(v: UnitView): void {
     this.setBleedLabel(v.uid, null); // the counter goes with the figure (a unit that drops out of the fog while downed)
+    this.statuses.delete(v.uid);
+    this.statusIcons.drop(v.uid);
     v.figure.dispose();
     if (v.gold) disposeGoldRing(v.gold);
     this.rings.remove(v.uid);
@@ -1080,17 +1204,45 @@ export class BoardView implements HostedView {
     this.viewW = w;
     this.viewH = h;
     const { forward } = this.basis();
+    if (this.shake && now > this.shakeEnd) this.shake = 0;
     const jitter = this.shake ? (Math.random() - 0.5) * this.shake : 0;
     const key = `${this.camX}|${this.camY}|${this.ppt}|${w}|${h}|${jitter}`;
     if (key === this.cameraKey) return;
     this.cameraKey = key;
     const target = new Vector3(this.camX + jitter, 0, -this.camY);
-    this.camera.position.copyFrom(target.subtract(forward.scale(60)));
+    this.camera.position.copyFrom(target.subtract(forward.scale(CAM_DIST)));
     this.camera.setTarget(target);
     this.camera.orthoLeft = -w / 2 / this.ppt;
     this.camera.orthoRight = w / 2 / this.ppt;
     this.camera.orthoTop = h / 2 / this.ppt;
     this.camera.orthoBottom = -h / 2 / this.ppt;
+    // the weather's particles fall over what the camera sees, in the same density at every zoom
+    const tilt = (this.data.render.camera.tiltDeg * Math.PI) / 180;
+    const steps = this.data.render.camera.zoomSteps;
+    const refPpt = Math.min(w, h) / steps[Math.min(1, steps.length - 1)]!;
+    this.weather.follow(this.camX, -this.camY, w / 2 / this.ppt, h / 2 / this.ppt / Math.cos(tilt), tilt, (w * h) / (refPpt * refPpt * Math.cos(tilt)));
+  }
+
+  /** Shakes the camera by `strength` tiles for `ms` real ms (nothing in skip mode or when the option is off). */
+  private kick(strength: number, ms: number): void {
+    if (!this.shakeEnabled || this.skip || strength <= 0) return;
+    this.shake = Math.max(this.shake, strength);
+    this.shakeEnd = Math.max(this.shakeEnd, performance.now() + ms);
+    this.wake(ms + 100);
+  }
+
+  /** Everything stands still for `ms` (a critical hit's freeze): skeletons, effects and floating numbers stop, the frame is still drawn. */
+  private async freeze(ms: number): Promise<void> {
+    if (ms <= 0 || this.skip) return;
+    const t0 = performance.now();
+    this.frozenAt = t0;
+    this.scene.animationTimeScale = 0;
+    await sleep(ms);
+    const dt = performance.now() - t0;
+    for (const f of this.fxSprites) f.start += dt;
+    for (const f of this.floaters) f.start += dt;
+    this.frozenAt = null;
+    this.scene.animationTimeScale = 1;
   }
 
   /** World point → CSS px relative to the canvas (for HTML overlays and tests). */
@@ -1241,19 +1393,24 @@ export class BoardView implements HostedView {
     if (this.disposed) return;
     this.updateCamera(now);
     this.terrain?.tick(now);
+    this.weather.tick(now);
+    // a critical hit's freeze: the figures and effects keep the time they stopped at
+    const clock = this.frozenAt ?? now;
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);
     for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
-    for (const v of this.units.values()) this.placeUnit(v, now);
+    for (const v of this.units.values()) this.placeUnit(v, clock);
     this.rings.flush();
     this.updateFade();
     this.updateGrudgeLine();
-    if (this.ghost) this.ghost.figure.tick(now, this.speed);
-    this.pointLights.forEach((l, k) => (l.intensity = 0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08));
-    this.updateFx(now);
+    if (this.ghost) this.ghost.figure.tick(clock, this.speed);
+    const boost = this.look.pointBoost;
+    this.pointLights.forEach((l, k) => (l.intensity = (0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08) * boost));
+    this.updateFx(clock);
     this.scene.render();
-    this.updateFloaters(now);
+    this.updateFloaters(clock);
     this.placeBleedLabels();
     this.placePennants();
+    this.placeStatusIcons();
   }
 
   private placeUnit(v: UnitView, now: number): void {
@@ -1297,6 +1454,7 @@ export class BoardView implements HostedView {
     mat.diffuseTexture = tex;
     mat.emissiveTexture = tex;
     mat.disableLighting = true;
+    mat.fogEnabled = false;
     mat.useAlphaFromDiffuseTexture = true;
     mat.backFaceCulling = false;
     mat.disableDepthWrite = true;
@@ -1332,11 +1490,12 @@ export class BoardView implements HostedView {
 
   // ------------------------------------------------------------------ floating text
 
-  floatText(tileX: number, tileY: number, text: string, cls: string, dur = 900): void {
+  floatText(tileX: number, tileY: number, text: string, cls: string, dur = 900, scale?: number): void {
     if (this.skip) return;
     const el = document.createElement('div');
     el.className = `hc-float ${cls}`;
     el.textContent = text;
+    if (scale) el.style.setProperty('--hc-num-scale', String(scale));
     this.floatLayer.appendChild(el);
     this.floaters.push({ el, x: tileX + 0.5, y: tileY + 0.5, h: this.tileTop([tileX, tileY]) + 1.05, start: performance.now(), dur: dur / this.speed });
   }
@@ -1378,6 +1537,15 @@ export class BoardView implements HostedView {
 
   private wait(ms: number): Promise<void> {
     return this.skip ? Promise.resolve() : sleep(ms / this.speed);
+  }
+
+  /** `tween` for a duration that is already in real milliseconds at the current speed (the critical hit's time line). */
+  private tweenReal(ms: number, fn: (t: number) => void): Promise<void> {
+    return this.tween(ms * this.speed, fn);
+  }
+
+  private waitReal(ms: number): Promise<void> {
+    return this.skip ? Promise.resolve() : sleep(ms);
   }
 
   private facingOf(from: Pos, to: Pos): Facing {
@@ -1445,6 +1613,9 @@ export class BoardView implements HostedView {
           const hitAt = this.hitDelay();
           const lx = Math.sign(dp[0] - ap[0]) * 0.12;
           const ly = Math.sign(dp[1] - ap[1]) * 0.12;
+          // a critical hit (story 8.6): the cut-in band runs while the attack winds up, the hit freezes, then star, shake, big number
+          const crit = e.hit && e.crit ? critTimeline(this.data.render.look.fx.crit, hitAt / this.speed, this.speed, this.skip) : null;
+          if (crit?.cutIn) this.hooks.onCutIn?.({ unit: e.attacker, element: e.element, skill: e.skill, ...crit.cutIn });
           void this.tween(hitAt, (t) => {
             a.offX = lx * Math.sin(t * Math.PI * 0.5);
             a.offY = ly * Math.sin(t * Math.PI * 0.5);
@@ -1452,20 +1623,29 @@ export class BoardView implements HostedView {
           await this.wait(hitAt);
           if (e.hit) {
             if (e.magic && e.element) this.spawnFx(e.element === 'fire' ? 'fire_bolt' : e.element === 'wind' ? 'wind_slash' : e.element === 'water' ? 'water_burst' : e.element === 'earth' ? 'earth_spikes' : e.element === 'light' ? 'light_pillar' : 'dark_tendrils', dp[0], dp[1]);
-            this.spawnFx(e.crit ? 'hit_star_crit' : 'hit_spark', dp[0], dp[1]);
             d.flash = 1;
             this.setAnim(d, 'hit');
-            if (e.crit && this.shakeEnabled) {
-              this.shake = 0.12;
-              setTimeout(() => (this.shake = 0), 220 / this.speed);
-            }
-            this.floatText(dp[0], dp[1], e.guarded ? '🛡 0' : String(e.dmg), e.crit ? 'hc-float-crit' : 'hc-float-dmg');
+            if (crit) await this.freeze(crit.freezeMs);
+            this.spawnFx(e.crit ? 'hit_star_crit' : 'hit_spark', dp[0], dp[1]);
+            if (crit) this.kick(crit.shake, crit.shakeMs);
+            this.floatText(dp[0], dp[1], e.guarded ? '🛡 0' : String(e.dmg), e.crit ? 'hc-float-crit' : 'hc-float-dmg', 900, e.crit ? crit?.numberScale : undefined);
             this.hooks.onUnitHp?.(e.defender, e.hpAfter);
             await this.hooks.onEvent?.(e);
-            await this.tween(140, (t) => {
-              d.flash = 1 - t;
-              d.offX = Math.sin(t * Math.PI * 3) * 0.04;
-            });
+            if (crit) {
+              // the target is thrown back along the blow and returns while its flash fades
+              const kx = Math.sign(dp[0] - ap[0]) * 0.22;
+              const ky = Math.sign(dp[1] - ap[1]) * 0.22;
+              await this.tweenReal(crit.recoilMs, (t) => {
+                d.flash = 1 - t;
+                d.offX = kx * Math.sin(t * Math.PI);
+                d.offY = ky * Math.sin(t * Math.PI);
+              });
+              d.offY = 0;
+            } else
+              await this.tween(140, (t) => {
+                d.flash = 1 - t;
+                d.offX = Math.sin(t * Math.PI * 3) * 0.04;
+              });
           } else {
             this.floatText(dp[0], dp[1], 'miss', 'hc-float-miss');
             await this.hooks.onEvent?.(e);
@@ -1475,13 +1655,17 @@ export class BoardView implements HostedView {
             });
           }
           d.offX = 0;
-          await this.tween(90, (t) => {
+          if (crit) await this.tweenReal(crit.returnMs, (t) => {
+            a.offX = lx * (1 - t);
+            a.offY = ly * (1 - t);
+          });
+          else await this.tween(90, (t) => {
             a.offX = lx * (1 - t);
             a.offY = ly * (1 - t);
           });
           this.setAnim(a, 'idle');
           if (!d.downed) this.setAnim(d, 'idle');
-          await this.wait(60);
+          await (crit ? this.waitReal(crit.settleMs) : this.wait(60));
           break;
         }
         case 'combatEnd':
@@ -1501,7 +1685,13 @@ export class BoardView implements HostedView {
         }
         case 'status': {
           const p = this.unitPos(e.unit);
-          if (p && e.on) this.floatText(p[0], p[1], e.status, `hc-float-status hc-status-${e.status}`);
+          if (p && e.on) {
+            // the localized short name and the effect at the feet; the icon over the head stays as long as the status does (story 8.6)
+            this.floatText(p[0], p[1], t(`ui.status.${e.status}`), `hc-float-status hc-status-${e.status}`);
+            const feet = this.data.render.look.fx.status.feet[e.status];
+            if (feet) this.spawnFx(feet, p[0], p[1]);
+          }
+          this.flipStatus(e.unit, e.status, e.on);
           await this.hooks.onEvent?.(e);
           break;
         }
@@ -1587,11 +1777,17 @@ export class BoardView implements HostedView {
           const v = this.units.get(e.unit);
           this.setBleedLabel(e.unit, null);
           if (v) {
-            if (e.t === 'died') this.spawnFx('smoke', Math.round(v.x), Math.round(v.y));
-            await this.tween(e.t === 'died' ? 500 : 300, (t) => {
+            // death in ash (story 8.6): flakes with embers burst from the unit, it fades upwards, a short shake
+            const death = this.data.render.look.fx.death;
+            if (e.t === 'died' && !this.skip) {
+              const g = this.groundOf(v);
+              this.ash?.burst(g.x, g.y - 0.1, g.z);
+              this.kick(death.shake, death.shakeMs / this.speed);
+            }
+            await this.tween(e.t === 'died' ? death.fadeMs : 300, (t) => {
               v.alpha = 1 - t;
               v.desat = t;
-              v.lift = e.t === 'died' ? t * 0.2 : 0;
+              v.lift = e.t === 'died' ? t * death.rise : 0;
             });
             v.visible = false;
           }

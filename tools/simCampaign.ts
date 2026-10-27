@@ -10,6 +10,7 @@ import {
   autoplay,
   beginBattle,
   conditionContext,
+  createHauntBattle,
   currentTier,
   effectiveLevel,
   evalConditions,
@@ -18,6 +19,7 @@ import {
   itemDef,
   merchantStock,
   newCampaign,
+  startBattle,
   upgradeCost,
   validateCampaign,
   type BattleResult,
@@ -33,7 +35,7 @@ export interface CampaignSimOptions {
   seed: number;
   difficulty: Difficulty;
   deathMode: DeathMode;
-  /** haunts between missions; they do not exist yet (story 5.6), the flag is only reported */
+  /** after each won story mission one day passes and the haunts then open are played (one attempt each, story 5.6) */
   haunts?: boolean;
 }
 
@@ -68,6 +70,8 @@ export interface CampaignSim {
   endArmyLevel: number;
   /** spent by the home heuristic over the act (all runs) */
   spent: { heal: number; buy: number; upgrade: number };
+  /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
+  haunts: { played: number; won: number; gold: number; fallen: number };
 }
 
 export interface MissionFlags {
@@ -164,13 +168,33 @@ function nextNode(data: GameData, c: CampaignState): string | undefined {
   return availableNodes(data, c).find((n) => n.kind === 'story' && !c.completed.includes(n.id))?.id;
 }
 
+/**
+ * A day goes by (the packet of `day`), then every haunt that is open is played once with the whole company, oldest first; a
+ * lost haunt stays open (story 5.6). The home heuristic runs after each, as a player would visit the camp.
+ */
+function playHaunts(data: GameData, c0: CampaignState, day: number, stats: CampaignSim['haunts']): CampaignState {
+  let c = tryCmd(data, c0, { type: 'advanceDay', day });
+  for (const h of [...c.haunts]) {
+    stats.played++;
+    const { state } = autoplay(data, startBattle(data, createHauntBattle(data, c, h.id, c.roster.map((u) => u.id))).state);
+    if (state.outcome !== 'victory') continue;
+    const won = finishBattle(data, c, state);
+    stats.won++;
+    stats.gold += won.result.gold;
+    stats.fallen += won.result.fallen.length;
+    c = won.campaign;
+  }
+  return c;
+}
+
 export function simulateCampaign(data: GameData, o: CampaignSimOptions): CampaignSim {
   const missions = new Map<string, MissionSim>();
-  const out: CampaignSim = { missions: [], finished: 0, endGold: 0, endArmyLevel: 0, spent: { heal: 0, buy: 0, upgrade: 0 } };
+  const out: CampaignSim = { missions: [], finished: 0, endGold: 0, endArmyLevel: 0, spent: { heal: 0, buy: 0, upgrade: 0 }, haunts: { played: 0, won: 0, gold: 0, fallen: 0 } };
   for (let run = 0; run < o.runs; run++) {
     const seed = o.seed + run;
     let c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
     let finished = true;
+    let day = 0;
     for (let id = nextNode(data, c); id; id = nextNode(data, c)) {
       const node = data.campaign.nodes.find((n) => n.id === id)!;
       const m =
@@ -205,6 +229,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.sideGold += sideGoldOf(won.result);
       m.deaths += won.result.fallen.length;
       c = homeHeuristic(data, won.campaign, out.spent);
+      if (o.haunts) c = playHaunts(data, c, 1000 + day++, out.haunts);
     }
     if (finished) {
       out.finished++;

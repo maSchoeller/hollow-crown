@@ -4,6 +4,7 @@ import {
   CoreInvariantError,
   applyCommand,
   beginBattle,
+  beginHauntBattle,
   keepQueued,
   replayBattle,
   restartKeep,
@@ -36,9 +37,9 @@ export const battle = signal<BattleSession | null>(null);
 /** Events from startBattle waiting for the board (opening phase banner, turn-1 dialogue). */
 export const pendingEvents = signal<GameEvent[]>([]);
 
-export function startBattle(nodeId: string, deploy: string[]): GameEvent[] {
+export function startBattle(nodeId: string, deploy: string[], hauntId?: string): GameEvent[] {
   const c = campaign.value!;
-  const r = beginBattle(data, c, nodeId, deploy);
+  const r = hauntId ? beginHauntBattle(data, c, hauntId, deploy) : beginBattle(data, c, nodeId, deploy);
   battle.value = { start: r.state, state: r.state, log: [], effects: [] };
   screen.value = { name: 'battle' };
   autosave('battle');
@@ -85,8 +86,9 @@ export async function commandOffThread(cmd: Command): Promise<GameEvent[] | null
 /** The campaign command for a restart; it carries the battle's log only where Classic has to verify a defeat. */
 function restartCommand(scope: RestartScope, b: BattleSession, c: CampaignState): CampaignCommand {
   const node = b.start.nodeId;
-  if (scope === 'turn') return { type: 'restartTurn', node, keep: restartKeep('turn', b.log) };
-  return c.settings.deathMode === 'classic' ? { type: 'restartMission', node, lost: { start: b.start, commands: b.log } } : { type: 'restartMission', node };
+  const haunt = b.start.hauntId ? { haunt: b.start.hauntId } : {};
+  if (scope === 'turn') return { type: 'restartTurn', node, keep: restartKeep('turn', b.log), ...haunt };
+  return c.settings.deathMode === 'classic' ? { type: 'restartMission', node, lost: { start: b.start, commands: b.log }, ...haunt } : { type: 'restartMission', node, ...haunt };
 }
 
 /** `canRestart` runs while screens render; the answer only changes with the campaign or the battle's log. */

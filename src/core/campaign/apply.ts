@@ -143,17 +143,19 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return validateEffects(data, c, cmd.effects);
     case 'finishMission':
       // queued dialogue effects are checked when they are applied, against the state after the battle
-      return isAvailable(data, c, cmd.start.nodeId) ? null : 'node_unavailable';
+      return startable(c, data, cmd.start.nodeId, cmd.start.hauntId) ? null : 'node_unavailable';
     case 'restartTurn':
-      if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
+      if (!startable(c, data, cmd.node, cmd.haunt)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
     case 'markBackupReminded':
       // only the running act, and only once its finale is done
       return cmd.act === data.campaign.act && actFinished(data, c) ? null : 'not_available';
     case 'advanceDay':
       return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
+    case 'seeHaunt':
+      return c.haunts.some((h) => h.id === cmd.id) ? null : 'not_available';
     case 'restartMission':
-      if (!isAvailable(data, c, cmd.node)) return 'node_unavailable';
+      if (!startable(c, data, cmd.node, cmd.haunt)) return 'node_unavailable';
       // Classic is the honour mode: a mission may only be started over once it is lost (replayed, not trusted)
       if (c.settings.deathMode === 'classic') {
         if (!cmd.lost || cmd.lost.start.nodeId !== cmd.node) return 'restart_forbidden';
@@ -161,6 +163,11 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       }
       return null;
   }
+}
+
+/** Whether a battle on node `nodeId` may start or be started over: an open node, or (a haunt) a haunt that is still open (story 5.6). */
+function startable(c: CampaignState, data: GameData, nodeId: string, hauntId?: string): boolean {
+  return hauntId ? c.haunts.some((h) => h.id === hauntId) : isAvailable(data, c, nodeId);
 }
 
 /** Gold and material changes, derived from the states so no handler can forget them. */
@@ -196,7 +203,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       for (const q of cmd.effects ?? []) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
       // the reward of the node itself (`effects` in campaign.yaml, e.g. the move to the castle) comes last, as one list;
       // the result carries it so the screens can name the consequences
-      const reward = data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? [];
+      const reward = s.hauntId ? [] : (data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? []);
       if (reward.length && validateEffects(data, campaign, reward) === null) {
         applyEffects(data, campaign, reward, effectEvents);
         result.effects = reward;
@@ -399,6 +406,9 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       break;
     case 'advanceDay':
       advanceDay(data, c, cmd.day, events);
+      break;
+    case 'seeHaunt':
+      c.haunts = c.haunts.map((h) => (h.id === cmd.id ? { ...h, new: false } : h));
       break;
   }
   noteRoles(data, c);

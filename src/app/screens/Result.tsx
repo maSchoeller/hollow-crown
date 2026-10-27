@@ -162,6 +162,8 @@ function Notes({ v }: { v: MissionResultView }) {
     ...v.scars.map((s) => ({ key: `s${s.id}`, icon: 'scar', cls: 'is-bad', text: `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}` })),
     ...(v.movedHome ? [{ key: 'home', icon: v.movedHome === 'castle' ? 'castle' : 'camp', cls: 'is-home', text: t('ui.result.newHome', { name: t(`home.${v.movedHome}.name`) }) }] : []),
     ...(v.supportsReady && campfireOpen ? [{ key: 'sup', icon: 'campfire', cls: 'is-gold', text: t('ui.result.supports') }] : []),
+    ...(v.haunt?.halved ? [{ key: 'hh', icon: 'wanted', cls: 'is-gold', text: t('ui.result.haunt.halved') }] : []),
+    ...(v.haunt?.catchUp ? [{ key: 'hc', icon: 'star', cls: 'is-gold', text: t('ui.result.haunt.catchUp') }] : []),
   ];
   if (!lines.length) return null;
   return (
@@ -185,7 +187,7 @@ export function Result({ result }: { result: BattleResult }) {
       <Backdrop image={homeBackdrop()} />
       <Piece class="res-pill res-pill--win">
         <b>{t('ui.result.victory')}</b>
-        <span>{t('ui.result.mission', { name: t(nodeDef(v.nodeId).titleKey), turns: t('ui.result.turns', { count: v.turns }) })}</span>
+        <span>{v.haunt ? t('ui.result.haunt', { name: t(`map.${nodeDef(v.nodeId).map}.name`), turns: t('ui.result.turns', { count: v.turns }) }) : t('ui.result.mission', { name: t(nodeDef(v.nodeId).titleKey), turns: t('ui.result.turns', { count: v.turns }) })}</span>
       </Piece>
       <Piece class="hc-view__fill res-body">
         <Spoils v={v} />

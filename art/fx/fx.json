@@ -25,7 +25,7 @@
     "hit_star_crit": {
       "row": 3,
       "frames": 5,
-      "fps": 12,
+      "fps": 20,
       "loop": "once"
     },
     "heal": {
@@ -37,7 +37,7 @@
     "smoke": {
       "row": 5,
       "frames": 6,
-      "fps": 8,
+      "fps": 12,
       "loop": "loop"
     },
     "levelup": {

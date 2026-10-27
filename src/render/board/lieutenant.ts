@@ -49,6 +49,7 @@ export function makeGoldRing(scene: Scene, uid: string): Mesh {
   inner.parent = outer;
   const m = new StandardMaterial(`gold:${uid}`, scene);
   m.disableLighting = true;
+  m.fogEnabled = false;
   m.emissiveColor = Color3.FromHexString(GOLD);
   outer.material = m;
   inner.material = m;
@@ -87,6 +88,7 @@ export class GrudgeLine {
     const tube = CreateTube('grudge-line', { path: [from, to], radius: LINE_RADIUS, tessellation: 6, updatable: true }, this.scene);
     const m = new StandardMaterial('grudge-line', this.scene);
     m.disableLighting = true;
+    m.fogEnabled = false;
     m.emissiveColor = Color3.FromHexString(GOLD);
     tube.material = m;
     tube.isPickable = false;

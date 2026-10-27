@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/defs';
-import { PERMANENT_COMPANIONS, WEAPON_GROUPS } from '../core/defs';
+import { HAUNT_VARIANTS, PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -323,6 +323,30 @@ const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
 ]);
 
+/**
+ * A haunt anchor of a map (story 5.5, `haunts:`): which fields each variant needs is checked here, whether they lie on the
+ * map and can be reached by `content:check`.
+ */
+export const hauntAnchorSchema = z
+  .strictObject({
+    variant: z.enum(HAUNT_VARIANTS),
+    target: z.strictObject({ at: pos }),
+    enemySpawn: area,
+    deploy: area,
+    max: z.number().int().min(1).optional(),
+    turns: z.number().int().min(1).optional(),
+    exit: area.optional(),
+    chests: z.array(pos).min(1).optional(),
+  })
+  .superRefine((a, ctx) => {
+    const need = (ok: boolean, key: string, message: string) => ok || ctx.addIssue({ code: 'custom', path: [key], message });
+    const timed = a.variant === 'defend' || a.variant === 'treasure';
+    need(!timed || a.turns !== undefined, 'turns', `${a.variant} needs turns`);
+    need(timed || a.variant === 'escort' || a.turns === undefined, 'turns', `${a.variant} has no turn limit`);
+    need(a.variant === 'escort' ? a.exit !== undefined : a.exit === undefined, 'exit', 'exit belongs to escort only, and escort needs it');
+    need(a.variant === 'treasure' ? a.chests !== undefined : a.chests === undefined, 'chests', 'chests belong to treasure only, and treasure needs them');
+  });
+
 export const mapSchema = z.object({
   id: z.string(),
   nameKey: z.string(),
@@ -335,11 +359,14 @@ export const mapSchema = z.object({
   noDeath: z.boolean().optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
-  ambient: z.object({ color: z.string(), intensity: z.number() }).optional(),
+  ambient: z.object({ color: z.string().optional(), intensity: z.number().optional() }).optional(),
   lights: z.array(z.object({ at: pos, color: z.string(), radius: z.number() })).optional(),
   sun: z
-    .object({ color: z.string(), intensity: z.number(), azimuthDeg: z.number(), elevationDeg: z.number().min(1).max(90) })
+    .object({ color: z.string().optional(), intensity: z.number().optional(), azimuthDeg: z.number().optional(), elevationDeg: z.number().min(1).max(90).optional() })
     .optional(),
+  /** story 8.6: light preset and weather of the board; both absent = the map looks as before */
+  timeOfDay: z.enum(TIMES_OF_DAY).optional(),
+  weather: z.enum(WEATHERS).optional(),
   objects: z
     .array(
       z.object({
@@ -382,6 +409,7 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
+  haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
 });
@@ -521,6 +549,28 @@ export const lieutenantSchema = z.strictObject({
   joins: z.boolean().optional(),
 });
 
+/** The enemy pools of the haunts of an act (`acts/actN/haunts.yaml`, story 5.5); the act comes from the folder. */
+export const hauntPoolsSchema = z.strictObject({
+  factions: z.record(
+    z.string().regex(/^[a-z0-9_]+$/),
+    z
+      .array(
+        z.strictObject({
+          class: z.string().min(1),
+          sprite: z.string().min(1),
+          nameKey: z.string().min(1),
+          items: z.array(itemRefSchema),
+          share: z.number().int().min(1).max(100),
+        }),
+      )
+      .min(1),
+  ),
+  civilian: z.strictObject({ class: z.string().min(1), sprite: z.string().min(1).optional(), portrait: z.string().min(1).optional(), nameKey: z.string().min(1) }),
+  chestLoot: z
+    .array(z.strictObject({ gold: z.number().int().min(1).optional(), item: itemRefSchema.optional() }).refine((l) => (l.gold === undefined) !== (l.item === undefined), 'exactly one of gold or item'))
+    .min(1),
+});
+
 /** Chronicle pages of an act (`acts/actN/chronicle.yaml`, story 4.7): German text here, English in the act's locale file. */
 export const chroniclePageSchema = z.strictObject({ id: z.string().regex(/^[a-z0-9_]+$/), title: z.string().min(1), text: z.string().min(1) });
 
@@ -605,6 +655,45 @@ const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.numb
 const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 
+const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const unit = z.number().min(0).max(1);
+const teamLook = z.object({ ui: hex, ramp: z.tuple([hex, hex, hex, hex]) });
+const timeOfDayDef = z.object({
+  ambient: z.object({ color: hex, intensity: z.number().min(0) }),
+  sun: z.object({ color: hex, intensity: z.number().min(0), azimuthDeg: z.number(), elevationDeg: z.number().min(1).max(90) }),
+  sky: hex,
+  figureFloor: unit,
+  rim: z.object({ color: hex, strength: unit }),
+  pointBoost: z.number().min(0),
+});
+const count = z.number().int().min(0);
+const weatherDef = z.object({
+  acts: z.array(z.number().int().min(1)),
+  grade: z.object({ ambientScale: z.number().min(0), sky: hex, skyMix: unit }).optional(),
+  particles: z
+    .object({ high: count, mid: count, low: count, fallSpeed: z.number().positive(), size: z.number().positive(), length: z.number().positive().optional(), color: hex, alpha: unit, emberShare: unit.optional() })
+    .optional(),
+  wet: z.object({ specular: z.number().min(0), power: z.number().positive() }).optional(),
+  puddles: z.object({ count, alpha: unit, color: hex }).optional(),
+  mist: z.object({ color: hex, near: z.number(), far: z.number().positive() }).optional(),
+  ground: z.object({ layers: count, height: z.number().min(0), alpha: unit, driftSpeed: z.number().min(0), color: hex }).optional(),
+});
+const ms = z.number().min(0);
+const lookSchema = z.object({
+  teams: z.object({ player: teamLook, enemy: teamLook, other: teamLook }),
+  figureReference: z.number().positive(),
+  clothGrey: z.number().positive().max(1),
+  clothSteps: z.tuple([z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3)]),
+  timeOfDay: z.object({ morning: timeOfDayDef, noon: timeOfDayDef, evening: timeOfDayDef, night: timeOfDayDef }),
+  weather: z.object({ clear: weatherDef, rain: weatherDef, fog: weatherDef, ash: weatherDef, snow: weatherDef }),
+  season: z.record(z.string(), z.object({ tint: hex, strength: unit, sunElevationOffsetDeg: z.number() })),
+  fx: z.object({
+    crit: z.object({ cutInInMs: ms, cutInHoldMs: ms, cutInOutMs: ms, freezeMs: ms, shakeMs: ms, shake: z.number().min(0), recoilMs: ms, returnMs: ms, settleMs: ms, numberScale: z.number().positive() }),
+    death: z.object({ ashMs: ms, fadeMs: ms, rise: z.number().min(0), shakeMs: ms, shake: z.number().min(0), flakes: z.object({ high: count, mid: count, low: count }), embers: count, colour: hex, emberColour: hex }),
+    status: z.object({ fadeMs: ms, sizePx: z.number().positive(), feet: z.record(z.string(), z.string()) }),
+  }),
+});
+
 export const renderSchema = z.object({
   camera: z.object({
     tiltDeg: z.number().min(0).max(80),
@@ -629,6 +718,7 @@ export const renderSchema = z.object({
     trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
     decor: z.object({ bushes: decorSchema, stones: decorSchema }),
   }),
+  look: lookSchema,
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),
@@ -675,6 +765,17 @@ export const balanceSchema = z.object({
   skills: z.record(z.string(), z.number()),
   death: z.record(z.string(), z.number()),
   day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
+  haunt: z.strictObject({
+    perDay: z.strictObject({ min: z.number().int().min(1), max: z.number().int().min(1) }).refine((p) => p.min <= p.max, 'perDay: min above max'),
+    maxOpen: z.number().int().min(1),
+    extraEnemies: z.number().int().min(0),
+    goldPct: z.number().min(0),
+    expPct: z.number().min(0),
+    catchUpExpPct: z.number().min(0),
+    halveFromNth: z.number().int().min(1),
+    material: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'material: min above max'),
+    triggerRadius: z.strictObject({ enemy: z.number().int().min(1), lieutenant: z.number().int().min(1) }),
+  }),
   scene: z.strictObject({
     autoBaseMs: z.number().int().min(0),
     autoPerCharMs: z.number().int().min(0),

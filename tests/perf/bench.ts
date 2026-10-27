@@ -10,6 +10,7 @@ import { applyCommand, createBattle, newCampaign, startBattle } from '../../src/
 import { setLocales } from '../../src/i18n';
 import { loadPack } from '../../src/packs/load';
 import { BoardView } from '../../src/render/board/board';
+import { parseLookParam } from '../../src/render/shared/look';
 import { BENCH_MAP_ID, benchMap } from './benchMap';
 
 export interface PreparedBattle {
@@ -32,7 +33,8 @@ export interface EnemyPhaseResult {
   newEffects: number;
 }
 
-type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number };
+/** `look`: time of day and weather of the bench map, e.g. `night,rain` (story 8.6, env PERF_LOOK of the runner); none: the map as it is */
+type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string };
 
 let prepared: { board: BoardView; data: ReturnType<typeof loadContent>['data']; state: ReturnType<typeof startBattle>['state'] } | null = null;
 
@@ -45,7 +47,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   setLocales(loaded.locales);
   await loadPack('act1').catch(() => undefined); // models and sprites resolve without it; content is not needed
   const data = loaded.data;
-  data.maps[BENCH_MAP_ID] = benchMap();
+  data.maps[BENCH_MAP_ID] = { ...benchMap(), ...parseLookParam(opts.look ?? null) };
   const first = data.campaign.nodes[0]!;
   if (!data.campaign.nodes.some((n) => n.id === 'perf')) {
     data.campaign.nodes.push({ ...first, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
