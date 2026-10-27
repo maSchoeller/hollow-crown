@@ -1032,6 +1032,8 @@ export interface RenderDef {
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;
+    /** the scenery around the map uses only the first n models of each variant class (every model costs draw calls as a template of its own) */
+    sceneryVariants: number;
     /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
     decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
     /**

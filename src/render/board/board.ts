@@ -616,7 +616,7 @@ export class BoardView implements HostedView {
       const rolls = [0, 1, 2].map((k) => ((hash3(gx, gy, this.seed + 5 + k * 131) >>> 20) % 1000) / 1000);
       const avoid = [chosen.get(`${gx - 1},${gy}`), chosen.get(`${gx},${gy - 1}`)].filter((m): m is string => !!m);
       const override = grid.inMap(gx, gy) ? overrides.get(`${x},${y}`) : undefined;
-      const model = pickVariant(variantList(this.data, cls, map.act), rolls, { has: known, override, avoid });
+      const model = pickVariant(variantList(this.data, cls, map.act, !grid.inMap(gx, gy)), rolls, { has: known, override, avoid });
       chosen.set(`${gx},${gy}`, model);
       return model;
     };

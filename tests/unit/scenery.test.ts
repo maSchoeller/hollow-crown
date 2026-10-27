@@ -18,6 +18,13 @@ describe('season tree lists', () => {
     expect(variantList(data, 'tree', undefined)).toEqual(variantList(data, 'tree', 1));
     expect(variantList(data, 'tree', 9)).toEqual(variantList(data, 'tree', 1));
   });
+  it('the scenery uses only the first sceneryVariants models, the map all of them', () => {
+    const n = data.render.board.sceneryVariants;
+    expect(n).toBeGreaterThanOrEqual(1);
+    expect(variantList(data, 'tree', 1, true).map((m) => m.model)).toEqual(variantList(data, 'tree', 1).slice(0, n).map((m) => m.model));
+    expect(variantList(data, 'lodge', 1, true)).toEqual(variantList(data, 'lodge', 1));
+    expect(variantList(data, 'tree', 1).length).toBe(5);
+  });
   it('picks by weight over the roll', () => {
     const mix = [{ model: 'a', weight: 4 }, { model: 'b', weight: 1 }];
     expect(pickWeighted(mix, 0).model).toBe('a');

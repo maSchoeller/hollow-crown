@@ -26,8 +26,9 @@ export function variantClassOf(prop: string | undefined): VariantClass | null {
  * The variants of a class. Trees follow the season of the act (autumn in act 2, snow firs in act 3); an act without an entry
  * (or none given) uses act 1, the summer borderland.
  */
-export function variantList(data: Pick<GameData, 'render'>, cls: VariantClass, act?: number): PropVariant[] {
+export function variantList(data: Pick<GameData, 'render'>, cls: VariantClass, act?: number, scenery = false): PropVariant[] {
   const v = data.render.board.variants;
-  if (cls !== 'tree') return v[cls];
-  return (act !== undefined && v.tree[act]) || v.tree[1] || [];
+  const list = cls !== 'tree' ? v[cls] : (act !== undefined && v.tree[act]) || v.tree[1] || [];
+  // the scenery around the map shows only the first `sceneryVariants` models of a class: every model is a template of its own (draw calls, story 7.8 AC 11)
+  return scenery ? list.slice(0, Math.max(1, data.render.board.sceneryVariants)) : list;
 }

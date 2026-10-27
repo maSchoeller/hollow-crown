@@ -17,6 +17,7 @@ board:
   waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe
   sceneryPropsLow: 3                      # D8: auf „Niedrig“ nur Bäume/Felsen bis so viele Felder um die Karte
+  sceneryVariants: 2                      # Story 8.11/7.8: die Landschaft um die Karte nutzt je Klasse nur die ersten n Modelle der Liste (jedes Modell kostet Draw Calls); auf der Karte gelten alle
   # Varianten der Requisiten (Modell `<prop>_<state>`, Gewicht): die Auswahl ist ein Feld-Hash mit dem Brett-Seed (deterministisch, zwei gleiche
   # Nachbarn werden nach Möglichkeit vermieden); eine Karte kann einzelne Felder mit `propVariants` festlegen (content:check prüft die Modell-Id
   # gegen diese Listen). Modelle, die das Manifest (public/assets/manifest.json models.props) noch nicht kennt, fallen weg; bleibt keines übrig,

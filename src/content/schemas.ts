@@ -733,6 +733,7 @@ export const renderSchema = z.object({
     tintPool: z.number().int().nonnegative(),
     precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
+    sceneryVariants: z.number().int().min(1),
     variants: z.object({
       house: propVariantList,
       lodge: propVariantList,
