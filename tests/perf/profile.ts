@@ -21,6 +21,10 @@ export const PROFILE = {
 export const TARGETS = {
   /** a frame slower than this counts as dropped (1.5 frames at 60 FPS) */
   droppedFrameMs: 25,
+  /** story 7.8: no single frame of the enemy phase is slower than this, at any throttling level, in any run (GPU runs only) */
+  maxFrameMs: 100,
+  /** frames slower than this get a trace entry with their cause in the bench (story 7.8) */
+  traceMs: 50,
   /** NFR2: cold start of the installed app until the title answers */
   coldStartMs: 5000,
   /** NFR3: the enemy phase takes at most this long per enemy unit (`pnpm bench:ai`, story 2.8) */

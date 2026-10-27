@@ -19,6 +19,7 @@ Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
 import os
 import sys
+import zlib
 
 import bpy
 import numpy as np
@@ -392,7 +393,78 @@ def sockets():
     return made
 
 
+def pose_probe():
+    """Vertex positions of the skinned meshes under a fixed, arbitrary pose of every bone that stays (deterministic)."""
+    for pb in arm.pose.bones:
+        pb.rotation_mode = "QUATERNION"
+        if pb.name in dropped:
+            pb.rotation_quaternion = (1, 0, 0, 0)
+        else:  # a rotation per bone name (the edit-mode round trip may reorder the bones)
+            q = np.random.default_rng(zlib.crc32(pb.name.encode())).uniform(-0.25, 0.25, 4) + np.array([1, 0, 0, 0])
+            pb.rotation_quaternion = q / np.linalg.norm(q)
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+    out = []
+    for o in skinned:
+        ev = o.evaluated_get(dg)
+        m = ev.to_mesh()
+        out.append(np.array([(ev.matrix_world @ v.co)[:] for v in m.vertices]))
+        ev.to_mesh_clear()
+    for pb in arm.pose.bones:
+        pb.rotation_quaternion = (1, 0, 0, 0)
+    bpy.context.view_layer.update()
+    return np.concatenate(out)
+
+
+def slim_rig():
+    """Story 7.8: 65 -> 22 joints, lossless. Finger and end bones are never keyed (SKIP above, the board shows no fingers), so in
+    every pose a skin matrix of such a bone equals its parent's (world = parent x rest-local, the inverse bind undoes the rest-local).
+    Their skin weights are therefore added to the nearest kept ancestor (the hand; Toe_End -> ToeBase, HeadTop_End -> Head) and the
+    bones are removed. The vertex positions under an arbitrary pose are compared before and after (the build stops on a deviation)."""
+    global dropped
+    names = {b.name for b in arm.data.bones}
+    dropped = {n for n in names if any(sk in n for sk in SKIP) or n.endswith("_End")}
+    if not dropped:
+        return
+    target = {}
+    for n in dropped:
+        b = arm.data.bones[n]
+        while b.name in dropped:
+            b = b.parent
+        target[n] = b.name
+    arm.animation_data.use_nla = False  # the probe poses the bones by hand; the NLA tracks would overwrite them
+    before = pose_probe()
+    for o in skinned:
+        vgs = o.vertex_groups
+        index = {vg.index: vg.name for vg in vgs}
+        for v in o.data.vertices:
+            add = {}
+            for g in v.groups:
+                n = index[g.group]
+                if n in dropped:
+                    add[target[n]] = add.get(target[n], 0.0) + g.weight
+            for tgt, w in add.items():
+                (vgs.get(tgt) or vgs.new(name=tgt)).add([v.index], w, "ADD")
+        for n in dropped:
+            if n in vgs:
+                vgs.remove(vgs[n])
+    bpy.context.view_layer.objects.active = arm
+    bpy.ops.object.mode_set(mode="EDIT")
+    for n in dropped:
+        arm.data.edit_bones.remove(arm.data.edit_bones[n])
+    bpy.ops.object.mode_set(mode="OBJECT")
+    after = pose_probe()
+    arm.animation_data.use_nla = True
+    dev = float(np.abs(before - after).max())
+    most = max(sum(1 for g in v.groups if g.weight > 1e-6) for o in skinned for v in o.data.vertices)
+    print(f"[hc] rig slimmed: {len(names)} -> {len(arm.data.bones)} bones, vertex deviation {dev:.2e}, at most {most} influences per vertex", flush=True)
+    if dev > 2e-4 * height:
+        raise SystemExit(f"slim_rig: vertex positions moved by {dev} (limit {2e-4 * height})")
+
+
+dropped = set()
 if arm:
+    slim_rig()
     sockets()
 
 bpy.ops.export_scene.gltf(filepath=dst, export_format="GLB", use_selection=False, export_image_format="JPEG",

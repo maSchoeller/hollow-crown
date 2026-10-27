@@ -1009,6 +1009,12 @@ export interface RenderDef {
     fpsIdle: number;
     /** story 7.7: figures doing nothing update their skeleton this often (Hz); acting ones at the frame rate */
     idleHz: number;
+    /** story 7.8: figures with a baked animation file (`.vat`, image-to-3D) play it as vertex animation instead of a skeleton; false: skeleton path for all */
+    vat: boolean;
+    /** story 7.8: how much the board warms up at load: 0 = precompile only, 1 = + flash/fade variants and prop twins, 2 = + a warm-up draw */
+    warm: 0 | 1 | 2;
+    /** Story 7.8: tint (flash/fade) materials kept per texture and case for reuse */
+    tintPool: number;
     /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
     precompileMs: number;
     /** size of 3D figures relative to their Blender scale */

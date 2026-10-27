@@ -105,9 +105,9 @@ def build_sheets(kind):
 
 
 def build_models():
-    """art/models/units/<id>.glb → public/assets/<pack>/models/units/<id>.glb (the pack of the figure's first appearance,
-    tools/art/model_packs.py); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/."""
-    result = {'units': [], 'unitPacks': {}, 'props': {}, 'weapons': []}
+    """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
+    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/."""
+    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'weapons': []}
     base = os.path.join(ART, 'models')
     src = os.path.join(base, 'units')
     ids = sorted(f[:-4] for f in os.listdir(src) if f.endswith('.glb') and 'preview' not in f) if os.path.isdir(src) else []
@@ -116,6 +116,10 @@ def build_models():
         dst = ensure(os.path.join(OUT, pack, 'models', 'units'))
         for mid in (m for m in ids if packs[m] == pack):
             shutil.copy2(os.path.join(src, mid + '.glb'), os.path.join(dst, mid + '.glb'))
+            # the baked animation (tools/art/bake_vat.py) lies beside the model, in its pack (story 7.8)
+            if os.path.exists(os.path.join(src, mid + '.vat')):
+                shutil.copy2(os.path.join(src, mid + '.vat'), os.path.join(dst, mid + '.vat'))
+                result['vat'].append(mid)
     result['units'] = ids
     result['unitPacks'] = packs
     for kind in ('props', 'weapons'):

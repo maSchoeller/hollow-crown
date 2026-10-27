@@ -3,7 +3,7 @@
  *
  * The loading screen (`src/app/loading/plan.ts` `missionAssets`, fed by `flow.ts`) works from runtime data (GameData,
  * manifest.json), which does not exist at build time. This derives the same set from the content YAML instead:
- *  - the unit models of every figure that joins at the opening node (`fixed: first`) or stands on its map (units and
+ *  - the unit models (and their baked animation files, `.vat`) of every figure that joins at the opening node (`fixed: first`) or stands on its map (units and
  *    reinforcements; the avatar adds both avatar models),
  *  - the weapon and prop model libraries (`models/weapons`, `models/props`; the plan picks only the weapons the units
  *    hold, here all of them: a few files more, and no dependency on item data),
@@ -37,7 +37,7 @@ export function firstMissionFigures(root = process.cwd()) {
 /** @param {string[]} files all files of dist (posix paths relative to it) */
 export function isFirstMissionFile(p, figures) {
   if (/^assets\/models\/(props|weapons)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
-  const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.glb$/.exec(p);
+  const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.(?:glb|vat)$/.exec(p);
   return m !== null && figures.has(m[1]);
 }
 

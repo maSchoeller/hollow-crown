@@ -8,6 +8,8 @@ into public/assets like the Blender figures. tools/art/export_models.py skips th
 Animations a figure's export lacks come from the humanoid library ANIM_LIBRARY (Kael's Tripo export with the AI
 slash, plus his flee and cheer export), transferred rest-pose-relative; so a new figure only needs the Tripo auto-rig.
 Each packed figure is measured against the figure budget (tools/figure-budget.mjs: triangles, texture, gzip size).
+tools/art/bake_vat.py then bakes the board animations of the raw figure into art/models/units/<id>.vat (story 7.8: 60 fps local poses, the
+renderer plays them as vertex animation); the figure budget counts the .vat file with the model.
 Then gltfpack (meshoptimizer, devDependency) quantizes and meshopt-compresses the figure (about half the transfer size);
 src/render/models.ts decodes it with the bundled decoder. Named nodes (bones, hand sockets) and vertex colours stay.
 """
@@ -40,6 +42,11 @@ for uid in ids:
     lines = [l for l in res.stdout.splitlines() if l.startswith("[hc]")]
     if res.returncode or not lines:
         sys.exit(f"{uid}: failed\n{res.stdout[-2000:]}\n{res.stderr[-2000:]}")
+    vat = os.path.join(UNITS, f"{uid}.vat")
+    baked = subprocess.run([sys.executable, os.path.join(HERE, "bake_vat.py"), raw, vat], capture_output=True, text=True)
+    if baked.returncode:
+        sys.exit(f"{uid}: bake_vat failed\n{baked.stdout[-2000:]}\n{baked.stderr[-2000:]}")
+    lines += [l for l in baked.stdout.splitlines() if l.startswith("[hc]")]
     # -kn keeps bones and sockets, -km the material with the base colour map, -af 12 the board's animation rate
     pack = subprocess.run([GLTFPACK, "-i", raw, "-o", dst, "-kn", "-km", "-c", "-af", "12"], capture_output=True, text=True)
     if pack.returncode:

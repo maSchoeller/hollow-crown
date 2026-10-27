@@ -39,7 +39,7 @@ export const figureBudgetSchema = z.object({
 });
 
 export const packsFileSchema = z
-  .object({ figureBudget: figureBudgetSchema.optional(), packs: z.array(packDefSchema).min(1) })
+  .object({ figureBudget: figureBudgetSchema.optional(), firstDownloadTargetMb: z.number().positive().optional(), packs: z.array(packDefSchema).min(1) })
   .refine((f) => f.packs[0]?.id === CORE_PACK && f.packs[0].released && f.packs[0].load === 'precache', {
     message: 'the first pack must be core (released, precache)',
   })

@@ -9,7 +9,9 @@ import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
+import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import type { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
@@ -26,12 +28,12 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, Element, GameData, GameEvent, GearPiece, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
-import { bleedsOut, itemDef, modelId, unitFigureId } from '../../core';
+import { bleedsOut, itemDef, modelId, unitFigureId, unitVatPath } from '../../core';
 import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
 import { loadPropMesh, loadUnitModel } from '../shared/models';
-import { ModelFigure, SpriteFigure, type Facing, type Figure, type FigureAnim } from '../shared/figures';
+import { ModelFigure, SpriteFigure, warmTints, type Facing, type Figure, type FigureAnim } from '../shared/figures';
 import { applyLight } from '../shared/season';
 import { lookOverride, resolveLook, weatherPlan, type ResolvedLook } from '../shared/look';
 import { t } from '../../i18n';
@@ -101,6 +103,10 @@ interface UnitView {
   alpha: number;
   visible: boolean;
   downed: boolean;
+  /** the tile (and visibility) the prop fade last saw this unit on; a change asks for a new fade pass (story 7.8) */
+  fadeX: number;
+  fadeY: number;
+  fadeSeen: boolean;
 }
 
 interface FxSprite {
@@ -157,6 +163,12 @@ export class BoardView implements HostedView {
   skip = false;
   quality: Quality = 'mid';
   figures: FigureStyle = '3d';
+  /**
+   * The clock of the figures' animations in ms: it runs with the frames but stops while the board freezes a critical hit
+   * (`scene.animationTimeScale` 0), as the engine's own animations do. Baked figures (story 7.8) read their rows from it.
+   */
+  private animClock = 0;
+  private animWall = -1;
   /** camera shake on critical hits and deaths (option "shake", off with prefers-reduced-motion) */
   shakeEnabled = true;
   /** what the map looks like: light, sky, figure floor and rim, weather (story 8.6) */
@@ -194,8 +206,8 @@ export class BoardView implements HostedView {
   private fadeMats = new Map<StandardMaterial, StandardMaterial>();
   /** height and footprint radius of a template's model */
   private propSizes = new Map<Mesh, { top: number; r: number }>();
-  /** unit tiles the fade was last worked out for; '' forces a new pass */
-  private fadeKey = '';
+  /** a unit moved to another tile, appeared, left or changed its visibility since the fade was last worked out (story 7.8: no key string per frame) */
+  private fadeDirty = true;
   private fires: ParticleSystem[] = [];
   private flameTexture: DynamicTexture;
   private units = new Map<string, UnitView>();
@@ -251,6 +263,10 @@ export class BoardView implements HostedView {
     this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
     this.propMat.backFaceCulling = false;
     this.flameTexture = this.makeFlameTexture();
+    if (typeof ResizeObserver !== 'undefined') {
+      this.sizeObserver = new ResizeObserver(() => (this.size = null));
+      this.sizeObserver.observe(this.canvas);
+    }
     this.bindInput();
     // dev tools and E2E tests (Playwright sets navigator.webdriver) inspect the board
     if (import.meta.env.DEV || navigator.webdriver) (window as unknown as { __board: BoardView }).__board = this;
@@ -263,6 +279,7 @@ export class BoardView implements HostedView {
 
   /** The host calls this when the canvas changed size. */
   resize(): void {
+    this.size = null;
     this.ppt = this.pptFor(this.step);
     this.clampCamera();
   }
@@ -272,6 +289,7 @@ export class BoardView implements HostedView {
     if (this.disposed) return;
     this.disposed = true;
     this.input.abort();
+    this.sizeObserver?.disconnect();
     for (const f of this.floaters) f.el.remove();
     for (const el of this.bleedLabels.values()) el.remove();
     for (const el of this.pennants.values()) el.remove();
@@ -379,7 +397,7 @@ export class BoardView implements HostedView {
   private applyWeather(): void {
     const plan = weatherPlan(this.look.weatherDef, this.quality);
     this.weather.apply(this.look, plan, this.terrain!, [this.state.width, this.state.height], this.seed, this.sun);
-    this.cameraKey = '';
+    this.camSet.x = NaN;
   }
 
   /** Loads assets and builds the board. Call once per battle. */
@@ -414,6 +432,7 @@ export class BoardView implements HostedView {
   private async precompile(): Promise<void> {
     if (this.disposed) return;
     const fx = this.makeFx(Object.keys(this.fx?.anims ?? {})[0] ?? '', 0, 0, false);
+    const warm = this.data.render.board.warm;
     const jobs: Promise<unknown>[] = [this.scene.whenReadyAsync()];
     if (fx) jobs.push(fx.mat.forceCompilationAsync(fx.mesh).catch(() => undefined));
     // the weather's particles and the death's ash compile their shaders on first use otherwise (story 8.6)
@@ -423,8 +442,60 @@ export class BoardView implements HostedView {
         poll();
       }),
     );
+    if (warm >= 1) {
+      // the materials of a flash and of a fade are shader variants of their own: a first hit would compile them mid-battle (story 7.8)
+      jobs.push(warmTints([...this.units.values()].map((u) => u.figure)).catch(() => undefined));
+      // the see-through twins of the props (story 8.10) were made, and their blended shader compiled, when the first unit
+      // stepped behind a prop: the frame trace of the enemy phase showed this as two new shader variants at 4.7 s (story 7.8).
+      // They compile with their instance (`useInstances`): without it the instance colour attribute has no declaration.
+      for (const twin of this.showTwins()) if (twin.material) jobs.push(twin.material.forceCompilationAsync(twin, { useInstances: true }).catch(() => undefined));
+    }
     await Promise.race([Promise.all(jobs), sleep(this.data.render.board.precompileMs)]);
     if (fx) this.disposeFx(fx);
+    if (warm >= 2 && !this.disposed) this.warmDraw();
+    // the twins go back to what the fade says (nothing faded: no instance)
+    if (warm >= 1) for (const set of this.propSets) this.writeProps(set);
+  }
+
+  /** Makes the twin of every prop template and gives it one instance, so that its shader variants (with instances) can compile and draw. */
+  private showTwins(): Mesh[] {
+    const twins: Mesh[] = [];
+    for (const set of this.propSets) {
+      if (!set.boxes.length) continue;
+      const twin = this.fadeTwin(set);
+      twin.isVisible = true;
+      twin.thinInstanceSetBuffer('matrix', set.mats.slice(0, 16), 16, true);
+      twin.thinInstanceSetBuffer('color', set.cols.slice(0, 4), 4, true);
+      twins.push(twin);
+    }
+    return twins;
+  }
+
+  /**
+   * Draws everything once (story 7.8): every figure switched on, terrain and props past the view's edge too, so the driver
+   * links its programs, the buffers and the skeletons' bone textures are uploaded here, not in the first frames of a battle.
+   * The normal frame is drawn over it in the same task, so nothing of it reaches the screen. `scene.isReady` alone draws nothing.
+   */
+  private warmDraw(): void {
+    const switchedOn: TransformNode[] = [];
+    for (const v of this.units.values()) {
+      if (v.figure.node.isEnabled(false)) continue;
+      v.figure.node.setEnabled(true);
+      switchedOn.push(v.figure.node);
+    }
+    const forced: AbstractMesh[] = [];
+    for (const m of this.scene.meshes) {
+      if (m.alwaysSelectAsActiveMesh || !m.isEnabled() || !m.isVisible) continue;
+      m.alwaysSelectAsActiveMesh = true;
+      forced.push(m);
+    }
+    try {
+      this.scene.render();
+    } finally {
+      for (const m of forced) m.alwaysSelectAsActiveMesh = false;
+      for (const n of switchedOn) n.setEnabled(false);
+    }
+    this.frame(performance.now());
   }
 
   private textureFromImage(name: string, img: HTMLImageElement | HTMLCanvasElement): DynamicTexture {
@@ -617,7 +688,7 @@ export class BoardView implements HostedView {
     this.propSets = sets;
     for (const set of sets) this.writeProps(set);
     for (const m of this.propMeshes) if (!m.thinInstanceCount) m.isVisible = false;
-    this.fadeKey = '';
+    this.fadeDirty = true;
     this.updateFade();
     this.refreshShadows();
   }
@@ -646,6 +717,8 @@ export class BoardView implements HostedView {
     twin = set.tpl.clone(`${set.tpl.name}:fade`, null, true)!;
     twin.makeGeometryUnique();
     twin.thinInstanceCount = 0;
+    // it carries the template's instance colours from the clone, but has no instance yet (`writeProps` fills it)
+    twin.thinInstanceSetBuffer('color', null);
     twin.isVisible = false;
     twin.isPickable = false;
     twin.alwaysSelectAsActiveMesh = true;
@@ -680,6 +753,12 @@ export class BoardView implements HostedView {
       m.isVisible = mats.length > 0;
       if (!mats.length) {
         m.thinInstanceCount = 0;
+        // without the colour buffer the mesh carries no instance attribute: a readiness check of the scene compiles it without
+        // instancing, and "instanceColor undeclared" would fail that shader (story 7.8)
+        m.thinInstanceSetBuffer('color', null);
+        // Babylon sets the define for instance colours when a mesh has instances and never clears it: a mesh that gave up its instances
+        // would be compiled with the colour attribute but without instancing by the next readiness check of the scene. Fresh defines.
+        for (const sm of m.subMeshes ?? []) sm.materialDefines = null;
         return;
       }
       m.thinInstanceSetBuffer('matrix', mats, 16, true);
@@ -711,21 +790,18 @@ export class BoardView implements HostedView {
 
   /**
    * Story 8.10: props in front of or on a unit's tile turn see-through. Runs every frame but works only when a unit
-   * reached another tile (moves, enemy phase, deployment), appeared or left.
+   * reached another tile (moves, enemy phase, deployment), appeared or left: `placeUnit` flags that (`fadeDirty`).
    */
   private updateFade(): void {
-    if (!this.terrain || !this.state) return;
-    let key = '';
+    if (!this.terrain || !this.state || !this.fadeDirty) return;
+    this.fadeDirty = false;
     const spots: Array<{ x: number; y: number; h: number }> = [];
     for (const v of this.units.values()) {
       if (!v.visible) continue;
       const tx = Math.round(v.x + v.offX);
       const ty = Math.round(v.y + v.offY);
-      key += `${tx},${ty};`;
       spots.push({ x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) });
     }
-    if (key === this.fadeKey) return;
-    this.fadeKey = key;
     const { cover, figureWidth } = this.data.render.board.fade;
     const rule = fadeRule(this.data.render.camera.tiltDeg, cover, figureWidth);
     for (const set of this.propSets) {
@@ -821,10 +897,12 @@ export class BoardView implements HostedView {
       // a figure per chosen portrait where one exists (the avatar: avatar_a / avatar_b), else the unit's own
       const manifestModels = (await loadManifest()).models;
       const mid = modelId(u, manifestModels?.units ?? [], this.data.classes);
-      const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u), manifestModels?.unitPacks);
+      // a figure with a baked animation file (the manifest lists them) plays it as vertex animation (story 7.8, `board.vat`)
+      const vatPath = this.data.render.board.vat && manifestModels?.vat?.includes(mid) ? unitVatPath(mid, manifestModels.unitPacks) : undefined;
+      const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u), manifestModels?.unitPacks, vatPath);
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
-        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz);
+        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz, this.data.render.board.tintPool);
       }
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
@@ -875,6 +953,9 @@ export class BoardView implements HostedView {
           alpha: 1,
           visible: true,
           downed: false,
+          fadeX: NaN,
+          fadeY: NaN,
+          fadeSeen: false,
         };
         this.units.set(u.uid, v);
         this.rings.add(u.uid, u.team);
@@ -916,7 +997,7 @@ export class BoardView implements HostedView {
     for (const [uid, el] of this.pennants) {
       const v = this.units.get(uid);
       if (!v) continue;
-      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.2, -(v.y + v.offY + 0.5)));
+      const p = this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 1.2, -(v.y + v.offY + 0.5));
       el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
       el.style.display = v.visible && v.alpha > 0.5 ? '' : 'none';
     }
@@ -978,7 +1059,7 @@ export class BoardView implements HostedView {
     for (const uid of this.statusIcons.uids()) {
       const v = this.units.get(uid);
       if (!v) continue;
-      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 0.95, -(v.y + v.offY + 0.5)));
+      const p = this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 0.95, -(v.y + v.offY + 0.5));
       // a lieutenant's pennant hangs over his head: the icons sit beside it
       const lt = this.pennants.has(uid);
       this.statusIcons.place(uid, lt ? p.x + this.ppt * 0.28 : p.x, p.y, v.visible && !v.downed && v.alpha > 0.5, !lt);
@@ -1007,14 +1088,14 @@ export class BoardView implements HostedView {
   headScreen(uid: string): { x: number; y: number } | null {
     const v = this.units.get(uid);
     if (!v) return null;
-    return this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.05, -(v.y + v.offY + 0.5)));
+    return this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 1.05, -(v.y + v.offY + 0.5));
   }
 
   private placeBleedLabels(): void {
     for (const [uid, el] of this.bleedLabels) {
       const v = this.units.get(uid);
       if (!v) continue;
-      const p = this.screenOfWorld(new Vector3(v.x + v.offX + 0.5, this.tileTop([Math.round(v.x), Math.round(v.y)]) + 1.05, -(v.y + v.offY + 0.5)));
+      const p = this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 1.05, -(v.y + v.offY + 0.5));
       el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
     }
   }
@@ -1027,6 +1108,7 @@ export class BoardView implements HostedView {
     if (v.gold) disposeGoldRing(v.gold);
     this.rings.remove(v.uid);
     this.units.delete(v.uid);
+    this.fadeDirty = true;
   }
 
   private setAnim(v: UnitView, anim: FigureAnim): void {
@@ -1055,6 +1137,11 @@ export class BoardView implements HostedView {
 
   private tileTop(p: Pos): number {
     return this.terrain?.standOn(p[0], p[1]) ?? 0;
+  }
+
+  /** `tileTop` for two numbers (the labels of every frame make no position array) */
+  private tileTop2(x: number, y: number): number {
+    return this.terrain?.standOn(x, y) ?? 0;
   }
 
   private buildOverlays(): void {
@@ -1092,13 +1179,24 @@ export class BoardView implements HostedView {
 
   // ------------------------------------------------------------------ camera
 
+  /**
+   * The canvas size in CSS px. Cached: reading it with `getBoundingClientRect` for every label of every frame forced a layout
+   * after the previous label's style write (story 7.8). A `ResizeObserver` and `resize()` drop the cache.
+   */
+  private size: { w: number; h: number } | null = null;
+  private sizeObserver: ResizeObserver | null = null;
+
   private cssSize(): { w: number; h: number } {
+    if (this.size) return this.size;
     const r = this.canvas.getBoundingClientRect();
-    return { w: Math.max(1, r.width), h: Math.max(1, r.height) };
+    const size = { w: Math.max(1, r.width), h: Math.max(1, r.height) };
+    // without an observer (no ResizeObserver) the size is measured anew on each call, as before
+    if (this.sizeObserver) this.size = size;
+    return size;
   }
 
   private cosTilt(): number {
-    return Math.cos((this.data.render.camera.tiltDeg * Math.PI) / 180);
+    return this.basis().cos;
   }
 
   private pptFor(step: number): number {
@@ -1184,13 +1282,22 @@ export class BoardView implements HostedView {
     return inFreeArea(p[0] + 0.5, this.camX, w / this.ppt, hud.left, hud.right, 1) && inFreeArea(p[1] + 0.5, this.camY, h / this.ppt / this.cosTilt(), hud.top, hud.bottom, 1);
   }
 
+  /** the view's axes for the camera tilt, worked out once per tilt value (callers do not change the vectors) */
+  private basisCache: { tiltDeg: number; forward: Vector3; up: Vector3; sin: number; cos: number } | null = null;
+
   private basis() {
-    const t = (this.data.render.camera.tiltDeg * Math.PI) / 180;
-    return { forward: new Vector3(0, -Math.cos(t), Math.sin(t)), up: new Vector3(0, Math.sin(t), Math.cos(t)) };
+    const tiltDeg = this.data.render.camera.tiltDeg;
+    if (this.basisCache?.tiltDeg !== tiltDeg) {
+      const t = (tiltDeg * Math.PI) / 180;
+      const sin = Math.sin(t);
+      const cos = Math.cos(t);
+      this.basisCache = { tiltDeg, forward: new Vector3(0, -cos, sin), up: new Vector3(0, sin, cos), sin, cos };
+    }
+    return this.basisCache!;
   }
 
   /** the camera values the view was last set from; a frame with the same ones leaves the camera alone */
-  private cameraKey = '';
+  private camSet = { x: NaN, y: NaN, ppt: NaN, w: NaN, h: NaN, jitter: NaN };
 
   private updateCamera(now: number): void {
     if (this.zoomTween) {
@@ -1206,9 +1313,14 @@ export class BoardView implements HostedView {
     const { forward } = this.basis();
     if (this.shake && now > this.shakeEnd) this.shake = 0;
     const jitter = this.shake ? (Math.random() - 0.5) * this.shake : 0;
-    const key = `${this.camX}|${this.camY}|${this.ppt}|${w}|${h}|${jitter}`;
-    if (key === this.cameraKey) return;
-    this.cameraKey = key;
+    const c = this.camSet;
+    if (c.x === this.camX && c.y === this.camY && c.ppt === this.ppt && c.w === w && c.h === h && c.jitter === jitter) return;
+    c.x = this.camX;
+    c.y = this.camY;
+    c.ppt = this.ppt;
+    c.w = w;
+    c.h = h;
+    c.jitter = jitter;
     const target = new Vector3(this.camX + jitter, 0, -this.camY);
     this.camera.position.copyFrom(target.subtract(forward.scale(CAM_DIST)));
     this.camera.setTarget(target);
@@ -1247,10 +1359,14 @@ export class BoardView implements HostedView {
 
   /** World point → CSS px relative to the canvas (for HTML overlays and tests). */
   screenOfWorld(p: Vector3): { x: number; y: number } {
+    return this.screenOfXYZ(p.x, p.y, p.z);
+  }
+
+  /** `screenOfWorld` for the three numbers: the frame's labels call it without making a vector each */
+  private screenOfXYZ(x: number, y: number, z: number): { x: number; y: number } {
     const { w, h } = this.cssSize();
-    const { up } = this.basis();
-    const rel = p.subtract(new Vector3(this.camX, 0, -this.camY));
-    return { x: w / 2 + rel.x * this.ppt, y: h / 2 - Vector3.Dot(rel, up) * this.ppt };
+    const { sin, cos } = this.basis();
+    return { x: w / 2 + (x - this.camX) * this.ppt, y: h / 2 - (y * sin + (z + this.camY) * cos) * this.ppt };
   }
 
   /** the canvas size (CSS px) the camera was last set up for */
@@ -1259,18 +1375,18 @@ export class BoardView implements HostedView {
 
   /** Is the world point (x east, y up, z north) in the view, with room for a figure around its feet? Cheaper than a projection. */
   private onScreen(x: number, y: number, z: number): boolean {
-    const t = (this.data.render.camera.tiltDeg * Math.PI) / 180;
+    const { sin, cos } = this.basis();
     const rx = x - this.camX;
     const rz = z + this.camY;
     const sx = this.viewW / 2 + rx * this.ppt;
-    const sy = this.viewH / 2 - (y * Math.sin(t) + rz * Math.cos(t)) * this.ppt;
+    const sy = this.viewH / 2 - (y * sin + rz * cos) * this.ppt;
     const m = this.ppt * OFFSCREEN_TILES;
     return sx > -m && sx < this.viewW + m && sy > -m * 2 && sy < this.viewH + m;
   }
 
   /** Ground point of tile coordinates (x east, y south, in tiles) at height `h` → CSS px. */
   screenOf(x: number, y: number, h = 0): { x: number; y: number } {
-    return this.screenOfWorld(new Vector3(x, h, -y));
+    return this.screenOfXYZ(x, h, -y);
   }
 
   /** Screen (CSS px) → tile: marches the view ray down through the terrain heights. */
@@ -1396,13 +1512,15 @@ export class BoardView implements HostedView {
     this.weather.tick(now);
     // a critical hit's freeze: the figures and effects keep the time they stopped at
     const clock = this.frozenAt ?? now;
+    this.animClock += this.animWall < 0 ? 0 : Math.max(0, now - this.animWall) * this.scene.animationTimeScale;
+    this.animWall = now;
     const pulse = 0.5 + 0.5 * Math.sin(now / 250);
     for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
-    for (const v of this.units.values()) this.placeUnit(v, clock);
+    for (const v of this.units.values()) this.placeUnit(v, this.animClock);
     this.rings.flush();
     this.updateFade();
     this.updateGrudgeLine();
-    if (this.ghost) this.ghost.figure.tick(clock, this.speed);
+    if (this.ghost) this.ghost.figure.tick(this.animClock, this.speed);
     const boost = this.look.pointBoost;
     this.pointLights.forEach((l, k) => (l.intensity = (0.9 + Math.sin(now / 90 + k * 2) * 0.12 + Math.sin(now / 37 + k) * 0.08) * boost));
     this.updateFx(clock);
@@ -1422,6 +1540,14 @@ export class BoardView implements HostedView {
     v.figure.node.position.set(x + 0.5, h, -y - 0.5);
     // a figure outside the view is switched off: the scene then skips its meshes, bones and nodes altogether (story 7.7)
     const onScreen = this.onScreen(x + 0.5, h, -y - 0.5);
+    const fx = Math.round(x);
+    const fy = Math.round(y);
+    if (fx !== v.fadeX || fy !== v.fadeY || v.visible !== v.fadeSeen) {
+      v.fadeX = fx;
+      v.fadeY = fy;
+      v.fadeSeen = v.visible;
+      this.fadeDirty = true;
+    }
     v.figure.node.setEnabled(v.visible && onScreen);
     v.figure.tint(v.desat, v.flash, v.alpha);
     v.figure.tick(now, this.speed, onScreen);
@@ -1473,19 +1599,23 @@ export class BoardView implements HostedView {
   private updateFx(now: number): void {
     const fx = this.fx;
     if (!fx) return;
-    this.fxSprites = this.fxSprites.filter((f) => {
+    // in place: no new array for the sprites of every frame (story 7.8)
+    const list = this.fxSprites;
+    let kept = 0;
+    for (const f of list) {
       const a = fx.anims[f.anim]!;
       const n = Math.floor(((now - f.start) / 1000) * a.fps * (this.speed > 1 ? 1.6 : 1));
       if (!f.loop && n >= a.frames) {
         this.disposeFx(f);
-        return false;
+        continue;
       }
       const col = f.loop ? n % a.frames : n;
       const tex = f.mat.diffuseTexture as Texture;
       tex.uOffset = (col * fx.cell[0]) / fx.image.width;
       tex.vOffset = 1 - ((a.row + 1) * fx.cell[1]) / fx.image.height;
-      return true;
-    });
+      list[kept++] = f;
+    }
+    list.length = kept;
   }
 
   // ------------------------------------------------------------------ floating text
@@ -1507,7 +1637,7 @@ export class BoardView implements HostedView {
         f.el.remove();
         return false;
       }
-      const p = this.screenOfWorld(new Vector3(f.x, f.h + t * 0.4, -f.y));
+      const p = this.screenOfXYZ(f.x, f.h + t * 0.4, -f.y);
       f.el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
       f.el.style.opacity = String(t < 0.75 ? 1 : 1 - (t - 0.75) / 0.25);
       return true;
