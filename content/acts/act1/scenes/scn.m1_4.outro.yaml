@@ -34,7 +34,7 @@ lines:
   - id: o07
     speaker: [brenna]
     fallback: skip
-    mood: neutral
+    mood: angry
     text: "Verbrannt noch eins. Wer ihn so schnell zum Schweigen bringt, fürchtet, was er sagen wollte."
   - id: o08
     requires: [{ alive: ysolde }]
@@ -54,7 +54,7 @@ lines:
   - id: g02
     panel: rhen_confession
     mood: neutral
-    text: "{avatar} dreht eine Münze in den Fingern: ein Rest vom Vorschuss der Paktnacht. Kael setzt sich dazu."
+    text: "{avatar} hält den Vertrag der Paktnacht, das rote Siegel gebrochen. Kael setzt sich dazu."
   - id: g03
     speaker: [avatar]
     mood: sad
