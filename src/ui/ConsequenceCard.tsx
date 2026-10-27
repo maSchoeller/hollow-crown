@@ -29,7 +29,12 @@ export function consequenceView(
       };
     }
     case 'item':
-      return { icon: <ItemImage data={data} item={l.def} size={40} bare />, title: t('ui.consequence.item.title', { name: t(`item.${l.def}.name`) }), desc: t('ui.consequence.item.desc') };
+      // several of one item at once read "2 × Name" (the number is the amount, never a word)
+      return {
+        icon: <ItemImage data={data} item={l.def} size={40} bare />,
+        title: l.amount && l.amount > 1 ? t('ui.consequence.itemCount.title', { n: l.amount, name: t(`item.${l.def}.name`) }) : t('ui.consequence.item.title', { name: t(`item.${l.def}.name`) }),
+        desc: t(l.amount && l.amount > 1 ? 'ui.consequence.itemCount.desc' : 'ui.consequence.item.desc'),
+      };
     case 'chronicle':
       return { icon: <Icon name="log" size={22} />, title: t('ui.consequence.chronicle.title'), desc: t('ui.consequence.chronicle.desc') };
     case 'quest': {
@@ -55,7 +60,7 @@ export function consequenceView(
     case 'priceMod':
       return { icon: <Icon name="merchant" size={22} />, title: t('ui.consequence.priceMod.title', { pct: `${l.pct > 0 ? '+' : ''}${l.pct}` }), desc: t('ui.consequence.priceMod.desc', { act: l.act }) };
     case 'villageAid':
-      return { icon: <Icon name="healer" size={22} />, title: t('ui.consequence.villageAid.title'), desc: t('ui.consequence.villageAid.desc') };
+      return { icon: <Icon name="healer" size={22} />, title: t('ui.consequence.villageAid.title'), desc: t('ui.consequence.villageAid.desc', { act: l.act }) };
     case 'home':
       return { icon: <Icon name={l.home === 'castle' ? 'castle' : 'camp'} size={22} />, title: t('ui.consequence.home.title'), desc: t('ui.consequence.home.desc') };
     case 'noted':
@@ -69,10 +74,13 @@ export function ConsequenceCard({
   title,
   lines,
   head,
+  mark = 'ui.consequence.mark',
   onClose,
 }: {
   data: GameData;
   title: string;
+  /** text key of the kicker (default: Consequences) */
+  mark?: string;
   lines: ConsequenceLine[];
   head: (unit: string) => ComponentChildren;
   onClose: () => void;
@@ -82,7 +90,7 @@ export function ConsequenceCard({
       <Piece class="cq-card" role="dialog" aria-modal="true" aria-labelledby="cq-title">
         <span class="hc-kick cq-card__kick">
           <i />
-          {t('ui.consequence.mark')}
+          {t(mark)}
         </span>
         <h3 id="cq-title" class="cq-card__title">
           {title}

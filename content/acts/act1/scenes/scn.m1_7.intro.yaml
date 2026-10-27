@@ -1,0 +1,47 @@
+# Mission 1-7, Szene vor der Karte: ein Beben in der Nacht, das Gewölbe unter der Paktwacht öffnet sich, Plünderer sind durch einen eingestürzten Gang eingedrungen.
+# Die Burg ist jetzt Heimat (nach 1-6). Der Verwalter (grauhaarig, Schlüsselhüter) tritt nur als Erzählung mit wörtlicher Rede auf: es gibt noch kein Porträt.
+id: scn.m1_7.intro
+background: paktwacht_gewoelbe
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Nacht in der Paktwacht. Ein Beben schüttelt die Mauern, Staub rieselt von den Balken."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Das war kein Gewitter, Küken! Mir ist die Suppe vom Herd gesprungen."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Hält die Burg? Das ist unser Haus."
+  - id: l04
+    mood: neutral
+    text: "Der grauhaarige Verwalter kommt mit einer Laterne gelaufen. Unter dem Keller ist ein Gang aufgebrochen."
+  - id: l05
+    speaker: [paktwacht_steward]
+    fallback: skip
+    mood: sad
+    text: "Das Gewölbe, Hauptmann. Seit Menschengedenken versiegelt, nun steht es offen. Fremde sind darin."
+  - id: l06
+    mood: neutral
+    text: "Aus der Tiefe hallen Stimmen. Plünderer sind durch einen eingestürzten Gang in die Gruft gekrochen."
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Plünderer in unserem Keller? Das ist mein Beruf! Ich meine … das ist unerhört!"
+  - id: l08
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Und wenn das Beben nicht das letzte war? Wer sagt uns, dass die Decke hält?"
+  - id: l09
+    speaker: [kael]
+    mood: neutral
+    text: "Wir steigen hinab. Truhen bergen, bevor alles einstürzt."
+  - id: l10
+    speaker: [avatar]
+    mood: neutral
+    text: "Das Gewölbe der Wächter. Was verwahrt man so tief unter einer Burg?"

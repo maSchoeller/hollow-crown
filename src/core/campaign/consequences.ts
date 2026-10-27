@@ -9,7 +9,8 @@ export type ConsequenceLine =
   | { kind: 'recruit' | 'leave'; unit: string }
   | { kind: 'gold'; amount: number }
   | { kind: 'material'; id: string; amount: number }
-  | { kind: 'item'; def: string }
+  /** `amount`: how many of this item came at once (repeated `item` effects of the same item are one line); absent for a single one */
+  | { kind: 'item'; def: string; amount?: number }
   | { kind: 'chronicle'; page: string }
   | { kind: 'quest'; node: string }
   | { kind: 'grudge'; lt: string; delta: number }
@@ -42,9 +43,13 @@ export function consequenceLines(effects: readonly Effect[]): ConsequenceLine[] 
       case 'material':
         for (const [id, n] of Object.entries(v as Record<string, number>)) out.push({ kind: 'material', id, amount: n });
         break;
-      case 'item':
-        out.push({ kind: 'item', def: (v as ItemRef).def });
+      case 'item': {
+        const def = (v as ItemRef).def;
+        const last = out[out.length - 1];
+        if (last?.kind === 'item' && last.def === def) last.amount = (last.amount ?? 1) + 1;
+        else out.push({ kind: 'item', def });
         break;
+      }
       case 'chronicle':
         out.push({ kind: 'chronicle', page: v as string });
         break;

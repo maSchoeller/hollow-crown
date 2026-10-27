@@ -7,6 +7,10 @@
 - { id: avatar_bold, kind: story, season2: false }
 # Wer als Leutnant beitritt, setzt joined_<id> (Wirkung recruit { lt }, Story 3.7); Heimsuchungen und Finale-Aufstellungen lesen es über isJoined/activeLieutenants.
 - { id: joined_grosk, kind: story, season2: true }
+# E4 (Mission 1-6): die Paktwacht – shelter = Flüchtlinge aufgenommen (Dorfhilfe in Akt 2), secret = geheim gehalten (Händlerpreise −10 % in Akt 2); 1-8 liest es
+- { id: e04, kind: decision, values: [shelter, secret], season2: true }
+# Mission 1-7: die versiegelte Chronik der Wächter ist geborgen und liegt im Burgarchiv (Knotenwirkung bei Sieg); Akt 2 (Beat 10) entziffert sie. Gibt einen Chronik-Eintrag (balance.yaml chronicle.sealed), keine Seite.
+- { id: wardens_chronicle, kind: story, season2: true }
 # E1 (Mission 1-2): Erlbach bietet Mira die Heimkehr an – keep = Mira bleibt, release = Mira geht heim und Erlbach hilft (villageAid)
 - { id: e01, kind: decision, values: [keep, release], season2: false }
 # Mission 1-2: Miras Haus ist abgebrannt (Karten-Trigger object_destroyed); dann tritt sie nicht bei und E1 entfällt

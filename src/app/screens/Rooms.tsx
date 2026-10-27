@@ -18,6 +18,7 @@ import {
   locateItem,
   memorialStones,
   merchantStock,
+  shopPrice,
   nextRoomLevel,
   rerollAllowed,
   rerollCost,
@@ -168,7 +169,7 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
   const [who, setWho] = useState(false);
   const stock = merchantStock(data, currentTier(data, c));
   const chosenDef = tab === 'buy' && sel ? sel : null;
-  const price = chosenDef ? itemDef(data, chosenDef).price : 0;
+  const price = chosenDef ? shopPrice(data, c, itemDef(data, chosenDef).price) : 0;
   const owned = tab === 'sell' && sel ? c.convoy.find((i) => i.uid === sel) : undefined;
   const sellFor = owned ? sellPrice(data, owned) : 0;
   const pick = (id: string | null) => {
@@ -231,7 +232,7 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
             inst={probe(id)}
             selected={sel === id}
             onClick={() => pick(sel === id ? null : id)}
-            side={<Amount resource="gold" value={itemDef(data, id).price} short={c.gold < itemDef(data, id).price} />}
+            side={<Amount resource="gold" value={shopPrice(data, c, itemDef(data, id).price)} short={c.gold < shopPrice(data, c, itemDef(data, id).price)} />}
           />
         ))
       ) : (
@@ -569,8 +570,8 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
         <div key={r.id} class="hm-offer">
           <ItemImage data={data} item={r.id} />
           <span>{t(`item.${r.id}.name`)}</span>
-          <SecondaryButton disabled={c.gold < (r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
-            <Amount resource="gold" value={r.price ?? 0} short={c.gold < (r.price ?? 0)} />
+          <SecondaryButton disabled={c.gold < shopPrice(data, c, r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
+            <Amount resource="gold" value={shopPrice(data, c, r.price ?? 0)} short={c.gold < shopPrice(data, c, r.price ?? 0)} />
           </SecondaryButton>
         </div>
       ))}

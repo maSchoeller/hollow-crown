@@ -1,0 +1,43 @@
+# Mission 1-8, Szene nach dem Sieg (Story 9.9): die Heimat hat gehalten, Morra ist fort (Beat 7b: „Die Truppe verteidigt zum ersten Mal etwas, das ihr gehört“),
+# dann die Tafel „Glutfunken“ und der Moment: zwei Funken steigen aus der Glut auf (Zeile mit `moment`: Funken über der Tafel, danach die Karte „2 × Glutfunke“).
+# Die zwei Glutfunken legt die Knotenwirkung an m1_8 (campaign.yaml) in den Konvoi; die Szene zeigt sie nur. Der Aufstieg selbst ist Story 10.2.
+id: scn.m1_8.outro
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Regen lässt nach. Im Süden verlieren sich die letzten Fackeln der Banden im Dunkel."
+  - id: l02
+    mood: neutral
+    text: "Morra zog als Letzte ab, den Bogen gesenkt. Ihr Wimpel liegt im Schlamm vor dem Tor."
+  - id: l03
+    speaker: [paktwacht_steward]
+    fallback: skip
+    mood: happy
+    text: "Kein Stein fehlt, Hauptmann. Die Mauern haben gehalten."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Sie kommen wieder. Aber diese Nacht gehört uns."
+  - id: l05
+    mood: happy
+    text: "Die Truppe hat zum ersten Mal etwas verteidigt, das ihr gehört."
+  - id: l06
+    speaker: [brenna, fenn, avatar]
+    mood: happy
+    text: "Ein Haufen Niemande hat eine Burg gehalten. Davon erzählt man sich noch in zehn Jahren."
+  # Tafel „Glutfunken“
+  - id: l07
+    panel: glutfunken
+    mood: neutral
+    text: "Im Hof glimmt die Glut der letzten Feuer. Der Regen hat sie nicht erstickt."
+  - id: l08
+    mood: happy
+    moment: reward
+    text: "Zwei Funken lösen sich aus der Glut und steigen auf. Sie fallen nicht zurück."
+  - id: l09
+    panel: none
+    speaker: [avatar]
+    mood: happy
+    text: "Sie sind warm. Und sie knistern, als wollten sie etwas sagen."

@@ -88,7 +88,7 @@ function Screens() {
       return <WorldMap />;
     case 'dialogue':
       return (
-        <Scene key={sc.id} id={sc.id} onDone={sc.next} />
+        <Scene key={sc.id} id={sc.id} rewards={sc.rewards} onDone={sc.next} />
       );
     case 'prep':
       return <Prep node={sc.node} from={sc.from ?? 'worldmap'} haunt={sc.haunt} />;
