@@ -8,6 +8,7 @@ Rules (content/packs.yaml gives the pack order and the content globs):
 - A roster character (units.yaml) counts for the pack of the map of the node it joins (`joins`), plus its portrait models
   (the avatar looks); a character that joins nowhere on a map counts for no pack.
 - A model that no released pack references goes to the last released pack (a later act pack takes it over by showing it).
+Props (models/props/) are not figures: `prop_packs` reads the `props` list of a pack.
 The result is written into the manifest (`models.unitPacks`) and decides the folder `<pack>/models/units/`.
 """
 import glob
@@ -109,6 +110,17 @@ def first_appearance(model_ids, root=ROOT):
                 see('avatar_a', pid)
                 see('avatar_b', pid)
     return {m: refs.get(m, fallback) for m in model_ids}
+
+
+def prop_packs(stems, root=ROOT):
+    """-> {prop file stem (`<prop>_<state>`): pack id}. A pack lists its props under `props:` in content/packs.yaml;
+    a prop that no released pack lists ships with the first pack (core, precached with the first mission)."""
+    packs = released_packs(root)
+    listed = {}
+    for p in packs[1:]:
+        for stem in p.get('props') or []:
+            listed.setdefault(stem, p['id'])
+    return {s: listed.get(s, packs[0]['id']) for s in stems}
 
 
 if __name__ == '__main__':

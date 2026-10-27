@@ -5,6 +5,7 @@ camera:
   margin: 0.25           # D10: Anteil der freien Sichtfläche, um den die Karte über den Rand darf
   zoomSteps: [7, 10, 15] # D9: sichtbare Spalten auf der kürzeren Bildschirmseite (Nah, Mittel, Übersicht)
   zoomMs: 240            # Dauer des Übergangs zwischen zwei Zoomstufen
+  markFrameMargin: 1     # Ziel markieren: so viele Felder Rand bleiben um die markierten Felder, wenn die Kamera sie ins Bild holt (verschiebt, geht bei Bedarf Zoomstufen heraus)
 
 # D1/D10: Brett. skirt = Landschaft rund um die Karte (Felder), skirtDim = Abdunklung dort (0–1),
 # waterLevel = Wasserspiegel, baseDepth = Unterkante des Dioramas (Felder unter Bodenniveau)
@@ -16,10 +17,26 @@ board:
   waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe
   sceneryPropsLow: 3                      # D8: auf „Niedrig“ nur Bäume/Felsen bis so viele Felder um die Karte
-  # Baummodelle (<prop>_<state>) je Akt mit Gewicht: Akt 2 Herbst, Akt 3 Winter; Akt 1 (Spätsommer) nimmt die Bäume des Manifests
-  trees:
-    2: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: tree_c, weight: 1 }]
-    3: [{ model: snowfir_a, weight: 5 }, { model: tree_c, weight: 1 }]
+  # Varianten der Requisiten (Modell `<prop>_<state>`, Gewicht): die Auswahl ist ein Feld-Hash mit dem Brett-Seed (deterministisch, zwei gleiche
+  # Nachbarn werden nach Möglichkeit vermieden); eine Karte kann einzelne Felder mit `propVariants` festlegen (content:check prüft die Modell-Id
+  # gegen diese Listen). Modelle, die das Manifest (public/assets/manifest.json models.props) noch nicht kennt, fallen weg; bleibt keines übrig,
+  # gilt das erste der Liste. Zustände (besucht, zerstört) hängt das Brett an das Modell der Liste: `lodge_intact` -> `lodge_visited`.
+  variants:
+    # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser
+    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }]
+    # Besuchshaus (Terrain village, Objekt village): eigenes, deutlich anderes Modell mit den Zuständen intact, visited, razed
+    lodge: [{ model: lodge_intact, weight: 1 }]
+    # Felsen (Terrain mountain, rock, rockwall)
+    rock: [{ model: rock_idle, weight: 4 }, { model: rock_b, weight: 2 }, { model: rock_c, weight: 2 }]
+    # Bäume je Akt: 1 Spätsommer, 2 Herbst, 3 Winter; ein Akt ohne Eintrag nimmt die Bäume des Akts 1
+    tree:
+      1: [{ model: tree_a, weight: 3 }, { model: tree_b, weight: 3 }, { model: tree_c, weight: 2 }, { model: tree_d, weight: 2 }, { model: tree_e, weight: 2 }]
+      2: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: autumn_c, weight: 3 }, { model: tree_c, weight: 1 }]
+      3: [{ model: snowfir_a, weight: 5 }, { model: snowfir_b, weight: 4 }, { model: tree_c, weight: 1 }]
+  # Ersatzmodell, solange ein Modell noch nicht gebaut ist (Manifest kennt es nicht): sonst bliebe das Feld leer (Besuchshaus -> Haus, Brunnen -> Fels)
+  propFallback: { well_idle: rock_idle, lodge_intact: house_intact, lodge_visited: house_visited, lodge_razed: house_razed }
+  # Ziel markieren (Tipp auf ein Nebenziel im HUD): so lange (ms) stehen die Markierungen der offenen Ziel-Orte, ein zweiter Tipp nimmt sie früher weg
+  markMs: 4000
   # Niedrige Deko auf freien Gras-/Flachlandfeldern ohne Requisite, Objekt, Einheit oder Aufstellfeld: Wahrscheinlichkeit je Feld
   # auf der Karte (map) und in der Landschaft darum (scenery), Größenbereich; Bäume wählt die Jahreszeit des Akts (trees)
   decor:
@@ -46,6 +63,9 @@ look:
     player: { ui: "#2F64C8", ramp: ["#1E3F86", "#2F64C8", "#5C8EE6", "#A9C6F4"] }
     enemy:  { ui: "#B83A2E", ramp: ["#7A2219", "#B83A2E", "#DB6A5C", "#F2B2A8"] }
     other:  { ui: "#3FA65A", ramp: ["#25693A", "#3FA65A", "#74C98A", "#BFE6C9"] }
+  # Markierung der Ziel-Orte (Art Direction: ungelit, nie Glutorange, nie Teamfarbe): heller Ring mit dunkler Kontur auf Feldhöhe (radius = Außenradius in Feldern, width = Ringbreite,
+  # outlineWidth = Kontur auf beiden Seiten) und ein Pfeil darüber (chevronHeight über dem Feld, chevronSize = Breite, bobTiles = Auf und Ab); pulse = Atmen der Deckkraft
+  marker: { color: "#fbf3d4", outline: "#2a2140", alpha: 0.95, pulse: 0.1, radius: 0.65, width: 0.15, outlineWidth: 0.06, chevronHeight: 1.45, chevronSize: 0.7, bobTiles: 0.12 }
   # Helligkeit einer Figur am Mittag (Anteil ihrer Grundfarbe), auf die sich figureFloor bezieht: Untergrenze = figureFloor * figureReference * Grundfarbe
   figureReference: 0.85
   # Grau der neutralen Textur unter dem Teamtuch der Bild-zu-3D-Figuren (tools/art/prepare_tripo_unit.py CLOTH_GREY)

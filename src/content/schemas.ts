@@ -419,6 +419,8 @@ export const mapSchema = z.object({
   haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
+  /** per field the model of a prop variant (house, rock, tree, lodge), overriding the hash pick of render.yaml board.variants; content:check checks the id */
+  propVariants: z.array(z.object({ at: pos, model: z.string().min(1) })).optional(),
 });
 
 // --- conditions and effects (architecture §5.3): an object with exactly one key; a list of conditions means AND ---
@@ -689,8 +691,10 @@ const weatherDef = z.object({
   ground: z.object({ layers: count, height: z.number().min(0), alpha: unit, driftSpeed: z.number().min(0), color: hex }).optional(),
 });
 const ms = z.number().min(0);
+const propVariantList = z.array(z.object({ model: z.string().min(1), weight: z.number().positive() })).min(1);
 const lookSchema = z.object({
   teams: z.object({ player: teamLook, enemy: teamLook, other: teamLook }),
+  marker: z.object({ color: hex, outline: hex, alpha: unit, pulse: unit, radius: z.number().positive(), width: z.number().positive(), outlineWidth: z.number().min(0), chevronHeight: z.number().min(0), chevronSize: z.number().positive(), bobTiles: z.number().min(0) }),
   figureReference: z.number().positive(),
   clothGrey: z.number().positive().max(1),
   clothSteps: z.tuple([z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3)]),
@@ -710,6 +714,7 @@ export const renderSchema = z.object({
     margin: z.number().min(0).max(1),
     zoomSteps: z.array(z.number().positive()).min(1),
     zoomMs: z.number().min(0),
+    markFrameMargin: z.number().min(0),
   }),
   board: z.object({
     skirt: z.number().int().min(0),
@@ -728,7 +733,14 @@ export const renderSchema = z.object({
     tintPool: z.number().int().nonnegative(),
     precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
-    trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
+    variants: z.object({
+      house: propVariantList,
+      lodge: propVariantList,
+      rock: propVariantList,
+      tree: z.record(z.string(), propVariantList),
+    }),
+    propFallback: z.record(z.string(), z.string()),
+    markMs: z.number().int().min(0),
     decor: z.object({ bushes: decorSchema, stones: decorSchema }),
   }),
   look: lookSchema,

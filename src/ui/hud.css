@@ -154,6 +154,12 @@
   background: var(--hc-team-enemy-soft);
   color: var(--hc-team-enemy);
 }
+/* goal marking: while its places are marked on the board the pill stays pressed (sunk, dark outline thicker) */
+.hud-goal.is-marked {
+  background: var(--hc-offer-soft);
+  box-shadow: 0 1px 0 var(--hc-line), inset 0 0 0 1px var(--hc-line);
+  transform: translateY(2px);
+}
 /* scenes (dialogue) hide the HUD completely (EXPERIENCE.md HUD & Diegetic UI) */
 .battle.in-scene .hud-top,
 .battle.in-scene .hud-bottom,

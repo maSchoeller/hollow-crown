@@ -65,6 +65,7 @@ import { concludeBattle, storyContext } from '../state/flow';
 import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { wantedUid } from '../state/wanted';
+import { clearGoalMark, goalMarkTiles, markedGoal, toggleGoalMark } from '../state/goalMarks';
 import { WantedDock } from './Wanted';
 import { settings, updateSettings } from '../state/settings';
 import {
@@ -221,6 +222,7 @@ export function Battle() {
     board.quality = settings.value.quality;
     board.figures = settings.value.figures;
     board.shakeEnabled = settings.value.shake && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    board.calmMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
     void (async () => {
       const st0 = battle.value!.state;
@@ -251,6 +253,7 @@ export function Battle() {
     })();
     return () => {
       alive = false;
+      clearGoalMark();
       board.dispose();
     };
   }, []);
@@ -284,6 +287,17 @@ export function Battle() {
   /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
   const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
 
+  /** the places of the side objective the player tapped in the HUD (goal marking, `markedGoal`) */
+  const markedId = markedGoal.value;
+  const markTiles = useMemo(() => goalMarkTiles(data, s, mapOf(data, s).objectives.side, markedId), [s, markedId]);
+
+  // a tap on an objective brings its places into view (once per tap; the view stays when the marking ends)
+  const markTilesRef = useRef(markTiles);
+  markTilesRef.current = markTiles;
+  useEffect(() => {
+    if (markedId) void boardRef.current?.frameTiles(markTilesRef.current);
+  }, [markedId]);
+
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
@@ -300,7 +314,7 @@ export function Battle() {
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
-    const base = { danger: dangerTiles, goal, reinforce, hold, fog: fogTiles.fog, fogEdge: fogTiles.edge };
+    const base = { danger: dangerTiles, goal, reinforce, hold, fog: fogTiles.fog, fogEdge: fogTiles.edge, mark: markTiles };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
     if (mode.k === 'pursue') {
@@ -345,7 +359,7 @@ export function Battle() {
       return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
-  }, [mode, s, dangerTiles, tileInfo]);
+  }, [mode, s, dangerTiles, tileInfo, markTiles]);
 
   // the HUD grows when a unit is selected; bring the unit (or the chosen tile) out from under it
   const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.k === 'pursue' ? (mode.to ?? unit(mode.uid).pos) : mode.to;
@@ -1183,7 +1197,14 @@ export function Battle() {
                 <TurnPill turn={shownTurn} phase={shownPhase} goal={goalText} progress={goalProgress} onClick={() => setObjectives(true)} />
                 <MenuStone onClick={() => setMenu(true)} />
               </div>
-              <GoalPills data={data} s={s} side={map.objectives.side} onClick={() => setObjectives(true)} />
+              <GoalPills
+                data={data}
+                s={s}
+                side={map.objectives.side}
+                marked={markedGoal.value}
+                onMark={(o) => toggleGoalMark(o.id, data.render.board.markMs)}
+                onClick={() => setObjectives(true)}
+              />
             </>
           )}
         </div>

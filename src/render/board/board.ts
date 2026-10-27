@@ -29,7 +29,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, Element, GameData, GameEvent, GearPiece, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
 import { bleedsOut, itemDef, modelId, unitFigureId, unitVatPath } from '../../core';
-import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
+import { centreOn, clampAxis, framePlan, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
 import { loadPropMesh, loadUnitModel } from '../shared/models';
@@ -37,7 +37,9 @@ import { ModelFigure, SpriteFigure, warmTints, type Facing, type Figure, type Fi
 import { applyLight } from '../shared/season';
 import { lookOverride, resolveLook, weatherPlan, type ResolvedLook } from '../shared/look';
 import { t } from '../../i18n';
-import { pickWeighted, treeSetOfAct } from '../shared/scenery';
+import { variantClassOf, variantList } from '../../content/propVariants';
+import { isPackRegistered } from '../../content/browser';
+import { modelAvailable, pickVariant, withState } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
@@ -171,6 +173,8 @@ export class BoardView implements HostedView {
   private animWall = -1;
   /** camera shake on critical hits and deaths (option "shake", off with prefers-reduced-motion) */
   shakeEnabled = true;
+  /** prefers-reduced-motion: the markings of the board do not pulse */
+  calmMotion = false;
   /** what the map looks like: light, sky, figure floor and rim, weather (story 8.6) */
   private look!: ResolvedLook;
   private weather: WeatherView;
@@ -589,17 +593,33 @@ export class BoardView implements HostedView {
     const s = this.state;
     const grid = this.terrain!.grid;
     type Place = { x: number; y: number; h: number; rot: number; scale: number; dim: boolean };
+    const manifest = await loadManifest();
+    // props of a later pack (manifest `models.propPacks`) only count once that pack is registered on this device (offline start before the download)
+    const known = (model: string) => modelAvailable(manifest.models, model, isPackRegistered);
+    // a model that is not built yet (the manifest does not know it) is drawn as its stand-in, if render.yaml names one
+    const fallback = this.data.render.board.propFallback;
+    const resolve = (model: string) => (known(model) ? model : (fallback[model] ?? model));
     const places = new Map<string, Place[]>();
-    const put = (key: string, p: Place) => {
+    const put = (model: string, p: Place) => {
+      const key = resolve(model);
       const list = places.get(key);
       if (list) list.push(p);
       else places.set(key, [p]);
     };
-    const manifest = await loadManifest();
-    const trees = manifest.models?.props.tree ?? ['a'];
-    // trees of the season of the act the map belongs to (summer: the manifest's plain trees)
     const map = this.data.maps[s.mapId]!;
-    const treeSet = treeSetOfAct(this.data, map.act);
+    // variants: a field hash picks from the weighted list of the prop class (trees of the season of the map's act); the map can set single fields
+    const overrides = new Map((map.propVariants ?? []).map((v) => [`${v.at[0]},${v.at[1]}`, v.model]));
+    const chosen = new Map<string, string>();
+    const variant = (prop: string, gx: number, gy: number, x: number, y: number): string => {
+      const cls = variantClassOf(prop)!;
+      // roll 0 is the field's own hash; the others only come into play when a neighbour (west, north: decided before) has the same model
+      const rolls = [0, 1, 2].map((k) => ((hash3(gx, gy, this.seed + 5 + k * 131) >>> 20) % 1000) / 1000);
+      const avoid = [chosen.get(`${gx - 1},${gy}`), chosen.get(`${gx},${gy - 1}`)].filter((m): m is string => !!m);
+      const override = grid.inMap(gx, gy) ? overrides.get(`${x},${y}`) : undefined;
+      const model = pickVariant(variantList(this.data, cls, map.act), rolls, { has: known, override, avoid });
+      chosen.set(`${gx},${gy}`, model);
+      return model;
+    };
     // tiles that must stay clear: objects, units, deploy slots and reinforcements
     const reserved = new Set<string>();
     for (const o of s.objects) reserved.add(`${o.at[0]},${o.at[1]}`);
@@ -637,15 +657,17 @@ export class BoardView implements HostedView {
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
         switch (def.prop) {
           case 'tree':
-            put(treeSet ? pickWeighted(treeSet, ((r >>> 20) % 1000) / 1000).model : `tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+            put(variant('tree', gx, gy, x, y), { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
             break;
           case 'rock':
           case 'rockwall':
-            put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: def.prop === 'rock' ? 1.05 : 0.9 });
+            put(variant(def.prop, gx, gy, x, y), { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: def.prop === 'rock' ? 1.05 : 0.9 });
             break;
-          case 'house': {
+          case 'house': // scenery house (terrain building): no object, always standing
+          case 'lodge': {
+            // the visitable house: its object's state picks intact / visited / razed
             const obj = s.objects.find((o) => o.at[0] === x && o.at[1] === y);
-            put(`house_${obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'}`, base);
+            put(withState(variant(def.prop, gx, gy, x, y), obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
             break;
           }
           case 'door_closed':
@@ -1149,7 +1171,7 @@ export class BoardView implements HostedView {
       o.mesh.dispose();
       o.mat.dispose();
     }
-    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p));
+    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg);
   }
 
   private async updateGhost(): Promise<void> {
@@ -1269,6 +1291,40 @@ export class BoardView implements HostedView {
     const fx = this.camX;
     const fy = this.camY;
     return this.tween(220, (t) => {
+      this.camX = fx + (tx - fx) * t;
+      this.camY = fy + (ty - fy) * t;
+      this.clampCamera();
+    });
+  }
+
+  /**
+   * Goal marking: brings the marked fields into view. Fields already comfortably on screen: nothing moves. Otherwise the camera
+   * glides to the middle of their bounding box and goes out zoom steps as far as needed (`framePlan`), never closer; it stays there
+   * when the marking ends. Margin: render.yaml camera.markFrameMargin.
+   */
+  frameTiles(tiles: Pos[]): Promise<void> {
+    if (!tiles.length || tiles.every((p) => this.isVisible(p))) return Promise.resolve();
+    const { w, h } = this.cssSize();
+    const css = this.hooks.insets?.() ?? NO_INSETS;
+    const cam = this.data.render.camera;
+    const plan = framePlan({ tiles, step: this.step, steps: cam.zoomSteps, viewW: w, viewH: h, hud: css, cosTilt: this.cosTilt(), margin: cam.markFrameMargin });
+    const ppt = this.pptFor(plan.step);
+    if (plan.step !== this.step) {
+      this.step = plan.step;
+      this.zoomTween = { from: this.ppt, to: ppt, start: performance.now() };
+    }
+    const kv = 1 / ppt / this.cosTilt();
+    const tx = centreOn(plan.cx, css.left / ppt, css.right / ppt);
+    const ty = centreOn(plan.cy, css.top * kv, css.bottom * kv);
+    if (this.skip) {
+      this.camX = tx;
+      this.camY = ty;
+      this.clampCamera();
+      return Promise.resolve();
+    }
+    const fx = this.camX;
+    const fy = this.camY;
+    return this.tween(Math.max(220, cam.zoomMs), (t) => {
       this.camX = fx + (tx - fx) * t;
       this.camY = fy + (ty - fy) * t;
       this.clampCamera();
@@ -1514,8 +1570,12 @@ export class BoardView implements HostedView {
     const clock = this.frozenAt ?? now;
     this.animClock += this.animWall < 0 ? 0 : Math.max(0, now - this.animWall) * this.scene.animationTimeScale;
     this.animWall = now;
-    const pulse = 0.5 + 0.5 * Math.sin(now / 250);
-    for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
+    // markings breathe; under reduced motion they stand still (their middle opacity)
+    const pulse = this.calmMotion ? 0.5 : 0.5 + 0.5 * Math.sin(now / 250);
+    for (const o of this.overlayMeshes) {
+      o.mat.alpha = o.alpha + o.pulse * pulse;
+      if (o.bob) o.mesh.position.y = this.calmMotion ? 0 : Math.sin(now / 320) * o.bob;
+    }
     for (const v of this.units.values()) this.placeUnit(v, this.animClock);
     this.rings.flush();
     this.updateFade();

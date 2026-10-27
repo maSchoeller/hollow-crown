@@ -1,24 +1,69 @@
 /**
- * Landscape choices of the battle board: the tree set of a season, the weighted pick from it and the fences around fields.
+ * Landscape choices of the battle board: the prop variants (weighted, by field hash), the tree set of a season and the fences around fields.
  * Pure (no Babylon), so it is unit tested.
  */
-import type { GameData } from '../../core/defs';
+import type { PropVariant } from '../../core/defs';
 
-export interface TreeChoice {
-  model: string;
-  weight: number;
+/**
+ * Whether the asset manifest (`models.props`: prop id -> states, split at the first underscore like tools/art/build.py does)
+ * has the model `<prop>_<state>`. No `models` in the manifest at all: nothing is filtered (the loader finds out by itself).
+ */
+export function modelKnown(props: Record<string, string[]> | undefined, model: string): boolean {
+  if (!props) return true;
+  const i = model.indexOf('_');
+  if (i < 0) return false;
+  return props[model.slice(0, i)]?.includes(model.slice(i + 1)) ?? false;
 }
 
 /**
- * Tree set of an act: the `render.board.trees` entry of the act (autumn in act 2, snow firs in act 3). Acts without an
- * entry (the summer borderland) get null: they use the manifest's plain trees.
+ * Whether a prop model can be drawn right now: the manifest knows it (`modelKnown`) and, if it ships with a later pack
+ * (`models.propPacks`: model -> pack id; models of the first download have no entry), that pack is available on the device
+ * (`packReady`). Without this the pick could choose a model whose file the offline device does not have yet.
  */
-export function treeSetOfAct(data: Pick<GameData, 'render'>, act: number | undefined): TreeChoice[] | null {
-  return (act !== undefined && data.render.board.trees[act]) || null;
+export function modelAvailable(
+  models: { props: Record<string, string[]>; propPacks?: Record<string, string> } | undefined,
+  model: string,
+  packReady: (pack: string) => boolean,
+): boolean {
+  if (!modelKnown(models?.props, model)) return false;
+  const pack = models?.propPacks?.[model];
+  return pack === undefined || packReady(pack);
 }
 
-/** Weighted pick from a tree set; roll in [0, 1). */
-export function pickWeighted(mix: TreeChoice[], roll: number): TreeChoice {
+/** The model of a list entry (always in state `intact`/`idle`) in another state: `lodge_intact` + `visited` = `lodge_visited`. */
+export function withState(model: string, state: string): string {
+  return state !== 'intact' && model.endsWith('_intact') ? `${model.slice(0, -'_intact'.length)}_${state}` : model;
+}
+
+export interface VariantPick {
+  /** whether the manifest has a model (see `modelKnown`) */
+  has: (model: string) => boolean;
+  /** a map's choice for this field (`propVariants`): wins when the manifest has the model */
+  override?: string;
+  /** models of the neighbours already decided: the first roll that gives another model is taken, if there is one */
+  avoid?: readonly string[];
+}
+
+/**
+ * The variant for one field: the override, else a weighted pick from the models the manifest has. `rolls` are hashes of the
+ * field in [0, 1), the first one decides, the next ones only when it gives a neighbour's model again. No model of the list
+ * available: the first one (the base model; the renderer then skips it or uses its fallback).
+ */
+export function pickVariant(list: readonly PropVariant[], rolls: readonly number[], o: VariantPick): string {
+  if (o.override && o.has(o.override)) return o.override;
+  const usable = list.filter((v) => o.has(v.model));
+  if (!usable.length) return list[0]?.model ?? '';
+  let first: string | null = null;
+  for (const roll of rolls) {
+    const m = pickWeighted(usable, roll).model;
+    first ??= m;
+    if (!o.avoid?.includes(m)) return m;
+  }
+  return first ?? usable[0]!.model;
+}
+
+/** Weighted pick from a set; roll in [0, 1). */
+export function pickWeighted(mix: readonly PropVariant[], roll: number): PropVariant {
   let t = roll * mix.reduce((a, m) => a + m.weight, 0);
   return mix.find((m) => (t -= m.weight) < 0) ?? mix[0]!;
 }

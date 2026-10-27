@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { centreOn, clampAxis, inFreeArea } from '../../src/render/shared/camera';
+import { centreOn, clampAxis, framePlan, inFreeArea } from '../../src/render/shared/camera';
 
 // Phone in portrait: 390 px wide view, 844 tall; top bar 60, bottom sheet 220 (world units = px here)
 const VIEW_H = 844;
@@ -51,5 +51,25 @@ describe('free area', () => {
     expect(inFreeArea(sheetTop - 10, cam, VIEW_H, TOP, BOTTOM, 0)).toBe(true);
     expect(inFreeArea(sheetTop + 10, cam, VIEW_H, TOP, BOTTOM, 0)).toBe(false);
     expect(inFreeArea(sheetTop - 10, cam, VIEW_H, TOP, BOTTOM, 48)).toBe(false);
+  });
+});
+
+describe('framePlan (goal marking)', () => {
+  const base = { steps: [7, 10, 15], viewW: 400, viewH: 800, hud: { top: 100, right: 0, bottom: 200, left: 0 }, cosTilt: Math.cos((35 * Math.PI) / 180), margin: 1 };
+
+  it('keeps the zoom step when the marked fields fit, and centres on their box', () => {
+    const p = framePlan({ ...base, step: 1, tiles: [[2, 3], [4, 5]] });
+    expect(p).toEqual({ step: 1, cx: 3.5, cy: 4.5 });
+  });
+
+  it('goes out as many steps as needed, never closer than now', () => {
+    // free width at step 0 = 7 columns; a box 8 wide with margin does not fit there, 10 columns (step 1) take it
+    const wide = framePlan({ ...base, step: 0, tiles: [[0, 0], [7, 0]] });
+    expect(wide.step).toBe(1);
+    expect(framePlan({ ...base, step: 2, tiles: [[1, 1]] }).step).toBe(2);
+  });
+
+  it('takes the last step when nothing fits', () => {
+    expect(framePlan({ ...base, step: 0, tiles: [[0, 0], [40, 40]] }).step).toBe(2);
   });
 });

@@ -106,8 +106,9 @@ def build_sheets(kind):
 
 def build_models():
     """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
-    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/."""
-    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'weapons': []}
+    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/
+    (props: the pack of a prop is only a matter of the first download, content/packs.yaml `props`, manifest `models.propPacks`)."""
+    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'propPacks': {}, 'weapons': []}
     base = os.path.join(ART, 'models')
     src = os.path.join(base, 'units')
     ids = sorted(f[:-4] for f in os.listdir(src) if f.endswith('.glb') and 'preview' not in f) if os.path.isdir(src) else []
@@ -131,6 +132,11 @@ def build_models():
             else:
                 pid, _, state = name.partition('_')
                 result['props'].setdefault(pid, []).append(state)
+    # props that ship with a later pack than core (`props` of the pack in content/packs.yaml); they stay in models/props/,
+    # only the first download (tools/build/first-mission.mjs) leaves them out. Manifest: models.propPacks {<prop>_<state>: pack}
+    stems = sorted(f"{pid}_{st}" for pid, states in result['props'].items() for st in states)
+    first = model_packs.released_packs()[0]['id']
+    result['propPacks'] = {k: v for k, v in model_packs.prop_packs(stems).items() if v != first}
     return result
 
 

@@ -15,7 +15,9 @@
 - { id: fort,     def: 2, avoid: 20,  heal: 20, flammable: false, ground: plain, prop: fort, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: throne,   def: 3, avoid: 30,  heal: 20, flammable: false, ground: plain, prop: throne, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: stone, height: 0.15, cliff: wall }
 - { id: gate,     def: 2, avoid: 20,  heal: 0,  flammable: false, ground: road,  prop: gate, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
-- { id: village,  def: 0, avoid: 10,  heal: 0,  flammable: false, ground: plain, prop: house, visitable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
+# Besuchbares Haus (Terrain-ID village bleibt wegen Speicherformat und gesperrter IDs; im Spiel heißt es "Haus"): Requisite lodge (lodge_intact / _visited / _razed
+# nach dem Objektzustand), bis das Modell da ist das Haus-Modell (render.yaml board.propFallback).
+- { id: village,  def: 0, avoid: 10,  heal: 0,  flammable: false, ground: plain, prop: lodge, visitable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: ruins,    def: 1, avoid: 10,  heal: 0,  flammable: false, ground: plain, prop: ruins, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: wall,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: wall,  cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: stone, height: 0.85, cliff: wall }
 - { id: burning,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, cost: { foot: 2, armored: 2, mounted: 2, flier: 1, monster: 2 }, surface: grass }
@@ -32,12 +34,13 @@
 # Marktstand (tent_idle) und Kohlebecken (campfire_idle) nutzen vorhandene Requisiten-Modelle (art/models/props); Story 9.1, 9.2.
 - { id: stall,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: tent, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
 - { id: brazier,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: campfire, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
-# Brunnen: kein eigenes Modell, bis dahin der Felsblock (prop rock). Platzhalter bis zum Brunnenmodell (Story 8.x, Art-Session).
-- { id: well,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: rock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
+# Brunnen: Requisite well (well_idle). Fehlt das Modell noch, zeichnet das Brett den Felsblock (render.yaml board.propFallback).
+- { id: well,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: well, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
 # Feld, Zaun, Hof (Stories 9.3, 9.12): vorhandene Requisiten-Modelle field/fence/farm; Werte kopiert, [C].
 # Feld wie Gras (brennbar, begehbar); Zaun und Hof wie Marktstand (nur Flieger kommen drüber).
 - { id: field,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, prop: field, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
 - { id: fence,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: fence, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
 - { id: farm,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: farm,  cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
-# Wohnhaus als Kulisse (Story 9.2): Requisite house ohne Objekt (house_intact), nicht besuchbar, nur Flieger kommen drüber. Startwerte [C].
+# Wohnhaus als Kulisse (Story 9.2): Requisite house ohne Objekt, nicht besuchbar, nur Flieger kommen drüber; das Modell wählt ein Feld-Hash
+# aus render.yaml board.variants.house (house_intact, house_b_intact …). Startwerte [C].
 - { id: building, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: house, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }

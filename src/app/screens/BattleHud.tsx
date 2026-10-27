@@ -15,7 +15,7 @@ import {
   type SideObjectiveDef,
   type Team,
 } from '../../core';
-import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideSubject } from '../../core/battle/objectives';
+import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideObjectiveSpots, sideSubject } from '../../core/battle/objectives';
 import { bleedsOut } from '../../core/rules/effects';
 import { t } from '../../i18n';
 import { ElementIcon, Icon, TriMark } from '../../ui/icons';
@@ -110,8 +110,26 @@ const SIDE_ICON: Record<SideObjectiveDef['type'], string> = {
   protect_npc: 'shield',
 };
 
-/** Side objectives as pills under the round pill: icon, text, count where something is counted; done ones turn green, broken ones red. */
-export function GoalPills({ data, s, side, onClick }: { data: GameData; s: BattleState; side: SideObjectiveDef[]; onClick: () => void }) {
+/**
+ * Side objectives as pills under the round pill: icon, text, count where something is counted; done ones turn green, broken ones red.
+ * A tap on a pill with places on the board (houses, chests, a unit) marks them (`marked` = id of the marked objective, `onMark`); a
+ * second tap takes the marking away. A pill without a place opens the goal sheet (`onClick`).
+ */
+export function GoalPills({
+  data,
+  s,
+  side,
+  marked,
+  onMark,
+  onClick,
+}: {
+  data: GameData;
+  s: BattleState;
+  side: SideObjectiveDef[];
+  marked: string | null;
+  onMark: (o: SideObjectiveDef) => void;
+  onClick: () => void;
+}) {
   if (!side.length) return null;
   return (
     <div class="hud-goals">
@@ -120,10 +138,19 @@ export function GoalPills({ data, s, side, onClick }: { data: GameData; s: Battl
         const p = sideObjectiveProgress(data, s, o);
         // "keep it so" objectives are done until they break; the rest counts up
         const failed = !done && (o.type === 'no_downs' || o.type === 'turn_limit');
+        const markable = sideObjectiveSpots(data, s, o).length > 0;
+        const line = sideLine({ ...o, ...sideSubject(mapOf(data, s), o) });
         return (
-          <button key={o.id} type="button" class={`hud-goal ${done ? 'is-done' : failed ? 'is-failed' : ''}`} onClick={onClick}>
+          <button
+            key={o.id}
+            type="button"
+            class={`hud-goal ${done ? 'is-done' : failed ? 'is-failed' : ''} ${markable && marked === o.id ? 'is-marked' : ''}`}
+            aria-pressed={markable ? marked === o.id : undefined}
+            aria-label={markable ? `${line}${p ? `, ${p.have}/${p.total}` : ''}. ${t('ui.goal.markAria')}` : undefined}
+            onClick={markable ? () => onMark(o) : onClick}
+          >
             <Icon name={done ? 'check' : failed ? 'cross' : (SIDE_ICON[o.type] ?? 'target')} size={15} />
-            <span>{sideLine({ ...o, ...sideSubject(mapOf(data, s), o) })}</span>
+            <span>{line}</span>
             {p && (
               <span class="hud-goal__count">
                 {p.have}/{p.total}

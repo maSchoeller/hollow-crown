@@ -1,4 +1,4 @@
-# Nebenquest N3, Szene beim Besuch des Elternhauses (Karte n3_erbe, Dorfbelohnung `dialogue`). Läuft in der Schlacht, ohne Antworten. Zeile m01 nur, wenn Tobin gefallen ist.
+# Nebenquest N3, Szene beim Besuch des Elternhauses (Karte n3_erbe, Hausbelohnung `dialogue`). Läuft in der Schlacht, ohne Antworten. Zeile m01 nur, wenn Tobin gefallen ist.
 id: scn.n3.home
 lines:
   - id: h01
