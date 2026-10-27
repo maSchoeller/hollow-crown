@@ -62,7 +62,7 @@ import { audio } from '../audio';
 import { fleeBark, ltBarks } from '../battle/ltLines';
 import { campaign, data } from '../state/session';
 import { concludeBattle, storyContext } from '../state/flow';
-import { battle, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
+import { abandonBattle, battle, canAbandon, canRestart, command, commandOffThread, pendingEvents, restartBattle } from '../state/battle';
 import { screen } from '../state/screen';
 import { wantedUid } from '../state/wanted';
 import { clearGoalMark, goalMarkTiles, markedGoal, toggleGoalMark } from '../state/goalMarks';
@@ -1266,6 +1266,14 @@ export function Battle() {
                   setMenu(false);
                   restartBattle('mission');
                   remount();
+                }
+              : undefined
+          }
+          onLeaveMission={
+            canAbandon()
+              ? () => {
+                  setMenu(false);
+                  abandonBattle();
                 }
               : undefined
           }

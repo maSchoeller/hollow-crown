@@ -59,7 +59,7 @@ import {
   readSlot,
   storeImportedRecord,
 } from './session';
-import { battle, canRestart, command, pendingEvents, restartBattle, startBattle } from './battle';
+import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle, startBattle } from './battle';
 import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
@@ -465,7 +465,7 @@ async function devNode(nodeId: string, difficulty: BattleSettings['difficulty'] 
 /** Hooks for the browser tests: the production build has no dev helpers, but Playwright sets `navigator.webdriver` (like `__board`). */
 if (typeof navigator !== 'undefined' && navigator.webdriver) {
   void import('../../core/ai/autoplay').then(({ autoCommand }) => {
-    (window as unknown as { __hcTest: unknown }).__hcTest = { devHaunt, devNode, autoWin: () => winBattle(autoCommand) };
+    (window as unknown as { __hcTest: unknown }).__hcTest = { devHaunt, devNode, autoWin: () => winBattle(autoCommand), abandonBattle, canAbandon };
   });
 }
 
@@ -484,6 +484,8 @@ if (import.meta.env.DEV) {
       storyContext,
       restartBattle,
       canRestart,
+      abandonBattle,
+      canAbandon,
       /** fault screen: an invalid battle command hits applyCommand's invariant check (or a plain fault outside battle) */
       crash: () =>
         battle.value
