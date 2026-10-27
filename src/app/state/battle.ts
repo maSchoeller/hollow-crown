@@ -108,6 +108,34 @@ export function canRestart(scope: RestartScope): boolean {
   return (restartMemo.answer[scope] ??= validateCampaign(data, c, restartCommand(scope, b, c)) === null);
 }
 
+/** The campaign command for leaving the running mission (story 1.9); the core checks the log against the death mode. */
+function abandonCommand(b: BattleSession): CampaignCommand {
+  return { type: 'abandonMission', node: b.start.nodeId, commands: b.log, ...(b.start.hauntId ? { haunt: b.start.hauntId } : {}) };
+}
+
+/** Whether the death mode lets the player leave the running mission for the world map (Classic: only before the first action). */
+export function canAbandon(): boolean {
+  const c = campaign.value;
+  const b = battle.value;
+  if (!c || !b) return false;
+  return validateCampaign(data, c, abandonCommand(b)) === null;
+}
+
+/**
+ * Leaves the running mission: a campaign command (validated, journaled), then the battle is dropped and the world map
+ * shows. The campaign stays as before the mission; the battle's auto-save is replaced so it cannot be resumed.
+ */
+export function abandonBattle(): boolean {
+  const b = battle.value;
+  if (!b || !campaign.value) return false;
+  if (!campaignCommand(abandonCommand(b)).ok) return false;
+  battle.value = null;
+  pendingEvents.value = [];
+  screen.value = { name: 'worldmap' };
+  autosave('worldmap'); // campaignCommand saved while the battle was still running
+  return true;
+}
+
 /**
  * Restarts the running battle at the start of the round or of the mission: a campaign command (validated per
  * death mode, journaled), then a replay of the kept part of the log. Returns false when the rules refuse.

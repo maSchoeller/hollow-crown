@@ -234,6 +234,7 @@ export function BattleMenu({
   onOptions,
   onRestartRound,
   onRestartMission,
+  onLeaveMission,
   onTitle,
 }: {
   onClose: () => void;
@@ -241,8 +242,27 @@ export function BattleMenu({
   /** absent when the death mode does not allow it (story 1.5, `canRestart`) */
   onRestartRound?: () => void;
   onRestartMission?: () => void;
+  /** leave for the world map, asked again before it runs; absent when the death mode does not allow it (story 1.9, `canAbandon`) */
+  onLeaveMission?: () => void;
   onTitle: () => void;
 }) {
+  const [leaving, setLeaving] = useState(false);
+  if (leaving && onLeaveMission) {
+    return (
+      <Sheet
+        title={t('ui.battle.leaveConfirmTitle')}
+        onClose={() => setLeaving(false)}
+        footer={
+          <>
+            <SecondaryButton onClick={() => setLeaving(false)}>{t('ui.cancel')}</SecondaryButton>
+            <PrimaryButton onClick={onLeaveMission}>{t('ui.battle.leaveConfirm')}</PrimaryButton>
+          </>
+        }
+      >
+        <p class="bp-hint">{t('ui.battle.leaveConfirmText')}</p>
+      </Sheet>
+    );
+  }
   return (
     <Sheet title={t('ui.menu')} onClose={onClose}>
       <div class="bp-choices">
@@ -257,6 +277,11 @@ export function BattleMenu({
         {onRestartMission && (
           <Choice icon="restart" onClick={onRestartMission}>
             {t('ui.battle.restartMission')}
+          </Choice>
+        )}
+        {onLeaveMission && (
+          <Choice icon="map" onClick={() => setLeaving(true)}>
+            {t('ui.battle.leaveMission')}
           </Choice>
         )}
         <Choice icon="home" quiet onClick={onTitle}>
