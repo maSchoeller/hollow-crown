@@ -1,6 +1,6 @@
 # Nebenquest N1 – Der Ring von Varnhold (Story 9.10, Fenns Vergangenheit; Voraussetzung E2 „schützen“). Variante der Karte m1_1_steckbriefe:
 # derselbe Markt von Varnhold, aber nachts und mit Nebel; ein Haus (NO) ist das Lagerhaus, in dem der Ringmeister den Ring hütet. Startwerte [C].
-# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: varnhold (Nacht).
+# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Felder timeOfDay/weather). Geplantes Ortsbild: varnhold (Nacht).
 # Ziel: Ringmeister besiegen (boss, kein Leutnant). Das Lagerhaus ist verschlossen (Tür 11,2; Schlüssel fällt bei einem Dieb, Späher öffnen ohne Schlüssel).
 # Rollen: Nebel + Gassen für Späher, Lagerhaustür als Engstelle für Vorkämpfer.
 # Belohnung (Story 9.10): Glutfunke (ember_spark) und Signaturdolch Elster (magpie) kommen mit dem Sieg als Knotenwirkung in den Konvoi (campaign.yaml n1 effects),
@@ -10,6 +10,8 @@ id: n1_ring
 nameKey: map.n1_ring.name
 size: [14, 16]
 fog: true
+timeOfDay: night
+weather: fog
 legend:
   ".": plain
   ",": grass
@@ -38,9 +40,6 @@ terrain: |
   ,,T,..__..,T,,
   ,,,,..__..,,,,
   ,,,,..__..,,,,
-# Nacht, Nebel: kaltes, graublaues Licht, Mond schwach, warme Lichter an Ständen, Brunnen und im Lagerhaus
-ambient: { color: "#7f8fb8", intensity: 0.6 }
-sun: { color: "#a9bff0", intensity: 0.45, azimuthDeg: 140, elevationDeg: 45 }
 lights:
   - { at: [4, 4], color: "#ffb35c", radius: 3 }
   - { at: [10, 4], color: "#ffb35c", radius: 3 }
