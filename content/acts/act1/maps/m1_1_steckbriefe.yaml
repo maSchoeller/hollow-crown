@@ -50,12 +50,13 @@ initialEffects: []
 # Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
 haunts:
   # Grund: der Brunnen auf dem Marktplatz – hier hängen die Steckbriefe, hier trifft man Leute aus allen Gassen. (Der Brunnen [7,6] ist
-  # ein Hindernis; der Zivilist steht im Südteil des Marktes auf [7,10], die Truppe bei ihm.) Die Angreifer kommen aus der Nordgasse.
+  # ein Hindernis; der Zivilist steht im Südteil des Marktes auf [7,10], die Truppe um ihn, der Anführer hinter ihm.) Die Angreifer kommen aus der Nordgasse;
+  # vier Runden Standhalten (Simulation 2026-10-28: sechs Runden und Aufstellung am Südrand 58 %, so 92 %).
   - variant: defend
     target: { at: [7, 10] }
     enemySpawn: { rect: [5, 0, 8, 1] }
-    deploy: { rect: [4, 12, 9, 12] }
-    turns: 6
+    deploy: { tiles: [[7, 11], [6, 10], [6, 11], [8, 10], [8, 11], [5, 10], [9, 10], [7, 9]] }
+    turns: 4
   # Grund: die Nordgasse – von hier kamen die Kopfgeldjäger, später kommt wieder jemand. Der Leutnant wartet in der Gasse, die Truppe
   # kommt von der Südstraße.
   - variant: boss

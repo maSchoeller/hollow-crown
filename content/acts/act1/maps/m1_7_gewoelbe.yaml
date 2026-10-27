@@ -67,17 +67,20 @@ haunts:
     target: { at: [7, 7] }
     enemySpawn: { rect: [1, 5, 4, 8] }
     deploy: { rect: [4, 1, 9, 2] }
-  # Grund: der eingestürzte Gang in der Halle – ein Loch, durch das immer wieder jemand kommt; ein Zivilist sucht hier Schutz.
+  # Grund: der eingestürzte Gang in der Halle – ein Loch, durch das immer wieder jemand kommt; ein Zivilist sucht am Westende der Halle Schutz, die
+  # Plünderer kommen aus dem Osten (Simulation 2026-10-28: stand er neben dem Streifen, fiel er in 22 von 30 Läufen in der ersten Runde).
   - variant: defend
-    target: { at: [11, 2] }
-    enemySpawn: { rect: [3, 3, 13, 3] }
-    deploy: { rect: [4, 1, 9, 2] }
+    target: { at: [2, 2] }
+    enemySpawn: { rect: [6, 1, 13, 3] }
+    deploy: { tiles: [[1, 2], [3, 2], [3, 1], [3, 3], [2, 1], [4, 2], [4, 1], [4, 3]] }
     turns: 8
-  # Grund: die Westkammer mit den Gräbern junger Könige – Beutegut, das die Plünderer noch nicht fanden.
+  # Grund: die Westkammer mit den Gräbern junger Könige – Beutegut, das die Plünderer noch nicht fanden. Der Leutnant lauert in der Halle, die Truppe
+  # stellt sich am Westende der Halle auf, nahe am Zugang der Kammer (Simulation 2026-10-28: stand der Leutnant in der Kammer, blieb die Truppe an
+  # ihm hängen, und die Simulator-KI verbrauchte die Schlüssel an den Türen – 61 %; so 83 %).
   - variant: treasure
-    target: { at: [2, 7] }
+    target: { at: [11, 2] }
     enemySpawn: { rect: [6, 5, 7, 9] }
-    deploy: { rect: [4, 1, 9, 2] }
+    deploy: { tiles: [[2, 2], [1, 2], [3, 2], [1, 3], [3, 3], [2, 1], [3, 1], [4, 1]] }
     chests: [[1, 8], [4, 5]]
     turns: 10
 deploy:

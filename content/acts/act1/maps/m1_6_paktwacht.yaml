@@ -62,12 +62,13 @@ haunts:
     target: { at: [8, 10] }
     enemySpawn: { rect: [2, 11, 13, 12] }
     deploy: { rect: [6, 14, 9, 15] }
-  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat.
+  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat. Der Zivilist wartet am Fuß der Straße, die Räuber lauern im äußeren
+  # Hof vor dem Ausgang (Simulation 2026-10-28: Räuber am Zivilisten 50 %, so 96 %).
   - variant: escort
-    target: { at: [8, 15] }
-    exit: { rect: [4, 16, 12, 16] }
-    enemySpawn: { rect: [0, 13, 15, 14] }
-    deploy: { rect: [6, 18, 9, 19] }
+    target: { at: [8, 19] }
+    exit: { rect: [5, 14, 10, 14] }
+    enemySpawn: { rect: [3, 9, 12, 11] }
+    deploy: { tiles: [[9, 19], [8, 18], [7, 17], [9, 17], [8, 17], [7, 18], [9, 18], [7, 19]] }
     turns: 8
 deploy:
   max: 7

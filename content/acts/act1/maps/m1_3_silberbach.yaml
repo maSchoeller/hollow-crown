@@ -56,11 +56,12 @@ deploy:
   slots: [[8, 4], [7, 4], [9, 4], [6, 4], [8, 5], [7, 5], [8, 3], [7, 3]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: der Schrein am Silberbach, an dem die Truppe Liora fand – hier beginnt der Weg nach Süden.
+  # Grund: der Schrein am Silberbach, an dem die Truppe Liora fand – hier beginnt der Weg nach Süden. Der Zivilist wartet nördlich der Brücke, die Jäger
+  # setzen aus dem Norden nach (Simulation 2026-10-28: Jäger im Süden, am Weg zum Ausgang, ließen die Truppe stehen bleiben – 38 %, so 83 %).
   - variant: escort
-    target: { at: [8, 2] }
-    enemySpawn: { rect: [5, 10, 10, 11] }
-    deploy: { rect: [6, 3, 9, 4] }
+    target: { at: [8, 6] }
+    enemySpawn: { rect: [4, 0, 11, 1] }
+    deploy: { tiles: [[8, 7], [8, 4], [7, 5], [9, 5], [7, 4], [9, 4], [7, 6], [9, 6]] }
     exit: { rect: [6, 17, 9, 17] }
   # Grund: die Brücke über den Silberbach – Hinterhalt an der Engstelle.
   - variant: rout
