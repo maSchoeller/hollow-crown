@@ -1,6 +1,6 @@
 # Nebenquest N1, Gedenk-Variante vor der Karte (Fenn ist gefallen; memorialIf in campaign.yaml). Ersatzsprecher-Kette, kein Humor.
 id: scn.n1.memorial_intro
-background: varnhold
+background: varnhold_nacht
 music: camp
 lines:
   - id: l01

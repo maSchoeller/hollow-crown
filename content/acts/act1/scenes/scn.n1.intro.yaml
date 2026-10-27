@@ -1,7 +1,7 @@
 # Nebenquest N1 „Der Ring von Varnhold“ (Story 9.10), Szene vor der Karte: Fenn will seine Elster zurück. Fenn: Gaunersprache, prahlt.
 # Hintergrund: E2 „schützen“ (die Truppe hat Fenn nicht an den Ring ausgeliefert). Gedenk-Variante: scn.n1.memorial_intro.
 id: scn.n1.intro
-background: varnhold
+background: varnhold_nacht
 music: tense
 lines:
   - id: l01

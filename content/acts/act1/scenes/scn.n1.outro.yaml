@@ -1,6 +1,6 @@
 # Nebenquest N1, Szene nach der Karte: Fenn bekommt die Elster, der Glutfunke wird gefunden. Belohnung selbst: Knotenwirkung (campaign.yaml). Gedenk-Variante: scn.n1.memorial_outro.
 id: scn.n1.outro
-background: varnhold
+background: varnhold_nacht
 music: camp
 lines:
   - id: l01

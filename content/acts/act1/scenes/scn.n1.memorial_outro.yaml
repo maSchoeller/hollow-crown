@@ -1,6 +1,6 @@
 # Nebenquest N1, Gedenk-Variante nach der Karte (Fenn ist gefallen): die Elster geht in den Konvoi (volle Belohnung, Produktinhaber 2026-10-26). Kein Humor.
 id: scn.n1.memorial_outro
-background: varnhold
+background: varnhold_nacht
 music: camp
 lines:
   - id: l01
