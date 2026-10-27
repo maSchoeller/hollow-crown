@@ -115,6 +115,8 @@
 - { id: haste_scroll,   kind: consumable, slot: bag, use: { target: ally, rng: [0,1], statMods: { mov: 2 }, duration: round }, charges: 1, wt: 0, rarity: rare, price: 800 }
 - { id: torch,          kind: consumable, slot: bag, use: { vision: 4, duration: 3 }, charges: 1, wt: 0, rarity: common, price: 150 }
 - { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000 }
+# Glutfunke (GDD: 12 in Staffel 1; Nebenquests N1/N2, Akt-1-Finale). Schema kennt nur `seal`, Architektur §5.11 nennt `promotion`; Aufstieg kommt mit Story 10.2
+- { id: ember_spark,    kind: seal,       slot: bag, wt: 0, rarity: rare, price: 3000, tags: [convoyOnly] }
 - { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
 
 # --- Materialien (nur Konvoi) ---
