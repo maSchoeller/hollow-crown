@@ -94,10 +94,9 @@ for (let r = 0; r < runs; r++) {
     turns += state.turn;
     winTurns.push(state.turn);
   }
-  for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) {
-    losses++;
-    causes[u.id] = (causes[u.id] ?? 0) + 1;
-  }
+  // downs = every fall to 0 HP during the battle (stats.downs), also those rescued later; the tally names who is still down or dead at the end
+  losses += state.stats.downs;
+  for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) causes[u.id] = (causes[u.id] ?? 0) + 1;
   if (state.outcome !== 'victory') {
     const key = `outcome:${state.outcome ?? 'timeout'}${state.defeatReason ? `:${state.defeatReason}` : ''}`;
     causes[key] = (causes[key] ?? 0) + 1;
@@ -201,7 +200,7 @@ function runHaunt(spec: string) {
       const key = `outcome:${state.outcome ?? 'timeout'}${state.defeatReason ? `:${state.defeatReason}` : ''}`;
       causes[key] = (causes[key] ?? 0) + 1;
     }
-    for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) downs++;
+    downs += state.stats.downs;
     if (state.units.some((u) => u.lieutenant && u.gone === 'fled')) fled++;
   }
   const corridor = data.balance.simulation.corridors[difficulty];
