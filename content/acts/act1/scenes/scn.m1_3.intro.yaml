@@ -1,0 +1,64 @@
+# Mission 1-3, Szene vor der Karte: Morgen, Nebel am Schrein am Silberbach. Ein Zettel mit grauem Siegel hat die Truppe hergeführt (Halvards heimlicher Kontakt,
+# über Liora). Liora, vom Pakttempel verstoßen, wartet hier; Morras Jäger sind ihr auf den Fersen. Auftrag: Liora heil zum Ausgang im Süden bringen.
+id: scn.m1_3.intro
+background: silberbach
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Silberbach, früher Morgen. Nebel liegt über dem Wasser, am Schrein brennt ein weißes Licht."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ein Zettel ohne Namen, nur ein Siegel aus grauem Wachs. Und wir laufen ihm nach. Küken, Küken."
+  - id: l03
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Jemand, der uns kennt und nicht aufhängen will. Das sind wenige. Ich sehe nach."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ihr seid pünktlich, Hauptmann. Er sagte, ihr kämt. Ich habe am Wasser auf euch gewartet."
+  - id: l05
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Er? Wer schickt dich?"
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das soll er euch selbst sagen. Ich bin Liora. Der Pakttempel hat mich verstoßen, weil ich fragte."
+  - id: l07
+    speaker: [tobin]
+    fallback: skip
+    mood: angry
+    text: "Hauptmann, am Westufer! Bewaffnete, und sie tragen Zettel – unsere Zettel!"
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Morra. Sie jagt mich seit zwei Tagen. Jetzt hat sie auch euch im Visier."
+  - id: l09
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Kopfgeldjäger. Natürlich. Es ist noch nicht mal Mittag, und schon will uns jemand zu Geld machen."
+  - id: l10
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Liora bleibt bei uns. Wir bringen sie zum Ausgang im Süden, hinter der Brücke."
+  - id: l11
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Und die Heilerin fällt nicht, Küken. Wenn sie fällt, war alles umsonst."
+  - id: l12
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "{avatar}, ordne die Reihen. Wo sie hingeht, gehen wir hin."

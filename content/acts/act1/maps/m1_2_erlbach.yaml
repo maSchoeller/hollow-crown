@@ -1,6 +1,6 @@
 # Mission 1-2 – Asche über Erlbach (Story 9.3, Knoten m1_2). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
 # Ort: Erlbach, Dorf am Bach im Grenzland, Spätsommer. Tageszeit: Nachmittag, Wetter: Asche, Rauch über den Feldern
-# (art-direction §2.5, Feld folgt mit Story 8.6). Planung: Ortsbild „erlbach“ für die Heimsuchungen / Weltkarte (Story 8.x), nur als Kommentar.
+# (art-direction §2.5; Felder timeOfDay/weather). Planung: Ortsbild „erlbach“ für die Heimsuchungen / Weltkarte (Story 8.x), nur als Kommentar.
 # Ziel: Der Dorfälteste (dritte Partei) übersteht 8 Runden (defend). Erste Begegnung mit Leutnant Hask und seinen Marodeuren.
 # Die Truppe steht im Süden am Bach; die einzige Brücke (x=7) ist die Engstelle für Vorkämpfer, Furten (x=3, x=12) nur für Fußtruppen.
 # Dorf in der Mitte: 5 Häuser (besuchbar), Felder und Zäune an den Flanken, Wald im Norden, aus dem Hask kommt.
@@ -42,9 +42,9 @@ terrain: |
   ~~~w~~~=~~~~w~~~
   T,,,,,,_.,,,,,,T
   TT,,,,,..,,,,,TT
-# Nachmittag, Ascheschleier: warm-grau, Sonne tief im Westen, durch Rauch gedämpft
-ambient: { color: "#e6cfae", intensity: 0.85 }
-sun: { color: "#f2b06a", intensity: 0.85, azimuthDeg: 250, elevationDeg: 32 }
+# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+timeOfDay: evening
+weather: ash
 lights:
   - { at: [6, 5], color: "#ffb35c", radius: 3 }
   - { at: [13, 7], color: "#ffb35c", radius: 3 }

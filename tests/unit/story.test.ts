@@ -83,7 +83,7 @@ describe('conditions (architecture §5.3)', () => {
     expect(holds(c, { storyCount: { min: 1 } })).toBe(false);
     c.completed.push('prologue', 'm1_1');
     expect(holds(c, { completed: 'prologue' })).toBe(true);
-    expect(holds(c, { completed: 'ch02' })).toBe(false);
+    expect(holds(c, { completed: 'm1_3' })).toBe(false);
     expect(holds(c, { storyCount: { min: 2 } })).toBe(true);
     expect(holds(c, { storyCount: { min: 3 } })).toBe(false);
     expect(holds(c, { storyCount: { max: 2 } })).toBe(true);
@@ -382,7 +382,7 @@ describe('expectedLevel (story 4.1)', () => {
 
 describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
-    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['m1_2_erlbach', 'ch02_silverbrook', 'm1_1_steckbriefe', 'prologue_paktnacht']));
+    expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['m1_2_erlbach', 'm1_3_silberbach', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
     expect(data.chars.kael).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();
@@ -404,10 +404,10 @@ describe('saves from before the fields existed', () => {
   it('normalizeCampaign turns a flag list into a record and fills the new fields', () => {
     const old = JSON.parse(readFileSync(join(process.cwd(), 'tests/fixtures/saves/format2-auto.json'), 'utf8')) as { payload: { campaign: CampaignState } };
     const legacy = clone(old.payload.campaign) as unknown as { flags: unknown; left?: unknown };
-    legacy.flags = ['avatar_honest', 'ch02_hold'];
+    legacy.flags = ['avatar_honest', 'avatar_bold'];
     delete legacy.left;
     const c = normalizeCampaign(data, legacy as unknown as CampaignState);
-    expect(c.flags).toEqual({ avatar_honest: true, ch02_hold: true });
+    expect(c.flags).toEqual({ avatar_honest: true, avatar_bold: true });
     expect(c.left).toEqual([]);
     expect(c.stance).toEqual({ warm: 0, sober: 0, defiant: 0 });
     expect(c.chronicle).toEqual([]);
