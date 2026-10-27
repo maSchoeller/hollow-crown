@@ -134,3 +134,11 @@ export function conditionKeys(cond: Condition, out: string[] = []): string[] {
   if (key === 'not') conditionKeys(v as Condition, out);
   return out;
 }
+
+/**
+ * The map units whose own `requires` hold against the campaign (story 9.5): a foe who is only there on some way of the story
+ * (e.g. not after a decision). Evaluated when the battle is created, so the start state of a replay already holds the filtered list.
+ */
+export function onConditions<T extends { requires?: Condition[] }>(ctx: ConditionContext, defs: readonly T[]): T[] {
+  return defs.filter((d) => evalConditions(ctx, d.requires));
+}

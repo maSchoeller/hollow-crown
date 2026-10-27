@@ -35,7 +35,7 @@ let data: GameData;
 let locales: ReturnType<typeof loadContentFromDisk>['locales'];
 let base: CampaignState;
 
-const STORY = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_6', 'm1_7'];
+const STORY = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_6', 'm1_7'];
 const NODE = 'm1_8';
 
 beforeAll(() => {

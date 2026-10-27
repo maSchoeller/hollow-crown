@@ -40,12 +40,14 @@ describe('act 1 enemy classes', () => {
     expect(locales.en!['class.wolf_rider.name']).toBeTruthy();
   });
 
-  it('gives every wolf rider on the shipped maps aggressive profiles and a lance, never mounted-effective gear', () => {
+  it('gives every wolf rider on the shipped maps an attacking profile (a trigger turns aggressive) and a lance, never mounted-effective gear', () => {
     for (const id of Object.keys(data.maps)) {
       const riders = enemies(id).filter((u) => u.class === 'wolf_rider');
       for (const u of riders) {
-        expect(['aggressive', 'hunt']).toContain(u.ai?.profile);
-        expect(u.items.map((i) => data.items[i.def]!.group)).toEqual(['lance']);
+        expect(['aggressive', 'hunt', 'trigger']).toContain(u.ai?.profile);
+        if (u.ai?.profile === 'trigger') expect(u.ai.then).toBe('aggressive');
+        // a lieutenant also carries a key (story 9.5: Ulvric holds the cage key): only the weapons count
+        expect(u.items.filter((i) => data.items[i.def]!.kind === 'weapon').map((i) => data.items[i.def]!.group)).toEqual(['lance']);
         for (const i of u.items) expect(data.items[i.def]!.effectiveVs ?? []).not.toContain('mounted');
       }
     }

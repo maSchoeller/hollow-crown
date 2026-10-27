@@ -115,31 +115,30 @@ lines:
     mood: neutral
     text: "Hört zu. Wer euch den Auftrag für die Paktnacht gab, kam nicht selbst. Ein Makler schickte ihn: Osric Dunn."
   - id: l22
+    requires: [{ not: { completed: m1_4 } }]
     speaker: [kael]
     fallback: skip
     mood: neutral
     text: "Dunn. Wo finden wir ihn?"
   - id: l23
+    requires: [{ not: { completed: m1_4 } }]
     speaker: [halvard]
     fallback: skip
     mood: neutral
     text: "Wo er sich verkrochen hat, weiß ich nicht. Ich kenne nur seinen Namen. Männer wie Dunn leben nicht lange."
-  # Story 9.5: requires completed m1_4 (content:check lehnt `completed` auf den noch unbekannten Knoten m1_4 ab, daher nur als Kommentar).
-  # Ist 1-4 schon gespielt, ersetzen diese zwei Zeilen l22/l23 (l22/l23 bekommen dann `requires: [{ not: { completed: m1_4 } }]`);
-  # Halvard hat von Dunns Tod gehört, wirkt betroffen, doppeldeutig (er räumt hinter sich auf). Texte (Box <= 110 Zeichen) auch in en/act1.dialogue.yaml ergänzen:
-  #   - id: l22d
-  #     requires: [{ completed: m1_4 }]
-  #     speaker: [kael]
-  #     fallback: skip
-  #     mood: neutral
-  #     text: "Osric Dunn ist tot. Wir haben ihn nicht getötet."          # EN: "Osric Dunn is dead. We did not kill him."
-  #   - id: l23d
-  #     requires: [{ completed: m1_4 }]
-  #     speaker: [halvard]
-  #     fallback: skip
-  #     mood: sad
-  #     text: "Ich habe davon gehört. Es geht mir nahe. Doch ein Hirte räumt auf, was seine Herde hinterlässt."
-  #     # EN: "I heard. It weighs on me. Yet a shepherd tidies up what his flock leaves behind."
+  # Ist Mission 1-4 schon gespielt (Story 9.5), ersetzen l22d/l23d die Zeilen l22/l23: Halvard hat von Dunns Tod gehört, wirkt betroffen, doppeldeutig (er räumt hinter sich auf).
+  - id: l22d
+    requires: [{ completed: m1_4 }]
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Osric Dunn ist tot. Wir haben ihn nicht getötet."
+  - id: l23d
+    requires: [{ completed: m1_4 }]
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Ich habe davon gehört. Es geht mir nahe. Doch ein Hirte räumt auf, was seine Herde hinterlässt."
   - id: l24
     speaker: [kael]
     fallback: skip
@@ -181,10 +180,18 @@ lines:
     mood: sad
     text: "Er war ein guter Mann. Geht jetzt, bevor der Nebel sich hebt. Ich finde euch wieder."
   - id: l32
+    requires: [{ not: { completed: m1_4 } }]
     speaker: [kael]
     fallback: skip
     mood: neutral
     text: "Willkommen im Aschenbanner, Liora. Wir suchen einen Makler."
+  # 1-4 schon gespielt: Dunn ist tot, die Spur führt weiter zu dem, der ihn bezahlt hat
+  - id: l32d
+    requires: [{ completed: m1_4 }]
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Willkommen im Aschenbanner, Liora. Dunn ist tot. Wir suchen den, der ihn bezahlt hat."
   - id: l33
     speaker: [liora]
     fallback: skip
