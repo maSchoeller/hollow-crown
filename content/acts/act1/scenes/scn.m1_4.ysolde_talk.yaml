@@ -1,0 +1,24 @@
+# Mission 1-4, Anwerben im Kampf: {avatar} öffnet das Gespräch mit Ysolde im Käfig (recruit der Karte). Beide kennen sich von der Akademie in Aurenhall.
+# Ysolde: akademisch, belehrend, Fachwörter; von der Akademie verwiesen wegen verbotener Forschung (Magie wird am Gebirge stärker). Keine Antworten (Kampfszene).
+id: scn.m1_4.ysolde_talk
+lines:
+  - id: l01
+    speaker: [ysolde]
+    mood: angry
+    text: "Wurde auch Zeit. Drei Tage im Käfig, und die Wolfsreiter heizen mit meinen Notizen."
+  - id: l02
+    speaker: [avatar]
+    mood: happy
+    text: "Ysolde? Aurenhall, Übungssaal drei. Du hast meine Formeln mit roter Tinte korrigiert."
+  - id: l03
+    speaker: [ysolde]
+    mood: neutral
+    text: "{avatar}. Der mit den Spielschulden. Deine Formeln hatten drei Fehler, ich habe nur zwei gefunden."
+  - id: l04
+    speaker: [ysolde]
+    mood: sad
+    text: "Die Akademie nennt meine Forschung verboten. Ich nenne sie unvollständig. Ich komme mit."
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Willkommen im Aschenbanner. Bleib hinter der Linie, bis das Lager still ist."

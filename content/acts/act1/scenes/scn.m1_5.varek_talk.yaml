@@ -1,0 +1,30 @@
+# Mission 1-5, Anwerben im Kampf: Kael spricht Varek an (recruit der Karte, by: [kael]). Varek, Deserteur des Grenzheers (Brücke General), kennt Kael und Dravn; er hängt bei den
+# Hungernden fest. Der Grund seiner Desertion bleibt in Akt 1 offen (Decision-Log 2026-10-24). Keine Antworten (Kampfszene). Brenna × Varek: Misstrauen gegenüber dem Deserteur.
+id: scn.m1_5.varek_talk
+background: hungerlager
+lines:
+  - id: l01
+    speaker: [varek]
+    mood: happy
+    text: "Kael! Ausgerechnet du, ausgerechnet hier. Die Würfel liegen heute wirklich schlecht."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Varek. Es heißt, du hast dem Grenzheer den Rücken gekehrt."
+  - id: l03
+    speaker: [varek]
+    mood: sad
+    text: "Es heißt viel. Ich wollte nur durchs Tal. Jetzt teile ich Rinde mit Leuten, die du gleich niedermachst."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Nur wenn sie uns zwingen. Komm mit uns, Varek."
+  - id: l05
+    speaker: [varek]
+    mood: happy
+    text: "Ein guter Wurf. Und wenn Dravn fragt: Du hast mich nie gesehen."
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ein Deserteur in der Truppe. Ich behalte dich im Auge, Küken."

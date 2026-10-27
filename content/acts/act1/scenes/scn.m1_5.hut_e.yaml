@@ -1,0 +1,18 @@
+# Mission 1-5, Besuchsszene der östlichen Hütte [11,11] (Belohnung: 200 Gold): die Beute der Bande, kaum etwas; daneben Kinderspielzeug (Ortsbild).
+id: scn.m1_5.hut_e
+background: hungerlager
+lines:
+  - id: l01
+    mood: neutral
+    text: "Unter einem Strohsack liegt die Beute der Bande: ein Beutel, kaum gefüllt. Daneben ein Holzpferdchen."
+  - id: l02
+    requires: [{ alive: fenn }]
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Das ist alles? In Varnhold hab ich mehr aus einer Manteltasche gezogen."
+  - id: l03
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das Pferdchen lasse ich liegen. Das gehört jemandem."

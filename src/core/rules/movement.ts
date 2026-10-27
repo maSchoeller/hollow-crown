@@ -195,7 +195,7 @@ export function tilesInRange(s: BattleState, from: Pos, range: [number, number])
 export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string, extraRange = 0): [number, number] {
   const inst = [unit.equip.mainHand, ...unit.bag].find((i) => i?.uid === weaponUid);
   if (!inst) return [1, 1];
-  const wp = weaponProfile(data, inst);
+  const wp = weaponProfile(data, inst, s);
   const st = computeStats(data, unit, { state: s, ownWeapon: wp });
   return [wp.range[0], wp.range[1] + st.skills.rangeBonus + extraRange];
 }
@@ -207,7 +207,7 @@ export function combinedRange(data: GameData, s: BattleState, unit: BattleUnit, 
   let lo = Infinity;
   let hi = -Infinity;
   for (const w of list) {
-    const r = staves ? (weaponProfile(data, w).range) : weaponRange(data, s, unit, w.uid);
+    const r = staves ? (weaponProfile(data, w, s).range) : weaponRange(data, s, unit, w.uid);
     lo = Math.min(lo, r[0]);
     hi = Math.max(hi, r[1]);
   }

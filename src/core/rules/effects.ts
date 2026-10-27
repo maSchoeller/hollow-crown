@@ -2,7 +2,7 @@ import type { Element, GameData, Pos, StatusId, Team } from '../defs';
 import type { GameEvent } from '../events';
 import { nextInt, roll1 } from '../rng';
 import type { BattleState, BattleUnit } from '../state';
-import { inBounds, neighbors, onMap, posKey, terrainAt, tileIndex, unitAt } from '../util';
+import { inBounds, neighbors, onMap, posKey, ruleOn, terrainAt, tileIndex, unitAt } from '../util';
 import { allItems, itemDef } from './items';
 import { computeStats } from './stats';
 import { activeSkillIds } from './skills';
@@ -13,9 +13,9 @@ export function hasStatus(u: BattleUnit, id: StatusId): boolean {
   return u.status.some((s) => s.id === id);
 }
 
-/** Applies a lasting status (not knockback). Respects immunities (concept/03 §6–7). */
+/** Applies a lasting status (not knockback). Respects immunities (concept/03 §6–7); does nothing while the `status` mechanic is not introduced. */
 export function applyStatus(data: GameData, s: BattleState, u: BattleUnit, id: StatusId, events: GameEvent[]): boolean {
-  if (!onMap(u) || u.downed) return false;
+  if (!onMap(u) || u.downed || !ruleOn(s, 'status')) return false;
   const aff = computeStats(data, u, { state: s }).affinity;
   if (aff && aff === STATUS_ELEMENT[id]) return false;
   if (id === 'burning' && hasStatus(u, 'wet')) return false;
@@ -82,7 +82,10 @@ export function raiseRockwall(data: GameData, s: BattleState, p: Pos, events: Ga
   return true;
 }
 
-/** Damage outside of combat (burn, fire tiles, bombs). Returns true if the unit was knocked out. */
+/**
+ * Damage outside of combat (burn, fire tiles, bombs). Returns true if the unit was knocked out. An `untargetable` unit (story 9.6)
+ * takes none of it: no foe may hurt it, so neither may fire, burn or a bomb's blast.
+ */
 export function damageUnit(
   data: GameData,
   s: BattleState,
@@ -92,7 +95,7 @@ export function damageUnit(
   events: GameEvent[],
   by?: string,
 ): boolean {
-  if (!onMap(u) || u.downed || amount <= 0) return false;
+  if (!onMap(u) || u.downed || u.untargetable || amount <= 0) return false;
   u.hp = Math.max(0, u.hp - amount);
   events.push({ t: 'damage', unit: u.uid, amount, hpAfter: u.hp, cause });
   if (u.hp <= 0) {

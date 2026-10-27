@@ -1,0 +1,93 @@
+# Mission 1-4, Szene vor der Karte mit Entscheidung E2 (Narrative „Entscheidungen“): Der Diebesring von Varnhold will Fenn zurück. Sein Bote nennt das Versteck
+# des Maklers Osric Dunn gleich zu Beginn (das Lager der Wolfsreiter; das Versteck kennt jeder, PO 2026-10-27) und bietet im Tausch gegen Fenn nur die
+# Wachwechsel und den Hintereingang an. `protect`: Fenn bleibt (Flag e02 = protect). `hand_over`: Fenn geht (leave), die Mission wird leichter, weil
+# wr3, wr4, g3 und g4 entfallen (Karte, `requires` auf e02 = hand_over). Ohne Fenn in der Truppe (gefallen oder gegangen) entfällt E2: der Ring will
+# dann nichts mehr, das Versteck nennt er trotzdem. Der Bote ist keine Figur mit Halbfigur: seine Zeilen sind Erzähltext („Der Bote: …“).
+# N1 baut die Session Nebenquests: der Knoten n1 öffnet sich an `protect`.
+id: scn.m1_4.intro
+background: wolfslager
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Dämmerung am Waldrand. Ein Mann tritt hervor, die Hände leer: ein Bote des Diebesrings von Varnhold."
+  - id: l02
+    mood: neutral
+    text: "Der Bote: „Ihr sucht den Makler Osric Dunn. Er sitzt bei den Wolfsreitern im Wald. Das Lager kennt jeder.“"
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Wenn es jeder kennt, warum sagst du es uns?"
+  - id: l04
+    mood: neutral
+    text: "Der Bote: „Aber lebend kommt keiner hinein. Wir kennen die Wachwechsel und den Hintereingang.“"
+  # Fenn ist in der Truppe: E2
+  - id: f01
+    requires: [{ alive: fenn }]
+    mood: neutral
+    text: "Der Bote: „Beides gegen Fenn. Er ließ ein Kind laufen, das er bestehlen sollte. Der Ring will ihn zurück.“"
+  - id: f02
+    requires: [{ alive: fenn }]
+    speaker: [fenn]
+    fallback: skip
+    mood: angry
+    text: "Die haben mich rausgeworfen! Jetzt wollen sie mich zurück? Das ist schmeichelhaft. Und lebensgefährlich."
+  - id: f03
+    requires: [{ alive: fenn }]
+    speaker: [kael]
+    mood: neutral
+    text: "{avatar}, dein Wort. Der Weg ins Lager oder der Junge."
+  - id: c01
+    requires: [{ alive: fenn }]
+    title: "Der Diebesring will Fenn zurück"
+    choice:
+      - id: protect
+        stance: warm
+        text: "„Fenn gehört zu uns. Das Lager finden wir auch ohne euch.“"
+        summary: "Fenn bleibt bei der Truppe"
+        # N1 (Session Nebenquests): { openQuest: n1 } wird dort nachgetragen, sobald der Knoten n1 existiert
+        effects: [{ setFlag: { e02: protect } }]
+      - id: hand_over
+        stance: sober
+        text: "„Nehmt ihn. Und zeigt uns den Hintereingang.“"
+        summary: "Fenn geht zum Ring, die Mission wird leichter"
+        effects: [{ setFlag: { e02: hand_over } }, { leave: fenn }]
+  - id: p01
+    requires: [{ flag: { e02: protect } }]
+    mood: angry
+    text: "Der Bote: „Dann geht allein hinein. Der Ring vergisst nicht, wer einen der Seinen behält.“"
+  - id: p02
+    requires: [{ flag: { e02: protect } }]
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Du hast das für mich getan? Ich merke mir das. Ehrlich. Ich merke mir sonst nie was."
+  - id: h01
+    requires: [{ flag: { e02: hand_over } }]
+    speaker: [fenn]
+    fallback: skip
+    mood: sad
+    text: "Ich verstehe das. Wirklich. Passt auf die Wachwechsel auf, ja? Die sind tückisch."
+  - id: h02
+    requires: [{ flag: { e02: hand_over } }]
+    mood: neutral
+    text: "Der Bote: „Der Hintereingang liegt im Süden hinter den Zelten. Die Wachen wechseln mit dem Mond.“"
+  - id: h03
+    requires: [{ flag: { e02: hand_over } }]
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Küken, das hängt uns noch lange nach. Hoffen wir, dass es sich gelohnt hat."
+  # Ohne Fenn: E2 entfällt
+  - id: n01
+    requires: [{ not: { alive: fenn } }, { not: { flag: { e02: protect } } }, { not: { flag: { e02: hand_over } } }]
+    mood: neutral
+    text: "Der Bote: „Den wir wollten, ist nicht mehr bei euch. Dann behalten wir die Auskunft. Das Lager kennt ihr ja.“"
+  - id: z01
+    speaker: [kael]
+    mood: neutral
+    text: "Das Lager liegt eine Nacht von hier. Ordnet die Reihen, wir holen den Makler."
+  - id: z02
+    speaker: [avatar]
+    mood: neutral
+    text: "Dunn hat uns in die Falle geschickt. Ich will sein Gesicht sehen, wenn er es erklärt."

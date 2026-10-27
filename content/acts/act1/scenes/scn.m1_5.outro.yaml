@@ -1,0 +1,132 @@
+# Mission 1-5, Szene nach der Karte (nach Runde 6) mit Entscheidung E3 (Narrative „Entscheidungen“, Gewissen): Grosk kommt mit erhobenen Händen ins Lager der Truppe, seine Leute sind
+# Hungernde, keine Mörder. Er stand während des Kampfes nicht auf dem Brett (Produktinhaber 2026-10-27); die Wirkung `meet` lässt ihn als begegnet gelten (Steckbrief, Heimsuchungen, Finale).
+# `spare`: Grosk tritt bei (recruit: { lt: grosk }, setzt joined_grosk), Hask-Groll −1, E3-Flag spare. `bounty`: +600 Gold, Grosk wird abgeführt, E3-Flag bounty (er kehrt im Finale
+# 1-8 als Leutnant zurück, solange er nicht gewechselt ist). Hask-Groll −1 steht so im Konzept; eine Vorgeschichte zwischen Grosk und Hask gibt das Konzept nicht her und wird nicht erfunden.
+# Gefährten sprechen nur, wenn sie in der Truppe sind (alive).
+id: scn.m1_5.outro
+background: hungerlager
+music: camp
+lines:
+  - id: o01
+    mood: neutral
+    text: "Die sechste Runde endet. Die Hungernden lassen Äxte und Knüppel sinken, im Lager verstummen die Rufe."
+  - id: o02
+    mood: neutral
+    text: "Ein Hüne tritt zwischen den Zelten hervor, beide Hände erhoben, kein Schwert am Gürtel."
+  - id: o03
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Genug! Ich bin Grosk. Der Zettel will mich. Rührt die Kinder nicht an."
+  - id: o04
+    speaker: [kael]
+    mood: neutral
+    text: "Du führst diese Bande. Dein Kopf ist Gold wert."
+  - id: o05
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Führen? Ich bin der, der noch laufen kann. Das Heer schickte mich heim wie einen alten Karren."
+  - id: o06
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Wir nahmen Brot, wo es lag. Mörder sind meine Leute nicht, nur hungrig."
+  - id: o07
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Der Zettel hat gelogen, Hauptmann. Das sind Leute wie wir."
+  - id: o08
+    mood: neutral
+    text: "Hinter Grosk spähen Kinder aus den Zelten. Auf einem Baumstumpf liegt ein Holzpferdchen."
+  - id: o09
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Das Gold liegt bereit, Küken. Die Frage ist nur, was es kostet."
+  - id: o10
+    speaker: [avatar]
+    mood: sad
+    text: "Das Kopfgeld füllt unsere Kasse. Aber wer füllt ihre Töpfe?"
+  - id: o11
+    speaker: [kael]
+    mood: neutral
+    text: "Wir haben den Zettel angenommen. Du entscheidest, {avatar}."
+  - id: c01
+    title: "Das Hungerlager: Kopfgeld oder Gnade"
+    choice:
+      - id: spare
+        stance: warm
+        text: "„Das Lager bleibt unberührt. Und du kommst mit uns, Grosk.“"
+        summary: "Grosk tritt bei, das Lager bleibt verschont"
+        effects: [{ setFlag: { e03: spare } }, { meet: { lt: grosk } }, { recruit: { lt: grosk } }, { grudge: { lt: hask, delta: -1 } }]
+      - id: bounty
+        stance: sober
+        text: "„Das Kopfgeld gehört uns. Kael, fessle ihn.“"
+        summary: "Grosk wird abgeführt, die Kasse füllt sich"
+        effects: [{ setFlag: { e03: bounty } }, { meet: { lt: grosk } }, { gold: 600 }]
+  - id: s01
+    requires: [{ flag: { e03: spare } }]
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Ihr lasst sie leben. Dann gehört mein Arm euch, und das vergesse ich nie."
+  - id: s02
+    requires: [{ flag: { e03: spare } }]
+    mood: neutral
+    text: "Grosk steckt das Holzpferdchen in den Gürtel. Die Hungernden bleiben im Tal, und niemand jagt sie."
+  - id: s03
+    requires: [{ flag: { e03: spare } }]
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ein Riese in der Truppe! Die Barden werden sich überschlagen, Hauptmann!"
+  - id: s04
+    requires: [{ flag: { e03: spare } }]
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Er isst für drei, Küken. Aber er steht für vier."
+  - id: s05
+    requires: [{ flag: { e03: spare } }, { alive: varek }]
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Ein guter Wurf, {avatar}. Selbst die Würfel nickten."
+  - id: s06
+    requires: [{ flag: { e03: spare } }]
+    speaker: [kael]
+    mood: neutral
+    text: "Wer heute Brot bekommt, vergisst es nicht. Weiter."
+  - id: b01
+    requires: [{ flag: { e03: bounty } }]
+    mood: neutral
+    text: "Kael fesselt Grosk die Hände. Die Hungernden schweigen, ein Kind drückt sein Holzpferdchen an die Brust."
+  - id: b02
+    requires: [{ flag: { e03: bounty } }]
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Nehmt mich, aber lasst ihnen etwas zu essen da."
+  - id: b03
+    requires: [{ flag: { e03: bounty } }]
+    mood: neutral
+    text: "Die Truppe führt Grosk ab. Das Gold ist so gut wie in der Kasse."
+  - id: b04
+    requires: [{ flag: { e03: bounty } }]
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das war nicht heldenhaft."
+  - id: b05
+    requires: [{ flag: { e03: bounty } }, { alive: varek }]
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Das Gold liegt auf dem Tisch, das Gewissen daneben. Ich wünsche eine gute Nacht."
+  - id: b06
+    requires: [{ flag: { e03: bounty } }]
+    speaker: [kael]
+    mood: neutral
+    text: "Gold ist Gold. Es schmeckt nur nach weniger, als ich dachte."

@@ -1,0 +1,12 @@
+# Mission 1-5, Besuchsszene der westlichen Hütte [4,11] (Belohnung: Wundsalbe): Kranke auf Stroh, die Frau gibt die letzte Salbe.
+id: scn.m1_5.hut_w
+background: hungerlager
+lines:
+  - id: l01
+    mood: neutral
+    text: "Kranke liegen auf Stroh. Eine Frau gibt euch die letzte Salbe: „Für die, die uns nicht erschlagen.“"
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: sad
+    text: "Küken, die Töpfe sind leer. Diese Leute essen Rinde."

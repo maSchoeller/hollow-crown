@@ -89,7 +89,7 @@ export function computeStats(
   for (const k of STAT_KEYS) stats[k] = Math.max(0, unit.stats[k] + (mods[k] ?? 0));
   const carry = stats.str + b.weight.carryBonus[cls.moveType];
   let load = 0;
-  for (const inst of Object.values(unit.equip)) if (inst) load += itemWeight(data, inst);
+  for (const inst of Object.values(unit.equip)) if (inst) load += itemWeight(data, inst, ctx.state);
   const overload = Math.max(0, load - carry);
   let movPenalty = 0;
   for (const p of b.weight.movPenalty) if (overload >= p.overload) movPenalty = Math.max(movPenalty, p.mov);
@@ -105,7 +105,7 @@ export function computeStats(
     hit,
     avoid,
     crit,
-    affinity: armorAffinity(data, unit) ?? unit.affinity,
+    affinity: armorAffinity(data, unit, ctx.state) ?? unit.affinity,
     skills,
   };
 }

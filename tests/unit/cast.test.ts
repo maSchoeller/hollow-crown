@@ -38,6 +38,7 @@ function arena(): BattleState {
   s.units.forEach((u) => (u.gone = 'retreated'));
   s.outcome = null;
   s.lockedRoles = [];
+  s.locked = []; // status and runes count for Wirken (wet, rune element); the prologue would still lock them
   s.terrain = s.terrain.map(() => 'plain');
   s.objects = [];
   s.loot = [];

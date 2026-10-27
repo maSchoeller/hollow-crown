@@ -21,7 +21,7 @@ beforeAll(() => {
   data = loadContentFromDisk().data;
   base = newCampaign(data, 7, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
-  base.completed = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_6'];
+  base.completed = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6'];
 });
 
 describe('node m1_7', () => {
@@ -32,7 +32,7 @@ describe('node m1_7', () => {
     expect(availableNodes(data, base).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_7']);
     // the finale follows (story 9.9): the only node open after 1-7
     expect(availableNodes(data, { ...base, completed: [...base.completed, 'm1_7'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_8']);
-    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'm1_3'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).not.toContain('m1_7');
+    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).not.toContain('m1_7');
   });
 
   it('sets wardens_chronicle on a victory only, never on the collapse', () => {

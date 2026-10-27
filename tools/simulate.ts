@@ -1,8 +1,11 @@
 /**
- * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--fresh]
+ * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--fresh] [--flag name=value]... [--leave id[,id]]
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
+ * --flag setzt vor dem Kampf ein Kampagnen-Flag (mehrfach möglich; Wert true, wenn nur der Name steht), --leave nimmt Begleiter aus der Truppe:
+ *   so lassen sich die Zweige einer Entscheidung simulieren, z. B. Mission 1-4 mit „ausliefern“: `--flag e02=hand_over --leave fenn`
+ *   (Einheiten mit `requires` auf der Karte hängen am Flag; ohne --flag gilt der Weg ohne Entscheidung = „schützen“).
  * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
  */
@@ -61,6 +64,8 @@ if (args.includes('--haunt')) {
 }
 
 const chained = !args.includes('--fresh');
+const flagArgs = args.flatMap((a, i) => (a === '--flag' ? [args[i + 1]!] : []));
+const leaveArgs = opt('leave', '').split(',').filter(Boolean);
 let wins = 0;
 let turns = 0;
 const winTurns: number[] = [];
@@ -73,6 +78,11 @@ let villages = 0;
 for (let r = 0; r < runs; r++) {
   const c = chained ? campaignChained(data, seed0 + r, node.id) : campaignAt(data, seed0 + r, node.id);
   if (!c) continue;
+  for (const f of flagArgs) {
+    const [name, value] = f.split('=');
+    c.flags[name!] = value === undefined ? true : /^-?\d+$/.test(value) ? Number(value) : value;
+  }
+  c.roster = c.roster.filter((u) => !leaveArgs.includes(u.id));
   played++;
   const deploy = c.roster.map((u) => u.id);
   const t0 = performance.now();
