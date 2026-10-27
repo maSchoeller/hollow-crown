@@ -211,6 +211,15 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
   const line = holdLine(data, s, defended, enemies);
+  // downed allies of the company: a careful player carries them off before they bleed out (Standard death mode)
+  const downedAllies = s.units.filter((o) => o.team === 'player' && o.downed && o.pos && !o.gone);
+  const rescuer = (() => {
+    if (!downedAllies.length) return undefined;
+    const spot = downedAllies[0]!.pos!;
+    return s.units
+      .filter((o) => o.team === 'player' && active(o) && o.pos && !o.acted && !o.flags.includes('mustSurvive'))
+      .sort((a, b) => dist(a.pos!, spot) - dist(b.pos!, spot) || (a.uid < b.uid ? -1 : 1))[0]?.uid;
+  })();
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
@@ -231,6 +240,28 @@ export function autoCommand(data: GameData, s: BattleState): Command {
         const action = v.type === 'seize' ? { kind: 'seize' as const } : v.type === 'escape' ? { kind: 'escape' as const } : { kind: 'wait' as const };
         return { type: 'act', unit: u.uid, to: onGoal, action };
       }
+    }
+    // rescue: whoever can carry a downed ally off this turn does so, unless the tile is too dangerous or it would leave the line
+    if (downedAllies.length) {
+      const risk = vip ? 0 : data.balance.ai.rescueMaxDanger;
+      const held = line?.posts.get(u.uid);
+      const fits = (to: Pos) => !line || (held ? posKey(to) === posKey(held) : line.inside.has(posKey(to)));
+      let pick: { to: Pos; danger: number; action: Command & { type: 'act' } } | null = null;
+      for (const p of dests) {
+        const d = danger.get(posKey(p)) ?? 0;
+        if (d > risk || !fits(p) || (pick && d >= pick.danger)) continue;
+        for (const o of availableActions(data, s, u, p)) {
+          const target = o.kind === 'rescue' || o.kind === 'farRescue' ? o.targets?.[0] : undefined;
+          if (!target) continue;
+          pick = {
+            to: p,
+            danger: d,
+            action: { type: 'act', unit: u.uid, to: p, action: o.kind === 'rescue' ? { kind: 'rescue', target } : { kind: 'farRescue', target } },
+          };
+          break;
+        }
+      }
+      if (pick) return pick.action;
     }
     const job = line ? null : errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
     if (job) return job;
@@ -265,7 +296,21 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     // treasure: whoever can open a chest heads for the closest one still shut
     const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
     const nearWard = guarding ? [...enemies].sort((a, b) => dist(a.pos!, ward!.pos!) - dist(b.pos!, ward!.pos!)).map((o) => o.pos!) : [];
-    const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : nearWard.length ? [ward!.pos!] : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
+    // one healthy unit (the closest) walks to a downed ally when nothing more urgent calls
+    const fetch = rescuer === u.uid && hpPct >= 60 ? downedAllies.map((o) => o.pos!) : [];
+    const targets = isGoalUnit
+      ? goal!
+      : errands.length
+        ? errands
+        : keys.length
+          ? keys
+          : nearWard.length
+            ? [ward!.pos!]
+            : fetch.length
+              ? fetch
+              : ward
+                ? [ward.pos!]
+                : enemies.map((o) => o.pos!);
     if (line) {
       // the line: a holder walks to its tile, everybody else stands as close behind the line as it can (a tile of the line is for its holder)
       const reserved = new Set(line.cut.map(posKey));

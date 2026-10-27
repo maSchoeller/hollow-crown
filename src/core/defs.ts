@@ -972,6 +972,7 @@ export interface Balance {
     wardGuardRadius: number;
     /** simulator player for `defend`: widest line (tiles) it holds in front of the ward; wider than this it crowds the ward instead */
     wardLineMax: number;
+    rescueMaxDanger: number;
   };
   /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {
