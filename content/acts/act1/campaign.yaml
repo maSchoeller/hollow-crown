@@ -30,7 +30,7 @@ nodes:
   # Nebenquest N2 (Story 9.11, Lore): öffnet nach Mission 1-3. Glutfunke mit dem Sieg (Knotenwirkung); Chronik-Seite und Relikt nur aus den Truhen der Karte, sonst für diese Kampagne verpasst (Produktinhaber 2026-10-26). expectedLevel nach 1-3 [C].
   - { id: n2, kind: side, expectedLevel: 3, map: n2_wachturm, titleKey: node.n2.title, pre: scn.n2.intro, post: scn.n2.outro, requires: [{ completed: m1_3 }], place: wachturm, merchantTier: 1, effects: [{ item: { def: ember_spark } }] }
   # Nebenquest N1 (Story 9.10): öffnet mit E2 „schützen“, bleibt über die Akte offen (eine Nebenquest verfällt nie). Belohnung bei Sieg im Konvoi: Elster + Glutfunke, auch in der Gedenk-Variante (Produktinhaber 2026-10-26). expectedLevel nach 1-4 [C].
-  - { id: n1, kind: side, expectedLevel: 4, map: n1_ring, titleKey: node.n1.title, pre: scn.n1.intro, post: scn.n1.outro, requires: [{ flag: { e02: protect } }], memorialIf: { dead: fenn }, memorial: { pre: scn.n1.memorial_intro, post: scn.n1.memorial_outro }, place: varnhold, merchantTier: 1, effects: [{ item: { def: magpie } }, { item: { def: ember_spark } }] }
+  - { id: n1, kind: side, expectedLevel: 4, map: n1_ring, titleKey: node.n1.title, pre: scn.n1.intro, post: scn.n1.outro, requires: [{ flag: { e02: protect } }], memorialIf: { dead: fenn }, memorial: { pre: scn.n1.memorial_intro, post: scn.n1.memorial_outro }, place: varnhold_nacht, merchantTier: 1, effects: [{ item: { def: magpie } }, { item: { def: ember_spark } }] }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]
