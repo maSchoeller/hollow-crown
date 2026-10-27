@@ -226,3 +226,22 @@ describe('opening lines (AC 7)', () => {
     expect(t('dlg.scn.lt.hask.grudge_2', bark!.params)).toContain(bark!.params!.target);
   });
 });
+
+describe('effect meet (Story 9.6: a lieutenant met in a scene)', () => {
+  const run = (from: CampaignState, lt = 'grosk') => applyCampaign(data, from, { type: 'effects', effects: [{ meet: { lt } }] });
+
+  it('marks him met with one encounter, once, and keeps his grudge', () => {
+    const first = run(fresh());
+    expect(first.campaign.lieutenants!.grosk).toMatchObject({ met: true, encounters: 1, grudge: 0 });
+    expect(evalCondition(conditionContext(data, first.campaign), { met: 'grosk' })).toBe(true);
+    const again = run(first.campaign);
+    expect(again.campaign.lieutenants!.grosk!.encounters).toBe(1);
+    const c = fresh();
+    c.lieutenants = { hask: { met: false, encounters: 0, grudge: 2, routs: 0, signatureDropped: false } };
+    expect(run(c, 'hask').campaign.lieutenants!.hask).toMatchObject({ met: true, encounters: 1, grudge: 2 });
+  });
+
+  it('refuses an unknown lieutenant and shows no consequence line', () => {
+    expect(validateCampaign(data, fresh(), { type: 'effects', effects: [{ meet: { lt: 'nobody' } }] })).toBe('unknown_unit');
+  });
+});

@@ -48,7 +48,7 @@ function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos
 }
 
 function hostileUnits(s: BattleState, u: BattleUnit): BattleUnit[] {
-  return s.units.filter((o) => onMap(o) && isHostile(o.team, u.team));
+  return s.units.filter((o) => onMap(o) && isHostile(o.team, u.team) && !o.untargetable);
 }
 
 /** The goal tile the field leads to from `from` (follows the falling values down to 0). */

@@ -34,7 +34,7 @@ export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head',
 export type Rarity = 'common' | 'rare' | 'epic' | 'legendary';
 export type Difficulty = 'easy' | 'normal' | 'hard';
 /** Rules that the campaign introduces step by step (campaign.yaml `mechanics`). */
-export type Mechanic = 'triangle' | 'magic' | 'elements' | 'supports';
+export type Mechanic = 'triangle' | 'magic' | 'elements' | 'status' | 'runes' | 'supports';
 export type DeathMode = 'classic' | 'standard' | 'casual';
 export type SupportRank = 'C' | 'B' | 'A' | 'S';
 export const SUPPORT_RANKS: readonly SupportRank[] = ['C', 'B', 'A', 'S'];
@@ -324,6 +324,8 @@ export interface MapUnitDef {
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };
   ignoreForRout?: boolean;
+  /** no foe ever targets this unit (children in the camp of mission 1-5, Story 9.6): not by the AI, not by attacks or damaging items */
+  untargetable?: boolean;
   /** unit only appears on these difficulties (default: all) */
   difficulty?: Difficulty[];
   /**
@@ -523,6 +525,7 @@ export type Effect =
   | { recruit: string | { lt: string } }
   | { leave: string }
   | { grudge: { lt: string; delta: number } }
+  | { meet: { lt: string } }
   | { gold: number }
   | { material: Record<string, number> }
   | { item: ItemRef }

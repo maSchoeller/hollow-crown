@@ -1,0 +1,17 @@
+# Mission 1-5, Sichtungszeile im Kampf (Trigger t_varek_spotted): Kael sieht Varek zwischen den Hungernden und kündigt an, ihn anzusprechen. Keine Antworten (Kampfszene).
+id: scn.m1_5.varek_spotted
+background: hungerlager
+lines:
+  - id: l01
+    speaker: [kael]
+    mood: neutral
+    text: "Der Mann bei den Zelten trägt Heerstiefel und keine Axt. Der gehört nicht zu ihnen."
+  - id: l02
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Ein Heerstiefel zwischen Hungernden? Das riecht nach Ärger."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Ich rede mit ihm. Deckt mich."

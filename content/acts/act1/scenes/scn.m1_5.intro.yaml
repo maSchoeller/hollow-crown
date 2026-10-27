@@ -1,0 +1,67 @@
+# Mission 1-5, Szene vor der Karte (Knoten pre): Auftrag aus Varnhold, Kopfgeld auf Grosks Bande. Das Lager im Talkessel ist ein Hungerlager (Frauen, Kinder,
+# ein Kessel mit Wasser, ein Holzpferdchen). Die Hungernden halten die Truppe für Jäger und schließen den Hügel ein: „Gold gegen Gewissen“. Gefährten sprechen nur,
+# wenn sie in der Truppe sind (alive), damit die Reihenfolge der Missionen 1-2 bis 1-5 frei bleibt. Entscheidung E3 fällt erst nach der Mission (scn.m1_5.outro).
+id: scn.m1_5.intro
+background: hungerlager
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Abend im Talkessel. Über dem Lager der Grenzlandbande steht Rauch, und auf ihrem Anführer liegt ein Kopfgeld."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Grosk. Das Heer hat ihn als Invalide entlassen. Seitdem hält er sich mit Raub über Wasser."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Das Kopfgeld stopft unsere Löcher, Küken. Und mit einem Räuber habe ich kein Mitleid."
+  - id: l04
+    mood: neutral
+    text: "Doch zwischen den Zelten hocken Frauen und Kinder. Der Kessel über dem Feuer enthält kaum mehr als Wasser."
+  - id: l05
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Hauptmann, das sind keine Räuber. Das sind Hungernde. Ein Kind hat ein Holzpferd, mehr nicht."
+  - id: l06
+    mood: neutral
+    text: "Zu spät. Aus allen Zelten greifen sie nach Äxten und Knüppeln. Wer Hunger hat, fürchtet jeden Fremden."
+  - id: l07
+    requires: [{ alive: fenn }]
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Hunger macht erst bissig, dann blind. Ich weiß, wovon ich rede, Hauptmann."
+  - id: l08
+    requires: [{ alive: liora }]
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Sie schließen den Hügel ein. Aber ihre Schreie klingen nach Furcht, nicht nach Zorn."
+  - id: l09
+    requires: [{ alive: mira }]
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Hungrige Leute mit Äxten. Ich weiß, wie es ist, am Rand zu stehen."
+  - id: l10
+    requires: [{ alive: ysolde }]
+    speaker: [ysolde]
+    fallback: skip
+    mood: neutral
+    text: "Mangelernährung trübt das Urteil. Man darf ihnen nicht trauen, aber man sollte sie verstehen."
+  - id: l11
+    speaker: [kael]
+    mood: neutral
+    text: "Auf den Hügel! Wir halten die Ruinen, bis sich der Sturm legt. Tötet nur, wer euch zwingt."
+  - id: l12
+    speaker: [avatar]
+    mood: sad
+    text: "Auf dem Zettel stand ein Räuber. Ich sehe ein Dorf ohne Dach."
+  - id: l13
+    speaker: [brenna]
+    fallback: skip
+    mood: angry
+    text: "Haltet die Linie, Küken! Sechs Runden, dann müssen sie reden."

@@ -281,6 +281,7 @@ export const mapUnitSchema = z.object({
   quote: z.string().optional(),
   recruit: z.object({ by: z.union([z.array(z.string()), z.literal('any')]), dialogue: z.string().optional() }).optional(),
   ignoreForRout: z.boolean().optional(),
+  untargetable: z.boolean().optional(),
   difficulty: z.array(z.enum(['easy', 'normal', 'hard'])).optional(),
   /** conditions against the campaign at the creation of the battle (story 9.5); `conditionSchema` is defined further down */
   requires: z.array(z.lazy(() => conditionSchema)).optional(),
@@ -468,6 +469,7 @@ export const effectSchema: z.ZodType<Effect> = z.union([
   z.strictObject({ recruit: z.union([movableCompanion, z.strictObject({ lt: z.string().min(1) })]) }),
   z.strictObject({ leave: movableCompanion }),
   z.strictObject({ grudge: z.strictObject({ lt: z.string().min(1), delta: z.number().int() }) }),
+  z.strictObject({ meet: z.strictObject({ lt: z.string().min(1) }) }),
   z.strictObject({ gold: z.number().int() }),
   z.strictObject({ material: z.record(z.string(), z.number().int()) }),
   z.strictObject({ item: itemRefSchema }),
@@ -622,7 +624,7 @@ export const campaignSchema = z.object({
       effectsIf: z.array(z.strictObject({ requires: z.array(conditionSchema).min(1), effects: z.array(effectSchema).min(1) })).optional(),
     }),
   ),
-  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'supports']), z.number().int().min(0)).default({}),
+  mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'status', 'runes', 'supports']), z.number().int().min(0)).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()), storyCount: z.number().int().min(1).optional() })),
   scars: z.array(

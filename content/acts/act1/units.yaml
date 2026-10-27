@@ -100,7 +100,7 @@
   base:   { hp: 21, str: 7, mag: 0, skl: 10, spd: 10, lck: 2, def: 4, res: 2 }
   growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
   items: [ { def: steel_sword }, { def: slim_sword }, { def: leather_vest } ]
-  recruit: { chapter: m1_5, by: [kael] }   # startet als Gegner; Mission 1-5 (Story 9.6) setzt Ansprechen und Szene auf der Karte
+  # Beitritt: Mission 1-5 (Karte m1_5_hungerlager): Kael spricht ihn an (recruit der Kartenfigur, Szene scn.m1_5.varek_talk)
   supports: [brenna]
   joins: m1_5
 
