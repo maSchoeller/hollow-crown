@@ -25,17 +25,22 @@ function terrainRows(w: number, h: number): string[] {
   return rows;
 }
 
+/**
+ * The cast is what the game shows on its act-1 maps: image-to-3D figures for every class (story 7.8; before, the marksmen were the
+ * Blender `archer` and the skirmishers a thief without a model, which draws as a sprite). Enemies: brigand, soldier, bandit archer,
+ * mercenary; the player's side takes the party members of act 1 for the four classes (tobin, varek, mira, liora).
+ */
 const ENEMY_KINDS = [
   { class: 'brigand', sprite: 'brigand', items: [{ def: 'iron_axe' }] },
   { class: 'vanguard', sprite: 'soldier', items: [{ def: 'iron_lance' }] },
-  { class: 'marksman', sprite: 'archer', items: [{ def: 'iron_bow' }] },
-  { class: 'skirmisher', sprite: 'thief', items: [{ def: 'iron_sword' }] },
+  { class: 'marksman', sprite: 'bandit_archer', items: [{ def: 'iron_bow' }] },
+  { class: 'skirmisher', sprite: 'mercenary', items: [{ def: 'iron_sword' }] },
 ];
 const PLAYER_KINDS = [
-  { class: 'vanguard', items: [{ def: 'iron_lance' }] },
-  { class: 'skirmisher', items: [{ def: 'iron_sword' }] },
-  { class: 'marksman', items: [{ def: 'iron_bow' }] },
-  { class: 'healer', items: [{ def: 'heal_staff' }] },
+  { class: 'vanguard', sprite: 'tobin', items: [{ def: 'iron_lance' }] },
+  { class: 'skirmisher', sprite: 'varek', items: [{ def: 'iron_sword' }] },
+  { class: 'marksman', sprite: 'mira', items: [{ def: 'iron_bow' }] },
+  { class: 'healer', sprite: 'liora', items: [{ def: 'heal_staff' }] },
 ];
 
 export function benchMapRaw(): unknown {

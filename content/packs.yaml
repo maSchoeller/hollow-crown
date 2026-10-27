@@ -11,6 +11,9 @@
 # Figuren erscheinen als Warnung, der Build bricht nicht ab. triangles = Dreiecke, texture = Kantenlänge der Grundfarb-
 # Textur in Pixeln, transferMb = Transfergröße (gzip). large = Ids großer Einheiten (Reittiere, Drachen), die das
 # largeFactor-Fache dürfen; bisher gibt es keine.
+# Erwartete Größe des ersten Downloads (Paket core, Transfer) in MB: darüber warnt tools/check-bundle-size.mjs (das Budget des Pakets bricht ab). 12 MB seit 2026-10-27 (vorher 11): der Precache enthält die .vat-Dateien der ersten Mission (Story 7.8)
+firstDownloadTargetMb: 12
+
 figureBudget:
   triangles: 7000
   texture: 512

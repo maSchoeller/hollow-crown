@@ -3,7 +3,7 @@
  * and the numbers the stones show. No DOM, no cache access: `state/loading.ts` and `state/prepare.ts` do the I/O.
  */
 
-import { modelId, unitFigureId, unitModelPath, type FigureSource, type GameData } from '../../core';
+import { modelId, unitFigureId, unitModelPath, unitVatPath, type FigureSource, type GameData } from '../../core';
 
 /** Classes' figure fields, as `GameData.classes` has them. */
 type Classes = Parameters<typeof modelId>[2];
@@ -30,6 +30,8 @@ export interface MissionAssetInput {
   models: readonly string[] | undefined;
   /** pack folder per model id (`manifest.models.unitPacks`); a model without an entry lies in `models/units/` */
   unitPacks?: Readonly<Record<string, string>>;
+  /** model ids with a baked animation file beside the model (`manifest.models.vat`, story 7.8); the file loads with the model. Left out when `board.vat` is off */
+  vatModels?: readonly string[];
   /** the figure setting: `2d` draws every unit as a sprite sheet and needs no model files (default `3d`) */
   figures?: '3d' | '2d';
   /** sprite sheets the manifest lists (`manifest.units`, with their normal map flag): a unit without a model file shows one */
@@ -86,7 +88,7 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
  * figures (3D models and their weapon models, or sprite sheets for the 2D setting and units without a model) and the
  * images of the gear they hold.
  */
-export function missionAssets({ units, models, unitPacks, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
+export function missionAssets({ units, models, unitPacks, vatModels, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
   const out = new Set<string>([placePath(place ?? defaultPlace)]);
   if (music) for (const id of BATTLE_MUSIC) if (music.includes(id)) out.add(musicPath(id));
   const use3d = figures !== '2d' && models !== undefined;
@@ -94,6 +96,7 @@ export function missionAssets({ units, models, unitPacks, classes, place, defaul
     const mid = use3d ? modelId(u, models, classes) : '';
     if (use3d && mid && models.includes(mid)) {
       out.add(unitModelPath(mid, unitPacks));
+      if (vatModels?.includes(mid)) out.add(unitVatPath(mid, unitPacks));
       if (items && gear && weaponModels && u.gearItems)
         for (const w of gearModels(u.gearItems, items, gear)) if (weaponModels.includes(w)) out.add(`models/weapons/${w}.glb`);
     } else {
