@@ -287,6 +287,8 @@ export interface CampaignState {
    * into haunts directly (kept for saves)
    */
   day: { last: number | null; pending: number[] };
+  /** merchant price changes of decisions (effect `priceMod`): `pct` percent on every purchase while the act is `act` */
+  priceMods: Array<{ pct: number; act: number }>;
   /** open haunts, oldest first (story 5.5); more than `balance.haunt.maxOpen` and the oldest lapses */
   haunts: HauntState[];
   /** map id -> variant of the haunt played there last (story 5.6 writes it; the generator avoids it) */

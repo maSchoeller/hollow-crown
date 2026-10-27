@@ -7,6 +7,8 @@ import { consequenceView } from '../../src/ui/ConsequenceCard';
 import { addTexts, t } from '../../src/i18n';
 import { handleRequest } from '../../src/worker/handle';
 import {
+  addToRoster,
+  levelUp,
   applyCommand,
   autoplay,
   beginBattle,
@@ -44,19 +46,17 @@ afterEach(() => {
   while (restore.length) restore.pop()!();
 });
 
-/** m1_8 is no node of the campaign yet: the first node plays its map for the test. */
-const M18 = () => {
-  const n = data.campaign.nodes[0]!;
-  if (n.map !== 'm1_8_paktwacht_halten') {
-    const was = n.map;
-    n.map = 'm1_8_paktwacht_halten';
-    restore.push(() => (n.map = was));
-  }
-  return n;
-};
+/** the finale node m1_8 (story 9.9): its map has Ulvric and Grosk in wave 2 (round 4) */
+const M18 = () => data.campaign.nodes.find((n) => n.id === 'm1_8')!;
 const withGrudge = (): CampaignState => {
   const c = fresh();
   c.lieutenants = { ulvric: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'kael', signatureDropped: false } };
+  return c;
+};
+/** the army of the finale (story 9.9): a company strong enough to still stand when wave 2 arrives in round 4 */
+const strong = (c: CampaignState): CampaignState => {
+  for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) if (!c.roster.some((r) => r.id === id)) addToRoster(data, c, id);
+  for (const u of c.roster) while (u.level < 9) levelUp(data, u, c.rng);
   return c;
 };
 const ids = (c: CampaignState) => c.roster.map((r) => r.id);
@@ -124,7 +124,7 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
   });
 
   it('the plan is plain JSON and replays give the same state, also through the worker protocol', () => {
-    const c = withGrudge();
+    const c = strong(withGrudge());
     const start = startBattle(data, createBattle(data, c, M18().id, ids(c))).state;
     expect(structuredClone(start)).toEqual(start);
     const played = autoplay(data, start, 400);
@@ -195,7 +195,7 @@ describe('met only when seen or fled (R2)', () => {
   });
 
   it('is kept up to date by the commands (a reinforcement included), so a replay gives the same list', () => {
-    const c = withGrudge();
+    const c = strong(withGrudge());
     const start = startBattle(data, createBattle(data, c, M18().id, ids(c))).state;
     const played = autoplay(data, start, 400);
     expect(played.state.ltSeen).toEqual(expect.arrayContaining(['hask', 'ulvric']));

@@ -3,7 +3,7 @@ import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { nodeLinks } from '../core/campaign/graph';
-import { pageTextKey, pageTitleKey } from '../core/campaign/chronicle';
+import { pageTextKey, pageTitleKey, sealedTextKey, sealedTitleKey } from '../core/campaign/chronicle';
 import { memorialTexts } from '../core/campaign/memorial';
 import { CORE_ROLES } from '../core/defs';
 import { groupAllowed } from '../core/rules/items';
@@ -430,6 +430,10 @@ export function validateContent(
   for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
   // chronicle pages: English texts, and no more pages than the season has (narrative: 12)
   for (const p of Object.values(data.chronicle)) need.push(pageTitleKey(p.id), pageTextKey(p.id));
+  for (const e of data.balance.chronicle.sealed) {
+    need.push(sealedTitleKey(e.flag), sealedTextKey(e.flag));
+    if (!data.flags[e.flag]) err('balance.yaml', `chronicle.sealed: undeclared flag ${e.flag} (acts/*/flags.yaml)`);
+  }
   if (Object.keys(data.chronicle).length > data.balance.chronicle.seasonPages)
     err('chronicle.yaml', `${Object.keys(data.chronicle).length} chronicle pages, the season has ${data.balance.chronicle.seasonPages}`);
   for (const k of need) for (const lang of ['de', 'en']) if (!locales[lang]?.[k]) err(`locales/${lang}`, `missing key ${k}`);
@@ -684,8 +688,10 @@ function validateTreasure(
       const c = data.chars[id];
       return !!c && (scout(c.class) || key(c.items));
     }) ||
-    map.objects.some((o) => o.type === 'village' && o.reward?.item && key([o.reward.item]));
-  if (!opener) err(f, 'treasure: no scout or key available (a player unit, a forced character or a village reward must bring one)');
+    map.objects.some((o) => o.type === 'village' && o.reward?.item && key([o.reward.item])) ||
+    // a foe on the map from the start who drops a key (story 9.8: looters carry the keys, so the hunt never depends on a scout)
+    map.units.some((u) => u.team === 'enemy' && (u.drops ?? []).some((i) => u.items[i] && key([u.items[i]!])));
+  if (!opener) err(f, 'treasure: no scout or key available (a player unit, a forced character, a village reward or a foe dropping one must bring it)');
 }
 
 /**

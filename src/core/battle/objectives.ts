@@ -213,8 +213,10 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
     if (!whenMatches(s, t, ctx)) continue;
     s.firedTriggers.push(t.id);
     for (const a of t.then) {
-      if (a.action === 'dialogue') events.push({ t: 'dialogue', id: a.id });
-      else if (a.action === 'set_flag') {
+      if (a.action === 'dialogue') {
+        const on = a.onBoard ? findUnit(s, a.onBoard) : undefined;
+        if (!a.onBoard || (on && on.pos && !on.gone)) events.push({ t: 'dialogue', id: a.id });
+      } else if (a.action === 'set_flag') {
         if (!s.flags.includes(a.flag)) s.flags.push(a.flag);
       } else if (a.action === 'set_ai') {
         for (const id of a.units) {

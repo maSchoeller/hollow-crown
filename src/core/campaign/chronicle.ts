@@ -3,6 +3,10 @@ import type { CampaignState } from '../state';
 import { consequenceLines, type ConsequenceLine } from './consequences';
 import { decisionTitleKey, findChoice, optionKey, summaryKey } from './scene';
 
+/** Text keys of a sealed entry (shown once its flag is set, story 9.8). */
+export const sealedTitleKey = (flag: string): string => `chronicle.sealed.${flag}.title`;
+export const sealedTextKey = (flag: string): string => `chronicle.sealed.${flag}.text`;
+
 /** Text keys of a chronicle page. */
 export const pageTitleKey = (id: string): string => `chronicle.${id}.title`;
 export const pageTextKey = (id: string): string => `chronicle.${id}.text`;
@@ -27,6 +31,8 @@ export interface ChronicleAct {
   decisions: ChronicleDecision[];
   /** ids of the pages found in this act, in the order they were found */
   pages: string[];
+  /** flags of the sealed entries shown in this act (set story flags from `balance.chronicle.sealed`); they are no pages and are not counted */
+  sealed: string[];
 }
 
 export interface ChronicleView {
@@ -45,7 +51,7 @@ export function chronicleView(data: GameData, c: CampaignState): ChronicleView {
   const byAct = new Map<number, ChronicleAct>();
   const actOf = (n: number) => {
     let a = byAct.get(n);
-    if (!a) byAct.set(n, (a = { act: n, decisions: [], pages: [] }));
+    if (!a) byAct.set(n, (a = { act: n, decisions: [], pages: [], sealed: [] }));
     return a;
   };
   actOf(data.campaign.act);
@@ -68,5 +74,7 @@ export function chronicleView(data: GameData, c: CampaignState): ChronicleView {
     actOf(page.act).pages.push(id);
     found += 1;
   }
+  // sealed entries come from story flags: derived, no saved state, never counted as pages
+  for (const e of data.balance.chronicle.sealed) if (c.flags[e.flag] !== undefined) actOf(e.act).sealed.push(e.flag);
   return { acts: [...byAct.values()].sort((a, b) => a.act - b.act), found, total: data.balance.chronicle.seasonPages };
 }

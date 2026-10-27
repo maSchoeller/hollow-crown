@@ -1,0 +1,50 @@
+# Mission 1-8, Szene vor der Karte (Story 9.9): Abend, Regen, die Burg ist Heimat. Morra hat das Versteck gefunden.
+# Genau eine Zeile hängt an E4 (Flag e04, Story 9.7): bei „shelter“ das Gerücht von den Flüchtlingen, bei „secret“ Ulvrics Wölfe. Ist e04 nicht gesetzt (Spielstand ohne Entscheidung),
+# läuft keine von beiden und die Szene bleibt stimmig. Keine Kartenvariante. Grosk wird nicht erwähnt (er kommt nur, wenn er nicht beigetreten ist).
+# Ersatzsprecher-Ketten enden bei Rhen (avatar), damit die Zeile immer läuft.
+id: scn.m1_8.intro
+background: paktwacht_heimat
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Abend über der Paktwacht. Regen rinnt von den Zinnen, die Fackeln im Hof zischen."
+  - id: l02
+    speaker: [paktwacht_steward]
+    fallback: skip
+    mood: neutral
+    text: "Die Tore sind verriegelt, die Pforten besetzt, Hauptmann. Die Burg ist bereit."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Dann sollen sie kommen. Das hier ist unser Haus."
+  - id: l04
+    mood: angry
+    text: "Ein Späher keucht durchs Tor: Morra hat das Versteck der Truppe gefunden und sammelt die Banden."
+  # E4: genau eine der beiden Zeilen läuft
+  - id: l05
+    speaker: [fenn, brenna, avatar]
+    mood: neutral
+    requires: [{ flag: { e04: shelter } }]
+    text: "Das mit den Flüchtlingen hat sich herumgesprochen. Wer Obdach gibt, den findet man."
+  - id: l06
+    speaker: [mira, fenn, avatar]
+    mood: neutral
+    requires: [{ flag: { e04: secret } }]
+    text: "Ulvrics Wölfe haben unsere Fährte gewittert. Die Burg blieb geheim, die Spur nicht."
+  - id: l07
+    mood: neutral
+    text: "Von Süden, von Westen, von Osten: Hask, Ulvric und Morra kommen mit allem, was sie haben."
+  # Grosk nur, wenn er bei E3 nicht gewechselt ist
+  - id: l07b
+    mood: neutral
+    requires: [{ not: { flag: joined_grosk } }]
+    text: "Auch Grosk ist dabei. Seine Hungernden haben sich Morra angeschlossen."
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Der Verwalter bleibt im Bergfried. Ihm darf nichts geschehen, solange die Nacht dauert."
+  - id: l09
+    speaker: [avatar]
+    mood: neutral
+    text: "Wir halten die Nacht. Gemeinsam."

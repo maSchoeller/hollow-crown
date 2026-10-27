@@ -98,7 +98,10 @@ for (let r = 0; r < runs; r++) {
     losses++;
     causes[u.id] = (causes[u.id] ?? 0) + 1;
   }
-  if (state.outcome !== 'victory') causes[`outcome:${state.outcome ?? 'timeout'}`] = (causes[`outcome:${state.outcome ?? 'timeout'}`] ?? 0) + 1;
+  if (state.outcome !== 'victory') {
+    const key = `outcome:${state.outcome ?? 'timeout'}${state.defeatReason ? `:${state.defeatReason}` : ''}`;
+    causes[key] = (causes[key] ?? 0) + 1;
+  }
   if (state.outcome === 'defeat') {
     const map = data.maps[state.mapId]!;
     for (const d of map.objectives.defeat) {

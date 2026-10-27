@@ -29,6 +29,14 @@ nodes:
   - { id: m1_3, expectedLevel: 3, map: m1_3_silberbach, titleKey: node.m1_3.title, pre: scn.m1_3.intro, post: scn.m1_3.outro, requires: [{ completed: m1_1 }], place: silberbach, merchantTier: 1 }
   # 1-4: Entscheidung E2 vor der Mission (scn.m1_4.intro, Flag e02): ausliefern → wr3/wr4/g3/g4 entfallen (`requires` der Karte) und Fenn geht; Ysolde tritt im Kampf bei (Käfig, Ansprechen); Dunns Tod und Rhens Geständnis in scn.m1_4.outro
   - { id: m1_4, expectedLevel: 4, map: m1_4_wolfslager, titleKey: node.m1_4.title, pre: scn.m1_4.intro, post: scn.m1_4.outro, requires: [{ completed: m1_1 }], place: wolfslager, merchantTier: 1 }
+  # Mission 1-6: Eroberung der Paktwacht, danach die Burg als Heimat und Entscheidung E4. expectedLevel/merchantTier: technische Startwerte, final per Simulation.
+  # Übergang: m1_5 kommt mit Story 9.6 dazu (Produktinhaber 2026-10-26: m1_6 verlangt m1_2–m1_5)
+  - { id: m1_6, expectedLevel: 7, map: m1_6_paktwacht, titleKey: node.m1_6.title, pre: scn.m1_6.intro, post: scn.m1_6.outro, requires: [{ completed: m1_2 }, { completed: m1_3 }, { completed: m1_4 }], place: paktwacht_ruine, merchantTier: 2, effects: [{ setHome: castle }] }
+  # Mission 1-7: Gewölbe unter der Paktwacht (treasure), danach das Finale (Story 9.9). expectedLevel/merchantTier laut Produktinhaber 2026-10-26; Wirkung bei Sieg: die versiegelte Chronik
+  - { id: m1_7, expectedLevel: 8, map: m1_7_gewoelbe, titleKey: node.m1_7.title, pre: scn.m1_7.intro, post: scn.m1_7.outro, requires: [{ completed: m1_6 }], place: paktwacht_gewoelbe, merchantTier: 2, effects: [{ setFlag: wardens_chronicle }] }
+  # Mission 1-8: das Finale des Akts (fixed: finale, öffnet nach allen übrigen Story-Knoten). Die Burg ist Heimat (place paktwacht_heimat). expectedLevel/merchantTier laut Produktinhaber 2026-10-26.
+  # Die zwei Glutfunken sind zwei Knoten-Wirkungen `item` (nur bei Sieg); die Szene post zeigt sie als Moment (Tafel glutfunken, Funken, Karte „2 × Glutfunke“).
+  - { id: m1_8, expectedLevel: 9, map: m1_8_paktwacht_halten, titleKey: node.m1_8.title, pre: scn.m1_8.intro, post: scn.m1_8.outro, requires: [{ completed: m1_7 }], fixed: finale, place: paktwacht_heimat, merchantTier: 2, effects: [{ item: { def: ember_spark } }, { item: { def: ember_spark } }] }
 merchant:
   - tier: 0
     items: [vulnerary, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, hunting_bow, travel_lute, leather_vest, leather_cap, wooden_shield, door_key]

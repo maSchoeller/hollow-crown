@@ -42,7 +42,7 @@ HIGH = '--quality' in sys.argv and sys.argv[sys.argv.index('--quality') + 1] == 
 LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # places of act 1: the camp is the app shell (pack core), the rest are dialogue backdrops and ship with act1 (Epic 7, initial-download budget);
 # paktwacht_heimat (autumn) belongs to act 2, the other moodboard places to later acts
-ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'paktwacht_ruine', 'paktwacht_gewoelbe', 'paktnacht_glutdom', 'silberbach', 'wolfslager', 'rhen_confession'}
+ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'wolfslager', 'rhen_confession', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom'}
 TITLE_PX = (1024, 1536)
 # the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
