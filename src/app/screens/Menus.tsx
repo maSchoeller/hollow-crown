@@ -13,6 +13,7 @@ import { settings, updateSettings, type Settings } from '../state/settings';
 import { Logo } from '../../ui/Logo';
 import '../../ui/title.css';
 import '../../ui/options.css';
+import { LicensesLink } from './Licenses';
 
 /** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
@@ -151,6 +152,7 @@ export function Options({ back }: { back: Screen }) {
           {slider(t('ui.opt.sfx'), 'sfx')}
           {seg(t('ui.opt.keepAwake'), 'keepAwake', ON_OFF())}
         </Piece>
+        <LicensesLink from={{ name: 'options', back }} />
       </div>
     </div>
   );

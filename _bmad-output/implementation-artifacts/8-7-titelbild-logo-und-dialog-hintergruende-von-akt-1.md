@@ -82,7 +82,7 @@ Claude Sonnet 5.5
 - **Titelbild:** `art/title/title_act1.png` → `public/assets/title/title_act1.webp` (Paket core, 146 KB). Das Bild sitzt zwischen Logo und Menü, auf die Breite angepasst; darüber Himmelsfarbe, darunter Grasfarbe (aus den Randzeilen des Bildes), weiche Ränder. Breite Fenster: Bild mittig mit Seitenverlauf.
 - **Hintergründe:** sieben Orte aus `art/mockups/locations-s1/` bauen nach `public/assets/locations/<id>.webp` (`lager_unterwegs` in core, Rest in act1). Szenen, `campaign.yaml`, Dialogue und Sieg-/Niederlage-Hintergrund zeigen Orte; die Validierung prüft Szenen-`background` gegen die Moodboard-Dateien. PoC-Hintergründe `art/backgrounds/` gelöscht, Prompt-Dateien `bg_*.md` als abgelöst markiert, Unterstützung für das Präfix `backgrounds/` in `plan.ts` entfernt.
 - **Prompt-Protokolle** (vom Produktinhaber): `art/prompts/title_art.md`, `art/prompts/backgrounds_act1.md`.
-- **Credits:** Es gibt keinen Credits-Bildschirm; der OFL-Hinweis steht nur in `concept/23-art-direction/licensing.md` (A12) und bleibt dort zu ergänzen, sobald ein Credits-Bildschirm entsteht.
+- **Credits:** Seit 2026-10-27 (Entscheidung des Produktinhabers) gibt es in den Optionen die Seite „Lizenzen“ (`src/app/screens/Licenses.tsx`): OFL-1.1-Hinweis und Volltext zu Fraunces, Barlow und Barlow Condensed (aus den `@fontsource`-Paketen, statisch unter `public/licenses/`, im Precache), Bibliotheken mit Lizenz, KI-Kennzeichnung (Licensing A12 erledigt). AC 3 damit erfüllt.
 - Nicht Teil: Audio, Effekte (8.6). Kein Commit.
 
 ### File List
