@@ -320,7 +320,7 @@ describe('goal line of a defence', () => {
   it('names the unit to protect from the map, not a fixed one (the steward of 1-8, Liora in 1-3)', () => {
     addTexts('de', locales.de ?? {});
     const steward = data.maps['m1_8_paktwacht_halten']!;
-    expect(goalLine(steward.objectives.victory, steward)).toBe('Beschütze Verwalter für 10 Runden.');
+    expect(goalLine(steward.objectives.victory, steward)).toBe('Verwalter schützen · 10 Runden');
     const liora = data.maps['ch02_silverbrook']!;
     expect(goalLine(liora.objectives.victory, liora)).toContain('Liora');
   });

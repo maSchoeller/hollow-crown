@@ -1,6 +1,6 @@
 # Mission 1-7 – Unter der Paktwacht (Story 9.8). Nach einem Beben öffnet sich das Gewölbe unter der Burg: Gräber junger Könige, die versiegelte Chronik der
 # Wächter. Plünderer dringen durch einen eingestürzten Gang ein. Ziel: treasure (fünf Truhen vor dem Einsturz in Runde 14). Startwerte [C]. Kein Leutnant.
-# Tageszeit: innen / Nacht. Wetter: Staub, Fackeln (art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: paktwacht_gewoelbe.
+# Tageszeit: innen / Nacht. Wetter: Staub, Fackeln (art-direction §2.5, gesetzt über timeOfDay/weather). Geplantes Ortsbild: paktwacht_gewoelbe.
 # Aufbau (Nord oben): Treppe (4–9,1) und Eingangshalle -> Westkammer (offen) -> Mittelgang (7–8 ... 6–7,5–9) -> Ostkammer hinter Tür (8,7)
 # -> Gruftsaal hinter der Tür (7,10) mit der versiegelten Chronik im Südnischen-Raum. Eingestürzter Gang = Ruinenfelder (13,2) und (13,3).
 # Grabreliefs junger Könige: Terrain `relief` (Requisite shrine, heilt nicht). Zwei davon lösen je eine einmalige Szene aus (Beat 6): (2,6) in der Westkammer, (2,12) im Gruftsaal.
@@ -52,9 +52,9 @@ objects:
   # Ein Schlüssel, der in eine volle Tasche (balance.yaml bag.size) fällt, wandert in den Konvoi und ist im Kampf nicht mehr erreichbar.
   - { id: door_east, type: door, at: [8, 7] }
   - { id: door_crypt, type: door, at: [7, 10] }
-  - { id: c_west, type: chest, at: [3, 8], contents: { gold: 400, item: { def: door_key } } }
-  - { id: c_east, type: chest, at: [11, 8], contents: { gold: 600, item: { def: remedy_salve } } }
-  - { id: c_crypt_w, type: chest, at: [2, 13], contents: { gold: 800 } }
+  - { id: c_west, type: chest, at: [3, 8], contents: { gold: 100, item: { def: door_key } } }
+  - { id: c_east, type: chest, at: [11, 8], contents: { gold: 150, item: { def: remedy_salve } } }
+  - { id: c_crypt_w, type: chest, at: [2, 13], contents: { gold: 300 } }
   - { id: c_crypt_e, type: chest, at: [11, 13], contents: { item: { def: power_ring } } }
   # die versiegelte Chronik ist kein Gegenstand: die Truhe enthält nichts; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg (campaign.yaml)
   - { id: c_chronicle, type: chest, at: [6, 14] }
@@ -146,7 +146,7 @@ triggers:
     then:
       - { action: dialogue, id: scn.m1_7.chronicle }
 # Szenen (Knoten m1_7): scn.m1_7.intro vorher; scn.m1_7.outro nachher (Heimkehr, Chronik ins Burgarchiv).
-goldReward: 1400   # [C]
+goldReward: 850   # [C] Truhengold (550) zählt als Missionsgold: Summe 1 400 liegt im Korridor Akt 1 (800–1 500), Nebenziel 400 = 47 % von goldReward
 music: battle_a
 devNote: >
   14 × 16, Nebel an, Ziel treasure (5 Truhen, 14 Runden). Treppe oben (Start), Halle, Westkammer, Mittelgang, Ostkammer hinter Tür, Gruftsaal hinter Tür mit der Chronik.

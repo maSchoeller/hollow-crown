@@ -1,6 +1,6 @@
 # Mission 1-6 – Die Paktwacht (Story 9.7). Burgruine der Paktwächter auf einem Hügel im Grenzland, Spätsommer. Ziel: Kael erobert den Thron
 # im Thronsaal (seize). Leutnants Hask (hält den inneren Hof) und Ulvric (seine Reiter flankieren am Hang). Layout-Platzhalter, Startwerte [C].
-# Tageszeit: Morgen. Wetter: klar (art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: paktwacht_ruine (Ruine, 1-6/1-8).
+# Tageszeit: Morgen. Wetter: klar (art-direction §2.5, gesetzt über timeOfDay/weather). Geplantes Ortsbild: paktwacht_ruine (Ruine, 1-6/1-8).
 # Aufbau (Nord oben): Thronsaal (Thron 7–8,2) -> Burgtor (7–8,4) -> innerer Hof mit zwei Wachposten (Fort) -> Durchbruch (6–9,8) -> äußerer Hof
 # mit Mauerbrüchen (Ruinen bei 4,13 und 11,13) -> Tor (7–8,13) -> Hang mit Serpentinenstraße -> Fuß des Hangs im Süden (Aufstellung).
 # Rollen: Engstellen (Tore, Durchbruch) für Vorkämpfer; Gras am Hang brennt (Elementaristen); Hang und Wald für Ulvrics Reiter.

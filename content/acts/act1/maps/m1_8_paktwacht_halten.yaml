@@ -1,7 +1,7 @@
 # Mission 1-8 – Die Heimat halten (Story 9.9, Akt-1-Finale). Dieselbe Burg wie m1_6_paktwacht, jetzt von innen gesehen: Mauern ausgebessert, Brüche
 # geschlossen, Haupttor im Süden, zwei Seitenpforten (West/Ost) im äußeren Hof. Die Truppe verteidigt den Verwalter im Bergfried 10 Runden lang
 # gegen drei Wellen aus drei Richtungen (Süden, dann West und Ost, dann alle zugleich). Startwerte [C].
-# Tageszeit: Abend, dann Nacht. Wetter: Regen (art-direction §2.5, Feld folgt mit Story 8.6). Ortsbild des Knotens: paktwacht_heimat (die Burg ist Heimat).
+# Tageszeit: Abend, dann Nacht. Wetter: Regen (art-direction §2.5, gesetzt über timeOfDay/weather). Ortsbild des Knotens: paktwacht_heimat (die Burg ist Heimat).
 # Nach dem Sieg: 2 Glutfunken als Knoten-Wirkung (campaign.yaml, m1_8), inszeniert in scn.m1_8.outro.
 # Rollen: Tore und Seitenpforten als Engstellen für Vorkämpfer (halten Nachbarfelder), Fort für Schützen.
 # Tor (Produktinhaber 2026-10-26): Torfelder bleiben durchlässige Torfelder, es gibt keine Tor-TP und kein Zerstören.
@@ -109,7 +109,7 @@ objectives:
     - { type: unit_dies, unit: steward }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # OFFEN (Produktinhaber, Story 9.9): zweites Nebenziel – kein vorhandener Typ passt (kill_with gilt nur für Bosse; Leutnant-Ansprechen ist Story 2.7)
+    # Ein Nebenziel genügt (Produktinhaber 2026-10-27).
 triggers:
   # Runde 10, Beginn: Morra ruft den Rückzug (Blase über ihr, nur solange sie noch auf der Karte steht) und weicht mit dem Profil flee zum Südrand.
   # Erreicht sie ihn, gilt sie als geschlagen (Groll, Kopfgeld). Fällt sie vorher auf 0 TP, flieht sie wie jeder Leutnant.

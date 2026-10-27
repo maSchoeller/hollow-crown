@@ -10,6 +10,7 @@ import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, dist, inBounds, neighbors, posKey } from '../util';
 import { attackPlans } from './ai';
+import { wardLine } from './wardLine';
 
 function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
   const m = new Map<string, number>();
@@ -69,6 +70,45 @@ function approach(
   return best;
 }
 
+/**
+ * defend (story 9.9 follow-up): the line the company holds in front of the ward. The tankiest non-lord units (as many as the line has tiles)
+ * take one tile each, the nearest first; everybody else waits behind the line, close to it. Null while there is no narrow line (an open
+ * village) or a foe already stands on or behind it: then the company crowds and meets the foes at the ward as before.
+ */
+function holdLine(data: GameData, s: BattleState, ward: BattleUnit | undefined, enemies: BattleUnit[]): { posts: Map<string, Pos>; cut: Pos[]; inside: Set<string> } | null {
+  if (!ward?.pos) return null;
+  const line = wardLine(data, s, ward.pos, enemies.map((o) => o.pos!));
+  if (!line) return null;
+  const cutKeys = new Set(line.cut.map(posKey));
+  if (enemies.some((o) => cutKeys.has(posKey(o.pos!)) || line.inside.has(posKey(o.pos!)))) return null;
+  const toughness = (u: BattleUnit) => {
+    const st = computeStats(data, u, { state: s });
+    return st.maxHp + st.stats.def + st.stats.res;
+  };
+  const company = s.units
+    .filter((u) => u.team === 'player' && active(u) && u.pos)
+    .map((u) => ({ u, vip: u.flags.includes('mustSurvive'), t: toughness(u) }))
+    .sort((a, b) => Number(a.vip) - Number(b.vip) || b.t - a.t || (a.u.uid < b.u.uid ? -1 : 1));
+  const holders = company.slice(0, line.cut.length).map((c) => c.u);
+  const walk = line.cut.map((tile) => walkDistances(data, s, [tile]));
+  const posts = new Map<string, Pos>();
+  const freeTiles = new Set(line.cut.map((_, i) => i));
+  while (freeTiles.size && holders.length > posts.size) {
+    let best: { uid: string; i: number; d: number } | null = null;
+    for (const h of holders) {
+      if (posts.has(h.uid)) continue;
+      for (const i of freeTiles) {
+        const d = walk[i]!.get(posKey(h.pos!)) ?? 999;
+        if (!best || d < best.d) best = { uid: h.uid, i, d };
+      }
+    }
+    if (!best) break;
+    posts.set(best.uid, line.cut[best.i]!);
+    freeTiles.delete(best.i);
+  }
+  return { posts, cut: line.cut, inside: line.inside };
+}
+
 /** A visit or talk this unit can do this turn without stepping into more than `maxDanger` threats. `chests`: the chests of a treasure hunt it may open. */
 function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], danger: Map<string, number>, maxDanger: number, chests?: Set<string>): Command | null {
   for (const p of dests) {
@@ -110,6 +150,8 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       ? new Set([...v.chests, ...s.objects.filter((o) => o.type === 'door').map((o) => o.id)].filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed')))
       : undefined;
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
+  const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
+  const line = holdLine(data, s, defended, enemies);
   for (const u of s.units) {
     if (u.team !== 'player' || !active(u) || u.acted || !u.pos) continue;
     const reach = reachable(data, s, u);
@@ -131,7 +173,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
         return { type: 'act', unit: u.uid, to: onGoal, action };
       }
     }
-    const job = errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
+    const job = line ? null : errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
     if (job) return job;
     const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
     if (hpPct < 50 && potion) {
@@ -139,13 +181,17 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       return { type: 'act', unit: u.uid, to: safe, action: { kind: 'item', item: potion.uid } };
     }
     const spare = new Set(recruitable(u).map(posKey));
+    const post = line?.posts.get(u.uid);
+    // holding the line: the holders fight only from their tile, the rest from behind the line
+    const placed = (to: Pos) => (!line ? true : post ? posKey(to) === posKey(post) : line.inside.has(posKey(to)));
     const plans = attackPlans(data, s, u, dests)
+      .filter((p) => placed(p.to))
       .filter((p) => p.action.kind !== 'attack' || !spare.has(posKey(s.units.find((o) => o.uid === (p.action as { target: string }).target)!.pos!)))
       .map((p) => ({ ...p, score: p.score - (danger.get(posKey(p.to)) ?? 0) * (vip || hpPct < 60 ? 12 : 4) }))
       .sort((a, b) => b.score - a.score);
     const plan = plans.find((p) => p.score > 0);
     if (plan && !(isGoalUnit && plan.score < 30)) return { type: 'act', unit: u.uid, to: plan.to, action: plan.action };
-    const ward = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
+    const ward = defended;
     // the unit closest to an unvisited village heads there; a unit that can recruit seeks its target
     const nearestTo = (p: Pos, needsRoom = false) =>
       s.units
@@ -161,6 +207,15 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const keys = openable && openable.size && (isScout(data, s, u) || hasKey(data, u)) ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
     const nearWard = guarding ? [...enemies].sort((a, b) => dist(a.pos!, ward!.pos!) - dist(b.pos!, ward!.pos!)).map((o) => o.pos!) : [];
     const targets = isGoalUnit ? goal! : errands.length ? errands : keys.length ? keys : nearWard.length ? [ward!.pos!] : ward ? [ward.pos!] : enemies.map((o) => o.pos!);
+    if (line) {
+      // the line: a holder walks to its tile, everybody else stands as close behind the line as it can (a tile of the line is for its holder)
+      const reserved = new Set(line.cut.map(posKey));
+      const free = dests.filter((p) => !reserved.has(posKey(p)) || (post && posKey(p) === posKey(post)));
+      const behind = free.filter((p) => line.inside.has(posKey(p)));
+      const aim = post ? [post] : line.cut;
+      const to = approach(s, u, post ? free : behind.length ? behind : free, aim, danger, 99, walkDistances(data, s, aim));
+      return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
+    }
     if (npc && v.type === 'escort') {
       // escort: walk to the exit but end the turn within the radius the NPC follows in; too far off, walk back to it
       const radius = data.balance.ai.followRadius;
