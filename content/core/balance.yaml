@@ -226,6 +226,7 @@ ai:
   wardGuardRadius: 8     # Autoplay (Simulation): bei defend trifft die Truppe Gegner innerhalb dieses Abstands vom Schutzbefohlenen, statt Besuche zu erledigen
   wardLineMax: 4         # Autoplay (Simulation): bei defend hält die Truppe eine Linie aus höchstens so vielen Feldern (kleinster Schnitt zwischen Gegnern und Schutzbefohlenem, ohne dessen Nachbarfelder); ist der Schnitt breiter (offenes Dorf), sammelt sie sich wie bisher um ihn
   followDanger: 100
+  rescueMaxDanger: 2   # Autoplay (Simulation): so viele Gegner dürfen das Feld bedrohen, von dem aus geborgen wird (Einheiten mit mustSurvive: 0)
 # Leutnants (Story 3.4): Stufe = kaufmännisch gerundeter Durchschnitt der effektiven Stufen der armySize stärksten Einheiten der Truppe + Groll;
 # Waffe(n) der Karteneinheit je Groll eine Stufe höher entlang tierUp (gleiche Waffengruppe, Eintrag fehlt = Deckel); die Signaturwaffe trägt er nie.
 # Leutnants (Story 3.5): Kopfgeld je Vertreibung = goldPerLevel x (Groll vor dieser Vertreibung + 1) Gold + min..max Material des Akts;

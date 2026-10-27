@@ -2,7 +2,7 @@
 # Plünderer haben sich im Turm eingenistet. Startwerte [C].
 # Tageszeit: Morgen. Wetter: Nebel (Wetternebel, kein Sichtnebel: fog: false; art-direction §2.5, Felder timeOfDay/weather).
 # Aufbau (Nord oben): Turm mit Truhen (5–8,1–2), Turmtor (6–7,3), Vorplatz mit Mauerresten, Moorweg nach Süden (Aufstellung).
-# Ziel: seize (Kael) auf dem Turmtor (Produktinhaber 2026-10-26). Der Glutfunke kommt mit dem Sieg (Knotenwirkung n2 in campaign.yaml).
+# Ziel: seize (Kael) im Turminneren (6–7,1), hinter den Wachen (Produktinhaber 2026-10-27; vorher Turmtor, in 2 Runden ohne Kampf erreichbar). Der Glutfunke kommt mit dem Sieg (Knotenwirkung n2 in campaign.yaml).
 # Chronik-Truhe (8,1) gibt die Seite a1_watchtower, Relikt-Truhe (5,1) den Schild der Paktwächter (Stufe 1); wer sie vor dem Sieg nicht öffnet, verpasst beides für diese Kampagne.
 # Rollen: Nebelwetter (Sicht und Späher), Mauerreste als Deckung, Turmtor als Engstelle für Vorkämpfer.
 id: n2_wachturm
@@ -19,7 +19,7 @@ legend:
   "^": mountain
   "#": wall          # Turmmauer
   "R": ruins         # Mauerreste
-  "G": gate          # Turmtor (Ziel: seize)
+  "G": gate          # Turmtor (Engstelle, kein Ziel)
 #          x: 0123456789ABCD
 terrain: |
   ^^^^^^^^^^^^^^
@@ -45,7 +45,7 @@ initialEffects: []
 # Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
 #   [6,4] Grund: der Vorplatz des Turms – wer den Turm besetzt, sieht den ganzen Moorweg.
 #   [6,8] Grund: der Moorweg im Nebel – ein Hinterhalt zwischen den Heidebüschen.
-#   [6,1] Grund: das Innere des Turms – Ort der Chronik-Seite.
+#   [6,1] Grund: das Innere des Turms – Ort der Chronik-Seite und des Eroberungsfelds (6–7,1).
 deploy:
   max: 5
   forced: [avatar, kael]
@@ -64,7 +64,7 @@ units:
 pairs: []
 reinforcements: []
 objectives:
-  victory: { type: seize, area: { rect: [6, 3, 7, 3] } }
+  victory: { type: seize, area: { rect: [6, 1, 7, 1] } }   # Turminneres, hinter e1/e2 (6–7,2); das Tor (6–7,3) bleibt Engstelle
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
@@ -76,4 +76,4 @@ triggers: []
 goldReward: 600   # [C] Nebenquest
 music: battle_a
 devNote: >
-  14 × 14, Felssporn im Hochmoor, Nebelwetter. Turm im Norden (Tor 6–7,3, zwei Truhen), Moorweg nach Süden. Leicht: 5 Plünderer; Normal: 7; Schwer: 9.
+  14 × 14, Felssporn im Hochmoor, Nebelwetter. Turm im Norden (Tor 6–7,3 als Engstelle, Eroberungsfeld im Turminneren 6–7,1 hinter den Wachen e1/e2, zwei Truhen), Moorweg nach Süden. Leicht: 5 Plünderer; Normal: 7; Schwer: 9.

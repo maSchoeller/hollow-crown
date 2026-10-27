@@ -5,7 +5,7 @@ import { sideObjectiveDone, sideSubject } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
 import { deathless } from '../rules/effects';
-import { allItems, itemDef, maxCharges } from '../rules/items';
+import { allItems, itemDef, maxCharges, stackKeys } from '../rules/items';
 import { expPercent, grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
@@ -93,7 +93,9 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     priceMods: old.priceMods ?? [],
     villageAid: (c as Partial<CampaignState>).villageAid ?? null,
     home: c.home ?? { kind: 'camp', rooms: {} },
-    tavern: c.tavern ?? [],
+    // keys stack into one bag entry (key ring, decision 2026-10-27); older saves held one entry per key
+    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
+    tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
     quests: old.quests ?? [],
@@ -434,10 +436,13 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
     const kind = pick(c.rng, classes);
     const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
     const cls = data.classes[kind.class]!;
+    // two offers (or an offer and a hired mercenary) never share a name while the list has names left
+    const taken = new Set([...c.tavern, ...c.roster].map((u) => u.nameKey));
+    const freeNames = tav.names.filter((n) => !taken.has(n));
     const zero = { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 };
     const rec: UnitRecord = {
       id: `merc${c.nextUid++}`,
-      nameKey: pick(c.rng, tav.names),
+      nameKey: pick(c.rng, freeNames.length ? freeNames : tav.names),
       classId: kind.class,
       level,
       exp: 0,

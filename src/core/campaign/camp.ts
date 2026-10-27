@@ -1,5 +1,5 @@
 import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
-import { canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
+import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { levelCap, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
@@ -274,7 +274,7 @@ export function equipCandidates(data: GameData, c: CampaignState, unit: UnitReco
     const d = itemDef(data, inst);
     if (slot === 'bag') {
       if (where === 'bag' || d.tags?.includes('convoyOnly')) return;
-      out.push({ inst, where, error: unit.bag.length >= data.balance.bag.size ? 'bag_full' : null });
+      out.push({ inst, where, error: bagIsFull(data, unit.bag, inst) ? 'bag_full' : null });
       return;
     }
     if (d.tags?.includes('convoyOnly') || !slotFits(d, slot)) return;

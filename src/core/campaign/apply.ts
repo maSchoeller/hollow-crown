@@ -4,7 +4,7 @@ import type { Effect, GameData } from '../defs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { allItems, canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
+import { addToBag, allItems, bagIsFull, canEquip, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
 import { loadoutSlots, promote, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import type { CampaignState } from '../state';
@@ -60,7 +60,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!u) return 'unknown_unit';
       const loc = locateItem(c, cmd.uid);
       if (!loc) return 'unknown_item';
-      if (cmd.slot === 'bag') return u.bag.length >= data.balance.bag.size && loc.owner !== u ? 'bag_full' : null;
+      if (cmd.slot === 'bag') return bagIsFull(data, u.bag, loc.inst) && loc.owner !== u ? 'bag_full' : null;
       const err = canEquip(data, u, loc.inst, cmd.slot, activeSkillIds(data, u));
       return err && err !== 'two_handed' ? 'cannot_equip' : null;
     }
@@ -264,7 +264,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       // moves an item (from convoy or any unit) into a unit's slot; the displaced item goes to the convoy
       const u = c.roster.find((r) => r.id === cmd.unit)!;
       const inst = takeItem(c, cmd.uid)!;
-      if (cmd.slot === 'bag') u.bag.push(inst);
+      if (cmd.slot === 'bag') addToBag(data, u.bag, inst);
       else {
         const old = u.equip[cmd.slot];
         u.equip[cmd.slot] = inst;

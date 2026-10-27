@@ -86,7 +86,7 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3}'],
+          globPatterns: ['**/*.{js,css,html,png,webp,svg,woff2,json,webm,m4a,mp3,txt}'],
           dontCacheBustURLsMatching: CONTENT_HASHED,
           runtimeCaching: [
             {

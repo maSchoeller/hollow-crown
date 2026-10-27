@@ -1,5 +1,5 @@
 import { STAT_KEYS, type CharDef, type EquipSlot, type GameData, type ItemRef, type MapUnitDef, type Pos, type Stats } from '../defs';
-import { canEquip, itemDef } from '../rules/items';
+import { addToBag, bagIsFull, canEquip, itemDef } from '../rules/items';
 import { computeStats } from '../rules/stats';
 import type { AvatarSettings, BattleUnit, ItemInstance, LieutenantPlan, UnitRecord } from '../state';
 import { clone } from '../util';
@@ -29,14 +29,13 @@ const zeroStats = (): Stats => ({ hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0,
 /** Puts items into the best fitting slots; the rest goes into the bag (overflow is returned). */
 export function autoEquip(data: GameData, u: UnitRecord, items: ItemInstance[]): ItemInstance[] {
   const overflow: ItemInstance[] = [];
-  const bagSize = data.balance.bag.size;
   for (const inst of items) {
     const d = itemDef(data, inst);
     const slots: EquipSlot[] =
       d.slot === 'accessory' ? ['accessory1', 'accessory2'] : d.slot === 'bag' ? [] : [d.slot as EquipSlot];
     const free = slots.find((sl) => !u.equip[sl] && canEquip(data, u, inst, sl) === null);
     if (free) u.equip[free] = inst;
-    else if (u.bag.length < bagSize && !d.tags?.includes('convoyOnly')) u.bag.push(inst);
+    else if (!bagIsFull(data, u.bag, inst) && !d.tags?.includes('convoyOnly')) addToBag(data, u.bag, inst);
     else overflow.push(inst);
   }
   return overflow;

@@ -202,6 +202,18 @@ describe('smith, tavern and army limits (story 6.4)', () => {
     }
   });
 
+  it('refreshTavern: no two offers and no offer and hired mercenary share a name (acceptance 2026-10-27)', () => {
+    const c = fresh();
+    for (let i = 0; i < 30; i++) {
+      refreshTavern(data, c);
+      const names = c.tavern.map((u) => u.nameKey);
+      expect(new Set(names).size).toBe(names.length);
+      if (i === 10) c.roster.push({ ...c.tavern[0]!, id: 'merc_hired' });
+      const hired = c.roster.filter((u) => u.id === 'merc_hired').map((u) => u.nameKey);
+      expect(names.filter((n) => hired.includes(n))).toEqual(i === 10 ? [hired[0]] : []);
+    }
+  });
+
   it('hire: pays 600 + 150 × level, joins the company, errors and determinism', () => {
     const c = fresh();
     refreshTavern(data, c);

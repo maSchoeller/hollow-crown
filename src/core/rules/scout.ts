@@ -12,7 +12,7 @@ import type { GameData, Pos } from '../defs';
 import { activeSkillIds } from './skills';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, isHostile, neighbors, samePos, unitAt } from '../util';
-import { isRune, itemDef } from './items';
+import { bagIsFull, isRune, itemDef } from './items';
 import { classActionId } from './roles';
 
 /** The unit is a scout of the player's side: it has Öffnen and Stehlen. */
@@ -29,7 +29,7 @@ export function openTargets(data: GameData, s: BattleState, u: BattleUnit, pos: 
 
 /** Whether an item taken or found by `u` ends up in the convoy: its bag is full, the item is `convoyOnly` or a rune. */
 export function goesToConvoy(data: GameData, u: Pick<BattleUnit, 'bag'>, item: ItemInstance): boolean {
-  return u.bag.length >= data.balance.bag.size || !!itemDef(data, item).tags?.includes('convoyOnly') || isRune(data, item);
+  return bagIsFull(data, u.bag, item) || !!itemDef(data, item).tags?.includes('convoyOnly') || isRune(data, item);
 }
 
 /** The thief has a skill that lets Stehlen take equipped items (the Elster, `stealEquipped`). */
@@ -94,6 +94,6 @@ export function stealPreview(data: GameData, s: BattleState, u: BattleUnit, targ
     target,
     items: stealableItems(data, o, u).map((item) => ({ item, toConvoy: goesToConvoy(data, u, item), equipped: !o.bag.some((b) => b.uid === item.uid) })),
     takesEquipped: stealsEquipped(data, u),
-    bagFull: u.bag.length >= data.balance.bag.size,
+    bagFull: bagIsFull(data, u.bag),
   };
 }

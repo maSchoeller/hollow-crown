@@ -48,7 +48,7 @@ export interface MissionSim {
   reached: number;
   /** won at the first attempt */
   wins: number;
-  /** player units downed or dead at the first attempt (corridor: per run) */
+  /** falls to 0 HP of player units at the first attempt, rescued or not (corridor: per run) */
   downs: number;
   /** gold of the won attempt: everything, and the part from side objectives */
   gold: number;
@@ -212,7 +212,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         const { state } = autoplay(data, beginBattle(data, from, id, from.roster.map((u) => u.id)).state);
         if (attempt === 0) {
           if (state.outcome === 'victory') m.wins++;
-          m.downs += state.units.filter((u) => u.team === 'player' && (u.downed || u.gone === 'dead')).length;
+          m.downs += state.stats.downs; // every fall to 0 HP, also the ones rescued later
         }
         if (state.outcome === 'victory') {
           won = finishBattle(data, from, state);
