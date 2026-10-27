@@ -1,0 +1,6 @@
+id: scn.m1_3.house_mill
+background: silberbach
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Müllerin reicht euch einen Heiltrank. „Für die Heilerin vom Schrein. Sie hat meinen Jungen gepflegt.“"

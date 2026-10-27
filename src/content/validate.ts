@@ -468,7 +468,7 @@ function validateMechanics(data: GameData, err: (f: string, m: string) => void):
   // the shop sells the tiers of completed nodes: those that can be done while a magic-less mission still lies ahead
   const shopTier = Math.max(-1, ...early.filter((n) => n.kind === 'story' && minStoryCount(data, n) + 1 < from).map((n) => n.merchantTier));
   for (const m of camp.merchant)
-    if (m.tier <= shopTier)
+    if (m.tier <= shopTier || (m.storyCount !== undefined && m.storyCount < from))
       for (const id of m.items) if (data.items[id]?.damageType === 'magical') err('campaign.yaml', `merchant tier ${m.tier}: tome ${id} before magic (${from} story missions)`);
 }
 

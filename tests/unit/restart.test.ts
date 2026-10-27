@@ -103,7 +103,7 @@ describe('restartTurn / restartMission (story 1.5)', () => {
 });
 
 describe('dialogue effects queued in a battle and restarts', () => {
-  const q = (at: number) => ({ at, effects: [{ setFlag: 'ch02_hold' }] });
+  const q = (at: number) => ({ at, effects: [{ setFlag: 'avatar_bold' }] });
   it('a restart keeps the effects fired within the kept part of the log and drops the rest', () => {
     const queue = [q(0), q(3), q(5), q(8)];
     expect(keepQueued(queue, 5).map((x) => x.at)).toEqual([0, 3, 5]);
@@ -134,8 +134,8 @@ describe('manual slots and import (story 1.5)', () => {
   });
 
   it('a saved battle carries its queued dialogue effects; older saves have none', () => {
-    const withQueue = { ...format2, payload: { ...format2.payload, battle: { ...format2.payload.battle!, effects: [{ at: 2, effects: [{ setFlag: 'ch02_hold' }] }] } } };
-    expect(importSave(exportSave(withQueue)).payload.battle!.effects).toEqual([{ at: 2, effects: [{ setFlag: 'ch02_hold' }] }]);
+    const withQueue = { ...format2, payload: { ...format2.payload, battle: { ...format2.payload.battle!, effects: [{ at: 2, effects: [{ setFlag: 'avatar_bold' }] }] } } };
+    expect(importSave(exportSave(withQueue)).payload.battle!.effects).toEqual([{ at: 2, effects: [{ setFlag: 'avatar_bold' }] }]);
     expect(importSave(exportSave(format2)).payload.battle!.effects).toBeUndefined();
     const broken = { ...format2, payload: { ...format2.payload, battle: { ...format2.payload.battle!, effects: [{ at: -1, effects: [] }] } } };
     expect(() => importSave(exportSave(broken as unknown as SaveRecord))).toThrow('content');
