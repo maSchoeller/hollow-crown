@@ -894,12 +894,13 @@ export function Battle() {
   const victory = map.objectives.victory;
   // how many foes are left is not known under fog
   const enemiesLeft = full.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
+  // defend: the goal line already names the rounds ("Verwalter schützen · 10 Runden"), the round pill above counts them; a second count would not fit at 375 px
   const goalProgress =
     victory.type === 'rout'
       ? fogged
         ? ''
         : t('ui.hud.left', { n: enemiesLeft })
-      : victory.type === 'defend' || victory.type === 'survive'
+      : victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
   // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)

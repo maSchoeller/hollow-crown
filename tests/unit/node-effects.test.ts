@@ -64,13 +64,13 @@ describe('node effects', () => {
     expect(campaignSchema.safeParse({ ...raw, nodes: [{ ...node, effects: [{ nonsense: 1 }] }] }).success).toBe(false);
   });
 
-  it('content:check rejects unsupported and unknown node effects like scene effects', () => {
+  it('content:check rejects unknown node effects like scene effects', () => {
     const problems = (effects: unknown[]) => {
       const d = structuredClone(data);
       d.campaign.nodes.find((n) => n.id === 'm1_1')!.effects = effects as never;
       return validateContent(d, locales).map((i) => i.message);
     };
-    expect(problems([{ priceMod: { delta: 1 } }])).toContainEqual(expect.stringContaining('m1_1 effects: effect priceMod is not yet supported'));
+    expect(problems([{ priceMod: { pct: -10, act: 2 } }, { villageAid: { act: 2 } }])).toEqual([]);
     expect(problems([{ recruit: 'nobody' }])).toContainEqual(expect.stringContaining('m1_1 effects: unknown companion nobody'));
     expect(problems([{ setFlag: 'no_such_flag' }]).length).toBeGreaterThan(0);
     expect(problems([{ recruit: 'fenn' }])).toEqual([]);

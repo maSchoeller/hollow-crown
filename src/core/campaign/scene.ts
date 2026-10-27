@@ -24,7 +24,7 @@ export interface ResolvedOption {
 
 /** A line the player gets to see, or the choice that follows. `uid` is unique within the scene. */
 export type ResolvedLine =
-  | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean; panel?: string }
+  | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean; panel?: string; moment?: 'reward' }
   | { kind: 'choice'; uid: string; line: string; options: ResolvedOption[]; decision: boolean; titleKey?: string };
 
 /** Whether a companion can speak: avatar and kael always, everyone else unless fallen or gone (an NPC who never joined can). */
@@ -59,11 +59,11 @@ export function pickSpeaker(ctx: ConditionContext, chain: readonly string[]): st
 
 function resolveSpeech(scene: SceneDef, l: SceneSpeech, ctx: ConditionContext, out: ResolvedLine[]): void {
   if (!l.speaker) {
-    out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}) });
+    out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}), ...(l.moment ? { moment: l.moment } : {}) });
     return;
   }
   const speaker = pickSpeaker(ctx, l.speaker);
-  if (speaker) out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), speaker, mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}) });
+  if (speaker) out.push({ kind: 'line', uid: l.id, line: l.id, key: lineKey(scene.id, l.id), speaker, mood: l.mood, memorial: false, ...(l.panel ? { panel: l.panel } : {}), ...(l.moment ? { moment: l.moment } : {}) });
   // the first figure of the chain has fallen (gone for good is not a death): a memorial line follows
   if (l.memorial && ctx.fallen.includes(l.speaker[0]!)) {
     const m = pickSpeaker(ctx, l.memorial.speaker);

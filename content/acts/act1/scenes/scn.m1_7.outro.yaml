@@ -1,0 +1,34 @@
+# Mission 1-7, Szene nach dem Sieg: Heimkehr in die Burg, die versiegelte Chronik kommt ins Burgarchiv (das Flag wardens_chronicle setzt die Knotenwirkung an m1_7, campaign.yaml);
+# Entziffert wird sie später in Akt 2 (Beat 10, Ysolde/Liora). Ausblick auf das Finale 1-8. Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen.
+id: scn.m1_7.outro
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Hinter der Truppe stürzt der Gang ein. Der Staub legt sich, das Gewölbe ist wieder ein Grab."
+  - id: l02
+    mood: neutral
+    text: "Die Chronik der Wächter, noch immer versiegelt, wandert ins Burgarchiv. Brenna stellt eine Wache davor."
+  - id: l03
+    speaker: [paktwacht_steward]
+    fallback: skip
+    mood: neutral
+    text: "Im Archiv ist sie trocken und sicher. Keiner rührt sie an, ehe Ihr es erlaubt, Hauptmann."
+  - id: l04
+    speaker: [ysolde, liora, avatar]
+    mood: neutral
+    text: "Entziffern können wir sie später, bei Licht und Ruhe. Heute nicht."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Ein Dach, Mauern und ein Archiv, Küken. Jetzt fehlt nur noch, dass sich keiner dafür interessiert."
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Das Banner hängt weithin sichtbar. Es wird sich jemand dafür interessieren."
+  - id: l07
+    speaker: [avatar]
+    mood: neutral
+    text: "Dann sollen sie kommen. Es ist unser Haus."

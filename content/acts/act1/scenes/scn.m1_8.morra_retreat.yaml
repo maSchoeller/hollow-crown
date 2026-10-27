@@ -1,0 +1,9 @@
+# Mission 1-8, Karten-Szene in Runde 10 (Trigger t_morra_retreat): Morra ruft den Rückzug, als Blase über ihr (nur solange sie auf der Karte steht).
+# Die Flucht selbst ist das Profil flee (set_ai); die Flucht-Zeile beim Verlassen kommt aus scn.lt.morra.
+id: scn.m1_8.morra_retreat
+lines:
+  - id: l01
+    speaker: [morra]
+    fallback: skip
+    mood: angry
+    text: "Rückzug! Die Burg ist es nicht wert. Die Rechnung bleibt offen."

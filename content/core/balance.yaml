@@ -122,6 +122,10 @@ scene:
 # chronicle (story 4.7): pages of the whole season, 4 per act (narrative "Found Documents")
 chronicle:
   seasonPages: 12
+  # entries that appear in the chronicle with their story flag but are no pages and do not count towards the 12 (story 9.8: the sealed chronicle of the wardens)
+  # texts: chronicle.sealed.<flag>.title|text in locales/<lang>.yaml
+  sealed:
+    - { flag: wardens_chronicle, act: 1 }
 # farewell card after a death (story 6.7, UX: the first 2 s cannot be skipped)
 farewell:
   lockMs: 2000
@@ -220,6 +224,7 @@ ai:
   # Profil „follow“ (Story 4.8, Eskorte-NPC): wartet, bis ein Spieler höchstens so viele Felder entfernt ist, bleibt beim Ziehen in diesem Abstand zu einem Spieler; ein bedrohtes Feld kostet so viele Wegpunkte je Gegner
   followRadius: 4
   wardGuardRadius: 8     # Autoplay (Simulation): bei defend trifft die Truppe Gegner innerhalb dieses Abstands vom Schutzbefohlenen, statt Besuche zu erledigen
+  wardLineMax: 4         # Autoplay (Simulation): bei defend hält die Truppe eine Linie aus höchstens so vielen Feldern (kleinster Schnitt zwischen Gegnern und Schutzbefohlenem, ohne dessen Nachbarfelder); ist der Schnitt breiter (offenes Dorf), sammelt sie sich wie bisher um ihn
   followDanger: 100
 # Leutnants (Story 3.4): Stufe = kaufmännisch gerundeter Durchschnitt der effektiven Stufen der armySize stärksten Einheiten der Truppe + Groll;
 # Waffe(n) der Karteneinheit je Groll eine Stufe höher entlang tierUp (gleiche Waffengruppe, Eintrag fehlt = Deckel); die Signaturwaffe trägt er nie.

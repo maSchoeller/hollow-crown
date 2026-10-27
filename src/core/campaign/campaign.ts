@@ -38,6 +38,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     decisions: [],
     scenesSeen: [],
     backupReminded: [],
+    priceMods: [],
     villageAid: null,
     completed: [],
     quests: [],
@@ -71,6 +72,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     chronicle?: string[];
     scenesSeen?: string[];
     backupReminded?: number[];
+    priceMods?: CampaignState['priceMods'];
     quests?: string[];
     rolesSeen?: string[];
     available?: string[];
@@ -88,6 +90,7 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     chronicle: old.chronicle ?? [],
     scenesSeen: old.scenesSeen ?? [],
     backupReminded: old.backupReminded ?? [],
+    priceMods: old.priceMods ?? [],
     villageAid: (c as Partial<CampaignState>).villageAid ?? null,
     home: c.home ?? { kind: 'camp', rooms: {} },
     tavern: c.tavern ?? [],

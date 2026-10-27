@@ -45,7 +45,7 @@ beforeAll(() => {
 
 describe('place images and recruit dialogues', () => {
   const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
-  const places = () => new Set([data.campaign.defaultPlace, ...Object.values(data.home).map((h) => h.image), ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : []))]);
+  const places = () => new Set([data.campaign.defaultPlace, ...Object.values(data.home).map((h) => h.image), ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : [])), 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken']);
   it('accepts the shipped places', () => {
     expect(msgs(data, places())).toEqual([]);
   });
@@ -68,7 +68,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom', 'silberbach'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);
@@ -85,7 +85,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach' });
+    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat' });
   });
 });
 
