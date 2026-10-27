@@ -42,7 +42,7 @@ HIGH = '--quality' in sys.argv and sys.argv[sys.argv.index('--quality') + 1] == 
 LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # places of act 1: the camp is the app shell (pack core), the rest are dialogue backdrops and ship with act1 (Epic 7, initial-download budget);
 # paktwacht_heimat (autumn) belongs to act 2, the other moodboard places to later acts
-ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'paktwacht_ruine', 'paktwacht_gewoelbe', 'paktnacht_glutdom', 'silberbach', 'wachturm', 'varnhold_nacht'}
+ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom', 'wachturm', 'varnhold_nacht'}
 TITLE_PX = (1024, 1536)
 # the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
@@ -105,9 +105,9 @@ def build_sheets(kind):
 
 
 def build_models():
-    """art/models/units/<id>.glb → public/assets/<pack>/models/units/<id>.glb (the pack of the figure's first appearance,
-    tools/art/model_packs.py); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/."""
-    result = {'units': [], 'unitPacks': {}, 'props': {}, 'weapons': []}
+    """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
+    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/."""
+    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'weapons': []}
     base = os.path.join(ART, 'models')
     src = os.path.join(base, 'units')
     ids = sorted(f[:-4] for f in os.listdir(src) if f.endswith('.glb') and 'preview' not in f) if os.path.isdir(src) else []
@@ -116,6 +116,10 @@ def build_models():
         dst = ensure(os.path.join(OUT, pack, 'models', 'units'))
         for mid in (m for m in ids if packs[m] == pack):
             shutil.copy2(os.path.join(src, mid + '.glb'), os.path.join(dst, mid + '.glb'))
+            # the baked animation (tools/art/bake_vat.py) lies beside the model, in its pack (story 7.8)
+            if os.path.exists(os.path.join(src, mid + '.vat')):
+                shutil.copy2(os.path.join(src, mid + '.vat'), os.path.join(dst, mid + '.vat'))
+                result['vat'].append(mid)
     result['units'] = ids
     result['unitPacks'] = packs
     for kind in ('props', 'weapons'):

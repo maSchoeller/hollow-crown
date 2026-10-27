@@ -9,6 +9,7 @@ import {
   armyOverLimit,
   beginBattle,
   conditionContext,
+  consequenceLines,
   createHauntBattle,
   firstNode,
   hauntMap,
@@ -20,6 +21,8 @@ import {
   createBattle,
   withoutLeavers,
   newCampaign,
+  addToRoster,
+  levelUp,
   queuedFlags,
   validateEffects,
   flattenQueued,
@@ -151,6 +154,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
     units: [...units.map(battleSource), ...later.map(defSource)],
     models: manifest.models?.units,
     unitPacks: manifest.models?.unitPacks,
+    vatModels: data.render.board.vat ? manifest.models?.vat : undefined,
     figures: settings.value.figures,
     sprites: manifest.units,
     music: manifest.audio,
@@ -321,7 +325,9 @@ export function concludeBattle(): void {
   const { post } = b.state.hauntId ? ({} as { post?: string }) : nodeScenes(data, before, b.state.nodeId);
   // whoever left in the scene after the mission (an answer with `leave`) is no longer in the company: not a new member, no level-up line
   const toResult = () => (screen.value = { name: 'result', result: withoutLeavers(result, campaign.value) });
-  if (post) screen.value = { name: 'dialogue', id: post, next: toResult };
+  // what the node gave (items, gold ...) for a scene line with `moment: reward`
+  const rewards = consequenceLines(result.effects ?? []).filter((l) => l.kind !== 'noted');
+  if (post) screen.value = { name: 'dialogue', id: post, next: toResult, ...(rewards.length ? { rewards } : {}) };
   else toResult();
 }
 
@@ -497,6 +503,30 @@ if (import.meta.env.DEV) {
         addTexts('de', sceneTexts(scene));
         addTexts('en', sceneTexts(scene));
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
+      },
+      /**
+       * plays any story node on a throwaway campaign, never the player's slot (saving is switched off, QA note B22): the nodes before it in
+       * campaign.yaml count as completed and everyone who has joined by then is in the company, raised to the node's `expectedLevel`. `await __hc.devNode('m1_6')` opens the
+       * pre scene, then the battle; win it with `__hc.autoWin()`. Second argument: difficulty (default `normal`).
+       */
+      devNode: async (nodeId: string, difficulty: BattleSettings['difficulty'] = 'normal') => {
+        const nodes = data.campaign.nodes;
+        const idx = nodes.findIndex((n) => n.id === nodeId);
+        if (idx < 0) throw new Error(`no node "${nodeId}"; there are: ${nodes.map((n) => n.id).join(', ')}`);
+        devSaveFailure.on = true;
+        const c = newCampaign(data, 1, { difficulty, deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        const order = nodes.map((n) => n.id);
+        for (const ch of Object.values(data.chars)) {
+          const j = order.indexOf(ch.joins);
+          if (j >= 0 && j < idx) addToRoster(data, c, ch.id);
+        }
+        // everyone is as strong as an army that played its way here would be: raised to the node's expectedLevel with the game's own level-up
+        for (const u of c.roster) while (u.level < nodes[idx]!.expectedLevel) levelUp(data, u, c.rng);
+        c.completed = order.slice(0, idx);
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'worldmap' };
+        playNode(nodeId);
       },
       /**
        * the end of the act without Level-Design (story 7.3): adds a `fixed: finale` node to the running content when the act has

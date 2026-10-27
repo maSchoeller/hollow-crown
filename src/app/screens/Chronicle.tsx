@@ -1,6 +1,6 @@
 /** Chronicle (story 4.7, EXPERIENCE.md "Chronik"): per act the decisions with the answer given and their consequences, and the pages found. */
 import { useState } from 'preact/hooks';
-import { chronicleView, pageTextKey, pageTitleKey, type ChronicleAct, type ChronicleDecision } from '../../core';
+import { chronicleView, pageTextKey, pageTitleKey, sealedTextKey, sealedTitleKey, type ChronicleAct, type ChronicleDecision } from '../../core';
 import { t } from '../../i18n';
 import { consequenceView } from '../../ui/ConsequenceCard';
 import { Icon } from '../../ui/icons';
@@ -27,6 +27,7 @@ export function Chronicle({ from = 'worldmap' }: { from?: From }) {
   const view = chronicleView(data, c);
   const [tab, setTab] = useState<Tab>('decisions');
   const [page, setPage] = useState<string | null>(null);
+  const [sealed, setSealed] = useState<string | null>(null);
   const decisions = view.acts.reduce((n, a) => n + a.decisions.length, 0);
   return (
     <>
@@ -59,11 +60,16 @@ export function Chronicle({ from = 'worldmap' }: { from?: From }) {
                     : t('ui.chronicle.count.pages', { n: a.pages.length })}
                 </span>
               </div>
-              {tab === 'decisions' ? <Decisions act={a} /> : <Pages act={a} onOpen={setPage} />}
+              {tab === 'decisions' ? <Decisions act={a} /> : <Pages act={a} onOpen={setPage} onOpenSealed={setSealed} />}
             </section>
           ))}
         </Piece>
       </div>
+      {sealed && (
+        <Sheet title={t(sealedTitleKey(sealed))} onClose={() => setSealed(null)}>
+          <p class="chr-page">{t(sealedTextKey(sealed))}</p>
+        </Sheet>
+      )}
       {page && (
         <Sheet title={t(pageTitleKey(page))} onClose={() => setPage(null)}>
           <p class="chr-page">{t(pageTextKey(page))}</p>
@@ -119,10 +125,24 @@ function Decision({ d }: { d: ChronicleDecision }) {
   );
 }
 
-function Pages({ act, onOpen }: { act: ChronicleAct; onOpen: (id: string) => void }) {
-  if (!act.pages.length) return <p class="chr-empty">{t('ui.chronicle.noPages')}</p>;
+function Pages({ act, onOpen, onOpenSealed }: { act: ChronicleAct; onOpen: (id: string) => void; onOpenSealed: (flag: string) => void }) {
+  if (!act.pages.length && !act.sealed.length) return <p class="chr-empty">{t('ui.chronicle.noPages')}</p>;
   return (
     <div class="chr-items">
+      {act.sealed.map((flag) => (
+        <button key={flag} type="button" class="hc-line-item chr-pageline" onClick={() => onOpenSealed(flag)}>
+          <span class="chr-pageline__icon">
+            <Icon name="log" size={22} />
+          </span>
+          <span style={{ minWidth: 0 }}>
+            <span class="hc-line-item__name">{t(sealedTitleKey(flag))}</span>
+            <span class="hc-line-item__sub">{t('ui.chronicle.sealed')}</span>
+          </span>
+          <span class="hc-line-item__side">
+            <Icon name="forward" size={18} />
+          </span>
+        </button>
+      ))}
       {act.pages.map((id) => (
         <button key={id} type="button" class="hc-line-item chr-pageline" onClick={() => onOpen(id)}>
           <span class="chr-pageline__icon">

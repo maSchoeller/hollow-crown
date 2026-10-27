@@ -1,6 +1,6 @@
 /**
  * Global teardown of the performance run: joins test-results/perf/<device>.json into report.md (and the CI job summary),
- * with the values before story 7.7 from tests/perf/baseline.json next to them. `PERF_WRITE_BASELINE=1` writes the medians
+ * with the values before story 7.8 (after 8.6) from tests/perf/baseline.json next to them. `PERF_WRITE_BASELINE=1` writes the medians
  * of this run to baseline.json instead (only to record a new starting point; the file is a fixed reference).
  */
 import { appendFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -19,7 +19,7 @@ export default function summary(): void {
   const assets = existsSync(join(process.cwd(), 'public', 'assets', 'manifest.json')) ? 'mit Assets' : 'ohne Assets (Platzhalter-Figuren)';
   const gpu = reports.some((r) => isGpu(r.renderer));
   if (process.env.PERF_WRITE_BASELINE === '1') {
-    const note = `Ausgangswerte vor Story 7.7 (Median, ${gpu ? 'GPU' : 'SwiftShader'}, Renderer ${reports[0]!.renderer}, erhoben ${new Date().toISOString().slice(0, 10)})`;
+    const note = `Ausgangswerte vor Story 7.8, nach Story 8.6 (Median, ${gpu ? 'GPU' : 'SwiftShader'}, Renderer ${reports[0]!.renderer}, erhoben ${new Date().toISOString().slice(0, 10)})`;
     writeFileSync(baselineFile, JSON.stringify(toBaseline(reports, note), null, 1) + '\n');
   }
   const baseline = existsSync(baselineFile) ? (JSON.parse(readFileSync(baselineFile, 'utf8')) as Baseline) : undefined;

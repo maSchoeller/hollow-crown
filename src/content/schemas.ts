@@ -320,7 +320,7 @@ const triggerWhen = z.discriminatedUnion('type', [
 ]);
 
 const triggerAction = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('dialogue'), id: z.string() }),
+  z.object({ action: z.literal('dialogue'), id: z.string(), onBoard: z.string().optional() }),
   z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
@@ -507,6 +507,8 @@ export const sceneSchema = z.strictObject({
         text: z.string().min(1),
         /** illustration panel from this line on: a background id, or `none` to return to the scene background (architecture §5.8) */
         panel: z.union([z.literal('none'), z.string().regex(/^[a-z0-9_]+$/)]).optional(),
+        /** the moment of the node's reward (sparks, then the reward card) after this line, see `SceneSpeech.moment` */
+        moment: z.literal('reward').optional(),
         requires: conditionsListSchema.optional(),
         memorial: z.strictObject({ speaker: chainSchema, text: z.string().min(1), mood: moodSchema.default('sad') }).optional(),
       }),
@@ -716,6 +718,9 @@ export const renderSchema = z.object({
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     idleHz: z.number().positive(),
+    vat: z.boolean(),
+    warm: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    tintPool: z.number().int().nonnegative(),
     precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
     trees: z.record(z.string(), z.array(z.object({ model: z.string(), weight: z.number().positive() })).min(1)),
@@ -788,7 +793,10 @@ export const balanceSchema = z.object({
     bubbleMaxChars: z.number().int().min(20),
   }),
   loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
-  chronicle: z.strictObject({ seasonPages: z.number().int().min(1) }),
+  chronicle: z.strictObject({
+    seasonPages: z.number().int().min(1),
+    sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1) })).default([]),
+  }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
   simulation: z.object({
     armySize: z.number().int().min(1),

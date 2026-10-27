@@ -1,0 +1,42 @@
+# Mission 1-6, Szene vor der Karte: Halvard (Hüter des Paktes) rät zur verlassenen Paktwacht als Versteck. Die Truppe ahnt nichts
+# von der Chronik in den Mauern (Narrative Beat 7). Halvard: großväterlich, Sprichwörter, nennt jeden beim Vornamen.
+id: scn.m1_6.intro
+background: paktwacht_ruine
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Am Fuß des Hangs wartet Halvard, den Wanderstab in der Hand. Über ihm ragt die Paktwacht, grau und stumm."
+  - id: l02
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "{avatar}, Kael. Ein Dach über dem Kopf ist der halbe Frieden. Dort oben steht eins, wenn auch ein löchriges."
+  - id: l03
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Ein Versteck, das keiner sucht, ist das beste."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Und wer sitzt jetzt darin?"
+  - id: l05
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Hask und seine Bande, fürchte ich. Und Ulvrics Reiter streifen am Hang. Aber ihr seid mehr als sie."
+  - id: l06
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Mauern, ein Dach und ein Tor, Küken! Dafür lass ich mich gern von einem Wolf beißen."
+  - id: l07
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "Nehmt, was ihr braucht, Kinder. Und lasst die alten Steine schlafen. Sie haben ihre Ruhe verdient."
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Wir nehmen die Burg. {avatar}, du führst."

@@ -396,7 +396,8 @@ export type TriggerWhen =
   | { type: 'hp_below'; unit: string; percent: number };
 
 export type TriggerAction =
-  | { action: 'dialogue'; id: string }
+  /** `onBoard`: plays only while this unit still stands on the map (a lieutenant's call must not come from one who has left) */
+  | { action: 'dialogue'; id: string; onBoard?: string }
   | { action: 'set_ai'; units: string[]; profile: AiDef['profile'] }
   | { action: 'spawn'; units: MapUnitDef[] }
   | { action: 'set_flag'; flag: string };
@@ -615,6 +616,11 @@ export interface SceneSpeech {
   text: string;
   /** illustration panel from this line on (background id; replaces the scene background full-screen), `none` ends it; a panel stands for at most `MAX_PANEL_LINES` text lines */
   panel?: string;
+  /**
+   * `reward`: the moment of the node's reward (story 9.9): sparks rise over the line, and when the player goes on, the card with the items
+   * the won node gave (`BattleResult.effects`) opens. The line is shown as it is when the scene has no reward to show.
+   */
+  moment?: 'reward';
   requires?: Condition[];
   /** extra line (key `….memorial`) after this one when the first figure of the chain has fallen */
   memorial?: { speaker: string[]; text: string; mood: Mood };
@@ -870,7 +876,11 @@ export interface Balance {
   /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
   loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
-  chronicle: { seasonPages: number };
+  chronicle: {
+    seasonPages: number;
+    /** entries the chronicle shows once their story flag is set; they are no pages and do not count towards `seasonPages` (story 9.8) */
+    sealed: Array<{ flag: string; act: number }>;
+  };
   /** farewell card after a death (story 6.7): the button stays locked this long */
   farewell: { lockMs: number };
   /** targets of the chained act simulation (story 6.8, `pnpm sim --campaign`): NFR12 corridors, GDD gold curve */
@@ -950,6 +960,8 @@ export interface Balance {
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
     wardGuardRadius: number;
+    /** simulator player for `defend`: widest line (tiles) it holds in front of the ward; wider than this it crowds the ward instead */
+    wardLineMax: number;
   };
   /** strength, bounty and signature drop of the lieutenants (stories 3.4, 3.5) */
   lieutenant: {
@@ -1010,6 +1022,12 @@ export interface RenderDef {
     fpsIdle: number;
     /** story 7.7: figures doing nothing update their skeleton this often (Hz); acting ones at the frame rate */
     idleHz: number;
+    /** story 7.8: figures with a baked animation file (`.vat`, image-to-3D) play it as vertex animation instead of a skeleton; false: skeleton path for all */
+    vat: boolean;
+    /** story 7.8: how much the board warms up at load: 0 = precompile only, 1 = + flash/fade variants and prop twins, 2 = + a warm-up draw */
+    warm: 0 | 1 | 2;
+    /** Story 7.8: tint (flash/fade) materials kept per texture and case for reuse */
+    tintPool: number;
     /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
     precompileMs: number;
     /** size of 3D figures relative to their Blender scale */

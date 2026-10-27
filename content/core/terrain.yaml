@@ -26,6 +26,8 @@
 # Kapitel-spezifisch
 - { id: wagon,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: wagon, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
 - { id: shrine,   def: 2, avoid: 20,  heal: 20, flammable: false, ground: plain, prop: shrine, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
+# Grabrelief eines jungen Königs (Story 9.8): wie der Schrein die Requisite shrine, aber ohne Heilung und ohne Deckung (nur Kulisse, Auslöser der Relief-Szenen). Startwerte [C].
+- { id: relief,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: shrine, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: stone }
 # Mauer-Requisiten ohne Zugang (Startwerte [C], Werte wie der Wagen: nur Flieger kommen drüber).
 # Marktstand (tent_idle) und Kohlebecken (campfire_idle) nutzen vorhandene Requisiten-Modelle (art/models/props); Story 9.1, 9.2.
 - { id: stall,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: tent, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }

@@ -34,6 +34,11 @@ export interface DialogueProps {
   onChoose: (line: string, option: ResolvedOption) => void;
   /** answers given before in this scene (line id → option id): such a choice is not asked again */
   answered?: Readonly<Record<string, string>>;
+  /**
+   * what the won node gave (card lines): a line with `moment: reward` lets sparks rise and then opens the card with these before the scene goes on.
+   * Without them such a line is an ordinary one.
+   */
+  rewards?: ConsequenceLine[];
   /** round head of a company member for the consequence card */
   head?: (unit: string) => ComponentChildren;
   /** the scene ended (read to the end or skipped) */
@@ -80,8 +85,21 @@ function Figure({ speaker, mood, avatarPortrait, side, active, halves }: { halve
   );
 }
 
+/**
+ * Two sparks rising over the scene (the reward moment): decorative, a second and a half at most; under reduced motion they stand still.
+ * The crackle of the embers comes with the audio story (EXPERIENCE: Funkenknistern): hook for `audio.sfx('sparks')` here.
+ */
+function Sparks() {
+  return (
+    <div class="vn-sparks" aria-hidden="true">
+      <i class="vn-spark vn-spark--a" />
+      <i class="vn-spark vn-spark--b" />
+    </div>
+  );
+}
+
 /** Visual-novel scene: blurred place, speaker as a bright half figure, listeners dimmed, glow-pill name tag, Log/Auto/Skip, tap to go on (mockup 05). */
-export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, head = noHead, onDone, onSeen, onLine }: DialogueProps) {
+export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, rewards, head = noHead, onDone, onSeen, onLine }: DialogueProps) {
   const def = data.scenes[id];
   // the story as the scene began: an answer that sends a companion away must not change who spoke the lines before it;
   // later lines follow the answer through the flags it sets (`local`)
@@ -95,7 +113,9 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   // answers given in this run of the scene (for the log), the answer marked by a first tap, the open consequence card
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [selected, setSelected] = useState<string | null>(null);
-  const [card, setCard] = useState<{ title: string; lines: ConsequenceLine[]; go: () => void } | null>(null);
+  const [card, setCard] = useState<{ title: string; mark?: string; lines: ConsequenceLine[]; go: () => void } | null>(null);
+  // reward moments (line uids) whose card has been shown
+  const [rewarded, setRewarded] = useState<ReadonlySet<string>>(new Set());
   // answers given in this scene count at once, before the campaign state has caught up
   const now = useMemo(() => ({ ...ctx, flags: { ...ctx.flags, ...local } }), [ctx, local]);
   const lines = useMemo(() => (def ? resolveScene(data, now, id) : []), [data, now, id]);
@@ -124,11 +144,19 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   }, [shown, text]);
   // auto mode: once a line is shown it waits for the time it takes to read, then goes on (never at a choice)
   const readyToGo = line?.kind === 'line' && shown >= text.length;
+  // a reward moment: sparks over the line, the card of the node's reward when the player goes on (once per line)
+  const momentOpen = line?.kind === 'line' && line.moment === 'reward' && !!rewards?.length && !rewarded.has(line.uid);
+  const openReward = () => {
+    if (line?.kind !== 'line' || !rewards) return;
+    const uid = line.uid;
+    setRewarded(new Set(rewarded).add(uid));
+    setCard({ title: t('ui.reward.title'), mark: 'ui.reward.mark', lines: rewards, go: () => setIdx((i) => i + 1) });
+  };
   useEffect(() => {
-    if (!auto || !readyToGo) return;
-    const timer = setTimeout(() => setIdx((i) => i + 1), cfg.autoBaseMs + cfg.autoPerCharMs * text.length);
+    if (!auto || !readyToGo || card) return;
+    const timer = setTimeout(() => (momentOpen ? openReward() : setIdx((i) => i + 1)), cfg.autoBaseMs + cfg.autoPerCharMs * text.length);
     return () => clearTimeout(timer);
-  }, [auto, readyToGo, idx]);
+  }, [auto, readyToGo, idx, card, momentOpen]);
 
   // sides follow the order of first appearance: kael and the avatar left, the others right (then left)
   const sides = useMemo(() => {
@@ -167,7 +195,11 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   // Skip runs through the lines but halts at the first open answer (its effects must always run); no answer ahead ends the scene
   const skip = () => {
     const to = skipTarget(lines, idx, Object.keys(answered));
-    if (to < 0) finish();
+    // the card of the node's reward is never skipped: items already lie in the convoy, the player is shown them
+    const moment = rewards?.length ? lines.findIndex((l, i) => i >= idx && l.kind === 'line' && l.moment === 'reward' && !rewarded.has(l.uid)) : -1;
+    if (moment >= 0 && (to < 0 || moment < to)) {
+      if (moment !== idx) setIdx(moment);
+    } else if (to < 0) finish();
     else if (to !== idx) setIdx(to);
   };
   const confirm = (c: Choice, o: ResolvedOption) => {
@@ -180,6 +212,7 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   const advance = () => {
     if (line.kind === 'choice') return;
     if (shown < text.length) return setShown(text.length);
+    if (momentOpen) return openReward();
     setIdx(idx + 1);
   };
   const nameOf = (sp: string) => (sp === 'avatar' ? t('unit.avatar.name') : t(`unit.${sp}.name`));
@@ -206,6 +239,7 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
           );
         })}
       </div>
+      {momentOpen && !card && <Sparks />}
       <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onLog={() => setLog(true)} onSkip={skip} locked={!!choice?.decision} />
       <div class={`vn-box ${choice?.decision ? 'vn-box--decision' : ''}`} onClick={(e) => choice && e.stopPropagation()}>
         {speaking && <span class={`vn-name vn-name--${speakerSide} vn-name--${teamOf(speaking)}`}>{nameOf(speaking)}</span>}
@@ -258,6 +292,7 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
         <ConsequenceCard
           data={data}
           title={card.title}
+          mark={card.mark}
           lines={card.lines}
           head={head}
           onClose={() => {

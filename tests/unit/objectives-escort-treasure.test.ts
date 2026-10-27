@@ -194,6 +194,13 @@ describe('content:check', () => {
       strip(v);
       v.objects.push({ id: 'dev_village', type: 'village', at: [2, 6], reward: { item: { def: 'door_key' } } });
       expect(issuesOf(v)).toEqual([]);
+      // or a foe on the map that drops one (story 9.8)
+      const f = base();
+      strip(f);
+      f.units.find((u) => u.id === 'dev_brigand')!.items.push({ def: 'door_key' });
+      expect(issuesOf(f)).toContainEqual(expect.stringMatching(/no scout or key available/));
+      f.units.find((u) => u.id === 'dev_brigand')!.drops = [1];
+      expect(issuesOf(f)).toEqual([]);
     });
   });
 });

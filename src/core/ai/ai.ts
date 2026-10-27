@@ -4,7 +4,7 @@ import { attackTargets, staffTargets } from '../battle/actions';
 import { applyAct, moveAfterAction } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
-import { deathless } from '../rules/effects';
+import { deathless, fleesAtZero } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
 import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
@@ -405,11 +405,18 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     }
     case 'flee': {
       const goals = ai.area ? areaTiles(ai.area) : [];
-      const to = bestApproach(data, s, u, goals);
+      // already standing in the way out: leave at once (a lieutenant called back while he is still at the edge)
+      const to = u.pos && goals.some((g) => samePos(g, u.pos!)) ? u.pos : bestApproach(data, s, u, goals);
       if (to && ai.area && goals.some((g) => samePos(g, to))) {
         applyAct(data, s, u, to, { kind: 'wait' }, events);
-        u.gone = 'escaped';
-        events.push({ t: 'escaped', unit: u.uid });
+        if (fleesAtZero(u)) {
+          // a lieutenant who withdraws on his own (a map trigger set `flee`, story 9.9) is driven off like one who fell to 0 HP: grudge, bounty, flee line
+          u.gone = 'fled';
+          events.push({ t: 'fled', unit: u.uid });
+        } else {
+          u.gone = 'escaped';
+          events.push({ t: 'escaped', unit: u.uid });
+        }
         return;
       }
       return act(to ? { to, action: { kind: 'wait' }, score: 0 } : null);

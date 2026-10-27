@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { exceedances, frameStats, markdown, median, summarize, toBaseline, type DeviceReport, type PhaseRun } from '../perf/report';
+import { causeCounts, classify, exceedances, frameStats, markdown, median, summarize, toBaseline, type DeviceReport, type PhaseRun, type Spike } from '../perf/report';
 
 const run = (avgFps: number, over: Partial<PhaseRun> = {}): PhaseRun => ({
   ...frameStats([16.7]),
@@ -26,7 +26,9 @@ const report = (fps2: number[], fps4: number[], coldStartMs = 3000, renderer = '
   coldStart: { firstVisitMs: 400, firstInstallMs: 9000, coldStartMs },
 });
 
-describe('performance report (stories 7.5, 7.7)', () => {
+const spike = (over: Partial<Spike> = {}): Spike => ({ atMs: 5000, dtMs: 300, frameMs: 0, renderMs: 0, newEnabled: 0, newEffects: 0, heapFreedKb: 0, layoutMs: 0, longTaskMs: 0, causes: [], ...over });
+
+describe('performance report (stories 7.5, 7.7, 7.8)', () => {
   it('derives FPS, quantiles and dropped frames from frame times', () => {
     const s = frameStats([16, 16, 17, 17, 50]);
     expect(s.frames).toBe(5);
@@ -57,6 +59,36 @@ describe('performance report (stories 7.5, 7.7)', () => {
   it('does not warn about FPS on software rendering, but about the cold start', () => {
     const sw = report([10], [3], 6200, 'Google SwiftShader');
     expect(exceedances(sw)).toEqual(['pixel6a: cold start 6200 ms (target < 5000 ms)']);
+  });
+
+  it('fails a frame over 100 ms in any run, not the median, and only on a GPU', () => {
+    const slow = (maxMs: number) => run(60, { maxMs });
+    const r = report([60], [31]);
+    r.stages[0]!.runs = [slow(40), slow(60), slow(140)];
+    expect(summarize(r.stages[0]!)).toMatchObject({ maxMs: 60, maxAllMs: 140 });
+    expect(exceedances(r)).toEqual(['pixel6a: enemy phase at CPU 2× has a frame of 140 ms (limit 100 ms, slowest of 3 runs)']);
+    r.stages[0]!.runs = [slow(40), slow(60), slow(100)];
+    expect(exceedances(r)).toEqual([]);
+    r.stages[0]!.runs = [slow(300)];
+    r.renderer = 'Google SwiftShader';
+    expect(exceedances(r)).toEqual([]);
+    // a level without a target is only reported
+    const free = report([60], [31]);
+    free.stages.push({ cpuSlowdown: 1, targetFps: null, runs: [slow(500)] });
+    expect(exceedances(free)).toEqual([]);
+  });
+
+  it('names the cause of a slow frame from its trace', () => {
+    expect(classify(spike({ newEffects: 2, frameMs: 280, renderMs: 270 }))).toEqual(['shader', 'render']);
+    expect(classify(spike({ newEnabled: 3, frameMs: 200, renderMs: 20 }))).toEqual(['enable', 'frame-js']);
+    expect(classify(spike({ heapFreedKb: 4096 }))).toEqual(['gc']);
+    expect(classify(spike({ heapFreedKb: 100, layoutMs: 25 }))).toEqual(['layout']);
+    expect(classify(spike())).toEqual(['other']);
+    const runs = [run(60, { spikes: [spike({ causes: ['shader', 'render'] }), spike({ causes: ['gc'] })] }), run(60), run(60, { spikes: [spike({ causes: ['gc'] })] })];
+    expect(causeCounts(runs)).toEqual({ shader: 1, render: 1, gc: 2 });
+    const r = report([60], [31]);
+    r.stages[1]!.runs = runs;
+    expect(markdown([r], 'note')).toContain('| pixel6a | 4× | 3 | gc 2, shader 1, render 1 |');
   });
 
   it('writes one table row per device and level, with the values before', () => {

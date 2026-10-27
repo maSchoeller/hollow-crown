@@ -1,0 +1,22 @@
+# Mission 1-7, Karten-Szene beim ersten Grabrelief (2,6) in der Westkammer (Beat 6 „Junge Könige“). Inschriften mit Königsnamen und Jahreszahlen, deren Abstände kurz sind.
+# Der Pakt als Opfervertrag wird hier NICHT ausgesprochen. Namen und Jahreszahlen: Ausgedachtes, siehe Story 9.8 Dev Notes.
+# Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen (Narrative „Ysolde und Liora entziffern“).
+id: scn.m1_7.relief_west
+lines:
+  - id: l01
+    panel: grabreliefs
+    mood: neutral
+    text: "In die Wand ist ein Relief gemeißelt: ein junger König mit geschlossenen Augen, die Hände auf der Brust."
+  - id: l02
+    speaker: [ysolde, liora, avatar]
+    mood: neutral
+    text: "„Hadric II., gekrönt im Jahr 88 nach dem Pakt, gestorben im Jahr 96.“ Er wurde keine dreißig."
+  - id: l03
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Daneben ein zweiter Stein: Osmund III., Jahr 96 bis 101. Fünf Jahre auf dem Thron."
+  - id: l04
+    panel: none
+    speaker: [kael]
+    mood: neutral
+    text: "Zwei Könige, dreizehn Jahre. Merkwürdig."
