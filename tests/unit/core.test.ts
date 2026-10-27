@@ -59,7 +59,7 @@ describe('place images and recruit dialogues', () => {
   });
   it('reports a character recruit dialogue that is no scene', () => {
     const d = structuredClone(data);
-    d.chars.liora!.recruit = { chapter: 'ch02', by: 'any', dialogue: 'scn.ghost' };
+    d.chars.liora!.recruit = { chapter: 'm1_3', by: 'any', dialogue: 'scn.ghost' };
     expect(msgs(d)).toContainEqual(expect.stringContaining('liora recruit.dialogue: unknown scene scn.ghost'));
   });
 });
@@ -68,7 +68,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktnacht_glutdom', 'silberbach'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);
@@ -85,7 +85,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
     const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
-    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', ch02: 'varnhold' });
+    expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach' });
   });
 });
 

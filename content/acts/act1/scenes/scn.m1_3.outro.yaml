@@ -1,0 +1,176 @@
+# Mission 1-3, Szene nach der Karte. Schlüsselgespräch 4 „Der Fremde mit dem Siegel“ (Narrative: Halvard, Kael, Liora; Trost, Vertrauen):
+# Halvards erster Auftritt. Er kommt heimlich, bringt Brot, kennt Kael lange, glaubt „an ihre Unschuld“ und weist auf den Mittelsmann Osric Dunn
+# (Mission 1-4), ohne zu sagen, dass er ihn selbst bezahlt hat. Seine Sätze sind im Rückblick doppeldeutig (Mörder, Hirte, der sein Opfer füttert).
+# Liora ist seine Ziehtochter und tritt bei (Beitritt im Kern: escort-Ziel der Karte). Keine Entscheidung in dieser Szene.
+id: scn.m1_3.outro
+background: silberbach
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Morras Jäger verschwinden im Nebel. Am Ausgang des Tals wird es still. Zu still."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ihr habt mich nicht zurückgelassen. Das hat lange niemand getan."
+  - id: l03
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Hauptmann. Am Weg, ein Mann mit Kapuze. Allein. Und er hat ein Brot unterm Arm."
+  - id: l04
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Hände von den Waffen. Der kommt allein."
+  - id: l05
+    mood: neutral
+    text: "Der Fremde schlägt die Kapuze zurück: ein alter Mann mit weißem Bart und einem Siegelring."
+  - id: l06
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "Kael. Mein Junge. Du bist breiter geworden, seit ich dich zuletzt gescholten habe."
+  - id: l07
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Halvard. Ihr solltet nicht hier sein."
+  - id: l08
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Ich sollte vieles nicht. Aber ein Hirte, der seine Schafe nicht sucht, ist keiner. Hier, noch warm."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Brot. Er hat Brot mitgebracht. Küken, schreibt euch den Mann auf."
+  - id: l10
+    requires: [{ alive: mira }]
+    speaker: [mira]
+    fallback: skip
+    mood: neutral
+    text: "Ein Priester, der Brot bringt und nichts will? Wo ist der Haken?"
+  - id: l11
+    requires: [{ alive: mira }]
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "Der Haken, mein Kind? Dass ihr satt werdet. Mehr verlange ich nicht."
+  - id: l12
+    speaker: [avatar]
+    fallback: skip
+    mood: neutral
+    text: "Wer ist das?"
+  - id: l13
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Halvard, Hüter des Paktes. Er war da, als sonst keiner da war."
+  - id: l14
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Und du bist {avatar}. Setz dich, du zitterst. Ein volles Herz verträgt sich schlecht mit leerem Magen."
+  - id: l15
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Auf jedem Zettel steht, wir hätten den König getötet. Glaubt Ihr das?"
+  - id: l16
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Nein, Kael. Ich glaube nicht, dass ihr es wart. Ich glaube, jemand wollte, dass ihr es wart."
+  - id: l17
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Ich habe Aldric aufwachsen sehen. Ich habe ihn am Ende nicht retten können. Das trage ich mit mir."
+  - id: l18
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Er hat mich großgezogen, als sonst keiner fragte. Auch das ist ein Grund, warum ich ihm vertraue."
+  - id: l19
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "„Der Pakt schützt, wer schweigt“, steht am Tor des Tempels. Ich habe nie verstanden, wen er schützt."
+  - id: l20
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Mein Mädchen. Alte Häuser haben Angst vor Fragen."
+  - id: l20b
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Manche Wahrheit ist wie rohes Mehl: zu früh gegessen, macht sie krank."
+  - id: l21
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Hört zu. Wer euch den Auftrag für die Paktnacht gab, kam nicht selbst. Ein Makler schickte ihn: Osric Dunn."
+  - id: l22
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Dunn. Wo finden wir ihn?"
+  - id: l23
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Er versteckt sich bei den Wolfsreitern im Wald. Beeilt euch: Männer wie Dunn leben nicht lange."
+  - id: l24
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Warum sagt Ihr uns das? Der Tempel jagt uns, und Ihr tragt sein Siegel."
+  - id: l25
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "Weil ich dich kenne, Kael. Und weil Brot und Rat das Einzige sind, was ein alter Mann noch geben kann."
+  - id: l26
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Man darf mich nicht bei euch sehen. Liora trägt meine Nachrichten. Fragt sie, wenn ihr Rat braucht."
+  - id: l27
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Nimm sie mit, Kael. Bei dir ist sie sicherer als im Tempel. Ich vertraue sie dir an."
+  - id: l28
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich gehe nicht, weil du es willst, Vater Halvard. Ich gehe, weil die Fragen mit ihnen wandern."
+  - id: l29
+    speaker: [halvard]
+    fallback: skip
+    mood: happy
+    text: "Das ist mein Mädchen. Teilt das Brot, ihr alle. Brot teilt man mit denen, die man behüten will."
+  - id: l30
+    speaker: [kael]
+    fallback: skip
+    mood: sad
+    text: "Das letzte Mal hat uns Gerrit gefüttert. Danke, Halvard."
+  - id: l31
+    speaker: [halvard]
+    fallback: skip
+    mood: sad
+    text: "Er war ein guter Mann. Geht jetzt, bevor der Nebel sich hebt. Ich finde euch wieder."
+  - id: l32
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Willkommen im Aschenbanner, Liora. Wir suchen einen Makler."
+  - id: l33
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ich bezahle meine Schulden, Hauptmann. Und ich stelle weiter Fragen."
