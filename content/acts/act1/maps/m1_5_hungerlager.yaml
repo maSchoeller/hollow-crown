@@ -1,6 +1,6 @@
 # Mission 1-5 – Das Hungerlager (Story 9.6). Layout-Entwurf, kein Knoten, keine Szenen. Startwerte [C].
 # Ort: Lager der Hungernden in einem Talkessel; die Truppe sitzt auf einem Hügel mit Ruinen in der Mitte (Festungsfelder, Heilung).
-# Tageszeit: Abend, Wetter: Asche (Rauch, Elend; art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: „hungerlager“ (Story 8.x), nur Kommentar.
+# Tageszeit: Abend, Wetter: Asche (Rauch, Elend; art-direction §2.5; Felder timeOfDay/weather). Geplantes Ortsbild: „hungerlager“ (Story 8.x), nur Kommentar.
 # Ziel: 6 Runden standhalten (survive); danach redet Leutnant Grosk (Szene scn.m1_5.grosk_talk), er muss nicht besiegt werden.
 # Die Hungernden strömen aus dem Lager ringsum in Wellen (Runde 2 und 4) auf den Hügel. Varek wird durch Kael angesprochen (recruit).
 # Zelte des Lagers sind Gelände (stall), Kinder/Zivilisten als grüne Nicht-Ziele: OFFEN (kein neutraler Nichtkämpfer-Typ vorhanden).
@@ -41,9 +41,9 @@ terrain: |
   ,,,,,W,,b,W,,,,,
   TTT,,,,,,a,,,TTT
   TTT,,,,,,,,,,TTT
-# Abend, Ascheschleier: rotbraunes, schweres Licht, Sonne tief
-ambient: { color: "#c8a9a0", intensity: 0.75 }
-sun: { color: "#ff9a60", intensity: 0.8, azimuthDeg: 260, elevationDeg: 15 }
+# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+timeOfDay: evening
+weather: ash
 lights:
   - { at: [4, 4], color: "#ffb35c", radius: 3 }
   - { at: [11, 4], color: "#ffb35c", radius: 3 }

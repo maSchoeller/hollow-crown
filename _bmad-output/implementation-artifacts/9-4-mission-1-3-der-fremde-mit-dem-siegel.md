@@ -74,3 +74,4 @@ Claude Sonnet 5.5
 ### Change Log
 
 - 2026-10-26: Story 9.4 umgesetzt (Karte, Szenen, Halvards Auftritt, Liora-Beitritt, Händlerstufe nach Missionszahl).
+- 2026-10-27: Halvard nennt Dunn nur als Mittelsmann (kein Versteck, PO-Entscheidung); m1_4-Variante als Kommentar vorbereitet (Story 9.5); Tageszeit/Wetter auf Karten 1-2 bis 1-5.

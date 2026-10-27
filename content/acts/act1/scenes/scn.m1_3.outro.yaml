@@ -1,6 +1,6 @@
 # Mission 1-3, Szene nach der Karte. Schlüsselgespräch 4 „Der Fremde mit dem Siegel“ (Narrative: Halvard, Kael, Liora; Trost, Vertrauen):
-# Halvards erster Auftritt. Er kommt heimlich, bringt Brot, kennt Kael lange, glaubt „an ihre Unschuld“ und weist auf den Mittelsmann Osric Dunn
-# (Mission 1-4), ohne zu sagen, dass er ihn selbst bezahlt hat. Seine Sätze sind im Rückblick doppeldeutig (Mörder, Hirte, der sein Opfer füttert).
+# Halvards erster Auftritt. Er kommt heimlich, bringt Brot, kennt Kael lange, glaubt „an ihre Unschuld“ und nennt den Mittelsmann Osric Dunn
+# (PO 2026-10-27: er weiß nicht, wo Dunn steckt; das Versteck erfährt die Truppe in Mission 1-4 vom Diebesring, E2), ohne zu sagen, dass er ihn selbst bezahlt hat. Seine Sätze sind im Rückblick doppeldeutig (Mörder, Hirte, der sein Opfer füttert).
 # Liora ist seine Ziehtochter und tritt bei (Beitritt im Kern: escort-Ziel der Karte). Keine Entscheidung in dieser Szene.
 id: scn.m1_3.outro
 background: silberbach
@@ -123,7 +123,23 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Er versteckt sich bei den Wolfsreitern im Wald. Beeilt euch: Männer wie Dunn leben nicht lange."
+    text: "Wo er sich verkrochen hat, weiß ich nicht. Ich kenne nur seinen Namen. Männer wie Dunn leben nicht lange."
+  # Story 9.5: requires completed m1_4 (content:check lehnt `completed` auf den noch unbekannten Knoten m1_4 ab, daher nur als Kommentar).
+  # Ist 1-4 schon gespielt, ersetzen diese zwei Zeilen l22/l23 (l22/l23 bekommen dann `requires: [{ not: { completed: m1_4 } }]`);
+  # Halvard hat von Dunns Tod gehört, wirkt betroffen, doppeldeutig (er räumt hinter sich auf). Texte (Box <= 110 Zeichen) auch in en/act1.dialogue.yaml ergänzen:
+  #   - id: l22d
+  #     requires: [{ completed: m1_4 }]
+  #     speaker: [kael]
+  #     fallback: skip
+  #     mood: neutral
+  #     text: "Osric Dunn ist tot. Wir haben ihn nicht getötet."          # EN: "Osric Dunn is dead. We did not kill him."
+  #   - id: l23d
+  #     requires: [{ completed: m1_4 }]
+  #     speaker: [halvard]
+  #     fallback: skip
+  #     mood: sad
+  #     text: "Ich habe davon gehört. Es geht mir nahe. Doch ein Hirte räumt auf, was seine Herde hinterlässt."
+  #     # EN: "I heard. It weighs on me. Yet a shepherd tidies up what his flock leaves behind."
   - id: l24
     speaker: [kael]
     fallback: skip

@@ -1,5 +1,5 @@
 # Mission 1-3 – Der Fremde mit dem Siegel (Story 9.4, Knoten m1_3). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
-# Ort: der Schrein am Silberbach. Tageszeit: Morgen, Wetter: Nebel (Wetter, kein Kriegsnebel; art-direction §2.5, Feld folgt mit Story 8.6).
+# Ort: der Schrein am Silberbach. Tageszeit: Morgen, Wetter: Nebel (Wetter, kein Kriegsnebel; art-direction §2.5; weather: fog).
 # Ziel: escort { unit: liora, area: rect [6,17,9,17] } – Liora (dritte Partei, Profil follow) zieht mit dem Trupp zum Ausgang im Süden;
 # fällt sie, ist die Mission verloren. Nach dem Sieg tritt sie bei (Kern: escort join). Erste Begegnung mit Leutnant Morra und ihren Jägern.
 # Halvards Auftritt ist die Nachszene scn.m1_3.outro, nicht Teil der Karte.
@@ -41,9 +41,9 @@ terrain: |
   ,,,H,,,..,,,,,,,
   ,,,,,,,..,,,,,,,
   ,,,,,,,..,,,,,,,
-# Morgen, Nebel: kühles, helles Grau; Sonne flach aus Osten, kaum Schatten
-ambient: { color: "#cfd8e0", intensity: 0.95 }
-sun: { color: "#eef0f2", intensity: 0.8, azimuthDeg: 100, elevationDeg: 28 }
+# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+timeOfDay: morning
+weather: fog
 lights:
   - { at: [8, 2], color: "#fff1c4", radius: 3 }
 objects:
