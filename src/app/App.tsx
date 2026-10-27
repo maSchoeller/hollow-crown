@@ -9,6 +9,7 @@ import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
 import { Chronicle } from './screens/Chronicle';
 import { Wanted } from './screens/Wanted';
+import { Licenses } from './screens/Licenses';
 import { Options, Title } from './screens/Menus';
 import { Defeat, Result } from './screens/Result';
 import { Farewell } from './screens/Farewell';
@@ -112,5 +113,7 @@ function Screens() {
       return <Chronicle from={sc.from} />;
     case 'options':
       return <Options back={sc.back} />;
+    case 'licenses':
+      return <Licenses back={sc.back} />;
   }
 }

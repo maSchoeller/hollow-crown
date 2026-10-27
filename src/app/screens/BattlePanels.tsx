@@ -20,6 +20,7 @@ import {
   type Stats,
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
+import { bagUsed } from '../../core/rules/items';
 import { mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
@@ -412,7 +413,7 @@ export function TradeSheet({ s, a, b, onClose, onCommit }: { s: BattleState; a: 
       <div class="bp-col__head">
         <b>{unitName(u)}</b>
         <small>
-          {t('ui.bag')} {u.bag.length}/{data.balance.bag.size}
+          {t('ui.bag')} {bagUsed(data, u.bag)}/{data.balance.bag.size}
         </small>
       </div>
       {carried(u).map((inst) => (

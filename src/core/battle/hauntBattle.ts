@@ -9,6 +9,7 @@ import type { BattleState, CampaignState, HauntState } from '../state';
 import { hash32 } from '../rng';
 import { hauntLevel } from '../campaign/haunts';
 import { planLieutenants } from '../campaign/lieutenants';
+import { addToBag } from '../rules/items';
 import { isScout } from '../rules/scout';
 import { newItem } from './create';
 import { HAUNT_CIVILIAN, hauntMap } from './hauntMap';
@@ -97,13 +98,10 @@ export function createHauntBattle(data: GameData, c: CampaignState, hauntId: str
   finishSetup(data, s, map);
   if (h.variant === 'treasure' && !s.units.some((u) => isScout(data, s, u))) {
     const players = s.units.filter((x) => x.team === 'player');
-    let left = base.haunts!.find((a) => a.variant === 'treasure')!.chests!.length - players.reduce((n, u) => n + u.bag.filter((i) => data.items[i.def]?.use?.open?.includes('chest')).length, 0);
-    for (const u of players) {
-      while (left > 0 && u.bag.length < data.balance.bag.size) {
-        u.bag.push(newItem(s, 'door_key', data));
-        left--;
-      }
-    }
+    const held = players.reduce((n, u) => n + u.bag.reduce((m, i) => m + (data.items[i.def]?.use?.open?.includes('chest') ? (i.charges ?? 1) : 0), 0), 0);
+    const left = base.haunts!.find((a) => a.variant === 'treasure')!.chests!.length - held;
+    // keys take no bag place (key ring): hand them out one by one round the company
+    for (let k = 0; k < left && players.length; k++) addToBag(data, players[k % players.length]!.bag, newItem(s, 'door_key', data));
   }
   return s;
 }

@@ -58,6 +58,19 @@ function Received({ v }: { v: MissionResultView }) {
   );
 }
 
+/** Plain equal pick-ups (same item, no upgrade, affixes or runes, same charges) as one line "11 × Key"; anything special stays on its own line. */
+function groupLoot(items: MissionResultView['items']): Array<{ item: MissionResultView['items'][number]; count: number }> {
+  const out: Array<{ item: MissionResultView['items'][number]; count: number; key: string | null }> = [];
+  for (const i of items) {
+    const plain = !i.upgrade && !i.affixes.length && i.runes.every((r) => !r);
+    const key = plain ? `${i.def}|${i.charges ?? ''}` : null;
+    const same = key ? out.find((o) => o.key === key) : undefined;
+    if (same) same.count++;
+    else out.push({ item: i, count: 1, key });
+  }
+  return out;
+}
+
 function Spoils({ v }: { v: MissionResultView }) {
   return (
     <section class="res-sec">
@@ -68,10 +81,10 @@ function Spoils({ v }: { v: MissionResultView }) {
           <Amount key={m.id} material={itemDef(data, m.id)} value={m.count} signed />
         ))}
       </div>
-      {v.items.map((i) => (
+      {groupLoot(v.items).map(({ item: i, count }) => (
         <div key={i.uid} class="res-item">
           <ItemImage data={data} item={i} />
-          <span class={`res-item__name r-${rarityOf(data, i)}`}>{itemName(data, i)}</span>
+          <span class={`res-item__name r-${rarityOf(data, i)}`}>{count > 1 ? t('ui.result.lootMany', { count, name: itemName(data, i) }) : itemName(data, i)}</span>
         </div>
       ))}
     </section>
@@ -174,15 +187,20 @@ function Notes({ v }: { v: MissionResultView }) {
   const c = campaign.value!;
   // the hint only helps when the campfire can be entered: its room may still be locked (rooms.yaml `requires`)
   const campfireOpen = homeRooms(data, c).some((r) => r.room.function === 'campfire' && r.open);
+  // a mercenary has no `unit.<id>.name` key: name every figure of the mission the way the company list does
+  const nameOf = (id: string) => {
+    const f = v.figures.find((x) => x.id === id);
+    return f ? unitName(f) : t(`unit.${id}.name`);
+  };
   const lines: Array<{ key: string; icon: string; cls: string; text: string }> = [
     ...v.recruited.map((id) => ({ key: `r${id}`, icon: 'star', cls: 'is-good', text: t('ui.result.recruited', { name: t(`unit.${id}.name`) }) })),
     ...v.granted.map((g) => ({
       key: `g${g.item.uid}`,
       icon: 'star',
       cls: 'is-good',
-      text: t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : t(`unit.${g.id}.name`), item: itemName(data, g.item) }),
+      text: t('ui.result.granted', { name: g.id === 'avatar' ? (c.avatar.name ?? '') : nameOf(g.id), item: itemName(data, g.item) }),
     })),
-    ...v.scars.map((s) => ({ key: `s${s.id}`, icon: 'scar', cls: 'is-bad', text: `${t(`unit.${s.id}.name`)}: ${t(`scar.${s.scar}`)}` })),
+    ...v.scars.map((s) => ({ key: `s${s.id}`, icon: 'scar', cls: 'is-bad', text: `${nameOf(s.id)}: ${t(`scar.${s.scar}`)}` })),
     ...(v.movedHome ? [{ key: 'home', icon: v.movedHome === 'castle' ? 'castle' : 'camp', cls: 'is-home', text: t('ui.result.newHome', { name: t(`home.${v.movedHome}.name`) }) }] : []),
     ...(v.supportsReady && campfireOpen ? [{ key: 'sup', icon: 'campfire', cls: 'is-gold', text: t('ui.result.supports') }] : []),
     ...(v.haunt?.halved ? [{ key: 'hh', icon: 'wanted', cls: 'is-gold', text: t('ui.result.haunt.halved') }] : []),

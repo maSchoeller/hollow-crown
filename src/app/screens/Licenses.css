@@ -1,0 +1,70 @@
+/* Licenses page in the options (style B): same stones as the options, plain text entries. */
+@import '../../ui/tokens.css';
+
+.lic-intro,
+.lic-text {
+  margin: 0;
+  font-family: var(--hc-font-body);
+  font-size: var(--hc-size-body);
+  color: var(--hc-line);
+}
+.lic-intro {
+  padding: 0 4px;
+  color: var(--hc-cream);
+}
+.lic-head {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-size: var(--hc-size-name-small);
+  color: var(--hc-line);
+}
+.lic-entry {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 10px;
+  border-top: 1px dashed var(--hc-soft);
+}
+.lic-entry__name {
+  font-family: var(--hc-font-label);
+  font-size: var(--hc-size-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-line);
+}
+.lic-entry__license,
+.lic-entry__copy,
+.lic-entry__note {
+  font-family: var(--hc-font-body);
+  font-size: var(--hc-size-body);
+  color: var(--hc-soft);
+  overflow-wrap: anywhere;
+}
+.lic-entry__toggle {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+  cursor: pointer;
+}
+.lic-entry__text {
+  margin: 0;
+  max-height: 50vh;
+  overflow: auto;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--hc-cream-2);
+  font-family: var(--hc-font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--hc-line);
+}
