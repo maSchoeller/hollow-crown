@@ -165,7 +165,7 @@ describe('Nebenquest N1 als Knoten', () => {
   it('is a side quest that never lapses: it stays open over further missions until it is played', () => {
     const c = fresh();
     c.flags.e02 = 'protect';
-    for (const done of ['ch01', 'ch02', 'n2', 'n3', 'zzz_later_story']) {
+    for (const done of ['ch01', 'ch02', 'n2', 'zzz_later_story']) {
       c.completed.push(done);
       expect(ids(c)).toContain('n1');
     }

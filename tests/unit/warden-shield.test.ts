@@ -131,7 +131,7 @@ describe('Nebenquest N2 als Knoten', () => {
     const c = newCampaign(d, 5, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     c.completed = ['prologue', 'm1_1'];
     expect(availableNodes(d, c).map((n) => n.id)).not.toContain('n2');
-    c.completed.push('m1_3', 'ch01', 'n1', 'n3');
+    c.completed.push('m1_3', 'ch01', 'n1');
     expect(availableNodes(d, c).map((n) => n.id)).toContain('n2');
     c.completed.push('n2');
     expect(availableNodes(d, c).map((n) => n.id)).not.toContain('n2');

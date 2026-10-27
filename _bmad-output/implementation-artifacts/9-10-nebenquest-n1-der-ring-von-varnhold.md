@@ -19,7 +19,7 @@ damit Entscheidungen eigene Geschichten öffnen.
 ## Dev Notes
 
 - Narrative: Fenn (19, Späher, vom Diebesring verstoßen, weil er ein Kind nicht bestehlen wollte), E2, Nebenquest-Tabelle; GDD Missionszustände (Nebenquest offen über Akte, Gedenk-Variante).
-- Karten N1–N3 gehören dieser Session; in `campaign.yaml`, `valmora.yaml`, Locale-Dateien nur anhängen.
+- Karten N1–N2 gehören dieser Session; in `campaign.yaml`, `valmora.yaml`, Locale-Dateien nur anhängen.
 - Abhängig von Story 9.5 (Flag `e02`) der Session „Akt 1 Mitte“: vor dem PR `origin/main` mit deren Stand holen.
 
 ### References
