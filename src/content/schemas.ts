@@ -225,6 +225,7 @@ export const skillSchema = z.object({
       bagChargeSaveChance: z.number(),
       refreshAction: z.boolean(),
       allowArmorClass: z.string(),
+      stealEquipped: z.boolean(),
       until: z.string(),
     })
     .partial(),
@@ -232,6 +233,7 @@ export const skillSchema = z.object({
   chanceFrom: z.enum(['hp', 'str', 'mag', 'skl', 'spd', 'lck', 'def', 'res']).optional(),
   chanceDivisor: z.number().optional(),
   area: z.object({ radius: z.number(), allies: z.boolean().optional() }).optional(),
+  aura: z.object({ radius: z.number().int().min(1) }).optional(),
   target: z.object({ ally: z.boolean(), adjacent: z.boolean(), exhausted: z.boolean() }).partial().optional(),
 });
 
@@ -294,6 +296,7 @@ const reward = z
     material: z.record(z.string(), z.number()),
     recruit: z.string(),
     dialogue: z.string(),
+    chronicle: z.string(),
   })
   .partial();
 

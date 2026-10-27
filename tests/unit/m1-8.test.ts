@@ -91,9 +91,9 @@ describe('node m1_8', () => {
   });
 
   it('opens only after every other story node and then is the only one open', () => {
-    expect(availableNodes(data, base).map((n) => n.id)).toEqual([NODE]);
-    expect(availableNodes(data, { ...base, completed: STORY.slice(0, -1) }).map((n) => n.id)).toEqual(['m1_7']);
-    expect(availableNodes(data, { ...base, completed: [...STORY, NODE] })).toEqual([]);
+    expect(availableNodes(data, base).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual([NODE]);
+    expect(availableNodes(data, { ...base, completed: STORY.slice(0, -1) }).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_7']);
+    expect(availableNodes(data, { ...base, completed: [...STORY, NODE] }).filter((n) => n.kind !== 'side')).toEqual([]);
   });
 
   it('ends the act when won; without a pack for act 2 the world map says it is coming soon', () => {
@@ -265,7 +265,7 @@ describe('the finale won and lost', () => {
     expect(r.events.filter((e) => e.t === 'itemGained' && e.def === 'ember_spark')).toHaveLength(2);
     expect(r.campaign.completed).toContain(NODE);
     expect(actFinished(data, r.campaign)).toBe(true);
-    expect(availableNodes(data, r.campaign)).toEqual([]);
+    expect(availableNodes(data, r.campaign).filter((n) => n.kind !== 'side')).toEqual([]);
     expect(sparks(normalizeCampaign(data, JSON.parse(JSON.stringify(r.campaign))))).toBe(2);
     // two instances, not one counted twice
     expect(new Set(r.campaign.convoy.filter((i) => i.def === 'ember_spark').map((i) => i.uid)).size).toBe(2);

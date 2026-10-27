@@ -1,0 +1,39 @@
+# Nebenquest N1, Szene nach der Karte: Fenn bekommt die Elster, der Glutfunke wird gefunden. Belohnung selbst: Knotenwirkung (campaign.yaml). Gedenk-Variante: scn.n1.memorial_outro.
+id: scn.n1.outro
+background: varnhold_nacht
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Nebel lichtet sich. Aus dem Lagerhaus trägt Fenn ein schmales Bündel, vorsichtig, als wäre es aus Glas."
+  - id: l02
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Da bist du ja, meine Schöne. Hat dich einer geputzt? Frechheit. Das mach ich selbst."
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Ein Dolch namens Elster. Ich hoffe, er klaut nur Beutel und keine Löffel, Küken."
+  - id: l04
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Mit ihr nehm ich nicht nur den Beutel. Auch, was einer in der Hand hält. Das hat mein Meister nie zugegeben."
+  - id: l05
+    mood: neutral
+    text: "Zwischen den Beutestücken liegt ein winziger, glimmender Splitter. Ein Glutfunke."
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Den nehmen wir mit. Wer weiß, wofür er gut ist."
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Ihr habt mich nicht ausgeliefert. Das vergess ich euch nicht. Und ich vergesse sonst alles, Namen, Schulden …"
+  - id: l08
+    speaker: [kael]
+    mood: neutral
+    text: "Dann behalt das eine. Weiter."

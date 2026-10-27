@@ -73,9 +73,9 @@ describe('node m1_6 and decision E4', () => {
     expect(node.effects).toEqual([{ setHome: 'castle' }]);
     expect(node.map).toBe('m1_6_paktwacht');
     const afterCh02 = { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5'] };
-    expect(availableNodes(data, afterCh02).map((n) => n.id)).toEqual(['m1_6']);
-    expect(availableNodes(data, { ...afterCh02, completed: [...afterCh02.completed, 'm1_6'] }).map((n) => n.id)).toEqual(['m1_7']);
-    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2'] }).map((n) => n.id)).not.toContain('m1_6');
+    expect(availableNodes(data, afterCh02).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_6']);
+    expect(availableNodes(data, { ...afterCh02, completed: [...afterCh02.completed, 'm1_6'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_7']);
+    expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).not.toContain('m1_6');
   });
 
   it('"shelter" sets the flag and Village aid for act 2; the card names both', () => {

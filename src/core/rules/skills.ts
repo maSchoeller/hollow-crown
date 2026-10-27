@@ -169,6 +169,8 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
   };
   for (const id of activeSkillIds(data, ctx.unit)) {
     const sk = data.skills[id]!;
+    // an aura skill works on the neighbours of its bearer, not on the bearer (see `addAuras`)
+    if (sk.aura) continue;
     const trig = sk.trigger;
     const applies =
       trig === 'passive' ||
@@ -209,7 +211,34 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     )
       t.used.push(id);
   }
+  addAuras(data, ctx, t);
   return t;
+}
+
+/**
+ * Auras (Schild der Paktwächter): the stat bonuses of the aura skills of allies standing within their radius of this unit.
+ * The bearer has to stand (on the map, not downed); the radius is measured from the tiles they stand on now, so the
+ * preview of a fight sees the aura of the tile the attacker would fight from. Needs the battle (`ctx.state`).
+ */
+function addAuras(data: GameData, ctx: SkillCtx, t: SkillTotals): void {
+  const s = ctx.state;
+  const u = ctx.unit;
+  if (!s || !isBattleUnit(u)) return;
+  const pos = ctx.pos ?? u.pos;
+  if (!pos) return;
+  for (const o of s.units) {
+    if (o.uid === u.uid || !active(o) || !isAlly(o.team, u.team) || !o.pos) continue;
+    const d = dist(o.pos, pos);
+    for (const id of activeSkillIds(data, o)) {
+      const sk = data.skills[id]!;
+      if (!sk.aura || d > sk.aura.radius || !conditionMet(data, sk.condition, { ...ctx, unit: o, pos: o.pos })) continue;
+      for (const [k, v] of Object.entries(sk.effect.stats ?? {})) {
+        const key = k as keyof StatMods;
+        t.stats[key] = (t.stats[key] ?? 0) + (v ?? 0);
+      }
+      t.used.push(id);
+    }
+  }
 }
 
 export const distance = dist;

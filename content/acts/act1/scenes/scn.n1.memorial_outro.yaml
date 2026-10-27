@@ -1,0 +1,23 @@
+# Nebenquest N1, Gedenk-Variante nach der Karte (Fenn ist gefallen): die Elster geht in den Konvoi (volle Belohnung, Produktinhaber 2026-10-26). Kein Humor.
+id: scn.n1.memorial_outro
+background: varnhold_nacht
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Der Ring ist zerschlagen. Aus dem Lagerhaus trägt Kael ein schmales Bündel."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Die Elster. Fenns Dolch."
+  - id: l03
+    speaker: [mira, brenna, kael]
+    mood: sad
+    text: "Elf Dietriche und ein Dolch. Mehr hat er nicht besessen. Und er hat jeden Beutel zurückgegeben."
+  - id: l04
+    mood: neutral
+    text: "Zwischen den Beutestücken liegt ein winziger, glimmender Splitter. Ein Glutfunke."
+  - id: l05
+    speaker: [kael]
+    mood: sad
+    text: "Wir nehmen beides mit. Die Elster bleibt in der Kompanie. Für ihn."

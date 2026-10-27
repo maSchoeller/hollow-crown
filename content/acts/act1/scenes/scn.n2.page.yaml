@@ -1,0 +1,14 @@
+# Nebenquest N2, Szene beim Öffnen der Chronik-Truhe (8,1). Läuft in der Schlacht, ohne Antworten. Die Seite selbst ist die Truhenbelohnung `chronicle: a1_watchtower`.
+id: scn.n2.page
+lines:
+  - id: l01
+    mood: neutral
+    text: "In der Truhe liegt ein einzelnes Blatt aus der Chronik der Wächter, eng beschrieben, die Tinte noch schwarz."
+  - id: l02
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Ein König, der vor dem Winter starb. Der dritte, den der Schreiber zählt. Und er hat nie aufgehört zu zählen."
+    memorial:
+      speaker: [avatar]
+      mood: sad
+      text: "Liora hätte das lesen können."

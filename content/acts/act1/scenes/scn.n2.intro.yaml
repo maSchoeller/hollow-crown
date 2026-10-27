@@ -1,0 +1,29 @@
+# Nebenquest N2 „Der letzte Wachturm“ (Story 9.11), Szene vor der Karte: ein Turm der Paktwächter im Hochmoor, Plünderer darin. Nach Mission 1-3 (Liora ist dabei, sonst Ersatzsprecher).
+id: scn.n2.intro
+background: wachturm
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Felssporn im Hochmoor, Morgennebel. Ein halb verfallener Turm, über dem Tor Drache und Krone."
+  - id: l02
+    speaker: [liora, ysolde, avatar]
+    mood: neutral
+    text: "Das Zeichen der Paktwächter. Sie hüteten die Grenze, bevor der Tempel den Orden auflöste."
+  - id: l03
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Im Tempel hieß es, es habe sie nie gegeben. Wer nach ihnen fragte, bekam keine Antwort mehr."
+  - id: l04
+    speaker: [tobin]
+    fallback: skip
+    mood: happy
+    text: "Ein Turm der Paktwächter! Hüter der Wahrheit, Schützer der … äh … von irgendwas mit Wahrheit!"
+  - id: l05
+    speaker: [kael]
+    mood: neutral
+    text: "Plünderer sitzen darin. Sie schleppen heraus, was nicht festgenagelt ist."
+  - id: l06
+    speaker: [kael]
+    mood: neutral
+    text: "Wir nehmen das Tor und vertreiben sie. Was im Turm liegt, holen wir, bevor sie es verkaufen."

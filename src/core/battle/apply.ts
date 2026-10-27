@@ -270,6 +270,7 @@ function grantReward(data: GameData, s: BattleState, u: BattleUnit, r: Reward | 
     events.push({ t: 'material', id, amount: n });
   }
   if (r.item) giveItem(data, s, u, newItem(s, r.item, data), events);
+  if (r.chronicle && !(s.stats.pages ?? []).includes(r.chronicle)) (s.stats.pages ??= []).push(r.chronicle);
   if (r.recruit) {
     const def = data.chars[r.recruit];
     if (def && u.pos) {
@@ -430,8 +431,10 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       break;
     case 'steal': {
       const target = getUnit(s, a.target);
-      const item = target.bag.find((i) => i.uid === a.item)!;
+      // the bag first; an equipped item only reaches here when the thief wears the Elster (validated with the options)
+      const item = target.bag.find((i) => i.uid === a.item) ?? Object.values(target.equip).find((i) => i?.uid === a.item)!;
       target.bag = target.bag.filter((i) => i.uid !== item.uid);
+      for (const slot of Object.keys(target.equip) as Array<keyof typeof target.equip>) if (target.equip[slot]?.uid === item.uid) delete target.equip[slot];
       target.dropUids = target.dropUids.filter((uid) => uid !== item.uid);
       events.push({ t: 'stolen', unit: u.uid, target: target.uid, item });
       giveItem(data, s, u, item, events);

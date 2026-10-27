@@ -1,0 +1,14 @@
+# Nebenquest N2, Szene beim Öffnen der Relikt-Truhe (5,1): Schild der Paktwächter, Stufe 1 (schlafend). Läuft in der Schlacht.
+id: scn.n2.relic
+lines:
+  - id: l01
+    mood: neutral
+    text: "In der Truhe ruht ein Schild mit Drache und Krone. Das Metall ist matt, als schliefe es."
+  - id: l02
+    speaker: [brenna, kael]
+    mood: happy
+    text: "Ein Schild, der schläft. Wie Tobin nach dem Frühstück."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Er ist schwer und gut gearbeitet. Wer ihn trägt, deckt die Seinen."

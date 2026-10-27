@@ -28,7 +28,7 @@ describe('chained act simulation (story 6.8)', () => {
   it('plays the story missions in campaign order and is deterministic per seed', { timeout: 60000 }, () => {
     const o = { runs: 1, seed: 3, difficulty: 'normal' as const, deathMode: 'standard' as const };
     const a = simulateCampaign(data, o);
-    expect(a.missions.map((m) => m.node)).toEqual(data.campaign.nodes.slice(0, a.missions.length).map((n) => n.id));
+    expect(a.missions.map((m) => m.node)).toEqual(data.campaign.nodes.filter((n) => n.kind !== 'side').slice(0, a.missions.length).map((n) => n.id));
     expect(a.missions[0]!.node).toBe(firstNode(data).id);
     expect(simulateCampaign(data, o)).toEqual(a);
   });

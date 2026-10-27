@@ -172,6 +172,8 @@ export interface BattleState {
     downs: number;
     recruited: string[];
     bossKilledWith?: string;
+    /** chronicle pages found in chests and villages of this battle (reward `chronicle`, story 9.11); they reach the campaign when it is won (missing in older saves = none) */
+    pages?: string[];
   };
   outcome: 'victory' | 'defeat' | null;
   /** why the battle was lost: a unit id (a unit that had to survive fell) or 'turns' (turn limit); missing in old saves */

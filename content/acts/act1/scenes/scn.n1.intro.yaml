@@ -1,0 +1,51 @@
+# Nebenquest N1 „Der Ring von Varnhold“ (Story 9.10), Szene vor der Karte: Fenn will seine Elster zurück. Fenn: Gaunersprache, prahlt.
+# Hintergrund: E2 „schützen“ (die Truppe hat Fenn nicht an den Ring ausgeliefert). Gedenk-Variante: scn.n1.memorial_intro.
+id: scn.n1.intro
+background: varnhold_nacht
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Varnhold bei Nacht. Nebel in den Gassen, warme Lichter an den Ständen. Der Markt ist leer."
+  - id: l02
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Bleibt dicht hinter mir. Im Nebel kenn ich jeden Pflasterstein. Die meisten hab ich selbst gelockert."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Du sagtest, es geht um etwas, das dir gehört."
+  - id: l04
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Meine Elster. Ein Dolch, so flink, dass man ihn nicht kommen sieht. Der Ringmeister behielt ihn."
+  - id: l05
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Rausgeworfen, weil du einem Kind den Beutel ließest. Ich hätte dich auch genommen, Küken."
+  - id: l06
+    speaker: [fenn]
+    fallback: skip
+    mood: neutral
+    text: "Der Ring wollte mich zurück, gegen eine Auskunft. Ihr habt nein gesagt. Das hat noch keiner für mich getan."
+  - id: l07
+    speaker: [kael]
+    mood: neutral
+    text: "Du schuldest uns nichts. Wo hält er den Dolch?"
+  - id: l08
+    speaker: [fenn]
+    fallback: skip
+    mood: happy
+    text: "Im Lagerhaus im Nordosten, hinter der Schlüsseltür. Ich geh auch ohne, Hauptmann. Ist nur eine Tür."
+  - id: l09
+    speaker: [brenna]
+    fallback: skip
+    mood: happy
+    text: "Dann klopfen wir an. Wer nicht aufmacht, kriegt den Axtstiel. Ich nenne das Öffnungszeiten."
+  - id: l10
+    speaker: [kael]
+    mood: neutral
+    text: "Waffen bereit. Wir bleiben beisammen."

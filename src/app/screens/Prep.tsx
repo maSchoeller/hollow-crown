@@ -101,7 +101,7 @@ export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: 
         <ScreenHead title={t('ui.prep.title')} onBack={() => (screen.value = { name: from })} />
       </div>
       <Piece class="prp-info">
-        <div class="prp-info__kicker">{t(h ? 'ui.map.haunt.kicker' : 'ui.map.kicker', { node: nodeShort(node) })}</div>
+        <div class="prp-info__kicker">{t(h ? 'ui.map.haunt.kicker' : nd.kind === 'side' ? 'ui.map.side.kicker' : 'ui.map.kicker', { node: nodeShort(node) })}</div>
         <h2 class="prp-info__title">{t(`map.${nd.map}.name`)}</h2>
         <p class="prp-info__goal">{goalLine(map.objectives.victory, map)}</p>
         <div class="prp-info__tags">

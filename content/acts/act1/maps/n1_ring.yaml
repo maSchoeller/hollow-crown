@@ -1,14 +1,17 @@
 # Nebenquest N1 – Der Ring von Varnhold (Story 9.10, Fenns Vergangenheit; Voraussetzung E2 „schützen“). Variante der Karte m1_1_steckbriefe:
 # derselbe Markt von Varnhold, aber nachts und mit Nebel; ein Haus (NO) ist das Lagerhaus, in dem der Ringmeister den Ring hütet. Startwerte [C].
-# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Feld folgt mit Story 8.6). Geplantes Ortsbild: varnhold (Nacht).
+# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Felder timeOfDay/weather). Geplantes Ortsbild: varnhold (Nacht).
 # Ziel: Ringmeister besiegen (boss, kein Leutnant). Das Lagerhaus ist verschlossen (Tür 11,2; Schlüssel fällt bei einem Dieb, Späher öffnen ohne Schlüssel).
 # Rollen: Nebel + Gassen für Späher, Lagerhaustür als Engstelle für Vorkämpfer.
-# OFFEN: Belohnung Glutfunke und Signaturdolch (items.md §6.3) existieren noch nicht als Items/Effekte; bis dahin Gold in den Truhen.
-# Gedenk-Variante, falls Fenn gefallen ist: nur Szenen-/Belohnungsvariante (Story 9.10), hier nur Kommentar.
+# Belohnung (Story 9.10): Glutfunke (ember_spark) und Signaturdolch Elster (magpie) kommen mit dem Sieg als Knotenwirkung in den Konvoi (campaign.yaml n1 effects),
+# nicht aus einer Truhe: wer den Ringmeister schlägt, hat sie, auch ohne die Lagerhaustruhen. Die Truhen sind gewöhnliche Beute.
+# Gedenk-Variante, falls Fenn gefallen ist (memorialIf): gleiche Karte, gleiche volle Belohnung, nur andere Szenen (scn.n1.memorial_intro/outro); scn.n1.ring hat Zeilen für beide Fälle.
 id: n1_ring
 nameKey: map.n1_ring.name
 size: [14, 16]
 fog: true
+timeOfDay: night
+weather: fog
 legend:
   ".": plain
   ",": grass
@@ -37,9 +40,6 @@ terrain: |
   ,,T,..__..,T,,
   ,,,,..__..,,,,
   ,,,,..__..,,,,
-# Nacht, Nebel: kaltes, graublaues Licht, Mond schwach, warme Lichter an Ständen, Brunnen und im Lagerhaus
-ambient: { color: "#7f8fb8", intensity: 0.6 }
-sun: { color: "#a9bff0", intensity: 0.45, azimuthDeg: 140, elevationDeg: 45 }
 lights:
   - { at: [4, 4], color: "#ffb35c", radius: 3 }
   - { at: [10, 4], color: "#ffb35c", radius: 3 }
@@ -49,7 +49,7 @@ lights:
   - { at: [11, 1], color: "#ffb35c", radius: 3 }
 objects:
   - { id: door_wh, type: door, at: [11, 2] }
-  # OFFEN: Ring = Signaturdolch + Glutfunke (kein Item/Effekt vorhanden); Gold als Platzhalter
+  # Beute des Rings [C]; Elster und Glutfunke kommen nicht aus der Truhe (siehe Kopf)
   - { id: c_ring, type: chest, at: [10, 1], contents: { gold: 500 } }
   - { id: c_stock, type: chest, at: [12, 1], contents: { gold: 300, item: { def: vulnerary } } }
   - { id: v_nw, type: village, at: [3, 1],  reward: { gold: 150 } }
@@ -86,8 +86,13 @@ objectives:
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
     - { id: s_chests, type: open_chests, reward: { gold: 300 } }
-triggers: []
-# Szenen (9.10): scn.n1.intro (Fenns Vergangenheit) bei Runde 1; scn.n1.ring beim Fall des Ringmeisters; Gedenk-Variante bei gefallenem Fenn.
+triggers:
+  - id: t_ring_master
+    once: true
+    when: { type: unit_dies, unit: ring_master }
+    then:
+      - { action: dialogue, id: scn.n1.ring }
+# Szenen (9.10): scn.n1.intro / scn.n1.outro (Knoten pre/post) vor und nach der Karte; scn.n1.ring beim Fall des Ringmeisters (Trigger oben); Gedenk-Variante (Fenn gefallen) über den Knoten.
 goldReward: 600   # [C] Nebenquest
 music: battle_a
 devNote: >

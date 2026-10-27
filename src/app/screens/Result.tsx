@@ -3,7 +3,7 @@
  * lieutenants, side objectives and EP per figure with the fallen grey; and the defeat screen with its restarts.
  * What to show comes from the core (`missionResultView`, `defeatSentence`); this file only lays it out.
  */
-import { defeatSentence, farewellView, homeRooms, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
+import { defeatSentence, pageTitleKey, farewellView, homeRooms, itemDef, missionResultView, type BattleResult, type MissionResultView, type Reward } from '../../core';
 import { t } from '../../i18n';
 import { sideLine } from '../../ui/goalText';
 import { itemName, rarityOf, unitName } from '../../ui/components';
@@ -32,6 +32,29 @@ function RewardAmounts({ reward: r }: { reward: Reward }) {
         </span>
       )}
     </span>
+  );
+}
+
+/** What the node's own reward put into the convoy and the chronicle: the item with its picture, the ember spark highlighted, equal items as "2 ×". */
+function Received({ v }: { v: MissionResultView }) {
+  if (!v.received.length) return null;
+  return (
+    <section class="res-sec">
+      <h3 class="res-sec__title">{t('ui.result.received')}</h3>
+      {v.received.map((r) =>
+        r.kind === 'page' ? (
+          <div key={`p${r.id}`} class="res-note is-good">
+            <Icon name="star" size={18} />
+            <span>{t('ui.result.page', { title: t(pageTitleKey(r.id)) })}</span>
+          </div>
+        ) : (
+          <div key={`i${r.id}`} class={`res-item ${itemDef(data, r.id).kind === 'seal' ? 'res-item--spark' : ''}`}>
+            <ItemImage data={data} item={r.id} size={itemDef(data, r.id).kind === 'seal' ? 40 : 32} />
+            <span class={`res-item__name r-${itemDef(data, r.id).rarity}`}>{r.count > 1 ? t('ui.result.receivedMany', { count: r.count, name: t(`item.${r.id}.name`) }) : t('ui.result.receivedOne', { name: t(`item.${r.id}.name`) })}</span>
+          </div>
+        ),
+      )}
+    </section>
   );
 }
 
@@ -191,6 +214,7 @@ export function Result({ result }: { result: BattleResult }) {
       </Piece>
       <Piece class="hc-view__fill res-body">
         <Spoils v={v} />
+        <Received v={v} />
         <Bounty v={v} />
         <Sides v={v} />
         <Company v={v} />

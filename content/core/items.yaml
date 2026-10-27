@@ -130,3 +130,9 @@
 - { id: bounty,       kind: weapon, slot: mainHand, weaponType: bow,  group: bow,  damageType: physical, mt: 6, hit: 85, crit: 15, rng: [2,2], wt: 5, rarity: legendary, price: 1000, twoHanded: true, effectiveVs: [flier] }              # Morra: Kopfgeld (Armbrust)
 - { id: wolf_fang,    kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 80, crit: 0,  rng: [1,1], wt: 7, rarity: legendary, price: 1000, grantsSkill: { skill: wolf_run, masteryCost: 40 } } # Ulvric: Wolfszahn
 - { id: little_hands, kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7, rarity: legendary, price: 1200, grantsSkill: { skill: renewal, masteryCost: 45 } }                                                               # Grosk: Kinderhand
+
+# --- Signaturen der Gefährten aus Nebenquests (items.md §6.2): Werte der Eisenwaffe der Gruppe, Seltenheit legendary, Preis wie die Leutnant-Signaturen [C]; der Effekt hängt als Skill am Item ---
+- { id: magpie, kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 4, hit: 85, crit: 10, rng: [1,1], wt: 3, rarity: legendary, price: 1000, grantsSkill: { skill: long_fingers, masteryCost: 40 } }   # Fenn: Elster (N1), Stehlen auch von Ausgerüstetem
+
+# --- Relikte (items.md §5; Story 9.11): Schild der Paktwächter, Stufe 1 schlafend. Werte wie der Eisenschild, unverkäuflich; Erwachen (Stufen 2/3, Bilder _2/_3) folgt in einer späteren Story ---
+- { id: pact_warden_shield, kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7, rarity: legendary, price: 0, tags: [unsellable], image: pact_warden_shield_1, grantsSkill: { skill: warden_ward, masteryCost: 45 } }   # Relikt Akt 1 (N2)

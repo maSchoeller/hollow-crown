@@ -263,6 +263,8 @@ export interface SkillEffect {
   bagChargeSaveChance?: number;
   refreshAction?: boolean;
   allowArmorClass?: string;
+  /** Stehlen also takes equipped items of the foe (Elster, story 9.10) */
+  stealEquipped?: boolean;
   until?: string;
 }
 
@@ -276,6 +278,11 @@ export interface SkillDef {
   chanceFrom?: StatKey;
   chanceDivisor?: number;
   area?: { radius: number; allies?: boolean };
+  /**
+   * Aura (Schild der Paktwächter, story 9.11): a passive skill whose `effect.stats` do not go to the bearer but to every
+   * active ally within `radius` tiles of him, as long as the bearer stands (is on the map and not downed).
+   */
+  aura?: { radius: number };
   target?: { ally?: boolean; adjacent?: boolean; exhausted?: boolean };
 }
 
@@ -358,6 +365,8 @@ export interface Reward {
   material?: Record<string, number>;
   recruit?: string;
   dialogue?: string;
+  /** chronicle page found with it (story 9.11); it reaches the campaign as the effect `{ chronicle }` when the mission is won */
+  chronicle?: string;
 }
 
 export type ObjectiveDef =

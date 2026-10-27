@@ -1,0 +1,19 @@
+# Nebenquest N2, Szene nach der Karte. Der Glutfunke ist die Knotenwirkung (campaign.yaml), Seite und Relikt kommen aus den Truhen (scn.n2.page, scn.n2.relic), falls geöffnet.
+id: scn.n2.outro
+background: wachturm
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Das Tor des Turms gehört wieder niemandem. Der Wind pfeift durch die leeren Schießscharten."
+  - id: l02
+    mood: neutral
+    text: "Im Torstein glimmt ein Splitter Glut, vom Frost freigelegt. Ein Glutfunke."
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Der Turm war der letzte seiner Art. Jemand muss ihn eine lange Zeit allein gehalten haben."
+  - id: l04
+    speaker: [liora, ysolde, avatar]
+    mood: neutral
+    text: "Dann behalten wir, was er bewahrt hat. Das ist mehr, als der Tempel getan hat."

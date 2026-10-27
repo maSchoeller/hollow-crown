@@ -9,6 +9,7 @@ import {
   getUnit,
   knockOut,
   missionResultView,
+  receivedLines,
   newCampaign,
   type BattleResult,
   type CampaignState,
@@ -133,5 +134,25 @@ describe('defeatSentence (story 6.6)', () => {
       log.push({ type: 'endPhase' });
     }
     if (s.outcome === 'defeat') expect(s.defeatReason).toBeTruthy();
+  });
+});
+
+describe('what the node reward put into the convoy and the chronicle (side quests)', () => {
+  it('lists items and chronicle pages from the applied effects, in order', () => {
+    const v = missionResultView(fake({ effects: [{ item: { def: 'magpie' } }, { item: { def: 'ember_spark' } }, { chronicle: 'a1_watchtower' }, { gold: 5 }] }));
+    expect(v.received).toEqual([
+      { kind: 'item', id: 'magpie', count: 1 },
+      { kind: 'item', id: 'ember_spark', count: 1 },
+      { kind: 'page', id: 'a1_watchtower' },
+    ]);
+  });
+
+  it('adds equal items up: two ember sparks read "2 ×"', () => {
+    expect(receivedLines([{ item: { def: 'ember_spark' } }, { item: { def: 'ember_spark' } }])).toEqual([{ kind: 'item', id: 'ember_spark', count: 2 }]);
+  });
+
+  it('is empty for a mission without such a reward, and the ember spark is a seal (the highlighted kind)', () => {
+    expect(missionResultView(fake()).received).toEqual([]);
+    expect(data.items.ember_spark!.kind).toBe('seal');
   });
 });
