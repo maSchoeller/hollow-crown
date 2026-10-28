@@ -85,7 +85,8 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Sprechband | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen; sitzt fest am Bildschirm, die Kamera bewegt sich nicht, der Sprecher muss nicht auf dem Brett stehen; Barks und Leutnant-Zeilen laufen ebenso, ohne Tipp und mit Brett-Tempo |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
 | Raumstein | Tipp öffnet das Raum-Panel; Ausbau-Band erscheint nur, wenn Gefährte und Gold reichen; sonst nennt die Stufe, was fehlt |
-| Item-Zeile | erster Tipp wählt und zeigt den Vergleich, Haupttaste führt aus; Unpassendes bleibt sichtbar, gedimmt, mit Grund |
+| Item-Zeile | erster Tipp wählt und zeigt den Vergleich, Haupttaste führt aus; Unpassendes bleibt sichtbar, gedimmt, mit Grund; Info-Stein rechts oder Langdruck öffnet die Item-Details |
+| Item-Details | Overlay-Blatt: Bild, Seltenheit, Typ, Beschreibung, jeder Wert mit vollem Namen und kurzer Erklärung, Wirkungen, gelehrte Fähigkeit (FP), Set, Runen, Preis; schließt mit Zurück, Esc oder Tipp daneben |
 | Dialogbox | Tipp irgendwo führt weiter; Log, Auto, Überspringen oben rechts; bereits gesehene Szenen lassen sich ganz überspringen |
 | Entscheidung | Marke „Entscheidung · hat Folgen“; erster Tipp markiert, zweiter bestätigt; Überspringen und Auto sind aus |
 | Folgen-Karte | erscheint direkt nach der Wahl; eine Zeile je Wirkung; schreibt einen Eintrag in die Chronik |
@@ -114,7 +115,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 |---|---|
 | Tipp | wählen, bestätigen, weiter |
 | Zweiter Tipp auf dasselbe Ziel | bestätigen (Bewegung, Angriff, Antwort) |
-| Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners |
+| Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners, Item-Details |
 | Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett, 2 auf der Weltkarte) |
 | Ziehen | Kamera verschieben |
 | Wischen | nächste Figur, nächste Epilog-Kachel, nächstes Kontext-Band (Punkte-Anzeige darunter) |

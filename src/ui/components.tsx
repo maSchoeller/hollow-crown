@@ -10,29 +10,17 @@ import {
   type ItemInstance,
 } from '../core';
 import { t } from '../i18n';
-import { instanceRarity } from '../core/loot';
+import { itemName, rarityOf } from './itemInfo';
 import { Icon } from './icons';
 import { ItemImage } from './pieces';
+import { ItemInfoButton, ItemSheetPortal, useLongPress } from './ItemSheet';
 import { asset } from './asset';
 
 export { asset };
+export { itemName, rarityOf };
 
 export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);
-}
-
-export function itemName(data: GameData, inst: ItemInstance): string {
-  let name = t(`item.${inst.def}.name`);
-  const pre = inst.affixes.filter((a) => data.affixes[a]?.position === 'prefix').map((a) => t(`affix.${a}`));
-  const suf = inst.affixes.filter((a) => data.affixes[a]?.position === 'suffix').map((a) => t(`affix.${a}`));
-  if (pre.length) name = t('ui.item.prefixed', { name, affix: pre.join(' ') });
-  if (suf.length) name = `${name} ${suf.join(' ')}`;
-  if (inst.upgrade > 0) name += ` +${inst.upgrade}`;
-  return name;
-}
-
-export function rarityOf(data: GameData, inst: ItemInstance): string {
-  return instanceRarity(data, inst.def, inst.affixes.length);
 }
 
 export function Modal({ title, onClose, children, wide }: { title?: ComponentChildren; onClose?: () => void; children: ComponentChildren; wide?: boolean }) {
@@ -127,24 +115,31 @@ export function ItemLine({
 }) {
   const d = itemDef(data, inst);
   const values = [...itemParts(data, inst), ...(d.grantsSkill ? [t('ui.item.teaches', { skill: t(`skill.${d.grantsSkill.skill}.name`) })] : [])];
+  const [info, setInfo] = useState(false);
+  const long = useLongPress(() => setInfo(true));
   return (
-    <button
-      type="button"
-      class={`hc-line-item ${selected ? 'is-sel' : ''} ${current ? 'is-current' : ''} ${dim ? 'is-dim' : ''}`}
-      aria-pressed={selected}
-      aria-disabled={dim}
-      onClick={dim ? undefined : onClick}
-    >
-      <ItemImage data={data} item={inst} />
-      <span style={{ minWidth: 0 }}>
-        <span class="hc-line-item__name">
-          {itemName(data, inst)}
-          {tag && <span class="hc-tag">{tag}</span>}
+    <div class="hc-line-row">
+      <button
+        type="button"
+        {...long}
+        class={`hc-line-item ${selected ? 'is-sel' : ''} ${current ? 'is-current' : ''} ${dim ? 'is-dim' : ''}`}
+        aria-pressed={selected}
+        aria-disabled={dim}
+        onClick={dim ? undefined : onClick}
+      >
+        <ItemImage data={data} item={inst} />
+        <span style={{ minWidth: 0 }}>
+          <span class="hc-line-item__name">
+            {itemName(data, inst)}
+            {tag && <span class="hc-tag">{tag}</span>}
+          </span>
+          <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
         </span>
-        <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
-      </span>
-      <span class="hc-line-item__side">{side}</span>
-    </button>
+        <span class="hc-line-item__side">{side}</span>
+      </button>
+      <ItemInfoButton data={data} item={inst} />
+      <ItemSheetPortal data={data} item={info ? inst : null} onClose={() => setInfo(false)} />
+    </div>
   );
 }
 
