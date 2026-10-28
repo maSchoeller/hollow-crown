@@ -42,6 +42,7 @@ import {
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { ItemLine, itemName, unitName } from '../../ui/components';
+import { ItemInfoButton } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton, Tabs } from '../../ui/pieces';
 import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
@@ -556,8 +557,9 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
         return (
           <div key={id} class="hm-offer">
             <ItemImage data={data} item={id} />
-            <span>
+            <span class="hm-offer__name">
               {t(`item.${id}.name`)} ×{n}
+              <ItemInfoButton data={data} item={id} />
             </span>
             <SecondaryButton disabled={!m || n < data.balance.economy.runeMerge.count} onClick={() => apply({ type: 'mergeRunes', rune: id }, t('ui.camp.merged'))}>
               {t('ui.camp.merge')}
@@ -569,7 +571,10 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
       {buyable.map((r) => (
         <div key={r.id} class="hm-offer">
           <ItemImage data={data} item={r.id} />
-          <span>{t(`item.${r.id}.name`)}</span>
+          <span class="hm-offer__name">
+            {t(`item.${r.id}.name`)}
+            <ItemInfoButton data={data} item={r.id} />
+          </span>
           <SecondaryButton disabled={c.gold < shopPrice(data, c, r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
             <Amount resource="gold" value={shopPrice(data, c, r.price ?? 0)} short={c.gold < shopPrice(data, c, r.price ?? 0)} />
           </SecondaryButton>
