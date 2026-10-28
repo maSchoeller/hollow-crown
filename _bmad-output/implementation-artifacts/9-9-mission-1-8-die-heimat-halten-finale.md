@@ -1,6 +1,6 @@
 # Story 9.9: Mission 1-8 „Die Heimat halten“ (Finale)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -173,3 +173,7 @@ Story: diese Datei, `sprint-status.yaml` (nur die Zeile 9-9).
 ### Change Log
 
 - 2026-10-26: Mission 1-8 spielbar (Karte, Knoten `fixed: finale`, Szenen, Morras Rückzug, Item `ember_spark`, Funkenmoment mit Karte „2 × Glutfunke“), Akt-Ende; Befund und Korrektur des Zieltextes `defend`.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt bis Glutfunken-Moment und Hinweis auf Akt 2. Balancing PR #73: Leicht 100 %/0,46, Normal 92 %/0,45, Kampagne Schwer 61 %, Kampagne Normal 96 %; dritte Welle Runde 8 statt 7 (zur Bestätigung beim Produktinhaber). Gesamtbefund: `acceptance-2026-10-27.md`.

@@ -1,6 +1,6 @@
 # Story 9.1: Prolog „Die Paktnacht“
 
-Status: review
+Status: done
 
 ## Story
 
@@ -102,3 +102,7 @@ Claude Sonnet 5.5
 - 2026-10-25: kein `min` beim Fluchtziel, Tafeln über `panel`, Spielstand-Fixtures neu, Simulation abgestimmt (Produktinhaber-Entscheidungen).
 - 2026-10-25 (Merge main, PR #45/#47): Orte statt `bg_*`, Tafel über `locations`, Tempelwachen auf `temple_guard`, Nachtlicht, Nebenziel `s_fast` 9 Runden (Normal-Median 9). Sim nach dem Merge: Leicht 100 % / 0,00, Normal 98 % / 0,44, Schwer 48 % / 1,54 (Median 7 / 9 / 11 Runden).
 - 2026-10-25 (Merge main, PR #46: Halten, Nachsetzen, Wirken, Nebel, Kontext-Band, Wolfsreiter, Escort/Treasure): Schwer-Wachen im Süden (tg3h Stufe 2, tg4h 2, tg5h 2; Auslöseradius 2/3/3) statt Stufen 3/4/4 mit Radius 5, weil Rhen allein zum Ausgang läuft und sonst in jedem Lauf fällt; `s_fast` 11 Runden (Normal-Median 11 seit der Reihenfolge-Regel für Kael). Sim, 50 Läufe: Leicht 100 % / 0,00, Normal 98 % / 0,96, Schwer 52 % / 1,06 (Median 7 / 11 / 12).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt; Sim im Korridor (Leicht 100 %/0,00, Normal 100 %/1,02, Schwer über die Kampagne 47 %). Gesamtbefund: `acceptance-2026-10-27.md`.

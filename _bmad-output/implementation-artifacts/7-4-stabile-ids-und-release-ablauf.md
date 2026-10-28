@@ -1,6 +1,6 @@
 # Story 7.4: Stabile IDs und Release-Ablauf
 
-Status: review
+Status: done
 
 ## Story
 
@@ -55,3 +55,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 - tools/content-check.ts, src/content/node.ts, src/content/packs.ts, tools/build/packs-plugin.ts
 - src/persistence/save.ts, package.json, AGENTS.md
 - concept/24-architecture/decision-log.md
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Sperre aktiv ab 9.14; Migrations-Fixtures und Release-Ablauf vorhanden. Gesamtbefund: `acceptance-2026-10-27.md`.

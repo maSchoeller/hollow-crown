@@ -1,6 +1,6 @@
 # Story 5.1: Szenen-Host und geteilter Asset-Cache
 
-Status: review
+Status: done
 
 ## Story
 
@@ -96,3 +96,7 @@ Claude Opus 5.5 (claude-opus-5-5)
 - `content/core/render.yaml`, `src/content/schemas.ts`, `src/core/defs.ts`
 - `tests/unit/render-cache.test.ts` (neu), `tests/unit/{camera,terrain3d}.test.ts`, `tests/e2e/smoke.spec.ts`
 - `concept/24-architecture/decision-log.md`, `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Brett, Weltkarte und Szenen im Durchlauf ohne Fehler; Tests grün. Gesamtbefund: `acceptance-2026-10-27.md`.

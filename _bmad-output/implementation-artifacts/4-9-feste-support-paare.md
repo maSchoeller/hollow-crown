@@ -1,6 +1,6 @@
 # Story 4.9: Feste Support-Paare
 
-Status: review
+Status: done
 
 ## Story
 
@@ -78,3 +78,7 @@ Claude Opus 5.5
 - `content/acts/act1/campaign.yaml`, `content/core/balance.yaml`
 - `src/app/screens/Camp.tsx`, `src/ui/camp.css`
 - Doku: `concept/24-architecture/{architecture,decision-log}.md`, `concept/25-ux/.decision-log.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). 9 Paare / 4 Kernpaare in Akt 1 (Staffelziel 25/6 über die Akte), Marke „Gespräche bereit“ in Lager und Burg gesehen. Gesamtbefund: `acceptance-2026-10-27.md`.

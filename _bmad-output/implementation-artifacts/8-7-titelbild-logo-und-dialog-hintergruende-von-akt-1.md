@@ -1,6 +1,6 @@
 # Story 8.7: Titelbild, Logo und Dialog-Hintergründe von Akt 1
 
-Status: review
+Status: done
 
 ## Story
 
@@ -94,3 +94,7 @@ Claude Sonnet 5.5
 - `content/acts/act1/campaign.yaml`, `content/acts/act1/scenes/*.yaml` (Hintergrund-Ids)
 - `art/title/title_act1.png`, `art/prompts/title_art.md`, `art/prompts/backgrounds_act1.md`, `art/prompts/bg_*.md`, `art/README.md`, `art/backgrounds/` (gelöscht)
 - `concept/23-art-direction/decision-log.md`, `concept/23-art-direction/art-direction.md`, `concept/11-content-format.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). AC 3: Seite „Lizenzen“ in den Optionen mit OFL-Hinweis (Entscheidung 2026-10-27, PR #71). Gesamtbefund: `acceptance-2026-10-27.md`.

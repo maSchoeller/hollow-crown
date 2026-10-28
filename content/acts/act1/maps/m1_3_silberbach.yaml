@@ -56,11 +56,12 @@ deploy:
   slots: [[8, 4], [7, 4], [9, 4], [6, 4], [8, 5], [7, 5], [8, 3], [7, 3]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: der Schrein am Silberbach, an dem die Truppe Liora fand – hier beginnt der Weg nach Süden.
+  # Grund: der Schrein am Silberbach, an dem die Truppe Liora fand – hier beginnt der Weg nach Süden. Der Zivilist wartet nördlich der Brücke, die Jäger
+  # setzen aus dem Norden nach (Simulation 2026-10-28: Jäger im Süden, am Weg zum Ausgang, ließen die Truppe stehen bleiben – 38 %, so 83 %).
   - variant: escort
-    target: { at: [8, 2] }
-    enemySpawn: { rect: [5, 10, 10, 11] }
-    deploy: { rect: [6, 3, 9, 4] }
+    target: { at: [8, 6] }
+    enemySpawn: { rect: [4, 0, 11, 1] }
+    deploy: { tiles: [[8, 7], [8, 4], [7, 5], [9, 5], [7, 4], [9, 4], [7, 6], [9, 6]] }
     exit: { rect: [6, 17, 9, 17] }
   # Grund: die Brücke über den Silberbach – Hinterhalt an der Engstelle.
   - variant: rout
@@ -75,6 +76,7 @@ haunts:
 # Epic 3: Morra flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Kopfgeld (bounty). Ihre Kartenwaffe ist Eisen (iron_bow), damit
 # „+1 Tier je Groll“ greift (Review R14/R15). Morra ist Schützin (Klasse marksman aus lieutenants.yaml), kein Boss: das Ziel ist escort.
 # Liora: dritte Partei am Schrein (Heilstab), Profil follow – sie wartet, bis die Truppe nahe ist, und zieht dann mit ihr zum Ausgang.
+# Balancing 2026-10-28 [C]: Stufen der Banditen 3 statt 2 (h2 bleibt 3, h4 Stufe 4, h8/Schütze Stufe 4 nur Schwer), Auslöseradius der Schleichwege 6 statt 4/5, h7 trigger statt hold (Normal/Schwer). Hintergrund: Schwer lag bei 97 % Sieg (Korridor 30-70), Normal bei 0,3 Niedergestreckten (Korridor 0,4-1,3).
 units:
   - { char: liora, id: liora, team: other, class: healer, level: 3, at: [8, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }, { def: leather_vest }, { def: leather_cap }], ai: { profile: follow } }
   - id: morra
@@ -90,28 +92,24 @@ units:
     drops: [1]
     ai: { profile: trigger, radius: 4, then: aggressive }
     quote: scn.m1_3.morra_battle
-  - { id: h1, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 2, at: [2, 6],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: h2, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 2, at: [13, 5], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: h3, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 2, at: [2, 10], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: h4, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 2, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: h5, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 2, at: [4, 12], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: h6, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 2, at: [11, 13], items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: h7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 2, at: [12, 3], items: [{ def: iron_bow }],   ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: h8, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 2, at: [1, 13], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 3, at: [2, 6],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h2, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [13, 5], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h3, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [2, 10], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h4, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h5, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [4, 12], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: h6, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 3, at: [11, 13], items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
+  - { id: h7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [12, 3], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  - { id: h8, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [1, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-# Wellen von den Seiten, angekündigt: Runde 3 (links/rechts), Runde 5 (nur schwer)
+# Wellen von den Seiten, angekündigt: Runde 3 (links/rechts; schwer zusätzlich der Schütze von links unten) [C] (vorher schwer Runde 5)
 reinforcements:
   - turn: 3
     phase: enemy
     announce: true
     units:
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [0, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [15, 5], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - turn: 5
-    phase: enemy
-    announce: true
-    units:
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [0, 14], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 5], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [0, 14], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: escort, unit: liora, area: { rect: [6, 17, 9, 17] } }
   defeat:
@@ -127,4 +125,4 @@ goldReward: 1100   # [C]
 music: battle_a
 devNote: >
   Eskorte. 16 × 18: Schrein im Norden (Liora), Brücke x=7 als Engstelle, Furten x=3/x=12, Ausgang unten (x=6–9). Fällt Liora, ist die Mission verloren.
-  Leicht: 8 Gegner; Normal: 10; Schwer: 12 (einschließlich Wellen Runde 3 und 5).
+  Leicht: 8 Gegner; Normal: 10; Schwer: 12 (einschließlich der Welle Runde 3).

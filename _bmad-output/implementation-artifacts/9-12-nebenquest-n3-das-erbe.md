@@ -1,6 +1,6 @@
 # Story 9.12: Nebenquest N3 „Das Erbe“
 
-Status: review
+Status: done
 
 ## Story
 
@@ -49,3 +49,7 @@ Claude Sonnet 5.5
 - Inhalte: `content/core/items.yaml` (`heirloom`), `content/core/skills.yaml` (`young_heroes`), `content/core/locales/{de,en}.names.yaml`, `content/acts/act1/campaign.yaml` (Knoten n3), `content/world/valmora.yaml` (n3), `content/acts/act1/maps/n3_erbe.yaml`, `content/acts/act1/scenes/scn.n3.{intro,outro,memorial_intro,memorial_outro,home}.yaml`, `content/locales/en/act1.dialogue.yaml`; Bild `art/items/heirloom.png` und Prompt `art/prompts/heirloom.md` (schon vorhanden)
 - Tests: neu `tests/unit/heirloom.test.ts`
 - Doku: `concept/21-gdd/decision-log.md`, `concept/22-narrative/decision-log.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gedenk-Variante gespielt (Tobin gefallen), Erbstück erhalten; Sim Normal 100 %/0,45. Gesamtbefund: `acceptance-2026-10-27.md`.

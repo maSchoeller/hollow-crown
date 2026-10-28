@@ -1,6 +1,6 @@
 # Story 8.3: Brettfiguren für Akt 1
 
-Status: review
+Status: done
 
 ## Story
 
@@ -96,3 +96,7 @@ Claude Opus 5.5 (Kontrolleur: Bilder per ChatGPT, Tripo über Claude in Chrome, 
 - tools/art/silhouettes.py, package.json (`art:silhouettes`), art/previews/silhouettes_act1.png, silhouettes_act1_large.png
 - concept/23-art-direction/decision-log.md
 - _bmad-output/implementation-artifacts/8-3-brettfiguren-fuer-akt-1.md, sprint-status.yaml
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Figuren im Durchlauf auf allen Karten gesehen; die schwachen Silhouettenpaare waren abgenommen. Gesamtbefund: `acceptance-2026-10-27.md`.

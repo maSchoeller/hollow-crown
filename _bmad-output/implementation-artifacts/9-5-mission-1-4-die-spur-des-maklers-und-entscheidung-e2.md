@@ -1,6 +1,6 @@
 # Story 9.5: Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
 
-Status: review
+Status: done
 
 ## Story
 
@@ -84,3 +84,7 @@ Claude Sonnet 5.5
 ### Change Log
 
 - 2026-10-27: Story 9.5 umgesetzt (Mission 1-4, E2 mit Karteneinheiten-`requires`, Dunns Tod, Rhens Geständnis, Ysolde, Halvard-Variante in 1-3).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt; E2 „schützen“ öffnet N1. Balancing PR #73 (Leicht entschärft), Leicht 100 %/0,40. Gesamtbefund: `acceptance-2026-10-27.md`.

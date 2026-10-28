@@ -50,12 +50,13 @@ initialEffects: []
 # Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
 haunts:
   # Grund: der Brunnen auf dem Marktplatz – hier hängen die Steckbriefe, hier trifft man Leute aus allen Gassen. (Der Brunnen [7,6] ist
-  # ein Hindernis; der Zivilist steht im Südteil des Marktes auf [7,10], die Truppe bei ihm.) Die Angreifer kommen aus der Nordgasse.
+  # ein Hindernis; der Zivilist steht im Südteil des Marktes auf [7,10], die Truppe um ihn, der Anführer hinter ihm.) Die Angreifer kommen aus der Nordgasse;
+  # vier Runden Standhalten (Simulation 2026-10-28: sechs Runden und Aufstellung am Südrand 58 %, so 92 %).
   - variant: defend
     target: { at: [7, 10] }
     enemySpawn: { rect: [5, 0, 8, 1] }
-    deploy: { rect: [4, 12, 9, 12] }
-    turns: 6
+    deploy: { tiles: [[7, 11], [6, 10], [6, 11], [8, 10], [8, 11], [5, 10], [9, 10], [7, 9]] }
+    turns: 4
   # Grund: die Nordgasse – von hier kamen die Kopfgeldjäger, später kommt wieder jemand. Der Leutnant wartet in der Gasse, die Truppe
   # kommt von der Südstraße.
   - variant: boss
@@ -76,6 +77,7 @@ deploy:
 # Lektion: Waffendreieck. Axt, Lanze und Schwert gemischt, damit jede eigene Einheit ein „richtiges“ Ziel hat.
 # Gegnerstufen 2 bis 3 (Anführer 3) liegen um expectedLevel 2, abgestimmt per Simulation (Truppe tritt bei etwa Stufe 1,5 an) [C].
 # Kopfgeldjäger: freie Jäger, kein Leutnant; der Anführer (ohne Leutnant-Status) hält sich bei der Steckbriefwand.
+# Balancing 2026-10-28 [C]: Schwer (nur die Hard-Einheiten): bh7 Stufe 4 (vorher 2), bh4h Stufe 5 und trigger Radius 3 (vorher 4, hold), Welle Runde 2 mit Stufe 3 (vorher Runde 3, Stufe 2). Leicht/Normal unverändert.
 units:
   - { id: bh_leader, nameKey: unit.bounty_leader.name, team: enemy, class: brigand, level: 3, at: [7, 2], sprite: brigand, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [easy, normal] }
   - { id: bh_leaderh, nameKey: unit.bounty_leader.name, team: enemy, class: brigand, level: 5, at: [7, 2], sprite: brigand, items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
@@ -86,20 +88,20 @@ units:
   - { id: bh3, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [11, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [easy, normal] }
   - { id: bh3h, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 5, at: [11, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: bh4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 6, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold }, difficulty: [easy, normal] }
-  - { id: bh4h, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 4, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: bh4h, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 5, at: [3, 9], sprite: brigand, items: [{ def: hand_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
   - { id: bh5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 4, at: [11, 9], sprite: soldier, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [easy, normal] }
   - { id: bh5h, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 5, at: [11, 9], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
   - { id: bh6, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 3, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: bh7, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 2, at: [9, 7], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: bh7, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, level: 4, at: [9, 7], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
 pairs: []
-# Hart: Welle von hinten (Süden), Runde 3, angekündigt
+# Hart: Welle von hinten (Süden), Runde 2 [C] (vorher 3), angekündigt
 reinforcements:
-  - turn: 3
+  - turn: 2
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [4, 14], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [9, 14], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [4, 14], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [9, 14], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: rout }
   defeat:
@@ -126,4 +128,4 @@ music: battle_a
 devNote: >
   Neue Mechanik: Waffendreieck (Runde 1). 14 × 16: Südstraße (Aufstellung), Marktplatz mit Ständen, Brunnen (7,6) und Steckbriefwand
   (6,3)/(7,3), vier besuchbare Häuser an den Rändern, Kopfgeldjäger aus Nord-, West- und Ostgasse. Leicht: 6 Gegner (mit Anführer);
-  Normal: 7; Schwer: 8 plus zwei Jäger aus dem Süden in Runde 3.
+  Normal: 7; Schwer: 8 plus zwei Jäger aus dem Süden in Runde 2.

@@ -1,6 +1,6 @@
 # Story 4.5: Szenen im neuen Stil
 
-Status: review
+Status: done
 
 ## Story
 
@@ -70,3 +70,7 @@ Claude Opus 5.5
 ### File List
 
 Siehe Project Structure Notes.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Optik und Ablauf im Durchlauf gesehen (Halbfiguren, Log/Auto/Überspringen, Sprechblasen am Kopf). Offene Frage 3 vom Produktinhaber am 2026-10-27 bestätigt: Mehrsprecher-, Antwort- und Off-Board-Szenen laufen im Kampf als Overlay. Gesamtbefund: `acceptance-2026-10-27.md`.
