@@ -274,7 +274,7 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Phasen-Pille** (`phase-pill`) | oben mittig; Spielerphase Glut-Badge mit Runde, Gegnerphase rot mit großem Titel |
 | **Ziel-Pillen** | Hauptziel in der Rundenpille, Nebenziele als kleine Pillen mit Icon und Stand |
 | **Groll-Wimpel** | roter Wimpel über dem Leutnant, 0–3 weiße Kerben |
-| **Sprechblase** | Stein mit Spitze zum Kopf, Name in Teamfarbe, max. 2 Zeilen |
+| **Sprechband** (`speech-band`) | Stein am oberen Bildschirmrand unter den Pillen, nicht am Brett befestigt: rundes Porträt mit Ring in Teamfarbe, Namensschild in Teamfarbe, max. 2 Zeilen (löst die Sprechblase am Kopf ab) |
 | **Steckbrief** | Stein mit großem Leutnant-Medaillon, Groll-Kerben (Goldpunkte), Groll-Ziel, Faktenfeld (Fluchtregel, Kopfgeld, Begegnungen), Groll-Fähigkeiten als Chips (gesperrte gestrichelt) |
 | **Weltkarten-Knoten** (`map-node`) | runder Stein mit Spitze und Ortslabel; Story Glut mit Nummer, Nebenquest grün mit „!“, Heimsuchung rot mit Leutnant-Gesicht und Marke „NEU“, Heimat Creme mit Zelt/Burg, erledigt klein und grau; gewählt mit weißem Hof |
 | **Knoten-Karte** | Stein unten: Kicker, Titel, Tag-Chips (Ziel, Plätze, Stufe), Leutnant-Zeile, Belohnung, Aufstellung + Aufbrechen |

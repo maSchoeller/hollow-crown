@@ -128,7 +128,7 @@ export function fogBands(s: Pick<BattleState, 'width' | 'height'>, seen: Readonl
  *   the fight begins and faded out with `retreated` when it ends, so it is on the board for the duration of the fight only. A
  *   fight between two fighters in the fog is dropped.
  * - `ambush`: the foe that stopped the player's unit is let in with `spawned` and stays (it is next to the unit).
- * - `quote` of an unseen unit becomes a `dialogue` (no speech bubble, so the camera does not move to it).
+ * - `quote` of an unseen unit becomes a `dialogue` (the speech band is fixed to the screen, so nothing of the fog is shown).
  * - events of an unseen unit (`aiTurn`, `status`, `damage`, `died`, `fled`, ...) and on unseen tiles (`terrain`, `lootDropped`) are dropped.
  * Everything else (phase, gold, objectives, battle end, ...) stays.
  */

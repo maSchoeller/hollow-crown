@@ -605,7 +605,7 @@ if (import.meta.env.DEV) {
        * opens a test battle with lieutenants on the prologue's ground (stories 3.1, 3.3) and sets what the campaign knows of them:
        * `devLieutenant('hask', 2)` or `devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'kael', 'first'], ['ulvric', 1, 'fenn', 'mock']])`
        * (id, grudge 0-3, target id, default kael; kind `first` = not met yet, `grudge` = met with the grudge, `mock` = the target has fallen;
-       * default kind: `grudge` for grudge 1+, else `first`). Each lieutenant speaks his line as a bubble when the first player phase begins.
+       * default kind: `grudge` for grudge 1+, else `first`). Each lieutenant speaks his line in the speech band when the first player phase begins.
        * Starts an unsaved campaign when none is open. Tap a lieutenant with grudge 1+ to see the line to his target.
        */
       devLieutenant: async (spec: string | Array<[string, number?, string?, ('first' | 'grudge' | 'mock')?]>, grudge = 0, target = 'kael', kind?: 'first' | 'grudge' | 'mock') => {
@@ -661,7 +661,7 @@ if (import.meta.env.DEV) {
        * = grudge, target id). He has 1 HP, a company unit stands next to him. With `play = 'preview'` nothing more happens: select the
        * company unit that stands next to him, tap Attack and the lieutenant; the forecast shows "flees"
        * instead of 0. With `play = 'attack'` (default) the attack is played at once: backward jump, smoke, falling pennant and the flee
-       * line (`flee_<routs % 3 + 1>`) as a speech bubble.
+       * line (`flee_<routs % 3 + 1>`) in the speech band.
        */
       devFlee: async (id = 'hask', grudge = 0, target = 'kael', play: 'attack' | 'preview' = 'attack') => {
         await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);

@@ -1,5 +1,5 @@
 /**
- * Combat barks (story 9.13): one short speech-bubble line of a companion at six moments. Pure presentation; the
+ * Combat barks (story 9.13): one short line in the speech band of a companion at six moments. Pure presentation; the
  * core knows nothing about them (17-audio §1), the variant pick is not part of the replay. The texts live in the
  * scene `scn.bark.<charId>` (one line per moment), English under `dlg.scn.bark.<charId>.<line>`.
  */
@@ -12,10 +12,8 @@ export { BARK_LINES, type BarkLine };
 export const barkScene = (charId: string): string => `scn.bark.${charId}`;
 
 export interface Bark {
-  /** unit that speaks (its name is shown) */
+  /** unit that speaks (its name and head are shown in the band; it need not be on the board, e.g. a rescued unit) */
   unit: string;
-  /** unit whose head the bubble sits above: the speaker, or the rescuer when the rescued unit has left the board */
-  anchor: string;
   scene: string;
   /** a companion bark, or an opening line of a lieutenant (`ltLines.ts`, story 3.3) */
   line: BarkLine | LieutenantLine;
@@ -36,8 +34,8 @@ export const hasBark = (data: GameData, charId: string, line: BarkLine): boolean
  */
 export function barkFor(data: GameData, s: BattleState, e: GameEvent, pick: (n: number) => number = (n) => Math.floor(Math.random() * n)): Bark | null {
   const unit = (uid: string) => s.units.find((u) => u.uid === uid);
-  const mk = (u: BattleUnit | undefined, line: BarkLine, anchor?: BattleUnit): Bark | null =>
-    u && u.team === 'player' && hasBark(data, barkChar(u), line) ? { unit: u.uid, anchor: (anchor ?? u).uid, scene: barkScene(barkChar(u)), line } : null;
+  const mk = (u: BattleUnit | undefined, line: BarkLine): Bark | null =>
+    u && u.team === 'player' && hasBark(data, barkChar(u), line) ? { unit: u.uid, scene: barkScene(barkChar(u)), line } : null;
   switch (e.t) {
     case 'phase': {
       if (e.phase !== 'player' || e.turn !== 1) return null;
@@ -49,8 +47,8 @@ export function barkFor(data: GameData, s: BattleState, e: GameEvent, pick: (n: 
     case 'downed':
       return mk(unit(e.unit), 'downed');
     case 'rescued':
-      // the rescued unit has left the board (`gone: 'rescued'`, its figure fades out): its line sits above the rescuer
-      return mk(unit(e.unit), 'rescued', unit(e.by));
+      // the rescued unit has left the board (`gone: 'rescued'`, its figure fades out): the band shows its head all the same
+      return mk(unit(e.unit), 'rescued');
     case 'levelUp':
       return mk(unit(e.unit), 'level_up');
     default:
