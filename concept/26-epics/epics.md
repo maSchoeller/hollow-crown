@@ -1570,14 +1570,14 @@ damit ich die Leutnants kennenlerne.
 ### Story 9.4: Mission 1-3 „Der Fremde mit dem Siegel“
 
 Als Spieler
-möchte ich Liora sicher herausbringen und Halvard zum ersten Mal sehen,
+möchte ich Liora schützen, Morras Jäger vertreiben und Halvard zum ersten Mal sehen,
 damit die Paktgeschichte beginnt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Karte (Ziel `escort` mit Liora, Leutnant Morra) und Szenen mit Halvards Auftritt
-**Wenn** Liora den Ausgang erreicht
-**Dann** tritt sie bei; die Nebenquest N2 „Der letzte Wachturm“ öffnet sich
+**Angenommen** Karte (Ziel `rout`, Liora am Schrein darf nicht fallen, Leutnant Morra) und Szenen mit Halvards Auftritt (Ziel geändert von `escort`, narrative decision-log 2026-10-28)
+**Wenn** alle Jäger besiegt oder vertrieben sind
+**Dann** tritt Liora bei; die Nebenquest N2 „Der letzte Wachturm“ öffnet sich
 **Und** gestaffelte Regeln hängen nur an der Zahl abgeschlossener Story-Missionen (Magie nach 2), nicht an dieser Mission.
 
 ### Story 9.5: Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2

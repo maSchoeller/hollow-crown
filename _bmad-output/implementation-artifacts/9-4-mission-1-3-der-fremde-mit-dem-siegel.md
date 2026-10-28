@@ -10,9 +10,9 @@ damit die Paktgeschichte beginnt.
 
 ## Acceptance Criteria
 
-1. **Karte:** `m1_3_silberbach` (16 × 18, Ziel `escort`: Liora zum Ausgang [6,17,9,17], Leutnant Morra erste Begegnung, zwei Häuser). Gegner Leicht 8 / Normal 10 / Schwer 12 (mit Wellen in Runde 3 und 5). Gelände unverändert.
+1. **Karte:** `m1_3_silberbach` (16 × 18, Ziel `rout` seit 2026-10-28, vorher `escort`: Liora am Schrein darf nicht fallen, Leutnant Morra erste Begegnung, zwei Häuser). Gegner Leicht 8 / Normal 10 / Schwer 12 (mit Wellen in Runde 3 und 5). Gelände unverändert.
 2. **Knoten:** `m1_3` (`requires: completed m1_1`, `place silberbach`, `merchantTier 1`, `expectedLevel 3`), Weltkarte 1-3 zeigt ihn. Der PoC-Knoten `ch02` samt Karte, Szenen, Locale-Schlüsseln und Flags `ch02_hold`/`ch02_question` entfällt.
-3. **Beitritt:** Liora tritt nach dem Sieg genau einmal bei (Kern: `escort` mit `join`) und erscheint im Ergebnis-Screen (`recruited`).
+3. **Beitritt:** Liora tritt nach dem Sieg genau einmal bei (Kern: dritte Partei mit Charakter) und erscheint im Ergebnis-Screen (`recruited`).
 4. **Szenen:** `scn.m1_3.intro`, `morra_battle` (Kampfzeile, „Kopfgeld in Gold“), `house_hut`, `house_mill`, `outro` (Halvards erster Auftritt); DE in der Szene, EN im Locale, Box ≤ 110 Zeichen.
 5. **Händlerstufe:** Stufe 2 öffnet mit der 4. abgeschlossenen Story-Mission, egal welche (`merchant[].storyCount`).
 6. **Heimsuchungs-Anker:** `haunts:` mit drei Ankern (escort, rout, boss).
@@ -30,7 +30,8 @@ damit die Paktgeschichte beginnt.
 
 ## Dev Notes
 
-- **Entscheidungen des Produktinhabers (bindend, 2026-10-26):** Ziel echt `escort`; Morra marksman mit `iron_bow`; PoC-Knoten `ch02` entfernen; Händlerstufe nach Zahl der Missionen.
+- **Änderung 2026-10-28 (Produktinhaber, Playtest):** Ziel `rout` statt `escort` (Liora `hold` am Schrein, `unit_dies liora` als Niederlage), weil die Eskorte Häuser und Gegner unerreichbar machte; Details und Simulation im narrative decision-log. Die Simulationstabelle unten gilt noch für die Eskorte.
+- **Entscheidungen des Produktinhabers (bindend, 2026-10-26):** ~~Ziel echt `escort`~~ (abgelöst am 2026-10-28); Morra marksman mit `iron_bow`; PoC-Knoten `ch02` entfernen; Händlerstufe nach Zahl der Missionen.
 - **Technische Entscheidungen:**
   - Händlerstufe: `merchant[].storyCount` (optional) in der `campaign.yaml`; `currentTier` = Maximum aus Knoten-`merchantTier` und erreichten `storyCount`-Stufen; `refreshOffers` nach der Mission nutzt `currentTier`. Tier 2: `storyCount: 4`.
   - `finishBattle`: eine eskortierte dritte Partei tritt nur bei, wenn sie noch nicht im Tross ist (Wiederholung der Mission).

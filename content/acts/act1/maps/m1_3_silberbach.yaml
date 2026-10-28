@@ -1,7 +1,9 @@
 # Mission 1-3 – Der Fremde mit dem Siegel (Story 9.4, Knoten m1_3). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
 # Ort: der Schrein am Silberbach. Tageszeit: Morgen, Wetter: Nebel (Wetter, kein Kriegsnebel; art-direction §2.5; weather: fog).
-# Ziel: escort { unit: liora, area: rect [6,17,9,17] } – Liora (dritte Partei, Profil follow) zieht mit dem Trupp zum Ausgang im Süden;
-# fällt sie, ist die Mission verloren. Nach dem Sieg tritt sie bei (Kern: escort join). Erste Begegnung mit Leutnant Morra und ihren Jägern.
+# Ziel: rout – die Truppe hält den Schrein und vertreibt Morras Jäger; Liora (dritte Partei, Profil hold) bleibt dort und darf nicht fallen
+# (defeat unit_dies liora). Nach dem Sieg tritt sie bei (Kern: jede Figur der dritten Partei mit Charakter). Erste Begegnung mit Leutnant Morra
+# und ihren Jägern. Vorher war das Ziel escort (Liora zum Ausgang im Süden); PO 2026-10-28: die Eskorte trieb die Truppe am Haus und den
+# Gegnern vorbei zum Ausgang, Häuser besuchen und Gegner besiegen blieb unmöglich (narrative decision-log, Eintrag 2026-10-28).
 # Halvards Auftritt ist die Nachszene scn.m1_3.outro, nicht Teil der Karte.
 # Lehrstück: Engstelle Brücke (x=7) für Vorkämpfer, Furten (x=3, x=12) nur Fußtruppen; Wald an den Flanken als Deckung für Späher/Hinterhalt.
 # 16 × 18 (Hochformat).
@@ -75,10 +77,10 @@ haunts:
     deploy: { rect: [6, 14, 9, 15] }
 # Epic 3: Morra flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Kopfgeld (bounty). Ihre Kartenwaffe ist Eisen (iron_bow), damit
 # „+1 Tier je Groll“ greift (Review R14/R15). Morra ist Schützin (Klasse marksman aus lieutenants.yaml), kein Boss: das Ziel ist escort.
-# Liora: dritte Partei am Schrein (Heilstab), Profil follow – sie wartet, bis die Truppe nahe ist, und zieht dann mit ihr zum Ausgang.
+# Liora: dritte Partei am Schrein (Heilstab), Profil hold – sie bleibt am Schrein, heilt aus der Nähe und wird von der Truppe gedeckt.
 # Balancing 2026-10-28 [C]: Stufen der Banditen 3 statt 2 (h2 bleibt 3, h4 Stufe 4, h8/Schütze Stufe 4 nur Schwer), Auslöseradius der Schleichwege 6 statt 4/5, h7 trigger statt hold (Normal/Schwer). Hintergrund: Schwer lag bei 97 % Sieg (Korridor 30-70), Normal bei 0,3 Niedergestreckten (Korridor 0,4-1,3).
 units:
-  - { char: liora, id: liora, team: other, class: healer, level: 3, at: [8, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }, { def: leather_vest }, { def: leather_cap }], ai: { profile: follow } }
+  - { char: liora, id: liora, team: other, class: healer, level: 3, at: [8, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }, { def: leather_vest }, { def: leather_cap }], ai: { profile: hold } }
   - id: morra
     nameKey: unit.morra.name
     team: enemy
@@ -101,7 +103,7 @@ units:
   - { id: h7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [12, 3], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
   - { id: h8, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [1, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-# Wellen von den Seiten, angekündigt: Runde 3 (links/rechts; schwer zusätzlich der Schütze von links unten) [C] (vorher schwer Runde 5)
+# Wellen von den Seiten, angekündigt: Runde 3 (links/rechts) [C] (vorher schwer Runde 5; der Schütze von links unten entfiel mit dem Ziel rout, 2026-10-28)
 reinforcements:
   - turn: 3
     phase: enemy
@@ -109,12 +111,12 @@ reinforcements:
     units:
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [0, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 5], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [0, 14], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
-  victory: { type: escort, unit: liora, area: { rect: [6, 17, 9, 17] } }
+  victory: { type: rout }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: liora }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
@@ -124,5 +126,5 @@ triggers: []
 goldReward: 1100   # [C]
 music: battle_a
 devNote: >
-  Eskorte. 16 × 18: Schrein im Norden (Liora), Brücke x=7 als Engstelle, Furten x=3/x=12, Ausgang unten (x=6–9). Fällt Liora, ist die Mission verloren.
-  Leicht: 8 Gegner; Normal: 10; Schwer: 12 (einschließlich der Welle Runde 3).
+  Halten und Vertreiben. 16 × 18: Schrein im Norden (Liora), Brücke x=7 als Engstelle, Furten x=3/x=12, zwei Häuser im Süden und Osten. Fällt Liora, ist die Mission verloren.
+  Leicht: 8 Gegner; Normal: 10; Schwer: 11 (einschließlich der Welle Runde 3).
