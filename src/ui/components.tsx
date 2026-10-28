@@ -127,15 +127,17 @@ export function ItemLine({
         aria-disabled={dim}
         onClick={dim ? undefined : onClick}
       >
-        <ItemImage data={data} item={inst} />
-        <span style={{ minWidth: 0 }}>
-          <span class="hc-line-item__name">
-            {itemName(data, inst)}
-            {tag && <span class="hc-tag">{tag}</span>}
+        <span class="hc-line-item__in">
+          <ItemImage data={data} item={inst} />
+          <span style={{ minWidth: 0 }}>
+            <span class="hc-line-item__name">
+              {itemName(data, inst)}
+              {tag && <span class="hc-tag">{tag}</span>}
+            </span>
+            <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
           </span>
-          <span class="hc-line-item__sub">{sub ?? values.join(' · ')}</span>
+          <span class="hc-line-item__side">{side}</span>
         </span>
-        <span class="hc-line-item__side">{side}</span>
       </button>
       <ItemInfoButton data={data} item={inst} />
       <ItemSheetPortal data={data} item={info ? inst : null} onClose={() => setInfo(false)} />

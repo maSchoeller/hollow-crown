@@ -433,12 +433,10 @@
   grid-column: 1 / -1;
 }
 
-/* item line: image, name and values, right side comparison or price */
+/* item line: image, name and values, right side comparison or price.
+   The button only draws box and ring; the grid lives in an inner wrapper, because a button that is a grid container does not size to its content the same way in every engine (iOS Safari put the selected ring too tight at the bottom). */
 .hc-line-item {
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
-  gap: 10px;
-  align-items: center;
+  display: block;
   width: 100%;
   min-height: 56px;
   padding: 6px 8px;
@@ -450,6 +448,12 @@
   text-align: left;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+.hc-line-item__in {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 10px;
+  align-items: center;
 }
 .hc-line-item.is-current {
   background: var(--hc-cream-2);
