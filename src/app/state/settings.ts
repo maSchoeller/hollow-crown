@@ -17,14 +17,18 @@ export interface Settings {
   shake: boolean;
   /** scenes advance on their own (the Auto pill of a scene) */
   dialogueAuto: boolean;
+  /** version of the enemy-phase pace; a stored setting of an older one is reset, because the old default (2x) was too fast to follow */
+  enemyPaceRev: number;
 }
+
+const ENEMY_PACE_REV = 2;
 
 const SETTINGS_KEY = 'hc.settings';
 function loadSettings(): Settings {
   const def: Settings = {
     lang: navigator.language?.startsWith('de') ? 'de' : 'en',
     speed: 1,
-    enemySpeed: 2,
+    enemySpeed: 1,
     dangerDefault: false,
     confirmForecast: true,
     quality: 'mid',
@@ -34,9 +38,12 @@ function loadSettings(): Settings {
     keepAwake: true,
     shake: true,
     dialogueAuto: false,
+    enemyPaceRev: ENEMY_PACE_REV,
   };
   try {
-    return { ...def, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') as Partial<Settings>) };
+    const stored = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') as Partial<Settings>;
+    const merged = { ...def, ...stored };
+    return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
   } catch {
     return def;
   }
