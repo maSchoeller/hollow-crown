@@ -1,0 +1,166 @@
+/* Item detail sheet (ItemSheet.tsx) and the round info stone beside item lines. */
+.its .hc-sheet__body {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.its__top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+.its__id {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.its__rarity {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-rarity-common);
+}
+.its__rarity.r-rare {
+  color: var(--hc-rarity-rare);
+}
+.its__rarity.r-epic {
+  color: var(--hc-rarity-epic);
+}
+.its__rarity.r-legendary {
+  color: var(--hc-lieutenant);
+}
+.its__type {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.its__desc {
+  margin: 0;
+  font-size: var(--hc-size-body);
+  line-height: 1.4;
+}
+.its__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.its__fact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 0 8px;
+  padding: 6px 10px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream-2);
+}
+.its__fact dt {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+  color: var(--hc-soft);
+}
+.its__fact dd {
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-number);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.its__fact small {
+  grid-column: 1 / -1;
+  color: var(--hc-soft);
+  font-size: 12px;
+  line-height: 1.3;
+}
+.its__sec {
+  display: grid;
+  gap: 4px;
+}
+.its__sec h3 {
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.its__list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 2px;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+.its__line {
+  margin: 0;
+  font-size: var(--hc-size-body);
+  line-height: 1.35;
+}
+.its__note {
+  margin: 0;
+  color: var(--hc-soft);
+  font-size: 12px;
+}
+.its__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-label);
+}
+.its__chip {
+  padding: 1px 8px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-line);
+  color: var(--hc-cream);
+}
+.its__price {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--hc-soft);
+}
+
+/* item line with the info stone beside it */
+.hc-line-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.hc-line-row > .hc-line-item,
+.hc-line-row > .bp-line {
+  flex: 1;
+  min-width: 0;
+}
+.its-info {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--hc-touch-min);
+  height: var(--hc-touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--hc-r-pill);
+  background: transparent;
+  color: var(--hc-soft);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.its-info:active {
+  background: var(--hc-cream-2);
+}
+.its-info:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: -3px;
+}
