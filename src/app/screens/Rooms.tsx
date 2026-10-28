@@ -502,7 +502,8 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
             </b>
           </div>
         ))}
-      {/* the talk plays full screen like the scenes between missions, not inside the panel (story 9.13) */}
+      {/* the talk plays full screen like the scenes between missions, not inside the panel (story 9.13);
+          into #app, not the body: only #app is as tall as the display in the installed app, so a body portal ends above the home indicator and the room panel shows below it */}
       {talk &&
         createPortal(
           <Scene
@@ -512,7 +513,7 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
               setTalk(null);
             }}
           />,
-          document.body,
+          document.getElementById('app') ?? document.body,
         )}
     </RoomPanel>
   );
