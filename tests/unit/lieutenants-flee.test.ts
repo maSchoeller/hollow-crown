@@ -285,7 +285,7 @@ describe('flee line (AC 6)', () => {
     const spoken = new Set<string>();
     expect(fleeBark(data, c, s, foe.uid, me.uid, spoken, false)).toBeNull();
     const bark = fleeBark(data, c, s, foe.uid, me.uid, spoken, true);
-    expect(bark).toMatchObject({ unit: foe.uid, anchor: foe.uid, scene: 'scn.lt.hask', line: 'flee_2' });
+    expect(bark).toMatchObject({ unit: foe.uid, scene: 'scn.lt.hask', line: 'flee_2' });
     expect(bark!.params?.target).toBeTruthy();
     expect(fleeBark(data, c, s, foe.uid, me.uid, spoken, true)).toBeNull();
     expect(fleeBark(data, null, s, foe.uid, undefined, new Set(), true)).toBeNull();

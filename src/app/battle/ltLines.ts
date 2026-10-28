@@ -1,5 +1,5 @@
 /**
- * Opening lines of the enemy lieutenants (story 3.3): at first sight a lieutenant speaks one line as a speech bubble,
+ * Opening lines of the enemy lieutenants (story 3.3): at first sight a lieutenant speaks one line in the speech band,
  * once per battle. The choice is made in the core (`ltLinesDue`); this module turns it into barks for the board and
  * puts the target's name in. Pure presentation, like `barks.ts`; the scene `scn.lt.<id>` holds the texts.
  */
@@ -19,7 +19,7 @@ export function ltBarks(data: GameData, c: CampaignState | null, s: BattleState,
     const scene = data.lieutenants[due.lieutenant]?.scene;
     if (!play || !scene) continue;
     const who = due.target ? (c.roster.find((r) => r.id === due.target) ?? c.fallen.find((f) => f.id === due.target)) : undefined;
-    out.push({ unit: due.unit, anchor: due.unit, scene, line: due.line, ...(who ? { params: { target: who.name ?? t(who.nameKey) } } : {}) });
+    out.push({ unit: due.unit, scene, line: due.line, ...(who ? { params: { target: who.name ?? t(who.nameKey) } } : {}) });
   }
   return out;
 }
@@ -38,7 +38,6 @@ export function fleeBark(data: GameData, c: CampaignState | null, s: BattleState
   const driver = by ? s.units.find((x) => x.uid === by) : undefined;
   return {
     unit: u.uid,
-    anchor: u.uid,
     scene,
     line: ltFleeLine(c, u.lieutenant),
     ...(driver ? { params: { target: driver.name ?? t(driver.nameKey) } } : {}),

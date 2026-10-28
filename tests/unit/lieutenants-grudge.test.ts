@@ -215,7 +215,7 @@ describe('opening lines (AC 7)', () => {
     const s = { units: [lt({ uid: 'a', grudge: 2, grudgeTarget: 'brenna' })] } as BattleState;
     const spoken = new Set<string>();
     const [bark] = ltBarks(data, c, s, spoken, true);
-    expect(bark).toMatchObject({ unit: 'a', anchor: 'a', scene: 'scn.lt.hask', line: 'grudge_2' });
+    expect(bark).toMatchObject({ unit: 'a', scene: 'scn.lt.hask', line: 'grudge_2' });
     expect(spoken.has('a')).toBe(true);
     expect(ltBarks(data, c, s, spoken, true)).toEqual([]);
     const skipped = new Set<string>();
