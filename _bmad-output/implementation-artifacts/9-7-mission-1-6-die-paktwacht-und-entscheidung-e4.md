@@ -1,6 +1,6 @@
 # Story 9.7: Mission 1-6 „Die Paktwacht“ und Entscheidung E4
 
-Status: review
+Status: done
 
 ## Story
 
@@ -153,3 +153,7 @@ content/acts/act1/{campaign,flags}.yaml, content/acts/act1/maps/m1_6_paktwacht.y
 ### Change Log
 
 - 2026-10-26: Story 9.7 umgesetzt (Karte, Knoten, Szenen, E4, priceMod/villageAid im Kern, Tests, Sim-Abstimmung).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt; E4 und Burg als Heimat; E2E `tests/e2e/m1-6.spec.ts` ergänzt (T10). Screenshots im Scratchpad der Abnahme-Session. Gesamtbefund: `acceptance-2026-10-27.md`.

@@ -1,6 +1,6 @@
 # Story 9.10: Nebenquest N1 „Der Ring von Varnhold“
 
-Status: review
+Status: done
 
 ## Story
 
@@ -52,3 +52,7 @@ Claude Sonnet 5.5
 - Inhalte: `content/core/items.yaml` (`magpie`), `content/core/skills.yaml` (`long_fingers`), `content/core/locales/{de,en}.names.yaml`, `content/core/locales/{de,en}.yaml` (`ui.steal.*`), `content/acts/act1/campaign.yaml` (Knoten n1), `content/world/valmora.yaml` (n1), `content/acts/act1/maps/n1_ring.yaml`, `content/acts/act1/scenes/scn.n1.{intro,ring,outro,memorial_intro,memorial_outro}.yaml`, `content/locales/en/act1.dialogue.yaml`
 - Tests: neu `tests/unit/elster-steal.test.ts`, `tests/fixtures/arena.ts`
 - Doku: `concept/21-gdd/decision-log.md`, `concept/22-narrative/decision-log.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gedenk-Variante gespielt (Fenn gefallen), Elster und Glutfunke erhalten; Sim Normal 100 %/0,71. Gesamtbefund: `acceptance-2026-10-27.md`.

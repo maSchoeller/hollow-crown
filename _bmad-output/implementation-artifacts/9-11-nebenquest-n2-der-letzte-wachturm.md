@@ -1,6 +1,6 @@
 # Story 9.11: Nebenquest N2 „Der letzte Wachturm“
 
-Status: review
+Status: done
 
 ## Story
 
@@ -62,3 +62,7 @@ Das Eroberungsfeld (`seize`, Kael) liegt jetzt im Turminneren `[6, 1, 7, 1]`, hi
 | Schwer | 9 / 9 | 100 % / 100 % | 4,9 / 6,9 | 0,67 / 0,89 |
 
 Gegnerstufen unverändert [C]; Normal liegt knapp unter dem Korridor der Niedergestreckten (0,4–1,3), der Autoplay-Bot rennt am Gefecht vorbei, Schwer ist mit 9 Läufen nur informativ.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Eroberungsfeld ins Turminnere (Entscheidung 2026-10-27); Sim Normal 100 %/0,52. Gesamtbefund: `acceptance-2026-10-27.md`.

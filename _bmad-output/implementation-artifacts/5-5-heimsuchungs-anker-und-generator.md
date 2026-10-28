@@ -1,6 +1,6 @@
 # Story 5.5: Heimsuchungs-Anker und Generator
 
-Status: review
+Status: done
 
 ## Story
 
@@ -89,3 +89,7 @@ Claude Sonnet 5.5
 - `content/acts/act1/haunts.yaml` (neu), `content/acts/act1/maps/prologue_paktnacht.yaml`, `m1_1_steckbriefe.yaml`
 - `tests/unit/haunts.test.ts` (neu), `tests/unit/day.test.ts`
 - `concept/24-architecture/architecture.md`, `concept/24-architecture/decision-log.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Heimsuchungen erscheinen nach der ersten Begegnung mit Hask; Generator und Deckel per Tests. Gesamtbefund: `acceptance-2026-10-27.md`.

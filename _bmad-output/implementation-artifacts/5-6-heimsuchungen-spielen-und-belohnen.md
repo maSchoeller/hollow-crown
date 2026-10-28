@@ -1,6 +1,6 @@
 # Story 5.6: Heimsuchungen spielen und belohnen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -83,3 +83,7 @@ Claude Sonnet 5.5
 - `tools/simulate.ts`, `tools/simCampaign.ts`
 - `tests/unit/haunt-battle.test.ts`, `tests/e2e/haunt.spec.ts`
 - `concept/24-architecture/architecture.md`, `concept/24-architecture/decision-log.md`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Heimsuchung im Browser gespielt (Gold, Kopfgeld, Material, EP-Deckel). Alle 24 Anker von Akt 1 simuliert; sechs lagen unter 75 % und wurden über ihre Anker-Felder korrigiert (PR #72), alle ≥ 77 %. Gesamtbefund: `acceptance-2026-10-27.md`.

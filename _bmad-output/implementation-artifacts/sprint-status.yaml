@@ -55,7 +55,7 @@ development_status:
   1-6-verbluten-im-modus-standard: done  # Verbluten im Modus Standard
   1-7-fehlerbericht-und-speicherschutz: done  # Fehlerbericht und Speicherschutz
   1-8-optionen-ende-und-hinweise-im-stil-b: done  # Optionen, Ende und Hinweise im Stil B (nachgetragen 2026-10-24)
-  1-9-mission-verlassen-und-zur-weltkarte: review  # Mission verlassen und zur Weltkarte (nachgetragen 2026-10-27)
+  1-9-mission-verlassen-und-zur-weltkarte: done  # Mission verlassen und zur Weltkarte (nachgetragen 2026-10-27)
   epic-1-retrospective: optional
 
   # Epic 2: Rollenklassen und neues Kampf-HUD
@@ -89,21 +89,21 @@ development_status:
   4-2-bedingungen-und-wirkungen: done  # Bedingungen und Wirkungen
   4-3-kampagnen-graph-eines-akts: done  # Kampagnen-Graph eines Akts
   4-4-szenen-schema-mit-ersatzsprechern: done  # Szenen-Schema mit Ersatzsprechern
-  4-5-szenen-im-neuen-stil: review  # Szenen im neuen Stil
+  4-5-szenen-im-neuen-stil: done  # Szenen im neuen Stil
   4-6-entscheidungen-und-folgen-karte: done  # Entscheidungen und Folgen-Karte
   4-7-chronik: done  # Chronik
   4-8-neue-missionsziele-escort-und-treasure: done  # Neue Missionsziele escort und treasure
-  4-9-feste-support-paare: review  # Feste Support-Paare
+  4-9-feste-support-paare: done  # Feste Support-Paare
   epic-4-retrospective: optional
 
   # Epic 5: Weltkarte und Heimsuchungen
   epic-5: in-progress
-  5-1-szenen-host-und-geteilter-asset-cache: review  # Szenen-Host und geteilter Asset-Cache
+  5-1-szenen-host-und-geteilter-asset-cache: done  # Szenen-Host und geteilter Asset-Cache
   5-2-die-weltkarte-als-3d-szene: done  # Die Weltkarte als 3D-Szene
   5-3-weltkarte-als-hub: done  # Weltkarte als Hub
   5-4-tageswechsel: done  # Tageswechsel
-  5-5-heimsuchungs-anker-und-generator: review  # Heimsuchungs-Anker und Generator
-  5-6-heimsuchungen-spielen-und-belohnen: review  # Heimsuchungen spielen und belohnen
+  5-5-heimsuchungs-anker-und-generator: done  # Heimsuchungs-Anker und Generator
+  5-6-heimsuchungen-spielen-und-belohnen: done  # Heimsuchungen spielen und belohnen
   epic-5-retrospective: optional
 
   # Epic 6: Truppe, Fortschritt und Lager
@@ -115,9 +115,9 @@ development_status:
   6-5-stufendeckel-und-ep-regeln: done  # Stufendeckel und EP-Regeln
   6-6-missionsergebnis: done  # Missionsergebnis
   6-7-abschied-von-gefallenen: done  # Abschied von Gefallenen
-  6-8-wirtschaftskurve-und-verkettete-simulation: review  # Wirtschaftskurve und verkettete Simulation
-  6-9-die-paktwacht-als-heimat: review  # Die Paktwacht als Heimat
-  6-10-aufstellung-vor-der-mission-im-stil-b: review  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
+  6-8-wirtschaftskurve-und-verkettete-simulation: done  # Wirtschaftskurve und verkettete Simulation
+  6-9-die-paktwacht-als-heimat: done  # Die Paktwacht als Heimat
+  6-10-aufstellung-vor-der-mission-im-stil-b: done  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
   epic-6-retrospective: optional
 
   # Epic 7: Akt-Pakete und Offline
@@ -125,22 +125,22 @@ development_status:
   7-1-pakete-im-build: done  # Pakete im Build
   7-2-hintergrund-download-und-offline: done  # Hintergrund-Download und Offline
   7-3-ende-eines-veroeffentlichten-akts: done  # Ende eines veröffentlichten Akts
-  7-4-stabile-ids-und-release-ablauf: review  # Stabile IDs und Release-Ablauf
+  7-4-stabile-ids-und-release-ablauf: done  # Stabile IDs und Release-Ablauf
   7-5-leistung-messen: done  # Leistung messen
   7-6-ladeanzeige-beim-ersten-start-und-vor-missionen: done  # Ladeanzeige beim ersten Start und vor Missionen (nachgetragen 2026-10-24)
-  7-7-grosse-schlachten-fluessig: review  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
-  7-8-grosse-schlachten-ohne-ruckler: review  # Große Schlachten ohne Ruckler (nachgetragen 2026-10-25, NFR1, Rest aus 7.7)
+  7-7-grosse-schlachten-fluessig: done  # Große Schlachten flüssig (nachgetragen 2026-10-24, NFR1)
+  7-8-grosse-schlachten-ohne-ruckler: done  # Große Schlachten ohne Ruckler (nachgetragen 2026-10-25, NFR1, Rest aus 7.7)
   epic-7-retrospective: optional
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio
   epic-8: in-progress
   8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
-  8-2-tripo-pipeline-vervollstaendigen: review  # Tripo-Pipeline vervollständigen
-  8-3-brettfiguren-fuer-akt-1: review  # Brettfiguren für Akt 1
+  8-2-tripo-pipeline-vervollstaendigen: done  # Tripo-Pipeline vervollständigen
+  8-3-brettfiguren-fuer-akt-1: done  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: done  # Porträts mit Stimmungen für Akt 1
   8-5-item-bilder: done  # Item-Bilder
-  8-6-licht-wetter-und-effekte-auf-dem-brett: review  # Licht, Wetter und Effekte auf dem Brett
-  8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: review  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
+  8-6-licht-wetter-und-effekte-auf-dem-brett: done  # Licht, Wetter und Effekte auf dem Brett
+  8-7-titelbild-logo-und-dialog-hintergruende-von-akt-1: done  # Titelbild, Logo und Dialog-Hintergründe von Akt 1
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
   8-10-verdeckte-figuren-bleiben-sichtbar: done  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
@@ -148,18 +148,18 @@ development_status:
 
   # Epic 9: Akt 1 „Asche“ (MVP)
   epic-9: backlog
-  9-1-prolog-die-paktnacht: review  # Prolog „Die Paktnacht“
-  9-2-mission-1-1-steckbriefe: review  # Mission 1-1 „Steckbriefe“
-  9-3-mission-1-2-asche-ueber-erlbach-und-entscheidung-e1: review  # Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
-  9-4-mission-1-3-der-fremde-mit-dem-siegel: review  # Mission 1-3 „Der Fremde mit dem Siegel“
-  9-5-mission-1-4-die-spur-des-maklers-und-entscheidung-e2: review  # Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
-  9-6-mission-1-5-das-hungerlager-und-entscheidung-e3: review   # Mission 1-5 „Das Hungerlager“ und Entscheidung E3
-  9-7-mission-1-6-die-paktwacht-und-entscheidung-e4: review  # Mission 1-6 „Die Paktwacht“ und Entscheidung E4
-  9-8-mission-1-7-unter-der-paktwacht: review  # Mission 1-7 „Unter der Paktwacht“
-  9-9-mission-1-8-die-heimat-halten-finale: review  # Mission 1-8 „Die Heimat halten“ (Finale)
-  9-10-nebenquest-n1-der-ring-von-varnhold: review  # Nebenquest N1 „Der Ring von Varnhold“
-  9-11-nebenquest-n2-der-letzte-wachturm: review  # Nebenquest N2 „Der letzte Wachturm“
-  9-12-nebenquest-n3-das-erbe: review  # Nebenquest N3 „Das Erbe“
+  9-1-prolog-die-paktnacht: done  # Prolog „Die Paktnacht“
+  9-2-mission-1-1-steckbriefe: done  # Mission 1-1 „Steckbriefe“
+  9-3-mission-1-2-asche-ueber-erlbach-und-entscheidung-e1: done  # Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
+  9-4-mission-1-3-der-fremde-mit-dem-siegel: done  # Mission 1-3 „Der Fremde mit dem Siegel“
+  9-5-mission-1-4-die-spur-des-maklers-und-entscheidung-e2: done  # Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2
+  9-6-mission-1-5-das-hungerlager-und-entscheidung-e3: done   # Mission 1-5 „Das Hungerlager“ und Entscheidung E3
+  9-7-mission-1-6-die-paktwacht-und-entscheidung-e4: done  # Mission 1-6 „Die Paktwacht“ und Entscheidung E4
+  9-8-mission-1-7-unter-der-paktwacht: done  # Mission 1-7 „Unter der Paktwacht“
+  9-9-mission-1-8-die-heimat-halten-finale: done  # Mission 1-8 „Die Heimat halten“ (Finale)
+  9-10-nebenquest-n1-der-ring-von-varnhold: done  # Nebenquest N1 „Der Ring von Varnhold“
+  9-11-nebenquest-n2-der-letzte-wachturm: done  # Nebenquest N2 „Der letzte Wachturm“
+  9-12-nebenquest-n3-das-erbe: done  # Nebenquest N3 „Das Erbe“
   9-13-supports-und-barks-von-akt-1: done  # Supports und Barks von Akt 1
   9-14-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
   epic-9-retrospective: optional

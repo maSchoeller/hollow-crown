@@ -1,6 +1,6 @@
 # Story 1.9: Mission verlassen und zur Weltkarte
 
-Status: review
+Status: done
 
 ## Story
 
@@ -51,3 +51,7 @@ Claude Sonnet 5.5
 - `src/app/state/{battle,flow}.ts`, `src/app/screens/{Battle,BattlePanels}.tsx`
 - `content/core/locales/{de,en}.yaml`
 - `tests/unit/restart.test.ts`, `tests/e2e/prep.spec.ts`
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). AC 1 und 3 im Browser (Standard, 1-5): Rückfrage-Sheet, „Mission verlassen“ führt auf die Weltkarte, Kampagne unverändert, danach 1-4 neu gestartet. AC 2 (Klassik) über `tests/unit/restart.test.ts` (`abandon_forbidden`). Gesamtbefund: `acceptance-2026-10-27.md`.

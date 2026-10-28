@@ -1,6 +1,6 @@
 # Story 6.8: Wirtschaftskurve und verkettete Simulation
 
-Status: review
+Status: done
 
 ## Story
 
@@ -81,3 +81,7 @@ Auffälligkeiten (nur markiert, nicht geändert):
 
 - 2026-10-24: Story-Datei angelegt (ready-for-dev).
 - 2026-10-24: Umgesetzt, Simulation im Log, Status review.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). `--campaign act1` auf allen drei Stufen gelaufen; AC 4 („--haunts noch nicht im Spiel“) ist durch 5.6 überholt. Niedergestreckte zählen seit der Abnahme jeden Fall auf 0 TP (`stats.downs`). Gesamtbefund: `acceptance-2026-10-27.md`.

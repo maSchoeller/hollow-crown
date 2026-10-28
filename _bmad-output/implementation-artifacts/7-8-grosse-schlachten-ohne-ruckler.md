@@ -1,6 +1,6 @@
 # Story 7.8: Große Schlachten ohne Ruckler
 
-Status: review
+Status: done
 
 ## Story
 
@@ -407,3 +407,7 @@ Teil 1: `tests/perf/{profile,report,report-summary,bench,perf.spec}.ts`, `tests/
 Teil 2 und 2b: `src/render/shared/{vatLoader,vatWorker}.ts` (neu), `tests/perf/{benchMap.ts,baseline.json}` (Besetzung und Baseline), `content/packs.yaml` und `src/content/packs.ts` (`firstDownloadTargetMb`), `tools/art/{prepare_tripo_unit,tripo_units,build}.py`, `tools/art/bake_vat.py` (neu), `tools/{figure-budget,check-bundle-size}.mjs`, `tools/build/first-mission.mjs`, `.gitattributes`, `art/models/units/*.glb` (40 neu gebaut) und `*.vat` (40 neu), `src/render/shared/vat.ts` (neu), `src/render/shared/{models,figures,assets}.ts`, `src/render/{host.ts,board/board.ts}`, `src/core/{figure,defs}.ts` (`unitVatPath`, `RenderDef`), `src/content/schemas.ts`, `content/core/render.yaml` (`board.vat`, `board.warm`), `src/app/loading/plan.ts`, `src/app/state/flow.ts`, `tests/unit/vat.test.ts` (neu), `tests/perf/{bench,perf.spec,report}.ts`.
 
 Noch offen (T10, nicht Teil 2): `concept/24-architecture/decision-log.md`, `art/README.md`, `concept/16-asset-pipeline.md`, Abnahme-Screenshots/Video. Screenshots der Stichprobe Hand/Waffe (3 Figuren × 6 Waffengruppen, vorher/nachher) und der A/B-Vergleiche liegen im Scratchpad `shots/7-8/` (`hands-before-after.png`, `ab-t2-*`, `atk-lance-strip.png`).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). T10-Sichtabnahme an die Abnahme delegiert (Produktinhaber 2026-10-27): A/B-Bilder Skelett gegen VAT (Idle, Gehen, Lanzenangriff, Treffer, Niedergestreckt, Hände/Waffen aller 6 Waffengruppen) deckungsgleich, im Durchlauf keine Fehldarstellung; Decision-Log, `art/README.md` und `16-asset-pipeline.md` nennen `.vat`. Gesamtbefund: `acceptance-2026-10-27.md`.
