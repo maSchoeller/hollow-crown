@@ -83,6 +83,7 @@ haunts:
 # Epic 3: Ulvric flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Wolfszahn (wolf_fang) ist Beute (Story 3.5). Seine Kartenwaffe ist Eisen
 # (Review R14/R15), damit „+1 Tier je Groll“ greift; Klasse wolf_rider (kein Reittier, Wolfsfell nur Optik; Figur ulvric).
 # Osric Dunn: Platzhalterfigur des Söldners (sprite mercenary) bis zur eigenen Figur (Epic 8); Halbfigur osric ist da, eine Büste fehlt (Klassenbild).
+# Balancing 2026-10-28 [C]: Schwer: g6/g7 Stufe 5 (vorher 3), g7 aggressive statt hold, beide Wolfsreiter der Welle Stufe 4 (vorher 2) und schon in Runde 2 (vorher 4). Leicht: wr2 Stufe 1 und trigger Radius 3 (vorher 2/5), g2 Stufe 1 (vorher 2); sie standen für die meisten Niedergestreckten (Korridor Leicht <= 0,5).
 units:
   - id: osric
     nameKey: unit.osric.name
@@ -110,27 +111,27 @@ units:
     ai: { profile: trigger, radius: 5, then: aggressive }
   # Wolfsreiter: Klasse wolf_rider, Figur wolf_rider. wr3 und wr4 entfallen bei E2 „ausliefern“ (der Ring zeigt den Hintereingang und die Wachwechsel).
   - { id: wr1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [6, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: wr2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [11, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: wr2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 1, at: [11, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: wr3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [4, 8],  items: [{ def: iron_lance }], ai: { profile: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
   - { id: wr4, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [9, 6],  items: [{ def: iron_lance }], ai: { profile: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
   # Lagerwachen; g3 und g4 entfallen bei E2 „ausliefern“ (Wachwechsel)
   - { id: g1, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 2, at: [7, 5],  items: [{ def: iron_axe }],  ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: g2, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [9, 3],  items: [{ def: iron_bow }],  ai: { profile: hold } }
+  - { id: g2, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 1, at: [9, 3],  items: [{ def: iron_bow }],  ai: { profile: hold } }
   - { id: g3, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard], requires: [{ not: { flag: { e02: hand_over } } }] }
   - { id: g4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 2, at: [5, 5],  items: [{ def: hand_axe }],  ai: { profile: hold }, difficulty: [normal, hard], requires: [{ not: { flag: { e02: hand_over } } }] }
   - { id: g5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier,       level: 2, at: [12, 3],  items: [{ def: iron_lance }], ai: { profile: hold } }   # Käfigwache
-  - { id: g6, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 3, at: [3, 10],  items: [{ def: iron_axe }],  ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: g7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [11, 13],  items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: g6, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 5, at: [3, 10],  items: [{ def: iron_axe }],  ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: g7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [11, 13],  items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   # Ysolde, Gefangene im Käfig (Tür cage bei [13,3]): enemy + hold + keine Waffe wie Varek in 1-5, zählt nicht für Rout; {avatar} spricht sie an
   - { id: ysolde, char: ysolde, team: enemy, class: elementalist, level: 5, at: [14, 3], items: [], ai: { profile: hold }, ignoreForRout: true, recruit: { by: [avatar], dialogue: scn.m1_4.ysolde_talk } }
 pairs: []
 reinforcements:
-  - turn: 4
+  - turn: 2
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [2, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [13, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [2, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [13, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: boss, unit: osric }
   defeat:
@@ -147,5 +148,5 @@ goldReward: 1300   # [C]
 music: battle_a
 devNote: >
   Nachtlager im Nebel des Krieges. 16 × 18: Lichtung mit Zelten und Feuern, Dunns Zelt im Norden, Käfig im Nordosten (Tür bei [13,3]).
-  Gegner: Leicht 9, Normal 11, Schwer 13 plus 2 Wolfsreiter in Runde 4 (Wellenzählung: Schwer 15 gesamt). Bei E2 „ausliefern“ entfallen
+  Gegner: Leicht 9, Normal 11, Schwer 13 plus 2 Wolfsreiter in Runde 2 (Wellenzählung: Schwer 15 gesamt). Bei E2 „ausliefern“ entfallen
   wr3, wr4, g3, g4: Leicht 7, Normal 7, Schwer 9 (plus 2 Wolfsreiter).

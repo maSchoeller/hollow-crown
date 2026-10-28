@@ -129,7 +129,7 @@ describe('map m1_8_paktwacht_halten', () => {
     const steward = m.units.find((u) => u.id === 'steward')!;
     expect(steward).toMatchObject({ team: 'other', class: 'healer', at: [8, 3], ai: { profile: 'hold' } });
     expect(steward.items.map((i) => i.def)).toEqual(['heal_staff']);
-    expect(m.reinforcements.map((r) => r.turn)).toEqual([4, 7]);
+    expect(m.reinforcements.map((r) => r.turn)).toEqual([4, 8]);
     expect((m as { haunts?: unknown }).haunts).toBeUndefined();
   });
 
@@ -155,7 +155,7 @@ describe('map m1_8_paktwacht_halten', () => {
     expect(lt(s, 'ulvric')).toMatchObject({ classId: 'wolf_rider', team: 'enemy' });
     expect(lt(s, 'grosk')).toBeDefined();
     expect(lt(s, 'morra')).toBeUndefined();
-    wave(s, 7);
+    wave(s, 8);
     expect(lt(s, 'morra')?.pos).toBeTruthy();
   });
 
@@ -164,11 +164,11 @@ describe('map m1_8_paktwacht_halten', () => {
     wave(s, 4);
     expect(lt(s, 'grosk')).toBeUndefined();
     expect(lt(s, 'ulvric')).toBeDefined();
-    wave(s, 7);
+    wave(s, 8);
     expect(s.units.filter((u) => u.team === 'enemy').length).toBe(12);
     const open = begin(base);
     wave(open, 4);
-    wave(open, 7);
+    wave(open, 8);
     expect(open.units.filter((u) => u.team === 'enemy').length).toBe(13);
   });
 });
@@ -193,7 +193,7 @@ describe('Morra calls the retreat in round 10', () => {
   function round10(at: [number, number] = [8, 13]) {
     const s = begin(base);
     wave(s, 4);
-    wave(s, 7);
+    wave(s, 8);
     const morra = lt(s, 'morra')!;
     morra.pos = at;
     for (const u of s.units) if (u.team === 'enemy' && u.uid !== morra.uid) Object.assign(u, { gone: 'dead', pos: null });

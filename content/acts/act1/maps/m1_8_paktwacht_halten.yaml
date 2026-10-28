@@ -63,18 +63,18 @@ deploy:
   max: 7
   forced: [avatar, kael]
   slots: [[6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12], [6, 12], [9, 12], [7, 10]]
-# Stufen [C]: Gegner 7, Verwalter 8 (Simulation Story 9.9 gegen ein Heer der Stufe 9; die Leutnant-Stufen rechnet createBattle, `level` ist dort Platzhalter). Leutnants (Hask, Ulvric, Morra, Grosk): Klasse und Stufe kommen aus `lieutenant` (flieht bei 0 TP, Groll, Kopfgeld);
+# Stufen [C]: Gegner 5, Verwalter 8 (Balancing 2026-10-28: Gegner vorher 7; Welle 1 löst erst bei Radius 5 aus, Welle 3 kommt in Runde 8 statt 7; Simulation Story 9.9 gegen ein Heer der Stufe 9; die Leutnant-Stufen rechnet createBattle, `level` ist dort Platzhalter). Leutnants (Hask, Ulvric, Morra, Grosk): Klasse und Stufe kommen aus `lieutenant` (flieht bei 0 TP, Groll, Kopfgeld);
 # ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35). Ein beigetretener Grosk (Flag joined_grosk) steht nicht auf der Karte.
 units:
   # Zu verteidigende Figur im Bergfried (Produktinhaber 2026-10-26): der Verwalter, grauhaarig, hütete die Schlüssel (scn.m1_6.outro). Heilt Verbündete in Reichweite, ohne Waffe.
   # Kein Modell: wie der Dorfälteste in m1_2 bekommt er die Figur der Klasse healer (Platzhalter bis zur Grafik-Session).
   - { id: steward, nameKey: unit.paktwacht_steward.name, team: other, class: healer, level: 8, at: [8, 3], items: [{ def: heal_staff }], ai: { profile: hold } }
-  # Welle 1 (Süden, ab Runde 1)
+  # Welle 1 (Süden; trigger Radius 5 [C], Hask bleibt aggressive)
   - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, level: 9, at: [8, 16], sprite: hask, portrait: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
-  - { id: w1a, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [6, 16], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w1b, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [10, 15], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w1c, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [5, 17], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: w1d, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 7, at: [9, 17], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: w1a, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [6, 16], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: w1b, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [10, 15], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: w1c, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [5, 17], sprite: archer, items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: w1d, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [9, 17], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
 pairs: []
 reinforcements:
   # Welle 2 (Runde 4, angekündigt): West- und Ostpforte
@@ -83,24 +83,24 @@ reinforcements:
     announce: true
     units:
       - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 9, at: [0, 10], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 7, at: [0, 11], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [0, 9], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 5, at: [0, 11], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [0, 9], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
       # nur wenn Grosk nicht gewechselt (E3): ein beigetretener Leutnant (Flag joined_grosk) spawnt nicht (createBattle legt den Plan vorab an, spawnUnits lässt ihn weg)
       - { id: grosk, lieutenant: grosk, nameKey: unit.grosk.name, team: enemy, level: 9, at: [15, 10], sprite: grosk, portrait: grosk, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [15, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [15, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  # Welle 3 (Runde 7, angekündigt): alle drei Seiten, Morra führt von Süden
-  - turn: 7
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Welle 3 (Runde 8 [C], vorher 7, angekündigt): alle drei Seiten, Morra führt von Süden
+  - turn: 8
     phase: enemy
     announce: true
     units:
       # Morra zieht in Runde 10 ab (Trigger t_morra_retreat setzt das Profil flee; der Südrand ist ihr Rückzugsgebiet)
       - { id: morra, lieutenant: morra, nameKey: unit.morra.name, team: enemy, level: 10, at: [8, 18], sprite: morra, portrait: morra, items: [{ def: iron_bow }, { def: vulnerary }], drops: [1], ai: { profile: aggressive, area: { rect: [0, 17, 15, 19] } } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 7, at: [6, 18], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 7, at: [10, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: skirmisher, level: 7, at: [0, 12], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 7, at: [15, 12], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 7, at: [7, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [6, 18], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [10, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: skirmisher, level: 5, at: [0, 12], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 12], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [7, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: defend, unit: steward, turns: 10 }
   defeat:
@@ -124,4 +124,4 @@ goldReward: 1500   # [C]
 music: battle_a
 devNote: >
   16 × 20, dieselbe Burg wie m1_6_paktwacht von innen. Aufstellung im äußeren Hof, Verwalter im Bergfried (8,3), heilt. Welle 1 Süden (Runde 1), Welle 2 West/Ost (Runde 4),
-  Welle 3 alle Seiten (Runde 7). Leicht: 13 Gegner; Normal: 15; Schwer: 17 (Grosk zählt nur, wenn er nicht beigetreten ist). Runde 10: Morra zieht ab; 2 Glutfunken nach dem Sieg.
+  Welle 3 alle Seiten (Runde 8). Leicht: 13 Gegner; Normal: 15; Schwer: 17 (Grosk zählt nur, wenn er nicht beigetreten ist). Runde 10: Morra zieht ab; 2 Glutfunken nach dem Sieg.

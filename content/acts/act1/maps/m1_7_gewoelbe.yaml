@@ -87,12 +87,13 @@ deploy:
   max: 7
   forced: [avatar, kael]
   slots: [[6, 1], [7, 1], [5, 1], [8, 1], [4, 1], [5, 2], [6, 2], [7, 2], [8, 2]]
-# Plünderer, Stufe um 8 [C], per Simulation abgestimmt (Story 9.8). Kein Leutnant. Jeder trägt Schlüssel (Schlüsselregel, siehe objects).
+# Plünderer, Stufe um 7 [C], per Simulation abgestimmt (Story 9.8). Kein Leutnant. Jeder trägt Schlüssel (Schlüsselregel, siehe objects).
+# Balancing 2026-10-28 [C]: Plünderer Stufe 7 statt 6 (Schwer-Welle Runde 6 unverändert 7), l2/l4 lösen erst bei Radius 2 aus (vorher 4). Schwer verliert hier an der Rundenfrist, nicht an Verlusten; je kampfbereiter die Plünderer, desto früher liegen die Schlüssel (Normal blieb bei 0,2 Niedergestreckten, nicht erreichbar).
 units:
-  - { id: l1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [3, 7], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
-  - { id: l2, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 6, at: [6, 7], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: l3, nameKey: unit.looter.name, team: enemy, class: marksman, level: 6, at: [7, 8], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold } }
-  - { id: l4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [10, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: l1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [3, 7], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
+  - { id: l2, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 7, at: [6, 7], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 2, then: aggressive } }
+  - { id: l3, nameKey: unit.looter.name, team: enemy, class: marksman, level: 7, at: [7, 8], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold } }
+  - { id: l4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [10, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 2, then: aggressive } }
 pairs: []
 # Der eingestürzte Gang: Plünderer rücken in Wellen nach (angekündigt). Auch sie tragen je einen Schlüssel (Reserve für die Schlüsselregel).
 reinforcements:
@@ -100,14 +101,14 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 6, at: [13, 2], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [13, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 7, at: [13, 2], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [13, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 4
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 6, at: [13, 2], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 6, at: [13, 3], sprite: soldier, items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 7, at: [13, 2], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 7, at: [13, 3], sprite: soldier, items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 6
     phase: enemy
     announce: true
