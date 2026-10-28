@@ -265,16 +265,18 @@ export interface EquipCandidate {
 
 /**
  * Items for one place of a unit, from its bag and the convoy (story 6.2). Items of the wrong kind for the place
- * are left out; items the role may not hold stay in the list with the reason in `error`.
+ * are left out; items the role may not hold stay in the list with the reason in `error`. `replace` (bag only) is the
+ * item in the tapped bag place: it leaves when another comes in, so it does not count towards a full bag.
  */
-export function equipCandidates(data: GameData, c: CampaignState, unit: UnitRecord, slot: EquipSlot | 'bag'): EquipCandidate[] {
+export function equipCandidates(data: GameData, c: CampaignState, unit: UnitRecord, slot: EquipSlot | 'bag', replace?: string): EquipCandidate[] {
   const skills = activeSkillIds(data, unit);
+  const bag = unit.bag.filter((i) => i.uid !== replace);
   const out: EquipCandidate[] = [];
   const consider = (inst: ItemInstance, where: 'convoy' | 'bag') => {
     const d = itemDef(data, inst);
     if (slot === 'bag') {
       if (where === 'bag' || d.tags?.includes('convoyOnly')) return;
-      out.push({ inst, where, error: bagIsFull(data, unit.bag, inst) ? 'bag_full' : null });
+      out.push({ inst, where, error: bagIsFull(data, bag, inst) ? 'bag_full' : null });
       return;
     }
     if (d.tags?.includes('convoyOnly') || !slotFits(d, slot)) return;

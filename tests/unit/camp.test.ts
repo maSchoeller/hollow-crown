@@ -76,6 +76,38 @@ describe('equip list and comparison (story 6.2)', () => {
     expect(equipCandidates(data, c, u, 'bag').find((x) => x.inst.def === 'vulnerary')!.error).toBe('bag_full');
   });
 
+  it('a taken bag place swaps: the item in it does not count as full and goes to the convoy', () => {
+    const c = clone(base);
+    const potion = newItem(c, 'vulnerary', data);
+    c.convoy.push(potion);
+    const u = unit(c, 'kael');
+    while (u.bag.length < data.balance.bag.size) u.bag.push(newItem(c, 'torch', data));
+    const old = u.bag[0]!;
+    expect(equipCandidates(data, c, u, 'bag', old.uid).find((x) => x.inst.uid === potion.uid)!.error).toBeNull();
+    expect(validateCampaign(data, c, { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'bag' })).toBe('bag_full');
+    const cmd = { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'bag', replace: old.uid } as const;
+    expect(validateCampaign(data, c, cmd)).toBeNull();
+    const r = applyCampaign(data, c, cmd).campaign;
+    expect(unit(r, 'kael').bag[0]!.uid).toBe(potion.uid);
+    expect(unit(r, 'kael').bag.map((i) => i.uid)).not.toContain(old.uid);
+    expect(r.convoy.some((i) => i.uid === old.uid)).toBe(true);
+    // replace must name an item in that bag
+    expect(validateCampaign(data, c, { ...cmd, replace: 'nope' })).toBe('unknown_item');
+    expect(validateCampaign(data, c, { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'mainHand', replace: old.uid })).toBe('unknown_item');
+  });
+
+  it('an item in the bag can be put back into the convoy', () => {
+    const c = clone(base);
+    const u = unit(c, 'kael');
+    const torch = newItem(c, 'torch', data);
+    u.bag.push(torch);
+    const cmd = { type: 'unequip', uid: torch.uid } as const;
+    expect(validateCampaign(data, c, cmd)).toBeNull();
+    const r = applyCampaign(data, c, cmd).campaign;
+    expect(unit(r, 'kael').bag.some((i) => i.uid === torch.uid)).toBe(false);
+    expect(r.convoy.some((i) => i.uid === torch.uid)).toBe(true);
+  });
+
   it('the preview uses the battle formulas: lighter weapon, shorter damage, longer reach', () => {
     const c = clone(base);
     const brenna = unit(c, 'brenna');
