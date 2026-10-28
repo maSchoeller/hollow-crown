@@ -1,6 +1,6 @@
 # Story 6.9: Die Paktwacht als Heimat
 
-Status: review
+Status: done
 
 ## Story
 
@@ -95,3 +95,7 @@ Claude Sonnet 5.5
 - `tests/unit/home.test.ts` (neu), `tests/unit/story.test.ts`, `tests/unit/core.test.ts`
 - `concept/24-architecture/architecture.md`, `decision-log.md`, `concept/25-ux/.decision-log.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`, diese Datei
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Burg nach 1-6, Raumsteine, Gedächtnishalle mit Gerrit, Gefallenen und Söldnerin gesehen. Gesamtbefund: `acceptance-2026-10-27.md`.

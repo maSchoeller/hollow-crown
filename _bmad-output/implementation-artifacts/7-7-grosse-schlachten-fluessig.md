@@ -1,6 +1,6 @@
 # Story 7.7: Große Schlachten flüssig
 
-Status: review
+Status: done
 
 ## Story
 
@@ -216,3 +216,7 @@ Zielverfehlung: 2× liegt bei 58,8 FPS statt 60 (beide Profile), 4× bei 34,8 (p
 ### File List
 
 `src/render/board/board.ts`, `src/render/board/rings.ts` (neu), `src/render/shared/figures.ts`, `src/render/shared/models.ts`, `src/render/shared/terrain3d.ts`, `src/render/host.ts`, `content/core/render.yaml`, `src/content/schemas.ts`, `src/core/defs.ts` (nur Typ `RenderDef`), `tests/perf/profile.ts`, `tests/perf/perf.spec.ts`, `tests/perf/bench.ts`, `tests/perf/report.ts`, `tests/perf/report-summary.ts`, `tests/perf/baseline.json` (neu), `tests/unit/perf-report.test.ts`, `concept/24-architecture/decision-log.md`, `concept/23-art-direction/decision-log.md`, `_bmad-output/implementation-artifacts/7-5-leistung-messen.md` (Verweis), `_bmad-output/implementation-artifacts/sprint-status.yaml` (7-7 auf review).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Mit der Abweichung vom 2026-10-25 abgenommen; Rest in 7.8. Gesamtbefund: `acceptance-2026-10-27.md`.

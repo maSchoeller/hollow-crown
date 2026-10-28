@@ -64,11 +64,12 @@ deploy:
   slots: [[7, 14], [8, 14], [6, 14], [9, 14], [7, 15], [8, 15], [6, 15]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: die Dorfstraße vor dem Haus des Ältesten – hier hat die Truppe Erlbach gehalten, hier kehrt Hasks Groll zurück.
+  # Grund: die Dorfstraße vor dem Haus des Ältesten – hier hat die Truppe Erlbach gehalten, hier kehrt Hasks Groll zurück. Der Älteste steht mitten
+  # auf der Straße, die Truppe als Riegel nördlich von ihm (Anführer hinten; Simulation 2026-10-28: am Südrand aufgestellt 71 %, so 96 %).
   - variant: defend
-    target: { at: [8, 6] }
+    target: { at: [8, 8] }
     enemySpawn: { rect: [5, 0, 10, 1] }
-    deploy: { rect: [5, 14, 9, 15] }
+    deploy: { tiles: [[8, 9], [7, 6], [8, 6], [7, 7], [9, 7], [7, 8], [9, 8], [8, 7]] }
     turns: 8
   # Grund: die Brücke über den Bach – Hinterhalt an der Engstelle auf dem Rückweg.
   - variant: rout

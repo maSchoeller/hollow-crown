@@ -1,6 +1,6 @@
 # Story 9.6: Mission 1-5 „Das Hungerlager“ und Entscheidung E3
 
-Status: review
+Status: done
 
 ## Story
 
@@ -82,3 +82,7 @@ Claude Sonnet 5.5
 
 - 2026-10-27: Story 9.6 umgesetzt (Mission 1-5 mit Varek, Kindern und Grosk im Outro, E3 mit der neuen Wirkung `meet`, Karteneinheiten-Feld `untargetable`).
 - 2026-10-27: Nacharbeit (Produktinhaber): `status` und `runes` sind gestaffelte Mechaniken (`campaign.yaml` `mechanics`, je ab der 3. Story-Mission, unabhängig von der Reihenfolge); `untargetable`-Einheiten nehmen auch keinen Schaden durch Brennen, brennende Felder, Bomben oder Rückstoß (`damageUnit`). Tests `staged-status-runes.test.ts`, `untargetable.test.ts`.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt; E3 „verschonen“: Grosk tritt bei, Hask-Groll −1. Balancing PR #73: Wellen Runde 1 und 3 statt 2 und 4 (zur Bestätigung beim Produktinhaber). Gesamtbefund: `acceptance-2026-10-27.md`.

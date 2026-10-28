@@ -1,6 +1,6 @@
 # Story 9.8: Mission 1-7 „Unter der Paktwacht“
 
-Status: review
+Status: done
 
 ## Story
 
@@ -131,3 +131,7 @@ m1_6 (Stufe br1 und Wolfsreiter auf 5): Normal 200 Läufe 1,20 Niedergestreckte 
 - Normal/Schwer-Korridor von m1_7 nicht erreicht; E2E und Screenshots nicht erstellt.
 
 - **Kontrolleur (2026-10-26):** Normal (42 %) und Schwer liegen in der Zwischenkette (prologue → m1_1 → ch01 → ch02 → m1_6 → m1_7) außerhalb des Korridors; `--fresh` Normal 10 % (Rekruten auf Beitrittsstufe, nicht aussagekräftig). Abstimmung von m1_6–m1_8 erfolgt nach dem Merge von 9.3–9.6 auf der echten Kette, vor dem PR. Die Änderung an `src/core/ai/autoplay.ts` (Schatzsuche öffnet Türen, holt Schlüssel) ist geprüft und übernommen. Offen: Beute zeigt übrige Schlüssel einzeln (8×), Truhengold hebt die Beute auf 3 600.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Verdacht geklärt: der Simulator (kein Bergen, volle Taschen, Leerlauf), nicht die Karte. Simulator und Schlüsselbund behoben (PR #71); verkettet Leicht 100 %, Normal 90 %. E2E `tests/e2e/m1-7.spec.ts`, Chronik-Eintrag gesehen. Offen beim Produktinhaber: Niedergestreckte Normal 0,14 (Korridor ab 0,4). Gesamtbefund: `acceptance-2026-10-27.md`.

@@ -1,6 +1,6 @@
 # Story 9.3: Mission 1-2 „Asche über Erlbach“ und Entscheidung E1
 
-Status: review
+Status: done
 
 ## Story
 
@@ -104,3 +104,7 @@ Claude Sonnet 5.5
 
 - 2026-10-26: Story 9.3 umgesetzt (Karte, Szenen, E1, Klasse `civilian`, Wirkung `villageAid`, Heimsuchungs-Anker), Simulation abgestimmt.
 - 2026-10-26 (Nacharbeit nach Kontrolle, Entscheidungen des Produktinhabers): Ältester zurück ins Dorf (Dorfstraße [7,10]), Gegnerstufen 3–4, Raider-Starts so, dass jedes Haus ab Spielerphase 2 erreichbar ist; Mira tritt im Outro bei, wenn ihre Hütte steht (Knoten-`effectsIf`, Battle-Flag `mira_house_razed`); Glutbuch-Zeile in `scn.m1_1.outro`; Ergebnis-Screen ohne Gehende (`withoutLeavers`); Zivilisten-Figur `villager_elder` (Porträt, Halbfigur, Tripo-Brettfigur) statt Platzhalter, der Älteste spricht mit Namensschild; Zieltexte nennen ihre Einheit (`defend`/`escort` {name}, Nebenziel `recruit` {name}, `kill_with` {weapon}); Nebenziel `s_bow` gestrichen (`kill_with` zählt nur Bosse, 1-2 hat keinen). `e02`/`e03` im Flag-Register vorab deklariert (Abstimmung mit der Session N1–N3).
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Gespielt (Mira-Haus zerstört, E1 entfällt) und E1 „gehen lassen“ per `__hc.devNode` (Folgen-Karte, Dorfhilfe). Gesamtbefund: `acceptance-2026-10-27.md`.

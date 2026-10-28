@@ -51,12 +51,13 @@ deploy:
   forced: [avatar, kael]
   slots: [[6, 13], [7, 13], [5, 13], [8, 13], [6, 12], [7, 12], [5, 12]]
 # Stufen um 5–6 [C] Stufe vorläufig, Abgleich per Simulation, sobald spielbar.
+# Balancing 2026-10-28 [C]: e1/e3 trigger Radius 3 statt hold, e4/e5 Stufe 6 (vorher 5); Normal lag bei 0,28 Niedergestreckten (Korridor 0,4-1,3).
 units:
-  - { id: e1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [6, 2], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
+  - { id: e1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [6, 2], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: e2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 6, at: [7, 2], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: e3, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 6, at: [5, 5], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold } }
-  - { id: e4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [9, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: e5, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 5, at: [3, 8], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: e3, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 6, at: [5, 5], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: e4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 6, at: [9, 6], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: e5, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 6, at: [3, 8], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
   - { id: e6, nameKey: unit.looter.name, team: enemy, class: marksman, level: 5, at: [9, 4], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   - { id: e7, nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [10, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
   - { id: e8, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 6, at: [4, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [hard] }

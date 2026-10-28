@@ -62,12 +62,13 @@ haunts:
     target: { at: [8, 10] }
     enemySpawn: { rect: [2, 11, 13, 12] }
     deploy: { rect: [6, 14, 9, 15] }
-  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat.
+  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat. Der Zivilist wartet am Fuß der Straße, die Räuber lauern im äußeren
+  # Hof vor dem Ausgang (Simulation 2026-10-28: Räuber am Zivilisten 50 %, so 96 %).
   - variant: escort
-    target: { at: [8, 15] }
-    exit: { rect: [4, 16, 12, 16] }
-    enemySpawn: { rect: [0, 13, 15, 14] }
-    deploy: { rect: [6, 18, 9, 19] }
+    target: { at: [8, 19] }
+    exit: { rect: [5, 14, 10, 14] }
+    enemySpawn: { rect: [3, 9, 12, 11] }
+    deploy: { tiles: [[9, 19], [8, 18], [7, 17], [9, 17], [8, 17], [7, 18], [9, 18], [7, 19]] }
     turns: 8
 deploy:
   max: 7
@@ -75,21 +76,22 @@ deploy:
   slots: [[6, 19], [7, 19], [8, 19], [9, 19], [5, 18], [6, 18], [7, 18], [8, 18], [9, 18]]
 # Gegner: Stufen [C], per Simulation abgestimmt (Story 9.7). Leutnants (Hask, Ulvric): Stufe und Klasse kommen aus `lieutenant`
 # (flieht bei 0 TP, Groll, Kopfgeld); ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35).
+# Balancing 2026-10-28 [C]: Schwer: outer2 Stufe 6 und trigger Radius 4 (vorher 5, hold), rider3 Stufe 6 (vorher 4); geteilt: rider1/rider2/br1 Stufe 6 (vorher 5), mk2/br3 trigger Radius 4 statt hold (Normal/Schwer).
 units:
   - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 8, at: [8, 6], sprite: hask, portrait: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: guard, radius: 3 } }   # Signaturwaffe: OFFEN (items.md §6.3)
   - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 7, at: [11, 16], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Ulvrics Wolfsreiter am Hang
-  - { id: rider1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 5, at: [2, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: rider2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 5, at: [13, 14], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: rider1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [2, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: rider2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [13, 14], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: mk1, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [6, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: inner1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [7, 3], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: outer1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [5, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: br1, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [10, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: br1, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [10, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
   - { id: br2, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [3, 11], sprite: brigand, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: mk2, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [9, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: br3, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [8, 12], sprite: brigand, items: [{ def: steel_axe }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: outer2, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [11, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: rider3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [7, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: mk2, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [9, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  - { id: br3, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [8, 12], sprite: brigand, items: [{ def: steel_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  - { id: outer2, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [11, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: rider3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [7, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements: []
 objectives:

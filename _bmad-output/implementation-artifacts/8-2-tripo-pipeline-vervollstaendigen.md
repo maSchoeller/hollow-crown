@@ -1,6 +1,6 @@
 # Story 8.2: Tripo-Pipeline vervollständigen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -101,3 +101,7 @@ Claude Opus 5.5 (Teile T1–T3, Commit d3bd3f2), Claude Sonnet 5.5 (T4, Laute in
 - tools/art/blender_weapons.py, tools/art/prepare_tripo_unit.py, tools/art/tripo_units.py (Commit d3bd3f2)
 - tools/figure-budget.mjs, tools/check-bundle-size.mjs
 - art/models/weapons/dagger.glb, lute.glb; art/models/source/kael_anims_flee_cheer.glb; art/models/units/*.glb (neu gebaut, Commit d3bd3f2)
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Prompt-Protokoll der KI-Animationen nachgetragen: `art/prompts/kael_anims_flee_cheer.md` (licensing §6). Gesamtbefund: `acceptance-2026-10-27.md`.

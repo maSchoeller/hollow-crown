@@ -1,6 +1,6 @@
 # Story 6.10: Aufstellung vor der Mission im Stil B
 
-Status: review
+Status: done
 
 ## Story
 
@@ -164,3 +164,7 @@ Claude Sonnet 5.5 (gds-dev-story, nicht interaktiv)
 - `tests/e2e/prep.spec.ts` (neu)
 - `tests/fixtures/saves/generate.ts`, `tests/fixtures/saves/prep-worldmap-export.json` (neu)
 - `_bmad-output/implementation-artifacts/sprint-status.yaml` (6-10: review)
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Aufstellung bei 375 × 812 gesehen: Pflichtfiguren mit Schloss, Zähler, Plus-Steine bei voller Truppe. Gesamtbefund: `acceptance-2026-10-27.md`.

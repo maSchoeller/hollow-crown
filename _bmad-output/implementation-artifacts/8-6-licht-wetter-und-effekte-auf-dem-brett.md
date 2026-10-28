@@ -1,6 +1,6 @@
 # Story 8.6: Licht, Wetter und Effekte auf dem Brett
 
-Status: review
+Status: done
 
 ## Story
 
@@ -392,3 +392,7 @@ content/core/render.yaml, playwright.perf.config.ts, src/core/defs.ts, src/conte
 ### Change Log
 
 - 2026-10-26: Story 8.6 umgesetzt (Licht, Wetter, Teamtuch ungelit, Krit-Cut-in, Statussymbole, Tod in Asche), Status review.
+
+## Abnahme 2026-10-27
+
+Abgenommen (Status done). Nacht und Nebel (1-7), Abend (1-2) und Effekte im Durchlauf gesehen. Gesamtbefund: `acceptance-2026-10-27.md`.
