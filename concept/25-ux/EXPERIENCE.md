@@ -82,7 +82,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Leerlauf-Dock | Gefahr (Umschalter), Nächste (nächste bereite Einheit), Phase beenden (zeigt bereite Einheiten, fragt nach, solange welche bereit sind) |
 | Kampfvorschau | öffnet beim Tipp auf ein Ziel; zweiter Tipp auf dasselbe Ziel oder „Angreifen“ bestätigt; zeigt „flieht“ statt 0 TP bei Leutnants |
 | Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
-| Sprechblase | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen |
+| Sprechband | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen; sitzt fest am Bildschirm, die Kamera bewegt sich nicht, der Sprecher muss nicht auf dem Brett stehen; Barks und Leutnant-Zeilen laufen ebenso, ohne Tipp und mit Brett-Tempo |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
 | Raumstein | Tipp öffnet das Raum-Panel; Ausbau-Band erscheint nur, wenn Gefährte und Gold reichen; sonst nennt die Stufe, was fehlt |
 | Item-Zeile | erster Tipp wählt und zeigt den Vergleich, Haupttaste führt aus; Unpassendes bleibt sichtbar, gedimmt, mit Grund; Info-Stein rechts oder Langdruck öffnet die Item-Details |

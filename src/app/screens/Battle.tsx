@@ -48,7 +48,7 @@ import {
 import { mapOf } from '../../core/battle/objectives';
 import { BoardView, type CutInEvent } from '../../render/board/board';
 import { t } from '../../i18n';
-import { Scene, SceneBubbles } from './Scene';
+import { Scene, SceneBand } from './Scene';
 import { CutIn, type CutInShown } from './CutIn';
 import { cutInLineColour, cutInName, cutInPortrait } from '../battle/cutIn';
 import { halfFigures, loadHalfFigures } from '../state/halves';
@@ -162,7 +162,7 @@ export function Battle() {
   /** the cut-in band of a critical hit (story 8.6) */
   const [cutIn, setCutIn] = useState<CutInShown | null>(null);
   const cutSeq = useRef(0);
-  const [dialogue, setDialogue] = useState<{ id: string; done: () => void; bubble?: boolean; quote?: string } | null>(null);
+  const [dialogue, setDialogue] = useState<{ id: string; done: () => void; band?: boolean } | null>(null);
   const [bark, setBark] = useState<{ b: Bark; seq: number; done: () => void } | null>(null);
   const [levelUp, setLevelUp] = useState<{ uid: string; gains: Partial<Stats>; level: number; done: () => void } | null>(null);
   const [toast, setToastState] = useState<{ text: string; item?: ItemInstance } | null>(null);
@@ -185,13 +185,10 @@ export function Battle() {
 
   const unit = (uid: string) => s.units.find((u) => u.uid === uid)!;
 
-  /** The unit that speaks as `speaker` (company member by id or story character); a quote falls back to its own unit. */
-  const speakerUnit = (speaker: string, quoteUnit?: string) =>
-    s.units.find((u) => u.pos && !u.gone && !u.downed && (u.id === speaker || u.charId === speaker)) ?? (quoteUnit ? s.units.find((u) => u.uid === quoteUnit && u.pos && !u.gone) : undefined);
-  /** Whether scene `id` can play as bubbles: only spoken lines, every speaker on the board. */
-  const bubbleSpeakers = (id: string, quoteUnit?: string): boolean => {
+  /** Whether scene `id` can play as a speech band: only spoken lines, no answers. Where the speakers stand does not matter. */
+  const bandScene = (id: string): boolean => {
     const lines = resolveScene(data, storyContext(), id);
-    return lines.length > 0 && lines.every((l) => l.kind === 'line' && !!l.speaker && !!speakerUnit(l.speaker, quoteUnit));
+    return lines.length > 0 && lines.every((l) => l.kind === 'line' && !!l.speaker);
   };
 
   // --------------------------------------------------------------- board lifecycle
@@ -258,8 +255,8 @@ export function Battle() {
     };
   }, []);
 
-  // a visual-novel dialogue covers the board: it only needs the idle frame rate (speech bubbles follow the camera)
-  const overlayDialogue = !!dialogue && !dialogue.bubble;
+  // a visual-novel dialogue covers the board: it only needs the idle frame rate (the speech band leaves the board in view)
+  const overlayDialogue = !!dialogue && !dialogue.band;
   useEffect(() => boardRef.current?.hold(overlayDialogue ? 'idle' : 'run'), [overlayDialogue]);
 
   // the bottom sheet changes height with the selection (and leaves in landscape); keep the map clear of the HUD
@@ -472,9 +469,8 @@ export function Battle() {
       case 'quote':
         if (!data.scenes[e.id]) break;
         {
-          const quote = e.t === 'quote' ? e.unit : undefined;
-          // a scene without answers whose speakers all stand on the board plays as speech bubbles at their heads
-          await new Promise<void>((resolve) => setDialogue({ id: e.id, done: resolve, bubble: bubbleSpeakers(e.id, quote), quote }));
+          // a scene of spoken lines without answers plays as a speech band fixed to the screen: no camera move, no figure needed
+          await new Promise<void>((resolve) => setDialogue({ id: e.id, done: resolve, band: bandScene(e.id) }));
           setDialogue(null);
         }
         break;
@@ -1158,36 +1154,8 @@ export function Battle() {
       <div class="board-wrap">
         <div ref={stageRef} class="hc-stage-slot" />
         <div ref={floatRef} class="float-layer" />
-        {dialogue?.bubble && (
-          <SceneBubbles
-            id={dialogue.id}
-            anchorOf={async (speaker) => {
-              const u = speakerUnit(speaker, dialogue.quote);
-              const board = boardRef.current;
-              if (!u?.pos || !board) return null;
-              await board.centerOn(u.pos);
-              return board.headScreen(u.uid);
-            }}
-            onDone={dialogue.done}
-          />
-        )}
-        {bark && (
-          <SceneBubbles
-            id={bark.b.scene}
-            key={bark.seq}
-            only={[bark.b.line]}
-            params={bark.b.params}
-            speed={boardRef.current?.speed ?? 1}
-            anchorOf={async () => {
-              const u = s.units.find((x) => x.uid === bark.b.anchor);
-              const board = boardRef.current;
-              if (!u?.pos || !board) return null;
-              await board.centerOn(u.pos);
-              return board.headScreen(u.uid);
-            }}
-            onDone={bark.done}
-          />
-        )}
+        {dialogue?.band && <SceneBand id={dialogue.id} onDone={dialogue.done} />}
+        {bark && <SceneBand id={bark.b.scene} key={bark.seq} only={[bark.b.line]} params={bark.b.params} speed={boardRef.current?.speed ?? 1} onDone={bark.done} />}
         <div class="hud-top" ref={topRef}>
           {otherPhase ? (
             <PhasePill turn={shownTurn} phase={shownPhase} />
@@ -1292,7 +1260,7 @@ export function Battle() {
       {trade && <TradeSheet s={s} a={trade.a} b={trade.b} onClose={() => setTrade(null)} onCommit={(cmd) => { setTrade(null); void run(cmd); }} />}
       {convoy && <ConvoySheet s={s} uid={convoy} onClose={() => setConvoy(null)} onCommit={(cmd) => { setConvoy(null); void run(cmd); }} />}
       {levelUp && <LevelUpPopup u={unit(levelUp.uid)} gains={levelUp.gains} level={levelUp.level} onDone={levelUp.done} />}
-      {dialogue && !dialogue.bubble && (
+      {dialogue && !dialogue.band && (
         <Scene id={dialogue.id} overlay onDone={dialogue.done} />
       )}
     </div>
