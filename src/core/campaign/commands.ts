@@ -22,7 +22,8 @@ export type CampaignCommand =
   | { type: 'buy'; item: string }
   | { type: 'buyOffer'; uid: string }
   | { type: 'sell'; uid: string }
-  | { type: 'equip'; unit: string; uid: string; slot: EquipSlot | 'bag' }
+  /** `replace` (bag only): uid of the item in that bag place, which goes to the convoy in the same step (swap) */
+  | { type: 'equip'; unit: string; uid: string; slot: EquipSlot | 'bag'; replace?: string }
   | { type: 'unequip'; uid: string }
   | { type: 'upgrade'; uid: string }
   | { type: 'reroll'; uid: string; index: number }

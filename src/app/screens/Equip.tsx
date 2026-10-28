@@ -1,6 +1,7 @@
 /** Equip list of one place of a figure, with the green/red comparison (concept/25-ux mockup 06, story 6.2). */
 import { useState } from 'preact/hooks';
 import { equipCandidates, equipPreview, itemDef, type EquipDelta, type EquipSlot, type ItemInstance, type UnitRecord } from '../../core';
+import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
 import { ItemLine, itemName, Toast, unitName } from '../../ui/components';
 import { Backdrop, Piece, PrimaryButton, ScreenHead, SecondaryButton } from '../../ui/pieces';
@@ -57,14 +58,16 @@ function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
 
 /**
  * The list for one place: what is worn (marked), then what fits from bag and convoy. The first tap chooses, the main
- * button runs the campaign command ("Javelin equip"); "Unequip" puts the worn item back into the convoy.
+ * button runs the campaign command ("Javelin equip"); "Unequip" puts the worn item back into the convoy. A bag place
+ * shows the item in it the same way (`index` counts the bag places without keys, as the figure view does), and a new
+ * item for a taken bag place swaps with it.
  */
-export function EquipView({ unit, slot, onBack }: { unit: UnitRecord; slot: EquipSlot | 'bag'; index: number; onBack: () => void }) {
+export function EquipView({ unit, slot, index, onBack }: { unit: UnitRecord; slot: EquipSlot | 'bag'; index: number; onBack: () => void }) {
   const c = campaign.value!;
   const [pick, setPick] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const worn = slot === 'bag' ? undefined : unit.equip[slot];
-  const cands = equipCandidates(data, c, unit, slot).sort((a, b) => Number(!!a.error) - Number(!!b.error));
+  const worn = slot === 'bag' ? unit.bag.filter((b) => !isKey(data, b))[index] : unit.equip[slot];
+  const cands = equipCandidates(data, c, unit, slot, slot === 'bag' ? worn?.uid : undefined).sort((a, b) => Number(!!a.error) - Number(!!b.error));
   const chosen = cands.find((x) => x.inst.uid === pick && !x.error);
   const run = (cmd: Parameters<typeof campaignCommand>[0], after?: () => void) => {
     const r = campaignCommand(cmd);
@@ -88,7 +91,7 @@ export function EquipView({ unit, slot, onBack }: { unit: UnitRecord; slot: Equi
           {groups || t(`ui.slot.${slot}`)}
           <span>{t('ui.equip.fit', { n: fits })}</span>
         </div>
-        {worn && <ItemLine data={data} inst={worn} current tag={t('ui.equip.worn')} />}
+        {worn && <ItemLine data={data} inst={worn} current tag={t(slot === 'bag' ? 'ui.equip.inBag' : 'ui.equip.worn')} />}
         {cands.map(({ inst, error }) => (
           <ItemLine
             key={inst.uid}
@@ -111,7 +114,7 @@ export function EquipView({ unit, slot, onBack }: { unit: UnitRecord; slot: Equi
         )}
         <PrimaryButton
           disabled={!chosen}
-          onClick={() => chosen && run({ type: 'equip', unit: unit.id, uid: chosen.inst.uid, slot }, onBack)}
+          onClick={() => chosen && run({ type: 'equip', unit: unit.id, uid: chosen.inst.uid, slot, ...(slot === 'bag' && worn ? { replace: worn.uid } : {}) }, onBack)}
         >
           {chosen ? t(slot === 'bag' ? 'ui.equip.toBagNamed' : 'ui.equip.named', { item: itemName(data, chosen.inst) }) : t('ui.equip.choose')}
         </PrimaryButton>
