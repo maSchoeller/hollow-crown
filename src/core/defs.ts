@@ -348,6 +348,8 @@ export interface AiDef {
   profile: 'aggressive' | 'hold' | 'guard' | 'trigger' | 'hunt' | 'raider' | 'flee' | 'support' | 'follow';
   radius?: number;
   then?: AiDef['profile'];
+  /** `trigger` on `defend`/`survive`: the round the unit wakes by itself (default: `ai.sleeperWakePercent` of the mission's rounds) */
+  wakeTurn?: number;
   target?: string;
   area?: Area;
 }
@@ -971,6 +973,8 @@ export interface Balance {
     followRadius: number;
     /** profile `follow`: path cost of a tile that a foe threatens (per foe), so it is avoided unless nothing else leads on */
     followDanger: number;
+    /** `defend` and `survive`: a sleeping `trigger` unit wakes by itself after this share (percent) of the mission's rounds, rounded up */
+    sleeperWakePercent: number;
     wardGuardRadius: number;
     /** simulator player for `defend`: widest line (tiles) it holds in front of the ward; wider than this it crowds the ward instead */
     wardLineMax: number;

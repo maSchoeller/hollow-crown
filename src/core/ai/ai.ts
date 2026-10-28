@@ -330,12 +330,28 @@ function healPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[])
   return best;
 }
 
-function wake(s: BattleState, u: BattleUnit): void {
+/**
+ * On `defend` and `survive` the player wins by waiting, so a foe must not wait for him: a `trigger` unit that nobody has come
+ * close to wakes by itself and takes its `then` profile, at its own `wakeTurn` or else at `ai.sleeperWakePercent` of the
+ * mission's rounds.
+ */
+export function wakesByTime(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  const v = mapOf(data, s).objectives.victory;
+  if (v.type !== 'defend' && v.type !== 'survive') return false;
+  return s.turn >= (u.ai?.wakeTurn ?? Math.ceil((v.turns * data.balance.ai.sleeperWakePercent) / 100));
+}
+
+/** A `trigger` unit that has not woken up yet (and does not by time either). */
+export function asleep(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  return u.ai?.profile === 'trigger' && !u.ai.awake && !wakesByTime(data, s, u);
+}
+
+function wake(data: GameData, s: BattleState, u: BattleUnit): void {
   const ai = u.ai!;
   if (ai.profile !== 'trigger' || ai.awake) return;
   const r = ai.radius ?? 3;
   const near = hostileUnits(s, u).some((o) => o.pos && u.pos && dist(o.pos, u.pos) <= r);
-  if (near) {
+  if (near || wakesByTime(data, s, u)) {
     ai.awake = true;
     ai.profile = ai.then ?? 'aggressive';
   }
@@ -345,7 +361,7 @@ function wake(s: BattleState, u: BattleUnit): void {
 function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos) return;
   const ai = u.ai ?? { profile: 'aggressive' as const };
-  if (u.ai) wake(s, u);
+  if (u.ai) wake(data, s, u);
   const profile = u.ai?.profile ?? ai.profile;
   const here: Pos[] = [u.pos];
   const reach = reachable(data, s, u);

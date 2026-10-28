@@ -85,7 +85,7 @@ Profile pro Einheit oder Gruppe (`ai.profile`):
 | `aggressive` | bewegt sich zum besten erreichbaren Ziel und greift an; sonst nähert sich dem nächsten Spieler |
 | `hold` | bewegt sich nicht; greift an, was in Reichweite steht |
 | `guard` | wie `hold`, verlässt aber Feld (Boss auf Thron) nie; heilt durch Gelände |
-| `trigger` | wartet, bis ein Spieler eine Distanz ≤ `radius` erreicht, ein Bereich betreten oder ein Trigger ausgelöst wird → dann `then`-Profil (Default `aggressive`) |
+| `trigger` | wartet, bis ein Spieler eine Distanz ≤ `radius` erreicht, ein Bereich betreten oder ein Trigger ausgelöst wird → dann `then`-Profil (Default `aggressive`); bei `defend`/`survive` auch ohne Auslöser ab der halben Rundenzahl bzw. `ai.wakeTurn` |
 | `hunt` | verfolgt Ziel (`target`: Einheit, NPC, Dorf, Feld) und ignoriert Rest, außer ein Kill ist möglich |
 | `raider` | zieht zu Dörfern und zerstört sie, greift nur bei Gelegenheit an |
 | `flee` | bewegt sich zu Ausgangsfeld und verlässt Karte (Dieb mit Beute) |

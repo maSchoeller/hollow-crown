@@ -261,6 +261,7 @@ const aiSchema = z.object({
   profile: aiProfile,
   radius: z.number().optional(),
   then: aiProfile.optional(),
+  wakeTurn: z.number().int().min(1).optional(),
   target: z.string().optional(),
   area: area.optional(),
 });
