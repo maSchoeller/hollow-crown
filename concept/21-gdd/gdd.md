@@ -189,6 +189,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 - Profile: aggressive, hold, guard, trigger, hunt, raider, flee, support. Ziel-Wertung: Schaden + 50 × Kill-Chance − 0,5 × Konter, Heiler +10, niedrigste TP +5, Missionsziel +30, Groll-Ziel +20; auf Schwer −5 je bereits angreifendem Gegner (Verteilung).
 - Zugreihenfolge zu Phasenbeginn: erst Kill-Chance, dann Distanz.
+- Wartende Gegner (Profil `trigger`) wachen bei `defend` und `survive` nach der Hälfte der Missionsrunden (aufgerundet, `ai.sleeperWakePercent`) von selbst auf und nehmen ihr `then`-Profil an, auch wenn niemand in ihre Nähe kam; eine Einheit kann per `ai.wakeTurn` früher oder später aufwachen. Wer nur abwartet, gewinnt so nicht.
 - Halten: Die Pfadsuche der KI kennt die Haltezonen und umgeht sie, wenn der Umweg höchstens 2 Felder länger ist; sonst läuft sie hinein.
 - Gegnerische Elementaristen nutzen Wirken, wenn mindestens 2 Spieler-Einheiten im Brand-Ausbreitungsbereich stehen oder ein Felswall einen Spieler-Pfad zum Ziel sperrt.
 - Niedergestreckte angreifen: Leicht nie, Normal nur wenn kein anderes Ziel, Schwer bevorzugt.

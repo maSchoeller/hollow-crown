@@ -9,14 +9,14 @@ import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos } from '../util';
-import { attackPlans, bestApproach } from './ai';
+import { asleep, attackPlans, bestApproach } from './ai';
 import { wardLine } from './wardLine';
 
 function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
   const m = new Map<string, number>();
   for (const o of s.units) {
     if (o.team !== 'enemy' || !active(o)) continue;
-    const hold = staysPut(o);
+    const hold = staysPut(data, s, o);
     for (const k of threatTiles(data, s, o, !!hold)) m.set(k, (m.get(k) ?? 0) + 1);
   }
   return m;
@@ -99,14 +99,14 @@ function doorOnTheWay(s: BattleState, field: Map<string, number>, from: Pos): { 
 }
 
 /** Foes that stay where they are until somebody comes close (hold, guard, a trigger not yet awake). */
-const staysPut = (o: BattleUnit): boolean => !!o.ai && (o.ai.profile === 'hold' || o.ai.profile === 'guard' || (o.ai.profile === 'trigger' && !o.ai.awake));
+const staysPut = (data: GameData, s: BattleState, o: BattleUnit): boolean => !!o.ai && (o.ai.profile === 'hold' || o.ai.profile === 'guard' || asleep(data, s, o));
 
 /**
  * The foe will do nothing next phase: it stays put (hold, guard, a trigger not yet awake), or it would move but has no attack
  * to make and no tile that brings it closer (e.g. a foe fenced off from the player it wants to reach).
  */
 function idleFoe(data: GameData, s: BattleState, o: BattleUnit): boolean {
-  if (staysPut(o)) return true;
+  if (staysPut(data, s, o)) return true;
   if (attackPlans(data, s, o, destinations(s, o, reachable(data, s, o))).length) return false;
   const goals = s.units.filter((p) => p.team === 'player' && active(p) && p.pos).flatMap((p) => neighbors(p.pos!));
   return !bestApproach(data, s, o, goals);
