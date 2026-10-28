@@ -83,7 +83,7 @@ Der Proof of Concept (Prolog, Kap. 1–2) hat Kampfgefühl und Bedienung bestät
 ### Sieg und Niederlage
 
 - **Mission gewonnen:** Hauptziel erfüllt (siehe Missionsziele). Leutnants und Bosse mit Fluchtregel gelten als besiegt, sobald sie geflohen sind.
-- **Mission verloren:** Avatar oder Kael fällt auf 0 TP; ein Schutzziel fällt (`defend`, `escort`, `protect_npc` als Pflicht); bei `defend` erreicht ein Gegner das Verteidigungsfeld; bei `treasure` läuft das Rundenlimit ab. `survive` gewinnt man durch Erreichen des Rundenlimits.
+- **Mission verloren:** Avatar oder Kael fällt auf 0 TP; ein Schutzziel fällt (`defend`, `escort`, `protect_npc` als Pflicht); bei `defend` erreicht ein Gegner das Verteidigungsfeld; bei `treasure` läuft das Rundenlimit ab. `survive` gewinnt man durch Erreichen des Rundenlimits. **`defend` und `survive` enden vorzeitig mit dem Sieg**, sobald kein Gegner mehr auf dem Feld steht und keine Verstärkungswelle oder kein Spawn-Trigger mehr aussteht (leere Runden müssen nicht übersprungen werden); ein gefallenes Schutzziel verliert weiterhin zuerst.
 - **Neustart:** setzt alles auf den Missionsbeginn bzw. Rundenbeginn zurück, auch Tode.
 
 | Tod-Modus | Runde neu starten | Mission neu starten | Spielstände |

@@ -1025,6 +1025,17 @@ export interface RenderDef {
     /** goal marking: tiles of margin round the marked fields when the camera brings them into view */
     markFrameMargin: number;
   };
+  /** pace of the enemy and third-party phases at speed 1x, milliseconds (the speed settings divide it) */
+  aiPace: {
+    /** one tile of a foe's walk (the player's own units take 140) */
+    stepMs: number;
+    /** the acting foe pulses this long before it moves or strikes */
+    focusMs: number;
+    /** pause on the new tile after a foe's walk */
+    afterMoveMs: number;
+    /** pause after a foe's strike before the next action */
+    afterStrikeMs: number;
+  };
   board: {
     /** scenery tiles around the map (D10) and how much it is darkened */
     skirt: number;

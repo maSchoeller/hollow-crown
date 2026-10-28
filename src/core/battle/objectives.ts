@@ -46,7 +46,7 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
     }
     case 'defend':
     case 'survive':
-      if (phaseStart && s.turn > v.turns) endBattle(s, 'victory', events);
+      if ((phaseStart && s.turn > v.turns) || noFoesToCome(map, s)) endBattle(s, 'victory', events);
       break;
     case 'escape': {
       const left = s.units.filter((u) => u.team === 'player' && onMap(u) && !u.downed);
@@ -71,6 +71,30 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       break;
     }
   }
+}
+
+const PHASE_ORDER: Record<Team, number> = { player: 0, enemy: 1, other: 2 };
+
+/** Whether (turn, phase) still lies ahead of the battle clock, the phase in progress included. */
+function notPast(s: BattleState, turn: number, phase: Team): boolean {
+  return turn > s.turn || (turn === s.turn && PHASE_ORDER[phase] >= PHASE_ORDER[s.phase]);
+}
+
+/**
+ * True when `defend`/`survive` is decided before the round limit: no foe stands on the map (as for `rout`), no reinforcement wave
+ * is still due and no spawn trigger can still fire, so the empty rounds up to the limit would only be skipped. Triggers on events
+ * (unit enters, dies, ...) count as able to fire as long as they have not; only a timed one whose round has passed cannot.
+ */
+function noFoesToCome(map: MapDef, s: BattleState): boolean {
+  if (s.units.some((u) => u.team === 'enemy' && onMap(u) && !u.ignoreForRout)) return false;
+  const waveDue = map.reinforcements.some((r, i) => !s.reinforcementsDone.includes(i) && notPast(s, r.turn, r.phase));
+  if (waveDue) return false;
+  return !map.triggers.some(
+    (t) =>
+      t.then.some((a) => a.action === 'spawn') &&
+      !((t.once ?? true) && s.firedTriggers.includes(t.id)) &&
+      (t.when.type !== 'turn_start' || notPast(s, t.when.turn, t.when.phase)),
+  );
 }
 
 /** "have of total" for the chests of a `treasure` goal: open means recovered (story 4.8); a missing object counts as not recovered. */

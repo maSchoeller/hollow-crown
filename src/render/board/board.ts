@@ -45,6 +45,7 @@ import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, 
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
+import { isStaticMaterial } from './staticMaterial';
 import { RingLayer } from './rings';
 import { WeatherView } from './weather';
 import { AshBurst } from './ash';
@@ -133,8 +134,6 @@ interface PropSet {
 /** distance of the camera from its target along the view axis, tiles */
 const CAM_DIST = 60;
 const MAX_FIRES = 12;
-/** Materials that stay frozen while the board stands: the props (shared, glTF and see-through) and the opaque terrain layers; not water, veil, rings, figures */
-const STATIC_MATERIAL = /^(props$|prop:|terrain-(caps|earth|rock|wall|decks|rails)$)/;
 /** Frames between a change of lights, fog, shadows or meshes and the next freeze of the static materials */
 const FREEZE_FRAMES = 12;
 /** a figure this many tiles beyond the edge of the view is still worked out (it may step in next frame); farther ones are switched off */
@@ -759,7 +758,7 @@ export class BoardView implements HostedView {
   }
 
   private freezeStatic(): void {
-    this.frozen = this.scene.materials.filter((m) => STATIC_MATERIAL.test(m.name));
+    this.frozen = this.scene.materials.filter((m) => isStaticMaterial(m.name));
     for (const m of this.frozen) m.freeze();
   }
 
@@ -1819,29 +1818,46 @@ export class BoardView implements HostedView {
   /** Plays core events as board animations, then syncs to the final state. */
   async play(events: GameEvent[], finalState: BattleState, pool?: readonly BattleUnit[]): Promise<void> {
     if (this.readyPromise) await this.readyPromise;
-    for (const e of events) {
+    const pace = this.data.render.aiPace;
+    for (let n = 0; n < events.length; n++) {
+      const e = events[n]!;
       if (this.disposed) return;
       switch (e.t) {
         case 'moved': {
           const v = this.units.get(e.unit);
           if (!v || e.path.length < 2) break;
+          // the foe's and the third party's way is walked slower than the player's own, so the eye can follow it
+          const own = v.team === 'player';
           if (!this.isVisible(e.path[e.path.length - 1]!)) void this.centerOn(e.path[e.path.length - 1]!);
           for (let i = 1; i < e.path.length; i++) {
             const a = e.path[i - 1]!;
             const b = e.path[i]!;
             v.facing = this.facingOf(a, b);
             this.setAnim(v, 'walk');
-            await this.tween(140, (t) => {
+            await this.tween(own ? 140 : pace.stepMs, (t) => {
               v.x = a[0] + (b[0] - a[0]) * t;
               v.y = a[1] + (b[1] - a[1]) * t;
             });
           }
           this.setAnim(v, 'idle');
+          // a short pause on the new tile before the foe strikes or the next one moves
+          if (!own) await this.wait(pace.afterMoveMs);
           break;
         }
         case 'aiTurn': {
           const p = this.unitPos(e.unit);
           if (p && !this.isVisible(p)) await this.centerOn(p);
+          // a unit that only waits (no event of its own follows) is not announced
+          const next = events[n + 1];
+          if (!next || next.t === 'aiTurn' || next.t === 'phase' || next.t === 'exhausted' || next.t === 'battleEnd') break;
+          // the acting unit pulses before it moves or strikes, so the player sees who is about to act
+          const v = this.units.get(e.unit);
+          if (v && !this.skip) {
+            await this.tween(pace.focusMs, (t) => {
+              v.flash = 0.45 * Math.sin(t * Math.PI);
+            });
+            v.flash = 0;
+          }
           break;
         }
         case 'combat':
@@ -1913,7 +1929,7 @@ export class BoardView implements HostedView {
           });
           this.setAnim(a, 'idle');
           if (!d.downed) this.setAnim(d, 'idle');
-          await (crit ? this.waitReal(crit.settleMs) : this.wait(60));
+          await (crit ? this.waitReal(crit.settleMs) : this.wait(a.team === 'player' ? 60 : pace.afterStrikeMs));
           break;
         }
         case 'combatEnd':

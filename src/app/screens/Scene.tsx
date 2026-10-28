@@ -2,7 +2,7 @@
 import { useEffect } from 'preact/hooks';
 import type { ConsequenceLine } from '../../core';
 import { Dialogue } from '../../ui/Dialogue';
-import { SpeechBubbles } from '../../ui/SpeechBubbles';
+import { SpeechBand } from '../../ui/SpeechBand';
 import { builtBackgrounds, loadBuiltBackgrounds } from '../state/backgrounds';
 import { halfFigures, loadHalfFigures } from '../state/halves';
 import { data, campaign } from '../state/session';
@@ -43,7 +43,7 @@ export function Scene({ id, overlay, rewards, onDone }: { id: string; overlay?: 
   );
 }
 
-/** Battle scene as speech bubbles; `anchorOf` gives the point above a speaker's head; `only` plays just those lines (a bark, never marked seen). */
-export function SceneBubbles({ id, only, params, speed, anchorOf, onDone }: { id: string; only?: string[]; params?: Record<string, string>; speed?: number; anchorOf: (speaker: string) => Promise<{ x: number; y: number } | null>; onDone: () => void }) {
-  return <SpeechBubbles data={data} id={id} only={only} params={params} speed={speed} ctx={storyContext()} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} anchorOf={anchorOf} onDone={onDone} />;
+/** Battle scene as a speech band fixed to the screen; `only` plays just those lines (a bark, never marked seen). */
+export function SceneBand({ id, only, params, speed, onDone }: { id: string; only?: string[]; params?: Record<string, string>; speed?: number; onDone: () => void }) {
+  return <SpeechBand data={data} id={id} only={only} params={params} speed={speed} ctx={storyContext()} head={head} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} onDone={onDone} />;
 }

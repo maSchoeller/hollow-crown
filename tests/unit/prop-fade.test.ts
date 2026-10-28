@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fadeRule, hidesFigure } from '../../src/render/board/fade';
+import { isStaticMaterial } from '../../src/render/board/staticMaterial';
 
 // 35° tilt (render.yaml camera.tiltDeg): each tile south of a figure costs ~1.43 tiles of prop height
 const rule = fadeRule(35, 0.2, 0.3);
@@ -33,5 +34,19 @@ describe('prop fade (story 8.10)', () => {
 
   it('a steeper camera sees over more', () => {
     expect(hidesFigure(prop(0, 1, 1.6), figure, fadeRule(10, 0.2, 0.3))).toBe(false);
+  });
+});
+
+describe('frozen board materials (story 8.11)', () => {
+  it('freezes the props and the opaque terrain layers', () => {
+    for (const name of ['props', 'prop:field_idle:mat', 'prop:lodge_intact:mat', 'terrain-earth', 'terrain-caps']) expect(isStaticMaterial(name)).toBe(true);
+  });
+
+  it('keeps the see-through twins of props thawed: frozen they would keep the black depth pre-pass shader', () => {
+    for (const name of ['prop:field_idle:mat:fade', 'prop:tree_a:mat:fade']) expect(isStaticMaterial(name)).toBe(false);
+  });
+
+  it('leaves water, veil, rings and figures alone', () => {
+    for (const name of ['terrain-water', 'terrain-veil', 'rings:enemy', 'figure:0|0']) expect(isStaticMaterial(name)).toBe(false);
   });
 });

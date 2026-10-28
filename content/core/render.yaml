@@ -7,6 +7,14 @@ camera:
   zoomMs: 240            # Dauer des Übergangs zwischen zwei Zoomstufen
   markFrameMargin: 1     # Ziel markieren: so viele Felder Rand bleiben um die markierten Felder, wenn die Kamera sie ins Bild holt (verschiebt, geht bei Bedarf Zoomstufen heraus)
 
+# Tempo der Gegner- und Drittpartei-Phasen bei Geschwindigkeit 1x [C]; die Geschwindigkeit „Gegnerphase“ (2x) teilt die Zeiten.
+# Der Spieler soll sehen, wer zieht und was er tut: Figur pulsiert, geht langsam, bleibt kurz stehen, dann folgt der Schlag.
+aiPace:
+  stepMs: 260         # ein Feld des Gegnerwegs (eigene Figuren des Spielers: 140)
+  focusMs: 450        # der Handelnde pulsiert so lange, bevor er zieht oder schlägt
+  afterMoveMs: 350    # Pause auf dem Zielfeld, bevor er schlägt oder der Nächste zieht
+  afterStrikeMs: 450  # Pause nach einem Gegnerschlag
+
 # D1/D10: Brett. skirt = Landschaft rund um die Karte (Felder), skirtDim = Abdunklung dort (0–1),
 # waterLevel = Wasserspiegel, baseDepth = Unterkante des Dioramas (Felder unter Bodenniveau)
 board:

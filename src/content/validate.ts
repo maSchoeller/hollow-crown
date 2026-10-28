@@ -416,7 +416,9 @@ export function validateContent(
   // i18n: names of all content + parity between DE and EN
   const need: string[] = [];
   for (const c of Object.values(data.classes)) need.push(`class.${c.id}.name`);
-  for (const i of Object.values(data.items)) need.push(`item.${i.id}.name`);
+  // the detail sheet shows a description of every item and the name of its set
+  for (const i of Object.values(data.items)) need.push(`item.${i.id}.name`, `item.${i.id}.desc`);
+  for (const st of Object.values(data.sets)) need.push(`set.${st.id}.name`);
   for (const s of Object.values(data.skills)) need.push(`skill.${s.id}.name`, `skill.${s.id}.desc`);
   for (const a of Object.values(data.affixes)) need.push(`affix.${a.id}`);
   for (const t of Object.values(data.terrain)) need.push(`terrain.${t.id}`);

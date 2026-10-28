@@ -379,6 +379,12 @@
   gap: 10px;
   align-items: center;
 }
+.hm-offer__name {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
 .hm-stat-line {
   display: flex;
   flex-wrap: wrap;

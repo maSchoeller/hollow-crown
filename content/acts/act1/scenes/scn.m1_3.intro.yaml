@@ -1,5 +1,5 @@
 # Mission 1-3, Szene vor der Karte: Morgen, Nebel am Schrein am Silberbach. Ein Zettel mit grauem Siegel hat die Truppe hergeführt (Halvards heimlicher Kontakt,
-# über Liora). Liora, vom Pakttempel verstoßen, wartet hier; Morras Jäger sind ihr auf den Fersen. Auftrag: Liora heil zum Ausgang im Süden bringen.
+# über Liora). Liora, vom Pakttempel verstoßen, wartet hier; Morras Jäger sind ihr auf den Fersen. Auftrag: den Schrein halten, bis Morras Jäger vertrieben sind, und Liora heil durchbringen.
 id: scn.m1_3.intro
 background: silberbach
 music: tense
@@ -51,7 +51,7 @@ lines:
     speaker: [kael]
     fallback: skip
     mood: neutral
-    text: "Liora bleibt bei uns. Wir bringen sie zum Ausgang im Süden, hinter der Brücke."
+    text: "Liora bleibt bei uns. Wir halten den Schrein, bis der letzte Jäger weg ist."
   - id: l11
     speaker: [brenna]
     fallback: skip

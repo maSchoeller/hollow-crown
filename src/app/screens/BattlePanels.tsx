@@ -27,6 +27,7 @@ import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
 import { goalLine, goalStand, sideLine } from '../../ui/goalText';
 import { Sheet } from '../../ui/Sheet';
+import { ItemInfoButton, ItemSheetPortal, useLongPress } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { data } from '../state/session';
 import { Medallion, roleIcon } from './BattleHud';
@@ -70,12 +71,22 @@ export function ItemLine({
       {right && <span class="bp-line__right">{right}</span>}
     </>
   );
-  return onClick ? (
-    <button type="button" class={`bp-line is-click ${selected ? 'is-sel' : ''} ${compact ? 'is-compact' : ''}`} onClick={onClick}>
-      {body}
-    </button>
-  ) : (
-    <div class={`bp-line ${selected ? 'is-sel' : ''} ${compact ? 'is-compact' : ''}`}>{body}</div>
+  const [info, setInfo] = useState(false);
+  const long = useLongPress(() => setInfo(true));
+  return (
+    <div class="hc-line-row">
+      {onClick ? (
+        <button type="button" {...long} class={`bp-line is-click ${selected ? 'is-sel' : ''} ${compact ? 'is-compact' : ''}`} onClick={onClick}>
+          {body}
+        </button>
+      ) : (
+        <div {...long} class={`bp-line ${selected ? 'is-sel' : ''} ${compact ? 'is-compact' : ''}`}>
+          {body}
+        </div>
+      )}
+      <ItemInfoButton data={data} item={inst} />
+      <ItemSheetPortal data={data} item={info ? inst : null} onClose={() => setInfo(false)} />
+    </div>
   );
 }
 

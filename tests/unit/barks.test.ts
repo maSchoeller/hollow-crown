@@ -45,7 +45,7 @@ describe('combat barks (story 9.13)', () => {
   it('crit: only a hitting crit of a player unit speaks', () => {
     const u = speakers()[0]!;
     const strike = (attacker: string, hit: boolean, crit: boolean): GameEvent => ({ t: 'strike', attacker, defender: enemy().uid, hit, crit, dmg: 5, hpAfter: 1, ranged: false, magic: false });
-    expect(barkFor(data, s, strike(u.uid, true, true))).toEqual({ unit: u.uid, anchor: u.uid, scene: barkScene(u.charId ?? u.id), line: 'crit' });
+    expect(barkFor(data, s, strike(u.uid, true, true))).toEqual({ unit: u.uid, scene: barkScene(u.charId ?? u.id), line: 'crit' });
     expect(barkFor(data, s, strike(u.uid, true, false))).toBeNull();
     expect(barkFor(data, s, strike(u.uid, false, true))).toBeNull();
     expect(barkFor(data, s, strike(enemy().uid, true, true))).toBeNull();
@@ -63,10 +63,10 @@ describe('combat barks (story 9.13)', () => {
     expect(barkFor(data, plain, { t: 'downed', unit: u.uid })).toBeNull();
   });
 
-  it('rescued: the rescued unit speaks, the bubble sits above the rescuer', () => {
+  it('rescued: the rescued unit speaks (the band shows its head although it has left the board)', () => {
     const [a, b] = speakers();
     const bark = barkFor(data, s, { t: 'rescued', unit: a!.uid, by: b!.uid })!;
-    expect(bark).toMatchObject({ unit: a!.uid, anchor: b!.uid, line: 'rescued' });
+    expect(bark).toMatchObject({ unit: a!.uid, line: 'rescued' });
     expect(barkFor(data, s, { t: 'moved', unit: a!.uid, path: [] })).toBeNull();
   });
 

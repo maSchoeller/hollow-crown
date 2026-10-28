@@ -663,7 +663,7 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 | P ★ | Die Paktnacht | escape | – (Tempelwachen) | Rhen, Kael, Brenna, Tobin | Paktnacht, Gerrit fällt (Szene) |
 | 1-1 ★ | Steckbriefe | rout | – | Fenn | Die Truppe ist gesucht |
 | 1-2 | Asche über Erlbach | defend | **Hask** (erste Begegnung) | Mira | Dorf retten, E1 |
-| 1-3 | Der Fremde mit dem Siegel | escort (Liora) | **Morra** | Liora | Halvard tritt auf |
+| 1-3 | Der Fremde mit dem Siegel | rout (Schrein halten, Liora darf nicht fallen) | **Morra** | Liora | Halvard tritt auf |
 | 1-4 | Die Spur des Maklers | boss (Osric Dunn) | **Ulvric** | Ysolde (Gefangene der Wolfsreiter) | E2 davor; Dunn stirbt; danach Rhens Geständnis |
 | 1-5 | Das Hungerlager | survive (standhalten, bis Grosk redet) | **Grosk** | Varek (Ansprechen); Grosk direkt danach bei E3 „verschonen“ | Entscheidung E3 |
 | 1-6 ★ | Die Paktwacht | seize | Hask, Ulvric | – | Heimat erobert (Tafel 4), danach E4 |
