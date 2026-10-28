@@ -229,8 +229,8 @@ describe('Morra calls the retreat in round 10', () => {
     const after = r.state.units.find((u) => u.uid === morra.uid)!;
     expect(after.gone).toBe('fled');
     expect(r.events).toContainEqual({ t: 'fled', unit: morra.uid });
-    // the round is over: turn 11 begins and the steward has held
-    expect(r.state.turn).toBe(11);
+    // she was the last foe and no wave is due: the steward has held, the mission ends at once, not at the start of round 11
+    expect(r.state.turn).toBe(10);
     expect(r.state.outcome).toBe('victory');
     const done = finishBattle(data, base, r.state).campaign;
     expect(done.lieutenants?.morra).toMatchObject({ met: true, routs: 1, grudge: 1 });
