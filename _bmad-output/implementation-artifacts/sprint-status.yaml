@@ -144,7 +144,7 @@ development_status:
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
   8-10-verdeckte-figuren-bleiben-sichtbar: done  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
-  8-11-abwechslungsreiche-karten-und-besuchshaeuser: in-progress  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
+  8-11-abwechslungsreiche-karten-und-besuchshaeuser: review  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
   epic-8-retrospective: optional
 
   # Epic 9: Akt 1 „Asche“ (MVP)
