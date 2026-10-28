@@ -131,29 +131,33 @@ function Pages({ act, onOpen, onOpenSealed }: { act: ChronicleAct; onOpen: (id: 
     <div class="chr-items">
       {act.sealed.map((flag) => (
         <button key={flag} type="button" class="hc-line-item chr-pageline" onClick={() => onOpenSealed(flag)}>
-          <span class="chr-pageline__icon">
-            <Icon name="log" size={22} />
-          </span>
-          <span style={{ minWidth: 0 }}>
-            <span class="hc-line-item__name">{t(sealedTitleKey(flag))}</span>
-            <span class="hc-line-item__sub">{t('ui.chronicle.sealed')}</span>
-          </span>
-          <span class="hc-line-item__side">
-            <Icon name="forward" size={18} />
+          <span class="hc-line-item__in">
+            <span class="chr-pageline__icon">
+              <Icon name="log" size={22} />
+            </span>
+            <span style={{ minWidth: 0 }}>
+              <span class="hc-line-item__name">{t(sealedTitleKey(flag))}</span>
+              <span class="hc-line-item__sub">{t('ui.chronicle.sealed')}</span>
+            </span>
+            <span class="hc-line-item__side">
+              <Icon name="forward" size={18} />
+            </span>
           </span>
         </button>
       ))}
       {act.pages.map((id) => (
         <button key={id} type="button" class="hc-line-item chr-pageline" onClick={() => onOpen(id)}>
-          <span class="chr-pageline__icon">
-            <Icon name="log" size={22} />
-          </span>
-          <span style={{ minWidth: 0 }}>
-            <span class="hc-line-item__name">{t(pageTitleKey(id))}</span>
-            <span class="hc-line-item__sub">{t('ui.chronicle.read')}</span>
-          </span>
-          <span class="hc-line-item__side">
-            <Icon name="forward" size={18} />
+          <span class="hc-line-item__in">
+            <span class="chr-pageline__icon">
+              <Icon name="log" size={22} />
+            </span>
+            <span style={{ minWidth: 0 }}>
+              <span class="hc-line-item__name">{t(pageTitleKey(id))}</span>
+              <span class="hc-line-item__sub">{t('ui.chronicle.read')}</span>
+            </span>
+            <span class="hc-line-item__side">
+              <Icon name="forward" size={18} />
+            </span>
           </span>
         </button>
       ))}

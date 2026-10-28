@@ -345,12 +345,14 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
 function PersonLine({ unit, name, sub, side, selected, onClick, extra }: { unit?: UnitRecord; name: string; sub?: ComponentChildren; side?: ComponentChildren; selected?: boolean; onClick?: () => void; extra?: ComponentChildren }) {
   return (
     <button type="button" class={`hc-line-item ${selected ? 'is-sel' : ''}`} aria-pressed={selected} onClick={onClick}>
-      {extra ?? <UnitHead portrait={unit?.portrait} classId={unit?.classId} name={unit ? unitName(unit) : name} size={40} />}
-      <span style={{ minWidth: 0 }}>
-        <span class="hc-line-item__name">{name}</span>
-        <span class="hc-line-item__sub">{sub}</span>
+      <span class="hc-line-item__in">
+        {extra ?? <UnitHead portrait={unit?.portrait} classId={unit?.classId} name={unit ? unitName(unit) : name} size={40} />}
+        <span style={{ minWidth: 0 }}>
+          <span class="hc-line-item__name">{name}</span>
+          <span class="hc-line-item__sub">{sub}</span>
+        </span>
+        <span class="hc-line-item__side">{side}</span>
       </span>
-      <span class="hc-line-item__side">{side}</span>
     </button>
   );
 }
