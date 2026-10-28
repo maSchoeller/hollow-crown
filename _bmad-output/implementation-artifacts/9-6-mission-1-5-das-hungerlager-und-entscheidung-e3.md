@@ -85,4 +85,4 @@ Claude Sonnet 5.5
 
 ## Abnahme 2026-10-27
 
-Abgenommen (Status done). Gespielt; E3 „verschonen“: Grosk tritt bei, Hask-Groll −1. Balancing PR #72: Wellen Runde 1 und 3 statt 2 und 4 (zur Bestätigung beim Produktinhaber). Gesamtbefund: `acceptance-2026-10-27.md`.
+Abgenommen (Status done). Gespielt; E3 „verschonen“: Grosk tritt bei, Hask-Groll −1. Balancing PR #73: Wellen Runde 1 und 3 statt 2 und 4 (zur Bestätigung beim Produktinhaber). Gesamtbefund: `acceptance-2026-10-27.md`.

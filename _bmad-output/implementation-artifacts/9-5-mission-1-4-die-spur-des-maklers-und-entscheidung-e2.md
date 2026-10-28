@@ -87,4 +87,4 @@ Claude Sonnet 5.5
 
 ## Abnahme 2026-10-27
 
-Abgenommen (Status done). Gespielt; E2 „schützen“ öffnet N1. Balancing PR #72 (Leicht entschärft), Leicht 100 %/0,40. Gesamtbefund: `acceptance-2026-10-27.md`.
+Abgenommen (Status done). Gespielt; E2 „schützen“ öffnet N1. Balancing PR #73 (Leicht entschärft), Leicht 100 %/0,40. Gesamtbefund: `acceptance-2026-10-27.md`.

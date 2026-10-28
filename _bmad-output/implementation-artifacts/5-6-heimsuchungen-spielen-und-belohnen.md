@@ -86,4 +86,4 @@ Claude Sonnet 5.5
 
 ## Abnahme 2026-10-27
 
-Abgenommen (Status done). Heimsuchung im Browser gespielt (Gold, Kopfgeld, Material, EP-Deckel). Alle 24 Anker von Akt 1 simuliert; sechs lagen unter 75 % und wurden über ihre Anker-Felder korrigiert (PR #72), alle ≥ 77 %. Gesamtbefund: `acceptance-2026-10-27.md`.
+Abgenommen (Status done). Heimsuchung im Browser gespielt (Gold, Kopfgeld, Material, EP-Deckel). Alle 24 Anker von Akt 1 simuliert; sechs lagen unter 75 % und wurden über ihre Anker-Felder korrigiert (PR #73), alle ≥ 77 %. Gesamtbefund: `acceptance-2026-10-27.md`.

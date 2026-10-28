@@ -98,4 +98,4 @@ Claude Sonnet 5.5
 
 ## Abnahme 2026-10-27
 
-Abgenommen (Status done). Gespielt, Fenn tritt bei. Balancing PR #72: Schwer-Welle Runde 2 statt 3, Stufen nur auf Schwer. Gesamtbefund: `acceptance-2026-10-27.md`.
+Abgenommen (Status done). Gespielt, Fenn tritt bei. Balancing PR #73: Schwer-Welle Runde 2 statt 3, Stufen nur auf Schwer. Gesamtbefund: `acceptance-2026-10-27.md`.

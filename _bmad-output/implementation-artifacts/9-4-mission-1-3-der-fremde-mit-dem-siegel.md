@@ -78,4 +78,4 @@ Claude Sonnet 5.5
 
 ## Abnahme 2026-10-27
 
-Abgenommen (Status done). Gespielt; Liora tritt bei, N2 öffnet. Balancing PR #72 (Stufen, Profile), Normal 98 %/0,84. Gesamtbefund: `acceptance-2026-10-27.md`.
+Abgenommen (Status done). Gespielt; Liora tritt bei, N2 öffnet. Balancing PR #73 (Stufen, Profile), Normal 98 %/0,84. Gesamtbefund: `acceptance-2026-10-27.md`.

@@ -45,7 +45,7 @@ Neue Kampagne (Normal, Standard) → Prolog → 1-1 → 1-2 → Heimsuchung (Has
 
 Screenshots (Scratchpad der Session): `C:\Users\micro\AppData\Local\Temp\claude\C---Data-01-sourcecode-github-hollow-crown--claude-worktrees-neues-fave-icon-ca0c50\fafedfbb-be08-4032-a635-aa7ede9fb9b3\scratchpad\shots\` (01 Prolog-Brett … 16 Abschied Söldnerin) und `…\scratchpad\offline-prologue.png`, Lizenzen-Seite `…\scratchpad\licenses-375x812.jpg`.
 
-## Behoben (PR #71, gemergt; PR #72)
+## Behoben (PR #71, gemergt; PR #73)
 
 - **Simulator-Spieler** (`src/core/ai/autoplay.ts`): birgt Niedergestreckte (vorher nie; im Modus Standard starben Gefährten, die ein Mensch rettet, und die Armeen schrumpften bis 1-7 auf 4–5 Einheiten); Schatzsuche teilt Schlösser und Schlüssel-Beute nach Wegdistanz zu, keine untätigen Einheiten.
 - **Sim-Messung:** Niedergestreckte = jeder Fall auf 0 TP (`stats.downs`), auch später geborgene.
@@ -55,15 +55,15 @@ Screenshots (Scratchpad der Session): `C:\Users\micro\AppData\Local\Temp\claude\
 - **Ergebnis-Screen:** Narben-/Gabe-Zeile zeigte bei Söldnern den Rohschlüssel `unit.merc119.name`; gleiche Beute wird gebündelt („11 × Schlüssel“ statt elf Zeilen).
 - **Taverne:** zwei identische Angebote „Ines · Vorkämpferin“ möglich; Namen sind jetzt eindeutig gegenüber Angeboten und angeheuerten Söldnern.
 - **E2E** für 1-6 und 1-7; der Hilfscode findet die Einheit über `__board` statt über Pixel (auf CI flackerte die Pixelsuche).
-- **Heimsuchungs-Anker** von 1-1, 1-2, 1-3, 1-6, 1-7 (PR #72): Aufstellung um den Schützling, Spawns nicht mehr direkt daneben.
-- **Balancing** (PR #72): nur Stufen, KI-Profile und Wellenrunden, keine Gegnerzahlen (siehe unten).
+- **Heimsuchungs-Anker** von 1-1, 1-2, 1-3, 1-6, 1-7 (PR #73): Aufstellung um den Schützling, Spawns nicht mehr direkt daneben.
+- **Balancing** (PR #73): nur Stufen, KI-Profile und Wellenrunden, keine Gegnerzahlen (siehe unten).
 - Doku: GDD-Decision-Log (Messbasis Schwer, freie Mitte), Narrative-Decision-Log (N2), Architektur-Decision-Log (Schlüsselbund), `licensing.md` A12.
 
 ## Mission 1-7 „Unter der Paktwacht“
 
 Verdacht: verkettet 0 von 7 bzw. 10 % Siege. Befund: **der Simulator, nicht die Karte.** Alle Niederlagen waren Rundenfrist bei 0 Niedergestreckten. Mit voller Truppe auf Stufe 8 gewann derselbe Simulator Leicht/Normal 100 %, Schwer 93 % in ~6 Runden. Ursachen: (1) kein Bergen → Kette schrumpft auf 4–5 Einheiten; (2) volle Taschen (Tränke aus der Lager-Heuristik) – aufgehobene Schlüssel gingen in den Konvoi; (3) Leerlauf und Zuteilung nach Luftlinie. Nach den Fixes: verkettet Leicht 100 %, Normal 98 % (vor Balancing), nach Balancing Normal 90 %.
 
-## Simulation (Endstand nach PR #72)
+## Simulation (Endstand nach PR #73)
 
 Einzelkarten verkettet, 50 Läufe, Standard (Sieg % / Niedergestreckte; Korridor Leicht ≥ 95 % / ≤ 0,5, Normal 75–100 % / 0,4–1,3):
 
