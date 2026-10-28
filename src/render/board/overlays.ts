@@ -27,6 +27,24 @@ export interface Overlays {
   /** fields under fog (story 2.6): dark with a blue cast; `fogEdge` is the lighter fringe next to seen fields */
   fog?: Pos[];
   fogEdge?: Pos[];
+  /** places of a tapped side objective (goal marking): a light ring with a dark outline on the field, see `MarkerStyle` */
+  mark?: Pos[];
+}
+
+/** Look of the goal marking (render.yaml `look.marker`): light ring, dark outline, opacity and its pulse. Unlit, never ember orange nor a team colour. */
+export interface MarkerStyle {
+  color: string;
+  outline: string;
+  alpha: number;
+  pulse: number;
+  /** outer radius of the light ring, ring width and outline width (tiles) */
+  radius: number;
+  width: number;
+  outlineWidth: number;
+  /** arrow above the field: height over the tile top, width and bobbing amplitude (tiles) */
+  chevronHeight: number;
+  chevronSize: number;
+  bobTiles: number;
 }
 
 export interface OverlayMesh {
@@ -35,6 +53,8 @@ export interface OverlayMesh {
   /** base opacity and how much it pulses */
   alpha: number;
   pulse: number;
+  /** the mesh bobs up and down by this many tiles (0 = stays) */
+  bob?: number;
 }
 
 // overlay colours and opacities (same reading as the 2D board)
@@ -65,6 +85,8 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
   mat.fogEnabled = false; // markings stay legible in mist (art-direction 2.5)
   mat.emissiveColor = Color3.FromHexString(color);
   mat.alpha = alpha;
+  // always in the blended pass, even at opacity 1: an opaque mesh is drawn first and the blended ones (the dark outline below it) would cover it
+  mat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
   mat.backFaceCulling = false;
   mat.zOffset = -2;
   mat.disableDepthWrite = true;
@@ -73,8 +95,52 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
   return { mesh, mat, alpha, pulse };
 }
 
-/** Builds the meshes for `o`; `top` gives the height a marking lies on. */
-export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number): OverlayMesh[] {
+/** Ring segments of a marked field. */
+const RING_STEPS = 32;
+
+/** Flat ring around a field's centre, as vertices and triangles appended to `p` and `idx` (x east, z north = -y). */
+export function addRing(p: number[], idx: number[], tile: Pos, h: number, inner: number, outer: number): void {
+  const cx = tile[0] + 0.5;
+  const cz = -tile[1] - 0.5;
+  const k = p.length / 3;
+  for (let i = 0; i < RING_STEPS; i++) {
+    const a = (i / RING_STEPS) * Math.PI * 2;
+    p.push(cx + Math.cos(a) * inner, h, cz + Math.sin(a) * inner, cx + Math.cos(a) * outer, h, cz + Math.sin(a) * outer);
+  }
+  for (let i = 0; i < RING_STEPS; i++) {
+    const a = k + i * 2;
+    const b = k + ((i + 1) % RING_STEPS) * 2;
+    idx.push(a, a + 1, b + 1, a, b + 1, b);
+  }
+}
+
+/**
+ * Arrow pointing down over a field, standing in the plane that faces the camera (tilted by `tiltDeg` like the view's up axis),
+ * so it reads at full size from the board camera. Two bars from the tip to the arm ends; `half` = half the bar thickness,
+ * `extend` = how far the bars reach past their ends (the outline sticks out a little all round).
+ */
+export function addChevron(p: number[], idx: number[], tile: Pos, base: number, tiltDeg: number, size: number, half: number, extend: number): void {
+  const cx = tile[0] + 0.5;
+  const cz = -tile[1] - 0.5;
+  const sin = Math.sin((tiltDeg * Math.PI) / 180);
+  const cos = Math.cos((tiltDeg * Math.PI) / 180);
+  const at = (a: number, v: number): [number, number, number] => [cx + a, base + v * sin, cz + v * cos];
+  const tip: [number, number] = [0, -extend * half];
+  for (const side of [-1, 1]) {
+    const end: [number, number] = [side * size * 0.5, size * 0.5];
+    const dx = end[0] - tip[0];
+    const dv = end[1] - tip[1];
+    const len = Math.hypot(dx, dv);
+    const nx = (-dv / len) * half;
+    const nv = (dx / len) * half;
+    const k = p.length / 3;
+    for (const [a, v] of [[tip[0] + nx, tip[1] + nv], [tip[0] - nx, tip[1] - nv], [end[0] - nx, end[1] - nv], [end[0] + nx, end[1] + nv]] as const) p.push(...at(a, v));
+    idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
+  }
+}
+
+/** Builds the meshes for `o`; `top` gives the height a marking lies on; `marker` styles `o.mark` (its arrow stands tilted by `tiltDeg`, the camera's). */
+export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number, marker?: MarkerStyle, tiltDeg = 35): OverlayMesh[] {
   const out: OverlayMesh[] = [];
   const lists: Record<string, Pos[]> = {
     fog: o.fog ?? [],
@@ -122,6 +188,35 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
       idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
     }
     out.push(overlayMesh(scene, `overlay:${key}`, p, idx, spec.color, spec.alpha, spec.pulse ?? 0));
+  }
+  if (marker && o.mark?.length) {
+    // dark outline below, light ring above: legible on grass, dirt and cobbles alike
+    const dark = { p: [] as number[], idx: [] as number[] };
+    const light = { p: [] as number[], idx: [] as number[] };
+    const chev = { dark: { p: [] as number[], idx: [] as number[] }, light: { p: [] as number[], idx: [] as number[] } };
+    for (const t of o.mark) {
+      const h = top(t) + 0.06;
+      addRing(dark.p, dark.idx, t, h, marker.radius - marker.width - marker.outlineWidth, marker.radius + marker.outlineWidth);
+      addRing(light.p, light.idx, t, h + 0.002, marker.radius - marker.width, marker.radius);
+      if (marker.chevronHeight > 0) {
+        addChevron(chev.dark.p, chev.dark.idx, t, top(t) + marker.chevronHeight, tiltDeg, marker.chevronSize, 0.09 + marker.outlineWidth, 0.5);
+        addChevron(chev.light.p, chev.light.idx, t, top(t) + marker.chevronHeight, tiltDeg, marker.chevronSize, 0.09, 0);
+      }
+    }
+    const outline = overlayMesh(scene, 'overlay:mark-outline', dark.p, dark.idx, marker.outline, 0.95, 0);
+    outline.mesh.alphaIndex = 10;
+    const ring = overlayMesh(scene, 'overlay:mark', light.p, light.idx, marker.color, marker.alpha, marker.pulse);
+    ring.mesh.alphaIndex = 11;
+    out.push(outline, ring);
+    if (chev.light.p.length) {
+      const cd = overlayMesh(scene, 'overlay:mark-arrow-outline', chev.dark.p, chev.dark.idx, marker.outline, 0.95, 0);
+      cd.mesh.alphaIndex = 12;
+      cd.bob = marker.bobTiles;
+      const cl = overlayMesh(scene, 'overlay:mark-arrow', chev.light.p, chev.light.idx, marker.color, 1, 0);
+      cl.mesh.alphaIndex = 13;
+      cl.bob = marker.bobTiles;
+      out.push(cd, cl);
+    }
   }
   const c = o.cursor;
   if (c) {

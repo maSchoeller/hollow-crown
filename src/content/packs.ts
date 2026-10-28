@@ -26,6 +26,8 @@ export const packDefSchema = z.object({
   content: z.array(z.string()).default([]),
   /** built assets, relative to public/assets/ */
   assets: z.array(z.string()).default([]),
+  /** prop model stems (`<prop>_<state>`, art/models/props/<stem>.glb) that ship with this pack instead of the first download */
+  props: z.array(z.string()).default([]),
 });
 export type PackDef = z.infer<typeof packDefSchema>;
 
@@ -122,6 +124,20 @@ export interface PacksManifest {
 export interface PackCheckCampaign {
   /** the opening mission is the node with `fixed: first` (campaign graph, story 4.3) */
   nodes: readonly { id: string; map: string; pre?: string; post?: string; fixed?: string }[];
+}
+
+/** Prop stems that are no file of `existing` (art/models/props without .glb) or are listed by two packs. */
+export function checkPackProps(packs: readonly PackDef[], existing: ReadonlySet<string>): { file: string; message: string }[] {
+  const issues: { file: string; message: string }[] = [];
+  const owner = new Map<string, string>();
+  for (const p of packs)
+    for (const stem of p.props) {
+      if (!existing.has(stem)) issues.push({ file: 'packs.yaml', message: `pack ${p.id}: prop ${stem} has no file art/models/props/${stem}.glb` });
+      const other = owner.get(stem);
+      if (other !== undefined) issues.push({ file: 'packs.yaml', message: `prop ${stem} is listed by ${other === p.id ? `pack ${p.id} twice` : `packs ${other} and ${p.id}`}` });
+      else owner.set(stem, p.id);
+    }
+  return issues;
 }
 
 /**

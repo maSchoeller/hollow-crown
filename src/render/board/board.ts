@@ -14,6 +14,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import type { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
+import type { Material } from '@babylonjs/core/Materials/material';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
@@ -29,7 +30,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, Element, GameData, GameEvent, GearPiece, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
 import { bleedsOut, itemDef, modelId, unitFigureId, unitVatPath } from '../../core';
-import { centreOn, clampAxis, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
+import { centreOn, clampAxis, framePlan, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
 import { loadPropMesh, loadUnitModel } from '../shared/models';
@@ -37,7 +38,9 @@ import { ModelFigure, SpriteFigure, warmTints, type Facing, type Figure, type Fi
 import { applyLight } from '../shared/season';
 import { lookOverride, resolveLook, weatherPlan, type ResolvedLook } from '../shared/look';
 import { t } from '../../i18n';
-import { pickWeighted, treeSetOfAct } from '../shared/scenery';
+import { variantClassOf, variantList } from '../../content/propVariants';
+import { isPackRegistered } from '../../content/browser';
+import { modelAvailable, pickVariant, withState } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { marchToTile } from './picking';
@@ -130,6 +133,10 @@ interface PropSet {
 /** distance of the camera from its target along the view axis, tiles */
 const CAM_DIST = 60;
 const MAX_FIRES = 12;
+/** Materials that stay frozen while the board stands: the props (shared, glTF and see-through) and the opaque terrain layers; not water, veil, rings, figures */
+const STATIC_MATERIAL = /^(props$|prop:|terrain-(caps|earth|rock|wall|decks|rails)$)/;
+/** Frames between a change of lights, fog, shadows or meshes and the next freeze of the static materials */
+const FREEZE_FRAMES = 12;
 /** a figure this many tiles beyond the edge of the view is still worked out (it may step in next frame); farther ones are switched off */
 const OFFSCREEN_TILES = 1.5;
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -171,6 +178,8 @@ export class BoardView implements HostedView {
   private animWall = -1;
   /** camera shake on critical hits and deaths (option "shake", off with prefers-reduced-motion) */
   shakeEnabled = true;
+  /** prefers-reduced-motion: the markings of the board do not pulse */
+  calmMotion = false;
   /** what the map looks like: light, sky, figure floor and rim, weather (story 8.6) */
   private look!: ResolvedLook;
   private weather: WeatherView;
@@ -208,6 +217,9 @@ export class BoardView implements HostedView {
   private propSizes = new Map<Mesh, { top: number; r: number }>();
   /** a unit moved to another tile, appeared, left or changed its visibility since the fade was last worked out (story 7.8: no key string per frame) */
   private fadeDirty = true;
+  /** Frames until the static materials freeze again (0 = frozen or nothing to do), see `thawStatic` */
+  private freezeIn = 0;
+  private frozen: Material[] = [];
   private fires: ParticleSystem[] = [];
   private flameTexture: DynamicTexture;
   private units = new Map<string, UnitView>();
@@ -318,6 +330,7 @@ export class BoardView implements HostedView {
   }
 
   private applyQuality(): void {
+    this.thawStatic();
     this.quality = this.host.setQuality(this.quality);
     const q = this.data.render.quality[this.quality];
     this.shadows?.dispose();
@@ -382,6 +395,7 @@ export class BoardView implements HostedView {
 
   /** Light, sky and the figures' floor and rim light from the map's look (story 8.6); a map without time of day and weather looks as before. */
   private applyMapLight(): void {
+    this.thawStatic();
     const look = resolveLook(this.data.render, this.lookMap());
     this.look = look;
     applyLight(this.hemi, this.sun, look.ambient, look.sun);
@@ -395,6 +409,7 @@ export class BoardView implements HostedView {
 
   /** (Re)builds the weather for the current quality: particles, mist, wet shine, puddles. */
   private applyWeather(): void {
+    this.thawStatic();
     const plan = weatherPlan(this.look.weatherDef, this.quality);
     this.weather.apply(this.look, plan, this.terrain!, [this.state.width, this.state.height], this.seed, this.sun);
     this.camSet.x = NaN;
@@ -457,6 +472,21 @@ export class BoardView implements HostedView {
     if (warm >= 1) for (const set of this.propSets) this.writeProps(set);
   }
 
+  /**
+   * A template without instances costs the frame nothing: switched off it skips the world matrix, the active-mesh test and the
+   * readiness check (story 8.11: the variants and the twins doubled the templates, +2 ms of thread time per frame at 4x).
+   */
+  private idleProp(m: Mesh): void {
+    m.isVisible = false;
+    m.setEnabled(false);
+  }
+
+  /** The templates sit at the origin (the instances carry the transforms): their world matrix never changes, so it is not recomputed each frame. */
+  private freezeProp(m: Mesh): Mesh {
+    m.freezeWorldMatrix();
+    return m;
+  }
+
   /** Makes the twin of every prop template and gives it one instance, so that its shader variants (with instances) can compile and draw. */
   private showTwins(): Mesh[] {
     const twins: Mesh[] = [];
@@ -464,6 +494,7 @@ export class BoardView implements HostedView {
       if (!set.boxes.length) continue;
       const twin = this.fadeTwin(set);
       twin.isVisible = true;
+      twin.setEnabled(true);
       twin.thinInstanceSetBuffer('matrix', set.mats.slice(0, 16), 16, true);
       twin.thinInstanceSetBuffer('color', set.cols.slice(0, 4), 4, true);
       twins.push(twin);
@@ -517,6 +548,7 @@ export class BoardView implements HostedView {
   }
 
   private async buildTerrain(): Promise<void> {
+    this.thawStatic();
     this.terrain?.dispose();
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
@@ -534,6 +566,7 @@ export class BoardView implements HostedView {
       m.makeGeometryUnique();
       m.isVisible = false;
       m.alwaysSelectAsActiveMesh = true;
+      this.freezeProp(m);
       void key;
     }
     return m;
@@ -548,6 +581,7 @@ export class BoardView implements HostedView {
         if (m) {
           m.isVisible = false;
           m.alwaysSelectAsActiveMesh = true;
+          this.freezeProp(m);
           this.castShadows([m]);
         }
         return m ?? this.boxProp(pid, state);
@@ -584,22 +618,39 @@ export class BoardView implements HostedView {
   }
 
   private async buildProps(): Promise<void> {
+    this.thawStatic();
     for (const m of this.propMeshes) m.thinInstanceCount = 0;
     const sets: PropSet[] = [];
     const s = this.state;
     const grid = this.terrain!.grid;
     type Place = { x: number; y: number; h: number; rot: number; scale: number; dim: boolean };
+    const manifest = await loadManifest();
+    // props of a later pack (manifest `models.propPacks`) only count once that pack is registered on this device (offline start before the download)
+    const known = (model: string) => modelAvailable(manifest.models, model, isPackRegistered);
+    // a model that is not built yet (the manifest does not know it) is drawn as its stand-in, if render.yaml names one
+    const fallback = this.data.render.board.propFallback;
+    const resolve = (model: string) => (known(model) ? model : (fallback[model] ?? model));
     const places = new Map<string, Place[]>();
-    const put = (key: string, p: Place) => {
+    const put = (model: string, p: Place) => {
+      const key = resolve(model);
       const list = places.get(key);
       if (list) list.push(p);
       else places.set(key, [p]);
     };
-    const manifest = await loadManifest();
-    const trees = manifest.models?.props.tree ?? ['a'];
-    // trees of the season of the act the map belongs to (summer: the manifest's plain trees)
     const map = this.data.maps[s.mapId]!;
-    const treeSet = treeSetOfAct(this.data, map.act);
+    // variants: a field hash picks from the weighted list of the prop class (trees of the season of the map's act); the map can set single fields
+    const overrides = new Map((map.propVariants ?? []).map((v) => [`${v.at[0]},${v.at[1]}`, v.model]));
+    const chosen = new Map<string, string>();
+    const variant = (prop: string, gx: number, gy: number, x: number, y: number): string => {
+      const cls = variantClassOf(prop)!;
+      // roll 0 is the field's own hash; the others only come into play when a neighbour (west, north: decided before) has the same model
+      const rolls = [0, 1, 2].map((k) => ((hash3(gx, gy, this.seed + 5 + k * 131) >>> 20) % 1000) / 1000);
+      const avoid = [chosen.get(`${gx - 1},${gy}`), chosen.get(`${gx},${gy - 1}`)].filter((m): m is string => !!m);
+      const override = grid.inMap(gx, gy) ? overrides.get(`${x},${y}`) : undefined;
+      const model = pickVariant(variantList(this.data, cls, map.act, !grid.inMap(gx, gy)), rolls, { has: known, override, avoid });
+      chosen.set(`${gx},${gy}`, model);
+      return model;
+    };
     // tiles that must stay clear: objects, units, deploy slots and reinforcements
     const reserved = new Set<string>();
     for (const o of s.objects) reserved.add(`${o.at[0]},${o.at[1]}`);
@@ -637,15 +688,17 @@ export class BoardView implements HostedView {
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
         switch (def.prop) {
           case 'tree':
-            put(treeSet ? pickWeighted(treeSet, ((r >>> 20) % 1000) / 1000).model : `tree_${trees[r % trees.length]}`, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+            put(variant('tree', gx, gy, x, y), { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
             break;
           case 'rock':
           case 'rockwall':
-            put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: def.prop === 'rock' ? 1.05 : 0.9 });
+            put(variant(def.prop, gx, gy, x, y), { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: def.prop === 'rock' ? 1.05 : 0.9 });
             break;
-          case 'house': {
+          case 'house': // scenery house (terrain building): no object, always standing
+          case 'lodge': {
+            // the visitable house: its object's state picks intact / visited / razed
             const obj = s.objects.find((o) => o.at[0] === x && o.at[1] === y);
-            put(`house_${obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'}`, base);
+            put(withState(variant(def.prop, gx, gy, x, y), obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
             break;
           }
           case 'door_closed':
@@ -687,10 +740,27 @@ export class BoardView implements HostedView {
     }
     this.propSets = sets;
     for (const set of sets) this.writeProps(set);
-    for (const m of this.propMeshes) if (!m.thinInstanceCount) m.isVisible = false;
+    for (const m of this.propMeshes) if (!m.thinInstanceCount) this.idleProp(m);
     this.fadeDirty = true;
     this.updateFade();
     this.refreshShadows();
+  }
+
+  /**
+   * The materials of the terrain and the props never change their shader once the board stands (same lights, fog and shadows,
+   * no alpha animation): frozen, Babylon skips their per-frame readiness test and define hashing, a quarter of the frame's thread
+   * time at 4x (story 7.8 AC 11). Whatever changes lights, fog, shadows or the meshes thaws them (`thawStatic`); `frame` freezes
+   * them again a few frames later, when the new effects are ready.
+   */
+  private thawStatic(): void {
+    for (const m of this.frozen) m.unfreeze();
+    this.frozen = [];
+    this.freezeIn = FREEZE_FRAMES;
+  }
+
+  private freezeStatic(): void {
+    this.frozen = this.scene.materials.filter((m) => STATIC_MATERIAL.test(m.name));
+    for (const m of this.frozen) m.freeze();
   }
 
   /** Height and footprint radius of a template (its vertices are baked with the origin on the ground). */
@@ -722,6 +792,7 @@ export class BoardView implements HostedView {
     twin.isVisible = false;
     twin.isPickable = false;
     twin.alwaysSelectAsActiveMesh = true;
+    this.freezeProp(twin);
     twin.receiveShadows = true;
     const src = set.tpl.material as StandardMaterial;
     let mat = this.fadeMats.get(src);
@@ -751,6 +822,7 @@ export class BoardView implements HostedView {
     for (let k = 0; k < n; k++) f += set.faded[k]!;
     const fill = (m: Mesh, mats: Float32Array, cols: Float32Array) => {
       m.isVisible = mats.length > 0;
+      m.setEnabled(mats.length > 0);
       if (!mats.length) {
         m.thinInstanceCount = 0;
         // without the colour buffer the mesh carries no instance attribute: a readiness check of the scene compiles it without
@@ -795,19 +867,25 @@ export class BoardView implements HostedView {
   private updateFade(): void {
     if (!this.terrain || !this.state || !this.fadeDirty) return;
     this.fadeDirty = false;
-    const spots: Array<{ x: number; y: number; h: number }> = [];
+    // the figures by column of their tile: a prop only asks the columns within its reach (about three), not every figure
+    const columns = new Map<number, Array<{ x: number; y: number; h: number }>>();
     for (const v of this.units.values()) {
       if (!v.visible) continue;
       const tx = Math.round(v.x + v.offX);
       const ty = Math.round(v.y + v.offY);
-      spots.push({ x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) });
+      const column = columns.get(tx);
+      const spot = { x: tx + 0.5, y: ty + 0.5, h: this.terrain.standOn(tx, ty) };
+      if (column) column.push(spot);
+      else columns.set(tx, [spot]);
     }
     const { cover, figureWidth } = this.data.render.board.fade;
     const rule = fadeRule(this.data.render.camera.tiltDeg, cover, figureWidth);
     for (const set of this.propSets) {
       let changed = false;
       set.boxes.forEach((b, k) => {
-        const hide = spots.some((f) => hidesFigure(b, f, rule)) ? 1 : 0;
+        const reach = b.r + rule.figureWidth;
+        let hide = 0;
+        for (let c = Math.floor(b.x - reach); c <= Math.floor(b.x + reach) && !hide; c++) if (columns.get(c)?.some((f) => hidesFigure(b, f, rule))) hide = 1;
         if (set.faded[k] !== hide) {
           set.faded[k] = hide;
           changed = true;
@@ -818,6 +896,7 @@ export class BoardView implements HostedView {
   }
 
   private buildFires(): void {
+    this.thawStatic();
     // keep the texture: all flames share `flameTexture`, and a system disposes its texture by default
     for (const f of this.fires) f.dispose(false);
     this.fires = [];
@@ -1149,7 +1228,7 @@ export class BoardView implements HostedView {
       o.mesh.dispose();
       o.mat.dispose();
     }
-    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p));
+    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg);
   }
 
   private async updateGhost(): Promise<void> {
@@ -1269,6 +1348,40 @@ export class BoardView implements HostedView {
     const fx = this.camX;
     const fy = this.camY;
     return this.tween(220, (t) => {
+      this.camX = fx + (tx - fx) * t;
+      this.camY = fy + (ty - fy) * t;
+      this.clampCamera();
+    });
+  }
+
+  /**
+   * Goal marking: brings the marked fields into view. Fields already comfortably on screen: nothing moves. Otherwise the camera
+   * glides to the middle of their bounding box and goes out zoom steps as far as needed (`framePlan`), never closer; it stays there
+   * when the marking ends. Margin: render.yaml camera.markFrameMargin.
+   */
+  frameTiles(tiles: Pos[]): Promise<void> {
+    if (!tiles.length || tiles.every((p) => this.isVisible(p))) return Promise.resolve();
+    const { w, h } = this.cssSize();
+    const css = this.hooks.insets?.() ?? NO_INSETS;
+    const cam = this.data.render.camera;
+    const plan = framePlan({ tiles, step: this.step, steps: cam.zoomSteps, viewW: w, viewH: h, hud: css, cosTilt: this.cosTilt(), margin: cam.markFrameMargin });
+    const ppt = this.pptFor(plan.step);
+    if (plan.step !== this.step) {
+      this.step = plan.step;
+      this.zoomTween = { from: this.ppt, to: ppt, start: performance.now() };
+    }
+    const kv = 1 / ppt / this.cosTilt();
+    const tx = centreOn(plan.cx, css.left / ppt, css.right / ppt);
+    const ty = centreOn(plan.cy, css.top * kv, css.bottom * kv);
+    if (this.skip) {
+      this.camX = tx;
+      this.camY = ty;
+      this.clampCamera();
+      return Promise.resolve();
+    }
+    const fx = this.camX;
+    const fy = this.camY;
+    return this.tween(Math.max(220, cam.zoomMs), (t) => {
       this.camX = fx + (tx - fx) * t;
       this.camY = fy + (ty - fy) * t;
       this.clampCamera();
@@ -1514,11 +1627,16 @@ export class BoardView implements HostedView {
     const clock = this.frozenAt ?? now;
     this.animClock += this.animWall < 0 ? 0 : Math.max(0, now - this.animWall) * this.scene.animationTimeScale;
     this.animWall = now;
-    const pulse = 0.5 + 0.5 * Math.sin(now / 250);
-    for (const o of this.overlayMeshes) o.mat.alpha = o.alpha + o.pulse * pulse;
+    // markings breathe; under reduced motion they stand still (their middle opacity)
+    const pulse = this.calmMotion ? 0.5 : 0.5 + 0.5 * Math.sin(now / 250);
+    for (const o of this.overlayMeshes) {
+      o.mat.alpha = o.alpha + o.pulse * pulse;
+      if (o.bob) o.mesh.position.y = this.calmMotion ? 0 : Math.sin(now / 320) * o.bob;
+    }
     for (const v of this.units.values()) this.placeUnit(v, this.animClock);
     this.rings.flush();
     this.updateFade();
+    if (this.freezeIn > 0 && --this.freezeIn === 0) this.freezeStatic();
     this.updateGrudgeLine();
     if (this.ghost) this.ghost.figure.tick(this.animClock, this.speed);
     const boost = this.look.pointBoost;

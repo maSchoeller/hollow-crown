@@ -458,6 +458,8 @@ export interface MapDef {
   haunts?: HauntAnchor[];
   music?: string;
   devNote?: string;
+  /** model of a prop variant for single fields (`board.variants` of render.yaml names the allowed models), overriding the hash pick */
+  propVariants?: Array<{ at: Pos; model: string }>;
 }
 
 /** The kinds of haunt (story 5.5): a repeat task on a known map against a lieutenant. */
@@ -1001,6 +1003,11 @@ export interface Balance {
   };
 }
 
+export interface PropVariant {
+  model: string;
+  weight: number;
+}
+
 /** Presentation values of the battle board (content/render.yaml); never read by the rules. */
 export interface RenderDef {
   camera: {
@@ -1011,6 +1018,8 @@ export interface RenderDef {
     /** visible columns on the shorter screen side, near → overview (D9) */
     zoomSteps: number[];
     zoomMs: number;
+    /** goal marking: tiles of margin round the marked fields when the camera brings them into view */
+    markFrameMargin: number;
   };
   board: {
     /** scenery tiles around the map (D10) and how much it is darkened */
@@ -1024,10 +1033,19 @@ export interface RenderDef {
     lightsMax: Record<'high' | 'mid' | 'low', number>;
     /** on the low quality level, scenery props only this many tiles around the map */
     sceneryPropsLow: number;
+    /** the scenery around the map uses only the first n models of each variant class (every model costs draw calls as a template of its own) */
+    sceneryVariants: number;
     /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
     decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
-    /** trees per act (weighted `<prop>_<state>`); an act without an entry uses the manifest's plain trees */
-    trees: Record<string, Array<{ model: string; weight: number }>>;
+    /**
+     * prop variants (weighted `<prop>_<state>`, chosen by a field hash, see render/shared/scenery.ts): house (building), lodge (visitable
+     * house, state appended), rock; tree per act (an act without an entry uses act 1)
+     */
+    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; tree: Record<string, PropVariant[]> };
+    /** stand-in model while a model is not built yet (the manifest does not know it) */
+    propFallback: Record<string, string>;
+    /** goal marking: how long the markings of a side objective stay (ms) */
+    markMs: number;
     /** frame rate caps while something moves and at rest */
     fpsActive: number;
     fpsIdle: number;
@@ -1094,6 +1112,8 @@ export interface WeatherDef {
 }
 
 export interface LookDef {
+  /** marking of the places of a side objective: light ring with a dark outline (unlit, never ember orange nor a team colour) */
+  marker: { color: string; outline: string; alpha: number; pulse: number; radius: number; width: number; outlineWidth: number; chevronHeight: number; chevronSize: number; bobTiles: number };
   /** team colours (art-direction §2.1): `ui` = ring and marking colour, `ramp` = cloth dark → light (K0..K3) */
   teams: Record<Team, { ui: string; ramp: [string, string, string, string] }>;
   /** brightness of a figure at noon that the floors of `timeOfDay[..].figureFloor` refer to (share of its albedo) */

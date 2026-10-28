@@ -1,8 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
-import { checkPacks, globToRegExp, groupByPack, matchesGlob, packOf, parsePacks, type PackDef } from '../../src/content/packs';
+import { checkPackProps, checkPacks, globToRegExp, groupByPack, matchesGlob, packOf, parsePacks, type PackDef } from '../../src/content/packs';
 import { contentFiles, loadContentFromDisk } from '../../src/content/node';
 import { builtPack, contentByPack } from '../../tools/build/packs-plugin';
 
@@ -16,6 +16,7 @@ const pack = (id: string, over: Partial<PackDef> = {}): PackDef => ({
   budgetMb: 10,
   content: [],
   assets: [],
+  props: [],
   ...over,
 });
 
@@ -63,6 +64,23 @@ describe('parsePacks', () => {
     const core = { id: 'core', released: true, load: 'precache', act: 1, budgetMb: 1 };
     expect(() => parsePacks({ packs: [core, core] })).toThrow();
     expect(parsePacks({ packs: [core] })[0]!.content).toEqual([]);
+  });
+});
+
+describe('prop lists of packs', () => {
+  it('parses props (default empty) and the real act1 lists existing files only once', () => {
+    expect(pack('x').props).toEqual([]);
+    const act1 = realPacks.find((p) => p.id === 'act1')!;
+    expect(act1.props.length).toBeGreaterThan(0);
+    const files = new Set(readdirSync(join(process.cwd(), 'art', 'models', 'props')).filter((f) => f.endsWith('.glb')).map((f) => f.slice(0, -4)));
+    expect(checkPackProps(realPacks, files)).toEqual([]);
+  });
+  it('reports a missing file and a prop in two packs', () => {
+    const packs = [pack('core'), pack('a', { props: ['x_idle', 'gone_idle'] }), pack('b', { props: ['x_idle'] })];
+    const msgs = checkPackProps(packs, new Set(['x_idle'])).map((i) => i.message);
+    expect(msgs).toHaveLength(2);
+    expect(msgs[0]).toContain('gone_idle');
+    expect(msgs[1]).toContain('packs a and b');
   });
 });
 

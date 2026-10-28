@@ -5,7 +5,7 @@
  * manifest.json), which does not exist at build time. This derives the same set from the content YAML instead:
  *  - the unit models (and their baked animation files, `.vat`) of every figure that joins at the opening node (`fixed: first`) or stands on its map (units and
  *    reinforcements; the avatar adds both avatar models),
- *  - the weapon and prop model libraries (`models/weapons`, `models/props`; the plan picks only the weapons the units
+ *  - the weapon and prop model libraries (`models/weapons`, `models/props` without the props that a later pack lists in packs.yaml; the plan picks only the weapons the units
  *    hold, here all of them: a few files more, and no dependency on item data),
  *  - the battle music pair.
  * Used by vite.config.ts (adds them to the precache, story 7.6) and tools/check-bundle-size.mjs (budget).
@@ -34,8 +34,21 @@ export function firstMissionFigures(root = process.cwd()) {
   return figures;
 }
 
+/** Prop file stems that a pack other than core lists (`props` in content/packs.yaml): they are not part of the first download. */
+let laterProps;
+function laterPropStems(root = process.cwd()) {
+  laterProps ??= new Set(
+    (parse(readFileSync(join(root, 'content', 'packs.yaml'), 'utf8')).packs ?? [])
+      .filter((p, i) => i > 0 && p.released)
+      .flatMap((p) => p.props ?? []),
+  );
+  return laterProps;
+}
+
 /** @param {string[]} files all files of dist (posix paths relative to it) */
 export function isFirstMissionFile(p, figures) {
+  const prop = /^assets\/models\/props\/([^/]+)\.glb$/.exec(p);
+  if (prop && laterPropStems().has(prop[1])) return false;
   if (/^assets\/models\/(props|weapons)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
   const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.(?:glb|vat)$/.exec(p);
   return m !== null && figures.has(m[1]);

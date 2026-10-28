@@ -129,6 +129,35 @@ export function sideObjectiveProgress(data: GameData, s: BattleState, o: SideObj
   return undefined;
 }
 
+/**
+ * The places a side objective points at that are still open (HUD: the player taps the objective and the board marks them): the
+ * houses not visited yet, the closed chests, the unit to recruit or protect and the boss of a `kill_with`. Units count only when
+ * they stand on the (visible) map. Empty for objectives without a place (`no_downs`, `turn_limit`) and for finished ones.
+ */
+export function sideObjectiveSpots(data: GameData, s: BattleState, o: SideObjectiveDef): Pos[] {
+  // protect_npc counts as done while the unit lives (a keep-it-so goal), yet its place is what the player wants to see
+  if (o.type !== 'protect_npc' && sideObjectiveDone(data, s, o)) return [];
+  const where = (id: string | undefined): Pos[] => {
+    const u = id ? findUnit(s, id) : undefined;
+    return u && u.pos && onMap(u) ? [u.pos] : [];
+  };
+  switch (o.type) {
+    case 'visit_villages':
+      return s.objects.filter((x) => x.type === 'village' && x.state === 'closed').map((x) => x.at);
+    case 'open_chests':
+      return s.objects.filter((x) => x.type === 'chest' && x.state === 'closed').map((x) => x.at);
+    case 'recruit':
+    case 'protect_npc':
+      return where(o.unit);
+    case 'kill_with': {
+      const v = mapOf(data, s).objectives.victory;
+      return v.type === 'boss' ? where(v.unit) : [];
+    }
+    default:
+      return [];
+  }
+}
+
 /** Spawns map-defined units near their position if the tile is taken. */
 export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], reinforcement: boolean, events: GameEvent[]): void {
   const pct = data.balance.difficulty[s.settings.difficulty].enemyStatPercent;

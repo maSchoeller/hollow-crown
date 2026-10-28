@@ -61,6 +61,25 @@ packs:
     content:
       - acts/act1/**
       - locales/*/act1.*
+    # Requisiten-Modelle (art/models/props/<prop>_<zustand>.glb), die erst mit diesem Paket kommen und nicht in den ersten Download gehören:
+    # Dateinamen ohne .glb. Alle Requisiten, die kein Paket nennt, gelten als core (Vorab-Cache der ersten Mission, tools/build/first-mission.mjs).
+    # Die Dateien liegen weiter unter models/props/ (das Brett lädt sie von dort, bei Bedarf); fehlt eine, lässt das Brett das Feld leer
+    # bzw. nimmt propFallback aus render.yaml. Zuordnung: tools/art/model_packs.py `prop_packs`.
+    props:
+      - house_b_intact
+      - house_c_intact
+      - house_d_intact
+      - lodge_intact
+      - lodge_visited
+      - lodge_razed
+      - tree_d
+      - tree_e
+      - autumn_c
+      - snowfir_b
+      - rock_b
+      - rock_c
+      - well_idle
+      - fence_gate
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**

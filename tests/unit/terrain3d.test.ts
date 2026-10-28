@@ -53,7 +53,7 @@ describe('terrain grid', () => {
         if (g.inMap(gx, gy)) continue;
         const def = g.at(gx, gy)!;
         expect(def.cliff).not.toBe('wall');
-        expect(['house', 'fort', 'wagon', 'shrine', 'ruins', 'bridge']).not.toContain(def.prop);
+        expect(['house', 'lodge', 'fort', 'wagon', 'shrine', 'ruins', 'bridge']).not.toContain(def.prop);
         if (def.water) riverRows.add(gy);
       }
     // Varnhold's river crosses the map from west to east, so it continues into the scenery

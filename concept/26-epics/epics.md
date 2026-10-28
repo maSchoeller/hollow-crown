@@ -296,6 +296,22 @@ damit ich keine Einheit übersehe.
 **Dann** wird die Requisite halbdurchsichtig („schleierhaft“, Deckkraft `board.fade.alpha` in `render.yaml`), die Figur bleibt erkennbar
 **Und** verlässt die Einheit das Feld, ist die Requisite sofort wieder deckend; neu berechnet wird nur, wenn sich ein Feld einer Einheit ändert, nie jedes Bild.
 
+#### Story 8.11: Abwechslungsreiche Karten und Besuchshäuser
+
+Als Spieler
+möchte ich Karten mit unterschiedlichen Häusern, Bäumen und Felsen sehen und sofort erkennen, welche Häuser ich besuchen soll,
+damit die Brettwelt lebendig wirkt und ich keine Ziele suchen muss.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Requisiten-Bibliothek (Häuser, Bäume je Jahreszeit, Felsen, Brunnen, Zauntor) mit mehreren Varianten je Klasse
+**Wenn** eine Karte aufgebaut wird
+**Dann** wählt sie die Variante je Feld deterministisch (Feld-Hash plus Seed, optional `propVariants` im Karten-YAML), nie mit `Math.random`; gleiche Nachbarn werden vermieden
+**Und** Besuchsziele sind ein eigenes, deutlich erkennbares Haus („lodge“: blaugrünes Dach, Schild, Banner, Laterne; besucht: Tür offen, Banner eingeholt), das sich von Kulissenhäusern abhebt
+**Und** das Ziel heißt überall „Häuser besuchen“ (DE/EN: Zieltext, Kontext-Band, Toast, KI-Text); echte Dörfer als Handlungsorte bleiben „Dorf“
+**Und** ein Tipp auf das Nebenziel in der Zielanzeige markiert die offenen Ziel-Orte auf dem Brett (Besuch, Truhen, Anwerben, Schutz, Boss), ein zweiter Tipp oder `board.markMs` löscht sie
+**Und** die neuen Modelle liegen im Paket `act1`, nicht im ersten Download; die Bildrate bleibt über den Zielen aus Story 7.8.
+
 ## Epic 9: Akt 1 „Asche“ (MVP)
 Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
 **FRs covered:** FR55, FR60, FR63

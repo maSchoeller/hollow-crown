@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import { loadContentFromDisk, contentFiles } from '../src/content/node';
-import { checkPacks, parsePacks, type PackDef } from '../src/content/packs';
+import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/content/packs';
 import { checkLockedIds, collectIds, releasedIdsSchema, renamesSchema, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
 
@@ -26,6 +26,7 @@ const packIssues: { file: string; message: string }[] = [];
 try {
   packs = parsePacks(parse(readFileSync(join(process.cwd(), 'content', 'packs.yaml'), 'utf8')));
   packIssues.push(...checkPacks(packs, contentFiles(), data.campaign));
+  packIssues.push(...checkPackProps(packs, stems(join(process.cwd(), 'art', 'models', 'props'), '.glb') ?? new Set()));
 } catch (e) {
   packIssues.push({ file: 'packs.yaml', message: e instanceof Error ? e.message : String(e) });
 }

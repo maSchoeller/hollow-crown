@@ -8,7 +8,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_BLENDER = r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
-GROUPS = ['trees', 'trees_seasons', 'nature', 'houses', 'landmarks', 'camp']
+GROUPS = ['trees', 'trees_seasons', 'nature', 'houses', 'landmarks', 'camp', 'houses_variants', 'nature_variants']
 
 exe = os.environ.get('BLENDER', DEFAULT_BLENDER)
 for g in (sys.argv[1:] or GROUPS):

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
-import { iconStatuses, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
+import { iconStatuses, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
 import { TIMES_OF_DAY, WEATHERS, type MapDef } from '../../src/core/defs';
 import { newFigureLook } from '../../src/render/shared/figurePlugin';
 import { DEFAULT_AMBIENT, DEFAULT_SKY, DEFAULT_SUN, lookOverride, mixHex, parseLookParam, resolveLook, retint, weatherPlan } from '../../src/render/shared/look';
@@ -194,6 +194,31 @@ describe('content:check rules for the look', () => {
     expect(validateStatusIcons(data, new Set(['burning', 'wet', 'slowed']))).toEqual([]);
     expect(validateStatusIcons(data, new Set(['burning'])).map((i) => i.message)).toEqual([expect.stringContaining('slowed'), expect.stringContaining('wet')]);
     expect(validateStatusIcons(data)).toEqual([]);
+  });
+});
+
+describe('content:check rules for prop variants', () => {
+  const base = Object.values(data.maps)[0]!;
+  const withVariants = (at: [number, number], model: string) => ({ ...data, maps: { m: { ...base, id: 'm', act: 1, propVariants: [{ at, model }] } } });
+  const rows = base.terrain.split(/\r?\n/).filter((r) => r.length > 0);
+  const find = (prop: string) => {
+    for (let y = 0; y < rows.length; y++)
+      for (let x = 0; x < rows[y]!.length; x++) if (data.terrain[base.legend[rows[y]![x]!]!]?.prop === prop) return [x, y] as [number, number];
+    return null;
+  };
+
+  it('accepts a model of the list for the prop on the field', () => {
+    const t = find('tree');
+    expect(t).not.toBeNull();
+    expect(validatePropVariants(withVariants(t!, 'tree_d'))).toEqual([]);
+  });
+  it('flags a model of another class, a field without a variant prop and a field off the map', () => {
+    const t = find('tree')!;
+    expect(validatePropVariants(withVariants(t, 'house_b_intact')).map((i) => i.message)).toEqual([expect.stringContaining('not a tree variant')]);
+    expect(validatePropVariants(withVariants([999, 999], 'tree_a')).map((i) => i.message)).toEqual([expect.stringContaining('not on the map')]);
+  });
+  it('the shipped content passes', () => {
+    expect(validatePropVariants(data)).toEqual([]);
   });
 });
 
