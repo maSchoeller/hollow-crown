@@ -16,7 +16,7 @@ import { Matrix } from '@babylonjs/core/Maths/math.vector';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
-import { giveTint, sharedFigureMaterial, takeTint, tintMaterial, type UnitModel } from './models';
+import { giveTint, NO_GLOW, sharedFigureMaterial, takeTint, tintMaterial, type Glow, type UnitModel } from './models';
 import { clipRow, type VatClip } from './vat';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
@@ -26,8 +26,8 @@ export type Facing = 's' | 'n' | 'e' | 'w';
 export interface Figure {
   node: TransformNode;
   play(anim: FigureAnim, facing: Facing, speed: number): void;
-  /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1; writes only when a value changed */
-  tint(desat: number, flash: number, alpha: number): void;
+  /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1, colour glow (story 13.6); writes only when a value changed */
+  tint(desat: number, flash: number, alpha: number, glow?: Glow): void;
   /**
    * `now`: the animation clock in ms (it stops while the board freezes a critical hit); `onScreen`: false while the figure is
    * outside the view and switched off, so nothing about its skeleton or its baked row is worked out
@@ -57,6 +57,7 @@ export class ModelFigure implements Figure {
   private tDesat = -1;
   private tFlash = -1;
   private tAlpha = -1;
+  private tGlow: Glow = NO_GLOW;
   /** materials from the scene's pool while the figure flashes or fades (one per mesh group, opaque or blended); at rest it wears the scene's shared ones */
   private own: { mats: StandardMaterial[]; blend: boolean } | null = null;
   /** the idle group while the skeleton is throttled; null: at full rate or holding a still pose */
@@ -172,13 +173,14 @@ export class ModelFigure implements Figure {
     for (const sk of this.model.skeletons) this.needs.add(sk);
   }
 
-  tint(desat: number, flash: number, alpha: number): void {
-    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha) return;
+  tint(desat: number, flash: number, alpha: number, glow: Glow = NO_GLOW): void {
+    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha && glow === this.tGlow) return;
     this.tDesat = desat;
     this.tFlash = flash;
     this.tAlpha = alpha;
+    this.tGlow = glow;
     const at = this.model;
-    if (flash === 0 && alpha >= 0.999) {
+    if (flash === 0 && alpha >= 0.999 && glow === NO_GLOW) {
       // at rest: the scene's shared material of this desaturation
       at.groups.forEach((g) => {
         const m = sharedFigureMaterial(at.shared, at.root.getScene(), at.look, g.texture, desat);
@@ -187,14 +189,14 @@ export class ModelFigure implements Figure {
       this.releaseOwn();
       return;
     }
-    // flash, fade or ghost: pooled materials for as long as it lasts (the case, opaque or blended, is a shader variant of its own)
+    // flash, glow, fade or ghost: pooled materials for as long as it lasts (the case, opaque or blended, is a shader variant of its own)
     const blend = alpha < 0.99;
     if (this.own && this.own.blend !== blend) this.releaseOwn();
     const scene = at.root.getScene();
     const own = (this.own ??= { blend, mats: at.groups.map((g) => takeTint(at.tintPool, scene, at.look, g.texture, blend)) });
     at.groups.forEach((g, i) => {
       const m = own.mats[i]!;
-      tintMaterial(m, desat, flash, alpha);
+      tintMaterial(m, desat, flash, alpha, glow);
       for (const mesh of g.meshes) mesh.material = m;
     });
   }
@@ -359,12 +361,15 @@ export class SpriteFigure implements Figure {
   private tFlash = -1;
   private tAlpha = -1;
 
-  tint(desat: number, flash: number, alpha: number): void {
-    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha) return;
+  private tGlow: Glow = NO_GLOW;
+
+  tint(desat: number, flash: number, alpha: number, glow: Glow = NO_GLOW): void {
+    if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha && glow === this.tGlow) return;
     this.tDesat = desat;
     this.tFlash = flash;
     this.tAlpha = alpha;
-    tintMaterial(this.material, desat, flash, alpha);
+    this.tGlow = glow;
+    tintMaterial(this.material, desat, flash, alpha, glow);
     this.material.emissiveColor.addInPlace(new Color3(0.3, 0.3, 0.3));
     this.material.transparencyMode = alpha < 0.99 ? StandardMaterial.MATERIAL_ALPHATESTANDBLEND : StandardMaterial.MATERIAL_ALPHATEST;
   }

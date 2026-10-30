@@ -1020,18 +1020,16 @@ export interface LegibilityDef {
   range: { gap: number; corner: number; move: { color: string; alpha: number }; attack: { color: string; alpha: number }; heal: { color: string; alpha: number }; cream: string; edge: { cream: number; line: number } };
   /** story 13.2: the path arrow */
   path: { color: string; cream: string; width: number; outline: number; head: number; headLength: number };
-  /** story 13.5: danger tiers 1 / 2 / 3+, edge, count circle from `countFrom` attackers, dashed edge of sleeping foes, edge of one watched foe */
+  /** story 13.5: danger tiers 1 / 2 / 3+, edge, dashed edge of sleeping foes, edge of one watched foe */
   threat: {
     color: string;
     alpha: [number, number, number];
     edge: { cream: number; line: number };
-    countFrom: number;
-    countSize: number;
     sleeping: { color: string; width: number; dash: number; gap: number };
     watch: { color: string; cream: number; line: number };
   };
-  /** story 13.6: dashed lines from the foes that reach the chosen field */
-  lines: { color: string; cream: string; width: number; dash: number; gap: number };
+  /** story 13.6: the foes that reach the chosen field glow in this colour at this strength (0–1) */
+  reach: { color: string; strength: number };
   /** story 13.3: HP bar over the head */
   hpBar: { tick: number; tickWide: number; wideFrom: number; critical: number; widthTiles: number; minPx: number; maxPx: number; heightPx: number; lift: number };
   /** story 13.9: the whole-map zoom step */

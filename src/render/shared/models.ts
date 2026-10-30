@@ -164,11 +164,15 @@ export function figureMaterial(name: string, scene: Scene, look: FigureLook, tex
   return m;
 }
 
-/** Desaturation (acted/downed) 0–1, white flash 0–1 and opacity 0–1 as material values. */
-export function tintMaterial(m: StandardMaterial, desat: number, flash: number, alpha: number): void {
+/** A colour glow on a figure (story 13.6: the foes that reach the chosen field turn reddish), as RGB 0–1 already scaled by its strength. */
+export type Glow = readonly [number, number, number];
+export const NO_GLOW: Glow = [0, 0, 0];
+
+/** Desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1 and a colour glow as material values. */
+export function tintMaterial(m: StandardMaterial, desat: number, flash: number, alpha: number, glow: Glow = NO_GLOW): void {
   const k = 1 - desat * 0.45;
   m.diffuseColor.set(k, k, k * 1.04);
-  m.emissiveColor.set(flash * 0.8, flash * 0.8, flash * 0.8);
+  m.emissiveColor.set(flash * 0.8 + glow[0], flash * 0.8 + glow[1], flash * 0.8 + glow[2]);
   m.alpha = alpha;
 }
 

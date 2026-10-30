@@ -1,7 +1,7 @@
 /**
  * HUD pieces of epic 13 "Kampf lesbar machen" (EXPERIENCE.md, DESIGN.md): the target-tile pill, the terrain chip at the chosen
- * field, the foe-phase recap stone, the enemy strip and the round back stone beside the ghost figure. Numbers come from core
- * functions (`tileThreats`, `phaseRecap`); these components only show them.
+ * field, the foe-phase recap stone and the enemy strip. Numbers come from core functions (`tileThreats`, `phaseRecap`); these
+ * components only show them.
  */
 import { useRef } from 'preact/hooks';
 import type { BattleState, BattleUnit, GameData, Pos, RecapRow } from '../../core';
@@ -166,14 +166,5 @@ export function EnemyStrip({ data, s, hp, onCenter, onInfo, side }: { data: Game
         );
       })}
     </div>
-  );
-}
-
-/** Round back stone beside the ghost figure (story 13.9): takes the move back like "Zurück" (FR1). */
-export function BackStone({ onClick }: { onClick: () => void }) {
-  return (
-    <button type="button" class="lg-back" onClick={onClick} aria-label={t('ui.back')}>
-      <Icon name="back" size={18} />
-    </button>
   );
 }

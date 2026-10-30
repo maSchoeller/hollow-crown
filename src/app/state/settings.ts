@@ -18,10 +18,9 @@ export interface Settings {
   shake: boolean;
   /** scenes advance on their own (the Auto pill of a scene) */
   dialogueAuto: boolean;
-  /** board display (story 13.1, block "Brett-Anzeige"): grid marks, HP bars over the figures, numbers in the danger zone, enemy strip */
+  /** board display (story 13.1, block "Brett-Anzeige"): grid marks, HP bars over the figures, enemy strip */
   grid: 'off' | 'subtle' | 'strong';
   hpBars: 'always' | 'hurt' | 'off';
-  threatNumbers: boolean;
   enemyStrip: boolean;
   /** version of the enemy-phase pace; a stored setting of an older one is reset, because the old default (2x) was too fast to follow */
   enemyPaceRev: number;
@@ -46,7 +45,6 @@ function loadSettings(): Settings {
     dialogueAuto: false,
     grid: 'subtle',
     hpBars: 'always',
-    threatNumbers: true,
     enemyStrip: false,
     enemyPaceRev: ENEMY_PACE_REV,
   };

@@ -193,7 +193,7 @@ components:
     fill: '{colors.team-enemy}, drei Deckkraft-Stufen'
     edge: '{colors.team-enemy} über {colors.cream}'
     sleeping: 'gestrichelte Kante'
-    count: 'Kreis {colors.cream} mit Zahl in {colors.team-enemy}'
+    reach: 'Gegner, die das Zielfeld erreichen, leuchten rötlich (render.yaml legibility.reach)'
   kill-marker:
     background: '{colors.line}'
     symbol: 'Totenkopf {colors.cream}; halb = halbe Füllung'
@@ -321,8 +321,8 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Lebensleiste** (`hp-bar`) | Stein-Pille über dem Kopf jeder Figur: Creme-Grund, Füllung in Teamfarbe, dunkle Kontur (Leutnant Goldkontur), Teilstriche in Creme je 5 TP (ab 40 max. TP je 10); unter 25 % pulsierender Glutrand; in der Kampfvorschau blinkt der Teil, den der Angriff nimmt. Nie rot gefärbt, weil Rot Team ist |
 | **Raster-Eckpunkte** (`grid-mark`) | kleine Creme-Kreuze an den Feldecken auf Feldhöhe; Stufe „stark“ zeichnet durchgehende feine Linien |
 | **Bereichs-Kachel** (`range-tile`) | Einzelfeld mit 2–3 px Lücke und runden Ecken, gemeinsame Außenkante (Creme unter Teamfarbe); Weg als dicker runder Pfeil in `{colors.team-player}` mit Creme-Rand |
-| **Gefahrenzone** (`threat`) | rote durchscheinende Fläche in drei Stufen, Außenkante rot auf Creme, Zahl im Creme-Kreis ab 2 Angreifern; schlafende Gegner als gestrichelte Kante |
-| **Zielfeld-Pille** | Pille oben unter den Ziel-Pillen: „⚠ n Gegner erreichen dieses Feld“, ab 2 auf `{colors.team-enemy-soft}` mit roter Schrift, bei 1 auf Creme; gestrichelte rote Linien von den Gegnern zum Feld |
+| **Gefahrenzone** (`threat`) | rote durchscheinende Fläche in drei Stufen, Außenkante rot auf Creme, keine Zahl auf den Feldern; schlafende Gegner als gestrichelte Kante |
+| **Zielfeld-Pille** | Pille oben unter den Ziel-Pillen: „⚠ n Gegner erreichen dieses Feld“, ab 2 auf `{colors.team-enemy-soft}` mit roter Schrift, bei 1 auf Creme; die Gegner, die das Feld erreichen, leuchten rötlich (statt Linien) |
 | **Gelände-Chip** | Pille am Zielfeld: Gelände-Symbol, Name, Verteidigung (Schild), Ausweichen, Heilung; Werte als Symbol + Zahl, Bonus in `{colors.positive}` |
 | **Kill-Marker** (`kill-marker`) | runder dunkler Stein mit Creme-Totenkopf über dem Gegner, halb gefüllt = nur mit Krit; Warnung über eigenen Figuren grau mit „!“; nie Glutorange |
 | **Rückblick-Stein** | Stein über der Einheitenkarte: Titel „Gegnerphase n“ (Fraunces), Zeilen mit Medaillon, Satz, Zahl rechts (Schaden rot, ausgewichen grün); eine Nebentaste „Figur zeigen“ |
