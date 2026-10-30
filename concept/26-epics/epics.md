@@ -3,7 +3,7 @@ title: 'Hollow Crown – Epics und Stories (Staffel 1)'
 stepsCompleted: [1, 2, 3, 4]
 status: final
 created: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-30
 readiness: concept/26-epics/implementation-readiness-report-2026-10-23.md (Auflösung der Befunde in Abschnitt 9)
 source: BMAD-Workflow gds-create-epics-and-stories
 decisions: concept/26-epics/decision-log.md
@@ -194,6 +194,12 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 - UX-DR23: Steckbriefe-Liste und Chronik als Vollbild-Ansichten aus der Leiste.
 - UX-DR24: Responsive: Tablet mit Seitenleiste 320 px, PC mit Panels links/rechts und Hover; Safe Areas; Tastenkürzel.
 - UX-DR25: Bewegung und Haptik: Druckzustand der Steine, Bildschirmwackeln und Haptik abschaltbar, `prefers-reduced-motion`.
+- UX-DR26 (neu 2026-10-30): Options-Block „Brett-Anzeige“ (Raster, Lebensleisten, Zahlen in der Gefahrenzone, Gegner-Leiste, Gefahrenzone standardmäßig); Raster als Eckpunkte, Bereiche als Einzelkacheln mit Außenkante, Weg als Pfeil.
+- UX-DR27 (neu 2026-10-30): Lebensleisten über allen Figuren in Teamfarbe mit Teilstrichen, Leutnant-Goldkontur, kritischer Glutrand, Schadensvorschau in der Leiste; Kill-Marker voll/halb über Gegnern.
+- UX-DR28 (neu 2026-10-30): Gefahrenzone mit Kante, drei Stufen und Zahl; schlafende Gegner gestrichelt; Zielfeld-Check mit Linien, Pille und Gelände-Chip (PC beim Hover); Warn-Totenkopf über gefährdeten eigenen Figuren.
+- UX-DR29 (neu 2026-10-30): Gegnerphase-Rückblick, Gegner-Leiste (Option), Fertig-Häkchen, Doppeltipp zentriert, Zoomstufe „ganze Karte“ (PC M), Zurück-Stein an der Geist-Figur.
+- UX-DR30 (neu 2026-10-30): Handbuch aus Kampfmenü, Weltkarte und Titel mit Kategorien, Suche und Einträgen (Grafik, Werte aus den Daten, Querverweise), Klassen-Steckbriefe, Lektionen.
+- UX-DR31 (neu 2026-10-30): Kontext-„?“ an Kampfvorschau, Gelände-Chip, Zuständen und Lektionen öffnet den passenden Handbuch-Eintrag über dem Kampf.
 
 ### FR Coverage Map
 
@@ -328,7 +334,15 @@ Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronf
 Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2.
 **FRs covered:** FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
 
-**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 (MVP-Release), danach 10 → 11 → 12. Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
+### Epic 13: Kampf lesbar machen
+Spieler lesen das Brett auf einen Blick: Raster, Lebensleisten, Bereiche mit Kanten, eine abgestufte Gefahrenzone, Zielfeld-Check und Kill-Marker vor dem Zug, ein Rückblick nach der Gegnerphase. Neu seit der Course Correction 2026-10-30, vor dem MVP-Release.
+**FRs covered:** – (Darstellung bestehender Regeln FR1, FR2, FR6, FR9) · UX-DR26–UX-DR29
+
+### Epic 14: Handbuch
+Spieler schlagen jede Regel im Spiel nach, aus dem Menü oder über ein „?“ an der Stelle, an der sie wirkt; Werte kommen aus den Content-Daten. Neu seit der Course Correction 2026-10-30, nach dem MVP-Release und vor Akt 2.
+**FRs covered:** – · UX-DR30, UX-DR31
+
+**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
 
 <!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
 
@@ -2018,10 +2032,292 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 **Wenn** die verkettete Simulation über die ganze Staffel läuft
 **Dann** liegen alle Missionen in den Korridoren, die Spielzeit trifft 30–35 Stunden auf Normal, `act3` ist veröffentlicht und Spielstände aus Akt 1 und 2 laufen weiter.
 
+## Epic 13: Kampf lesbar machen
+
+Spieler lesen das Brett auf einen Blick: Felder, TP jeder Figur, Reichweiten und Gefahr sind sichtbar, bevor sie ziehen; nach der Gegnerphase wissen sie, was passiert ist. Entschieden in der UX-Werkstatt am 2026-10-30 (`concept/sprint-change-proposal-2026-10-30.md`), Verhalten in `EXPERIENCE.md`, Aussehen in `DESIGN.md`, Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`. Alle Zahlen der Anzeigen kommen aus Kern-Funktionen über `dangerZone`/`threatTiles` und `forecast` (Vorschau = Auflösung, AGENTS.md); Stufen, Schwellen und Deckkraft stehen in `render.yaml`.
+
+### Story 13.1: Brett-Anzeige in den Optionen und Raster
+
+Als Spieler
+möchte ich die Felder des Bretts zählen können und selbst bestimmen, wie viel Hilfe das Brett zeigt,
+damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett wird.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Optionen (Titel und Menü)
+**Wenn** der Spieler sie öffnet
+**Dann** gibt es einen Block „Brett-Anzeige“ mit Raster (aus / dezent / stark), Lebensleisten (Immer / Nur verletzte / Aus), Zahlen in der Gefahrenzone (an/aus), Gegner-Leiste (an/aus) und dem bisherigen Schalter „Gefahrenzone standardmäßig“
+**Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Zahlen an, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
+
+**Angenommen** ein Kampf mit Raster „dezent“
+**Wenn** das Brett steht
+**Dann** liegen kleine Creme-Kreuze an allen Feldecken auf Feldhöhe, nie vom Szenenlicht gefärbt (Art Direction §2.5)
+**Und** „stark“ zeichnet feine durchgehende Linien, „aus“ nichts; Deckkraft und Größe je Stufe stehen in `render.yaml`
+**Und** die Bildrate bleibt über den Zielen aus Story 7.8.
+
+### Story 13.2: Bereiche als Kacheln und Weg-Pfeil
+
+Als Spieler
+möchte ich Bewegungs- und Angriffsbereich als einzelne Felder mit klarer Kante sehen und meinen Weg als Pfeil,
+damit ich nicht raten muss, wie weit eine Figur kommt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine gewählte eigene Einheit
+**Wenn** ihr Bereich erscheint
+**Dann** ist jedes erreichbare Feld eine Einzelkachel mit kleiner Lücke und runden Ecken in Teamblau, Angriffsfelder ebenso in Rot, und der Bewegungsbereich hat eine gemeinsame Außenkante (Creme unter Blau)
+**Und** Haltezonen, Wirken-Felder und Ziele behalten ihre bisherige Darstellung (Story 2.4, 2.5).
+
+**Angenommen** ein gesetztes Zielfeld
+**Wenn** die Geist-Figur dort steht
+**Dann** zeigt ein dicker, runder Pfeil mit Creme-Rand den Weg vom Start bis zum Ziel, mit Spitze am Ziel; er ersetzt die bisherige Weg-Markierung.
+
+### Story 13.3: Lebensleisten über den Figuren
+
+Als Spieler
+möchte ich über jeder Figur sehen, wie viele TP sie noch hat,
+damit ich angeschlagene Gegner und gefährdete Gefährten ohne Antippen erkenne.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** ein Kampf mit Lebensleisten „Immer“
+**Wenn** das Brett steht
+**Dann** trägt jede sichtbare Figur über dem Kopf eine Leiste nach DESIGN.md (`hp-bar`): Creme-Grund, Füllung in Teamfarbe, dunkle Kontur, Leutnant mit Goldkontur, Teilstrich je 5 TP und ab 40 max. TP je 10 (`render.yaml`)
+**Und** sie liegt in der DOM-Ebene der Verblutungs-Zähler, folgt der Figur bei Bewegung, Zoom und Kamerafahrt und verdeckt weder Groll-Wimpel noch Zustands-Symbole.
+
+**Angenommen** eine Figur unter 25 % ihrer max. TP (Schwelle in `render.yaml`)
+**Wenn** sie auf dem Brett steht
+**Dann** hat ihre Leiste einen pulsierenden Glutrand; mit `prefers-reduced-motion` ist der Rand fest
+**Und** die Füllung bleibt Teamfarbe.
+
+**Angenommen** die Gegnerphase oder ein eigener Angriff
+**Wenn** eine Figur Schaden nimmt oder geheilt wird
+**Dann** ändert sich ihre Leiste im Takt der Trefferanimation (`onUnitHp`)
+**Und** „Nur verletzte“ zeigt Leisten nur unter max. TP (Leutnants immer), „Aus“ zeigt keine; niedergestreckte, geflohene und tote Figuren haben keine Leiste.
+
+### Story 13.4: Schadensvorschau und Kill-Marker
+
+Als Spieler
+möchte ich vor dem Angriff sehen, wie viel die Leiste des Ziels verliert und wen ich diese Runde besiegen kann,
+damit ich Angriffe gezielt verteile.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die offene Kampfvorschau
+**Wenn** ein Ziel gewählt ist
+**Dann** blinkt in seiner Lebensleiste der Teil, den der Angriff bei Treffer nimmt (inklusive Doppelangriff), mit `prefers-reduced-motion` schraffiert statt blinkend
+**Und** die Zahl stammt aus `forecast`, nie aus einer Kopie der Formel.
+
+**Angenommen** eine gewählte eigene Einheit in der Spielerphase
+**Wenn** ihr Bereich erscheint
+**Dann** steht über jedem Gegner, den sie von einem erreichbaren Feld aus angreifen kann, ein Kill-Marker nach DESIGN.md: voller Totenkopf = fällt bei Treffer (inklusive Doppelangriff), halber = fällt nur mit Krit
+**Und** Leutnants zeigen statt Totenkopf die Flucht-Marke; gerechnet wird mit der besten angelegten Waffe und dem günstigsten erreichbaren Feld
+**Und** die Rechnung ist eine reine Funktion in `src/core/rules` mit Unit-Tests (Treffer, Krit, Doppelangriff, Dreieck, Element, Leutnant).
+
+### Story 13.5: Gefahrenzone mit Stufen
+
+Als Spieler
+möchte ich in der Gefahrenzone sehen, wie viele Gegner ein Feld erreichen,
+damit ich zwischen leicht und sehr gefährlich unterscheiden kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Gefahrenzone ist an (Leerlauf-Dock „Gefahr“, PC D)
+**Wenn** das Brett sie zeigt
+**Dann** ist sie eine durchscheinende rote Fläche in drei Stufen (1 / 2 / 3+ Gegner, Deckkraft in `render.yaml`) mit roter Außenkante auf Creme
+**Und** auf Feldern ab 2 Angreifern steht die Zahl im Creme-Kreis, sofern „Zahlen in der Gefahrenzone“ an ist
+**Und** eigene Figuren und ihre Lebensleisten bleiben darunter lesbar.
+
+**Angenommen** Gegner mit den KI-Profilen hold/guard, schlafende Gegner (trigger) und angekündigte Verstärkung
+**Wenn** die Zone berechnet wird
+**Dann** zählen hold/guard wie heute ohne Bewegung, schlafende Gegner zählen nicht und ihre Zone steht als gestrichelte Kante da, Verstärkungen behalten ihre Ankunftsmarke
+**Und** die Zählung ist eine reine Funktion (`threatCounts`) aus `threatTiles`, getestet.
+
+**Angenommen** ein Langdruck auf einen Gegner (Steckbrief bzw. Einheiten-Info)
+**Wenn** seine Zone erscheint
+**Dann** zeigt sie nur seine Außenkante in dunklerem Rot, damit sie über der Gesamtzone lesbar bleibt.
+
+### Story 13.6: Zielfeld-Check und Warnung für eigene Figuren
+
+Als Spieler
+möchte ich vor dem Bestätigen sehen, welche Gegner mein Zielfeld erreichen und welche meiner Figuren fallen könnten,
+damit ich nicht aus Versehen in eine Falle ziehe.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine gesetzte Geist-Figur auf einem Zielfeld (Handy) bzw. die Maus über einem erreichbaren Feld (PC, Hover)
+**Wenn** das Feld feststeht
+**Dann** führen gestrichelte rote Linien von jedem Gegner, der das Feld in seiner nächsten Phase erreicht (Regeln wie Story 13.5), zum Feld
+**Und** eine Pille unter den Ziel-Pillen sagt „n Gegner erreichen dieses Feld“ (ab 2 auf Rot-hell, bei 1 auf Creme, bei 0 keine Pille)
+**Und** am Feld steht der Gelände-Chip mit Name, Verteidigung, Ausweichen und Heilung als Symbol + Zahl aus `terrain.yaml`.
+
+**Angenommen** die Spielerphase
+**Wenn** die Summe des Schadens bei Treffer aller Gegner, die eine eigene Figur erreichen, ihre aktuellen TP erreicht (ohne Krit und Trefferchance, mit Doppelangriff)
+**Dann** steht über dieser Figur ein grauer Warn-Totenkopf mit „!“ (DESIGN.md `kill-marker.warn`)
+**Und** er verschwindet, sobald die Bedingung nicht mehr gilt; die Rechnung ist eine getestete reine Funktion.
+
+### Story 13.7: Gegnerphase-Rückblick
+
+Als Spieler
+möchte ich nach der Gegnerphase kurz sehen, was passiert ist,
+damit ich bei 2× oder Überspringen nichts Wichtiges verpasse.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Gegnerphase, in der etwas geschah
+**Wenn** die Spielerphase beginnt
+**Dann** liegt über der Einheitenkarte ein Stein „Gegnerphase n“ mit einer Zeile je Ereignis: zuerst Niedergestreckte und Gefallene (mit Verblutungs-Zähler bzw. in Klassik „gefallen“), dann Treffer auf eigene Figuren (TP vorher → nachher, Verfehlt als „weicht aus“), dann Verstärkungen und geweckte Gegner
+**Und** eine Nebentaste „Figur zeigen“ bzw. ein Tipp auf eine Zeile zentriert die Kamera auf Figur oder Ort
+**Und** die Liste entsteht als reine Funktion aus den Events der Phase, getestet.
+
+**Angenommen** der Rückblick ist offen
+**Wenn** der Spieler aufs Brett tippt oder eine Einheit wählt
+**Dann** schließt er sich ohne Rückfrage; er blockiert nie, erscheint nicht, wenn nichts geschah, und Lektionen und Szenen haben Vorrang.
+
+### Story 13.8: Gegner-Leiste
+
+Als Spieler
+möchte ich auf Wunsch alle Gegner mit ihren TP in einer Reihe sehen,
+damit ich auf großen Karten niemanden übersehe.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Option „Gegner-Leiste“ ist an (Standard aus)
+**Wenn** die Spielerphase läuft
+**Dann** steht unter den Ziel-Pillen eine Reihe kleiner Medaillons aller sichtbaren Gegner mit TP-Ring und TP-Zahl, Leutnants mit Goldring zuerst; Gegner im Nebel fehlen
+**Und** ein Tipp zentriert die Kamera auf den Gegner, ein Langdruck öffnet seine Info; bei vielen Gegnern lässt sich die Reihe seitlich wischen
+**Und** auf Tablet und PC sitzt sie in der Seitenleiste (UX-DR24).
+
+### Story 13.9: Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
+
+Als Spieler
+möchte ich sehen, wer schon gehandelt hat, schnell zu einer Figur oder zur ganzen Karte springen und eine Bewegung direkt an der Figur zurücknehmen,
+damit sich lange Runden flüssig spielen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Figur hat in dieser Phase gehandelt
+**Wenn** sie auf dem Brett steht
+**Dann** trägt sie zusätzlich zur Entsättigung ein kleines grünes Häkchen am Kopf (DESIGN.md Fertig-Häkchen).
+
+**Angenommen** das Brett
+**Wenn** der Spieler doppelt auf eine Figur tippt
+**Dann** gleitet die Kamera auf sie, ohne sie zu wählen oder eine Aktion auszulösen
+**Und** Herauspinchen über die weiteste Zoomstufe hinaus bzw. am PC Taste M oder Mausrad zeigt die ganze Karte (vierte Zoomstufe, aus der Kartengröße berechnet; Rand in `render.yaml`); erneutes Hineinzoomen kehrt zur weitesten Stufe zurück.
+
+**Angenommen** eine gesetzte Geist-Figur vor der Aktion
+**Wenn** der Spieler den runden Zurück-Stein neben ihr antippt bzw. am PC rechts klickt
+**Dann** steht die Figur wieder auf dem Startfeld wie mit dem bisherigen Zurück (FR1); die Leisten-Taste „Zurück“ bleibt.
+
+## Epic 14: Handbuch
+
+Spieler schlagen jede Spielregel im Spiel nach: aus dem Menü oder direkt über ein „?“ an der Stelle, an der die Regel wirkt. Entschieden in der UX-Werkstatt am 2026-10-30 (`concept/sprint-change-proposal-2026-10-30.md`); Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`. Werte in Einträgen sind Verweise auf Content-Pfade und stimmen damit nach jedem Balancing. Texte DE + EN entwirft der Assistent aus GDD, Narrative und Content, der Produktinhaber nimmt sie im Pull Request ab. Entdecken (NEU-Marken, Fortschritt) und Bestiarium sind nicht Teil dieses Epics, weil sie das Speicherformat ändern.
+
+### Story 14.1: Handbuch als Content
+
+Als Entwickler
+möchte ich Handbuch-Einträge als YAML mit Schema anlegen,
+damit Texte, Werte und Verweise geprüft werden und nie im Code stehen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/core/handbook.yaml` mit Zod-Schema (Kategorien in fester Reihenfolge; Einträge mit id, Kategorie, Grafik-Typ, Wert-Verweisen, Querverweisen, optionalem Kontext-Anker)
+**Wenn** `pnpm content:check` läuft
+**Dann** scheitert er bei fehlendem DE- oder EN-Schlüssel unter `handbook.*`, bei einem Wert-Verweis, der sich nicht auflöst (z. B. `balance.triangle.hit`, `terrain.forest.avoid`, `classes.vanguard.mov`), bei Querverweisen auf unbekannte Einträge und bei doppelten Kontext-Ankern
+**Und** eine reine Funktion löst Wert-Verweise gegen `GameData` auf (getestet); kein Zahlenwert steht als Text im YAML.
+
+### Story 14.2: Handbuch-Screen und Einstieg
+
+Als Spieler
+möchte ich das Handbuch aus jedem Menü öffnen und Einträge schnell finden,
+damit ich Regeln nachlese, wann immer ich unsicher bin.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Menü im Kampf, das Menü auf der Weltkarte oder der Titel
+**Wenn** der Spieler „Handbuch“ wählt (im Kampf an zweiter Stelle unter Optionen)
+**Dann** öffnet eine Vollbild-Ansicht im Stil B mit Zurück-Stein, Titelpille, Suchfeld und den Kategorien als Steine im Zweier-Raster
+**Und** die Suche findet Einträge über Titel und Stichworte in der aktuellen Sprache.
+
+**Angenommen** ein gewählter Eintrag
+**Wenn** er öffnet
+**Dann** zeigt er Grafik, Werte-Feld (aufgelöste Werte, Symbol + Zahl), einen Satz „wo im Spiel“ und Querverweise als Chips; ein Querverweis öffnet den anderen Eintrag, Zurück führt zum vorigen
+**Und** aus dem Kampf heraus liegt das Handbuch über dem Kampf; Schließen kehrt in denselben Zustand zurück, ohne Command und ohne Speichern.
+
+### Story 14.3: Einträge Grundlagen, Kampf, Waffen und Elemente
+
+Als Spieler
+möchte ich verstehen, wie Phasen, Bewegung, Treffer, Krit, Doppelangriff, Waffendreieck und Elemente funktionieren,
+damit ich die Kampfvorschau deuten kann.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kategorien Grundlagen, Kampf sowie Waffen & Elemente
+**Wenn** der Spieler sie öffnet
+**Dann** gibt es Einträge mindestens zu Phasen und Aktionen, Bewegung und Zurücknehmen, Speichern, Trefferchance (zwei Würfel), Schaden, Krit, Doppelangriff, Supports im Kampf, Waffendreieck (Grafik) und Elementkreislauf (Grafik) mit Werten aus `balance.yaml`
+**Und** die Texte liegen DE und EN vor und sind vom Produktinhaber abgenommen.
+
+### Story 14.4: Einträge Gelände, Zustände, Leutnants, Tod und Bergen
+
+Als Spieler
+möchte ich nachlesen, was Gelände, Zustände, Leutnants und die Tod-Modi bewirken,
+damit mich weder Feuer noch eine Flucht noch das Verbluten überrascht.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kategorien Gelände, Zustände, Leutnants sowie Tod & Bergen
+**Wenn** der Spieler sie öffnet
+**Dann** gibt es Einträge zu jedem Gelände mit Verteidigung, Ausweichen, Heilung und Bewegungskosten je Bewegungstyp aus `terrain.yaml`, zu Feuer und Ausbreitung, Nass, Langsam, Wegstoßen, Felswand und Nebel, zu Groll und Kerben, Flucht bei 0 TP, Kopfgeld und Heimsuchungen, zu Niederstrecken, Verbluten, Bergen, Narben und den Modi Klassik/Standard/Casual
+**Und** Texte DE + EN abgenommen.
+
+### Story 14.5: Klassen-Steckbriefe
+
+Als Spieler
+möchte ich für jede spielbare Klasse Stärken und Schwächen sehen,
+damit ich meine Truppe gezielt einsetze.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kategorie Klassen
+**Wenn** der Spieler eine spielbare Klasse öffnet (`playable: true` in `classes.yaml`)
+**Dann** zeigt der Steckbrief Rollen-Icon, ein Werte-Netz aus dem Wachstum, Bewegung, Bewegungstyp, Waffengruppen, Klassen-Aktion und Profi-Wege aus `classes.yaml`
+**Und** je 2–3 Zeilen „stark“ und „schwach“ (Text in den Locales, DE + EN abgenommen)
+**Und** eine neue spielbare Klasse ohne Steckbrief lässt `content:check` scheitern.
+
+### Story 14.6: Einträge Heimat und Items
+
+Als Spieler
+möchte ich nachlesen, wie Räume, Ausbau, Items, Seltenheit, Runen, Sets und Last funktionieren,
+damit ich Gold und Material sinnvoll einsetze.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kategorien Heimat und Items
+**Wenn** der Spieler sie öffnet
+**Dann** gibt es Einträge zu Lager und Burg, Räumen und Ausbau (`rooms.yaml`), Glutfunke, Seltenheit (Rauten), Aufwerten, Runen, Sets, Gewicht und Last mit Werten aus den Content-Dateien
+**Und** Inhalte, die erst mit Epic 10 kommen, sind als „ab Akt 2“ gekennzeichnet; Texte DE + EN abgenommen.
+
+### Story 14.7: Lektionen und Kontext-„?“
+
+Als Spieler
+möchte ich die Lektionen des Prologs später nachlesen und aus dem Kampf direkt zur passenden Regel springen,
+damit ich nicht erst suchen muss.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kategorie Lektionen
+**Wenn** der Spieler sie öffnet
+**Dann** stehen dort die Lektionen des Prologs (Bewegung, Gefahr, Heilen und alle weiteren Lektionen) als Text aus denselben Szenen-Schlüsseln, nicht als Kopie.
+
+**Angenommen** Kampfvorschau, Gelände-Chip, Zustands-Symbole und Lektionen im Kampf
+**Wenn** dort ein Kontext-„?“ steht (DESIGN.md `help-stone`) und der Spieler es antippt
+**Dann** öffnet der Eintrag mit dem passenden Kontext-Anker als Blatt über dem Kampf; Schließen kehrt ohne Zustandsverlust zurück
+**Und** jedes „?“ hat eine Tippfläche von mindestens 44 pt und verdeckt keine Zahl.
+
 ## Validierung
 
 - **FR-Abdeckung:** FR1–FR63 sind in der Coverage Map einem Epic zugeordnet und in mindestens einer Story mit Kriterien hinterlegt; bestehende Regeln (FR1–FR3, FR6, FR9, FR10, FR45) werden in Story 2.1/2.2 bzw. 6.2 übernommen und nicht neu gebaut.
-- **UX-Abdeckung:** UX-DR1–UX-DR25 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt.
+- **UX-Abdeckung:** UX-DR1–UX-DR31 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt; UX-DR26–UX-DR31 kamen mit der Course Correction 2026-10-30 (Epics 13 und 14, 16 Stories).
 - **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
 - **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
 - **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager, Burg auf Stufe 1 ab 1-6) und Epic 10 (Burg-Ausbau ab Akt 2) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
