@@ -1,0 +1,514 @@
+# Handbuch (Epic 14): Texte zu content/core/handbook.yaml. In handbook.entry.* stehen keine Ziffern; Zahlen kommen als {id} aus den
+# Werten des Eintrags (content:check prüft beides). Entwurf des Assistenten, Abnahme durch den Produktinhaber im Pull Request.
+handbook:
+  ui:
+    title: "Handbuch"
+    search: "Begriff suchen, z. B. „Groll“"
+    results: "{count} Treffer"
+    noResults: "Nichts gefunden. Versuch ein anderes Wort."
+    entries: { one: "{count} Eintrag", other: "{count} Einträge" }
+    values: "Werte"
+    where: "Im Spiel"
+    see: "Siehe auch"
+    fromAct: "ab Akt {act}"
+    help: "Im Handbuch nachlesen"
+    beats: "schlägt"
+    terrain: "Gelände"
+    cost: "Bewegungskosten"
+    impassable: "–"
+    affixes: "Affixe"
+    runeSlots: "Runen-Plätze"
+    growth: "Wachstum"
+    mov: "BEW"
+    moveType: "Bewegung"
+    weapons: "Waffen"
+    classAction: "Klassen-Aktion"
+    passive: "passiv"
+    perMap: "{n}× je Karte"
+    classSkill: "Klassen-Skill"
+    proPaths: "Profi-Wege"
+    strong: "Stark"
+    weak: "Schwach"
+    lessonMissing: "Diese Lektion wird noch geladen."
+  moveShort: { foot: "Fuß", armored: "Panz.", mounted: "Ber.", flier: "Flug", monster: "Mon." }
+  move:
+    foot: "Fuß"
+    armored: "Gepanzert"
+    mounted: "Beritten"
+    flier: "Flieger"
+    monster: "Monster"
+  action:
+    command: "Befehl"
+    rally: "Sammelruf"
+    hold: "Halten"
+    pursue: "Nachsetzen"
+    aim: "Zielen"
+    cast: "Wirken"
+    far_rescue: "Fernbergen"
+    open_steal: "Öffnen und Stehlen"
+    inspire: "Anfeuern"
+  pro:
+    grand_strategist: "Großstratege"
+    banner_lord: "Bannerherr"
+    blade_dancer: "Klingentänzer"
+    ranger: "Waldläufer"
+    hexer: "Hexer"
+    battle_priest: "Kampfpriester"
+    shadow: "Schatten"
+    trapper: "Fallensteller"
+    bard: "Barde"
+    standard_bearer: "Bannerträger"
+  cat:
+    basics: { name: "Grundlagen", sub: "Phasen, Bewegung" }
+    combat: { name: "Kampf", sub: "Treffer, Krit, Doppelt" }
+    weapons: { name: "Waffen & Elemente", sub: "Dreieck, Kreislauf" }
+    terrain: { name: "Gelände", sub: "Deckung, Feuer, Nebel" }
+    status: { name: "Zustände", sub: "Brennen, Nass, Langsam" }
+    lieutenants: { name: "Leutnants", sub: "Groll, Flucht" }
+    death: { name: "Tod & Bergen", sub: "Verbluten, Klassik" }
+    home: { name: "Heimat", sub: "Lager, Burg, Räume" }
+    items: { name: "Items", sub: "Seltenheit, Runen, Last" }
+    classes: { name: "Klassen", sub: "Stärken, Schwächen" }
+    lessons: { name: "Lektionen", sub: "aus dem Prolog" }
+  label:
+    perSkl: "Treffer je GES"
+    lckDiv: "GLÜ geteilt durch"
+    perAs: "Ausweichen je AT"
+    effective: "Effektiv"
+    sklDiv: "GES geteilt durch"
+    mult: "Krit-Schaden"
+    lead: "AT-Vorsprung"
+    rankC: "Rang C ab"
+    rankB: "Rang B ab"
+    rankA: "Rang A ab"
+    rankS: "Rang S ab"
+    tandem: "Tandem-Schaden"
+    guardA: "Schutz Rang A"
+    guardS: "Schutz Rang S"
+    grief: "Trauer: Treffer weniger"
+    griefMissions: "Trauer: Missionen"
+    hit: "Treffer"
+    dmg: "Schaden"
+    adv: "Vorteil"
+    dis: "Nachteil"
+    same: "Gleiches Element"
+    elemMax: "Höchstens"
+    fireRounds: "Brand: Runden"
+    enter: "Schaden beim Betreten"
+    spread: "Ausbreitung je Runde"
+    wallRounds: "Felswall: Runden"
+    base: "Sicht"
+    marksman: "Schütze"
+    scout: "Späher"
+    flier: "Flieger"
+    wind: "Wind lichtet (Radius)"
+    rounds: "Dauer (Runden)"
+    burn: "Schaden je Phase (max. TP)"
+    spd: "TEM weniger"
+    slowMov: "BEW weniger"
+    blocked: "Schaden, wenn blockiert"
+    grudgeMax: "Höchster Groll"
+    aim: "KI-Wertung Groll-Ziel"
+    army: "Stufe nach den stärksten"
+    bountyGold: "Gold je Groll-Stufe"
+    matMin: "Material ab"
+    matMax: "Material bis"
+    chance: "Signatur-Item"
+    sure: "Sicher bei Vertreibung"
+    perDayMin: "Je Tag ab"
+    perDayMax: "Je Tag bis"
+    hauntOpen: "Höchstens offen"
+    hauntGold: "Gold"
+    hauntExp: "EP"
+    halve: "Halbe Beute ab"
+    phases: "Eigene Phasen"
+    far: "Fernbergen (Felder)"
+    rescueExp: "EP fürs Bergen"
+    limit: "Narben bis zum Tod"
+    cost: "Narbe entfernen"
+    sell: "Verkaufspreis"
+    convoy: "Konvoi-Plätze"
+    level: "Aufstieg ab Stufe"
+    price: "Preis beim Händler"
+    might: "Macht je Stufe"
+    upHit: "Treffer je Stufe"
+    armor: "VER oder RES je Stufe"
+    first: "Erste Stufe"
+    campMax: "Höchste im Lager"
+    two: "Zustand Stufe II"
+    three: "Zustand Stufe III"
+    merge: "Verschmelzen"
+    foot: "Tragkraft Fuß"
+    armored: "Tragkraft gepanzert"
+    over1: "Überlast Stufe I"
+    mov1: "BEW weniger"
+    over2: "Überlast Stufe II"
+    mov2: "BEW weniger"
+    bag: "Beutel-Plätze"
+  entry:
+    # ------------------------------------------------------------ Grundlagen
+    phases:
+      title: "Phasen und Aktionen"
+      text: "Erst zieht deine Truppe, dann die Gegner, dann eine dritte Partei, falls es eine gibt. In deiner Phase darf jede Figur einmal ziehen und eine Aktion ausführen: angreifen, eine Klassen-Aktion, ein Item, Ansprechen, Bergen oder Warten. Tauschen und Waffe wechseln kosten keine Aktion. Haben alle gehandelt, endet die Phase von selbst."
+      where: "Die Pille oben zeigt Runde und Phase; „Phase beenden“ schließt deine Phase vorzeitig ab."
+      keywords: "Runde, Zug, Phase, Aktion, Warten, Tauschen, Gegnerphase"
+    movement:
+      title: "Bewegung und Zurücknehmen"
+      text: "Tippe eine Figur an: Blau zeigt, wohin sie kommt, Rot, was sie angreifen kann. Ein Tipp auf ein Feld setzt eine Geist-Figur, ein zweiter bestätigt. Bis zur Aktion nimmst du die Bewegung wieder zurück. Gezogen wird in vier Richtungen ohne Diagonalen; durch Verbündete geht es hindurch, Gegner versperren den Weg."
+      where: "„Zurück“ in der Leiste oder ein Rechtsklick setzt die Geist-Figur aufs Startfeld."
+      keywords: "Bewegen, Ziehen, Geist, Zurück, Weg, Reichweite, BEW"
+    danger:
+      title: "Gefahrenzone und Brett lesen"
+      text: "Die rote Gefahrenzone zeigt jedes Feld, das ein Gegner in seiner nächsten Phase angreifen kann; je dunkler, desto mehr Gegner. Tippe einen Gegner an, um nur seine Reichweite zu sehen. Lebensleisten zeigen die TP jeder Figur, Totenköpfe, wen du diese Runde besiegen kannst."
+      where: "„Gefahr“ im Dock schaltet die Zone, am PC die Taste D; die Optionen haben einen Block „Brett-Anzeige“."
+      keywords: "Gefahr, Zone, Bedrohung, rot, Lebensleiste, Totenkopf, Raster"
+    saving:
+      title: "Speichern"
+      text: "Der Fortschritt wird nach jeder Aktion gespeichert. In Standard und Casual gibt es dazu drei Speicherplätze sowie Export und Import als Datei; in Klassik gibt es nur einen Spielstand je Kampagne."
+      where: "Speichern steht im Menü der Weltkarte, Export und Import in der Kampagnen-Ansicht."
+      keywords: "Speichern, Spielstand, Export, Import, Autospeicher, Platz"
+    # ------------------------------------------------------------ Kampf
+    forecast:
+      title: "Kampfvorschau"
+      text: "Vor jedem Angriff zeigt die Vorschau beide Seiten: Schaden je Schlag, Trefferchance, Krit-Chance und die TP danach. Pfeile am Waffen-Chip zeigen das Waffendreieck, ein Prozent am Element-Symbol den Element-Bonus. Die Zahlen sind dieselben, mit denen der Kampf gerechnet wird."
+      where: "Tippe mit gewählter Figur einen Gegner in Reichweite an; die Vorschau erscheint, bevor du bestätigst."
+      keywords: "Vorschau, Kampfvorschau, Prognose, Vergleich, TP danach"
+    hit_chance:
+      title: "Trefferchance"
+      text: "Die Chance ist der Treffer des Angreifers minus das Ausweichen des Ziels. Treffer: Treffer der Waffe plus GES {perSkl} plus GLÜ geteilt durch {lckDiv}. Ausweichen: AT {perAs} plus GLÜ plus Gelände. Gewürfelt wird zweimal und der Mittelwert zählt: hohe Chancen treffen öfter, niedrige seltener, als die Zahl verspricht."
+      where: "In der Kampfvorschau unter „Treffer“; das Gelände steht im Gelände-Chip am Zielfeld."
+      keywords: "Treffer, Trefferchance, Ausweichen, Würfel, Zufall, Genauigkeit, GES, GLÜ"
+    damage:
+      title: "Schaden"
+      text: "Schaden ist der Angriff minus VER des Ziels, bei Zaubern minus RES. Der Angriff ist STÄ oder MAG plus die Macht der Waffe; Waffendreieck und Element kommen dazu. Effektive Waffen, etwa Licht gegen Untote, zählen ihre Macht {effective}."
+      where: "In der Kampfvorschau unter „Schaden“, je Schlag."
+      keywords: "Schaden, Angriff, Macht, VER, RES, effektiv"
+    crit:
+      title: "Kritische Treffer"
+      text: "Die Krit-Chance ist der Krit der Waffe plus GES geteilt durch {sklDiv}, minus GLÜ des Ziels. Ein kritischer Treffer macht {mult} Schaden."
+      where: "In der Kampfvorschau unter „Krit“; ein halber Totenkopf heißt „fällt nur mit Krit“."
+      keywords: "Krit, kritisch, Volltreffer, Glück"
+    double_attack:
+      title: "Doppelangriff"
+      text: "Wer um mindestens {lead} AT schneller ist als sein Gegner, schlägt zweimal zu. AT ist TEM minus die Überlast der Ausrüstung; Nässe senkt sie ebenfalls."
+      where: "Die Vorschau zeigt beim Schaden ein kleines Mal-Zeichen mit der Zahl der Schläge."
+      keywords: "Doppelt, zweimal, Doppelangriff, Tempo, AT, schnell"
+    supports:
+      title: "Supports im Kampf"
+      text: "Gefährten, die nebeneinander kämpfen, sammeln Bindung und erreichen die Ränge C ({rankC}), B ({rankB}), A ({rankA}) und S ({rankS}). Ein Partner auf dem Nachbarfeld gibt Treffer und Ausweichen. Ab Rang B schlägt er im Tandem mit {tandem} Schaden nach, ab Rang A schützt er dich mit {guardA} Chance ({guardS} auf Rang S). Stirbt ein Partner, trauert die Figur: {grief} Treffer weniger für {griefMissions} Missionen."
+      where: "Tandem und Schutz stehen als Chips in der Kampfvorschau; die Gespräche gibt es am Lagerfeuer."
+      keywords: "Support, Bindung, Rang, Tandem, Schutz, Trauer, Partner"
+    # ------------------------------------------------------------ Waffen & Elemente
+    triangle:
+      title: "Waffendreieck"
+      text: "Schwert, Axt und Lanze schlagen einander im Kreis. Mit Vorteil gibt es {hit} Treffer und {dmg} Schaden, mit Nachteil ziehst du dasselbe ab. Bögen, Dolche, Stäbe und Zauber stehen außerhalb des Dreiecks."
+      where: "In der Kampfvorschau zeigt ein grüner Pfeil am Waffen-Chip den Vorteil, ein roter den Nachteil."
+      keywords: "Dreieck, Waffendreieck, Schwert, Axt, Lanze, Vorteil, Nachteil"
+    elements:
+      title: "Elemente"
+      text: "Jedes Element schlägt das nächste im Kreislauf, Licht und Dunkel schlagen einander. Mit Vorteil gibt es {adv} Schaden, mit Nachteil {dis}, gegen das gleiche Element {same}. Element und Waffendreieck bringen zusammen höchstens {elemMax}. Jedes Element kann einen Zustand auslösen."
+      where: "Das Element-Symbol steht an Waffe und Affinität; die Vorschau zeigt den Bonus in Prozent."
+      keywords: "Element, Feuer, Wasser, Erde, Wind, Licht, Dunkel, Affinität, Kreislauf"
+    magic:
+      title: "Zauber und Wirken"
+      text: "Zauberwaffen greifen mit MAG gegen die RES des Ziels an und tragen ein Element. Elementaristen wirken ihr Element zusätzlich aufs Feld: Feuer setzt in Brand, Wasser löscht und macht nass, Erde zieht einen Felswall hoch, Wind lichtet den Nebel. Die Körperrüstung bestimmt die Affinität einer Figur."
+      where: "„Wirken“ steht im Klassen-Stein des Docks, sobald ein Elementarist gewählt ist."
+      keywords: "Magie, Zauber, Wirken, MAG, RES, Anima, Affinität"
+    # ------------------------------------------------------------ Gelände
+    terrain_open:
+      title: "Offenes Gelände"
+      text: "Ebene, Gras, Straße, Brücke und Feld geben keine Deckung, dafür kommt hier jeder gleich schnell voran. Gras und Felder brennen."
+      where: "Der Gelände-Chip am Zielfeld nennt das Gelände mit seinen Werten."
+      keywords: "Ebene, Gras, Straße, Brücke, Feld, offen"
+    terrain_cover:
+      title: "Deckung: Wald, Ruinen, Häuser"
+      text: "Wald, Ruinen und Häuser geben Deckung: mehr Verteidigung und Ausweichen. Wald und Sand kosten mehr Bewegung, vor allem gepanzerte und berittene Figuren. Ein Haus lässt sich besuchen, bevor Plünderer es zerstören."
+      where: "Der Gelände-Chip am Zielfeld zeigt Verteidigung und Ausweichen als Symbol und Zahl."
+      keywords: "Wald, Deckung, Ruine, Haus, Sand, Besuchen, Bäume"
+    terrain_mountain:
+      title: "Berge"
+      text: "Auf Berge kommen nur Flieger, Monster und Kletterer wie der Späher. Wer oben steht, ist schwer zu treffen und gut geschützt."
+      where: "Der Gelände-Chip zeigt die Werte, sobald die Geist-Figur auf dem Berg steht."
+      keywords: "Berg, Fels, Klettern, Kletterer, Höhe"
+    terrain_water:
+      title: "Wasser"
+      text: "Seichtes Wasser bremst und senkt das Ausweichen; gepanzerte Figuren kommen nicht hinein. Den Fluss überqueren nur Flieger, alle anderen brauchen eine Brücke."
+      where: "Blaue Felder am Rand des Bewegungsbereichs zeigen, wie weit es durchs Wasser geht."
+      keywords: "Wasser, Fluss, seicht, Furt, Brücke"
+    terrain_fort:
+      title: "Festungen, Thron, Tor und Schrein"
+      text: "Diese Felder schützen am besten. Festung, Thron und Schrein heilen zu Beginn deiner Phase einen Teil der TP. Thron und Tor kann Kael einnehmen, wenn das Missionsziel es verlangt."
+      where: "Die Heilung steht im Gelände-Chip; das Ziel „Einnehmen“ in den Ziel-Pillen."
+      keywords: "Festung, Fort, Thron, Tor, Schrein, Heilung, Einnehmen"
+    terrain_blocked:
+      title: "Hindernisse"
+      text: "Mauern versperren den Weg für alle. Über Wagen, Stände, Brunnen, Kohlebecken, Zäune, Höfe und Häuser kommen nur Flieger."
+      where: "Hindernisse liegen nie im blauen Bewegungsbereich."
+      keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Haus, blockiert"
+    doors:
+      title: "Türen"
+      text: "Geschlossene Türen versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne; offen sind sie freier Weg."
+      where: "„Tür öffnen“ erscheint im grünen Kontext-Band, wenn eine Figur neben der Tür steht."
+      keywords: "Tür, Schlüssel, öffnen, Späher"
+    fire:
+      title: "Feuer und Ausbreitung"
+      text: "Ein brennendes Feld brennt {fireRounds} Runden und wird dann zu Asche. Wer es betritt oder darauf steht, nimmt {enter} Schaden. Jede Runde springt das Feuer mit {spread} Chance auf brennbare Nachbarfelder wie Gras, Wald und Feld; Wasser löscht es."
+      where: "Brennende Felder flackern auf dem Brett; die Gefahrenzone kennt sie nicht, achte selbst darauf."
+      keywords: "Feuer, Brand, brennen, Asche, Ausbreitung, löschen"
+    rockwall:
+      title: "Felswall"
+      text: "Ein Erd-Elementarist zieht einen Felswall hoch. Er versperrt das Feld für alle, auch die Sicht im Nebel, und fällt nach {wallRounds} Runden wieder."
+      where: "Wirken mit einer Erd-Zauberwaffe auf ein freies Feld."
+      keywords: "Felswall, Erde, Wall, Sperre, Felswand"
+    fog:
+      title: "Nebel des Krieges"
+      text: "Im Nebel sieht deine Truppe nur {base} Felder weit um jede Figur; Mauern, Türen und Felswälle versperren die Sicht. Schützen und Späher sehen {marksman} beziehungsweise {scout} weiter, Flieger {flier}. Ein Wind-Zauber lichtet den Nebel im Radius {wind}. Die Gegner sehen trotzdem alles."
+      where: "Auf manchen Karten liegt Nebel; was du nicht siehst, ist abgedunkelt."
+      keywords: "Nebel, Sicht, unsichtbar, Wind, dunkel"
+    # ------------------------------------------------------------ Zustände
+    status_burning:
+      title: "Brennen"
+      text: "Wer brennt, verliert zu Beginn jeder eigenen Phase {burn} seiner max. TP, für {rounds} Runden. Feuer-Zauber und Feuer-Runen setzen in Brand."
+      where: "Das Zustands-Symbol steht an der Figur und in ihrer Info; die Vorschau nennt die Chance."
+      keywords: "Brennen, Feuer, Brand, Zustand"
+    status_wet:
+      title: "Nass"
+      text: "Nässe senkt TEM um {spd} für {rounds} Runden; wer nass ist, schlägt seltener doppelt. Wasser-Zauber und Wasser-Runen machen nass."
+      where: "Das Zustands-Symbol steht an der Figur und in ihrer Info."
+      keywords: "Nass, Wasser, Tempo, Zustand"
+    status_slowed:
+      title: "Verlangsamt"
+      text: "Verlangsamte Figuren haben {slowMov} BEW weniger, für {rounds} Runden. Erd-Zauber und Erd-Runen verlangsamen."
+      where: "Das Zustands-Symbol steht an der Figur; ihr blauer Bereich ist kleiner."
+      keywords: "Langsam, verlangsamt, Erde, Bewegung, Zustand"
+    status_knockback:
+      title: "Rückstoß"
+      text: "Ein Wind-Treffer stößt das Ziel ein Feld zurück. Steht dahinter ein Hindernis oder eine Figur, nimmt es stattdessen {blocked} Schaden."
+      where: "Die Vorschau nennt die Chance; der Stoß passiert direkt im Kampf."
+      keywords: "Rückstoß, Wegstoßen, Wind, stoßen, Zustand"
+    # ------------------------------------------------------------ Leutnants
+    grudge:
+      title: "Groll und Kerben"
+      text: "Jede Vertreibung erhöht den Groll eines Leutnants um eins, bis höchstens {grudgeMax}; die Kerben an seinem Wimpel zeigen ihn. Mit jedem Groll kommt er besser ausgerüstet und mit einer neuen Groll-Fähigkeit zurück. Wer ihn zuletzt vertrieben hat, ist sein Groll-Ziel, das er bevorzugt angreift. Seine Stufe folgt den {army} stärksten Figuren deiner Truppe; manche Entscheidungen senken den Groll."
+      where: "Der Steckbrief zeigt Groll, Groll-Ziel und Fähigkeiten, über dem Leutnant weht der Wimpel."
+      keywords: "Groll, Kerben, Wimpel, Groll-Ziel, Rache, Leutnant"
+    lt_flee:
+      title: "Flucht bei null TP"
+      text: "Leutnants sterben nie. Fallen ihre TP auf null, fliehen sie vom Brett und zählen für das Missionsziel als besiegt. Sie kehren wieder, in der Geschichte und in Heimsuchungen."
+      where: "Die Vorschau zeigt statt der TP „flieht“, der Kill-Marker eine Flucht-Marke."
+      keywords: "Flucht, fliehen, Leutnant, unsterblich"
+    bounty:
+      title: "Kopfgeld und Signatur-Item"
+      text: "Für jede Vertreibung gibt es Kopfgeld: {bountyGold} Gold für jede Groll-Stufe plus eine, dazu {matMin} bis {matMax} Material des Akts. Mit {chance} Chance lässt er sein Signatur-Item fallen, spätestens bei der {sure}. Vertreibung."
+      where: "Das Kopfgeld steht im Steckbrief und im Missionsergebnis."
+      keywords: "Kopfgeld, Belohnung, Signatur, Beute, Material"
+    haunts:
+      title: "Heimsuchungen"
+      text: "Jeden Tag kehren {perDayMin} bis {perDayMax} bekannte Karten als Heimsuchung zurück, mit einem Leutnant und Gegnern auf deiner Stufe; höchstens {hauntOpen} bleiben offen. Sie bringen {hauntGold} des Golds und {hauntExp} der EP einer Story-Mission, dazu Kopfgeld und Material. Ab der {halve}. Heimsuchung seit der letzten Story-Mission gibt es nur noch die Hälfte."
+      where: "Heimsuchungen erscheinen als eigene Knoten auf der Weltkarte."
+      keywords: "Heimsuchung, täglich, Tag, wiederholen, Leutnant, Weltkarte"
+    # ------------------------------------------------------------ Tod & Bergen
+    downed:
+      title: "Niederstrecken"
+      text: "Im Modus Standard stirbt eine Figur bei null TP nicht sofort: Sie wird niedergestreckt, bleibt liegen und versperrt das Feld. Jeder weitere Treffer tötet sie. Bring sie in Sicherheit, bevor sie verblutet."
+      where: "Niedergestreckte liegen grau auf dem Brett, mit dem Puls-Zeichen und dem Zähler darüber."
+      keywords: "niedergestreckt, Niederstrecken, null TP, liegen, Standard"
+    bleed_out:
+      title: "Verbluten"
+      text: "Eine niedergestreckte Figur verblutet nach {phases} eigenen Phasen; der Zähler über ihr zeigt, wie viele bleiben. Im Prolog verblutet niemand."
+      where: "Der Zähler steht über der Figur und in ihrer Einheitenkarte."
+      keywords: "Verbluten, Zähler, sterben, Tod, Standard"
+    rescue:
+      title: "Bergen"
+      text: "Eine Figur auf dem Nachbarfeld birgt Niedergestreckte; Heiler schaffen es mit Fernbergen aus {far} Feldern. Geborgene sind für den Rest der Mission aus dem Kampf und tragen eine Narbe davon. Bergen bringt {rescueExp} EP."
+      where: "„Bergen“ erscheint im grünen Kontext-Band neben einer Niedergestreckten."
+      keywords: "Bergen, retten, Fernbergen, Heiler"
+    scars:
+      title: "Narben"
+      text: "Wer geborgen wird, behält eine Narbe mit dauerhaftem Malus, etwa ein lahmes Bein. Nach {limit} Narben ist der nächste Fall auf null TP tödlich. Der Heiler in der Heimat entfernt eine Narbe für {cost} Gold."
+      where: "Narben stehen in der Truppe bei der Figur."
+      keywords: "Narbe, Malus, Verletzung, Heiler"
+    death_modes:
+      title: "Klassik, Standard und Casual"
+      text: "Klassik: Wer fällt, ist tot, und es gibt nur einen Spielstand. Standard: Niederstrecken, Bergen und Verbluten wie beschrieben; Runde und Mission lassen sich neu starten. Casual: Wer fällt, zieht sich zurück und ist in der nächsten Mission ohne Narbe wieder da. Fällt der Avatar oder Kael, ist die Mission in jedem Modus verloren."
+      where: "Der Modus wird beim Anlegen der Kampagne gewählt und steht in der Kampagnen-Ansicht."
+      keywords: "Klassik, Standard, Casual, Modus, Tod, permadeath, Neustart"
+    # ------------------------------------------------------------ Heimat
+    camp_castle:
+      title: "Lager und Burg"
+      text: "Im ersten Akt reist die Truppe mit einem Lager: Konvoi, Händler, Schmied, Heiler, Taverne und Lagerfeuer. Nach der Eroberung der Paktwacht wird die Burg zur Heimat, mit denselben Räumen und der Gedächtnishalle."
+      where: "Die Heimat erreichst du von der Weltkarte über den Stein unten links."
+      keywords: "Lager, Burg, Paktwacht, Heimat, Räume"
+    rooms:
+      title: "Räume"
+      text: "Jeder Raum hat genau eine Aufgabe. Manche öffnen sich erst nach einigen Story-Missionen; bis dahin stehen sie gestrichelt da, mit dem Grund daneben. Kein Raum ist Pflicht."
+      where: "Tippe in der Heimat auf einen Raum; jede Handlung braucht höchstens zwei Tipps."
+      keywords: "Raum, Händler, Schmied, Heiler, Taverne, Lagerfeuer, Konvoi, Gedächtnishalle"
+    rooms_upgrade:
+      title: "Ausbau der Burg"
+      text: "Die Räume der Burg wachsen in drei Stufen. Jede Stufe braucht den passenden Gefährten in der Truppe und Gold und schaltet mehr frei, etwa höhere Aufwertungen beim Schmied oder die Ränge A und S am Lagerfeuer. Dazu kommen Akademie, Werkstatt, Verzauberer und Übungsplatz."
+      where: "Der Ausbau steht in jedem Raum der Burg."
+      keywords: "Ausbau, Stufe, Burg, Akademie, Werkstatt, Übungsplatz"
+    trade:
+      title: "Händler und Konvoi"
+      text: "Der Händler kauft deine Items für {sell} ihres Preises. Der Konvoi fasst {convoy} Items, auch die Ausrüstung Gefallener landet dort. Im Kampf erreicht ihn, wer neben Kael steht."
+      where: "Händler und Konvoi sind Räume der Heimat; im Kampf öffnet „Konvoi“ das Lager."
+      keywords: "Händler, kaufen, verkaufen, Gold, Konvoi, Lager"
+    ember_spark:
+      title: "Glutfunke und Aufstieg"
+      text: "Mit einem Glutfunken steigt eine Figur ab Stufe {level} in der Akademie zu einem der zwei Profi-Wege ihrer Rolle auf und beginnt wieder bei Stufe eins. Glutfunken sind selten: aus dem Finale und aus Nebenquests, später beim Händler für {price} Gold."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Glutfunke, Aufstieg, Beförderung, Profi, Akademie"
+    # ------------------------------------------------------------ Items
+    rarity:
+      title: "Seltenheit"
+      text: "Je seltener ein Item, desto mehr Affixe und Runen-Plätze hat es; die Rauten am Bild zeigen die Seltenheit. Affixe sind zufällige Zusatzwerte. Legendäre Items sind feste Unikate."
+      where: "Die Rauten stehen an jedem Item-Bild, die Affixe im Item-Blatt."
+      keywords: "Seltenheit, Rauten, selten, episch, legendär, Affix"
+    upgrade:
+      title: "Aufwerten"
+      text: "Der Schmied wertet Waffen und Rüstung auf: Jede Stufe gibt einer Waffe {might} Macht und {upHit} Treffer, einer Rüstung {armor} VER oder RES. Die erste Stufe kostet {first} Gold und etwas Material; im Lager geht es bis {campMax}."
+      where: "Im Schmied der Heimat; die Stufe steht als Plus am Item-Namen."
+      keywords: "Aufwerten, Schmied, Stufe, verbessern, Material"
+    runes:
+      title: "Runen"
+      text: "Der Verzauberer setzt Runen in die Runen-Plätze: eine Element-Rune je Waffe, dazu Hilfs-Runen. Element-Runen geben das Element, ab Stufe zwei eine Zustands-Chance von {two}, auf Stufe drei {three}. Aus {merge} gleichen Runen wird die nächste Stufe."
+      where: "Im Verzauberer der Burg; eingesetzte Runen stehen im Item-Blatt."
+      keywords: "Rune, Runen, Verzauberer, Element, verschmelzen"
+    sets:
+      title: "Sets"
+      text: "Einige Rüstungsteile gehören zu einem Set. Trägt eine Figur mehrere Teile desselben Sets, gibt es Bonus-Werte oder eine Fähigkeit dazu."
+      where: "Das Item-Blatt nennt das Set und ab wie vielen Teilen welcher Bonus gilt."
+      keywords: "Set, Rüstung, Bonus, Teile"
+    weight:
+      title: "Gewicht und Last"
+      text: "Jedes Item wiegt etwas. Die Tragkraft ist STÄ plus ein Bonus nach Bewegungstyp, zu Fuß {foot}, gepanzert {armored}. Überlast senkt die AT; ab {over1} Überlast kostet sie {mov1} BEW, ab {over2} sogar {mov2}. Der Beutel fasst {bag} Items ohne Gewicht."
+      where: "Last und Tragkraft stehen in der Info der Figur und beim Ausrüsten."
+      keywords: "Gewicht, Last, Tragkraft, Überlast, Beutel"
+    # ------------------------------------------------------------ Klassen
+    class_tactician:
+      title: "Taktiker"
+      text: "Die Rolle des Avatars: führt Schwert und Zauber und gibt mit „Befehl“ einer Nachbarfigur, die schon gehandelt hat, eine zweite Aktion."
+      where: "„Befehl“ steht im Klassen-Stein, einmal je Karte."
+      keywords: "Taktiker, Avatar, Befehl"
+      strong: { "1": "Befehl schenkt einer starken Figur einen zweiten Zug.", "2": "Schwert und Zauber: trifft VER und RES.", "3": "Ausgewogenes Wachstum." }
+      weak: { "1": "Keine Spitzenwerte.", "2": "Fällt der Avatar, ist die Mission verloren." }
+    class_captain:
+      title: "Hauptmann"
+      text: "Kaels Rolle: führt Schwert, Lanze und Schild und stärkt mit „Sammelruf“ alle Verbündeten in der Nähe bis zum Ende der nächsten Gegnerphase."
+      where: "„Sammelruf“ steht im Klassen-Stein, einmal je Karte."
+      keywords: "Hauptmann, Kael, Sammelruf"
+      strong: { "1": "Sammelruf hebt Schaden und Treffer der ganzen Linie.", "2": "Robust und vielseitig bewaffnet.", "3": "Konvoi im Kampf über Kael." }
+      weak: { "1": "Fällt Kael, ist die Mission verloren.", "2": "Geringe RES." }
+    class_vanguard:
+      title: "Vorkämpfer"
+      text: "Gepanzerte Front mit Lanze, Axt und Schild. „Halten“: Gegner, die ein Nachbarfeld betreten, beenden dort ihre Bewegung. Die einzige Kontrollzone im Spiel."
+      where: "Die Haltezone zeigt sich als Rand um den Vorkämpfer, sobald er gewählt ist."
+      keywords: "Vorkämpfer, Halten, Panzer, Front, Kontrollzone"
+      strong: { "1": "Hält Engstellen und schützt die hintere Reihe.", "2": "Hohe VER und viele TP.", "3": "Mehr VER mit einem Verbündeten daneben." }
+      weak: { "1": "Langsam: Wald und Sand kosten viel.", "2": "Geringe RES gegen Zauber." }
+    class_skirmisher:
+      title: "Plänkler"
+      text: "Schneller Kämpfer mit Schwert und Dolch. „Nachsetzen“: Nach dem Angriff darf er die restliche Bewegung nutzen."
+      where: "Nach dem Angriff bleibt sein blauer Bereich für die Restbewegung stehen."
+      keywords: "Plänkler, Nachsetzen, schnell, Schwert"
+      strong: { "1": "Schlägt oft doppelt.", "2": "Zuschlagen und wieder in Deckung.", "3": "Trifft besser, wenn er angegriffen wird." }
+      weak: { "1": "Wenig VER: hält keine Linie.", "2": "Axtkämpfer sind ihm überlegen." }
+    class_marksman:
+      title: "Schütze"
+      text: "Fernkämpfer mit Bogen. „Zielen“: Wer ohne Bewegung angreift, bekommt mehr Reichweite und Treffer."
+      where: "„Zielen“ steht im Klassen-Stein, solange der Schütze noch nicht gezogen hat."
+      keywords: "Schütze, Bogen, Zielen, Fernkampf"
+      strong: { "1": "Greift aus sicherer Entfernung an.", "2": "Trifft auf Distanz besser.", "3": "Sieht im Nebel weiter." }
+      weak: { "1": "Wehrlos im Nahkampf.", "2": "Wenig TP und VER." }
+    class_elementalist:
+      title: "Elementarist"
+      text: "Zauberer mit Anima und Fokus. „Wirken“: legt das Element der Zauberwaffe auf ein Feld in Reichweite: Brand, Löschen, Felswall oder Wind gegen Nebel."
+      where: "„Wirken“ steht im Klassen-Stein; die Vorschau zeigt, welche Felder es trifft."
+      keywords: "Elementarist, Magier, Wirken, Zauber, Element"
+      strong: { "1": "Trifft die RES der Gepanzerten.", "2": "Formt das Schlachtfeld mit Feuer, Wasser, Erde und Wind.", "3": "Löst häufiger Zustände aus." }
+      weak: { "1": "Wenig TP und VER.", "2": "Kaum STÄ: nur Zauberwaffen." }
+    class_healer:
+      title: "Heiler"
+      text: "Unterstützung mit Stab und Licht. Heilt Verbündete und birgt mit „Fernbergen“ Niedergestreckte auch aus der Entfernung."
+      where: "„Heilen“ und „Fernbergen“ erscheinen im Dock, sobald ein Ziel in Reichweite ist."
+      keywords: "Heiler, Stab, heilen, Fernbergen, Licht"
+      strong: { "1": "Hält die Truppe am Leben.", "2": "Birgt aus sicherer Entfernung.", "3": "Hohe RES und GLÜ." }
+      weak: { "1": "Kaum Angriff.", "2": "Ein bevorzugtes Ziel der Gegner." }
+    class_scout:
+      title: "Späher"
+      text: "Beweglicher Kletterer mit Dolch und leichtem Bogen. „Öffnen und Stehlen“: öffnet Türen und Truhen ohne Schlüssel und stiehlt einem Nachbarn ein Item, das er nicht in der Hand hält."
+      where: "„Öffnen“ und „Stehlen“ erscheinen im Dock neben Türen, Truhen und Gegnern."
+      keywords: "Späher, Dieb, Stehlen, Öffnen, Klettern, Truhe"
+      strong: { "1": "Kommt auf Berge und durch schweres Gelände.", "2": "Öffnet Truhen ohne Schlüssel.", "3": "Sieht im Nebel weiter." }
+      weak: { "1": "Leichte Waffen, wenig Schaden.", "2": "Wenig VER." }
+    class_minstrel:
+      title: "Spielmann"
+      text: "Unterstützung mit Dolch und Laute. „Anfeuern“: ein Nachbar bekommt bis zum Zugende mehr BEW und Treffer."
+      where: "„Anfeuern“ steht im Klassen-Stein, sobald ein Verbündeter daneben steht."
+      keywords: "Spielmann, Barde, Anfeuern, Laute"
+      strong: { "1": "Bringt eine starke Figur weiter nach vorn.", "2": "Macht unsichere Angriffe sicherer.", "3": "Schnell und glücklich." }
+      weak: { "1": "Wenig eigener Schaden.", "2": "Wenig VER." }
+    class_duelist:
+      title: "Duellant"
+      text: "Profi-Weg des Plänklers mit Schwert und Dolch. Sein Skill heilt ihn mit etwas Glück um einen Teil des Schadens, den er austeilt."
+      where: "Der Aufstieg geschieht in der Akademie; im Spiel tragen ihn erfahrene Gegner."
+      keywords: "Duellant, Profi, Plänkler"
+      strong: { "1": "Sehr schnell und treffsicher.", "2": "Heilt sich im Angriff." }
+      weak: { "1": "Weiterhin wenig RES.", "2": "Axtkämpfer sind ihm überlegen." }
+    class_bulwark:
+      title: "Bollwerk"
+      text: "Profi-Weg des Vorkämpfers mit Lanze, Axt und Schild und mehr Bewegung als zuvor. Mit etwas Glück durchschlägt er einen Teil der Rüstung."
+      where: "Der Aufstieg geschieht in der Akademie."
+      keywords: "Bollwerk, Profi, Vorkämpfer"
+      strong: { "1": "Die höchste VER im Spiel.", "2": "Durchschlägt Rüstung.", "3": "Hält wie der Vorkämpfer." }
+      weak: { "1": "Geringe RES.", "2": "Nicht schnell." }
+    class_breaker:
+      title: "Sturmbrecher"
+      text: "Profi-Weg des Vorkämpfers für den Angriff: viele TP, große Kraft, und als Kletterer kommt er auch auf Berge."
+      where: "Der Aufstieg geschieht in der Akademie."
+      keywords: "Sturmbrecher, Profi, Vorkämpfer, Kletterer"
+      strong: { "1": "Die meisten TP und viel STÄ.", "2": "Klettert auf Berge." }
+      weak: { "1": "Sehr geringe RES.", "2": "Weniger VER als das Bollwerk." }
+    class_sharpshooter:
+      title: "Scharfschütze"
+      text: "Profi-Weg des Schützen: Mit Bögen reicht er ein Feld weiter und trifft noch genauer."
+      where: "Der Aufstieg geschieht in der Akademie."
+      keywords: "Scharfschütze, Profi, Bogen, Reichweite"
+      strong: { "1": "Größte Reichweite der Truppe.", "2": "Sehr hohe GES." }
+      weak: { "1": "Weiter wehrlos im Nahkampf.", "2": "Nur Bögen." }
+    class_sage:
+      title: "Weiser"
+      text: "Profi-Weg des Elementaristen: stärkere Zauber, und er darf zusätzlich Stäbe führen und heilen."
+      where: "Der Aufstieg geschieht in der Akademie."
+      keywords: "Weiser, Profi, Elementarist, Magier"
+      strong: { "1": "Viel MAG und RES.", "2": "Heilt mit Stäben." }
+      weak: { "1": "Wenig TP und VER.", "2": "Kaum STÄ: nur Zauber und Stäbe." }
+    class_bishop:
+      title: "Bischof"
+      text: "Profi-Weg des Heilers: heilt mehr, ist schneller und hat die höchste RES."
+      where: "Der Aufstieg geschieht in der Akademie."
+      keywords: "Bischof, Profi, Heiler"
+      strong: { "1": "Stärkere Heilung.", "2": "Sehr hohe RES und GLÜ." }
+      weak: { "1": "Kaum Angriff.", "2": "Wenig VER." }
+    # ------------------------------------------------------------ Lektionen
+    lesson_move:
+      title: "Lektion: Bewegen und Vorschau"
+      text: "Aus dem Prolog, erste Runde: Figuren wählen, ziehen und vor dem Angriff in die Vorschau schauen."
+      where: "Im Prolog „Die Paktnacht“, zu Beginn der ersten Runde."
+      keywords: "Lektion, Prolog, Bewegen, Vorschau, Anfang"
+    lesson_danger:
+      title: "Lektion: Gefahr und Deckung"
+      text: "Aus dem Prolog, zweite Runde: wie weit Gegner kommen und warum der Wald schützt."
+      where: "Im Prolog „Die Paktnacht“, zu Beginn der zweiten Runde."
+      keywords: "Lektion, Prolog, Gefahr, Gefahrenzone, Deckung, Wald"
+    lesson_heal:
+      title: "Lektion: Heiltrank"
+      text: "Aus dem Prolog: Wer verwundet ist, nimmt einen Heiltrank, bevor er wartet."
+      where: "Im Prolog „Die Paktnacht“, sobald Kael verwundet ist."
+      keywords: "Lektion, Prolog, Heiltrank, Item, heilen"
+    lesson_triangle:
+      title: "Lektion: Waffendreieck"
+      text: "Aus der ersten Mission: welche Waffe welche schlägt und wie die Vorschau es zeigt."
+      where: "In der Mission „Steckbriefe in Varnhold“, zu Beginn."
+      keywords: "Lektion, Dreieck, Waffendreieck, Vorteil"

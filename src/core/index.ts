@@ -19,6 +19,7 @@ export * from './rules/vision';
 export * from './rules/progression';
 export * from './rules/supports';
 export * from './rules/legibility';
+export * from './handbook';
 export * from './battle/commands';
 export * from './battle/create';
 export * from './battle/actions';

@@ -24,6 +24,8 @@ export type Screen =
   | { name: 'chronicle'; from?: From }
   | { name: 'wanted'; unit?: string; from?: From }
   | { name: 'options'; back: Screen }
+  /** the rules handbook as a full-screen view (title, world map menu; epic 14) */
+  | { name: 'handbook'; back: Screen }
   | { name: 'licenses'; back: Screen };
 
 export const screen = signal<Screen>({ name: 'title' });

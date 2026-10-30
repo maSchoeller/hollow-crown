@@ -11,6 +11,7 @@ import { Chronicle } from './screens/Chronicle';
 import { Wanted } from './screens/Wanted';
 import { Licenses } from './screens/Licenses';
 import { Options, Title } from './screens/Menus';
+import { HandbookScreen, HandbookSheet } from './screens/Handbook';
 import { Defeat, Result } from './screens/Result';
 import { Farewell } from './screens/Farewell';
 import { WorldMap } from './screens/WorldMap';
@@ -59,6 +60,7 @@ export function App() {
   return (
     <>
       {!renderError && (updateStatus.value === 'installing' ? <UpdateScreen /> : prepare.value.phase === 'off' ? <Screens /> : <PrepareScreen />)}
+      {!renderError && <HandbookSheet />}
       <SaveNotices />
       {failed && <FaultScreen />}
     </>
@@ -115,5 +117,7 @@ function Screens() {
       return <Options back={sc.back} />;
     case 'licenses':
       return <Licenses back={sc.back} />;
+    case 'handbook':
+      return <HandbookScreen back={sc.back} />;
   }
 }

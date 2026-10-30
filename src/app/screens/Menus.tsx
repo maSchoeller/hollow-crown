@@ -38,6 +38,7 @@ export function Title() {
         )}
         <Campaigns onClick={() => (screen.value = { name: 'campaigns' })}>{t('ui.title.campaigns')}</Campaigns>
         <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'title' } })}>{t('ui.options')}</SecondaryButton>
+        <SecondaryButton onClick={() => (screen.value = { name: 'handbook', back: { name: 'title' } })}>{t('handbook.ui.title')}</SecondaryButton>
         {saveDbBlocked.value && (
           <Piece class="title-note" role="alert">
             {t('ui.title.closeOtherTabs')}

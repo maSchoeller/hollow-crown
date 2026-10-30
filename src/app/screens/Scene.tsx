@@ -10,6 +10,7 @@ import { answeredIn, chooseAnswer, isSceneSeen, markSceneSeen, storyContext } fr
 import { settings, updateSettings } from '../state/settings';
 import { t } from '../../i18n';
 import { UnitHead } from './unitArt';
+import { HelpStone } from './HelpStone';
 
 const avatarOf = (): string => campaign.value?.avatar.portrait ?? 'avatar_a';
 /** Round head of a company member (consequence card). */
@@ -39,11 +40,12 @@ export function Scene({ id, overlay, rewards, onDone }: { id: string; overlay?: 
       answered={answeredIn(id)}
       head={head}
       onDone={onDone}
+      aside={<HelpStone anchor={`lesson.${id}`} />}
     />
   );
 }
 
 /** Battle scene as a speech band fixed to the screen; `only` plays just those lines (a bark, never marked seen). */
 export function SceneBand({ id, only, params, speed, onDone }: { id: string; only?: string[]; params?: Record<string, string>; speed?: number; onDone: () => void }) {
-  return <SpeechBand data={data} id={id} only={only} params={params} speed={speed} ctx={storyContext()} head={head} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} onDone={onDone} />;
+  return <SpeechBand data={data} id={id} only={only} params={params} speed={speed} ctx={storyContext()} head={head} seen={isSceneSeen(id)} {...autoProps()} onSeen={markSceneSeen} onDone={onDone} aside={only ? undefined : <HelpStone anchor={`lesson.${id}`} />} />;
 }

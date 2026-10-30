@@ -74,6 +74,7 @@ import { wantedUid } from '../state/wanted';
 import { clearGoalMark, goalMarkTiles, markedGoal, toggleGoalMark } from '../state/goalMarks';
 import { WantedDock } from './Wanted';
 import { settings, updateSettings } from '../state/settings';
+import { handbookSheet, openHandbook } from '../state/handbook';
 import {
   BackPill,
   ContextBands,
@@ -864,7 +865,7 @@ export function Battle() {
   const ctxRef = useRef({ n: 0, go: () => undefined as void, step: (_d: number) => undefined as void });
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp || bark) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || dialogue || levelUp || bark || handbookSheet.value) return;
     const modal = menu || objectives || classPick || !!items || !!trade || !!convoy || !!info || mode.k === 'steal';
     if (e.key === 'Escape') escape();
     else if (modal) return;
@@ -1318,6 +1319,10 @@ export function Battle() {
           onOptions={() => {
             setMenu(false);
             screen.value = { name: 'options', back: { name: 'battle' } };
+          }}
+          onHandbook={() => {
+            setMenu(false);
+            openHandbook();
           }}
           onRestartRound={
             canRestart('turn')

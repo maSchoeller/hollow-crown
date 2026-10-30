@@ -24,6 +24,7 @@ import { sideLine } from '../../ui/goalText';
 import { asset } from '../../ui/asset';
 import { ItemChip } from '../../ui/pieces';
 import { artId } from './unitArt';
+import { HelpStone } from './HelpStone';
 import '../../ui/hud.css';
 
 const teamClass = (team: Team) => (team === 'enemy' ? 'is-enemy' : team === 'other' ? 'is-other' : 'is-player');
@@ -260,6 +261,7 @@ export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p:
           </span>
         ) : null}
       </span>
+      <HelpStone anchor={`terrain.${terr.id}`} />
     </div>
   );
 }
@@ -526,7 +528,10 @@ export function ForecastCard({
     <div class="hc-piece hud-fc">
       <div class="hud-fc__head">
         {who(f.attacker, a, aw, false)}
-        <span class="hud-l1">{t('ui.fc.vs')}</span>
+        <span class="hud-fc__mid">
+          <span class="hud-l1">{t('ui.fc.vs')}</span>
+          <HelpStone anchor="forecast" />
+        </span>
         {who(f.defender, d, dw, true)}
       </div>
       <div class="hud-fc__table">

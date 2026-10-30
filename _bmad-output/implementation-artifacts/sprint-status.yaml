@@ -224,12 +224,12 @@ development_status:
   epic-13-retrospective: optional
 
   # Epic 14: Handbuch (course correction 2026-10-30, after the MVP release, before Epic 10)
-  epic-14: backlog
-  14-1-handbuch-als-content: backlog  # Handbuch als Content
-  14-2-handbuch-screen-und-einstieg: backlog  # Handbuch-Screen und Einstieg
-  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: backlog  # Einträge Grundlagen, Kampf, Waffen und Elemente
-  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: backlog  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
-  14-5-klassen-steckbriefe: backlog  # Klassen-Steckbriefe
-  14-6-eintraege-heimat-und-items: backlog  # Einträge Heimat und Items
-  14-7-lektionen-und-kontext-fragezeichen: backlog  # Lektionen und Kontext-„?“
+  epic-14: in-progress
+  14-1-handbuch-als-content: review  # Handbuch als Content
+  14-2-handbuch-screen-und-einstieg: review  # Handbuch-Screen und Einstieg
+  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: review  # Einträge Grundlagen, Kampf, Waffen und Elemente
+  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: review  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
+  14-5-klassen-steckbriefe: review  # Klassen-Steckbriefe
+  14-6-eintraege-heimat-und-items: review  # Einträge Heimat und Items
+  14-7-lektionen-und-kontext-fragezeichen: review  # Lektionen und Kontext-„?“
   epic-14-retrospective: optional

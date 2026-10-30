@@ -1,0 +1,514 @@
+# Handbook (epic 14): texts of content/core/handbook.yaml. No digits in handbook.entry.*; numbers come as {id} from the entry's
+# values (content:check checks both). Drafted by the assistant, accepted by the product owner in the pull request.
+handbook:
+  ui:
+    title: "Handbook"
+    search: "Search a term, e.g. “grudge”"
+    results: "{count} found"
+    noResults: "Nothing found. Try another word."
+    entries: { one: "{count} entry", other: "{count} entries" }
+    values: "Values"
+    where: "In the game"
+    see: "See also"
+    fromAct: "from act {act}"
+    help: "Look it up in the handbook"
+    beats: "beats"
+    terrain: "Terrain"
+    cost: "Movement cost"
+    impassable: "–"
+    affixes: "Affixes"
+    runeSlots: "Rune slots"
+    growth: "Growth"
+    mov: "MOV"
+    moveType: "Movement"
+    weapons: "Weapons"
+    classAction: "Class action"
+    passive: "passive"
+    perMap: "{n}× per map"
+    classSkill: "Class skill"
+    proPaths: "Pro paths"
+    strong: "Strong"
+    weak: "Weak"
+    lessonMissing: "This lesson is still loading."
+  moveShort: { foot: "Foot", armored: "Arm.", mounted: "Mtd.", flier: "Fly", monster: "Mon." }
+  move:
+    foot: "Foot"
+    armored: "Armored"
+    mounted: "Mounted"
+    flier: "Flier"
+    monster: "Monster"
+  action:
+    command: "Command"
+    rally: "Rally"
+    hold: "Hold"
+    pursue: "Pursue"
+    aim: "Aim"
+    cast: "Cast"
+    far_rescue: "Far rescue"
+    open_steal: "Open and steal"
+    inspire: "Cheer"
+  pro:
+    grand_strategist: "Grand Strategist"
+    banner_lord: "Banner Lord"
+    blade_dancer: "Blade Dancer"
+    ranger: "Ranger"
+    hexer: "Hexer"
+    battle_priest: "Battle Priest"
+    shadow: "Shadow"
+    trapper: "Trapper"
+    bard: "Bard"
+    standard_bearer: "Standard Bearer"
+  cat:
+    basics: { name: "Basics", sub: "Phases, movement" }
+    combat: { name: "Combat", sub: "Hit, crit, double" }
+    weapons: { name: "Weapons & elements", sub: "Triangle, cycle" }
+    terrain: { name: "Terrain", sub: "Cover, fire, fog" }
+    status: { name: "Conditions", sub: "Burning, wet, slowed" }
+    lieutenants: { name: "Lieutenants", sub: "Grudge, flight" }
+    death: { name: "Death & rescue", sub: "Bleeding out, classic" }
+    home: { name: "Home", sub: "Camp, castle, rooms" }
+    items: { name: "Items", sub: "Rarity, runes, load" }
+    classes: { name: "Classes", sub: "Strengths, weaknesses" }
+    lessons: { name: "Lessons", sub: "from the prologue" }
+  label:
+    perSkl: "Hit per SKL"
+    lckDiv: "LCK divided by"
+    perAs: "Avoid per AS"
+    effective: "Effective"
+    sklDiv: "SKL divided by"
+    mult: "Crit damage"
+    lead: "AS lead"
+    rankC: "Rank C from"
+    rankB: "Rank B from"
+    rankA: "Rank A from"
+    rankS: "Rank S from"
+    tandem: "Tandem damage"
+    guardA: "Guard rank A"
+    guardS: "Guard rank S"
+    grief: "Grief: less hit"
+    griefMissions: "Grief: missions"
+    hit: "Hit"
+    dmg: "Damage"
+    adv: "Advantage"
+    dis: "Disadvantage"
+    same: "Same element"
+    elemMax: "At most"
+    fireRounds: "Fire: rounds"
+    enter: "Damage on entering"
+    spread: "Spread per round"
+    wallRounds: "Rock wall: rounds"
+    base: "Vision"
+    marksman: "Marksman"
+    scout: "Scout"
+    flier: "Flier"
+    wind: "Wind clears (radius)"
+    rounds: "Duration (rounds)"
+    burn: "Damage per phase (max HP)"
+    spd: "Less SPD"
+    slowMov: "Less MOV"
+    blocked: "Damage when blocked"
+    grudgeMax: "Highest grudge"
+    aim: "AI weight on grudge target"
+    army: "Level from the strongest"
+    bountyGold: "Gold per grudge level"
+    matMin: "Material from"
+    matMax: "Material up to"
+    chance: "Signature item"
+    sure: "Certain at rout"
+    perDayMin: "Per day from"
+    perDayMax: "Per day up to"
+    hauntOpen: "Open at most"
+    hauntGold: "Gold"
+    hauntExp: "EXP"
+    halve: "Half loot from"
+    phases: "Own phases"
+    far: "Far rescue (tiles)"
+    rescueExp: "EXP for a rescue"
+    limit: "Scars until death"
+    cost: "Remove a scar"
+    sell: "Sell price"
+    convoy: "Convoy slots"
+    level: "Promotion from level"
+    price: "Merchant price"
+    might: "Might per level"
+    upHit: "Hit per level"
+    armor: "DEF or RES per level"
+    first: "First level"
+    campMax: "Highest in camp"
+    two: "Condition tier II"
+    three: "Condition tier III"
+    merge: "Merge"
+    foot: "Carry on foot"
+    armored: "Carry armored"
+    over1: "Overload tier I"
+    mov1: "Less MOV"
+    over2: "Overload tier II"
+    mov2: "Less MOV"
+    bag: "Bag slots"
+  entry:
+    # ------------------------------------------------------------ Basics
+    phases:
+      title: "Phases and actions"
+      text: "First your company moves, then the enemies, then a third party if there is one. In your phase every unit may move once and take one action: attack, a class action, an item, talk, rescue or wait. Trading and switching weapons cost no action. Once everyone has acted, the phase ends by itself."
+      where: "The pill at the top shows round and phase; “End phase” closes your phase early."
+      keywords: "round, turn, phase, action, wait, trade, enemy phase"
+    movement:
+      title: "Moving and taking back"
+      text: "Tap a unit: blue shows where it can go, red what it can attack. A tap on a tile places a ghost figure, a second tap confirms. Until the action you can take the move back. Units move in four directions without diagonals; allies can be passed through, enemies block the way."
+      where: "“Back” in the bar, or a right click, returns the ghost figure to its start tile."
+      keywords: "move, ghost, back, undo, path, range, MOV"
+    danger:
+      title: "Danger zone and reading the board"
+      text: "The red danger zone shows every tile an enemy can attack in its next phase; the darker, the more enemies. Tap an enemy to see only its reach. Health bars show every unit's HP, skulls whom you can defeat this round."
+      where: "“Danger” in the dock toggles the zone, on PC the D key; the options have a “Board display” block."
+      keywords: "danger, zone, threat, red, health bar, skull, grid"
+    saving:
+      title: "Saving"
+      text: "Progress is saved after every action. In Standard and Casual there are also three save slots plus export and import as a file; in Classic there is only one save per campaign."
+      where: "Save is in the world map menu, export and import in the campaign view."
+      keywords: "save, saving, export, import, autosave, slot"
+    # ------------------------------------------------------------ Combat
+    forecast:
+      title: "Combat forecast"
+      text: "Before every attack the forecast shows both sides: damage per strike, hit chance, crit chance and HP afterwards. Arrows on the weapon chip show the weapon triangle, a percentage on the element symbol the element bonus. The numbers are the very ones the fight is resolved with."
+      where: "With a unit selected, tap an enemy in range; the forecast appears before you confirm."
+      keywords: "forecast, preview, prediction, compare, HP after"
+    hit_chance:
+      title: "Hit chance"
+      text: "The chance is the attacker's hit minus the target's avoid. Hit: the weapon's hit plus SKL {perSkl} plus LCK divided by {lckDiv}. Avoid: AS {perAs} plus LCK plus terrain. The game rolls twice and takes the average: high chances hit more often and low chances less often than the number promises."
+      where: "In the combat forecast under “Hit”; the terrain is in the terrain chip at the target tile."
+      keywords: "hit, hit chance, avoid, dice, random, accuracy, SKL, LCK"
+    damage:
+      title: "Damage"
+      text: "Damage is the attack minus the target's DEF, or RES against spells. The attack is STR or MAG plus the weapon's might; the weapon triangle and the element add to it. Effective weapons, such as light against the undead, count their might {effective}."
+      where: "In the combat forecast under “Damage”, per strike."
+      keywords: "damage, attack, might, DEF, RES, effective"
+    crit:
+      title: "Critical hits"
+      text: "The crit chance is the weapon's crit plus SKL divided by {sklDiv}, minus the target's LCK. A critical hit deals {mult} damage."
+      where: "In the combat forecast under “Crit”; a half skull means “falls only to a crit”."
+      keywords: "crit, critical, luck"
+    double_attack:
+      title: "Double attack"
+      text: "Whoever is at least {lead} AS faster than the foe strikes twice. AS is SPD minus the overload of the equipment; being wet lowers it too."
+      where: "The forecast shows a small times sign with the number of strikes next to the damage."
+      keywords: "double, twice, double attack, speed, AS, fast"
+    supports:
+      title: "Supports in battle"
+      text: "Companions who fight side by side build a bond and reach ranks C ({rankC}), B ({rankB}), A ({rankA}) and S ({rankS}). A partner on the next tile adds hit and avoid. From rank B the partner follows up in tandem for {tandem} damage, from rank A guards you with a {guardA} chance ({guardS} at rank S). When a partner dies, the unit grieves: {grief} less hit for {griefMissions} missions."
+      where: "Tandem and guard appear as chips in the combat forecast; the conversations happen at the campfire."
+      keywords: "support, bond, rank, tandem, guard, grief, partner"
+    # ------------------------------------------------------------ Weapons & elements
+    triangle:
+      title: "Weapon triangle"
+      text: "Sword, axe and lance beat one another in a circle. With the advantage you get {hit} hit and {dmg} damage; with the disadvantage you lose the same. Bows, daggers, staves and spells stand outside the triangle."
+      where: "In the combat forecast a green arrow on the weapon chip shows the advantage, a red one the disadvantage."
+      keywords: "triangle, weapon triangle, sword, axe, lance, advantage, disadvantage"
+    elements:
+      title: "Elements"
+      text: "Each element beats the next one in the cycle; light and dark beat each other. With the advantage you deal {adv} damage, with the disadvantage {dis}, against the same element {same}. Element and weapon triangle together add at most {elemMax}. Every element can cause a condition."
+      where: "The element symbol sits on weapon and affinity; the forecast shows the bonus in percent."
+      keywords: "element, fire, water, earth, wind, light, dark, affinity, cycle"
+    magic:
+      title: "Spells and casting"
+      text: "Spell weapons attack with MAG against the target's RES and carry an element. Elementalists also cast their element onto a tile: fire sets it ablaze, water douses and soaks, earth raises a rock wall, wind clears the fog. A unit's body armor sets its affinity."
+      where: "“Cast” is in the class stone of the dock once an elementalist is selected."
+      keywords: "magic, spell, cast, MAG, RES, anima, affinity"
+    # ------------------------------------------------------------ Terrain
+    terrain_open:
+      title: "Open ground"
+      text: "Plain, grass, road, bridge and field give no cover, but everyone moves across them at the same pace. Grass and fields burn."
+      where: "The terrain chip at the target tile names the terrain and its values."
+      keywords: "plain, grass, road, bridge, field, open"
+    terrain_cover:
+      title: "Cover: forest, ruins, houses"
+      text: "Forest, ruins and houses give cover: more defense and avoid. Forest and sand cost more movement, above all for armored and mounted units. A house can be visited before raiders destroy it."
+      where: "The terrain chip at the target tile shows defense and avoid as symbol and number."
+      keywords: "forest, cover, ruins, house, sand, visit, trees, woods"
+    terrain_mountain:
+      title: "Mountains"
+      text: "Only fliers, monsters and climbers such as the scout get onto mountains. Whoever stands on top is hard to hit and well protected."
+      where: "The terrain chip shows the values as soon as the ghost figure stands on the mountain."
+      keywords: "mountain, rock, climb, climber, height"
+    terrain_water:
+      title: "Water"
+      text: "Shallows slow you down and lower avoid; armored units cannot enter them. Only fliers cross the river, everyone else needs a bridge."
+      where: "Blue tiles at the edge of the movement area show how far the way through the water goes."
+      keywords: "water, river, shallows, ford, bridge"
+    terrain_fort:
+      title: "Forts, throne, gate and shrine"
+      text: "These tiles protect best. Fort, throne and shrine heal part of the HP at the start of your phase. Kael can seize throne and gate when the mission goal asks for it."
+      where: "The healing is in the terrain chip; the goal “Seize” in the goal pills."
+      keywords: "fort, throne, gate, shrine, healing, seize"
+    terrain_blocked:
+      title: "Obstacles"
+      text: "Walls block the way for everyone. Only fliers get over wagons, stalls, wells, braziers, fences, farmsteads and houses."
+      where: "Obstacles never lie in the blue movement area."
+      keywords: "wall, obstacle, wagon, fence, well, stall, house, blocked"
+    doors:
+      title: "Doors"
+      text: "Closed doors block the way and the view. A key opens them, the scout manages without; open doors are free passage."
+      where: "“Open door” appears in the green context band when a unit stands next to the door."
+      keywords: "door, key, open, scout"
+    fire:
+      title: "Fire and spreading"
+      text: "A burning tile burns for {fireRounds} rounds and then turns to ash. Whoever enters or stands on it takes {enter} damage. Every round the fire jumps with a {spread} chance onto flammable neighbouring tiles such as grass, forest and field; water puts it out."
+      where: "Burning tiles flicker on the board; the danger zone does not count them, so keep an eye out."
+      keywords: "fire, blaze, burning, ash, spread, douse"
+    rockwall:
+      title: "Rock wall"
+      text: "An earth elementalist raises a rock wall. It blocks the tile for everyone, and the view in the fog, and falls after {wallRounds} rounds."
+      where: "Cast with an earth spell weapon onto a free tile."
+      keywords: "rock wall, earth, wall, barrier"
+    fog:
+      title: "Fog of war"
+      text: "In the fog your company sees only {base} tiles around each unit; walls, doors and rock walls block the view. Marksmen and scouts see {marksman} and {scout} further, fliers {flier}. A wind spell clears the fog in radius {wind}. The enemies see everything regardless."
+      where: "Some maps lie in fog; what you cannot see is darkened."
+      keywords: "fog, vision, sight, invisible, wind, dark"
+    # ------------------------------------------------------------ Conditions
+    status_burning:
+      title: "Burning"
+      text: "A burning unit loses {burn} of its max HP at the start of each of its phases, for {rounds} rounds. Fire spells and fire runes set units ablaze."
+      where: "The condition symbol sits on the unit and in its info; the forecast names the chance."
+      keywords: "burning, fire, blaze, condition"
+    status_wet:
+      title: "Wet"
+      text: "Being wet lowers SPD by {spd} for {rounds} rounds; a wet unit strikes twice less often. Water spells and water runes soak units."
+      where: "The condition symbol sits on the unit and in its info."
+      keywords: "wet, water, speed, condition"
+    status_slowed:
+      title: "Slowed"
+      text: "Slowed units have {slowMov} less MOV for {rounds} rounds. Earth spells and earth runes slow."
+      where: "The condition symbol sits on the unit; its blue area is smaller."
+      keywords: "slow, slowed, earth, movement, condition"
+    status_knockback:
+      title: "Knockback"
+      text: "A wind hit pushes the target back one tile. If an obstacle or a unit stands behind it, it takes {blocked} damage instead."
+      where: "The forecast names the chance; the push happens right in the fight."
+      keywords: "knockback, push, wind, shove, condition"
+    # ------------------------------------------------------------ Lieutenants
+    grudge:
+      title: "Grudge and notches"
+      text: "Every rout raises a lieutenant's grudge by one, up to {grudgeMax}; the notches on the pennant show it. With each grudge they return better equipped and with a new grudge ability. Whoever routed them last is their grudge target, whom they prefer to attack. Their level follows the {army} strongest units of your company; some decisions lower the grudge."
+      where: "The wanted poster shows grudge, grudge target and abilities; the pennant flies above the lieutenant."
+      keywords: "grudge, notches, pennant, grudge target, revenge, lieutenant"
+    lt_flee:
+      title: "Fleeing at zero HP"
+      text: "Lieutenants never die. When their HP fall to zero, they flee the board and count as defeated for the mission goal. They come back, in the story and in haunts."
+      where: "The forecast shows “flees” instead of the HP, the kill marker a flight mark."
+      keywords: "flee, flight, lieutenant, immortal"
+    bounty:
+      title: "Bounty and signature item"
+      text: "Every rout pays a bounty: {bountyGold} gold for each grudge level plus one, and {matMin} to {matMax} material of the act. With a {chance} chance they drop their signature item, at the latest on rout number {sure}."
+      where: "The bounty is on the wanted poster and in the mission result."
+      keywords: "bounty, reward, signature, loot, material"
+    haunts:
+      title: "Haunts"
+      text: "Every day {perDayMin} to {perDayMax} known maps return as haunts, with a lieutenant and enemies at your level; at most {hauntOpen} stay open. They bring {hauntGold} of the gold and {hauntExp} of the EXP of a story mission, plus bounty and material. From haunt number {halve} since the last story mission on, you get only half."
+      where: "Haunts appear as nodes of their own on the world map."
+      keywords: "haunt, daily, day, repeat, lieutenant, world map"
+    # ------------------------------------------------------------ Death & rescue
+    downed:
+      title: "Downed"
+      text: "In Standard mode a unit at zero HP does not die at once: it is downed, stays on the ground and blocks its tile. Any further hit kills it. Get it to safety before it bleeds out."
+      where: "Downed units lie grey on the board, with the pulse sign and the counter above them."
+      keywords: "downed, zero HP, fallen, standard"
+    bleed_out:
+      title: "Bleeding out"
+      text: "A downed unit bleeds out after {phases} of its own phases; the counter above it shows how many are left. Nobody bleeds out in the prologue."
+      where: "The counter sits above the unit and in its unit card."
+      keywords: "bleed out, counter, die, death, standard"
+    rescue:
+      title: "Rescue"
+      text: "A unit on the next tile rescues the downed; healers manage it from {far} tiles away with far rescue. Rescued units are out of the fight for the rest of the mission and carry a scar. A rescue earns {rescueExp} EXP."
+      where: "“Rescue” appears in the green context band next to a downed unit."
+      keywords: "rescue, save, far rescue, healer"
+    scars:
+      title: "Scars"
+      text: "A rescued unit keeps a scar with a lasting penalty, such as a lame leg. After {limit} scars the next fall to zero HP is fatal. The healer at home removes a scar for {cost} gold."
+      where: "Scars are listed with the unit in the company."
+      keywords: "scar, penalty, injury, healer"
+    death_modes:
+      title: "Classic, Standard and Casual"
+      text: "Classic: whoever falls is dead, and there is only one save. Standard: downed, rescue and bleeding out as described; round and mission can be restarted. Casual: whoever falls withdraws and is back for the next mission without a scar. If the avatar or Kael falls, the mission is lost in every mode."
+      where: "The mode is chosen when the campaign is created and shown in the campaign view."
+      keywords: "classic, standard, casual, mode, death, permadeath, restart"
+    # ------------------------------------------------------------ Home
+    camp_castle:
+      title: "Camp and castle"
+      text: "In the first act the company travels with a camp: convoy, merchant, smith, healer, tavern and campfire. Once the Pact Watch is taken, the castle becomes home, with the same rooms and the hall of remembrance."
+      where: "Reach home from the world map with the stone at the bottom left."
+      keywords: "camp, castle, Pact Watch, home, rooms"
+    rooms:
+      title: "Rooms"
+      text: "Every room has exactly one job. Some open only after a few story missions; until then they are drawn dashed, with the reason beside them. No room is required."
+      where: "Tap a room at home; every action takes at most two taps."
+      keywords: "room, merchant, smith, healer, tavern, campfire, convoy, hall of remembrance"
+    rooms_upgrade:
+      title: "Upgrading the castle"
+      text: "The castle's rooms grow in three levels. Each level needs the right companion in the company and gold, and unlocks more, such as higher upgrades at the smith or ranks A and S at the campfire. The academy, workshop, enchanter and training ground join them."
+      where: "Upgrading is offered in every room of the castle."
+      keywords: "upgrade, level, castle, academy, workshop, training ground"
+    trade:
+      title: "Merchant and convoy"
+      text: "The merchant buys your items for {sell} of their price. The convoy holds {convoy} items; the equipment of the fallen ends up there too. In battle, whoever stands next to Kael can reach it."
+      where: "Merchant and convoy are rooms at home; in battle “Convoy” opens the store."
+      keywords: "merchant, buy, sell, gold, convoy, store"
+    ember_spark:
+      title: "Ember spark and promotion"
+      text: "With an ember spark a unit from level {level} promotes in the academy to one of the two pro paths of its role and starts again at level one. Ember sparks are rare: from the finale and side quests, later at the merchant for {price} gold."
+      where: "Promotion happens in the castle's academy."
+      keywords: "ember spark, promotion, promote, pro, academy"
+    # ------------------------------------------------------------ Items
+    rarity:
+      title: "Rarity"
+      text: "The rarer an item, the more affixes and rune slots it has; the diamonds on its picture show the rarity. Affixes are random extra values. Legendary items are fixed one-offs."
+      where: "The diamonds sit on every item picture, the affixes in the item sheet."
+      keywords: "rarity, diamonds, rare, epic, legendary, affix"
+    upgrade:
+      title: "Upgrading"
+      text: "The smith upgrades weapons and armor: every level gives a weapon {might} might and {upHit} hit, an armor {armor} DEF or RES. The first level costs {first} gold and some material; in the camp it goes up to {campMax}."
+      where: "At the smith at home; the level shows as a plus on the item name."
+      keywords: "upgrade, smith, level, improve, material"
+    runes:
+      title: "Runes"
+      text: "The enchanter sets runes into rune slots: one element rune per weapon, plus utility runes. Element runes give their element, from tier two a condition chance of {two}, at tier three {three}. {merge} equal runes merge into the next tier."
+      where: "At the castle's enchanter; set runes are listed in the item sheet."
+      keywords: "rune, runes, enchanter, element, merge"
+    sets:
+      title: "Sets"
+      text: "Some armor pieces belong to a set. A unit wearing several pieces of the same set gets bonus values or an ability."
+      where: "The item sheet names the set and from how many pieces which bonus applies."
+      keywords: "set, armor, bonus, pieces"
+    weight:
+      title: "Weight and load"
+      text: "Every item weighs something. Carrying capacity is STR plus a bonus by movement type, on foot {foot}, armored {armored}. Overload lowers AS; from {over1} overload it costs {mov1} MOV, from {over2} even {mov2}. The bag holds {bag} items without weight."
+      where: "Load and capacity are in the unit's info and when equipping."
+      keywords: "weight, load, carry, overload, bag"
+    # ------------------------------------------------------------ Classes
+    class_tactician:
+      title: "Tactician"
+      text: "The avatar's role: wields sword and spells and with “Command” grants a neighbour who has already acted a second action."
+      where: "“Command” is in the class stone, once per map."
+      keywords: "tactician, avatar, command"
+      strong: { "1": "Command gives a strong unit a second turn.", "2": "Sword and spells: hits DEF and RES.", "3": "Balanced growth." }
+      weak: { "1": "No standout stats.", "2": "If the avatar falls, the mission is lost." }
+    class_captain:
+      title: "Captain"
+      text: "Kael's role: wields sword, lance and shield and with “Rally” strengthens all nearby allies until the end of the next enemy phase."
+      where: "“Rally” is in the class stone, once per map."
+      keywords: "captain, Kael, rally"
+      strong: { "1": "Rally raises damage and hit of the whole line.", "2": "Sturdy and widely armed.", "3": "Convoy in battle through Kael." }
+      weak: { "1": "If Kael falls, the mission is lost.", "2": "Low RES." }
+    class_vanguard:
+      title: "Vanguard"
+      text: "Armored front line with lance, axe and shield. “Hold”: enemies entering a neighbouring tile end their movement there. The only zone of control in the game."
+      where: "The hold zone shows as a border around the vanguard once selected."
+      keywords: "vanguard, hold, armor, front, zone of control"
+      strong: { "1": "Holds chokepoints and shields the back row.", "2": "High DEF and plenty of HP.", "3": "More DEF with an ally alongside." }
+      weak: { "1": "Slow: forest and sand cost a lot.", "2": "Low RES against spells." }
+    class_skirmisher:
+      title: "Skirmisher"
+      text: "Fast fighter with sword and dagger. “Pursue”: after the attack the skirmisher may use the remaining movement."
+      where: "After the attack the blue area stays for the remaining movement."
+      keywords: "skirmisher, pursue, fast, sword"
+      strong: { "1": "Often strikes twice.", "2": "Strike and get back into cover.", "3": "Hits better when attacked." }
+      weak: { "1": "Little DEF: holds no line.", "2": "Axe fighters have the upper hand." }
+    class_marksman:
+      title: "Marksman"
+      text: "Ranged fighter with a bow. “Aim”: attacking without moving grants more range and hit."
+      where: "“Aim” is in the class stone as long as the marksman has not moved."
+      keywords: "marksman, bow, aim, ranged, archer"
+      strong: { "1": "Attacks from a safe distance.", "2": "Hits better at range.", "3": "Sees further in the fog." }
+      weak: { "1": "Defenceless in melee.", "2": "Little HP and DEF." }
+    class_elementalist:
+      title: "Elementalist"
+      text: "Caster with anima and focus. “Cast”: puts the element of the spell weapon onto a tile in range: blaze, douse, rock wall or wind against fog."
+      where: "“Cast” is in the class stone; the preview shows which tiles it hits."
+      keywords: "elementalist, mage, cast, spell, element"
+      strong: { "1": "Hits the RES of armored foes.", "2": "Shapes the battlefield with fire, water, earth and wind.", "3": "Causes conditions more often." }
+      weak: { "1": "Little HP and DEF.", "2": "Hardly any STR: spell weapons only." }
+    class_healer:
+      title: "Healer"
+      text: "Support with staff and light. Heals allies and with “Far rescue” saves the downed from a distance."
+      where: "“Heal” and “Far rescue” appear in the dock once a target is in range."
+      keywords: "healer, staff, heal, far rescue, light, cleric"
+      strong: { "1": "Keeps the company alive.", "2": "Rescues from a safe distance.", "3": "High RES and LCK." }
+      weak: { "1": "Hardly any attack.", "2": "A favourite target of the enemy." }
+    class_scout:
+      title: "Scout"
+      text: "Nimble climber with dagger and light bow. “Open and steal”: opens doors and chests without a key and steals an item a neighbour is not holding."
+      where: "“Open” and “Steal” appear in the dock next to doors, chests and enemies."
+      keywords: "scout, thief, steal, open, climb, chest"
+      strong: { "1": "Gets onto mountains and through rough terrain.", "2": "Opens chests without a key.", "3": "Sees further in the fog." }
+      weak: { "1": "Light weapons, little damage.", "2": "Little DEF." }
+    class_minstrel:
+      title: "Minstrel"
+      text: "Support with dagger and lute. “Cheer”: a neighbour gains more MOV and hit until the end of the turn."
+      where: "“Cheer” is in the class stone once an ally stands alongside."
+      keywords: "minstrel, bard, cheer, lute"
+      strong: { "1": "Carries a strong unit further forward.", "2": "Makes shaky attacks safer.", "3": "Fast and lucky." }
+      weak: { "1": "Little damage of its own.", "2": "Little DEF." }
+    class_duelist:
+      title: "Duelist"
+      text: "Pro path of the skirmisher with sword and dagger. With some luck the duelist's skill heals a share of the damage dealt."
+      where: "Promotion happens in the academy; in the game, seasoned enemies carry it."
+      keywords: "duelist, pro, skirmisher"
+      strong: { "1": "Very fast and accurate.", "2": "Heals while attacking." }
+      weak: { "1": "Still little RES.", "2": "Axe fighters have the upper hand." }
+    class_bulwark:
+      title: "Bulwark"
+      text: "Pro path of the vanguard with lance, axe and shield and more movement than before. With some luck it pierces part of the armor."
+      where: "Promotion happens in the academy."
+      keywords: "bulwark, pro, vanguard"
+      strong: { "1": "The highest DEF in the game.", "2": "Pierces armor.", "3": "Holds like the vanguard." }
+      weak: { "1": "Low RES.", "2": "Not fast." }
+    class_breaker:
+      title: "Breaker"
+      text: "The vanguard's attacking pro path: lots of HP, great strength, and as a climber it gets onto mountains too."
+      where: "Promotion happens in the academy."
+      keywords: "breaker, pro, vanguard, climber"
+      strong: { "1": "The most HP and plenty of STR.", "2": "Climbs mountains." }
+      weak: { "1": "Very low RES.", "2": "Less DEF than the bulwark." }
+    class_sharpshooter:
+      title: "Sharpshooter"
+      text: "Pro path of the marksman: with bows it reaches one tile further and hits even more precisely."
+      where: "Promotion happens in the academy."
+      keywords: "sharpshooter, pro, bow, range"
+      strong: { "1": "Longest range of the company.", "2": "Very high SKL." }
+      weak: { "1": "Still defenceless in melee.", "2": "Bows only." }
+    class_sage:
+      title: "Sage"
+      text: "Pro path of the elementalist: stronger spells, and it may also wield staves and heal."
+      where: "Promotion happens in the academy."
+      keywords: "sage, pro, elementalist, mage"
+      strong: { "1": "Plenty of MAG and RES.", "2": "Heals with staves." }
+      weak: { "1": "Little HP and DEF.", "2": "Hardly any STR: spells and staves only." }
+    class_bishop:
+      title: "Bishop"
+      text: "Pro path of the healer: heals more, is faster and has the highest RES."
+      where: "Promotion happens in the academy."
+      keywords: "bishop, pro, healer"
+      strong: { "1": "Stronger healing.", "2": "Very high RES and LCK." }
+      weak: { "1": "Hardly any attack.", "2": "Little DEF." }
+    # ------------------------------------------------------------ Lessons
+    lesson_move:
+      title: "Lesson: moving and the forecast"
+      text: "From the prologue, first round: select units, move them and check the forecast before attacking."
+      where: "In the prologue “The Pact Night”, at the start of the first round."
+      keywords: "lesson, prologue, move, forecast, start"
+    lesson_danger:
+      title: "Lesson: danger and cover"
+      text: "From the prologue, second round: how far enemies reach and why the woods protect."
+      where: "In the prologue “The Pact Night”, at the start of the second round."
+      keywords: "lesson, prologue, danger, danger zone, cover, forest"
+    lesson_heal:
+      title: "Lesson: vulnerary"
+      text: "From the prologue: whoever is wounded drinks a vulnerary before waiting."
+      where: "In the prologue “The Pact Night”, as soon as Kael is wounded."
+      keywords: "lesson, prologue, vulnerary, potion, item, heal"
+    lesson_triangle:
+      title: "Lesson: weapon triangle"
+      text: "From the first mission: which weapon beats which and how the forecast shows it."
+      where: "In the mission “Wanted in Varnhold”, at the start."
+      keywords: "lesson, triangle, weapon triangle, advantage"

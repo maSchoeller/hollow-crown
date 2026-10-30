@@ -21,6 +21,8 @@ const P: Record<string, string> = {
   rewind: 'M11 7l-6 5 6 5zM19 7l-6 5 6 5z',
   skip: 'M5 6l7 6-7 6zM13 6l7 6-7 6z',
   log: 'M6 4h12v16H6zM9 8h6M9 12h6M9 16h4',
+  search: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.5 15.5L20 20',
+  book: 'M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v14',
   box: 'M4 7h16v13H4zM4 7l2-3h12l2 3M10 11h4',
   more: 'M5 12h.01M12 12h.01M19 12h.01',
   save: 'M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6',
@@ -91,6 +93,8 @@ const P: Record<string, string> = {
 };
 
 export type IconName = keyof typeof P;
+/** Whether a name has a drawn icon (content names icons, e.g. the handbook; a unit test checks them). */
+export const hasIcon = (name: string): boolean => Object.prototype.hasOwnProperty.call(P, name);
 
 export function Icon({ name, size = 20, class: cls = '', label }: { name: IconName | string; size?: number; class?: string; label?: string }) {
   const d = P[name] ?? P.star!;

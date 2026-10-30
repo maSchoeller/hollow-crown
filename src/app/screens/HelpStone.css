@@ -1,0 +1,36 @@
+/* Context "?" (DESIGN.md help-stone): 22 px cream-2 stone with a dark outline, never blue (blue is team); 44 pt tap area. */
+.hc-help {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  background: var(--hc-cream-2);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  box-shadow: 0 2px 0 var(--hc-line);
+  color: var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+/* the tap area reaches 44 px around the small stone without covering more of the view */
+.hc-help::after {
+  content: '';
+  position: absolute;
+  inset: -11px;
+}
+.hc-help:active {
+  translate: 0 1px;
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+.hc-help:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}

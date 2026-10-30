@@ -1037,6 +1037,57 @@ export interface LegibilityDef {
   doubleTapMs: number;
 }
 
+/** Pictures a handbook entry can show above its values (story 14.1); the UI draws each one from the data. */
+export const HANDBOOK_GRAPHICS = ['icon', 'triangle', 'elements', 'terrain', 'class', 'lesson', 'rarity'] as const;
+export type HandbookGraphic = (typeof HANDBOOK_GRAPHICS)[number];
+/** How the UI writes a resolved value: 15, +15, 15 %, +15 %, ×1.2, a factor as percent change (1.2 → +20 %), a share as percent (0.1 → 10 %). */
+export const HANDBOOK_FORMATS = ['plain', 'signed', 'percent', 'signedPercent', 'factor', 'factorPercent', 'share'] as const;
+export type HandbookFormat = (typeof HANDBOOK_FORMATS)[number];
+
+/** One number of an entry: a path into the content (`balance.triangle.hit`, `terrain.forest.avoid`), never a typed value. */
+export interface HandbookValueDef {
+  /** placeholder `{id}` in the entry text; label key `handbook.label.<label ?? id>` */
+  id: string;
+  ref: string;
+  label?: string;
+  format: HandbookFormat;
+  /** icon in front of the number (symbol + number) */
+  icon?: string;
+}
+
+/** One handbook entry (`content/core/handbook.yaml`); texts under `handbook.entry.<id>.*` in the locales. */
+export interface HandbookEntryDef {
+  id: string;
+  category: string;
+  graphic: HandbookGraphic;
+  /** symbol of the `icon` graphic and of the entry in lists */
+  icon?: string;
+  values: HandbookValueDef[];
+  /** cross references (entry ids) */
+  see: string[];
+  /** context anchor of a "?" in the game (`forecast`, `status.wet`); terrain, class and lesson entries get theirs implicitly */
+  anchor?: string;
+  /** terrain ids the entry explains (graphic `terrain`); anchors `terrain.<id>` */
+  terrain?: string[];
+  /** playable class of a profile (graphic `class`); anchor `class.<id>` */
+  class?: string;
+  /** scene of a lesson whose lines the entry shows (graphic `lesson`); anchor `lesson.<scene>` */
+  lesson?: string;
+  /** the rule comes with this act (e.g. 2 for the castle rooms of epic 10): the entry says "ab Akt n" */
+  fromAct?: number;
+}
+
+export interface HandbookCategoryDef {
+  id: string;
+  icon: string;
+}
+
+/** The handbook (epic 14): categories in display order and their entries. */
+export interface HandbookDef {
+  categories: HandbookCategoryDef[];
+  entries: HandbookEntryDef[];
+}
+
 /** Presentation values of the battle board (content/render.yaml); never read by the rules. */
 export interface RenderDef {
   camera: {
@@ -1247,4 +1298,6 @@ export interface GameData {
   lieutenants: Record<string, LieutenantDef>;
   /** enemy pools of the haunts by act (`acts/actN/haunts.yaml`, story 5.5) */
   hauntPools: Record<number, HauntPoolsDef>;
+  /** the rules handbook (`content/core/handbook.yaml`, epic 14); absent in hand-built test data */
+  handbook?: HandbookDef;
 }
