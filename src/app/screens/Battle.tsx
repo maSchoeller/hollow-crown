@@ -96,7 +96,7 @@ import {
   UnitCardB,
 } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
-import { BackStone, EnemyStrip, RecapStone, TerrainChip, ThreatPill } from './BattleLegibility';
+import { EnemyStrip, RecapStone, TerrainChip, ThreatPill } from './BattleLegibility';
 
 export { pendingEvents };
 
@@ -192,7 +192,6 @@ export function Battle() {
   /** the field under the mouse while a unit is selected (PC hover, story 13.6) */
   const [hover, setHover] = useState<Pos | null>(null);
   const chipRef = useRef<HTMLDivElement>(null);
-  const backRef = useRef<HTMLDivElement>(null);
   /** the Nachsetzen chance the player let go (key of `s.pursue` and the turn); the core keeps it until the next command */
   const [pursueDone, setPursueDone] = useState<string | null>(null);
   const wide = useWide();
@@ -327,15 +326,13 @@ export function Battle() {
   })();
   const checkKey = checkTile && selUid ? `${selUid}@${posKey(checkTile)}` : '';
   const checkFoes = useMemo(() => (checkTile && selUid ? tileThreats(data, s, unit(selUid), checkTile) : []), [s, checkKey]);
-  const checkLines = checkTile ? checkFoes.map((uid) => [unit(uid).pos!, checkTile] as [Pos, Pos]).filter(([a]) => !!a) : [];
-  const ghostAt = mode.k === 'moved' && !samePos(mode.to, unit(mode.uid).pos) ? mode.to : null;
-  // the terrain chip below the checked field and the back stone beside the ghost ride on the board (pinned, moved with the camera)
+  // the foes that reach the field glow reddish; the terrain chip below the field rides on the board (pinned, moved with the camera)
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
+    board.setReach(checkTile ? checkFoes : []);
     board.pin('chip', chipRef.current, checkTile, { south: 0.5 });
-    board.pin('back', backRef.current, ghostAt, { east: 0.62, lift: 0.45 });
-  }, [checkKey, ghostAt?.[0], ghostAt?.[1]]);
+  }, [checkKey, checkFoes]);
 
   /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
   const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
@@ -368,7 +365,7 @@ export function Battle() {
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
     const base = {
-      threat: threat && { ...threat, numbers: opt.threatNumbers },
+      threat,
       watch: watchTiles,
       goal,
       reinforce,
@@ -376,7 +373,6 @@ export function Battle() {
       fog: fogTiles.fog,
       fogEdge: fogTiles.edge,
       mark: markTiles,
-      lines: checkLines,
     };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
@@ -423,7 +419,7 @@ export function Battle() {
       return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
-  }, [mode, s, threat, watchTiles, tileInfo, markTiles, checkKey, opt.threatNumbers]);
+  }, [mode, s, threat, watchTiles, tileInfo, markTiles, checkKey]);
 
   // the HUD grows when a unit is selected; bring the unit (or the chosen tile) out from under it
   const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.k === 'pursue' ? (mode.to ?? unit(mode.uid).pos) : mode.to;
@@ -1255,9 +1251,6 @@ export function Battle() {
         <div class="lg-pins">
           <div class="lg-pin" ref={chipRef} style={{ display: checkTile ? '' : 'none' }}>
             {checkTile && <TerrainChip data={data} s={s} p={checkTile} />}
-          </div>
-          <div class="lg-pin" ref={backRef} style={{ display: ghostAt ? '' : 'none' }}>
-            {ghostAt && <BackStone onClick={() => cancelRef.current()} />}
           </div>
         </div>
         {dialogue?.band && <SceneBand id={dialogue.id} onDone={dialogue.done} />}

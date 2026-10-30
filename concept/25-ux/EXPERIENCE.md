@@ -51,7 +51,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene | `mockups/08-ergebnis-abschied.html` |
 | Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen | `mockups/08-ergebnis-abschied.html` |
 | Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region | `mockups/08-ergebnis-abschied.html` |
-| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln, Figuren 3D/2D; Block **Brett-Anzeige**: Raster, Lebensleisten, Zahlen in der Gefahrenzone, Gegner-Leiste, Gefahrenzone standardmäßig | – (Bestand 09 §5; Block Brett-Anzeige `mockups/10-lesbarkeit-handbuch.html`) |
+| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln, Figuren 3D/2D; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig | – (Bestand 09 §5; Block Brett-Anzeige `mockups/10-lesbarkeit-handbuch.html`) |
 | Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen | `mockups/10-lesbarkeit-handbuch.html` |
 | Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen | `mockups/10-lesbarkeit-handbuch.html` |
 
@@ -86,14 +86,14 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Raster | Eckpunkte (kleine Kreuze an den Feldecken) liegen dezent über dem ganzen Brett; Option „Raster: aus / dezent / stark“, stark = feine Linien überall; Standard dezent |
 | Bewegungsbereich | bei gewählter Einheit Einzelkacheln mit kleiner Lücke und einer gemeinsamen Außenkante, Angriffsfelder ebenso in Rot; der gesetzte Weg als dicker, runder Pfeil mit Spitze am Ziel |
 | Lebensleiste | über dem Kopf jeder Figur auf dem Brett; Option „Lebensleisten: Immer / Nur verletzte / Aus“, Standard „Immer“; bleibt in der Gegnerphase sichtbar und folgt jedem Treffer |
-| Gefahrenzone | Umschalter „Gefahr“ (Leerlauf-Dock, PC: D): durchscheinende Fläche in drei Stufen (1 / 2 / 3+ Gegner) mit roter Außenkante, Zahl der Angreifer auf Feldern ab 2 (Option „Zahlen in der Gefahrenzone“, Standard an). Wache und Halten rechnen ohne Bewegung; schlafende Gegner zählen nicht, ihre Zone steht als gestrichelte Kante da. Langdruck auf einen Gegner zeigt nur seine Zone als Kante |
-| Zielfeld-Check | sobald ein Zielfeld gesetzt ist (Geist-Figur) bzw. am PC beim Hover: gestrichelte Linien von jedem Gegner, der das Feld in seiner nächsten Phase erreicht, eine Pille „n Gegner erreichen dieses Feld“ (0: keine Pille) und der Gelände-Chip des Felds (Name, Verteidigung, Ausweichen, Heilung, Symbol + Zahl); zählt nach denselben Regeln wie die Gefahrenzone |
+| Gefahrenzone | Umschalter „Gefahr“ (Leerlauf-Dock, PC: D): durchscheinende Fläche in drei Stufen (1 / 2 / 3+ Gegner) mit roter Außenkante, ohne Zahl auf den Feldern (Playtest 2026-10-30). Wache und Halten rechnen ohne Bewegung; schlafende Gegner zählen nicht, ihre Zone steht als gestrichelte Kante da. Langdruck auf einen Gegner zeigt nur seine Zone als Kante |
+| Zielfeld-Check | sobald ein Zielfeld gesetzt ist (Geist-Figur) bzw. am PC beim Hover: jeder Gegner, der das Feld in seiner nächsten Phase erreicht, leuchtet rötlich auf (keine Linien, Playtest 2026-10-30), eine Pille „n Gegner erreichen dieses Feld“ (0: keine Pille) und der Gelände-Chip des Felds (Name, Verteidigung, Ausweichen, Heilung, Symbol + Zahl); zählt nach denselben Regeln wie die Gefahrenzone |
 | Kill-Marker | bei gewählter Einheit über jedem Gegner, den sie in dieser Phase erreichen kann: voller Totenkopf = fällt bei einem Treffer (inklusive Doppelangriff), halber = nur mit Krit; Leutnants zeigen statt Totenkopf die Flucht-Marke; gerechnet mit dem Formelcode der Vorschau |
 | Warnung eigene Figur | in der Spielerphase grauer Totenkopf mit „!“ über eigenen Figuren, deren TP der Schaden aller Gegner, die sie erreichen, bei Treffer erreicht (ohne Krit und Trefferchance) |
 | Gegnerphase-Rückblick | Stein über der Einheitenkarte direkt nach der Gegnerphase, nur wenn etwas geschah: Niedergestreckte und Gefallene zuerst (mit Verblutungs-Zähler und „Figur zeigen“), dann Treffer auf eigene Figuren (TP vorher → nachher, Verfehlt als „weicht aus“), dann Verstärkungen und geweckte Gegner mit Sprung zur Stelle; der erste Tipp aufs Brett schließt ihn, nie blockierend |
 | Gegner-Leiste | Option (Standard aus): Medaillons aller sichtbaren Gegner mit TP-Ring unter den Ziel-Pillen, Leutnant mit Goldring; Tipp zentriert den Gegner, Langdruck öffnet seine Info |
 | Fertig-Häkchen | grünes Häkchen über Figuren, die in dieser Phase gehandelt haben, zusätzlich zur Entsättigung |
-| Zurück an der Figur | nach dem Setzen eines Zielfelds steht ein runder Zurück-Stein neben der Geist-Figur; PC: Rechtsklick nimmt die Bewegung zurück |
+| Zurück an der Figur | PC: Rechtsklick nimmt die Bewegung zurück; auf dem Handy die Leisten-Taste „Zurück“ (kein eigener Stein an der Geist-Figur, Playtest 2026-10-30) |
 | Kontext-„?“ | runder Stein mit „?“ an Werten, die eine Regel tragen (Kampfvorschau, Gelände-Chip, Zustands-Symbole, Lektionen); Tipp öffnet den passenden Handbuch-Eintrag als Blatt über dem Kampf |
 | Handbuch | Kopf mit Zurück-Stein und Titelpille, Suchfeld, Kategorien als Steine im Zweier-Raster; Eintrag mit Grafik, Werten aus den Daten (nie abgetippt), einem Satz „wo im Spiel“ und Querverweisen als Chips; alle Einträge sind von Anfang an sichtbar (Entdecken folgt später) |
 | Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
@@ -165,7 +165,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 
 Barrierefreiheit im Sinne von Farbenblind-Modus, Schriftgröße und Linkshänder-Layout bleibt nach V1 (T12). In V1 gilt trotzdem:
 
-- Nichts nur über Farbe: Teams auch über Form (Ring, Wimpel, Seite), Vergleich auch über +/−, Knoten auch über Symbol, Gefahrenstufen auch über Zahl und Kante, Kill-Marker über Form (voll/halb), kritische TP über Rand und Puls.
+- Nichts nur über Farbe: Teams auch über Form (Ring, Wimpel, Seite), Vergleich auch über +/−, Knoten auch über Symbol, Gefahrenstufen auch über Deckkraft und Kante, Kill-Marker über Form (voll/halb), kritische TP über Rand und Puls.
 - Kontraste laut `DESIGN.md` (Colors).
 - Tippziele ≥ 44 pt, alles mit einer Hand und mit Maus bedienbar.
 - Untertitel für vertonte Zeilen immer an (Narrative, Localization).

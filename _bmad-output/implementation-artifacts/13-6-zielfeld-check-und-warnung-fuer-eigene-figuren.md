@@ -12,7 +12,7 @@ damit ich nicht aus Versehen in eine Falle ziehe.
 
 **Angenommen** eine gesetzte Geist-Figur auf einem Zielfeld (Handy) bzw. die Maus über einem erreichbaren Feld (PC, Hover)
 **Wenn** das Feld feststeht
-**Dann** führen gestrichelte rote Linien von jedem Gegner, der das Feld in seiner nächsten Phase erreicht (Regeln wie Story 13.5), zum Feld
+**Dann** leuchtet jeder Gegner, der das Feld in seiner nächsten Phase erreicht (Regeln wie Story 13.5), rötlich auf (Farbe und Stärke in `render.yaml`; Playtest 2026-10-30: statt Linien zum Feld)
 **Und** eine Pille unter den Ziel-Pillen sagt „n Gegner erreichen dieses Feld“ (ab 2 auf Rot-hell, bei 1 auf Creme, bei 0 keine Pille)
 **Und** am Feld steht der Gelände-Chip mit Name, Verteidigung, Ausweichen und Heilung als Symbol + Zahl aus `terrain.yaml`.
 
@@ -24,7 +24,7 @@ damit ich nicht aus Versehen in eine Falle ziehe.
 ## Tasks / Subtasks
 
 - [x] T1 `tileThreats(data, s, unit, at)`: Gegner, die das Feld in ihrer nächsten Phase erreichen (Regeln wie 13.5; die Figur steht dabei schon auf dem Feld)
-- [x] T2 Gestrichelte rote Linien (Creme darunter) von jedem dieser Gegner zum Feld (`lines`)
+- [x] T2 Diese Gegner leuchten rötlich (`BoardView.setReach`, Glow über den Tönungs-Pfad der Figuren, `legibility.reach`); ersetzt nach dem Playtest 2026-10-30 die gestrichelten Linien
 - [x] T3 Pille „n Gegner erreichen dieses Feld“ unter den Ziel-Pillen (`ThreatPill`, ab 2 auf Rot-hell, bei 1 Creme, bei 0 keine)
 - [x] T4 Gelände-Chip am Feld (`TerrainChip`, Symbol + Zahl, Bonus grün), mit der Kamera mitgeführt (`BoardView.pin`)
 - [x] T5 PC: Hover über ein erreichbares Feld bei gewählter Einheit zeigt denselben Check und den Weg (`onHover`, entprellt je Feld)

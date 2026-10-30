@@ -194,10 +194,10 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 - UX-DR23: Steckbriefe-Liste und Chronik als Vollbild-Ansichten aus der Leiste.
 - UX-DR24: Responsive: Tablet mit Seitenleiste 320 px, PC mit Panels links/rechts und Hover; Safe Areas; Tastenkürzel.
 - UX-DR25: Bewegung und Haptik: Druckzustand der Steine, Bildschirmwackeln und Haptik abschaltbar, `prefers-reduced-motion`.
-- UX-DR26 (neu 2026-10-30): Options-Block „Brett-Anzeige“ (Raster, Lebensleisten, Zahlen in der Gefahrenzone, Gegner-Leiste, Gefahrenzone standardmäßig); Raster als Eckpunkte, Bereiche als Einzelkacheln mit Außenkante, Weg als Pfeil.
+- UX-DR26 (neu 2026-10-30): Options-Block „Brett-Anzeige“ (Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig); Raster als Eckpunkte, Bereiche als Einzelkacheln mit Außenkante, Weg als Pfeil.
 - UX-DR27 (neu 2026-10-30): Lebensleisten über allen Figuren in Teamfarbe mit Teilstrichen, Leutnant-Goldkontur, kritischer Glutrand, Schadensvorschau in der Leiste; Kill-Marker voll/halb über Gegnern.
-- UX-DR28 (neu 2026-10-30): Gefahrenzone mit Kante, drei Stufen und Zahl; schlafende Gegner gestrichelt; Zielfeld-Check mit Linien, Pille und Gelände-Chip (PC beim Hover); Warn-Totenkopf über gefährdeten eigenen Figuren.
-- UX-DR29 (neu 2026-10-30): Gegnerphase-Rückblick, Gegner-Leiste (Option), Fertig-Häkchen, Doppeltipp zentriert, Zoomstufe „ganze Karte“ (PC M), Zurück-Stein an der Geist-Figur.
+- UX-DR28 (neu 2026-10-30): Gefahrenzone mit Kante und drei Stufen (ohne Zahl, Playtest 2026-10-30); schlafende Gegner gestrichelt; Zielfeld-Check mit rötlich gefärbten Gegnern, Pille und Gelände-Chip (PC beim Hover); Warn-Totenkopf über gefährdeten eigenen Figuren.
+- UX-DR29 (neu 2026-10-30): Gegnerphase-Rückblick, Gegner-Leiste (Option), Fertig-Häkchen, Doppeltipp zentriert, Zoomstufe „ganze Karte“ (PC M), Rechtsklick nimmt die Bewegung zurück (Zurück-Stein an der Geist-Figur entfällt, Playtest 2026-10-30).
 - UX-DR30 (neu 2026-10-30): Handbuch aus Kampfmenü, Weltkarte und Titel mit Kategorien, Suche und Einträgen (Grafik, Werte aus den Daten, Querverweise), Klassen-Steckbriefe, Lektionen.
 - UX-DR31 (neu 2026-10-30): Kontext-„?“ an Kampfvorschau, Gelände-Chip, Zuständen und Lektionen öffnet den passenden Handbuch-Eintrag über dem Kampf.
 
@@ -2046,7 +2046,7 @@ damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett 
 
 **Angenommen** die Optionen (Titel und Menü)
 **Wenn** der Spieler sie öffnet
-**Dann** gibt es einen Block „Brett-Anzeige“ mit Raster (aus / dezent / stark), Lebensleisten (Immer / Nur verletzte / Aus), Zahlen in der Gefahrenzone (an/aus), Gegner-Leiste (an/aus) und dem bisherigen Schalter „Gefahrenzone standardmäßig“
+**Dann** gibt es einen Block „Brett-Anzeige“ mit Raster (aus / dezent / stark), Lebensleisten (Immer / Nur verletzte / Aus), Gegner-Leiste (an/aus) und dem bisherigen Schalter „Gefahrenzone standardmäßig“
 **Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Zahlen an, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
 
 **Angenommen** ein Kampf mit Raster „dezent“
@@ -2125,7 +2125,7 @@ damit ich zwischen leicht und sehr gefährlich unterscheiden kann.
 **Angenommen** die Gefahrenzone ist an (Leerlauf-Dock „Gefahr“, PC D)
 **Wenn** das Brett sie zeigt
 **Dann** ist sie eine durchscheinende rote Fläche in drei Stufen (1 / 2 / 3+ Gegner, Deckkraft in `render.yaml`) mit roter Außenkante auf Creme
-**Und** auf Feldern ab 2 Angreifern steht die Zahl im Creme-Kreis, sofern „Zahlen in der Gefahrenzone“ an ist
+**Und** die Felder tragen keine Zahl der Angreifer (Playtest 2026-10-30: überfrachtet; die Stufe zeigt die Menge)
 **Und** eigene Figuren und ihre Lebensleisten bleiben darunter lesbar.
 
 **Angenommen** Gegner mit den KI-Profilen hold/guard, schlafende Gegner (trigger) und angekündigte Verstärkung
@@ -2147,7 +2147,7 @@ damit ich nicht aus Versehen in eine Falle ziehe.
 
 **Angenommen** eine gesetzte Geist-Figur auf einem Zielfeld (Handy) bzw. die Maus über einem erreichbaren Feld (PC, Hover)
 **Wenn** das Feld feststeht
-**Dann** führen gestrichelte rote Linien von jedem Gegner, der das Feld in seiner nächsten Phase erreicht (Regeln wie Story 13.5), zum Feld
+**Dann** leuchtet jeder Gegner, der das Feld in seiner nächsten Phase erreicht (Regeln wie Story 13.5), rötlich auf (Farbe und Stärke in `render.yaml`; Playtest 2026-10-30: statt Linien zum Feld)
 **Und** eine Pille unter den Ziel-Pillen sagt „n Gegner erreichen dieses Feld“ (ab 2 auf Rot-hell, bei 1 auf Creme, bei 0 keine Pille)
 **Und** am Feld steht der Gelände-Chip mit Name, Verteidigung, Ausweichen und Heilung als Symbol + Zahl aus `terrain.yaml`.
 
@@ -2206,8 +2206,8 @@ damit sich lange Runden flüssig spielen.
 **Und** Herauspinchen über die weiteste Zoomstufe hinaus bzw. am PC Taste M oder Mausrad zeigt die ganze Karte (vierte Zoomstufe, aus der Kartengröße berechnet; Rand in `render.yaml`); erneutes Hineinzoomen kehrt zur weitesten Stufe zurück.
 
 **Angenommen** eine gesetzte Geist-Figur vor der Aktion
-**Wenn** der Spieler den runden Zurück-Stein neben ihr antippt bzw. am PC rechts klickt
-**Dann** steht die Figur wieder auf dem Startfeld wie mit dem bisherigen Zurück (FR1); die Leisten-Taste „Zurück“ bleibt.
+**Wenn** der Spieler am PC rechts klickt
+**Dann** steht die Figur wieder auf dem Startfeld wie mit dem bisherigen Zurück (FR1); die Leisten-Taste „Zurück“ bleibt; einen eigenen Zurück-Stein an der Figur gibt es nicht (Playtest 2026-10-30: überfüllte Bedienung).
 
 ## Epic 14: Handbuch
 

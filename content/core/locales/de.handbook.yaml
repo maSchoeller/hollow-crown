@@ -155,7 +155,7 @@ handbook:
     movement:
       title: "Bewegung und Zurücknehmen"
       text: "Tippe eine Figur an: Blau zeigt, wohin sie kommt, Rot, was sie angreifen kann. Ein Tipp auf ein Feld setzt eine Geist-Figur, ein zweiter bestätigt. Bis zur Aktion nimmst du die Bewegung wieder zurück. Gezogen wird in vier Richtungen ohne Diagonalen; durch Verbündete geht es hindurch, Gegner versperren den Weg."
-      where: "Der runde Zurück-Stein neben der Geist-Figur oder ein Rechtsklick setzt sie aufs Startfeld."
+      where: "„Zurück“ in der Leiste oder ein Rechtsklick setzt die Geist-Figur aufs Startfeld."
       keywords: "Bewegen, Ziehen, Geist, Zurück, Weg, Reichweite, BEW"
     danger:
       title: "Gefahrenzone und Brett lesen"

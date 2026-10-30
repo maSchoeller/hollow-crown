@@ -155,7 +155,7 @@ handbook:
     movement:
       title: "Moving and taking back"
       text: "Tap a unit: blue shows where it can go, red what it can attack. A tap on a tile places a ghost figure, a second tap confirms. Until the action you can take the move back. Units move in four directions without diagonals; allies can be passed through, enemies block the way."
-      where: "The round back stone beside the ghost figure, or a right click, returns it to its start tile."
+      where: "“Back” in the bar, or a right click, returns the ghost figure to its start tile."
       keywords: "move, ghost, back, undo, path, range, MOV"
     danger:
       title: "Danger zone and reading the board"

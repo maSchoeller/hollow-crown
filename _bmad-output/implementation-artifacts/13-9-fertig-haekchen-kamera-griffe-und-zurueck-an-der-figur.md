@@ -20,15 +20,15 @@ damit sich lange Runden flüssig spielen.
 **Und** Herauspinchen über die weiteste Zoomstufe hinaus bzw. am PC Taste M oder Mausrad zeigt die ganze Karte (vierte Zoomstufe, aus der Kartengröße berechnet; Rand in `render.yaml`); erneutes Hineinzoomen kehrt zur weitesten Stufe zurück.
 
 **Angenommen** eine gesetzte Geist-Figur vor der Aktion
-**Wenn** der Spieler den runden Zurück-Stein neben ihr antippt bzw. am PC rechts klickt
-**Dann** steht die Figur wieder auf dem Startfeld wie mit dem bisherigen Zurück (FR1); die Leisten-Taste „Zurück“ bleibt.
+**Wenn** der Spieler am PC rechts klickt
+**Dann** steht die Figur wieder auf dem Startfeld wie mit dem bisherigen Zurück (FR1); die Leisten-Taste „Zurück“ bleibt; einen eigenen Zurück-Stein an der Figur gibt es nicht (Playtest 2026-10-30: überfüllte Bedienung).
 
 ## Tasks / Subtasks
 
 - [x] T1 Fertig-Häkchen in den Abzeichen (grüner Stein, weißer Haken), aus `acted` in der eigenen Phase und den Events `exhausted`/`refreshed`/`phase`
 - [x] T2 Doppeltipp auf eine Figur (`onDoubleTap`, `legibility.doubleTapMs`): Kamera gleitet hin, ohne Auswahl oder Aktion
 - [x] T3 Vierte Zoomstufe „ganze Karte“: Herauspinchen bzw. Mausrad über die weiteste Stufe, am PC Taste M (`wholeMap`); Größe aus Kartengröße und freier Fläche mit Rand `view.wholeMapMargin`
-- [x] T4 Runder Zurück-Stein neben der Geist-Figur (`BackStone`, mit der Kamera mitgeführt); Rechtsklick nimmt die Bewegung zurück (wie bisher `onCancel`); die Leisten-Taste „Zurück“ bleibt
+- [x] T4 Rechtsklick nimmt die Bewegung zurück (wie bisher `onCancel`); die Leisten-Taste „Zurück“ bleibt; der Zurück-Stein neben der Geist-Figur ist nach dem Playtest 2026-10-30 entfernt
 
 ## Dev Notes
 
