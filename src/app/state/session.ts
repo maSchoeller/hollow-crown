@@ -10,6 +10,7 @@ import {
   normalizeCampaign,
   renameLegacyBattleClasses,
   renameLegacyClasses,
+  stateHash,
   turnStartIndex,
   validateCampaign,
   type AvatarSettings,
@@ -28,6 +29,7 @@ import { setAvatar, setLocales } from '../../i18n';
 import { createAutoSaver, createPlayClock } from '../../persistence/autosave';
 import { createJournalWriter, needsUpdateCheckpoint, type CheckpointReason } from '../../persistence/journal';
 import { log } from '../log';
+import { compactCommand, trail, trailEvents } from '../trail';
 import {
   CampaignLimitError,
   contentVersionOf,
@@ -184,16 +186,23 @@ export type CampaignCommandResult = { ok: true; events: CampaignEvent[] } | { ok
  */
 export function campaignCommand(cmd: CampaignCommand): CampaignCommandResult {
   const c = campaign.value;
-  if (!c) return { ok: false, error: 'not_available' };
+  if (!c) return refused(cmd, 'not_available');
   const error = validateCampaign(data, c, cmd);
-  if (error) return { ok: false, error };
+  if (error) return refused(cmd, error);
   const r = guarded(() => applyCampaign(data, c, cmd), null);
-  if (!r) return { ok: false, error: 'not_available' }; // invariant violated: the fault screen takes over
+  if (!r) return refused(cmd, 'not_available'); // invariant violated: the fault screen takes over
+  trail.record({ kind: 'campaign', cmd: compactCommand(cmd), ok: true, ...trailEvents(r.events), hash: stateHash(r.campaign) });
   showCampaign(r.campaign);
   const id = campaignId.value;
   if (id) void journal.append(id, { kind: 'command', cmd });
   autosave(live().where);
   return { ok: true, events: r.events };
+}
+
+/** A campaign command the rules refused: into the action trail (architecture §6.2a), nothing else changes. */
+function refused(cmd: CampaignCommand, error: CampaignError): CampaignCommandResult {
+  trail.record({ kind: 'campaign', cmd: compactCommand(cmd), ok: false, error });
+  return { ok: false, error };
 }
 
 /**
@@ -213,6 +222,7 @@ export async function createNewCampaign(settingsIn: BattleSettings, avatar: Avat
   }
   await saver.flush();
   showCampaign(c);
+  trail.record({ kind: 'load', reason: 'new', campaignId: campaignId.value!, battle: false });
   checkpoint(campaignId.value!, c, 'new');
   playClock.reset();
   autosave('worldmap');
@@ -275,6 +285,7 @@ export function adoptRecord(rec: SaveRecord, reason: 'load' | 'import'): SavePay
   if (p.battle) p.battle = { ...p.battle, start: renameLegacyBattleClasses(data, p.battle.start) };
   campaignId.value = rec.campaignId;
   playClock.reset();
+  trail.record({ kind: 'load', reason, campaignId: rec.campaignId, battle: !!p.battle });
   showCampaign(p.campaign);
   if (reason === 'import') checkpoint(rec.campaignId, p.campaign, 'import');
   else checkpointOnLoad(rec.campaignId, p.campaign);

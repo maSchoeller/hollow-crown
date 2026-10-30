@@ -1,16 +1,23 @@
 /**
  * Core invariant violations (concept/24-architecture §6.1): the controller catches them, remembers the first
- * one and the app shows "Etwas ist schiefgelaufen". A leaf module (only the log), so state modules can use it.
+ * one and the app shows "Etwas ist schiefgelaufen". A leaf module (only the log and the trail), so state modules can use it.
  */
 import { signal } from '@preact/signals';
 import { CoreInvariantError } from '../../core';
 import { log } from '../log';
+import { trail } from '../trail';
 
 /** The error that stopped the game; `null` while all is well. The first one stays (later ones are follow-ups). */
 export const fault = signal<unknown>(null);
 
 export function reportFault(e: unknown): void {
   log.error('core', e instanceof Error ? e.message : String(e), e);
+  trail.record({
+    kind: 'fault',
+    name: e instanceof Error ? e.name : 'Unknown',
+    message: e instanceof Error ? e.message : String(e),
+    ...(e instanceof CoreInvariantError ? { code: e.code } : {}),
+  });
   if (fault.value === null) fault.value = e;
 }
 

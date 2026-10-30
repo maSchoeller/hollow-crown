@@ -26,8 +26,7 @@ export function FaultScreen() {
   };
   const exportReport = async () => {
     try {
-      await exportBugReport();
-      setNote(t('ui.fault.exported'));
+      if ((await exportBugReport()) !== 'cancelled') setNote(t('ui.fault.exported'));
     } catch {
       setNote(t('ui.fault.exportFailed'));
     }

@@ -62,6 +62,10 @@
 :root.has-bottom-notice .screen {
   padding-bottom: calc(var(--hc-hud-top) + var(--safe-bottom, 0px) + var(--hc-notice-reserve));
 }
+/* sheets too: their button row sits at the bottom */
+:root.has-bottom-notice .hc-veil {
+  padding-bottom: calc(var(--hc-hud-edge) + var(--safe-bottom, 0px) + var(--hc-notice-reserve));
+}
 :root.has-bottom-notice .wm__bottom {
   padding-bottom: calc(var(--hc-hud-top) + var(--safe-bottom, 0px) + var(--hc-notice-reserve));
 }
