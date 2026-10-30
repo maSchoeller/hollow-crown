@@ -33,7 +33,7 @@ import { bleedsOut, itemDef, maxHpOf, modelId, unitFigureId, unitVatPath } from 
 import { centreOn, clampAxis, framePlan, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
-import { loadPropMesh, loadUnitModel } from '../shared/models';
+import { loadPropMesh, loadUnitModel, NO_GLOW, type Glow } from '../shared/models';
 import { ModelFigure, SpriteFigure, warmTints, type Facing, type Figure, type FigureAnim } from '../shared/figures';
 import { applyLight } from '../shared/season';
 import { lookOverride, resolveLook, weatherPlan, type ResolvedLook } from '../shared/look';
@@ -249,6 +249,9 @@ export class BoardView implements HostedView {
   /** HP bars, kill/warning markers and done checks over the figures (epic 13) */
   private badges: Badges;
   private done = new Set<string>();
+  /** foes that reach the chosen field glow reddish (story 13.6); one glow value for all, so the figures' tint cache compares it by reference */
+  private reach = new Set<string>();
+  private reachGlow: Glow;
   private gridLevel: GridLevel = 'subtle';
   private gridMesh: OverlayMesh | null = null;
   /** DOM elements the UI pins to a field (story 13.6 terrain chip, 13.9 back stone): placed each frame */
@@ -293,6 +296,9 @@ export class BoardView implements HostedView {
     this.weather = new WeatherView(this.scene, CAM_DIST);
     this.statusIcons = new StatusIcons(floatLayer, data.render.look.fx.status.fadeMs, data.render.look.fx.status.sizePx);
     this.badges = new Badges(floatLayer, data.render.legibility.hpBar);
+    const reach = data.render.legibility.reach;
+    const rc = Color3.FromHexString(reach.color);
+    this.reachGlow = [rc.r * reach.strength, rc.g * reach.strength, rc.b * reach.strength];
     this.propMat = new StandardMaterial('props', this.scene);
     this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
     this.propMat.backFaceCulling = false;
@@ -1104,6 +1110,13 @@ export class BoardView implements HostedView {
     this.wake();
   }
 
+  /** The foes that reach the chosen field (story 13.6): they glow reddish until the next call; empty ends it. */
+  setReach(uids: readonly string[]): void {
+    if (uids.length === this.reach.size && uids.every((u) => this.reach.has(u))) return;
+    this.reach = new Set(uids);
+    this.wake();
+  }
+
   /** The part of the target's HP bar a previewed attack takes (story 13.4); `null` ends it. */
   setHpPreview(p: { uid: string; after: number } | null): void {
     this.badges.setPreview(p);
@@ -1853,7 +1866,7 @@ export class BoardView implements HostedView {
       this.fadeDirty = true;
     }
     v.figure.node.setEnabled(v.visible && onScreen);
-    v.figure.tint(v.desat, v.flash, v.alpha);
+    v.figure.tint(v.desat, v.flash, v.alpha, this.reach.has(v.uid) ? this.reachGlow : NO_GLOW);
     v.figure.tick(now, this.speed, onScreen);
     this.rings.place(v.uid, x + 0.5, h + 0.025, -y - 0.5, v.visible && !v.downed && v.alpha > 0.5 ? (v.desat > 0.3 ? 0.25 : 0.5) : 0);
     if (v.gold) {

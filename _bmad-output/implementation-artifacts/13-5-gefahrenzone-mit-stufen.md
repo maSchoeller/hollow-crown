@@ -13,7 +13,7 @@ damit ich zwischen leicht und sehr gefährlich unterscheiden kann.
 **Angenommen** die Gefahrenzone ist an (Leerlauf-Dock „Gefahr“, PC D)
 **Wenn** das Brett sie zeigt
 **Dann** ist sie eine durchscheinende rote Fläche in drei Stufen (1 / 2 / 3+ Gegner, Deckkraft in `render.yaml`) mit roter Außenkante auf Creme
-**Und** auf Feldern ab 2 Angreifern steht die Zahl im Creme-Kreis, sofern „Zahlen in der Gefahrenzone“ an ist
+**Und** die Felder tragen keine Zahl der Angreifer (Playtest 2026-10-30: überfrachtet; die Stufe zeigt die Menge)
 **Und** eigene Figuren und ihre Lebensleisten bleiben darunter lesbar.
 
 **Angenommen** Gegner mit den KI-Profilen hold/guard, schlafende Gegner (trigger) und angekündigte Verstärkung
@@ -28,8 +28,8 @@ damit ich zwischen leicht und sehr gefährlich unterscheiden kann.
 ## Tasks / Subtasks
 
 - [x] T1 `threatMap` / `threatCounts` (`core/rules/legibility.ts`) aus `threatTiles`: hold/guard ohne Bewegung, schlafende `trigger`-Gegner (`asleep`) zählen nicht und liefern die gestrichelte Kante; `only` für einzelne Gegner
-- [x] T2 Fläche in drei Stufen (`threat.alpha`), rote Außenkante auf Creme, Zahl im Creme-Kreis ab `countFrom` (Textur-Atlas 2..9+, flach in der Südwest-Ecke des Felds, wo keine Figur steht)
-- [x] T3 Option „Zahlen in der Gefahrenzone“; Verstärkungen behalten ihre Ankunftsmarke
+- [x] T2 Fläche in drei Stufen (`threat.alpha`), rote Außenkante auf Creme; die Zahl im Creme-Kreis und ihre Option sind nach dem Playtest 2026-10-30 entfernt
+- [x] T3 Verstärkungen behalten ihre Ankunftsmarke
 - [x] T4 Einzelne Gegner (Tipp, Langdruck, Steckbrief): nur ihre Außenkante in dunklerem Rot (`threat.watch`), auch über der Gesamtzone
 - [x] T5 Tests: Zählung gegen `threatTiles`, hold, Schlafende, `only`
 

@@ -1,4 +1,4 @@
-/* HUD pieces of epic 13 (DESIGN.md: Zielfeld-Pille, Gelände-Chip, Rückblick-Stein, Gegner-Leiste, Zurück an der Figur). */
+/* HUD pieces of epic 13 (DESIGN.md: Zielfeld-Pille, Gelände-Chip, Rückblick-Stein, Gegner-Leiste). */
 
 /* ---------- target-tile pill (story 13.6) ---------- */
 .lg-threat {
@@ -62,28 +62,6 @@
 }
 .lg-chip__val.is-plus {
   color: var(--hc-positive);
-}
-
-/* round back stone beside the ghost figure (story 13.9) */
-.lg-back {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  translate: -50% -50%;
-  padding: 0;
-  border: var(--hc-outline) solid var(--hc-line);
-  border-radius: 50%;
-  background: var(--hc-cream);
-  color: var(--hc-line);
-  box-shadow: 0 3px 0 var(--hc-line);
-  pointer-events: auto;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.lg-back:active {
-  translate: -50% calc(-50% + 2px);
-  box-shadow: 0 1px 0 var(--hc-line);
 }
 
 /* ---------- foe phase recap (story 13.7) ---------- */
