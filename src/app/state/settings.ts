@@ -1,6 +1,7 @@
 /** Player settings: persisted in localStorage, applied to the UI language on load and on change. */
 import { signal } from '@preact/signals';
 import { lang, type Lang } from '../../i18n';
+import { trail } from '../trail';
 
 export interface Settings {
   lang: Lang;
@@ -50,8 +51,21 @@ function loadSettings(): Settings {
 }
 export const settings = signal<Settings>(loadSettings());
 lang.value = settings.value.lang;
+/** Changes go into the action trail together once the player stops for a moment (a slider drag is one entry, not fifty). */
+let changed: Partial<Settings> = {};
+let changeTimer: ReturnType<typeof setTimeout> | undefined;
+function noteChange(p: Partial<Settings>): void {
+  changed = { ...changed, ...p };
+  clearTimeout(changeTimer);
+  changeTimer = setTimeout(() => {
+    trail.record({ kind: 'settings', changed });
+    changed = {};
+  }, 500);
+}
+
 export function updateSettings(p: Partial<Settings>): void {
   settings.value = { ...settings.value, ...p };
+  noteChange(p);
   if (p.lang) lang.value = p.lang;
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings.value));

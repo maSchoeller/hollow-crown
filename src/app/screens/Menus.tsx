@@ -14,6 +14,7 @@ import { Logo } from '../../ui/Logo';
 import '../../ui/title.css';
 import '../../ui/options.css';
 import { LicensesLink } from './Licenses';
+import { ReportSheet } from './ReportSheet';
 
 /** Title (concept/25-ux/mockups/07): one primary "Continue", "Campaigns", "Options", version line. */
 export function Title() {
@@ -112,9 +113,13 @@ const SPEEDS = (): Array<[1 | 2 | 3, string]> => [
   [3, t('ui.opt.skip')],
 ];
 
-/** Options in style B: stones with segment switches and sliders over the blurred camp scene; every change applies and persists at once. */
+/**
+ * Options in style B: stones with segment switches and sliders over the blurred camp scene; every change applies and persists at once.
+ * Below them "Fehler melden" (the bug report sheet, architecture §6.2a) and the licenses.
+ */
 export function Options({ back }: { back: Screen }) {
   const s = settings.value;
+  const [report, setReport] = useState(false);
   const set = <K extends keyof Settings>(k: K) => (v: Settings[K]) => updateSettings({ [k]: v } as Partial<Settings>);
   const seg = <K extends keyof Settings>(label: string, k: K, options: Array<[Settings[K], string]>) => (
     <div class="opt-row" role="group" aria-label={label}>
@@ -152,8 +157,10 @@ export function Options({ back }: { back: Screen }) {
           {slider(t('ui.opt.sfx'), 'sfx')}
           {seg(t('ui.opt.keepAwake'), 'keepAwake', ON_OFF())}
         </Piece>
+        <SecondaryButton onClick={() => setReport(true)}>{t('ui.report.open')}</SecondaryButton>
         <LicensesLink from={{ name: 'options', back }} />
       </div>
+      {report && <ReportSheet onClose={() => setReport(false)} />}
     </div>
   );
 }

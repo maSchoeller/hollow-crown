@@ -4,6 +4,20 @@ import type { BattleState, BattleUnit } from './state';
 
 export const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 
+/**
+ * Checksum of a plain-JSON state (FNV-1a, 32 bit, as 8 hex digits). The action trail stores it after every command so a
+ * replay finds the first step where it ran differently (architecture §6.2a); browser and tools compute it the same way.
+ */
+export function stateHash(v: unknown): string {
+  const s = JSON.stringify(v) ?? '';
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
 /** Whether a step-by-step introduced mechanic applies in this battle. */
 export const ruleOn = (s: { locked?: Mechanic[] }, m: Mechanic): boolean => !s.locked?.includes(m);
 

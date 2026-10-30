@@ -1,0 +1,41 @@
+/* "Fehler melden" sheet: text, note field like the name field of a new campaign, count and status line. */
+.report-sheet {
+  display: grid;
+  gap: 10px;
+}
+.report-sheet p {
+  margin: 0;
+}
+.report-sheet__label {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.report-sheet__note {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--hc-line);
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 16px; /* 16 px keeps iOS from zooming into the field */
+}
+.report-sheet__note:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+.report-sheet__count {
+  font-size: 13px;
+  color: var(--hc-soft);
+  font-variant-numeric: tabular-nums;
+}
+.report-sheet__status {
+  font-weight: 700;
+}

@@ -8,6 +8,7 @@ import {
   keepQueued,
   replayBattle,
   restartKeep,
+  stateHash,
   validateCampaign,
   type BattleState,
   type CampaignCommand,
@@ -18,8 +19,9 @@ import {
   type RestartScope,
 } from '../../core';
 import { applyCommandInWorker } from '../coreWorker';
+import { trail, trailEvents } from '../trail';
 import { autosave, campaign, campaignCommand, data } from './session';
-import { guarded, reportFault } from './fault';
+import { reportFault } from './fault';
 import { screen } from './screen';
 
 export interface BattleSession {
@@ -41,16 +43,39 @@ export function startBattle(nodeId: string, deploy: string[], hauntId?: string):
   const c = campaign.value!;
   const r = hauntId ? beginHauntBattle(data, c, hauntId, deploy) : beginBattle(data, c, nodeId, deploy);
   battle.value = { start: r.state, state: r.state, log: [], effects: [] };
+  trail.record({ kind: 'battleStart', node: nodeId, ...(hauntId ? { haunt: hauntId } : {}), deploy, hash: stateHash(r.state) });
   screen.value = { name: 'battle' };
   autosave('battle');
   return r.events;
 }
 
+/** One battle command in the action trail (architecture §6.2a): where it was played, what came of it, the state's checksum after it. */
+function recordCommand(from: BattleState, i: number, cmd: Command, r: { state: BattleState; events: GameEvent[] } | null, ok: boolean | 'dropped', error?: string): void {
+  trail.record({
+    kind: 'battle',
+    i,
+    turn: from.turn,
+    phase: from.phase,
+    cmd,
+    ok,
+    ...(error ? { error } : {}),
+    ...(r ? { ...trailEvents(r.events), hash: stateHash(r.state) } : {}),
+  });
+}
+
 /** Executes a player command. Returns events for the board to play. */
 export function command(cmd: Command): GameEvent[] {
   const b = battle.value!;
-  const r = guarded(() => applyCommand(data, b.state, cmd), null);
-  if (!r) return []; // invariant violated: the fault screen takes over, the battle stays as it was
+  let r;
+  try {
+    r = applyCommand(data, b.state, cmd);
+  } catch (e) {
+    recordCommand(b.state, b.log.length, cmd, null, false, e instanceof CoreInvariantError ? e.code : String(e));
+    if (!(e instanceof CoreInvariantError)) throw e;
+    reportFault(e); // the fault screen takes over, the battle stays as it was
+    return [];
+  }
+  recordCommand(b.state, b.log.length, cmd, r, true);
   battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
   autosave('battle');
   return r.events;
@@ -64,11 +89,13 @@ export function command(cmd: Command): GameEvent[] {
  */
 export async function commandOffThread(cmd: Command): Promise<GameEvent[] | null> {
   const from = battle.value!.state;
+  const i = battle.value!.log.length;
   let r;
   try {
     r = await applyCommandInWorker(data, from, cmd);
   } catch (e) {
     if (!(e instanceof CoreInvariantError)) throw e;
+    recordCommand(from, i, cmd, null, battle.value?.state !== from ? 'dropped' : false, e.code);
     if (battle.value?.state !== from) return null;
     reportFault(e);
     return [];
@@ -77,7 +104,11 @@ export async function commandOffThread(cmd: Command): Promise<GameEvent[] | null
   // replaces that state; a change that keeps it (queued dialogue effects) must not drop the answer, so the session
   // object is read again here instead of compared.
   const b = battle.value;
-  if (!b || b.state !== from) return null;
+  if (!b || b.state !== from) {
+    recordCommand(from, i, cmd, r, 'dropped');
+    return null;
+  }
+  recordCommand(from, i, cmd, r, true);
   battle.value = { ...b, state: r.state, log: [...b.log, cmd] };
   autosave('battle');
   return r.events;

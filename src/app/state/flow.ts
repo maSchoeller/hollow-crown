@@ -64,6 +64,7 @@ import { fault, reportFault } from './fault';
 import { devResetHint, devSaveFailure } from './protection';
 import { screen, type From, type Screen } from './screen';
 import { log } from '../log';
+import { trail } from '../trail';
 import { addTexts } from '../../i18n';
 import { clone } from '../../core/util';
 import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
@@ -364,6 +365,7 @@ export function runEffects(effects: Effect[]): void {
   const c = campaign.value;
   // like an immediate run, an answer the rules refuse is dropped now, so it cannot stop the mission from finishing later
   const error = c ? validateEffects(data, c, [...flattenQueued(b.effects), ...effects]) : 'not_available';
+  trail.record({ kind: 'effects', queued: !error, ...(error ? { error } : {}), effects });
   if (error) {
     log.warn('core', `dialogue effects refused: ${error}`, effects);
     return;

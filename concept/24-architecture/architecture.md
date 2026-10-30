@@ -113,6 +113,7 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 | AR21 | Speicherschutz | `navigator.storage.persist()`, Installationshinweis, Backup-Erinnerung | Epic 1 | C |
 | AR22 | Fehler | Kern meldet Spielerfehler per `validate`, Invarianten per Ausnahme; App fängt, bietet Fehlerbericht, lädt den letzten Auto-Save | Epic 1 | C |
 | AR23 | Release | Veröffentlichte Akte stehen in `content/packs.yaml` (`released`); unveröffentlichte Pakete kommen nicht in den Build | Epic 7, 9, 11, 12 | C |
+| AR24 | Aktionsprotokoll | Jede Spielaktion mit Ergebnis und Prüfsumme in eigener IndexedDB (2000 Einträge); Fehlerbericht v2 jederzeit aus den Optionen, Auswertung mit `pnpm report` (§6.2a) | – | A |
 
 ## 5. Architektur im Detail
 
@@ -462,6 +463,45 @@ export type WorkerResponse =
 - `src/app/log.ts`: Ringpuffer mit 500 Einträgen, Stufen `error`, `warn`, `info`, `debug`; `debug` nur im Dev-Build oder mit `?debug`.
 - Format `{ t, level, area, msg, data? }`, `area` aus festem Satz (`core`, `content`, `packs`, `save`, `render`, `audio`, `worker`, `ui`).
 - `src/core` loggt nicht; es liefert Events und Fehler. Keine Telemetrie, kein Netzwerk-Logging.
+
+### 6.2a Aktionsprotokoll und Fehler melden (AR24)
+
+**Ziel:** Jeder Fehlerfall lässt sich nachvollziehen und nachmelden, auch wenn das Spiel nicht anhält (falscher Schaden, verschwundene Figur, fehlende Szene). Der Spieler exportiert dafür jederzeit aus dem Menü einen Fehlerbericht, der zeigt, was gespielt wurde, welche Aktionen passiert sind und was daraus folgte.
+
+**Vier Quellen, ein Bericht:**
+
+| Quelle | Inhalt | Lebt | Zweck |
+|---|---|---|---|
+| Journal (§5.2) | gültige Kampagnen-Commands, Checkpoints | `hollow-crown/journal`, ganze Kampagne | exaktes Replay der Kampagne |
+| Kampf-Log | Start und Commands des laufenden Kampfs | Auto-Save | exaktes Replay des Kampfs |
+| **Aktionsprotokoll** (neu) | jede Spielaktion mit Ergebnis, auch abgelehnte; Bildschirme, Laden, Einstellungen, Fehler | eigene IndexedDB `hollow-crown-trail`, letzte **2000 Einträge** über App-Starts hinweg (Startwert) | lesbarer Verlauf; Prüfsummen finden die erste Abweichung beim Replay |
+| Log (§6.2) | technische Meldungen | Speicher, 500 Zeilen | Diagnose |
+
+**Eintrag** `{ n, run, t, kind, … }`: `n` zählt je App-Start (`run`), `t` ist die Uhrzeit. Arten:
+
+| `kind` | Felder | geschrieben von |
+|---|---|---|
+| `app` | App- und Content-Version, Gerät | App-Start |
+| `screen` | Name und einfache Parameter des Bildschirms (ohne Funktionen) | Wechsel von `screen` |
+| `load` | `campaignId`, Grund (`new`, `load`, `import`), Kampf läuft? | `session` |
+| `battleStart` | Knoten, Heimsuchung, Aufstellung, `hash` des Startzustands | `battle.startBattle` |
+| `battle` | `i` (Index im Kampf-Log), Runde, Phase, Command, `ok`/`error`, Events (höchstens 50, dazu `eventCount`), `hash` danach | `battle.command`, `commandOffThread` (verworfene Worker-Antworten als `dropped`) |
+| `campaign` | Command kompakt (Kampf-Logs als Prüfsumme und Länge), `ok`/`error`, Events, `hash` danach | `session.campaignCommand`, auch abgelehnte |
+| `effects` | im Kampf vorgemerkte oder abgelehnte Dialog-Wirkungen | `flow.runEffects` |
+| `settings` | geänderte Einstellungen | `settings.updateSettings` |
+| `fault` | Fehlername, Code, Meldung | `fault.reportFault` |
+
+- **Prüfsumme** `stateHash` (FNV-1a über das JSON des Zustands) liegt rein in `src/core/util.ts`, damit Browser und Werkzeug gleich rechnen.
+- **Schreiben:** sofort in den Speicher, gebündelt in IndexedDB (spätestens nach 1 s und bei `visibilitychange → hidden`/`pagehide`). Scheitert das Schreiben, gibt es eine Warnung im Log; das Spiel blockiert nie. Eigene Datenbank, damit das Speicherformat unberührt bleibt (keine Migration, kein Fixture).
+- `src/core` protokolliert nicht; das Protokoll schreibt der Controller in `src/app` wie das Log. Modul `src/app/trail.ts` (Blatt wie `log.ts`), Speicher `src/persistence/trail.ts`.
+
+**Fehlerbericht, Version 2** (erweitert §6.1): zusätzlich `version: 2`, `reason` (`fault` oder `manual`), `note` (Text des Spielers), `screen`, `history` (das ganze Journal der Kampagne kompakt: Checkpoints ohne Zustand, Commands ohne Kampf-Logs) und `trail` (Aktionsprotokoll). `error` ist `null`, wenn der Spieler ohne Fehler meldet.
+
+**Bedienung:** Optionen → Stein „Fehler melden“ → Sheet mit Textfeld „Was ist passiert?“, Hinweis auf den Inhalt und zwei Knöpfen: „Bericht exportieren“ (auf Touch-Geräten der Teilen-Dialog, sonst Download) und „Protokoll leeren“. Der Fehler-Screen exportiert denselben Bericht mit `reason: fault`. Erreichbar überall, wo die Optionen erreichbar sind (Titel, Weltkarte, Heimat, Kampf).
+
+**Auswerten:** `pnpm report <datei>` zeigt Kopf, Notiz und Fehler, dann das Aktionsprotokoll als Zeilen und prüft das Replay: Kampf (Start + Commands) gegen die Prüfsummen im Protokoll bis zur ersten Abweichung, Kampagne (Checkpoint + Journal) gegen den Zustand im Bericht. Weicht die Content-Version ab, warnt es.
+
+**Datenschutz:** wie §11. Alles bleibt auf dem Gerät, bis der Spieler den Bericht selbst teilt; keine Telemetrie.
 
 ### 6.3 Konfiguration
 

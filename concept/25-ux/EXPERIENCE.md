@@ -123,6 +123,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Kampagnen | leer (nur „Neue Kampagne“) · 1–3 belegt · voll (Neue Kampagne verlangt Löschen) · PoC-Stand vorhanden · Import fehlerhaft (Grund in einem Satz) |
 | Speichern | gespeichert (still) · fehlgeschlagen (Banner, nächster Versuch beim nächsten Commit, Export anbieten) · Speicherschutz fehlt (Hinweis „Zum Home-Bildschirm“, einmal) |
 | Fehler im Kern | „Etwas ist schiefgelaufen“, Fehlerbericht exportieren, letzter Auto-Save (Architektur AR22) |
+| Fehler melden | jederzeit über Optionen → „Fehler melden“: Sheet mit Textfeld „Was ist passiert?“, Zahl der aufgezeichneten Aktionen, „Bericht exportieren“ (Touch: Teilen-Dialog, sonst Download), „Protokoll leeren“ (Architektur AR24, §6.2a) |
 
 ## Interaction Primitives
 
