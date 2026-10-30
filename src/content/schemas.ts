@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/defs';
-import { HAUNT_VARIANTS, PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
+import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS, HAUNT_VARIANTS, PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -892,4 +892,35 @@ export const balanceSchema = z.object({
     }),
     signature: z.strictObject({ chance: z.number().min(0).max(1), guaranteedRout: z.number().int().min(1) }),
   }),
+});
+
+/** Handbook (epic 14, story 14.1): categories in display order; entries with values as content paths, never numbers. */
+const handbookId = z.string().regex(/^[a-z][a-z0-9_]*$/);
+export const handbookSchema = z.strictObject({
+  categories: z.array(z.strictObject({ id: handbookId, icon: z.string().min(1) })).min(1),
+  entries: z.array(
+    z.strictObject({
+      id: handbookId,
+      category: handbookId,
+      graphic: z.enum(HANDBOOK_GRAPHICS).default('icon'),
+      icon: z.string().min(1).optional(),
+      values: z
+        .array(
+          z.strictObject({
+            id: z.string().regex(/^[a-zA-Z][a-zA-Z0-9]*$/),
+            ref: z.string().regex(/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)+$/),
+            label: z.string().regex(/^[a-zA-Z][a-zA-Z0-9]*$/).optional(),
+            format: z.enum(HANDBOOK_FORMATS).default('plain'),
+            icon: z.string().min(1).optional(),
+          }),
+        )
+        .default([]),
+      see: z.array(handbookId).default([]),
+      anchor: z.string().regex(/^[a-z][a-zA-Z0-9_.]*$/).optional(),
+      terrain: z.array(z.string()).min(1).optional(),
+      class: z.string().optional(),
+      lesson: z.string().optional(),
+      fromAct: z.number().int().min(2).optional(),
+    }),
+  ),
 });

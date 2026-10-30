@@ -428,6 +428,7 @@ export function WorldMap() {
             </SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'chronicle', from: 'worldmap' })}>{t('ui.chronicle.title')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'options', back: { name: 'worldmap' } })}>{t('ui.options')}</SecondaryButton>
+            <SecondaryButton onClick={() => (screen.value = { name: 'handbook', back: { name: 'worldmap' } })}>{t('handbook.ui.title')}</SecondaryButton>
             <SecondaryButton onClick={() => (screen.value = { name: 'title' })}>{t('ui.end.toTitle')}</SecondaryButton>
           </Piece>
         )}

@@ -22,6 +22,8 @@ export interface SpeechBandProps {
   auto: boolean;
   onAuto: () => void;
   onDone: () => void;
+  /** element at the right end of the band, e.g. the context "?" of a lesson (story 14.7); a tap on it does not advance */
+  aside?: ComponentChildren;
 }
 
 /** One speaker's page of text: at most two lines (`balance.scene.bubbleMaxChars`). */
@@ -37,7 +39,7 @@ interface Page {
  * heard all the same. Blocks the board until a tap, or `balance.scene.bubbleAutoMs` in auto mode. Only for scenes without
  * choices where every line has a speaker.
  */
-export function SpeechBand({ data, id, ctx, head, seen = false, only, params, speed = 1, auto, onAuto, onSeen, onDone }: SpeechBandProps) {
+export function SpeechBand({ data, id, ctx, head, seen = false, only, params, speed = 1, auto, onAuto, onSeen, onDone, aside }: SpeechBandProps) {
   const cfg = data.balance.scene;
   const pages = useMemo<Page[]>(
     () =>
@@ -78,6 +80,7 @@ export function SpeechBand({ data, id, ctx, head, seen = false, only, params, sp
           <span class={`band__name band__name--${team}`}>{page.speaker === 'avatar' ? t('unit.avatar.name') : t(`unit.${page.speaker}.name`)}</span>
           <span class="band__text">{page.text}</span>
         </div>
+        {aside}
       </div>
     </div>
   );

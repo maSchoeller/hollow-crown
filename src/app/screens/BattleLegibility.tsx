@@ -11,6 +11,7 @@ import { unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { SecondaryButton } from '../../ui/pieces';
 import { Head } from './BattleHud';
+import { HelpStone } from './HelpStone';
 import './BattleLegibility.css';
 
 /** "⚠ n Gegner erreichen dieses Feld" under the goal pills (story 13.6); nothing at 0, cream at 1, light red from 2. */
@@ -41,6 +42,7 @@ export function TerrainChip({ data, s, p }: { data: GameData; s: BattleState; p:
       {val('shield', t('ui.stat.def'), terr.def)}
       {val('avoid', t('ui.avoid'), terr.avoid)}
       {terr.heal ? val('healer', t('ui.heal'), terr.heal, '%') : null}
+      <HelpStone anchor={`terrain.${terr.id}`} />
     </span>
   );
 }

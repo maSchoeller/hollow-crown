@@ -1,0 +1,367 @@
+# Handbuch (Epic 14, Architektur §8.3, UX: EXPERIENCE.md „Handbuch“, Mockup concept/25-ux/mockups/10-lesbarkeit-handbuch.html).
+# Texte unter handbook.* in core/locales/<lang>.handbook.yaml: Kategorie name/sub, Eintrag title/text/where/keywords
+# (Stichworte kommagetrennt für die Suche), Klassen zusätzlich strong.1–3 und weak.1–3, Wert-Beschriftung handbook.label.<label|id>.
+# Zahlen stehen nie hier und nie in den Texten: values sind Pfade in die Content-Daten (balance.triangle.hit, terrain.forest.avoid,
+# classes.vanguard.mov), die Texte setzen sie als {id} ein. content:check prüft Schlüssel, Pfade, Querverweise und Anker.
+# graphic: icon (großes Symbol), triangle (Waffendreieck aus balance), elements (Kreislauf aus balance), terrain (Tabelle der
+# Gelände aus terrain.yaml), class (Steckbrief aus classes.yaml), lesson (Zeilen der Lektions-Szene), rarity (Tabelle aus balance).
+# format: plain 15 · signed +15 · percent 15% · signedPercent +15% · factor ×3 · factorPercent 1.2 → +20% · share 0.1 → 10%.
+# anchor: Kontext-„?“ im Spiel (forecast, status.<id>); Gelände, Klassen und Lektionen bekommen terrain.<id>, class.<id>, lesson.<szene>.
+# fromAct: die Regel kommt erst mit diesem Akt (Epic 10) und steht als „ab Akt n“ da.
+
+categories:
+  - { id: basics, icon: book }
+  - { id: combat, icon: attack }
+  - { id: weapons, icon: blade }
+  - { id: terrain, icon: map }
+  - { id: status, icon: fire }
+  - { id: lieutenants, icon: wanted }
+  - { id: death, icon: rescue }
+  - { id: home, icon: castle }
+  - { id: items, icon: bag }
+  - { id: classes, icon: company }
+  - { id: lessons, icon: log }
+
+entries:
+  # ------------------------------------------------------------------ Grundlagen
+  - id: phases
+    category: basics
+    icon: end
+    see: [movement, danger, saving]
+  - id: movement
+    category: basics
+    icon: next
+    see: [phases, terrain_cover, weight]
+  - id: danger
+    category: basics
+    icon: danger
+    see: [movement, forecast, lesson_danger]
+  - id: saving
+    category: basics
+    icon: save
+    see: [death_modes, phases]
+
+  # ------------------------------------------------------------------ Kampf
+  - id: forecast
+    category: combat
+    icon: target
+    anchor: forecast
+    see: [hit_chance, damage, crit, double_attack, triangle, elements]
+  - id: hit_chance
+    category: combat
+    icon: target
+    values:
+      - { id: perSkl, ref: balance.combat.hitPerSkl, format: factor, icon: target }
+      - { id: lckDiv, ref: balance.combat.hitPerLckDivisor, icon: star }
+      - { id: perAs, ref: balance.combat.avoidPerAs, format: factor, icon: avoid }
+    see: [forecast, terrain_cover, triangle, supports]
+  - id: damage
+    category: combat
+    icon: attack
+    values:
+      - { id: effective, ref: balance.combat.effectiveMightMultiplier, format: factor, icon: star }
+    see: [forecast, triangle, elements, crit, double_attack]
+  - id: crit
+    category: combat
+    icon: star
+    values:
+      - { id: sklDiv, ref: balance.combat.critPerSklDivisor, icon: target }
+      - { id: mult, ref: balance.combat.critMultiplier, format: factor, icon: attack }
+    see: [damage, forecast]
+  - id: double_attack
+    category: combat
+    icon: skip
+    values:
+      - { id: lead, ref: balance.combat.doubleAttackThreshold, icon: next }
+    see: [weight, forecast]
+  - id: supports
+    category: combat
+    icon: company
+    values:
+      - { id: rankC, ref: balance.supports.thresholds.C, icon: star }
+      - { id: rankB, ref: balance.supports.thresholds.B, icon: star }
+      - { id: rankA, ref: balance.supports.thresholds.A, icon: star }
+      - { id: rankS, ref: balance.supports.thresholds.S, icon: star }
+      - { id: tandem, ref: balance.supports.tandemDamagePercent, format: percent, icon: attack }
+      - { id: guardA, ref: balance.supports.guardChance.A, format: percent, icon: shield }
+      - { id: guardS, ref: balance.supports.guardChance.S, format: percent, icon: shield }
+      - { id: grief, ref: balance.supports.griefHitPenalty, icon: target }
+      - { id: griefMissions, ref: balance.supports.griefMissions, icon: log }
+    see: [hit_chance, rooms]
+
+  # ------------------------------------------------------------------ Waffen & Elemente
+  - id: triangle
+    category: weapons
+    graphic: triangle
+    values:
+      - { id: hit, ref: balance.triangle.hit, format: signed, icon: target }
+      - { id: dmg, ref: balance.triangle.damage, format: signed, icon: attack }
+    see: [hit_chance, elements, forecast]
+  - id: elements
+    category: weapons
+    graphic: elements
+    values:
+      - { id: adv, ref: balance.element.advantage, format: factorPercent, icon: attack }
+      - { id: dis, ref: balance.element.disadvantage, format: factorPercent, icon: attack }
+      - { id: same, ref: balance.element.sameElement, format: factorPercent, icon: attack }
+      - { id: elemMax, ref: balance.element.maxBonusPercent, format: signedPercent, icon: star }
+    see: [triangle, magic, status_burning, runes]
+  - id: magic
+    category: weapons
+    icon: cast
+    see: [elements, damage, class_elementalist]
+
+  # ------------------------------------------------------------------ Gelände
+  - id: terrain_open
+    category: terrain
+    graphic: terrain
+    terrain: [plain, grass, road, bridge, field, relief]
+    see: [terrain_cover, movement]
+  - id: terrain_cover
+    category: terrain
+    graphic: terrain
+    terrain: [forest, ruins, sand, village]
+    see: [hit_chance, terrain_mountain, fire]
+  - id: terrain_mountain
+    category: terrain
+    graphic: terrain
+    terrain: [mountain]
+    see: [terrain_cover, class_scout]
+  - id: terrain_water
+    category: terrain
+    graphic: terrain
+    terrain: [shallows, river]
+    see: [terrain_open, status_wet]
+  - id: terrain_fort
+    category: terrain
+    graphic: terrain
+    terrain: [fort, throne, gate, shrine]
+    see: [terrain_cover, hit_chance]
+  - id: terrain_blocked
+    category: terrain
+    graphic: terrain
+    terrain: [wall, wagon, stall, brazier, well, fence, farm, building]
+    see: [doors, rockwall, fog]
+  - id: doors
+    category: terrain
+    graphic: terrain
+    terrain: [door, door_open]
+    see: [class_scout, terrain_blocked]
+  - id: fire
+    category: terrain
+    graphic: terrain
+    terrain: [burning, ash]
+    values:
+      - { id: fireRounds, ref: balance.terrainEffects.burningDuration, icon: wait }
+      - { id: enter, ref: balance.terrainEffects.burningEnterDamage, icon: fire }
+      - { id: spread, ref: balance.terrainEffects.burningSpreadChance, format: percent, icon: fire }
+    see: [status_burning, magic, terrain_cover]
+  - id: rockwall
+    category: terrain
+    graphic: terrain
+    terrain: [rockwall]
+    values:
+      - { id: wallRounds, ref: balance.terrainEffects.rockwallDuration, icon: wait }
+    see: [magic, terrain_blocked]
+  - id: fog
+    category: terrain
+    icon: info
+    values:
+      - { id: base, ref: balance.fog.baseVision, icon: info }
+      - { id: marksman, ref: balance.fog.roleBonus.marksman, format: signed, icon: bow }
+      - { id: scout, ref: balance.fog.roleBonus.scout, format: signed, icon: steal }
+      - { id: flier, ref: balance.fog.moveTypeBonus.flier, format: signed, icon: wind }
+      - { id: wind, ref: balance.terrainEffects.windFogClearRadius, icon: wind }
+    see: [class_scout, magic, terrain_blocked]
+
+  # ------------------------------------------------------------------ Zustände
+  - id: status_burning
+    category: status
+    icon: fire
+    anchor: status.burning
+    values:
+      - { id: rounds, ref: balance.status.durationRounds, icon: wait }
+      - { id: burn, ref: balance.status.burnPercentMaxHp, format: percent, icon: fire }
+    see: [fire, elements, runes]
+  - id: status_wet
+    category: status
+    icon: water
+    anchor: status.wet
+    values:
+      - { id: rounds, ref: balance.status.durationRounds, icon: wait }
+      - { id: spd, ref: balance.status.wetSpdPenalty, icon: skip }
+    see: [double_attack, elements, terrain_water]
+  - id: status_slowed
+    category: status
+    icon: earth
+    anchor: status.slowed
+    values:
+      - { id: rounds, ref: balance.status.durationRounds, icon: wait }
+      - { id: slowMov, ref: balance.status.slowMovPenalty, icon: next }
+    see: [movement, elements]
+  - id: status_knockback
+    category: status
+    icon: wind
+    anchor: status.knockback
+    values:
+      - { id: blocked, ref: balance.status.knockbackBlockedDamage, icon: attack }
+    see: [elements, runes]
+
+  # ------------------------------------------------------------------ Leutnants
+  - id: grudge
+    category: lieutenants
+    icon: wanted
+    values:
+      - { id: grudgeMax, ref: balance.lieutenant.grudge.max, icon: wanted }
+      - { id: aim, ref: balance.ai.grudgeTargetBonus, format: signed, icon: target }
+      - { id: army, ref: balance.lieutenant.scaling.armySize, icon: company }
+    see: [lt_flee, bounty, haunts]
+  - id: lt_flee
+    category: lieutenants
+    icon: flee
+    see: [grudge, bounty, forecast]
+  - id: bounty
+    category: lieutenants
+    icon: gold
+    values:
+      - { id: bountyGold, ref: balance.lieutenant.bounty.goldPerLevel, icon: gold }
+      - { id: matMin, ref: balance.lieutenant.bounty.materials.min, icon: box }
+      - { id: matMax, ref: balance.lieutenant.bounty.materials.max, icon: box }
+      - { id: chance, ref: balance.lieutenant.signature.chance, format: share, icon: star }
+      - { id: sure, ref: balance.lieutenant.signature.guaranteedRout, icon: star }
+    see: [grudge, haunts]
+  - id: haunts
+    category: lieutenants
+    icon: map
+    values:
+      - { id: perDayMin, ref: balance.haunt.perDay.min, icon: map }
+      - { id: perDayMax, ref: balance.haunt.perDay.max, icon: map }
+      - { id: hauntOpen, ref: balance.haunt.maxOpen, icon: map }
+      - { id: hauntGold, ref: balance.haunt.goldPct, format: percent, icon: gold }
+      - { id: hauntExp, ref: balance.haunt.expPct, format: percent, icon: star }
+      - { id: halve, ref: balance.haunt.halveFromNth, icon: gold }
+    see: [grudge, bounty]
+
+  # ------------------------------------------------------------------ Tod & Bergen
+  - id: downed
+    category: death
+    icon: fallen
+    see: [bleed_out, rescue, death_modes]
+  - id: bleed_out
+    category: death
+    icon: wait
+    values:
+      - { id: phases, ref: balance.death.bleedOutTurns, icon: wait }
+    see: [downed, rescue, scars]
+  - id: rescue
+    category: death
+    icon: rescue
+    values:
+      - { id: far, ref: balance.classActions.farRescue.range, icon: farRescue }
+      - { id: rescueExp, ref: balance.experience.rescueOrTalk, icon: star }
+    see: [downed, bleed_out, class_healer]
+  - id: scars
+    category: death
+    icon: scar
+    values:
+      - { id: limit, ref: balance.death.scarsUntilInstantDeath, icon: scar }
+      - { id: cost, ref: balance.economy.scarRemoval.gold, icon: gold }
+    see: [rescue, rooms]
+  - id: death_modes
+    category: death
+    icon: fallen
+    see: [downed, bleed_out, saving]
+
+  # ------------------------------------------------------------------ Heimat
+  - id: camp_castle
+    category: home
+    icon: camp
+    see: [rooms, trade]
+  - id: rooms
+    category: home
+    icon: castle
+    see: [camp_castle, rooms_upgrade, supports]
+  - id: rooms_upgrade
+    category: home
+    icon: castle
+    fromAct: 2
+    see: [rooms, ember_spark]
+  - id: trade
+    category: home
+    icon: merchant
+    values:
+      - { id: sell, ref: balance.economy.sellRatio, format: share, icon: gold }
+      - { id: convoy, ref: balance.economy.convoySize, icon: convoy }
+    see: [rooms, upgrade]
+  - id: ember_spark
+    category: home
+    icon: star
+    fromAct: 2
+    values:
+      - { id: level, ref: balance.levels.promoteFrom, icon: star }
+      - { id: price, ref: items.ember_spark.price, icon: gold }
+    see: [rooms_upgrade, class_vanguard]
+
+  # ------------------------------------------------------------------ Items
+  - id: rarity
+    category: items
+    graphic: rarity
+    see: [upgrade, runes, sets]
+  - id: upgrade
+    category: items
+    icon: smith
+    values:
+      - { id: might, ref: balance.economy.upgradePerLevel.weaponMight, format: signed, icon: attack }
+      - { id: upHit, ref: balance.economy.upgradePerLevel.weaponHit, format: signed, icon: target }
+      - { id: armor, ref: balance.economy.upgradePerLevel.armorDefOrRes, format: signed, icon: shield }
+      - { id: first, ref: balance.economy.upgradeCost.0.gold, icon: gold }
+      - { id: campMax, ref: balance.economy.smithMaxUpgrade.0, format: signed, icon: smith }
+    see: [rarity, trade]
+  - id: runes
+    category: items
+    icon: enchanter
+    fromAct: 2
+    values:
+      - { id: two, ref: balance.status.rune2StatusChance, format: percent, icon: enchanter }
+      - { id: three, ref: balance.status.rune3StatusChance, format: percent, icon: enchanter }
+      - { id: merge, ref: balance.economy.runeMerge.count, icon: enchanter }
+    see: [elements, rarity, status_burning]
+  - id: sets
+    category: items
+    icon: shield
+    see: [rarity, upgrade]
+  - id: weight
+    category: items
+    icon: bag
+    values:
+      - { id: foot, ref: balance.weight.carryBonus.foot, format: signed, icon: bag }
+      - { id: armored, ref: balance.weight.carryBonus.armored, format: signed, icon: bag }
+      - { id: over1, ref: balance.weight.movPenalty.0.overload, icon: bag }
+      - { id: mov1, ref: balance.weight.movPenalty.0.mov, icon: next }
+      - { id: over2, ref: balance.weight.movPenalty.1.overload, icon: bag }
+      - { id: mov2, ref: balance.weight.movPenalty.1.mov, icon: next }
+      - { id: bag, ref: balance.bag.size, icon: bag }
+    see: [double_attack, movement]
+
+  # ------------------------------------------------------------------ Klassen (nur spielbare, content:check verlangt jede)
+  - { id: class_tactician, category: classes, graphic: class, class: tactician, see: [class_captain, phases] }
+  - { id: class_captain, category: classes, graphic: class, class: captain, see: [class_tactician, supports] }
+  - { id: class_vanguard, category: classes, graphic: class, class: vanguard, see: [class_bulwark, class_breaker, terrain_cover] }
+  - { id: class_skirmisher, category: classes, graphic: class, class: skirmisher, see: [class_duelist, double_attack] }
+  - { id: class_marksman, category: classes, graphic: class, class: marksman, see: [class_sharpshooter, fog] }
+  - { id: class_elementalist, category: classes, graphic: class, class: elementalist, see: [class_sage, magic, elements] }
+  - { id: class_healer, category: classes, graphic: class, class: healer, see: [class_bishop, rescue] }
+  - { id: class_scout, category: classes, graphic: class, class: scout, see: [doors, fog, terrain_mountain] }
+  - { id: class_minstrel, category: classes, graphic: class, class: minstrel, see: [class_captain, supports] }
+  - { id: class_duelist, category: classes, graphic: class, class: duelist, see: [class_skirmisher, ember_spark] }
+  - { id: class_bulwark, category: classes, graphic: class, class: bulwark, see: [class_vanguard, ember_spark] }
+  - { id: class_breaker, category: classes, graphic: class, class: breaker, see: [class_vanguard, ember_spark] }
+  - { id: class_sharpshooter, category: classes, graphic: class, class: sharpshooter, see: [class_marksman, ember_spark] }
+  - { id: class_sage, category: classes, graphic: class, class: sage, see: [class_elementalist, ember_spark] }
+  - { id: class_bishop, category: classes, graphic: class, class: bishop, see: [class_healer, ember_spark] }
+
+  # ------------------------------------------------------------------ Lektionen (Text aus den Szenen selbst, keine Kopie)
+  - { id: lesson_move, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_move, see: [movement, forecast] }
+  - { id: lesson_danger, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_danger, see: [danger, terrain_cover] }
+  - { id: lesson_heal, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_heal, see: [rescue, phases] }
+  - { id: lesson_triangle, category: lessons, graphic: lesson, lesson: scn.m1_1.tutorial_triangle, see: [triangle, forecast] }

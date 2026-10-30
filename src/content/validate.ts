@@ -11,6 +11,7 @@ import { areaTiles, pairKey, posKey } from '../core/util';
 import { hauntEnemyCount, hauntPlaces } from '../core/campaign/haunts';
 import { standableTiles } from '../core/battle/hauntMap';
 import { BARK_LINES } from './barkLines';
+import { validateHandbook } from './validateHandbook';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import { validatePropVariants, validateStatusIcons, validateWeather } from './validateLook';
 import type { ContentIssue, Locales } from './load';
@@ -322,6 +323,7 @@ export function validateContent(
   }
   validateLieutenants(data, locales, err, lieutenantFiles);
   validateHauntPools(data, locales, err, spriteIds);
+  validateHandbook(data, locales, err);
   // map triggers set flags of the register
   for (const map of Object.values(data.maps))
     for (const t of map.triggers)

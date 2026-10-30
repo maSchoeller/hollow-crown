@@ -43,6 +43,8 @@ export interface DialogueProps {
   head?: (unit: string) => ComponentChildren;
   /** the scene ended (read to the end or skipped) */
   onDone: () => void;
+  /** element in the top right corner of the text box, e.g. the context "?" of a lesson (story 14.7) */
+  aside?: ComponentChildren;
   /** records that the scene was seen (called just before `onDone`) */
   onSeen?: (id: string) => void;
   auto: boolean;
@@ -99,7 +101,7 @@ function Sparks() {
 }
 
 /** Visual-novel scene: blurred place, speaker as a bright half figure, listeners dimmed, glow-pill name tag, Log/Auto/Skip, tap to go on (mockup 05). */
-export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, rewards, head = noHead, onDone, onSeen, onLine }: DialogueProps) {
+export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, rewards, head = noHead, onDone, onSeen, onLine, aside }: DialogueProps) {
   const def = data.scenes[id];
   // the story as the scene began: an answer that sends a companion away must not change who spoke the lines before it;
   // later lines follow the answer through the flags it sets (`local`)
@@ -243,6 +245,7 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
       <SceneTools seen={wasSeen} auto={auto} onAuto={onAuto} onLog={() => setLog(true)} onSkip={skip} locked={!!choice?.decision} />
       <div class={`vn-box ${choice?.decision ? 'vn-box--decision' : ''}`} onClick={(e) => choice && e.stopPropagation()}>
         {speaking && <span class={`vn-name vn-name--${speakerSide} vn-name--${teamOf(speaking)}`}>{nameOf(speaking)}</span>}
+        {aside && <span class="vn-aside">{aside}</span>}
         {choice ? (
           <div class="vn-choices">
             {choice.decision ? (

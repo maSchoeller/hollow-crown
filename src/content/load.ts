@@ -11,6 +11,7 @@ import type {
   ClassDef,
   FlagDef,
   GameData,
+  HandbookDef,
   HomeKind,
   HomeViewDef,
   ItemDef,
@@ -42,6 +43,7 @@ import {
   sceneSchema,
   supportPairSchema,
   flagSchema,
+  handbookSchema,
   homeSchema,
   itemSchema,
   lieutenantSchema,
@@ -246,6 +248,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);
+  const handbook = parseOne<HandbookDef>('handbook.yaml', get('core/handbook.yaml'), handbookSchema, issues);
   const { maps, scenes, chronicle, memorials, supports, lieutenants, hauntPools, locales } = parsePackFiles(files, issues);
   resolveLieutenantClasses(maps, lieutenants, issues);
   // runes are items too (they sit in the convoy and get sold/bought)
@@ -283,6 +286,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     world: world as WorldDef,
     lieutenants,
     hauntPools,
+    handbook: handbook ?? undefined,
   };
   return { data, locales, issues };
 }

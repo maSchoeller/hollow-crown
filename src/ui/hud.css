@@ -690,6 +690,15 @@
 .hud-fc__head > .hud-l1 {
   white-space: nowrap;
 }
+/* "vs" with the context "?" of the forecast below it (story 14.7) */
+.hud-fc__mid {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+.hud-fc__mid .hud-l1 {
+  white-space: nowrap;
+}
 .hud-fc__who {
   display: flex;
   align-items: center;

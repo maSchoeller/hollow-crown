@@ -31,6 +31,7 @@ import { ItemInfoButton, ItemSheetPortal, useLongPress } from '../../ui/ItemShee
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { data } from '../state/session';
 import { Medallion, roleIcon } from './BattleHud';
+import { HelpStone } from './HelpStone';
 import '../../ui/battle-panels.css';
 
 const AI_TEXT: Record<string, string> = {
@@ -132,6 +133,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
                 {u.status.map((x) => (
                   <span class="bp-chip" key={x.id}>
                     {t(`ui.status.${x.id}`)} {x.turns}
+                    <HelpStone anchor={`status.${x.id}`} />
                   </span>
                 ))}
               </span>
@@ -244,6 +246,7 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
 export function BattleMenu({
   onClose,
   onOptions,
+  onHandbook,
   onRestartRound,
   onRestartMission,
   onLeaveMission,
@@ -251,6 +254,8 @@ export function BattleMenu({
 }: {
   onClose: () => void;
   onOptions: () => void;
+  /** the handbook as a sheet over the battle (story 14.2) */
+  onHandbook: () => void;
   /** absent when the death mode does not allow it (story 1.5, `canRestart`) */
   onRestartRound?: () => void;
   onRestartMission?: () => void;
@@ -280,6 +285,9 @@ export function BattleMenu({
       <div class="bp-choices">
         <Choice icon="gear" onClick={onOptions}>
           {t('ui.options')}
+        </Choice>
+        <Choice icon="book" onClick={onHandbook}>
+          {t('handbook.ui.title')}
         </Choice>
         {onRestartRound && (
           <Choice icon="rewind" onClick={onRestartRound}>
