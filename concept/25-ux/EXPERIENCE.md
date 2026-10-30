@@ -2,7 +2,7 @@
 title: 'EXPERIENCE.md – Hollow Crown, Staffel 1'
 status: final
 created: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-30
 form_factor: Handy-Browser im Hochformat (PWA), dazu Tablet und PC-Browser mit Maus; später Capacitor
 sources:
   - concept/20-game-brief/brief.md
@@ -51,9 +51,11 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene | `mockups/08-ergebnis-abschied.html` |
 | Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen | `mockups/08-ergebnis-abschied.html` |
 | Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region | `mockups/08-ergebnis-abschied.html` |
-| Optionen | Titel, Menü | Sprache, Tempo, Gefahrenzone, Qualität, Lautstärke, Bildschirmwackeln, Figuren 3D/2D | – (Bestand 09 §5) |
+| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln, Figuren 3D/2D; Block **Brett-Anzeige**: Raster, Lebensleisten, Zahlen in der Gefahrenzone, Gegner-Leiste, Gefahrenzone standardmäßig | – (Bestand 09 §5; Block Brett-Anzeige `mockups/10-lesbarkeit-handbuch.html`) |
+| Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen | `mockups/10-lesbarkeit-handbuch.html` |
+| Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen | `mockups/10-lesbarkeit-handbuch.html` |
 
-**Navigation:** Die Weltkarte ist der Hub. Die Leiste unten hat vier Steine: Heimat (auf der Heimat: Weltkarte), Truppe, Steckbriefe, Chronik. Das Menü (rund, oben rechts) enthält Speichern (nicht in Klassik), Optionen und Titel. Vollbild-Ansichten haben oben links einen runden Zurück-Stein. Nichts liegt tiefer als zwei Ebenen unter dem Hub.
+**Navigation:** Die Weltkarte ist der Hub. Die Leiste unten hat vier Steine: Heimat (auf der Heimat: Weltkarte), Truppe, Steckbriefe, Chronik. Das Menü (rund, oben rechts) enthält Speichern (nicht in Klassik), Optionen, Handbuch und Titel; im Kampf steht das Handbuch an zweiter Stelle direkt unter Optionen. Vollbild-Ansichten haben oben links einen runden Zurück-Stein. Nichts liegt tiefer als zwei Ebenen unter dem Hub.
 
 ## Voice and Tone
 
@@ -80,7 +82,20 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Klassen-Aktion | fester Platz neben Angriff; Zähler zeigt Restnutzungen (1×/Karte); Tipp öffnet die Zielauswahl mit Vorschau wie beim Angriff. Passive Rollen (Vorkämpfer: Halten, Plänkler: Nachsetzen): Rollen-Symbol als Zustand (bereit/aktiv), nicht auslösbar, Tipp erklärt die Regel mit Vorschau |
 | Kontext-Band | erscheint über der Einheitenkarte, sobald Bergen, Ansprechen, Besuchen oder Öffnen auf dem Zielfeld möglich ist; ein Tipp führt die Aktion aus; das Dock bleibt unverändert |
 | Leerlauf-Dock | Gefahr (Umschalter), Nächste (nächste bereite Einheit), Phase beenden (zeigt bereite Einheiten, fragt nach, solange welche bereit sind) |
-| Kampfvorschau | öffnet beim Tipp auf ein Ziel; zweiter Tipp auf dasselbe Ziel oder „Angreifen“ bestätigt; zeigt „flieht“ statt 0 TP bei Leutnants |
+| Kampfvorschau | öffnet beim Tipp auf ein Ziel; zweiter Tipp auf dasselbe Ziel oder „Angreifen“ bestätigt; zeigt „flieht“ statt 0 TP bei Leutnants; der Teil der Lebensleiste des Ziels, den der Angriff nimmt, blinkt; Werte tragen ein Kontext-„?“ |
+| Raster | Eckpunkte (kleine Kreuze an den Feldecken) liegen dezent über dem ganzen Brett; Option „Raster: aus / dezent / stark“, stark = feine Linien überall; Standard dezent |
+| Bewegungsbereich | bei gewählter Einheit Einzelkacheln mit kleiner Lücke und einer gemeinsamen Außenkante, Angriffsfelder ebenso in Rot; der gesetzte Weg als dicker, runder Pfeil mit Spitze am Ziel |
+| Lebensleiste | über dem Kopf jeder Figur auf dem Brett; Option „Lebensleisten: Immer / Nur verletzte / Aus“, Standard „Immer“; bleibt in der Gegnerphase sichtbar und folgt jedem Treffer |
+| Gefahrenzone | Umschalter „Gefahr“ (Leerlauf-Dock, PC: D): durchscheinende Fläche in drei Stufen (1 / 2 / 3+ Gegner) mit roter Außenkante, Zahl der Angreifer auf Feldern ab 2 (Option „Zahlen in der Gefahrenzone“, Standard an). Wache und Halten rechnen ohne Bewegung; schlafende Gegner zählen nicht, ihre Zone steht als gestrichelte Kante da. Langdruck auf einen Gegner zeigt nur seine Zone als Kante |
+| Zielfeld-Check | sobald ein Zielfeld gesetzt ist (Geist-Figur) bzw. am PC beim Hover: gestrichelte Linien von jedem Gegner, der das Feld in seiner nächsten Phase erreicht, eine Pille „n Gegner erreichen dieses Feld“ (0: keine Pille) und der Gelände-Chip des Felds (Name, Verteidigung, Ausweichen, Heilung, Symbol + Zahl); zählt nach denselben Regeln wie die Gefahrenzone |
+| Kill-Marker | bei gewählter Einheit über jedem Gegner, den sie in dieser Phase erreichen kann: voller Totenkopf = fällt bei einem Treffer (inklusive Doppelangriff), halber = nur mit Krit; Leutnants zeigen statt Totenkopf die Flucht-Marke; gerechnet mit dem Formelcode der Vorschau |
+| Warnung eigene Figur | in der Spielerphase grauer Totenkopf mit „!“ über eigenen Figuren, deren TP der Schaden aller Gegner, die sie erreichen, bei Treffer erreicht (ohne Krit und Trefferchance) |
+| Gegnerphase-Rückblick | Stein über der Einheitenkarte direkt nach der Gegnerphase, nur wenn etwas geschah: Niedergestreckte und Gefallene zuerst (mit Verblutungs-Zähler und „Figur zeigen“), dann Treffer auf eigene Figuren (TP vorher → nachher, Verfehlt als „weicht aus“), dann Verstärkungen und geweckte Gegner mit Sprung zur Stelle; der erste Tipp aufs Brett schließt ihn, nie blockierend |
+| Gegner-Leiste | Option (Standard aus): Medaillons aller sichtbaren Gegner mit TP-Ring unter den Ziel-Pillen, Leutnant mit Goldring; Tipp zentriert den Gegner, Langdruck öffnet seine Info |
+| Fertig-Häkchen | grünes Häkchen über Figuren, die in dieser Phase gehandelt haben, zusätzlich zur Entsättigung |
+| Zurück an der Figur | nach dem Setzen eines Zielfelds steht ein runder Zurück-Stein neben der Geist-Figur; PC: Rechtsklick nimmt die Bewegung zurück |
+| Kontext-„?“ | runder Stein mit „?“ an Werten, die eine Regel tragen (Kampfvorschau, Gelände-Chip, Zustands-Symbole, Lektionen); Tipp öffnet den passenden Handbuch-Eintrag als Blatt über dem Kampf |
+| Handbuch | Kopf mit Zurück-Stein und Titelpille, Suchfeld, Kategorien als Steine im Zweier-Raster; Eintrag mit Grafik, Werten aus den Daten (nie abgetippt), einem Satz „wo im Spiel“ und Querverweisen als Chips; alle Einträge sind von Anfang an sichtbar (Entdecken folgt später) |
 | Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
 | Sprechband | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen; sitzt fest am Bildschirm, die Kamera bewegt sich nicht, der Sprecher muss nicht auf dem Brett stehen; Barks und Leutnant-Zeilen laufen ebenso, ohne Tipp und mit Brett-Tempo |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
@@ -100,8 +115,8 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 
 | Fläche | Zustände |
 |---|---|
-| Kampf | Leerlauf · Einheit gewählt · Bewegung gesetzt (zurücknehmbar bis zur Aktion) · Ziel gewählt (Vorschau) · Gegnerphase (Tempo 1×/2×/Überspringen) · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
-| Einheit | bereit · erschöpft (entsättigt, Ring gestrichelt) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
+| Kampf | Leerlauf · Einheit gewählt (Kill-Marker) · Bewegung gesetzt (zurücknehmbar bis zur Aktion, Zielfeld-Check) · Ziel gewählt (Vorschau, Schaden in der Lebensleiste) · Gegnerphase (Tempo 1×/2×/Überspringen) · Rückblick nach der Gegnerphase · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
+| Einheit | bereit · in Gefahr (Warn-Totenkopf) · erschöpft (entsättigt, Ring gestrichelt, Häkchen) · kritisch (Lebensleiste unter 25 % mit pulsierendem Glutrand) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
 | Weltkarte | normal · neuer Tag (Hinweis mit Zahl der Heimsuchungen) · Paket lädt · Akt beendet, nächster nicht veröffentlicht („erscheint bald“ im Nebel) · offline mit fehlendem Paket (Knoten sichtbar, „Wird geladen, sobald du online bist“) |
 | Heimat | Lager (Akt 1 bis Mission 1-6, sechs Stationen) · Burg (ab 1-6: sechs Räume auf Stufe 1 und Gedächtnishalle; ab Akt 2 elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
 | Szene | Zeile · Sprecher fehlt (Ersatzsprecher, ggf. Gedenkzeile) · Entscheidung · Folgen · Log |
@@ -115,18 +130,19 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Eingabe | Wirkung |
 |---|---|
 | Tipp | wählen, bestätigen, weiter |
+| Doppeltipp auf eine Figur | Kamera zentriert die Figur |
 | Zweiter Tipp auf dasselbe Ziel | bestätigen (Bewegung, Angriff, Antwort) |
 | Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners, Item-Details |
-| Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett, 2 auf der Weltkarte) |
+| Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett plus eine vierte „ganze Karte“ beim Herauspinchen über die weiteste Stufe; 2 auf der Weltkarte) |
 | Ziehen | Kamera verschieben |
 | Wischen | nächste Figur, nächste Epilog-Kachel, nächstes Kontext-Band (Punkte-Anzeige darunter) |
-| PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone, F = vorderes Kontext-Band ausführen, Pfeiltasten = zwischen Kontext-Bändern |
+| PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Hover über ein Zielfeld = Zielfeld-Check, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone, M = ganze Karte, F = vorderes Kontext-Band ausführen, Pfeiltasten = zwischen Kontext-Bändern |
 | Zurück | jede Ansicht hat einen Zurück-Stein; Abbrechen ist nie ein Verlust (außer nach bestätigter Aktion) |
 
 ## HUD & Diegetic UI
 
-- **Nicht diegetisch** (Overlay): Rundenpille, Ziel-Pillen, Einheitenkarte, Dock, Leiste, Panels.
-- **Diegetisch** (in der 3D-Welt): Bodenringe in Teamfarbe, Groll-Wimpel, Verblutungs-Zähler über der Figur, Markierungen auf Feldhöhe, Ausbauteile und Gefährten-Gegenstände in der Burg. Der Nebel der Weltkarte ist ein Verlauf über dem Bild, nicht diegetisch in 3D.
+- **Nicht diegetisch** (Overlay): Rundenpille, Ziel-Pillen, Gegner-Leiste, Zielfeld-Pille, Gegnerphase-Rückblick, Einheitenkarte, Dock, Leiste, Panels.
+- **Diegetisch** (in der 3D-Welt): Bodenringe in Teamfarbe, Groll-Wimpel, Verblutungs-Zähler, Lebensleisten, Kill- und Warn-Marker und Fertig-Häkchen über der Figur, Raster-Eckpunkte, Bereichskacheln, Weg-Pfeil und Markierungen auf Feldhöhe, Ausbauteile und Gefährten-Gegenstände in der Burg. Der Nebel der Weltkarte ist ein Verlauf über dem Bild, nicht diegetisch in 3D.
 - **Rangfolge:** Teamfarbe und TP der gewählten Einheit, dann Ziel, dann alles andere. In der Gegnerphase verschwinden Dock und Einheitenkarte; Phasen-Pille und Tempo bleiben. In Szenen verschwindet das HUD ganz.
 - Markierungen und UI werden nie vom Szenenlicht gefärbt (Art Direction §2.5).
 
@@ -149,11 +165,11 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 
 Barrierefreiheit im Sinne von Farbenblind-Modus, Schriftgröße und Linkshänder-Layout bleibt nach V1 (T12). In V1 gilt trotzdem:
 
-- Nichts nur über Farbe: Teams auch über Form (Ring, Wimpel, Seite), Vergleich auch über +/−, Knoten auch über Symbol.
+- Nichts nur über Farbe: Teams auch über Form (Ring, Wimpel, Seite), Vergleich auch über +/−, Knoten auch über Symbol, Gefahrenstufen auch über Zahl und Kante, Kill-Marker über Form (voll/halb), kritische TP über Rand und Puls.
 - Kontraste laut `DESIGN.md` (Colors).
 - Tippziele ≥ 44 pt, alles mit einer Hand und mit Maus bedienbar.
 - Untertitel für vertonte Zeilen immer an (Narrative, Localization).
-- Bildschirmwackeln und Haptik abschaltbar; `prefers-reduced-motion` schaltet Wackeln und Hüpfen ab.
+- Bildschirmwackeln und Haptik abschaltbar; `prefers-reduced-motion` schaltet Wackeln und Hüpfen ab, Puls und Blinken (kritische Lebensleiste, Schadensvorschau) werden zu einem festen Rand bzw. einer Schraffur.
 
 ## Responsive & Platform
 

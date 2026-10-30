@@ -370,6 +370,7 @@ src/render/
 - **Jede Szene hat dieselbe kleine Schnittstelle** wie heute das Brett: `load`, `play(events)`, `setOverlays`, `centerOn`, `relayout`, `quality`, `dispose`. Der Kern kennt keine Szene.
 - **Weltkarte** (`content/world/valmora.yaml`, seit 2026-10-24 **keine 3D-Szene mehr**): ein flaches gemaltes Bild im Hochformat (`public/assets/world/valmora.webp`, 1024 × 1536) in einem verschiebbaren Bereich (CSS-Transform, 2 Zoomstufen aus `render.yaml worldMap`). Die Datei nennt `image`, `size`, `regions` (Akt, Ort des Namens), `fog` (bis wohin der Nebel früherer Akte reicht) und `places` (Platz im Plan der 35 Orte plus Heimat: Beschriftung, Art Kreis/Raute/Heimat, Prozentposition auf dem Bild, optional der Knoten der Kampagne). Steine, Wege und Regionsnamen sind HTML über dem Bild; die reine Sicht-Rechnung steht in `src/app/screens/worldMapView.ts`. Kleine 3D-Aufsätze (Burg, Lager) sind später optional. Die Weltkarte braucht damit keinen Szenen-Host.
 - **Figuren:** Tripo-Modelle nach Art Direction §4.6; Teamtuch über Vertex-Alpha-Maske (wie heute), Leutnant-Markierungen und Verblutungs-Zähler als Overlays. 2D-Sprites bleiben als Option, werden nicht weiterentwickelt.
+- **Lesbarkeit (Epic 13, Entscheidung 2026-10-30):** Raster-Eckpunkte, Bereichskacheln mit Außenkante, Weg-Pfeil und Gefahrenzone mit Stufen bleiben in `board/overlays.ts`; Lebensleisten, Kill-/Warn-Marker und Fertig-Häkchen liegen wie die Verblutungs-Zähler in der DOM-Ebene über dem Canvas. Die Zahlen dahinter (Bedrohung je Feld, Kill-Prognose, Warnung) rechnen reine Funktionen in `src/core/rules` über `dangerZone` und `forecast` (`rules/combat.ts`); Stufen und Schwellen in `render.yaml`, Schalter in `src/app/state/settings.ts`.
 
 ### 5.13 KI im Web Worker (AR14) [A]
 
@@ -623,7 +624,7 @@ Schlüssel im Zod-Schema, Auswertung in `conditions.ts`/`effects.ts`, Referenzpr
 
 ### 8.3 Neues Content-Feld
 
-Zod-Schema → Typ in `core/defs.ts` → Referenzprüfung → Beispiel in einer Content-Datei → `pnpm content:check`. Spielwerte nie im Code (AGENTS.md).
+Zod-Schema → Typ in `core/defs.ts` → Referenzprüfung → Beispiel in einer Content-Datei → `pnpm content:check`. Spielwerte nie im Code (AGENTS.md). Das Handbuch (`content/core/handbook.yaml`, Epic 14) folgt demselben Muster; Zahlen in Einträgen sind Verweise auf Content-Pfade, die `content:check` auflöst, nie abgetippte Werte.
 
 ### 8.4 Szene einbinden
 
