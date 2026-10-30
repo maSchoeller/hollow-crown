@@ -1012,6 +1012,33 @@ export interface PropVariant {
   weight: number;
 }
 
+/** Look of the board's legibility aids (render.yaml `legibility`, epic 13); lengths in tiles unless named px. */
+export interface LegibilityDef {
+  /** story 13.1: cream crosses at the tile corners (subtle) or thin lines round every tile (strong) */
+  grid: { color: string; subtle: { alpha: number; arm: number; width: number }; strong: { alpha: number; width: number } };
+  /** story 13.2: single range tiles with a gap and round corners, and the shared outer edge (cream below the line) */
+  range: { gap: number; corner: number; move: { color: string; alpha: number }; attack: { color: string; alpha: number }; heal: { color: string; alpha: number }; cream: string; edge: { cream: number; line: number } };
+  /** story 13.2: the path arrow */
+  path: { color: string; cream: string; width: number; outline: number; head: number; headLength: number };
+  /** story 13.5: danger tiers 1 / 2 / 3+, edge, count circle from `countFrom` attackers, dashed edge of sleeping foes, edge of one watched foe */
+  threat: {
+    color: string;
+    alpha: [number, number, number];
+    edge: { cream: number; line: number };
+    countFrom: number;
+    countSize: number;
+    sleeping: { color: string; width: number; dash: number; gap: number };
+    watch: { color: string; cream: number; line: number };
+  };
+  /** story 13.6: dashed lines from the foes that reach the chosen field */
+  lines: { color: string; cream: string; width: number; dash: number; gap: number };
+  /** story 13.3: HP bar over the head */
+  hpBar: { tick: number; tickWide: number; wideFrom: number; critical: number; widthTiles: number; minPx: number; maxPx: number; heightPx: number; lift: number };
+  /** story 13.9: the whole-map zoom step */
+  view: { wholeMapMargin: number };
+  doubleTapMs: number;
+}
+
 /** Presentation values of the battle board (content/render.yaml); never read by the rules. */
 export interface RenderDef {
   camera: {
@@ -1083,6 +1110,8 @@ export interface RenderDef {
   look: LookDef;
   /** GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket */
   gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<WeaponGroup, GearPiece>> };
+  /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
+  legibility: LegibilityDef;
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
   /** shared asset cache of the render host (story 5.1): unused models and textures kept for the next scene */
   assets: { keepUnused: number };

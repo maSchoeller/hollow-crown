@@ -7,14 +7,23 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
-import type { Pos } from '../../core';
+import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
+import type { LegibilityDef, Pos } from '../../core';
+import { arrow, dashes, edgeRibbons, geo, gridTile, outerEdges, ribbon, roundedTile, type Geo } from './shapes';
 
 export interface Overlays {
+  /** story 13.2: single range tiles; `move` also gets the shared outer edge */
   move?: Pos[];
   attack?: Pos[];
   heal?: Pos[];
-  danger?: Pos[];
+  /** story 13.5: the danger zone, fields with their number of attackers; `sleeping`: fields only sleeping foes reach (dashed edge); `numbers`: count circles from `countFrom` on */
+  threat?: { tiles: Array<[Pos, number]>; sleeping: Pos[]; numbers: boolean } | null;
+  /** story 13.5: the zone of single foes (long press, wanted poster) as an outer edge in darker red */
+  watch?: Pos[];
+  /** story 13.2: the way of the ghost figure, drawn as an arrow with its head on the last field */
   path?: Pos[];
+  /** story 13.6: dashed lines from each foe that reaches the chosen field to that field */
+  lines?: Array<[Pos, Pos]>;
   targets?: Pos[];
   cursor?: Pos | null;
   ghost?: { uid: string; pos: Pos } | null;
@@ -57,23 +66,51 @@ export interface OverlayMesh {
   bob?: number;
 }
 
-// overlay colours and opacities (same reading as the 2D board)
+// overlay colours and opacities of the plain square markings (same reading as the 2D board); range tiles, path and danger zone come from render.yaml `legibility`
 const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pulse?: number }> = {
   fog: { color: '#1a2440', alpha: 0.6, inset: 0 },
   fogEdge: { color: '#1a2440', alpha: 0.3, inset: 0 },
-  danger: { color: '#d9333f', alpha: 0.28, inset: 0 },
   goal: { color: '#f2cc4d', alpha: 0.3, inset: 0, pulse: 0.15 },
-  move: { color: '#4080f2', alpha: 0.42, inset: 0.02 },
-  attack: { color: '#f24d4d', alpha: 0.38, inset: 0.02 },
-  heal: { color: '#59e680', alpha: 0.4, inset: 0.02 },
   reinforce: { color: '#f2802e', alpha: 0.25, inset: 0.16, pulse: 0.2 },
   hold: { color: '#8a2be2', alpha: 0.5, inset: 0 },
   cast: { color: '#2ec4d6', alpha: 0.5, inset: 0.06, pulse: 0.2 },
-  path: { color: '#ffffff', alpha: 0.55, inset: 0.33 },
   targets: { color: '#ffd959', alpha: 0.35, inset: 0.04, pulse: 0.35 },
 };
 
-function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], color: string, alpha: number, pulse: number): OverlayMesh {
+/**
+ * Draw order of the markings (alpha index of their blended meshes; all lie at about the same depth, so the order is set, not
+ * sorted by distance): zone fills, edges, range tiles, lines, path, targets, numbers; the goal marking and the cursor on top.
+ */
+const LAYER = {
+  grid: 1,
+  fog: 2,
+  fogEdge: 3,
+  threat: 4,
+  goal: 5,
+  reinforce: 6,
+  hold: 7,
+  threatCream: 8,
+  threatLine: 9,
+  sleeping: 10,
+  move: 11,
+  attack: 12,
+  heal: 13,
+  moveCream: 14,
+  moveLine: 15,
+  watchCream: 16,
+  watchLine: 17,
+  cast: 18,
+  linesCream: 19,
+  lines: 20,
+  pathCream: 21,
+  path: 22,
+  targets: 23,
+  numbers: 24,
+  mark: 30,
+  cursor: 40,
+} as const;
+
+function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], color: string, alpha: number, pulse: number, layer?: number): OverlayMesh {
   const mesh = new Mesh(name, scene);
   const vd = new VertexData();
   vd.positions = p;
@@ -92,7 +129,101 @@ function overlayMesh(scene: Scene, name: string, p: number[], idx: number[], col
   mat.disableDepthWrite = true;
   mesh.material = mat;
   mesh.isPickable = false;
+  if (layer !== undefined) mesh.alphaIndex = layer;
   return { mesh, mat, alpha, pulse };
+}
+
+/** `overlayMesh` from a shape, or nothing when it is empty. */
+function shapeMesh(scene: Scene, out: OverlayMesh[], name: string, g: Geo, color: string, alpha: number, layer: number, pulse = 0): void {
+  if (g.idx.length) out.push(overlayMesh(scene, name, g.p, g.idx, color, alpha, pulse, layer));
+}
+
+const keySet = (tiles: readonly Pos[]) => new Set(tiles.map((t) => `${t[0]},${t[1]}`));
+
+/** Grid marks of a map (story 13.1): one mesh, at the height of each tile; nothing for `off`. */
+export function buildGridMesh(scene: Scene, width: number, height: number, top: (p: Pos) => number, level: 'off' | 'subtle' | 'strong', look: LegibilityDef['grid']): OverlayMesh | null {
+  if (level === 'off') return null;
+  const g = geo();
+  const spec = level === 'strong' ? look.strong : look.subtle;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) gridTile(g, [x, y], top([x, y]) + 0.012, level, spec.width, look.subtle.arm);
+  return overlayMesh(scene, 'overlay:grid', g.p, g.idx, look.color, spec.alpha, 0, LAYER.grid);
+}
+
+/** Texture with the count circles 2..9 of the danger zone (cream circle, red outline and number), one cell each; made once per scene. */
+const countAtlas = new WeakMap<Scene, DynamicTexture>();
+const COUNT_CELLS = 8;
+const COUNT_PX = 128;
+function countTexture(scene: Scene, color: string): DynamicTexture {
+  let tex = countAtlas.get(scene);
+  if (tex) return tex;
+  tex = new DynamicTexture('overlay:counts', { width: COUNT_PX * COUNT_CELLS, height: COUNT_PX }, scene, true);
+  tex.hasAlpha = true;
+  const ctx = tex.getContext() as CanvasRenderingContext2D;
+  ctx.clearRect(0, 0, COUNT_PX * COUNT_CELLS, COUNT_PX);
+  for (let i = 0; i < COUNT_CELLS; i++) {
+    const cx = i * COUNT_PX + COUNT_PX / 2;
+    const cy = COUNT_PX / 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, COUNT_PX / 2 - 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#FFF8EC';
+    ctx.fill();
+    ctx.lineWidth = 9;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.font = `700 ${i === COUNT_CELLS - 1 ? 64 : 84}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(i === COUNT_CELLS - 1 ? '9+' : String(i + 2), cx, cy + 5);
+  }
+  tex.update();
+  countAtlas.set(scene, tex);
+  scene.onDisposeObservable.addOnce(() => countAtlas.delete(scene));
+  return tex;
+}
+
+/** Count circles on the fields with at least `from` attackers: flat quads in the south-west corner of the field, where no figure stands. */
+function countMesh(scene: Scene, tiles: Array<[Pos, number]>, from: number, size: number, top: (p: Pos) => number, color: string): OverlayMesh | null {
+  const list = tiles.filter(([, n]) => n >= Math.max(2, from));
+  if (!list.length) return null;
+  const p: number[] = [];
+  const idx: number[] = [];
+  const uv: number[] = [];
+  const r = size / 2;
+  for (const [t, n] of list) {
+    const cx = t[0] + 0.06 + r;
+    const cz = -t[1] - 1 + 0.06 + r;
+    const h = top(t) + 0.03;
+    const cell = Math.min(COUNT_CELLS - 1, n - 2);
+    const u0 = cell / COUNT_CELLS;
+    const u1 = (cell + 1) / COUNT_CELLS;
+    const k = p.length / 3;
+    p.push(cx - r, h, cz + r, cx + r, h, cz + r, cx + r, h, cz - r, cx - r, h, cz - r);
+    uv.push(u0, 1, u1, 1, u1, 0, u0, 0);
+    idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
+  }
+  const mesh = new Mesh('overlay:counts', scene);
+  const vd = new VertexData();
+  vd.positions = p;
+  vd.indices = idx;
+  vd.uvs = uv;
+  vd.normals = p.map((_, i) => (i % 3 === 1 ? 1 : 0));
+  vd.applyToMesh(mesh);
+  const mat = new StandardMaterial('overlay:counts', scene);
+  const tex = countTexture(scene, color);
+  mat.disableLighting = true;
+  mat.fogEnabled = false;
+  mat.diffuseTexture = tex;
+  mat.emissiveTexture = tex;
+  mat.useAlphaFromDiffuseTexture = true;
+  mat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
+  mat.backFaceCulling = false;
+  mat.zOffset = -2;
+  mat.disableDepthWrite = true;
+  mesh.material = mat;
+  mesh.isPickable = false;
+  mesh.alphaIndex = LAYER.numbers;
+  return { mesh, mat, alpha: 1, pulse: 0 };
 }
 
 /** Ring segments of a marked field. */
@@ -139,32 +270,119 @@ export function addChevron(p: number[], idx: number[], tile: Pos, base: number, 
   }
 }
 
-/** Builds the meshes for `o`; `top` gives the height a marking lies on; `marker` styles `o.mark` (its arrow stands tilted by `tiltDeg`, the camera's). */
-export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number, marker?: MarkerStyle, tiltDeg = 35): OverlayMesh[] {
+/**
+ * Builds the meshes for `o`; `top` gives the height a marking lies on; `marker` styles `o.mark` (its arrow stands tilted by
+ * `tiltDeg`, the camera's); `leg` styles the range tiles, path arrow, danger zone and lines (render.yaml `legibility`).
+ */
+export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number, marker: MarkerStyle | undefined, tiltDeg: number, leg: LegibilityDef): OverlayMesh[] {
   const out: OverlayMesh[] = [];
+  const top2 = (x: number, y: number) => top([x, y]);
   const lists: Record<string, Pos[]> = {
     fog: o.fog ?? [],
     fogEdge: o.fogEdge ?? [],
-    danger: o.danger ?? [],
     goal: o.goal ?? [],
-    move: o.move ?? [],
-    attack: o.attack ?? [],
-    heal: o.heal ?? [],
     reinforce: o.reinforce ?? [],
     hold: o.hold ?? [],
     cast: o.cast ?? [],
-    path: o.path ?? [],
     targets: o.targets ?? [],
   };
-  let order = 0;
+  // the danger zone (story 13.5): fill in three tiers, red edge on cream round all of it, dashed edge of sleeping foes, count circles
+  const threat = o.threat;
+  if (threat?.tiles.length) {
+    const tiers = [geo(), geo(), geo()];
+    for (const [t, n] of threat.tiles) {
+      const g = tiers[Math.min(3, n) - 1]!;
+      const h = top(t) + 0.02;
+      const k = g.p.length / 3;
+      g.p.push(t[0], h, -t[1], t[0] + 1, h, -t[1], t[0] + 1, h, -t[1] - 1, t[0], h, -t[1] - 1);
+      g.idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
+    }
+    tiers.forEach((g, i) => shapeMesh(scene, out, `overlay:threat${i + 1}`, g, leg.threat.color, leg.threat.alpha[i]!, LAYER.threat));
+    const segs = outerEdges(keySet(threat.tiles.map(([t]) => t)));
+    const cream = geo();
+    const line = geo();
+    edgeRibbons(cream, segs, top2, 0.024, leg.threat.edge.cream);
+    edgeRibbons(line, segs, top2, 0.025, leg.threat.edge.line);
+    shapeMesh(scene, out, 'overlay:threat-cream', cream, leg.range.cream, 0.9, LAYER.threatCream);
+    shapeMesh(scene, out, 'overlay:threat-edge', line, leg.threat.color, 1, LAYER.threatLine);
+    if (threat.numbers) {
+      const counts = countMesh(scene, threat.tiles, leg.threat.countFrom, leg.threat.countSize, top, leg.threat.color);
+      if (counts) out.push(counts);
+    }
+  }
+  if (threat?.sleeping.length) {
+    const sl = leg.threat.sleeping;
+    const g = geo();
+    for (const seg of outerEdges(keySet(threat.sleeping))) {
+      for (const [a, b] of dashes(seg.a, seg.b, sl.dash, sl.gap)) ribbon(g, a, b, top(seg.tile) + 0.026, sl.width);
+    }
+    shapeMesh(scene, out, 'overlay:threat-sleeping', g, sl.color, 0.95, LAYER.sleeping);
+  }
+  if (o.watch?.length) {
+    const segs = outerEdges(keySet(o.watch));
+    const cream = geo();
+    const line = geo();
+    edgeRibbons(cream, segs, top2, 0.03, leg.threat.watch.cream);
+    edgeRibbons(line, segs, top2, 0.031, leg.threat.watch.line);
+    shapeMesh(scene, out, 'overlay:watch-cream', cream, leg.range.cream, 0.95, LAYER.watchCream);
+    shapeMesh(scene, out, 'overlay:watch', line, leg.threat.watch.color, 1, LAYER.watchLine);
+  }
+  // range tiles (story 13.2): single tiles with a gap and round corners, the move range with a shared edge (cream under blue)
+  const r = leg.range;
+  for (const [key, tiles, spec, layer] of [
+    ['move', o.move ?? [], r.move, LAYER.move],
+    ['attack', o.attack ?? [], r.attack, LAYER.attack],
+    ['heal', o.heal ?? [], r.heal, LAYER.heal],
+  ] as const) {
+    if (!tiles.length) continue;
+    const g = geo();
+    for (const t of tiles) roundedTile(g, t, top(t) + 0.022, r.gap, r.corner);
+    shapeMesh(scene, out, `overlay:${key}`, g, spec.color, spec.alpha, layer);
+  }
+  if (o.move?.length) {
+    const segs = outerEdges(keySet(o.move));
+    const cream = geo();
+    const line = geo();
+    edgeRibbons(cream, segs, top2, 0.027, r.edge.cream);
+    edgeRibbons(line, segs, top2, 0.028, r.edge.line);
+    shapeMesh(scene, out, 'overlay:move-cream', cream, r.cream, 0.95, LAYER.moveCream);
+    shapeMesh(scene, out, 'overlay:move-edge', line, r.move.color, 1, LAYER.moveLine);
+  }
+  // dashed lines from the foes to the chosen field (story 13.6), cream under red
+  if (o.lines?.length) {
+    const ln = leg.lines;
+    const cream = geo();
+    const red = geo();
+    for (const [from, to] of o.lines) {
+      const a: [number, number] = [from[0] + 0.5, from[1] + 0.5];
+      const b: [number, number] = [to[0] + 0.5, to[1] + 0.5];
+      for (const [d0, d1] of dashes(a, b, ln.dash, ln.gap)) {
+        const h = top([Math.floor((d0[0] + d1[0]) / 2), Math.floor((d0[1] + d1[1]) / 2)]) + 0.05;
+        ribbon(cream, d0, d1, h, ln.width * 2, ln.width / 2);
+        ribbon(red, d0, d1, h + 0.001, ln.width);
+      }
+    }
+    shapeMesh(scene, out, 'overlay:lines-cream', cream, ln.cream, 0.9, LAYER.linesCream);
+    shapeMesh(scene, out, 'overlay:lines', red, ln.color, 1, LAYER.lines);
+  }
+  // the path arrow (story 13.2)
+  if (o.path && o.path.length > 1) {
+    const pa = leg.path;
+    const cream = geo();
+    const blue = geo();
+    arrow(cream, o.path, top2, 0.035, pa.width + pa.outline * 2, pa.head + pa.outline * 3, pa.headLength + pa.outline * 2);
+    arrow(blue, o.path, top2, 0.036, pa.width, pa.head, pa.headLength);
+    shapeMesh(scene, out, 'overlay:path-cream', cream, pa.cream, 1, LAYER.pathCream);
+    shapeMesh(scene, out, 'overlay:path', blue, pa.color, 1, LAYER.path);
+  }
   for (const [key, tiles] of Object.entries(lists)) {
-    order++;
     if (!tiles.length) continue;
     const spec = OVERLAY[key]!;
+    const layer = LAYER[key as keyof typeof LAYER];
     const p: number[] = [];
     const idx: number[] = [];
     for (const t of tiles) {
-      const h = top(t) + 0.02 + order * 0.002;
+      const h = top(t) + 0.02 + layer * 0.001;
       if (key === 'hold') {
         // diagonal stripes inside the tile (u right, v down)
         const w = 0.05;
@@ -187,7 +405,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
       p.push(x0, h, zn, x1, h, zn, x1, h, zs, x0, h, zs);
       idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
     }
-    out.push(overlayMesh(scene, `overlay:${key}`, p, idx, spec.color, spec.alpha, spec.pulse ?? 0));
+    out.push(overlayMesh(scene, `overlay:${key}`, p, idx, spec.color, spec.alpha, spec.pulse ?? 0, layer));
   }
   if (marker && o.mark?.length) {
     // dark outline below, light ring above: legible on grass, dirt and cobbles alike
@@ -204,16 +422,16 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
       }
     }
     const outline = overlayMesh(scene, 'overlay:mark-outline', dark.p, dark.idx, marker.outline, 0.95, 0);
-    outline.mesh.alphaIndex = 10;
+    outline.mesh.alphaIndex = LAYER.mark;
     const ring = overlayMesh(scene, 'overlay:mark', light.p, light.idx, marker.color, marker.alpha, marker.pulse);
-    ring.mesh.alphaIndex = 11;
+    ring.mesh.alphaIndex = LAYER.mark + 1;
     out.push(outline, ring);
     if (chev.light.p.length) {
       const cd = overlayMesh(scene, 'overlay:mark-arrow-outline', chev.dark.p, chev.dark.idx, marker.outline, 0.95, 0);
-      cd.mesh.alphaIndex = 12;
+      cd.mesh.alphaIndex = LAYER.mark + 2;
       cd.bob = marker.bobTiles;
       const cl = overlayMesh(scene, 'overlay:mark-arrow', chev.light.p, chev.light.idx, marker.color, 1, 0);
-      cl.mesh.alphaIndex = 13;
+      cl.mesh.alphaIndex = LAYER.mark + 3;
       cl.bob = marker.bobTiles;
       out.push(cd, cl);
     }
@@ -236,7 +454,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
       bar(cx, cz, cx + sx * l, cz + sz * t);
       bar(cx, cz, cx + sx * t, cz + sz * l);
     }
-    out.push(overlayMesh(scene, 'overlay:cursor', p, idx, '#fff2bf', 0.7, 0.25));
+    out.push(overlayMesh(scene, 'overlay:cursor', p, idx, '#fff2bf', 0.7, 0.25, LAYER.cursor));
   }
   return out;
 }

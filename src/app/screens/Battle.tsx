@@ -6,7 +6,7 @@ import {
   availableActions,
   classActionId,
   combinedRange,
-  dangerZone,
+  damageAtHit,
   destinations,
   castBlock,
   classPreview,
@@ -18,15 +18,20 @@ import {
   holdZone,
   itemDef,
   itemTargets,
+  killMarks,
   longPressView,
   passivePreview,
   pathTo,
+  perilWarnings,
+  phaseRecap,
   posKey,
   pursueReach,
   reachNow,
   resolveScene,
   samePos,
   stealBlock,
+  threatMap,
+  tileThreats,
   tilesInRange,
   unitAt,
   wantedView,
@@ -42,11 +47,12 @@ import {
   type ItemInstance,
   type Pos,
   type ReachNode,
+  type RecapRow,
   type Stats,
   type Team,
 } from '../../core';
 import { mapOf } from '../../core/battle/objectives';
-import { BoardView, type CutInEvent } from '../../render/board/board';
+import { BoardView, type CutInEvent, type KillKind } from '../../render/board/board';
 import { t } from '../../i18n';
 import { Scene, SceneBand } from './Scene';
 import { CutIn, type CutInShown } from './CutIn';
@@ -89,6 +95,7 @@ import {
   UnitCardB,
 } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
+import { BackStone, EnemyStrip, RecapStone, TerrainChip, ThreatPill } from './BattleLegibility';
 
 export { pendingEvents };
 
@@ -179,6 +186,12 @@ export function Battle() {
   const [convoy, setConvoy] = useState<string | null>(null);
   const [items, setItems] = useState<{ uid: string; to: Pos; list: string[] } | null>(null);
   const [hp, setHp] = useState<Record<string, number>>({});
+  /** what the last foe phase did (story 13.7); closed by the first tap on the board or a selection */
+  const [recap, setRecap] = useState<{ turn: number; rows: RecapRow[] } | null>(null);
+  /** the field under the mouse while a unit is selected (PC hover, story 13.6) */
+  const [hover, setHover] = useState<Pos | null>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
+  const backRef = useRef<HTMLDivElement>(null);
   /** the Nachsetzen chance the player let go (key of `s.pursue` and the turn); the core keeps it until the next command */
   const [pursueDone, setPursueDone] = useState<string | null>(null);
   const wide = useWide();
@@ -197,6 +210,8 @@ export function Battle() {
     const board = new BoardView(stageRef.current!, floatRef.current!, data, {
       onTap: (p) => tapRef.current(p),
       onLongPress: (p) => longRef.current(p),
+      onDoubleTap: (p) => void boardRef.current?.centerOn(p),
+      onHover: (p) => setHover(p),
       onCancel: () => cancelRef.current(),
       onEvent: (e) => eventRef.current(e),
       onUnitHp: (uid, v) => setHp((h) => ({ ...h, [uid]: v })),
@@ -218,6 +233,8 @@ export function Battle() {
     preloadHeads(battle.value!.state.units);
     board.quality = settings.value.quality;
     board.figures = settings.value.figures;
+    board.grid = settings.value.grid;
+    board.hpBars = settings.value.hpBars;
     board.shakeEnabled = settings.value.shake && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     board.calmMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
@@ -255,6 +272,15 @@ export function Battle() {
     };
   }, []);
 
+  // the options "Raster" and "Lebensleisten" apply at once (story 13.1, 13.3)
+  const opt = settings.value;
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+    board.grid = opt.grid;
+    board.hpBars = opt.hpBars;
+  }, [opt.grid, opt.hpBars]);
+
   // a visual-novel dialogue covers the board: it only needs the idle frame rate (the speech band leaves the board in view)
   const overlayDialogue = !!dialogue && !dialogue.band;
   useEffect(() => boardRef.current?.hold(overlayDialogue ? 'idle' : 'run'), [overlayDialogue]);
@@ -275,11 +301,40 @@ export function Battle() {
     if (!r) reachCache.set(u.uid, (r = reachNow(data, s, u)));
     return r;
   };
-  const dangerTiles = useMemo(() => {
-    if (!danger && !watch.length) return [] as Pos[];
-    const set = dangerZone(data, s, 'player', danger ? undefined : watch);
-    return [...set].map((k) => k.split(',').map(Number) as Pos);
-  }, [s, danger, watch]);
+  const toPos = (k: string) => k.split(',').map(Number) as Pos;
+  /** the danger zone in tiers (story 13.5): attackers per field, the fields only sleeping foes reach */
+  const threat = useMemo(() => {
+    if (!danger) return null;
+    const m = threatMap(data, s, 'player');
+    return { tiles: [...m.byTile].map(([k, l]) => [toPos(k), l.length] as [Pos, number]), sleeping: [...m.sleeping].map(toPos) };
+  }, [s, danger]);
+  /** the zone of single foes (tap, long press, wanted poster) as their outer edge */
+  const watchTiles = useMemo(() => {
+    if (!watch.length) return [] as Pos[];
+    const m = threatMap(data, s, 'player', watch);
+    return [...m.byTile.keys(), ...m.sleeping].map(toPos);
+  }, [s, watch]);
+
+  // the target-tile check (story 13.6): the field of a set ghost (phone) or the reachable field under the mouse (PC)
+  const selUid = mode.k === 'selected' || mode.k === 'moved' ? mode.uid : null;
+  const checkTile: Pos | null = (() => {
+    if (s.phase !== 'player' || busy || s.outcome) return null;
+    if (mode.k === 'moved') return mode.to;
+    if (mode.k !== 'selected' || !hover) return null;
+    const u = unit(mode.uid);
+    return destinations(s, u, reachOf(u)).some((d) => samePos(d, hover)) ? hover : null;
+  })();
+  const checkKey = checkTile && selUid ? `${selUid}@${posKey(checkTile)}` : '';
+  const checkFoes = useMemo(() => (checkTile && selUid ? tileThreats(data, s, unit(selUid), checkTile) : []), [s, checkKey]);
+  const checkLines = checkTile ? checkFoes.map((uid) => [unit(uid).pos!, checkTile] as [Pos, Pos]).filter(([a]) => !!a) : [];
+  const ghostAt = mode.k === 'moved' && !samePos(mode.to, unit(mode.uid).pos) ? mode.to : null;
+  // the terrain chip below the checked field and the back stone beside the ghost ride on the board (pinned, moved with the camera)
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+    board.pin('chip', chipRef.current, checkTile, { south: 0.5 });
+    board.pin('back', backRef.current, ghostAt, { east: 0.62, lift: 0.45 });
+  }, [checkKey, ghostAt?.[0], ghostAt?.[1]]);
 
   /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
   const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
@@ -311,7 +366,17 @@ export function Battle() {
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
-    const base = { danger: dangerTiles, goal, reinforce, hold, fog: fogTiles.fog, fogEdge: fogTiles.edge, mark: markTiles };
+    const base = {
+      threat: threat && { ...threat, numbers: opt.threatNumbers },
+      watch: watchTiles,
+      goal,
+      reinforce,
+      hold,
+      fog: fogTiles.fog,
+      fogEdge: fogTiles.edge,
+      mark: markTiles,
+      lines: checkLines,
+    };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
     if (mode.k === 'pursue') {
@@ -325,13 +390,14 @@ export function Battle() {
     const dests = destinations(s, u, reach);
     if (mode.k === 'selected') {
       const range = combinedRange(data, s, u) ?? combinedRange(data, s, u, true);
+      const hoverPath = checkTile && !samePos(checkTile, u.pos) ? pathTo(reach, checkTile) : [];
       const atk = new Set<string>();
       if (range) for (const d of dests) for (const p of tilesInRange(s, d, range)) atk.add(posKey(p));
       for (const d of dests) atk.delete(posKey(d));
       for (const o of s.units) if (o.pos && o.team !== 'enemy' && !o.gone) atk.delete(posKey(o.pos));
       const attack = [...atk].map((k) => k.split(',').map(Number) as Pos);
       const staves = !!combinedRange(data, s, u, true) && !combinedRange(data, s, u);
-      return board.setOverlays({ ...base, move: dests, attack: staves ? [] : attack, heal: staves ? attack : [], cursor: u.pos });
+      return board.setOverlays({ ...base, move: dests, attack: staves ? [] : attack, heal: staves ? attack : [], path: hoverPath, cursor: checkTile ?? u.pos });
     }
     const to = mode.to;
     const ghost = samePos(to, u.pos) ? null : { uid: u.uid, pos: to };
@@ -356,7 +422,7 @@ export function Battle() {
       return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
-  }, [mode, s, dangerTiles, tileInfo, markTiles]);
+  }, [mode, s, threat, watchTiles, tileInfo, markTiles, checkKey, opt.threatNumbers]);
 
   // the HUD grows when a unit is selected; bring the unit (or the chosen tile) out from under it
   const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.k === 'pursue' ? (mode.to ?? unit(mode.uid).pos) : mode.to;
@@ -385,6 +451,7 @@ export function Battle() {
     setMode({ k: 'idle' });
     setInfo(null);
     setTileInfo(null);
+    setRecap(null);
     const enemy = cmd.type === 'endPhase';
     const before = battle.value!.state;
     if (enemy) setPhaseView({ phase: 'enemy', turn: s.turn });
@@ -408,7 +475,8 @@ export function Battle() {
       return;
     }
     const after = battle.value!.state;
-    await board.play(filterEvents(data, after, events, 'player', before), visibleState(data, after, 'player'), after.units);
+    const shown = filterEvents(data, after, events, 'player', before);
+    await board.play(shown, visibleState(data, after, 'player'), after.units);
     // a lieutenant who came into sight by this command speaks his opening line (story 3.2: under fog it waits for the sight)
     if (ltReady.current && !battle.value!.state.outcome) await playLieutenantLines(true);
     board.skip = false;
@@ -416,6 +484,11 @@ export function Battle() {
     setPhaseView(null);
     setBusy(false);
     const st = battle.value!.state;
+    // what the foe phase did, as the player saw it (story 13.7); nothing when nothing happened
+    if (enemy && !st.outcome) {
+      const rows = phaseRecap(data, visibleState(data, before, 'player'), visibleState(data, st, 'player'), shown);
+      if (rows.length) setRecap({ turn: before.turn, rows });
+    }
     if (st.outcome) {
       await showBanner(t(st.outcome === 'victory' ? 'ui.battle.victory' : 'ui.battle.defeat'), st.outcome === 'victory' ? 'victory' : 'enemy', 1600);
       audio.sfx(st.outcome === 'victory' ? 'victory' : 'defeat');
@@ -553,6 +626,16 @@ export function Battle() {
   // --------------------------------------------------------------- input handling
   const playerTurn = s.phase === 'player' && !busy && !s.outcome;
 
+  // kill markers of the selected unit (story 13.4) and warnings over own units in danger (story 13.6)
+  const kills = useMemo(() => (selUid && playerTurn ? killMarks(data, s, unit(selUid)) : []), [s, selUid, playerTurn]);
+  const perils = useMemo(() => (playerTurn ? perilWarnings(data, s) : []), [s, playerTurn]);
+  useEffect(() => {
+    const m = new Map<string, KillKind>();
+    for (const k of kills) m.set(k.target, k.flees ? (k.kind === 'hit' ? 'flee' : 'fleeCrit') : k.kind);
+    for (const uid of perils) m.set(uid, 'warn');
+    boardRef.current?.setMarks(m);
+  }, [kills, perils]);
+
   const selectable = (u?: BattleUnit) => !!u && u.team === 'player' && active(u) && !u.acted;
 
   const bestTileToAttack = (u: BattleUnit, target: BattleUnit, from: Pos | null): { to: Pos; weapon?: string } | null => {
@@ -572,6 +655,7 @@ export function Battle() {
   const tapRef = useRef<(p: Pos) => void>(() => undefined);
   tapRef.current = (p: Pos) => {
     if (!playerTurn) return;
+    if (recap) setRecap(null);
     audio.sfx('tap');
     const at = unitAt(s, p);
     switch (mode.k) {
@@ -753,6 +837,7 @@ export function Battle() {
   useEffect(() => {
     setConfirmEnd(false);
     setReason(null);
+    if (mode.k !== 'idle') setRecap(null);
   }, [mode]);
   useEffect(() => {
     if (!reason) return;
@@ -788,6 +873,7 @@ export function Battle() {
     if (e.key === 'Escape') escape();
     else if (modal) return;
     else if (e.key === 'd' || e.key === 'D') setDanger((d) => !d);
+    else if (e.key === 'm' || e.key === 'M') boardRef.current?.wholeMap();
     else if (e.key === 'e' || e.key === 'E') endPhase();
     else if (mode.k === 'moved' && ctxRef.current.n > 0 && (e.key === 'f' || e.key === 'F')) ctxRef.current.go();
     else if (mode.k === 'moved' && ctxRef.current.n > 1 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
@@ -890,6 +976,12 @@ export function Battle() {
       : null;
   const fc =
     aimPre?.kind === 'aim' ? aimPre.forecast : mode.k === 'forecast' ? forecast(data, s, mode.uid, mode.target, mode.weapon, mode.to) : null;
+  // the part of the target's HP bar the attack takes at hit (story 13.4), from the forecast
+  const previewAfter = fc && mode.k === 'forecast' ? Math.max(0, fc.defender.hpBefore - damageAtHit(data, fc)) : null;
+  const previewUid = mode.k === 'forecast' ? mode.target : null;
+  useEffect(() => {
+    boardRef.current?.setHpPreview(previewUid && previewAfter !== null ? { uid: previewUid, after: previewAfter } : null);
+  }, [previewUid, previewAfter]);
   const weaponsForTarget =
     mode.k === 'forecast'
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
@@ -1005,6 +1097,9 @@ export function Battle() {
     </Dock>
   );
 
+  /** a long press on a medallion of the enemy strip opens what a long press on the foe opens (story 13.8) */
+  const foeInfo = (u: BattleUnit) => (longPressView(data, u) === 'wanted' ? setWanted(u.uid) : setInfo(u.uid));
+
   const card = selUnit && <UnitCardB data={data} state={s} u={selUnit} hp={hp[selUnit.uid] ?? selUnit.hp} onClick={() => setInfo(selUnit.uid)} />;
   const back = <BackPill onClick={() => cancelRef.current()} />;
   const tileUnit = tileInfo ? unitAt(s, tileInfo) : undefined;
@@ -1014,6 +1109,7 @@ export function Battle() {
       {reason && <HintPill reason>{reason}</HintPill>}
       {mode.k === 'idle' && (
         <>
+          {recap && <RecapStone turn={recap.turn} rows={recap.rows} units={full.units} onShow={(at) => void boardRef.current?.centerOn(at)} onClose={() => setRecap(null)} />}
           {tileInfo &&
             (tileUnit ? (
               <UnitCardB data={data} state={s} u={tileUnit} hp={hp[tileUnit.uid] ?? tileUnit.hp} onClick={() => setInfo(tileUnit.uid)} />
@@ -1149,11 +1245,20 @@ export function Battle() {
               void boardRef.current?.centerOn(u.pos!);
             }}
           />
+          {opt.enemyStrip && !otherPhase && <EnemyStrip data={data} s={s} hp={hp} side onCenter={(u) => void boardRef.current?.centerOn(u.pos!)} onInfo={foeInfo} />}
         </div>
       )}
       <div class="board-wrap">
         <div ref={stageRef} class="hc-stage-slot" />
         <div ref={floatRef} class="float-layer" />
+        <div class="lg-pins">
+          <div class="lg-pin" ref={chipRef} style={{ display: checkTile ? '' : 'none' }}>
+            {checkTile && <TerrainChip data={data} s={s} p={checkTile} />}
+          </div>
+          <div class="lg-pin" ref={backRef} style={{ display: ghostAt ? '' : 'none' }}>
+            {ghostAt && <BackStone onClick={() => cancelRef.current()} />}
+          </div>
+        </div>
         {dialogue?.band && <SceneBand id={dialogue.id} onDone={dialogue.done} />}
         {bark && <SceneBand id={bark.b.scene} key={bark.seq} only={[bark.b.line]} params={bark.b.params} speed={boardRef.current?.speed ?? 1} onDone={bark.done} />}
         <div class="hud-top" ref={topRef}>
@@ -1173,6 +1278,8 @@ export function Battle() {
                 onMark={(o) => toggleGoalMark(o.id, data.render.board.markMs)}
                 onClick={() => setObjectives(true)}
               />
+              {checkTile && <ThreatPill n={checkFoes.length} />}
+              {opt.enemyStrip && !wide && <EnemyStrip data={data} s={s} hp={hp} onCenter={(u) => void boardRef.current?.centerOn(u.pos!)} onInfo={foeInfo} />}
             </>
           )}
         </div>

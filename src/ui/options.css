@@ -92,3 +92,12 @@
   outline-offset: 3px;
   border-radius: var(--hc-r-pill);
 }
+
+/* heading of a block of options (story 13.1: "Brett-Anzeige") */
+.options__head {
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.1;
+  color: var(--hc-line);
+}

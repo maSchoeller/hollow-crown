@@ -1,0 +1,170 @@
+/*
+ * Badges over the figures (epic 13, DESIGN.md hp-bar, kill-marker, Fertig-Häkchen): HP bar as a small stone pill in team colour
+ * with cream ticks, gold outline for lieutenants, a pulsing ember edge when critical; marker at its left, check at its right.
+ */
+.hc-badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  --hc-badge-team: var(--hc-team-player);
+}
+.hc-badge.is-enemy {
+  --hc-badge-team: var(--hc-team-enemy);
+}
+.hc-badge.is-other {
+  --hc-badge-team: var(--hc-team-other);
+}
+
+.hc-hpbar {
+  position: relative;
+  display: block;
+  width: var(--hc-hpbar-w, 40px);
+  height: var(--hc-hpbar-h, 8px);
+  box-sizing: border-box;
+  border: var(--hc-outline-small, 2px) solid var(--hc-line);
+  border-radius: var(--hc-r-pill, 9999px);
+  background: var(--hc-cream);
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(40, 28, 20, 0.35);
+}
+.hc-badge.is-lt .hc-hpbar {
+  border-color: var(--hc-gold);
+  box-shadow:
+    0 0 0 1px var(--hc-line),
+    0 1px 0 rgba(40, 28, 20, 0.35);
+}
+.hc-badge.no-bar .hc-hpbar {
+  visibility: hidden;
+  width: 0;
+}
+.hc-hpbar__fill,
+.hc-hpbar__loss {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--hc-badge-team);
+}
+/* ticks every 5 HP (10 from 40 max. HP), cream, over the fill and the empty part alike */
+.hc-hpbar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, transparent calc(100% - 1px), var(--hc-cream) calc(100% - 1px));
+  background-size: calc(var(--hc-tick, 1) * 100%) 100%;
+  opacity: 0.85;
+}
+/* the part a previewed attack takes (story 13.4): flashes; hatched under reduced motion */
+.hc-hpbar__loss {
+  animation: hc-hpbar-loss 0.7s ease-in-out infinite alternate;
+}
+@keyframes hc-hpbar-loss {
+  from {
+    opacity: 0.95;
+  }
+  to {
+    opacity: 0.15;
+  }
+}
+/* critical (under 25 %): pulsing ember edge, the only ember mark on the board */
+.hc-badge.is-critical .hc-hpbar {
+  border-color: var(--hc-ember);
+  animation: hc-hpbar-critical 0.9s ease-in-out infinite;
+}
+@keyframes hc-hpbar-critical {
+  50% {
+    box-shadow: 0 0 0 2px var(--hc-ember);
+  }
+}
+
+/* kill marker (round dark stone, cream skull; half = only with a crit) and warning (grey skull with "!") */
+.hc-badge__mark {
+  display: block;
+  width: 0;
+  height: 18px;
+}
+.hc-badge__mark[class*='is-'] {
+  width: 18px;
+  margin-left: -6px;
+}
+.hc-badge__mark svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  overflow: visible;
+}
+.hc-badge__mark .b-bg {
+  fill: var(--hc-line);
+  stroke: var(--hc-cream);
+  stroke-width: 1.4;
+}
+.hc-badge__mark .b-half,
+.hc-badge__mark .b-bang {
+  display: none;
+}
+.hc-badge__mark .b-skull {
+  fill: var(--hc-cream);
+  stroke: var(--hc-cream);
+}
+.hc-badge__mark .is-flee .b-skull,
+.hc-badge__mark.is-flee .b-skull,
+.hc-badge__mark.is-fleeCrit .b-skull {
+  fill: none;
+}
+.hc-badge__mark .b-eye {
+  fill: var(--hc-line);
+}
+.hc-badge__mark.is-crit .b-half,
+.hc-badge__mark.is-fleeCrit .b-half {
+  display: block;
+  fill: var(--hc-cream);
+  opacity: 0.35;
+}
+.hc-badge__mark.is-crit .b-skull {
+  fill: var(--hc-downed);
+}
+.hc-badge__mark.is-fleeCrit .b-skull {
+  stroke: var(--hc-downed);
+}
+.hc-badge__mark.is-warn .b-skull {
+  fill: var(--hc-downed);
+}
+.hc-badge__mark.is-warn .b-bang {
+  display: block;
+  fill: var(--hc-cream);
+  font: 700 9px/1 var(--hc-font-label);
+}
+
+/* done check (story 13.9): small round stone in positive green with a white tick */
+.hc-badge__check {
+  display: block;
+  width: 0;
+  height: 14px;
+}
+.hc-badge__check.is-done {
+  width: 14px;
+  margin-right: -6px;
+  border-radius: 50%;
+  background: var(--hc-positive);
+  box-shadow: 0 0 0 1.5px var(--hc-line);
+}
+.hc-badge__check svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hc-hpbar__loss {
+    animation: none;
+    background-image: repeating-linear-gradient(135deg, transparent 0 2px, var(--hc-cream) 2px 3.5px);
+  }
+  .hc-badge.is-critical .hc-hpbar {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--hc-ember);
+  }
+}

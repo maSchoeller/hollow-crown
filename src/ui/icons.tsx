@@ -55,6 +55,7 @@ const P: Record<string, string> = {
   wanted: 'M5 3h14v18H5zM12 7.5a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4zM8 17h8',
   swap: 'M7 4L4 7l3 3M4 7h13M17 14l3 3-3 3M20 17H7',
   // roles (class-action slot of the battle dock)
+  avoid: 'M4 18c5 0 6-11 11-11h5M17 4l3 3-3 3',
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
   blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',

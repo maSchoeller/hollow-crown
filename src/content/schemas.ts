@@ -709,6 +709,26 @@ const lookSchema = z.object({
   }),
 });
 
+const tint = z.object({ color: hex, alpha: unit });
+const legibilitySchema = z.object({
+  grid: z.object({ color: hex, subtle: z.object({ alpha: unit, arm: z.number().positive(), width: z.number().positive() }), strong: z.object({ alpha: unit, width: z.number().positive() }) }),
+  range: z.object({ gap: z.number().min(0), corner: z.number().min(0), move: tint, attack: tint, heal: tint, cream: hex, edge: z.object({ cream: z.number().min(0), line: z.number().min(0) }) }),
+  path: z.object({ color: hex, cream: hex, width: z.number().positive(), outline: z.number().min(0), head: z.number().positive(), headLength: z.number().positive() }),
+  threat: z.object({
+    color: hex,
+    alpha: z.tuple([unit, unit, unit]),
+    edge: z.object({ cream: z.number().min(0), line: z.number().min(0) }),
+    countFrom: z.number().int().min(1),
+    countSize: z.number().positive(),
+    sleeping: z.object({ color: hex, width: z.number().positive(), dash: z.number().positive(), gap: z.number().positive() }),
+    watch: z.object({ color: hex, cream: z.number().min(0), line: z.number().min(0) }),
+  }),
+  lines: z.object({ color: hex, cream: hex, width: z.number().positive(), dash: z.number().positive(), gap: z.number().positive() }),
+  hpBar: z.object({ tick: z.number().int().positive(), tickWide: z.number().int().positive(), wideFrom: z.number().int().positive(), critical: unit, widthTiles: z.number().positive(), minPx: z.number().positive(), maxPx: z.number().positive(), heightPx: z.number().positive(), lift: z.number().min(0) }),
+  view: z.object({ wholeMapMargin: z.number().min(0) }),
+  doubleTapMs: ms,
+});
+
 export const renderSchema = z.object({
   camera: z.object({
     tiltDeg: z.number().min(0).max(80),
@@ -751,6 +771,7 @@ export const renderSchema = z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),
   }),
+  legibility: legibilitySchema,
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),
   assets: z.object({ keepUnused: z.number().int().min(0) }),
   worldMap: z.object({

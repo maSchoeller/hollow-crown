@@ -29,7 +29,7 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, BattleUnit, Element, GameData, GameEvent, GearPiece, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
-import { bleedsOut, itemDef, modelId, unitFigureId, unitVatPath } from '../../core';
+import { bleedsOut, itemDef, maxHpOf, modelId, unitFigureId, unitVatPath } from '../../core';
 import { centreOn, clampAxis, framePlan, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
 import { loadFx, loadManifest, loadUnitSheet, UNIT_ROWS, type FxInfo } from '../shared/assets';
 import { buildTerrain, hash3, loadGroundTextures, type GroundTextures, type TerrainView } from '../shared/terrain3d';
@@ -42,7 +42,8 @@ import { variantClassOf, variantList } from '../../content/propVariants';
 import { isPackRegistered } from '../../content/browser';
 import { modelAvailable, pickVariant, withState } from '../shared/scenery';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
-import { buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
+import { buildGridMesh, buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
+import { Badges, type HpBarMode, type KillKind } from './badges';
 import { marchToTile } from './picking';
 import { fadeRule, hidesFigure, type PropBox } from './fade';
 import { isStaticMaterial } from './staticMaterial';
@@ -57,6 +58,9 @@ import { disposeGoldRing, dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, flee
 export interface BoardHooks {
   onTap?(tile: Pos): void;
   onLongPress?(tile: Pos): void;
+  /** two taps on a figure within `legibility.doubleTapMs` (story 13.9); while set, a tap on a figure waits that long for the second one */
+  onDoubleTap?(tile: Pos): void;
+  /** the mouse rests over another field (PC hover, story 13.6); `null` when it left the board */
   onHover?(tile: Pos | null): void;
   onCancel?(): void;
   /** called for events the UI presents (dialogue, phase banner, level up …); may await */
@@ -82,6 +86,14 @@ export interface CutInEvent {
 }
 
 export type { Overlays } from './overlays';
+export type { HpBarMode, KillKind } from './badges';
+export type GridLevel = 'off' | 'subtle' | 'strong';
+/** Where a pinned element sits relative to its field's centre, in tiles (story 13.6, 13.9). */
+export interface PinOffset {
+  east?: number;
+  south?: number;
+  lift?: number;
+}
 export type { Quality } from '../host';
 export type FigureStyle = '3d' | '2d';
 
@@ -234,6 +246,16 @@ export class BoardView implements HostedView {
   /** grudge pennants over the lieutenants (story 3.1) */
   private pennants = new Map<string, HTMLDivElement>();
   /** uid of the lieutenant whose line to the grudge target is shown (set by a tap on him) */
+  /** HP bars, kill/warning markers and done checks over the figures (epic 13) */
+  private badges: Badges;
+  private done = new Set<string>();
+  private gridLevel: GridLevel = 'subtle';
+  private gridMesh: OverlayMesh | null = null;
+  /** DOM elements the UI pins to a field (story 13.6 terrain chip, 13.9 back stone): placed each frame */
+  private pins = new Map<string, { el: HTMLElement; tile: Pos; at: PinOffset; x: number; y: number }>();
+  /** a tap on a figure waiting for a second one (double tap, story 13.9) */
+  private pendingTap: { tile: Pos; timer: number } | null = null;
+  private hoverKey = '';
   private grudgeFor: string | null = null;
   private grudgeLine?: GrudgeLine;
   private readyPromise: Promise<void> | null = null;
@@ -270,6 +292,7 @@ export class BoardView implements HostedView {
     this.rings = new RingLayer(this.scene, { player: teams.player.ui, enemy: teams.enemy.ui, other: teams.other.ui });
     this.weather = new WeatherView(this.scene, CAM_DIST);
     this.statusIcons = new StatusIcons(floatLayer, data.render.look.fx.status.fadeMs, data.render.look.fx.status.sizePx);
+    this.badges = new Badges(floatLayer, data.render.legibility.hpBar);
     this.propMat = new StandardMaterial('props', this.scene);
     this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
     this.propMat.backFaceCulling = false;
@@ -303,6 +326,10 @@ export class BoardView implements HostedView {
     this.sizeObserver?.disconnect();
     for (const f of this.floaters) f.el.remove();
     for (const el of this.bleedLabels.values()) el.remove();
+    this.badges.dispose();
+    if (this.pendingTap) clearTimeout(this.pendingTap.timer);
+    this.gridMesh?.mesh.dispose();
+    this.gridMesh?.mat.dispose();
     for (const el of this.pennants.values()) el.remove();
     this.statusIcons.dispose();
     this.weather.dispose();
@@ -552,6 +579,7 @@ export class BoardView implements HostedView {
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
     this.weather.terrainChanged(this.terrain);
+    this.buildGrid();
     await this.buildProps();
     if (!this.disposed) this.buildFires();
   }
@@ -1052,7 +1080,89 @@ export class BoardView implements HostedView {
     for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone && bleedsOut(this.data, state, u) ? u.bleed ?? 0 : null);
     for (const u of state.units) this.setPennant(u);
     for (const u of state.units) this.setStatuses(u);
+    for (const u of state.units) this.setBadge(u);
+    this.done = new Set(state.units.filter((u) => u.acted && u.team === state.phase && !u.downed && !u.gone && this.units.has(u.uid)).map((u) => u.uid));
+    this.badges.setDone(this.done);
     if (this.grudgeFor && !this.grudgeTargetView()) this.grudgeFor = null;
+  }
+
+  /** The badge of a unit from its state: units on the board that stand (not downed, fled, gone) have one (story 13.3). */
+  private setBadge(u: BattleUnit): void {
+    if (!u.pos || u.gone || u.downed || !this.units.has(u.uid)) return this.badges.set(u.uid, null);
+    this.badges.set(u.uid, { team: u.team, hp: u.hp, maxHp: maxHpOf(this.data, this.state, u), lieutenant: !!u.lieutenant });
+  }
+
+  /** Option "Lebensleisten" (story 13.3). */
+  set hpBars(mode: HpBarMode) {
+    this.badges.setMode(mode);
+    this.wake();
+  }
+
+  /** Kill markers over foes, warning skulls over own units (stories 13.4, 13.6); empty map clears them. */
+  setMarks(marks: ReadonlyMap<string, KillKind>): void {
+    this.badges.setMarks(marks);
+    this.wake();
+  }
+
+  /** The part of the target's HP bar a previewed attack takes (story 13.4); `null` ends it. */
+  setHpPreview(p: { uid: string; after: number } | null): void {
+    this.badges.setPreview(p);
+    this.wake();
+  }
+
+  /** Option "Raster" (story 13.1): grid marks at the tile corners, thin lines or nothing. */
+  set grid(level: GridLevel) {
+    if (level === this.gridLevel) return;
+    this.gridLevel = level;
+    this.buildGrid();
+    this.wake();
+  }
+
+  private buildGrid(): void {
+    this.gridMesh?.mesh.dispose();
+    this.gridMesh?.mat.dispose();
+    this.gridMesh = this.state && this.terrain ? buildGridMesh(this.scene, this.state.width, this.state.height, (p) => this.tileTop(p), this.gridLevel, this.data.render.legibility.grid) : null;
+  }
+
+  /**
+   * Pins a DOM element (positioned absolutely over the canvas) to the centre of field `tile`, moved by `at` (tiles east, south and
+   * up); the board moves it with the camera every frame. `null` unpins it.
+   */
+  pin(key: string, el: HTMLElement | null, tile: Pos | null, at: PinOffset = {}): void {
+    if (!el || !tile) {
+      this.pins.delete(key);
+      return;
+    }
+    const old = this.pins.get(key);
+    if (old && old.el === el && old.tile[0] === tile[0] && old.tile[1] === tile[1] && old.at.east === at.east && old.at.south === at.south && old.at.lift === at.lift) return;
+    this.pins.set(key, { el, tile, at, x: NaN, y: NaN });
+    this.wake();
+  }
+
+  private placePins(): void {
+    for (const p of this.pins.values()) {
+      const s = this.screenOfXYZ(p.tile[0] + 0.5 + (p.at.east ?? 0), this.tileTop(p.tile) + (p.at.lift ?? 0), -(p.tile[1] + 0.5 + (p.at.south ?? 0)));
+      const x = Math.round(s.x);
+      const y = Math.round(s.y);
+      if (x === p.x && y === p.y) continue;
+      p.x = x;
+      p.y = y;
+      p.el.style.transform = `translate(${x}px, ${y}px)`;
+    }
+  }
+
+  private placeBadges(): void {
+    this.badges.setScale(this.ppt);
+    const lift = this.data.render.legibility.hpBar.lift;
+    for (const uid of this.badges.uids()) {
+      const v = this.units.get(uid);
+      if (!v) continue;
+      const x = v.x + v.offX + 0.5;
+      const z = -(v.y + v.offY + 0.5);
+      const h = this.tileTop2(Math.round(v.x), Math.round(v.y)) + v.lift;
+      const p = this.screenOfXYZ(x, h + lift, z);
+      this.badges.place(uid, p.x, p.y, v.visible && !v.downed && v.alpha > 0.5 && this.onScreen(x, h, z));
+    }
   }
 
   /** Grudge pennant over a lieutenant on the board (0-3 notches from `BattleUnit.grudge`); everyone else has none. */
@@ -1076,7 +1186,7 @@ export class BoardView implements HostedView {
       const v = this.units.get(uid);
       if (!v) continue;
       const p = this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 1.2, -(v.y + v.offY + 0.5));
-      el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
+      el.style.transform = `translate(${p.x}px, ${p.y - this.badges.heightOf(uid)}px) translate(-50%, -100%)`;
       el.style.display = v.visible && v.alpha > 0.5 ? '' : 'none';
     }
   }
@@ -1140,7 +1250,7 @@ export class BoardView implements HostedView {
       const p = this.screenOfXYZ(v.x + v.offX + 0.5, this.tileTop2(Math.round(v.x), Math.round(v.y)) + 0.95, -(v.y + v.offY + 0.5));
       // a lieutenant's pennant hangs over his head: the icons sit beside it
       const lt = this.pennants.has(uid);
-      this.statusIcons.place(uid, lt ? p.x + this.ppt * 0.28 : p.x, p.y, v.visible && !v.downed && v.alpha > 0.5, !lt);
+      this.statusIcons.place(uid, lt ? p.x + this.ppt * 0.28 : p.x, p.y - this.badges.heightOf(uid), v.visible && !v.downed && v.alpha > 0.5, !lt);
     }
   }
 
@@ -1180,6 +1290,7 @@ export class BoardView implements HostedView {
 
   private removeUnit(v: UnitView): void {
     this.setBleedLabel(v.uid, null); // the counter goes with the figure (a unit that drops out of the fog while downed)
+    this.badges.set(v.uid, null);
     this.statuses.delete(v.uid);
     this.statusIcons.drop(v.uid);
     v.figure.dispose();
@@ -1227,7 +1338,7 @@ export class BoardView implements HostedView {
       o.mesh.dispose();
       o.mat.dispose();
     }
-    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg);
+    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg, this.data.render.legibility);
   }
 
   private async updateGhost(): Promise<void> {
@@ -1277,10 +1388,45 @@ export class BoardView implements HostedView {
     return this.basis().cos;
   }
 
+  /** Pixels per tile of zoom step `step`; one step past the last of render.yaml is "whole map" (story 13.9). */
   private pptFor(step: number): number {
     const { w, h } = this.cssSize();
     const steps = this.data.render.camera.zoomSteps;
-    return Math.min(w, h) / steps[Math.max(0, Math.min(steps.length - 1, step))]!;
+    const far = Math.min(w, h) / steps[Math.max(0, Math.min(steps.length - 1, step))]!;
+    if (step < steps.length || !this.state) return far;
+    const css = this.hooks.insets?.() ?? NO_INSETS;
+    const m = this.data.render.legibility.view.wholeMapMargin;
+    const fit = Math.min((w - css.left - css.right) / (this.state.width + 2 * m), (h - css.top - css.bottom) / ((this.state.height + 2 * m) * this.cosTilt()));
+    return Math.max(1, Math.min(far, fit));
+  }
+
+  /** The zoom step "whole map" (story 13.9, PC: M): shows the map in the free area; again (or zooming in) returns to the farthest step. */
+  wholeMap(on = this.step < this.data.render.camera.zoomSteps.length): void {
+    const steps = this.data.render.camera.zoomSteps.length;
+    const next = on ? steps : steps - 1;
+    if (next === this.step) return;
+    this.zoomTo(next);
+  }
+
+  private zoomTo(next: number): void {
+    const whole = next === this.data.render.camera.zoomSteps.length;
+    this.step = next;
+    this.zoomTween = { from: this.ppt, to: this.pptFor(next), start: performance.now() };
+    if (whole && this.state) {
+      // the whole map sits in the middle of the free area
+      const css = this.hooks.insets?.() ?? NO_INSETS;
+      const ppt = this.zoomTween.to;
+      const kv = 1 / ppt / this.cosTilt();
+      const tx = centreOn(this.state.width / 2, css.left / ppt, css.right / ppt);
+      const ty = centreOn(this.state.height / 2, css.top * kv, css.bottom * kv);
+      const fx = this.camX;
+      const fy = this.camY;
+      void this.tween(Math.max(1, this.data.render.camera.zoomMs), (t) => {
+        this.camX = fx + (tx - fx) * t;
+        this.camY = fy + (ty - fy) * t;
+      });
+    }
+    this.wake();
   }
 
   /** HUD insets in ground tiles (vertical ones stretched by the tilt). */
@@ -1327,11 +1473,10 @@ export class BoardView implements HostedView {
   /** Steps through the zoom levels of render.yaml (D9): +1 = closer. */
   zoom(delta: number): void {
     const steps = this.data.render.camera.zoomSteps.length;
-    const next = Math.max(0, Math.min(steps - 1, this.step - Math.sign(delta)));
+    // zooming out past the farthest step shows the whole map (story 13.9)
+    const next = Math.max(0, Math.min(steps, this.step - Math.sign(delta)));
     if (next === this.step) return;
-    this.step = next;
-    this.zoomTween = { from: this.ppt, to: this.pptFor(next), start: performance.now() };
-    this.wake();
+    this.zoomTo(next);
   }
 
   centerOn(p: Pos, smooth = true): Promise<void> {
@@ -1363,7 +1508,7 @@ export class BoardView implements HostedView {
     const { w, h } = this.cssSize();
     const css = this.hooks.insets?.() ?? NO_INSETS;
     const cam = this.data.render.camera;
-    const plan = framePlan({ tiles, step: this.step, steps: cam.zoomSteps, viewW: w, viewH: h, hud: css, cosTilt: this.cosTilt(), margin: cam.markFrameMargin });
+    const plan = framePlan({ tiles, step: Math.min(this.step, cam.zoomSteps.length - 1), steps: cam.zoomSteps, viewW: w, viewH: h, hud: css, cosTilt: this.cosTilt(), margin: cam.markFrameMargin });
     const ppt = this.pptFor(plan.step);
     if (plan.step !== this.step) {
       this.step = plan.step;
@@ -1552,7 +1697,14 @@ export class BoardView implements HostedView {
     c.addEventListener('pointermove', (e) => {
       const p = this.pointer.get(e.pointerId);
       if (!p) {
-        if (e.pointerType === 'mouse') this.hooks.onHover?.(this.tileAt(e.clientX, e.clientY));
+        if (e.pointerType === 'mouse' && this.hooks.onHover) {
+          const t = this.tileAt(e.clientX, e.clientY);
+          const k = t ? `${t[0]},${t[1]}` : '';
+          if (k !== this.hoverKey) {
+            this.hoverKey = k;
+            this.hooks.onHover(t);
+          }
+        }
         return;
       }
       const dx = e.clientX - p.x;
@@ -1586,17 +1738,50 @@ export class BoardView implements HostedView {
       if (!p || this.pointer.size > 0) return;
       if (!this.panMoved && !this.longFired) {
         const t = this.tileAt(e.clientX, e.clientY);
-        if (t) {
-          this.pickGrudgeLine(t);
-          this.hooks.onTap?.(t);
-        }
+        if (t) this.tapped(t);
       }
     };
+    c.addEventListener('pointerleave', () => {
+      if (this.hoverKey && this.hooks.onHover) {
+        this.hoverKey = '';
+        this.hooks.onHover(null);
+      }
+    }, { signal });
     c.addEventListener('pointerup', up, { signal });
     c.addEventListener('pointercancel', (e) => {
       this.pointer.delete(e.pointerId);
       clearTimeout(this.longTimer);
     }, { signal });
+  }
+
+  /**
+   * A tap on field `t`. With a double-tap hook a tap on a figure waits `legibility.doubleTapMs` for a second one: two taps glide the
+   * camera to the figure without selecting it or acting (story 13.9); a tap on an empty field goes through at once.
+   */
+  private tapped(t: Pos): void {
+    const fire = (p: Pos) => {
+      this.pickGrudgeLine(p);
+      this.hooks.onTap?.(p);
+    };
+    const pending = this.pendingTap;
+    if (pending) {
+      clearTimeout(pending.timer);
+      this.pendingTap = null;
+      if (pending.tile[0] === t[0] && pending.tile[1] === t[1]) {
+        this.hooks.onDoubleTap?.(t);
+        return;
+      }
+      fire(pending.tile);
+    }
+    const figure = this.state?.units.some((u) => u.pos && !u.gone && u.pos[0] === t[0] && u.pos[1] === t[1] && this.units.has(u.uid));
+    if (!this.hooks.onDoubleTap || !figure) return fire(t);
+    this.pendingTap = {
+      tile: t,
+      timer: window.setTimeout(() => {
+        this.pendingTap = null;
+        if (!this.disposed) fire(t);
+      }, this.data.render.legibility.doubleTapMs),
+    };
   }
 
   private pan(dxCss: number, dyCss: number): void {
@@ -1644,8 +1829,10 @@ export class BoardView implements HostedView {
     this.scene.render();
     this.updateFloaters(clock);
     this.placeBleedLabels();
+    this.placeBadges();
     this.placePennants();
     this.placeStatusIcons();
+    this.placePins();
   }
 
   private placeUnit(v: UnitView, now: number): void {
@@ -1894,6 +2081,7 @@ export class BoardView implements HostedView {
             if (crit) this.kick(crit.shake, crit.shakeMs);
             this.floatText(dp[0], dp[1], e.guarded ? '🛡 0' : String(e.dmg), e.crit ? 'hc-float-crit' : 'hc-float-dmg', 900, e.crit ? crit?.numberScale : undefined);
             this.hooks.onUnitHp?.(e.defender, e.hpAfter);
+            this.badges.setHp(e.defender, e.hpAfter);
             await this.hooks.onEvent?.(e);
             if (crit) {
               // the target is thrown back along the blow and returns while its flash fades
@@ -1943,6 +2131,7 @@ export class BoardView implements HostedView {
             if (e.t === 'heal') this.spawnFx('heal', p[0], p[1]);
           }
           this.hooks.onUnitHp?.(e.unit, e.hpAfter);
+          this.badges.setHp(e.unit, e.hpAfter);
           if (e.t === 'heal') void this.hooks.onEvent?.(e);
           await this.wait(e.t === 'heal' ? 350 : 250);
           break;
@@ -1987,6 +2176,7 @@ export class BoardView implements HostedView {
           if (v) {
             v.downed = true;
             v.desat = 1;
+            this.badges.set(e.unit, null);
             this.setAnim(v, 'downed');
             const du = this.state?.units.find((x) => x.uid === e.unit);
             if (!du || bleedsOut(this.data, this.state, du)) this.setBleedLabel(e.unit, 0);
@@ -2005,6 +2195,7 @@ export class BoardView implements HostedView {
           // the flee line (UI hook) is spoken after the jump while he still stands there (story 3.2). Skip mode only settles it.
           const v = this.units.get(e.unit);
           this.setBleedLabel(e.unit, null);
+          this.badges.set(e.unit, null);
           if (v) {
             const origin: Pos = [Math.round(v.x), Math.round(v.y)];
             const by = e.by ? this.units.get(e.by) : undefined;
@@ -2040,6 +2231,7 @@ export class BoardView implements HostedView {
         case 'escaped': {
           const v = this.units.get(e.unit);
           this.setBleedLabel(e.unit, null);
+          this.badges.set(e.unit, null);
           if (v) {
             // death in ash (story 8.6): flakes with embers burst from the unit, it fades upwards, a short shake
             const death = this.data.render.look.fx.death;
@@ -2083,11 +2275,17 @@ export class BoardView implements HostedView {
         case 'exhausted': {
           const v = this.units.get(e.unit);
           if (v) v.desat = 0.65;
+          if (v && !v.downed) {
+            this.done.add(e.unit);
+            this.badges.setDone(this.done);
+          }
           break;
         }
         case 'refreshed': {
           const v = this.units.get(e.unit);
           if (v) v.desat = 0;
+          this.done.delete(e.unit);
+          this.badges.setDone(this.done);
           const p = this.unitPos(e.unit);
           if (p) this.spawnFx('levelup', p[0], p[1]);
           await this.hooks.onEvent?.(e);
@@ -2109,6 +2307,8 @@ export class BoardView implements HostedView {
         }
         case 'phase': {
           for (const v of this.units.values()) if (v.team === e.phase && !v.downed) v.desat = 0;
+          this.done.clear();
+          this.badges.setDone(this.done);
           await this.hooks.onEvent?.(e);
           break;
         }
