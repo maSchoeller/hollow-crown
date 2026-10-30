@@ -132,6 +132,44 @@ look:
     # feet = Sprite-Effekt (art/fx) am Fuss der Figur, wenn der Status eintritt (§8: Flamme, Tropfen, Erdklumpen)
     status: { fadeMs: 150, sizePx: 24, feet: { burning: flame, wet: water_burst, slowed: earth_spikes } }
 
+# Epic 13 „Kampf lesbar machen“ (EXPERIENCE.md, DESIGN.md hp-bar/grid-mark/range-tile/threat/kill-marker). Ungelit, Farben aus DESIGN.md.
+# Längen in Feldern, wo nicht anders genannt. Startwerte [C], am Bildschirm eingestellt (Prolog auf dem iPhone-13-Profil).
+legibility:
+  # Story 13.1: Raster. subtle = Creme-Kreuze an den Feldecken (arm = Armlänge, width = Strichbreite), strong = feine Linien rund um jedes Feld
+  grid:
+    color: "#FFF8EC"
+    subtle: { alpha: 0.55, arm: 0.12, width: 0.03 }
+    strong: { alpha: 0.4, width: 0.022 }
+  # Story 13.2: Bereiche als Einzelkacheln (gap = Lücke zwischen zwei Kacheln, corner = Eckradius) mit gemeinsamer Außenkante
+  # (Creme unter Teamblau: cream = Breite der Creme-Kante, edge = Breite der blauen darüber), Weg als runder Pfeil
+  range:
+    gap: 0.06
+    corner: 0.14
+    move: { color: "#2F64C8", alpha: 0.42 }
+    attack: { color: "#B83A2E", alpha: 0.36 }
+    heal: { color: "#2F8A4C", alpha: 0.38 }
+    cream: "#FFF8EC"
+    edge: { cream: 0.085, line: 0.045 }
+  path: { color: "#2F64C8", cream: "#FFF8EC", width: 0.17, outline: 0.05, head: 0.42, headLength: 0.36 }
+  # Story 13.5: Gefahrenzone in drei Stufen (1 / 2 / 3+ Gegner), rote Außenkante auf Creme, Zahl im Creme-Kreis ab countFrom Angreifern;
+  # sleeping = gestrichelte Kante schlafender Gegner (dash/gap Strichlänge), watch = Kante eines einzelnen Gegners (Langdruck) in dunklerem Rot
+  threat:
+    color: "#B83A2E"
+    alpha: [0.14, 0.26, 0.4]
+    edge: { cream: 0.08, line: 0.045 }
+    countFrom: 2
+    countSize: 0.5
+    sleeping: { color: "#B83A2E", width: 0.05, dash: 0.22, gap: 0.14 }
+    watch: { color: "#7A2219", cream: 0.1, line: 0.06 }
+  # Story 13.6: gestrichelte Linien von den Gegnern, die das Zielfeld erreichen
+  lines: { color: "#B83A2E", cream: "#FFF8EC", width: 0.06, dash: 0.24, gap: 0.16 }
+  # Story 13.3: Lebensleiste über dem Kopf. tick = Teilstrich je so viele TP, ab wideFrom max. TP je tickWide; critical = Anteil der max. TP,
+  # unter dem der Glutrand pulsiert; Breite = widthTiles Felder, begrenzt auf minPx..maxPx CSS-px; heightPx = Höhe; lift = Höhe über dem Feld (Felder)
+  hpBar: { tick: 5, tickWide: 10, wideFrom: 40, critical: 0.25, widthTiles: 0.8, minPx: 24, maxPx: 54, heightPx: 8, lift: 1.0 }
+  # Story 13.9: Zoomstufe „ganze Karte“ (Rand in Feldern um die Karte) und die Zeit, in der zwei Tipps als Doppeltipp zählen
+  view: { wholeMapMargin: 1 }
+  doubleTapMs: 300
+
 # GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
 # Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel
 # der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die

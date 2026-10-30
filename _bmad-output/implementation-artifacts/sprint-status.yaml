@@ -211,16 +211,16 @@ development_status:
   epic-12-retrospective: optional
 
   # Epic 13: Kampf lesbar machen (course correction 2026-10-30, before 9-14)
-  epic-13: backlog
-  13-1-brett-anzeige-in-den-optionen-und-raster: backlog  # Brett-Anzeige in den Optionen und Raster
-  13-2-bereiche-als-kacheln-und-weg-pfeil: backlog  # Bereiche als Kacheln und Weg-Pfeil
-  13-3-lebensleisten-ueber-den-figuren: backlog  # Lebensleisten über den Figuren
-  13-4-schadensvorschau-und-kill-marker: backlog  # Schadensvorschau und Kill-Marker
-  13-5-gefahrenzone-mit-stufen: backlog  # Gefahrenzone mit Stufen
-  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: backlog  # Zielfeld-Check und Warnung für eigene Figuren
-  13-7-gegnerphase-rueckblick: backlog  # Gegnerphase-Rückblick
-  13-8-gegner-leiste: backlog  # Gegner-Leiste
-  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: backlog  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
+  epic-13: in-progress
+  13-1-brett-anzeige-in-den-optionen-und-raster: review  # Brett-Anzeige in den Optionen und Raster
+  13-2-bereiche-als-kacheln-und-weg-pfeil: review  # Bereiche als Kacheln und Weg-Pfeil
+  13-3-lebensleisten-ueber-den-figuren: review  # Lebensleisten über den Figuren
+  13-4-schadensvorschau-und-kill-marker: review  # Schadensvorschau und Kill-Marker
+  13-5-gefahrenzone-mit-stufen: review  # Gefahrenzone mit Stufen
+  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: review  # Zielfeld-Check und Warnung für eigene Figuren
+  13-7-gegnerphase-rueckblick: review  # Gegnerphase-Rückblick
+  13-8-gegner-leiste: review  # Gegner-Leiste
+  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: review  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
   epic-13-retrospective: optional
 
   # Epic 14: Handbuch (course correction 2026-10-30, after the MVP release, before Epic 10)

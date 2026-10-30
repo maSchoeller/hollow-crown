@@ -1,0 +1,239 @@
+/* HUD pieces of epic 13 (DESIGN.md: Zielfeld-Pille, Gelände-Chip, Rückblick-Stein, Gegner-Leiste, Zurück an der Figur). */
+
+/* ---------- target-tile pill (story 13.6) ---------- */
+.lg-threat {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 520px;
+  padding: 5px 12px 5px 9px;
+  border-radius: var(--hc-r-pill);
+  box-shadow: 0 3px 0 var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.1;
+}
+.lg-threat.is-many {
+  background: var(--hc-team-enemy-soft);
+  color: var(--hc-team-enemy);
+}
+
+/* ---------- pinned elements over the board: the board writes their transform each frame ---------- */
+.lg-pins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.lg-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.lg-pin > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* terrain chip below the chosen field */
+.lg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  translate: -50% 4px;
+  padding: 3px 9px;
+  border-radius: var(--hc-r-pill);
+  border-width: var(--hc-outline-small);
+  box-shadow: 0 2px 0 var(--hc-line);
+  white-space: nowrap;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.1;
+}
+.lg-chip__val {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.lg-chip__val.is-plus {
+  color: var(--hc-positive);
+}
+
+/* round back stone beside the ghost figure (story 13.9) */
+.lg-back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  translate: -50% -50%;
+  padding: 0;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  box-shadow: 0 3px 0 var(--hc-line);
+  pointer-events: auto;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.lg-back:active {
+  translate: -50% calc(-50% + 2px);
+  box-shadow: 0 1px 0 var(--hc-line);
+}
+
+/* ---------- foe phase recap (story 13.7) ---------- */
+.lg-recap {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+}
+.lg-recap__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lg-recap__title {
+  font-family: var(--hc-font-name);
+  font-size: 17px;
+  line-height: 1.1;
+}
+.lg-recap__close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+}
+.lg-recap__rows {
+  display: grid;
+  gap: 4px;
+  max-height: 168px;
+  overflow-y: auto;
+}
+.lg-recap__row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px;
+  border: 0;
+  border-radius: var(--hc-r-chip);
+  background: transparent;
+  color: var(--hc-line);
+  text-align: left;
+  font-family: var(--hc-font-body);
+  font-size: 13px;
+  line-height: 1.2;
+}
+.lg-recap__row:not(:disabled):active {
+  background: var(--hc-cream-2);
+}
+.lg-recap__face {
+  display: block;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-team-player-soft);
+}
+.lg-recap__face.is-enemy {
+  background: var(--hc-team-enemy-soft);
+}
+.lg-recap__row.is-down .lg-recap__face {
+  filter: grayscale(1);
+}
+.lg-recap__text {
+  display: grid;
+  min-width: 0;
+}
+.lg-recap__text small {
+  color: var(--hc-soft);
+  font-size: 12px;
+}
+.lg-recap__num {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.is-minus .lg-recap__num {
+  color: var(--hc-negative);
+}
+.is-plus .lg-recap__num {
+  color: var(--hc-positive);
+}
+.lg-recap__foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- enemy strip (story 13.8) ---------- */
+.lg-strip {
+  display: flex;
+  gap: 6px;
+  max-width: 520px;
+  padding: 2px 2px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.lg-strip::-webkit-scrollbar {
+  display: none;
+}
+.lg-strip.is-side {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.lg-strip__foe {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
+  padding: 3px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: conic-gradient(var(--hc-team-enemy) 0 var(--lg-hp, 100%), rgba(59, 42, 32, 0.18) 0 100%);
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.lg-strip__foe.is-lt {
+  box-shadow:
+    0 0 0 2px var(--hc-gold),
+    0 0 0 4px var(--hc-line);
+  margin: 0 3px;
+}
+.lg-strip__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--hc-team-enemy-soft);
+}
+.lg-strip__hp {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  translate: -50% 0;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1.5px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font: 700 10px/1.25 var(--hc-font-label);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}

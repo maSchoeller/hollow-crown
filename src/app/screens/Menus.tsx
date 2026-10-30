@@ -145,6 +145,13 @@ export function Options({ back }: { back: Screen }) {
           {seg(t('ui.opt.lang'), 'lang', [['de', 'Deutsch'], ['en', 'English']])}
           {seg(t('ui.opt.speed'), 'speed', SPEEDS())}
           {seg(t('ui.opt.enemySpeed'), 'enemySpeed', SPEEDS())}
+        </Piece>
+        <Piece class="options__stone">
+          <b class="options__head">{t('ui.opt.board')}</b>
+          {seg(t('ui.opt.grid'), 'grid', [['off', t('ui.off')], ['subtle', t('ui.opt.gridSubtle')], ['strong', t('ui.opt.gridStrong')]])}
+          {seg(t('ui.opt.hpBars'), 'hpBars', [['always', t('ui.opt.hpAlways')], ['hurt', t('ui.opt.hpHurt')], ['off', t('ui.off')]])}
+          {seg(t('ui.opt.threatNumbers'), 'threatNumbers', ON_OFF())}
+          {seg(t('ui.opt.enemyStrip'), 'enemyStrip', ON_OFF())}
           {seg(t('ui.opt.danger'), 'dangerDefault', ON_OFF())}
         </Piece>
         <Piece class="options__stone">
