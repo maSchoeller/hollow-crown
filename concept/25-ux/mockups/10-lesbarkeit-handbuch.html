@@ -1,0 +1,629 @@
+<meta charset="utf-8">
+<title>Hollow Crown Lesbarkeit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: eine Lesespalte mit Bildreihen aus Handy-Rahmen; jede Idee = Bild zuerst, Text daneben. Farben und Schriften aus concept/25-ux/DESIGN.md (bewusst nur helles Spielzeug-Thema wie das Spiel selbst). */
+:root {
+  color-scheme: light;
+  --cream: #FFF8EC; --cream-2: #F4E9D6; --paper: #EFE4D0;
+  --line: #3B2A20; --soft: #7A6553;
+  --ember: #E8743B; --ember-dark: #B44C18;
+  --blue: #2F64C8; --blue-soft: #E7EFFF; --red: #B83A2E; --red-soft: #FDEEE9;
+  --green: #2F8A4C; --green-soft: #E9F6EC; --gold: #D9A931; --frame: #101014;
+  --f-name: 'Fraunces', Georgia, serif;
+  --f-body: 'Barlow', system-ui, sans-serif;
+  --f-label: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--line); font: 600 15px/1.45 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--f-name); font-weight: 700; margin: 0; text-wrap: balance; line-height: 1.08; }
+h1 { font-size: clamp(32px, 6vw, 54px); }
+h2 { font-size: clamp(24px, 3.6vw, 34px); }
+h3 { font-size: 19px; }
+p { margin: 0; max-width: 68ch; }
+.kicker { font: 700 13px/1 var(--f-label); letter-spacing: .12em; text-transform: uppercase; color: var(--ember-dark); }
+.lead { font-size: 17px; color: var(--line); }
+.muted { color: var(--soft); }
+header.top { display: grid; gap: 14px; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.nav a { font: 700 14px/1 var(--f-label); letter-spacing: .03em; color: var(--line); text-decoration: none; background: var(--cream);
+  border: 2px solid var(--line); border-radius: 999px; padding: 8px 12px 7px; box-shadow: 0 3px 0 var(--line); }
+.nav a:hover, .nav a:focus-visible { background: var(--cream-2); outline: none; }
+.nav a:focus-visible { outline: 3px solid var(--ember); outline-offset: 2px; }
+section { display: grid; gap: 18px; scroll-margin-top: 16px; }
+.sec-head { display: grid; gap: 8px; }
+.row { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); align-items: start; }
+.row.three { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+figure { margin: 0; display: grid; gap: 10px; min-width: 0; }
+figcaption { display: grid; gap: 4px; font-size: 14px; }
+figcaption b { font: 700 16px/1.2 var(--f-label); letter-spacing: .02em; }
+.tag { justify-self: start; font: 700 12px/1 var(--f-label); letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 5px 9px 4px; border: 2px solid var(--line); }
+.tag.ist { background: var(--cream-2); }
+.tag.neu { background: var(--ember); color: #fff; border-color: var(--ember-dark); }
+.tag.reco { background: var(--green); color: #fff; border-color: #1f5f34; }
+.phone { position: relative; background: var(--frame); border-radius: 30px; padding: 7px; box-shadow: 0 10px 24px rgba(59,42,32,.22); max-width: 300px; width: 100%; }
+.screen { position: relative; border-radius: 24px; overflow: hidden; background: #1a1d24; aspect-ratio: 390 / 690; }
+.screen > img, .screen > svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.crop { border-radius: 18px; overflow: hidden; border: 3px solid var(--line); box-shadow: 0 4px 0 var(--line); background: #2b3a22; max-width: 100%; }
+.crop svg { display: block; width: 100%; height: auto; }
+.pin { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: var(--ember); color: #fff; border: 2px solid #fff;
+  font: 700 14px/22px var(--f-label); text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.4); transform: translate(-50%, -50%); }
+.pains { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); padding: 0; margin: 0; list-style: none; }
+.pains li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; background: var(--cream); border: 2px solid var(--line); border-radius: 16px; padding: 12px; }
+.pains .n { width: 26px; height: 26px; border-radius: 50%; background: var(--ember); color: #fff; font: 700 14px/26px var(--f-label); text-align: center; }
+.note { background: var(--cream); border: 2px dashed var(--soft); border-radius: 14px; padding: 10px 14px; font-size: 14px; color: var(--soft); max-width: 80ch; }
+.callout { background: var(--green-soft); border: 2px solid var(--green); border-radius: 16px; padding: 12px 16px; max-width: 80ch; }
+.callout b { color: var(--green); }
+/* HUD-Teile im Mock */
+.hud { position: absolute; left: 0; right: 0; font-family: var(--f-body); }
+.pill { background: var(--cream); border: 2px solid var(--line); border-radius: 999px; box-shadow: 0 3px 0 var(--line); }
+.mini-top { top: 8px; padding: 0 8px; display: flex; gap: 6px; align-items: center; }
+.mini-top .pill { flex: 1; display: flex; align-items: center; gap: 7px; padding: 4px 8px 4px 4px; font-size: 11px; line-height: 1.15; }
+.round { width: 26px; height: 26px; border-radius: 50%; background: var(--ember); color: #fff; border: 2px solid var(--line); font: 700 14px/22px var(--f-name); text-align: center; flex: none; }
+.mini-top small { display: block; font: 700 8.5px/1 var(--f-label); letter-spacing: .1em; color: var(--blue); }
+.warn { position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 700 12px/1 var(--f-label); padding: 7px 11px 6px; border-radius: 999px; border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line); }
+.warn.red { background: var(--red-soft); color: var(--red); }
+.warn.cream { background: var(--cream); color: var(--line); }
+.estrip { top: 52px; display: flex; gap: 5px; padding: 0 8px; }
+.med { position: relative; width: 34px; height: 34px; border-radius: 50%; padding: 3px; background: conic-gradient(var(--c) calc(var(--p) * 1%), #d8cfc2 0); border: 2px solid var(--line); flex: none; }
+.med.lt { box-shadow: 0 0 0 2px var(--gold); }
+.med span { display: block; width: 100%; height: 100%; border-radius: 50%; background: var(--cream) center/cover no-repeat; font: 700 11px/24px var(--f-label); text-align: center; color: var(--red); }
+.med i { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); font: 700 9px/1 var(--f-label); background: var(--line); color: #fff; border-radius: 6px; padding: 2px 3px; font-style: normal; }
+.med.dead i { background: var(--ember); }
+/* Karten (Rückblick, Handbuch) */
+.panel { background: var(--cream); border: 2.5px solid var(--line); border-radius: 22px; box-shadow: 0 5px 0 var(--line); padding: 14px; display: grid; gap: 10px; }
+.mock { background: #27303a; border-radius: 24px; padding: 12px; display: grid; gap: 10px; align-content: start; min-height: 100%; }
+.mock.blur { background: linear-gradient(160deg, #4d6b3a, #2e3d28); }
+.recap-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; background: var(--cream-2); border-radius: 14px; padding: 6px 8px; font-size: 13px; }
+.recap-row img, .avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); object-fit: cover; background: var(--cream); }
+.dmg { font: 700 15px/1 var(--f-label); color: var(--red); }
+.btn { font: 700 14px/1 var(--f-label); text-align: center; border-radius: 999px; padding: 10px 12px 9px; border: 2px solid var(--line); box-shadow: 0 3px 0 var(--line); background: var(--cream); }
+.btn.primary { background: var(--ember); color: #fff; border-color: var(--ember-dark); box-shadow: 0 3px 0 var(--ember-dark); }
+.menu-item { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; border: 2px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 5px; box-shadow: 0 3px 0 var(--line); font: 700 15px/1 var(--f-label); background: var(--cream); }
+.menu-item .ic { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; background: var(--cream-2); }
+.menu-item.hot { background: var(--selection, #FDF0E3); border-color: var(--ember-dark); box-shadow: 0 3px 0 var(--ember-dark); }
+.badge-new { font: 700 10px/1 var(--f-label); letter-spacing: .06em; background: var(--ember); color: #fff; border-radius: 999px; padding: 4px 6px 3px; }
+.cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.cat { position: relative; background: var(--cream); border: 2px solid var(--line); border-radius: 16px; box-shadow: 0 3px 0 var(--line); padding: 9px 9px 8px; display: grid; gap: 3px; font-size: 12px; }
+.cat b { font: 700 14px/1.1 var(--f-label); }
+.cat .bar { height: 5px; background: var(--cream-2); border-radius: 3px; overflow: hidden; }
+.cat .bar i { display: block; height: 100%; background: var(--green); }
+.cat .dot { position: absolute; top: -5px; right: -5px; width: 14px; height: 14px; border-radius: 50%; background: var(--ember); border: 2px solid var(--line); }
+.cat.locked { border-style: dashed; color: var(--soft); box-shadow: none; }
+.search { display: flex; align-items: center; gap: 8px; background: var(--cream-2); border: 2px solid var(--line); border-radius: 999px; padding: 7px 12px; color: var(--soft); font-size: 13px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; background: var(--cream-2); border-radius: 12px; padding: 8px 10px; font-size: 13px; }
+.kv dt { font: 700 11px/1.6 var(--f-label); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 700 12px/1 var(--f-label); border: 2px solid var(--line); border-radius: 999px; padding: 5px 8px 4px; background: var(--cream); }
+.chip.link { color: var(--blue); border-color: var(--blue); background: var(--blue-soft); }
+.diagram { background: var(--cream); border: 2px solid var(--line); border-radius: 22px; padding: 12px; overflow-x: auto; }
+.diagram svg { display: block; min-width: 640px; width: 100%; height: auto; }
+.qs { display: grid; gap: 14px; }
+.q { background: var(--cream); border: 2.5px solid var(--line); border-radius: 20px; box-shadow: 0 4px 0 var(--line); padding: 14px 16px; display: grid; gap: 8px; }
+.q h3 { font-size: 18px; }
+.q .opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.q .opt { font: 700 13px/1.1 var(--f-label); background: var(--cream-2); border-radius: 999px; padding: 6px 10px 5px; }
+.q .rec { background: var(--green-soft); border-left: 5px solid var(--green); border-radius: 10px; padding: 8px 10px; font-size: 14px; }
+.qs { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.small-cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.sc { background: var(--cream); border: 2px solid var(--line); border-radius: 18px; padding: 12px; display: grid; gap: 8px; align-content: start; }
+.sc svg { width: 100%; height: auto; border-radius: 12px; display: block; }
+.sc b { font: 700 16px/1.2 var(--f-label); }
+.sc p { font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) {
+  .pulse { animation: pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <span class="kicker">Hollow Crown · UX-Werkstatt · 30.10.2026</span>
+  <h1>Das Brett lesbarer machen</h1>
+  <p class="lead">Grundlage sind Screenshots der aktuellen App (Prolog, Runde 1, iPhone 13) und das Kampf-Mockup. Jede Idee steht als Bild da: links der Ist-Zustand, daneben Varianten auf dem echten Brett-Bild. Grüne Marken zeigen die Empfehlung; was entschieden wurde, steht ganz unten.</p>
+  <nav class="nav" aria-label="Abschnitte">
+    <a href="#ist">Ist-Zustand</a><a href="#raster">Raster</a><a href="#tp">Lebensleisten</a><a href="#gefahr">Gefahrenzone</a>
+    <a href="#zielfeld">Zielfeld-Check</a><a href="#kill">Kill-Marker</a><a href="#rueckblick">Gegnerphase</a><a href="#handbuch">Handbuch</a>
+    <a href="#klein">Kleinkram</a><a href="#matrix">Wirkung/Aufwand</a><a href="#fragen">Entscheidungen</a>
+  </nav>
+</header>
+
+<!-- ============================================================ IST -->
+<section id="ist">
+  <div class="sec-head"><span class="kicker">1 · Ausgangslage</span><h2>So sieht der Kampf heute aus</h2>
+  <p class="muted">Aufgenommen ohne Grafikkarte, deshalb zeigt das Brett hier die Pixel-Ersatzgrafik statt der 3D-Figuren. Die Oberfläche darüber ist genau die echte. Auf einem Handy sieht das Brett aus wie in den Varianten weiter unten.</p></div>
+  <div class="row">
+    <figure><div class="phone"><div class="screen"><img src="assets/ist-leerlauf.jpg" alt="Leerlauf: Rundenpille oben, drei Tasten unten, Figuren ohne TP-Anzeige">
+      <span class="pin" style="left:30%;top:47%">3</span><span class="pin" style="left:76%;top:22%">1</span></div></div>
+      <figcaption><span class="tag ist">Ist</span><b>Leerlauf</b>Wie viele TP die Gegner haben, sieht man nur nach einem Tipp auf jeden einzelnen.</figcaption></figure>
+    <figure><div class="phone"><div class="screen"><img src="assets/ist-gewaehlt.jpg" alt="Einheit gewählt: blaue und rote Flächen ohne Feldgrenzen">
+      <span class="pin" style="left:55%;top:40%">2</span><span class="pin" style="left:88%;top:77%">3</span></div></div>
+      <figcaption><span class="tag ist">Ist</span><b>Einheit gewählt</b>Bewegung und Angriff sind volle Flächen. Felder zählen geht nur über die Textur darunter. (Das leere Waffen-Bild liegt nur an meinem lokalen Build.)</figcaption></figure>
+    <figure><div class="phone"><div class="screen"><img src="assets/ist-gefahr.jpg" alt="Gefahr eingeschaltet: fast das ganze Brett rot">
+      <span class="pin" style="left:50%;top:35%">4</span></div></div>
+      <figcaption><span class="tag ist">Ist</span><b>Gefahr an</b>Fast das ganze Brett wird rot. Ob ein Feld von einem oder drei Gegnern erreicht wird, bleibt offen.</figcaption></figure>
+    <figure><div class="phone"><div class="screen"><img src="assets/ist-menue.jpg" alt="Menü: Optionen, Runde neu, Mission neu, Mission verlassen, Titel">
+      <span class="pin" style="left:50%;top:43%">5</span></div></div>
+      <figcaption><span class="tag ist">Ist</span><b>Menü</b>Keine Stelle, an der man Regeln nachlesen kann. Die Prolog-Lektionen sind nach einmaligem Lesen weg.</figcaption></figure>
+  </div>
+  <ul class="pains">
+    <li><span class="n">1</span><span><b>Kein Raster.</b> Das 3D-Brett zeigt Felder nur über Bodentextur und Requisiten. Auf Wiese und Pflaster verschwimmen die Grenzen.</span></li>
+    <li><span class="n">2</span><span><b>Bereiche ohne Kanten.</b> Blau und Rot sind zusammenhängende Flächen, die Reichweite muss man abschätzen.</span></li>
+    <li><span class="n">3</span><span><b>TP unsichtbar.</b> Die Einheitenkarte zeigt TP nur für die gewählte Figur. Wer angeschlagen ist, sieht man auf dem Brett nicht.</span></li>
+    <li><span class="n">4</span><span><b>Gefahr ohne Abstufung.</b> Eine Farbe für alles, eigene Figuren gehen darin unter.</span></li>
+    <li><span class="n">5</span><span><b>Regeln nur im Kopf.</b> Waffendreieck, Elemente, Zustände, Groll und Verbluten stehen nirgends im Spiel zum Nachlesen.</span></li>
+  </ul>
+</section>
+
+<!-- ============================================================ RASTER -->
+<section id="raster">
+  <div class="sec-head"><span class="kicker">2 · Raster</span><h2>Felder sichtbar machen, ohne das Diorama zu zerschneiden</h2>
+  <p>Ein volles Gitter macht aus dem gemalten Diorama schnell ein Schachbrett. Drei Stärken, alle als Overlay auf Feldhöhe und nie vom Szenenlicht gefärbt (Art Direction §2.5).</p></div>
+  <div class="row three">
+    <figure><div class="crop" id="g-lines"></div><figcaption><span class="tag neu">Variante A</span><b>Feine Linien überall</b>Am klarsten, aber das Brett wirkt technischer. Gut als Option „Raster: stark“.</figcaption></figure>
+    <figure><div class="crop" id="g-dots"></div><figcaption><span class="tag reco">Variante B · Empfehlung</span><b>Eckpunkte</b>Kleine Kreuze an den Feldecken. Man kann zählen, das Bild bleibt ruhig. Immer an, in den Optionen abschaltbar.</figcaption></figure>
+    <figure><div class="crop" id="g-range"></div><figcaption><span class="tag reco">Variante C · Empfehlung</span><b>Felder im Bereich</b>Sobald eine Einheit gewählt ist, wird der Bewegungsbereich zu einzelnen Kacheln mit Lücke und einer Außenkante. Passt zu B.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================================================ TP -->
+<section id="tp">
+  <div class="sec-head"><span class="kicker">3 · Lebensleisten</span><h2>TP über jeder Figur</h2>
+  <p>Drei Formen für dasselbe Brett, mit denselben Werten: Brenna 18/27, Tobin 9/19, ein Bandit 12/22, Leutnant Hask voll. Die Leiste ist in Abschnitte zu 5 TP geteilt, damit man Schaden schätzen kann, ohne Zahlen zu lesen.</p></div>
+  <div class="row three">
+    <figure><div class="crop" id="hp-bar"></div><figcaption><span class="tag reco">Variante A · Empfehlung</span><b>Leiste über dem Kopf</b>Teamfarbe, Creme-Grund, dunkle Kontur wie jeder Stein. Leutnant mit Goldrand. Am schnellsten erfasst, auch beim Herauszoomen.</figcaption></figure>
+    <figure><div class="crop" id="hp-ring"></div><figcaption><span class="tag neu">Variante B</span><b>Bogen im Bodenring</b>Der Teamring unter der Figur wird zur TP-Anzeige. Sehr diegetisch, aber flach gekippt schwer abzulesen und von Figuren verdeckt.</figcaption></figure>
+    <figure><div class="crop" id="hp-num"></div><figcaption><span class="tag neu">Variante C</span><b>Zahl nur bei Schaden</b>Kleine Pille neben verletzten Figuren. Am ruhigsten, aber Zahlen lesen ist langsamer als Längen vergleichen.</figcaption></figure>
+  </div>
+  <div class="row three">
+    <figure><div class="crop" id="hp-preview"></div><figcaption><span class="tag reco">Zusatz · Empfehlung</span><b>Schaden in der Leiste vorschauen</b>Während der Kampfvorschau blinkt der Teil der Leiste, den der Angriff nimmt (hier −12 auf 12 TP). Reicht er, steht ein Totenkopf daneben. Die Zahlen kommen aus demselben Formelcode wie die Vorschau.</figcaption></figure>
+    <figure>
+      <div class="panel" style="gap:8px">
+        <b style="font:700 15px/1.2 var(--f-label)">Option „Lebensleisten“</b>
+        <div class="chips"><span class="chip" style="background:var(--ember);color:#fff;border-color:var(--ember-dark)">Immer</span><span class="chip">Nur verletzte</span><span class="chip">Aus</span></div>
+        <svg viewBox="0 0 260 70" role="img" aria-label="Leiste bei voller, halber und kritischer Gesundheit">
+          <g font-family="Barlow Condensed" font-weight="700" font-size="11" fill="#3B2A20">
+          <g transform="translate(6,10)"><rect width="70" height="12" rx="4" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><rect x="2" y="2" width="66" height="8" rx="2" fill="#2F64C8"/><text y="32">voll</text></g>
+          <g transform="translate(94,10)"><rect width="70" height="12" rx="4" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><rect x="2" y="2" width="33" height="8" rx="2" fill="#2F64C8"/><text y="32">halb</text></g>
+          <g transform="translate(182,10)"><rect width="70" height="12" rx="4" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><rect x="2" y="2" width="12" height="8" rx="2" fill="#2F64C8"/><rect x="-3" y="-3" width="76" height="18" rx="6" fill="none" stroke="#E8743B" stroke-width="2" class="pulse"/><text y="32">unter 25 %</text></g>
+          </g>
+          <text x="6" y="64" font-family="Barlow" font-weight="600" font-size="10.5" fill="#7A6553">Kritisch = Glutrand statt Rot.</text>
+        </svg>
+      </div>
+      <figcaption><b>Sichtbarkeit und kritischer Zustand</b>Teamfarben sind laut DESIGN.md nur für Teams da. Darum färbt sich die Leiste bei wenig TP nicht rot, sondern bekommt einen pulsierenden Rand.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================ GEFAHR -->
+<section id="gefahr">
+  <div class="sec-head"><span class="kicker">4 · Gefahrenzone 2.0</span><h2>Wie gefährlich ist welches Feld?</h2>
+  <p>Statt einer roten Fläche: eine rote Kante um alles, was Gegner in ihrer nächsten Phase erreichen, und darin eine Abstufung nach Anzahl der Angreifer. Die Zahl steht nur auf Feldern, die mindestens zwei Gegner erreichen.</p></div>
+  <div class="row three">
+    <figure><div class="phone"><div class="screen"><img src="assets/ist-gefahr.jpg" alt="Heutige Gefahrenzone"></div></div><figcaption><span class="tag ist">Ist</span><b>Eine Fläche</b>Alles gleich rot.</figcaption></figure>
+    <figure><div class="crop" id="danger"></div><figcaption><span class="tag reco">Vorschlag · Empfehlung</span><b>Kante + Stufen + Zahl</b>Hellrot = 1 Gegner, kräftiger = 2, satt = 3 und mehr. Eigene Figuren bleiben sichtbar, weil die Fläche durchscheinend ist.</figcaption></figure>
+    <figure><div class="crop" id="danger-one"></div><figcaption><span class="tag neu">Bestand, verbessert</span><b>Ein Gegner per Langdruck</b>Der Langdruck auf einen Gegner zeigt heute schon seine Zone. Neu: nur als Kante in seiner Farbe, damit sie über der Gesamtzone lesbar bleibt.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================================================ ZIELFELD -->
+<section id="zielfeld">
+  <div class="sec-head"><span class="kicker">5 · Zielfeld-Check</span><h2>Bevor ich ziehe: Was erwartet mich dort?</h2>
+  <p>Der häufigste Fehler im Genre ist der Zug ins Feld, das drei Gegner erreichen. Beim Antippen eines Zielfelds zeigt das Brett deshalb, wer dorthin kommt, und eine Pille sagt es in Worten. Daneben der Geländebonus des Felds.</p></div>
+  <div class="row three">
+    <figure><div class="crop" id="target-bad"></div><figcaption><span class="tag reco">Vorschlag</span><b>Riskantes Feld</b>Feine Linien von den drei Gegnern, die das Feld erreichen. Pille oben: „3 Gegner erreichen dieses Feld“.</figcaption></figure>
+    <figure><div class="crop" id="target-ok"></div><figcaption><span class="tag reco">Vorschlag</span><b>Sichereres Feld</b>Ein Feld weiter hinten: nur noch ein Gegner. Die Entscheidung liegt beim Spieler, das Brett nennt nur die Folge.</figcaption></figure>
+    <figure>
+      <div class="panel">
+        <b style="font:700 15px/1.2 var(--f-label)">Gelände-Chip am Zielfeld</b>
+        <svg viewBox="0 0 260 120" role="img" aria-label="Chips mit Schild und Ausweichen für Wald und Fort">
+          <g font-family="Barlow Condensed" font-weight="700" font-size="13">
+            <g transform="translate(4,8)"><rect width="250" height="34" rx="17" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/>
+              <circle cx="17" cy="17" r="11" fill="#2F8A4C"/><path d="M12 22l5-11 5 11z" fill="#fff"/>
+              <text x="34" y="22" fill="#3B2A20">Wald</text>
+              <text x="74" y="22" fill="#2F8A4C">⛨ Vert +1</text><text x="134" y="22" fill="#2F8A4C">↯ Ausw +20</text><text x="204" y="22" fill="#7A6553">Weg ×2</text></g>
+            <g transform="translate(4,50)"><rect width="250" height="34" rx="17" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/>
+              <circle cx="17" cy="17" r="11" fill="#7A6553"/><rect x="11" y="12" width="12" height="10" fill="#fff"/>
+              <text x="34" y="22" fill="#3B2A20">Fort</text>
+              <text x="74" y="22" fill="#2F8A4C">⛨ Vert +2</text><text x="134" y="22" fill="#2F8A4C">↯ Ausw +20</text><text x="204" y="22" fill="#2F8A4C">♥ 20 %</text></g>
+          </g>
+          <text x="4" y="108" font-family="Barlow" font-weight="600" font-size="11" fill="#7A6553">Werte aus content/core/terrain.yaml, Symbol + Zahl.</text>
+        </svg>
+      </div>
+      <figcaption><b>Gelände ohne Extra-Tipp</b>Heute zeigt die Gelände-Karte nur ein leeres Feld. Beim Ziehen steht derselbe Inhalt als Chip direkt am Ziel.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================ KILL -->
+<section id="kill">
+  <div class="sec-head"><span class="kicker">6 · Kill-Marker und Gegner-Leiste</span><h2>Wen kann ich diese Runde ausschalten?</h2>
+  <p>Ist eine Einheit gewählt, rechnet das Spiel für jeden erreichbaren Gegner die Vorschau durch (wieder derselbe Formelcode). Fällt der Gegner bei einem Treffer, steht ein voller Totenkopf, reicht es nur mit Krit, ein halber. Der Marker ist ein dunkler Stein, kein Glutorange (DESIGN.md: Glut nie für Markierungen auf dem Brett). Optional oben eine Leiste mit allen Gegnern.</p></div>
+  <div class="row three">
+    <figure><div class="phone"><div class="screen" id="kill-phone"></div></div><figcaption><span class="tag reco">Kill-Marker · Empfehlung</span><b>Totenkopf über dem Opfer</b>Brenna ist gewählt. Der angeschlagene Bandit oben fällt sicher (voller Totenkopf), der rechts daneben nur mit Krit (halber).</figcaption></figure>
+    <figure><div class="phone"><div class="screen" id="strip-phone"></div></div><figcaption><span class="tag neu">Gegner-Leiste · offen</span><b>Alle Gegner auf einen Blick</b>Medaillons mit TP-Ring unter den Ziel-Pillen; Tipp springt zur Figur. Kostet eine Zeile Platz im Hochformat, darum eher nur auf Tablet und PC.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================================================ RÜCKBLICK -->
+<section id="rueckblick">
+  <div class="sec-head"><span class="kicker">7 · Gegnerphase-Rückblick</span><h2>Was ist gerade passiert?</h2>
+  <p>Bei 2× oder „Überspringen“ verpasst man leicht, wer getroffen wurde. Nach der Gegnerphase liegt deshalb ein kleiner Stein über der Einheitenkarte, der sich mit dem ersten Tipp aufs Brett von selbst schließt.</p></div>
+  <div class="row three">
+    <figure>
+      <div class="mock blur" style="border-radius:24px">
+        <div class="panel" style="padding:12px;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font:700 17px/1 var(--f-name)">Gegnerphase 2</b><span class="muted" style="font-size:12px">3 Angriffe</span></div>
+          <div class="recap-row"><img src="assets/brenna_head.webp" alt=""><span><b>Brenna</b> von Hask getroffen<br><span class="muted" style="font-size:12px">27 → 19 TP</span></span><span class="dmg">−8</span></div>
+          <div class="recap-row"><img src="assets/tobin_head.webp" alt=""><span><b>Tobin</b> niedergestreckt<br><span class="muted" style="font-size:12px">verblutet nach 2 eigenen Phasen</span></span><span class="dmg">−10</span></div>
+          <div class="recap-row"><img src="assets/kael_head.webp" alt=""><span><b>Kael</b> weicht aus<br><span class="muted" style="font-size:12px">Bandit verfehlt</span></span><span class="dmg" style="color:var(--green)">0</span></div>
+          <div class="btn">Tobin zeigen</div>
+        </div>
+      </div>
+      <figcaption><span class="tag reco">Vorschlag</span><b>Stein „Gegnerphase 2“</b>Eine Zeile je Treffer, schlimmster Fall zuerst. Die Taste springt zur gefährdeten Figur, die Bergen braucht.</figcaption>
+    </figure>
+    <figure>
+      <div class="panel">
+        <b style="font:700 15px/1.2 var(--f-label)">Wann erscheint er?</b>
+        <svg viewBox="0 0 260 150" role="img" aria-label="Ablauf: Gegnerphase, Rückblick, erster Tipp schließt">
+          <g font-family="Barlow Condensed" font-weight="700" font-size="13" text-anchor="middle">
+            <rect x="4" y="14" width="74" height="40" rx="20" fill="#FDEEE9" stroke="#B83A2E" stroke-width="2"/><text x="41" y="39" fill="#B83A2E">Gegnerphase</text>
+            <path d="M80 34h18" stroke="#3B2A20" stroke-width="2" marker-end="url(#ar)"/>
+            <rect x="102" y="14" width="74" height="40" rx="20" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><text x="139" y="39" fill="#3B2A20">Rückblick</text>
+            <path d="M178 34h18" stroke="#3B2A20" stroke-width="2" marker-end="url(#ar)"/>
+            <rect x="200" y="14" width="56" height="40" rx="20" fill="#E8743B" stroke="#B44C18" stroke-width="2"/><text x="228" y="39" fill="#fff">Tipp</text>
+          </g>
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3B2A20"/></marker></defs>
+          <g font-family="Barlow" font-weight="600" font-size="11.5" fill="#3B2A20">
+            <text x="4" y="82">• nur wenn etwas passiert ist</text>
+            <text x="4" y="102">• keine Rückfrage, kein Blockieren</text>
+            <text x="4" y="122">• in der Lektion des Prologs einmal erklärt</text>
+            <text x="4" y="142" fill="#7A6553">Platz: wie das Kontext-Band über der Karte</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption><b>Verhalten</b>Er blockiert nie und erscheint nur, wenn es etwas zu melden gibt.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================ HANDBUCH -->
+<section id="handbuch">
+  <div class="sec-head"><span class="kicker">8 · Handbuch (Wiki)</span><h2>Regeln im Spiel nachschlagen</h2>
+  <p>Ein neuer Menüpunkt im Kampf, auf der Weltkarte und im Titel. Inhalt kommt wie alles andere aus YAML plus Locale-Schlüsseln, die Zahlen direkt aus <code>balance.yaml</code> und <code>terrain.yaml</code>. So stimmt das Handbuch automatisch, wenn das Balancing sich ändert.</p></div>
+  <div class="row three">
+    <figure>
+      <div class="mock" style="background:#3a3330">
+        <div style="display:flex;gap:8px;align-items:center"><div class="pill" style="width:38px;height:38px;display:grid;place-items:center;border-radius:50%">✕</div><div class="pill" style="flex:1;padding:8px 14px;font:700 19px/1 var(--f-name)">Menü</div></div>
+        <div class="panel" style="gap:9px">
+          <div class="menu-item"><span class="ic">☼</span>Optionen<span></span></div>
+          <div class="menu-item hot"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B2A20" stroke-width="2.4" stroke-linecap="round"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v14"/></svg></span>Handbuch<span class="badge-new">3 NEU</span></div>
+          <div class="menu-item"><span class="ic">«</span>Runde neu starten<span></span></div>
+          <div class="menu-item"><span class="ic">↻</span>Mission neu starten<span></span></div>
+          <div class="menu-item"><span class="ic">⌂</span>Zum Titelbildschirm<span></span></div>
+        </div>
+      </div>
+      <figcaption><span class="tag neu">Einstieg</span><b>Menü mit Handbuch</b>Zweiter Platz, direkt unter Optionen. Die Zahl nennt Einträge, die seit dem letzten Öffnen neu entdeckt wurden.</figcaption>
+    </figure>
+    <figure>
+      <div class="mock" style="background:#3a3330">
+        <div style="display:flex;gap:8px;align-items:center"><div class="pill" style="width:38px;height:38px;display:grid;place-items:center;border-radius:50%">‹</div><div class="pill" style="flex:1;padding:8px 14px;font:700 19px/1 var(--f-name)">Handbuch</div></div>
+        <div class="panel" style="gap:10px">
+          <div class="search">⌕ Begriff suchen, z. B. „Groll“</div>
+          <div class="cats">
+            <div class="cat"><b>Grundlagen</b>Phasen, Bewegung<div class="bar"><i style="width:100%"></i></div></div>
+            <div class="cat"><span class="dot"></span><b>Kampf</b>Treffer, Krit, Doppelt<div class="bar"><i style="width:70%"></i></div></div>
+            <div class="cat"><b>Waffen &amp; Elemente</b>Dreieck, Kreislauf<div class="bar"><i style="width:50%"></i></div></div>
+            <div class="cat"><span class="dot"></span><b>Gelände</b>Deckung, Feuer<div class="bar"><i style="width:40%"></i></div></div>
+            <div class="cat"><b>Zustände</b>Brennen, Nass, Langsam<div class="bar"><i style="width:33%"></i></div></div>
+            <div class="cat"><span class="dot"></span><b>Leutnants</b>Groll, Flucht<div class="bar"><i style="width:25%"></i></div></div>
+            <div class="cat"><b>Tod &amp; Bergen</b>Verbluten, Klassik<div class="bar"><i style="width:60%"></i></div></div>
+            <div class="cat locked"><b>Heimat</b>ab Mission 1-6</div>
+          </div>
+        </div>
+      </div>
+      <figcaption><span class="tag neu">Übersicht</span><b>Kategorien als Steine</b>Fortschrittsbalken zeigt, wie viel schon entdeckt ist. Gesperrtes steht gestrichelt da, mit Grund.</figcaption>
+    </figure>
+    <figure>
+      <div class="mock" style="background:#3a3330">
+        <div style="display:flex;gap:8px;align-items:center"><div class="pill" style="width:38px;height:38px;display:grid;place-items:center;border-radius:50%">‹</div><div class="pill" style="flex:1;padding:8px 14px;font:700 19px/1 var(--f-name)">Waffendreieck</div></div>
+        <div class="panel" style="gap:10px">
+          <svg viewBox="0 -4 240 158" role="img" aria-label="Schwert schlägt Axt, Axt schlägt Lanze, Lanze schlägt Schwert">
+            <defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2F8A4C"/></marker></defs>
+            <g stroke="#2F8A4C" stroke-width="3" fill="none" marker-end="url(#ar2)">
+              <path d="M104 46 L60 100"/><path d="M76 124 L164 124"/><path d="M180 100 L136 46"/></g>
+            <g font-family="Barlow Condensed" font-weight="700" font-size="13" text-anchor="middle" fill="#3B2A20">
+              <circle cx="120" cy="26" r="25" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="120" y="31">Schwert</text>
+              <circle cx="46" cy="124" r="25" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="46" y="129">Axt</text>
+              <circle cx="194" cy="124" r="25" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="194" y="129">Lanze</text>
+              <text x="58" y="66" fill="#2F8A4C" font-size="12">schlägt</text><text x="120" y="144" fill="#2F8A4C" font-size="12">schlägt</text><text x="184" y="66" fill="#2F8A4C" font-size="12">schlägt</text>
+            </g>
+          </svg>
+          <dl class="kv"><dt>Vorteil</dt><dd>+15 Treffer, +1 Schaden</dd><dt>Nachteil</dt><dd>−15 Treffer, −1 Schaden</dd><dt>Bögen, Magie</dt><dd>außerhalb des Dreiecks</dd></dl>
+          <p style="font-size:13px">In der Kampfvorschau zeigt ein grüner Pfeil am Waffen-Chip den Vorteil.</p>
+          <div class="chips"><span class="chip link">Trefferchance</span><span class="chip link">Elemente</span><span class="chip link">Kampfvorschau</span></div>
+        </div>
+      </div>
+      <figcaption><span class="tag neu">Eintrag</span><b>Bild, Werte, Querverweise</b>Jeder Eintrag: eine Grafik, die Zahlen aus den Daten, ein Satz, wo man es im Spiel sieht, und blaue Verweise.</figcaption>
+    </figure>
+  </div>
+  <div class="diagram">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="Kontext-Fragezeichen an vier Stellen im Spiel führen direkt in den passenden Handbuch-Eintrag">
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3B2A20"/></marker></defs>
+      <g font-family="Barlow Condensed" font-weight="700" font-size="16" fill="#3B2A20">
+        <text x="10" y="24" font-size="13" fill="#B44C18" letter-spacing="1.5">IM SPIEL</text>
+        <text x="760" y="24" font-size="13" fill="#B44C18" letter-spacing="1.5">IM HANDBUCH</text>
+        <g transform="translate(10,40)"><rect width="300" height="46" rx="23" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="20" y="29">Kampfvorschau: „Treffer 74“</text><circle cx="276" cy="23" r="13" fill="#E7EFFF" stroke="#2F64C8" stroke-width="2"/><text x="276" y="29" text-anchor="middle" fill="#2F64C8">?</text></g>
+        <g transform="translate(10,100)"><rect width="300" height="46" rx="23" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="20" y="29">Gelände-Chip: „Wald ⛨ +1“</text><circle cx="276" cy="23" r="13" fill="#E7EFFF" stroke="#2F64C8" stroke-width="2"/><text x="276" y="29" text-anchor="middle" fill="#2F64C8">?</text></g>
+        <g transform="translate(10,160)"><rect width="300" height="46" rx="23" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="20" y="29">Zustands-Symbol (Langdruck)</text><circle cx="276" cy="23" r="13" fill="#E7EFFF" stroke="#2F64C8" stroke-width="2"/><text x="276" y="29" text-anchor="middle" fill="#2F64C8">?</text></g>
+        <g transform="translate(10,220)"><rect width="300" height="46" rx="23" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><text x="20" y="29">Prolog-Lektion „Gefahr“</text><circle cx="276" cy="23" r="13" fill="#E7EFFF" stroke="#2F64C8" stroke-width="2"/><text x="276" y="29" text-anchor="middle" fill="#2F64C8">?</text></g>
+        <g stroke="#3B2A20" stroke-width="2" fill="none" marker-end="url(#ar3)">
+          <path d="M300 63 C 520 63, 560 63, 750 63"/><path d="M300 123 C 520 123, 560 123, 750 123"/><path d="M300 183 C 520 183, 560 183, 750 183"/><path d="M300 243 C 520 243, 560 243, 750 243"/></g>
+        <g transform="translate(760,40)"><rect width="230" height="46" rx="14" fill="#F4E9D6" stroke="#3B2A20" stroke-width="2"/><text x="16" y="29">Kampf › Trefferchance</text></g>
+        <g transform="translate(760,100)"><rect width="230" height="46" rx="14" fill="#F4E9D6" stroke="#3B2A20" stroke-width="2"/><text x="16" y="29">Gelände › Wald</text></g>
+        <g transform="translate(760,160)"><rect width="230" height="46" rx="14" fill="#F4E9D6" stroke="#3B2A20" stroke-width="2"/><text x="16" y="29">Zustände › Nass</text></g>
+        <g transform="translate(760,220)"><rect width="230" height="46" rx="14" fill="#F4E9D6" stroke="#3B2A20" stroke-width="2"/><text x="16" y="29">Lektionen › Gefahrenzone</text></g>
+        <text x="420" y="40" font-size="14" fill="#7A6553" font-family="Barlow" font-weight="600">ein Tipp aufs „?“ öffnet den Eintrag als Blatt</text>
+      </g>
+    </svg>
+  </div>
+  <p class="muted">Kontext-„?“: Das blaue Fragezeichen erscheint an Stellen, die heute schon eine Zahl oder ein Symbol zeigen. Der Eintrag öffnet als Overlay-Blatt über dem Kampf, zurück geht es mit einem Tipp daneben. Die Prolog-Lektionen landen zusätzlich als eigene Kategorie im Handbuch, damit man sie später nachlesen kann.</p>
+</section>
+
+<!-- ============================================================ KLEINKRAM -->
+<section id="klein">
+  <div class="sec-head"><span class="kicker">9 · Kleinere Ideen</span><h2>Wenig Aufwand, spürbar im Spielgefühl</h2></div>
+  <div class="small-cards">
+    <div class="sc"><div class="crop" id="mini-path" style="box-shadow:none;border-width:2px"></div><b>Pfeil statt Punkte für den Weg</b><p>Der gesetzte Weg als dicker, runder Pfeil mit Spitze am Ziel. Man sieht sofort, ob die Figur um den Wald herum oder hindurch läuft.</p></div>
+    <div class="sc"><div class="crop" id="mini-done" style="box-shadow:none;border-width:2px"></div><b>Häkchen für „fertig“</b><p>Erschöpfte Figuren sind heute nur entsättigt. Ein kleines Häkchen über dem Kopf zeigt es eindeutig, auch bei Nacht- und Regenlicht.</p></div>
+    <div class="sc"><svg viewBox="0 0 260 120" role="img" aria-label="Doppeltipp zentriert, Zwei-Finger-Tipp zoomt heraus">
+      <rect width="260" height="120" fill="#F4E9D6"/>
+      <g font-family="Barlow Condensed" font-weight="700" font-size="13" fill="#3B2A20">
+        <rect x="16" y="18" width="96" height="84" rx="12" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><circle cx="64" cy="58" r="12" fill="none" stroke="#E8743B" stroke-width="3"/><circle cx="64" cy="58" r="20" fill="none" stroke="#E8743B" stroke-width="2" opacity=".5"/><text x="64" y="94" text-anchor="middle">Doppeltipp</text>
+        <rect x="146" y="18" width="96" height="84" rx="12" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2"/><rect x="166" y="34" width="56" height="40" rx="4" fill="none" stroke="#3B2A20" stroke-width="2" stroke-dasharray="4 3"/><path d="M174 42l-8-8M214 42l8-8M174 66l-8 8M214 66l8 8" stroke="#E8743B" stroke-width="3"/><text x="194" y="94" text-anchor="middle">Übersicht</text>
+      </g></svg><b>Kamera-Griffe</b><p>Doppeltipp auf eine Figur zentriert sie. Eine Taste oder ein Zwei-Finger-Tipp zoomt auf die ganze Karte, damit man nach der Gegnerphase den Überblick zurückhat.</p></div>
+    <div class="sc"><svg viewBox="0 0 260 120" role="img" aria-label="Rückgängig-Taste nach dem Ziehen">
+      <rect width="260" height="120" fill="#F4E9D6"/>
+      <g font-family="Barlow Condensed" font-weight="700" font-size="14" fill="#3B2A20">
+        <rect x="18" y="34" width="100" height="46" rx="23" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2.5"/><path d="M40 57a12 12 0 1 1 4 9" fill="none" stroke="#3B2A20" stroke-width="2.5"/><path d="M36 50v8h8" fill="none" stroke="#3B2A20" stroke-width="2.5"/><text x="58" y="62">Zurück</text>
+        <text x="136" y="50" font-family="Barlow" font-weight="600" font-size="12" fill="#7A6553">Bewegung</text><text x="136" y="66" font-family="Barlow" font-weight="600" font-size="12" fill="#7A6553">zurücknehmbar</text><text x="136" y="82" font-family="Barlow" font-weight="600" font-size="12" fill="#7A6553">bis zur Aktion</text>
+      </g></svg><b>Zurück deutlicher machen</b><p>Die Regel gibt es schon. Nach dem Ziehen steht „Zurück“ mit Pfeil-Symbol direkt neben der Figur statt nur in der Leiste, und auf dem PC löst Rechtsklick dasselbe aus.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ MATRIX -->
+<section id="matrix">
+  <div class="sec-head"><span class="kicker">10 · Einordnung</span><h2>Wirkung gegen Aufwand</h2>
+  <p class="muted">Meine Schätzung aus dem Code: Brett-Overlays laufen über <code>render/board/overlays.ts</code> und die DOM-Ebene der Verblutungs-Zähler, also überschaubar. Das Handbuch braucht Schema, Inhalte in zwei Sprachen und einen neuen Screen.</p></div>
+  <div class="diagram"><svg id="matrix-svg" viewBox="0 0 900 470" role="img" aria-label="Streudiagramm: Wirkung auf der Hochachse, Aufwand auf der Querachse"></svg></div>
+</section>
+
+<!-- ============================================================ FRAGEN -->
+<section id="fragen">
+  <div class="sec-head"><span class="kicker">11 · Entschieden am 30.10.2026</span><h2>Was gilt</h2>
+  <p>Ergebnis des Gesprächs mit dem Produktinhaber. Wo diese Liste von den Bildern oben abweicht, gilt die Liste.</p></div>
+  <div class="qs" id="qs"></div>
+</section>
+</div>
+
+<script>
+(function () {
+  const BOARD = 'assets/board.jpg';
+  const T = { ox: 25, oy: 4.5, w: 57, h: 45 };
+  const tx = (c) => T.ox + T.w * c, ty = (r) => T.oy + T.h * r;
+  const cx = (c) => tx(c) + T.w / 2, cy = (r) => ty(r) + T.h / 2;
+  const COL = { p: '#2F64C8', e: '#B83A2E', line: '#3B2A20', cream: '#FFF8EC', ember: '#E8743B', gold: '#D9A931', green: '#2F8A4C' };
+  const units = [
+    { id: 'kael', t: 'p', c: 2, r: 10, hp: 22, max: 22 },
+    { id: 'brenna', t: 'p', c: 3, r: 10, hp: 18, max: 27 },
+    { id: 'tobin', t: 'p', c: 2, r: 11, hp: 9, max: 19 },
+    { id: 'rhen', t: 'p', c: 3, r: 11, hp: 20, max: 20 },
+    { id: 'e0', t: 'e', c: 0, r: 5, hp: 19, max: 19, reach: 4 },
+    { id: 'e1', t: 'e', c: 4, r: 3, hp: 12, max: 22, reach: 4 },
+    { id: 'e2', t: 'e', c: 5, r: 4, hp: 19, max: 19, reach: 3 },
+    { id: 'e3', t: 'e', c: 6, r: 7, hp: 21, max: 21, reach: 4 },
+    { id: 'hask', t: 'e', c: 2, r: 2, hp: 30, max: 30, reach: 1, lt: true },
+  ];
+  const U = Object.fromEntries(units.map((u) => [u.id, u]));
+  const blocked = new Set(['1,9', '4,9']);
+  const occupied = new Set(units.map((u) => u.c + ',' + u.r));
+  const inMap = (c, r) => c >= 0 && c <= 6 && r >= 0 && r <= 14;
+  const dist = (a, b, c, d) => Math.abs(a - c) + Math.abs(b - d);
+
+  function svg(vb, body) {
+    const [x, y, w, h] = vb;
+    return `<svg viewBox="${x} ${y} ${w} ${h}" xmlns="http://www.w3.org/2000/svg"><image href="${BOARD}" x="0" y="0" width="390" height="670"/>${body}</svg>`;
+  }
+  function tiles(list, fill, stroke, opts = {}) {
+    const ins = opts.inset ?? 2.5, a = opts.alpha ?? 0.38;
+    return list.map(([c, r]) => `<rect x="${tx(c) + ins}" y="${ty(r) + ins}" width="${T.w - 2 * ins}" height="${T.h - 2 * ins}" rx="${opts.rx ?? 6}" fill="${fill}" fill-opacity="${a}" ${stroke ? `stroke="${stroke}" stroke-opacity=".9" stroke-width="1.3"` : ''}/>`).join('');
+  }
+  function contour(set, color, w = 2.6) {
+    let d = '';
+    for (const k of set) {
+      const [c, r] = k.split(',').map(Number);
+      if (!set.has(c + ',' + (r - 1))) d += `M${tx(c)} ${ty(r)}h${T.w}`;
+      if (!set.has(c + ',' + (r + 1))) d += `M${tx(c)} ${ty(r + 1)}h${T.w}`;
+      if (!set.has(c - 1 + ',' + r)) d += `M${tx(c)} ${ty(r)}v${T.h}`;
+      if (!set.has(c + 1 + ',' + r)) d += `M${tx(c + 1)} ${ty(r)}v${T.h}`;
+    }
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
+  }
+  function moveRange(u, mov) {
+    const out = [];
+    for (let c = 0; c <= 6; c++) for (let r = 0; r <= 14; r++) {
+      const k = c + ',' + r, d = dist(u.c, u.r, c, r);
+      if (d <= mov && !blocked.has(k) && (!occupied.has(k) || (c === u.c && r === u.r))) out.push([c, r]);
+    }
+    return out;
+  }
+  function attackRing(u, mov) {
+    const out = [];
+    for (let c = 0; c <= 6; c++) for (let r = 0; r <= 14; r++) {
+      const d = dist(u.c, u.r, c, r);
+      if (d === mov + 1 && !blocked.has(c + ',' + r)) out.push([c, r]);
+    }
+    return out;
+  }
+  function threatCount(c, r) {
+    return units.filter((u) => u.t === 'e' && dist(u.c, u.r, c, r) <= u.reach).length;
+  }
+  function headY(u) { return cy(u.r) - (u.lt ? 70 : 52); }
+  function bar(u, opt = {}) {
+    const w = u.lt ? 44 : 38, h = 7, x = cx(u.c) - w / 2, y = headY(u);
+    const fill = u.t === 'p' ? COL.p : COL.e;
+    const pw = (w - 3) * (u.hp / u.max);
+    let s = `<g>`;
+    s += `<rect x="${x - 1}" y="${y - 1}" width="${w + 2}" height="${h + 2}" rx="4" fill="${COL.cream}" stroke="${u.lt ? COL.gold : COL.line}" stroke-width="${u.lt ? 2.4 : 1.8}"/>`;
+    if (opt.ghost) {
+      const gw = (w - 3) * (Math.min(opt.ghost, u.hp) / u.max);
+      const keep = pw - gw;
+      s += `<rect x="${x + 1.5}" y="${y + 1}" width="${Math.max(0, keep)}" height="${h - 2}" rx="1.5" fill="${fill}"/>`;
+      s += `<rect class="pulse" x="${x + 1.5 + Math.max(0, keep)}" y="${y + 1}" width="${gw}" height="${h - 2}" rx="1.5" fill="${fill}" opacity=".9"/>`;
+    } else {
+      s += `<rect x="${x + 1.5}" y="${y + 1}" width="${pw}" height="${h - 2}" rx="1.5" fill="${fill}"/>`;
+    }
+    for (let k = 5; k < u.max; k += 5) {
+      const lx = x + 1.5 + (w - 3) * (k / u.max);
+      s += `<line x1="${lx}" y1="${y + 1}" x2="${lx}" y2="${y + h - 1}" stroke="${COL.cream}" stroke-width=".9"/>`;
+    }
+    s += `</g>`;
+    return s;
+  }
+  function ringArc(u) {
+    const rx = u.lt ? 24 : 21, ry = u.lt ? 11 : 9.5, x = cx(u.c), y = cy(u.r) + 4;
+    const fill = u.t === 'p' ? COL.p : COL.e, p = (100 * u.hp) / u.max;
+    const path = `M${x - rx} ${y} a${rx} ${ry} 0 1 0 ${2 * rx} 0 a${rx} ${ry} 0 1 0 ${-2 * rx} 0`;
+    return `<path d="${path}" fill="none" stroke="${COL.line}" stroke-width="5.5" opacity=".75"/><path d="${path}" pathLength="100" fill="none" stroke="${COL.cream}" stroke-width="3.5"/><path d="${path}" pathLength="100" fill="none" stroke="${fill}" stroke-width="3.5" stroke-dasharray="${p} 100"/>`;
+  }
+  function numPill(u) {
+    if (u.hp >= u.max) return '';
+    const x = cx(u.c) + 14, y = cy(u.r) - 30, fill = u.t === 'p' ? COL.p : COL.e;
+    return `<g><rect x="${x}" y="${y}" width="24" height="15" rx="7.5" fill="${COL.cream}" stroke="${fill}" stroke-width="2"/><text x="${x + 12}" y="${y + 11.5}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="12" fill="${COL.line}">${u.hp}</text></g>`;
+  }
+  function skull(x, y, half) {
+    return `<g transform="translate(${x - 10},${y - 10})"><circle cx="10" cy="10" r="11" fill="${COL.line}"/>` +
+      (half ? `<path d="M10 1 A9 9 0 0 1 10 19z" fill="${COL.cream}"/>` : '') +
+      `<path d="M5 9.5a5 5 0 0 1 10 0v2.5h-2v2h-6v-2h-2z" fill="${half ? '#8A8D96' : COL.cream}"/><circle cx="8" cy="10" r="1.3" fill="${COL.line}"/><circle cx="12" cy="10" r="1.3" fill="${COL.line}"/></g>`;
+  }
+  const VB = [80, 90, 310, 430];
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+
+  // Raster
+  let lines = '';
+  for (let c = -1; c <= 7; c++) lines += `<line x1="${tx(c)}" y1="0" x2="${tx(c)}" y2="670"/>`;
+  for (let r = 0; r <= 15; r++) lines += `<line x1="0" y1="${ty(r)}" x2="390" y2="${ty(r)}"/>`;
+  set('g-lines', svg(VB, `<g stroke="#FFF8EC" stroke-opacity=".42" stroke-width="1">${lines}</g>`));
+  let dots = '';
+  for (let c = -1; c <= 7; c++) for (let r = 0; r <= 15; r++) dots += `<path d="M${tx(c) - 4} ${ty(r)}h8M${tx(c)} ${ty(r) - 4}v8"/>`;
+  set('g-dots', svg(VB, `<g stroke="#FFF8EC" stroke-opacity=".75" stroke-width="1.4" stroke-linecap="round">${dots}</g>`));
+  const br = U.brenna, mv = moveRange(br, 4), mvSet = new Set(mv.map(([c, r]) => c + ',' + r));
+  const atk = attackRing(br, 4).filter(([c, r]) => !mvSet.has(c + ',' + r));
+  set('g-range', svg(VB, `<g stroke="#FFF8EC" stroke-opacity=".5" stroke-width="1.2" stroke-linecap="round">${dots}</g>` + tiles(mv, COL.p, COL.p) + tiles(atk, COL.e, COL.e, { alpha: .3 }) + contour(mvSet, '#FFF8EC', 3) + contour(mvSet, COL.p, 1.6)));
+
+  // Lebensleisten
+  set('hp-bar', svg(VB, units.map((u) => bar(u)).join('')));
+  set('hp-ring', svg(VB, units.map(ringArc).join('')));
+  set('hp-num', svg(VB, units.map(numPill).join('')));
+  const e1 = U.e1;
+  set('hp-preview', svg([190, 40, 190, 190], units.filter((u) => u.id !== 'e1').map((u) => bar(u)).join('') + bar(e1, { ghost: 12 }) + skull(cx(e1.c) + 30, headY(e1) + 3) +
+    `<g font-family="Barlow Condensed" font-weight="700"><rect x="${cx(e1.c) - 34}" y="${headY(e1) - 26}" width="68" height="20" rx="10" fill="${COL.cream}" stroke="${COL.line}" stroke-width="2"/><text x="${cx(e1.c)}" y="${headY(e1) - 11.5}" text-anchor="middle" font-size="13" fill="${COL.line}">12 → 0</text></g>`));
+
+  // Gefahr
+  const dz = new Map();
+  for (let c = 0; c <= 6; c++) for (let r = 0; r <= 14; r++) { const n = threatCount(c, r); if (n && !blocked.has(c + ',' + r)) dz.set(c + ',' + r, n); }
+  let heat = '';
+  for (const [k, n] of dz) {
+    const [c, r] = k.split(',').map(Number);
+    heat += `<rect x="${tx(c)}" y="${ty(r)}" width="${T.w}" height="${T.h}" fill="${COL.e}" fill-opacity="${[0, .16, .32, .5][Math.min(n, 3)]}"/>`;
+    if (n >= 2) heat += `<g font-family="Barlow Condensed" font-weight="700"><circle cx="${tx(c) + 10}" cy="${ty(r) + 10}" r="7.5" fill="${COL.cream}" stroke="${COL.e}" stroke-width="1.6"/><text x="${tx(c) + 10}" y="${ty(r) + 14}" text-anchor="middle" font-size="11" fill="${COL.e}">${n}</text></g>`;
+  }
+  set('danger', svg([25, 60, 365, 560], heat + contour(new Set(dz.keys()), '#FFF8EC', 4.2) + contour(new Set(dz.keys()), COL.e, 2.4) + units.map((u) => bar(u)).join('')));
+  const e3 = U.e3, one = new Set();
+  for (let c = 0; c <= 6; c++) for (let r = 0; r <= 14; r++) if (dist(e3.c, e3.r, c, r) <= e3.reach && !blocked.has(c + ',' + r)) one.add(c + ',' + r);
+  set('danger-one', svg([25, 60, 365, 560], heat.replace(/<g font-family[\s\S]*?<\/g>/g, '').replace(/fill-opacity="[^"]+"/g, 'fill-opacity=".1"') + contour(one, '#FFF8EC', 5) + contour(one, '#7a1f17', 3) +
+    `<circle cx="${cx(e3.c)}" cy="${cy(e3.r)}" r="24" fill="none" stroke="#FFF8EC" stroke-width="3" stroke-dasharray="5 4"/>`));
+
+  // Zielfeld
+  function target(tc, tr, path, label) {
+    const thr = units.filter((u) => u.t === 'e' && dist(u.c, u.r, tc, tr) <= u.reach);
+    let s = tiles(mv, COL.p, COL.p, { alpha: .22 }) + contour(mvSet, COL.p, 1.6);
+    const pts = path.map(([c, r]) => `${cx(c)},${cy(r) + 6}`).join(' ');
+    s += `<polyline points="${pts}" fill="none" stroke="#FFF8EC" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="${COL.p}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    s += thr.map((u) => `<line x1="${cx(u.c)}" y1="${cy(u.r)}" x2="${cx(tc)}" y2="${cy(tr)}" stroke="${COL.e}" stroke-width="2.2" stroke-dasharray="6 4"/><circle cx="${cx(u.c)}" cy="${cy(u.r) + 4}" r="22" fill="none" stroke="${COL.e}" stroke-width="3"/>`).join('');
+    const x = tx(tc), y = ty(tr);
+    s += `<path d="M${x + 2} ${y + 12}v-10h10M${x + T.w - 12} ${y + 2}h10v10M${x + 2} ${y + T.h - 12}v10h10M${x + T.w - 12} ${y + T.h - 2}h10v-10" fill="none" stroke="#FFF8EC" stroke-width="3.2" stroke-linecap="round"/>`;
+    const n = thr.length;
+    s += `<g font-family="Barlow Condensed" font-weight="700"><rect x="120" y="100" width="${n > 1 ? 228 : 210}" height="26" rx="13" fill="${n > 1 ? '#FDEEE9' : '#FFF8EC'}" stroke="${COL.line}" stroke-width="2"/>` +
+      `<text x="${120 + (n > 1 ? 114 : 105)}" y="118" text-anchor="middle" font-size="14" fill="${n > 1 ? COL.e : COL.line}">⚠ ${n} ${n === 1 ? 'Gegner erreicht' : 'Gegner erreichen'} dieses Feld</text>` +
+      `<rect x="${x - 20}" y="${y + T.h + 4}" width="${T.w + 40}" height="20" rx="10" fill="#FFF8EC" stroke="${COL.line}" stroke-width="1.8"/><text x="${x + T.w / 2}" y="${y + T.h + 18}" text-anchor="middle" font-size="12" fill="${COL.line}">${label}</text></g>`;
+    return svg([80, 90, 310, 430], s);
+  }
+  set('target-bad', target(3, 6, [[3, 10], [3, 9], [3, 8], [3, 7], [3, 6]], 'Straße · ⛨ 0 · ↯ 0'));
+  set('target-ok', target(3, 8, [[3, 10], [3, 9], [3, 8]], 'Straße · ⛨ 0 · ↯ 0'));
+
+  // Kill + Gegnerleiste
+  const killBody = units.map((u) => bar(u)).join('') +
+    skull(cx(U.e1.c), headY(U.e1) - 16) + skull(cx(U.e2.c), headY(U.e2) - 16, true) +
+    `<rect x="${tx(3) + 3}" y="${ty(10) + 3}" width="${T.w - 6}" height="${T.h - 6}" rx="8" fill="none" stroke="#FFF8EC" stroke-width="3"/>`;
+  const topPill = `<div class="hud mini-top"><div class="pill"><span class="round">2</span><span><small>RUNDE 2 · SPIELERPHASE</small>Entkommt über die Ausgänge</span></div></div>`;
+  document.getElementById('kill-phone').innerHTML = svg([0, 0, 390, 690], killBody) + topPill +
+    `<span class="warn cream" style="bottom:12px">Brenna · 2 Gegner fallen sicher oder mit Krit</span>`;
+  const meds = [['hask', 100, true], ['e0', 100], ['e1', 55], ['e2', 100], ['e3', 100]].map(([id, p, lt]) =>
+    `<div class="med${lt ? ' lt' : ''}${id === 'e1' ? ' dead' : ''}" style="--c:#B83A2E;--p:${p}"><span${lt ? ` style="background-image:url('assets/hask_head.webp')"` : ''}>${lt ? '' : 'B'}</span><i>${U[id].hp}</i></div>`).join('');
+  document.getElementById('strip-phone').innerHTML = svg([0, 0, 390, 690], units.map((u) => bar(u)).join('')) + topPill + `<div class="hud estrip">${meds}</div>`;
+
+  // Kleinkram
+  set('mini-path', svg([120, 260, 190, 230], tiles(mv, COL.p, COL.p, { alpha: .18 }) +
+    `<polyline points="${cx(3)},${cy(10)} ${cx(3)},${cy(8)} ${cx(4) - 6},${cy(8)} ${cx(4) - 6},${cy(7)}" fill="none" stroke="#FFF8EC" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<polyline points="${cx(3)},${cy(10)} ${cx(3)},${cy(8)} ${cx(4) - 6},${cy(8)} ${cx(4) - 6},${cy(7) + 10}" fill="none" stroke="${COL.p}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<path d="M${cx(4) - 16} ${cy(7) + 12}l10 -16l10 16z" fill="${COL.p}" stroke="#FFF8EC" stroke-width="2"/>`));
+  set('mini-done', svg([120, 380, 190, 160], [U.kael, U.rhen].map((u) => `<g transform="translate(${cx(u.c) + 12},${headY(u) + 2})"><circle r="10" fill="${COL.green}" stroke="${COL.line}" stroke-width="2"/><path d="M-5 0l3.5 3.5l6 -7" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>`).join('')));
+
+  // Matrix
+  const pts = [
+    ['Lebensleisten', 3, 9.2, 'r'], ['Raster-Eckpunkte', 1.6, 7.0, 'r'], ['Bereich als Kacheln', 2.8, 7.5, 'r'], ['Schadens-Vorschau', 3.5, 8.3, 'r'],
+    ['Gefahrenzone 2.0', 5, 8.0, 'r'], ['Zielfeld-Check', 5.6, 8.7, 'r'], ['Kill-Marker', 4.2, 6.6, 'r'], ['Gegner-Leiste', 4.6, 4.6, 'o'],
+    ['Gegnerphase-Rückblick', 4.4, 6.0, 'r'], ['Handbuch (Grundgerüst)', 7.4, 8.1, 'r'], ['Kontext-„?“', 8.4, 6.9, 'r'], ['Entdecken/Freischalten', 8.8, 4.2, 'o'],
+    ['Weg-Pfeil', 1.8, 5.0, 'r'], ['Fertig-Häkchen', 1.2, 4.4, 'r'], ['Kamera-Griffe', 3.2, 4.0, 'o'],
+  ];
+  const X = (v) => 70 + v * 80, Y = (v) => 430 - v * 40;
+  let m = `<rect x="70" y="30" width="400" height="200" fill="#E9F6EC"/><rect x="470" y="30" width="400" height="200" fill="#FFF1D6"/><rect x="70" y="230" width="400" height="200" fill="#F4E9D6"/><rect x="470" y="230" width="400" height="200" fill="#F3EFE8"/>`;
+  m += `<g font-family="Barlow Condensed" font-weight="700" font-size="14" fill="#7A6553" letter-spacing="1"><text x="80" y="50">SCHNELLE GEWINNE</text><text x="480" y="50">GROSSE STÜCKE</text><text x="80" y="420">NEBENBEI</text><text x="480" y="420">SPÄTER</text></g>`;
+  m += `<g stroke="#3B2A20" stroke-width="2"><line x1="70" y1="430" x2="870" y2="430"/><line x1="70" y1="30" x2="70" y2="430"/></g>`;
+  m += `<g font-family="Barlow Condensed" font-weight="700" font-size="14" fill="#3B2A20"><text x="470" y="458" text-anchor="middle">Aufwand →</text><text transform="translate(28,230) rotate(-90)" text-anchor="middle">Wirkung aufs Spielgefühl →</text></g>`;
+  for (const [n, a, w, k] of pts) {
+    const x = X(a), y = Y(w), right = x < 760;
+    m += `<circle cx="${x}" cy="${y}" r="8" fill="${k === 'r' ? '#E8743B' : '#FFF8EC'}" stroke="#3B2A20" stroke-width="2"/><text x="${right ? x + 13 : x - 13}" y="${y + 5}" text-anchor="${right ? 'start' : 'end'}" font-family="Barlow" font-weight="700" font-size="13.5" fill="#3B2A20">${n}</text>`;
+  }
+  m += `<g font-family="Barlow" font-weight="600" font-size="12" fill="#3B2A20"><circle cx="640" cy="458" r="6" fill="#E8743B" stroke="#3B2A20" stroke-width="1.6"/><text x="652" y="462">empfohlen</text><circle cx="742" cy="458" r="6" fill="#FFF8EC" stroke="#3B2A20" stroke-width="1.6"/><text x="754" y="462">offen / später</text></g>`;
+  document.getElementById('matrix-svg').innerHTML = m;
+
+  // Fragen
+  const D = [
+    ['Reihenfolge', 'Brett lesen und Züge absichern als Epic 13 „Kampf lesbar machen“, vor dem MVP-Release; das Handbuch als Epic 14 direkt danach.'],
+    ['Raster', 'Eckpunkte immer dezent, gewählter Bereich als Einzelkacheln mit Außenkante. Option „Raster: aus / dezent / stark“ (stark = Linien überall).'],
+    ['Lebensleiste', 'Leiste über dem Kopf in Teamfarbe, Teilstrich je 5 TP (ab 40 max. TP je 10), Leutnant mit Goldrand, unter 25 % pulsierender Glutrand, Schaden blinkt während der Kampfvorschau. Werte in render.yaml.'],
+    ['Sichtbarkeit', 'Option „Lebensleisten: Immer / Nur verletzte / Aus“, Standard „Immer“, auch in der Gegnerphase.'],
+    ['Gefahrenzone', 'Kante + drei Stufen + Zahl ab 2 Angreifern; die Zahlen lassen sich in den Optionen abschalten. Langdruck auf einen Gegner zeigt nur dessen Kante.'],
+    ['Wer zählt', 'Wache/Halten wie heute; schlafende Gegner zählen nicht, ihre Zone erscheint als gestrichelte Kante; Verstärkungen behalten ihre Ankunftsmarke.'],
+    ['Zielfeld-Check', 'Linien von den Gegnern, die das Feld erreichen, Pille mit Anzahl, Gelände-Chip. Am PC schon beim Hover.'],
+    ['Kill-Marker', 'Voller Totenkopf: fällt bei Treffer; halber: nur mit Krit. Dazu Warn-Totenkopf über eigenen Figuren, die in der nächsten Gegnerphase fallen können.'],
+    ['Rückblick', 'Nach der Gegnerphase: Treffer auf eigene Figuren, Niedergestreckte/Gefallene zuerst, Verstärkungen und geweckte Gegner. Schließt beim ersten Tipp.'],
+    ['Gegner-Leiste', 'Als Option, Standard aus.'],
+    ['Kleineres', 'Weg-Pfeil, Fertig-Häkchen, Doppeltipp zentriert, ganz herauspinchen bzw. Taste M = ganze Karte, „Zurück“ direkt an der Figur (PC: Rechtsklick).'],
+    ['Optionen', 'Neuer Block „Brett-Anzeige“: Raster, Lebensleisten, Gefahr-Zahlen, Gegner-Leiste, dazu „Gefahrenzone standardmäßig“.'],
+    ['Handbuch', 'Nachschlagewerk + Kontext-„?“ im Kampf (Creme-Stein mit dunkler Kontur, nicht blau wie oben gezeichnet: Blau ist Team); Name „Handbuch“, erreichbar aus Kampfmenü, Weltkarte und Titel. Entdecken und Bestiarium später (Speicherformat).'],
+    ['Kategorien', 'Grundlagen, Kampf, Waffen & Elemente, Gelände, Zustände, Leutnants, Tod & Bergen, Heimat, Items, Klassen (Steckbrief mit Werte-Netz und Stärken/Schwächen, nur spielbare), Lektionen.'],
+    ['Texte', 'Entwurf DE + EN durch den Assistenten aus GDD, YAML-Daten und Narrative; Abnahme durch den Produktinhaber im PR.'],
+    ['Ablage', 'EXPERIENCE.md, DESIGN.md und Decision-Log in concept/25-ux, dieses Mockup, Epics 13/14 in epics.md über gds-correct-course.'],
+  ];
+  document.getElementById('qs').innerHTML = D.map(([t, d]) =>
+    `<div class="q"><h3>${t}</h3><div class="rec">${d}</div></div>`).join('');
+})();
+</script>
