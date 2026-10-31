@@ -19,6 +19,7 @@ import { MissionLoading, PrepareScreen, UpdateScreen } from './screens/Loading';
 import { updateStatus } from './update';
 import { data } from './state/session';
 import { nodeDef } from './state/flow';
+import './state/devHooks';
 import { missionLoad } from './state/loading';
 import { prepare } from './state/prepare';
 import { battle } from './state/battle';
