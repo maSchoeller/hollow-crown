@@ -3,7 +3,7 @@
  * The surface only lays it out; bounty and material come from the same sources as the payout (story 3.5).
  */
 import type { BattleUnit, CampaignState } from '../state';
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import { bountyGold, bountyMaterialId, clampGrudge, isJoined, lieutenantSkills, lieutenantState } from './lieutenants';
 
 /** Where the grudge points: nowhere, at a unit of the company, at one who has fallen, or at one who left. */

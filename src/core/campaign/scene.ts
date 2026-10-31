@@ -1,4 +1,6 @@
-import type { Effect, GameData, Mood, Team, SceneChoice, SceneDef, SceneLine, SceneOption, SceneSpeech, Stance } from '../defs';
+import type { Team, Stance } from '../defs';
+import type { GameData } from '../gameData';
+import type { Effect, Mood, SceneChoice, SceneDef, SceneLine, SceneOption, SceneSpeech } from '../storyDefs';
 import { PERMANENT_COMPANIONS } from '../defs';
 import { evalConditions, type ConditionContext } from './conditions';
 

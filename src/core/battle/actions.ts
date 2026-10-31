@@ -1,4 +1,5 @@
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/items';
 import { forecast, type Forecast } from '../rules/combat';
 import { castArea, castTargets, type CastArea } from '../rules/cast';

@@ -2,35 +2,12 @@ import type { z } from 'zod';
 import { chronicleTexts } from '../core/campaign/chronicle';
 import { memorialTexts } from '../core/campaign/memorial';
 import { sceneTexts } from '../core/campaign/scene';
-import type {
-  AffixDef,
-  Balance,
-  CampaignDef,
-  CharDef,
-  ChroniclePageDef,
-  ClassDef,
-  FlagDef,
-  GameData,
-  HandbookDef,
-  HomeKind,
-  HomeViewDef,
-  ItemDef,
-  HauntPoolsDef,
-  LieutenantDef,
-  MapDef,
-  MapUnitDef,
-  MemorialDef,
-  Rarity,
-  RenderDef,
-  WorldDef,
-  RoomDef,
-  RuneDef,
-  SceneDef,
-  SetDef,
-  SkillDef,
-  SupportPairDef,
-  TerrainDef,
-} from '../core/defs';
+import type { AffixDef, CharDef, ClassDef, HomeKind, ItemDef, Rarity, RuneDef, SetDef, SkillDef } from '../core/defs';
+import type { Balance } from '../core/balanceDefs';
+import type { GameData } from '../core/gameData';
+import type { HauntPoolsDef, MapDef, MapUnitDef, TerrainDef } from '../core/mapDefs';
+import type { HandbookDef, RenderDef, WorldDef } from '../core/renderDefs';
+import type { CampaignDef, ChroniclePageDef, FlagDef, HomeViewDef, LieutenantDef, MemorialDef, RoomDef, SceneDef, SupportPairDef } from '../core/storyDefs';
 import { pairKey } from '../core/util';
 import {
   affixSchema,

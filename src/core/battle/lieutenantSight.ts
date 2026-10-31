@@ -2,7 +2,7 @@
  * Which lieutenants the company has seen in this battle (review R2): `BattleState.ltSeen`, kept by the core so the mission
  * result is the same for every replay. Sight is the real sight of `vision.ts` (without fog everything on the board is seen).
  */
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import { fogOn, visibleTiles } from '../rules/vision';
 import type { BattleState } from '../state';
 import { posKey } from '../util';

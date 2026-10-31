@@ -1,6 +1,7 @@
 import { advanceDay } from './day';
 import { CoreInvariantError } from '../errors';
-import type { Effect, GameData } from '../defs';
+import type { GameData } from '../gameData';
+import type { Effect } from '../storyDefs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';

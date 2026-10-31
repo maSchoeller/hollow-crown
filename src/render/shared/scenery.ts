@@ -2,7 +2,7 @@
  * Landscape choices of the battle board: the prop variants (weighted, by field hash), the tree set of a season and the fences around fields.
  * Pure (no Babylon), so it is unit tested.
  */
-import type { PropVariant } from '../../core/defs';
+import type { PropVariant } from '../../core/renderDefs';
 
 /**
  * Whether the asset manifest (`models.props`: prop id -> states, split at the first underscore like tools/art/build.py does)

@@ -1,5 +1,6 @@
 import { CoreInvariantError } from './errors';
-import type { Area, Difficulty, Mechanic, Pos, Team } from './defs';
+import type { Difficulty, Mechanic, Pos, Team } from './defs';
+import type { Area } from './mapDefs';
 import type { BattleState, BattleUnit } from './state';
 
 export const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;

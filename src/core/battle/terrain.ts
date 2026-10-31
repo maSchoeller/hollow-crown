@@ -1,4 +1,4 @@
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 
 /** The terrain ids of a map, row by row (index y * width + x), from its terrain picture and legend. */
 export function parseTerrain(data: GameData, mapId: string): string[] {

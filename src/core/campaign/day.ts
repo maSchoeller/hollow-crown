@@ -5,7 +5,7 @@
  * first meeting brings a packet for the day it happens on at once (Produktinhaber 2026-10-26). The packets become haunts
  * right here (story 5.5, `haunts.ts`).
  */
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import type { CampaignState } from '../state';
 import type { CampaignEvent } from './commands';
 import { spawnHaunts } from './haunts';

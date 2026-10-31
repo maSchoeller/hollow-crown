@@ -10,7 +10,7 @@ import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTextur
 import { ParticleSystem } from '@babylonjs/core/Particles/particleSystem';
 import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { LookDef } from '../../core/defs';
+import type { LookDef } from '../../core/renderDefs';
 
 type DeathFx = LookDef['fx']['death'];
 

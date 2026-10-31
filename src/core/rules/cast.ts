@@ -5,7 +5,8 @@
  * fog (Story 2.6 reads `liftedTiles`). `castArea` serves the preview and the resolution, so both always agree. Casting
  * itself never draws a random number; only the spread of fire (`tickTerrain`) does.
  */
-import type { Element, GameData, Pos } from '../defs';
+import type { Element, Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, inBounds, neighbors, posKey, samePos, terrainAt, unitAt } from '../util';

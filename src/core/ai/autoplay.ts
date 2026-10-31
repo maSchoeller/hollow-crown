@@ -1,4 +1,5 @@
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';

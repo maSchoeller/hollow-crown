@@ -1,4 +1,5 @@
-import type { ChroniclePageDef, GameData } from '../defs';
+import type { GameData } from '../gameData';
+import type { ChroniclePageDef } from '../storyDefs';
 import type { CampaignState } from '../state';
 import { consequenceLines, type ConsequenceLine } from './consequences';
 import { decisionTitleKey, findChoice, optionKey, summaryKey } from './scene';
