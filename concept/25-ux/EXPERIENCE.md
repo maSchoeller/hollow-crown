@@ -99,7 +99,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
 | Sprechband | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen; sitzt fest am Bildschirm, die Kamera bewegt sich nicht, der Sprecher muss nicht auf dem Brett stehen; Barks und Leutnant-Zeilen laufen ebenso, ohne Tipp und mit Brett-Tempo |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
-| Raumstein | Tipp öffnet das Raum-Panel; Ausbau-Band erscheint nur, wenn Gefährte und Gold reichen; sonst nennt die Stufe, was fehlt |
+| Raumstein | Tipp öffnet das Raum-Panel; oben steht das Ausbau-Band für die nächste Stufe. Reichen Raum-Gefährte und Gold, ist es grün und baut aus; sonst ist es gestrichelt mit Schloss und nennt den Grund (erste offene Bedingung, z. B. „ab Akt 2“), wie seit Story 6.9 gebaut |
 | Item-Zeile | erster Tipp wählt und zeigt den Vergleich, Haupttaste führt aus; Unpassendes bleibt sichtbar, gedimmt, mit Grund; Info-Stein rechts oder Langdruck öffnet die Item-Details |
 | Item-Details | Overlay-Blatt: Bild, Seltenheit, Typ, Beschreibung, jeder Wert mit vollem Namen und kurzer Erklärung, Wirkungen, gelehrte Fähigkeit (FP), Set, Runen, Preis; schließt mit Zurück, Esc oder Tipp daneben |
 | Dialogbox | Tipp irgendwo führt weiter; Log, Auto, Überspringen oben rechts; bereits gesehene Szenen lassen sich ganz überspringen |
@@ -225,7 +225,7 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 
 ## Offene Punkte
 
-- **Burg in 3D:** Der obere Teil der Heimat (Diorama, Raum-Anker, Ausbauteile) wird neu geprüft, sobald die 3D-Burg steht; Raumsteine, Panels und ≤ 2 Taps bleiben.
+- **Burg in 3D:** Der obere Teil der Heimat (Diorama, Raum-Anker, Ausbauteile) wird neu geprüft, sobald die 3D-Burg steht; Raumsteine, Panels und ≤ 2 Taps bleiben. Bis dahin zeigt der Ausbau (Epic 10) die Stufe nur als Punkte und Pfeil am Raumstein auf dem gemalten Burgbild; Ausbauteile und Gegenstände der lebenden Burg folgen nach dem 3D-Vergleich (Produktinhaber 2026-10-31).
 - **Item-Bilder:** In den Mockups stehen Platzhalter; die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
 - **Chronik, Optionen, Steckbrief-Liste:** spine-only; Mockups bei Bedarf in der Umsetzung.
 - **Logo:** im Titel-Mockup nur angedeutet; Auswahl zwischen den Kandidaten aus Art Direction §5.5.

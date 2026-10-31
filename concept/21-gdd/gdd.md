@@ -4,7 +4,7 @@ game_type: turn-based-tactics (sekundär: rpg)
 platforms: Handy-Browser im Hochformat (PWA), PC-Browser, später Capacitor
 status: final
 created: 2026-10-23
-updated: 2026-10-23
+updated: 2026-10-31
 source: concept/20-game-brief/brief.md
 decisions: concept/21-gdd/decision-log.md
 supersedes: Spielmechanik in concept/01-decisions.md (G*, U*, O1, O2, D3/D11/D18) sowie concept/02-core-loop.md, 04 §4, 07
@@ -136,19 +136,22 @@ Die **Klasse ist eine Rolle**: Bewegungstyp, erlaubte Waffengruppen, eine Klasse
 
 | Rolle | Bewegung (MOV) | Waffengruppen | Klassen-Aktion | Profi A / Profi B |
 |---|---|---|---|---|
-| **Vorkämpfer** | Gepanzert (4) | Lanze, Axt, Schild | **Halten** (passiv): Gegner, die ein Nachbarfeld betreten, beenden dort ihre Bewegung | Bollwerk (Schutz für Nachbarn +10 %) / Sturmbrecher (jeder Treffer mit Rückstoß 1 Feld) |
+| **Vorkämpfer** | Gepanzert (4) | Lanze, Axt, Schild | **Halten** (passiv): Gegner, die ein Nachbarfeld betreten, beenden dort ihre Bewegung | Bollwerk (eigener Schutz 10 % für jeden Nachbarn, auch ohne Support; mit Support-Schutz zusammen höchstens 30 %) / Sturmbrecher (jeder Treffer mit Rückstoß 1 Feld) |
 | **Plänkler** | Fuß (6) | Schwert, Dolch | **Nachsetzen** (passiv): nach dem Angriff Restbewegung nutzen | Klingentänzer (+15 Ausweichen, +10 Krit) / Duellant (Konter schlagen zuerst) |
 | **Schütze** | Fuß (5) | Bogen | **Zielen:** ohne Bewegung angreifen → +1 Reichweite, +15 Treffer | Scharfschütze (Reichweite bis 4) / Waldläufer (Bogen + Schwert, Wald kostet 1) |
 | **Elementarist** | Fuß (5) | Zauber | **Wirken:** Elementfeld der eigenen Zauberwaffe auf ein Feld in Reichweite, 2 Runden (Feuer → Brand, Wasser → löscht und macht Nass, Erde → Felswall, Wind → lichtet Nebel Radius 2) | Weiser (Wirken im Radius 1) / Hexer (Dunkel, Statuschance +20 %) |
-| **Heiler** | Fuß (5) | Stab, Licht | **Fernbergen:** Niedergestreckte auf bis zu 2 Feldern Distanz bergen | Bischof (Heilen im Radius 1) / Kampfpriester (Stab + Hammer) |
-| **Späher** | Fuß (6), Kletterer | Dolch, leichter Bogen | **Öffnen/Stehlen:** Türen und Truhen ohne Schlüssel; ein nicht ausgerüstetes Item eines Nachbarn stehlen; +2 Sicht im Nebel | Schatten (im Nebel für Gegner unsichtbar, bis er angreift) / Fallensteller (max. 2 Fallen gleichzeitig, für Gegner unsichtbar, bis Missionsende: 8 Schaden + Verlangsamt; Fallen entschärfen) |
+| **Heiler** | Fuß (5) | Stab, Licht | **Fernbergen:** Niedergestreckte auf bis zu 2 Feldern Distanz bergen | Bischof (Heilen im Radius 1) / Kampfpriester (Stab, Licht, Axt; der Hammer ist eine Axt) |
+| **Späher** | Fuß (6), Kletterer | Dolch, leichter Bogen | **Öffnen/Stehlen:** Türen und Truhen ohne Schlüssel; ein nicht ausgerüstetes Item eines Nachbarn stehlen; +2 Sicht im Nebel | Schatten (für Gegner unsichtbar, solange kein Gegner näher als 3 Felder steht, im Nebel immer; nach einem Angriff sichtbar bis zum Ende der nächsten Gegnerphase) / Fallensteller (legt Fallen auf Nachbarfelder, max. 2 gleichzeitig, eine dritte ersetzt die älteste; für Gegner unsichtbar, bis Missionsende; nur Gegner lösen aus: Bewegung endet, 8 Schaden + Verlangsamt; nimmt eigene Fallen zurück) |
 | **Spielmann** | Fuß (5) | Dolch, Laute | **Anfeuern:** ein Nachbar erhält bis Zugende +1 MOV und +10 Treffer | Barde (Radius 2, max. 2 Ziele) / Bannerträger (Nachbarn ignorieren Trauer, +5 Ausweichen) |
 | **Taktiker** (nur Avatar) | Fuß (5) | Schwert, Zauber | **Befehl** 1×/Karte | Großstratege (Befehl 2×/Karte) |
 | **Hauptmann** (nur Kael) | Fuß (5) | Schwert, Lanze | **Sammelruf** 1×/Karte | Bannerherr (Sammelruf Radius 3) |
 
 - 20 Story-Gefährten, 2–3 je Rolle; sie unterscheiden sich über Wachstum, persönlichen Skill und Startausrüstung.
 - PoC-Klassen werden umgemappt: Söldner/Held → Plänkler, Soldat/Ritter → Vorkämpfer, Kämpfer → Vorkämpfer oder Plänkler, Schütze → Schütze, Magier → Elementarist, Kleriker → Heiler. `[ASSUMPTION: Basiswerte und Wachstum je Rolle aus den PoC-Klassen abgeleitet]`
-- Gegnerklassen (Bandit, Wolfsreiter, Pegasusritter, Ritter, Glut-Fanatiker, Drache, Monster) dürfen eigene Regeln haben.
+- **Profi-Wege:** Der Profi behält den Skill seiner Rolle; die Profi-Wirkung kommt als zweiter Skill dazu. Die Skills der Profiklassen aus dem Proof of Concept entfallen. Profis behalten den Bewegungstyp der Rolle, MOV = Rolle + 1, höchstens 6; die Vorkämpfer-Profis bleiben gepanzert mit MOV 5 `[ASSUMPTION]`. Auf dem Brett trägt jeder Profi-Weg ein eigenes Anhängeteil an der Figur der Rolle (16 Teile), es gilt für alle Figuren der Klasse.
+- **Fallen-Set** (Werkstatt): Jede Figur legt damit eine Falle mit denselben Werten wie der Fallensteller, zusätzlich zu dessen 2 Fallen.
+- Gegnerklassen (Bandit, Wolfsreiter, Pegasusritter, Ritter, Glut-Fanatiker, Drache, Monster) dürfen eigene Regeln haben. Wyvernreiter sind keine Gegnerklasse; die einzige Wyvernreiterin ist die Leutnantin Brakka (Unikat).
+- Flieger gelten auf dem Brett nach den Regeln für Flieger; bis eigene Pegasus- und Wyvern-Modelle da sind, stehen sie zu Fuß mit einer Flieger-Kennung.
 - Eine Kontrollzone hat nur der Vorkämpfer.
 
 ### Steuerung und Eingabe
@@ -187,7 +190,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 ### Gegner-KI
 
-- Profile: aggressive, hold, guard, trigger, hunt, raider, flee, support. Ziel-Wertung: Schaden + 50 × Kill-Chance − 0,5 × Konter, Heiler +10, niedrigste TP +5, Missionsziel +30, Groll-Ziel +20; auf Schwer −5 je bereits angreifendem Gegner (Verteilung).
+- Profile: aggressive, hold, guard, trigger, hunt, raider, flee, support, follow (Begleitfigur bei `escort`: folgt der nächsten eigenen Figur). Ziel-Wertung: Schaden + 50 × Kill-Chance − 0,5 × Konter, Heiler +10, niedrigste TP +5, Missionsziel +30, Groll-Ziel +20; auf Schwer −5 je bereits angreifendem Gegner (Verteilung).
 - Zugreihenfolge zu Phasenbeginn: erst Kill-Chance, dann Distanz.
 - Wartende Gegner (Profil `trigger`) wachen bei `defend` und `survive` nach der Hälfte der Missionsrunden (aufgerundet, `ai.sleeperWakePercent`) von selbst auf und nehmen ihr `then`-Profil an, auch wenn niemand in ihre Nähe kam; eine Einheit kann per `ai.wakeTurn` früher oder später aufwachen. Wer nur abwartet, gewinnt so nicht.
 - Halten: Die Pfadsuche der KI kennt die Haltezonen und umgeht sie, wenn der Umweg höchstens 2 Felder länger ist; sonst läuft sie hinein.
@@ -204,7 +207,8 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 ### Gelände und Umwelteffekte
 
-- Interaktive Objekte: Tür, Truhe, Hebel, Balliste (Reichweite 3–10, Mt 12), Dorf (Gegner können es zerstören).
+- Interaktive Objekte: Tür, Truhe, Hebel, Balliste, Dorf (Gegner können es zerstören).
+- **Balliste:** Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–10, kein Gegenangriff, Schüsse unbegrenzt. Bedienen kann jede Fuß- oder gepanzerte Figur auf einem Nachbarfeld, kein Flieger. Keine Effektivität gegen Flieger. Die Gegner-KI bedient sie nur mit dem Profil `hold` oder wenn ein Gegner schon daneben steht.
 - Elementeffekte: Brand 2 Runden, 5 Schaden beim Betreten, Ausbreitung 25 % pro Runde auf brennbare Nachbarfelder; Löschen; Felswall 2 Runden; Wind lichtet Nebel (Radius 2). Die Ausbreitung ist reproduzierbar.
 - Jahreszeit pro Akt verändert nur die Optik.
 
@@ -222,9 +226,9 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 | Stufendeckel | 10 | 20 | 20 |
 | Release | MVP | 2. Release | 3. Release |
 
-- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
+- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 2 öffnen nach 2-1 die drei Strang-Anfänge 2-2, 2-4 und 2-6, die zweite Mission eines Strangs braucht die erste (2-3 nach 2-2, 2-5 nach 2-4, 2-7 nach 2-6), das Finale 2-8 öffnet nach allen; in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
 - **Missionsgrößen:** 19 der 25 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
-- **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Kael), defend, survive, escape, **escort** (NPC zum Ausgang bringen), **treasure** (Truhen vor Rundenlimit bergen); 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
+- **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Kael), defend, survive, escape, **escort** (NPC zum Ausgang bringen; mit dem Profil `follow` bleibt er bei der nächsten eigenen Figur), **treasure** (Truhen vor Rundenlimit bergen). Ein Ziel kann in eine zweite Phase wechseln: Im Akt-2-Finale gilt erst `survive`, danach öffnet sich eine Fluchtzone (`escape`). 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
 
 ### Missionszustände
 
@@ -252,7 +256,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übernimmt die verkettete Simulation (Story 6.8).
 
 - **Wachstum:** Wachstumsraten mit Glättung (Ist ≤ Erwartung − 1,0 → garantiert +1; Ist ≥ Erwartung + 1,5 → 0; mindestens 1 Wert pro Level-up).
-- **Aufstieg:** ab Stufe 10 mit einem **Glutfunken** in der Akademie (ab Akt 2); Wahl Profi A oder B; Stufe wird 1, Loadout 4 → 5.
+- **Aufstieg:** ab Stufe 10 mit einem **Glutfunken** in der Akademie (ab Akt 2); Wahl Profi A oder B; Stufe wird 1, Loadout 4 → 5. Avatar und Kael steigen genauso mit einem Glutfunken auf. Der Glutfunke ersetzt das Siegel des Proof of Concept.
 - **Skills:** persönlicher Skill + Klassen-Skills + Item-Skills. Item-Skills werden durch Tragen gemeistert: FP +1 je Kampfsequenz, +5 bei Missionsende; Meisterung nach Seltenheit 20/30/40/60 FP (Gewöhnlich/Selten/Episch/Legendär) `[ASSUMPTION]`.
 - **Narben:** sechs Narben mit dauerhaftem Malus (`extract-01-decisions.md`); der Heiler entfernt sie.
 
@@ -302,27 +306,34 @@ Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit 
 ### Fortschritt des Spielers
 
 - **Stufen:** siehe Figurensystem; Deckel 20/20 lässt Luft für Staffel 2.
-- **Glutfunke:** kostbares Aufstiegs-Item, 12 Stück in Staffel 1: 2 aus dem Finale von Akt 1, je 1 aus 7 der 10 Nebenquests, 3 rotierend beim Händler (ab Händler-Stufe 3, 3 000 Gold, höchstens einer gleichzeitig im Angebot). Nicht alle Gefährten können aufsteigen; die Wahl, wer und wohin, ist Absicht. Der Erhalt wird als Moment inszeniert.
+- **Glutfunke:** kostbares Aufstiegs-Item, 12 Stück in Staffel 1: 2 aus dem Finale von Akt 1, je 1 aus 7 der 10 Nebenquests, 3 rotierend beim Händler (ab Händler-Stufe 3, 3 000 Gold, höchstens einer gleichzeitig im Angebot; nach einem Kauf erscheint der nächste erst nach der nächsten Story-Mission, bis 3 verkauft sind). Nicht alle Gefährten können aufsteigen; die Wahl, wer und wohin, ist Absicht. Der Erhalt wird als Moment inszeniert.
 - **Ausrüstung:** Tier pro Akt; Legendäre und Signatur-Items über Nebenquests und Leutnants.
 - **Burg:** Raumausbau als zweite Fortschrittsachse.
 
 ### Heimat: Lager und Burg
 
-Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, Taverne und Lagerfeuer auf Stufe 1. Ab Mission 1-6 übernimmt die Burg diese Funktionen auf Stufe 1, dazu die Gedächtnishalle mit Gedenksteinen. Ab Akt 2 kommen Ausbau und die übrigen Räume dazu. Jeder Raum steht für genau eine Funktion und hat drei Stufen. Für Stufe 2 und 3 braucht es den passenden Gefährten in der Truppe und Gold (Stufe 2 = 1 500, Stufe 3 = 4 000 Gold `[ASSUMPTION]`).
+Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, Taverne und Lagerfeuer auf Stufe 1. Ab Mission 1-6 übernimmt die Burg diese Funktionen auf Stufe 1, dazu die Gedächtnishalle mit Gedenksteinen. Ab Akt 2 kommen Ausbau und die übrigen Räume dazu. Jeder Raum steht für genau eine Funktion und hat drei Stufen. Für Stufe 2 und 3 braucht es einen der zwei Raum-Gefährten des Raums in der Truppe (einer reicht) und Gold (Stufe 2 = 1 500, Stufe 3 = 4 000 Gold `[ASSUMPTION]`). Fällt oder geht ein Raum-Gefährte, bleibt die gebaute Stufe; nur ein weiterer Ausbau braucht wieder einen der zwei. Fallen oder gehen beide, bleibt der Raum auf seiner Stufe.
 
-| Raum | Funktion | Stufe 1 → 2 → 3 |
-|---|---|---|
-| Konvoi | Items lagern (200 Plätze) | Sortieren → Ausrüstungs-Vorlagen je Figur → „Bestes anlegen“ |
-| Händler | Kaufen, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend |
-| Schmied | Aufwerten, Affix neu würfeln, Trank verstärken | max. +3 → +4 → +5 und Neu würfeln |
-| Verzauberer (ab Akt 2) | Runen ein-/ausbauen, verschmelzen | Rune I → II → III |
-| Heiler | Narben entfernen | 2 500 → 1 800 → 1 200 Gold, Trauer 2 statt 3 Missionen |
-| Taverne | Söldner anheuern | 3 Angebote → 4 Angebote + bessere Traits → Wunschrolle |
-| Lagerfeuer | Support-Gespräche | Ränge C und B → A → S (Kernpaare) |
-| Akademie (ab Akt 2) | Aufstieg per Glutfunke, Skill-Loadout | Aufstieg → Profi-Weg innerhalb der Rolle wechseln → zweiter Profi-Weg für Aufgestiegene `[ASSUMPTION]` |
-| Werkstatt (ab Akt 2) | Verbrauchsgüter aus Material herstellen | Feuerbombe, Schlüssel → Hast, verstärktes Gegengift → Fallen-Set, Rune I |
-| Gedächtnishalle (Gedenksteine ab 1-6, Lektionen ab Akt 2) | Gedenksteine; einmal pro Akt vererbt ein Gefallener eine Lektion (passiver Skill seiner Rolle, z. B. +5 Treffer, +1 MOV im Wald) an einen Gefährten | 1 Lektion → 2 Lektionen → freie Wahl der Lektion |
-| Übungsplatz (ab Akt 2) | Reserve erhält EP | 20 % → 35 % → 50 % der Durchschnitts-EP der Mission |
+| Raum | Raum-Gefährten | Funktion | Stufe 1 → 2 → 3 |
+|---|---|---|---|
+| Konvoi | Tobin, Nell | Items lagern (200 Plätze) | Sortieren → Ausrüstungs-Vorlagen (gespeicherte Belegung je Figur) → „Bestes anlegen“ |
+| Händler | Fenn, Nell | Kaufen, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
+| Schmied | Brenna, Grosk | Aufwerten, Affix neu würfeln, Trank verstärken | max. +3 → +4 → +5 und Neu würfeln |
+| Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen, verschmelzen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
+| Heiler | Liora, Amos | Narben entfernen | 2 500 → 1 800 → 1 200 Gold, Trauer 2 statt 3 Missionen |
+| Taverne | Varek, Jory | Söldner anheuern | 3 Angebote → 4 Angebote + bessere Traits → Wunschrolle (die nächste Angebotsrunde enthält sicher ein Angebot dieser Rolle) |
+| Lagerfeuer | Jory, Brenna | Support-Gespräche | Ränge C und B → A → S (Kernpaare) |
+| Akademie (ab Akt 2) | Varek, Odile | Aufstieg per Glutfunke, Skill-Loadout | Aufstieg → Profi-Weg innerhalb der Rolle wechseln (1 500 Gold; Stufe und EP bleiben, die Wertgewinne des Aufstiegs werden getauscht) → ein Aufgestiegener lernt für einen weiteren Glutfunken zusätzlich die Wirkung des anderen Profi-Wegs seiner Rolle (die Klasse bleibt) |
+| Werkstatt (ab Akt 2) | Fenn, Brann | Verbrauchsgüter aus Material herstellen | Feuerbombe, Schlüssel → Hast, Starkes Gegengift → Fallen-Set, Rune I |
+| Gedächtnishalle (Gedenksteine ab 1-6, Lektionen ab Akt 2) | Liora, Amos | Gedenksteine; einmal pro Akt vererbt ein Gefallener eine Lektion (passiver Skill seiner Rolle, z. B. +5 Treffer, +1 MOV im Wald) an einen Gefährten | feste Lektion der Rolle des Gefallenen → Wahl aus 2 Lektionen seiner Rolle → freie Wahl aus allen Lektionen |
+| Übungsplatz (ab Akt 2) | Mira, Ilka | Reserve erhält EP | 20 % → 35 % → 50 % der Durchschnitts-EP der Mission |
+
+- **Lektionen:** Je Akt gibt es genau eine Vererbung, unabhängig von der Stufe; die Stufe bestimmt nur die Auswahl. Auch gefallene Söldner vererben; Gerrit vererbt eine feste Lektion. Empfänger sind alle Story-Gefährten einschließlich Avatar und Kael, keine Söldner. Jede Figur trägt höchstens eine Lektion; sie belegt keinen Loadout-Platz.
+- **Starkes Gegengift:** heilt alle Zustände und macht 1 Runde immun; nur in der Werkstatt herstellbar. „Trank verstärken“ bleibt beim Schmied.
+- **Runen in Akt 1:** Der Verzauberer kommt erst mit Akt 2; in Akt 1 gibt es Runen nur als Beute.
+- **Söldner-Traits** (Taverne Stufe 2; Liste in `extract-01-decisions.md`) werden als eigener Baustein gebaut.
+- **Lebende Burg:** Jeder Gefährte bringt einen Gegenstand an einen festen Platz in der Burg; dort steht nur der Gegenstand. Wer die Truppe verlässt, nimmt ihn mit; wer fällt, lässt ihn liegen (Narrative). Die Liste der 20 Gegenstände wird aus Narrative und Art Direction abgeleitet.
+- **Darstellung:** Vorläufig gelten die Regeln auf dem gemalten Burgbild: die Stufe als Punkte und Pfeil am Raumstein. Ausbauteile und Gegenstände der lebenden Burg folgen nach dem Vergleich mit einem 3D-Testaufbau.
 
 Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 
@@ -331,11 +342,13 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 - Leicht/Normal/Schwer: Gegnerwerte −15/0/+15 %; Schwer mit 1 Gegner-Affix je Elite und Hinterhalten; Aufstellung je Schwierigkeit; nur absenkbar, in den Optionen der Kampagne. Tod-Modus unabhängig wählbar.
 - Zielkorridore je Story-Mission (Simulation über die verkettete Kampagne): Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 - Gegnerstufe = erwartete effektive Armee-Stufe der Mission + Akt-Zuschlag (+0/+1/+2) `[ASSUMPTION]`; große Schlachten am oberen Rand des Korridors.
+- **Gegnerstufe nach Position (Akt 2):** In den Akt-2-Story-Missionen hängt die erwartete Stufe nicht am Knoten, sondern an der Zahl der schon erledigten Akt-2-Story-Missionen; die Kartengegner stehen +0 bis +2 Stufen darüber. Die Beitrittsstufe der Akt-2-Gefährten wächst genauso mit.
 
 ### Wirtschaft und Ressourcen
 
 - **Grundsatz:** Pro Story-Mission reicht das Gold für eine von drei großen Investitionen (Aufwertung, Raumausbau, Narbe heilen bzw. Anwerben).
-- **Gold pro Story-Mission:** Prolog 300; Akt 1 800–1 500; Akt 2 2 000–3 000; Akt 3 3 000–4 500; Nebenziele +30–50 %. Nebenquest wie Story + Sonderbeute. Heimsuchung siehe oben. Startgold 500.
+- **Gold pro Story-Mission:** Prolog 300; Akt 1 800–1 500; Akt 2 2 000–3 000; Akt 3 3 000–4 500; Nebenziele +30–50 %. Nebenquest ≈ 55 % einer Story-Mission des Akts wie in Akt 1 (Akt 2: 1 300–1 600) plus ihre Sonderbeute. Heimsuchung siehe oben. Startgold 500.
+- **Händler-Rabatte** aus Entscheidungen (E4, E7) und aus Händler-Stufe 3 addieren sich, höchstens −30 %.
 - **Material:** Eisenerz (Akt 1), Mondstahl (Akt 2), Drachenschuppe (Akt 3), Arkanstaub; vor allem aus Heimsuchungen und Kopfgeld.
 - **Kosten:** Aufwerten 300/600/1 000/1 600/2 500 + Material; Affix neu 500 + 2 Arkanstaub (Episch 800 + 3); Rune I 400, Verschmelzen 3× Stufe N + 200 × N; Trank verstärken 400/900; Söldner 600 + 150 × Stufe; Raumausbau siehe Heimat; Verkauf 50 %.
 
@@ -354,7 +367,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ### Missionsfolge
 
-- Pro Akt steht eine neue Regel oder Rolle im Fokus.
+- Pro Akt steht eine neue Regel oder Rolle im Fokus. Akt 2: Flieger und Balliste; 2-1 führt beides mit einer Lektion ein.
 - Jeder Leutnant eines Akts tritt in mindestens 2 Story-Missionen auf, einer davon auch im Akt-Finale.
 - Kein Missionsziel kommt im selben Akt mehr als zweimal hintereinander vor.
 - Jeder Beitritt hat in seinem Akt mindestens eine weitere Story-Mission; Gefährten aus Akt 3 treten spätestens in dessen vierter Mission bei.
@@ -445,7 +458,8 @@ Die Epics und Stories stehen in `concept/26-epics/epics.md` (Epic 1–12; Sprint
 7. Meisterung 20/30/40/60 FP nach Seltenheit.
 8. Armee-Limit 20 Gefährten + 6 Söldner.
 9. Raumausbau Stufe 2 = 1 500, Stufe 3 = 4 000 Gold.
-10. Akademie Stufe 3: zweiter Profi-Weg.
+10. ~~Akademie Stufe 3: zweiter Profi-Weg.~~ Entschieden 2026-10-31 (Heimat: Wirkung des anderen Profi-Wegs für einen weiteren Glutfunken).
 11. Gegner-Akt-Zuschlag +0/+1/+2 Stufen.
 12. Referenzgerät Pixel 6a / iPhone 12.
 13. Rechtliche Prüfung zum Nemesis-Patent vor Veröffentlichung.
+14. Profi-Wege: Bewegungstyp der Rolle, MOV = Rolle + 1 (höchstens 6), Vorkämpfer-Profis gepanzert MOV 5.

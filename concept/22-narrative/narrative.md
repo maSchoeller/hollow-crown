@@ -95,7 +95,7 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 
 - **Prolog:** 1, 2
 - **Akt 1 „Asche“ (Aufbau):** 3, 4, 5, 6, 7, 7b. Fest liegen 3 (1-1), 7 (1-6), 6 (1-7) und 7b (1-8); 4 und 5 verteilen sich auf die frei wählbaren Missionen.
-- **Akt 2 „Glut“ (Konfrontation):** 8, 9, 10, 11, 12. Fest liegen 8 sowie 11 und 12, Beat 9 läuft in den drei Strängen, Beat 10 als Burg-Szene nach einer beliebigen Mission.
+- **Akt 2 „Glut“ (Konfrontation):** 8, 9, 10, 11, 12. Fest liegen 8 sowie 11 und 12, Beat 9 läuft in den drei Strängen (das brennende Dorf hängt an E7, siehe Missionsfolge), Beat 10 als Burg-Szene bei der Rückkehr nach der dritten abgeschlossenen Akt-2-Story-Mission, egal welcher (Sprecherkette Liora → Ysolde → Rhen).
 - **Akt 3 „Krone“ (Auflösung):** 13 bis 19. Hier gibt es weniger Freiheit, weil der Hauptbogen dominiert.
 
 ---
@@ -200,7 +200,7 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 |---|---|---|
 | **General Dravn** (45) | Aldrics Halbbruder, führt das Grenzheer der Eisenmark, hält den Pakt für Aberglauben | Er will Grenzdörfer als Brandschneise gegen die Drachen opfern |
 | **Herzogin Maelis vom Silbermeer** (50) | Reichste Adlige, entfernte Cousine, kauft Loyalität | Sie hat die Banden aus Akt 1 finanziert, um das Kronland zu schwächen |
-| **Seraphine** | siehe oben | Der Freispruch ist eine Falle |
+| **Seraphine** | siehe oben | Der Freispruch ist eine Falle. Ihr Strang (2-2, 2-3) deckt keinen eigenen Betrug auf, er sät Zweifel: Odile weiß von Halvards Briefen an die Prinzessin, und das Siegel aus dem Salzpass ist für den Freispruch-Erlass bestimmt. Die Lüge platzt erst in Kronfeld (2-8) |
 
 ---
 
@@ -240,7 +240,7 @@ Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte tre
 | Akt | Lager | Leutnants |
 |---|---|---|
 | 1 | Kopfgeldjäger und Banditen | **Grosk** (Banditenführer, Seitenwechsler), **Hask** (Marodeur-Hauptmann), **Morra** (Kopfgeldjägerin), **Ulvric** (Wolfsreiter) |
-| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden) |
+| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden; die einzige Wyvernreiterin des Spiels, Wyvernreiter gibt es nicht als Gegnertyp) |
 | 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
 
 Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
@@ -480,7 +480,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 **Set Dressing:**
 
 - **Die Glutfarbe:** Jedes Mitglied der Truppe trägt ein glutorangefarbenes Stoffstück (#E8743B). Neue Gefährten bekommen es beim Beitritt, und Seitenwechsler binden es sich sichtbar um.
-- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel. Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein.
+- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel. Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein. Wer die Truppe verlässt, nimmt seinen Gegenstand mit. Am Platz steht nur der Gegenstand, nicht die Figur.
 - **Steckbriefe:** In Akt 1 hängen in Dörfern Steckbriefe der Truppe, in Akt 3 werden sie abgerissen oder übermalt.
 
 **Environmental Details:**
@@ -543,6 +543,8 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 
 - Required: keine; die Story funktioniert ohne sie.
 - Optional: alle 12, in Truhen, in Dörfern, über Nebenziele und als Belohnung für Nebenquests.
+- Quellen Akt 2: N5 und je eine Truhe in 2-2, 2-4 und 2-7.
+- Stand Akt 1: Gebaut ist bisher nur 1 von 4 Seiten (Truhe in N2); die fehlenden 3 Akt-1-Seiten sind eine eigene Nacharbeit (offen, nicht Teil von Akt 2). Bis dahin ist das Bonus-Ende mit allen 12 Seiten nicht erreichbar.
 
 **Rewards:** Die gefundenen Seiten liegen im Burgarchiv der Paktwacht, wo Liora oder die Ersatzsprecher sie kommentieren. Wer alle 12 Seiten hat, bekommt eine eigene Epilog-Zeile und eine zusätzliche Antwort in der Entscheidung „Wahrheit oder Frieden“, die keinen mechanischen Vorteil bringt.
 
@@ -577,6 +579,8 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 9. Drachen über Aurenhall
 10. Der Preis: Halvards Opfer
 11. Wahrheit oder Frieden: die Schlusstafel (zwei bzw. drei Varianten)
+
+**Zusätzliche Akt-Titeltafel:** Nach dem Outro von 1-8 steht kurz die Tafel „Akt 2 · Glut“, danach lichtet sich auf der Weltkarte der Nebel über der Eisenmark. Das Bild ist eine eigene Grafik-Aufgabe; bis dahin steht der Text auf Glutgrund. Die Tafel zählt nicht zu den 11 Illustrationstafeln.
 
 ---
 
@@ -672,20 +676,31 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet, hängt an E4: Bei „aufnehmen“ verbreitet sich das Gerücht, bei „geheim halten“ spüren Ulvrics Wölfe die Truppe auf (eine Szenenzeile, keine Kartenvariante).
 
-**Akt 2 „Glut“ (8).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter. Jeder Strang hat zwei Missionen.
+**Akt 2 „Glut“ (8).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter (einzige Ausnahme: 2-7, siehe unten). Jeder Strang hat zwei Missionen. Nach 2-1 sind die drei Strang-Anfänge 2-2, 2-4 und 2-6 offen; 2-3 braucht 2-2, 2-5 braucht 2-4, 2-7 braucht 2-6; Kronfeld (2-8) öffnet nach allen.
 
 | # | Mission | Strang | Ziel | Leutnant | Beitritt |
 |---|---|---|---|---|---|
 | 2-1 ★ | Wind über der Eisenmark | – | survive | **Brakka** | Jory, danach die drei Angebote |
 | 2-2 | Das Siegel im Salzpass | Prinzessin | treasure | **Grell** | Nell |
 | 2-3 | Die verstoßene Leibwache | Prinzessin | escort (Odile) | **Sable** | Odile |
-| 2-4 | Der Wyvernhorst | Dravn | boss | **Rowena** | Ilka |
+| 2-4 | Der Wyvernhorst | Dravn | boss (Rowena) | **Rowena** | Ilka |
 | 2-5 | Die Brandschneise | Dravn | defend (Brandhang) | **Grell** | Brann; Sable bei E7 „warnen“ |
 | 2-6 | Gold für Banditen | Herzogin | rout | **Rowena**, **Sable** | Amos |
 | 2-7 | Das Kontor am Silbermeer | Herzogin | reach (Geschäftsbücher sichern) | **Brakka** | – (Beweis gegen Maelis, E8) |
 | 2-8 ★ | Kronfeld (Finale, große Schlacht) | – | survive → escape | Rowena, Grell, Brakka, Sable (falls nicht gewechselt) | – („Die Krone war hohl“) |
 
 2-6 weckt den Verdacht, dass Maelis die Banden aus Akt 1 bezahlt hat; 2-7 bringt den Beweis.
+
+- **2-1:** Die Mission führt die beiden Neuerungen des Akts ein, Flieger und die Balliste (je mit einer Lektion).
+- **Prinzessin-Strang (2-2, 2-3):** keine eigene aufgedeckte Lüge, sondern Zweifel. Odile weiß von Halvards Briefen an die Prinzessin, das Siegel aus dem Salzpass ist für den Freispruch-Erlass bestimmt. Die Lüge („Der Freispruch ist eine Falle“) platzt in Kronfeld.
+- **2-3:** Das Ziel bleibt `escort`. Odile folgt der nächsten eigenen Figur, statt allein zum Ausgang zu ziehen; der Ausgang liegt hinter der Gegnerlinie.
+- **2-4:** Der Boss ist Rowena selbst; ihre Flucht ist der Sieg.
+- **Sable in 2-5:** Sable steht in 2-5 als Dravns Offizierin mit dem Brandbefehl auf dem Brett, nicht feindlich, und gilt danach als getroffen. Wechselt sie bei E7 zur Truppe, fehlt sie in 2-3, 2-6 und 2-8; in 2-6 steht dann ein Ersatz-Hauptmann ohne Leutnant-Status.
+- **Das brennende Dorf (Beat 9) hängt an E7:** Bei „Befehl ausführen“ brennt Brandhang (Szene und Weltkarten-Variante). Bei „warnen“ sieht die Truppe in 2-6 in einer Szene ein Dorf, das Drachenschatten verbrannt haben. Gekämpft wird gegen keinen Drachen.
+- **2-7 ist der bewusste Bruch mit Maelis:** Die Gegner sind Brakkas Söldner, die Maelis zum Vertuschen angeheuert hat, und die Wachen des Kontors. Das ist die einzige Ausnahme von der Regel, dass die Truppe gegen die Leute der *anderen* Anwärter kämpft.
+- **Kronfeld (2-8):** Karte 24×28, bis 15 Plätze (Söldner dürfen auffüllen). Die Truppe hält 8 Runden, dann öffnet sich eine Fluchtzone; gewonnen ist, wenn Avatar, Kael und die Hälfte der Eingesetzten fliehen. Etwa 30 Gegner: die Garde der Prinzessin als Hauptmacht und Truppen der anderen Anwärter, dazu alle Akt-2-Leutnants (Sable nur, wenn sie nicht gewechselt ist). Seraphine und Halvard erscheinen nur in Szenen.
+- **Odile und Varek nach dem Weggang (E5, E6):** Sie stehen in Kronfeld nicht auf dem Brett; sie haben nur eine Szenenzeile auf der Gegenseite. Ihre Ausrüstung bleibt im Konvoi.
+- **Gegnerstufe:** In Akt 2 richtet sich die Stufe einer Story-Mission nach ihrer Position (Zahl der schon erledigten Akt-2-Story-Missionen), nicht nach dem Knoten; die Beitrittsstufe der Gefährten wächst ebenso mit (GDD).
 
 **Akt 3 „Krone“ (8, davon 2 große Schlachten)**
 
@@ -702,7 +717,7 @@ Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet
 
 In Akt 3 sind 3-2 bis 3-4 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale. Pell tritt mit Kit bei: Der eine kennt die Gänge, der andere hat sich geweigert, die Truppe zu jagen.
 
-Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale. Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen. Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
+Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale (Folge der Sable-Regel: Wechselt Sable in 2-5, bevor 2-3 oder 2-6 gespielt sind, bleibt es bei ihrem Auftritt in 2-5). Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen. Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
 
 ### Die 12 Entscheidungen
 
@@ -734,7 +749,7 @@ Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuf
 | N1 | 1 | persönlich | Der Ring von Varnhold (Fenns Vergangenheit) | E2 „schützen“ | Glutfunke, Signaturdolch |
 | N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, Relikt Schild der Paktwächter |
 | N3 | 1 | persönlich | Das Erbe (Tobins Pachthof; Variante der Karte Erlbach) | Tobin in der Truppe, Mission 1-6 gespielt | Signaturlanze |
-| N4 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan) | Ilka in der Truppe | Glutfunke, Signaturbogen |
+| N4 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan; früher Schnee, nur auf dieser Akt-2-Karte) | Ilka in der Truppe | Glutfunke, Signaturbogen |
 | N5 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III, Relikt Drachenglut |
 | N6 | 2 | persönlich | Die Gauklertruppe (Jorys alte Truppe) | Jory in der Truppe | Signaturlaute |
 | N7 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
@@ -786,7 +801,7 @@ Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
 
 **Story-Locked Elements:** Die erste Mission eines Akts und das Finale sind fest. Das Finale öffnet sich erst, wenn alle anderen Story-Missionen des Akts gespielt sind. Akt 1 ab der Eroberung der Paktwacht und Akt 3 ab der Krönung sind linear. Die Burg ist ab Mission 1-6 nutzbar, ausgebaut wird sie ab Akt 2. Die Lektionen der gestaffelten Regeln hängen an der Zahl gespielter Missionen (GDD).
 
-**Cutscene Triggers:** Akt-Einstieg, Akt-Finale, die 11 Tafeln aus der Narrative Delivery, der Tod eines Gefährten (Gedenken nach der Mission).
+**Cutscene Triggers:** Akt-Einstieg (Akt 2 mit der Titeltafel „Akt 2 · Glut“), Akt-Finale, die 11 Tafeln aus der Narrative Delivery, der Tod eines Gefährten (Gedenken nach der Mission).
 
 **Mandatory Story Beats:** die 25 Story-Missionen und ihre Szenen.
 

@@ -223,6 +223,7 @@ worldRegion: borderland
 - Story-Knoten sind nach dem Abschluss nicht wiederholbar; Nebenquests bleiben über Akte offen; ein gefallener Auslöser schaltet die Gedenk-Variante (`memorialIf`) statt die Quest zu sperren.
 - **Gestaffelte Regeln:** `lockedMechanics(data, c)` zählt `storyCount` (nur `kind: story`) statt Knotenpositionen; `mechanics` nennt je Regel die Zahl. Klassen-Aktionen einer Rolle gelten, sobald der erste Gefährte dieser Rolle beigetreten ist (`c.rolesSeen`, `BattleState.lockedRoles`).
 - **Stand (Story 4.3):** umgesetzt in `src/core/campaign/graph.ts` (`availableNodes`, `isAvailable`, `nodeScenes`, `lockedMechanics`, `lockedRoles`, `nodeLinks`). Knoten: `kind` (Standard `story`), `fixed`, `requires`, `memorialIf` mit `memorial: { pre?, post? }` (Gedenk-Szenen). Eine Nebenquest öffnet sich über `openQuest` oder eigene, nicht leere `requires`; ohne beides lehnt `content:check` sie ab. Der Akt-Übergang (`act + 1`, `actReached`) folgt mit Akt 2. Knotenwirkungen (`effects` am Knoten, z. B. `recruit: fenn` an `m1_1`) sind seit Story 9.2 umgesetzt: `finishMission` wendet sie nach einem Sieg als letzte Liste mit `applyEffects` an (nach den in der Schlacht eingereihten Szenenwirkungen), `BattleResult.effects` nennt sie, Beitritte stehen auch in `recruited`, `content:check` prüft sie wie Szenenwirkungen. Die Simulationen (`tools/simulate.ts`, `tools/simCampaign.ts`) rufen `finishBattle` direkt und wenden die Knotenwirkungen selbst an. **Story 9.4:** Die Händlerstufe (`currentTier`) ist das Maximum aus dem `merchantTier` der erledigten Knoten und jeder Stufe im Eintrag `merchant` der `campaign.yaml`, deren optionales `storyCount` (Zahl abgeschlossener Story-Missionen) erreicht ist; Stufe 2 öffnet so mit der 4. Story-Mission, egal welche.
+- **Akt 2, Freischaltung und Positionsstufe (Produktinhaber 2026-10-31):** Die Strang-Folge steht als `requires` in der `campaign.yaml` von Akt 2 (`m2_2`, `m2_4`, `m2_6` nach `m2_1`; `m2_3` nach `m2_2`, `m2_5` nach `m2_4`, `m2_7` nach `m2_6`; `m2_8` `fixed: finale`). Die erwartete Stufe einer Akt-2-Story-Mission hängt nicht am Knoten, sondern an ihrer Position: eine reine Funktion des Kampagnenstands (Zahl erledigter Story-Knoten des Akts) liefert sie beim Missionsstart; generische Kartengegner stehen relativ dazu (`+0…+2` je Einheit in der Karten-YAML), ebenso die Beitrittsstufe der Akt-2-Gefährten. Die errechnete Stufe steht im Startzustand des Kampfes, Replays (Startzustand + Command-Log), Neustart und Simulation bleiben deterministisch; Heimsuchungen behalten ihre Regel (§5.6). Schlüssel und Stufen-Tabelle in `campaign.yaml` bzw. `balance.yaml`, nicht im Code.
 - **Akt-Übergang:** Nach dem Akt-Finale setzt `finishMission` `act + 1` und meldet `actReached`. Fehlt das Paket des nächsten Akts im Build (AR23), zeigt die Weltkarte „Akt 2 erscheint bald“. Heimsuchungen, Nebenquests, Supports und Heimat laufen weiter.
 - **Stand (Story 7.3):** Akt-Ende ist `actFinished(data, c)` (Finale-Knoten erledigt). Ohne Paket des nächsten Akts im Build (`virtual:hc-packs`, `hasPackForAct`) bleibt der Akt bei n: kein `act + 1`, kein `actReached` (das baut Akt 2); die Weltkarte zeigt den Stein „erscheint bald“ im Nebel der Region n + 1. Backup-Erinnerung: `c.backupReminded: number[]` (Akte), gesetzt durch das Command `markBackupReminded`, einmal je Akt als Blatt auf der Weltkarte; Format 2 bleibt.
 
@@ -294,6 +295,10 @@ Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und
 - **Passive** im Regelcode: Halten in `movement.ts` (Gegner stoppen auf Nachbarfeldern; die KI-Pfadsuche kennt Haltezonen und umgeht sie bei ≤ 2 Feldern Umweg). Nachsetzen als eigenes Command `pursue{unit, to}`, nur direkt nach einem Angriff mit Restbewegung erlaubt; jedes andere Command beendet die Möglichkeit.
 - **Vorschau:** `previewAction(state, unit, action)` für jede Aktion, auf demselben Code wie `apply`.
 - **Nebel:** `visibleTiles(state, team)` rein im Kern; Render und UI zeigen nur Sichtbares, Events auf unsichtbaren Feldern werden vor dem Abspielen gefiltert (`event.at`/`unit` gegen Sicht).
+- **Gegner-Sicht für Schatten und Fallen (Epic 10, Produktinhaber 2026-10-31):** Die Gegner-KI sieht weiter durch den Nebel; nur Schatten und Fallen blendet ein eigener reiner Filter aus (Gegner-Wissen), bevor die KI Ziele wertet und Wege sucht. Ein Schatten ist für Gegner unsichtbar, solange kein Gegner näher als 3 Felder steht, im Nebel immer; nach seinem Angriff ist er sichtbar bis zum Ende der nächsten Gegnerphase (Zähler im `BattleState`). Fallen stehen im `BattleState` (Feld, Besitzer, Reihenfolge des Legens), für Gegner immer unsichtbar; nur Gegner lösen aus (Bewegung endet, 8 Schaden + Verlangsamt, Werte in `balance.yaml`). Der Filter ist deterministisch, ohne Zufall, und läuft im Worker wie im synchronen Rückfall (§5.13, §8.5); die Vorschau nutzt denselben Code.
+- **Ziel-Phasen (Epic 11):** Ein Kartenziel kann eine zweite Phase haben (Kronfeld: `survive` n Runden, danach `escape` mit Fluchtzone und Mindestzahl Fliehender, Pflichtfiguren Avatar und Kael). Der Phasenwechsel ist ein Ereignis des Kerns, die aktive Phase steht im `BattleState`; Schema in `mapSchema`, `content:check` prüft Zone und Erreichbarkeit.
+- **Eskorte mit Folgen-Profil (Epic 11):** KI-Profil `follow` für die Begleitfigur bei `escort`: Sie zieht zur nächsten eigenen Figur statt allein zum Ausgang (feste Reihenfolge bei Gleichstand, kein Zufall).
+- **Balliste (Epic 11):** Kartenobjekt mit Werten aus `balance.yaml` (Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–10, kein Gegenangriff); bedient von einer Fuß- oder gepanzerten Figur auf einem Nachbarfeld; Vorschau und Auflösung über denselben Formelcode.
 
 ### 5.8 Szenen und Dialoge (AR9) [A]
 
@@ -340,7 +345,7 @@ lines:
 
 ### 5.10 Heimat: Lager und Burg (AR11)
 
-- `content/core/rooms.yaml`: `id`, `function`, `fromAct`, `levels[1..3]` mit `cost`, `requires` (passender Gefährte über AR3), `unlocks` (z. B. `maxUpgrade`, Rezepte, Lagerfeuer-Ränge, Übungsplatz-EP).
+- `content/core/rooms.yaml`: `id`, `function`, `fromAct`, `levels` (Stufe 2 und 3) mit `cost` und `requires` (Akt und Raum-Gefährten über AR3, je Raum zwei, einer reicht: `any: [{ alive: a }, { alive: b }]`), `unlocks` für freigeschaltete Funktionen. **Kosten und Bedingungen stehen in `rooms.yaml`, die Wirkungen je Stufe als Arrays nach Stufe in `balance.yaml`** (Muster `economy.smithMaxUpgrade [3, 4, 5]`, `supports.campfireMaxRank [B, A, S]`); der Code liest den Wert an `roomLevel(c, id) − 1`. Die Bedingung prüft nur `buildRoom`: Fällt oder geht ein Raum-Gefährte, bleibt die gebaute Stufe (Produktinhaber 2026-10-31).
 - `c.home = { kind: 'camp' | 'castle', rooms: Record<roomId, level> }`. Raumfunktionen prüfen `roomLevel(c, id)`; es gibt keine verstreuten `if (act >= 2)`.
 - Der Wechsel vom Lager zur Burg geschieht mitten in Akt 1 über die Wirkung `setHome` an Knoten `m1_6`. Ausbau ab Akt 2 steht in den Daten: Stufe 2 und 3 tragen `requires: [{ act: 2 }]`, Verzauberer, Akademie, Werkstatt und Übungsplatz `fromAct: 2`; die Gedächtnishalle hat `fromAct: 1` (Gedenksteine), ihre Lektionen schaltet `unlocks` erst ab Akt 2 frei.
 - Jede Interaktion ist genau ein Kampagnen-Command (≤ 2 Taps, GDD).
@@ -352,8 +357,9 @@ lines:
 
 - Stufendeckel aus `campaign.yaml` des Akts (`levelCap`), EP darüber verfallen (`exp`-Event meldet `capped`).
 - **Verbluten:** `BattleUnit.bleed` zählt eigene Phasen seit dem Niederstrecken; bei `balance.death.bleedOutTurns` (3) stirbt die Einheit; Zähler in State und Event, damit die UI ihn zeigt.
-- **Glutfunke** ist ein Item (`kind: promotion`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie.
+- **Glutfunke** ist ein Item (`kind: promotion`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie. Er ersetzt das Siegel des Proof of Concept, auch für Avatar und Kael (Produktinhaber 2026-10-31).
 - Übungsplatz, Lektionen der Gedächtnishalle, Händler-Sortiment je Tier, Kopfgeld: alles in `balance.yaml` bzw. `rooms.yaml`, Code liest nur.
+- **Werkstatt-Rezepte** in `content/core/recipes.yaml` (Item, ab welcher Werkstatt-Stufe, Material, Gold) mit Zod-Schema und Referenzprüfung in `content:check`; das Command `craft{recipe}` liest nur diese Datei.
 - **Simulation:** `pnpm sim --campaign act1` spielt den Akt verkettet (KI auf beiden Seiten, Heimat-Heuristik kauft und wertet auf) und prüft die Korridore je Story-Mission aus dem GDD.
 
 ### 5.12 Rendering: eine Engine, Szenen für Brett und Heimat; Weltkarte flach (AR12, AR13)
@@ -534,7 +540,7 @@ hollow-crown/
     renames.yaml                  ID-Umbenennungen mit Migration
     core/                         Paket core
       balance.yaml render.yaml terrain.yaml classes.yaml items.yaml skills.yaml
-      affixes.yaml runes.yaml sets.yaml rooms.yaml traits.yaml
+      affixes.yaml runes.yaml sets.yaml rooms.yaml traits.yaml recipes.yaml
       locales/de.yaml en.yaml de.names.yaml en.names.yaml
     acts/
       act1/                       Paket act1; Prolog-Karte und -Szenen weist packs.yaml dem Paket core zu
@@ -613,7 +619,7 @@ case 'buildRoom': {
   if (!evalCondition(ctxOf(c), cost.requires)) return err('companion_missing');
   const next = clone(c);
   next.gold -= cost.gold;
-  next.home.rooms[cmd.room] = (next.home.rooms[cmd.room] ?? 0) + 1;
+  next.home.rooms[cmd.room] = roomLevel(c, cmd.room) + 1; // roomLevel liefert ohne Eintrag 1, nie `?? 0`
   return ok(next, [{ t: 'roomBuilt', room: cmd.room, level: next.home.rooms[cmd.room]! }]);
 }
 ```

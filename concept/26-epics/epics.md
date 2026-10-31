@@ -24,7 +24,7 @@ supersedes: concept/21-gdd/epics.md (Grobfassung)
 
 ## Overview
 
-Dieses Dokument zerlegt GDD, Narrative, Architektur und UX von Hollow Crown, Staffel 1, in umsetzbare Epics und Stories. Es löst die Grobfassung `concept/21-gdd/epics.md` ab. Bis zum MVP (Akt 1) sind die Stories mit vollen Akzeptanzkriterien ausgearbeitet; Burg-Ausbau, Akt 2 und Akt 3 stehen als Story-Liste mit Kurz-Kriterien und werden vor dem jeweiligen Akt verfeinert. Jede Story ist erst fertig, wenn `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build` grün sind (AGENTS.md).
+Dieses Dokument zerlegt GDD, Narrative, Architektur und UX von Hollow Crown, Staffel 1, in umsetzbare Epics und Stories. Es löst die Grobfassung `concept/21-gdd/epics.md` ab. Bis einschließlich Burg-Ausbau und Akt 2 (Epic 10 und 11, verfeinert am 2026-10-31) sind die Stories mit vollen Akzeptanzkriterien ausgearbeitet; Akt 3 steht als Story-Liste mit Kurz-Kriterien und wird vor dem Akt verfeinert. Jede Story ist erst fertig, wenn `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build` grün sind (AGENTS.md).
 
 Kennzeichnung: **(neu)** gibt es im PoC nicht, **(geändert)** ersetzt PoC-Verhalten, **(bestehend)** ist im PoC umgesetzt und wird nur übernommen bzw. geprüft.
 
@@ -322,12 +322,12 @@ damit die Brettwelt lebendig wirkt und ich keine Ziele suchen muss.
 Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
 **FRs covered:** FR55, FR60, FR63
 
-### Epic 10: Die Burg ausbauen (ab Akt 2) – grob
-Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle.
+### Epic 10: Die Burg ausbauen (ab Akt 2)
+Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle. Verfeinert am 2026-10-31: 11 Stories (neu 10.8 Raumfunktionen, 10.9 Söldner-Traits, 10.10 Anhängeteile, 10.11 Burg-Grafik nach der 3D-Entscheidung).
 **FRs covered:** FR14, FR15, FR44, FR50 (ab Akt 2)–FR54 · UX-DR10 (Burg-Ausbau), UX-DR11 (Lektionen), UX-DR21
 
-### Epic 11: Akt 2 „Glut“ – grob
-Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark.
+### Epic 11: Akt 2 „Glut“
+Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark. Verfeinert am 2026-10-31: 15 Stories (Akt-Übergang, Gefährten und Leutnants, Gegner mit Flieger und Balliste, eine Story je Mission mit Kurzspezifikation, Nebenquests, Supports, Abstimmung).
 **FRs covered:** FR17 (Akt 2), FR61, FR63
 
 ### Epic 12: Akt 3 „Krone“ und Staffelende – grob
@@ -342,7 +342,7 @@ Spieler lesen das Brett auf einen Blick: Raster, Lebensleisten, Bereiche mit Kan
 Spieler schlagen jede Regel im Spiel nach, aus dem Menü oder über ein „?“ an der Stelle, an der sie wirkt; Werte kommen aus den Content-Daten. Neu seit der Course Correction 2026-10-30, nach dem MVP-Release und vor Akt 2.
 **FRs covered:** – · UX-DR30, UX-DR31
 
-**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig.
+**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig. Epic 10 und 11 laufen verschränkt (Verfeinerung 2026-10-31): 11.1 (Akt-Übergang) zuerst, dann 10.2 und 10.3 parallel zu 11.2–11.4, danach die übrigen Stories beider Epics; 11.15 (Abstimmung Akt 2) erst, wenn 10.2 und 10.3 gemergt sind. Details in den Absätzen „Reihenfolge“ beider Epics.
 
 <!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
 
@@ -1724,33 +1724,178 @@ damit die Kernhypothese geprüft wird.
 **Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 passt zu 30–35 Stunden für die Staffel
 **Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind mit Story 7.5 auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu die Burg als Heimat und die Gedenksteine) liegt vor (`gds-playtest-plan`).
 
-## Epic 10: Die Burg ausbauen (ab Akt 2) – grob
+## Epic 10: Die Burg ausbauen (ab Akt 2)
 
-Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und geben das Erbe der Gefallenen als Lektion weiter. Die Burg als Heimat auf Stufe 1 und die Gedenksteine entstehen schon für den MVP in Story 6.9. Story-Liste mit Kurz-Kriterien; vor Akt 2 mit `gds-create-story` verfeinern. Hinweis: Die Burg ist ein 3D-Diorama (Art Direction §7); der obere Teil des Heimat-Screens wird dann neu geprüft (UX-Log).
+Spieler bauen die eroberte Paktwacht ab Akt 2 auf 11 Räume in drei Stufen aus, lassen ausgewählte Gefährten per Glutfunke auf einen von zwei Profi-Wegen aufsteigen und geben das Erbe der Gefallenen als Lektion weiter. Quellen: GDD „Rollenklassen“, „Heimat: Lager und Burg“, „Wirtschaft und Ressourcen“ und „Fortschritt“ (`concept/21-gdd/gdd.md`), `concept/25-ux/EXPERIENCE.md`, `DESIGN.md`, Mockups 04, 06 und 08, Architektur §5.3, §5.7, §5.10, §5.11, §8.1, §8.5, §8.7, die Entscheidungen des Produktinhabers vom 2026-10-31 (Verfeinerung Epic 10/11) und die Code-Bestandsaufnahme der Session epic10-castle (`_bmad-output/planning-artifacts/handoff-epic10.md`). Epic 10 hängt an Epic 11: Story 11.1 liefert den Akt-Übergang mit `c.act`, den Stufendeckel `levelCap: 20` für Akt 2 und die festen Ids der Akt-2-Gefährten, Story 11.2 `moonsteel` als Akt-2-Material (`lieutenant.bounty.materialByAct`), die Missions-Stories von Epic 11 die Akt-2-Gefährten `jory`, `odile`, `nell`, `brann`, `amos`, `ilka` (Raum-Gefährten) und die Händler-Liste mit `roomLevel: 2`. Bis Story 11.1 gemergt ist, prüfen die Stories alles Akt-2-Abhängige mit Fixture-Spielständen (`c.act = 2`, `c.home.kind = 'castle'`); die Burg oben bleibt bis Story 10.11 das gemalte Bild `paktwacht_ruine`.
+
+**Reihenfolge:** 10.2 → 10.3 → 10.1 → 10.4 → 10.5 → 10.6 → 10.7 → 10.8 → 10.9. Akademie und Profi-Wege kommen zuerst, weil die Abstimmung von Akt 2 (Story 11.15) mit Aufstiegen simuliert; 10.2 bringt deshalb den Raum `academy` selbst mit, 10.1 ergänzt danach Kosten und Gefährten-Bedingungen aller Räume. 10.10 (Anhängeteile) geht jederzeit nach 10.3, 10.11 (Burg-Grafik) erst nach der 3D-Entscheidung des Produktinhabers.
+
+**Für alle Stories gilt:** Fertig erst mit grünem `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build`. Jede Handlung ist ein Kampagnen- oder Kampf-Command im Journal, das beim Replay dasselbe Ergebnis liefert; UI und Command rufen dieselbe reine Vorschau-/Kostenfunktion (Architektur §8.1). Spielwerte stehen in YAML (Raumkosten und -bedingungen in `content/core/rooms.yaml`, Stufenwirkungen als Stufen-Arrays in `content/core/balance.yaml`), kein `if (act >= 2)` im Code, kein sichtbarer Text im Code, Beträge immer als Symbol + Zahl. Neue persistierte Felder bekommen einen Default in `normalizeCampaign` (Architektur §8.7); solange Akt 1 nicht veröffentlicht ist, braucht es keine Migration. Sichtbare Änderungen werden mit Screenshots bei 375 × 812 belegt. Neue Entscheidungen gehen in die Decision-Logs unter `concept/`. Werte mit `[ASSUMPTION]` sind abgeleitet und werden per `pnpm sim` geprüft. Audio-Kriterien sind als „später (Audio)“ markiert; bis dahin klingt der vorhandene Bestätigungs-Klang oder nichts.
 
 ### Story 10.1: Räume ausbauen
 
 Als Spieler
-möchte ich Räume mit dem passenden Gefährten und Gold auf Stufe 2 und 3 bringen,
-damit die Burg eine zweite Fortschrittsachse ist.
+möchte ich Räume der Paktwacht mit einem ihrer Raum-Gefährten und Gold auf Stufe 2 und 3 bringen,
+damit die Burg neben den Figuren eine zweite Fortschrittsachse ist.
+
+**Abhängigkeiten:** liest `c.act` aus Story 11.1; die Akt-2-Raum-Gefährten legt Epic 11 an (ihre Ids stehen schon vorher in `rooms.yaml`); den Raum `academy` hat Story 10.2 angelegt; Stufe 2/3 der Räume nutzen die Stories 10.2 und 10.5–10.8.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** `rooms.yaml` mit Kosten (Stufe 2 ≈ 1 500, Stufe 3 ≈ 4 000 Gold) und `requires` (Gefährte in der Truppe)
-**Wenn** beides erfüllt ist
-**Dann** baut `buildRoom` aus, das Ausbau-Band im Panel zeigt Kosten als Symbol + Zahl, und die Burg zeigt das neue Modellteil.
+**Angenommen** `roomSchema` in `src/content/schemas.ts` und `RoomDef` in `src/core/defs.ts`
+**Wenn** die Story umgesetzt ist
+**Dann** trägt jeder Eintrag in `levels` zusätzlich `cost: { gold }` (`z.strictObject({ gold: z.number().int().positive() })`), und das Enum `function` kennt neben `convoy`, `merchant`, `smith`, `healer`, `tavern`, `campfire`, `memorial`, `enchanter` auch `academy`, `workshop`, `training`
+**Und** `pnpm content:check` verlangt für jeden Raum mit `homes` ∋ `castle` genau zwei `levels` mit `cost`, Stufe 3 nicht billiger als Stufe 2, und meldet eine `alive`-Id, die in keinem `content/acts/*/units.yaml` steht, als Warnung, solange `act2` in `content/packs.yaml` nicht `released: true` ist, danach als Fehler `[ASSUMPTION]`.
+
+**Angenommen** `content/core/rooms.yaml`
+**Wenn** die Story umgesetzt ist
+**Dann** stehen dort alle 11 Räume in dieser Reihenfolge (= Anzeige), jeder mit Kosten 1 500 / 4 000 Gold und den zwei Raum-Gefährten als `any`-Bedingung (einer reicht); die Akt-1-Räume mit `storyCount`-Bedingung bleiben in Akt 2 offen, weil Story 11.1 ihre Bedingung schon um `{ act: 2 }` ergänzt hat:
+
+```yaml
+# Vorschlag für content/core/rooms.yaml (Kosten GDD-Annahme 9, Gefährten Produktinhaber 2026-10-31)
+- { id: convoy,    function: convoy,    icon: convoy,    fromAct: 1, homes: [camp, castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }, { any: [{ alive: tobin }, { alive: nell }] }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: tobin }, { alive: nell }] }] }] }
+# alle weiteren Räume: levels nach dem Muster von convoy, nur die zwei Gefährten wechseln („…“ = Muster)
+- { id: merchant,  …, requires: [],                                                         Gefährten fenn | nell }
+- { id: smith,     …, requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],         Gefährten brenna | grosk }
+- { id: healer,    …, requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],         Gefährten liora | amos }
+- { id: tavern,    …, requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],         Gefährten varek | jory }
+- { id: campfire,  …, requires: [{ any: [{ act: 2 }, { storyCount: { min: 4 } }] }],         Gefährten jory | brenna }
+- { id: memorial,  function: memorial,  icon: stone,     fromAct: 1, homes: [castle], …,    Gefährten liora | amos, unlocks: [{ id: lessons, requires: [{ act: 2 }] }] }
+- { id: enchanter, function: enchanter, icon: enchanter, fromAct: 2, homes: [castle], …,    Gefährten ysolde | brann }
+- { id: academy,   function: academy,   icon: academy,   fromAct: 2, homes: [castle], …,    Gefährten varek | odile }
+- { id: workshop,  function: workshop,  icon: workshop,  fromAct: 2, homes: [castle], …,    Gefährten fenn | brann }
+- { id: training,  function: training,  icon: training,  fromAct: 2, homes: [castle], …,    Gefährten mira | ilka }
+```
+
+**Und** die Icons `academy`, `workshop`, `training` stehen in `src/ui/icons.tsx`, Namen und Kurztexte als `room.<id>.name|desc` in `de.yaml`/`en.yaml`, Anker der drei neuen Räume in `content/home/home.yaml` (Position auf `paktwacht_ruine` setzt der Entwickler, Abnahme per Screenshot).
+
+**Angenommen** die Heimat ist die Burg (`c.home.kind = 'castle'`), der Raum ist offen (`homeRooms`), hat eine nächste Stufe, alle `requires` dieser Stufe sind erfüllt und `c.gold ≥ cost.gold`
+**Wenn** der Spieler `{ type: 'buildRoom', room }` schickt
+**Dann** sinkt das Gold um `cost.gold`, `c.home.rooms[room]` wird `roomLevel(c, room) + 1`, und es entstehen die Events `goldChanged` und `roomBuilt { room, level }`
+**Und** UI und `validateCampaign` rufen dieselbe reine Funktion `roomBuild(data, c, roomId)` in `src/core/campaign/camp.ts` (liefert nächste Stufe, Kosten, erste offene Bedingung oder Fehler; ersetzt `nextRoomLevel`).
+
+**Angenommen** eine verletzte Vorbedingung
+**Wenn** `buildRoom` geprüft wird
+**Dann** liefert es genau einen Fehlercode ohne Änderung am Zustand: `unknown_room` (Id unbekannt oder Raum nicht in dieser Heimat bzw. noch nicht offen), `room_locked` (eine `requires` der Stufe offen, z. B. Akt < 2 oder kein Raum-Gefährte in der Truppe; im Lager immer), `max_level` (Stufe 3 erreicht), `not_enough_gold`.
+
+**Angenommen** ein Raum auf Stufe 2, dessen Raum-Gefährten beide gefallen sind oder die Truppe verlassen haben (`dead`/`left`)
+**Wenn** die Heimat geladen wird
+**Dann** bleibt der Raum auf Stufe 2 mit allen Wirkungen dieser Stufe (`roomLevel` liest nur `c.home.rooms`, nie die Gefährten)
+**Und** nur der Ausbau auf Stufe 3 ist `room_locked`; ein Test deckt Tod und Weggang beider Gefährten ab.
+
+**Angenommen** das Raum-Panel eines Burg-Raums mit nächster Stufe
+**Wenn** alle Bedingungen und das Gold reichen
+**Dann** steht oben das Ausbau-Band in Grün (`colors.positive`) mit „Ausbauen auf Stufe n“, der Wirkung der nächsten Stufe in einem Satz (`room.<id>.level.<n>`), dem erfüllten Gefährten („Nell in der Truppe ✓“) und der Taste „Ausbauen · ● 1 500“ (`Amount`); ein Tipp baut aus (Panel öffnen + Tippen = 2 Taps)
+**Und** fehlt etwas, bleibt das Band gestrichelt wie seit Story 6.9 und nennt die erste offene Bedingung (`lockReason` kennt jetzt `any` mit `alive`: „Tobin oder Nell in der Truppe“) bzw. zeigt den Betrag rot, wenn nur Gold fehlt; auf Stufe 3 steht statt des Bands „Höchste Stufe“
+**Und** `concept/25-ux/EXPERIENCE.md` Z. 102 („Ausbau-Band erscheint nur, wenn …“) wird auf dieses Verhalten nachgezogen, Eintrag in `concept/25-ux/.decision-log.md`.
+
+**Angenommen** die Heimat-Ansicht
+**Wenn** ein Raum ausgebaut wurde oder ausgebaut werden kann
+**Dann** zeigt sein Raumstein die Stufe als Punkte (`Pips`) und einen grünen Pfeil, solange ein Ausbau jetzt möglich ist (DESIGN `room-stone`), und die Kopfzeile lautet „Räume 11 · n ausbaubar“ (Mockup 04, Variante B)
+**Und** auf dem gemalten Bild trägt der Anker des Raums dieselben Punkte und denselben Pfeil; Ausbauteile oben gibt es in dieser Story nicht (Story 10.11)
+**Und** ein Toast meldet „Schmied auf Stufe 2 ausgebaut“; Ausbau-Klang später (Audio).
+
+**Angenommen** die Stufenwirkungen, die nur Zahlen sind
+**Wenn** ein Raum ausgebaut ist
+**Dann** gelten diese Stufen-Arrays aus `balance.yaml` (Index = Stufe − 1), gelesen über je eine Funktion in `camp.ts`, die Panel und Command teilen:
+
+```yaml
+# Vorschlag für content/core/balance.yaml (Zahlen GDD „Heimat“)
+economy:
+  smithMaxUpgrade: [3, 4, 5]                 # existiert
+  rerollFromSmithLevel: 3                    # existiert: Affix neu würfeln ab Schmied-Stufe 3
+  scarRemoval: { goldByLevel: [2500, 1800, 1200], altItem: seers_herb }   # ersetzt gold: 2500; scarCost(data, c)
+  tavern:
+    offersByLevel: [3, 4, 4]                 # ersetzt tavernOffersPerChapter; tavernOfferCount(data, c)
+supports:
+  campfireMaxRank: [B, A, S]                 # existiert; Abnahme der Gespräche in Story 10.7
+```
+
+**Und** Tests über `buildRoom` belegen: Schmied Stufe 2 erlaubt +4, Stufe 3 +5 und Neu würfeln; Narbe kostet 2 500 → 1 800 → 1 200 (Seherkraut-Weg unverändert); die nächste Taverne-Runde nach Ausbau auf Stufe 2 bringt 4 Angebote; Lagerfeuer-Deckel B → A → S
+**Und** der Hinweis bleibt im Story-Log: +5 kostet `dragon_scale` (Akt 3), Schmied Stufe 3 wirkt in Akt 2 also nur über Neu würfeln.
+
+**Angenommen** die Architektur
+**Wenn** die Story fertig ist
+**Dann** rechnet das Beispiel in §8.1 `roomLevel(c, id) + 1` statt `(rooms[id] ?? 0) + 1`, §5.10 nennt Kosten/Bedingungen in `rooms.yaml` und Wirkungen als Stufen-Arrays in `balance.yaml` (statt `unlocks`), Eintrag in `concept/24-architecture/decision-log.md`
+**Und** der Handbuch-Eintrag `rooms_upgrade` (Kategorie Heimat) nennt Kosten und Gefährten als Verweise auf die Daten, nie abgetippt.
+
+**Angenommen** `tools/simulate.ts` mit der Heimat-Heuristik aus Story 6.8
+**Wenn** `pnpm sim --campaign act2` läuft (sobald Epic 11 Akt 2 liefert; vorher mit Fixture-Kampagne in `tests/unit/rooms-build.test.ts`)
+**Dann** baut die Heuristik Räume aus, sobald nach dem Ausbau noch das Gold für Narbe und Aufwerten bleibt (Reihenfolge Schmied, Akademie, Heiler, Übungsplatz, Rest `[ASSUMPTION]`), und die Ausgabe zeigt je Mission die gebauten Stufen neben dem Gold
+**Und** die Tests decken ab: Ausbau 1 → 2 → 3, jeden Fehlercode, beide Events, Determinismus (zweimal anwenden), Replay über das Journal.
 
 ### Story 10.2: Akademie und Aufstieg mit Glutfunke
 
 Als Spieler
-möchte ich ausgewählte Gefährten mit einem Glutfunken aufsteigen lassen,
+möchte ich ausgewählte Gefährten in der Akademie mit einem Glutfunken auf einen Profi-Weg aufsteigen lassen,
 damit die knappe Wahl, wer wächst, ein Moment wird.
+
+**Abhängigkeiten:** braucht `levelCap: 20` und `c.act` aus Story 11.1 (bis dahin Fixture); bringt Raum `academy` und Enum-Wert mit, solange 10.1 fehlt (10.1 ergänzt Kosten und Gefährten); Stufe 2 und 3 der Akademie sind vor 10.1 mit Fixture `c.home.rooms.academy = 2|3` testbar; die übrigen 10 Profi-Wege und die Wirkungstexte liefert 10.3, bis dahin funktioniert der Aufstieg mit den sechs vorhandenen Profiklassen.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** eine Figur ab Stufe 10 und ein Glutfunke
-**Wenn** der Spieler in der Akademie einen von zwei Profi-Wegen wählt
-**Dann** steigt sie auf (Stufe → 1, Loadout 4 → 5), der Glutfunke ist verbraucht, und der Funken-Moment spielt (Mockup 08, UX-DR21); Akademie-Stufen 2/3 laut GDD.
+**Angenommen** `content/core/items.yaml`
+**Wenn** die Story umgesetzt ist
+**Dann** ist der Glutfunke das einzige Aufstiegs-Item: `ember_spark` trägt `use: { promote: true, minLevel: 10 }` (weiter `kind: seal`, `tags: [convoyOnly]`, `price: 3000`), `promotion_seal` ist mit Locales, Bild, `itemInfo.ts`-Eintrag und Handbuch-Verweisen entfernt
+**Und** Architektur §5.11 nennt `kind: seal` statt `kind: promotion`; ein PoC-Spielstand mit `promotion_seal` lädt ohne Fehler, das Item verschwindet beim Laden (`normalizeCampaign`) `[ASSUMPTION]`.
+
+**Angenommen** `rooms.yaml` mit `{ id: academy, function: academy, icon: academy, fromAct: 2, homes: [castle] }`
+**Wenn** Akt 2 erreicht ist und die Heimat die Burg ist
+**Dann** steht die Akademie als Raumstein mit Stufe als Punkten unter den Räumen und öffnet ihr Panel; in Akt 1 gibt es sie nicht (nur über `fromAct`, kein `if` im Code).
+
+**Angenommen** eine Figur der Truppe mit Stufe ≥ `balance.levels.promoteFrom` (10), deren Klasse nicht `tier: pro` ist und einen Profi-Weg hat (`promotionTargets` nicht leer; auch `tier: unique` von Avatar und Kael), mindestens ein `ember_spark` im Konvoi und eine offene Akademie (`academyOpen(data, c)` über `homeRooms`)
+**Wenn** der Spieler `{ type: 'promote', unit, classId }` schickt
+**Dann** wird die Figur Profi der gewählten Klasse (Stufe → 1, EP → 0, `promotionBonus` bis zu den Caps der neuen Klasse), der tatsächlich gutgeschriebene Wertgewinn steht als `promotionGain` am `UnitRecord` (Default `{}`), ein Glutfunke verschwindet aus dem Konvoi, der Loadout fasst 5 statt 4 Skills (`skills.loadoutAdvanced`), Events `itemLost` und `promoted { unit, from, to, gain }`
+**Und** Fehler ohne Änderung: `unknown_unit`, `not_available` (Stufe < 10, schon Profi, Akademie nicht offen), `unknown_class` (kein Profi-Weg dieser Klasse), `not_enough_materials` (kein Glutfunke)
+**Und** Avatar (`tactician` → `grand_strategist`) und Kael (`captain` → `banner_lord`) steigen genauso auf: Stufe 10, ein Glutfunke, Akademie, eine Weg-Karte.
+
+**Angenommen** das Panel der Akademie (UX-DR21, Mockup 08 „Akademie · Aufstieg“)
+**Wenn** der Spieler es öffnet
+**Dann** zeigt es oben den Vorrat an Glutfunken (Item-Bild + Zahl), darunter die Figuren ab Stufe 10 ohne Profi-Klasse, alle anderen gedimmt mit Grund („ab Stufe 10“, „schon aufgestiegen“)
+**Und** nach Wahl einer Figur zwei Weg-Karten (Avatar und Kael: eine) mit Name, Wirkung in einem Satz (`class.<id>.effect`), Wertgewinn aus `promotionPreview(data, u, classId)` in `src/core/rules/progression.ts`, die `promote` selbst benutzt („TP +4 · DEF +3 …“; es gelten die Daten, nicht die Beispielzahlen in Mockup 08), und dem Namen des Signaturteils (`part.<classId>.name`, Grafik in Story 10.10)
+**Und** die Haupttaste lautet „Aufsteigen · [Glutfunke] 1“; ohne Glutfunken ist sie gesperrt und nennt den Grund; Figur wählen und Weg wählen sind Auswahl, erst die Haupttaste führt aus.
+
+**Angenommen** ein gelungener Aufstieg
+**Wenn** `promoted` eintrifft
+**Dann** spielt über dem Panel der Funken-Moment (≤ 1,5 s): die Darstellung `.vn-sparks` aus Story 9.9 ist als wiederverwendbare Komponente `src/ui/Sparks.tsx` aus `Dialogue.tsx` herausgelöst (nicht kopiert), mit `prefers-reduced-motion` ein stehendes Glühen
+**Und** die Bark-Zeile `ember` der Figur erscheint, falls vorhanden (`hasBark`)
+**Und** Funkenknistern später (Audio).
+
+**Angenommen** Truppe und Figur (Story 6.1)
+**Wenn** eine Figur aufsteigen kann
+**Dann** trägt sie die Marke „Bereit für den Aufstieg“ nur, wenn auch eine Akademie offen ist; die Taste „Aufsteigen“ in der Figur öffnet das Akademie-Panel mit dieser Figur vorgewählt
+**Und** die bisherige Aufstiegs-Auswahl in `src/app/screens/Troop.tsx` entfällt (keine zweite Aufstiegs-Oberfläche); in Akt 1 gibt es weder Marke noch Taste
+**Und** der Skill-Loadout bleibt in der Figur (`setLoadout`); das Akademie-Panel verlinkt nur dorthin.
+
+**Angenommen** die Akademie auf Stufe 2 und ein Profi mit zwei Wegen seiner Rolle
+**Wenn** der Spieler `{ type: 'changeProPath', unit, classId }` mit dem anderen Weg derselben Rolle schickt
+**Dann** werden `promotionGain` abgezogen und der `promotionBonus` des neuen Wegs bis zu dessen Caps gutgeschrieben (neuer `promotionGain`; Werte über den neuen Caps werden auf sie gesenkt), die Klasse wechselt, Stufe, EP, Loadout und Ausrüstung bleiben, das Gold sinkt um 1 500, Events `goldChanged` und `proPathChanged { unit, from, to }`
+**Und** Fehler ohne Änderung: `not_available` (Akademie < 2, kein Profi, schon zweiten Effekt gelernt `[ASSUMPTION]`), `unknown_class` (kein anderer Weg derselben Rolle, also auch Avatar und Kael), `not_enough_gold`
+**Und** im Panel erscheint bei einem gewählten Profi die zweite Weg-Karte mit „Weg wechseln · ● 1 500“.
+
+**Angenommen** die Akademie auf Stufe 3 und ein Profi, dessen Rolle zwei Wege hat
+**Wenn** der Spieler `{ type: 'learnSecondPath', unit }` schickt
+**Dann** lernt die Figur für einen weiteren Glutfunken zusätzlich die Wirkung des anderen Profi-Wegs: `secondPath` am `UnitRecord` (Default `null`) nennt die andere Klasse, deren `proSkills` (Story 10.3) zählen ab sofort in `activeSkillIds`; Klasse, Werte und Wertgewinn bleiben; Events `itemLost`, `secondPathLearned { unit, path }`; der Funken-Moment spielt
+**Und** Fehler ohne Änderung: `not_available` (Akademie < 3, kein Profi, schon gelernt, Rolle mit nur einem Weg), `not_enough_materials` (kein Glutfunke)
+**Und** die Figur zeigt unter Skills „Auch: <Wirkung des anderen Wegs>“.
+
+```yaml
+# Vorschlag für content/core/balance.yaml
+academy:
+  changePathFromLevel: 2
+  changePathGold: 1500          # Produktinhaber 2026-10-31
+  secondPathFromLevel: 3
+  secondPathSparks: 1           # Produktinhaber 2026-10-31: „für einen weiteren Glutfunken“
+```
+
+**Angenommen** `promote`, `changeProPath`, `learnSecondPath`
+**Wenn** sie im Journal stehen
+**Dann** ergibt das Replay denselben Zustand, und die effektive Stufe zählt sofort mit +15 (`experience.advancedLevelOffset`) für EP, Leutnant-Skalierung und Heimsuchungs-Deckel
+**Und** `tests/unit/academy.test.ts` deckt gültigen Aufstieg (Stufe 1, Loadout 5, Glutfunke weg), jeden Fehlercode (auch Akt 1 ohne Akademie), Wechsel mit Rückrechnung bis zu den Caps, zweiten Effekt und Replay ab
+**Und** die Heimat-Heuristik in `tools/simulate.ts` lässt bei vorhandenem Glutfunken die Figur mit der höchsten Stufe ≥ 10 auf den ersten Weg aufsteigen (für Story 11.15)
+**Und** die Handbuch-Einträge `academy` (Kategorie Heimat, Werte als Verweise auf `balance.levels.promoteFrom`, `balance.skills.loadoutAdvanced`, `balance.academy`) und `ember_spark` verweisen aufeinander.
 
 ### Story 10.3: Profi-Wege aller Rollen
 
@@ -1758,171 +1903,1268 @@ Als Spieler
 möchte ich zwischen zwei klar verschiedenen Profi-Wegen je Rolle wählen,
 damit ein Aufstieg die Spielweise ändert.
 
+**Abhängigkeiten:** nach 10.2 (Aufstieg); Steckbriefe nach Story 14.5; Schatten- und Fallensteller-Wirkung in Story 10.4 (hier nur Klasse und Werte); Brett-Grafik in Story 10.10, nicht hier; Epic 12 braucht `battle_priest` vor Maels Beitritt.
+
 **Akzeptanzkriterien:**
 
-**Angenommen** die 14 Profiklassen plus Großstratege und Bannerherr mit den Effekten aus dem GDD (u. a. Bollwerk, Sturmbrecher, Klingentänzer, Duellant, Scharfschütze, Waldläufer, Weiser, Hexer, Bischof, Kampfpriester, Barde, Bannerträger)
-**Wenn** eine Figur aufgestiegen ist
-**Dann** gelten ihre Effekte mit Vorschau und neuem Signaturteil auf dem Brett.
+**Angenommen** `classSchema` und `skillSchema` in `src/content/schemas.ts`
+**Wenn** die Story umgesetzt ist
+**Dann** hat jede Klasse mit `tier: pro` ein Pflichtfeld `proSkills` (1–2 Skill-Ids mit Präfix `pro_`) und ein optionales Feld `proPart` (Id des Anhängeteils, Story 10.10); `skill` einer Profiklasse ist der Rollen-Skill ihrer Herkunftsrolle (der Spielmann hat keinen)
+**Und** `activeSkillIds` (`src/core/rules/skills.ts`) zählt Rollen-Skill, `proSkills` der Klasse und `proSkills` von `secondPath` (Story 10.2); die PoC-Skills der Profis `sol`, `impale`, `longshot` und der PoC-Klassen-Skill `climber` des Sturmbrechers entfallen als Klassen-Skills (Einträge in `skills.yaml` löschen, falls nichts sie mehr nutzt)
+**Und** `skillSchema.effect` kennt die neuen Bausteine `guardNeighbors`, `statusOnHit: { status, chance }`, `rangeCap`, `addWeaponGroups`, `castRadius`, `healRadius`, `cheerRange`, `cheerTargets`, `ignoreGrief`, `usesBonus: { <skillId>: n }`, `radiusBonus: { <skillId>: n }`; `content:check` prüft, dass jede Profiklasse eine Herkunftsrolle mit passendem `proPaths` und gültige `proSkills` hat.
+
+**Angenommen** `content/core/classes.yaml`
+**Wenn** die Story umgesetzt ist
+**Dann** stehen dort 16 Profiklassen: die 10 neuen mit diesen Werten (Reihenfolge der Werte hp/str/mag/skl/spd/lck/def/res; Waffengruppen = Rolle, Zusatzgruppen nur über `addWeaponGroups` des Profi-Skills, damit Akademie Stufe 3 sie mitgibt; MOV = Rolle + 1, höchstens 6) und `shadow`/`trapper` bis zu Story 10.4 mit `playable: false` (`promotionTargets` filtert nicht spielbare Klassen heraus):
+
+| Klasse | Rolle | Bewegung | base | growth | growthMod | caps | promotionBonus |
+|---|---|---|---|---|---|---|---|
+| `blade_dancer` | skirmisher | foot 6 | 27/8/1/11/12/5/6/3 | 80/45/5/55/60/30/25/15 | 10/5/0/10/15/5/0/0 | 62/28/15/32/32/30/24/20 | hp3 str1 skl2 spd3 lck1 def1 |
+| `ranger` | marksman | foot 6 | 26/8/1/10/9/4/6/3 | 75/45/5/55/50/25/25/15 | 10/5/0/15/10/0/0/0 | 60/28/15/32/30/30/24/20 | hp3 str2 skl2 spd2 def1 res1 |
+| `hexer` | elementalist | foot 6 | 24/1/11/8/7/3/2/8 | 65/5/65/45/40/25/15/40 | 5/0/20/5/5/0/0/15 | 55/15/33/30/26/30/20/30 | hp3 mag4 skl1 res2 |
+| `battle_priest` | healer | foot 6 | 26/4/8/6/7/6/5/8 | 70/30/45/35/40/45/30/45 | 5/10/5/0/5/5/5/10 | 58/24/28/26/26/30/24/27 | hp4 str3 mag1 def2 res1 |
+| `bard` | minstrel | foot 6 | 25/4/5/8/10/7/3/6 | 75/23/35/45/50/40/20/35 | 5/3/5/5/10/10/0/10 | 58/20/22/28/30/33/22/26 | hp3 skl1 spd2 lck2 res2 |
+| `standard_bearer` | minstrel | foot 6 | 27/6/3/8/8/6/6/5 | 80/33/30/40/45/35/30/30 | 10/5/0/5/5/5/5/5 | 60/22/20/26/26/30/24/22 | hp4 str2 spd1 def3 res1 |
+| `shadow` | scout | foot 6 | 25/8/1/10/12/5/5/3 | 75/45/5/55/55/30/23/15 | 7/5/0/12/13/5/0/0 | 60/27/15/31/31/32/23/20 | hp3 str1 skl2 spd3 lck2 |
+| `trapper` | scout | foot 6 | 26/7/1/11/9/4/6/3 | 80/40/5/60/40/25/30/15 | 10/5/0/15/8/0/5/0 | 62/26/15/32/28/30/24/20 | hp4 str1 skl3 spd1 def2 |
+| `grand_strategist` | tactician | foot 6 | 27/7/7/8/8/6/6/6 | 80/45/45/50/45/40/35/35 | 5/5/5/5/5/5/5/5 | 62/28/28/30/29/30/26/26 | hp3 str1 mag2 skl2 spd1 def1 res1 |
+| `banner_lord` | captain | foot 6 | 30/9/2/9/9/6/9/4 | 90/50/10/45/45/35/45/25 | 15/5/0/5/5/5/10/0 | 68/31/15/29/28/30/30/21 | hp4 str2 skl1 spd1 def3 res1 |
+
+`[ASSUMPTION]` Werte nach dem Muster der sechs vorhandenen Profiklassen (Lückenanalyse §3.8), per Sim zu prüfen.
+**Und** die sechs vorhandenen Profiklassen sind angeglichen: `bulwark` und `breaker` `moveType: armored`, `mov: 5` (Vorkämpfer gepanzert 4 + 1); `skill` = Rollen-Skill (`duelist` `counter_instinct`, `bulwark`/`breaker` `phalanx`, `sharpshooter` `eagle_eye`, `sage` `elemental_focus`, `bishop` `blessing`); Werte und `promotionBonus` bleiben
+**Und** Namen, Kurztext und Wirkungssatz stehen als `class.<id>.name|desc|effect` in `de.yaml`/`en.yaml`; der Kopfkommentar von `classes.yaml` nennt Epic 10 statt Epic 6.
+
+**Angenommen** die Profi-Skills in `content/core/skills.yaml` (`source: class`)
+**Wenn** eine aufgestiegene Figur handelt oder angegriffen wird
+**Dann** gilt genau diese Wirkung im Kampf, in der Kampfvorschau, in der Gegner-KI (Worker) und in der Simulation:
+
+| Klasse | `proSkills` | Wirkung |
+|---|---|---|
+| Bollwerk | `pro_guard` | `guardNeighbors: 10`: jeder Nachbar des Bollwerks hat 10 % Schutz durch das Bollwerk, auch ohne Support; zusammen mit dem Support-Schutz (`supports.guardChance` A 20 / S 30) höchstens 30 % (`supports.guardMaxTotal: 30`, neu); ein Wurf aus dem Seed-RNG gegen die Summe, es schützt das Bollwerk, sonst der Support-Partner `[ASSUMPTION]` |
+| Sturmbrecher | `pro_knockback` | `on_hit`, `statusOnHit: { status: knockback, chance: 100 }`: jeder Treffer (auch im Konter) stößt das Ziel 1 Feld weg (Regeln des Status `knockback`, blockiert = `status.knockbackBlockedDamage`) |
+| Klingentänzer | `pro_blade_dance` | `avoidBonus: 15`, `critBonus: 10` |
+| Duellant | `pro_duel` | `on_defend`, `strikeFirst: true`: sein Konter schlägt vor dem Angriff zu |
+| Scharfschütze | `pro_far_shot` | mit Bogen `rangeBonus: 1`, `rangeCap: 4`: Gesamtreichweite inklusive Zielen höchstens 4 |
+| Waldläufer | `pro_woodsman` | `terrainCost: { forest: 1 }`, `addWeaponGroups: [sword]` |
+| Weiser | `pro_wide_cast` | `castRadius: 1`: Wirken legt das Elementfeld auf das Zielfeld und alle Felder im Manhattan-Radius 1, auf denen es nach Story 2.5 entstehen darf |
+| Hexer | `pro_hex` | `statusChanceBonus: 20`, `addWeaponGroups: [dark]`; zusammen mit dem Rollen-Skill `elemental_focus` +40 (per Sim prüfen) |
+| Bischof | `pro_wide_heal` | `healRadius: 1`: Stab-Heilen heilt auch alle Verbündeten neben dem Ziel um denselben Betrag; EP 12 + `experience.healExtraTarget` (3) je weiterem Ziel |
+| Kampfpriester | `pro_battle_faith` | `addWeaponGroups: [axe]`: führt Stab, Licht und Axt (der Hammer ist eine Axt) |
+| Barde | `pro_song` | `cheerRange: 2`, `cheerTargets: 2`: Anfeuern (`classActions.cheer`) erreicht Verbündete im Abstand bis 2; nach dem ersten Ziel optional ein zweites, „Fertig“ beendet nach einem |
+| Bannerträger | `pro_banner`, `pro_banner_poise` | `pro_banner`: `aura: { radius: 1 }`, `ignoreGrief: true` (Nachbarn ohne `griefHitPenalty`); `pro_banner_poise`: der Träger selbst `avoidBonus: 5` `[ASSUMPTION]` |
+| Großstratege | `pro_grand_command` | `usesBonus: { tactician_command: 1 }`: Befehl 2×/Karte |
+| Bannerherr | `pro_banner_lord` | `radiusBonus: { rally: 1 }`: Sammelruf Radius 3 |
+| Schatten | `pro_shadow` | Story 10.4 |
+| Fallensteller | `pro_traps` | Story 10.4 |
+
+**Und** jede Wirkung steht als Daten im Skill, kein `if (classId === …)`.
+
+**Angenommen** eine Wirkung, die eine Zahl, eine Reihenfolge oder eine Fläche ändert
+**Wenn** der Spieler sie vorbereitet
+**Dann** zeigt die Vorschau sie über dieselbe Funktion wie die Auflösung (`forecast`, `previewAction`, `castArea`): Schutzchance in der Kampfvorschau, Schlagreihenfolge des Duellanten, Rückstoß-Pfeil mit Zielfeld, Reichweiten-Kacheln (Epic 13), Wirken- und Heilfläche als Kacheln, mögliche Anfeuern-Ziele
+**Und** Unit-Tests zeigen je Wirkung Vorschau = Auflösung auf einer Fixture-Karte.
+
+**Angenommen** die Gegner-KI (`src/core/ai/*`)
+**Wenn** sie Züge bewertet
+**Dann** rechnet sie mit denselben Funktionen: Schutz und Konter zuerst erhöhen das Risiko eines Angriffs (`counterWeight`), Rückstoß und Reichweite gelten regelkonform, und Worker und synchroner Fallback liefern identische Ergebnisse (Architektur §8.5).
+
+**Angenommen** das Akademie-Panel und das Handbuch
+**Wenn** die Story fertig ist
+**Dann** zeigt die Akademie je Rolle beide Wege mit Wirkungssatz und Wertgewinn (Späher-Wege bis Story 10.4 gesperrt mit Grund „folgt“)
+**Und** jede spielbare Profiklasse hat einen Steckbrief `class_<id>` nach Story 14.5 (Wirkung, Werte aus den Daten, Verweis auf die Rolle, `content:check` verlangt ihn); der Eintrag der Rolle verweist auf beide Wege.
+
+**Angenommen** `tools/simulate.ts`
+**Wenn** `pnpm sim <mapId> --runs 50 --promote a|b` läuft
+**Dann** steigen vor der Mission alle Figuren ab Stufe 10 auf den ersten (`a`) bzw. zweiten (`b`) Weg auf, und die Ausgabe nennt Siegquote und Niedergestreckte je Option; die endgültigen Korridore prüft Story 11.15
+**Und** `pnpm test:coverage` senkt die Coverage von `src/core` nicht.
 
 ### Story 10.4: Fallensteller und Schatten
 
 Als Spieler
-möchte ich mit Späher-Profis Fallen legen oder im Nebel verschwinden,
+möchte ich mit Späher-Profis Fallen legen oder für Gegner unsichtbar bleiben,
 damit Späher im späten Spiel eine eigene Taktik haben.
+
+**Abhängigkeiten:** nach 10.3 (Klassen `shadow`/`trapper`, `proSkills`); Bereichskacheln aus Epic 13; Karten mit Nebel aus Epic 11 (bis dahin Fixture-Karten mit und ohne Nebel); Story 10.5 nutzt die Fallen-Logik für das Fallen-Set.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** ein Fallensteller bzw. Schatten
-**Wenn** er seine Fähigkeit nutzt
-**Dann** liegen bis zu 2 für Gegner unsichtbare Fallen (8 Schaden + Verlangsamt, entschärfbar) bzw. ist er im Nebel unsichtbar, bis er angreift; beides reproduzierbar und für die KI regelkonform.
+**Angenommen** `classes.yaml` mit `shadow` und `trapper`
+**Wenn** die Story umgesetzt ist
+**Dann** sind beide `playable: true` mit `proSkills` `pro_shadow` (`hidden: true`) bzw. `pro_traps` (`grantAction: trap`), behalten Kletterer, Öffnen/Stehlen und +2 Sicht der Rolle, und ihre Steckbriefe `class_shadow`/`class_trapper` beschreiben die Regeln unten
+**Und** die neuen Werte stehen in `balance.yaml`:
+
+```yaml
+# Vorschlag für content/core/balance.yaml (Werte GDD und Produktinhaber 2026-10-31)
+classActions:
+  trap: { range: 1, max: 2, damage: 8, status: slowed }   # Verlangsamt: status.slowMovPenalty, status.durationRounds
+shadow:
+  revealDistance: 3     # ohne Nebel sichtbar, sobald ein Gegner näher als 3 Felder steht (Manhattan-Abstand ≤ 2)
+```
+
+**Angenommen** ein Fallensteller mit Aktion
+**Wenn** er `{ type: 'trap', unit, at }` auf ein Nachbarfeld wählt, das frei (keine Einheit, kein Objekt, keine Falle) und zu Fuß begehbar ist
+**Dann** liegt dort eine Falle in `BattleState.traps: Array<{ id, at, owner, source: 'class' | 'item', seq }>` (Default `[]`), die Aktion des Zugs ist verbraucht (Klassen-Aktion), Event `trapSet`
+**Und** liegen schon 2 Fallen mit `source: 'class'` dieses Fallenstellers, ersetzt die neue die älteste (kleinste `seq`, Event `trapRemoved`)
+**Und** Fallen bleiben bis Missionsende.
+
+**Angenommen** eine Einheit des Teams `enemy` bewegt sich
+**Wenn** ihr Weg ein Feld mit Falle betritt
+**Dann** endet die Bewegung auf diesem Feld, sie nimmt 8 Schaden (ohne Zufall; 0 TP nach den normalen Regeln, Leutnants fliehen) und erhält Verlangsamt, die Falle verschwindet, Event `trapTriggered { trap, unit, damage }`
+**Und** die KI entscheidet vom Fallenfeld aus neu, ohne weitere Bewegung (angreifen, wenn ein Ziel in Reichweite ist, sonst warten) `[ASSUMPTION]`
+**Und** eigene und verbündete Einheiten (`player`, `other`) lösen keine Falle aus und laufen über sie hinweg.
+
+**Angenommen** ein Fallensteller neben einer eigenen Falle
+**Wenn** er `{ type: 'disarm', unit, at }` wählt
+**Dann** nimmt er diese Falle zurück (Event `trapRemoved`), die Aktion des Zugs ist verbraucht `[ASSUMPTION]`
+**Und** Fallen anderer Figuren und Karten-Fallen gibt es in dieser Story nicht.
+
+**Angenommen** ein Schatten auf dem Brett
+**Wenn** ein Gegner (KI) eine Entscheidung trifft
+**Dann** ist der Schatten für ihn unsichtbar, wenn die Karte Nebel hat (`maps.<id>.fog`), oder, auf Karten ohne Nebel, solange kein Gegner näher als 3 Felder steht; geprüft wird mit den aktuellen Positionen vor jeder einzelnen Gegner-Entscheidung
+**Und** nach einem eigenen Angriff des Schattens ist er sichtbar bis zum Ende der nächsten Gegnerphase (`BattleUnit.revealedUntil`, Default `null`); Konter enthüllen ihn nicht `[ASSUMPTION]`
+**Und** ein unsichtbarer Schatten ist für die KI kein Ziel und keine Gefahr; sein Feld behandelt ihre Wegsuche als unpassierbar, ohne ihn zu erkennen `[ASSUMPTION]`.
+
+**Angenommen** die Gegner-KI (Gegnerphase, Gefahrenzone, Autoplay der Gegnerseite)
+**Wenn** sie den Zustand liest
+**Dann** liest sie nur über die reine Funktion `enemyView(data, s, enemyUid)` in `src/core/ai/`: ohne Fallen, ohne unsichtbare Schatten; der Nebel der Spielerseite bleibt unverändert (die KI sieht sonst weiter alles)
+**Und** der Worker bekommt den vollen Zustand und wendet denselben Filter an; Worker und synchroner Fallback, Replay (Start + Command-Log), „Runde neu“ und `pnpm sim` liefern identische Ergebnisse; Fallen und Sichtbarkeit liegen vollständig im `BattleState` (Plain-JSON).
+
+**Angenommen** die Spielerseite
+**Wenn** Fallen liegen oder ein Schatten verborgen ist
+**Dann** sieht der Spieler seine Fallen als Markierung auf Feldhöhe (Aussehen in `render.yaml`), am Aktions-Stein des Fallenstellers die Zahl gelegter Fallen („1/2“) und im Fallen-Modus die gültigen Felder als Bereichskacheln (Story 13.2)
+**Und** ein verborgener Schatten trägt in der DOM-Ebene der Lebensleisten das Zeichen „verborgen“, das beim Enthüllen verschwindet; Einheiten-Infos der Gegner erwähnen keine Fallen; die Gefahrenzone rechnet mit `enemyView`
+**Und** das Auslösen zeigt einen Effekt ≤ 600 ms nach Art Direction §8; Fallen-Klang später (Audio).
+
+**Angenommen** `src/core/ai/autoplay.ts` für die Spielerseite der Simulation
+**Wenn** ein Fallensteller am Zug ist und kein Angriff lohnt
+**Dann** legt er eine Falle auf das freie Nachbarfeld mit dem kleinsten Abstand zum nächsten Gegner (Gleichstand: kleinste Feld-Id), damit `pnpm sim` die Klasse misst; die Ausgabe zählt ausgelöste Fallen
+**Und** `tests/unit/traps-shadow.test.ts` deckt ab: Legen, dritte ersetzt die älteste, Auslösen (Bewegung endet, 8 Schaden, Verlangsamt), nur Gegner lösen aus, KI läuft hinein, Zurücknehmen, Schatten im Nebel trotz Nachbar unsichtbar, ohne Nebel ab Abstand ≤ 2 sichtbar, nach Angriff bis Ende der nächsten Gegnerphase sichtbar, Worker = synchron, Replay, „Runde neu“
+**Und** Architektur §5.7 („Stand“) beschreibt Fallen, Gegner-Sicht und Schatten.
 
 ### Story 10.5: Verzauberer und Werkstatt
 
 Als Spieler
-möchte ich Runen bearbeiten und Verbrauchsgüter aus Material herstellen,
-damit Material aus Heimsuchungen einen Zweck hat.
+möchte ich Runen verschmelzen und Verbrauchsgüter aus Material herstellen,
+damit Material aus Kopfgeld und Heimsuchungen einen Zweck hat.
+
+**Abhängigkeiten:** nach 10.1 (Raum `workshop`, `buildRoom`) und 10.4 (Fallen-Logik); `moonsteel` als Akt-2-Material aus Story 11.2 (`materialByAct`, Heimsuchungen); Item-Bilder nach `concept/23-art-direction/licensing.md` §6.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Verzauberer und Werkstatt in der Burg
-**Wenn** der Spieler sie nutzt
-**Dann** gelten Runen-Stufen und Rezepte je Raumstufe (Feuerbombe, Schlüssel → Hast, verstärktes Gegengift → Fallen-Set, Rune I) mit Kosten als Symbol + Zahl.
+**Angenommen** der Verzauberer der Burg auf Stufe n (`economy.enchanterMergeMaxTier: [1, 2, 3]`, gelesen über `runeMergeLimit(data, c)` in `camp.ts`)
+**Wenn** der Spieler Runen verschmilzt
+**Dann** ist Verschmelzen zur Stufe N + 1 nur erlaubt, wenn N + 1 ≤ Grenze (Stufe 1: kein Verschmelzen, Stufe 2: bis Rune II, Stufe 3: bis Rune III); sonst Fehler `room_locked` und die Taste ist gedimmt mit „ab Verzauberer Stufe n“
+**Und** Einsetzen (`insertRune`) und Ausbauen (`removeRune`) jeder Rune gehen auf jeder Stufe (eine Erd-Rune III aus N5 ist sofort nutzbar)
+**Und** die Verschmelzen-Taste nennt die Kosten aus `runeMerge()`: 3 × Rune der Stufe N und ● 200 × N (`economy.runeMerge`, existiert).
+
+**Angenommen** Akt 1
+**Wenn** der Spieler Runen findet
+**Dann** gibt es keinen Ort zum Einsetzen (Verzauberer `fromAct: 2`, keine Code-Änderung), und der Handbuch-Eintrag `runes` sagt: in Akt 1 nur Beute, Einsetzen ab Akt 2 beim Verzauberer, Verschmelzen je Verzauberer-Stufe.
+
+**Angenommen** `content/core/recipes.yaml` mit Schema `recipeSchema` (`{ id, item, roomLevel: 1–3, materials: Record<materialId, int ≥ 1>, gold: int ≥ 0 = 0 }`), Typ `RecipeDef`, geladen als `GameData.recipes` (`src/content/load.ts`)
+**Wenn** `pnpm content:check` läuft
+**Dann** prüft es: Ids eindeutig, `item` existiert in `items.yaml` oder `runes.yaml`, jedes Material hat `kind: material` und ein Bild
+**Und** die Datei enthält diese Rezepte `[ASSUMPTION]` (Materialwert = Preis in `items.yaml`; Rezept ≈ 70–80 % des Kaufpreises, reine Werkstatt-Items ≈ 100 %; kein Arkanstaub, er hat keine Quelle):
+
+```yaml
+# Vorschlag für content/core/recipes.yaml
+- { id: fire_bomb,      item: fire_bomb,     roomLevel: 1, materials: { iron_ore: 2 }, gold: 100 }
+- { id: door_key,       item: door_key,      roomLevel: 1, materials: { iron_ore: 1 }, gold: 50 }
+- { id: haste_scroll,   item: haste_scroll,  roomLevel: 2, materials: { moonsteel: 1 }, gold: 200 }
+- { id: strong_remedy,  item: strong_remedy, roomLevel: 2, materials: { moonsteel: 1 } }
+- { id: trap_kit,       item: trap_kit,      roomLevel: 3, materials: { moonsteel: 1, iron_ore: 2 } }
+- { id: fire_rune_1,    item: fire_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: wind_rune_1,    item: wind_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: earth_rune_1,   item: earth_rune_1,  roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: water_rune_1,   item: water_rune_1,  roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: light_rune_1,   item: light_rune_1,  roomLevel: 3, materials: { moonsteel: 1 }, gold: 200 }   # Kaufpreis 600; Dunkel bleibt Beute
+```
+
+**Angenommen** ein Rezept, dessen `roomLevel` die Werkstatt erreicht, genug Material und Gold und Platz im Konvoi (`economy.convoySize`)
+**Wenn** der Spieler `{ type: 'craft', recipe }` schickt
+**Dann** sinken Material und Gold, das Item liegt neu im Konvoi (`newItem`), Events `materialChanged`, `goldChanged` (nur bei Gold > 0), `itemGained`; UI und Command rufen `craftCost(data, c, recipeId)`
+**Und** Fehler ohne Änderung: `unknown_item` (Rezept unbekannt), `room_locked` (Werkstatt nicht offen oder Stufe zu niedrig), `not_enough_materials`, `not_enough_gold`, `convoy_full`.
+
+**Angenommen** das Panel der Werkstatt
+**Wenn** der Spieler es öffnet
+**Dann** listet es die Rezepte im Listen-Muster des Händlers (EXPERIENCE Z. 45): Item-Bild, Name, Info-Stein (`ItemInfoButton`), Kosten als Material-Bild + Zahl und ● + Zahl (fehlende Menge rot), Bestand im Konvoi; Rezepte höherer Stufen gedimmt mit „ab Werkstatt Stufe n“
+**Und** Rezept wählen (1), Haupttaste „Herstellen · …“ mit den Kosten (2); Styles in einer eigenen CSS-Datei neben `WorkshopRoom`.
+
+**Angenommen** `content/core/items.yaml`
+**Wenn** die Story umgesetzt ist
+**Dann** gibt es zwei neue Items, beide nur aus der Werkstatt (`tags: [craftOnly]`, `content:check` verbietet sie in Händler-Listen):
+
+```yaml
+# Vorschlag für content/core/items.yaml
+- { id: strong_remedy, kind: consumable, slot: bag, use: { cureStatus: true, statusImmuneRounds: 1 }, charges: 2, refillAfterMission: true, wt: 0, rarity: rare, price: 500, tags: [craftOnly] }
+- { id: trap_kit,      kind: consumable, slot: bag, use: { trap: true, rng: [1, 1] }, charges: 1, wt: 0, rarity: rare, price: 600, tags: [craftOnly] }
+```
+
+`[ASSUMPTION]` Ladungen und Preise; Starkes Gegengift „heilt alle Zustände, 1 Runde immun“ ist Entscheidung des Produktinhabers.
+**Und** Starkes Gegengift entfernt alle Zustände der Zielfigur (eigene oder Nachbar wie `remedy_salve`) und macht sie bis zum Ende der laufenden Runde (einschließlich der folgenden Gegnerphase) immun gegen neue Zustände; die Kampf-Info zeigt „immun“
+**Und** das Fallen-Set legt mit der Aktion „Benutzen“ eine Falle auf ein freies, begehbares Nachbarfeld mit denselben Regeln und Werten wie Story 10.4 (`classActions.trap`: 8 Schaden + Verlangsamt, nur Gegner lösen aus, für Gegner unsichtbar, bis Missionsende), `source: 'item'`; jede Figur kann es nutzen, und es zählt nicht gegen die 2 Fallen des Fallenstellers.
+
+**Angenommen** die neuen Items
+**Wenn** `pnpm content:check` läuft
+**Dann** haben `strong_remedy` und `trap_kit` Namen und Beschreibung in `de/en.items.yaml` und ein gemaltes Bild unter `art/items/` (ChatGPT über Claude in Chrome, Prompt und Abnahme in `art/prompts/strong_remedy.md` bzw. `trap_kit.md`, Auflagen `licensing.md` §6 A1–A14; vor `pnpm art:build` erst `git lfs pull`); ohne Bild scheitert die Prüfung.
+
+**Angenommen** `tools/simulate.ts` und die Tests
+**Wenn** die Story fertig ist
+**Dann** stellt die Heimat-Heuristik Feuerbomben her, sobald mehr als 4 `iron_ore` übrig sind `[ASSUMPTION]`, und die Kettensimulation zeigt die Materialkurve je Mission
+**Und** `tests/unit/workshop.test.ts` deckt ab: Verschmelzen je Verzauberer-Stufe, Einsetzen jeder Stufe auf Stufe 1, `craft` gültig und jeder Fehlercode, Starkes Gegengift (Zustände weg, Immunität endet nach der Gegnerphase), Fallen-Set (zusätzlich zu 2 Fallen des Fallenstellers), Replay, `content:check` mit fehlendem Item/Material
+**Und** die Handbuch-Einträge `runes` und `workshop` (Kategorie Heimat) nennen Werte als Verweise.
 
 ### Story 10.6: Lektionen der Gedächtnishalle
 
 Als Spieler
-möchte ich das Erbe der Gefallenen an Gefährten weitergeben,
+möchte ich einmal je Akt das Erbe eines Gefallenen als Lektion an einen Gefährten weitergeben,
 damit Verlust Bedeutung behält.
 
+**Abhängigkeiten:** Gedächtnishalle und Gedenksteine aus Story 6.9; Stufen über `buildRoom` (10.1, vorher Fixture); `c.act` aus Story 11.1; Begriffstrennung zu den Regel-Lektionen aus Story 14.7.
+
 **Akzeptanzkriterien:**
 
-**Angenommen** die Gedächtnishalle mit Gedenksteinen aus Story 6.9 und Akt 2 ist erreicht
-**Wenn** der Spieler die Gedächtnishalle öffnet
-**Dann** vererbt einmal pro Akt ein Gefallener eine Lektion an einen Gefährten; Stufen 2/3 laut GDD (UX-DR11).
+**Angenommen** die Begriffe
+**Wenn** Code und Daten entstehen
+**Dann** heißen alle Bezeichner `legacy` (Skill-`source: legacy`, Skill-Ids `legacy_*`, Datei `content/core/legacy.yaml`, Command `inheritLegacy`, Event `legacyInherited`, Felder `legacy`/`legacyGiven`); sichtbar heißt es „Lektion“; die Handbuch-Kategorie `lessons` (Regel-Lektionen, Story 14.7) bleibt unberührt.
 
-### Story 10.7: Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+**Angenommen** `content/core/skills.yaml` und `content/core/legacy.yaml` (`- { role, lessons: [erste, zweite] }`, die erste ist die feste Lektion)
+**Wenn** `pnpm content:check` läuft
+**Dann** hat jede der 7 Kernrollen genau zwei Lektionen, jede ist ein gültiger passiver Skill mit `source: legacy` und Namen/Text DE/EN; Gerrits Stein in `content/acts/act1/memorials.yaml` trägt `legacy: legacy_shield_wall`
+**Und** die Lektionen sind `[ASSUMPTION]` (etwa halb so stark wie persönliche Skills, nur vorhandene Bausteine, Lückenanalyse §3.7):
+
+| Rolle | Lektion 1 (fest) | Lektion 2 |
+|---|---|---|
+| Vorkämpfer | `legacy_shield_wall` „Schildwall“: +2 VER mit ≥ 1 Nachbarn | `legacy_tough` „Zäh“: +3 TP |
+| Plänkler | `legacy_quick_blade` „Schnelle Klinge“: +5 Krit | `legacy_nimble` „Leichtfüßig“: +5 Ausweichen |
+| Schütze | `legacy_steady_hand` „Ruhige Hand“: +5 Treffer | `legacy_far_aim` „Weiter Blick“: +1 Schaden ab Abstand 2 |
+| Elementarist | `legacy_ember_sense` „Glutgespür“: +10 Statuschance | `legacy_focus` „Sammlung“: +1 MAG |
+| Heiler | `legacy_gentle_hands` „Sanfte Hände“: +3 Heilung | `legacy_prayer` „Gebet“: +2 WID |
+| Späher | `legacy_light_step` „Leichter Schritt“: Wald kostet 1 | `legacy_cover` „Deckung“: +10 Ausweichen im Wald |
+| Spielmann | `legacy_luck` „Glück“: +3 GLK | `legacy_cheer` „Zuruf“: Nachbarn +5 Treffer (`aura: { radius: 1 }`) |
+
+**Angenommen** Akt 2 ist erreicht (`unlocks: [{ id: lessons, requires: [{ act: 2 }] }]` im Raum `memorial`)
+**Wenn** der Spieler `{ type: 'inheritLegacy', from, to, skill }` schickt
+**Dann** gilt: `from` ist ein Gedenkstein (gefallener Gefährte oder Söldner aus `c.fallen` mit `classId`, oder ein fester Stein mit `legacy` wie Gerrit), der noch nie vererbt hat; `to` ist ein lebender Story-Gefährte der Truppe einschließlich Avatar und Kael, kein Söldner, ohne Lektion; in `c.legacyGiven` gibt es für `c.act` noch keinen Eintrag
+**Und** erlaubt ist je Stufe der Gedächtnishalle: Stufe 1 die feste Lektion der Rolle des Gefallenen (Gerrit: seine), Stufe 2 eine der zwei Lektionen seiner Rolle (Gerrit: nur seine), Stufe 3 jede der 14 Lektionen (auch bei Gerrit `[ASSUMPTION]`)
+**Und** danach trägt der Empfänger `legacy: { skill, from }` am `UnitRecord` (Default `null`), `c.legacyGiven` (Default `[]`) bekommt `{ act, from, to, skill }`, Event `legacyInherited`
+**Und** Fehler ohne Änderung: `not_available` (Akt < 2, in diesem Akt schon vererbt, Stein hat schon vererbt, Stein ohne Rolle, Empfänger hat schon eine Lektion), `unknown_unit` (Empfänger nicht in der Truppe oder Söldner), `unknown_choice` (Lektion auf dieser Stufe nicht erlaubt).
+
+```yaml
+# Vorschlag für content/core/balance.yaml (Produktinhaber 2026-10-31)
+memorial:
+  legacyPerAct: 1
+  legacyChoiceByLevel: [fixed, role, all]
+```
+
+**Angenommen** eine Figur mit Lektion
+**Wenn** sie kämpft
+**Dann** wirkt die Lektion immer wie ein passiver Skill (`activeSkillIds`), ohne Loadout-Platz, in Kampf, Vorschau, KI und Simulation
+**Und** die Figur zeigt sie unter Skills mit Herkunft („Lektion · von Fenn“); fällt die Figur, geht die Lektion mit ihr.
+
+**Angenommen** das Panel der Gedächtnishalle (UX-DR11, Mockup 04 „Gedächtnishalle“)
+**Wenn** in diesem Akt noch nicht vererbt wurde
+**Dann** wählt der Spieler einen Stein (1), darunter steht „Lektion vererben: Fenns ‚Leichter Schritt‘ an …“ mit Lektionswahl (nur ab Stufe 2) und Empfängerliste (2), dann die ruhige Taste „Lektion vererben“ (3); oben „1× in Akt 2“
+**Und** ist in diesem Akt schon vererbt, steht dort „In Akt 2 vergeben: Fenn → Tobin“, die Steine bleiben; ein Stein, der vererbt hat, trägt eine kleine Glutmarke
+**Und** der Stil bleibt Gedenken: entsättigt bis auf Glutorange, keine Bewegung außer langsamem Ausblenden; Klang später (Audio).
+
+**Angenommen** ein Akt-Wechsel oder ein alter Spielstand
+**Wenn** die Kampagne geladen wird
+**Dann** ist das Vererben eines Akts nicht nachholbar (es zählt nur `c.act`), Lektionen bleiben über Akte erhalten, Gefallene aller Akte zählen als Steine, und Spielstände ohne die neuen Felder laden mit Defaults
+**Und** `tests/unit/legacy.test.ts` deckt ab: jede Stufe (fest, Rolle, alle), Gerrit, Söldner-Stein, Avatar als Empfänger, Söldner als Empfänger abgelehnt, zweite Lektion abgelehnt, zweites Vererben im Akt abgelehnt, Wirkung im Kampf (Vorschau = Auflösung), Replay
+**Und** der Handbuch-Eintrag `legacy` (Kategorie Heimat, `fromAct: 2`) erklärt Lektionen; Architektur §5.10/§5.11 („Stand“) nennen `legacy.yaml`.
+
+### Story 10.7: Übungsplatz und Lagerfeuer-Ränge
 
 Als Spieler
-möchte ich, dass die Reserve mitwächst, Freundschaften tiefer werden und die Burg sich mit den Menschen füllt,
+möchte ich, dass die Reserve mitwächst und Freundschaften am Lagerfeuer tiefer werden,
+damit nicht eingesetzte Gefährten nicht zurückfallen und Supports ihr Ende finden.
+
+**Abhängigkeiten:** nach 10.1 (Raum `training`, `buildRoom` für Lagerfeuer und Übungsplatz); `c.act` aus Story 11.1; A/S-Gespräche der Akt-2-Paare liefert Story 11.14 (Akt-1-Paare haben sie schon).
+
+**Akzeptanzkriterien:**
+
+**Angenommen** der Übungsplatz auf Stufe n
+
+```yaml
+# Vorschlag für content/core/balance.yaml (GDD)
+training:
+  reservePctByLevel: [20, 35, 50]
+```
+
+**Wenn** eine Story-Mission oder Heimsuchung gewonnen wird (`finishBattle`)
+**Dann** erhält jede Figur der Reserve `round(avg × pct / 100)` EP: Reserve = alle lebenden, nicht eingesetzten Mitglieder der Truppe einschließlich Söldnern; `avg` = Durchschnitt der tatsächlich vergebenen EP der eingesetzten, überlebenden Figuren dieser Mission (bei Heimsuchungen also auf ihrer 60-%-Basis) `[ASSUMPTION]`
+**Und** die Vergabe läuft über denselben EP-Kern wie im Kampf (aus `grantExp` in `src/core/rules/progression.ts` herausgezogen, nicht kopiert): Stufendeckel des Akts, in Heimsuchungen der Aufhol-Deckel, Level-ups mit `c.rng` in der Reihenfolge der Truppe nach den eingesetzten Figuren `[ASSUMPTION]`
+**Und** ohne offenen Übungsplatz (Akt 1, Lager), bei Niederlage, Verlassen oder Neustart und bei `avg = 0` gibt es keine Reserve-EP.
+
+**Angenommen** das Missionsergebnis (Story 6.6)
+**Wenn** Reserve-EP vergeben wurden
+**Dann** zeigt es die Zeile „Übungsplatz: Reserve +n EP“ (Stern + Zahl) und darunter die Figuren mit Stufenaufstieg; die Daten kommen aus `BattleResult.reserve: Array<{ unit, exp, levelBefore, levelAfter }>` über `resultView.ts`.
+
+**Angenommen** das Panel des Übungsplatzes
+**Wenn** der Spieler es öffnet
+**Dann** nennt es den Anteil der Stufe („Reserve erhält 20 % der Durchschnitts-EP“, Zahl aus den Daten) und die Reserve der letzten Mission mit ihren EP; das Ausbau-Band nennt den Anteil der nächsten Stufe.
+
+**Angenommen** das Lagerfeuer auf Stufe 2 bzw. 3
+**Wenn** ein Paar die Schwelle erreicht (`supports.thresholds` A 45, S 70)
+**Dann** öffnen sich Rang A bzw. S (S nur für Kernpaare, `core: true` in `acts/*/supports.yaml`), die Gespräche erscheinen am Lagerfeuer und als Marke in der Truppe (vorhandener Code `campfireMaxRank`, `unlockableRank`)
+**Und** das Panel zeigt Gespräche über dem Deckel gesperrt mit Grund („Rang A ab Lagerfeuer Stufe 2“, „Rang S ab Lagerfeuer Stufe 3“, „Rang S nur für Kernpaare“) über eine neue Funktion `campfireLock(data, c, pairKey)`
+**Und** Lagerfeuer-Knistern später (Audio).
+
+**Angenommen** die Kettensimulation
+**Wenn** `pnpm sim --campaign act2` läuft (vorher Fixture)
+**Dann** nennt die Ausgabe je Mission die Reserve-EP und die Durchschnittsstufe der Reserve neben der Armee-Stufe
+**Und** `tests/unit/training.test.ts` deckt ab: Anteil je Stufe, Rundung, Söldner in der Reserve, Deckel des Akts, Heimsuchung auf 60-%-Basis, deterministische Level-ups, keine EP bei Niederlage, Lagerfeuer A nach Ausbau auf 2, S nur für Kernpaare nach Ausbau auf 3
+**Und** der Handbuch-Eintrag `training` (Kategorie Heimat) nennt den Anteil als Verweis.
+
+### Story 10.8: Raumfunktionen der Stufen 2 und 3
+
+Als Spieler
+möchte ich, dass ausgebaute Räume neue Möglichkeiten bekommen,
+damit sich ein Ausbau nicht nur in Zahlen zeigt.
+
+**Abhängigkeiten:** nach 10.1 (Stufen), 10.2 (`ember_spark` als Aufstiegs-Item, Funken-Moment); Händler-Liste `roomLevel: 2` von Akt 2 und Rabatt aus E7 liefert Epic 11 (Rabatt aus E4 existiert); Söldner-Traits in Story 10.9.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Händler-Listen einer Akt-Kampagne (`merchant[]` in `campaign.yaml`, Schema `src/content/schemas.ts`)
+**Wenn** eine Liste `roomLevel: 2` trägt (optional, Default 1)
+**Dann** erscheint ihr Sortiment nur, wenn der Händler mindestens Stufe 2 hat („größeres Sortiment“); das Sortiment nach Akt-Fortschritt (`merchantTier`) bleibt unverändert
+**Und** ein Test mit Fixture-Liste zeigt die Liste erst nach `buildRoom merchant`.
+
+**Angenommen** der Händler auf Stufe 3 (`economy.dailyOfferFromMerchantLevel: 3`)
+**Wenn** der Spieler ihn öffnet
+**Dann** zeigt ein eigener Abschnitt „Angebot des Tages“ die schon erzeugten Angebote `c.offers` (1–2 Items mit Affix, erneuert wie heute nach jeder Story-Mission durch `refreshOffers`) mit Item-Bild, Affix, Preis; Kauf über das vorhandene Command `buyOffer`
+**Und** unter Stufe 3 erscheint der Abschnitt nicht.
+
+**Angenommen** Rabatte aus Entscheidungen (`priceMod` mit negativem `pct`, z. B. E4 „secret“ und E7 „obey“, je −10 %) und der Händler-Rabatt
+
+```yaml
+# Vorschlag für content/core/balance.yaml
+economy:
+  merchantDiscountByLevel: [0, 0, 10]
+  maxDiscountPct: 30               # Produktinhaber 2026-10-31: Rabatte addieren sich bis −30 %
+  dailyOfferFromMerchantLevel: 3
+  emberShop: { fromMerchantLevel: 3, total: 3, maxOffered: 1 }   # Preis = items.ember_spark.price (3 000)
+```
+
+**Wenn** der Spieler kauft
+**Dann** rechnet `shopPrice` den Gesamtrabatt als Summe aller aktiven `priceMod`-Prozente des Akts plus Händler-Rabatt der Stufe, höchstens 30 %; Verkaufen bleibt 50 % des Grundpreises
+**Und** das Panel zeigt den Gesamtrabatt als Marke („−20 %“); Tests decken −10, −20, −30 und eine Summe über 30 (gedeckelt) ab.
+
+**Angenommen** der Händler auf Stufe 3 und `c.emberShop = { sold, lastSoldAtStory }` (Default `{ sold: 0, lastSoldAtStory: null }`)
+**Wenn** weniger als 3 Glutfunken verkauft sind und seit dem letzten Kauf mindestens eine weitere Story-Mission abgeschlossen ist (Zahl aller abgeschlossenen Story-Missionen über alle Akte > `lastSoldAtStory`)
+**Dann** steht genau ein Glutfunke im Angebot für ● 3 000 (ohne Rabatt `[ASSUMPTION]`); `{ type: 'buyEmberSpark' }` zieht das Gold ab, legt ihn in den Konvoi, setzt `sold + 1` und `lastSoldAtStory`, Events `goldChanged`, `itemGained`; der Funken-Moment aus Story 10.2 spielt
+**Und** Fehler ohne Änderung: `not_available` (Stufe < 3, nicht im Angebot, alle 3 verkauft), `not_enough_gold`.
+
+**Angenommen** der Konvoi auf Stufe 2 und eine Figur
+**Wenn** der Spieler in der Figur „Als Vorlage speichern“ tippt (`{ type: 'saveGearTemplate', unit }`)
+**Dann** speichert `UnitRecord.gearTemplate` (Default `null`) die Item-Uids ihrer 6 Ausrüstungs- und 3 Beutelplätze, eine Vorlage je Figur `[ASSUMPTION]`
+**Und** „Vorlage anlegen“ (`{ type: 'applyGearTemplate', unit }`) legt diese Items aus dem Konvoi bzw. der eigenen Ausrüstung an, gibt die abgelösten Items in den Konvoi, überspringt verkaufte Items und Items anderer Figuren und nennt diese im Toast („Bei Brenna: Eisenlanze“) `[ASSUMPTION]`
+**Und** Fehler ohne Änderung: `not_available` (Konvoi < 2, keine Vorlage), `convoy_full`.
+
+**Angenommen** der Konvoi auf Stufe 3 und eine Figur
+**Wenn** der Spieler „Bestes anlegen“ tippt (`{ type: 'equipBest', unit }`)
+**Dann** legt der gemeinsame Kern von `autoEquip` (wie bei Söldnern, nicht kopiert) aus Konvoi und eigener Ausrüstung die führbare Waffe mit der höchsten Mt (Gleichstand: Treffer, dann Uid) und je Rüstungsplatz das Teil mit der höchsten Summe VER + WID (Gleichstand: VER) an; Items anderer Figuren, Zubehör und Beutel bleiben unberührt `[ASSUMPTION]`
+**Und** die Ausrüsten-Ansicht zeigt das Ergebnis mit dem Vergleich grün/rot aus Story 6.2.
+
+**Angenommen** die Taverne auf Stufe 3 (`economy.tavern.wishRoleFromLevel: 3`)
+**Wenn** der Spieler eine Wunschrolle wählt (`{ type: 'setTavernWish', role }`, Rollen aus `economy.tavern.classes`, `role: null` hebt sie auf)
+**Dann** enthält die nächste Angebotsrunde (`refreshTavern` nach der nächsten Story-Mission) sicher ein Angebot dieser Rolle (ersetzt das erste gezogene Angebot, falls keins dieser Rolle dabei ist), danach ist der Wunsch verbraucht; `c.tavernWish` (Default `null`) und die Ziehung laufen über `c.rng`
+**Und** das Panel zeigt die gewählte Rolle als Marke; unter Stufe 3 gibt es die Wahl nicht.
+
+**Angenommen** der Heiler auf Stufe 3
+
+```yaml
+# Vorschlag für content/core/balance.yaml (GDD; Stufe nach Lückenanalyse A8 [ASSUMPTION])
+supports:
+  griefMissionsByHealerLevel: [3, 3, 2]   # ersetzt griefMissions: 3
+```
+
+**Wenn** ein Support-Partner fällt
+**Dann** dauert die neu entstehende Trauer 2 statt 3 Missionen (`finishBattle` liest die Zahl über eine Funktion in `camp.ts`); laufende Trauer bleibt unverändert `[ASSUMPTION]`.
+
+**Angenommen** der Schmied auf jeder Stufe und ein Heiltrank (Verbrauchsgut mit `use.heal`, z. B. `vulnerary`)
+**Wenn** der Spieler „Trank verstärken“ wählt (`{ type: 'upgradePotion', item }`)
+**Dann** kostet die erste Verstärkung ● 400, die zweite ● 900, jede gibt +5 Heilung (`economy.potionUpgrade`, existiert); die Item-Instanz trägt die Stufe als Zahl („+1“), höchstens 2; gilt auch im Lager von Akt 1 `[ASSUMPTION]`
+**Und** Fehler ohne Änderung: `not_available` (kein Heiltrank, schon +2), `not_enough_gold`; die Taste nennt den Betrag.
+
+**Angenommen** alle Funktionen dieser Story
+**Wenn** die Tests laufen
+**Dann** decken `tests/unit/room-functions.test.ts` jede Stufen-Schwelle, jeden Fehlercode, Glutfunke-Rotation (erster sofort ab Stufe 3, zweiter erst nach der nächsten Story-Mission, nach 3 Schluss), Rabatt-Deckel, Vorlage, Bestes anlegen, Wunschrolle, Trauer 2 und Trank verstärken ab; Replay gleich
+**Und** die Kettensimulation kauft Glutfunken, sobald ● 3 000 frei sind, und meldet sie; das Handbuch nennt alle Stufenfunktionen im Eintrag `rooms_upgrade` als Verweise.
+
+### Story 10.9: Söldner-Traits
+
+Als Spieler
+möchte ich, dass Söldner aus der Taverne Eigenheiten haben und eine ausgebaute Taverne bessere bringt,
+damit die Wahl zwischen Angeboten mehr ist als der Preis.
+
+**Abhängigkeiten:** nach 10.1 (Taverne-Stufen) und 10.8; Taverne aus Story 6.4; Liste aus `concept/21-gdd/extract-01-decisions.md` Z. 50.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `content/core/traits.yaml` (Schema `traitSchema`: `{ id, kind: good | bad, effect?: <Bausteine passiver Skills>, hireCostPct?: number }`, Namen `trait.<id>.name|desc` DE/EN)
+**Wenn** `pnpm content:check` läuft
+**Dann** gibt es genau diese sieben Traits mit Werten `[ASSUMPTION]`:
+
+| Id | Name | Art | Wirkung |
+|---|---|---|---|
+| `tough` | Zäh | gut | `stats: { hp: 4 }` |
+| `nimble` | Flink | gut | `stats: { spd: 2 }` |
+| `veteran` | Veteran | gut | `stats: { skl: 2, lck: 2 }` |
+| `elemental_child` | Elementkind | gut | `stats: { mag: 2, res: 2 }` |
+| `greedy` | Gierig | schlecht | `hireCostPct: 25` (Anheuern 25 % teurer) |
+| `coward` | Feigling | schlecht | `stats: { str: -2, mov: 1 }` |
+| `clumsy` | Unbeholfen | schlecht | `stats: { skl: -2 }`, `hitBonus: -5` |
+
+**Angenommen** die Taverne auf Stufe n
+
+```yaml
+# Vorschlag für content/core/balance.yaml [ASSUMPTION]
+economy:
+  tavern:
+    traitCount: [1, 2]                    # 1 oder 2 Traits je Angebot, gleich wahrscheinlich
+    goodTraitChanceByLevel: [50, 75, 75]  # Stufe 2 = „bessere Traits“
+```
+
+**Wenn** `refreshTavern` Angebote zieht
+**Dann** bekommt jedes Angebot 1–2 verschiedene Traits, jeder Platz mit der Wahrscheinlichkeit der Stufe aus den guten, sonst aus den schlechten, alles aus `c.rng` in fester Reihenfolge
+**Und** die Traits stehen in `UnitRecord.traits` (Default `[]`), wirken als passive Bausteine über `activeSkillIds`/Werte in Kampf, Vorschau und Simulation, und `Gierig` erhöht `recruitCost` im Angebot und im Command `hire` gleich.
+
+**Angenommen** das Taverne-Panel und die Figur
+**Wenn** ein Söldner Traits hat
+**Dann** zeigt er sie als Marken (gute in Grün, schlechte in Rot, Name + Info-Stein mit Wirkung), der Preis enthält den Aufschlag
+**Und** Story-Gefährten haben keine Traits.
+
+**Angenommen** die Tests
+**Wenn** sie laufen
+**Dann** deckt `tests/unit/traits.test.ts` ab: Zahl und Verteilung je Stufe über einen festen Seed, keine doppelten Traits, Wirkung jedes Traits, Gierig im Preis, alte Söldner ohne Feld laden; Replay gleich
+**Und** der Handbuch-Eintrag `tavern` nennt die Traits mit Wirkung.
+
+### Story 10.10: Anhängeteile der Profi-Wege
+
+Als Spieler
+möchte ich einer aufgestiegenen Figur auf dem Brett ansehen, welchen Profi-Weg sie gewählt hat,
+damit Aufstiege auch sichtbar etwas ändern.
+
+**Abhängigkeiten:** nach 10.3 (Feld `proPart`); Tripo-Pipeline aus Story 8.2; Art Direction §4.2 und §4.6; blockiert keine andere Story.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die 16 Profi-Wege
+**Wenn** die Teile gebaut sind
+**Dann** gibt es je Weg genau ein Anhängeteil als GLB unter `art/models/parts/<id>.glb`, gebaut mit `tools/art/blender_parts.py` (eigene Modellierung in Blender, bei Bedarf Bild-zu-3D mit Tripo nach §4.6), im Budget aus `concept/16-asset-pipeline.md`, im Toon-Look mit Kontur:
+
+| Klasse | Teil (`proPart`) | Sockel |
+|---|---|---|
+| `bulwark` | `tower_shield` Turmschild | `back` |
+| `breaker` | `ram_axe` Rammaxt | `back` |
+| `blade_dancer` | `second_blade` Zweitklinge | `back` |
+| `duelist` | `feather_beret` Federbarett | `head` |
+| `sharpshooter` | `feather_hat` Federhut (der Langbogen kommt aus der Waffe) | `head` |
+| `ranger` | `leaf_cloak` Blätterumhang | `back` |
+| `sage` | `pointed_hat` Spitzhut | `head` |
+| `hexer` | `raven_collar` Rabenkragen | `back` |
+| `bishop` | `mitre` Mitra | `head` |
+| `battle_priest` | `war_hammer` Kriegshammer am Rücken | `back` |
+| `bard` | `great_lute` große Laute am Rücken | `back` |
+| `standard_bearer` | `back_banner` Rückenbanner | `back` |
+| `shadow` | `half_mask` Halbmaske | `head` |
+| `trapper` | `trap_belt` Fallengurt | `back` |
+| `grand_strategist` | `general_cloak` Feldherrnumhang | `back` |
+| `banner_lord` | `standard` Standarte | `back` |
+
+`[ASSUMPTION]` Liste nach Lückenanalyse A20; die Namen erscheinen schon in Akademie und Figur (`part.<classId>.name`).
+**Und** `render.yaml` ordnet unter `gear.proParts` jedem Teil Modell und Sockel zu; der Rig der Tripo-Figuren bekommt die Sockel `socket_back` und `socket_head` (`tools/art/prepare_tripo_unit.py`).
+
+**Angenommen** eine Figur mit Profi-Klasse auf dem Brett
+**Wenn** der Kampf startet
+**Dann** hängt das Teil ihrer Klasse am Sockel der vorhandenen Figur (kein neues Figurenmodell), für alle Figuren dieser Klasse gleich, auch für Gegner mit Profi-Klasse; Figuren ohne Sockel (Blender-Figuren) zeigen kein Teil, ein Test listet sie
+**Und** das Teil bewegt sich mit Idle, Lauf und Angriff, verdeckt weder Lebensleiste noch Groll-Wimpel, und die Bildrate bleibt über den Zielen aus Story 7.8.
+
+**Angenommen** die Auflagen für KI-Assets
+**Wenn** ein Teil mit Tripo oder nach einer ChatGPT-Vorlage entsteht
+**Dann** stehen Prompt, Werkzeug, Eigenanteil und Abnahme in `art/prompts/part_<id>.md` nach `licensing.md` §6
+**Und** je Teil gibt es einen Screenshot bei 375 × 812 auf dem Brett zur Abnahme.
+
+### Story 10.11: Burg-Grafik nach der 3D-Entscheidung
+
+Als Spieler
+möchte ich sehen, wie die Paktwacht mit jedem Ausbau und jedem Gefährten wächst und wo Gefallene fehlen,
 damit die Heimat lebendig wirkt.
 
+**Abhängigkeiten:** erst nach der Entscheidung des Produktinhabers „3D oder Bild“ auf Grundlage des 3D-Testaufbaus der Session epic10-castle (Branch `claude/epic10-castle-2a96a1`: `src/render/home/castle.ts`, `src/app/screens/Castle3d.tsx`, Screenshots in `_bmad-output/planning-artifacts/handoff-epic10/`, Messung auf echtem Gerät); nach 10.1 (Stufen); die Liste der Gegenstände nimmt der Produktinhaber als Narrative-Vorschlag ab.
+
 **Akzeptanzkriterien:**
 
-**Angenommen** die Burg
-**Wenn** Übungsplatz und Lagerfeuer ausgebaut sind und Gefährten beitreten oder fallen
-**Dann** erhält die Reserve 20/35/50 % der Durchschnitts-EP, das Lagerfeuer öffnet A und (Kernpaare) S, Gefährten und ihre Gegenstände stehen an festen Plätzen, und Gefallene hinterlassen einen leeren Platz.
+**Angenommen** die Entscheidung des Produktinhabers
+**Wenn** die Story beginnt
+**Dann** steht sie in `concept/23-art-direction/decision-log.md` und `concept/25-ux/.decision-log.md`; `EXPERIENCE.md` („Burg in 3D“) und Art Direction §7 sind nachgezogen; Raumsteine, Raum-Panels und ≤ 2 Taps bleiben unverändert
+**Und** der Spike-Code wird bei „3D“ zu Produktionscode umgebaut, bei „Bild“ gelöscht.
 
-## Epic 11: Akt 2 „Glut“ – grob
+**Angenommen** die Daten (für beide Ausgänge)
+**Wenn** `pnpm content:check` läuft
+**Dann** trägt jeder der 20 Story-Gefährten in `charSchema` ein Feld `homeObject` (Id des Gegenstands), `content/home/home.yaml` hat unter `castle` je Gegenstand einen festen Platz (`objects: [{ id, char, at, asset }]`) und je Raum und Stufe ein Ausbauteil (`parts: [{ room, level, asset }]`), und jedes Asset existiert
+**Und** die Gegenstände sind ein Narrative-Vorschlag `[ASSUMPTION]`, eingetragen in `concept/22-narrative/narrative.md` („Die Paktwacht wächst mit“) und dessen Decision-Log:
 
-Spieler spielen Akt 2 in der Eisenmark. Eine Story je Mission wie in Epic 9 (Karte, Szenen DE/EN, Leutnants, Beitritte, Entscheidungen, Heimsuchungs-Anker, Sim-Korridor). Vor Akt 2 verfeinern.
+| Gefährte | Gegenstand | Gefährte | Gegenstand |
+|---|---|---|---|
+| Brenna | Axtständer | Nell | Seekarte mit Kompass |
+| Tobin | Holzschild mit selbstgemaltem Wappen | Brann | aufgeschichtetes Steinmännchen |
+| Mira | Trockengestell mit Fellen | Amos | Feldschertasche mit Kräuterbund |
+| Fenn | Kiste voller Krimskrams mit Dietrichrolle | Ilka | Hirschgeweih an der Wand |
+| Liora | kleiner Hausaltar mit Kerzen | Sable | Säbel des Grenzheers auf Ständer |
+| Varek | Würfelbrett | Mael | Gardehelm der Paktgarde |
+| Ysolde | Bücherstapel | Pell | Laterne der Stadtwache |
+| Grosk | großer Kochkessel | Vesna | Drachenknochen auf Sockel |
+| Jory | Laute | Kit | Schlüsselbund des Palasts |
+| Odile | polierter Brustpanzer auf Ständer | Harlan | Notenständer mit Pergament |
 
-### Story 11.1: Paket, Region und Gegner von Akt 2
+**Angenommen** die reine Funktion `castleScene(data, c)` (liest nur `c.roster`, `c.fallen`, `c.left`, `c.home`, kein neuer Zustand)
+**Wenn** ein Gefährte beitritt, fällt oder geht
+**Dann** liefert sie je Platz den Zustand: beigetreten → Gegenstand steht an seinem Platz; gefallen → der Gegenstand bleibt liegen, der Platz ist leer (entsättigt, Gedenken-Stil), und die Gedächtnishalle hat seinen Stein; gegangen → er nimmt den Gegenstand mit, der Platz ist leer, kein Stein; nie beigetreten → nichts; Söldner haben keinen Platz
+**Und** je Raum das Ausbauteil seiner Stufe (Stufe 1 Gerüst und Planen, Stufe 2 Dach und Fenster, Stufe 3 Banner, Licht und Leben)
+**Und** Unit-Tests decken alle Zustände ab.
+
+**Angenommen** Ausgang „3D“
+**Wenn** die Heimat die Burg ist
+**Dann** zeichnet `src/render/home/` die Burg als Diorama auf dem Szenen-Host mit eigenen Burg-Modellen (Blender/Tripo, Prompts und Eigenanteil nach `licensing.md` §6), Ausbauteilen und Gegenständen als Modelle an den Plätzen aus `home.yaml`, abendlichem Licht aus `render.yaml`; Antippen eines Raums öffnet sein Panel
+**Und** die Ansicht zeichnet nur bei Änderung neu (keine dauernd schwingende Kamera), zeigt beim Laden die Ladeanzeige aus Story 7.6, bleibt als eigener Chunk im Bundle-Budget und hält auf dem Referenzgerät die Ziele aus Story 7.8.
+
+**Angenommen** Ausgang „Bild“
+**Wenn** die Heimat die Burg ist
+**Dann** liegen über `paktwacht_ruine` je Raum und Stufe gemalte, freigestellte Ausbauteile am Anker und an jedem Platz der gemalte Gegenstand (ChatGPT über Claude in Chrome, Prompt und Abnahme in `art/prompts/<id>.md`, `licensing.md` §6, Bilder in Git LFS); Positionen in Prozent aus `home.yaml`
+**Und** das Bild bleibt bei 375 × 812 und am Desktop scharf, die Anker-Punkte und -Pfeile aus Story 10.1 bleiben lesbar.
+
+**Angenommen** beide Ausgänge
+**Wenn** die Story fertig ist
+**Dann** belegen Screenshots bei 375 × 812 die Burg mit allen Räumen auf Stufe 1, 2 und 3 sowie einen gefallenen und einen gegangenen Gefährten
+**Und** Burg-Atmosphäre und Raumklänge später (Audio).
+
+## Epic 11: Akt 2 „Glut“
+
+Spieler ziehen nach dem Finale von Akt 1 in die herbstliche Eisenmark, dienen nacheinander den drei Thronanwärtern (Prinzessin, Dravn, Herzogin), decken je Strang eine Lüge auf und werden in Kronfeld verraten. Das Epic liefert den Akt-Übergang mit dem Paket `act2`, die sieben Gefährten und vier Leutnants von Akt 2, Flieger und Balliste als Regel-Schwerpunkt des Akts, eine Story je Mission (2-1 bis 2-8), die Nebenquests N4 bis N6, Supports, Barks und die Chronik-Szene sowie die Abstimmung. Grundlagen: `concept/22-narrative/narrative.md` (Missionsfolge Akt 2, E5–E8, N4–N6, Supports, Key Conversations 6–8), `concept/21-gdd/gdd.md`, `concept/21-gdd/items.md` §5/§6 und die Entscheidungen des Produktinhabers vom 2026-10-31 (Verfeinerung Epic 10/11). Alle Spielwerte in den Stories sind Vorschläge für `balance.yaml` bzw. die Content- und Karten-YAMLs, als `[ASSUMPTION]` markiert und per Simulation zu prüfen; Szenen gibt es auf Deutsch und Englisch, jede Box ≤ 110 Zeichen; Musik, Klang und Vertonung von Akt 2 kommen später.
+
+**Reihenfolge und Abhängigkeiten zu Epic 10:** Story 11.1 kommt zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die festen Gefährten-IDs (`jory`, `odile`, `nell`, `brann`, `amos`, `ilka`, `sable`) braucht; Epic 10 liest `c.act` nur. Danach folgen 11.2 (Gefährten, Leutnants, Stahl), 11.3 (Gegner, Flieger, Balliste) und die Mission 2-1 (11.4). Die drei Stränge (11.5/11.6 Prinzessin, 11.7/11.8 Dravn, 11.9/11.10 Herzogin) und die Nebenquests 11.12/11.13 lassen sich danach in beliebiger Reihenfolge bauen. 11.11 (2-8 Kronfeld) kommt zuletzt, 11.14 (Supports, Barks, Chronik-Szene) sobald die Gefährten ihrer Paare existieren. 11.15 (Abstimmung) beginnt erst, wenn 10.2 (Akademie, Glutfunke) und 10.3 (Profi-Wege) auf `main` sind; bis dahin stimmen alle Missions-Stories vorläufig ohne Aufstieg ab. Datei-Zuständigkeit: Epic 11 besitzt `content/acts/act2/**`, den Akt-Übergang, Gegner, Leutnants und Stahl-Items; Epic 10 besitzt `content/core/rooms.yaml` (einzige Ausnahme: 11.1 ergänzt bei den vier Akt-1-Räumen `{ act: 2 }`, damit sie beim Übergang nicht schließen), die Profi-Klassen und den Glutfunken. In gemeinsamen Dateien ändert Epic 11 nur eigene Blöcke: Abschnitt „Gegnertypen“ in `classes.yaml`, ein Block „Akt 2: Stahl-Tier“ in `items.yaml`, in `balance.yaml` nur Akt-Schlüssel und die hier genannten neuen Schlüssel. Nicht Teil von Epic 11: die drei fehlenden Chronik-Seiten von Akt 1 (eigene Nacharbeit).
+
+**Gemeinsame Regeln aller Missions-Stories (11.4–11.13):**
+
+- **Positionsstufe P** (Story 11.1): P = 11 + Zahl der erledigten Story-Missionen von Akt 2 (+ `levelBonus` des Knotens, nur 2-8). Generische Kartengegner stehen relativ dazu mit `levelOffset` +0 bis +2; Leutnants skalieren wie in Akt 1 mit der Armee. Die Spalte „Position“ nennt, an welcher Stelle eine Mission frühestens und spätestens gespielt werden kann.
+- **Ausrüstung:** Generische Gegner tragen Stahl (Akt-Tier), Leutnants auf der Karte Eisen, damit „+1 Tier je Groll“ greift.
+- **Niederlage:** Tod von Avatar oder Kael (`unit_dies`), bei 2-3 zusätzlich Odile niedergestreckt oder tot.
+- **Herbst:** Karten liegen unter `content/acts/act2/maps/` (`map.act = 2`), Jahreszeit und Herbst-Boden aus Story 11.3.
+- **Szenen:** IDs nach Akt-1-Schema (`scn.<knoten>.intro|outro`, `scn.<knoten>.<lt>_battle`, `scn.<knoten>.<einheit>_talk`, Besuche `scn.<knoten>.house_*`, Lektionen `scn.<knoten>.tutorial_*`). Deutsch steht in der Szenen-YAML, Englisch in `content/locales/en/act2.dialogue.yaml`; Schreib-Pipeline der Narrative (Humanizer-Durchgang, dann Englisch). Gefährtenzeilen stehen unter `requires: alive` mit Ersatzsprecher-Kette. Tafeln sind `panel: <bild>`; fehlt das Bild, steht bis zum Grafik-Task eine Platzhalter-Tafel (Text auf Glutgrund wie die Titeltafel aus 11.1).
+- **Entscheidungen:** Jede Antwort trägt eine Haltung (warm, nüchtern, trotzig) wie in Akt 1 und zeigt ihre Folgen-Karte (Mockup 05). Flags werden in `content/acts/act2/flags.yaml` deklariert.
+- **Ortsbilder:** Vorhanden sind `grauwacht`, `salzpass`, `brandhang`, `kronfeld`. Fehlende Ortsbilder (2-1, 2-4, 2-6, 2-7, N4–N6) sind je ein eigener Grafik-Task (`art/prompts/<id>.md`, Lizenzauflagen `licensing.md` §6). Er blockiert nichts; bis dahin zeigt der Knoten ein vorhandenes Ortsbild als Platzhalter, das in der Karten-YAML als Kommentar steht.
+- **Sim-Korridor:** NFR12 aus `balance.yaml › simulation.corridors` (Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %). Geprüft mit `pnpm sim <map> --runs 50 --start expected --position <k>` an der frühesten und der spätesten Position der Mission, vorläufig ohne Aufstieg. Abweichungen begründet der Dev Agent Record; die endgültigen Korridore folgen in 11.15.
+- **Fertig:** `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build` sind grün. Screenshots (Hochformat 375 × 812) zeigen Karte, Intro, Leutnant-Zeile und Nachszene. Neue Entscheidungen stehen im zuständigen Decision-Log unter `concept/`.
+
+### Story 11.1: Akt-Übergang und Paket `act2`
 
 Als Spieler
-möchte ich die Eisenmark im Herbst betreten,
-damit Akt 2 eine eigene Welt hat.
+möchte ich nach dem Finale von Akt 1 mit meinem Spielstand nahtlos in Akt 2 weiterziehen,
+damit die Kampagne über die Akte hinweg eine Geschichte bleibt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Paket `act2` mit Region 2, Herbst-Texturen, Gegnertypen (Eisenmark-Truppen, Ritter, Pegasusritter, Ballisten), Leutnants Brakka, Grell, Sable, Rowena und Ausrüstungs-Tier Stahl
-**Wenn** Akt 2 erreicht ist
-**Dann** lichtet sich der Nebel über der Eisenmark und die Weltkarte zeigt die Knoten von Akt 2.
+**Angenommen** `content/acts/act2/` mit `campaign.yaml`, `units.yaml` und `flags.yaml`
+**Wenn** der Loader (`src/content/load.ts` `buildContent`) den Content baut
+**Dann** lädt er `campaign.yaml`, `units.yaml` und `flags.yaml` aller vorhandenen Akt-Ordner statt fest `acts/act1/…`; `GameData` hält die Kampagnen je Akt (`acts: Record<number, CampaignDef>`), Gefährten und Flags aller Akte stehen gemeinsam in `data.chars` bzw. `data.flags`
+**Und** eine Hilfsfunktion `actCampaign(data, c)` liefert die Kampagne des laufenden Akts, `nodeDef(data, id)` findet einen Knoten über alle Akte; alle Lesestellen von `data.campaign` (rund 60 in `src/core`, `src/app`, `src/content`, `tools/`, Liste per `grep -rn "data\.campaign" src tools`) lesen danach den Akt der Kampagne
+**Und** `content:check` meldet doppelte Gefährten-, Flag- und Knoten-IDs über Akte hinweg als Fehler.
 
-### Story 11.2: Mission 2-1 „Wind über der Eisenmark“ (survive, Brakka) und die drei Angebote
+**Angenommen** die Truppe gewinnt das Finale eines Akts (`fixed: finale`) und die Kampagne des nächsten Akts liegt in den Daten vor
+**Wenn** `finishMission` den Sieg verbucht
+**Dann** setzt es `c.act = act + 1` und meldet das Event `actReached { act }`; fehlt der nächste Akt, bleibt alles wie in Story 7.3 („Akt n „Name“ erscheint bald“)
+**Und** Replays (Startzustand + Command-Log) und die Simulation (`simCampaign.ts`, `applyNodeRewards`) führen den Übergang genauso aus
+**Und** die Änderungen an `apply.ts` und `commands.ts` bleiben klein (Übergang am Ende des `finishMission`-Zweigs, `markBackupReminded` gegen `c.act`, ein neues Event), weil Epic 10 dieselben Dateien ändert.
+
+**Angenommen** ein gespeicherter Akt-1-Stand im Format 2 mit erledigtem `m1_8`, auch einer, der wegen „erscheint bald“ in Akt 1 stand
+**Wenn** er nach dem Update geladen wird
+**Dann** füllt `normalizeCampaign` das fehlende `c.act` (Standard 1) und holt den Übergang nach, solange das Finale des Akts erledigt ist und der nächste Akt vorliegt; Format 2 bleibt, eine Migration ist nicht nötig
+**Und** die Fixture `tests/fixtures/saves/format2-act1-finale-done.json` lädt mit `act: 2`, Truppe, Gold, Tross, Flags, Groll und Gedenksteine bleiben unverändert; ein Stand ohne erledigtes Finale bleibt in Akt 1
+**Und** `metaFromCampaign` (`src/persistence/save.ts`) liefert `c.act` statt fest 1, die Kampagnen-Liste zeigt „Akt 2“.
+
+**Angenommen** `c.act = 2`
+**Wenn** Regeln nachschlagen, was im Akt gilt
+**Dann** gelten `levelCap` 20, `mechanics: {}` (alle Regeln an), Händlerstufen und `storyCount` aus der Kampagne von Akt 2, die Bedingung `act`, `priceMods`, `villageAid` und `decisions[].act` für Akt 2
+**Und** `availableNodes` liefert die Story-Knoten des laufenden Akts und die Nebenquest-Knoten aller Akte bis `c.act` (offene Akt-1-Nebenquests bleiben spielbar); Heimat (`c.home`) und gebaute Räume bleiben beim Übergang, wie sie sind
+**Und** damit die Akt-1-Räume (Schmied, Heiler, Taverne, Lagerfeuer) trotz `storyCount` je Akt offen bleiben, ergänzt 11.1 in `content/core/rooms.yaml` nur deren Raum-Bedingung zu `any: [{ act: 2 }, { storyCount: { min: n } }]` (kleiner Eingriff in eine Epic-10-Datei, abgestimmt; Kosten und Gefährten der Stufen ergänzt 10.1); ein Test belegt, dass nach dem Übergang kein Raum schließt.
+
+**Angenommen** `acts/act2/campaign.yaml`
+**Wenn** sie angelegt ist
+**Dann** enthält sie `act: 2`, `levelCap: 20`, `mechanics: {}`, `home: castle`, `defaultPlace: grauwacht`, `startGold`/`startConvoy` nur fürs Schema, `scars` wie Akt 1, `positionLevel: { base: 11 }` und `nodes: []`; jede Missions-Story ergänzt ihren Knoten und setzt `node:` am vorhandenen Ort in `content/world/valmora.yaml`
+**Und** `merchant` hat zunächst nur Stufe 0 mit vorhandenen Teilen (`vulnerary`, `remedy_salve`, `door_key`, `steel_sword`, `steel_lance`, `steel_axe`, `steel_bow`, `javelin`, `hand_axe`, `travel_lute`, `mend_staff`, `chainmail`, `iron_helm`, `iron_shield`, `ember`, `gust`, `surge`, `rockfall`, `shine`, `fire_bomb`); Story 11.2 ergänzt die Stufen 1 und 2
+**Und** `acts/act2/units.yaml` legt die sieben festen IDs mit Klasse und `joins` an (Werte ergänzt Story 11.2): `jory` minstrel (`m2_1`), `nell` scout (`m2_2`), `odile` skirmisher (`m2_3`), `ilka` marksman (`m2_4`), `brann` elementalist (`m2_5`), `amos` healer (`m2_6`), `sable` skirmisher (`lieutenant`); Namen `unit.<id>.name` in DE und EN
+**Und** `content:check` erlaubt einen Akt ohne Knoten nur, solange seine IDs nicht in `content/released-ids.json` stehen.
+
+**Angenommen** die Positionsstufe von Akt 2 `[ASSUMPTION]`
+**Wenn** ein Knoten von Akt 2 seine erwartete Stufe braucht
+**Dann** ist `expectedLevel` = `positionLevel.base` (11) + Zahl der erledigten Story-Knoten von Akt 2 + `levelBonus` des Knotens (Standard 0); das gilt für Story- und Nebenquest-Knoten des Akts, als reine Funktion aus dem Kampagnenstand (replay-sicher), getestet
+**Und** Karteneinheiten dürfen statt `level` ein `levelOffset` (ganze Zahl 0 bis 2) tragen, auch in Verstärkungen und `spawn`-Triggern; `createBattle` rechnet `expectedLevel + levelOffset`; `content:check` verlangt auf Story-Karten von Akt 2 `levelOffset` für alle generischen Gegner und meldet Werte außerhalb 0–2
+**Und** `hauntLevel` nutzt dieselbe Funktion, die Stufen-Abweichung der Simulation (`levelTolerance`) misst gegen sie
+**Und** die Weltkarte zeigt auf jedem offenen Knoten von Akt 2 „Stufe ≈ n“ (Schlüssel `ui.map.levelApprox` in DE und EN, Symbol + Zahl), auch im Knoten-Blatt vor dem Start.
+
+**Angenommen** ein Gefährte von Akt 2 tritt bei (Knotenwirkung `recruit`, Ansprechen im Kampf oder Eskorte)
+**Wenn** sein Datensatz entsteht
+**Dann** ist seine Stufe max(`level` der Definition, P der Mission − 1); die Werte steigen wie bei `joinLieutenant` (`src/core/campaign/lieutenants.ts`) um den Erwartungswert des Wachstums, kaufmännisch gerundet und durch die Klassengrenzen gedeckelt, ohne Zufall
+**Und** ein Test belegt Beitritt an früher und später Position (zum Beispiel Nell als 2. Mission auf Stufe 11, als 6. Mission auf Stufe 15).
+
+**Angenommen** das Paket `act2` in `content/packs.yaml`
+**Wenn** gebaut wird
+**Dann** hat es `released: true`, `load: background`, `act: 2`, `budgetMb: 40` und `content: [acts/act2/**, locales/*/act2.*]`; seine Bilder und Modelle (Akt-2-Porträts, -Figuren, -Ortsbilder, -Tafeln, Herbstbäume `autumn_a/b/c`) stehen als Globs je Datei oder Ordner vor dem Paket `act1`, damit sie nicht über `act1`-Globs (`models/**`, `locations/**`, `busts/**`, `halves/**`) dort landen; die Globs kennen keine `{a,b}`-Klammern
+**Und** die Kopfdateien `acts/act2/{campaign,units,flags}.yaml` gehören zu `core`, damit Übergang, Bedingungen und Räume sie vor dem Hintergrund-Download kennen
+**Und** Dateien unter `acts/actN/` kommen nur in den Build, wenn das Paket `actN` `released: true` hat, auch wenn ein `core`-Glob sie trifft (`tools/build/packs-plugin.ts`); ein Test in `tests/unit/packs*.test.ts` deckt das ab
+**Und** `pnpm build` ist grün: `act2` ≤ 40 MB, `core` wächst höchstens um die Kopfdateien, `act1` wird nicht größer; `pnpm content:lock` läuft nicht, `content/released-ids.json` entsteht erst beim echten Release
+**Und** `duePacks` lädt `act2`, sobald `c.act ≥ 2` ist (`reachedAct` in `src/app/state/packs.ts` liest `c.act`); ist das Paket noch nicht geladen, zeigt die Weltkarte den Ladezustand (Story 7.2).
+
+**Angenommen** das Outro von 1-8 ist vorbei und `c.act` ist gerade 2 geworden
+**Wenn** der Spieler zur Weltkarte zurückkehrt
+**Dann** erscheint einmal eine kurze Titeltafel „Akt 2 · Glut“ (Schlüssel `act.2.title` in DE und EN); bis das Bild aus dem Grafik-Task `art/prompts/act2_title.md` da ist, ist sie Text auf Glutgrund
+**Und** danach lichtet sich der Nebel über der Eisenmark (`fogTop(world, 2)` deckt nur noch Aurenhall ab, das Regions-Schild „Eisenmark“ verschwindet), das Akt-Band zeigt „Akt 2 · Herbst – Glut“ (neuer Schlüssel `act.2.season`)
+**Und** ob die Tafel gezeigt wurde, hält das neue Feld `c.actTitleSeen` (höchster gezeigter Akt, Standard aus `normalizeCampaign` = 1), gesetzt über ein Command; ein aus Akt 1 hochgeholter Spielstand sieht die Tafel also beim ersten Öffnen der Weltkarte
+**Und** solange Akt 2 keine Knoten hat, zeigt die Weltkarte „Weitere Missionen folgen“ (`moreMissionsFollow`); `WorldMap.tsx`, `Camp.tsx` und `BackupSheet.tsx` lesen den Akt aus `c.act`.
+
+**Angenommen** Heimsuchungen in Akt 2
+**Wenn** sie entstehen und gespielt werden
+**Dann** wählt das Brett die Jahreszeit nach `c.act`, nicht nach dem Ordner der Karte (Heimsuchungen auf Akt-1-Karten sehen in Akt 2 herbstlich aus)
+**Und** solange der laufende Akt keinen Story-Knoten mit Karte hat, fallen `hauntGold` und `hauntLevel` nicht auf 0 bzw. Stufe 1 zurück, sondern nehmen die Werte des letzten Akts mit Story-Karten; ein Test belegt das
+**Und** Leutnant-Heimsuchungen nutzen den Pool aus `data.hauntPools[lt.act]`.
+
+**Angenommen** die Simulation über Akte
+**Wenn** `pnpm sim --campaign act2` läuft
+**Dann** spielt jeder Lauf Akt 1 bis zum Finale, wechselt per `finishMission`-Regel in Akt 2 und spielt dessen Story-Knoten; der Bericht nennt Armee-Stufe und Gold beim Eintritt in Akt 2, die Goldkurve prüft `perAct['2']`
+**Und** neue Optionen: `--start expected` (Startarmee ohne Akt-1-Lauf auf der Positionsstufe), `--position <k>` (Mission so spielen, als wären k Akt-2-Missionen erledigt; setzt P), `--order m2_4,m2_5,…` (Reihenfolge der Akt-Mitte), `--map-file <pfad>` (Fixture-Karte mit der verketteten Armee); `pnpm sim <mapId>` findet Knoten aller Akte; die Optionen stehen im Kopf von `tools/simulate.ts`
+**Und** die Fixture-Karte `tests/fixtures/maps/dev_eisenmark.yaml` (kein Knoten, kein Paket) zeigt Herbstgelände und Gegner mit `levelOffset`; `__hc.devMap('dev_eisenmark', 2)` spielt sie mit der Jahreszeit von Akt 2 (`devMap` in `flow.ts` übernimmt einen Akt-Parameter); Story 11.3 erweitert sie.
+
+**Angenommen** die Story ist fertig
+**Wenn** geprüft wird
+**Dann** gibt es `tests/unit/act-transition.test.ts` (Übergang, kein Übergang ohne Akt 2, Replay identisch, Nebenquests von Akt 1 offen, `storyCount`/`levelCap`/Händler je Akt, Positionsstufe, Beitrittsstufe, `actTitleSeen`) und einen Ladetest der Fixture
+**Und** die Abdeckung von `src/core` sinkt nicht (`pnpm test:coverage`); Architektur §5.4/§5.5/§5.14 bekommt einen Absatz „Stand (Story 11.1)“, die Entscheidungen stehen im Architektur-Log
+**Und** Screenshots zeigen Titeltafel, gelichtete Weltkarte und Kampagnen-Liste mit „Akt 2“.
+
+### Story 11.2: Gefährten und Leutnants von Akt 2
+
+Als Spieler
+möchte ich in Akt 2 sieben neue Gefährten und vier neue Leutnants mit eigenem Charakter treffen,
+damit der Akt neue Gesichter, Rivalen und Beute bringt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Mission ist gewonnen
-**Wenn** die Szenen danach laufen
-**Dann** tritt Jory bei und die drei Thronanwärter machen ihre Angebote (Illustrationstafel).
+**Angenommen** `acts/act2/units.yaml` aus 11.1
+**Wenn** die Werte ergänzt sind
+**Dann** hat jeder Gefährte Basiswerte auf Stufe 10, persönliches Wachstum (Summe 320–340 % wie Akt 1), Affinität, persönliche Fähigkeit, Startausrüstung und Support-Partner laut Narrative; Vorschlag `[ASSUMPTION]`:
 
-### Story 11.3: Mission 2-2 „Das Siegel im Salzpass“ (treasure, Grell)
+| ID | Klasse | Affinität | Basis Stufe 10 (TP/STR/MAG/GES/SCH/GLK/VER/RES) | Wachstum % (gleiche Reihenfolge) | persönliche Fähigkeit (nur vorhandene Effekt-Formen) | Ausrüstung | Supports |
+|---|---|---|---|---|---|---|---|
+| `jory` | minstrel | Wind | 23/6/6/10/11/10/4/7 | 60/30/35/45/50/55/20/40 | `stage_presence`: passiv, `adjacentAllies: 1` → Ausweichen +15 | `steel_dagger`, `travel_lute`, `vulnerary` | nell |
+| `odile` | skirmisher | Wasser | 26/9/1/12/12/5/7/3 | 70/45/5/50/50/40/35/35 | `sworn_guard`: passiv, `adjacentAllies: 1` → VER +2, RES +2 | `steel_sword`, `iron_helm`, `vulnerary` | varek, sable |
+| `nell` | scout | Wasser | 24/8/0/12/12/7/5/3 | 70/40/5/55/55/50/25/30 | `smugglers_stash`: passiv, `bagChargeSaveChance: 30` | `steel_dagger`, `door_key`, `vulnerary` | jory, varek |
+| `brann` | elementalist | Erde (fest) | 22/2/10/7/7/4/6/7 | 70/15/55/35/35/35/45/40 | `buried_glow`: passiv, `hpBelowPercent: 50` → MAG +3 | `stone_fist`, `rockfall`, `vulnerary` | ilka |
+| `amos` | healer | Erde | 22/2/9/6/6/9/5/10 | 70/20/45/35/30/45/30/55 | `field_surgeon`: passiv, `healBonus: 5` | `mend_staff`, `heal_staff`, `vulnerary` | liora, grosk |
+| `ilka` | marksman | Wind | 24/9/0/13/10/5/5/3 | 65/45/5/60/50/45/25/35 | `still_hunter`: passiv, `notMovedThisTurn` → Treffer +10, Krit +5 | `steel_bow`, `vulnerary` | sable, brann |
+| `sable` | skirmisher | Feuer | 30/12/1/13/12/6/9/4 | 75/50/5/50/45/35/40/30 | `old_orders`: beim Angriff, `hpBelowPercent: 50` → Schaden +2 | `steel_sword`, `dravns_oath`, `vulnerary` | odile, ilka |
+
+**Und** `level` aller sieben ist 10, die Beitrittsstufe rechnet 11.1 (P − 1); die persönlichen Fähigkeiten stehen in `skills.yaml` (Quelle `personal`), Namen in DE und EN.
+
+**Angenommen** `acts/act2/lieutenants.yaml`
+**Wenn** `content:check` (`validateLieutenants`) läuft
+**Dann** sind Rowena, Sable (`joins: true`), Grell und Brakka mit `class`, `faction`, `signatureItem`, drei `grudgeSkills`, `titleKey`, `scene: scn.lt.<id>`, `portrait`/`model` = vorhandene Dateien angelegt; Vorschlag `[ASSUMPTION]`:
+
+| ID | Klasse | Fraktion | Signatur | Groll 1 / 2 / 3 (Quelle `grudge`, nur vorhandene Effekt-Formen) | Erkennungsformel | Titel (DE) |
+|---|---|---|---|---|---|---|
+| `rowena` | `pegasus_knight` | `silver_lance` | `wing_lance` | `dive` (Angreifer: Schaden +3) / `silver_resolve` (passiv: Treffer +15) / `wing_retreat` (nach der Aktion +2 Bewegung) | „Für Aldric und die Silberne Lanze!“ | Ritterin der Silbernen Lanze |
+| `sable` | `skirmisher` | `iron_march` | `dravns_oath` | `oath_guard` (nicht bewegt: VER/RES +3) / `last_order` (verteidigt unter 50 % TP: schlägt zuerst) / `iron_discipline` (Aura Radius 1: Verbündete VER +2, Form wie `warden_ward`) | „Befehl ist Befehl.“ | Hauptfrau des Grenzheers |
+| `grell` | `skirmisher` | `silver_sea` | `gold_hook` | `boarding_party` (2 Verbündete am Ziel: Treffer +10, Schaden +2) / `dirty_hook` (Angriff: Krit +10) / `sea_legs` (Rundenbeginn: 10 % Heilung) | „Alles hat seinen Preis.“ | Kaperkapitän des Hauses Silbermeer |
+| `brakka` | `brakka_wyvern` | `free_blades` | `wyvern_cleaver` | `wyvern_dive` (Angreifer: Schaden +4) / `scale_hide` (unter 50 % TP: VER +3) / `over_the_lines` (zieht durch Gegner) | „Wer mehr zahlt, hat recht.“ | Wyvernreiterin der Meistbietenden |
+
+**Und** Brakka hat eine eigene Unikat-Klasse `brakka_wyvern` im Abschnitt „Gegnertypen“ von `classes.yaml`: `tier: unique`, `playable: false`, `moveType: flier`, `tags: [flier]`, `weaponGroups: [axe]`, `mov: 6`, Werte zäher und stärker, aber langsamer als der Pegasusritter (`base { hp: 22, str: 7, mag: 0, skl: 4, spd: 4, lck: 1, def: 7, res: 0 }`, `growth { hp: 85, str: 50, mag: 0, skl: 30, spd: 30, lck: 15, def: 35, res: 5 }`, `caps { hp: 60, str: 27, mag: 8, skl: 22, spd: 20, lck: 20, def: 26, res: 12 }`) `[ASSUMPTION]`; `content:check` meldet jede andere Einheit dieser Klasse als Fehler (keine generischen Wyvernreiter)
+**Und** auf Karten tragen die Leutnants Eisen (`iron_lance`, `iron_sword`, `iron_sword`, `iron_axe`), damit die Groll-Stufe über `tierUp` greift.
+
+**Angenommen** die Szenen `content/acts/act2/scenes/scn.lt.{rowena,sable,grell,brakka}.yaml`
+**Wenn** sie geschrieben sind
+**Dann** hat jede die Zeilen `first`, `grudge_1..3` (mit `{target}`), `flee_1..3` und `mock` (Gedenk-Spott mit `{target}`), Sable zusätzlich `join` (Seitenwechsel nach E7, Bezug auf das gewarnte Dorf); die Erkennungsformel steht in `first` und in mindestens einer weiteren Zeile; Englisch in `content/locales/en/act2.dialogue.yaml`, Titel `lt.<id>.title` in DE und EN
+**Und** die erste Begegnung spielt `first`, egal in welcher Mission sie liegt (Grell in 2-2 oder 2-5, Rowena in 2-4 oder 2-6, Sable in 2-3, 2-5 oder 2-6).
+
+**Angenommen** der Block `# Akt 2: Stahl-Tier (Story 11.2)` in `content/core/items.yaml`
+**Wenn** die fehlenden Teile aus `items.md` §6.1/§6.6 angelegt sind
+**Dann** gibt es `steel_dagger`, `armorpiercer`, `stiletto`, `blaze`, `gale_blade`, `stone_fist`, `whirlpool`, `light_lance`, `shadow`, `physic_staff`, `round_shield`, `crystal_focus`, `steel_helm`, `scale_mail` mit Werten nach der Ableitungsregel `[ASSUMPTION]`: Waffen gegenüber dem Eisen-Pendant Mt +3, Treffer −10 bis −15, Gewicht ×1,5–2, Preis 900–1 200 (Beispiele `steel_dagger` Mt 7/Tr 75/Krit 10/Gew 6/900; `armorpiercer` Mt 6/Tr 75/`effectiveVs: [armored]`/1 100; `stiletto` Mt 5/Tr 80/Krit 25/1 200); Zauber nach ihrem Eisen-Pendant mit Element und Zustand wie dort; `physic_staff` Reichweite 1–3, Heilung wie `heal_staff`; Rüstung VER +1–2 über Eisen (`round_shield` VER +2 und Ausweichen +10, `steel_helm` VER 3, `scale_mail` mittel VER 6, `crystal_focus` Nebenhand RES +3)
+**Und** die vier Signaturen haben `rarity: legendary`, Preis 1 500 `[ASSUMPTION]` und die Werte der Stahlwaffe ihrer Gruppe plus einen Effekt: `wing_lance` = `steel_lance` + `grantsSkill wing_retreat` (40 SP); `dravns_oath` = `steel_sword` + `grantsSkill last_order` (45 SP); `gold_hook` = `steel_sword` mit Krit +20; `wyvern_cleaver` = `steel_axe` + `effectiveVs: [armored]`
+**Und** `ember_spark` und `promotion_seal` (Epic 10) bleiben unberührt; Item-Bilder sind Platzhalter, bis Story 8.5 sie nachzieht; Namen und Beschreibungen in DE und EN.
+
+**Angenommen** die Akt-Schlüssel in `balance.yaml`
+**Wenn** sie ergänzt sind
+**Dann** gilt `lieutenant.bounty.materialByAct: { 1: iron_ore, 2: moonsteel }` und `lieutenant.scaling.tierUp` kennt zusätzlich `iron_dagger: steel_dagger`
+**Und** der Händler von Akt 2 bekommt Stufe 1 (über `merchantTier` der Knoten: `blaze`, `gale_blade`, `stone_fist`, `whirlpool`, `light_lance`, `armorpiercer`, `steel_dagger`, `hammer`, `longbow`, `round_shield`, `steel_helm`, `scale_mail`, `physic_staff`, `crystal_focus`) und Stufe 2 (`storyCount: 4`: `stiletto`, `shadow`, `tower_shield`) `[ASSUMPTION]`; Händler-Stufe 3 (Glutfunke) gehört Epic 10.
+
+**Angenommen** die Testkarte `dev_eisenmark`
+**Wenn** dort alle vier Leutnants stehen
+**Dann** zeigen Steckbrief, Groll-Zeilen, Flucht und Kopfgeld (Mondstahl) die neuen Daten; Tests decken Beitrittsstufe, Groll-Fähigkeiten und die Unikat-Regel ab
+**Und** Musik, Klang und Vertonung der Leutnant-Zeilen: später.
+
+### Story 11.3: Gegner, Flieger und Balliste
+
+Als Spieler
+möchte ich in Akt 2 auf Ritter, Pegasusritter und Ballisten treffen,
+damit Flieger und Geschütze den Akt taktisch prägen.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Mission ist gewonnen
-**Wenn** die Szenen laufen
-**Dann** tritt Nell bei; E5 (Odile) wird über die Prinzessinnen-Missionen vorbereitet.
+**Angenommen** die generischen Gegner von Akt 2 aus vorhandenen Klassen
+**Wenn** sie auf Karten und in Heimsuchungen stehen
+**Dann** gibt es diese Gruppen mit eigenen Namen in DE und EN: Eisenmark-Soldaten (`vanguard`/Lanze, `skirmisher`/Schwert, `marksman`/Bogen; `unit.iron_soldier.name`), Eisenmark-Ritter (`knight`; `unit.iron_knight.name`), Lanzenritter und Pegasusritter der Silbernen Lanze (`knight`, `pegasus_knight`; `unit.lance_knight.name`, `unit.lance_pegasus.name`), Kaperfahrer der Herzogin (`brigand`/`skirmisher`/`marksman`; `unit.privateer.name`), Söldner (`brigand`/`skirmisher`/`marksman`/`vanguard`; `unit.sellsword.name`) und Kontorwachen (`vanguard`/`marksman`; `unit.counting_guard.name`)
+**Und** `knight` und `pegasus_knight` sind auf Stufe 11–20 geprüft: Ritter verwundbar gegen Axt, Magie und Panzerstecher, Pegasusritter gegen Bögen (×3); Korrekturen nur im Block „Gegnertypen“ von `classes.yaml`; beide bekommen `art:` mit vorhandenen Porträts als Platzhalter
+**Und** es gibt keine generischen Wyvernreiter.
 
-### Story 11.4: Mission 2-3 „Die verstoßene Leibwache“ (escort Odile, Sable)
+**Angenommen** eine Einheit mit Bewegungsart Flieger (Pegasusritter, Rowena, Brakka)
+**Wenn** sie auf dem Brett steht
+**Dann** spielt sie nach den Flieger-Regeln (Gelände, Bewegung, Sicht +1, Bogen-Effektivität), wird aber mit ihrer Figur zu Fuß dargestellt
+**Und** eine Flieger-Kennung macht sie erkennbar, nicht nur über Farbe (NFR10): ein Flügel-Symbol neben der Lebensleiste, in der Gegner-Leiste und im Steckbrief, dazu ein leichter Schwebe-Versatz mit Schatten am Boden `[ASSUMPTION]` (Werte in `render.yaml`)
+**Und** die Kampfvorschau zeigt die Bogen-Effektivität gegen Flieger.
+
+**Angenommen** ein Kartenobjekt `type: ballista`
+**Wenn** eine Figur zu Fuß oder in Rüstung auf einem Nachbarfeld steht (Abstand 1, jedes Team, nie ein Flieger)
+**Dann** kann sie mit der Aktion `{ kind: 'ballista'; object; target }` im Command `act` schießen: Reichweite 3–10 ab dem Ballistenfeld, Ziel sichtbar (Nebel), Schaden nach der physischen Formel mit Mt 12 + STR des Bedieners, Treffer 70 als Waffenwert in der normalen Trefferformel, Krit 0, kein Gegenangriff, Waffendreieck und Waffengruppe des Bedieners zählen nicht, keine Effektivität gegen Flieger, unbegrenzte Munition, ein Schuss je Bediener und Zug (er ersetzt dessen Aktion)
+**Und** die Werte stehen im Item `ballista_bolt` (`kind: weapon`, Gruppe `siege` außerhalb des Dreiecks, `mt: 12`, `hit: 70`, `crit: 0`, `rng: [3, 10]`, Tag `fixed`: nie im Tross, nie beim Händler), nicht im Code
+**Und** Vorschau (`forecast`) und Auflösung (`resolveAttack`) laufen über denselben Formelcode mit einer synthetischen Waffen-Instanz (Uid `ballista:<objectId>`) und dem Ballistenfeld als Schussposition; fehlende Parameter (Waffengruppe ignorieren, kein Gegenangriff) kommen als Option in `AttackMods`, nicht als zweiter Rechenweg; Leutnants zeigen „flieht“
+**Und** das Ballistenfeld ist für Einheiten nicht betretbar; das Kontext-Band bietet „Balliste“ an, sobald eine berechtigte Figur daneben steht (Schlüssel in DE und EN).
+
+**Angenommen** die Gegner-KI (auch Autoplay der Simulation)
+**Wenn** eine Balliste auf der Karte steht
+**Dann** nutzt eine Gegnereinheit sie nur, wenn sie das Profil `hold` oder `guard` hat und die Balliste in ihrer Reichweite liegt, oder wenn sie schon daneben steht; dann bewertet sie den Schuss wie einen Angriff; andere Gegner laufen nicht zur Balliste
+**Und** das Autoplay des Spielers nutzt eine Balliste, wenn eine eigene Figur daneben steht und der Schuss besser bewertet ist als ihr bester Angriff
+**Und** die Gefahrenzone (Story 13.5) zählt einen Bediener mit seiner Ballisten-Reichweite.
+
+**Angenommen** die Lektionen des Akt-2-Schwerpunkts
+**Wenn** Story 11.4 sie in 2-1 auslöst
+**Dann** stehen die Lektionsszenen `scn.m2_1.tutorial_flier` (Bögen ×3 gegen Flieger, Flieger ignorieren Gelände) und `scn.m2_1.tutorial_ballista` (Bedienen, Reichweite, kein Gegenangriff) im Handbuch unter Lektionen (`lesson_flier`, `lesson_ballista`), dazu Regel-Einträge „Flieger“ und „Balliste“ mit Kontext-Anker und Klassen-Steckbriefe für `knight`, `pegasus_knight` und `brakka_wyvern`, falls `validateHandbook` sie verlangt.
+
+**Angenommen** Herbst auf dem Brett (`map.act = 2`)
+**Wenn** eine Akt-2-Karte oder eine Heimsuchung in Akt 2 läuft
+**Dann** zeigt der Boden Herbstfarben (braunes Gras, Heide) aus `tools/art/ground.py` als Akt-Variante, Berge tragen eine Haube ohne Grün; Tönung `look.season.2` und Herbstbäume `variants.tree.2` sind vorhanden
+**Und** Wetter in Akt 2: `clear`, `fog`, `rain`; `ash` und `snow` bleiben gesperrt (Ausnahme N4, Story 11.12)
+**Und** ein Screenshot vergleicht dieselbe Testkarte in Akt 1 und Akt 2.
+
+**Angenommen** `content/acts/act2/haunts.yaml`
+**Wenn** Heimsuchungen in Akt 2 entstehen
+**Dann** gibt es Pools je Fraktion mit Stahl-Waffen (`share` in %) `[ASSUMPTION]`: `iron_march` (Sable) vanguard 30, knight 20, marksman 25, skirmisher 25; `silver_lance` (Rowena) knight 30, pegasus_knight 30, skirmisher 20, marksman 20; `silver_sea` (Grell) brigand 35, skirmisher 35, marksman 30; `free_blades` (Brakka) skirmisher 35, brigand 35, marksman 30; dazu `civilian` und `chestLoot` (Gold 300–500, Mondstahl)
+**Und** Heimsuchungs-Gegner stehen auf `hauntLevel` (Positionsstufe), Leutnants skalieren wie gewohnt.
+
+**Angenommen** die Testkarte `tests/fixtures/maps/dev_eisenmark.yaml`
+**Wenn** sie erweitert ist
+**Dann** zeigt sie alle generischen Gegner von Akt 2, zwei Ballisten, Rowena und Brakka als Flieger und Herbstgelände; `pnpm sim --map-file tests/fixtures/maps/dev_eisenmark.yaml --start expected` läuft und die Werte der Gegner und der Balliste sind dort geprüft (Dev Agent Record)
+**Und** `tests/unit/ballista.test.ts` deckt Nachbarschaft, Flieger als Bediener verboten, Reichweite 2/3/10/11, Nebel, kein Gegenangriff, keine Flieger-Effektivität, Vorschau = Auflösung, Leutnant-Flucht, KI-Regel und Replay ab.
+
+**Angenommen** fehlende Grafik
+**Wenn** die Story abgeschlossen ist
+**Dann** gibt es Prompt-Dateien (`art/prompts/<id>_board_turnaround.md`, Tripo-Pipeline §4.6) für die Brettfiguren Eisenmark-Soldat, Eisenmark-Ritter, Pegasusritter (zu Fuß) und Kaperfahrer; bis dahin dienen vorhandene Modelle über `art`/`sprite` als Platzhalter (vermerkt in `art/README.md`); die Balliste ist ein Requisitenmodell (`tools/art/blender_*.py`) oder eine Platzhalter-Requisite mit `propFallback`
+**Und** Pegasus- und Wyvern-Reittiere (Rowena, Brakka, Pegasusritter) sind ein eigener Grafik-Task (`art/prompts/mounts_pegasus_wyvern.md`, großer Rahmen `figureBudget.large`), Ziel vor 2-4; er blockiert keine Story, bis dahin gilt die Darstellung zu Fuß mit Flieger-Kennung
+**Und** Klang der Balliste: später.
+
+### Story 11.4: Mission 2-1 „Wind über der Eisenmark“ und die drei Angebote
+
+Als Spieler
+möchte ich im Hochland der Eisenmark gegen Brakka standhalten und danach die drei Angebote der Thronanwärter hören,
+damit Akt 2 mit Fliegern, Balliste und einer politischen Wahl beginnt.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_1_passwacht`, 14×16 (kompakt): Hochlandpass am Rand der Eisenmark, verlassene Grenzwacht mit einer Balliste auf dem Wall, Gauklerwagen am Wegrand, Felsgrate nur für Flieger frei; Mittag, `clear` `[ASSUMPTION]` |
+| Ziel | `survive`, 7 Runden `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 13 = 8 Start + 5 in Wellen (Runde 2, 4, 5): Brakka + 12 Söldner (4 skirmisher, 4 brigand, 3 marksman, 1 vanguard); Leicht 11 (−2 Wellen-Söldner), Schwer 15 (+2 Söldner in Runde 5) `[ASSUMPTION]` |
+| Position und Stufe | Position 0 (fest), P = 11; Start +0, Wellen +1 |
+| Leutnant | Brakka, erste Begegnung in Akt 2; von einem ungenannten Auftraggeber bezahlt `[ASSUMPTION]` |
+| Szenen | `scn.m2_1.intro`, `scn.m2_1.brakka_battle`, `scn.m2_1.tutorial_flier`, `scn.m2_1.tutorial_ballista`, `scn.m2_1.house_wagon`, `scn.m2_1.house_watch`, `scn.m2_1.outro` mit Jorys Beitritt und Tafel 5 „Drei Angebote“ (Key Conversation 6: Seraphine, Dravn, Maelis, Kael) |
+| Beitritte | Jory per Knotenwirkung `recruit: jory` nach dem Sieg |
+| Entscheidungen und Flags | keine Entscheidung; die drei Angebote sind Gespräch, keine Wahl |
+| Freischaltung | `fixed: first`; danach öffnen `m2_2`, `m2_4`, `m2_6` und N6 |
+| Heimsuchungs-Anker | 3: `defend` (Gauklerwagen), `boss` (Passhöhe), `rout` (Grenzwacht) |
+| Einsatzplätze | 7 (Pflicht: Avatar, Kael) |
+| Gold | 2 000 `[ASSUMPTION]`; `merchantTier: 0` |
+| Nebenziele | `kill_with` Bogen (300 Gold), `visit_villages` Wagen + Wachstube (`remedy_salve`), `no_downs` (`vulnerary`) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 0 (`--position 0`), vorläufig ohne Aufstieg |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Odile erreicht den Ausgang
+**Angenommen** die Karte `m2_1_passwacht`, der Knoten `m2_1` (`fixed: first`, `place` = Platzhalter `grauwacht` bis zum Ortsbild-Task) und die Szenen der Tabelle
+**Wenn** die Mission startet
+**Dann** führt das Intro in die Eisenmark (Herbst, Wind, Drachenschatten am Himmel als Bild in der Szene), Brakka erscheint mit `first` und ihrer Erkennungsformel
+**Und** in Runde 1 der Spielerphase läuft `scn.m2_1.tutorial_flier` (Lektion Flieger); betritt zum ersten Mal eine eigene Figur ein Nachbarfeld der Balliste (Trigger `unit_enters`), läuft `scn.m2_1.tutorial_ballista`; beide höchstens einmal je Kampf und im Handbuch nachlesbar.
+
+**Angenommen** die Truppe hält 7 Runden
 **Wenn** die Mission gewonnen ist
-**Dann** tritt Odile bei; E5 (Odile kehrt zur Garde zurück oder bleibt) fällt.
+**Dann** tritt Jory bei (Stufe nach 11.1), die Truppe erhält 2 000 Gold und die Nebenziel-Belohnungen
+**Und** die Nachszene zeigt Tafel 5 „Drei Angebote“ (Bild per Grafik-Task `art/prompts/tafel_drei_angebote.md`, bis dahin Platzhalter); Seraphine bietet Freispruch gegen das Siegel im Salzpass, Dravn gegen den Wyvernhorst, Maelis gegen ihr verschwundenes Gold; Kael schließt mit einem Satz, der zur Haltung passt
+**Und** auf der Weltkarte öffnen 2-2, 2-4, 2-6 und N6, jeder Knoten zeigt „Stufe ≈ 12“.
 
-### Story 11.5: Mission 2-4 „Der Wyvernhorst“ (boss, Rowena)
+**Angenommen** die Söldner und die Balliste
+**Wenn** die Simulation läuft
+**Dann** nutzt kein Söldner die Balliste, es sei denn, er steht schon daneben (Profil `hold` am Wall, ein Bogenschütze) `[ASSUMPTION]`
+**Und** `pnpm sim m2_1 --runs 50 --start expected --position 0` liegt auf allen Schwierigkeiten im Korridor; Brakka flieht im Normal-Schnitt mindestens in 30 % der Läufe `[ASSUMPTION]`.
 
-**Akzeptanzkriterien:**
+### Story 11.5: Mission 2-2 „Das Siegel im Salzpass“
 
-**Angenommen** die Mission ist gewonnen
-**Wenn** die Szenen laufen
-**Dann** tritt Ilka bei; E6 (Varek) fällt; Nebenquest N4 öffnet, solange Ilka in der Truppe ist.
+Als Spieler
+möchte ich für Prinzessin Seraphine im Nebel des Salzpasses das Siegel bergen, bevor Grells Kaperfahrer es finden,
+damit der Prinzessin-Strang beginnt und Nell zur Truppe stößt.
 
-### Story 11.6: Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
-
-**Akzeptanzkriterien:**
-
-**Angenommen** die Mission ist gewonnen
-**Wenn** E7 fällt (warnen oder Befehl ausführen)
-**Dann** tritt Brann bei, bei „warnen“ zusätzlich Sable (Seitenwechsel); N5 öffnet.
-
-### Story 11.7: Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
-
-**Akzeptanzkriterien:**
-
-**Angenommen** die Mission ist gewonnen
-**Wenn** die Szenen laufen
-**Dann** tritt Amos bei; der Verdacht gegen Maelis öffnet die Spur zum Kontor (2-7).
-
-### Story 11.8: Mission 2-7 „Das Kontor am Silbermeer“ (reach, Brakka) und E8
-
-**Akzeptanzkriterien:**
-
-**Angenommen** die Mission ist gewonnen und die Geschäftsbücher sind gesichert
-**Wenn** die Szenen laufen
-**Dann** fällt E8 (Beweise gegen Maelis an Seraphine geben oder zurückverkaufen); bis zum Finale gibt es keinen Beitritt mehr.
-
-### Story 11.9: Mission 2-8 „Kronfeld“ (große Schlacht, survive → escape)
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_2_salzpass`, 16×22: langer Pass zwischen Klippen, Karawanenwagen als Deckung, Kriegsnebel (`fog: true`), Wetter `fog`, Morgen; Klippen nur für Flieger; Nell gefesselt in einem Käfigwagen der Kaperfahrer `[ASSUMPTION]` |
+| Ziel | `treasure`: 4 Truhen (Siegel, Schmuggelgold, Karawanenkasse, Vorrat), 12 Runden `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 15 = 10 Start + 5 in 2 Wellen von beiden Passenden (Runde 3, 6): Grell + 5 brigand, 5 skirmisher, 4 marksman (Kaperfahrer); Leicht 13, Schwer 17 `[ASSUMPTION]` |
+| Position und Stufe | Position 1–5, P = 12–16; Start +0, Wellen +1, Grells Leibwache +2 |
+| Leutnant | Grell (Herzogin), erste oder zweite Begegnung |
+| Szenen | `scn.m2_2.intro` (Seraphines Gesandter: das Siegel ist für den Freispruch-Erlass), `scn.m2_2.grell_battle`, `scn.m2_2.nell_talk`, `scn.m2_2.page` (Chronik-Truhe), `scn.m2_2.outro` (Nell erkennt die Geldwege der Herzogin, erster Zweifel am Erlass) |
+| Beitritte | Nell: Ansprechen am Käfigwagen (`recruit: { by: any }`); spricht sie niemand an, tritt sie nach dem Sieg per Knotenwirkung bei (wirkt nur, wenn sie noch nicht dabei ist) `[ASSUMPTION]` |
+| Entscheidungen und Flags | keine; Chronik-Seite `a2_saltpass` |
+| Freischaltung | `requires: completed m2_1`; öffnet `m2_3` |
+| Heimsuchungs-Anker | 3: `treasure`, `escort`, `boss` |
+| Einsatzplätze | 8 |
+| Gold | 2 300 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | `recruit nell` (300 Gold), `open_chests` (Chronik-Truhe, Seite `a2_saltpass`), `turn_limit` 9 (`steel_helm`) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 1 und 5 |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die große Schlacht (bis 24×32, ~15 eigene Einheiten, alle Leutnants von Akt 2, sofern nicht gewechselt)
-**Wenn** sie gewonnen ist
-**Dann** folgt „Die Krone war hohl“ (Illustrationstafel); die Gegnerphase hält NFR1 und NFR3 auf dem Referenzgerät.
+**Angenommen** die Karte, der Knoten `m2_2` (`place: salzpass`) und die Szenen der Tabelle
+**Wenn** die Mission läuft
+**Dann** verbergen Kriegsnebel und Wetter `fog` die Truhen, bis eine Figur sie sieht; Späher öffnen ohne Schlüssel, die Karte bringt einen Öffner mit (`validateTreasure`)
+**Und** die Chronik-Truhe gehört nicht zu den Ziel-Truhen; wer sie öffnet, erhält die Seite `a2_saltpass` (Wirkung `chronicle`, Thema „dass sie beim Paktfest etwas gaben“, ≤ 400 Zeichen, DE in `acts/act2/chronicle.yaml`, EN in `locales/en/act2.chronicle.yaml`).
 
-### Story 11.10: Nebenquests N4 „Der Clan im Schnee“ und N5 „Glut unter dem Berg“
+**Angenommen** alle 4 Ziel-Truhen sind in 12 Runden geborgen
+**Wenn** die Mission gewonnen ist
+**Dann** ist Nell dabei, die Truppe erhält 2 300 Gold und die Nebenziel-Belohnungen; nach Runde 12 ohne alle Truhen ist die Mission verloren (`defeatReason = 'turns'`)
+**Und** die Nachszene sät Zweifel, ohne eine Lüge aufzudecken: das Siegel ist für den Freispruch-Erlass gedacht, und Nell wundert sich, wer den Pass für die Kaperfahrer bezahlt.
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_2 --runs 50 --start expected --position 1` und `--position 5` laufen
+**Dann** liegen beide im Korridor; das Autoplay öffnet die Ziel-Truhen mit Spähern oder Schlüsseln.
+
+### Story 11.6: Mission 2-3 „Die verstoßene Leibwache“ und Entscheidung E5
+
+Als Spieler
+möchte ich Odile, die entlassene Leibwächterin der Prinzessin, durch Dravns Linien geleiten,
+damit der Prinzessin-Strang eine Brückenfigur und eine persönliche Wahl bekommt.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_3_muehlweg`, 16×20: Waldweg unter der Grauwacht, Odile versteckt in einer Mühle in der Kartenmitte, Start der Truppe im Süden, Ausgang am Nordrand hinter Dravns Postenlinie; Abend, `rain`; im Lager der Posten das erbeutete Banner der Silbernen Lanze `[ASSUMPTION]` |
+| Ziel | `escort` Odile zum Ausgang, `join: true`; Odile mit neuem Profil `follow_ally` |
+| Gegner Normal (Leicht/Schwer) | 16 = 12 Start + 4 Welle (Runde 4, aus der Grauwacht): Sable + 4 vanguard, 3 knight, 4 marksman, 4 skirmisher (Eisenmark); Leicht 14, Schwer 18 `[ASSUMPTION]` |
+| Position und Stufe | Position 2–6, P = 13–17; Posten +1, Welle +2 |
+| Leutnant | Sable (Dravn); hat sie per E7 gewechselt, fehlt sie ohne Ersatz-Leutnant |
+| Szenen | `scn.m2_3.intro` (Seraphines Bitte), `scn.m2_3.sable_battle`, `scn.m2_3.odile_talk` (erstes Treffen an der Mühle), `scn.m2_3.house_banner`, `scn.m2_3.outro` mit E5 |
+| Beitritte | Odile über die Eskorte (`join: true`) |
+| Entscheidungen und Flags | E5 `e05: [return, stay]`: `return` → Wirkung `leave: odile` (Ausrüstung bleibt im Konvoi), `stay` → bleibt; Odile berichtet von Halvards Briefen an die Prinzessin (Zweifel, keine aufgedeckte Lüge) |
+| Freischaltung | `requires: completed m2_2` |
+| Heimsuchungs-Anker | 3: `escort`, `rout`, `defend` |
+| Einsatzplätze | 9 |
+| Gold | 2 600 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | Banner der Silbernen Lanze erobern (Besuch des Zelts → `silverwing`), `no_downs` (`vulnerary` ×2), `turn_limit` 10 (500 Gold) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 2 und 6 |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Auslöser (Ilka in der Truppe bzw. 2-5 gespielt)
-**Wenn** der Spieler sie spielt
-**Dann** gibt es je Glutfunke und Sonderbelohnung (Signaturbogen bzw. Chronik-Seite und Erd-Rune III), mit Gedenk-Varianten.
+**Angenommen** das neue KI-Profil `follow_ally` (Eskorte, Lehre aus 1-3: das vorhandene `follow` zieht selbst zum Ausgang)
+**Wenn** Odile in der Phase `other` zieht
+**Dann** wartet sie, bis eine Spielerfigur höchstens `balance.ai.followRadius` entfernt ist, und zieht dann auf ein Feld möglichst nah bei der nächsten Spielerfigur (Abstand 1 bevorzugt), mit Wegkosten `followDanger` je bedrohendem Gegner wie beim vorhandenen `follow`
+**Und** sie greift nie selbst an, verteidigt sich aber mit normalem Gegenangriff `[ASSUMPTION]`
+**Und** steht eine Spielerfigur im Ausgang oder auf einem Nachbarfeld davon und erreicht Odile ein Ausgangsfeld, zieht sie hinein und entkommt (`gone = 'escaped'`, Event `escaped`); das Ziel `escort` gilt dann als erfüllt
+**Und** das Profil steht in `schemas.ts` und `defs.ts`, `validateEscort` akzeptiert `follow` oder `follow_ally`, Gegner gewichten Odile wie ein Schutzziel (`objectiveBonus`); Tests decken Folgen, Warten, Gefahr meiden, Entkommen und Replay ab
+**Und** das Autoplay bewegt die Truppe als Block zum Ausgang, damit Odile folgt.
 
-### Story 11.11: Nebenquest N6 „Die Gauklertruppe“
+**Angenommen** die Karte, der Knoten `m2_3` (`place: grauwacht`) und die Szenen
+**Wenn** die Truppe die Mühle erreicht
+**Dann** läuft `scn.m2_3.odile_talk`, Odile wird sichtbar (Team `other`, Klasse `skirmisher`, Figur `odile`) und folgt ab jetzt
+**Und** ist `joined_sable` gesetzt, entfällt Sable per `requires` an der Einheit (Muster `grosk` in `m1_8`), ihre Kampfzeile entfällt
+**Und** wird Odile niedergestreckt oder fällt sie, ist die Mission verloren (Niederlagegrund Odile).
+
+**Angenommen** Odile entkommt
+**Wenn** die Mission gewonnen ist
+**Dann** tritt Odile bei (Stufe nach 11.1), wer das Banner-Zelt besucht hat, besitzt `silverwing` (Werte nach `items.md` §6.4 `[ASSUMPTION]`: `steel_lance` Mt +2, Krit +10, `rarity: legendary`, Preis 0, `unsellable`)
+**Und** in der Nachszene bietet Seraphine Odile die Rückkehr in die Garde an (E5) mit Folgen-Karte; bei `return` verlässt Odile die Truppe mit einer Abschiedszeile, ihre Ausrüstung geht in den Konvoi, das Flag `e05: return` bestimmt ihre Zeile in Kronfeld (11.11)
+**Und** die Akademie (Raum-Gefährten Varek|Odile, Epic 10) bleibt auf ihrer gebauten Stufe, auch wenn Odile geht (Entscheidung E10-2).
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_3 --runs 50 --start expected --position 2` und `--position 6` laufen, je mit und ohne `joined_sable`
+**Dann** liegen alle im Korridor.
+
+### Story 11.7: Mission 2-4 „Der Wyvernhorst“ und Entscheidung E6
+
+Als Spieler
+möchte ich für General Dravn die Silberne Lanze vom Wyvernhorst vertreiben und Dame Rowena stellen,
+damit der Dravn-Strang beginnt und Ilka zur Truppe stößt.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_4_wyvernhorst`, 16×22: Felshorst über einer Schlucht, Dravns Wyvern-Zucht (leere Nester als Gelände), Berge und Klippen (Flieger frei, Fußtruppen gebunden), zwei Ballisten der Zucht; Morgen, `clear`; Ilka spürt am Schluchtrand der Lanze nach `[ASSUMPTION]` |
+| Ziel | `boss` Rowena (Flucht bei 0 TP zählt als besiegt) |
+| Gegner Normal (Leicht/Schwer) | 16 = 13 Start + 3 Welle (Runde 3, Pegasusritter aus der Schlucht): Rowena + 5 pegasus_knight, 4 knight, 3 marksman, 3 skirmisher (Silberne Lanze); Leicht 14, Schwer 18 `[ASSUMPTION]` |
+| Position und Stufe | Position 1–5, P = 12–16; Start +0, Welle +1, Ritter am Horst +2 |
+| Leutnant | Rowena (Prinzessin) als Boss |
+| Szenen | `scn.m2_4.intro` (Dravns Auftrag), `scn.m2_4.rowena_battle`, `scn.m2_4.ilka_talk`, `scn.m2_4.page`, `scn.m2_4.outro` mit E6 |
+| Beitritte | Ilka: Ansprechen (`recruit: { by: any }`, Team `other`, Profil `hold`); sonst Knotenwirkung nach dem Sieg (nur wenn noch nicht dabei) `[ASSUMPTION]` |
+| Entscheidungen und Flags | E6 `e06: [pardon, stay]`: `pardon` → `leave: varek` (Ausrüstung in den Konvoi), `stay` → `grudge { lt: sable, delta: -1 }`; Chronik-Seite `a2_eyrie` |
+| Freischaltung | `requires: completed m2_1`; öffnet `m2_5` und N4 |
+| Heimsuchungs-Anker | 3: `boss`, `rout`, `treasure` |
+| Einsatzplätze | 8 |
+| Gold | 2 400 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | `recruit ilka` (300 Gold), `open_chests` (Chronik-Truhe in der alten Wächterkammer, Seite `a2_eyrie`), `kill_with` Bogen (`steel_bow`) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 1 und 5 |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** Jory ist in der Truppe
-**Wenn** der Spieler N6 spielt
-**Dann** gibt es die Signaturlaute Letzter Vorhang (keinen Glutfunken), mit Gedenk-Variante.
+**Angenommen** die Karte, der Knoten `m2_4` (Ortsbild per Grafik-Task, bis dahin `grauwacht`) und die Szenen
+**Wenn** die Mission läuft
+**Dann** stehen die Ritter am Horst mit Profil `guard` neben den Ballisten und schießen von dort (Regel 11.3); die Truppe kann die Ballisten erobern und gegen Rowena nutzen (ohne Flieger-Effektivität)
+**Und** Rowena erscheint als Flieger zu Fuß mit Flieger-Kennung (Reittier-Task aus 11.3 nicht nötig).
 
-### Story 11.12: Supports, Barks und Vertonung von Akt 2
+**Angenommen** Rowena flieht bei 0 TP
+**Wenn** die Mission damit gewonnen ist
+**Dann** steigt ihr Groll, Kopfgeld (Mondstahl) wird gezahlt, Ilka ist dabei, die Truppe erhält 2 400 Gold
+**Und** in der Nachszene bietet Dravn Varek Begnadigung im Heer an (E6) mit Folgen-Karte; ist Varek tot oder gegangen, entfällt E6 ohne Szene der Wahl (Muster E1)
+**Und** bei `pardon` verlässt Varek die Truppe mit Abschiedszeile, seine Ausrüstung geht in den Konvoi; seine Kronfeld-Zeile wechselt auf die Gegenseite (11.11); bei `stay` sinkt Sables Groll um 1 (auch wenn sie noch nicht getroffen ist; nie unter 0)
+**Und** Taverne und Akademie (Raum-Gefährte Varek) bleiben auf ihrer gebauten Stufe (E10-2).
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_4 --runs 50 --start expected --position 1` und `--position 5` laufen
+**Dann** liegen beide im Korridor; Rowena fällt im Normal-Schnitt nicht vor Runde 4 `[ASSUMPTION]`.
+
+### Story 11.8: Mission 2-5 „Die Brandschneise“ und Entscheidung E7
+
+Als Spieler
+möchte ich Sables Heimatdorf gegen Grells Plünderer verteidigen und dabei Dravns Lüge aufdecken,
+damit die Gewissensfrage des Akts fällt und Sable die Seite wechseln kann.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_5_brandhang`, 16×20: Herbstdorf am Hang, Heufelder (brennbar), 5 besuchbare Häuser mit Flüchtlingen, Branns Hütte am oberen Rand; Sable mit einem Brandtrupp am Ortsrand (Team `other`, Profil `hold`, nicht angreifbar); Abend, `clear` |
+| Ziel | `defend` Dorfvorsteher (Zivilist, Team `other`), 10 Runden `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 17 = 11 Start + 6 in Wellen (Runde 2, 5, 7): Grell + 6 brigand (4 mit Profil `raider` auf Häuser), 6 skirmisher, 4 marksman (Kaperfahrer); Leicht 15, Schwer 19 `[ASSUMPTION]` |
+| Position und Stufe | Position 2–6, P = 13–17; Start +0, Wellen +1, Grells Maate +2 |
+| Leutnant | Grell (Herzogin); Sable anwesend, nicht feindlich, gilt als getroffen |
+| Szenen | `scn.m2_5.intro` (Dravns Auftrag: das Dorf schützen), `scn.m2_5.grell_battle`, `scn.m2_5.brann_talk`, `scn.m2_5.sable_order` (Trigger Runde 5: Sable trägt den Befehl, das Dorf nach dem Kampf als Brandschneise zu opfern), `scn.m2_5.house_*`, `scn.m2_5.outro` mit E7 |
+| Beitritte | Brann: Ansprechen an seiner Hütte (`recruit: { by: any }`), sonst Knotenwirkung nach dem Sieg; Sable bei E7 `warn` |
+| Entscheidungen und Flags | E7 `e07: [warn, obey]`: `warn` → `recruit { lt: sable }` (Flag `joined_sable`), `obey` → `priceMod { pct: -10, act: 2 }` + `setFlag brandhang_burned`; Lüge Dravns aufgedeckt |
+| Freischaltung | `requires: completed m2_4`; öffnet N5 |
+| Heimsuchungs-Anker | 3: `defend`, `rout`, `escort` |
+| Einsatzplätze | 9 |
+| Gold | 2 700 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | `visit_villages` alle 5 Häuser vor den Plünderern („alle Flüchtlinge gerettet“) → `dawnbreaker`; `recruit brann` (300 Gold); `no_downs` (`vulnerary`) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 2 und 6 |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Paare mit beiden Figuren ab Akt 2
-**Wenn** C/B/A-Gespräche, Barks und Groll-Zeilen der Akt-2-Leutnants geschrieben und vertont sind
-**Dann** stehen sie bereit (DE + EN, Paket `voice.act2.<lang>`).
+**Angenommen** die Karte, der Knoten `m2_5` (`place: brandhang`) und die Szenen
+**Wenn** die Mission läuft
+**Dann** steht Sable sichtbar als Dravns Offizierin auf dem Brett (Team `other`, `untargetable`, Profil `hold`), ihre erste Begegnung zählt (Wirkung `meet`, Zeile `first` aus `scn.lt.sable`); die Gegner-KI greift sie nicht an
+**Und** in Runde 5 deckt `scn.m2_5.sable_order` Dravns Lüge auf (Grenzdörfer als Brandschneise gegen die Drachen); Drachenschatten ziehen in der Szene über den Hang
+**Und** Plünderer mit Profil `raider` zerstören Häuser; ein Besuch vorher rettet die Flüchtlinge des Hauses.
 
-### Story 11.13: Akt 2 abstimmen und veröffentlichen
+**Angenommen** der Vorsteher übersteht 10 Runden
+**Wenn** die Mission gewonnen ist
+**Dann** ist Brann dabei, wer alle 5 Häuser gerettet hat, erhält `dawnbreaker` (Werte des vorhandenen Eintrags auf Akt-2-Niveau geprüft, Kommentar „Kap. 4“ korrigiert)
+**Und** in der Nachszene fällt E7 mit Folgen-Karte: bei `warn` warnt die Truppe das Dorf, Sable bindet sich das glutorange Tuch um und tritt bei (Zeile `join`; Stufe nach `joinLieutenant`; Groll gegen sie und von ihr erlischt); bei `obey` brennt Brandhang (Weltkarten-Variante von Brandhang, Szenenzeile), Dravns Gunst gibt Händler −10 % in Akt 2, Sable bleibt Leutnant
+**Und** N5 öffnet.
+
+**Angenommen** mehrere Rabatte in Akt 2 (E4 `secret`, E7 `obey`, Händler-Stufe 3 aus Epic 10)
+**Wenn** der Händler Preise rechnet
+**Dann** addieren sich alle `priceMods` des Akts, gedeckelt bei −30 % (`balance.yaml › merchant.maxDiscountPct: 30`), getestet; die Händler-Ansicht zeigt den Gesamtrabatt.
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_5 --runs 50 --start expected --position 2` und `--position 6` laufen
+**Dann** liegen beide im Korridor; der Bericht nennt den Anteil der Läufe mit allen Häusern gerettet.
+
+### Story 11.9: Mission 2-6 „Gold für Banditen“
+
+Als Spieler
+möchte ich für Herzogin Maelis ihr verschwundenes Gold aus einem Banditenlager holen und dort Rowena und Sable vertreiben,
+damit der Verdacht wächst, dass Maelis die Banden aus Akt 1 bezahlt hat.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_6_canyon`, 16×22: Banditenlager im Canyon des Tafellands, Kisten mit Silbermeer-Münzen, ein Feldlazarett, in dem Amos verwundete Banditen behandelt; Truppen der Silbernen Lanze und des Grenzheers haben das Lager zuerst gestürmt `[ASSUMPTION]`; Nachmittag, `clear` |
+| Ziel | `rout` |
+| Gegner Normal (Leicht/Schwer) | 16 = 13 Start + 3 Welle (Runde 4, Pegasusritter vom Canyonrand): Rowena + 3 pegasus_knight, 2 knight, 2 skirmisher (Lanze); Sable + 2 vanguard, 3 marksman, 2 skirmisher (Grenzheer); Leicht 14, Schwer 18 `[ASSUMPTION]` |
+| Position und Stufe | Position 1–5, P = 12–16; Start +0, Welle +1, Ersatz-Hauptmann +2 |
+| Leutnants | Rowena (Prinzessin), Sable (Dravn); ist `joined_sable` gesetzt, ersetzt sie ein Eisenmark-Hauptmann (`unit.iron_captain.name`, `skirmisher`, kein Leutnant) |
+| Szenen | `scn.m2_6.intro` (Maelis' Auftrag), `scn.m2_6.rowena_battle`, `scn.m2_6.sable_battle`, `scn.m2_6.amos_talk`, `scn.m2_6.coins` (Fund: Silbermeer-Münzen als Sold der Banden), `scn.m2_6.burnt_village`, `scn.m2_6.outro` (Verdacht gegen Maelis) |
+| Beitritte | Amos: Ansprechen im Lazarett (Team `other`, Profil `hold`), sonst Knotenwirkung nach dem Sieg |
+| Entscheidungen und Flags | keine Entscheidung |
+| Freischaltung | `requires: completed m2_1`; öffnet `m2_7` |
+| Heimsuchungs-Anker | 3: `rout`, `boss`, `defend` |
+| Einsatzplätze | 8 |
+| Gold | 2 200 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | `recruit amos` (300 Gold), `protect_npc` Amos (`physic_staff`), `turn_limit` 10 (400 Gold) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 1 und 5, je mit und ohne `joined_sable` |
 
 **Akzeptanzkriterien:**
 
-**Angenommen** alle Akt-2-Stories
-**Wenn** die verkettete Simulation über Akt 1 und 2 läuft
-**Dann** liegen alle Missionen in den Korridoren; `act2` ist veröffentlicht, IDs gesperrt, Spielstände aus Akt 1 laufen weiter (Migrationstest).
+**Angenommen** die Karte, der Knoten `m2_6` (Ortsbild per Grafik-Task, bis dahin Platzhalter) und die Szenen
+**Wenn** die Mission läuft
+**Dann** kämpft die Truppe nur gegen Leute der beiden anderen Anwärter; Amos steht als Team `other` im Lazarett, Gegner greifen ihn an, wenn er in Reichweite ist (Nebenziel `protect_npc`)
+**Und** ist `joined_sable` gesetzt, entfallen Sable und `scn.m2_6.sable_battle` per `requires`, der Ersatz-Hauptmann steht an ihrem Platz.
+
+**Angenommen** alle Gegner sind besiegt oder vertrieben
+**Wenn** die Mission gewonnen ist
+**Dann** ist Amos dabei, die Truppe erhält 2 200 Gold, in der Nachszene findet sie Silbermeer-Münzen als Sold der Banden; Nell (falls dabei, Ersatzsprecher-Kette) erkennt die Prägung; der Verdacht öffnet 2-7
+**Und** Beat 9 „ein Dorf brennt“: Ist `e07` nicht `obey`, zeigt `scn.m2_6.burnt_village` auf dem Rückweg ein von Drachenschatten verbranntes Dorf (nur Szene, kein Kampf); so erscheint das brennende Dorf auch, wenn 2-6 vor 2-5 gespielt wird `[ASSUMPTION]`.
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_6 --runs 50 --start expected --position 1` und `--position 5` laufen
+**Dann** liegen alle Varianten im Korridor.
+
+### Story 11.10: Mission 2-7 „Das Kontor am Silbermeer“ und Entscheidung E8
+
+Als Spieler
+möchte ich im Kontor der Herzogin die Geschäftsbücher sichern, obwohl sie Brakka zum Vertuschen angeheuert hat,
+damit der Beweis gegen Maelis in meiner Hand liegt.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_7_kontor`, 16×20: Hafen bei Nacht, Lagerhäuser mit Türen (Schlüssel oder Späher), Laternen als Lichter, Archiv im Nordosten, Kriegsnebel (`fog: true`), Wetter `rain` |
+| Ziel | `reach`: eine beliebige eigene Figur erreicht das Archiv |
+| Gegner Normal (Leicht/Schwer) | 16 = 12 Start + 4 Welle (Runde 4, Söldner vom Kai): Brakka + 4 skirmisher, 3 brigand, 2 marksman (Söldner) + 3 vanguard, 2 marksman, 1 knight (Kontorwachen); Leicht 14, Schwer 18 `[ASSUMPTION]` |
+| Position und Stufe | Position 2–6, P = 13–17; Wachen +0, Söldner +1, Archivwache +2 |
+| Leutnant | Brakka (von Maelis angeheuert) |
+| Szenen | `scn.m2_7.intro`, `scn.m2_7.brakka_battle`, `scn.m2_7.ledgers` (Bücher gefunden), `scn.m2_7.page`, `scn.m2_7.outro` mit E8 |
+| Beitritte | keine |
+| Entscheidungen und Flags | E8 `e08: [seraphine, sell]`: `seraphine` → `grudge { lt: grell, delta: -1 }`, `sell` → +1 000 Gold `[ASSUMPTION]`; Flag `maelis_ledgers` (story, `season2: true`) bei Sieg; Chronik-Seite `a2_ledger` |
+| Freischaltung | `requires: completed m2_6` |
+| Heimsuchungs-Anker | 3: `treasure`, `rout`, `boss` |
+| Einsatzplätze | 9 |
+| Gold | 2 800 `[ASSUMPTION]`; `merchantTier: 1` |
+| Nebenziele | `open_chests` (Chronik-Truhe im Schreibzimmer, Seite `a2_ledger`), `turn_limit` 8 (Mondstahl ×2), `no_downs` (`vulnerary`) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 bei Position 2 und 6 |
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Karte, der Knoten `m2_7` (Ortsbild per Grafik-Task, bis dahin Platzhalter) und die Szenen
+**Wenn** die Mission läuft
+**Dann** kämpft die Truppe gegen Brakkas Söldner und Kontorwachen der eigenen Auftraggeberin: 2-7 ist der bewusste Bruch mit Maelis; die Ausnahme von der Regel „immer gegen die Leute der anderen Anwärter“ steht im Narrative-Log (Entscheidung A2-1)
+**Und** das Intro macht den Bruch klar (Maelis ließ Brakka anheuern, um die Bücher verschwinden zu lassen).
+
+**Angenommen** eine Figur erreicht das Archiv
+**Wenn** die Mission gewonnen ist
+**Dann** läuft `scn.m2_7.ledgers`, das Flag `maelis_ledgers` ist gesetzt, die Truppe erhält 2 800 Gold
+**Und** in der Nachszene fällt E8 mit Folgen-Karte: `seraphine` gibt die Beweise an die Prinzessin (Grell-Groll −1, Kronfeld-Zeile in 11.11), `sell` verkauft sie an Maelis zurück (+1 000 Gold).
+
+**Angenommen** die Simulation
+**Wenn** `pnpm sim m2_7 --runs 50 --start expected --position 2` und `--position 6` laufen
+**Dann** liegen beide im Korridor; das Autoplay öffnet Türen mit Spähern oder Schlüsseln.
+
+### Story 11.11: Mission 2-8 „Kronfeld“ (Finale, große Schlacht)
+
+Als Spieler
+möchte ich in Kronfeld den Freispruch empfangen, verraten werden und mit der Truppe entkommen,
+damit Akt 2 mit „Die Krone war hohl“ endet.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `m2_8_kronfeld`, 24×28: weites Feld mit Bannern, Verhandlungszelt in der Mitte, Start der Truppe am Zelt, Fluchtzone am Nordrand (Waldsaum), zwei Ballisten am Feldrand; Abend, `clear` |
+| Ziel | Phasen: `survive` 8 Runden, dann `escape`: Sieg, wenn Avatar, Kael und mindestens die Hälfte der Eingesetzten geflohen sind |
+| Gegner Normal (Leicht/Schwer) | ~30 = 15 Start + je 5 in Runde 2, 4, 6; in der Fluchtphase je 3 alle 2 Runden `[ASSUMPTION]`. Garde der Prinzessin als Hauptmacht (6 knight, 5 pegasus_knight, 3 skirmisher, 3 marksman), Grenzheer (3 vanguard, 2 marksman), Kaperfahrer (2 brigand, 2 skirmisher), dazu die Leutnants; Leicht 26, Schwer 34 |
+| Position und Stufe | Position 7 (fest), P = 11 + 7 + `levelBonus: 1` = 19 `[ASSUMPTION]`; Start +0, Wellen +1, Garde-Ritter +2 |
+| Leutnants | Rowena (führt), Grell, Brakka, Sable (falls nicht gewechselt) |
+| Szenen | `scn.m2_8.intro` (Freispruch-Treffen, Erlass mit dem Siegel aus 2-2), `scn.m2_8.betrayal` mit Tafel 6 „Kronfeld: der Verrat“, Leutnant-Zeilen `scn.m2_8.<lt>_battle`, `scn.m2_8.escape_open` (Beginn Runde 9), `scn.m2_8.outro` mit Tafel 7 „Die Krone war hohl“ (Key Conversation 8: Seraphine, Kael; Beats 11 und 12); Seraphine und Halvard nur in Szenen |
+| Beitritte | keine |
+| Entscheidungen und Flags | keine Entscheidung; Varianten: `e05: return` (Odile spricht eine Zeile auf der Gegenseite), `e06: pardon` (Varek ebenso), `e08: seraphine` (Seraphine hält die Beweise gegen Maelis) |
+| Freischaltung | `fixed: finale` (nach allen anderen Story-Knoten von Akt 2) |
+| Heimsuchungs-Anker | 0 |
+| Einsatzplätze | bis 15; Söldner der Taverne dürfen auffüllen |
+| Gold | 3 000 `[ASSUMPTION]`; `merchantTier: 2`; keine Glutfunken |
+| Nebenziele | `no_downs` (Mondstahl ×3) `[ASSUMPTION]` |
+| Sim-Korridor | NFR12 am oberen Rand (Normal 75–85 % Sieg, 0,9–1,3 Niedergestreckte) bei Position 7 `[ASSUMPTION]` |
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Kern-Erweiterung „Ziel-Phasen“
+**Wenn** eine Karte `victory: { type: survive, turns: 8, then: { type: escape, area, minShare: 50, must: [avatar, kael] } }` hat
+**Dann** gilt bis zum Ende von Runde 8 das Ziel `survive`; zu Beginn von Runde 9 wechselt das Ziel auf `escape` (Event `objectiveChanged`, Rundenpille und Zieltext wechseln, die Fluchtzone erscheint markiert), ein Trigger `objective_changed` kann eine Szene starten
+**Und** in der Fluchtphase dürfen Figuren in der Fluchtzone die Aktion `escape` nutzen; Kael flieht wie bisher als Letzter (`mustStayForRest`); der Sieg fällt, sobald Avatar und Kael geflohen sind und mindestens `ceil(minShare % × n)` Figuren geflohen sind
+**Und** `n` ist die Zahl der Eingesetzten, die zu Beginn der Fluchtphase noch leben, damit ein Sieg nach Verlusten möglich bleibt `[ASSUMPTION]`; was mit Niedergestreckten geschieht, die bei Sieg auf dem Brett liegen, regelt die vorhandene `escape`-Regel des Prologs
+**Und** Schema (`schemas.ts`), Typen (`defs.ts`), `objectives.ts`, KI-Ziele (`ai.ts`), Autoplay und `content:check` kennen die Phase; Vorschau, Gefahrenzone und Zielanzeige lesen das aktive Ziel; Tests decken Wechsel, Sieg, Niederlage (Avatar oder Kael fällt) und Replay ab.
+
+**Angenommen** die Karte, der Knoten `m2_8` (`place: kronfeld`, `levelBonus: 1`) und die Szenen
+**Wenn** die Schlacht beginnt
+**Dann** läuft im Intro das Freispruch-Treffen, in Runde 1 der Verrat (Tafel 6, Bild per Grafik-Task `art/prompts/tafel_kronfeld_verrat.md`, bis dahin Platzhalter); Seraphine liefert die Truppe aus, weil Halvard ihr einflüstert, das Aschenbanner sei schuldig
+**Und** die Leutnants sprechen ihre Kampfzeilen; ist `joined_sable` gesetzt, fehlen Sable und ihre Zeile (Muster `grosk` in `m1_8`); Odile und Varek stehen nach `return` bzw. `pardon` nicht auf dem Brett, sie sprechen nur ihre Szenenzeile auf der Gegenseite
+**Und** die Einsatzwahl erlaubt bis zu 15 Figuren, Söldner der Taverne füllen auf.
+
+**Angenommen** die Truppe entkommt
+**Wenn** die Mission gewonnen ist
+**Dann** folgt Tafel 7 „Die Krone war hohl“ (Bild per Grafik-Task, bis dahin Platzhalter): der Pakt hält durch ein Opfer, Seraphine glaubt, sie werde Königin; Ersatzsprecher-Kette für Gefährtenzeilen
+**Und** Akt 2 ist beendet (`actFinished`); ohne Paket `act3` zeigt die Weltkarte „Akt 3 „Krone“ erscheint bald“ (Story 7.3); 2-8 gibt keinen Glutfunken
+**Und** die Relikt-Stufen, die laut `items.md` §5 an 2-8 hängen, erwachen: Schild der Paktwächter Stufe 3, Drachenglut Stufe 2 (Mechanik aus Story 11.12).
+
+**Angenommen** das Referenzgerät (Pixel 6a / iPhone 12) und Story 7.7
+**Wenn** eine komplette Gegnerphase mit ~30 Gegnern und 15 eigenen Figuren läuft
+**Dann** hält sie 60 FPS (NFR1) und jede Gegnereinheit braucht unter 300 ms KI-Rechenzeit im Web Worker (NFR3); die Messung steht im Dev Agent Record
+**Und** `pnpm sim m2_8 --runs 50 --start expected --position 7` liegt auf allen Schwierigkeiten im Korridor, Normal am oberen Rand; Spielzeit 30–45 Minuten laut GDD.
+
+### Story 11.12: Nebenquests N4 „Der Clan im Schnee“ und N5 „Glut unter dem Berg“
+
+Als Spieler
+möchte ich Ilkas Jägerclan beistehen und in Branns Mine die Drachenglut finden,
+damit Akt 2 persönliche und Lore-Geschichten neben dem Hauptstrang hat.
+
+**N4 „Der Clan im Schnee“**
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `n4_clan`, 14×16: Clanlager im Hochland bei frühem Schnee (Wetter `snow`, nur auf dieser Karte in Akt 2), Kriegsnebel, Zelte und Felsen; Morgen |
+| Ziel | `defend` Clanälteste (Zivilistin), 8 Runden `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 12 = 8 Start + 4 Welle (Runde 3): Dravns Vorposten (3 vanguard, 2 knight, 3 marksman, 3 skirmisher) + ein Vorposten-Hauptmann (`skirmisher`, kein Leutnant); Leicht 10, Schwer 14 `[ASSUMPTION]` |
+| Position und Stufe | P beim Spielen (frühestens 13, wenn 2-4 als 2. Mission), Offsets +0 bis +2 |
+| Leutnant | keiner |
+| Szenen | `scn.n4.intro`, `scn.n4.outro`, `scn.n4.memorial_intro`, `scn.n4.memorial_outro` |
+| Auslöser | `completed m2_4` + `any: [alive ilka, dead ilka]` (gegangen = keine Quest), `memorialIf: { dead: ilka }`; bleibt über Akte offen |
+| Einsatzplätze | 7; Ilka Pflicht, wenn sie lebt |
+| Belohnung | Glutfunke (Knotenwirkung) + Signaturbogen `white_wolf`, auch in der Gedenk-Variante |
+| Gold | 1 400 `[ASSUMPTION]` (≈ 55 % einer Story-Mission) |
+| Nebenziele | `no_downs` (`vulnerary`), `visit_villages` 2 Zelte (Mondstahl) `[ASSUMPTION]` |
+| Heimsuchungs-Anker | 0 |
+
+**N5 „Glut unter dem Berg“**
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `n5_mine`, 14×18: Branns alte Mine bei Brandhang, Glutadern im Fels als Lichtquellen (kein Drache), Kriegsnebel, enge Stollen |
+| Ziel | `treasure`: 4 Truhen (Relikt `dragon_ember`, `earth_rune_3`, Chronik-Seite `a2_mine`, Mondstahl ×3), 12 Runden `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 12 = 9 Start + 3 Welle (Runde 4): Plünderer der Herzogin (4 brigand, 4 skirmisher, 3 marksman) + ein Vorarbeiter (`brigand`, kein Leutnant); Leicht 10, Schwer 14 `[ASSUMPTION]` |
+| Position und Stufe | P beim Spielen (frühestens 14), Offsets +0 bis +2 |
+| Leutnant | keiner |
+| Szenen | `scn.n5.intro` (Zeile je `brandhang_burned`), `scn.n5.relic`, `scn.n5.page`, `scn.n5.outro` |
+| Auslöser | `completed m2_5`; keine Gedenk-Variante (Lore); bleibt über Akte offen |
+| Einsatzplätze | 7, keine Pflichtfigur außer Avatar und Kael |
+| Belohnung | Glutfunke (Knotenwirkung); Relikt, Rune und Seite aus den Ziel-Truhen |
+| Gold | 1 500 `[ASSUMPTION]` |
+| Nebenziele | `turn_limit` 9 (`remedy_salve`), `no_downs` (`vulnerary`) `[ASSUMPTION]` |
+| Heimsuchungs-Anker | 0 |
+
+**Akzeptanzkriterien:**
+
+**Angenommen** N4 und Wetter `snow`
+**Wenn** `content:check` läuft
+**Dann** erlaubt `render.yaml` Schnee in Akt 2 nur für die Karte `n4_clan` (Eintrag `weather.snow.maps: [n4_clan]` neben `acts: [3]`); jede andere Akt-2-Karte mit `snow` ist ein Fehler.
+
+**Angenommen** Ilka ist in der Truppe oder gefallen und 2-4 ist gespielt
+**Wenn** der Spieler N4 gewinnt
+**Dann** erhält er einen Glutfunken und `white_wolf` (Bogen, Werte `steel_bow`, `rarity: legendary`, Effekt „Nebel und Schnee kosten keine Sicht“: Sicht des Trägers im Kriegsnebel +3 zusätzlich zum Rollen-Bonus `[ASSUMPTION]`); ist Ilka gefallen, laufen die Gedenk-Szenen und die Belohnung kommt trotzdem
+**Und** ist Ilka gegangen, erscheint N4 nicht.
+
+**Angenommen** 2-5 ist gespielt
+**Wenn** der Spieler N5 gewinnt
+**Dann** erhält er einen Glutfunken (Knotenwirkung) und aus den Truhen `dragon_ember`, `earth_rune_3` und die Seite `a2_mine` (Akt-2-Thema, ≤ 400 Zeichen, DE und EN); die Chronik zeigt die Seite
+**Und** das Intro nennt Brandhang verbrannt oder gerettet je nach `brandhang_burned`; Brann spricht unter `requires: alive`, sonst Ersatzsprecher.
+
+**Angenommen** Relikte erwachen mit der Story (`items.md` §5)
+**Wenn** ein Relikt eine Stufe erreicht
+**Dann** beschreibt das Item `stages` mit Bedingung (`requires`), Bild und Wirkung je Stufe; die Stufe ergibt sich als reine Funktion aus dem Kampagnenstand (ist der Story-Punkt beim Erhalt schon erreicht, gilt die Stufe sofort), Vorschau und Werte lesen sie
+**Und** `dragon_ember` (Accessoire, unverkäuflich): Stufe 1 schlafend MAG +2, Stufe 2 erwachend ab `completed m2_8` MAG +3 und Feuer-Affinität, Stufe 3 erwacht ab 3-6 (Epic 12) Schutz vor Brennen `[ASSUMPTION]`; `pact_warden_shield` bekommt Stufe 2 ab `completed m1_6` und Stufe 3 ab `completed m2_8` mit Wirkungen nach `items.md` §5 `[ASSUMPTION]`
+**Und** Tests decken Stufenwechsel und Vorschau = Auflösung ab; die Stufen-Bilder sind ein Grafik-Task (Story 8.5), bis dahin gilt das Bild der Stufe 1.
+
+**Angenommen** das Nebenquest-Gold
+**Wenn** die Story abgeschlossen ist
+**Dann** liegt das Gold von N4 und N5 bei ≈ 55 % einer Story-Mission (1 300–1 600) und der GDD-Satz „Nebenquest wie Story + Sonderbeute“ (§Wirtschaft) ist angepasst, mit Eintrag im GDD-Log (Entscheidung Runde 6)
+**Und** `pnpm sim n4 --start expected --position 2` und `pnpm sim n5 --start expected --position 3` (frühester Zeitpunkt) liegen im Korridor.
+
+### Story 11.13: Nebenquest N6 „Die Gauklertruppe“
+
+Als Spieler
+möchte ich mit Jory seiner alten Gauklertruppe gegen ihre Schuldeneintreiber beistehen,
+damit der Spielmann seine Geschichte und seine Signaturlaute bekommt.
+
+| Feld | Inhalt |
+|---|---|
+| Kartenidee und Größe | `n6_jahrmarkt`, 16×16: Jahrmarkt in einem Herbstdorf, Bühne, Wagen und Buden als Deckung, die Gauklermeisterin auf der Bühne; Nachmittag, `clear` |
+| Ziel | `rout` (Eintreiber vertreiben) `[ASSUMPTION]` |
+| Gegner Normal (Leicht/Schwer) | 12 = 9 Start + 3 Welle (Runde 3): Schuldeneintreiber (4 brigand, 4 skirmisher, 3 marksman; `unit.debt_collector.name`) + Anführer (`brigand`, kein Leutnant); Leicht 10, Schwer 14 `[ASSUMPTION]` |
+| Position und Stufe | P beim Spielen (frühestens 12), Offsets +0 bis +2 |
+| Leutnant | keiner |
+| Szenen | `scn.n6.intro`, `scn.n6.outro`, `scn.n6.memorial_intro`, `scn.n6.memorial_outro` |
+| Auslöser | `completed m2_1` + `any: [alive jory, dead jory]`, `memorialIf: { dead: jory }`; bleibt über Akte offen |
+| Einsatzplätze | 7; Jory Pflicht, wenn er lebt |
+| Belohnung | Signaturlaute `final_curtain` (auch in der Gedenk-Variante), kein Glutfunke |
+| Gold | 1 300 `[ASSUMPTION]` |
+| Nebenziele | `protect_npc` Gauklermeisterin (`remedy_salve` ×2), `no_downs` (`vulnerary`) `[ASSUMPTION]` |
+| Heimsuchungs-Anker | 0 |
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Laute-Regel für `final_curtain`
+**Wenn** ein Spielmann mit `final_curtain` in der Nebenhand Anfeuern nutzt
+**Dann** wirkt Anfeuern auf bis zu zwei benachbarte Verbündete, die noch nicht gehandelt haben (je +1 MOV und +10 Treffer aus `balance.yaml › classActions.cheer`, derselbe Empfänger nicht doppelt); das steht als Item-Feld (`cheer: { targets: 2 }`), nicht im Code
+**Und** ohne dieses Item bleibt Anfeuern bei einem Ziel; die Auswahl im Kontext-Band erlaubt das zweite Ziel nacheinander; KI und Autoplay sind nicht betroffen
+**Und** `final_curtain`: Laute, Nebenhand, Werte `travel_lute`, `rarity: legendary`, Preis 0, `unsellable` `[ASSUMPTION]`; Tests decken ein und zwei Ziele sowie Replay ab; der Handbuch-Eintrag zu Anfeuern nennt die Laute.
+
+**Angenommen** Jory ist in der Truppe oder gefallen und 2-1 ist gespielt
+**Wenn** der Spieler N6 gewinnt
+**Dann** erhält er `final_curtain` und 1 300 Gold, keinen Glutfunken; ist Jory gefallen, laufen die Gedenk-Szenen, die Laute kommt trotzdem in den Konvoi
+**Und** `pnpm sim n6 --start expected --position 1` und `--position 6` liegen im Korridor.
+
+### Story 11.14: Supports, Barks und Chronik-Szene von Akt 2
+
+Als Spieler
+möchte ich am Lagerfeuer die neuen Paare kennenlernen, die neuen Gefährten im Kampf hören und in der Burg die Chronik entziffern lassen,
+damit Akt 2 Beziehungen und das Pakt-Geheimnis vertieft.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die 8 Paare von Akt 2 laut Narrative (Jory × Nell, Nell × Varek, ★ Varek × Odile, Odile × Sable, Sable × Ilka, ★ Ilka × Brann, Liora × Amos, Amos × Grosk)
+**Wenn** ihre Gespräche in `content/acts/act2/supports.yaml` und `scn.support.<a>_<b>.<Rang>` geschrieben sind (Schreib-Pipeline der Narrative, DE + EN, 8–16 Boxen, ≤ 110 Zeichen je Box)
+**Dann** haben alle Paare C, B und A, die Kernpaare ★ zusätzlich S (26 Gespräche); sie stehen am Lagerfeuer bereit, sobald die Punkte reichen und die Lagerfeuer-Stufe den Rang erlaubt (`campfireMaxRank`, Epic 10)
+**Und** der Wissensstand folgt dem Akt-1-Muster: C und B kennen nur Akt-2-Einstieg und Beitritte, A und S dürfen das Ende der Stränge, aber nicht Kronfeld kennen; Gespräche mit Figuren, die gegangen sind (Odile nach E5, Varek nach E6) oder vor Sables Wechsel nicht dabei sind, erscheinen nicht.
+
+**Angenommen** die sieben Gefährten von Akt 2
+**Wenn** ihre Barks geschrieben sind
+**Dann** hat jeder etwa 6 Barks (`scn.bark.<id>`: Kampfbeginn, Krit, niedergestreckt, Dank fürs Bergen, Stufenaufstieg, Glutfunke), eine Todeszeile (`scn.farewell.<id>`) und eine Trauerzeile je Support-Partner, auch für die Akt-1-Partner (Varek, Liora, Grosk)
+**Und** Sable hat eigene Zeilen als Seitenwechslerin, sobald sie beigetreten ist.
+
+**Angenommen** Beat 10 „Die Chronik“ (Key Conversation 7)
+**Wenn** die Truppe nach der 3. abgeschlossenen Story-Mission von Akt 2 (egal welche) in die Burg zurückkehrt
+**Dann** läuft einmal die Burg-Szene `scn.castle.chronicle`: Liora entziffert die in 1-7 geborgene Chronik, sonst Ysolde, sonst Rhen (Ersatzsprecher-Kette); ist Liora tot, kommt eine Gedenkzeile; Kern: „Der Pakt verlangt etwas von den Königen“, was genau, bleibt offen
+**Und** ein Flag `chronicle_read` (story, `season2: true`) hält fest, dass die Szene lief; der Chronik-Eintrag `wardens_chronicle` wechselt von „versiegelt“ auf „entziffert“ (Text in `locales/<lang>.yaml`)
+**Und** Auslöser sind `storyCount` von Akt 2 ≥ 3 und die Heimat Burg, getestet für verschiedene Reihenfolgen.
+
+**Angenommen** Vertonung und Musik
+**Wenn** die Story abgeschlossen ist
+**Dann** sind Texte vollständig in DE und EN; Vertonung (`voice.act2.<lang>`), Musik (Flöte, Fiedel) und Klang von Akt 2: später.
+
+### Story 11.15: Akt 2 abstimmen und veröffentlichen
+
+Als Produktinhaber
+möchte ich Akt 2 über alle Reihenfolgen der Stränge abgestimmt sehen,
+damit Spieler aus Akt 1 ohne Brüche und im Korridor weiterspielen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** alle Stories von Epic 11 sowie 10.2 (Akademie, Glutfunke) und 10.3 (Profi-Wege) auf `main`
+**Wenn** `pnpm sim --campaign act2 --runs 50` die verkettete Kampagne über Akt 1 und Akt 2 mit Aufstiegen spielt
+**Dann** liegen alle Story-Missionen von Akt 2 auf allen Schwierigkeiten in den Korridoren (NFR12), 2-8 am oberen Rand; die Armee-Stufe weicht je Mission höchstens `levelTolerance` von der Positionsstufe ab; das Gold je Mission liegt in `perAct['2']`, Nebenziele bei 30–50 %
+**Und** geprüft werden mindestens die 6 Reihenfolgen, in denen die Stränge nacheinander laufen, und 2 verschränkte (2-2, 2-4, 2-6, 2-3, 2-5, 2-7 und umgekehrt) `[ASSUMPTION]`, je mit E7 `warn` und `obey`; Ergebnisse im Dev Agent Record
+**Und** die Nebenquests N4–N6 liegen an ihrer frühesten und spätesten Position im Korridor.
+
+**Angenommen** die vorläufigen Werte aus 11.4–11.13
+**Wenn** die Abstimmung Werte ändert
+**Dann** ändern sich nur Content-YAML und `balance.yaml`; jede Änderung gegenüber den Vorschlägen steht im GDD-Log
+**Und** die Rabatt-Summe (E4, E7, Händler-Stufe 3) erreicht nie mehr als −30 %, die Glutfunken von Akt 2 (N4, N5, Händler) passen zur Rechnung des GDD (12 je Staffel).
+
+**Angenommen** die Spielzeit
+**Wenn** der Simulator Züge und Szenen zählt und ein Probedurchlauf auf Normal gemessen ist
+**Dann** passt Akt 2 zu 30–35 Stunden für die Staffel (NFR16, Akt 2 rund ein Drittel) `[ASSUMPTION]`.
+
+**Angenommen** Spielstände aus Akt 1
+**Wenn** der Migrationstest läuft
+**Dann** laden die Fixtures aus dem Akt-1-Release (`tests/fixtures/saves/format2-*`) ohne Datenverlust; ein Stand mit erledigtem `m1_8` landet in Akt 2 mit Titeltafel; ändert sich das Speicherformat, gibt es eine Migration in `src/persistence/save.ts` mit Fixture (`tests/unit/migrations.test.ts`).
+
+**Angenommen** der echte Release von Akt 2
+**Wenn** der Produktinhaber ihn auslöst
+**Dann** läuft erst dann `pnpm content:lock` und sperrt die IDs von `act2` in `content/released-ids.json` (bis dahin keine Sperre, Entscheidung 2026-10-31); `act2` ist schon seit 11.1 `released: true`
+**Und** die Leistung von 2-8 ist mit Story 7.5 auf dem Referenzgerät gemessen (NFR1, NFR3), alle Prüfungen sind grün, der Pull Request gegen `main` nennt die Ergebnisse
+**Und** ein Playtest-Plan für Akt 2 (Stränge, Verrat in Kronfeld, Flieger und Balliste) liegt vor (`gds-playtest-plan`).
 
 ## Epic 12: Akt 3 „Krone“ und Staffelende – grob
 
@@ -2321,6 +3563,6 @@ damit ich nicht erst suchen muss.
 - **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
 - **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
 - **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager, Burg auf Stufe 1 ab 1-6) und Epic 10 (Burg-Ausbau ab Akt 2) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.
-- **Offen:** Epics 10–12 sind grob und werden vor dem jeweiligen Akt mit `gds-create-story` verfeinert; bis dahin bleiben sie im Sprint-Status `backlog`. Lizenzfrage GA26: siehe `concept/23-art-direction/licensing.md`.
+- **Offen:** Epic 12 ist grob und wird vor Akt 3 verfeinert; Epic 10 und 11 sind seit 2026-10-31 verfeinert. Lizenzfrage GA26: siehe `concept/23-art-direction/licensing.md`.
 - **Readiness (2026-10-23):** Befunde des Readiness-Checks mit dem Produktinhaber geklärt (Decision-Log); neu sind Story 3.7 und 7.5, mit der Course Correction 8/8/8 damit 108 Stories.
 - **Nächster Schritt:** Umsetzung nach `_bmad-output/implementation-artifacts/sprint-status.yaml`, Story für Story mit `gds-create-story` und `gds-dev-story`.
