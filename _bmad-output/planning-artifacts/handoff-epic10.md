@@ -86,7 +86,7 @@ Nachricht an die Session Epic 11 vom 2026-10-31 (Antwort auf ihre Frage):
 
 ## 4. Was gebaut ist
 
-- **Story-Entwürfe** `_bmad-output/implementation-artifacts/10-1-…` bis `10-7-…` (Status `ready-for-dev` im Kopf, im Sprint-Status unverändert `backlog`). Antworten 1–12 sind darin **noch nicht** eingearbeitet (der Einarbeitungs-Agent wurde für die Pause gestoppt, bevor er schrieb). Die Entwürfe sind gründlich (Heutiger Stand aus dem Code, Aufgaben mit Dateien) und eignen sich als Grundlage; nach der Verfeinerung in `epics.md` neu erzeugen oder anpassen.
+- **Story-Entwürfe** `_bmad-output/planning-artifacts/handoff-epic10/drafts/10-1-…` bis `10-7-…` (verschoben, weil die Planungssession die Story-Keys neu geschnitten hat; nur noch Material) (Status `ready-for-dev` im Kopf, im Sprint-Status unverändert `backlog`). Antworten 1–12 sind darin **noch nicht** eingearbeitet (der Einarbeitungs-Agent wurde für die Pause gestoppt, bevor er schrieb). Die Entwürfe sind gründlich (Heutiger Stand aus dem Code, Aufgaben mit Dateien) und eignen sich als Grundlage; nach der Verfeinerung in `epics.md` neu erzeugen oder anpassen.
 - **3D-Testaufbau der Burg (Spike, nur zur Bewertung):** `src/render/home/`, `src/app/screens/Castle3d.tsx`, `Castle3d.css`, Änderungen in `Camp.tsx`, `src/render/shared/models.ts` und den Locales. Stand und Bedienung siehe Abschnitt 5. Kein Produktionscode; nach der 3D-Entscheidung behalten (3D) oder löschen (Bild).
 - **Keine** Änderungen an Content-Schemas, `rooms.yaml`, `classes.yaml`, `items.yaml`, Kern-Commands, `sprint-status.yaml` oder Konzeptdokumenten. Der Schema-PR für Epic 11 ist noch nicht gebaut.
 
