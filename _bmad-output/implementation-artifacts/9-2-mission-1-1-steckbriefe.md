@@ -61,7 +61,7 @@ damit der Antrieb „Sündenbock“ greift.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.2]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.2]
 - [Source: concept/22-narrative/narrative.md#Story Beats]
 - [Source: concept/06-maps-missions.md#10]
 - [Source: _bmad-output/implementation-artifacts/9-13-supports-und-barks-von-akt-1.md]

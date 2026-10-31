@@ -47,7 +47,7 @@ damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.
 - [Source: concept/25-ux/DESIGN.md]
 - [Source: concept/25-ux/mockups/07-start-kampagnen.html]
 - [Source: concept/25-ux/.decision-log.md (Währungsanzeige, Start und Kampagnen)]
-- [Source: concept/26-epics/epics.md#Story 1.1]
+- [Source: concept/26-epics/epics/epic-01.md#Story 1.1]
 
 ## Dev Agent Record
 

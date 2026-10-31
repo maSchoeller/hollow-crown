@@ -44,7 +44,7 @@ damit große Schlachten Spaß machen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.5, NFR1, NFR2]
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.5, NFR1, NFR2]
 - [Source: concept/24-architecture/architecture.md#10 Leistung]
 
 ## Dev Agent Record

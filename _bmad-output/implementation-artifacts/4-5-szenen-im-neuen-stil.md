@@ -52,7 +52,7 @@ brenna angry/happy/sad, grosk angry, hask happy, kael angry/happy/sad, liora sad
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.5]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.5]
 - [Source: concept/25-ux/mockups/05-szenen.html]
 - [Source: concept/24-architecture/architecture.md#5.8]
 

@@ -14,15 +14,18 @@ Mobile-first Taktik-RPG (Fire Emblem trifft Battle Brothers) für den Browser (P
 
 ## Wo was liegt
 
+Die Dokumente unten sind lang. Von ihnen die Gliederung lesen (`grep -n '^#' <datei>`) und dann nur die betroffenen Abschnitte, nie das ganze Dokument „zur Sicherheit“.
+
 - Vor Planungs- oder Feature-Arbeit `concept/20-game-brief/brief.md` lesen, vor Arbeit an Spielregeln zusätzlich `concept/21-gdd/gdd.md`. Vor Arbeit an Story, Figuren, Dialogen oder Missionsinhalten `concept/22-narrative/narrative.md`. Wo diese schweigen, gilt `concept/01-decisions.md`; widerspricht ein BMAD-Artefakt dem Protokoll, gilt das Artefakt.
-- Vor Arbeit an Grafik, Figuren, Karten-Look, Effekten oder Audio-Richtung `concept/23-art-direction/art-direction.md` lesen (löst `15-art-direction.md` ab); Pipeline und Formate in `16-asset-pipeline.md`, Audio-Technik in `17-audio.md`, Asset-Formate in `art/README.md`. Zeichenstil ist runder Chibi (B8), Brettfiguren entstehen per Bild-zu-3D mit Tripo (§4.6).
+- Vor Arbeit an Grafik, Figuren, Karten-Look, Effekten oder Audio-Richtung `concept/23-art-direction/art-direction.md` lesen; Pipeline und Formate in `16-asset-pipeline.md`, Audio-Technik in `17-audio.md`, Asset-Formate in `art/README.md`. Zeichenstil ist runder Chibi (B8), Brettfiguren entstehen per Bild-zu-3D mit Tripo (§4.6).
 - Vor Arbeit an Oberfläche, HUD, Menüs oder Screens `concept/25-ux/DESIGN.md` und `EXPERIENCE.md` lesen (Mockups in `concept/25-ux/mockups/`); Beträge immer als Symbol + Zahl.
 - Vor technischer Arbeit `concept/24-architecture/architecture.md` lesen (Delta zu `concept/10-tech-architecture.md`, das gilt, wo das Delta schweigt): Kampagnen-Commands, Bedingungen/Wirkungen, Akt-Pakete, Speicherformat 2, Muster in §8. Spielwerte in `content/core/balance.yaml` (Akt-Inhalte in `content/acts/act1/`), Startwerte in `concept/data-samples/`.
-- Epics und Stories: `concept/26-epics/epics.md` (Quelle für `gds-sprint-planning` und `gds-create-story`, lesbar in `concept/26-epics/html/epics.html`); Story-Dateien und Sprint-Status (sobald vorhanden): `_bmad-output/implementation-artifacts/`.
+- Epics und Stories: `concept/26-epics/epics/`, je Epic eine Datei `epic-NN.md`, Übersicht in `index.md`, Anforderungen in `requirements.md` (Quelle für `gds-sprint-planning` und `gds-create-story`; nur das Epic lesen, an dem gearbeitet wird). HTML-Ansicht mit `python tools/docs/epics_html.py concept/26-epics/epics concept/26-epics/html/epics.html` neu erzeugen. Story-Dateien und Sprint-Status: `_bmad-output/implementation-artifacts/`.
+- Abgelöste Dokumente liegen in `concept/archive/`, nur für die Herleitung öffnen. Decision-Logs nur lesen, wenn eine Entscheidung nachzuvollziehen ist.
 
 ## Ausführen und prüfen
 
-- Fertig ist eine Aufgabe erst, wenn `pnpm lint` (inkl. Typecheck), `pnpm test`, `pnpm content:check` und `pnpm build` grün sind; `build` bricht auch bei überschrittenem Bundle-Budget ab.
+- Fertig ist eine Aufgabe erst, wenn `pnpm lint` (inkl. Typecheck), `pnpm test`, `pnpm content:check` und `pnpm build` grün sind; `build` bricht auch bei überschrittenem Bundle-Budget ab. `pnpm check` führt alle vier mit knapper Ausgabe nacheinander aus.
 - Balancing mit `pnpm sim <mapId> --runs 50` prüfen (weitere Optionen `--seed`, `--difficulty`, `--death` im Kopf von `tools/simulate.ts`).
 - Gemeldete Fehlerberichte (Optionen → „Fehler melden“) mit `pnpm report <datei>` lesen: Aktionsprotokoll als Zeilen plus Replay-Prüfung bis zur ersten Abweichung (Architektur §6.2a).
 - `pnpm art:build` braucht Python 3.12+ mit den Paketen aus `pip install -r tools/art/requirements.txt` (Pillow, numpy, PyYAML).
@@ -57,3 +60,14 @@ Während der Entwicklung nicht sperren: `released-ids.json` entsteht erst beim e
 - In einem frischen Worktree kann `node_modules` hinter `package.json` zurückliegen (z. B. fehlt `@babylonjs/materials`); bei „Cannot find package“ erst `pnpm install --frozen-lockfile`.
 
 <!-- /bmad:context -->
+
+## Kontext sparen
+
+Ausgewertet am 2026-10-31 über 14 Tage: 79 % der Tokens fielen in Runden mit mehr als 200k Kontext. Was einmal im Kontext liegt, wird in jeder folgenden Runde neu gelesen.
+
+- Eine Story oder ein Thema je Session. Ab etwa 200k Kontext eine neue Session mit kurzer Übergabe (Branch, Stand, nächster Schritt) starten statt weiterzuarbeiten. Orchestrierende Sessions lassen Sub-Sessions und Subagenten nur kurze Berichte schicken.
+- Große Dateien nie ganz lesen: Gliederung oder Symbol per `grep -n`, dann Ausschnitt mit offset/limit. Betrifft vor allem `concept/24-architecture/architecture.md`, `22-narrative/narrative.md`, `21-gdd/gdd.md`, `23-art-direction/`, die Decision-Logs, `src/render/board/board.ts`, `src/app/screens/Battle.tsx`, `src/app/state/flow.ts`, `src/core/defs.ts`, `src/content/schemas.ts` und `validate.ts`. Eine schon gelesene Datei nicht erneut lesen.
+- Shell-Ausgaben kurz halten: `pnpm check` statt der Einzelbefehle, bei Fehlern nur den Fehlerausschnitt ansehen (`| tail -n 40`), `git diff --stat` vor dem vollen Diff, `git log --oneline -n 10`. Python-Hilfsskripte geben Zusammenfassungen aus, keine ganzen Dateien.
+- Browser: Text mit `get_page_text`, `read_page` oder `find` lesen. Screenshots nur zur Sichtprüfung, mit `scale: 0.5`, und in einem `browser_batch` höchstens einen am Ende. Bei der Bildgenerierung in ChatGPT nicht nach jedem Schritt einen Screenshot machen, sondern auf das Ergebnis warten.
+- Deferred Tools in einem einzigen `ToolSearch` mit `select:` laden, und nur die Werkzeuge, die die Aufgabe braucht.
+- Breite Suchen über viele Dateien an einen Subagenten (`Explore`) geben, der nur das Ergebnis zurückmeldet.

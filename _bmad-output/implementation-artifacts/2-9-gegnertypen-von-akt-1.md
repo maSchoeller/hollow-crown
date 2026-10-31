@@ -109,7 +109,7 @@ damit Kämpfe abwechslungsreich bleiben.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 2.9]
+- [Source: concept/26-epics/epics/epic-02.md#Story 2.9]
 - [Source: concept/21-gdd/gdd.md#Rollenklassen, #Gegner-KI; Gegner pro Akt]
 - [Source: concept/22-narrative/narrative.md, Akt 1: Kopfgeldjäger und Banditen; Ulvric]
 - [Source: concept/24-architecture/architecture.md §5.7]

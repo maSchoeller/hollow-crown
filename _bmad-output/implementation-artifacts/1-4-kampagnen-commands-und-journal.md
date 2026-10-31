@@ -67,7 +67,7 @@ damit kein Kauf, keine Entscheidung und kein Fortschritt verloren geht.
 - [Source: concept/24-architecture/architecture.md#5.15 Speichern, Format 2]
 - [Source: concept/24-architecture/architecture.md#6.1 Fehlerbehandlung]
 - [Source: concept/24-architecture/architecture.md#8.1 Neues Kampagnen-Command]
-- [Source: concept/26-epics/epics.md#Story 1.4]
+- [Source: concept/26-epics/epics/epic-01.md#Story 1.4]
 - [Source: _bmad-output/implementation-artifacts/1-2-speicherformat-2-mit-kampagnen.md]
 
 ## Dev Agent Record

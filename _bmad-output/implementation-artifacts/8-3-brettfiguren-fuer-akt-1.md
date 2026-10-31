@@ -58,7 +58,7 @@ damit Porträt und Figur zusammengehören.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 8.3: Brettfiguren für Akt 1]
+- [Source: concept/26-epics/epics/epic-08.md#Story 8.3: Brettfiguren für Akt 1]
 - [Source: concept/23-art-direction/art-direction.md §4.1–§4.3, §4.6, §11]
 - [Source: concept/23-art-direction/decision-log.md – Zeilen 2026-10-23 (Turnaround, Credits, Avatar, Restguthaben) und 2026-10-24 (Wolfsreiter zu Fuß, Sonderfiguren abgeschlossen)]
 - [Source: concept/23-art-direction/licensing.md §6 (A1–A5, A7)]

@@ -108,7 +108,7 @@ damit die Truppe mitten in Akt 1 ein Zuhause bekommt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.7]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.7]
 - [Source: concept/22-narrative/narrative.md#Story Beats] (Beat 7), [#Key Conversations] (Nr. 5), [#Die 12 Entscheidungen] (E4), [#Missionsfolge]
 - [Source: concept/21-gdd/gdd.md] (Missionsziele, Reihenfolge, Entscheidungen, Heimat)
 - [Source: concept/24-architecture/architecture.md#5.3] (Wirkungen), [#5.4] (Knoten-Wirkungen)

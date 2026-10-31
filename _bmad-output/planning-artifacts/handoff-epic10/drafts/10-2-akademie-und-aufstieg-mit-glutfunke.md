@@ -79,7 +79,7 @@ damit die knappe Wahl, wer wächst, ein Moment wird.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.2], UX-DR21
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.2], UX-DR21
 - [Source: concept/21-gdd/gdd.md#Figurensystem (Aufstieg, effektive Stufe), #Fortschritt des Spielers (Glutfunke), #Heimat (Akademie-Zeile), #Annahmen-Index 10]
 - [Source: concept/21-gdd/items.md Z. 163 (Glutfunke ersetzt promotion_seal)]
 - [Source: concept/24-architecture/architecture.md#5.11 (Glutfunke, promote prüft Stufe und Akademie), #8.1]

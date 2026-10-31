@@ -6,7 +6,7 @@
 One row per animation, 48x48 cells, frames left to right. Particles are pixel-snapped squares
 (1-2 px) in Hollow-64 colours with hard alpha; only glows (flame base, heal, level-up, light) use
 soft alpha. Deterministic (fixed seeds). Effects stay short (<= 600 ms at 1x, see
-concept/15-art-direction.md section 8). Directional effects (fire_bolt, arrow) point east; the
+concept/archive/15-art-direction.md section 8). Directional effects (fire_bolt, arrow) point east; the
 renderer rotates/mirrors them.
 """
 from __future__ import annotations

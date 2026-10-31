@@ -58,7 +58,7 @@ damit ich zum Beispiel eine Klassik-Kampagne neben meinem Standard-Spiel führen
 - [Source: concept/24-architecture/architecture.md#5.15 Speichern, Format 2]
 - [Source: concept/24-architecture/architecture.md#5.2 Zwei Command-Ebenen (Journal)]
 - [Source: concept/24-architecture/architecture.md#6.4 Zeit und Zufall]
-- [Source: concept/26-epics/epics.md#Story 1.2]
+- [Source: concept/26-epics/epics/epic-01.md#Story 1.2]
 - [Source: concept/10-tech-architecture.md §6 (Format 1)]
 
 ## Dev Agent Record

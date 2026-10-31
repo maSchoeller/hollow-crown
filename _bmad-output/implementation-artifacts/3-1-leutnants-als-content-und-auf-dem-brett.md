@@ -49,7 +49,7 @@ damit ich weiß, wer wiederkommt.
 
 ### Quellen
 
-- Epics 3.1 (`concept/26-epics/epics.md`), Architektur §5.5 (AR5) und §8.3 (neues Content-Feld), GDD „Leutnants“ (4 je Akt, Erkennung: eigener Rahmen und Groll-Symbol), Narrative „Leutnants (12, je Akt ein Lager)“, „Dialogue Framework“ (Stimmen, Erkennungsformeln, ~10 Zeilen je Leutnant), `concept/21-gdd/items.md` §6.3 (Signaturen), DESIGN.md (Farben: Team Gegner `#B83A2E`, Gold `#D9A931`; Bausteine „Medaillon“, „Groll-Wimpel“: roter Wimpel, 0–3 weiße Kerben), EXPERIENCE (Zustand „geflohen“: Wimpel fällt; nichts nur über Farbe), Mockup `concept/25-ux/mockups/02-kampf.html` (Doppelring mit Goldkante).
+- Epics 3.1 (`concept/26-epics/epics/`), Architektur §5.5 (AR5) und §8.3 (neues Content-Feld), GDD „Leutnants“ (4 je Akt, Erkennung: eigener Rahmen und Groll-Symbol), Narrative „Leutnants (12, je Akt ein Lager)“, „Dialogue Framework“ (Stimmen, Erkennungsformeln, ~10 Zeilen je Leutnant), `concept/21-gdd/items.md` §6.3 (Signaturen), DESIGN.md (Farben: Team Gegner `#B83A2E`, Gold `#D9A931`; Bausteine „Medaillon“, „Groll-Wimpel“: roter Wimpel, 0–3 weiße Kerben), EXPERIENCE (Zustand „geflohen“: Wimpel fällt; nichts nur über Farbe), Mockup `concept/25-ux/mockups/02-kampf.html` (Doppelring mit Goldkante).
 - Vorbild fürs Laden und Prüfen: Story 4.9 (`supports.yaml`, Commit 616f5e7) und die Barks aus Story 9.13 (`scn.bark.<charId>`, `validate.ts`).
 
 ### Entscheidungen des Produktinhabers (2026-10-25, verbindlich)
@@ -113,7 +113,7 @@ damit ich weiß, wer wiederkommt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 3.1]
+- [Source: concept/26-epics/epics/epic-03.md#Story 3.1]
 - [Source: concept/24-architecture/architecture.md#5.5 Leutnants (AR5)]
 - [Source: concept/21-gdd/gdd.md#Leutnants]
 - [Source: concept/21-gdd/items.md#6.3 Leutnant-Signaturen]

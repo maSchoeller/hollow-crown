@@ -39,7 +39,7 @@ Was die KI entscheidet, ändert sich nicht, nur wo sie rechnet. Kampfregeln und 
 ### Quellen
 
 - Architektur §5.13 (KI im Web Worker), §8.5 (Arbeit im Worker), Schichtliste „`worker ← core, content`“, AR14, ADR-5; NFR1 (60 FPS, jetzt Story 7.7), NFR3 (300 ms je Gegnereinheit); `concept/10-tech-architecture.md` (Performance-Budget: „Web Worker, falls nötig“; AR14 macht daraus „von Anfang an“, Produktinhaber 2026-10-23, `concept/24-architecture/decision-log.md`).
-- Epics: `concept/26-epics/epics.md` Story 2.8, AR14, NFR3.
+- Epics: `concept/26-epics/epics/epic-02.md` Story 2.8, AR14, NFR3.
 
 ### Ist-Zustand des Codes (gelesen)
 

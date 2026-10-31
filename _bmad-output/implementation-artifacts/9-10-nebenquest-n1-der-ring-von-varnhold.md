@@ -24,7 +24,7 @@ damit Entscheidungen eigene Geschichten öffnen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.10], [Source: concept/22-narrative/narrative.md#Die 10 Nebenquests], [Source: concept/21-gdd/items.md#6.2]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.10], [Source: concept/22-narrative/narrative.md#Die 10 Nebenquests], [Source: concept/21-gdd/items.md#6.2]
 
 ## Dev Agent Record
 

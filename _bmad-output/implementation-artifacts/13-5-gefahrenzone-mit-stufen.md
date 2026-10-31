@@ -35,7 +35,7 @@ damit ich zwischen leicht und sehr gefährlich unterscheiden kann.
 
 ## Dev Notes
 
-- Quelle: `concept/26-epics/epics.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
+- Quelle: `concept/26-epics/epics/epic-13.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
 - Zahlen kommen aus reinen Kernfunktionen in `src/core/rules/legibility.ts` über `threatTiles` und `forecast` (Vorschau = Auflösung); Darstellungswerte in `content/core/render.yaml` unter `legibility`.
 - `dangerZone` bleibt unverändert (KI und Autoplay rechnen weiter damit); der Kampf-Screen nutzt `threatMap`.
 - Rechenzeit auf der Referenzschlacht 24×32 (40 Einheiten): `threatMap` ca. 13 ms je Zustand (Desktop), einmal je Befehl, nicht je Bild.

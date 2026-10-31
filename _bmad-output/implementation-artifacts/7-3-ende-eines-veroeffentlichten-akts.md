@@ -44,7 +44,7 @@ damit ich nicht vor einem leeren Bildschirm stehe.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.3, #Story 9.9], FR58, AR21, UX-DR18
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.3, #Story 9.9], FR58, AR21, UX-DR18
 - [Source: concept/24-architecture/architecture.md#5.4 Akt-Übergang, #5.14, #5.15 Speicherschutz]
 - [Source: concept/25-ux/EXPERIENCE.md Zustand Weltkarte; mockups/07-start-kampagnen.html, 03-weltkarte.html]
 

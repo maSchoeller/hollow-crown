@@ -30,7 +30,7 @@ damit die Heimat schon in Akt 1 ein Ort ist.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.3]
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.3]
 - [Source: concept/24-architecture/architecture.md#5.10]
 - [Source: concept/25-ux/mockups/04-heimat.html]
 

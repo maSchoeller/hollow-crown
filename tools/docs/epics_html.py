@@ -1,14 +1,16 @@
-"""Renders concept/26-epics/epics.md (epic/story sections) into a readable HTML review page.
-Usage: python3 epics_html.py <epics.md> <out.html> [first_epic] [last_epic] [title]"""
+"""Renders concept/26-epics/epics/ (one file per epic) into a readable HTML review page.
+Usage: python3 epics_html.py <epics dir or .md> <out.html> [first_epic] [last_epic] [title]"""
 import html
+import pathlib
 import re
 import sys
 
-src, out = sys.argv[1], sys.argv[2]
+src, out = pathlib.Path(sys.argv[1]), sys.argv[2]
 first = int(sys.argv[3]) if len(sys.argv) > 3 else 1
 last = int(sys.argv[4]) if len(sys.argv) > 4 else 99
 title = sys.argv[5] if len(sys.argv) > 5 else 'Hollow Crown Epics'
-md = open(src, encoding='utf-8').read()
+files = sorted(src.glob('epic-*.md')) if src.is_dir() else [src]
+md = '\n'.join(f.read_text(encoding='utf-8') for f in files)
 
 
 def inline(t: str) -> str:
@@ -94,7 +96,7 @@ parts = [f'<title>{html.escape(title)}</title>', '<meta name="claude:viewport-fi
          f'<style>{css}</style>', '<div class="wrap">']
 total = sum(len(b[3]) for b in blocks)
 parts.append(f'<header><span class="eyebrow">Hollow Crown · Staffel 1 · Epics {first}–{min(last, blocks[-1][0])}</span><h1>{html.escape(title)}</h1>'
-             f'<p>{len(blocks)} Epics, {total} Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics.md</code>.</p>'
+             f'<p>{len(blocks)} Epics, {total} Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics/</code>.</p>'
              '<nav>' + ''.join(f'<a href="#epic{n}">Epic {n}</a>' for n, *_ in blocks) + '</nav></header>')
 for n, name, intro, stories in blocks:
     parts.append(f'<section class="epic" id="epic{n}"><h2><span>Epic {n}</span>{inline(name)}</h2><p class="intro">{inline(intro)}</p>')

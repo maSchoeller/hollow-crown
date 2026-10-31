@@ -54,7 +54,7 @@ damit Akte einzeln wachsen und später als Pakete ausgeliefert werden können.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.1]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.1]
 - [Source: concept/24-architecture/architecture.md#7 Projektstruktur]
 - [Source: concept/24-architecture/architecture.md#5.4 Kampagnen-Graph und Akte]
 - [Source: concept/21-gdd/gdd.md#Figurensystem – Erwartete effektive Armee-Stufe]

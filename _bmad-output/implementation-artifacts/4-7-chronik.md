@@ -47,7 +47,7 @@ damit ich die Geschichte meines Durchlaufs im Blick behalte.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.7]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.7]
 - [Source: concept/25-ux/EXPERIENCE.md#Bildschirme]
 - [Source: concept/22-narrative/narrative.md#Found Documents]
 

@@ -64,7 +64,7 @@ damit Verlust Bedeutung behält.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.6], UX-DR11
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.6], UX-DR11
 - [Source: concept/21-gdd/gdd.md#Heimat (Gedächtnishalle-Zeile, Z. 324), #Quest-System (Tutorial-„Lektion“)]
 - [Source: concept/22-narrative/narrative.md#Visual Storytelling (Gedenkstein, leerer Platz)]
 - [Source: concept/25-ux/EXPERIENCE.md Z. 41, 161, 215; DESIGN.md Gedenken-Farben, ruhige Taste; mockups/04-heimat.html „Gedächtnishalle“]

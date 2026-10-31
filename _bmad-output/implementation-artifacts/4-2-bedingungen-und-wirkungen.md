@@ -63,7 +63,7 @@ damit Szenen, Knoten, Entscheidungen und Belohnungen ohne Code wirken.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.2]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.2]
 - [Source: concept/24-architecture/architecture.md#5.3 Bedingungen und Wirkungen]
 - [Source: concept/24-architecture/architecture.md#5.9 Story-Zustand: Flags, Haltung, Chronik, Epilog]
 - [Source: concept/24-architecture/architecture.md#8.1, #8.2, #8.7]

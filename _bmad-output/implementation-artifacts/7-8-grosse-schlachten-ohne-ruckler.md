@@ -10,7 +10,7 @@ damit die Gegnerphase gleichmäßig flüssig bleibt.
 
 ## Acceptance Criteria
 
-Grundlage ist `concept/26-epics/epics.md` Story 7.8 (NFR1, Rest aus 7.7). Die Punkte 1 bis 9 präzisieren sie nach den Entscheidungen des Produktinhabers vom **2026-10-26** (Eintrag in `concept/24-architecture/.decision-log.md` bzw. `decision-log.md`, siehe T10). Was unter „Offene Fragen“ steht, ist **nicht** entschieden: nicht raten, nachfragen.
+Grundlage ist `concept/26-epics/epics/epic-07.md` Story 7.8 (NFR1, Rest aus 7.7). Die Punkte 1 bis 9 präzisieren sie nach den Entscheidungen des Produktinhabers vom **2026-10-26** (Eintrag in `concept/24-architecture/.decision-log.md` bzw. `decision-log.md`, siehe T10). Was unter „Offene Fragen“ steht, ist **nicht** entschieden: nicht raten, nachfragen.
 
 1. **Zielmaß (mit 8.6 im Bild):** `PERF_GPU=1 pnpm perf` (Referenzschlacht 24×32, 40 Einheiten, Qualität `mid`, 3D-Figuren) erreicht in der Gegnerphase auf **beiden** Geräteprofilen (pixel6a, iphone12) **mindestens 60 FPS bei 2×** und **mindestens 30 FPS bei 4×** (Median der Läufe, Toleranz wie `exceedances`: 0,5 FPS). Die Zielwerte gelten **nach Story 8.6** (die vor 7.8 umgesetzt wird und +0,5 ms Thread-CPU bei 2× verbrauchen darf).
 2. **Keine Ausreißer:** In der Gegnerphase gibt es **keinen einzelnen Frame über 100 ms**, bei 2× und bei 4× (Maximum über **alle** Läufe, nicht der Median der Läufe). Das Perf-Werkzeug bekommt dafür eine Prüfung (`TARGETS.maxFrameMs` = 100, in `exceedances`, scheitert mit `PERF_STRICT=1`, nur im GPU-Lauf; Kaltstart-Prüfung unverändert).
@@ -84,7 +84,7 @@ Reihenfolge: erst messen und die Spitzen (T1–T3), dann die Pipeline (T4–T6),
 
 ### Quellen
 
-- `concept/26-epics/epics.md` Story 7.8, NFR1; Story 7.7 (`7-7-grosse-schlachten-fluessig.md`: Befund, Messverfahren, Abnahme 2026-10-25); Story 8.6 (Licht, Wetter, Effekte; wird **vor** 7.8 umgesetzt, darf +0,5 ms Thread-CPU bei 2× kosten); Architektur §10 Leistung; Art Direction §4.6 (Tripo-Pipeline, Figurenbudget); `concept/24-architecture/decision-log.md` (Einträge 7.5, 7.7).
+- `concept/26-epics/epics/epic-07.md` Story 7.8, NFR1; Story 7.7 (`7-7-grosse-schlachten-fluessig.md`: Befund, Messverfahren, Abnahme 2026-10-25); Story 8.6 (Licht, Wetter, Effekte; wird **vor** 7.8 umgesetzt, darf +0,5 ms Thread-CPU bei 2× kosten); Architektur §10 Leistung; Art Direction §4.6 (Tripo-Pipeline, Figurenbudget); `concept/24-architecture/decision-log.md` (Einträge 7.5, 7.7).
 - Technischer Entwurf (Quelle der Aussagen mit Datei:Zeile, Babylon 9.32.0, nur gelesen): `C:\Users\micro\AppData\Local\Temp\claude\C---Data-01-sourcecode-github-hollow-crown--claude-worktrees-jovial-sammet-a91bea\52d0b7dd-3175-4bae-aec6-b99bd9be126b\scratchpad\7-8-design.md` (Hilfsskripte `glb.mjs`, `joints.mjs`, `weights.mjs`, `rot2.mjs`, `size2.py` daneben). Er liegt nicht im Repo: der Dev-Agent soll die Kernaussagen unten als Ausgangslage nehmen und die mit [?] markierten selbst messen.
 
 ### Entscheidungen des Produktinhabers 2026-10-26 (bindend)

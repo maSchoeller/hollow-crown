@@ -35,7 +35,7 @@ damit ich gern, aber nicht aus Pflicht zurückkomme.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.4]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.4]
 - [Source: concept/24-architecture/architecture.md#5.6 Tageswechsel und Heimsuchungen, ADR-2]
 - [Source: concept/25-ux/EXPERIENCE.md#Zustände Weltkarte]
 

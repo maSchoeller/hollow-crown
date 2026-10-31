@@ -33,7 +33,7 @@ Ein **spielbarer Vertical Slice im Browser** (Handy hoch, Tablet, PC), der den K
 - [ ] Avatar-Erstellung (Name, Pronomen, Porträt-Vorlage, Affinität)
 
 **Content**
-- [ ] Prolog + Kapitel 1–5 (Karten, Dialoge vor/nach, Kampfdialoge, Boss-Zitate) laut `08-story-world.md`
+- [ ] Prolog + Kapitel 1–5 (Karten, Dialoge vor/nach, Kampfdialoge, Boss-Zitate) laut `archive/08-story-world.md`
 - [ ] 8 Story-Charaktere, Gegnerklassen Ritter, Pegasusritter, Bandit, Jungdrache
 - [ ] Alle Texte DE + EN
 

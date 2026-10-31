@@ -119,7 +119,7 @@ Ziel: Aufstellung erscheint, Pflicht-Figuren sind gesperrt, bei vollen Plätzen 
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.10]
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.10]
 - [Source: concept/25-ux/mockups/09-aufstellung.html]
 - [Source: concept/25-ux/DESIGN.md Components „Einheitenkarte“, „Item-Chip“, „Haupttaste“, „Medaillon“; Layout & Spacing „Vollbild-Ansichten“]
 - [Source: concept/25-ux/EXPERIENCE.md „Component Patterns“ (Haupttaste), „Responsive & Platform“, Information Architecture „Aufstellung“]

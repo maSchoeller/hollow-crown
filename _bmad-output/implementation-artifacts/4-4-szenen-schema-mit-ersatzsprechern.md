@@ -47,7 +47,7 @@ damit Permadeath nie eine Szene zerbricht.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.4]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.4]
 - [Source: concept/24-architecture/architecture.md#5.8]
 
 ## Dev Agent Record

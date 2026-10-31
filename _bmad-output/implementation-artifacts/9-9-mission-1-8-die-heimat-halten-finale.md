@@ -93,7 +93,7 @@ damit Akt 1 mit etwas endet, das der Truppe gehört.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.9]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.9]
 - [Source: concept/22-narrative/narrative.md#Story Beats] (Beat 7b), [#Missionsfolge], [#Die 12 Entscheidungen] (E4)
 - [Source: concept/21-gdd/gdd.md] (Glutfunke, Missionsziele)
 - [Source: concept/24-architecture/architecture.md#5.3], [#5.4], [#5.11]

@@ -55,7 +55,7 @@ damit Beziehungen wachsen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.13]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.13]
 - [Source: concept/22-narrative/narrative.md#Dialogue Framework]
 - [Source: concept/22-narrative/narrative.md#Die 25 Support-Paare]
 - [Source: concept/21-gdd/gdd.md#Supports]

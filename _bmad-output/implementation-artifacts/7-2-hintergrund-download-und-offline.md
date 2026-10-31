@@ -44,7 +44,7 @@ damit ich unterwegs ohne Netz spielen kann.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.2]
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.2]
 - [Source: concept/24-architecture/architecture.md#5.14]
 - [Source: concept/25-ux/EXPERIENCE.md (Fortschrittsring, Weltkarte „Paket lädt“)]
 - [Source: concept/25-ux/mockups/07-start-kampagnen.html („Akt-Paket lädt“)]

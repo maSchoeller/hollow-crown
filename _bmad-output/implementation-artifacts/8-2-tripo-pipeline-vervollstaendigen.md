@@ -55,7 +55,7 @@ damit alle Figuren gleich aussehen, ins Budget passen und Credits sparen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 8.2: Tripo-Pipeline vervollständigen]
+- [Source: concept/26-epics/epics/epic-08.md#Story 8.2: Tripo-Pipeline vervollständigen]
 - [Source: concept/23-art-direction/art-direction.md §4.2, §4.5, §4.6, §11]
 - [Source: concept/23-art-direction/decision-log.md – Zeilen 2026-10-23 zu Animationsübertragung, Waffenbibliothek, Credits, Größenbudget]
 - [Source: concept/23-art-direction/licensing.md §6 (A1–A5)]

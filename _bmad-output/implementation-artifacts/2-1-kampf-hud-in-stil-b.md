@@ -61,7 +61,7 @@ damit ich Ziel, Einheit und Aktionen auf einen Blick erfasse.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 2.1]
+- [Source: concept/26-epics/epics/epic-02.md#Story 2.1]
 - [Source: concept/25-ux/mockups/02-kampf.html]
 - [Source: concept/25-ux/DESIGN.md#Components] (medallion, phase-pill, dock-action, class-action, context-band)
 - [Source: concept/25-ux/EXPERIENCE.md#Component Patterns, #Interaction Primitives, #Responsive]

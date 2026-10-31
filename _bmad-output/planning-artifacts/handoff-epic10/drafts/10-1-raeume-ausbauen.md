@@ -93,7 +93,7 @@ Epic 11 (Akt 2) legt Gefährten, Händler-Sortiment und Nebenquests mit Glutfunk
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.1], UX-DR10
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.1], UX-DR10
 - [Source: concept/21-gdd/gdd.md#Heimat: Lager und Burg (Z. 309–327), #Wirtschaft und Ressourcen (Z. 335–340), #Fortschritt des Spielers (Glutfunke)]
 - [Source: concept/24-architecture/architecture.md#5.3, #5.10, #8.1, #8.3, #8.7]
 - [Source: concept/25-ux/DESIGN.md room-stone, Raum-Panel, Positiv-Farbe; EXPERIENCE.md Raumstein (Z. 102), Heimat-Zustände (Z. 121), Offene Punkte „Burg in 3D“]

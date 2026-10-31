@@ -44,7 +44,7 @@ damit Ausrüstung der Charakter ist.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 2.2]
+- [Source: concept/26-epics/epics/epic-02.md#Story 2.2]
 - [Source: concept/21-gdd/gdd.md#Rollenklassen]
 - [Source: concept/24-architecture/architecture.md §5.7]
 - [Source: concept/21-gdd/items.md §4]

@@ -1,6 +1,6 @@
 # 16 – Asset-Pipeline & Budgets
 
-> Wie Grafik und Audio entstehen, wo sie liegen, wie sie ins Spiel kommen. Stil: `15-art-direction.md`. Audio-Inhalte: `17-audio.md`.
+> Wie Grafik und Audio entstehen, wo sie liegen, wie sie ins Spiel kommen. Stil: `23-art-direction/art-direction.md`. Audio-Inhalte: `17-audio.md`.
 
 ## 1. Überblick
 

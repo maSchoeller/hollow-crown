@@ -86,7 +86,7 @@ damit Entscheidungen Feinde zu Gefährten machen können (FR25).
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 3.7]
+- [Source: concept/26-epics/epics/epic-03.md#Story 3.7]
 - [Source: concept/24-architecture/architecture.md#5.3 Bedingungen und Wirkungen (AR3)]
 - [Source: concept/24-architecture/architecture.md#5.5 Leutnants (AR5)]
 - [Source: concept/21-gdd/gdd.md#Leutnants]

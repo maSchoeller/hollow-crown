@@ -30,7 +30,7 @@ damit ich Gold sinnvoll einsetze.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.4]
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.4]
 - [Source: concept/21-gdd/gdd.md#Heimat, Wirtschaft, Rekrutierung]
 - [Source: concept/24-architecture/architecture.md#8.1]
 

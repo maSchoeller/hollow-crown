@@ -71,7 +71,7 @@ damit Material aus Heimsuchungen einen Zweck hat.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.5]
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.5]
 - [Source: concept/21-gdd/gdd.md#Heimat (Verzauberer, Werkstatt), #Wirtschaft und Ressourcen (Material, Kosten), #Inventar und Ausrüstung (Runen I–III, Verbrauchsgüter)]
 - [Source: concept/21-gdd/items.md Z. 163–165]
 - [Source: concept/24-architecture/architecture.md#5.10, #5.11, #8.1, #8.3]

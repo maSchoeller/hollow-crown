@@ -32,7 +32,7 @@ damit ich Akt für Akt mit derselben Truppe weiterspiele.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.4]
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.4]
 - [Source: concept/24-architecture/architecture.md#5.15, #5.16, #12]
 
 ## Dev Agent Record

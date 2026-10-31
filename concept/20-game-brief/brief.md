@@ -6,7 +6,7 @@ updated: 2026-10-23
 source: BMAD-Workflow gds-create-game-brief
 decisions: concept/20-game-brief/.decision-log.md
 addendum: concept/20-game-brief/addendum.md
-supersedes: concept/00-vision.md, V1-Umfang in concept/13-v1-scope.md
+supersedes: concept/archive/00-vision.md, V1-Umfang in concept/13-v1-scope.md
 ---
 
 # Game Brief: Hollow Crown – V1 (Staffel 1)
