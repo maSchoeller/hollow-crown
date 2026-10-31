@@ -4,7 +4,9 @@
  * battle state needs it (`ensureHauntMap`: the core worker, a restored save), so the rules and the board find terrain,
  * objects, goal and defeat conditions through `data.maps[state.mapId]` like on any map.
  */
-import { PERMANENT_COMPANIONS, type Area, type GameData, type HauntAnchor, type MapDef, type MapObjectDef, type ObjectiveDef, type Pos, type Reward } from '../defs';
+import { PERMANENT_COMPANIONS, type Pos } from '../defs';
+import type { GameData } from '../gameData';
+import type { Area, HauntAnchor, MapDef, MapObjectDef, ObjectiveDef, Reward } from '../mapDefs';
 import { areaTiles, posKey } from '../util';
 import { parseTerrain } from './terrain';
 

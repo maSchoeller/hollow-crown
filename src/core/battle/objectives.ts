@@ -1,4 +1,6 @@
-import type { GameData, MapDef, MapUnitDef, Pos, SideObjectiveDef, Team, TriggerDef, WeaponType } from '../defs';
+import type { Pos, Team, WeaponType } from '../defs';
+import type { GameData } from '../gameData';
+import type { MapDef, MapUnitDef, SideObjectiveDef, TriggerDef } from '../mapDefs';
 import type { GameEvent } from '../events';
 import { burningTileHit } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';

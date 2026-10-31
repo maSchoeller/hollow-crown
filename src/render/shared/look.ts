@@ -7,7 +7,9 @@
  *   `weather`             grades ambient strength and sky of what came out (also without a time of day), the rest is particles,
  *                         mist, wet shine and puddles (`weatherPlan`).
  */
-import { TIMES_OF_DAY, WEATHERS, type MapDef, type RenderDef, type TimeOfDay, type Weather, type WeatherDef } from '../../core/defs';
+import { TIMES_OF_DAY, WEATHERS, type TimeOfDay, type Weather } from '../../core/defs';
+import type { MapDef } from '../../core/mapDefs';
+import type { RenderDef, WeatherDef } from '../../core/renderDefs';
 
 type Quality = 'high' | 'mid' | 'low';
 

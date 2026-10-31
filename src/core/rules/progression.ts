@@ -1,5 +1,6 @@
 import { CoreInvariantError } from '../errors';
-import { STAT_KEYS, type GameData, type StatKey, type Stats } from '../defs';
+import { STAT_KEYS, type StatKey, type Stats } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { nextFloat, type RngState } from '../rng';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';

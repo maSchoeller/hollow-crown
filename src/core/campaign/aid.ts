@@ -1,4 +1,4 @@
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import type { CampaignState } from '../state';
 
 /**

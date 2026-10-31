@@ -3,7 +3,10 @@
  * an anchor, against a lieutenant who is still against the company. The enemies are made here and kept in the state so that
  * playing and replaying agree. Pure: all randomness comes from a stream seeded by campaign seed and day number.
  */
-import type { Difficulty, GameData, HauntAnchor, HauntEnemyType, HauntVariant, LieutenantDef, MapDef, Pos } from '../defs';
+import type { Difficulty, Pos } from '../defs';
+import type { GameData } from '../gameData';
+import type { HauntAnchor, HauntEnemyType, HauntVariant, MapDef } from '../mapDefs';
+import type { LieutenantDef } from '../storyDefs';
 import type { CampaignState, HauntEnemy, HauntState } from '../state';
 import { hash32, nextInt, pick, seedRng, type RngState } from '../rng';
 import { areaTiles, clone, posKey } from '../util';

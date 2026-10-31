@@ -1,4 +1,5 @@
-import type { Element, GameData, Pos, StatusId, Team } from '../defs';
+import type { Element, Pos, StatusId, Team } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { nextInt, roll1 } from '../rng';
 import type { BattleState, BattleUnit } from '../state';

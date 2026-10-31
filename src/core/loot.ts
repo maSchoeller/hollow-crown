@@ -1,4 +1,5 @@
-import { type GameData, type Rarity } from './defs';
+import { type Rarity } from './defs';
+import type { GameData } from './gameData';
 import { nextInt, type RngState } from './rng';
 import { itemCategory, itemDef } from './rules/items';
 

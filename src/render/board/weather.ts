@@ -23,7 +23,7 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Particles/webgl2ParticleSystem';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { WeatherDef } from '../../core/defs';
+import type { WeatherDef } from '../../core/renderDefs';
 import type { ResolvedLook, WeatherPlan } from '../shared/look';
 import { hash3, type TerrainGrid, type TerrainView } from '../shared/terrain3d';
 

@@ -1,4 +1,5 @@
-import type { Effect, ItemRef } from '../defs';
+import type { ItemRef } from '../defs';
+import type { Effect } from '../storyDefs';
 import { soleKey } from './conditions';
 
 /**

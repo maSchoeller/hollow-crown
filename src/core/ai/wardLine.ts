@@ -4,7 +4,8 @@
  * ward, not counting the ward's own neighbours. Found as a minimum vertex cut (unit-capacity max flow on the tile graph, the cut closest
  * to the ward). When that cut is wider than `ai.wardLineMax` (an open village) there is no line and the caller keeps crowding the ward.
  */
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState } from '../state';
 import { inBounds, neighbors, posKey } from '../util';
 

@@ -1,4 +1,4 @@
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import type { BattleState } from '../state';

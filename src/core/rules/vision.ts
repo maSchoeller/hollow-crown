@@ -8,7 +8,8 @@
  * The functions here only read; the UI uses them to show the board, the previews and the played events (`filterEvents`) for a
  * team, never to change a state, a log or a replay. Results are plain data (sets of `x,y` keys, arrays, a state copy).
  */
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import type { BattleState, BattleUnit } from '../state';
 import { active, inBounds, isAlly, onMap, posKey, terrainAt } from '../util';

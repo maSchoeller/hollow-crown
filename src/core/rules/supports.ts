@@ -1,4 +1,5 @@
-import { SUPPORT_RANKS, type GameData, type Pos, type SupportRank } from '../defs';
+import { SUPPORT_RANKS, type Pos, type SupportRank } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, SupportState } from '../state';
 import { active, isAlly, neighbors, pairKey, ruleOn, unitAt } from '../util';
 

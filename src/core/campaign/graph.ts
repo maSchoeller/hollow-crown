@@ -1,4 +1,6 @@
-import { CORE_ROLES, type CampaignNodeDef, type GameData, type Mechanic } from '../defs';
+import { CORE_ROLES, type Mechanic } from '../defs';
+import type { GameData } from '../gameData';
+import type { CampaignNodeDef } from '../storyDefs';
 import type { CampaignState } from '../state';
 import { conditionContext, evalCondition, evalConditions } from './conditions';
 

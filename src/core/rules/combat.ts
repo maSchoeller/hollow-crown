@@ -1,5 +1,6 @@
 import { CoreInvariantError } from '../errors';
-import type { Element, GameData, Pos, StatusId } from '../defs';
+import type { Element, Pos, StatusId } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';

@@ -1,4 +1,6 @@
-import type { Effect, EquipSlot, FlagValue, HauntVariant, HomeKind, Stance, SupportRank } from '../defs';
+import type { EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
+import type { HauntVariant } from '../mapDefs';
+import type { Effect } from '../storyDefs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
 import type { BattleResult } from './campaign';

@@ -1,4 +1,6 @@
-import { SUPPORT_RANKS, type Condition, type EquipSlot, type GameData, type RoomDef, type RuneDef, type SupportRank } from '../defs';
+import { SUPPORT_RANKS, type EquipSlot, type RuneDef, type SupportRank } from '../defs';
+import type { GameData } from '../gameData';
+import type { Condition, RoomDef } from '../storyDefs';
 import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { levelCap, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';

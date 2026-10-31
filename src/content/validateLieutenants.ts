@@ -1,5 +1,6 @@
 /** Cross-reference checks of the lieutenants (story 3.1): references, scene lines in both languages, map units that name one. */
-import type { GameData, MapDef, MapUnitDef } from '../core/defs';
+import type { GameData } from '../core/gameData';
+import type { MapDef, MapUnitDef } from '../core/mapDefs';
 import { lineKey } from '../core/campaign/scene';
 import { fillTarget, lieutenantLineIds, LIEUTENANT_LINES, TARGET_PLACEHOLDER } from './lieutenantLines';
 import type { Locales } from './load';
