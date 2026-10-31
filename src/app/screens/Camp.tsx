@@ -15,6 +15,7 @@ import { audio } from '../audio';
 import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
+import { Castle3d, castle3dFlag, CastleDevBar, type CastleMode } from './Castle3d';
 import '../../ui/camp.css';
 
 /** Level of a castle room as dots (filled up to the level; three at most). */
@@ -37,6 +38,10 @@ export function Camp({ tab }: { tab?: string }) {
   const c = campaign.value!;
   const [open, setOpen] = useState<string | null>(tab ?? null);
   const [toast, setToast] = useState<string | null>(null);
+  // evaluation spike (dev only, `?castle3d=1`): the castle as a 3D diorama, a dev bar for picture/3D and the level of all rooms
+  const [spike] = useState(castle3dFlag);
+  const [mode, setMode] = useState<CastleMode>('3d');
+  const [devLevel, setDevLevel] = useState<number | null>(null);
   useEffect(() => audio.music('camp'), []);
   const apply: Apply = (cmd: CampaignCommand, okText?: string) => {
     const r = campaignCommand(cmd);
@@ -62,8 +67,17 @@ export function Camp({ tab }: { tab?: string }) {
   const tap = ({ room: r, open: isOpen, unmet }: RoomStatus) => (isOpen ? setOpen(r.id) : setToast(lockReason(unmet)));
   return (
     <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
-      <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
-      {castle && !room && (
+      {castle && spike && mode === '3d' ? (
+        <Castle3d
+          rooms={rooms}
+          levelOf={(id) => devLevel ?? roomLevel(c, id)}
+          onRoom={(_id, st) => (st ? tap(st) : setToast(t('ui.dev.castle3d.noRoom')))}
+        />
+      ) : (
+        <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
+      )}
+      {castle && spike && !room && <CastleDevBar mode={mode} setMode={setMode} level={devLevel} setLevel={setDevLevel} />}
+      {castle && !room && !(spike && mode === '3d') && (
         <div class="hm__anchors">
           {view.anchors.flatMap((a) => {
             const st = rooms.find((x) => x.room.id === a.room);

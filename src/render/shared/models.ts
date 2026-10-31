@@ -461,10 +461,15 @@ export async function loadUnitModel(
  * settings of `material` with that texture; the texture stays owned by the cached container, the material never
  * disposes it (the host's stage clear disposes materials without textures). Others share `material`.
  */
-export async function loadPropMesh(store: AssetStore, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
-  const c = await store.container(`models/props/${pid}_${state}.glb`, true);
+export function loadPropMesh(store: AssetStore, pid: string, state: string, material: StandardMaterial): Promise<Mesh | null> {
+  return loadStaticMesh(store, `models/props/${pid}_${state}.glb`, `prop:${pid}_${state}`, material);
+}
+
+/** A model file as one static mesh named `name` (a prop, or a weapon standing on its own); see `loadPropMesh`. */
+export async function loadStaticMesh(store: AssetStore, path: string, name: string, material: StandardMaterial): Promise<Mesh | null> {
+  const c = await store.container(path, true);
   if (!c) return null;
-  const inst = instantiate(c, store.scene, (n) => `prop:${pid}_${state}:${n}`);
+  const inst = instantiate(c, store.scene, (n) => `${name}:${n}`);
   const parts: Mesh[] = [];
   let texture: BaseTexture | null = null;
   for (const n of inst.rootNodes)
@@ -482,9 +487,9 @@ export async function loadPropMesh(store: AssetStore, pid: string, state: string
   for (const n of inst.rootNodes) n.dispose(false, false);
   if (!parts.length) return null;
   const mesh = parts.length > 1 ? Mesh.MergeMeshes(parts, true, true)! : parts[0]!;
-  mesh.name = `prop:${pid}_${state}`;
+  mesh.name = name;
   if (texture) {
-    const own = new StandardMaterial(`prop:${pid}_${state}:mat`, store.scene);
+    const own = new StandardMaterial(`${name}:mat`, store.scene);
     own.specularColor = material.specularColor.clone();
     own.backFaceCulling = material.backFaceCulling;
     own.maxSimultaneousLights = material.maxSimultaneousLights;
