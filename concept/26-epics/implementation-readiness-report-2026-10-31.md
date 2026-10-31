@@ -383,3 +383,133 @@ Alle Befunde sind in `epics.md` (Epic 10, Epic 11, Epic-Liste, Reihenfolge, dazu
 | P8 | Wegwechsel gesperrt nach Zweit-Effekt – 10.2, GDD |
 | P9 | E6 `stay`: Groll −1, bei Groll 0 entfällt die nächste Steigerung (`grudge … buffer: true` `[ASSUMPTION]`) – 11.13, Narrative |
 | P10 | Für alle Räume: Stufe 2 nur Gold (ab Akt 2), Stufe 3 mit Raum-Gefährte – 10.1, 11.12, 11.13, GDD, EXPERIENCE, Architektur §5.10 |
+
+## Zweite Prüfung 2026-10-31
+
+Unabhängige zweite Prüfung (gds-check-implementation-readiness, nicht interaktiv), Umfang Epic 10 (10.1–10.14, `epics.md` Z. 1727–2508) und Epic 11 (11.1–11.22, Z. 2509–3383) nach Umsetzung der Befunde und Neunummerierung. Geprüft gegen GDD, Narrative, Architektur, UX, `sprint-status.yaml`, die Entscheidungen des Produktinhabers (Runden E10-1 bis A2-4, Runde 6, Übergaben, Readiness-Runden R1–R3) und den Code.
+
+### 1. Status der Befunde der ersten Prüfung
+
+| Befund | Status | Bemerkung |
+|---|---|---|
+| K1 | teilweise | Satz „Akt 1 ist veröffentlicht“ (Z. 1733), `renames.yaml` in 10.2 (Z. 1841) und 10.4 (Z. 1976) stehen. Offen: wie Spielstände die Umbenennung bekommen, siehe neuer Befund N1 |
+| K2 | erledigt | geteilt in 11.1–11.4; `nodeLevel`-Vertrag, `findNode`, 88 Lesestellen (nachgezählt: 88), `ui.map.level` mit „≈“, Architektur §5.4 Z. 226 nachgezogen. Kleinigkeit N6 |
+| W1 | erledigt | 11.5 (Z. 2715) und 10.9 (Z. 2257) verweisen wechselseitig, Merge-Regel konsistent |
+| W2 | erledigt | Deckel nur in 10.9, 11.14 Z. 3072 nur `priceMod` |
+| W3 | erledigt | `cheerTargets` nur in 10.4, `final_curtain` per `grantsSkill` (11.20), Stapelregel benannt |
+| W4 | erledigt | alle 22 Epic-11-Stories haben „Abhängigkeiten“; Flags in 11.5 (Z. 2719); Reihenfolge-Absatz Z. 2513 |
+| W5 | erledigt | 11.22 nach 10.1–10.12 (Z. 3356) |
+| W6 | erledigt | 10.14 prüft nur die 15 vorhandenen Gefährten (8 aus `act1/units.yaml` + 7 aus Akt 2, nachgezählt) |
+| W7 | erledigt | 10.3/10.4, 10.9–10.11, 11.6/11.7, 11.8, 11.9, 11.18/11.19 getrennt |
+| W8 | erledigt | 11.6 Z. 2745, 11.10, 11.13 Z. 3012 und GDD Z. 211 einheitlich „nur `hold` oder schon daneben“ |
+| W9 | erledigt | 11.14 Z. 3065–3068 |
+| k1 | erledigt | FR15 Z. 54 |
+| k2 | erledigt | EXPERIENCE Z. 224 „Glut-Zahl am Taverne-Stein“ |
+| k3 | erledigt | Architektur §5.2 Z. 153, §8.1 Z. 620; Prüfreihenfolge in „Für alle Stories gilt“ |
+| k4 | erledigt | 10.1 Z. 1821, 11.18/11.19 „nur prüfen“ |
+| k5 | erledigt | 10.1 Z. 1748 |
+| k6 | erledigt | 11.20 Position 7 |
+| k7 | teilweise | Regel neu (Z. 2098), aber `trap_kit` liegt bei 100 % statt ≈ 80 % (N5) |
+| k8 | erledigt | `usesBonus: { command: 1 }` |
+| k9 | erledigt | `heritage` durchgängig, Architektur-Log Z. 100 |
+| k10 | erledigt | 11.1/11.2 |
+| k11 | erledigt | 11.2 Z. 2597, 11.17 |
+| k12 | erledigt | Item `shade` |
+| k13 | erledigt | GDD Z. 193/231, Architektur §5.7 Z. 300–301, Arch-Log Z. 100 |
+| k14 | erledigt (als `[ASSUMPTION]`) | Z. 2523; Bestätigung siehe P-N1 |
+| k15 | erledigt | 10.6 Z. 2081 |
+| k16 | erledigt | Epic-10-Intro |
+| k17 | erledigt | 11.18 Z. 3241, 11.19 Z. 3277 |
+| P1 | erledigt | 10.4 Z. 1991, GDD Z. 145 (Umsetzung siehe N2) |
+| P2 | erledigt | 10.8 |
+| P3 | erledigt | 10.9 |
+| P4 | erledigt | 10.11 (`potionUpgradeFromAct`) |
+| P5 | erledigt | 10.5 Z. 2054–2056 |
+| P6 | erledigt | 11.8 Z. 2827, 11.17 Z. 3171 |
+| P7 | erledigt | 11.15 Z. 3113, Narrative Z. 699 |
+| P8 | erledigt | 10.2 Z. 1875 |
+| P9 | erledigt | 11.13 Z. 3019, Narrative Z. 733 |
+| P10 | erledigt | 10.1, 11.12 Z. 2977, 11.13 Z. 3020, GDD Z. 315, EXPERIENCE Z. 102, Architektur §5.10 Z. 348; die Regel „Stufe 2 nur Gold, Stufe 3 braucht Raum-Gefährten“ steht überall gleich. Lücke siehe N4 |
+
+**Ergebnis:** 41 von 43 erledigt, 2 teilweise (K1, k7), keiner offen.
+
+### 2. Verweise, Abhängigkeiten, Doppelungen
+
+- **Story-Verweise:** Alle Verweise auf 10.x/11.x in `epics.md` (auch Z. 326, 330, 345, 1021, 1201, 1283), in `concept/21-gdd`, `22-narrative`, `24-architecture` (einzige Treffer „Story 11.2“ in §5.4 Z. 226 und Arch-Log Z. 100, beide richtig), `25-ux` und die 36 Schlüssel in `sprint-status.yaml` Z. 170–209 existieren und passen inhaltlich. Keine falschen Verweise gefunden.
+- **Zirkel:** keine. 10.9 ↔ 11.5 ist eine Merge-Regel, keine Abhängigkeit; 10.6 → 11.5/11.7 und 10.8 → 11.21 sind als nicht blockierend benannt.
+- **Positionsstufen** nachgerechnet: 2-1 P 11, 2-2/2-4/2-6 P 12–16, 2-3/2-5/2-7 P 13–17, 2-8 P 19, N4 ab 13, N5 ab 14, N6 ab 12, Nell-Beispiel 11/15 – alle richtig.
+- **Doppelte oder verwaiste Kriterien:** nach der Teilung keine Doppelungen (Handbuch-Eintrag `rooms_upgrade` legt 10.1 an, 10.9–10.11 ergänzen ihn; Testkarte `dev_eisenmark` legt 11.2 an, 11.5–11.7 erweitern sie – beides gewollt). Verwaist ist nur der Folgen-Karten-Hinweis aus 11.12 (N4).
+
+### 3. Code-Stichprobe (15 Stellen aus den neuen Kriterien)
+
+| Kriterium (Story) | Fundstelle | Ergebnis |
+|---|---|---|
+| `grantExp` in `progression.ts` (10.8) | `src/core/rules/progression.ts` Z. 65 | ✓ |
+| `maps.<id>.fog` (10.5) | `schemas.ts` Z. 362 (`fog: boolean`) | ✓ |
+| `mustStayForRest` (11.8) | `battle/actions.ts`, `ai/autoplay.ts` | ✓ |
+| `priceMod { pct, act }`, E4 gilt in Akt 2 (10.9, 11.14) | `schemas.ts` Z. 483; `scn.m1_6.outro.yaml` Z. 105 `act: 2`; `aid.ts` Z. 10 | ✓ |
+| `grudge { lt, delta }` strikt, `meet` (11.13, 11.14) | `schemas.ts` Z. 478–479 | ✓ (11.13 erweitert um `buffer`, benannt) |
+| `memorialIf`; `alive` = in der Truppe (11.18, 10.1) | `schemas.ts` Z. 624; `conditions.ts` Z. 88 | ✓ |
+| `wardens_chronicle` (11.21) | `acts/act1/flags.yaml`, Locales | ✓ |
+| `hire`, `recruitCost` (10.12) | `apply.ts` Z. 396, `camp.ts` Z. 193 | ✓ |
+| `data.hauntPools` je Akt (11.1) | `load.ts` Z. 124 | ✓ |
+| Händler-Liste `{ tier, items, storyCount }`, nicht strikt (10.9) | `schemas.ts` Z. 636 | ✓ |
+| Vorkämpfer `armored` MOV 4, `bulwark` heute `foot` 6 (10.3) | `classes.yaml` Z. 56, 234 | ✓ |
+| Rezeptpreise (10.6): `iron_ore` 100, `moonsteel` 400, `fire_bomb` 400, `door_key` 250, `haste_scroll` 800, Runen I 400/600 | `items.yaml`, `runes.yaml` | ✓ (Spanne stimmt bis auf `trap_kit`, N5) |
+| `classActions.cheer { mov: 1, hit: 10 }` (11.20) | `balance.yaml` Z. 160 | ✓ |
+| Aura überträgt Nicht-Werte (10.4, 10.7) | `rules/skills.ts` Z. 224–247: `addAuras` überträgt nur `effect.stats` | ✗ (N2) |
+| Umbenennung beim Laden über `renamedId` (10.2, 10.4) | `save.ts` Z. 81–83, 162: `renamedId` wirkt nur in einer Migration je Speicherformat | ✗ (N1) |
+
+Zusätzlich bestätigt: 88 Lesestellen `data.campaign`; `steel_dagger`, `stiletto`, `physic_staff` fehlen noch (von 11.5 richtig als neu beschrieben), alle Stufe-0-Teile des Akt-2-Händlers (11.1 Z. 2567) existieren; `hasPackForAct` liegt nur in der App-Schicht (`src/app/state/packs.ts` Z. 149, siehe N3).
+
+### 4. Neue Befunde
+
+#### Fix in den Stories
+
+**Kritisch:** keine.
+
+**Wichtig**
+
+- **N1 – Umbenennungen erreichen die Spielstände nicht (10.2 Z. 1841–1842, 10.4 Z. 1976, 11.1 Z. 2554).** `renamedId` wirkt nur innerhalb einer Migration, und Migrationen hängen am Speicherformat (`save.ts` Z. 81–83, 162). 11.1 legt fest „Format 2 bleibt“; 10.2 und 10.4 verlangen trotzdem „Spielstände laden über `renamedId`, `migrations.test.ts` belegt das mit Fixture“. Ohne Formatwechsel läuft keine Migration, und zwei Stories würden unabhängig je eine anlegen. *Fix:* 10.2 hebt das Format auf 3 mit einer generischen Migration, die `content/renames.yaml` auf Items, Skills und Klassen im Spielstand anwendet (Fixture aus dem Akt-1-Release); 10.4 ergänzt nur die drei Einträge und einen Testfall; 11.1 Z. 2554 und 11.22 Z. 3377 auf „Format 3 seit 10.2“ anpassen. Alternative, falls kein Spielstand die Ids enthalten kann (`promotion_seal` im MVP nicht erhältlich, Klassen-Skills stehen nicht in `loadout`/`mastered`): Migrations-Kriterium streichen, nur `renames.yaml` und grünes `content:check` verlangen und das im Story-Log begründen.
+- **N2 – Auren tragen nur Werte (10.4 Z. 1991, 10.7 Z. 2165/2175).** `addAuras` (`src/core/rules/skills.ts` Z. 224–247) überträgt nur `effect.stats`. Der Bannerträger braucht per Aura `avoidBonus: 5` und `ignoreGrief` (Trauer-Abzug in `rules/stats.ts` Z. 67), die Lektion `heritage_cheer` „Nachbarn +5 Treffer“ per Aura einen Trefferbonus; 10.7 behauptet „nur vorhandene Bausteine“. *Fix:* in 10.4 ein Kriterium „`addAuras` überträgt zusätzlich `avoidBonus`, `hitBonus` und `ignoreGrief`; Vorschau = Auflösung“; 10.7 nennt 10.4 als Abhängigkeit (oder `heritage_cheer` auf einen reinen Wert umstellen).
+- **N3 – Wie der Akt-Übergang im Build gesperrt wird, ist offen (11.1 Z. 2545–2548, 2569).** 11.1 legt die Kopfdateien von Akt 2 ins Paket `core`; damit liegt die Kampagne von Akt 2 nach 11.1 im Build in den Daten, und die Bedingung „nächster Akt liegt in den Daten vor“ löst den Übergang schon vor 11.3 aus. Der Satz „im Build greift der Übergang erst, wenn das Paket `act2` vorliegt (`hasPackForAct`)“ lässt sich im Kern nicht umsetzen (`hasPackForAct`/`nextActInBuild` liegen in der App-Schicht; ein Kern-Zugriff darauf bräche Replay und Simulation). *Fix:* eine Lösung festschreiben – entweder die Build-Regel aus 11.3 („Dateien unter `acts/actN/` nur, wenn das Paket `actN` `released: true` hat“) samt Paket-Eintrag nach 11.1 vorziehen und als Bedingung allein „Kampagne liegt in den Daten vor“ nehmen, oder ausdrücklich festhalten, dass der Übergang ab 11.1 live ist (passt zur Entscheidung „act2 ab 11-1 released: true“, die sich auf die alte 11.1 mit Paket bezog) und den `hasPackForAct`-Satz streichen.
+
+**Klein**
+
+- **N4 – Folgen-Karten-Hinweis nur in einer Story (11.12 Z. 2977).** „Die Folgen-Karte der zweiten dieser Entscheidungen nennt, dass die Akademie Stufe 3 nicht mehr erreicht“: E5 und E6 liegen in verschiedenen Strängen; fällt E6 als zweite, baut 11.13 den Hinweis nicht (dort fehlt das Kriterium). *Fix:* dasselbe Kriterium in 11.13; der Hinweis entfällt, wenn die Akademie schon Stufe 3 hat.
+- **N5 – `trap_kit` verletzt die eigene Rezeptregel (10.6 Z. 2098, 2106).** Mondstahl 400 + 2 × Eisenerz 100 = 600 = Kaufpreis 600, also 100 % statt „reine Werkstatt-Items ≈ 80 %“. *Fix:* Preis 750 oder Rezept mit 1 Eisenerz und Gold 0 (500 = 83 %).
+- **N6 – Grep-Kriterium in 11.2 zu streng und unvollständig (Z. 2591).** `tools/simulate.ts` Z. 140 liest `expectedLevel` und fehlt in der Leserliste; der Typ `CampaignNode.expectedLevel` (`defs.ts` Z. 679) und das Berichtsfeld in `simCampaign.ts` Z. 46 bleiben zwangsläufig. *Fix:* `simulate.ts` aufnehmen, Kriterium auf „keine Lesestelle außer Schema, Typ, Prüfung und `nodeLevel`“ ändern.
+- **N7 – Story-Größe grenzwertig:** 10.2 (Item-Umbau mit Umbenennung, Raum, drei Commands, Panel, Auslagerung `Sparks`, Umbau der Truppe, Sim) und 11.5 (7 Gefährten, 4 Leutnants mit Szenen DE/EN, Unikat-Klasse, 18 Items, Händler, Flags). Kein Muss; wird es eng, in 10.2 Wegwechsel und Zweit-Effekt (Akademie Stufe 2/3) wie 10.9–10.11 abtrennen und in 11.5 die Stahl-Items samt Händler-Stufen.
+
+#### Braucht Produktinhaber
+
+| # | Frage | Story (Z.) | Vorschlag |
+|---|---|---|---|
+| P-N1 | Gilt „kein Ziel zweimal hintereinander“ nur für Story-Missionen? Die Auslegung steht als `[ASSUMPTION]` in den gemeinsamen Regeln und berührt eine Narrative-Prüfregel (k14 wurde abgeleitet, nicht gefragt). | Epic 11 Z. 2523 | bestätigen (Nebenquests zählen nicht), Eintrag ins Narrative-Log |
+
+Sonst keine versteckten Produktentscheidungen in den `[ASSUMPTION]`s gefunden; die übrigen sind abgeleitete Zahlen, Namen oder Umsetzungsdetails.
+
+### 5. Gesamturteil
+
+**NEEDS WORK (gering).** Die erste Prüfung ist fast vollständig und sauber umgesetzt; Verweise, Reihenfolge und Sprint-Status stimmen, die Entscheidungen R1–R3 sind überall gleich übernommen. Vor dem Start von 11.1 bzw. 10.2 sollten N3 (Sperre des Übergangs im Build) und N1 (Umbenennung ohne Migration) in den Stories geklärt sein, vor 10.4 N2 (Auren). Alle drei sind Textkorrekturen in `epics.md` ohne Produktentscheidung; danach **READY**. P-N1 blockiert nichts.
+
+*Prüfer: Claude (gds-check-implementation-readiness, zweite unabhängige Prüfung, nicht interaktiv), 2026-10-31.*
+
+## Abschluss 2026-10-31
+
+Die Befunde der zweiten Prüfung sind in `epics.md` (Epic 10/11), `concept/22-narrative/narrative.md` und den Decision-Logs umgesetzt.
+
+| Befund | Umgesetzt wie |
+|---|---|
+| N1 | 10.2 hebt das Speicherformat auf 3: generische Migration 2 → 3 in `src/persistence/save.ts`, wendet `content/renames.yaml` über `renamedId` auf Item-, Skill- und Klassen-Ids im Spielstand an; Fixture `tests/fixtures/saves/format2-*.json` aus dem Akt-1-Release, `tests/unit/migrations.test.ts`. 10.4 ergänzt nur `sol`, `impale`, `longshot` in `renames.yaml` und einen Testfall (keine eigene Migration, Abhängigkeit 10.2). 11.1 und 11.22: „11.1 braucht keine Migration; ab 10.2 Format 3“ |
+| N2 | 10.4: `addAuras` (`src/core/rules/skills.ts`) überträgt zusätzlich `avoidBonus`, `hitBonus`, `ignoreGrief`, Vorschau = Auflösung, Test. 10.7 nennt 10.4 als Abhängigkeit für `heritage_cheer` |
+| N3 | Produktinhaber: act2 sofort veröffentlichen (Übergabe epic11-act2, Antwort 1). 11.1: Übergang ab Merge live, Bedingung nur „Kampagne liegt in den Daten“; wer Akt 1 beendet, landet in Akt 2, Weltkarte „Weitere Missionen folgen“, Heimsuchungen laufen weiter; Titeltafel (11.3) erscheint über `actTitleSeen` nachträglich. `hasPackForAct`-Satz gestrichen, Build-Regel `acts/actN/` bleibt in 11.3; Reihenfolge-Absatz: 11.3 zeitnah nach 11.1 |
+| N4 | 11.13: Folgen-Karte von E6 `pardon` nennt bei schon gegangener Odile, dass die Akademie Stufe 3 nicht mehr erreicht; entfällt bei Akademie Stufe 3. 11.12 verweist darauf |
+| N5 | `trap_kit`: 1 × `moonsteel` + 1 × `iron_ore`, Gold 0 (500 von 600 = 83 %) |
+| N6 | 11.2: `tools/simulate.ts` in der Leserliste; Grep-Kriterium „keine Lesestelle von `expectedLevel` außer Schema, Typ, Prüfung und `nodeLevel`“ |
+| N7 | keine Pflichtänderung; je ein Satz „bei Bedarf teilen“ in 10.2 und 11.5 |
+| P-N1 | Produktinhaber: „Kein Ziel zweimal hintereinander“ gilt nur für Story-Missionen. `[ASSUMPTION]` in den gemeinsamen Regeln von Epic 11 durch Entscheidung ersetzt; Prüfsatz in `narrative.md` (Missionsfolge, „Prüfung“) ergänzt; Zeile im Narrative-Log |
+
+**Gesamturteil: READY** für Epic 10 und Epic 11, keine offenen Punkte. Beim Gegenlesen keine weiteren Probleme gefunden (Migrations-Rahmen in `save.ts` Z. 79–86, 161 und `moreMissionsFollow` in `worldMapView.ts` bestätigt).
+
+*Prüfer: Claude, 2026-10-31.*

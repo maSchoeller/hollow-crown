@@ -89,3 +89,4 @@
 | 2026-10-31 | **Kronfeld-Hälfte:** „Hälfte der Eingesetzten“ = Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten | Produktinhaber, Readiness-Runde R3 (P6) |
 | 2026-10-31 | **Verbranntes Dorf in 2-6** nur bei E7 „warnen“; ist E7 noch offen, keine Szene (nie zwei brennende Dörfer) | Produktinhaber, Readiness-Runde R3 (P7) |
 | 2026-10-31 | **E6 „Varek bleibt“:** Sable-Groll −1; hat Sable Groll 0, entfällt stattdessen ihre nächste Groll-Steigerung (Puffer) | Produktinhaber, Readiness-Runde R3 (P9) |
+| 2026-10-31 | **Zielfolge Akt 2:** „Kein Ziel zweimal hintereinander“ gilt nur für Story-Missionen; Nebenquests zählen nicht mit (z. B. 2-5 `defend` → N4 `defend` erlaubt) | Produktinhaber, Readiness-Bericht 2026-10-31 (zweite Prüfung, P-N1) |

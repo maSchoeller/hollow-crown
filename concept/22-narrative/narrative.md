@@ -717,7 +717,7 @@ Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet
 
 In Akt 3 sind 3-2 bis 3-4 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale. Pell tritt mit Kit bei: Der eine kennt die Gänge, der andere hat sich geweigert, die Truppe zu jagen.
 
-Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale (Folge der Sable-Regel: Wechselt Sable in 2-5, bevor 2-3 oder 2-6 gespielt sind, bleibt es bei ihrem Auftritt in 2-5). Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen. Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
+Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale (Folge der Sable-Regel: Wechselt Sable in 2-5, bevor 2-3 oder 2-6 gespielt sind, bleibt es bei ihrem Auftritt in 2-5). Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen; die Regel gilt nur für Story-Missionen, Nebenquests zählen nicht mit (Produktinhaber 2026-10-31). Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
 
 ### Die 12 Entscheidungen
 

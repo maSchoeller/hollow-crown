@@ -1832,14 +1832,19 @@ Als Spieler
 möchte ich ausgewählte Gefährten in der Akademie mit einem Glutfunken auf einen Profi-Weg aufsteigen lassen,
 damit die knappe Wahl, wer wächst, ein Moment wird.
 
-**Abhängigkeiten:** nach 11.1 (`levelCap: 20`, `c.act`); bringt Raum `academy` und Enum-Wert mit, solange 10.1 fehlt (10.1 ergänzt Kosten und Bedingungen); Stufe 2 und 3 der Akademie sind vor 10.1 mit Fixture `c.home.rooms.academy = 2|3` testbar; die übrigen 10 Profi-Wege liefern 10.3 (Klassen, darunter die von Avatar und Kael) und 10.4 (Wirkungen), bis dahin funktioniert der Aufstieg mit den sechs vorhandenen Profiklassen.
+**Abhängigkeiten:** nach 11.1 (`levelCap: 20`, `c.act`); bringt Raum `academy` und Enum-Wert mit, solange 10.1 fehlt (10.1 ergänzt Kosten und Bedingungen); Stufe 2 und 3 der Akademie sind vor 10.1 mit Fixture `c.home.rooms.academy = 2|3` testbar; die übrigen 10 Profi-Wege liefern 10.3 (Klassen, darunter die von Avatar und Kael) und 10.4 (Wirkungen), bis dahin funktioniert der Aufstieg mit den sechs vorhandenen Profiklassen. Wird die Story zu groß, bei Bedarf Wegwechsel und Zweit-Effekt (Akademie Stufe 2/3) wie 10.9–10.11 abtrennen.
 
 **Akzeptanzkriterien:**
 
 **Angenommen** `content/core/items.yaml`
 **Wenn** die Story umgesetzt ist
 **Dann** ist der Glutfunke das einzige Aufstiegs-Item: `ember_spark` trägt `use: { promote: true, minLevel: 10 }` (weiter `kind: seal`, `tags: [convoyOnly]`, `price: 3000`), `promotion_seal` ist mit Locales, Bild, `itemInfo.ts`-Eintrag und Handbuch-Verweisen entfernt und steht als `promotion_seal: ember_spark` in `content/renames.yaml` (Akt 1 ist veröffentlicht, die Id ist gesperrt; im MVP ist das Siegel nirgends erhältlich)
-**Und** `pnpm content:check` ist mit der gesperrten Id grün; Spielstände aus dem Akt-1-Release laden über `renamedId` (`src/persistence/save.ts`), `tests/unit/migrations.test.ts` belegt das mit einer Fixture aus dem Release; Architektur §5.11 nennt `kind: seal` statt `kind: promotion`.
+**Und** `pnpm content:check` ist mit der gesperrten Id grün; Architektur §5.11 nennt `kind: seal` statt `kind: promotion`.
+
+**Angenommen** ein Spielstand aus dem Akt-1-Release (Speicherformat 2)
+**Wenn** er nach dieser Story geladen wird
+**Dann** hebt `src/persistence/save.ts` das Speicherformat auf 3 mit einer generischen Migration 2 → 3, die jede Umbenennung aus `content/renames.yaml` über `renamedId` auf alle Item-, Skill- und Klassen-Ids im Spielstand anwendet (Konvoi, Ausrüstung, Taschen, `loadout`, `mastered`, Klassen der Einheiten); spätere Stories ergänzen nur Einträge in `renames.yaml`, keine eigene Migration
+**Und** eine Fixture `tests/fixtures/saves/format2-*.json` aus dem Akt-1-Release liegt bei, und `tests/unit/migrations.test.ts` belegt Migration und Umbenennung (`promotion_seal` → `ember_spark`) mit ihr (`AGENTS.md`, „Akt-Release“ Schritt 3).
 
 **Angenommen** `rooms.yaml` mit `{ id: academy, function: academy, icon: academy, fromAct: 2, homes: [castle] }`
 **Wenn** Akt 2 erreicht ist und die Heimat die Burg ist
@@ -1965,7 +1970,7 @@ Als Spieler
 möchte ich, dass Schutz, Rückstoß, Konter zuerst, Flächen und Anfeuern der Profi-Wege in Vorschau, Kampf und KI gleich wirken,
 damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 
-**Abhängigkeiten:** nach 10.3 (Schema, Klassen); Reichweiten-Kacheln aus Epic 13; Story 11.20 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
+**Abhängigkeiten:** nach 10.3 (Schema, Klassen) und 10.2 (Migration auf Format 3 für die Umbenennungen); Reichweiten-Kacheln aus Epic 13; Story 11.20 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
 
 **Akzeptanzkriterien:**
 
@@ -1973,7 +1978,7 @@ damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 **Wenn** die Story umgesetzt ist
 **Dann** kennt `skillSchema.effect` die neuen Bausteine `guardNeighbors`, `statusOnHit: { status, chance }`, `rangeCap`, `castRadius`, `healRadius`, `cheerRange`, `cheerTargets`, `ignoreGrief`; `proSkills` ist für jede spielbare Profiklasse Pflicht (1–2), und `bard` und `standard_bearer` sind `playable: true`
 **Und** die sechs vorhandenen Profiklassen tragen als `skill` den Rollen-Skill (`duelist` `counter_instinct`, `bulwark`/`breaker` `phalanx`, `sharpshooter` `eagle_eye`, `sage` `elemental_focus`, `bishop` `blessing`) und ihre `proSkills` aus der Tabelle; der PoC-Klassen-Skill `climber` entfällt nur am Sturmbrecher (Späher und Brigand behalten ihn)
-**Und** die PoC-Skills `sol`, `impale`, `longshot` sind aus `skills.yaml` gelöscht und stehen in `content/renames.yaml` als `sol: pro_duel`, `impale: pro_guard`, `longshot: pro_far_shot` (Akt 1 ist veröffentlicht, die Ids sind gesperrt); `pnpm content:check` ist grün, Spielstände aus dem Akt-1-Release laden über `renamedId`, `tests/unit/migrations.test.ts` belegt das mit einer Fixture aus dem Release.
+**Und** die PoC-Skills `sol`, `impale`, `longshot` sind aus `skills.yaml` gelöscht und stehen in `content/renames.yaml` als `sol: pro_duel`, `impale: pro_guard`, `longshot: pro_far_shot` (Akt 1 ist veröffentlicht, die Ids sind gesperrt); `pnpm content:check` ist grün; Spielstände übernehmen die Umbenennung über die generische Migration aus Story 10.2 (Format 3), diese Story legt keine eigene Migration an, sondern nur die drei Einträge und einen Testfall in `tests/unit/migrations.test.ts` (Fixture-Stand mit `sol`, `impale`, `longshot` in `loadout`/`mastered` → `pro_duel`, `pro_guard`, `pro_far_shot`).
 
 **Angenommen** die übrigen Profi-Skills in `content/core/skills.yaml` (`source: class`)
 **Wenn** eine aufgestiegene Figur handelt oder angegriffen wird
@@ -1993,6 +1998,7 @@ damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 | Fallensteller | `pro_traps` | Story 10.5 |
 
 **Und** jede Wirkung steht als Daten im Skill, kein `if (classId === …)`
+**Und** `addAuras` (`src/core/rules/skills.ts`) überträgt neben `effect.stats` zusätzlich `avoidBonus`, `hitBonus` und `ignoreGrief` an die Figuren im Radius (Bannerträger, Lektion `heritage_cheer` aus Story 10.7); die Kampfvorschau zeigt sie über dieselbe Funktion wie die Auflösung, ein Unit-Test belegt Vorschau = Auflösung für alle drei
 **Und** `cheerTargets` ist die einzige Mechanik für Anfeuern auf mehrere Ziele; auch die Laute `final_curtain` (Story 11.20) nutzt sie über `grantsSkill`. Treffen mehrere Quellen zusammen, gelten höchstens 2 Ziele und die größte Reichweite, nichts addiert sich `[ASSUMPTION]`.
 
 **Angenommen** eine Wirkung, die eine Zahl, eine Reihenfolge oder eine Fläche ändert
@@ -2103,7 +2109,7 @@ damit Material aus Kopfgeld und Heimsuchungen einen Zweck hat.
 - { id: door_key,       item: door_key,      roomLevel: 1, materials: { iron_ore: 1 }, gold: 50 }
 - { id: haste_scroll,   item: haste_scroll,  roomLevel: 2, materials: { moonsteel: 1 }, gold: 200 }
 - { id: strong_remedy,  item: strong_remedy, roomLevel: 2, materials: { moonsteel: 1 } }
-- { id: trap_kit,       item: trap_kit,      roomLevel: 3, materials: { moonsteel: 1, iron_ore: 2 } }
+- { id: trap_kit,       item: trap_kit,      roomLevel: 3, materials: { moonsteel: 1, iron_ore: 1 }, gold: 0 }   # 500 von 600 = 83 %
 - { id: fire_rune_1,    item: fire_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
 - { id: wind_rune_1,    item: wind_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
 - { id: earth_rune_1,   item: earth_rune_1,  roomLevel: 3, materials: { moonsteel: 1 } }
@@ -2151,7 +2157,7 @@ Als Spieler
 möchte ich einmal je Akt das Erbe eines Gefallenen als Lektion an einen Gefährten weitergeben,
 damit Verlust Bedeutung behält.
 
-**Abhängigkeiten:** Gedächtnishalle und Gedenksteine aus Story 6.9; Stufen über `buildRoom` (10.1, vorher Fixture); `c.act` aus Story 11.1; Begriffstrennung zu den Regel-Lektionen aus Story 14.7.
+**Abhängigkeiten:** Gedächtnishalle und Gedenksteine aus Story 6.9; Stufen über `buildRoom` (10.1, vorher Fixture); `c.act` aus Story 11.1; Begriffstrennung zu den Regel-Lektionen aus Story 14.7; `heritage_cheer` (Aura mit Trefferbonus) nach 10.4 (`addAuras` überträgt `hitBonus`).
 
 **Akzeptanzkriterien:**
 
@@ -2162,7 +2168,7 @@ damit Verlust Bedeutung behält.
 **Angenommen** `content/core/skills.yaml` und `content/core/heritage.yaml` (`- { role, lessons: [erste, zweite] }`, die erste ist die feste Lektion)
 **Wenn** `pnpm content:check` läuft
 **Dann** hat jede der 7 Kernrollen genau zwei Lektionen, jede ist ein gültiger passiver Skill mit `source: heritage` und Namen/Text DE/EN; Gerrits Stein in `content/acts/act1/memorials.yaml` trägt `heritage: heritage_shield_wall`
-**Und** die Lektionen sind `[ASSUMPTION]` (etwa halb so stark wie persönliche Skills, nur vorhandene Bausteine, Lückenanalyse §3.7):
+**Und** die Lektionen sind `[ASSUMPTION]` (etwa halb so stark wie persönliche Skills, nur vorhandene Bausteine samt der Aura-Übertragung von `hitBonus` aus Story 10.4, Lückenanalyse §3.7):
 
 | Rolle | Lektion 1 (fest) | Lektion 2 |
 |---|---|---|
@@ -2510,7 +2516,7 @@ damit die Heimat lebendig wirkt.
 
 Spieler ziehen nach dem Finale von Akt 1 in die herbstliche Eisenmark, dienen nacheinander den drei Thronanwärtern (Prinzessin, Dravn, Herzogin), decken je Strang eine Lüge auf und werden in Kronfeld verraten. Das Epic liefert den Akt-Übergang mit dem Paket `act2`, die sieben Gefährten und vier Leutnants von Akt 2, Flieger und Balliste als Regel-Schwerpunkt des Akts, eine Story je Mission (2-1 bis 2-8), die Nebenquests N4 bis N6, Supports, Barks und die Chronik-Szene sowie die Abstimmung. Grundlagen: `concept/22-narrative/narrative.md` (Missionsfolge Akt 2, E5–E8, N4–N6, Supports, Key Conversations 6–8), `concept/21-gdd/gdd.md`, `concept/21-gdd/items.md` §5/§6 und die Entscheidungen des Produktinhabers vom 2026-10-31 (Verfeinerung Epic 10/11). Alle Spielwerte in den Stories sind Vorschläge für `balance.yaml` bzw. die Content- und Karten-YAMLs, als `[ASSUMPTION]` markiert und per Simulation zu prüfen; Szenen gibt es auf Deutsch und Englisch, jede Box ≤ 110 Zeichen; Musik, Klang und Vertonung von Akt 2 kommen später.
 
-**Reihenfolge und Abhängigkeiten zu Epic 10:** Story 11.1 kommt zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die festen Gefährten-IDs (`jory`, `odile`, `nell`, `brann`, `amos`, `ilka`, `sable`) braucht; Epic 10 liest `c.act` nur. Danach laufen 11.2 (Positionsstufe), 11.3 (Paket, Weltkarte, Titeltafel), 11.4 (Simulation über Akte), 11.5 (Gefährten, Leutnants, Stahl, Flags), 11.6 (Balliste) und 11.7 (Flieger, Gegner, Herbst) parallel zu 10.2–10.4; 11.8 (Ziel-Phasen) und 11.9 (Relikt-Stufen) sind Kern-Stories ohne eigene Karte und gehen jederzeit nach 11.1. Die Missionen beginnen mit 11.10 (2-1, braucht 11.2–11.7); danach laufen die drei Stränge in beliebiger Reihenfolge, innerhalb eines Strangs nacheinander: Prinzessin 11.11 → 11.12, Dravn 11.13 → 11.14, Herzogin 11.15 → 11.16. Nebenquests: N4 (11.18) nach 11.13, N5 (11.19) nach 11.14 und 11.9, N6 (11.20) nach 11.10 und 10.4 (Anfeuern auf zwei Ziele); N4 und N5 zeigen den Funken-Moment aus 10.2. 11.17 (2-8 Kronfeld) kommt nach den übrigen Missionen 11.10–11.16 sowie 11.8 und 11.9; 11.21 (Supports, Barks, Chronik-Szene) sobald 11.5 die Gefährten ihrer Paare anlegt. 11.22 (Abstimmung und Release) kommt zuletzt: nach allen Stories von Epic 11 und nach 10.1–10.12, weil diese Gold, EP, Glutfunken und Rabatte von Akt 2 verändern; bis dahin stimmen alle Missions-Stories vorläufig ohne Aufstieg ab. Alle Flags von Akt 2 deklariert 11.5 in `content/acts/act2/flags.yaml`, damit `content:check` sie in jeder Bau-Reihenfolge kennt; jede Story nennt ihre Vorgänger in der Zeile „Abhängigkeiten“. Datei-Zuständigkeit: Epic 11 besitzt `content/acts/act2/**`, den Akt-Übergang, Gegner, Leutnants und Stahl-Items; Epic 10 besitzt `content/core/rooms.yaml` (einzige Ausnahme: 11.1 ergänzt bei den vier Akt-1-Räumen `{ act: 2 }`, damit sie beim Übergang nicht schließen), die Profi-Klassen und den Glutfunken. In gemeinsamen Dateien ändert Epic 11 nur eigene Blöcke: Abschnitt „Gegnertypen“ in `classes.yaml`, ein Block „Akt 2: Stahl-Tier“ in `items.yaml`, in `balance.yaml` nur Akt-Schlüssel und die hier genannten neuen Schlüssel. Nicht Teil von Epic 11: die drei fehlenden Chronik-Seiten von Akt 1 (eigene Nacharbeit).
+**Reihenfolge und Abhängigkeiten zu Epic 10:** Story 11.1 kommt zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die festen Gefährten-IDs (`jory`, `odile`, `nell`, `brann`, `amos`, `ilka`, `sable`) braucht; Epic 10 liest `c.act` nur. Weil der Akt-Übergang ab dem Merge von 11.1 live ist (Entscheidung Produktinhaber, siehe 11.1), folgt 11.3 (Paket, Titeltafel) zeitnah nach 11.1. Danach laufen 11.2 (Positionsstufe), 11.3 (Paket, Weltkarte, Titeltafel), 11.4 (Simulation über Akte), 11.5 (Gefährten, Leutnants, Stahl, Flags), 11.6 (Balliste) und 11.7 (Flieger, Gegner, Herbst) parallel zu 10.2–10.4; 11.8 (Ziel-Phasen) und 11.9 (Relikt-Stufen) sind Kern-Stories ohne eigene Karte und gehen jederzeit nach 11.1. Die Missionen beginnen mit 11.10 (2-1, braucht 11.2–11.7); danach laufen die drei Stränge in beliebiger Reihenfolge, innerhalb eines Strangs nacheinander: Prinzessin 11.11 → 11.12, Dravn 11.13 → 11.14, Herzogin 11.15 → 11.16. Nebenquests: N4 (11.18) nach 11.13, N5 (11.19) nach 11.14 und 11.9, N6 (11.20) nach 11.10 und 10.4 (Anfeuern auf zwei Ziele); N4 und N5 zeigen den Funken-Moment aus 10.2. 11.17 (2-8 Kronfeld) kommt nach den übrigen Missionen 11.10–11.16 sowie 11.8 und 11.9; 11.21 (Supports, Barks, Chronik-Szene) sobald 11.5 die Gefährten ihrer Paare anlegt. 11.22 (Abstimmung und Release) kommt zuletzt: nach allen Stories von Epic 11 und nach 10.1–10.12, weil diese Gold, EP, Glutfunken und Rabatte von Akt 2 verändern; bis dahin stimmen alle Missions-Stories vorläufig ohne Aufstieg ab. Alle Flags von Akt 2 deklariert 11.5 in `content/acts/act2/flags.yaml`, damit `content:check` sie in jeder Bau-Reihenfolge kennt; jede Story nennt ihre Vorgänger in der Zeile „Abhängigkeiten“. Datei-Zuständigkeit: Epic 11 besitzt `content/acts/act2/**`, den Akt-Übergang, Gegner, Leutnants und Stahl-Items; Epic 10 besitzt `content/core/rooms.yaml` (einzige Ausnahme: 11.1 ergänzt bei den vier Akt-1-Räumen `{ act: 2 }`, damit sie beim Übergang nicht schließen), die Profi-Klassen und den Glutfunken. In gemeinsamen Dateien ändert Epic 11 nur eigene Blöcke: Abschnitt „Gegnertypen“ in `classes.yaml`, ein Block „Akt 2: Stahl-Tier“ in `items.yaml`, in `balance.yaml` nur Akt-Schlüssel und die hier genannten neuen Schlüssel. Nicht Teil von Epic 11: die drei fehlenden Chronik-Seiten von Akt 1 (eigene Nacharbeit).
 
 **Gemeinsame Regeln aller Missions-Stories (11.10–11.20):**
 
@@ -2520,7 +2526,7 @@ Spieler ziehen nach dem Finale von Akt 1 in die herbstliche Eisenmark, dienen na
 - **Herbst:** Karten liegen unter `content/acts/act2/maps/` (`map.act = 2`), Jahreszeit und Herbst-Boden aus Story 11.7.
 - **Szenen:** IDs nach Akt-1-Schema (`scn.<knoten>.intro|outro`, `scn.<knoten>.<lt>_battle`, `scn.<knoten>.<einheit>_talk`, Besuche `scn.<knoten>.house_*`, Lektionen `scn.<knoten>.tutorial_*`). Deutsch steht in der Szenen-YAML, Englisch in `content/locales/en/act2.dialogue.yaml`; Schreib-Pipeline der Narrative (Humanizer-Durchgang, dann Englisch). Gefährtenzeilen stehen unter `requires: alive` mit Ersatzsprecher-Kette. Tafeln sind `panel: <bild>`; fehlt das Bild, steht bis zum Grafik-Task eine Platzhalter-Tafel (Text auf Glutgrund wie die Titeltafel aus 11.3).
 - **Entscheidungen:** Jede Antwort trägt eine Haltung (warm, nüchtern, trotzig) wie in Akt 1 und zeigt ihre Folgen-Karte (Mockup 05). Flags sind in `content/acts/act2/flags.yaml` deklariert (Story 11.5).
-- **Zielfolge:** Die Regel „kein Ziel zweimal hintereinander“ (GDD „Missionsfolge“, Narrative-Prüfregel) gilt für die Story-Missionen; Nebenquests zählen nicht mit `[ASSUMPTION]` (sonst entstünden Paare wie 2-5 `defend` → N4 `defend`).
+- **Zielfolge:** Die Regel „kein Ziel zweimal hintereinander“ (GDD „Missionsfolge“, Narrative-Prüfregel) gilt nur für die Story-Missionen; Nebenquests zählen nicht mit (Entscheidung Produktinhaber 2026-10-31, Readiness P-N1, Narrative-Log; sonst entstünden Paare wie 2-5 `defend` → N4 `defend`).
 - **Ortsbilder:** Vorhanden sind `grauwacht`, `salzpass`, `brandhang`, `kronfeld`. Fehlende Ortsbilder (2-1, 2-4, 2-6, 2-7, N4–N6) sind je ein eigener Grafik-Task (`art/prompts/<id>.md`, Lizenzauflagen `licensing.md` §6). Er blockiert nichts; bis dahin zeigt der Knoten ein vorhandenes Ortsbild als Platzhalter, das in der Karten-YAML als Kommentar steht.
 - **Sim-Korridor:** NFR12 aus `balance.yaml › simulation.corridors` (Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %). Geprüft mit `pnpm sim <map> --runs 50 --start expected --position <k>` (Optionen aus Story 11.4) an der frühesten und der spätesten Position der Mission, vorläufig ohne Aufstieg. Abweichungen begründet der Dev Agent Record; die endgültigen Korridore folgen in 11.22.
 - **Fertig:** `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build` sind grün. Screenshots (Hochformat 375 × 812) zeigen Karte, Intro, Leutnant-Zeile und Nachszene. Neue Entscheidungen stehen im zuständigen Decision-Log unter `concept/`.
@@ -2545,13 +2551,13 @@ damit die Kampagne über die Akte hinweg eine Geschichte bleibt.
 **Angenommen** die Truppe gewinnt das Finale eines Akts (`fixed: finale`) und die Kampagne des nächsten Akts liegt in den Daten vor
 **Wenn** `finishMission` den Sieg verbucht
 **Dann** setzt es `c.act = act + 1` und meldet das Event `actReached { act }`; fehlt der nächste Akt, bleibt alles wie in Story 7.3 („Akt n „Name“ erscheint bald“)
-**Und** im Build greift der Übergang erst, wenn das Paket `act2` vorliegt (`hasPackForAct`, Story 11.3); Tests und Simulation belegen ihn vorher über die Daten
+**Und** der Übergang ist ab dem Merge dieser Story live (Entscheidung Produktinhaber, Übergabe epic11-act2, Antwort 1: act2 sofort veröffentlichen): Bedingung ist allein, dass die Kampagne des nächsten Akts in den Daten liegt (die Kopfdateien von Akt 2 stehen im Paket `core`), der Kern fragt kein Paket ab; wer Akt 1 beendet, landet in Akt 2, die Weltkarte zeigt „Weitere Missionen folgen“ (vorhandenes `moreMissionsFollow`, solange Akt 2 keine Knoten hat), Heimsuchungen laufen weiter; die Titeltafel aus Story 11.3 erscheint dank `c.actTitleSeen` beim ersten Öffnen der Weltkarte nach 11.3 nachträglich; die Build-Regel für `acts/actN/` bleibt in Story 11.3
 **Und** Replays (Startzustand + Command-Log) und die Simulation (`simCampaign.ts`, `applyNodeRewards`) führen den Übergang genauso aus
 **Und** die Änderungen an `apply.ts` und `commands.ts` bleiben klein (Übergang am Ende des `finishMission`-Zweigs, `markBackupReminded` gegen `c.act`, ein neues Event), weil Epic 10 dieselben Dateien ändert.
 
 **Angenommen** ein gespeicherter Akt-1-Stand im Format 2 mit erledigtem `m1_8`, auch einer, der wegen „erscheint bald“ in Akt 1 stand
 **Wenn** er nach dem Update geladen wird
-**Dann** füllt `normalizeCampaign` das fehlende `c.act` (Standard 1) und holt den Übergang nach, solange das Finale des Akts erledigt ist und der nächste Akt vorliegt; Format 2 bleibt, solange kein persistiertes Feld seine Bedeutung ändert; ändert sich das Speicherformat, gibt es eine Migration mit Fixture (`AGENTS.md`, „Akt-Release“ Schritt 3)
+**Dann** füllt `normalizeCampaign` das fehlende `c.act` (Standard 1) und holt den Übergang nach, solange das Finale des Akts erledigt ist und der nächste Akt vorliegt; 11.1 braucht keine Migration (kein persistiertes Feld ändert seine Bedeutung, `c.act` füllt `normalizeCampaign`); ab Story 10.2 gilt Format 3 mit der generischen Umbenennungs-Migration
 **Und** die Fixture `tests/fixtures/saves/format2-act1-finale-done.json` ist ein echter Spielstand aus dem Akt-1-Release (Story 9.14), keine selbst gebaute Datei, und lädt mit `act: 2`, Truppe, Gold, Tross, Flags, Groll und Gedenksteine bleiben unverändert; ein Stand ohne erledigtes Finale bleibt in Akt 1
 **Und** `metaFromCampaign` (`src/persistence/save.ts`) liefert `c.act` statt fest 1, die Kampagnen-Liste zeigt „Akt 2“.
 
@@ -2588,7 +2594,7 @@ damit jede Mission fordert, ohne zu überfordern.
 **Wenn** ein Knoten seine erwartete Stufe braucht
 **Dann** liefert die reine Funktion `nodeLevel(data, c, node)` in `src/core/campaign/` für Akte ohne `positionLevel` das Knotenfeld `expectedLevel` (Akt 1 unverändert) und für Akte mit `positionLevel` die Positionsstufe P = `base` + Zahl der erledigten Story-Knoten des Akts + `levelBonus` des Knotens (Standard 0); das gilt für Story- und Nebenquest-Knoten des Akts, ist eine reine Funktion des Kampagnenstands (replay-sicher) und getestet
 **Und** `expectedLevel` ist im Schema (`src/content/schemas.ts`) für Knoten von Akten mit `positionLevel` optional, für alle anderen weiter Pflicht; die Monotonie-Prüfung in `src/content/validate.ts` gilt nur für Akte ohne `positionLevel`
-**Und** alle Leser von `expectedLevel` lesen danach `nodeLevel`: `refreshTavern` (Söldner-Stufe, `campaign.ts`), `hauntLevel` (`haunts.ts`), `WorldMap.tsx` und `Prep.tsx` (Anzeige `ui.map.level`), der Dev-Start in `flow.ts` und `simCampaign.ts`; `grep -rn expectedLevel src tools` zeigt danach nur noch Schema, Prüfung und `nodeLevel`
+**Und** alle Leser von `expectedLevel` lesen danach `nodeLevel`: `refreshTavern` (Söldner-Stufe, `campaign.ts`), `hauntLevel` (`haunts.ts`), `WorldMap.tsx` und `Prep.tsx` (Anzeige `ui.map.level`), der Dev-Start in `flow.ts`, `simCampaign.ts` und `tools/simulate.ts`; `grep -rn expectedLevel src tools` zeigt danach keine Lesestelle von `expectedLevel` außer Schema, Typ (`CampaignNode.expectedLevel` in `defs.ts`), Prüfung und `nodeLevel` (ein Berichtsfeld gleichen Namens in `simCampaign.ts`, das aus `nodeLevel` gefüllt wird, ist keine Lesestelle)
 **Und** die Weltkarte zeigt auf jedem offenen Knoten von Akt 2 und im Knoten-Blatt vor dem Start die Stufe über den vorhandenen Schlüssel `ui.map.level`, bei Positionsstufen mit „≈“ („Stufe ≈ 12“, Text in DE und EN angepasst, kein neuer Schlüssel).
 
 **Angenommen** Karteneinheiten von Akt 2
@@ -2663,7 +2669,7 @@ Als Spieler
 möchte ich in Akt 2 sieben neue Gefährten und vier neue Leutnants mit eigenem Charakter treffen,
 damit der Akt neue Gesichter, Rivalen und Beute bringt.
 
-**Abhängigkeiten:** nach 11.1 (`acts/act2/units.yaml`, Loader) und 11.2 (Beitrittsstufe); Item-Bilder nach Story 8.5; die Händler-Liste `roomLevel: 2` wirkt erst mit Story 10.9 (siehe unten).
+**Abhängigkeiten:** nach 11.1 (`acts/act2/units.yaml`, Loader) und 11.2 (Beitrittsstufe); Item-Bilder nach Story 8.5; die Händler-Liste `roomLevel: 2` wirkt erst mit Story 10.9 (siehe unten). Wird die Story zu groß, bei Bedarf die Stahl-Items samt Händler-Stufen abtrennen.
 
 **Akzeptanzkriterien:**
 
@@ -2974,7 +2980,7 @@ damit der Prinzessin-Strang eine Brückenfigur und eine persönliche Wahl bekomm
 **Wenn** die Mission gewonnen ist
 **Dann** tritt Odile bei (Stufe nach 11.2), wer das Banner-Zelt besucht hat, besitzt `silverwing` (Werte nach `items.md` §6.4 `[ASSUMPTION]`: `steel_lance` Mt +2, Krit +10, `rarity: legendary`, Preis 0, `unsellable`)
 **Und** in der Nachszene bietet Seraphine Odile die Rückkehr in die Garde an (E5) mit Folgen-Karte; bei `return` verlässt Odile die Truppe mit einer Abschiedszeile, ihre Ausrüstung geht in den Konvoi, das Flag `e05: return` bestimmt ihre Zeile in Kronfeld (11.17)
-**Und** die Akademie (Raum-Gefährten Varek|Odile, Epic 10) bleibt auf ihrer gebauten Stufe, auch wenn Odile geht (Entscheidung E10-2); Stufe 2 kostet ohnehin nur Gold, nur Stufe 3 braucht Varek oder Odile (Readiness-Runde R2); gehen beide (E5 `return`, E6 `pardon`), nennt die Folgen-Karte der zweiten dieser Entscheidungen, dass die Akademie Stufe 3 nicht mehr erreicht `[ASSUMPTION]`.
+**Und** die Akademie (Raum-Gefährten Varek|Odile, Epic 10) bleibt auf ihrer gebauten Stufe, auch wenn Odile geht (Entscheidung E10-2); Stufe 2 kostet ohnehin nur Gold, nur Stufe 3 braucht Varek oder Odile (Readiness-Runde R2); gehen beide (E5 `return`, E6 `pardon`), nennt die Folgen-Karte der zweiten dieser Entscheidungen, dass die Akademie Stufe 3 nicht mehr erreicht `[ASSUMPTION]`; fällt E6 als zweite, baut Story 11.13 den Hinweis; hat die Akademie schon Stufe 3, entfällt er.
 
 **Angenommen** die Simulation
 **Wenn** `pnpm sim m2_3 --runs 50 --start expected --position 2` und `--position 6` laufen, je mit und ohne `joined_sable`
@@ -3017,7 +3023,8 @@ damit der Dravn-Strang beginnt und Ilka zur Truppe stößt.
 **Dann** steigt ihr Groll, Kopfgeld (Mondstahl) wird gezahlt, Ilka ist dabei, die Truppe erhält 2 400 Gold
 **Und** in der Nachszene bietet Dravn Varek Begnadigung im Heer an (E6) mit Folgen-Karte; ist Varek tot oder gegangen, entfällt E6 ohne Szene der Wahl (Muster E1)
 **Und** bei `pardon` verlässt Varek die Truppe mit Abschiedszeile, seine Ausrüstung geht in den Konvoi; seine Kronfeld-Zeile wechselt auf die Gegenseite (11.17); bei `stay` sinkt Sables Groll um 1; hat sie Groll 0 (auch vor dem ersten Treffen), entfällt stattdessen ihre nächste Groll-Steigerung (Produktinhaber 2026-10-31, Readiness-Runde R3): `grudge` mit `buffer: true` legt dafür `c.grudgeBuffer[lt]` an (Default `{}` aus `normalizeCampaign`), die nächste Steigerung verbraucht ihn `[ASSUMPTION]` (Feldname und Umsetzung); Tests für Groll 0 und Groll ≥ 1
-**Und** Taverne und Akademie (Raum-Gefährte Varek) bleiben auf ihrer gebauten Stufe (E10-2), Stufe 2 bleibt ohne Varek baubar (Readiness-Runde R2).
+**Und** Taverne und Akademie (Raum-Gefährte Varek) bleiben auf ihrer gebauten Stufe (E10-2), Stufe 2 bleibt ohne Varek baubar (Readiness-Runde R2)
+**Und** ist Odile schon gegangen (E5 `return`, Story 11.12) und wählt der Spieler hier `pardon`, nennt die Folgen-Karte von E6, dass die Akademie Stufe 3 nicht mehr erreicht (dasselbe Kriterium wie in 11.12, je nachdem, welche der beiden Entscheidungen als zweite fällt); hat die Akademie schon Stufe 3, entfällt der Hinweis.
 
 **Angenommen** die Simulation
 **Wenn** `pnpm sim m2_4 --runs 50 --start expected --position 1` und `--position 5` laufen
@@ -3374,7 +3381,7 @@ damit Spieler aus Akt 1 ohne Brüche und im Korridor weiterspielen.
 
 **Angenommen** Spielstände aus Akt 1
 **Wenn** der Migrationstest läuft
-**Dann** laden die Fixtures aus dem Akt-1-Release (`tests/fixtures/saves/format2-*`) ohne Datenverlust; ein Stand mit erledigtem `m1_8` landet in Akt 2 mit Titeltafel; ändert sich das Speicherformat, gibt es eine Migration in `src/persistence/save.ts` mit Fixture (`tests/unit/migrations.test.ts`).
+**Dann** laden die Fixtures aus dem Akt-1-Release (`tests/fixtures/saves/format2-*`) ohne Datenverlust; ein Stand mit erledigtem `m1_8` landet in Akt 2 mit Titeltafel; 11.1 braucht keine Migration, ab Story 10.2 gilt Format 3 (generische Migration 2 → 3 mit den Umbenennungen aus `renames.yaml`, `tests/unit/migrations.test.ts`); ändert sich das Format danach erneut, gibt es eine weitere Migration mit Fixture.
 
 **Angenommen** der echte Release von Akt 2
 **Wenn** der Produktinhaber ihn auslöst
