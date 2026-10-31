@@ -71,7 +71,7 @@ damit die Heimat lebendig wirkt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.7]
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.7]
 - [Source: concept/21-gdd/gdd.md#Heimat (Übungsplatz, Lagerfeuer), #NPC und Dialog (Supports, Schwellen), #Figurensystem (EP)]
 - [Source: concept/22-narrative/narrative.md#Visual Storytelling „Die Paktwacht wächst mit“ (Z. ~483), „Leere Plätze“; #Die 25 Support-Paare]
 - [Source: concept/23-art-direction/art-direction.md#7 Heimat-Burg, #11 Asset-Umfang (Requisiten)]

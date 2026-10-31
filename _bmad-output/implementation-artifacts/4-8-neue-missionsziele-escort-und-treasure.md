@@ -78,7 +78,7 @@ Keine echte Karte nötig: `validateContent` und der Kern arbeiten auf `GameData`
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.8]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.8]
 - [Source: concept/21-gdd/gdd.md#Sieg und Niederlage; #Missionsziele; #Heimsuchungen]
 - [Source: concept/24-architecture/architecture.md#5.6 Tageswechsel und Heimsuchungen]
 - [Source: concept/25-ux/DESIGN.md#Ziel-Pillen; #Knoten-Karte]

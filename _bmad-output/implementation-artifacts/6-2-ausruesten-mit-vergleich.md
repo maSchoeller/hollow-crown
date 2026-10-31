@@ -29,7 +29,7 @@ damit Ausrüstung eine bewusste Entscheidung ist.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.2]
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.2]
 - [Source: concept/25-ux/mockups/06-truppe.html]
 
 ## Dev Agent Record

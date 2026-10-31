@@ -33,7 +33,7 @@ _Nachgetragen 2026-10-27, Wunsch des Produktinhabers._
 
 ### References
 
-- `concept/26-epics/epics.md` Story 1.9; Story 1.5 (Neustart je Tod-Modus); GDD Tod-Modi.
+- `concept/26-epics/epics/epic-01.md` Story 1.9; Story 1.5 (Neustart je Tod-Modus); GDD Tod-Modi.
 
 ## Dev Agent Record
 

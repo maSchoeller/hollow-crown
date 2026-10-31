@@ -4,7 +4,7 @@
 # project_key: NOKEY
 # tracking_system: file-system
 # story_location: _bmad-output/implementation-artifacts
-# source: concept/26-epics/epics.md (14 epics; course corrections 8/8/8 and 2026-10-30 readability + handbook)
+# source: concept/26-epics/epics/ (14 epics; course corrections 8/8/8 and 2026-10-30 readability + handbook)
 # order: Epic 4 runs before (or together with) Epic 3; Epic 13 before story 9-14 (MVP release), Epic 14 right after it and before Epic 10 (course correction 2026-10-30); epics 10 and 11 refined 2026-10-31 and re-cut after the readiness check 2026-10-31 (story keys changed): 11-1 first, then 10-2/10-3/10-4 in parallel with 11-2..11-7, missions from 11-10, 11-8 before 11-17, 11-22 last after all epic-10 stories up to 10-12; epic 12 stays backlog until refined
 
 # STATUS DEFINITIONS:

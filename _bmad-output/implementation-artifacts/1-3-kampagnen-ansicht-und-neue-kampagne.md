@@ -56,7 +56,7 @@ damit ich in Sekunden weiß, wo ich stehe, und schnell ins Spiel komme.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 1.3]
+- [Source: concept/26-epics/epics/epic-01.md#Story 1.3]
 - [Source: concept/25-ux/mockups/07-start-kampagnen.html]
 - [Source: concept/25-ux/EXPERIENCE.md#Kampagnen-Zeile]
 - [Source: concept/25-ux/DESIGN.md#Kampagnen-Zeile]

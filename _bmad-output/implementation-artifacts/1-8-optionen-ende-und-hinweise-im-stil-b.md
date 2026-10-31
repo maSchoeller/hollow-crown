@@ -36,7 +36,7 @@ so that nirgends noch der alte Prototyp durchscheint.
 
 ### References
 
-- `concept/26-epics/epics.md` Story 1.8; `concept/25-ux/DESIGN.md`, `EXPERIENCE.md`; Mockup `07-start-kampagnen.html`.
+- `concept/26-epics/epics/epic-01.md` Story 1.8; `concept/25-ux/DESIGN.md`, `EXPERIENCE.md`; Mockup `07-start-kampagnen.html`.
 
 ## Dev Agent Record
 

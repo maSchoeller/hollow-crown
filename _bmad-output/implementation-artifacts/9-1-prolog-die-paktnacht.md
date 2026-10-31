@@ -63,7 +63,7 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.1]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.1]
 - [Source: concept/22-narrative/narrative.md#Key Conversations]
 - [Source: concept/06-maps-missions.md#10]
 - [Source: concept/23-art-direction/art-direction.md#2.5]

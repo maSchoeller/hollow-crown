@@ -10,7 +10,7 @@ damit die Gegnerphase nicht ruckelt.
 
 ## Acceptance Criteria
 
-Grundlage ist `concept/26-epics/epics.md` Story 7.7 (NFR1). Die Punkte 1 bis 3 präzisieren sie nach den Entscheidungen des Produktinhabers vom 2026-10-24.
+Grundlage ist `concept/26-epics/epics/epic-07.md` Story 7.7 (NFR1). Die Punkte 1 bis 3 präzisieren sie nach den Entscheidungen des Produktinhabers vom 2026-10-24.
 
 1. **Zielmaß (Präzisierung zu „60 FPS“):** Im GPU-Lauf (`PERF_GPU=1 pnpm perf`, Desktop-Chromium, Referenzschlacht 24×32 mit 40 Einheiten, Qualität `mid`, 3D-Figuren) erreicht die Gegnerphase **bei 2× CPU-Drosselung mindestens 60 FPS und bei 4× mindestens 30 FPS** (Ø FPS über die Phase). Der SwiftShader-Lauf (CI) wird nur berichtet, ohne Zielverfehlung. Beide Zielwerte entsprechen demselben Rechenbudget von rund 8,3 ms Thread-CPU je Frame ohne Drosselung.
 2. **Bericht Vorher/Nachher:** `pnpm perf` misst die Gegnerphase bei **beiden** Drosselstufen (2× und 4×; Kaltstart/Erstbesuch bleiben bei 4×, NFR2) und der Bericht (`test-results/perf/report.md`, Job-Summary) zeigt je Gerät und Stufe Ø FPS, p95, max, Frames > 25 ms, Draw Calls sowie die **Thread-CPU-Zeit je Frame** (CDP `Performance.getMetrics` → `ThreadTime`), jeweils als Mittel mehrerer Läufe, und daneben die Werte vor der Story (Vorher/Nachher).
@@ -63,7 +63,7 @@ Reihenfolge nach Gewinn pro Aufwand; nach jedem Block `PERF_GPU=1 pnpm perf` (me
 
 ### Quellen
 
-- `concept/26-epics/epics.md` Story 7.7, NFR1; Story 7.5 (Messung, `_bmad-output/implementation-artifacts/7-5-leistung-messen.md`); Architektur §10 Leistung; `concept/24-architecture/decision-log.md` (Einträge 2026-10-24: Szenen-Host 5.1, Leistung messen 7.5, NFR1 → Story 7.7, Gegnerphase im Worker 2.8, Fade 8.10).
+- `concept/26-epics/epics/epic-07.md` Story 7.7, NFR1; Story 7.5 (Messung, `_bmad-output/implementation-artifacts/7-5-leistung-messen.md`); Architektur §10 Leistung; `concept/24-architecture/decision-log.md` (Einträge 2026-10-24: Szenen-Host 5.1, Leistung messen 7.5, NFR1 → Story 7.7, Gegnerphase im Worker 2.8, Fade 8.10).
 - `concept/01-decisions.md` D7 (echte weiche Schatten von Sonne/Mond), D8 (Qualitätsstufen, Schattenkarte 2048/1024/aus), D17 (Leistung der Figuren: ein Mesh mit Skelett, `fpsActive` 60 / `fpsIdle` 30); `concept/23-art-direction/art-direction.md` (Licht: weiche Schatten der Sonne, Toon-Abstufung bei Figuren/Requisiten). **Die Einheitenschatten entfallen gegen D7/Art-Direction**: das ist eine Produktentscheidung vom 2026-10-24 und gehört mit dem Eintrag in `decision-log.md` festgehalten (nicht in `01-decisions.md`, eingefroren).
 - Profil-Analyse vom 2026-10-24 (Kostenstellen K1 bis K5, A/B-Läufe); Zahlen unten, Stand **vor** PR #33 und Story 8.10.
 

@@ -50,7 +50,7 @@ damit jeder seine eigene Geschichte in der Truppe hat.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.9]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.9]
 - [Source: concept/21-gdd/gdd.md#Supports]
 - [Source: concept/22-narrative/narrative.md#Die 25 Support-Paare]
 

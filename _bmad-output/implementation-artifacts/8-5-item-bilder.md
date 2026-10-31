@@ -44,7 +44,7 @@ damit Ausrüstung so lebendig wirkt wie die Figuren.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 8.5: Item-Bilder]
+- [Source: concept/26-epics/epics/epic-08.md#Story 8.5: Item-Bilder]
 - [Source: concept/25-ux/DESIGN.md – `item-image`, Komponententabelle „Item-Bild“, Farben `rarity-*`]
 - [Source: concept/25-ux/mockups/06-truppe.html – `.ic`, `.gem`, `.plus`]
 - [Source: concept/23-art-direction/art-direction.md §5.6]

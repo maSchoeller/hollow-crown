@@ -38,7 +38,7 @@ Umfang laut Produktinhaber: Story 5.2 (Valmora als 3D-Szene) fehlt noch, die Kar
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.3]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.3]
 - [Source: concept/25-ux/mockups/03-weltkarte.html]
 - [Source: concept/25-ux/DESIGN.md#map-node, Knoten-Karte, Leiste]
 - [Source: concept/25-ux/EXPERIENCE.md#Navigation]

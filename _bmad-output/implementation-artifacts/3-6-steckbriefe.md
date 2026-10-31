@@ -87,7 +87,7 @@ damit ich planen kann, wer ihn stellt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 3.6]
+- [Source: concept/26-epics/epics/epic-03.md#Story 3.6]
 - [Source: concept/25-ux/DESIGN.md] (Bausteine Steckbrief, Medaillon, Leiste)
 - [Source: concept/25-ux/EXPERIENCE.md] (Eingabe, Screens, Zustände)
 - [Source: concept/25-ux/mockups/02-kampf.html] (Steckbrief per Langdruck)

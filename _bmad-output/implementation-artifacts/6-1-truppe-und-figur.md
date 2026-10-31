@@ -32,7 +32,7 @@ damit ich weiß, wer bereit ist und wer etwas braucht.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.1]
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.1]
 - [Source: concept/25-ux/mockups/06-truppe.html]
 
 ## Dev Agent Record

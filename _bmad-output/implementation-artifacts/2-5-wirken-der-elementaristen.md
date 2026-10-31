@@ -15,7 +15,7 @@ damit Magie mehr ist als Schaden.
 3. **KI:** Ein gegnerischer Elementarist nutzt Wirken statt anzugreifen, wenn mindestens 2 Spieler-Einheiten im Brand-Ausbreitungsbereich stehen oder ein Felswall einen Spieler-Pfad zum Ziel sperrt.
 4. Wirken ersetzt die Aktion des Zugs, sitzt auf dem festen Klassen-Platz des Docks mit Rollen-Icon und ist in `src/core` getestet. Alle Zahlen in `balance.yaml`.
 
-> Die Kriterien oben sind der Wortlaut aus `concept/26-epics/epics.md` und GDD (Rollenklassen, Gegner-KI, Gelände und Umwelteffekte). Wo sie schweigen, gelten die Entscheidungen des Produktinhabers vom 2026-10-24 unten (Q1–Q12 sind entschieden).
+> Die Kriterien oben sind der Wortlaut aus `concept/26-epics/epics/` und GDD (Rollenklassen, Gegner-KI, Gelände und Umwelteffekte). Wo sie schweigen, gelten die Entscheidungen des Produktinhabers vom 2026-10-24 unten (Q1–Q12 sind entschieden).
 
 ## Tasks / Subtasks
 

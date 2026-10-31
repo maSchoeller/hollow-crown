@@ -9,7 +9,7 @@ brief: 'concept/20-game-brief/brief.md'
 gdd: 'concept/21-gdd/gdd.md'
 narrative: 'concept/22-narrative/narrative.md'
 decisions: 'concept/23-art-direction/decision-log.md'
-supersedes: 'concept/15-art-direction.md (ganz); D1–D16, GA1–GA25 aus 01-decisions.md, soweit hier geregelt'
+supersedes: 'concept/archive/15-art-direction.md (ganz); D1–D16, GA1–GA25 aus 01-decisions.md, soweit hier geregelt'
 ---
 
 # Art Direction – Hollow Crown, Staffel 1
@@ -400,7 +400,7 @@ Startschätzung zur Planung der Epics. [C]
 
 | Altbestand | Status |
 |---|---|
-| `15-art-direction.md` | abgelöst; Elementfarben, Effekt-Liste, Gelände-IDs und Lesbarkeitsregeln sind hier übernommen |
+| `archive/15-art-direction.md` | abgelöst; Elementfarben, Effekt-Liste, Gelände-IDs und Lesbarkeitsregeln sind hier übernommen |
 | GA1, GA2, GA5, GA7, GA10, GA12, GA14, GA16 | durch §1–§8 präzisiert bzw. abgelöst (B8: Round-Chibi statt Anime-Ebene) |
 | GA3, GA6 (Pixel-Sprites) | 2D-Sprites bleiben nur als umschaltbare Alternative (D4), werden aber nicht mehr weiterentwickelt [C] |
 | D1–D16 | Technik bleibt; Look nach §3, Figuren nach §4 |

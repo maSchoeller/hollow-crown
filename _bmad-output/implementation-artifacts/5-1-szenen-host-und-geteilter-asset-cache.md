@@ -63,7 +63,7 @@ damit sich das Spiel wie ein Ganzes anfühlt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.1]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.1]
 - [Source: concept/24-architecture/architecture.md#5.12 Rendering: eine Engine, drei Szenen]
 - [Source: concept/24-architecture/architecture.md#10. Leistung]
 - [Source: concept/01-decisions.md#D17]

@@ -37,7 +37,7 @@ damit ich nicht auf einen großen Download warte.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.1]
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.1]
 - [Source: concept/24-architecture/architecture.md#5.14 Content- und Asset-Pakete]
 - [Source: _bmad-output/implementation-artifacts/7-6-ladeanzeige-beim-ersten-start-und-vor-missionen.md]
 

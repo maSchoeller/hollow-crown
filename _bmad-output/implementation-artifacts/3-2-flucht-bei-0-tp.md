@@ -87,7 +87,7 @@ damit sich nichts beliebig anfühlt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 3.2]
+- [Source: concept/26-epics/epics/epic-03.md#Story 3.2]
 - [Source: concept/24-architecture/architecture.md#5.5 Leutnants (AR5)]
 - [Source: concept/21-gdd/gdd.md#Leutnants]
 - [Source: concept/25-ux/EXPERIENCE.md]
