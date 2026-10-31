@@ -1,0 +1,65 @@
+/* EVALUATION SPIKE (dev only, ?castle3d=1): the 3D castle in the picture's place and its dev bar. */
+.hm__scene.c3d {
+  overflow: hidden;
+  /* evening sky behind the transparent canvas */
+  background: linear-gradient(180deg, #6c5a96 0%, #c78a8a 46%, #f0b071 72%, #e7c08a 100%);
+}
+.c3d .hc-stage {
+  image-rendering: auto;
+}
+.c3d-pin {
+  z-index: 1;
+}
+.c3d-pin .hm-room__stone {
+  width: 34px;
+  height: 34px;
+}
+.hm.has-room .c3d-pin {
+  display: none;
+}
+.c3d-stats {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 45%);
+  color: #fff;
+  font-size: 11px;
+  pointer-events: none;
+}
+.hm > .c3d-bar.c3d-bar {
+  position: absolute;
+  z-index: 3;
+  right: 8px;
+  /* on the row of the coin pill, clear of the keep's roof */
+  top: calc(var(--hc-hud-top) + env(safe-area-inset-top, 0px) + 58px);
+  width: auto;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 9px;
+  background: rgb(30 22 14 / 72%);
+  color: #f5ead6;
+  font-size: 11px;
+}
+.c3d-bar span {
+  padding-inline: 4px 2px;
+}
+.c3d-bar button {
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0 6px;
+  border: 1px solid rgb(245 234 214 / 40%);
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.c3d-bar button.is-on {
+  background: #f5ead6;
+  color: #2a1f14;
+}
