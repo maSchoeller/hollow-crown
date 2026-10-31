@@ -156,9 +156,12 @@ describe('kill markers (story 13.4)', () => {
 
   it('counts the double attack (strikes from the forecast)', () => {
     const { s, me, foe } = duel('slim_sword');
+    // far faster than the foe: the attacker strikes twice whatever the class values are
+    me.stats = { ...me.stats, spd: computeStats(data, foe).as + data.balance.combat.doubleAttackThreshold + 20 };
     const f = forecast(data, s, me.uid, foe.uid, me.equip.mainHand!.uid, [5, 5]);
+    expect(f.attacker.strikes).toBeGreaterThan(1);
     foe.hp = f.attacker.damage * f.attacker.strikes;
-    if (f.attacker.strikes > 1) expect(killMarks(data, s, me)[0]?.kind).toBe('hit');
+    expect(killMarks(data, s, me)[0]?.kind).toBe('hit');
     expect(damageAtHit(data, f)).toBe(Math.min(foe.hp, f.attacker.damage * f.attacker.strikes));
   });
 
@@ -185,7 +188,10 @@ describe('kill markers (story 13.4)', () => {
     const s = arena();
     const me = place(s, 'player', 'elementalist', [3, 5], 'ember');
     const foe = place(s, 'enemy', 'brigand', [6, 5], 'iron_axe');
+    // fire beats wind (balance.yaml element.cycle): the multiplier is in the numbers the marker counts with
+    foe.affinity = 'wind';
     const f = forecast(data, s, me.uid, foe.uid, me.equip.mainHand!.uid, [4, 5]);
+    expect(f.attacker.elementMult).not.toBe(1);
     foe.hp = damageAtHit(data, { ...f, defender: { ...f.defender, hpBefore: 999 } });
     expect(killMarks(data, s, me)[0]?.kind).toBe('hit');
   });

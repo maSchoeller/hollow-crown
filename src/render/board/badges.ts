@@ -31,6 +31,8 @@ interface Badge {
   x: number;
   y: number;
   shown: boolean;
+  /** height of the shown row (bar, marker, check) in CSS px, 0 when nothing shows */
+  height: number;
 }
 
 /** Which HP a bar fills, which tick step it shows and whether it is critical (pure, tested). */
@@ -55,6 +57,10 @@ const SKULL =
 const FLEE =
   '<svg viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" class="b-bg"/><path class="b-half" d="M11 2a9 9 0 0 1 0 18z"/>' +
   '<path class="b-skull" d="M5 12h8m-3-4 4 4-4 4M15 6v10" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+/** Heights in CSS px of the marker and the check (badges.css); the badge row is as high as its highest shown part. */
+const MARK_PX = 18;
+const CHECK_PX = 14;
+
 const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 8.5l2.6 2.6L12 5.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 export class Badges {
@@ -111,6 +117,7 @@ export class Badges {
         x: NaN,
         y: NaN,
         shown: true,
+        height: 0,
       };
       this.badges.set(uid, b);
     }
@@ -153,11 +160,13 @@ export class Badges {
     const b = this.badges.get(uid);
     if (!b) return;
     const u = b.unit;
-    const bar = barShown(this.mode, u);
     const look = barLook(this.look, u.hp, u.maxHp);
     const mark = this.marks.get(uid);
     const done = this.done.has(uid);
     const pre = this.preview?.uid === uid ? Math.max(0, Math.min(u.hp, this.preview.after)) : null;
+    // a previewed attack shows its bar whatever the option says, else the flashing loss would hide with it (story 13.4)
+    const bar = barShown(this.mode, u) || pre !== null;
+    b.height = Math.max(bar ? this.look.heightPx : 0, mark ? MARK_PX : 0, done ? CHECK_PX : 0);
     const sig = `${bar}|${u.team}|${u.hp}|${u.maxHp}|${u.lieutenant}|${mark ?? ''}|${done}|${pre ?? ''}`;
     if (sig === b.sig) return;
     b.sig = sig;
@@ -200,7 +209,7 @@ export class Badges {
   /** Height in CSS px the badge takes above the head, so pennant and status icons sit above it. */
   heightOf(uid: string): number {
     const b = this.badges.get(uid);
-    return b && b.shown && barShown(this.mode, b.unit) ? this.look.heightPx + 6 : 0;
+    return b && b.shown && b.height > 0 ? b.height + 6 : 0;
   }
 
   uids(): IterableIterator<string> {

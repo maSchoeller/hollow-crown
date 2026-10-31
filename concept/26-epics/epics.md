@@ -2047,7 +2047,7 @@ damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett 
 **Angenommen** die Optionen (Titel und Menü)
 **Wenn** der Spieler sie öffnet
 **Dann** gibt es einen Block „Brett-Anzeige“ mit Raster (aus / dezent / stark), Lebensleisten (Immer / Nur verletzte / Aus), Gegner-Leiste (an/aus) und dem bisherigen Schalter „Gefahrenzone standardmäßig“
-**Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Zahlen an, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
+**Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
 
 **Angenommen** ein Kampf mit Raster „dezent“
 **Wenn** das Brett steht
