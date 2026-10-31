@@ -1,7 +1,8 @@
 /**
  * EVALUATION SPIKE (dev only): the castle home as a 3D diorama instead of the painted picture, opened with `?castle3d=1`
- * (dev server, or any build with `?debug`). The scene module (`src/render/home/castle.ts`) is loaded on demand, so the
- * first download does not grow. A dev bar switches between picture and 3D and sets every room to level 1, 2 or 3.
+ * (dev server, or any build with `?debug`). The scene module (`src/render/home/castle.ts`) and its model file are loaded on
+ * demand, so the first download does not grow. A dev bar switches between picture and 3D and sets every room to level 1, 2
+ * or 3. The 3D castle places its rooms itself (reference layout); the picture keeps the anchors of `content/home/home.yaml`.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { RoomStatus } from '../../core';
@@ -54,6 +55,7 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
   /** the host's canvas goes in here; Preact never renders into it */
   const stage = useRef<HTMLDivElement>(null);
   const view = useRef<CastleView | null>(null);
+  const ids = useRef<string[]>([]);
   const [ready, setReady] = useState(false);
   const [stats, setStats] = useState<{ fps: number; drawCalls: number } | null>(null);
   const latest = useRef({ rooms, onRoom, levelOf });
@@ -62,7 +64,7 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
   useEffect(() => {
     let gone = false;
     let v: CastleView | null = null;
-    void import('../../render/home/castle').then(async ({ CastleView, SPIKE_SPOTS }) => {
+    void import('../../render/home/castle').then(async ({ CastleView, CASTLE_ROOMS }) => {
       if (gone || !stage.current) return;
       v = new CastleView(
         stage.current,
@@ -76,11 +78,8 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
         settings.value.quality,
       );
       view.current = v;
-      const anchors = data.home.castle.anchors.map((a) => ({ id: a.room, at: a.at as [number, number] }));
-      const extra = Object.entries(SPIKE_SPOTS)
-        .filter(([id]) => !anchors.some((a) => a.id === id))
-        .map(([id, at]) => ({ id, at }));
-      await v.build([...anchors, ...extra].map((r) => ({ ...r, level: latest.current.levelOf(r.id) })));
+      ids.current = CASTLE_ROOMS;
+      await v.build(CASTLE_ROOMS.map((id) => ({ id, level: latest.current.levelOf(id) })));
       if (!gone) setReady(true);
     });
     const timer = window.setInterval(() => {
@@ -98,7 +97,7 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
   useEffect(() => {
     const v = view.current;
     if (!v || !ready) return;
-    for (const id of [...data.home.castle.anchors.map((a) => a.room), 'enchanter', 'academy', 'workshop', 'training']) v.setLevel(id, levelOf(id));
+    for (const id of ids.current) v.setLevel(id, levelOf(id));
   });
 
   return (

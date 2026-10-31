@@ -1,12 +1,16 @@
 /**
  * EVALUATION SPIKE (dev only, `?castle3d=1`): the Paktwacht as a 3D diorama (concept/23-art-direction §7) on the render host
- * (story 5.1), so the product owner can compare it with the painted picture. Not the final feature: the castle is built
- * from the board's low-poly prop models (tools/art/props) plus Babylon primitives, in the evening light preset of
- * `render.yaml`. Rooms sit where the anchors of `content/home/home.yaml` put their stones; each room has parts per
- * build-up level (1: scaffolding and tarps, 2: new roof and windows, 3: banners, light and smoke).
+ * (story 5.1), so the product owner can compare it with the painted picture. Not the final feature.
  *
- * Layout and colours below are spike placeholders [C], deliberately in code (no game values; a real home scene would move
- * them into content next to the anchors).
+ * The castle is one model file, `models/castle/paktwacht.glb`, built by tools/art/blender_castle.py after the modelling
+ * references in art/mockups/castle3d-refs/ and loaded on demand. It holds one mesh per part, named `<group>_<levels>`: the
+ * shell (island, walls, towers, gate, keep, modelled in place), the eleven rooms and three keepsakes (modelled at the origin,
+ * placed by LAYOUT below), each with parts for the build-up levels (`a` always, `1` ruin with scaffolding and tarps, `23`
+ * from level 2: roofs and lit windows, `2` only level 2, `3` banners, lanterns, extras). Colours are vertex colours; glowing
+ * parts (windows, fire, lanterns, runes) wear an unlit material. Evening light preset of `render.yaml`.
+ *
+ * Layout, smoke and light spots below are spike placeholders [C], deliberately in code (no game values; a real home scene
+ * would move them into content). The picture view keeps its own anchors (`content/home/home.yaml`).
  */
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 import { Camera } from '@babylonjs/core/Cameras/camera';
@@ -16,10 +20,8 @@ import { Viewport } from '@babylonjs/core/Maths/math.viewport';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
-import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
+import type { Node } from '@babylonjs/core/node';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
-import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
-import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -34,14 +36,13 @@ import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { GameData } from '../../core';
 import { renderHost, type AssetStore, type HostedView, type Quality, type RenderHost } from '../host';
-import { loadPropMesh, loadStaticMesh } from '../shared/models';
 import { resolveLook } from '../shared/look';
 import { applyLight } from '../shared/season';
+// glTF loader and meshopt decoder (the castle file is meshopt-compressed by gltfpack)
+import '../shared/models';
 
 export interface CastleRoom {
   id: string;
-  /** stone position in % of the painted picture (home.yaml anchors); rooms without anchor get a spike spot */
-  at: [number, number];
   level: number;
 }
 
@@ -50,71 +51,82 @@ export interface CastleHooks {
   onRoom(id: string): void;
 }
 
-type Kind = 'stall' | 'forge' | 'garden' | 'hall' | 'tavern' | 'wagon' | 'fire' | 'tower' | 'academy' | 'workshop' | 'yard';
+const MODEL = 'models/castle/paktwacht.glb';
 
-/** [C] which building stands for which room */
-const KIND: Record<string, Kind> = {
-  merchant: 'stall',
-  smith: 'forge',
-  healer: 'garden',
-  memorial: 'hall',
-  tavern: 'tavern',
-  convoy: 'wagon',
-  campfire: 'fire',
-  enchanter: 'tower',
-  academy: 'academy',
-  workshop: 'workshop',
-  training: 'yard',
+/** radius of the island's top (tools/art/blender_castle.py ISLAND_R) */
+const ISLAND_R = 10.8;
+
+/** points the camera keeps in view: the island's rim, its underside, the tip of the keep's roof */
+const FRAME_POINTS: Vector3[] = [
+  ...Array.from({ length: 16 }, (_, i) => new Vector3(Math.cos((i / 16) * Math.PI * 2) * ISLAND_R, 0, Math.sin((i / 16) * Math.PI * 2) * ISLAND_R)),
+  ...Array.from({ length: 8 }, (_, i) => new Vector3(Math.cos((i / 8) * Math.PI * 2) * (ISLAND_R - 1), -2.2, Math.sin((i / 8) * Math.PI * 2) * (ISLAND_R - 1))),
+  new Vector3(0, -5, 0),
+  new Vector3(3.5, 7.5, 7.9),
+  new Vector3(-7.7, 3.9, 5.4),
+];
+
+/** [C] the band the island fits in (share of the view height; the view ends just under the top of the room list): below the HUD, above the room list */
+const BAND: [number, number] = [0.2, 0.92];
+const PITCH = 0.82;
+
+/**
+ * [C] Room spots after the reference layout (art/mockups/castle3d-refs/paktwacht_diorama_l3.png), grounds twice the area of
+ * the first spike: x, z in world units (z = back), yaw in degrees counter-clockwise seen from above (front = -z). Same table
+ * as PREVIEW_LAYOUT in tools/art/blender_castle.py.
+ */
+const LAYOUT: Record<string, [number, number, number]> = {
+  convoy: [-7.2, 1.0, 30],
+  workshop: [-4.3, 2.8, 18],
+  merchant: [-1.8, 2.0, 8],
+  campfire: [0, -0.4, 0],
+  tavern: [2.2, 3.4, -8],
+  smith: [5.0, 1.4, -22],
+  academy: [5.9, 4.6, -24],
+  healer: [6.6, -1.8, -32],
+  training: [-4.6, -3.0, 16],
+  memorial: [-4.2, 5.9, 10],
+  enchanter: [-6.6, 4.0, 22],
 };
 
-/** [C] act-2 rooms have no anchor yet: spike spots in % of the picture */
-export const SPIKE_SPOTS: Record<string, [number, number]> = {
-  enchanter: [27, 28],
-  academy: [73, 28],
-  workshop: [13, 75],
-  training: [87, 76],
+/** the rooms the castle model has, in LAYOUT order */
+export const CASTLE_ROOMS = Object.keys(LAYOUT);
+
+/** [C] companion keepsakes at fixed places (§7): x, z, yaw, scale */
+const KEEPSAKES: Record<string, [number, number, number, number]> = {
+  axe: [3.4, -0.4, -20, 1],
+  lute: [-1.3, -1.4, 10, 1],
+  books: [4.2, 3.2, 0, 1.3],
 };
 
-const C = {
-  stone: '#d8c9b0',
-  stoneDark: '#b3a288',
-  stoneWarm: '#e4d3b6',
-  wood: '#7a5232',
-  woodLight: '#a77a4c',
-  roof: '#b85a3c',
-  slate: '#4f5d80',
-  canvas: '#eadfc4',
-  banner: '#d9662a',
-  bannerDark: '#a8441d',
-  grass: '#86a24c',
-  grassDark: '#6d8a3e',
-  earth: '#6e4c33',
-  ivy: '#5f8a3a',
-  window: '#ffc861',
-  ember: '#ff9a3c',
-  violet: '#b58cff',
+/** [C] chimney smoke from level 3, room-local (x, height, z) */
+const SMOKE: Record<string, Array<[number, number, number]>> = {
+  smith: [[0.95, 3.2, 0.85]],
+  tavern: [[-1.05, 3.3, 0.3]],
+  healer: [[0.05, 2.55, 0.45]],
 };
 
-/** half extent of the diorama ground in world units */
-const R = 7.6;
-const ROOM_SCALE = 1.35;
-/** picture % → world: x across, z from the back (top of the picture) to the front */
-const toWorld = ([x, y]: [number, number]): [number, number] => [((x - 50) / 100) * 12.4, ((50 - y) / 100) * 14];
+const EMBER = '#ff9a3c';
+const RUNE = '#c9a2ff';
+
+/** part names of the model file: `<group>_<levels>` (glTF primitives get a `_primitive<n>` suffix) */
+const PART = /^(?:castle:)?([a-z]+)_(a|1|2|23|3)(?:_primitive\d+)?$/;
 
 /** One room's building with its level parts. */
 interface RoomView {
   id: string;
   root: TransformNode;
-  /** level 1 only (scaffolding, tarps, ruin variant) */
+  /** level 1 only (ruin: scaffolding, tarps, rubble) */
   l1: TransformNode;
-  /** level 2 and up (roof, windows, intact variant) */
+  /** level 2 and up (roof, lit windows) */
+  l23: TransformNode;
+  /** level 2 only */
   l2: TransformNode;
-  /** level 3 (banners, light, smoke) */
+  /** level 3 (banners, lanterns, extras) */
   l3: TransformNode;
   smoke: ParticleSystem[];
   lights: PointLight[];
-  /** point the room's stone sits over */
-  pin: Vector3;
+  /** height the room's stone sits at, over the root */
+  pin: number;
 }
 
 export class CastleView implements HostedView {
@@ -125,14 +137,18 @@ export class CastleView implements HostedView {
   private hemi: HemisphericLight;
   private sun: DirectionalLight;
   private shadows: ShadowGenerator | null = null;
-  private mats = new Map<string, StandardMaterial>();
-  private propMat: StandardMaterial;
+  private lit: StandardMaterial;
+  private glow: StandardMaterial;
   private smokeTex: DynamicTexture;
   private rooms = new Map<string, RoomView>();
+  private shell: Record<'l1' | 'l23' | 'l2' | 'l3', TransformNode>;
   private pins = new Map<string, HTMLElement>();
   private disposed = false;
   private input = new AbortController();
   private yaw = 0;
+  /** camera distance and aim that frame the island in BAND (fit, on resize) */
+  private dist = 30;
+  private aim = new Vector3(0, 0, 0);
   private drag: { x: number; yaw: number; id: number; moved: boolean; t: number } | null = null;
   private lastDrag = -1e9;
   private start = performance.now();
@@ -157,8 +173,8 @@ export class CastleView implements HostedView {
     this.camera.inputs.clear();
     this.camera.fovMode = Camera.FOVMODE_HORIZONTAL_FIXED;
     this.camera.fov = 0.78;
-    this.camera.minZ = 0.5;
-    this.camera.maxZ = 120;
+    this.camera.minZ = 1;
+    this.camera.maxZ = 160;
     this.scene.activeCamera = this.camera;
     this.hemi = new HemisphericLight('castle:ambient', new Vector3(0.2, 1, -0.3), this.scene);
     this.sun = new DirectionalLight('castle:sun', new Vector3(0.5, -1, 0.4), this.scene);
@@ -176,17 +192,25 @@ export class CastleView implements HostedView {
       sg.getShadowMap()!.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
       this.shadows = sg;
     }
-    this.propMat = new StandardMaterial('castle:props', this.scene);
-    this.propMat.specularColor = new Color3(0.05, 0.05, 0.05);
-    this.propMat.backFaceCulling = false;
+    this.lit = new StandardMaterial('castle:lit', this.scene);
+    this.lit.specularColor = new Color3(0.04, 0.04, 0.04);
+    this.lit.maxSimultaneousLights = 6;
+    // [C] the evening sun stands low in the west and leaves the fronts to the dim sky light: a warm lift keeps the toy colours
+    this.lit.emissiveColor = new Color3(0.2, 0.17, 0.14);
+    this.glow = new StandardMaterial('castle:glow', this.scene);
+    this.glow.disableLighting = true;
+    this.glow.emissiveColor = new Color3(1, 1, 1);
     this.smokeTex = this.makeSmokeTexture();
-    this.placeCamera();
+    const node = (n: string) => new TransformNode(`castle:shell:${n}`, this.scene);
+    this.shell = { l1: node('l1'), l23: node('l23'), l2: node('l2'), l3: node('l3') };
+    this.fit();
     this.bindInput();
     if (import.meta.env.DEV) (window as unknown as { __castle: CastleView }).__castle = this;
   }
 
   // ------------------------------------------------------------------ host
 
+  /** Always drawing: the idle sway moves the camera every frame (and smoke and fire run). */
   busy(): boolean {
     return true;
   }
@@ -208,7 +232,7 @@ export class CastleView implements HostedView {
   }
 
   resize(): void {
-    this.placeCamera();
+    this.fit();
   }
 
   dispose(): void {
@@ -220,46 +244,157 @@ export class CastleView implements HostedView {
     this.host.release(this);
   }
 
-  /** dev readout: frames drawn in the last second, draw calls and active meshes of the last frame */
+  /** dev readout: frames drawn in the last second, draw calls, active meshes and their vertices in the last frame */
   stats(): { fps: number; drawCalls: number; meshes: number; vertices: number } {
-    return {
-      fps: this.frames.length,
-      drawCalls: this.drawCalls,
-      meshes: this.scene.getActiveMeshes().length,
-      vertices: this.scene.getTotalVertices(),
-    };
+    const active = this.scene.getActiveMeshes();
+    let vertices = 0;
+    for (let i = 0; i < active.length; i++) vertices += active.data[i]!.getTotalVertices();
+    return { fps: this.frames.length, drawCalls: this.drawCalls, meshes: active.length, vertices };
   }
 
   // ------------------------------------------------------------------ build
 
   async build(rooms: CastleRoom[]): Promise<void> {
-    this.buildGround();
-    this.buildShell();
-    // model files load in parallel (the cache loads each once)
-    await Promise.all([this.buildScenery(), ...rooms.map((r) => this.buildRoom(r))]);
-    await this.buildKeepsakes();
-    if (this.disposed) return;
-    this.mergeStatic();
+    const parts = await this.loadParts();
+    if (this.disposed || !parts) return;
+    // shell: modelled in place
+    const shellRoot = new TransformNode('castle:shell', this.scene);
+    for (const n of Object.values(this.shell)) n.parent = shellRoot;
+    this.attach(parts.get('shell_a'), shellRoot);
+    this.attach(parts.get('shell_1'), this.shell.l1);
+    this.attach(parts.get('shell_23'), this.shell.l23);
+    this.attach(parts.get('shell_2'), this.shell.l2);
+    this.attach(parts.get('shell_3'), this.shell.l3);
+    for (const r of rooms) this.buildRoom(r, parts);
+    for (const [id, [x, z, yaw, s]] of Object.entries(KEEPSAKES)) {
+      const n = new TransformNode(`castle:keepsake:${id}`, this.scene);
+      n.position.set(x, 0, z);
+      n.rotation.y = (-yaw * Math.PI) / 180;
+      n.scaling.setAll(s);
+      this.attach(parts.get(`${id}_a`), n);
+    }
+    // the campfire burns at every level
+    const fire = this.rooms.get('campfire');
+    if (fire) {
+      this.smoke(fire.root, 0, 0.2, 0, true).start();
+      this.light(fire.root, EMBER, 0, 0.9, 0, 1.4, 5);
+    }
     for (const r of rooms) this.setLevel(r.id, r.level);
     if (this.shadows) {
-      for (const m of this.scene.meshes) if (m.isEnabled() && m.name !== 'castle:ground' && m.name !== 'castle:plinth') this.shadows.addShadowCaster(m, false);
+      for (const m of this.scene.meshes) if (m.material === this.lit) this.shadows.addShadowCaster(m, false);
       this.refreshShadows();
     }
-    this.freeze();
+    this.lit.freeze();
+    this.glow.freeze();
   }
 
-  /** Shows `level` (1–3) for one room. */
+  /**
+   * The model's parts by name, each a list of meshes (one per material) baked into castle space: the glTF root turns the
+   * file 180° about the vertical, the extra turn puts Blender's +X right and +Y back again (front = -z, towards the camera).
+   */
+  private async loadParts(): Promise<Map<string, Mesh[]> | null> {
+    const c = await this.store.container(MODEL, true);
+    if (!c || this.disposed) return null;
+    const inst = c.instantiateModelsToScene((n) => `castle:${n}`, false, { doNotInstantiate: true });
+    // the glTF materials belong to the cached container: off the scene list (the host clears it between scenes)
+    for (const m of c.materials) this.scene.removeMaterial(m);
+    const turn = Matrix.RotationY(Math.PI);
+    const parts = new Map<string, Mesh[]>();
+    for (const root of inst.rootNodes)
+      for (const m of root.getChildMeshes(false)) {
+        if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
+        const key = partKey(m);
+        if (!key) continue;
+        const glow = (m.material?.name ?? '').includes('glow');
+        m.makeGeometryUnique();
+        m.computeWorldMatrix(true);
+        m.setParent(null);
+        m.bakeCurrentTransformIntoVertices();
+        m.bakeTransformIntoVertices(turn);
+        m.material = glow ? this.glow : this.lit;
+        m.hasVertexAlpha = false;
+        m.isPickable = false;
+        m.receiveShadows = !glow;
+        const list = parts.get(key) ?? [];
+        list.push(m);
+        parts.set(key, list);
+      }
+    for (const n of inst.rootNodes) n.dispose(false, false);
+    return parts;
+  }
+
+  private attach(meshes: Mesh[] | undefined, parent: TransformNode): void {
+    for (const m of meshes ?? []) {
+      m.parent = parent;
+      m.computeWorldMatrix(true);
+      m.freezeWorldMatrix();
+    }
+  }
+
+  private buildRoom(r: CastleRoom, parts: Map<string, Mesh[]>): void {
+    const spot = LAYOUT[r.id];
+    if (!spot || !parts.has(`${r.id}_a`)) return;
+    const [x, z, yaw] = spot;
+    const root = new TransformNode(`castle:room:${r.id}`, this.scene);
+    root.position.set(x, 0, z);
+    root.rotation.y = (-yaw * Math.PI) / 180;
+    root.computeWorldMatrix(true);
+    const level = (n: string) => {
+      const t = new TransformNode(`castle:${r.id}:${n}`, this.scene);
+      t.parent = root;
+      return t;
+    };
+    const v: RoomView = { id: r.id, root, l1: level('l1'), l23: level('l23'), l2: level('l2'), l3: level('l3'), smoke: [], lights: [], pin: 2 };
+    // footprint and height (room-local, before placing) for the tap area and the stone
+    const min = new Vector3(Infinity, Infinity, Infinity);
+    const max = new Vector3(-Infinity, -Infinity, -Infinity);
+    for (const key of ['a', '23'])
+      for (const m of parts.get(`${r.id}_${key}`) ?? []) {
+        const b = m.getBoundingInfo().boundingBox;
+        min.minimizeInPlace(b.minimum);
+        max.maximizeInPlace(b.maximum);
+      }
+    this.attach(parts.get(`${r.id}_a`), root);
+    this.attach(parts.get(`${r.id}_1`), v.l1);
+    this.attach(parts.get(`${r.id}_23`), v.l23);
+    this.attach(parts.get(`${r.id}_2`), v.l2);
+    this.attach(parts.get(`${r.id}_3`), v.l3);
+    v.pin = Math.max(1.2, max.y + 0.35);
+    for (const [sx, sy, sz] of SMOKE[r.id] ?? []) v.smoke.push(this.smoke(root, sx, sy, sz));
+    if (r.id === 'smith') v.lights.push(this.light(root, EMBER, -0.2, 0.7, -0.6, 1.2, 4));
+    if (r.id === 'enchanter') v.lights.push(this.light(root, RUNE, 0.75, 0.6, -1.05, 1.2, 3.5));
+    // a generous invisible tap area over the building
+    const d = Math.max(1.6, Math.min(3.4, Math.max(max.x - min.x, max.z - min.z) * 0.85));
+    const hit = CreateCylinder(`castle:hit:${r.id}`, { diameter: d, height: v.pin, tessellation: 8 }, this.scene);
+    hit.parent = root;
+    hit.position.set((min.x + max.x) / 2, v.pin / 2, (min.z + max.z) / 2);
+    hit.visibility = 0;
+    hit.isPickable = true;
+    hit.metadata = { room: r.id };
+    this.rooms.set(r.id, v);
+  }
+
+  /** Shows `level` (1–3) for one room; the shell follows the rooms. */
   setLevel(id: string, level: number): void {
     const v = this.rooms.get(id);
     if (!v) return;
+    v.root.metadata = { level };
     v.l1.setEnabled(level <= 1);
-    v.l2.setEnabled(level >= 2);
+    v.l23.setEnabled(level >= 2);
+    v.l2.setEnabled(level === 2);
     v.l3.setEnabled(level >= 3);
     for (const p of v.smoke) {
       if (level >= 3) p.start();
       else p.stop();
     }
     for (const l of v.lights) l.setEnabled(level >= 3);
+    // [C] walls, towers and keep show the rounded-down mean level of the rooms (an open product question)
+    const levels = [...this.rooms.values()].map((r) => (r.root.metadata as { level?: number } | null)?.level ?? 1);
+    const shell = Math.max(1, Math.min(3, Math.floor(levels.reduce((a, b) => a + b, 0) / levels.length)));
+    this.shell.l1.setEnabled(shell <= 1);
+    this.shell.l23.setEnabled(shell >= 2);
+    this.shell.l2.setEnabled(shell === 2);
+    this.shell.l3.setEnabled(shell >= 3);
     this.refreshShadows();
   }
 
@@ -269,116 +404,7 @@ export class CastleView implements HostedView {
     else this.pins.delete(id);
   }
 
-  // ------------------------------------------------------------------ helpers
-
-  private mat(hex: string, emissive = false): StandardMaterial {
-    const key = `${hex}|${emissive ? 'e' : ''}`;
-    let m = this.mats.get(key);
-    if (!m) {
-      m = new StandardMaterial(`castle:${key}`, this.scene);
-      const c = Color3.FromHexString(hex);
-      m.diffuseColor = c;
-      m.specularColor = new Color3(0.04, 0.04, 0.04);
-      if (emissive) {
-        m.emissiveColor = c;
-        m.disableLighting = true;
-      }
-      this.mats.set(key, m);
-    }
-    return m;
-  }
-
-  private box(parent: TransformNode | null, w: number, h: number, d: number, color: string, x: number, y: number, z: number, rotY = 0, emissive = false): Mesh {
-    const m = CreateBox('castle:box', { width: w, height: h, depth: d }, this.scene);
-    m.material = this.mat(color, emissive);
-    m.position.set(x, y + h / 2, z);
-    m.rotation.y = rotY;
-    m.parent = parent;
-    m.receiveShadows = true;
-    m.isPickable = false;
-    return m;
-  }
-
-  private cyl(parent: TransformNode | null, dTop: number, dBottom: number, h: number, color: string, x: number, y: number, z: number, tess = 16): Mesh {
-    const m = CreateCylinder('castle:cyl', { diameterTop: dTop, diameterBottom: dBottom, height: h, tessellation: tess }, this.scene);
-    m.material = this.mat(color);
-    m.position.set(x, y + h / 2, z);
-    m.parent = parent;
-    m.receiveShadows = true;
-    m.isPickable = false;
-    return m;
-  }
-
-  private ball(parent: TransformNode | null, d: number, color: string, x: number, y: number, z: number, emissive = false): Mesh {
-    const m = CreateSphere('castle:ball', { diameter: d, segments: 8 }, this.scene);
-    m.material = this.mat(color, emissive);
-    m.position.set(x, y, z);
-    m.parent = parent;
-    m.receiveShadows = true;
-    m.isPickable = false;
-    return m;
-  }
-
-  /** a gable roof (triangular prism) along x */
-  private gable(parent: TransformNode, w: number, h: number, d: number, color: string, x: number, y: number, z: number, rotY = 0): Mesh {
-    const m = CreateCylinder('castle:roof', { diameter: 1, height: 1, tessellation: 3 }, this.scene);
-    m.material = this.mat(color);
-    m.rotation.set(0, rotY, Math.PI / 2);
-    m.bakeCurrentTransformIntoVertices();
-    // a unit prism lying along x with its ridge up; scale to the roof
-    m.scaling.set(w, h / 0.75, d / 0.866);
-    m.position.set(x, y + h * 0.333, z);
-    m.parent = parent;
-    m.receiveShadows = true;
-    m.isPickable = false;
-    return m;
-  }
-
-  /** a flat cloth (banner, tarp) facing the camera side (-z) */
-  private cloth(parent: TransformNode, w: number, h: number, color: string, x: number, y: number, z: number, rotX = 0, rotY = 0): Mesh {
-    const m = CreatePlane('castle:cloth', { width: w, height: h, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
-    m.material = this.mat(color);
-    m.position.set(x, y, z);
-    m.rotation.set(rotX, rotY, 0);
-    m.parent = parent;
-    m.receiveShadows = true;
-    m.isPickable = false;
-    return m;
-  }
-
-  /** a prop model scaled so its larger footprint side is `size`; null when the file is missing */
-  private async prop(parent: TransformNode, model: string, size: number, x: number, z: number, rotY = 0, y = 0): Promise<Mesh | null> {
-    const i = model.lastIndexOf('_');
-    const m = await loadPropMesh(this.store, model.slice(0, i), model.slice(i + 1), this.propMat);
-    if (!m || this.disposed) return null;
-    this.fit(m, size, false);
-    m.position.set(x, y, z);
-    m.rotation.y = rotY;
-    m.parent = parent;
-    return m;
-  }
-
-  /** a weapon model standing on its own, scaled to `height` */
-  private async weapon(parent: TransformNode, model: string, height: number, x: number, y: number, z: number, rot: Vector3): Promise<Mesh | null> {
-    const m = await loadStaticMesh(this.store, `models/weapons/${model}.glb`, `castle:${model}`, this.propMat);
-    if (!m || this.disposed) return null;
-    this.fit(m, height, true);
-    m.position.set(x, y, z);
-    m.rotation.copyFrom(rot);
-    m.parent = parent;
-    return m;
-  }
-
-  /** scales a mesh to `size` (footprint, or its longest side) and puts its base on y = 0 */
-  private fit(m: Mesh, size: number, longest: boolean): void {
-    m.refreshBoundingInfo();
-    const b = m.getBoundingInfo().boundingBox;
-    const ext = b.maximum.subtract(b.minimum);
-    const s = size / Math.max(longest ? Math.max(ext.x, ext.y, ext.z) : Math.max(ext.x, ext.z), 1e-3);
-    const centre = b.minimum.add(b.maximum).scale(0.5);
-    m.bakeTransformIntoVertices(Matrix.Translation(-centre.x, -b.minimum.y, -centre.z).multiply(Matrix.Scaling(s, s, s)));
-    m.refreshBoundingInfo();
-  }
+  // ------------------------------------------------------------------ effects
 
   private makeSmokeTexture(): DynamicTexture {
     const t = new DynamicTexture('castle:smoke', { width: 32, height: 32 }, this.scene, false);
@@ -406,11 +432,11 @@ export class CastleView implements HostedView {
       p.color1 = new Color4(1, 0.75, 0.35, 1);
       p.color2 = new Color4(1, 0.45, 0.15, 1);
       p.colorDead = new Color4(0.6, 0.2, 0.05, 0);
-      p.minSize = 0.18;
-      p.maxSize = 0.4;
+      p.minSize = 0.15;
+      p.maxSize = 0.35;
       p.minLifeTime = 0.3;
       p.maxLifeTime = 0.7;
-      p.emitRate = 40;
+      p.emitRate = 30;
       p.blendMode = ParticleSystem.BLENDMODE_ADD;
       p.direction1 = new Vector3(-0.1, 1, -0.1);
       p.direction2 = new Vector3(0.1, 1.4, 0.1);
@@ -448,459 +474,7 @@ export class CastleView implements HostedView {
     return l;
   }
 
-  /** deterministic jitter for the spike's scattering */
-  private rnd = (() => {
-    let s = 7;
-    return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
-  })();
-
-  // ------------------------------------------------------------------ ground and walls
-
-  private buildGround(): void {
-    const ground = CreateCylinder('castle:ground', { diameter: R * 2, height: 0.5, tessellation: 48 }, this.scene);
-    ground.position.y = -0.25;
-    ground.material = this.mat(C.grass);
-    ground.receiveShadows = true;
-    ground.isPickable = false;
-    const plinth = CreateCylinder('castle:plinth', { diameterTop: R * 2 + 0.3, diameterBottom: R * 2 - 0.4, height: 0.9, tessellation: 48 }, this.scene);
-    plinth.position.y = -0.9;
-    plinth.material = this.mat(C.earth);
-    plinth.isPickable = false;
-    // stone path from the front edge to the hall
-    for (let z = -R + 0.4; z < -0.6; z += 0.55)
-      for (let x = -0.75; x <= 0.76; x += 0.5) {
-        const w = 0.42 + this.rnd() * 0.08;
-        this.box(null, w, 0.06, 0.46, this.rnd() > 0.5 ? C.stoneWarm : C.stone, x + (this.rnd() - 0.5) * 0.06, 0, z, (this.rnd() - 0.5) * 0.2);
-      }
-    // courtyard paving
-    for (let i = 0; i < 26; i++) {
-      const a = this.rnd() * Math.PI * 2;
-      const r = 1.2 + this.rnd() * 2.3;
-      this.box(null, 0.5, 0.05, 0.45, C.stone, Math.cos(a) * r, 0, Math.sin(a) * r * 0.6 - 0.8, a);
-    }
-  }
-
-  /** curtain wall around the back, towers at its ends, ruined stubs and the two carved pillars at the front */
-  private buildShell(): void {
-    const shell = new TransformNode('castle:shell', this.scene);
-    const wallR = R - 0.7;
-    const from = 0.12 * Math.PI;
-    const to = 0.88 * Math.PI;
-    const seg = 14;
-    for (let i = 0; i < seg; i++) {
-      const a0 = from + ((to - from) * i) / seg;
-      const a1 = from + ((to - from) * (i + 1)) / seg;
-      const a = (a0 + a1) / 2;
-      const len = wallR * (a1 - a0) + 0.05;
-      const h = 2.1 - (i % 5 === 2 ? 0.7 : 0) - this.rnd() * 0.25;
-      const x = Math.cos(a) * wallR;
-      const z = Math.sin(a) * wallR;
-      const rot = -a + Math.PI / 2;
-      this.box(shell, len, h, 0.6, i % 2 ? C.stone : C.stoneDark, x, 0, z, rot);
-      // battlements
-      if (h > 1.8) for (const o of [-0.3, 0.3]) this.box(shell, 0.28, 0.3, 0.62, C.stone, x + Math.cos(rot) * o, h, z - Math.sin(rot) * o, rot);
-      if (i % 3 === 1) this.ball(shell, 0.7, C.ivy, x * 0.97, h * 0.6, z * 0.97);
-    }
-    for (const a of [from - 0.06, to + 0.06]) this.tower(shell, Math.cos(a) * wallR, Math.sin(a) * wallR, 1.5, 3.4);
-    this.tower(shell, 0, wallR + 0.1, 1.8, 4.2);
-    // ruined front wall stubs
-    for (const side of [-1, 1])
-      for (let i = 0; i < 4; i++) {
-        const a = -Math.PI / 2 + side * (0.32 + i * 0.22);
-        this.box(shell, 1.3, 0.35 + this.rnd() * 0.5, 0.5, C.stoneDark, Math.cos(a) * wallR, 0, Math.sin(a) * wallR, -a + Math.PI / 2);
-      }
-    // the two carved pillars at the entrance (dragon left, crown right, as in the painting)
-    for (const side of [-1, 1]) {
-      const x = side * 1.6;
-      const z = -R + 1.0;
-      this.box(shell, 0.9, 0.25, 0.9, C.stoneDark, x, 0, z);
-      this.box(shell, 0.7, 1.5, 0.7, C.stoneWarm, x, 0.25, z);
-      this.box(shell, 0.9, 0.25, 0.9, C.stone, x, 1.75, z);
-      this.box(shell, 0.42, 0.6, 0.04, C.stoneDark, x, 0.7, z - 0.36);
-      this.ball(shell, 0.5, C.ivy, x + side * 0.3, 1.7, z - 0.15);
-    }
-  }
-
-  private tower(parent: TransformNode, x: number, z: number, d: number, h: number): void {
-    this.cyl(parent, d, d * 1.08, h, C.stone, x, 0, z, 20);
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      this.box(parent, 0.3, 0.32, 0.3, C.stone, x + (Math.cos(a) * d) / 2.2, h, z + (Math.sin(a) * d) / 2.2, -a);
-    }
-    this.box(parent, 0.18, 0.4, 0.05, '#3a2c22', x, h * 0.6, z - d / 2 - 0.01);
-  }
-
-  private async buildScenery(): Promise<void> {
-    const node = new TransformNode('castle:scenery', this.scene);
-    const trees = ['autumn_a', 'autumn_b', 'autumn_c', 'tree_a', 'autumn_b'];
-    const spots: Array<[number, number, number]> = [
-      [-6.4, 2.6, 2.6],
-      [6.5, 2.2, 2.4],
-      [-6.8, -1.2, 2.2],
-      [6.9, -1.6, 2.3],
-      [-5.4, -4.4, 2],
-      [5.6, -4.6, 2.1],
-      [-2.6, 6.8, 2.4],
-      [3.1, 6.8, 2.2],
-    ];
-    for (let i = 0; i < spots.length; i++) {
-      const [x, z, s] = spots[i]!;
-      await this.prop(node, trees[i % trees.length]!, s, x, z, this.rnd() * 6);
-    }
-    for (const [x, z] of [
-      [-3.2, -6.4],
-      [3.4, -6.2],
-      [-6.6, 0.6],
-      [6.2, 0.2],
-    ] as const)
-      await this.prop(node, 'rocks_small', 0.8, x, z, this.rnd() * 6);
-    for (const [x, z] of [
-      [-2.2, -5.6],
-      [2.4, -5.8],
-      [-1.9, -3.2],
-      [1.8, -3.4],
-    ] as const)
-      await this.prop(node, 'bush_a', 0.7, x, z, this.rnd() * 6);
-  }
-
-  // ------------------------------------------------------------------ rooms
-
-  private async buildRoom(r: CastleRoom): Promise<void> {
-    const kind = KIND[r.id];
-    if (!kind) return;
-    const [x, z] = toWorld(r.at);
-    const root = new TransformNode(`castle:room:${r.id}`, this.scene);
-    root.position.set(x, 0, z);
-    // chibi proportions: buildings a bit large for the walls, so they read on a phone
-    root.scaling.setAll(ROOM_SCALE);
-    // face the courtyard centre a little
-    root.rotation.y = Math.atan2(-x, 6) * 0.35;
-    const l1 = new TransformNode(`castle:${r.id}:l1`, this.scene);
-    const l2 = new TransformNode(`castle:${r.id}:l2`, this.scene);
-    const l3 = new TransformNode(`castle:${r.id}:l3`, this.scene);
-    for (const n of [l1, l2, l3]) n.parent = root;
-    const v: RoomView = { id: r.id, root, l1, l2, l3, smoke: [], lights: [], pin: new Vector3(0, 2.2, 0) };
-    await this.buildKind(kind, v);
-    // a generous invisible tap area over the building
-    const hit = CreateCylinder(`castle:hit:${r.id}`, { diameter: 2, height: 2.6, tessellation: 8 }, this.scene);
-    hit.parent = root;
-    hit.position.y = 1.3;
-    hit.visibility = 0;
-    hit.isPickable = true;
-    hit.metadata = { room: r.id };
-    this.rooms.set(r.id, v);
-  }
-
-  /** scaffolding around a box of size w × h × d centred on (x, z) */
-  private scaffold(parent: TransformNode, w: number, h: number, d: number, x = 0, z = 0): void {
-    const poles: Array<[number, number]> = [
-      [-w / 2, -d / 2],
-      [w / 2, -d / 2],
-      [-w / 2, d / 2],
-      [w / 2, d / 2],
-    ];
-    for (const [px, pz] of poles) this.box(parent, 0.07, h, 0.07, C.woodLight, x + px, 0, z + pz);
-    for (const y of [h * 0.45, h * 0.9]) {
-      this.box(parent, w + 0.1, 0.06, 0.06, C.woodLight, x, y, z - d / 2);
-      this.box(parent, 0.06, 0.06, d + 0.1, C.woodLight, x - w / 2, y, z);
-      this.box(parent, 0.06, 0.06, d + 0.1, C.woodLight, x + w / 2, y, z);
-      this.box(parent, w, 0.04, 0.3, C.wood, x, y + 0.05, z - d / 2 - 0.15);
-    }
-    const diag = this.box(parent, 0.05, Math.hypot(w, h * 0.45), 0.05, C.woodLight, x, h * 0.02, z - d / 2 - 0.02);
-    diag.rotation.z = Math.atan2(w, h * 0.45);
-  }
-
-  private tarp(parent: TransformNode, w: number, h: number, x: number, y: number, z: number, rotY = 0): void {
-    this.cloth(parent, w, h, C.canvas, x, y, z, 0.18, rotY);
-  }
-
-  private windows(parent: TransformNode, xs: number[], y: number, z: number): void {
-    for (const x of xs) {
-      this.box(parent, 0.22, 0.32, 0.04, C.wood, x, y - 0.03, z + 0.01);
-      this.box(parent, 0.16, 0.26, 0.04, C.window, x, y, z - 0.01, 0, true);
-    }
-  }
-
-  private bannerPole(parent: TransformNode, x: number, z: number, h: number): void {
-    this.box(parent, 0.06, h, 0.06, C.wood, x, 0, z);
-    this.cloth(parent, 0.4, 0.75, C.banner, x + 0.24, h - 0.45, z);
-    this.ball(parent, 0.1, '#e8c35a', x, h + 0.03, z);
-  }
-
-  private wallBanner(parent: TransformNode, x: number, y: number, z: number): void {
-    this.cloth(parent, 0.34, 0.7, C.banner, x, y, z - 0.03);
-    this.box(parent, 0.44, 0.04, 0.04, C.wood, x, y + 0.36, z - 0.04);
-  }
-
-  private lantern(parent: TransformNode, x: number, y: number, z: number): void {
-    this.ball(parent, 0.14, C.window, x, y, z, true);
-  }
-
-  private async buildKind(kind: Kind, v: RoomView): Promise<void> {
-    const { root, l1, l2, l3 } = v;
-    switch (kind) {
-      case 'stall': {
-        await this.prop(l1, 'house_razed', 1.7, 0, 0.5);
-        await this.prop(l2, 'house_b_intact', 1.7, 0, 0.5);
-        // market stall in front
-        for (const [px, pz] of [
-          [-0.55, -0.6],
-          [0.55, -0.6],
-          [-0.55, -1.1],
-          [0.55, -1.1],
-        ] as const)
-          this.box(root, 0.06, 0.8, 0.06, C.wood, px, 0, pz);
-        this.box(root, 1.2, 0.08, 0.5, C.woodLight, 0, 0.45, -0.85);
-        await this.prop(root, 'chest_closed', 0.4, 0.75, -0.6, 0.3);
-        this.tarp(l1, 1.3, 0.6, 0, 0.9, -0.85);
-        for (let i = 0; i < 4; i++) this.cloth(l2, 0.33, 0.6, i % 2 ? C.canvas : C.banner, -0.5 + i * 0.33, 0.95, -0.85, Math.PI / 2 - 0.35);
-        this.scaffold(l1, 1.4, 1.4, 1.2, 0, 0.5);
-        this.bannerPole(l3, -0.8, -0.3, 1.6);
-        this.lantern(l3, 0.6, 0.85, -1.15);
-        break;
-      }
-      case 'forge': {
-        await this.prop(l1, 'house_razed', 1.6, 0.2, 0.5);
-        await this.prop(l2, 'house_c_intact', 1.6, 0.2, 0.5);
-        this.box(root, 0.4, 1.9, 0.4, C.stoneDark, -0.75, 0, 0.3);
-        // anvil
-        this.box(root, 0.28, 0.3, 0.2, '#4a4644', 0.3, 0, -0.75);
-        this.box(root, 0.4, 0.1, 0.18, '#5a5654', 0.3, 0.3, -0.75);
-        this.box(root, 0.5, 0.4, 0.4, C.stoneDark, -0.4, 0, -0.7);
-        this.ball(root, 0.22, C.ember, -0.4, 0.45, -0.7, true);
-        this.scaffold(l1, 0.6, 2, 0.6, -0.75, 0.3);
-        this.tarp(l1, 1, 0.6, 0.3, 1.1, -0.4);
-        this.wallBanner(l3, 0.2, 1.0, -0.25);
-        v.smoke.push(this.smoke(root, -0.75, 2, 0.3));
-        v.lights.push(this.light(root, C.ember, -0.4, 0.8, -0.9, 1.4, 4));
-        break;
-      }
-      case 'garden': {
-        await this.prop(l1, 'house_razed', 1.5, 0, 0.6);
-        await this.prop(l2, 'house_d_intact', 1.5, 0, 0.6);
-        for (let i = 0; i < 3; i++) {
-          this.box(root, 0.36, 0.14, 0.9, C.wood, -0.6 + i * 0.5, 0, -0.6);
-          for (let k = 0; k < 3; k++) this.ball(root, 0.18, k % 2 ? '#d58ab0' : '#9fc75a', -0.6 + i * 0.5, 0.2, -0.9 + k * 0.3);
-        }
-        this.scaffold(l1, 1.3, 1.3, 1.1, 0, 0.6);
-        this.bannerPole(l3, 0.85, -0.4, 1.4);
-        this.lantern(l3, -0.8, 0.7, -0.2);
-        break;
-      }
-      case 'hall': {
-        // the vaulted library behind the gate
-        const w = 3;
-        const d = 2.2;
-        this.box(root, w, 2.1, d, C.stone, 0, 0, 0.9);
-        this.box(root, 1.1, 1.5, 0.1, '#3b2b20', 0, 0, -0.21);
-        this.cyl(root, 1.1, 1.1, 0.1, '#3b2b20', 0, 1.2, -0.21, 16).rotation.x = Math.PI / 2;
-        for (const s of [-1, 1]) {
-          this.box(root, 0.6, 3, 0.6, C.stoneWarm, s * 1.0, 0, -0.1);
-          this.ball(root, 0.8, C.ivy, s * 1.15, 2.4, -0.15);
-        }
-        // L1: broken top
-        for (let i = 0; i < 6; i++) this.box(l1, 0.45, 0.2 + this.rnd() * 0.6, 0.5, C.stoneDark, -1.2 + i * 0.48, 2.1, 0.1 + this.rnd() * 1.4);
-        this.scaffold(l1, 1.1, 2.4, 0.8, 0, -0.55);
-        this.tarp(l1, 1.4, 0.8, 0.9, 2.0, 0.4, 0.4);
-        // L2: slate roof and lit windows
-        this.gable(l2, w + 0.2, 1.1, d + 0.3, C.slate, 0, 2.1, 0.9);
-        this.windows(l2, [-1.4, 1.4], 1.35, -0.21);
-        this.box(l2, 0.9, 1.3, 0.04, C.window, 0, 0.05, -0.17, 0, true);
-        // L3
-        this.wallBanner(l3, -0.62, 1.6, -0.3);
-        this.wallBanner(l3, 0.62, 1.6, -0.3);
-        this.bannerPole(l3, 0, 2.9, 1.3);
-        v.lights.push(this.light(root, C.window, 0, 1, -0.9, 1.2, 4));
-        v.pin.y = 3.6;
-        break;
-      }
-      case 'tavern': {
-        await this.prop(l1, 'lodge_razed', 1.9, 0, 0.4);
-        await this.prop(l2, 'lodge_intact', 1.9, 0, 0.4);
-        for (const [px, pz] of [
-          [-0.8, -0.6],
-          [-0.55, -0.75],
-          [0.85, -0.5],
-        ] as const)
-          this.cyl(root, 0.28, 0.32, 0.38, C.wood, px, 0, pz, 10);
-        this.box(root, 0.8, 0.06, 0.4, C.woodLight, 0.15, 0.4, -0.8);
-        this.scaffold(l1, 1.6, 1.4, 1.2, 0, 0.4);
-        this.tarp(l1, 1.2, 0.5, 0, 1.3, -0.2);
-        v.smoke.push(this.smoke(root, 0.5, 1.8, 0.6));
-        this.lantern(l3, -0.3, 1, -0.3);
-        this.lantern(l3, 0.4, 1, -0.3);
-        this.wallBanner(l3, 0.05, 1.1, -0.2);
-        break;
-      }
-      case 'wagon': {
-        await this.prop(root, 'wagon_idle', 1.5, 0, 0, 0.4);
-        await this.prop(root, 'chest_closed', 0.45, 0.9, -0.3, -0.3);
-        await this.prop(root, 'chest_open', 0.45, -0.9, -0.4, 0.4);
-        this.tarp(l1, 1.3, 0.7, 0, 0.4, 0.75, 0);
-        // L2: a lean-to shed over the wagon
-        for (const px of [-0.95, 0.95]) {
-          this.box(l2, 0.08, 1.4, 0.08, C.wood, px, 0, 0.6);
-          this.box(l2, 0.08, 1.0, 0.08, C.wood, px, 0, -0.5);
-        }
-        const roof = this.box(l2, 2.1, 0.08, 1.4, C.roof, 0, 1.15, 0.05);
-        roof.rotation.x = -0.35;
-        this.bannerPole(l3, 1.1, 0.4, 1.7);
-        this.lantern(l3, -0.9, 1.0, -0.5);
-        break;
-      }
-      case 'fire': {
-        await this.prop(root, 'campfire_idle', 0.8, 0, 0);
-        for (let i = 0; i < 3; i++) {
-          const a = -Math.PI / 2 + (i - 1) * 1.2 + Math.PI;
-          const log = this.cyl(root, 0.18, 0.18, 0.9, C.wood, Math.cos(a) * 0.8, 0, Math.sin(a) * 0.8, 8);
-          log.rotation.set(0, -a, Math.PI / 2);
-          log.position.y = 0.1;
-        }
-        // the fire burns and lights at every level
-        this.smoke(root, 0, 0.15, 0, true).start();
-        this.light(root, C.ember, 0, 0.7, 0, 1.5, 4.5);
-        this.tarp(l1, 1.2, 0.6, 0.9, 0.35, 0.6, 0.6);
-        // L2: a little pavilion of posts and a cloth roof
-        for (const [px, pz] of [
-          [-0.95, 0.75],
-          [0.95, 0.75],
-        ] as const)
-          this.box(l2, 0.07, 1.5, 0.07, C.wood, px, 0, pz);
-        this.cloth(l2, 2, 0.8, C.canvas, 0, 1.35, 0.45, Math.PI / 2 - 0.6);
-        for (let i = 0; i < 5; i++) this.lantern(l3, -0.9 + i * 0.45, 1.3 - Math.sin((i / 4) * Math.PI) * 0.2, 0.7);
-        v.smoke.push(this.smoke(root, 0, 0.6, 0));
-        break;
-      }
-      case 'tower': {
-        this.cyl(root, 1.2, 1.3, 3.0, C.stoneWarm, 0, 0, 0, 20);
-        for (let i = 0; i < 5; i++) this.box(l1, 0.3, 0.2 + this.rnd() * 0.4, 0.3, C.stoneDark, Math.cos(i * 1.3) * 0.5, 3.0, Math.sin(i * 1.3) * 0.5, i);
-        this.scaffold(l1, 1.4, 3.2, 1.4);
-        this.tarp(l1, 0.8, 0.9, 0, 1.8, -0.75);
-        this.cyl(l2, 0, 1.6, 1.4, '#6a5a9a', 0, 3.0, 0, 20);
-        this.box(l2, 0.16, 0.3, 0.04, C.violet, 0, 1.5, -0.64, 0, true);
-        this.box(l2, 0.16, 0.3, 0.04, C.violet, 0, 2.4, -0.62, 0, true);
-        this.cloth(l3, 0.3, 0.6, C.banner, 0.15, 4.4, 0);
-        this.box(l3, 0.05, 0.9, 0.05, C.wood, 0, 4.3, 0);
-        v.lights.push(this.light(root, C.violet, 0, 2, -1, 1.2, 3.5));
-        v.pin.y = 4.6;
-        break;
-      }
-      case 'academy': {
-        await this.prop(l1, 'house_razed', 1.7, 0, 0.3);
-        await this.prop(l2, 'house_intact', 1.7, 0, 0.3);
-        this.scaffold(l1, 1.4, 1.5, 1.2, 0, 0.3);
-        this.tarp(l1, 1.1, 0.6, 0.2, 1.2, -0.35);
-        this.bannerPole(l3, -0.9, -0.3, 1.6);
-        this.lantern(l3, 0.5, 0.9, -0.45);
-        break;
-      }
-      case 'workshop': {
-        for (const [px, pz] of [
-          [-0.8, -0.5],
-          [0.8, -0.5],
-          [-0.8, 0.6],
-          [0.8, 0.6],
-        ] as const)
-          this.box(root, 0.09, 1.2, 0.09, C.wood, px, 0, pz);
-        this.box(root, 1.0, 0.08, 0.45, C.woodLight, 0, 0.5, 0.1);
-        for (let i = 0; i < 3; i++) this.box(root, 0.32, 0.32, 0.32, C.woodLight, -0.6 + i * 0.25, 0, -0.85 + (i % 2) * 0.1, i * 0.3);
-        this.cloth(l1, 1.9, 1.3, C.canvas, 0, 1.25, 0.05, Math.PI / 2 - 0.2);
-        this.gable(l2, 1.9, 0.6, 1.4, C.roof, 0, 1.2, 0.05);
-        this.bannerPole(l3, 0.95, -0.7, 1.5);
-        this.lantern(l3, 0, 1.05, -0.5);
-        break;
-      }
-      case 'yard': {
-        for (let i = 0; i < 8; i++) {
-          const a = (i / 8) * Math.PI * 2;
-          this.box(root, 0.07, 0.45, 0.07, C.wood, Math.cos(a) * 0.95, 0, Math.sin(a) * 0.95);
-        }
-        for (const [px, pz] of [
-          [-0.35, 0.1],
-          [0.35, -0.15],
-        ] as const) {
-          this.cyl(root, 0.18, 0.22, 0.75, '#c9a46a', px, 0, pz, 8);
-          this.ball(root, 0.26, '#c9a46a', px, 0.9, pz);
-          this.box(root, 0.6, 0.07, 0.07, C.wood, px, 0.6, pz);
-        }
-        this.tarp(l1, 1, 0.5, 0, 0.3, 0.9);
-        for (let i = 0; i < 8; i++) {
-          const a0 = (i / 8) * Math.PI * 2;
-          const a1 = ((i + 1) / 8) * Math.PI * 2;
-          const rail = this.box(l2, 0.76, 0.06, 0.06, C.woodLight, Math.cos((a0 + a1) / 2) * 0.92, 0.35, Math.sin((a0 + a1) / 2) * 0.92);
-          rail.rotation.y = -((a0 + a1) / 2) + Math.PI / 2;
-        }
-        this.bannerPole(l3, 0.95, 0, 1.5);
-        this.bannerPole(l3, -0.95, 0, 1.5);
-        break;
-      }
-    }
-  }
-
-  /** Companion keepsakes at fixed places (§7): Brenna's axe stand, Jory's lute, Ysolde's book stack. */
-  private async buildKeepsakes(): Promise<void> {
-    const node = new TransformNode('castle:keepsakes', this.scene);
-    const fire = this.rooms.get('campfire')?.root.position ?? new Vector3(2, 0, -3.5);
-    const smith = this.rooms.get('smith')?.root.position ?? new Vector3(4, 0, 2);
-    const hall = this.rooms.get('memorial')?.root.position ?? new Vector3(0, 0, 0);
-    // Brenna's axe stand near the smithy
-    const ax = smith.x - 1.3;
-    const az = smith.z - 1.2;
-    this.box(node, 0.6, 0.06, 0.25, C.wood, ax, 0, az);
-    this.box(node, 0.06, 0.7, 0.06, C.wood, ax - 0.25, 0, az);
-    this.box(node, 0.06, 0.7, 0.06, C.wood, ax + 0.25, 0, az);
-    this.box(node, 0.6, 0.06, 0.06, C.wood, ax, 0.6, az);
-    await this.weapon(node, 'axe', 0.75, ax - 0.1, 0.02, az - 0.06, new Vector3(0, 0, 0.12));
-    await this.weapon(node, 'axe', 0.75, ax + 0.12, 0.02, az - 0.06, new Vector3(0, Math.PI, -0.12));
-    // Jory's lute leaning at a barrel by the fire
-    this.cyl(node, 0.3, 0.34, 0.42, C.wood, fire.x - 0.95, 0, fire.z - 0.55, 10);
-    await this.weapon(node, 'lute', 0.7, fire.x - 0.95, 0.02, fire.z - 0.8, new Vector3(-0.35, 0.4, 0));
-    // Ysolde's book stack at the foot of the hall
-    for (let i = 0; i < 3; i++) await this.weapon(node, 'book', 0.32, hall.x - 1.35, 0.01 + i * 0.09, hall.z - 0.8, new Vector3(0, i * 0.5, 0));
-  }
-
   // ------------------------------------------------------------------ view
-
-  /**
-   * Fewer draw calls: the primitives under each group (shell, room, level part, keepsakes) are merged per material. Prop
-   * models, tap areas and emitters stay as they are.
-   */
-  private mergeStatic(): void {
-    const groups = new Set<TransformNode>();
-    for (const m of this.scene.meshes) if (m instanceof Mesh && m.parent instanceof TransformNode && m.name.startsWith('castle:') && !m.isPickable) groups.add(m.parent);
-    for (const g of groups) {
-      const byMat = new Map<StandardMaterial, Mesh[]>();
-      for (const m of g.getChildMeshes(true))
-        if (m instanceof Mesh && m.name.startsWith('castle:') && !m.isPickable && m.material instanceof StandardMaterial && m.getTotalVertices() > 0) {
-          const list = byMat.get(m.material) ?? [];
-          list.push(m);
-          byMat.set(m.material, list);
-        }
-      for (const list of byMat.values()) {
-        if (list.length < 2) continue;
-        for (const m of list) m.computeWorldMatrix(true);
-        const merged = Mesh.MergeMeshes(list, true, true);
-        if (!merged) continue;
-        merged.name = 'castle:merged';
-        merged.setParent(g);
-        merged.receiveShadows = true;
-        merged.isPickable = false;
-      }
-    }
-    // loose meshes without a group (path, paving)
-    const loose = new Map<StandardMaterial, Mesh[]>();
-    for (const m of this.scene.meshes)
-      if (m instanceof Mesh && !m.parent && m.name === 'castle:box' && m.material instanceof StandardMaterial) {
-        const list = loose.get(m.material) ?? [];
-        list.push(m);
-        loose.set(m.material, list);
-      }
-    for (const list of loose.values()) if (list.length > 1) Mesh.MergeMeshes(list, true, true)!.receiveShadows = true;
-  }
-
-  private freeze(): void {
-    for (const m of this.mats.values()) m.freeze();
-  }
 
   private refreshShadows(): void {
     const map = this.shadows?.getShadowMap();
@@ -911,15 +485,47 @@ export class CastleView implements HostedView {
   }
 
   private placeCamera(): void {
+    const { dist, aim } = this;
+    this.camera.position.set(aim.x + Math.sin(this.yaw) * Math.cos(PITCH) * dist, aim.y + Math.sin(PITCH) * dist, aim.z - Math.cos(this.yaw) * Math.cos(PITCH) * dist);
+    this.camera.setTarget(aim);
+  }
+
+  /**
+   * Distance and aim of the front view so the whole island (FRAME_POINTS) fits the view's width and the band between the HUD
+   * and the room list (BAND); a few rounds of measuring the projected points and correcting.
+   */
+  private fit(): void {
     const w = this.slot.clientWidth || 1;
     const h = this.slot.clientHeight || 1;
-    const pitch = 0.82;
-    // fit the diorama's width; a tall view (phone) has room above and below, the HUD and the room list cover it
-    const dist = (R + 0.4) / Math.tan(this.camera.fov / 2) / (h > w * 1.2 ? 1.05 : 1);
-    // aim a little behind the centre so the diorama sits low, in the band between the HUD and the room list
-    const target = new Vector3(0, 0, 1.3);
-    this.camera.position.set(target.x + Math.sin(this.yaw) * Math.cos(pitch) * dist, target.y + Math.sin(pitch) * dist, target.z - Math.cos(this.yaw) * Math.cos(pitch) * dist);
-    this.camera.setTarget(target);
+    const top = h * BAND[0];
+    const bottom = h * BAND[1];
+    const vp = new Viewport(0, 0, w, h);
+    const yaw = this.yaw;
+    this.yaw = 0;
+    for (let round = 0; round < 6; round++) {
+      this.placeCamera();
+      const m = this.camera.getViewMatrix(true).multiply(this.camera.getProjectionMatrix(true));
+      let x0 = Infinity;
+      let x1 = -Infinity;
+      let y0 = Infinity;
+      let y1 = -Infinity;
+      for (const p of FRAME_POINTS) {
+        const s = Vector3.Project(p, Matrix.IdentityReadOnly, m, vp);
+        x0 = Math.min(x0, s.x);
+        x1 = Math.max(x1, s.x);
+        y0 = Math.min(y0, s.y);
+        y1 = Math.max(y1, s.y);
+      }
+      const scale = Math.max((x1 - x0) / (w * 0.92), (y1 - y0) / (bottom - top));
+      // screen pixels per world unit along z at the aim, to move the picture's centre into the band's centre
+      const a = Vector3.Project(this.aim, Matrix.IdentityReadOnly, m, vp);
+      const b = Vector3.Project(this.aim.add(new Vector3(0, 0, 1)), Matrix.IdentityReadOnly, m, vp);
+      const perUnit = Math.max(1e-3, a.y - b.y);
+      this.aim.z -= ((y0 + y1) / 2 - (top + bottom) / 2) / perUnit;
+      this.dist *= scale;
+    }
+    this.yaw = yaw;
+    this.placeCamera();
   }
 
   private placePins(): void {
@@ -931,7 +537,7 @@ export class CastleView implements HostedView {
     for (const [id, el] of this.pins) {
       const v = this.rooms.get(id);
       if (!v) continue;
-      const world = Vector3.TransformCoordinates(new Vector3(0, v.pin.y, 0), v.root.getWorldMatrix());
+      const world = Vector3.TransformCoordinates(new Vector3(0, v.pin, 0), v.root.getWorldMatrix());
       const p = Vector3.Project(world, Matrix.IdentityReadOnly, tm, vp);
       el.style.left = `${p.x}px`;
       el.style.top = `${p.y}px`;
@@ -973,4 +579,13 @@ export class CastleView implements HostedView {
     c.addEventListener('pointerup', end, opts);
     c.addEventListener('pointercancel', end, opts);
   }
+}
+
+/** `<group>_<levels>` of a loaded mesh, from its own name or its glTF node's */
+function partKey(m: Node): string | null {
+  for (let n: Node | null = m; n; n = n.parent) {
+    const hit = PART.exec(n.name);
+    if (hit) return `${hit[1]}_${hit[2]}`;
+  }
+  return null;
 }

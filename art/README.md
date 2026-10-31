@@ -28,6 +28,7 @@ Nur noch für die Alternative der 2D-Darstellung (D4, nicht weiterentwickelt): `
 | `models/units/<id>.glb` | 3D-Figuren fürs 3D-Brett (D4): ein Mesh pro Gelenk, Animationen `idle`, `walk`, `attack`, `hit`, `downed` | `tools/art/export_models.py` + Blender |
 | `models/units/<id>.vat` | Gebackene Animation der Tripo-Figuren (Story 7.8): 60 Bilder/s, lokale Pose je Zeile (22 Gelenk-Quaternionen Half + Hips-Translation), gzip-Strom, Git LFS | `tools/art/bake_vat.py` (über `pnpm art:tripo`) |
 | `models/props/<id>_<zustand>.glb` | 3D-Requisiten (D5), ein statisches Mesh pro Zustand (`tree_a`, `house_razed`, `chest_open` …) | `tools/art/export_models.py` + Blender |
+| `models/castle/paktwacht.glb` | Heimat-Burg als 3D-Diorama (Test `?castle3d=1`): ein Mesh je Teil `<gruppe>_<stufen>` (Schale, 11 Räume, 3 Gefährten-Gegenstände; Stufen `a`, `1`, `2`, `23`, `3`), Vertex-Farben, Material `castle_glow` ungelit; lädt bei Bedarf, nie im ersten Download | `tools/art/blender_castle.py` + Blender (Vorlagen `mockups/castle3d-refs/`) |
 | `fx/` | Effekt-Sheets (Flammen, Funken, Treffer-Stern …) | `tools/art/` |
 | `mockups/locations-s1/<id>.png` | Orte und VN-Hintergründe von Akt 1 (16:9, 1672 × 941, Sicherheitszone mittleres Drittel, unteres Drittel ruhig); `pnpm art:build` baut `public/assets/locations/<id>.webp`, Szenen und `place` nennen die Ort-Id (Story 8.7) | ChatGPT |
 | `title/title_act1.png` | Titelbild 1024 × 1536 (2:3); `pnpm art:build` baut `public/assets/title/title_act1.webp` (Paket core) | ChatGPT |
