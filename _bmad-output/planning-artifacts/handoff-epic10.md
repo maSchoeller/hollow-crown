@@ -102,3 +102,12 @@ Gebaut von einem Subagenten, von dieser Session per Screenshot geprüft. Nur zur
 - **Leistung:** ca. 85 (Stufe 1) bis 117 (Stufe 3) Draw-Calls, 73k Vertices; FPS im versteckten Vorschaufenster nicht aussagekräftig, auf echtem Gerät messen. Die Kamera schwingt ständig, also zeichnet die Heimat dauernd neu (Akku). Laden der Props dauert einige Sekunden ohne Ladeanzeige.
 - **Einschätzung des Subagenten:** Mit den vorhandenen Modellen liegt 3D sichtbar unter dem gemalten Bild (Efeu, gotische Bögen, Licht, Tiefe gehen verloren; wirkt wie das Kampfbrett). Für 3D sprechen sichtbare Ausbaustufen, Drehen, Stil-Einheit mit dem Brett. Konkurrenzfähig wäre es erst mit eigenen Burg-Modellen (Tripo/Blender) und Atmosphäre. Mittelweg: gemaltes Bild je Ausbaustufe.
 - **Screenshots (375 × 812):** `handoff-epic10/1-painted.png`, `2-3d-level1.png`, `3-3d-level3.png`.
+
+## 6. Nachtrag 2026-10-31: 3D-Burg v2
+
+Auf Wunsch des Nutzers („Die 3D-Box sieht ganz gut aus, aber mach sie ungefähr doppelt so groß. Und wichtig, lasse dir davor über ChatGPT verschiedene Bilder erstellen, damit wir dann bessere 3D-Modelle im Blender nachmodellieren können“; Rückfrage: „Burg-Gelände doppelt so groß“):
+
+- 9 Referenzbilder per ChatGPT Plus in `art/mockups/castle3d-refs/`, Protokoll `art/prompts/castle3d_refs.md`.
+- Modelle aus `tools/art/blender_castle.py` (bmesh, reproduzierbar) → `art/models/castle/paktwacht.glb` (1,4 MB, nachgeladen), 53 Teile mit Stufenteilen je Raum; Gelände etwa doppelte Fläche. Draw-Calls 30/38/63 (Stufe 1/2/3), 115–137k sichtbare Vertices.
+- Screenshots `handoff-epic10/v2/`.
+- Offene Punkte: Stufe von Mauern/Türmen/Bergfried (jetzt Mittel der Räume), Bergfried als eigener Raum?, Runenleuchten Gold/Violett statt Türkis (nah am Spielerblau), Plätze der Gefährten-Gegenstände, Banner-Motiv (Winkel oder Kompanie-Wappen), Vertex-Zahl; Gebäude wirken auf doppelter Fläche klein, die Dev-Leiste verdeckt die Bergfried-Spitze; Reliefs am Tor kaum lesbar; Kamera-Schwingen zeichnet dauernd neu.
