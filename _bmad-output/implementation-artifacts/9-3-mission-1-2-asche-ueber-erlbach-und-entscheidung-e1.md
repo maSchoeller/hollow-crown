@@ -70,7 +70,7 @@ damit ich die Leutnants kennenlerne.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.3]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.3]
 - [Source: concept/22-narrative/narrative.md]
 - [Source: _bmad-output/implementation-artifacts/9-2-mission-1-1-steckbriefe.md]
 

@@ -54,7 +54,7 @@ damit sich kleine Wahlen groß anfühlen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 4.6]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.6]
 - [Source: concept/25-ux/EXPERIENCE.md#Zustände]
 - [Source: concept/25-ux/DESIGN.md#Bausteine]
 - [Source: concept/22-narrative/narrative.md#Die 12 Entscheidungen]

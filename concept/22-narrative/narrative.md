@@ -10,7 +10,7 @@ narrativeComplexity: 'heavy'
 gdd: 'concept/21-gdd/gdd.md'
 brief: 'concept/20-game-brief/brief.md'
 decisions: 'concept/22-narrative/decision-log.md'
-supersedes: 'concept/08-story-world.md (nur die Prämisse bleibt)'
+supersedes: 'concept/archive/08-story-world.md (nur die Prämisse bleibt)'
 ---
 
 # Narrative Design Document
@@ -658,7 +658,7 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 ### Missionsfolge (25 Story-Missionen)
 
-★ = fester Platz, sonst innerhalb des Akts frei wählbar. Stand nach der Course Correction 2026-10-23 (`concept/sprint-change-proposal-2026-10-23.md`).
+★ = fester Platz, sonst innerhalb des Akts frei wählbar. Stand nach der Course Correction 2026-10-23 (`concept/archive/sprint-change-proposal-2026-10-23.md`).
 
 **Akt 1 „Asche“ (Prolog + 8)**
 
@@ -986,4 +986,4 @@ v
 - **Spiele:** Fire Emblem (GBA, Three Houses, Engage), Suikoden (Burg und Familie), Triangle Strategy (Politik, Akte), Battle Brothers und Wartales (Söldner, Verlust), Shadow of Mordor (wiederkehrende Gegner, bewusst ohne Prozedur), Kingdom Rush und Mario + Rabbids (runder Stil)
 - **Ton:** Studio Ghibli (Prinzessin Mononoke, Das wandelnde Schloss): freundliche Bilder, ernste Themen
 - **Bildreferenzen (Moodboards):** `art/mockups/characters-s1/` (37 Figuren), `art/mockups/locations-s1/` (14 Orte), `art/mockups/style-2026-10/round_chibi_kael.png` (Stil)
-- **Projektdokumente:** `concept/20-game-brief/brief.md`, `concept/21-gdd/gdd.md`, `concept/17-audio.md`, Prämisse aus `concept/08-story-world.md`
+- **Projektdokumente:** `concept/20-game-brief/brief.md`, `concept/21-gdd/gdd.md`, `concept/17-audio.md`, Prämisse aus `concept/archive/08-story-world.md`

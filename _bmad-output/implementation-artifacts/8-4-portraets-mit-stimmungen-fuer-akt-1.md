@@ -68,7 +68,7 @@ damit Szenen tragen.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 8.4: Porträts mit Stimmungen für Akt 1]
+- [Source: concept/26-epics/epics/epic-08.md#Story 8.4: Porträts mit Stimmungen für Akt 1]
 - [Source: concept/23-art-direction/art-direction.md §5.1, §11]
 - [Source: concept/23-art-direction/decision-log.md – Zeile 2026-10-24 „Alte Anime-Porträts gelöscht“]
 - [Source: concept/23-art-direction/licensing.md §6 (A1–A3, A7)]

@@ -91,7 +91,7 @@ Epic 11 legt Gefährten von Akt 2 an (Jory Spielmann, Odile/Sable Plänkler, Nel
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.3]
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.3]
 - [Source: concept/21-gdd/gdd.md#Rollenklassen (Z. 133–153), #Primäre Mechaniken (Schutz, Rückstoß), #Figurensystem]
 - [Source: concept/22-narrative/narrative.md Gefährten-Tabelle (Z. 212–233, Mael als Kampfpriester)]
 - [Source: concept/23-art-direction/art-direction.md#4.2 (Profi-Wege: ein neues Großteil), #4.6 (Produktion, Credits)]

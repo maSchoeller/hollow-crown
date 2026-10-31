@@ -31,7 +31,7 @@ damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett 
 
 ## Dev Notes
 
-- Quelle: `concept/26-epics/epics.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
+- Quelle: `concept/26-epics/epics/epic-13.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
 - Zahlen kommen aus reinen Kernfunktionen in `src/core/rules/legibility.ts` über `threatTiles` und `forecast` (Vorschau = Auflösung); Darstellungswerte in `content/core/render.yaml` unter `legibility`.
 - Jedes Feld zeichnet nur die Hälfte des Strichs, die auf ihm liegt; Nachbarn ergänzen sich zu ganzen Kreuzen auf ihrer eigenen Höhe, ohne dass sich durchscheinende Flächen doppelt überlagern.
 - Ein Mesh für die ganze Karte (24×32: 6 144 Vierecke), ein Draw Call.

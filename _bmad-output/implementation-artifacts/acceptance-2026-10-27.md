@@ -2,7 +2,7 @@
 
 Abnahme-Session im Auftrag des Produktinhabers (Freigabe 2026-10-27: Stories selbst auf `done` setzen, kleine Fehler beheben, nach grüner CI mergen). Geprüft wurden alle 27 Stories auf `review` (dazu die während der Abnahme gemergte Story 1.9) in `sprint-status.yaml`; Audio (8.1, 8.8, 8.9) und 9.14 standen auf `backlog` und gehören nicht dazu.
 
-Vorgehen je Story: Akzeptanzkriterien aus `concept/26-epics/epics.md` und der Story-Datei gegen Code, Content und Tests abgeglichen (Subagenten, read-only), im Browser angespielt (Hochformat 375 × 812, einmal Desktop-Breite 693 px), Missionen simuliert (`pnpm sim <mapId> --runs 50` auf Leicht/Normal, Schwer über die Kampagne), ein Durchlauf der ganzen Kampagne im Browser.
+Vorgehen je Story: Akzeptanzkriterien aus `concept/26-epics/epics/` und der Story-Datei gegen Code, Content und Tests abgeglichen (Subagenten, read-only), im Browser angespielt (Hochformat 375 × 812, einmal Desktop-Breite 693 px), Missionen simuliert (`pnpm sim <mapId> --runs 50` auf Leicht/Normal, Schwer über die Kampagne), ein Durchlauf der ganzen Kampagne im Browser.
 
 Die Notizen `qa-2026-10-25.md` und `pages-deploy-2026-10-25.md` waren weder im Repo noch unter `concept/` noch im Nutzerprofil zu finden.
 

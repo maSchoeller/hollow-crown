@@ -83,7 +83,7 @@ damit ein wiederkehrender Feind kein Frust ist.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 3.5]
+- [Source: concept/26-epics/epics/epic-03.md#Story 3.5]
 - [Source: concept/21-gdd/gdd.md#Leutnants]
 - [Source: concept/24-architecture/architecture.md#5.5 Leutnants (AR5)]
 - [Source: concept/25-ux/EXPERIENCE.md] (Szenen 1 und 2)

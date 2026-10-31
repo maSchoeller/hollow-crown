@@ -79,7 +79,7 @@ damit ich die Gräber junger Könige und die versiegelte Chronik finde.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.8]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.8]
 - [Source: concept/22-narrative/narrative.md#Story Beats] (Beat 6, 10), [#Missionsfolge], [#Found Documents]
 - [Source: concept/21-gdd/gdd.md] (Missionsziele, Reihenfolge)
 - [Source: content/acts/act1/maps/m1_7_gewoelbe.yaml]

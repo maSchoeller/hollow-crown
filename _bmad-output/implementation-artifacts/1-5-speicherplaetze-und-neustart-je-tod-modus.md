@@ -31,7 +31,7 @@ damit Klassik streng bleibt und die anderen Modi Fehler verzeihen.
 
 ### References
 
-- `concept/26-epics/epics.md` Story 1.5; `concept/24-architecture/architecture.md` §5.15; GDD Tod-Modi.
+- `concept/26-epics/epics/epic-01.md` Story 1.5; `concept/24-architecture/architecture.md` §5.15; GDD Tod-Modi.
 
 ## Dev Agent Record
 

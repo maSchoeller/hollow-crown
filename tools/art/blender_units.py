@@ -2,7 +2,7 @@
 
 Needs the namespaces of blender_chibi.py and blender_parts.py. Each builder creates the collection
 U_<id> with a rig (empties) and role-coloured primitives. Roles map to palette ramps in ramps.py.
-Briefings: concept/15-art-direction.md §6.
+Briefings: concept/archive/15-art-direction.md §6.
 """
 import math
 

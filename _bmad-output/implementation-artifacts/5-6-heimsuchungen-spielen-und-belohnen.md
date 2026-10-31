@@ -35,7 +35,7 @@ damit sie eine Ergänzung zur Story bleiben.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.6]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.6]
 - [Source: concept/21-gdd/gdd.md#Welt und Erkundung]
 - [Source: concept/24-architecture/architecture.md#5.6]
 - [Source: concept/25-ux/DESIGN.md#map-node], [Source: concept/25-ux/EXPERIENCE.md]

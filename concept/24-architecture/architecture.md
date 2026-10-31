@@ -8,7 +8,7 @@ stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 status: 'complete'
 source: 'BMAD-Workflow gds-game-architecture'
 gdd: 'concept/21-gdd/gdd.md'
-epics: 'concept/26-epics/epics.md'
+epics: 'concept/26-epics/epics/index.md'
 brief: 'concept/20-game-brief/brief.md'
 narrative: 'concept/22-narrative/narrative.md'
 art: 'concept/23-art-direction/art-direction.md'
@@ -86,7 +86,7 @@ Was der Stack nicht mitbringt und hier selbst gebaut wird: Szenen-Host für drei
 
 ## 4. Entscheidungsübersicht
 
-> Die Spalte „Epics“ nutzt die Nummern aus `concept/26-epics/epics.md` (Epic 1–12, nachgetragen 2026-10-23). „E1–E12“ bezeichnet in GDD und Narrative die Story-Entscheidungen, nicht Epics.
+> Die Spalte „Epics“ nutzt die Nummern aus `concept/26-epics/epics/` (Epic 1–12, nachgetragen 2026-10-23). „E1–E12“ bezeichnet in GDD und Narrative die Story-Entscheidungen, nicht Epics.
 
 | ID | Kategorie | Entscheidung | Epics | Status |
 |---|---|---|---|---|
@@ -658,9 +658,9 @@ Neue Darstellung bekommt Events oder Overlays, nie direkten Zugriff auf `Campaig
 
 ## 9. Epic-Zuordnung
 
-> **Achtung, alte Nummern:** Die Tabelle unten nutzt die frühere Epic-Zählung E0–E10 aus dem GDD-Entwurf; maßgeblich sind die Epics 1–12 in `concept/26-epics/epics.md` (Zuordnung je Entscheidung in §4).
+> **Achtung, alte Nummern:** Die Tabelle unten nutzt die frühere Epic-Zählung E0–E10 aus dem GDD-Entwurf; maßgeblich sind die Epics 1–12 in `concept/26-epics/epics/` (Zuordnung je Entscheidung in §4).
 >
-> **Nachtrag aus `gds-create-epics-and-stories` (2026-10-23):** Das Fundament-Epic E0 entfällt. Seine Bausteine entstehen im ersten Epic, das sie braucht (Speicherformat, Kampagnen-Commands, Fehlerbericht → Epic 1; Worker → Epic 2; Content-Layout, Bedingungen, Szenen-Schema → Epic 4; Pakete, ID-Sperre → Epic 7). Maßgeblich ist `concept/26-epics/epics.md`; die Tabelle unten bleibt als Zuordnung der Bausteine.
+> **Nachtrag aus `gds-create-epics-and-stories` (2026-10-23):** Das Fundament-Epic E0 entfällt. Seine Bausteine entstehen im ersten Epic, das sie braucht (Speicherformat, Kampagnen-Commands, Fehlerbericht → Epic 1; Worker → Epic 2; Content-Layout, Bedingungen, Szenen-Schema → Epic 4; Pakete, ID-Sperre → Epic 7). Maßgeblich ist `concept/26-epics/epics/`; die Tabelle unten bleibt als Zuordnung der Bausteine.
 
 Ursprünglicher Vorschlag: ein technisches Fundament-Epic vor E1, danach die Reihenfolge aus dem GDD.
 

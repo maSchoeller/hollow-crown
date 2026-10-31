@@ -73,7 +73,7 @@ damit Späher im späten Spiel eine eigene Taktik haben.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 10.4]
+- [Source: concept/26-epics/epics/epic-10.md#Story 10.4]
 - [Source: concept/21-gdd/gdd.md#Rollenklassen (Späher-Zeile), #Primäre Mechaniken (Status), #Gegner-KI]
 - [Source: concept/24-architecture/architecture.md#5.7 (Aktionen `trap{at}`, `disarm{at}`, Nebel), #5.13 (Worker), #8.5, #8.7]
 - [Source: concept/21-gdd/items.md Z. 163 (trap_kit)]

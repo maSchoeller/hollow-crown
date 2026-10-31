@@ -70,7 +70,7 @@ damit ich die Mitte eines Akts in meiner Reihenfolge spiele.
 
 - [Source: concept/24-architecture/architecture.md#5.4 Kampagnen-Graph und Akte]
 - [Source: concept/21-gdd/gdd.md#Reihenfolge, Gestaffelte Regeln]
-- [Source: concept/26-epics/epics.md#Story 4.3]
+- [Source: concept/26-epics/epics/epic-04.md#Story 4.3]
 
 ## Dev Agent Record
 

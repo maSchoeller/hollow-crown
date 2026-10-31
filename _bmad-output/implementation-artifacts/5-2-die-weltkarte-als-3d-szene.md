@@ -58,7 +58,7 @@ damit ich spüre, wo meine Truppe gewesen ist.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.2]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.2]
 - [Source: concept/24-architecture/architecture.md#5.12]
 - [Source: concept/23-art-direction/art-direction.md#6. Weltkarte, #2.4 Jahreszeiten]
 - [Source: concept/25-ux/DESIGN.md#map-node, Nebel `{colors.fog}`]

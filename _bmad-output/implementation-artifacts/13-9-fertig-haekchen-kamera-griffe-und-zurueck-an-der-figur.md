@@ -32,7 +32,7 @@ damit sich lange Runden flüssig spielen.
 
 ## Dev Notes
 
-- Quelle: `concept/26-epics/epics.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
+- Quelle: `concept/26-epics/epics/epic-13.md` Epic 13, Verhalten `concept/25-ux/EXPERIENCE.md`, Aussehen `concept/25-ux/DESIGN.md` (Tokens `hp-bar`, `grid-mark`, `range-tile`, `threat`, `kill-marker`), Mockup `concept/25-ux/mockups/10-lesbarkeit-handbuch.html`, Architektur §5.12.
 - Zahlen kommen aus reinen Kernfunktionen in `src/core/rules/legibility.ts` über `threatTiles` und `forecast` (Vorschau = Auflösung); Darstellungswerte in `content/core/render.yaml` unter `legibility`.
 - Damit ein Doppeltipp keine Aktion auslöst, wartet ein Tipp auf eine Figur `doubleTapMs` (300 ms) auf den zweiten; Tipps auf leere Felder gehen sofort durch. Im Playtest prüfen, ob sich die Auswahl damit träge anfühlt (Wert in `render.yaml`).
 

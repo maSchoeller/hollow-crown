@@ -56,7 +56,7 @@ damit der erste Eindruck stimmt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 8.7: Titelbild, Logo und Dialog-Hintergründe von Akt 1]
+- [Source: concept/26-epics/epics/epic-08.md#Story 8.7: Titelbild, Logo und Dialog-Hintergründe von Akt 1]
 - [Source: concept/23-art-direction/art-direction.md §5.2, §5.5, §11]
 - [Source: concept/23-art-direction/decision-log.md – Zeile 2026-10-23 Course Correction 8/8/8 (Gewölbe der Paktwacht, rund 26 Hintergründe)]
 - [Source: concept/23-art-direction/licensing.md §6 (A1–A3, A7, A8, A12)]

@@ -52,7 +52,7 @@ damit sich Wiederkehr lohnt.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 5.5]
+- [Source: concept/26-epics/epics/epic-05.md#Story 5.5]
 - [Source: concept/24-architecture/architecture.md#5.6 Tageswechsel und Heimsuchungen]
 - [Source: concept/21-gdd/gdd.md#Welt und Erkundung]
 - Notiz `haunt-anchors-5-5.md` im Notizordner der Sessions

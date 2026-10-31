@@ -401,7 +401,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ## Development Epics
 
-Die Epics und Stories stehen in `concept/26-epics/epics.md` (Epic 1–12; Sprint-Status in `_bmad-output/implementation-artifacts/sprint-status.yaml`). Die frühere Zählung E1–E10 dieses Abschnitts ist abgelöst; „E1–E12“ bezeichnet in GDD und Narrative die Entscheidungen.
+Die Epics und Stories stehen in `concept/26-epics/epics/` (Epic 1–12; Sprint-Status in `_bmad-output/implementation-artifacts/sprint-status.yaml`). Die frühere Zählung E1–E10 dieses Abschnitts ist abgelöst; „E1–E12“ bezeichnet in GDD und Narrative die Entscheidungen.
 
 ## Success Metrics
 

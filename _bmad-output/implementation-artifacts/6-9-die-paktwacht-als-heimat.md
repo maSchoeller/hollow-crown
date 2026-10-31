@@ -53,7 +53,7 @@ damit die Truppe schon in Akt 1 ein Zuhause hat und ihre Gefallenen einen Ort.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 6.9], UX-DR10, UX-DR11
+- [Source: concept/26-epics/epics/epic-06.md#Story 6.9], UX-DR10, UX-DR11
 - [Source: concept/24-architecture/architecture.md#5.3, #5.4, #5.10, #8.2, #8.3]
 - [Source: concept/21-gdd/gdd.md Heimat (Zeile ~308, Raumtabelle)]
 - [Source: concept/25-ux/DESIGN.md Gedenken-Farben, Grabstein-Porträt; EXPERIENCE.md Raumstein, Zustand Heimat]

@@ -23,7 +23,7 @@ damit ich die erste Chronik-Seite und Lore finde.
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 9.11], [Source: concept/22-narrative/narrative.md#Found Documents], [Source: concept/21-gdd/items.md#5. Relikte]
+- [Source: concept/26-epics/epics/epic-09.md#Story 9.11], [Source: concept/22-narrative/narrative.md#Found Documents], [Source: concept/21-gdd/items.md#5. Relikte]
 
 ## Dev Agent Record
 

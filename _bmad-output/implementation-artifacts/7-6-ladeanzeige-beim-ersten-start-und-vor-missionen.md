@@ -41,7 +41,7 @@ damit ich nicht vor einem leeren Bildschirm warte und weiß, wann ich offline sp
 
 ### References
 
-- [Source: concept/26-epics/epics.md#Story 7.6]
+- [Source: concept/26-epics/epics/epic-07.md#Story 7.6]
 - [Source: concept/25-ux/EXPERIENCE.md (Ladebildschirm)]
 - [Source: concept/25-ux/.decision-log.md, 2026-10-24 „Laden sichtbar machen“]
 - [Source: concept/24-architecture/decision-log.md, 2026-10-24 „Große Bilder bei Bedarf laden“]
