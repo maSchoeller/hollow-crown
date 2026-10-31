@@ -696,9 +696,9 @@ Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet
 - **2-3:** Das Ziel bleibt `escort`. Odile folgt der nächsten eigenen Figur, statt allein zum Ausgang zu ziehen; der Ausgang liegt hinter der Gegnerlinie.
 - **2-4:** Der Boss ist Rowena selbst; ihre Flucht ist der Sieg.
 - **Sable in 2-5:** Sable steht in 2-5 als Dravns Offizierin mit dem Brandbefehl auf dem Brett, nicht feindlich, und gilt danach als getroffen. Wechselt sie bei E7 zur Truppe, fehlt sie in 2-3, 2-6 und 2-8; in 2-6 steht dann ein Ersatz-Hauptmann ohne Leutnant-Status.
-- **Das brennende Dorf (Beat 9) hängt an E7:** Bei „Befehl ausführen“ brennt Brandhang (Szene und Weltkarten-Variante). Bei „warnen“ sieht die Truppe in 2-6 in einer Szene ein Dorf, das Drachenschatten verbrannt haben. Gekämpft wird gegen keinen Drachen.
+- **Das brennende Dorf (Beat 9) hängt an E7:** Bei „Befehl ausführen“ brennt Brandhang (Szene und Weltkarten-Variante). Bei „warnen“ sieht die Truppe in 2-6 in einer Szene ein Dorf, das Drachenschatten verbrannt haben; ist E7 beim Spielen von 2-6 noch offen, entfällt die Szene (nie zwei brennende Dörfer). Gekämpft wird gegen keinen Drachen.
 - **2-7 ist der bewusste Bruch mit Maelis:** Die Gegner sind Brakkas Söldner, die Maelis zum Vertuschen angeheuert hat, und die Wachen des Kontors. Das ist die einzige Ausnahme von der Regel, dass die Truppe gegen die Leute der *anderen* Anwärter kämpft.
-- **Kronfeld (2-8):** Karte 24×28, bis 15 Plätze (Söldner dürfen auffüllen). Die Truppe hält 8 Runden, dann öffnet sich eine Fluchtzone; gewonnen ist, wenn Avatar, Kael und die Hälfte der Eingesetzten fliehen. Etwa 30 Gegner: die Garde der Prinzessin als Hauptmacht und Truppen der anderen Anwärter, dazu alle Akt-2-Leutnants (Sable nur, wenn sie nicht gewechselt ist). Seraphine und Halvard erscheinen nur in Szenen.
+- **Kronfeld (2-8):** Karte 24×28, bis 15 Plätze (Söldner dürfen auffüllen). Die Truppe hält 8 Runden, dann öffnet sich eine Fluchtzone; gewonnen ist, wenn Avatar, Kael und die Hälfte der Eingesetzten fliehen; gezählt wird die Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten. Etwa 30 Gegner: die Garde der Prinzessin als Hauptmacht und Truppen der anderen Anwärter, dazu alle Akt-2-Leutnants (Sable nur, wenn sie nicht gewechselt ist). Seraphine und Halvard erscheinen nur in Szenen.
 - **Odile und Varek nach dem Weggang (E5, E6):** Sie stehen in Kronfeld nicht auf dem Brett; sie haben nur eine Szenenzeile auf der Gegenseite. Ihre Ausrüstung bleibt im Konvoi.
 - **Gegnerstufe:** In Akt 2 richtet sich die Stufe einer Story-Mission nach ihrer Position (Zahl der schon erledigten Akt-2-Story-Missionen), nicht nach dem Knoten; die Beitrittsstufe der Gefährten wächst ebenso mit (GDD).
 
@@ -730,7 +730,7 @@ Je Akt 2 persönliche, 1 Gewissensfrage, 1 politische.
 | E3 | 1 | Gewissen | Das **Hungerlager**: verschonen oder das Kopfgeld kassieren | Grosk tritt bei und Hask-Groll −1, oder +600 Gold |
 | E4 | 1 | politisch | Die **Paktwacht**: Flüchtlinge aufnehmen oder geheim halten | Dorfhilfe in Akt 2, oder Händler −10 % in Akt 2; dazu eine Szenenzeile in 1-8 (wie Morra das Versteck findet) |
 | E5 | 2 | persönlich | Seraphine bietet **Odile** die Rückkehr in die Garde an | Odile geht (ihre Zeile in Kronfeld wechselt), oder sie bleibt |
-| E6 | 2 | persönlich | Dravn bietet **Varek** Begnadigung im Heer an | Varek geht, oder er bleibt und Sable-Groll −1 |
+| E6 | 2 | persönlich | Dravn bietet **Varek** Begnadigung im Heer an | Varek geht, oder er bleibt und Sable-Groll −1 (hat Sable Groll 0, entfällt stattdessen ihre nächste Groll-Steigerung) |
 | E7 | 2 | Gewissen | **Brandhang** warnen oder den Befehl ausführen | Sable tritt bei, oder Dravns Gunst bringt Händler −10 % |
 | E8 | 2 | politisch | Die Beweise gegen **Maelis** an Seraphine geben oder zurückverkaufen | Grell-Groll −1, oder +1 000 Gold |
 | E9 | 3 | persönlich | Vesna will **Ysolde** mit ins Gebirge zum Forschen nehmen | Ysolde geht (Epilog-Wendung) und Vesna bleibt, oder Ysolde bleibt und Nebenquest N7 öffnet |

@@ -99,7 +99,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Steckbrief | Langdruck auf einen Leutnant (Brett, Weltkarte, Steckbriefe); auf dem Brett zeigt derselbe Langdruck zugleich seine Gefahrenzone; schließt mit Zurück oder Tipp daneben |
 | Sprechband | blockiert kurz (bis Tipp oder 2,5 s bei Auto), nie länger als 2 Zeilen; sitzt fest am Bildschirm, die Kamera bewegt sich nicht, der Sprecher muss nicht auf dem Brett stehen; Barks und Leutnant-Zeilen laufen ebenso, ohne Tipp und mit Brett-Tempo |
 | Weltkarten-Knoten | Tipp zoomt leicht heran und öffnet die Knoten-Karte; Tipp daneben schließt |
-| Raumstein | Tipp öffnet das Raum-Panel; oben steht das Ausbau-Band für die nächste Stufe. Reichen Raum-Gefährte und Gold, ist es grün und baut aus; sonst ist es gestrichelt mit Schloss und nennt den Grund (erste offene Bedingung, z. B. „ab Akt 2“), wie seit Story 6.9 gebaut |
+| Raumstein | Tipp öffnet das Raum-Panel; oben steht das Ausbau-Band für die nächste Stufe. Reichen die Bedingungen und das Gold, ist es grün und baut aus; sonst ist es gestrichelt mit Schloss und nennt den Grund (erste offene Bedingung, z. B. „ab Akt 2“), wie seit Story 6.9 gebaut. Stufe 2 braucht nur Gold (ab Akt 2), erst Stufe 3 zusätzlich einen der zwei Raum-Gefährten; das Band nennt den Gefährten nur für Stufe 3 |
 | Item-Zeile | erster Tipp wählt und zeigt den Vergleich, Haupttaste führt aus; Unpassendes bleibt sichtbar, gedimmt, mit Grund; Info-Stein rechts oder Langdruck öffnet die Item-Details |
 | Item-Details | Overlay-Blatt: Bild, Seltenheit, Typ, Beschreibung, jeder Wert mit vollem Namen und kurzer Erklärung, Wirkungen, gelehrte Fähigkeit (FP), Set, Runen, Preis; schließt mit Zurück, Esc oder Tipp daneben |
 | Dialogbox | Tipp irgendwo führt weiter; Log, Auto, Überspringen oben rechts; bereits gesehene Szenen lassen sich ganz überspringen |
@@ -221,7 +221,7 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 1. Um 7:10 öffnet sie die App. Der Tageswechsel war um 4:00; der Hinweis meldet „Neuer Tag: 3 Heimsuchungen“.
 2. Ein roter Knoten zeigt Morras Gesicht mit „NEU“. Die Karte sagt: Truhenjagd, Groll 2 gegen Mira, Kopfgeld ● 600, bleibt offen.
 3. Sie spielt sie in 15 Minuten; das Ergebnis zeigt ● +400 Gold, eine Eisenerz-Raute und 60 % EP.
-4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber die Burg hat einen grünen Pfeil: In der Taverne wartet ein neues Söldner-Angebot. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang. (Die Burg ist seit 1-6 Heimat; ihre Räume lassen sich erst ab Akt 2 ausbauen.)
+4. **Höhepunkt:** Über der Eisenmark liegt Nebel mit „Akt 2 ‚Glut‘ erscheint bald“, aber am Taverne-Stein der Burg steht eine Glut-Zahl: In der Taverne wartet ein neues Söldner-Angebot. Sie hat einen Grund, morgen wiederzukommen, und keinen Zwang. (Die Burg ist seit 1-6 Heimat; ihre Räume lassen sich erst ab Akt 2 ausbauen.)
 
 ## Offene Punkte
 

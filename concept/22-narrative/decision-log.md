@@ -86,3 +86,6 @@
 | 2026-10-31 | **Akt-Wechsel:** kurze Titeltafel „Akt 2 · Glut“ nach dem 1-8-Outro (Bild als Grafik-Aufgabe, bis dahin Text auf Glutgrund), danach lichtet sich der Nebel | Produktinhaber 2026-10-31 (Verfeinerung Epic 10/11) |
 | 2026-10-31 | **Odile und Varek nach dem Weggang (E5, E6):** nur eine Szenenzeile in Kronfeld auf der Gegenseite, nicht auf dem Brett; ihre Ausrüstung bleibt im Konvoi | Produktinhaber 2026-10-31 (Verfeinerung Epic 10/11) |
 | 2026-10-31 | **Lebende Burg:** Am Platz steht nur der Gegenstand; wer geht, nimmt ihn mit; die Liste der 20 Gegenstände wird abgeleitet | Produktinhaber 2026-10-31 (Verfeinerung Epic 10/11) |
+| 2026-10-31 | **Kronfeld-Hälfte:** „Hälfte der Eingesetzten“ = Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten | Produktinhaber, Readiness-Runde R3 (P6) |
+| 2026-10-31 | **Verbranntes Dorf in 2-6** nur bei E7 „warnen“; ist E7 noch offen, keine Szene (nie zwei brennende Dörfer) | Produktinhaber, Readiness-Runde R3 (P7) |
+| 2026-10-31 | **E6 „Varek bleibt“:** Sable-Groll −1; hat Sable Groll 0, entfällt stattdessen ihre nächste Groll-Steigerung (Puffer) | Produktinhaber, Readiness-Runde R3 (P9) |
