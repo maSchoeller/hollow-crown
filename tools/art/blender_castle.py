@@ -488,8 +488,8 @@ def wall_segment(p, a, b, h=2.2, t=0.7, broken=False, seed=0, M=None, ivy_p=None
         ivy(ivy_p, pt.x, pt.y, hh - 0.1, n=4, spread=(0.3, min(1.2, hh - 0.3)), seed=seed * 7 + s, face=ang + (0 if s < 0 else 180), M=M)
 
 
-def round_tower(p, lit, x, y, r=0.95, h=3.0, broken=False, seed=0, M=None, win_face=0, ivy_p=None):
-    R = (M or Matrix()) @ mat4((x, y, 0))
+def round_tower(p, lit, x, y, r=0.95, h=3.0, broken=False, seed=0, M=None, win_face=0, ivy_p=None, s=1.0):
+    R = (M or Matrix()) @ mat4((x, y, 0), scale=(s, s, s))
     rr = random.Random(seed)
     hh = h * (0.78 if broken else 1.0)
     cyl(p, 'stone_dark', (0, 0, 0), r * 1.12, 0.4, seg=14, r2=r * 1.06, M=R, bev=0.15)
@@ -593,10 +593,11 @@ class Lv:
 ISLAND_R = 10.8
 WALL_R = 9.4
 WALL_T = 0.7
-GATE_HALF = 2.15  # pillar centre distance from the gate axis
-TOWERS = [-21, 18, 112, 145, 201]  # wall towers, degrees (0 = +X / right, 90 = +Y / back)
-KEEP_TOWER = (3.5, 7.86, 1.6)  # the big round tower (x, y, r)
-KEEP_HALL = (-0.7, 6.9)
+BUILDING_S = 1.4  # keep, towers and gate stand this much bigger than modelled (rooms: BUILDING_S in src/render/home/castle.ts)
+GATE_HALF = 2.15  # pillar centre distance from the gate axis (modelled size, times BUILDING_S in the castle)
+TOWERS = [-30, 14, 124, 160, 212]  # wall towers, degrees (0 = +X / right, 90 = +Y / back)
+KEEP_TOWER = (5.3, 6.4, 1.6)  # the big round tower (x, y, modelled r)
+KEEP_HALL = (-1.0, 6.8)
 
 
 def build_island(L):
@@ -690,8 +691,6 @@ def build_island(L):
     for k, deg in enumerate((-62, -42, -6, 32, 48, 84, 100, 128, 166, 188, 218, 234, 304, 322)):
         rad = (WALL_R + ISLAND_R) / 2 + 0.05
         tree(a, math.cos(math.radians(deg)) * rad, math.sin(math.radians(deg)) * rad, s=rr.uniform(0.95, 1.2), seed=500 + k)
-    for k, (x, y) in enumerate(((3.8, -4.6), (-2.6, -6.4), (2.7, -6.5), (7.4, -5.0), (-7.6, -4.6), (-1.9, 8.5), (6.9, 6.2))):
-        tree(a, x, y, s=0.95, seed=520 + k)
     for k in range(26):
         deg = rr.uniform(240, 300) if k < 10 else rr.uniform(0, 360)
         if 262 < deg < 278:
@@ -713,9 +712,9 @@ def _ring_spans():
     """Wall pieces between the structures on the ring: list of (start deg, end deg)."""
     stops = []
     for t in TOWERS:
-        stops.append((t % 360, math.degrees(0.9 / WALL_R)))
-    stops.append((math.degrees(math.atan2(KEEP_TOWER[1], KEEP_TOWER[0])), math.degrees(1.3 / WALL_R)))
-    stops.append((270, math.degrees((GATE_HALF + 0.55) / WALL_R)))
+        stops.append((t % 360, math.degrees(0.9 * BUILDING_S / WALL_R)))
+    stops.append((math.degrees(math.atan2(KEEP_TOWER[1], KEEP_TOWER[0])), math.degrees(1.3 * BUILDING_S / WALL_R)))
+    stops.append((270, math.degrees((GATE_HALF + 0.55) * BUILDING_S / WALL_R)))
     stops.sort()
     spans = []
     for i in range(len(stops)):
@@ -753,11 +752,13 @@ def build_walls(L):
                 banner(L.l3, q.x, q.y, 1.95, w=0.42, h=0.85, rot=mid_deg - 270)
     for k, deg in enumerate(TOWERS):
         x, y = math.cos(math.radians(deg)) * WALL_R, math.sin(math.radians(deg)) * WALL_R
-        round_tower(whole, L.l23, x, y, r=0.95, h=3.0, seed=40 + k, ivy_p=whole)
-        round_tower(ruin, None, x, y, r=0.95, h=3.0, broken=True, seed=60 + k, ivy_p=ruin)
+        S = BUILDING_S
+        round_tower(whole, L.l23, x, y, r=0.95, h=3.0, seed=40 + k, ivy_p=whole, s=S)
+        round_tower(ruin, None, x, y, r=0.95, h=3.0, broken=True, seed=60 + k, ivy_p=ruin, s=S)
         # pennant on the tower top and a banner on its camera side
-        pennant(L.l3, x, y, 3.25, h=0.85)
-        banner(L.l3, x, y - 0.98, 2.4, w=0.38, h=0.8)
+        T = mat4((x, y, 0), scale=(S, S, S))
+        pennant(L.l3, 0, 0, 3.25, h=0.85, M=T)
+        banner(L.l3, 0, -0.98, 2.4, w=0.38, h=0.8, M=T)
 
 
 def dragon_relief(p, M):
@@ -793,7 +794,7 @@ def crown_relief(p, M):
 
 def build_gate(L):
     a = L.a
-    G = mat4((0, -WALL_R, 0))
+    G = mat4((0, -WALL_R, 0), scale=(BUILDING_S,) * 3)
     # gatehouse wall between the pillars, with a pointed gateway
     box(a, 'stone', (0, 0, 0), (2 * GATE_HALF - 0.6, 0.95, 2.55), bev=0.04, M=G)
     box(a, 'stone_dark', (0, 0, 0), (2 * GATE_HALF - 0.4, 1.05, 0.3), bev=0.2, M=G)
@@ -823,19 +824,19 @@ def build_gate(L):
             crown_relief(a, R @ mat4((0, 0, 0.12), (0, 0, 0), (1.25, 1, 1.18)))
         ivy(a, sx * 0.62, -0.3, 2.9, n=4, spread=(0.08, 1.4), seed=70 + sx, face=sx * 90, M=P)
         # level 3: banner on the pillar's inner side and a lantern by the gate
-        banner(L.l3, sx * (GATE_HALF - 0.95), -WALL_R - 0.5, 2.3, w=0.34, h=0.78)
-        lantern_wall(L.l3, sx * (GATE_HALF - 1.05), -WALL_R - 0.48, 1.25)
-        lantern_post(L.l3, sx * 1.15, -WALL_R - 1.2, h=1.0)
-    for k, (x, y) in enumerate(((-1.2, -8.0), (1.2, -8.0), (-1.2, -6.1), (1.2, -6.1), (-3.6, -2.6), (3.6, -2.4), (-2.6, 3.6), (2.8, 4.4))):
+        banner(L.l3, sx * (GATE_HALF - 0.95), -0.5, 2.3, w=0.34, h=0.78, M=G)
+        lantern_wall(L.l3, sx * (GATE_HALF - 1.05), -0.48, 1.25, M=G)
+        lantern_post(L.l3, sx * 1.25, -WALL_R - 1.05, h=1.0)
+    for k, (x, y) in enumerate(((-1.2, -8.0), (1.2, -8.0), (-1.2, -6.1), (1.2, -6.1), (-1.5, -3.6), (1.5, -3.6), (-1.9, 2.3), (2.1, 1.7))):
         lantern_post(L.l3, x, y, h=1.0)
-    ivy(L.l1, -0.9, -WALL_R - 0.5, 2.4, n=6, spread=(0.4, 1.6), seed=77)
+    ivy(L.l1, -0.9, -0.5, 2.4, n=6, spread=(0.4, 1.6), seed=77, M=G)
     rubble(L.l1, 1.6, -WALL_R - 1.0, n=5, spread=0.5, seed=78)
-    rubble(L.l1, -2.9, -WALL_R + 1.0, n=4, spread=0.4, seed=79)
+    rubble(L.l1, -1.6, -WALL_R + 1.8, n=4, spread=0.4, seed=79)
 
 
 def build_keep(L):
     a, l1, l23, l3 = L.a, L.l1, L.l23, L.l3
-    K = mat4((KEEP_HALL[0], KEEP_HALL[1], 0))
+    K = mat4((KEEP_HALL[0], KEEP_HALL[1], 0), scale=(BUILDING_S,) * 3)
     W, D, H = 3.3, 2.3, 2.3
     box(a, 'stone_dark', (0, 0, 0), (W + 0.2, D + 0.2, 0.3), bev=0.2, M=K)
     box(a, 'stone', (0, 0, 0.2), (W, D, H - 0.2), bev=0.04, M=K)
@@ -883,7 +884,7 @@ def build_keep(L):
         pennant(l3, sx * W / 2, -D / 2, H + 0.4, h=0.6, M=K)
     # the big round tower
     tx, ty, tr = KEEP_TOWER
-    T = mat4((tx, ty, 0))
+    T = mat4((tx, ty, 0), scale=(BUILDING_S,) * 3)
     th = 4.6
     cyl(a, 'stone_dark', (0, 0, 0), tr * 1.12, 0.45, seg=18, r2=tr * 1.06, M=T, bev=0.15)
     cyl(a, 'stone', (0, 0, 0.35), tr * 1.05, th - 0.35, seg=18, r2=tr, M=T, bev=0.03)
@@ -1649,10 +1650,10 @@ def preview(path, objs):
 
 # rooms at their layout spots (x, y, yaw in degrees, counter-clockwise) – the same table as LAYOUT in src/render/home/castle.ts
 PREVIEW_LAYOUT = {
-    'convoy': (-7.2, 1.0, 30), 'workshop': (-4.3, 2.8, 18), 'merchant': (-1.8, 2.0, 8), 'campfire': (0.0, -0.4, 0),
-    'tavern': (2.2, 3.4, -8), 'smith': (5.0, 1.4, -22), 'academy': (5.9, 4.6, -24), 'healer': (6.6, -1.8, -32),
-    'training': (-4.6, -3.0, 16), 'memorial': (-4.2, 5.9, 10), 'enchanter': (-6.6, 4.0, 22),
-    'axe': (3.4, -0.4, -20), 'lute': (-1.3, -1.4, 10), 'books': (4.2, 3.2, 0),
+    'convoy': (-5.3, -3.7, 45), 'workshop': (3.9, -1.4, -30), 'merchant': (-3.4, 1.0, 22), 'campfire': (0.0, -0.4, 0),
+    'tavern': (1.7, 3.6, -5), 'smith': (5.6, 2.9, -50), 'academy': (7.5, -2.6, -80), 'healer': (4.4, -6.2, -30),
+    'training': (-3.6, -6.6, 12), 'memorial': (-5.4, 4.5, 40), 'enchanter': (-7.5, 0.3, 78),
+    'axe': (2.6, -3.4, -20), 'lute': (-1.9, -2.4, 10), 'books': (-3.6, 4.4, 0),
 }
 
 
@@ -1698,6 +1699,7 @@ def main():
                 x, y, rot = PREVIEW_LAYOUT[g]
                 o.location = (x, y, 0)
                 o.rotation_euler = (0, 0, math.radians(rot))
+                o.scale = (BUILDING_S,) * 3
         preview(PREVIEW, objs)
 
 

@@ -55,47 +55,58 @@ const MODEL = 'models/castle/paktwacht.glb';
 
 /** radius of the island's top (tools/art/blender_castle.py ISLAND_R) */
 const ISLAND_R = 10.8;
+/** tip of the keep tower's roof pennant, x, y, z (tools/art/blender_castle.py KEEP_TOWER) */
+const KEEP_TIP: [number, number, number] = [5.3, 11.4, 6.4];
 
-/** points the camera keeps in view: the island's rim, its underside, the tip of the keep's roof */
+/** points the camera keeps in the band: the island's rim and its underside */
 const FRAME_POINTS: Vector3[] = [
   ...Array.from({ length: 16 }, (_, i) => new Vector3(Math.cos((i / 16) * Math.PI * 2) * ISLAND_R, 0, Math.sin((i / 16) * Math.PI * 2) * ISLAND_R)),
   ...Array.from({ length: 8 }, (_, i) => new Vector3(Math.cos((i / 8) * Math.PI * 2) * (ISLAND_R - 1), -2.2, Math.sin((i / 8) * Math.PI * 2) * (ISLAND_R - 1))),
   new Vector3(0, -5, 0),
-  new Vector3(3.5, 7.5, 7.9),
-  new Vector3(-7.7, 3.9, 5.4),
 ];
+
+/** the tall tops that may rise above the band, up to TOP: the keep's roof tip and the back left tower (blender_castle.py) */
+const TALL_POINTS: Vector3[] = [new Vector3(KEEP_TIP[0], KEEP_TIP[1], KEEP_TIP[2]), new Vector3(-8.8, 5.7, 3.2)];
 
 /** [C] the band the island fits in (share of the view height; the view ends just under the top of the room list): below the HUD, above the room list */
 const BAND: [number, number] = [0.2, 0.92];
+/** [C] the highest the tall tops may reach (share of the view height): under the coin pill and the dev bar */
+const TOP = 0.2;
 const PITCH = 0.82;
 
 /**
  * [C] Room spots after the reference layout (art/mockups/castle3d-refs/paktwacht_diorama_l3.png), grounds twice the area of
- * the first spike: x, z in world units (z = back), yaw in degrees counter-clockwise seen from above (front = -z). Same table
+ * the first spike, re-spaced for the bigger buildings (BUILDING_S): x, z in world units (z = back), yaw in degrees counter-clockwise seen from above (front = -z). Same table
  * as PREVIEW_LAYOUT in tools/art/blender_castle.py.
  */
 const LAYOUT: Record<string, [number, number, number]> = {
-  convoy: [-7.2, 1.0, 30],
-  workshop: [-4.3, 2.8, 18],
-  merchant: [-1.8, 2.0, 8],
+  convoy: [-5.3, -3.7, 45],
+  workshop: [3.9, -1.4, -30],
+  merchant: [-3.4, 1.0, 22],
   campfire: [0, -0.4, 0],
-  tavern: [2.2, 3.4, -8],
-  smith: [5.0, 1.4, -22],
-  academy: [5.9, 4.6, -24],
-  healer: [6.6, -1.8, -32],
-  training: [-4.6, -3.0, 16],
-  memorial: [-4.2, 5.9, 10],
-  enchanter: [-6.6, 4.0, 22],
+  tavern: [1.7, 3.6, -5],
+  smith: [5.6, 2.9, -50],
+  academy: [7.5, -2.6, -80],
+  healer: [4.4, -6.2, -30],
+  training: [-3.6, -6.6, 12],
+  memorial: [-5.4, 4.5, 40],
+  enchanter: [-7.5, 0.3, 78],
 };
+
+/**
+ * [C] the rooms and keepsakes are modelled at the first spike's size; on the doubled grounds they stand this much bigger
+ * (the shell's keep, towers and gate are scaled in tools/art/blender_castle.py by the same factor, BUILDING_S)
+ */
+const BUILDING_S = 1.4;
 
 /** the rooms the castle model has, in LAYOUT order */
 export const CASTLE_ROOMS = Object.keys(LAYOUT);
 
 /** [C] companion keepsakes at fixed places (§7): x, z, yaw, scale */
 const KEEPSAKES: Record<string, [number, number, number, number]> = {
-  axe: [3.4, -0.4, -20, 1],
-  lute: [-1.3, -1.4, 10, 1],
-  books: [4.2, 3.2, 0, 1.3],
+  axe: [2.6, -3.4, -20, 1],
+  lute: [-1.9, -2.4, 10, 1],
+  books: [-3.6, 4.4, 0, 1.3],
 };
 
 /** [C] chimney smoke from level 3, room-local (x, height, z) */
@@ -270,7 +281,7 @@ export class CastleView implements HostedView {
       const n = new TransformNode(`castle:keepsake:${id}`, this.scene);
       n.position.set(x, 0, z);
       n.rotation.y = (-yaw * Math.PI) / 180;
-      n.scaling.setAll(s);
+      n.scaling.setAll(s * BUILDING_S);
       this.attach(parts.get(`${id}_a`), n);
     }
     // the campfire burns at every level
@@ -338,6 +349,7 @@ export class CastleView implements HostedView {
     const root = new TransformNode(`castle:room:${r.id}`, this.scene);
     root.position.set(x, 0, z);
     root.rotation.y = (-yaw * Math.PI) / 180;
+    root.scaling.setAll(BUILDING_S);
     root.computeWorldMatrix(true);
     const level = (n: string) => {
       const t = new TransformNode(`castle:${r.id}:${n}`, this.scene);
@@ -470,7 +482,7 @@ export class CastleView implements HostedView {
     l.diffuse = Color3.FromHexString(color);
     l.specular = new Color3(0, 0, 0);
     l.intensity = intensity;
-    l.range = range;
+    l.range = range * BUILDING_S;
     return l;
   }
 
@@ -509,6 +521,7 @@ export class CastleView implements HostedView {
       let x1 = -Infinity;
       let y0 = Infinity;
       let y1 = -Infinity;
+      let tall = Infinity;
       for (const p of FRAME_POINTS) {
         const s = Vector3.Project(p, Matrix.IdentityReadOnly, m, vp);
         x0 = Math.min(x0, s.x);
@@ -516,13 +529,17 @@ export class CastleView implements HostedView {
         y0 = Math.min(y0, s.y);
         y1 = Math.max(y1, s.y);
       }
-      const scale = Math.max((x1 - x0) / (w * 0.92), (y1 - y0) / (bottom - top));
-      // screen pixels per world unit along z at the aim, to move the picture's centre into the band's centre
+      for (const p of TALL_POINTS) tall = Math.min(tall, Vector3.Project(p, Matrix.IdentityReadOnly, m, vp).y);
+      const island = Math.max((x1 - x0) / (w * 0.92), (y1 - y0) / (bottom - top));
+      const tops = (y1 - tall) / (bottom - h * TOP);
+      // screen pixels per world unit along z at the aim, to move the picture's centre into the band's centre, but low enough
+      // for the tall tops to stay under TOP and high enough for the island's bottom to stay in the band
       const a = Vector3.Project(this.aim, Matrix.IdentityReadOnly, m, vp);
       const b = Vector3.Project(this.aim.add(new Vector3(0, 0, 1)), Matrix.IdentityReadOnly, m, vp);
       const perUnit = Math.max(1e-3, a.y - b.y);
-      this.aim.z -= ((y0 + y1) / 2 - (top + bottom) / 2) / perUnit;
-      this.dist *= scale;
+      const off = Math.max(y1 - bottom, Math.min((y0 + y1) / 2 - (top + bottom) / 2, tall - h * TOP));
+      this.aim.z -= off / perUnit;
+      this.dist *= Math.max(island, tops);
     }
     this.yaw = yaw;
     this.placeCamera();
