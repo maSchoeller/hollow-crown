@@ -242,9 +242,9 @@ handbook:
       keywords: "Festung, Fort, Thron, Tor, Schrein, Heilung, Einnehmen"
     terrain_blocked:
       title: "Hindernisse"
-      text: "Mauern versperren den Weg für alle. Über Wagen, Stände, Brunnen, Kohlebecken, Zäune, Höfe und Häuser kommen nur Flieger."
+      text: "Mauern versperren den Weg für alle. Über Wagen, Stände, Brunnen, Kohlebecken, Zäune, Höfe und Gebäude kommen nur Flieger."
       where: "Hindernisse liegen nie im blauen Bewegungsbereich."
-      keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Haus, blockiert"
+      keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Gebäude, blockiert"
     doors:
       title: "Türen"
       text: "Geschlossene Türen versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne; offen sind sie freier Weg."

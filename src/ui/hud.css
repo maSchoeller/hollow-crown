@@ -690,19 +690,11 @@
 .hud-fc__head > .hud-l1 {
   white-space: nowrap;
 }
-/* "vs" with the context "?" of the forecast below it (story 14.7) */
-.hud-fc__mid {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
-}
-.hud-fc__mid .hud-l1 {
-  white-space: nowrap;
-}
 .hud-fc__who {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
   min-width: 0;
 }
 .hud-fc__who.is-right {
@@ -712,12 +704,21 @@
 .hud-fc__who.is-right .hud-chips {
   justify-content: flex-end;
 }
+/* name and chips sit beside the medallion while they fit, otherwise below it (phone width);
+   names and weapon labels are never cut off, a too long word breaks inside its own column */
 .hud-fc__id {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-width: 0;
   display: grid;
 }
-/* the name cuts off with an ellipsis inside its own column (.hud-name already clips) */
+.hud-fc__who .hud-name,
+.hud-fc__who .hud-chip,
+.hud-fc__who .hc-item-chip,
+.hud-fc__who .hc-item-chip__name {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: break-word;
+}
 .hud-fc__who .hud-name {
   flex: none;
   display: block;

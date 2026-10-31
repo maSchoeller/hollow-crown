@@ -37,17 +37,76 @@ code { font-size:.88em; background:var(--soft); padding:0 4px; border-radius:4px
 @media (max-width:560px) { .user, .ac { margin-left:0; } .row { grid-template-columns:1fr; gap:2px; } .kw { justify-self:start; } }
 </style>
 <div class="wrap">
-<header><span class="eyebrow">Hollow Crown · Staffel 1 · Epics 5–9</span><h1>Epics 5–9 zur Freigabe</h1><p>5 Epics, 45 Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics.md</code>.</p><nav><a href="#epic5">Epic 5</a><a href="#epic6">Epic 6</a><a href="#epic7">Epic 7</a><a href="#epic8">Epic 8</a><a href="#epic9">Epic 9</a></nav></header>
-<section class="epic" id="epic5"><h2><span>Epic 5</span>Weltkarte und Heimsuchungen</h2><p class="intro">Spieler wählen die nächste Mission auf einer 3D-Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen bekannter Leutnants auf bekannten Karten.</p>
+<header><span class="eyebrow">Hollow Crown · Staffel 1 · Epics 5–9</span><h1>Epics 5–9 zur Freigabe</h1><p>7 Epics, 46 Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics.md</code>.</p><nav><a href="#epic8">Epic 8</a><a href="#epic9">Epic 9</a><a href="#epic5">Epic 5</a><a href="#epic6">Epic 6</a><a href="#epic7">Epic 7</a><a href="#epic8">Epic 8</a><a href="#epic9">Epic 9</a></nav></header>
+<section class="epic" id="epic8"><h2><span>Epic 8</span>Chibi-Stil, Item-Bilder und Audio</h2><p class="intro">Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Porträts mit Stimmungen, gemalte Item-Bilder, warmes Licht und Effekte, folk-lastige Musik und vertonte Schlüsselzeilen.
+<b>FRs covered:</b> FR42, FR63 (Teil) · UX-DR16
+
+#### Story 8.10: Verdeckte Figuren bleiben sichtbar
+
+Als Spieler
+möchte ich jede Figur sehen, auch wenn sie hinter oder in einem Haus, Turm, einer Ruine oder einem Baum steht,
+damit ich keine Einheit übersehe.
+
+<b>Akzeptanzkriterien:</b>
+
+<b>Angenommen</b> die Kamera des Bretts (Neigung <code>camera.tiltDeg</code>, Blick von Süden) und eine Requisite, die eine Figur auf demselben Feld oder auf Feldern nördlich davon um mindestens <code>board.fade.cover</code> Felder ihrer Höhe verdeckt
+<b>Wenn</b> eine Einheit (Spieler oder Gegner) dort steht, hinzieht oder beim Aufstellen dort landet
+<b>Dann</b> wird die Requisite halbdurchsichtig („schleierhaft“, Deckkraft <code>board.fade.alpha</code> in <code>render.yaml</code>), die Figur bleibt erkennbar
+<b>Und</b> verlässt die Einheit das Feld, ist die Requisite sofort wieder deckend; neu berechnet wird nur, wenn sich ein Feld einer Einheit ändert, nie jedes Bild.
+
+#### Story 8.11: Abwechslungsreiche Karten und Besuchshäuser
+
+Als Spieler
+möchte ich Karten mit unterschiedlichen Häusern, Bäumen und Felsen sehen und sofort erkennen, welche Häuser ich besuchen soll,
+damit die Brettwelt lebendig wirkt und ich keine Ziele suchen muss.
+
+<b>Akzeptanzkriterien:</b>
+
+<b>Angenommen</b> die Requisiten-Bibliothek (Häuser, Bäume je Jahreszeit, Felsen, Brunnen, Zauntor) mit mehreren Varianten je Klasse
+<b>Wenn</b> eine Karte aufgebaut wird
+<b>Dann</b> wählt sie die Variante je Feld deterministisch (Feld-Hash plus Seed, optional <code>propVariants</code> im Karten-YAML), nie mit <code>Math.random</code>; gleiche Nachbarn werden vermieden
+<b>Und</b> Besuchsziele sind ein eigenes, deutlich erkennbares Haus („lodge“: blaugrünes Dach, Schild, Banner, Laterne; besucht: Tür offen, Banner eingeholt), das sich von Kulissenhäusern abhebt
+<b>Und</b> das Ziel heißt überall „Häuser besuchen“ (DE/EN: Zieltext, Kontext-Band, Toast, KI-Text); echte Dörfer als Handlungsorte bleiben „Dorf“
+<b>Und</b> ein Tipp auf das Nebenziel in der Zielanzeige markiert die offenen Ziel-Orte auf dem Brett (Besuch, Truhen, Anwerben, Schutz, Boss), ein zweiter Tipp oder <code>board.markMs</code> löscht sie
+<b>Und</b> die neuen Modelle liegen im Paket <code>act1</code>, nicht im ersten Download; die Bildrate bleibt über den Zielen aus Story 7.8.</p>
+</section>
+<section class="epic" id="epic9"><h2><span>Epic 9</span>Akt 1 „Asche“ (MVP)</h2><p class="intro">Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
+<b>FRs covered:</b> FR55, FR60, FR63
+
+### Epic 10: Die Burg ausbauen (ab Akt 2)
+Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen per Glutfunke auf Profi-Wege auf und ehren Gefallene in der Gedächtnishalle. Verfeinert am 2026-10-31: 11 Stories (neu 10.8 Raumfunktionen, 10.9 Söldner-Traits, 10.10 Anhängeteile, 10.11 Burg-Grafik nach der 3D-Entscheidung).
+<b>FRs covered:</b> FR14, FR15, FR44, FR50 (ab Akt 2)–FR54 · UX-DR10 (Burg-Ausbau), UX-DR11 (Lektionen), UX-DR21
+
+### Epic 11: Akt 2 „Glut“
+Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark. Verfeinert am 2026-10-31: 15 Stories (Akt-Übergang, Gefährten und Leutnants, Gegner mit Flieger und Balliste, eine Story je Mission mit Kurzspezifikation, Nebenquests, Supports, Abstimmung).
+<b>FRs covered:</b> FR17 (Akt 2), FR61, FR63
+
+### Epic 12: Akt 3 „Krone“ und Staffelende – grob
+Spieler spielen Akt 3 bis zum Staffelfinale, sehen das Epilog-Mosaik und nehmen ihre Entscheidungen als Staffel-Zusammenfassung mit in Staffel 2.
+<b>FRs covered:</b> FR17 (Akt 3), FR39, FR57 (Staffel 2), FR62, FR63 · AR20 · UX-DR22
+
+### Epic 13: Kampf lesbar machen
+Spieler lesen das Brett auf einen Blick: Raster, Lebensleisten, Bereiche mit Kanten, eine abgestufte Gefahrenzone, Zielfeld-Check und Kill-Marker vor dem Zug, ein Rückblick nach der Gegnerphase. Neu seit der Course Correction 2026-10-30, vor dem MVP-Release.
+<b>FRs covered:</b> – (Darstellung bestehender Regeln FR1, FR2, FR6, FR9) · UX-DR26–UX-DR29
+
+### Epic 14: Handbuch
+Spieler schlagen jede Regel im Spiel nach, aus dem Menü oder über ein „?“ an der Stelle, an der sie wirkt; Werte kommen aus den Content-Daten. Neu seit der Course Correction 2026-10-30, nach dem MVP-Release und vor Akt 2.
+<b>FRs covered:</b> – · UX-DR30, UX-DR31
+
+<b>Reihenfolge:</b> 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig. Epic 10 und 11 laufen verschränkt (Verfeinerung 2026-10-31): 11.1 (Akt-Übergang) zuerst, dann 10.2 und 10.3 parallel zu 11.2–11.4, danach die übrigen Stories beider Epics; 11.15 (Abstimmung Akt 2) erst, wenn 10.2 und 10.3 gemergt sind. Details in den Absätzen „Reihenfolge“ beider Epics.
+
+&lt;!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). --&gt;</p>
+</section>
+<section class="epic" id="epic5"><h2><span>Epic 5</span>Weltkarte und Heimsuchungen</h2><p class="intro">Spieler wählen die nächste Mission auf einer Weltkarte, die nach jeder Mission der Startpunkt ist, und finden jeden Tag neue Heimsuchungen bekannter Leutnants auf bekannten Karten.</p>
 <details><summary><span class="id">5.1</span><span class="t">Szenen-Host und geteilter Asset-Cache</span><span class="n">2 Kriterien</span></summary>
 <div class="user"><p>Als Spieler</p><p>möchte ich zwischen Brett, Weltkarte und Heimat wechseln, ohne lange zu warten,</p><p>damit sich das Spiel wie ein Ganzes anfühlt.</p></div>
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span><code>src/render/host.ts</code> mit Engine, Canvas, Qualitätsstufe und FPS-Deckel</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die App zwischen Szenen wechselt</span></div><div class="row"><span class="kw Dann">Dann</span><span>ist immer nur eine Szene aktiv; die alte wird entsorgt, Modelle bleiben im geteilten Asset-Cache (Referenzzählung) und werden nicht neu geladen</span></div><div class="row"><span class="kw Und">Und</span><span>das Brett ist in <code>render/board/</code> und gemeinsame Teile (Gelände, Modelle, Figuren, Kamera, Jahreszeit) in <code>render/shared/</code> aufgeteilt, mit unveränderter Schnittstelle (<code>load</code>, <code>play</code>, <code>setOverlays</code>, <code>centerOn</code>, <code>relayout</code>, <code>quality</code>, <code>dispose</code>).</span></div></div>
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Szene im Hintergrund eines Dialogs</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>eine Visual-Novel-Szene läuft</span></div><div class="row"><span class="kw Dann">Dann</span><span>rendert der Canvas mit <code>board.fpsIdle</code> oder pausiert</span></div><div class="row"><span class="kw Und">Und</span><span>die Zeichenaufrufe auf Kap. 1 (Mittel) steigen nicht gegenüber D17.</span></div></div>
 </details>
-<details><summary><span class="id">5.2</span><span class="t">Die Weltkarte als 3D-Szene</span><span class="n">2 Kriterien</span></summary>
-<div class="user"><p>Als Spieler</p><p>möchte ich Valmora als bespielte Miniaturlandschaft sehen,</p><p>damit ich spüre, wo meine Truppe gewesen ist.</p></div>
-<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span><code>content/world/valmora.yaml</code> (Kachelraster mit Legende, Regionen mit Akt und Jahreszeit, Orte mit Knoten-ID, Feld, Modell und Varianten mit <code>requires</code>)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Weltkarte geladen wird</span></div><div class="row"><span class="kw Dann">Dann</span><span>baut <code>render/world/</code> sie mit <code>terrain3d</code> und denselben Bodentexturen und Requisiten wie das Brett; Regionen späterer Akte liegen unter Nebel mit Regionsname</span></div><div class="row"><span class="kw Und">Und</span><span>die Kamera hat 2 Zoomstufen und lässt sich verschieben.</span></div></div>
-<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>ein gespielter Ort mit Varianten (z. B. Erlbach gerettet/verbrannt)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Bedingungen einer Variante erfüllt sind</span></div><div class="row"><span class="kw Dann">Dann</span><span>zeigt die Weltkarte diese Variante als Miniatur</span></div><div class="row"><span class="kw Und">Und</span><span>je Akt kommen Drachenzeichen als zusätzliche Ebene dazu (Akt 1 Asche).</span></div></div>
+<details><summary><span class="id">5.2</span><span class="t">Die Weltkarte als flaches Bild</span><span class="n">2 Kriterien</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich Valmora als gemalte Karte sehen, auf der meine Truppe von Akt zu Akt nach Norden zieht,</p><p>damit ich spüre, wo sie gewesen ist.</p><p>*(Geändert vom Produktinhaber, 2026-10-24: flaches Bild statt 3D-Szene; siehe <code>concept/23-art-direction/decision-log.md</code>.)*</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span><code>content/world/valmora.yaml</code> (Bild, Regionen mit Akt und Ort des Namens, Nebelkanten je Akt, Orte als Prozentpositionen mit Beschriftung und Art, optional mit Knoten-ID)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Weltkarte geladen wird</span></div><div class="row"><span class="kw Dann">Dann</span><span>zeigt sie das gemalte Hochformat-Bild (Akt 1 unten, Akt 2 Mitte, Akt 3 oben) mit den Steinen der Knoten darauf; Regionen späterer Akte liegen unter Nebel mit Regionsname</span></div><div class="row"><span class="kw Und">Und</span><span>die Karte hat 2 Zoomstufen und lässt sich verschieben; <code>content:check</code> prüft, dass jeder Knoten und die Heimat einen Ort haben und die Steine mindestens 90 px Abstand halten.</span></div></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>ein Ort mit Varianten oder Drachenzeichen (z. B. Varnhold gerettet/verbrannt)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>diese Aufsätze gebaut sind</span></div><div class="row"><span class="kw Dann">Dann</span><span>liegen sie als kleine Bilder oder Modelle auf der Lichtung (nicht Teil dieser Story; später optional).</span></div></div>
 </details>
 <details><summary><span class="id">5.3</span><span class="t">Weltkarte als Hub</span><span class="n">2 Kriterien</span></summary>
 <div class="user"><p>Als Spieler</p><p>möchte ich nach jeder Mission auf der Weltkarte landen und von dort alles erreichen,</p><p>damit ich immer sehe, was als Nächstes ansteht.</p></div>
@@ -113,6 +172,11 @@ code { font-size:.88em; background:var(--soft); padding:0 4px; border-radius:4px
 <div class="user"><p>Als Spieler</p><p>möchte ich nach der Eroberung der Paktwacht dort statt im Lager leben,</p><p>damit die Truppe schon in Akt 1 ein Zuhause hat und ihre Gefallenen einen Ort.</p></div>
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>die Wirkung <code>setHome</code> (Architektur §5.3, Muster §8.2) und Knoten <code>m1_6</code> mit <code>effects: [{ setHome: castle }]</code></span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Mission 1-6 gewonnen ist</span></div><div class="row"><span class="kw Dann">Dann</span><span>ist <code>c.home.kind = 'castle'</code>, die Räume behalten ihre Stufe, und <code>render/home/</code> zeigt die Paktwacht als Ruine im 3D-Diorama mit Raum-Ankern und unten Konvoi, Händler, Schmied, Heiler, Taverne, Lagerfeuer und Gedächtnishalle als Raumsteine (UX-DR10)</span></div><div class="row"><span class="kw Und">Und</span><span>die Ausbau-Bänder sind bis Akt 2 gestrichelt mit Grund gesperrt (<code>requires: [{ act: 2 }]</code> in <code>rooms.yaml</code>, kein <code>if (act &gt;= 2)</code>).</span></div></div>
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>gefallene Gefährten und Söldner, darunter Gerrit aus dem Prolog</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>der Spieler die Gedächtnishalle öffnet</span></div><div class="row"><span class="kw Dann">Dann</span><span>stehen ihre Gedenksteine dort (entsättigt, Glutlinie, Zitat), Gerrits Stein zuerst; Lektionen gibt es erst ab Akt 2 (Story 10.6) (UX-DR11 Teil).</span></div></div>
+</details>
+<details><summary><span class="id">6.10</span><span class="t">Aufstellung vor der Mission im Stil B</span><span class="n">2 Kriterien</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich die Aufstellung vor einer Mission im selben Stil wie Truppe, Lager und Ergebnis sehen,</p><p>damit der Weg von der Knoten-Karte in den Kampf nicht durch einen Bildschirm aus dem Prototyp bricht.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>die Knoten-Karte der Weltkarte („Aufstellung“) oder mehr Gefährten als Plätze („Aufbrechen“)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>der Vorbereitungs-Screen (<code>prep</code>) erscheint</span></div><div class="row"><span class="kw Dann">Dann</span><span>zeigt er Ziel, Plätze (x/y) und die Truppe als Steine im Stil B (DESIGN.md, Studio-Look): Porträt, Name, Klasse und Stufe ohne Umbruch, TP, Waffe, Pflicht-Figuren gesperrt mit Grund, Tasche/Ausrüsten wie heute, und „Kampf beginnen“ als Primär-Knopf</span></div><div class="row"><span class="kw Und">Und</span><span>die Funktion bleibt unverändert (Auswahl, Pflicht-Figuren, Ausrüsten, Start); Styles in einer eigenen CSS-Datei neben der Komponente, der Abschnitt in <code>src/ui/styles.css</code> entfällt.</span></div></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>ein Mockup in <code>concept/25-ux/mockups/</code> (fehlt noch, UX liefert es zuerst)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Story umgesetzt ist</span></div><div class="row"><span class="kw Dann">Dann</span><span>passt der Screen bei 375 × 812 und am Desktop zum Mockup, alle Texte stehen in <code>de.yaml</code>/<code>en.yaml</code>.</span></div></div>
 </details>
 </section>
 <section class="epic" id="epic7"><h2><span>Epic 7</span>Akt-Pakete und Offline</h2><p class="intro">Spieler laden das Spiel schnell, bekommen den Rest eines Akts im Hintergrund und spielen danach offline; neue Akte kommen per Update, ohne dass Spielstände brechen.</p>
@@ -201,8 +265,8 @@ code { font-size:.88em; background:var(--soft); padding:0 4px; border-radius:4px
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>Karte (Ziel <code>defend</code>, Leutnant Hask, erste Begegnung), Szenen und Mira als Beitritt</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>Hask flieht und die Mission gewonnen ist</span></div><div class="row"><span class="kw Dann">Dann</span><span>beginnen ab jetzt Heimsuchungen; Mira tritt bei</span></div><div class="row"><span class="kw Und">Und</span><span>in der Szene danach fällt E1 (Mira heimkehren lassen oder halten) mit Folgen-Karte (Mockup 05); die Weltkarten-Variante von Erlbach folgt dem Ausgang.</span></div></div>
 </details>
 <details><summary><span class="id">9.4</span><span class="t">Mission 1-3 „Der Fremde mit dem Siegel“</span><span class="n">1 Kriterium</span></summary>
-<div class="user"><p>Als Spieler</p><p>möchte ich Liora sicher herausbringen und Halvard zum ersten Mal sehen,</p><p>damit die Paktgeschichte beginnt.</p></div>
-<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>Karte (Ziel <code>escort</code> mit Liora, Leutnant Morra) und Szenen mit Halvards Auftritt</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>Liora den Ausgang erreicht</span></div><div class="row"><span class="kw Dann">Dann</span><span>tritt sie bei; die Nebenquest N2 „Der letzte Wachturm“ öffnet sich</span></div><div class="row"><span class="kw Und">Und</span><span>gestaffelte Regeln hängen nur an der Zahl abgeschlossener Story-Missionen (Magie nach 2), nicht an dieser Mission.</span></div></div>
+<div class="user"><p>Als Spieler</p><p>möchte ich Liora schützen, Morras Jäger vertreiben und Halvard zum ersten Mal sehen,</p><p>damit die Paktgeschichte beginnt.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>Karte (Ziel <code>rout</code>, Liora am Schrein darf nicht fallen, Leutnant Morra) und Szenen mit Halvards Auftritt (Ziel geändert von <code>escort</code>, narrative decision-log 2026-10-28)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>alle Jäger besiegt oder vertrieben sind</span></div><div class="row"><span class="kw Dann">Dann</span><span>tritt Liora bei; die Nebenquest N2 „Der letzte Wachturm“ öffnet sich</span></div><div class="row"><span class="kw Und">Und</span><span>gestaffelte Regeln hängen nur an der Zahl abgeschlossener Story-Missionen (Magie nach 2), nicht an dieser Mission.</span></div></div>
 </details>
 <details><summary><span class="id">9.5</span><span class="t">Mission 1-4 „Die Spur des Maklers“ und Entscheidung E2</span><span class="n">1 Kriterium</span></summary>
 <div class="user"><p>Als Spieler</p><p>möchte ich den Makler Osric Dunn stellen und Ysolde befreien,</p><p>damit Akt 1 seinen Wendepunkt bekommt.</p></div>

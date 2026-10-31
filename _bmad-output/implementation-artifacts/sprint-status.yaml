@@ -1,11 +1,11 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-30
+# last_updated: 2026-10-31
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
 # story_location: _bmad-output/implementation-artifacts
 # source: concept/26-epics/epics.md (14 epics; course corrections 8/8/8 and 2026-10-30 readability + handbook)
-# order: Epic 4 runs before (or together with) Epic 3; Epic 13 before story 9-14 (MVP release), Epic 14 right after it and before Epic 10 (course correction 2026-10-30); epics 10-12 stay backlog until refined
+# order: Epic 4 runs before (or together with) Epic 3; Epic 13 before story 9-14 (MVP release), Epic 14 right after it and before Epic 10 (course correction 2026-10-30); epics 10 and 11 refined 2026-10-31 and re-cut after the readiness check 2026-10-31 (story keys changed): 11-1 first, then 10-2/10-3/10-4 in parallel with 11-2..11-7, missions from 11-10, 11-8 before 11-17, 11-22 last after all epic-10 stories up to 10-12; epic 12 stays backlog until refined
 
 # STATUS DEFINITIONS:
 # ==================
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-30
+last_updated: 2026-10-31
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -144,7 +144,7 @@ development_status:
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
   8-10-verdeckte-figuren-bleiben-sichtbar: done  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
-  8-11-abwechslungsreiche-karten-und-besuchshaeuser: review  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
+  8-11-abwechslungsreiche-karten-und-besuchshaeuser: done  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
   epic-8-retrospective: optional
 
   # Epic 9: Akt 1 „Asche“ (MVP)
@@ -165,32 +165,48 @@ development_status:
   9-14-akt-1-abstimmen-und-veroeffentlichen: backlog  # Akt 1 abstimmen und veröffentlichen
   epic-9-retrospective: optional
 
-  # Epic 10: Die Burg ausbauen (ab Akt 2) – grob
+  # Epic 10: Die Burg ausbauen (ab Akt 2) – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
   epic-10: backlog
   10-1-raeume-ausbauen: backlog  # Räume ausbauen
   10-2-akademie-und-aufstieg-mit-glutfunke: backlog  # Akademie und Aufstieg mit Glutfunke
-  10-3-profi-wege-aller-rollen: backlog  # Profi-Wege aller Rollen
-  10-4-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
-  10-5-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt
-  10-6-lektionen-der-gedaechtnishalle: backlog  # Lektionen der Gedächtnishalle
-  10-7-uebungsplatz-lagerfeuer-raenge-und-lebende-burg: backlog  # Übungsplatz, Lagerfeuer-Ränge und lebende Burg
+  10-3-profi-klassen-und-werte: backlog  # Profi-Klassen und Werte
+  10-4-wirkungen-der-profi-wege: backlog  # Wirkungen der Profi-Wege
+  10-5-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
+  10-6-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt
+  10-7-lektionen-der-gedaechtnishalle: backlog  # Lektionen der Gedächtnishalle
+  10-8-uebungsplatz-und-lagerfeuer-raenge: backlog  # Übungsplatz und Lagerfeuer-Ränge
+  10-9-haendler-der-stufen-2-und-3: backlog  # Händler der Stufen 2 und 3
+  10-10-konvoi-der-stufen-2-und-3: backlog  # Konvoi der Stufen 2 und 3
+  10-11-taverne-heiler-und-schmied-der-stufen-2-und-3: backlog  # Taverne, Heiler und Schmied der Stufen 2 und 3
+  10-12-soeldner-traits: backlog  # Söldner-Traits
+  10-13-anhaengeteile-der-profi-wege: backlog  # Anhängeteile der Profi-Wege
+  10-14-burg-grafik-nach-der-3d-entscheidung: backlog  # Burg-Grafik nach der 3D-Entscheidung
   epic-10-retrospective: optional
 
-  # Epic 11: Akt 2 „Glut“ – grob
+  # Epic 11: Akt 2 „Glut“ – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
   epic-11: backlog
-  11-1-paket-region-und-gegner-von-akt-2: backlog  # Paket, Region und Gegner von Akt 2
-  11-2-mission-2-1-wind-ueber-der-eisenmark-survive-brakka-und-die-drei-angebote: backlog  # Mission 2-1 „Wind über der Eisenmark“ (survive, Brakka) und die drei Angebote
-  11-3-mission-2-2-das-siegel-im-salzpass-treasure-grell: backlog  # Mission 2-2 „Das Siegel im Salzpass“ (treasure, Grell)
-  11-4-mission-2-3-die-verstossene-leibwache-escort-odile-sable: backlog  # Mission 2-3 „Die verstoßene Leibwache“ (escort Odile, Sable)
-  11-5-mission-2-4-der-wyvernhorst-boss-rowena: backlog  # Mission 2-4 „Der Wyvernhorst“ (boss, Rowena)
-  11-6-mission-2-5-die-brandschneise-defend-brandhang-grell-und-e7: backlog  # Mission 2-5 „Die Brandschneise“ (defend Brandhang, Grell) und E7
-  11-7-mission-2-6-gold-fuer-banditen-rout-rowena-und-sable: backlog  # Mission 2-6 „Gold für Banditen“ (rout, Rowena und Sable)
-  11-8-mission-2-7-das-kontor-am-silbermeer-reach-brakka-und-e8: backlog  # Mission 2-7 „Das Kontor am Silbermeer“ (reach, Brakka) und E8
-  11-9-mission-2-8-kronfeld-grosse-schlacht-survive-escape: backlog  # Mission 2-8 „Kronfeld“ (große Schlacht, survive → escape)
-  11-10-nebenquests-n4-der-clan-im-schnee-und-n5-glut-unter-dem-berg: backlog  # Nebenquests N4 „Der Clan im Schnee“ und N5 „Glut unter dem Berg“
-  11-11-nebenquest-n6-die-gauklertruppe: backlog  # Nebenquest N6 „Die Gauklertruppe“
-  11-12-supports-barks-und-vertonung-von-akt-2: backlog  # Supports, Barks und Vertonung von Akt 2
-  11-13-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
+  11-1-akt-uebergang-und-spielstand: backlog  # Akt-Übergang und Spielstand
+  11-2-positionsstufe-der-akt-2-missionen: backlog  # Positionsstufe der Akt-2-Missionen
+  11-3-paket-act2-weltkarte-und-titeltafel: backlog  # Paket act2, Weltkarte und Titeltafel
+  11-4-simulation-ueber-akte: backlog  # Simulation über Akte
+  11-5-gefaehrten-und-leutnants-von-akt-2: backlog  # Gefährten und Leutnants von Akt 2
+  11-6-balliste: backlog  # Balliste
+  11-7-flieger-gegner-herbst-und-heimsuchungen-von-akt-2: backlog  # Flieger, Gegner, Herbst und Heimsuchungen von Akt 2
+  11-8-ziel-phasen-kern: backlog  # Ziel-Phasen (Kern)
+  11-9-relikt-stufen: backlog  # Relikt-Stufen
+  11-10-mission-2-1-wind-ueber-der-eisenmark-und-die-drei-angebote: backlog  # Mission 2-1 „Wind über der Eisenmark“ und die drei Angebote
+  11-11-mission-2-2-das-siegel-im-salzpass: backlog  # Mission 2-2 „Das Siegel im Salzpass“
+  11-12-mission-2-3-die-verstossene-leibwache-und-entscheidung-e5: backlog  # Mission 2-3 „Die verstoßene Leibwache“ und Entscheidung E5
+  11-13-mission-2-4-der-wyvernhorst-und-entscheidung-e6: backlog  # Mission 2-4 „Der Wyvernhorst“ und Entscheidung E6
+  11-14-mission-2-5-die-brandschneise-und-entscheidung-e7: backlog  # Mission 2-5 „Die Brandschneise“ und Entscheidung E7
+  11-15-mission-2-6-gold-fuer-banditen: backlog  # Mission 2-6 „Gold für Banditen“
+  11-16-mission-2-7-das-kontor-am-silbermeer-und-entscheidung-e8: backlog  # Mission 2-7 „Das Kontor am Silbermeer“ und Entscheidung E8
+  11-17-mission-2-8-kronfeld-finale-grosse-schlacht: backlog  # Mission 2-8 „Kronfeld“ (Finale, große Schlacht)
+  11-18-nebenquest-n4-der-clan-im-schnee: backlog  # Nebenquest N4 „Der Clan im Schnee“
+  11-19-nebenquest-n5-glut-unter-dem-berg: backlog  # Nebenquest N5 „Glut unter dem Berg“
+  11-20-nebenquest-n6-die-gauklertruppe: backlog  # Nebenquest N6 „Die Gauklertruppe“
+  11-21-supports-barks-und-chronik-szene-von-akt-2: backlog  # Supports, Barks und Chronik-Szene von Akt 2
+  11-22-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob
@@ -211,25 +227,25 @@ development_status:
   epic-12-retrospective: optional
 
   # Epic 13: Kampf lesbar machen (course correction 2026-10-30, before 9-14)
-  epic-13: in-progress
-  13-1-brett-anzeige-in-den-optionen-und-raster: review  # Brett-Anzeige in den Optionen und Raster
-  13-2-bereiche-als-kacheln-und-weg-pfeil: review  # Bereiche als Kacheln und Weg-Pfeil
-  13-3-lebensleisten-ueber-den-figuren: review  # Lebensleisten über den Figuren
-  13-4-schadensvorschau-und-kill-marker: review  # Schadensvorschau und Kill-Marker
-  13-5-gefahrenzone-mit-stufen: review  # Gefahrenzone mit Stufen
-  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: review  # Zielfeld-Check und Warnung für eigene Figuren
-  13-7-gegnerphase-rueckblick: review  # Gegnerphase-Rückblick
-  13-8-gegner-leiste: review  # Gegner-Leiste
-  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: review  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
+  epic-13: done
+  13-1-brett-anzeige-in-den-optionen-und-raster: done  # Brett-Anzeige in den Optionen und Raster
+  13-2-bereiche-als-kacheln-und-weg-pfeil: done  # Bereiche als Kacheln und Weg-Pfeil
+  13-3-lebensleisten-ueber-den-figuren: done  # Lebensleisten über den Figuren
+  13-4-schadensvorschau-und-kill-marker: done  # Schadensvorschau und Kill-Marker
+  13-5-gefahrenzone-mit-stufen: done  # Gefahrenzone mit Stufen
+  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: done  # Zielfeld-Check und Warnung für eigene Figuren
+  13-7-gegnerphase-rueckblick: done  # Gegnerphase-Rückblick
+  13-8-gegner-leiste: done  # Gegner-Leiste
+  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: done  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
   epic-13-retrospective: optional
 
   # Epic 14: Handbuch (course correction 2026-10-30, after the MVP release, before Epic 10)
-  epic-14: in-progress
-  14-1-handbuch-als-content: review  # Handbuch als Content
-  14-2-handbuch-screen-und-einstieg: review  # Handbuch-Screen und Einstieg
-  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: review  # Einträge Grundlagen, Kampf, Waffen und Elemente
-  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: review  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
-  14-5-klassen-steckbriefe: review  # Klassen-Steckbriefe
-  14-6-eintraege-heimat-und-items: review  # Einträge Heimat und Items
-  14-7-lektionen-und-kontext-fragezeichen: review  # Lektionen und Kontext-„?“
+  epic-14: done
+  14-1-handbuch-als-content: done  # Handbuch als Content
+  14-2-handbuch-screen-und-einstieg: done  # Handbuch-Screen und Einstieg
+  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: done  # Einträge Grundlagen, Kampf, Waffen und Elemente
+  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: done  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
+  14-5-klassen-steckbriefe: done  # Klassen-Steckbriefe
+  14-6-eintraege-heimat-und-items: done  # Einträge Heimat und Items
+  14-7-lektionen-und-kontext-fragezeichen: done  # Lektionen und Kontext-„?“
   epic-14-retrospective: optional

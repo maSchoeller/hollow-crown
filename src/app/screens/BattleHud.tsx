@@ -216,6 +216,7 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
           {u.status.map((x) => (
             <span class="hud-chip" key={x.id}>
               {t(`ui.status.${x.id}`)} {x.turns}
+              <HelpStone anchor={`status.${x.id}`} />
             </span>
           ))}
         </div>
@@ -528,10 +529,7 @@ export function ForecastCard({
     <div class="hc-piece hud-fc">
       <div class="hud-fc__head">
         {who(f.attacker, a, aw, false)}
-        <span class="hud-fc__mid">
-          <span class="hud-l1">{t('ui.fc.vs')}</span>
-          <HelpStone anchor="forecast" />
-        </span>
+        <span class="hud-l1">{t('ui.fc.vs')}</span>
         {who(f.defender, d, dw, true)}
       </div>
       <div class="hud-fc__table">
@@ -568,6 +566,7 @@ export function ForecastCard({
           .map((x) => (
             <span class="hud-chip" key={x.status}>
               {t(`ui.status.${x.status}`)} {x.chance}%
+              <HelpStone anchor={`status.${x.status}`} />
             </span>
           ))}
         {tandem && (
@@ -580,6 +579,8 @@ export function ForecastCard({
             {t('ui.guard')}: {unitName(guard)} {f.guard!.chance}%
           </span>
         )}
+        {/* the forecast's "?" in its own spot below the table, never over the names and weapons of the head (story 14.7) */}
+        <HelpStone anchor="forecast" />
       </div>
     </div>
   );

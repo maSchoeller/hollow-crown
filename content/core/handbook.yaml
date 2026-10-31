@@ -353,12 +353,12 @@ entries:
   - { id: class_healer, category: classes, graphic: class, class: healer, see: [class_bishop, rescue] }
   - { id: class_scout, category: classes, graphic: class, class: scout, see: [doors, fog, terrain_mountain] }
   - { id: class_minstrel, category: classes, graphic: class, class: minstrel, see: [class_captain, supports] }
-  - { id: class_duelist, category: classes, graphic: class, class: duelist, see: [class_skirmisher, ember_spark] }
-  - { id: class_bulwark, category: classes, graphic: class, class: bulwark, see: [class_vanguard, ember_spark] }
-  - { id: class_breaker, category: classes, graphic: class, class: breaker, see: [class_vanguard, ember_spark] }
-  - { id: class_sharpshooter, category: classes, graphic: class, class: sharpshooter, see: [class_marksman, ember_spark] }
-  - { id: class_sage, category: classes, graphic: class, class: sage, see: [class_elementalist, ember_spark] }
-  - { id: class_bishop, category: classes, graphic: class, class: bishop, see: [class_healer, ember_spark] }
+  - { id: class_duelist, category: classes, graphic: class, class: duelist, fromAct: 2, see: [class_skirmisher, ember_spark] }
+  - { id: class_bulwark, category: classes, graphic: class, class: bulwark, fromAct: 2, see: [class_vanguard, ember_spark] }
+  - { id: class_breaker, category: classes, graphic: class, class: breaker, fromAct: 2, see: [class_vanguard, ember_spark] }
+  - { id: class_sharpshooter, category: classes, graphic: class, class: sharpshooter, fromAct: 2, see: [class_marksman, ember_spark] }
+  - { id: class_sage, category: classes, graphic: class, class: sage, fromAct: 2, see: [class_elementalist, ember_spark] }
+  - { id: class_bishop, category: classes, graphic: class, class: bishop, fromAct: 2, see: [class_healer, ember_spark] }
 
   # ------------------------------------------------------------------ Lektionen (Text aus den Szenen selbst, keine Kopie)
   - { id: lesson_move, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_move, see: [movement, forecast] }
