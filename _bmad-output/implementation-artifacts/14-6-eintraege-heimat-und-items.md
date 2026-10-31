@@ -1,6 +1,6 @@
 # Story 14.6: Einträge Heimat und Items
 
-Status: review
+Status: done
 
 ## Story
 
@@ -32,3 +32,7 @@ damit ich Gold und Material sinnvoll einsetze.
 - Umgesetzt zusammen mit allen Stories von Epic 14 auf dem Branch `claude/elegant-wozniak-3p2ee2`.
 - Prüfungen: `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm build` grün; Sichtprüfung per Screenshots (iPhone-13-Profil, Titel → Handbuch und Prolog-Kampf, ohne LFS-Grafik).
 - Offen zur Abnahme: Texte DE + EN durch den Produktinhaber.
+
+## Abnahme (2026-10-31)
+
+Abgenommen im Spiel (Titel, Kampfmenü, Kontext-„?“ an Lektion und Kampfvorschau) und gegen den Code geprüft; Texte DE + EN vom Produktinhaber abgenommen. Bei der Abnahme behoben: Kontext-„?“ auch an den Zustands-Chips von Einheitenkarte und Kampfvorschau, „?“ der Kampfvorschau unter die Tabelle (verdeckte den Waffennamen), Abstand des „?“ zu Zahlen, Ziffern-Prüfung auf alle `handbook.*`-Texte ausgeweitet, Kulissenhaus heißt „Gebäude“, Profi-Klassen tragen „ab Akt 2“. Wunsch für später: Einträge mit Ausschnitten wichtiger UI-Elemente bzw. Beispiel-Assets bebildern. Status: done.

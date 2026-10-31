@@ -29,9 +29,10 @@ export interface Settings {
 const ENEMY_PACE_REV = 2;
 
 const SETTINGS_KEY = 'hc.settings';
-function loadSettings(): Settings {
-  const def: Settings = {
-    lang: navigator.language?.startsWith('de') ? 'de' : 'en',
+/** Settings of a first start in the language `lang`. */
+export function defaultSettings(lang: Lang): Settings {
+  return {
+    lang,
     speed: 1,
     enemySpeed: 1,
     dangerDefault: false,
@@ -48,10 +49,16 @@ function loadSettings(): Settings {
     enemyStrip: false,
     enemyPaceRev: ENEMY_PACE_REV,
   };
+}
+/** Stored settings over the defaults (pure, tested): fields an older version did not store keep their default. */
+export function mergeSettings(def: Settings, stored: Partial<Settings>): Settings {
+  const merged = { ...def, ...stored };
+  return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
+}
+function loadSettings(): Settings {
+  const def = defaultSettings(navigator.language?.startsWith('de') ? 'de' : 'en');
   try {
-    const stored = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') as Partial<Settings>;
-    const merged = { ...def, ...stored };
-    return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
+    return mergeSettings(def, JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') as Partial<Settings>);
   } catch {
     return def;
   }

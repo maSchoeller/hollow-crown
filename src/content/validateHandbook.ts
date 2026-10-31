@@ -16,7 +16,7 @@ const CLASS_PARTS = ['strong.1', 'strong.2', 'weak.1', 'weak.2'];
 /**
  * The handbook (story 14.1): every text in DE and EN, every value path resolves to a number, cross references and
  * context anchors are sound, every terrain and every playable class has its entry, every status and the forecast have a "?",
- * and entry texts carry no digits (numbers come from the values as `{id}`).
+ * and no handbook text carries digits (numbers come from the values as `{id}`).
  */
 export function validateHandbook(data: GameData, locales: Locales, err: (file: string, message: string) => void): void {
   const f = 'handbook.yaml';
@@ -75,17 +75,20 @@ export function validateHandbook(data: GameData, locales: Locales, err: (file: s
     if (e.graphic === 'terrain' && !e.terrain) err(f, `${ctx}: graphic terrain needs a terrain list`);
     if (e.graphic === 'class' && !e.class) err(f, `${ctx}: graphic class needs a class`);
     if (e.graphic === 'lesson' && !e.lesson) err(f, `${ctx}: graphic lesson needs a lesson`);
-    // texts: placeholders name a value of the entry, and no digit stands in them (values come from the content)
+    // texts: placeholders name a value of the entry (values come from the content)
     for (const lang of LANGS)
       for (const [k, text] of Object.entries(locales[lang] ?? {})) {
         if (!k.startsWith(`handbook.entry.${e.id}.`)) continue;
         for (const m of text.matchAll(/\{([\w.]+)\}/g))
           if (!valueIds.has(m[1]!) && m[1] !== 'avatar' && !m[1]!.startsWith('pronoun.'))
             err(`locales/${lang}`, `${k}: placeholder {${m[1]}} is no value of ${e.id}`);
-        if (/\d/.test(text.replace(/\{[\w.]+\}/g, '')))
-          err(`locales/${lang}`, `${k}: numbers come from values ({id}), not from the text`);
       }
   }
+  // no digit in any handbook text (entries, category subtitles, labels, ui) outside a {placeholder}
+  for (const lang of LANGS)
+    for (const [k, text] of Object.entries(locales[lang] ?? {}))
+      if (k.startsWith('handbook.') && /\d/.test(text.replace(/\{[\w.]+\}/g, '')))
+        err(`locales/${lang}`, `${k}: numbers come from values ({id}), not from the text`);
   // every terrain is explained once, every playable class has a profile
   for (const id of Object.keys(data.terrain)) if (!terrainOf.has(id)) err(f, `terrain ${id} has no handbook entry`);
   for (const cls of Object.values(data.classes))

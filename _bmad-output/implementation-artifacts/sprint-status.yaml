@@ -1,5 +1,5 @@
 # generated: 2026-10-23
-# last_updated: 2026-10-30
+# last_updated: 2026-10-31
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
@@ -38,7 +38,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-10-30
+last_updated: 2026-10-31
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -144,7 +144,7 @@ development_status:
   8-8-musik-und-klang-von-akt-1: backlog  # Musik und Klang von Akt 1
   8-9-teilvertonung-von-akt-1: backlog  # Teilvertonung von Akt 1
   8-10-verdeckte-figuren-bleiben-sichtbar: done  # Verdeckte Figuren bleiben sichtbar (nachgetragen 2026-10-24)
-  8-11-abwechslungsreiche-karten-und-besuchshaeuser: review  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
+  8-11-abwechslungsreiche-karten-und-besuchshaeuser: done  # Abwechslungsreiche Karten und Besuchshäuser (nachgetragen 2026-10-27)
   epic-8-retrospective: optional
 
   # Epic 9: Akt 1 „Asche“ (MVP)
@@ -211,25 +211,25 @@ development_status:
   epic-12-retrospective: optional
 
   # Epic 13: Kampf lesbar machen (course correction 2026-10-30, before 9-14)
-  epic-13: in-progress
-  13-1-brett-anzeige-in-den-optionen-und-raster: review  # Brett-Anzeige in den Optionen und Raster
-  13-2-bereiche-als-kacheln-und-weg-pfeil: review  # Bereiche als Kacheln und Weg-Pfeil
-  13-3-lebensleisten-ueber-den-figuren: review  # Lebensleisten über den Figuren
-  13-4-schadensvorschau-und-kill-marker: review  # Schadensvorschau und Kill-Marker
-  13-5-gefahrenzone-mit-stufen: review  # Gefahrenzone mit Stufen
-  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: review  # Zielfeld-Check und Warnung für eigene Figuren
-  13-7-gegnerphase-rueckblick: review  # Gegnerphase-Rückblick
-  13-8-gegner-leiste: review  # Gegner-Leiste
-  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: review  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
+  epic-13: done
+  13-1-brett-anzeige-in-den-optionen-und-raster: done  # Brett-Anzeige in den Optionen und Raster
+  13-2-bereiche-als-kacheln-und-weg-pfeil: done  # Bereiche als Kacheln und Weg-Pfeil
+  13-3-lebensleisten-ueber-den-figuren: done  # Lebensleisten über den Figuren
+  13-4-schadensvorschau-und-kill-marker: done  # Schadensvorschau und Kill-Marker
+  13-5-gefahrenzone-mit-stufen: done  # Gefahrenzone mit Stufen
+  13-6-zielfeld-check-und-warnung-fuer-eigene-figuren: done  # Zielfeld-Check und Warnung für eigene Figuren
+  13-7-gegnerphase-rueckblick: done  # Gegnerphase-Rückblick
+  13-8-gegner-leiste: done  # Gegner-Leiste
+  13-9-fertig-haekchen-kamera-griffe-und-zurueck-an-der-figur: done  # Fertig-Häkchen, Kamera-Griffe und Zurück an der Figur
   epic-13-retrospective: optional
 
   # Epic 14: Handbuch (course correction 2026-10-30, after the MVP release, before Epic 10)
-  epic-14: in-progress
-  14-1-handbuch-als-content: review  # Handbuch als Content
-  14-2-handbuch-screen-und-einstieg: review  # Handbuch-Screen und Einstieg
-  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: review  # Einträge Grundlagen, Kampf, Waffen und Elemente
-  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: review  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
-  14-5-klassen-steckbriefe: review  # Klassen-Steckbriefe
-  14-6-eintraege-heimat-und-items: review  # Einträge Heimat und Items
-  14-7-lektionen-und-kontext-fragezeichen: review  # Lektionen und Kontext-„?“
+  epic-14: done
+  14-1-handbuch-als-content: done  # Handbuch als Content
+  14-2-handbuch-screen-und-einstieg: done  # Handbuch-Screen und Einstieg
+  14-3-eintraege-grundlagen-kampf-waffen-und-elemente: done  # Einträge Grundlagen, Kampf, Waffen und Elemente
+  14-4-eintraege-gelaende-zustaende-leutnants-tod-und-bergen: done  # Einträge Gelände, Zustände, Leutnants, Tod und Bergen
+  14-5-klassen-steckbriefe: done  # Klassen-Steckbriefe
+  14-6-eintraege-heimat-und-items: done  # Einträge Heimat und Items
+  14-7-lektionen-und-kontext-fragezeichen: done  # Lektionen und Kontext-„?“
   epic-14-retrospective: optional
