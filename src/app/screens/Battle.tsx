@@ -52,7 +52,9 @@ import {
   type Team,
 } from '../../core';
 import { mapOf } from '../../core/battle/objectives';
-import { BoardView, type CutInEvent, type KillKind } from '../../render/board/board';
+import { BoardView } from '../../render/board/board';
+import type { CutInEvent } from '../../render/board/boardTypes';
+import type { KillKind } from '../../render/board/badges';
 import { t } from '../../i18n';
 import { Scene, SceneBand } from './Scene';
 import { CutIn, type CutInShown } from './CutIn';
