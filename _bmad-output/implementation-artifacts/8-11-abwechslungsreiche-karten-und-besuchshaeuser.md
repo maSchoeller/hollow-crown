@@ -1,6 +1,6 @@
 # Story 8.11: Abwechslungsreiche Karten und Besuchshäuser
 
-Status: review (nachgetragen 2026-10-27, PR #72)
+Status: done
 
 ## Story
 
@@ -47,3 +47,7 @@ damit die Brettwelt lebendig wirkt und ich keine Ziele suchen muss.
 10. **Zielmarkierung:** Tipp auf Nebenziele mit Ort markiert jetzt, statt die Zielliste zu öffnen (die Liste öffnet die Runden-Pille). Pfeilhöhe `look.marker.chevronHeight` ist geschätzt; bei sehr hohen Dächern kann der Pfeil verdeckt werden.
 11. **Benennung:** Interne IDs `visit_villages`/`village` bleiben (Speicherformat); wer den Begriff später auch intern angleicht, braucht Migration und `renames.yaml`.
 12. **E2E-Stabilität:** `goalmarks` und `worker` laufen unter hoher Rechnerlast ins Zeitlimit; einzeln und in CI grün.
+
+## Abnahme (2026-10-31)
+
+Abgenommen im Spiel (Mission 1-1 und 1-2: Besuchshäuser als eigene Requisite, Hausvarianten, Zielmarkierung per Tipp) und gegen den Code geprüft. Offen als Nacharbeit (Produktinhaber 2026-10-31): `fence_gate` gebaut, aber von keinem Gelände genutzt; Abnahme-Kästchen der Referenzblätter in `art/prompts/props_variants.md`. Hinweis: Das lokale Asset-Manifest (`public/assets/manifest.json`) muss nach dem Pull mit `pnpm art:build` neu erzeugt werden, sonst fehlen die Varianten im Dev-Server. Status: done.

@@ -1,6 +1,6 @@
 # Story 13.1: Brett-Anzeige in den Optionen und Raster
 
-Status: review
+Status: done
 
 ## Story
 
@@ -13,7 +13,7 @@ damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett 
 **Angenommen** die Optionen (Titel und Menü)
 **Wenn** der Spieler sie öffnet
 **Dann** gibt es einen Block „Brett-Anzeige“ mit Raster (aus / dezent / stark), Lebensleisten (Immer / Nur verletzte / Aus), Gegner-Leiste (an/aus) und dem bisherigen Schalter „Gefahrenzone standardmäßig“
-**Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Zahlen an, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
+**Und** die Standardwerte sind Raster dezent, Lebensleisten Immer, Gegner-Leiste aus; die Werte liegen in `src/app/state/settings.ts`, nicht im Spielstand, und alte Einstellungen laden ohne Fehler.
 
 **Angenommen** ein Kampf mit Raster „dezent“
 **Wenn** das Brett steht
@@ -40,3 +40,7 @@ damit ich Reichweiten sicher einschätze, ohne dass das Diorama zum Schachbrett 
 
 - Umgesetzt zusammen mit allen Stories von Epic 13 auf dem Branch `claude/affectionate-fermat-tb1pzv`.
 - Prüfungen: `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm build` grün; Sichtprüfung per Screenshots (iPhone-13-Profil, Mission 1-1, ohne LFS-Grafik).
+
+## Abnahme (2026-10-31)
+
+Abgenommen im Spiel (375×812, Prolog und Mission 1-1, Screenshots in der Abnahme-Session) und gegen den Code geprüft; Stand nach dem Playtest 2026-10-30 (keine Feldzahlen, rot gefärbte Gegner statt Linien, kein Zurück-Stein). Bei der Abnahme behoben: Schadensvorschau zeigt die Leiste des Ziels auch bei Lebensleisten „Nur verletzte“/„Aus“; Marker und Häkchen schieben Groll-Wimpel und Zustands-Symbole hoch, auch wenn die Leiste verborgen ist; Tests für Doppelangriff, Element und alte Einstellungen verschärft; Standardwert „Zahlen an“ aus 13.1 gestrichen. Status: done.

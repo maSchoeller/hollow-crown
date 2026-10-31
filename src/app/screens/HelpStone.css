@@ -6,7 +6,8 @@
   place-items: center;
   width: 22px;
   height: 22px;
-  margin: 0;
+  /* own space at the left: with the row's gap (4 px and more) the tap area below stays off the number or text before it */
+  margin: 0 0 0 7px;
   padding: 0;
   background: var(--hc-cream-2);
   border: var(--hc-outline-small) solid var(--hc-line);

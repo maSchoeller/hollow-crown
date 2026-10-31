@@ -242,9 +242,9 @@ handbook:
       keywords: "fort, throne, gate, shrine, healing, seize"
     terrain_blocked:
       title: "Obstacles"
-      text: "Walls block the way for everyone. Only fliers get over wagons, stalls, wells, braziers, fences, farmsteads and houses."
+      text: "Walls block the way for everyone. Only fliers get over wagons, stalls, wells, braziers, fences, farmsteads and buildings."
       where: "Obstacles never lie in the blue movement area."
-      keywords: "wall, obstacle, wagon, fence, well, stall, house, blocked"
+      keywords: "wall, obstacle, wagon, fence, well, stall, building, blocked"
     doors:
       title: "Doors"
       text: "Closed doors block the way and the view. A key opens them, the scout manages without; open doors are free passage."
