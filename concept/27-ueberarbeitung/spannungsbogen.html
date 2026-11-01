@@ -1,0 +1,248 @@
+<title>Hollow Crown Staffelbogen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: eine Chronik-Spalte, breite Grafiken in eigenen Scroll-Containern; Akte und Staffeln tragen eigene Farben */
+:root {
+  --bg: #f6f5f1; --surface: #ffffff; --ink: #24262b; --muted: #61646c; --line: #dcdad3;
+  --ember: #c4471f; --gold: #a97b12;
+  --a1: #c99a2e; --a2: #b2552c; --a3: #4f78a3; --s2: #2f8f78; --s3: #7a55a8;
+  --band1: #f3e9cf; --band2: #f3ddd2; --band3: #dde7f1;
+  --display: "Alegreya", Georgia, serif; --body: "Alegreya Sans", "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #17181b; --surface: #202227; --ink: #ecebe6; --muted: #a3a5ab; --line: #34363c;
+  --ember: #ef7a4d; --gold: #d9ab43; --a1: #d9b04f; --a2: #e07a4c; --a3: #7fa7d1; --s2: #5cc3a6; --s3: #ad8ad8;
+  --band1: #2b271c; --band2: #2d221d; --band3: #1f2731; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #17181b; --surface: #202227; --ink: #ecebe6; --muted: #a3a5ab; --line: #34363c;
+  --ember: #ef7a4d; --gold: #d9ab43; --a1: #d9b04f; --a2: #e07a4c; --a3: #7fa7d1; --s2: #5cc3a6; --s3: #ad8ad8;
+  --band1: #2b271c; --band2: #2d221d; --band3: #1f2731; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 800; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+section { display: grid; gap: 18px; min-width: 0; }
+.lead { color: var(--muted); font-size: 1.1rem; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+svg text { font-family: var(--body); fill: var(--ink); }
+svg .small { font-size: 11px; fill: var(--muted); }
+svg .peak { font-size: 12.5px; font-weight: 700; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .9rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+.note h3 { font-size: 1.05rem; }
+.note p { color: var(--muted); font-size: .97rem; }
+.note.bad { border-left: 4px solid var(--ember); }
+.note.good { border-left: 4px solid var(--s2); }
+/* Fäden-Tabelle */
+.threads { border-collapse: collapse; width: 100%; min-width: 860px; font-size: .92rem; }
+.threads th, .threads td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.threads thead th { font-family: var(--display); font-size: 1rem; border-bottom: 3px solid var(--c); }
+.threads tbody th { font-weight: 700; width: 150px; }
+.threads td.seed { color: var(--gold); font-weight: 500; }
+.threads td.close { color: var(--ember); font-weight: 700; }
+.threads td.empty { color: var(--muted); }
+.tag { display: inline-block; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; }
+.seasons { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.season { border-top: 6px solid var(--c); background: var(--surface); border-radius: 0 0 10px 10px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.season ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; color: var(--muted); font-size: .96rem; }
+.season .q { font-family: var(--display); font-size: 1.12rem; font-style: italic; }
+.choice { display: grid; gap: 12px; }
+.choice > h3 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.opt { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.opt.rec { border: 2px solid var(--ember); }
+.opt b { font-family: var(--display); font-size: 1.05rem; }
+.opt p { font-size: .94rem; color: var(--muted); }
+.opt .tag { color: var(--ember); justify-self: start; }
+.seedlist { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 72ch; }
+footer { color: var(--muted); font-size: .9rem; }
+</style>
+
+<div class="wrap">
+<header style="display:grid;gap:12px">
+  <div class="eyebrow">Konzept-Überarbeitung · Etappe 1 · Stand 1. November 2026</div>
+  <h1>Der Staffelbogen von Hollow Crown</h1>
+  <p class="lead">Wie die Spannung über die 25 Story-Missionen von Staffel 1 heute läuft, wo sie hakt und wie ein Bogen über drei Staffeln aussehen kann. Die Entscheidungen am Ende triffst du; daraus entsteht die neue Missionsliste.</p>
+</header>
+
+<section>
+  <div class="eyebrow">Bestand</div>
+  <h2>Spannungskurve Staffel 1, so wie sie heute geplant ist</h2>
+  <p>Jede Mission ist eine Welle, die Akt-Finale sind die Gipfel. Die Höhe ist eine Einschätzung aus Story-Beats und Gegnerdruck, keine Messung.</p>
+  <div class="scroll">
+  <svg viewBox="0 0 1000 345" width="1000" height="345" role="img" aria-label="Spannungskurve über 25 Missionen mit Gipfeln bei 1-8, 2-8, 3-5 und 3-8">
+    <rect x="40" y="20" width="338" height="282" fill="var(--band1)"/>
+    <rect x="378" y="20" width="300" height="282" fill="var(--band2)"/>
+    <rect x="678" y="20" width="302" height="282" fill="var(--band3)"/>
+    <g stroke="var(--line)" stroke-width="1">
+      <line x1="40" y1="300" x2="980" y2="300"/><line x1="40" y1="170" x2="980" y2="170" stroke-dasharray="3 5"/><line x1="40" y1="40" x2="980" y2="40" stroke-dasharray="3 5"/>
+    </g>
+    <text x="34" y="304" class="small" text-anchor="end">ruhig</text>
+    <text x="34" y="44" class="small" text-anchor="end">Gipfel</text>
+    <polyline fill="none" stroke="var(--ember)" stroke-width="3" stroke-linejoin="round"
+      points="60,144 97.5,222 135,196 172.5,183 210,157 247.5,170 285,131 322.5,144 360,105 397.5,170 435,170 472.5,157 510,144 547.5,131 585,144 622.5,131 660,66 697.5,131 735,131 772.5,131 810,118 847.5,66 885,79 922.5,92 960,40"/>
+    <g fill="var(--surface)" stroke="var(--ember)" stroke-width="2.5">
+      <circle cx="60" cy="144" r="4.5"/><circle cx="97.5" cy="222" r="4.5"/><circle cx="135" cy="196" r="4.5"/><circle cx="172.5" cy="183" r="4.5"/><circle cx="210" cy="157" r="4.5"/><circle cx="247.5" cy="170" r="4.5"/><circle cx="285" cy="131" r="4.5"/><circle cx="322.5" cy="144" r="4.5"/><circle cx="360" cy="105" r="6" fill="var(--ember)"/>
+      <circle cx="397.5" cy="170" r="4.5"/><circle cx="435" cy="170" r="4.5"/><circle cx="472.5" cy="157" r="4.5"/><circle cx="510" cy="144" r="4.5"/><circle cx="547.5" cy="131" r="4.5"/><circle cx="585" cy="144" r="4.5"/><circle cx="622.5" cy="131" r="4.5"/><circle cx="660" cy="66" r="6" fill="var(--ember)"/>
+      <circle cx="697.5" cy="131" r="4.5"/><circle cx="735" cy="131" r="4.5"/><circle cx="772.5" cy="131" r="4.5"/><circle cx="810" cy="118" r="4.5"/><circle cx="847.5" cy="66" r="6" fill="var(--ember)"/><circle cx="885" cy="79" r="4.5"/><circle cx="922.5" cy="92" r="4.5"/><circle cx="960" cy="40" r="6" fill="var(--ember)"/>
+    </g>
+    <text x="52" y="131" class="peak">Paktnacht</text>
+    <text x="285" y="118" class="peak" text-anchor="middle">Paktwacht erobert</text>
+    <text x="360" y="92" class="peak" text-anchor="middle">Heimat halten</text>
+    <text x="660" y="53" class="peak" text-anchor="middle">Kronfeld: „Die Krone war hohl“</text>
+    <text x="840" y="53" class="peak" text-anchor="end">Krönung: Mentor ist Mörder</text>
+    <text x="968" y="30" class="peak" text-anchor="end">Der Preis</text>
+    <g class="small" text-anchor="middle">
+      <text x="60" y="318">P</text><text x="97.5" y="318">1-1</text><text x="135" y="318">1-2</text><text x="172.5" y="318">1-3</text><text x="210" y="318">1-4</text><text x="247.5" y="318">1-5</text><text x="285" y="318">1-6</text><text x="322.5" y="318">1-7</text><text x="360" y="318">1-8</text>
+      <text x="397.5" y="318">2-1</text><text x="435" y="318">2-2</text><text x="472.5" y="318">2-3</text><text x="510" y="318">2-4</text><text x="547.5" y="318">2-5</text><text x="585" y="318">2-6</text><text x="622.5" y="318">2-7</text><text x="660" y="318">2-8</text>
+      <text x="697.5" y="318">3-1</text><text x="735" y="318">3-2</text><text x="772.5" y="318">3-3</text><text x="810" y="318">3-4</text><text x="847.5" y="318">3-5</text><text x="885" y="318">3-6</text><text x="922.5" y="318">3-7</text><text x="960" y="318">3-8</text>
+    </g>
+    <g font-size="13" font-weight="700" text-anchor="middle">
+      <text x="209" y="338" fill="var(--a1)">Akt 1 „Asche“ · Grenzland · Spätsommer</text>
+      <text x="528" y="338" fill="var(--a2)">Akt 2 „Glut“ · Eisenmark · Herbst</text>
+      <text x="829" y="338" fill="var(--a3)">Akt 3 „Krone“ · Aurenhall · Winter</text>
+    </g>
+  </svg>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Befund</div>
+  <h2>Was trägt und wo es hakt</h2>
+  <div class="grid2">
+    <div class="note good"><h3>Die Prämisse trägt</h3><p>Sündenbock-Kompanie, hohle Krone, Opferpakt: Die drei Themen (gewählte Familie, wer zahlt den Preis, Wahrheit gegen Frieden) greifen ineinander und passen zu Permadeath.</p></div>
+    <div class="note good"><h3>Akt 1 funktioniert</h3><p>Du hast es gespielt: Flucht, Fremde, die zur Familie werden, eine Ruine, die zum Zuhause wird, und ein Finale, in dem man zum ersten Mal etwas verteidigt, das einem gehört.</p></div>
+    <div class="note bad"><h3>Der Mörder ist früh zu erraten</h3><p>Der warme Mentor, der Brot bringt und „hinter sich aufräumt“, ist der älteste Twist des Genres. Wer ihn in Akt 1 durchschaut, wartet zwei Akte auf die Bestätigung. Der Twist braucht einen doppelten Boden.</p></div>
+    <div class="note bad"><h3>Die Staffel schließt fast alles ab</h3><p>Mörder gestellt, Name reingewaschen, Hüter tot. Für Staffel 2 bleiben nur die Frist und Vhaelyras „anderer Preis“. Es fehlt ein Faden, der durch alle drei Staffeln läuft.</p></div>
+    <div class="note bad"><h3>Drachen und Flieger kollidieren mit deinen Regeln</h3><p>Akt 2 führt heute Flieger ein (Rowena auf dem Pegasus, Brakka auf dem Wyvern), Akt 3 bringt Drachenangriff und Drachengebirge. Nach deinen Leitplanken gibt es in Staffel 1 nur Pferde.</p></div>
+    <div class="note bad"><h3>Akt 2 läuft in der Mitte flach</h3><p>Sechs frei wählbare Strang-Missionen auf gleicher Höhe. Die Lügen der Anwärter platzen einzeln, aber keine verändert die Lage der Truppe selbst.</p></div>
+    <div class="note bad"><h3>Akt 3 hat drei Gipfel ohne Atempause</h3><p>Krönung, Drachen über der Stadt und Finale folgen fest aufeinander. Nach der größten Enthüllung (3-5) fehlt ein Tal, in dem die Truppe sie verarbeitet.</p></div>
+    <div class="note bad"><h3>Zwanzig Mal „verstoßen“</h3><p>Alle Gefährten folgen demselben Muster. Das macht sie austauschbar, in der Story wie im Bild. Für individuelle Figuren braucht es verschiedene Motive: Schuld, Pflicht, Gier, Liebe, Neugier, Rache.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Vorschlag</div>
+  <h2>Ein Bogen über drei Staffeln</h2>
+  <p>Jede Staffel beantwortet ihre eigene Frage und öffnet die nächste. Staffel 1 bleibt im Kern, wie sie ist; sie legt nur mehr Saat. Empfohlen ist die Variante „Der Erste König“ (siehe Entscheidung C).</p>
+  <div class="seasons">
+    <div class="season" style="--c:var(--ember)">
+      <div class="eyebrow">Staffel 1 · Jahr 1 · Spätsommer bis Winter</div>
+      <h3>Die hohle Krone</h3>
+      <div class="q">Wer hat König Aldric IV. getötet?</div>
+      <ul>
+        <li>Antwort: Halvard, aber nicht aus eigenem Antrieb. Er folgte einer Stimme, die er für den Pakt hielt.</li>
+        <li>Wahrheit: Der Pakt frisst die Lebenszeit der Könige.</li>
+        <li>Drachen nur als Zeichen: Beben, Schatten, Knochen, ein schlafender Riese im Pass.</li>
+        <li>Neu in Akt 2: Reiterei zu Pferd und Balliste statt Fliegern.</li>
+        <li>Schluss: Halvard gibt sich in den Pakt, die Frist läuft. Vhaelyra öffnet zum ersten Mal die Augen: „Wir haben nie etwas genommen.“</li>
+      </ul>
+    </div>
+    <div class="season" style="--c:var(--s2)">
+      <div class="eyebrow">Staffel 2 · Jahr 2 · Frühling bis Herbst</div>
+      <h3>Drachenzeit</h3>
+      <div class="q">Wohin ist die Lebenszeit der Könige gegangen?</div>
+      <ul>
+        <li>Der Pakt zerfällt, die Drachen erwachen: wild, verwirrt, manche verhandelbar.</li>
+        <li>Die Truppe gewinnt die ersten Drachen und Reittiere: Feuer, Luft, Erde und Wasser; dazu Wolf, Pegasus und Krokodil.</li>
+        <li>Kharesh nutzt das Chaos und fällt ein. Alte Feinde werden Verbündete (Entscheidung D).</li>
+        <li>Wende: Die Drachen haben nie gegessen, was die Könige gaben. Die Spur führt in das leere Grab Aldrics I.</li>
+        <li>Schluss: Der Erste König kehrt zurück.</li>
+      </ul>
+    </div>
+    <div class="season" style="--c:var(--s3)">
+      <div class="eyebrow">Staffel 3 · Jahr 3 · Winter bis Frühling</div>
+      <h3>Der Erste König</h3>
+      <div class="q">Kann man einen Pakt brechen, ohne dass jemand zahlt?</div>
+      <ul>
+        <li>Antagonist: Aldric I., 300 Jahre genährt von der Lebenszeit seiner Nachfahren.</li>
+        <li>Sein Unterpfand ist Vhaelyras Gefährte, ein gefesselter Drache, den er als Waffe reitet: der feindliche Drache.</li>
+        <li>Die Truppe kämpft <em>für</em> die Drachen, Seite an Seite mit ihnen.</li>
+        <li>Finale: Der Pakt fällt, und mit ihm die Lüge, auf der Valmora gebaut ist.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Fäden</div>
+  <h2>Was wo gesät, gedreht und geschlossen wird</h2>
+  <div class="legend">
+    <span style="--c:var(--gold)">Saat</span><span style="--c:var(--ink)">Drehung</span><span style="--c:var(--ember)">Abschluss</span>
+  </div>
+  <div class="scroll">
+  <table class="threads">
+    <thead><tr><th></th><th style="--c:var(--a1)">S1 Akt 1</th><th style="--c:var(--a2)">S1 Akt 2</th><th style="--c:var(--a3)">S1 Akt 3</th><th style="--c:var(--s2)">Staffel 2</th><th style="--c:var(--s3)">Staffel 3</th></tr></thead>
+    <tbody>
+      <tr><th>Wer tötete Aldric IV.?</th><td>Steckbriefe, Mittelsmann Dunn stirbt</td><td>Seraphines Briefe von Halvard</td><td class="close">Halvard enttarnt, er gibt sich in den Pakt</td><td class="empty">–</td><td class="empty">–</td></tr>
+      <tr><th>Die Stimme hinter Halvard</th><td class="seed">Dunn: „Er hört auf die Krone, nicht auf Menschen.“</td><td class="seed">Halvard spricht nachts mit der leeren Krone</td><td>Halvards letzte Worte: „Er hat es befohlen.“</td><td>Die Stimme gehört Aldric I.</td><td class="close">Aldric I. besiegt</td></tr>
+      <tr><th>Was frisst der Pakt?</th><td class="seed">Gräber junger Könige im Gewölbe</td><td>Chronik der Wächter entziffert</td><td>Lebenszeit der Könige</td><td>Die Drachen haben nie genommen</td><td class="close">Der Pakt fällt</td></tr>
+      <tr><th>Das leere Grab</th><td class="empty">–</td><td class="seed">Chronik: erste und letzte Seite in derselben Hand</td><td class="seed">N9: Das Grab Aldrics I. ist leer</td><td>Spurensuche, Rückkehr des Ersten Königs</td><td class="close">Endgegner</td></tr>
+      <tr><th>Drachen</th><td class="seed">Beben, Asche</td><td class="seed">Drachenschatten am Himmel, Knochenfeld</td><td>Schlafender Drache im Pass, Vhaelyra erwacht</td><td>Drachen als Gefährten und Reittiere</td><td class="close">Kampf für die Drachen, feindlicher Drache</td></tr>
+      <tr><th>Feinde werden Freunde</th><td class="seed">Morra jagt die Truppe, Grosk wechselt</td><td class="seed">Dravns Brandschneise, Seraphines Verrat</td><td>Seraphines Weg hängt an „Wahrheit oder Frieden“</td><td>Seraphine, Dravn und Rowena als Verbündete gegen Kharesh</td><td class="close">gemeinsames Finale</td></tr>
+      <tr><th>Kharesh</th><td class="seed">Gerüchte, Kriegsnarben Kaels</td><td class="seed">Kharesh-Kundschafter im Salzpass</td><td class="seed">Krieger aus Kharesh beobachten die Krönung</td><td>Einmarsch</td><td>Kharesh wählt eine Seite</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="choice">
+  <div class="eyebrow">Entschieden am 1. November 2026</div>
+  <h2>Vier Weichen, bevor ich die Missionsliste neu schreibe</h2>
+  <p><b>Gewählt:</b> A Halvard mit doppeltem Boden · B Zeichen, dann Erwachen · C Der Erste König · D Seraphine, General Dravn und Dame Rowena. Morra bleibt Gegnerin.</p>
+
+  <h3>A · Der Mörder</h3>
+  <div class="opts">
+    <div class="opt rec"><span class="tag">Empfehlung</span><b>Halvard mit doppeltem Boden</b><p>Halvard bleibt der Mörder, aber er folgt der „Stimme der Krone“. Wer ihn früh durchschaut, hat recht und wird trotzdem überrascht. Trägt direkt in Staffel 2 und 3.</p></div>
+    <div class="opt"><b>Aldric starb am Pakt</b><p>Niemand hat ihn ermordet; er verweigerte das Opfer, und der Pakt tötete ihn. Halvard vertuscht es und braucht einen Schuldigen. Stärker als Thema, schwächer als Krimi.</p></div>
+    <div class="opt"><b>Wie bisher</b><p>Halvard allein, Enthüllung bei der Krönung. Bewährt, aber früh zu erraten.</p></div>
+  </div>
+
+  <h3>B · Drachen in Staffel 1</h3>
+  <div class="opts">
+    <div class="opt rec"><span class="tag">Empfehlung</span><b>Zeichen, dann Erwachen</b><p>Keine Drachen als Gegner oder Gefährten. Beben, Schatten und Knochen; in 3-7 ein schlafender Drache als Gelände. Am Ende öffnet Vhaelyra die Augen. 3-6 wird eine Stadtschlacht gegen Paktgarde und Pöbel.</p></div>
+    <div class="opt"><b>Ein Drachenangriff bleibt</b><p>3-6 „Drachen über der Stadt“ bleibt als dritte Partei, nicht reitbar. Mehr Spektakel, nimmt Staffel 2 aber etwas vorweg.</p></div>
+    <div class="opt"><b>Gar nicht sichtbar</b><p>Drachen nur in Legenden und Dialogen. Hebt sie ganz für Staffel 2 auf, das Finale verliert aber an Größe.</p></div>
+  </div>
+
+  <h3>C · Der Endgegner von Staffel 3</h3>
+  <div class="opts">
+    <div class="opt rec"><span class="tag">Empfehlung</span><b>Der Erste König</b><p>Aldric I. lebt seit 300 Jahren von der Lebenszeit seiner Nachfahren und reitet Vhaelyras gefesselten Gefährten. Verbindet hohle Krone, Pakt und Drachen zu einem Faden.</p></div>
+    <div class="opt"><b>Kharesh und sein Drache</b><p>Das Nachbarreich hat einen Drachen versklavt. Klassischer Krieg, leicht zu verstehen, aber vom Pakt-Thema getrennt.</p></div>
+    <div class="opt"><b>Herzogin Maelis</b><p>Die Strippenzieherin aus Akt 2 überlebt und greift in Staffel 3 nach der Macht, mit einem gekauften Drachen. Nah an den Figuren, aber weniger mythisch.</p></div>
+    <div class="opt"><b>Ein Drache will Krieg</b><p>Ein Drache, der den Menschen den Pakt nie verziehen hat. Die Drachen sind gespalten, und die Truppe muss wählen.</p></div>
+  </div>
+
+  <h3>D · Wer aus Staffel 1 wird in Staffel 2 Verbündeter?</h3>
+  <p>Mehrfachwahl. Wer gewählt wird, bekommt in Staffel 1 eine Szene, die den Wechsel vorbereitet, und darf deshalb nicht fallen. Leutnants fliehen ohnehin immer.</p>
+  <div class="opts">
+    <div class="opt"><b>Morra, die Kopfgeldjägerin</b><p>Jagt die Truppe den ganzen Akt 1 und erkennt in Staffel 2, wer sie bezahlt hat.</p></div>
+    <div class="opt"><b>Seraphine</b><p>Die Marionette wird zur Königin, die die Truppe braucht; je nach „Wahrheit oder Frieden“ als Verbündete oder misstrauische Partnerin.</p></div>
+    <div class="opt"><b>General Dravn</b><p>Wollte Drachen bekämpfen und Dörfer opfern. Muss mit Drachen kämpfen, um Kharesh aufzuhalten.</p></div>
+    <div class="opt"><b>Dame Rowena</b><p>Die Ritterin der Prinzessin, in Staffel 1 zu Pferd. In Staffel 2 die erste Pegasusreiterin auf eurer Seite.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Folgeänderungen</div>
+  <h2>Was sich in Staffel 1 dadurch ändert</h2>
+  <ul class="seedlist">
+    <li><b>Akt 2 ohne Flieger:</b> Neuerung ist Reiterei zu Pferd plus Balliste. Rowena wird Lanzenritterin zu Pferd, Brakka eine Söldnerin ohne Wyvern (Ballistenmeisterin oder Hundeführerin). 2-4 „Der Wyvernhorst“ bekommt einen neuen Ort.</li>
+    <li><b>Akt 3 mit Tal:</b> Nach der Krönung (3-5) folgt eine ruhige Fluchtmission aus der Stadt, statt sofort die nächste große Schlacht.</li>
+    <li><b>Akt 2 mit Lagewechsel:</b> Jede aufgedeckte Lüge ändert etwas für die Truppe (Steckbrief höher, Weg versperrt, Gefährte bedroht), damit der Mittelteil steigt.</li>
+    <li><b>Saat-Szenen:</b> etwa sechs kurze Szenen über die drei Akte, siehe Fäden-Tabelle.</li>
+    <li><b>Gefährten-Motive:</b> „verstoßen“ bleibt für einige, die anderen bekommen eigene Gründe. Das kommt in die Figuren-Bibel (Etappe 3).</li>
+  </ul>
+</section>
+
+<footer>Quelle: <code>concept/22-narrative/narrative.md</code> (Stand 2026-10-31) und die Leitplanken in <code>concept/27-ueberarbeitung/roadmap.md</code>. Entscheidungen im Decision-Log der Narrative, Ausarbeitung in <code>concept/22-narrative/staffelbogen.md</code>.</footer>
+</div>
