@@ -23,7 +23,7 @@ Lauf 1 (1 Versuch, 1024 × 1536, Chat „Fantasy Map erstellen“). Das Original
 - Drei Jahreszeiten-Zonen, Stil und Stimmung wie die Referenz ✓; Halbinsel, Insel vor der Küste, Mündung mit Hafen und Schiffen, Sumpfdelta im Süden, gefrorener See mit goldener Hauptstadt, glühender Krater ✓
 - Abweichungen: Der Eisfjord im Nordwesten fehlt (dort nur Klippen); der Graue Kamm als Riegel zwischen Grenzland und Eisenmark ist kaum zu sehen; die Burg steht auf einem Hügel im Herbstland statt an einer Bergflanke; Wege und Brücken sind eingezeichnet (für ein Konzeptbild in Ordnung)
 
-Lauf 2 (quadratisch, 1 Versuch, 1254 × 1254). Original noch nicht heruntergeladen; gezeigt wurde ein Bildschirmfoto.
+Lauf 2 (quadratisch, 1 Versuch, 1254 × 1254). Original unverändert aus ChatGPT heruntergeladen: `art/world/map_concept_v3.png` (3,9 MB, Git LFS).
 
 - Alle drei Korrekturen sitzen: Fjord mit Gruft-Eingang ✓, felsiger Gebirgsriegel quer durch die Mitte mit Pass ✓, Burg in der Südflanke mit Terrassen und Feldern davor ✓
 - Mündung mit Hafen und Flussinsel, Halbinsel, Insel mit Schiff, Sumpfdelta, goldene Hauptstadt am gefrorenen See, glühender Krater ✓
