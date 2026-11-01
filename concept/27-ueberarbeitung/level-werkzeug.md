@@ -45,3 +45,5 @@ Was das Spielformat nicht kennt, steht im optionalen Feld `design:` der Karte. D
 ## Abnahme durch den Produktinhaber
 
 Der Atlas wird als Artifact veröffentlicht. Der Produktinhaber sieht je Level Blatt und Stimmungsbild nebeneinander, gibt Rückmeldung zum Raster und nimmt jedes Level einzeln ab (Etappe 6).
+
+Je Level gibt es dazu eine knappe Abnahme-Ansicht `levels/abnahme/<id>.md`: Kurzfassung oben, darunter nur das Raster (aus dem PNG zugeschnitten), Details eingeklappt.

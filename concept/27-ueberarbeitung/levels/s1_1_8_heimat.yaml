@@ -1,0 +1,191 @@
+# Etappe 6, Akt 1, Mission 1-8 – Die Heimat halten. Entwurf nach missionsliste-s1.md (G 30×40, defend, 14 / 42, Leutnants Morra, Hask, Ulvric, Grosk).
+# Variante der 1-6-Karte: Die Truppe hält die Paktwacht. Die Westpforte der Vorburg ist vermauert, sonst gleiches Gelände.
+# Hask, Ulvric und Grosk (nur ohne Wechsel bei E3) kommen von Süden über Felder und Terrassen, Morras Häscher ab Runde 4
+# über den Wachpass in den Rücken (Osttor des Burghofs). Zu schützen: der Burgverwalter im Bergfried, 12 Runden.
+id: s1_1_8_heimat
+nameKey: map.s1_1_8_heimat.name
+size: [30, 40]
+legend:
+  ".": plain
+  ",": grass
+  "f": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "~": river
+  "w": shallows
+  "=": bridge
+  "W": wall
+  "B": wall
+  "G": gate
+  "F": fort
+  "H": village
+  "t": throne
+  "d": door
+#          x: 012345678901234567890123456789
+terrain: |
+  ^^^^^^^^^^^^^^^^^^^^^^^^__^^^^
+  ^^^^^^^^^^^^^^^^^^^^^^^^__^^^^
+  ^^^^^^^^^^^^^^^^^^^^^^^^__^^^^
+  ^^^^^^^^^^^^^^dd^^^^^^^^__^^^^
+  ^^^^^^WWWWWWWWWWWWWWWWWW__,,,,
+  ^,^^^^WF...W..t...W...FG,,,,,,
+  ^,^^^^W....W......W....W^^^^^^
+  ^,^^^^W....WWW..WWW....W^^^^^^
+  ^,^^^^W.......__.......WTTT^^^
+  ^,^^^^W..BB...__...BB..WTTT^^^
+  ^,^TTTW..BB...__...BB..WTTT^^^
+  ^,^TTTWF......__......FWTTT^^^
+  ^,^TTTWWWWWWWWGGWWWWWWWWTTT^^^
+  ^,,TTT,,W.....__.....W,,TTT^^^
+  ^,^TTT,,W.BB..__..BB.W,,TTT^^^
+  ^,^TTT,,W.BB..__..BB.W,,TTT^^^
+  ^,^TTT,,W...H.__.H...W,,TTT^^^
+  ^,^TTT,,W.....__.....W,,TTT^^^
+  ^,^TTT,,FWWWWWGGWWWWWF,,TTT^^^
+  ^,,,,,,,,,,,,,,,,,,,,,,,,,,^^^
+  ^,^TTT,,,,,,,,,,,,,,,,,,TTT^^^
+  ^,^WWWW__WWWWWWWWWWWW__WWWW^^^
+  ^,^TTT,,,,TT,,,,,,TT,,,,TTT^^^
+  ^,^TTT,,,,TT,,,,,,TT,,,,TTT^^^
+  ^,^TTT,,,,,,,,,,,,,,,,,,TTT^^^
+  ^,^W_WWWWWWWWW__WWWWWWWWWWW^^^
+  ^,^TTT,,TT,,,,__,,,,TT,,TTT^^^
+  ^,^TTT,,TT,,,,__,,,,TT,,TTT^^^
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,TT
+  ,,fffffffff,,,__,,ffffffffffTT
+  ,,fffHfffff,,,__,,fffHBBffffTT
+  ,,fffffffff,,,________BBffffTT
+  TTfffffffff,,,__,,ffffffffff,,
+  TTfffffffHf,,,__,,ffffffffff,,
+  TTfffffffff,,,__,,ffffffffff,,
+  TT,,,,,,,,,,,,__,,,,,,,,,,H,,,
+  ~~~~ww~~~~~~~~==~~~~~~~~~ww~~~
+  ~~~~ww~~~~~~~~==~~~~~~~~~ww~~~
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+timeOfDay: evening
+weather: ash
+objects:
+  - { id: v_farm_w, type: village, at: [5, 30], reward: { gold: 300 } }
+  - { id: v_mill, type: village, at: [21, 30], reward: { item: { def: vulnerary } } }
+  - { id: v_stable_w, type: village, at: [12, 16], reward: { item: { def: steel_lance } } }
+  - { id: v_stable_e, type: village, at: [17, 16], reward: { item: { def: vulnerary } } }
+deploy:
+  max: 14
+  forced: [avatar, kael]
+  slots: [[9, 13], [12, 13], [13, 13], [16, 13], [17, 13], [20, 13], [12, 14], [13, 14], [16, 14], [17, 14], [9, 17], [10, 17], [19, 17], [20, 17], [13, 9], [16, 9], [13, 10], [16, 10]]
+units:
+  - { id: steward, nameKey: unit.steward.name, team: other, class: civilian, level: 1, at: [14, 5], items: [], ai: { profile: hold } }
+  # Hasks Bande in den Feldern (Mitte)
+  - { id: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 7, at: [14, 33], lieutenant: hask, items: [{ def: iron_axe }, { def: vulnerary }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [12, 32], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [17, 32], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 4, at: [13, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 4, at: [16, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: vanguard, level: 4, at: [14, 31], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: marksman, level: 4, at: [11, 34], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: marksman, level: 4, at: [18, 34], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [15, 34], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Ulvric und Wölfe (Ostfelder)
+  - { id: ulvric, nameKey: unit.ulvric.name, team: enemy, class: wolf_rider, level: 7, at: [24, 32], lieutenant: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [22, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [25, 30], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [26, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [23, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Grosk und Hungernde (Westfelder), nur wenn Grosk in 1-5 nicht gewechselt ist (E3)
+  - { id: grosk, nameKey: unit.grosk.name, team: enemy, class: vanguard, level: 6, at: [5, 32], lieutenant: grosk, items: [{ def: iron_lance }], ai: { profile: aggressive }, requires: [{ not: { flag: { e03: join } } }] }
+  - { nameKey: unit.hungry.name, team: enemy, class: brigand, level: 3, at: [4, 30], items: [{ def: iron_axe }], ai: { profile: aggressive }, requires: [{ not: { flag: { e03: join } } }] }
+  - { nameKey: unit.hungry.name, team: enemy, class: skirmisher, level: 3, at: [7, 31], items: [{ def: iron_sword }], ai: { profile: aggressive }, requires: [{ not: { flag: { e03: join } } }] }
+  - { nameKey: unit.hungry.name, team: enemy, class: brigand, level: 3, at: [6, 34], items: [{ def: iron_axe }], ai: { profile: aggressive }, requires: [{ not: { flag: { e03: join } } }] }
+  - { nameKey: unit.hungry.name, team: enemy, class: marksman, level: 3, at: [3, 33], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard], requires: [{ not: { flag: { e03: join } } }] }
+reinforcements:
+  # Süden: Nachschub über Brücke und Furten
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 4, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, level: 4, at: [4, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [25, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, level: 4, at: [13, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Wachpass im Rücken: Morra und ihre Häscher
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { id: morra, nameKey: unit.morra.name, team: enemy, class: marksman, level: 7, at: [24, 0], lieutenant: morra, items: [{ def: steel_bow }, { def: vulnerary }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 4, at: [25, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: scout, level: 4, at: [24, 1], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, level: 4, at: [25, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, level: 4, at: [24, 2], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 4, at: [25, 2], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [5, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 4, at: [26, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 4, at: [29, 28], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, level: 4, at: [24, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, level: 4, at: [25, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: knight, level: 5, at: [24, 1], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 9
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, level: 5, at: [14, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 5, at: [15, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 5, at: [29, 29], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, level: 5, at: [4, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Ziegenpfad West: kleine Gruppe, die den vermauerten Weg sucht
+  - turn: 10
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: scout, level: 5, at: [1, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 5, at: [1, 29], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+objectives:
+  victory: { type: defend, unit: steward, turns: 12 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: steward }
+  side:
+    - { id: s_villages, type: visit_villages, reward: { gold: 500 } }
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+goldReward: 2000
+design:
+  title: Die Heimat halten
+  intent: >
+    Akt-Finale, erste große Verteidigung: Was in 1-6 Engstelle für den Angreifer war, hält jetzt die Truppe. Von Süden steigen drei Leutnants
+    die Terrassen hinauf, ab Runde 4 fällt Morra über den Wachpass in den Rücken. Die Truppe muss sich auf zwei Fronten teilen.
+  mood: Abend, Asche weht vom Norden, Fackeln auf den neu gesetzten Mauern, unten in den Feldern die Feuer der Belagerer, Morras Laternen am Pass.
+  phases:
+    - { id: p1, turns: [1, 3], label: Aufmarsch, note: "Hask, Ulvric und Grosk rücken durch die Felder; Truppe besetzt Terrassen und Vorburg." }
+    - { id: p2, turns: [4, 7], label: Zwei Fronten, note: "Morra über den Wachpass (R4, R7) gegen das Osttor; Südwellen R3, R6." }
+    - { id: p3, turns: [8, 12], label: Halten, note: "Letzte Wellen R9 Süd und R10 über den Ziegenpfad." }
+  paths:
+    - { team: enemy, points: [[14, 33], [14, 25], [8, 22], [7, 20], [14, 18]], label: Hask }
+    - { team: enemy, points: [[24, 32], [22, 26], [22, 21], [22, 19]], label: Ulvric }
+    - { team: enemy, points: [[5, 32], [4, 25], [7, 21]], label: Grosk }
+    - { team: enemy, points: [[24, 0], [24, 5], [23, 5], [18, 8], [14, 6]], phase: p2, label: Morra }
+    - { team: enemy, points: [[1, 30], [1, 19], [3, 19]], phase: p3, label: R10 Ziegenpfad }
+  zones:
+    - { area: { rect: [12, 5, 17, 6] }, label: Bergfried }
+    - { area: { rect: [9, 13, 20, 17] }, label: Vorburg }
+  marks:
+    - { at: [23, 5], label: O, note: "Osttor zum Wachpass: Morras Weg in den Rücken." }
+    - { at: [14, 18], label: E4, note: Vorburgtor gegen Süden. }
+    - { at: [8, 15], label: X, note: "Westpforte vermauert (Unterschied zu 1-6)." }
+  notes:
+    - "Normal 41 Gegner (36 ohne Grosks Gruppe bei E3 = Wechsel), davon 24 in Wellen; gegen 14 eigene, Stufe 3–5 plus vier Leutnants; Leicht 33, Schwer 43."
+    - "Bedingung Grosk: Flag e03 = join lässt ihn und die Hungernden entfallen (Name des Flags beim Umzug nach content/ prüfen)."
+    - "Morras Weg zum Versteck hängt an E4 (Szene); auf der Karte kommt sie immer über den Pass."
+    - Keine Geländeveränderung (nächste veränderliche Karte in Akt 2).
