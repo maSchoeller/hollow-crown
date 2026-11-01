@@ -32,15 +32,15 @@ p { margin: 0; max-width: 68ch; }
 .eyebrow { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
 .lead { color: var(--muted); font-size: 1.1rem; }
 section { display: grid; gap: 16px; min-width: 0; }
-.mapgrid { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 28px; align-items: start; }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
 @media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
-.map { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--sea); display: block; }
+.map { width: 100%; max-width: 900px; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--sea); display: block; }
 .map text { font-family: var(--body); fill: var(--ink); }
 .map .region { font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: .14em; text-transform: uppercase; fill: var(--ink); opacity: .55; }
 .map .lbl { font-size: 11.5px; font-weight: 700; paint-order: stroke; stroke: var(--land); stroke-width: 3.5px; stroke-linejoin: round; }
 .map .feat { font-size: 11px; font-style: italic; fill: var(--muted); paint-order: stroke; stroke: var(--land); stroke-width: 3px; }
 .map .seaname { font-family: var(--display); font-size: 20px; letter-spacing: .3em; fill: var(--sea-ink); font-weight: 700; }
-.side { display: grid; gap: 18px; min-width: 0; }
+.side { display: grid; gap: 18px; min-width: 0; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
 .legend { display: grid; gap: 6px; font-size: .92rem; color: var(--muted); }
 .legend div { display: flex; gap: 8px; align-items: center; }
 .dot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid var(--c); background: var(--surface); flex: none; }
@@ -69,11 +69,12 @@ footer { color: var(--muted); font-size: .9rem; }
 
 <section>
   <div class="mapgrid">
-    <svg class="map" id="map" viewBox="0 0 600 900" role="img" aria-label="Skizze von Valmora mit Regionen, Flüssen, Gebirgen und den Orten aller 35 Missionen">
+    <svg class="map" id="map" viewBox="0 0 900 900" role="img" aria-label="Skizze von Valmora mit Regionen, Flüssen, Gebirgen und den Orten aller 35 Missionen">
       <defs>
         <pattern id="swamp" width="10" height="8" patternUnits="userSpaceOnUse"><path d="M1 6h6M4 2h5" stroke="var(--swamp)" stroke-width="1.4"/></pattern>
         <pattern id="field" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0v12" stroke="var(--land2)" stroke-width="5"/></pattern>
       </defs>
+      <g transform="scale(1.5 1)">
       <!-- Land: alles außer dem Meer im Westen -->
       <path fill="var(--land)" d="M168 0 C170 40 180 80 205 112 C225 138 248 156 256 176 C240 184 222 172 200 150 C178 130 158 122 140 140 C118 170 124 214 140 248 C150 272 128 292 96 300 C66 310 40 330 36 352 C34 372 70 378 104 372 C134 368 168 386 200 404 C226 420 248 436 264 452 C246 462 222 460 196 466 C160 474 118 458 84 472 C52 486 22 512 18 536 C16 556 48 566 82 556 C112 548 140 560 152 584 C166 612 158 646 132 676 C110 702 90 726 74 760 C66 780 88 792 112 796 C138 800 160 810 178 828 C168 846 142 852 116 860 C88 868 62 880 44 900 L600 900 L600 0 Z"/>
       <!-- Inseln: Krähenholm vor der Küste, Aue-Insel in der Mündung, Klippen im Nordwesten -->
@@ -89,15 +90,13 @@ footer { color: var(--muted); font-size: .9rem; }
       <!-- Spiegelsee -->
       <ellipse cx="322" cy="238" rx="78" ry="30" fill="var(--lake)" stroke="var(--river)" stroke-width="1.5"/>
       <!-- Flüsse -->
-      <g fill="none" stroke="var(--river)" stroke-linecap="round">
+      <g fill="none" stroke="var(--river)" stroke-linecap="round" vector-effect="non-scaling-stroke">
         <path stroke-width="3" d="M300 112 C310 160 330 190 328 210"/>
         <path stroke-width="7" d="M262 252 C246 300 280 352 290 396 C296 424 282 444 262 452"/>
         <path stroke-width="3" d="M540 300 C500 330 430 350 372 384 C340 400 310 400 290 398"/>
         <path stroke-width="3.5" d="M442 626 C436 670 420 700 384 730 C352 756 300 770 262 790 C230 806 206 818 178 828"/>
       </g>
-      <g id="mountains"></g>
-      <g id="forests"></g>
-      <!-- Grenze nach Kharesh -->
+                  <!-- Grenze nach Kharesh -->
       <path d="M584 640 L584 900" stroke="var(--ember)" stroke-width="2" stroke-dasharray="7 6"/>
       <!-- Aurenhall -->
       <path d="M292 268 h70 l8 30 h-86 z" fill="var(--city)" opacity=".85"/>
@@ -106,24 +105,27 @@ footer { color: var(--muted); font-size: .9rem; }
       <path d="M408 628 h46 v22 h-46 z" fill="var(--city)"/>
       <path d="M402 628 l8 -16 l8 16 M444 628 l8 -16 l8 16" fill="var(--city)"/>
 
+      </g>
+      <g id="mountains"></g>
+      <g id="forests"></g>
       <text class="seaname" transform="translate(30 330) rotate(-90)" style="font-size:16px">SILBERMEER</text>
-      <text class="feat" x="196" y="120" text-anchor="end">Eisfjord</text>
-      <text class="feat" x="150" y="424">Auremündung</text>
-      <text class="feat" x="22" y="582">Möwenzunge</text>
-      <text class="feat" x="32" y="680">Krähenholm</text>
-      <text class="feat" x="96" y="822">Erlenbucht</text>
-      <text class="region" x="300" y="182" text-anchor="middle">Drachengebirge</text>
-      <text class="region" x="420" y="520" text-anchor="middle">Eisenmark</text>
-      <text class="region" x="400" y="880" text-anchor="middle">Grenzland</text>
-      <text class="region" x="592" y="770" text-anchor="middle" transform="rotate(90 592 770)" style="fill:var(--ember)">Kharesh</text>
-      <text class="feat" x="322" y="242" text-anchor="middle">Spiegelsee</text>
-      <text class="feat" x="196" y="603">Grauer Kamm</text>
-      <text class="feat" x="232" y="320">Aure</text>
-      <text class="feat" x="355" y="752">Erle</text>
-      <text class="feat" x="196" y="884">Erlenmoor</text>
-      <text class="feat" x="520" y="292">Kupferberge</text>
-      <text class="feat" x="402" y="362">Eisenschlucht</text>
-      <text class="feat" x="470" y="782">Grenzwald</text>
+      <text class="feat" x="294" y="120" text-anchor="end">Eisfjord</text>
+      <text class="feat" x="225" y="424">Auremündung</text>
+      <text class="feat" x="33" y="582">Möwenzunge</text>
+      <text class="feat" x="48" y="680">Krähenholm</text>
+      <text class="feat" x="144" y="822">Erlenbucht</text>
+      <text class="region" x="450" y="182" text-anchor="middle">Drachengebirge</text>
+      <text class="region" x="630" y="520" text-anchor="middle">Eisenmark</text>
+      <text class="region" x="600" y="880" text-anchor="middle">Grenzland</text>
+      <text class="region" x="888" y="770" text-anchor="middle" transform="rotate(90 888 770)" style="fill:var(--ember)">Kharesh</text>
+      <text class="feat" x="483" y="242" text-anchor="middle">Spiegelsee</text>
+      <text class="feat" x="294" y="603">Grauer Kamm</text>
+      <text class="feat" x="348" y="320">Aure</text>
+      <text class="feat" x="532" y="752">Erle</text>
+      <text class="feat" x="294" y="884">Erlenmoor</text>
+      <text class="feat" x="780" y="292">Kupferberge</text>
+      <text class="feat" x="603" y="362">Eisenschlucht</text>
+      <text class="feat" x="705" y="782">Grenzwald</text>
 
       <g id="markers"></g>
     </svg>
@@ -211,10 +213,11 @@ const NS = "http://www.w3.org/2000/svg";
 function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
 // Fester Zufall, damit die Skizze bei jedem Laden gleich aussieht
 let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const SX = 1.5;
 const mg = document.getElementById("mountains");
 function range(x0, x1, y0, y1, n, size, snow) {
   for (let i = 0; i < n; i++) {
-    const x = x0 + rnd() * (x1 - x0), y = y0 + rnd() * (y1 - y0), s = size * (0.7 + rnd() * 0.6);
+    const x = (x0 + rnd() * (x1 - x0)) * SX, y = y0 + rnd() * (y1 - y0), s = size * (0.7 + rnd() * 0.6);
     el("path", { d: `M${x - s} ${y + s * .55} L${x} ${y - s} L${x + s} ${y + s * .55} Z`, fill: "var(--mount)", stroke: "var(--ink)", "stroke-opacity": ".25" }, mg);
     if (snow) el("path", { d: `M${x - s * .3} ${y - s * .45} L${x} ${y - s} L${x + s * .3} ${y - s * .45} Z`, fill: "var(--snow)" }, mg);
   }
@@ -226,12 +229,12 @@ range(150, 320, 580, 620, 10, 13, false); // Grauer Kamm West
 range(360, 590, 580, 620, 13, 13, false); // Grauer Kamm Ost (Lücke = Windscharte)
 range(490, 570, 820, 870, 6, 10, false);  // Wolfshügel
 // Krater des Urtempels
-el("circle", { cx: 300, cy: 66, r: 16, fill: "var(--ember)", opacity: ".8" }, mg);
+el("circle", { cx: 300 * SX, cy: 66, r: 16, fill: "var(--ember)", opacity: ".8" }, mg);
 const fg = document.getElementById("forests");
 function forest(cx, cy, rx, ry, n) {
   for (let i = 0; i < n; i++) {
     const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
-    el("circle", { cx: cx + Math.cos(a) * rx * r, cy: cy + Math.sin(a) * ry * r, r: 5 + rnd() * 3, fill: "var(--forest)", opacity: ".85" }, fg);
+    el("circle", { cx: (cx + Math.cos(a) * rx * r) * SX, cy: cy + Math.sin(a) * ry * r, r: 5 + rnd() * 3, fill: "var(--forest)", opacity: ".85" }, fg);
   }
 }
 forest(470, 740, 60, 40, 60);  // Grenzwald
@@ -272,7 +275,8 @@ const M = [
 ];
 const mk = document.getElementById("markers");
 const col = { 1: "var(--a1)", 2: "var(--a2)", 3: "var(--a3)", n: "var(--side)" };
-for (const [, x, y, act, label, side] of M) {
+for (const [, x0, y, act, label, side] of M) {
+  const x = x0 * SX;
   if (act === "n") el("rect", { x: x - 5.5, y: y - 5.5, width: 11, height: 11, fill: col.n, transform: `rotate(45 ${x} ${y})` }, mk);
   else el("circle", { cx: x, cy: y, r: 6.5, fill: "var(--surface)", stroke: col[act], "stroke-width": 3 }, mk);
   const t = el("text", { x: side === "w" ? x - 11 : x + 11, y: y + 4, class: "lbl", "text-anchor": side === "w" ? "end" : "start" }, mk);
