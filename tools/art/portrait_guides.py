@@ -10,8 +10,9 @@ Two jobs:
 Guide lines are fractions of the image height, measured on rhen_a.png and fenn.png.
 
 Usage:
-  python tools/art/portrait_guides.py sheet out.png a.png b.png ...
-  python tools/art/portrait_guides.py template out.png
+  python tools/art/portrait_guides.py sheet out.png a.png b.png:heavy ...
+  (append ":<build>" to check a portrait against its build template)
+  python tools/art/portrait_guides.py template out.png [average|slim|broad|heavy|small|tall]
 """
 
 import sys
@@ -52,7 +53,9 @@ def draw_guides(draw, size, colour=(220, 40, 40, 255)):
 def sheet(out, paths, size=420):
     edge = outline(size)
     tiles = []
-    for path in paths:
+    for arg in paths:
+        # "file.png:heavy" compares against that build's template, else the anchors' range
+        path, _, build = arg.rpartition(":") if arg.rsplit(":", 1)[-1] in BUILDS else (arg, "", "")
         img = Image.open(path).convert("RGBA")
         mask = alpha(img)
         tile = Image.new("RGBA", (size, size + 40), (238, 238, 238, 255))
@@ -60,12 +63,17 @@ def sheet(out, paths, size=420):
         tile.paste((40, 120, 255, 255), (0, 0), edge)
         draw = ImageDraw.Draw(tile)
         draw_guides(draw, size)
+        target = build_mask(build, 300)[0] if build else None
         parts = []
         for frac in WIDTH_ROWS:
             w = width_at(mask, frac)
-            lo, hi = ANCHOR_RANGE[frac]
+            if target is not None:
+                t = width_at(target, frac)
+                lo, hi = t - BUILD_TOLERANCE, t + BUILD_TOLERANCE
+            else:
+                lo, hi = ANCHOR_RANGE[frac]
             parts.append(f"{int(frac * 100)}%:{w:.2f}{'' if lo <= w <= hi else '!'}")
-        name = path.replace("\\", "/").split("/")[-1]
+        name = path.replace("\\", "/").split("/")[-1] + (f" ({build})" if build else "")
         draw.text((4, size + 4), name, fill=(20, 20, 20, 255))
         draw.text((4, size + 20), "  ".join(parts), fill=(20, 20, 20, 255))
         tiles.append(tile)
@@ -78,12 +86,54 @@ def sheet(out, paths, size=420):
     canvas.save(out)
 
 
-def template(out, size=1254):
-    mask = Image.fromarray((alpha(Image.open(ANCHOR)) * 255).astype("uint8")).resize((size, size))
+# Body builds as warps of the anchor silhouette. Head and eye lines stay close to the
+# anchor so the style holds; shoulders, torso, belly and size in the frame vary.
+#   lines: target fractions for top, chin, belt (the anchor is 0.02 / 0.33 / 0.78)
+#   widths: horizontal scale at head, shoulders (0.40), chest (0.60), belt (0.78), bottom
+BUILDS = {
+    "average": {"lines": (0.02, 0.33, 0.78), "widths": (1.00, 1.00, 1.00, 1.00, 1.00)},
+    "slim":    {"lines": (0.02, 0.33, 0.78), "widths": (0.95, 0.78, 0.74, 0.74, 0.76)},
+    "broad":   {"lines": (0.02, 0.33, 0.78), "widths": (1.03, 1.28, 1.22, 1.10, 1.08)},
+    "heavy":   {"lines": (0.03, 0.34, 0.80), "widths": (1.05, 1.12, 1.38, 1.42, 1.35)},
+    "small":   {"lines": (0.08, 0.38, 0.82), "widths": (0.98, 0.95, 0.95, 0.95, 0.95)},
+    "tall":    {"lines": (0.01, 0.29, 0.74), "widths": (0.92, 0.95, 0.88, 0.86, 0.86)},
+}
+WIDTH_KEYS = (0.20, 0.40, 0.60, 0.78, 1.00)
+# Allowed deviation from a build template's width; arms, capes and props add spread.
+BUILD_TOLERANCE = 0.12
+
+
+def build_mask(name, size):
+    src = alpha(Image.open(ANCHOR).resize((size, size)))
+    spec = BUILDS[name]
+    top, chin, belt = spec["lines"]
+    # Vertical: map target rows to source rows piecewise through top, chin, belt, bottom.
+    tgt = [top, chin, belt, 1.0]
+    srcl = [0.02, 0.33, 0.78, 1.0]
+    out = np.zeros_like(src)
+    cx = np.where(src.any(0))[0].mean()
+    for y in range(size):
+        f = y / size
+        if f < top:
+            continue
+        sy = np.interp(f, tgt, srcl)
+        row = src[min(int(sy * size), size - 1)]
+        k = np.interp(sy, WIDTH_KEYS, spec["widths"])
+        xs = (np.arange(size) - cx) / k + cx
+        valid = (xs >= 0) & (xs < size)
+        out[y, valid] = row[xs[valid].astype(int)]
+    return out, spec
+
+
+def template(out, build="average", size=1254):
+    mask, spec = build_mask(build, size)
+    top, chin, belt = spec["lines"]
+    lines = [("top", top), ("eyes", top + (chin - top) * 0.58), ("chin", chin),
+             ("shoulders", chin + 0.07), ("belt", belt)]
     img = Image.new("RGBA", (size, size), (255, 255, 255, 255))
-    img.paste((205, 205, 205, 255), (0, 0), mask)
+    img.paste((205, 205, 205, 255), (0, 0), Image.fromarray((mask * 255).astype("uint8")))
     draw = ImageDraw.Draw(img)
-    for label, frac in GUIDES:
+    for label, frac in lines:
         y = int(frac * size)
         draw.line([(0, y), (size, y)], fill=(220, 40, 40, 255), width=4)
         draw.text((12, y + 6), label.upper(), fill=(220, 40, 40, 255))
@@ -96,4 +146,4 @@ if __name__ == "__main__":
     if sys.argv[1] == "sheet":
         sheet(sys.argv[2], sys.argv[3:])
     else:
-        template(sys.argv[2])
+        template(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "average")

@@ -71,7 +71,7 @@ never covering the face.
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
 - **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
-- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block. Die Korrektur schoss über das Ziel (zu schmal, Kopf zu groß); erst die Proportions-Vorlage (§9) brachte Kael im ersten Versuch auf Rhens Umriss (`v24_kael_guide.png`).
+- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block. Die Korrektur schoss über das Ziel (zu schmal, Kopf zu groß); erst die Proportions-Vorlage (§9) brachte Kael im ersten Versuch auf Rhens Umriss (`v24_kael_guide.png`). Weil dann alle Figuren denselben Körper bekämen, gibt es seither sechs Statur-Vorlagen (Regel 14).
 - **v2.3 (verworfen):** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
@@ -98,7 +98,7 @@ MOUTH: <wide | small | thin-lipped | full>, <teeth detail if any>.
 MARKS AND AGE: <freckles | scar | mole | crow's feet | grey temples | missing tooth | none>.
 SKIN: <explicit tone>.
 HAIR: <texture: straight | wavy | curly | coily | stubble | bald>, <cut and how it is worn>.
-BUILD (visible part): <narrow-shouldered | broad | heavy | wiry | soft>.
+BUILD: <average | slim | broad | heavy | small | tall> (attach guide_build_<build>.png), plus <one detail: e.g. sloping shoulders, thick neck, long arms>.
 PALETTE: dominant <colour #hex>, secondary <colour #hex>, accent <colour #hex>.
 CLOTHES TELL: <origin>, <what is worn, repaired or wrong-sized>, <one hint at the past>.
 EXPRESSION: <concrete: e.g. one brow raised, lopsided half-grin | flat mouth, tired eyes>.
@@ -120,6 +120,16 @@ SIGNATURE: <the one recognisable part>.
 11. **Stimmungen** (`_happy`, `_angry`, `_sad`) im selben Chat direkt nach dem neutralen Bild, mit dem neutralen Bild als einziger Referenz: „same character, same pose and crop, change only brows, eyes, mouth and shoulders“.
 12. **Neuer Chat je Figur** (Stil-Anker neu anhängen). Lange Folgechats ziehen die Gesichter zur ersten Figur hin.
 13. **Abnahme nebeneinander:** jedes neue Porträt neben Rhen A und Fenn in gleicher Größe prüfen: Augen, Nase, Linie, Schatten gleich gebaut? Kopf gleich groß im Bild?
+14. **Statur verteilen.** Jede Figur bekommt eine von sechs Statur-Vorlagen (`average`, `slim`, `broad`, `heavy`, `small`, `tall`; `art/mockups/style-2026-11/guide_build_<statur>.png`, erzeugt mit `python tools/art/portrait_guides.py template <datei> <statur>`). Kopf, Augenlinie und Machart bleiben gleich, Schultern, Rumpf, Bauch und Größe im Bild ändern sich. In einer Gruppe höchstens zwei Figuren mit derselben Statur; nebeneinander sprechende Figuren (Dialogpaare) möglichst verschieden. Die Statur folgt der Figur, nicht der Rolle: eine Heilerin kann `broad` sein, ein Ritter `slim`. Zusätzlich ein Detail im Feld `BUILD` (hängende Schultern, kurzer Hals, lange Arme), damit gleiche Statur nicht gleich aussieht.
+
+   | Statur | Wirkung | Beispiele (Vorschlag für Etappe 3) |
+   |---|---|---|
+   | average | Maßstab, Rhen | Rhen A, Rhen B, Pell |
+   | slim | schmale Schultern, schlanker Rumpf | Fenn, Mira, Liora |
+   | broad | breite Schultern, kräftiger Rumpf | Brenna, Dravn, Torvald |
+   | heavy | Bauch, breite Hüfte | Grosk, Amos, Osric |
+   | small | kleiner im Bild, Kopf tiefer | Tobin, Kit, Ysolde |
+   | tall | kleinerer Kopf, längerer Rumpf, schmal | Lucan, Odile, Halvard |
 
 ## 4. Test an Brenna, Grosk, Liora (und Kael als Vergleich)
 
@@ -346,8 +356,8 @@ Für den Fall, dass später ein anderer Stil gebraucht wird (neue Figurengruppe,
 
 Die fünf Runden (2026-11-01) zeigten: ChatGPT trifft Gesicht und Machart gut, aber Proportionen (Kopf zu Körper, Schulterbreite, Größe im Bild) schwanken von Bild zu Bild, und jede Folgekorrektur kann über das Ziel hinausschießen (Kael: erst zu massig, dann zu schmal mit zu großem Kopf). Gegenmittel:
 
-1. **Proportions-Vorlage als dritter Anhang.** `art/mockups/style-2026-11/guide_proportions.png`, erzeugt mit `python tools/art/portrait_guides.py template <datei>`: Rhens Silhouette hellgrau mit roten Linien TOP 2 %, EYES 20 %, CHIN 33 %, SHOULDERS 40 %, BELT 78 % der Bildhöhe. Im Prompt nach dem Stil-Block der Absatz `PROPORTION TEMPLATE` (§9a). Die Figur soll die Silhouette füllen; die Linien selbst darf sie nicht zeichnen.
-2. **Prüfbogen statt Augenmaß.** Jedes neue Bild sofort mit `python tools/art/portrait_guides.py sheet <bogen.png> rhen_a.png fenn.png <neu>.png …` prüfen: Hilfslinien, Rhens Umriss in Blau darüber, gemessene Breite bei 40/60/78 % mit `!`, wenn sie außerhalb der Spanne der Anker liegt. Was hier durchfällt, sieht der Produktinhaber gar nicht erst.
+1. **Statur-Vorlage als dritter Anhang.** `art/mockups/style-2026-11/guide_build_<statur>.png` (Regel 14 in §3), erzeugt mit `python tools/art/portrait_guides.py template <datei> <statur>`: Rhens Silhouette, nach Statur verformt, hellgrau mit roten Linien TOP, EYES, CHIN, SHOULDERS, BELT (bei `average` 2/20/33/40/78 % der Bildhöhe, bei `small` und `tall` verschoben). Im Prompt nach dem Stil-Block der Absatz `PROPORTION TEMPLATE` (§9a). Die Figur soll die Silhouette füllen; die Linien selbst darf sie nicht zeichnen.
+2. **Prüfbogen statt Augenmaß.** Jedes neue Bild sofort mit `python tools/art/portrait_guides.py sheet <bogen.png> rhen_a.png fenn.png <neu>.png:<statur> …` prüfen (mit `:<statur>` wird gegen die Statur-Vorlage gemessen, Toleranz ±0,12): Hilfslinien, Rhens Umriss in Blau darüber, gemessene Breite bei 40/60/78 % mit `!`, wenn sie außerhalb der Spanne liegt. Arme, Umhänge und Requisiten verbreitern einzelne Zeilen; ein einzelnes `!` ist ein Hinweis zum Hinsehen, kein Ausschluss. Was hier durchfällt, sieht der Produktinhaber gar nicht erst.
 3. **Varianten statt Kettenkorrektur.** Je Figur zwei frische Chats parallel mit demselben Prompt; die bessere Variante per Prüfbogen wählen. Höchstens **eine** Folgekorrektur je Chat; weicht das Ergebnis danach noch ab, neuer Chat.
 4. **Körperbau relativ zu Rhen beschreiben.** Im Feld `BUILD` keine Wörter, die Größe oder Masse ohne Maß setzen (*lean, tall, huge, bulky, broad*), sondern „as wide as RHEN“, „about 1.3 × RHEN's shoulder width, same height“. Adel, Heldentum, Größe nur über Haltung.
 5. **Korrekturen nur als „keep this exact image … and only …“** und mit dem Maß aus dem Prüfbogen („shoulders as wide as the grey silhouette“), nie „smaller“ oder „bigger“ ohne Bezug.
@@ -357,11 +367,15 @@ Die fünf Runden (2026-11-01) zeigten: ChatGPT trifft Gesicht und Machart gut, a
 ### 9a. Absatz für die Proportions-Vorlage
 
 ```text
-PROPORTION TEMPLATE: the THIRD attached image is a measuring guide made from the RHEN anchor:
+PROPORTION TEMPLATE: the THIRD attached image is a measuring guide for this character's build:
 a light-grey body silhouette with red lines labelled TOP, EYES, CHIN, SHOULDERS, BELT. The new
 character must fill this silhouette at the same scale: top of the hair on TOP, eyes on EYES,
 chin on CHIN, shoulder line on SHOULDERS, belt on BELT, shoulders and torso as wide as the grey
 silhouette, the figure cut off by the bottom edge of the image exactly like the anchors.
-Head-to-body ratio exactly like RHEN. Do NOT draw the lines, labels or the grey silhouette in
+The head keeps the anchors' size and style; the body takes the silhouette's width. Do NOT draw the lines, labels or the grey silhouette in
 the result.
 ```
+
+### 9b. Test der Statur-Vorlagen (2026-11-01)
+
+Brenna `broad`, Grosk `heavy`, Liora `tall`, je ein frischer Chat ohne Korrektur, erzeugt von einem Sonnet-Subagenten nach dieser Vorlage (`art/mockups/style-2026-11/build_*.png`). Breite bei 40/60/78 %: Rhen 0,44/0,66/0,70; Brenna 0,53/0,79/0,85 (im Rahmen); Grosk 0,75/0,91/0,86 (Schulterzeile durch den erhobenen Arm über der Toleranz); Liora 0,48/0,67/0,73 (Gürtelzeile durch den Umhang darüber). Köpfe, Augenlinie und Machart blieben gleich, die Körper unterscheiden sich deutlich.
