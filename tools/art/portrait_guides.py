@@ -13,6 +13,7 @@ Usage:
   python tools/art/portrait_guides.py sheet out.png a.png b.png:heavy ...
   (append ":<build>" to check a portrait against its build template)
   python tools/art/portrait_guides.py template out.png [average|slim|broad|heavy|small|tall]
+  python tools/art/portrait_guides.py heads out.png a.png b.png ...   (black head silhouettes)
 """
 
 import sys
@@ -140,10 +141,33 @@ def template(out, build="average", size=1254):
     img.convert("RGB").save(out)
 
 
+def heads(out, paths, size=160):
+    """Silhouette test: the upper part of every portrait (down to the shoulder line) filled
+    black at a small size, as the roster rule in portrait_master.md §5 asks."""
+    tiles = []
+    for path in paths:
+        mask = alpha(Image.open(path))
+        crop = mask[: int(mask.shape[0] * 0.45)]
+        img = Image.fromarray(np.where(crop, 0, 255).astype("uint8")).resize((size, int(size * 0.45)))
+        tile = Image.new("L", (size, int(size * 0.45) + 16), 255)
+        tile.paste(img, (0, 0))
+        ImageDraw.Draw(tile).text((2, int(size * 0.45) + 2), path.replace("\\", "/").split("/")[-1][:24], fill=0)
+        tiles.append(tile)
+    cols = min(len(tiles), 8)
+    rows = (len(tiles) + cols - 1) // cols
+    h = tiles[0].height
+    canvas = Image.new("L", (cols * size, rows * h), 255)
+    for i, tile in enumerate(tiles):
+        canvas.paste(tile, ((i % cols) * size, (i // cols) * h))
+    canvas.save(out)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] not in ("sheet", "template"):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("sheet", "template", "heads"):
         sys.exit(__doc__)
     if sys.argv[1] == "sheet":
         sheet(sys.argv[2], sys.argv[3:])
+    elif sys.argv[1] == "heads":
+        heads(sys.argv[2], sys.argv[3:])
     else:
         template(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "average")

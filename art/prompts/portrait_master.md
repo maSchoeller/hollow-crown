@@ -48,8 +48,12 @@ HAIR: a bold, readable hair SILHOUETTE as described in the character block, slig
 exaggerated in volume; big clumps with a few stray strands; one shadow tone, one highlight.
 CLOTHES rendered like the anchors: a few big clean shapes, no fabric texture, no grain, no
 scratches, no weathering marks, no dirt; patches, repairs and missing emblems as clean flat
-shapes; straps as plain bands; faction trim as flat colour bands, never filigree. At most
-one prop, held low and never covering the face.
+shapes; straps as plain bands; faction trim as flat colour bands, never filigree.
+WEAPON: the character HOLDS the weapon given in the character block in one or both hands,
+clearly readable and big enough to recognise at a glance: held diagonally across the body,
+resting on the shoulder or raised beside the head, the blade or head of the weapon inside
+the image, never covering the face. Weapons are drawn in the same clean style (one shadow
+tone, one highlight shape on metal). Besides the weapon at most one more item.
 ```
 
 ## 3. Format-Block (fest)
@@ -93,6 +97,7 @@ POSE: body three-quarter facing the RIGHT edge of the image; head <three-quarter
 PALETTE: dominant <colour #hex>, secondary <colour #hex>, accent <colour #hex>.
 CLOTHES TELL: <origin>, <what is worn, repaired or wrong-sized>, <one hint at the past>.
 EXPRESSION: <concrete: e.g. one brow raised, lopsided half-grin>.
+WEAPON: <weapon of the class's weapon group or the signature weapon, its look>, <in which hand, how held>.
 SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its prop if listed>.
 ```
 
@@ -103,6 +108,23 @@ SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its pro
 1. **Machart fest, Form frei.** Linie, Schattierung, Gesichtsbau und Kopfgröße sind für alle gleich; Statur, Kopfform, Augen, Nase, Haar, Blick und Kleidung variieren.
 2. **Signaturteil ist Kanon.** Das Signaturteil aus `art-direction.md` §4.3 (inklusive Requisit, etwa Lioras Kristallstab) steht immer im Figurenblock. Änderungen daran nur per Entscheidung des Produktinhabers.
 3. **Kleidung als Biografie,** aber innerhalb des Fraktions-Kits (Regel 10). Abgerissenes oder Geflicktes nur, wenn die Figur es erklärt.
+3a. **Waffe in der Hand ist Pflicht** für alle Kämpfer und Gegner (Produktinhaber, 2026-11-01). Sie zeigt die Waffengruppe der Klasse (`content/core/classes.yaml`, `weaponGroups`), als persönliche Ausführung; steht in §4.3 eine Signaturwaffe, ist es diese. Elementaristen halten Fokus (Buch, Kugel) und Element, Heiler den Stab, Spielleute Laute oder Dolch. Nur Nicht-Kämpfer (Halvard, Seraphine, Maelis, Gerrit …) halten statt einer Waffe ihr Rollenstück (Schlüssel, Banner, Fächer). Nicht auf den Rücken schnallen, nicht weglassen.
+
+   | Klasse | Waffe im Porträt |
+   |---|---|
+   | tactician (Rhen) | Schwert, alternativ Zauberbuch |
+   | captain (Lucan) | Langschwert |
+   | vanguard | Axt, Lanze oder Schild (Brenna Doppelaxt, Tobin langer Speer, Grosk Schild mit Kinderhänden) |
+   | skirmisher, duelist | Schwert oder Dolch (Varek Säbel, Odile Rapier) |
+   | marksman, sharpshooter | Bogen oder Armbrust (Mira Langbogen, Morra Armbrust) |
+   | scout | Dolche (Fenn) |
+   | elementalist, sage | Fokus + Element (Ysolde Buch und Flamme) |
+   | healer, bishop | Stab (Liora Kristallstab) |
+   | minstrel | Laute oder Dolch (Jory) |
+   | brigand | Axt (Hask Hackbeil + Fackel) |
+   | wolf_rider, knight | Lanze/Speer (Ulvric) |
+   | Paktgarde (Mael) | Kriegshammer |
+   | Grenzheer (Dravn) | Kriegsaxt |
 
 **Unterscheidbarkeit** (in einer Gruppe = Kompanie, Leutnants einer Fraktion, Hof)
 
@@ -144,9 +166,11 @@ SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its pro
 | Figur zu groß oder zu schmal | Wörter wie *tall, lean, broad* ohne Maß | Statur-Feld nur mit Vorlagen-Namen + ein Detail |
 | Gesichter zu kindlich oder zu hart | Gesichtsreife ohne Anker | „FACE MATURITY exactly like the anchors“ |
 | Stoffstruktur, Kratzer, Abnutzung | Weathering-Wörter im Figurenblock | „as clean flat shapes“, Stil-Block nicht kürzen |
-| Alle ähnlich frisiert | keine Silhouetten-Vorgabe | Frisur-Katalog, Regel 6 |
+| Alle ähnlich frisiert | keine Silhouetten-Vorgabe; ChatGPT fällt auf „lockig zerzaust“ zurück | Frisur-Katalog, Regel 6; Haar ausdrücklich glatt, kurz, gebunden usw. beschreiben, Silhouettentest mit `portrait_guides.py heads` |
+| `small` wird ignoriert, `broad`/`heavy` vergrößern die ganze Figur | Statur-Vorlage wirkt nur auf die Breite | Kleinheit über Umgebung erzählen (zu große Kleidung, Helm), bei `broad`/`heavy` „the head stays exactly as big as RHEN's“ ergänzen |
 | Fraktion wirkt zusammengewürfelt | jede Figur eigene Palette | Kit-Zeile, Regel 10 |
 | Signaturteil fehlt | Figurenblock ohne §4.3 | Regel 2 |
+| Waffe fehlt oder hängt auf dem Rücken | „at most one prop“, Waffe unter SIGNATURE versteckt | Feld `WEAPON` mit Hand und Haltung, Regel 3a |
 | Lange Folgechats ziehen Figuren zur ersten | Kontext im Chat | neuer Chat je Figur |
 | Stimmungs-Adjektive → Durchschnittsgesicht | *gentle, confident …* | Regel 9 |
 
@@ -165,7 +189,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 - Prüfbogen ohne `!` oder `!` erklärbar (Arm, Umhang, offenes Haar, Requisit; die Breitenmessung zählt alles mit und ist bei weiten Gewändern nur ein Hinweis).
 - Augen, Nase, Linie, Schatten gebaut wie bei Rhen A und Fenn; Kopf gleich groß.
 - Alter lesbar, aber kein hartes oder kindliches Gesicht.
-- Fraktions-Kit erkennbar, Signaturteil vorhanden.
+- Fraktions-Kit erkennbar, Signaturteil vorhanden, Waffe in der Hand und lesbar.
 - Neben den anderen Figuren der Gruppe: andere Statur, Kopfform, Frisur-Silhouette; Silhouettentest bestanden.
 - Freigestellt (echter Alphakanal), kein Text, quadratisch, ≥ 1254 px.
 
