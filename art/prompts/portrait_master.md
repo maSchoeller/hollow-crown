@@ -132,7 +132,7 @@ SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its pro
 
 **Blickrichtung**
 
-13. **Grundausrichtung:** Körper dreiviertel zum **rechten** Bildrand (wie Rhen A und Fenn). Im Dialog steht die Figur links und schaut zur Mitte; rechts wird sie gespiegelt (Umsetzung offen, siehe §9).
+13. **Grundausrichtung:** Körper dreiviertel zum **rechten** Bildrand (wie Rhen A und Fenn). Im Dialog steht die Figur links und schaut zur Mitte; rechts wird sie gespiegelt (umgesetzt, siehe §9).
 14. **Kopf und Blick variieren mit dem Wesen:** offen und direkt → fast frontal, Blick zum Betrachter; misstrauisch oder schüchtern → Kopf weiter weg, Blick seitlich oder von unten; stolz → Kinn hoch, Blick über den Betrachter hinweg. In einer Gruppe nicht mehr als die Hälfte mit gleichem Kopfwinkel und Blick.
 15. **Spiegeln:** Asymmetrische Signaturteile (Lucans linke Schulterplatte, Narben, Augenklappe, Seitenzopf) wandern beim Spiegeln auf die andere Seite. Figuren, bei denen das stört, bekommen zusätzlich ein eigenes, zum linken Rand gewandtes Bild (`<id>_l.png`, selber Chat, „same character, mirrored pose, keep <Teil> on his LEFT“).
 
@@ -171,7 +171,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 
 ## 9. Offene Punkte
 
-- **Spiegeln im Dialog:** `src/ui/Dialogue.tsx` stellt Sprecher links und rechts auf, spiegelt aber nicht; alle Porträts schauen nach rechts, rechte Figuren blicken also aus dem Bild. Spiegeln der rechten Figur (CSS `scaleX(-1)`, Ausnahme bei `<id>_l.png`) ist eine Umsetzungsaufgabe.
+- **Spiegeln im Dialog: erledigt (2026-11-01).** `src/ui/Dialogue.tsx` spiegelt die rechte Figur (`pickSideHalf` in `src/ui/halfFigure.ts`); gibt es ein nach links gewandtes Bild `<id>_l` bzw. `<id>_l_<mood>`, wird es rechts ungespiegelt gezeigt.
 - **Kader-Zuordnung** (Statur, Frisur, Kopfform, Blick je Figur) macht Etappe 3 (Figuren-Bibel) mit dieser Vorlage.
 
 ## 10. Schablone für einen neuen Stil
