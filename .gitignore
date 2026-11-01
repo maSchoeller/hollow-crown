@@ -10,3 +10,4 @@ playwright-report/
 *.log
 .vite/
 dist-perf/
+concept/27-ueberarbeitung/levels/out/
