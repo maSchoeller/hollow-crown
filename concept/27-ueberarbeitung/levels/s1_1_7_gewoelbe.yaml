@@ -1,0 +1,127 @@
+# Etappe 6, Akt 1, Mission 1-7 – Unter der Paktwacht. Entwurf nach missionsliste-s1.md (K 16×20, treasure, 6 / 14, Plünderer).
+# Gewölbe im Fels des Grauen Kamms hinter der Burg: Eingangshalle im Süden (vom Gewölbe-Tor), ein Hauptgang nach Norden,
+# vier Grabkammern seitlich, die Königskammer mit der versiegelten Chronik im Norden. Dunkel (Nebel des Krieges), Fackeln.
+# Veränderliche Karte: Ab Runde 4 bebt es aus dem Norden, das Gewölbe stürzt von Norden her und von den Seiten ein (Formatwunsch set_terrain).
+# Die Westkammer oben ist verschlossen; den Schlüssel trägt der Anführer der Plünderer in der Ostkammer unten (oder Fenn).
+id: s1_1_7_gewoelbe
+nameKey: map.s1_1_7_gewoelbe.name
+size: [16, 20]
+fog: true
+legend:
+  ".": plain
+  "_": road
+  "^": mountain
+  "R": ruins
+  "d": door
+#          x: 0123456789012345
+terrain: |
+  ^^^^^^^^^^^^^^^^
+  ^^^^.R....R.^^^^
+  ^^^^........^^^^
+  ^^^^.R....R...^^
+  ^^^^^^^...^^..^^
+  ^^^^^^^..^^^^^^^
+  ^R...^^..^^....^
+  ^....d.........^
+  ^....^^..^^...R^
+  ^^^^^^^..^^^^^^^
+  ^^^^^^R..R^^^^^^
+  ^^^^^^^..^^^^^^^
+  ^R...^^..^^...R^
+  ^..............^
+  ^...R^^..^^R...^
+  ^^^^^^^..^^^^^^^
+  ^^^^^......^^^^^
+  ^^^^^......^^^^^
+  ^^^^^......^^^^^
+  ^^^^^..__..^^^^^
+timeOfDay: night
+weather: clear
+lights:
+  - { at: [7, 17], color: "#ffb35c", radius: 3 }
+  - { at: [7, 12], color: "#ffb35c", radius: 2 }
+  - { at: [7, 2], color: "#9fd4ff", radius: 3 }
+objects:
+  - { id: c_chronicle, type: chest, at: [7, 1], contents: { dialogue: scn.s1_1_7.chronicle } }
+  - { id: c_w1, type: chest, at: [2, 13], contents: { item: { def: vulnerary } } }
+  - { id: c_e1, type: chest, at: [13, 13], contents: { gold: 400 } }
+  - { id: c_w2, type: chest, at: [2, 7], contents: { item: { def: steel_sword } } }
+  - { id: c_e2, type: chest, at: [13, 7], contents: { gold: 300 } }
+  - { id: d_w2, type: door, at: [5, 7] }
+deploy:
+  max: 6
+  forced: [avatar, kael]
+  slots: [[6, 18], [7, 18], [8, 18], [9, 18], [6, 17], [9, 17], [7, 17], [8, 17]]
+units:
+  # Hauptgang
+  - { id: p1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 3, at: [7, 11], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p2, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 3, at: [8, 5], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  # Kammern unten
+  - { id: p3, nameKey: unit.looter.name, team: enemy, class: scout, level: 3, at: [2, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p4, nameKey: unit.looter.name, team: enemy, class: marksman, level: 3, at: [3, 14], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: looter_chief, nameKey: unit.looter_chief.name, team: enemy, class: brigand, level: 4, at: [12, 13], items: [{ def: steel_axe }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: p5, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 3, at: [13, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  # Kammern oben
+  - { id: p6, nameKey: unit.looter.name, team: enemy, class: brigand, level: 3, at: [3, 6], items: [{ def: iron_axe }], ai: { profile: hold } }
+  - { id: p7, nameKey: unit.looter.name, team: enemy, class: marksman, level: 3, at: [12, 6], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p8, nameKey: unit.looter.name, team: enemy, class: scout, level: 3, at: [13, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  # Königskammer
+  - { id: p9, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 4, at: [7, 3], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: p10, nameKey: unit.looter.name, team: enemy, class: marksman, level: 3, at: [9, 1], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Nur Schwer
+  - { id: p11, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [8, 8], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+reinforcements:
+  # aus Felsspalten
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 3, at: [13, 4], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 3, at: [1, 13], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: scout, level: 3, at: [14, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+objectives:
+  victory: { type: treasure, chests: [c_chronicle], turns: 8 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
+  side:
+    - { id: s_chests, type: open_chests, reward: { gold: 300 } }
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+triggers:
+  - id: t_quake
+    once: true
+    when: { type: turn_start, turn: 4, phase: player }
+    then:
+      - { action: dialogue, id: scn.s1_1_7.quake }
+      - { action: set_flag, flag: m1_7_collapse }
+goldReward: 800
+design:
+  title: Unter der Paktwacht
+  intent: >
+    Zweite veränderliche Karte: Das Gewölbe stürzt ab Runde 4 von Norden her ein. Der Spieler muss wählen zwischen der Chronik
+    (Sieg) und den Grabkammern (Beute), bevor sie verschüttet sind. Enge Gänge, Dunkelheit, Plünderer aus Felsspalten.
+  mood: Dunkles Felsgewölbe, Fackeln an den Wänden, Steinsarkophage junger Könige mit Kronen-Reliefs, Staub rieselt, ein fahles Glühen im Norden.
+  phases:
+    - { id: p1, turns: [1, 3], label: Gang, note: "Plünderer in Gang und unteren Kammern; Spaltenwelle Nordost (R3)." }
+    - { id: p2, turns: [4, 6], label: Beben, note: "R4 Beben; R5 stürzt die Königskammer bis auf die Chronik ein, R6 die oberen Kammern." }
+    - { id: p3, turns: [7, 8], label: Flucht nach vorn, note: "R7 stürzen die unteren Kammern ein; der Hauptgang bleibt bis zuletzt offen." }
+  paths:
+    - { team: player, points: [[7, 18], [7, 13], [7, 4], [7, 2]], label: Hauptgang }
+    - { team: player, points: [[6, 13], [3, 13]], label: Kammer W1 }
+    - { team: player, points: [[9, 13], [12, 13]], label: Kammer O1 }
+    - { team: enemy, points: [[13, 4], [11, 3], [9, 3]], phase: p1, label: R3 Spalte }
+  zones:
+    - { area: { rect: [4, 1, 11, 3] }, label: Königskammer, phase: p2 }
+    - { area: { tiles: [[1, 6], [2, 6], [3, 6], [4, 6], [11, 6], [12, 6], [13, 6], [14, 6], [1, 7], [2, 7], [3, 7], [4, 7], [11, 7], [12, 7], [13, 7], [14, 7], [1, 8], [2, 8], [3, 8], [4, 8], [11, 8], [12, 8], [13, 8], [14, 8]] }, label: Einsturz R6, phase: p2 }
+  marks:
+    - { at: [5, 7], label: T, note: "Verschlossene Tür zur Kammer W2; Schlüssel beim Anführer in Kammer O1 oder Fenn." }
+    - { at: [12, 13], label: A, note: "Anführer der Plünderer mit Schlüssel." }
+    - { at: [7, 1], label: C, note: "Versiegelte Chronik: Siegtruhe; Grabreliefs zeigen den Pakt (Saat Pakt)." }
+  notes:
+    - "Normal 14 Gegner (3 davon R3/R5) gegen 6 eigene, Stufe 3–4; Leicht 11, Schwer 15."
+    - "Formatwunsch set_terrain: Einsturz Runde 5 Königskammer außer [7,1]/[8,1]/[7,2]/[8,2], Runde 6 obere Kammern, Runde 7 untere Kammern werden zu rockwall; der Hauptgang bleibt offen; Figuren darauf werden auf das nächste freie Feld geschoben."
+    - "Verschüttete Truhen sind verloren; die Chronik selbst bleibt bis Runde 8 erreichbar."

@@ -1,0 +1,118 @@
+# Etappe 6, Akt 1, Nebenquest N3 – Das Erbe. Entwurf nach missionsliste-s1.md (K 16×20, defend, öffnet nach 1-6, wenn Tobin lebt).
+# Tobins Pachthof: Fluss im Norden mit Mühle und Mühlbrücke, Furt im Osten; in der Mitte Hofplatz mit Wohnhaus und Scheunen,
+# im Süden offene Kornfelder mit Hecken. Hasks versprengte Marodeure kommen von Süden über die Felder und von Norden über die Brücke.
+# Zu schützen: Tobins Vater. Der Hauptmann trägt den Schlüssel zur Truhe in der Scheune.
+id: s1_n3_erbe
+nameKey: map.s1_n3_erbe.name
+size: [16, 20]
+legend:
+  ".": plain
+  ",": grass
+  "f": grass
+  "_": road
+  "T": forest
+  "~": river
+  "w": shallows
+  "=": bridge
+  "B": wall
+  "H": village
+#          x: 0123456789012345
+terrain: |
+  TTTT,,,,,_,,TTTT
+  TTTT,,,,,_,,TTTT
+  ,,,,,,,,,_,,,,,,
+  ~~~~~~~BB=~~~ww~
+  ~~~~~~~~~=~~~ww~
+  ,,,,,,,H,_,,,,,,
+  ,,,,,,,,,_,,,,,,
+  ,,,,......BB.,,,
+  ,,,,..H...BB.,,,
+  ,,,,.........TTT
+  ,,,,.........TTT
+  ,,,,BB.......,,,
+  ,,,,BB.......,,,
+  Tfffffff,_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  Tfffffff,_,fffff
+  T,,,,,,,,_,,,,,,
+timeOfDay: evening
+weather: clear
+initialEffects:
+  - { effect: burning, tiles: [[3, 16], [13, 16]], turns: 3 }
+objects:
+  - { id: v_home, type: village, at: [6, 8], reward: { dialogue: scn.s1_n3.home } }
+  - { id: v_miller, type: village, at: [7, 5], reward: { item: { def: vulnerary } } }
+  - { id: c_barn, type: chest, at: [12, 8], contents: { gold: 400 } }
+deploy:
+  max: 6
+  forced: [avatar, tobin]
+  slots: [[5, 9], [6, 9], [7, 9], [8, 9], [5, 10], [6, 10], [7, 10], [8, 10]]
+units:
+  - { id: tobin_father, nameKey: unit.tobin_father.name, team: other, class: civilian, level: 1, at: [6, 7], items: [], ai: { profile: hold } }
+  # Süden: Felder und Straße
+  - { id: m1, nameKey: unit.marauder.name, team: enemy, class: brigand, level: 3, at: [3, 17], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+  - { id: m2, nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 3, at: [5, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m3, nameKey: unit.marauder.name, team: enemy, class: brigand, level: 3, at: [12, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m4, nameKey: unit.marauder.name, team: enemy, class: marksman, level: 3, at: [14, 19], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: captain, nameKey: unit.marauder_captain.name, team: enemy, class: vanguard, level: 4, at: [9, 18], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: trigger, wakeTurn: 2, then: aggressive } }
+  # Norden: über die Mühlbrücke
+  - { id: m5, nameKey: unit.marauder.name, team: enemy, class: brigand, level: 3, at: [9, 1], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 3, at: [7, 1], items: [{ def: iron_sword }], ai: { profile: raider, target: v_miller } }
+  - { id: m7, nameKey: unit.marauder.name, team: enemy, class: marksman, level: 3, at: [11, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: m8, nameKey: unit.marauder.name, team: enemy, class: brigand, level: 4, at: [1, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+reinforcements:
+  - turn: 2
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 3, at: [12, 19], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 3, at: [2, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, level: 3, at: [15, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, level: 3, at: [15, 2], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, level: 4, at: [9, 19], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, level: 3, at: [10, 19], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+objectives:
+  victory: { type: defend, unit: tobin_father, turns: 8 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: tobin }
+    - { type: unit_dies, unit: tobin_father }
+  side:
+    - { id: s_chest, type: open_chests, reward: { gold: 200 } }
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
+goldReward: 500
+design:
+  title: Das Erbe
+  intent: >
+    Kleine Verteidigung auf zwei Fronten: Süden über offene, brennende Felder, Norden über die Mühlbrücke und die Furt im Osten.
+    Plünderer zielen auf Wohnhaus und Müllerhaus. Nach dem Sieg übergibt Tobins Vater die Signaturlanze (Szene).
+  mood: Spätsommerabend auf einem Pachthof, das Mühlrad dreht sich, Rauch über den Kornfeldern, Hühner flüchten über den Hof.
+  phases:
+    - { id: p1, turns: [1, 3], label: Felder, note: "Marodeure aus dem Süden, Feuer in den Feldern; zwei Mann über die Brücke." }
+    - { id: p2, turns: [4, 5], label: Furt, note: Welle über die Furt im Nordosten (R4). }
+    - { id: p3, turns: [6, 8], label: Letzter Ansturm, note: Nachschub über die Straße (R6). }
+  paths:
+    - { team: enemy, points: [[3, 17], [4, 13], [6, 9]], label: Plünderer }
+    - { team: enemy, points: [[9, 1], [9, 6], [7, 8]], label: Mühlbrücke }
+    - { team: enemy, points: [[15, 0], [13, 3], [12, 7]], phase: p2, label: R4 Furt }
+  zones:
+    - { area: { rect: [4, 7, 12, 12] }, label: Hofplatz }
+  marks:
+    - { at: [9, 3], label: E1, note: "Mühlbrücke, ein Kämpfer hält sie." }
+    - { at: [13, 3], label: E2, note: "Furt, nur zu Fuß." }
+    - { at: [12, 8], label: K, note: "Truhe in der Scheune: Schlüssel beim Hauptmann oder Fenn." }
+  notes:
+    - "Normal 14 Gegner (6 davon in Wellen R2/R4/R6) gegen 6 eigene, Stufe 3–4; Leicht 11, Schwer 16."
+    - Keine Geländeveränderung außer dem vorhandenen Feuer (nächste veränderliche Karte 1-7).
