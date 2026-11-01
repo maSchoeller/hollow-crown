@@ -54,3 +54,5 @@
 | 8 | Umsetzungsplanung | Epics und Stories für den Umbau | `26-epics/` | alle |
 
 Die Etappen 1, 2 und 5 hängen nicht voneinander ab und können parallel laufen.
+
+**Stand Etappe 6 (2026-11-01):** Akt 1 abgenommen, 12 Entwürfe in `levels/s1_*.yaml`, Abnahme-Ansichten in `levels/abnahme/`. Offene Formatwünsche: Wirkung `set_terrain` (veränderliche Karten P, 1-4, 1-7), Gelände `roof` (N1), Item `pactwarden_shield` (N2). Als Nächstes Akt 2.
