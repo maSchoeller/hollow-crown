@@ -21,6 +21,9 @@ import sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
+# Body outline source: the old weaponless Rhen portrait. The style anchors moved to
+# art/mockups/style-2026-11/anchor_rhen.png / anchor_fenn.png (they hold weapons, which
+# must not end up in a build silhouette); their guide lines sit at the same heights.
 ANCHOR = "art/mockups/characters-s1/rhen_a.png"
 # (label, fraction of image height)
 GUIDES = [("top", 0.02), ("eyes", 0.20), ("chin", 0.33), ("shoulders", 0.40), ("belt", 0.78)]

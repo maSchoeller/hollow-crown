@@ -3,15 +3,16 @@
 - **Stand:** 2026-11-01, Fassung **v2.5** (Stil v2.4 vom Produktinhaber gewählt, ergänzt um Statur, Blick, Fraktion, Frisur).
 - **Gilt für:** alle Dialog-Porträts (`art/mockups/characters-s1/<id>.png` und Stimmungen, Format `art-direction.md` §5.1). Brettfiguren bleiben, wie sie sind.
 - **Herleitung und Testbilder:** `art/prompts/portrait_tests_2026-11.md`, Bilder `art/mockups/style-2026-11/`, Entscheidungen `concept/23-art-direction/decision-log.md`.
-- **Werkzeug:** `tools/art/portrait_guides.py` (Statur-Vorlagen, Prüfbogen).
+- **Werkzeug:** `tools/art/portrait_guides.py` (Statur-Vorlagen, Prüfbogen, Kopf-Silhouetten).
+- **Stil-Anker:** `art/mockups/style-2026-11/anchor_rhen.png` und `anchor_fenn.png` (Produktinhaber, 2026-11-01; vorher die Spiel-Porträts `characters-s1/rhen_a.png` und `fenn.png`). Die Statur-Vorlagen und der blaue Umriss im Prüfbogen bleiben aus dem alten, waffenlosen `rhen_a.png` gebaut, damit keine Waffe in die Silhouette gerät; die Linien liegen beim neuen Anker an denselben Stellen.
 
 ## 1. Ablauf für eine neue Figur
 
 1. **Figurenblatt ausfüllen** (§4): Fraktion, Statur, Kopf, Gesicht, Frisur, Blick, Palette, Kleidung, Signaturteil. Vorher die Regeln für den Kader (§5) gegen die Gruppe prüfen, in der die Figur auftritt.
 2. **Prompt zusammensetzen:** Einleitungssatz + Stil-Block (§2) + Format-Block (§3) + Statur-Absatz (§3a) + Figurenblock. Nichts davon umformulieren.
-3. **Anhänge:** `art/mockups/characters-s1/rhen_a.png`, `fenn.png` (Stil-Anker), dann `art/mockups/style-2026-11/guide_build_<statur>.png`.
+3. **Anhänge:** `art/mockups/style-2026-11/anchor_rhen.png`, `anchor_fenn.png` (Stil-Anker, seit 2026-11-01 die neuen Rhen A und Fenn mit Waffe), dann `art/mockups/style-2026-11/guide_build_<statur>.png`.
 4. **Zwei frische Chats parallel** mit demselben Prompt. Keine langen Folgechats.
-5. **Prüfbogen:** `python tools/art/portrait_guides.py sheet <bogen.png> art/mockups/characters-s1/rhen_a.png art/mockups/characters-s1/fenn.png <a>.png:<statur> <b>.png:<statur>`. Bessere Variante wählen; höchstens **eine** Folgekorrektur (§7), sonst neuer Chat.
+5. **Prüfbogen:** `python tools/art/portrait_guides.py sheet <bogen.png> art/mockups/style-2026-11/anchor_rhen.png art/mockups/style-2026-11/anchor_fenn.png <a>.png:<statur> <b>.png:<statur>`. Bessere Variante wählen; höchstens **eine** Folgekorrektur (§7), sonst neuer Chat.
 6. **Abnahme** (§8) zusammen mit den Nachbarn aus der Gruppe; der Produktinhaber bekommt pro Runde einen Bogen, keine Einzelbilder.
 7. **Stimmungen** `_happy`, `_angry`, `_sad` im selben Chat mit dem abgenommenen Bild als Vorlage (§7).
 8. **Protokoll** `art/prompts/<id>.md` nach `licensing.md` §6 (Dienst, Tarif, Konto, Datum, Prompt, Anhänge, Iterationen, Original unverändert in LFS, menschlicher Anteil).
