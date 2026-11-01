@@ -3,7 +3,8 @@
 - **Datum:** 2026-11-01
 - **Zweck:** Ein fester Stil-Block plus Regeln zur Individualisierung, damit die Dialog-Porträts aus einem Guss wirken, die Figuren aber nicht gleich aussehen (Roadmap `concept/27-ueberarbeitung/roadmap.md`, „Figuren-Stil“, Etappe 2).
 - **Gilt für:** Dialog-Porträts (`art/mockups/characters-s1/<id>.png` und ihre Stimmungen, Format `art-direction.md` §5.1). **Nicht** für die Brettfiguren: Die 3D-Figuren sind auf dem Brett so klein, dass ihr Stil im Großen und Ganzen passt (Produktinhaber, 2026-11-01); Körper sind zweitrangig.
-- **Status:** getestet an Brenna, Grosk, Liora und Kael (§4); Alternativen in §5; Wahl des Produktinhabers im Decision-Log `concept/23-art-direction/decision-log.md`.
+- **Status:** **Fassung v2.4 gewählt** (Produktinhaber, 2026-11-01), Decision-Log `concept/23-art-direction/decision-log.md`. Getestet an Brenna, Grosk, Liora und Kael (§4); Alternativen in §5.
+- **Herkunft (licensing.md §6, A1–A3):** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto `maschoeller` (Seitenleiste, 2026-11-01); keine Modell-Versionsnummer sichtbar (Denkaufwand „Medium“). Originale unverändert in `art/mockups/style-2026-11/` (LFS), Download per `fetch` der Bildquelle im Chat. Menschlicher Anteil: Auswahl, Korrekturanweisungen, keine Retusche. Die Bilder sind Stiltests, keine Spiel-Assets.
 
 ## 1. Befund: vier Stile nebeneinander
 
@@ -56,7 +57,8 @@ Hair: a few big clumps with 2-4 stray strands breaking the outline.
 PROPORTIONS exactly like the anchors: round chibi, big round head about one third of the
 image height, short compact body (about 2.5 heads tall overall), short arms, small hands;
 the eyes sit at about one third from the top of the image, the same for every portrait.
-Build and face shape vary per character, the chibi proportions do not.
+Build and face shape vary per character, the chibi proportions do not; tall, noble or
+heroic characters show it only through posture, never through a longer body.
 CLOTHES rendered like the anchors: a few big clean shapes, no fabric texture, no grain, no
 scratches, no weathering marks, no dirt; patches, repairs and missing emblems as clean flat
 shapes; chainmail as a flat grey area with a few ring marks at the edges; straps as plain
@@ -69,7 +71,7 @@ never covering the face.
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
 - **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
-- **v2.4:** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2).
+- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block.
 - **v2.3 (verworfen):** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
