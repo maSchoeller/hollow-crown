@@ -71,7 +71,7 @@ never covering the face.
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
 - **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
-- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block.
+- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block. Die Korrektur schoss über das Ziel (zu schmal, Kopf zu groß); erst die Proportions-Vorlage (§9) brachte Kael im ersten Versuch auf Rhens Umriss (`v24_kael_guide.png`).
 - **v2.3 (verworfen):** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
@@ -341,3 +341,27 @@ Für den Fall, dass später ein anderer Stil gebraucht wird (neue Figurengruppe,
 - Stimmungs-Adjektive (*gentle, serene, confident*) erzeugen Durchschnittsgesichter.
 - Ein starker Figurenblock überstimmt einen schwachen Stil-Block; Alternativstile brauchen deshalb Anker, sonst gleichen sie sich an.
 - ChatGPT übernimmt Entwürfe zwischen Tabs: Der Eingabeentwurf eines neuen Chats kann den Text eines anderen Tabs enthalten; vor dem Einfügen leeren.
+
+## 9. Maßnahmen gegen lange Iterationen
+
+Die fünf Runden (2026-11-01) zeigten: ChatGPT trifft Gesicht und Machart gut, aber Proportionen (Kopf zu Körper, Schulterbreite, Größe im Bild) schwanken von Bild zu Bild, und jede Folgekorrektur kann über das Ziel hinausschießen (Kael: erst zu massig, dann zu schmal mit zu großem Kopf). Gegenmittel:
+
+1. **Proportions-Vorlage als dritter Anhang.** `art/mockups/style-2026-11/guide_proportions.png`, erzeugt mit `python tools/art/portrait_guides.py template <datei>`: Rhens Silhouette hellgrau mit roten Linien TOP 2 %, EYES 20 %, CHIN 33 %, SHOULDERS 40 %, BELT 78 % der Bildhöhe. Im Prompt nach dem Stil-Block der Absatz `PROPORTION TEMPLATE` (§9a). Die Figur soll die Silhouette füllen; die Linien selbst darf sie nicht zeichnen.
+2. **Prüfbogen statt Augenmaß.** Jedes neue Bild sofort mit `python tools/art/portrait_guides.py sheet <bogen.png> rhen_a.png fenn.png <neu>.png …` prüfen: Hilfslinien, Rhens Umriss in Blau darüber, gemessene Breite bei 40/60/78 % mit `!`, wenn sie außerhalb der Spanne der Anker liegt. Was hier durchfällt, sieht der Produktinhaber gar nicht erst.
+3. **Varianten statt Kettenkorrektur.** Je Figur zwei frische Chats parallel mit demselben Prompt; die bessere Variante per Prüfbogen wählen. Höchstens **eine** Folgekorrektur je Chat; weicht das Ergebnis danach noch ab, neuer Chat.
+4. **Körperbau relativ zu Rhen beschreiben.** Im Feld `BUILD` keine Wörter, die Größe oder Masse ohne Maß setzen (*lean, tall, huge, bulky, broad*), sondern „as wide as RHEN“, „about 1.3 × RHEN's shoulder width, same height“. Adel, Heldentum, Größe nur über Haltung.
+5. **Korrekturen nur als „keep this exact image … and only …“** und mit dem Maß aus dem Prüfbogen („shoulders as wide as the grey silhouette“), nie „smaller“ oder „bigger“ ohne Bezug.
+6. **Abnahme in einem Schritt.** Der Produktinhaber bekommt einen Prüfbogen mit allen Kandidaten einer Runde nebeneinander, nicht einzelne Bilder; Rückmeldungen gelten dann für die ganze Runde.
+7. **Produktion delegieren.** Ist der Prompt fertig, erzeugen Sonnet-Subagenten die Bilder und Prüfbögen; die Session prüft nur noch die Bögen.
+
+### 9a. Absatz für die Proportions-Vorlage
+
+```text
+PROPORTION TEMPLATE: the THIRD attached image is a measuring guide made from the RHEN anchor:
+a light-grey body silhouette with red lines labelled TOP, EYES, CHIN, SHOULDERS, BELT. The new
+character must fill this silhouette at the same scale: top of the hair on TOP, eyes on EYES,
+chin on CHIN, shoulder line on SHOULDERS, belt on BELT, shoulders and torso as wide as the grey
+silhouette, the figure cut off by the bottom edge of the image exactly like the anchors.
+Head-to-body ratio exactly like RHEN. Do NOT draw the lines, labels or the grey silhouette in
+the result.
+```
