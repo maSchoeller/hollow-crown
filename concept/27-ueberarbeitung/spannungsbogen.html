@@ -245,40 +245,40 @@ footer { color: var(--muted); font-size: .9rem; }
 </section>
 
 <section>
-  <div class="eyebrow">Entwurf · Missionsliste Staffel 1</div>
+  <div class="eyebrow">Missionsliste Staffel 1 · an die Welt angepasst</div>
   <h2>Missionsgraph: höchstens zwei parallel</h2>
-  <p>Je Akt zwei Paare in freier Reihenfolge, sonst eine feste Folge. Nebenquests (Raute) öffnen nur, wenn genau eine Story-Mission offen ist; sonst warten sie. <b>G</b> = große Karte 30×40, <b>K</b> = klein, ohne Zeichen = mittel. Details stehen in <code>concept/22-narrative/missionsliste-s1.md</code>.</p>
+  <p>Je Akt zwei Paare in freier Reihenfolge, sonst eine feste Folge. Nebenquests (Raute) zählen nicht mit und öffnen nach ihrem Auslöser; Stadt-Nebenquests sind nach Akt 3 nachholbar. Unter jedem Titel steht der Ort aus dem Weltentwurf. <b>G</b> = große Karte 30×40, <b>K</b> = klein, ohne Zeichen = mittel. Details stehen in <code>concept/22-narrative/missionsliste-s1.md</code>.</p>
   <h3 style="color:var(--a1)">Akt 1 „Asche“</h3>
   <div class="scroll"><pre class="mermaid">
 flowchart LR
-  P["P · Die Paktnacht · K"] --> A11["1-1 Steckbriefe · K"]
-  A11 --> A12["1-2 Asche über Erlbach"] & A13["1-3 Der Fremde mit dem Siegel"]
-  A12 & A13 --> A14["1-4 Die Spur des Maklers"]
-  A14 --> A15["1-5 Das Hungerlager"] --> A16["1-6 Die Paktwacht · G"] --> A17["1-7 Unter der Paktwacht · K"] --> A18["1-8 Die Heimat halten · G"]
-  A14 -.-> N1{{"N1 Ring von Varnhold"}}
-  A15 -.-> N2{{"N2 Letzter Wachturm"}}
-  A16 -.-> N3{{"N3 Das Erbe"}}
+  P["P · Die Paktnacht · K<br/><i>Glutdom, Aurenhall</i>"] --> A11["1-1 Steckbriefe · K<br/><i>Varnhold</i>"]
+  A11 --> A12["1-2 Asche über Erlbach<br/><i>Erlbach</i>"] & A13["1-3 Der Fremde mit dem Siegel<br/><i>Grenzwald</i>"]
+  A12 & A13 --> A14["1-4 Die Spur des Maklers<br/><i>Wolfshügel</i>"]
+  A14 --> A15["1-5 Das Hungerlager<br/><i>Erlenmoor</i>"] --> A16["1-6 Die Paktwacht · G<br/><i>Grauer Kamm</i>"] --> A17["1-7 Unter der Paktwacht · K<br/><i>Gewölbe</i>"] --> A18["1-8 Die Heimat halten · G<br/><i>Paktwacht</i>"]
+  A14 -.-> N1{{"N1 Ring von Varnhold<br/><i>Varnhold</i>"}}
+  A15 -.-> N2{{"N2 Letzter Wachturm<br/><i>Grenzmauer</i>"}}
+  A16 -.-> N3{{"N3 Das Erbe<br/><i>Pachthof</i>"}}
   </pre></div>
   <h3 style="color:var(--a2)">Akt 2 „Glut“</h3>
   <div class="scroll"><pre class="mermaid">
 flowchart LR
-  B21["2-1 Wind über der Eisenmark"] --> B22["2-2 Siegel im Salzpass · K"] & B23["2-3 Die Rabenweide"]
-  B22 & B23 --> B24["2-4 Die Brandschneise · G"]
-  B24 --> B25["2-5 Die verstoßene Leibwache"] & B26["2-6 Gold für Banditen"]
-  B25 & B26 --> B27["2-7 Das Kontor am Silbermeer"] --> B28["2-8 Kronfeld · G"]
-  B24 -.-> N4{{"N4 Clan im Schnee"}}
-  B24 -.-> N5{{"N5 Glut unter dem Berg"}}
-  B27 -.-> N6{{"N6 Gauklertruppe"}}
+  B21["2-1 Wind über der Eisenmark<br/><i>Windscharte</i>"] --> B22["2-2 Siegel im Salzpass · K<br/><i>Salzpass</i>"] & B23["2-3 Die Rabenweide<br/><i>Gestüt an der Aure</i>"]
+  B22 & B23 --> B24["2-4 Die Brandschneise · G<br/><i>Brandhang</i>"]
+  B24 --> B25["2-5 Die verstoßene Leibwache<br/><i>Silberquell</i>"] & B26["2-6 Gold für Banditen<br/><i>Krähenholm</i>"]
+  B25 & B26 --> B27["2-7 Das Kontor am Silbermeer<br/><i>Auremündung</i>"] --> B28["2-8 Kronfeld · G<br/><i>Ebene an der Aure</i>"]
+  B23 -.-> N4{{"N4 Clan im Schnee<br/><i>Kupferberge</i>"}}
+  B24 -.-> N5{{"N5 Glut unter dem Berg<br/><i>Kupferhall</i>"}}
+  B27 -.-> N6{{"N6 Gauklertruppe<br/><i>Aue-Insel</i>"}}
   </pre></div>
   <h3 style="color:var(--a3)">Akt 3 „Krone“</h3>
   <div class="scroll"><pre class="mermaid">
 flowchart LR
-  C31["3-1 Winter über Aurenhall · K"] --> C32["3-2 Das verbotene Lied"] & C33["3-3 Die Einsiedlerin"]
-  C32 & C33 --> C34["3-4 Der Zweifler"] --> C35["3-5 Die Krönung"] --> C36["3-6 Das Südtor · G"] --> C37["3-7 Der Weg ins Gebirge"] --> C38["3-8 Im Drachengebirge · G"]
-  C34 -.-> N7{{"N7 Verwiesen"}}
-  C34 -.-> N10{{"N10 Die Unterstadt"}}
-  C37 -.-> N9{{"N9 Grab Aldrics I."}}
-  C38 -.-> N8{{"N8 Brennas Bruder"}}
+  C31["3-1 Winter über Aurenhall · K<br/><i>Palastgänge</i>"] --> C32["3-2 Das verbotene Lied<br/><i>Sängerviertel</i>"] & C33["3-3 Die Einsiedlerin<br/><i>Winterwald</i>"]
+  C32 & C33 --> C34["3-4 Der Zweifler<br/><i>Spiegelsee</i>"] --> C35["3-5 Die Krönung<br/><i>Glutdom</i>"] --> C36["3-6 Das Südtor · G<br/><i>Unterstadt</i>"] --> C37["3-7 Der Weg ins Gebirge<br/><i>Gletscherpass</i>"] --> C38["3-8 Im Drachengebirge · G<br/><i>Urtempel</i>"]
+  C31 -.-> N7{{"N7 Verwiesen<br/><i>Akademie</i>"}}
+  C31 -.-> N10{{"N10 Die Unterstadt<br/><i>Unterstadt</i>"}}
+  C37 -.-> N9{{"N9 Grab Aldrics I.<br/><i>Eisfjord</i>"}}
+  C38 -.-> N8{{"N8 Brennas Bruder<br/><i>Flüchtlingslager</i>"}}
   </pre></div>
 </section>
 
