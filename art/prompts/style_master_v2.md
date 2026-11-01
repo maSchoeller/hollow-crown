@@ -22,12 +22,12 @@ Was A von den anderen trennt, sind nicht die Figuren, sondern **die Bauweise des
 
 Was die Lieblinge zusätzlich auszeichnet: Jede hat einen konkreten Makel oder ein Ding (gesprungene Nadel, Pflaster, Zahnlücke, Brille, Tintenflecken) und einen bestimmten Ausdruck (ernst, frech, eifrig, süffisant). Die schwächeren Prompts beschreiben Stimmung mit Adjektiven (*gentle, serene, kind, warm*); das führt zum Durchschnittsgesicht.
 
-## 2. Fester Stil-Block (Fassung v2.3)
+## 2. Fester Stil-Block (Fassung v2.4)
 
 Wörtlich und unverändert in jeden Prompt (englisch). Stil-Anker anhängen: **`art/mockups/characters-s1/rhen_a.png` und `fenn.png`** (die bisherigen Porträts von Rhen A und Fenn; sie bleiben unverändert und sind der Maßstab, Produktinhaber 2026-11-01). Der Satz dazu steht im Block.
 
 ```text
-STYLE (fixed, Hollow Crown portrait v2.3). The attached images are STYLE ANCHORS ONLY: copy
+STYLE (fixed, Hollow Crown portrait v2.4). The attached images are STYLE ANCHORS ONLY: copy
 their drawing technique and proportions, never their face, hair, body or clothes.
 Round-chibi cartoon dialogue portrait. Clean dark-brown line (never black) of even medium
 weight, slightly thicker outer contour.
@@ -36,11 +36,12 @@ tone, plus a smaller darker core shadow in the deepest spots (under chin and hai
 folds, under straps and belts, where arms meet the body); a soft occlusion shadow where
 layers overlap; one small highlight shape on hair, leather, metal and eyes. No airbrush,
 no gradients across big areas, no texture, no glow, no rim light.
-CHILDLIKE FACE like the anchors, for every age: big round head, big round forehead, soft
-round cheeks, small soft chin, eyes set low and wide (at the vertical middle of the head),
-short small nose, small mouth. Age, toughness and character show only through a few small
-lines, scars, beard, hair and expression, never through a longer, harder or more realistic
-face.
+FACE MATURITY exactly like the anchors: the same head shape, head size and eye placement
+as RHEN and FENN - youthful chibi faces of young adults, NOT babyish, NOT toddler-like: a
+defined small chin, normal anchor-sized eyes, a light hint of cheekbones. Each character
+looks their stated age the way the anchors look theirs: older characters get a few clean
+lines (eye corners, forehead, nasolabial), a firmer jaw, beard or grey hair, but keep the
+same chibi head; never a longer, realistic or rugged face.
 FACE CONSTRUCTION, identical for every character (only the SHAPES vary):
 - Eyes: strong dark upper-lid line, simple coloured iris with a darker top, round pupil,
   exactly ONE small white catchlight; no lower lashes, no sparkles, no extra highlights.
@@ -68,7 +69,8 @@ never covering the face.
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
 - **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
-- **v2.3:** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
+- **v2.4:** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2).
+- **v2.3 (verworfen):** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
 
@@ -195,6 +197,25 @@ PALETTE: dominant gunmetal grey #5A5F66, secondary dark brown leather #4B3426, a
 CLOTHES TELL: a dented old army breastplate with the noble crest scratched out; one big mismatched rounded pauldron on his left shoulder; frayed grey cloak; ember-orange sash.
 EXPRESSION: calm, unimpressed, mouth a flat line, one corner slightly up.
 SIGNATURE: the big mismatched left pauldron and the low ponytail.
+```
+
+### Kael (neues Konzept ab v2.1, verstoßener Adliger)
+
+```text
+CHARACTER: KAEL, 38, captain of the mercenary company; a cast-out nobleman and former knight-captain of the border army who left after a noble commander sacrificed his unit; upright, calm, protective.
+HEAD: well-proportioned head, refined face, slim jaw.
+EYES: medium, almond, calm and a little tired, amber.
+BROWS: straight, dark brown.
+NOSE: straight and elegant.
+MOUTH: firm, a faint dry smile.
+MARKS AND AGE: a short scar through the right eyebrow, a few fine lines at the eye corners, clean-shaven.
+SKIN: light olive.
+HAIR: well-kept dark brown hair grown a bit too long, tied into a short low ponytail, a few strands at the temples.
+BUILD (visible part): lean, not muscular, upright noble bearing.
+PALETTE: dominant royal green #1F5E3B, secondary clean steel grey #8A939C, accent dark brown leather #5A3D26, plus ONE small ember-orange #E8743B cloth knot on his belt (company sign).
+CLOTHES TELL: a knight's royal-green surcoat over a plain steel breastplate; the noble house emblem on the surcoat has been unpicked, leaving only a faint outline; one rounded pauldron on his LEFT shoulder; dark green cloak. No red anywhere.
+EXPRESSION: calm, steady gaze, faint dry smile.
+SIGNATURE: the royal-green surcoat with the unpicked emblem and the left pauldron.
 ```
 
 ### Reproduzierbarkeit: Rhen A und Fenn frisch aus v2.2
