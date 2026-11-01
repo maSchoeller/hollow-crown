@@ -1,4 +1,6 @@
-# style_master_v2 – Stil-Vorlage für Porträts und Gesichter (Etappe 2 der Überarbeitung)
+# portrait_tests_2026-11 – Herleitung des Porträtstils (Etappe 2 der Überarbeitung)
+
+> **Abgelöst als Vorlage durch `art/prompts/portrait_master.md`.** Diese Datei bleibt als Herleitung und als Prompt-Protokoll der Testbilder in `art/mockups/style-2026-11/` (licensing.md §6, A2). Für neue Porträts nur `portrait_master.md` verwenden.
 
 - **Datum:** 2026-11-01
 - **Zweck:** Ein fester Stil-Block plus Regeln zur Individualisierung, damit die Dialog-Porträts aus einem Guss wirken, die Figuren aber nicht gleich aussehen (Roadmap `concept/27-ueberarbeitung/roadmap.md`, „Figuren-Stil“, Etappe 2).
@@ -379,3 +381,11 @@ the result.
 ### 9b. Test der Statur-Vorlagen (2026-11-01)
 
 Brenna `broad`, Grosk `heavy`, Liora `tall`, je ein frischer Chat ohne Korrektur, erzeugt von einem Sonnet-Subagenten nach dieser Vorlage (`art/mockups/style-2026-11/build_*.png`). Breite bei 40/60/78 %: Rhen 0,44/0,66/0,70; Brenna 0,53/0,79/0,85 (im Rahmen); Grosk 0,75/0,91/0,86 (Schulterzeile durch den erhobenen Arm über der Toleranz); Liora 0,48/0,67/0,73 (Gürtelzeile durch den Umhang darüber). Köpfe, Augenlinie und Machart blieben gleich, die Körper unterscheiden sich deutlich.
+
+### 9c. Erster Test von portrait_master v2.5 (2026-11-01)
+
+Liora (Pakttempel-Kit, abtrünnig; Kristallstab als Signaturteil; Kopf abgewandt, Blick von der Seite) und Hask (Banden-Kit; Irokese; fast frontal, Blick zum Betrachter), beide , je ein frischer Chat ohne Korrektur, Sonnet-Subagent. Prompts:  §2, §3, §3a plus die Figurenblöcke unten. Ergebnis , . Breite 40/60/78 %: Liora 0,75/0,77/0,78, Hask 0,56/0,86/0,73, beide über der -Spanne, weil Ärmel, offenes Haar, Stab, Fackel und Fell mitgemessen werden; der Körper selbst ist schmal. Die Breitenmessung taugt deshalb bei Requisiten und weiten Gewändern nur als Hinweis. Fraktionsnähe Hask–Grosk (Erdbraun, Oliv, Fell, Leder) sichtbar; Lioras Kronensymbol wurde gezeichnet statt ausgeschnitten.
+
+
+
+

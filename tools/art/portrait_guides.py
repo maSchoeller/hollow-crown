@@ -1,4 +1,4 @@
-"""Proportion guides for dialogue portraits (art/prompts/style_master_v2.md).
+"""Proportion guides for dialogue portraits (art/prompts/portrait_master.md).
 
 Two jobs:
   sheet     Contact sheet: every portrait with the guide lines and the anchor's
