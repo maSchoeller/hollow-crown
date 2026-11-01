@@ -22,41 +22,49 @@ Was A von den anderen trennt, sind nicht die Figuren, sondern **die Bauweise des
 
 Was die Lieblinge zusätzlich auszeichnet: Jede hat einen konkreten Makel oder ein Ding (gesprungene Nadel, Pflaster, Zahnlücke, Brille, Tintenflecken) und einen bestimmten Ausdruck (ernst, frech, eifrig, süffisant). Die schwächeren Prompts beschreiben Stimmung mit Adjektiven (*gentle, serene, kind, warm*); das führt zum Durchschnittsgesicht.
 
-## 2. Fester Stil-Block
+## 2. Fester Stil-Block (Fassung v2.2)
 
-Wörtlich und unverändert in jeden Prompt (englisch). Dazu als Stil-Anker die Bilder `rhen_a.png` und `fenn.png` anhängen (Satz im Block).
+Wörtlich und unverändert in jeden Prompt (englisch). Stil-Anker anhängen: **`art/mockups/style-2026-11/v22_brenna.png` und `v22_kael.png`** (zwei freigegebene Bilder im Zielstil; der Satz dazu steht im Block). Bis die neuen Porträts von Rhen und Fenn abgenommen sind, gelten diese beiden als Anker; die alten `rhen_a.png` und `fenn.png` waren die Anker von v2 und v2.1.
 
 ```text
-STYLE (fixed, Hollow Crown portrait v2). The attached images are STYLE ANCHORS ONLY: copy
-their drawing technique, never their face, hair, body or clothes.
+STYLE (fixed, Hollow Crown portrait v2.2). The attached images are STYLE ANCHORS ONLY: copy
+their drawing technique and proportions, never their face, hair, body or clothes.
 Round-chibi cartoon dialogue portrait. Clean dark-brown line (never black) of even medium
-weight, slightly thicker outer contour. Flat colours with exactly ONE shadow tone per colour
-and at most one simple highlight shape on hair and metal; no airbrush, no gradients, no
-texture, no glow, no rim light.
+weight, slightly thicker outer contour.
+SHADING: two-tone cel shading, light from the upper left: base colour, one clear shadow
+tone, plus a smaller darker core shadow in the deepest spots (under chin and hair, inside
+folds, under straps and belts, where arms meet the body); a soft occlusion shadow where
+layers overlap; one small highlight shape on hair, leather, metal and eyes. No airbrush,
+no gradients across big areas, no texture, no glow, no rim light.
 FACE CONSTRUCTION, identical for every character (only the SHAPES vary):
 - Eyes: strong dark upper-lid line, simple coloured iris with a darker top, round pupil,
   exactly ONE small white catchlight; no lower lashes, no sparkles, no extra highlights.
   Eye SIZE and SHAPE come from the character block.
 - Nose: a simple line drawing (short stroke or small angled shape) with at most one small
-  flat shadow; never a shaded or shiny bulb, no red nose tip unless stated.
+  flat shadow; never a shaded or shiny bulb, no red nose tip.
 - Mouth: simple line or open shape with a flat dark inside and one white teeth shape.
-- Skin: one flat tone plus one shadow tone; no blush, no glossy skin, no pore or stubble
-  texture (stubble = one flat slightly darker area).
+- Skin: base tone plus shadow tone; no blush, no glossy skin, no pore or stubble texture
+  (stubble or a short beard = one flat darker shape).
 - Wrinkles, scars and age lines: a few clean single lines, never hatching.
-Hair: a few big clumps with 2-4 stray strands, one shadow tone, one highlight shape.
+Hair: a few big clumps with 2-4 stray strands breaking the outline.
 PROPORTIONS exactly like the anchors: round chibi, big round head about one third of the
 image height, short compact body (about 2.5 heads tall overall), short arms, small hands;
 the eyes sit at about one third from the top of the image, the same for every portrait.
 Build and face shape vary per character, the chibi proportions do not.
-Clothes rendered like the anchors: a few big clean shapes, flat colour plus one shadow
-tone, no fabric texture, no grain, no scratches, no weathering marks, no dirt; patches,
-repairs and missing emblems as flat clean shapes (like the patches on Fenn); chainmail as a
-flat grey area with a few ring marks at the edges; straps as plain bands; metal with one
-shadow tone and one simple highlight shape. No gold filigree, no embroidery patterns, no
-gems, at most one prop, held low and never covering the face.
+CLOTHES rendered like the anchors: a few big clean shapes, no fabric texture, no grain, no
+scratches, no weathering marks, no dirt; patches, repairs and missing emblems as clean flat
+shapes; chainmail as a flat grey area with a few ring marks at the edges; straps as plain
+bands. No gold filigree, no embroidery patterns, no gems, at most one prop, held low and
+never covering the face.
 ```
 
-> **v2.1 (2026-11-01, nach Feedback):** In v2 stand nur „Kopf 40 % der Bildhöhe“. ChatGPT malte die Gesichter richtig, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung. Der Produktinhaber: Figuren gefallen, sollen aber in Proportion und Machart genau wie die Anker sein. Deshalb stehen Proportionen und Kleidungs-Machart jetzt ausdrücklich im Block. Die Korrektur lief als Folgenachricht im selben Chat (Anker schon angehängt) und reichte in einem Schritt.
+**Herleitung der Fassungen** (alle am 2026-11-01, Produktinhaber):
+
+- **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
+- **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
+- **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Abgenommen als Zielstil.
+
+Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
 
 ### Format-Block (§5.1)
 
@@ -183,6 +191,44 @@ EXPRESSION: calm, unimpressed, mouth a flat line, one corner slightly up.
 SIGNATURE: the big mismatched left pauldron and the low ponytail.
 ```
 
+### Reproduzierbarkeit: Rhen A und Fenn frisch aus v2.2
+
+Neuer Chat je Figur, Anker `v22_brenna.png` + `v22_kael.png`, Stil-Block v2.2 + Format-Block + Figurenblock, keine Folgekorrektur.
+
+```text
+CHARACTER: RHEN, about 24, the player's tactician (masculine-read); expelled from the war academy over gambling debts, joined the company weeks ago and brought them the job that trapped them.
+HEAD: round head, soft but defined chin.
+EYES: medium, almond, sharp grey.
+BROWS: straight, slightly drawn together.
+NOSE: small and straight.
+MOUTH: small, closed.
+MARKS AND AGE: none, young face.
+SKIN: light olive.
+HAIR: short tousled slate-black hair, a few strands over the forehead.
+BUILD (visible part): slim, narrow shoulders.
+PALETTE: dominant night blue #24345E, secondary dark brown leather #4B3426, accent ember orange #E8743B (scarf).
+CLOTHES TELL: night-blue tactician coat with simple silver trim and a high collar, hood folded back; a small round silver compass-star academy pin that is visibly CRACKED; leather map satchel with rolled maps across the chest; dark gloves; ember-orange scarf.
+EXPRESSION: thoughtful, a little guilty, determined; brows slightly drawn together, mouth flat.
+SIGNATURE: the cracked academy pin and the map satchel.
+```
+
+```text
+CHARACTER: FENN, 19, ex-thief and scout; big mouth, soft heart.
+HEAD: heart-shaped head, pointed chin.
+EYES: large, upturned, golden.
+BROWS: thin, arched, mobile.
+NOSE: small button nose with a sticking plaster across the bridge.
+MOUTH: wide, open cheeky grin.
+MARKS AND AGE: the plaster on the nose.
+SKIN: warm tan.
+HAIR: wild spiky black hair sticking out under an ember-orange headband.
+BUILD (visible part): lanky and narrow.
+PALETTE: dominant dark grey #4A4A50, secondary brown leather #6B4A2B, accent ember orange #E8743B (headband).
+CLOTHES TELL: patched dark-grey hooded jerkin, hood down on the shoulders, with big clean patches; a few pouches on the belt; fingerless gloves.
+EXPRESSION: cheeky grin, one brow up, flipping a stolen coin with one hand.
+SIGNATURE: the plaster on the nose and the orange headband.
+```
+
 ## 5. Alternativstile (Vergleich, Probefigur Kael)
 
 Drei bewusst andere Richtungen mit demselben Kael-Figurenblock und demselben Format-Block, ohne Stil-Anker. Der Stil-Block wird ersetzt.
@@ -219,4 +265,50 @@ visible half-body), precise, calm and readable, like a classic adventure comic a
 
 ## 6. Ergebnis
 
-Wird nach dem Test ergänzt.
+- **v2** (erste Runde): Gesichter aus einem Guss, Brenna, Grosk und Liora individuell; Körper zu erwachsen, Kleidung mit Struktur. Kael wirkte zu bullig.
+- **v2.1:** Proportionen und Machart wie Rhen A und Fenn; zu flach. Kael neu als verstoßener Adliger in königlichem Grün (Produktinhaber: „besonders der neue Kael“), Name soll sich ändern (offen).
+- **v2.2:** mit Kernschatten und Okklusion; Zielstil. Bilder `art/mockups/style-2026-11/v22_*.png`.
+- **Reproduzierbarkeit:** Rhen A und Fenn frisch aus v2.2 (ein Versuch je Figur, keine Korrektur), Bilder `repro_rhen_a.png`, `repro_fenn.png`; Bewertung siehe Decision-Log.
+- **Alternativen** A–C (Bilderbuch, grafisch, klare Linie): nicht gewählt; B und C fielen einander ähnlich aus, weil der Figurenblock stärker wirkte als der Stil-Block.
+
+## 7. Korrektur-Bausteine (Folgenachricht im selben Chat)
+
+Haben in einem Schritt gewirkt. Immer mit „keep this exact image … and only …“ beginnen, damit ChatGPT nicht neu entwirft.
+
+| Problem | Baustein |
+|---|---|
+| Körper zu erwachsen, Kleidung mit Struktur | „Good character design: keep this exact character, face, expression, outfit pieces and colours. But redraw it so it matches the attached anchor portraits EXACTLY in proportions and rendering. PROPORTIONS like the anchors: round chibi, big round head about one third of the image height, short compact body (about 2.5 heads tall overall), shorter arms, smaller hands. RENDERING like the anchors: clothes as a few big clean shapes, no fabric texture, no grain, no scratches, no weathering marks, no dirt; patches as flat clean shapes; straps as plain bands.“ |
+| zu flach | „Keep this exact image (character, pose, crop, proportions, outfit, colours, line) and only add more DEPTH: two-tone cel shading, light from the upper left: base colour, one clear shadow tone, plus a smaller darker core shadow in the deepest spots (…); a soft occlusion shadow where layers overlap; one small highlight shape on hair, leather, metal and eyes. Still no texture.“ |
+| Figur zu jung / Merkmal fehlt | „Keep this exact image … with two small fixes: add <Merkmal> and make him look about <Alter> (a few fine lines at the eye corners, slightly sharper cheekbones).“ |
+| Konzept falsch (z. B. zu bullig) | neuer Figurenblock als Folgenachricht, Stil- und Formatangaben kurz wiederholen |
+
+## 8. Schablone für neue Stile
+
+Für den Fall, dass später ein anderer Stil gebraucht wird (neue Figurengruppe, Spin-off, Werbegrafik). Diese Vorlage ist so entstanden; der Weg ist wiederholbar.
+
+**Vorgehen**
+
+1. **Bestand sammeln und nebeneinanderlegen** (Kopfausschnitte in gleicher Größe). Lieblinge benennen lassen.
+2. **Familien bilden:** Woran unterscheiden sich die Bilder in der *Machart*? Auge, Nase, Mund, Haut, Linie, Schattierung, Proportion, Kleidungsdetail. Nicht nach Figuren sortieren.
+3. **Stil-Block schreiben** mit genau diesen Abschnitten, jeweils als feste Regel für alle Figuren:
+   - `STYLE (fixed, <Projekt> <Bildart> v<Nr>)` + Anker-Satz („STYLE ANCHORS ONLY: copy drawing technique and proportions, never face, hair, body or clothes“)
+   - Linie (Farbe, Stärke, Außenkontur)
+   - `SHADING` (Anzahl Tonstufen, Lichtrichtung, wo Kernschatten, Glanzlichter, Verbote)
+   - `FACE CONSTRUCTION` (Auge, Nase, Mund, Haut, Alterslinien; „identical for every character, only the SHAPES vary“)
+   - Haar (Büschel, Strähnen)
+   - `PROPORTIONS` (Kopfanteil am Bild, Köpfe gesamt, Hände; „build and face shape vary, proportions do not“)
+   - `CLOTHES` (Detailgrad, Verbote wie Struktur, Ornament, Requisiten)
+4. **Format-Block** getrennt halten (Bildformat, Ausschnitt, Hintergrund, kein Text).
+5. **Figurenblock** wie §3: nur Formen und konkrete Dinge, Verbotsliste der Stimmungs-Adjektive.
+6. **Zwei Anker** im Zielstil wählen (verschiedene Figurentypen, z. B. Frau und Mann, jung und alt) und jedem Prompt anhängen.
+7. **Testen** an 3–4 Figuren aus verschiedenen Familien des Bestands, je neuer Chat; Abweichungen mit Bausteinen (§7) korrigieren und jede wirksame Korrektur in den Stil-Block zurückschreiben (neue Fassungsnummer).
+8. **Reproduzierbarkeit prüfen:** zwei Figuren frisch, ohne Korrektur, nur mit Vorlage und Ankern; nebeneinander mit den Ankern abnehmen.
+9. **Prompt und Abnahme** je Bild in `art/prompts/<id>.md` (Lizenz-Auflagen `licensing.md` §6: Dienst, Tarif, Datum, Original unverändert in LFS).
+
+**Fehler, die sich gezeigt haben**
+
+- Ein Stil-Block, der Proportionen nur als Zahl nennt („Kopf 40 %“), reicht nicht; „exactly like the anchors“ wirkt stärker.
+- Lange Folgechats ziehen alle Figuren zur ersten hin; neuer Chat je Figur.
+- Stimmungs-Adjektive (*gentle, serene, confident*) erzeugen Durchschnittsgesichter.
+- Ein starker Figurenblock überstimmt einen schwachen Stil-Block; Alternativstile brauchen deshalb Anker, sonst gleichen sie sich an.
+- ChatGPT übernimmt Entwürfe zwischen Tabs: Der Eingabeentwurf eines neuen Chats kann den Text eines anderen Tabs enthalten; vor dem Einfügen leeren.
