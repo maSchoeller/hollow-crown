@@ -22,12 +22,12 @@ Was A von den anderen trennt, sind nicht die Figuren, sondern **die Bauweise des
 
 Was die Lieblinge zusätzlich auszeichnet: Jede hat einen konkreten Makel oder ein Ding (gesprungene Nadel, Pflaster, Zahnlücke, Brille, Tintenflecken) und einen bestimmten Ausdruck (ernst, frech, eifrig, süffisant). Die schwächeren Prompts beschreiben Stimmung mit Adjektiven (*gentle, serene, kind, warm*); das führt zum Durchschnittsgesicht.
 
-## 2. Fester Stil-Block (Fassung v2.2)
+## 2. Fester Stil-Block (Fassung v2.3)
 
-Wörtlich und unverändert in jeden Prompt (englisch). Stil-Anker anhängen: **`art/mockups/style-2026-11/v22_brenna.png` und `v22_kael.png`** (zwei freigegebene Bilder im Zielstil; der Satz dazu steht im Block). Bis die neuen Porträts von Rhen und Fenn abgenommen sind, gelten diese beiden als Anker; die alten `rhen_a.png` und `fenn.png` waren die Anker von v2 und v2.1.
+Wörtlich und unverändert in jeden Prompt (englisch). Stil-Anker anhängen: **`art/mockups/characters-s1/rhen_a.png` und `fenn.png`** (die bisherigen Porträts von Rhen A und Fenn; sie bleiben unverändert und sind der Maßstab, Produktinhaber 2026-11-01). Der Satz dazu steht im Block.
 
 ```text
-STYLE (fixed, Hollow Crown portrait v2.2). The attached images are STYLE ANCHORS ONLY: copy
+STYLE (fixed, Hollow Crown portrait v2.3). The attached images are STYLE ANCHORS ONLY: copy
 their drawing technique and proportions, never their face, hair, body or clothes.
 Round-chibi cartoon dialogue portrait. Clean dark-brown line (never black) of even medium
 weight, slightly thicker outer contour.
@@ -36,6 +36,11 @@ tone, plus a smaller darker core shadow in the deepest spots (under chin and hai
 folds, under straps and belts, where arms meet the body); a soft occlusion shadow where
 layers overlap; one small highlight shape on hair, leather, metal and eyes. No airbrush,
 no gradients across big areas, no texture, no glow, no rim light.
+CHILDLIKE FACE like the anchors, for every age: big round head, big round forehead, soft
+round cheeks, small soft chin, eyes set low and wide (at the vertical middle of the head),
+short small nose, small mouth. Age, toughness and character show only through a few small
+lines, scars, beard, hair and expression, never through a longer, harder or more realistic
+face.
 FACE CONSTRUCTION, identical for every character (only the SHAPES vary):
 - Eyes: strong dark upper-lid line, simple coloured iris with a darker top, round pupil,
   exactly ONE small white catchlight; no lower lashes, no sparkles, no extra highlights.
@@ -62,7 +67,8 @@ never covering the face.
 
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
-- **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Abgenommen als Zielstil.
+- **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
+- **v2.3:** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
 
