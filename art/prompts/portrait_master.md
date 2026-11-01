@@ -180,6 +180,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 
 - **Proportionen:** „Keep this exact character, face, expression, outfit and colours, but fill the grey silhouette of the third image: shoulders and torso as wide as the silhouette, chin on CHIN, belt on BELT.“
 - **Tiefe:** „Keep this exact image and only add more depth: a smaller darker core shadow in the deepest spots and a soft occlusion shadow where layers overlap.“
+- **Waffen-Artefakt:** „Keep this exact image (…) and fix only the <sword/axe>: draw ONE straight, rigid <weapon>, <grip and position>, no kink, no bend, no second blade.“
 - **Merkmal/Alter:** „Keep this exact image with two small fixes: add <Merkmal> and make <him/her> look about <Alter> (a few fine lines …).“
 - **Stimmung:** „Same character, same pose, crop, outfit and colours. Change only brows, eyes, mouth and shoulders to <happy: open grin, raised cheeks | angry: brows down, teeth showing, shoulders up | sad: brows up in the middle, mouth down, shoulders dropped>.“
 - **Spiegelbild:** „Same character, same outfit, mirrored pose facing the LEFT edge; keep <Teil> on the character's <Seite>.“
@@ -189,7 +190,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 - Prüfbogen ohne `!` oder `!` erklärbar (Arm, Umhang, offenes Haar, Requisit; die Breitenmessung zählt alles mit und ist bei weiten Gewändern nur ein Hinweis).
 - Augen, Nase, Linie, Schatten gebaut wie bei Rhen A und Fenn; Kopf gleich groß.
 - Alter lesbar, aber kein hartes oder kindliches Gesicht.
-- Fraktions-Kit erkennbar, Signaturteil vorhanden, Waffe in der Hand und lesbar.
+- Fraktions-Kit erkennbar, Signaturteil vorhanden, Waffe in der Hand und lesbar, ohne Artefakte (geknickte Klinge, zweite Spitze, schiefer Axtkopf; Korrektur siehe §7).
 - Neben den anderen Figuren der Gruppe: andere Statur, Kopfform, Frisur-Silhouette; Silhouettentest bestanden.
 - Freigestellt (echter Alphakanal), kein Text, quadratisch, ≥ 1254 px.
 
