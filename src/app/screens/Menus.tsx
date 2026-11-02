@@ -156,7 +156,6 @@ export function Options({ back }: { back: Screen }) {
         </Piece>
         <Piece class="options__stone">
           {seg(t('ui.opt.quality'), 'quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
-          {seg(t('ui.opt.figures'), 'figures', [['3d', t('ui.opt.fig.3d')], ['2d', t('ui.opt.fig.2d')]])}
           {seg(t('ui.opt.shake'), 'shake', ON_OFF())}
         </Piece>
         <Piece class="options__stone">

@@ -27,7 +27,7 @@ Quelle der Wahrheit für Grafik und Audio-Richtung von Staffel 1. Entscheidungen
 | **Bildebene** | Porträts, Dialog-Hintergründe, Illustrationstafeln, Cut-ins, Key Art | Round-Chibi-Cartoon (Figuren), warm gemalter Cartoon (Orte) | ChatGPT über Claude in Chrome, Prompt in `art/prompts/` |
 | **UI** | HTML-Overlay | Studio-Look „B hell – Wappen & Banner“ (U21) | CSS/SVG |
 
-**Referenzen** (Stimmung, nicht kopieren): Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png` (verbindliche Leitreferenz), Figuren- und Orte-Moodboards in `art/mockups/characters-s1/` und `locations-s1/`; außerdem Fire Emblem Engage (Helligkeit, Lesbarkeit), Kingdom Rush und Mario + Rabbids (runde Formen, Cartoon-Effekte), Triangle Strategy (Diorama-Karte), Ghibli (warme Ernsthaftigkeit).
+**Referenzen** (Stimmung, nicht kopieren): Stil-Mockup `art/mockups/style-2026-11/anchor_rhen.png` (verbindliche Leitreferenz), Figuren- und Orte-Moodboards in `art/mockups/characters-s1/` und `locations-s1/`; außerdem Fire Emblem Engage (Helligkeit, Lesbarkeit), Kingdom Rush und Mario + Rabbids (runde Formen, Cartoon-Effekte), Triangle Strategy (Diorama-Karte), Ghibli (warme Ernsthaftigkeit).
 
 **Drei Regeln, die alles andere schlagen:**
 

@@ -207,7 +207,7 @@ components:
 
 # DESIGN.md – Hollow Crown, Staffel 1
 
-> Visuelle Identität der Oberfläche. Verhalten steht in `EXPERIENCE.md`, die Spielwelt (Brett, Figuren, Licht) in `concept/23-art-direction/art-direction.md`. Herleitungen in `.decision-log.md`. Die Mockups in `mockups/` illustrieren; bei Widerspruch gilt dieses Dokument.
+> Visuelle Identität der Oberfläche. Verhalten steht in `EXPERIENCE.md`, die Spielwelt (Brett, Figuren, Licht) in `concept/23-art-direction/art-direction.md`. Herleitungen in `.decision-log.md`. Die HTML-Mockups wurden am 2026-11-02 entfernt (Git-Verlauf: `concept/25-ux/mockups/` bis Commit `d2e50b4`); nennt ein Epic „Mockup NN“, ist diese Fassung gemeint.
 
 ## Brand & Style
 
@@ -215,7 +215,7 @@ components:
 
 Warm, freundlich, klar lesbar. Ernste Momente (Abschied, Gedächtnishalle, Gedenken) nehmen die Farbe heraus und lassen nur das Glutorange stehen: weniger Spielzeug, mehr Stille.
 
-Referenz ist das Stil-Mockup `art/mockups/style-2026-10/round_chibi_kael.png`. Visuelle Grundrichtung: `mockups/01-ui-richtungen.html` (Richtung B).
+Stil-Referenz sind die Porträt-Anker (`art/mockups/style-2026-11/anchor_rhen.png`). Visuelle Grundrichtung: Richtung B.
 
 ## Colors
 

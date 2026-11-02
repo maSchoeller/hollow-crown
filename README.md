@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/readme/banner.jpg" alt="Kael und eine verhüllte Gestalt am Lagerfeuer, über der Burgruine kreist ein Drache" width="100%">
+<img src="art/title/title_act1.png" alt="Titelbild von Hollow Crown" width="320">
 
 # Hollow Crown
 
@@ -25,11 +25,6 @@ Läuft im Browser auf Handy, Tablet und PC und lässt sich als App installieren.
 
 Eine kleine Söldnertruppe aus Außenseitern gerät in einen Krieg, der nicht ihrer ist. Du führst sie durch Gefechte, versorgst sie im Lager und versuchst, so viele wie möglich heimzubringen. Jede Figur kann dauerhaft fallen, und gerade weil die Welt freundlich und rund gezeichnet ist, wiegt jeder Verlust schwer.
 
-<p align="center">
-  <img src="docs/readme/screens.jpg" alt="Spielszenen auf dem Handy: Titel, neue Kampagne, Dialog mit Liora, Kampf mit Bewegungsreichweite, Antwortauswahl" width="100%">
-  <br><sub>Titel · neue Kampagne · Dialog · Zug im Prolog-Gefecht · Antwortwahl (echte Aufnahmen aus dem Spiel)</sub>
-</p>
-
 ## Was Hollow Crown ausmacht
 
 | | |
@@ -47,10 +42,6 @@ Eine kleine Söldnertruppe aus Außenseitern gerät in einen Krieg, der nicht ih
 
 ## Die Welt Valmora
 
-<p align="center">
-  <img src="docs/readme/world.jpg" alt="Weltkarte von Valmora: verschneite Berge im Norden, Herbstwälder in der Mitte, Küsten und Felder im Süden" width="100%">
-</p>
-
 <table>
   <tr>
     <td width="33%"><img src="docs/readme/loc_aurenhall_winter.jpg" alt="Aurenhall im Winter"><br><sub>Aurenhall im Winter</sub></td>
@@ -66,16 +57,7 @@ Eine kleine Söldnertruppe aus Außenseitern gerät in einen Krieg, der nicht ih
 
 ## Die Truppe
 
-<p align="center">
-  <img src="docs/readme/cast.jpg" alt="Übersicht der Figuren von Staffel 1 im runden Chibi-Stil" width="100%">
-</p>
-
 Runder Chibi-Stil, warm und freundlich, mit ernsten Themen darunter. Die Brettfiguren entstehen aus diesen Entwürfen per Bild-zu-3D und stehen als kleine Dioramen auf der Karte.
-
-<p align="center">
-  <img src="docs/readme/style.jpg" alt="Stilprobe: Kael als Porträt neben einem Handy-Mockup der Kampfkarte" width="80%">
-  <br><sub>Stilprobe: Kael und die angestrebte Diorama-Karte (Mockup)</sub>
-</p>
 
 ## Status
 

@@ -37,7 +37,7 @@ spec.loader.exec_module(ramps)
 PALETTE = [l.strip() for l in open(os.path.join(ROOT, "art", "palette", "hollow-64.hex")) if l.strip()]
 TILE_UNITS = 48 / ns["PX_PER_UNIT"]  # Blender units per board tile
 FPS = 24
-# (animation, sprite fps, loop) – timings match the sprite rows in art/sprites/units/*/sheet.json
+# (animation, sprite fps, loop)
 ANIMS = [("idle", 6, "pingpong"), ("walk", 10, "loop"), ("attack", 12, "once"), ("hit", 12, "once"), ("downed", 1, "once")]
 HIDDEN = 1e-4  # scale of a tagged object outside the frames that show it (glTF has no visibility track)
 # Props drawn in large numbers (forests, rock fields) are thinned out: round shapes keep their silhouette
