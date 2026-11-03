@@ -102,6 +102,17 @@ WEAPON: <weapon of the class's weapon group or the signature weapon, its look>, 
 SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its prop if listed>.
 ```
 
+### 4a. Namenlose Gegner (Klassen-Büsten)
+
+Klassen-Büsten (`class_*`) stehen für namenlose Einheiten und sind bewusst einfacher als Story-Figuren (Produktinhaber, 2026-11-02). Ihr Figurenblock lässt MARKS leer (`none`) und nennt keine persönlichen Stücke; angehängt wird dieser Absatz:
+
+```text
+GENERIC ENEMY (a nameless unit, NOT a story character): draw this figure deliberately SIMPLER than the anchors:
+fewer and bigger shapes, at most two straps or belts, no personal items, no scars, no trophies, no jewellery, no patches;
+a plain everyday face with smaller, simpler eyes (small iris, one catchlight) and a plain look; the upper face slightly
+shaded by the headgear where there is one; flat faction colours. Head size, line and shading technique stay as in the anchors.
+```
+
 ## 5. Regeln für den Kader
 
 **Gestaltung**
@@ -172,6 +183,8 @@ SIGNATURE: <the one recognisable part from art-direction.md §4.3, incl. its pro
 | Fraktion wirkt zusammengewürfelt | jede Figur eigene Palette | Kit-Zeile, Regel 10 |
 | Signaturteil fehlt | Figurenblock ohne §4.3 | Regel 2 |
 | Waffe fehlt oder hängt auf dem Rücken | „at most one prop“, Waffe unter SIGNATURE versteckt | Feld `WEAPON` mit Hand und Haltung, Regel 3a |
+| Griff und Klinge geknickt, Klinge krumm statt gerade | Waffe nur benannt; „curved“ bei Dolchen | im Feld `WEAPON` verlangen: „ONE rigid object on ONE straight axis: pommel, grip, guard and blade in the same straight line“; Dolche und Schwerter gerade, nur der Säbel leicht zur Spitze gekrümmt. Eine Korrektur mit Hilfslinie half bei Varek kaum, beim Söldner schon; im Zweifel neu malen |
+| Sehne läuft durch den Körper, Pfeil falsch gebaut oder zu klein | gespannter Bogen im Halbporträt | Bogen ungespannt neben dem Körper, Sehne gerade von Spitze zu Spitze; Pfeil voll lang, Spitze an einem Ende, Federn am anderen |
 | Lange Folgechats ziehen Figuren zur ersten | Kontext im Chat | neuer Chat je Figur |
 | Stimmungs-Adjektive → Durchschnittsgesicht | *gentle, confident …* | Regel 9 |
 
@@ -192,6 +205,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 - Augen, Nase, Linie, Schatten gebaut wie bei Rhen A und Fenn; Kopf gleich groß.
 - Alter lesbar, aber kein hartes oder kindliches Gesicht.
 - Fraktions-Kit erkennbar, Signaturteil vorhanden, Waffe in der Hand und lesbar, ohne Artefakte (geknickte Klinge, zweite Spitze, schiefer Axtkopf; Korrektur siehe §7).
+- Waffenlogik mit Prüflinie nachgemessen: Griff und Klinge auf einer Achse, Bogensehne von Spitze zu Spitze und nicht durch den Körper, Pfeil vollständig und richtig herum. Der Bericht eines Subagenten ersetzt das Nachmessen nicht.
 - Neben den anderen Figuren der Gruppe: andere Statur, Kopfform, Frisur-Silhouette; Silhouettentest bestanden.
 - Freigestellt (echter Alphakanal), kein Text, quadratisch, ≥ 1254 px.
 
