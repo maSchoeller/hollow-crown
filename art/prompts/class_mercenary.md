@@ -34,3 +34,25 @@ WEAPON: a plain straight arming sword resting on his right shoulder, held loosel
 SIGNATURE: the dented round steel cap.
 GENERIC ENEMY (a nameless unit, NOT a story character): draw this figure deliberately SIMPLER than the anchors: fewer and bigger shapes, at most two straps or belts, no personal items, no scars, no trophies, no jewellery, no patches; a plain everyday face with smaller, simpler eyes (small iris, one catchlight) and a plain look; the upper face slightly shaded by the headgear where there is one; flat faction colours. Head size, line and shading technique stay as in the anchors.
 ```
+
+## Korrektur 2026-11-03 (gilt, ersetzt die Datei oben)
+
+- **Anlass:** Schwert auch nach der Folgekorrektur noch krumm (Produktinhaber). Neu gemalt, Griff und Klinge liegen auf der Prüflinie. Der Produktinhaber wählte Fassung A (auf der Schulter) statt B (senkrecht, https://chatgpt.com/c/6aea3a53-7870-83ed-bb29-4fffbc7ff53f).
+- **Chat:** https://chatgpt.com/c/6aea3a1d-e8e8-83ed-88aa-a12c7860fbcb
+- **Anhänge:** `anchor_rhen.png`, `anchor_fenn.png`, `guide_build_broad.png`, die vorige `class_mercenary.png` als Vorlage für sein Aussehen
+- **Menschlicher Anteil:** Korrekturanweisung, Auswahl und Abnahme durch den Produktinhaber (2026-11-03); keine Retusche
+- **Original (A3):** die Datei im Spielordner ist der unveränderte Download (1254 × 1254, RGBA, echter Alphakanal, Git LFS)
+
+## Prompt
+
+Wie oben, mit zwei Abweichungen. Die Achsen-Vorgabe stand durch einen Skriptfehler nicht im Figurenblock, sondern anstelle des allgemeinen `WEAPON`-Absatzes im Stil-Block, der dadurch in diesem Bild fehlte:
+
+```text
+WEAPON: a plain straight arming sword resting on his right shoulder, held loosely in his right hand. Pommel, grip, crossguard and blade lie exactly on one straight line, ruler-straight; the blade continues the grip without any bend or offset; the crossguard sits at a right angle to the blade.
+```
+
+Zusätzlich am Ende:
+
+```text
+LOOK: the FOURTH attached image is the previous version of this figure: copy face, steel cap, scarf and armour from it, but NOT its sword, whose blade was bent against the grip.
+```

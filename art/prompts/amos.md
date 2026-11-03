@@ -33,3 +33,17 @@ EXPRESSION: crooked, dry smile, one brow raised.
 WEAPON: a short wooden healing staff held in his right hand like a walking stick, its top bound with bandage.
 SIGNATURE: the bald head, the spectacles and the apron.
 ```
+
+## Korrektur 2026-11-03 (gilt, ersetzt die Datei oben)
+
+- **Anlass:** Der Produktinhaber wollte den Stab aus der vorigen Fassung zurück; die Statur bleibt.
+- **Chat:** https://chatgpt.com/c/6aea3982-3cb8-83eb-ba23-692a13a620ec
+- **Anhänge:** die vorige Datei `amos.png` (Stand PR #98) und `amos.png` von `main` als Vorlage für den Stab. Abweichung: ChatGPT teilt den Entwurf eines neuen Chats zwischen Tabs, deshalb gingen in dieser einen Nachricht vier fremde Anhänge mit (`anchor_*`, `guide_*`), alle aus diesem Repository.
+- **Menschlicher Anteil:** Korrekturanweisung, Auswahl und Abnahme durch den Produktinhaber (2026-11-03); keine Retusche
+- **Original (A3):** die Datei im Spielordner ist der unveränderte Download (1254 × 1254, RGBA, echter Alphakanal, Git LFS)
+
+```text
+Create an image. The FIRST attached image is the APPROVED dialogue portrait of BROTHER AMOS from my original fantasy tactics RPG 'Hollow Crown'. Keep it exactly: same character, face, beard, spectacles, pose, crop, faded ivory habit, apron, pouches, rope belt, same drawing style, square 1:1, FULLY TRANSPARENT background (PNG with real alpha channel), no text.
+Change ONLY the staff in his right hand: remove the staff with the bandage and draw instead EXACTLY the staff from the SECOND attached image (an older version of him): dark knotted brown wood, spiral wood grain, at its top a small claw holding a glowing amber crystal, a small round gold medallion hanging on a short cord below the crystal. His hand grips it at the same place as now.
+Do not use anything else from the second image: his clothes and his face stay as in the first image.
+```

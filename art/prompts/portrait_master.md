@@ -206,7 +206,7 @@ Immer „Keep this exact image (…) and only …“, mit Maß statt „bigger/s
 - Alter lesbar, aber kein hartes oder kindliches Gesicht.
 - Fraktions-Kit erkennbar, Signaturteil vorhanden, Waffe in der Hand und lesbar, ohne Artefakte (geknickte Klinge, zweite Spitze, schiefer Axtkopf; Korrektur siehe §7).
 - Waffenlogik mit Prüflinie nachgemessen: Griff und Klinge auf einer Achse, Bogensehne von Spitze zu Spitze und nicht durch den Körper, Pfeil vollständig und richtig herum. Der Bericht eines Subagenten ersetzt das Nachmessen nicht.
-- Neben den anderen Figuren der Gruppe: andere Statur, Kopfform, Frisur-Silhouette; Silhouettentest bestanden.
+- Neben den anderen Figuren der Gruppe: andere Statur, Kopfform, Frisur-Silhouette; Silhouettentest bestanden. Eine Figur wird über Haar, Brauen, Nase und Kopfbedeckung unverwechselbar, nie über ein längeres oder realistisches Gesicht (§2 FACE MATURITY). Alte Männer nicht alle mit Glatze und weißem Vollbart.
 - Freigestellt (echter Alphakanal), kein Text, quadratisch, ≥ 1254 px.
 
 ## 9. Offene Punkte
