@@ -1,0 +1,190 @@
+<title>Missionsliste Staffel 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: eine Spalte je Akt, Missionen als Karten im Raster (eine Spalte am Handy); Akte tragen ihre Farbe wie auf Staffelbogen und Weltentwurf */
+:root {
+  --bg: #f6f5f1; --surface: #ffffff; --ink: #24262b; --muted: #61646c; --line: #dcdad3; --chipbg: #f0eee8;
+  --ember: #c4471f; --gold: #a97b12; --a1: #b8860b; --a2: #b2552c; --a3: #3f6f9f; --side: #7a55a8;
+  --display: "Alegreya", Georgia, serif; --body: "Alegreya Sans", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #17181b; --surface: #202227; --ink: #ecebe6; --muted: #a3a5ab; --line: #34363c; --chipbg: #2a2c31;
+  --ember: #ef7a4d; --gold: #d9ab43; --a1: #e0b347; --a2: #e48058; --a3: #84aedb; --side: #b593e0; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #17181b; --surface: #202227; --ink: #ecebe6; --muted: #a3a5ab; --line: #34363c; --chipbg: #2a2c31;
+  --ember: #ef7a4d; --gold: #d9ab43; --a1: #e0b347; --a2: #e48058; --a3: #84aedb; --side: #b593e0; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 52px; }
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; }
+h2 { font-size: 1.8rem; color: var(--c, var(--ink)); }
+h3 { font-size: 1.15rem; color: var(--muted); }
+h4 { font-size: 1.15rem; }
+p { margin: 0; max-width: 72ch; }
+code { font-size: .88em; }
+.eyebrow { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); font-size: 1.08rem; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav a, .jump a { color: var(--ink); text-decoration: none; border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 3px 12px; font-size: .92rem; }
+nav a:hover, .jump a:hover, nav a:focus-visible, .jump a:focus-visible { border-color: var(--ink); outline: none; }
+section { display: grid; gap: 16px; min-width: 0; }
+.act { border-top: 6px solid var(--c); padding-top: 18px; scroll-margin-top: 12px; }
+.acthead { display: grid; gap: 10px; }
+.flow { font-family: var(--display); font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.flow .arr { color: var(--muted); font-weight: 500; }
+.flow .par { color: var(--c); }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.jump a { font-size: .85rem; padding: 2px 10px; font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; align-items: start; }
+.m { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 16px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 12px; }
+.m:target { outline: 2px solid var(--c); }
+.m header { display: flex; gap: 10px; align-items: baseline; }
+.num { font-family: var(--display); font-weight: 800; font-size: 1.25rem; color: var(--c); font-variant-numeric: tabular-nums; min-width: 2.4em; }
+.m.side .num { color: var(--side); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: .8rem; background: var(--chipbg); border-radius: 99px; padding: 1px 9px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chip.goal { font-weight: 700; }
+.chip.sG { background: var(--ember); color: var(--surface); font-weight: 700; }
+dl { margin: 0; display: grid; gap: 6px; }
+dt { font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+dd { margin: 0 0 4px; font-size: .96rem; }
+dd b { color: var(--gold); }
+.note { color: var(--muted); font-size: .96rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 8px; }
+ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 80ch; }
+.herk { columns: 2 260px; display: block; }
+.herk li { margin-bottom: 4px; break-inside: avoid; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: .93rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-family: var(--display); font-size: 1rem; }
+footer { color: var(--muted); font-size: .9rem; }
+</style>
+
+<div class="wrap">
+<header style="display:grid;gap:14px">
+  <div class="eyebrow">Konzept-Überarbeitung · Etappe 1 · abgenommen · 1. November 2026</div>
+  <h1>Missionsliste Staffel 1</h1>
+  <p class="lead">Alle 25 Story-Missionen und 10 Nebenquests, jede mit Ort und Landschaft aus dem Weltentwurf, Ziel, Größe, Leutnant, Beitritt, Zweck und Saat. Zum Durchgehen Mission für Mission; Quelle ist <code>concept/22-narrative/missionsliste-s1.md</code>.</p>
+  <nav><a href="#akt1">Akt 1 · Asche</a><a href="#akt2">Akt 2 · Glut</a><a href="#akt3">Akt 3 · Krone</a><a href="#sitze">Sitze und Herkunft</a><a href="#pruefungen">Prüfungen</a></nav>
+</header>
+
+<section>
+  <div class="eyebrow">Regeln</div>
+  <ul><li><b>Parallelität:</b> Höchstens 2 Story-Missionen sind gleichzeitig offen. Ein Paar (∥) läuft in freier Reihenfolge und führt danach wieder zusammen. Pro Akt gibt es zwei Paare, sonst läuft die Folge fest.</li><li><b>Nebenquests:</b> Sie zählen nicht mit und öffnen nach ihrem Auslöser ohne Warteschlange. Offene Nebenquests bleiben bis zum Akt-Finale spielbar. Wird ihr Ort im Akt verschlossen (Aurenhall ab der Krönung), sind sie nach dem Akt über die Weltkarte nachholbar.</li><li><b>Größenklassen:</b> <b>K</b> klein (bis 16 × 20), <b>M</b> mittel (um 20 × 25), <b>G</b> groß (30 × 40). Angegeben ist Breite × Höhe im Hochformat.</li><li><b>Gegner:</b> zwei- bis dreimal so viele wie eigene Einheiten, dafür schwächer. Große Karten füllen fehlende Plätze mit Söldnern aus der Taverne auf.</li><li><b>Verteilung:</b> 12 K, 17 M, 6 G, entsprechend den Anteilen ⅓, ½ und ⅙.</li><li><b>Beitritt über Nebenquests:</b> Drei Gefährten treten nur über eine Nebenquest bei: Varek (N2), Brann (N5) und Pell (N10). Bedingung ist allein das Ansprechen durch eine bestimmte Figur im Kampf. Wer die Quest auslässt oder das Ansprechen versäumt, hat die Figur für die Staffel nicht; die Quest bleibt trotzdem gewonnen.</li><li><b>Heimat:</b> Jeder Beitritt findet an oder nahe der Heimat der Figur statt, jeder Leutnant kämpft auf eigenem Boden oder hat einen Grund, dort zu sein.</li></ul>
+</section>
+
+<section class="act" id="akt1" style="--c:var(--a1)">
+<div class="acthead"><div class="eyebrow">Akt 1 · Grenzland um Varnhold, Spätsommer</div><h2>„Asche“</h2>
+<p>Die Truppe flieht aus Aurenhall nach Süden ins Flusstal der Erle und erobert die Paktwacht an der Südflanke des Grauen Kamms. Die Burg bewacht den Wachpass, den einzigen Weg nach Norden.</p>
+<p class="flow">P <span class="arr">→</span> 1-1 <span class="arr">→</span> (1-2 <span class="par">∥</span> 1-3) <span class="arr">→</span> 1-4 <span class="arr">→</span> 1-5 <span class="arr">→</span> 1-6 <span class="arr">→</span> 1-7 <span class="arr">→</span> 1-8</p><p class="jump"><a href="#m-p">P</a> <a href="#m-1-1">1-1</a> <a href="#m-1-2">1-2</a> <a href="#m-1-3">1-3</a> <a href="#m-1-4">1-4</a> <a href="#m-1-5">1-5</a> <a href="#m-1-6">1-6</a> <a href="#m-1-7">1-7</a> <a href="#m-1-8">1-8</a> <a href="#m-n1">N1</a> <a href="#m-n2">N2</a> <a href="#m-n3">N3</a></p></div>
+<h3>Story-Missionen</h3><div class="grid"><article class="m" id="m-p">
+<header><span class="num">P</span><h4>Die Paktnacht</h4></header>
+<div class="chips"><span class="chip goal">escape</span><span class="chip size sK">K 14×18</span><span class="chip">Eigene / Gegner 4 / 10</span></div><dl><dt>Ort und Landschaft</dt><dd>Tempelbezirk des Glutdoms, Aurenhall; enge Höfe, Säulengänge, Nacht</dd><dt>Leutnant</dt><dd>– (Tempelwachen)</dd><dt>Beitritt</dt><dd>Rhen, Kael, Brenna, Tobin</dd><dt>Zweck in der Story</dt><dd>Auslöser: König tot, die Truppe gilt als Mörder. Gerrit fällt, das erste Grab. Brenna kennt den Fluchtweg aus der Unterstadt</dd><dt>Saat, Entscheidung</dt><dd>Erstes Beben, Glutleuchten über dem Tempel</dd></dl></article><article class="m" id="m-1-1">
+<header><span class="num">1-1</span><h4>Steckbriefe</h4></header>
+<div class="chips"><span class="chip goal">rout</span><span class="chip size sK">K 16×20</span><span class="chip">Eigene / Gegner 5 / 12</span></div><dl><dt>Ort und Landschaft</dt><dd>Varnhold an der Erle; Markt, Brücke als Engstelle</dd><dt>Leutnant</dt><dd>– (Morras Häscher)</dd><dt>Beitritt</dt><dd>Fenn</dd><dt>Zweck in der Story</dt><dd>Ganz Valmora jagt die Truppe; Morra hängt in ihrer Stadt die Steckbriefe auf. Neues Ziel: Wer hat uns angeheuert?</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Kharesh:</b> Marktgerücht über Unruhe am Grenzposten; Kael schweigt, seine Narben stammen von dort</dd></dl></article><article class="m" id="m-1-2">
+<header><span class="num">1-2</span><h4>Asche über Erlbach</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sM">M 20×24</span><span class="chip">Eigene / Gegner 7 / 18</span></div><dl><dt>Ort und Landschaft</dt><dd>Dorf Erlbach am Bach; brennbare Felder, Furten</dd><dt>Leutnant</dt><dd><b>Hask</b></dd><dt>Beitritt</dt><dd>Mira</dd><dt>Zweck in der Story</dt><dd>Hask zieht aus seinem Lager im Süden gegen das Dorf. Die Truppe rettet ein Dorf, das sie eigentlich ausliefern müsste</dd><dt>Saat, Entscheidung</dt><dd>E1 (Mira)</dd></dl></article><article class="m" id="m-1-3">
+<header><span class="num">1-3</span><h4>Der Fremde mit dem Siegel</h4></header>
+<div class="chips"><span class="chip goal">reach</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 7 / 18</span></div><dl><dt>Ort und Landschaft</dt><dd>Schrein am Weißdorn im Grenzwald; dichter Wald, Lichtung</dd><dt>Leutnant</dt><dd><b>Morra</b></dd><dt>Beitritt</dt><dd>Liora</dd><dt>Zweck in der Story</dt><dd>Morra stellt der Truppe im Wald nach. Halvard tritt auf, bietet Hilfe und Hinweise und wird zum Mentor</dd><dt>Saat, Entscheidung</dt><dd>Halvard kennt jeden Namen; Liora, im Glutdom aufgewachsen, als seine Ziehtochter</dd></dl></article><article class="m" id="m-1-4">
+<header><span class="num">1-4</span><h4>Die Spur des Maklers</h4></header>
+<div class="chips"><span class="chip goal">boss (Osric Dunn)</span><span class="chip size sM">M 22×26</span><span class="chip">Eigene / Gegner 8 / 22</span></div><dl><dt>Ort und Landschaft</dt><dd>Wolfshügel; Felsen, Höhlen, Anhöhen</dd><dt>Leutnant</dt><dd><b>Ulvric</b></dd><dt>Beitritt</dt><dd>Ysolde (Gefangene)</dd><dt>Zweck in der Story</dt><dd>Dunn versteckt sich bei Ulvrics Wolfsbande. Der Mittelsmann stirbt, bevor er alles sagen kann; danach Rhens Geständnis</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Stimme:</b> Dunns letzte Worte: „Er hört auf die Krone, nicht auf Menschen.“ E2 (Fenn) davor</dd></dl></article><article class="m" id="m-1-5">
+<header><span class="num">1-5</span><h4>Das Hungerlager</h4></header>
+<div class="chips"><span class="chip goal">survive</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 8 / 24</span></div><dl><dt>Ort und Landschaft</dt><dd>Hungerlager im Erlenmoor an der Erlenbucht; Sumpf, Stege, Nebel</dd><dt>Leutnant</dt><dd><b>Grosk</b></dd><dt>Beitritt</dt><dd>Grosk bei E3</dd><dt>Zweck in der Story</dt><dd>Die Banditen sind Hungernde im Land, das niemand haben will. Gewissensfrage</dd><dt>Saat, Entscheidung</dt><dd>E3. Ein Hungernder erzählt von einem Deserteur am alten Wachturm (öffnet N2)</dd></dl></article><article class="m" id="m-1-6">
+<header><span class="num">1-6</span><h4>Die Paktwacht</h4></header>
+<div class="chips"><span class="chip goal">seize</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 12 / 36</span></div><dl><dt>Ort und Landschaft</dt><dd>Burgruine am Grauen Kamm; Sturm bergauf über Felder und Terrassen</dd><dt>Leutnant</dt><dd>Hask, Ulvric</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Die Truppe erobert eine Heimat; Hask flieht in sein Lager im Süden</dd><dt>Saat, Entscheidung</dt><dd>E4</dd></dl></article><article class="m" id="m-1-7">
+<header><span class="num">1-7</span><h4>Unter der Paktwacht</h4></header>
+<div class="chips"><span class="chip goal">treasure</span><span class="chip size sK">K 16×20</span><span class="chip">Eigene / Gegner 6 / 14</span></div><dl><dt>Ort und Landschaft</dt><dd>Gewölbe im Fels des Grauen Kamms; enge Gänge, Gräber</dd><dt>Leutnant</dt><dd>– (Plünderer)</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Gräber junger Könige, die Chronik wird versiegelt gefunden</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Pakt:</b> Grabreliefs; ein Beben aus dem Norden lässt das Gewölbe einstürzen</dd></dl></article><article class="m" id="m-1-8">
+<header><span class="num">1-8</span><h4>Die Heimat halten</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 14 / 42</span></div><dl><dt>Ort und Landschaft</dt><dd>Paktwacht; Angriff von Süden und über den Wachpass im Rücken</dd><dt>Leutnant</dt><dd><b>Morra</b> (führt), Hask, Ulvric, Grosk (falls nicht gewechselt)</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Die Truppe verteidigt zum ersten Mal, was ihr gehört; Hask zieht über den Süden heran, Morras Häscher kommen über den Pass</dd><dt>Saat, Entscheidung</dt><dd>Morras Weg zum Versteck hängt an E4</dd></dl></article></div>
+<h3>Nebenquests</h3><div class="grid"><article class="m side" id="m-n1">
+<header><span class="num">N1</span><h4>Der Ring von Varnhold</h4></header>
+<div class="chips"><span class="chip goal">rout</span><span class="chip size sK">K 14×18</span></div><dl><dt>Ort und Landschaft</dt><dd>Varnhold bei Nacht; Dächer, Gassen</dd><dt>Öffnet</dt><dd>E2 „schützen“ (nach 1-4)</dd><dt>Inhalt</dt><dd>Fenns Vergangenheit</dd></dl></article><article class="m side" id="m-n2">
+<header><span class="num">N2</span><h4>Der letzte Wachturm</h4></header>
+<div class="chips"><span class="chip goal">treasure</span><span class="chip size sK">K 16×20</span></div><dl><dt>Ort und Landschaft</dt><dd>Wachturm an der Grenzmauer, Grenzhügel mit Blick nach Kharesh</dd><dt>Öffnet</dt><dd>nach 1-5</dd><dt>Inhalt</dt><dd><b>Beitritt Varek</b> (Kael spricht ihn an): Der Deserteur des Grenzheers versteckt sich an Kaels alter Front und kennt Kael und Dravn. Chronik-Seite, Relikt Schild der Paktwächter; Kael erzählt vom Grenzkrieg (<b>Saat Kharesh</b>)</dd></dl></article><article class="m side" id="m-n3">
+<header><span class="num">N3</span><h4>Das Erbe</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sK">K 16×20</span></div><dl><dt>Ort und Landschaft</dt><dd>Tobins Pachthof; Felder, Mühle, Fluss</dd><dt>Öffnet</dt><dd>Tobin lebt, nach 1-6</dd><dt>Inhalt</dt><dd>Tobins Vater, Signaturlanze</dd></dl></article></div>
+
+</section>
+<section class="act" id="akt2" style="--c:var(--a2)">
+<div class="acthead"><div class="eyebrow">Akt 2 · Hochland der Eisenmark und Küste, Herbst</div><h2>„Glut“</h2>
+<p><b>Neu in Akt 2:</b> Reiterei zu Pferd und Balliste, beide mit einer Lektion in 2-1. Die Anwärter werben nacheinander statt gleichzeitig. Seraphine und Dravn bieten in 2-1 an; Maelis kommt erst dazu, als Dravns Lüge in 2-4 platzt. Jede Lüge ändert die Lage der Truppe. Der Weg führt durch die Windscharte ins Hochland, dann der Aure entlang bis an die Küste.</p>
+<p class="flow">2-1 <span class="arr">→</span> (2-2 <span class="par">∥</span> 2-3) <span class="arr">→</span> 2-4 <span class="arr">→</span> (2-5 <span class="par">∥</span> 2-6) <span class="arr">→</span> 2-7 <span class="arr">→</span> 2-8</p><p class="jump"><a href="#m-2-1">2-1</a> <a href="#m-2-2">2-2</a> <a href="#m-2-3">2-3</a> <a href="#m-2-4">2-4</a> <a href="#m-2-5">2-5</a> <a href="#m-2-6">2-6</a> <a href="#m-2-7">2-7</a> <a href="#m-2-8">2-8</a> <a href="#m-n4">N4</a> <a href="#m-n5">N5</a> <a href="#m-n6">N6</a></p></div>
+<h3>Story-Missionen</h3><div class="grid"><article class="m" id="m-2-1">
+<header><span class="num">2-1</span><h4>Wind über der Eisenmark</h4></header>
+<div class="chips"><span class="chip goal">survive</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 9 / 24</span></div><dl><dt>Ort und Landschaft</dt><dd>Windscharte im Grauen Kamm; Ballisten auf Felsnasen, Ebene dahinter</dd><dt>Leutnant</dt><dd><b>Brakka</b> (Ballistenmeisterin, Söldnerin)</dd><dt>Beitritt</dt><dd>Jory</dd><dt>Zweck in der Story</dt><dd>Neues Land, neue Gefahr; zwei Angebote auf Freispruch (Seraphine, Dravn)</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Drachen:</b> Drachenschatten über der Scharte</dd></dl></article><article class="m" id="m-2-2">
+<header><span class="num">2-2</span><h4>Das Siegel im Salzpass</h4></header>
+<div class="chips"><span class="chip goal">treasure</span><span class="chip size sK">K 16×20</span><span class="chip">Eigene / Gegner 7 / 16</span></div><dl><dt>Ort und Landschaft</dt><dd>Salzpass im Küstengebirge; schmaler Pass, Nebel, Steinschlag</dd><dt>Leutnant</dt><dd><b>Grell</b></dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Prinzessin-Strang: Das Siegel ist für den Freispruch-Erlass bestimmt; erster Zweifel. Grell bringt Maelis' Schmuggelware über den Pass</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Kharesh:</b> Kundschafter im Pass. Zweifel: Wer schreibt der Prinzessin?</dd></dl></article><article class="m" id="m-2-3">
+<header><span class="num">2-3</span><h4>Die Rabenweide</h4></header>
+<div class="chips"><span class="chip goal">boss (Rowena)</span><span class="chip size sM">M 22×26</span><span class="chip">Eigene / Gegner 9 / 24</span></div><dl><dt>Ort und Landschaft</dt><dd>Gestüt der Silbernen Lanze an der Aure; offene Weiden, Koppelzäune, Furten</dd><dt>Leutnant</dt><dd><b>Rowena</b> (Lanzenritterin zu Pferd)</dd><dt>Beitritt</dt><dd>Ilka</dd><dt>Zweck in der Story</dt><dd>Dravn-Strang: Die Krone verweigert seinem Heer die Pferde, also holt er sie sich über die Truppe. Rowena verteidigt ihr eigenes Gestüt. Ilka ist als Fährtenleserin für die Pferdezüge angeheuert und wechselt die Seite</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Rowena:</b> Sie lässt einen verwundeten Gefährten der Truppe versorgen, statt ihn gefangen zu nehmen. Erste kleine Lüge Dravns</dd></dl></article><article class="m" id="m-2-4">
+<header><span class="num">2-4</span><h4>Die Brandschneise</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 12 / 38</span></div><dl><dt>Ort und Landschaft</dt><dd>Brandhang im Hinterland der Grauwacht; Bergdorf, Getreideterrassen, Wald</dd><dt>Leutnant</dt><dd><b>Grell</b>, Sable (als Dravns Offizierin, nicht feindlich)</dd><dt>Beitritt</dt><dd>Sable bei E7 „warnen“</dd><dt>Zweck in der Story</dt><dd>Dravns Lüge platzt: Er opfert seine eigenen Dörfer. Grells Leute plündern hinter dem Feuer, und Dravn lässt sie gewähren. Brann (Gast, nicht steuerbar) hält mit Erdmagie das Feuer auf und rettet das Dorf, das ihn als „Hexenkind“ verstieß; als sie ihn wieder so nennen, flieht er in die Minen von Kupferhall (öffnet N5). <b>Lagewechsel:</b> Das Grenzheer jagt die Truppe, Maelis bietet als Dritte an</dd><dt>Saat, Entscheidung</dt><dd>E7. <b>Saat Dravn:</b> Er glaubt, Drachen nur mit Feuer aufhalten zu können. Erste Spur: Dravn und Maelis verbindet mehr als gedacht</dd></dl></article><article class="m" id="m-2-5">
+<header><span class="num">2-5</span><h4>Die verstoßene Leibwache</h4></header>
+<div class="chips"><span class="chip goal">escort (Odile)</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 9 / 22</span></div><dl><dt>Ort und Landschaft</dt><dd>Klosterhof Silberquell in der Eisenschlucht; Hängebrücken, Wasserfall</dd><dt>Leutnant</dt><dd><b>Sable</b> (jagt die Truppe für das Grenzheer)</dd><dt>Beitritt</dt><dd>Odile, Amos</dd><dt>Zweck in der Story</dt><dd>Prinzessin-Strang: Odile kennt Halvards Briefe an Seraphine. Amos ist Feldscher des Klosters</dd><dt>Saat, Entscheidung</dt><dd>E5 nach 2-5. <b>Saat Stimme:</b> Odile: „Er schreibt ihr nachts, nach Gesprächen mit der Krone.“</dd></dl></article><article class="m" id="m-2-6">
+<header><span class="num">2-6</span><h4>Gold für Banditen</h4></header>
+<div class="chips"><span class="chip goal">rout</span><span class="chip size sM">M 22×26</span><span class="chip">Eigene / Gegner 10 / 28</span></div><dl><dt>Ort und Landschaft</dt><dd>Schmugglerinsel Krähenholm vor der Möwenzunge; Strand, Sandbänke bei Ebbe, Klippenpfade, Grells Schiff</dd><dt>Leutnant</dt><dd><b>Grell</b>, <b>Sable</b></dd><dt>Beitritt</dt><dd>Nell</dd><dt>Zweck in der Story</dt><dd>Herzogin-Strang: Über Krähenholm floss das Gold an die Banden aus Akt 1. Sable übergibt dort Gold aus Dravns Kasse; die Spur aus 2-4 bestätigt sich. Nell, von Maelis fallen gelassen, kennt die Insel. <b>Lagewechsel:</b> Maelis lässt die Truppe fallen</dd><dt>Saat, Entscheidung</dt><dd>E6 (Varek, falls dabei) nach 2-6</dd></dl></article><article class="m" id="m-2-7">
+<header><span class="num">2-7</span><h4>Das Kontor am Silbermeer</h4></header>
+<div class="chips"><span class="chip goal">reach (Geschäftsbücher)</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 10 / 26</span></div><dl><dt>Ort und Landschaft</dt><dd>Kontor an der Auremündung; Lagerhäuser, Kräne, Kais, Schiffe</dd><dt>Leutnant</dt><dd><b>Brakka</b> (von Maelis angeheuert)</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Beweis gegen Maelis</dd><dt>Saat, Entscheidung</dt><dd>E8. <b>Saat Pakt:</b> Chronik-Fund in den Büchern: Erste und letzte Seite stammen aus derselben Hand</dd></dl></article><article class="m" id="m-2-8">
+<header><span class="num">2-8</span><h4>Kronfeld</h4></header>
+<div class="chips"><span class="chip goal">survive → escape</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 15 / 40</span></div><dl><dt>Ort und Landschaft</dt><dd>Kronfeld an der Aure, zwischen Grauwacht, Perlhof und Aurenhall; weite Ebene, Hügel, Fluss</dd><dt>Leutnant</dt><dd>Rowena, Grell, Brakka, Sable (falls nicht gewechselt)</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Hinterhalt am „neutralen“ Treffpunkt; „Die Krone war hohl“. Fluchtzone am Fluss</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Rowena:</b> Sie zögert, als Seraphine den Angriff befiehlt</dd></dl></article></div>
+<h3>Nebenquests</h3><div class="grid"><article class="m side" id="m-n4">
+<header><span class="num">N4</span><h4>Der Clan im Schnee</h4></header>
+<div class="chips"><span class="chip goal">survive</span><span class="chip size sM">M 20×24</span></div><dl><dt>Ort und Landschaft</dt><dd>Jagdgründe in den Kupferbergen; Bergwald, früher Schnee</dd><dt>Öffnet</dt><dd>Ilka in der Truppe (nach 2-3)</dd><dt>Inhalt</dt><dd>Ilkas Clan, Signaturbogen</dd></dl></article><article class="m side" id="m-n5">
+<header><span class="num">N5</span><h4>Glut unter dem Berg</h4></header>
+<div class="chips"><span class="chip goal">treasure</span><span class="chip size sK">K 16×20</span></div><dl><dt>Ort und Landschaft</dt><dd>Bergwerk bei Kupferhall; Loren, Schächte</dd><dt>Öffnet</dt><dd>nach 2-4</dd><dt>Inhalt</dt><dd><b>Beitritt Brann</b> (Ilka spricht ihn an, sonst Kael): Er hat sich in den Stollen versteckt und fürchtet die eigene Glut. <b>Saat Drachen:</b> Drachenknochen im Fels; Relikt Drachenglut, Erd-Rune III</dd></dl></article><article class="m side" id="m-n6">
+<header><span class="num">N6</span><h4>Die Gauklertruppe</h4></header>
+<div class="chips"><span class="chip goal">escort</span><span class="chip size sK">K 14×18</span></div><dl><dt>Ort und Landschaft</dt><dd>Herbstmarkt auf der Aue-Insel in der Mündung; Brücken, Boote, Gaukelbühne, Gezeiten</dd><dt>Öffnet</dt><dd>Jory in der Truppe, öffnet mit 2-7</dd><dt>Inhalt</dt><dd>Jorys alte Truppe, Signaturlaute; liegt vor dem Kontor (2-7) in derselben Mündung</dd></dl></article></div>
+
+</section>
+<section class="act" id="akt3" style="--c:var(--a3)">
+<div class="acthead"><div class="eyebrow">Akt 3 · Aurenhall und Drachengebirge, Winter</div><h2>„Krone“</h2>
+<p>Keine Drachen als Gegner. 3-6 ist eine Stadtschlacht ohne Drachen; in 3-7 liegt ein schlafender Drache als Gelände im Pass. 3-7 ist zugleich das Tal nach der Krönung: wenige Gegner, viel Landschaft, Lagerfeuer davor. Jede Mission in Aurenhall bekommt ein eigenes Viertel.</p>
+<p class="flow">3-1 <span class="arr">→</span> (3-2 <span class="par">∥</span> 3-3) <span class="arr">→</span> 3-4 <span class="arr">→</span> 3-5 <span class="arr">→</span> 3-6 <span class="arr">→</span> 3-7 <span class="arr">→</span> 3-8</p><p class="jump"><a href="#m-3-1">3-1</a> <a href="#m-3-2">3-2</a> <a href="#m-3-3">3-3</a> <a href="#m-3-4">3-4</a> <a href="#m-3-5">3-5</a> <a href="#m-3-6">3-6</a> <a href="#m-3-7">3-7</a> <a href="#m-3-8">3-8</a> <a href="#m-n7">N7</a> <a href="#m-n10">N10</a> <a href="#m-n9">N9</a> <a href="#m-n8">N8</a></p></div>
+<h3>Story-Missionen</h3><div class="grid"><article class="m" id="m-3-1">
+<header><span class="num">3-1</span><h4>Winter über Aurenhall</h4></header>
+<div class="chips"><span class="chip goal">reach</span><span class="chip size sK">K 16×20</span><span class="chip">Eigene / Gegner 8 / 18</span></div><dl><dt>Ort und Landschaft</dt><dd>Gänge unter dem Palast; verwinkelt, Türen und Schlüssel</dd><dt>Leutnant</dt><dd><b>Eluned</b></dd><dt>Beitritt</dt><dd>Kit</dd><dt>Zweck in der Story</dt><dd>Zurück in der Stadt, die die Truppe jagt; Pell, Stadtwache, lässt die Truppe entkommen, statt sie zu stellen (öffnet N10); Seraphine soll gekrönt werden. Brenna führt durch die Unterstadt hinein</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Kharesh:</b> Krieger aus Kharesh als Gesandte in der Stadt</dd></dl></article><article class="m" id="m-3-2">
+<header><span class="num">3-2</span><h4>Das verbotene Lied</h4></header>
+<div class="chips"><span class="chip goal">escort (Harlan)</span><span class="chip size sM">M 20×25</span><span class="chip">Eigene / Gegner 10 / 26</span></div><dl><dt>Ort und Landschaft</dt><dd>Sängerviertel an den Kanälen; Brücken, Boote, Schnee</dd><dt>Leutnant</dt><dd><b>Cassian</b></dd><dt>Beitritt</dt><dd>Harlan</dd><dt>Zweck in der Story</dt><dd>Harlans Lied enthält einen Hinweis auf die Paktnacht</dd></dl></article><article class="m" id="m-3-3">
+<header><span class="num">3-3</span><h4>Die Einsiedlerin</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sM">M 20×24</span><span class="chip">Eigene / Gegner 10 / 26</span></div><dl><dt>Ort und Landschaft</dt><dd>Vesnas Hütte im Winterwald; gefrorener Bach, Schnee</dd><dt>Leutnant</dt><dd><b>Torvald</b></dd><dt>Beitritt</dt><dd>Vesna</dd><dt>Zweck in der Story</dt><dd>Vesna kennt die Drachen; die Magie wird stärker</dd><dt>Saat, Entscheidung</dt><dd>E9 (Ysolde)</dd></dl></article><article class="m" id="m-3-4">
+<header><span class="num">3-4</span><h4>Der Zweifler</h4></header>
+<div class="chips"><span class="chip goal">boss (Mael)</span><span class="chip size sM">M 22×26</span><span class="chip">Eigene / Gegner 11 / 28</span></div><dl><dt>Ort und Landschaft</dt><dd>Lager der Paktgarde auf dem zugefrorenen Spiegelsee; Eis, Schilf</dd><dt>Leutnant</dt><dd><b>Mael</b></dd><dt>Beitritt</dt><dd>Mael bei E11</dd><dt>Zweck in der Story</dt><dd>Ein Paktgardist zweifelt; die Chronik überzeugt ihn. Das Eis trägt nicht überall und bricht unter Reitern und schweren Einheiten</dd><dt>Saat, Entscheidung</dt><dd>E11</dd></dl></article><article class="m" id="m-3-5">
+<header><span class="num">3-5</span><h4>Die Krönung</h4></header>
+<div class="chips"><span class="chip goal">seize</span><span class="chip size sM">M 24×28</span><span class="chip">Eigene / Gegner 12 / 32</span></div><dl><dt>Ort und Landschaft</dt><dd>Glutdom; Krönungshalle, Emporen, Vorplatz im Schnee</dd><dt>Leutnant</dt><dd>Cassian, Eluned, Torvald</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Halvards Heimspiel: Die Truppe sprengt die Krönung, Halvard wird enttarnt</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Kharesh:</b> Die Gesandten verlassen den Dom vor dem Kampf</dd></dl></article><article class="m" id="m-3-6">
+<header><span class="num">3-6</span><h4>Das Südtor</h4></header>
+<div class="chips"><span class="chip goal">defend (Tor halten, bis die Flüchtlinge draußen sind)</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 15 / 42</span></div><dl><dt>Ort und Landschaft</dt><dd>Südtor und Unterstadt; Mauer, Tor, Gassen als Flanken</dd><dt>Leutnant</dt><dd><b>Torvald</b></dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Die Paktgarde räumt die Stadt; die Truppe schützt die Menschen, die sie gejagt haben. Brennas Viertel; ihr Bruder ist unter den Flüchtlingen</dd></dl></article><article class="m" id="m-3-7">
+<header><span class="num">3-7</span><h4>Der Weg ins Gebirge</h4></header>
+<div class="chips"><span class="chip goal">reach</span><span class="chip size sM">M 18×28</span><span class="chip">Eigene / Gegner 10 / 20</span></div><dl><dt>Ort und Landschaft</dt><dd>Pass ins Drachengebirge; Gletscher, Spalten, Lawinen</dd><dt>Leutnant</dt><dd><b>Eluned</b></dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Tal nach dem Sturm; Schönheit und Stille, ein schlafender Drache</dd><dt>Saat, Entscheidung</dt><dd><b>Saat Drachen:</b> Der schlafende Drache als Gelände; wer ihn weckt, bekommt Glutstürme</dd></dl></article><article class="m" id="m-3-8">
+<header><span class="num">3-8</span><h4>Im Drachengebirge</h4></header>
+<div class="chips"><span class="chip goal">boss (Halvard)</span><span class="chip size sG">G 30×40</span><span class="chip">Eigene / Gegner 15 / 40</span></div><dl><dt>Ort und Landschaft</dt><dd>Urtempel im Krater und Vhaelyras Hort; Glutrisse, Eisbrücken</dd><dt>Leutnant</dt><dd>Cassian, Torvald, Eluned, Mael (falls nicht gewechselt)</dd><dt>Beitritt</dt><dd>–</dd><dt>Zweck in der Story</dt><dd>Halvard gestellt; er gibt sich in den Pakt</dd><dt>Saat, Entscheidung</dt><dd>E10, E12. <b>Saat Stimme:</b> Halvard: „Er hat es befohlen.“ Vhaelyra öffnet die Augen: „Wir haben nie etwas genommen.“</dd></dl></article></div>
+<h3>Nebenquests</h3><div class="grid"><article class="m side" id="m-n7">
+<header><span class="num">N7</span><h4>Verwiesen</h4></header>
+<div class="chips"><span class="chip goal">treasure</span><span class="chip size sK">K 16×20</span></div><dl><dt>Ort und Landschaft</dt><dd>Akademie von Aurenhall; Bibliothek, Regale als Wände</dd><dt>Öffnet</dt><dd>nach 3-1</dd><dt>Inhalt</dt><dd>Rhen (und Ysolde, falls da) an der Akademie, Taktiker-Buch</dd></dl></article><article class="m side" id="m-n10">
+<header><span class="num">N10</span><h4>Die Unterstadt</h4></header>
+<div class="chips"><span class="chip goal">rout</span><span class="chip size sK">K 16×20</span></div><dl><dt>Ort und Landschaft</dt><dd>Unterstadt von Aurenhall; Kanäle, Schleusen, Diebeswege</dd><dt>Öffnet</dt><dd>nach 3-1</dd><dt>Inhalt</dt><dd><b>Beitritt Pell</b> (Kit spricht ihn an): Er schützt die Unterstadt vor der Paktgarde. Signaturbogen; Brenna kennt die Wege. Beitritt nur bis zur Krönung; nachgeholt bringt N10 nur die Belohnung</dd></dl></article><article class="m side" id="m-n9">
+<header><span class="num">N9</span><h4>Das Grab Aldrics I.</h4></header>
+<div class="chips"><span class="chip goal">survive</span><span class="chip size sM">M 20×25</span></div><dl><dt>Ort und Landschaft</dt><dd>Königsgruft am Ende des Eisfjords; Grabkammern in der Klippe, Absturzkanten</dd><dt>Öffnet</dt><dd>nach 3-6</dd><dt>Inhalt</dt><dd><b>Saat Grab:</b> Der Sarkophag ist leer, nur ein Abdruck der Krone. Relikt Aldrics Paktklinge, Zeile für „Vhaelyra fragen“</dd></dl></article><article class="m side" id="m-n8">
+<header><span class="num">N8</span><h4>Brennas Bruder</h4></header>
+<div class="chips"><span class="chip goal">defend</span><span class="chip size sM">M 20×24</span></div><dl><dt>Ort und Landschaft</dt><dd>Flüchtlingslager vor der Stadt; Winterfeld, Wäldchen, Wagenburg</dd><dt>Öffnet</dt><dd>Brenna lebt, B-Support mit Kael oder Tobin, nach 3-7</dd><dt>Inhalt</dt><dd>Brennas Bruder ist mit den Flüchtlingen aus der Unterstadt gekommen (3-6). Er trägt die Schuld, die Brenna auf sich nahm; Signaturaxt. Er ist keine spielbare Figur, bekommt aber ein eigenes Porträt (Grafik-Aufgabe für später)</dd></dl></article></div>
+<p class="note">N7 und N10 spielen in der Stadt. Ab 3-5 ist Aurenhall im Akt verschlossen; wer sie bis dahin nicht gespielt hat, holt sie nach dem Akt über die Weltkarte nach.</p>
+</section>
+
+<section id="sitze">
+  <div class="eyebrow">Welt</div>
+  <h2>Sitze und Herkunft</h2>
+  <div class="scroll"><table><thead><tr><th>Wer</th><th>Sitz</th><th>Bezug zu Missionen</th></tr></thead><tbody><tr><td>Seraphine, Krone, Silberne Lanze</td><td>Königspalast in Aurenhall; Gestüt der Lanze auf der Rabenweide an der Aure</td><td>2-3, 3-1, 3-5</td></tr><tr><td>General Dravn, Grenzheer</td><td>Festung Grauwacht am Fuß der Kupferberge</td><td>2-4 in seinem eigenen Hinterland; Sable in 2-5 und 2-6</td></tr><tr><td>Herzogin Maelis, Haus Silbermeer</td><td>Perlhof an der Spitze der Möwenzunge; Kontor an der Auremündung; Salzpass als Schmuggelroute; Krähenholm als Umschlagplatz</td><td>2-2, 2-6, 2-7</td></tr><tr><td>Halvard, Pakttempel, Paktgarde</td><td>Glutdom in Aurenhall; Lager der Paktgarde auf dem Spiegelsee</td><td>P, 3-4, 3-5</td></tr><tr><td>Hask, Marodeure</td><td>Hasks Lager im Süden zwischen Grenzwald und Wolfshügeln</td><td>1-2, Fluchtweg nach 1-6 und 1-8</td></tr><tr><td>Ulvric, Wolfsbande</td><td>Wolfshügel</td><td>1-4</td></tr><tr><td>Morra, Kopfgeldjägerin</td><td>Kopfgeldstube in Varnhold</td><td>1-1, 1-3</td></tr><tr><td>Grosk, Hungernde</td><td>Hungerlager im Erlenmoor</td><td>1-5</td></tr><tr><td>Kharesh</td><td>Grenzposten an der Ostgrenze</td><td>Saat in 1-1, N2, 2-2, 3-1</td></tr><tr><td>Kupferhall</td><td>Minenstadt in den Kupferbergen</td><td>N5</td></tr><tr><td>Vhaelyra</td><td>Hort unter dem Urtempel im Krater</td><td>Beben in P und 1-7, 3-8</td></tr><tr><td>Aldric I.</td><td>Königsgruft am Eisfjord, leer</td><td>N9</td></tr></tbody></table></div>
+  <div class="card"><h3>Herkunft der Gefährten</h3><ul class="herk"><li>Kael Grenzland bei Kharesh (seine Front im Grenzkrieg, N2 blickt auf sie)</li><li>Brenna Unterstadt von Aurenhall (ihr Bruder flieht in 3-6 durchs Südtor, N8)</li><li>Mira Erlbach</li><li>Fenn Varnhold</li><li>Tobin Pachthof</li><li>Liora Glutdom</li><li>Rhen, Ysolde, Vesna Akademie</li><li>Varek, Sable Grenzheer</li><li>Jory fahrende Gaukler</li><li>Odile, Kit, Harlan Palast</li><li>Pell Stadtwache</li><li>Nell Krähenholm</li><li>Brann Brandhang</li><li>Amos Kloster Silberquell</li><li>Ilka Clan in den Kupferbergen</li><li>Mael Paktgarde</li></ul></div>
+</section>
+
+<section id="pruefungen">
+  <div class="eyebrow">Gegenprobe</div>
+  <h2>Prüfungen</h2>
+  <ul><li><b>Ziele:</b> In keiner erlaubten Reihenfolge der Story-Missionen kommt ein Ziel zweimal hintereinander vor (auch nicht über ein Paar hinweg).</li><li><b>Leutnants:</b> Jeder tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale. Hask 1-2/1-6/1-8, Morra 1-3/1-8, Ulvric 1-4/1-6/1-8, Grosk 1-5/1-8, Brakka 2-1/2-7/2-8, Grell 2-2/2-4/2-6/2-8, Rowena 2-3/2-8, Sable 2-5/2-6/2-8, Eluned 3-1/3-5/3-7/3-8, Cassian 3-2/3-5/3-8, Torvald 3-3/3-5/3-6/3-8, Mael 3-4/3-8.</li><li><b>Beitritte:</b> Jeder hat danach noch mindestens eine Story-Mission im Akt; alle Gefährten aus Akt 3 sind spätestens in 3-4 dabei (Pell über N10 spätestens vor 3-5). Varek (N2), Brann (N5) und Pell (N10) sind optional; Entscheidungen, die sie betreffen (E6 Varek), entfallen ohne sie. Jeder Beitritt liegt an oder nahe der Heimat (siehe „Sitze und Herkunft“).</li><li><b>Verbündete aus Staffel 2:</b> Seraphine und Dravn haben keine Kampfrolle. Rowena flieht als Leutnant und hat drei Saat-Szenen (2-3, 2-8 und das Ende von Kronfeld).</li><li><b>Größen:</b> K = P, 1-1, 1-7, 2-2, 3-1, N1, N2, N3, N5, N6, N7, N10 (12). G = 1-6, 1-8, 2-4, 2-8, 3-6, 3-8 (6). Alle übrigen 17 sind M.</li></ul>
+  <h3>Was sich gegenüber dem Bestand ändert</h3>
+  <ul><li>Akt 1: Statt vier frei wählbarer Missionen gibt es ein Paar (1-2 ∥ 1-3). 1-3 hat jetzt das Ziel <code>reach</code>, weil sonst nach 1-1 zweimal <code>rout</code> hintereinander käme. Das Hungerlager liegt im Erlenmoor. Varek tritt in N2 bei statt in 1-5.</li><li>Akt 2: Die drei Stränge laufen nicht mehr gleichzeitig. „Der Wyvernhorst“ wird zu „Die Rabenweide“ (Rowena zu Pferd), Brakka wird Ballistenmeisterin. 2-4 bis 2-6 sind neu geordnet. Brann tritt erst in N5 bei statt in 2-4. 2-6 spielt auf Krähenholm mit Grell statt Rowena; Nell tritt dort bei statt in 2-2, Amos in 2-5 statt in 2-6. N6 liegt auf der Aue-Insel statt in Eisenfurt.</li><li>Akt 3: „Drachen über der Stadt“ wird zu „Das Südtor“ (ohne Drachen). N8 und N9 rücken hinter die Stadtschlacht. Pell tritt in N10 bei statt mit Kit in 3-1. 3-4 spielt auf dem zugefrorenen Spiegelsee statt in einer Kaserne, N9 am Eisfjord.</li></ul>
+</section>
+
+<footer>Karte und Landschaften: Weltentwurf. Spannungskurve und Missionsgraph: Staffelbogen. Gegnerzahlen sind Richtwerte, abgestimmt wird per <code>pnpm sim</code>.</footer>
+</div>
