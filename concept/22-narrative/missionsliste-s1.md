@@ -14,6 +14,8 @@
 
 ## Sitze und Herkunft
 
+> Lage, Wege und Entfernungen stehen seit 2026-11-03 in `geografie-valmora.md`; dort auch die kleinen Story-Folgen für P, 1-2, 1-5, 1-6, 1-8, 2-2, 2-4 und N8.
+
 Die Mächte haben feste Sitze auf der Karte. Aus ihnen folgt, warum Missionen dort liegen, wo sie liegen.
 
 | Wer | Sitz | Bezug zu Missionen |
