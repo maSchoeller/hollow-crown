@@ -10,7 +10,7 @@ export interface Settings {
   dangerDefault: boolean;
   confirmForecast: boolean;
   quality: 'low' | 'mid' | 'high';
-  /** figures on the board: 3D models or pixel sprites (concept/01-decisions.md D4) */
+  /** figures on the board: always 3D models since the 2D sprites are gone; `2d` remains for the placeholder fallback */
   figures: '3d' | '2d';
   music: number;
   sfx: number;
@@ -52,7 +52,7 @@ export function defaultSettings(lang: Lang): Settings {
 }
 /** Stored settings over the defaults (pure, tested): fields an older version did not store keep their default. */
 export function mergeSettings(def: Settings, stored: Partial<Settings>): Settings {
-  const merged = { ...def, ...stored };
+  const merged = { ...def, ...stored, figures: def.figures };
   return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
 }
 function loadSettings(): Settings {

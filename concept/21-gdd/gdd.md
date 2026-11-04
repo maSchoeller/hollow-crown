@@ -374,7 +374,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ## Art and Audio Direction
 
-- **Stil:** runder Chibi-Cartoon für Porträts und Figuren (Referenz `art/mockups/style-2026-10/round_chibi_kael.png`); helles 3D-Diorama für Karten und Weltkarte; UI im Studio-Look (U21). Ob die Diorama-Karte (D1–D16) bleibt und wie sich Licht und Farbe anpassen, klärt die Art-Direction-Etappe.
+- **Stil:** runder Chibi-Cartoon für Porträts und Figuren (Referenz `art/mockups/style-2026-11/anchor_rhen.png`); helles 3D-Diorama für Karten und Weltkarte; UI im Studio-Look (U21). Ob die Diorama-Karte (D1–D16) bleibt und wie sich Licht und Farbe anpassen, klärt die Art-Direction-Etappe.
 - **Lesbarkeit:** Teamfarben Blau/Rot über Tuch und Bodenring; Leutnants mit eigenem Rahmen und Groll-Symbol; Rollen an Silhouette und Klassen-Icon erkennbar; Verblutungs-Zähler an Niedergestreckten.
 - **Audio:** warm und folk-lastig, Orchester nur bei Bossen und Drama; Leitmotive pro Figur und Truppe; Musik in Burg, Lager, Weltkarte und Menüs dezent und ohne Gesang; Teilvertonung (Barks, Groll-Zeilen der Leutnants, Boss-Zitate, 2 Schlüsselszenen).
 

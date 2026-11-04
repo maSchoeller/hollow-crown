@@ -2,7 +2,7 @@
 
 python tools/art/build.py [--quality mid|high]
 
-- FX and sprite sheets: copied losslessly (PNG). The 2D tile set (art/tiles) is gone (3D board, D6).
+- FX: copied losslessly (PNG). The 2D tile set and the 2D sprite sheets are gone (3D board, D6).
 - 3D models (art/models: export_models.py, tripo_units.py, blender_weapons.py in tools/art): copied as .glb. Unit models go
   into the pack of their first appearance (public/assets/<pack>/models/units/, tools/art/model_packs.py), weapons and props
   stay in models/, the home castle (art/models/castle, tools/art/blender_castle.py) goes to models/castle/ (on demand).
@@ -79,29 +79,6 @@ def copy_tree_files(src, dst, exts):
             shutil.copy2(os.path.join(src, f), os.path.join(dst, f))
             out.append(f)
     return out
-
-
-def build_sheets(kind):
-    base = os.path.join(ART, 'sprites', kind)
-    result = {}
-    if not os.path.isdir(base):
-        return result
-    for sid in sorted(os.listdir(base)):
-        d = os.path.join(base, sid)
-        meta = os.path.join(d, 'sheet.json')
-        color = os.path.join(d, 'sheet.key.png')
-        if not (os.path.isfile(meta) and os.path.isfile(color)):
-            continue
-        dst = ensure(os.path.join(OUT, 'sprites', kind, sid))
-        shutil.copy2(color, os.path.join(dst, 'sheet.png'))
-        has_normal = os.path.isfile(os.path.join(d, 'sheet.normal.png'))
-        if has_normal:
-            shutil.copy2(os.path.join(d, 'sheet.normal.png'), os.path.join(dst, 'normal.png'))
-        with open(meta, encoding='utf-8') as f:
-            m = json.load(f)
-        m['normal'] = has_normal
-        result[sid] = m
-    return result
 
 
 def build_models():
@@ -360,7 +337,7 @@ def main():
     manifest = {
         'tileSize': 48,
         'fx': bool(fx),
-        'units': build_sheets('units'),
+        'units': {},  # 2D sprite sheets are gone, a unit without a model gets the placeholder
         'models': build_models(),
         'ground': ground.build(os.path.join(OUT, 'ground')),
         'items': build_items(),
