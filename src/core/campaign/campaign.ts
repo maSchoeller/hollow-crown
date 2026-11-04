@@ -1,4 +1,7 @@
-import type { Effect, GameData, Reward, SideObjectiveDef, Stats, WeaponType } from '../defs';
+import type { Stats, WeaponType } from '../defs';
+import type { GameData } from '../gameData';
+import type { Reward, SideObjectiveDef } from '../mapDefs';
+import type { Effect } from '../storyDefs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
 import { sideObjectiveDone, sideSubject } from '../battle/objectives';

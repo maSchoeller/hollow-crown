@@ -8,7 +8,7 @@
  * freeze, then the star, the shake and the big number come and the target recoils. At 1× the whole sequence is 550 ms
  * (hit 250 + 80 + 120 + 70 + 30), at most 600 ms. All values are real milliseconds at the given speed.
  */
-import type { LookDef } from '../../core/defs';
+import type { LookDef } from '../../core/renderDefs';
 
 export type CritFx = LookDef['fx']['crit'];
 

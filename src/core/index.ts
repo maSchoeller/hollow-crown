@@ -1,6 +1,11 @@
 /** Public surface of the rules core. Pure TypeScript – no DOM, no Babylon, no wall clock, no Math.random. */
 export * from './errors';
 export * from './defs';
+export * from './storyDefs';
+export * from './mapDefs';
+export * from './balanceDefs';
+export * from './renderDefs';
+export * from './gameData';
 export * from './state';
 export * from './events';
 export * from './rng';

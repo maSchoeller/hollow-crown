@@ -4,7 +4,8 @@
  * civilian of defend and escort. Built through the same skeleton as `createBattle`, so a lieutenant is scaled to the company
  * and his grudge (`planLieutenants`) exactly as on a story map.
  */
-import type { GameData, MapDef, MapUnitDef } from '../defs';
+import type { GameData } from '../gameData';
+import type { MapDef, MapUnitDef } from '../mapDefs';
 import type { BattleState, CampaignState, HauntState } from '../state';
 import { hash32 } from '../rng';
 import { hauntLevel } from '../campaign/haunts';

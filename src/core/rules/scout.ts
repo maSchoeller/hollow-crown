@@ -8,7 +8,8 @@
  * `convoyOnly` goods stay safe. The item goes to the thief's bag, or to the convoy when the bag is full (`goesToConvoy`, shared with `giveItem`).
  * The UI shows only seen foes (`visibleState`), so what the preview lists is what the player may know.
  */
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import { activeSkillIds } from './skills';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, isHostile, neighbors, samePos, unitAt } from '../util';

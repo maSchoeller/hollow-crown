@@ -3,7 +3,8 @@ import { loadContentFromDisk } from '../../src/content/node';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
 import { iconStatuses, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
-import { TIMES_OF_DAY, WEATHERS, type MapDef } from '../../src/core/defs';
+import { TIMES_OF_DAY, WEATHERS } from '../../src/core/defs';
+import type { MapDef } from '../../src/core/mapDefs';
 import { newFigureLook } from '../../src/render/shared/figurePlugin';
 import { DEFAULT_AMBIENT, DEFAULT_SKY, DEFAULT_SUN, lookOverride, mixHex, parseLookParam, resolveLook, retint, weatherPlan } from '../../src/render/shared/look';
 

@@ -1,22 +1,5 @@
-import type {
-  AiDef,
-  DeathMode,
-  Difficulty,
-  Element,
-  EquipSlot,
-  FlagValue,
-  HauntVariant,
-  HomeKind,
-  ItemRef,
-  MapDef,
-  Mechanic,
-  Pos,
-  Stance,
-  Stats,
-  StatusId,
-  SupportRank,
-  Team,
-} from './defs';
+import type { DeathMode, Difficulty, Element, EquipSlot, FlagValue, HomeKind, ItemRef, Mechanic, Pos, Stance, Stats, StatusId, SupportRank, Team } from './defs';
+import type { AiDef, HauntVariant, MapDef } from './mapDefs';
 import type { RngState } from './rng';
 
 /** One concrete item. Plain JSON. */

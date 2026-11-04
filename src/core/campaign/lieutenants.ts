@@ -3,7 +3,10 @@
  * against whoever drove him off; and which line he speaks at first sight. Pure: no Babylon, no DOM, no randomness.
  */
 import type { BattleState, BattleUnit, CampaignState, ItemInstance, LieutenantPlan, LieutenantState } from '../state';
-import { STAT_KEYS, type Difficulty, type GameData, type ItemRef, type LieutenantDef, type MapDef, type MapUnitDef } from '../defs';
+import { STAT_KEYS, type Difficulty, type ItemRef } from '../defs';
+import type { GameData } from '../gameData';
+import type { MapDef, MapUnitDef } from '../mapDefs';
+import type { LieutenantDef } from '../storyDefs';
 import { autoEquip, newItem, recordFromChar, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
 import { allItems } from '../rules/items';

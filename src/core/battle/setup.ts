@@ -1,4 +1,6 @@
-import type { GameData, MapDef, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
+import type { MapDef } from '../mapDefs';
 import { seedRng } from '../rng';
 import type { BattleState, CampaignState, ObjectState } from '../state';
 import { applyVillageAid } from '../rules/items';

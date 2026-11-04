@@ -3,7 +3,7 @@
  * all advance in the enemy phase). Built here instead of in content/ so it never ships; checked with the map schema.
  */
 import { mapSchema } from '../../src/content/schemas';
-import type { MapDef } from '../../src/core/defs';
+import type { MapDef } from '../../src/core/mapDefs';
 
 export const BENCH_MAP_ID = 'perf_bench_large';
 export const BENCH_SIZE: [number, number] = [24, 32];

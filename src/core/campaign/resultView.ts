@@ -1,4 +1,6 @@
-import type { Effect, GameData, HomeKind } from '../defs';
+import type { HomeKind } from '../defs';
+import type { GameData } from '../gameData';
+import type { Effect } from '../storyDefs';
 import type { BattleState, CampaignState, ItemInstance } from '../state';
 import { findUnit } from '../util';
 import type { BattleResult, BountyResult } from './campaign';

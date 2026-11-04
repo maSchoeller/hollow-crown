@@ -4,7 +4,8 @@
  * a foe phase. Pure functions over `threatTiles` and `forecast` (the preview code, never a copy of the formula); the board only
  * draws what they return.
  */
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, isHostile, onMap, posKey } from '../util';

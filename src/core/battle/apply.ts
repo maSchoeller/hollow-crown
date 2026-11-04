@@ -1,5 +1,7 @@
 import { CoreInvariantError } from '../errors';
-import type { GameData, Pos, Reward } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
+import type { Reward } from '../mapDefs';
 import type { GameEvent } from '../events';
 import { roll1 } from '../rng';
 import { resolveAttack } from '../rules/combat';

@@ -1,4 +1,7 @@
-import { HOME_KINDS, MAX_PANEL_LINES, PERMANENT_COMPANIONS, type Area, type CampaignNodeDef, type Condition, type Effect, type FlagValue, type GameData, type ItemRef, type MapDef, type MapUnitDef, type Pos, type Reward } from '../core/defs';
+import { HOME_KINDS, MAX_PANEL_LINES, PERMANENT_COMPANIONS, type FlagValue, type ItemRef, type Pos } from '../core/defs';
+import type { GameData } from '../core/gameData';
+import type { Area, MapDef, MapUnitDef, Reward } from '../core/mapDefs';
+import type { CampaignNodeDef, Condition, Effect } from '../core/storyDefs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { decisionTitleKey, lineKey, memorialKey, optionKey, speakerTeam, summaryKey } from '../core/campaign/scene';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
