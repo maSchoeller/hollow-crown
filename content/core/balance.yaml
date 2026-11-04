@@ -243,3 +243,7 @@ lieutenant:
     materials: { min: 1, max: 2 }
     materialByAct: { 1: iron_ore }
   signature: { chance: 0.1, guaranteedRout: 4 }
+
+# Burgstufe (Art Direction §7): Zahl der Raum-Ausbauten für Gesichert, Wehrhaft, Festung [ASSUMPTION]
+castle:
+  tierAt: [1, 6, 14]

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { applyCampaign, bubblePages, newCampaign, normalizeCampaign, replayCampaign, sceneSeen, validateCampaign, type CampaignState, type GameData } from '../../src/core';
-import { figureId, pickHalf } from '../../src/ui/halfFigure';
+import { figureId, pickHalf, pickSideHalf } from '../../src/ui/halfFigure';
 
 let data: GameData;
 let base: CampaignState;
@@ -61,6 +61,16 @@ describe('half figures', () => {
     expect(pickHalf('kael', 'neutral', built)).toBe('kael');
     expect(pickHalf('grosk', 'neutral', built)).toBeNull();
     expect(pickHalf('grosk', 'neutral', null)).toBe('grosk');
+  });
+  it('mirrors the right speaker unless a figure facing left exists', () => {
+    const built = new Set(['kael', 'kael_sad', 'lucan', 'lucan_l', 'lucan_l_sad']);
+    expect(pickSideHalf('kael', 'sad', 'left', built)).toEqual({ stem: 'kael_sad', mirror: false });
+    expect(pickSideHalf('kael', 'sad', 'right', built)).toEqual({ stem: 'kael_sad', mirror: true });
+    expect(pickSideHalf('lucan', 'sad', 'right', built)).toEqual({ stem: 'lucan_l_sad', mirror: false });
+    expect(pickSideHalf('lucan', 'angry', 'right', built)).toEqual({ stem: 'lucan_l', mirror: false });
+    expect(pickSideHalf('lucan', 'neutral', 'left', built)).toEqual({ stem: 'lucan', mirror: false });
+    expect(pickSideHalf('grosk', 'neutral', 'right', built)).toBeNull();
+    expect(pickSideHalf('grosk', 'neutral', 'right', null)).toEqual({ stem: 'grosk', mirror: true });
   });
   it('maps the avatar to its look', () => {
     expect(figureId('avatar', 'avatar_a')).toBe('rhen_a');

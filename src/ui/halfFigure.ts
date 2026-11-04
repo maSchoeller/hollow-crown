@@ -18,5 +18,24 @@ export function pickHalf(id: string, mood: string, built: ReadonlySet<string> | 
   return !built || built.has(id) ? id : null;
 }
 
+/**
+ * Half figure for a dialogue side. Portraits face the right edge, so a figure on the left looks into the scene as is;
+ * on the right it is mirrored, unless a figure drawn facing left exists (`<id>_l`, `<id>_l_<mood>`), which keeps
+ * asymmetric signature parts on their side (portrait_master.md §5, rule 15).
+ */
+export function pickSideHalf(
+  id: string,
+  mood: string,
+  side: 'left' | 'right',
+  built: ReadonlySet<string> | null | undefined,
+): { stem: string; mirror: boolean } | null {
+  if (side === 'right' && built) {
+    const facingLeft = pickHalf(`${id}_l`, mood, built);
+    if (facingLeft) return { stem: facingLeft, mirror: false };
+  }
+  const stem = pickHalf(id, mood, built);
+  return stem ? { stem, mirror: side === 'right' } : null;
+}
+
 /** URL of a half-figure stem. */
 export const halfUrl = (stem: string): string => asset(`halves/${stem}.webp`);

@@ -656,68 +656,9 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 **Ludonarrative Considerations:** Das Kopfgeld ist Teil der Story: Der Spieler kassiert es selbst von Leutnants. Dass Söldner für Geld kämpfen, wird nie verschwiegen. Der Konflikt Gold gegen Gewissen wird in Entscheidung E3 ausdrücklich gemacht.
 
-### Missionsfolge (25 Story-Missionen)
+### Missionsfolge
 
-★ = fester Platz, sonst innerhalb des Akts frei wählbar. Stand nach der Course Correction 2026-10-23 (`concept/archive/sprint-change-proposal-2026-10-23.md`).
-
-**Akt 1 „Asche“ (Prolog + 8)**
-
-| # | Mission | Ziel | Leutnant | Beitritt | Beat |
-|---|---|---|---|---|---|
-| P ★ | Die Paktnacht | escape | – (Tempelwachen) | Rhen, Kael, Brenna, Tobin | Paktnacht, Gerrit fällt (Szene) |
-| 1-1 ★ | Steckbriefe | rout | – | Fenn | Die Truppe ist gesucht |
-| 1-2 | Asche über Erlbach | defend | **Hask** (erste Begegnung) | Mira | Dorf retten, E1 |
-| 1-3 | Der Fremde mit dem Siegel | rout (Schrein halten, Liora darf nicht fallen) | **Morra** | Liora | Halvard tritt auf |
-| 1-4 | Die Spur des Maklers | boss (Osric Dunn) | **Ulvric** | Ysolde (Gefangene der Wolfsreiter) | E2 davor; Dunn stirbt; danach Rhens Geständnis |
-| 1-5 | Das Hungerlager | survive (standhalten, bis Grosk redet) | **Grosk** | Varek (Ansprechen); Grosk direkt danach bei E3 „verschonen“ | Entscheidung E3 |
-| 1-6 ★ | Die Paktwacht | seize | Hask, Ulvric | – | Heimat erobert (Tafel 4), danach E4 |
-| 1-7 ★ | Unter der Paktwacht | treasure (vor dem Einsturz bergen) | – (Plünderer) | – | Junge Könige: Grabreliefs im Gewölbe, die Chronik versiegelt gefunden |
-| 1-8 ★ | Die Heimat halten (Finale) | defend | **Morra** (führt), Hask, Ulvric, Grosk (falls nicht gewechselt) | – | Morra findet das Versteck (Weg je nach E4), 2 Glutfunken |
-
-Ab der Eroberung läuft Akt 1 fest bis zum Finale. Wie Morra das Versteck findet, hängt an E4: Bei „aufnehmen“ verbreitet sich das Gerücht, bei „geheim halten“ spüren Ulvrics Wölfe die Truppe auf (eine Szenenzeile, keine Kartenvariante).
-
-**Akt 2 „Glut“ (8).** Die Champions der drei Anwärter sabotieren sich gegenseitig; die Truppe kämpft immer gegen die Leute der *anderen* Anwärter (einzige Ausnahme: 2-7, siehe unten). Jeder Strang hat zwei Missionen. Nach 2-1 sind die drei Strang-Anfänge 2-2, 2-4 und 2-6 offen; 2-3 braucht 2-2, 2-5 braucht 2-4, 2-7 braucht 2-6; Kronfeld (2-8) öffnet nach allen.
-
-| # | Mission | Strang | Ziel | Leutnant | Beitritt |
-|---|---|---|---|---|---|
-| 2-1 ★ | Wind über der Eisenmark | – | survive | **Brakka** | Jory, danach die drei Angebote |
-| 2-2 | Das Siegel im Salzpass | Prinzessin | treasure | **Grell** | Nell |
-| 2-3 | Die verstoßene Leibwache | Prinzessin | escort (Odile) | **Sable** | Odile |
-| 2-4 | Der Wyvernhorst | Dravn | boss (Rowena) | **Rowena** | Ilka |
-| 2-5 | Die Brandschneise | Dravn | defend (Brandhang) | **Grell** | Brann; Sable bei E7 „warnen“ |
-| 2-6 | Gold für Banditen | Herzogin | rout | **Rowena**, **Sable** | Amos |
-| 2-7 | Das Kontor am Silbermeer | Herzogin | reach (Geschäftsbücher sichern) | **Brakka** | – (Beweis gegen Maelis, E8) |
-| 2-8 ★ | Kronfeld (Finale, große Schlacht) | – | survive → escape | Rowena, Grell, Brakka, Sable (falls nicht gewechselt) | – („Die Krone war hohl“) |
-
-2-6 weckt den Verdacht, dass Maelis die Banden aus Akt 1 bezahlt hat; 2-7 bringt den Beweis.
-
-- **2-1:** Die Mission führt die beiden Neuerungen des Akts ein, Flieger und die Balliste (je mit einer Lektion).
-- **Prinzessin-Strang (2-2, 2-3):** keine eigene aufgedeckte Lüge, sondern Zweifel. Odile weiß von Halvards Briefen an die Prinzessin, das Siegel aus dem Salzpass ist für den Freispruch-Erlass bestimmt. Die Lüge („Der Freispruch ist eine Falle“) platzt in Kronfeld.
-- **2-3:** Das Ziel bleibt `escort`. Odile folgt der nächsten eigenen Figur, statt allein zum Ausgang zu ziehen; der Ausgang liegt hinter der Gegnerlinie.
-- **2-4:** Der Boss ist Rowena selbst; ihre Flucht ist der Sieg.
-- **Sable in 2-5:** Sable steht in 2-5 als Dravns Offizierin mit dem Brandbefehl auf dem Brett, nicht feindlich, und gilt danach als getroffen. Wechselt sie bei E7 zur Truppe, fehlt sie in 2-3, 2-6 und 2-8; in 2-6 steht dann ein Ersatz-Hauptmann ohne Leutnant-Status.
-- **Das brennende Dorf (Beat 9) hängt an E7:** Bei „Befehl ausführen“ brennt Brandhang (Szene und Weltkarten-Variante). Bei „warnen“ sieht die Truppe in 2-6 in einer Szene ein Dorf, das Drachenschatten verbrannt haben; ist E7 beim Spielen von 2-6 noch offen, entfällt die Szene (nie zwei brennende Dörfer). Gekämpft wird gegen keinen Drachen.
-- **2-7 ist der bewusste Bruch mit Maelis:** Die Gegner sind Brakkas Söldner, die Maelis zum Vertuschen angeheuert hat, und die Wachen des Kontors. Das ist die einzige Ausnahme von der Regel, dass die Truppe gegen die Leute der *anderen* Anwärter kämpft.
-- **Kronfeld (2-8):** Karte 24×28, bis 15 Plätze (Söldner dürfen auffüllen). Die Truppe hält 8 Runden, dann öffnet sich eine Fluchtzone; gewonnen ist, wenn Avatar, Kael und die Hälfte der Eingesetzten fliehen; gezählt wird die Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten. Etwa 30 Gegner: die Garde der Prinzessin als Hauptmacht und Truppen der anderen Anwärter, dazu alle Akt-2-Leutnants (Sable nur, wenn sie nicht gewechselt ist). Seraphine und Halvard erscheinen nur in Szenen.
-- **Odile und Varek nach dem Weggang (E5, E6):** Sie stehen in Kronfeld nicht auf dem Brett; sie haben nur eine Szenenzeile auf der Gegenseite. Ihre Ausrüstung bleibt im Konvoi.
-- **Gegnerstufe:** In Akt 2 richtet sich die Stufe einer Story-Mission nach ihrer Position (Zahl der schon erledigten Akt-2-Story-Missionen), nicht nach dem Knoten; die Beitrittsstufe der Gefährten wächst ebenso mit (GDD).
-
-**Akt 3 „Krone“ (8, davon 2 große Schlachten)**
-
-| # | Mission | Ziel | Leutnant | Beitritt |
-|---|---|---|---|---|
-| 3-1 ★ | Winter über Aurenhall | reach (durch die Palastgänge) | **Eluned** | Kit und Pell |
-| 3-2 | Das verbotene Lied | escort (Harlan) | **Cassian** | Harlan |
-| 3-3 | Die Einsiedlerin | defend (Vesnas Hütte) | **Torvald** | Vesna (E9) |
-| 3-4 | Der Zweifler | boss (Mael; Nebenziel recruit) | **Mael** | Mael bei E11 „verschonen“ |
-| 3-5 ★ | Die Krönung | seize (Glutdom) | Cassian, Eluned, Torvald | – (Halvard enttarnt) |
-| 3-6 ★ | Drachen über der Stadt (große Schlacht) | defend | Torvald, Drachen (dritte Partei) | – |
-| 3-7 ★ | Der Weg ins Gebirge | reach (Pass, Drachen als Gelände-Gefahr) | Eluned | – |
-| 3-8 ★ | Im Drachengebirge (Finale, große Schlacht) | boss (Halvard) | Cassian, Torvald, Eluned, Mael (falls nicht gewechselt) | – (Der Preis, Wahrheit oder Frieden) |
-
-In Akt 3 sind 3-2 bis 3-4 frei wählbar; ab der Krönung läuft die Folge fest bis zum Finale. Pell tritt mit Kit bei: Der eine kennt die Gänge, der andere hat sich geweigert, die Truppe zu jagen.
-
-Prüfung: Jeder Leutnant tritt in mindestens 2 Story-Missionen auf, eine davon das Akt-Finale (Folge der Sable-Regel: Wechselt Sable in 2-5, bevor 2-3 oder 2-6 gespielt sind, bleibt es bei ihrem Auftritt in 2-5). Die erste Leutnant-Begegnung liegt in Mission 1-2. Kein Ziel kommt zweimal hintereinander vor, in jeder Reihenfolge der freien Missionen; die Regel gilt nur für Story-Missionen, Nebenquests zählen nicht mit (Produktinhaber 2026-10-31). Beitritte: 8, 7 und 5; der letzte Beitritt eines Akts hat danach noch mindestens eine Story-Mission im Akt, in Akt 3 noch vier.
+Die Missionsfolge von Staffel 1 (25 Story-Missionen mit Ort, Ziel, Größe, Leutnant, Beitritt, Zweck und Saat) steht seit 2026-11-01 in `missionsliste-s1.md`. Sie ersetzt die frühere Tabelle; Orte und Landschaften folgen dem Weltentwurf `concept/27-ueberarbeitung/weltentwurf.html`.
 
 ### Die 12 Entscheidungen
 
@@ -742,22 +683,9 @@ Orte: E1 nach 1-2, E2 vor 1-4, E3 nach 1-5, E4 nach 1-6, E5 nach 2-3, E6 nach 2-
 
 Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuft als Gedenk-Variante. Avatar und Kael gehen nie. Die Gold- und Preiswerte sind Startwerte für das Balancing. `[ASSUMPTION]`
 
-### Die 10 Nebenquests
+### Nebenquests
 
-| # | Akt | Art | Quest | Auslöser | Belohnung |
-|---|---|---|---|---|---|
-| N1 | 1 | persönlich | Der Ring von Varnhold (Fenns Vergangenheit) | E2 „schützen“ | Glutfunke, Signaturdolch |
-| N2 | 1 | Lore | Der letzte Wachturm der Paktwächter | Mission 1-3 gespielt | Glutfunke, Chronik-Seite, Relikt Schild der Paktwächter |
-| N3 | 1 | persönlich | Das Erbe (Tobins Pachthof; Variante der Karte Erlbach) | Tobin in der Truppe, Mission 1-6 gespielt | Signaturlanze |
-| N4 | 2 | persönlich | Der Clan im Schnee (Ilkas Clan; früher Schnee, nur auf dieser Akt-2-Karte) | Ilka in der Truppe | Glutfunke, Signaturbogen |
-| N5 | 2 | Lore | Glut unter dem Berg (Drachenglut in Branns Mine) | Mission 2-5 gespielt | Glutfunke, Chronik-Seite, Erd-Rune III, Relikt Drachenglut |
-| N6 | 2 | persönlich | Die Gauklertruppe (Jorys alte Truppe) | Jory in der Truppe | Signaturlaute |
-| N7 | 3 | persönlich | Verwiesen (Rhen und Ysolde an der Akademie) | E9 „bleiben“, sonst Rhen allein | Glutfunke, Taktiker-Buch |
-| N8 | 3 | persönlich | Brennas Bruder | Brenna lebt und hat B-Support mit Kael oder Tobin | Glutfunke, Signaturaxt |
-| N9 | 3 | Lore | Das Grab Aldrics I. | Mission 3-2 gespielt | Glutfunke, Chronik-Seite, Relikt Aldrics Paktklinge, Zeile für „Vhaelyra fragen“ |
-| N10 | 3 | persönlich | Die Unterstadt (Kit und Pell; Variante der Karte 3-1) | Kit und Pell in der Truppe | Signaturbogen (Pell) |
-
-Fällt der Gefährte, an den eine Quest gebunden ist, läuft sie als Gedenk-Variante (laut GDD). N3, N6 und N10 geben keinen Glutfunken, damit es bei 12 Glutfunken bleibt (GDD).
+Die 10 Nebenquests stehen ebenfalls in `missionsliste-s1.md`, je Akt unter den Story-Missionen. Drei von ihnen sind der einzige Weg zu einem Gefährten (Varek N2, Brann N5, Pell N10).
 
 ### Die 25 Support-Paare
 
@@ -985,5 +913,5 @@ v
 
 - **Spiele:** Fire Emblem (GBA, Three Houses, Engage), Suikoden (Burg und Familie), Triangle Strategy (Politik, Akte), Battle Brothers und Wartales (Söldner, Verlust), Shadow of Mordor (wiederkehrende Gegner, bewusst ohne Prozedur), Kingdom Rush und Mario + Rabbids (runder Stil)
 - **Ton:** Studio Ghibli (Prinzessin Mononoke, Das wandelnde Schloss): freundliche Bilder, ernste Themen
-- **Bildreferenzen (Moodboards):** `art/mockups/characters-s1/` (37 Figuren), `art/mockups/locations-s1/` (14 Orte), `art/mockups/style-2026-10/round_chibi_kael.png` (Stil)
+- **Bildreferenzen (Moodboards):** `art/mockups/characters-s1/` (37 Figuren), `art/mockups/locations-s1/` (14 Orte), `art/mockups/style-2026-11/anchor_rhen.png` (Stil)
 - **Projektdokumente:** `concept/20-game-brief/brief.md`, `concept/21-gdd/gdd.md`, `concept/17-audio.md`, Prämisse aus `concept/archive/08-story-world.md`

@@ -75,6 +75,10 @@
   -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
   mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
 }
+/* portraits face the right edge; the right speaker is mirrored to look into the scene */
+.vn-fig img.is-mirrored {
+  transform: scaleX(-1);
+}
 .vn-fig--right {
   right: -14%;
 }

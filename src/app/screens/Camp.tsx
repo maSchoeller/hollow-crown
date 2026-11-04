@@ -2,10 +2,10 @@
  * The home (concept/25-ux/mockups/04-heimat.html "Lager in Akt 1" and Variante B, stories 6.3 and 6.9): the picture on top,
  * the rooms as stones below, a room opens as a panel over the blurred view. The rooms come from `content/core/rooms.yaml`
  * (`c.home`), their opening from `requires` per room; picture and anchors per kind of home from `content/home/home.yaml`.
- * In the castle the room stones also sit on the picture (the anchors) and show their level as dots.
+ * In the castle the top is the 3D scene (`Castle3d`) with the room stones over their buildings; the list shows their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { availableSupportTalks, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { availableSupportTalks, castleTier, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -15,7 +15,7 @@ import { audio } from '../audio';
 import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
-import { Castle3d, castle3dFlag, CastleDevBar, type CastleMode } from './Castle3d';
+import { Castle3d, castle3dFlag, CastleDevBar } from './Castle3d';
 import '../../ui/camp.css';
 
 /** Level of a castle room as dots (filled up to the level; three at most). */
@@ -38,10 +38,9 @@ export function Camp({ tab }: { tab?: string }) {
   const c = campaign.value!;
   const [open, setOpen] = useState<string | null>(tab ?? null);
   const [toast, setToast] = useState<string | null>(null);
-  // evaluation spike (dev only, `?castle3d=1`): the castle as a 3D diorama, a dev bar for picture/3D and the level of all rooms
-  const [spike] = useState(castle3dFlag);
-  const [mode, setMode] = useState<CastleMode>('3d');
-  const [devLevel, setDevLevel] = useState<number | null>(null);
+  // dev only (`?castle3d=1`): a bar sets one stage for all of the castle
+  const [devBar] = useState(castle3dFlag);
+  const [devTier, setDevTier] = useState<number | null>(null);
   useEffect(() => audio.music('camp'), []);
   const apply: Apply = (cmd: CampaignCommand, okText?: string) => {
     const r = campaignCommand(cmd);
@@ -67,31 +66,19 @@ export function Camp({ tab }: { tab?: string }) {
   const tap = ({ room: r, open: isOpen, unmet }: RoomStatus) => (isOpen ? setOpen(r.id) : setToast(lockReason(unmet)));
   return (
     <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
-      {castle && spike && mode === '3d' ? (
+      {castle ? (
         <Castle3d
           rooms={rooms}
-          levelOf={(id) => devLevel ?? roomLevel(c, id)}
+          levelOf={(id) => (devTier !== null ? Math.max(1, devTier) : rooms.some((x) => x.room.id === id) ? roomLevel(c, id) : 0)}
+          tier={devTier ?? castleTier(data, c)}
           onRoom={(_id, st) => (st ? tap(st) : setToast(t('ui.dev.castle3d.noRoom')))}
+          fallback={asset(`locations/${view.image}.webp`)}
+          stats={devBar}
         />
       ) : (
         <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
       )}
-      {castle && spike && !room && <CastleDevBar mode={mode} setMode={setMode} level={devLevel} setLevel={setDevLevel} />}
-      {castle && !room && !(spike && mode === '3d') && (
-        <div class="hm__anchors">
-          {view.anchors.flatMap((a) => {
-            const st = rooms.find((x) => x.room.id === a.room);
-            if (!st) return [];
-            return [
-              <button key={a.room} type="button" class={`hm-anchor ${st.open ? '' : 'is-locked'}`} style={{ left: `${a.at[0]}%`, top: `${a.at[1]}%` }} aria-label={t(`room.${a.room}.name`)} onClick={() => tap(st)}>
-                <span class="hm-room__stone">
-                  <Icon name={st.open ? st.room.icon : 'lock'} size={22} />
-                </span>
-              </button>,
-            ];
-          })}
-        </div>
-      )}
+      {castle && devBar && !room && <CastleDevBar tier={devTier} setTier={setDevTier} />}
       <div class="hm__hud">
         <div class="hm__top">
           <Piece class="hm-act">

@@ -1,0 +1,364 @@
+<title>Valmora Weltentwurf</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: Karte links, Erläuterung rechts; schmal untereinander. Farben der Karte als Tokens, damit sie in beiden Themen lesbar bleibt */
+:root {
+  --bg: #f4f5f1; --surface: #ffffff; --ink: #23262a; --muted: #5f646b; --line: #d9dbd4;
+  --land: #e7e3cf; --land2: #dcd6b8; --sea: #9cc3d6; --sea-ink: #2f6f8e; --river: #4f95c0; --lake: #b8d8e6;
+  --mount: #9a9284; --snow: #f7f7f4; --forest: #4f7d4a; --swamp: #6f8a5a; --city: #8a5a44;
+  --a1: #b8860b; --a2: #b2552c; --a3: #3f6f9f; --side: #7a55a8; --ember: #c4471f;
+  --display: "Alegreya", Georgia, serif; --body: "Alegreya Sans", "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16181a; --surface: #1f2226; --ink: #ebebe6; --muted: #a2a6ac; --line: #33363b;
+  --land: #3a372c; --land2: #4a4535; --sea: #1f4556; --sea-ink: #8cc4dc; --river: #5fa8d4; --lake: #2c5466;
+  --mount: #7b7468; --snow: #cfd3d6; --forest: #5f9a59; --swamp: #7e9a68; --city: #c08a70;
+  --a1: #e0b347; --a2: #e48058; --a3: #84aedb; --side: #b593e0; --ember: #ef7a4d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16181a; --surface: #1f2226; --ink: #ebebe6; --muted: #a2a6ac; --line: #33363b;
+  --land: #3a372c; --land2: #4a4535; --sea: #1f4556; --sea-ink: #8cc4dc; --river: #5fa8d4; --lake: #2c5466;
+  --mount: #7b7468; --snow: #cfd3d6; --forest: #5f9a59; --swamp: #7e9a68; --city: #c08a70;
+  --a1: #e0b347; --a2: #e48058; --a3: #84aedb; --side: #b593e0; --ember: #ef7a4d; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 52px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; }
+h2 { font-size: 1.65rem; }
+h3 { font-size: 1.15rem; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.lead { color: var(--muted); font-size: 1.1rem; }
+section { display: grid; gap: 16px; min-width: 0; }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
+.map { width: 100%; max-width: 900px; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--sea); display: block; }
+.map text { font-family: var(--body); fill: var(--ink); }
+.map .region { font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: .14em; text-transform: uppercase; fill: var(--ink); opacity: .55; }
+.map .lbl { font-size: 11.5px; font-weight: 700; paint-order: stroke; stroke: var(--land); stroke-width: 3.5px; stroke-linejoin: round; }
+.map .feat { font-size: 11px; font-style: italic; fill: var(--muted); paint-order: stroke; stroke: var(--land); stroke-width: 3px; }
+.map .seaname { font-family: var(--display); font-size: 20px; letter-spacing: .3em; fill: var(--sea-ink); font-weight: 700; }
+.side { display: grid; gap: 18px; min-width: 0; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+.legend { display: grid; gap: 6px; font-size: .92rem; color: var(--muted); }
+.legend div { display: flex; gap: 8px; align-items: center; }
+.dot { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid var(--c); background: var(--surface); flex: none; }
+.dia { width: 11px; height: 11px; transform: rotate(45deg); background: var(--side); flex: none; margin: 0 2px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 8px; }
+.card p, .card li { color: var(--muted); font-size: .96rem; }
+.card ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: .93rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { font-family: var(--display); font-size: 1rem; }
+td.m { white-space: nowrap; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font-size: .8rem; padding: 1px 9px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); margin: 1px 3px 1px 0; white-space: nowrap; }
+.castle { width: 100%; height: auto; display: block; }
+.castle text { font-family: var(--body); font-size: 12px; fill: var(--ink); }
+.qs { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; max-width: 72ch; }
+footer { color: var(--muted); font-size: .9rem; }
+</style>
+
+<div class="wrap">
+<header style="display:grid;gap:12px">
+  <div class="eyebrow">Konzept-Überarbeitung · Etappe 4 · Entwurf 1. November 2026</div>
+  <h1>Valmora, vom Großen ins Kleine</h1>
+  <p class="lead">Ein Land, das man erzählen kann: Meer im Westen, das Drachengebirge im Norden, Grenzmarken im Osten. Jede Mission bekommt ihren eigenen Landschaftstyp, statt auf Wiesen und in Dörfern zu spielen. Die Skizze ist das Gerüst, nach dem ChatGPT später die Weltkarte malt.</p>
+</header>
+
+<section>
+  <div class="mapgrid">
+    <svg class="map" id="map" viewBox="0 0 900 900" role="img" aria-label="Skizze von Valmora mit Regionen, Flüssen, Gebirgen und den Orten aller 35 Missionen">
+      <defs>
+        <pattern id="swamp" width="10" height="8" patternUnits="userSpaceOnUse"><path d="M1 6h6M4 2h5" stroke="var(--swamp)" stroke-width="1.4"/></pattern>
+        <pattern id="field" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0v12" stroke="var(--land2)" stroke-width="5"/></pattern>
+      </defs>
+      <g transform="scale(1.5 1)">
+      <!-- Land: alles außer dem Meer im Westen -->
+      <path fill="var(--land)" d="M168 0 C170 40 180 80 205 112 C225 138 248 156 256 176 C240 184 222 172 200 150 C178 130 158 122 140 140 C118 170 124 214 140 248 C150 272 128 292 96 300 C66 310 40 330 36 352 C34 372 70 378 104 372 C134 368 168 386 200 404 C226 420 248 436 264 452 C246 462 222 460 196 466 C160 474 118 458 84 472 C52 486 22 512 18 536 C16 556 48 566 82 556 C112 548 140 560 152 584 C166 612 158 646 132 676 C110 702 90 726 74 760 C66 780 88 792 112 796 C138 800 160 810 178 828 C168 846 142 852 116 860 C88 868 62 880 44 900 L600 900 L600 0 Z"/>
+      <!-- Inseln: Krähenholm vor der Küste, Aue-Insel in der Mündung, Klippen im Nordwesten -->
+      <path fill="var(--land)" d="M38 612 C54 596 84 600 92 618 C98 636 84 656 62 660 C40 662 26 646 30 630 Z"/>
+      <ellipse cx="218" cy="436" rx="13" ry="7" fill="var(--land)"/>
+      <circle cx="70" cy="200" r="9" fill="var(--land)"/><circle cx="52" cy="226" r="6" fill="var(--land)"/><circle cx="20" cy="430" r="7" fill="var(--land)"/>
+      <!-- Felder vor der Paktwacht und im Grenzland -->
+      <path fill="url(#field)" d="M360 650 C400 640 470 648 500 670 C490 700 420 712 370 700 Z"/>
+      <path fill="url(#field)" d="M240 690 C280 676 320 690 330 712 C300 730 260 726 236 712 Z"/>
+      <path fill="url(#field)" d="M180 790 C210 780 250 792 252 808 C226 824 196 820 178 808 Z"/>
+      <!-- Sumpf im Delta der Erle -->
+      <ellipse cx="200" cy="846" rx="52" ry="28" fill="url(#swamp)"/>
+      <!-- Spiegelsee -->
+      <ellipse cx="322" cy="238" rx="78" ry="30" fill="var(--lake)" stroke="var(--river)" stroke-width="1.5"/>
+      <!-- Flüsse -->
+      <g fill="none" stroke="var(--river)" stroke-linecap="round" vector-effect="non-scaling-stroke">
+        <path stroke-width="3" d="M300 112 C310 160 330 190 328 210"/>
+        <path stroke-width="7" d="M262 252 C246 300 280 352 290 396 C296 424 282 444 262 452"/>
+        <path stroke-width="3" d="M540 300 C500 330 430 350 372 384 C340 400 310 400 290 398"/>
+        <path stroke-width="3.5" d="M442 626 C436 670 420 700 384 730 C352 756 300 770 262 790 C230 806 206 818 178 828"/>
+      </g>
+                  <!-- Grenze nach Kharesh -->
+      <path d="M584 640 L584 900" stroke="var(--ember)" stroke-width="2" stroke-dasharray="7 6"/>
+      <!-- Aurenhall -->
+      <path d="M292 268 h70 l8 30 h-86 z" fill="var(--city)" opacity=".85"/>
+      <circle cx="327" cy="276" r="7" fill="var(--ember)"/>
+      <!-- Paktwacht im Fels -->
+      <path d="M408 628 h46 v22 h-46 z" fill="var(--city)"/>
+      <path d="M402 628 l8 -16 l8 16 M444 628 l8 -16 l8 16" fill="var(--city)"/>
+
+      </g>
+      <g id="mountains"></g>
+      <g id="forests"></g>
+      <text class="seaname" transform="translate(30 330) rotate(-90)" style="font-size:16px">SILBERMEER</text>
+      <text class="feat" x="294" y="120" text-anchor="end">Eisfjord</text>
+      <text class="feat" x="225" y="424">Auremündung</text>
+      <text class="feat" x="33" y="582">Möwenzunge</text>
+      <text class="feat" x="48" y="680">Krähenholm</text>
+      <text class="feat" x="144" y="822">Erlenbucht</text>
+      <text class="region" x="450" y="182" text-anchor="middle">Drachengebirge</text>
+      <text class="region" x="630" y="520" text-anchor="middle">Eisenmark</text>
+      <text class="region" x="600" y="880" text-anchor="middle">Grenzland</text>
+      <text class="region" x="888" y="770" text-anchor="middle" transform="rotate(90 888 770)" style="fill:var(--ember)">Kharesh</text>
+      <text class="feat" x="483" y="242" text-anchor="middle">Spiegelsee</text>
+      <text class="feat" x="294" y="603">Grauer Kamm</text>
+      <text class="feat" x="348" y="320">Aure</text>
+      <text class="feat" x="532" y="752">Erle</text>
+      <text class="feat" x="294" y="884">Erlenmoor</text>
+      <text class="feat" x="780" y="292">Kupferberge</text>
+      <text class="feat" x="603" y="362">Eisenschlucht</text>
+      <text class="feat" x="705" y="782">Grenzwald</text>
+
+      <g id="markers"></g>
+    </svg>
+
+    <div class="side">
+      <div class="legend">
+        <div><span class="dot" style="--c:var(--a1)"></span>Akt 1 „Asche“ (Grenzland, Spätsommer)</div>
+        <div><span class="dot" style="--c:var(--a2)"></span>Akt 2 „Glut“ (Eisenmark und Küste, Herbst)</div>
+        <div><span class="dot" style="--c:var(--a3)"></span>Akt 3 „Krone“ (Aurenhall und Gebirge, Winter)</div>
+        <div><span class="dia"></span>Nebenquest</div>
+        <div><span style="width:11px;height:11px;background:var(--ink);flex:none;margin:0 2px"></span>Sitz, Residenz oder Lager (kein Missionsort)</div>
+      </div>
+      <div class="card">
+        <h3>Die Reise</h3>
+        <p>Der Prolog spielt im Norden in Aurenhall. Die Truppe flieht nach Süden ins Grenzland und erobert dort die Paktwacht am Grauen Kamm. Von da geht es durch die Windscharte hinauf in die Eisenmark und an die Küste, in Akt 3 zurück nach Aurenhall und schließlich ins Drachengebirge. So schließt sich der Kreis.</p>
+      </div>
+      <div class="card">
+        <h3>Drei Regionen, drei Gesichter</h3>
+        <ul>
+          <li><b>Grenzland:</b> Flusstal der Erle, Grenzwald, Felsenhügel, das Moor im Delta, Felder. Grün und golden.</li>
+          <li><b>Eisenmark:</b> Hochland mit Schlucht und Wasserfällen, Kupferberge mit Minen. Die Aure wird zum großen Strom und öffnet sich in eine breite Mündung mit Hafen und Flussinsel. Südlich davon ragt die Halbinsel Möwenzunge ins Meer, davor liegt die Schmugglerinsel Krähenholm. Rost und Ocker.</li>
+          <li><b>Kronland und Drachengebirge:</b> Aurenhall am zugefrorenen Spiegelsee, Winterwald, Königsgruft in der Klippe, Pass und Gletscher, der Urtempel im Krater. Weiß, Gold, Glut.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Die Heimat</div>
+  <h2>Die Paktwacht lehnt sich an den Berg</h2>
+  <p>Die Paktwacht liegt an der Südflanke des Grauen Kamms und bewacht den Wachpass, den einzigen Weg vom Grenzland nach Norden. Darum stand sie dort: Wer in die Eisenmark will, muss an ihr vorbei. Hinten ist der Fels, in den die Gewölbe führen (Mission 1-7). Vorne steigen Mauer, Hof und Terrassen an, davor liegen Felder, Mühle und Wiesen an der Erle.</p>
+  <div class="card">
+    <svg class="castle" viewBox="0 0 900 260" role="img" aria-label="Schnitt durch die Paktwacht: Berg hinten, Gewölbe im Fels, Burg mit Terrassen, davor Felder und Fluss">
+      <path d="M0 240 L900 240 L900 260 L0 260 Z" fill="var(--land2)"/>
+      <path d="M560 240 C600 120 660 40 720 20 C780 30 840 90 900 120 L900 240 Z" fill="var(--mount)"/>
+      <path d="M700 26 L720 20 L742 30 L730 42 Z" fill="var(--snow)"/>
+      <path d="M610 200 C640 196 690 200 720 212 L720 232 L610 232 Z" fill="var(--bg)" stroke="var(--ink)" stroke-dasharray="4 4"/>
+      <text x="628" y="222">Gewölbe, Gräber, Chronik</text>
+      <path d="M440 240 v-70 h20 v-14 h12 v14 h40 v-34 h14 v-18 h16 v18 h14 v34 h20 v70 z" fill="var(--city)"/>
+      <path d="M380 240 v-40 h60 v40 z" fill="var(--city)" opacity=".75"/>
+      <path d="M300 240 v-18 h80 v18 z" fill="var(--land)" stroke="var(--line)"/>
+      <rect x="40" y="226" width="250" height="14" fill="var(--land)" stroke="var(--forest)" stroke-dasharray="2 6"/>
+      <path d="M150 240 q30 -12 60 0" fill="none" stroke="var(--river)" stroke-width="5"/>
+      <text x="480" y="120" text-anchor="middle">Burg</text>
+      <text x="410" y="192" text-anchor="middle">Vorburg</text>
+      <text x="340" y="214" text-anchor="middle">Terrassen</text>
+      <text x="90" y="218">Felder, Wiesen</text>
+      <text x="180" y="256" text-anchor="middle">Erle</text>
+      <text x="760" y="100">Grauer Kamm</text>
+      <text x="16" y="24" style="font-weight:700">Süden</text>
+      <text x="884" y="24" text-anchor="end" style="font-weight:700">Norden, Wachpass</text>
+    </svg>
+  </div>
+  <p>Für die Level heißt das: In 1-6 stürmt die Truppe von Süden über Felder und Terrassen. In 1-8 kommen die Angreifer von Süden und zusätzlich über den Wachpass im Rücken. Die Burg wächst in Akt 2 und 3 nach vorne in die Ländereien hinein.</p>
+</section>
+
+<section>
+  <div class="eyebrow">Landschaften</div>
+  <h2>Jede Mission an ihrem Ort</h2>
+  <p>Zuordnung aus der Missionsliste (<code>concept/22-narrative/missionsliste-s1.md</code>); dort stehen auch Ziele, Gegner und Begründungen.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Mission</th><th>Ort</th><th>Landschaft</th><th>Was das Gelände spielerisch hergibt</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Gegenprobe mit der Story</div>
+  <h2>Wer lebt wo</h2>
+  <p>Jede Macht und jede Figur braucht einen Ort, an dem sie zu Hause ist. Bisher fehlten Dravns Festung, der Sitz der Herzogin, Hasks Lager und die Grenze nach Kharesh; sie sind jetzt als Sitze auf der Karte. Daraus ergibt sich auch, warum Missionen dort liegen, wo sie liegen.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Wer</th><th>Sitz</th><th>Was daraus für die Story folgt</th></tr></thead>
+    <tbody>
+      <tr><td><b>Seraphine</b>, Krone, Silberne Lanze</td><td>Königspalast in Aurenhall; die Reiterei der Lanze auf der Rabenweide an der Aure (2-3)</td><td>Rowena verteidigt in 2-3 ihr eigenes Gestüt, das macht sie als spätere Verbündete greifbar</td></tr>
+      <tr><td><b>General Dravn</b>, Grenzheer</td><td>Festung Grauwacht am Fuß der Kupferberge, nahe der Grenze</td><td>Brandhang (2-4) liegt in seinem eigenen Hinterland: Er opfert seine eigenen Dörfer. Varek und Sable kommen aus seinem Heer</td></tr>
+      <tr><td><b>Herzogin Maelis</b>, Haus Silbermeer</td><td>Perlhof an der Spitze der Möwenzunge; Kontor an der Auremündung (2-7); der Salzpass als ihre Schmuggelroute ins Hochland (2-2)</td><td>Ihr Geld fließt übers Meer: Krähenholm (2-6) ist der Umschlagplatz für das Bandengold. Grell und Nell sind ihre Kaperleute</td></tr>
+      <tr><td><b>Halvard</b>, Pakttempel, Paktgarde</td><td>Glutdom in Aurenhall; Lager der Paktgarde auf dem Spiegelsee (3-4)</td><td>Liora wuchs im Glutdom auf; die Krönung (3-5) ist sein Heimspiel</td></tr>
+      <tr><td><b>Kronfeld</b></td><td>Ebene genau zwischen Grauwacht, Perlhof und Aurenhall</td><td>Darum ist es der „neutrale“ Treffpunkt für den Freispruch (2-8)</td></tr>
+      <tr><td><b>Hask</b>, Marodeure</td><td>Hasks Lager im Süden zwischen Grenzwald und Wolfshügeln</td><td>Von dort zieht er nach Erlbach (1-2); Fluchtweg nach 1-6 und 1-8</td></tr>
+      <tr><td><b>Ulvric</b>, Wolfsbande</td><td>Wolfshügel (1-4)</td><td>Dunn versteckt sich bei ihm</td></tr>
+      <tr><td><b>Morra</b>, Kopfgeldjägerin</td><td>Kopfgeldstube in Varnhold (1-1)</td><td>Sie hängt die Steckbriefe auf und kennt die Stadt</td></tr>
+      <tr><td><b>Grosk</b>, Hungernde</td><td>Hungerlager im Erlenmoor (1-5)</td><td>Das Moor ist das Land, das niemand haben will</td></tr>
+      <tr><td><b>Kharesh</b></td><td>Grenzposten an der Ostgrenze, dahinter das Nachbarreich</td><td>Saat für Staffel 2; Kaels Kriegsnarben stammen von hier, N2 blickt hinüber</td></tr>
+      <tr><td><b>Vhaelyra</b></td><td>Hort unter dem Urtempel im Krater (3-8)</td><td>Das Beben in Akt 1 kommt von hier</td></tr>
+      <tr><td><b>Aldric I.</b></td><td>Königsgruft am Eisfjord (N9), leer</td><td>Saat für Staffel 2 und 3</td></tr>
+      <tr><td><b>Gefährten</b></td><td>Mira Erlbach · Fenn Varnhold · Tobin Pachthof · Liora Glutdom · Rhen, Ysolde, Vesna Akademie · Varek, Sable Grenzheer · Jory fahrende Gaukler · Odile, Kit, Harlan Palast · Nell Krähenholm (2-6) · Brann Brandhang · Amos Kloster Silberquell (2-5) · Ilka Clan in den Kupferbergen · Mael Paktgarde · Pell Stadtwache</td><td>Jeder Beitritt findet an oder nahe der Heimat der Figur statt. Kael stammt aus dem Grenzland bei Kharesh, Brenna aus der Unterstadt von Aurenhall</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Zur Prüfung</div>
+  <h2>Was ich bewusst entschieden habe</h2>
+  <ul class="qs">
+    <li><b>Neue Orte statt Wiesen:</b> das Erlenmoor für das Hungerlager, die Schmugglerbucht mit Strand und Schiff, die Eisenschlucht mit Wasserfall, der zugefrorene Spiegelsee, die Königsgruft in der Klippe.</li>
+    <li><b>Wasser als Thema:</b> Zwei Flüsse (Aure, Erle), ein See, die Küste. Furten, Brücken, Eis, Ebbe und Stege tauchen in elf Missionen auf.</li>
+    <li><b>Aurenhall bleibt dicht:</b> Fünf Story-Missionen und zwei Nebenquests spielen in der Stadt, weil der Hauptbogen dort kulminiert. Jede bekommt ein anderes Viertel (Palastgänge, Sängerviertel an den Kanälen, Glutdom, Südtor, Akademie, Unterstadt).</li>
+    <li><b>Später:</b> Himmelslevel kommen erst mit den Drachen in Staffel 2; Kharesh jenseits der Grenze bleibt bis dahin unbetreten.</li>
+  </ul>
+</section>
+
+<footer>Stand: im Grundsatz abgenommen (2026-11-01). Grundlage sind <code>concept/22-narrative/staffelbogen.md</code> und <code>missionsliste-s1.md</code>; die alte Karte <code>art/world/map_flat_v1.png</code> wird durch eine neue ersetzt, sobald die Geografie steht.</footer>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
+// Fester Zufall, damit die Skizze bei jedem Laden gleich aussieht
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const SX = 1.5;
+const mg = document.getElementById("mountains");
+function range(x0, x1, y0, y1, n, size, snow) {
+  for (let i = 0; i < n; i++) {
+    const x = (x0 + rnd() * (x1 - x0)) * SX, y = y0 + rnd() * (y1 - y0), s = size * (0.7 + rnd() * 0.6);
+    el("path", { d: `M${x - s} ${y + s * .55} L${x} ${y - s} L${x + s} ${y + s * .55} Z`, fill: "var(--mount)", stroke: "var(--ink)", "stroke-opacity": ".25" }, mg);
+    if (snow) el("path", { d: `M${x - s * .3} ${y - s * .45} L${x} ${y - s} L${x + s * .3} ${y - s * .45} Z`, fill: "var(--snow)" }, mg);
+  }
+}
+range(130, 590, 20, 150, 46, 22, true);   // Drachengebirge
+range(130, 200, 300, 380, 9, 14, false);  // Küstengebirge am Salzpass
+range(470, 590, 300, 480, 18, 16, true);  // Kupferberge
+range(150, 320, 580, 620, 10, 13, false); // Grauer Kamm West
+range(360, 590, 580, 620, 13, 13, false); // Grauer Kamm Ost (Lücke = Windscharte)
+range(490, 570, 820, 870, 6, 10, false);  // Wolfshügel
+// Krater des Urtempels
+el("circle", { cx: 300 * SX, cy: 66, r: 16, fill: "var(--ember)", opacity: ".8" }, mg);
+const fg = document.getElementById("forests");
+function forest(cx, cy, rx, ry, n) {
+  for (let i = 0; i < n; i++) {
+    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd());
+    el("circle", { cx: (cx + Math.cos(a) * rx * r) * SX, cy: cy + Math.sin(a) * ry * r, r: 5 + rnd() * 3, fill: "var(--forest)", opacity: ".85" }, fg);
+  }
+}
+forest(470, 740, 60, 40, 60);  // Grenzwald
+forest(482, 220, 46, 30, 34);  // Winterwald um Vesnas Hütte
+forest(452, 420, 34, 24, 22);  // Wälder am Brandhang
+forest(230, 316, 26, 18, 12);  // Wäldchen vor der Stadt
+forest(300, 720, 18, 12, 8);   // Hain am Pachthof
+
+// Orte: [Kürzel, x, y, Akt (1-3) oder "n" für Nebenquest, Beschriftung, Ankerseite]
+const M = [
+  ["Aurenhall", 327, 276, 3, "P · 3-1 · 3-2 · 3-5 · 3-6", "e"],
+  ["", 352, 262, "n", "N7 · N10", "e"],
+  ["3-4", 300, 236, 3, "3-4 Eis", "w"],
+  ["3-3", 482, 220, 3, "3-3 Vesna", "e"],
+  ["3-7", 392, 132, 3, "3-7 Pass", "e"],
+  ["3-8", 300, 66, 3, "3-8 Urtempel", "e"],
+  ["N9", 262, 166, "n", "N9 Königsgruft", "e"],
+  ["N8", 222, 330, "n", "N8 Lager", "w"],
+  ["2-1", 340, 596, 2, "2-1 Windscharte", "e"],
+  ["2-2", 152, 340, 2, "2-2 Salzpass", "e"],
+  ["2-3", 300, 420, 2, "2-3 Rabenweide", "e"],
+  ["2-4", 470, 430, 2, "2-4 Brandhang", "e"],
+  ["2-5", 380, 380, 2, "2-5 Silberquell", "e"],
+  ["2-6", 62, 630, 2, "2-6 Krähenholm", "e"],
+  ["2-7", 186, 392, 2, "2-7 Kontor", "w"],
+  ["2-8", 330, 500, 2, "2-8 Kronfeld", "e"],
+  ["N4", 540, 340, "n", "N4 Clan", "w"],
+  ["N5", 548, 466, "n", "N5 Mine", "w"],
+  ["N6", 218, 436, "n", "N6 Aue-Insel", "w"],
+  ["Paktwacht", 430, 640, 1, "1-6 · 1-7 · 1-8 Paktwacht", "e"],
+  ["", 505, 545, "s", "Grauwacht (Dravn)", "e"],
+  ["", 44, 528, "s", "Perlhof (Maelis)", "e"],
+  ["", 575, 410, "s", "Kupferhall (Minen)", "w"],
+  ["", 420, 862, "s", "Hasks Lager", "w"],
+  ["", 572, 652, "s", "Grenzposten Kharesh", "w"],
+  ["", 300, 300, "s", "Palast · Glutdom · Akademie", "w"],
+  ["1-1", 330, 760, 1, "1-1 · N1 Varnhold", "e"],
+  ["1-2", 256, 786, 1, "1-2 Erlbach", "w"],
+  ["1-3", 470, 735, 1, "1-3 Weißdorn", "e"],
+  ["1-4", 522, 846, 1, "1-4 Wolfshügel", "w"],
+  ["1-5", 206, 846, 1, "1-5 Hungerlager", "e"],
+  ["N2", 556, 688, "n", "N2 Wachturm", "w"],
+  ["N3", 290, 700, "n", "N3 Pachthof", "w"],
+];
+const mk = document.getElementById("markers");
+const col = { 1: "var(--a1)", 2: "var(--a2)", 3: "var(--a3)", n: "var(--side)" };
+for (const [, x0, y, act, label, side] of M) {
+  const x = x0 * SX;
+  if (act === "s") el("rect", { x: x - 5, y: y - 5, width: 10, height: 10, fill: "var(--ink)" }, mk);
+  else if (act === "n") el("rect", { x: x - 5.5, y: y - 5.5, width: 11, height: 11, fill: col.n, transform: `rotate(45 ${x} ${y})` }, mk);
+  else el("circle", { cx: x, cy: y, r: 6.5, fill: "var(--surface)", stroke: col[act], "stroke-width": 3 }, mk);
+  const t = el("text", { x: side === "w" ? x - 11 : x + 11, y: y + 4, class: "lbl", "text-anchor": side === "w" ? "end" : "start" }, mk);
+  t.textContent = label;
+}
+
+// Tabelle: Mission, Ort, Landschaft, Spielwert
+const R = [
+  ["P", "Tempelbezirk des Glutdoms, Aurenhall", ["Stadt", "Nacht"], "Enge Höfe, Säulengänge, Fackellicht; Flucht auf vorgegebenen Wegen"],
+  ["1-1", "Varnhold", ["Kleinstadt", "Fluss", "Brücke"], "Markt als Deckung, Brücke als Engstelle, Steckbriefe an jeder Mauer"],
+  ["1-2", "Erlbach", ["Dorf", "Bach", "Felder"], "Brennbare Felder, Furten nur zu Fuß, Häuser zum Besuchen"],
+  ["1-3", "Schrein am Weißdorn, Grenzwald", ["dichter Wald", "Lichtung"], "Sichtlinien durch Wald gebrochen, Späher im Vorteil, Weg zum Schrein"],
+  ["1-4", "Wolfshügel", ["Felsen", "Höhlen", "Anhöhen"], "Höhe gibt Reichweite, Höhlen als Hinterhalt, Wölfe im Gelände"],
+  ["1-5", "Hungerlager im Erlenmoor an der Erlenbucht", ["Sumpf", "Stege", "Delta"], "Sumpf kostet Bewegung, Stege als Engstellen, Nebel"],
+  ["1-6", "Paktwacht", ["Burg am Berg", "Terrassen", "Felder"], "Sturm bergauf, Tore und Mauern, Terrassen als Stufen"],
+  ["1-7", "Gewölbe im Grauen Kamm", ["Höhle", "Gräber"], "Enge Gänge, Einsturz als Zeitdruck, Dunkelheit"],
+  ["1-8", "Paktwacht", ["Burg", "Wachpass im Rücken"], "Verteidigung nach zwei Seiten, Mauern halten"],
+  ["N1", "Varnhold bei Nacht", ["Dächer", "Gassen"], "Über Dächer laufen, Nebel, Diebe"],
+  ["N2", "Letzter Wachturm an der Grenzmauer", ["Grenzhügel", "Ruine"], "Ruinen als Deckung, Blick nach Kharesh"],
+  ["N3", "Tobins Pachthof", ["Felder", "Mühle", "Fluss"], "Mühlrad, Scheunen, offene Felder"],
+  ["2-1", "Windscharte im Grauen Kamm", ["Bergscharte", "Wind"], "Ballisten auf Felsnasen, Wind verkürzt Bogenschüsse, Reiterei in der Ebene dahinter"],
+  ["2-2", "Salzpass im Küstengebirge", ["Gebirgspass", "Nebel"], "Schmaler Pass, Nebel, Steinschlag"],
+  ["2-3", "Rabenweide an der Aure", ["Hochlandweiden", "Fluss"], "Offenes Weideland für Reiterei, Koppelzäune, Furten"],
+  ["2-4", "Brandhang", ["Bergdorf", "Getreideterrassen", "Wald"], "Feuer frisst sich den Hang hinauf, Terrassen, große Karte"],
+  ["2-5", "Klosterhof Silberquell, Eisenschlucht", ["Schlucht", "Wasserfall", "Brücken"], "Hängebrücken, Wasserfall als Sichtschutz, Geleit über enge Wege"],
+  ["2-6", "Schmugglerinsel Krähenholm", ["Insel", "Strand", "Schiff"], "Landung per Schiff, Ebbe und Flut öffnen Sandbänke, Klippenpfade, Grells Schiff vor Anker"],
+  ["2-7", "Kontor an der Auremündung", ["Hafenstadt", "Kais", "Schiffe"], "Lagerhäuser, Kräne, Kais als Linien, Schiffe als Brücken"],
+  ["2-8", "Kronfeld an der Aure", ["weite Ebene", "Fluss", "Hügel"], "Offene Schlacht, Reiterei, Fluchtzone am Fluss"],
+  ["N4", "Jagdgründe in den Kupferbergen", ["Bergwald", "erster Schnee"], "Spuren im Schnee, Kälte, Hochwald"],
+  ["N5", "Branns Bergwerk", ["Mine", "Stollen"], "Loren, Schächte, Drachenknochen im Fels"],
+  ["N6", "Herbstmarkt auf der Aue-Insel in der Mündung", ["Flussinsel", "Markt", "Gezeiten"], "Insel mit Brücken und Booten, Gaukelbühne"],
+  ["3-1", "Gänge unter dem Palast", ["Innenraum", "Gänge"], "Verwinkelte Gänge, Türen und Schlüssel"],
+  ["3-2", "Sängerviertel an den Kanälen", ["Stadt", "Kanäle", "Schnee"], "Kanäle trennen die Karte, Brücken und Boote"],
+  ["3-3", "Vesnas Hütte im Winterwald", ["Winterwald", "gefrorener Bach"], "Schnee verlangsamt, Wind-Magie, Hütte halten"],
+  ["3-4", "Lager der Paktgarde auf dem Spiegelsee", ["Eis", "Schilf"], "Eis trägt nicht überall und bricht unter schweren Einheiten"],
+  ["3-5", "Glutdom", ["Tempel", "Innen und Vorplatz"], "Krönungshalle, Emporen, Vorplatz im Schnee"],
+  ["3-6", "Südtor und Unterstadt", ["Stadtmauer", "Tor", "Gassen"], "Tor halten, Flüchtlinge schützen, Gassen als Flanken"],
+  ["3-7", "Pass ins Drachengebirge", ["Gletscher", "Pass"], "Gletscherspalten, Lawinen, ein schlafender Drache als Gelände"],
+  ["3-8", "Urtempel im Krater", ["Krater", "Eis und Glut"], "Glutrisse, Eisbrücken, uralter Stein"],
+  ["N7", "Akademie von Aurenhall", ["Innenraum", "Bibliothek"], "Regale als Wände, Lesesäle"],
+  ["N8", "Flüchtlingslager vor der Stadt", ["Winterfeld", "Wäldchen"], "Zelte, Wagenburg, offenes Feld"],
+  ["N9", "Königsgruft am Ende des Eisfjords", ["Fjord", "Klippe", "Gruft"], "Grabkammern im Fels, Absturzkanten"],
+  ["N10", "Unterstadt von Aurenhall", ["Kanäle", "Gassen"], "Untergrund, Schleusen, Diebeswege"],
+];
+const tb = document.getElementById("rows");
+for (const [m, ort, tags, spiel] of R) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td class="m">${m}</td><td>${ort}</td><td>${tags.map(t => `<span class="pill">${t}</span>`).join("")}</td><td>${spiel}</td>`;
+  tb.appendChild(tr);
+}
+</script>

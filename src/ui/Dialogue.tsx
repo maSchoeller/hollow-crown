@@ -17,7 +17,7 @@ import {
 import { t } from '../i18n';
 import { asset, Modal } from './components';
 import { ConsequenceCard } from './ConsequenceCard';
-import { figureId, halfUrl, pickHalf } from './halfFigure';
+import { figureId, halfUrl, pickSideHalf } from './halfFigure';
 import { Icon } from './icons';
 import { SceneTools } from './SceneTools';
 import './Dialogue.css';
@@ -76,13 +76,14 @@ function setFlags(effects: readonly Effect[]): Record<string, FlagValue> {
 
 /** Half figure of a speaker (mood variant, else neutral; none without a picture, never an older style). Speaker bright, listeners dimmed. */
 function Figure({ speaker, mood, avatarPortrait, side, active, halves }: { halves?: ReadonlySet<string> | null; speaker: string; mood: string; avatarPortrait: string; side: Side; active: boolean }) {
-  const stem = pickHalf(figureId(speaker, avatarPortrait), mood, halves);
+  const pick = pickSideHalf(figureId(speaker, avatarPortrait), mood, side, halves);
+  const stem = pick?.stem;
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [stem]);
-  if (!stem || failed) return null;
+  if (!pick || failed) return null;
   return (
     <div class={`vn-fig vn-fig--${side} ${active ? 'is-speaker' : 'is-listener'}`}>
-      <img src={halfUrl(stem)} alt="" draggable={false} onError={() => setFailed(true)} />
+      <img class={pick.mirror ? 'is-mirrored' : undefined} src={halfUrl(pick.stem)} alt="" draggable={false} onError={() => setFailed(true)} />
     </div>
   );
 }

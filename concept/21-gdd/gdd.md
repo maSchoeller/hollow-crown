@@ -333,7 +333,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 - **Runen in Akt 1:** Der Verzauberer kommt erst mit Akt 2; in Akt 1 gibt es Runen nur als Beute.
 - **Söldner-Traits** (Taverne Stufe 2; Liste in `extract-01-decisions.md`) werden als eigener Baustein gebaut.
 - **Lebende Burg:** Jeder Gefährte bringt einen Gegenstand an einen festen Platz in der Burg; dort steht nur der Gegenstand. Wer die Truppe verlässt, nimmt ihn mit; wer fällt, lässt ihn liegen (Narrative). Die Liste der 20 Gegenstände wird aus Narrative und Art Direction abgeleitet.
-- **Darstellung:** Vorläufig gelten die Regeln auf dem gemalten Burgbild: die Stufe als Punkte und Pfeil am Raumstein. Ausbauteile und Gegenstände der lebenden Burg folgen nach dem Vergleich mit einem 3D-Testaufbau.
+- **Darstellung:** Die Burg ist eine 3D-Szene (Art Direction §7). Jeder Raum zeigt seine Stufe als Modellteile, Mauern und Land die Burgstufe aus der Summe aller Raum-Ausbauten (Ruine, Gesichert, Wehrhaft, Festung; Schwellen 1/6/14 `[ASSUMPTION]`). Die Stufe steht zusätzlich als Punkte am Raumstein.
 
 Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 
@@ -374,7 +374,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ## Art and Audio Direction
 
-- **Stil:** runder Chibi-Cartoon für Porträts und Figuren (Referenz `art/mockups/style-2026-10/round_chibi_kael.png`); helles 3D-Diorama für Karten und Weltkarte; UI im Studio-Look (U21). Ob die Diorama-Karte (D1–D16) bleibt und wie sich Licht und Farbe anpassen, klärt die Art-Direction-Etappe.
+- **Stil:** runder Chibi-Cartoon für Porträts und Figuren (Referenz `art/mockups/style-2026-11/anchor_rhen.png`); helles 3D-Diorama für Karten und Weltkarte; UI im Studio-Look (U21). Ob die Diorama-Karte (D1–D16) bleibt und wie sich Licht und Farbe anpassen, klärt die Art-Direction-Etappe.
 - **Lesbarkeit:** Teamfarben Blau/Rot über Tuch und Bodenring; Leutnants mit eigenem Rahmen und Groll-Symbol; Rollen an Silhouette und Klassen-Icon erkennbar; Verblutungs-Zähler an Niedergestreckten.
 - **Audio:** warm und folk-lastig, Orchester nur bei Bossen und Drama; Leitmotive pro Figur und Truppe; Musik in Burg, Lager, Weltkarte und Menüs dezent und ohne Gesang; Teilvertonung (Barks, Groll-Zeilen der Leutnants, Boss-Zitate, 2 Schlüsselszenen).
 

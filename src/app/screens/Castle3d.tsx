@@ -1,8 +1,8 @@
 /**
- * EVALUATION SPIKE (dev only): the castle home as a 3D diorama instead of the painted picture, opened with `?castle3d=1`
- * (dev server, or any build with `?debug`). The scene module (`src/render/home/castle.ts`) and its model file are loaded on
- * demand, so the first download does not grow. A dev bar switches between picture and 3D and sets every room to level 1, 2
- * or 3. The 3D castle places its rooms itself (reference layout); the picture keeps the anchors of `content/home/home.yaml`.
+ * The castle home in 3D (art direction §7). The scene module (`src/render/home/castle.ts`) and its model file are loaded on
+ * demand, so the first download does not grow; until they are there, or if the model cannot be loaded, the painted picture
+ * shows. The room stones sit over their buildings. With `?castle3d=1` (dev server, or any build with `?debug`) a dev bar sets
+ * every room's level and the castle tier, to look at each stage of the build-up.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { RoomStatus } from '../../core';
@@ -13,53 +13,40 @@ import { data } from '../state/session';
 import type { CastleView } from '../../render/home/castle';
 import './Castle3d.css';
 
-/** Is the 3D test switched on (URL flag, dev build or `?debug`)? */
+/** Is the dev bar switched on (URL flag, dev build or `?debug`)? */
 export function castle3dFlag(): boolean {
   if (typeof location === 'undefined') return false;
   const q = new URLSearchParams(location.search);
   return (import.meta.env.DEV || q.has('debug')) && q.get('castle3d') === '1';
 }
 
-export type CastleMode = 'picture' | '3d';
-
-/** The dev bar: picture or 3D, and one level for all rooms (null = the campaign's own levels). */
-export function CastleDevBar({ mode, setMode, level, setLevel }: { mode: CastleMode; setMode: (m: CastleMode) => void; level: number | null; setLevel: (n: number | null) => void }) {
+/** The dev bar: one stage for all rooms and walls (null = the campaign's own). */
+export function CastleDevBar({ tier, setTier }: { tier: number | null; setTier: (n: number | null) => void }) {
   return (
     <div class="c3d-bar" role="toolbar" aria-label={t('ui.dev.castle3d.title')}>
-      <button type="button" class={mode === 'picture' ? 'is-on' : ''} onClick={() => setMode('picture')}>
-        {t('ui.dev.castle3d.picture')}
-      </button>
-      <button type="button" class={mode === '3d' ? 'is-on' : ''} onClick={() => setMode('3d')}>
-        {t('ui.dev.castle3d.model')}
-      </button>
-      {mode === '3d' && (
-        <>
-          <span>{t('ui.dev.castle3d.level')}</span>
-          {[1, 2, 3].map((n) => (
-            <button key={n} type="button" class={level === n ? 'is-on' : ''} onClick={() => setLevel(level === n ? null : n)}>
-              {n}
-            </button>
-          ))}
-        </>
-      )}
+      <span>{t('ui.dev.castle3d.level')}</span>
+      {[0, 1, 2, 3].map((n) => (
+        <button key={n} type="button" class={tier === n ? 'is-on' : ''} onClick={() => setTier(tier === n ? null : n)}>
+          {n}
+        </button>
+      ))}
     </div>
   );
 }
 
 /**
- * The diorama in the picture's place, with the room stones over their buildings. `levelOf` gives a room's level, `onRoom`
- * is a tap on a building or stone (status null: a room the content does not have yet).
+ * The scene in the picture's place. `levelOf` gives a room's level (0: not there yet), `tier` the stage of walls and land,
+ * `onRoom` is a tap on a building or stone (status null: a room the content does not have yet). `fallback` is the picture.
  */
-export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; levelOf: (id: string) => number; onRoom: (id: string, status: RoomStatus | null) => void }) {
-  const slot = useRef<HTMLDivElement>(null);
+export function Castle3d({ rooms, levelOf, tier, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; levelOf: (id: string) => number; tier: number; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
   /** the host's canvas goes in here; Preact never renders into it */
   const stage = useRef<HTMLDivElement>(null);
   const view = useRef<CastleView | null>(null);
   const ids = useRef<string[]>([]);
   const [ready, setReady] = useState(false);
   const [stats, setStats] = useState<{ fps: number; drawCalls: number } | null>(null);
-  const latest = useRef({ rooms, onRoom, levelOf });
-  latest.current = { rooms, onRoom, levelOf };
+  const latest = useRef({ rooms, onRoom });
+  latest.current = { rooms, onRoom };
 
   useEffect(() => {
     let gone = false;
@@ -79,12 +66,13 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
       );
       view.current = v;
       ids.current = CASTLE_ROOMS;
-      await v.build(CASTLE_ROOMS.map((id) => ({ id, level: latest.current.levelOf(id) })));
-      if (!gone) setReady(true);
+      if ((await v.build()) && !gone) setReady(true);
     });
-    const timer = window.setInterval(() => {
-      if (view.current) setStats(view.current.stats());
-    }, 1000);
+    const timer = showStats
+      ? window.setInterval(() => {
+          if (view.current) setStats(view.current.stats());
+        }, 1000)
+      : 0;
     return () => {
       gone = true;
       clearInterval(timer);
@@ -93,15 +81,17 @@ export function Castle3d({ rooms, levelOf, onRoom }: { rooms: RoomStatus[]; leve
     };
   }, []);
 
-  // levels follow the dev bar (or the campaign)
+  // levels follow the campaign (and the dev bar)
   useEffect(() => {
     const v = view.current;
     if (!v || !ready) return;
     for (const id of ids.current) v.setLevel(id, levelOf(id));
+    v.setTier(tier);
   });
 
   return (
-    <div class="hm__scene c3d" ref={slot}>
+    <div class="hm__scene c3d">
+      {!ready && <img class="c3d-fallback" src={fallback} alt="" draggable={false} />}
       <div class="hc-stage-slot" ref={stage} />
       {ready &&
         rooms.map((st) => (

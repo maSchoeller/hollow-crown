@@ -354,3 +354,15 @@ export function usableBy(data: GameData, c: CampaignState, defId: string): UnitR
 }
 
 export { SUPPORT_RANKS };
+
+/**
+ * Stage of the castle's walls and land (0 ruin, 1 secured, 2 fortified, 3 fortress): grows with every room upgrade, from the
+ * sum of the levels above 1 of all rooms (art direction §7). Only a view of `c.home`, no state of its own.
+ */
+export function castleTier(data: GameData, c: CampaignState): number {
+  let upgrades = 0;
+  for (const room of Object.values(data.rooms)) upgrades += Math.max(0, roomLevel(c, room.id) - 1);
+  let tier = 0;
+  for (const at of data.balance.castle.tierAt) if (upgrades >= at) tier++;
+  return tier;
+}

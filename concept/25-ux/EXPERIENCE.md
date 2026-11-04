@@ -18,7 +18,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 
 # EXPERIENCE.md – Hollow Crown, Staffel 1
 
-> Wie die Oberfläche funktioniert. Aussehen und Tokens stehen in `DESIGN.md` und werden hier als `{pfad.zum.token}` referenziert. Mockups in `mockups/` illustrieren; bei Widerspruch gilt dieses Dokument.
+> Wie die Oberfläche funktioniert. Aussehen und Tokens stehen in `DESIGN.md` und werden hier als `{pfad.zum.token}` referenziert. Die HTML-Mockups wurden am 2026-11-02 entfernt (Git-Verlauf: `concept/25-ux/mockups/` bis Commit `d2e50b4`); nennt ein Epic „Mockup NN“, ist diese Fassung gemeint.
 
 ## Foundation
 
@@ -29,31 +29,31 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 
 ## Information Architecture
 
-| Fläche | Erreicht über | Zweck | Mockup |
-|---|---|---|---|
-| Titel | App-Start | Fortsetzen, Kampagnen, Optionen | `mockups/07-start-kampagnen.html` |
-| Kampagnen | Titel | bis zu 3 Kampagnen, Speicherplätze, Neue Kampagne, Import/Export, PoC-Stand exportieren | `mockups/07-start-kampagnen.html` |
-| Neue Kampagne | Kampagnen, freier Platz | Name, Aussehen und Pronomen, Schwierigkeit, Tod-Modus | `mockups/07-start-kampagnen.html` |
-| **Weltkarte (Hub)** | Fortsetzen, nach jeder Mission, Leiste | Knoten wählen, Tagespaket sehen, Akt-Fortschritt | `mockups/03-weltkarte.html` |
-| Knoten-Karte | Tap auf Knoten | Mission prüfen, Aufstellung, Aufbrechen | `mockups/03-weltkarte.html` |
-| Heimat (Lager/Burg) | Leiste, Heimat-Knoten | Räume, Ausbau, Gefährten sichtbar | `mockups/04-heimat.html` |
-| Raum-Panel | Raumstein oder Gebäude | eine Raumfunktion, Ausbau | `mockups/04-heimat.html` |
-| Gedächtnishalle | Raumstein | Gedenksteine, Lektion vererben | `mockups/04-heimat.html` |
-| Truppe | Leiste | Übersicht, Filter, Marken | `mockups/06-truppe.html` |
-| Figur | Truppe, Einheitenkarte (Langdruck) | Werte, Ausrüstung, Skills, Supports, Aufstieg | `mockups/06-truppe.html` |
-| Ausrüsten | Platz der Figur | passende Items mit Vergleich | `mockups/06-truppe.html` |
-| Händler, Konvoi, Verzauberer, Akademie, Werkstatt | Raumstein | gleiche Listen-Muster wie Ausrüsten | `mockups/06-truppe.html` |
-| Steckbriefe | Leiste | alle Leutnants mit Groll, Ziel, Begegnungen | `mockups/02-kampf.html` (Einzelansicht) |
-| Chronik | Leiste | Entscheidungen, Folgen, Chronik-Seiten | – (spine-only) |
-| Aufstellung | Knoten-Karte („Aufstellung“, von selbst bei Truppe > Plätze) | Einsatzplätze besetzen, Pflicht-Figuren gesperrt, Ausrüsten über die Tasche | `mockups/09-aufstellung.html` |
-| Kampf | Aufbrechen | Brett, HUD, Vorschau, Gegnerphase | `mockups/02-kampf.html` |
-| Szene | vor/nach Missionen, Trigger, Lagerfeuer | Dialog, Entscheidung, Folgen | `mockups/05-szenen.html` |
-| Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene | `mockups/08-ergebnis-abschied.html` |
-| Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen | `mockups/08-ergebnis-abschied.html` |
-| Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region | `mockups/08-ergebnis-abschied.html` |
-| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln, Figuren 3D/2D; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig | – (Bestand 09 §5; Block Brett-Anzeige `mockups/10-lesbarkeit-handbuch.html`) |
-| Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen | `mockups/10-lesbarkeit-handbuch.html` |
-| Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen | `mockups/10-lesbarkeit-handbuch.html` |
+| Fläche | Erreicht über | Zweck |
+|---|---|---|
+| Titel | App-Start | Fortsetzen, Kampagnen, Optionen |
+| Kampagnen | Titel | bis zu 3 Kampagnen, Speicherplätze, Neue Kampagne, Import/Export, PoC-Stand exportieren |
+| Neue Kampagne | Kampagnen, freier Platz | Name, Aussehen und Pronomen, Schwierigkeit, Tod-Modus |
+| **Weltkarte (Hub)** | Fortsetzen, nach jeder Mission, Leiste | Knoten wählen, Tagespaket sehen, Akt-Fortschritt |
+| Knoten-Karte | Tap auf Knoten | Mission prüfen, Aufstellung, Aufbrechen |
+| Heimat (Lager/Burg) | Leiste, Heimat-Knoten | Räume, Ausbau, Gefährten sichtbar |
+| Raum-Panel | Raumstein oder Gebäude | eine Raumfunktion, Ausbau |
+| Gedächtnishalle | Raumstein | Gedenksteine, Lektion vererben |
+| Truppe | Leiste | Übersicht, Filter, Marken |
+| Figur | Truppe, Einheitenkarte (Langdruck) | Werte, Ausrüstung, Skills, Supports, Aufstieg |
+| Ausrüsten | Platz der Figur | passende Items mit Vergleich |
+| Händler, Konvoi, Verzauberer, Akademie, Werkstatt | Raumstein | gleiche Listen-Muster wie Ausrüsten |
+| Steckbriefe | Leiste | alle Leutnants mit Groll, Ziel, Begegnungen |
+| Chronik | Leiste | Entscheidungen, Folgen, Chronik-Seiten |
+| Aufstellung | Knoten-Karte („Aufstellung“, von selbst bei Truppe > Plätze) | Einsatzplätze besetzen, Pflicht-Figuren gesperrt, Ausrüsten über die Tasche |
+| Kampf | Aufbrechen | Brett, HUD, Vorschau, Gegnerphase |
+| Szene | vor/nach Missionen, Trigger, Lagerfeuer | Dialog, Entscheidung, Folgen |
+| Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene |
+| Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen |
+| Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region |
+| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig |
+| Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen |
+| Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen |
 
 **Navigation:** Die Weltkarte ist der Hub. Die Leiste unten hat vier Steine: Heimat (auf der Heimat: Weltkarte), Truppe, Steckbriefe, Chronik. Das Menü (rund, oben rechts) enthält Speichern (nicht in Klassik), Optionen, Handbuch und Titel; im Kampf steht das Handbuch an zweiter Stelle direkt unter Optionen. Vollbild-Ansichten haben oben links einen runden Zurück-Stein. Nichts liegt tiefer als zwei Ebenen unter dem Hub.
 
@@ -225,8 +225,8 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 
 ## Offene Punkte
 
-- **Burg in 3D:** Der obere Teil der Heimat (Diorama, Raum-Anker, Ausbauteile) wird neu geprüft, sobald die 3D-Burg steht; Raumsteine, Panels und ≤ 2 Taps bleiben. Bis dahin zeigt der Ausbau (Epic 10) die Stufe nur als Punkte und Pfeil am Raumstein auf dem gemalten Burgbild; Ausbauteile und Gegenstände der lebenden Burg folgen nach dem 3D-Vergleich (Produktinhaber 2026-10-31).
-- **Item-Bilder:** In den Mockups stehen Platzhalter; die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
-- **Chronik, Optionen, Steckbrief-Liste:** spine-only; Mockups bei Bedarf in der Umsetzung.
-- **Logo:** im Titel-Mockup nur angedeutet; Auswahl zwischen den Kandidaten aus Art Direction §5.5.
+- **Burg in 3D (Produktinhaber 2026-11-04):** Der obere Teil der Heimat ist die 3D-Szene der Paktwacht (Art Direction §7): Raumsteine über den Gebäuden, Antippen von Stein oder Gebäude öffnet das Panel, Wischen schwenkt zur Seite und zum Fluss hinunter. Raumliste, Panels und ≤ 2 Taps bleiben; die Stufe steht weiter als Punkte in der Liste. Solange das Modell lädt oder wenn es fehlt, steht dort das gemalte Burgbild.
+- **Item-Bilder:** Die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
+- **Chronik, Optionen, Steckbrief-Liste:** spine-only.
+- **Logo:** Auswahl zwischen den Kandidaten aus Art Direction §5.5.
 - **Umsetzung:** `src/ui/styles.css` (U21) wird in Story 1.1 auf die Tokens aus `DESIGN.md` umgestellt.

@@ -3,6 +3,8 @@ import type { Difficulty, MoveType, Rarity, StatusId, SupportRank } from './defs
 import type { TavernDef } from './storyDefs';
 
 export interface Balance {
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: { tierAt: [number, number, number] };
   combat: {
     hitPerSkl: number;
     hitPerLckDivisor: number;

@@ -22,6 +22,7 @@
     "content:lock": "tsx tools/content-lock.ts",
     "sim": "tsx tools/simulate.ts",
     "report": "tsx tools/report.ts",
+    "levels": "tsx tools/levels/atlas.ts",
     "bench:ai": "tsx tools/bench-ai.ts",
     "art:build": "python tools/art/build.py",
     "art:icons": "python tools/art/icons.py",

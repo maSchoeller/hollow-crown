@@ -424,6 +424,29 @@ export const mapSchema = z.object({
   devNote: z.string().optional(),
   /** per field the model of a prop variant (house, rock, tree, lodge), overriding the hash pick of render.yaml board.variants; content:check checks the id */
   propVariants: z.array(z.object({ at: pos, model: z.string().min(1) })).optional(),
+  /** planning notes for the level sheet (`pnpm levels`, concept/27-ueberarbeitung/level-werkzeug.md); the game ignores them */
+  design: z
+    .strictObject({
+      /** working title of a draft that has no locale key yet */
+      title: z.string().optional(),
+      intent: z.string().optional(),
+      mood: z.string().optional(),
+      notes: z.array(z.string()).optional(),
+      phases: z.array(z.strictObject({ id: z.string(), turns: range, label: z.string(), note: z.string().optional() })).optional(),
+      paths: z
+        .array(
+          z.strictObject({
+            team,
+            points: z.array(pos).min(2),
+            phase: z.string().optional(),
+            label: z.string().optional(),
+          }),
+        )
+        .optional(),
+      zones: z.array(z.strictObject({ area, label: z.string(), phase: z.string().optional() })).optional(),
+      marks: z.array(z.strictObject({ at: pos, label: z.string().max(3), note: z.string() })).optional(),
+    })
+    .optional(),
 });
 
 // --- conditions and effects (architecture §5.3): an object with exactly one key; a list of conditions means AND ---
@@ -783,6 +806,8 @@ export const renderSchema = z.object({
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
 export const balanceSchema = z.object({
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: z.object({ tierAt: z.tuple([z.number().int().positive(), z.number().int().positive(), z.number().int().positive()]) }),
   combat: z.record(z.string(), z.union([z.number(), z.boolean()])),
   triangle: z.object({ hit: z.number(), damage: z.number(), beats: z.record(z.string(), z.string()) }),
   element: z.object({
