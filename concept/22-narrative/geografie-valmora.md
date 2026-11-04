@@ -1,6 +1,6 @@
-# Geografie von Valmora (abgenommen 2026-11-03)
+# Geografie von Valmora (abgenommen 2026-11-03, Stand 2026-11-04)
 
-> Konzept-Überarbeitung Etappe 4. Karte: `art/world/map_v4.png`, Probe mit Markern `concept/27-ueberarbeitung/weltkarte/map_v4_marked.jpg`, Ortsdaten `art/world/map_places_v4.json`, Herleitung der Vorlage und Protokoll in `art/world/v4/` und `art/prompts/world_map_v4.md`. Ausführliche Fassung mit Karte und allen Orten: `concept/27-ueberarbeitung/weltkarte-konzept.html`. Ergänzt `missionsliste-s1.md` und löst die Lagebeschreibung in `weltentwurf.html` ab. Die Einbindung ins Spiel steht noch aus.
+> Konzept-Überarbeitung Etappe 4. Karte: `art/world/map_v5.png`, Stadtbilder `art/world/sites/`, Probe mit allen Orten `concept/27-ueberarbeitung/weltkarte/map_v5_marked.jpg`, Ortsdaten `art/world/map_places_v5.json`, Protokoll `art/prompts/world_map_v5.md` (Herleitung des Layouts in `art/world/v4/`). Ausführliche Fassung mit Karte und allen Orten: `concept/27-ueberarbeitung/weltkarte-konzept.html`. Ergänzt `missionsliste-s1.md` und löst die Lagebeschreibung in `weltentwurf.html` ab. Die Einbindung ins Spiel steht noch aus.
 
 ## Grundsatz
 
@@ -60,7 +60,7 @@ Die Höhen sind Richtwerte.
 
 ## Maßstab und Entfernungen
 
-Kantenlänge 400 km. Gemessen auf `map_v4.png` entlang der Straße, 25 km Marsch am Tag.
+Kantenlänge 400 km. Gemessen auf dem Layout `map_v4.png` entlang der Straße, `map_v5` folgt ihm, 25 km Marsch am Tag.
 
 | Strecke | km | Tage |
 |---|---:|---:|
