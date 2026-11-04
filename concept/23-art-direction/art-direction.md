@@ -396,6 +396,7 @@ Startschätzung zur Planung der Epics. [C]
 - **Logo-Schrift:** entschieden am 2026-10-25: Fraunces (Entscheidungslog).
 - **Casting** der neuen Figuren in `17-audio.md` (Stimmbilder für 20 Gefährten und 12 Leutnants).
 - **Figuren:** Rig, Animationen und Teamtuch-Maske für Tripo-Figuren (§4.6); Feinabgleich von Licht, Toon-Look und Outline mit der Karte.
+- **Seraphine als Kämpferin (offen, Produktinhaber 2026-11-02):** ob sie später spielbar wird und welche Klasse bzw. Waffe sie dann hat, ist inhaltlich zu klären; bis dahin hält ihr Porträt (2026-11-02) keine Waffe. Maelis bleibt Nichtkämpferin.
 - **Datenschutz:** Kaels erstes HD-Modell liegt öffentlich in der Tripo-Galerie (kostenloser Tarif); ggf. dort auf privat stellen oder löschen.
 
 ## 14. Verhältnis zum Altbestand

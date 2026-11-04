@@ -1,5 +1,9 @@
 # Porträts Staffel 1
 
+**Stand 2026-11-02: alle 51 Porträts im Stil v2.5** nach `art/prompts/portrait_master.md` neu (Etappe 2 der Überarbeitung, `concept/27-ueberarbeitung/roadmap.md`), jede Kampffigur mit Waffe in der Hand, Fraktions-Kits, Statur-Vorlagen; Klassen-Büsten (`class_*`) bewusst schlichter (§4a der Vorlage). Stimmungen (`_happy`, `_angry`, `_sad`) für Rhen A/B, Lucan (`kael`), Brenna, Fenn, Tobin, Mira, Liora, Varek, Ysolde, Grosk, Halvard, Hask, Morra, Ulvric, Jory, Odile, Mael, Dravn. Prompt, Chat und Abnahme je Figur in `art/prompts/<id>.md`; 16 Figuren stammen unverändert aus den Stiltests (`art/mockups/style-2026-11/`, Herleitung `art/prompts/portrait_tests_2026-11.md`), Mira mit korrigiertem Pfeil, Varek neu gemalt. Seraphine hält vorerst keine Waffe (Kampfrolle offen, `art-direction.md` §13).
+
+Alles Folgende beschreibt die abgelösten Fassungen (Moodboard 2026-10-23 bis 2026-10-25); sie liegen nur noch in der Git-Historie.
+
 Porträts aller Figuren aus `concept/22-narrative/narrative.md`, entstanden als Moodboard (2026-10-23). **Status (2026-10-25, Story 8.4): final für Akt 1.** Die Porträts der Figuren mit Tripo-Brettfigur bleiben, weil Porträt und Figur zusammengehören; die Kernfiguren von Akt 1 haben alle vier Stimmungen (`<id>_happy`, `_angry`, `_sad`; Prompts und Abnahme in `art/prompts/moods_2026-10-24.md` und `moods_act1_2026-10-24.md`). Neu sind Osric Dunn (`osric.png`), König Aldric IV. (`aldric.png`), die Gegnerklassen Wolfsreiterin, Söldner und Tempelwache (`enemies_act1_2026-10-24.md`) sowie Soldatin, Schützin und Klerikerin als Frauen (`moods_act1_2026-10-24.md`). Figuren späterer Akte bleiben auf Moodboard-Stand, bis ihr Akt gebaut wird.
 
 - **Dateien:** `art/mockups/characters-s1/<id>.png` (1254 × 1254, RGBA, transparent); Übersicht `overview.png`
