@@ -56,7 +56,9 @@ const DIST = 82;
 const AIM_Y = 11;
 /** the tip of the keep's roof (x, height, z), kept just under TOP of the view; it sets the aim's depth */
 const KEEP_TIP = new Vector3(-5.5, 25.8, 19.2);
-const TOP = 0.13;
+const TOP = 0.11;
+/** [C] the scene fills the screen, but the room list covers its lower part: the picture's centre sits this much above the screen's (share of the height) */
+const CENTRE_UP = 0.16;
 /** [C] how far the view pans from there: sideways, and forwards (down to the river, negative) */
 const PAN_X = 5;
 const PAN_Z: [number, number] = [-27, 1];
@@ -439,6 +441,7 @@ export class CastleView implements HostedView {
     const vp = new Viewport(0, 0, w, h);
     const { panX, panZ } = this;
     this.panX = this.panZ = 0;
+    this.shiftLens();
     for (let round = 0; round < 5; round++) {
       this.placeCamera();
       const m = this.camera.getViewMatrix(true).multiply(this.camera.getProjectionMatrix(true));
@@ -450,6 +453,14 @@ export class CastleView implements HostedView {
     this.panX = panX;
     this.panZ = panZ;
     this.placeCamera();
+  }
+
+  /** Moves the picture's centre up without moving or tilting the camera, so the castle keeps its size on every screen height. */
+  private shiftLens(): void {
+    this.camera.unfreezeProjectionMatrix();
+    const m = Array.from(this.camera.getProjectionMatrix(true).m);
+    m[9] = CENTRE_UP * 2;
+    this.camera.freezeProjectionMatrix(Matrix.FromArray(m));
   }
 
   private placePins(): void {

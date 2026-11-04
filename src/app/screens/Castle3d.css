@@ -1,5 +1,7 @@
 /* The castle home in 3D, in the picture's place, and its dev bar (?castle3d=1). */
 .hm__scene.c3d {
+  /* the scene fills the whole screen, HUD and room list lie over it */
+  height: 100%;
   overflow: hidden;
   /* evening sky behind the transparent canvas */
   background: linear-gradient(180deg, #6c5a96 0%, #c78a8a 46%, #f0b071 72%, #e7c08a 100%);

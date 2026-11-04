@@ -164,7 +164,7 @@ def ground_col(x, y, steep):
 def build_terrain():
     p = part('land_a')
     xs = [-33 + i * 1.5 for i in range(45)]
-    ys = [-58 + j * 1.25 for j in range(84)]
+    ys = [-74 + j * 1.25 for j in range(97)]
     H = {(i, j): height(x, y) for i, x in enumerate(xs) for j, y in enumerate(ys)}
     for i in range(len(xs) - 1):
         for j in range(len(ys) - 1):
@@ -600,7 +600,7 @@ def build_land():
     for x, y in ((-2.2, -2.6), (2.0, -2.6), (17.5, -1.0), (-17.5, -1.0)):
         cypress(a, x, y, s=2.4, seed=r.randint(0, 999), M=mat4((0, 0, height(x, y))))
     for i in range(40):
-        x, y = r.uniform(-22, 22), r.uniform(-50, -28)
+        x, y = r.uniform(-22, 22), r.uniform(-64, -28)
         if polyline_dist(RIVER, x, y)[0] < 3.2 or polyline_dist(ROAD, x, y)[0] < 1.5:
             continue
         bush(a, x, y, s=r.uniform(0.45, 0.8), seed=r.randint(0, 999), M=mat4((0, 0, height(x, y))), flowers=r.choice((None, 'flower_w', 'flower_y')))
