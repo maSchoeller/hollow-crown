@@ -81,6 +81,21 @@ def copy_tree_files(src, dst, exts):
     return out
 
 
+def unshipped_props():
+    """Models of the asset gallery that no map uses yet (concept/23-art-direction/map-assets/groups/*.yaml without `ships: true`):
+    they stay in art/models/props/ and out of the build, so the download does not carry them."""
+    import glob
+
+    import yaml
+    out = set()
+    for path in glob.glob(os.path.join(ROOT, 'concept', '23-art-direction', 'map-assets', 'groups', '*.yaml')):
+        with open(path, encoding='utf-8') as fh:
+            group = yaml.safe_load(fh) or {}
+        if not group.get('ships'):
+            out |= {item['id'] for item in group.get('items') or [] if not item.get('ships')}
+    return out
+
+
 def build_models():
     """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
     tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/
@@ -104,6 +119,9 @@ def build_models():
         files = copy_tree_files(os.path.join(base, kind), os.path.join(OUT, 'models', kind), {'.glb'})
         for f in files:
             name = f[:-4]
+            if kind == 'props' and name in unshipped_props():
+                os.remove(os.path.join(OUT, 'models', kind, f))
+                continue
             if kind == 'weapons':
                 result[kind].append(name)
             else:

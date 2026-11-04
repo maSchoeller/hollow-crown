@@ -16,12 +16,12 @@ import {
   MeshBuilder,
   PBRMaterial,
   Scene,
-  SceneLoader,
   ShadowGenerator,
   StandardMaterial,
   Texture,
   Vector3,
 } from '@babylonjs/core';
+import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/loaders/glTF';
 import { teamColours } from '../../src/render/shared/models';
 import { applyLight } from '../../src/render/shared/season';
@@ -71,7 +71,9 @@ const tileB = tileA.clone('tb');
 tileB.diffuseColor = new Color3(0.86, 0.86, 0.86);
 
 async function place(file: string, x: number, z: number, scale = 1, folder = '/assets/models/props/'): Promise<void> {
-  const r = await SceneLoader.ImportMeshAsync('', folder, `${file}.glb`, scene);
+  // as the board loads them (src/render/shared/models.ts): it shades in gamma space, so the texture must not be decoded as sRGB
+  const r = await LoadAssetContainerAsync(`${folder}${file}.glb`, scene, { pluginOptions: { gltf: { useSRGBBuffers: false } } });
+  r.addAllToScene();
   r.animationGroups.forEach((a) => a.stop());
   for (const m of r.meshes) {
     if (!(m instanceof Mesh) || !m.getTotalVertices()) continue;
@@ -89,6 +91,8 @@ async function place(file: string, x: number, z: number, scale = 1, folder = '/a
       m.setParent(null);
       m.bakeCurrentTransformIntoVertices();
       m.scaling.setAll(scale);
+      // setParent left a quaternion behind, which would override the Euler angle
+      m.rotationQuaternion = null;
       m.rotation.y = Math.PI;
       m.position.set(x + 0.5, 0, z + 0.5);
     }

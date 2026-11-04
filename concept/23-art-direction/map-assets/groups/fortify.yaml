@@ -1,4 +1,5 @@
 title: Festung und Fels (schon im Spiel)
+ships: true
 items:
   - { id: wallrim_idle, name: Mauerkante mit Zinnen, ref: { sheet: ziel_paktwacht.png, box: [600, 720, 828, 830] }, missions: [P, 1-6, 1-8, N2, 3-6], use: "Steht auf jeder freien Mauerkante, Mauer sperrt." }
   - { id: tower_idle, name: Rundturm, ref: { sheet: ziel_paktwacht.png, box: [185, 440, 300, 610] }, missions: [P, 1-6, 1-8, N2, 3-6], use: "Krönt Ecken und freie Mauerenden." }

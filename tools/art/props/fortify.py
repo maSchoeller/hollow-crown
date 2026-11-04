@@ -283,8 +283,8 @@ def gatehouse(state):
         parts.append(wing(M, 'wl', (-0.46, -0.2), math.radians(48), 0.74, 0.44, flip=True))
         parts.append(wing(M, 'wr', (0.46, -0.2), math.radians(-48), 0.74, 0.44))
     else:
-        parts.append(wing(M, 'wl', (-0.46, -0.1), 0, 0.74, 0.46))
-        parts.append(wing(M, 'wr', (0.46, -0.1), 0, 0.74, 0.46, flip=True))
+        parts.append(wing(M, 'wl', (-0.46, -0.205), 0, 0.74, 0.46))
+        parts.append(wing(M, 'wr', (0.46, -0.205), 0, 0.74, 0.46, flip=True))
     pid = f'gatehouse_{state}'
     finish(with_wings(parts, pid, 0.01), pid, size=1024)
 
@@ -308,8 +308,8 @@ def door(state):
     M = Mats()
     parts = arch_face(M, 0.33, 0.42, 0.22, 0.86, 0.24, 'f')
     if state == 'closed':
-        parts.append(wing(M, 'wl', (-0.33, -0.05), 0, 0.62, 0.33))
-        parts.append(wing(M, 'wr', (0.33, -0.05), 0, 0.62, 0.33, flip=True))
+        parts.append(wing(M, 'wl', (-0.33, -0.145), 0, 0.62, 0.33))
+        parts.append(wing(M, 'wr', (0.33, -0.145), 0, 0.62, 0.33, flip=True))
     else:
         parts.append(wing(M, 'wl', (-0.33, -0.12), math.radians(48), 0.62, 0.3, flip=True))
         parts.append(wing(M, 'wr', (0.33, -0.12), math.radians(-48), 0.62, 0.3))

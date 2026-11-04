@@ -3,7 +3,9 @@
 `python concept/23-art-direction/map-assets/gallery.py` liest `groups/*.yaml`, schneidet die Referenzen aus den Blättern und
 schreibt `gallery/index.html` mit `gallery/img/`. Fehlt ein Bild, zeigt die Kachel das offen an.
 """
+import base64
 import html
+import re
 import sys
 from pathlib import Path
 
@@ -15,7 +17,7 @@ ROOT = HERE.parents[2]
 OUT = HERE / 'gallery'
 PREVIEW = ROOT / 'art' / 'props' / 'previews'
 REFS = ROOT / 'art' / 'mockups' / 'map-assets' / 'refs'
-SIZE = 360
+SIZE = 300
 
 GROUPS = ['fortify', 'nature', 'village', 'interior', 'coast', 'winter']
 
@@ -32,7 +34,7 @@ def tile_preview(mid):
         im = im.crop((max(box[0] - pad, 0), max(box[1] - pad, 0), min(box[2] + pad, im.width), min(box[3] + pad, im.height)))
     im.thumbnail((SIZE, SIZE), Image.LANCZOS)
     out = OUT / 'img' / f'{mid}.jpg'
-    im.save(out, quality=84)
+    im.save(out, quality=78)
     return out.name
 
 
@@ -49,7 +51,7 @@ def tile_ref(mid, ref):
         im = im.crop(tuple(ref['box']))
     im.thumbnail((SIZE, SIZE), Image.LANCZOS)
     out = OUT / 'img' / f'{mid}_ref.jpg'
-    im.save(out, quality=84)
+    im.save(out, quality=78)
     return out.name
 
 
@@ -69,11 +71,17 @@ def main():
             count += 1
             if not prev:
                 missing.append(mid)
+            game = HERE / 'gallery_game' / f'{mid}.jpg'
+            gamehtml = f'<figure class="game"><img src="img/{mid}_game.jpg" alt="Im Spielblick {html.escape(it.get("name", mid))}" loading="lazy"><figcaption>Spielkamera, Figur als Maßstab</figcaption></figure>' if game.exists() else ''
+            if game.exists():
+                g_im = Image.open(game).convert('RGB')
+                g_im.thumbnail((420, 420), Image.LANCZOS)
+                g_im.save(OUT / 'img' / f'{mid}_game.jpg', quality=76)
             refimg = f'<img src="img/{ref}" alt="Referenz {html.escape(it.get("name", mid))}" loading="lazy">' if ref else '<div class="none">ohne Referenz</div>'
             prevhtml = f'<img src="img/{prev}" alt="Modell {html.escape(it.get("name", mid))}" loading="lazy">' if prev else '<div class="none">Modell fehlt</div>'
             miss = ', '.join(str(m) for m in it.get('missions', []) or [])
             cards.append(
-                f'<article><div class="pair"><figure>{refimg}<figcaption>Referenz</figcaption></figure><figure>{prevhtml}<figcaption>Blender</figcaption></figure></div>'
+                f'<article><div class="pair"><figure>{refimg}<figcaption>Referenz</figcaption></figure><figure>{prevhtml}<figcaption>Blender</figcaption></figure>{gamehtml}</div>'
                 f'<h3>{html.escape(it.get("name", mid))}</h3><p>{html.escape(it.get("use", ""))}</p><small><code>{mid}</code>{" · " + html.escape(miss) if miss else ""}</small></article>'
             )
         sections.append(f'<section id="{g}"><h2>{html.escape(d.get("title", g))} <small>{len(cards)}</small></h2><div class="cards">{"".join(cards)}</div></section>')
@@ -81,6 +89,11 @@ def main():
     nav = ' '.join(f'<a href="#{g}">{g}</a>' for g in GROUPS if (HERE / 'groups' / f'{g}.yaml').exists())
     t = t.replace('{{SECTIONS}}', '\n'.join(sections)).replace('{{COUNT}}', str(count)).replace('{{NAV}}', nav)
     (OUT / 'index.html').write_text(t, encoding='utf8')
+    # one file for the artifact: images inline, so the 256-file limit of a publish does not bite
+    def inline(m):
+        data = (OUT / 'img' / m.group(1)).read_bytes()
+        return 'src="data:image/jpeg;base64,' + base64.b64encode(data).decode() + '"'
+    (OUT / 'single.html').write_text(re.sub(r'src="img/([^"]+)"', inline, t), encoding='utf8')
     print('items', count, 'missing', missing)
     return 0
 

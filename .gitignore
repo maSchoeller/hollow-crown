@@ -11,3 +11,6 @@ playwright-report/
 .vite/
 dist-perf/
 concept/27-ueberarbeitung/levels/out/
+# Galerie der Karten-Assets: generiert von concept/23-art-direction/map-assets/gallery.py
+concept/23-art-direction/map-assets/gallery/
+concept/23-art-direction/map-assets/gallery_game/
