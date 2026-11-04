@@ -95,7 +95,7 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 
 - **Welt:** Valmora, das Königreich zwischen Drachengebirge, Silbermeer und Grenzmarken. Die Prämisse bleibt: Der Drachenpakt ist gebrochen, und die Krone war immer hohl, weil der Pakt auf einem Opfer der Könige beruhte. Wer König Aldric IV. getötet hat, ist die tragende Frage der Kampagne.
 - **Erzählweise:** Visual-Novel-Dialoge mit Porträts, Sprechblasen auf der Karte, Lagerfeuer-Gespräche (Supports) und Groll-Zeilen der Leutnants.
-- **Art Direction:** runder Chibi-Cartoon-Stil für Porträts und Figuren auf der Karte gleichermaßen (Referenz `art/mockups/style-2026-10/round_chibi_kael.png`). Er löst die Anime-Halbfiguren aus GA5 und GA14 ab. Die Karte ist ein helles 3D-Diorama, die UI bleibt im Studio-Look (U21).
+- **Art Direction:** runder Chibi-Cartoon-Stil für Porträts und Figuren auf der Karte gleichermaßen (Referenz `art/mockups/style-2026-11/anchor_rhen.png`). Er löst die Anime-Halbfiguren aus GA5 und GA14 ab. Die Karte ist ein helles 3D-Diorama, die UI bleibt im Studio-Look (U21).
 - **Audio:** warm und folk-lastig, das Orchester nur bei Bossen und Drama. Details im Addendum, Basis in `17-audio.md`.
 
 ## Risiken
