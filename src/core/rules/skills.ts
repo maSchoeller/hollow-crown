@@ -1,4 +1,5 @@
-import type { GameData, Pos, SkillCondition, SkillDef, StatMods, StatKey } from '../defs';
+import type { Pos, SkillCondition, SkillDef, StatMods, StatKey } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { active, dist, isAlly, neighbors, onMap, samePos, terrainAt, unitAt } from '../util';
 import type { WeaponProfile } from './items';

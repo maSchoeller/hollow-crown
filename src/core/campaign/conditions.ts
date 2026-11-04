@@ -1,4 +1,6 @@
-import type { Condition, FlagValue, GameData, Stance, SupportRank } from '../defs';
+import type { FlagValue, Stance, SupportRank } from '../defs';
+import type { GameData } from '../gameData';
+import type { Condition } from '../storyDefs';
 import { STANCES, SUPPORT_RANKS } from '../defs';
 import type { CampaignState, LieutenantState } from '../state';
 import { pairKey } from '../util';

@@ -736,6 +736,8 @@ Als Spieler
 möchte ich sehen, wie die Paktwacht mit jedem Ausbau und jedem Gefährten wächst und wo Gefallene fehlen,
 damit die Heimat lebendig wirkt.
 
+**Stand 2026-11-04:** Entschieden ist 3D (Art Direction §7). Schon gebaut: Szene als Produktionscode, Raumteile je Stufe, Burgstufe (`castleTier`), drei Gegenstände ohne Datenbindung. Offen aus dieser Story: `homeObject` und die übrigen Gegenstände, `castleScene` mit Gefallenen und Gegangenen, Messung auf echtem Gerät; Plätze und Teile stehen nicht in `home.yaml`, sondern im Modell (`tools/art/blender_paktwacht.py`), das Kriterium dazu ist anzupassen.
+
 **Abhängigkeiten:** erst nach der Entscheidung des Produktinhabers „3D oder Bild“ auf Grundlage des 3D-Testaufbaus der Session epic10-castle (Branch `claude/epic10-castle-2a96a1`: `src/render/home/castle.ts`, `src/app/screens/Castle3d.tsx`, Screenshots in `_bmad-output/planning-artifacts/handoff-epic10/`, Messung auf echtem Gerät); nach 10.1 (Stufen); die Liste der Gegenstände nimmt der Produktinhaber als Narrative-Vorschlag ab.
 
 **Akzeptanzkriterien:**

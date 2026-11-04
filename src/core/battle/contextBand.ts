@@ -3,7 +3,7 @@
  * order and why. Pure: the UI only draws what comes out. Under fog the caller passes the options built on the visible state
  * (`visibleState`), so a target in the fog never shows up here.
  */
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit } from '../state';
 import type { ActionOption } from './actions';
 

@@ -1,4 +1,5 @@
-import { STAT_KEYS, type GameData, type Pos, type StatMods, type Stats } from '../defs';
+import { STAT_KEYS, type Pos, type StatMods, type Stats } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { armorAffinity, itemStatMods, itemWeight } from './items';
 import { setBonuses, skillTotals, type SkillCtx, type SkillTotals } from './skills';

@@ -1,0 +1,74 @@
+[
+ {
+  "file": "art/world/sites/aurenhall_v2.png",
+  "x": 605,
+  "bottom": 349,
+  "w": 106
+ },
+ {
+  "file": "art/world/sites/paktwacht_v3.png",
+  "x": 831,
+  "bottom": 860,
+  "w": 72
+ },
+ {
+  "file": "art/world/sites/varnhold_v2.png",
+  "x": 613,
+  "bottom": 1014,
+  "w": 66
+ },
+ {
+  "file": "art/world/sites/kronfeld.png",
+  "x": 599,
+  "bottom": 655,
+  "w": 104
+ },
+ {
+  "file": "art/world/sites/kontor.png",
+  "x": 553,
+  "bottom": 593,
+  "w": 80
+ },
+ {
+  "file": "art/world/sites/perlhof.png",
+  "x": 185,
+  "bottom": 750,
+  "w": 62
+ },
+ {
+  "file": "art/world/sites/grauwacht.png",
+  "x": 1102,
+  "bottom": 595,
+  "w": 82
+ },
+ {
+  "file": "art/world/sites/kupferhall.png",
+  "x": 1155,
+  "bottom": 528,
+  "w": 62
+ },
+ {
+  "file": "art/world/sites/silberquell.png",
+  "x": 802,
+  "bottom": 534,
+  "w": 51
+ },
+ {
+  "file": "art/world/sites/erlbach.png",
+  "x": 684,
+  "bottom": 1068,
+  "w": 70
+ },
+ {
+  "file": "art/world/sites/kraehenholm.png",
+  "x": 85,
+  "bottom": 939,
+  "w": 41
+ },
+ {
+  "file": "art/world/sites/urtempel.png",
+  "x": 639,
+  "bottom": 101,
+  "w": 43
+ }
+]

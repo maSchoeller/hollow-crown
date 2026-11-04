@@ -1,5 +1,6 @@
 import { CoreInvariantError } from '../errors';
-import type { GameData, Pos } from '../defs';
+import type { Pos } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';

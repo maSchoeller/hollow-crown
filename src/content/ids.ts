@@ -4,7 +4,7 @@
  * `content/renames.yaml` names its successor (the save migration of that release reads the same file).
  */
 import { z } from 'zod';
-import type { GameData } from '../core/defs';
+import type { GameData } from '../core/gameData';
 
 /** Kinds of IDs a save refers to (lieutenants since story 3.1). */
 export const ID_KINDS = ['chars', 'classes', 'items', 'skills', 'affixes', 'sets', 'nodes', 'maps', 'flags', 'rooms', 'scenes', 'lieutenants'] as const;

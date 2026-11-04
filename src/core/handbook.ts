@@ -2,7 +2,8 @@
  * The rules handbook (epic 14, architecture §8.3): values of an entry are paths into the content, resolved here against
  * GameData, so the handbook says what the rules do after every balancing pass. Pure; the UI only draws the result.
  */
-import type { GameData, HandbookDef, HandbookEntryDef, HandbookFormat, HandbookValueDef } from './defs';
+import type { GameData } from './gameData';
+import type { HandbookDef, HandbookEntryDef, HandbookFormat, HandbookValueDef } from './renderDefs';
 
 /** Locale key of a part of an entry: `title`, `text`, `where`, `keywords`, class lines `strong.1` … */
 export const handbookEntryKey = (id: string, part: string): string => `handbook.entry.${id}.${part}`;

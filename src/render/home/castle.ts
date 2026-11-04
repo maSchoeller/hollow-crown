@@ -1,16 +1,13 @@
 /**
- * EVALUATION SPIKE (dev only, `?castle3d=1`): the Paktwacht as a 3D diorama (concept/23-art-direction §7) on the render host
- * (story 5.1), so the product owner can compare it with the painted picture. Not the final feature.
+ * The home castle: the Paktwacht in the mountain flank as a 3D scene on the render host (concept/23-art-direction §7).
  *
- * The castle is one model file, `models/castle/paktwacht.glb`, built by tools/art/blender_castle.py after the modelling
- * references in art/mockups/castle3d-refs/ and loaded on demand. It holds one mesh per part, named `<group>_<levels>`: the
- * shell (island, walls, towers, gate, keep, modelled in place), the eleven rooms and three keepsakes (modelled at the origin,
- * placed by LAYOUT below), each with parts for the build-up levels (`a` always, `1` ruin with scaffolding and tarps, `23`
- * from level 2: roofs and lit windows, `2` only level 2, `3` banners, lanterns, extras). Colours are vertex colours; glowing
- * parts (windows, fire, lanterns, runes) wear an unlit material. Evening light preset of `render.yaml`.
+ * One model file, `models/castle/paktwacht.glb`, built by tools/art/blender_paktwacht.py and loaded on demand. It holds one
+ * mesh per part, named `<group>_<tag>`, all modelled in place. Tag `a` always shows, any other tag lists the levels it shows
+ * at: `shell` and `land` go by the castle tier 0-3 (`castleTier` in src/core/campaign/camp.ts), rooms and keepsakes by the
+ * room level 1-3. Colours are vertex colours; glowing parts wear an unlit material. Evening light preset of `render.yaml`.
  *
- * Layout, smoke and light spots below are spike placeholders [C], deliberately in code (no game values; a real home scene
- * would move them into content). The picture view keeps its own anchors (`content/home/home.yaml`).
+ * The view looks at the castle from the south at 30° and only pans (drag): a little sideways, and down to the fields and the
+ * river. Nothing turns, so the backs of the mountain and buildings do not exist.
  */
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
 import { Camera } from '@babylonjs/core/Cameras/camera';
@@ -19,7 +16,6 @@ import { Matrix, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Viewport } from '@babylonjs/core/Maths/math.viewport';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
-import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import type { Node } from '@babylonjs/core/node';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
@@ -41,11 +37,6 @@ import { applyLight } from '../shared/season';
 // glTF loader and meshopt decoder (the castle file is meshopt-compressed by gltfpack)
 import '../shared/models';
 
-export interface CastleRoom {
-  id: string;
-  level: number;
-}
-
 export interface CastleHooks {
   /** a building was tapped */
   onRoom(id: string): void;
@@ -53,91 +44,59 @@ export interface CastleHooks {
 
 const MODEL = 'models/castle/paktwacht.glb';
 
-/** radius of the island's top (tools/art/blender_castle.py ISLAND_R) */
-const ISLAND_R = 10.8;
-/** tip of the keep tower's roof pennant, x, y, z (tools/art/blender_castle.py KEEP_TOWER) */
-const KEEP_TIP: [number, number, number] = [5.3, 11.4, 6.4];
+/** the rooms the castle model has */
+export const CASTLE_ROOMS = ['convoy', 'workshop', 'merchant', 'campfire', 'tavern', 'smith', 'academy', 'healer', 'training', 'memorial', 'enchanter'];
 
-/** points the camera keeps in the band: the island's rim and its underside */
-const FRAME_POINTS: Vector3[] = [
-  ...Array.from({ length: 16 }, (_, i) => new Vector3(Math.cos((i / 16) * Math.PI * 2) * ISLAND_R, 0, Math.sin((i / 16) * Math.PI * 2) * ISLAND_R)),
-  ...Array.from({ length: 8 }, (_, i) => new Vector3(Math.cos((i / 8) * Math.PI * 2) * (ISLAND_R - 1), -2.2, Math.sin((i / 8) * Math.PI * 2) * (ISLAND_R - 1))),
-  new Vector3(0, -5, 0),
-];
+const KEEPSAKES = ['axe', 'lute', 'books'];
 
-/** the tall tops that may rise above the band, up to TOP: the keep's roof tip and the back left tower (blender_castle.py) */
-const TALL_POINTS: Vector3[] = [new Vector3(KEEP_TIP[0], KEEP_TIP[1], KEEP_TIP[2]), new Vector3(-8.8, 5.7, 3.2)];
+/** [C] camera: angle above the horizon, horizontal field of view (kept on every screen), distance to the aim, height of the aim */
+const PITCH = (30 * Math.PI) / 180;
+const FOV = 0.426;
+const DIST = 82;
+const AIM_Y = 11;
+/** the tip of the keep's roof (x, height, z), kept just under TOP of the view; it sets the aim's depth */
+const KEEP_TIP = new Vector3(-5.5, 25.8, 19.2);
+const TOP = 0.11;
+/** [C] the scene fills the screen, but the room list covers its lower part: the picture's centre sits this much above the screen's (share of the height) */
+const CENTRE_UP = 0.16;
+/** [C] how far the view pans from there: sideways, and forwards (down to the river, negative) */
+const PAN_X = 5;
+const PAN_Z: [number, number] = [-27, 1];
+const PAN_SPEED = 0.05;
 
-/** [C] the band the island fits in (share of the view height; the view ends just under the top of the room list): below the HUD, above the room list */
-const BAND: [number, number] = [0.2, 0.92];
-/** [C] the highest the tall tops may reach (share of the view height): under the coin pill and the dev bar */
-const TOP = 0.2;
-const PITCH = 0.82;
-
-/**
- * [C] Room spots after the reference layout (art/mockups/castle3d-refs/paktwacht_diorama_l3.png), grounds twice the area of
- * the first spike, re-spaced for the bigger buildings (BUILDING_S): x, z in world units (z = back), yaw in degrees counter-clockwise seen from above (front = -z). Same table
- * as PREVIEW_LAYOUT in tools/art/blender_castle.py.
- */
-const LAYOUT: Record<string, [number, number, number]> = {
-  convoy: [-5.3, -3.7, 45],
-  workshop: [3.9, -1.4, -30],
-  merchant: [-3.4, 1.0, 22],
-  campfire: [0, -0.4, 0],
-  tavern: [1.7, 3.6, -5],
-  smith: [5.6, 2.9, -50],
-  academy: [7.5, -2.6, -80],
-  healer: [4.4, -6.2, -30],
-  training: [-3.6, -6.6, 12],
-  memorial: [-5.4, 4.5, 40],
-  enchanter: [-7.5, 0.3, 78],
-};
-
-/**
- * [C] the rooms and keepsakes are modelled at the first spike's size; on the doubled grounds they stand this much bigger
- * (the shell's keep, towers and gate are scaled in tools/art/blender_castle.py by the same factor, BUILDING_S)
- */
-const BUILDING_S = 1.4;
-
-/** the rooms the castle model has, in LAYOUT order */
-export const CASTLE_ROOMS = Object.keys(LAYOUT);
-
-/** [C] companion keepsakes at fixed places (§7): x, z, yaw, scale */
-const KEEPSAKES: Record<string, [number, number, number, number]> = {
-  axe: [2.6, -3.4, -20, 1],
-  lute: [-1.9, -2.4, 10, 1],
-  books: [-3.6, 4.4, 0, 1.3],
-};
-
-/** [C] chimney smoke from level 3, room-local (x, height, z) */
+/** [C] chimney smoke from level 3 (x, height, z in castle space, from LAYOUT and the room models) */
 const SMOKE: Record<string, Array<[number, number, number]>> = {
-  smith: [[0.95, 3.2, 0.85]],
-  tavern: [[-1.05, 3.3, 0.3]],
-  healer: [[0.05, 2.55, 0.45]],
+  smith: [[-9.6, 12.4, 8]],
+  tavern: [[-6.4, 13.1, 10.5]],
+  healer: [[-8.7, 10.2, 3.3]],
 };
+const FIRE: [number, number, number] = [0, 7.3, 6.4];
+/** [C] warm and rune light from level 3 */
+const LIGHTS: Record<string, [string, number, number, number, number, number]> = {
+  smith: ['#ff9a3c', -10.9, 8.1, 5.1, 1.2, 7],
+  enchanter: ['#c9a2ff', 9.1, 14.5, 14.5, 1.2, 6],
+};
+const FIRE_LIGHT: [string, number, number, number, number, number] = ['#ff9a3c', 0, 8.6, 6.4, 1.4, 9];
 
-const EMBER = '#ff9a3c';
-const RUNE = '#c9a2ff';
+/** part names of the model file (glTF primitives get a `_primitive<n>` suffix) */
+const PART = /^(?:castle:)?([a-z]+)_(a|[0-9]+)(?:_primitive\d+)?$/;
 
-/** part names of the model file: `<group>_<levels>` (glTF primitives get a `_primitive<n>` suffix) */
-const PART = /^(?:castle:)?([a-z]+)_(a|1|2|23|3)(?:_primitive\d+)?$/;
+/** One group's parts, each under its own node so it can switch as a whole. */
+type Tagged = Array<{ tag: string; node: TransformNode }>;
 
-/** One room's building with its level parts. */
+function shown(tag: string, level: number): boolean {
+  return tag === 'a' || tag.includes(String(level));
+}
+
 interface RoomView {
   id: string;
   root: TransformNode;
-  /** level 1 only (ruin: scaffolding, tarps, rubble) */
-  l1: TransformNode;
-  /** level 2 and up (roof, lit windows) */
-  l23: TransformNode;
-  /** level 2 only */
-  l2: TransformNode;
-  /** level 3 (banners, lanterns, extras) */
-  l3: TransformNode;
+  parts: Tagged;
   smoke: ParticleSystem[];
   lights: PointLight[];
-  /** height the room's stone sits at, over the root */
-  pin: number;
+  /** where the room's stone sits */
+  pin: Vector3;
+  level: number;
 }
 
 export class CastleView implements HostedView {
@@ -152,17 +111,16 @@ export class CastleView implements HostedView {
   private glow: StandardMaterial;
   private smokeTex: DynamicTexture;
   private rooms = new Map<string, RoomView>();
-  private shell: Record<'l1' | 'l23' | 'l2' | 'l3', TransformNode>;
+  private tiered: Tagged = [];
+  private tier = -1;
   private pins = new Map<string, HTMLElement>();
   private disposed = false;
   private input = new AbortController();
-  private yaw = 0;
-  /** camera distance and aim that frame the island in BAND (fit, on resize) */
-  private dist = 30;
-  private aim = new Vector3(0, 0, 0);
-  private drag: { x: number; yaw: number; id: number; moved: boolean; t: number } | null = null;
-  private lastDrag = -1e9;
-  private start = performance.now();
+  /** the aim's depth at rest (fit, on resize) */
+  private aimZ = -10;
+  private panX = 0;
+  private panZ = 0;
+  private drag: { x: number; y: number; panX: number; panZ: number; id: number; moved: boolean } | null = null;
   /** frame times and draw calls of the last frame, for the dev readout */
   private frames: number[] = [];
   private drawCalls = 0;
@@ -180,15 +138,15 @@ export class CastleView implements HostedView {
     this.host.activate(this);
     const q = this.host.setQuality(quality);
     this.scene.clearColor = new Color4(0, 0, 0, 0);
-    this.camera = new FreeCamera('castle:cam', new Vector3(0, 10, -20), this.scene);
+    this.camera = new FreeCamera('castle:cam', new Vector3(0, 40, -70), this.scene);
     this.camera.inputs.clear();
     this.camera.fovMode = Camera.FOVMODE_HORIZONTAL_FIXED;
-    this.camera.fov = 0.78;
-    this.camera.minZ = 1;
-    this.camera.maxZ = 160;
+    this.camera.fov = FOV;
+    this.camera.minZ = 2;
+    this.camera.maxZ = 300;
     this.scene.activeCamera = this.camera;
     this.hemi = new HemisphericLight('castle:ambient', new Vector3(0.2, 1, -0.3), this.scene);
-    this.sun = new DirectionalLight('castle:sun', new Vector3(0.5, -1, 0.4), this.scene);
+    this.sun = new DirectionalLight('castle:sun', new Vector3(0.5, -1, 0.7), this.scene);
     // evening, always (§7): the time-of-day preset of render.yaml, season of act 1
     const look = resolveLook(data.render, { act: 1, timeOfDay: 'evening' });
     applyLight(this.hemi, this.sun, look.ambient, look.sun);
@@ -212,8 +170,6 @@ export class CastleView implements HostedView {
     this.glow.disableLighting = true;
     this.glow.emissiveColor = new Color3(1, 1, 1);
     this.smokeTex = this.makeSmokeTexture();
-    const node = (n: string) => new TransformNode(`castle:shell:${n}`, this.scene);
-    this.shell = { l1: node('l1'), l23: node('l23'), l2: node('l2'), l3: node('l3') };
     this.fit();
     this.bindInput();
     if (import.meta.env.DEV) (window as unknown as { __castle: CastleView }).__castle = this;
@@ -221,17 +177,12 @@ export class CastleView implements HostedView {
 
   // ------------------------------------------------------------------ host
 
-  /** Always drawing: the idle sway moves the camera every frame (and smoke and fire run). */
+  /** Always drawing: smoke and fire run. */
   busy(): boolean {
     return true;
   }
 
   frame(now: number): void {
-    if (!this.drag && now - this.lastDrag > 2500) {
-      // gentle idle sway around the front view
-      const t = (now - this.start) / 1000;
-      this.yaw += (Math.sin(t * 0.18) * 0.16 - this.yaw) * 0.02;
-    }
     this.placeCamera();
     const calls = this.host.engine._drawCalls;
     const before = calls?.current ?? 0;
@@ -265,38 +216,27 @@ export class CastleView implements HostedView {
 
   // ------------------------------------------------------------------ build
 
-  async build(rooms: CastleRoom[]): Promise<void> {
+  /** Loads the model; afterwards `show` sets the levels. False if the model could not be loaded. */
+  async build(): Promise<boolean> {
     const parts = await this.loadParts();
-    if (this.disposed || !parts) return;
-    // shell: modelled in place
-    const shellRoot = new TransformNode('castle:shell', this.scene);
-    for (const n of Object.values(this.shell)) n.parent = shellRoot;
-    this.attach(parts.get('shell_a'), shellRoot);
-    this.attach(parts.get('shell_1'), this.shell.l1);
-    this.attach(parts.get('shell_23'), this.shell.l23);
-    this.attach(parts.get('shell_2'), this.shell.l2);
-    this.attach(parts.get('shell_3'), this.shell.l3);
-    for (const r of rooms) this.buildRoom(r, parts);
-    for (const [id, [x, z, yaw, s]] of Object.entries(KEEPSAKES)) {
-      const n = new TransformNode(`castle:keepsake:${id}`, this.scene);
-      n.position.set(x, 0, z);
-      n.rotation.y = (-yaw * Math.PI) / 180;
-      n.scaling.setAll(s * BUILDING_S);
-      this.attach(parts.get(`${id}_a`), n);
+    if (this.disposed || !parts) return false;
+    for (const [key, meshes] of parts) {
+      const at = key.lastIndexOf('_');
+      const group = key.slice(0, at);
+      const tag = key.slice(at + 1);
+      if (group === 'shell' || group === 'land') this.tiered.push({ tag, node: this.attach(meshes, `tier:${key}`) });
     }
+    for (const id of CASTLE_ROOMS) this.buildRoom(id, parts);
+    for (const id of KEEPSAKES) this.attach(parts.get(`${id}_a`) ?? [], `keepsake:${id}`);
     // the campfire burns at every level
-    const fire = this.rooms.get('campfire');
-    if (fire) {
-      this.smoke(fire.root, 0, 0.2, 0, true).start();
-      this.light(fire.root, EMBER, 0, 0.9, 0, 1.4, 5);
-    }
-    for (const r of rooms) this.setLevel(r.id, r.level);
+    this.smoke(FIRE, true).start();
+    this.light(FIRE_LIGHT);
     if (this.shadows) {
       for (const m of this.scene.meshes) if (m.material === this.lit) this.shadows.addShadowCaster(m, false);
-      this.refreshShadows();
     }
     this.lit.freeze();
     this.glow.freeze();
+    return true;
   }
 
   /**
@@ -334,79 +274,75 @@ export class CastleView implements HostedView {
     return parts;
   }
 
-  private attach(meshes: Mesh[] | undefined, parent: TransformNode): void {
-    for (const m of meshes ?? []) {
-      m.parent = parent;
+  private attach(meshes: Mesh[], name: string): TransformNode {
+    const node = new TransformNode(`castle:${name}`, this.scene);
+    for (const m of meshes) {
+      m.parent = node;
       m.computeWorldMatrix(true);
       m.freezeWorldMatrix();
     }
+    return node;
   }
 
-  private buildRoom(r: CastleRoom, parts: Map<string, Mesh[]>): void {
-    const spot = LAYOUT[r.id];
-    if (!spot || !parts.has(`${r.id}_a`)) return;
-    const [x, z, yaw] = spot;
-    const root = new TransformNode(`castle:room:${r.id}`, this.scene);
-    root.position.set(x, 0, z);
-    root.rotation.y = (-yaw * Math.PI) / 180;
-    root.scaling.setAll(BUILDING_S);
-    root.computeWorldMatrix(true);
-    const level = (n: string) => {
-      const t = new TransformNode(`castle:${r.id}:${n}`, this.scene);
-      t.parent = root;
-      return t;
-    };
-    const v: RoomView = { id: r.id, root, l1: level('l1'), l23: level('l23'), l2: level('l2'), l3: level('l3'), smoke: [], lights: [], pin: 2 };
-    // footprint and height (room-local, before placing) for the tap area and the stone
+  private buildRoom(id: string, parts: Map<string, Mesh[]>): void {
+    if (!parts.has(`${id}_a`)) return;
+    const root = new TransformNode(`castle:room:${id}`, this.scene);
+    const v: RoomView = { id, root, parts: [], smoke: [], lights: [], pin: Vector3.Zero(), level: 0 };
+    // footprint and height for the tap area and the stone
     const min = new Vector3(Infinity, Infinity, Infinity);
     const max = new Vector3(-Infinity, -Infinity, -Infinity);
-    for (const key of ['a', '23'])
-      for (const m of parts.get(`${r.id}_${key}`) ?? []) {
-        const b = m.getBoundingInfo().boundingBox;
-        min.minimizeInPlace(b.minimum);
-        max.maximizeInPlace(b.maximum);
-      }
-    this.attach(parts.get(`${r.id}_a`), root);
-    this.attach(parts.get(`${r.id}_1`), v.l1);
-    this.attach(parts.get(`${r.id}_23`), v.l23);
-    this.attach(parts.get(`${r.id}_2`), v.l2);
-    this.attach(parts.get(`${r.id}_3`), v.l3);
-    v.pin = Math.max(1.2, max.y + 0.35);
-    for (const [sx, sy, sz] of SMOKE[r.id] ?? []) v.smoke.push(this.smoke(root, sx, sy, sz));
-    if (r.id === 'smith') v.lights.push(this.light(root, EMBER, -0.2, 0.7, -0.6, 1.2, 4));
-    if (r.id === 'enchanter') v.lights.push(this.light(root, RUNE, 0.75, 0.6, -1.05, 1.2, 3.5));
+    for (const [key, meshes] of parts) {
+      const at = key.lastIndexOf('_');
+      if (key.slice(0, at) !== id) continue;
+      const tag = key.slice(at + 1);
+      if (tag === 'a' || tag === '23')
+        for (const m of meshes) {
+          const b = m.getBoundingInfo().boundingBox;
+          min.minimizeInPlace(b.minimum);
+          max.maximizeInPlace(b.maximum);
+        }
+      const node = this.attach(meshes, `${id}:${tag}`);
+      node.parent = root;
+      v.parts.push({ tag, node });
+    }
+    const cx = (min.x + max.x) / 2;
+    const cz = (min.z + max.z) / 2;
+    v.pin = new Vector3(cx, max.y + 0.6, cz);
+    for (const at of SMOKE[id] ?? []) v.smoke.push(this.smoke(at));
+    const l = LIGHTS[id];
+    if (l) v.lights.push(this.light(l));
     // a generous invisible tap area over the building
-    const d = Math.max(1.6, Math.min(3.4, Math.max(max.x - min.x, max.z - min.z) * 0.85));
-    const hit = CreateCylinder(`castle:hit:${r.id}`, { diameter: d, height: v.pin, tessellation: 8 }, this.scene);
+    const height = max.y - min.y + 0.6;
+    const d = Math.max(4, Math.min(8, Math.max(max.x - min.x, max.z - min.z) * 0.9));
+    const hit = CreateCylinder(`castle:hit:${id}`, { diameter: d, height, tessellation: 8 }, this.scene);
     hit.parent = root;
-    hit.position.set((min.x + max.x) / 2, v.pin / 2, (min.z + max.z) / 2);
+    hit.position.set(cx, min.y + height / 2, cz);
     hit.visibility = 0;
     hit.isPickable = true;
-    hit.metadata = { room: r.id };
-    this.rooms.set(r.id, v);
+    hit.metadata = { room: id };
+    this.rooms.set(id, v);
   }
 
-  /** Shows `level` (1–3) for one room; the shell follows the rooms. */
+  /** Shows a room at `level` (1-3), or not at all (0: not there yet). */
   setLevel(id: string, level: number): void {
     const v = this.rooms.get(id);
-    if (!v) return;
-    v.root.metadata = { level };
-    v.l1.setEnabled(level <= 1);
-    v.l23.setEnabled(level >= 2);
-    v.l2.setEnabled(level === 2);
-    v.l3.setEnabled(level >= 3);
+    if (!v || v.level === level) return;
+    v.level = level;
+    v.root.setEnabled(level > 0);
+    for (const { tag, node } of v.parts) node.setEnabled(shown(tag, level));
     for (const p of v.smoke) {
       if (level >= 3) p.start();
       else p.stop();
     }
     for (const l of v.lights) l.setEnabled(level >= 3);
-    // [C] walls, towers and keep show the rounded-down mean level of the rooms (an open product question)
-    const levels = [...this.rooms.values()].map((r) => (r.root.metadata as { level?: number } | null)?.level ?? 1);
-    const shell = Math.max(1, Math.min(3, Math.floor(levels.reduce((a, b) => a + b, 0) / levels.length)));
-    this.shell.l1.setEnabled(shell <= 1);
-    this.shell.l23.setEnabled(shell >= 2);
-    this.shell.l2.setEnabled(shell === 2);
-    this.shell.l3.setEnabled(shell >= 3);
+    this.refreshShadows();
+  }
+
+  /** Shows walls, keep and land at castle tier 0-3. */
+  setTier(tier: number): void {
+    if (tier === this.tier) return;
+    this.tier = tier;
+    for (const { tag, node } of this.tiered) node.setEnabled(shown(tag, tier));
     this.refreshShadows();
   }
 
@@ -431,43 +367,40 @@ export class CastleView implements HostedView {
     return t;
   }
 
-  private smoke(parent: TransformNode, x: number, y: number, z: number, fire = false): ParticleSystem {
+  private smoke([x, y, z]: [number, number, number], fire = false): ParticleSystem {
     const p = new ParticleSystem('castle:smoke', fire ? 40 : 60, this.scene);
     p.particleTexture = this.smokeTex;
-    const node = new TransformNode('castle:smokeAt', this.scene);
-    node.parent = parent;
-    node.position.set(x, y, z);
-    p.emitter = node as unknown as AbstractMesh;
-    p.minEmitBox = new Vector3(-0.05, 0, -0.05);
-    p.maxEmitBox = new Vector3(0.05, 0, 0.05);
+    p.emitter = new Vector3(x, y, z);
+    p.minEmitBox = new Vector3(-0.1, 0, -0.1);
+    p.maxEmitBox = new Vector3(0.1, 0, 0.1);
     if (fire) {
       p.color1 = new Color4(1, 0.75, 0.35, 1);
       p.color2 = new Color4(1, 0.45, 0.15, 1);
       p.colorDead = new Color4(0.6, 0.2, 0.05, 0);
-      p.minSize = 0.15;
-      p.maxSize = 0.35;
+      p.minSize = 0.25;
+      p.maxSize = 0.6;
       p.minLifeTime = 0.3;
       p.maxLifeTime = 0.7;
       p.emitRate = 30;
       p.blendMode = ParticleSystem.BLENDMODE_ADD;
       p.direction1 = new Vector3(-0.1, 1, -0.1);
       p.direction2 = new Vector3(0.1, 1.4, 0.1);
-      p.minEmitPower = 0.5;
-      p.maxEmitPower = 0.9;
+      p.minEmitPower = 0.8;
+      p.maxEmitPower = 1.5;
     } else {
       p.color1 = new Color4(0.85, 0.82, 0.8, 0.45);
       p.color2 = new Color4(0.75, 0.72, 0.72, 0.35);
       p.colorDead = new Color4(0.7, 0.7, 0.72, 0);
-      p.minSize = 0.25;
-      p.maxSize = 0.6;
+      p.minSize = 0.45;
+      p.maxSize = 1.1;
       p.minLifeTime = 2;
       p.maxLifeTime = 3.5;
       p.emitRate = 9;
       p.blendMode = ParticleSystem.BLENDMODE_STANDARD;
       p.direction1 = new Vector3(0.1, 1, 0);
       p.direction2 = new Vector3(0.35, 1, 0.1);
-      p.minEmitPower = 0.25;
-      p.maxEmitPower = 0.45;
+      p.minEmitPower = 0.4;
+      p.maxEmitPower = 0.8;
       p.minAngularSpeed = -0.4;
       p.maxAngularSpeed = 0.4;
     }
@@ -476,13 +409,12 @@ export class CastleView implements HostedView {
     return p;
   }
 
-  private light(parent: TransformNode, color: string, x: number, y: number, z: number, intensity: number, range: number): PointLight {
+  private light([color, x, y, z, intensity, range]: [string, number, number, number, number, number]): PointLight {
     const l = new PointLight('castle:light', new Vector3(x, y, z), this.scene);
-    l.parent = parent;
     l.diffuse = Color3.FromHexString(color);
     l.specular = new Color3(0, 0, 0);
     l.intensity = intensity;
-    l.range = range * BUILDING_S;
+    l.range = range;
     return l;
   }
 
@@ -497,52 +429,38 @@ export class CastleView implements HostedView {
   }
 
   private placeCamera(): void {
-    const { dist, aim } = this;
-    this.camera.position.set(aim.x + Math.sin(this.yaw) * Math.cos(PITCH) * dist, aim.y + Math.sin(PITCH) * dist, aim.z - Math.cos(this.yaw) * Math.cos(PITCH) * dist);
+    const aim = new Vector3(this.panX, AIM_Y, this.aimZ + this.panZ);
+    this.camera.position.set(aim.x, aim.y + Math.sin(PITCH) * DIST, aim.z - Math.cos(PITCH) * DIST);
     this.camera.setTarget(aim);
   }
 
-  /**
-   * Distance and aim of the front view so the whole island (FRAME_POINTS) fits the view's width and the band between the HUD
-   * and the room list (BAND); a few rounds of measuring the projected points and correcting.
-   */
+  /** The aim's depth that puts the keep's tip just under the top of the view, whatever the screen's height; a few rounds of measuring. */
   private fit(): void {
     const w = this.slot.clientWidth || 1;
     const h = this.slot.clientHeight || 1;
-    const top = h * BAND[0];
-    const bottom = h * BAND[1];
     const vp = new Viewport(0, 0, w, h);
-    const yaw = this.yaw;
-    this.yaw = 0;
-    for (let round = 0; round < 6; round++) {
+    const { panX, panZ } = this;
+    this.panX = this.panZ = 0;
+    this.shiftLens();
+    for (let round = 0; round < 5; round++) {
       this.placeCamera();
       const m = this.camera.getViewMatrix(true).multiply(this.camera.getProjectionMatrix(true));
-      let x0 = Infinity;
-      let x1 = -Infinity;
-      let y0 = Infinity;
-      let y1 = -Infinity;
-      let tall = Infinity;
-      for (const p of FRAME_POINTS) {
-        const s = Vector3.Project(p, Matrix.IdentityReadOnly, m, vp);
-        x0 = Math.min(x0, s.x);
-        x1 = Math.max(x1, s.x);
-        y0 = Math.min(y0, s.y);
-        y1 = Math.max(y1, s.y);
-      }
-      for (const p of TALL_POINTS) tall = Math.min(tall, Vector3.Project(p, Matrix.IdentityReadOnly, m, vp).y);
-      const island = Math.max((x1 - x0) / (w * 0.92), (y1 - y0) / (bottom - top));
-      const tops = (y1 - tall) / (bottom - h * TOP);
-      // screen pixels per world unit along z at the aim, to move the picture's centre into the band's centre, but low enough
-      // for the tall tops to stay under TOP and high enough for the island's bottom to stay in the band
-      const a = Vector3.Project(this.aim, Matrix.IdentityReadOnly, m, vp);
-      const b = Vector3.Project(this.aim.add(new Vector3(0, 0, 1)), Matrix.IdentityReadOnly, m, vp);
-      const perUnit = Math.max(1e-3, a.y - b.y);
-      const off = Math.max(y1 - bottom, Math.min((y0 + y1) / 2 - (top + bottom) / 2, tall - h * TOP));
-      this.aim.z -= off / perUnit;
-      this.dist *= Math.max(island, tops);
+      const tip = Vector3.Project(KEEP_TIP, Matrix.IdentityReadOnly, m, vp).y;
+      const a = Vector3.Project(new Vector3(0, AIM_Y, this.aimZ), Matrix.IdentityReadOnly, m, vp).y;
+      const b = Vector3.Project(new Vector3(0, AIM_Y, this.aimZ + 1), Matrix.IdentityReadOnly, m, vp).y;
+      this.aimZ += (h * TOP - tip) / Math.max(1e-3, a - b);
     }
-    this.yaw = yaw;
+    this.panX = panX;
+    this.panZ = panZ;
     this.placeCamera();
+  }
+
+  /** Moves the picture's centre up without moving or tilting the camera, so the castle keeps its size on every screen height. */
+  private shiftLens(): void {
+    this.camera.unfreezeProjectionMatrix();
+    const m = Array.from(this.camera.getProjectionMatrix(true).m);
+    m[9] = CENTRE_UP * 2;
+    this.camera.freezeProjectionMatrix(Matrix.FromArray(m));
   }
 
   private placePins(): void {
@@ -554,10 +472,11 @@ export class CastleView implements HostedView {
     for (const [id, el] of this.pins) {
       const v = this.rooms.get(id);
       if (!v) continue;
-      const world = Vector3.TransformCoordinates(new Vector3(0, v.pin, 0), v.root.getWorldMatrix());
-      const p = Vector3.Project(world, Matrix.IdentityReadOnly, tm, vp);
+      const p = Vector3.Project(v.pin, Matrix.IdentityReadOnly, tm, vp);
       el.style.left = `${p.x}px`;
       el.style.top = `${p.y}px`;
+      // panned away: no stone over the HUD
+      el.style.visibility = p.y < h * TOP ? 'hidden' : '';
     }
   }
 
@@ -567,7 +486,7 @@ export class CastleView implements HostedView {
     c.addEventListener(
       'pointerdown',
       (e) => {
-        this.drag = { x: e.clientX, yaw: this.yaw, id: e.pointerId, moved: false, t: performance.now() };
+        this.drag = { x: e.clientX, y: e.clientY, panX: this.panX, panZ: this.panZ, id: e.pointerId, moved: false };
       },
       opts,
     );
@@ -577,8 +496,12 @@ export class CastleView implements HostedView {
         const d = this.drag;
         if (!d || d.id !== e.pointerId) return;
         const dx = e.clientX - d.x;
-        if (Math.abs(dx) > 8) d.moved = true;
-        if (d.moved) this.yaw = Math.max(-0.7, Math.min(0.7, d.yaw - dx * 0.006));
+        const dy = e.clientY - d.y;
+        if (Math.hypot(dx, dy) > 8) d.moved = true;
+        if (d.moved) {
+          this.panX = Math.max(-PAN_X, Math.min(PAN_X, d.panX - dx * PAN_SPEED));
+          this.panZ = Math.max(PAN_Z[0], Math.min(PAN_Z[1], d.panZ + dy * PAN_SPEED * 2));
+        }
       },
       opts,
     );
@@ -586,7 +509,6 @@ export class CastleView implements HostedView {
       const d = this.drag;
       if (!d || d.id !== e.pointerId) return;
       this.drag = null;
-      this.lastDrag = performance.now();
       if (d.moved || e.type === 'pointercancel') return;
       const r = c.getBoundingClientRect();
       const hit = this.scene.pick(e.clientX - r.left, e.clientY - r.top, (m) => (m.metadata as { room?: string } | null)?.room !== undefined && m.isEnabled());
@@ -598,7 +520,7 @@ export class CastleView implements HostedView {
   }
 }
 
-/** `<group>_<levels>` of a loaded mesh, from its own name or its glTF node's */
+/** `<group>_<tag>` of a loaded mesh, from its own name or its glTF node's */
 function partKey(m: Node): string | null {
   for (let n: Node | null = m; n; n = n.parent) {
     const hit = PART.exec(n.name);

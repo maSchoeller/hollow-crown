@@ -1,4 +1,6 @@
-import { HOME_KINDS, type Effect, type FlagValue, type GameData, type HomeKind, type Stance } from '../defs';
+import { HOME_KINDS, type FlagValue, type HomeKind, type Stance } from '../defs';
+import type { GameData } from '../gameData';
+import type { Effect } from '../storyDefs';
 import { newItem } from '../battle/create';
 import { allItems } from '../rules/items';
 import type { CampaignState } from '../state';

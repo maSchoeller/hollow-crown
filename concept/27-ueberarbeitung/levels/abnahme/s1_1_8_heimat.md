@@ -2,9 +2,9 @@
 
 **Kurz:** G 30×40 · Abend, Asche · Burgverwalter 12 Runden schützen · 14 eigene gegen 41 (2,9 : 1) · Leutnants **Morra** (führt), **Hask**, **Ulvric**, **Grosk**
 
-- **Gleiche Karte wie 1-6**, nur andersherum: Jetzt hält die Truppe Vorburg, Terrassen und Burghof. Die Westpforte ist vermauert.
-- **Von Süden** steigen drei Leutnants die Terrassen hinauf: Hask über die Mitte, Ulvric mit Wölfen von Osten, Grosk von Westen. **Grosk** fehlt samt seinen Leuten, wenn er bei E3 gewechselt ist (dann 36 Gegner).
-- **Im Rücken:** Ab Runde 4 kommt **Morra** mit ihren Häschern über den **Wachpass** und greift durch das Osttor den Bergfried an. In Runde 7 folgt Nachschub.
+- **Gleiche Karte wie 1-6**, nur andersherum: Jetzt hält die Truppe Vorburg, Terrassen und Burghof. Die Ostpforte ist vermauert.
+- **Von Süden** steigen drei Leutnants die Terrassen hinauf: Hask über die Mitte, Ulvric mit Wölfen von Westen, Grosk von Osten. **Grosk** fehlt samt seinen Leuten, wenn er bei E3 gewechselt ist (dann 36 Gegner).
+- **Im Rücken:** Ab Runde 4 kommt **Morra** mit ihren Häschern die Passstraße hinauf, über einen Hangweg vom **Wachpass** und greift durch das Westtor den Bergfried an. Der Pass liegt 2 bis 4 km westlich der Burg. In Runde 7 folgt Nachschub.
 - Die Truppe muss sich **auf zwei Fronten teilen**. Weitere Wellen von Süden in Runde 3, 6 und 9, in Runde 10 ein kleiner Trupp über den Ziegenpfad.
 
 ![Raster](s1_1_8_heimat.png)

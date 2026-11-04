@@ -1,4 +1,5 @@
-import type { GameData, MemorialDef } from '../defs';
+import type { GameData } from '../gameData';
+import type { MemorialDef } from '../storyDefs';
 import type { CampaignState } from '../state';
 import { conditionContext, evalConditions } from './conditions';
 import { farewellScene, hasLine } from './farewellView';

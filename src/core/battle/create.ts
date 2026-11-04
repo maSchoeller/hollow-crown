@@ -1,4 +1,6 @@
-import { STAT_KEYS, type CharDef, type EquipSlot, type GameData, type ItemRef, type MapUnitDef, type Pos, type Stats } from '../defs';
+import { STAT_KEYS, type CharDef, type EquipSlot, type ItemRef, type Pos, type Stats } from '../defs';
+import type { GameData } from '../gameData';
+import type { MapUnitDef } from '../mapDefs';
 import { addToBag, bagIsFull, canEquip, itemDef } from '../rules/items';
 import { computeStats } from '../rules/stats';
 import type { AvatarSettings, BattleUnit, ItemInstance, LieutenantPlan, UnitRecord } from '../state';

@@ -1,6 +1,8 @@
 import { z } from 'zod';
-import type { Condition, Effect } from '../core/defs';
-import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS, HAUNT_VARIANTS, PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
+import type { Condition, Effect } from '../core/storyDefs';
+import { PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
+import { HAUNT_VARIANTS } from '../core/mapDefs';
+import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 
 const stat = z.number();
 export const statsSchema = z.object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat });
@@ -804,6 +806,8 @@ export const renderSchema = z.object({
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
 export const balanceSchema = z.object({
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: z.object({ tierAt: z.tuple([z.number().int().positive(), z.number().int().positive(), z.number().int().positive()]) }),
   combat: z.record(z.string(), z.union([z.number(), z.boolean()])),
   triangle: z.object({ hit: z.number(), damage: z.number(), beats: z.record(z.string(), z.string()) }),
   element: z.object({

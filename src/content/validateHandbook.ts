@@ -5,7 +5,7 @@ import {
   handbookLabelKey,
   resolveHandbookRef,
 } from '../core/handbook';
-import type { GameData } from '../core/defs';
+import type { GameData } from '../core/gameData';
 import type { Locales } from './load';
 
 const LANGS = ['de', 'en'];

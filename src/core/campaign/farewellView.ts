@@ -1,4 +1,4 @@
-import type { GameData } from '../defs';
+import type { GameData } from '../gameData';
 import type { BattleResult } from './campaign';
 import { lineKey } from './scene';
 

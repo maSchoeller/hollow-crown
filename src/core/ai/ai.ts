@@ -1,4 +1,5 @@
-import type { GameData, Pos, Team } from '../defs';
+import type { Pos, Team } from '../defs';
+import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { attackTargets, staffTargets } from '../battle/actions';
 import { applyAct, moveAfterAction } from '../battle/apply';

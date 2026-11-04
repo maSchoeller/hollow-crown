@@ -1,5 +1,5 @@
 /** Checks of the board look (story 8.6): weather against the act of the map, status icons. Pure, called by validateContent. */
-import type { GameData } from '../core/defs';
+import type { GameData } from '../core/gameData';
 import type { ContentIssue } from './load';
 import { variantClassOf, variantList } from './propVariants';
 

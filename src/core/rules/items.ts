@@ -1,5 +1,6 @@
 import { CoreInvariantError } from '../errors';
-import type { AffixDef, ClassDef, Element, Mechanic, EquipSlot, GameData, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
+import type { AffixDef, ClassDef, Element, Mechanic, EquipSlot, ItemDef, RuneDef, StatMods, StatusId, WeaponType } from '../defs';
+import type { GameData } from '../gameData';
 import type { ItemInstance, UnitRecord } from '../state';
 import { ruleOn } from '../util';
 

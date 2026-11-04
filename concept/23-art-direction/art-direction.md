@@ -300,6 +300,8 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 6. Weltkarte [A]
 
+> **Neue Karte abgenommen (2026-11-04), noch nicht eingebunden:** `art/world/map_v5.png`, quadratisch (3276 × 3276, etwa 3,2 MB als WebP), Geografie in `concept/22-narrative/geografie-valmora.md`, Orte in `art/world/map_places_v5.json`, Protokoll in `art/prompts/world_map_v5.md`. Gegenüber dem Stand unten: **Figurenstil** (klare dunkelbraune Linie, zwei Schattentöne, hell und sonnig), einheitlicher Detailgrad, dünne Straßen; **Straßen, Brücken und namenlose Weiler sind fest gemalt**. Die zwölf wichtigsten Orte haben ein **gemaltes leeres Plateau**, darauf legt das Spiel ein freigestelltes **Stadtbild** (`art/world/sites/`, einfache große Formen mit kräftigem Umriss, ohne Untergrund); so lassen sich Orte später tauschen (brennend, ausgebaut, die Varianten kommen mit der Einbindung). Die übrigen Orte, Namen und Nebel sind Marker bzw. Ebenen. Die Jahreszeiten wechseln an Geländekanten. Bauwerke sind nicht maßstäblich. Der Rest dieses Abschnitts beschreibt bis zur Einbindung den Stand im Spiel.
+
 - **Flaches gemaltes Bild** (Produktinhaber 2026-10-24, löst die 3D-Szene vom 23./24.10. ab): `art/world/map_flat_v1.png`, Hochformat 2:3 (1024 × 1536), von ChatGPT nach der Layout-Skizze `art/world/map_guide.png` und dem Stil von `weltkarte_valmora.png` gemalt (`art/prompts/world_map.md`). Das Bild zeigt **keine Gebäude, Wege oder Schrift**; Orte, Wege, Nebel, Namen und Marker legt das Spiel als HTML darüber.
 - **Aufbau:** Reise von unten nach oben: Akt 1 Grenzland (Spätsommer, Felder und Wälder, Start unten rechts), Akt 2 Eisenmark (Herbst, Tafelland mit Canyon und großer Ebene in der Mitte), Akt 3 Aurenhall und Drachengebirge (Winter, oben). Silbermeer im Westen, ein Fluss vom Gebirge zur Südwestküste. Die Akt-Grenzen laufen als weiche Wellenbänder, damit der Nebel späterer Akte ein einfacher Verlauf von oben ist.
 - **35 Orte plus Heimat** auf gemalten Lichtungen (`art/world/map_placed_v1.json`, Plan in `art/world/map_layout.json`): 25 Story-Missionen (Prolog + 8, 8, 8) und 10 Nebenquests (3, 3, 4), Mindestabstand 100 px im Quellbild. Aurenhall (3-1, 3-5, 3-6, N7, N10) und die Paktwacht (Heimat, 1-6 bis 1-8) sind Gruppen von Lichtungen nebeneinander.
@@ -310,10 +312,20 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 7. Heimat-Burg [A]
 
-- Die **Paktwacht als 3D-Diorama**, Vorlage `paktwacht_ruine.png` und `paktwacht_heimat.png`. Akt 1 zeigt bis Mission 1-6 das wandernde Lager (ebenfalls 3D: Zelte, Lagerfeuer, Wagen), danach die Burg als Ruine mit Räumen auf Stufe 1; Ausbauteile ab Akt 2.
-- **Ausbaustufen** als zusätzliche Modellteile je Raum: Stufe 1 Gerüst und Planen, Stufe 2 neues Dach und Fenster, Stufe 3 Banner, Licht und Leben (Rauch, Figuren).
-- **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen. Stirbt ein Gefährte, bleibt der Gegenstand liegen; in der Gedächtnishalle steht ein Gedenkstein.
-- Antippen eines Raums öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
+- Die **Paktwacht als 3D-Szene in der Bergflanke** (Produktinhaber 2026-11-04, löst die runde Insel ab), Richtungsbild `art/mockups/paktwacht-berg/paktwacht_berg_mix_v1.png`, Modell `tools/art/blender_paktwacht.py`, eine Datei `art/models/castle/paktwacht.glb`. Akt 1 zeigt bis Mission 1-6 das wandernde Lager, danach die Burg als Ruine; Ausbau ab Akt 2.
+- **Aufbau von oben nach unten:** Fels im Rücken und an beiden Seiten, oben ein Felsabsatz (Bergfried, Gedächtnishalle, Akademie, Verzauberer, Rundturm, Gewölbetür für Mission 1-7, Passstraße rechts), darunter der ummauerte Hof mit den übrigen Räumen um das Lagerfeuer, das Tor mit Drachen- und Kronenpfeiler, davor quadratische Felder auf Terrassen, Höfe, Mühle und Fluss mit Brücke.
+- **Kamera:** 30° über dem Horizont von Süden, mit Perspektive, nie drehend; Wischen schwenkt ein Stück zur Seite und zum Fluss hinunter. Tiefe entsteht durch die Staffelung; Rück- und Außenseiten werden nicht modelliert.
+- **Zwei Achsen, alles eigene Modellteile:** Jeder Raum zeigt seine Stufe: Stufe 1 Gerüst und Planen, Stufe 2 neues Dach und Fenster, Stufe 3 Banner, Licht und Leben (Rauch). Mauern, Bergfried und Land zeigen die **Burgstufe**, die sich aus der Summe der Raum-Ausbauten ergibt (`castleTier`, Schwellen in `balance.yaml` unter `castle.tierAt`, Startwerte 1/6/14 `[ASSUMPTION]`; kein eigener Spielstand-Wert):
+
+| Burgstufe | Burg | Ländereien |
+|---|---|---|
+| 0 Ruine | Lücken in der Mauer, Bergfried als Stumpf, Tor ohne Flügel, Efeu, Gestrüpp im Hof, Trümmer auf den Plätzen der Akt-2-Räume | Felder verwildert, Mauern eingefallen, Mühle ohne Dach und Rad, Brücke weg (Trittsteine) |
+| 1 Gesichert | Torflügel, Palisaden in den Lücken, Gerüste, Bergfried wieder hoch | Holzbrücke, Mühlrad, die ersten Felder tragen Korn, erster Hof |
+| 2 Wehrhaft | Mauer geschlossen, Zinnen, Laternen, Palisade am Pass | Steinbrücke, weitere Felder und Höfe, junger Obstgarten |
+| 3 Festung | Kegeldächer, Banner an der ganzen Mauer, Wachturm am Pass | Alle Felder, Weiler an der Brücke, Laternen an der Straße, Heuhaufen |
+
+- **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen. Stirbt ein Gefährte, bleibt der Gegenstand liegen; in der Gedächtnishalle steht ein Gedenkstein. Gebaut sind bisher drei; der Rest kommt mit Story 10.14.
+- Antippen eines Raums oder seines Steins öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
 - Licht immer abendlich warm (Narrative: Ruhe).
 
 ## 8. Effekte [A]

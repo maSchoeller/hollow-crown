@@ -2,7 +2,8 @@
  * Which props come in variants (render.yaml `board.variants`) and which list a terrain's prop draws from. Pure and shared by the
  * board (render) and `content:check` (content), hence in content; the rules never read it.
  */
-import type { GameData, PropVariant } from '../core/defs';
+import type { GameData } from '../core/gameData';
+import type { PropVariant } from '../core/renderDefs';
 
 /** Classes of props that come in variants (render.yaml `board.variants`). */
 export type VariantClass = 'house' | 'lodge' | 'rock' | 'tree';

@@ -1,0 +1,445 @@
+{
+ "image": "art/world/map_v5.png",
+ "size": [
+  3276,
+  3276
+ ],
+ "coords": "px und site in Karten-Pixeln auf 1254 x 1254; Faktor zum Bild 3276/1254",
+ "km_per_px": 0.319,
+ "seasons": "Grenzland Spaetsommer bis Grauer Kamm, Hochland Herbst bis Moraenenriegel, Kessel und Gebirge Winter",
+ "places": [
+  {
+   "id": "crater",
+   "name": "Urtempel im Krater",
+   "px": [
+    639,
+    92
+   ],
+   "site": {
+    "image": "art/world/sites/urtempel.png",
+    "x": 639,
+    "bottom": 101,
+    "width": 43
+   },
+   "missions": [
+    "3-8"
+   ],
+   "note": "Aktiver Vulkan im Hauptkamm, Tempel auf der Schulter; Feuer-Drachenort"
+  },
+  {
+   "id": "mountain_pass",
+   "name": "Pass ins Gebirge",
+   "px": [
+    607,
+    190
+   ],
+   "missions": [
+    "3-7"
+   ],
+   "note": "Einziges Tal vom See zum Krater"
+  },
+  {
+   "id": "royal_crypt",
+   "name": "Königsgruft",
+   "px": [
+    432,
+    250
+   ],
+   "missions": [
+    "N9"
+   ],
+   "note": "Inneres Ende des Eisfjords; Wasser-Drachenort"
+  },
+  {
+   "id": "mirror_lake_camp",
+   "name": "Lager auf dem Spiegelsee",
+   "px": [
+    600,
+    270
+   ],
+   "missions": [
+    "3-4"
+   ],
+   "note": "Breiteste freie Flaeche vor der Stadt, nur im Winter begehbar"
+  },
+  {
+   "id": "winter_forest_hut",
+   "name": "Vesnas Hütte",
+   "px": [
+    860,
+    240
+   ],
+   "missions": [
+    "3-3"
+   ],
+   "note": "Winterwald oestlich des Sees, einen Tag von der Stadt"
+  },
+  {
+   "id": "aurenhall",
+   "name": "Aurenhall",
+   "px": [
+    605,
+    328
+   ],
+   "site": {
+    "image": "art/world/sites/aurenhall_v2.png",
+    "x": 605,
+    "bottom": 349,
+    "width": 106
+   },
+   "missions": [
+    "P",
+    "3-1",
+    "3-2",
+    "3-5",
+    "3-6",
+    "N7",
+    "N10"
+   ],
+   "note": "Suedufer des Spiegelsees, wo der Pakt geschlossen wurde; Stadtviertel als eigene Missionen (Fortsetzung in der Umsetzung)"
+  },
+  {
+   "id": "refugee_camp",
+   "name": "Flüchtlingslager",
+   "px": [
+    510,
+    322
+   ],
+   "missions": [
+    "N8"
+   ],
+   "note": "Im Kessel vor der Klamm; die Zollburg laesst niemanden durch"
+  },
+  {
+   "id": "aure_gorge",
+   "name": "Aureklamm",
+   "px": [
+    610,
+    385
+   ],
+   "missions": [],
+   "note": "Tor zu Akt 3: einzige Enge durch den Moraenenriegel, Zollburg der Krone (Spiel-Ebene)"
+  },
+  {
+   "id": "raven_meadow",
+   "name": "Rabenweide",
+   "px": [
+    640,
+    470
+   ],
+   "missions": [
+    "2-3"
+   ],
+   "note": "Weiden an der Aure, Gestuet der Krone nah an Dravns Gebiet"
+  },
+  {
+   "id": "kronfeld",
+   "name": "Kronfeld",
+   "px": [
+    599,
+    634
+   ],
+   "site": {
+    "image": "art/world/sites/kronfeld.png",
+    "x": 599,
+    "bottom": 655,
+    "width": 104
+   },
+   "missions": [
+    "2-8"
+   ],
+   "note": "Kornkammer und Drehscheibe von Akt 2, an der Furt suedlich der Aure"
+  },
+  {
+   "id": "kontor",
+   "name": "Kontor",
+   "px": [
+    553,
+    577
+   ],
+   "site": {
+    "image": "art/world/sites/kontor.png",
+    "x": 553,
+    "bottom": 593,
+    "width": 80
+   },
+   "missions": [
+    "2-7"
+   ],
+   "note": "Kopf des Muendungstrichters, Zoll auf die Aure"
+  },
+  {
+   "id": "aue_island",
+   "name": "Aue-Insel",
+   "px": [
+    470,
+    600
+   ],
+   "missions": [
+    "N6"
+   ],
+   "note": "Insel in der Muendung, Herbstmarkt"
+  },
+  {
+   "id": "salt_pass",
+   "name": "Salzpass",
+   "px": [
+    335,
+    425
+   ],
+   "missions": [
+    "2-2"
+   ],
+   "note": "Am Zoll vorbei durchs Kuestengebirge ins Hochland"
+  },
+  {
+   "id": "pearl_court",
+   "name": "Perlhof",
+   "px": [
+    185,
+    738
+   ],
+   "site": {
+    "image": "art/world/sites/perlhof.png",
+    "x": 185,
+    "bottom": 750,
+    "width": 62
+   },
+   "missions": [],
+   "note": "Spitze der Moewenzunge, Maelis sieht jedes Schiff"
+  },
+  {
+   "id": "crow_holm",
+   "name": "Krähenholm",
+   "px": [
+    85,
+    931
+   ],
+   "site": {
+    "image": "art/world/sites/kraehenholm.png",
+    "x": 85,
+    "bottom": 939,
+    "width": 41
+   },
+   "missions": [
+    "2-6"
+   ],
+   "note": "Letztes Stueck des abtauchenden Hoehenzugs, Seeweg zur Erlenbucht"
+  },
+  {
+   "id": "silverspring",
+   "name": "Kloster Silberquell",
+   "px": [
+    802,
+    524
+   ],
+   "site": {
+    "image": "art/world/sites/silberquell.png",
+    "x": 802,
+    "bottom": 534,
+    "width": 51
+   },
+   "missions": [
+    "2-5"
+   ],
+   "note": "An der Eisenschlucht zwischen Krone und Heer"
+  },
+  {
+   "id": "greywatch",
+   "name": "Grauwacht",
+   "px": [
+    1102,
+    579
+   ],
+   "site": {
+    "image": "art/world/sites/grauwacht.png",
+    "x": 1102,
+    "bottom": 595,
+    "width": 82
+   },
+   "missions": [],
+   "note": "Fuss der Kupferberge, sperrt Strasse nach Kharesh und Erzwege"
+  },
+  {
+   "id": "burnt_slope",
+   "name": "Brandhang",
+   "px": [
+    955,
+    405
+   ],
+   "missions": [
+    "2-4"
+   ],
+   "note": "Noerdlich der Grauwacht, zwischen Drachen und Festung"
+  },
+  {
+   "id": "copperhall",
+   "name": "Kupferhall",
+   "px": [
+    1155,
+    516
+   ],
+   "site": {
+    "image": "art/world/sites/kupferhall.png",
+    "x": 1155,
+    "bottom": 528,
+    "width": 62
+   },
+   "missions": [
+    "N5"
+   ],
+   "note": "Mine im alten Vulkanbogen; Erde-Drachenort (Knochen im Fels)"
+  },
+  {
+   "id": "clan_grounds",
+   "name": "Jagdgründe der Clans",
+   "px": [
+    1120,
+    360
+   ],
+   "missions": [
+    "N4"
+   ],
+   "note": "Bergwald der Kupferberg-Clans"
+  },
+  {
+   "id": "wind_gap",
+   "name": "Windscharte",
+   "px": [
+    772,
+    790
+   ],
+   "missions": [
+    "2-1"
+   ],
+   "note": "Scheitel des Wachpasses, altes Trockental; Tor zu Akt 2; Luft-Drachenort"
+  },
+  {
+   "id": "paktwacht",
+   "name": "Paktwacht",
+   "px": [
+    831,
+    846
+   ],
+   "site": {
+    "image": "art/world/sites/paktwacht_v3.png",
+    "x": 831,
+    "bottom": 860,
+    "width": 72
+   },
+   "missions": [
+    "1-6",
+    "1-7",
+    "1-8"
+   ],
+   "note": "Felsnische an der Suedwand des Grauen Kamms, 2 bis 4 km oestlich des Passes; Heimat"
+  },
+  {
+   "id": "tobin_farm",
+   "name": "Tobins Pachthof",
+   "px": [
+    770,
+    892
+   ],
+   "missions": [
+    "N3"
+   ],
+   "note": "Hof und Felder an der Erle unter der Burg"
+  },
+  {
+   "id": "varnhold",
+   "name": "Varnhold",
+   "px": [
+    613,
+    1001
+   ],
+   "site": {
+    "image": "art/world/sites/varnhold_v2.png",
+    "x": 613,
+    "bottom": 1014,
+    "width": 66
+   },
+   "missions": [
+    "1-1",
+    "N1"
+   ],
+   "note": "Einzige Bruecke ueber die untere Erle"
+  },
+  {
+   "id": "alder_moor",
+   "name": "Erlenmoor",
+   "px": [
+    430,
+    975
+   ],
+   "missions": [
+    "1-5"
+   ],
+   "note": "Delta der Erle in der Erlenbucht"
+  },
+  {
+   "id": "erlbach",
+   "name": "Erlbach",
+   "px": [
+    684,
+    1054
+   ],
+   "site": {
+    "image": "art/world/sites/erlbach.png",
+    "x": 684,
+    "bottom": 1068,
+    "width": 70
+   },
+   "missions": [
+    "1-2"
+   ],
+   "note": "Furten eines Erle-Zuflusses, in Hasks Reichweite"
+  },
+  {
+   "id": "hawthorn_shrine",
+   "name": "Schrein am Weißdorn",
+   "px": [
+    930,
+    960
+   ],
+   "missions": [
+    "1-3"
+   ],
+   "note": "Alter Pilgerweg des Paktes im Grenzwald"
+  },
+  {
+   "id": "hask_camp",
+   "name": "Hasks Lager",
+   "px": [
+    1105,
+    1075
+   ],
+   "missions": [],
+   "note": "Abseits der Strasse zwischen Grenzwald und Wolfshuegeln"
+  },
+  {
+   "id": "wolf_hills",
+   "name": "Wolfshügel",
+   "px": [
+    1150,
+    1135
+   ],
+   "missions": [
+    "1-4"
+   ],
+   "note": "Kahle Felshuegel ohne Ackerland"
+  },
+  {
+   "id": "border_tower",
+   "name": "Wachturm am Wall",
+   "px": [
+    1190,
+    990
+   ],
+   "missions": [
+    "N2"
+   ],
+   "note": "Verlassener Suedteil des Grenzwalls"
+  }
+ ]
+}

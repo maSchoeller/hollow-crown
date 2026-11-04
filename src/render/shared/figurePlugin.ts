@@ -11,7 +11,8 @@ import { MaterialPluginBase } from '@babylonjs/core/Materials/materialPluginBase
 import type { MaterialDefines } from '@babylonjs/core/Materials/materialDefines';
 import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { UniformBuffer } from '@babylonjs/core/Materials/uniformBuffer';
-import type { LookDef, Team } from '../../core/defs';
+import type { Team } from '../../core/defs';
+import type { LookDef } from '../../core/renderDefs';
 
 /** What the figures of a scene share: team ramps (hex) and the values of the plug-in's uniforms. */
 export interface FigureLook {
