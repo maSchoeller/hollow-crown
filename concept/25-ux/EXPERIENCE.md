@@ -225,7 +225,7 @@ Mara (28) spielt Standard und hat Akt 1 durch, Akt 2 ist noch nicht erschienen.
 
 ## Offene Punkte
 
-- **Burg in 3D:** Der obere Teil der Heimat (Diorama, Raum-Anker, Ausbauteile) wird neu geprüft, sobald die 3D-Burg steht; Raumsteine, Panels und ≤ 2 Taps bleiben. Bis dahin zeigt der Ausbau (Epic 10) die Stufe nur als Punkte und Pfeil am Raumstein auf dem gemalten Burgbild; Ausbauteile und Gegenstände der lebenden Burg folgen nach dem 3D-Vergleich (Produktinhaber 2026-10-31).
+- **Burg in 3D (Produktinhaber 2026-11-04):** Der obere Teil der Heimat ist die 3D-Szene der Paktwacht (Art Direction §7): Raumsteine über den Gebäuden, Antippen von Stein oder Gebäude öffnet das Panel, Wischen schwenkt zur Seite und zum Fluss hinunter. Raumliste, Panels und ≤ 2 Taps bleiben; die Stufe steht weiter als Punkte in der Liste. Solange das Modell lädt oder wenn es fehlt, steht dort das gemalte Burgbild.
 - **Item-Bilder:** Die gemalten Bilder entstehen per ChatGPT (Art Direction §11).
 - **Chronik, Optionen, Steckbrief-Liste:** spine-only.
 - **Logo:** Auswahl zwischen den Kandidaten aus Art Direction §5.5.
