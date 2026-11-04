@@ -26,12 +26,14 @@ Die Karte erzählt eine Rückkehr: Die Truppe flieht durch das ganze Land nach S
 
 | Abschnitt | Weg |
 |---|---|
-| Prolog | Brenna führt durchs Südtor-Viertel zu den Kanälen, ein Lastkahn trägt die Truppe nachts durch die Aureklamm, danach zu Fuß nach Süden über den noch leeren Wachpass, vorbei an der Ruine |
+| Prolog | Brenna führt durchs Südtor-Viertel zu den Kanälen, ein Lastkahn trägt die Truppe nachts durch die Aureklamm, danach zu Fuß nach Süden über den Wachpass; die Ruine sieht sie nur von fern |
 | Akt 1 | Schleife durchs Grenzland (Varnhold, Erlbach, Schrein, Wolfshügel, Erlenmoor), Ende am Fuß des Passes. Die geschlagenen Banden ziehen sich erst nach 1-2 und 1-4 in die Ruine zurück |
-| Tor zu Akt 2 | **Wachpass und Windscharte sind ein Pass:** Der Wachpass steigt von der Burg auf, die Windscharte ist sein Scheitel. Morras Leute kommen in 1-8 über einen Schmugglersteig am Westende des Kamms und fallen von oben ein |
+| Tor zu Akt 2 | **Wachpass und Windscharte sind ein Pass:** Die Passstraße führt 2 bis 4 km westlich an der Burg vorbei, die Windscharte ist ihr Scheitel. Morras Leute kommen in 1-8 die Passstraße hinauf und über einen Hangweg durchs Westtor in den Burghof |
 | Akt 2 | Kronfeld ist die Drehscheibe. Jede Speiche führt zu einer Macht, Spieler kreuzen die Ebene mehrfach, bevor dort in 2-8 der Verrat geschieht |
 | Tor zu Akt 3 | **Aureklamm:** einzige Enge durch den Riegel, mit Zollburg der Krone. Die Truppe kommt versteckt im letzten Kornzug vor dem ersten Schnee hindurch |
 | Akt 3 | Weißer Kessel, Stadt, See, Winterwald, zuletzt der Pass ins Gebirge. Das Südtor ist Anfang und Ende: In 3-6 hält die Truppe es für andere. Die Flüchtlinge bleiben vor der Klamm hängen (N8) |
+
+**Die Paktwacht (Stand 2026-11-04):** Sie liegt in einer Felsnische an der Südwand des Grauen Kamms: hinten und seitlich Fels, die Burg ragt aus dem Berg, davor Terrassen und Ländereien. Sie überblickt den Pass, sperrt ihn aber nicht, und ist gerade deshalb als Versteck glaubhaft (Halvards Rat, E4). **Sie bewacht in Wahrheit die Gräber:** Alle glauben an eine Passburg, in 1-7 zeigt sich, dass sie über den Gräbern der jungen Könige steht und der Pass nur der Vorwand war. Sperren kann die Truppe den Pass erst über ein **Vorwerk**: ein verfallener Wachturm am Passfuß, ausbaubar in Akt 2 oder 3 (Stufe im Burgausbau, noch zu planen).
 
 ## Landschaft und ihr Grund
 
@@ -82,7 +84,8 @@ Keine Mission entfällt oder wandert in eine andere Region. Die Zuordnung Ort zu
 - **2-4:** Der Brandhang liegt nördlich der Grauwacht, zum Drachengebirge hin.
 - **1-2:** Erlbach liegt südlich der Hauptstraße, in Hasks Reichweite.
 - **1-5:** Das Bandengold läuft von Krähenholm durch die Erlenbucht: Die Hungernden sehen es und bekommen nichts.
-- **1-6, 1-8:** siehe Tabelle zur Reise (Banden in der Ruine, Morras Schmugglersteig).
+- **1-6, 1-8:** siehe Tabelle zur Reise (Banden in der Ruine, Morras Hangweg). Beide Level sind dafür gespiegelt, der Pass liegt im Nordwesten, Morra greift durchs Westtor an. Hask flieht jetzt durch die Ostpforte.
+- **1-7:** neue Szenenzeile: Die Burg steht über den Gräbern, der Pass war nur der Vorwand.
 - **N8:** Das Lager liegt im Kessel vor der Klamm.
 
 ## Im Bild schwächer als in der Story

@@ -3,10 +3,10 @@
 **Kurz:** G 30×40 · Mittag · Thron einnehmen · 12 eigene gegen 36 (3 : 1) · Leutnants **Hask** und **Ulvric**
 
 - Sturm **von Süden nach Norden** über sechs Stufen: Brücke über die Erle → Felder mit Mühle und Höfen → **3 Terrassen** → Vorburg → Burghof → Thron im Bergfried.
-- Jede Stufe hat eine **Engstelle** mit Schützen darüber: Brücke (Furten links und rechts), Mittelrampe, Randrampen im Zickzack, Vorburgtor, Burgtor.
-- **Ulvric** jagt mit Wölfen auf der untersten Terrasse, in Runde 5 kommen weitere Wölfe aus dem Ostwald. In Runde 8 setzen Marodeure über die Furten und fallen der Truppe in den Rücken.
-- **Hask** hält die Vorburg. Bei 0 TP flieht er durch die Westpforte über den **Ziegenpfad** nach Süden (den können auch Späher als Flankenweg nutzen).
-- Schon sichtbar für später: das **Gewölbe-Tor** im Fels (1-7) und der **Wachpass** im Nordosten (1-8).
+- Jede Stufe hat eine **Engstelle** mit Schützen darüber: Brücke (Furten rechts und links), Mittelrampe, Randrampen im Zickzack, Vorburgtor, Burgtor.
+- **Ulvric** jagt mit Wölfen auf der untersten Terrasse, in Runde 5 kommen weitere Wölfe aus dem Westwald. In Runde 8 setzen Marodeure über die Furten und fallen der Truppe in den Rücken.
+- **Hask** hält die Vorburg. Bei 0 TP flieht er durch die Ostpforte über den **Ziegenpfad** nach Süden (den können auch Späher als Flankenweg nutzen).
+- Schon sichtbar für später: das **Gewölbe-Tor** im Fels (1-7) und der **Wachpass** im Nordwesten (1-8).
 
 ![Raster](s1_1_6_paktwacht.png)
 
