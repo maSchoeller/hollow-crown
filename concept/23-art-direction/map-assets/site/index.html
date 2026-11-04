@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hollow Crown Karten-Assets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Prüfbericht: Bild zuerst, Befund darunter. Palette aus dem Brett: Stein, Holz, Grün, Teamblau. */
+:root {
+  --bg: #f4f1ea; --ink: #2a2433; --mute: #6c6577; --line: #d9d3c7; --card: #fffdf8; --accent: #2f64c8;
+  --v: #3fa65a; --b: #d9962b; --f: #b83a2e;
+  --vbg: #e3f3e6; --bbg: #fbeed4; --fbg: #f9e0dc;
+  --display: "Fraunces", Georgia, serif; --body: "Barlow", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1d1a22; --ink: #ece7dd; --mute: #a59eaf; --line: #3a3541; --card: #26222c; --accent: #7fa7ef;
+  --vbg: #1f3626; --bbg: #3b2f18; --fbg: #3f211d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1d1a22; --ink: #ece7dd; --mute: #a59eaf; --line: #3a3541; --card: #26222c; --accent: #7fa7ef;
+  --vbg: #1f3626; --bbg: #3b2f18; --fbg: #3f211d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 var(--body); }
+main { max-width: 1060px; margin: 0 auto; padding: 28px 18px 80px; display: grid; gap: 34px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0 0 .4em; }
+h1 { font-size: 2.1rem; } h2 { font-size: 1.5rem; padding-top: 10px; border-top: 2px solid var(--line); } h3 { font-size: 1.1rem; }
+p { margin: 0 0 .7em; max-width: 68ch; } small { color: var(--mute); }
+figure { margin: 0; display: grid; gap: 6px; } img { max-width: 100%; display: block; border-radius: 8px; }
+figcaption { font-size: .92rem; color: var(--mute); }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); align-items: start; }
+.two { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.tiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; font: 600 1.7rem var(--display); font-variant-numeric: tabular-nums; }
+.c { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: .84rem; margin: 2px 3px 2px 0; border-left: 3px solid; }
+.c.V { background: var(--vbg); border-color: var(--v); } .c.B { background: var(--bbg); border-color: var(--b); } .c.F { background: var(--fbg); border-color: var(--f); }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+th, td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+thead th { font-size: .82rem; color: var(--mute); }
+.scroll { overflow-x: auto; }
+.et { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.use { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.use small { margin-left: 2px; }
+.q { border-left: 4px solid var(--accent); background: var(--card); padding: 10px 14px; border-radius: 0 8px 8px 0; }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Karten-Assets von Hollow Crown</h1>
+<p>Geprüft wurde alles, was auf dem Brett steht, im echten Spiellicht und an den abgenommenen Entwürfen von Akt 1. Maßstab sind die 35 Missionen der Staffel.</p>
+<div class="tiles">
+  <div class="tile"><b>62</b>Asset-Arten braucht die Staffel</div>
+  <div class="tile"><b style="color:var(--v)">10</b>sind gut genug</div>
+  <div class="tile"><b style="color:var(--b)">16</b>müssen besser werden</div>
+  <div class="tile"><b style="color:var(--f)">36</b>fehlen ganz</div>
+  <div class="tile"><b>33</b>von 35 Missionen haben eine Lücke</div>
+</div>
+</header>
+
+<section>
+<h2>Das Wichtigste</h2>
+<p><b>Die Einzelmodelle sind besser als das, was aus ihnen entsteht.</b> Häuser, Bäume, Wagen und Zäune sind solide. Schwach ist alles, was aus Geländefeldern zusammengesetzt wird: Mauer, Tor, Berg, Höhle, Sumpf. Genau das trägt die Story.</p>
+<ol>
+<li><b>Die Burg liest sich als Grundriss.</b> Die Paktwacht ist das Herz von Akt 1, zu sehen sind flache Steinplatten auf orangem Boden. Es gibt keine Zinnen, keine Türme, kein Tor, nur Rahmen aus Kisten.</li>
+<li><b>Berg und Höhle sehen aus wie eine Wiese mit Felsbrocken.</b> Im Gewölbe 1-7 wächst Gras zwischen den Felsen. Niemand sieht, dass man dort nicht durchkommt.</li>
+<li><b>Überall dasselbe Wasser.</b> Fluss, Furt und Sumpf teilen sich ein Türkis, obwohl das eine begehbar ist und das andere nicht.</li>
+<li><b>Hebel und Balliste sind unsichtbar.</b> Das Spiel kennt beide Objekte, das Brett zeichnet sie nicht. Beide werden von Missionen gefordert.</li>
+<li><b>Die Jahreszeit endet an den Bäumen.</b> Es gibt nur einen Grasboden. Akt 3 wäre heute Schneefichten auf Sommerwiese.</li>
+</ol>
+</section>
+
+<section>
+<h2>Der Bestand im selben Licht</h2>
+<p>Alle Modelle im Mittagslicht des Spiels, gleicher Maßstab, ganz links je eine Figur.</p>
+<figure><img src="img/catalog.jpg" alt="Katalog aller Requisiten nebeneinander mit einer Figur als Maßstab"><figcaption>Ausreißer: die fast schwarze Fichte tree_c, Fels rock_b und Totholz deadtree_a sind deutlich dunkler als alles andere. Das Besuchshaus-Türkis und das Marineblau von house_c fallen aus der warmen Palette. Bäume sind schmal, Häuser füllen das Feld ganz, das bringt die Maßstäbe durcheinander.</figcaption></figure>
+</section>
+
+<section>
+<h2>So sieht es auf dem Brett aus</h2>
+<div class="grid">
+<figure><img src="img/m16_all.jpg" alt="Paktwacht als Gesamtkarte"><figcaption><b>1-6, ganze Karte.</b> Laut Entwurf drei Terrassen bergauf, zu sehen ist eine flache Fläche mit Bändern.</figcaption></figure>
+<figure><img src="img/m16_top.jpg" alt="Burghof der Paktwacht nah"><figcaption><b>1-6, Burghof.</b> Mauer als Bodenplatte, Hof in Orange, darüber der Berg aus Einzelsteinen.</figcaption></figure>
+<figure><img src="img/m17.jpg" alt="Gewölbe als Wiese mit Felsen"><figcaption><b>1-7, Gewölbe.</b> Gras und Findlinge statt Fels. Nacht ändert nur die Helligkeit.</figcaption></figure>
+<figure><img src="img/m15.jpg" alt="Hungerlager im Türkiswasser"><figcaption><b>1-5, Moor.</b> Ein Becken mit klarem Wasser. Stege sind schwere Bohlenblöcke. Die Festungen wirken mitten im Lager wie Fremdkörper.</figcaption></figure>
+<figure><img src="img/m14.jpg" alt="Wolfshügel nah"><figcaption><b>1-4, Wolfshügel.</b> Felskamm aus Einzelsteinen: Wo ist die Lücke, wo die Rampe?</figcaption></figure>
+<figure><img src="img/m11.jpg" alt="Varnhold nah"><figcaption><b>1-1, Varnhold.</b> Pflaster und Wagen tragen den Markt, dazu dieselben Mauerplatten. Fachwerkhäuser könnten hier viel mehr leisten.</figcaption></figure>
+<figure><img src="img/p.jpg" alt="Prolog nah"><figcaption><b>Prolog.</b> Erster Eindruck des Spiels, wieder Platten und Kistentore.</figcaption></figure>
+<figure><img src="img/terrain.jpg" alt="Alle Geländearten nebeneinander"><figcaption><b>Alle Geländearten</b> im Vergleich. Mauer mit Hof, Tür, Wald, Fels, Einzelbauten.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>Spielklarheit: sieht man die Wirkung?</h2>
+<p>Gemessen an <code>content/core/terrain.yaml</code>. Rot sind Stellen, an denen gleiche Wirkung verschieden aussieht oder verschiedene Wirkung gleich.</p>
+<div class="scroll"><table>
+<thead><tr><th>Wirkung im Spiel</th><th>Gelände</th><th>Was man heute sieht</th><th>Befund</th></tr></thead>
+<tbody>
+<tr><td>Sperrt alle</td><td>Mauer, Felswall, Tür zu</td><td>Platte, Felsnadeln, Kiste</td><td><span class="c F">drei Sprachen</span></td></tr>
+<tr><td>Sperrt, nur Flieger drüber</td><td>Wagen, Marktstand, Kohlebecken, Brunnen, Zaun, Hof, Haus</td><td>Kleine Dinge, zwischen denen man Platz vermutet</td><td><span class="c B">Staffel 1 hat keine Flieger: wirkt wie „sperrt alle“, sieht aber durchlässig aus</span></td></tr>
+<tr><td>Begehbar und Haus</td><td>Besuchshaus</td><td>Haus wie die gesperrten, nur Türkis</td><td><span class="c F">gleich aussehend, andere Wirkung</span></td></tr>
+<tr><td>Deckung, langsamer</td><td>Wald +1 / +20</td><td>Ein dünner Baum, Büsche daneben ohne Wirkung</td><td><span class="c F">Deko sieht aus wie Deckung</span></td></tr>
+<tr><td>Viel Deckung, Heilung</td><td>Festung, Schrein</td><td>Turm bzw. Kapelle ohne Zeichen</td><td><span class="c B">Heilung unsichtbar</span></td></tr>
+<tr><td>Nichts</td><td>Grabrelief</td><td>Exakt das Modell des Schreins</td><td><span class="c F">gleiches Bild, andere Wirkung</span></td></tr>
+<tr><td>Begehbar, teuer</td><td>Flachwasser</td><td>Fast wie Fluss</td><td><span class="c F">kaum unterscheidbar</span></td></tr>
+<tr><td>Begehbar, kostenlos</td><td>Feld</td><td>Fest umrahmtes Gelb</td><td><span class="c B">sieht nach Gehege aus</span></td></tr>
+<tr><td>Engstelle, Deckung, erobern</td><td>Tor</td><td>Holzrahmen je Feld</td><td><span class="c F">kein Tor zu erkennen, Regel offen</span></td></tr>
+<tr><td>Höhe</td><td>nur optisch</td><td>0,5 bzw. 0,85 Felder</td><td><span class="c B">Aus der Spielkamera kaum sichtbar, und ohne Regelwirkung</span></td></tr>
+</tbody></table></div>
+<h3 style="margin-top:14px">Vorschlag: vier Regeln für jedes Asset</h3>
+<ol>
+<li><b>Sperrt es, füllt es das Feld.</b> Geschlossener Fuß bis an die Feldkante, höher als eine Figur. Kein Blick auf Boden daneben.</li>
+<li><b>Ist es begehbar, bleibt die Mitte frei.</b> Boden sichtbar, die Figur steht im Asset: Wald als Bäume am Feldrand, Ruine als Trümmerring, Feld ohne Rahmen.</li>
+<li><b>Deko ist flach.</b> Was keine Wirkung hat, bleibt unter Knöchelhöhe. Büsche, die wie Deckung wirken, ziehen an den Feldrand oder werden kleiner.</li>
+<li><b>Gleiche Wirkung, gleiche Form, in jeder Region.</b> Wechseln dürfen nur Material und Farbe. Eine Mauer im Schnee ist dieselbe Mauer mit Schneehaube.</li>
+</ol>
+</section>
+
+<section>
+<h2>Vielfalt je Region, günstig gebaut</h2>
+<p>Statt jedes Modell dreimal zu bauen: <b>Form × Material × Zustand.</b> Die Bauskripte in <code>tools/art/props/</code> tragen schon Vertex-Farben, also kostet eine neue Region nur eine Farbtabelle.</p>
+<div class="scroll"><table>
+<thead><tr><th></th><th>Süden, Spätsommer (Akt 1)</th><th>Hochland, Herbst (Akt 2)</th><th>Norden, Winter (Akt 3)</th></tr></thead>
+<tbody>
+<tr><th>Stein</th><td>warmer Sandstein</td><td>Schiefergrau, Kupferader</td><td>kühles Blaugrau, Schneehaube</td></tr>
+<tr><th>Dach</th><td>Ziegelrot, Stroh</td><td>Schieferplatten, Holzschindeln</td><td>dunkle Schindeln, Schnee</td></tr>
+<tr><th>Boden</th><td>Gelbgrün, Erde</td><td>Rostgras, Laub</td><td>Schnee, Harsch, Eis</td></tr>
+<tr><th>Wasser</th><td>Türkis, Moor-Braungrün</td><td>Grün-grau, Gischt</td><td>Stahlblau, Eisschollen</td></tr>
+<tr><th>Bäume</th><td>Laubbaum, Birke</td><td>Herbstfarben, Fichte</td><td>Schneefichte, kahl</td></tr>
+<tr><th>Eigenes</th><td>Fachwerk, Korn, Wein</td><td>Kloster, Schiefer, Hafen</td><td>Palast, Kanäle, Gletscher</td></tr>
+</tbody></table></div>
+<p style="margin-top:10px"><b>Schnee zur Ladezeit:</b> Beim Laden eines Modells färbt das Brett nach oben weisende Flächen weiß. Das macht jedes vorhandene Modell winterfest, ganz ohne neue Datei. <b>Gelände-Kit:</b> Mauer, Fels und Höhle bekommen Eck-, Geraden- und Endstücke, die sich nach den Nachbarfeldern wählen, wie das Gelände das heute schon für den Boden tut.</p>
+</section>
+
+<section>
+<h2>Zielbilder: vorher und nachher</h2>
+<p>Links das heutige Brett, rechts ein gemaltes Zielbild auf derselben Karte. Die Bilder zeigen die Richtung, nicht den späteren 3D-Stand. Sie sind Skizzen und kommen nicht ins Spiel.</p>
+<div class="two">
+<figure><img src="img/ziel_paktwacht.jpg" alt="Paktwacht vorher und nachher"><figcaption><b>Paktwacht.</b> Mauern mit Wehrgang und Zinnen, Rundtürme, echtes Torhaus, ruhiger Hof. Der Fels ist noch zu sehr Einzelbrocken, das Gewölbe zeigt die stärkere Lösung.</figcaption></figure>
+<figure><img src="img/ziel_gewoelbe.jpg" alt="Gewölbe vorher und nachher"><figcaption><b>Gewölbe.</b> Fels als dunkle Masse bis an die Feldkante, heller Gang, Fackeln, Sarkophage. Begehbar und gesperrt trennen sich sofort.</figcaption></figure>
+<figure><img src="img/ziel_moor.jpg" alt="Moor vorher und nachher"><figcaption><b>Moor.</b> Dunkle Priele, olivfarbener Sumpf mit Schilf, schlanke Stege, ärmliches Lager statt Steintürmen.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>Regeln, die Marvin entscheiden muss</h2>
+<p>Für diese Punkte fordert die Story etwas, das die Regeln nicht kennen.</p>
+<div class="two">
+<div class="q"><b>R1 Tor.</b> Heute ein begehbares Feld mit Deckung, nie geschlossen. 1-6, 1-8 und 3-6 („Tor halten“) erzählen aber ein Tor, das man aufbekommen muss.</div>
+<div class="q"><b>R2 Zerstörbare Mauer.</b> Nichts lässt sich heute zerstören. 1-8 und 3-6 schreien nach Bresche, N2 hat eine bröckelnde Grenzmauer.</div>
+<div class="q"><b>R3 Wehrgang und Dach.</b> Der GDD sagt: Höhe nur optisch, die Mauer sperrt. Die Entwürfe wollen Schützen auf Mauern und Dächern (1-6, 1-8, N1, 3-6).</div>
+<div class="q"><b>R4 Eis.</b> 3-4 „bricht unter Reitern und schweren Einheiten“. Dazu fehlen Werte; muss erst für Akt 3 stehen.</div>
+</div>
+</section>
+
+<section>
+<h2>Bauplan nach Missionen</h2>
+<p>Zahl = so viele Missionen brauchen das Asset. Reihenfolge: was früh im Spiel und oft vorkommt, zuerst.</p>
+<div class="two"><section class="et"><h3>Etappe 1: Formensprache und Grundbau</h3><p><small>Akt 1 und alle späteren Burgen</small><br>Fels als Masse, Mauer mit Zinnen, Turm, ein echtes Tor, Tür, Thron, Rampe, Hebel, Wald-Nest, Furt lesbar, Feld ohne Rahmen. Das Probeset stammt aus dieser Etappe.</p><ul class="use"><li><span class="c B">Wald</span><small>15 Missionen</small></li><li><span class="c B">Berg, Felsmasse</span><small>15 Missionen</small></li><li><span class="c B">Mauer</span><small>9 Missionen</small></li><li><span class="c B">Furt, Flachwasser</span><small>8 Missionen</small></li><li><span class="c B">Besuchshaus</span><small>7 Missionen</small></li><li><span class="c B">Tor</span><small>6 Missionen</small></li><li><span class="c B">Tür, offen und zu</span><small>6 Missionen</small></li><li><span class="c B">Festung</span><small>6 Missionen</small></li><li><span class="c B">Steinbrücke</span><small>6 Missionen</small></li><li><span class="c F">Mauerturm, Ecke</span><small>5 Missionen</small></li><li><span class="c F">Rampe, Stützmauer, Terrasse</span><small>4 Missionen</small></li><li><span class="c B">Thron</span><small>4 Missionen</small></li><li><span class="c B">Holzbrücke</span><small>4 Missionen</small></li><li><span class="c B">Kornfeld</span><small>4 Missionen</small></li><li><span class="c F">Hebel</span><small>3 Missionen</small></li></ul></section>
+<section class="et"><h3>Etappe 2: Akt-1-Sonderorte</h3><p><small>1-5, 1-7, N1, N3, Prolog</small><br>Sumpf, Steg, Höhle, Grabrelief, Säule, Dach, Mühle, Fackeln, Marktstand, Wehrgang, Bresche.</p><ul class="use"><li><span class="c F">Fackel, Wandleuchte</span><small>11 Missionen</small></li><li><span class="c B">Lagerfeuer, Kohlebecken</span><small>6 Missionen</small></li><li><span class="c F">Höhlenboden und Felswand innen</span><small>4 Missionen</small></li><li><span class="c F">Wehrgang, Treppe</span><small>4 Missionen</small></li><li><span class="c F">Bresche, Trümmer in der Mauer</span><small>3 Missionen</small></li><li><span class="c F">Steg, Bohlenweg</span><small>3 Missionen</small></li><li><span class="c F">Säule, Säulengang</span><small>3 Missionen</small></li><li><span class="c F">Sumpf, Schilf, Priele</span><small>2 Missionen</small></li><li><span class="c B">Schrein</span><small>2 Missionen</small></li><li><span class="c F">Grabrelief, Sarkophag</span><small>2 Missionen</small></li><li><span class="c B">Marktstand</span><small>2 Missionen</small></li><li><span class="c F">Begehbares Dach</span><small>1 Missionen</small></li><li><span class="c F">Mühle mit Rad</span><small>1 Missionen</small></li></ul></section>
+<section class="et"><h3>Etappe 3: Regionen</h3><p><small>alle Akte</small><br>Herbst- und Winterboden, Schneehauben, Materialsätze je Region für alle vorhandenen Modelle.</p><ul class="use"><li><span class="c F">Boden Schnee, Schneehauben</span><small>10 Missionen</small></li><li><span class="c F">Boden Herbst</span><small>9 Missionen</small></li></ul></section>
+<section class="et"><h3>Etappe 4: Akt 2</h3><p><small>2-1 bis N6</small><br>Balliste, Koppel, Terrassen, Klippe, Hängebrücke, Hafen, Schiff, Bergwerk.</p><ul class="use"><li><span class="c F">Klippe, Absturzkante</span><small>7 Missionen</small></li><li><span class="c F">Schiff, Boot</span><small>5 Missionen</small></li><li><span class="c F">Kai, Lagerhaus, Kran</span><small>2 Missionen</small></li><li><span class="c F">Wasserfall</span><small>1 Missionen</small></li><li><span class="c F">Hängebrücke</span><small>1 Missionen</small></li><li><span class="c F">Koppel, Stall, Gestüt</span><small>1 Missionen</small></li><li><span class="c F">Getreideterrasse, Bergdorf</span><small>1 Missionen</small></li><li><span class="c F">Balliste</span><small>1 Missionen</small></li><li><span class="c F">Gaukelbühne, Markt-Deko</span><small>1 Missionen</small></li><li><span class="c F">Stollen, Lore, Schienen</span><small>1 Missionen</small></li><li><span class="c F">Drachenknochen</span><small>1 Missionen</small></li></ul></section>
+<section class="et"><h3>Etappe 5: Akt 3</h3><p><small>3-1 bis N10</small><br>Eis, Stadt und Kanal, Palast, Gletscher, Glutrisse, schlafender Drache.</p><ul class="use"><li><span class="c F">Eis mit Bruchstellen</span><small>3 Missionen</small></li><li><span class="c F">Stadthaus hoch, Gasse</span><small>3 Missionen</small></li><li><span class="c F">Palast: Fliesen, Teppich, Empore</span><small>3 Missionen</small></li><li><span class="c F">Kanal, Schleuse</span><small>3 Missionen</small></li><li><span class="c F">Gletscher, Spalten, Lawine</span><small>1 Missionen</small></li><li><span class="c F">Glutrisse, Krater</span><small>1 Missionen</small></li><li><span class="c F">Eisbrücke</span><small>1 Missionen</small></li><li><span class="c F">Bücherregal als Wand</span><small>1 Missionen</small></li><li><span class="c B">Wagenburg</span><small>1 Missionen</small></li><li><span class="c F">Schlafender Drache als Gelände</span><small>1 Missionen</small></li><li><span class="c F">Urtempel, Gletscher-Ruine</span><small>1 Missionen</small></li></ul></section></div>
+</section>
+
+<section>
+<h2>Matrix: Mission × Asset</h2>
+<p><span class="c V">vorhanden</span><span class="c B">verbessern</span><span class="c F">fehlt</span></p>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>Mission</th><th>Region</th><th>Bedarf</th></tr></thead>
+<tbody>
+<tr><th scope="row">P</th><td><b>Die Paktnacht</b><br><small>Tempelbezirk, Höfe, Säulengänge, Nacht</small></td><td>Stadt</td><td class="chips"><span class="c F">Mauerturm, Ecke</span><span class="c F">Säule, Säulengang</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Mauer</span><span class="c B">Tor</span><span class="c B">Tür, offen und zu</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c V">Gras, Erde, Straße</span></td></tr>
+<tr><th scope="row">1-1</th><td><b>Steckbriefe</b><br><small>Varnhold, Markt, Brücke</small></td><td>Süd</td><td class="chips"><span class="c B">Besuchshaus</span><span class="c B">Marktstand</span><span class="c B">Steinbrücke</span><span class="c B">Furt, Flachwasser</span><span class="c B">Mauer</span><span class="c B">Festung</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Kulissenhäuser</span><span class="c V">Wagen</span><span class="c V">Fluss</span></td></tr>
+<tr><th scope="row">1-2</th><td><b>Asche über Erlbach</b><br><small>Dorf am Bach, Kornfelder, Furten</small></td><td>Süd</td><td class="chips"><span class="c B">Besuchshaus</span><span class="c B">Kornfeld</span><span class="c B">Furt, Flachwasser</span><span class="c B">Holzbrücke</span><span class="c B">Wald</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Kulissenhäuser</span><span class="c V">Zaun</span><span class="c V">Fluss</span></td></tr>
+<tr><th scope="row">1-3</th><td><b>Der Fremde mit dem Siegel</b><br><small>Grenzwald, Lichtung, Schrein</small></td><td>Süd</td><td class="chips"><span class="c F">Steg, Bohlenweg</span><span class="c B">Wald</span><span class="c B">Schrein</span><span class="c B">Furt, Flachwasser</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Ruine</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">1-4</th><td><b>Die Spur des Maklers</b><br><small>Wolfshügel, Felsen, Höhlen</small></td><td>Süd</td><td class="chips"><span class="c F">Hebel</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span><span class="c B">Festung</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Ruine</span><span class="c V">Truhe</span><span class="c V">Zelt, Lager</span></td></tr>
+<tr><th scope="row">1-5</th><td><b>Das Hungerlager</b><br><small>Erlenmoor, Stege, Nebel</small></td><td>Süd</td><td class="chips"><span class="c F">Sumpf, Schilf, Priele</span><span class="c F">Steg, Bohlenweg</span><span class="c F">Schiff, Boot</span><span class="c B">Wald</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Zelt, Lager</span><span class="c V">Ruine</span><span class="c V">Sand, Strand</span><span class="c V">Wagen</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">1-6</th><td><b>Die Paktwacht</b><br><small>Burgruine, Sturm bergauf über Terrassen</small></td><td>Süd</td><td class="chips"><span class="c F">Mauerturm, Ecke</span><span class="c F">Rampe, Stützmauer, Terrasse</span><span class="c F">Wehrgang, Treppe</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span><span class="c B">Mauer</span><span class="c B">Tor</span><span class="c B">Tür, offen und zu</span><span class="c B">Thron</span><span class="c B">Festung</span><span class="c B">Kornfeld</span><span class="c B">Steinbrücke</span><span class="c B">Furt, Flachwasser</span><span class="c B">Besuchshaus</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">1-7</th><td><b>Unter der Paktwacht</b><br><small>Gewölbe im Fels, Gräber</small></td><td>Innen</td><td class="chips"><span class="c F">Höhlenboden und Felswand innen</span><span class="c F">Grabrelief, Sarkophag</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Berg, Felsmasse</span><span class="c B">Tür, offen und zu</span><span class="c V">Ruine</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">1-8</th><td><b>Die Heimat halten</b><br><small>Paktwacht, zwei Fronten</small></td><td>Süd</td><td class="chips"><span class="c F">Mauerturm, Ecke</span><span class="c F">Rampe, Stützmauer, Terrasse</span><span class="c F">Wehrgang, Treppe</span><span class="c F">Bresche, Trümmer in der Mauer</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span><span class="c B">Mauer</span><span class="c B">Tor</span><span class="c B">Tür, offen und zu</span><span class="c B">Thron</span><span class="c B">Festung</span><span class="c B">Kornfeld</span><span class="c B">Steinbrücke</span><span class="c B">Besuchshaus</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c V">Gras, Erde, Straße</span></td></tr>
+<tr><th scope="row">N1</th><td><b>Der Ring von Varnhold</b><br><small>Nacht, Dächer, Gassen</small></td><td>Süd</td><td class="chips"><span class="c F">Begehbares Dach</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Mauer</span><span class="c B">Tor</span><span class="c B">Holzbrücke</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Kulissenhäuser</span><span class="c V">Fluss</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">N2</th><td><b>Der letzte Wachturm</b><br><small>Grenzmauer, Hügel</small></td><td>Süd</td><td class="chips"><span class="c F">Mauerturm, Ecke</span><span class="c F">Bresche, Trümmer in der Mauer</span><span class="c B">Mauer</span><span class="c B">Festung</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Ruine</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">N3</th><td><b>Das Erbe</b><br><small>Pachthof, Mühle, Fluss</small></td><td>Süd</td><td class="chips"><span class="c F">Mühle mit Rad</span><span class="c B">Kornfeld</span><span class="c B">Besuchshaus</span><span class="c B">Furt, Flachwasser</span><span class="c B">Holzbrücke</span><span class="c B">Wald</span><span class="c V">Gras, Erde, Straße</span><span class="c V">Zaun</span><span class="c V">Kulissenhäuser</span><span class="c V">Fluss</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">2-1</th><td><b>Wind über der Eisenmark</b><br><small>Windscharte, Ballisten auf Felsnasen</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Balliste</span><span class="c F">Klippe, Absturzkante</span><span class="c F">Rampe, Stützmauer, Terrasse</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span></td></tr>
+<tr><th scope="row">2-2</th><td><b>Das Siegel im Salzpass</b><br><small>Pass, Nebel, Steinschlag</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Klippe, Absturzkante</span><span class="c B">Berg, Felsmasse</span><span class="c V">Truhe</span><span class="c V">Wagen</span></td></tr>
+<tr><th scope="row">2-3</th><td><b>Die Rabenweide</b><br><small>Gestüt, Weiden, Koppelzäune, Furten</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Koppel, Stall, Gestüt</span><span class="c B">Furt, Flachwasser</span><span class="c B">Wald</span><span class="c V">Zaun</span><span class="c V">Fluss</span><span class="c V">Kulissenhäuser</span></td></tr>
+<tr><th scope="row">2-4</th><td><b>Die Brandschneise</b><br><small>Bergdorf, Getreideterrassen, Wald</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Getreideterrasse, Bergdorf</span><span class="c F">Rampe, Stützmauer, Terrasse</span><span class="c B">Besuchshaus</span><span class="c B">Wald</span><span class="c B">Berg, Felsmasse</span><span class="c V">Kulissenhäuser</span></td></tr>
+<tr><th scope="row">2-5</th><td><b>Die verstoßene Leibwache</b><br><small>Kloster, Hängebrücken, Wasserfall</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Hängebrücke</span><span class="c F">Wasserfall</span><span class="c F">Klippe, Absturzkante</span><span class="c B">Schrein</span><span class="c B">Mauer</span><span class="c B">Berg, Felsmasse</span><span class="c V">Fluss</span></td></tr>
+<tr><th scope="row">2-6</th><td><b>Gold für Banditen</b><br><small>Krähenholm, Strand, Ebbe, Schiff</small></td><td>Küste</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Klippe, Absturzkante</span><span class="c F">Schiff, Boot</span><span class="c F">Kai, Lagerhaus, Kran</span><span class="c B">Berg, Felsmasse</span><span class="c B">Furt, Flachwasser</span><span class="c V">Sand, Strand</span><span class="c V">Zelt, Lager</span></td></tr>
+<tr><th scope="row">2-7</th><td><b>Das Kontor am Silbermeer</b><br><small>Lagerhäuser, Kräne, Kais</small></td><td>Küste</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Kai, Lagerhaus, Kran</span><span class="c F">Schiff, Boot</span><span class="c B">Steinbrücke</span><span class="c V">Kulissenhäuser</span><span class="c V">Wagen</span><span class="c V">Fluss</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">2-8</th><td><b>Kronfeld</b><br><small>Ebene, Hügel, Fluss</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c B">Berg, Felsmasse</span><span class="c B">Wald</span><span class="c B">Furt, Flachwasser</span><span class="c B">Steinbrücke</span><span class="c B">Festung</span><span class="c V">Fluss</span><span class="c V">Zelt, Lager</span><span class="c V">Wagen</span></td></tr>
+<tr><th scope="row">N4</th><td><b>Der Clan im Schnee</b><br><small>Bergwald, früher Schnee</small></td><td>Hochland</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c B">Wald</span><span class="c B">Berg, Felsmasse</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c V">Zelt, Lager</span></td></tr>
+<tr><th scope="row">N5</th><td><b>Glut unter dem Berg</b><br><small>Bergwerk, Loren, Schächte</small></td><td>Innen</td><td class="chips"><span class="c F">Höhlenboden und Felswand innen</span><span class="c F">Stollen, Lore, Schienen</span><span class="c F">Drachenknochen</span><span class="c F">Fackel, Wandleuchte</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">N6</th><td><b>Die Gauklertruppe</b><br><small>Herbstmarkt, Boote, Bühne</small></td><td>Küste</td><td class="chips"><span class="c F">Boden Herbst</span><span class="c F">Gaukelbühne, Markt-Deko</span><span class="c F">Schiff, Boot</span><span class="c B">Marktstand</span><span class="c B">Holzbrücke</span><span class="c V">Fluss</span><span class="c V">Wagen</span></td></tr>
+<tr><th scope="row">3-1</th><td><b>Winter über Aurenhall</b><br><small>Gänge unter dem Palast, Türen</small></td><td>Innen</td><td class="chips"><span class="c F">Höhlenboden und Felswand innen</span><span class="c F">Palast: Fliesen, Teppich, Empore</span><span class="c F">Hebel</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Tür, offen und zu</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">3-2</th><td><b>Das verbotene Lied</b><br><small>Sängerviertel, Kanäle, Boote, Schnee</small></td><td>Stadt</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Stadthaus hoch, Gasse</span><span class="c F">Kanal, Schleuse</span><span class="c F">Schiff, Boot</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Steinbrücke</span></td></tr>
+<tr><th scope="row">3-3</th><td><b>Die Einsiedlerin</b><br><small>Winterwald, gefrorener Bach</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Eis mit Bruchstellen</span><span class="c B">Wald</span><span class="c B">Besuchshaus</span><span class="c B">Berg, Felsmasse</span><span class="c V">Kulissenhäuser</span></td></tr>
+<tr><th scope="row">3-4</th><td><b>Der Zweifler</b><br><small>Lager auf dem gefrorenen See, Schilf</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Eis mit Bruchstellen</span><span class="c F">Sumpf, Schilf, Priele</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c V">Zelt, Lager</span><span class="c V">Wagen</span></td></tr>
+<tr><th scope="row">3-5</th><td><b>Die Krönung</b><br><small>Glutdom, Halle, Emporen, Vorplatz</small></td><td>Stadt</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Palast: Fliesen, Teppich, Empore</span><span class="c F">Säule, Säulengang</span><span class="c F">Wehrgang, Treppe</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Thron</span><span class="c B">Tor</span><span class="c B">Mauer</span></td></tr>
+<tr><th scope="row">3-6</th><td><b>Das Südtor</b><br><small>Mauer, Tor, Gassen</small></td><td>Stadt</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Mauerturm, Ecke</span><span class="c F">Wehrgang, Treppe</span><span class="c F">Bresche, Trümmer in der Mauer</span><span class="c F">Stadthaus hoch, Gasse</span><span class="c F">Kanal, Schleuse</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Mauer</span><span class="c B">Tor</span><span class="c V">Wagen</span></td></tr>
+<tr><th scope="row">3-7</th><td><b>Der Weg ins Gebirge</b><br><small>Gletscher, Spalten, schlafender Drache</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Gletscher, Spalten, Lawine</span><span class="c F">Klippe, Absturzkante</span><span class="c F">Schlafender Drache als Gelände</span><span class="c F">Eis mit Bruchstellen</span><span class="c B">Berg, Felsmasse</span></td></tr>
+<tr><th scope="row">3-8</th><td><b>Im Drachengebirge</b><br><small>Urtempel im Krater, Glutrisse</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Glutrisse, Krater</span><span class="c F">Eisbrücke</span><span class="c F">Urtempel, Gletscher-Ruine</span><span class="c F">Klippe, Absturzkante</span><span class="c F">Säule, Säulengang</span><span class="c B">Berg, Felsmasse</span><span class="c B">Thron</span></td></tr>
+<tr><th scope="row">N7</th><td><b>Verwiesen</b><br><small>Akademie, Regale als Wände</small></td><td>Innen</td><td class="chips"><span class="c F">Palast: Fliesen, Teppich, Empore</span><span class="c F">Bücherregal als Wand</span><span class="c F">Fackel, Wandleuchte</span><span class="c B">Tür, offen und zu</span><span class="c V">Truhe</span></td></tr>
+<tr><th scope="row">N8</th><td><b>Brennas Bruder</b><br><small>Flüchtlingslager, Wagenburg</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c B">Wagenburg</span><span class="c B">Lagerfeuer, Kohlebecken</span><span class="c B">Wald</span><span class="c V">Wagen</span><span class="c V">Zelt, Lager</span></td></tr>
+<tr><th scope="row">N9</th><td><b>Das Grab Aldrics I.</b><br><small>Gruft in der Klippe, Fjord</small></td><td>Winter</td><td class="chips"><span class="c F">Boden Schnee, Schneehauben</span><span class="c F">Höhlenboden und Felswand innen</span><span class="c F">Grabrelief, Sarkophag</span><span class="c F">Klippe, Absturzkante</span><span class="c F">Fackel, Wandleuchte</span></td></tr>
+<tr><th scope="row">N10</th><td><b>Die Unterstadt</b><br><small>Kanäle, Schleusen, Diebeswege</small></td><td>Stadt</td><td class="chips"><span class="c F">Kanal, Schleuse</span><span class="c F">Stadthaus hoch, Gasse</span><span class="c F">Hebel</span><span class="c F">Fackel, Wandleuchte</span><span class="c F">Steg, Bohlenweg</span><span class="c V">Truhe</span></td></tr>
+</tbody></table></div>
+<p style="margin-top:10px"><small>Akt 1 ist aus den Entwürfen abgeleitet; Akt 2, Akt 3 aus der Missionsliste, weil deren Level noch nicht entworfen sind. Dort kann sich Bedarf noch ändern. Aufnahmen: Grafikkarte, Qualität hoch, Hochformat wie am Handy. Offene PRs #99 (Weltkarte) und #100 (3D-Heimat) berühren das Brett nicht.</small></p>
+</section>
+</main>
+</body>
+</html>
