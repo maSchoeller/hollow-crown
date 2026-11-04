@@ -777,6 +777,8 @@ export interface TavernDef {
 }
 
 export interface Balance {
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: { tierAt: [number, number, number] };
   combat: {
     hitPerSkl: number;
     hitPerLckDivisor: number;

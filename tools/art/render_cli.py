@@ -4,7 +4,7 @@ blender -b --factory-startup --python tools/art/render_cli.py -- <raw_dir> <id> 
 
 Builds the requested units/props from scratch in a fresh scene "HC_Sprites" and renders their passes
 into <raw_dir> (see blender_render.py). With --save, all built subjects stay in the scene and the
-file is saved (used for art/blender/hc_sprites.blend).
+file is saved.
 """
 import os
 import sys

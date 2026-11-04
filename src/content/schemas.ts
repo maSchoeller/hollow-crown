@@ -804,6 +804,8 @@ export const renderSchema = z.object({
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
 export const balanceSchema = z.object({
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: z.object({ tierAt: z.tuple([z.number().int().positive(), z.number().int().positive(), z.number().int().positive()]) }),
   combat: z.record(z.string(), z.union([z.number(), z.boolean()])),
   triangle: z.object({ hit: z.number(), damage: z.number(), beats: z.record(z.string(), z.string()) }),
   element: z.object({
