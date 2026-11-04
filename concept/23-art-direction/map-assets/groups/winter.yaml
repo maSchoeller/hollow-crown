@@ -1,0 +1,117 @@
+title: Winter, Aurenhall und Drachengebirge (Akt 3)
+items:
+  - id: snowcap_wall_idle
+    name: Mauerkante im Schnee
+    ref: { sheet: winter_1.png, box: [125, 90, 440, 285] }
+    missions: [3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9]
+    use: Gleiche Form wie die Mauerkante der Festung, kühles Blaugrau, Schnee auf Zinnen und Wehrgang; 1 Feld, reiht sich in Ost-West-Richtung.
+  - id: snowcap_tower_idle
+    name: Mauerturm im Schnee
+    ref: { sheet: winter_1.png, box: [655, 15, 880, 320] }
+    missions: [3-5, 3-6]
+    use: Gleiche Form wie der Mauerturm, kühles Blaugrau, Schneehaube auf jeder Zinne, Verwehung am Fuß; 1 Feld, sperrt.
+  - id: city_house_a
+    name: Stadthaus hoch, Fachwerk
+    ref: { sheet: winter_1.png, box: [1115, 15, 1350, 322] }
+    missions: [3-2, 3-6, N10]
+    use: Hohes schmales Haus von Aurenhall mit Giebel nach Süden und Schneedach; 1 Feld, sperrt und verdeckt das Feld dahinter.
+  - id: city_house_b
+    name: Stadthaus hoch, Treppengiebel
+    ref: { sheet: winter_1.png, box: [170, 340, 395, 645] }
+    missions: [3-2, 3-6, N10]
+    use: Hohes Haus aus hellem Putz über Stein mit Treppengiebel; 1 Feld, sperrt.
+  - id: city_house_c
+    name: Stadthaus hoch, Schindeln
+    ref: { sheet: winter_1.png, box: [620, 345, 880, 650] }
+    missions: [3-2, 3-6, N10]
+    use: Hohes Haus mit Schindeln und vorkragendem Obergeschoss, Kamin im Schnee; 1 Feld, sperrt.
+  - id: city_arch_a
+    name: Gassenbogen
+    ref: { sheet: winter_1.png, box: [1045, 375, 1440, 640] }
+    missions: [3-2, 3-6, N10]
+    use: Zwei Hausenden mit Rundbogen darüber, der Durchgang bleibt frei; 1 Feld, begehbar von Nord nach Süd.
+  - id: canal_wall_a
+    name: Kanalmauer
+    ref: { sheet: winter_2.png, box: [35, 210, 365, 440] }
+    missions: [3-2, 3-6, N10]
+    use: Kaimauer im Norden des Felds mit Eisenring, Wasserstreifen im Süden; 1 Feld, reiht sich in Ost-West-Richtung.
+  - id: canal_lock_a
+    name: Schleuse
+    ref: { sheet: winter_2.png, box: [400, 145, 745, 450] }
+    missions: [3-2, 3-6, N10]
+    use: Zwei Pfeiler mit Stemmtor und Handrädern, Wasser in zwei Höhen; 1 Feld, sperrt.
+  - id: canal_bridge_a
+    name: Kanalbrücke
+    ref: { sheet: winter_2.png, box: [780, 165, 1140, 435] }
+    missions: [3-2, N10]
+    use: Buckelbrücke aus Stein in Ost-West-Richtung über den Kanal; etwa 2 Felder, begehbar, Scheitel 0,48 hoch.
+  - id: street_lantern_a
+    name: Straßenlaterne
+    ref: { sheet: winter_1.png, box: [190, 680, 365, 995] }
+    missions: [3-2, 3-5, 3-6, N10]
+    use: Eiserne Laterne mit warmem Glas am Nordwestrand des Felds, die Feldmitte bleibt frei; 1 Feld, begehbar.
+  - id: palace_column_a
+    name: Palastsäule
+    ref: { sheet: winter_1.png, box: [680, 680, 825, 995] }
+    missions: [3-5, 3-8]
+    use: Helle Säule mit Kapitell auf Stufensockel; 1 Feld, sperrt.
+  - id: palace_window_a
+    name: Palastfenster
+    ref: { sheet: winter_1.png, box: [1125, 670, 1340, 990] }
+    missions: [3-5]
+    use: Wandstück mit hohem Spitzbogen aus buntem Glas in Bernstein, Violett und Türkis, keine Teamfarbe; 1 Feld, sperrt.
+  - id: dome_a
+    name: Kuppelstück des Glutdoms
+    ref: { sheet: winter_3.png, box: [25, 25, 430, 395] }
+    missions: [3-5]
+    use: Aufgebrochene Kuppel mit Bronzerippen, Glut an den Bruchkanten; 2 x 2 Felder, sperrt.
+  - id: ice_floe_a
+    name: Eisscholle
+    ref: { sheet: winter_2.png, box: [1170, 205, 1510, 430] }
+    missions: [3-3, 3-4]
+    use: Flache Scholle mit Schnee am Nordrand, die Mitte bleibt frei; 1 Feld, begehbar.
+  - id: ice_crack_a
+    name: Eis mit Bruchstelle
+    ref: { sheet: winter_2.png, box: [20, 645, 365, 890] }
+    missions: [3-3, 3-4, 3-7]
+    use: Eisfläche, deren dunkle Risse und aufgestellte Scherben die Bruchstelle von weitem zeigen; 1 Feld, flach.
+  - id: glacier_crack_a
+    name: Gletscherspalte
+    ref: { sheet: winter_2.png, box: [395, 590, 735, 890] }
+    missions: [3-7]
+    use: Eisblock mit tiefer dunkler Spalte von Süd nach Nord, Schnee auf den Lippen; 1 Feld, sperrt.
+  - id: ice_spire_a
+    name: Eisnadel
+    ref: { sheet: winter_2.png, box: [775, 525, 1050, 895] }
+    missions: [3-7]
+    use: Hohe facettierte Eisnadel mit kleinerer daneben; 1 Feld, sperrt.
+  - id: ice_bridge_a
+    name: Eisbrücke
+    ref: { sheet: winter_2.png, box: [1100, 640, 1515, 880] }
+    missions: [3-8]
+    use: Natürlicher Eisbogen in Ost-West-Richtung, Schnee obenauf, Eiszapfen darunter; etwa 2 Felder, begehbar, Scheitel 0,6 hoch.
+  - id: ember_rift_a
+    name: Glutriss
+    ref: { sheet: winter_3.png, box: [380, 120, 800, 370] }
+    missions: [3-8]
+    use: Flacher Riss durch dunkle Felsplatten, Glühen in Orange ohne Teamfarbe; 1 Feld.
+  - id: urtempel_pillar_a
+    name: Urtempel-Säule
+    ref: { sheet: winter_3.png, box: [830, 20, 1020, 380] }
+    missions: [3-8]
+    use: Alter Pfeiler mit Spiralband und Ringreliefs, abgebrochene Spitze, Eiszapfen; 1 Feld, sperrt.
+  - id: wagon_ring_a
+    name: Wagenburg-Stück
+    ref: { sheet: winter_3.png, box: [1060, 80, 1510, 375] }
+    missions: [N8]
+    use: Schwerer Wagen mit großen Rädern nach Süden, Pfähle und geflickte Plane; etwa 2 Felder in Ost-West-Richtung, sperrt.
+  - id: refugee_tent_a
+    name: Flüchtlingszelt
+    ref: { sheet: winter_3.png, box: [20, 510, 440, 885] }
+    missions: [N8]
+    use: Geflicktes Zelt auf krummen Stangen, offen nach Süden mit Bettrolle und Kessel; 1 Feld, sperrt.
+  - id: sleeping_dragon_a
+    name: Schlafender Drache
+    ref: { sheet: winter_3.png, box: [490, 390, 1510, 955] }
+    missions: [3-7]
+    use: Eingerollter Drache in Felsfarben als Gelände, Kopf auf den Pranken nach Süden, Schnee auf dem Rücken; etwa 4 x 3 Felder, sperrt, ruhig und schön.

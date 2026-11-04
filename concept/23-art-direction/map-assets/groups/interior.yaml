@@ -1,0 +1,122 @@
+title: Gewölbe, Tempel, Interaktives, Höhen-Bauteile, Bergwerk
+items:
+  - id: sarcophagus_a
+    name: Sarkophag
+    ref: { sheet: interior_1.png, box: [53, 180, 393, 400] }
+    missions: [1-7, N9]
+    use: Steinsarkophag eines jungen Königs, Kopf nach Norden, Krone und Lorbeer an der Südseite; sperrt das Feld, 1 Feld.
+  - id: relief_a
+    name: Grabrelief
+    ref: { sheet: interior_1.png, box: [440, 90, 745, 410] }
+    missions: [1-7, N9]
+    use: Steinplatte mit kniendem Ritter an der Nordkante, ohne Altar und Kerzen, darum klar kein Schrein; ohne Wirkung, 1 Feld.
+  - id: pillar_a
+    name: Säule
+    ref: { sheet: interior_1.png, box: [850, 50, 1065, 440] }
+    missions: [P, 1-7, N9]
+    use: Klobige Steinsäule, höher als eine Figur; sperrt, 1 Feld.
+  - id: pillar_broken_a
+    name: Gebrochene Säule
+    ref: { sheet: interior_1.png, box: [1175, 145, 1480, 440] }
+    missions: [P, 1-7, N9]
+    use: Abgebrochene Säule mit Trommel und Splittern; sperrt, 1 Feld.
+  - id: pillar_temple_a
+    name: Tempelsäule
+    ref: { sheet: interior_1.png, box: [130, 510, 290, 935] }
+    missions: [3-5, N7]
+    use: Schlanke kannelierte Marmorsäule mit Goldringen für Palast und Tempel; sperrt, 1 Feld.
+  - id: rubble_a
+    name: Trümmer
+    ref: { sheet: interior_1.png, box: [425, 725, 730, 910] }
+    missions: [P, 1-7, N9]
+    use: Niedrige Steinbrocken an Nord- und Ostrand, die Feldmitte bleibt frei; reine Deko, 1 Feld.
+  - id: torch_idle
+    name: Wandfackel
+    ref: { sheet: interior_1.png, box: [820, 570, 1070, 915] }
+    missions: [P, 1-7, N5, 3-1, 3-5, N7, N9]
+    use: Eisenfackel auf einem Mauerblock an der Nordkante, warmer Lichtschein aufgemalt; Feldmitte frei, 1 Feld.
+  - id: brazier_b_idle
+    name: Kohlebecken
+    ref: { sheet: interior_1.png, box: [1205, 625, 1465, 915] }
+    missions: [1-4, 1-6, 1-8, 2-1, N1]
+    use: Eisenschale auf drei Rollfüßen voller Glut, deutlich kein Lagerfeuer; sperrt, 1 Feld.
+  - id: banner_a
+    name: Hängebanner
+    ref: { sheet: interior_2.png, box: [105, 30, 360, 455] }
+    missions: [1-7, 3-5, N7]
+    use: Weinrotes Banner mit Goldkrone an Pfosten und Stange an der Nordkante, keine Teamfarbe; reine Deko, 1 Feld.
+  - id: lever_up
+    name: Hebel oben
+    ref: { sheet: interior_2.png, box: [410, 45, 695, 420] }
+    missions: [1-4, 3-1, N10]
+    use: Hebel in Grundstellung, Eisenarm nach Norden, große Goldkugel auf Goldkragen; von weitem als Interaktives lesbar, 1 Feld.
+  - id: lever_down
+    name: Hebel unten
+    ref: { sheet: interior_2.png, box: [790, 185, 1070, 455] }
+    missions: [1-4, 3-1, N10]
+    use: Derselbe Hebel betätigt, Arm und Kugel liegen nach Süden; 1 Feld.
+  - id: ballista_idle
+    name: Balliste
+    ref: { sheet: interior_2.png, box: [1130, 55, 1490, 470] }
+    missions: [2-1]
+    use: Eichenballiste mit Eisenbogen und Bolzen nach Süden auf rundem Steinsockel, Kurbelrad hinten; das Modell wird zum Zielen gedreht, 1 Feld.
+  - id: bookshelf_a
+    name: Bücherregal
+    ref: { sheet: interior_2.png, box: [35, 535, 380, 955] }
+    missions: [N7]
+    use: Regal als Wand, füllt das Feld und ist höher als eine Figur, Bücher nach Süden; reiht sich zu Regalwänden, 1 Feld.
+  - id: carpet_a
+    name: Teppich
+    ref: { sheet: interior_2.png, box: [435, 560, 710, 960] }
+    missions: [3-1, 3-5, N7]
+    use: Flacher weinroter Läufer mit Goldkrone und Fransen an beiden Enden; begehbar, kettet sich nach Nord-Süd, 1 Feld.
+  - id: chest_b_closed
+    name: Truhe zu
+    ref: { sheet: interior_2.png, box: [765, 630, 1075, 930] }
+    missions: [P, 1-4, 1-6, 1-7, N5, 3-1, N7]
+    use: Helle Honigeiche mit breiten Goldbändern und großem Schloss, deutlich heller als die alte Truhe; 1 Feld.
+  - id: chest_b_open
+    name: Truhe offen
+    ref: { sheet: interior_2.png, box: [1150, 560, 1485, 945] }
+    missions: [P, 1-4, 1-6, 1-7, N5, 3-1, N7]
+    use: Deckel zurückgeklappt, Goldmünzen und Pokal sichtbar; 1 Feld.
+  - id: ramp_idle
+    name: Rampe
+    ref: { sheet: interior_3.png, box: [40, 145, 500, 875] }
+    missions: [1-6, 1-8, 2-1]
+    use: Stufenwechsel für alle, auch Reiter, glatte Schräge mit Bordsteinen von z 0 im Süden auf 0,85 im Norden; 1 Feld.
+  - id: stairs_idle
+    name: Treppe
+    ref: { sheet: interior_3.png, box: [550, 145, 990, 875] }
+    missions: [1-6, 1-8, 3-5]
+    use: Stufenwechsel ohne Reiter, fünf Stufen mit hellen Kanten und Wangen auf Höhe 0,85; 1 Feld.
+  - id: ladder_idle
+    name: Leiter
+    ref: { sheet: interior_3.png, box: [1045, 145, 1485, 875] }
+    missions: [1-6, 1-8, N1]
+    use: Stufenwechsel nur zu Fuß, schmale Leiter in der Feldmitte lehnt an der Mauer 0,85, Boden seitlich frei; 1 Feld.
+  - id: mine_cart_idle
+    name: Lore
+    ref: { sheet: interior_4.png, box: [110, 50, 440, 400] }
+    missions: [N5]
+    use: Holzlore mit Eisenbändern und Erz, Längsachse auf den Schienen; sperrt, 1 Feld.
+  - id: mine_track_a
+    name: Schienen
+    ref: { sheet: interior_4.png, box: [605, 70, 885, 395] }
+    missions: [N5]
+    use: Flaches Gleis Nord-Süd, kettet sich über Feldgrenzen; begehbar, 1 Feld.
+  - id: mine_support_a
+    name: Stollenstütze
+    ref: { sheet: interior_4.png, box: [1000, 20, 1465, 395] }
+    missions: [N5]
+    use: Zwei Pfosten, Querbalken und Laterne, die Mitte bleibt offen und begehbar; 1 Feld.
+  - id: mine_entrance_a
+    name: Stolleneingang
+    ref: { sheet: interior_4.png, box: [30, 430, 655, 925] }
+    missions: [N5]
+    use: Felsbrocken mit Holzrahmen, schwarzem Mund und Schienen nach Süden; sperrt, 1 Feld.
+  - id: dragon_bones_a
+    name: Drachenknochen
+    ref: { sheet: interior_4.png, box: [715, 440, 1505, 955] }
+    missions: [N5]
+    use: Gehörnter Schädel und Rippen im violetten Fels, Blickfang der Karte; sperrt, 2 Felder breit (Ursprung in der Mitte).

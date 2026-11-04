@@ -85,6 +85,13 @@ def main():
                 f'<h3>{html.escape(it.get("name", mid))}</h3><p>{html.escape(it.get("use", ""))}</p><small><code>{mid}</code>{" · " + html.escape(miss) if miss else ""}</small></article>'
             )
         sections.append(f'<section id="{g}"><h2>{html.escape(d.get("title", g))} <small>{len(cards)}</small></h2><div class="cards">{"".join(cards)}</div></section>')
+    # pictures from the real board in front of the kits
+    shots = ''
+    for f in extras:
+        (OUT / 'img' / f.name).write_bytes(f.read_bytes())
+        shots += f'<figure><img src="img/{f.name}" alt="Aufnahme aus dem Spiel: {f.stem[2:]}" loading="lazy"></figure>'
+    if shots:
+        sections.insert(0, f'<section id="spiel"><h2>Im echten Spiel <small>Festung und Fels auf den Entwürfen von Akt 1</small></h2><div class="shots">{shots}</div></section>')
     t = (HERE / 'gallery.template.html').read_text(encoding='utf8')
     nav = ' '.join(f'<a href="#{g}">{g}</a>' for g in GROUPS if (HERE / 'groups' / f'{g}.yaml').exists())
     t = t.replace('{{SECTIONS}}', '\n'.join(sections)).replace('{{COUNT}}', str(count)).replace('{{NAV}}', nav)

@@ -25,6 +25,8 @@ article { background: var(--card); border: 1px solid var(--line); border-radius:
 figure { margin: 0; } figure img, .none { width: 100%; aspect-ratio: 1; object-fit: contain; background: #cfd0c9; border-radius: 6px; display: block; }
 .none { display: grid; place-items: center; font-size: .8rem; color: #555; }
 figcaption { font-size: .75rem; color: var(--mute); margin-top: 2px; }
+.shots { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); align-items: start; }
+.shots img { aspect-ratio: auto; background: none; }
 .wide { display: grid; gap: 12px; }
 .wide img { max-width: 100%; border-radius: 8px; display: block; }
 </style>
