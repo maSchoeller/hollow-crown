@@ -41,6 +41,7 @@ import { t } from '../../i18n';
 import { variantClassOf, variantList } from '../../content/propVariants';
 import { isPackRegistered } from '../../content/browser';
 import { modelAvailable, pickVariant, withState } from '../shared/scenery';
+import { faceRot, gatePieces, wallPieces } from './wallKit';
 import { renderHost, type AssetStore, type Hold, type HostedView, type Quality, type RenderHost } from '../host';
 import { buildGridMesh, buildOverlayMeshes, type OverlayMesh, type Overlays } from './overlays';
 import { Badges, type HpBarMode, type KillKind } from './badges';
@@ -690,13 +691,19 @@ export class BoardView implements HostedView {
     for (const u of [...map.units, ...map.reinforcements.flatMap((rf) => rf.units)]) reserved.add(`${u.at[0]},${u.at[1]}`);
     for (const p of map.deploy.slots) reserved.add(`${p[0]},${p[1]}`);
     const decor = this.data.render.board.decor;
+    const terrainId = (gx: number, gy: number) => grid.at(gx, gy)?.id ?? null;
     for (let gy = 0; gy < grid.h; gy++)
       for (let gx = 0; gx < grid.w; gx++) {
         const def = grid.at(gx, gy)!;
         const isOpen = def.id === 'grass' || def.id === 'plain';
-        if ((!def.prop && !isOpen) || def.prop === 'bridge') continue;
+        const isWall = def.id === 'wall';
+        if ((!def.prop && !isOpen && !isWall) || def.prop === 'bridge') continue;
         const x = gx - grid.skirt;
         const y = gy - grid.skirt;
+        if (isWall) {
+          for (const k of wallPieces(terrainId, gx, gy)) put(k.model, { x: x + k.dx, y: y + k.dy, h: k.ground ? 0 : def.height, rot: k.rot, scale: 1, dim: !grid.inMap(gx, gy) });
+          continue;
+        }
         if (this.quality === 'low' && !grid.inMap(gx, gy)) {
           const away = Math.max(-x - 1, x - s.width, -y - 1, y - s.height) + 1;
           if (away > this.data.render.board.sceneryPropsLow) continue;
@@ -724,8 +731,11 @@ export class BoardView implements HostedView {
             put(variant('tree', gx, gy, x, y), { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
             break;
           case 'rock':
+            // the massif's rim lies flat on the tile edge, so neighbours join: full size, quarter turns only
+            put(variant(def.prop, gx, gy, x, y), { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2) });
+            break;
           case 'rockwall':
-            put(variant(def.prop, gx, gy, x, y), { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: def.prop === 'rock' ? 1.05 : 0.9 });
+            put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: 0.9 });
             break;
           case 'house': // scenery house (terrain building): no object, always standing
           case 'lodge': {
@@ -734,9 +744,13 @@ export class BoardView implements HostedView {
             put(withState(variant(def.prop, gx, gy, x, y), obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
             break;
           }
+          case 'gate':
+            for (const k of gatePieces(terrainId, gx, gy)) put(k.model, { ...base, x: x + k.dx, y: y + k.dy, rot: k.rot });
+            break;
           case 'door_closed':
           case 'door_open':
-          case 'gate':
+            put(`${def.prop}_idle`, { ...base, rot: faceRot(terrainId, gx, gy) });
+            break;
           case 'throne':
             put(`${def.prop}_idle`, base);
             break;

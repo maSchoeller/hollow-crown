@@ -15,7 +15,6 @@ export function variantClassOf(prop: string | undefined): VariantClass | null {
     case 'lodge':
       return prop;
     case 'rock':
-    case 'rockwall':
       return 'rock';
     default:
       return null;

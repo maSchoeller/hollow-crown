@@ -19,7 +19,7 @@ import type { AssetStore } from '../host';
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
 
-export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'planks', 'water_0', 'water_1', 'water_2', 'water_3'];
+export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'rock_top', 'planks', 'water_0', 'water_1', 'water_2', 'water_3'];
 
 /** The ground textures from the shared cache (loaded once for board and world map, story 5.1). */
 export async function loadGroundTextures(store: AssetStore): Promise<GroundTextures> {
@@ -98,8 +98,9 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
       if (!wild || !def || def.cliff === 'wall' || (def.prop && !SKIRT_FLAT.has(def.prop)) || def.water) t = wild ? 'grass' : t;
       if (wild) {
         const r = hash3(gx, gy, seed) % 100;
-        if (r < 30) t = 'forest';
-        else if (r < 37) t = 'mountain';
+        // a massif at the map's edge runs on as a massif; single raised blocks in the meadow read as crates
+        if (def?.id === 'mountain') t = r < 88 ? 'mountain' : 'forest';
+        else if (r < 30) t = 'forest';
         else if (r < 70) t = 'grass';
       }
       ids.push(t);
@@ -275,6 +276,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
 
   const tops = new Geo();
   const caps = new Geo();
+  const rockCaps = new Geo();
   const sides: Record<string, Geo> = { earth: new Geo(), rock: new Geo(), wall: new Geo() };
   const water = new Geo();
   const veil = new Geo();
@@ -286,6 +288,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       const x = wx(gx);
       const y = wy(gy);
       if (def.cliff === 'wall') caps.flat(x, y, h, [x / 2, -y / 2, (x + 1) / 2, -y / 2, (x + 1) / 2, (-y - 1) / 2, x / 2, (-y - 1) / 2]);
+      else if (def.cliff === 'rock') rockCaps.flat(x, y, h, [x / 2, -y / 2, (x + 1) / 2, -y / 2, (x + 1) / 2, (-y - 1) / 2, x / 2, (-y - 1) / 2]);
       else {
         const u0 = gx / grid.w;
         const u1 = (gx + 1) / grid.w;
@@ -345,6 +348,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   };
   add(tops, 'terrain-tops', mix);
   add(caps, 'terrain-caps', std('terrain-caps', 'stone'), true);
+  add(rockCaps, 'terrain-rock-caps', std('terrain-rock-caps', 'rock_top'), true);
   add(sides.earth!, 'terrain-earth', std('terrain-earth', 'earth_side'));
   add(sides.rock!, 'terrain-rock', std('terrain-rock', 'rock_side'), true);
   add(sides.wall!, 'terrain-wall', std('terrain-wall', 'wall'), true);
