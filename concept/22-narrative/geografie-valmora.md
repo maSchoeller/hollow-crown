@@ -60,25 +60,25 @@ Die Höhen sind Richtwerte.
 
 ## Maßstab und Entfernungen
 
-Kantenlänge 400 km. Gemessen auf dem Layout `map_v4.png` entlang der Straße, `map_v5` folgt ihm, 25 km Marsch am Tag.
+Kantenlänge 400 km. Gemessen auf `map_v5.png` entlang der Straße, 25 km Marsch am Tag. Bauwerke sind bewusst nicht maßstäblich.
 
 | Strecke | km | Tage |
 |---|---:|---:|
-| Aurenhall – Kronfeld (durch die Klamm) | 75 | 3 |
-| Kronfeld – Windscharte | 88 | 3,5 |
-| Windscharte – Paktwacht | 22 | 1 |
-| Paktwacht – Varnhold | 90 | 3,5 |
-| **Aurenhall – Varnhold, gesamt** | **275** | **11** |
-| Kronfeld – Kontor | 32 | 1,5 |
-| Kronfeld – Grauwacht | 137 | 5,5 |
-| Kontor – Perlhof | 136 | 5,5, per Schiff 2 |
-| Aurenhall – Krater | 79 | 3, im Winter deutlich länger |
+| Aurenhall – Kronfeld (durch die Klamm) | 101 | 4 |
+| Kronfeld – Windscharte | 74 | 3 |
+| Windscharte – Paktwacht | 26 | 1 |
+| Paktwacht – Varnhold | 85 | 3,5 |
+| **Aurenhall – Varnhold, gesamt** | **287** | **11,5** |
+| Kronfeld – Kontor | 23 | 1 |
+| Kronfeld – Grauwacht (über Silberquell) | 171 | 7 |
+| Kontor – Perlhof | 128 | 5, per Schiff 2 |
+| Aurenhall – Krater | 77 | 3, im Winter deutlich länger |
 
 Zwischen Spätsommer und Winter liegen rund fünf Monate; das reicht für alle Wege und Missionen.
 
 ## Folgen für die Missionsliste
 
-Keine Mission entfällt oder wandert in eine andere Region. Die Zuordnung Ort zu Mission steht in `map_places_v4.json`.
+Keine Mission entfällt oder wandert in eine andere Region. Die Zuordnung Ort zu Mission steht in `map_places_v5.json`.
 
 - **2-2:** Die Kundschafter aus Kharesh kamen per Schiff, Silbermeer hat ihnen die Überfahrt verkauft. Neue leise Spur: Maelis macht auch mit Kharesh Geschäfte.
 - **2-4:** Der Brandhang liegt nördlich der Grauwacht, zum Drachengebirge hin.
@@ -88,6 +88,10 @@ Keine Mission entfällt oder wandert in eine andere Region. Die Zuordnung Ort zu
 - **1-7:** neue Szenenzeile: Die Burg steht über den Gräbern, der Pass war nur der Vorwand.
 - **N8:** Das Lager liegt im Kessel vor der Klamm.
 
+## Orte auf der Karte
+
+Zwölf Orte stehen als eigenes Stadtbild auf einem gemalten Plateau: Aurenhall, Paktwacht, Varnhold, Kronfeld, Kontor, Perlhof, Grauwacht, Kupferhall, Silberquell, Erlbach, Krähenholm, Urtempel. Die übrigen 18 sind Marker. Varnhold liegt neben seiner Brücke, Kronfeld südlich der Aure an der Furt, der Urtempel auf der Schulter des Kraters, Perlhof auf der Spitze der Möwenzunge. Die Aue-Insel ist nur als Marker in der Mündung vorhanden, im Bild liegt dort keine Insel. Zustandsvarianten (Varnhold brennt, Burg ausgebaut, Aurenhall verschlossen) kommen mit der Einbindung.
+
 ## Im Bild schwächer als in der Story
 
-Abgenommen im Wissen darum; das Gelände entsteht jeweils erst in der Mission. Die **Wolfshügel** sind im Bild kaum als Felshügel zu erkennen. Der **Salzpass** ist im Bild kein sichtbarer schmaler Pass, das Küstengebirge nur eine Hügelgruppe. Die Klamm trägt im Bild keine Zollburg, die zeigt die Ebene des Spiels.
+Abgenommen im Wissen darum; das Gelände entsteht jeweils erst in der Mission. Die **Wolfshügel** sind im Bild kaum als Felshügel zu erkennen. Der **Salzpass** ist im Bild kein sichtbarer schmaler Pass. Die Klamm trägt im Bild keine Zollburg, die zeigt die Ebene des Spiels.
