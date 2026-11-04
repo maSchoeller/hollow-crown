@@ -91,8 +91,8 @@ def image_mat(name, file, mode='wall', scale=1.0, center=(0.0, 0.0), radius=0.4,
 
 class Mats:
     def __init__(self, center=(0.0, 0.0), radius=0.42):
-        self.stone = image_mat('kit_stone', 'kit_stone.png', 'wall', 1.5)
-        self.round = image_mat('kit_round', 'kit_stone.png', 'round', 1.5, center, radius)
+        self.stone = image_mat('kit_stone', 'kit_stone.png', 'wall', 1.05)
+        self.round = image_mat('kit_round', 'kit_stone.png', 'round', 1.05, center, radius)
         self.block = paint('kit_block', [(0.0, lin(150, 112, 70)), (0.45, lin(214, 170, 112)), (1.0, lin(250, 222, 168))],
                            wn=0.75, noise=0.12, nscale=18, seed=72.0, bias=0.0)
         self.floor = paint('kit_floor', [(0.0, lin(134, 112, 86)), (0.6, lin(182, 156, 122)), (1.0, lin(210, 188, 152))], wn=0.3,
@@ -165,6 +165,7 @@ def wing(M, name, hinge, angle, height, width, flip=False):
         parts.append(box(f'{name}t{k}', (width / 2, t / 2 + 0.004, z), (width * 0.92, 0.012, 0.035), M.iron))
     for k, (dx, dz, w, h) in enumerate(((0, 0.028, 0.06, 0.016), (0, -0.028, 0.06, 0.016), (0.028, 0, 0.016, 0.06), (-0.028, 0, 0.016, 0.06))):
         parts.append(box(f'{name}r{k}', (width * 0.78 + dx, -t / 2 - 0.008, height * 0.42 + dz), (w, 0.012, h), M.iron))
+        parts.append(box(f'{name}q{k}', (width * 0.78 + dx, t / 2 + 0.008, height * 0.42 + dz), (w, 0.012, h), M.iron))
     obj = join(parts, name)
     ca, sa = math.cos(angle), math.sin(angle)
     for v in obj.data.vertices:
@@ -193,16 +194,17 @@ def tower_parts(M, c, r, top, prefix, ring=8, crown=True):
     ]
     if crown:
         parts.append(loft(f'{prefix}floor', [circle(c, r + 0.04, top - 0.005, SEG), circle(c, r + 0.04, top + 0.003, SEG)], M.floor))
-        ring_merlons(parts, M.block, prefix, c, r + 0.015, top, ring, 0.15, 0.09)
+        ring_merlons(parts, M.block, prefix, c, r + 0.01, top, ring, 0.19, 0.11, fill=0.62)
     return parts
 
 
 def slit(M, x, y, z, prefix):
     """Arched arrow slit on the south front."""
     return [
-        box(f'{prefix}fr', (x, y, z), (0.1, 0.018, 0.2), M.block),
-        box(f'{prefix}frt', (x, y, z + 0.115), (0.075, 0.018, 0.05), M.block),
-        box(f'{prefix}sl', (x, y - 0.012, z - 0.005), (0.04, 0.012, 0.15), M.iron),
+        box(f'{prefix}fr', (x, y, z), (0.15, 0.02, 0.24), M.block),
+        box(f'{prefix}frt', (x, y, z + 0.135), (0.1, 0.02, 0.06), M.block),
+        box(f'{prefix}sl', (x, y - 0.014, z - 0.005), (0.07, 0.012, 0.18), M.iron),
+        box(f'{prefix}slt', (x, y - 0.014, z + 0.095), (0.045, 0.012, 0.03), M.iron),
     ]
 
 
@@ -222,9 +224,9 @@ def wallrim_idle():
 def tower_idle():
     reset()
     M = Mats()
-    top = 1.2
-    parts = tower_parts(M, (0, 0), 0.4, top, 't', ring=8)
-    parts += slit(M, 0, -0.405, 0.72, 'a')
+    top = 1.42
+    parts = tower_parts(M, (0, 0), 0.44, top, 't', ring=8)
+    parts += slit(M, 0, -0.445, 0.68, 'a')
     parts.append(box('pole', (-0.14, 0.14, top + 0.33), (0.022, 0.022, 0.66), M.frame))
     parts.append(box('ball', (-0.14, 0.14, top + 0.68), (0.045, 0.045, 0.045), M.gold))
     parts.append(loft('flag', [[(-0.13, 0.14, top + 0.44), (-0.13, 0.14, top + 0.62), (-0.13, 0.145, top + 0.62), (-0.13, 0.145, top + 0.44)],
@@ -243,12 +245,12 @@ def arch_face(M, half, spring, rise, top, depth, prefix, peak=0.0):
     parts = [extrude_y(f'{prefix}wall', outline, -depth / 2, depth / 2, M.stone)]
     for i in range(n):
         a0, a1 = math.pi * (i + 0.04) / n, math.pi * (i + 0.96) / n
-        out = 0.11
+        out = 0.15
         q = [(-half * math.cos(a0), spring + rise * math.sin(a0)),
              (-half * math.cos(a1), spring + rise * math.sin(a1)),
              (-(half + out) * math.cos(a1), spring + (rise + out) * math.sin(a1)),
              (-(half + out) * math.cos(a0), spring + (rise + out) * math.sin(a0))]
-        parts.append(extrude_y(f'{prefix}w{i}', q, -depth / 2 - 0.025, -depth / 2 + 0.02, M.block))
+        parts.append(extrude_y(f'{prefix}w{i}', q, -depth / 2 - 0.045, -depth / 2 + 0.02, M.block))
     return parts
 
 
@@ -263,19 +265,23 @@ def gatehouse(state):
     reset()
     M = Mats((0.78, -0.02), 0.28)
     Ml = Mats((-0.78, -0.02), 0.28)
-    top = 1.18
+    top = 1.36
     parts = []
     parts += tower_parts(Ml, (-0.78, -0.02), 0.28, top, 'l', crown=False)
     parts += tower_parts(M, (0.78, -0.02), 0.28, top, 'r', crown=False)
     for s, m in ((-1, Ml), (1, M)):
         c = (s * 0.78, -0.02)
-        parts.append(loft(f'cap{s}', [circle(c, 0.32, top - 0.005, SEG), circle(c, 0.32, top + 0.06, SEG), circle(c, 0.2, top + 0.13, SEG), [(c[0], c[1], top + 0.17)]], m.block, cap=False))
+        parts.append(loft(f'cap{s}', [circle(c, 0.325, top - 0.005, SEG), circle(c, 0.325, top + 0.07, SEG), circle(c, 0.26, top + 0.11, SEG), circle(c, 0.26, top + 0.13, SEG)], m.block))
+        parts.append(box(f'notch{s}', (c[0], c[1] - 0.2, top + 0.15), (0.2, 0.14, 0.08), m.block))
     parts += arch_face(M, 0.46, 0.5, 0.26, 1.0, 0.36, 'h', peak=0.22)
-    parts += shield(M, 0, -0.195, 0.99, 0.2, 'sh')
+    parts += shield(M, 0, -0.195, 1.0, 0.22, 'sh')
+    for sx in (-1, 1):
+        a = math.atan2(0.22, 0.6)
+        parts.append(box(f'gb{sx}', (sx * 0.3, -0.05, 1.11), (0.68, 0.34, 0.07), M.block, rot=(0, sx * a, 0)))
     if state == 'open':
         # the wings swing towards the viewer and away from the middle: their faces stay visible from the game camera
-        parts.append(wing(M, 'wl', (-0.46, -0.2), math.radians(-40), 0.74, 0.44, flip=True))
-        parts.append(wing(M, 'wr', (0.46, -0.2), math.radians(-140), 0.74, 0.44))
+        parts.append(wing(M, 'wl', (-0.46, -0.2), math.radians(48), 0.74, 0.44, flip=True))
+        parts.append(wing(M, 'wr', (0.46, -0.2), math.radians(-48), 0.74, 0.44))
     else:
         parts.append(wing(M, 'wl', (-0.46, -0.1), 0, 0.74, 0.46))
         parts.append(wing(M, 'wr', (0.46, -0.1), 0, 0.74, 0.46, flip=True))
@@ -292,8 +298,8 @@ def gate_idle():
         parts.append(box(f'cap{s}', (s * 0.42, 0, 1.03), (0.24, 0.42, 0.08), M.block))
     parts += arch_face(M, 0.31, 0.42, 0.22, 0.9, 0.34, 'h', peak=0.14)
     parts += shield(M, 0, -0.18, 0.86, 0.13, 'sh')
-    parts.append(wing(M, 'wl', (-0.31, -0.18), math.radians(-40), 0.56, 0.28, flip=True))
-    parts.append(wing(M, 'wr', (0.31, -0.18), math.radians(-140), 0.56, 0.28))
+    parts.append(wing(M, 'wl', (-0.31, -0.18), math.radians(48), 0.56, 0.28, flip=True))
+    parts.append(wing(M, 'wr', (0.31, -0.18), math.radians(-48), 0.56, 0.28))
     finish(with_wings(parts, 'gate_idle', 0.01), 'gate_idle', size=512)
 
 
@@ -305,8 +311,8 @@ def door(state):
         parts.append(wing(M, 'wl', (-0.33, -0.05), 0, 0.62, 0.33))
         parts.append(wing(M, 'wr', (0.33, -0.05), 0, 0.62, 0.33, flip=True))
     else:
-        parts.append(wing(M, 'wl', (-0.33, -0.12), math.radians(-40), 0.62, 0.3, flip=True))
-        parts.append(wing(M, 'wr', (0.33, -0.12), math.radians(-140), 0.62, 0.3))
+        parts.append(wing(M, 'wl', (-0.33, -0.12), math.radians(48), 0.62, 0.3, flip=True))
+        parts.append(wing(M, 'wr', (0.33, -0.12), math.radians(-48), 0.62, 0.3))
     pid = f'door_{state}_idle'
     finish(with_wings(parts, pid, 0.008), pid, size=512)
 

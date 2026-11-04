@@ -1,0 +1,13 @@
+title: Festung und Fels (schon im Spiel)
+items:
+  - { id: wallrim_idle, name: Mauerkante mit Zinnen, ref: { sheet: ziel_paktwacht.png, box: [600, 720, 828, 830] }, missions: [P, 1-6, 1-8, N2, 3-6], use: "Steht auf jeder freien Mauerkante, Mauer sperrt." }
+  - { id: tower_idle, name: Rundturm, ref: { sheet: ziel_paktwacht.png, box: [185, 440, 300, 610] }, missions: [P, 1-6, 1-8, N2, 3-6], use: "Krönt Ecken und freie Mauerenden." }
+  - { id: gatehouse_open, name: Torhaus offen, ref: { sheet: ziel_paktwacht.png, box: [325, 1090, 500, 1240] }, missions: [P, 1-6, 1-8, 3-6], use: "Zwei Felder breit, begehbar, Engstelle." }
+  - { id: gatehouse_closed, name: Torhaus zu, ref: { sheet: ziel_paktwacht.png, box: [325, 1090, 500, 1240] }, missions: [1-6, 1-8, 3-6], use: "Sperrt, öffnet über Hebel, Schlüssel oder Auslöser (Regel entschieden, noch nicht im Spiel)." }
+  - { id: gate_idle, name: Einfeldiges Tor, ref: { sheet: ziel_paktwacht.png, box: [325, 1090, 500, 1240] }, missions: [N1], use: "Für einzelne Tor-Felder." }
+  - { id: door_closed_idle, name: Tür zu, ref: null, missions: [P, 1-7, 3-1, N7], use: "Sperrt, passend zur Mauer gedreht." }
+  - { id: door_open_idle, name: Tür offen, ref: null, missions: [P, 1-7, 3-1, N7], use: "Begehbar." }
+  - { id: throne_idle, name: Thron, ref: null, missions: [1-6, 1-8, 3-5, 3-8], use: "Ziel und starke Deckung." }
+  - { id: massif_a, name: Felsmasse A, ref: { sheet: ziel_gewoelbe.png, box: [170, 200, 420, 450] }, missions: [1-4, 1-6, 1-7, 2-1, 2-2], use: "Füllt das Feld, sperrt, Nahtstellen verschwinden." }
+  - { id: massif_b, name: Felsmasse B, ref: { sheet: ziel_gewoelbe.png, box: [170, 200, 420, 450] }, missions: [1-4, 1-6, 1-7, 2-1, 2-2], use: "Variante, höher." }
+  - { id: massif_c, name: Felsmasse C, ref: { sheet: ziel_gewoelbe.png, box: [170, 200, 420, 450] }, missions: [1-4, 1-6, 1-7, 2-1, 2-2], use: "Variante, flacher." }

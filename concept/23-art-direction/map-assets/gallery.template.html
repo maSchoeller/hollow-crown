@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hollow Crown Asset-Galerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Galerie: Kacheln mit Referenz links, Modell rechts, nach Asset-Gruppen. */
+:root { --bg: #f2efe7; --card: #fffdf8; --ink: #2a2433; --mute: #6c6577; --line: #d9d3c7; --accent: #2f64c8; --display: "Fraunces", Georgia, serif; --body: "Barlow", system-ui, sans-serif; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #1d1a22; --card: #26222c; --ink: #ece7dd; --mute: #a59eaf; --line: #3a3541; --accent: #7fa7ef; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #1d1a22; --card: #26222c; --ink: #ece7dd; --mute: #a59eaf; --line: #3a3541; --accent: #7fa7ef; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 var(--body); }
+main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 70px; display: grid; gap: 30px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.45rem; margin-bottom: 12px; padding-top: 8px; border-top: 2px solid var(--line); } h3 { font-size: 1rem; margin-top: 8px; }
+h2 small { font: 400 1rem var(--body); color: var(--mute); }
+p { margin: 4px 0; max-width: 68ch; } small { color: var(--mute); } code { font-size: .85em; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; } nav a { color: var(--accent); }
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+article { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+figure { margin: 0; } figure img, .none { width: 100%; aspect-ratio: 1; object-fit: contain; background: #cfd0c9; border-radius: 6px; display: block; }
+.none { display: grid; place-items: center; font-size: .8rem; color: #555; }
+figcaption { font-size: .75rem; color: var(--mute); margin-top: 2px; }
+.wide { display: grid; gap: 12px; }
+.wide img { max-width: 100%; border-radius: 8px; display: block; }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Asset-Galerie der Karten</h1>
+<p>{{COUNT}} Modelle: je Kachel links das von ChatGPT gemalte Vorbild, rechts das Blender-Modell. Noch nicht alle stehen im Spiel, das sind Baustein-Entwürfe für die Staffel.</p>
+<nav>{{NAV}}</nav>
+</header>
+{{SECTIONS}}
+</main>
+</body>
+</html>
