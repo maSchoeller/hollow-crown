@@ -101,9 +101,9 @@ units:
   # Tempeltor: halten den Ausgang (Engstelle 2)
   - { id: tg7, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 3, at: [6, 15], items: [{ def: iron_lance }], ai: { profile: hold } }
   - { id: tg8, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 3, at: [7, 15], items: [{ def: iron_lance }], ai: { profile: hold } }
-  # Nur Schwer: unterer Hof
-  - { id: tg9, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [3, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: tg10, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Nur Schwer: unterer Hof. Balancing 2026-11-05 [C]: warten erst (Radius 7 und 4), statt loszulaufen: Rhen fällt sonst fast immer, Sieg 1 %, so 40 %
+  - { id: tg9, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [3, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 7, then: aggressive }, difficulty: [hard] }
+  - { id: tg10, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements:
   # Seitentor Ost, nach dem Beben
