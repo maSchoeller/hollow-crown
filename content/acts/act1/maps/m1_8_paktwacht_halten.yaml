@@ -113,8 +113,8 @@ units:
   - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [12, 32], items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [16, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [13, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 31], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [18, 34], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 31], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [18, 34], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [11, 34], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [14, 34], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   # Ulvric und Wölfe (Westfelder)
@@ -138,7 +138,7 @@ reinforcements:
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [15, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [14, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [25, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [25, 39], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [4, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [16, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Wachpass im Rücken: Morra und ihre Häscher. Morra zieht in Runde 10 ab (Trigger t_morra_retreat setzt das Profil flee; der Pass ist ihr Rückzugsgebiet).
@@ -175,7 +175,7 @@ reinforcements:
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 29], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
       - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [25, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Ziegenpfad Ost: kleine Gruppe, die den vermauerten Weg sucht
   - turn: 10

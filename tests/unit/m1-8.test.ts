@@ -40,8 +40,8 @@ let base: CampaignState;
 const STORY = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6', 'm1_7'];
 const NODE = 'm1_8';
 /** enemies with Grosk's group on the map: easy, normal, hard */
-// hard has one more than the draft: a marksman with Morra's people (balancing 2026-11-05)
-const COUNTS = [33, 39, 44];
+// balancing 2026-11-05: easy four fewer than the draft, hard one more (a marksman with Morra's people)
+const COUNTS = [29, 39, 44];
 
 beforeAll(() => {
   const loaded = loadContentFromDisk();
@@ -138,7 +138,7 @@ describe('map m1_8_paktwacht_halten', () => {
     expect((m as { haunts?: unknown }).haunts).toBeUndefined();
   });
 
-  it('counts 33 / 39 / 44 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
+  it('counts 29 / 39 / 44 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
     const m = data.maps['m1_8_paktwacht_halten']!;
     const all = [...m.units, ...m.reinforcements.flatMap((r) => r.units)].filter((u) => u.team === 'enemy');
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
