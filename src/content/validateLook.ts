@@ -3,6 +3,9 @@ import type { GameData } from '../core/gameData';
 import type { ContentIssue } from './load';
 import { variantClassOf, variantList } from './propVariants';
 
+/** Terrain props the board builds from pieces or names itself (walls, gates, boardwalks, the rock wall, the lever), not from `<prop>_idle`. */
+const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'rockwall', 'lever']);
+
 /** A map's weather must be one that `render.yaml look.weather[..].acts` allows in the map's act (art-direction §2.5): an error. */
 export function validateWeather(data: GameData): ContentIssue[] {
   const out: ContentIssue[] = [];
@@ -60,7 +63,7 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
  * out (`unshipped`: concept/23-art-direction/map-assets/groups without `ships`, tools/art/build.py), else the board draws nothing
  * there (story 15.8).
  */
-export function validateBoardModels(data: Pick<GameData, 'render' | 'maps'>, existing: ReadonlySet<string>, unshipped: ReadonlySet<string>): ContentIssue[] {
+export function validateBoardModels(data: Pick<GameData, 'render' | 'maps' | 'terrain'>, existing: ReadonlySet<string>, unshipped: ReadonlySet<string>): ContentIssue[] {
   const b = data.render.board;
   const named = new Map<string, string>();
   const name = (model: string, where: string) => {
@@ -68,8 +71,12 @@ export function validateBoardModels(data: Pick<GameData, 'render' | 'maps'>, exi
   };
   for (const [cls, list] of Object.entries(b.variants)) {
     const lists = Array.isArray(list) ? [list] : Object.values(list);
-    for (const l of lists) for (const e of l) name(e.model, `render.yaml board.variants.${cls}`);
+    // a visitable house (lodge) hangs its object's state on the intact model: visited, razed (boardProps.ts withState)
+    const states = (m: string) => (cls === 'lodge' && m.endsWith('_intact') ? ['intact', 'visited', 'razed'].map((s) => `${m.slice(0, -'intact'.length)}${s}`) : [m]);
+    for (const l of lists) for (const e of l) for (const m of states(e.model)) name(m, `render.yaml board.variants.${cls}`);
   }
+  // a terrain prop without variants and without a model kit of its own is drawn as `<prop>_idle` (boardProps.ts, default case)
+  for (const t of Object.values(data.terrain)) if (t.prop && !variantClassOf(t.prop) && !OWN_KIT.has(t.prop)) name(`${t.prop}_idle`, `terrain.yaml ${t.id}`);
   for (const [k, d] of Object.entries(b.decor)) name(d.model, `render.yaml board.decor.${k}`);
   for (const [t, list] of Object.entries(b.decorOn)) for (const d of list) name(d.model, `render.yaml board.decorOn.${t}`);
   for (const m of Object.values(b.propFallback)) name(m, 'render.yaml board.propFallback');
@@ -78,6 +85,19 @@ export function validateBoardModels(data: Pick<GameData, 'render' | 'maps'>, exi
   for (const [model, file] of named) {
     if (!existing.has(model)) out.push({ file, message: `missing model ${model} (art/models/props/${model}.glb)` });
     else if (unshipped.has(model)) out.push({ file, message: `model ${model} is a gallery model without ships: true (concept/23-art-direction/map-assets/groups), the build leaves it out` });
+  }
+  return out;
+}
+
+/**
+ * Gallery models the build leaves out (same rule as tools/art/build.py `unshipped_props`, keep both in step): every item of a
+ * gallery group (concept/23-art-direction/map-assets/groups/*.yaml) unless the group or the item says `ships: true`.
+ */
+export function unshippedGalleryModels(groups: readonly unknown[]): Set<string> {
+  const out = new Set<string>();
+  for (const g of groups) {
+    const group = (g ?? {}) as { ships?: boolean; items?: { id: string; ships?: boolean }[] };
+    if (!group.ships) for (const it of group.items ?? []) if (!it.ships) out.add(it.id);
   }
   return out;
 }

@@ -94,7 +94,7 @@ Spieler bauen die eroberte Paktwacht auf 11 Räume in drei Stufen aus, steigen p
 **FRs covered:** FR14, FR15, FR44, FR50 (ab Akt 2)–FR54 · UX-DR10 (Burg-Ausbau), UX-DR11 (Lektionen), UX-DR21
 
 ### Epic 11: Akt 2 „Glut“
-Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark. Verfeinert am 2026-10-31 und nach der Readiness-Prüfung neu geschnitten: 22 Stories (11.1–11.4 Akt-Übergang, Positionsstufe, Paket und Simulation; 11.5 Gefährten und Leutnants; 11.6 Balliste; 11.7 Flieger, Gegner und Herbst; 11.8 Ziel-Phasen; 11.9 Relikt-Stufen; 11.10–11.17 je eine Mission mit Kurzspezifikation; 11.18–11.20 Nebenquests; 11.21 Supports und Chronik-Szene; 11.22 Abstimmung).
+Spieler spielen Akt 2 mit 8 Story-Missionen inklusive der großen Schlacht Kronfeld, 3 Nebenquests, 4 Leutnants und 4 Entscheidungen in der Eisenmark. Verfeinert am 2026-10-31 und nach der Readiness-Prüfung neu geschnitten: 23 Stories (11.1–11.4 Akt-Übergang, Positionsstufe, Paket und Simulation; 11.5 Gefährten und Leutnants; 11.6 Balliste; 11.7 Flieger, Gegner und Herbst; 11.8 Ziel-Phasen; 11.9 Relikt-Stufen; 11.10–11.17 je eine Mission mit Kurzspezifikation; 11.18–11.20 Nebenquests; 11.21 Supports und Chronik-Szene; 11.22 Abstimmung; 11.23 Galerie-Modelle, aus Story 15.8).
 **FRs covered:** FR17 (Akt 2), FR61, FR63
 
 ### Epic 12: Akt 3 „Krone“ und Staffelende – grob

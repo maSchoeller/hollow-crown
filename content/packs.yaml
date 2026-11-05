@@ -108,6 +108,8 @@ packs:
       - market_b
       - camp_tent_a
       - mill_idle
+      # das alte Zelt zeichnet seit Story 15.8 kein Gelände mehr (Stand = Marktstand bzw. Lagerzelt): nicht mehr im ersten Download
+      - tent_idle
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**
