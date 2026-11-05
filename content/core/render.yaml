@@ -14,6 +14,7 @@ aiPace:
   focusMs: 450        # der Handelnde pulsiert so lange, bevor er zieht oder schlägt
   afterMoveMs: 350    # Pause auf dem Zielfeld, bevor er schlägt oder der Nächste zieht
   afterStrikeMs: 450  # Pause nach einem Gegnerschlag
+  marchMin: 2         # Story 15.11, „Gegnerzüge: Gemeinsam“: so viele Gegner, die nur laufen, ziehen ab hier gleichzeitig
 
 # D1/D10: Brett. skirt = Landschaft rund um die Karte (Felder), skirtDim = Abdunklung dort (0–1),
 # waterLevel = Wasserspiegel, baseDepth = Unterkante des Dioramas (Felder unter Bodenniveau)

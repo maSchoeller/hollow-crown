@@ -149,6 +149,9 @@ export default defineConfig(({ mode }) => {
     test: {
       include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'],
       environment: 'node',
+      // story 15.11: tests that play whole battles (replays, worker protocol, now on 30×40 maps) take 2–4 s alone and broke the
+      // default 5 s under load (other checkouts, dev servers, CI runners); the limit only catches hangs, it checks nothing itself
+      testTimeout: 20_000,
       coverage: {
         provider: 'v8',
         include: ['src/core/**/*.ts'],

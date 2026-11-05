@@ -1,6 +1,6 @@
 /** The battle screen: HUD, sheets and panels over the 3D board. State, board, overlays, presentation, commands and input live in the hooks next to it. */
 import { type ActionOption, type BattleUnit, active, availableActions, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
-import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
+import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 import { CLASS_KINDS, type Mode } from './battleMode';
 import { CutIn } from './CutIn';
@@ -35,7 +35,7 @@ export function Battle() {
     banner, bark, boardRef, bottomRef, cancelRef, chipRef, classPick, confirmEnd, convoy, cutIn, danger, dialogue,
     floatRef, fogged, full, hp, info, items, levelUp, loading, menu, mode, objectives, phaseView, reason, recap, s,
     setClassPick, setConvoy, setCutIn, setDanger, setInfo, setItems, setMenu, setMode, setObjectives, setReason,
-    setRecap, setToastState, setTrade, setWanted, stageRef, tileInfo, toast, topRef, trade, unit, wanted, wide,
+    setRecap, setToastState, setTrade, setWanted, stageRef, tileInfo, toast, topRef, trade, unit, wanted, whole, wide,
   } = b;
   const show = useBattlePresentation(b);
   useBoardLifecycle(b, show);
@@ -345,6 +345,7 @@ export function Battle() {
             <>
               <div class="hud-topbar">
                 <TurnPill turn={shownTurn} phase={shownPhase} goal={goalText} progress={goalProgress} onClick={() => setObjectives(true)} />
+                <OverviewStone on={whole} onClick={() => boardRef.current?.wholeMap()} />
                 <MenuStone onClick={() => setMenu(true)} />
               </div>
               <GoalPills

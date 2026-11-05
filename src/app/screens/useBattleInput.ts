@@ -1,6 +1,7 @@
 /** Input handling of the battle screen (Battle.tsx). */
 import { type Action, type ActionOption, type BattleUnit, type Command, type Pos, active, availableActions, destinations, itemDef, itemTargets, killMarks, longPressView, perilWarnings, posKey, pursueReach, samePos, unitAt } from '../../core';
 import type { KillKind } from '../../render/board/badges';
+import { overviewTap } from './largeMap';
 import { audio } from '../audio';
 import { battle } from '../state/battle';
 import { data } from '../state/session';
@@ -49,6 +50,10 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
 
   tapRef.current = (p: Pos) => {
     if (!playerTurn) return;
+    // story 15.11: a tap in the overview jumps there; on a figure it also chooses it as usual
+    const route = overviewTap(!!boardRef.current?.isWholeMap(), !!unitAt(s, p));
+    if (route.zoom) void boardRef.current!.zoomInAt(p);
+    if (!route.tap) return;
     if (recap) setRecap(null);
     audio.sfx('tap');
     const at = unitAt(s, p);

@@ -51,7 +51,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene |
 | Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen |
 | Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region |
-| Optionen | Titel, Menü | Sprache, Tempo, Qualität, Lautstärke, Bildschirmwackeln; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig |
+| Optionen | Titel, Menü | Sprache, Tempo, Gegnerzüge (Gemeinsam/Einzeln), Qualität, Lautstärke, Bildschirmwackeln; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig |
 | Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen |
 | Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen |
 
@@ -115,7 +115,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 
 | Fläche | Zustände |
 |---|---|
-| Kampf | Leerlauf · Einheit gewählt (Kill-Marker) · Bewegung gesetzt (zurücknehmbar bis zur Aktion, Zielfeld-Check) · Ziel gewählt (Vorschau, Schaden in der Lebensleiste) · Gegnerphase (Tempo 1×/2×/Überspringen) · Rückblick nach der Gegnerphase · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
+| Kampf | Leerlauf · Einheit gewählt (Kill-Marker) · Bewegung gesetzt (zurücknehmbar bis zur Aktion, Zielfeld-Check) · Ziel gewählt (Vorschau, Schaden in der Lebensleiste) · Gegnerphase (Tempo 1×/2×/Überspringen; Gegner, die nur laufen, ziehen bei „Gegnerzüge: Gemeinsam“ gleichzeitig, Schläge bleiben einzeln) · Rückblick nach der Gegnerphase · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
 | Einheit | bereit · in Gefahr (Warn-Totenkopf) · erschöpft (entsättigt, Ring gestrichelt, Häkchen) · kritisch (Lebensleiste unter 25 % mit pulsierendem Glutrand) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
 | Weltkarte | normal · neuer Tag (Hinweis mit Zahl der Heimsuchungen) · Paket lädt · Akt beendet, nächster nicht veröffentlicht („erscheint bald“ im Nebel) · offline mit fehlendem Paket (Knoten sichtbar, „Wird geladen, sobald du online bist“) |
 | Heimat | Lager (Akt 1 bis Mission 1-6, sechs Stationen) · Burg (ab 1-6: sechs Räume auf Stufe 1 und Gedächtnishalle; ab Akt 2 elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |
@@ -134,6 +134,8 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Zweiter Tipp auf dasselbe Ziel | bestätigen (Bewegung, Angriff, Antwort) |
 | Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners, Item-Details |
 | Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett plus eine vierte „ganze Karte“ beim Herauspinchen über die weiteste Stufe; 2 auf der Weltkarte) |
+| Übersicht-Stein (Kampf) | runder Stein mit Karten-Icon neben dem Menü-Stein: „ganze Karte“ ein und aus, ohne Pinch; gedrückt, solange die ganze Karte zu sehen ist (Story 15.11) |
+| Tipp in der Übersicht | springt: die Kamera geht auf die weiteste normale Zoomstufe, zentriert auf das getippte Feld; ein leeres Feld wird nicht gewählt, eine Figur wie gewohnt (Story 15.11) |
 | Ziehen | Kamera verschieben |
 | Wischen | nächste Figur, nächste Epilog-Kachel, nächstes Kontext-Band (Punkte-Anzeige darunter) |
 | PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Hover über ein Zielfeld = Zielfeld-Check, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone, M = ganze Karte, F = vorderes Kontext-Band ausführen, Pfeiltasten = zwischen Kontext-Bändern |

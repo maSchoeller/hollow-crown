@@ -297,6 +297,7 @@ Kein Stapel tiefer als eine Karte über einem Panel.
 | **Kontext-Band** (`context-band`) | grüne Pille über der Einheitenkarte: Mini-Porträt, Aktion, Grund (z. B. „Verblutet nach 2 eigenen Phasen“), grüne Taste |
 | **Medaillon** (`medallion`) | rundes Porträt mit TP-Ring in Teamfarbe und Stufen-Pille unten; Leutnant mit Goldring; Niedergestreckte grau |
 | **Einheitenkarte** | Stein mit Medaillon, Name, Rolle, TP als Zahl, Waffen-Chip |
+| **Übersicht-Stein** | runder Stein wie der Menü-Stein, Karten-Icon, links neben ihm in der Kopfzeile des Kampfs; gedrückt (ganze Karte zu sehen) mit `{colors.team-player-soft}` als Grund (Story 15.11) |
 | **Phasen-Pille** (`phase-pill`) | oben mittig; Spielerphase Glut-Badge mit Runde, Gegnerphase rot mit großem Titel |
 | **Ziel-Pillen** | Hauptziel in der Rundenpille, Nebenziele als kleine Pillen mit Icon und Stand |
 | **Groll-Wimpel** | roter Wimpel über dem Leutnant, 0–3 weiße Kerben |

@@ -49,9 +49,57 @@ export abstract class BoardCamera extends BoardUnits {
     this.zoomTo(next);
   }
 
+  /** Is the camera on the zoom step "whole map" (story 15.11)? */
+  isWholeMap(): boolean {
+    return this.step >= this.data.render.camera.zoomSteps.length;
+  }
+
+  /** Tells the UI when the camera went to the whole map or left it. */
+  private wholeShown: boolean | null = null;
+  protected noteWholeMap(): void {
+    const on = this.isWholeMap();
+    if (on === this.wholeShown) return;
+    this.wholeShown = on;
+    this.hooks.onWholeMap?.(on);
+  }
+
+  /**
+   * From the whole map back to the farthest normal step, centred on `p` (story 15.11: a tap in the overview jumps there).
+   * Does nothing when the camera is not on the whole map.
+   */
+  zoomInAt(p: Pos): Promise<void> {
+    if (!this.isWholeMap()) return Promise.resolve();
+    const next = this.data.render.camera.zoomSteps.length - 1;
+    this.step = next;
+    this.noteWholeMap();
+    const ppt = this.pptFor(next);
+    this.zoomTween = { from: this.ppt, to: ppt, start: performance.now() };
+    const css = this.hooks.insets?.() ?? NO_INSETS;
+    const kv = 1 / ppt / this.cosTilt();
+    const tx = centreOn(p[0] + 0.5, css.left / ppt, css.right / ppt);
+    const ty = centreOn(p[1] + 0.5, css.top * kv, css.bottom * kv);
+    if (this.skip) {
+      this.ppt = ppt;
+      this.zoomTween = null;
+      this.camX = tx;
+      this.camY = ty;
+      this.clampCamera();
+      return Promise.resolve();
+    }
+    const fx = this.camX;
+    const fy = this.camY;
+    this.wake();
+    return this.tween(Math.max(1, this.data.render.camera.zoomMs), (t) => {
+      this.camX = fx + (tx - fx) * t;
+      this.camY = fy + (ty - fy) * t;
+      this.clampCamera();
+    });
+  }
+
   protected zoomTo(next: number): void {
     const whole = next === this.data.render.camera.zoomSteps.length;
     this.step = next;
+    this.noteWholeMap();
     this.zoomTween = { from: this.ppt, to: this.pptFor(next), start: performance.now() };
     if (whole && this.state) {
       // the whole map sits in the middle of the free area
@@ -81,6 +129,7 @@ export abstract class BoardCamera extends BoardUnits {
   protected fitCamera(): void {
     const s = this.state;
     this.step = Math.min(1, this.data.render.camera.zoomSteps.length - 1);
+    this.noteWholeMap();
     this.ppt = this.pptFor(this.step);
     const player = s.units.filter((u) => u.team === 'player' && u.pos);
     let cx = s.width / 2;
@@ -153,6 +202,7 @@ export abstract class BoardCamera extends BoardUnits {
     const ppt = this.pptFor(plan.step);
     if (plan.step !== this.step) {
       this.step = plan.step;
+      this.noteWholeMap();
       this.zoomTween = { from: this.ppt, to: ppt, start: performance.now() };
     }
     const kv = 1 / ppt / this.cosTilt();

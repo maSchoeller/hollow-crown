@@ -104,6 +104,8 @@ export interface RenderDef {
     focusMs: number;
     /** pause on the new tile after a foe's walk */
     afterMoveMs: number;
+    /** story 15.11: this many foes in a row that only walk go together (option „Gegnerzüge: Gemeinsam“) */
+    marchMin: number;
     /** pause after a foe's strike before the next action */
     afterStrikeMs: number;
   };

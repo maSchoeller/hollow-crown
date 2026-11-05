@@ -106,6 +106,10 @@
   border-radius: 50%;
   cursor: pointer;
 }
+/* story 15.11: the overview stone while the whole map shows */
+.hud-round.is-on {
+  background: var(--hc-team-player-soft);
+}
 .hud-round:active,
 .hud-turn:active,
 .hud-ctx:active,

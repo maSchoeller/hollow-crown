@@ -1,6 +1,6 @@
 # Story 15.8: Galerie-Modelle für Akt 1
 
-Status: review
+Status: done
 
 ## Story
 

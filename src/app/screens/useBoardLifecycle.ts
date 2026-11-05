@@ -16,13 +16,14 @@ import type { BattlePresentation } from './battlePresentation';
 export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): void {
   const {
     boardRef, bottomRef, cancelRef, cutInRef, dialogue, eventRef, floatRef, longRef, ltReady, ltSpoken, openingBark,
-    setBusy, setHover, setHp, setLoading, setPhaseView, stageRef, tapRef, topRef, wide,
+    setBusy, setHover, setHp, setLoading, setPhaseView, setWhole, stageRef, tapRef, topRef, wide,
   } = b;
   const { playBark, playLieutenantLines } = show;
   useEffect(loadHalfFigures, []);
   useEffect(() => {
     const board = new BoardView(stageRef.current!, floatRef.current!, data, {
       onTap: (p) => tapRef.current(p),
+      onWholeMap: (on) => setWhole(on),
       onLongPress: (p) => longRef.current(p),
       onDoubleTap: (p) => void boardRef.current?.centerOn(p),
       onHover: (p) => setHover(p),

@@ -1,6 +1,6 @@
 # Story 15.7: Weltkarte v5 einbinden
 
-Status: review
+Status: done
 
 ## Story
 
