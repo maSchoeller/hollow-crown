@@ -60,8 +60,8 @@ Leicht und Normal aus 20 Läufen vor den Wolfsreitern; Schwer aus bis zu 120 Lä
 <details>
 <summary>Noch offen</summary>
 
-- Schwer 1-5 und 1-6 zu leicht: Die Truppe hält den Hügel bzw. stürmt die Burg zu sicher; braucht mehr Gegner nur auf Schwer.
-- Kleine Normal-Abweichungen in 1-1, 1-6, 1-7, 1-8 nach neuer Messung mit Wolfsreitern prüfen.
+- 1-7 auf Normal schwankt zwischen 70 und 87 %: Die KI holt die Chronik manchmal nicht in 8 Runden. Das Limit bleibt.
+- Prolog und 1-1 auf Normal mit wenig Niedergestreckten (0,15 / 0,20), so gewollt sanft.
 - Halvard hat noch keine eigene Figur (Platzhalter Dorfältester).
 - Häscher in 1-1 heißen als Einheit weiter „Kopfgeldjäger“.
 - FPS auf 30 × 40 nicht gemessen; KI-Zug 1-8 höchstens 5 ms je Figur.

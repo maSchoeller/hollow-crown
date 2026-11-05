@@ -122,7 +122,7 @@ units:
   - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [7, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [4, 30], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [3, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [6, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [6, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Grosk und Hungernde (Ostfelder). Grosk selbst fehlt nach einem Beitritt von allein, die Hungernden hängen am Flag.
   - { id: grosk, lieutenant: grosk, nameKey: unit.grosk.name, team: enemy, sprite: grosk, portrait: grosk, level: 6, at: [24, 32], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
   - { id: g1, nameKey: unit.starving_raider.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [25, 31], items: [{ def: iron_axe }], ai: { profile: aggressive }, requires: [{ not: { flag: joined_grosk } }] }
@@ -158,7 +158,7 @@ reinforcements:
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [24, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [3, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 28], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 28], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [15, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 7
     phase: enemy
