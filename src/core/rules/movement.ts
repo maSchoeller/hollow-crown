@@ -230,7 +230,7 @@ export function canStrike(
   from: Pos,
   to: Pos,
   range: readonly [number, number],
-  target: BattleUnit | null | undefined = unitAt(s, to),
+  target?: BattleUnit,
 ): boolean {
   const d = dist(from, to);
   if (d < range[0] || d > range[1] + data.balance.elevation.rangedBonus) return false;
@@ -239,7 +239,8 @@ export function canStrike(
   if (d > range[1] && (range[1] < 2 || lf <= lt)) return false;
   if (d !== 1 || lf === lt) return true;
   const flies = (u: BattleUnit) => data.balance.elevation.freeMoveTypes.includes(data.classes[u.classId]!.moveType);
-  if (flies(unit) || (target && flies(target))) return true;
+  const struck = target ?? unitAt(s, to);
+  if (flies(unit) || (struck && flies(struck))) return true;
   if (Math.abs(lf - lt) !== 1) return false;
   const connector = data.terrain[terrainAt(s, lf < lt ? from : to)]?.connector;
   return !!connector && data.balance.elevation.meleeConnectors.includes(connector);
@@ -247,7 +248,9 @@ export function canStrike(
 
 /** The tiles an attack with this range can reach from `from`, against `target` if given, else against whoever stands there; see `canStrike`. */
 export function strikeTiles(data: GameData, s: BattleState, unit: BattleUnit, from: Pos, range: readonly [number, number], target?: BattleUnit): Pos[] {
-  return tilesInRange(s, from, [range[0], range[1] + data.balance.elevation.rangedBonus]).filter((p) => canStrike(data, s, unit, from, p, range, target ?? unitAt(s, p)));
+  // only a ranged weapon can gain reach from above, so a melee one looks at its own tiles alone
+  const far = range[1] < 2 ? range[1] : range[1] + data.balance.elevation.rangedBonus;
+  return tilesInRange(s, from, [range[0], far]).filter((p) => canStrike(data, s, unit, from, p, range, target));
 }
 
 /** Attack range of a weapon for a unit, including skill range bonuses (longshot) and `extraRange` (Zielen). */
