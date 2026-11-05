@@ -8,6 +8,8 @@
 - **Halvard** (unangreifbar) und **Liora** warten am Schrein. Liora heilt, wer die Lichtung erreicht, und muss überleben.
 - Wellen: Runde 4 von Süden auf der Spur der Truppe, Runde 6 Morras Flankenleute.
 
+**Im Spiel (2026-11-05):** Schrein auf einer Terrasse (Stufe 1, x 6–13, y 1–2), Rampe in der Mitte, zwei Felder breit. Morras Schützen oben in den Ruinen über der Rampe. Abweichungen: Halvard auf dem Schrein mit Platzhalterfigur; Ortsbild bleibt `silberbach`, bis es eines vom Weißdorn gibt; Liora spricht erst auf der Lichtung.
+
 ![Raster](s1_1_3_weissdorn.png)
 
 <details><summary>Details</summary>

@@ -371,4 +371,5 @@ entries:
   - { id: lesson_move, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_move, see: [movement, forecast] }
   - { id: lesson_danger, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_danger, see: [danger, terrain_cover] }
   - { id: lesson_heal, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_heal, see: [rescue, phases] }
+  - { id: lesson_height, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_height, see: [movement, forecast] }
   - { id: lesson_triangle, category: lessons, graphic: lesson, lesson: scn.m1_1.tutorial_triangle, see: [triangle, forecast] }

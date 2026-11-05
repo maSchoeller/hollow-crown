@@ -1,135 +1,136 @@
-# Mission 1-2 – Asche über Erlbach (Story 9.3, Knoten m1_2). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
-# Ort: Erlbach, Dorf am Bach im Grenzland, Spätsommer. Tageszeit: Nachmittag, Wetter: Asche, Rauch über den Feldern
-# (art-direction §2.5; Felder timeOfDay/weather). Planung: Ortsbild „erlbach“ für die Heimsuchungen / Weltkarte (Story 8.x), nur als Kommentar.
-# Ziel: Der Dorfälteste (dritte Partei) übersteht 8 Runden (defend). Erste Begegnung mit Leutnant Hask und seinen Marodeuren.
-# Die Truppe steht im Süden am Bach; die einzige Brücke (x=7) ist die Engstelle für Vorkämpfer, Furten (x=3, x=12) nur für Fußtruppen.
-# Dorf in der Mitte: 5 Häuser (besuchbar), Felder und Zäune an den Flanken, Wald im Norden, aus dem Hask kommt.
-# Wartende Marodeure (trigger) wachen bei defend von selbst auf: Standard Runde 4 (50 % von 8), hier per wakeTurn gestaffelt (Runde 5-7), damit Normal im Korridor bleibt.
-# Marodeure mit Profil raider zerstören Häuser auf dem Weg; ein Besuch rettet das Haus (Belohnung). Brennende Felder und Wald belohnen Elementaristen.
-# Miras Beitritt (PO 2026-10-26): Besuch ihres Hauses v_e (Hütte am Ostrand [13,7], Ziel des Marodeurs r5) im Kampf, Belohnung `recruit: mira`.
-# Zerstört ein Marodeur das Haus vorher (Trigger object_destroyed), ist Mira dauerhaft weg (scn.m1_2.mira_lost) und E1 entfällt.
+# Mission 1-2 – Asche über Erlbach (Knoten m1_2). Entwurf s1_1_2_erlbach (abgenommen), Missionsliste: M 20×24, defend, 7 / 18, Leutnant Hask. Startwerte [C].
+# Dorf Erlbach nördlich des Bachs, Abend, Asche. Die Truppe startet am Nordufer; Hask zieht aus seinem Lager im Süden über die Brücke und zwei Furten (nur zu Fuß) heran.
+# Seine Leute haben die Kornfelder südlich des Bachs angezündet, das Feuer frisst sich durch die Felder. Bleibt flach (keine Höhenstufen).
+# Ziel: Der Dorfälteste (dritte Partei, Klasse civilian) übersteht 8 Runden (defend).
+# Marodeure mit Profil raider zerstören Häuser; ein Besuch rettet das Haus. Miras Haus v_e (Hütte am Ostrand [17,8]): Besuch im Kampf, Belohnung `recruit: mira`.
+# Zerstört ein Marodeur es vorher (Trigger object_destroyed), ist Mira dauerhaft weg (scn.m1_2.mira_lost, Flag mira_house_razed) und E1 entfällt. Von den Aufstellfeldern ist das Haus in Runde 2 erreichbar, frühestens in Runde 4 steht ein Plünderer davor.
+# Hask flieht bei 0 TP (gone: fled), Groll, Kopfgeld, Signaturwaffe Zunder (tinder). Seine Kartenwaffe ist Eisen (iron_axe), damit „+1 Tier je Groll“ greift.
+# Balancing 2026-11-05 [C]: Mit dem Entwurf (alle sofort aggressiv) Normal 4 % Sieg. Die Südtruppe wartet gestaffelt (wakeTurn 3–7), Hask ab Runde 6 statt 3, Stufen 2 statt 3, Flankenwellen Stufe 1 und eine Runde später (R4, R6). Gegnerzahl wie im Entwurf.
+# Häuser-IDs der alten Karte bleiben (v_elder, v_n1, v_n2, v_w, v_e), die Szenen scn.m1_2.house_* wandern mit.
 # Szenen: scn.m1_2.intro / .outro (Knoten pre/post, E1 in der Nachszene), scn.m1_2.hask_battle (Kampfzeile), Besuchsszenen scn.m1_2.house_*.
-# Der Dorfälteste ist ein Zivilist (Klasse civilian, Nichtkämpfer); er steht auf der Dorfstraße am Brückenkopf [7,10] und wird verteidigt.
 id: m1_2_erlbach
 nameKey: map.m1_2_erlbach.name
-size: [16, 16]
+size: [20, 24]
 fog: false
 legend:
   ".": plain
   ",": grass
+  "f": field
   "_": road
   "T": forest
   "~": river
-  "w": shallows      # Furt, nur Fußtruppen
-  "=": bridge        # die Brücke: Engstelle
-  "H": village       # Haus (besuchbar)
-  "f": field         # Feld (Requisite field), brennbar
-  "x": fence         # Zaun (Requisite fence), nur Flieger drüber
-#          x: 0123456789ABCDEF
+  "w": shallows
+  "=": bridge
+  "B": building
+  "H": village
+#          x: 01234567890123456789
 terrain: |
-  TTTTTTT__TTTTTTT
-  TTTT,,T__T,,TTTT
-  TT,,,,,__,,,,,TT
-  T,,ff,,__,,ff,,T
-  ,,fffx,__,xfff,,
-  ,,fff,H__H,fff,,
-  ,,,,,,,__,,,,,,,
-  ,,H,,,,__,,,,H,,
-  ,,,,,,H__,,,,,,,
-  ,ffff,,__,,ffff,
-  ,ffffx,__,xffff,
-  ,,,,,,,_,,,,,,,,
-  ~~~w~~~=~~~~w~~~
-  ~~~w~~~=~~~~w~~~
-  T,,,,,,_.,,,,,,T
-  TT,,,,,..,,,,,TT
-# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+  TTTTTT,,,,_,,,,TTTTT
+  TTTTTT,,,,_,,,,TTTTT
+  TT,,,,,,,,_,,,,,,,,T
+  ,,,H,,,,,,_,,,,,H,,,
+  ,,,,............,,,,
+  ,,,,..BB.....BB.,,,,
+  ,,,,.....T......,,,,
+  ,,H,.___________,,,,
+  ,,,,............,H,,
+  ,,,,.BB......BB.,,,,
+  ,,,,.........BB.,,,,
+  ,,,,,,,,,,_,H,,,,,,,
+  TT,,,,,,,,_,,,,,,,,,
+  TT,,,,,,,,_,,,,,,,,,
+  ~~~ww~~~~~=~~~~~ww~~
+  ~~~ww~~~~~=~~~~~ww~~
+  ,,,,,,,,,,_,,,,,,,,,
+  ,,fffffff,_,fffffff,
+  TTfffffff,_,fffffff,
+  TTfffffff,_,fffffff,
+  TTfffffff,_,fffffff,
+  TT,,,,,,,,_,,,,,,,,,
+  TT,,,,,,,,_,,TTT,,TT
+  TT,,,,,,,,_,,TTT,,TT
 timeOfDay: evening
 weather: ash
 lights:
-  - { at: [6, 5], color: "#ffb35c", radius: 3 }
-  - { at: [13, 7], color: "#ffb35c", radius: 3 }
-objects:
-  # Belohnungen [C]; v_e ist Miras Haus (Beitritt statt Gegenstand, der Wurfspieß entfällt)
-  - { id: v_elder, type: village, at: [6, 8],  reward: { item: { def: vulnerary }, dialogue: scn.m1_2.house_elder } }   # Haus des Dorfältesten; er selbst steht auf der Dorfstraße am Brückenkopf [7,10]
-  - { id: v_n1,    type: village, at: [6, 5],  reward: { gold: 200, dialogue: scn.m1_2.house_n1 } }
-  - { id: v_n2,    type: village, at: [9, 5],  reward: { item: { def: remedy_salve }, dialogue: scn.m1_2.house_n2 } }
-  - { id: v_w,     type: village, at: [2, 7],  reward: { gold: 200, dialogue: scn.m1_2.house_w } }
-  - { id: v_e,     type: village, at: [13, 7], reward: { recruit: mira, dialogue: scn.m1_2.mira_house } }
+  - { at: [9, 7], color: "#ffb35c", radius: 3 }
+  - { at: [17, 8], color: "#ffb35c", radius: 3 }
 # Felder in Brand: Lehrstück Feuer/Gras (Elementaristen)
 initialEffects:
-  - { effect: burning, tiles: [[11, 10], [12, 10]], turns: 3 }
+  - { effect: burning, tiles: [[4, 18], [5, 18], [14, 18], [15, 19]], turns: 3 }
+objects:
+  # Belohnungen [C]; v_e ist Miras Haus (Beitritt statt Gegenstand)
+  - { id: v_n1, type: village, at: [3, 3], reward: { gold: 200, dialogue: scn.m1_2.house_n1 } }
+  - { id: v_n2, type: village, at: [16, 3], reward: { item: { def: vulnerary }, dialogue: scn.m1_2.house_n2 } }
+  - { id: v_w, type: village, at: [2, 7], reward: { item: { def: hand_axe }, dialogue: scn.m1_2.house_w } }
+  - { id: v_e, type: village, at: [17, 8], reward: { recruit: mira, dialogue: scn.m1_2.mira_house } }
+  - { id: v_elder, type: village, at: [12, 11], reward: { gold: 100, dialogue: scn.m1_2.house_elder } }
 deploy:
-  max: 5
+  max: 6
   forced: [avatar, kael]
-  slots: [[7, 14], [8, 14], [6, 14], [9, 14], [7, 15], [8, 15], [6, 15]]
+  slots: [[8, 12], [9, 12], [11, 12], [12, 12], [8, 13], [9, 13], [11, 13], [12, 13]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: die Dorfstraße vor dem Haus des Ältesten – hier hat die Truppe Erlbach gehalten, hier kehrt Hasks Groll zurück. Der Älteste steht mitten
-  # auf der Straße, die Truppe als Riegel nördlich von ihm (Anführer hinten; Simulation 2026-10-28: am Südrand aufgestellt 71 %, so 96 %).
+  # Grund: die Dorfstraße vor der Linde – hier hat die Truppe Erlbach gehalten, hier kehrt Hasks Groll zurück. Der Älteste steht mitten auf der Straße,
+  # die Truppe um ihn, die Angreifer kommen vom Bach her.
   - variant: defend
-    target: { at: [8, 8] }
-    enemySpawn: { rect: [5, 0, 10, 1] }
-    deploy: { tiles: [[8, 9], [7, 6], [8, 6], [7, 7], [9, 7], [7, 8], [9, 8], [8, 7]] }
+    target: { at: [9, 7] }
+    enemySpawn: { rect: [8, 12, 12, 13] }
+    deploy: { tiles: [[9, 8], [8, 7], [10, 7], [9, 6], [8, 8], [10, 8], [8, 6], [10, 6]] }
     turns: 8
   # Grund: die Brücke über den Bach – Hinterhalt an der Engstelle auf dem Rückweg.
   - variant: rout
-    target: { at: [7, 12] }
-    enemySpawn: { rect: [5, 9, 9, 10] }
-    deploy: { rect: [5, 14, 9, 15] }
-  # Grund: der Waldweg im Norden, auf dem die Marodeure kamen.
+    target: { at: [10, 14] }
+    enemySpawn: { rect: [8, 11, 11, 13] }
+    deploy: { rect: [9, 16, 11, 18] }
+  # Grund: die Straße nach Süden zu Hasks Lager, auf der die Marodeure kamen.
   - variant: boss
-    target: { at: [8, 1] }
-    enemySpawn: { rect: [9, 2, 12, 3] }
-    deploy: { rect: [5, 14, 9, 15] }
-# Marodeure: Axt/Lanze/Schwert/Bogen gemischt. Hask kommt über die Straße.
-# Epic 3: Hask flieht bei 0 TP (gone: fled), Groll, Kopfgeld, Signaturwaffe Zunder (tinder). Seine Kartenwaffe ist Eisen (iron_axe), damit
-# „+1 Tier je Groll“ greift und er nicht überladen ist (Review R15/R35). Hask ist kein Boss: das Ziel ist defend. level wird von createBattle gerechnet (3.4).
+    target: { at: [10, 22] }
+    enemySpawn: { rect: [8, 20, 12, 21] }
+    deploy: { rect: [8, 12, 12, 13] }
 units:
-  # Zivilist (Klasse civilian: keine Waffe, schwache Werte); Figur und Porträt villager_elder
-  - { id: elder, nameKey: unit.erlbach_elder.name, team: other, class: civilian, level: 1, at: [7, 10], sprite: villager_elder, portrait: villager_elder, items: [], ai: { profile: hold } }
-  - id: hask
-    nameKey: unit.hask.name
-    team: enemy
-    class: brigand
-    level: 5
-    at: [8, 1]
-    lieutenant: hask
-    sprite: hask
-    portrait: hask
-    items: [ { def: iron_axe }, { def: vulnerary } ]
-    drops: [1]
-    ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 6 }
-    quote: scn.m1_2.hask_battle
-  # Raider starten so weit vom Ziel, dass sie zwei Gegnerphasen brauchen: ein Haus brennt frühestens in Gegnerphase 3, jedes ist in Spielerphase 2 erreichbar
-  - { id: r1, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [7, 0],  items: [{ def: iron_axe }],   ai: { profile: raider, target: v_n1 } }
-  - { id: r2, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [8, 0],  items: [{ def: iron_axe }],   ai: { profile: raider, target: v_n2 }, difficulty: [easy, normal] }
-  - { id: r2h, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [9, 3],  items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
-  - { id: r3, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,        level: 3, at: [4, 1],  items: [{ def: iron_axe }], ai: { profile: raider, target: v_w }, difficulty: [easy, normal] }
-  - { id: r3h, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [4, 1],  items: [{ def: iron_axe }], ai: { profile: raider, target: v_elder }, difficulty: [hard] }
-  - { id: r4, nameKey: unit.marauder.name, team: enemy, class: vanguard,   sprite: soldier,       level: 3, at: [7, 2],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 5 } }
-  - { id: r6, nameKey: unit.marauder.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [10, 2], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 5 } }
-  - { id: r7, nameKey: unit.marauder.name, team: enemy, class: vanguard,   sprite: soldier,       level: 4, at: [3, 4],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive, wakeTurn: 6 }, difficulty: [normal, hard] }
-  - { id: r9, nameKey: unit.marauder.name, team: enemy, class: brigand,    sprite: brigand,       level: 4, at: [12, 4], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 3, then: aggressive, wakeTurn: 6 }, difficulty: [normal, hard] }
-  - { id: r10, nameKey: unit.marauder.name, team: enemy, class: vanguard,   sprite: soldier,       level: 4, at: [5, 6],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 2, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
+  - { id: elder, nameKey: unit.erlbach_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: villager_elder, level: 1, at: [9, 8], items: [], ai: { profile: hold } }
+  # Hask auf der Straße, rückt ab Runde 3 nach
+  - { id: hask, nameKey: unit.hask.name, team: enemy, class: brigand, sprite: hask, portrait: hask, level: 5, at: [10, 22], lieutenant: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 6 }, quote: scn.m1_2.hask_battle }
+  # Straße zur Brücke
+  - { id: r1, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [10, 20], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 3 } }
+  - { id: r2, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [9, 21], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 5 } }
+  - { id: r3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [11, 21], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 6 } }
+  - { id: r4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [8, 22], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 6 } }
+  - { id: r5, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 22], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 6 } }
+  # Westfurt: Plünderer aufs Westhaus
+  - { id: r6, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [4, 21], items: [{ def: iron_axe }], ai: { profile: raider, target: v_w } }
+  - { id: r7, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [6, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
+  # Ostfurt: Plünderer auf Miras Haus
+  - { id: r8, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [16, 21], items: [{ def: iron_axe }], ai: { profile: raider, target: v_e } }
+  - { id: r9, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
+  - { id: r10, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 21], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
+  # Nur Schwer
+  - { id: r11, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [5, 22], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: r12, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [12, 21], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-# Wellen aus dem Nordwald, angekündigt. Runde 2: Raider auf das Haus am Ostrand (Mira); Runde 3: ein Marodeur; Runde 4: nur Schwer, zwei
 reinforcements:
-  - turn: 2
+  # Flanke Ost am Nordufer
+  - turn: 4
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [13, 1], items: [{ def: hand_axe }], ai: { profile: raider, target: v_e } }
-  - turn: 3
-    phase: enemy
-    announce: true
-    units:
-      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [7, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [19, 12], items: [{ def: iron_axe }], ai: { profile: raider, target: v_e } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [19, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Flanke West aus dem Wald
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [10, 1], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [0, 10], items: [{ def: iron_axe }], ai: { profile: raider, target: v_n1 } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [0, 11], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Nachschub aus Hasks Lager
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [10, 23], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [11, 23], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [9, 23], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: defend, unit: elder, turns: 8 }
   defeat:
@@ -149,7 +150,30 @@ triggers:
       - { action: dialogue, id: scn.m1_2.mira_lost }
 goldReward: 1000   # [C]
 music: battle_a
-devNote: >
-  Erste Leutnant-Begegnung (Hask). 16 × 16: Bach im Süden mit Brücke (x=7) als Engstelle und zwei Furten (Fußtruppen), Dorf mit fünf
-  Häusern in der Mitte (Haus des Ältesten bei [6,8]), Felder/Zäune an den Flanken, Wald im Norden. Leicht: 8 Gegner; Normal: 10;
-  Schwer: 12 (einschließlich Wellen Runde 3 und 5). Raider-Marodeure zerstören ihre Zielhäuser, wenn sie nicht besucht/geschützt werden.
+design:
+  title: Asche über Erlbach
+  intent: >
+    Erste Verteidigung, der Bach ist die Front: Brücke in der Mitte, zwei Furten nur zu Fuß. Plünderer zielen auf die Häuser, eines davon ist Miras.
+    Das Feuer in den Kornfeldern drängt die Angreifer auf Straße und Furten, die Flankenwellen ziehen die Truppe auseinander.
+  mood: Abend, Rauch über brennenden Kornfeldern, Asche fällt auf Strohdächer, der Bach glänzt orange, Dorfbewohner unter der Linde.
+  phases:
+    - { id: p1, turns: [1, 2], label: Am Bach, note: "Erste Lanze über die Brücke, Plünderer an den Furten, Feuer im Süden." }
+    - { id: p2, turns: [3, 5], label: Flanken, note: "Die Südtruppe rückt gestaffelt nach, Hask ab R6; Wellen Ost (R4) und West (R6) am Nordufer." }
+    - { id: p3, turns: [6, 8], label: Letzter Ansturm, note: Nachschub aus Hasks Lager über die Straße (R6). }
+  paths:
+    - { team: enemy, points: [[10, 22], [10, 14], [10, 9]], label: Hask }
+    - { team: enemy, points: [[4, 21], [3, 15], [2, 8]], label: Westfurt }
+    - { team: enemy, points: [[16, 21], [16, 15], [17, 9]], label: Ostfurt }
+    - { team: enemy, points: [[19, 12], [18, 9]], phase: p2, label: R4 }
+    - { team: enemy, points: [[0, 10], [3, 4]], phase: p3, label: R6 West }
+  zones:
+    - { area: { rect: [2, 17, 18, 20] }, label: Kornfelder brennbar }
+  marks:
+    - { at: [10, 15], label: E, note: "Brücke: Hauptweg, auch für Gepanzerte." }
+    - { at: [3, 15], label: F1, note: Westfurt nur zu Fuß. }
+    - { at: [16, 15], label: F2, note: "Ostfurt nur zu Fuß, direkt auf Miras Haus." }
+    - { at: [17, 8], label: Mi, note: "Miras Haus (v_e): besuchen bringt Mira; Plünderer r8 und die Welle R4 zielen darauf." }
+  notes:
+    - "Normal 17 Gegner (6 davon R4/R6) gegen 7 eigene (6 aufstellbar + Mira), Stufe 1–2 plus Hask."
+    - "Aufstellbar 6: Rhen, Kael, Brenna, Tobin, Fenn + Liora, falls 1-3 zuerst gespielt; sonst ein Söldner aus der Taverne."
+    - Keine Geländeveränderung über das vorhandene Feuer hinaus (nächste veränderliche Karte 1-4).

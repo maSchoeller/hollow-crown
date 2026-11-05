@@ -20,35 +20,35 @@ function begin(nodeId: string, mapOf: string): BattleState {
 describe('sleeper wake on defend', () => {
   it('wakes at the unit’s own wakeTurn, else at half of the mission rounds', () => {
     const s = begin('m1_2', 'm1_2_erlbach');
-    const r4 = s.units.find((u) => u.id === 'r4')!; // wakeTurn 5
+    const r2 = s.units.find((u) => u.id === 'r2')!; // wakeTurn 5
     const hask = s.units.find((u) => u.id === 'hask')!; // wakeTurn 6
     s.turn = 4;
-    expect(wakesByTime(data, s, r4)).toBe(false);
-    expect(asleep(data, s, r4)).toBe(true);
+    expect(wakesByTime(data, s, r2)).toBe(false);
+    expect(asleep(data, s, r2)).toBe(true);
     s.turn = 5;
-    expect(asleep(data, s, r4)).toBe(false);
+    expect(asleep(data, s, r2)).toBe(false);
     expect(asleep(data, s, hask)).toBe(true);
     s.turn = 6;
     expect(asleep(data, s, hask)).toBe(false);
-    delete r4.ai!.wakeTurn; // default: ceil(8 × 50 %) = 4
+    delete r2.ai!.wakeTurn; // default: ceil(8 × 50 %) = 4
     s.turn = 4;
-    expect(wakesByTime(data, s, r4)).toBe(true);
+    expect(wakesByTime(data, s, r2)).toBe(true);
   });
 
   it('a sleeper that is due leaves its post and walks towards the company, with the player doing nothing', () => {
     const s = begin('m1_2', 'm1_2_erlbach');
-    const r4 = s.units.find((u) => u.id === 'r4')!;
-    const from = [...r4.pos!] as [number, number];
+    const r2 = s.units.find((u) => u.id === 'r2')!;
+    const from = [...r2.pos!] as [number, number];
     const elder = s.units.find((u) => u.id === 'elder')!;
     s.turn = 3;
     runAiPhase(data, s, 'enemy', []);
-    expect(r4.ai!.profile).toBe('trigger'); // still asleep
-    expect(r4.pos).toEqual(from);
+    expect(r2.ai!.profile).toBe('trigger'); // still asleep
+    expect(r2.pos).toEqual(from);
     for (const u of s.units) u.acted = false;
     s.turn = 5;
     runAiPhase(data, s, 'enemy', []);
-    expect(r4.ai!.profile).toBe('aggressive');
-    expect(dist(r4.pos!, elder.pos!)).toBeLessThan(dist(from, elder.pos!));
+    expect(r2.ai!.profile).toBe('aggressive');
+    expect(dist(r2.pos!, elder.pos!)).toBeLessThan(dist(from, elder.pos!));
   });
 
   it('sleepers keep sleeping on a map that is not defend or survive', () => {

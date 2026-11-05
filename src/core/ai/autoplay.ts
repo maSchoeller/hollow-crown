@@ -27,7 +27,7 @@ function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
  * Movement-cost distance of every tile to the nearest goal (units ignored), so a fence or a wall is walked around, not
  * stared at. With `doorsOpen` the closed doors count as floor: the field shows the way once somebody has opened them.
  */
-function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], doorsOpen: boolean): Map<string, number> {
+function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], doorsOpen: boolean, blocked?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
   const over = doorsOpen ? Object.fromEntries(Object.values(data.terrain).filter((t) => t.opensTo).map((t) => [t.id, 1])) : undefined;
   const buckets: Pos[][] = [];
@@ -43,7 +43,7 @@ function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], 
       for (const n of neighbors(p)) {
         if (stepCost(data, s, u, p, n, over) === null) continue;
         const k = posKey(n);
-        if ((out.get(k) ?? Infinity) <= total) continue;
+        if (blocked?.has(k) || (out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);
         (buckets[total] ??= []).push(n);
       }
@@ -338,7 +338,10 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       .map((p) => ({ ...p, score: p.score - (danger.get(posKey(p.to)) ?? 0) * (vip || hpPct < 60 ? 12 : 4) }))
       .sort((a, b) => b.score - a.score);
     const plan = plans.find((p) => p.score > 0);
-    if (plan && !(isGoalUnit && plan.score < 30)) return { type: 'act', unit: u.uid, to: plan.to, action: plan.action };
+    // the way to the goal runs around walls and around foes that stay put; where they bar every way, the goal unit fights its way through
+    const goalWay = isGoalUnit ? walkField(data, s, u, goal!, false, new Set(enemies.filter((o) => staysPut(data, s, o)).map((o) => posKey(o.pos!)))) : undefined;
+    const barred = !!goalWay && !goalWay.has(posKey(u.pos));
+    if (plan && !(isGoalUnit && plan.score < 30 && !barred)) return { type: 'act', unit: u.uid, to: plan.to, action: plan.action };
     const ward = defended;
     // the unit closest to an unvisited village heads there; a unit that can recruit seeks its target
     const nearestTo = (p: Pos) =>
@@ -397,7 +400,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     }
     let maxDanger = guarding && hpPct >= 60 ? (vip ? 1 : 2) : errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
     let aim = targets.length ? targets : [u.pos];
-    let field: Map<string, number> | undefined;
+    let field: Map<string, number> | undefined = goalWay && (barred ? walkField(data, s, u, goal!, false) : goalWay);
     const hunting = !isGoalUnit && !errands.length && !keys.length && !ward;
     // siege: the foes that are left never come and the victory needs them down; whoever is healthy takes the risk of their reach
     const siege = hunting && enemies.length > 0 && (v.type === 'rout' || v.type === 'boss') && enemies.every((o) => idleFoe(data, s, o));
