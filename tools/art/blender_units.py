@@ -582,28 +582,6 @@ def build_mercenary(sc):
     return finish_unit(col, uid, R, "sword")
 
 
-def build_archer(sc):
-    uid = "archer"
-    col = new_collection(sc, f"U_{uid}")
-    R = build_rig(col, uid, {"sh": 0.32, "leg_x": 0.12})
-    top, hip = R["top"], R["body"]["hip"]
-    legs(col, R, "cloth_brown", "leather", r=0.1, cuff="leather_light")
-    torso(col, R, "green_cloth", rx=0.24, ry=0.19)
-    shape(col, "cyl", "leather", (0, -0.01, top - 0.3), (0.25, 0.2, 0.16), parent=R["chest"])
-    belt(col, R, "leather_dark", buckle="steel")
-    skirt(col, R, "green_cloth", length=0.26, rx=0.25, ry=0.2, flare=1.2)
-    arms(col, R, "green_cloth", glove="leather_dark", r=0.085, cuff="leather")
-    shape(col, "cyl", "leather_light", (R["body"]["sh"] + 0.02, 0, R["hand_L"][2] + 0.14), (0.1, 0.1, 0.1), parent=R["arm_L"])  # bracer
-    quiver(col, R, role="leather", fletch="fletch")
-    shape(col, "box", "leather_dark", (0.0, -0.215, top - 0.25), (0.34, 0.035, 0.03), rot=(0, -45, 0), parent=R["chest"])
-    head(col, R, "skin", "eye", iris="eye_green", brows="hair_brown")
-    fringe(col, R, "hair_brown", [(-0.15, -10, 0.9), (0.05, 6, 1.0), (0.2, 14, 0.85)], length=0.15, r=0.11, tilt=24, z=head_c(R) + 0.26)
-    hood_up(col, R, "team", tip=True)
-    bow(col, R, wood="wood_light", string="string", length=1.05)
-    bow_fx(col, R)
-    return finish_unit(col, uid, R, "bow")
-
-
 def build_fighter(sc):
     uid = "fighter"
     col = new_collection(sc, f"U_{uid}")
@@ -699,7 +677,6 @@ UNITS = {
     "varek": build_varek,
     "morra": build_morra,
     "mercenary": build_mercenary,
-    "archer": build_archer,
     "fighter": build_fighter,
     "mage": build_mage,
     "soldier": build_soldier,

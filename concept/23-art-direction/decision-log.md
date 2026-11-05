@@ -106,6 +106,12 @@
 - Zuerst nur 3 Modelle mit dem vorhandenen Guthaben von rund 425 Credits: Lucan, Verwalter der Paktwacht, Osric Dunn. Über den Rest und über Nachkauf entscheidet der Produktinhaber nach Sichtung.
 - Pferde auf der Rabenweide (2-3) sind ein einfaches Deko-Modell ohne Reittier-Pipeline.
 
+## 2026-11-05: Schritt 1a, Stand nach Story 15.9 (Teil 1)
+
+- **Tripo-Konto im Free-Tarif:** In Tripo Studio stehen **625 Credits**, das Konto läuft aber auf **Free** (Preisdialog zeigt „Free“ als aktuellen Tarif, Hinweis „Upgrade für Smart Mesh, Multi-Views“). Auflage A1 (`licensing.md` §6) verlangt Pro mit Datenschutz „Privat“; Free-Ausgaben werden nicht ausgeliefert. Deshalb **kein Tripo-Lauf, 0 Credits verbraucht**, nichts gekauft. Über das Abo entscheidet der Produktinhaber; danach kosten die drei Figuren wie geplant 420 Credits (Rest dann 205, also ein zweiter Lauf für eine Figur möglich).
+- **Brett-Turnarounds fertig und geprüft:** Lucan, Osric Dunn, Verwalter (`art/turnarounds/<id>_board/`, Prompts und Abnahme in `art/prompts/<id>_board_turnaround.md`). Neu gegenüber Oktober: Vorlage ist der Lieblings-Turnaround Ysolde statt Kaels Bogen; Statur steht im Prompt (Osric schwer und rund, Verwalter schlank); das **Teamtuch liegt auf kleinen Stücken** (Schärpe, Halstuch), Signaturteile behalten ihre Farbe.
+- **`archer` → `bandit_archer`:** alle 9 Stellen auf den Akt-1-Karten und die Testkarten zeigen den Bandit-Schützen; die Blender-Kastenfigur `archer` ist aus Repo und Build-Skript entfernt; auch der Klassen-Rückfall von Schütze und Scharfschütze zeigt `bandit_archer`. `content:check` prüft Figuren-IDs jetzt auch ohne Sprite-Ordner.
+
 ## 2026-11-05: Galerie-Modelle für Akt 1 (Story 15.8)
 
 - Ermittelt an den 12 Karten von Akt 1 (PR #104), nicht an den Missions-Markierungen der Galerie: das Brett zeichnet nur, was eine Karte als Gelände oder Objekt nennt. Neu im Build, Paket `act1`, nicht im ersten Download: `market_a` und `market_b` (Marktstände 1-1), `camp_tent_a` (Lagerzelte des Hungerlagers 1-5), `mill_idle` (Mühle mit Rad, N3). Zusammen rund 0,5 MB Transfer, 400–3 000 Dreiecke je Modell (Besuchshaus 2 518, Figurenbudget 7 000).

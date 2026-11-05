@@ -25,3 +25,18 @@ describe('modelId', () => {
     expect(modelId({ portrait: 'nobody', classId: 'skirmisher' }, models, classes)).toBe('mercenary');
   });
 });
+
+describe('class figures of the real content (story 15.9)', () => {
+  it('every class figure a hired unit falls back to is a model in art/models/units, apart from the known cleric gap', async () => {
+    const { readdirSync } = await import('node:fs');
+    const { loadContentFromDisk } = await import('../../src/content/node');
+    const { validateContent } = await import('../../src/content/validate');
+    const { data, locales } = loadContentFromDisk();
+    const models = new Set(readdirSync('art/models/units').filter((f) => f.endsWith('.glb')).map((f) => f.slice(0, -4)));
+    expect(models.has('archer')).toBe(false);
+    const unknown = validateContent(data, locales, models).filter((i) => i.file === 'classes.yaml' && i.message.startsWith('unknown sprite'));
+    // the healer roles have no figure yet (art-direction decision log 2026-10-24: the cleric stays without a model)
+    expect(unknown.map((i) => i.message).filter((m) => !m.startsWith('unknown sprite cleric '))).toEqual([]);
+    expect(validateContent(data, locales, new Set(['kael'])).some((i) => i.message === 'unknown sprite bandit_archer (class marksman)')).toBe(true);
+  }, 30000);
+});

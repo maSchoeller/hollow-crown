@@ -11,3 +11,7 @@
 > Change only brows, eyes, mouth and shoulders to happy: open grin, raised cheeks. / … angry: brows down, teeth showing, shoulders up. / … sad: brows up in the middle, mouth down, shoulders dropped.
 
 (Vollständige Nachrichten: Notizen der Session `PROCEDURE.md` §B/§C, wortgleich: „Create an image. The attached image is the APPROVED dialogue portrait of NAME … Same character, same pose, crop, outfit, weapon and colours, same drawing style, square 1:1, FULLY TRANSPARENT background … Change only …“.)
+
+## Brettfigur (Story 15.9)
+
+Brett-Turnaround vom 2026-11-05: `art/prompts/lucan_board_turnaround.md`, Bilder `art/turnarounds/lucan_board/`. Tripo-Lauf steht aus (Konto im Free-Tarif, Auflage A1); das Modell entsteht danach als `kael` (Umbenennung in Story 15.6).
