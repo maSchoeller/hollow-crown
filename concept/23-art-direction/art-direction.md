@@ -130,19 +130,23 @@ Der Look wird auf dieser Basis an das Stil-Mockup angeglichen:
 | `road` | Feldweg mit Fahrspuren bzw. Pflaster in Städten | |
 | `forest` | 1–3 runde Bäume pro Feld, Stamm auf dem Feld | Feld bleibt lesbar |
 | `sand` | heller Sand, Wellenlinien | |
-| `mountain` | hoher Felsblock, Gras- bzw. Schneehaube je Akt | |
+| `mountain` | geschlossene Felsmasse aus kantigen Platten bis an die Feldkante (`massif_*` auf Felskappe `rock_top`, Höhe 0,75) | Schneehaube je Akt offen |
 | `shallows` | helles Wasser mit Kieseln | animiert |
 | `river` | tiefes Wasser, Strömungslinien | animiert, Uferkanten |
 | `bridge` | Holz bzw. Stein | |
 | `fort` | kleiner Wachturm mit Fahne | Fahne in Fraktionsfarbe |
 | `throne` | Thron auf Podest | |
-| `gate` | Tor in der Mauer | offen/zu |
+| `gate` | Torhaus mit Rundtürmen, Bogen aus Keilsteinen und Eichenflügeln; zwei Felder bilden ein Torhaus, ein Feld das schmale Tor | offen/zu; Baukasten §3.2 |
 | `village` | Haus, Tür nach Süden, Rauch | besucht: Tür offen; zerstört: `ruins` |
 | `ruins` | eingestürzte Mauerreste mit Efeu | |
-| `wall` | Mauer mit Zinnen | |
+| `wall` | Mauer mit Wehrgang und runden Zinnen, Rundturm an Ecken und freien Enden | Baukasten §3.2 |
 | `burning` | Grund + Cartoon-Flammen + orangefarbenes Punktlicht | |
 | `ash` | dunkelgrauer Boden, Glutpunkte | |
 | `rockwall` | runde Felsnadeln | Auftauch-Animation |
+
+### 3.2 Lesbarkeit und Baukasten (Entscheidung 2026-11-04)
+
+Vier Regeln für jedes Asset: Was sperrt, füllt das Feld und ist höher als eine Figur. Ist etwas begehbar, bleibt die Feldmitte frei und der Boden sichtbar. Deko bleibt flach. Gleiche Wirkung hat in jeder Region die gleiche Form, nur Material und Farbe wechseln. Mauer, Tor und Tür wählen ihre Bauteile aus den Nachbarfeldern (`src/render/board/wallKit.ts`, Modelle `tools/art/props/fortify.py`). Bericht, Matrix Mission × Asset und Galerie: `concept/23-art-direction/map-assets/`.
 
 Interaktive Objekte (Türen, Truhen, Hebel, Ballisten, Dörfer) haben zwei Zustände mit kurzem Übergang und im Zielmodus ein pulsierendes Glanzlicht.
 

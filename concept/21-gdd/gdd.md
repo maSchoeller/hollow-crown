@@ -162,7 +162,8 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 
 ### Raster und Bewegung
 
-- Quadratisches Raster, 4 Richtungen, keine Diagonalen. Reichweiten werden in Feldschritten gezählt (Manhattan). Höhe ist nur optisch.
+- Quadratisches Raster, 4 Richtungen, keine Diagonalen. Reichweiten werden in Feldschritten gezählt (Manhattan).
+- **Höhe (Entscheidung 2026-11-04, noch nicht umgesetzt):** 3 Stufen (Feld; Wehrgang, Dach, Terrasse; Turm, Felsnase). Stufenwechsel nur über Rampe (alle), Treppe (ohne Reiter), Leiter (nur zu Fuß). Fernkampf von oben +1 Reichweite; Nahkampf nur auf gleicher Stufe oder bei 1 Stufe Unterschied an Rampe und Treppe.
 - Durch Verbündete darf man hindurchziehen, aber nicht auf ihnen stehen bleiben. Gegner blockieren, auch niedergestreckte.
 - Angriffe brauchen keine Sichtlinie. Im Nebel blockieren Mauern und geschlossene Türen die Sicht `[ASSUMPTION]`.
 
@@ -207,7 +208,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 ### Gelände und Umwelteffekte
 
-- Interaktive Objekte: Tür, Truhe, Hebel, Balliste, Dorf (Gegner können es zerstören).
+- Interaktive Objekte: Tür, Tor, Truhe, Hebel, Balliste, Dorf (Gegner können es zerstören). Ein geschlossenes Tor sperrt und öffnet über Hebel, Schlüssel oder Auslöser. Mauern stürzen nur per Ereignis ein.
 - **Balliste:** Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–10, kein Gegenangriff, Schüsse unbegrenzt. Bedienen kann jede Fuß- oder gepanzerte Figur auf einem Nachbarfeld, kein Flieger. Keine Effektivität gegen Flieger. Die Gegner-KI bedient sie nur mit dem Profil `hold` oder wenn ein Gegner schon daneben steht.
 - Elementeffekte: Brand 2 Runden, 5 Schaden beim Betreten, Ausbreitung 25 % pro Runde auf brennbare Nachbarfelder; Löschen; Felswall 2 Runden; Wind lichtet Nebel (Radius 2). Die Ausbreitung ist reproduzierbar.
 - Jahreszeit pro Akt verändert nur die Optik.

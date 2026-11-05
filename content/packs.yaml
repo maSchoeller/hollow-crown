@@ -78,6 +78,8 @@ packs:
       - snowfir_b
       - rock_b
       - rock_c
+      - massif_c
+      - gatehouse_closed
       - well_idle
       - fence_gate
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel

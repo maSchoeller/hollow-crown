@@ -1,0 +1,112 @@
+title: Dorf, Hof, Land
+items:
+  - id: field_open
+    name: Kornfeld offen
+    ref: { sheet: village_3.png, box: [45, 150, 300, 405] }
+    missions: [1-2, 1-6, 1-8, N3]
+    use: Zwei dicke Ährenreihen ohne Rahmen, begehbar, Mitte frei, Boden sichtbar.
+  - id: field_burnt
+    name: Kornfeld verbrannt
+    ref: { sheet: village_3.png, box: [345, 170, 605, 415] }
+    missions: [1-2, N3]
+    use: Dasselbe Feld nach dem Brand, schwarze Stoppeln, Asche und Glut, begehbar.
+  - id: hay_a
+    name: Heuhaufen
+    ref: { sheet: village_3.png, box: [645, 120, 890, 410] }
+    missions: [1-2, N3, 2-3]
+    use: Runder Haufen aus gestuften Halmbündeln auf Stützen, füllt das Feld, sperrt.
+  - id: mill_idle
+    name: Wassermühle
+    ref: { sheet: village_1.png, box: [60, 20, 480, 330] }
+    missions: [N3]
+    use: 1 Feld, Rad und Rinne ragen nach Osten etwas über den Feldrand; Rad zum Südosten gedreht, damit es aus der Spielkamera als Rad lesbar bleibt.
+  - id: barn_a
+    name: Scheune
+    ref: { sheet: village_1.png, box: [540, 5, 870, 325] }
+    missions: [N3, 2-3]
+    use: Bretterscheune mit Doppeltor nach Süden und großem Strohdach, sperrt.
+  - id: market_a
+    name: Marktstand Streifen
+    ref: { sheet: village_1.png, box: [270, 725, 645, 1000] }
+    missions: [1-1, N6]
+    use: Stand mit Senf-Creme-Plane, Brot und Äpfeln, Plane steht hinten, die Ware bleibt von oben sichtbar.
+  - id: market_b
+    name: Marktstand Flicken
+    ref: { sheet: village_1.png, box: [830, 720, 1220, 1000] }
+    missions: [1-1, N6]
+    use: Stand mit Flickenplane in Orange, Pflaume, Creme, Gemüsekisten, hängendes Tuch.
+  - id: lodge_b_intact
+    name: Besuchshaus
+    ref: { sheet: village_2.png, box: [30, 20, 480, 465] }
+    missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
+    use: Haus nur in der Nordhälfte, offene Vorlaube, Laterne, Wegplatten; Feldmitte frei und begehbar, sofort anders als das Kulissenhaus.
+  - id: lodge_b_visited
+    name: Besuchshaus besucht
+    ref: { sheet: village_2.png, box: [545, 20, 990, 465] }
+    missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
+    use: Tür offen mit warmem Licht, Bank, Sack, Blumenkästen und Ockerwimpel zeigen klar „besucht“.
+  - id: lodge_b_razed
+    name: Besuchshaus zerstört
+    ref: { sheet: village_2.png, box: [1055, 20, 1505, 465] }
+    missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
+    use: Gleicher Grundriss ausgebrannt, Mauerstümpfe, verkohlte Sparren, Kamin steht noch, Wegplatten bleiben.
+  - id: roof_tile_idle
+    name: Begehbares Dach
+    ref: { sheet: village_2.png, box: [205, 540, 685, 955] }
+    missions: [N1]
+    use: 1 Feld Dachfläche als zweite Ebene, füllt das Feld bis zum Rand, Brüstung im Süden, Mitte frei.
+  - id: house_town_a
+    name: Fachwerkhaus Gaube
+    ref: { sheet: village_1.png, box: [310, 335, 670, 705] }
+    missions: [1-1, N1]
+    use: Fachwerk für Varnhold, rot-oranges Ziegeldach mit Gaube, das Dach trägt die Variante, sperrt.
+  - id: house_town_b
+    name: Fachwerkhaus Stufengiebel
+    ref: { sheet: village_1.png, box: [800, 340, 1225, 700] }
+    missions: [1-1, N1]
+    use: Ockerfarbenes Fachwerk, Stufengiebel nach Süden, dunkles Pflaumendach, Schild ohne Schrift, sperrt.
+  - id: stable_a
+    name: Pferdestall
+    ref: { sheet: village_1.png, box: [925, 50, 1490, 320] }
+    missions: [2-3]
+    use: 2 Felder breit, Ursprung in der Mitte; Halbtüren mit Heu, Heuraufe, Ziegeldach, sperrt.
+  - id: paddock_straight
+    name: Koppelzaun gerade
+    ref: { sheet: village_3.png, box: [40, 665, 295, 835] }
+    missions: [2-3]
+    use: Weißer Koppelzaun über die ganze Feldbreite (Ost-West), Holme stoßen an die Nachbarfelder.
+  - id: paddock_corner
+    name: Koppelzaun Ecke
+    ref: { sheet: village_3.png, box: [345, 625, 595, 845] }
+    missions: [2-3]
+    use: Ecke in der Feldmitte, Holme nach Westen und Norden; Drehung legt das Brett fest.
+  - id: paddock_gate
+    name: Koppeltor
+    ref: { sheet: village_3.png, box: [635, 650, 905, 865] }
+    missions: [2-3]
+    use: Zwei Pfosten mit offenem Brettertor, nach Süden aufgeschwungen, Durchgang in der Mitte frei.
+  - id: terrace_a
+    name: Getreideterrasse
+    ref: { sheet: village_2.png, box: [835, 540, 1330, 955] }
+    missions: [2-4]
+    use: Füllt das Feld, Trockenmauer im Süden, Korn auf der Stufe, Mitte frei, höherer Streifen hinten.
+  - id: vine_a
+    name: Weinstöcke
+    ref: { sheet: village_3.png, box: [935, 155, 1190, 410] }
+    missions: [1-6]
+    use: Zwei Reihen Stöcke an Pfosten und Draht mit Trauben, Gasse in der Feldmitte frei.
+  - id: fence_wicker_a
+    name: Flechtzaun
+    ref: { sheet: village_3.png, box: [1225, 220, 1500, 370] }
+    missions: [1-2, N3]
+    use: Geflochtener Weidenzaun über die Feldbreite (Ost-West), zwei Pfosten mit Seil.
+  - id: sign_a
+    name: Steckbriefbrett
+    ref: { sheet: village_3.png, box: [955, 580, 1240, 860] }
+    missions: [1-1]
+    use: Brett mit Schindeldach und leeren Zetteln, Dach so flach, dass die Zettel aus der Spielkamera sichtbar bleiben.
+  - id: lantern_post_a
+    name: Laternenpfahl
+    ref: { sheet: village_3.png, box: [1285, 545, 1470, 860] }
+    missions: [1-1, N1]
+    use: Holzpfahl auf Steinfuß mit Eisenarm und Laterne nach Osten, schmale Deko, sperrt nur den Pfahl.

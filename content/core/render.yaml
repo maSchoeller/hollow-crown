@@ -35,8 +35,8 @@ board:
     house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }]
     # Besuchshaus (Terrain village, Objekt village): eigenes, deutlich anderes Modell mit den Zuständen intact, visited, razed
     lodge: [{ model: lodge_intact, weight: 1 }]
-    # Felsen (Terrain mountain, rock, rockwall)
-    rock: [{ model: rock_idle, weight: 4 }, { model: rock_b, weight: 2 }, { model: rock_c, weight: 2 }]
+    # Felsmasse (Terrain mountain): gefacettete Kappe bis an die Feldkante; der Felswall (rockwall) zeichnet rock_idle
+    rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }]
     # Bäume je Akt: 1 Spätsommer, 2 Herbst, 3 Winter; ein Akt ohne Eintrag nimmt die Bäume des Akts 1
     tree:
       1: [{ model: tree_a, weight: 3 }, { model: tree_b, weight: 3 }, { model: tree_c, weight: 2 }, { model: tree_d, weight: 2 }, { model: tree_e, weight: 2 }]

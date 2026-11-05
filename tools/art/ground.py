@@ -232,6 +232,16 @@ def tex_rock_side():
     return paint(crack * 0.6 + n * 0.4, mix(PAL["stone"][0], PAL["stone"][3], n * 0.8 * crack + 0.1), relief=9, ambient=0.5)
 
 
+def tex_rock_top():
+    """Top of the rock massif: large facets, warm grey-brown, calmer than the side."""
+    f1, f2, ident = voronoi(U, V, 4, 818)
+    n = fbm(U, V, 4, 4, 819)
+    tone = ((ident >> 12) & 255) / 255.0
+    crack = sstep(0.015, 0.09, f2 - f1)
+    c = mix(rgb("#6e625c"), rgb("#a4937f"), tone * 0.6 + n * 0.4)
+    return paint(crack * 0.5 + n * 0.4 + tone * 0.2, c * (0.72 + crack[..., None] * 0.28), relief=9, ambient=0.55)
+
+
 def tex_planks():
     boards = 4
     b = np.floor(U * boards)
@@ -264,6 +274,7 @@ TEXTURES = {
     "wall": tex_wall,
     "earth_side": tex_earth_side,
     "rock_side": tex_rock_side,
+    "rock_top": tex_rock_top,
     "planks": tex_planks,
     **{f"water_{k}": (lambda k=k: tex_water(k)) for k in range(4)},
 }
@@ -275,11 +286,14 @@ SHEETS = {
     "sheet1_grass_dirt_road_sand.png": ("grass", "dirt", "road", "sand"),
     "sheet2_ash_riverbed_stone_planks.png": ("ash", "riverbed", "stone", "planks"),
     "sheet3_wall_earth_rock_water.png": ("wall", "earth_side", "rock_side", "water"),
+    # warm stone and rock after the target pictures (art/prompts/map_assets_textures.md); later sheets win
+    "sheet4_stone_wall_rocktop_rockside.png": ("stone", "wall", "rock_top", "rock_side"),
+    "sheet5_honey_oak_dirt_vault.png": ("kit_stone", "kit_oak", "dirt", "vault_floor"),
 }
 CROP_MARGIN = 10        # px dropped inside every quadrant edge (border artefacts)
 TARGET_LUMA = 118.0     # brightness the textures are pulled towards
 LUMA_PULL = 0.55        # 0 = keep each texture's own brightness, 1 = all equal
-LUMA_KEEP = {"ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
+LUMA_KEEP = {"rock_top": 0.6, "rock_side": 0.6, "wall": 0.5, "stone": 0.5, "ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
 SEAM_BAND = 0.5         # blend zone next to the borders (share of the size; 0.5 = whole half, least smearing of structure)
 FRAME_SHIFT = S // 16   # water: the shifted twin the frames cross-fade to
 
@@ -322,11 +336,26 @@ def make_seamless(img):
     return out
 
 
+# Colour grade after the painted sheets: (saturation, multiply RGB). The sheets came out too orange and pink against the target pictures.
+GRADE = {
+    "dirt": (0.52, (1.0, 0.98, 0.92)),
+    "stone": (0.5, (1.06, 1.03, 0.94)),
+    "wall": (0.72, (1.0, 0.95, 0.86)),
+    "rock_side": (0.6, (0.92, 0.9, 0.88)),
+    "rock_top": (0.6, (0.95, 0.93, 0.9)),
+}
+
+
 def unify(arr, name):
     luma = arr @ np.array([0.299, 0.587, 0.114])
     pull = LUMA_PULL * (1 - LUMA_KEEP.get(name, 0.0))
     goal = luma.mean() + (TARGET_LUMA - luma.mean()) * pull
-    return np.clip(arr * (goal / max(luma.mean(), 1.0)), 0, 255)
+    out = arr * (goal / max(luma.mean(), 1.0))
+    if name in GRADE:
+        sat, tint = GRADE[name]
+        grey = (out @ np.array([0.299, 0.587, 0.114]))[..., None]
+        out = (grey + (out - grey) * sat) * np.array(tint)
+    return np.clip(out, 0, 255)
 
 
 def _finish(arr):

@@ -40,11 +40,11 @@ describe('prop variants', () => {
   const list = [{ model: 'house_intact', weight: 3 }, { model: 'house_b_intact', weight: 1 }, { model: 'house_c_intact', weight: 1 }];
   const all = () => true;
 
-  it('classes: houses, lodges, rocks (rockwall too) and trees have variants, the rest not', () => {
+  it('classes: houses, lodges, rocks and trees have variants, the rest not (the rock wall keeps its single boulder)', () => {
     expect(variantClassOf('house')).toBe('house');
     expect(variantClassOf('lodge')).toBe('lodge');
     expect(variantClassOf('rock')).toBe('rock');
-    expect(variantClassOf('rockwall')).toBe('rock');
+    expect(variantClassOf('rockwall')).toBeNull();
     expect(variantClassOf('tree')).toBe('tree');
     expect(variantClassOf('fort')).toBeNull();
     expect(variantClassOf(undefined)).toBeNull();
@@ -55,7 +55,7 @@ describe('prop variants', () => {
     expect(data.terrain.building!.prop).toBe('house');
     expect(variantList(data, 'lodge').map((v) => v.model)).toEqual(['lodge_intact']);
     expect(variantList(data, 'house').length).toBeGreaterThan(1);
-    expect(variantList(data, 'rock').map((v) => v.model)).toContain('rock_idle');
+    expect(variantList(data, 'rock').map((v) => v.model)).toContain('massif_a');
   });
 
   it('is deterministic for the same rolls', () => {

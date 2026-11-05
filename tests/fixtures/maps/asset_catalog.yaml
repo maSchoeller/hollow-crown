@@ -1,0 +1,78 @@
+# Entwicklerkarte: jedes Gelände der terrain.yaml nebeneinander im echten Brett (Asset-Prüfung). `await __hc.devMap('asset_catalog')`.
+# Kommt nicht in den Build. Von oben: Natur, Wasser, Mauerwerk mit Tor und Türen, Einzelbauten, Flächen; Einheiten als Maßstab.
+#          x: 0123456789ABCDEFGHIJ
+terrain: |
+  ,,,TTT,,^^^,,..,,sss
+  ,,,TTT,,^^^,,..,,sss
+  __,TTT,,^^^,,..,,sss
+  __,,,,,,,,,,,,,,,,,,
+  ~~~~~~BB~~~~~~wwww,,
+  ~~~~~~BB~~~~~~wwww,,
+  ,,,,,,,,,,,,,,,,,,,,
+  ,###GG###,,,,###,,,,
+  ,#......#,,,,#D#,,,,
+  ,#..t...#,,,,#.#,,,,
+  ,#......#,,,,#d#,,,,
+  ,########,,,,,,,,,,,
+  ,,,,,,,,,,,,,,,,,,,,
+  ,F,,V,,R,,S,,r,,X,,,
+  ,,,,,,,,,,,,,,,,,,,,
+  ,W,,M,,O,,Z,,H,,Y,,,
+  ,,,,,,,,,,,,,,,,,,,,
+  ,bbb,,aaa,,AA,,,,,,,
+  ,bbb,,aaa,,AA,,,,,,,
+  ,,,,,,,,,,,,,,,,,,,,
+id: asset_catalog
+nameKey: map.prologue_paktnacht.name
+size: [20, 20]
+fog: false
+timeOfDay: noon
+weather: clear
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "s": sand
+  "~": river
+  "w": shallows
+  "B": bridge
+  "#": wall
+  "G": gate
+  "D": door
+  "d": door_open
+  "t": throne
+  "F": fort
+  "V": village
+  "R": ruins
+  "S": shrine
+  "r": rockwall
+  "X": wagon
+  "W": well
+  "M": stall
+  "O": brazier
+  "Z": fence
+  "H": farm
+  "Y": building
+  "b": field
+  "a": ash
+  "A": burning
+objects: []
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [] }
+units:
+  - { id: cat_a, team: player, class: vanguard, level: 3, at: [2, 3], sprite: soldier, items: [] }
+  - { id: cat_b, team: player, class: scout, level: 3, at: [6, 3], sprite: mercenary, items: [] }
+  - { id: cat_c, team: player, class: marksman, level: 3, at: [3, 9], sprite: archer, items: [] }
+  - { id: cat_d, team: enemy, class: brigand, level: 3, at: [5, 12], sprite: brigand, items: [] }
+  - { id: cat_e, team: enemy, class: brigand, level: 3, at: [16, 16], sprite: brigand, items: [] }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: rout }
+  defeat:
+    - { type: unit_dies, unit: cat_a }
+  side: []
+triggers: []
+goldReward: 0

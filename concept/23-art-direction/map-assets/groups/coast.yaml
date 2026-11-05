@@ -1,0 +1,122 @@
+title: Küste, Hafen und Hochland (Akt 2)
+items:
+  - id: quay_straight
+    name: Kai, gerade
+    ref: { sheet: coast_1.png, box: [40, 140, 335, 415] }
+    missions: [2-6, 2-7]
+    use: Begehbares Kaifeld mit Plankendeck und Steinkante nach Süden, Fenderbalken zum Wasser; 1 Feld, reiht sich in Ost-West-Richtung.
+  - id: quay_corner
+    name: Kai, Ecke
+    ref: { sheet: coast_1.png, box: [385, 130, 695, 435] }
+    missions: [2-6, 2-7]
+    use: Außenecke des Kais, Steinkante und Fender nach Süden und Osten; 1 Feld, begehbar.
+  - id: warehouse_a
+    name: Lagerhaus, hoch
+    ref: { sheet: coast_1.png, box: [735, 30, 1075, 445] }
+    missions: [2-6, 2-7]
+    use: Sperrt das Feld. Steinsockel, Fachwerk-Obergeschoss, Schieferdach, Giebel und Ladetor nach Süden; 1 Feld.
+  - id: warehouse_b
+    name: Lagerhaus, lang
+    ref: { sheet: coast_1.png, box: [1090, 125, 1520, 440] }
+    missions: [2-6, 2-7]
+    use: Sperrt. Langer Steinbau mit Schieferdach, Dachgaube mit Lastenhaken nach Süden; 2 Felder (Ost-West).
+  - id: crane_idle
+    name: Hafenkran
+    ref: { sheet: coast_1.png, box: [20, 530, 335, 970] }
+    missions: [2-6, 2-7]
+    use: Sperrt. Holzkran mit Tretrad und Haken, der Ausleger ragt nach Osten über das Nachbarfeld; 1 Feld.
+  - id: ship_a
+    name: Grells Schiff
+    ref: { sheet: coast_1.png, box: [355, 475, 760, 955] }
+    missions: [2-6, 2-7]
+    use: Großes Handelsschiff mit Burgen vorn und achtern, gerefftem Segel und Mastkorb, Bug nach Westen; 4 x 2 Felder.
+  - id: boat_a
+    name: Ruderboot
+    ref: { sheet: coast_1.png, box: [775, 650, 1100, 970] }
+    missions: [3-2, N6]
+    use: Kleines Boot auf dem Wasser, Riemen liegen zu beiden Seiten aus; 1 Feld.
+  - id: boat_b
+    name: Kanalboot
+    ref: { sheet: coast_1.png, box: [1110, 590, 1515, 950] }
+    missions: [3-2, N6]
+    use: Langer Lastkahn mit Kisten und geflicktem Sonnendach; 2 Felder (Ost-West).
+  - id: mooring_a
+    name: Poller
+    ref: { sheet: coast_2.png, box: [75, 100, 300, 430] }
+    missions: [2-6, 2-7]
+    use: Deko im Nordwesten des Felds, Holzpfosten mit Eisenring und Tauwerk; Feldmitte bleibt frei.
+  - id: crates_a
+    name: Kistenstapel
+    ref: { sheet: coast_2.png, box: [375, 95, 710, 430] }
+    missions: [2-6, 2-7, N6]
+    use: Deko auf der Nordhälfte des Felds, drei verschnürte Kisten; Feldmitte bleibt frei.
+  - id: barrels_a
+    name: Fässer
+    ref: { sheet: coast_2.png, box: [760, 120, 1095, 455] }
+    missions: [2-6, 2-7, N6]
+    use: Deko im hinteren Teil des Felds, zwei stehende und ein liegendes Fass; Feldmitte bleibt weitgehend frei.
+  - id: stage_a
+    name: Gaukelbühne
+    ref: { sheet: coast_2.png, box: [1150, 30, 1525, 455] }
+    missions: [N6]
+    use: Sperrt. Niedrige Bühne mit hohem Rahmen, Pflaumenvorhang und Wimpeln, Blickfang des Herbstmarkts; 1 Feld.
+  - id: tent_market_a
+    name: Marktzelt
+    ref: { sheet: coast_2.png, box: [15, 515, 430, 935] }
+    missions: [N6]
+    use: Sperrt. Rundes Streifenzelt in Creme und Ocker, offen nach Süden, Waren im Eingang; 1 Feld.
+  - id: rope_bridge_straight
+    name: Hängebrücke, Mittelstück
+    ref: { sheet: coast_2.png, box: [465, 510, 725, 950] }
+    missions: [2-5]
+    use: Begehbar. Planken mit Lücken und Handseile in Nord-Süd-Richtung, ohne Boden darunter; 1 Feld, reiht sich.
+  - id: rope_bridge_end
+    name: Hängebrücke, Anker
+    ref: { sheet: coast_2.png, box: [750, 535, 1150, 965] }
+    missions: [2-5]
+    use: Begehbar. Zwei Pfosten auf Felsabsatz im Norden, die Planken führen nach Süden; 1 Feld, für das andere Ende drehen.
+  - id: waterfall_a
+    name: Wasserfall
+    ref: { sheet: coast_3.png, box: [15, 115, 355, 460] }
+    missions: [2-5]
+    use: Sperrt. Gestufter Fels mit zweistufigem Fall nach Süden und flachem Becken am Fuß; 1 Feld.
+  - id: monastery_a
+    name: Kloster Silberquell
+    ref: { sheet: coast_3.png, box: [385, 30, 750, 460] }
+    missions: [2-5]
+    use: Sperrt. Heller Steinbau mit Schieferdach, Glockengiebel, Rundbogentür nach Süden und Herbstefeu; 2 x 2 Felder.
+  - id: house_slate_a
+    name: Bergdorfhaus, Giebel
+    ref: { sheet: coast_3.png, box: [775, 110, 1095, 440] }
+    missions: [2-4]
+    use: Sperrt. Feldsteinhaus mit dunklem Holzgiebel und schwerem Schieferdach; 1 Feld.
+  - id: house_slate_b
+    name: Bergdorfhaus, Anbau
+    ref: { sheet: coast_3.png, box: [1120, 125, 1520, 450] }
+    missions: [2-4]
+    use: Sperrt. Geweißtes Feldsteinhaus, Traufe nach Süden, Bretterschuppen im Osten; 1 Feld.
+  - id: watch_fire_a
+    name: Signalfeuer
+    ref: { sheet: coast_2.png, box: [1170, 495, 1485, 940] }
+    missions: [2-4, 2-8]
+    use: Sperrt. Eisenkorb mit großem Feuer im Steinring, weithin sichtbar; 1 Feld.
+  - id: cliff_edge_a
+    name: Abbruchkante, gerade
+    ref: { sheet: coast_3.png, box: [15, 580, 365, 925] }
+    missions: [2-1, 2-2, N9]
+    use: Sperrt. Felsblock mit Herbstgras oben, nach Süden fällt die Säulenwand ab; 1 Feld, reiht sich in Ost-West-Richtung.
+  - id: cliff_corner_a
+    name: Abbruchkante, Ecke
+    ref: { sheet: coast_3.png, box: [385, 550, 725, 925] }
+    missions: [2-1, 2-2, N9]
+    use: Sperrt. Außenecke der Abbruchkante, Wände nach Süden und Osten; 1 Feld.
+  - id: rockfall_a
+    name: Steinschlag
+    ref: { sheet: coast_3.png, box: [735, 595, 1120, 885] }
+    missions: [2-2]
+    use: Sperrt. Breiter Haufen scharfkantiger Brocken um eine hohe Platte, Geröll und Staub am Fuß; 1 Feld.
+  - id: sandbar_a
+    name: Sandbank
+    ref: { sheet: coast_3.png, box: [1140, 655, 1510, 900] }
+    missions: [2-6]
+    use: Begehbar und flach. Heller Sand mit Rippeln, Prielen, Algen und Muschel, taucht bei Ebbe auf; 1 Feld.

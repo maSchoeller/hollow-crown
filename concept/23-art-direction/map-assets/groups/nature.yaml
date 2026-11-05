@@ -1,0 +1,102 @@
+title: Natur Süden und Moor (Akt 1)
+items:
+  - id: grove_a
+    name: Waldfeld A, Spätsommer
+    ref: { sheet: nature_1.png, box: [20, 80, 360, 420] }
+    missions: [1-2, 1-3, 1-4, 1-5]
+    use: Drei runde Bäume an Nord- und Westrand in Olivgrün und Gold; die Feldmitte bleibt frei und begehbar.
+  - id: grove_b
+    name: Waldfeld B, Sommergrün
+    ref: { sheet: nature_1.png, box: [390, 80, 680, 400] }
+    missions: [1-2, 1-3, 1-4]
+    use: Ein großer und ein kleiner Baum am Feldrand; Mitte frei, kräftiger grüner Akzent zwischen den Goldtönen.
+  - id: grove_c
+    name: Waldfeld C, Bogen
+    ref: { sheet: nature_1.png, box: [770, 110, 1130, 340] }
+    missions: [1-2, 1-3, 1-5]
+    use: Drei kleinere Bäume im Bogen am Nordrand; Mitte frei, lockerer Waldrand.
+  - id: grove_autumn_a
+    name: Waldfeld Herbst
+    ref: { sheet: nature_1.png, box: [1160, 85, 1510, 415] }
+    missions: [1-3, 1-4]
+    use: Rost- und orangefarbene Bäume am Feldrand mit Fallaub auf dem Boden; Mitte frei.
+  - id: grove_snow_a
+    name: Waldfeld Schnee
+    ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
+    missions: [N4, 3-3, 3-4]
+    use: Dunkle Bäume unter dicken Schneehauben am Feldrand; Mitte frei, für den Winter.
+  - id: fir_a
+    name: Fichte, hell
+    ref: { sheet: nature_1.png, box: [460, 530, 730, 875] }
+    missions: [1-3, 1-4, N4]
+    use: Einzelne Fichte in frischem Mittelgrün, ersetzt die fast schwarze tree_c.
+  - id: deadtree_b
+    name: Totholz
+    ref: { sheet: nature_1.png, box: [825, 540, 1085, 870] }
+    missions: [1-4, 1-5, 3-4]
+    use: Knorriger kahler Baum in verwittertem Graubraun, nicht schwarz; gibt dem Moor seine trostlosen Punkte.
+  - id: stump_a
+    name: Baumstumpf
+    ref: { sheet: nature_1.png, box: [1200, 670, 1495, 860] }
+    missions: [1-2, 1-3, 1-5]
+    use: Niedriger bemooster Stumpf mit Jahresringen als Deko am Waldrand.
+  - id: bush_low_a
+    name: Flacher Busch
+    ref: { sheet: nature_2.png, box: [75, 245, 345, 415] }
+    missions: [1-2, 1-3, 1-4, 1-5]
+    use: Knöchelhohes Blattpolster mit blassen Blüten; reine Deko, verdeckt nichts.
+  - id: reed_a
+    name: Schilf, dicht
+    ref: { sheet: nature_2.png, box: [430, 50, 710, 415] }
+    missions: [1-5, 3-4]
+    use: Hoher dichter Schilfbüschel mit Rohrkolben für den Rand von Priel und Ufer.
+  - id: reed_b
+    name: Schilf, locker
+    ref: { sheet: nature_2.png, box: [800, 180, 1095, 415] }
+    missions: [1-5, 3-4]
+    use: Niedrigerer strohfarbener Schilfbüschel für Flachwasser und Uferkanten.
+  - id: lily_a
+    name: Seerosen
+    ref: { sheet: nature_2.png, box: [1175, 210, 1450, 415] }
+    missions: [1-5]
+    use: Flache Seerosenblätter mit zwei Blüten; kennzeichnet tiefe dunkle Priele.
+  - id: tussock_a
+    name: Moorhügel
+    ref: { sheet: nature_2.png, box: [60, 650, 350, 840] }
+    missions: [1-5]
+    use: Niedriger Torfhügel mit zottigem Gras und Heide im Sumpf; flache Deko.
+  - id: boardwalk_straight
+    name: Steg, gerade
+    ref: { sheet: nature_2.png, box: [430, 505, 670, 935] }
+    missions: [1-3, 1-5]
+    use: Schlanker Steg auf Pfählen, Nord-Süd, Seil an der Ostseite; 1 Feld, begehbar, schließt nahtlos an.
+  - id: boardwalk_corner
+    name: Steg, Ecke
+    ref: { sheet: nature_2.png, box: [800, 530, 1100, 935] }
+    missions: [1-5]
+    use: Stegecke von Süd nach Ost, Seil an der Nordseite; 1 Feld, begehbar.
+  - id: boardwalk_end
+    name: Steg, Ende
+    ref: { sheet: nature_2.png, box: [1205, 560, 1445, 925] }
+    missions: [1-3, 1-5]
+    use: Stegende nach Süden offen, zwei hohe Pfähle mit Seil im Norden; 1 Feld, begehbar.
+  - id: boulder_a
+    name: Felsblock
+    ref: { sheet: nature_3.png, box: [15, 310, 375, 655] }
+    missions: [1-2, 1-4, N4]
+    use: Einzelblock als Felswall, füllt das Feld bis zum Rand und ist höher als eine Figur; sperrt.
+  - id: camp_tent_a
+    name: Flickenzelt
+    ref: { sheet: nature_3.png, box: [385, 325, 735, 665] }
+    missions: [1-4, 1-5, 3-4]
+    use: Ärmliches Zelt aus geflicktem Segeltuch, offener Eingang nach Süden; gibt dem Hungerlager sein Gesicht.
+  - id: camp_rack_a
+    name: Trockengestell
+    ref: { sheet: nature_3.png, box: [760, 370, 1110, 635] }
+    missions: [1-5, 3-4]
+    use: Zwei Stangenböcke mit aufgehängten Lappen und einem Fell; Lagerdeko neben den Zelten.
+  - id: wolf_cave_a
+    name: Wolfshöhle
+    ref: { sheet: nature_3.png, box: [1125, 310, 1520, 665] }
+    missions: [1-4]
+    use: Felshügel mit dunklem Höhleneingang nach Süden, Knochen und Schädel davor; füllt das Feld, sperrt.
