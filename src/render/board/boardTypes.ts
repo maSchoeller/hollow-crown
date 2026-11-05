@@ -18,6 +18,8 @@ export interface BoardHooks {
   insets?(): Insets;
   /** a critical hit begins (story 8.6): the UI slides its band over the board; times in real ms, the board keeps its own count */
   onCutIn?(c: CutInEvent): void;
+  /** the camera went to the zoom step "whole map" or left it (story 15.11: the overview stone shows the state) */
+  onWholeMap?(on: boolean): void;
 }
 
 /** What the UI needs to draw the cut-in band of a critical hit. */

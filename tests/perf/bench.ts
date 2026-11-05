@@ -8,7 +8,8 @@
  */
 import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstrumentation';
 import { loadContent } from '../../src/content/browser';
-import { applyCommand, createBattle, newCampaign, startBattle } from '../../src/core';
+import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type MapDef } from '../../src/core';
+import { mapSchema } from '../../src/content/schemas';
 import { setLocales } from '../../src/i18n';
 import { loadPack } from '../../src/packs/load';
 import { BoardView } from '../../src/render/board/board';
@@ -55,8 +56,23 @@ export interface EnemyPhaseResult {
 /** `look`: time of day and weather of the bench map, e.g. `night,rain` (story 8.6, env PERF_LOOK of the runner); none: the map as it is.
  * `warm`: overrides `board.warm` of render.yaml (story 7.8, env PERF_WARM): 0 = shaders as before 7.8, 1 = + flash/fade variants, 2 = + warm-up draw (the default).
  * `vat`: overrides `board.vat` (env PERF_VAT): false = every figure plays its skeleton, to compare the two paths.
- * `vatWorker`: false (env PERF_VATWORKER=0) = the baked animations are read and worked out on the main thread, not in workers */
-type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean };
+ * `vatWorker`: false (env PERF_VATWORKER=0) = the baked animations are read and worked out on the main thread, not in workers.
+ * `map` (story 15.11, env PERF_LARGE): a level draft of `concept/27-ueberarbeitung/levels/` instead of the reference battle, played
+ * with the company of the act at node `m1_6` deployed in full and every foe set to advance (the worst case of a phase).
+ * `march`: foes that only walk go together (option „Gegnerzüge: Gemeinsam“); off = one by one as before 15.11.
+ * `whole`: the phase is watched on the zoom step "whole map" (the overview of story 15.11) instead of the opening view */
+type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean; map?: string; march?: boolean; whole?: boolean };
+
+/** the level drafts (story 15.11), parsed on demand; only the perf build has them */
+const drafts = import.meta.glob('../../concept/27-ueberarbeitung/levels/*.yaml');
+
+/** A level draft with every foe on the advance (profile `aggressive`, no wake-up trigger), for the worst case of an enemy phase. */
+async function draftMap(id: string): Promise<MapDef> {
+  const load = drafts[`../../concept/27-ueberarbeitung/levels/${id}.yaml`];
+  if (!load) throw new Error(`no level draft ${id}`);
+  const map = mapSchema.parse(((await load()) as { default: unknown }).default) as MapDef;
+  return { ...map, id: BENCH_MAP_ID, act: 1, units: map.units.map((u) => (u.team === 'enemy' ? { ...u, ai: { profile: 'aggressive' as const } } : u)) } as MapDef;
+}
 
 let prepared: { board: BoardView; data: ReturnType<typeof loadContent>['data']; state: ReturnType<typeof startBattle>['state'] } | null = null;
 
@@ -99,18 +115,32 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   setLocales(loaded.locales);
   await loadPack('act1').catch(() => undefined); // models and sprites resolve without it; content is not needed
   const data = loaded.data;
-  data.maps[BENCH_MAP_ID] = { ...benchMap(), ...parseLookParam(opts.look ?? null) };
-  const first = data.campaign.nodes[0]!;
-  if (!data.campaign.nodes.some((n) => n.id === 'perf')) {
-    data.campaign.nodes.push({ ...first, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
+  data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null) };
+  const nodes = data.campaign.nodes;
+  // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
+  const at = opts.map ? nodes.findIndex((n) => n.id === 'm1_6') : 0;
+  if (!nodes.some((n) => n.id === 'perf')) {
+    nodes.push({ ...nodes[Math.max(0, at)]!, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
   }
   const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  const state = startBattle(data, createBattle(data, c, 'perf', [])).state;
+  let deploy: string[] = [];
+  if (opts.map && at > 0) {
+    const order = nodes.map((n) => n.id);
+    for (const ch of Object.values(data.chars)) {
+      const j = order.indexOf(ch.joins);
+      if (j >= 0 && j < at) addToRoster(data, c, ch.id);
+    }
+    for (const u of c.roster) while (u.level < nodes[at]!.expectedLevel) levelUp(data, u, c.rng);
+    c.completed = order.slice(0, at);
+    deploy = c.roster.map((u) => u.id).slice(0, data.maps[BENCH_MAP_ID]!.deploy.max);
+  }
+  const state = startBattle(data, createBattle(data, c, 'perf', deploy)).state;
 
   const board = new BoardView(document.getElementById('board') as HTMLDivElement, document.getElementById('float') as HTMLDivElement, data, {});
   board.quality = opts.quality ?? 'mid';
   board.figures = opts.figures ?? '3d';
   board.speed = opts.speed ?? 1;
+  board.march = opts.march ?? false;
   if (opts.warm !== undefined) data.render.board.warm = opts.warm;
   if (opts.vat !== undefined) data.render.board.vat = opts.vat;
   vatBuild.models = vatBuild.ms = vatBuild.bytes = 0;
@@ -119,6 +149,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   const t0 = performance.now();
   await board.load(state);
   const loadMs = performance.now() - t0;
+  if (opts.whole) board.wholeMap(true);
   // let textures settle before measuring
   await new Promise((r) => setTimeout(r, 1500));
   prepared = { board, data, state };
@@ -276,5 +307,51 @@ async function enemyPhase(): Promise<EnemyPhaseResult> {
   };
 }
 
-(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase } }).__bench = { prepare, startEnemyPhase, enemyPhase };
+export interface CastleResult {
+  loadMs: number;
+  renderer: string;
+  /** time between consecutive animation frames while the camera glides over the castle */
+  frames: number[];
+  drawCalls: number;
+  meshes: number;
+  vertices: number;
+}
+
+/**
+ * The 3D castle of the home (story 15.11): every room at its highest level, walls and keep at the highest tier, smoke and fire
+ * burning; the camera glides from side to side for `ms` while the frames are counted (the castle always draws, story 10.x).
+ */
+async function castle(opts: { quality?: 'low' | 'mid' | 'high'; ms?: number } = {}): Promise<CastleResult> {
+  const loaded = loadContent();
+  setLocales(loaded.locales);
+  await loadPack('act1').catch(() => undefined);
+  const { CastleView, CASTLE_ROOMS } = await import('../../src/render/home/castle');
+  const view = new CastleView(document.getElementById('board') as HTMLDivElement, loaded.data, { onRoom: () => undefined }, opts.quality ?? 'mid');
+  const t0 = performance.now();
+  if (!(await view.build())) throw new Error('the castle model did not load');
+  for (const id of CASTLE_ROOMS) view.setLevel(id, 3);
+  view.setTier(3);
+  const loadMs = performance.now() - t0;
+  await new Promise((r) => setTimeout(r, 1500));
+  // the pan is the player's drag; the bench moves it like a slow drag across the castle
+  const pan = view as unknown as { panX: number };
+  const frames: number[] = [];
+  const ms = opts.ms ?? 6000;
+  await new Promise<void>((resolve) => {
+    let last = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (last) frames.push(now - last);
+      last = now;
+      pan.panX = Math.sin(((now - start) / ms) * Math.PI * 2) * 12;
+      if (now - start < ms) requestAnimationFrame(tick);
+      else resolve();
+    };
+    requestAnimationFrame(tick);
+  });
+  const stats = view.stats();
+  return { loadMs, renderer: (view as unknown as { host: { engine: { getGlInfo(): { renderer: string } } } }).host.engine.getGlInfo().renderer, frames, drawCalls: stats.drawCalls, meshes: stats.meshes, vertices: stats.vertices };
+}
+
+(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase; castle: typeof castle } }).__bench = { prepare, startEnemyPhase, enemyPhase, castle };
 document.body.dataset.ready = '1';

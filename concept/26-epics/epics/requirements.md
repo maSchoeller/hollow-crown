@@ -96,7 +96,7 @@
 
 ### NonFunctional Requirements
 
-- NFR1: 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten).
+- NFR1: 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase auf Karten bis 1 200 Felder (30 × 40) mit bis zu 50 Figuren und in der 3D-Burg (alle Räume ausgebaut); Desktop-Ersatz `PERF_LARGE=1 pnpm perf`: 60 FPS bei 2×, 30 FPS bei 4× CPU-Drosselung, kein Frame über 100 ms. Die Wiedergabe einer Gegnerphase dauert bei Tempo 1× und „Gegnerzüge: Gemeinsam“ höchstens 15 s (ohne KI-Rechenzeit, NFR3). Vorschlag Story 15.11, vom Produktinhaber zu bestätigen; bis dahin gilt das alte Maß (24×32, ~40 Einheiten) als erfüllt.
 - NFR2: Kaltstart unter 5 s; initialer Download (Shell + Prolog) unter 15 MB (gzip); Build bricht bei Überschreitung ab.
 - NFR3: Gegner-KI unter 300 ms Rechenzeit je Gegnereinheit; Gegnerphase im Web Worker.
 - NFR4: Qualitätsstufen Hoch/Mittel/Niedrig, automatisch vorgewählt.

@@ -23,4 +23,10 @@ describe('settings merge', () => {
   it('resets the enemy pace of a store from before the pace revision', () => {
     expect(mergeSettings(def, { enemySpeed: 2 }).enemySpeed).toBe(def.enemySpeed);
   });
+
+  it('lets the foes march together unless the player chose one by one (story 15.11)', () => {
+    expect(def.enemyMarch).toBe('together');
+    expect(mergeSettings(def, { enemyPaceRev: 2 }).enemyMarch).toBe('together');
+    expect(mergeSettings(def, { enemyPaceRev: 2, enemyMarch: 'each' }).enemyMarch).toBe('each');
+  });
 });

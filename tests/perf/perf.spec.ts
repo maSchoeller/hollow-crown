@@ -13,8 +13,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
 import { PROFILE } from './profile';
-import { exceedances, frameStats, type DeviceReport, type PhaseRun, type StageReport } from './report';
-import type { EnemyPhaseResult, PreparedBattle } from './bench';
+import { exceedances, frameStats, median, type DeviceReport, type PhaseRun, type StageReport } from './report';
+import type { CastleResult, EnemyPhaseResult, PreparedBattle } from './bench';
 
 const OUT = join(process.cwd(), 'test-results', 'perf');
 const RUNS = Math.max(1, Number(process.env.PERF_RUNS) || 3);
@@ -54,15 +54,23 @@ async function threadTime(cdp: CDPSession): Promise<number> {
   return metrics.find((m) => m.name === 'ThreadTime')?.value ?? 0;
 }
 
-type Bench = { prepare(o: object): Promise<PreparedBattle>; startEnemyPhase(): Promise<{ aiMs: number }>; enemyPhase(): Promise<EnemyPhaseResult> };
+type Bench = {
+  prepare(o: object): Promise<PreparedBattle>;
+  startEnemyPhase(): Promise<{ aiMs: number }>;
+  enemyPhase(): Promise<EnemyPhaseResult>;
+  castle(o: object): Promise<CastleResult>;
+};
 
-/** One run: loads the bench page, the battle, and plays the enemy phase under `rate`× CPU throttling. */
-async function phaseRun(page: Page, cdp: CDPSession, rate: number): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number }> {
+/**
+ * One run: loads the bench page, the battle, and plays the enemy phase under `rate`× CPU throttling. `units`: the count the battle
+ * must have (the reference battle 40; null for a level draft, which brings what it brings).
+ */
+async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: object = BENCH_OPTIONS, units: number | null = 40): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number }> {
   await setCpu(cdp, rate);
   await page.goto('./tests/perf/bench.html');
   await page.waitForFunction(() => document.body.dataset.ready === '1');
-  const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), BENCH_OPTIONS)) as PreparedBattle;
-  expect(prepared.units).toBe(40);
+  const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), options)) as PreparedBattle;
+  if (units !== null) expect(prepared.units).toBe(units);
   // the AI's working-out is a stall of its own (NFR3), not a frame of the playback: it is timed apart and left out of the thread time
   await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.startEnemyPhase());
   const cpu0 = await threadTime(cdp);
@@ -109,7 +117,9 @@ async function untilTitle(page: Page, timeout: number): Promise<number> {
   return Math.round((await handle.jsonValue()) as number);
 }
 
+/** `PERF_LARGE=1` (story 15.11) runs only the large-map test below, not this one. */
 test('enemy phase of the large battle and cold start', async ({ page, context }, info) => {
+  test.skip(process.env.PERF_LARGE === '1', 'PERF_LARGE=1 measures the large maps and the castle only');
   test.setTimeout(3_600_000);
   const device = info.project.name;
 
@@ -166,4 +176,105 @@ test('enemy phase of the large battle and cold start', async ({ page, context },
     console.log(process.env.CI ? `::warning::${o}` : `⚠ ${o}`);
   }
   if (process.env.PERF_STRICT === '1') expect(over).toEqual([]);
+});
+
+/** One row of the large-map table (story 15.11): a scenario at one throttling level, medians over the runs, max over all runs. */
+interface LargeRow {
+  scenario: string;
+  cpuSlowdown: number;
+  units: number;
+  avgFps: number;
+  p95Ms: number;
+  maxMs: number;
+  drawCalls: number | null;
+  /** wall time of the enemy phase playback at speed 1×, ms (none for the castle) */
+  phaseMs: number | null;
+  threadMsPerFrame: number | null;
+}
+
+/**
+ * Story 15.11 (NFR1 on the new scale): `PERF_LARGE=1 pnpm perf` measures the level drafts 1-6 and 1-8 (30×40, the company of the act
+ * deployed, every foe advancing) next to the reference battle, each with the foes walking one by one and together, and the 3D
+ * castle with every room built. Writes `test-results/perf/large-<device>.json` and `.md`. Desktop throttling stands in for the phone;
+ * the reference devices stay a release check (story 9.14). `PERF_LARGE_MAPS=reference,s1_1_6_paktwacht,s1_1_8_heimat,whole,castle`
+ * limits the rows (`whole` = 1-6 watched in the overview).
+ */
+test('large maps and the castle (story 15.11)', async ({ page }, info) => {
+  test.skip(process.env.PERF_LARGE !== '1', 'set PERF_LARGE=1');
+  test.setTimeout(3_600_000);
+  const device = info.project.name;
+  const cdp = await throttle(page);
+  const only = process.env.PERF_LARGE_MAPS?.split(',');
+  const maps: Array<{ label: string; map?: string; whole?: boolean }> = [
+    { label: 'Referenz 24×32' },
+    { label: '1-6 Paktwacht 30×40', map: 's1_1_6_paktwacht' },
+    { label: '1-8 Heimat 30×40', map: 's1_1_8_heimat' },
+    { label: '1-6 Paktwacht 30×40 in der Übersicht', map: 's1_1_6_paktwacht', whole: true },
+  ].filter((m) => !only || only.includes(m.whole ? 'whole' : (m.map ?? 'reference')));
+  // `PERF_LARGE_MARCH=1`: only the foes marching together (the rows one by one do not change with the march)
+  const marches = process.env.PERF_LARGE_MARCH === '1' ? [true] : [false, true];
+  const rows: LargeRow[] = [];
+  let renderer = '';
+  for (const stage of stages()) {
+    for (const m of maps) {
+      for (const march of marches) {
+        const runs: PhaseRun[] = [];
+        let units = 0;
+        for (let i = 0; i < RUNS; i++) {
+          const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, map: m.map, march, whole: m.whole }, m.map ? null : 40);
+          runs.push(r.run);
+          units = r.prepared.units;
+          renderer = r.prepared.renderer;
+        }
+        const row: LargeRow = {
+          scenario: `${m.label}, ${march ? 'gemeinsam' : 'einzeln'}`,
+          cpuSlowdown: stage.cpuSlowdown,
+          units,
+          avgFps: median(runs.map((r) => r.avgFps)),
+          p95Ms: median(runs.map((r) => r.p95Ms)),
+          maxMs: Math.max(...runs.map((r) => r.maxMs)),
+          drawCalls: median(runs.map((r) => r.drawCallsAvg ?? 0)),
+          phaseMs: median(runs.map((r) => r.durationMs)),
+          threadMsPerFrame: median(runs.map((r) => r.threadMsPerFrame ?? 0)),
+        };
+        rows.push(row);
+        console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, phase ${row.phaseMs} ms, ${row.units} units`);
+      }
+    }
+    if (only && !only.includes('castle')) continue;
+    const castles: CastleResult[] = [];
+    for (let i = 0; i < RUNS; i++) {
+      await setCpu(cdp, stage.cpuSlowdown);
+      await page.goto('./tests/perf/bench.html');
+      await page.waitForFunction(() => document.body.dataset.ready === '1');
+      castles.push((await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.castle({ quality: 'mid' }))) as CastleResult);
+      await setCpu(cdp, 1);
+    }
+    const stats = castles.map((c) => frameStats(c.frames));
+    const row: LargeRow = {
+      scenario: 'Burg, alle Räume Stufe 3',
+      cpuSlowdown: stage.cpuSlowdown,
+      units: 0,
+      avgFps: median(stats.map((s) => s.avgFps)),
+      p95Ms: median(stats.map((s) => s.p95Ms)),
+      maxMs: Math.max(...stats.map((s) => s.maxMs)),
+      drawCalls: median(castles.map((c) => c.drawCalls)),
+      phaseMs: null,
+      threadMsPerFrame: null,
+    };
+    rows.push(row);
+    console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, ${row.drawCalls} draw calls`);
+  }
+  mkdirSync(OUT, { recursive: true });
+  writeFileSync(join(OUT, `large-${device}.json`), JSON.stringify({ device, renderer, runs: RUNS, rows }, null, 1));
+  const md = [
+    `# Große Karten und Burg – ${device}`,
+    '',
+    `Renderer: ${renderer}; ${RUNS} Läufe je Zeile (Median, max = über alle Läufe); Gegnerphase bei Tempo 1×.`,
+    '',
+    '| Szenario | Drosselung | Figuren | Ø FPS | p95 ms | max ms | Draw Calls | Thread ms/Frame | Gegnerphase s |',
+    '|---|---|---|---|---|---|---|---|---|',
+    ...rows.map((r) => `| ${r.scenario} | ${r.cpuSlowdown}× | ${r.units || '–'} | ${r.avgFps} | ${r.p95Ms} | ${r.maxMs} | ${r.drawCalls ?? '–'} | ${r.threadMsPerFrame ?? '–'} | ${r.phaseMs === null ? '–' : (r.phaseMs / 1000).toFixed(1)} |`),
+  ].join('\n');
+  writeFileSync(join(OUT, `large-${device}.md`), md + '\n');
 });

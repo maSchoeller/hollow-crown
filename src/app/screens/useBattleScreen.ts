@@ -71,6 +71,8 @@ export function useBattleScreen() {
   const chipRef = useRef<HTMLDivElement>(null);
   /** the Nachsetzen chance the player let go (key of `s.pursue` and the turn); the core keeps it until the next command */
   const [pursueDone, setPursueDone] = useState<string | null>(null);
+  /** the camera shows the whole map (story 15.11: the overview stone is pressed) */
+  const [whole, setWhole] = useState(false);
   const wide = useWide();
 
   const unit = (uid: string) => s.units.find((u) => u.uid === uid)!;
@@ -96,7 +98,7 @@ export function useBattleScreen() {
   const barkSeq = useRef(0);
 
   return {
-    session, full, fogged, s, stageRef, floatRef, topRef, bottomRef, boardRef, mode, setMode, busy, setBusy, loading, setLoading, danger, setDanger, watch, setWatch, info, setInfo, wanted, setWanted, watchRef, tileInfo, setTileInfo, banner, setBanner, cutIn, setCutIn, cutSeq, dialogue, setDialogue, bark, setBark, levelUp, setLevelUp, toast, setToastState, setToast, menu, setMenu, classPick, setClassPick, reason, setReason, phaseView, setPhaseView, confirmEnd, setConfirmEnd, objectives, setObjectives, trade, setTrade, convoy, setConvoy, items, setItems, hp, setHp, recap, setRecap, hover, setHover, chipRef, pursueDone, setPursueDone, wide, unit, bandScene, tapRef, longRef, cancelRef, cutInRef, eventRef, openingBark, ltSpoken, ltReady, fleeSpoken, barkSeq,
+    session, full, fogged, s, stageRef, floatRef, topRef, bottomRef, boardRef, mode, setMode, busy, setBusy, loading, setLoading, danger, setDanger, watch, setWatch, info, setInfo, wanted, setWanted, watchRef, tileInfo, setTileInfo, banner, setBanner, cutIn, setCutIn, cutSeq, dialogue, setDialogue, bark, setBark, levelUp, setLevelUp, toast, setToastState, setToast, menu, setMenu, classPick, setClassPick, reason, setReason, phaseView, setPhaseView, confirmEnd, setConfirmEnd, objectives, setObjectives, trade, setTrade, convoy, setConvoy, items, setItems, hp, setHp, recap, setRecap, hover, setHover, chipRef, pursueDone, setPursueDone, whole, setWhole, wide, unit, bandScene, tapRef, longRef, cancelRef, cutInRef, eventRef, openingBark, ltSpoken, ltReady, fleeSpoken, barkSeq,
   };
 }
 

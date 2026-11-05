@@ -102,6 +102,15 @@ export function MenuStone({ onClick }: { onClick: () => void }) {
   );
 }
 
+/** Overview stone (story 15.11): the whole map and back, for touch screens without pinching. */
+export function OverviewStone({ on, onClick }: { on: boolean; onClick: () => void }) {
+  return (
+    <button type="button" class={`hc-piece hud-round ${on ? 'is-on' : ''}`} onClick={onClick} aria-label={t('ui.hud.overview')} aria-pressed={on}>
+      <Icon name="map" size={22} />
+    </button>
+  );
+}
+
 const SIDE_ICON: Record<SideObjectiveDef['type'], string> = {
   visit_villages: 'visit',
   open_chests: 'chest',

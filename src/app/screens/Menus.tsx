@@ -146,6 +146,7 @@ export function Options({ back }: { back: Screen }) {
           {seg(t('ui.opt.lang'), 'lang', [['de', 'Deutsch'], ['en', 'English']])}
           {seg(t('ui.opt.speed'), 'speed', SPEEDS())}
           {seg(t('ui.opt.enemySpeed'), 'enemySpeed', SPEEDS())}
+          {seg(t('ui.opt.enemyMarch'), 'enemyMarch', [['together', t('ui.opt.marchTogether')], ['each', t('ui.opt.marchEach')]])}
         </Piece>
         <Piece class="options__stone">
           <b class="options__head">{t('ui.opt.board')}</b>

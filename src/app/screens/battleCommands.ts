@@ -37,6 +37,8 @@ export function makeRun(b: BattleScreen, reachOf: BoardOverlays['reachOf'], show
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;
     board.skip = sp === 3;
+    // story 15.11: foes that only walk go together, unless the player wants to see them one by one
+    board.march = enemy && settings.value.enemyMarch === 'together';
     let events: GameEvent[] | null;
     try {
       // the enemy phase is computed in the core worker, player commands directly (architecture §5.13)
