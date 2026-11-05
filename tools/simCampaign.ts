@@ -37,6 +37,8 @@ export interface CampaignSimOptions {
   deathMode: DeathMode;
   /** after each won story mission one day passes and the haunts then open are played (one attempt each, story 5.6) */
   haunts?: boolean;
+  /** stops each run after this many missions, without counting it as finished (a whole run takes half a minute on the large maps) */
+  maxMissions?: number;
 }
 
 /** Per story mission, summed over all runs that reached it. */
@@ -195,7 +197,12 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
     let c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
     let finished = true;
     let day = 0;
+    let played = 0;
     for (let id = nextNode(data, c); id; id = nextNode(data, c)) {
+      if (o.maxMissions !== undefined && played++ >= o.maxMissions) {
+        finished = false;
+        break;
+      }
       const node = data.campaign.nodes.find((n) => n.id === id)!;
       const m =
         missions.get(id) ??
