@@ -137,6 +137,23 @@ describe('prop variants', () => {
     for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 1, true)) expect(v.weight).toBeGreaterThan(0);
   });
 
+  it('act 1 maps: every stand of the hunger camp is a camp tent, N3 has its mill, the market of 1-1 rolls market stalls (story 15.8)', () => {
+    const fields = (id: string, terrain: string) => {
+      const m = data.maps[id]!;
+      const rows = m.terrain.split(/\r?\n/).filter((r) => r.length > 0);
+      const out: string[] = [];
+      rows.forEach((r, y) => [...r].forEach((c, x) => m.legend[c] === terrain && out.push(`${x},${y}`)));
+      return { m, out };
+    };
+    const camp = fields('m1_5_hungerlager', 'stall');
+    expect(camp.out.length).toBeGreaterThan(0);
+    expect(new Set((camp.m.propVariants ?? []).filter((v) => v.model === 'camp_tent_a').map((v) => v.at.join(',')))).toEqual(new Set(camp.out));
+    expect(data.maps.n3_erbe!.propVariants?.some((v) => v.model === 'mill_idle')).toBe(true);
+    const market = fields('m1_1_steckbriefe', 'stall');
+    expect(market.out.length).toBeGreaterThan(0);
+    expect(market.m.propVariants ?? []).toEqual([]);
+  });
+
   it('the stand-ins in render.yaml point at models that exist today', () => {
     expect(data.render.board.propFallback.well_idle).toBe('rock_idle');
     expect(data.render.board.propFallback.lodge_b_visited).toBe('lodge_visited');
