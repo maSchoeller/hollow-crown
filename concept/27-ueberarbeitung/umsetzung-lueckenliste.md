@@ -1,18 +1,20 @@
 # Lückenliste: Planung gegen die Überarbeitung
 
-> Stand 2026-11-05, Abgleich mit main (`bb063c6`). Quellen: `roadmap.md`, Decision-Logs von GDD, Narrative, Art Direction, Architektur und UX seit 2026-11-01, `concept/22-narrative/missionsliste-s1.md`, `concept/26-epics/epics/`. **Nichts hiervon ist in die Epics übernommen.** Der Story-Vorschlag steht in `umbau-stories-entwurf.md`.
+> Stand 2026-11-05, Abgleich mit main (`bb063c6`). Quellen: `roadmap.md`, Decision-Logs von GDD, Narrative, Art Direction, Architektur und UX seit 2026-11-01, `concept/22-narrative/missionsliste-s1.md`, `concept/26-epics/epics/`. **Die Epics sind noch nicht geändert.** Der Story-Vorschlag steht in `umbau-stories-entwurf.md`.
 
-## Entscheidungen für den Produktinhaber
+## Entscheidungen des Produktinhabers (2026-11-05)
 
-| # | Frage | Warum sie offen ist | Empfehlung |
-|---|---|---|---|
-| 1 | Neues Epic für den Umbau oder Stories 9.x wieder öffnen? | Die Stories 9.1–9.13 sind fertig, ihre Karten und Teile der Szenen werden aber ersetzt | Neues Epic 15; 9.1–9.13 bleiben als erledigt stehen |
-| 2 | Bleiben die Brettfiguren oder entstehen sie neu? | Art-Log 2026-11-01: „Brettfiguren bleiben unverändert“; der Auftrag für diese Planung verlangt Brettfiguren zu den neuen Porträts | Beschluss aufheben, nach dem Bestandsabgleich nur Figuren mit sichtbarem Widerspruch neu bauen, Story-Figuren von Akt 1 zuerst |
-| 3 | Heißt die Figur im Spiel Kael oder Lucan? | Art-Log und Porträt-Vorlage sagen Lucan, Narrative-Log, Missionsliste, Epics und aller Spielinhalt sagen Kael | Vor dem Umbau der Szenen entscheiden; eine Umbenennung kostet vor dem ersten `content:lock` am wenigsten |
-| 4 | Was muss vor dem Release von Akt 1 fertig sein? | Story 9.14 verlangt alle Stories aus Epic 1–9, also auch den Tonbruch-Test 8.1 und das Audio 8.8 und 8.9; Audio soll laut früherer Vorgabe erst am Ende kommen | Karten, Weltkarte, neue Kampagnenfolge, Tonbruch-Test und Leistungsmessung sind Pflicht; Audio blockiert nicht, die neuen Modelle nur, soweit Karten von Akt 1 sie brauchen |
-| 5 | Gibt es in Staffel 1 noch fliegende Gegner? | Keine Flug-Reiter (GDD-Log 2026-11-01), trotzdem bekam die Höhenregel am 2026-11-05 Flieger-Sonderfälle; Epic 11 plant `pegasus_knight`-Gruppen und eine Flieger-Lektion | Keine in Staffel 1; die Flieger-Regel bleibt im Kern für Staffel 2 |
-| 6 | Reiten eigene Figuren in Staffel 1? | „Reit-Mechanik nur vorbereitet“ gegen „Reiterei zu Pferd“ mit Lektion in 2-1; Treppenregel und Eis in 3-4 nennen Reiter; `mounted` steht im Schema, aber keine Klasse nutzt es | Nur Gegner reiten in Staffel 1 (Rowena und Lanzenreiter mit `mounted`); eigene Reiter erst in Staffel 2 |
-| 7 | Wann wird Epic 11 neu geschnitten, und läuft Akt 2 weiter sofort live? | Die Level von Akt 2 sind noch in Arbeit; 11.1 wurde vor der Überarbeitung als „sofort live“ beschlossen | Neu schneiden, wenn die Akt-2-Level abgenommen sind; Akt 2 erst nach dem Release von Akt 1 auf main freischalten |
+| # | Frage | Antwort |
+|---|---|---|
+| 1 | Umbau-Epic | Neues Epic 15; die Stories 9.1–9.13 bleiben erledigt |
+| 2 | Brettfiguren | Beschluss „bleiben unverändert“ aufgehoben. Kleine Variante, zunächst nur 3 Modelle mit dem vorhandenen Guthaben (Lucan, Verwalter, Osric Dunn), dann neu entscheiden |
+| 3 | Name | Lucan überall, auch in IDs; vor dem ersten `content:lock` |
+| 4 | Release von Akt 1 | Pflicht: Karten, Missionsfolge, Weltkarte v5, Leistungsmessung, Tonbruch-Test, Brettfiguren aus Schritt 1. Audio blockiert nicht |
+| 5 | Flieger | Keine in Staffel 1; die Regel bleibt für Staffel 2 im Code |
+| 6 | Reiter | Keine Pferde als Figuren, auch nicht bei Gegnern. Rowena zu Fuß, Pferde in 2-3 als Kulisse |
+| 7 | Epic 11 | Neu schneiden nach Abnahme der Akt-2-Level; Akt 2 erst nach dem Release von Akt 1 live |
+
+Eingetragen in den Logs von Epics, GDD, Narrative und Art Direction; die Missionsliste ist nachgezogen. Die Tabellen unten nennen den Bestand und sind noch nicht in die Epics übernommen.
 
 Dazu ohne Eile zu bestätigen: „10–15 Charaktere“ meint eigene Einheiten (Roadmap, Annahme); Hebel vom Nachbarfeld (GDD-Log, Annahme [C]); Burgstufen-Schwellen 1/6/14 (Art-Log, `[ASSUMPTION]`); Zeitpunkt des Vorwerks am Passfuß (Narrative-Log 2026-11-04: „zu planen“).
 
@@ -21,7 +23,7 @@ Dazu ohne Eile zu bestätigen: „10–15 Charaktere“ meint eigene Einheiten (
 | Story | Lücke |
 |---|---|
 | 8.1 Tonbruch-Test | Weiter offen und nötig. Muss nun mit den Porträts v2.5 laufen, Ergebnis fehlt im Art-Log |
-| 8.3 Brettfiguren | Als fertig gezählt, die Figuren entstanden aber vor den neuen Porträts. Siehe Entscheidung 2 |
+| 8.3 Brettfiguren | Bleibt erledigt; die Nacharbeit läuft über Epic 15 (Entscheidung 2) |
 | 8.4 Porträts | Überholt durch die 51 Porträts nach `portrait_master.md` v2.5. Bleibt erledigt, kein Nacharbeiten |
 | 8.7 Titelbild | Zeigt laut Story Kael und Rhen; nicht mit Stil v2.5 und dem neuen Kael abgeglichen |
 | 8.8, 8.9 Audio | Weiter offen. Im Repo liegen nur die 31 PoC-Klänge von 2026-10-22. Der Satz „Lizenzfrage GA26 bleibt offen“ ist seit 2026-10-24 falsch (AGENTS.md); dieselbe Altlast steht in Art Direction §13 |
@@ -58,10 +60,10 @@ Die Reihenfolge 11.1 vor Epic 10 bleibt inhaltlich gültig, beginnt aber erst na
 
 | Story heute | Neu laut Missionsliste |
 |---|---|
-| 11.10 Mission 2-1, „drei Angebote“ | Zwei Angebote (Seraphine, Dravn); Maelis erst nach 2-4. Brakka ist Ballistenmeisterin, Lektion Pferde statt Flieger |
+| 11.10 Mission 2-1, „drei Angebote“ | Zwei Angebote (Seraphine, Dravn); Maelis erst nach 2-4. Brakka ist Ballistenmeisterin, Lektion nur zur Balliste |
 | 11.11 Mission 2-2 | Niemand tritt bei (Nell wandert nach 2-6); Grell mit Maelis' Schmuggelware; neue Spur Kundschafter per Schiff |
 | 11.12 Mission 2-3 „Leibwache“, E5 | Wird 2-5 in Silberquell; Sable jagt die Truppe, Amos tritt mit Odile bei |
-| 11.13 Mission 2-4 „Wyvernhorst“, E6 | Wird 2-3 „Die Rabenweide“; Rowena zu Pferd. E6 wandert hinter 2-6 und entfällt ohne Varek |
+| 11.13 Mission 2-4 „Wyvernhorst“, E6 | Wird 2-3 „Die Rabenweide“; Rowena zu Fuß, Pferde als Kulisse. E6 wandert hinter 2-6 und entfällt ohne Varek |
 | 11.14 Mission 2-5 „Brandschneise“, E7 | Wird 2-4, groß; Brann nur als Gast, Grell plündert, Maelis bietet danach an |
 | 11.15 Mission 2-6 | Krähenholm, Grell und Sable statt Rowena; Nell tritt bei, Amos nicht mehr |
 | 11.16 Mission 2-7 | Brakka von Maelis angeheuert; Chronik-Fund in den Büchern |
@@ -74,7 +76,7 @@ Die Reihenfolge 11.1 vor Epic 10 bleibt inhaltlich gültig, beginnt aber erst na
 - **11.3 Weltkarte:** Muss auf Weltkarte v5 und die neue Geografie aufsetzen.
 - **11.5:** Rowena und `brakka_wyvern` als Flieger entfallen; Varek und Brann sind optional, Supports brauchen Ersatz.
 - **11.6 Balliste:** Die Balliste steht schon in Schema, Zustand und Brett; zu prüfen, was davon die Story noch braucht. Flieger-Bezüge streichen. Zusammenspiel mit Stufe und Reichweite (+1 von oben) ist nicht definiert.
-- **11.7:** Flieger-Teile, Pegasus-Pools, Reittier-Grafik und Lektion entfallen (Entscheidung 5). Neu nötig: Reiter zu Pferd (Entscheidung 6). Herbstboden folgt jetzt `map-assets/jahreszeiten-plan.md`.
+- **11.7:** Flieger-Teile, Pegasus-Pools, Reittier-Grafik und Lektion entfallen (Entscheidung 5). Reiter und Reittiere entfallen ebenfalls (Entscheidung 6). Herbstboden folgt jetzt `map-assets/jahreszeiten-plan.md`.
 - **Gemeinsame Regeln:** „Niederlage bei 2-3: Odile“ wandert nach 2-5; Reihenfolge und Abhängigkeiten sind neu zu schreiben; Kartengrößen fehlen; die Chronik-Szene „nach der 3. Mission“ (11.21) gegen die feste Folge prüfen.
 - **Fehlt ganz:** Höhenstufen, Tor, Hebel, `set_terrain` und veränderliche Karten als Kriterien der Karten; Akt-2-Assets aus der Galerie; Beitritt nur durch Ansprechen.
 - **Branch `claude/epic11-act2-f4df6f`:** Der pausierte Entwurf 11-1 trägt den alten Schlüssel und Zuschnitt (13 Stories, Wyvernreiter). Nicht als Grundlage nehmen; die fünf Antworten der Übergabe sind in Epic 11 eingeflossen.

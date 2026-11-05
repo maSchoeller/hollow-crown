@@ -61,4 +61,4 @@ Die Etappen 1, 2 und 5 hängen nicht voneinander ab und können parallel laufen.
 
 **Stand Etappe 7 (2026-11-05):** Etappe 1 und 2 der Matrix für Akt 1 im Spiel und auf den Entwürfen 1-2, 1-3, 1-5, 1-7 abgenommen (Waldfeld, Kornfeld, Besuchshaus, Moor mit Stegen, Gewölbe, Relief, Hebel, Balliste). Entwürfe laden mit `__hc.devMap(<id>)`. Herbst, Winter, Schneehauben: Plan in `23-art-direction/map-assets/jahreszeiten-plan.md`.
 
-**Stand Etappe 8 (2026-11-05):** Vorarbeit, noch nichts beschlossen. Lücken und offene Entscheidungen in `umsetzung-lueckenliste.md`, Vorschlag für den Umbau in `umbau-stories-entwurf.md`. Die Etappen 6 (Akt 2 und 3) und 7 laufen noch.
+**Stand Etappe 8 (2026-11-05):** Sieben Entscheidungen des Produktinhabers und die Lücken in `umsetzung-lueckenliste.md`, Entwurf für Epic 15 in `umbau-stories-entwurf.md`; die Epics sind noch nicht geändert. Die Etappen 6 (Akt 2 und 3) und 7 laufen noch.
