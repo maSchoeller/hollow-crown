@@ -60,7 +60,7 @@ def contact(sprites, out, scale=3):
     udir = os.path.join(sprites, "units")
     ids = sorted(d for d in os.listdir(udir) if os.path.exists(os.path.join(udir, d, "sheet.json")))
     order = ["kael", "avatar", "brenna", "tobin", "mira", "liora", "varek", "brigand", "bandit_archer", "grosk", "hask", "morra",
-             "mercenary", "archer", "fighter", "mage", "soldier"]
+             "mercenary", "fighter", "mage", "soldier"]
     ids = [i for i in order if i in ids] + [i for i in ids if i not in order]
     shots = [("player", "idle_s", 0), ("player", "walk_e", 1), ("player", "attack_e", 3), ("player", "attack_s", 3), ("player", "walk_n", 0),
              ("enemy", "idle_s", 0), ("enemy", "attack_e", 3)]

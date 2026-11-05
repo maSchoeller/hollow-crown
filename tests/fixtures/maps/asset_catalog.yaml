@@ -66,7 +66,7 @@ deploy: { max: 0, forced: [], slots: [] }
 units:
   - { id: cat_a, team: player, class: vanguard, level: 3, at: [2, 3], sprite: soldier, items: [] }
   - { id: cat_b, team: player, class: scout, level: 3, at: [6, 3], sprite: mercenary, items: [] }
-  - { id: cat_c, team: player, class: marksman, level: 3, at: [3, 9], sprite: archer, items: [] }
+  - { id: cat_c, team: player, class: marksman, level: 3, at: [3, 9], sprite: bandit_archer, items: [] }
   - { id: cat_d, team: enemy, class: brigand, level: 3, at: [5, 12], sprite: brigand, items: [] }
   - { id: cat_e, team: enemy, class: brigand, level: 3, at: [16, 16], sprite: brigand, items: [] }
 pairs: []

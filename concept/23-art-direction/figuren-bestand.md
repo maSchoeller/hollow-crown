@@ -119,7 +119,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 | Söldner (`mercenary`) | 1 | ja | ja | ✅ | 26 Stellen |
 | Wolfsreiterin (`wolf_rider`) | 1 | ja | ja | ✅ | 10 Stellen; zu Fuß wie geplant |
 | Tempelwache (`temple_guard`) | 1 | ja | ja | ✅ | 11 Stellen |
-| Schütze (`archer`) | 1 (`class_archer`) | ja | Blender | ❌ | Kastenfigur, 9 Stellen; nie durch Tripo gegangen |
+| Schütze (`archer`) | 1 (`class_archer`) | ja | – | ✅ | seit Story 15.9 überall `bandit_archer`; Kastenfigur entfernt |
 
 **Ohne Modell, keines nötig:** Gerrit (Entscheidung 2026-10-24), Aldric I. Beide stehen auf keiner Karte. Halvard steht in Akt 1 ebenfalls auf keiner Karte, ist aber Boss von 3-8 und braucht für Akt 3 ein Modell.
 
@@ -152,6 +152,8 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 </details>
 
 ## Credits
+
+**Stand 2026-11-05 (Story 15.9):** Tripo zeigt **625 Credits**, das Konto steht aber auf dem **Free-Tarif**; nach Auflage A1 entsteht dort nichts, was ausgeliefert wird. Schritt 1a wartet deshalb auf die Entscheidung des Produktinhabers zum Abo; die drei Turnarounds sind fertig (Decision-Log der Art Direction, 2026-11-05).
 
 Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Letzter Eintrag im Decision-Log: 705 am 2026-10-24. Danach kamen die beiden Dorffiguren dazu, also rechnerisch rund **425**. Schritt 1a braucht 420 und ließe nur 5 übrig, deshalb vorher in Tripo nachsehen. Dieser Wert ist nicht in Tripo nachgeprüft, und ob sich das Guthaben auffüllt, steht nicht im Repo.
 
