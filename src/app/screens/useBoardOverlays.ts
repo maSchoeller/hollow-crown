@@ -1,5 +1,5 @@
 /** Board overlays of the battle screen (Battle.tsx). */
-import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, visibleTiles } from '../../core';
+import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, visibleTiles } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { mapOf } from '../../core/battle/objectives';
@@ -103,7 +103,8 @@ export function useBoardOverlays(b: BattleScreen) {
       const range = combinedRange(data, s, u) ?? combinedRange(data, s, u, true);
       const hoverPath = checkTile && !samePos(checkTile, u.pos) ? pathTo(reach, checkTile) : [];
       const atk = new Set<string>();
-      if (range) for (const d of dests) for (const p of tilesInRange(s, d, range)) atk.add(posKey(p));
+      const onlyStaves = !combinedRange(data, s, u);
+      if (range) for (const d of dests) for (const p of onlyStaves ? tilesInRange(s, d, range) : strikeTiles(data, s, u, d, range)) atk.add(posKey(p));
       for (const d of dests) atk.delete(posKey(d));
       for (const o of s.units) if (o.pos && o.team !== 'enemy' && !o.gone) atk.delete(posKey(o.pos));
       const attack = [...atk].map((k) => k.split(',').map(Number) as Pos);

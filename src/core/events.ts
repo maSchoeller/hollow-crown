@@ -25,7 +25,7 @@ export type GameEvent =
   | { t: 'combatEnd'; attacker: string; defender: string }
   | { t: 'status'; unit: string; status: StatusId; on: boolean }
   | { t: 'knockback'; unit: string; from: Pos; to: Pos; blocked: boolean }
-  | { t: 'terrain'; at: Pos; terrain: string; cause: 'ignite' | 'spread' | 'burnout' | 'extinguish' | 'rockwall' | 'raze' }
+  | { t: 'terrain'; at: Pos; terrain: string; cause: 'ignite' | 'spread' | 'burnout' | 'extinguish' | 'rockwall' | 'raze' | 'event'; level?: number }
   | { t: 'damage'; unit: string; amount: number; hpAfter: number; cause: 'burn' | 'fire' | 'item' }
   | { t: 'heal'; unit: string; amount: number; hpAfter: number; by?: string; cause: 'staff' | 'item' | 'terrain' | 'skill' }
   | { t: 'downed'; unit: string }

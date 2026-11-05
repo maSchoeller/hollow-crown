@@ -177,6 +177,7 @@ export class BoardView extends BoardFrame implements HostedView {
         case 'terrain':
           this.state = { ...this.state, terrain: [...this.state.terrain], timers: { ...this.state.timers } };
           this.state.terrain[e.at[1] * this.state.width + e.at[0]] = e.terrain;
+          if (e.level !== undefined) this.state.levels = { ...this.state.levels, [`${e.at[0]},${e.at[1]}`]: e.level };
           if (e.terrain === 'burning') {
             const k = `${e.at[0]},${e.at[1]}`;
             this.state.timers[k] = finalState.timers[k] ?? { kind: 'burning', turns: 1, revertTo: 'grass' };

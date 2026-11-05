@@ -3,7 +3,7 @@ import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { nextInt, roll1 } from '../rng';
 import type { BattleState, BattleUnit } from '../state';
-import { inBounds, neighbors, onMap, posKey, ruleOn, terrainAt, tileIndex, unitAt } from '../util';
+import { inBounds, neighbors, onMap, posKey, ruleOn, samePos, terrainAt, tileIndex, unitAt } from '../util';
 import { allItems, itemDef } from './items';
 import { computeStats } from './stats';
 import { activeSkillIds } from './skills';
@@ -34,6 +34,26 @@ export function applyStatus(data: GameData, s: BattleState, u: BattleUnit, id: S
 
 export function setTerrain(s: BattleState, p: Pos, terrain: string): void {
   s.terrain[tileIndex(s, p)] = terrain;
+}
+
+/**
+ * The map changes by an event (trigger action `set_terrain`; walls fall only this way). A tile keeps its terrain while a unit stands there
+ * that could not stand on the new one. It takes the level of the new terrain unless `level` says otherwise; a closed door or gate
+ * the event opens counts as open from then on, so nobody offers to open it again.
+ */
+export function eventTerrain(data: GameData, s: BattleState, p: Pos, terrain: string, level: number | undefined, events: GameEvent[]): void {
+  const def = data.terrain[terrain];
+  if (!inBounds(s, p) || !def) return;
+  const on = s.units.find((u) => onMap(u) && samePos(u.pos, p));
+  if (on && def.cost[data.classes[on.classId]!.moveType] === null) return;
+  setTerrain(s, p, terrain);
+  delete s.timers[posKey(p)];
+  const levels = s.levels ?? {};
+  if (level === undefined) delete levels[posKey(p)];
+  else levels[posKey(p)] = level;
+  s.levels = levels;
+  for (const o of s.objects) if (o.type === 'door' && o.state === 'closed' && samePos(o.at, p) && !def.opensTo) o.state = 'open';
+  events.push({ t: 'terrain', at: p, terrain, cause: 'event', level: level ?? def.level });
 }
 
 /** `renew`: a tile that already burns gets its full duration again (Wirken, story 2.5). */

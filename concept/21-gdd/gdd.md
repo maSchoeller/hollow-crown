@@ -163,7 +163,7 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 ### Raster und Bewegung
 
 - Quadratisches Raster, 4 Richtungen, keine Diagonalen. Reichweiten werden in Feldschritten gezählt (Manhattan).
-- **Höhe (Entscheidung 2026-11-04, noch nicht umgesetzt):** 3 Stufen (Feld; Wehrgang, Dach, Terrasse; Turm, Felsnase). Stufenwechsel nur über Rampe (alle), Treppe (ohne Reiter), Leiter (nur zu Fuß). Fernkampf von oben +1 Reichweite; Nahkampf nur auf gleicher Stufe oder bei 1 Stufe Unterschied an Rampe und Treppe.
+- **Höhe (Entscheidung 2026-11-04):** 3 Stufen (Feld; Wehrgang, Dach, Terrasse; Turm, Felsnase). Stufenwechsel nur über Rampe (alle), Treppe (ohne Reiter), Leiter (nur zu Fuß). Fernkampf von oben +1 Reichweite; Nahkampf nur auf gleicher Stufe oder bei 1 Stufe Unterschied an Rampe und Treppe. Flieger wechseln die Stufe frei; die Nahkampfregel gilt für keinen Kampf, an dem ein Flieger beteiligt ist, als Angreifer, Ziel oder beim Konter.
 - Durch Verbündete darf man hindurchziehen, aber nicht auf ihnen stehen bleiben. Gegner blockieren, auch niedergestreckte.
 - Angriffe brauchen keine Sichtlinie. Im Nebel blockieren Mauern und geschlossene Türen die Sicht `[ASSUMPTION]`.
 

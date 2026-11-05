@@ -2,7 +2,7 @@
  * Terrain, props with their see-through twins (story 8.10), static-material freezing and fires of the battle board.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
-import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, faceRot, gatePieces, wallPieces } from './wallKit';
+import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, topPieces, wallPieces } from './wallKit';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -101,7 +101,6 @@ export abstract class BoardProps extends BoardSetup {
 
   protected async buildProps(): Promise<void> {
     this.thawStatic();
-    for (const m of this.propMeshes) m.thinInstanceCount = 0;
     const sets: PropSet[] = [];
     const s = this.state;
     const grid = this.terrain!.grid;
@@ -155,12 +154,12 @@ export abstract class BoardProps extends BoardSetup {
         // under a roof nothing grows on the floor; terrains with their own ground decorate from `decorOn`
         const isOpen = (def.id === 'grass' || def.id === 'plain') && !map.interior;
         const own = decorOn[def.id];
-        const isWall = def.id === 'wall';
+        const isWall = def.id === 'wall' || isWallTop(def.id);
         if ((!def.prop && !isOpen && !own && !isWall) || def.prop === 'bridge') continue;
         const x = gx - grid.skirt;
         const y = gy - grid.skirt;
         if (isWall) {
-          for (const k of wallPieces(terrainId, gx, gy)) put(k.model, { x: x + k.dx, y: y + k.dy, h: k.ground ? 0 : def.height, rot: k.rot, scale: 1, dim: !grid.inMap(gx, gy) });
+          for (const k of def.id === 'wall' ? wallPieces(terrainId, gx, gy) : topPieces(terrainId, gx, gy)) put(k.model, { x: x + k.dx, y: y + k.dy, h: k.ground ? 0 : def.height, rot: k.rot, scale: 1, dim: !grid.inMap(gx, gy) });
           continue;
         }
         if (this.quality === 'low' && !grid.inMap(gx, gy)) {
@@ -227,6 +226,16 @@ export abstract class BoardProps extends BoardSetup {
           case 'gate':
             for (const k of gatePieces(terrainId, gx, gy)) put(k.model, { ...base, x: x + k.dx, y: y + k.dy, rot: k.rot });
             break;
+          case 'ramp':
+          case 'stairs':
+          case 'ladder':
+            put(`${def.prop}_idle`, { ...base, rot: connectorRot((ax, ay) => grid.at(ax, ay)?.height ?? 0, gx, gy) });
+            break;
+          case 'lever': {
+            const obj = s.objects.find((o) => o.at[0] === x && o.at[1] === y);
+            put(`lever_${obj?.state === 'open' ? 'down' : 'up'}`, base);
+            break;
+          }
           case 'door_closed':
           case 'door_open':
             put(`${def.prop}_idle`, { ...base, rot: faceRot(terrainId, gx, gy) });
@@ -274,6 +283,8 @@ export abstract class BoardProps extends BoardSetup {
       sets.push({ tpl, shadow: kind !== 'scenery', mats, cols, boxes, faded: new Uint8Array(list.length) });
       if (!this.propMeshes.includes(tpl)) this.propMeshes.push(tpl);
     }
+    // only now, in one go: loading a new model above takes frames, and a mesh with its colour buffer but no instance would fail its shader meanwhile
+    for (const m of this.propMeshes) m.thinInstanceCount = 0;
     this.propSets = sets;
     for (const set of sets) this.writeProps(set);
     for (const m of this.propMeshes) if (!m.thinInstanceCount) this.idleProp(m);

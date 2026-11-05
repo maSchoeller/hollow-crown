@@ -97,3 +97,4 @@
 - `relief` zeichnet `relief_a` statt des Schreins, `brazier` zeichnet `brazier_b_idle` statt des Lagerfeuers.
 - Abgenommen durch den Produktinhaber am 2026-11-05 auf den Entwürfen 1-2, 1-3, 1-5, 1-7: Moor, Wald und Kornfeld wie gezeigt; Sarkophag sperrt das Feld.
 - Schneehauben: Plan angenommen (Weiß von oben im Material, eigene Modelle nur für Mauer, Turm und Wald, vorher Probe auf einer Karte aus Akt 3).
+- Kulissenhäuser statt Mauerblöcke im Dorf von 1-2 bleiben (PR 103). Entscheidung des Produktinhabers vom 2026-11-05.

@@ -33,7 +33,7 @@ export function standableTiles(data: GameData, map: MapDef, area: Area, moveType
   return areaTiles(area).filter((p) => {
     if (p[0] < 0 || p[1] < 0 || p[0] >= w || p[1] >= h) return false;
     const t = data.terrain[terrain[p[1]! * w + p[0]!]!];
-    return !!t && t.id !== 'door' && t.cost[moveType as keyof typeof t.cost] !== null && !objects.has(posKey(p));
+    return !!t && !t.opensTo && t.cost[moveType as keyof typeof t.cost] !== null && !objects.has(posKey(p));
   });
 }
 

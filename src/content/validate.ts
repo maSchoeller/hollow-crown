@@ -540,6 +540,25 @@ function validateMap(
   });
   const inside = (p: Pos) => p[0] >= 0 && p[1] >= 0 && p[0] < w && p[1] < h;
   const terr = (p: Pos) => data.terrain[grid[p[1]]?.[p[0]] ?? 'plain'];
+  const levels = new Map<string, number>();
+  for (const l of map.levels ?? [])
+    for (const p of areaTiles(l.area)) {
+      if (!inside(p)) err(f, `levels: ${p} out of bounds`);
+      levels.set(`${p[0]},${p[1]}`, l.level);
+    }
+  const level = (p: Pos) => levels.get(`${p[0]},${p[1]}`) ?? terr(p)?.level ?? 0;
+  const g: Terr = { inside, terr, level, freeMoveTypes: data.balance.elevation.freeMoveTypes };
+  // a connector leads to exactly one tile a level above it: that is how it knows which way it faces
+  grid.forEach((line, y) =>
+    line.forEach((_, x) => {
+      const p: Pos = [x, y];
+      if (!terr(p)?.connector) return;
+      const up = ([[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]] as Pos[]).filter((n) => inside(n) && level(n) === level(p) + 1);
+      if (up.length !== 1) err(f, `${terr(p)!.id} at ${p}: needs exactly one neighbour a level higher, has ${up.length}`);
+    }),
+  );
+  for (const t of map.triggers)
+    for (const a of t.then) if (a.action === 'set_terrain' && !data.terrain[a.terrain]) err(f, `${t.id}: set_terrain to unknown terrain ${a.terrain}`);
   const checkUnit = (u: MapUnitDef, ctx: string) => {
     if (!data.classes[u.class]) err(f, `${ctx}: unknown class ${u.class}`);
     if (u.char && !data.chars[u.char]) err(f, `${ctx}: unknown char ${u.char}`);
@@ -579,8 +598,10 @@ function validateMap(
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
   for (const o of map.objects) {
     if (!inside(o.at)) err(f, `${o.id}: out of bounds`);
-    // a door is terrain and object at once (story 2.6): it blocks the path and sight as `door` until opened
-    if (o.type === 'door' && inside(o.at) && terr(o.at)?.id !== 'door') err(f, `${o.id}: a door object needs the terrain "door" on its tile`);
+    // a door or gate is terrain and object at once (story 2.6): it blocks the path and sight until opened
+    if (o.type === 'door' && inside(o.at) && !terr(o.at)?.opensTo) err(f, `${o.id}: a door object needs a closed passage (door, gate_closed) on its tile`);
+    if (o.type === 'lever' && inside(o.at) && terr(o.at)?.prop !== 'lever') err(f, `${o.id}: a lever object needs the terrain "lever" on its tile`);
+    for (const id of o.links ?? []) if (!map.objects.some((m) => m.id === id)) err(f, `${o.id}: links unknown object ${id}`);
     reward(f, o.reward, o.id);
     reward(f, o.contents, o.id);
   }
@@ -607,18 +628,23 @@ function validateMap(
     }
     if (!found) err(f, 'victory area not reachable on foot from the deploy area');
   }
-  if (v.type === 'escort') validateEscort(data, map, v, err, { inside, terr }, locales);
-  if (v.type === 'treasure') validateTreasure(data, map, v, err, { inside, terr });
-  validateHaunts(data, map, err, { inside, terr });
+  if (v.type === 'escort') validateEscort(data, map, v, err, g, locales);
+  if (v.type === 'treasure') validateTreasure(data, map, v, err, g);
+  validateHaunts(data, map, err, g);
 }
 
-type Terr = { inside: (p: Pos) => boolean; terr: (p: Pos) => { id: string; cost: Record<string, number | null> } | undefined };
+type Terr = {
+  inside: (p: Pos) => boolean;
+  terr: (p: Pos) => { id: string; cost: Record<string, number | null>; opensTo?: string; connector?: string } | undefined;
+  level: (p: Pos) => number;
+  freeMoveTypes: readonly string[];
+};
 
 /**
  * The tiles a unit of move type `mt` can reach from `from`, ignoring units (story 4.8). A closed door counts as passable
  * (a scout or a key opens it); every other tile follows the move cost of the terrain.
  */
-function walkable(from: Pos, mt: string, { inside, terr }: Terr): Set<string> {
+function walkable(from: Pos, mt: string, { inside, terr, level, freeMoveTypes }: Terr): Set<string> {
   const seen = new Set<string>();
   const queue: Pos[] = [from];
   while (queue.length) {
@@ -626,9 +652,13 @@ function walkable(from: Pos, mt: string, { inside, terr }: Terr): Set<string> {
     const k = `${p[0]},${p[1]}`;
     if (seen.has(k) || !inside(p)) continue;
     const t = terr(p);
-    if (!t || (t.cost[mt] === null && t.id !== 'door')) continue;
+    if (!t || (t.cost[mt] === null && !t.opensTo)) continue;
     seen.add(k);
-    queue.push([p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]);
+    for (const n of [[p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]] as Pos[]) {
+      if (!inside(n)) continue;
+      const [a, b] = [level(p), level(n)];
+      if (a === b || freeMoveTypes.includes(mt) || (Math.abs(a - b) === 1 && terr(a < b ? p : n)?.connector)) queue.push(n);
+    }
   }
   return seen;
 }

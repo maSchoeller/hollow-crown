@@ -94,6 +94,7 @@ handbook:
     same: "Gleiches Element"
     elemMax: "Höchstens"
     fireRounds: "Brand: Runden"
+    rangeFromAbove: "Von oben: Reichweite"
     enter: "Schaden beim Betreten"
     spread: "Ausbreitung je Runde"
     wallRounds: "Felswall: Runden"
@@ -245,9 +246,14 @@ handbook:
       text: "Mauern versperren den Weg für alle. Über Wagen, Stände, Brunnen, Kohlebecken, Zäune, Höfe und Gebäude kommen nur Flieger."
       where: "Hindernisse liegen nie im blauen Bewegungsbereich."
       keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Gebäude, blockiert"
+    heights:
+      title: "Höhen"
+      text: "Es gibt drei Stufen: das Feld, Wehrgang und Terrasse, Turm und Felsnase. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
+      where: "Die Stufe eines Felds steht in der Geländeanzeige; die Reichweite zeigt das Spielbrett."
+      keywords: "Höhe, Stufe, Wehrgang, Rampe, Treppe, Leiter, Turm"
     doors:
-      title: "Türen"
-      text: "Geschlossene Türen versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne; offen sind sie freier Weg."
+      title: "Türen und Tore"
+      text: "Geschlossene Türen und Tore versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne, manche öffnet ein Hebel oder ein Ereignis; offen sind sie freier Weg."
       where: "„Tür öffnen“ erscheint im grünen Kontext-Band, wenn eine Figur neben der Tür steht."
       keywords: "Tür, Schlüssel, öffnen, Späher"
     fire:

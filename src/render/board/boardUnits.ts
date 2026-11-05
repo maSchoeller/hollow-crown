@@ -269,7 +269,11 @@ export abstract class BoardUnits extends BoardProps {
   protected groundOf(v: UnitView): Vector3 {
     const x = v.x + v.offX;
     const y = v.y + v.offY;
-    const h = (this.terrain?.standOn(Math.min(Math.max(Math.round(x), 0), this.state.width - 1), Math.min(Math.max(Math.round(y), 0), this.state.height - 1)) ?? 0) + v.lift;
+    // between two tiles the figure rises and falls with the step instead of jumping at the middle (ramps, stairs)
+    const top = (tx: number, ty: number) => this.terrain?.standOn(Math.min(Math.max(tx, 0), this.state.width - 1), Math.min(Math.max(ty, 0), this.state.height - 1)) ?? 0;
+    const [fx, fy] = [Math.floor(x), Math.floor(y)];
+    const along = top(fx, fy) + (top(fx + 1, fy) - top(fx, fy)) * (x - fx);
+    const h = (x === fx ? top(fx, fy) + (top(fx, fy + 1) - top(fx, fy)) * (y - fy) : along) + v.lift;
     return new Vector3(x + 0.5, h + 0.12, -y - 0.5);
   }
 

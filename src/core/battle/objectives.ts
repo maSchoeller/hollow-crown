@@ -2,9 +2,9 @@ import type { Pos, Team, WeaponType } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapDef, MapUnitDef, SideObjectiveDef, TriggerDef } from '../mapDefs';
 import type { GameEvent } from '../events';
-import { burningTileHit } from '../rules/effects';
+import { burningTileHit, eventTerrain } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
-import { active, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
+import { active, areaTiles, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
 import { battleUnitFromPlan } from './create';
 import { noteLieutenantSight } from './lieutenantSight';
 
@@ -282,6 +282,7 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
           }
         }
       } else if (a.action === 'spawn') spawnUnits(data, s, a.units, true, events);
+      else if (a.action === 'set_terrain') for (const p of areaTiles(a.area)) eventTerrain(data, s, p, a.terrain, a.level, events);
     }
   }
 }

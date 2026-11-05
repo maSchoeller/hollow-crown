@@ -8,6 +8,7 @@ export type Action =
   | { kind: 'visit' }
   | { kind: 'chest' }
   | { kind: 'door'; object: string }
+  | { kind: 'lever'; object: string }
   | { kind: 'rescue'; target: string }
   | { kind: 'talk'; target: string }
   | { kind: 'command'; target: string }

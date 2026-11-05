@@ -80,6 +80,9 @@ packs:
       - rock_c
       - massif_c
       - gatehouse_closed
+      - stairs_idle
+      - ramp_idle
+      - ladder_idle
       - well_idle
       - fence_gate
       - grove_c

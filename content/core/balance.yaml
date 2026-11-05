@@ -165,11 +165,16 @@ bag: { size: 3 }
 # Nebel (Story 2.6): Sicht = Manhattan-Radius um jede eigene (und verbündete) Einheit mit Sichtlinie; baseVision + höchster Bonus
 # (Boni stapeln nicht): roleBonus nach Klassenrolle, moveTypeBonus nach Bewegungsart. blockers = Gelände, hinter dem die Sicht endet
 # (das Feld selbst bleibt sichtbar). Die Gegner-KI sieht alles; der Nebel gilt nur für Brett, UI, Vorschau und abgespielte Events der Spielerseite.
+# Höhenstufen (GDD, Entscheidung 2026-11-04). Startwerte [C]: Fernkampf von oben, wer keine Stufenverbindung braucht, über welche Verbindung ein Nahkampf reicht.
+elevation:
+  rangedBonus: 1
+  freeMoveTypes: [flier]
+  meleeConnectors: [ramp, stairs]
 fog:
   baseVision: 3
   roleBonus: { marksman: 2, scout: 2 }
   moveTypeBonus: { flier: 1 }
-  blockers: [wall, door, rockwall]
+  blockers: [wall, door, gate_closed, rockwall]
 economy:
   sellRatio: 0.5
   upgradeCost:
@@ -214,6 +219,7 @@ ai:
   lowestHpBonus: 5
   objectiveBonus: 30
   dangerPerAttacker: 5
+  highGroundBonus: 2
   supportHealBelowPercent: 70
   selfHealBelowPercent: 40
   grudgeTargetBonus: 20

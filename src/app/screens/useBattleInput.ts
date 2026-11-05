@@ -297,6 +297,8 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind } as Action });
       case 'door':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'door', object: opt.object! } });
+      case 'lever':
+        return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'lever', object: opt.object! } });
       case 'open':
         return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'open', object: opt.object! } });
       case 'steal': {

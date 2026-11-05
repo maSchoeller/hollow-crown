@@ -55,7 +55,7 @@ function vnoise(x: number, y: number, seed: number): number {
 // ------------------------------------------------------------------ terrain grid
 
 /** What the terrain needs of a map: its size and tiles (a battle state; the world map's layout has the same shape). */
-export type TerrainSource = Pick<BattleState, 'width' | 'height' | 'terrain' | 'timers'>;
+export type TerrainSource = Pick<BattleState, 'width' | 'height' | 'terrain' | 'timers' | 'levels'>;
 
 /** Terrain ids of map + scenery skirt, row-major, (W + 2·skirt) × (H + 2·skirt). */
 export interface TerrainGrid {
@@ -125,7 +125,14 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
     skirt: s,
     ids,
     interior,
-    at: (gx, gy) => (gx < 0 || gy < 0 || gx >= w || gy >= h ? undefined : data.terrain[ids[gy * w + gx]!]),
+    at: (gx, gy) => {
+      if (gx < 0 || gy < 0 || gx >= w || gy >= h) return undefined;
+      const def = data.terrain[ids[gy * w + gx]!];
+      // a tile a map raises stands that many levels above its terrain
+      const level = state.levels?.[`${gx - s},${gy - s}`];
+      if (!def || level === undefined || level === def.level) return def;
+      return { ...def, level, height: def.height + (level - def.level) * data.render.board.levelHeight };
+    },
     inMap: (gx, gy) => gx >= s && gy >= s && gx < s + state.width && gy < s + state.height,
   };
 }
@@ -426,13 +433,17 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   return {
     grid,
     casters,
-    topOf: (x, y) => (x < 0 || y < 0 || x >= state.width || y >= state.height ? null : (grid.at(x + S, y + S)?.height ?? 0)),
+    topOf: (x, y) => {
+      if (x < 0 || y < 0 || x >= state.width || y >= state.height) return null;
+      const def = grid.at(x + S, y + S);
+      return (def?.height ?? 0) + (def?.stand ?? 0);
+    },
     standOn: (x, y) => {
       const def = grid.at(x + S, y + S);
       if (!def) return 0;
       if (def.prop === 'bridge') return 0.02;
       if (def.prop === 'boardwalk') return BOARDWALK_DECK;
-      return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height;
+      return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height + def.stand;
     },
     setWet: (wet) => {
       for (const w of wetMats) {

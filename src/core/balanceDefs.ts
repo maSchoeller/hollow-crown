@@ -1,5 +1,6 @@
 /** The balance values (content/core/balance.yaml) as the rules core sees them. */
 import type { Difficulty, MoveType, Rarity, StatusId, SupportRank } from './defs';
+import type { TerrainConnector } from './mapDefs';
 import type { TavernDef } from './storyDefs';
 
 export interface Balance {
@@ -136,6 +137,8 @@ export interface Balance {
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
   };
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
+  /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */
+  elevation: { rangedBonus: number; freeMoveTypes: MoveType[]; meleeConnectors: TerrainConnector[] };
   fog: { baseVision: number; roleBonus: Record<string, number>; moveTypeBonus: Partial<Record<MoveType, number>>; blockers: string[] };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the class actions: Zielen, Fernbergen, Anfeuern (story 2.3) and the AI's detour limit around hold zones (story 2.4) */
@@ -189,6 +192,8 @@ export interface Balance {
     lowestHpBonus: number;
     objectiveBonus: number;
     dangerPerAttacker: number;
+    /** attack plans: score per height level the attacker stands on */
+    highGroundBonus: number;
     supportHealBelowPercent: number;
     selfHealBelowPercent: number;
     /** score bonus for the grudge target of a lieutenant (story 3.3) */

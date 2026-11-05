@@ -8,11 +8,11 @@ import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import type { BattleState, BattleUnit } from '../state';
-import { active, dist, isHostile, onMap, posKey } from '../util';
+import { active, isHostile, onMap, posKey } from '../util';
 import { asleep } from '../ai/ai';
 import { forecast, type Forecast } from './combat';
 import { usableWeapons } from './items';
-import { destinations, reachNow, reachable, threatTiles, weaponRange } from './movement';
+import { canStrike, destinations, reachNow, reachable, threatTiles, weaponRange } from './movement';
 import { computeStats } from './stats';
 import { bleedsOut } from './effects';
 
@@ -123,8 +123,7 @@ export function killMarks(data: GameData, s: BattleState, unit: BattleUnit): Kil
     let best: KillMark['kind'] | null = null;
     for (const w of weapons) {
       for (const o of origins) {
-        const d = dist(o, foe.pos!);
-        if (d < w.range[0] || d > w.range[1]) continue;
+        if (!canStrike(data, s, unit, o, foe.pos!, w.range, foe)) continue;
         const f = forecast(data, s, unit.uid, foe.uid, w.uid, o);
         if (lossAtHit(data, f, false) >= foe.hp) best = 'hit';
         else if (!best && f.attacker.crit > 0 && lossAtHit(data, f, true) >= foe.hp) best = 'crit';
@@ -156,10 +155,7 @@ export function perilWarnings(data: GameData, s: BattleState, team: BattleUnit['
       if (!f.zone.has(posKey(me.pos!))) continue;
       let most = 0;
       for (const w of f.weapons) {
-        const from = f.origins.find((o) => {
-          const d = dist(o, me.pos!);
-          return d >= w.range[0] && d <= w.range[1];
-        });
+        const from = f.origins.find((o) => canStrike(data, s, f.u, o, me.pos!, w.range, me));
         if (!from) continue;
         most = Math.max(most, damageAtHit(data, forecast(data, s, f.u.uid, me.uid, w.uid, from, true)));
       }

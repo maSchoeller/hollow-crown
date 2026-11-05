@@ -5,7 +5,7 @@
  */
 import { useRef } from 'preact/hooks';
 import type { BattleState, BattleUnit, GameData, Pos, RecapRow } from '../../core';
-import { maxHpOf, onMap, active } from '../../core';
+import { levelAt, maxHpOf, onMap, active } from '../../core';
 import { t } from '../../i18n';
 import { unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -39,6 +39,7 @@ export function TerrainChip({ data, s, p }: { data: GameData; s: BattleState; p:
   return (
     <span class="hc-piece lg-chip">
       <b>{t(`terrain.${terr.id}`)}</b>
+      {levelAt(data, s, p) > 0 ? <span class="lg-chip__val">{t('ui.heightLevel', { n: levelAt(data, s, p) })}</span> : null}
       {val('shield', t('ui.stat.def'), terr.def)}
       {val('avoid', t('ui.avoid'), terr.avoid)}
       {terr.heal ? val('healer', t('ui.heal'), terr.heal, '%') : null}

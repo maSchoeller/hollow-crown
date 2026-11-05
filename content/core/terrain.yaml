@@ -1,7 +1,9 @@
 # Gelände (concept/06 §2, Bewegungskosten concept/04 §2). Startwerte [C].
 # cost: Bewegungskosten je Bewegungstyp, null = nicht betretbar.
 # ground: Bodenschicht fürs Dual-Grid-Rendering, prop: Requisite darüber (art/README.md).
-# 3D-Brett, nur Darstellung (concept/01-decisions.md D3, D6): surface = Bodentextur, height = Oberkante in Feldern
+# level: Höhenstufe als Regel (GDD; Standard 0; 1 Wehrgang, Terrasse; 2 Turm, Felsnase). Die Mauer selbst bleibt unbetretbar und Stufe 0, begehbar ist `rampart`.
+# connector: ramp|stairs|ladder führt von diesem Feld zum einen Nachbarn eine Stufe höher; wer sie nutzen darf, sagt cost. opensTo: geschlossener Durchgang, öffnet zu diesem Gelände.
+# 3D-Brett, nur Darstellung (concept/01-decisions.md D3, D6): stand = Standhöhe einer Figur über height; surface = Bodentextur, height = Oberkante in Feldern
 # (Standard 0), cliff = Seitenwand earth|rock|wall (Standard earth), water = Wasserfläche darüber.
 - { id: plain,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: grass,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
@@ -23,7 +25,7 @@
 - { id: burning,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, cost: { foot: 2, armored: 2, mounted: 2, flier: 1, monster: 2 }, surface: grass }
 - { id: ash,      def: 0, avoid: 0,   heal: 0,  flammable: false, ground: ash,   cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: ash }
 - { id: rockwall, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: rockwall, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: dirt }
-- { id: door,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: door_closed, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: road }
+- { id: door,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: door_closed, opensTo: door_open, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: road }
 - { id: door_open, def: 0, avoid: 0,  heal: 0,  flammable: false, ground: road,  prop: door_open, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
 # Kapitel-spezifisch
 - { id: wagon,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: wagon, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
@@ -44,6 +46,17 @@
 # Wohnhaus als Kulisse (Story 9.2): Requisite house ohne Objekt, nicht besuchbar, nur Flieger kommen drüber; das Modell wählt ein Feld-Hash
 # aus render.yaml board.variants.house (house_intact, house_b_intact …). Startwerte [C].
 - { id: building, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: house, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
+# Höhenstufen und Tor (Entscheidung 2026-11-04, GDD). Startwerte [C]. Rampe alle, Treppe ohne Reiter, Leiter nur zu Fuß; Flieger brauchen keine Verbindung.
+- { id: rampart,  def: 1, avoid: 10,  heal: 0,  flammable: false, ground: wall,  level: 1, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: stone, height: 0.85, cliff: wall }
+- { id: terrace,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, level: 1, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass, height: 0.85, cliff: wall }
+- { id: tower_top, def: 2, avoid: 20, heal: 0,  flammable: false, ground: wall,  level: 2, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: stone, height: 1.7, cliff: wall }
+- { id: crag,     def: 1, avoid: 10,  heal: 0,  flammable: false, ground: grass, level: 2, cost: { foot: 1, armored: 2, mounted: 2, flier: 1, monster: 1 }, surface: grass, height: 1.7, cliff: rock }
+- { id: ramp,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: ramp, connector: ramp, stand: 0.42, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
+- { id: stairs,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: stairs, connector: stairs, stand: 0.42, cost: { foot: 1, armored: 2, mounted: null, flier: 1, monster: 2 }, surface: road }
+- { id: ladder,   def: 0, avoid: -10, heal: 0,  flammable: false, ground: plain, prop: ladder, connector: ladder, stand: 0.3, cost: { foot: 2, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
+- { id: gate_closed, def: 0, avoid: 0, heal: 0, flammable: false, ground: road,  prop: gate, opensTo: gate, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: road }
+# Hebel: Objekt `lever` auf diesem Feld; man zieht ihn vom Nachbarfeld, die Requisite zeigt lever_up / lever_down nach dem Objektzustand.
+- { id: lever,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: lever, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
 # Moor (Erlenmoor 1-5, Matrix map-assets): Werte wie Furt und Fluss, eigener Boden und eigenes Wasser. Sumpf begehbar wie die Furt, Priel gesperrt wie der Fluss.
 # Steg: Werte wie die Brücke, Modell aus boardwalk_* nach den Nachbarfeldern (src/render/board/wallKit.ts). footbridge ist derselbe Steg über klarem Bach.
 - { id: swamp,    def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 }, surface: peat, height: -0.15, water: true, waterLook: mire }

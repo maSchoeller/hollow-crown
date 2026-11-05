@@ -6,6 +6,8 @@ export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone
 /** Colour of a water plane: the clear river, the murky shallow mire, the dark deep creek of a moor. */
 export type TerrainWaterLook = 'clear' | 'mire' | 'creek';
 export type TerrainCliff = 'earth' | 'rock' | 'wall';
+/** What leads from a tile up to the neighbouring tile one level higher (GDD, height levels). */
+export type TerrainConnector = 'ramp' | 'stairs' | 'ladder';
 
 export interface TerrainDef {
   id: string;
@@ -27,6 +29,14 @@ export interface TerrainDef {
   waterLook: TerrainWaterLook;
   seizable?: boolean;
   visitable?: boolean;
+  /** height level as a rule (0 field; 1 wall walk, terrace; 2 tower, crag); a map can raise single tiles with `levels` */
+  level: number;
+  /** the tile links to the one neighbour a level above it; who may use it says `cost` */
+  connector?: TerrainConnector;
+  /** the tile is a closed passage: its object opens it (key, lever, trigger) and the terrain turns into this one */
+  opensTo?: string;
+  /** render only: how far above `height` a unit stands (half way up a ramp or stairs) */
+  stand: number;
 }
 
 export type Area = { rect: [number, number, number, number] } | { tiles: Pos[] };
@@ -128,7 +138,9 @@ export type TriggerAction =
   | { action: 'dialogue'; id: string; onBoard?: string }
   | { action: 'set_ai'; units: string[]; profile: AiDef['profile'] }
   | { action: 'spawn'; units: MapUnitDef[] }
-  | { action: 'set_flag'; flag: string };
+  | { action: 'set_flag'; flag: string }
+  /** the map changes by an event (a wall falls, a gate shuts): `level` sets the height level of the tiles, without it they take their terrain's */
+  | { action: 'set_terrain'; area: Area; terrain: string; level?: number };
 
 export interface TriggerDef {
   id: string;
@@ -155,6 +167,8 @@ export interface MapDef {
   noDeath?: boolean;
   legend: Record<string, string>;
   terrain: string;
+  /** tiles standing a level other than their terrain's (a stairs on the wall walk, a terrace of ordinary ground) */
+  levels?: Array<{ level: number; area: Area }>;
   /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
   interior?: boolean;
   /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
