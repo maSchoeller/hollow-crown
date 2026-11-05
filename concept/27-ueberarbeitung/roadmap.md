@@ -61,4 +61,6 @@ Die Etappen 1, 2 und 5 hängen nicht voneinander ab und können parallel laufen.
 
 **Stand Etappe 7 (2026-11-05):** Etappe 1 und 2 der Matrix für Akt 1 im Spiel und auf den Entwürfen 1-2, 1-3, 1-5, 1-7 abgenommen (Waldfeld, Kornfeld, Besuchshaus, Moor mit Stegen, Gewölbe, Relief, Hebel, Balliste). Entwürfe laden mit `__hc.devMap(<id>)`. Herbst, Winter, Schneehauben: Plan in `23-art-direction/map-assets/jahreszeiten-plan.md`.
 
-**Stand 2026-11-05 (Höhenstufen):** Alle 12 Entwürfe von Akt 1 sind im Spiel, mit Höhenstufen, Toren, Hebeln und `set_terrain`. Abnahme: `levels/abnahme/akt1-hoehen.md`. Offen: Schwer 1-5 und 1-6.
+**Stand 2026-11-05 (Höhenstufen):** Alle 12 Entwürfe von Akt 1 sind im Spiel, mit Höhenstufen, Toren, Hebeln und `set_terrain`. Abnahme: `levels/abnahme/akt1-hoehen.md`. Schwer liegt überall im Korridor; offen bleibt 1-8 auf Leicht/Normal (Erfahrungskurve).
+
+**Stand Etappe 3 (2026-11-05):** Noch nicht begonnen, eine Figuren-Bibel gibt es nicht. Bestandsliste und Vorschlag für die Neuanfertigung in `23-art-direction/figuren-bestand.md`; Umfang beschlossen: 12 Modelle, zuerst Lucan, Verwalter und Osric Dunn.
