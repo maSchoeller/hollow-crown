@@ -1,5 +1,7 @@
 # world_map – flache Weltkarte von Valmora (Hochformat)
 
+> **Abgelöst (Story 15.7, 2026-11-05):** Im Spiel ist die Weltkarte v5 (`art/prompts/world_map_v5.md`). Bild und Lage `map_placed_v1.json` bleiben nur zur Herleitung im Repo.
+
 - **Dateien:** `art/world/map_flat.png` (Original von ChatGPT), `art/world/map_guide.png` (Layout-Referenz, erzeugt von `tools/art/world_guide.py` aus `art/world/map_layout.json`)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif Plus, Konto maschoeller), gesteuert über Claude in Chrome

@@ -17,8 +17,9 @@ python tools/art/build.py [--quality mid|high]
 - Status icons (art/status/source/<id>.png, painted in ChatGPT, story 8.6): WebP q85, 96 px square → public/assets/core/status/<id>.webp.
   Exception to the rule "new assets go into act1" (product owner 2026-10-26): the icons are a few KB and the prologue shows them, too.
 - Title image (art/title/title_act1.png, 2:3): WebP q72, 1024×1536 → public/assets/title/title_act1.webp (pack core).
-- World map (art/world/map_flat_v1.png, painted in ChatGPT): the flat picture, doubled to 2048 px wide → public/assets/world/valmora.webp; loads on demand
-  when the world map first opens (not precached, see ON_DEMAND_ASSETS in vite.config.ts).
+- World map v5 (art/world/map_v5.png, 3276 px square, story 15.7): 3 x 3 tiles → public/assets/world/valmora_r<r>c<c>.webp, an
+  overview picture valmora.webp (fallback under the tiles and backdrop of the deployment) and the town pictures of
+  art/world/map_places_v5.json → world/sites/<place>.webp; all of it loads on demand with the act pack.
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow and PyYAML.
 """
@@ -28,7 +29,7 @@ import re
 import shutil
 import sys
 
-from PIL import Image, ImageFilter
+from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ground  # noqa: E402
@@ -166,22 +167,53 @@ def build_title():
     return ['title_act1']
 
 
-WORLD_MAP = 'map_flat_v1.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map.md)
-WORLD_WIDTH = 2048  # shipped width: the 1024 px source is doubled (Lanczos + unsharp mask), so the near zoom stays crisp on dense screens
+WORLD_MAP = 'map_v5.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map_v5.md)
+WORLD_PLACES = 'map_places_v5.json'  # places and town pictures; their coordinates are in pixels of a 1254 px map
+WORLD_TILES = 3  # tiles per side: each one is a third of the source, so the near zoom on a phone shows full detail
+WORLD_LOW = 1024  # width of the overview picture shown until (or where) a tile has not loaded
+SITE_HEADROOM = 1.25  # town pictures are shipped this much wider than their width on the full-size map (zoom past 1:1)
 
 
 def build_world():
-    """The flat world map (story 5.2) → public/assets/world/valmora.webp; loads on demand (folder world/ is not precached)."""
+    """World map v5 (story 15.7): tiles, overview picture and town pictures under public/assets/world/ (not precached)."""
     src = os.path.join(ART, 'world', WORLD_MAP)
     if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
     im = Image.open(src).convert('RGB')
-    if im.width < WORLD_WIDTH:
-        im = im.resize((WORLD_WIDTH, round(im.height * WORLD_WIDTH / im.width)), Image.LANCZOS)
-        im = im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=70, threshold=2))
-    im.save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=84, method=6)
-    return ['valmora']
+    built = []
+    n = WORLD_TILES
+    for r in range(n):
+        for c in range(n):
+            box = (c * im.width // n, r * im.height // n, (c + 1) * im.width // n, (r + 1) * im.height // n)
+            im.crop(box).save(os.path.join(dst, f'valmora_r{r}c{c}.webp'), 'WEBP', quality=82, method=6)
+            built.append(f'valmora_r{r}c{c}')
+    low = im.resize((WORLD_LOW, round(im.height * WORLD_LOW / im.width)), Image.LANCZOS)
+    low.save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=72, method=6)
+    built.append('valmora')
+    places_path = os.path.join(ART, 'world', WORLD_PLACES)
+    if not os.path.isfile(places_path):
+        return built
+    with open(places_path, encoding='utf-8') as f:
+        places = json.load(f)
+    unit = im.width / 1254
+    sites = ensure(os.path.join(dst, 'sites'))
+    for p in places.get('places', []):
+        site = p.get('site')
+        path = site and os.path.join(ROOT, site['image'])
+        if not path or not os.path.isfile(path):
+            continue
+        pic = Image.open(path).convert('RGBA')
+        box = pic.getbbox()
+        w = round(site['width'] * unit * SITE_HEADROOM)
+        if not box or w < 1:
+            print(f"  world: town picture {site['image']} is empty, skipped")
+            continue
+        pic = pic.crop(box)
+        pic = pic.resize((w, round(pic.height * w / pic.width)), Image.LANCZOS)
+        pic.save(os.path.join(sites, f"{p['id']}.webp"), 'WEBP', quality=86, method=6)
+        built.append(f"sites/{p['id']}")
+    return built
 
 
 def content_unit_ids():

@@ -221,9 +221,10 @@ quality:
 assets:
   keepUnused: 80
 
-# Story 5.2: flache Weltkarte (concept/23-art-direction §6): das gemalte Bild `art/world/map_flat_v1.png` mit den Orten darauf.
+# Story 5.2/15.7: flache Weltkarte (concept/23-art-direction §6): das gemalte Bild `art/world/map_v5.png` (quadratisch) mit den Orten darauf.
 # zoomSteps = Breite des Bildes als Vielfaches der Bildschirmbreite (Übersicht, Nah); focusZoom = so viel näher beim Tipp auf einen Ort.
+# Auf 375 × 812 deckt das Bild ab 2,17 Breiten die Höhe; nah mit Tipp 2,8 × 1,12 ≈ 1180 CSS-px, bei DPR 3 rund das 1,08-Fache der Quelle.
 worldMap:
-  zoomSteps: [1.6, 2.4]
+  zoomSteps: [2.2, 2.8]
   zoomMs: 260
   focusZoom: 1.12

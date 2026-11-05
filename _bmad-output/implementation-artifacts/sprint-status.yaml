@@ -265,7 +265,7 @@ development_status:
   15-4-mittlere-karten: backlog  # Mittlere Karten (1-2, 1-3, 1-4, 1-5)
   15-5-grosse-karten: backlog  # Große Karten (1-6, 1-8)
   15-6-szenen-anpassen-lucan-statt-kael: backlog  # Szenen an Welt und Folge anpassen, Lucan statt Kael
-  15-7-weltkarte-v5-einbinden: backlog  # Weltkarte v5 einbinden
+  15-7-weltkarte-v5-einbinden: review  # Weltkarte v5 einbinden
   15-8-galerie-modelle-fuer-akt-1: backlog  # Galerie-Modelle für Akt 1
   15-9-brettfiguren-zu-den-neuen-portraets-schritt-1: backlog  # Brettfiguren zu den neuen Porträts, Schritt 1
   15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen

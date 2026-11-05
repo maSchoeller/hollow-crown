@@ -1,8 +1,9 @@
 /**
- * View maths of the flat world map (story 5.2): the painted picture lies under the screen at scale `s` (screen px per
- * picture px) with its top-left corner at (x, y); places are percentages of the picture. Pure, so it is unit tested.
+ * View maths of the flat world map (stories 5.2 and 15.7): the painted picture lies under the screen at scale `s` (screen px
+ * per picture px) with its top-left corner at (x, y); places are percentages of the picture. Which stone stands at a place,
+ * the fog areas and the town picture of a place are worked out here too. Pure, so it is unit tested.
  */
-import type { WorldDef, WorldPlace } from '../../core';
+import { evalConditions, type ConditionContext, type HomeKind, type WorldDef, type WorldPlace } from '../../core';
 
 export type Size = readonly [number, number];
 export interface Screen {
@@ -56,15 +57,80 @@ export function zoomAround(v: MapView, scr: Screen, size: Size, s2: number, anch
   return clampView({ s: v.s * k, x: anchor[0] - (anchor[0] - v.x) * k, y: anchor[1] - (anchor[1] - v.y) * k }, scr, size, pad);
 }
 
-/** Percent of the height down to which the fog of the regions after `act` reaches, or null when nothing lies under fog. */
-export function fogTop(world: WorldDef, act: number): number | null {
-  const edges = world.fog.filter((e) => e.act > act).map((e) => e.y);
-  return edges.length ? Math.max(...edges) : null;
+/** The fog: the areas of every region whose act lies after `act` (polygons in percent of the picture). */
+export function fogAreas(world: WorldDef, act: number): Array<Array<[number, number]>> {
+  return world.regions.filter((r) => r.act > act).flatMap((r) => r.areas);
 }
 
-/** The place of a campaign node, or of the home. */
-export function placeOf(world: WorldDef, key: { node: string } | { home: true }): WorldPlace | undefined {
-  return world.places.find((p) => ('node' in key ? p.node === key.node : p.kind === 'home'));
+/** The place whose slot holds a campaign node. */
+export function placeOf(world: WorldDef, node: string): WorldPlace | undefined {
+  return world.places.find((p) => p.slots.some((s) => s.node === node));
+}
+
+/** The label of a node's slot (P, 1-1, N1), or null for a node without a place. */
+export function labelOf(world: WorldDef, node: string): string | null {
+  for (const p of world.places) for (const s of p.slots) if (s.node === node) return s.label;
+  return null;
+}
+
+/** Tip of the home stone for the current kind of home. */
+export const homeAt = (world: WorldDef, kind: HomeKind): [number, number] => world.home[kind];
+
+/** A stone on the map: the node it opens, where it points, and its place in a fan of open stones at the same place. */
+export interface Stone {
+  node: string;
+  at: [number, number];
+  done: boolean;
+  /** offset in the fan: 0 alone, otherwise −(n−1)/2 … (n−1)/2 */
+  fan: number;
+}
+
+/**
+ * The stones of the shown nodes: one per place. A place with open nodes shows those (fanned out side by side); otherwise the
+ * node completed last. A node without a place stands on the home stone, so it never disappears (fallback).
+ */
+export function stonesOf(world: WorldDef, shown: readonly string[], open: readonly string[], completed: readonly string[], home: [number, number]): Stone[] {
+  const groups = new Map<string, { at: [number, number]; nodes: string[] }>();
+  for (const id of shown) {
+    const p = placeOf(world, id);
+    const key = p ? p.id : '';
+    const g = groups.get(key) ?? { at: p ? p.at : home, nodes: [] };
+    g.nodes.push(id);
+    groups.set(key, g);
+  }
+  const stones: Stone[] = [];
+  for (const g of groups.values()) {
+    const opened = g.nodes.filter((n) => open.includes(n));
+    const last = [...g.nodes].sort((a, b) => completed.indexOf(b) - completed.indexOf(a))[0]!;
+    const pick = opened.length ? opened : [last];
+    pick.forEach((node, i) => stones.push({ node, at: g.at, done: completed.includes(node) && !open.includes(node), fan: i - (pick.length - 1) / 2 }));
+  }
+  return stones;
+}
+
+/**
+ * The town picture of a place: the first variant whose conditions hold, otherwise the base picture named like the place.
+ * A picture in `missing` (it failed to load) is skipped, so a missing variant falls back to the base picture; null when the
+ * base picture is missing too (the plateau then shows a place sign).
+ */
+export function siteImage(place: WorldPlace, ctx: ConditionContext, missing: readonly string[] = []): string | null {
+  const variant = place.site?.variants?.find((v) => evalConditions(ctx, v.requires))?.image;
+  if (variant && !missing.includes(variant)) return variant;
+  return missing.includes(place.id) ? null : place.id;
+}
+
+/** A fog area pushed past the picture edge where it touches it, so the soft edge does not thin the fog along the border. */
+export function bleedArea(area: ReadonlyArray<readonly [number, number]>, bleed = 5): Array<[number, number]> {
+  const out = (v: number) => (v <= 0 ? -bleed : v >= 100 ? 100 + bleed : v);
+  return area.map(([x, y]) => [out(x), out(y)]);
+}
+
+/** What the map says while the overview picture and the tiles load: nothing once either covers the map. */
+export function mapNotice(overview: 'loading' | 'ready' | 'failed', tilesLoaded: number, tilesFailed: number, tiles: number): 'loading' | 'missing' | null {
+  if (overview === 'ready' || tilesLoaded === tiles) return null;
+  if (overview === 'loading' || tilesLoaded + tilesFailed < tiles) return 'loading';
+  // the overview failed and every tile has answered: some tiles show (no notice), none show (the map is missing)
+  return tilesLoaded > 0 ? null : 'missing';
 }
 
 /**
