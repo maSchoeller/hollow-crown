@@ -58,6 +58,7 @@ items:
     missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
     use: Gleicher Grundriss ausgebrannt, Mauerstümpfe, verkohlte Sparren, Kamin steht noch, Wegplatten bleiben.
   - id: roof_tile_idle
+    ships: true
     name: Begehbares Dach
     ref: { sheet: village_2.png, box: [205, 540, 685, 955] }
     missions: [N1]

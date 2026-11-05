@@ -1,0 +1,20 @@
+# Prolog, Runde 3: das erste Beben. Die Pforte zur Unterstadt springt auf, Säulen fallen (Karten-Trigger t_quake).
+id: scn.prologue.quake
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Boden bebt. Säulen brechen, Staub fällt vom Dom. Im Westen springt eine Pforte aus den Angeln."
+  - id: l02
+    speaker: [tobin]
+    fallback: skip
+    mood: sad
+    text: "Das war kein Donner! Der Boden, der ganze Boden …"
+  - id: l03
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Die Pforte zur Unterstadt, Küken. Die Gasse führt am Tempeltor vorbei. Ich kenne den Weg."
+  - id: l04
+    speaker: [kael]
+    mood: neutral
+    text: "Zwei Wege raus. Nehmt den, der uns alle lebend hinausbringt."

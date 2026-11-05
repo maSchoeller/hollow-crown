@@ -1,0 +1,23 @@
+# Mission 1-3, die Truppe betritt die Lichtung (Karten-Trigger t_shrine): Liora ruft vom Schrein herab. Nach dem Sieg tritt sie bei.
+id: scn.m1_3.shrine
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Ihr seid pünktlich, Hauptmann. Er sagte, ihr kämt. Kommt herauf, die Rampe ist der einzige Weg."
+  - id: l02
+    speaker: [kael]
+    fallback: skip
+    mood: neutral
+    text: "Er? Wer schickt dich?"
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Das soll er euch selbst sagen. Ich bin Liora. Der Pakttempel hat mich verstoßen, weil ich fragte."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Morra jagt mich seit zwei Tagen. Ihre Schützen stehen schon oben. Jetzt hat sie auch euch im Visier."

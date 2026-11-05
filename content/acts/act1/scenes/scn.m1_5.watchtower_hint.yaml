@@ -1,0 +1,14 @@
+# Mission 1-5, Besuchsszene der Hütte im Westen [1,16]: Ein alter Hungernder erzählt vom Deserteur am alten Wachturm (N2 öffnet nach dem Sieg, Missionsliste).
+id: scn.m1_5.watchtower_hint
+background: hungerlager
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ein Alter hockt allein am Feuer: „Am Wachturm an der Grenzmauer sitzt einer in Heerstiefeln. Sie suchen ihn.“"
+  - id: l02
+    mood: sad
+    text: "„Er hat sein Brot mit uns geteilt und ist weitergezogen. Nehmt euch vor dem Suchtrupp in Acht.“"
+  - id: l03
+    speaker: [kael]
+    mood: neutral
+    text: "Den Turm kenne ich noch aus dem Krieg. Das merken wir uns."

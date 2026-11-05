@@ -1,5 +1,5 @@
-# Mission 1-5, Szene nach der Karte (nach Runde 6) mit Entscheidung E3 (Narrative „Entscheidungen“, Gewissen): Grosk kommt mit erhobenen Händen ins Lager der Truppe, seine Leute sind
-# Hungernde, keine Mörder. Er stand während des Kampfes nicht auf dem Brett (Produktinhaber 2026-10-27); die Wirkung `meet` lässt ihn als begegnet gelten (Steckbrief, Heimsuchungen, Finale).
+# Mission 1-5, Szene nach der Karte (nach Runde 8) mit Entscheidung E3 (Narrative „Entscheidungen“, Gewissen): Grosk kommt mit erhobenen Händen ins Lager der Truppe, seine Leute sind
+# Hungernde, keine Mörder. Er stand im Kampf auf dem Brett und floh dort bei 0 TP; die Wirkung `meet` lässt ihn auch dann als begegnet gelten, wenn ihn die Truppe im Nebel nie sah (Steckbrief, Heimsuchungen, Finale).
 # `spare`: Grosk tritt bei (recruit: { lt: grosk }, setzt joined_grosk), Hask-Groll −1, E3-Flag spare. `bounty`: +600 Gold, Grosk wird abgeführt, E3-Flag bounty (er kehrt im Finale
 # 1-8 als Leutnant zurück, solange er nicht gewechselt ist). Hask-Groll −1 steht so im Konzept; eine Vorgeschichte zwischen Grosk und Hask gibt das Konzept nicht her und wird nicht erfunden.
 # Gefährten sprechen nur, wenn sie in der Truppe sind (alive).
@@ -9,10 +9,10 @@ music: camp
 lines:
   - id: o01
     mood: neutral
-    text: "Die sechste Runde endet. Die Hungernden lassen Äxte und Knüppel sinken, im Lager verstummen die Rufe."
+    text: "Die achte Runde endet. Die Hungernden lassen Äxte und Knüppel sinken, im Lager verstummen die Rufe."
   - id: o02
     mood: neutral
-    text: "Ein Hüne tritt zwischen den Zelten hervor, beide Hände erhoben, kein Schwert am Gürtel."
+    text: "Über den Steg kommt ein Hüne, beide Hände erhoben, die Lanze hat er im Schlamm gelassen."
   - id: o03
     speaker: [grosk]
     fallback: skip
@@ -88,12 +88,6 @@ lines:
     fallback: skip
     mood: happy
     text: "Er isst für drei, Küken. Aber er steht für vier."
-  - id: s05
-    requires: [{ flag: { e03: spare } }, { alive: varek }]
-    speaker: [varek]
-    fallback: skip
-    mood: happy
-    text: "Ein guter Wurf, {avatar}. Selbst die Würfel nickten."
   - id: s06
     requires: [{ flag: { e03: spare } }]
     speaker: [kael]
@@ -119,12 +113,6 @@ lines:
     fallback: skip
     mood: sad
     text: "Das war nicht heldenhaft."
-  - id: b05
-    requires: [{ flag: { e03: bounty } }, { alive: varek }]
-    speaker: [varek]
-    fallback: skip
-    mood: sad
-    text: "Das Gold liegt auf dem Tisch, das Gewissen daneben. Ich wünsche eine gute Nacht."
   - id: b06
     requires: [{ flag: { e03: bounty } }]
     speaker: [kael]

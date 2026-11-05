@@ -153,8 +153,12 @@ describe('Nebenquest N1 als Knoten', () => {
   };
   const ids = (c: CampaignState) => availableNodes(data, c).map((n) => n.id);
 
-  it('opens with E2 "schützen" and not otherwise (synthetic state: the flag comes with another session)', () => {
+  it('opens after 1-4 with E2 "schützen" and not otherwise (synthetic state: the flag comes with another session)', () => {
     const c = fresh();
+    c.flags.e02 = 'protect';
+    expect(ids(c)).not.toContain('n1');
+    c.completed.push('m1_4');
+    delete c.flags.e02;
     expect(ids(c)).not.toContain('n1');
     c.flags.e02 = 'deliver';
     expect(ids(c)).not.toContain('n1');
@@ -164,6 +168,7 @@ describe('Nebenquest N1 als Knoten', () => {
 
   it('is a side quest that never lapses: it stays open over further missions until it is played', () => {
     const c = fresh();
+    c.completed.push('m1_4');
     c.flags.e02 = 'protect';
     for (const done of ['ch01', 'ch02', 'n2', 'zzz_later_story']) {
       c.completed.push(done);

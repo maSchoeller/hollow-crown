@@ -10,9 +10,13 @@ import {
   chronicleView,
   newCampaign,
   normalizeCampaign,
+  reachable,
+  applyCommand,
+  type BattleState,
   type CampaignState,
   type GameData,
 } from '../../src/core';
+import { clone, neighbors } from '../../src/core/util';
 
 let data: GameData;
 let base: CampaignState;
@@ -48,7 +52,7 @@ describe('node m1_7', () => {
     expect(won!.completed).toContain('m1_7');
     // the collapse: nobody acts, the turn limit ends the battle in defeat and the campaign stays as it was
     const start = beginBattle(data, base, 'm1_7', base.roster.map((u) => u.id)).state;
-    const lost = autoplay(data, { ...start, turn: 15 });
+    const lost = autoplay(data, { ...start, turn: 9 });
     expect(lost.state.outcome).toBe('defeat');
     expect(lost.state.defeatReason).toBe('turns');
     expect(base.flags.wardens_chronicle).toBeUndefined();
@@ -75,21 +79,97 @@ describe('sealed chronicle entry', () => {
   });
 });
 
+describe('the collapse', () => {
+  const battle = () => {
+    const s = beginBattle(data, base, 'm1_7', base.roster.map((u) => u.id)).state;
+    for (const u of s.units) if (u.team === 'enemy') Object.assign(u, { gone: 'dead', pos: null });
+    return s;
+  };
+  /** the state after `turn` has begun */
+  const at = (s: BattleState, turn: number) => {
+    const n = clone(s);
+    n.turn = turn - 1;
+    n.phase = 'player';
+    return applyCommand(data, n, { type: 'endPhase' }).state;
+  };
+  const ter = (s: BattleState, x: number, y: number) => s.terrain[y * s.width + x];
+
+  it('quakes in round 4 and brings the chambers down from the north, one part a round', () => {
+    const s = battle();
+    const r4 = at(s, 4);
+    expect(r4.firedTriggers).toContain('t_quake');
+    expect(ter(r4, 4, 2)).not.toBe('rockwall');
+    const r5 = at(r4, 5);
+    expect(ter(r5, 4, 2)).toBe('rockwall');
+    expect(ter(r5, 11, 3)).toBe('rockwall');
+    expect(ter(r5, 2, 7)).not.toBe('rockwall');
+    const r6 = at(r5, 6);
+    expect(ter(r6, 2, 7)).toBe('rockwall');
+    expect(ter(r6, 13, 7)).toBe('rockwall');
+    expect(ter(r6, 2, 13)).not.toBe('rockwall');
+    const r7 = at(r6, 7);
+    expect(ter(r7, 2, 13)).toBe('rockwall');
+    expect(ter(r7, 13, 13)).toBe('rockwall');
+  });
+
+  it('keeps the main corridor and the way to the chronicle open to the end', () => {
+    let s = battle();
+    for (const turn of [4, 5, 6, 7]) s = at(s, turn);
+    for (let y = 1; y <= 18; y++) expect(ter(s, 7, y), `7,${y}`).not.toBe('rockwall');
+    const kael = s.units.find((u) => u.id === 'kael')!;
+    kael.pos = [7, 18];
+    kael.acted = false;
+    kael.moved = false;
+    expect([...reachable(data, s, kael, [7, 18], 30).keys()]).toContain('7,2');
+  });
+
+  it('leaves a tile under a figure standing, and pushes nobody', () => {
+    const s = battle();
+    const kael = s.units.find((u) => u.id === 'kael')!;
+    kael.pos = [4, 2];
+    const r5 = at(s, 5);
+    expect(r5.units.find((u) => u.id === 'kael')!.pos).toEqual([4, 2]);
+    expect(ter(r5, 4, 2)).not.toBe('rockwall');
+    expect(ter(r5, 4, 3)).toBe('rockwall');
+  });
+
+  it('buries a side chest for good: nobody reaches it, the chronicle still wins the battle', () => {
+    let s = battle();
+    for (const turn of [4, 5, 6, 7]) s = at(s, turn);
+    const u = s.units.find((x) => x.id === 'fenn')!;
+    u.pos = [7, 13];
+    const tiles = [...reachable(data, s, u, [7, 13], 40).keys()];
+    for (const c of ['c_w1', 'c_e1', 'c_w2', 'c_e2']) {
+      const at = s.objects.find((o) => o.id === c)!.at;
+      expect(tiles).not.toContain(`${at[0]},${at[1]}`);
+      for (const n of neighbors(at)) expect(tiles).not.toContain(`${n[0]},${n[1]}`);
+    }
+    expect(s.objects.find((o) => o.id === 'c_chronicle')!.state).toBe('closed');
+    expect(tiles).toContain('7,2');
+  });
+});
+
 describe('map m1_7_gewoelbe', () => {
-  it('is a treasure hunt of five chests in 14 turns without a placeholder defeat or s_chests; the chronicle chest holds nothing', () => {
+  it('is a treasure hunt for the chronicle alone in 8 turns without a placeholder defeat; the other chests are the side goal; the chronicle chest holds nothing', () => {
     const m = data.maps['m1_7_gewoelbe']!;
-    expect(m.objectives.victory).toEqual({ type: 'treasure', chests: ['c_west', 'c_east', 'c_crypt_w', 'c_crypt_e', 'c_chronicle'], turns: 14 });
+    expect(m.objectives.victory).toEqual({ type: 'treasure', chests: ['c_chronicle'], turns: 8 });
     expect(m.objectives.defeat.some((d) => d.type === 'turn_limit')).toBe(false);
-    expect(m.objectives.side.some((s) => s.id === 's_chests')).toBe(false);
+    expect(m.objectives.side.some((s) => s.id === 's_chests' && s.type === 'open_chests')).toBe(true);
     expect(m.objects.find((o) => o.id === 'c_chronicle')!.contents).toBeUndefined();
+    expect(m.levels ?? []).toEqual([]);
   });
 
   it('has relief terrain that does not heal, and one-time triggers', () => {
     expect(data.terrain.relief!.heal).toBe(0);
     const m = data.maps['m1_7_gewoelbe']!;
     expect(m.terrain).not.toContain('shrine');
-    expect(m.triggers.map((t) => t.id).sort()).toEqual(['t_chronicle', 't_collapse', 't_relief_crypt', 't_relief_west']);
-    expect(m.triggers.find((t) => t.id === 't_collapse')!.when).toEqual({ type: 'turn_start', turn: 2, phase: 'player' });
+    expect(m.triggers.map((t) => t.id).sort()).toEqual(['t_chronicle', 't_collapse_king', 't_collapse_lower', 't_collapse_upper', 't_quake', 't_relief_crypt', 't_relief_west']);
+    expect(m.triggers.find((t) => t.id === 't_quake')!.when).toEqual({ type: 'turn_start', turn: 4, phase: 'player' });
+    const tile = (x: number, y: number) => m.legend[m.terrain.split('\n')[y]![x]!];
+    expect([tile(1, 6), tile(14, 12)]).toEqual(['relief', 'relief']);
+    const area = (id: string) => (m.triggers.find((t) => t.id === id)!.when as { area: unknown }).area;
+    expect(area('t_relief_west')).toEqual({ rect: [1, 6, 1, 6] });
+    expect(area('t_relief_crypt')).toEqual({ rect: [14, 12, 14, 12] });
   });
 
   it('supplies more keys than locks without a scout, on every difficulty', () => {

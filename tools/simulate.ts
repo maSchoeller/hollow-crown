@@ -1,5 +1,6 @@
 /**
- * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--fresh] [--flag name=value]... [--leave id[,id]]
+ * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--chain normal] [--death standard] [--fresh] [--flag name=value]... [--leave id[,id]]
+ * --chain spielt die Missionen vor der Zielkarte auf einer anderen Stufe (Schwer-Ziel mit Normal-Kette, damit genug Läufe ankommen).
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
@@ -30,6 +31,7 @@ if (!node) throw new Error(`no campaign node for ${mapId}`);
 const runs = Number(opt('runs', '50'));
 const seed0 = Number(opt('seed', '1'));
 const difficulty = opt('difficulty', 'normal') as Difficulty;
+const chainDifficulty = opt('chain', difficulty) as Difficulty;
 const deathMode = opt('death', 'standard') as DeathMode;
 
 function campaignAt(d: GameData, seed: number, nodeId: string) {
@@ -47,9 +49,13 @@ function campaignAt(d: GameData, seed: number, nodeId: string) {
 
 /** Plays the campaign up to the target node with autoplay so units carry their progression. */
 function campaignChained(d: GameData, seed: number, nodeId: string) {
-  let c = newCampaign(d, seed, { difficulty, deathMode }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+  // --chain plays the missions before the target on another difficulty (e.g. hard target with a normal chain, so enough runs arrive)
+  let c = newCampaign(d, seed, { difficulty: chainDifficulty, deathMode }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   for (const n of d.campaign.nodes) {
-    if (n.id === nodeId) return c;
+    if (n.id === nodeId) {
+      c.settings.difficulty = difficulty;
+      return c;
+    }
     const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state);
     if (state.outcome !== 'victory') return null;
     c = finishBattle(d, c, state).campaign;

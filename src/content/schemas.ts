@@ -403,7 +403,8 @@ export const mapSchema = z.object({
   units: z.array(mapUnitSchema),
   pairs: z.array(z.object({ a: z.string(), b: z.string(), rank })).default([]),
   reinforcements: z
-    .array(z.object({ turn: z.number().int(), phase: team, announce: z.boolean().optional(), units: z.array(mapUnitSchema) }))
+    // `unlessFlag`: the wave stays away when this battle flag is set by then (a landslide buried its cave)
+    .array(z.object({ turn: z.number().int(), phase: team, announce: z.boolean().optional(), unlessFlag: z.string().optional(), units: z.array(mapUnitSchema) }))
     .default([]),
   objectives: z.object({
     victory: objective,

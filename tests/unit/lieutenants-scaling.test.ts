@@ -207,7 +207,7 @@ describe('the lieutenant on the board', () => {
 
   it('leaves other enemies at the level of the map', () => {
     const { s } = varnhold([9, 9, 9], 3);
-    expect(s.units.find((u) => u.uid === 'r4')!.level).toBe(3);
+    expect(s.units.find((u) => u.uid === 'r4')!.level).toBe(data.maps.m1_2_erlbach!.units.find((u) => u.id === 'r4')!.level);
   });
 
   it('does not depend on the order of the roster', () => {

@@ -80,7 +80,6 @@ packs:
       - rock_c
       - massif_c
       - gatehouse_closed
-      - stairs_idle
       - ramp_idle
       - ladder_idle
       - well_idle
@@ -103,6 +102,7 @@ packs:
       - lever_down
       - ballista_idle
       - torch_idle
+      - roof_tile_idle
       # Story 15.8: Galerie-Modelle, die die Karten von Akt 1 brauchen (Marktstände 1-1, Lagerzelt 1-5, Mühle N3)
       - market_a
       - market_b

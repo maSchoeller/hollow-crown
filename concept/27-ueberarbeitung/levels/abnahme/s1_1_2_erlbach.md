@@ -7,6 +7,8 @@
 - Plünderer zielen auf die Häuser. Einer geht über die Ostfurt direkt auf **Miras Haus**: Wer es zuerst besucht, bekommt Mira.
 - Wellen: Runde 3 Ost, Runde 5 West (beide am Nordufer), Runde 6 Nachschub über die Straße.
 
+**Im Spiel (2026-11-05):** Flach wie abgenommen. Abweichungen für Normal: Südtruppe wartet gestaffelt (Runde 2–7), Hask ab Runde 6, Stufen 1–2, Wellen R4 Ost und R6 West statt R3 und R5. Miras Haus ab Runde 2 erreichbar, frühestens Runde 4 steht ein Plünderer davor.
+
 ![Raster](s1_1_2_erlbach.png)
 
 <details><summary>Details</summary>

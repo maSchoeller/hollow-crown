@@ -8,6 +8,12 @@
 - **Truhe** in der Scheune: Den Schlüssel trägt der **Hauptmann** (rückt ab Runde 2 vor), Fenn öffnet sie auch ohne.
 - Nach dem Sieg übergibt der Vater Tobins **Signaturlanze** (Szene).
 
+**Im Spiel seit 2026-11-05:**
+
+- **Höhe:** keine, bleibt flach.
+- **Gedenken:** Tobin gefallen: Karte gleich, seine Niederlage entfällt, Vater bleibt Ziel, Szenen ohne Humor.
+- **Abweichungen:** Kornfeld `field`, Scheunen `farm`, Mühle `building`. Aufstellung rund um den Vater statt nur südlich, Vater im Kettenhemd, Gegner Stufe 6–7 statt 3–4 (Sim). Niederlage auch bei Kaels Tod, falls er mitkommt. Vater übergibt die Lanze in der Szene, Marodeure statt Pachteintreiber.
+
 ![Raster](s1_n3_erbe.png)
 
 <details><summary>Details</summary>

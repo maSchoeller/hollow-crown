@@ -220,13 +220,16 @@ describe('content:check of decisions', () => {
 });
 
 describe('E2 in scn.m1_4.intro (side quest N1)', () => {
-  it('protecting Fenn sets e02 and opens the side quest N1; the consequence card shows the quest', () => {
+  it('protecting Fenn sets e02; the side quest N1 opens with the victory in 1-4 and the consequence card shows it', () => {
     const scene = loadContentFromDisk().data.scenes['scn.m1_4.intro']!;
     const protect = scene.lines.flatMap((l) => ('choice' in l ? (l.choice ?? []) : [])).find((o) => o.id === 'protect')!;
-    expect(protect.effects).toEqual([{ setFlag: { e02: 'protect' } }, { openQuest: 'n1' }]);
-    expect(consequenceLines(protect.effects ?? [])).toContainEqual({ kind: 'quest', node: 'n1' });
+    expect(protect.effects).toEqual([{ setFlag: { e02: 'protect' } }]);
+    const opens = loadContentFromDisk().data.campaign.nodes.find((n) => n.id === 'm1_4')!.effectsIf![0]!;
+    expect(opens.requires).toEqual([{ flag: { e02: 'protect' } }]);
+    expect(opens.effects).toEqual([{ openQuest: 'n1' }]);
+    expect(consequenceLines(opens.effects)).toContainEqual({ kind: 'quest', node: 'n1' });
     const c = newCampaign(data, 3, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-    const r = applyCampaign(data, c, { type: 'effects', effects: protect.effects ?? [] });
+    const r = applyCampaign(data, c, { type: 'effects', effects: opens.effects });
     expect(r.events.some((e) => e.t === 'questOpened')).toBe(true);
   });
 });
