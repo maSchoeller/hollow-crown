@@ -96,6 +96,7 @@ items:
     missions: [1-2, 1-4, N4]
     use: Einzelblock als Felswall, füllt das Feld bis zum Rand und ist höher als eine Figur; sperrt.
   - id: camp_tent_a
+    ships: true
     name: Flickenzelt
     ref: { sheet: nature_3.png, box: [385, 325, 735, 665] }
     missions: [1-4, 1-5, 3-4]

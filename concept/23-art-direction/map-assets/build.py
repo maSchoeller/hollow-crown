@@ -55,11 +55,11 @@ ASSETS = {
     # Hof und Land
     'feld': ('Kornfeld', 'B', 'Hof', 1, 'Starkes Gelb in einem geschlossenen Holzrahmen. Sieht aus wie ein Gehege, ist aber begehbar.'),
     'zaun': ('Zaun', 'V', 'Hof', 1, 'Gut. Tor, Ecke und Bruch sind gebaut, das Brett nutzt nur die Gerade.'),
-    'muehle': ('Mühle mit Rad', 'F', 'Hof', 2, ''),
+    'muehle': ('Mühle mit Rad', 'V', 'Hof', 2, 'Seit Story 15.8 im Spiel (`mill_idle`), die Karte setzt sie von Hand (`propVariants`).'),
     'koppel': ('Koppel, Stall, Gestüt', 'F', 'Hof', 4, ''),
     'terrasse': ('Getreideterrasse, Bergdorf', 'F', 'Hof', 4, ''),
     # Kleinteile
-    'markt': ('Marktstand', 'B', 'Dinge', 2, 'Heute das Zelt-Modell.'),
+    'markt': ('Marktstand', 'V', 'Dinge', 2, 'Seit Story 15.8 zwei Marktstände (`market_a`, `market_b`); das Hungerlager setzt sein Lagerzelt `camp_tent_a` von Hand.'),
     'wagen': ('Wagen', 'V', 'Dinge', 3, 'Gut.'),
     'wagenburg': ('Wagenburg', 'B', 'Dinge', 5, 'Aus Wagen und Zaun baubar.'),
     'feuer': ('Lagerfeuer, Kohlebecken', 'B', 'Dinge', 2, 'Kohlebecken ist heute das Lagerfeuer, sperrt aber das Feld.'),

@@ -32,14 +32,17 @@ board:
   # gegen diese Listen). Modelle, die das Manifest (public/assets/manifest.json models.props) noch nicht kennt, fallen weg; bleibt keines übrig,
   # gilt das erste der Liste. Zustände (besucht, zerstört) hängt das Brett an das Modell der Liste: `lodge_intact` -> `lodge_visited`.
   variants:
-    # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser
-    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }]
+    # Gewicht 0: nur von Hand gesetzt (propVariants der Karte), nie vom Feld-Hash gewürfelt (Story 15.8)
+    # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser; die Mühle mit Rad (N3) setzt die Karte von Hand
+    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }, { model: mill_idle, weight: 0 }]
     # Besuchshaus (Terrain village, Objekt village): eigenes, deutlich anderes Modell mit den Zuständen intact, visited, razed
     lodge: [{ model: lodge_b_intact, weight: 1 }]
     # Kornfeld ohne Rahmen (begehbar, Boden sichtbar), Grabrelief und Sarkophag: je ein eigenes Modell (Art Direction §3.2)
     field: [{ model: field_open, weight: 1 }]
     relief: [{ model: relief_a, weight: 1 }]
     sarcophagus: [{ model: sarcophagus_a, weight: 1 }]
+    # Stand (Terrain stall, sperrt): Marktstände; das Lagerzelt des Hungerlagers (1-5) setzt die Karte von Hand (Story 15.8)
+    stall: [{ model: market_a, weight: 1 }, { model: market_b, weight: 1 }, { model: camp_tent_a, weight: 0 }]
     # Felsmasse (Terrain mountain): gefacettete Kappe bis an die Feldkante; der Felswall (rockwall) zeichnet rock_idle
     rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }]
     # Waldfeld je Akt: 1 Spätsommer, 2 Herbst, 3 Winter; ein Akt ohne Eintrag nimmt den Wald des Akts 1. Bäume am Nord- und Westrand, die Feldmitte bleibt frei (§3.2).

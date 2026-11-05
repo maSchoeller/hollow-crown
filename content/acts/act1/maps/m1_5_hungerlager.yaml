@@ -56,6 +56,13 @@ levels:
   - { level: 1, area: { rect: [8, 11, 11, 13] } }
 timeOfDay: morning
 weather: fog
+# Lagerzelte statt Marktstände (Story 15.8, render.yaml board.variants.stall)
+propVariants:
+  - { at: [8, 0], model: camp_tent_a }
+  - { at: [5, 1], model: camp_tent_a }
+  - { at: [11, 1], model: camp_tent_a }
+  - { at: [14, 2], model: camp_tent_a }
+  - { at: [6, 3], model: camp_tent_a }
 objects:
   - { id: v_old, type: village, at: [1, 16], reward: { dialogue: scn.m1_5.watchtower_hint } }
   - { id: c_stores, type: chest, at: [8, 0], contents: { item: { def: vulnerary } } }

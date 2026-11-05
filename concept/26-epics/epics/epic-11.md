@@ -874,3 +874,18 @@ damit Spieler aus Akt 1 ohne Brüche und im Korridor weiterspielen.
 **Dann** läuft erst dann `pnpm content:lock` und sperrt die IDs von `act2` in `content/released-ids.json` (bis dahin keine Sperre, Entscheidung 2026-10-31); `act2` ist schon seit 11.3 `released: true`
 **Und** die Leistung von 2-8 ist mit Story 7.5 auf dem Referenzgerät gemessen (NFR1, NFR3), alle Prüfungen sind grün, der Pull Request gegen `main` nennt die Ergebnisse
 **Und** ein Playtest-Plan für Akt 2 (Stränge, Verrat in Kronfeld, Flieger und Balliste) liegt vor (`gds-playtest-plan`).
+
+### Story 11.23: Galerie-Modelle für Akt 2
+
+Als Spieler
+möchte ich auf den Karten von Akt 2 die Kulisse sehen, die beim Leveldesign abgenommen wurde,
+damit Brett und Abnahme-Ansicht übereinstimmen.
+
+Kommt aus Story 15.8 (Galerie-Modelle für Akt 1), läuft nach den Karten-Stories 11.10–11.20 und vor 11.22.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Galerie (`concept/23-art-direction/map-assets/groups/`), `map-assets/matrix.md` und die abgenommenen Karten von Akt 2
+**Wenn** nur die Modelle in den Build kommen, die eine Karte von Akt 2 über Gelände, Objekt oder `propVariants` zeichnet (`ships: true`, Paket `act2`, Auswahl im Art-Log)
+**Dann** besteht jedes verwendete Modell die vier Lesbarkeitsregeln (art-direction §3.2), Dreiecks- und Paket-Budget halten
+**Und** `content:check` meldet kein fehlendes oder nicht ausgeliefertes Modell (Prüfung aus 15.8); Modelle, die schon in `act1` liegen und in Akt 2 wieder vorkommen (z. B. Marktstände in N6), stehen im Art-Log mit der Paket-Entscheidung.

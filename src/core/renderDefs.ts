@@ -128,9 +128,9 @@ export interface RenderDef {
     decorOn: Record<string, Array<{ model: string; map: number; scenery: number; scale: [number, number] }>>;
     /**
      * prop variants (weighted `<prop>_<state>`, chosen by a field hash, see render/shared/scenery.ts): house (building), lodge (visitable
-     * house, state appended), rock; tree per act (an act without an entry uses act 1)
+     * house, state appended), rock, stall; tree per act (an act without an entry uses act 1). Weight 0 = only by a map's `propVariants`
      */
-    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; field: PropVariant[]; relief: PropVariant[]; sarcophagus: PropVariant[]; tree: Record<string, PropVariant[]>; sceneryTree: Record<string, PropVariant[]> };
+    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; field: PropVariant[]; relief: PropVariant[]; stall: PropVariant[]; sarcophagus: PropVariant[]; tree: Record<string, PropVariant[]>; sceneryTree: Record<string, PropVariant[]> };
     /** stand-in model while a model is not built yet (the manifest does not know it) */
     propFallback: Record<string, string>;
     /** goal marking: how long the markings of a side objective stay (ms) */

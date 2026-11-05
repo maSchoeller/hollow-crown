@@ -51,8 +51,10 @@ export interface VariantPick {
  */
 export function pickVariant(list: readonly PropVariant[], rolls: readonly number[], o: VariantPick): string {
   if (o.override && o.has(o.override)) return o.override;
-  const usable = list.filter((v) => o.has(v.model));
-  if (!usable.length) return list[0]?.model ?? '';
+  // weight 0 = only by hand (a map's propVariants): never rolled
+  const rollable = list.filter((v) => v.weight > 0);
+  const usable = rollable.filter((v) => o.has(v.model));
+  if (!usable.length) return rollable[0]?.model ?? list[0]?.model ?? '';
   let first: string | null = null;
   for (const roll of rolls) {
     const m = pickWeighted(usable, roll).model;

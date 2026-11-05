@@ -6,6 +6,7 @@ import { loadContentFromDisk, contentFiles } from '../src/content/node';
 import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/content/packs';
 import { checkLockedIds, collectIds, releasedIdsSchema, renamesSchema, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
+import { unshippedGalleryModels, validateBoardModels } from '../src/content/validateLook';
 
 const { data, locales, issues } = loadContentFromDisk();
 const spriteDir = join(process.cwd(), 'art', 'sprites', 'units');
@@ -33,6 +34,14 @@ try {
   packIssues.push(...checkPackProps(packs, stems(join(process.cwd(), 'art', 'models', 'props'), '.glb') ?? new Set()));
 } catch (e) {
   packIssues.push({ file: 'packs.yaml', message: e instanceof Error ? e.message : String(e) });
+}
+// prop models the board draws by content (story 15.8): a file under art/models/props and no gallery model the build leaves out
+const galleryDir = join(process.cwd(), 'concept', '23-art-direction', 'map-assets', 'groups');
+const propModels = stems(join(process.cwd(), 'art', 'models', 'props'), '.glb');
+if (!propModels || !existsSync(galleryDir)) packIssues.push({ file: 'art/models/props', message: 'prop models or gallery groups not found: board models not checked' });
+else {
+  const groups = readdirSync(galleryDir).filter((n) => n.endsWith('.yaml')).map((f) => parse(readFileSync(join(galleryDir, f), 'utf8')) as unknown);
+  packIssues.push(...validateBoardModels(data, propModels, unshippedGalleryModels(groups)));
 }
 // stable IDs (story 7.4): only once a release has locked them with pnpm content:lock
 const lockFile = join(process.cwd(), 'content', 'released-ids.json');
