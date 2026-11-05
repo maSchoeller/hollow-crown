@@ -1,34 +1,36 @@
 # Figuren-Bestand Akt 1 und Akt 2
 
-Stand 2026-11-05. Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt.
+Stand 2026-11-05. Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt. Die Beschlüsse des Produktinhabers vom selben Tag sind eingearbeitet.
 
 ## Kurzfassung
 
 - **Figuren-Bibel:** Es gibt sie nicht, auch nicht unter anderem Namen. Die Bausteine liegen verstreut (siehe unten).
 - **Porträts:** Alle 51 sind v2.5. Es fehlen nur die Stimmungen der Akt-2-Figuren und die Büsten neuer Gegnertypen.
 - **Modelle:** Alle stammen vom Oktober, also aus der Zeit vor den neuen Porträts. Von 35 geprüften Figuren passen **23**, bei **6** fehlt etwas Wesentliches, **6** widersprechen dem Porträt oder fehlen ganz.
-- **Vorschlag:** **13 neue Modelle** in drei Schritten, dazu ein Tausch ohne Kosten. Das sind 1 820 Tripo-Credits plus ein Pferd.
-- **Engpass:** Rechnerisch sind noch rund 425 Credits da (siehe „Credits“). Das reicht für 3 Modelle, also nicht einmal für Schritt 1 ganz.
+- **Beschlossen:** **12 neue Modelle** in drei Schritten (1 680 Tripo-Credits), dazu ein Tausch ohne Kosten und ein einfaches Deko-Pferd. Niemand reitet auf dem Brett.
+- **Zuerst nur 3 Modelle:** Lucan, Verwalter, Osric Dunn. Rechnerisch sind noch rund 425 Credits da (siehe „Credits“), danach entscheidet der Produktinhaber nach Sichtung neu.
 
 ![Die vier auffälligsten Fälle](../../art/previews/figuren_bestand_faelle.png)
 
-## Vorschlag: Reihenfolge
+## Reihenfolge
 
-| Schritt | Was | Stück | Credits | Warum jetzt |
+Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Figuren neu zu bauen.
+
+| Schritt | Was | Stück | Credits | Warum |
 |---|---|---|---|---|
 | 0 | **Bibel** für Akt 1 und 2 schreiben, Figurenblätter von Lucan, Rowena und Brakka berichtigen | 1 Dokument | 0 | Jeder neue Turnaround braucht sie; sonst wird zweimal gebaut |
 | 0 | `sprite: archer` auf `bandit_archer` umstellen | 9 Stellen auf 4 Karten | 0 | Die Kastenfigur verschwindet sofort, das Modell gibt es schon |
-| 1 | **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn**, **Dorfältester** | 4 | 560 | Widersprüche, die in Akt 1 zu sehen sind; Lucan steht in jeder Mission |
+| **1a** | **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn** | **3** | **420** | **Beschlossen.** Danach Sichtung und neue Entscheidung |
+| 1b | **Dorfältester** | 1 | 140 | Letzter Widerspruch in Akt 1 |
 | 2 | **Brenna**, **Mira**, **Varek**, **Ysolde** | 4 | 560 | Signaturteil fehlt oder wird vom Teamtuch überdeckt |
-| 3 | **Rowena**, **Brann**, neu: **Ritter der Lanze**, **Reiter zu Pferd**, **Kaperer** | 5 + Pferd | 700 + Pferd | Vor dem Bau von Akt 2 |
-| | **Summe** | **13 + Pferd** | **1 820 + Pferd** | |
+| 3 | **Rowena**, **Brann**, neu: **Ritter der Lanze**, **Kaperer** | 4 | 560 | Vor dem Bau von Akt 2 |
+| | **Summe** | **12** | **1 680** | |
 
 - Je Modell kommt ein Brett-Turnaround per ChatGPT dazu.
 - **Ysolde** zuletzt: Ihr Turnaround gehört zu den Lieblingen des Produktinhabers (Decision-Log 2026-11-01). Neu nur, wenn die Bibel ihr Teamtuch auf ein kleineres Stück legt.
 - **Brakka** ist nicht mitgezählt: Das Modell sieht aus wie das Porträt, nur das Figurenblatt ist veraltet. Neu nur, wenn sie als Ballistenmeisterin anders aussehen soll.
-- Die drei neuen Gegnertypen sind eine Schätzung; sie sind gegen die Akt-2-Entwürfe zu prüfen, sobald diese vorliegen.
-
-**Alternative „alle neu“:** Die Roadmap verlangt neue Turnarounds je Figur. Das wären 37 Modelle und 5 180 Credits für Akt 1 und 2. Empfehlung ist die kleine Variante: 23 Modelle passen, und die fünf Lieblings-Turnarounds (Rhen A/B, Tobin, Fenn, Ysolde) sollen ohnehin die Vorlage bleiben.
+- Die zwei neuen Gegnertypen sind eine Schätzung; sie sind gegen die Akt-2-Entwürfe zu prüfen, sobald diese vorliegen.
+- **Deko-Pferd:** Für die Rabenweide (2-3) reicht ein einfaches Modell ohne Reittier-Pipeline. Es kostet keine Tripo-Credits, wenn es wie die übrigen Requisiten in Blender entsteht.
 
 ### Porträts, die dazukommen
 
@@ -37,16 +39,23 @@ Stand 2026-11-05. Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`con
 | Stimmungen Nell, Brann, Amos, Ilka, Sable, Brakka, Grell, Rowena, Maelis | 27 | je 3; §5.1 verlangt sie für Kompanie, Leutnants und Maelis |
 | Stimmungen Seraphine | 3 | erst nach Funkenflug #9, sonst doppelt |
 | Seraphine mit Waffe (Funkenflug #9) | 1 | nur falls sie spielbar wird; Kampfrolle ist offen |
-| Büsten Ritter, Reiter, Kaperer | 3 | zusammen mit Schritt 3 |
+| Büsten Ritter, Kaperer | 2 | zusammen mit Schritt 3 |
 | Brennas Bruder (Funkenflug #8) | 1 | Akt 3, Nebenquest N8; kein Modell nötig, kann warten |
 | Brakka als Ballistenmeisterin | 0–1 | nur falls das Figurenblatt ihr Aussehen ändert |
 
 ## Offen, entscheidet der Produktinhaber
 
-1. **Umfang und Credits:** 13 oder 37 Modelle, und ob Tripo-Credits nachgekauft werden.
-2. **Widerspruch in den Vorgaben:** `portrait_master.md` sagt „Brettfiguren bleiben, wie sie sind“, die Roadmap verlangt in Etappe 3 neue Turnarounds.
-3. **Pferd:** Akt 2 braucht Reiterei und Rowena zu Pferd, Reittiere stehen aber als offen in `art-direction.md` §4.6 und sind im GDD „nach dem MVP“ eingeplant. Für Vierbeiner gibt es noch keinen Weg durch die Pipeline.
-4. **Seraphines Kampfrolle** (Funkenflug #9) und ob **Dravn, Maelis und Seraphine** auf einer Karte stehen. Die Missionsliste gibt ihnen keine Kampfrolle, deshalb sind sie hier ohne Modell eingeplant.
+1. **Nach Schritt 1a:** ob es weitergeht und ob Tripo-Credits nachgekauft werden.
+2. **Seraphines Kampfrolle** (Funkenflug #9). Davon hängen ihre Stimmungen und ein mögliches Porträt mit Waffe ab.
+
+## Beschlossen am 2026-11-05
+
+Die Einträge dazu in den Decision-Logs von Art Direction und Narrative kommen mit PR 105.
+
+- **Umfang:** 13 neue Modelle in drei Schritten gewählt; der Beschluss „Brettfiguren bleiben unverändert“ vom 2026-11-01 ist aufgehoben.
+- **Credits:** zuerst 3 Modelle, dann neu entscheiden.
+- **Pferde:** Niemand reitet auf dem Brett, Pferde sind nur Kulisse. Damit entfallen „Reiter zu Pferd“ und das Reit-Pferd, es bleiben 12 Modelle. Rowena kämpft zu Fuß.
+- **Name:** Lucan gilt überall; `kael` wird `lucan`, umgesetzt im Umbau vor dem ersten `content:lock`.
 
 ## Was die Bibel klären sollte
 
@@ -78,7 +87,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 |---|---|---|---|---|---|
 | Rhen A (`avatar_a`) | 4 | ja | ja | ✅ | |
 | Rhen B (`avatar_b`) | 4 | ja | ja | ✅ | Ziel sind 4 Avatar-Vorlagen (§5.1), vorhanden 2 |
-| Lucan (`kael`) | 4 | ja | ja | ❌ | Modell zeigt den alten Kael, kein Grün, kein Pelz; Inhalts-IDs heißen noch `kael` |
+| Lucan (`kael`) | 4 | ja | ja | ❌ | Modell zeigt den alten Kael, kein Grün, kein Pelz; Inhalts-IDs heißen noch `kael`, die Umbenennung ist beschlossen |
 | Brenna | 4 | ja | ja | 🟡 | dicker Zopf fehlt schon im Turnaround |
 | Tobin | 4 | ja | ja | ✅ | |
 | Fenn | 4 | ja | ja | ✅ | |
@@ -134,17 +143,17 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 | Sable | 1 | ja | ja | ✅ | Porträt und Modell zeigen längeres Haar, §4.3 sagt Stoppeln |
 | Brakka | 1 | ja | ja | 🟡 | sieht aus wie das Porträt; Figurenblatt sagt noch „wyvern rider“, die Missionsliste Ballistenmeisterin |
 | Grell | 1 | ja | ja | ✅ | |
-| Rowena | 1 | ja | ja | ❌ | Porträt: Helm unterm Arm, langer Zopf. Modell: Helm auf dem Kopf. Figurenblatt sagt noch „pegasus knight“, die Missionsliste Lanzenritterin zu Pferd; ein Pferd gibt es nicht |
+| Rowena | 1 | ja | ja | ❌ | Porträt: Helm unterm Arm, langer Zopf. Modell: Helm auf dem Kopf. Figurenblatt sagt noch „pegasus knight“; sie kämpft jetzt als Lanzenritterin zu Fuß |
 
 **Ohne Modell:** Dravn (Porträt 4), Maelis (1), Seraphine (1, ohne Waffe). Sie bekommen nach §4.3 nur ein Modell, wenn sie auf einer Karte stehen.
 
-**Neu nötig (Schätzung):** Ritter der Silbernen Lanze (Klasse `knight` hat keine Figur), Reiter zu Pferd, Grells Kaperer. Das Grenzheer kann `soldier` nutzen. `pegasus_knight` steht noch in `classes.yaml` und GDD, obwohl Akt 2 seit 2026-11-01 ohne Flieger geplant ist.
+**Neu nötig (Schätzung):** Ritter der Silbernen Lanze (Klasse `knight` hat keine Figur), Grells Kaperer. Dazu das Deko-Pferd für 2-3. Das Grenzheer kann `soldier` nutzen. `pegasus_knight` steht noch in `classes.yaml` und GDD, obwohl Akt 2 seit 2026-11-01 ohne Flieger geplant ist.
 
 </details>
 
 ## Credits
 
-Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Letzter Eintrag im Decision-Log: 705 am 2026-10-24. Danach kamen die beiden Dorffiguren dazu, also rechnerisch rund **425**. Dieser Wert ist nicht in Tripo nachgeprüft, und ob sich das Guthaben auffüllt, steht nicht im Repo.
+Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Letzter Eintrag im Decision-Log: 705 am 2026-10-24. Danach kamen die beiden Dorffiguren dazu, also rechnerisch rund **425**. Schritt 1a braucht 420 und ließe nur 5 übrig, deshalb vorher in Tripo nachsehen. Dieser Wert ist nicht in Tripo nachgeprüft, und ob sich das Guthaben auffüllt, steht nicht im Repo.
 
 ## Wie die Bilder entstanden
 
