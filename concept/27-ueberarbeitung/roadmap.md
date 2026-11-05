@@ -60,3 +60,5 @@ Die Etappen 1, 2 und 5 hängen nicht voneinander ab und können parallel laufen.
 **Stand Etappe 7 (2026-11-04):** Bericht und Matrix in `concept/23-art-direction/map-assets/`, Richtung und Regeln entschieden (Tor, Mauer, Stufenmodell). Festungs-Baukasten und Felsmasse im Spiel, 113 weitere Modelle in der Galerie (noch nicht im Spiel eingebaut). Noch nicht umgesetzt: Stufenmodell und geschlossenes Tor in den Regeln, Sumpf, Stege, Jahreszeiten-Boden im Gelände.
 
 **Stand Etappe 7 (2026-11-05):** Etappe 1 und 2 der Matrix für Akt 1 im Spiel und auf den Entwürfen 1-2, 1-3, 1-5, 1-7 abgenommen (Waldfeld, Kornfeld, Besuchshaus, Moor mit Stegen, Gewölbe, Relief, Hebel, Balliste). Entwürfe laden mit `__hc.devMap(<id>)`. Herbst, Winter, Schneehauben: Plan in `23-art-direction/map-assets/jahreszeiten-plan.md`.
+
+**Stand Etappe 3 (2026-11-05):** Noch nicht begonnen, eine Figuren-Bibel gibt es nicht. Bestandsliste und Vorschlag für die Neuanfertigung in `23-art-direction/figuren-bestand.md`; Umfang beschlossen: 12 Modelle, zuerst Lucan, Verwalter und Osric Dunn.

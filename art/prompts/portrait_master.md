@@ -1,7 +1,7 @@
 # portrait_master – Vorlage für Dialog-Porträts
 
 - **Stand:** 2026-11-01, Fassung **v2.5** (Stil v2.4 vom Produktinhaber gewählt, ergänzt um Statur, Blick, Fraktion, Frisur).
-- **Gilt für:** alle Dialog-Porträts (`art/mockups/characters-s1/<id>.png` und Stimmungen, Format `art-direction.md` §5.1). Brettfiguren bleiben, wie sie sind.
+- **Gilt für:** alle Dialog-Porträts (`art/mockups/characters-s1/<id>.png` und Stimmungen, Format `art-direction.md` §5.1). Brettfiguren entstehen zu diesen Porträts neu, soweit sie widersprechen (Beschluss 2026-11-05, Liste und Reihenfolge in `concept/23-art-direction/figuren-bestand.md`).
 - **Herleitung und Testbilder:** `art/prompts/portrait_tests_2026-11.md`, Bilder `art/mockups/style-2026-11/`, Entscheidungen `concept/23-art-direction/decision-log.md`.
 - **Werkzeug:** `tools/art/portrait_guides.py` (Statur-Vorlagen, Prüfbogen, Kopf-Silhouetten).
 - **Stil-Anker:** `art/mockups/style-2026-11/anchor_rhen.png` und `anchor_fenn.png` (Produktinhaber, 2026-11-01; vorher die Spiel-Porträts `characters-s1/rhen_a.png` und `fenn.png`). Die Statur-Vorlagen und der blaue Umriss im Prüfbogen bleiben aus dem alten, waffenlosen `rhen_a.png` gebaut, damit keine Waffe in die Silhouette gerät; die Linien liegen beim neuen Anker an denselben Stellen.
