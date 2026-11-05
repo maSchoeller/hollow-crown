@@ -6,7 +6,7 @@ import type { GameData } from '../core/gameData';
 import type { PropVariant } from '../core/renderDefs';
 
 /** Classes of props that come in variants (render.yaml `board.variants`). */
-export type VariantClass = 'house' | 'lodge' | 'rock' | 'tree' | 'field' | 'relief' | 'sarcophagus';
+export type VariantClass = 'house' | 'lodge' | 'rock' | 'tree' | 'field' | 'relief' | 'sarcophagus' | 'stall';
 
 /** Class of the prop a terrain carries (terrain.yaml `prop`), or null for props without variants. */
 export function variantClassOf(prop: string | undefined): VariantClass | null {
@@ -17,6 +17,7 @@ export function variantClassOf(prop: string | undefined): VariantClass | null {
     case 'field':
     case 'relief':
     case 'sarcophagus':
+    case 'stall':
       return prop;
     case 'rock':
       return 'rock';
@@ -34,6 +35,7 @@ export function variantList(data: Pick<GameData, 'render'>, cls: VariantClass, a
   const v = data.render.board.variants;
   const trees = scenery ? v.sceneryTree : v.tree;
   const list = cls !== 'tree' ? v[cls] : (act !== undefined && trees[act]) || trees[1] || [];
-  // the scenery around the map shows only the first `sceneryVariants` models of a class: every model is a template of its own (draw calls, story 7.8 AC 11)
-  return scenery ? list.slice(0, Math.max(1, data.render.board.sceneryVariants)) : list;
+  // the scenery around the map shows only the first `sceneryVariants` rolled models of a class: every model is a template of its own
+  // (draw calls, story 7.8 AC 11); a hand-placed model (weight 0, story 15.8) never stands in the scenery
+  return scenery ? list.filter((e) => e.weight > 0).slice(0, Math.max(1, data.render.board.sceneryVariants)) : list;
 }

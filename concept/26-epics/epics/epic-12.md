@@ -98,6 +98,16 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 **Wenn** der Spieler weiterspielt
 **Dann** laufen Heimsuchungen, offene Nebenquests, Supports und Burgausbau weiter; die Abschlussszene bietet den Export der Staffel-Zusammenfassung an (AR20).
 
+### Story 12.14: Galerie-Modelle für Akt 3
+
+Kommt aus Story 15.8, läuft nach den Karten-Stories und vor 12.13.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Galerie, `map-assets/matrix.md` und die abgenommenen Karten von Akt 3
+**Wenn** nur die Modelle in den Build kommen, die eine Karte von Akt 3 zeichnet (`ships: true`, Paket `act3`, Auswahl im Art-Log), samt Schneehauben nach `map-assets/jahreszeiten-plan.md`
+**Dann** besteht jedes verwendete Modell die vier Lesbarkeitsregeln, Dreiecks- und Paket-Budget halten, und `content:check` meldet kein fehlendes Modell.
+
 ### Story 12.13: Akt 3 abstimmen und veröffentlichen
 
 **Akzeptanzkriterien:**

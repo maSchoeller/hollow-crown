@@ -120,6 +120,40 @@ describe('prop variants', () => {
     expect(withState('rock_b', 'visited')).toBe('rock_b');
   });
 
+  it('a weight-0 model is never rolled, only placed by a map override (story 15.8)', () => {
+    const stall = [{ model: 'market_a', weight: 1 }, { model: 'market_b', weight: 1 }, { model: 'camp_tent_a', weight: 0 }];
+    for (let i = 0; i < 200; i++) expect(pickVariant(stall, [i / 200, ((i * 7) % 200) / 200], { has: all, avoid: ['market_a', 'market_b'] })).not.toBe('camp_tent_a');
+    expect(pickVariant(stall, [0.99], { has: all, override: 'camp_tent_a' })).toBe('camp_tent_a');
+    // no rollable model available: the first rollable one stands, never the hand-placed one
+    expect(pickVariant(stall, [0.5], { has: (m) => m === 'camp_tent_a' })).toBe('market_a');
+  });
+
+  it('stands are a variant class: market stalls by hash, the camp tent of 1-5 by hand; the mill only by hand (story 15.8)', () => {
+    expect(variantClassOf('stall')).toBe('stall');
+    expect(data.terrain.stall!.prop).toBe('stall');
+    expect(variantList(data, 'stall').map((v) => [v.model, v.weight > 0])).toEqual([['market_a', true], ['market_b', true], ['camp_tent_a', false]]);
+    expect(variantList(data, 'house').find((v) => v.model === 'mill_idle')?.weight).toBe(0);
+    // the scenery around the map takes the first entries of a list: never a hand-placed one
+    for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 1, true)) expect(v.weight).toBeGreaterThan(0);
+  });
+
+  it('act 1 maps: every stand of the hunger camp is a camp tent, N3 has its mill, the market of 1-1 rolls market stalls (story 15.8)', () => {
+    const fields = (id: string, terrain: string) => {
+      const m = data.maps[id]!;
+      const rows = m.terrain.split(/\r?\n/).filter((r) => r.length > 0);
+      const out: string[] = [];
+      rows.forEach((r, y) => [...r].forEach((c, x) => m.legend[c] === terrain && out.push(`${x},${y}`)));
+      return { m, out };
+    };
+    const camp = fields('m1_5_hungerlager', 'stall');
+    expect(camp.out.length).toBeGreaterThan(0);
+    expect(new Set((camp.m.propVariants ?? []).filter((v) => v.model === 'camp_tent_a').map((v) => v.at.join(',')))).toEqual(new Set(camp.out));
+    expect(data.maps.n3_erbe!.propVariants?.some((v) => v.model === 'mill_idle')).toBe(true);
+    const market = fields('m1_1_steckbriefe', 'stall');
+    expect(market.out.length).toBeGreaterThan(0);
+    expect(market.m.propVariants ?? []).toEqual([]);
+  });
+
   it('the stand-ins in render.yaml point at models that exist today', () => {
     expect(data.render.board.propFallback.well_idle).toBe('rock_idle');
     expect(data.render.board.propFallback.lodge_b_visited).toBe('lodge_visited');

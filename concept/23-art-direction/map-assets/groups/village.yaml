@@ -17,6 +17,7 @@ items:
     missions: [1-2, N3, 2-3]
     use: Runder Haufen aus gestuften Halmbündeln auf Stützen, füllt das Feld, sperrt.
   - id: mill_idle
+    ships: true
     name: Wassermühle
     ref: { sheet: village_1.png, box: [60, 20, 480, 330] }
     missions: [N3]
@@ -27,11 +28,13 @@ items:
     missions: [N3, 2-3]
     use: Bretterscheune mit Doppeltor nach Süden und großem Strohdach, sperrt.
   - id: market_a
+    ships: true
     name: Marktstand Streifen
     ref: { sheet: village_1.png, box: [270, 725, 645, 1000] }
     missions: [1-1, N6]
     use: Stand mit Senf-Creme-Plane, Brot und Äpfeln, Plane steht hinten, die Ware bleibt von oben sichtbar.
   - id: market_b
+    ships: true
     name: Marktstand Flicken
     ref: { sheet: village_1.png, box: [830, 720, 1220, 1000] }
     missions: [1-1, N6]

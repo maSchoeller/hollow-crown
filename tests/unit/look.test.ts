@@ -1,8 +1,11 @@
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parse } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema, renderSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
-import { iconStatuses, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
+import { iconStatuses, unshippedGalleryModels, validateBoardModels, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
 import { TIMES_OF_DAY, WEATHERS } from '../../src/core/defs';
 import type { MapDef } from '../../src/core/mapDefs';
 import { newFigureLook } from '../../src/render/shared/figurePlugin';
@@ -220,6 +223,74 @@ describe('content:check rules for prop variants', () => {
   });
   it('the shipped content passes', () => {
     expect(validatePropVariants(data)).toEqual([]);
+  });
+  it('a hand-placed (weight 0) model is a valid override for its class', () => {
+    const s = find('house');
+    expect(s).not.toBeNull();
+    expect(validatePropVariants(withVariants(s!, 'mill_idle'))).toEqual([]);
+  });
+});
+
+describe('render.yaml variant weights (story 15.8)', () => {
+  const raw = () => parse(readFileSync(join(process.cwd(), 'content', 'core', 'render.yaml'), 'utf8')) as { board: { variants: { stall: { model: string; weight: number }[] } } };
+  const withStall = (stall: { model: string; weight: number }[]) => {
+    const r = raw();
+    r.board.variants.stall = stall;
+    return renderSchema.safeParse(r);
+  };
+  it('accepts weight 0 next to a rolled model', () => {
+    expect(withStall([{ model: 'market_a', weight: 1 }, { model: 'camp_tent_a', weight: 0 }]).success).toBe(true);
+  });
+  it('refuses a list with nothing to roll and a negative weight', () => {
+    const none = withStall([{ model: 'camp_tent_a', weight: 0 }]);
+    expect(none.success).toBe(false);
+    expect(JSON.stringify(none.error?.issues)).toContain('at least one variant needs a weight above 0');
+    expect(withStall([{ model: 'market_a', weight: 1 }, { model: 'camp_tent_a', weight: -1 }]).success).toBe(false);
+  });
+});
+
+describe('content:check: board models exist and ship (story 15.8)', () => {
+  const names = () => {
+    const b = render.board;
+    const out = new Set<string>();
+    for (const l of Object.values(b.variants)) for (const list of Array.isArray(l) ? [l] : Object.values(l)) for (const e of list) out.add(e.model);
+    for (const d of Object.values(b.decor)) out.add(d.model);
+    for (const list of Object.values(b.decorOn)) for (const d of list) out.add(d.model);
+    for (const m of Object.values(b.propFallback)) out.add(m);
+    for (const t of Object.values(data.terrain)) if (t.prop) out.add(`${t.prop}_idle`);
+    for (const e of b.variants.lodge) for (const s of ['visited', 'razed']) out.add(e.model.replace(/intact$/, s));
+    return out;
+  };
+  it('passes when every named model is a file and none is held back', () => {
+    expect(validateBoardModels(data, names(), new Set())).toEqual([]);
+  });
+  it('flags a missing file and a gallery model without ships', () => {
+    const files = names();
+    files.delete('market_a');
+    const msgs = validateBoardModels(data, files, new Set(['mill_idle'])).map((i) => i.message);
+    expect(msgs).toHaveLength(2);
+    expect(msgs).toEqual(expect.arrayContaining([expect.stringContaining('missing model market_a'), expect.stringContaining('mill_idle is a gallery model without ships')]));
+  });
+  it('flags a missing state of a visitable house and a missing `<prop>_idle` of a terrain prop', () => {
+    const files = names();
+    files.delete('lodge_b_razed');
+    files.delete('brazier_b_idle');
+    expect(validateBoardModels(data, files, new Set()).map((i) => i.message)).toEqual(
+      expect.arrayContaining([expect.stringContaining('missing model lodge_b_razed'), expect.stringContaining('missing model brazier_b_idle')]),
+    );
+  });
+  it('the real gallery: shipped models are out of the unshipped set, the rest of a group without ships is in', () => {
+    const dir = join(process.cwd(), 'concept', '23-art-direction', 'map-assets', 'groups');
+    const groups = readdirSync(dir).filter((f) => f.endsWith('.yaml')).map((f) => parse(readFileSync(join(dir, f), 'utf8')) as unknown);
+    const out = unshippedGalleryModels(groups);
+    for (const m of ['market_a', 'market_b', 'camp_tent_a', 'mill_idle', 'wallrim_idle', 'grove_a']) expect(out.has(m)).toBe(false);
+    for (const m of ['house_town_a', 'chest_b_closed', 'barn_a']) expect(out.has(m)).toBe(true);
+    expect(unshippedGalleryModels([{ ships: true, items: [{ id: 'a' }] }, { items: [{ id: 'b' }, { id: 'c', ships: true }] }])).toEqual(new Set(['b']));
+  });
+  it('checks the models a map sets by hand', () => {
+    const base = Object.values(data.maps)[0]!;
+    const one = { ...data, maps: { m: { ...base, id: 'm', propVariants: [{ at: [0, 0] as [number, number], model: 'ghost_idle' }] } } };
+    expect(validateBoardModels(one, names(), new Set()).map((i) => i.file)).toEqual(['maps/m']);
   });
 });
 

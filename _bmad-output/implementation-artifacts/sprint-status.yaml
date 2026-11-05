@@ -214,6 +214,7 @@ development_status:
   11-20-nebenquest-n6-die-gauklertruppe: backlog  # Nebenquest N6 „Die Gauklertruppe“
   11-21-supports-barks-und-chronik-szene-von-akt-2: backlog  # Supports, Barks und Chronik-Szene von Akt 2
   11-22-akt-2-abstimmen-und-veroeffentlichen: backlog  # Akt 2 abstimmen und veröffentlichen
+  11-23-galerie-modelle-fuer-akt-2: backlog  # Galerie-Modelle für Akt 2 (aus 15.8, vor 11.22)
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob
@@ -231,6 +232,7 @@ development_status:
   12-11-nebenquests-n7-n8-n9-und-n10: backlog  # Nebenquests N7, N8, N9 und N10
   12-12-nach-dem-finale-und-uebergabe-an-staffel-2: backlog  # Nach dem Finale und Übergabe an Staffel 2
   12-13-akt-3-abstimmen-und-veroeffentlichen: backlog  # Akt 3 abstimmen und veröffentlichen
+  12-14-galerie-modelle-fuer-akt-3: backlog  # Galerie-Modelle für Akt 3 (aus 15.8, vor 12.13)
   epic-12-retrospective: optional
 
   # Epic 13: Kampf lesbar machen (course correction 2026-10-30, before 9-14)
@@ -266,7 +268,7 @@ development_status:
   15-5-grosse-karten: backlog  # Große Karten (1-6, 1-8)
   15-6-szenen-anpassen-lucan-statt-kael: backlog  # Szenen an Welt und Folge anpassen, Lucan statt Kael
   15-7-weltkarte-v5-einbinden: review  # Weltkarte v5 einbinden
-  15-8-galerie-modelle-fuer-akt-1: backlog  # Galerie-Modelle für Akt 1
+  15-8-galerie-modelle-fuer-akt-1: review  # Galerie-Modelle für Akt 1
   15-9-brettfiguren-zu-den-neuen-portraets-schritt-1: in-progress  # Brettfiguren zu den neuen Porträts, Schritt 1
   15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen
   15-11-leistung-grosser-karten: backlog  # Leistung großer Karten

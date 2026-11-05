@@ -207,6 +207,7 @@ export abstract class BoardProps extends BoardSetup {
           case 'field':
           case 'relief':
           case 'sarcophagus':
+          case 'stall':
             put(variant(def.prop, gx, gy, x, y), base);
             break;
           case 'rock':

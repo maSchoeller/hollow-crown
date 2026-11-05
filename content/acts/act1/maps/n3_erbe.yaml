@@ -51,6 +51,9 @@ terrain: |
 lights: []
 initialEffects:
   - { effect: burning, tiles: [[3, 16], [13, 16]], turns: 3 }
+# Wassermühle mit Rad (Story 15.8): das Rad zeigt nach Osten zur Brücke, das Westfeld bleibt ein Haus
+propVariants:
+  - { at: [8, 3], model: mill_idle }
 objects:
   - { id: v_home, type: village, at: [6, 8], reward: { dialogue: scn.n3.home } }
   - { id: v_miller, type: village, at: [7, 5], reward: { item: { def: vulnerary } } }
