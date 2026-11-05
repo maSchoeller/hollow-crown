@@ -171,11 +171,6 @@ units:
   - { id: k4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [11, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   - { id: k5, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [16, 9], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: k6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [13, 9], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [hard] }
-  # Nur Schwer, Balancing 2026-11-05: Hasks Leibwache hinter dem Tor
-  - { id: e1, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [12, 13], items: [{ def: steel_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: e2, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 5, at: [16, 13], items: [{ def: steel_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: e3, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [13, 14], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: e4, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [16, 14], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements:
   # Wölfe aus dem Bergwald West
@@ -197,8 +192,6 @@ reinforcements:
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [25, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [4, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [24, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [5, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [3, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: seize, area: { rect: [15, 5, 15, 5] } }
   defeat:

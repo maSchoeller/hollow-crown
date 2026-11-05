@@ -17,10 +17,11 @@ beforeAll(() => {
 });
 
 describe('map m1_5_hungerlager', () => {
-  it('has 19 / 24 / 27 foes with the waves and Grosk, as in the draft and the mission list', () => {
+  // hard has five more than the draft (island raiders, balancing 2026-11-05)
+  it('has 19 / 24 / 32 foes with the waves and Grosk', () => {
     const map = data.maps.m1_5_hungerlager!;
     expect(map.units.some((u) => u.id === 'grosk' && u.lieutenant === 'grosk')).toBe(true);
-    for (const [d, n] of [['easy', 19], ['normal', 24], ['hard', 27]] as const) {
+    for (const [d, n] of [['easy', 19], ['normal', 24], ['hard', 32]] as const) {
       const s = createBattle(data, fresh(d), 'm1_5', ['avatar', 'kael']);
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map.reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;

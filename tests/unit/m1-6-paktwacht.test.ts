@@ -33,14 +33,15 @@ beforeAll(() => {
 });
 
 describe('map m1_6_paktwacht', () => {
-  it('is the large map of the act: 30 × 40, 12 places, seize the throne, Hask and Ulvric, 28 / 33 / 40 foes', () => {
+  it('is the large map of the act: 30 × 40, 12 places, seize the throne, Hask and Ulvric, 28 / 31 / 43 foes', () => {
+    // balancing 2026-11-05: normal without the two wolf riders at the forest edge, hard with three strong wolves in the turn-5 wave
     const m = data.maps[MAP]!;
     expect(m.size).toEqual([30, 40]);
     expect(m.deploy.max).toBe(12);
     expect(m.objectives.victory).toEqual({ type: 'seize', area: { rect: [15, 5, 15, 5] } });
     const all = [...m.units, ...m.reinforcements.flatMap((r) => r.units)].filter((u) => u.team === 'enemy');
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
-    expect([count('easy'), count('normal'), count('hard')]).toEqual([28, 33, 40]);
+    expect([count('easy'), count('normal'), count('hard')]).toEqual([28, 31, 43]);
     expect(all.filter((u) => u.lieutenant).map((u) => u.lieutenant).sort()).toEqual(['hask', 'ulvric']);
     expect(m.haunts?.map((h) => h.variant).sort()).toEqual(['boss', 'escort', 'rout']);
   });

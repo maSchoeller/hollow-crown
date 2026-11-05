@@ -4,7 +4,7 @@
 - Alle 12 abgenommenen Entwürfe ersetzen die alten Karten. IDs bleiben, Spielstände und Weltkarte passen.
 - Höhe gezielt: 1-4 drei Stufen, 1-6 und 1-8 Terrassen und Wehrgänge, N1 Dächer mit Leitern; Prolog, 1-1, 1-3, 1-5, N2 mit Akzenten; 1-2, 1-7, N3 flach.
 - Ereignisse: Beben im Prolog, Felsrutsch in 1-4, Burgtor mit Hebel in 1-6, Einsturz in 1-7.
-- Normal läuft die ganze Kampagne durch. Schwer: 7 von 9 Story-Missionen im Korridor, 1-5 und 1-6 noch zu leicht.
+- Normal läuft die Kampagne 19 von 20 Mal durch, Leicht 20 von 20. Schwer: alle Story-Missionen im Korridor (30–70 %).
 - Neu: Gelände Dach, Wolfsreiter wie Reiter, Zelte in 1-5, Ortsbilder 1-3 und 1-4, Kampagnenfolge nach Missionsliste (Varek in N2).
 
 | | | |
@@ -47,13 +47,13 @@ Korridor: Leicht Sieg ≥ 95 %, ≤ 0,5 Niedergestreckte; Normal Sieg ≥ 75 %, 
 | 1-1 | 100 % | 100 % / 0,20 | 31–38 % |
 | 1-2 | 100 % | 100 % / 0,50 | 55 % |
 | 1-3 | 100 % | 100 % / 1,15 | 42 % |
-| 1-4 | 100 % | 100 % / 0,75 | 66 % |
-| 1-5 | 100 % | 100 % / 1,30 | **100 %** |
-| 1-6 | 100 % | 100 % / **1,45** | **92 %** |
-| 1-7 | **90 %** | 80 % / **0,30** | 42 % |
-| 1-8 | 100 % / **1,11** | 95 % / **1,50** | 68 % |
+| 1-4 | 100 % | 95 % / 0,90 | 66 % |
+| 1-5 | 100 % | 100 % / 1,20 | 52 % |
+| 1-6 | 100 % | 100 % / 1,30 | 56 % |
+| 1-7 | 100 % | **70 %** / 0,60 | 42 % |
+| 1-8 | 100 % / **1,05** | 89 % / **1,79** | 69 % |
 
-Leicht und Normal aus 20 Läufen vor den Wolfsreitern; Schwer aus bis zu 120 Läufen danach. Fett = außerhalb.
+Leicht und Normal: verkettete Kampagne, 20 Läufe. Schwer: die Zielmission auf Schwer nach einer Kette auf Normal (`pnpm sim <karte> --difficulty hard --chain normal`), weil verkettet auf Schwer kaum ein Lauf bis 1-5 kommt. Die früheren 100 % und 92 % kamen aus ein bis zwei Läufen. Fett = außerhalb.
 
 </details>
 
@@ -62,6 +62,7 @@ Leicht und Normal aus 20 Läufen vor den Wolfsreitern; Schwer aus bis zu 120 Lä
 
 - 1-7 auf Normal schwankt zwischen 70 und 87 %: Die KI holt die Chronik manchmal nicht in 8 Runden. Das Limit bleibt.
 - Prolog und 1-1 auf Normal mit wenig Niedergestreckten (0,15 / 0,20), so gewollt sanft.
+- 1-8 auf Leicht und Normal mit zu vielen Niedergestreckten: Die Truppe liegt dort zwei Stufen unter Plan (7,7 statt 9). Weniger Wölfe halfen nicht, darum bleibt die Karte beim Entwurf. Das ist ein Thema der Erfahrungskurve, nicht der Karte.
 - Halvard hat noch keine eigene Figur (Platzhalter Dorfältester).
 - Häscher in 1-1 heißen als Einheit weiter „Kopfgeldjäger“.
 - FPS auf 30 × 40 nicht gemessen; KI-Zug 1-8 höchstens 5 ms je Figur.
