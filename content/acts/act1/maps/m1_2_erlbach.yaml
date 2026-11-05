@@ -6,6 +6,8 @@
 # Zerstört ein Marodeur es vorher (Trigger object_destroyed), ist Mira dauerhaft weg (scn.m1_2.mira_lost, Flag mira_house_razed) und E1 entfällt. Von den Aufstellfeldern ist das Haus in Runde 2 erreichbar, frühestens in Runde 4 steht ein Plünderer davor.
 # Hask flieht bei 0 TP (gone: fled), Groll, Kopfgeld, Signaturwaffe Zunder (tinder). Seine Kartenwaffe ist Eisen (iron_axe), damit „+1 Tier je Groll“ greift.
 # Balancing 2026-11-05 [C]: Mit dem Entwurf (alle sofort aggressiv) Normal 4 % Sieg. Die Südtruppe wartet gestaffelt (wakeTurn 3–7), Hask ab Runde 6 statt 3, Stufen 2 statt 3, Flankenwellen Stufe 1 und eine Runde später (R4, R6). Gegnerzahl wie im Entwurf.
+# Balancing 2026-11-05 [C], Schwer: Der Älteste fiel in 40 von 40 Läufen in Runde 7–8, getroffen fast nur von den beiden Flanken-Plänklern (R4 Ost, R6 West) und r12. Auf Schwer ziehen Wellen schon in der Runde ihres Erscheinens (ambushReinforcements).
+# Deshalb erscheinen die Flanken-Plänkler auf Schwer eine Runde später (R5, R7) und kommen so an wie auf Normal; r11/r12 Stufe 2 und erst ab Runde 7 wach. Schwer danach 55 % Sieg (76 Läufe), 20 Gegner (Missionsliste 18).
 # Häuser-IDs der alten Karte bleiben (v_elder, v_n1, v_n2, v_w, v_e), die Szenen scn.m1_2.house_* wandern mit.
 # Szenen: scn.m1_2.intro / .outro (Knoten pre/post, E1 in der Nachszene), scn.m1_2.hask_battle (Kampfzeile), Besuchsszenen scn.m1_2.house_*.
 id: m1_2_erlbach
@@ -105,8 +107,8 @@ units:
   - { id: r9, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
   - { id: r10, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 21], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
   # Nur Schwer
-  - { id: r11, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [5, 22], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: r12, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [12, 21], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: r11, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 22], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
+  - { id: r12, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [12, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
 pairs: []
 reinforcements:
   # Flanke Ost am Nordufer
@@ -115,14 +117,25 @@ reinforcements:
     announce: true
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [19, 12], items: [{ def: iron_axe }], ai: { profile: raider, target: v_e } }
-      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [19, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [19, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal] }
+  # Balancing 2026-11-05 [C]: Auf Schwer ziehen Wellen schon in der Runde ihres Erscheinens (ambushReinforcements). Eine Runde später gesetzt, damit sie so ankommen wie auf Normal.
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [19, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   # Flanke West aus dem Wald
   - turn: 6
     phase: enemy
     announce: true
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [0, 10], items: [{ def: iron_axe }], ai: { profile: raider, target: v_n1 } }
-      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [0, 11], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [0, 11], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal] }
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [0, 11], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   # Nachschub aus Hasks Lager
   - turn: 6
     phase: enemy

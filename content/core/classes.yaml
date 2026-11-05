@@ -364,14 +364,14 @@
   playable: false
   v1: true
 
-# Wolfsreiter (Akt 1): zu Fuß mit Wolfsfell, kein Reittier, keine Beritten-Effektivität (PO 2026-10-24).
+# Wolfsreiter (Akt 1): reitet auf dem Wolf, Bewegung wie Reiter (Entscheidung 2026-11-05: keine Treppen, keine Leitern, nur Rampen). Keine Beritten-Effektivität: Tag `mounted` fehlt (PO 2026-10-24).
 # Werte von `skirmisher` abgeleitet (leichter, schneller, Lanze statt Schwert); Wolfsfell ist nur Optik.
 - id: wolf_rider
   nameKey: class.wolf_rider.name
   role: wolf_rider
   tier: base
   roleGroup: melee
-  moveType: foot
+  moveType: mounted
   mov: 6
   weaponGroups: [lance]
   proPaths: []

@@ -16,9 +16,9 @@ const enemies = (mapId: string): MapUnitDef[] => {
 };
 
 describe('act 1 enemy classes', () => {
-  it('wolf_rider is an enemy-only role class on foot with a lance and no mounted effectiveness', () => {
+  it('wolf_rider is an enemy-only role class that moves like a rider, with a lance and no mounted effectiveness', () => {
     const c = data.classes.wolf_rider!;
-    expect(c).toMatchObject({ id: 'wolf_rider', role: 'wolf_rider', tier: 'base', moveType: 'foot', playable: false });
+    expect(c).toMatchObject({ id: 'wolf_rider', role: 'wolf_rider', tier: 'base', moveType: 'mounted', playable: false });
     expect(c.weaponGroups).toEqual(['lance']);
     expect(c.classAction).toBeUndefined();
     expect(c.tags).not.toContain('mounted');

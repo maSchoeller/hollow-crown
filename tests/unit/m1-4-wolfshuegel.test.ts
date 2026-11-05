@@ -90,7 +90,7 @@ describe('the rockfall', () => {
   it('the waves of the east cave stay away after it, the west wave still comes', () => {
     const s = pull(battle()).state;
     const map = data.maps[MAP]!;
-    expect(map.reinforcements.map((r) => [r.turn, r.unlessFlag])).toEqual([[3, 'm1_4_rockfall'], [5, undefined], [6, 'm1_4_rockfall']]);
+    expect(map.reinforcements.map((r) => [r.turn, r.unlessFlag])).toEqual([[3, 'm1_4_rockfall'], [5, undefined], [6, 'm1_4_rockfall'], [8, undefined]]);
     s.units = s.units.filter((u) => u.team !== 'enemy' || u.id === 'osric');
     let cur = s;
     for (const turn of [3, 6]) {

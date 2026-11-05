@@ -19,7 +19,7 @@ legend:
   "w": swamp
   "~": creek
   "=": boardwalk
-  "R": ruins
+  "R": stall         # Zelte des Lagers (Entscheidung 2026-11-05: wie in den Szenen, statt Ruinen)
   "F": fort
   "H": village
   "s": sand
