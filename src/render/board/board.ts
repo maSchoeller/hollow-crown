@@ -12,9 +12,67 @@ import type { HostedView } from '../host';
 import { critTimeline } from './critTimeline';
 import { dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, fleeTarget } from './lieutenant';
 import { BoardFrame } from './boardFrame';
+import { marchRun, type March } from './march';
 
 export class BoardView extends BoardFrame implements HostedView {
+  /** story 15.11: turns of the foes that only walk are played at the same time (option „Gegnerzüge: Gemeinsam“) */
+  march = false;
+
   // ------------------------------------------------------------------ event playback
+
+  /**
+   * Walks the ways of a march run at the same time, step by step. When a goal is out of view the camera glides to the middle of the
+   * goals at its zoom step: zooming out to show them all doubled the draw calls and halved the frame rate (story 15.11 measurement).
+   */
+  private async playMarch(marches: March[], exhausted: readonly string[]): Promise<void> {
+    const pace = this.data.render.aiPace;
+    const walkers = marches.flatMap((m) => {
+      const v = this.units.get(m.unit);
+      return v ? [{ v, path: m.path }] : [];
+    });
+    // where they start and where they stop; goals spread wider than the view leave some walkers out of it (the overview shows all)
+    const ends = walkers.flatMap((w) => [w.path[0]!, w.path[w.path.length - 1]!]);
+    if (ends.length && !ends.every((p) => this.isVisible(p))) {
+      const mid = (k: 0 | 1) => Math.round(ends.reduce((s, p) => s + p[k], 0) / ends.length);
+      await this.centerOn([mid(0), mid(1)]);
+    }
+    const turnOver = new Set(exhausted);
+    const steps = Math.max(0, ...walkers.map((w) => w.path.length - 1));
+    for (let i = 1; i <= steps; i++) {
+      const moving = walkers.filter((w) => i < w.path.length);
+      for (const w of moving) {
+        w.v.facing = this.facingOf(w.path[i - 1]!, w.path[i]!);
+        this.setAnim(w.v, 'walk');
+      }
+      await this.tween(pace.stepMs, (t) => {
+        for (const w of moving) {
+          const a = w.path[i - 1]!;
+          const b = w.path[i]!;
+          w.v.x = a[0] + (b[0] - a[0]) * t;
+          w.v.y = a[1] + (b[1] - a[1]) * t;
+        }
+      });
+      // a walker whose way ended stands still while the others go on, greyed at once if its turn is over
+      for (const w of moving) {
+        if (i !== w.path.length - 1) continue;
+        this.setAnim(w.v, 'idle');
+        if (turnOver.delete(w.v.uid)) this.markExhausted(w.v.uid);
+      }
+    }
+    // the foes that only waited
+    for (const uid of turnOver) this.markExhausted(uid);
+    await this.wait(pace.afterMoveMs);
+  }
+
+  /** A unit ends its turn: greyed and ticked (event `exhausted`). */
+  private markExhausted(uid: string): void {
+    const v = this.units.get(uid);
+    if (v) v.desat = 0.65;
+    if (v && !v.downed) {
+      this.done.add(uid);
+      this.badges.setDone(this.done);
+    }
+  }
 
   /** Plays core events as board animations, then syncs to the final state. */
   async play(events: GameEvent[], finalState: BattleState, pool?: readonly BattleUnit[]): Promise<void> {
@@ -46,6 +104,13 @@ export class BoardView extends BoardFrame implements HostedView {
           break;
         }
         case 'aiTurn': {
+          // story 15.11: several foes in a row that only walk go together (skip mode has nothing to show anyway)
+          const run = this.march && !this.skip ? marchRun(events, n, this.data.render.aiPace.marchMin) : null;
+          if (run) {
+            await this.playMarch(run.marches, run.exhausted);
+            n = run.end - 1; // the loop's n++ goes on with the first event after the run
+            break;
+          }
           const p = this.unitPos(e.unit);
           if (p && !this.isVisible(p)) await this.centerOn(p);
           // a unit that only waits (no event of its own follows) is not announced
@@ -287,15 +352,9 @@ export class BoardView extends BoardFrame implements HostedView {
           await this.hooks.onEvent?.(e);
           break;
         }
-        case 'exhausted': {
-          const v = this.units.get(e.unit);
-          if (v) v.desat = 0.65;
-          if (v && !v.downed) {
-            this.done.add(e.unit);
-            this.badges.setDone(this.done);
-          }
+        case 'exhausted':
+          this.markExhausted(e.unit);
           break;
-        }
         case 'refreshed': {
           const v = this.units.get(e.unit);
           if (v) v.desat = 0;

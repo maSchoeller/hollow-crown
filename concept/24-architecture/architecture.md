@@ -56,7 +56,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 ### 2.2 Plattform und Rahmen
 
 - **Plattform:** 1. Handy-Browser im Hochformat (PWA), 2. Tablet/PC-Browser mit Maus, 3. später Capacitor. Kein Server, kein Konto, kein Netzwerkspiel; Netz nur für Auslieferung und Updates.
-- **Leistung:** 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase einer großen Schlacht (24×32, ~40 Einheiten); Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
+- **Leistung:** NFR1 (Vorschlag Story 15.11) – 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase auf Karten bis 30 × 40 mit 50 und mehr Figuren und in der 3D-Burg, Wiedergabe der Gegnerphase ≤ 15 s bei 1× und „Gegnerzüge: Gemeinsam“; Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
 - **Team:** ein Entwickler mit KI-Agenten. Die Architektur muss vor allem verhindern, dass verschiedene Agenten dieselbe Sache unterschiedlich lösen.
 
 ### 2.3 Komplexitätstreiber und neuartige Konzepte
@@ -696,6 +696,7 @@ Hinweis für die Story-Planung: Die E1-Story „Spielstände migrieren“ entfä
 - **Laden:** Kaltstart lädt nur `core`; Content als JSON-Chunk statt YAML-Parsing zur Laufzeit (wie heute).
 - **Speichern:** Auto-Save asynchron; Journal append-only; keine Kopie des ganzen Journals in Spielständen.
 - **Messung:** FPS-Overlay im Dev-Build (`?debug`), Playwright-Lauf über die Gegnerphase der größten Schlacht mit Zeichenaufrufen und Frame-Zeiten; echte Geräte manuell je Akt-Release.
+- **Große Karten (Story 15.11):** `PERF_LARGE=1 pnpm perf` misst die Entwürfe 1-6 und 1-8 (30 × 40, Truppe des Akts voll aufgestellt, alle Gegner rücken vor), die Referenzschlacht, 1-6 in der Übersicht und die Burg (alle Räume Stufe 3), je Gegnerzüge einzeln und gemeinsam; Tabelle `test-results/perf/large-<gerät>.md`. Gegner, die nur laufen, ziehen in der Wiedergabe gleichzeitig (`render/board/march.ts`, reine Darstellung, Replays unverändert); die Kamera gleitet dabei, ohne die Zoomstufe zu wechseln (Herauszoomen verdoppelte die Zeichenaufrufe). Die Kosten einer Karte wachsen mit der sichtbaren Fläche: auf 30 × 40 und in der Übersicht reicht der Stand von 7.8 nicht für 30 FPS bei 4× (Messwerte Story 15.11).
 
 ## 11. Sicherheit und Datenschutz
 

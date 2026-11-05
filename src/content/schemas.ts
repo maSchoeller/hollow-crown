@@ -774,7 +774,7 @@ export const renderSchema = z.object({
     zoomMs: z.number().min(0),
     markFrameMargin: z.number().min(0),
   }),
-  aiPace: z.object({ stepMs: ms, focusMs: ms, afterMoveMs: ms, afterStrikeMs: ms }),
+  aiPace: z.object({ stepMs: ms, focusMs: ms, afterMoveMs: ms, afterStrikeMs: ms, marchMin: z.number().int().min(2) }),
   board: z.object({
     skirt: z.number().int().min(0),
     skirtDim: z.number().min(0).max(1),

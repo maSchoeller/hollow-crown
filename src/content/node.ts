@@ -22,11 +22,29 @@ export function contentFiles(root = process.cwd()): string[] {
     .filter((p) => !META_FILES.includes(p));
 }
 
-/** The parsed YAML documents of content/, keyed like the browser loader (`content/<path>`). */
+/**
+ * Parsed documents per file, kept for the life of the process (story 15.11): parsing the YAML is most of the time of a content load
+ * (about 0.9 of 1.2 s), and the tests load the content again and again. A file is parsed anew when its size or one of its time stamps
+ * changed.
+ */
+const parsed = new Map<string, { stamp: string; doc: unknown }>();
+
+/** The parsed YAML documents of content/, keyed like the browser loader (`content/<path>`); each call returns its own copy. */
 export function readContentFiles(root = process.cwd()): Record<string, unknown> {
   const dir = join(root, 'content');
   const files: Record<string, unknown> = {};
-  for (const rel of contentFiles(root)) files[`content/${rel}`] = parse(readFileSync(join(dir, rel), 'utf8'));
+  for (const rel of contentFiles(root)) {
+    const path = join(dir, rel);
+    const st = statSync(path);
+    const stamp = `${st.size}:${st.mtimeMs}:${st.ctimeMs}`;
+    let hit = parsed.get(path);
+    if (hit?.stamp !== stamp) {
+      hit = { stamp, doc: parse(readFileSync(path, 'utf8')) };
+      parsed.set(path, hit);
+    }
+    // callers may change what they get (tests build broken content from it), so the kept document stays untouched
+    files[`content/${rel}`] = structuredClone(hit.doc);
+  }
   return files;
 }
 

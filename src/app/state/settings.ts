@@ -7,6 +7,8 @@ export interface Settings {
   lang: Lang;
   speed: 1 | 2 | 3; // 3 = skip
   enemySpeed: 1 | 2 | 3;
+  /** story 15.11: foes that only walk go together (`together`) or one after the other as before (`each`) */
+  enemyMarch: 'together' | 'each';
   dangerDefault: boolean;
   confirmForecast: boolean;
   quality: 'low' | 'mid' | 'high';
@@ -35,6 +37,7 @@ export function defaultSettings(lang: Lang): Settings {
     lang,
     speed: 1,
     enemySpeed: 1,
+    enemyMarch: 'together',
     dangerDefault: false,
     confirmForecast: true,
     quality: 'mid',
@@ -53,6 +56,8 @@ export function defaultSettings(lang: Lang): Settings {
 /** Stored settings over the defaults (pure, tested): fields an older version did not store keep their default. */
 export function mergeSettings(def: Settings, stored: Partial<Settings>): Settings {
   const merged = { ...def, ...stored, figures: def.figures };
+  // a value this version does not know (hand-edited, a later version) falls back to the default
+  if (merged.enemyMarch !== 'together' && merged.enemyMarch !== 'each') merged.enemyMarch = def.enemyMarch;
   return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
 }
 function loadSettings(): Settings {
