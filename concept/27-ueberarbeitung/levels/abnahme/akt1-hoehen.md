@@ -4,8 +4,8 @@
 - Alle 12 abgenommenen Entwürfe ersetzen die alten Karten. IDs bleiben, Spielstände und Weltkarte passen.
 - Höhe gezielt: 1-4 drei Stufen, 1-6 und 1-8 Terrassen und Wehrgänge, N1 Dächer mit Leitern; Prolog, 1-1, 1-3, 1-5, N2 mit Akzenten; 1-2, 1-7, N3 flach.
 - Ereignisse: Beben im Prolog, Felsrutsch in 1-4, Burgtor mit Hebel in 1-6, Einsturz in 1-7.
-- Normal läuft die Kampagne 19 von 20 Mal durch, Leicht 20 von 20. Schwer: alle Story-Missionen im Korridor (30–70 %).
-- Neu: Gelände Dach, Wolfsreiter wie Reiter, Zelte in 1-5, Ortsbilder 1-3 und 1-4, Kampagnenfolge nach Missionsliste (Varek in N2).
+- Normal läuft die Kampagne 18 von 20 Mal durch, Leicht 20 von 20. Schwer: alle Story-Missionen im Korridor (30–70 %).
+- Neu: Gelände Dach, Wolfsreiter zu Fuß (in Staffel 1 reitet niemand), Zelte in 1-5, Ortsbilder 1-3 und 1-4, Kampagnenfolge nach Missionsliste (Varek in N2).
 
 | | | |
 |---|---|---|
@@ -47,11 +47,11 @@ Korridor: Leicht Sieg ≥ 95 %, ≤ 0,5 Niedergestreckte; Normal Sieg ≥ 75 %, 
 | 1-1 | 100 % | 100 % / 0,20 | 31–38 % |
 | 1-2 | 100 % | 100 % / 0,50 | 55 % |
 | 1-3 | 100 % | 100 % / 1,15 | 42 % |
-| 1-4 | 100 % | 95 % / 0,90 | 66 % |
-| 1-5 | 100 % | 100 % / 1,20 | 52 % |
-| 1-6 | 100 % | 100 % / 1,30 | 56 % |
-| 1-7 | 100 % | **70 %** / 0,60 | 42 % |
-| 1-8 | 100 % / **1,05** | 89 % / **1,79** | 69 % |
+| 1-4 | 100 % | 100 % / 0,75 | 41 % |
+| 1-5 | 100 % | 100 % / 1,25 | 52 % |
+| 1-6 | 100 % | 100 % / 1,15 | 69 % |
+| 1-7 | 100 % | 75 % / 0,45 | 42 % |
+| 1-8 | 100 % / **1,05** | 100 % / **1,72** | 63 % |
 
 Leicht und Normal: verkettete Kampagne, 20 Läufe. Schwer: die Zielmission auf Schwer nach einer Kette auf Normal (`pnpm sim <karte> --difficulty hard --chain normal`), weil verkettet auf Schwer kaum ein Lauf bis 1-5 kommt. Die früheren 100 % und 92 % kamen aus ein bis zwei Läufen. Fett = außerhalb.
 

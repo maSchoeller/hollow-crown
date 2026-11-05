@@ -151,7 +151,8 @@ reinforcements:
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: scout, sprite: mercenary, level: 3, at: [5, 1], items: [{ def: iron_dagger }], ai: { profile: aggressive } }
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [4, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [5, 2], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [4, 2], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+      # Nur Schwer, Balancing 2026-11-05: Morras Leute stärker, sie kommen dem Verwalter am nächsten
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [4, 2], items: [{ def: steel_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   - turn: 6
     phase: enemy
     announce: true
@@ -166,7 +167,8 @@ reinforcements:
     units:
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [5, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [4, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: knight, sprite: soldier, level: 3, at: [5, 1], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: knight, sprite: soldier, level: 6, at: [5, 1], items: [{ def: steel_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [4, 1], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   - turn: 9
     phase: enemy
     announce: true
