@@ -7,7 +7,7 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | # | Mission | Umgebung | Region | Vorhanden | Verbessern | Fehlt |
 |---|---|---|---|---|---|---|
 | P | Die Paktnacht | Tempelbezirk, Höfe, Säulengänge, Nacht | Stadt | Gras, Erde, Straße | Mauer, Tor, Tür, offen und zu, Lagerfeuer, Kohlebecken | Mauerturm, Ecke, Säule, Säulengang, Fackel, Wandleuchte |
-| 1-1 | Steckbriefe | Varnhold, Markt, Brücke | Süd | Gras, Erde, Straße, Kulissenhäuser, Wagen, Fluss | Besuchshaus, Marktstand, Steinbrücke, Furt, Flachwasser, Mauer, Festung | – |
+| 1-1 | Steckbriefe | Varnhold, Markt, Brücke | Süd | Gras, Erde, Straße, Kulissenhäuser, Marktstand, Wagen, Fluss | Besuchshaus, Steinbrücke, Furt, Flachwasser, Mauer, Festung | – |
 | 1-2 | Asche über Erlbach | Dorf am Bach, Kornfelder, Furten | Süd | Gras, Erde, Straße, Kulissenhäuser, Zaun, Fluss | Besuchshaus, Kornfeld, Furt, Flachwasser, Holzbrücke, Wald | – |
 | 1-3 | Der Fremde mit dem Siegel | Grenzwald, Lichtung, Schrein | Süd | Gras, Erde, Straße, Ruine, Truhe | Wald, Schrein, Furt, Flachwasser | Steg, Bohlenweg |
 | 1-4 | Die Spur des Maklers | Wolfshügel, Felsen, Höhlen | Süd | Gras, Erde, Straße, Ruine, Truhe, Zelt, Lager | Berg, Felsmasse, Wald, Festung, Lagerfeuer, Kohlebecken | Hebel |
@@ -17,7 +17,7 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | 1-8 | Die Heimat halten | Paktwacht, zwei Fronten | Süd | Gras, Erde, Straße | Berg, Felsmasse, Wald, Mauer, Tor, Tür, offen und zu, Thron, Festung, Kornfeld, Steinbrücke, Besuchshaus, Lagerfeuer, Kohlebecken | Mauerturm, Ecke, Rampe, Stützmauer, Terrasse, Wehrgang, Treppe, Bresche, Trümmer in der Mauer |
 | N1 | Der Ring von Varnhold | Nacht, Dächer, Gassen | Süd | Gras, Erde, Straße, Kulissenhäuser, Fluss, Truhe | Mauer, Tor, Holzbrücke | Begehbares Dach, Fackel, Wandleuchte |
 | N2 | Der letzte Wachturm | Grenzmauer, Hügel | Süd | Gras, Erde, Straße, Ruine, Truhe | Mauer, Festung, Berg, Felsmasse, Wald | Mauerturm, Ecke, Bresche, Trümmer in der Mauer |
-| N3 | Das Erbe | Pachthof, Mühle, Fluss | Süd | Gras, Erde, Straße, Zaun, Kulissenhäuser, Fluss, Truhe | Kornfeld, Besuchshaus, Furt, Flachwasser, Holzbrücke, Wald | Mühle mit Rad |
+| N3 | Das Erbe | Pachthof, Mühle, Fluss | Süd | Gras, Erde, Straße, Zaun, Mühle mit Rad, Kulissenhäuser, Fluss, Truhe | Kornfeld, Besuchshaus, Furt, Flachwasser, Holzbrücke, Wald | – |
 | 2-1 | Wind über der Eisenmark | Windscharte, Ballisten auf Felsnasen | Hochland | – | Berg, Felsmasse, Wald | Boden Herbst, Balliste, Klippe, Absturzkante, Rampe, Stützmauer, Terrasse |
 | 2-2 | Das Siegel im Salzpass | Pass, Nebel, Steinschlag | Hochland | Truhe, Wagen | Berg, Felsmasse | Boden Herbst, Klippe, Absturzkante |
 | 2-3 | Die Rabenweide | Gestüt, Weiden, Koppelzäune, Furten | Hochland | Zaun, Fluss, Kulissenhäuser | Furt, Flachwasser, Wald | Boden Herbst, Koppel, Stall, Gestüt |
@@ -28,7 +28,7 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | 2-8 | Kronfeld | Ebene, Hügel, Fluss | Hochland | Fluss, Zelt, Lager, Wagen | Berg, Felsmasse, Wald, Furt, Flachwasser, Steinbrücke, Festung | Boden Herbst |
 | N4 | Der Clan im Schnee | Bergwald, früher Schnee | Hochland | Zelt, Lager | Wald, Berg, Felsmasse, Lagerfeuer, Kohlebecken | Boden Schnee, Schneehauben |
 | N5 | Glut unter dem Berg | Bergwerk, Loren, Schächte | Innen | Truhe | – | Höhlenboden und Felswand innen, Stollen, Lore, Schienen, Drachenknochen, Fackel, Wandleuchte |
-| N6 | Die Gauklertruppe | Herbstmarkt, Boote, Bühne | Küste | Fluss, Wagen | Marktstand, Holzbrücke | Boden Herbst, Gaukelbühne, Markt-Deko, Schiff, Boot |
+| N6 | Die Gauklertruppe | Herbstmarkt, Boote, Bühne | Küste | Marktstand, Fluss, Wagen | Holzbrücke | Boden Herbst, Gaukelbühne, Markt-Deko, Schiff, Boot |
 | 3-1 | Winter über Aurenhall | Gänge unter dem Palast, Türen | Innen | Truhe | Tür, offen und zu | Höhlenboden und Felswand innen, Palast: Fliesen, Teppich, Empore, Hebel, Fackel, Wandleuchte |
 | 3-2 | Das verbotene Lied | Sängerviertel, Kanäle, Boote, Schnee | Stadt | – | Steinbrücke | Boden Schnee, Schneehauben, Stadthaus hoch, Gasse, Kanal, Schleuse, Schiff, Boot, Fackel, Wandleuchte |
 | 3-3 | Die Einsiedlerin | Winterwald, gefrorener Bach | Winter | Kulissenhäuser | Wald, Besuchshaus, Berg, Felsmasse | Boden Schnee, Schneehauben, Eis mit Bruchstellen |
@@ -73,9 +73,9 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | Sumpf, Schilf, Priele | Wasser | fehlt | 2 | 1-5, 3-4 | 2 | Das Moor von 1-5 ist heute dasselbe Türkis wie der Fluss. Kein Morast, kein Schilf. |
 | Schrein | Bauten | verbessern | 2 | 1-3, 2-5 | 2 | Heilt und gibt Deckung. `relief` zeichnet dasselbe Modell ohne jede Wirkung. |
 | Grabrelief, Sarkophag | Bauten | fehlt | 2 | 1-7, N9 | 2 | Heute die Schrein-Requisite, obwohl andere Wirkung. |
-| Marktstand | Dinge | verbessern | 2 | 1-1, N6 | 2 | Heute das Zelt-Modell. |
+| Marktstand | Dinge | vorhanden | 2 | 1-1, N6 | 2 | Seit Story 15.8 zwei Marktstände (`market_a`, `market_b`); das Hungerlager setzt sein Lagerzelt `camp_tent_a` von Hand. |
 | Begehbares Dach | Bauten | fehlt | 2 | N1 | 1 | Formatwunsch aus N1 (`roof`). Regel offen (R3). |
-| Mühle mit Rad | Hof | fehlt | 2 | N3 | 1 |  |
+| Mühle mit Rad | Hof | vorhanden | 2 | N3 | 1 | Seit Story 15.8 im Spiel (`mill_idle`), die Karte setzt sie von Hand (`propVariants`). |
 | Truhe | Dinge | vorhanden | 3 | 1-3, 1-4, 1-5, 1-6, 1-7, N1, N2, N3, 2-2, 2-7, N5, 3-1, N7, N10 | 14 | Gut, aber dunkel. Im Zielmodus fehlt der im Text geforderte Glanz. |
 | Boden Schnee, Schneehauben | Boden | fehlt | 3 | N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9 | 10 | Schneefichten stehen auf Sommerwiese, Felsen und Dächer tragen keinen Schnee. |
 | Fluss | Wasser | vorhanden | 3 | 1-1, 1-2, N1, N3, 2-3, 2-5, 2-7, 2-8, N6 | 9 | Klar und schön, passt aber nur für Akt 1. Im Moor und auf dem See ist es dasselbe Türkis. |

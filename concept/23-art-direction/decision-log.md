@@ -105,3 +105,11 @@
 - Umfang: die kleine Variante in drei Schritten statt aller 37 Figuren. Weil niemand reitet (GDD-Log 2026-11-05), entfallen „Reiter zu Pferd“ und das Reit-Pferd; es bleiben 12 Modelle, rechnerisch 1 680 Tripo-Credits.
 - Zuerst nur 3 Modelle mit dem vorhandenen Guthaben von rund 425 Credits: Lucan, Verwalter der Paktwacht, Osric Dunn. Über den Rest und über Nachkauf entscheidet der Produktinhaber nach Sichtung.
 - Pferde auf der Rabenweide (2-3) sind ein einfaches Deko-Modell ohne Reittier-Pipeline.
+
+## 2026-11-05: Galerie-Modelle für Akt 1 (Story 15.8)
+
+- Ermittelt an den 12 Karten von Akt 1 (PR #104), nicht an den Missions-Markierungen der Galerie: das Brett zeichnet nur, was eine Karte als Gelände oder Objekt nennt. Neu im Build, Paket `act1`, nicht im ersten Download: `market_a` und `market_b` (Marktstände 1-1), `camp_tent_a` (Lagerzelte des Hungerlagers 1-5), `mill_idle` (Mühle mit Rad, N3). Zusammen rund 0,5 MB Transfer, 400–3 000 Dreiecke je Modell (Besuchshaus 2 518, Figurenbudget 7 000).
+- Lesbarkeit: alle vier sperren und sind 1,07–1,26 Felder hoch (Figur rund 0,9), füllen das Feld; das Mühlrad ragt wie im Galerie-Text nach Osten über den Rand. Keine Deko, nichts Begehbares darunter.
+- Gelände `stall` zeichnet Marktstände statt des Zelts; ein Stand sperrt in jeder Region gleich. Das Lagerzelt und die Mühle setzt die Karte von Hand: Gewicht 0 in `render.yaml board.variants` heißt „nur über `propVariants`, nie gewürfelt“.
+- Nicht übernommen, weil keine Karte von Akt 1 sie über ein Gelände zeichnen kann oder die Matrix sie einer späteren Etappe gibt: `house_town_a/b` (Varnhold behält die vier Kulissenhäuser; ein Stadt-Satz bräuchte eine Auswahl je Karte), `chest_b_*` (Truhe ist Etappe 3 und beträfe den Prolog im ersten Download), `field_burnt`, `hay_a`, `barn_a`, `vine_a`, `fence_wicker_a`, `sign_a`, `lantern_post_a`, `pillar_a`, `pillar_broken_a`, `rubble_a`, `banner_a`, `grove_autumn_a`, `fir_a`, `deadtree_b`, `stump_a`, `bush_low_a`, `boulder_a`, `camp_rack_a`, `wolf_cave_a`. Sie bleiben in der Galerie ohne `ships`.
+- `content:check` meldet jetzt jedes Modell, das `render.yaml` oder eine Karte für das Brett nennt und das als Datei fehlt oder als Galerie-Modell ohne `ships` nicht ausgeliefert wird.
