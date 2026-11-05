@@ -479,7 +479,7 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
     spawnLines.push(`R${r.turn} (${TEAM_NAME[r.phase]}phase${r.announce ? ', angekündigt' : ''}): ${r.units.map((u) => `${unitLine(u)} ${fmt(u.at)}${u.difficulty ? ` [${u.difficulty.map((d) => DIFF_SHORT[d]).join('')}]` : ''}`).join(', ')}`);
   map.triggers.forEach((t, i) => {
     const spawns = t.then.flatMap((a) => (a.action === 'spawn' ? a.units : []));
-    const what = t.then.map((a) => (a.action === 'spawn' ? `${a.units.length} Figuren` : a.action === 'dialogue' ? 'Dialog' : a.action === 'set_ai' ? `KI ${a.units.join(', ')} → ${AI_NAME[a.profile] ?? a.profile}` : `Flag ${a.flag}`));
+    const what = t.then.map((a) => (a.action === 'spawn' ? `${a.units.length} Figuren` : a.action === 'dialogue' ? 'Dialog' : a.action === 'set_ai' ? `KI ${a.units.join(', ')} → ${AI_NAME[a.profile] ?? a.profile}` : a.action === 'set_terrain' ? `Gelände ${a.terrain}` : `Flag ${a.flag}`));
     spawnLines.push(`${spawns.length ? `A${i + 1} ` : ''}${t.id}: wenn ${whenText(t.when, unitName)} → ${what.join(', ')}${spawns.length ? ` (${spawns.map((u) => `${unitLine(u)} ${fmt(u.at)}`).join(', ')})` : ''}`);
   });
   section('Verstärkungen und Auslöser', spawnLines);

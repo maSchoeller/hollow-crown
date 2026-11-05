@@ -21,6 +21,7 @@ board:
   skirt: 10
   skirtDim: 0.45
   waterLevel: -0.1
+  levelHeight: 0.85
   baseDepth: 0.8
   waterFrameMs: 450                        # Wasser-Animation: Dauer je Textur-Bild (ruhige Bewegung)
   lightsMax: { high: 8, mid: 5, low: 0 }   # Punktlichter (Karte + Feuer) je Qualitätsstufe

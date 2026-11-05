@@ -5,7 +5,7 @@ import { forecast, type Forecast } from '../rules/combat';
 import { castArea, castTargets, type CastArea } from '../rules/cast';
 import { classActionId } from '../rules/roles';
 import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
-import { moveBudget, reachable, tilesInRange, weaponRange } from '../rules/movement';
+import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds } from '../rules/skills';
 import type { BattleState, BattleUnit } from '../state';
@@ -45,7 +45,7 @@ export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos
   const finishAllowed = true;
   for (const w of usableWeapons(data, u)) {
     const r = weaponRange(data, s, u, w.uid, extraRange);
-    for (const t of tilesInRange(s, pos, r)) {
+    for (const t of strikeTiles(data, s, pos, r)) {
       const o = unitAt(s, t);
       if (!o || !onMap(o) || !isHostile(o.team, u.team) || o.untargetable) continue;
       if (o.downed && !finishAllowed) continue;
@@ -207,6 +207,8 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
       (o) => o.type === 'door' && o.state === 'closed' && !freeIds.has(o.id) && neighbors(pos).some((p) => samePos(p, o.at)),
     );
     if (door && hasKey(data, u)) out.push({ kind: 'door', object: door.id });
+    const lever = s.objects.find((o) => o.type === 'lever' && o.state === 'closed' && neighbors(pos).some((p) => samePos(p, o.at)));
+    if (lever) out.push({ kind: 'lever', object: lever.id });
     const downed = adj.filter((o) => o.downed && o.team === 'player');
     if (downed.length) out.push({ kind: 'rescue', targets: downed.map((o) => o.uid) });
     const talk = adj.filter(

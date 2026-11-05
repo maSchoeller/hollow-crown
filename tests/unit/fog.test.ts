@@ -85,7 +85,7 @@ afterEach(() => {
 
 describe('fog numbers come from balance.yaml', () => {
   it('has base 3, +2 for marksman and scout, +1 for fliers, and the blockers wall, door and rockwall', () => {
-    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'rockwall'] });
+    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'gate_closed', 'rockwall'] });
   });
   it('keeps the bonus keys to roles and terrain that exist (content:check)', () => {
     expect(validateContent(data, locales).filter((i) => i.file === 'balance.yaml' && /fog\./.test(i.message))).toEqual([]);

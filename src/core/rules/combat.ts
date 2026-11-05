@@ -7,7 +7,7 @@ import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clamp, dist, getUnit, inBounds, pairKey, ruleOn, terrainAt, unitAt } from '../util';
 import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
 import { itemDef, weaponProfile, type WeaponProfile } from './items';
-import { moveCost, weaponRange } from './movement';
+import { canStrike, stepCost, weaponRange } from './movement';
 import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
 import { adjacencyBonus, adjacentPartners, addSupportPoints, rankIndex } from './supports';
@@ -212,9 +212,8 @@ function tandemPartner(data: GameData, s: BattleState, attacker: BattleUnit, aPo
     if (rankIndex(rank) < min || !p.pos) continue;
     const w = equippedWeapon(p);
     if (!w || itemDef(data, w).mt === undefined) continue;
-    const r = weaponRange(data, s, p, w.uid);
+    if (!canStrike(data, s, p.pos, dPos, weaponRange(data, s, p, w.uid))) continue;
     const d = dist(p.pos, dPos);
-    if (d < r[0] || d > r[1]) continue;
     const calc = calcSide(data, s, p, p.pos, defender, dPos, w, equippedWeapon(defender), true, d);
     const damage = Math.floor((calc.side.damage * data.balance.supports.tandemDamagePercent) / 100);
     const cand = { uid: p.uid, damage, hit: calc.side.hit, rank: rankIndex(rank) };
@@ -262,8 +261,7 @@ export function forecast(
     ac.side.canStrike = !!ac.wp;
     let dCan = !!dc.wp && !d.downed && active(d);
     if (dCan && dWeapon) {
-      const r = weaponRange(data, s, d, dWeapon.uid);
-      dCan = distance >= r[0] && distance <= r[1];
+      dCan = canStrike(data, s, dPos, aPos, weaponRange(data, s, d, dWeapon.uid));
     }
     dc.side.canStrike = dCan;
     const th = data.balance.combat.doubleAttackThreshold;
@@ -332,7 +330,7 @@ function knockback(data: GameData, s: BattleState, attacker: BattleUnit, target:
   const dy = dx !== 0 ? 0 : Math.sign(target.pos[1] - attacker.pos[1]);
   const to: Pos = [target.pos[0] + dx, target.pos[1] + dy];
   const from: Pos = [target.pos[0], target.pos[1]];
-  const blocked = !inBounds(s, to) || !!unitAt(s, to) || moveCost(data, s, target, to) === null;
+  const blocked = !inBounds(s, to) || !!unitAt(s, to) || stepCost(data, s, target, target.pos!, to) === null;
   if (blocked && target.untargetable) {
     events.push({ t: 'knockback', unit: target.uid, from, to: from, blocked: true });
   } else if (blocked) {

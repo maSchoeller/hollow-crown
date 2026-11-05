@@ -73,6 +73,7 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
     case 'cast':
       return opt.tiles?.some((p) => samePos(p, a.at)) ? null : 'invalid_target';
     case 'door':
+    case 'lever':
       return opt.object === a.object ? null : 'invalid_target';
     case 'open':
       return opts.some((o) => o.kind === 'open' && o.object === a.object) ? null : 'invalid_target';
@@ -326,10 +327,27 @@ function openObject(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectSt
     grantReward(data, s, u, mapOf(data, s).objects.find((o) => o.id === obj.id)?.contents, events);
     return;
   }
-  s.terrain[obj.at[1] * s.width + obj.at[0]] = 'door_open';
-  events.push({ t: 'opened', unit: u.uid, object: obj.id });
-  events.push({ t: 'terrain', at: obj.at, terrain: 'door_open', cause: 'raze' });
+  openPassage(data, s, u, obj, events);
   runTriggers(data, s, { kind: 'action', unit: u }, events);
+}
+
+/** A door or gate opens, together with what it is linked to (the second wing of a gatehouse). */
+function openPassage(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectState, events: GameEvent[]): void {
+  obj.state = 'open';
+  const idx = obj.at[1] * s.width + obj.at[0];
+  const open = data.terrain[s.terrain[idx]!]?.opensTo ?? 'door_open';
+  s.terrain[idx] = open;
+  events.push({ t: 'opened', unit: u.uid, object: obj.id });
+  events.push({ t: 'terrain', at: obj.at, terrain: open, cause: 'raze' });
+  pullLinks(data, s, u, obj, events);
+}
+
+/** What the map links to an object opens with it. */
+function pullLinks(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectState, events: GameEvent[]): void {
+  for (const id of mapOf(data, s).objects.find((o) => o.id === obj.id)?.links ?? []) {
+    const other = s.objects.find((o) => o.id === id);
+    if (other?.type === 'door' && other.state === 'closed') openPassage(data, s, u, other, events);
+  }
 }
 
 function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, events: GameEvent[]): void {
@@ -419,6 +437,15 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       const obj = s.objects.find((o) => samePos(o.at, u.pos) && o.type === 'chest')!;
       useCharge(data, u, u.bag.find((i) => i.uid === hasKey(data, u))!);
       openObject(data, s, u, obj, events);
+      break;
+    }
+    case 'lever': {
+      // anybody beside it can pull it; it stays down (`object_activated` fires, the linked doors and gates open)
+      const obj = s.objects.find((o) => o.id === a.object)!;
+      obj.state = 'open';
+      events.push({ t: 'opened', unit: u.uid, object: obj.id });
+      pullLinks(data, s, u, obj, events);
+      runTriggers(data, s, { kind: 'action', unit: u }, events);
       break;
     }
     case 'door': {

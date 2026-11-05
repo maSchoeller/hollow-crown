@@ -1,0 +1,67 @@
+# Probekarte der Höhenstufen und des Tors (Entscheidung 2026-11-04). Gehört zu keinem Paket, kommt nicht in den Build.
+# Im Spiel: `await __hc.devMap('dev_levels')`.
+#
+# Süden: Feld (Stufe 0) mit Rampe, Treppe, Leiter hinauf auf den Wehrgang (Stufe 1). Der Hebel öffnet das Torhaus.
+# Mitte: Treppe auf Stufe 1 hinauf zum Turm (Stufe 2). Norden: Hof mit Thron; in Runde 4 stürzt ein Stück Mauer ein.
+#          x: 01234567890123
+terrain: |
+  ##############
+  #....K.......#
+  #............#
+  #............#
+  ######GG#xx###
+  ======__====^O
+  ======__=====O
+  ,,r,,,,,,,s,l,
+  ,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,
+  ,,,,,,H,,,,,,,
+  ,,,,,,,,,,,,,,
+id: dev_levels
+nameKey: map.prologue_paktnacht.name
+size: [14, 12]
+fog: false
+legend:
+  ".": plain
+  ",": grass
+  "#": wall
+  "=": rampart
+  "O": tower_top
+  "G": gate_closed
+  "_": road
+  "K": throne
+  "r": ramp
+  "s": stairs
+  "l": ladder
+  "^": stairs
+  "H": lever
+  "x": wall
+levels:
+  - { level: 1, area: { tiles: [[12, 5]] } }
+objects:
+  - { id: dev_gate_w, type: door, at: [6, 4], links: [dev_gate_e] }
+  - { id: dev_gate_e, type: door, at: [7, 4], links: [dev_gate_w] }
+  - { id: dev_lever, type: lever, at: [6, 10], links: [dev_gate_w, dev_gate_e] }
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [] }
+units:
+  - { id: dev_vanguard, team: player, class: vanguard, level: 5, at: [3, 9], sprite: soldier, items: [{ def: iron_sword }, { def: vulnerary }] }
+  - { id: dev_scout, team: player, class: scout, level: 5, at: [7, 10], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 5, at: [8, 9], sprite: archer, items: [{ def: iron_bow }, { def: vulnerary }] }
+  - { id: dev_wall_archer, team: enemy, class: marksman, level: 3, at: [3, 5], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: iron_bow }] }
+  - { id: dev_wall_guard, team: enemy, class: brigand, level: 3, at: [8, 5], sprite: brigand, items: [{ def: iron_axe }] }
+  - { id: dev_tower_archer, team: enemy, class: marksman, level: 3, at: [13, 6], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: iron_bow }] }
+  - { id: dev_yard_guard, team: enemy, class: brigand, level: 3, at: [11, 2], sprite: brigand, ai: { profile: hold }, items: [{ def: iron_axe }] }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: rout }
+  defeat:
+    - { type: unit_dies, unit: dev_vanguard }
+  side: []
+triggers:
+  - id: dev_wall_falls
+    when: { type: turn_start, turn: 4, phase: player }
+    then:
+      - { action: set_terrain, area: { rect: [9, 4, 10, 6] }, terrain: ruins }
+goldReward: 0

@@ -80,6 +80,11 @@ packs:
       - rock_c
       - massif_c
       - gatehouse_closed
+      - stairs_idle
+      - ramp_idle
+      - ladder_idle
+      - lever_up
+      - lever_down
       - well_idle
       - fence_gate
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel

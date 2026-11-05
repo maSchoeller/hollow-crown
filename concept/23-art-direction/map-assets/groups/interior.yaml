@@ -46,11 +46,13 @@ items:
     missions: [1-7, 3-5, N7]
     use: Weinrotes Banner mit Goldkrone an Pfosten und Stange an der Nordkante, keine Teamfarbe; reine Deko, 1 Feld.
   - id: lever_up
+    ships: true
     name: Hebel oben
     ref: { sheet: interior_2.png, box: [410, 45, 695, 420] }
     missions: [1-4, 3-1, N10]
     use: Hebel in Grundstellung, Eisenarm nach Norden, große Goldkugel auf Goldkragen; von weitem als Interaktives lesbar, 1 Feld.
   - id: lever_down
+    ships: true
     name: Hebel unten
     ref: { sheet: interior_2.png, box: [790, 185, 1070, 455] }
     missions: [1-4, 3-1, N10]
@@ -81,16 +83,19 @@ items:
     missions: [P, 1-4, 1-6, 1-7, N5, 3-1, N7]
     use: Deckel zurückgeklappt, Goldmünzen und Pokal sichtbar; 1 Feld.
   - id: ramp_idle
+    ships: true
     name: Rampe
     ref: { sheet: interior_3.png, box: [40, 145, 500, 875] }
     missions: [1-6, 1-8, 2-1]
     use: Stufenwechsel für alle, auch Reiter, glatte Schräge mit Bordsteinen von z 0 im Süden auf 0,85 im Norden; 1 Feld.
   - id: stairs_idle
+    ships: true
     name: Treppe
     ref: { sheet: interior_3.png, box: [550, 145, 990, 875] }
     missions: [1-6, 1-8, 3-5]
     use: Stufenwechsel ohne Reiter, fünf Stufen mit hellen Kanten und Wangen auf Höhe 0,85; 1 Feld.
   - id: ladder_idle
+    ships: true
     name: Leiter
     ref: { sheet: interior_3.png, box: [1045, 145, 1485, 875] }
     missions: [1-6, 1-8, N1]

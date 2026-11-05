@@ -111,6 +111,8 @@ export interface RenderDef {
     skirt: number;
     skirtDim: number;
     waterLevel: number;
+    /** visual height of one height level, in tiles (a wall walk stands at 0.85) */
+    levelHeight: number;
     /** depth of the diorama's bottom below ground level, tiles */
     baseDepth: number;
     /** water animation: ms per texture frame */

@@ -17,13 +17,37 @@ export interface KitPiece {
 /** Id of the terrain on a field, null outside the grid. */
 export type TerrainAt = (gx: number, gy: number) => string | null;
 
-const isGate = (id: string | null): boolean => id === 'gate';
-const closesWall = (id: string | null): boolean => id === 'wall' || id === 'door' || id === 'door_open' || isGate(id);
+const isGate = (id: string | null): boolean => id === 'gate' || id === 'gate_closed';
+/** Walkable tops of the kit: no tower of their own, a figure stands there. */
+const WALKABLE = new Set(['rampart', 'tower_top', 'terrace']);
+export const isWallTop = (id: string | null): boolean => id !== null && WALKABLE.has(id);
+const closesWall = (id: string | null): boolean =>
+  id === 'wall' || id === 'door' || id === 'door_open' || isGate(id) || isWallTop(id) || id === 'ramp' || id === 'stairs' || id === 'ladder';
 
 const SOUTH = Math.PI;
 const EAST = Math.PI / 2;
 const NORTH = 0;
 const WEST = -Math.PI / 2;
+
+/** Pieces of a walkable top: a parapet on each free edge, the centre stays free; a terrace has none. */
+export function topPieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
+  if (at(gx, gy) === 'terrace') return [];
+  const out: KitPiece[] = [];
+  if (!closesWall(at(gx, gy + 1))) out.push({ model: 'wallrim_idle', dx: 0, dy: 0, rot: SOUTH, ground: false });
+  if (!closesWall(at(gx, gy - 1))) out.push({ model: 'wallrim_idle', dx: 0, dy: 0, rot: NORTH, ground: false });
+  if (!closesWall(at(gx + 1, gy))) out.push({ model: 'wallrim_idle', dx: 0, dy: 0, rot: EAST, ground: false });
+  if (!closesWall(at(gx - 1, gy))) out.push({ model: 'wallrim_idle', dx: 0, dy: 0, rot: WEST, ground: false });
+  return out;
+}
+
+/** Turn of a ramp, stairs or ladder: its models rise to the north as modelled (like every prop, at `rot` = pi), so it faces the neighbour higher than it (`heightAt`). */
+export function connectorRot(heightAt: (gx: number, gy: number) => number, gx: number, gy: number): number {
+  const h = heightAt(gx, gy);
+  if (heightAt(gx, gy - 1) > h) return SOUTH;
+  if (heightAt(gx + 1, gy) > h) return WEST;
+  if (heightAt(gx - 1, gy) > h) return EAST;
+  return NORTH;
+}
 
 /** Pieces of a wall tile: a tower on corners and free ends (not beside a gate, it brings its own), otherwise a parapet on each free edge. */
 export function wallPieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
@@ -53,18 +77,22 @@ export function faceRot(at: TerrainAt, gx: number, gy: number): number {
 
 /** Pieces of a gate tile: runs of gates pair up from the west (or north) into one two-tile gatehouse; a tile left over gets the one-tile gate. */
 export function gatePieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
+  // open and closed wings do not pair: a gate half open draws two narrow gates
+  const self = at(gx, gy);
+  const closed = self === 'gate_closed';
+  const same = (id: string | null) => id === self;
   const runBefore = (dx: number, dy: number): number => {
     let k = 0;
-    while (isGate(at(gx - dx * (k + 1), gy - dy * (k + 1)))) k++;
+    while (same(at(gx - dx * (k + 1), gy - dy * (k + 1)))) k++;
     return k;
   };
-  const horizontal = isGate(at(gx - 1, gy)) || isGate(at(gx + 1, gy));
-  const vertical = !horizontal && (isGate(at(gx, gy - 1)) || isGate(at(gx, gy + 1)));
+  const horizontal = same(at(gx - 1, gy)) || same(at(gx + 1, gy));
+  const vertical = !horizontal && (same(at(gx, gy - 1)) || same(at(gx, gy + 1)));
   if (horizontal || vertical) {
     const [dx, dy] = horizontal ? [1, 0] : [0, 1];
     const before = runBefore(dx, dy);
     if (before % 2 === 1) return [];
-    if (isGate(at(gx + dx, gy + dy))) return [{ model: 'gatehouse_open', dx: dx * 0.5, dy: dy * 0.5, rot: horizontal ? SOUTH : EAST, ground: true }];
+    if (same(at(gx + dx, gy + dy))) return [{ model: closed ? 'gatehouse_closed' : 'gatehouse_open', dx: dx * 0.5, dy: dy * 0.5, rot: horizontal ? SOUTH : EAST, ground: true }];
   }
-  return [{ model: 'gate_idle', dx: 0, dy: 0, rot: faceRot(at, gx, gy), ground: true }];
+  return [{ model: closed ? 'door_closed_idle' : 'gate_idle', dx: 0, dy: 0, rot: faceRot(at, gx, gy), ground: true }];
 }

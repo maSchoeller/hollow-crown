@@ -7,7 +7,7 @@ import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
-import { holdZone, moveCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -36,7 +36,7 @@ function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos
     for (const n of neighbors(p)) {
       // cost of stepping from n into p (symmetric enough for grids)
       const step = moveCost(data, s, u, p);
-      const enter = moveCost(data, s, u, n);
+      const enter = stepCost(data, s, u, p, n);
       if (enter === null) continue;
       const total = c + (step ?? 1);
       const k = posKey(n);
@@ -146,6 +146,7 @@ export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origi
         if (t.downed) score = diff.aiFinishDowned === 'prefer' ? score + w.objectiveBonus : -1000 + score;
         const terr = data.terrain[terrainAt(s, pos)];
         score += ((terr?.def ?? 0) + (terr?.avoid ?? 0) / 10) * 0.5;
+        score += levelAt(data, s, pos) * w.highGroundBonus;
         if (danger) score -= (danger.get(posKey(pos)) ?? 0) * w.dangerPerAttacker;
         plans.push({ to: pos, action: { kind: 'attack', target: tid, weapon: wid }, score });
       }

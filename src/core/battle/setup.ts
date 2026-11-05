@@ -10,7 +10,7 @@ import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
-import { parseTerrain } from './terrain';
+import { parseLevels, parseTerrain } from './terrain';
 
 export { parseTerrain };
 
@@ -50,6 +50,7 @@ export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, no
     width: w,
     height: h,
     terrain: parseTerrain(data, map.id),
+    ...(map.levels?.length ? { levels: parseLevels(map) } : {}),
     timers: {},
     units: [],
     objects,

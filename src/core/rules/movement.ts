@@ -1,5 +1,5 @@
 import { CoreInvariantError } from '../errors';
-import type { Pos } from '../defs';
+import type { MoveType, Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
@@ -14,7 +14,31 @@ export function terrainDef(data: GameData, s: BattleState, p: Pos) {
   return t;
 }
 
-/** Movement cost of entering tile p for this unit; null = impassable. */
+/** Height level of a tile: what the map says for it, else what its terrain says. */
+export function levelAt(data: GameData, s: BattleState, p: Pos): number {
+  return s.levels?.[posKey(p)] ?? data.terrain[terrainAt(s, p)]?.level ?? 0;
+}
+
+/**
+ * Whether a unit of this move type can step between two neighbouring tiles as far as their levels go (both ways): the same level,
+ * or one level with a connector on the lower tile. Who may use the connector at all is its movement cost; fliers need none.
+ */
+export function levelsLink(data: GameData, s: BattleState, a: Pos, b: Pos, moveType: MoveType): boolean {
+  const la = levelAt(data, s, a);
+  const lb = levelAt(data, s, b);
+  if (la === lb || data.balance.elevation.freeMoveTypes.includes(moveType)) return true;
+  if (Math.abs(la - lb) !== 1) return false;
+  return !!data.terrain[terrainAt(s, la < lb ? a : b)]?.connector;
+}
+
+/** Movement cost of the step from `from` onto its neighbour `to`; null = this unit cannot make it. */
+export function stepCost(data: GameData, s: BattleState, unit: BattleUnit, from: Pos, to: Pos, overrides?: Record<string, number>): number | null {
+  if (!inBounds(s, to)) return null;
+  if (!levelsLink(data, s, from, to, data.classes[unit.classId]!.moveType)) return null;
+  return moveCost(data, s, unit, to, overrides);
+}
+
+/** Movement cost of entering tile p for this unit, whatever the level of the tile it comes from; null = impassable. */
 export function moveCost(data: GameData, s: BattleState, unit: BattleUnit, p: Pos, overrides?: Record<string, number>): number | null {
   if (!inBounds(s, p)) return null;
   const id = terrainAt(s, p);
@@ -67,7 +91,7 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
     open.sort((a, b) => a.cost - b.cost || a.pos[1] - b.pos[1] || a.pos[0] - b.pos[0]);
     const cur = open.shift()!;
     for (const n of neighbors(cur.pos)) {
-      const c = moveCost(data, s, unit, n, overrides);
+      const c = stepCost(data, s, unit, cur.pos, n, overrides);
       if (c === null) continue;
       const total = cur.cost + c;
       if (total > budget) continue;
@@ -118,7 +142,7 @@ export function walkPath(data: GameData, s: BattleState, unit: BattleUnit, path:
   for (let i = 1; i < path.length && !cut; i++) {
     const p = path[i]!;
     if (dist(tiles[tiles.length - 1]!, p) !== 1 || !inBounds(s, p)) return null;
-    const c = moveCost(data, s, unit, p, st.skills.terrainCost);
+    const c = stepCost(data, s, unit, tiles[tiles.length - 1]!, p, st.skills.terrainCost);
     if (c === null || total + c > budget) return null;
     const occ = unitAt(s, p);
     const foe = occ && occ.uid !== unit.uid && isHostile(occ.team, unit.team) && !pass;
@@ -192,6 +216,28 @@ export function tilesInRange(s: BattleState, from: Pos, range: [number, number])
   return out;
 }
 
+/**
+ * Whether an attack with this range can be made from `from` on `to`: the one rule for preview, resolution, counter, threat zones and AI.
+ * A ranged weapon (reach of 2 or more) reaches `elevation.rangedBonus` further from above. A blow between neighbours lands
+ * on the same level, or across one level when the lower one stands on a connector made for it (ramp, stairs).
+ */
+export function canStrike(data: GameData, s: BattleState, from: Pos, to: Pos, range: readonly [number, number]): boolean {
+  const d = dist(from, to);
+  if (d < range[0] || d > range[1] + data.balance.elevation.rangedBonus) return false;
+  const lf = levelAt(data, s, from);
+  const lt = levelAt(data, s, to);
+  if (d > range[1] && (range[1] < 2 || lf <= lt)) return false;
+  if (d !== 1 || lf === lt) return true;
+  if (Math.abs(lf - lt) !== 1) return false;
+  const connector = data.terrain[terrainAt(s, lf < lt ? from : to)]?.connector;
+  return !!connector && data.balance.elevation.meleeConnectors.includes(connector);
+}
+
+/** The tiles an attack with this range can reach from `from`; see `canStrike`. */
+export function strikeTiles(data: GameData, s: BattleState, from: Pos, range: readonly [number, number]): Pos[] {
+  return tilesInRange(s, from, [range[0], range[1] + data.balance.elevation.rangedBonus]).filter((p) => canStrike(data, s, from, p, range));
+}
+
 /** Attack range of a weapon for a unit, including skill range bonuses (longshot) and `extraRange` (Zielen). */
 export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string, extraRange = 0): [number, number] {
   const inst = [unit.equip.mainHand, ...unit.bag].find((i) => i?.uid === weaponUid);
@@ -222,7 +268,7 @@ export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ig
   const range = combinedRange(data, s, unit);
   if (!range) return out;
   const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
-  for (const o of origins) for (const t of tilesInRange(s, o, range)) out.add(posKey(t));
+  for (const o of origins) for (const t of strikeTiles(data, s, o, range)) out.add(posKey(t));
   return out;
 }
 

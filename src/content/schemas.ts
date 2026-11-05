@@ -256,6 +256,10 @@ export const terrainSchema = z.object({
   surface: z.enum(['grass', 'dirt', 'road', 'sand', 'ash', 'stone', 'riverbed']),
   cliff: z.enum(['earth', 'rock', 'wall']).default('earth'),
   water: z.boolean().default(false),
+  level: z.number().int().min(0).max(2).default(0),
+  connector: z.enum(['ramp', 'stairs', 'ladder']).optional(),
+  opensTo: z.string().optional(),
+  stand: z.number().min(0).default(0),
 });
 
 const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support', 'follow']);
@@ -331,6 +335,7 @@ const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
+  z.object({ action: z.literal('set_terrain'), area, terrain: z.string(), level: z.number().int().min(0).max(2).optional() }),
 ]);
 
 /**
@@ -369,6 +374,7 @@ export const mapSchema = z.object({
   noDeath: z.boolean().optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
+  levels: z.array(z.object({ level: z.number().int().min(0).max(2), area })).optional(),
   ambient: z.object({ color: z.string().optional(), intensity: z.number().optional() }).optional(),
   lights: z.array(z.object({ at: pos, color: z.string(), radius: z.number() })).optional(),
   sun: z
@@ -765,6 +771,7 @@ export const renderSchema = z.object({
     skirt: z.number().int().min(0),
     skirtDim: z.number().min(0).max(1),
     waterLevel: z.number(),
+    levelHeight: z.number().min(0),
     baseDepth: z.number().positive(),
     waterFrameMs: z.number().positive(),
     lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
@@ -876,6 +883,11 @@ export const balanceSchema = z.object({
       perAct: z.record(z.string(), z.tuple([z.number(), z.number()])),
       sideShare: z.tuple([z.number(), z.number()]),
     }),
+  }),
+  elevation: z.object({
+    rangedBonus: z.number().int().min(0),
+    freeMoveTypes: z.array(moveType),
+    meleeConnectors: z.array(z.enum(['ramp', 'stairs', 'ladder'])),
   }),
   fog: z.object({
     baseVision: z.number().int().min(1),

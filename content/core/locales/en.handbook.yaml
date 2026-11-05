@@ -94,6 +94,7 @@ handbook:
     same: "Same element"
     elemMax: "At most"
     fireRounds: "Fire: rounds"
+    rangeFromAbove: "From above: range"
     enter: "Damage on entering"
     spread: "Spread per round"
     wallRounds: "Rock wall: rounds"
@@ -245,9 +246,14 @@ handbook:
       text: "Walls block the way for everyone. Only fliers get over wagons, stalls, wells, braziers, fences, farmsteads and buildings."
       where: "Obstacles never lie in the blue movement area."
       keywords: "wall, obstacle, wagon, fence, well, stall, building, blocked"
+    heights:
+      title: "Heights"
+      text: "There are three levels: the field, wall walks and terraces, towers and crags. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs."
+      where: "A tile's level is shown in the terrain info; the board shows the reach."
+      keywords: "height, level, wall walk, ramp, stairs, ladder, tower"
     doors:
       title: "Doors"
-      text: "Closed doors block the way and the view. A key opens them, the scout manages without; open doors are free passage."
+      text: "Closed doors and gates block the way and the view. A key opens them, the scout manages without, a lever or an event may too; open ones are free passage."
       where: "“Open door” appears in the green context band when a unit stands next to the door."
       keywords: "door, key, open, scout"
     fire:

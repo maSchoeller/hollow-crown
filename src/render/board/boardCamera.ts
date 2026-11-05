@@ -5,9 +5,12 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { Pos } from '../../core';
 import { centreOn, clampAxis, framePlan, inFreeArea, NO_INSETS, type Insets } from '../shared/camera';
-import { marchToTile } from './picking';
+import { figureAt, marchToTile, type RaisedFigure } from './picking';
 import { CAM_DIST, OFFSCREEN_TILES, sleep } from './boardBase';
 import { BoardUnits } from './boardUnits';
+
+/** From this height on (tiles) a figure no longer stands on the tile a tap at its body falls on. */
+const RAISED = 0.3;
 
 export abstract class BoardCamera extends BoardUnits {
   // ------------------------------------------------------------------ camera
@@ -278,6 +281,21 @@ export abstract class BoardCamera extends BoardUnits {
   }
 
   /** Screen (CSS px) → tile: marches the view ray down through the terrain heights. */
+  /** Figures a tap on the tile below them would miss: on a raised tile, or behind one that hides their tile (height levels). */
+  protected raisedFigures(): RaisedFigure[] {
+    const terrain = this.terrain;
+    if (!terrain || !this.state) return [];
+    const out: RaisedFigure[] = [];
+    for (const u of this.state.units) {
+      if (!u.pos || u.gone) continue;
+      const [x, y] = u.pos;
+      const top = terrain.standOn(x, y);
+      const south = terrain.topOf(x, y + 1) ?? 0;
+      if (top >= RAISED || south - top >= RAISED) out.push({ tile: [x, y], top });
+    }
+    return out;
+  }
+
   tileAt(clientX: number, clientY: number): Pos | null {
     if (!this.terrain || !this.state) return null;
     const r = this.canvas.getBoundingClientRect();
@@ -286,6 +304,6 @@ export abstract class BoardCamera extends BoardUnits {
     const sy = (r.height / 2 - (clientY - r.top)) / this.ppt;
     const origin = new Vector3(this.camX + sx, 0, -this.camY).add(up.scale(sy));
     const terrain = this.terrain;
-    return marchToTile(origin, forward, (x, y) => terrain.topOf(x, y));
+    return figureAt(origin, up, this.raisedFigures()) ?? marchToTile(origin, forward, (x, y) => terrain.topOf(x, y));
   }
 }

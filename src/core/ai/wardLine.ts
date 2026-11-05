@@ -7,6 +7,7 @@
 import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { BattleState } from '../state';
+import { levelsLink } from '../rules/movement';
 import { inBounds, neighbors, posKey } from '../util';
 
 export interface WardLine {
@@ -21,8 +22,8 @@ const INF = 1e9;
 /** A tile a foot unit can stand on or pass; closed doors count as open because foes and the company open them. */
 function footTile(data: GameData, s: BattleState, p: Pos): boolean {
   if (!inBounds(s, p)) return false;
-  const terrain = s.terrain[p[1] * s.width + p[0]]!;
-  return terrain === 'door' || data.terrain[terrain]?.cost.foot != null;
+  const terrain = data.terrain[s.terrain[p[1] * s.width + p[0]]!];
+  return !!terrain?.opensTo || terrain?.cost.foot != null;
 }
 
 export function wardLine(data: GameData, s: BattleState, ward: Pos, foes: Pos[]): WardLine | null {
@@ -56,7 +57,7 @@ export function wardLine(data: GameData, s: BattleState, ward: Pos, foes: Pos[])
     if (!open[t]) continue;
     edge(2 * t, 2 * t + 1, protect.has(t) || foeIds.has(t) ? INF : 1);
     const p: Pos = [t % s.width, Math.floor(t / s.width)];
-    for (const q of neighbors(p)) if (inBounds(s, q) && open[id(q)]) edge(2 * t + 1, 2 * id(q), INF);
+    for (const q of neighbors(p)) if (inBounds(s, q) && open[id(q)] && levelsLink(data, s, p, q, 'foot')) edge(2 * t + 1, 2 * id(q), INF);
   }
   for (const f of foeIds) if (open[f]) edge(S, 2 * f, INF);
 

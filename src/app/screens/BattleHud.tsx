@@ -14,6 +14,7 @@ import {
   type ItemInstance,
   type SideObjectiveDef,
   type Team,
+  levelAt,
 } from '../../core';
 import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideObjectiveSpots, sideSubject } from '../../core/battle/objectives';
 import { bleedsOut } from '../../core/rules/effects';
@@ -250,6 +251,7 @@ export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p:
     <div class="hc-piece hud-terrain">
       <b class="hud-name hud-name--small">{t(`terrain.${terr.id}`)}</b>
       <span class="hud-chips">
+        {levelAt(data, s, p) > 0 ? <span class="hud-chip">{t('ui.heightLevel', { n: levelAt(data, s, p) })}</span> : null}
         <span class="hud-chip">
           {t('ui.stat.def')} {terr.def}
         </span>

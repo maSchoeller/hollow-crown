@@ -143,6 +143,8 @@ export interface BattleState {
   height: number;
   /** current terrain id per tile (index y * width + x) */
   terrain: string[];
+  /** tiles whose height level differs from their terrain's, by `x,y` (missing = none, also in older saves) */
+  levels?: Record<string, number>;
   timers: Record<string, TileTimer>;
   units: BattleUnit[];
   objects: ObjectState[];

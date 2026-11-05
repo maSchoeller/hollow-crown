@@ -5,7 +5,7 @@ import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
-import { destinations, moveCost, reachable, threatTiles } from '../rules/movement';
+import { destinations, levelsLink, moveCost, reachable, stepCost, threatTiles } from '../rules/movement';
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
@@ -29,7 +29,7 @@ function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
  */
 function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], doorsOpen: boolean): Map<string, number> {
   const out = new Map<string, number>();
-  const over = doorsOpen ? { door: 1 } : undefined;
+  const over = doorsOpen ? Object.fromEntries(Object.values(data.terrain).filter((t) => t.opensTo).map((t) => [t.id, 1])) : undefined;
   const buckets: Pos[][] = [];
   for (const g of goals) {
     if (!inBounds(s, g)) continue;
@@ -41,7 +41,7 @@ function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], 
       if (out.get(posKey(p)) !== c) continue;
       const total = c + Math.max(1, moveCost(data, s, u, p, over) ?? 1);
       for (const n of neighbors(p)) {
-        if (moveCost(data, s, u, n, over) === null) continue;
+        if (stepCost(data, s, u, p, n, over) === null) continue;
         const k = posKey(n);
         if ((out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);
@@ -67,8 +67,9 @@ function walkDistances(data: GameData, s: BattleState, targets: Pos[]): Map<stri
     const c = queue[i]!;
     for (const n of neighbors(c)) {
       if (!inBounds(s, n) || out.has(posKey(n))) continue;
-      const terrain = s.terrain[n[1] * s.width + n[0]]!;
-      if (terrain !== 'door' && data.terrain[terrain]?.cost.foot == null) continue;
+      const terrain = data.terrain[s.terrain[n[1] * s.width + n[0]]!];
+      if (!terrain?.opensTo && terrain?.cost.foot == null) continue;
+      if (!levelsLink(data, s, n, c, 'foot')) continue;
       out.set(posKey(n), out.get(posKey(c))! + 1);
       queue.push(n);
     }
@@ -408,7 +409,16 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       // nothing the unit heads for is reachable on foot: a closed door may be in the way
       const open = walkField(data, s, u, targets, true);
       const door = open.has(posKey(u.pos)) ? doorOnTheWay(s, open, u.pos) : null;
-      if (door) {
+      // a lever opens it too: whoever is nearest walks there and pulls it
+      const lever = door ? s.objects.find((o) => o.type === 'lever' && o.state === 'closed' && data.maps[s.mapId]!.objects.find((m) => m.id === o.id)?.links?.includes(door.id)) : undefined;
+      if (lever) {
+        for (const p of dests) {
+          if ((danger.get(posKey(p)) ?? 0) > maxDanger) continue;
+          if (availableActions(data, s, u, p).some((a) => a.kind === 'lever' && a.object === lever.id)) return { type: 'act', unit: u.uid, to: p, action: { kind: 'lever', object: lever.id } };
+        }
+        aim = [lever.at];
+        field = walkField(data, s, u, aim, false);
+      } else if (door) {
         const canOpen = (o: BattleUnit) => isScout(data, s, o) || !!hasKey(data, o);
         const company = s.units.some((o) => o.team === 'player' && active(o) && o.pos && canOpen(o));
         const keyAt = s.loot.filter((l) => itemDef(data, l.item).use?.open).map((l) => l.at);
