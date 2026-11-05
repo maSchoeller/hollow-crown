@@ -1,152 +1,192 @@
-# Mission 1-4 – Die Spur des Maklers (Story 9.5, Knoten m1_4). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
-# Ort: Lager der Wolfsreiter auf einer Waldlichtung. Tageszeit: Nacht, Wetter: klar (Lagerfeuer als Kohlebecken, art-direction §2.5; Felder timeOfDay/weather).
-# Ziel: Boss Osric Dunn besiegen (boss). Er hat sich im Zelt am Nordende verschanzt. Im Kampf ist Dunn nur besiegt; sein Tod (Armbrustbolzen aus dem Wald)
-# und Rhens Geständnis stehen in der Nachszene scn.m1_4.outro. Leutnant Ulvric (wolf_rider) führt die Wolfsreiter und trägt den Käfigschlüssel.
-# Ysolde sitzt im Käfig im Nordosten: Tür `cage` (geschlossen; Schlüssel von Ulvric, Brenna trägt einen, ein Späher knackt sie), danach Ansprechen durch
-# {avatar} = Anwerben (recruit mit Szene scn.m1_4.ysolde_talk). Team der Gefangenen wie Varek in 1-5: enemy + hold + keine Waffe + ignoreForRout.
-# Kriegsnebel an (Nachtwald): Späher sehen weiter; die offene Lichtung begünstigt die Reiter, die Waldränder geben Fußtruppen Deckung.
-# 16 × 18. Einmarsch von Süden über den Waldweg (x=7–8).
-# Entscheidung E2 (Szene scn.m1_4.intro, Flag e02): „ausliefern“ (e02 = hand_over) lässt wr3, wr4, g3, g4 entfallen (`requires`, Story 9.5); Fenn geht dann.
-# Das Versteck (dieses Lager) kennt jeder; der Tausch betrifft nur Wachwechsel und Hintereingang (PO 2026-10-27).
+# Mission 1-4 – Die Spur des Maklers (Knoten m1_4). Entwurf s1_1_4_wolfshuegel (abgenommen 2026-11-01), Missionsliste: M 22×26, boss Osric Dunn, 8 / 22, Leutnant Ulvric. Startwerte [C].
+# Wolfshügel: zwei Felskämme teilen die Karte in drei Stufen (Höhenstufen, GDD): Fuß Süd = 0, Mittelterrasse y 10–19 = 1, Oberterrasse und Höhlen y 0–9 = 2.
+# Die Kämme sind zwei Reihen dick: Die Lücken sind je ein Rampenfeld in der unteren Kammreihe (y 20 auf Stufe 0, y 10 auf Stufe 1), das Feld darüber (y 19, y 9) gehört schon zur höheren Stufe.
+# Drei Rampen je Kamm: West, Mitte (zwei Felder breit), Ost. Ulvric hält mit Wolfsreitern die Anhöhe in der Mitte, aus zwei Wolfshöhlen (West, Ost) kommen Wellen. Dunn sitzt in der Höhle im Norden.
+# Veränderliche Karte: Der Hebel l_rock steht auf der Felsnase (Stufe 2, Treppe von der Mittelterrasse); der Felsrutsch verschüttet die Osthöhle, ihre noch ausstehenden Wellen entfallen (`unlessFlag`).
+# Ysolde sitzt gefangen in der Westhöhle ({avatar} spricht sie an, Szene scn.m1_4.ysolde_talk); der Kerkermeister trägt den Schlüssel für die Truhen, Fenn öffnet ohne Schlüssel.
+# Team der Gefangenen wie bisher: enemy + hold + keine Waffe + ignoreForRout. Im Kampf ist Dunn nur besiegt; sein Tod und Rhens Geständnis stehen in der Nachszene scn.m1_4.outro.
+# Entscheidung E2 (Szene scn.m1_4.intro, Flag e02): „ausliefern“ (e02 = hand_over) lässt wr3, wr4, g3, g4 entfallen (`requires`); Fenn geht dann.
+# Abweichung vom Entwurf: w4 steht über der Mittelrampe statt auf der Ruine [14,7], damit +1 Reichweite von oben zählt: Er trifft die Rampe [11,10], von dort reicht ein Bogen nicht zurück.
+# Balancing 2026-11-05 [C]: wr3 wartet (trigger, Radius 5) statt anzugreifen, s_ysolde 300 Gold wie auf der alten Karte (Normal vorher 1,44 Niedergestreckte, Korridor bis 1,3); Schwer: die drei Figuren nur für Schwer Stufe 4 statt 3 (Sieg blieb bei 94 %, Korridor bis 70 %; Messung nur über die 18 von 100 Läufen, die 1-4 erreichen, offen).
+# Szenen: scn.m1_4.intro vor der Karte (Knoten pre, E2), scn.m1_4.dunn_battle, scn.m1_4.ysolde_talk, scn.m1_4.rockfall (Hebel), scn.m1_4.outro nach dem Sieg.
 id: m1_4_wolfslager
 nameKey: map.m1_4_wolfslager.name
-size: [16, 18]
-fog: true
+size: [22, 26]
 legend:
   ".": plain
   ",": grass
   "_": road
   "T": forest
-  "W": stall         # Zelt (Requisite tent)
-  "b": brazier       # Lagerfeuer (Requisite campfire)
-  "x": fence         # Käfiggitter (Requisite fence)
-  "D": door          # Käfigtür (geschlossen)
-#          x: 0123456789ABCDEF
+  "^": mountain
+  "R": ruins
+  "F": fort
+  "/": ramp
+  "S": stairs
+  "C": crag
+  "H": lever
+#          x: 0123456789012345678901
 terrain: |
-  TTTTTTTTTTTTTTTT
-  TTTT,,,,,,,,TTTT
-  TT,,,,WW,WW,,,xT
-  TT,,,,W,,,W,,D,x
-  TT,,,,,b,b,,,,xT
-  TT,..........,TT
-  TTTTW......W.,TT
-  TTTT........TTTT
-  TT,...b..b..TTTT
-  TT,W........W,TT
-  TT,..........,TT
-  TTTT....b...TTTT
-  TTTT.b.....bTTTT
-  TTTT........TTTT
-  TTTTTT,__,TTTTTT
-  TTTTTT,__,TTTTTT
-  TTTTTT,__,TTTTTT
-  TTTTTT,__,TTTTTT
-# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
-timeOfDay: night
+  ^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^^^^^R....R^^TTTTTT
+  ^...^^^^......^^TTTTTT
+  ^...^^^^......^^TTTTTT
+  ^.....^^^^..^^^^TTTTTT
+  ^^.^^^^^^^..^^^^,,^^^^
+  ^^.^^^,,,,__,,,,,,^^^^
+  ,,,,,,,R,,__,,R,,,,,,,
+  ,,,,R,,,,,__,,,,,R,,,,
+  ^^,^^^^^^^__^^^^^,^^^^
+  ^^/^^^^^^^//^^^^^/^^^^
+  ,,,,,,,,,,__,,,,,,CH^^
+  ^^,TTTT,,,__,,,TTTS^^^
+  ^^,TTTT,,,,,,,,TTTT,^^
+  ..,TTTT,,,FF,,,TTTT,..
+  ..,TTTT,,,FF,,,TTTT,..
+  ^^,TTTT,,,,,,,,TTTT,^^
+  ^^,TTTT,,,__,,,TTTT,^^
+  ,,,,,,,,,,__,,,,,,,,,,
+  ^^^,^^^^^^__^^^^^^,^^^
+  ^^^/^^^^^^//^^^^^^/^^^
+  ,,,,,,,,,,__,,,,,,,,,,
+  TTTT,,,,,,__,,,,,,TTTT
+  TTTT,,,,,,__,,TTT,TTTT
+  TTTT,,,,,,__,,TTT,TTTT
+  TTTT,,,,,,__,,,,,,TTTT
+# Stufen: was später in der Liste steht, gilt (die Felsnase mit dem Hebel liegt über der Mittelterrasse)
+levels:
+  - { level: 2, area: { rect: [0, 0, 21, 9] } }
+  - { level: 1, area: { rect: [0, 10, 21, 19] } }
+  - { level: 2, area: { tiles: [[18, 11], [19, 11]] } }
+timeOfDay: evening
 weather: clear
-lights:
-  - { at: [7, 4], color: "#ffb35c", radius: 3 }
-  - { at: [9, 4], color: "#ffb35c", radius: 3 }
-  - { at: [6, 8], color: "#ffb35c", radius: 3 }
-  - { at: [9, 8], color: "#ffb35c", radius: 3 }
-  - { at: [8, 11], color: "#ffb35c", radius: 3 }
-  - { at: [5, 12], color: "#ffb35c", radius: 3 }
-  - { at: [11, 12], color: "#ffb35c", radius: 3 }
 objects:
-  - { id: cage, type: door, at: [13, 3] }   # Ysolde im Käfig; Schlüssel trägt Ulvric
+  - { id: l_rock, type: lever, at: [19, 11] }
+  - { id: c_hoard, type: chest, at: [13, 1], contents: { item: { def: steel_lance } } }
+  - { id: c_ruin, type: chest, at: [17, 8], contents: { gold: 300 } }
 initialEffects: []
 deploy:
-  max: 6
+  max: 8
   forced: [avatar, kael]
-  slots: [[7, 17], [8, 17], [7, 16], [8, 16], [6, 17], [9, 17], [6, 16], [9, 16]]
+  slots: [[8, 22], [9, 22], [12, 22], [13, 22], [8, 23], [9, 23], [12, 23], [13, 23], [10, 24], [11, 24]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: die Lagermitte zwischen den Feuern – das Wolfslager, in das Ulvric zurückkehrt.
+  # Grund: die Anhöhe mit dem alten Fort, die Ulvric hält – sein eigener Boden, in den er zurückkehrt.
   - variant: rout
-    target: { at: [8, 8] }
-    enemySpawn: { rect: [3, 5, 12, 6] }
-    deploy: { rect: [6, 15, 9, 16] }
+    target: { at: [11, 13] }
+    enemySpawn: { rect: [6, 6, 15, 8] }
+    deploy: { rect: [8, 22, 13, 22] }
     max: 5
-  # Grund: Dunns Zelt am Nordende – der Makler, dessen Spur hierher führte.
+  # Grund: Dunns Höhle im Norden – der Makler, dessen Spur hierher führte.
   - variant: boss
-    target: { at: [8, 2] }
-    enemySpawn: { rect: [3, 9, 12, 10] }
-    deploy: { rect: [6, 15, 9, 16] }
+    target: { at: [10, 2] }
+    enemySpawn: { rect: [6, 11, 15, 13] }
+    deploy: { rect: [8, 22, 13, 22] }
     max: 5
-  # Grund: der Waldweg, auf dem die Truppe ins Lager einmarschierte – hier hält sie den Rückzug.
+  # Grund: der Fuß der ersten Rampe, über die die Truppe heraufkam – hier hält sie den Rückzug.
   - variant: defend
-    target: { at: [7, 16] }
-    enemySpawn: { rect: [3, 5, 12, 6] }
-    deploy: { rect: [5, 12, 10, 13] }
+    target: { at: [10, 21] }
+    enemySpawn: { rect: [6, 11, 15, 13] }
+    deploy: { rect: [8, 22, 13, 22] }
     max: 5
     turns: 8
 # Epic 3: Ulvric flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Wolfszahn (wolf_fang) ist Beute (Story 3.5). Seine Kartenwaffe ist Eisen
 # (Review R14/R15), damit „+1 Tier je Groll“ greift; Klasse wolf_rider (kein Reittier, Wolfsfell nur Optik; Figur ulvric).
 # Osric Dunn: Platzhalterfigur des Söldners (sprite mercenary) bis zur eigenen Figur (Epic 8); Halbfigur osric ist da, eine Büste fehlt (Klassenbild).
-# Balancing 2026-10-28 [C]: Schwer: g6/g7 Stufe 5 (vorher 3), g7 aggressive statt hold, beide Wolfsreiter der Welle Stufe 4 (vorher 2) und schon in Runde 2 (vorher 4). Leicht: wr2 Stufe 1 und trigger Radius 3 (vorher 2/5), g2 Stufe 1 (vorher 2); sie standen für die meisten Niedergestreckten (Korridor Leicht <= 0,5).
 units:
-  - id: osric
-    nameKey: unit.osric.name
-    team: enemy
-    class: skirmisher
-    sprite: mercenary
-    level: 3
-    at: [8, 2]
-    boss: true
-    items: [ { def: steel_sword }, { def: vulnerary } ]
-    drops: [1]
-    ai: { profile: guard }
-    quote: scn.m1_4.dunn_battle
-  - id: ulvric
-    nameKey: unit.ulvric.name
-    team: enemy
-    class: wolf_rider
-    level: 5
-    at: [10, 8]
-    lieutenant: ulvric
-    sprite: ulvric
-    portrait: ulvric
-    items: [ { def: iron_lance }, { def: door_key } ]
-    drops: [1]
-    ai: { profile: trigger, radius: 5, then: aggressive }
-  # Wolfsreiter: Klasse wolf_rider, Figur wolf_rider. wr3 und wr4 entfallen bei E2 „ausliefern“ (der Ring zeigt den Hintereingang und die Wachwechsel).
-  - { id: wr1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [6, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: wr2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 1, at: [11, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: wr3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [4, 8],  items: [{ def: iron_lance }], ai: { profile: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
-  - { id: wr4, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [9, 6],  items: [{ def: iron_lance }], ai: { profile: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
-  # Lagerwachen; g3 und g4 entfallen bei E2 „ausliefern“ (Wachwechsel)
-  - { id: g1, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 2, at: [7, 5],  items: [{ def: iron_axe }],  ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: g2, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 1, at: [9, 3],  items: [{ def: iron_bow }],  ai: { profile: hold } }
-  - { id: g3, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard], requires: [{ not: { flag: { e02: hand_over } } }] }
-  - { id: g4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 2, at: [5, 5],  items: [{ def: hand_axe }],  ai: { profile: hold }, difficulty: [normal, hard], requires: [{ not: { flag: { e02: hand_over } } }] }
-  - { id: g5, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier,       level: 2, at: [12, 3],  items: [{ def: iron_lance }], ai: { profile: hold } }   # Käfigwache
-  - { id: g6, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,  sprite: brigand,       level: 5, at: [3, 10],  items: [{ def: iron_axe }],  ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: g7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [11, 13],  items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
-  # Ysolde, Gefangene im Käfig (Tür cage bei [13,3]): enemy + hold + keine Waffe wie Varek in 1-5, zählt nicht für Rout; {avatar} spricht sie an
-  - { id: ysolde, char: ysolde, team: enemy, class: elementalist, level: 5, at: [14, 3], items: [], ai: { profile: hold }, ignoreForRout: true, recruit: { by: [avatar], dialogue: scn.m1_4.ysolde_talk } }
+  # Höhle im Norden: Dunn (Boss) mit zwei Wachen
+  - { id: osric, nameKey: unit.osric.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [10, 2], boss: true, items: [{ def: steel_sword }, { def: vulnerary }], drops: [1], ai: { profile: hold }, quote: scn.m1_4.dunn_battle }
+  - { id: w1, nameKey: unit.wolf_bandit.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [9, 3], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: w2, nameKey: unit.wolf_bandit.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [12, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Westhöhle: Ysolde gefangen, Kerkermeister mit Schlüssel
+  - { id: ysolde, char: ysolde, team: enemy, class: elementalist, level: 4, at: [1, 2], items: [], ai: { profile: hold }, ignoreForRout: true, recruit: { by: [avatar], dialogue: scn.m1_4.ysolde_talk } }
+  - { id: jailer, nameKey: unit.wolf_jailer.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [3, 3], items: [{ def: iron_axe }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: guard } }   # zwei Schlüssel für zwei Truhen: Nach E2 „ausliefern“ fehlt Fenn, das Nebenziel bleibt erreichbar
+  # Oberterrasse: Schützen über dem Kamm, Lanzen an der Lücke im zweiten Kamm. g3 entfällt bei E2 „ausliefern“.
+  - { id: g3, nameKey: unit.wolf_bandit.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [7, 7], items: [{ def: iron_bow }], ai: { profile: hold }, requires: [{ not: { flag: { e02: hand_over } } }] }
+  - { id: w4, nameKey: unit.wolf_bandit.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 8], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: w5, nameKey: unit.wolf_bandit.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [4, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: w6, nameKey: unit.wolf_bandit.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [17, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: w7, nameKey: unit.wolf_bandit.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [10, 8], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: w8, nameKey: unit.wolf_bandit.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [11, 8], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Mittelterrasse: Ulvric auf der Anhöhe, Wolfsreiter, Äxte im Wald. wr3, wr4 und g4 entfallen bei E2 „ausliefern“ (der Ring zeigt den Hintereingang und die Wachwechsel).
+  - { id: ulvric, nameKey: unit.ulvric.name, team: enemy, class: wolf_rider, sprite: ulvric, portrait: ulvric, level: 5, at: [10, 14], lieutenant: ulvric, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: wr1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [8, 13], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: wr4, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [13, 13], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
+  - { id: wr3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [9, 16], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard], requires: [{ not: { flag: { e02: hand_over } } }] }
+  - { id: w12, nameKey: unit.wolf_bandit.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [4, 14], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: g4, nameKey: unit.wolf_bandit.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [16, 15], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, requires: [{ not: { flag: { e02: hand_over } } }] }
+  # Erste Rampe
+  - { id: w14, nameKey: unit.wolf_bandit.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [10, 18], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Nur Schwer
+  - { id: wr2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [12, 16], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: w16, nameKey: unit.wolf_bandit.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [3, 18], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
 reinforcements:
-  - turn: 2
+  # Osthöhle (fällt weg, wenn der Felsrutsch ausgelöst ist)
+  - turn: 3
+    phase: enemy
+    announce: true
+    unlessFlag: m1_4_rockfall
+    units:
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [21, 14], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [21, 15], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Westhöhle
+  - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [2, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [13, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [0, 14], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Osthöhle, zweite Welle
+  - turn: 6
+    phase: enemy
+    announce: true
+    unlessFlag: m1_4_rockfall
+    units:
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 3, at: [21, 14], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [21, 15], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: boss, unit: osric }
   defeat:
-    - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
   side:
     - { id: s_ysolde, type: recruit, unit: ysolde, reward: { gold: 300 } }
-    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    - { id: s_fast, type: turn_limit, turns: 10, reward: { gold: 200 } }   # [C] Startwert
-triggers: []
-# Szenen: scn.m1_4.intro vor der Karte (Knoten pre, Entscheidung E2), scn.m1_4.dunn_battle (Dunns Auftritt), scn.m1_4.ysolde_talk (Anwerben),
-# scn.m1_4.outro nach dem Sieg (Dunns Tod, Rhens Geständnis mit Tafel)
-goldReward: 1300   # [C]
+    - { id: s_chests, type: open_chests, reward: { item: { def: vulnerary } } }
+triggers:
+  # Den Hebel ziehen nur Spielerfiguren (Decision Log 2026-11-05). Vier Felder schließen die Osthöhle [20–21, 14–15] zum Rest der Terrasse hin; sie behalten Stufe 1.
+  - id: t_rockfall
+    once: true
+    when: { type: object_activated, object: l_rock }
+    then:
+      - { action: dialogue, id: scn.m1_4.rockfall }
+      - { action: set_flag, flag: m1_4_rockfall }
+      - { action: set_terrain, area: { tiles: [[19, 14], [19, 15], [20, 14], [21, 14]] }, terrain: rockwall, level: 1 }
+goldReward: 1000
 music: battle_a
-devNote: >
-  Nachtlager im Nebel des Krieges. 16 × 18: Lichtung mit Zelten und Feuern, Dunns Zelt im Norden, Käfig im Nordosten (Tür bei [13,3]).
-  Gegner: Leicht 9, Normal 11, Schwer 13 plus 2 Wolfsreiter in Runde 2 (Wellenzählung: Schwer 15 gesamt). Bei E2 „ausliefern“ entfallen
-  wr3, wr4, g3, g4: Leicht 7, Normal 7, Schwer 9 (plus 2 Wolfsreiter).
+design:
+  title: Die Spur des Maklers
+  intent: >
+    Erste veränderliche Karte: Wer den Hebel auf der Felsnase erreicht, verschüttet die Osthöhle und schneidet die Wolfswellen ab.
+    Zwei Kämme machen Rampen und Lücken zu Engstellen; Wolfsreiter sind im Wald und am Fels langsam, auf dem Gras schnell.
+  mood: Abendrot über kahlen Felskuppen, Wolfsgeheul aus den Höhlen, Lagerfeuer vor Dunns Höhle, Knochen und Fahnen der Wolfsbande.
+  phases:
+    - { id: p1, turns: [1, 3], label: Erste Rampe, note: "Rampe West, Mitte, Ost; erste Welle aus der Osthöhle (R3)." }
+    - { id: p2, turns: [4, 7], label: Mittelterrasse, note: "Ulvric auf der Anhöhe; Felsrutsch möglich; Wellen R5 West, R6 Ost." }
+    - { id: p3, turns: [8, 12], label: Dunns Höhle, note: "Lücke im zweiten Kamm, Schützen über den Rampen, Ysolde im Westen." }
+  paths:
+    - { team: player, points: [[10, 22], [10, 19], [10, 11], [10, 4]], label: Hauptweg }
+    - { team: player, points: [[13, 22], [18, 21], [18, 18], [19, 17], [19, 13], [18, 13], [18, 11]], phase: p2, label: zum Hebel }
+    - { team: player, points: [[3, 20], [2, 12], [2, 9], [2, 6], [2, 3]], phase: p3, label: zu Ysolde }
+    - { team: enemy, points: [[21, 14], [18, 18], [18, 21], [13, 21]], phase: p1, label: Osthöhle }
+    - { team: enemy, points: [[0, 14], [3, 18], [3, 21], [8, 21]], phase: p2, label: Westhöhle }
+  zones:
+    - { area: { rect: [9, 13, 12, 16] }, label: Anhöhe Ulvric, phase: p2 }
+    - { area: { rect: [8, 1, 13, 3] }, label: Dunns Höhle, phase: p3 }
+  marks:
+    - { at: [19, 11], label: H, note: "Hebel: Felsrutsch, Felder [19,14], [19,15], [20,14], [21,14] werden zu rockwall; die Wellen der Osthöhle entfallen." }
+    - { at: [10, 9], label: E, note: "Lücke im zweiten Kamm, zwei Lanzen halten sie." }
+    - { at: [12, 8], label: S, note: "Schütze über der Mittelrampe: von oben Reichweite 2–3." }
+    - { at: [1, 2], label: Y, note: "Ysolde gefangen; {avatar} spricht sie an. Der Kerkermeister trägt den Schlüssel für die Truhen." }
+  notes:
+    - "Gegner mit Wellen (R3/R5/R6) und Ysolde: Leicht 20, Normal 22, Schwer 25, gegen 8 eigene. Bei E2 „ausliefern“ vier, auf Leicht drei weniger."
+    - "Truhen: Fenn öffnet ohne Schlüssel, alle anderen brauchen den Schlüssel des Kerkermeisters (Regel aus Story 2.6)."
+    - Dunns letzte Worte (Saat Stimme) und E2 davor stehen in den Szenen.

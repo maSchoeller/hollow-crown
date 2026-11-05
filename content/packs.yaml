@@ -103,6 +103,7 @@ packs:
       - lever_down
       - ballista_idle
       - torch_idle
+      - roof_tile_idle
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**

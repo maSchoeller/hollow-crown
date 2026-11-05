@@ -150,7 +150,7 @@ entries:
   - id: heights
     category: terrain
     graphic: terrain
-    terrain: [rampart, terrace, tower_top, crag, ramp, stairs, ladder]
+    terrain: [rampart, roof, terrace, tower_top, crag, ramp, stairs, ladder]
     values:
       - { id: rangeFromAbove, ref: balance.elevation.rangedBonus, icon: wait }
     see: [terrain_cover, doors]
