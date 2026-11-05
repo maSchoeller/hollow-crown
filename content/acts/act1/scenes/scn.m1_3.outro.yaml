@@ -8,7 +8,7 @@ music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Morras Jäger verschwinden im Nebel. Am Schrein wird es still. Zu still."
+    text: "Morras Jäger weichen in den Nebel zurück. Am Schrein wird es still. Zu still."
   - id: l02
     speaker: [liora]
     fallback: skip
@@ -18,12 +18,12 @@ lines:
     speaker: [fenn]
     fallback: skip
     mood: neutral
-    text: "Hauptmann. Am Weg, ein Mann mit Kapuze. Allein. Und er hat ein Brot unterm Arm."
+    text: "Hauptmann. Hinter dem Weißdorn, ein Mann mit Kapuze. Allein. Und er hat ein Brot unterm Arm."
   - id: l04
     speaker: [kael]
     fallback: skip
     mood: neutral
-    text: "Hände von den Waffen. Der kommt allein."
+    text: "Hände von den Waffen. Den hat keiner angerührt."
   - id: l05
     mood: neutral
     text: "Der Fremde schlägt die Kapuze zurück: ein alter Mann mit weißem Bart und einem Siegelring."

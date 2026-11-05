@@ -1,12 +1,12 @@
-# Mission 1-3, Szene vor der Karte: Morgen, Nebel am Schrein am Silberbach. Ein Zettel mit grauem Siegel hat die Truppe hergeführt (Halvards heimlicher Kontakt,
-# über Liora). Liora, vom Pakttempel verstoßen, wartet hier; Morras Jäger sind ihr auf den Fersen. Auftrag: den Schrein halten, bis Morras Jäger vertrieben sind, und Liora heil durchbringen.
+# Mission 1-3, Szene vor der Karte: Morgen, Nebel im Grenzwald. Ein Zettel mit grauem Siegel führt die Truppe zum Schrein am Weißdorn (Halvards heimlicher Kontakt,
+# über Liora). Morra stellt der Truppe im Wald nach. Auftrag: Rhen erreicht den Schrein; die Heilerin dort darf nicht fallen. Liora selbst spricht erst auf der Lichtung (scn.m1_3.shrine).
 id: scn.m1_3.intro
 background: silberbach
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Der Silberbach, früher Morgen. Nebel liegt über dem Wasser, am Schrein brennt ein weißes Licht."
+    text: "Grenzwald, früher Morgen. Nebel zwischen den Eichen. Der Zettel nennt nur einen Ort: den Schrein am Weißdorn."
   - id: l02
     speaker: [brenna]
     fallback: skip
@@ -18,30 +18,20 @@ lines:
     mood: neutral
     text: "Jemand, der uns kennt und nicht aufhängen will. Das sind wenige. Ich sehe nach."
   - id: l04
-    speaker: [liora]
+    speaker: [avatar]
     fallback: skip
     mood: neutral
-    text: "Ihr seid pünktlich, Hauptmann. Er sagte, ihr kämt. Ich habe am Wasser auf euch gewartet."
-  - id: l05
-    speaker: [kael]
-    fallback: skip
-    mood: neutral
-    text: "Er? Wer schickt dich?"
-  - id: l06
-    speaker: [liora]
-    fallback: skip
-    mood: neutral
-    text: "Das soll er euch selbst sagen. Ich bin Liora. Der Pakttempel hat mich verstoßen, weil ich fragte."
+    text: "„Am Schrein wartet eine Heilerin. Bringt sie durch.“ Mehr steht hier nicht."
   - id: l07
     speaker: [tobin]
     fallback: skip
     mood: angry
-    text: "Hauptmann, am Westufer! Bewaffnete, und sie tragen Zettel – unsere Zettel!"
+    text: "Hauptmann, zwischen den Bäumen! Bewaffnete, und sie tragen Zettel – unsere Zettel!"
   - id: l08
-    speaker: [liora]
+    speaker: [brenna]
     fallback: skip
-    mood: sad
-    text: "Morra. Sie jagt mich seit zwei Tagen. Jetzt hat sie auch euch im Visier."
+    mood: neutral
+    text: "Morras Leute. Die Jägerin aus Varnhold hat unsere Spur. Haltet die Augen offen im Dickicht, Küken."
   - id: l09
     speaker: [fenn]
     fallback: skip
@@ -51,14 +41,9 @@ lines:
     speaker: [kael]
     fallback: skip
     mood: neutral
-    text: "Liora bleibt bei uns. Wir halten den Schrein, bis der letzte Jäger weg ist."
-  - id: l11
-    speaker: [brenna]
-    fallback: skip
-    mood: neutral
-    text: "Und die Heilerin fällt nicht, Küken. Wenn sie fällt, war alles umsonst."
+    text: "Die Straße ist lang, die Wildwechsel sind eng. Wir müssen zum Schrein, und die Heilerin fällt nicht."
   - id: l12
     speaker: [kael]
     fallback: skip
     mood: neutral
-    text: "{avatar}, ordne die Reihen. Wo sie hingeht, gehen wir hin."
+    text: "{avatar}, ordne die Reihen. Du gehst hinauf zum Schrein, wir halten dir den Weg frei."

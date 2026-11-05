@@ -269,9 +269,9 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
     const at = (d: 'easy' | 'normal' | 'hard') =>
       beginBattle(data, { ...campaign, settings: { ...campaign.settings, difficulty: d } }, 'prologue', campaign.roster.map((u) => u.id)).state;
     const foes = (s: BattleState) => s.units.filter((u) => u.team === 'enemy').length;
-    // Product owner 2026-10-24: easy 4, normal 5, hard 6 temple guards, and Hard adds the announced side-gate reinforcement in round 3.
-    expect([foes(at('easy')), foes(at('normal')), foes(at('hard'))]).toEqual([4, 5, 6]);
-    expect(data.maps.prologue_paktnacht!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('normal'))).toBe(true);
+    // Draft s1_p_paktnacht: 8 guards on easy and normal, 10 on hard; the announced side-gate wave of round 4 brings one more from normal on.
+    expect([foes(at('easy')), foes(at('normal')), foes(at('hard'))]).toEqual([8, 8, 10]);
+    expect(data.maps.prologue_paktnacht!.reinforcements[0]!.units.some((u) => u.difficulty?.includes('hard') && !u.difficulty.includes('easy'))).toBe(true);
   });
   it('hands the avatar a tome after the second story mission', () => {
     expect(campaign.roster.find((u) => u.id === 'avatar')!.equip.mainHand?.def).toBe('iron_sword');

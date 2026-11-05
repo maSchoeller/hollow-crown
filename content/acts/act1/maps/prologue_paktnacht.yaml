@@ -1,11 +1,17 @@
-# Prolog – Die Paktnacht (Story 9.1). Äußerer Ring des Pakttempels Glutdom in Aurenhall, Nacht des Paktfestes: Der König ist tot,
-# die Tempelwachen wenden sich gegen die Söldner. Ziel: Flucht durch das Tempeltor im Süden, alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Kael zuletzt (escape).
-# Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf). Startwerte [C].
-# Produktinhaber 2026-10-24: nur Nahkampf-Gegner (Lanzen-Vorkämpfer, Schwert-Plänkler), keine Leutnants. Gerrit (Bannerträger, nicht
-# spielbar) steht nur in den Szenen, nicht auf der Karte.
+# Prolog – Die Paktnacht (Knoten prologue). Entwurf s1_p_paktnacht, Missionsliste: K 14×18, escape, 4 / 10, keine Leutnants. Startwerte [C].
+# Tempelbezirk des Glutdoms, Aurenhall, Nacht des Paktfestes: Der König ist tot, die Tempelwachen wenden sich gegen die Söldner.
+# Von Norden nach Süden: Glutdom-Tür, Innenhof, Säulengang, innere Mauer, unterer Hof, Tempeltor. Gärten an den Flanken mit Seitentoren.
+# Ziel: Flucht in die Unterstadt (Südrand), alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Kael zuletzt (escape). Gerrit steht nur in den Szenen, nicht auf der Karte.
+# Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf), Höhe (Wehrgang, sobald die Truppe das innere Tor erreicht).
+# Höhe, sanft: nur ein kurzes Stück Wehrgang auf der inneren Mauer (x 8–10, y 9, Stufe 1) mit einer Treppe vom unteren Hof ([9,10]) und einem Schützen ([9,9], Stufe 1, hält).
+# Er trifft von oben auf 2–3 Felder die letzten Felder des Säulengangs und das innere Tor; von der Treppe aus kann man ihn schlagen, das Ziel verlangt es nicht.
+# Abweichung von „nur Nahkampf-Gegner“ (Produktinhaber 2026-10-24): Der eine Schütze ist Vorgabe des Produktinhabers vom 2026-11-05. Der Schütze trägt die Figur temple_guard, damit keine neue Figur in den ersten Download kommt.
+# Das Beben t_quake in Runde 3 öffnet Brennas Pforte [1,11] (set_terrain; vorher öffnet sie Brenna mit dem Schlüssel) und wirft vier Säulen um (Ruinen, Deckung). Keine Säule liegt auf einem Feld, auf dem jemand stehen könnte.
+# Balancing 2026-11-05 [C]: Stufen wie im Entwurf, tg1 wartet zwei Felder weiter südlich ([5,7] statt [5,5]), erste Berührung etwas später. Niedergestreckt wird in der Simulation fast nur Rhen, das ist hier Niederlage (noDeath nimmt ihn aus): Mehr Druck senkt den Sieg, bevor die Niedergestreckten die 0,4 erreichen (tg1 Stufe 3: 79 % Sieg, 0,23).
+# Abweichung vom Entwurf: Kohlebecken an den Punktlichtern (wie die alte Karte, sonst leuchten die Lichter aus dem Nichts). Neue Modelle stairs_idle gehört zu core (packs.yaml).
 id: prologue_paktnacht
 nameKey: map.prologue_paktnacht.name
-size: [12, 16]
+size: [14, 18]
 fog: false
 # Produktinhaber 2026-10-25: Im Prolog verbluten und sterben Niedergestreckte nicht (egal welcher Todesmodus), sie bleiben liegen
 # und kehren nach der Mission zurück. Rhen und Kael (Niederlage bei Tod) sind ausgenommen: ihr Tod verliert die Mission wie zuvor.
@@ -15,97 +21,109 @@ legend:
   ",": grass
   "_": road
   "T": forest
-  "^": mountain
-  "#": wall          # Mauer und Säulen (einzelne Felder)
-  "D": door          # Glutdom, Tür geschlossen
-  "b": brazier       # Kohlebecken (Requisite campfire), Punktlichter siehe lights
-  "E": door_open     # Tempeltor = Ausgang (Ausgangsfelder: objectives.victory.area)
-#          x: 0123456789AB
+  "W": wall          # Tempelmauern
+  "P": wall          # Säulen
+  "G": gate          # offene Tore: innere Mauer, Seitentore, Tempeltor
+  "d": door          # Glutdom-Tür (Kulisse) und Brennas Pforte [1,11]
+  "F": fort
+  "R": ruins
+  "b": brazier       # Kohlebecken, Punktlichter siehe lights
+  "r": rampart       # Wehrgang, Stufe 1
+  "S": stairs        # Treppe vom Hof auf den Wehrgang
+#          x: 01234567890123
 terrain: |
-  ^^##DDDD##^^
-  ,T#..__..#T,
-  ,,.b.__.b.,,
-  T,.#.__.#.,T
-  ,,..____..,,
-  T,,.b__b.,,T
-  ,,T..__..T,,
-  #,,.#__#.,,#
-  _,,..__..,,_
-  #,T..__..T,#
-  ,,,.b__b.,,,
-  T,,.____.,,T
-  ,,T..__..T,,
-  #,,.#__#.,,#
-  ##,,.__.,,##
-  ####EEEE####
-# Nacht: mondblaues Umgebungslicht, Mond als schwache Sonne, warme Punktlichter an den Kohlebecken (art-direction §2.5, Tageszeit night)
-ambient: { color: "#5a70b0", intensity: 0.6 }
-sun: { color: "#8fa8ee", intensity: 0.4, azimuthDeg: 120, elevationDeg: 50 }
+  WWWWWWddWWWWWW
+  TT,W______W,TT
+  T,,Wb____bW,,T
+  ,,,G______G,,,
+  T,,WP____PW,,T
+  TT,W.____.W,TT
+  T,,WP____PW,,T
+  ,,,W.____.W,,,
+  T,,WP____PW,T,
+  WWGWWWGGrrrGWW
+  _W.F..__.SF..W
+  _d..b.__..b..W
+  _W..R.__..R..W
+  _W....__.....G
+  _WTT.P__P..TTW
+  _W,,.P__P.,,,W
+  _WWWWWGGWWWWWW
+  __,,,,__,,,,,,
+timeOfDay: night
+weather: ash
+# Nacht: warme Punktlichter an den Kohlebecken (art-direction §2.5, Tageszeit night)
 lights:
-  - { at: [3, 2], color: "#ffb35c", radius: 4 }
-  - { at: [8, 2], color: "#ffb35c", radius: 4 }
-  - { at: [4, 5], color: "#ffb35c", radius: 4 }
-  - { at: [7, 5], color: "#ffb35c", radius: 4 }
-  - { at: [4, 10], color: "#ffb35c", radius: 4 }
-  - { at: [7, 10], color: "#ffb35c", radius: 4 }
-objects: []
+  - { at: [4, 2], color: "#ffb35c", radius: 4 }
+  - { at: [9, 2], color: "#ffb35c", radius: 4 }
+  - { at: [4, 11], color: "#ffb35c", radius: 4 }
+  - { at: [10, 11], color: "#ffb35c", radius: 4 }
+objects:
+  - { id: d_unterstadt, type: door, at: [1, 11] }
+  - { id: c_garden, type: chest, at: [11, 1], contents: { item: { def: vulnerary } } }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
-haunts:
-  # Grund: Mitte des Hofes, Kreuzung der Straße mit den Seitentoren – hier laufen alle Wege zusammen. Der Leutnant hält die Kreuzung
-  # (rout), die Truppe kommt vom Tempeltor im Süden, seine Leute stehen im nördlichen Hof.
-  - variant: rout
-    target: { at: [5, 8] }
-    enemySpawn: { rect: [2, 1, 9, 4] }
-    deploy: { rect: [3, 12, 8, 12] }
-  # Grund: Engstelle vor dem Tempeltor zwischen den Säulen – wer hier lauert, fängt jeden Flüchtenden ab. (Das Feld [4,13] ist eine
-  # Säule; der Leutnant steht auf der Straße zwischen den Säulen, [5,13].) Die Truppe kommt von der Glutdom-Tür im Norden.
-  - variant: boss
-    target: { at: [5, 13] }
-    enemySpawn: { rect: [3, 9, 8, 12] }
-    deploy: { rect: [4, 1, 7, 2] }
-  # Grund: Aufstellfeld vor der verschlossenen Glutdom-Tür – der Ort, an dem die Paktnacht begann. Ein Zivilist wartet vor der Tür
-  # (defend), die Truppe steht im Hof davor, die Angreifer kommen vom Tempeltor im Süden.
-  - variant: defend
-    target: { at: [5, 1] }
-    enemySpawn: { rect: [2, 11, 9, 13] }
-    deploy: { rect: [4, 3, 7, 4] }
-    turns: 8
 deploy:
   max: 4
   forced: [avatar, kael]
-  slots: [[5, 1], [6, 1], [4, 1], [7, 1], [5, 2], [6, 2]]
+  slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
+# Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
+haunts:
+  # Grund: das innere Tor mitten im Tempelbezirk – alle Wege laufen hier zusammen. Der Leutnant hält den Säulengang davor, seine Leute stehen im Innenhof,
+  # die Truppe kommt aus dem unteren Hof zurück.
+  - variant: rout
+    target: { at: [6, 7] }
+    enemySpawn: { rect: [5, 1, 8, 3] }
+    deploy: { rect: [4, 12, 9, 13] }
+  # Grund: das Tempeltor – wer hier lauert, fängt jeden Flüchtenden ab. Die Truppe kommt von der Glutdom-Tür im Norden.
+  - variant: boss
+    target: { at: [6, 15] }
+    enemySpawn: { rect: [4, 12, 9, 13] }
+    deploy: { rect: [5, 1, 8, 2] }
+  # Grund: der Platz vor der verschlossenen Glutdom-Tür – der Ort, an dem die Paktnacht begann. Ein Zivilist wartet vor der Tür,
+  # die Truppe steht im Innenhof davor, die Angreifer kommen durch das innere Tor aus dem unteren Hof.
+  - variant: defend
+    target: { at: [6, 1] }
+    enemySpawn: { rect: [4, 10, 9, 11] }
+    deploy: { rect: [5, 2, 8, 3] }
+    turns: 8
+# Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle): Lanzen-Vorkämpfer und Schwert-Plänkler, dazu der eine Schütze. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
 units:
-  # Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle, das Modell trägt keine eingebaute Lanze): Lanzen-Vorkämpfer und Schwert-Plänkler. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
-  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 6], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 5, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
-  - { id: tg2h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 3, at: [8, 7], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
-  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 3, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
-  - { id: tg3h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [3, 10], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 2, then: aggressive }, difficulty: [hard] }
-  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 4, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [easy, normal] }
-  - { id: tg4h, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 2, at: [8, 11], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
-  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 4, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal] }
-  - { id: tg5h, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [6, 13], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
-  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 1, at: [2, 9], sprite: temple_guard, portrait: class_temple_guard, items: [{ def: iron_lance }], ai: { profile: hold }, difficulty: [hard] }
+  # Säulengang: wachen auf, sobald die Truppe herankommt
+  - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [5, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: tg2, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [8, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  # Gärten: greifen über die Seitentore in die Flanke
+  - { id: tg3, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 1, at: [1, 5], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  # Wehrgang: der Schütze, an dem die Höhe sichtbar wird. Ersetzt die Lanze im Ostgarten des Entwurfs.
+  - { id: tg4, nameKey: unit.temple_guard.name, team: enemy, class: marksman, sprite: temple_guard, portrait: class_temple_guard, level: 1, at: [9, 9], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Innere Mauer: zwei Wachen hinter dem Tor (Engstelle 1)
+  - { id: tg5, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 3, at: [6, 10], items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: guard } }
+  - { id: tg6, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [7, 10], items: [{ def: iron_sword }], ai: { profile: guard } }
+  # Tempeltor: halten den Ausgang (Engstelle 2)
+  - { id: tg7, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 3, at: [6, 15], items: [{ def: iron_lance }], ai: { profile: hold } }
+  - { id: tg8, nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 3, at: [7, 15], items: [{ def: iron_lance }], ai: { profile: hold } }
+  # Nur Schwer: unterer Hof
+  - { id: tg9, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [3, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: tg10, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-# Hart: Verstärkung aus dem Seitentor im Osten (angekündigt), Runde 3
 reinforcements:
+  # Seitentor Ost, nach dem Beben
   - turn: 4
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 1, at: [11, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [13, 13], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [12, 13], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  # Siegt, sobald alle eigenen Einheiten, die noch stehen, das Tor verlassen haben; Kael als Letzter (Regel im Kern: mustStayForRest).
+  # Siegt, sobald alle eigenen Einheiten, die noch stehen, die Unterstadt erreicht haben (durch das Tempeltor oder die Gasse); Kael als Letzter (Regel im Kern: mustStayForRest).
   # Kein min: Niedergestreckte zählen nicht mit (Entscheidung Produktinhaber 2026-10-25).
-  victory: { type: escape, area: { rect: [4, 15, 7, 15] } }
+  victory: { type: escape, area: { rect: [0, 17, 13, 17] } }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl per Simulation abgestimmt (Normal: Median 11 Runden bis zum Sieg)
-    - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 100 } }
+    # Rundenzahl per Simulation abgestimmt (Normal: Median 13 Runden bis zum Sieg)
+    - { id: s_fast, type: turn_limit, turns: 13, reward: { gold: 100 } }
 triggers:
   # Eine Lektion pro Runde, kurz und genau dann, wenn sie gebraucht wird.
   - id: t_intro
@@ -120,6 +138,44 @@ triggers:
     when: { type: hp_below, unit: kael, percent: 60 }
     then:
       - { action: dialogue, id: scn.prologue.tutorial_heal }
+  # Das erste Beben: Brennas Pforte springt auf, Säulen fallen (Ruinen als Deckung)
+  - id: t_quake
+    once: true
+    when: { type: turn_start, turn: 3, phase: player }
+    then:
+      - { action: dialogue, id: scn.prologue.quake }
+      - { action: set_terrain, area: { tiles: [[1, 11]] }, terrain: door_open }
+      - { action: set_terrain, area: { tiles: [[4, 6], [9, 6], [5, 14], [8, 14]] }, terrain: ruins }
+  # Höhe: sobald die Truppe in die Reichweite des Schützen auf dem Wehrgang kommt
+  - id: t_height
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [5, 7, 8, 8] } }
+    then:
+      - { action: dialogue, id: scn.prologue.tutorial_height }
 goldReward: 300
 music: battle_a
-devNote: "Fluchtkarte 12 × 16, Nord nach Süd. Aufstellung vor der Glutdom-Tür, Hof mit Säulen und Kohlebecken, Gärten links und rechts, Seitentore (0,8) und (11,8), Tempeltor unten = Ausgang. Leicht: 4 Wachen; Normal: 5; Schwer: 6 plus Verstärkung aus dem Osttor in Runde 3."
+design:
+  title: Die Paktnacht
+  intent: >
+    Lernkarte und Auslöser der Staffel: Die Truppe flieht vom Glutdom nach Süden. Zwei Engstellen (inneres Tor, Tempeltor)
+    lehren Gefahrenzone und Deckung; der Schütze auf dem Wehrgang zeigt die Höhe; Brennas Pforte zeigt früh, dass es mehr als einen Weg gibt.
+  mood: Nacht des Paktfestes, Glutleuchten über dem Dom, Ascheflocken, Kohlebecken im Hof, lange Säulenschatten, Wachen mit Fackeln.
+  phases:
+    - { id: p1, turns: [1, 2], label: Säulengang, note: "Lektionen Bewegen und Angriff; Wachen wachen in den Gängen auf." }
+    - { id: p2, turns: [3, 5], label: Beben, note: "Erstes Beben: Pforte offen, Säulen fallen; Verstärkung durch das Seitentor Ost (R4)." }
+    - { id: p3, turns: [6, 10], label: Ausbruch, note: Tempeltor erzwingen oder durch Brennas Pforte in die Gasse. }
+  paths:
+    - { team: player, points: [[6, 2], [6, 9], [6, 16]], label: Tempeltor }
+    - { team: player, points: [[5, 10], [2, 11], [0, 11], [0, 17]], phase: p3, label: Brennas Pforte }
+    - { team: enemy, points: [[13, 13], [9, 12], [7, 11]], phase: p2, label: Seitentor }
+  zones:
+    - { area: { rect: [4, 1, 9, 3] }, label: Innenhof }
+    - { area: { rect: [0, 10, 0, 17] }, label: Unterstadt-Gasse, phase: p3 }
+  marks:
+    - { at: [6, 9], label: E1, note: "Inneres Tor, zwei Wachen dahinter: erste Engstelle." }
+    - { at: [6, 16], label: E2, note: "Tempeltor, zwei Lanzen halten: zweite Engstelle." }
+    - { at: [1, 11], label: B, note: "Brennas Pforte zur Unterstadt: Brenna öffnet sie mit dem Schlüssel, das Beben in R3 sprengt sie auf." }
+    - { at: [9, 9], label: S, note: "Schütze auf dem Wehrgang, Treppe [9,10] vom unteren Hof." }
+  notes:
+    - "Normal 10 Gegner (2 davon R4) gegen 4 eigene, Stufe 1–3; Leicht 9, Schwer 12."
+    - Gerrit fällt in der Szene vor Runde 1 (Bannerträger, nicht auf der Karte).

@@ -513,6 +513,11 @@ handbook:
       text: "From the prologue: whoever is wounded drinks a vulnerary before waiting."
       where: "In the prologue “The Pact Night”, as soon as Kael is wounded."
       keywords: "lesson, prologue, vulnerary, potion, item, heal"
+    lesson_height:
+      title: "Lesson: height"
+      text: "From the prologue: from above a bow reaches one tile farther; the stairs lead up."
+      where: "In the prologue “The Pact Night”, before the inner gate."
+      keywords: "lesson, prologue, height, rampart, stairs, archer"
     lesson_triangle:
       title: "Lesson: weapon triangle"
       text: "From the first mission: which weapon beats which and how the forecast shows it."

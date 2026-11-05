@@ -513,6 +513,11 @@ handbook:
       text: "Aus dem Prolog: Wer verwundet ist, nimmt einen Heiltrank, bevor er wartet."
       where: "Im Prolog „Die Paktnacht“, sobald Kael verwundet ist."
       keywords: "Lektion, Prolog, Heiltrank, Item, heilen"
+    lesson_height:
+      title: "Lektion: Höhe"
+      text: "Aus dem Prolog: Von oben reicht ein Bogen ein Feld weiter, hinauf führt die Treppe."
+      where: "Im Prolog „Die Paktnacht“, vor dem inneren Tor."
+      keywords: "Lektion, Prolog, Höhe, Wehrgang, Treppe, Schütze"
     lesson_triangle:
       title: "Lektion: Waffendreieck"
       text: "Aus der ersten Mission: welche Waffe welche schlägt und wie die Vorschau es zeigt."
