@@ -1,4 +1,4 @@
-# Nebenquest N2, Szene beim Öffnen der Chronik-Truhe (8,1). Läuft in der Schlacht, ohne Antworten. Die Seite selbst ist die Truhenbelohnung `chronicle: a1_watchtower`.
+# Nebenquest N2, Szene beim Öffnen der Chronik-Truhe c_page. Läuft in der Schlacht, ohne Antworten. Die Seite selbst ist die Truhenbelohnung `chronicle: a1_watchtower`.
 id: scn.n2.page
 lines:
   - id: l01

@@ -7,7 +7,7 @@ import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
-import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -27,22 +27,26 @@ interface Plan {
  */
 function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], avoid?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
-  const open: Array<[Pos, number]> = goals.filter((g) => inBounds(s, g)).map((g) => [g, 0]);
-  for (const [g] of open) out.set(posKey(g), 0);
-  while (open.length) {
-    open.sort((a, b) => a[1] - b[1]);
-    const [p, c] = open.shift()!;
-    if (avoid && c > 0 && avoid.has(posKey(p))) continue;
-    for (const n of neighbors(p)) {
+  // one bucket per cost instead of a sorted list: the frontier of a 30×40 map is too long to sort for every tile
+  const buckets: Pos[][] = [];
+  for (const g of goals) {
+    if (!inBounds(s, g)) continue;
+    out.set(posKey(g), 0);
+    (buckets[0] ??= []).push(g);
+  }
+  for (let c = 0; c < buckets.length; c++) {
+    for (const p of buckets[c] ?? []) {
+      const key = posKey(p);
+      if (out.get(key) !== c || (avoid && c > 0 && avoid.has(key))) continue;
       // cost of stepping from n into p (symmetric enough for grids)
-      const step = moveCost(data, s, u, p);
-      const enter = stepCost(data, s, u, p, n);
-      if (enter === null) continue;
-      const total = c + (step ?? 1);
-      const k = posKey(n);
-      if ((out.get(k) ?? Infinity) <= total) continue;
-      out.set(k, total);
-      open.push([n, total]);
+      const total = c + Math.max(1, moveCost(data, s, u, p) ?? 1);
+      for (const n of neighbors(p)) {
+        if (stepCost(data, s, u, p, n) === null) continue;
+        const k = posKey(n);
+        if ((out.get(k) ?? Infinity) <= total) continue;
+        out.set(k, total);
+        (buckets[total] ??= []).push(n);
+      }
     }
   }
   return out;
@@ -363,6 +367,10 @@ function wake(data: GameData, s: BattleState, u: BattleUnit): void {
 function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos) return;
   const ai = u.ai ?? { profile: 'aggressive' as const };
+  if (waitsToJoin(u)) {
+    events.push({ t: 'aiTurn', unit: u.uid });
+    return applyAct(data, s, u, u.pos, { kind: 'wait' }, events);
+  }
   if (u.ai) wake(data, s, u);
   const profile = u.ai?.profile ?? ai.profile;
   const here: Pos[] = [u.pos];

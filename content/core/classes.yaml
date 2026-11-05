@@ -364,7 +364,7 @@
   playable: false
   v1: true
 
-# Wolfsreiter (Akt 1): zu Fuß mit Wolfsfell, kein Reittier, keine Beritten-Effektivität (PO 2026-10-24).
+# Wolfsreiter (Akt 1): bewegt sich zu Fuß (PO 2026-10-24, bestätigt 2026-11-05: in Staffel 1 reitet niemand, `mounted` bleibt unbenutzt). Keine Beritten-Effektivität: Tag `mounted` fehlt.
 # Werte von `skirmisher` abgeleitet (leichter, schneller, Lanze statt Schwert); Wolfsfell ist nur Optik.
 - id: wolf_rider
   nameKey: class.wolf_rider.name

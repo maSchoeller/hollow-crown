@@ -10,7 +10,7 @@ import {
   addToRoster,
   levelUp,
   applyCommand,
-  autoplay,
+  type Command,
   beginBattle,
   createBattle,
   finishBattle,
@@ -46,11 +46,11 @@ afterEach(() => {
   while (restore.length) restore.pop()!();
 });
 
-/** the finale node m1_8 (story 9.9): its map has Ulvric and Grosk in wave 2 (round 4) */
+/** the finale node m1_8 (story 9.9): its map has Morra in the wave of round 4, Ulvric and Grosk from the start */
 const M18 = () => data.campaign.nodes.find((n) => n.id === 'm1_8')!;
 const withGrudge = (): CampaignState => {
   const c = fresh();
-  c.lieutenants = { ulvric: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'kael', signatureDropped: false } };
+  c.lieutenants = { morra: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'kael', signatureDropped: false } };
   return c;
 };
 /** the army of the finale (story 9.9): a company strong enough to still stand when wave 2 arrives in round 4 */
@@ -60,6 +60,17 @@ const strong = (c: CampaignState): CampaignState => {
   return c;
 };
 const ids = (c: CampaignState) => c.roster.map((r) => r.id);
+/** the 30×40 finale past the wave of round 4 with its lieutenant: one command a round, the enemy phases are what these tests are about */
+const throughWave = (start: BattleState) => {
+  const log: Command[] = [];
+  let state = start;
+  for (let round = 0; round < 4; round++) {
+    const cmd: Command = { type: 'endPhase' };
+    state = applyCommand(data, state, cmd).state;
+    log.push(cmd);
+  }
+  return { state, log };
+};
 const wave2 = (s: BattleState): GameEvent[] => {
   const events: GameEvent[] = [];
   s.turn = 4;
@@ -72,30 +83,31 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
   it('are built like the ones at the start: level, grudge, target, grudge skills', () => {
     const c = withGrudge();
     const s = createBattle(data, c, M18().id, ids(c));
-    expect(s.units.find((u) => u.lieutenant === 'ulvric')).toBeUndefined(); // not on the board yet
-    expect(s.lieutenantPlan!.ulvric).toMatchObject({ grudge: 2, target: 'kael', skills: ['wolf_run', 'pack'] });
+    expect(s.units.find((u) => u.lieutenant === 'morra')).toBeUndefined(); // not on the board yet
+    const plan = s.lieutenantPlan!.morra!;
+    expect(plan).toMatchObject({ grudge: 2, target: 'kael' });
+    expect(plan.skills.length).toBeGreaterThan(0);
     wave2(s);
-    const u = s.units.find((x) => x.lieutenant === 'ulvric')!;
+    const u = s.units.find((x) => x.lieutenant === 'morra')!;
     expect(u.level).toBe(lieutenantLevel(data, c, 2));
     expect(u.grudge).toBe(2);
     expect(u.grudgeTarget).toBe('kael');
-    expect(u.mastered).toEqual(expect.arrayContaining(['wolf_run', 'pack']));
-    expect(u.loadout).toEqual(expect.arrayContaining(['wolf_run', 'pack']));
-    expect(u.mastered).not.toContain('breakthrough');
+    expect(u.mastered).toEqual(expect.arrayContaining(plan.skills));
+    expect(u.loadout).toEqual(expect.arrayContaining(plan.skills));
   });
 
   it('match the line-up build exactly: the same lieutenant on the map start and as a late spawn', () => {
     const c = withGrudge();
     const map = data.maps[M18().map]!;
-    const copy: MapUnitDef = clone(map.reinforcements.flatMap((r) => r.units).find((u) => u.lieutenant === 'ulvric')!);
+    const copy: MapUnitDef = clone(map.reinforcements.flatMap((r) => r.units).find((u) => u.lieutenant === 'morra')!);
     const early = createBattle(data, c, M18().id, ids(c));
     // the same unit as a line-up unit of the map
     map.units.push(copy);
     restore.push(() => map.units.pop());
     const sStart = createBattle(data, c, M18().id, ids(c));
-    const a = sStart.units.find((u) => u.lieutenant === 'ulvric')!;
+    const a = sStart.units.find((u) => u.lieutenant === 'morra')!;
     wave2(early);
-    const b = early.units.find((u) => u.lieutenant === 'ulvric')!;
+    const b = early.units.find((u) => u.lieutenant === 'morra')!;
     const pick = (u: typeof a) => ({ level: u.level, stats: u.stats, grudge: u.grudge, target: u.grudgeTarget, mastered: u.mastered, loadout: u.loadout, items: [...Object.values(u.equip), ...u.bag].map((i) => i!.def) });
     expect(pick(b)).toEqual(pick(a));
   });
@@ -118,8 +130,8 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
     const s = createBattle(data, c, M18().id, ids(c));
     delete s.lieutenantPlan;
     wave2(s);
-    const u = s.units.find((x) => x.lieutenant === 'ulvric')!;
-    expect(u.level).toBe(9);
+    const u = s.units.find((x) => x.lieutenant === 'morra')!;
+    expect(u.level).toBe(data.maps[M18().map]!.reinforcements.flatMap((r) => r.units).find((m) => m.lieutenant === 'morra')!.level);
     expect(u.grudge).toBeUndefined();
   });
 
@@ -127,9 +139,9 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
     const c = strong(withGrudge());
     const start = startBattle(data, createBattle(data, c, M18().id, ids(c))).state;
     expect(structuredClone(start)).toEqual(start);
-    const played = autoplay(data, start, 400);
+    const played = throughWave(start);
     expect(replayBattle(data, start, played.log)).toEqual(played.state);
-    expect(played.state.units.some((u) => u.lieutenant === 'ulvric')).toBe(true);
+    expect(played.state.units.some((u) => u.lieutenant === 'morra')).toBe(true);
     // the enemy phases through the worker
     let s = start;
     let id = 1;
@@ -197,8 +209,8 @@ describe('met only when seen or fled (R2)', () => {
   it('is kept up to date by the commands (a reinforcement included), so a replay gives the same list', () => {
     const c = strong(withGrudge());
     const start = startBattle(data, createBattle(data, c, M18().id, ids(c))).state;
-    const played = autoplay(data, start, 400);
-    expect(played.state.ltSeen).toEqual(expect.arrayContaining(['hask', 'ulvric']));
+    const played = throughWave(start);
+    expect(played.state.ltSeen).toEqual(expect.arrayContaining(['hask', 'ulvric', 'morra']));
     expect(replayBattle(data, start, played.log).ltSeen).toEqual(played.state.ltSeen);
   });
 });

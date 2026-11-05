@@ -22,6 +22,8 @@ export function arena(data: GameData): BattleState {
   s.objects = [];
   s.loot = [];
   s.timers = {};
+  // the map's waves stay away: the arena holds only what a test places
+  s.reinforcementsDone = data.maps[s.mapId]!.reinforcements.map((_, i) => i);
   return s;
 }
 

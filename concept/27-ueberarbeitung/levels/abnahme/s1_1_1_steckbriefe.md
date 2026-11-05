@@ -7,6 +7,8 @@
 - **Fenn** reißt am Markt Steckbriefe ab: ansprechen, dann tritt er bei. **Kharesh-Gerücht** im Händlerhaus (B links).
 - Runde 4: zwei Häscher aus der Vorstadt fallen der Truppe in den Rücken.
 
+**Im Spiel (2026-11-05):** Stadtmauer als Wehrgang (Stufe 1, x 6–10) mit zwei Türmen (Stufe 2), Treppen vom Markt und vom Wehrgang in die Türme, Rest flach. Abweichungen: Fenn tritt laut Knoten nach dem Sieg bei, nicht auf der Karte (4 statt 5 eigene). Mauer außerhalb des Wehrgangs unbetretbar.
+
 ![Raster](s1_1_1_steckbriefe.png)
 
 <details><summary>Details</summary>

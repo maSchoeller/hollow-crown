@@ -1,11 +1,11 @@
-# Nebenquest N2 „Der letzte Wachturm“ (Story 9.11), Szene vor der Karte: ein Turm der Paktwächter im Hochmoor, Plünderer darin. Nach Mission 1-3 (Liora ist dabei, sonst Ersatzsprecher).
+# Nebenquest N2 „Der letzte Wachturm“, Szene vor der Karte: ein Turm der Paktwächter an der Grenzmauer, davor ein Suchtrupp des Grenzheers. Nach Mission 1-5. Kael erzählt vom Grenzkrieg (Saat Kharesh).
 id: scn.n2.intro
 background: wachturm
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Felssporn im Hochmoor, Morgennebel. Ein halb verfallener Turm, über dem Tor Drache und Krone."
+    text: "Abend an der Grenzmauer, dahinter im Dunst Kharesh. Davor ein Turm, über dem Tor Drache und Krone."
   - id: l02
     speaker: [liora, ysolde, avatar]
     mood: neutral
@@ -22,8 +22,8 @@ lines:
   - id: l05
     speaker: [kael]
     mood: neutral
-    text: "Plünderer sitzen darin. Sie schleppen heraus, was nicht festgenagelt ist."
+    text: "An dieser Mauer stand ich im Grenzkrieg. Kharesh sah damals genauso aus: still und viel zu nah."
   - id: l06
     speaker: [kael]
     mood: neutral
-    text: "Wir nehmen das Tor und vertreiben sie. Was im Turm liegt, holen wir, bevor sie es verkaufen."
+    text: "Ein Suchtrupp des Grenzheers belagert den Turm. Holen wir, was dort liegt, bevor sie es tun."

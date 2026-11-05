@@ -30,7 +30,7 @@ const MIN_W = 640;
 const LINE = 17;
 
 /** terrain look on the sheet: fill and glyph; the board itself is the art direction's business (§3.1) */
-const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; name: string }> = {
+const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; name: string; level?: number }> = {
   plain: { fill: '#e6dcb8', name: 'Ebene' },
   grass: { fill: '#c3d99a', name: 'Gras' },
   road: { fill: '#d4b47c', name: 'Weg' },
@@ -61,6 +61,16 @@ const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; na
   fence: { fill: '#c3d99a', glyph: '#', name: 'Zaun' },
   farm: { fill: '#c99a62', glyph: '■', name: 'Hof' },
   building: { fill: '#b5876a', glyph: '■', dark: true, name: 'Gebäude' },
+  rampart: { fill: '#a8a095', glyph: '▤', name: 'Wehrgang', level: 1 },
+  roof: { fill: '#c9775a', glyph: '⌂', dark: true, name: 'Dach', level: 1 },
+  terrace: { fill: '#b4cc8e', name: 'Terrasse', level: 1 },
+  tower_top: { fill: '#8f8779', glyph: '▣', dark: true, name: 'Turm', level: 2 },
+  crag: { fill: '#a89f8f', glyph: '△', name: 'Felsnase', level: 2 },
+  ramp: { fill: '#c6a26a', glyph: '◢', name: 'Rampe' },
+  stairs: { fill: '#b89a70', glyph: '≡', name: 'Treppe' },
+  ladder: { fill: '#d3bb8e', glyph: '☰', name: 'Leiter' },
+  gate_closed: { fill: '#6b5a48', glyph: '∏', dark: true, name: 'Tor zu' },
+  lever: { fill: '#c9bfb0', glyph: '⍿', name: 'Hebel' },
 };
 
 const COL = {
@@ -167,6 +177,11 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
   const uid = map.id.replace(/[^a-z0-9_]/gi, '_');
   const rows = map.terrain.replace(/\r/g, '').split('\n').filter((r) => r.length > 0);
   const terrainAt = (x: number, y: number) => map.legend[rows[y]?.[x] ?? ''] ?? '?';
+  // height level of a tile: what the map says, else what the terrain brings
+  const raised = new Map<string, number>();
+  for (const l of map.levels ?? []) for (const [x, y] of tilesOf(l.area)) raised.set(`${x},${y}`, l.level);
+  const levelAt = (x: number, y: number) => raised.get(`${x},${y}`) ?? TERRAIN[terrainAt(x, y)]?.level ?? 0;
+  const anyLevel = rows.some((row, y) => [...row].some((_, x) => levelAt(x, y) > 0));
   const unitName = (id: string | undefined) => {
     if (!id) return 'eine Einheit';
     const u = map.units.find((v) => v.id === id);
@@ -263,6 +278,12 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
       const look = TERRAIN[t] ?? { fill: '#cccccc', glyph: '?', name: t };
       parts.push(`<rect x="${bx + x * C}" y="${by + yy * C}" width="${C}" height="${C}" fill="${look.fill}"/>`);
       if (look.glyph) parts.push(`<text x="${cx(x)}" y="${cy(yy) + 5}" font-size="15" text-anchor="middle" fill="${look.dark ? 'rgba(255,255,255,0.55)' : 'rgba(59,42,32,0.45)'}">${esc(look.glyph)}</text>`);
+      // the height level: a darker veil per level and its digit in the corner
+      const lvl = levelAt(x, yy);
+      if (lvl > 0) {
+        parts.push(`<rect x="${bx + x * C}" y="${by + yy * C}" width="${C}" height="${C}" fill="rgba(47,63,110,${0.07 * lvl})"/>`);
+        parts.push(`<text x="${bx + x * C + C - 3}" y="${by + yy * C + 10}" font-size="9" font-weight="700" text-anchor="end" fill="${COL.ink}" stroke="${COL.paper}" stroke-width="2" paint-order="stroke">${lvl}</text>`);
+      }
     }
   for (let x = 0; x <= w; x++) parts.push(`<line x1="${bx + x * C}" y1="${by}" x2="${bx + x * C}" y2="${by + h * C}" stroke="${COL.grid}" stroke-width="${x % 5 === 0 ? 1.2 : 0.5}"/>`);
   for (let yy = 0; yy <= h; yy++) parts.push(`<line x1="${bx}" y1="${by + yy * C}" x2="${bx + w * C}" y2="${by + yy * C}" stroke="${COL.grid}" stroke-width="${yy % 5 === 0 ? 1.2 : 0.5}"/>`);
@@ -442,6 +463,11 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
   // terrain legend
   y += 12;
   sx = PAD;
+  if (anyLevel) {
+    y += 8;
+    text(PAD, y, 'Ziffer oben rechts im Feld: Höhenstufe (ohne Ziffer Stufe 0).', { size: 11, fill: COL.soft });
+    y += 6;
+  }
   for (const [t, n] of [...used.entries()].sort((a, b) => b[1] - a[1])) {
     const look = TERRAIN[t] ?? { fill: '#cccccc', name: t };
     const label = `${look.name} ${n}`;

@@ -1,130 +1,171 @@
-# Mission 1-3 – Der Fremde mit dem Siegel (Story 9.4, Knoten m1_3). Startwerte [C], Stufen und Profile per Simulation abgestimmt.
-# Ort: der Schrein am Silberbach. Tageszeit: Morgen, Wetter: Nebel (Wetter, kein Kriegsnebel; art-direction §2.5; weather: fog).
-# Ziel: rout – die Truppe hält den Schrein und vertreibt Morras Jäger; Liora (dritte Partei, Profil hold) bleibt dort und darf nicht fallen
-# (defeat unit_dies liora). Nach dem Sieg tritt sie bei (Kern: jede Figur der dritten Partei mit Charakter). Erste Begegnung mit Leutnant Morra
-# und ihren Jägern. Vorher war das Ziel escort (Liora zum Ausgang im Süden); PO 2026-10-28: die Eskorte trieb die Truppe am Haus und den
-# Gegnern vorbei zum Ausgang, Häuser besuchen und Gegner besiegen blieb unmöglich (narrative decision-log, Eintrag 2026-10-28).
-# Halvards Auftritt ist die Nachszene scn.m1_3.outro, nicht Teil der Karte.
-# Lehrstück: Engstelle Brücke (x=7) für Vorkämpfer, Furten (x=3, x=12) nur Fußtruppen; Wald an den Flanken als Deckung für Späher/Hinterhalt.
-# 16 × 18 (Hochformat).
+# Mission 1-3 – Der Fremde mit dem Siegel (Knoten m1_3). Entwurf s1_1_3_weissdorn (abgenommen), Missionsliste: M 20×25, reach, 7 / 18, Leutnant Morra. Startwerte [C].
+# Grenzwald, früher Morgen, Nebel des Krieges (fog) und Wetter Nebel. Ziel: Rhen erreicht den Schrein am Weißdorn auf der Lichtung im Norden (reach, nicht mehr rout).
+# Der Dateiname und die ID bleiben m1_3_silberbach (Spielstände, Knoten, Tests); Ort ist laut Missionsliste der Schrein am Weißdorn.
+# Höhe: Der Schrein liegt auf einer niedrigen Terrasse (x 6–13, y 1–2, Stufe 1), das Ziel liegt oben. Hinauf führt eine Rampe in der Mitte, zwei Felder breit ([9,3], [10,3]).
+# Morras zwei Schützen stehen oben in den Ruinen ([7,2], [12,2]) und treffen die Rampe von oben auf 2–3 Felder. Der Rest der Karte ist flach.
+# Drei Wege: die Waldstraße in Schleifen (lang, Holzsteg über den Bach), zwei Wildwechsel West und Ost (kurz, schmal, Hinterhalte).
+# Halvard (unangreifbar, Platzhalterfigur villager_elder, bis es eine eigene gibt) und Liora warten am Schrein. Liora heilt von dort, darf nicht fallen und tritt nach dem Sieg bei (Kern: jede Figur der dritten Partei mit Charakter).
+# Morra flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Kopfgeld (bounty). Ihre Kartenwaffe ist Eisen (iron_bow), damit „+1 Tier je Groll“ greift.
+# Abweichungen vom Entwurf: Schützen auf der Terrasse statt am Lichtungsrand; Liora und Halvard auf den Schreinfeldern [9,1], [10,1], damit die Rampe frei bleibt und die Schützen Liora nicht von Beginn an treffen.
+# Szenen: scn.m1_3.intro vor der Karte (Knoten pre), scn.m1_3.shrine beim Betreten der Lichtung, scn.m1_3.morra_battle (quote), scn.m1_3.outro (Halvard, Beitritt Liora) nach dem Sieg.
 id: m1_3_silberbach
 nameKey: map.m1_3_silberbach.name
-size: [16, 18]
-fog: false
+size: [20, 25]
+fog: true
 legend:
   ".": plain
   ",": grass
+  "_": road
   "T": forest
-  "^": mountain
-  "~": river
   "w": shallows
-  "=": bridge
-  "s": sand
-  "H": village
+  "=": footbridge
   "R": ruins
-  "S": shrine
-#          x: 0123456789ABCDEF
+  "s": shrine
+  "/": ramp
+#          x: 01234567890123456789
 terrain: |
-  ^^TT,,,,,,,,TT^^
-  ^T,,,,R,,R,,,T^^
-  T,,,,,,,S,,,,,,T
-  ,,TT,,,..,,,TT,,
-  T,TT,,,..,,,TT,,
-  ,,,,,,,..,,,,,,,
-  ss,,,,,..,,,,,ss
-  ssss,,,..,,,ssss
-  ~~~w~~~=~~~~w~~~
-  ~~~w~~~=~~~~w~~~
-  ssss,,,..,,,ssss
-  ,,,,,,T..T,,H,,,
-  T,,TT,,..,,,TT,,
-  ,,TT,,,..,,,TT,,
-  T,,,,,,..,,,,,,T
-  ,,,H,,,..,,,,,,,
-  ,,,,,,,..,,,,,,,
-  ,,,,,,,..,,,,,,,
-# Tageszeit und Wetter (Story 8.6): Preset aus render.yaml look.timeOfDay/weather
+  TTTTTTTTTTTTTTTTTTTT
+  TTTTTT,,.ss.,,TTTTTT
+  TTTTTT,R....R,TTTTTT
+  TTTTTT,,,//,,,TTTTTT
+  TTTTTT,,,,,,,,TTTTTT
+  TTTTTT,,,,,,,,TTTTTT
+  TTTTTT,,,,,,,,TTTTTT
+  TTTTT,TTTT_TTT,TT,RT
+  TTTTT,TTTT_TTTT,T,,T
+  T,,T,TT____TTTT,TTTT
+  TR,T,TT_TTTTTTTT,TTT
+  TTTT,TT_TTTTTTTT,TTT
+  TTT,TTT_______TT,TTT
+  TTT,TTTTTTTTT_TTT,TT
+  wwwwwwwwwwwww=wwwwww
+  TTT,TTTTTTTTT_TTT,TT
+  TTT,T,,TTT,,T_TTT,TT
+  TTT,T,,TTT,,T_TT,TTT
+  TTTT,TTTTTTTT_TT,TTT
+  TTTT,TTTTTTTT_TT,TTT
+  TTTTT,TTT_____T,TTTT
+  TTTTT,,,,_,,,,,TTTTT
+  TTTTT,,,,_,,,,,TTTTT
+  TTTTT,,,,_,,,,,TTTTT
+  TTTTT,,,,__,,,,TTTTT
+levels:
+  - { level: 1, area: { rect: [6, 1, 13, 2] } }
 timeOfDay: morning
 weather: fog
 lights:
-  - { at: [8, 2], color: "#fff1c4", radius: 3 }
+  - { at: [9, 1], color: "#fff1c4", radius: 3 }
+  - { at: [10, 1], color: "#fff1c4", radius: 3 }
 objects:
-  - { id: v_hut,  type: village, at: [3, 15],  reward: { gold: 200, dialogue: scn.m1_3.house_hut } }
-  - { id: v_mill, type: village, at: [12, 11], reward: { item: { def: vulnerary }, dialogue: scn.m1_3.house_mill } }
+  - { id: c_west, type: chest, at: [1, 10], contents: { item: { def: vulnerary } } }
+  - { id: c_east, type: chest, at: [18, 7], contents: { gold: 300 } }
 initialEffects: []
 deploy:
-  max: 5
+  max: 7
   forced: [avatar, kael]
-  slots: [[8, 4], [7, 4], [9, 4], [6, 4], [8, 5], [7, 5], [8, 3], [7, 3]]
+  slots: [[8, 22], [9, 22], [10, 22], [11, 22], [8, 23], [9, 23], [10, 23], [11, 23]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
-  # Grund: der Schrein am Silberbach, an dem die Truppe Liora fand – hier beginnt der Weg nach Süden. Der Zivilist wartet nördlich der Brücke, die Jäger
-  # setzen aus dem Norden nach (Simulation 2026-10-28: Jäger im Süden, am Weg zum Ausgang, ließen die Truppe stehen bleiben – 38 %, so 83 %).
+  # Grund: der Schrein am Weißdorn, an dem die Truppe Liora fand – hier beginnt der Weg zurück nach Süden. Der Zivilist wartet am Fuß der Terrasse, die Jäger setzen von der Lichtung nach.
   - variant: escort
-    target: { at: [8, 6] }
-    enemySpawn: { rect: [4, 0, 11, 1] }
-    deploy: { tiles: [[8, 7], [8, 4], [7, 5], [9, 5], [7, 4], [9, 4], [7, 6], [9, 6]] }
-    exit: { rect: [6, 17, 9, 17] }
-  # Grund: die Brücke über den Silberbach – Hinterhalt an der Engstelle.
+    target: { at: [10, 8] }
+    enemySpawn: { rect: [7, 3, 12, 4] }
+    deploy: { tiles: [[10, 9], [9, 9], [8, 9], [7, 9], [7, 10], [7, 11], [7, 12], [8, 12]] }
+    exit: { rect: [8, 24, 10, 24] }
+  # Grund: der Holzsteg über den Bach – Hinterhalt an der Engstelle.
   - variant: rout
-    target: { at: [7, 8] }
-    enemySpawn: { rect: [5, 3, 10, 5] }
-    deploy: { rect: [6, 14, 9, 15] }
-  # Grund: der Wald an der Westflanke, aus dem Morras Jäger traten.
+    target: { at: [13, 14] }
+    enemySpawn: { rect: [7, 10, 13, 12] }
+    deploy: { rect: [8, 21, 12, 22] }
+  # Grund: die Waldtasche am Wildwechsel West, aus der Morras Jäger traten.
   - variant: boss
-    target: { at: [3, 12] }
-    enemySpawn: { rect: [0, 10, 2, 13] }
-    deploy: { rect: [6, 14, 9, 15] }
-# Epic 3: Morra flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Kopfgeld (bounty). Ihre Kartenwaffe ist Eisen (iron_bow), damit
-# „+1 Tier je Groll“ greift (Review R14/R15). Morra ist Schützin (Klasse marksman aus lieutenants.yaml), kein Boss: das Ziel ist escort.
-# Liora: dritte Partei am Schrein (Heilstab), Profil hold – sie bleibt am Schrein, heilt aus der Nähe und wird von der Truppe gedeckt.
-# Balancing 2026-10-28 [C]: Stufen der Banditen 3 statt 2 (h2 bleibt 3, h4 Stufe 4, h8/Schütze Stufe 4 nur Schwer), Auslöseradius der Schleichwege 6 statt 4/5, h7 trigger statt hold (Normal/Schwer). Hintergrund: Schwer lag bei 97 % Sieg (Korridor 30-70), Normal bei 0,3 Niedergestreckten (Korridor 0,4-1,3).
+    target: { at: [5, 16] }
+    enemySpawn: { rect: [2, 17, 7, 19] }
+    deploy: { rect: [8, 21, 12, 22] }
 units:
-  - { char: liora, id: liora, team: other, class: healer, level: 3, at: [8, 2], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }, { def: leather_vest }, { def: leather_cap }], ai: { profile: hold } }
-  - id: morra
-    nameKey: unit.morra.name
-    team: enemy
-    class: marksman
-    level: 5
-    at: [14, 14]
-    lieutenant: morra
-    sprite: morra
-    portrait: morra
-    items: [ { def: iron_bow }, { def: vulnerary } ]
-    drops: [1]
-    ai: { profile: trigger, radius: 4, then: aggressive }
-    quote: scn.m1_3.morra_battle
-  - { id: h1, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 3, at: [2, 6],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: h2, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [13, 5], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: h3, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [2, 10], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: h4, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: h5, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand,    sprite: brigand,       level: 3, at: [4, 12], items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: h6, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard,   sprite: soldier,       level: 3, at: [11, 13], items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: h7, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 3, at: [12, 3], items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: h8, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 4, at: [1, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Am Schrein: Halvard (unangreifbar) und Liora (heilt eigene, tritt nach dem Sieg bei)
+  - { id: halvard, nameKey: unit.halvard.name, team: other, class: bishop, sprite: villager_elder, level: 10, at: [10, 1], items: [], ai: { profile: hold }, untargetable: true }
+  - { id: liora, char: liora, team: other, class: healer, level: 3, at: [9, 1], items: [{ def: shine }, { def: heal_staff }, { def: mage_robe }, { def: vulnerary }, { def: leather_vest }, { def: leather_cap }], ai: { profile: support } }
+  # Lichtung: Morra am Fuß der Terrasse, ihre Schützen oben in den Ruinen über der Rampe
+  - { id: morra, nameKey: unit.morra.name, team: enemy, class: marksman, sprite: morra, portrait: morra, level: 5, at: [10, 6], lieutenant: morra, items: [{ def: iron_bow }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive }, quote: scn.m1_3.morra_battle }
+  - { id: m1, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [7, 2], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: m2, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 2], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Waldstraße: zwei Lanzen an der Kehre vor der Lichtung
+  - { id: m3, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [9, 9], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: m4, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [10, 8], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Hinterhalte in Waldtaschen (wachen erst in der Nähe auf)
+  - { id: m5, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 16], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m6, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [6, 17], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m7, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [10, 16], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m8, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [11, 17], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m9, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [17, 13], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m10, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [2, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m11, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 8], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: m12, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [18, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: m13, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [3, 13], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: m14, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [13, 11], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [hard] }
 pairs: []
-# Wellen von den Seiten, angekündigt: Runde 3 (links/rechts) [C] (vorher schwer Runde 5; der Schütze von links unten entfiel mit dem Ziel rout, 2026-10-28)
 reinforcements:
-  - turn: 3
+  # Häscher folgen der Spur von Süden
+  - turn: 4
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [0, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 5], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [14, 24], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Morra ruft ihre Flankenleute
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [0, 7], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [19, 5], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [0, 4], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
-  victory: { type: rout }
+  victory: { type: reach, unit: avatar, area: { rect: [8, 1, 11, 2] } }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
     - { type: unit_dies, unit: liora }
   side:
-    - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
-    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    - { id: s_fast, type: turn_limit, turns: 10, reward: { gold: 200 } }   # [C] Startwert
-triggers: []
-# Szenen: scn.m1_3.intro vor der Karte (Knoten pre), scn.m1_3.morra_battle bei Morras Auftritt (quote), scn.m1_3.outro (Beitritt Liora, Halvard) nach dem Sieg
+    - { id: s_chests, type: open_chests, reward: { gold: 200 } }
+    - { id: s_fast, type: turn_limit, turns: 10, reward: { item: { def: vulnerary } } }
+triggers:
+  # Am Schrein: Liora spricht die Truppe an, sobald jemand die Lichtung betritt.
+  - id: t_shrine
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [6, 3, 13, 6] } }
+    then:
+      - { action: dialogue, id: scn.m1_3.shrine }
 goldReward: 1100   # [C]
 music: battle_a
-devNote: >
-  Halten und Vertreiben. 16 × 18: Schrein im Norden (Liora), Brücke x=7 als Engstelle, Furten x=3/x=12, zwei Häuser im Süden und Osten. Fällt Liora, ist die Mission verloren.
-  Leicht: 8 Gegner; Normal: 10; Schwer: 11 (einschließlich der Welle Runde 3).
+design:
+  title: Der Fremde mit dem Siegel
+  intent: >
+    Waldkarte mit Nebel des Krieges: Späher sehen weiter, Hinterhalte in Waldtaschen strafen Eile. Die Straße ist sicher, aber lang;
+    die Wildwechsel sind schnell, aber eng. Am Ende Morras Schützen über der Rampe zur Terrasse des Schreins.
+  mood: Früher Morgen, Nebel zwischen alten Eichen, Lichtstrahlen auf die Lichtung, der Weißdorn voller roter Beeren, moosiger Schrein.
+  phases:
+    - { id: p1, turns: [1, 3], label: Waldrand, note: "Wegwahl: Straße, Wildwechsel West oder Ost; Hinterhalte in den Taschen." }
+    - { id: p2, turns: [4, 6], label: Bach, note: "Häscher folgen von Süden (R4); Holzsteg am Bach als Engstelle." }
+    - { id: p3, turns: [7, 10], label: Lichtung, note: "Morras Linie, Flankenleute (R6), Liora heilt vom Schrein aus." }
+  paths:
+    - { team: player, points: [[9, 22], [9, 20], [13, 20], [13, 12], [7, 12], [7, 9], [10, 9], [10, 3]], label: Waldstraße }
+    - { team: player, points: [[6, 21], [3, 16], [3, 12], [5, 7], [8, 3]], label: Wildwechsel West }
+    - { team: player, points: [[14, 21], [16, 18], [17, 13], [15, 8], [12, 3]], label: Wildwechsel Ost }
+    - { team: enemy, points: [[5, 24], [6, 21]], phase: p2, label: R4 }
+    - { team: enemy, points: [[0, 7], [5, 7]], phase: p3, label: R6 }
+  zones:
+    - { area: { rect: [6, 1, 13, 6] }, label: Lichtung, phase: p3 }
+  marks:
+    - { at: [9, 3], label: R, note: "Rampe auf die Terrasse (zwei Felder breit), Schützen darüber in den Ruinen." }
+    - { at: [13, 14], label: E, note: Holzsteg über den Bach; daneben Furt (langsam). }
+    - { at: [5, 16], label: A1, note: Hinterhalt am Wildwechsel West. }
+    - { at: [10, 16], label: A2, note: "Hinterhalt nahe der Straße, Schütze dabei." }
+    - { at: [17, 13], label: A3, note: Hinterhalt am Wildwechsel Ost. }
+  notes:
+    - "Normal 18 Gegner (4 davon R4/R6) gegen 7 eigene, Stufe 2–3 plus Morra; Leicht 15, Schwer 22."
+    - "Aufstellbar 7: Rhen, Kael, Brenna, Tobin, Fenn + Mira, falls 1-2 zuerst gespielt; sonst Söldner."
+    - "Halvard tritt hier zum ersten Mal auf und kennt jeden Namen (Nachszene am Schrein); Liora tritt nach dem Sieg bei."
+    - Keine Geländeveränderung (nächste veränderliche Karte 1-4).

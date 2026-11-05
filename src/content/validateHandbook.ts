@@ -40,6 +40,9 @@ export function validateHandbook(data: GameData, locales: Locales, err: (file: s
   }
   const anchors = new Map<string, string>();
   const terrainOf = new Map<string, string>();
+  // the texts of all entries once, not the whole locale per entry: this check runs in every validation
+  const entryTexts: Record<string, [string, string][]> = {};
+  for (const lang of LANGS) entryTexts[lang] = Object.entries(locales[lang] ?? {}).filter(([k]) => k.startsWith('handbook.entry.'));
   for (const e of hb.entries) {
     const ctx = `entry ${e.id}`;
     if (!cats.has(e.category)) err(f, `${ctx}: unknown category ${e.category}`);
@@ -77,7 +80,7 @@ export function validateHandbook(data: GameData, locales: Locales, err: (file: s
     if (e.graphic === 'lesson' && !e.lesson) err(f, `${ctx}: graphic lesson needs a lesson`);
     // texts: placeholders name a value of the entry (values come from the content)
     for (const lang of LANGS)
-      for (const [k, text] of Object.entries(locales[lang] ?? {})) {
+      for (const [k, text] of entryTexts[lang]!) {
         if (!k.startsWith(`handbook.entry.${e.id}.`)) continue;
         for (const m of text.matchAll(/\{([\w.]+)\}/g))
           if (!valueIds.has(m[1]!) && m[1] !== 'avatar' && !m[1]!.startsWith('pronoun.'))

@@ -3,17 +3,17 @@
 # Wachwechsel und den Hintereingang an. `protect`: Fenn bleibt (Flag e02 = protect). `hand_over`: Fenn geht (leave), die Mission wird leichter, weil
 # wr3, wr4, g3 und g4 entfallen (Karte, `requires` auf e02 = hand_over). Ohne Fenn in der Truppe (gefallen oder gegangen) entfällt E2: der Ring will
 # dann nichts mehr, das Versteck nennt er trotzdem. Der Bote ist keine Figur mit Halbfigur: seine Zeilen sind Erzähltext („Der Bote: …“).
-# N1 baut die Session Nebenquests: der Knoten n1 öffnet sich an `protect`.
+# N1 öffnet nach dem Sieg in 1-4, wenn E2 `protect` fiel (Knoten m1_4, Missionsliste).
 id: scn.m1_4.intro
 background: wolfslager
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Dämmerung am Waldrand. Ein Mann tritt hervor, die Hände leer: ein Bote des Diebesrings von Varnhold."
+    text: "Dämmerung am Fuß der Wolfshügel. Ein Mann tritt hervor, die Hände leer: ein Bote des Diebesrings von Varnhold."
   - id: l02
     mood: neutral
-    text: "Der Bote: „Ihr sucht den Makler Osric Dunn. Er sitzt bei den Wolfsreitern im Wald. Das Lager kennt jeder.“"
+    text: "Der Bote: „Ihr sucht den Makler Osric Dunn. Er sitzt bei den Wolfsreitern im Fels. Das Lager kennt jeder.“"
   - id: l03
     speaker: [kael]
     mood: neutral
@@ -45,7 +45,7 @@ lines:
         stance: warm
         text: "„Fenn gehört zu uns. Das Lager finden wir auch ohne euch.“"
         summary: "Fenn bleibt bei der Truppe"
-        effects: [{ setFlag: { e02: protect } }, { openQuest: n1 }]
+        effects: [{ setFlag: { e02: protect } }]
       - id: hand_over
         stance: sober
         text: "„Nehmt ihn. Und zeigt uns den Hintereingang.“"
@@ -70,7 +70,7 @@ lines:
   - id: h02
     requires: [{ flag: { e02: hand_over } }]
     mood: neutral
-    text: "Der Bote: „Der Hintereingang liegt im Süden hinter den Zelten. Die Wachen wechseln mit dem Mond.“"
+    text: "Der Bote: „Der Hintereingang liegt oben zwischen den Felsen. Die Wachen wechseln mit dem Mond.“"
   - id: h03
     requires: [{ flag: { e02: hand_over } }]
     speaker: [brenna]

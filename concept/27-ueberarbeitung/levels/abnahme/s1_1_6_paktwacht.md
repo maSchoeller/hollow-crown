@@ -8,6 +8,13 @@
 - **Hask** hält die Vorburg. Bei 0 TP flieht er durch die Ostpforte über den **Ziegenpfad** nach Süden (den können auch Späher als Flankenweg nutzen).
 - Schon sichtbar für später: das **Gewölbe-Tor** im Fels (1-7) und der **Wachpass** im Nordwesten (1-8).
 
+**Im Spiel (2026-11-05):**
+
+- **Stufen:** Felder und Terrasse 1 = 0. Terrasse 2 und 3, Vorburg, Burghof, Bergfried, Wachpass = 1. Stützmauer y 25 führt hinauf: Mittelrampe, Rampe Ostwald, Treppe am Ziegenpfad. Stützmauer y 21 bleibt Zickzack auf Stufe 1.
+- **Wehrgänge auf Stufe 2:** Vorburg-Südmauer samt kurzer Seitenmauern (Treppen [9,16], [20,16]), Burgmauer West samt Seitenmauer (Treppe [7,10]), Burgmauer Ost (Treppe [17,13]). Ecktürme der Vorburg als `tower_top`.
+- **Burgtor** geschlossen, Hebel [20,12] am Ende des Wehrgangs Ost, nur von oben zu ziehen. Späher und Schlüssel öffnen auch.
+- **Abweichungen:** Schützen t7, t13, t14, k3, k4 auf Rampe und Wehrgang umgestellt. Treppen an Seitenmauern, weil die Kamera eine Treppe auf der Nordseite einer Mauer nur von hinten zeigt. Gegner L 28 · N 33 · S 40 statt 30 · 36 · 40, weil die Truppe nach 1-5 nur 4 bis 8 Figuren hat; Stufen einiger Gegner gesenkt, Auslöse-Radien kleiner. Gold kleiner (900, Truhe 300, Häuser 300, Nebenziel 400). Felder als Gelände `field`.
+
 ![Raster](s1_1_6_paktwacht.png)
 
 <details><summary>Details</summary>

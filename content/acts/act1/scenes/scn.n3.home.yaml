@@ -7,6 +7,7 @@ lines:
     mood: sad
     text: "Hier am Tisch sagte Vater immer: Ein Pächter bleibt. Ich bin gegangen. Und der Tisch steht noch."
   - id: h02
+    requires: [{ alive: tobin }]
     speaker: [brenna]
     fallback: skip
     mood: neutral

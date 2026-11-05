@@ -5,7 +5,7 @@ music: camp
 lines:
   - id: l01
     mood: sad
-    text: "Mittag auf dem Land. Felder, ein Bach, ein Zaun um einen Hof. Tobin hat oft von hier erzählt."
+    text: "Abend auf dem Land. Felder, ein Fluss mit Mühle, mitten darin ein Hof. Tobin hat oft von hier erzählt."
   - id: l02
     speaker: [brenna, kael, avatar]
     mood: sad
@@ -13,7 +13,7 @@ lines:
   - id: l03
     speaker: [brenna, kael, avatar]
     mood: sad
-    text: "Pachteintreiber halten ihn besetzt. Wir holen den Hof zurück. Für ihn."
+    text: "Marodeure fallen über den Hof her, und sein Vater ist noch dort. Wir halten ihn. Für Tobin."
   - id: l04
     speaker: [kael]
     mood: neutral

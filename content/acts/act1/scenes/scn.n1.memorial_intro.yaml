@@ -9,7 +9,7 @@ lines:
   - id: l02
     speaker: [mira, brenna, kael]
     mood: sad
-    text: "Er hat einmal erzählt, wo der Ring seinen Dolch hielt. Im Lagerhaus, hinter der verschlossenen Tür."
+    text: "Er hat einmal erzählt, wo der Ring seinen Dolch hielt. Oben im Nest, auf den Dächern im Nordosten."
   - id: l03
     speaker: [brenna, kael]
     mood: sad
