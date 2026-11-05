@@ -4,7 +4,7 @@
 
 - Die Truppe kommt von Süden. Die **Windscharte** ist vier Felder breit, darüber zwei **Felsnasen mit Ballisten**.
 - **Balliste:** Wer oben steht, dreht sie um. Hinauf geht es über Rampe und Treppe, im Westen auch über eine Leiter (nur zu Fuß).
-- **Reiter** kommen in Runde 3, 6 und 9 über die Ebene. In Runde 7 kommen **Söldner von hinten**.
+- **Söldnerwellen** kommen in Runde 3, 6 und 9 über die Ebene. In Runde 7 kommen **Söldner von hinten**.
 - **Jory** steckt am Gauklerwagen fest, in Reichweite der Ostballiste. Das **Passhospiz** heilt, liegt aber ebenfalls im Schussfeld.
 - Runde 8 **Drachenschatten**, nach Runde 10 bieten Seraphine und Dravn den Freispruch an.
 
@@ -17,8 +17,8 @@
 | Gegner | L 20 · N 24 · S 28, Stufe P−3 bis P−1 (hier 8–10), Leutnants P+1 bis P+2 |
 | Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Kael |
 | Nebenziele | Jory anwerben · Brakkas Soldtruhe auf der Ostnase |
-| Phasen | R1–3 Kessel · R4–6 Reiter und Sturm auf die Nasen · R7–10 Falle |
-| Formatwünsche | Klasse `cavalier`, Regel Balliste (fehlt in `src/core`), Leutnant `brakka` |
+| Phasen | R1–3 Kessel · R4–6 Wellen und Sturm auf die Nasen · R7–10 Falle |
+| Formatwünsche | Regel Balliste (fehlt in `src/core`), Leutnant `brakka` |
 | Datei | `levels/s2_2_1_windscharte.yaml` |
 
 </details>

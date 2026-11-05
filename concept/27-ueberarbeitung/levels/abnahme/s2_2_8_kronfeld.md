@@ -5,7 +5,7 @@
 - Der **neutrale Treffpunkt** ist die Falle: Die Truppe steht auf dem Hügel in der Mitte, die vier Mächte kommen von allen Seiten.
 - **Überleben, dann ausbrechen:** Das Brückentor ist zu. In **Runde 6 zögert Rowena**, das Tor geht auf, und ihre Leute halten still.
 - Wer früher weg will, muss zur **Furt** im Osten. Sie ist weit und wird ab Runde 9 von Lanzen gesperrt.
-- **Brakkas Balliste** steht auf dem Osthügel und reicht bis zum Treffpunkt. Reiterwellen kommen in Runde 3 und 5 über die Ebene.
+- **Brakkas Balliste** steht auf dem Osthügel und reicht bis zum Treffpunkt. Wellen kommen in Runde 3 und 5 über die Ebene.
 - Hat Sable bei E7 gewechselt, führt im Süden der Hauptmann.
 
 ![Raster](s2_2_8_kronfeld.png)
@@ -19,7 +19,7 @@
 | Sieg | 6 Figuren aufs Nordufer (Vorschlag, per `pnpm sim` prüfen) |
 | Nebenziele | niemand fällt · binnen 14 Runden |
 | Phasen | R1–5 überleben · R6–9 das Tor · R10–15 Ausbruch |
-| Formatwünsche | Klasse `cavalier`, Regel Balliste, Modelle Zelt, Boden Herbst |
+| Formatwünsche | Regel Balliste, Modelle Zelt, Boden Herbst |
 | Datei | `levels/s2_2_8_kronfeld.yaml` |
 
 </details>

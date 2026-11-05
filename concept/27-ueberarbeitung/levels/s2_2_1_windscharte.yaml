@@ -1,7 +1,7 @@
 # Etappe 6, Akt 2, Mission 2-1 – Wind über der Eisenmark. Entwurf nach missionsliste.html (M 20×25, survive, 9 / 24, Leutnant Brakka, Beitritt Jory).
 # Die Truppe kommt von Süden die Passstraße herauf. Die Windscharte ist ein trockenes altes Flusstal: vier Felder breit, zwei Felsnasen mit Ballisten darüber, dahinter die offene Ebene.
-# Lektion Balliste: Die Nasen sind Stufe 2 und von Süden über Rampe, Leiter und Treppe erreichbar. Wer oben steht, dreht die Balliste gegen die Reiter.
-# Lektion Reiterei: Die Reiter kommen über die Ebene und sind schnell auf Gras; Wald und die enge Scharte bremsen sie.
+# Lektion Balliste: Die Nasen sind Stufe 2 und von Süden über Rampe, Leiter und Treppe erreichbar. Wer oben steht, dreht die Balliste gegen die Wellen aus der Ebene.
+# Wellen von Söldnern kommen über die Ebene und drängen durch die enge Scharte.
 id: s2_2_1_windscharte
 nameKey: map.s2_2_1_windscharte.name
 size: [20, 25]
@@ -81,23 +81,23 @@ units:
   # Jory am liegengebliebenen Gauklerwagen, in Reichweite der Ostballiste
   - { id: jory, char: jory, team: other, class: minstrel, level: 5, at: [16, 19], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_1.jory_talk } }
 reinforcements:
-  # Erste Reiter über die Ebene
+  # Erste Welle über die Ebene
   - turn: 3
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  # Zweite Reiter
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Zweite Welle
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [12, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [12, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Die Falle: Söldner kommen von hinten die Passstraße herauf
   - turn: 7
     phase: enemy
@@ -106,13 +106,13 @@ reinforcements:
       - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 9, levelOffset: -2, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [8, 24], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  # Letzter Reiter
+  # Letzte Welle
   - turn: 9
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: survive, turns: 10 }
   defeat:
@@ -142,17 +142,17 @@ design:
   title: Wind über der Eisenmark
   intent: >
     Neues Land, neue Gefahr: Die Truppe gerät im Scheitel des Passes in Brakkas Sperre und muss zehn Runden aushalten, bis die Boten von Seraphine und Dravn kommen.
-    Lektion Balliste und Reiterei: Wer eine Felsnase erobert, dreht die Balliste um und schießt die Reiter schon in der Scharte zusammen.
+    Lektion Balliste: Wer eine Felsnase erobert, dreht die Balliste um und beschießt die Wellen schon in der Scharte.
   mood: Klarer, kalter Herbstmorgen im Hochgebirge, Sturm reißt an Fahnen und Gras, kahle Felsnasen mit großen Ballisten, dahinter die weite goldbraune Ebene der Eisenmark, ein liegengebliebener bunter Gauklerwagen an der Passstraße.
   phases:
     - { id: p1, turns: [1, 3], label: Der Kessel, note: "Erste Linie aus der Scharte, die Ballisten decken die Straße bis y 17. Jory wird beschossen." }
-    - { id: p2, turns: [4, 6], label: Die Reiter, note: "Reiter kommen durch die Scharte (R3, R6). Sturm auf die Nasen über Rampe, Leiter und Treppe." }
-    - { id: p3, turns: [7, 10], label: Die Falle, note: "R7 Söldner von Süden, R8 Drachenschatten, R9 letzter Reiter, nach R10 die Boten." }
+    - { id: p2, turns: [4, 6], label: Die Wellen, note: "Söldner kommen durch die Scharte (R3, R6). Sturm auf die Nasen über Rampe, Leiter und Treppe." }
+    - { id: p3, turns: [7, 10], label: Die Falle, note: "R7 Söldner von Süden, R8 Drachenschatten, R9 letzte Welle, nach R10 die Boten." }
   paths:
     - { team: player, points: [[8, 21], [6, 19], [2, 19], [2, 17], [3, 16], [3, 15], [3, 14]], phase: p2, label: Westnase }
     - { team: player, points: [[6, 17], [5, 17], [4, 17]], phase: p2, label: Leiter }
     - { team: player, points: [[12, 21], [16, 18], [16, 16], [16, 13], [16, 12], [16, 11]], phase: p2, label: Ostnase }
-    - { team: enemy, points: [[9, 0], [9, 8], [9, 15], [10, 20]], phase: p2, label: Reiter }
+    - { team: enemy, points: [[9, 0], [9, 8], [9, 15], [10, 20]], phase: p2, label: Wellen }
     - { team: enemy, points: [[9, 24], [9, 21]], phase: p3, label: Von hinten }
   zones:
     - { area: { rect: [8, 10, 11, 14] }, label: Die Scharte }
@@ -169,9 +169,8 @@ design:
   notes:
     - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 11 und bleibt fürs Schema."
     - "Normal 24 Gegner (10 davon R3/R6/R7/R9) gegen 9 eigene (+ Jory), P−3 bis P−1 (hier P = 11, Stufe 8–10), Leutnants P+1 bis P+2; Leicht 20, Schwer 28."
-    - "Formatwunsch Klasse cavalier: Söldnerreiter zu Pferd (moveType mounted), nur Gegner. Das Spiel hat noch keine Pferdeklasse."
     - "Formatwunsch Balliste: Objekt und Modell gibt es, die Regel (GDD: Mt 12 + STR, Treffer 70, Reichweite 3–10, Bedienen vom Nachbarfeld) fehlt in src/core noch. Die KI bedient sie nur mit Profil hold."
     - "Formatwunsch Leutnant: brakka fehlt in lieutenants (Akt-2-Paket); als Ballistenmeisterin zu Fuß, Bogenklasse hier nur als Platzhalter."
     - "Die Truhe mit Brakkas Sold auf der Ostnase: Fenn öffnet ohne Schlüssel, sonst der Schlüssel der Wache auf der Nase."
     - "Saat Drachen: In Runde 8 zieht ein Schatten über die Scharte, Söldner und Truppe halten kurz inne (Szene, keine Figur)."
-    - "Nach dem Sieg: Rowenas Reiter und ein Bote Dravns erreichen den Pass gleichzeitig, beide bieten den Freispruch an (Szene). Brakka zieht ab, sie wurde bezahlt."
+    - "Nach dem Sieg: Rowenas Lanzen und ein Bote Dravns erreichen den Pass gleichzeitig, beide bieten den Freispruch an (Szene). Brakka zieht ab, sie wurde bezahlt."
