@@ -1,0 +1,127 @@
+# Etappe 6, Akt 2, Nebenquest N5 – Glut unter dem Berg. Entwurf nach missionsliste.html (K 16×20, treasure, Beitritt Brann); Gegner, Truhen, Nebenziele nach Epic 11, Story 11.19.
+# Bergwerk bei Kupferhall, enge Stollen im Kriegsnebel. Vier Truhen in vier Winkeln. Zur Knochenhalle führen die verschlossene Mitteltür oder das Gatter im Osten, das ein Hebel öffnet.
+id: s2_n5_mine
+nameKey: map.s2_n5_mine.name
+size: [16, 20]
+fog: true
+interior: true
+legend:
+  "X": rockwall
+  "o": vault
+  "d": door
+  "g": gate_closed
+  "L": lever
+  "W": wagon
+  "q": sarcophagus
+#          x: 0123456789012345
+terrain: |
+  XXXXXXXXXXXXXXXX
+  XXooooooooooooXX
+  XXooooqqqqooooXX
+  XXoooooqqoooooXX
+  XXooooooooooooXX
+  XXXXXXXooXXoooXX
+  XXXXXXXooXXoooXX
+  XXXXXXXooXXoooXX
+  XXXXXXXddXXoooXX
+  XXXXXXXooXXXgXXX
+  XXXXXXXooXXXoXXX
+  XXXXXXXooooooooX
+  XooooooooWooooLX
+  XooooWoooooooooX
+  XooooooooXXXXXXX
+  XXXXXXXooXXXXXXX
+  XXXXXXXooXXXXXXX
+  XXXXXooooooXXXXX
+  XXXXXooooooXXXXX
+  XXXXXooooooXXXXX
+timeOfDay: indoor
+objects:
+  - { id: d_mid_w, type: door, at: [7, 8] }
+  - { id: d_mid_e, type: door, at: [8, 8] }
+  - { id: l_gate, type: lever, at: [14, 12] }
+  - { id: c_ember, type: chest, at: [3, 2], contents: { item: { def: dragon_ember } } }
+  - { id: c_rune, type: chest, at: [12, 1], contents: { item: { def: earth_rune_3 } } }
+  - { id: c_page, type: chest, at: [14, 13], contents: { chronicle: a2_mine } }
+  - { id: c_moon, type: chest, at: [1, 12], contents: { material: { moonsteel: 3 } } }
+deploy:
+  max: 7
+  forced: [avatar, kael]
+  slots: [[5, 17], [6, 17], [7, 17], [8, 17], [9, 17], [10, 17], [5, 18], [6, 18], [9, 18], [10, 18]]
+units:
+  # Unten im Hauptschacht
+  - { id: a1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [7, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: a2, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [8, 13], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  # Vorarbeiter im Westgang trägt den Türschlüssel
+  - { id: foreman, nameKey: unit.foreman.name, team: enemy, class: brigand, level: 14, levelOffset: -1, at: [3, 13], items: [{ def: iron_axe }, { def: door_key }], ai: { profile: guard }, drops: [1] }
+  - { id: b1, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [5, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: b2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [2, 14], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Ostgang vor dem Hebel
+  - { id: c1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [11, 12], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: c2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [13, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Knochenhalle im Norden
+  - { id: d1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [4, 3], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: d2, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [11, 3], items: [{ def: iron_sword }], ai: { profile: guard } }
+  - { id: d3, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [7, 4], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: d4, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [12, 6], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [normal, hard] }
+  - { id: d5, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [3, 1], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [8, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [11, 7], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [hard] }
+  # Brann versteckt sich im Westgang, fürchtet die eigene Glut; Ilka oder Kael sprechen ihn an
+  - { id: brann, char: brann, team: other, class: elementalist, level: 8, at: [1, 13], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: [ilka, kael], dialogue: scn.n5.brann_talk } }
+reinforcements:
+  # Vom Eingang
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [7, 19], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [8, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [6, 19], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+objectives:
+  victory: { type: treasure, chests: [c_ember, c_rune, c_page, c_moon], turns: 12 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
+  side:
+    - { id: s_brann, type: recruit, unit: brann, reward: { gold: 300 } }
+    - { id: s_fast, type: turn_limit, turns: 9, reward: { item: { def: vulnerary } } }
+    - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }
+triggers:
+  - id: t_gate
+    once: true
+    when: { type: object_activated, object: l_gate }
+    then:
+      - { action: set_terrain, area: { tiles: [[12, 9]] }, terrain: gate }
+  - id: t_bones
+    once: true
+    when: { type: object_activated, object: c_ember }
+    then:
+      - { action: dialogue, id: scn.n5.relic }
+goldReward: 1500
+design:
+  title: Glut unter dem Berg
+  intent: >
+    Eine kurze, enge Schatzsuche im Dunkeln: Vier Truhen, zwölf Runden, und man muss sich aufteilen. Brann sitzt im Westgang und fürchtet die eigene Glut. In der Knochenhalle liegt, was niemand erklären kann (Saat Drachen).
+  mood: Enge Stollen im Kupferberg, Loren auf Schienen, rote Glutadern im Fels als einziges Licht, riesige Rippenknochen im Gestein der oberen Halle.
+  phases:
+    - { id: p1, turns: [1, 4], label: Hauptschacht, note: "Aufteilen: West zu Brann und Truhe, Ost zu Hebel und Seite. R4 vom Eingang." }
+    - { id: p2, turns: [5, 12], label: Knochenhalle, note: "Über Tür oder Gatter in die obere Halle, Relikt und Rune." }
+  paths:
+    - { team: player, points: [[7, 17], [7, 13], [2, 13]], label: Brann }
+    - { team: player, points: [[8, 16], [8, 12], [13, 12]], label: Hebel }
+    - { team: player, points: [[12, 10], [12, 5], [12, 2]], phase: p2, label: Gatter }
+    - { team: player, points: [[7, 9], [7, 5], [4, 3]], phase: p2, label: Tür }
+  zones:
+    - { area: { rect: [2, 1, 13, 4] }, label: Knochenhalle, phase: p2 }
+  marks:
+    - { at: [14, 12], label: H, note: "Hebel öffnet das Gatter [12,9]." }
+    - { at: [7, 3], label: K, note: "Drachenknochen im Fels, unpassierbar. Sarkophag ist Platzhalter fürs Modell." }
+    - { at: [3, 13], label: V, note: "Vorarbeiter trägt den Türschlüssel; Fenn öffnet ohne." }
+  notes:
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 15 und bleibt fürs Schema."
+    - "Normal 15 Gegner (3 davon R4), gegen 7 eigene; Leicht 12, Schwer 18. Beitritt Brann über Ilka oder Kael."
+    - "Ohne Hebel und ohne Schlüssel bleibt die Knochenhalle zu: Hebel und Schlüssel sind beide leicht erreichbar, Fenn öffnet die Tür."
+    - "Knotenwirkung: Glutfunke. Item-IDs laut Epic; das Blatt warnt nicht bei fehlenden Items."

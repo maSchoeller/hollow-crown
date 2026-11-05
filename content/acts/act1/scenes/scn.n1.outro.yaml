@@ -5,7 +5,7 @@ music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Der Nebel lichtet sich. Aus dem Lagerhaus trägt Fenn ein schmales Bündel, vorsichtig, als wäre es aus Glas."
+    text: "Der Nebel lichtet sich. Vom Dach des Nests trägt Fenn ein schmales Bündel herunter, als wäre es aus Glas."
   - id: l02
     speaker: [fenn]
     fallback: skip

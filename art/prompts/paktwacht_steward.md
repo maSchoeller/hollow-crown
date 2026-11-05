@@ -53,3 +53,7 @@ EXPRESSION: quietly relieved, tired smile.
 WEAPON: NONE - he is not a fighter; instead he holds up one big old iron key in his right hand.
 SIGNATURE: the key ring and the raised old key.
 ```
+
+## Brettfigur (Story 15.9)
+
+Brett-Turnaround vom 2026-11-05: `art/prompts/paktwacht_steward_board_turnaround.md`, Bilder `art/turnarounds/paktwacht_steward_board/`. Tripo-Lauf steht aus (Konto im Free-Tarif, Auflage A1); das Modell entsteht danach.

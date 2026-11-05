@@ -125,25 +125,24 @@ describe('Truhenbelohnung chronicle', () => {
 });
 
 describe('Nebenquest N2 als Knoten', () => {
-  it('opens after mission 1-3 (synthetic state: the node comes with another session) and never lapses', () => {
+  it('opens after mission 1-5 (missionsliste) and never lapses', () => {
     const d = structuredClone(data);
-    d.campaign.nodes.push({ id: 'm1_3', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 3 });
     const c = newCampaign(d, 5, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-    c.completed = ['prologue', 'm1_1'];
+    c.completed = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4'];
     expect(availableNodes(d, c).map((n) => n.id)).not.toContain('n2');
-    c.completed.push('m1_3', 'ch01', 'n1');
+    c.completed.push('m1_5', 'ch01', 'n1');
     expect(availableNodes(d, c).map((n) => n.id)).toContain('n2');
     c.completed.push('n2');
     expect(availableNodes(d, c).map((n) => n.id)).not.toContain('n2');
   });
 
-  it('pays the ember spark with the victory, the page and the relic only from the chests, plays no memorial variant', () => {
+  it('pays the ember spark with the victory, the page and the relic are the chests of the goal, plays no memorial variant', () => {
     const n = data.campaign.nodes.find((x) => x.id === 'n2')!;
     expect(n.effects).toEqual([{ item: { def: 'ember_spark' } }]);
     expect(n.memorialIf).toBeUndefined();
     expect(n.place).toBe('wachturm');
     const m = data.maps.n2_wachturm!;
-    expect(m.objectives.victory.type).toBe('seize');
+    expect(m.objectives.victory.type).toBe('treasure');
     expect(m.objects.find((o) => o.id === 'c_page')!.contents).toMatchObject({ chronicle: 'a1_watchtower', dialogue: 'scn.n2.page' });
     expect(m.objects.find((o) => o.id === 'c_relic')!.contents).toMatchObject({ item: { def: 'pact_warden_shield' }, dialogue: 'scn.n2.relic' });
     expect(nodeScenes(data, null, 'n2')).toEqual({ pre: 'scn.n2.intro', post: 'scn.n2.outro' });

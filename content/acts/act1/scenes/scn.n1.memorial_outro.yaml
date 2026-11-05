@@ -5,7 +5,7 @@ music: camp
 lines:
   - id: l01
     mood: sad
-    text: "Der Ring ist zerschlagen. Aus dem Lagerhaus trägt Kael ein schmales Bündel."
+    text: "Der Ring ist zerschlagen. Vom Dach des Nests holen sie ein schmales Bündel herunter."
   - id: l02
     speaker: [kael]
     mood: neutral

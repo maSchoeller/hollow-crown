@@ -1,0 +1,6 @@
+# Mission 1-6, Karten-Szene beim Hebel auf dem Wehrgang (Trigger t_gate): Das Burgtor öffnet sich. Späher und Schlüssel öffnen es ohne diese Zeile.
+id: scn.m1_6.gate
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ketten rasseln im Mauerwerk. Unter dem Wehrgang schwingt das Burgtor auf."

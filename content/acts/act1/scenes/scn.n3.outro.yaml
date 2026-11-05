@@ -1,11 +1,11 @@
-# Nebenquest N3, Szene nach der Karte: das Erbstück. Belohnung selbst: Knotenwirkung (campaign.yaml). Kein Glutfunke. Gedenk-Variante: scn.n3.memorial_outro.
+# Nebenquest N3, Szene nach der Karte: Der Vater übergibt das Erbstück. Belohnung selbst: Knotenwirkung (campaign.yaml). Kein Glutfunke. Gedenk-Variante: scn.n3.memorial_outro.
 id: scn.n3.outro
 background: erlbach
 music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Die Eintreiber sind fort. Auf dem Hof ist es still. Der Vater ist nicht da."
+    text: "Die Marodeure sind fort. Auf dem Hof ist es still. Der Alte steht noch immer vor seinem Haus."
   - id: l02
     speaker: [tobin]
     fallback: skip
@@ -13,7 +13,10 @@ lines:
     text: "Er hängt noch dort. Über dem Herd. Das Erbstück."
   - id: l03
     mood: neutral
-    text: "Über dem Herd hängt eine alte Lanze: Schaft aus Esche, die Spitze aus einem Pflugblatt, eine Ähre darin."
+    text: "Der Vater nimmt die alte Lanze vom Herd: Schaft aus Esche, die Spitze aus einem Pflugblatt, eine Ähre darin."
+  - id: l07
+    mood: neutral
+    text: "Er legt sie Tobin in die Hände. „Ein Pächter bleibt. Du bist gegangen. Also nimm sie mit.“"
   - id: l04
     speaker: [tobin]
     fallback: skip
@@ -27,4 +30,4 @@ lines:
   - id: l06
     speaker: [kael]
     mood: neutral
-    text: "Nimm sie mit. Und lass das Tor offen für deinen Vater."
+    text: "Nimm sie mit, Tobin. Und komm wieder, solange das Tor offen steht."

@@ -1,0 +1,10 @@
+# Mission 1-4, im Kampf: Eine Figur zieht den Hebel auf der Felsnase, der Fels verschüttet die Osthöhle (Trigger t_rockfall). Keine Antworten (Kampfszene).
+id: scn.m1_4.rockfall
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Hebel kippt. Über der Osthöhle gibt die Felsnase nach, Geröll donnert den Hang hinab."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Die Höhle ist zu. Aus dem Osten kommt kein Wolf mehr."

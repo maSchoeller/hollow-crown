@@ -297,7 +297,7 @@ describe('haunt content', () => {
       patched((m) => {
         const a = m.haunts!;
         a[0]!.target.at = [50, 50];
-        a[1]!.deploy = { rect: [5, 13, 5, 13] }; // 1 field for 4 places
+        a[1]!.deploy = { rect: [6, 15, 6, 15] }; // 1 field for 4 places
         a[2]!.enemySpawn = { rect: [1, 3, 1, 3] }; // 1 spawn field
         a.push({ ...a[1]! });
       }),
@@ -309,7 +309,7 @@ describe('haunt content', () => {
   });
 
   it('content:check reports target in the deploy area and pools that do not add up', () => {
-    const p1 = problems(patched((m) => (m.haunts![0]!.deploy = { rect: [6, 10, 8, 10] })));
+    const p1 = problems(patched((m) => (m.haunts![0]!.deploy = { rect: [6, 9, 8, 9] })));
     expect(p1.some((x) => /target .* lies in deploy or enemySpawn/.test(x))).toBe(true);
     const bad = structuredClone(data.hauntPools[1]!);
     bad.factions.border_bands![0]!.share = 30;
