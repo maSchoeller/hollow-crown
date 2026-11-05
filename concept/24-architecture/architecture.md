@@ -56,7 +56,7 @@ Hollow Crown bleibt ein **Browser-Spiel auf eigenem Stack** (TypeScript, Vite, B
 ### 2.2 Plattform und Rahmen
 
 - **Plattform:** 1. Handy-Browser im Hochformat (PWA), 2. Tablet/PC-Browser mit Maus, 3. später Capacitor. Kein Server, kein Konto, kein Netzwerkspiel; Netz nur für Auslieferung und Updates.
-- **Leistung:** NFR1 (Vorschlag Story 15.11) – 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase auf Karten bis 30 × 40 mit bis zu 50 Figuren und in der 3D-Burg, Wiedergabe der Gegnerphase ≤ 15 s bei 1× und „Gegnerzüge: Gemeinsam“; Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
+- **Leistung:** NFR1 (Vorschlag Story 15.11) – 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase auf Karten bis 30 × 40 mit 50 und mehr Figuren und in der 3D-Burg, Wiedergabe der Gegnerphase ≤ 15 s bei 1× und „Gegnerzüge: Gemeinsam“; Kaltstart < 5 s; Shell + Prolog < 30 MB (gzip, erwartet ~11 MB); KI < 300 ms je Gegnereinheit.
 - **Team:** ein Entwickler mit KI-Agenten. Die Architektur muss vor allem verhindern, dass verschiedene Agenten dieselbe Sache unterschiedlich lösen.
 
 ### 2.3 Komplexitätstreiber und neuartige Konzepte

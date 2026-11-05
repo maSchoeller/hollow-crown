@@ -135,7 +135,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 | Langdruck ≥ 400 ms | Info: Steckbrief, Figur, Gefahrenzone eines Gegners, Item-Details |
 | Pinch, Mausrad | Zoomstufe wechseln (3 auf dem Brett plus eine vierte „ganze Karte“ beim Herauspinchen über die weiteste Stufe; 2 auf der Weltkarte) |
 | Übersicht-Stein (Kampf) | runder Stein mit Karten-Icon neben dem Menü-Stein: „ganze Karte“ ein und aus, ohne Pinch; gedrückt, solange die ganze Karte zu sehen ist (Story 15.11) |
-| Tipp in der Übersicht | wählt nichts aus, sondern springt: die Kamera geht auf die weiteste normale Zoomstufe, zentriert auf das getippte Feld (Story 15.11) |
+| Tipp in der Übersicht | springt: die Kamera geht auf die weiteste normale Zoomstufe, zentriert auf das getippte Feld; ein leeres Feld wird nicht gewählt, eine Figur wie gewohnt (Story 15.11) |
 | Ziehen | Kamera verschieben |
 | Wischen | nächste Figur, nächste Epilog-Kachel, nächstes Kontext-Band (Punkte-Anzeige darunter) |
 | PC | Linksklick = Tipp, Rechtsklick/Esc = zurück, Hover = Info, Hover über ein Zielfeld = Zielfeld-Check, Leertaste = nächste Einheit, E = Phase beenden, D = Gefahrenzone, M = ganze Karte, F = vorderes Kontext-Band ausführen, Pfeiltasten = zwischen Kontext-Bändern |

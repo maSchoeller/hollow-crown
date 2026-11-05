@@ -78,6 +78,14 @@ export abstract class BoardCamera extends BoardUnits {
     const kv = 1 / ppt / this.cosTilt();
     const tx = centreOn(p[0] + 0.5, css.left / ppt, css.right / ppt);
     const ty = centreOn(p[1] + 0.5, css.top * kv, css.bottom * kv);
+    if (this.skip) {
+      this.ppt = ppt;
+      this.zoomTween = null;
+      this.camX = tx;
+      this.camY = ty;
+      this.clampCamera();
+      return Promise.resolve();
+    }
     const fx = this.camX;
     const fy = this.camY;
     this.wake();

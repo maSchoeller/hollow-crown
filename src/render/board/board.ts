@@ -24,17 +24,19 @@ export class BoardView extends BoardFrame implements HostedView {
    * Walks the ways of a march run at the same time, step by step. When a goal is out of view the camera glides to the middle of the
    * goals at its zoom step: zooming out to show them all doubled the draw calls and halved the frame rate (story 15.11 measurement).
    */
-  private async playMarch(marches: March[]): Promise<void> {
+  private async playMarch(marches: March[], exhausted: readonly string[]): Promise<void> {
     const pace = this.data.render.aiPace;
     const walkers = marches.flatMap((m) => {
       const v = this.units.get(m.unit);
       return v ? [{ v, path: m.path }] : [];
     });
-    const goals = walkers.map((w) => w.path[w.path.length - 1]!);
-    if (goals.length && !goals.every((p) => this.isVisible(p))) {
-      const mid = (k: 0 | 1) => Math.round(goals.reduce((s, p) => s + p[k], 0) / goals.length);
+    // where they start and where they stop; goals spread wider than the view leave some walkers out of it (the overview shows all)
+    const ends = walkers.flatMap((w) => [w.path[0]!, w.path[w.path.length - 1]!]);
+    if (ends.length && !ends.every((p) => this.isVisible(p))) {
+      const mid = (k: 0 | 1) => Math.round(ends.reduce((s, p) => s + p[k], 0) / ends.length);
       await this.centerOn([mid(0), mid(1)]);
     }
+    const turnOver = new Set(exhausted);
     const steps = Math.max(0, ...walkers.map((w) => w.path.length - 1));
     for (let i = 1; i <= steps; i++) {
       const moving = walkers.filter((w) => i < w.path.length);
@@ -50,9 +52,15 @@ export class BoardView extends BoardFrame implements HostedView {
           w.v.y = a[1] + (b[1] - a[1]) * t;
         }
       });
-      // a walker whose way ended stands still while the others go on
-      for (const w of moving) if (i === w.path.length - 1) this.setAnim(w.v, 'idle');
+      // a walker whose way ended stands still while the others go on, greyed at once if its turn is over
+      for (const w of moving) {
+        if (i !== w.path.length - 1) continue;
+        this.setAnim(w.v, 'idle');
+        if (turnOver.delete(w.v.uid)) this.markExhausted(w.v.uid);
+      }
     }
+    // the foes that only waited
+    for (const uid of turnOver) this.markExhausted(uid);
     await this.wait(pace.afterMoveMs);
   }
 
@@ -97,11 +105,10 @@ export class BoardView extends BoardFrame implements HostedView {
         }
         case 'aiTurn': {
           // story 15.11: several foes in a row that only walk go together (skip mode has nothing to show anyway)
-          const run = this.march && !this.skip ? marchRun(events, n) : null;
+          const run = this.march && !this.skip ? marchRun(events, n, this.data.render.aiPace.marchMin) : null;
           if (run) {
-            await this.playMarch(run.marches);
-            for (const uid of run.exhausted) this.markExhausted(uid);
-            n = run.end - 1;
+            await this.playMarch(run.marches, run.exhausted);
+            n = run.end - 1; // the loop's n++ goes on with the first event after the run
             break;
           }
           const p = this.unitPos(e.unit);

@@ -28,5 +28,7 @@ describe('settings merge', () => {
     expect(def.enemyMarch).toBe('together');
     expect(mergeSettings(def, { enemyPaceRev: 2 }).enemyMarch).toBe('together');
     expect(mergeSettings(def, { enemyPaceRev: 2, enemyMarch: 'each' }).enemyMarch).toBe('each');
+    // a value this version does not know
+    expect(mergeSettings(def, { enemyPaceRev: 2, enemyMarch: 'fast' as never }).enemyMarch).toBe('together');
   });
 });

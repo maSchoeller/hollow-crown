@@ -22,8 +22,7 @@ export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): vo
   useEffect(loadHalfFigures, []);
   useEffect(() => {
     const board = new BoardView(stageRef.current!, floatRef.current!, data, {
-      // story 15.11: a tap in the overview jumps there instead of choosing a field too small to aim at
-      onTap: (p) => (boardRef.current?.isWholeMap() ? void boardRef.current.zoomInAt(p) : tapRef.current(p)),
+      onTap: (p) => tapRef.current(p),
       onWholeMap: (on) => setWhole(on),
       onLongPress: (p) => longRef.current(p),
       onDoubleTap: (p) => void boardRef.current?.centerOn(p),

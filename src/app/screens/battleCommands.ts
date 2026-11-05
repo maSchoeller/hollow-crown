@@ -5,6 +5,7 @@ import { battle, command, commandOffThread } from '../state/battle';
 import { concludeBattle } from '../state/flow';
 import { data } from '../state/session';
 import { settings } from '../state/settings';
+import { marchTogether } from './largeMap';
 import { t } from '../../i18n';
 import type { BattleScreen } from './useBattleScreen';
 import type { BattlePresentation } from './battlePresentation';
@@ -38,7 +39,7 @@ export function makeRun(b: BattleScreen, reachOf: BoardOverlays['reachOf'], show
     board.speed = sp === 2 ? 2 : 1;
     board.skip = sp === 3;
     // story 15.11: foes that only walk go together, unless the player wants to see them one by one
-    board.march = enemy && settings.value.enemyMarch === 'together';
+    board.march = marchTogether(enemy, settings.value.enemyMarch);
     let events: GameEvent[] | null;
     try {
       // the enemy phase is computed in the core worker, player commands directly (architecture §5.13)

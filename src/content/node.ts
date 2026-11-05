@@ -24,7 +24,8 @@ export function contentFiles(root = process.cwd()): string[] {
 
 /**
  * Parsed documents per file, kept for the life of the process (story 15.11): parsing the YAML is most of the time of a content load
- * (about 0.9 of 1.2 s), and the tests load the content again and again. A file is parsed anew when its size or time stamp changed.
+ * (about 0.9 of 1.2 s), and the tests load the content again and again. A file is parsed anew when its size or one of its time stamps
+ * changed.
  */
 const parsed = new Map<string, { stamp: string; doc: unknown }>();
 
@@ -35,7 +36,7 @@ export function readContentFiles(root = process.cwd()): Record<string, unknown> 
   for (const rel of contentFiles(root)) {
     const path = join(dir, rel);
     const st = statSync(path);
-    const stamp = `${st.size}:${st.mtimeMs}`;
+    const stamp = `${st.size}:${st.mtimeMs}:${st.ctimeMs}`;
     let hit = parsed.get(path);
     if (hit?.stamp !== stamp) {
       hit = { stamp, doc: parse(readFileSync(path, 'utf8')) };

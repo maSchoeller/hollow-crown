@@ -56,6 +56,8 @@ export function defaultSettings(lang: Lang): Settings {
 /** Stored settings over the defaults (pure, tested): fields an older version did not store keep their default. */
 export function mergeSettings(def: Settings, stored: Partial<Settings>): Settings {
   const merged = { ...def, ...stored, figures: def.figures };
+  // a value this version does not know (hand-edited, a later version) falls back to the default
+  if (merged.enemyMarch !== 'together' && merged.enemyMarch !== 'each') merged.enemyMarch = def.enemyMarch;
   return (stored.enemyPaceRev ?? 0) < ENEMY_PACE_REV ? { ...merged, enemySpeed: def.enemySpeed, enemyPaceRev: ENEMY_PACE_REV } : merged;
 }
 function loadSettings(): Settings {

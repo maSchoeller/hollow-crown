@@ -70,7 +70,9 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: obje
   await page.goto('./tests/perf/bench.html');
   await page.waitForFunction(() => document.body.dataset.ready === '1');
   const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), options)) as PreparedBattle;
+  // a draft brings what it brings, but at least the foes of a large map and a company (a broken load would measure an empty board)
   if (units !== null) expect(prepared.units).toBe(units);
+  else expect(prepared.units).toBeGreaterThan(20);
   // the AI's working-out is a stall of its own (NFR3), not a frame of the playback: it is timed apart and left out of the thread time
   await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.startEnemyPhase());
   const cpu0 = await threadTime(cdp);
@@ -178,6 +180,9 @@ test('enemy phase of the large battle and cold start', async ({ page, context },
   if (process.env.PERF_STRICT === '1') expect(over).toEqual([]);
 });
 
+/** Median of the values, or null when a run has none (shown as „–“, not as 0). */
+const medianOrNull = (values: Array<number | null>): number | null => (values.some((v) => v === null) ? null : median(values as number[]));
+
 /** One row of the large-map table (story 15.11): a scenario at one throttling level, medians over the runs, max over all runs. */
 interface LargeRow {
   scenario: string;
@@ -233,9 +238,9 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
           avgFps: median(runs.map((r) => r.avgFps)),
           p95Ms: median(runs.map((r) => r.p95Ms)),
           maxMs: Math.max(...runs.map((r) => r.maxMs)),
-          drawCalls: median(runs.map((r) => r.drawCallsAvg ?? 0)),
+          drawCalls: medianOrNull(runs.map((r) => r.drawCallsAvg)),
           phaseMs: median(runs.map((r) => r.durationMs)),
-          threadMsPerFrame: median(runs.map((r) => r.threadMsPerFrame ?? 0)),
+          threadMsPerFrame: medianOrNull(runs.map((r) => r.threadMsPerFrame)),
         };
         rows.push(row);
         console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, phase ${row.phaseMs} ms, ${row.units} units`);

@@ -119,6 +119,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   const nodes = data.campaign.nodes;
   // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
   const at = opts.map ? nodes.findIndex((n) => n.id === 'm1_6') : 0;
+  if (at < 0) throw new Error('the campaign has no node m1_6 to take the company from');
   if (!nodes.some((n) => n.id === 'perf')) {
     nodes.push({ ...nodes[Math.max(0, at)]!, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
   }
