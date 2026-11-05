@@ -33,3 +33,7 @@ EXPRESSION: ingratiating smile that does not reach the eyes.
 WEAPON: NONE - he is not a fighter; instead a thick leather ledger tucked under his left arm and a small jingling coin purse held up in his right hand.
 SIGNATURE: the ledger and the coin purse.
 ```
+
+## Brettfigur (Story 15.9)
+
+Brett-Turnaround vom 2026-11-05: `art/prompts/osric_board_turnaround.md`, Bilder `art/turnarounds/osric_board/`. Tripo-Lauf steht aus (Konto im Free-Tarif, Auflage A1); das Modell entsteht danach.

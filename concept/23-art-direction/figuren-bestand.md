@@ -8,7 +8,7 @@ Stand 2026-11-05. Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`con
 - **Porträts:** Alle 51 sind v2.5. Es fehlen nur die Stimmungen der Akt-2-Figuren und die Büsten neuer Gegnertypen.
 - **Modelle:** Alle stammen vom Oktober, also aus der Zeit vor den neuen Porträts. Von 35 geprüften Figuren passen **23**, bei **6** fehlt etwas Wesentliches, **6** widersprechen dem Porträt oder fehlen ganz.
 - **Beschlossen:** **12 neue Modelle** in drei Schritten (1 680 Tripo-Credits), dazu ein Tausch ohne Kosten und ein einfaches Deko-Pferd. Niemand reitet auf dem Brett.
-- **Zuerst nur 3 Modelle:** Lucan, Verwalter, Osric Dunn. Rechnerisch sind noch rund 425 Credits da (siehe „Credits“), danach entscheidet der Produktinhaber nach Sichtung neu.
+- **Zuerst nur 3 Modelle:** Lucan, Verwalter, Osric Dunn. Tripo zeigt 625 Credits, das Konto steht aber auf Free (siehe „Credits“); die drei Brett-Turnarounds sind fertig, die Modelle warten auf das Abo. Danach entscheidet der Produktinhaber nach Sichtung neu.
 
 ![Die vier auffälligsten Fälle](../../art/previews/figuren_bestand_faelle.png)
 
@@ -19,7 +19,7 @@ Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Fi
 | Schritt | Was | Stück | Credits | Warum |
 |---|---|---|---|---|
 | 0 | **Bibel** für Akt 1 und 2 schreiben, Figurenblätter von Lucan, Rowena und Brakka berichtigen | 1 Dokument | 0 | Jeder neue Turnaround braucht sie; sonst wird zweimal gebaut |
-| 0 | `sprite: archer` auf `bandit_archer` umstellen | 9 Stellen auf 4 Karten | 0 | Die Kastenfigur verschwindet sofort, das Modell gibt es schon |
+| 0 | ✅ `sprite: archer` auf `bandit_archer` umstellen | 9 Stellen auf 4 Karten, dazu der Klassen-Rückfall von Schütze und Scharfschütze | 0 | Erledigt in Story 15.9; Kastenfigur entfernt |
 | **1a** | **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn** | **3** | **420** | **Beschlossen.** Danach Sichtung und neue Entscheidung |
 | 1b | **Dorfältester** | 1 | 140 | Letzter Widerspruch in Akt 1 |
 | 2 | **Brenna**, **Mira**, **Varek**, **Ysolde** | 4 | 560 | Signaturteil fehlt oder wird vom Teamtuch überdeckt |
@@ -87,7 +87,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 |---|---|---|---|---|---|
 | Rhen A (`avatar_a`) | 4 | ja | ja | ✅ | |
 | Rhen B (`avatar_b`) | 4 | ja | ja | ✅ | Ziel sind 4 Avatar-Vorlagen (§5.1), vorhanden 2 |
-| Lucan (`kael`) | 4 | ja | ja | ❌ | Modell zeigt den alten Kael, kein Grün, kein Pelz; Inhalts-IDs heißen noch `kael`, die Umbenennung ist beschlossen |
+| Lucan (`kael`) | 4 | ja | ja | ❌ | Modell zeigt den alten Kael, kein Grün, kein Pelz; Inhalts-IDs heißen noch `kael`, die Umbenennung ist beschlossen. **Brett-Turnaround neu** (`lucan_board`, 2026-11-05), Tripo offen |
 | Brenna | 4 | ja | ja | 🟡 | dicker Zopf fehlt schon im Turnaround |
 | Tobin | 4 | ja | ja | ✅ | |
 | Fenn | 4 | ja | ja | ✅ | |
@@ -111,8 +111,8 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 |---|---|---|---|---|---|
 | Dorfältester (`villager_elder`) | 1 | ja | ja | ❌ | Modell mit Glatze und Vollbart, Porträt seit 2026-11-03 mit Strohhut und Kinnbärtchen |
 | Dorfkind (`villager_child`) | 1 | ja | ja | ✅ | |
-| Osric Dunn | 1 | nein | nein | ❌ | Boss von 1-4 steht als `mercenary` auf der Karte, laut Kartenkommentar Platzhalter |
-| Verwalter (`paktwacht_steward`) | 1 | nein | nein | ❌ | zu schützendes Ziel in 1-8; Klasse verweist auf `cleric`, das Modell gibt es nicht. Laut Code erscheint eine Platzhalter-Figur, **im Spiel nicht geprüft** |
+| Osric Dunn | 1 | ja | nein | ❌ | Boss von 1-4 steht als `mercenary` auf der Karte, laut Kartenkommentar Platzhalter. **Brett-Turnaround** 2026-11-05, Tripo offen |
+| Verwalter (`paktwacht_steward`) | 1 | ja | nein | ❌ | zu schützendes Ziel in 1-8; Klasse verweist auf `cleric`, das Modell gibt es nicht. Laut Code erscheint eine Platzhalter-Figur, **im Spiel nicht geprüft**. **Brett-Turnaround** 2026-11-05, Tripo offen |
 | Bandit (`brigand`) | 1 | ja | ja | ✅ | 43 Stellen |
 | Bandit-Schütze (`bandit_archer`) | 1 (`class_archer`) | ja | ja | ✅ | 12 Stellen |
 | Soldat (`soldier`) | 1 | ja | ja | ✅ | 28 Stellen; Porträt trägt das Grenzheer-Kit, passt also für Akt 2 |
@@ -155,7 +155,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 
 **Stand 2026-11-05 (Story 15.9):** Tripo zeigt **625 Credits**, das Konto steht aber auf dem **Free-Tarif**; nach Auflage A1 entsteht dort nichts, was ausgeliefert wird. Schritt 1a wartet deshalb auf die Entscheidung des Produktinhabers zum Abo; die drei Turnarounds sind fertig (Decision-Log der Art Direction, 2026-11-05).
 
-Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Letzter Eintrag im Decision-Log: 705 am 2026-10-24. Danach kamen die beiden Dorffiguren dazu, also rechnerisch rund **425**. Schritt 1a braucht 420 und ließe nur 5 übrig, deshalb vorher in Tripo nachsehen. Dieser Wert ist nicht in Tripo nachgeprüft, und ob sich das Guthaben auffüllt, steht nicht im Repo.
+Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Die frühere Rechnung (705 am 2026-10-24 minus die beiden Dorffiguren, rund 425) ist durch die Ablesung überholt: Mit 625 Credits ließe Schritt 1a 205 übrig, genug für einen zweiten Lauf bei einer Figur.
 
 ## Wie die Bilder entstanden
 

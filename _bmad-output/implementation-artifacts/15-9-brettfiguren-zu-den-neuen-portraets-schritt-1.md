@@ -1,6 +1,6 @@
 # Story 15.9: Brettfiguren zu den neuen Porträts, Schritt 1
 
-Status: ready-for-dev
+Status: in-progress (Tripo blockiert: Konto im Free-Tarif, siehe Completion Notes)
 
 ## Story
 
@@ -20,23 +20,23 @@ damit ich sie wiedererkenne.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Brett-Turnarounds (AC 1, 6)
-  - [ ] je Figur ein neuer ChatGPT-Chat, Porträt v2.5 (`art/mockups/characters-s1/<id>.png`) und ein Lieblings-Brett-Turnaround (`art/turnarounds/ysolde_board/sheet.png`) als Stil- und Formatvorlage anhängen; ein Prompt für beide Stufen (vereinfacht, ohne Waffe, Teamtuch Magenta), Vorlage `art/prompts/kael_board_turnaround.md`
-  - [ ] Teamtuch auf ein **kleines** Stück legen, nie aufs Signaturteil (Befund „Teamtuch frisst Signaturteile“ in `figuren-bestand.md`)
-  - [ ] Sheet speichern unter `art/turnarounds/<id>_board/sheet.png`, mit `tools/art/split_turnaround.py` in `front/side/back.png` teilen
-  - [ ] selbst gegen Porträt und §4.1/§4.6 prüfen, bevor Credits fließen; höchstens zwei Tripo-Läufe je Figur
+- [x] T1 Brett-Turnarounds (AC 1, 6)
+  - [x] je Figur ein neuer ChatGPT-Chat, Porträt v2.5 (`art/mockups/characters-s1/<id>.png`) und ein Lieblings-Brett-Turnaround (`art/turnarounds/ysolde_board/sheet.png`) als Stil- und Formatvorlage anhängen; ein Prompt für beide Stufen (vereinfacht, ohne Waffe, Teamtuch Magenta), Vorlage `art/prompts/kael_board_turnaround.md`
+  - [x] Teamtuch auf ein **kleines** Stück legen, nie aufs Signaturteil (Befund „Teamtuch frisst Signaturteile“ in `figuren-bestand.md`)
+  - [x] Sheet speichern unter `art/turnarounds/<id>_board/sheet.png`, mit `tools/art/split_turnaround.py` in `front/side/back.png` teilen
+  - [x] selbst gegen Porträt und §4.1/§4.6 prüfen, bevor Credits fließen; höchstens zwei Tripo-Läufe je Figur
 - [ ] T2 Tripo (AC 1, 6)
-  - [ ] Guthaben in Tripo ablesen, bevor der erste Lauf startet; je Figur 140 Credits (Smart-Mesh 100, Textur 20, Auto-Rig 20)
+  - [x] Guthaben in Tripo ablesen, bevor der erste Lauf startet; je Figur 140 Credits (Smart-Mesh 100, Textur 20, Auto-Rig 20)
   - [ ] Pro, Datenschutz „Privat“, Smart-Mesh P2.0 Multi-View (vorn / rechts / hinten), Quad, 3 000 Polygone, Textur, Auto-Rig Humanoid; GLB mit Skelett ohne Animationen nach `art/models/source/<id>_board_tripo.glb`
-  - [ ] Hängt Tripo (Login, Limit, Fehler): Stand sichern, nichts kaufen, im Bericht melden
+  - [x] Hängt Tripo (Login, Limit, Fehler): Stand sichern, nichts kaufen, im Bericht melden
 - [ ] T3 Pipeline (AC 1, 2, 5)
   - [ ] Lucan: die Animationsbibliothek `kael_board_tripo.glb` (alter Kael) wird `kael_anims_base.glb`, `ANIM_LIBRARY` in `tools/art/tripo_units.py` zeigt darauf; Lucans Export wird `kael_board_tripo.glb` und baut `kael.glb` (Umbenennung `kael`→`lucan` macht Story 15.6)
   - [ ] `pnpm art:tripo kael osric paktwacht_steward`, Budget-Zeilen prüfen
   - [ ] `content/acts/act1/maps/m1_4_wolfslager.yaml`: Osric `sprite: osric`; `m1_8_paktwacht_halten.yaml`: Verwalter `sprite: paktwacht_steward`
   - [ ] `pnpm art:build`, Paketzuordnung (`tools/art/model_packs.py`) prüfen
-- [ ] T4 Tausch `archer` → `bandit_archer` (AC 3)
-  - [ ] 9 Stellen in `m1_6_paktwacht.yaml`, `m1_7_gewoelbe.yaml`, `m1_8_paktwacht_halten.yaml`, `n2_wachturm.yaml`; Kartenkommentare nachziehen
-  - [ ] weitere Verweise auf `archer` als Figur in `src/`, `tests/`, `tools/` suchen (Klassen-`legacyIds: [archer]` bleibt)
+- [x] T4 Tausch `archer` → `bandit_archer` (AC 3)
+  - [x] 9 Stellen in `m1_6_paktwacht.yaml`, `m1_7_gewoelbe.yaml`, `m1_8_paktwacht_halten.yaml`, `n2_wachturm.yaml`; Kartenkommentare nachziehen
+  - [x] weitere Verweise auf `archer` als Figur in `src/`, `tests/`, `tools/` suchen (Klassen-`legacyIds: [archer]` bleibt)
 - [ ] T5 Nachweise (AC 4, 6)
   - [ ] `pnpm art:silhouettes kael osric paktwacht_steward bandit_archer`
   - [ ] Bogen Porträt | Brett-Render (Cycles, wie `figuren-bestand.md` „Wie die Bilder entstanden“) je Figur unter `art/previews/`
@@ -54,7 +54,7 @@ damit ich sie wiedererkenne.
 - **Teamtuch:** Magenta `#FF00FF` wird zum Teamschlüssel (blau eigene, rot Gegner, grün Dritte). Osric ist Gegner, der Verwalter Dritter, Lucan eigene Einheit. Kleines Stück wählen, Signaturteile frei lassen: Lucan grüner Wappenrock, Pelzkragen, linkes Schulterstück; Osric senfgelber Mantel mit braunem Pelz, Hauptbuch, Geldbeutel; Verwalter dunkelgrüne Weste, Schlüsselbund.
 - **Ohne Waffe im Turnaround:** Waffen hängen zur Laufzeit am Sockel. Osric (Klasse `skirmisher`, `steel_sword`) und der Verwalter (`heal_staff`) bekommen ihre Waffe so. Hauptbuch und Schlüsselbund sind Kleidung bzw. Gürtel, keine Waffe; der Schlüsselbund darf am Gürtel bleiben, das Hauptbuch nicht in die Hand (die Hand trägt die Waffe).
 - **Größe:** `prepare_tripo_unit.py` skaliert jede Figur auf die gemeinsame Höhe; die Statur (Osric heavy, Verwalter slim und gebeugt) muss also aus der Form kommen, nicht aus der Höhe. Das allgemeine „alle gleich groß“ ist Sache der Bibel, nicht dieser Story.
-- **Credits:** rechnerisch ~425 (`figuren-bestand.md` „Credits“), drei Figuren kosten 420. Ein zweiter Lauf ist damit praktisch nicht bezahlbar; daher die Selbstprüfung vor dem Lauf. Vor dem ersten Lauf Guthaben ablesen.
+- **Credits:** abgelesen 625 (2026-11-05), drei Figuren kosten 420, Rest 205 – ein zweiter Lauf für eine Figur. Selbstprüfung vor dem Lauf. **Tarif:** Das Konto stand am 2026-11-05 auf Free; ohne Pro kein Lauf (Licensing A1).
 - **Nicht hier:** Umbenennung `kael`→`lucan` (Story 15.6, wartet auf PR #104), Kartenumbau (15.3–15.5; die Kartendateien können sich dort ändern – Konflikte beim Merge klein halten, nur die `sprite`-Zeilen anfassen), Dorfältester und Schritt 2/3.
 
 ### Project Structure Notes
@@ -89,5 +89,19 @@ Claude Opus 5.5
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created
+- 2026-11-05, Teil 1: **Tripo blockiert.** Tripo Studio zeigt 625 Credits, das Konto steht aber auf **Free** (Preisdialog, Hinweis „Upgrade für Smart Mesh, Multi-Views“). A1 verlangt Pro mit „Privat“, deshalb kein Lauf, 0 Credits verbraucht, nichts gekauft. Offen bis zum Abo: T2, T3 (Bibliothek umbenennen, `ANIM_LIBRARY`, `sprite: osric` / `sprite: paktwacht_steward` setzen – erst mit Modell, sonst Platzhalter), T5 (Silhouetten, Brett-Render, Screenshot der neuen Figuren) und damit AC 1, 2, 4, 5 und der Render-Teil von AC 6.
+- T1: drei Brett-Turnarounds per ChatGPT (Plus), je ein Chat, Porträt v2.5 + Ysolde-Blatt als Vorlage; Lucan in zwei Nachrichten (Schulterstück vergrößert), Osric und Verwalter auf Anhieb. Bogen Porträt | Turnaround: `art/previews/figuren_15_9_turnarounds.png`.
+- T4: 9 Kartenstellen und 5 Testkarten zeigen `bandit_archer`; Klassen-Rückfall `art` von `marksman` und `sharpshooter` ebenfalls (sonst Platzhalter bei Tavernen-Söldnern); `archer.glb` und `build_archer` entfernt. `content:check` prüft Figuren-IDs jetzt auch ohne `art/sprites/units` und meldet unbekannte Klassen-Figuren (Warnung; bekannt: `cleric` ohne Modell).
+- **Vor dem Tripo-Lauf prüfen (Review):** Schärpe liegt bei Lucan hinten über dem Umhang, bei Osric vorn unter, hinten über dem Mantel – Tripo baut die Form aus den Ansichten, das kann Geometrie verschmelzen; Osrics Hauptbuch fehlt bewusst (Hand trägt zur Laufzeit die Waffe); die Beuge des Verwalters ist nur angedeutet; sein Schlüsselbund hängt rechts (Hand rechts trägt den Heilstab). Teamtuch bei Osric und Verwalter zwei Stücke (Hals + Hüfte), wie bisher bei Brakka.
+- Offene Frage an den Produktinhaber (A2): Prüfung und Abnahme der Turnarounds lagen beim Assistenten; ob das als menschlicher Anteil reicht, entscheidet er bei der Sichtung.
 
 ### File List
+
+- `_bmad-output/implementation-artifacts/15-9-brettfiguren-zu-den-neuen-portraets-schritt-1.md`, `sprint-status.yaml`
+- `art/turnarounds/{lucan,osric,paktwacht_steward}_board/{sheet,front,side,back}.png`
+- `art/prompts/{lucan,osric,paktwacht_steward}_board_turnaround.md`, Verweise in `art/prompts/kael.md`, `osric.md`, `paktwacht_steward.md`
+- `art/previews/figuren_15_9_turnarounds.png`
+- `art/models/units/archer.glb` (gelöscht), `tools/art/blender_units.py`, `tools/art/previews.py`
+- `content/core/classes.yaml`, `content/acts/act1/maps/{m1_6_paktwacht,m1_7_gewoelbe,m1_8_paktwacht_halten,n2_wachturm}.yaml`, `tests/fixtures/maps/*.yaml`
+- `tools/content-check.ts`, `src/content/validate.ts`, `tests/unit/figure.test.ts`
+- `concept/23-art-direction/decision-log.md`, `figuren-bestand.md`

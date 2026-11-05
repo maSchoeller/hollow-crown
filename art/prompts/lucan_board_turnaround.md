@@ -2,7 +2,7 @@
 
 - **Dateien:** `art/turnarounds/lucan_board/sheet.png` (1536 × 1024, unveränderter Download, A3); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`, je 1024 × 1024)
 - **Datum:** 2026-11-05
-- **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto Marvin Schoeller (Profilmenü, 2026-11-05); keine Modell-Versionsnummer sichtbar
+- **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto `maschoeller` (Profilmenü, 2026-11-05); keine Modell-Versionsnummer sichtbar
 - **Anhänge:** `art/mockups/characters-s1/kael.png` (Porträt v2.5) und `art/turnarounds/ysolde_board/sheet.png` (Lieblings-Turnaround des Produktinhabers, nur als Format- und Stilvorlage)
 - **Zweck:** Eingabe für Tripo Smart-Mesh (Multi-View vorn / rechts / hinten), `concept/23-art-direction/art-direction.md` §4.6; Story 15.9
 - **Menschlicher Anteil (A2):** Figurenbeschreibung, Wahl des Teamtuchs, Prompt, Prüfung und Abnahme durch den Assistenten im Auftrag des Produktinhabers; keine Retusche

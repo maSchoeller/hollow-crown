@@ -115,7 +115,7 @@
   growthMod: { hp: 5, str: 5, mag: 0, skl: 15, spd: 5, lck: 0, def: 0, res: 0 }
   caps: { hp: 48, str: 22, mag: 12, skl: 26, spd: 22, lck: 25, def: 18, res: 15 }
   playable: true
-  art: archer
+  art: bandit_archer   # Story 15.9: die Blender-Kastenfigur archer ist entfernt
   v1: true
 
 # Magier (PoC)
@@ -296,7 +296,7 @@
   caps: { hp: 60, str: 28, mag: 15, skl: 35, spd: 30, lck: 30, def: 25, res: 20 }
   promotionBonus: { hp: 3, str: 1, skl: 3, spd: 2, def: 1, res: 1 }
   playable: true
-  art: archer
+  art: bandit_archer   # Story 15.9: die Blender-Kastenfigur archer ist entfernt
   v1: true
 
 # Weiser (PoC)
