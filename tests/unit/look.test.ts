@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
-import { iconStatuses, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
+import { iconStatuses, validateBoardModels, validatePropVariants, validateStatusIcons, validateWeather } from '../../src/content/validateLook';
 import { TIMES_OF_DAY, WEATHERS } from '../../src/core/defs';
 import type { MapDef } from '../../src/core/mapDefs';
 import { newFigureLook } from '../../src/render/shared/figurePlugin';
@@ -220,6 +220,37 @@ describe('content:check rules for prop variants', () => {
   });
   it('the shipped content passes', () => {
     expect(validatePropVariants(data)).toEqual([]);
+  });
+  it('a hand-placed (weight 0) model is a valid override for its class', () => {
+    const s = find('house');
+    if (s) expect(validatePropVariants(withVariants(s, 'mill_idle'))).toEqual([]);
+  });
+});
+
+describe('content:check: board models exist and ship (story 15.8)', () => {
+  const names = () => {
+    const b = render.board;
+    const out = new Set<string>();
+    for (const l of Object.values(b.variants)) for (const list of Array.isArray(l) ? [l] : Object.values(l)) for (const e of list) out.add(e.model);
+    for (const d of Object.values(b.decor)) out.add(d.model);
+    for (const list of Object.values(b.decorOn)) for (const d of list) out.add(d.model);
+    for (const m of Object.values(b.propFallback)) out.add(m);
+    return out;
+  };
+  it('passes when every named model is a file and none is held back', () => {
+    expect(validateBoardModels(data, names(), new Set())).toEqual([]);
+  });
+  it('flags a missing file and a gallery model without ships', () => {
+    const files = names();
+    files.delete('market_a');
+    const msgs = validateBoardModels(data, files, new Set(['mill_idle'])).map((i) => i.message);
+    expect(msgs).toHaveLength(2);
+    expect(msgs).toEqual(expect.arrayContaining([expect.stringContaining('missing model market_a'), expect.stringContaining('mill_idle is a gallery model without ships')]));
+  });
+  it('checks the models a map sets by hand', () => {
+    const base = Object.values(data.maps)[0]!;
+    const one = { ...data, maps: { m: { ...base, id: 'm', propVariants: [{ at: [0, 0] as [number, number], model: 'ghost_idle' }] } } };
+    expect(validateBoardModels(one, names(), new Set()).map((i) => i.file)).toEqual(['maps/m']);
   });
 });
 

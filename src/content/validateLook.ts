@@ -17,12 +17,13 @@ export function validateWeather(data: GameData): ContentIssue[] {
 
 /**
  * `propVariants` of a map (single fields set by hand): the field is on the map, its terrain carries a prop with variants
- * (house, lodge, rock, tree) and the model is one of that class's list in `render.yaml board.variants` (the trees of the map's act).
+ * (house, lodge, rock, tree, field, relief, sarcophagus, stall) and the model is one of that class's list in `render.yaml board.variants`
+ * (the trees of the map's act); a weight-0 entry is exactly such a hand-placed model.
  */
 export function validatePropVariants(data: GameData): ContentIssue[] {
   const out: ContentIssue[] = [];
   const v = data.render.board.variants;
-  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], field: [v.field], relief: [v.relief], sarcophagus: [v.sarcophagus], tree: Object.values(v.tree), sceneryTree: Object.values(v.sceneryTree) })) {
+  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], field: [v.field], relief: [v.relief], stall: [v.stall], sarcophagus: [v.sarcophagus], tree: Object.values(v.tree), sceneryTree: Object.values(v.sceneryTree) })) {
     for (const list of lists) {
       const seen = new Set<string>();
       for (const e of list) {
@@ -42,13 +43,41 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
       }
       const cls = variantClassOf(data.terrain[id]?.prop);
       if (!cls) {
-        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus)` });
+        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus, stall)` });
         continue;
       }
       if (!variantList(data, cls, map.act).some((e) => e.model === pv.model)) {
         out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is not a ${cls} variant of act ${map.act} (render.yaml board.variants.${cls}: ${variantList(data, cls, map.act).map((e) => e.model).join(', ')})` });
       }
     }
+  }
+  return out;
+}
+
+/**
+ * The prop models content names for the board (render.yaml `board.variants`, `decor`, `decorOn`, `propFallback`, and every map's
+ * `propVariants`): each must be a file `art/models/props/<model>.glb` (`existing`) and must not be a gallery model the build leaves
+ * out (`unshipped`: concept/23-art-direction/map-assets/groups without `ships`, tools/art/build.py), else the board draws nothing
+ * there (story 15.8).
+ */
+export function validateBoardModels(data: Pick<GameData, 'render' | 'maps'>, existing: ReadonlySet<string>, unshipped: ReadonlySet<string>): ContentIssue[] {
+  const b = data.render.board;
+  const named = new Map<string, string>();
+  const name = (model: string, where: string) => {
+    if (!named.has(model)) named.set(model, where);
+  };
+  for (const [cls, list] of Object.entries(b.variants)) {
+    const lists = Array.isArray(list) ? [list] : Object.values(list);
+    for (const l of lists) for (const e of l) name(e.model, `render.yaml board.variants.${cls}`);
+  }
+  for (const [k, d] of Object.entries(b.decor)) name(d.model, `render.yaml board.decor.${k}`);
+  for (const [t, list] of Object.entries(b.decorOn)) for (const d of list) name(d.model, `render.yaml board.decorOn.${t}`);
+  for (const m of Object.values(b.propFallback)) name(m, 'render.yaml board.propFallback');
+  for (const map of Object.values(data.maps)) for (const pv of map.propVariants ?? []) name(pv.model, `maps/${map.id}`);
+  const out: ContentIssue[] = [];
+  for (const [model, file] of named) {
+    if (!existing.has(model)) out.push({ file, message: `missing model ${model} (art/models/props/${model}.glb)` });
+    else if (unshipped.has(model)) out.push({ file, message: `model ${model} is a gallery model without ships: true (concept/23-art-direction/map-assets/groups), the build leaves it out` });
   }
   return out;
 }

@@ -120,6 +120,23 @@ describe('prop variants', () => {
     expect(withState('rock_b', 'visited')).toBe('rock_b');
   });
 
+  it('a weight-0 model is never rolled, only placed by a map override (story 15.8)', () => {
+    const stall = [{ model: 'market_a', weight: 1 }, { model: 'market_b', weight: 1 }, { model: 'camp_tent_a', weight: 0 }];
+    for (let i = 0; i < 200; i++) expect(pickVariant(stall, [i / 200, ((i * 7) % 200) / 200], { has: all, avoid: ['market_a', 'market_b'] })).not.toBe('camp_tent_a');
+    expect(pickVariant(stall, [0.99], { has: all, override: 'camp_tent_a' })).toBe('camp_tent_a');
+    // no rollable model available: the first rollable one stands, never the hand-placed one
+    expect(pickVariant(stall, [0.5], { has: (m) => m === 'camp_tent_a' })).toBe('market_a');
+  });
+
+  it('stands are a variant class: market stalls by hash, the camp tent of 1-5 by hand; the mill only by hand (story 15.8)', () => {
+    expect(variantClassOf('stall')).toBe('stall');
+    expect(data.terrain.stall!.prop).toBe('stall');
+    expect(variantList(data, 'stall').map((v) => [v.model, v.weight > 0])).toEqual([['market_a', true], ['market_b', true], ['camp_tent_a', false]]);
+    expect(variantList(data, 'house').find((v) => v.model === 'mill_idle')?.weight).toBe(0);
+    // the scenery around the map takes the first entries of a list: never a hand-placed one
+    for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 1, true)) expect(v.weight).toBeGreaterThan(0);
+  });
+
   it('the stand-ins in render.yaml point at models that exist today', () => {
     expect(data.render.board.propFallback.well_idle).toBe('rock_idle');
     expect(data.render.board.propFallback.lodge_b_visited).toBe('lodge_visited');

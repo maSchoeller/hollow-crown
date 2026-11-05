@@ -33,8 +33,8 @@
 # Grabrelief eines jungen Königs (Story 9.8): eigene Requisite relief_a, ohne Heilung und ohne Deckung (nur Kulisse, Auslöser der Relief-Szenen). Startwerte [C].
 - { id: relief,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: relief, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: vault }
 # Mauer-Requisiten ohne Zugang (Startwerte [C], Werte wie der Wagen: nur Flieger kommen drüber).
-# Marktstand (tent_idle) nutzt das Zelt-Modell (Story 9.1); das Kohlebecken hat sein eigenes Modell brazier_b_idle.
-- { id: stall,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: tent, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
+# Stand: Marktstände market_a/market_b, Lagerzelt camp_tent_a per propVariants (render.yaml board.variants.stall, Story 15.8); das Kohlebecken hat sein eigenes Modell brazier_b_idle.
+- { id: stall,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: stall, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }
 - { id: brazier,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: brazier_b, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
 # Brunnen: Requisite well (well_idle). Fehlt das Modell noch, zeichnet das Brett den Felsblock (render.yaml board.propFallback).
 - { id: well,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: well, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: road }

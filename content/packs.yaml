@@ -103,6 +103,11 @@ packs:
       - lever_down
       - ballista_idle
       - torch_idle
+      # Story 15.8: Galerie-Modelle, die die Karten von Akt 1 brauchen (Marktstände 1-1, Lagerzelt 1-5, Mühle N3)
+      - market_a
+      - market_b
+      - camp_tent_a
+      - mill_idle
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**

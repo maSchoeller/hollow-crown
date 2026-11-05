@@ -6,7 +6,7 @@ import type { GameData } from '../core/gameData';
 import type { PropVariant } from '../core/renderDefs';
 
 /** Classes of props that come in variants (render.yaml `board.variants`). */
-export type VariantClass = 'house' | 'lodge' | 'rock' | 'tree' | 'field' | 'relief' | 'sarcophagus';
+export type VariantClass = 'house' | 'lodge' | 'rock' | 'tree' | 'field' | 'relief' | 'sarcophagus' | 'stall';
 
 /** Class of the prop a terrain carries (terrain.yaml `prop`), or null for props without variants. */
 export function variantClassOf(prop: string | undefined): VariantClass | null {
@@ -17,6 +17,7 @@ export function variantClassOf(prop: string | undefined): VariantClass | null {
     case 'field':
     case 'relief':
     case 'sarcophagus':
+    case 'stall':
       return prop;
     case 'rock':
       return 'rock';
