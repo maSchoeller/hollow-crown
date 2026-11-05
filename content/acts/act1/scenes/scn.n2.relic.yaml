@@ -1,4 +1,4 @@
-# Nebenquest N2, Szene beim Öffnen der Relikt-Truhe (5,1): Schild der Paktwächter, Stufe 1 (schlafend). Läuft in der Schlacht.
+# Nebenquest N2, Szene beim Öffnen der Relikt-Truhe c_relic: Schild der Paktwächter, Stufe 1 (schlafend). Läuft in der Schlacht.
 id: scn.n2.relic
 lines:
   - id: l01

@@ -155,7 +155,7 @@ describe('Nebenquest N3 als Knoten', () => {
 
   it('forces Tobin into the deployment, and a fallen Tobin is filtered like any absent forced unit', () => {
     const m = data.maps.n3_erbe!;
-    expect(m.deploy.forced).toEqual(['avatar', 'kael', 'tobin']);
+    expect(m.deploy.forced).toEqual(['avatar', 'tobin']);
     const d = structuredClone(data);
     d.campaign.nodes.push({ id: 'm1_6', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 6 });
     const c = fresh();

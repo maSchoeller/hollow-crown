@@ -279,13 +279,16 @@ export function combinedRange(data: GameData, s: BattleState, unit: BattleUnit, 
 /** All tiles the unit can attack this turn (move + range) – used for the red overlay and danger zones. `target`: for a unit that might step onto them. */
 export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false, target?: BattleUnit): Set<string> {
   const out = new Set<string>();
-  if (!unit.pos || !active(unit)) return out;
+  if (!unit.pos || !active(unit) || waitsToJoin(unit)) return out;
   const range = combinedRange(data, s, unit);
   if (!range) return out;
   const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
   for (const o of origins) for (const t of strikeTiles(data, s, unit, o, range, target)) out.add(posKey(t));
   return out;
 }
+
+/** A foe on `hold` who can be talked over (Varek in N2, Ysolde in 1-4) strikes nobody until then; a blow against it is still countered. */
+export const waitsToJoin = (u: Pick<BattleUnit, 'recruit' | 'ai'>): boolean => !!u.recruit && u.ai?.profile === 'hold';
 
 /** Danger zone: union of threat tiles of all active units hostile to `team`. */
 export function dangerZone(data: GameData, s: BattleState, team: BattleUnit['team'], only?: string[]): Set<string> {

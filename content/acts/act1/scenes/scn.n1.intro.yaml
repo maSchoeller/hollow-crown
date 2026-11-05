@@ -6,7 +6,7 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Varnhold bei Nacht. Nebel in den Gassen, warme Lichter an den Ständen. Der Markt ist leer."
+    text: "Varnhold bei Nacht. Nebel im Gerberviertel, es stinkt nach Lohe. Die Gassen sind leer."
   - id: l02
     speaker: [fenn]
     fallback: skip
@@ -39,12 +39,12 @@ lines:
     speaker: [fenn]
     fallback: skip
     mood: happy
-    text: "Im Lagerhaus im Nordosten, hinter der Schlüsseltür. Ich geh auch ohne, Hauptmann. Ist nur eine Tür."
+    text: "Im Nest auf den Dächern, ganz im Nordosten. Leitern stehen in den Gassen, ein paar hab ich selbst geklaut."
   - id: l09
     speaker: [brenna]
     fallback: skip
     mood: happy
-    text: "Dann klopfen wir an. Wer nicht aufmacht, kriegt den Axtstiel. Ich nenne das Öffnungszeiten."
+    text: "Dann steigen wir ihm aufs Dach. Wer nicht runterkommt, kriegt den Axtstiel. Ich nenne das Hausbesuch."
   - id: l10
     speaker: [kael]
     mood: neutral

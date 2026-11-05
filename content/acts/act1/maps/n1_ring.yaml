@@ -1,100 +1,127 @@
-# Nebenquest N1 – Der Ring von Varnhold (Story 9.10, Fenns Vergangenheit; Voraussetzung E2 „schützen“). Variante der Karte m1_1_steckbriefe:
-# derselbe Markt von Varnhold, aber nachts und mit Nebel; ein Haus (NO) ist das Lagerhaus, in dem der Ringmeister den Ring hütet. Startwerte [C].
-# Tageszeit: Nacht. Wetter: Nebel (Sichtnebel an, fog: true; art-direction §2.5, Felder timeOfDay/weather). Geplantes Ortsbild: varnhold (Nacht).
-# Ziel: Ringmeister besiegen (boss, kein Leutnant). Das Lagerhaus ist verschlossen (Tür 11,2; Schlüssel fällt bei einem Dieb, Späher öffnen ohne Schlüssel).
-# Rollen: Nebel + Gassen für Späher, Lagerhaustür als Engstelle für Vorkämpfer.
-# Belohnung (Story 9.10): Glutfunke (ember_spark) und Signaturdolch Elster (magpie) kommen mit dem Sieg als Knotenwirkung in den Konvoi (campaign.yaml n1 effects),
-# nicht aus einer Truhe: wer den Ringmeister schlägt, hat sie, auch ohne die Lagerhaustruhen. Die Truhen sind gewöhnliche Beute.
-# Gedenk-Variante, falls Fenn gefallen ist (memorialIf): gleiche Karte, gleiche volle Belohnung, nur andere Szenen (scn.n1.memorial_intro/outro); scn.n1.ring hat Zeilen für beide Fälle.
+# Nebenquest N1 – Der Ring von Varnhold (Knoten n1, öffnet nach 1-4 mit E2 „schützen“). Entwurf s1_n1_ring (abgenommen 2026-11-01), Missionsliste: K 14×18, rout, Nacht. Startwerte [C].
+# Gerberviertel von Varnhold am Fluss: Gassen im Raster, Häuserblöcke mit begehbaren Dächern (`roof`, Stufe 1, nur zu Fuß) und geschlossene Gerberhallen.
+# Jeder Dachblock hat Leitern in den Gassen (`ladder`, untere Stufe, genau ein Nachbar oben): NW [4,3], NO [9,3] und [11,1], Ost [9,7], SW [4,12], Süd [6,12]. Nahkampf geht nicht über die Leiter: Wer die Schützen will, muss hinauf.
+# Der Ringmeister (ring_master) sitzt auf dem Dach des Diebesnests und trägt die Truhenschlüssel: zwei Schlüssel für zwei Truhen, je eine Ladung. Beim Fall scn.n1.ring (Trigger), Zeilen für beide Fälle.
+# Belohnung (Story 9.10): Glutfunke (ember_spark) und Elster (magpie) kommen mit dem Sieg als Knotenwirkung (campaign.yaml n1 effects), nicht aus einer Truhe.
+# Gedenk-Variante (Fenn gefallen, memorialIf): gleiche Karte, gleiche Belohnung, nur andere Szenen. Pflicht und Niederlage bleiben eingetragen: Die Aufstellung filtert forced auf die Truppe, `unit_dies` greift nur für Figuren auf dem Brett, das Zielblatt nennt nur diese.
+# Abweichungen vom Entwurf: Niederlage auch bei Kaels Tod, falls er mitkommt (Kael verlässt die Truppe nie, PERMANENT_COMPANIONS); zwei Schlüssel statt einem; IDs ring_master statt ringmaster.
+# Gerberhallen als Häuser (`building`) statt Mauer, Gerbbottiche als `well`, damit die Blöcke nicht wie begehbare Flächen wirken.
+# Balancing 2026-11-05 [C]: Stufen wie im Entwurf; Normal Sieg 89 %, 1,30 Niedergestreckte (oberer Rand), Leicht 98 %, 0,62 (Korridor bis 0,5, offen).
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [11,3] Grund: das Dach des Diebesnests, hier hielt der Ringmeister sein Diebesgut.
+#   [6,6] Grund: die Gerbbottiche auf dem Platz, Treffpunkt der Diebe.
+#   [6,13] Grund: die Gasse am Uferweg, auf der die Truppe ins Viertel kam.
 id: n1_ring
 nameKey: map.n1_ring.name
-size: [14, 16]
+size: [14, 18]
 fog: true
 timeOfDay: night
 weather: fog
 legend:
   ".": plain
-  ",": grass
   "_": road
-  "T": forest
-  "#": wall          # Mauerstück und Lagerhaus
-  "H": village       # Haus (besuchbar)
-  "W": stall         # Marktstand (Requisite tent)
-  "o": well          # Brunnen (Felsblock-Platzhalter)
-  "D": door          # Lagerhaustür (verschlossen)
-#          x: 0123456789ABCD
+  "~": river
+  "=": bridge
+  "W": wall
+  "G": gate
+  "B": building
+  "O": well
+  "r": roof
+  "L": ladder
+#          x: 01234567890123
 terrain: |
-  TT,##.__.#####
-  ,,.H..__.#...#
-  ,,....__.##D##
-  ,..___##___..,
-  ,.._W_____W_.,
-  ,.._________.,
-  ,H.____o___.H,
-  ,.._________.,
-  ,..__W____W_.,
-  ,,..______..,,
-  T,,..____..,,T
-  TT,,..__..,,TT
-  ,T,,..__..,,T,
-  ,,T,..__..,T,,
-  ,,,,..__..,,,,
-  ,,,,..__..,,,,
+  WWWWWWGGWWWWWW
+  ...........L..
+  .rrr.BBBB.rrr.
+  .rrrLBBBBLrrr.
+  .rrr......rrr.
+  ..............
+  .BBB......rrr.
+  .BBB..OO.Lrrr.
+  .BBB......rrr.
+  ..............
+  .rrr.rrrr.BBB.
+  .rrr.rrrr.BBB.
+  .rrrL.L...BBB.
+  ..............
+  ______________
+  ______________
+  ~~~=~~~~~~=~~~
+  ~~~=~~~~~~=~~~
 lights:
-  - { at: [4, 4], color: "#ffb35c", radius: 3 }
-  - { at: [10, 4], color: "#ffb35c", radius: 3 }
-  - { at: [5, 8], color: "#ffb35c", radius: 3 }
-  - { at: [10, 8], color: "#ffb35c", radius: 3 }
-  - { at: [7, 6], color: "#ffb35c", radius: 3 }
-  - { at: [11, 1], color: "#ffb35c", radius: 3 }
+  - { at: [6, 14], color: "#ffb35c", radius: 3 }
+  - { at: [6, 6], color: "#ffb35c", radius: 2 }
 objects:
-  - { id: door_wh, type: door, at: [11, 2] }
-  # Beute des Rings [C]; Elster und Glutfunke kommen nicht aus der Truhe (siehe Kopf)
-  - { id: c_ring, type: chest, at: [10, 1], contents: { gold: 500 } }
-  - { id: c_stock, type: chest, at: [12, 1], contents: { gold: 300, item: { def: vulnerary } } }
-  - { id: v_nw, type: village, at: [3, 1],  reward: { gold: 150 } }
-  - { id: v_w,  type: village, at: [1, 6],  reward: { item: { def: remedy_salve } } }
-  - { id: v_e,  type: village, at: [12, 6], reward: { gold: 150 } }
+  - { id: c_loot, type: chest, at: [12, 2], contents: { item: { def: steel_sword } } }
+  - { id: c_alley, type: chest, at: [0, 9], contents: { gold: 300 } }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
-#   [11,3] Grund: vor dem Lagerhaus – hier hielt der Ringmeister sein Diebesgut.
-#   [7,6] Grund: der Brunnen auf dem Markt bei Nacht – Treffpunkt der Diebe.
-#   [6,13] Grund: die Südstraße, auf der die Truppe in die Stadt kam.
 deploy:
-  max: 5
-  forced: [avatar, kael]
-  slots: [[6, 15], [7, 15], [5, 15], [8, 15], [6, 14], [7, 14], [5, 14]]
-# Diebe: Plänkler (Schwert) und Späher (Dolch). Stufen um 5 [C] Stufe vorläufig, Abgleich per Simulation, sobald spielbar.
-# Balancing 2026-10-28 [C]: t1-t4 Stufe 6 (vorher 5), t5/t6 Stufe 7 (vorher 5, nur Normal/Schwer), t5 trigger Radius 4 statt hold; Normal lag bei 0,3-0,4 Niedergestreckten (Korridor 0,4-1,3), Leicht bleibt bei 0,0-0,1.
+  max: 6
+  forced: [avatar, fenn]
+  slots: [[4, 14], [5, 14], [6, 14], [7, 14], [8, 14], [9, 14], [5, 15], [8, 15]]
 units:
-  # Ringmeister: Anführer der Diebe, kein Leutnant. Hält sich im Lagerhaus.
-  - { id: ring_master, nameKey: unit.ring_master.name, team: enemy, class: skirmisher, level: 6, at: [11, 1], boss: true, sprite: mercenary, items: [{ def: steel_sword }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: t1, nameKey: unit.thief.name, team: enemy, class: scout, level: 6, at: [6, 1], sprite: mercenary, items: [{ def: iron_dagger }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: t2, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 6, at: [2, 4], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: t3, nameKey: unit.thief.name, team: enemy, class: scout, level: 6, at: [11, 4], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: t4, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 6, at: [3, 8], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold } }
-  - { id: t5, nameKey: unit.thief.name, team: enemy, class: scout, level: 7, at: [11, 7], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: t6, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 7, at: [7, 10], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: t7, nameKey: unit.thief.name, team: enemy, class: skirmisher, level: 6, at: [4, 6], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: t8, nameKey: unit.thief.name, team: enemy, class: scout, level: 6, at: [9, 9], sprite: mercenary, items: [{ def: iron_dagger }], ai: { profile: hold }, difficulty: [hard] }
+  # Ringmeister auf dem Dach des Diebesnests, trägt die Truhenschlüssel
+  - { id: ring_master, nameKey: unit.ring_master.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [11, 3], items: [{ def: steel_sword }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: hold } }
+  # Dachschützen
+  - { id: t1, nameKey: unit.thief.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [2, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t2, nameKey: unit.thief.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [11, 7], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t3, nameKey: unit.thief.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [2, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t4, nameKey: unit.thief.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [6, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Gassen
+  - { id: t5, nameKey: unit.thief.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [4, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t6, nameKey: unit.thief.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [9, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t7, nameKey: unit.thief.name, team: enemy, class: scout, sprite: mercenary, level: 2, at: [0, 5], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t8, nameKey: unit.thief.name, team: enemy, class: scout, sprite: mercenary, level: 2, at: [13, 9], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t9, nameKey: unit.thief.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [7, 5], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: t10, nameKey: unit.thief.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [6, 8], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: t11, nameKey: unit.thief.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [9, 13], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  # Nur Schwer
+  - { id: t12, nameKey: unit.thief.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [12, 6], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
 pairs: []
-reinforcements: []
+reinforcements:
+  # Nachzügler durch das Nordtor
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.thief.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [6, 1], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.thief.name, team: enemy, class: scout, sprite: mercenary, level: 2, at: [7, 1], items: [{ def: iron_dagger }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  victory: { type: boss, unit: ring_master }
+  victory: { type: rout }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: fenn }
   side:
-    - { id: s_villages, type: visit_villages, reward: { gold: 300 } }
-    - { id: s_chests, type: open_chests, reward: { gold: 300 } }
+    - { id: s_chests, type: open_chests, reward: { gold: 200 } }
+    - { id: s_fast, type: turn_limit, turns: 9, reward: { item: { def: vulnerary } } }
 triggers:
   - id: t_ring_master
     once: true
     when: { type: unit_dies, unit: ring_master }
     then:
       - { action: dialogue, id: scn.n1.ring }
-# Szenen (9.10): scn.n1.intro / scn.n1.outro (Knoten pre/post) vor und nach der Karte; scn.n1.ring beim Fall des Ringmeisters (Trigger oben); Gedenk-Variante (Fenn gefallen) über den Knoten.
-goldReward: 600   # [C] Nebenquest
+# Szenen (9.10): scn.n1.intro / scn.n1.outro (Knoten pre/post); scn.n1.ring beim Fall des Ringmeisters (Trigger oben); Gedenk-Variante (Fenn gefallen) über den Knoten.
+goldReward: 500
 music: battle_a
-devNote: >
-  14 × 16, Variante von m1_1_steckbriefe bei Nacht, Nebel an. Lagerhaus im Nordosten (Tür 11,2, zwei Truhen, Ringmeister im Inneren). Leicht: 5 Gegner; Normal: 7; Schwer: 9.
+design:
+  title: Der Ring von Varnhold
+  intent: >
+    Kurze Nachtkarte für Fenns Vergangenheit: Dächer als zweite Ebene, Schützen oben, Klingen in den Gassen, Nebel und Sichtgrenze.
+    Wer zuerst die Dachschützen holt, gewinnt die Gassen. Fenn öffnet die Truhen ohne Schlüssel.
+  mood: Nacht im Gerberviertel, Nebel vom Fluss, Laternen an den Stegen, nasse Schindeldächer, Gerbbottiche auf dem Platz.
+  phases:
+    - { id: p1, turns: [1, 3], label: Uferweg, note: "Ankunft über die Stege, erste Gassenkämpfe." }
+    - { id: p2, turns: [4, 6], label: Gerberplatz, note: Nachzügler durchs Nordtor (R4). }
+    - { id: p3, turns: [7, 9], label: Diebesnest, note: Ringmeister auf dem Dach im Nordosten. }
+  paths:
+    - { team: player, points: [[6, 14], [4, 13], [4, 5], [9, 4], [9, 3], [10, 3]], label: Gassen }
+    - { team: enemy, points: [[6, 1], [6, 5]], phase: p2, label: R4 }
+  zones:
+    - { area: { rect: [4, 5, 9, 9] }, label: Gerberplatz }
+  marks:
+    - { at: [11, 3], label: R, note: "Ringmeister mit Schlüsseln; ohne Fenn sind die Truhen erst nach ihm offen." }
+    - { at: [2, 3], label: D, note: "Dächer: begehbar zu Fuß, Ausweichen-Bonus, gute Schussposition." }
+    - { at: [4, 3], label: L, note: "Leiter: nur zu Fuß, je Block mindestens eine." }
+  notes:
+    - "Normal 14 Gegner (2 davon R4) gegen 6 eigene; Leicht 12, Schwer 15."

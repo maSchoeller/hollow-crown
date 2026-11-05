@@ -1,11 +1,11 @@
-# Nebenquest N2, Szene nach der Karte. Der Glutfunke ist die Knotenwirkung (campaign.yaml), Seite und Relikt kommen aus den Truhen (scn.n2.page, scn.n2.relic), falls geöffnet.
+# Nebenquest N2, Szene nach der Karte. Der Glutfunke ist die Knotenwirkung (campaign.yaml), Seite und Relikt kommen aus den Truhen (scn.n2.page, scn.n2.relic). Varek spricht nur, wenn er beigetreten ist.
 id: scn.n2.outro
 background: wachturm
 music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Das Tor des Turms gehört wieder niemandem. Der Wind pfeift durch die leeren Schießscharten."
+    text: "Der Suchtrupp zieht ab. Der Wind pfeift durch die leeren Schießscharten des Turms."
   - id: l02
     mood: neutral
     text: "Im Torstein glimmt ein Splitter Glut, vom Frost freigelegt. Ein Glutfunke."
@@ -17,3 +17,9 @@ lines:
     speaker: [liora, ysolde, avatar]
     mood: neutral
     text: "Dann behalten wir, was er bewahrt hat. Das ist mehr, als der Tempel getan hat."
+  - id: v01
+    requires: [{ alive: varek }]
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Der Turm hat mich länger behalten, als die Würfel versprachen. Weiter, Kael?"

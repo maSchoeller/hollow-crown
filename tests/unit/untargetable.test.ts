@@ -25,7 +25,7 @@ describe('untargetable children in mission 1-5', () => {
   it('a foe next to a child cannot attack it (only the flag keeps it out of the target list)', () => {
     const s = battle();
     const child = s.units.find((u) => u.id === 'child1')!;
-    const foe = s.units.find((u) => u.id === 'h1')!;
+    const foe = s.units.find((u) => u.id === 'g1')!;
     foe.pos = [child.pos![0] + 1, child.pos![1]];
     expect(Object.keys(attackTargets(data, s, foe, foe.pos))).not.toContain(child.uid);
     child.untargetable = false;
@@ -35,7 +35,7 @@ describe('untargetable children in mission 1-5', () => {
   it('damaging items of a foe never offer a child', () => {
     const s = battle();
     const child = s.units.find((u) => u.id === 'child1')!;
-    const foe = s.units.find((u) => u.id === 'h1')!;
+    const foe = s.units.find((u) => u.id === 'g1')!;
     foe.pos = [child.pos![0] + 1, child.pos![1]];
     foe.bag.push({ uid: 'bomb', def: 'fire_bomb', charges: 3 } as never);
     expect(itemTargets(data, s, foe, foe.pos, 'bomb')).not.toContain(child.uid);
@@ -46,7 +46,7 @@ describe('untargetable children in mission 1-5', () => {
     const kids = s.units.filter((u) => u.id.startsWith('child'));
     const full = kids.map((k) => k.hp);
     // the foes stand right beside the children, in reach of an attack
-    const foes = s.units.filter((u) => u.team === 'enemy' && /^h[0-9]$/.test(u.id));
+    const foes = s.units.filter((u) => u.team === 'enemy' && /^g[0-9]$/.test(u.id));
     kids.forEach((k, i) => {
       const f = foes[i]!;
       f.pos = [k.pos![0], k.pos![1] + 1];
