@@ -1,4 +1,4 @@
-# Mission 1-8, Szene vor der Karte (Story 9.9): Abend, Regen, die Burg ist Heimat. Morra hat das Versteck gefunden.
+# Mission 1-8, Szene vor der Karte (Story 9.9): Abend, Asche im Wind, die Burg ist Heimat. Morra hat das Versteck gefunden.
 # Genau eine Zeile hängt an E4 (Flag e04, Story 9.7): bei „shelter“ das Gerücht von den Flüchtlingen, bei „secret“ Ulvrics Wölfe. Ist e04 nicht gesetzt (Spielstand ohne Entscheidung),
 # läuft keine von beiden und die Szene bleibt stimmig. Keine Kartenvariante. Grosk wird nicht erwähnt (er kommt nur, wenn er nicht beigetreten ist).
 # Ersatzsprecher-Ketten enden bei Rhen (avatar), damit die Zeile immer läuft.
@@ -8,12 +8,12 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Abend über der Paktwacht. Regen rinnt von den Zinnen, die Fackeln im Hof zischen."
+    text: "Abend über der Paktwacht. Asche weht von Norden über die Zinnen, die Fackeln im Hof zischen."
   - id: l02
     speaker: [paktwacht_steward]
     fallback: skip
     mood: neutral
-    text: "Die Tore sind verriegelt, die Pforten besetzt, Hauptmann. Die Burg ist bereit."
+    text: "Die Tore sind besetzt, die Wehrgänge bemannt, Hauptmann. Die Burg ist bereit."
   - id: l03
     speaker: [kael]
     mood: neutral
@@ -34,7 +34,7 @@ lines:
     text: "Ulvrics Wölfe haben unsere Fährte gewittert. Die Burg blieb geheim, die Spur nicht."
   - id: l07
     mood: neutral
-    text: "Von Süden, von Westen, von Osten: Hask, Ulvric und Morra kommen mit allem, was sie haben."
+    text: "Von Süden steigen Hask und Ulvric die Terrassen herauf. Über den Wachpass kommt Morra."
   # Grosk nur, wenn er bei E3 nicht gewechselt ist
   - id: l07b
     mood: neutral

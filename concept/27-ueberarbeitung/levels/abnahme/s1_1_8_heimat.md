@@ -7,6 +7,12 @@
 - **Im Rücken:** Ab Runde 4 kommt **Morra** mit ihren Häschern die Passstraße hinauf, über einen Hangweg vom **Wachpass** und greift durch das Westtor den Bergfried an. Der Pass liegt 2 bis 4 km westlich der Burg. In Runde 7 folgt Nachschub.
 - Die Truppe muss sich **auf zwei Fronten teilen**. Weitere Wellen von Süden in Runde 3, 6 und 9, in Runde 10 ein kleiner Trupp über den Ziegenpfad.
 
+**Im Spiel (2026-11-05):**
+
+- **Stufen und Wehrgänge wie 1-6.** Burgtor offen, statt Hebel Wehrgang, Ostpforte vermauert. Aufstellplätze auch auf den Wehrgängen.
+- **Grosk:** Das Flag heißt `joined_grosk` (der Entwurf nannte `e03: join`). Grosk fehlt dann von selbst, die Hungernden hängen per `requires` daran.
+- **Abweichungen:** Gegner L 33 · N 39 · S 43 statt 33 · 41 · 43, Häscher und späte Wellen eine Stufe tiefer, weil die Truppe kleiner ist als die 14 Plätze. Der Verwalter bleibt Heiler auf Stufe 8 und steht auf dem Thronfeld [15,5] (Entwurf: Zivilist). Morra mit Eisenbogen, damit Groll greift; Rückzug in Runde 10 zum Wachpass. Wetter Asche wie im Entwurf, die Szenen sagen jetzt Asche statt Regen. Gold kleiner (1200, Hof 300, Nebenziel 500). Figuren der Wellen in `reinforcements` wie im Entwurf.
+
 ![Raster](s1_1_8_heimat.png)
 
 <details><summary>Details</summary>

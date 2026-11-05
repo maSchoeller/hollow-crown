@@ -1,84 +1,132 @@
-# Nebenquest N3 – Das Erbe (Story 9.12). Startwerte [C].
-# Variante von m1_2_erlbach (gleiche Geländebasis: Bach im Süden mit Brücke x=7 und Furten, Felder, Wald im Norden), statt der Dorfmitte der Pachthof von Tobins Vater.
-# Tageszeit: Mittag, Wetter: klar (art-direction §2.5, Felder timeOfDay/weather). Ziel: alle Gegner besiegen (rout).
-# Die Pachteintreiber des Grundherrn (Söldner) haben den Hof besetzt. Hofplatz mit Zaun, Eingang im Süden (x=7–8) als Engstelle.
+# Nebenquest N3 – Das Erbe (Knoten n3, öffnet nach 1-6, wenn Tobin in der Truppe oder gefallen ist). Entwurf s1_n3_erbe (abgenommen 2026-11-01), Missionsliste: K 16×20, defend. Startwerte [C]. Bleibt flach (keine Höhenstufen, Produktinhaber 2026-11-05).
+# Tobins Pachthof: Fluss im Norden mit Mühle und Mühlbrücke, Furt im Osten; in der Mitte Hofplatz mit Wohnhaus und Scheunen, im Süden Kornfelder mit Hecken.
+# Hasks versprengte Marodeure kommen von Süden über die brennenden Felder und von Norden über die Brücke. Zu schützen: Tobins Vater. Der Hauptmann trägt den Schlüssel zur Scheunentruhe.
 # Belohnung: Signaturlanze „Erbstück“ (heirloom) bei Sieg als Knotenwirkung in den Konvoi, kein Glutfunke (campaign.yaml n3 effects).
-# Gedenk-Variante (Tobin gefallen, memorialIf): kein Kartenunterschied, volle Belohnung, Szenen scn.n3.memorial_intro/outro statt intro/outro.
-# Tobin ist Pflichtfigur (Produktinhaber 2026-10-26): forced avatar, kael, tobin; ist er gefallen, filtert die Aufstellung ihn (forced ∩ Truppe) weg.
-# Stufen 5–6 [C] Platzhalter, Abgleich per Simulation.
+# Gedenk-Variante (Tobin gefallen, memorialIf): keine Kartenänderung, volle Belohnung, Szenen scn.n3.memorial_intro/outro. Pflicht und Niederlage bleiben eingetragen: Die Aufstellung filtert forced auf die Truppe, `unit_dies` greift nur für Figuren auf dem Brett, das Zielblatt nennt nur diese.
+# Abweichungen vom Entwurf: Kornfeld als `field` statt Gras (Abnahme Karten-Assets 2026-11-05), Scheunen als `farm` und Mühle als `building` statt Mauerblock; Niederlage auch bei Kaels Tod, falls er mitkommt (Kael verlässt die Truppe nie, PERMANENT_COMPANIONS).
+# Balancing 2026-11-05 [C]: Marodeure Stufe 6 (Entwurf 3), Hauptmann und schwere Figuren 7 (Entwurf 4), expectedLevel des Knotens ist 7; Aufstellung rund um den Vater statt nur südlich, der Vater im Kettenhemd (sonst fiel er auf Stufe 6 in über der Hälfte der Läufe; Normal jetzt Sieg 86 %, 0,50 Niedergestreckte).
+# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
+#   [6,7] Grund: der Platz vor dem Wohnhaus, wo Tobins Vater stand.
+#   [9,3] Grund: die Mühlbrücke, der Weg nach Norden.
 id: n3_erbe
 nameKey: map.n3_erbe.name
-size: [16, 16]
+size: [16, 20]
 fog: false
-timeOfDay: noon
+timeOfDay: evening
 weather: clear
 legend:
   ".": plain
   ",": grass
+  "f": field
   "_": road
   "T": forest
   "~": river
-  "w": shallows      # Furt, nur Fußtruppen
+  "w": shallows
   "=": bridge
-  "H": village       # Wohnhaus/Scheune (besuchbar)
-  "A": farm          # Hofgebäude (Requisite farm)
-  "f": field
-  "x": fence
-#          x: 0123456789ABCDEF
+  "B": farm
+  "M": building
+  "H": village
+#          x: 0123456789012345
 terrain: |
-  TTTTTTT,,TTTTTTT
-  TTTT,,,,,,,,TTTT
-  TT,,,,,,,,,,,,TT
-  ,,ffff,,,,ffff,,
-  ,,ffffx,,xffff,,
-  ,,,,,xxxxxx,,,,,
-  ,,,,,x,A,,x,,,,,
-  ,,,,,x,,,Hx,,,,,
-  ,,,,,x,,,,x,,,,,
-  ,,,,,xx__xx,,,,,
-  ,ffff,,__,,ffff,
-  ,ffff,,__,,ffff,
-  ~~~w~~~=~~~~w~~~
-  ~~~w~~~=~~~~w~~~
-  T,,,,,,_.,,,,,,T
-  TT,,,,,..,,,,,TT
+  TTTT,,,,,_,,TTTT
+  TTTT,,,,,_,,TTTT
+  ,,,,,,,,,_,,,,,,
+  ~~~~~~~MM=~~~ww~
+  ~~~~~~~~~=~~~ww~
+  ,,,,,,,H,_,,,,,,
+  ,,,,,,,,,_,,,,,,
+  ,,,,......BB.,,,
+  ,,,,..H...BB.,,,
+  ,,,,.........TTT
+  ,,,,.........TTT
+  ,,,,BB.......,,,
+  ,,,,BB.......,,,
+  Tfffffff,_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  TfffffffT_,fffff
+  Tfffffff,_,fffff
+  T,,,,,,,,_,,,,,,
 lights: []
+initialEffects:
+  - { effect: burning, tiles: [[3, 16], [13, 16]], turns: 3 }
 objects:
-  - { id: v_home, type: village, at: [9, 7], reward: { gold: 300, dialogue: scn.n3.home } }   # Elternhaus; Szene scn.n3.home (Dorfbelohnung)
-initialEffects: []
-# Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
-#   [8,7] Grund: der Hofplatz – Tobins Elternhof, hierhin kommen die Eintreiber zurück.
-#   [7,11] Grund: der Weg vom Bach zum Hof.
+  - { id: v_home, type: village, at: [6, 8], reward: { dialogue: scn.n3.home } }
+  - { id: v_miller, type: village, at: [7, 5], reward: { item: { def: vulnerary } } }
+  - { id: c_barn, type: chest, at: [12, 8], contents: { gold: 400 } }
 deploy:
-  max: 5
-  forced: [avatar, kael, tobin]
-  slots: [[7, 14], [8, 14], [6, 14], [9, 14], [7, 15], [8, 15], [6, 15]]
-# Pachteintreiber des Grundherrn (Söldner). Normal 7, Leicht 5, Schwer 9.
-# Balancing 2026-10-28 [C]: c1 Stufe 7 (vorher 6), c4/c5 Stufe 6 (vorher 5), c2/c3 trigger Radius 3 statt hold, c6/c7 Stufe 6 (nur Normal/Schwer), c7 trigger Radius 4 statt hold; Normal lag bei 0,12 Niedergestreckten (Korridor 0,4-1,3).
+  max: 6
+  forced: [avatar, tobin]
+  slots: [[6, 6], [5, 7], [7, 7], [5, 8], [7, 8], [6, 9], [5, 9], [7, 9]]
 units:
-  - { id: c1, nameKey: unit.rent_collector.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 7, at: [8, 7],  items: [{ def: steel_sword }, { def: vulnerary }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }   # Vogt der Eintreiber
-  - { id: c2, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 5, at: [6, 8],  items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: c3, nameKey: unit.rent_collector.name, team: enemy, class: brigand,    sprite: brigand,       level: 5, at: [9, 8],  items: [{ def: iron_axe }],   ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: c4, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 6, at: [7, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: c5, nameKey: unit.rent_collector.name, team: enemy, class: skirmisher, sprite: mercenary,     level: 6, at: [3, 4],  items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: c6, nameKey: unit.rent_collector.name, team: enemy, class: brigand,    sprite: brigand,       level: 6, at: [12, 4], items: [{ def: iron_axe }],   ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: c7, nameKey: unit.rent_collector.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 6, at: [8, 3],  items: [{ def: iron_bow }],   ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: c8, nameKey: unit.rent_collector.name, team: enemy, class: marksman,   sprite: bandit_archer, level: 6, at: [12, 10], items: [{ def: iron_bow }],  ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: c9, nameKey: unit.rent_collector.name, team: enemy, class: vanguard,   sprite: soldier,       level: 6, at: [3, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: tobin_father, nameKey: unit.tobin_father.name, team: other, class: civilian, sprite: villager_elder, portrait: villager_elder, level: 1, at: [6, 7], items: [{ def: chainmail }], ai: { profile: hold } }
+  # Süden: Felder und Straße
+  - { id: m1, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [3, 17], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+  - { id: m2, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [5, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [12, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [14, 19], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: captain, nameKey: unit.marauder_captain.name, team: enemy, class: vanguard, sprite: soldier, level: 7, at: [9, 18], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: trigger, wakeTurn: 2, then: aggressive } }
+  # Norden: über die Mühlbrücke
+  - { id: m5, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [9, 1], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [7, 1], items: [{ def: iron_sword }], ai: { profile: raider, target: v_miller } }
+  - { id: m7, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [11, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: m8, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 7, at: [1, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-reinforcements: []
+reinforcements:
+  - turn: 2
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [12, 19], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [2, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 4
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [15, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [15, 2], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 7, at: [9, 19], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [10, 19], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  victory: { type: rout }
+  victory: { type: defend, unit: tobin_father, turns: 8 }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: tobin }
+    - { type: unit_dies, unit: tobin_father }
   side:
+    - { id: s_chest, type: open_chests, reward: { gold: 200 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    - { id: s_fast, type: turn_limit, turns: 8, reward: { gold: 200 } }   # [C] Startwert
-    - { id: s_home, type: visit_villages, reward: { gold: 200 } }
 triggers: []
-# Szenen (9.12): scn.n3.intro / scn.n3.outro (Knoten pre/post, Erbstück als Knotenwirkung); Gedenk-Varianten über den Knoten; scn.n3.home beim Elternhaus (9,7)
-goldReward: 700   # [C] Nebenquest kompakt
+# Szenen (9.12): scn.n3.intro / scn.n3.outro (Knoten pre/post, Erbstück als Knotenwirkung); Gedenk-Varianten über den Knoten; scn.n3.home beim Wohnhaus [6,8]
+goldReward: 500
 music: battle_a
-devNote: >
-  Variante von m1_2_erlbach: Hofplatz mit Zaun statt Dorfmitte, Eingang im Süden als Engstelle, Felder an den Flanken. Leicht 5, Normal 7, Schwer 9 Gegner.
+design:
+  title: Das Erbe
+  intent: >
+    Kleine Verteidigung auf zwei Fronten: Süden über offene, brennende Felder, Norden über die Mühlbrücke und die Furt im Osten.
+    Plünderer zielen auf Wohnhaus und Müllerhaus. Nach dem Sieg übergibt Tobins Vater die Signaturlanze (Szene).
+  mood: Spätsommerabend auf einem Pachthof, das Mühlrad dreht sich, Rauch über den Kornfeldern, Hühner flüchten über den Hof.
+  phases:
+    - { id: p1, turns: [1, 3], label: Felder, note: "Marodeure aus dem Süden, Feuer in den Feldern; zwei Mann über die Brücke." }
+    - { id: p2, turns: [4, 5], label: Furt, note: Welle über die Furt im Nordosten (R4). }
+    - { id: p3, turns: [6, 8], label: Letzter Ansturm, note: Nachschub über die Straße (R6). }
+  paths:
+    - { team: enemy, points: [[3, 17], [4, 13], [6, 9]], label: Plünderer }
+    - { team: enemy, points: [[9, 1], [9, 6], [7, 8]], label: Mühlbrücke }
+    - { team: enemy, points: [[15, 0], [13, 3], [12, 7]], phase: p2, label: R4 Furt }
+  zones:
+    - { area: { rect: [4, 7, 12, 12] }, label: Hofplatz }
+  marks:
+    - { at: [9, 3], label: E1, note: "Mühlbrücke, ein Kämpfer hält sie." }
+    - { at: [13, 3], label: E2, note: "Furt, nur zu Fuß." }
+    - { at: [12, 8], label: K, note: "Truhe in der Scheune: Schlüssel beim Hauptmann oder Fenn." }
+  notes:
+    - "Normal 14 Gegner (6 davon in Wellen R2/R4/R6) gegen 6 eigene; Leicht 11, Schwer 16."
+    - Keine Geländeveränderung außer dem vorhandenen Feuer (nächste veränderliche Karte 1-7).

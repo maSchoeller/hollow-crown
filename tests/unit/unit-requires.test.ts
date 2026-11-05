@@ -20,10 +20,10 @@ beforeAll(() => {
 });
 
 describe('units with requires at the creation of the battle', () => {
-  it('without the E2 flag the whole line-up stands (normal: 11 foes, the prisoner not counted)', () => {
+  it('without the E2 flag the whole line-up stands (normal: 17 foes, the prisoner not counted)', () => {
     const ids = foes(fresh());
     for (const id of GONE) expect(ids).toContain(id);
-    expect(ids.filter((id) => id !== 'ysolde')).toHaveLength(11);
+    expect(ids.filter((id) => id !== 'ysolde')).toHaveLength(17);
   });
 
   it('with hand_over wr3, wr4, g3 and g4 are gone on every difficulty and nothing else changes', () => {

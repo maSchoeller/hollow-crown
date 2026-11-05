@@ -1,117 +1,200 @@
-# Mission 1-8 – Die Heimat halten (Story 9.9, Akt-1-Finale). Dieselbe Burg wie m1_6_paktwacht, jetzt von innen gesehen: Mauern ausgebessert, Brüche
-# geschlossen, Haupttor im Süden, zwei Seitenpforten (West/Ost) im äußeren Hof. Die Truppe verteidigt den Verwalter im Bergfried 10 Runden lang
-# gegen drei Wellen aus drei Richtungen (Süden, dann West und Ost, dann alle zugleich). Startwerte [C].
-# Tageszeit: Abend, dann Nacht. Wetter: Regen (art-direction §2.5, gesetzt über timeOfDay/weather). Ortsbild des Knotens: paktwacht_heimat (die Burg ist Heimat).
-# Nach dem Sieg: 2 Glutfunken als Knoten-Wirkung (campaign.yaml, m1_8), inszeniert in scn.m1_8.outro.
-# Rollen: Tore und Seitenpforten als Engstellen für Vorkämpfer (halten Nachbarfelder), Fort für Schützen.
-# Tor (Produktinhaber 2026-10-26): Torfelder bleiben durchlässige Torfelder, es gibt keine Tor-TP und kein Zerstören.
-# Der Verwalter heilt: er bleibt im Bergfried (hold) und heilt Verbündete in Reichweite, ohne Waffe (nur Heilstab).
-# Morra führt Welle 3. In Runde 10 ruft sie den Rückzug (Trigger t_morra_retreat: Zeile + Profil flee zum Südrand, sie zählt dann wie geschlagen: Groll, Kopfgeld).
+# Mission 1-8 – Die Heimat halten (Knoten m1_8, Akt-Finale). Entwurf s1_1_8_heimat (abgenommen 2026-11-01), Missionsliste: G 30×40, defend, 14 / 42, Morra führt, Hask, Ulvric, Grosk. Startwerte [C].
+# Gelände und Stufen wie m1_6_paktwacht (dieselben `levels`-Bereiche, dieselben Wehrgänge). Die Burg gehört jetzt der Truppe: Burgtor offen, kein Hebel (dort Wehrgang), Ostpforte [21,15] vermauert.
+# Der Reiz der Karte: Was in 1-6 Engstelle für den Angreifer war, hält jetzt die Truppe, und ihre Schützen stehen auf dem Wehrgang (Aufstellplätze darauf).
+# Hask, Ulvric und Grosk steigen von Süden die Terrassen hinauf, ab Runde 4 fällt Morra über den Wachpass und das Westtor [6,5] in den Rücken. Zu schützen: der Verwalter im Bergfried, 12 Runden.
+# Der Verwalter heilt: Er bleibt auf dem Thronfeld (hold) und heilt Verbündete in Reichweite, ohne Waffe (Abweichung vom Entwurf, dort Zivilist: Absicht der Karte seit Story 9.9).
+# Grosk: Wer bei E3 verschont (`spare`), bekommt die Wirkung recruit { lt: grosk }, Flag joined_grosk. Der Entwurf nannte „e03: join“, den Wert gibt es nicht. Ein beigetretener Leutnant
+# kommt von selbst nicht auf die Karte, seine Hungernden hängen per `requires` am selben Flag.
+# Morra ruft in Runde 10 den Rückzug (Trigger t_morra_retreat: Zeile + Profil flee zum Wachpass; erreicht sie ihn, gilt sie als geschlagen: Groll, Kopfgeld).
+# Abweichungen vom Entwurf: Gold kleiner (Korridor Akt 1: goldReward 1200, Hof 300, Nebenziel 500); Morra mit Eisenbogen statt Stahl, damit „+1 Stufe je Groll“ greift.
+# Balancing 2026-11-05 [C], Normal über die verkettete Kampagne: Morras Häscher Stufe 3 statt 4, Wellen R9/R10 Stufe 4 statt 5, zwei Häscher nur auf Schwer.
 # Finale: keine Heimsuchung (Produktinhaber 2026-10-26).
 id: m1_8_paktwacht_halten
 nameKey: map.m1_8_paktwacht_halten.name
-size: [16, 20]
-fog: false
+size: [30, 40]
 legend:
   ".": plain
   ",": grass
+  "f": field
   "_": road
   "T": forest
   "^": mountain
-  "#": wall
-  "F": fort          # Wachposten im inneren Hof
-  "G": gate          # Tore (Haupttor Süd, Innentor Nord), durchlässig
-  "K": throne        # Thron im Bergfried (nur Kulisse hier)
-  "E": door_open     # Seitenpforten West (1,10) und Ost (14,10)
-#          x: 0123456789ABCDEF
+  "~": river
+  "w": shallows
+  "=": bridge
+  "W": wall
+  "B": wall
+  "G": gate
+  "F": fort
+  "H": village
+  "t": throne
+  "d": door
+  "R": rampart
+  "O": tower_top
+  "S": stairs
+  "/": ramp
+#          x: 012345678901234567890123456789
 terrain: |
-  ^^^^########^^^^
-  ^^^^#......#^^^^
-  ^^^^#..KK..#^^^^
-  ^^^^#......#^^^^
-  ^^^^###GG###^^^^
-  ^^^^#.F..F.#^^^^
-  ^^^^#......#^^^^
-  ^^^^#......#^^^^
-  ^^^^##_.._##^^^^
-  _#............#_
-  _E............E_
-  _#............#_
-  _#............#_
-  ^^#####GG#####^^
-  ^,T,,,,__,,,,T,^
-  ^,,^^,,,,____,,^
-  ^,,,_________,,^
-  ^T,,___,,,,,,,T^
-  ,,,,___,,,,,,,,,
-  ,,,,____,,,,,,,,
-# Abend -> Nacht, Regen: tiefes, kaltes Violett-Blau, tiefe orange Restsonne, warme Fackeln an Toren und Hof
-# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^dd^^^^^^^^^^^^^^
+  ,,,,__WWWWWWWWWWWWWWWWWW^^^^^^
+  ,,,,,,GF...W...t..W...FW^^^^,^
+  ^^^^^^W....W......W....W^^^^,^
+  ^^^^^^W....WWW..WWW....W^^^^,^
+  ^^^TTTW.......__.......W^^^^,^
+  ^^^TTTW..BB...__...BB..W^^^^,^
+  ^^^TTTRS.BB...__...BB..WTTT^,^
+  ^^^TTTRF......__......FWTTT^,^
+  ^^^TTTRRRRRRRRGGRRRRRWWWTTT^,^
+  ^^^TTT,,W.....__.S..WW,,TTT,,^
+  ^^^TTT,,W.BB..__..BB.W,,TTT^,^
+  ^^^TTT,,W.BB..__..BB.W,,TTT^,^
+  ^^^TTT,,RS..H.__.H..SR,,TTT^,^
+  ^^^TTT,,R.....__.....R,,TTT^,^
+  ^^^TTT,,ORRRRRGGRRRRRO,,TTT^,^
+  ^^^,,,,,,,,,,,,,,,,,,,,,,,,,,^
+  ^^^TTT,,,,,,,,,,,,,,,,,,TTT^,^
+  ^^^WWWW__WWWWWWWWWWWW__WWWW^,^
+  ^^^TTT,,,,TT,,,,,,TT,,,,TTT^,^
+  ^^^TTT,,,,TT,,,,,,TT,,,,TTT^,^
+  ^^^TTT,,,,,,,,,,,,,,,,,,TTT^,^
+  ^^^WWWWWWWWWWW//WWWWWWWWW/W^S^
+  ^^^TTT,,TT,,,,__,,,,TT,,TTT^,^
+  ^^^TTT,,TT,,,,__,,,,TT,,TTT^,^
+  TT,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  TTffffffffff,,__,,,fffffffff,,
+  TTffffBBHfff,,__,,,fffffHfff,,
+  TTffffBB________,,,fffffffff,,
+  ,,ffffffffff,,__,,,fffffffffTT
+  ,,ffffffffff,,__,,,fHfffffffTT
+  ,,ffffffffff,,__,,,fffffffffTT
+  ,,,H,,,,,,,,,,__,,,,,,,,,,,,TT
+  ~~~ww~~~~~~~~~==~~~~~~~~ww~~~~
+  ~~~ww~~~~~~~~~==~~~~~~~~ww~~~~
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+# Stufen: dieselben Bereiche wie m1_6_paktwacht
+levels:
+  - { level: 1, area: { rect: [0, 0, 29, 24] } }
+  - { level: 2, area: { rect: [8, 16, 8, 18] } }
+  - { level: 2, area: { rect: [8, 18, 13, 18] } }
+  - { level: 2, area: { rect: [16, 18, 21, 18] } }
+  - { level: 2, area: { rect: [21, 16, 21, 18] } }
+  - { level: 2, area: { rect: [6, 10, 6, 12] } }
+  - { level: 2, area: { rect: [6, 12, 13, 12] } }
+  - { level: 2, area: { rect: [16, 12, 20, 12] } }
 timeOfDay: evening
-weather: rain
+weather: ash
 lights:
-  - { at: [7, 4], color: "#ffb35c", radius: 3 }
-  - { at: [8, 4], color: "#ffb35c", radius: 3 }
-  - { at: [7, 13], color: "#ffb35c", radius: 3 }
-  - { at: [8, 13], color: "#ffb35c", radius: 3 }
-  - { at: [3, 10], color: "#ffb35c", radius: 3 }
-  - { at: [12, 10], color: "#ffb35c", radius: 3 }
-  - { at: [7, 2], color: "#ffb35c", radius: 4 }
-objects: []
+  - { at: [14, 18], color: "#ffb35c", radius: 3 }
+  - { at: [15, 18], color: "#ffb35c", radius: 3 }
+  - { at: [14, 12], color: "#ffb35c", radius: 3 }
+  - { at: [15, 12], color: "#ffb35c", radius: 3 }
+  - { at: [6, 5], color: "#ffb35c", radius: 3 }
+  - { at: [15, 5], color: "#ffb35c", radius: 4 }
+objects:
+  - { id: v_farm_e, type: village, at: [24, 30], reward: { gold: 300 } }
+  - { id: v_mill, type: village, at: [8, 30], reward: { item: { def: vulnerary } } }
+  - { id: v_stable_e, type: village, at: [17, 16], reward: { item: { def: steel_lance } } }
+  - { id: v_stable_w, type: village, at: [12, 16], reward: { item: { def: vulnerary } } }
 initialEffects: []
 deploy:
-  max: 7
+  max: 14
   forced: [avatar, kael]
-  slots: [[6, 11], [7, 11], [8, 11], [9, 11], [7, 12], [8, 12], [6, 12], [9, 12], [7, 10]]
-# Stufen [C]: Gegner 5, Verwalter 8 (Balancing 2026-10-28: Gegner vorher 7; Welle 1 löst erst bei Radius 5 aus, Welle 3 kommt in Runde 8 statt 7; Simulation Story 9.9 gegen ein Heer der Stufe 9; die Leutnant-Stufen rechnet createBattle, `level` ist dort Platzhalter). Leutnants (Hask, Ulvric, Morra, Grosk): Klasse und Stufe kommen aus `lieutenant` (flieht bei 0 TP, Groll, Kopfgeld);
-# ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35). Ein beigetretener Grosk (Flag joined_grosk) steht nicht auf der Karte.
+  # Vorburg und Burghof wie im Entwurf, dazu Schützenplätze auf den Wehrgängen
+  slots: [[16, 13], [13, 13], [12, 13], [9, 13], [16, 14], [13, 14], [12, 14], [17, 14], [12, 18], [17, 18], [11, 18], [18, 18], [13, 12], [18, 12], [16, 9], [13, 9], [16, 10], [13, 10]]
 units:
-  # Zu verteidigende Figur im Bergfried (Produktinhaber 2026-10-26): der Verwalter, grauhaarig, hütete die Schlüssel (scn.m1_6.outro). Heilt Verbündete in Reichweite, ohne Waffe.
-  # Kein Modell: wie der Dorfälteste in m1_2 bekommt er die Figur der Klasse healer (Platzhalter bis zur Grafik-Session).
-  - { id: steward, nameKey: unit.paktwacht_steward.name, team: other, class: healer, level: 8, at: [8, 3], items: [{ def: heal_staff }], ai: { profile: hold } }
-  # Welle 1 (Süden; trigger Radius 5 [C], Hask bleibt aggressive)
-  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, level: 9, at: [8, 16], sprite: hask, portrait: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
-  - { id: w1a, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [6, 16], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: w1b, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [10, 15], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: w1c, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [5, 17], sprite: archer, items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: w1d, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [9, 17], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: steward, nameKey: unit.paktwacht_steward.name, team: other, class: healer, level: 8, at: [15, 5], items: [{ def: heal_staff }], ai: { profile: hold } }
+  # Hasks Bande in den Feldern (Mitte)
+  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, sprite: hask, portrait: hask, level: 7, at: [15, 33], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [17, 32], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [12, 32], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [16, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [13, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 31], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [18, 34], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [11, 34], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [14, 34], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Ulvric und Wölfe (Westfelder)
+  - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, sprite: ulvric, portrait: ulvric, level: 7, at: [5, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [7, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [4, 30], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [3, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [6, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Grosk und Hungernde (Ostfelder). Grosk selbst fehlt nach einem Beitritt von allein, die Hungernden hängen am Flag.
+  - { id: grosk, lieutenant: grosk, nameKey: unit.grosk.name, team: enemy, sprite: grosk, portrait: grosk, level: 6, at: [24, 32], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
+  - { id: g1, nameKey: unit.starving_raider.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [25, 31], items: [{ def: iron_axe }], ai: { profile: aggressive }, requires: [{ not: { flag: joined_grosk } }] }
+  - { id: g2, nameKey: unit.starving_raider.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [22, 31], items: [{ def: iron_sword }], ai: { profile: aggressive }, requires: [{ not: { flag: joined_grosk } }] }
+  - { id: g3, nameKey: unit.starving_raider.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [23, 34], items: [{ def: iron_axe }], ai: { profile: aggressive }, requires: [{ not: { flag: joined_grosk } }] }
+  - { id: g4, nameKey: unit.starving_raider.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [26, 33], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard], requires: [{ not: { flag: joined_grosk } }] }
 pairs: []
 reinforcements:
-  # Welle 2 (Runde 4, angekündigt): West- und Ostpforte
+  # Süden: Nachschub über Brücke und Furten
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [15, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [14, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [25, 39], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [4, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [16, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Wachpass im Rücken: Morra und ihre Häscher. Morra zieht in Runde 10 ab (Trigger t_morra_retreat setzt das Profil flee; der Pass ist ihr Rückzugsgebiet).
   - turn: 4
     phase: enemy
     announce: true
     units:
-      - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 9, at: [0, 10], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 5, at: [0, 11], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [0, 9], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-      # nur wenn Grosk nicht gewechselt (E3): ein beigetretener Leutnant (Flag joined_grosk) spawnt nicht (createBattle legt den Plan vorab an, spawnUnits lässt ihn weg)
-      - { id: grosk, lieutenant: grosk, nameKey: unit.grosk.name, team: enemy, level: 9, at: [15, 10], sprite: grosk, portrait: grosk, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  # Welle 3 (Runde 8 [C], vorher 7, angekündigt): alle drei Seiten, Morra führt von Süden
-  - turn: 8
+      - { id: morra, lieutenant: morra, nameKey: unit.morra.name, team: enemy, sprite: morra, portrait: morra, level: 7, at: [5, 0], items: [{ def: iron_bow }, { def: vulnerary }], drops: [1], ai: { profile: aggressive, area: { rect: [4, 0, 5, 1] } } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [4, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: scout, sprite: mercenary, level: 3, at: [5, 1], items: [{ def: iron_dagger }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [4, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [5, 2], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      # Nur Schwer, Balancing 2026-11-05: Morras Leute stärker, sie kommen dem Verwalter am nächsten
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [4, 2], items: [{ def: steel_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - turn: 6
     phase: enemy
     announce: true
     units:
-      # Morra zieht in Runde 10 ab (Trigger t_morra_retreat setzt das Profil flee; der Südrand ist ihr Rückzugsgebiet)
-      - { id: morra, lieutenant: morra, nameKey: unit.morra.name, team: enemy, level: 10, at: [8, 18], sprite: morra, portrait: morra, items: [{ def: iron_bow }, { def: vulnerary }], drops: [1], ai: { profile: aggressive, area: { rect: [0, 17, 15, 19] } } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 5, at: [6, 18], sprite: archer, items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [10, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: skirmisher, level: 5, at: [0, 12], sprite: mercenary, items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 5, at: [15, 12], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-      - { nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 5, at: [7, 18], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [24, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [3, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 28], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [15, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [5, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 3, at: [4, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: knight, sprite: soldier, level: 6, at: [5, 1], items: [{ def: steel_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [4, 1], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - turn: 9
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 4, at: [0, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [25, 39], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Ziegenpfad Ost: kleine Gruppe, die den vermauerten Weg sucht
+  - turn: 10
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: scout, sprite: mercenary, level: 5, at: [28, 30], items: [{ def: iron_dagger }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [28, 29], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
-  victory: { type: defend, unit: steward, turns: 10 }
+  victory: { type: defend, unit: steward, turns: 12 }
   defeat:
-    - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: steward }
   side:
+    - { id: s_villages, type: visit_villages, reward: { gold: 500 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Ein Nebenziel genügt (Produktinhaber 2026-10-27).
 triggers:
-  # Runde 10, Beginn: Morra ruft den Rückzug (Blase über ihr, nur solange sie noch auf der Karte steht) und weicht mit dem Profil flee zum Südrand.
+  # Runde 10, Beginn: Morra ruft den Rückzug (Blase über ihr, nur solange sie noch auf der Karte steht) und weicht mit dem Profil flee zum Wachpass.
   # Erreicht sie ihn, gilt sie als geschlagen (Groll, Kopfgeld). Fällt sie vorher auf 0 TP, flieht sie wie jeder Leutnant.
   - id: t_morra_retreat
     once: true
@@ -120,8 +203,32 @@ triggers:
       - { action: dialogue, id: scn.m1_8.morra_retreat, onBoard: morra }
       - { action: set_ai, units: [morra], profile: flee }
 # Szenen (Knoten m1_8): scn.m1_8.intro vorher (eine Zeile je E4-Ausgang); scn.m1_8.outro nachher (Sieg, Tafel, Glutfunken); scn.m1_8.morra_retreat im Kampf (Runde 10).
-goldReward: 1500   # [C]
+goldReward: 1200
 music: battle_a
-devNote: >
-  16 × 20, dieselbe Burg wie m1_6_paktwacht von innen. Aufstellung im äußeren Hof, Verwalter im Bergfried (8,3), heilt. Welle 1 Süden (Runde 1), Welle 2 West/Ost (Runde 4),
-  Welle 3 alle Seiten (Runde 8). Leicht: 13 Gegner; Normal: 15; Schwer: 17 (Grosk zählt nur, wenn er nicht beigetreten ist). Runde 10: Morra zieht ab; 2 Glutfunken nach dem Sieg.
+design:
+  title: Die Heimat halten
+  intent: >
+    Akt-Finale, erste große Verteidigung: Was in 1-6 Engstelle für den Angreifer war, hält jetzt die Truppe. Von Süden steigen drei Leutnants
+    die Terrassen hinauf, ab Runde 4 fällt Morra über den Wachpass in den Rücken. Die Truppe muss sich auf zwei Fronten teilen, ihre Schützen stehen auf dem Wehrgang.
+  mood: Abend, Asche weht vom Norden, Fackeln auf den neu gesetzten Mauern, unten in den Feldern die Feuer der Belagerer, Morras Laternen am Pass.
+  phases:
+    - { id: p1, turns: [1, 3], label: Aufmarsch, note: "Hask, Ulvric und Grosk rücken durch die Felder; Truppe besetzt Wehrgänge und Vorburg." }
+    - { id: p2, turns: [4, 7], label: Zwei Fronten, note: "Morra über den Wachpass (R4, R7) gegen das Westtor; Südwellen R3, R6." }
+    - { id: p3, turns: [8, 12], label: Halten, note: "Letzte Wellen R9 Süd und R10 über den Ziegenpfad; Morra zieht in Runde 10 ab." }
+  paths:
+    - { team: enemy, points: [[15, 33], [15, 25], [21, 22], [22, 20], [15, 18]], label: Hask }
+    - { team: enemy, points: [[5, 32], [7, 26], [7, 21], [7, 19]], label: Ulvric }
+    - { team: enemy, points: [[24, 32], [25, 25], [22, 21]], label: Grosk }
+    - { team: enemy, points: [[5, 0], [5, 5], [6, 5], [11, 8], [15, 6]], phase: p2, label: Morra }
+    - { team: enemy, points: [[28, 30], [28, 19], [26, 19]], phase: p3, label: R10 Ziegenpfad }
+  zones:
+    - { area: { rect: [12, 5, 17, 6] }, label: Bergfried }
+    - { area: { rect: [9, 13, 20, 17] }, label: Vorburg }
+  marks:
+    - { at: [6, 5], label: O, note: "Westtor zum Hangweg vom Wachpass: Morras Weg in den Rücken." }
+    - { at: [15, 18], label: E4, note: "Vorburgtor gegen Süden, eigene Schützen auf dem Wehrgang darüber." }
+    - { at: [21, 15], label: X, note: "Ostpforte vermauert (Unterschied zu 1-6)." }
+  notes:
+    - "Normal 39 Gegner (34 ohne Grosks Gruppe nach E3 „verschonen“), Leicht 33, Schwer 43. Missionsliste und Entwurf sagen 41–42: Die Truppe ist kleiner als die 14 Plätze, zwei Häscher aus R4/R7 stehen deshalb nur auf Schwer [C]."
+    - "Morras Weg zum Versteck hängt an E4 (Szene); auf der Karte kommt sie immer über den Pass."
+    - Keine Geländeveränderung (nächste veränderliche Karte in Akt 2).

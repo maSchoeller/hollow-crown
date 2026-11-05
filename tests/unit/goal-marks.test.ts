@@ -68,11 +68,11 @@ describe('sideObjectiveSpots', () => {
     expect(sideObjectiveSpots(data, s, side({ type: 'turn_limit', turns: 9 }))).toEqual([]);
   });
 
-  it('mission 1-1 marks its four houses', () => {
+  it('mission 1-1 marks its five houses', () => {
     const sides = data.maps[s.mapId]!.objectives.side;
     const o = sides.find((x) => x.type === 'visit_villages')!;
-    expect(sideObjectiveSpots(data, s, o)).toHaveLength(4);
-    expect(goalMarkTiles(data, s, sides, o.id)).toHaveLength(4);
+    expect(sideObjectiveSpots(data, s, o)).toHaveLength(5);
+    expect(goalMarkTiles(data, s, sides, o.id)).toHaveLength(5);
     expect(goalMarkTiles(data, s, sides, null)).toEqual([]);
     expect(goalMarkTiles(data, s, sides, 'unknown')).toEqual([]);
   });

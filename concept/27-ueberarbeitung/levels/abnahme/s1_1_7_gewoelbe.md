@@ -8,6 +8,11 @@
 - Die **verschlossene Tür** zur Kammer oben links öffnet der Schlüssel des **Anführers** (Kammer unten rechts) oder Fenn.
 - Plünderer kommen aus **Felsspalten** (Runde 3 Nordost, Runde 5 aus beiden unteren Kammern).
 
+**Im Spiel (2026-11-05):**
+
+- **Eben,** Einsturz als `set_terrain` zu `rockwall`: Beben Runde 4, Runde 5 Königskammer, 6 obere, 7 untere Kammern. Figuren werden nicht geschoben, ihr Feld bleibt stehen.
+- **Abweichungen:** [7,3] und [8,3] bleiben in Runde 5 offen, sonst wäre die Chronik abgeschnitten. Jeder Plünderer trägt einen Schlüssel, damit die Karte ohne Fenn lösbar bleibt. Gegner Stufe 3–6 statt 3–4, Kammern gefährlich, Hauptgang leicht (Korridor). Wetter klar wie im Entwurf, vorher Nebel-Wetter; die Regel Nebel des Krieges bleibt.
+
 ![Raster](s1_1_7_gewoelbe.png)
 
 <details><summary>Details</summary>

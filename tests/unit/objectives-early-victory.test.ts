@@ -33,13 +33,15 @@ describe('early victory of survive and defend', () => {
     expect(s.outcome).toBeNull();
   });
 
-  it('survive: won as soon as the last foe falls and the last wave is through, Varek (ignoreForRout) does not count', () => {
+  it('survive: won as soon as the last foe falls and the last wave is through, a figure with ignoreForRout does not count', () => {
     const s = battle('m1_5');
+    const spared = s.units.find((u) => u.team === 'enemy')!;
+    spared.ignoreForRout = true;
     clearFoes(s);
     s.turn = 3;
     s.phase = 'player';
     s.reinforcementsDone = data.maps.m1_5_hungerlager!.reinforcements.map((_, i) => i);
-    expect(s.units.some((u) => u.id === 'varek' && u.gone !== 'dead')).toBe(true);
+    expect(spared.gone).not.toBe('dead');
     expect(check(s)).toEqual([{ t: 'battleEnd', outcome: 'victory', reason: undefined }]);
     expect(s.outcome).toBe('victory');
   });
