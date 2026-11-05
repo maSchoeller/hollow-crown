@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { faceRot, gatePieces, wallPieces, type TerrainAt } from '../../src/render/board/wallKit';
+import { boardwalkPiece, faceRot, gatePieces, wallPieces, type TerrainAt } from '../../src/render/board/wallKit';
 
 /** A map from rows: # wall, G gate, D door, . ground. */
 function grid(rows: string[]): TerrainAt {

@@ -34,7 +34,6 @@ items:
     missions: [1-3, 1-4, N4]
     use: Einzelne Fichte in frischem Mittelgrün, ersetzt die fast schwarze tree_c.
   - id: deadtree_b
-    ships: true
     name: Totholz
     ref: { sheet: nature_1.png, box: [825, 540, 1085, 870] }
     missions: [1-4, 1-5, 3-4]

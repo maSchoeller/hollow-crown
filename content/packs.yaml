@@ -82,6 +82,24 @@ packs:
       - gatehouse_closed
       - well_idle
       - fence_gate
+      - grove_c
+      - lodge_b_intact
+      - lodge_b_visited
+      - lodge_b_razed
+      - field_open
+      - reed_a
+      - reed_b
+      - lily_a
+      - tussock_a
+      - boardwalk_straight
+      - boardwalk_corner
+      - boardwalk_end
+      - relief_a
+      - sarcophagus_a
+      - lever_up
+      - lever_down
+      - ballista_idle
+      - torch_idle
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**

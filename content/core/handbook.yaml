@@ -115,7 +115,7 @@ entries:
   - id: terrain_open
     category: terrain
     graphic: terrain
-    terrain: [plain, grass, road, bridge, field, relief]
+    terrain: [plain, grass, road, bridge, boardwalk, footbridge, field, relief, vault, torch]
     see: [terrain_cover, movement]
   - id: terrain_cover
     category: terrain
@@ -130,7 +130,7 @@ entries:
   - id: terrain_water
     category: terrain
     graphic: terrain
-    terrain: [shallows, river]
+    terrain: [shallows, river, swamp, creek]
     see: [terrain_open, status_wet]
   - id: terrain_fort
     category: terrain
@@ -140,7 +140,7 @@ entries:
   - id: terrain_blocked
     category: terrain
     graphic: terrain
-    terrain: [wall, wagon, stall, brazier, well, fence, farm, building]
+    terrain: [wall, wagon, stall, brazier, well, fence, farm, building, sarcophagus]
     see: [doors, rockwall, fog]
   - id: doors
     category: terrain
