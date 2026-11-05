@@ -74,78 +74,78 @@ deploy:
   slots: [[11, 18], [12, 18], [13, 18], [14, 18], [15, 18], [16, 18], [17, 18], [18, 18], [11, 19], [12, 19], [17, 19], [18, 19], [11, 20], [12, 20], [17, 20], [18, 20], [11, 22], [12, 22], [13, 22], [14, 22], [15, 22], [16, 22], [17, 22], [18, 22]]
 units:
   # Norden: Rowena mit der Lanze vor dem Brückentor
-  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: cavalier, level: 11, at: [14, 9], lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
-  - { id: n1, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: n2, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [19, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: n3, nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 6, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: n4, nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 6, at: [15, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: n5, nameKey: unit.crown_soldier.name, team: enemy, class: marksman, level: 5, at: [12, 12], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: n6, nameKey: unit.crown_soldier.name, team: enemy, class: marksman, level: 5, at: [17, 12], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: n7, nameKey: unit.crown_soldier.name, team: enemy, class: healer, level: 5, at: [15, 10], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: cavalier, level: 21, levelOffset: 2, at: [14, 9], lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: n1, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n2, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [19, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n3, nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n4, nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [15, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n5, nameKey: unit.crown_soldier.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [12, 12], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: n6, nameKey: unit.crown_soldier.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [17, 12], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: n7, nameKey: unit.crown_soldier.name, team: enemy, class: healer, level: 16, levelOffset: -3, at: [15, 10], items: [{ def: heal_staff }], ai: { profile: support } }
   # Westen: Grell und seine Leute
-  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 10, at: [2, 21], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: aggressive } }
-  - { id: w1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 5, at: [3, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 5, at: [3, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: w3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 5, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w4, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 5, at: [7, 26], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: w5, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [2, 15], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: w6, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [2, 27], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 20, levelOffset: 1, at: [2, 21], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: aggressive } }
+  - { id: w1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [3, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [3, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w4, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [7, 26], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w5, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [2, 15], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: w6, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [2, 27], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Osten: Brakka mit Balliste auf dem Hügel (Stufe 2), Söldner darunter
-  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 10, at: [23, 13], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
-  - { id: e1, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 6, at: [24, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: e2, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 5, at: [22, 14], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: e3, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [27, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: e4, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [27, 21], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: e5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [21, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: e6, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 20, levelOffset: 1, at: [23, 13], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
+  - { id: e1, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 17, levelOffset: -2, at: [24, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: e2, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [22, 14], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: e3, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [27, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: e4, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [27, 21], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: e5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [21, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: e6, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Süden: Sable oder, wenn sie bei E7 gewechselt hat, der Hauptmann mit dem Grenzheer
-  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 10, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_order }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 10, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_warned }] }
-  - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 6, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 5, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: s3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [18, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: s4, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 5, at: [13, 36], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: s5, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 6, at: [16, 36], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_order }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_warned }] }
+  - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 17, levelOffset: -2, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [18, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s4, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 16, levelOffset: -3, at: [13, 36], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: s5, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [16, 36], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Nur Schwer
-  - { id: h1, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 7, at: [6, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 7, at: [23, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 6, at: [6, 25], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h4, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 6, at: [25, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: h5, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 6, at: [8, 37], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h6, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 6, at: [21, 37], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 18, levelOffset: -1, at: [6, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 18, levelOffset: -1, at: [23, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 17, levelOffset: -2, at: [6, 25], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 17, levelOffset: -2, at: [25, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h5, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 17, levelOffset: -2, at: [8, 37], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h6, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 17, levelOffset: -2, at: [21, 37], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 reinforcements:
   # Reiter von Westen
   - turn: 3
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [0, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [0, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [0, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [0, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [0, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [0, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Reiter von Osten
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [29, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [29, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [29, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [29, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [29, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [29, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Fußvolk von Süden
   - turn: 7
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 6, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 6, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 6, at: [13, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 17, levelOffset: -2, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 17, levelOffset: -2, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [13, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Letzte Lanzen sperren die Furt
   - turn: 9
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 6, at: [23, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
-      - { nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 6, at: [25, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
-      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 6, at: [24, 7], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [23, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
+      - { nameKey: unit.crown_soldier.name, team: enemy, class: knight, level: 17, levelOffset: -2, at: [25, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
+      - { nameKey: unit.lance_rider.name, team: enemy, class: cavalier, level: 17, levelOffset: -2, at: [24, 7], items: [{ def: iron_lance }], ai: { profile: aggressive } }
 objectives:
   victory: { type: escape, area: { rect: [0, 0, 29, 1] }, min: 6 }
   defeat:
@@ -195,7 +195,8 @@ design:
     - { at: [24, 13], label: BA, note: "Brakkas Balliste, deckt Hügel und Ostseite. Reicht bis zum Treffpunkt." }
     - { at: [14, 9], label: R, note: "Rowena. Ab Runde 6 hält sie still, wenn niemand sie angreift." }
   notes:
-    - "Normal 40 Gegner (12 davon in Wellen), Stufe 5–6 plus Leutnants (St. 10–11), gegen 15 eigene; Leicht 36, Schwer 46. Das Blatt zählt Sable und Hauptmann beide."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 19 und bleibt fürs Schema."
+    - "Normal 40 Gegner (12 davon in Wellen), P−3 bis P−1 (hier P = 19, Stufe 16–18), Leutnants P+1 bis P+2, gegen 15 eigene; Leicht 36, Schwer 46. Das Blatt zählt Sable und Hauptmann beide."
     - "Format: Es gibt ein Siegziel; 'survive → escape' entsteht über das Tor. min 6 ist Vorschlag, per pnpm sim prüfen."
     - "Leistung: 1 200 Felder und bis zu 46 Gegner, Architektur T8. Gegnerphase mit Schnelldurchlauf."
     - "Odiles Zeile wechselt nach E5, Saat Rowena als Szene, danach Tor zu Akt 3 (Aureklamm)."

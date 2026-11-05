@@ -59,25 +59,25 @@ deploy:
   slots: [[7, 21], [8, 21], [11, 21], [12, 21], [7, 22], [8, 22], [9, 22], [10, 22], [11, 22], [12, 22], [9, 23], [10, 23]]
 units:
   # Ostnase: Brakka an der Balliste, Wache oben, Söldner auf der Terrasse darunter
-  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 8, at: [15, 10], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
-  - { id: g_east, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 5, at: [16, 11], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: guard } }
-  - { id: t_east, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 4, at: [16, 14], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 12, levelOffset: 1, at: [15, 10], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
+  - { id: g_east, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [16, 11], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: t_east, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 8, levelOffset: -3, at: [16, 14], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
   # Westnase: Bedienung an der Balliste, Wache, Söldner auf der Terrasse
-  - { id: crew_west, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 4, at: [3, 12], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: g_west, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 4, at: [3, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: t_west, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 4, at: [3, 16], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: crew_west, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 8, levelOffset: -3, at: [3, 12], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: g_west, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 8, levelOffset: -3, at: [3, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: t_west, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 8, levelOffset: -3, at: [3, 16], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
   # In der Scharte: die erste Linie kommt sofort
-  - { id: m1, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 4, at: [9, 12], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: m2, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 4, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m3, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 4, at: [8, 11], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: m4, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 4, at: [11, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: m5, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 4, at: [9, 9], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: m6, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 4, at: [10, 9], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: m7, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 4, at: [8, 8], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m8, nameKey: unit.mercenary.name, team: enemy, class: healer, level: 4, at: [11, 8], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: m1, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 8, levelOffset: -3, at: [9, 12], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m2, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 8, levelOffset: -3, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m3, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 8, levelOffset: -3, at: [8, 11], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: m4, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 8, levelOffset: -3, at: [11, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: m5, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 8, levelOffset: -3, at: [9, 9], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: m6, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 8, levelOffset: -3, at: [10, 9], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: m7, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 8, levelOffset: -3, at: [8, 8], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m8, nameKey: unit.mercenary.name, team: enemy, class: healer, level: 8, levelOffset: -3, at: [11, 8], items: [{ def: heal_staff }], ai: { profile: support } }
   # Nur Schwer
-  - { id: h1, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 5, at: [9, 8], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 5, at: [10, 8], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [9, 8], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 9, levelOffset: -2, at: [10, 8], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   # Jory am liegengebliebenen Gauklerwagen, in Reichweite der Ostballiste
   - { id: jory, char: jory, team: other, class: minstrel, level: 5, at: [16, 19], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_1.jory_talk } }
 reinforcements:
@@ -86,33 +86,33 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 4, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 4, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 4, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Zweite Reiter
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 5, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 5, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 4, at: [12, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 5, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [12, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Die Falle: Söldner kommen von hinten die Passstraße herauf
   - turn: 7
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 4, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 4, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 4, at: [8, 24], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 9, levelOffset: -2, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 9, levelOffset: -2, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [8, 24], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Letzter Reiter
   - turn: 9
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 5, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 5, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.merc_rider.name, team: enemy, class: cavalier, level: 9, levelOffset: -2, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: survive, turns: 10 }
   defeat:
@@ -167,7 +167,8 @@ design:
     - { at: [5, 17], label: L, note: "Leiter: nur zu Fuß, zwei Felder Kosten; der kurze Weg auf die Westterrasse." }
     - { at: [12, 17], label: H, note: "Passhospiz: heilt, liegt aber in Reichweite der Ostballiste." }
   notes:
-    - "Normal 24 Gegner (10 davon R3/R6/R7/R9) gegen 9 eigene (+ Jory), Stufe 4–5 plus Brakka (St. 8); Leicht 20, Schwer 28. Stufen per pnpm sim abstimmen."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 11 und bleibt fürs Schema."
+    - "Normal 24 Gegner (10 davon R3/R6/R7/R9) gegen 9 eigene (+ Jory), P−3 bis P−1 (hier P = 11, Stufe 8–10), Leutnants P+1 bis P+2; Leicht 20, Schwer 28."
     - "Formatwunsch Klasse cavalier: Söldnerreiter zu Pferd (moveType mounted), nur Gegner. Das Spiel hat noch keine Pferdeklasse."
     - "Formatwunsch Balliste: Objekt und Modell gibt es, die Regel (GDD: Mt 12 + STR, Treffer 70, Reichweite 3–10, Bedienen vom Nachbarfeld) fehlt in src/core noch. Die KI bedient sie nur mit Profil hold."
     - "Formatwunsch Leutnant: brakka fehlt in lieutenants (Akt-2-Paket); als Ballistenmeisterin zu Fuß, Bogenklasse hier nur als Platzhalter."

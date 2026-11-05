@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| Gegner | L 18 · N 22 · S 26, Stufe 5 plus Sable (St. 9); das Blatt zählt Sable und Hauptmann beide |
+| Gegner | L 18 · N 22 · S 26, Stufe P−3 bis P−1 (hier 12–14), Leutnants P+1 bis P+2; das Blatt zählt Sable und Hauptmann beide |
 | Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Kael |
 | Niederlage | Rhen, Kael oder Odile fallen |
 | Nebenziele | Amos gewinnen · binnen 11 Runden |

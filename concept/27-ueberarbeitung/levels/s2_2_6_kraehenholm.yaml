@@ -56,37 +56,37 @@ deploy:
   slots: [[6, 22], [7, 22], [8, 22], [9, 22], [10, 22], [11, 22], [12, 22], [13, 22], [14, 22], [7, 23], [8, 23], [9, 23], [10, 23], [11, 23], [12, 23]]
 units:
   # Strand und Dünen im Süden
-  - { id: a1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [5, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: a2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [10, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: a3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [16, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: a4, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [8, 19], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
-  - { id: a5, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [12, 19], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [5, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: a2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [10, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: a3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [16, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: a4, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [8, 19], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a5, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [12, 19], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Klippenpfad: Rampe bewacht, Schützen auf dem Plateau (Stufe 1)
-  - { id: b1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 5, at: [7, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: b2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 5, at: [9, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: b3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [5, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: b4, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: b5, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [6, 13], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: b6, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: b1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [7, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: b2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [9, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: b3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [5, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: b4, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: b5, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [6, 13], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: b6, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Felsnase (Stufe 2): Goldübergabe. Sable oder, wenn sie bei E7 gewechselt hat, ein Hauptmann des Grenzheers
-  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 9, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_order }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 9, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
-  - { id: c1, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [10, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: c2, nameKey: unit.smuggler.name, team: enemy, class: healer, level: 5, at: [7, 12], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_order }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
+  - { id: c1, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [10, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: c2, nameKey: unit.smuggler.name, team: enemy, class: healer, level: 13, levelOffset: -2, at: [7, 12], items: [{ def: heal_staff }], ai: { profile: support } }
   # Nordbucht: Grell am Schiff
-  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 9, at: [13, 5], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: guard } }
-  - { id: d1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 5, at: [10, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: d2, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 5, at: [16, 5], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: d3, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [7, 6], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: d4, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [15, 6], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: d5, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [18, 5], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: d6, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [5, 3], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: d7, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [12, 5], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 16, levelOffset: 1, at: [13, 5], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: guard } }
+  - { id: d1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [10, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: d2, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [16, 5], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: d3, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [7, 6], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: d4, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [15, 6], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: d5, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [18, 5], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: d6, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [5, 3], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: d7, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [12, 5], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Nur Schwer
-  - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 5, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 5, at: [17, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [8, 9], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: h4, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 5, at: [9, 6], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [17, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [8, 9], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [9, 6], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
   # Nell, von Maelis fallen gelassen, versteckt in der Nordwestecke; kennt die Insel
   - { id: nell, char: nell, team: other, class: scout, level: 8, at: [3, 5], items: [{ def: iron_dagger }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_6.nell_talk } }
 reinforcements:
@@ -95,22 +95,22 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [1, 20], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [1, 21], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [1, 20], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [1, 21], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Vom Schiff
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 5, at: [11, 4], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 5, at: [16, 4], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [11, 4], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [16, 4], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Boote von Osten
   - turn: 8
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 5, at: [20, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 5, at: [20, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [20, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [20, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
 objectives:
   victory: { type: rout }
   defeat:
@@ -161,7 +161,8 @@ design:
     - { at: [3, 5], label: N, note: "Nell; wer sie anspricht, gewinnt sie." }
     - { at: [8, 12], label: S, note: "Sable; hat sie bei E7 gewechselt, steht hier ein Hauptmann, Sable belastet Dravn in einer Szene." }
   notes:
-    - "Normal 28 Gegner (6 davon R3/R6/R8), Stufe 4–5 plus Grell (St. 9) und Sable (St. 9), gegen 10 eigene; Leicht 24, Schwer 32. Das Blatt zählt Sable und den Hauptmann beide."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 15 und bleibt fürs Schema."
+    - "Normal 28 Gegner (6 davon R3/R6/R8), P−3 bis P−1 (hier P = 15, Stufe 12–14), Leutnants P+1 bis P+2, gegen 10 eigene; Leicht 24, Schwer 32. Das Blatt zählt Sable und den Hauptmann beide."
     - "Formatwunsch: Modelle Schiff, Boot, Kai, Lagerhaus, Kran fehlen laut Matrix; Zustand Sandbank (Sand reicht fürs Erste)."
     - "Die Flut lässt besetzte Felder unverändert (Regel set_terrain), niemand ertrinkt."
     - "E6 (Varek, falls dabei) nach 2-6."

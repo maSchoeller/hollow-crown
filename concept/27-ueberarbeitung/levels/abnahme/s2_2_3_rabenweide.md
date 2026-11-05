@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| Gegner | L 20 · N 24 · S 28, Stufe 4–6 plus Rowena (St. 9) |
+| Gegner | L 20 · N 24 · S 28, Stufe P−3 bis P−1 (hier 9–11), Leutnants P+1 bis P+2 |
 | Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Kael |
 | Nebenziele | Ilka gewinnen · beide Ställe besuchen |
 | Phasen | R1–4 Weide · R5–7 Furten · R8–12 Gestütshof |

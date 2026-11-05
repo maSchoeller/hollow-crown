@@ -56,57 +56,57 @@ deploy:
   slots: [[6, 22], [7, 23], [8, 22], [11, 22], [12, 23], [13, 22], [6, 23], [8, 23], [11, 23], [13, 23], [7, 24], [8, 24], [11, 24], [12, 24]]
 units:
   # Südkai: Wachen zwischen den Lagerhäusern, zwei Lanzen an der Brücke
-  - { id: s1, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: s2, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: s3, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [5, 21], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
-  - { id: s4, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: s5, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 6, at: [9, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: s6, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 6, at: [10, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: s1, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 14, levelOffset: -3, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 14, levelOffset: -3, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 14, levelOffset: -3, at: [5, 21], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: s4, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 14, levelOffset: -3, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: s5, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 15, levelOffset: -2, at: [9, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: s6, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 15, levelOffset: -2, at: [10, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
   # Nordkai: Brückenkopf und Schützen
-  - { id: n1, nameKey: unit.mercenary.name, team: enemy, class: knight, level: 6, at: [9, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: n2, nameKey: unit.mercenary.name, team: enemy, class: knight, level: 6, at: [10, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: n3, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 5, at: [7, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: n4, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 5, at: [12, 11], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
-  - { id: n5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [3, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: n6, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [16, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: n7, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [7, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: n8, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [12, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: n1, nameKey: unit.mercenary.name, team: enemy, class: knight, level: 15, levelOffset: -2, at: [9, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n2, nameKey: unit.mercenary.name, team: enemy, class: knight, level: 15, levelOffset: -2, at: [10, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n3, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 14, levelOffset: -3, at: [7, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: n4, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 14, levelOffset: -3, at: [12, 11], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: n5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 14, levelOffset: -3, at: [3, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n6, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 14, levelOffset: -3, at: [16, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n7, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 14, levelOffset: -3, at: [7, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n8, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 14, levelOffset: -3, at: [12, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Brakka an der Balliste vor dem Kontor, sie hält die Brücke unter Feuer
-  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 10, at: [10, 7], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, level: 18, levelOffset: 1, at: [10, 7], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
   # Der Zahlmeister trägt den Schlüssel, an der Ostseite
-  - { id: purser, nameKey: unit.kontor_guard.name, team: enemy, class: skirmisher, level: 5, at: [16, 6], items: [{ def: iron_sword }, { def: door_key }], ai: { profile: guard }, drops: [1] }
+  - { id: purser, nameKey: unit.kontor_guard.name, team: enemy, class: skirmisher, level: 14, levelOffset: -3, at: [16, 6], items: [{ def: iron_sword }, { def: door_key }], ai: { profile: guard }, drops: [1] }
   # Im Kontor
-  - { id: i1, nameKey: unit.kontor_guard.name, team: enemy, class: vanguard, level: 6, at: [8, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: i2, nameKey: unit.kontor_guard.name, team: enemy, class: knight, level: 6, at: [11, 3], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
-  - { id: i3, nameKey: unit.kontor_guard.name, team: enemy, class: marksman, level: 5, at: [9, 2], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: i4, nameKey: unit.kontor_guard.name, team: enemy, class: healer, level: 5, at: [10, 4], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: i1, nameKey: unit.kontor_guard.name, team: enemy, class: vanguard, level: 15, levelOffset: -2, at: [8, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: i2, nameKey: unit.kontor_guard.name, team: enemy, class: knight, level: 15, levelOffset: -2, at: [11, 3], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
+  - { id: i3, nameKey: unit.kontor_guard.name, team: enemy, class: marksman, level: 14, levelOffset: -3, at: [9, 2], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: i4, nameKey: unit.kontor_guard.name, team: enemy, class: healer, level: 14, levelOffset: -3, at: [10, 4], items: [{ def: heal_staff }], ai: { profile: support } }
   # Nur Schwer
-  - { id: h1, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 6, at: [3, 15], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 6, at: [14, 16], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 6, at: [4, 6], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
-  - { id: h4, nameKey: unit.kontor_guard.name, team: enemy, class: vanguard, level: 6, at: [12, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 15, levelOffset: -2, at: [3, 15], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 15, levelOffset: -2, at: [14, 16], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 15, levelOffset: -2, at: [4, 6], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.kontor_guard.name, team: enemy, class: vanguard, level: 15, levelOffset: -2, at: [12, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
 reinforcements:
   # Boote am Westkai
   - turn: 3
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 5, at: [1, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 5, at: [1, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 15, levelOffset: -2, at: [1, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 15, levelOffset: -2, at: [1, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Schiff am Ostkai
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 5, at: [18, 16], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 5, at: [18, 17], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 15, levelOffset: -2, at: [18, 16], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 15, levelOffset: -2, at: [18, 17], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Von der Stadt her
   - turn: 7
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 6, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 6, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 15, levelOffset: -2, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 15, levelOffset: -2, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
 objectives:
   victory: { type: reach, area: { rect: [6, 2, 7, 3] } }
   defeat:
@@ -146,6 +146,7 @@ design:
     - { at: [16, 15], label: H, note: "Hebel am Kran, vom Nachbarfeld zu ziehen, nur Spielerfiguren: Steg über das Becken." }
     - { at: [16, 6], label: Z, note: "Zahlmeister mit Türschlüssel. Fenn öffnet ohne." }
   notes:
-    - "Normal 26 Gegner (6 davon R3/R5/R7), Stufe 5–6 plus Brakka (St. 10), gegen 10 eigene; Leicht 22, Schwer 30."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 17 und bleibt fürs Schema."
+    - "Normal 26 Gegner (6 davon R3/R5/R7), P−3 bis P−1 (hier P = 17, Stufe 14–16), Leutnants P+1 bis P+2, gegen 10 eigene; Leicht 22, Schwer 30."
     - "Formatwunsch: Modelle Kai, Lagerhaus, Kran, Schiff, Boot fehlen laut Matrix; Regel Balliste wie in 2-1."
     - "E8 und Saat Pakt (Erste und letzte Seite der Chronik aus derselben Hand) stehen in der Szene nach der Mission. Nach 2-7 öffnet N6."

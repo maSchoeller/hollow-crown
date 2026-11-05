@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| Gegner | L 20 · N 24 · S 28, Stufe 4–5 plus Brakka (St. 8) |
+| Gegner | L 20 · N 24 · S 28, Stufe P−3 bis P−1 (hier 8–10), Leutnants P+1 bis P+2 |
 | Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Kael |
 | Nebenziele | Jory anwerben · Brakkas Soldtruhe auf der Ostnase |
 | Phasen | R1–3 Kessel · R4–6 Reiter und Sturm auf die Nasen · R7–10 Falle |

@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| Gegner | L 36 · N 40 · S 46, Stufe 5–6 plus Leutnants (St. 10–11); das Blatt zählt Sable und Hauptmann beide |
+| Gegner | L 36 · N 40 · S 46, Stufe P−3 bis P−1 (hier 16–18), Leutnants P+1 bis P+2; das Blatt zählt Sable und Hauptmann beide |
 | Aufstellung | 15 von 24 Feldern, Pflicht Rhen und Kael |
 | Sieg | 6 Figuren aufs Nordufer (Vorschlag, per `pnpm sim` prüfen) |
 | Nebenziele | niemand fällt · binnen 14 Runden |

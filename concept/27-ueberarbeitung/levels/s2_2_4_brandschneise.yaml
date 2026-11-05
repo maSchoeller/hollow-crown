@@ -79,36 +79,36 @@ deploy:
   slots: [[11, 21], [12, 21], [13, 20], [14, 20], [15, 20], [16, 20], [17, 20], [18, 21], [11, 22], [12, 22], [18, 22], [11, 24], [12, 24], [13, 24], [14, 24], [15, 24], [16, 24], [17, 24]]
 units:
   # Oberste Terrasse: Schützen schießen von Stufe 2 ins Dorf (Reichweite +1)
-  - { id: a0, nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [5, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: a1, nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [10, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
-  - { id: a2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [19, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: a3, nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [24, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a0, nameKey: unit.looter.name, team: enemy, class: marksman, level: 11, levelOffset: -3, at: [5, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: a1, nameKey: unit.looter.name, team: enemy, class: marksman, level: 11, levelOffset: -3, at: [10, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 11, levelOffset: -3, at: [19, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: a3, nameKey: unit.looter.name, team: enemy, class: marksman, level: 11, levelOffset: -3, at: [24, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Oberer Weg durch Wald und Felder
-  - { id: n1, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 4, at: [13, 15], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: n2, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [16, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: n3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [13, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: n4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [16, 12], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: n1, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 11, levelOffset: -3, at: [13, 15], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n2, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [16, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: n3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [13, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: n4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [16, 12], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Plünderer in den Flanken: gehen auf die Häuser, nicht auf die Truppe
-  - { id: r0, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: raider } }
-  - { id: r1, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [3, 21], items: [{ def: iron_sword }], ai: { profile: raider } }
-  - { id: r2, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [4, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
-  - { id: r3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [3, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
-  - { id: r4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [26, 23], items: [{ def: iron_axe }], ai: { profile: raider } }
-  - { id: r5, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [26, 25], items: [{ def: iron_sword }], ai: { profile: raider } }
-  - { id: r6, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [25, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
-  - { id: r7, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [26, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r0, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: raider } }
+  - { id: r1, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [3, 21], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r2, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [4, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
+  - { id: r3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [3, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [26, 23], items: [{ def: iron_axe }], ai: { profile: raider } }
+  - { id: r5, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [26, 25], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r6, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [25, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
+  - { id: r7, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [26, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
   # Süden: Grells Fußvolk kommt die Straße herauf
-  - { id: s0, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 4, at: [8, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: s1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [11, 35], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: s2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [18, 35], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: s3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [21, 33], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s0, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 11, levelOffset: -3, at: [8, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: s1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 11, levelOffset: -3, at: [11, 35], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 11, levelOffset: -3, at: [18, 35], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 11, levelOffset: -3, at: [21, 33], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Nur Schwer
-  - { id: h0, nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [7, 29], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [22, 29], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 5, at: [12, 33], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 5, at: [17, 33], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h4, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 5, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h5, nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [16, 10], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h0, nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [7, 29], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [22, 29], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.looter.name, team: enemy, class: marksman, level: 12, levelOffset: -2, at: [12, 33], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.looter.name, team: enemy, class: vanguard, level: 12, levelOffset: -2, at: [17, 33], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -2, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h5, nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [16, 10], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   # Brann auf dem Schrein im Dorf: Gast, nicht steuerbar. Fällt er, ist die Mission verloren
   - { id: brann, char: brann, team: other, class: elementalist, level: 8, at: [15, 22], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true }
   # Sable als Dravns Offizierin auf der Lichtung im Nordosten: nicht feindlich, sie sieht zu
@@ -119,49 +119,49 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [15, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [14, 1], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 4, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -2, at: [15, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 12, levelOffset: -2, at: [14, 1], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 12, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Westflanke
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 4, at: [2, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 4, at: [2, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 4, at: [2, 32], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -2, at: [2, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [2, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 12, levelOffset: -2, at: [2, 32], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Grell selbst mit seinen Leuten
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 8, at: [14, 1], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 5, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 5, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 15, levelOffset: 1, at: [14, 1], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 12, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 12, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Von Süden
   - turn: 8
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 5, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 5, at: [14, 38], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -2, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 12, levelOffset: -2, at: [14, 38], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Letzte Welle Nord
   - turn: 9
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 5, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 12, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Ostflanke
   - turn: 10
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 5, at: [27, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 5, at: [27, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -2, at: [27, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 12, levelOffset: -2, at: [27, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
 objectives:
   victory: { type: defend, unit: brann, turns: 12 }
   defeat:
@@ -218,7 +218,8 @@ design:
     - { at: [10, 4], label: C, note: "Chronik-Seite in der Köhlerruine. Der Wald brennt dorthin: früh losgehen." }
     - { at: [14, 17], label: R, note: "Rampen der Oberkante bei x 6, 14, 15, 23; Unterkante ebenso, dazu Treppen bei x 10, 19." }
   notes:
-    - "Normal 38 Gegner (18 davon in Wellen), Stufe 4–5 plus Grell (St. 8), gegen 12 eigene; Leicht 33, Schwer 44. Die Gegnerstufen sind per pnpm sim abzustimmen."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 14 und bleibt fürs Schema."
+    - "Normal 38 Gegner (18 davon in Wellen), P−3 bis P−1 (hier P = 14, Stufe 11–13), Leutnants P+1 bis P+2, gegen 12 eigene; Leicht 33, Schwer 44. Die Gegnerstufen sind per pnpm sim abzustimmen."
     - "Plünderer (AI raider) zerstören Besuchshäuser; ohne Einsatz geht das Nebenziel Häuser verloren."
     - "Feuer: Wald, Gras und Feld brennen und breiten sich nach der vorhandenen Regel aus; Asche und Terrasse nicht. Die Schneise liegt auf y 17."
     - "Modell Getreideterrasse, Rampe, Stützmauer laut Matrix fehlend; Boden Herbst ausstehend. Leutnant grell fehlt in lieutenants."

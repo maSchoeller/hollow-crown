@@ -50,36 +50,36 @@ deploy:
   slots: [[4, 17], [7, 17], [8, 17], [5, 18], [6, 18], [7, 18], [8, 18], [5, 19], [6, 19]]
 units:
   # Nordkammer: Grell bei den Wagen, Zahlmeister mit dem Schlüssel
-  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 7, at: [6, 3], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: guard } }
-  - { id: purser, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [8, 3], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
-  - { id: n1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 4, at: [11, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: n2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 4, at: [12, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: brigand, level: 13, levelOffset: 1, at: [6, 3], lieutenant: grell, items: [{ def: steel_axe }], ai: { profile: guard } }
+  - { id: purser, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [8, 3], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: n1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [11, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [12, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 10, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
   # Felsleiste: Schützen schießen von Stufe 1 in die Mittelkammer
-  - { id: l1, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [14, 9], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: l2, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [14, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: l1, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 10, levelOffset: -2, at: [14, 9], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: l2, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 10, levelOffset: -2, at: [14, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Mittelkammer: warten im Nebel
-  - { id: m1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [6, 11], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: m2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [9, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: m3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [10, 12], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  - { id: m1, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 10, levelOffset: -2, at: [6, 11], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: m2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [9, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: m3, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 10, levelOffset: -2, at: [10, 12], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
   # Südenge
-  - { id: s1, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 3, at: [5, 13], items: [{ def: iron_sword }], ai: { profile: guard } }
-  - { id: s2, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 3, at: [6, 13], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [normal, hard] }
+  - { id: s1, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 9, levelOffset: -3, at: [5, 13], items: [{ def: iron_sword }], ai: { profile: guard } }
+  - { id: s2, nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 9, levelOffset: -3, at: [6, 13], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [normal, hard] }
   # Kundschafter aus Kharesh im Westwinkel, fliehen nach Westen und tragen die Karte des Passes
-  - { id: k1, nameKey: unit.kharesh_scout.name, team: enemy, class: scout, level: 5, at: [4, 9], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: k2, nameKey: unit.kharesh_scout.name, team: enemy, class: marksman, level: 5, at: [3, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: k1, nameKey: unit.kharesh_scout.name, team: enemy, class: scout, level: 11, levelOffset: -1, at: [4, 9], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: k2, nameKey: unit.kharesh_scout.name, team: enemy, class: marksman, level: 11, levelOffset: -1, at: [3, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
   # Nur Schwer
-  - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 4, at: [8, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 4, at: [14, 6], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [8, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 10, levelOffset: -2, at: [14, 6], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
 reinforcements:
   # Grells Nachhut schließt von Süden auf, sobald die Truppe in der Mittelkammer steht
   - turn: 6
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 4, at: [5, 19], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 4, at: [6, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 4, at: [7, 19], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, level: 10, levelOffset: -2, at: [5, 19], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [6, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [7, 19], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
   victory: { type: treasure, chests: [c_seal], turns: 11 }
   defeat:
@@ -143,7 +143,8 @@ design:
     - { at: [13, 5], label: T, note: "Treppe von der Leiste in die Nordkammer." }
     - { at: [3, 9], label: K, note: "Kundschafter aus Kharesh, in ihrer Truhe die Seekarte aus Silbermeer (Saat)." }
   notes:
-    - "Normal 16 Gegner (2 davon R6) gegen 7 eigene, Stufe 3–5 plus Grell (St. 7); Leicht 13, Schwer 19."
+    - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 12 und bleibt fürs Schema."
+    - "Normal 16 Gegner (2 davon R6) gegen 7 eigene, P−3 bis P−1 (hier P = 12, Stufe 9–11), Leutnants P+1 bis P+2; Leicht 13, Schwer 19."
     - "Die Straße bleibt immer offen: Steinschlag engt nur ein, sperrt nie ganz. Laut Regel bleibt ein besetztes Feld unverändert."
     - "Formatwunsch Inhalt: Truhe c_seal braucht den Gegenstand Siegel (key item), c_page trägt laut Narrative eine Chronik-Seite (Quellen Akt 2: je eine Truhe in 2-2, 2-4, 2-7), die ID ist Platzhalter."
     - "Formatwunsch Leutnant: grell fehlt in lieutenants (Akt-2-Paket); Klasse brigand ist Platzhalter."

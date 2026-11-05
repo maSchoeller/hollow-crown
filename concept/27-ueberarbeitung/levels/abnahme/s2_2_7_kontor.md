@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| Gegner | L 22 · N 26 · S 30, Stufe 5–6 plus Brakka (St. 10) |
+| Gegner | L 22 · N 26 · S 30, Stufe P−3 bis P−1 (hier 14–16), Leutnants P+1 bis P+2 |
 | Aufstellung | 10 von 14 Feldern, Pflicht Rhen und Kael |
 | Nebenziele | Chronik-Seite · binnen 12 Runden |
 | Phasen | R1–4 Südkai · R5–8 über das Becken · R9–13 Kontor |
