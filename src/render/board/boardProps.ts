@@ -2,7 +2,7 @@
  * Terrain, props with their see-through twins (story 8.10), static-material freezing and fires of the battle board.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
-import { connectorRot, faceRot, gatePieces, isWallTop, topPieces, wallPieces } from './wallKit';
+import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, topPieces, wallPieces } from './wallKit';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -128,7 +128,9 @@ export abstract class BoardProps extends BoardSetup {
       const rolls = [0, 1, 2].map((k) => ((hash3(gx, gy, this.seed + 5 + k * 131) >>> 20) % 1000) / 1000);
       const avoid = [chosen.get(`${gx - 1},${gy}`), chosen.get(`${gx},${gy - 1}`)].filter((m): m is string => !!m);
       const override = grid.inMap(gx, gy) ? overrides.get(`${x},${y}`) : undefined;
-      const model = pickVariant(variantList(this.data, cls, map.act, !grid.inMap(gx, gy)), rolls, { has: known, override, avoid });
+      // the lowest quality draws the light single trees everywhere, not only around the map
+      const light = !grid.inMap(gx, gy) || (cls === 'tree' && this.quality === 'low');
+      const model = pickVariant(variantList(this.data, cls, map.act, light), rolls, { has: known, override, avoid });
       chosen.set(`${gx},${gy}`, model);
       return model;
     };
@@ -138,13 +140,22 @@ export abstract class BoardProps extends BoardSetup {
     for (const u of [...map.units, ...map.reinforcements.flatMap((rf) => rf.units)]) reserved.add(`${u.at[0]},${u.at[1]}`);
     for (const p of map.deploy.slots) reserved.add(`${p[0]},${p[1]}`);
     const decor = this.data.render.board.decor;
+    const decorOn = this.data.render.board.decorOn;
     const terrainId = (gx: number, gy: number) => grid.at(gx, gy)?.id ?? null;
+    const waterLevel = this.data.render.board.waterLevel;
+    // a boardwalk reaches another boardwalk or dry ground a figure can stand on
+    const boardwalkJoins = (gx: number, gy: number) => {
+      const n = grid.at(gx, gy);
+      return !!n && (n.prop === 'boardwalk' || (!n.water && n.cost.foot !== null));
+    };
     for (let gy = 0; gy < grid.h; gy++)
       for (let gx = 0; gx < grid.w; gx++) {
         const def = grid.at(gx, gy)!;
-        const isOpen = def.id === 'grass' || def.id === 'plain';
+        // under a roof nothing grows on the floor; terrains with their own ground decorate from `decorOn`
+        const isOpen = (def.id === 'grass' || def.id === 'plain') && !map.interior;
+        const own = decorOn[def.id];
         const isWall = def.id === 'wall' || isWallTop(def.id);
-        if ((!def.prop && !isOpen && !isWall) || def.prop === 'bridge') continue;
+        if ((!def.prop && !isOpen && !own && !isWall) || def.prop === 'bridge') continue;
         const x = gx - grid.skirt;
         const y = gy - grid.skirt;
         if (isWall) {
@@ -161,21 +172,42 @@ export abstract class BoardProps extends BoardSetup {
           if (inMap && reserved.has(`${x},${y}`)) continue;
           const d = hash3(gx, gy, this.seed + 61);
           const roll = (d & 0xffff) / 0x10000;
-          const pb = inMap ? decor.bushes.map : decor.bushes.scenery;
-          const ps = inMap ? decor.stones.map : decor.stones.scenery;
-          const kind = roll < pb ? decor.bushes : roll < pb + ps ? decor.stones : null;
+          let kind: (typeof decor)['bushes'] | null = null;
+          let upTo = 0;
+          for (const k of own ?? [decor.bushes, decor.stones]) {
+            upTo += inMap ? k.map : k.scenery;
+            if (roll < upTo) {
+              kind = k;
+              break;
+            }
+          }
           if (!kind) continue;
           const [lo, hi] = kind.scale;
           const ox = ((d >>> 16) & 1 ? 1 : -1) * (0.2 + ((d >>> 17) % 10) / 100);
           const oy = ((d >>> 21) & 1 ? 1 : -1) * (0.2 + ((d >>> 22) % 10) / 100);
-          put(`${kind.model}`, { x: x + ox, y: y + oy, h: def.height, rot: ((d >>> 8) % 360) * (Math.PI / 180), scale: lo + (((d >>> 4) % 100) / 100) * (hi - lo), dim: !inMap });
+          put(`${kind.model}`, { x: x + ox, y: y + oy, h: def.water ? waterLevel : def.height, rot: ((d >>> 8) % 360) * (Math.PI / 180), scale: lo + (((d >>> 4) % 100) / 100) * (hi - lo), dim: !inMap });
           continue;
         }
         const r = hash3(gx, gy, this.seed + 5);
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
         switch (def.prop) {
-          case 'tree':
-            put(variant('tree', gx, gy, x, y), { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+          case 'tree': {
+            const model = variant('tree', gx, gy, x, y);
+            // a grove keeps its trees on the north and west rim, so a figure on the tile stands in front of them: never turned
+            if (model.startsWith('grove_')) put(model, base);
+            else put(model, { ...base, rot: ((r >>> 4) % 360) * (Math.PI / 180), scale: 0.88 + ((r >>> 12) % 25) / 100 });
+            break;
+          }
+          case 'boardwalk': {
+            const k = boardwalkPiece(boardwalkJoins, gx, gy);
+            // the deck stands level with the banks: the model's posts end at about the water line
+            put(k.model, { ...base, h: BOARDWALK_DECK - BOARDWALK_MODEL_DECK, rot: k.rot });
+            break;
+          }
+          case 'field':
+          case 'relief':
+          case 'sarcophagus':
+            put(variant(def.prop, gx, gy, x, y), base);
             break;
           case 'rock':
             // the massif's rim lies flat on the tile edge, so neighbours join: full size, quarter turns only
@@ -215,7 +247,16 @@ export abstract class BoardProps extends BoardSetup {
             put(`${def.prop}_idle`, base);
         }
       }
-    for (const o of s.objects) if (o.type === 'chest') put(`chest_${o.state === 'open' ? 'open' : 'closed'}`, { x: o.at[0], y: o.at[1], h: this.terrain!.standOn(o.at[0], o.at[1]), rot: Math.PI, scale: 1, dim: false });
+    // objects drawn over their tile; a lever stands up until it is pulled (state open), a ballista looks south like its model
+    const objectModel: Partial<Record<(typeof s.objects)[number]['type'], (state: string) => string>> = {
+      chest: (state) => `chest_${state === 'open' ? 'open' : 'closed'}`,
+      lever: (state) => `lever_${state === 'open' ? 'down' : 'up'}`,
+      ballista: () => 'ballista_idle',
+    };
+    for (const o of s.objects) {
+      const model = objectModel[o.type]?.(o.state);
+      if (model) put(model, { x: o.at[0], y: o.at[1], h: this.terrain!.standOn(o.at[0], o.at[1]), rot: Math.PI, scale: 1, dim: false });
+    }
     // map props cast shadows; the darkened scenery around it does not (a third of the shadow pass)
     const split = new Map<string, Place[]>();
     for (const [key, list] of places) {

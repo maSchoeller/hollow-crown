@@ -10,9 +10,9 @@ legend:
   ".": plain
   ",": grass
   "T": forest
-  "w": shallows
-  "~": river
-  "=": bridge
+  "w": swamp
+  "~": creek
+  "=": boardwalk
   "R": ruins
   "F": fort
   "H": village

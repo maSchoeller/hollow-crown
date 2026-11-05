@@ -13,13 +13,14 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
-import type { BattleState, GameData, TerrainDef, TerrainSurface } from '../../core';
+import type { BattleState, GameData, TerrainDef, TerrainSurface, TerrainWaterLook } from '../../core';
 import type { AssetStore } from '../host';
+import { BOARDWALK_DECK } from '../board/wallKit';
 
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
 
-export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'rock_top', 'planks', 'water_0', 'water_1', 'water_2', 'water_3'];
+export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'rock_top', 'planks', 'peat', 'vault', 'water_0', 'water_1', 'water_2', 'water_3', 'mire_0', 'mire_1', 'mire_2', 'creek_0', 'creek_1', 'creek_2'];
 
 /** The ground textures from the shared cache (loaded once for board and world map, story 5.1). */
 export async function loadGroundTextures(store: AssetStore): Promise<GroundTextures> {
@@ -62,6 +63,8 @@ export interface TerrainGrid {
   h: number;
   skirt: number;
   ids: string[];
+  /** the map lies under a roof: rock all around, stone under the rock */
+  interior: boolean;
   at(gx: number, gy: number): TerrainDef | undefined;
   inMap(gx: number, gy: number): boolean;
 }
@@ -79,6 +82,7 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
     return t;
   };
   const wild = ['forest', 'mountain', 'grass'].every((t) => data.terrain[t]);
+  const interior = !!data.maps[state.mapId]?.interior && !!data.terrain.mountain;
   const ids: string[] = [];
   for (let gy = 0; gy < h; gy++)
     for (let gx = 0; gx < w; gx++) {
@@ -88,8 +92,18 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
         ids.push(mapId(x, y));
         continue;
       }
+      // under a roof the rock simply goes on
+      if (interior) {
+        ids.push('mountain');
+        continue;
+      }
       let t = mapId(Math.min(Math.max(x, 0), state.width - 1), Math.min(Math.max(y, 0), state.height - 1));
       const def = data.terrain[t];
+      // a moor runs on as a moor, its boardwalks stay on the map
+      if (def?.water && def.surface === 'peat') {
+        ids.push(def.prop ? 'creek' : t);
+        continue;
+      }
       if (def?.water && def.surface === 'riverbed') {
         // rivers run on; bridges and fords belong to the map only
         ids.push(Object.values(data.terrain).find((d) => d.water && d.surface === 'riverbed' && !d.prop)?.id ?? t);
@@ -110,6 +124,7 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
     h,
     skirt: s,
     ids,
+    interior,
     at: (gx, gy) => {
       if (gx < 0 || gy < 0 || gx >= w || gy >= h) return undefined;
       const def = data.terrain[ids[gy * w + gx]!];
@@ -172,8 +187,8 @@ const SIDES: Array<[number, number, number[]]> = [
   [-1, 0, [-1, 0, 0]],
 ];
 
-// splat layers: mix map 1 (R, G, B, 1 − A) and mix map 2 (R, G)
-const SPLAT_LAYERS: TerrainSurface[] = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed'];
+// splat layers: mix map 1 (R, G, B, 1 − A) and mix map 2 (R, G, B, 1 − A)
+const SPLAT_LAYERS: TerrainSurface[] = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'peat', 'vault'];
 const SPLAT_PX = 8; // splat texels per tile
 
 /**
@@ -206,7 +221,8 @@ function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTextu
       const ny = ty + (vnoise(tx * 3, ty * 3, seed + 2) - 0.5) * 2 * warp;
       const gx = Math.min(grid.w - 1, Math.max(0, Math.floor(nx)));
       const gy = Math.min(grid.h - 1, Math.max(0, Math.floor(ny)));
-      const surface = grid.at(gx, gy)?.surface ?? 'grass';
+      const def = grid.at(gx, gy);
+      const surface = grid.interior && def?.cliff === 'rock' ? 'vault' : (def?.surface ?? 'grass');
       const li = SPLAT_LAYERS.indexOf(surface);
       raw[(y * w + x) * layers + (li < 0 ? 1 : li)] = 1;
     }
@@ -237,8 +253,8 @@ function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTextu
       a[k + 3] = (1 - f[3]!) * 255;
       b[k] = f[4]! * 255;
       b[k + 1] = f[5]! * 255;
-      b[k + 2] = 0;
-      b[k + 3] = 255;
+      b[k + 2] = f[6]! * 255;
+      b[k + 3] = (1 - f[7]!) * 255;
     }
   const mk = (data: Uint8Array) => {
     const t = RawTexture.CreateRGBATexture(data, w, h, scene, false, false, Texture.BILINEAR_SAMPLINGMODE);
@@ -285,7 +301,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   const caps = new Geo();
   const rockCaps = new Geo();
   const sides: Record<string, Geo> = { earth: new Geo(), rock: new Geo(), wall: new Geo() };
-  const water = new Geo();
+  const water: Record<TerrainWaterLook, Geo> = { clear: new Geo(), mire: new Geo(), creek: new Geo() };
   const veil = new Geo();
   const decks = new Geo();
   for (let gy = 0; gy < grid.h; gy++)
@@ -303,7 +319,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
         const vb = 1 - (gy + 1) / grid.h;
         tops.flat(x, y, h, [u0, vt, u1, vt, u1, vb, u0, vb]);
       }
-      if (def.water) water.flat(x, y, board.waterLevel, [x / 2, -y / 2, (x + 1) / 2, -y / 2, (x + 1) / 2, (-y - 1) / 2, x / 2, (-y - 1) / 2]);
+      if (def.water) water[def.waterLook].flat(x, y, board.waterLevel, [x / 2, -y / 2, (x + 1) / 2, -y / 2, (x + 1) / 2, (-y - 1) / 2, x / 2, (-y - 1) / 2]);
       if (def.prop === 'bridge') decks.flat(x, y, 0.02, [0, 1, 1, 1, 1, 0, 0, 0]);
       if (!grid.inMap(gx, gy)) {
         const vy = Math.max(h, def.water ? board.waterLevel : h) + 0.012;
@@ -336,8 +352,6 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
     (mix as unknown as Record<string, Texture>)[`diffuseTexture${k}`] = t;
   };
   SPLAT_LAYERS.forEach((s, i) => layer(i + 1, s));
-  layer(7, 'dirt');
-  layer(8, 'dirt');
   mix.specularColor = new Color3(0.03, 0.03, 0.03);
   mix.backFaceCulling = false;
   mix.maxSimultaneousLights = maxLights + 2;
@@ -346,7 +360,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
     if (!m) return;
     meshes.push(m);
     if (cast) casters.push(m);
-    if (name !== 'terrain-water' && !wetMats.some((w) => w.m === mat)) wetMats.push({ m: mat, colour: mat.specularColor.clone(), power: mat.specularPower });
+    if (!name.startsWith('terrain-water') && !wetMats.some((w) => w.m === mat)) wetMats.push({ m: mat, colour: mat.specularColor.clone(), power: mat.specularPower });
   };
   const std = (name: string, t: string) => {
     const m = material(scene, name, tex[t]);
@@ -361,12 +375,21 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   add(sides.wall!, 'terrain-wall', std('terrain-wall', 'wall'), true);
   add(decks, 'terrain-decks', std('terrain-decks', 'planks'), true);
 
-  const waterFrames = [0, 1, 2, 3].map((k) => tex[`water_${k}`]!);
-  const waterMat = std('terrain-water', 'water_0');
-  waterMat.alpha = 0.86;
-  waterMat.specularColor = new Color3(0.35, 0.35, 0.4);
-  waterMat.specularPower = 48;
-  add(water, 'terrain-water', waterMat);
+  // the moor's waters are calmer and duller than the river; three pictures, the middle one twice (a cross-fade there and back)
+  const waters = (
+    [
+      ['clear', [0, 1, 2, 3], 'water', 0.86, 0.35],
+      ['mire', [0, 1, 2, 1], 'mire', 0.8, 0.12],
+      ['creek', [0, 1, 2, 1], 'creek', 0.92, 0.22],
+    ] as const
+  ).map(([look, frames, name, alpha, shine]) => {
+    const mat = std(look === 'clear' ? 'terrain-water' : `terrain-water-${look}`, `${name}_0`);
+    mat.alpha = alpha;
+    mat.specularColor = new Color3(shine, shine, shine * 1.14);
+    mat.specularPower = 48;
+    add(water[look], mat.name, mat);
+    return { mat, frames: frames.map((k) => tex[`${name}_${k}`]!) };
+  });
 
   const veilMat = new StandardMaterial('terrain-veil', scene);
   veilMat.disableLighting = true;
@@ -419,6 +442,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       const def = grid.at(x + S, y + S);
       if (!def) return 0;
       if (def.prop === 'bridge') return 0.02;
+      if (def.prop === 'boardwalk') return BOARDWALK_DECK;
       return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height + def.stand;
     },
     setWet: (wet) => {
@@ -433,10 +457,10 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       }
     },
     tick: (now) => {
-      const f = Math.floor(now / board.waterFrameMs) % waterFrames.length;
+      const f = Math.floor(now / board.waterFrameMs) % 4;
       if (f !== frame) {
         frame = f;
-        waterMat.diffuseTexture = waterFrames[f]!;
+        for (const w of waters) w.mat.diffuseTexture = w.frames[f]!;
       }
     },
     dispose: () => {

@@ -104,7 +104,7 @@ export function useBoardOverlays(b: BattleScreen) {
       const hoverPath = checkTile && !samePos(checkTile, u.pos) ? pathTo(reach, checkTile) : [];
       const atk = new Set<string>();
       const onlyStaves = !combinedRange(data, s, u);
-      if (range) for (const d of dests) for (const p of onlyStaves ? tilesInRange(s, d, range) : strikeTiles(data, s, d, range)) atk.add(posKey(p));
+      if (range) for (const d of dests) for (const p of onlyStaves ? tilesInRange(s, d, range) : strikeTiles(data, s, u, d, range)) atk.add(posKey(p));
       for (const d of dests) atk.delete(posKey(d));
       for (const o of s.units) if (o.pos && o.team !== 'enemy' && !o.gone) atk.delete(posKey(o.pos));
       const attack = [...atk].map((k) => k.split(',').map(Number) as Pos);

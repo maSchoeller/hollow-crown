@@ -1,7 +1,7 @@
 /**
  * Screenshots of the prop catalog and of a dev map in the real board, against the running dev server (`pnpm dev --port 5173`).
  *   node tools/art/shot.mjs catalog <out.png> [query]       the prop catalog page (tools/art/prop-catalog.html)
- *   node tools/art/shot.mjs map <mapId> <out.png> [close]    a fixture map of tests/fixtures/maps (sound off, no save written)
+ *   node tools/art/shot.mjs map <mapId> <out.png> [close]    a fixture map of tests/fixtures/maps or a draft of concept/27-ueberarbeitung/levels (sound off, no save written; NOFOG=1 shows it without fog of war)
  *   node tools/art/shot.mjs node <nodeId> <out.png> [close]  a campaign map (`__hc.devNode`)
  */
 import { chromium } from '@playwright/test';
@@ -28,7 +28,7 @@ if (mode === 'catalog') {
   await page.waitForFunction(() => !!window.__hc, null, { timeout: 60_000 });
   const fn = mode === 'map' ? 'devMap' : 'devNode';
   for (let i = 0; ; i++) {
-    const err = await page.evaluate(([f, id]) => window.__hc[f](id).then(() => null, (e) => String(e)), [fn, a]);
+    const err = await page.evaluate(([f, id, opts]) => window.__hc[f](id, opts).then(() => null, (e) => String(e)), [fn, a, mode === 'map' && process.env.NOFOG ? { fog: false } : undefined]);
     if (!err) break;
     if (i > 40) throw new Error(err);
     await page.waitForTimeout(1000);

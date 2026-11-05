@@ -22,7 +22,7 @@ export function validateWeather(data: GameData): ContentIssue[] {
 export function validatePropVariants(data: GameData): ContentIssue[] {
   const out: ContentIssue[] = [];
   const v = data.render.board.variants;
-  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], tree: Object.values(v.tree) })) {
+  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], field: [v.field], relief: [v.relief], sarcophagus: [v.sarcophagus], tree: Object.values(v.tree), sceneryTree: Object.values(v.sceneryTree) })) {
     for (const list of lists) {
       const seen = new Set<string>();
       for (const e of list) {
@@ -42,7 +42,7 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
       }
       const cls = variantClassOf(data.terrain[id]?.prop);
       if (!cls) {
-        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree)` });
+        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus)` });
         continue;
       }
       if (!variantList(data, cls, map.act).some((e) => e.model === pv.model)) {

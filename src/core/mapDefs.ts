@@ -2,7 +2,9 @@
 import type { Difficulty, ItemRef, MoveType, Pos, SupportRank, Team, TimeOfDay, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
-export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed';
+export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed' | 'peat' | 'vault';
+/** Colour of a water plane: the clear river, the murky shallow mire, the dark deep creek of a moor. */
+export type TerrainWaterLook = 'clear' | 'mire' | 'creek';
 export type TerrainCliff = 'earth' | 'rock' | 'wall';
 /** What leads from a tile up to the neighbouring tile one level higher (GDD, height levels). */
 export type TerrainConnector = 'ramp' | 'stairs' | 'ladder';
@@ -24,6 +26,7 @@ export interface TerrainDef {
   surface: TerrainSurface;
   cliff: TerrainCliff;
   water: boolean;
+  waterLook: TerrainWaterLook;
   seizable?: boolean;
   visitable?: boolean;
   /** height level as a rule (0 field; 1 wall walk, terrace; 2 tower, crag); a map can raise single tiles with `levels` */
@@ -166,6 +169,8 @@ export interface MapDef {
   terrain: string;
   /** tiles standing a level other than their terrain's (a stairs on the wall walk, a terrace of ordinary ground) */
   levels?: Array<{ level: number; area: Area }>;
+  /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
+  interior?: boolean;
   /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
   ambient?: { color?: string; intensity?: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;

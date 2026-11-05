@@ -1,6 +1,7 @@
 title: Dorf, Hof, Land
 items:
   - id: field_open
+    ships: true
     name: Kornfeld offen
     ref: { sheet: village_3.png, box: [45, 150, 300, 405] }
     missions: [1-2, 1-6, 1-8, N3]
@@ -36,16 +37,19 @@ items:
     missions: [1-1, N6]
     use: Stand mit Flickenplane in Orange, Pflaume, Creme, Gemüsekisten, hängendes Tuch.
   - id: lodge_b_intact
+    ships: true
     name: Besuchshaus
     ref: { sheet: village_2.png, box: [30, 20, 480, 465] }
     missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
     use: Haus nur in der Nordhälfte, offene Vorlaube, Laterne, Wegplatten; Feldmitte frei und begehbar, sofort anders als das Kulissenhaus.
   - id: lodge_b_visited
+    ships: true
     name: Besuchshaus besucht
     ref: { sheet: village_2.png, box: [545, 20, 990, 465] }
     missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]
     use: Tür offen mit warmem Licht, Bank, Sack, Blumenkästen und Ockerwimpel zeigen klar „besucht“.
   - id: lodge_b_razed
+    ships: true
     name: Besuchshaus zerstört
     ref: { sheet: village_2.png, box: [1055, 20, 1505, 465] }
     missions: [1-1, 1-2, 1-6, 1-8, N3, 2-4, 3-3]

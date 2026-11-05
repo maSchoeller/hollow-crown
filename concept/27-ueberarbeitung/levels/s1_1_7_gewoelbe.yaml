@@ -6,41 +6,49 @@
 id: s1_1_7_gewoelbe
 nameKey: map.s1_1_7_gewoelbe.name
 size: [16, 20]
+interior: true
 fog: true
 legend:
-  ".": plain
+  ".": vault
   "_": road
   "^": mountain
   "R": ruins
+  "X": sarcophagus
+  "h": relief
+  "t": torch
   "d": door
 #          x: 0123456789012345
 terrain: |
   ^^^^^^^^^^^^^^^^
-  ^^^^.R....R.^^^^
+  ^^^^tX....Xt^^^^
   ^^^^........^^^^
-  ^^^^.R....R...^^
+  ^^^^.X....X...^^
   ^^^^^^^...^^..^^
   ^^^^^^^..^^^^^^^
-  ^R...^^..^^....^
+  ^h...^^..^^....^
   ^....d.........^
-  ^....^^..^^...R^
+  ^....^^..^^...X^
   ^^^^^^^..^^^^^^^
   ^^^^^^R..R^^^^^^
   ^^^^^^^..^^^^^^^
-  ^R...^^..^^...R^
+  ^X...^^..^^...h^
   ^..............^
-  ^...R^^..^^R...^
+  ^...X^^..^^X...^
   ^^^^^^^..^^^^^^^
-  ^^^^^......^^^^^
+  ^^^^^t....t^^^^^
   ^^^^^......^^^^^
   ^^^^^......^^^^^
   ^^^^^..__..^^^^^
-timeOfDay: night
+timeOfDay: indoor
 weather: clear
 lights:
   - { at: [7, 17], color: "#ffb35c", radius: 3 }
   - { at: [7, 12], color: "#ffb35c", radius: 2 }
   - { at: [7, 2], color: "#9fd4ff", radius: 3 }
+  - { at: [4, 1], color: "#ffb35c", radius: 3 }
+  - { at: [11, 1], color: "#ffb35c", radius: 3 }
+  - { at: [5, 16], color: "#ffb35c", radius: 3 }
+  - { at: [10, 16], color: "#ffb35c", radius: 3 }
 objects:
   - { id: c_chronicle, type: chest, at: [7, 1], contents: { dialogue: scn.s1_1_7.chronicle } }
   - { id: c_w1, type: chest, at: [2, 13], contents: { item: { def: vulnerary } } }

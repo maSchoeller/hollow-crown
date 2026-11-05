@@ -220,22 +220,34 @@ export function tilesInRange(s: BattleState, from: Pos, range: [number, number])
  * Whether an attack with this range can be made from `from` on `to`: the one rule for preview, resolution, counter, threat zones and AI.
  * A ranged weapon (reach of 2 or more) reaches `elevation.rangedBonus` further from above. A blow between neighbours lands
  * on the same level, or across one level when the lower one stands on a connector made for it (ramp, stairs).
+ * The level rule for a blow holds for no fight with a flier (`elevation.freeMoveTypes`) in it, on either side. `target`: who is struck,
+ * by default whoever stands on `to`; pass it for a tile the target would only move to.
  */
-export function canStrike(data: GameData, s: BattleState, from: Pos, to: Pos, range: readonly [number, number]): boolean {
+export function canStrike(
+  data: GameData,
+  s: BattleState,
+  unit: BattleUnit,
+  from: Pos,
+  to: Pos,
+  range: readonly [number, number],
+  target: BattleUnit | null | undefined = unitAt(s, to),
+): boolean {
   const d = dist(from, to);
   if (d < range[0] || d > range[1] + data.balance.elevation.rangedBonus) return false;
   const lf = levelAt(data, s, from);
   const lt = levelAt(data, s, to);
   if (d > range[1] && (range[1] < 2 || lf <= lt)) return false;
   if (d !== 1 || lf === lt) return true;
+  const flies = (u: BattleUnit) => data.balance.elevation.freeMoveTypes.includes(data.classes[u.classId]!.moveType);
+  if (flies(unit) || (target && flies(target))) return true;
   if (Math.abs(lf - lt) !== 1) return false;
   const connector = data.terrain[terrainAt(s, lf < lt ? from : to)]?.connector;
   return !!connector && data.balance.elevation.meleeConnectors.includes(connector);
 }
 
-/** The tiles an attack with this range can reach from `from`; see `canStrike`. */
-export function strikeTiles(data: GameData, s: BattleState, from: Pos, range: readonly [number, number]): Pos[] {
-  return tilesInRange(s, from, [range[0], range[1] + data.balance.elevation.rangedBonus]).filter((p) => canStrike(data, s, from, p, range));
+/** The tiles an attack with this range can reach from `from`, against `target` if given, else against whoever stands there; see `canStrike`. */
+export function strikeTiles(data: GameData, s: BattleState, unit: BattleUnit, from: Pos, range: readonly [number, number], target?: BattleUnit): Pos[] {
+  return tilesInRange(s, from, [range[0], range[1] + data.balance.elevation.rangedBonus]).filter((p) => canStrike(data, s, unit, from, p, range, target ?? unitAt(s, p)));
 }
 
 /** Attack range of a weapon for a unit, including skill range bonuses (longshot) and `extraRange` (Zielen). */
@@ -261,14 +273,14 @@ export function combinedRange(data: GameData, s: BattleState, unit: BattleUnit, 
   return [lo, hi];
 }
 
-/** All tiles the unit can attack this turn (move + range) – used for the red overlay and danger zones. */
-export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false): Set<string> {
+/** All tiles the unit can attack this turn (move + range) – used for the red overlay and danger zones. `target`: for a unit that might step onto them. */
+export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false, target?: BattleUnit): Set<string> {
   const out = new Set<string>();
   if (!unit.pos || !active(unit)) return out;
   const range = combinedRange(data, s, unit);
   if (!range) return out;
   const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
-  for (const o of origins) for (const t of strikeTiles(data, s, o, range)) out.add(posKey(t));
+  for (const o of origins) for (const t of strikeTiles(data, s, unit, o, range, target)) out.add(posKey(t));
   return out;
 }
 

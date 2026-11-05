@@ -253,13 +253,14 @@ export const terrainSchema = z.object({
   seizable: z.boolean().optional(),
   visitable: z.boolean().optional(),
   height: z.number().default(0),
-  surface: z.enum(['grass', 'dirt', 'road', 'sand', 'ash', 'stone', 'riverbed']),
+  surface: z.enum(['grass', 'dirt', 'road', 'sand', 'ash', 'stone', 'riverbed', 'peat', 'vault']),
   cliff: z.enum(['earth', 'rock', 'wall']).default('earth'),
   water: z.boolean().default(false),
   level: z.number().int().min(0).max(2).default(0),
   connector: z.enum(['ramp', 'stairs', 'ladder']).optional(),
   opensTo: z.string().optional(),
   stand: z.number().min(0).default(0),
+  waterLook: z.enum(['clear', 'mire', 'creek']).default('clear'),
 });
 
 const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support', 'follow']);
@@ -381,6 +382,8 @@ export const mapSchema = z.object({
     .object({ color: z.string().optional(), intensity: z.number().optional(), azimuthDeg: z.number().optional(), elevationDeg: z.number().min(1).max(90).optional() })
     .optional(),
   /** story 8.6: light preset and weather of the board; both absent = the map looks as before */
+  /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
+  interior: z.boolean().optional(),
   timeOfDay: z.enum(TIMES_OF_DAY).optional(),
   weather: z.enum(WEATHERS).optional(),
   objects: z
@@ -730,7 +733,7 @@ const lookSchema = z.object({
   figureReference: z.number().positive(),
   clothGrey: z.number().positive().max(1),
   clothSteps: z.tuple([z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3)]),
-  timeOfDay: z.object({ morning: timeOfDayDef, noon: timeOfDayDef, evening: timeOfDayDef, night: timeOfDayDef }),
+  timeOfDay: z.object({ morning: timeOfDayDef, noon: timeOfDayDef, evening: timeOfDayDef, night: timeOfDayDef, indoor: timeOfDayDef }),
   weather: z.object({ clear: weatherDef, rain: weatherDef, fog: weatherDef, ash: weatherDef, snow: weatherDef }),
   season: z.record(z.string(), z.object({ tint: hex, strength: unit, sunElevationOffsetDeg: z.number() })),
   fx: z.object({
@@ -790,11 +793,16 @@ export const renderSchema = z.object({
       house: propVariantList,
       lodge: propVariantList,
       rock: propVariantList,
+      field: propVariantList,
+      relief: propVariantList,
+      sarcophagus: propVariantList,
       tree: z.record(z.string(), propVariantList),
+      sceneryTree: z.record(z.string(), propVariantList),
     }),
     propFallback: z.record(z.string(), z.string()),
     markMs: z.number().int().min(0),
     decor: z.object({ bushes: decorSchema, stones: decorSchema }),
+    decorOn: z.record(z.string(), z.array(decorSchema)),
   }),
   look: lookSchema,
   gear: z.object({

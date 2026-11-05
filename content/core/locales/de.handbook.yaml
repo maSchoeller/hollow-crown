@@ -248,7 +248,7 @@ handbook:
       keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Gebäude, blockiert"
     heights:
       title: "Höhen"
-      text: "Es gibt drei Stufen: das Feld, Wehrgang und Terrasse, Turm und Felsnase. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe."
+      text: "Es gibt drei Stufen: das Feld, Wehrgang und Terrasse, Turm und Felsnase. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
       where: "Die Stufe eines Felds steht in der Geländeanzeige; die Reichweite zeigt das Spielbrett."
       keywords: "Höhe, Stufe, Wehrgang, Rampe, Treppe, Leiter, Turm"
     doors:

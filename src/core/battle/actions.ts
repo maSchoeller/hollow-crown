@@ -45,7 +45,7 @@ export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos
   const finishAllowed = true;
   for (const w of usableWeapons(data, u)) {
     const r = weaponRange(data, s, u, w.uid, extraRange);
-    for (const t of strikeTiles(data, s, pos, r)) {
+    for (const t of strikeTiles(data, s, u, pos, r)) {
       const o = unitAt(s, t);
       if (!o || !onMap(o) || !isHostile(o.team, u.team) || o.untargetable) continue;
       if (o.downed && !finishAllowed) continue;

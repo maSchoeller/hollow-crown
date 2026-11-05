@@ -14,6 +14,8 @@ import {
   canStrike,
   createBattle,
   dangerZone,
+  threatTiles,
+  tileThreats,
   forecast,
   levelAt,
   newCampaign,
@@ -55,6 +57,13 @@ function classOf(moveType: 'foot' | 'armored' | 'mounted' | 'flier' | 'monster')
   const id = `test_${moveType}`;
   data.classes[id] = { ...data.classes.scout!, id, moveType };
   return id;
+}
+
+/** Lets a unit fly: its own class with the flier's way of moving, so its weapons stay usable. */
+function fly(u: BattleState['units'][number]) {
+  const id = `test_flying_${u.classId}`;
+  data.classes[id] = { ...data.classes[u.classId]!, id, moveType: 'flier' };
+  u.classId = id;
 }
 
 beforeAll(() => {
@@ -141,25 +150,26 @@ describe('moving between levels', () => {
 describe('striking across levels', () => {
   it('a ranged weapon reaches one further from above, not from below', () => {
     const s = start();
-    expect(canStrike(data, s, [3, 5], [3, 8], [2, 2])).toBe(true);
-    expect(canStrike(data, s, [3, 8], [3, 5], [2, 2])).toBe(false);
-    expect(canStrike(data, s, [3, 5], [3, 9], [2, 2])).toBe(false);
-    expect(canStrike(data, s, [0, 8], [3, 8], [2, 2])).toBe(false); // on the same level the range stays
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [3, 5], [3, 8], [2, 2])).toBe(true);
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [3, 8], [3, 5], [2, 2])).toBe(false);
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [3, 5], [3, 9], [2, 2])).toBe(false);
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [0, 8], [3, 8], [2, 2])).toBe(false); // on the same level the range stays
   });
 
   it('a melee weapon gains nothing from above', () => {
-    expect(canStrike(data, start(), [3, 6], [3, 8], [1, 1])).toBe(false);
+    const s = start();
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [3, 6], [3, 8], [1, 1])).toBe(false);
   });
 
   it('a blow lands on the same level or across a ramp or stairs, not across a wall or ladder', () => {
     const s = start();
-    expect(canStrike(data, s, [0, 8], [0, 9], [1, 1])).toBe(true);
-    expect(canStrike(data, s, [5, 7], [5, 6], [1, 1])).toBe(false); // wall
-    expect(canStrike(data, s, [2, 7], [2, 6], [1, 1])).toBe(true); // ramp
-    expect(canStrike(data, s, [2, 6], [2, 7], [1, 1])).toBe(true);
-    expect(canStrike(data, s, [10, 7], [10, 6], [1, 1])).toBe(true); // stairs
-    expect(canStrike(data, s, [12, 7], [12, 6], [1, 1])).toBe(false); // ladder
-    expect(canStrike(data, s, [12, 6], [13, 6], [1, 1])).toBe(false); // wall walk beside the tower
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [0, 8], [0, 9], [1, 1])).toBe(true);
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [5, 7], [5, 6], [1, 1])).toBe(false); // wall
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [2, 7], [2, 6], [1, 1])).toBe(true); // ramp
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [2, 6], [2, 7], [1, 1])).toBe(true);
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [10, 7], [10, 6], [1, 1])).toBe(true); // stairs
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [12, 7], [12, 6], [1, 1])).toBe(false); // ladder
+    expect(canStrike(data, s, unit(s, 'dev_vanguard'), [12, 6], [13, 6], [1, 1])).toBe(false); // wall walk beside the tower
   });
 
   it('the attack list, the forecast and the threat zone follow the same rule', () => {
@@ -174,7 +184,7 @@ describe('striking across levels', () => {
     const f = forecast(data, s, archer.uid, below.uid, targets[below.uid]![0]!, [3, 5]);
     expect(f.defender.canStrike).toBe(false);
     expect(attackTargets(data, s, below, [3, 8])[archer.uid]).toBeUndefined();
-    expect(strikeTiles(data, s, [3, 5], [2, 2]).some((p) => p[0] === 3 && p[1] === 8)).toBe(true);
+    expect(strikeTiles(data, s, archer, [3, 5], [2, 2]).some((p) => p[0] === 3 && p[1] === 8)).toBe(true);
     expect(dangerZone(data, s, 'player', [archer.uid]).has(posKey([3, 8]))).toBe(true);
   });
 
@@ -187,6 +197,102 @@ describe('striking across levels', () => {
     const w = attackTargets(data, s, shooter, [9, 8])['dev_wall_guard'];
     expect(w).toBeTruthy();
     expect(forecast(data, s, shooter.uid, 'dev_wall_guard', w![0]!, [9, 8]).defender.canStrike).toBe(false);
+  });
+});
+
+describe('no level rule for a blow in a fight with a flier', () => {
+  it('a blow of a flier lands across a wall, a ladder and two levels; the others stay bound', () => {
+    const s = start();
+    const flier = unit(s, 'dev_vanguard');
+    fly(flier);
+    expect(canStrike(data, s, flier, [5, 7], [5, 6], [1, 1])).toBe(true); // wall
+    expect(canStrike(data, s, flier, [5, 6], [5, 7], [1, 1])).toBe(true); // down from it
+    expect(canStrike(data, s, flier, [12, 7], [12, 6], [1, 1])).toBe(true); // ladder
+    expect(levelAt(data, s, [13, 6]) - levelAt(data, s, [13, 7])).toBe(2);
+    expect(canStrike(data, s, flier, [13, 7], [13, 6], [1, 1])).toBe(true);
+    const foot = unit(s, 'dev_marksman');
+    expect(canStrike(data, s, foot, [5, 7], [5, 6], [1, 1])).toBe(false);
+    expect(canStrike(data, s, foot, [13, 7], [13, 6], [1, 1])).toBe(false);
+  });
+
+  it('flying changes no reach: a melee weapon stays at one tile, a bow gets no bonus from below', () => {
+    const s = start();
+    const flier = unit(s, 'dev_vanguard');
+    fly(flier);
+    expect(canStrike(data, s, flier, [3, 6], [3, 8], [1, 1])).toBe(false);
+    expect(canStrike(data, s, flier, [3, 8], [3, 5], [2, 2])).toBe(false);
+    expect(canStrike(data, s, flier, [3, 5], [3, 8], [2, 2])).toBe(true); // from above as for anyone
+  });
+
+  it('attack list, forecast and threat zone follow the same rule; a foe on foot answers a flier and strikes it', () => {
+    const s = start();
+    alone(s, 'dev_vanguard', 'dev_wall_guard');
+    const flier = unit(s, 'dev_vanguard');
+    const guard = unit(s, 'dev_wall_guard');
+    place(s, 'dev_vanguard', [5, 7]);
+    place(s, 'dev_wall_guard', [5, 6]);
+    expect(attackTargets(data, s, flier, [5, 7])[guard.uid]).toBeUndefined();
+    expect(threatTiles(data, s, flier, true).has(posKey([5, 6]))).toBe(false);
+    fly(flier);
+    const weapons = attackTargets(data, s, flier, [5, 7])[guard.uid];
+    expect(weapons).toBeTruthy();
+    expect(threatTiles(data, s, flier, true).has(posKey([5, 6]))).toBe(true);
+    expect(forecast(data, s, flier.uid, guard.uid, weapons![0]!, [5, 7]).defender.canStrike).toBe(true);
+    const back = attackTargets(data, s, guard, [5, 6])[flier.uid];
+    expect(back).toBeTruthy();
+    expect(forecast(data, s, guard.uid, flier.uid, back![0]!, [5, 6]).defender.canStrike).toBe(true);
+    expect(threatTiles(data, s, guard, true).has(posKey([5, 7]))).toBe(true);
+  });
+
+  it('who walks stays bound against who walks; a tile a flier might step onto counts for it alone', () => {
+    const s = start();
+    alone(s, 'dev_vanguard', 'dev_wall_guard', 'dev_marksman');
+    const guard = unit(s, 'dev_wall_guard');
+    const flier = unit(s, 'dev_vanguard');
+    place(s, 'dev_wall_guard', [5, 6]);
+    place(s, 'dev_marksman', [5, 7]);
+    place(s, 'dev_vanguard', [0, 11]);
+    fly(flier);
+    expect(attackTargets(data, s, guard, [5, 6])['dev_marksman']).toBeUndefined();
+    expect(canStrike(data, s, guard, [5, 6], [4, 6], [1, 1])).toBe(true); // same level
+    place(s, 'dev_marksman', [0, 10]);
+    expect(threatTiles(data, s, guard, true).has(posKey([5, 7]))).toBe(false);
+    expect(threatTiles(data, s, guard, true, flier).has(posKey([5, 7]))).toBe(true);
+    expect(tileThreats(data, s, flier, [5, 7])).toContain('dev_wall_guard');
+    expect(canStrike(data, s, guard, [5, 6], [5, 7], [1, 1], flier)).toBe(true);
+    expect(canStrike(data, s, guard, [3, 5], [3, 8], [1, 1], flier)).toBe(false); // the reach stays
+  });
+
+  it('a flier answers a flier across the wall', () => {
+    const s = start();
+    alone(s, 'dev_vanguard', 'dev_wall_guard');
+    place(s, 'dev_vanguard', [5, 7]);
+    place(s, 'dev_wall_guard', [5, 6]);
+    fly(unit(s, 'dev_vanguard'));
+    fly(unit(s, 'dev_wall_guard'));
+    const weapons = attackTargets(data, s, unit(s, 'dev_vanguard'), [5, 7])['dev_wall_guard'];
+    expect(forecast(data, s, 'dev_vanguard', 'dev_wall_guard', weapons![0]!, [5, 7]).defender.canStrike).toBe(true);
+  });
+
+  it('the AI finds the target of a flier, also straight across the wall', () => {
+    const s = start();
+    alone(s, 'dev_vanguard', 'dev_wall_guard');
+    place(s, 'dev_vanguard', [5, 7]);
+    place(s, 'dev_wall_guard', [5, 6]);
+    fly(unit(s, 'dev_wall_guard'));
+    const r = applyCommand(data, s, { type: 'endPhase' });
+    expect(r.events.some((e) => e.t === 'combat' && e.attacker === 'dev_wall_guard' && e.defender === 'dev_vanguard')).toBe(true);
+  });
+
+  it('a foe on foot on the wall strikes a flier below it without coming down', () => {
+    const s = start();
+    alone(s, 'dev_vanguard', 'dev_wall_guard');
+    place(s, 'dev_vanguard', [5, 7]);
+    place(s, 'dev_wall_guard', [5, 6]);
+    fly(unit(s, 'dev_vanguard'));
+    const r = applyCommand(data, s, { type: 'endPhase' });
+    expect(r.events.some((e) => e.t === 'combat' && e.attacker === 'dev_wall_guard' && e.defender === 'dev_vanguard')).toBe(true);
+    expect(unit(r.state, 'dev_wall_guard').pos).toEqual([5, 6]);
   });
 });
 
@@ -249,8 +355,10 @@ describe('the AI on levels', () => {
     const map = data.maps.dev_levels!;
     data.maps.dev_levels = { ...map, triggers: [] };
     const s = start();
+    place(s, 'dev_yard_guard', [11, 1]); // out of a shot from the wall walk, so only the gate reaches it
     const end = autoplay(data, s, 3000).state;
     data.maps.dev_levels = map;
+    expect(end.outcome).toBe('victory');
     expect(end.objects.filter((o) => o.id.startsWith('dev_gate')).every((o) => o.state === 'open')).toBe(true);
   });
 

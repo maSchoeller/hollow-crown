@@ -58,7 +58,9 @@ legend:
   "b": field
   "a": ash
   "A": burning
-objects: []
+objects:
+  - { id: cat_ballista, type: ballista, at: [1, 12] }
+  - { id: cat_lever, type: lever, at: [4, 12] }
 initialEffects: []
 deploy: { max: 0, forced: [], slots: [] }
 units:

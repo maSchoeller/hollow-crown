@@ -211,7 +211,7 @@ describe('content:check rules for prop variants', () => {
   it('accepts a model of the list for the prop on the field', () => {
     const t = find('tree');
     expect(t).not.toBeNull();
-    expect(validatePropVariants(withVariants(t!, 'tree_d'))).toEqual([]);
+    expect(validatePropVariants(withVariants(t!, 'grove_a'))).toEqual([]);
   });
   it('flags a model of another class, a field without a variant prop and a field off the map', () => {
     const t = find('tree')!;

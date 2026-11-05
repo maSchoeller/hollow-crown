@@ -109,15 +109,15 @@ if (import.meta.env.DEV) {
        * `await __hc.devMap()`. Saving is switched off for the battle (`failSaves`), so no real save is overwritten. The files are
        * imported on demand and exist in the dev build only; a new fixture map is picked up by its file name.
        */
-      devMap: async (id = 'dev_fog') => {
+      devMap: async (id = 'dev_fog', opts: { fog?: boolean } = {}) => {
         const c = campaign.value;
         if (!c) throw new Error('load a campaign first');
-        const files = import.meta.glob('../../../tests/fixtures/maps/*.yaml');
-        const load = files[`../../../tests/fixtures/maps/${id}.yaml`];
+        const files = { ...import.meta.glob('../../../tests/fixtures/maps/*.yaml'), ...import.meta.glob('../../../concept/27-ueberarbeitung/levels/*.yaml') };
+        const load = files[`../../../tests/fixtures/maps/${id}.yaml`] ?? files[`../../../concept/27-ueberarbeitung/levels/${id}.yaml`];
         if (!load) throw new Error(`no fixture map "${id}"; there are: ${Object.keys(files).map((f) => /([^/]+)\.yaml$/.exec(f)![1]).join(', ')}`);
         const { mapSchema } = await import('../../content/schemas');
         const raw = ((await load()) as { default: unknown }).default;
-        data.maps[id] = { ...mapSchema.parse(raw), act: 1 } as MapDef;
+        data.maps[id] = { ...mapSchema.parse(raw), act: 1, ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;
         if (!data.campaign.nodes.some((n) => n.id === id)) data.campaign.nodes.push({ ...data.campaign.nodes[0]!, id, map: id, pre: undefined, post: undefined });
         devSaveFailure.on = true;
         const r = beginBattle(data, c, id, []);

@@ -212,7 +212,7 @@ function tandemPartner(data: GameData, s: BattleState, attacker: BattleUnit, aPo
     if (rankIndex(rank) < min || !p.pos) continue;
     const w = equippedWeapon(p);
     if (!w || itemDef(data, w).mt === undefined) continue;
-    if (!canStrike(data, s, p.pos, dPos, weaponRange(data, s, p, w.uid))) continue;
+    if (!canStrike(data, s, p, p.pos, dPos, weaponRange(data, s, p, w.uid), defender)) continue;
     const d = dist(p.pos, dPos);
     const calc = calcSide(data, s, p, p.pos, defender, dPos, w, equippedWeapon(defender), true, d);
     const damage = Math.floor((calc.side.damage * data.balance.supports.tandemDamagePercent) / 100);
@@ -261,7 +261,7 @@ export function forecast(
     ac.side.canStrike = !!ac.wp;
     let dCan = !!dc.wp && !d.downed && active(d);
     if (dCan && dWeapon) {
-      dCan = canStrike(data, s, dPos, aPos, weaponRange(data, s, d, dWeapon.uid));
+      dCan = canStrike(data, s, d, dPos, aPos, weaponRange(data, s, d, dWeapon.uid), a);
     }
     dc.side.canStrike = dCan;
     const th = data.balance.combat.doubleAttackThreshold;

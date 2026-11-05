@@ -286,7 +286,7 @@ function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, n
   const m = new Map<string, number>();
   for (const o of hostileUnits(s, u)) {
     if (!active(o)) continue;
-    for (const k of threatTiles(data, s, o)) m.set(k, (m.get(k) ?? 0) + 1);
+    for (const k of threatTiles(data, s, o, false, u)) m.set(k, (m.get(k) ?? 0) + 1);
   }
   return m;
 }

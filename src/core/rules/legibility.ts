@@ -123,7 +123,7 @@ export function killMarks(data: GameData, s: BattleState, unit: BattleUnit): Kil
     let best: KillMark['kind'] | null = null;
     for (const w of weapons) {
       for (const o of origins) {
-        if (!canStrike(data, s, o, foe.pos!, w.range)) continue;
+        if (!canStrike(data, s, unit, o, foe.pos!, w.range, foe)) continue;
         const f = forecast(data, s, unit.uid, foe.uid, w.uid, o);
         if (lossAtHit(data, f, false) >= foe.hp) best = 'hit';
         else if (!best && f.attacker.crit > 0 && lossAtHit(data, f, true) >= foe.hp) best = 'crit';
@@ -155,7 +155,7 @@ export function perilWarnings(data: GameData, s: BattleState, team: BattleUnit['
       if (!f.zone.has(posKey(me.pos!))) continue;
       let most = 0;
       for (const w of f.weapons) {
-        const from = f.origins.find((o) => canStrike(data, s, o, me.pos!, w.range));
+        const from = f.origins.find((o) => canStrike(data, s, f.u, o, me.pos!, w.range, me));
         if (!from) continue;
         most = Math.max(most, damageAtHit(data, forecast(data, s, f.u.uid, me.uid, w.uid, from, true)));
       }

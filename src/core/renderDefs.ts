@@ -124,11 +124,13 @@ export interface RenderDef {
     sceneryVariants: number;
     /** low decoration on free grass/plain tiles: chance per tile on the map and in the scenery around it, model `<prop>_<state>`, size range */
     decor: Record<'bushes' | 'stones', { model: string; map: number; scenery: number; scale: [number, number] }>;
+    /** decoration of terrains with their own ground, by terrain id (moor, vault): tried in order, one roll per tile, in a corner of the tile */
+    decorOn: Record<string, Array<{ model: string; map: number; scenery: number; scale: [number, number] }>>;
     /**
      * prop variants (weighted `<prop>_<state>`, chosen by a field hash, see render/shared/scenery.ts): house (building), lodge (visitable
      * house, state appended), rock; tree per act (an act without an entry uses act 1)
      */
-    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; tree: Record<string, PropVariant[]> };
+    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; field: PropVariant[]; relief: PropVariant[]; sarcophagus: PropVariant[]; tree: Record<string, PropVariant[]>; sceneryTree: Record<string, PropVariant[]> };
     /** stand-in model while a model is not built yet (the manifest does not know it) */
     propFallback: Record<string, string>;
     /** goal marking: how long the markings of a side objective stay (ms) */
