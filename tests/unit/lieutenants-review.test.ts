@@ -153,7 +153,7 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
       } else s = applyCommand(data, s, cmd).state;
     }
     expect(s).toEqual(played.state);
-  });
+  }, 30_000); // replays the large map 1-8 (story 15.5) twice, also through the worker protocol: over 5 s on a busy CI runner
 });
 
 describe('met only when seen or fled (R2)', () => {
