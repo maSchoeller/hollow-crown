@@ -98,3 +98,10 @@
 - Abgenommen durch den Produktinhaber am 2026-11-05 auf den Entwürfen 1-2, 1-3, 1-5, 1-7: Moor, Wald und Kornfeld wie gezeigt; Sarkophag sperrt das Feld.
 - Schneehauben: Plan angenommen (Weiß von oben im Material, eigene Modelle nur für Mauer, Turm und Wald, vorher Probe auf einer Karte aus Akt 3).
 - Kulissenhäuser statt Mauerblöcke im Dorf von 1-2 bleiben (PR 103). Entscheidung des Produktinhabers vom 2026-11-05.
+
+## 2026-11-05: Brettfiguren zu den neuen Porträts
+
+- Der Beschluss „Brettfiguren bleiben unverändert“ vom 2026-11-01 ist aufgehoben (Produktinhaber, Grundlage: Figuren-Bestand der Session vom 2026-11-05).
+- Umfang: die kleine Variante in drei Schritten statt aller 37 Figuren. Weil niemand reitet (GDD-Log 2026-11-05), entfallen „Reiter zu Pferd“ und das Reit-Pferd; es bleiben 12 Modelle, rechnerisch 1 680 Tripo-Credits.
+- Zuerst nur 3 Modelle mit dem vorhandenen Guthaben von rund 425 Credits: Lucan, Verwalter der Paktwacht, Osric Dunn. Über den Rest und über Nachkauf entscheidet der Produktinhaber nach Sichtung.
+- Pferde auf der Rabenweide (2-3) sind ein einfaches Deko-Modell ohne Reittier-Pipeline.
