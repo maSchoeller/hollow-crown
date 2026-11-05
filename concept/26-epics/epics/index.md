@@ -49,6 +49,7 @@ Je Epic eine Datei; nur die Datei des Epics lesen, an dem gearbeitet wird.
 | [epic-12.md](epic-12.md) | Epic 12: Akt 3 „Krone“ und Staffelende – grob |
 | [epic-13.md](epic-13.md) | Epic 13: Kampf lesbar machen |
 | [epic-14.md](epic-14.md) | Epic 14: Handbuch |
+| [epic-15.md](epic-15.md) | Epic 15: Umbau von Akt 1 |
 
 ## Epic List
 
@@ -108,7 +109,13 @@ Spieler lesen das Brett auf einen Blick: Raster, Lebensleisten, Bereiche mit Kan
 Spieler schlagen jede Regel im Spiel nach, aus dem Menü oder über ein „?“ an der Stelle, an der sie wirkt; Werte kommen aus den Content-Daten. Neu seit der Course Correction 2026-10-30, nach dem MVP-Release und vor Akt 2.
 **FRs covered:** – · UX-DR30, UX-DR31
 
-**Reihenfolge:** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig. Epic 10 und 11 laufen verschränkt (Verfeinerung und Readiness-Fixes 2026-10-31): 11.1 (Akt-Übergang) zuerst, dann 10.2, 10.3 und 10.4 parallel zu 11.2–11.7, danach die übrigen Stories von Epic 10 und die Missionen ab 11.10; 11.8 (Ziel-Phasen) vor 11.17 (Kronfeld); 11.22 (Abstimmung Akt 2) zuletzt, nach allen Epic-10-Stories bis 10.12. Details in den Absätzen „Reihenfolge“ beider Epics.
+### Epic 15: Umbau von Akt 1
+Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung: größere Karten mit mehr, schwächeren Gegnern, neue Missionsfolge, Weltkarte v5, angepasste Szenen, Lucan statt Kael und die ersten Brettfiguren zu den neuen Porträts. Festgeschrieben am 2026-11-05: 11 Stories (15.1 Format-Reste, 15.2 Kampagnenfolge, 15.3–15.5 Karten klein, mittel, groß, 15.6 Szenen, 15.7 Weltkarte v5, 15.8 Galerie-Modelle, 15.9 Brettfiguren Schritt 1, 15.10 Abstimmung, 15.11 Leistung). Das Release bleibt Story 9.14.
+**FRs covered:** FR55, FR60, FR63 (Umbau) · NFR1 (neuer Maßstab)
+
+**Stand 2026-11-05:** Epic 1–8, 13 und 14 sind fertig, Epic 9 bis 9.13. Neu gilt: 15 → 9.14 (Release von Akt 1) → 10 → 11 → 12. Epic 11 wird neu geschnitten, sobald die Level von Akt 2 abgenommen sind; Akt 2 geht erst nach dem Release von Akt 1 live. Epic 10 wird vorher nachgezogen (Lückenliste in `concept/27-ueberarbeitung/umsetzung-lueckenliste.md`). Die Reihenfolge darunter ist die ursprüngliche Planung.
+
+**Reihenfolge (ursprünglich):** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig. Epic 10 und 11 laufen verschränkt (Verfeinerung und Readiness-Fixes 2026-10-31): 11.1 (Akt-Übergang) zuerst, dann 10.2, 10.3 und 10.4 parallel zu 11.2–11.7, danach die übrigen Stories von Epic 10 und die Missionen ab 11.10; 11.8 (Ziel-Phasen) vor 11.17 (Kronfeld); 11.22 (Abstimmung Akt 2) zuletzt, nach allen Epic-10-Stories bis 10.12. Details in den Absätzen „Reihenfolge“ beider Epics.
 
 <!-- Stories: Format „Als … möchte ich …, damit …“; Akzeptanzkriterien in deutscher Gherkin-Form (Angenommen / Wenn / Dann / Und). -->
 

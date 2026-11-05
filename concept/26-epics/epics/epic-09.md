@@ -174,12 +174,14 @@ damit Beziehungen wachsen.
 ### Story 9.14: Akt 1 abstimmen und veröffentlichen
 
 Als Produktinhaber
-möchte ich Akt 1 als MVP veröffentlichen und testen,
+möchte ich Akt 1 in der umgebauten Fassung als erstes echtes Release veröffentlichen und testen,
 damit die Kernhypothese geprüft wird.
+
+Umgeschrieben am 2026-11-05: Das Release folgt jetzt auf den Umbau von Akt 1 (Epic 15); die Abstimmung liegt in Story 15.10, die Leistungsmessung in 15.11.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** alle Stories von Epic 1–9
-**Wenn** `pnpm sim --campaign act1` auf allen Schwierigkeiten läuft
-**Dann** liegen alle Story-Missionen in den Korridoren (NFR12) und die Spielzeit von Akt 1 passt zu 30–35 Stunden für die Staffel
-**Und** Paket `act1` ist `released: true`, `content:lock` ist gelaufen, die Performance-Ziele sind mit Story 7.5 auf einem Referenzgerät gemessen, und ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu die Burg als Heimat und die Gedenksteine) liegt vor (`gds-playtest-plan`).
+**Angenommen** alle Stories von Epic 15, Epic 13 und der bewertete Tonbruch-Test (Story 8.1)
+**Wenn** die Pflichtteile vorliegen: neue Karten, Missionsfolge, Weltkarte v5, Leistungsmessung auf dem Referenzgerät, Brettfiguren aus Schritt 1 (15.9)
+**Dann** läuft `pnpm content:lock` erst jetzt (nach der Umbenennung `kael` → `lucan`), und ein Fixture-Spielstand für spätere Migrationen liegt unter `tests/fixtures/saves/`
+**Und** ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu Burg in 3D, neue Karten und Höhenregel) liegt vor (`gds-playtest-plan`); Musik und Vertonung (8.8, 8.9) blockieren das Release nicht.
