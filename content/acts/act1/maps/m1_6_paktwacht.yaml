@@ -1,113 +1,242 @@
-# Mission 1-6 – Die Paktwacht (Story 9.7). Burgruine der Paktwächter auf einem Hügel im Grenzland, Spätsommer. Ziel: Kael erobert den Thron
-# im Thronsaal (seize). Leutnants Hask (hält den inneren Hof) und Ulvric (seine Reiter flankieren am Hang). Layout-Platzhalter, Startwerte [C].
-# Tageszeit: Morgen. Wetter: klar (art-direction §2.5, gesetzt über timeOfDay/weather). Geplantes Ortsbild: paktwacht_ruine (Ruine, 1-6/1-8).
-# Aufbau (Nord oben): Thronsaal (Thron 7–8,2) -> Burgtor (7–8,4) -> innerer Hof mit zwei Wachposten (Fort) -> Durchbruch (6–9,8) -> äußerer Hof
-# mit Mauerbrüchen (Ruinen bei 4,13 und 11,13) -> Tor (7–8,13) -> Hang mit Serpentinenstraße -> Fuß des Hangs im Süden (Aufstellung).
-# Rollen: Engstellen (Tore, Durchbruch) für Vorkämpfer; Gras am Hang brennt (Elementaristen); Hang und Wald für Ulvrics Reiter.
-# Nach dem Sieg (campaign.yaml, Knoten m1_6): Knotenwirkung setHome: castle; Szene scn.m1_6.outro mit Tafel „Das Banner auf der Ruine“,
-# Gespräch „Eine Burg für Niemande“ und E4 (Flüchtlinge aufnehmen oder geheim halten).
+# Mission 1-6 – Die Paktwacht (Knoten m1_6). Entwurf s1_1_6_paktwacht (abgenommen 2026-11-01), Missionsliste: G 30×40, seize, 12 / 36, Leutnants Hask und Ulvric. Startwerte [C].
+# Schnitt von Süden: Erle, Felder mit Mühle, drei Terrassen mit Stützmauern, Vorburg, Burghof, Bergfried mit Thron am Fels des Grauen Kamms. Sturm bergauf.
+# Stufen (Vorgabe Produktinhaber 2026-11-05, Decision Log): Felder und Terrasse 1 (y ≥ 25) = 0. Die Stützmauer y 25 führt über drei Verbindungen auf Stufe 1:
+#   Mittelrampe [14–15,25], Rampe im Ostwald [25,25], Treppe des Ziegenpfads [28,25]. Terrasse 2, Terrasse 3, Vorburg, Burghof, Bergfried und Wachpass liegen auf Stufe 1.
+#   Die Stützmauer y 21 bleibt Mauer mit Lücken (Zickzack) auf gleicher Stufe. Wehrgänge und Ecktürme liegen auf Stufe 2.
+# Wehrgänge nur auf vier Abschnitten: Vorburg-Südmauer West und Ost samt Seitenmauer (Treppen [9,16], [20,16] aus dem Vorburghof), Burgmauer West samt Seitenmauer (Treppe [7,10] aus dem Burghof),
+#   Burgmauer Ost (Treppe [17,13] aus dem Vorburghof). Das ist die Hauptaussage der Karte: Engstelle mit Schützen darüber. Die Treppen laufen an der Seitenmauer hoch, weil die Kamera eine Treppe an der Nordseite einer Mauer nur von hinten sieht.
+# Burgtor [14–15,12] geschlossen: Der Hebel l_gate steht am Ostende des Wehrgangs Burgmauer Ost; der Hof darunter [20,13] ist Mauer, er lässt sich also nur von oben ziehen.
+#   Späher und Schlüssel öffnen das Tor auch (Decision Log 2026-11-05). Das Vorburgtor [14–15,18] steht offen.
+# Hask hält die Vorburg; bei 0 TP flieht er (Regel), erzählt durch die Ostpforte [21,15] über den Ziegenpfad (x 28) nach Süden; den Pfad nutzen auch Späher.
+# Abweichungen vom Entwurf: t7 steht über der Mittelrampe statt im Weinstock, t13/t14 auf dem Vorburg-Wehrgang statt auf Terrasse 3, k3/k4 auf dem Burg-Wehrgang statt auf den Forts.
+# Felder (`f`) als Gelände `field` statt Gras: gleiche Werte, zeigt die Felder. Gold kleiner als im Entwurf (Korridor Akt 1): goldReward 900, Truhe 300, Häuser 200 + 100, Nebenziel 400.
+# Balancing 2026-11-05 [C], Normal über die verkettete Kampagne: Stufen 2–5 wie im Entwurf, Schützen und Wölfe je 1 Stufe tiefer, Auslöse-Radien 3 statt 4–5, drei Figuren nur auf Schwer (siehe Notizen). Die Truppe ist kleiner als die 12 Plätze.
+# Nach dem Sieg (campaign.yaml, Knoten m1_6): Knotenwirkung setHome: castle; Szene scn.m1_6.outro mit Tafel, Gespräch „Eine Burg für Niemande“ und E4.
 id: m1_6_paktwacht
 nameKey: map.m1_6_paktwacht.name
-size: [16, 20]
-fog: false
+size: [30, 40]
 legend:
   ".": plain
   ",": grass
+  "f": field
   "_": road
   "T": forest
   "^": mountain
-  "#": wall          # Burgmauer
-  "R": ruins         # Mauerbruch / Trümmer
-  "F": fort          # Wachposten im inneren Hof
-  "G": gate          # Burgtor (Innentor), durchlässig
-  "K": throne        # Thron (Ziel: seize)
-#          x: 0123456789ABCDEF
+  "~": river
+  "w": shallows
+  "=": bridge
+  "W": wall
+  "B": wall
+  "G": gate
+  "K": gate_closed
+  "F": fort
+  "H": village
+  "t": throne
+  "d": door
+  "R": rampart
+  "O": tower_top
+  "S": stairs
+  "/": ramp
+  "L": lever
+#          x: 012345678901234567890123456789
 terrain: |
-  ^^^^########^^^^
-  ^^^^#......#^^^^
-  ^^^^#..KK..#^^^^
-  ^^^^#......#^^^^
-  ^^^^###GG###^^^^
-  ^^^^#.F..F.#^^^^
-  ^^^^#......#^^^^
-  ^^^^#......#^^^^
-  ^^^^##_RR_##^^^^
-  ^#............#^
-  ^#.RR......RR.#^
-  ^#............#^
-  ^#............#^
-  ^^##R##__##R##^^
-  ^,T,,,,__,,,,T,^
-  ^,,^^,,,,____,,^
-  ^,,,_________,,^
-  ^T,,___,,,,,,,T^
-  ,,,,___,,,,,,,,,
-  ,,,,____,,,,,,,,
-# Morgen, klar: tiefe, warme Sonne aus Osten, kühles Umgebungslicht
-# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
-timeOfDay: morning
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^^^^^^^^^^^^^^^^^
+  ^^^^__^^^^^^^^dd^^^^^^^^^^^^^^
+  ,,,,__WWWWWWWWWWWWWWWWWW^^^^^^
+  ,,,,,,GF...W...t..W...FW^^^^,^
+  ^^^^^^W....W......W....W^^^^,^
+  ^^^^^^W....WWW..WWW....W^^^^,^
+  ^^^TTTW.......__.......W^^^^,^
+  ^^^TTTW..BB...__...BB..W^^^^,^
+  ^^^TTTRS.BB...__...BB..WTTT^,^
+  ^^^TTTRF......__......FWTTT^,^
+  ^^^TTTRRRRRRRRKKRRRRLWWWTTT^,^
+  ^^^TTT,,W.....__.S..WW,,TTT,,^
+  ^^^TTT,,W.BB..__..BB.W,,TTT^,^
+  ^^^TTT,,W.BB..__..BB.G,,TTT^,^
+  ^^^TTT,,RS..H.__.H..SR,,TTT^,^
+  ^^^TTT,,R.....__.....R,,TTT^,^
+  ^^^TTT,,ORRRRRGGRRRRRO,,TTT^,^
+  ^^^,,,,,,,,,,,,,,,,,,,,,,,,,,^
+  ^^^TTT,,,,,,,,,,,,,,,,,,TTT^,^
+  ^^^WWWW__WWWWWWWWWWWW__WWWW^,^
+  ^^^TTT,,,,TT,,,,,,TT,,,,TTT^,^
+  ^^^TTT,,,,TT,,,,,,TT,,,,TTT^,^
+  ^^^TTT,,,,,,,,,,,,,,,,,,TTT^,^
+  ^^^WWWWWWWWWWW//WWWWWWWWW/W^S^
+  ^^^TTT,,TT,,,,__,,,,TT,,TTT^,^
+  ^^^TTT,,TT,,,,__,,,,TT,,TTT^,^
+  TT,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  TTffffffffff,,__,,,fffffffff,,
+  TTffffBBHfff,,__,,,fffffHfff,,
+  TTffffBB________,,,fffffffff,,
+  ,,ffffffffff,,__,,,fffffffffTT
+  ,,ffffffffff,,__,,,fHfffffffTT
+  ,,ffffffffff,,__,,,fffffffffTT
+  ,,,H,,,,,,,,,,__,,,,,,,,,,,,TT
+  ~~~ww~~~~~~~~~==~~~~~~~~ww~~~~
+  ~~~ww~~~~~~~~~==~~~~~~~~ww~~~~
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+  TTTT,,,,,,,,,,__,,,,,,,,,,TTTT
+# Stufen: was später in der Liste steht, gilt. Dieselben Bereiche in m1_8_paktwacht_halten.
+levels:
+  - { level: 1, area: { rect: [0, 0, 29, 24] } }
+  - { level: 2, area: { rect: [8, 16, 8, 18] } }
+  - { level: 2, area: { rect: [8, 18, 13, 18] } }
+  - { level: 2, area: { rect: [16, 18, 21, 18] } }
+  - { level: 2, area: { rect: [21, 16, 21, 18] } }
+  - { level: 2, area: { rect: [6, 10, 6, 12] } }
+  - { level: 2, area: { rect: [6, 12, 13, 12] } }
+  - { level: 2, area: { rect: [16, 12, 20, 12] } }
+timeOfDay: noon
 weather: clear
-lights: []
-objects: []
+objects:
+  - { id: v_farm_e, type: village, at: [24, 30], reward: { gold: 200 } }
+  - { id: v_farm_s, type: village, at: [20, 33], reward: { item: { def: vulnerary } } }
+  - { id: v_mill, type: village, at: [8, 30], reward: { item: { def: steel_lance } } }
+  - { id: v_ferry, type: village, at: [3, 35], reward: { gold: 100 } }
+  - { id: c_keep, type: chest, at: [12, 5], contents: { gold: 300 } }
+  - { id: gate_w, type: door, at: [14, 12], links: [gate_e] }
+  - { id: gate_e, type: door, at: [15, 12], links: [gate_w] }
+  - { id: l_gate, type: lever, at: [20, 12], links: [gate_w, gate_e] }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5). Höchstens einer je Variante.
-haunts:
-  # Grund: der innere Hof vor dem Thronsaal – hier hielt Hask die Burg, später treibt es ihn zurück.
-  - variant: boss
-    target: { at: [8, 6] }
-    enemySpawn: { rect: [5, 7, 10, 8] }
-    deploy: { rect: [6, 9, 9, 11] }
-  # Grund: der äußere Hof – Treffpunkt aller Wege durch die Mauerbrüche.
-  - variant: rout
-    target: { at: [8, 10] }
-    enemySpawn: { rect: [2, 11, 13, 12] }
-    deploy: { rect: [6, 14, 9, 15] }
-  # Grund: die Serpentinenstraße am Hang – Hinterhalt auf dem Weg zur neuen Heimat. Der Zivilist wartet am Fuß der Straße, die Räuber lauern im äußeren
-  # Hof vor dem Ausgang (Simulation 2026-10-28: Räuber am Zivilisten 50 %, so 96 %).
-  - variant: escort
-    target: { at: [8, 19] }
-    exit: { rect: [5, 14, 10, 14] }
-    enemySpawn: { rect: [3, 9, 12, 11] }
-    deploy: { tiles: [[9, 19], [8, 18], [7, 17], [9, 17], [8, 17], [7, 18], [9, 18], [7, 19]] }
-    turns: 8
 deploy:
-  max: 7
+  max: 12
   forced: [avatar, kael]
-  slots: [[6, 19], [7, 19], [8, 19], [9, 19], [5, 18], [6, 18], [7, 18], [8, 18], [9, 18]]
-# Gegner: Stufen [C], per Simulation abgestimmt (Story 9.7). Leutnants (Hask, Ulvric): Stufe und Klasse kommen aus `lieutenant`
-# (flieht bei 0 TP, Groll, Kopfgeld); ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35).
-# Balancing 2026-10-28 [C]: Schwer: outer2 Stufe 6 und trigger Radius 4 (vorher 5, hold), rider3 Stufe 6 (vorher 4); geteilt: rider1/rider2/br1 Stufe 6 (vorher 5), mk2/br3 trigger Radius 4 statt hold (Normal/Schwer).
+  slots: [[16, 38], [13, 38], [17, 38], [12, 38], [18, 38], [11, 38], [19, 38], [10, 38], [16, 39], [13, 39], [17, 39], [12, 39], [18, 39], [11, 39], [19, 39], [10, 39]]
+# Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: der Burghof vor dem Bergfried, in dem Hasks Leute saßen; später treibt es ihn zurück.
+  - variant: boss
+    target: { at: [15, 10] }
+    enemySpawn: { rect: [7, 6, 10, 8] }
+    deploy: { rect: [16, 9, 18, 10] }
+    max: 5
+  # Grund: die Vorburg, Treffpunkt aller Wege von den Terrassen und durch die Ostpforte.
+  - variant: rout
+    target: { at: [15, 15] }
+    enemySpawn: { rect: [9, 16, 13, 17] }
+    deploy: { rect: [16, 19, 20, 19] }
+    max: 5
+  # Grund: die Straße durch die Felder: Hinterhalt auf dem Weg zur neuen Heimat. Der Zivilist wartet in den Feldern, die Räuber lauern hinter der Mittelrampe.
+  - variant: escort
+    target: { at: [15, 30] }
+    exit: { rect: [12, 26, 17, 26] }
+    enemySpawn: { rect: [10, 22, 19, 24] }
+    deploy: { tiles: [[16, 30], [14, 30], [15, 31], [14, 31], [16, 31], [13, 30], [13, 31]] }
+    max: 5
+    turns: 8
+# Gegner: Stufen [C], Leutnants: Stufe und Klasse kommen aus `lieutenant` (flieht bei 0 TP, Groll, Kopfgeld); ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35).
 units:
-  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, class: brigand, level: 8, at: [8, 6], sprite: hask, portrait: hask, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: guard, radius: 3 } }   # Signaturwaffe: OFFEN (items.md §6.3)
-  - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, level: 7, at: [11, 16], sprite: ulvric, portrait: ulvric, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  # Ulvrics Wolfsreiter am Hang
-  - { id: rider1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [2, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: rider2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [13, 14], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: mk1, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [6, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: inner1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [7, 3], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: hold } }
-  - { id: outer1, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [5, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
-  - { id: br1, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [10, 11], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  - { id: br2, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [3, 11], sprite: brigand, items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  - { id: mk2, nameKey: unit.gang_warrior.name, team: enemy, class: marksman, level: 6, at: [9, 5], sprite: archer, items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: br3, nameKey: unit.gang_warrior.name, team: enemy, class: brigand, level: 6, at: [8, 12], sprite: brigand, items: [{ def: steel_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
-  - { id: outer2, nameKey: unit.gang_warrior.name, team: enemy, class: vanguard, level: 6, at: [11, 10], sprite: soldier, items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: rider3, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, level: 6, at: [7, 15], sprite: wolf_rider, items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Felder und Brücke
+  - { id: f1, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 35], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: f2, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [14, 35], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: f3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [23, 31], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: f4, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [20, 30], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: f5, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [9, 32], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: f6, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [6, 33], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: f7, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [19, 33], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  - { id: f8, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [5, 30], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  # Terrasse 1: Ulvric und Wölfe
+  - { id: ulvric, lieutenant: ulvric, nameKey: unit.ulvric.name, team: enemy, sprite: ulvric, portrait: ulvric, level: 6, at: [7, 26], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t1, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [22, 27], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t2, nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [6, 27], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [17, 26], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: t4, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [12, 27], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  # Terrasse 2: Rampenwache in der Mitte, ein Schütze über der Mittelrampe (von oben Reichweite 3), einer im Weinstock
+  - { id: t5, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [15, 24], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: t6, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [14, 24], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: t7, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 24], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t8, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [10, 22], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t9, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [22, 23], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: t10, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [7, 23], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  # Terrasse 3: Wachen an den Lücken der Stützmauer y 21
+  - { id: t11, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [22, 20], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: t12, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 3, at: [7, 20], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Vorburg: Hask am Tor, Schützen auf Wehrgang und Ecktürmen
+  - { id: t13, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 18], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: t14, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 18], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: hask, lieutenant: hask, nameKey: unit.hask.name, team: enemy, sprite: hask, portrait: hask, level: 6, at: [14, 16], items: [{ def: iron_axe }, { def: vulnerary }], drops: [1], ai: { profile: guard, radius: 3 } }
+  - { id: v1, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [15, 17], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: v2, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [14, 17], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: v3, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [21, 18], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: v4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [8, 18], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: v5, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [17, 15], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [normal, hard] }
+  # Burghof, Burg-Wehrgang und Bergfried
+  - { id: k1, nameKey: unit.castellan.name, team: enemy, class: knight, sprite: soldier, level: 5, at: [15, 6], items: [{ def: iron_lance }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
+  - { id: k2, nameKey: unit.marauder.name, team: enemy, class: healer, sprite: cleric, level: 3, at: [13, 6], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: k3, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [18, 12], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: k4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [11, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: k5, nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 4, at: [16, 9], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: k6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 3, at: [13, 9], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [hard] }
 pairs: []
-reinforcements: []
+reinforcements:
+  # Wölfe aus dem Bergwald West
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [2, 28], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.wolf_rider.name, team: enemy, class: wolf_rider, sprite: wolf_rider, level: 2, at: [2, 29], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Marodeure aus Hasks Lager im Rücken über die Furten
+  - turn: 8
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [25, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [4, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [24, 39], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 objectives:
-  victory: { type: seize, area: { rect: [7, 2, 8, 2] } }
+  victory: { type: seize, area: { rect: [15, 5, 15, 5] } }
   defeat:
-    - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
   side:
-    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
-    # Rundenzahl und Belohnung: Startwerte [C], die Steuerung stimmt sie per Simulation ab
-    - { id: s_fast, type: turn_limit, turns: 12, reward: { gold: 400 } }
-triggers: []
-# Szenen (Knoten m1_6): scn.m1_6.intro vorher; scn.m1_6.outro nachher (Tafel „Das Banner auf der Ruine“, Gespräch „Eine Burg für Niemande“, E4).
-goldReward: 1100   # [C]
+    - { id: s_villages, type: visit_villages, reward: { gold: 400 } }
+    - { id: s_fast, type: turn_limit, turns: 18, reward: { item: { def: vulnerary } } }
+triggers:
+  # Den Hebel ziehen nur Spielerfiguren (Decision Log 2026-11-05); die Tor-Flügel öffnen über `links`.
+  - id: t_gate
+    once: true
+    when: { type: object_activated, object: l_gate }
+    then:
+      - { action: dialogue, id: scn.m1_6.gate }
+# Szenen (Knoten m1_6): scn.m1_6.intro vorher; scn.m1_6.gate beim Hebel; scn.m1_6.outro nachher.
+goldReward: 900
 music: battle_a
-devNote: >
-  16 × 20: Ruine auf dem Hügel. Aufstellung am Hangfuß (Süd), Serpentinenstraße, äußerer Hof mit Mauerbrüchen, innerer Hof (Hask), Thronsaal.
-  Ulvric und seine Wolfsreiter (Klasse wolf_rider) flankieren am Hang; Kael ergreift den Thron (seize).
-  Leicht: 9 Gegner; Normal: 11 (Hask, Ulvric, zwei weitere Reiter); Schwer: 13. Keine Verstärkung.
+design:
+  title: Die Paktwacht
+  intent: >
+    Erste große Schlacht, Sturm bergauf: Brücke, Felder, drei Terrassen mit Rampen im Zickzack, Vorburg, Burghof, Thron.
+    Jede Stufe ist eine Engstelle mit Schützen darüber; Wölfe auf der untersten Terrasse und aus dem Westwald strafen lange Kolonnen.
+  mood: Spätsommermittag, goldene Kornfelder an der Erle, Weinterrassen, darüber die graue Burg vor dem Fels, Marodeursfahnen auf den Türmen.
+  phases:
+    - { id: p1, turns: [1, 4], label: Brücke und Felder, note: "Lanzen an der Brücke, Plünderer in den Feldern, Mühle und Höfe." }
+    - { id: p2, turns: [5, 9], label: Terrassen, note: "Ulvric und Wölfe auf Terrasse 1, Wolfswelle West (R5), Rückenwelle über die Furten (R8)." }
+    - { id: p3, turns: [10, 14], label: Vorburg, note: "Hask am Tor; flieht bei 0 TP durch die Ostpforte über den Ziegenpfad. Hebel auf dem Burg-Wehrgang." }
+    - { id: p4, turns: [15, 18], label: Burghof, note: Kastellan im Bergfried; Thron einnehmen. }
+  paths:
+    - { team: player, points: [[15, 38], [15, 28], [15, 25], [21, 22], [22, 21], [17, 19], [15, 18], [15, 14], [17, 13], [19, 12]], label: Sturm }
+    - { team: player, points: [[15, 13], [15, 8], [15, 6]], phase: p4, label: Burgtor }
+    - { team: enemy, points: [[21, 15], [23, 15], [27, 13], [28, 20], [28, 30], [26, 36]], phase: p3, label: Hasks Flucht }
+    - { team: enemy, points: [[2, 28], [7, 27], [12, 27]], phase: p2, label: R5 Wölfe }
+    - { team: enemy, points: [[25, 39], [25, 36], [23, 33]], phase: p2, label: R8 }
+  zones:
+    - { area: { rect: [6, 26, 23, 27] }, label: Terrasse 1 }
+    - { area: { rect: [6, 22, 23, 24] }, label: Terrasse 2 }
+    - { area: { rect: [6, 19, 23, 20] }, label: Terrasse 3 }
+    - { area: { rect: [9, 13, 20, 17] }, label: Vorburg, phase: p3 }
+  marks:
+    - { at: [15, 36], label: E1, note: "Brücke über die Erle, zwei Lanzen; Furten rechts und links nur zu Fuß." }
+    - { at: [15, 25], label: E2, note: "Mittelrampe Stützmauer 1, Lanzen oben, Schütze [17,24] darüber; Nebenrampe im Ostwald [25,25]; Treppe am Ziegenpfad [28,25]." }
+    - { at: [22, 21], label: E3, note: "Lücken in Stützmauer 2 (Ost und West), gleiche Stufe." }
+    - { at: [15, 18], label: E4, note: "Vorburgtor mit Hask dahinter, Schützen auf dem Wehrgang darüber (Stufe 2)." }
+    - { at: [20, 12], label: H, note: "Hebel öffnet das Burgtor; nur vom Wehrgang [19,12] aus. Späher oder Schlüssel öffnen es auch." }
+    - { at: [15, 3], label: G, note: "Gewölbe-Tor im Fels (Einstieg 1-7), verschlossen." }
+    - { at: [5, 2], label: P, note: "Wachpass nach Norden (Angriffsweg in 1-8)." }
+  notes:
+    - "Normal 33 Gegner (3 davon R5/R8), Leicht 28, Schwer 40. Missionsliste und Entwurf sagen 36 gegen 12: Die Truppe hat nach 1-5 nur 4 bis 8 Figuren, die Taverne trägt 0 bis 2 mehr; f4, t9 und ein Wolf aus R5 stehen deshalb nur auf Schwer [C]."
+    - "Große Karte: Plätze über 12 füllen Söldner aus der Taverne auf (Missionsliste, Regeln)."
+    - Die Karte ist Vorlage für 1-8 (gleiche Stufen und Wehrgänge).

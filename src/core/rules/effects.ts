@@ -48,7 +48,7 @@ export function eventTerrain(data: GameData, s: BattleState, p: Pos, terrain: st
   if (on && def.cost[data.classes[on.classId]!.moveType] === null) return;
   setTerrain(s, p, terrain);
   delete s.timers[posKey(p)];
-  const levels = s.levels ?? {};
+  const levels = { ...s.levels };
   if (level === undefined) delete levels[posKey(p)];
   else levels[posKey(p)] = level;
   s.levels = levels;

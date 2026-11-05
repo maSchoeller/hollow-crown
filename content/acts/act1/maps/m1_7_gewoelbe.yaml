@@ -1,147 +1,172 @@
-# Mission 1-7 – Unter der Paktwacht (Story 9.8). Nach einem Beben öffnet sich das Gewölbe unter der Burg: Gräber junger Könige, die versiegelte Chronik der
-# Wächter. Plünderer dringen durch einen eingestürzten Gang ein. Ziel: treasure (fünf Truhen vor dem Einsturz in Runde 14). Startwerte [C]. Kein Leutnant.
-# Tageszeit: innen / Nacht. Wetter: Staub, Fackeln (art-direction §2.5, gesetzt über timeOfDay/weather). Geplantes Ortsbild: paktwacht_gewoelbe.
-# Aufbau (Nord oben): Treppe (4–9,1) und Eingangshalle -> Westkammer (offen) -> Mittelgang (7–8 ... 6–7,5–9) -> Ostkammer hinter Tür (8,7)
-# -> Gruftsaal hinter der Tür (7,10) mit der versiegelten Chronik im Südnischen-Raum. Eingestürzter Gang = Ruinenfelder (13,2) und (13,3).
-# Grabreliefs junger Könige: Terrain `relief` (Requisite relief_a, heilt nicht). Zwei davon lösen je eine einmalige Szene aus (Beat 6): (2,6) in der Westkammer, (2,12) im Gruftsaal.
-# Nebel: Mauern und geschlossene Türen blockieren die Sicht; Späher öffnen Türen und Truhen ohne Schlüssel.
+# Mission 1-7 – Unter der Paktwacht (Knoten m1_7). Entwurf s1_1_7_gewoelbe (abgenommen 2026-11-01), Missionsliste: K 16×20, treasure, 6 / 14, Plünderer, kein Leutnant. Startwerte [C].
+# Gewölbe im Fels des Grauen Kamms hinter der Burg, eben (keine Höhenstufen): Eingangshalle im Süden, ein Hauptgang nach Norden, vier Grabkammern seitlich, Königskammer mit der versiegelten Chronik im Norden. Nebel, Fackeln.
+# Zweite veränderliche Karte: Ab Runde 4 bebt es aus dem Norden (scn.m1_7.quake). Runde 5 stürzt die Königskammer ein, Runde 6 die oberen, Runde 7 die unteren Kammern; alles als `set_terrain` zu `rockwall`.
+# Figuren werden nicht geschoben: Ein Feld bleibt, solange dort jemand steht (Regel 2026-11-05, die Entwurfsnotiz sagte anderes). Verschüttete Truhen sind verloren: Das Objekt bleibt, aber kein Weg führt mehr hin.
+# Hauptziel nur die Chronik c_chronicle in 8 Runden, die Wahl der Karte ist Chronik oder Beute. Der Hauptgang und der Weg zur Chronik bleiben offen.
+# Abweichung vom Entwurf: In Runde 5 bleiben zusätzlich [7,3] und [8,3] stehen, sonst wäre die Chronik abgeschnitten (die Entwurfsnotiz nannte nur [7–8,1–2]).
+# Abweichung vom Entwurf: Schlüssel. Die Mission bleibt ohne Späher lösbar (E2 „ausliefern“, Fenn fehlt): Jeder Plünderer trägt einen Schlüssel und lässt ihn fallen, nicht nur der Anführer.
+# Die Chronik ist kein Gegenstand: Die Truhe enthält nichts; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg (campaign.yaml). Grabreliefs: Gelände `relief`, heilt nicht, [1,6] und [14,12] lösen je eine Szene aus.
+# Balancing 2026-11-05 [C]: Der Hauptgang bleibt leicht (Stufe 4–5), sonst scheitert der Simulator-Spieler an der Frist; die Kammern und Spaltenwellen sind mit Stufe 4–6 und Radius 4 die Gefahr (Entwurf Stufe 3–4 gab 0,15 Niedergestreckte).
 id: m1_7_gewoelbe
 nameKey: map.m1_7_gewoelbe.name
-size: [14, 16]
+size: [16, 20]
 interior: true
 fog: true
 legend:
   ".": vault
-  "_": road          # Treppe
-  "#": wall
-  "D": door          # verschlossene Tür (Schlüssel oder Späher)
-  "E": door_open     # aufgebrochenes Tor
-  "R": ruins         # eingestürzter Gang (Zugang der Plünderer)
-  "h": relief        # Grabrelief eines jungen Königs (Kulisse, kein Heilfeld)
-  "b": brazier       # Fackelhalter (Requisite campfire)
-#          x: 0123456789ABCD
+  "_": road
+  "^": mountain
+  "R": ruins
+  "X": sarcophagus
+  "h": relief
+  "t": torch
+  "d": door
+#          x: 0123456789012345
 terrain: |
-  ##############
-  #b..______..b#
-  #............R
-  #.h........h.R
-  ##.###EE######
-  #....#..#....#
-  #.h..#..#..h.#
-  #....#..D....#
-  #....#..#....#
-  ######..######
-  #######D######
-  #............#
-  #.h.#....#.h.#
-  #............#
-  #####....#####
-  ##############
-# Nacht, innen: dunkles, kaltes Umgebungslicht, schwacher Schein von oben, warme Punktlichter an den Fackeln
-# Licht und Wetter (Story 8.6): Voreinstellung statt eigener ambient/sun-Werte
+  ^^^^^^^^^^^^^^^^
+  ^^^^tX....Xt^^^^
+  ^^^^........^^^^
+  ^^^^.X....X...^^
+  ^^^^^^^...^^..^^
+  ^^^^^^^..^^^^^^^
+  ^h...^^..^^....^
+  ^....d.........^
+  ^....^^..^^...X^
+  ^^^^^^^..^^^^^^^
+  ^^^^^^R..R^^^^^^
+  ^^^^^^^..^^^^^^^
+  ^X...^^..^^...h^
+  ^..............^
+  ^...X^^..^^X...^
+  ^^^^^^^..^^^^^^^
+  ^^^^^t....t^^^^^
+  ^^^^^......^^^^^
+  ^^^^^......^^^^^
+  ^^^^^..__..^^^^^
 timeOfDay: indoor
-weather: fog
+weather: clear
 lights:
-  - { at: [1, 1], color: "#ffb35c", radius: 4 }
-  - { at: [12, 1], color: "#ffb35c", radius: 4 }
-  - { at: [6, 6], color: "#ffb35c", radius: 3 }
-  - { at: [6, 12], color: "#ffb35c", radius: 3 }
+  - { at: [7, 17], color: "#ffb35c", radius: 3 }
+  - { at: [7, 12], color: "#ffb35c", radius: 2 }
+  - { at: [7, 2], color: "#9fd4ff", radius: 3 }
+  - { at: [4, 1], color: "#ffb35c", radius: 3 }
+  - { at: [11, 1], color: "#ffb35c", radius: 3 }
+  - { at: [5, 16], color: "#ffb35c", radius: 3 }
+  - { at: [10, 16], color: "#ffb35c", radius: 3 }
 objects:
-  # Schlüssel (Produktinhaber 2026-10-26): Türen und Truhen brauchen je einen Schlüssel (door_key, eine Ladung) oder einen Späher. Die Mission ist auch ohne Späher lösbar:
-  # Gebraucht werden 7 Ladungen (2 Türen, 5 Truhen). Alle Plünderer tragen Schlüssel und lassen sie fallen (l2 und l4 je zwei, alle anderen einer):
-  # Leicht 8, Normal 10, Schwer 12 Schlüssel, also mehr als Schlösser. Eine Truhe in der offenen Westkammer (c_west) gibt zusätzlich einen Schlüssel zurück.
-  # Schlüssel belegen keinen Taschenplatz (Schlüsselbund, Entscheidung 2026-10-27): gleichartige Schlüssel stapeln als ein Beutel-Eintrag, eine volle Tasche nimmt sie trotzdem auf.
-  - { id: door_east, type: door, at: [8, 7] }
-  - { id: door_crypt, type: door, at: [7, 10] }
-  - { id: c_west, type: chest, at: [3, 8], contents: { gold: 100, item: { def: door_key } } }
-  - { id: c_east, type: chest, at: [11, 8], contents: { gold: 150, item: { def: remedy_salve } } }
-  - { id: c_crypt_w, type: chest, at: [2, 13], contents: { gold: 300 } }
-  - { id: c_crypt_e, type: chest, at: [11, 13], contents: { item: { def: power_ring } } }
-  # die versiegelte Chronik ist kein Gegenstand: die Truhe enthält nichts; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg (campaign.yaml)
-  - { id: c_chronicle, type: chest, at: [6, 14] }
+  - { id: c_chronicle, type: chest, at: [7, 1] }
+  - { id: c_w1, type: chest, at: [2, 13], contents: { item: { def: vulnerary } } }
+  - { id: c_e1, type: chest, at: [13, 13], contents: { gold: 400 } }
+  - { id: c_w2, type: chest, at: [2, 7], contents: { item: { def: steel_sword } } }
+  - { id: c_e2, type: chest, at: [13, 7], contents: { gold: 300 } }
+  - { id: d_w2, type: door, at: [5, 7] }
 initialEffects: []
-# Heimsuchungs-Anker (Story 5.5). Höchstens einer je Variante; nur Felder, die ohne Schlüssel erreichbar sind
-# (Halle, Westkammer, Mittelgang; Türen sind kein begehbares Gelände). Der Gruftsaal hinter der Tür (7,10) bleibt deshalb ohne Anker.
-haunts:
-  # Grund: der Mittelgang unter der Burg – alles Plündern läuft hier durch.
-  - variant: rout
-    target: { at: [7, 7] }
-    enemySpawn: { rect: [1, 5, 4, 8] }
-    deploy: { rect: [4, 1, 9, 2] }
-  # Grund: der eingestürzte Gang in der Halle – ein Loch, durch das immer wieder jemand kommt; ein Zivilist sucht am Westende der Halle Schutz, die
-  # Plünderer kommen aus dem Osten (Simulation 2026-10-28: stand er neben dem Streifen, fiel er in 22 von 30 Läufen in der ersten Runde).
-  - variant: defend
-    target: { at: [2, 2] }
-    enemySpawn: { rect: [6, 1, 13, 3] }
-    deploy: { tiles: [[1, 2], [3, 2], [3, 1], [3, 3], [2, 1], [4, 2], [4, 1], [4, 3]] }
-    turns: 8
-  # Grund: die Westkammer mit den Gräbern junger Könige – Beutegut, das die Plünderer noch nicht fanden. Der Leutnant lauert in der Halle, die Truppe
-  # stellt sich am Westende der Halle auf, nahe am Zugang der Kammer (Simulation 2026-10-28: stand der Leutnant in der Kammer, blieb die Truppe an
-  # ihm hängen, und die Simulator-KI verbrauchte die Schlüssel an den Türen – 61 %; so 83 %).
-  - variant: treasure
-    target: { at: [11, 2] }
-    enemySpawn: { rect: [6, 5, 7, 9] }
-    deploy: { tiles: [[2, 2], [1, 2], [3, 2], [1, 3], [3, 3], [2, 1], [3, 1], [4, 1]] }
-    chests: [[1, 8], [4, 5]]
-    turns: 10
 deploy:
-  max: 7
+  max: 6
   forced: [avatar, kael]
-  slots: [[6, 1], [7, 1], [5, 1], [8, 1], [4, 1], [5, 2], [6, 2], [7, 2], [8, 2]]
-# Plünderer, Stufe um 7 [C], per Simulation abgestimmt (Story 9.8). Kein Leutnant. Jeder trägt Schlüssel (Schlüsselregel, siehe objects).
-# Balancing 2026-10-28 [C]: Plünderer Stufe 7 statt 6 (Schwer-Welle Runde 6 unverändert 7), l2/l4 lösen erst bei Radius 2 aus (vorher 4). Schwer verliert hier an der Rundenfrist, nicht an Verlusten; je kampfbereiter die Plünderer, desto früher liegen die Schlüssel (Normal blieb bei 0,2 Niedergestreckten, nicht erreichbar).
+  slots: [[7, 18], [8, 18], [6, 18], [9, 18], [7, 17], [8, 17], [6, 17], [9, 17]]
+# Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante. Die Haunt-Karte hat keinen Einsturz.
+haunts:
+  # Grund: der Hauptgang unter der Burg, alles Plündern läuft hier durch.
+  - variant: rout
+    target: { at: [7, 12] }
+    enemySpawn: { rect: [1, 12, 4, 14] }
+    deploy: { rect: [6, 17, 9, 18] }
+    max: 5
+  # Grund: die Eingangshalle, ein Zivilist sucht am Westende Schutz, die Plünderer kommen aus der unteren Ostkammer.
+  - variant: defend
+    target: { at: [6, 18] }
+    enemySpawn: { rect: [11, 12, 14, 14] }
+    deploy: { tiles: [[5, 18], [7, 18], [7, 17], [6, 17], [5, 17], [8, 18], [8, 17]] }
+    max: 5
+    turns: 8
+  # Grund: die Kammern mit den Gräbern junger Könige, Beutegut, das die Plünderer noch nicht fanden. Die Truppe steht schon im Hauptgang.
+  - variant: treasure
+    target: { at: [12, 13] }
+    enemySpawn: { rect: [7, 8, 8, 11] }
+    deploy: { tiles: [[7, 13], [8, 13], [6, 13], [9, 13], [7, 14], [8, 14], [7, 12]] }
+    chests: [[2, 12], [13, 8]]
+    max: 5
+    turns: 10
+# Plünderer: Stufen [C]. Jeder trägt einen Schlüssel (siehe oben, Prüfung in tests/unit/m1-7.test.ts).
 units:
-  - { id: l1, nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [3, 7], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
-  - { id: l2, nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 7, at: [6, 7], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 2, then: aggressive } }
-  - { id: l3, nameKey: unit.looter.name, team: enemy, class: marksman, level: 7, at: [7, 8], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold } }
-  - { id: l4, nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [10, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }, { def: door_key }], drops: [1, 2], ai: { profile: trigger, radius: 2, then: aggressive } }
+  # Hauptgang
+  - { id: p1, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [7, 11], items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: p2, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 4, at: [8, 5], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
+  # Kammern unten
+  - { id: p3, nameKey: unit.looter.name, team: enemy, class: scout, sprite: mercenary, level: 5, at: [2, 12], items: [{ def: iron_dagger }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: p4, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [3, 14], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: looter_chief, nameKey: unit.looter_chief.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [12, 13], items: [{ def: steel_axe }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: p5, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [13, 12], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
+  # Kammern oben
+  - { id: p6, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 3, at: [3, 6], items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: hold } }
+  - { id: p7, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [12, 6], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: p8, nameKey: unit.looter.name, team: enemy, class: scout, sprite: mercenary, level: 4, at: [13, 8], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  # Königskammer
+  - { id: p9, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, level: 5, at: [7, 3], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: p10, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [9, 1], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Nur Schwer
+  - { id: p11, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [8, 8], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
-# Der eingestürzte Gang: Plünderer rücken in Wellen nach (angekündigt). Auch sie tragen je einen Schlüssel (Reserve für die Schlüsselregel).
 reinforcements:
-  - turn: 2
+  # aus Felsspalten
+  - turn: 3
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 7, at: [13, 2], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [13, 3], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - turn: 4
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [13, 4], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, level: 7, at: [13, 2], sprite: archer, items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: vanguard, level: 7, at: [13, 3], sprite: soldier, items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - turn: 6
-    phase: enemy
-    announce: true
-    units:
-      - { nameKey: unit.looter.name, team: enemy, class: brigand, level: 7, at: [13, 2], sprite: brigand, items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [hard] }
-      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, level: 7, at: [13, 3], sprite: mercenary, items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [hard] }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [1, 13], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: scout, sprite: mercenary, level: 5, at: [14, 13], items: [{ def: iron_dagger }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  # Die fünf Truhen vor dem Einsturz bergen; treasure löst die Niederlage durch die Rundenfrist selbst aus (kein defeat turn_limit)
-  victory: { type: treasure, chests: [c_west, c_east, c_crypt_w, c_crypt_e, c_chronicle], turns: 14 }
+  # treasure löst die Niederlage durch die Rundenfrist selbst aus (kein defeat turn_limit)
+  victory: { type: treasure, chests: [c_chronicle], turns: 8 }
   defeat:
     - { type: unit_dies, unit: kael }
     - { type: unit_dies, unit: avatar }
   side:
-    - { id: s_clean, type: no_downs, reward: { item: { def: torch } } }
-    # Rundenzahl und Belohnung: Startwerte [C], per Simulation abgestimmt
-    - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 400 } }
+    - { id: s_chests, type: open_chests, reward: { gold: 300 } }
+    - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
 triggers:
-  # Beben und Einsturzwarnung: die Frist von 14 Runden wird angekündigt
-  - id: t_collapse
+  # Das Beben aus dem Norden, Warnung vor dem Einsturz
+  - id: t_quake
     once: true
-    when: { type: turn_start, turn: 2, phase: player }
+    when: { type: turn_start, turn: 4, phase: player }
     then:
-      - { action: dialogue, id: scn.m1_7.collapse }
+      - { action: dialogue, id: scn.m1_7.quake }
+  # Runde 5: Königskammer außer der Chronik und dem Weg zu ihr
+  - id: t_collapse_king
+    once: true
+    when: { type: turn_start, turn: 5, phase: player }
+    then:
+      - { action: set_terrain, area: { rect: [4, 1, 6, 3] }, terrain: rockwall }
+      - { action: set_terrain, area: { rect: [9, 1, 11, 3] }, terrain: rockwall }
+  # Runde 6: die oberen Kammern
+  - id: t_collapse_upper
+    once: true
+    when: { type: turn_start, turn: 6, phase: player }
+    then:
+      - { action: set_terrain, area: { rect: [1, 6, 4, 8] }, terrain: rockwall }
+      - { action: set_terrain, area: { rect: [11, 6, 14, 8] }, terrain: rockwall }
+  # Runde 7: die unteren Kammern; der Hauptgang bleibt
+  - id: t_collapse_lower
+    once: true
+    when: { type: turn_start, turn: 7, phase: player }
+    then:
+      - { action: set_terrain, area: { rect: [1, 12, 4, 14] }, terrain: rockwall }
+      - { action: set_terrain, area: { rect: [11, 12, 14, 14] }, terrain: rockwall }
   # Grabreliefs junger Könige (Beat 6): einmalig beim Betreten, nur durch die Truppe
   - id: t_relief_west
     once: true
-    when: { type: unit_enters, team: player, area: { rect: [2, 6, 2, 6] } }
+    when: { type: unit_enters, team: player, area: { rect: [1, 6, 1, 6] } }
     then:
       - { action: dialogue, id: scn.m1_7.relief_west }
   - id: t_relief_crypt
     once: true
-    when: { type: unit_enters, team: player, area: { rect: [2, 12, 2, 12] } }
+    when: { type: unit_enters, team: player, area: { rect: [14, 12, 14, 12] } }
     then:
       - { action: dialogue, id: scn.m1_7.relief_crypt }
   # die versiegelte Chronik: gefunden, bleibt versiegelt
@@ -151,9 +176,33 @@ triggers:
     then:
       - { action: dialogue, id: scn.m1_7.chronicle }
 # Szenen (Knoten m1_7): scn.m1_7.intro vorher; scn.m1_7.outro nachher (Heimkehr, Chronik ins Burgarchiv).
-goldReward: 850   # [C] Truhengold (550) zählt als Missionsgold: Summe 1 400 liegt im Korridor Akt 1 (800–1 500), Nebenziel 400 = 47 % von goldReward
+goldReward: 800
 music: battle_a
-devNote: >
-  14 × 16, Nebel an, Ziel treasure (5 Truhen, 14 Runden). Treppe oben (Start), Halle, Westkammer, Mittelgang, Ostkammer hinter Tür, Gruftsaal hinter Tür mit der Chronik.
-  Plünderer von einem eingestürzten Gang (13,2)/(13,3). Leicht: 6 Plünderer; Normal: 8; Schwer: 10. Truhen: 5 (Gold, Salbe, Kraftring, ein Schlüssel, die Chronik ohne Inhalt).
-  Schlüssel: je Tür und Truhe einer (Drops der Plünderer, dazu einer in c_west); ein Späher spart sie.
+design:
+  title: Unter der Paktwacht
+  intent: >
+    Zweite veränderliche Karte: Das Gewölbe stürzt ab Runde 5 von Norden her ein. Der Spieler muss wählen zwischen der Chronik
+    (Sieg) und den Grabkammern (Beute), bevor sie verschüttet sind. Enge Gänge, Dunkelheit, Plünderer aus Felsspalten.
+  mood: Dunkles Felsgewölbe, Fackeln an den Wänden, Steinsarkophage junger Könige mit Kronen-Reliefs, Staub rieselt, ein fahles Glühen im Norden.
+  phases:
+    - { id: p1, turns: [1, 3], label: Gang, note: "Plünderer in Gang und unteren Kammern; Spaltenwelle Nordost (R3)." }
+    - { id: p2, turns: [4, 6], label: Beben, note: "R4 Beben; R5 stürzt die Königskammer bis auf die Chronik ein, R6 die oberen Kammern." }
+    - { id: p3, turns: [7, 8], label: Flucht nach vorn, note: "R7 stürzen die unteren Kammern ein; der Hauptgang bleibt offen." }
+  paths:
+    - { team: player, points: [[7, 18], [7, 13], [7, 4], [7, 2]], label: Hauptgang }
+    - { team: player, points: [[6, 13], [3, 13]], label: Kammer W1 }
+    - { team: player, points: [[9, 13], [12, 13]], label: Kammer O1 }
+    - { team: enemy, points: [[13, 4], [11, 3], [9, 3]], phase: p1, label: R3 Spalte }
+  zones:
+    - { area: { rect: [4, 1, 11, 3] }, label: Königskammer, phase: p2 }
+    - { area: { rect: [1, 6, 4, 8] }, label: Einsturz R6, phase: p2 }
+    - { area: { rect: [11, 6, 14, 8] }, label: Einsturz R6, phase: p2 }
+    - { area: { rect: [1, 12, 4, 14] }, label: Einsturz R7, phase: p3 }
+    - { area: { rect: [11, 12, 14, 14] }, label: Einsturz R7, phase: p3 }
+  marks:
+    - { at: [5, 7], label: T, note: "Verschlossene Tür zur Kammer oben links; Schlüssel oder Fenn." }
+    - { at: [12, 13], label: A, note: "Anführer der Plünderer mit Schlüssel." }
+    - { at: [7, 1], label: C, note: "Versiegelte Chronik: Siegtruhe; Grabreliefs zeigen den Pakt (Saat Pakt)." }
+  notes:
+    - "Normal 14 Gegner (3 davon R3/R5) gegen 6 eigene; Leicht 11, Schwer 15."
+    - "Verschüttete Truhen sind verloren; die Chronik selbst bleibt bis Runde 8 erreichbar."

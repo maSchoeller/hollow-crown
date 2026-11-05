@@ -26,6 +26,8 @@ import {
   type CampaignState,
   type GameData,
   type GameEvent,
+  levelAt,
+  reachable,
 } from '../../src/core';
 import { hasPackForAct } from '../../src/packs/plan';
 import { addTexts } from '../../src/i18n';
@@ -37,6 +39,8 @@ let base: CampaignState;
 
 const STORY = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6', 'm1_7'];
 const NODE = 'm1_8';
+/** enemies with Grosk's group on the map: easy, normal, hard */
+const COUNTS = [33, 39, 43];
 
 beforeAll(() => {
   const loaded = loadContentFromDisk();
@@ -122,22 +126,22 @@ describe('scene before the map: one line per E4 outcome', () => {
 });
 
 describe('map m1_8_paktwacht_halten', () => {
-  it('has the steward, who heals and carries no weapon, defended for ten rounds; no haunt anchors', () => {
+  it('has the steward, who heals and carries no weapon, defended for twelve rounds; no haunt anchors', () => {
     const m = data.maps['m1_8_paktwacht_halten']!;
-    expect(m.objectives.victory).toEqual({ type: 'defend', unit: 'steward', turns: 10 });
+    expect(m.objectives.victory).toEqual({ type: 'defend', unit: 'steward', turns: 12 });
     expect(m.objectives.defeat).toContainEqual({ type: 'unit_dies', unit: 'steward' });
     const steward = m.units.find((u) => u.id === 'steward')!;
-    expect(steward).toMatchObject({ team: 'other', class: 'healer', at: [8, 3], ai: { profile: 'hold' } });
+    expect(steward).toMatchObject({ team: 'other', class: 'healer', at: [15, 5], ai: { profile: 'hold' } });
     expect(steward.items.map((i) => i.def)).toEqual(['heal_staff']);
-    expect(m.reinforcements.map((r) => r.turn)).toEqual([4, 8]);
+    expect(m.reinforcements.map((r) => r.turn)).toEqual([3, 4, 6, 7, 9, 10]);
     expect((m as { haunts?: unknown }).haunts).toBeUndefined();
   });
 
-  it('counts 13 / 15 / 17 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
+  it('counts 33 / 39 / 43 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
     const m = data.maps['m1_8_paktwacht_halten']!;
     const all = [...m.units, ...m.reinforcements.flatMap((r) => r.units)].filter((u) => u.team === 'enemy');
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
-    expect([count('easy'), count('normal'), count('hard')]).toEqual([13, 15, 17]);
+    expect([count('easy'), count('normal'), count('hard')]).toEqual(COUNTS);
     expect(all.filter((u) => u.lieutenant).map((u) => u.lieutenant).sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
     for (const u of all.filter((x) => x.lieutenant)) {
       // the loader takes the class of the lieutenant (the map names none)
@@ -147,29 +151,58 @@ describe('map m1_8_paktwacht_halten', () => {
     expect(all.filter((u) => u.nameKey === 'unit.wolf_rider.name').every((u) => u.class === 'wolf_rider')).toBe(true);
   });
 
-  it('fields Hask in wave 1, Ulvric and Grosk in wave 2 and Morra in wave 3', () => {
+  it('fields Hask, Ulvric and Grosk in the south from the start; Morra comes over the watch pass in round 4', () => {
     const s = begin(base);
-    expect(lt(s, 'hask')).toBeDefined();
-    expect(lt(s, 'ulvric')).toBeUndefined();
-    wave(s, 4);
+    expect(lt(s, 'hask')!.pos![1]).toBeGreaterThan(25);
     expect(lt(s, 'ulvric')).toMatchObject({ classId: 'wolf_rider', team: 'enemy' });
-    expect(lt(s, 'grosk')).toBeDefined();
+    expect(lt(s, 'ulvric')!.pos![1]).toBeGreaterThan(25);
+    expect(lt(s, 'grosk')!.pos![1]).toBeGreaterThan(25);
     expect(lt(s, 'morra')).toBeUndefined();
-    wave(s, 8);
-    expect(lt(s, 'morra')?.pos).toBeTruthy();
+    wave(s, 4);
+    expect(lt(s, 'morra')?.pos).toEqual([5, 0]);
   });
 
-  it('leaves Grosk off the board when he has joined (E3), also as a reinforcement; the others come as before', () => {
+  it('stands on the terrain of 1-6, with the gates open, no lever and the east postern walled up', () => {
+    const m = data.maps['m1_8_paktwacht_halten']!;
+    const six = data.maps['m1_6_paktwacht']!;
+    expect(m.levels).toEqual(six.levels);
+    const tile = (map: typeof m, x: number, y: number) => map.legend[map.terrain.replace(/\r/g, '').split('\n')[y]![x]!];
+    const differs: string[] = [];
+    for (let y = 0; y < 40; y++) for (let x = 0; x < 30; x++) if (tile(m, x, y) !== tile(six, x, y)) differs.push(`${x},${y}:${tile(six, x, y)}>${tile(m, x, y)}`);
+    expect(differs).toEqual(['20,12:lever>rampart', '14,12:gate_closed>gate', '15,12:gate_closed>gate', '21,15:gate>wall'].sort((a, b) => Number(a.split(',')[1]!.split(':')[0]) - Number(b.split(',')[1]!.split(':')[0]) || Number(a.split(',')[0]) - Number(b.split(',')[0])));
+    expect(m.objects.some((o) => o.type === 'lever' || o.type === 'door')).toBe(false);
+  });
+
+  it('offers archer posts on the wall walk, a level above the yard', () => {
+    const s = begin(base);
+    const slots = data.maps['m1_8_paktwacht_halten']!.deploy.slots;
+    const onWall = slots.filter((p) => s.terrain[p[1] * s.width + p[0]] === 'rampart');
+    expect(onWall.length).toBeGreaterThanOrEqual(4);
+    for (const p of onWall) expect(levelAt(data, s, p)).toBe(2);
+  });
+
+  it('brings Morra and her hunters from the watch pass through the west gate: the way is open on foot', () => {
+    const s = begin(base);
+    const hunter = s.units.find((u) => u.id === 'hask')!;
+    const tiles = [...reachable(data, s, hunter, [5, 0], 30).keys()];
+    expect(tiles).toContain('6,5');
+    expect(tiles).toContain('15,6');
+  });
+
+  it('leaves Grosk and his starving raiders off the board when he has joined (E3); the others come as before', () => {
     const s = begin(withFlags({ joined_grosk: true }));
-    wave(s, 4);
     expect(lt(s, 'grosk')).toBeUndefined();
+    expect(s.units.some((u) => u.nameKey === 'unit.starving_raider.name')).toBe(false);
     expect(lt(s, 'ulvric')).toBeDefined();
-    wave(s, 8);
-    expect(s.units.filter((u) => u.team === 'enemy').length).toBe(12);
     const open = begin(base);
-    wave(open, 4);
-    wave(open, 8);
-    expect(open.units.filter((u) => u.team === 'enemy').length).toBe(13);
+    expect(lt(open, 'grosk')).toBeDefined();
+    // Grosk and three raiders on easy
+    const raiders = open.units.filter((u) => u.nameKey === 'unit.starving_raider.name').length;
+    expect(raiders).toBe(3);
+    const foes = (b: BattleState) => b.units.filter((u) => u.team === 'enemy').length;
+    expect(foes(open) - foes(s)).toBe(raiders + 1);
+    // the answer that declines him (`bounty`) keeps them on the map
+    expect(lt(begin(withFlags({ e03: 'bounty' })), 'grosk')).toBeDefined();
   });
 });
 
@@ -178,11 +211,11 @@ describe('the steward heals', () => {
     const s = begin(base);
     for (const u of s.units) if (u.team === 'enemy') Object.assign(u, { gone: 'dead', pos: null });
     const kael = s.units.find((u) => u.id === 'kael')!;
-    kael.pos = [8, 4];
+    kael.pos = [15, 6];
     kael.hp = 5;
     const r = applyCommand(data, s, { type: 'endPhase' });
     const steward = r.state.units.find((u) => u.id === 'steward')!;
-    expect(steward.pos).toEqual([8, 3]);
+    expect(steward.pos).toEqual([15, 5]);
     expect(r.state.units.find((u) => u.id === 'kael')!.hp).toBeGreaterThan(5);
     expect(r.events.some((e) => e.t === 'heal')).toBe(true);
   });
@@ -193,7 +226,7 @@ describe('Morra calls the retreat in round 10', () => {
   function round10(at: [number, number] = [8, 13]) {
     const s = begin(base);
     wave(s, 4);
-    wave(s, 8);
+    s.reinforcementsDone = data.maps['m1_8_paktwacht_halten']!.reinforcements.map((_, i) => i);
     const morra = lt(s, 'morra')!;
     morra.pos = at;
     for (const u of s.units) if (u.team === 'enemy' && u.uid !== morra.uid) Object.assign(u, { gone: 'dead', pos: null });
@@ -223,7 +256,7 @@ describe('Morra calls the retreat in round 10', () => {
   });
 
   it('withdraws in the enemy phase, is driven off like at 0 HP and the mission pays grudge and bounty', () => {
-    const { s, morra } = round10([8, 18]);
+    const { s, morra } = round10([5, 2]);
     startRound10(s);
     const r = applyCommand(data, s, { type: 'endPhase' });
     const after = r.state.units.find((u) => u.uid === morra.uid)!;
@@ -256,7 +289,7 @@ describe('the finale won and lost', () => {
     throw new Error('no victory in 40 seeds');
   }
 
-  it('gives two ember sparks in the convoy on a victory, saves and loads them, and the act is over', () => {
+  it('gives two ember sparks in the convoy on a victory, saves and loads them, and the act is over', { timeout: 30000 }, () => {
     const { start, played, seed } = playToVictory(base);
     const r = applyCampaign(data, { ...base, seed }, { type: 'finishMission', start, commands: played.log });
     const sparks = (cc: CampaignState) => cc.convoy.filter((i) => i.def === 'ember_spark').length;
@@ -320,7 +353,7 @@ describe('goal line of a defence', () => {
   it('names the unit to protect from the map, not a fixed one (the steward of 1-8, the elder of 1-2)', () => {
     addTexts('de', locales.de ?? {});
     const steward = data.maps['m1_8_paktwacht_halten']!;
-    expect(goalLine(steward.objectives.victory, steward)).toBe('Verwalter schützen · 10 Runden');
+    expect(goalLine(steward.objectives.victory, steward)).toBe('Verwalter schützen · 12 Runden');
     const elder = data.maps['m1_2_erlbach']!;
     expect(goalLine(elder.objectives.victory, elder)).not.toContain('Verwalter');
   });

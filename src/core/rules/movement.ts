@@ -14,9 +14,29 @@ export function terrainDef(data: GameData, s: BattleState, p: Pos) {
   return t;
 }
 
+/**
+ * `s.levels` as a dense grid (-1 = the map says nothing), so that the path searches do not build a string key per step on a large map with a raised area
+ * of hundreds of tiles. Derived and invisible: kept per `levels` object, which is never written to (an event puts a new one on the state).
+ */
+const levelGrids = new WeakMap<Record<string, number>, Int8Array>();
+
+function levelGrid(s: BattleState, levels: Record<string, number>): Int8Array {
+  let grid = levelGrids.get(levels);
+  if (!grid) {
+    grid = new Int8Array(s.width * s.height).fill(-1);
+    for (const k in levels) {
+      const comma = k.indexOf(',');
+      grid[Number(k.slice(comma + 1)) * s.width + Number(k.slice(0, comma))] = levels[k]!;
+    }
+    levelGrids.set(levels, grid);
+  }
+  return grid;
+}
+
 /** Height level of a tile: what the map says for it, else what its terrain says. */
 export function levelAt(data: GameData, s: BattleState, p: Pos): number {
-  return s.levels?.[posKey(p)] ?? data.terrain[terrainAt(s, p)]?.level ?? 0;
+  const own = s.levels && inBounds(s, p) ? levelGrid(s, s.levels)[p[1] * s.width + p[0]]! : -1;
+  return own >= 0 ? own : (data.terrain[terrainAt(s, p)]?.level ?? 0);
 }
 
 /**
@@ -85,6 +105,13 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
   const hold = holdZone(data, s, unit.team);
   const overrides = st.skills.terrainCost;
   const pass = st.skills.moveThroughEnemies;
+  // who stands where, once: a search asks for every tile, the list of units is long on a large map (first on the list wins, as in `unitAt`)
+  const standing = new Map<number, BattleUnit>();
+  for (const o of s.units) {
+    if (!onMap(o)) continue;
+    const i = o.pos![1] * s.width + o.pos![0];
+    if (!standing.has(i)) standing.set(i, o);
+  }
   out.set(posKey(start), { cost: 0, prev: null, pos: start });
   const open: ReachNode[] = [{ cost: 0, prev: null, pos: start }];
   while (open.length) {
@@ -95,7 +122,7 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
       if (c === null) continue;
       const total = cur.cost + c;
       if (total > budget) continue;
-      const occ = unitAt(s, n);
+      const occ = standing.get(n[1] * s.width + n[0]);
       if (occ && occ.uid !== unit.uid && isHostile(occ.team, unit.team) && !pass) continue;
       const k = posKey(n);
       const held = hold.has(k);
@@ -185,10 +212,9 @@ export function pursueReach(data: GameData, s: BattleState, unit: BattleUnit): M
 /** Tiles the unit may end its move on (not occupied by another unit). */
 export function destinations(s: BattleState, unit: BattleUnit, reach: Map<string, ReachNode>): Pos[] {
   const out: Pos[] = [];
-  for (const node of reach.values()) {
-    const occ = unitAt(s, node.pos);
-    if (!occ || occ.uid === unit.uid) out.push(node.pos);
-  }
+  const taken = new Set<string>();
+  for (const o of s.units) if (onMap(o) && o.uid !== unit.uid) taken.add(posKey(o.pos!));
+  for (const [k, node] of reach) if (!taken.has(k)) out.push(node.pos);
   return out;
 }
 
