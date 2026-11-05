@@ -1,6 +1,6 @@
 # Entwurf: Epic 15 „Umbau von Akt 1 und Release“
 
-> **Entwurf** (Etappe 8 der Roadmap). Stand 2026-11-05. Das Epic ist beschlossen, Zuschnitt und Reihenfolge der Stories noch nicht (Antworten in `umsetzung-lueckenliste.md`). Beim Festschreiben wird daraus `concept/26-epics/epics/epic-15.md`, erst dann bekommt `sprint-status.yaml` Schlüssel. Epic 11 wird hier bewusst nicht neu geschnitten, weil die Level von Akt 2 noch nicht abgenommen sind.
+> **Abgelöst am 2026-11-05:** festgeschrieben als `concept/26-epics/epics/epic-15.md`; das Release ist Story 9.14 (umgeschrieben), 15.12 entfällt. Dieser Entwurf bleibt nur zur Herleitung. Epic 11 wird hier bewusst nicht neu geschnitten, weil die Level von Akt 2 noch nicht abgenommen sind.
 
 **Ziel:** Spieler bekommen Akt 1 in der abgenommenen Fassung: neue Karten, neue Folge, neue Weltkarte, stimmige Figuren. Danach wird Akt 1 das erste echte Release.
 

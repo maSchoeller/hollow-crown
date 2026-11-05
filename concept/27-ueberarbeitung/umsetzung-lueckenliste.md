@@ -1,6 +1,6 @@
 # Lückenliste: Planung gegen die Überarbeitung
 
-> Stand 2026-11-05, Abgleich mit main (`bb063c6`). Quellen: `roadmap.md`, Decision-Logs von GDD, Narrative, Art Direction, Architektur und UX seit 2026-11-01, `concept/22-narrative/missionsliste-s1.md`, `concept/26-epics/epics/`. **Die Epics sind noch nicht geändert.** Der Story-Vorschlag steht in `umbau-stories-entwurf.md`.
+> Stand 2026-11-05, Abgleich mit main (`bb063c6`). Quellen: `roadmap.md`, Decision-Logs von GDD, Narrative, Art Direction, Architektur und UX seit 2026-11-01, `concept/22-narrative/missionsliste-s1.md`, `concept/26-epics/epics/`. **Epic 15 ist seit 2026-11-05 festgeschrieben** (`concept/26-epics/epics/epic-15.md`), Story 9.14 umgeschrieben. Epic 10, 11, 12, GDD und Requirements sind noch nicht geändert.
 
 ## Entscheidungen des Produktinhabers (2026-11-05)
 
@@ -14,7 +14,7 @@
 | 6 | Reiter | Keine Pferde als Figuren, auch nicht bei Gegnern. Rowena zu Fuß, Pferde in 2-3 als Kulisse |
 | 7 | Epic 11 | Neu schneiden nach Abnahme der Akt-2-Level; Akt 2 erst nach dem Release von Akt 1 live |
 
-Eingetragen in den Logs von Epics, GDD, Narrative und Art Direction; die Missionsliste ist nachgezogen. Die Tabellen unten nennen den Bestand und sind noch nicht in die Epics übernommen.
+Eingetragen in den Logs von Epics, GDD, Narrative und Art Direction; die Missionsliste ist nachgezogen. Die Abschnitte zu Epic 9 und 9.14 sind in Epic 15 und die neue Story 9.14 eingegangen; die übrigen Tabellen nennen den Bestand.
 
 Dazu ohne Eile zu bestätigen: „10–15 Charaktere“ meint eigene Einheiten (Roadmap, Annahme); Hebel vom Nachbarfeld (GDD-Log, Annahme [C]); Burgstufen-Schwellen 1/6/14 (Art-Log, `[ASSUMPTION]`); Zeitpunkt des Vorwerks am Passfuß (Narrative-Log 2026-11-04: „zu planen“).
 
