@@ -6,7 +6,7 @@
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif Plus, Konto maschoeller), gesteuert über Claude in Chrome
 - **Referenzen:** keine
 - **Iterationen:** 1
-- **Abnahme:** offen (Produktinhaber, im Spiel auf dem Entwurf 1-5)
+- **Abnahme:** abgenommen (Produktinhaber, 2026-11-05, im Spiel auf dem Entwurf 1-5)
 
 ## Prompt
 

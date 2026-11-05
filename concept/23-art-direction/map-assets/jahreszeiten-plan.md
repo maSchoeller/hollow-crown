@@ -31,9 +31,9 @@ Akt 2 steht heute mit Herbstlaub auf Sommerwiese, Akt 3 mit Schneefichten. Boden
 ## Schneehauben: zwei Wege
 
 - **A, eigener Modellsatz:** Je Modell eine Winter-Fassung in Blender wie `snowcap_wall_idle`. Sieht am besten aus, kostet aber Arbeit und Download je Modell.
-- **B, weiß von oben im Material (Empfehlung für Fels, Dächer, Kleinkram):** Der Requisiten-Shader mischt nach Normalenrichtung Weiß auf nach oben zeigende Flächen. Das kostet keinen Download und gilt sofort für alles, wirkt aber weniger gestaltet.
+- **B, weiß von oben im Material (für Fels, Dächer, Kleinkram):** Der Requisiten-Shader mischt nach Normalenrichtung Weiß auf nach oben zeigende Flächen. Das kostet keinen Download und gilt sofort für alles, wirkt aber weniger gestaltet.
 
-Empfehlung: B als Grundlage, A nur für das, was der Spieler lange ansieht (Mauer, Turm, Wald). Vorher eine Probe auf einem Entwurf aus Akt 3 zeigen.
+Entschieden (Produktinhaber, 2026-11-05): B als Grundlage, A nur für das, was der Spieler lange ansieht (Mauer, Turm, Wald). Vorher eine Probe auf einem Entwurf aus Akt 3 zeigen.
 
 ## Reihenfolge
 

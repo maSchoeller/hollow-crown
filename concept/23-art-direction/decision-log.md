@@ -95,4 +95,5 @@
 - Neues Gelände `swamp` und `creek` mit den Werten von Furt und Fluss, `boardwalk` und `footbridge` mit den Werten der Brücke. Keine neue Regel.
 - Neues Gelände `vault`, `sarcophagus`, `torch`; Kartenfeld `interior` und Tageszeit `indoor`. Sarkophag sperrt wie der Wagen (Startwert [C]).
 - `relief` zeichnet `relief_a` statt des Schreins, `brazier` zeichnet `brazier_b_idle` statt des Lagerfeuers.
-- Abnahme durch den Produktinhaber: offen.
+- Abgenommen durch den Produktinhaber am 2026-11-05 auf den Entwürfen 1-2, 1-3, 1-5, 1-7: Moor, Wald und Kornfeld wie gezeigt; Sarkophag sperrt das Feld.
+- Schneehauben: Plan angenommen (Weiß von oben im Material, eigene Modelle nur für Mauer, Turm und Wald, vorher Probe auf einer Karte aus Akt 3).
