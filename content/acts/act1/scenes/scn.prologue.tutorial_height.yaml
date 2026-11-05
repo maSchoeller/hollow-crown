@@ -1,0 +1,12 @@
+# Prolog: Lektion Höhe, sobald die Truppe in die Reichweite des Schützen auf dem Wehrgang kommt (Karten-Trigger t_height).
+id: scn.prologue.tutorial_height
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Schütze auf dem Wehrgang! Von oben reicht sein Bogen ein Feld weiter."
+  - id: l02
+    speaker: [kael]
+    mood: neutral
+    text: "Klingen kommen nicht hinauf. Hinter dem Tor führt eine Treppe, von dort erreicht ihr ihn."

@@ -7,10 +7,10 @@ music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Der Regen lässt nach. Im Süden verlieren sich die letzten Fackeln der Banden im Dunkel."
+    text: "Der Aschewind lässt nach. Im Süden verlieren sich die letzten Fackeln der Banden im Dunkel."
   - id: l02
     mood: neutral
-    text: "Morra zog als Letzte ab, den Bogen gesenkt. Ihr Wimpel liegt im Schlamm vor dem Tor."
+    text: "Morra zog als Letzte ab, den Bogen gesenkt. Ihr Wimpel liegt in der Asche vor dem Tor."
   - id: l03
     speaker: [paktwacht_steward]
     fallback: skip
@@ -31,7 +31,7 @@ lines:
   - id: l07
     panel: glutfunken
     mood: neutral
-    text: "Im Hof glimmt die Glut der letzten Feuer. Der Regen hat sie nicht erstickt."
+    text: "Im Hof glimmt die Glut der letzten Feuer. Die Asche hat sie nicht erstickt."
   - id: l08
     mood: happy
     moment: reward

@@ -1,11 +1,11 @@
-# Mission 1-1, Szene vor der Karte: Ankunft in Varnhold, die Steckbriefe (Beat 3). Gerrits Verlust ist noch zu spüren, aber nicht schwer.
+# Mission 1-1, Szene vor der Karte: Ankunft in Varnhold von Süden, vor der Brücke, die Steckbriefe (Beat 3). Gerrits Verlust ist noch zu spüren, aber nicht schwer.
 id: scn.m1_1.intro
 background: varnhold
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Varnhold, Grenzstädtchen. Spätsommer, Mittag, Staub auf der Straße. Einige Tage nach der Paktnacht."
+    text: "Varnhold an der Erle. Spätsommer, Mittag, Staub auf der Straße. Einige Tage nach der Paktnacht."
   - id: l02
     speaker: [tobin]
     fallback: skip
@@ -49,7 +49,7 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: angry
-    text: "Und die kommen schon. Aus den Gassen. Mit den Zetteln in der Hand."
+    text: "Morras Häscher, Küken, das ist ihre Stadt. An der Brücke stehen sie schon, die Zettel in der Hand."
   - id: l12
     speaker: [kael]
     mood: angry

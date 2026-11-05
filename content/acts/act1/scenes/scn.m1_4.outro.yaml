@@ -1,4 +1,4 @@
-# Mission 1-4, Szene nach der Karte. Teil 1: Osric Dunn, im Kampf nur besiegt, will den Auftraggeber nennen; ein Armbrustbolzen aus dem Wald trifft ihn mitten
+# Mission 1-4, Szene nach der Karte. Teil 1: Osric Dunn, im Kampf nur besiegt, will den Auftraggeber nennen; ein Armbrustbolzen von den Felsen trifft ihn mitten
 # im Satz, der Schütze entkommt ungesehen. Doppeldeutig: der Hüter (Halvard) bleibt unsichtbar und wird nicht genannt (Narrative Beat 5: „Der Hüter räumt hinter sich auf“).
 # Teil 2: Schlüsselgespräch 3 „Rhens Geständnis“ am Feuer (Rhen, Kael), Tafel 3 `rhen_confession`: Rhen hat den Vertrag der Paktnacht von Dunn geholt.
 # Kaels Reaktion hängt an der vorherrschenden Haltung (warm, sober, defiant; ohne Punkte gilt sober). Die Tafel steht genau vier Textboxen lang
@@ -10,7 +10,7 @@ music: camp
 lines:
   - id: o01
     mood: neutral
-    text: "Die Wolfsreiter sind geflohen oder gefesselt. Dunn sinkt gegen die Zeltstange, die Hand an der Seite."
+    text: "Die Wolfsreiter sind geflohen oder gefesselt. Dunn sinkt gegen den Fels, die Hand an der Seite."
   - id: o02
     speaker: [osric]
     fallback: skip
@@ -18,16 +18,16 @@ lines:
     text: "Genug. Ihr wollt den Namen. Der Mann, der mich bezahlt hat, hat die Paktnacht –"
   - id: o03
     mood: sad
-    text: "Ein Schnappen aus dem Wald. Ein Armbrustbolzen trifft Dunn in die Brust, mitten im Satz."
+    text: "Ein Schnappen von den Felsen. Ein Armbrustbolzen trifft Dunn in die Brust, mitten im Satz."
   - id: o04
     speaker: [kael]
     mood: angry
-    text: "In Deckung! Im Wald, links!"
+    text: "In Deckung! Oben, links!"
   - id: o05
     speaker: [fenn, mira]
     fallback: skip
     mood: neutral
-    text: "Ein Schatten zwischen den Kiefern, dann nichts mehr. Wer immer das war, kennt diesen Wald."
+    text: "Ein Schatten zwischen den Felsen, dann nichts mehr. Wer immer das war, kennt diese Hügel."
   - id: o06
     mood: sad
     text: "Dunn ist tot. Wer den Bolzen schoss, bleibt im Dunkel."
@@ -41,7 +41,7 @@ lines:
     speaker: [ysolde]
     fallback: skip
     mood: neutral
-    text: "Ein Bolzen auf zwanzig Schritt, durch Rauch und Zeltstoff. Das war kein Zufall, das war Handwerk."
+    text: "Ein Bolzen auf zwanzig Schritt, durch Rauch und Abendlicht. Das war kein Zufall, das war Handwerk."
   - id: o09
     requires: [{ completed: m1_3 }]
     speaker: [kael]

@@ -77,7 +77,7 @@ describe('the worker protocol carries a battle (structured clone)', () => {
       expect(s).toEqual(replayBattle(data, start, played.log));
       expect(s).toEqual(played.state);
       expect(events).toEqual(played.events);
-    });
+    }, 30_000); // whole battles on the large draft maps, played three times over
   }
 
   it('answers a refused command with the code of the core error and leaves the state alone', () => {

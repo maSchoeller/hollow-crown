@@ -89,7 +89,7 @@ function notPast(s: BattleState, turn: number, phase: Team): boolean {
  */
 function noFoesToCome(map: MapDef, s: BattleState): boolean {
   if (s.units.some((u) => u.team === 'enemy' && onMap(u) && !u.ignoreForRout)) return false;
-  const waveDue = map.reinforcements.some((r, i) => !s.reinforcementsDone.includes(i) && notPast(s, r.turn, r.phase));
+  const waveDue = map.reinforcements.some((r, i) => !s.reinforcementsDone.includes(i) && notPast(s, r.turn, r.phase) && !(r.unlessFlag && s.flags.includes(r.unlessFlag)));
   if (waveDue) return false;
   return !map.triggers.some(
     (t) =>
@@ -223,6 +223,7 @@ export function runReinforcements(data: GameData, s: BattleState, events: GameEv
   mapOf(data, s).reinforcements.forEach((r, i) => {
     if (s.reinforcementsDone.includes(i) || r.turn !== s.turn || r.phase !== s.phase) return;
     s.reinforcementsDone.push(i);
+    if (r.unlessFlag && s.flags.includes(r.unlessFlag)) return;
     spawnUnits(data, s, r.units, true, events);
   });
 }

@@ -153,6 +153,8 @@ export interface ReinforcementDef {
   turn: number;
   phase: Team;
   announce?: boolean;
+  /** the wave stays away when this battle flag is set by then */
+  unlessFlag?: string;
   units: MapUnitDef[];
 }
 

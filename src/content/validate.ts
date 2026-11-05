@@ -337,10 +337,14 @@ export function validateContent(
   validateLieutenants(data, locales, err, lieutenantFiles);
   validateHauntPools(data, locales, err, spriteIds);
   validateHandbook(data, locales, err);
-  // map triggers set flags of the register
-  for (const map of Object.values(data.maps))
+  // map triggers set flags of the register, waves read them
+  for (const map of Object.values(data.maps)) {
     for (const t of map.triggers)
       for (const a of t.then) if (a.action === 'set_flag') flag(`maps/${map.id}`, a.flag, `trigger ${t.id}`);
+    map.reinforcements.forEach((r, i) => {
+      if (r.unlessFlag) flag(`maps/${map.id}`, r.unlessFlag, `reinforcement ${i}.unlessFlag`);
+    });
+  }
   // scenes (architecture §5.8): speaker chains, conditions, effects, texts in both languages, box length
   const MAX_BOX = 110;
   // enemies and lieutenants cannot die for good in the story sense, so their chains need no fallback (decision 2026-10-24)
@@ -620,23 +624,28 @@ function validateMap(
     reward(f, s.reward, s.id);
     if (s.reward.chronicle) err(f, `${s.id}: a side objective cannot pay a chronicle page (chests and villages can)`);
   }
-  // reachability of reach/seize/escape goals for a foot unit from the deploy area (ignoring units)
+  for (const s of map.deploy.slots) if (inside(s) && terr(s)?.cost.foot === null) err(f, `deploy slot ${s} on impassable ${terr(s)?.id}`);
+  // reachability on foot from the deploy area (ignoring units, along the levels and their connectors): the goal of the mission
   const v = map.objectives.victory;
+  const start = map.deploy.slots[0];
+  const fromDeploy = start ? walkable(start, 'foot', g) : undefined;
   const goalArea: Area | undefined = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? v.area : undefined;
-  if (goalArea && map.deploy.slots[0]) {
-    const goals = new Set(areaTiles(goalArea).map((p) => `${p[0]},${p[1]}`));
-    const seen = new Set<string>();
-    const queue: Pos[] = [map.deploy.slots[0]];
-    let found = false;
-    while (queue.length && !found) {
-      const p = queue.shift()!;
-      const k = `${p[0]},${p[1]}`;
-      if (seen.has(k) || !inside(p) || terr(p)?.cost.foot === null) continue;
-      seen.add(k);
-      if (goals.has(k)) found = true;
-      queue.push([p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]);
+  if (goalArea && fromDeploy && !areaTiles(goalArea).some((p) => fromDeploy.has(posKey(p)))) err(f, 'victory area not reachable on foot from the deploy area');
+  if (v.type === 'boss' && fromDeploy) {
+    const boss = map.units.find((u) => u.id === v.unit || u.char === v.unit);
+    if (boss && !fromDeploy.has(posKey(boss.at))) err(f, `boss ${v.unit} not reachable on foot from the deploy area`);
+  }
+  // a foe who attacks must be able to walk to the company: one who walls himself in stands around for ever
+  if (start) {
+    const byMoveType = new Map<string, Set<string>>();
+    for (const u of [...map.units, ...map.reinforcements.flatMap((r) => r.units)]) {
+      const profile = u.ai?.profile === 'trigger' ? u.ai.then : u.ai?.profile;
+      if (u.team !== 'enemy' || !inside(u.at) || (profile !== undefined && profile !== 'aggressive' && profile !== 'hunt')) continue;
+      const mt = data.classes[u.class]?.moveType ?? 'foot';
+      // walking is symmetric, so one walk from the deploy area serves all foes of a move type
+      if (!byMoveType.has(mt)) byMoveType.set(mt, walkable(start, mt, g));
+      if (!byMoveType.get(mt)!.has(posKey(u.at))) err(f, `${u.id ?? u.class} at ${u.at}: cannot walk to the deploy area`);
     }
-    if (!found) err(f, 'victory area not reachable on foot from the deploy area');
   }
   if (v.type === 'escort') validateEscort(data, map, v, err, g, locales);
   if (v.type === 'treasure') validateTreasure(data, map, v, err, g);
@@ -799,8 +808,11 @@ function validateHaunts(data: GameData, map: MapDef, err: (f: string, m: string)
       }
     }
     // reachability on foot (ignoring units) from every deploy field
+    // walking is symmetric: fields of one connected region share their walk (large maps, content:check runs in many tests)
+    const walks: Array<Set<string>> = [];
     for (const d of deployTiles) {
-      const reach = walkable(d, 'foot', g);
+      let reach = walks.find((w) => w.has(posKey(d)));
+      if (!reach) walks.push((reach = walkable(d, 'foot', g)));
       for (const [what, tiles] of goals) if (!tiles.some((p) => reach.has(posKey(p)))) err(f, `${ctx}: ${what} not reachable on foot from deploy field ${d}`);
     }
     // the civilian of an escort must reach the exit with its own move type

@@ -12,7 +12,7 @@ pnpm levels concept/27-ueberarbeitung/levels/muster_mittel_20x25.yaml --png   # 
 
 Ausgabe in `concept/27-ueberarbeitung/levels/out/` (nicht eingecheckt): je Level `<id>.svg` (mit `--png` auch `<id>.png`) und `atlas.html`, eine einzelne Seite mit allen Blättern, die auch auf dem Handy lesbar ist. Weitere Optionen: `--out <ordner>`, `--moods <ordner>`.
 
-Entwürfe liegen als `*.yaml` in `concept/27-ueberarbeitung/levels/`. Das Spiel lädt sie nicht; das Skript prüft sie gegen das Karten-Schema des Spiels (`mapSchema`) und bricht bei Fehlern mit der Liste ab, unbekannte Gelände- und Klassen-IDs meldet es als Warnung. Ist ein Level abgenommen, zieht die Datei nach `content/acts/actN/maps/` um und bekommt Texte, Szenen und `pnpm sim`.
+Entwürfe liegen als `*.yaml` in `concept/27-ueberarbeitung/levels/`. Das Spiel lädt sie nicht; das Skript prüft sie gegen das Karten-Schema des Spiels (`mapSchema`) und bricht bei Fehlern mit der Liste ab, unbekannte Gelände- und Klassen-IDs meldet es als Warnung. Ist ein Level abgenommen, kommt es wie unter „Entwurf ins Spiel holen“ beschrieben in die Karte.
 
 ## Was das Blatt zeigt
 
@@ -41,6 +41,19 @@ Was das Spielformat nicht kennt, steht im optionalen Feld `design:` der Karte. D
 2. Im Atlas beim Level „ChatGPT-Vorlage für das Stimmungsbild“ aufklappen und kopieren. Die Vorlage nennt Größe und Ausrichtung, den Stil der Art Direction (§3), eine Beschreibung der Karte in Dritteln (Nord/Mitte/Süd × West/Mitte/Ost nach Hauptgelände), Tageszeit, Wetter und `design.mood`, und schließt Figuren, Schrift und Raster aus.
 3. In ChatGPT (über Claude in Chrome, siehe AGENTS.md) das PNG anhängen und die Vorlage senden. Weicht die Lage von Wasser, Wegen, Mauern oder Häusern vom Raster ab, nachfordern: „Halte dich genauer an das Raster: …“.
 4. Ergebnis als `concept/27-ueberarbeitung/levels/stimmung/<id>.png` speichern und `pnpm levels` erneut laufen lassen: Der Atlas bettet das Bild neben dem Blatt ein. Prompt und Abnahme wie üblich in `art/prompts/<id>.md`, Auflagen nach `23-art-direction/licensing.md` §6.
+
+## Entwurf ins Spiel holen
+
+Muster ist 1-4 (`content/acts/act1/maps/m1_4_wolfslager.yaml`, Test `tests/unit/m1-4-wolfshuegel.test.ts`). Der Entwurf ersetzt den Inhalt der alten Karte, ihre Hüllen bleiben.
+
+1. **Bleibt von der alten Karte:** Dateiname, `id`, `nameKey`, `music`, Tageszeit und Wetter, wenn der Entwurf nichts sagt. Einheiten-IDs, auf die sich Szenen, Tests, Leutnants oder Nebenziele beziehen, wandern auf passende Figuren des Entwurfs, samt `requires`, `quote`, `drops`. Alle Figuren bekommen ihr `sprite`.
+2. **Kommt aus dem Entwurf:** Größe, Legende, Terrain, Einheiten, Objekte, Ziele, Nebenziele, Wellen, Auslöser, `design:`, Kopfkommentar. Die Szenen-IDs `scn.s1_*` werden zu `scn.m*`. `haunts` je Variante auf dem neuen Gelände neu setzen, mit Grund als Kommentar, Aufstellgebiet klein halten (der Check läuft je Feld).
+3. **Stufen:** Bereiche per `levels:` heben (später in der Liste gewinnt). Gelände behält seine Art, ein Wald auf der Terrasse bleibt Wald. Eine Verbindung liegt auf der unteren Stufe und hat genau einen Nachbarn eine Stufe höher. Bei einem Kamm aus zwei Reihen gehört die obere Reihe zur höheren Stufe, die untere zur tieferen, das Rampenfeld liegt in der unteren. Mindestens ein Schütze über einer Rampe.
+4. **Veränderung:** Hebel = Gelände `lever` + Objekt `lever`, wird vom Nachbarfeld gezogen. Der Auslöser `object_activated` setzt Flag und `set_terrain` (mit `level:`, sonst fällt das Feld auf Stufe 0). Wellen, die dadurch entfallen, bekommen `unlessFlag`; das Flag steht als `kind: battle` in `flags.yaml`.
+5. **Texte:** Fehlende Szenen in `content/acts/actN/scenes/`, englisch in `content/locales/en/actN.dialogue.yaml`, Namen in `content/core/locales/{de,en}.names.yaml`. Vorhandene Szenen nach dem alten Ort durchsuchen (Zelt, Käfig, Wald …) und anpassen, je Box höchstens 110 Zeichen.
+6. **Prüfen:** `pnpm check`, Tests an die neue Karte anpassen, ohne ihre Absicht zu schwächen. Leicht und Normal mit `pnpm sim --campaign act1 --difficulty normal` und `pnpm sim <id> --difficulty easy` gegen die Korridore in `balance.yaml`, Schwer über die Kampagne. Abstimmen in kleinen Schritten über Stufen und KI-Profile, `[C]`-Kommentar in die Karte. Blatt mit `pnpm levels <id> --png --out <ordner>` ansehen, Karte im Spiel mit `await __hc.devNode('<knoten>')` öffnen (vorher `pnpm art:build`, wenn `public/assets` fehlt; Lautstärke auf 0).
+
+Neues Gelände mit Modell: Eintrag in `content/core/terrain.yaml`, Namen, `content/core/handbook.yaml`, `TERRAIN` in `tools/levels/sheet.ts`, Modell in `content/packs.yaml` (`props`) und in seiner Gruppe unter `concept/23-art-direction/map-assets/groups/` auf `ships: true`.
 
 ## Abnahme durch den Produktinhaber
 

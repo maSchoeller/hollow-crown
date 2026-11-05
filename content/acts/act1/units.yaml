@@ -100,9 +100,9 @@
   base:   { hp: 21, str: 7, mag: 0, skl: 10, spd: 10, lck: 2, def: 4, res: 2 }
   growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
   items: [ { def: steel_sword }, { def: slim_sword }, { def: leather_vest } ]
-  # Beitritt: Mission 1-5 (Karte m1_5_hungerlager): Kael spricht ihn an (recruit der Kartenfigur, Szene scn.m1_5.varek_talk)
+  # Beitritt laut Missionsliste: Nebenquest N2, Kael spricht ihn an (Kartenfigur in n2_wachturm, Szene scn.n2.varek_talk).
   supports: [brenna]
-  joins: m1_5
+  joins: n2
 
 - id: ysolde
   nameKey: unit.ysolde.name
@@ -113,7 +113,7 @@
   base:   { hp: 17, str: 0, mag: 9, skl: 6, spd: 7, lck: 3, def: 2, res: 6 }
   growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
   items: [ { def: ember }, { def: gust } ]
-  # Beitritt: Mission 1-4 (Karte m1_4_wolfslager): Käfigtür öffnen, dann spricht {avatar} sie an (recruit der Kartenfigur, Szene scn.m1_4.ysolde_talk)
+  # Beitritt: Mission 1-4 (Karte m1_4_wolfslager): Gefangene in der Westhöhle, {avatar} spricht sie an (recruit der Kartenfigur, Szene scn.m1_4.ysolde_talk)
   supports: [liora]
   joins: m1_4
 - id: grosk

@@ -74,7 +74,7 @@ export function useBoardOverlays(b: BattleScreen) {
     })();
     // the player does not know the reinforcements of a fog map
     const reinforce = fogged ? [] : mapOf(data, s)
-      .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
+      .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && !(r.unlessFlag && s.flags.includes(r.unlessFlag)) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];

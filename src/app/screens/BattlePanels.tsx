@@ -214,7 +214,8 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
         <small>{t('ui.obj.defeat')}</small>
         <b>
           {[
-            ...map.objectives.defeat.map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(mapUnitNameKey(map, d.unit)) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
+            // only who is on this board: a fallen Fenn or a Kael left at home cannot lose the battle (`checkObjectives`)
+            ...map.objectives.defeat.filter((d) => d.type !== 'unit_dies' || s.units.some((u) => u.id === d.unit)).map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(mapUnitNameKey(map, d.unit)) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
             // the goal itself names the other defeats (story 4.8): the escorted NPC falls, the round limit of a treasure hunt passes
             ...(v.type === 'escort' ? [t('ui.obj.dies', { name: t(mapUnitNameKey(map, v.unit)) })] : []),
             ...(v.type === 'treasure' ? [t('ui.obj.turnLimit', { turns: v.turns })] : []),

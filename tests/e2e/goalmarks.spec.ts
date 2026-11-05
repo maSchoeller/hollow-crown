@@ -55,7 +55,7 @@ test('a tap on the house goal marks the houses of mission 1-1, a second tap clea
   await tap();
   await expect(pill).toHaveAttribute('aria-pressed', 'true');
   // the board gets the marks from an effect after the next frame, so on a slow runner they follow the pressed state: wait for them
-  await expect.poll(marks, { timeout: 15_000 }).toBe(4);
+  await expect.poll(marks, { timeout: 15_000 }).toBe(5);
   await tap();
   await expect(pill).toHaveAttribute('aria-pressed', 'false');
   await expect.poll(marks, { timeout: 15_000 }).toBe(0);
