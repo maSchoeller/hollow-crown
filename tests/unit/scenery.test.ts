@@ -7,8 +7,8 @@ import { hash3 } from '../../src/render/shared/terrain3d';
 const { data } = loadContentFromDisk();
 
 describe('season tree lists', () => {
-  it('act 1 is the summer list with five trees', () => {
-    expect(variantList(data, 'tree', 1).map((m) => m.model)).toEqual(['tree_a', 'tree_b', 'tree_c', 'tree_d', 'tree_e']);
+  it('act 1 is the summer list of three groves', () => {
+    expect(variantList(data, 'tree', 1).map((m) => m.model)).toEqual(['grove_a', 'grove_b', 'grove_c']);
   });
   it('act 2 is autumn, act 3 winter', () => {
     expect(variantList(data, 'tree', 2).map((m) => m.model)).toEqual(['autumn_a', 'autumn_b', 'autumn_c', 'tree_c']);
@@ -18,12 +18,12 @@ describe('season tree lists', () => {
     expect(variantList(data, 'tree', undefined)).toEqual(variantList(data, 'tree', 1));
     expect(variantList(data, 'tree', 9)).toEqual(variantList(data, 'tree', 1));
   });
-  it('the scenery uses only the first sceneryVariants models, the map all of them', () => {
+  it('the scenery uses light single trees and only the first sceneryVariants models, the map all of them', () => {
     const n = data.render.board.sceneryVariants;
     expect(n).toBeGreaterThanOrEqual(1);
-    expect(variantList(data, 'tree', 1, true).map((m) => m.model)).toEqual(variantList(data, 'tree', 1).slice(0, n).map((m) => m.model));
+    expect(variantList(data, 'tree', 1, true).map((m) => m.model)).toEqual(['tree_a', 'tree_b'].slice(0, n));
     expect(variantList(data, 'lodge', 1, true)).toEqual(variantList(data, 'lodge', 1));
-    expect(variantList(data, 'tree', 1).length).toBe(5);
+    expect(variantList(data, 'tree', 1).length).toBe(3);
   });
   it('picks by weight over the roll', () => {
     const mix = [{ model: 'a', weight: 4 }, { model: 'b', weight: 1 }];
@@ -53,7 +53,7 @@ describe('prop variants', () => {
   it('the content names the classes the board draws; building and village use different houses', () => {
     expect(data.terrain.village!.prop).toBe('lodge');
     expect(data.terrain.building!.prop).toBe('house');
-    expect(variantList(data, 'lodge').map((v) => v.model)).toEqual(['lodge_intact']);
+    expect(variantList(data, 'lodge').map((v) => v.model)).toEqual(['lodge_b_intact']);
     expect(variantList(data, 'house').length).toBeGreaterThan(1);
     expect(variantList(data, 'rock').map((v) => v.model)).toContain('massif_a');
   });
@@ -122,7 +122,7 @@ describe('prop variants', () => {
 
   it('the stand-ins in render.yaml point at models that exist today', () => {
     expect(data.render.board.propFallback.well_idle).toBe('rock_idle');
-    expect(data.render.board.propFallback.lodge_visited).toBe('house_visited');
+    expect(data.render.board.propFallback.lodge_b_visited).toBe('lodge_visited');
   });
 });
 

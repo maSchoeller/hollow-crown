@@ -8,13 +8,13 @@ size: [20, 24]
 legend:
   ".": plain
   ",": grass
-  "f": grass
+  "f": field
   "_": road
   "T": forest
   "~": river
   "w": shallows
   "=": bridge
-  "B": wall
+  "B": building
   "H": village
 #          x: 01234567890123456789
 terrain: |

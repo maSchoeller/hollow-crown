@@ -2,7 +2,9 @@
 import type { Difficulty, ItemRef, MoveType, Pos, SupportRank, Team, TimeOfDay, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
-export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed';
+export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed' | 'peat' | 'vault';
+/** Colour of a water plane: the clear river, the murky shallow mire, the dark deep creek of a moor. */
+export type TerrainWaterLook = 'clear' | 'mire' | 'creek';
 export type TerrainCliff = 'earth' | 'rock' | 'wall';
 
 export interface TerrainDef {
@@ -22,6 +24,7 @@ export interface TerrainDef {
   surface: TerrainSurface;
   cliff: TerrainCliff;
   water: boolean;
+  waterLook: TerrainWaterLook;
   seizable?: boolean;
   visitable?: boolean;
 }
@@ -152,6 +155,8 @@ export interface MapDef {
   noDeath?: boolean;
   legend: Record<string, string>;
   terrain: string;
+  /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
+  interior?: boolean;
   /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
   ambient?: { color?: string; intensity?: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;
