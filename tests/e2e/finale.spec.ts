@@ -6,12 +6,12 @@ import { APP_VERSION, contentVersionOf, exportSave } from '../../src/persistence
 /**
  * Story 9.9: the end of act 1 on a production build (`pnpm preview` has no dev helpers).
  * The way to the finale is the player's own: an exported save is imported on the title screen's campaign list. The save is made here from the
- * content on disk: the army of the last mission, and the finale m1_8 played by the simulator's player up to the start of round 10. The test then
- * ends round 10, so the steward has held, plays the outro to the reward moment and checks panel, sparks, the card "2 × Ember spark" and the
+ * content on disk: the army of the last mission, and the finale m1_8 played by the simulator's player up to the start of round 12. The test then
+ * ends round 12, so the steward has held, plays the outro to the reward moment and checks panel, sparks, the card "2 × Ember spark" and the
  * world map hint "coming soon" for act 2 (there is no pack for it).
  */
 
-/** The finale up to the start of round 10 (player phase) with the steward alive, as an exported save. */
+/** The finale up to the start of round 12 (player phase) with the steward alive, as an exported save. */
 function finaleSave(): string {
   const { data } = loadContentFromDisk();
   for (let seed = 1; seed < 30; seed++) {
@@ -24,7 +24,7 @@ function finaleSave(): string {
     const start = beginBattle(data, c, 'm1_8', c.roster.map((u) => u.id)).state;
     let s: BattleState = start;
     const commands: Command[] = [];
-    while (!s.outcome && !(s.turn === 10 && s.phase === 'player')) {
+    while (!s.outcome && !(s.turn === 12 && s.phase === 'player')) {
       const cmd = autoCommand(data, s);
       s = applyCommand(data, s, cmd).state;
       commands.push(cmd);
@@ -40,7 +40,7 @@ function finaleSave(): string {
       payload: { campaign: c, battle: { start, commands, turnStartIndex: turnStartIndex(commands), effects: [] }, screen: 'battle' },
     });
   }
-  throw new Error('no seed reaches round 10 with the steward alive');
+  throw new Error('no seed reaches round 12 with the steward alive');
 }
 
 test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world map says act 2 is coming', async ({ page }, testInfo) => {
@@ -51,7 +51,7 @@ test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.locator('input[type=file]').setInputFiles({ name: 'finale.json', mimeType: 'application/json', buffer: Buffer.from(save) });
 
-  // the imported battle resumes at the start of round 10: end the phase (units are ready, so it asks once more)
+  // the imported battle resumes at the start of round 12: end the phase (units are ready, so it asks once more)
   await page.getByRole('button', { name: /End phase|Phase beenden/ }).click({ timeout: 120_000 });
   await page.getByRole('button', { name: /Sure\?|Wirklich\?/ }).click();
 

@@ -1,11 +1,11 @@
-# Mission 1-7, Karten-Szene beim Grabrelief (2,12) im Gruftsaal (Beat 6 „Junge Könige“): leere Nischen, aus denen Chronik-Seiten fehlen; Beben, Asche in der Luft, niemand kann sie erklären.
+# Mission 1-7, Karten-Szene beim Grabrelief (14,12) in der unteren Ostkammer (Beat 6 „Junge Könige“): leere Nischen, aus denen Chronik-Seiten fehlen; Beben, Asche in der Luft, niemand kann sie erklären.
 # Der Pakt als Opfervertrag wird hier NICHT ausgesprochen. Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen.
 id: scn.m1_7.relief_crypt
 lines:
   - id: l01
     panel: grabreliefs
     mood: neutral
-    text: "Im Gruftsaal reiht sich Relief an Relief. Ein junger König neben dem anderen, dicht an dicht."
+    text: "In der Grabkammer reiht sich Relief an Relief. Ein junger König neben dem anderen, dicht an dicht."
   - id: l02
     speaker: [ysolde, liora, avatar]
     mood: neutral

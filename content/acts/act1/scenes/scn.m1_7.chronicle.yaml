@@ -1,4 +1,4 @@
-# Mission 1-7, Karten-Szene beim Öffnen der Chronik-Truhe c_chronicle (6,14): die Chronik der Wächter wird versiegelt gefunden und bleibt versiegelt (Siegel, kein Entziffern).
+# Mission 1-7, Karten-Szene beim Öffnen der Chronik-Truhe c_chronicle (7,1): die Chronik der Wächter wird versiegelt gefunden und bleibt versiegelt (Siegel, kein Entziffern).
 # Die Chronik ist kein Gegenstand; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg. Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen.
 id: scn.m1_7.chronicle
 lines:

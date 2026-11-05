@@ -22,8 +22,8 @@ describe('wardLine', () => {
     const line = wardLine(data, s, ward.pos!, s.units.filter((u) => u.team === 'enemy' && u.pos).map((u) => u.pos!))!;
     expect(line).not.toBeNull();
     expect(line.cut.length).toBeLessThanOrEqual(data.balance.ai.wardLineMax);
-    // every tile of the line lies north of the outer wall and the keep behind it holds the ward
-    expect(line.cut.every(([, y]) => y <= 5)).toBe(true);
+    // every tile of the line lies north of the castle wall: the entrance of the keep, with the ward behind it
+    expect(line.cut.every(([, y]) => y <= 7)).toBe(true);
     expect(line.inside.has(`${ward.pos![0]},${ward.pos![1]}`)).toBe(true);
   });
 

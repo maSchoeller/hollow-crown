@@ -13,10 +13,16 @@ import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos } from '.
 import { asleep, attackPlans, bestApproach } from './ai';
 import { wardLine } from './wardLine';
 
+/** Farther than any walk of a unit plus any walk and reach of a foe, boosts included. */
+const DANGER_REACH = 26;
+
 function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
   const m = new Map<string, number>();
+  const company = s.units.filter((o) => o.team === 'player' && active(o) && o.pos);
   for (const o of s.units) {
     if (o.team !== 'enemy' || !active(o)) continue;
+    // only tiles a unit can walk to this turn are ever asked for: a foe further off cannot threaten one (saves most of the work on a large map)
+    if (!company.some((p) => dist(p.pos!, o.pos!) <= DANGER_REACH)) continue;
     const hold = staysPut(data, s, o);
     for (const k of threatTiles(data, s, o, !!hold)) m.set(k, (m.get(k) ?? 0) + 1);
   }
@@ -98,6 +104,25 @@ function doorOnTheWay(s: BattleState, field: Map<string, number>, from: Pos): { 
     v = nv;
   }
   return null;
+}
+
+/**
+ * The lever that opens the closed gate between the seizer and the goal, and who goes for it: a lord keeps out of danger, so the healthy unit closest
+ * by walking takes this errand. Null when the way to the goal is free, no lever opens it, or nobody is left to go.
+ */
+function gateErrand(data: GameData, s: BattleState, goal: Pos[]): { uid: string; lever: { id: string; at: Pos } } | null {
+  if (!s.objects.some((o) => o.type === 'door' && o.state === 'closed')) return null;
+  const seizer = s.units.find((o) => o.team === 'player' && active(o) && o.pos && o.flags.includes('seizer'));
+  if (!seizer) return null;
+  const closed = (id: string) => s.objects.some((o) => o.id === id && o.type === 'door' && o.state === 'closed');
+  const lever = s.objects.find((o) => o.type === 'lever' && o.state === 'closed' && data.maps[s.mapId]!.objects.find((m) => m.id === o.id)?.links?.some(closed));
+  if (!lever || walkField(data, s, seizer, goal, false).has(posKey(seizer.pos!))) return null;
+  const walk = walkDistances(data, s, neighbors(lever.at).filter((p) => inBounds(s, p) && data.terrain[s.terrain[p[1] * s.width + p[0]]!]?.cost.foot != null));
+  const able = s.units.filter((o) => o.team === 'player' && active(o) && o.pos && walk.has(posKey(o.pos)));
+  const others = able.filter((o) => !o.flags.includes('mustSurvive'));
+  // nobody else is left: the lords go themselves
+  const runner = (others.length ? others : able).sort((a, b) => walk.get(posKey(a.pos!))! - walk.get(posKey(b.pos!))! || (a.uid < b.uid ? -1 : 1))[0];
+  return runner ? { uid: runner.uid, lever: { id: lever.id, at: lever.at } } : null;
 }
 
 /** Foes that stay where they are until somebody comes close (hold, guard, a trigger not yet awake). */
@@ -269,6 +294,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
   const line = holdLine(data, s, defended, enemies);
   const plan0 = openable?.size ? treasurePlan(data, s, openable) : undefined;
+  const gate = v.type === 'seize' ? gateErrand(data, s, goal!) : null;
   // downed allies of the company: a careful player carries them off before they bleed out (Standard death mode)
   const downedAllies = s.units.filter((o) => o.team === 'player' && o.downed && o.pos && !o.gone);
   const rescuer = (() => {
@@ -291,6 +317,11 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     if (isGoalUnit && v.type === 'escape' && mustStayForRest(s, u)) {
       const exit = new Set(goal.map(posKey));
       dests = dests.filter((p) => !exit.has(posKey(p)));
+    }
+    // only the seizer may take the seat: anybody else standing on it would keep it from him for ever
+    if (goal && v.type === 'seize' && !isGoalUnit) {
+      const off = dests.filter((p) => !goal.some((g) => samePos(g, p)));
+      if (off.length) dests = off;
     }
     if (isGoalUnit) {
       const onGoal = dests.find((p) => goal.some((g) => posKey(g) === posKey(p)));
@@ -323,6 +354,10 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     }
     const job = line ? null : errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
     if (job) return job;
+    if (gate?.uid === u.uid) {
+      const beside = dests.find((p) => availableActions(data, s, u, p).some((a) => a.kind === 'lever' && a.object === gate.lever.id));
+      if (beside) return { type: 'act', unit: u.uid, to: beside, action: { kind: 'lever', object: gate.lever.id } };
+    }
     const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
     if (hpPct < 50 && potion) {
       const safe = approach(s, u, dests, [u.pos], danger, 0);
@@ -403,9 +438,20 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     let field: Map<string, number> | undefined = goalWay && (barred ? walkField(data, s, u, goal!, false) : goalWay);
     const hunting = !isGoalUnit && !errands.length && !keys.length && !ward;
     // siege: the foes that are left never come and the victory needs them down; whoever is healthy takes the risk of their reach
-    const siege = hunting && enemies.length > 0 && (v.type === 'rout' || v.type === 'boss') && enemies.every((o) => idleFoe(data, s, o));
+    const siege =
+      hunting &&
+      enemies.length > 0 &&
+      (v.type === 'seize' ? enemies.every((o) => staysPut(data, s, o)) : (v.type === 'rout' || v.type === 'boss') && enemies.every((o) => idleFoe(data, s, o)));
     if (siege) {
-      if (!vip && hpPct >= 60) maxDanger = Infinity;
+      const alone = v.type === 'seize' && !s.units.some((o) => o.team === 'player' && active(o) && o.pos && !o.flags.includes('mustSurvive'));
+      if ((!vip || alone) && hpPct >= 60) maxDanger = Infinity;
+      field = walkField(data, s, u, aim, false);
+    }
+    // a map with levels: a foe on the wall above is reached over its stairs, not by standing under it
+    if (hunting && !field && s.levels) field = walkField(data, s, u, aim, false);
+    if (gate?.uid === u.uid && hpPct >= 60) {
+      maxDanger = Infinity;
+      aim = [gate.lever.at];
       field = walkField(data, s, u, aim, false);
     }
     if (targets.length && s.objects.some((o) => o.type === 'door' && o.state === 'closed') && !walkField(data, s, u, targets, false).has(posKey(u.pos))) {
