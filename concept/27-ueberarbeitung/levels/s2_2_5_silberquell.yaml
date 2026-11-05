@@ -1,0 +1,158 @@
+# Etappe 6, Akt 2, Mission 2-5 – Die verstoßene Leibwache. Entwurf nach missionsliste.html (M 20×25, escort Odile, 9 / 22, Leutnant Sable, Beitritt Odile, Amos).
+# Kloster Silberquell in der Eisenschlucht. Die Truppe kommt von Süden in den Klosterhof, Odile folgt der nächsten eigenen Figur, der Ausgang liegt hinter der Schlucht im Norden.
+# Zwei Hängebrücken queren die Schlucht, der Nordrand liegt eine Stufe höher. Veränderliche Karte: In Runde 6 kappen Sables Leute die Westbrücke.
+id: s2_2_5_silberquell
+nameKey: map.s2_2_5_silberquell.name
+size: [20, 25]
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "~": river
+  "h": footbridge
+  "M": wall
+  "G": gate
+  "S": shrine
+  "b": building
+  "v": village
+  "/": ramp
+  "s": stairs
+#          x: 01234567890123456789
+terrain: |
+  ^,,,,,,,,__,,,,,,,,^
+  ^,,,,,,,,__,,,,,,,,^
+  ^,TTTT,,,__,,,,,,,,^
+  ^,TTTT,,,__,,TTTT,,^
+  ^,TTTT,,,__,,TTTT,,^
+  ^,,,,,,,,__,,TTTT,,^
+  ^,,,,,,,,__,,,,,,,,^
+  ^,,,,,,,,__,,,,,,,,^
+  ^,,,/,,,,ss,,,,/,,,^
+  ^~~~h~~~~~~~~~~h~~~^
+  ^~~~h~~~~~~~~~~h~~~^
+  ^~~~h~~~~~~~~~~h~~~^
+  ^~~~h~~~~~~~~~~h~~~^
+  ^^^,,,,,,__,,,,,,^^^
+  ^^^,,,,,,__,,,,,,^^^
+  ^^^,MMMMMGGMMMMM,^^^
+  ^,,,M.......bb.M,,,^
+  ^,,,M.bb....bb.M,,,^
+  ^TT,M.bb.SS....M,TT^
+  ^TT,M....__..v.M,TT^
+  ^TT,M....__....M,TT^
+  ^,,,M....__....M,,,^
+  ^,,,MMMMMGGMMMMM,,,^
+  ^,,,,,,,,__,,,,,,,,^
+  ^,,,,,,,,__,,,,,,,,^
+levels:
+  - { level: 1, area: { rect: [0, 0, 19, 7] } }
+timeOfDay: noon
+weather: clear
+objects:
+  - { id: v_hospice, type: village, at: [13, 19], reward: { item: { def: vulnerary } } }
+deploy:
+  max: 9
+  forced: [avatar, kael]
+  slots: [[6, 23], [7, 23], [8, 23], [11, 23], [12, 23], [13, 23], [6, 24], [7, 24], [8, 24], [11, 24], [12, 24], [13, 24]]
+units:
+  # Klosterhof: Sables Leute sind schon drin
+  - { id: y1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 5, at: [7, 20], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: y2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 5, at: [12, 20], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: y3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [6, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: y4, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [13, 18], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Nordrand (Stufe 1): Schützen über der Schlucht, Ritter an den Rampen
+  - { id: r1, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 5, at: [5, 7], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: r2, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 5, at: [14, 7], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: r3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 5, at: [9, 7], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: k1, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 5, at: [4, 7], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: k2, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 5, at: [15, 7], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Außen um die Mauer
+  - { id: o1, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [2, 17], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: o2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 5, at: [17, 17], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  # Am Ausgang: Sable oder, wenn sie bei E7 gewechselt hat, ein Hauptmann des Grenzheers (gleiche Werte, gleiches Feld)
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 9, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_order }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 9, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
+  - { id: e1, nameKey: unit.border_soldier.name, team: enemy, class: healer, level: 5, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: e2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 5, at: [8, 2], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: e3, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 5, at: [11, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 6, at: [7, 7], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 6, at: [12, 7], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 6, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 6, at: [12, 14], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Odile folgt der nächsten eigenen Figur; Amos im Hospiz, wer ihn anspricht, gewinnt ihn
+  - { id: odile, char: odile, team: other, class: skirmisher, level: 7, at: [10, 18], items: [{ def: steel_sword }], ai: { profile: follow }, ignoreForRout: true }
+  - { id: amos, char: amos, team: other, class: healer, level: 7, at: [12, 19], items: [{ def: heal_staff }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_5.amos_talk } }
+reinforcements:
+  # Von hinten um die Mauer
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 5, at: [1, 23], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [2, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 5, at: [18, 24], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Südrand der Schlucht
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.border_soldier.name, team: enemy, class: marksman, level: 5, at: [3, 13], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 5, at: [16, 13], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  # Letzte Reserve am Ausgang
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 5, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 5, at: [10, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+objectives:
+  victory: { type: escort, unit: odile, area: { rect: [8, 0, 11, 1] }, join: true }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: odile }
+  side:
+    - { id: s_amos, type: recruit, unit: amos, reward: { gold: 300 } }
+    - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 300 } }
+triggers:
+  - id: t_warn
+    once: true
+    when: { type: turn_start, turn: 5, phase: player }
+    then:
+      - { action: dialogue, id: scn.s2_5.bridge_warn }
+  - id: t_cut
+    once: true
+    when: { type: turn_start, turn: 6, phase: enemy }
+    then:
+      - { action: set_terrain, area: { tiles: [[4, 10], [4, 11]] }, terrain: river }
+goldReward: 1200
+design:
+  title: Die verstoßene Leibwache
+  intent: >
+    Odile sicher durch die Schlucht bringen: Sie läuft selbst mit, wer sie führt, entscheidet, wo sie steht. Zwei Hängebrücken, eine davon fällt: Wer in Runde 6 auf der falschen Seite steht, läuft zurück.
+    Das Grenzheer jagt die Truppe jetzt offen. Odile kennt Halvards Briefe (E5 nach der Mission).
+  mood: Mittagslicht in einer tiefen Schlucht, ein weißer Wasserfall im Osten, schwankende Hängebrücken, ein stilles Steinkloster mit Silberquelle im Hof, Soldaten des Grenzheers auf dem Felsrand.
+  phases:
+    - { id: p1, turns: [1, 3], label: Klosterhof, note: "Tor Süd, Sables Leute im Hof, Odile und Amos gewinnen. R3 von hinten um die Mauer." }
+    - { id: p2, turns: [4, 7], label: Die Brücken, note: "Warnung R4/R5, R6 fällt die Westbrücke. Schützen schießen vom Nordrand mit +1 Reichweite." }
+    - { id: p3, turns: [8, 12], label: Der Ausgang, note: "Nordrand stürmen, Sable oder der Hauptmann halten den Ausgang." }
+  paths:
+    - { team: player, points: [[9, 23], [9, 19], [9, 14], [5, 13], [4, 9], [4, 7], [9, 5], [9, 1]], label: West }
+    - { team: player, points: [[10, 14], [15, 13], [15, 8], [15, 7], [10, 5], [10, 1]], phase: p2, label: Ost }
+    - { team: enemy, points: [[1, 23], [3, 17], [8, 14]], phase: p1, label: R3 }
+  zones:
+    - { area: { rect: [5, 16, 14, 21] }, label: Klosterhof, phase: p1 }
+    - { area: { tiles: [[4, 10], [4, 11]] }, label: Brückenschnitt R6, phase: p2 }
+    - { area: { rect: [1, 0, 18, 7] }, label: Nordrand St.1 }
+    - { area: { rect: [8, 0, 11, 1] }, label: Ausgang }
+  marks:
+    - { at: [18, 9], label: WF, note: "Wasserfall (Modell fehlt laut Matrix, bis dahin Fluss)." }
+    - { at: [13, 19], label: H, note: "Hospiz, Amos daneben; Besuch gibt einen Trank." }
+    - { at: [9, 4], label: S, note: "Sable; hat sie bei E7 gewechselt, steht hier ein Hauptmann mit gleichen Werten und Sable spielt auf eurer Seite." }
+  notes:
+    - "Normal 22 Gegner (7 davon R3/R5/R7), Stufe 5 plus Sable (St. 9), gegen 9 eigene; Leicht 18, Schwer 26. Das Blatt zählt Sable und den Hauptmann beide, im Spiel steht nur einer."
+    - "Bedingung: Flags e7_order und e7_warned sind Platzhalter für den Ausgang von E7 (Produktinhaber 2026-11-05)."
+    - "Formatwunsch: Klasse-Zuordnung Leutnant sable, Modell Hängebrücke (footbridge bis dahin mit Steg), Wasserfall."
