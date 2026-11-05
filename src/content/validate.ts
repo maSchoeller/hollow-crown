@@ -466,6 +466,11 @@ export function validateContent(
   if (spriteIds) {
     for (const m of Object.values(data.maps))
       for (const u of allUnits(m)) if (u.sprite && !spriteIds.has(u.sprite)) err(`maps/${m.id}`, `unknown sprite ${u.sprite}`);
+    // the figure of a unit without its own sprite (tavern hires, src/core/figure.ts unitFigureId)
+    for (const c of Object.values(data.classes)) {
+      const fig = c.sprite ?? c.art;
+      if (fig && !spriteIds.has(fig)) err('classes.yaml', `unknown sprite ${fig} (class ${c.id})`);
+    }
   }
   return issues;
 }

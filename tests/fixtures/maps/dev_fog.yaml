@@ -31,7 +31,7 @@ deploy: { max: 0, forced: [], slots: [] }
 units:
   # Spieler: ein Späher an der Tür, ein Schütze und ein Vorkämpfer auf dem freien Feld
   - { id: dev_scout, team: player, class: scout, level: 3, at: [4, 2], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
-  - { id: dev_marksman, team: player, class: marksman, level: 3, at: [2, 6], sprite: archer, items: [{ def: iron_bow }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 3, at: [2, 6], sprite: bandit_archer, items: [{ def: iron_bow }] }
   - { id: dev_vanguard, team: player, class: vanguard, level: 3, at: [1, 3], sprite: soldier, items: [{ def: iron_lance }] }
   # Gegner: der Wächter in der Halle (Beutel: Heiltrank), ein Plünderer auf dem Feld (Beutel: Heiltrank, Heilsalbe), ein Bogenschütze am Ostrand
   - { id: dev_guard, team: enemy, class: brigand, level: 3, at: [9, 2], sprite: brigand, items: [{ def: iron_axe }, { def: vulnerary }], ai: { profile: hold } }

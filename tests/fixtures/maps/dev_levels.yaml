@@ -47,7 +47,7 @@ deploy: { max: 0, forced: [], slots: [] }
 units:
   - { id: dev_vanguard, team: player, class: vanguard, level: 5, at: [3, 9], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }] }
   - { id: dev_scout, team: player, class: scout, level: 5, at: [7, 10], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
-  - { id: dev_marksman, team: player, class: marksman, level: 5, at: [8, 9], sprite: archer, items: [{ def: iron_bow }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 5, at: [8, 9], sprite: bandit_archer, items: [{ def: iron_bow }, { def: vulnerary }] }
   - { id: dev_wall_archer, team: enemy, class: marksman, level: 3, at: [3, 5], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: iron_bow }] }
   - { id: dev_wall_guard, team: enemy, class: brigand, level: 3, at: [8, 5], sprite: brigand, items: [{ def: iron_axe }] }
   - { id: dev_tower_archer, team: enemy, class: marksman, level: 3, at: [13, 6], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: iron_bow }] }
