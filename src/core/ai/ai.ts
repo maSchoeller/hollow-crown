@@ -7,7 +7,7 @@ import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
-import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles } from '../rules/movement';
+import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -363,6 +363,10 @@ function wake(data: GameData, s: BattleState, u: BattleUnit): void {
 function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos) return;
   const ai = u.ai ?? { profile: 'aggressive' as const };
+  if (waitsToJoin(u)) {
+    events.push({ t: 'aiTurn', unit: u.uid });
+    return applyAct(data, s, u, u.pos, { kind: 'wait' }, events);
+  }
   if (u.ai) wake(data, s, u);
   const profile = u.ai?.profile ?? ai.profile;
   const here: Pos[] = [u.pos];

@@ -100,7 +100,7 @@
   base:   { hp: 21, str: 7, mag: 0, skl: 10, spd: 10, lck: 2, def: 4, res: 2 }
   growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
   items: [ { def: steel_sword }, { def: slim_sword }, { def: leather_vest } ]
-  # Beitritt laut Missionsliste: Nebenquest N2 (Kael spricht ihn an). Bis zum Umbau der Karten 1-5 und N2 steht die Kartenfigur noch in m1_5_hungerlager (Szene scn.m1_5.varek_talk).
+  # Beitritt laut Missionsliste: Nebenquest N2, Kael spricht ihn an (Kartenfigur in n2_wachturm, Szene scn.n2.varek_talk).
   supports: [brenna]
   joins: n2
 

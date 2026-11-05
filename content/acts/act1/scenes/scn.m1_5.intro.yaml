@@ -1,13 +1,13 @@
-# Mission 1-5, Szene vor der Karte (Knoten pre): Auftrag aus Varnhold, Kopfgeld auf Grosks Bande. Das Lager im Talkessel ist ein Hungerlager (Frauen, Kinder,
-# ein Kessel mit Wasser, ein Holzpferdchen). Die Hungernden halten die Truppe für Jäger und schließen den Hügel ein: „Gold gegen Gewissen“. Gefährten sprechen nur,
-# wenn sie in der Truppe sind (alive), damit die Reihenfolge der Missionen 1-2 bis 1-5 frei bleibt. Entscheidung E3 fällt erst nach der Mission (scn.m1_5.outro).
+# Mission 1-5, Szene vor der Karte (Knoten pre): Auftrag aus Varnhold, Kopfgeld auf Grosks Bande. Das Lager im Erlenmoor ist ein Hungerlager (Frauen, Kinder,
+# ein Kessel mit Wasser, ein Holzpferdchen). Die Hungernden halten die Truppe für Jäger und schließen den Wachhügel ein: „Gold gegen Gewissen“. Gefährten sprechen nur,
+# wenn sie in der Truppe sind (alive). Entscheidung E3 fällt erst nach der Mission (scn.m1_5.outro).
 id: scn.m1_5.intro
 background: hungerlager
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Abend im Talkessel. Über dem Lager der Grenzlandbande steht Rauch, und auf ihrem Anführer liegt ein Kopfgeld."
+    text: "Morgennebel über dem Erlenmoor. Hinter dem Nordsteg lagert eine Bande, auf ihrem Anführer ein Kopfgeld."
   - id: l02
     speaker: [kael]
     mood: neutral
@@ -55,7 +55,7 @@ lines:
   - id: l11
     speaker: [kael]
     mood: neutral
-    text: "Auf den Hügel! Wir halten die Ruinen, bis sich der Sturm legt. Tötet nur, wer euch zwingt."
+    text: "Auf den alten Wachhügel! Wir halten die Rampen, bis sich der Sturm legt. Tötet nur, wer euch zwingt."
   - id: l12
     speaker: [avatar]
     mood: sad
@@ -64,4 +64,4 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: angry
-    text: "Haltet die Linie, Küken! Sechs Runden, dann müssen sie reden."
+    text: "Haltet die Linie, Küken! Acht Runden, dann müssen sie reden."

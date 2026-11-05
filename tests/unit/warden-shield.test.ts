@@ -136,13 +136,13 @@ describe('Nebenquest N2 als Knoten', () => {
     expect(availableNodes(d, c).map((n) => n.id)).not.toContain('n2');
   });
 
-  it('pays the ember spark with the victory, the page and the relic only from the chests, plays no memorial variant', () => {
+  it('pays the ember spark with the victory, the page and the relic are the chests of the goal, plays no memorial variant', () => {
     const n = data.campaign.nodes.find((x) => x.id === 'n2')!;
     expect(n.effects).toEqual([{ item: { def: 'ember_spark' } }]);
     expect(n.memorialIf).toBeUndefined();
     expect(n.place).toBe('wachturm');
     const m = data.maps.n2_wachturm!;
-    expect(m.objectives.victory.type).toBe('seize');
+    expect(m.objectives.victory.type).toBe('treasure');
     expect(m.objects.find((o) => o.id === 'c_page')!.contents).toMatchObject({ chronicle: 'a1_watchtower', dialogue: 'scn.n2.page' });
     expect(m.objects.find((o) => o.id === 'c_relic')!.contents).toMatchObject({ item: { def: 'pact_warden_shield' }, dialogue: 'scn.n2.relic' });
     expect(nodeScenes(data, null, 'n2')).toEqual({ pre: 'scn.n2.intro', post: 'scn.n2.outro' });

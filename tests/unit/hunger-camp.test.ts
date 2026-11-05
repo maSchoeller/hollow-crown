@@ -1,4 +1,4 @@
-/** Mission 1-5 "Das Hungerlager" and decision E3 (story 9.6): line-up, Varek, children, the outro with Grosk. */
+/** Mission 1-5 "Das Hungerlager" and decision E3 (story 9.6): line-up, children, the outro with Grosk. Levels and Varek's move: act1-side-maps.test.ts. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { applyCampaign, conditionContext, consequenceLines, createBattle, evalCondition, newCampaign, resolveScene, type CampaignState, type Difficulty, type GameData } from '../../src/core';
@@ -17,27 +17,19 @@ beforeAll(() => {
 });
 
 describe('map m1_5_hungerlager', () => {
-  it('has 10 / 12 / 14 hungry foes with the waves, and no Grosk on the board', () => {
+  it('has 19 / 24 / 27 foes with the waves and Grosk, as in the draft and the mission list', () => {
     const map = data.maps.m1_5_hungerlager!;
-    expect(map.units.some((u) => u.id === 'grosk' || u.lieutenant === 'grosk')).toBe(false);
-    for (const [d, n] of [['easy', 10], ['normal', 12], ['hard', 14]] as const) {
+    expect(map.units.some((u) => u.id === 'grosk' && u.lieutenant === 'grosk')).toBe(true);
+    for (const [d, n] of [['easy', 19], ['normal', 24], ['hard', 27]] as const) {
       const s = createBattle(data, fresh(d), 'm1_5', ['avatar', 'kael']);
-      const start = s.units.filter((u) => u.team === 'enemy' && u.id !== 'varek').length;
+      const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map.reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
       expect(start + waves, d).toBe(n);
     }
   });
 
-  it('Kael recruits Varek by talking (scene varek_talk); he is no weapon-bearing foe', () => {
-    const v = data.maps.m1_5_hungerlager!.units.find((u) => u.id === 'varek')!;
-    expect(v.recruit).toEqual({ by: ['kael'], dialogue: 'scn.m1_5.varek_talk' });
-    expect(v.items).toEqual([]);
-    expect(v.ignoreForRout).toBe(true);
-    expect(data.chars.varek!.recruit).toBeUndefined();
-  });
-
-  it('survives six rounds: goal survive, no kill needed', () => {
-    expect(data.maps.m1_5_hungerlager!.objectives.victory).toEqual({ type: 'survive', turns: 6 });
+  it('survives eight rounds: goal survive, no kill needed', () => {
+    expect(data.maps.m1_5_hungerlager!.objectives.victory).toEqual({ type: 'survive', turns: 8 });
   });
 });
 
