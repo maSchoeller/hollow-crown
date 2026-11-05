@@ -35,7 +35,8 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   const stone = page.getByRole('button', { name: /Heimsuchung: |Haunting: / });
   await expect(stone).toBeVisible({ timeout: 30_000 });
   await expect(stone.locator('.wm-node__new')).toBeVisible();
-  await stone.click();
+  // the prologue's map lies in Aurenhall, far north of the first view (world map v5, story 15.7); a tap there glides the map to it
+  await stone.dispatchEvent('click');
   const card = page.locator('.wm-card--haunt');
   await expect(card).toContainText(/Hask/, { timeout: 30_000 });
   await expect(card).toContainText(/flieht bei 0 TP|flees at 0 HP/, { timeout: 30_000 });
