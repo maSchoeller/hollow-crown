@@ -59,3 +59,20 @@ describe('faceRot', () => {
     expect(faceRot(grid(['#', 'D', '#']), 0, 1)).toBe(Math.PI / 2);
   });
 });
+
+describe('boardwalk pieces', () => {
+  const walk = (rows: string[]) => (gx: number, gy: number) => rows[gy]?.[gx] === '=';
+  it('picks straight, corner and end from what the tile reaches', () => {
+    expect(boardwalkPiece(walk([' = ', ' = ', ' = ']), 1, 1).model).toBe('boardwalk_straight');
+    expect(boardwalkPiece(walk(['   ', '===', '   ']), 1, 1)).toEqual({ model: 'boardwalk_straight', rot: Math.PI / 2 });
+    expect(boardwalkPiece(walk(['   ', ' ==', ' = ']), 1, 1)).toEqual({ model: 'boardwalk_corner', rot: Math.PI });
+    expect(boardwalkPiece(walk(['   ', ' = ', ' = ']), 1, 1)).toEqual({ model: 'boardwalk_end', rot: Math.PI });
+  });
+});
+
+describe('doors in rock', () => {
+  it('turns a door between rock tiles like one between wall tiles', () => {
+    const at = (_gx: number, gy: number) => (gy === 1 ? 'door' : 'mountain');
+    expect(faceRot(at, 1, 1)).toBe(Math.PI / 2);
+  });
+});

@@ -24,7 +24,7 @@ export type MoveType = 'foot' | 'armored' | 'mounted' | 'flier' | 'monster';
 export type Team = 'player' | 'enemy' | 'other';
 export type StatusId = 'burning' | 'wet' | 'slowed' | 'knockback';
 /** Time of day and weather of a battle map (story 8.6, art-direction §2.5); render only, the rules never read them. */
-export const TIMES_OF_DAY = ['morning', 'noon', 'evening', 'night'] as const;
+export const TIMES_OF_DAY = ['morning', 'noon', 'evening', 'night', 'indoor'] as const;
 export type TimeOfDay = (typeof TIMES_OF_DAY)[number];
 export const WEATHERS = ['clear', 'rain', 'fog', 'ash', 'snow'] as const;
 export type Weather = (typeof WEATHERS)[number];

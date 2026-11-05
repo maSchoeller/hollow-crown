@@ -277,6 +277,11 @@ TEXTURES = {
     "rock_top": tex_rock_top,
     "planks": tex_planks,
     **{f"water_{k}": (lambda k=k: tex_water(k)) for k in range(4)},
+    # moor and vault: painted (art/prompts/map_assets_moor.md, map_assets_textures.md); these fallbacks stand in without the sheets
+    "peat": tex_ash,
+    "vault": lambda: tex_cobble(4, 424, 0.55),
+    **{f"mire_{k}": tex_riverbed for k in range(3)},
+    **{f"creek_{k}": tex_riverbed for k in range(3)},
 }
 
 
@@ -288,7 +293,9 @@ SHEETS = {
     "sheet3_wall_earth_rock_water.png": ("wall", "earth_side", "rock_side", "water"),
     # warm stone and rock after the target pictures (art/prompts/map_assets_textures.md); later sheets win
     "sheet4_stone_wall_rocktop_rockside.png": ("stone", "wall", "rock_top", "rock_side"),
-    "sheet5_honey_oak_dirt_vault.png": ("kit_stone", "kit_oak", "dirt", "vault_floor"),
+    "sheet5_honey_oak_dirt_vault.png": ("kit_stone", "kit_oak", "dirt", "vault"),
+    # moor (art/prompts/map_assets_moor.md); the fourth quadrant is the autumn ground probe, not in the game yet
+    "sheet6_mire_creek_peat_autumn.png": ("mire", "creek", "peat", "autumn_probe"),
 }
 CROP_MARGIN = 10        # px dropped inside every quadrant edge (border artefacts)
 TARGET_LUMA = 118.0     # brightness the textures are pulled towards
@@ -377,13 +384,13 @@ def painted_textures():
         for name, quad in zip(names, quads):
             q = _square(quad).resize((512, 512), Image.LANCZOS)   # normalise before blending
             base = unify(make_seamless(q), name)
-            if name == "water":
+            if name in ("water", "mire", "creek"):
                 base_img = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8), "RGB").resize((S, S), Image.LANCZOS)
                 b = np.asarray(base_img, dtype=np.float64)
                 twin = np.roll(b, (FRAME_SHIFT, FRAME_SHIFT // 2), axis=(0, 1))
-                for k in range(4):
-                    f = (1 - np.cos(2 * np.pi * k / 4)) / 2     # 0, .5, 1, .5: loops smoothly
-                    out[f"water_{k}"] = Image.fromarray(np.clip(b * (1 - f) + twin * f, 0, 255).astype(np.uint8), "RGB")
+                for k in range(4 if name == "water" else 3):
+                    f = (1 - np.cos(2 * np.pi * k / 4)) / 2     # 0, .5, 1, .5: loops smoothly (moor: frame 1 again on the way back)
+                    out[f"{name}_{k}"] = Image.fromarray(np.clip(b * (1 - f) + twin * f, 0, 255).astype(np.uint8), "RGB")
             else:
                 out[name] = _finish(base)
     return out

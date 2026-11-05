@@ -46,9 +46,10 @@ export function wallPieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
   return out;
 }
 
-/** Turn of a door or one-tile gate: it faces along the wall it stands in. */
+/** Turn of a door or one-tile gate: it faces along the wall it stands in; in a vault the rock is that wall. */
 export function faceRot(at: TerrainAt, gx: number, gy: number): number {
-  return closesWall(at(gx, gy - 1)) || closesWall(at(gx, gy + 1)) ? EAST : SOUTH;
+  const closes = (id: string | null) => closesWall(id) || id === 'mountain';
+  return closes(at(gx, gy - 1)) || closes(at(gx, gy + 1)) ? EAST : SOUTH;
 }
 
 /** Pieces of a gate tile: runs of gates pair up from the west (or north) into one two-tile gatehouse; a tile left over gets the one-tile gate. */
@@ -67,4 +68,26 @@ export function gatePieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
     if (isGate(at(gx + dx, gy + dy))) return [{ model: 'gatehouse_open', dx: dx * 0.5, dy: dy * 0.5, rot: horizontal ? SOUTH : EAST, ground: true }];
   }
   return [{ model: 'gate_idle', dx: 0, dy: 0, rot: faceRot(at, gx, gy), ground: true }];
+}
+
+/** Height of a boardwalk's deck above its tile's ground level, and of the deck within the model (tools/art/props/nature_map.py DECK). */
+export const BOARDWALK_DECK = 0.04;
+export const BOARDWALK_MODEL_DECK = 0.16;
+
+/**
+ * Piece of a boardwalk tile, from the fields it reaches (`joins`: another boardwalk or dry walkable ground). The models of
+ * tools/art/props/nature_map.py, at `rot` = pi: `straight` runs north-south, `corner` joins south and east, `end` is open to the south.
+ */
+export function boardwalkPiece(joins: (gx: number, gy: number) => boolean, gx: number, gy: number): { model: string; rot: number } {
+  const n = joins(gx, gy - 1);
+  const s = joins(gx, gy + 1);
+  const e = joins(gx + 1, gy);
+  const w = joins(gx - 1, gy);
+  const count = +n + +s + +e + +w;
+  if (count === 1) return { model: 'boardwalk_end', rot: s ? SOUTH : n ? NORTH : e ? WEST : EAST };
+  if (count === 2 && n !== s) {
+    if (s) return { model: 'boardwalk_corner', rot: e ? SOUTH : WEST };
+    return { model: 'boardwalk_corner', rot: e ? EAST : NORTH };
+  }
+  return { model: 'boardwalk_straight', rot: n || s ? SOUTH : EAST };
 }
