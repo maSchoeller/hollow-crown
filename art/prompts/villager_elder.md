@@ -1,5 +1,7 @@
 # villager_elder – Dialog-Porträt (Stil v2.5)
 
+> Brettfigur passend zu diesem Porträt (Strohhut): `villager_elder_board_turnaround.md` (Story 15.14, 2026-11-06).
+
 - **Dienst (A1, A2):** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome von Sonnet-Subagenten; keine Modell-Versionsnummer sichtbar
 - **Tarif und Konto:** Plus, Konto `maschoeller` (Stand 2026-11-01)
 - **Datum:** 2026-11-01/02

@@ -25,7 +25,7 @@
 - FR14 (neu): Je Rolle 2 Profi-Wege mit den Unterschieden aus dem GDD (14 Profiklassen + Großstratege + Bannerherr).
 - FR15 (neu): Späher-Profi Fallensteller (max. 2 für Gegner unsichtbare Fallen auf Nachbarfeldern, nur Gegner lösen aus: Bewegung endet, 8 Schaden + Verlangsamt; eigene Fallen zurücknehmen) und Schatten (für Gegner unsichtbar, solange kein Gegner näher als 3 Felder steht, im Nebel immer; nach eigenem Angriff sichtbar bis Ende der nächsten Gegnerphase).
 - FR16 (neu): Die KI kennt Haltezonen (Umweg ≤ 2 Felder) und nutzt gegnerisches Wirken nach GDD-Regel.
-- FR17 (neu): Gegnertypen pro Akt dürfen eigene Regeln haben (Bandit, Wolfsreiter, Pegasusritter, Ritter, Glut-Fanatiker, Untote, Drache).
+- FR17 (neu): Gegnertypen pro Akt dürfen eigene Regeln haben (Bandit, Wolfsreiter, Pegasusritter, Ritter, Glut-Fanatiker, Untote, Drache). *Stand 2026-11-06:* In Staffel 1 keine Flieger und keine Reiter auf dem Brett (GDD-Log 2026-11-05); Akt 2 nutzt Ritter zu Fuß und die Balliste, Pegasusritter bleiben für Staffel 2 im Code.
 
 **Leutnants (GDD Leutnants)**
 
@@ -90,7 +90,7 @@
 **Inhalte (Narrative Missionsfolge)**
 
 - FR60 (neu): Akt 1: Prolog + 8 Story-Missionen, 3 Nebenquests (N1–N3), 4 Leutnants (Hask, Morra, Ulvric, Grosk), Entscheidungen E1–E4, Beitritte laut Narrative, Akt-1-Supports, 2 Glutfunken im Finale 1-8.
-- FR61 (neu): Akt 2: 8 Story-Missionen inkl. großer Schlacht Kronfeld, N4–N6, Leutnants Brakka, Grell, Sable, Rowena, E5–E8, Region 2, Burg als Heimat.
+- FR61 (neu): Akt 2: 8 Story-Missionen inkl. großer Schlacht Kronfeld, N4–N6, Leutnants Brakka, Grell, Sable, Rowena, E5–E8, Region 2, Burg als Heimat. *Stand 2026-11-06:* Folge `2-1 → (2-2 ∥ 2-3) → 2-4 → (2-5 ∥ 2-6) → 2-7 → 2-8` laut `missionsliste-s1.md`, Regel-Schwerpunkt Balliste, Karten nach den abgenommenen Entwürfen (Epic 11).
 - FR62 (neu): Akt 3: 8 Story-Missionen inkl. 2 großer Schlachten, N7–N10, Leutnants Eluned, Cassian, Mael, Torvald, Drachen als dritte Partei, E9–E12, Region 3, Epilog.
 - FR63 (neu): Alle Texte in DE und EN.
 

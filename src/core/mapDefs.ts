@@ -136,7 +136,8 @@ export type TriggerWhen =
 export type TriggerAction =
   /** `onBoard`: plays only while this unit still stands on the map (a lieutenant's call must not come from one who has left) */
   | { action: 'dialogue'; id: string; onBoard?: string }
-  | { action: 'set_ai'; units: string[]; profile: AiDef['profile'] }
+  /** `area`: the new goal area of the units (the way out of `flee`); without it they keep theirs */
+  | { action: 'set_ai'; units: string[]; profile: AiDef['profile']; area?: Area }
   | { action: 'spawn'; units: MapUnitDef[] }
   | { action: 'set_flag'; flag: string }
   /** the map changes by an event (a wall falls, a gate shuts): `level` sets the height level of the tiles, without it they take their terrain's */
@@ -193,8 +194,8 @@ export interface MapDef {
   goldReward: number;
   /** haunt anchors (story 5.5, architecture §5.6): at most one per variant; maps without any are never haunted */
   haunts?: HauntAnchor[];
-  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): it has no haunt anchors and is never haunted */
-  abandoned?: boolean;
+  /** never haunted (GDD log 2026-11-06): left for good (prologue), caved in (1-7) or home (1-6); it has no haunt anchors */
+  noHaunts?: boolean;
   music?: string;
   devNote?: string;
   /** model of a prop variant for single fields (`board.variants` of render.yaml names the allowed models), overriding the hash pick */

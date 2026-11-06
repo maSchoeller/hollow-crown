@@ -128,7 +128,12 @@ describe('world map content', () => {
     const noName = { de: { ...locales.de }, en: { ...locales.en } };
     delete noName.en!['world.region.eisenmark'];
     expect(validateContent(data, noName).map((i) => i.message)).toContain('missing key world.region.eisenmark');
-  }, 30_000); // six full content checks
+    // roads: the same pair twice in one kind (either order) is refused, a road and the flight on one pair are fine, the flight is one line
+    const roads = (extra: WorldDef['roads']): string[] => validateContent({ ...data, world: { ...world, roads: [...world.roads, ...extra] } }, locales).map((i) => i.message);
+    expect(roads([['erlbach', 'varnhold']])).toContain('road erlbach-varnhold: drawn twice');
+    expect(roads([['aurenhall', 'aure_gorge']]).some((m) => /aurenhall-aure_gorge/.test(m))).toBe(true);
+    expect(roads([['erlbach', 'hawthorn_shrine', 'escape']])).toContain('escape route breaks before erlbach');
+  }, 40_000); // eight full content checks
 });
 
 describe('stones and town pictures', () => {
@@ -165,7 +170,7 @@ describe('stones and town pictures', () => {
 
   it('the road network joins every place, without crossings and long diagonals (story 15.12)', () => {
     const at = new Map(world.places.map((p) => [p.id, p.at]));
-    const roads = world.roads;
+    const roads = world.roads.filter((r) => (r[2] ?? 'road') === 'road');
     // every place reachable
     const reach = new Set([world.places[0]!.id]);
     for (let grown = true; grown; ) {
@@ -194,7 +199,7 @@ describe('stones and town pictures', () => {
   });
 
   it('draws no road into the fog of a later act and dims roads towards places not unlocked yet', () => {
-    const act1 = roadsOf(world, 1, new Set(['varnhold', 'erlbach']));
+    const act1 = roadsOf(world, 1, new Set(['varnhold', 'erlbach'])).filter((r) => r.kind === 'road');
     const act1Places = new Set(world.places.filter((p) => p.act === 1).map((p) => p.at.join()));
     expect(act1.length).toBeGreaterThan(0);
     for (const r of act1) expect(act1Places.has(r.a.join()) && act1Places.has(r.b.join())).toBe(true);
@@ -203,7 +208,44 @@ describe('stones and town pictures', () => {
     const between = act1.find((r) => [r.a.join(), r.b.join()].sort().join() === [varnhold, erlbach].sort().join())!;
     expect(between.dim).toBe(false);
     expect(act1.filter((r) => r !== between).every((r) => r.dim)).toBe(true);
-    expect(roadsOf(world, 3, new Set()).length).toBe(world.roads.length);
+    // in act 3 every road shows, except where the flight runs along it
+    const flight = new Set(world.roads.filter((r) => r[2] === 'escape').map(([x, y]) => [x, y].sort().join('|')));
+    const hidden = world.roads.filter((r) => (r[2] ?? 'road') === 'road' && flight.has([r[0], r[1]].sort().join('|'))).length;
+    expect(roadsOf(world, 3, new Set()).length).toBe(world.roads.length - hidden);
+  });
+
+  it('draws the flight of the prologue as its own line from Aurenhall to Varnhold, through the fog and never dimmed', () => {
+    const escape = world.roads.filter((r) => r[2] === 'escape');
+    // one chain from Aurenhall through the Aureklamm and over the pass to Varnhold
+    expect(escape[0]![0]).toBe('aurenhall');
+    expect(escape.at(-1)![1]).toBe('varnhold');
+    expect(escape.map((r) => r[0])).toContain('aure_gorge');
+    expect(escape.map((r) => r[1])).toContain('wind_gap');
+    for (const [i, r] of escape.entries()) if (i > 0) expect(r[0]).toBe(escape[i - 1]![1]);
+    const all = roadsOf(world, 3, new Set());
+    const drawn = all.filter((r) => r.kind === 'escape');
+    expect(drawn).toHaveLength(escape.length);
+    expect(drawn.every((r) => !r.dim)).toBe(true);
+    // where the flight runs along a road, only the flight is drawn
+    const key = (r: { a: readonly number[]; b: readonly number[] }) => [r.a.join(), r.b.join()].sort().join('|');
+    const flightKeys = new Set(drawn.map(key));
+    expect(all.filter((r) => r.kind === 'road' && flightKeys.has(key(r)))).toEqual([]);
+  });
+
+  it('Erlbach burns after 1-2 and Aurenhall is besieged from 3-5 on (four story missions of act 3 done)', () => {
+    const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+    const erlbach = world.places.find((p) => p.id === 'erlbach')!;
+    const auren = world.places.find((p) => p.id === 'aurenhall')!;
+    expect(siteImage(erlbach, conditionContext(data, c))).toBe('erlbach');
+    expect(siteImage(erlbach, conditionContext(data, { ...c, completed: ['prologue', 'm1_1', 'm1_2'] }))).toBe('erlbach_burnt');
+    // a picture not delivered yet falls back to the base picture
+    expect(siteImage(erlbach, conditionContext(data, { ...c, completed: ['prologue', 'm1_1', 'm1_2'] }), ['erlbach_burnt'])).toBe('erlbach');
+    const ctx = conditionContext(data, c);
+    expect(siteImage(auren, ctx)).toBe('aurenhall');
+    expect(siteImage(auren, { ...ctx, act: 3, storyCount: 3 })).toBe('aurenhall');
+    expect(siteImage(auren, { ...ctx, act: 3, storyCount: 4 })).toBe('aurenhall_siege');
+    // earlier acts never, however many missions are done (storyCount counts the missions of the loaded act's campaign)
+    expect(siteImage(auren, { ...ctx, act: 2, storyCount: 20 })).toBe('aurenhall');
   });
 
   it('the Paktwacht is a ruin at the start and built from castle tier 1 on (story 15.12)', () => {

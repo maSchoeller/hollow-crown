@@ -25,7 +25,7 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await skipIntro(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
 
-  // a campaign with an open haunt on the map of 1-1 (the prologue's map is abandoned and never haunted), then the world map (the test hook exists where `navigator.webdriver` is set)
+  // a campaign with an open haunt on the map of 1-1 (the prologue's map has noHaunts), then the world map (the test hook exists where `navigator.webdriver` is set)
   // the lieutenants and enemy pools come with the act pack, which loads in the background: ask until it is there
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { __hcTest: Hooks }).__hcTest.devHaunt('m1_1_steckbriefe', 'boss')), { timeout: 60_000 })
