@@ -144,6 +144,19 @@ describe('handbook anchors and search', () => {
     const t = (k: string) => locales.de![k] ?? '';
     expect(searchHandbook(data.handbook!, 'Groll', t)[0]?.id).toBe('grudge');
   });
+
+  it('heights, gates and levers match the rules (story 15.1): every raised terrain and every connector, roof included', () => {
+    const t = (k: string) => locales.de![k] ?? '';
+    const hb = data.handbook!;
+    const heights = hb.entries.find((e) => e.id === 'heights')!;
+    const raised = Object.entries(data.terrain).filter(([, d]) => (d.level ?? 0) > 0 || d.connector).map(([id]) => id);
+    expect([...heights.terrain!].sort()).toEqual(raised.sort());
+    expect(data.terrain.roof!.level).toBe(1);
+    expect(hb.entries.find((e) => e.id === 'doors')!.terrain).toEqual(expect.arrayContaining(['door', 'gate_closed', 'lever']));
+    expect(searchHandbook(hb, 'Dach', t)[0]?.id).toBe('heights');
+    expect(searchHandbook(hb, 'Hebel', t)[0]?.id).toBe('doors');
+    expect(searchHandbook(hb, 'Tor', t).map((e) => e.id)).toContain('doors');
+  });
 });
 
 describe('handbook content check (story 14.1, 14.5)', () => {
