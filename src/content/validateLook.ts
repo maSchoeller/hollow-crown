@@ -2,6 +2,7 @@
 import type { GameData } from '../core/gameData';
 import type { ContentIssue } from './load';
 import { variantClassOf, variantList } from './propVariants';
+import { seasonOf } from './season';
 
 /** Terrain props the board builds from pieces or names itself (walls, gates, boardwalks, the rock wall, the lever), not from `<prop>_idle`. */
 const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'rockwall', 'lever']);
@@ -13,15 +14,38 @@ export function validateWeather(data: GameData): ContentIssue[] {
     if (!map.weather) continue;
     const acts = data.render.look.weather[map.weather]?.acts;
     if (!acts) out.push({ file: `maps/${map.id}`, message: `unknown weather ${map.weather}` });
-    else if (!acts.includes(map.act)) out.push({ file: `maps/${map.id}`, message: `weather ${map.weather} does not occur in act ${map.act} (allowed: act ${acts.join(', ')}; render.yaml look.weather)` });
+    // snow falls wherever the board is in winter, also outside act 3 (N4 in act 2, story 15.15)
+    else if (!acts.includes(map.act) && !(map.weather === 'snow' && seasonOf(data.render, map) === 'winter')) out.push({ file: `maps/${map.id}`, message: `weather ${map.weather} does not occur in act ${map.act} (allowed: act ${acts.join(', ')}; render.yaml look.weather)` });
   }
+  return out;
+}
+
+/**
+ * Seasons (story 15.15): every act a map lives in has a season in `render.yaml board.actSeason`, a map's own `season` is not set on an
+ * interior (a place under a roof has none), and `board.seasonGround` only swaps the ground of surfaces that terrains draw, for a texture
+ * that `tools/art/ground.py` builds (`groundTextures`, read by content:check; left out, the names are not checked).
+ */
+export function validateSeasons(data: GameData, groundTextures?: ReadonlySet<string>): ContentIssue[] {
+  const out: ContentIssue[] = [];
+  const board = data.render.board;
+  for (const map of Object.values(data.maps)) {
+    if (!board.actSeason[String(map.act)]) out.push({ file: 'render.yaml', message: `board.actSeason: no season for act ${map.act} (map ${map.id})` });
+    if (map.season && map.interior) out.push({ file: `maps/${map.id}`, message: `season ${map.season} on an interior map: a place under a roof has no season` });
+  }
+  const surfaces = new Set<string>(Object.values(data.terrain).map((t) => t.surface));
+  for (const [season, swap] of Object.entries(board.seasonGround))
+    for (const [surface, texture] of Object.entries(swap ?? {})) {
+      if (!surfaces.has(surface)) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}: no terrain draws the surface ${surface}` });
+      if (texture === surface) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}.${surface}: swaps the texture for itself` });
+      else if (groundTextures && !groundTextures.has(texture)) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}.${surface}: ${texture} is no ground texture of tools/art/ground.py (TEXTURES)` });
+    }
   return out;
 }
 
 /**
  * `propVariants` of a map (single fields set by hand): the field is on the map, its terrain carries a prop with variants
  * (house, lodge, rock, tree, field, relief, sarcophagus, stall) and the model is one of that class's list in `render.yaml board.variants`
- * (the trees of the map's act); a weight-0 entry is exactly such a hand-placed model.
+ * (the trees of the map's season); a weight-0 entry is exactly such a hand-placed model.
  */
 export function validatePropVariants(data: GameData): ContentIssue[] {
   const out: ContentIssue[] = [];
@@ -49,8 +73,9 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
         out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus, stall)` });
         continue;
       }
-      if (!variantList(data, cls, map.act).some((e) => e.model === pv.model)) {
-        out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is not a ${cls} variant of act ${map.act} (render.yaml board.variants.${cls}: ${variantList(data, cls, map.act).map((e) => e.model).join(', ')})` });
+      const season = seasonOf(data.render, map);
+      if (!variantList(data, cls, season).some((e) => e.model === pv.model)) {
+        out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is not a ${cls} variant of ${season} (render.yaml board.variants.${cls}: ${variantList(data, cls, season).map((e) => e.model).join(', ')})` });
       }
     }
   }
@@ -80,6 +105,7 @@ export function validateBoardModels(data: Pick<GameData, 'render' | 'maps' | 'te
   for (const [k, d] of Object.entries(b.decor)) name(d.model, `render.yaml board.decor.${k}`);
   for (const [t, list] of Object.entries(b.decorOn)) for (const d of list) name(d.model, `render.yaml board.decorOn.${t}`);
   for (const m of Object.values(b.propFallback)) name(m, 'render.yaml board.propFallback');
+  for (const [season, swap] of Object.entries(b.seasonModels)) for (const m of Object.values(swap ?? {})) name(m, `render.yaml board.seasonModels.${season}`);
   for (const map of Object.values(data.maps)) for (const pv of map.propVariants ?? []) name(pv.model, `maps/${map.id}`);
   const out: ContentIssue[] = [];
   for (const [model, file] of named) {

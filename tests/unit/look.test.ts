@@ -13,13 +13,13 @@ import { DEFAULT_AMBIENT, DEFAULT_SKY, DEFAULT_SUN, lookOverride, mixHex, parseL
 
 const { data, locales } = loadContentFromDisk();
 const render = data.render;
-const baseMap = (over: Partial<MapDef> = {}): Pick<MapDef, 'act' | 'ambient' | 'sun' | 'timeOfDay' | 'weather'> => ({ act: 1, ...over });
+const baseMap = (over: Partial<MapDef> = {}): Pick<MapDef, 'act' | 'season' | 'ambient' | 'sun' | 'timeOfDay' | 'weather'> => ({ act: 1, ...over });
 
 describe('render.yaml look (story 8.6)', () => {
   it('has all four times of day, all five weathers and the acts 1 to 3', () => {
     expect(Object.keys(render.look.timeOfDay).sort()).toEqual([...TIMES_OF_DAY].sort());
     expect(Object.keys(render.look.weather).sort()).toEqual([...WEATHERS].sort());
-    expect(Object.keys(render.look.season).sort()).toEqual(['1', '2', '3']);
+    expect(Object.keys(render.look.season).sort()).toEqual(['autumn', 'summer', 'winter']);
   });
 
   it('keeps the figure floors of art direction 2.5 (85 / 100 / 80 / 60 %)', () => {
@@ -90,8 +90,10 @@ describe('resolveLook', () => {
   });
 
   it('uses the preset as the base: noon is not evening', () => {
-    const noon = resolveLook(render, baseMap({ timeOfDay: 'noon', act: 9 }));
-    const evening = resolveLook(render, baseMap({ timeOfDay: 'evening', act: 9 }));
+    // without season tints: the pure preset
+    const bare = { ...render, look: { ...render.look, season: {} } };
+    const noon = resolveLook(bare, baseMap({ timeOfDay: 'noon' }));
+    const evening = resolveLook(bare, baseMap({ timeOfDay: 'evening' }));
     expect(noon.sun.elevationDeg).toBe(render.look.timeOfDay.noon.sun.elevationDeg);
     expect(evening.sun.azimuthDeg).toBe(270);
     expect(noon.sky).toBe(render.look.timeOfDay.noon.sky);
@@ -111,7 +113,7 @@ describe('resolveLook', () => {
   });
 
   it('puts the season of the act above the preset: tint and sun height', () => {
-    const s1 = render.look.season['1']!;
+    const s1 = render.look.season.summer!;
     const plain = render.look.timeOfDay.noon;
     const l = resolveLook(render, baseMap({ timeOfDay: 'noon', act: 1 }));
     expect(l.sun.elevationDeg).toBe(Math.min(90, plain.sun.elevationDeg + s1.sunElevationOffsetDeg));
@@ -119,6 +121,8 @@ describe('resolveLook', () => {
     expect(l.ambient.color).toBe(mixHex(plain.ambient.color, s1.tint, s1.strength));
     const winter = resolveLook(render, baseMap({ timeOfDay: 'noon', act: 3 }));
     expect(winter.sun.elevationDeg).toBeLessThan(l.sun.elevationDeg);
+    // a map's own season wins over its act's (story 15.15: N4 lies in act 2 with snow)
+    expect(resolveLook(render, baseMap({ timeOfDay: 'noon', act: 2, season: 'winter' }))).toEqual(winter);
   });
 
   it('grades light and sky by the weather without changing the time of day', () => {
@@ -189,6 +193,9 @@ describe('content:check rules for the look', () => {
     expect(validateWeather(withWeather('m', 1, 'rain'))).toEqual([]);
     expect(validateWeather(withWeather('m', 2, 'clear'))).toEqual([]);
     expect(validateWeather(withWeather('m', 3, 'snow'))).toEqual([]);
+    // story 15.15: snow falls on a winter board outside act 3 too (N4)
+    const n4 = withWeather('m', 2, 'snow');
+    expect(validateWeather({ ...n4, maps: { m: { ...n4.maps.m!, season: 'winter' as const } } })).toEqual([]);
   });
   it('the shipped maps pass', () => {
     expect(validateContent(data, locales).filter((i) => i.message.includes('weather'))).toEqual([]);
@@ -257,6 +264,7 @@ describe('content:check: board models exist and ship (story 15.8)', () => {
     for (const d of Object.values(b.decor)) out.add(d.model);
     for (const list of Object.values(b.decorOn)) for (const d of list) out.add(d.model);
     for (const m of Object.values(b.propFallback)) out.add(m);
+    for (const swap of Object.values(b.seasonModels)) for (const m of Object.values(swap ?? {})) out.add(m);
     for (const t of Object.values(data.terrain)) if (t.prop) out.add(`${t.prop}_idle`);
     for (const e of b.variants.lodge) for (const s of ['visited', 'razed']) out.add(e.model.replace(/intact$/, s));
     return out;

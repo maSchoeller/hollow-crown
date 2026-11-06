@@ -28,6 +28,9 @@ export const TIMES_OF_DAY = ['morning', 'noon', 'evening', 'night', 'indoor'] as
 export type TimeOfDay = (typeof TIMES_OF_DAY)[number];
 export const WEATHERS = ['clear', 'rain', 'fog', 'ash', 'snow'] as const;
 export type Weather = (typeof WEATHERS)[number];
+/** Season of a battle map (story 15.15, art-direction §2.4): the map's `season` or that of its act (render.yaml `board.actSeason`); render only. */
+export const SEASONS = ['summer', 'autumn', 'winter'] as const;
+export type Season = (typeof SEASONS)[number];
 export type ItemSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory' | 'bag';
 export type EquipSlot = 'mainHand' | 'offHand' | 'head' | 'body' | 'accessory1' | 'accessory2';
 export const EQUIP_SLOTS: readonly EquipSlot[] = ['mainHand', 'offHand', 'head', 'body', 'accessory1', 'accessory2'];

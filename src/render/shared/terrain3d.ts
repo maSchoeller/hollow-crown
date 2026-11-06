@@ -17,16 +17,22 @@ import type { BattleState, GameData, TerrainDef, TerrainSurface, TerrainWaterLoo
 import type { AssetStore } from '../host';
 import { BOARDWALK_DECK } from '../board/wallKit';
 import { connectorSurface, riseDir } from './connectors';
+import { seasonGround, seasonOf } from '../../content/season';
+import { addSnow } from './snow';
 
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
 
 export const GROUND_TEXTURES = ['grass', 'dirt', 'road', 'sand', 'ash', 'riverbed', 'stone', 'wall', 'earth_side', 'rock_side', 'rock_top', 'planks', 'peat', 'vault', 'water_0', 'water_1', 'water_2', 'water_3', 'mire_0', 'mire_1', 'mire_2', 'creek_0', 'creek_1', 'creek_2'];
 
-/** The ground textures from the shared cache (loaded once for board and world map, story 5.1). */
-export async function loadGroundTextures(store: AssetStore): Promise<GroundTextures> {
-  const list = await Promise.all(GROUND_TEXTURES.map((name) => store.texture(`ground/${name}.png`)));
-  return Object.fromEntries(GROUND_TEXTURES.map((name, i) => [name, list[i]!]));
+/**
+ * The ground textures from the shared cache (loaded once for board and world map, story 5.1), plus `extra` ones: the season's ground of
+ * the board shown (story 15.15, `seasonTextures`), so the other seasons' textures are never downloaded.
+ */
+export async function loadGroundTextures(store: AssetStore, extra: readonly string[] = []): Promise<GroundTextures> {
+  const names = [...new Set([...GROUND_TEXTURES, ...extra])];
+  const list = await Promise.all(names.map((name) => store.texture(`ground/${name}.png`)));
+  return Object.fromEntries(names.map((name, i) => [name, list[i]!]));
 }
 
 // ------------------------------------------------------------------ noise (deterministic, render only)
@@ -391,8 +397,12 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   const mix = new MixMaterial('terrain-tops', scene);
   mix.mixTexture1 = mix1;
   mix.mixTexture2 = mix2;
-  const layer = (k: number, name: string) => {
-    const t = tex[name]!.clone();
+  // the season's ground (story 15.15) swaps the texture of a layer, never the layer: a tile keeps its surface and its look of the rules
+  const map = data.maps[state.mapId];
+  const season = map ? seasonOf(data.render, map) : 'summer';
+  const layer = (k: number, surface: string) => {
+    const name = seasonGround(data.render, season, surface, !!map?.interior);
+    const t = (tex[name] ?? tex[surface]!).clone();
     t.uScale = grid.w / 2;
     t.vScale = grid.h / 2;
     (mix as unknown as Record<string, Texture>)[`diffuseTexture${k}`] = t;
@@ -414,8 +424,12 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
     return m;
   };
   add(tops, 'terrain-tops', mix);
-  add(caps, 'terrain-caps', std('terrain-caps', 'stone'), true);
-  add(rockCaps, 'terrain-rock-caps', std('terrain-rock-caps', 'rock_top'), true);
+  const capMat = std('terrain-caps', 'stone');
+  const rockCapMat = std('terrain-rock-caps', 'rock_top');
+  // winter (story 15.15): snow on the tops of rock and wall blocks too, as on the props (way B); not under a roof
+  if (season === 'winter' && !map?.interior) for (const m of [capMat, rockCapMat]) addSnow(m, data.render.board.snow.winter);
+  add(caps, 'terrain-caps', capMat, true);
+  add(rockCaps, 'terrain-rock-caps', rockCapMat, true);
   add(sides.earth!, 'terrain-earth', std('terrain-earth', 'earth_side'));
   add(sides.rock!, 'terrain-rock', std('terrain-rock', 'rock_side'), true);
   add(sides.wall!, 'terrain-wall', std('terrain-wall', 'wall'), true);

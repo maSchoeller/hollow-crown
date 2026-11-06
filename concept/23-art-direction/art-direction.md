@@ -130,7 +130,7 @@ Der Look wird auf dieser Basis an das Stil-Mockup angeglichen:
 | `road` | Feldweg mit Fahrspuren bzw. Pflaster in Städten | |
 | `forest` | Waldfeld `grove_*`: Baumgruppe am Nord- und Westrand, Mitte frei | Landschaft um die Karte und Qualität „Niedrig“: Einzelbäume |
 | `sand` | heller Sand, Wellenlinien | |
-| `mountain` | geschlossene Felsmasse aus kantigen Platten bis an die Feldkante (`massif_*` auf Felskappe `rock_top`, Höhe 0,75) | Schneehaube je Akt offen |
+| `mountain` | geschlossene Felsmasse aus kantigen Platten bis an die Feldkante (`massif_*` auf Felskappe `rock_top`, Höhe 0,75) | Winter: Schnee auf den Oberseiten (Story 15.15) |
 | `shallows` | helles Wasser mit Kieseln | animiert |
 | `swamp` | trübes Olivwasser über Torf, niedriges Schilf `reed_b`, Bülten `tussock_a` | begehbar wie Furt, eigene Textur `mire_*` |
 | `creek` | fast schwarzer Priel, hohes Schilf `reed_a`, Seerosen `lily_a` | gesperrt wie Fluss, eigene Textur `creek_*` |
@@ -156,7 +156,7 @@ Der Look wird auf dieser Basis an das Stil-Mockup angeglichen:
 
 Vier Regeln für jedes Asset: Was sperrt, füllt das Feld und ist höher als eine Figur. Ist etwas begehbar, bleibt die Feldmitte frei und der Boden sichtbar. Deko bleibt flach. Gleiche Wirkung hat in jeder Region die gleiche Form, nur Material und Farbe wechseln. Mauer, Tor und Tür wählen ihre Bauteile aus den Nachbarfeldern (`src/render/board/wallKit.ts`, Modelle `tools/art/props/fortify.py`). Bericht, Matrix Mission × Asset und Galerie: `concept/23-art-direction/map-assets/`.
 
-Hebel (`lever_up`, `lever_down`) und Balliste (`ballista_idle`) zeichnet das Brett seit 2026-11-05. Plan für Herbst, Winter und Schneehauben: `map-assets/jahreszeiten-plan.md`.
+Hebel (`lever_up`, `lever_down`) und Balliste (`ballista_idle`) zeichnet das Brett seit 2026-11-05. Herbst, Winter und Schneehauben nach `map-assets/jahreszeiten-plan.md` seit Story 15.15 (`render.yaml board.actSeason`, `seasonGround`, `seasonModels`, `snow`; Karte: `season`).
 
 Interaktive Objekte (Türen, Truhen, Hebel, Ballisten, Dörfer) haben zwei Zustände mit kurzem Übergang und im Zielmodus ein pulsierendes Glanzlicht.
 

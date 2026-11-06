@@ -19,11 +19,13 @@ items:
     missions: [1-2, 1-3, 1-5]
     use: Drei kleinere Bäume im Bogen am Nordrand; Mitte frei, lockerer Waldrand.
   - id: grove_autumn_a
+    ships: true
     name: Waldfeld Herbst
     ref: { sheet: nature_1.png, box: [1160, 85, 1510, 415] }
     missions: [1-3, 1-4]
     use: Rost- und orangefarbene Bäume am Feldrand mit Fallaub auf dem Boden; Mitte frei.
   - id: grove_snow_a
+    ships: true
     name: Waldfeld Schnee
     ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
     missions: [N4, 3-3, 3-4]

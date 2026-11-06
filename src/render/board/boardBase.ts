@@ -163,6 +163,8 @@ export abstract class BoardBase implements HostedView {
   protected terrain: TerrainView | null = null;
   protected seed = 7;
   protected propMat: StandardMaterial;
+  /** the shared prop material with snow (story 15.15), made on first use in winter */
+  protected propMatSnow: StandardMaterial | null = null;
   protected propTemplates = new Map<string, Promise<Mesh | null>>();
   protected propMeshes: Mesh[] = [];
   protected propSets: PropSet[] = [];

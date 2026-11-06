@@ -77,9 +77,9 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | Begehbares Dach | Bauten | fehlt | 2 | N1 | 1 | Formatwunsch aus N1 (`roof`). Regel offen (R3). |
 | Mühle mit Rad | Hof | vorhanden | 2 | N3 | 1 | Seit Story 15.8 im Spiel (`mill_idle`), die Karte setzt sie von Hand (`propVariants`). |
 | Truhe | Dinge | vorhanden | 3 | 1-3, 1-4, 1-5, 1-6, 1-7, N1, N2, N3, 2-2, 2-7, N5, 3-1, N7, N10 | 14 | Gut, aber dunkel. Im Zielmodus fehlt der im Text geforderte Glanz. |
-| Boden Schnee, Schneehauben | Boden | fehlt | 3 | N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9 | 10 | Schneefichten stehen auf Sommerwiese, Felsen und Dächer tragen keinen Schnee. |
+| Boden Schnee, Schneehauben | Boden | im Spiel (Story 15.15) | 3 | N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9 | 10 | Schneeboden, gefrorene Erde, Schneeweg; Schnee auf Requisiten (Weg B), Mauerkante und Turm mit Schneehaube, Waldfeld im Schnee. Probe Weg B wartet auf den Produktinhaber, zwei Waldvarianten fehlen. |
 | Fluss | Wasser | vorhanden | 3 | 1-1, 1-2, N1, N3, 2-3, 2-5, 2-7, 2-8, N6 | 9 | Klar und schön, passt aber nur für Akt 1. Im Moor und auf dem See ist es dasselbe Türkis. |
-| Boden Herbst | Boden | fehlt | 3 | 2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6 | 9 | Es gibt nur eine Grastextur. In Akt 2 steht Herbstlaub auf Sommerwiese. |
+| Boden Herbst | Boden | im Spiel (Story 15.15) | 3 | 2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6 | 9 | Herbstgras mit Laub (sheet6), Waldfeld Herbst; zwei Waldvarianten fehlen. |
 | Wagen | Dinge | vorhanden | 3 | 1-1, 1-5, 2-2, 2-7, 2-8, N6, 3-4, 3-6, N8 | 9 | Gut. |
 | Kulissenhäuser | Bauten | vorhanden | 3 | 1-1, 1-2, N1, N3, 2-3, 2-4, 2-7, 3-3 | 8 | Vier gute Modelle, Stil einheitlich. Aus der Spielkamera sieht man fast nur das Dach, daher soll das Dach die Variante tragen. |
 | Zelt, Lager | Dinge | vorhanden | 3 | 1-4, 1-5, 2-6, 2-8, N4, 3-4, N8 | 7 | Gut. |

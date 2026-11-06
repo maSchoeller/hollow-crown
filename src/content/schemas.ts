@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/storyDefs';
-import { PERMANENT_COMPANIONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
+import { PERMANENT_COMPANIONS, SEASONS, TIMES_OF_DAY, WEAPON_GROUPS, WEATHERS } from '../core/defs';
 import { HAUNT_VARIANTS } from '../core/mapDefs';
 import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 
@@ -385,6 +385,8 @@ export const mapSchema = z.object({
   /** story 8.6: light preset and weather of the board; both absent = the map looks as before */
   /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
   interior: z.boolean().optional(),
+  /** story 15.15: season of the board, otherwise that of the act (render.yaml board.actSeason) */
+  season: z.enum(SEASONS).optional(),
   timeOfDay: z.enum(TIMES_OF_DAY).optional(),
   weather: z.enum(WEATHERS).optional(),
   objects: z
@@ -761,7 +763,7 @@ const lookSchema = z.object({
   clothSteps: z.tuple([z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3), z.number().int().min(0).max(3)]),
   timeOfDay: z.object({ morning: timeOfDayDef, noon: timeOfDayDef, evening: timeOfDayDef, night: timeOfDayDef, indoor: timeOfDayDef }),
   weather: z.object({ clear: weatherDef, rain: weatherDef, fog: weatherDef, ash: weatherDef, snow: weatherDef }),
-  season: z.record(z.string(), z.object({ tint: hex, strength: unit, sunElevationOffsetDeg: z.number() })),
+  season: z.partialRecord(z.enum(SEASONS), z.object({ tint: hex, strength: unit, sunElevationOffsetDeg: z.number() })),
   fx: z.object({
     crit: z.object({ cutInInMs: ms, cutInHoldMs: ms, cutInOutMs: ms, freezeMs: ms, shakeMs: ms, shake: z.number().min(0), recoilMs: ms, returnMs: ms, settleMs: ms, numberScale: z.number().positive() }),
     death: z.object({ ashMs: ms, fadeMs: ms, rise: z.number().min(0), shakeMs: ms, shake: z.number().min(0), flakes: z.object({ high: count, mid: count, low: count }), embers: count, colour: hex, emberColour: hex }),
@@ -771,7 +773,7 @@ const lookSchema = z.object({
 
 const tint = z.object({ color: hex, alpha: unit });
 const legibilitySchema = z.object({
-  grid: z.object({ color: hex, subtle: z.object({ alpha: unit, arm: z.number().positive(), width: z.number().positive() }), strong: z.object({ alpha: unit, width: z.number().positive() }) }),
+  grid: z.object({ color: hex, seasonColor: z.partialRecord(z.enum(SEASONS), hex).optional(), subtle: z.object({ alpha: unit, arm: z.number().positive(), width: z.number().positive() }), strong: z.object({ alpha: unit, width: z.number().positive() }) }),
   range: z.object({ gap: z.number().min(0), corner: z.number().min(0), move: tint, attack: tint, heal: tint, cream: hex, edge: z.object({ cream: z.number().min(0), line: z.number().min(0) }) }),
   path: z.object({ color: hex, cream: hex, width: z.number().positive(), outline: z.number().min(0), head: z.number().positive(), headLength: z.number().positive() }),
   threat: z.object({
@@ -827,8 +829,15 @@ export const renderSchema = z.object({
       relief: propVariantList,
       stall: propVariantList,
       sarcophagus: propVariantList,
-      tree: z.record(z.string(), propVariantList),
-      sceneryTree: z.record(z.string(), propVariantList),
+      tree: z.partialRecord(z.enum(SEASONS), propVariantList),
+      sceneryTree: z.partialRecord(z.enum(SEASONS), propVariantList),
+    }),
+    actSeason: z.record(z.string().regex(/^\d+$/), z.enum(SEASONS)),
+    seasonGround: z.partialRecord(z.enum(SEASONS), z.record(z.string(), slugId)),
+    seasonModels: z.partialRecord(z.enum(SEASONS), z.record(z.string(), slugId)),
+    snow: z.object({
+      winter: z.object({ color: hex, from: z.number().min(0).max(1), to: z.number().min(0).max(1), ragged: z.number().min(0).max(1), scale: z.number().positive(), cover: z.number().min(0).max(1) }).refine((s) => s.to > s.from, 'to must lie above from'),
+      skip: z.array(z.string()),
     }),
     propFallback: z.record(z.string(), z.string()),
     markMs: z.number().int().min(0),

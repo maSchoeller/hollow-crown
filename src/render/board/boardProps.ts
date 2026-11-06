@@ -14,6 +14,9 @@ import { loadManifest } from '../shared/assets';
 import { buildTerrain, hash3 } from '../shared/terrain3d';
 import { loadPropMesh } from '../shared/models';
 import { variantClassOf, variantList } from '../../content/propVariants';
+import { seasonModel, seasonOf, takesSnow } from '../../content/season';
+import type { Season } from '../../core/defs';
+import { addSnow } from '../shared/snow';
 import { isPackRegistered } from '../../content/browser';
 import { modelAvailable, pickVariant, withState } from '../shared/scenery';
 import { fadeRule, hidesFigure, mayFade } from './fade';
@@ -60,6 +63,8 @@ export abstract class BoardProps extends BoardSetup {
     if (!p) {
       p = (async () => {
         const m = await loadPropMesh(this.store, pid, state, this.propMat);
+        // winter: painted snow on the faces that look up (way B), unless the model brings its own
+        if (m && takesSnow(this.data.render, this.season(), key)) m.material = this.snowy(m.material as StandardMaterial);
         if (m) {
           m.isVisible = false;
           m.alwaysSelectAsActiveMesh = true;
@@ -71,6 +76,26 @@ export abstract class BoardProps extends BoardSetup {
       this.propTemplates.set(key, p);
     }
     return p;
+  }
+
+  /** Season of the board shown (story 15.15): the map's own or that of its act; under a roof none, the board looks as in summer. */
+  protected season(): Season {
+    const map = this.data.maps[this.state.mapId]!;
+    return map.interior ? 'summer' : seasonOf(this.data.render, map);
+  }
+
+  /** A prop material with snow: a template's own material gets the plug-in, the shared prop material a winter twin. */
+  protected snowy(m: StandardMaterial): StandardMaterial {
+    const def = this.data.render.board.snow.winter;
+    if (m !== this.propMat) {
+      addSnow(m, def);
+      return m;
+    }
+    if (!this.propMatSnow) {
+      this.propMatSnow = this.propMat.clone('prop:snow');
+      addSnow(this.propMatSnow, def);
+    }
+    return this.propMatSnow;
   }
 
   /** Simple stand-ins for props without a Blender model (doors, gates, thrones). */
@@ -110,7 +135,13 @@ export abstract class BoardProps extends BoardSetup {
     const known = (model: string) => modelAvailable(manifest.models, model, isPackRegistered);
     // a model that is not built yet (the manifest does not know it) is drawn as its stand-in, if render.yaml names one
     const fallback = this.data.render.board.propFallback;
-    const resolve = (model: string) => (known(model) ? model : (fallback[model] ?? model));
+    // the season's own version of a model (snow-capped wall and tower, story 15.15) when it is built, else the model itself
+    const season = this.season();
+    const resolve = (model: string) => {
+      const own = seasonModel(this.data.render, season, model);
+      if (own !== model && known(own)) return own;
+      return known(model) ? model : (fallback[model] ?? model);
+    };
     const places = new Map<string, Place[]>();
     const put = (model: string, p: Place) => {
       const key = resolve(model);
@@ -130,7 +161,7 @@ export abstract class BoardProps extends BoardSetup {
       const override = grid.inMap(gx, gy) ? overrides.get(`${x},${y}`) : undefined;
       // the lowest quality draws the light single trees everywhere, not only around the map
       const light = !grid.inMap(gx, gy) || (cls === 'tree' && this.quality === 'low');
-      const model = pickVariant(variantList(this.data, cls, map.act, light), rolls, { has: known, override, avoid });
+      const model = pickVariant(variantList(this.data, cls, season, light), rolls, { has: known, override, avoid });
       chosen.set(`${gx},${gy}`, model);
       return model;
     };
@@ -350,6 +381,7 @@ export abstract class BoardProps extends BoardSetup {
       mat.backFaceCulling = src.backFaceCulling;
       mat.maxSimultaneousLights = src.maxSimultaneousLights;
       mat.diffuseTexture = src.diffuseTexture; // shared with the opaque material, owned by the model file
+      if (src.pluginManager?.getPlugin('HcSnow')) addSnow(mat, this.data.render.board.snow.winter);
       mat.alpha = this.data.render.board.fade.alpha;
       mat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
       // depth first: only the front surface blends, the prop reads as one veil instead of a tangle of inner faces

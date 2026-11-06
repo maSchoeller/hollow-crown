@@ -9,6 +9,7 @@
  * `PERF_VAT=0|1` overrides `board.vat`: 0 = every figure plays its skeleton (the path before the baked animation of story 7.8).
  * `PERF_STAGES=1,2,4` overrides the throttling levels (levels without a target are only reported).
  */
+import { SEASONS, type Season } from '../../src/core/defs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
@@ -202,8 +203,10 @@ interface LargeRow {
  * deployed, every foe advancing) next to the reference battle, each with the foes walking one by one and together, and the 3D
  * castle with every room built. Writes `test-results/perf/large-<device>.json` and `.md`. Desktop throttling stands in for the phone;
  * the reference devices stay a release check (story 9.14). `PERF_LARGE_MAPS=reference,s1_1_6_paktwacht,s1_1_8_heimat,whole,castle`
- * limits the rows (`whole` = 1-6 watched in the overview).
+ * limits the rows (`whole` = 1-6 watched in the overview). `PERF_SEASON=winter` (story 15.15) shows every draft in that season.
  */
+const SEASON = process.env.PERF_SEASON as Season | undefined;
+if (SEASON && !SEASONS.includes(SEASON)) throw new Error(`PERF_SEASON=${SEASON}: no season (${SEASONS.join(', ')})`);
 test('large maps and the castle (story 15.11)', async ({ page }, info) => {
   test.skip(process.env.PERF_LARGE !== '1', 'set PERF_LARGE=1');
   test.setTimeout(3_600_000);
@@ -226,7 +229,7 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
         const runs: PhaseRun[] = [];
         let units = 0;
         for (let i = 0; i < RUNS; i++) {
-          const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, map: m.map, march, whole: m.whole }, m.map ? null : 40);
+          const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, map: m.map, march, whole: m.whole, ...(SEASON ? { season: SEASON } : {}) }, m.map ? null : 40);
           runs.push(r.run);
           units = r.prepared.units;
           renderer = r.prepared.renderer;

@@ -6,7 +6,7 @@ import { loadContentFromDisk, contentFiles } from '../src/content/node';
 import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/content/packs';
 import { checkLockedIds, collectIds, releasedIdsSchema, renamesSchema, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
-import { unshippedGalleryModels, validateBoardModels } from '../src/content/validateLook';
+import { unshippedGalleryModels, validateBoardModels, validateSeasons } from '../src/content/validateLook';
 
 const { data, locales, issues } = loadContentFromDisk();
 const spriteDir = join(process.cwd(), 'art', 'sprites', 'units');
@@ -43,6 +43,12 @@ else {
   const groups = readdirSync(galleryDir).filter((n) => n.endsWith('.yaml')).map((f) => parse(readFileSync(join(galleryDir, f), 'utf8')) as unknown);
   packIssues.push(...validateBoardModels(data, propModels, unshippedGalleryModels(groups)));
 }
+// story 15.15: the season's ground textures are ones tools/art/ground.py builds (keys of its TEXTURES)
+const groundPy = join(process.cwd(), 'tools', 'art', 'ground.py');
+const textures = existsSync(groundPy) ? /\r?\nTEXTURES = \{([\s\S]*?)\r?\n\}/.exec(readFileSync(groundPy, 'utf8'))?.[1] : undefined;
+const groundNames = textures ? new Set([...textures.matchAll(/^\s+"([a-z_0-9]+)":/gm)].map((m) => m[1]!)) : undefined;
+if (!groundNames?.size) packIssues.push({ file: 'tools/art/ground.py', message: 'TEXTURES not found: season ground textures not checked' });
+else packIssues.push(...validateSeasons(data, groundNames).filter((i) => i.message.includes('no ground texture')));
 // stable IDs (story 7.4): only once a release has locked them with pnpm content:lock
 const lockFile = join(process.cwd(), 'content', 'released-ids.json');
 const renamesFile = join(process.cwd(), 'content', 'renames.yaml');

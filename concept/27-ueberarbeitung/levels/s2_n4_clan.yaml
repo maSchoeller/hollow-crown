@@ -45,6 +45,8 @@ levels:
   - { level: 1, area: { tiles: [[4, 7]] } }
 timeOfDay: morning
 weather: snow
+# Story 15.15: früher Schnee in Akt 2 (Matrix: Boden Schnee, Schneehauben)
+season: winter
 objects:
   - { id: v_west, type: village, at: [6, 10], reward: { gold: 200 } }
   - { id: v_east, type: village, at: [13, 10], reward: { material: { moonsteel: 1 } } }

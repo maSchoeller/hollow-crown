@@ -1,5 +1,5 @@
 /** Map definitions as the rules core sees them: terrain, units, objects, objectives, triggers, reinforcements, maps and haunts. */
-import type { Difficulty, ItemRef, MoveType, Pos, SupportRank, Team, TimeOfDay, WeaponType, Weather } from './defs';
+import type { Difficulty, ItemRef, MoveType, Pos, SupportRank, Team, Season, TimeOfDay, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone' | 'riverbed' | 'peat' | 'vault';
@@ -174,6 +174,8 @@ export interface MapDef {
   levels?: Array<{ level: number; area: Area }>;
   /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
   interior?: boolean;
+  /** story 15.15: season of the board (ground, trees, snow caps, light) when it differs from that of the act (N4 lies in act 2 with snow) */
+  season?: Season;
   /** ambient light of the 3D board; with `timeOfDay` each field overrides the preset, without it a missing field is the plain default */
   ambient?: { color?: string; intensity?: number };
   lights?: Array<{ at: Pos; color: string; radius: number }>;
