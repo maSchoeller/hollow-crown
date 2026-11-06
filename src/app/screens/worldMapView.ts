@@ -62,6 +62,30 @@ export function fogAreas(world: WorldDef, act: number): Array<Array<[number, num
   return world.regions.filter((r) => r.act > act).flatMap((r) => r.areas);
 }
 
+/** A drawn path between two places: its ends (percent) and whether it leads to a place without an unlocked stone. */
+export interface Road {
+  key: string;
+  a: [number, number];
+  b: [number, number];
+  dim: boolean;
+}
+
+/**
+ * The paths to draw (story 15.12): the road network of the world, without roads into the fog of a later act. A road is full
+ * when both its places hold a stone that is open or done (`known`), otherwise it is drawn dimmed.
+ */
+export function roadsOf(world: WorldDef, act: number, known: ReadonlySet<string>): Road[] {
+  const place = new Map(world.places.map((p) => [p.id, p]));
+  const out: Road[] = [];
+  for (const [a, b] of world.roads) {
+    const pa = place.get(a);
+    const pb = place.get(b);
+    if (!pa || !pb || pa.act > act || pb.act > act) continue;
+    out.push({ key: `${a}|${b}`, a: pa.at, b: pb.at, dim: !known.has(a) || !known.has(b) });
+  }
+  return out;
+}
+
 /** The place whose slot holds a campaign node. */
 export function placeOf(world: WorldDef, node: string): WorldPlace | undefined {
   return world.places.find((p) => p.slots.some((s) => s.node === node));

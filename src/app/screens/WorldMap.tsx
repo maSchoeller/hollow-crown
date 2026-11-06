@@ -7,7 +7,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
+import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -22,7 +22,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
 import { UnitHead } from './unitArt';
-import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
+import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, roadsOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -409,18 +409,13 @@ export function WorldMap() {
         </div>
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" ref={paths} aria-hidden="true">
-            {nodeLinks(data).flatMap(([from, to]) => {
-              const a = shown.some((x) => x.id === from) && atOf(from);
-              const b = shown.some((x) => x.id === to) && atOf(to);
-              // nodes at the same place share a stone: no path between them
-              if (!a || !b || (a[0] === b[0] && a[1] === b[1])) return [];
-              return [
-                <g key={from + to}>
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path wm__path--edge" />
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path" />
-                </g>,
-              ];
-            })}
+            {/* the road network (story 15.12): the geography, not the campaign order; dimmed towards places not unlocked yet */}
+            {roadsOf(world, data.campaign.act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
+              <g key={r.key} class={r.dim ? 'wm__road is-dim' : 'wm__road'}>
+                <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path wm__path--edge" />
+                <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path" />
+              </g>
+            ))}
           </svg>
           {fog.length > 0 &&
             world.regions

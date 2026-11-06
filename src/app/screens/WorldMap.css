@@ -111,6 +111,10 @@
   stroke-dasharray: none;
   opacity: 0.45;
 }
+/* a road towards a place without an unlocked stone (story 15.12) */
+.wm__road.is-dim {
+  opacity: 0.6;
+}
 
 .wm__loading {
   position: absolute;

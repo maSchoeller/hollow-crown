@@ -144,3 +144,10 @@
 - Ausgebaut erscheint die Burg ab **Burgstufe 1** (`castleTier: 1`, neue Bedingung), also mit dem ersten Raum-Ausbau; Räume lassen sich erst ab Akt 2 ausbauen, nach 1-6 bleibt die Burg in Akt 1 eine Ruine wie in §7 [ASSUMPTION: Stufe 1 statt einer späteren Stufe; die Variante zeigt schon die volle Festung].
 - **Offen beim Produktinhaber:** Varianten für weitere Orte (Erlbach verbrannt nach 1-2, Aurenhall belagert); bis zur Entscheidung zeigen sie ihr Grundbild. Ebenso offen: ob die Burgstufen 1 und 2 (gesichert, wehrhaft) eigene Stadtbilder bekommen; bis dahin zeigt jede Stufe ab 1 die volle Festung.
 - Paket: die drei Stufen zusammen 4,6 MB statt 3,4 MB (Kacheln + Übersicht); ein Handy mit DPR 3 lädt davon Übersicht und volle Stufe, rund 3,3 MB. `act1` 35,8 von 40 MB.
+
+## 2026-11-06: Wege zeigen die Geografie, nicht die Missionsfolge (Story 15.12)
+
+- **Produktinhaber 2026-11-06:** Die gezeichneten Wege liefen in der Reihenfolge der Kampagne kreuz und quer über die Karte. Gewünscht ist eine Straßenkarte: **Wege verbinden Orte, die nah beieinander liegen; sie zeigen die Geografie, nicht die Missionsfolge.** Kampagnenfolge, Freischaltung und Knoten bleiben unverändert.
+- Umsetzung: Wegenetz als Daten (`roads` in `content/world/valmora.yaml`, erzeugt mit `tools/art/world_roads.py`). Zuerst die Straßen aus `geografie-valmora.md` (Klammstraße Aurenhall–Kronfeld, Passstraße Kronfeld–Windscharte–Paktwacht, Paktwacht–Tobins Hof–Varnhold, Speichen von Kronfeld, Weg über den Spiegelsee zum Krater), dann Nachbarn per Gabriel-Graph: keine Kreuzungen, kein Weg länger als 18 % der Kartenbreite (die Küstenstrecke Aue-Insel–Perlhof 25 %, sonst wäre Perlhof abgeschnitten), jeder Ort erreichbar. 41 Wege über 30 Orte.
+- Wege in den Nebel eines späteren Akts zeichnet die Karte nicht. Damit hat der Prolog-Stein in Aurenhall in Akt 1 keinen Weg mehr nach Varnhold (bisher zeigte die Linie die Flucht nach Süden); die Flucht erzählt die Prolog-Szene. Wege zu einem Ort ohne offenen oder erledigten Stein sind gedämpft (60 % Deckkraft).
+- Belege: `_bmad-output/implementation-artifacts/15-12-belege/wege-vergleich.jpg` (375 × 812, vorher und nachher bei 1-6).

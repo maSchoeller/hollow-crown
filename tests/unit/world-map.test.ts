@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { conditionContext, newCampaign, type WorldDef, type WorldPlace } from '../../src/core';
 import { loadContentFromDisk } from '../../src/content/node';
 import { validateContent } from '../../src/content/validate';
-import { clampView, coverScale, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, pickLevel, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround } from '../../src/app/screens/worldMapView';
+import { clampView, coverScale, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, pickLevel, placeOf, roadsOf, screenOf, siteImage, stepScale, stonesOf, zoomAround } from '../../src/app/screens/worldMapView';
 
 const { data, locales } = loadContentFromDisk();
 const size = [1024, 1536] as const; // the view maths take any picture size
@@ -161,6 +161,49 @@ describe('stones and town pictures', () => {
     // a variant that failed to load falls back to the base picture, a missing base to the place sign (null)
     expect(siteImage(burnt, after, ['erlbach_burnt'])).toBe('erlbach');
     expect(siteImage(burnt, after, ['erlbach_burnt', 'erlbach'])).toBeNull();
+  });
+
+  it('the road network joins every place, without crossings and long diagonals (story 15.12)', () => {
+    const at = new Map(world.places.map((p) => [p.id, p.at]));
+    const roads = world.roads;
+    // every place reachable
+    const reach = new Set([world.places[0]!.id]);
+    for (let grown = true; grown; ) {
+      grown = false;
+      for (const [a, b] of roads)
+        if (reach.has(a) !== reach.has(b)) {
+          reach.add(a).add(b);
+          grown = true;
+        }
+    }
+    expect(reach.size).toBe(world.places.length);
+    // no road crosses another
+    const side = (p: readonly number[], q: readonly number[], r: readonly number[]) => Math.sign((q[0]! - p[0]!) * (r[1]! - p[1]!) - (q[1]! - p[1]!) * (r[0]! - p[0]!));
+    for (const [i, [a, b]] of roads.entries())
+      for (const [c, d] of roads.slice(i + 1)) {
+        if (new Set([a, b, c, d]).size < 4) continue;
+        const [pa, pb, pc, pd] = [a, b, c, d].map((id) => at.get(id)!) as Array<readonly [number, number]>;
+        const crosses = side(pa!, pb!, pc!) * side(pa!, pb!, pd!) < 0 && side(pc!, pd!, pa!) * side(pc!, pd!, pb!) < 0;
+        expect(crosses, `${a}-${b} × ${c}-${d}`).toBe(false);
+      }
+    // no road across the map: at most a quarter of its width
+    for (const [a, b] of roads) expect(Math.hypot(at.get(a)![0] - at.get(b)![0], at.get(a)![1] - at.get(b)![1]), `${a}-${b}`).toBeLessThanOrEqual(26);
+    // the roads of geografie-valmora.md are part of it: the pass road and the way from the Paktwacht to Varnhold
+    const has = (a: string, b: string) => roads.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+    expect(has('kronfeld', 'wind_gap') && has('wind_gap', 'paktwacht') && has('paktwacht', 'tobin_farm') && has('tobin_farm', 'varnhold')).toBe(true);
+  });
+
+  it('draws no road into the fog of a later act and dims roads towards places not unlocked yet', () => {
+    const act1 = roadsOf(world, 1, new Set(['varnhold', 'erlbach']));
+    const act1Places = new Set(world.places.filter((p) => p.act === 1).map((p) => p.at.join()));
+    expect(act1.length).toBeGreaterThan(0);
+    for (const r of act1) expect(act1Places.has(r.a.join()) && act1Places.has(r.b.join())).toBe(true);
+    const varnhold = world.places.find((p) => p.id === 'varnhold')!.at.join();
+    const erlbach = world.places.find((p) => p.id === 'erlbach')!.at.join();
+    const between = act1.find((r) => [r.a.join(), r.b.join()].sort().join() === [varnhold, erlbach].sort().join())!;
+    expect(between.dim).toBe(false);
+    expect(act1.filter((r) => r !== between).every((r) => r.dim)).toBe(true);
+    expect(roadsOf(world, 3, new Set()).length).toBe(world.roads.length);
   });
 
   it('the Paktwacht is a ruin at the start and built from castle tier 1 on (story 15.12)', () => {

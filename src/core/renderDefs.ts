@@ -293,4 +293,6 @@ export interface WorldDef {
   /** tip of the home stone per kind of home (camp until mission 1-6, then the castle) */
   home: Record<HomeKind, [number, number]>;
   places: WorldPlace[];
+  /** drawn paths between two places (ids), the geography and not the campaign order (story 15.12) */
+  roads: Array<[string, string]>;
 }

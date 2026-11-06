@@ -74,6 +74,10 @@ Code-Review 2026-11-06 (Blind Hunter, Edge Case Hunter, Verification Gap, Accept
 - `concept/23-art-direction/art-direction.md` §6 und §7, `decision-log.md` 2026-11-05 (Weltkarte v5), `licensing.md` §6
 - `concept/25-ux/DESIGN.md` (map-node, Ebenen), `concept/24-architecture/architecture.md` §5.12
 
+## Zusatz: Wege als Straßenkarte (Produktinhaber 2026-11-06)
+
+Nachgereicht während des Reviews: Die Wege liefen in der Kampagnenfolge kreuz und quer. Jetzt verbindet ein festes Wegenetz (`roads` in `valmora.yaml`, `tools/art/world_roads.py`) nahe Orte: zuerst die Straßen aus `geografie-valmora.md`, dann Gabriel-Graph ohne Kreuzungen und ohne lange Diagonalen; jeder Ort erreichbar (Unit-Test). Wege in den Nebel späterer Akte bleiben verborgen, Wege zu Orten ohne freigeschalteten Stein sind gedämpft (`roadsOf`). Kampagnenfolge und Freischaltung unverändert. Vergleich: `15-12-belege/wege-vergleich.jpg`. Entscheidung im Art-Decision-Log.
+
 ## Messung
 
 **Aufbau:** `node tools/art/worldmap-perf.mjs --rate <4|6>` gegen den Dev-Server: Chromium (Playwright, headless), 375 × 812 mit DPR 3 und Touch, CPU per DevTools-Protokoll 4× bzw. 6× gedrosselt, Spiel stumm. Kampagne bis 1-2, Weltkarte, dann 4 Züge mit Nachgleiten, 5 Zoomschritte, 2 Züge in der Nah-Stufe, Tipp auf einen Stein. Gemessen: Abstand jedes Frames (rAF), Long Animation Frames, Layout/Stil aus `Performance.getMetrics`, Chrome-Trace (Paint, Commit, Raster), Ebenen und dekodierte Bilder. Die Drossel trifft nur den Hauptthread; Raster und GPU laufen in voller Rechnergeschwindigkeit (headless mit Software-GPU), das echte Handy prüft der Produktinhaber.
@@ -124,7 +128,8 @@ Claude Opus 5.5
 
 ### File List
 
-- `tools/art/build.py`, `tools/art/worldmap-perf.mjs` (neu), `tools/art/worldmap-shots.mjs`
+- `tools/art/build.py`, `tools/art/worldmap-perf.mjs` (neu), `tools/art/worldmap-shots.mjs`, `tools/art/world_roads.py` (neu)
+- `src/content/validate.ts` (Wege)
 - `art/world/map_places_v5.json`, `art/world/sites/paktwacht_ruin.png` (neu), `art/world/v5/paktwacht_ruin_chatgpt.png` (neu), `art/prompts/paktwacht_ruin_site.md` (neu)
 - `content/world/valmora.yaml`, `content/core/render.yaml`
 - `src/core/campaign/castle.ts` (neu), `src/core/campaign/camp.ts`, `src/core/campaign/conditions.ts`, `src/core/storyDefs.ts`, `src/core/renderDefs.ts`, `src/content/schemas.ts`
