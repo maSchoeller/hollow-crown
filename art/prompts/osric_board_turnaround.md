@@ -22,4 +22,4 @@
 
 ## Tripo
 
-Noch nicht gelaufen (Stand 2026-11-05): Das Tripo-Konto steht auf dem Free-Tarif; Auflage A1 (`concept/23-art-direction/licensing.md` §6) verlangt Pro mit Datenschutz „Privat“. Siehe Decision-Log der Art Direction, 2026-11-05.
+2026-11-06, Konto `maschoeller`, Credits aus dem bezahlten Tarif (Freigabe des Produktinhabers im Chat 2026-11-06), Datenschutz **Privat**. Smart-Mesh P2.0 Multi-View (Front = `front.png`, Right = `side.png`, Back = `back.png`), Quad, 3 000 Polygone, 4 Varianten (100), Textur (20), Auto-Rig Humanoid/Mixamo (20) = 140 Credits; Aufgabe `45f0dd5d-9847-486f-964e-0331ce6e8909`. Gewählt: Variante 2 von 4 (alle vier sehr ähnlich): runder Bauch, Senfmantel mit Pelzkragen, Halstuch und Bauchschärpe magenta, Geldbeutel links. Export GLB mit Skelett, Textur 2k → `art/models/source/osric_board_tripo.glb`; `pnpm art:tripo` → `art/models/units/osric.glb`, 6 295 Dreiecke, 512 px, 0,28 MB gz (Budget 7 000 / 512 / 0,5 MB). Vergleich: `art/previews/figuren_15_9_board.png`.

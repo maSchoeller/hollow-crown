@@ -1,6 +1,6 @@
 # Story 15.9: Brettfiguren zu den neuen Porträts, Schritt 1
 
-Status: in-progress (Tripo blockiert: Konto im Free-Tarif, siehe Completion Notes)
+Status: done
 
 ## Story
 
@@ -25,26 +25,26 @@ damit ich sie wiedererkenne.
   - [x] Teamtuch auf ein **kleines** Stück legen, nie aufs Signaturteil (Befund „Teamtuch frisst Signaturteile“ in `figuren-bestand.md`)
   - [x] Sheet speichern unter `art/turnarounds/<id>_board/sheet.png`, mit `tools/art/split_turnaround.py` in `front/side/back.png` teilen
   - [x] selbst gegen Porträt und §4.1/§4.6 prüfen, bevor Credits fließen; höchstens zwei Tripo-Läufe je Figur
-- [ ] T2 Tripo (AC 1, 6)
+- [x] T2 Tripo (AC 1, 6)
   - [x] Guthaben in Tripo ablesen, bevor der erste Lauf startet; je Figur 140 Credits (Smart-Mesh 100, Textur 20, Auto-Rig 20)
-  - [ ] Pro, Datenschutz „Privat“, Smart-Mesh P2.0 Multi-View (vorn / rechts / hinten), Quad, 3 000 Polygone, Textur, Auto-Rig Humanoid; GLB mit Skelett ohne Animationen nach `art/models/source/<id>_board_tripo.glb`
+  - [x] Pro, Datenschutz „Privat“, Smart-Mesh P2.0 Multi-View (vorn / rechts / hinten), Quad, 3 000 Polygone, Textur, Auto-Rig Humanoid; GLB mit Skelett ohne Animationen nach `art/models/source/<id>_board_tripo.glb`
   - [x] Hängt Tripo (Login, Limit, Fehler): Stand sichern, nichts kaufen, im Bericht melden
-- [ ] T3 Pipeline (AC 1, 2, 5)
-  - [ ] Lucan: die Animationsbibliothek `kael_board_tripo.glb` (alter Kael) wird `kael_anims_base.glb`, `ANIM_LIBRARY` in `tools/art/tripo_units.py` zeigt darauf; Lucans Export wird `kael_board_tripo.glb` und baut `kael.glb` (Umbenennung `kael`→`lucan` macht Story 15.6)
-  - [ ] `pnpm art:tripo kael osric paktwacht_steward`, Budget-Zeilen prüfen
-  - [ ] `content/acts/act1/maps/m1_4_wolfslager.yaml`: Osric `sprite: osric`; `m1_8_paktwacht_halten.yaml`: Verwalter `sprite: paktwacht_steward`
-  - [ ] `pnpm art:build`, Paketzuordnung (`tools/art/model_packs.py`) prüfen
+- [x] T3 Pipeline (AC 1, 2, 5)
+  - [x] Lucan: die Animationsbibliothek `kael_board_tripo.glb` (alter Kael) wird `kael_anims_base.glb`, `ANIM_LIBRARY` in `tools/art/tripo_units.py` zeigt darauf; Lucans Export wird `kael_board_tripo.glb` und baut `kael.glb` (Umbenennung `kael`→`lucan` macht Story 15.6)
+  - [x] `pnpm art:tripo kael osric paktwacht_steward`, Budget-Zeilen prüfen
+  - [x] `content/acts/act1/maps/m1_4_wolfslager.yaml`: Osric `sprite: osric`; `m1_8_paktwacht_halten.yaml`: Verwalter `sprite: paktwacht_steward`
+  - [x] `pnpm art:build`, Paketzuordnung (`tools/art/model_packs.py`) prüfen
 - [x] T4 Tausch `archer` → `bandit_archer` (AC 3)
   - [x] 9 Stellen in `m1_6_paktwacht.yaml`, `m1_7_gewoelbe.yaml`, `m1_8_paktwacht_halten.yaml`, `n2_wachturm.yaml`; Kartenkommentare nachziehen
   - [x] weitere Verweise auf `archer` als Figur in `src/`, `tests/`, `tools/` suchen (Klassen-`legacyIds: [archer]` bleibt)
-- [ ] T5 Nachweise (AC 4, 6)
-  - [ ] `pnpm art:silhouettes kael osric paktwacht_steward bandit_archer`
-  - [ ] Bogen Porträt | Brett-Render (Cycles, wie `figuren-bestand.md` „Wie die Bilder entstanden“) je Figur unter `art/previews/`
-  - [ ] Screenshot im Spiel 375 × 812, alle Lautstärken 0
-- [ ] T6 Doku (AC 6, 7)
-  - [ ] `art/prompts/<id>_board_turnaround.md` je Figur, Tripo-Eintrag in `art/prompts/<id>.md`
-  - [ ] Credit-Stand im Decision-Log der Art Direction (`concept/23-art-direction/decision-log.md`) und in `figuren-bestand.md` („Credits“, Bestandstabelle)
-- [ ] T7 `pnpm check`, `bmad-code-review`, PR
+- [x] T5 Nachweise (AC 4, 6)
+  - [x] `pnpm art:silhouettes kael osric paktwacht_steward bandit_archer`
+  - [x] Bogen Porträt | Brett-Render (Cycles, wie `figuren-bestand.md` „Wie die Bilder entstanden“) je Figur unter `art/previews/`
+  - [x] Screenshot im Spiel 375 × 812, alle Lautstärken 0
+- [x] T6 Doku (AC 6, 7)
+  - [x] `art/prompts/<id>_board_turnaround.md` je Figur, Tripo-Eintrag in `art/prompts/<id>.md`
+  - [x] Credit-Stand im Decision-Log der Art Direction (`concept/23-art-direction/decision-log.md`) und in `figuren-bestand.md` („Credits“, Bestandstabelle)
+- [x] T7 `pnpm check`, `bmad-code-review`, PR
 
 ## Dev Notes
 
@@ -93,6 +93,8 @@ Claude Opus 5.5
 - T1: drei Brett-Turnarounds per ChatGPT (Plus), je ein Chat, Porträt v2.5 + Ysolde-Blatt als Vorlage; Lucan in zwei Nachrichten (Schulterstück vergrößert), Osric und Verwalter auf Anhieb. Bogen Porträt | Turnaround: `art/previews/figuren_15_9_turnarounds.png`.
 - T4: 9 Kartenstellen und 5 Testkarten zeigen `bandit_archer`; Klassen-Rückfall `art` von `marksman` und `sharpshooter` ebenfalls (sonst Platzhalter bei Tavernen-Söldnern); `archer.glb` und `build_archer` entfernt. `content:check` prüft Figuren-IDs jetzt auch ohne `art/sprites/units` und meldet unbekannte Klassen-Figuren (Warnung; bekannt: `cleric` ohne Modell).
 - **Vor dem Tripo-Lauf prüfen (Review):** Schärpe liegt bei Lucan hinten über dem Umhang, bei Osric vorn unter, hinten über dem Mantel – Tripo baut die Form aus den Ansichten, das kann Geometrie verschmelzen; Osrics Hauptbuch fehlt bewusst (Hand trägt zur Laufzeit die Waffe); die Beuge des Verwalters ist nur angedeutet; sein Schlüsselbund hängt rechts (Hand rechts trägt den Heilstab). Teamtuch bei Osric und Verwalter zwei Stücke (Hals + Hüfte), wie bisher bei Brakka.
+- 2026-11-06, Teil 2: Produktinhaber gibt Tripo frei (Credits aus dem bezahlten Tarif). Je Figur ein Lauf mit Datenschutz „Privat“, 420 Credits, **Rest 205**. Bibliothek → `kael_anims_base.glb`, `pnpm art:tripo kael osric paktwacht_steward` (6 179 / 6 295 / 6 050 Dreiecke, 512 px, 0,28 MB gz), Sprites in 1-4 und 1-8 gesetzt, `pnpm art:build` (Pakete: `kael` core, `osric` und `paktwacht_steward` act1). Silhouetten mit neuer Gruppe „Bosses and NPCs“. Vergleichsbogen statt Cycles mit Workbench-Render der Tripo-Quellen (`art/previews/figuren_15_9_board.png`); Spielbilder 375 × 812, Ton aus: `art/previews/story_15_9_osric_m1_4.png`, `story_15_9_steward_m1_8.png` (Osric steht im Nebel und wirkt deshalb blass; das Hinweisband „Speichern fehlgeschlagen“ kommt von `failSaves` der Dev-Hilfe).
+- Abweichung Lucan: Haar strubbeliger als im Porträt, der kurze Zopf fehlt (alle vier Varianten); ein zweiter Lauf hätte die Reserve aufgebraucht, deshalb belassen – Sichtung durch den Produktinhaber.
 - Offene Frage an den Produktinhaber (A2): Prüfung und Abnahme der Turnarounds lagen beim Assistenten; ob das als menschlicher Anteil reicht, entscheidet er bei der Sichtung.
 
 ### File List
@@ -104,4 +106,5 @@ Claude Opus 5.5
 - `art/models/units/archer.glb` (gelöscht), `tools/art/blender_units.py`, `tools/art/previews.py`
 - `content/core/classes.yaml`, `content/acts/act1/maps/{m1_6_paktwacht,m1_7_gewoelbe,m1_8_paktwacht_halten,n2_wachturm}.yaml`, `tests/fixtures/maps/*.yaml`
 - `tools/content-check.ts`, `src/content/validate.ts`, `tests/unit/figure.test.ts`
-- `concept/23-art-direction/decision-log.md`, `figuren-bestand.md`
+- `concept/23-art-direction/decision-log.md`, `figuren-bestand.md`, `art-direction.md`
+- Teil 2: `art/models/source/{kael_anims_base,kael_board_tripo,osric_board_tripo,paktwacht_steward_board_tripo}.glb`, `art/models/units/{kael,osric,paktwacht_steward}.{glb,vat}`, `tools/art/tripo_units.py`, `tools/art/silhouettes.py`, `art/previews/{silhouettes_act1,silhouettes_act1_large,figuren_15_9_board,story_15_9_osric_m1_4,story_15_9_steward_m1_8}.png`, `content/acts/act1/maps/{m1_4_wolfslager,m1_8_paktwacht_halten}.yaml`

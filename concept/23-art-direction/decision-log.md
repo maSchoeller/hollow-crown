@@ -120,6 +120,14 @@
 - **Brett-Turnarounds fertig und geprüft:** Lucan, Osric Dunn, Verwalter (`art/turnarounds/<id>_board/`, Prompts und Abnahme in `art/prompts/<id>_board_turnaround.md`). Neu gegenüber Oktober: Vorlage ist der Lieblings-Turnaround Ysolde statt Kaels Bogen; Statur steht im Prompt (Osric schwer und rund, Verwalter schlank); das **Teamtuch liegt auf kleinen Stücken** (Schärpe, Halstuch), Signaturteile behalten ihre Farbe.
 - **`archer` → `bandit_archer`:** alle 9 Stellen auf den Akt-1-Karten und die Testkarten zeigen den Bandit-Schützen; die Blender-Kastenfigur `archer` ist aus Repo und Build-Skript entfernt; auch der Klassen-Rückfall von Schütze und Scharfschütze zeigt `bandit_archer`. `content:check` prüft Figuren-IDs jetzt auch ohne Sprite-Ordner.
 
+## 2026-11-06: Schritt 1a gebaut (Story 15.9, Teil 2)
+
+- **Freigabe Tripo:** Der Produktinhaber hat am 2026-11-06 im Chat die Läufe freigegeben: Die Credits stammen aus dem bezahlten Tarif, der Free-Status des Kontos ist für sie egal. Damit gilt A1 (`licensing.md` §6) für diese drei Figuren als erfüllt; Datenschutz je Lauf „Privat“.
+- **Gebaut:** Lucan (als `kael`), Osric Dunn (`osric`), Verwalter (`paktwacht_steward`), je Smart-Mesh P2.0 Multi-View, Quad 3 000, Textur, Auto-Rig Humanoid = 140 Credits, je ein Lauf. **Credits: 625 → 205.** Budget: 6 179 / 6 295 / 6 050 Dreiecke, 512 px, je 0,28 MB gz.
+- **Animationsbibliothek getrennt:** Kaels alter Export heißt jetzt `art/models/source/kael_anims_base.glb` (`ANIM_LIBRARY` in `tools/art/tripo_units.py`); `kael_board_tripo.glb` ist Lucans Figur.
+- **Karten:** Osric steht in 1-4 als `sprite: osric` (statt `mercenary`), der Verwalter in 1-8 als `sprite: paktwacht_steward` (vorher Platzhalter-Kasten). Silhouettentest mit beiden in einer neuen Gruppe „Bosses and NPCs“ (`tools/art/silhouettes.py`).
+- **Abweichungen:** Lucans Haar steht strubbelig ab, der kurze Zopf fehlt (in allen vier Varianten); Osrics Hauptbuch fehlt bewusst; die Beuge des Verwalters ist kaum zu sehen. Sichtung: `art/previews/figuren_15_9_board.png`, Spielbilder `art/previews/story_15_9_{osric_m1_4,steward_m1_8}.png`.
+
 ## 2026-11-05: Galerie-Modelle für Akt 1 (Story 15.8)
 
 - Ermittelt an den 12 Karten von Akt 1 (PR #104), nicht an den Missions-Markierungen der Galerie: das Brett zeichnet nur, was eine Karte als Gelände oder Objekt nennt. Neu im Build, Paket `act1`, nicht im ersten Download: `market_a` und `market_b` (Marktstände 1-1), `camp_tent_a` (Lagerzelte des Hungerlagers 1-5), `mill_idle` (Mühle mit Rad, N3). Zusammen rund 0,5 MB Transfer, 400–3 000 Dreiecke je Modell (Besuchshaus 2 518, Figurenbudget 7 000).

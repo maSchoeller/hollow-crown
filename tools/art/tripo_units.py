@@ -5,7 +5,7 @@ pnpm art:tripo [<id> ...]        (needs Blender; BLENDER=<path to blender> if it
 For each art/models/source/<id>_board_tripo.glb (Tripo export: rig, animations, team cloth in key magenta)
 runs tools/art/prepare_tripo_unit.py and writes art/models/units/<id>.glb, which `pnpm art:build` copies
 into public/assets like the Blender figures. tools/art/export_models.py skips these ids.
-Animations a figure's export lacks come from the humanoid library ANIM_LIBRARY (Kael's Tripo export with the AI
+Animations a figure's export lacks come from the humanoid library ANIM_LIBRARY (Kael's old Tripo export kael_anims_base.glb with the AI
 slash, plus his flee and cheer export), transferred rest-pose-relative; so a new figure only needs the Tripo auto-rig.
 Each packed figure is measured against the figure budget (tools/figure-budget.mjs: triangles, texture, gzip size).
 tools/art/bake_vat.py then bakes the board animations of the raw figure into art/models/units/<id>.vat (story 7.8: 60 fps local poses, the
@@ -25,7 +25,7 @@ SOURCE = os.path.join(ROOT, "art", "models", "source")
 UNITS = os.path.join(ROOT, "art", "models", "units")
 # first file wins on a name clash; the second holds the AI animations flee and cheer (named "...retreat...", "...victory cheer...");
 # its name must not end in _board_tripo.glb or it would be built as a figure
-ANIM_LIBRARY = [os.path.join(SOURCE, "kael_board_tripo.glb"), os.path.join(SOURCE, "kael_anims_flee_cheer.glb")]
+ANIM_LIBRARY = [os.path.join(SOURCE, "kael_anims_base.glb"), os.path.join(SOURCE, "kael_anims_flee_cheer.glb")]
 GLTFPACK = os.path.join(ROOT, "node_modules", ".bin", "gltfpack.cmd" if os.name == "nt" else "gltfpack")
 
 blender = os.environ.get("BLENDER") or shutil.which("blender")

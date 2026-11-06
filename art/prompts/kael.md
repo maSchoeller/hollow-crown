@@ -14,4 +14,4 @@
 
 ## Brettfigur (Story 15.9)
 
-Brett-Turnaround vom 2026-11-05: `art/prompts/lucan_board_turnaround.md`, Bilder `art/turnarounds/lucan_board/`. Tripo-Lauf steht aus (Konto im Free-Tarif, Auflage A1); das Modell entsteht danach als `kael` (Umbenennung in Story 15.6).
+Brett-Turnaround vom 2026-11-05: `art/prompts/lucan_board_turnaround.md`, Bilder `art/turnarounds/lucan_board/`. Tripo-Modell 2026-11-06 als `kael` (Umbenennung in Story 15.6), Einzelheiten in `lucan_board_turnaround.md` §Tripo.
