@@ -16,6 +16,7 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung (`concept/
 15.9 Brettfiguren, Schritt 1 ──────────────────────────────────────────────────────────┤
 15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┘
 15.13 Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5, unabhängig)
+15.14 Brettfigur Dorfältester (Folge zu 15.9, unabhängig)
 ```
 
 ### Story 15.1: Format-Reste für die Entwürfe
@@ -176,3 +177,17 @@ Gemeldet vom Produktinhaber am 2026-11-06: Läuft eine Figur Treppen hoch, steht
 **Dann** steht sie sichtbar auf der Oberfläche in der passenden Höhe, schwebt nicht und steckt nicht im Modell
 **Und** Treppen, Rampen und Leitern werden nie durchsichtig; Häuser, Dächer und andere Gebäude blenden bei Verdeckung weiter aus.
 
+### Story 15.14: Brettfigur Dorfältester (Folge zu 15.9)
+
+Als Spieler
+möchte ich den Dorfältesten auf dem Brett so sehen wie in seinem Porträt,
+damit ich ihn wiedererkenne.
+
+Beschlossen vom Produktinhaber am 2026-11-06: die nach Story 15.9 übrigen 205 Tripo-Credits für Schritt 1b in `concept/23-art-direction/figuren-bestand.md` einsetzen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Porträt `villager_elder` v2.5 (Strohhut, Kinnbärtchen, normal gebaut) und mindestens 140 Tripo-Credits im bezahlten Tarif
+**Wenn** der Dorfälteste neu entsteht (Turnaround → Tripo mit Datenschutz „Privat“ → Pipeline nach Art Direction §4.6)
+**Dann** besteht die Figur den Silhouettentest im Zoom „Mittel“ und bleibt im Budget (7 000 Dreiecke, 512er-Textur, 0,5 MB)
+**Und** sie steht auf allen Karten, auf denen der Dorfälteste vorkommt; Prompts und Abnahme liegen unter `art/prompts/`, der neue Credit-Stand im Decision-Log der Art Direction.
