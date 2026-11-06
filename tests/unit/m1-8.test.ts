@@ -120,7 +120,7 @@ describe('scene before the map: one line per E4 outcome', () => {
   });
 
   it('reads well without the E4 line (same lines around it) and every line fits a box', () => {
-    expect(lines(base).map((l) => l.line)).toEqual(['l01', 'l02', 'l03', 'l04', 'l07', 'l07b', 'l08', 'l09']);
+    expect(lines(base).map((l) => l.line)).toEqual(['l01', 'l02', 'l03', 'l04', 'l07', 'l07a', 'l07b', 'l08', 'l09']);
     for (const id of ['scn.m1_8.intro', 'scn.m1_8.outro', 'scn.m1_8.morra_retreat'])
       for (const l of data.scenes[id]!.lines) if ('text' in l) expect(l.text.length).toBeLessThanOrEqual(110);
   });
