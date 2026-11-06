@@ -35,5 +35,5 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 - Bekannte Grenze: `pnpm report` auf einem Fehlerbericht aus einer älteren Version, dessen Protokoll eine Prolog-Heimsuchung spielt, bricht beim Nachspielen an diesem Befehl ab (die Heimsuchung verfällt beim Normalisieren). Betrifft nur das Werkzeug, nicht Spieler.
 
-- P, 1-7 und N3 liegen außerhalb des Korridors → Story 15.10 (keine Abstimmung in diesem Abgleich).
+- P, 1-7 und N3 liegen außerhalb des Korridors → Story 15.10 (keine Abstimmung in diesem Abgleich). Stand nach 15.10 (2026-11-06): 1-7 und N3 auf Leicht und Normal im Korridor; der Prolog bleibt auf Normal bei 0,12–0,20 Niedergestreckten (Entscheidung Produktinhaber, siehe 15.10 „Offen“); N3 auf Schwer 13–21 %.
 - ~~Weitere Karten ohne Heimsuchung~~: entschieden am 2026-11-06, 1-6 und 1-7 tragen ebenfalls `noHaunts: true` (PR nach #115). Folge für den Produktinhaber: Mit 1-7 fiel der einzige `treasure`-Anker von Akt 1 weg; die Truhen-Heimsuchung kommt in Akt 1 nicht mehr vor (übrig: boss, defend, rout, escort).

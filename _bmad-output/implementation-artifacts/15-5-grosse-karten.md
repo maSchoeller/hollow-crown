@@ -1,6 +1,6 @@
 # Story 15.5: Große Karten (1-6, 1-8)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -28,5 +28,5 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 ## Rest
 
-- 1-8 liegt außerhalb des Korridors → Story 15.10.
+- 1-8 liegt außerhalb des Korridors → Story 15.10. Erledigt in 15.10 (2026-11-06): Leicht 0,36, Normal 1,21 Niedergestreckte je Lauf.
 - Hasks Fluchtschwelle 40 % bestätigen (das GDD nennt nur 0 TP).

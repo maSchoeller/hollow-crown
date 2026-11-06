@@ -103,9 +103,9 @@ units:
   - { id: h9, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [12, 0], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Anführer vor der Kopfgeldstube
   - { id: bh_leader, nameKey: unit.bounty_leader.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [7, 2], items: [{ def: steel_axe }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
-  # Nur Schwer
-  - { id: h10, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [9, 4], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
-  - { id: h11, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [2, 8], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  # Story 15.10 [C]: h10 und h11 jetzt ab Normal (vorher nur Schwer), Normal vorher 0,22 Niedergestreckte je Lauf
+  - { id: h10, nameKey: unit.bounty_hunter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [9, 4], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  - { id: h11, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [2, 8], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
 pairs: []
 reinforcements:
   # Häscher aus der Vorstadt im Rücken

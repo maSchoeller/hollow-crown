@@ -65,15 +65,15 @@ deploy:
 units:
   - { id: tobin_father, nameKey: unit.tobin_father.name, team: other, class: civilian, sprite: villager_elder, portrait: villager_elder, level: 1, at: [6, 7], items: [{ def: chainmail }], ai: { profile: hold } }
   # Süden: Felder und Straße
-  - { id: m1, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [3, 17], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
-  - { id: m2, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [5, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: m3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [12, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: m4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [14, 19], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: m1, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [3, 17], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+  - { id: m2, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [5, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m3, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [12, 17], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m4, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [14, 19], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   - { id: captain, nameKey: unit.marauder_captain.name, team: enemy, class: vanguard, sprite: soldier, level: 7, at: [9, 18], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: trigger, wakeTurn: 2, then: aggressive } }
   # Norden: über die Mühlbrücke
-  - { id: m5, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [9, 1], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: m6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [7, 1], items: [{ def: iron_sword }], ai: { profile: raider, target: v_miller } }
-  - { id: m7, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [11, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: m5, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [9, 1], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: m6, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [7, 1], items: [{ def: iron_sword }], ai: { profile: raider, target: v_miller } }
+  - { id: m7, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [11, 2], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Nur Schwer
   - { id: m8, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 7, at: [1, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
 pairs: []
@@ -82,20 +82,22 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [12, 19], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
-      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [2, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [12, 19], items: [{ def: iron_axe }], ai: { profile: raider, target: v_home } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [2, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 4
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 6, at: [15, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 6, at: [15, 2], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [15, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [15, 2], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      # Story 15.10 [C]: ein Plünderer mehr (Normal, Schwer); dafür das Fußvolk Stufe 5 statt 6 (Normal vorher 72 % Siege, der Vater fiel)
+      - { nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - turn: 6
     phase: enemy
     announce: true
     units:
       - { nameKey: unit.marauder.name, team: enemy, class: vanguard, sprite: soldier, level: 7, at: [9, 19], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 6, at: [10, 19], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [10, 19], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
   victory: { type: defend, unit: tobin_father, turns: 8 }
   defeat:
