@@ -99,7 +99,7 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
   const maps: MapDef[] = [];
   for (const node of data.campaign.nodes) {
     const map = data.maps[node.map];
-    if (node.kind !== 'story' || !c.completed.includes(node.id) || !map?.haunts?.length) continue;
+    if (node.kind !== 'story' || !c.completed.includes(node.id) || !map?.haunts?.length || map.abandoned) continue;
     if (!maps.includes(map)) maps.push(map);
   }
   const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= data.campaign.act && data.hauntPools?.[lt.act]?.factions[lt.faction]?.length);

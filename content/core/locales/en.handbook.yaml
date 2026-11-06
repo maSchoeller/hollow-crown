@@ -248,14 +248,14 @@ handbook:
       keywords: "wall, obstacle, wagon, fence, well, stall, building, blocked"
     heights:
       title: "Heights"
-      text: "There are three levels: the field, wall walks and terraces, towers and crags. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs. Not with a flier in the fight: it strikes and is struck across any level."
+      text: "There are three levels: the field, wall walks, roofs and terraces, towers and crags. Roofs are for those on foot only. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs. Not with a flier in the fight: it strikes and is struck across any level."
       where: "A tile's level is shown in the terrain info; the board shows the reach."
-      keywords: "height, level, wall walk, ramp, stairs, ladder, tower"
+      keywords: "height, level, wall walk, roof, terrace, ramp, stairs, ladder, tower"
     doors:
-      title: "Doors"
+      title: "Doors and gates"
       text: "Closed doors and gates block the way and the view. A key opens them, the scout manages without, a lever or an event may too; open ones are free passage."
       where: "“Open door” appears in the green context band when a unit stands next to the door."
-      keywords: "door, key, open, scout"
+      keywords: "door, gate, lever, key, open, scout"
     fire:
       title: "Fire and spreading"
       text: "A burning tile burns for {fireRounds} rounds and then turns to ash. Whoever enters or stands on it takes {enter} damage. Every round the fire jumps with a {spread} chance onto flammable neighbouring tiles such as grass, forest and field; water puts it out."

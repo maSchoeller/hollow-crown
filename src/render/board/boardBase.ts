@@ -84,6 +84,8 @@ export interface PropSet {
   cols: Float32Array;
   boxes: PropBox[];
   faded: Uint8Array;
+  /** never fades: a figure stands on it (ramp, stairs, ladder; story 15.13) */
+  solid: boolean;
 }
 
 /** distance of the camera from its target along the view axis, tiles */

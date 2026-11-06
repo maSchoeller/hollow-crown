@@ -16,6 +16,7 @@ import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
 import type { BattleState, GameData, TerrainDef, TerrainSurface, TerrainWaterLook } from '../../core';
 import type { AssetStore } from '../host';
 import { BOARDWALK_DECK } from '../board/wallKit';
+import { connectorSurface, riseDir } from './connectors';
 
 /** Ground textures by name (tools/art/ground.py). */
 export type GroundTextures = Record<string, Texture>;
@@ -134,6 +135,53 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
       return { ...def, level, height: def.height + (level - def.level) * data.render.board.levelHeight };
     },
     inMap: (gx, gy) => gx >= s && gy >= s && gx < s + state.width && gy < s + state.height,
+  };
+}
+
+/** Where feet stand on the board: per tile and, on ramps, stairs and ladders, per point of the tile (story 15.13). */
+export interface Floor {
+  /** where a unit's feet are on map tile (x, y): bridges carry their deck, water its surface, a connector its middle */
+  standOn(x: number, y: number): number;
+  /** the same at a point between tiles (x, y in tiles, whole numbers = tile centres): a connector's surface under it */
+  surfaceAt(x: number, y: number): number;
+}
+
+export function floorOf(data: GameData, grid: TerrainGrid, width: number, height: number): Floor {
+  const board = data.render.board;
+  const S = grid.skirt;
+  const flat = (def: TerrainDef) => {
+    if (def.prop === 'bridge') return 0.02;
+    if (def.prop === 'boardwalk') return BOARDWALK_DECK;
+    return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height + def.stand;
+  };
+  // a connector's rise per tile, worked out once: placing a figure asks every frame
+  const rises = new Map<number, { dir: [number, number]; top: number } | null>();
+  const riseOf = (gx: number, gy: number) => {
+    const k = gy * grid.w + gx;
+    let r = rises.get(k);
+    if (r === undefined) {
+      const dir = riseDir((ax, ay) => grid.at(ax, ay)?.height ?? 0, gx, gy);
+      // the model ends one level up, at the higher tile's top: a roof's ridge (`stand`) or the next connector's foot start there
+      r = dir ? { dir, top: grid.at(gx + dir[0], gy + dir[1])!.height } : null;
+      rises.set(k, r);
+    }
+    return r;
+  };
+  const surface = (x: number, y: number, ox: number, oy: number): number => {
+    const def = grid.at(x + S, y + S);
+    if (!def) return 0;
+    const shape = def.connector ? board.connectors[def.connector] : undefined;
+    const rise = shape ? riseOf(x + S, y + S) : null;
+    if (!shape || !rise) return flat(def);
+    return connectorSurface(shape, def.height, rise.top, rise.dir, ox, oy);
+  };
+  return {
+    standOn: (x, y) => surface(x, y, 0, 0),
+    surfaceAt: (x, y) => {
+      const tx = Math.min(Math.max(Math.round(x), 0), width - 1);
+      const ty = Math.min(Math.max(Math.round(y), 0), height - 1);
+      return surface(tx, ty, Math.min(0.5, Math.max(-0.5, x - tx)), Math.min(0.5, Math.max(-0.5, y - ty)));
+    },
   };
 }
 
@@ -266,14 +314,12 @@ function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTextu
 
 // ------------------------------------------------------------------ build
 
-export interface TerrainView {
+export interface TerrainView extends Floor {
   grid: TerrainGrid;
   /** shadow casters among the terrain meshes */
   casters: Mesh[];
   /** top height of map tile (x, y), null outside the map */
   topOf(x: number, y: number): number | null;
-  /** where a unit's feet are on map tile (x, y): bridges carry their deck, water its surface */
-  standOn(x: number, y: number): number;
   /** advances the water animation */
   tick(now: number): void;
   /** wet shine of the ground (rain, story 8.6): specular strength and power of the block materials; null restores them */
@@ -430,20 +476,17 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   add(rails, 'terrain-rails', wood, true);
 
   let frame = -1;
+  const floor = floorOf(data, grid, state.width, state.height);
   return {
     grid,
     casters,
+    ...floor,
     topOf: (x, y) => {
       if (x < 0 || y < 0 || x >= state.width || y >= state.height) return null;
       const def = grid.at(x + S, y + S);
+      // a connector's top is where a figure stands on it, like everywhere a figure stands (story 15.13)
+      if (def?.connector) return floor.standOn(x, y);
       return (def?.height ?? 0) + (def?.stand ?? 0);
-    },
-    standOn: (x, y) => {
-      const def = grid.at(x + S, y + S);
-      if (!def) return 0;
-      if (def.prop === 'bridge') return 0.02;
-      if (def.prop === 'boardwalk') return BOARDWALK_DECK;
-      return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height + def.stand;
     },
     setWet: (wet) => {
       for (const w of wetMats) {

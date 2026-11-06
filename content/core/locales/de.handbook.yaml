@@ -248,14 +248,14 @@ handbook:
       keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Gebäude, blockiert"
     heights:
       title: "Höhen"
-      text: "Es gibt drei Stufen: das Feld, Wehrgang und Terrasse, Turm und Felsnase. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
+      text: "Es gibt drei Stufen: das Feld, Wehrgang, Dach und Terrasse, Turm und Felsnase. Aufs Dach kommt man nur zu Fuß. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
       where: "Die Stufe eines Felds steht in der Geländeanzeige; die Reichweite zeigt das Spielbrett."
-      keywords: "Höhe, Stufe, Wehrgang, Rampe, Treppe, Leiter, Turm"
+      keywords: "Höhe, Stufe, Wehrgang, Dach, Terrasse, Rampe, Treppe, Leiter, Turm"
     doors:
       title: "Türen und Tore"
       text: "Geschlossene Türen und Tore versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne, manche öffnet ein Hebel oder ein Ereignis; offen sind sie freier Weg."
       where: "„Tür öffnen“ erscheint im grünen Kontext-Band, wenn eine Figur neben der Tür steht."
-      keywords: "Tür, Schlüssel, öffnen, Späher"
+      keywords: "Tür, Tor, Hebel, Schlüssel, öffnen, Späher"
     fire:
       title: "Feuer und Ausbreitung"
       text: "Ein brennendes Feld brennt {fireRounds} Runden und wird dann zu Asche. Wer es betritt oder darauf steht, nimmt {enter} Schaden. Jede Runde springt das Feuer mit {spread} Chance auf brennbare Nachbarfelder wie Gras, Wald und Feld; Wasser löscht es."

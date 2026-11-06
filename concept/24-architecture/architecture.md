@@ -205,7 +205,7 @@ Höhe ist seit 2026-11-04 Regel (GDD; löst G21/D3 ab). `TerrainDef.level` (0–
 - **Angriff:** `canStrike` und `strikeTiles` sind die eine Regel für Vorschau, Auflösung, Konter, Tandem, Gefahrenzone und KI. Niemand prüft `dist` gegen eine Waffenreichweite selbst. Steht einer der beiden Kämpfenden in `elevation.freeMoveTypes`, gilt die Nahkampf-Stufenregel nicht. Darum kennt die Regel auch das Ziel (`target`, sonst wer auf dem Feld steht); `threatTiles` nimmt es für Felder, auf die eine Figur erst treten könnte.
 - **Geschlossene Durchgänge:** `TerrainDef.opensTo` macht ein Gelände zum Durchgang (`door`, `gate_closed`), Objekt vom Typ `door`. Objekte `lever` und Durchgänge öffnen über `links` mit.
 - **Ereignisse:** Trigger-Aktion `set_terrain` (`eventTerrain` in `rules/effects.ts`) ist der einzige Weg, wie Mauern fallen. Das Brett baut das Gelände über das Ereignis `terrain` neu auf.
-- **Darstellung:** `TerrainGrid.at` rechnet Kartenstufen in Höhe um (`render.board.levelHeight`), `figureAt` in `picking.ts` trifft Figuren auf oder hinter erhöhten Feldern zuerst. Inhaltsprüfung: Eine Verbindung braucht genau einen Nachbarn eine Stufe höher, daraus folgt ihre Richtung.
+- **Darstellung:** `TerrainGrid.at` rechnet Kartenstufen in Höhe um (`render.board.levelHeight`), `figureAt` in `picking.ts` trifft Figuren auf oder hinter erhöhten Feldern zuerst. Auf Rampe, Treppe und Leiter stehen die Füße auf der Modellfläche (`floorOf`/`surfaceAt` in `terrain3d.ts`, Form in `render.board.connectors`, Story 15.13); diese Modelle verblassen nie (`render.board.fade.solid`), Gebäude und Mauerteile weiter. Inhaltsprüfung: Eine Verbindung braucht genau einen Nachbarn eine Stufe höher, daraus folgt ihre Richtung.
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 
@@ -294,7 +294,7 @@ haunts:
 
 `target` und `chests` müssen begehbare Felder ohne Kartenobjekt sein und dürfen nicht in `deploy`/`enemySpawn` liegen (ein Brunnen oder eine Säule als Ziel ist ein Fehler). Gegner-Pools, Zivilist und Truhen-Inhalt je Akt in `content/acts/actN/haunts.yaml` (Paket des Akts, Schema `hauntPoolsSchema`, `GameData.hauntPools[act]`).
 
-Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
+Jede Story-Karte bekommt 2–3 Anker, außer sie trägt `abandoned: true` (die Truppe kehrt nie zurück, z. B. der Prolog; GDD-Log 2026-11-06): dort lehnt `content:check` Anker ab, der Generator überspringt sie, und `normalizeCampaign` lässt eine offene Heimsuchung ohne Anker aus einem alten Spielstand verfallen (ein laufender Kampf darin endet beim Laden auf der Weltkarte, `staleHauntMap`). `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
 
 **Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Lucan). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
 

@@ -235,7 +235,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 | Knoten | Gesperrt | Verfügbar | Abgeschlossen | Verfällt |
 |---|---|---|---|---|
-| Story-Mission | bis Akt erreicht bzw. Vorgänger gespielt | wählbar auf der Weltkarte | nicht wiederholbar; Karte kehrt als Heimsuchung zurück | nie |
+| Story-Mission | bis Akt erreicht bzw. Vorgänger gespielt | wählbar auf der Weltkarte | nicht wiederholbar; Karte kehrt als Heimsuchung zurück, außer die Truppe hat den Ort für immer verlassen (`abandoned`, z. B. der Prolog; Log 2026-11-06) | nie |
 | Nebenquest | bis Auslöser (Entscheidung, Gefährte, Story-Fortschritt) | offen über alle Akte | nicht wiederholbar | nie; stirbt oder geht der Auslöser, Gedenk-Variante der Szene |
 | Heimsuchung | bis zur ersten Leutnant-Begegnung | bis zu 6 offen | verschwindet | älteste wird verdrängt, wenn eine 7. entsteht |
 

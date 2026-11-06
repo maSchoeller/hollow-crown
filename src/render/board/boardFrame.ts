@@ -194,9 +194,8 @@ export abstract class BoardFrame extends BoardCamera {
   protected placeUnit(v: UnitView, now: number): void {
     const x = v.x + v.offX;
     const y = v.y + v.offY;
-    const tx = Math.min(Math.max(Math.round(x), 0), this.state.width - 1);
-    const ty = Math.min(Math.max(Math.round(y), 0), this.state.height - 1);
-    const h = (this.terrain?.standOn(tx, ty) ?? 0) + v.lift;
+    // on a ramp, stairs or ladder the feet follow its surface, step by step while walking (story 15.13)
+    const h = (this.terrain?.surfaceAt(x, y) ?? 0) + v.lift;
     v.figure.node.position.set(x + 0.5, h, -y - 0.5);
     // a figure outside the view is switched off: the scene then skips its meshes, bones and nodes altogether (story 7.7)
     const onScreen = this.onScreen(x + 0.5, h, -y - 0.5);

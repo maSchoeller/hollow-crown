@@ -5,6 +5,9 @@
  * by `cos(tilt)` per tile northwards, so a prop whose back edge lies `d` tiles south of a figure covers that figure up to
  * `top - d · cot(tilt)` above its feet. A prop counts when it covers at least `cover` tiles of the figure and overlaps it
  * sideways; a prop north of the figure is behind it and never counts.
+ *
+ * Story 15.13: models a figure stands on (ramps, stairs, ladders: `render.yaml board.fade.solid`) never fade; buildings,
+ * roofs and the wall kit still do.
  */
 
 /** Prop footprint: centre in tiles (x east, y south), radius around the centre, top height above the board's zero. */
@@ -41,4 +44,10 @@ export function hidesFigure(b: PropBox, f: FigureSpot, rule: FadeRule): boolean 
   // in front of the figure: some of the prop lies south of the figure's centre
   if (b.y + b.r <= f.y) return false;
   return b.top - f.h - rule.cover > (b.y - b.r - f.y) * rule.cot;
+}
+
+/** May the model `key` (`<class>_<state>`, e.g. `stairs_idle`, `house_a_intact`) fade? Not when its class is listed as solid. */
+export function mayFade(key: string, solid: readonly string[]): boolean {
+  const cls = key.slice(0, Math.max(0, key.lastIndexOf('_')));
+  return !solid.includes(cls);
 }

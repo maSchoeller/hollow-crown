@@ -429,6 +429,8 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
+  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): no haunt anchors, never haunted */
+  abandoned: z.boolean().optional(),
   haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
@@ -793,7 +795,11 @@ export const renderSchema = z.object({
     waterFrameMs: z.number().positive(),
     lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
     figureScale: z.number().positive(),
-    fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0) }),
+    fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0), solid: z.array(z.string()) }),
+    connectors: z.record(
+      z.enum(['ramp', 'stairs', 'ladder']),
+      z.object({ from: z.number().min(0).max(1), to: z.number().min(0).max(1), steps: z.number().int().min(0) }).refine((c) => c.to > c.from, 'to must lie past from'),
+    ),
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     idleHz: z.number().positive(),
