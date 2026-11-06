@@ -44,6 +44,8 @@ Schwer verkettet: Ab 1-4 kommen nur noch 12–18 von 50 Läufen an, das sind die
 
 N3 ist eine Nebenquest und läuft in `--campaign` nicht mit. Vorher: `pnpm sim n3_erbe --runs 50` (25 von 50 Läufen kamen an); nachher auf 40 Kampagnenständen nach 1-6, je dreimal gespielt (120 Läufe). Die Spalte „Normal-Kette“ spielt die Mission auf Schwer mit Normal-Ständen (wie `--chain normal`), 40–80 Läufe.
 
+**Nach dem Merge mit `main`** (Hasks sichtbare Flucht in 1-6, `noHaunts`, Schlüssel der neuen Plünderer), Seed 1: Leicht unverändert im Korridor (1-6 0,44, 1-8 0,36). Normal 1-7 94 % · **0,36**, 1-8 98 % · 1,06, sonst wie oben. Über drei Normal-Läufe liegt 1-7 bei 0,36–0,56 und 1-8 bei 1,06–1,36: Beide sitzen an der Streugrenze eines 50er-Laufs (±0,2); für einen festen Abstand bräuchte es mehr Läufe je Messung oder einen schmaleren Hebel.
+
 Armee-Stufe vor der Mission (Normal, nachher): Prolog 1,5 · 1-1 1,7 · 1-2 2,9 · 1-3 3,4 · 1-4 4,0 · 1-5 5,1 · 1-6 5,9 · 1-7 7,2 · 1-8 7,8–7,9 (erwartet 1/2/3/3/4/5/6/8/9).
 
 ## Was geändert wurde (nur YAML)
@@ -83,7 +85,7 @@ Auf Schwer 1-8: Ø 57 s / 10 s, längste 87 s / 58 s. Das Zeitziel aus Story 15.
 
 ## Stand der Akzeptanzkriterien
 
-- AK 1 teilweise: Leicht erfüllt; Normal erfüllt bis auf den Prolog (Offen 1), 1-8 im Mittel knapp (1,21); Schwer nur bis 1-3 und für 1-6/1-7 erfüllt (Offen 2, 5); Goldkurve trägt; EP-Kurve trägt bis 1-6 (Offen 3).
+- AK 1 teilweise: Leicht erfüllt; Normal erfüllt bis auf den Prolog (Offen 1), 1-7 und 1-8 im Mittel im Korridor, einzelne Läufe knapp draußen; Schwer nur bis 1-3 und für 1-6/1-7 erfüllt (Offen 2, 5); Goldkurve trägt; EP-Kurve trägt bis 1-6 (Offen 3).
 - AK 2 teilweise: Gegnerphase gemessen; die Spielzeit passt nicht zu 30–35 Stunden (Offen 4).
 - Die offenen Punkte brauchen Entscheidungen des Produktinhabers, keine weiteren Werte in dieser Story.
 
