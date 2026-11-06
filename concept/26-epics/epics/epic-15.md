@@ -15,6 +15,7 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung (`concept/
 15.8 Galerie-Modelle (parallel zu 15.3–15.5)                                           │
 15.9 Brettfiguren, Schritt 1 ──────────────────────────────────────────────────────────┤
 15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┘
+15.13 Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5, unabhängig)
 ```
 
 ### Story 15.1: Format-Reste für die Entwürfe
@@ -159,3 +160,19 @@ damit die Schlachten auf dem Handy funktionieren.
 **Wenn** auf dem Referenzgerät Karten bis 1 200 Felder mit 50+ Figuren und die Burg gemessen werden
 **Dann** halten sie die Leistungsziele; NFR1 ist auf den neuen Maßstab gehoben
 **Und** Kamera und Übersicht funktionieren auf 30 × 40, die Gegnerphase lässt sich beschleunigen.
+
+### Story 15.13: Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
+
+Als Spieler
+möchte ich meine Figuren auf Treppen, Rampen und Leitern sichtbar auf den Stufen stehen sehen,
+damit ich Höhenwechsel auf dem Brett lesen kann.
+
+Gemeldet vom Produktinhaber am 2026-11-06: Läuft eine Figur Treppen hoch, steht sie nicht auf der Treppe, und die Treppe wird durchsichtig.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Karte mit Höhenstufen (1-4, Wehrgänge in 1-6)
+**Wenn** eine Figur auf einer Treppe, Rampe oder Leiter steht oder darüber läuft, auch über mehrere Stufen
+**Dann** steht sie sichtbar auf der Oberfläche in der passenden Höhe, schwebt nicht und steckt nicht im Modell
+**Und** Treppen, Rampen und Leitern werden nie durchsichtig; Häuser, Dächer und andere Gebäude blenden bei Verdeckung weiter aus.
+

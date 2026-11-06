@@ -16,7 +16,7 @@ import { loadPropMesh } from '../shared/models';
 import { variantClassOf, variantList } from '../../content/propVariants';
 import { isPackRegistered } from '../../content/browser';
 import { modelAvailable, pickVariant, withState } from '../shared/scenery';
-import { fadeRule, hidesFigure } from './fade';
+import { fadeRule, hidesFigure, mayFade } from './fade';
 import { isStaticMaterial } from './staticMaterial';
 import { type PropSet, MAX_FIRES, FREEZE_FRAMES } from './boardBase';
 import { BoardSetup } from './boardSetup';
@@ -281,7 +281,7 @@ export abstract class BoardProps extends BoardSetup {
       });
       const size = this.propSize(base);
       const boxes = list.map((p) => ({ x: p.x + 0.5, y: p.y + 0.5, r: size.r * p.scale, top: p.h + size.top * p.scale }));
-      sets.push({ tpl, shadow: kind !== 'scenery', mats, cols, boxes, faded: new Uint8Array(list.length) });
+      sets.push({ tpl, shadow: kind !== 'scenery', mats, cols, boxes, faded: new Uint8Array(list.length), solid: !mayFade(key, this.data.render.board.fade.solid) });
       if (!this.propMeshes.includes(tpl)) this.propMeshes.push(tpl);
     }
     // only now, in one go: loading a new model above takes frames, and a mesh with its colour buffer but no instance would fail its shader meanwhile
@@ -429,6 +429,7 @@ export abstract class BoardProps extends BoardSetup {
     const { cover, figureWidth } = this.data.render.board.fade;
     const rule = fadeRule(this.data.render.camera.tiltDeg, cover, figureWidth);
     for (const set of this.propSets) {
+      if (set.solid) continue;
       let changed = false;
       set.boxes.forEach((b, k) => {
         const reach = b.r + rule.figureWidth;

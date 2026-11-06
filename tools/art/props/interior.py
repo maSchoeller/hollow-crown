@@ -805,6 +805,8 @@ def ballista_idle():
 
 
 # ---------------------------------------------------------------- height pieces
+# Their shape along the rise (steps, where the slope starts and ends) is copied in content/core/render.yaml board.connectors:
+# a figure stands on that surface (story 15.13). Change both together.
 
 def ramp_idle():
     """Continuous paved slope for everybody (carts and horses): smooth, wide, low stone curbs."""

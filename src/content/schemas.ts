@@ -793,7 +793,11 @@ export const renderSchema = z.object({
     waterFrameMs: z.number().positive(),
     lightsMax: z.object({ high: z.number().int().min(0), mid: z.number().int().min(0), low: z.number().int().min(0) }),
     figureScale: z.number().positive(),
-    fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0) }),
+    fade: z.object({ alpha: z.number().min(0).max(1), cover: z.number().min(0), figureWidth: z.number().min(0), solid: z.array(z.string()) }),
+    connectors: z.record(
+      z.enum(['ramp', 'stairs', 'ladder']),
+      z.object({ from: z.number().min(0).max(1), to: z.number().min(0).max(1), steps: z.number().int().min(0) }).refine((c) => c.to > c.from, 'to must lie past from'),
+    ),
     fpsActive: z.number().positive(),
     fpsIdle: z.number().positive(),
     idleHz: z.number().positive(),

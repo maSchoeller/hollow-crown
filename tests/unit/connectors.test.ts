@@ -1,0 +1,155 @@
+import { describe, expect, it } from 'vitest';
+import type { BattleState } from '../../src/core';
+import { loadContentFromDisk } from '../../src/content/node';
+import { mayFade } from '../../src/render/board/fade';
+import { connectorRot } from '../../src/render/board/wallKit';
+import { connectorSurface, riseDir } from '../../src/render/shared/connectors';
+import { floorOf, terrainGrid } from '../../src/render/shared/terrain3d';
+
+const { data } = loadContentFromDisk();
+const board = data.render.board;
+const L = board.levelHeight;
+
+/**
+ * 3 × 4 map: a terrace on level 1 in the north (row 0), the connector at (1, 1) rising north to it, grass at its foot.
+ * `level` lifts the whole map (1-4 has its stairs on level 1, leading to level 2).
+ */
+function floor(connector: 'ramp' | 'stairs' | 'ladder', level = 0, upper = 'grass') {
+  const rows = [
+    ['grass', upper, 'grass'],
+    ['grass', connector, 'grass'],
+    ['grass', 'grass', 'grass'],
+    ['grass', 'grass', 'grass'],
+  ];
+  const levels: Record<string, number> = {};
+  rows.forEach((r, y) => r.forEach((_, x) => (levels[`${x},${y}`] = level + (y === 0 ? 1 : 0))));
+  const state = { mapId: 'test', width: 3, height: 4, terrain: rows.flat(), timers: {}, levels } as unknown as BattleState;
+  return floorOf(data, terrainGrid(data, state, 7), 3, 4);
+}
+
+describe('connector surface (story 15.13)', () => {
+  const ramp = { from: 0, to: 1, steps: 0 };
+  const stairs = { from: 0, to: 1, steps: 5 };
+  const north = [0, -1] as const;
+
+  it('rises along the direction to the higher neighbour', () => {
+    expect(connectorSurface(ramp, 0, 1, north, 0, 0.5)).toBeCloseTo(0);
+    expect(connectorSurface(ramp, 0, 1, north, 0, 0)).toBeCloseTo(0.5);
+    expect(connectorSurface(ramp, 0, 1, north, 0, -0.5)).toBeCloseTo(1);
+    // sideways the height stays
+    expect(connectorSurface(ramp, 0, 1, north, 0.4, 0)).toBeCloseTo(0.5);
+    expect(connectorSurface(ramp, 0, 1, [1, 0], 0.25, 0)).toBeCloseTo(0.75);
+  });
+
+  it('carries a figure on the tread under it, step by step', () => {
+    const at = (oy: number) => connectorSurface(stairs, 0, 1, north, 0, oy);
+    expect(at(0.45)).toBeCloseTo(0.2);
+    expect(at(0.25)).toBeCloseTo(0.4);
+    expect(at(0)).toBeCloseTo(0.6);
+    expect(at(-0.25)).toBeCloseTo(0.8);
+    expect(at(-0.5)).toBeCloseTo(1);
+    // never falls while climbing
+    for (let oy = 0.5; oy > -0.5; oy -= 0.05) expect(at(oy - 0.05)).toBeGreaterThanOrEqual(at(oy));
+  });
+
+  it('rises the way connectorRot turns the model, in all four directions', () => {
+    // the model rises to the north at rot = pi (wallKit.ts); turned by rot, its rise points that way
+    const rotOf: Record<string, number> = { '0,-1': Math.PI, '1,0': -Math.PI / 2, '-1,0': Math.PI / 2, '0,1': 0 };
+    for (const [dx, dy] of [
+      [0, -1],
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+    ] as const) {
+      const h = (gx: number, gy: number) => (gx === 1 + dx && gy === 1 + dy ? 1 : 0);
+      expect(riseDir(h, 1, 1)).toEqual([dx, dy]);
+      expect(connectorRot(h, 1, 1)).toBeCloseTo(rotOf[`${dx},${dy}`]!);
+    }
+    expect(riseDir(() => 0, 1, 1)).toBeNull();
+  });
+
+  it('keeps the flat run in front of a shape that starts later on the ground', () => {
+    expect(connectorSurface({ from: 0.3, to: 1, steps: 5 }, 0, 1, north, 0, 0.4)).toBe(0);
+  });
+});
+
+describe('floor of the board (story 15.13)', () => {
+  it('has the shapes of the three connector models in render.yaml', () => {
+    expect(Object.keys(board.connectors).sort()).toEqual(['ladder', 'ramp', 'stairs']);
+  });
+
+  for (const level of [0, 1])
+    it(`puts a figure on the stairs' tread on level ${level}`, () => {
+      const f = floor('stairs', level);
+      const base = level * L;
+      // the middle of the tile is the third of five treads, not the old fixed `stand`
+      expect(f.standOn(1, 1)).toBeCloseTo(base + (3 / 5) * L);
+      expect(f.surfaceAt(1, 1)).toBeCloseTo(f.standOn(1, 1));
+      // the top edge meets the terrace, the bottom edge is the first tread above the grass
+      expect(f.surfaceAt(1, 0.5)).toBeCloseTo(f.standOn(1, 0));
+      expect(f.standOn(1, 0)).toBeCloseTo(base + L);
+      expect(f.surfaceAt(1, 1.49)).toBeCloseTo(base + L / 5);
+      expect(f.standOn(1, 2)).toBeCloseTo(base);
+    });
+
+  it('walks a figure up the stairs without sinking or floating', () => {
+    const f = floor('stairs');
+    let last = f.surfaceAt(1, 2);
+    for (let y = 2; y >= 0; y -= 0.05) {
+      const h = f.surfaceAt(1, y);
+      expect(h).toBeGreaterThanOrEqual(last - 1e-9);
+      // never more than one tread above the step before
+      expect(h - last).toBeLessThanOrEqual(L / 5 + 1e-9);
+      last = h;
+    }
+    expect(last).toBeCloseTo(L);
+  });
+
+  it('follows a ramp smoothly from the grass to the terrace', () => {
+    const f = floor('ramp');
+    expect(f.surfaceAt(1, 1.49)).toBeCloseTo(0, 1);
+    expect(f.standOn(1, 1)).toBeCloseTo(L / 2);
+    expect(f.surfaceAt(1, 0.75)).toBeCloseTo((3 / 4) * L);
+    expect(f.surfaceAt(1, 0.5)).toBeCloseTo(L);
+  });
+
+  it('keeps a figure on the ground in front of a ladder and lifts it along the rungs', () => {
+    const f = floor('ladder');
+    expect(f.surfaceAt(1, 1.4)).toBeCloseTo(0);
+    expect(f.standOn(1, 1)).toBeGreaterThan(0.25 * L);
+    expect(f.standOn(1, 1)).toBeLessThan(0.45 * L);
+    expect(f.surfaceAt(1, 0.5)).toBeCloseTo(L);
+  });
+
+  it('ends a ladder at the roof edge, not at the ridge a figure stands on up there', () => {
+    const f = floor('ladder', 0, 'roof');
+    expect(f.surfaceAt(1, 0.51)).toBeCloseTo(L);
+    expect(f.standOn(1, 0)).toBeGreaterThan(L);
+  });
+
+  it('runs stairs into stairs one level up without a drop', () => {
+    // row 0 on level 1 is stairs too (rising further north, off the map: no higher neighbour, so flat)
+    const f = floor('stairs', 0, 'stairs');
+    expect(f.surfaceAt(1, 0.51)).toBeCloseTo(L);
+    expect(f.surfaceAt(1, 0.49)).toBeGreaterThanOrEqual(L);
+  });
+
+  it('leaves flat tiles as they were', () => {
+    const f = floor('stairs');
+    expect(f.surfaceAt(0.3, 2.2)).toBe(f.standOn(0, 2));
+    expect(f.surfaceAt(0, 0)).toBeCloseTo(L);
+  });
+});
+
+describe('models that may fade (story 15.13)', () => {
+  const solid = board.fade.solid;
+
+  it('never fades the models a figure stands on', () => {
+    for (const k of ['stairs_idle', 'ramp_idle', 'ladder_idle']) expect(mayFade(k, solid)).toBe(false);
+  });
+
+  it('still fades buildings, roofs, walls and trees', () => {
+    for (const k of ['house_a_intact', 'lodge_b_intact', 'roof_idle', 'wallrim_idle', 'tower_idle', 'gatehouse_open', 'tree_a_idle', 'fort_idle', 'massif_a'])
+      expect(mayFade(k, solid)).toBe(true);
+  });
+});
