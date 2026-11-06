@@ -45,7 +45,7 @@ mit `gltfpack` (der glTF-Import von Blender 4.2 kann `EXT_meshopt_compression` n
 - **Look**: AgX „Medium High Contrast“, Compositor: Dunst, Fog-Glow, Lift/Gamma/Gain (kühle Schatten, warme Lichter),
   leichte chromatische Dispersion; Vignette und Filmkorn danach im Wrapper (nur Standbilder).
 - **Render**: Cycles CPU, Standbilder 24 Samples adaptiv + OpenImageDenoise (≈ 1–2 min je Bild auf 4 Kernen);
-  Animatic 3 Samples, ohne Volumen-Dunst, mit Bewegungsunschärfe (≈ 0,5 s je Bild, 640 Bilder).
+  Animatic 3 Samples, ohne Volumen-Dunst, mit Bewegungsunschärfe (≈ 1,1 s je Bild, 636 Bilder, 12 min).
 
 ## Review-Runden
 
@@ -77,3 +77,7 @@ mit `gltfpack` (der glTF-Import von Blender 4.2 kann `EXT_meshopt_compression` n
 - Animatic ohne Volumen-Dunst, Vignette und Korn, mit 3 Samples: Rauschen/Flimmern des Denoisers, nur zur Prüfung von Timing und Schnitt.
 - l12 hat noch viel leeren Himmel, l01 einen leeren Vordergrund; die Totalen wirken flacher als die Nahen.
 - Kein Letterbox im Bild (der Film setzt `letterbox: true`, das Spiel zeichnet die Balken selbst).
+
+## Abgleich mit dem Spiel (2026-11-06)
+
+Die Kamera-Korrekturen in `camera_fixes.yaml` sind **nicht** in die Film-YAML übernommen. Im Spiel zeigen l03, l10, l11 und l12 mit den aktuellen YAML-Werten bereits Gesicht bzw. Gruppe (siehe `ingame.mp4`, `ingame_contact.png`). Dass Blender dort Hinterköpfe zeigt, deutet auf eine abweichende Blickrichtung der Figuren (`facing`/`face`) zwischen `blender_film.py` und dem Brett hin. Das ist vor Story 16.9 zu vereinheitlichen; erst dann gilt eine Kamera für beide.
