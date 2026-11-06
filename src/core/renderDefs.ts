@@ -299,6 +299,9 @@ export interface WorldRegion {
   areas: Array<Array<[number, number]>>;
 }
 
+/** Kind of a drawn path: a road of the network, or the flight of the prologue (shown through the fog). */
+export type WorldRoadKind = 'road' | 'escape';
+
 /** The world map of Valmora (content/world/valmora.yaml, stories 5.2 and 15.7). */
 export interface WorldDef {
   id: string;
@@ -312,8 +315,8 @@ export interface WorldDef {
   /** tip of the home stone per kind of home (camp until mission 1-6, then the castle) */
   home: Record<HomeKind, [number, number]>;
   places: WorldPlace[];
-  /** drawn paths between two places (ids), the geography and not the campaign order (story 15.12) */
-  roads: Array<[string, string]>;
+  /** drawn paths between two places (ids), the geography and not the campaign order (story 15.12); kind `road` unless named */
+  roads: Array<[string, string] | [string, string, WorldRoadKind]>;
 }
 
 /** Snow on the props (story 15.15): colour, normal height where it starts and covers (0 = side, 1 = up), raggedness of the edge, noise per tile. */

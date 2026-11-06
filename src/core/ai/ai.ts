@@ -5,7 +5,7 @@ import { attackTargets, staffTargets } from '../battle/actions';
 import { applyAct, moveAfterAction } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
-import { deathless, fleesAtZero } from '../rules/effects';
+import { deathless, fleesAtZero, withdraw } from '../rules/effects';
 import { expectedDamage, forecast } from '../rules/combat';
 import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
@@ -436,16 +436,17 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
       if (to && ai.area && goals.some((g) => samePos(g, to))) {
         applyAct(data, s, u, to, { kind: 'wait' }, events);
         if (fleesAtZero(u)) {
-          // a lieutenant who withdraws on his own (a map trigger set `flee`, story 9.9) is driven off like one who fell to 0 HP: grudge, bounty, flee line
-          u.gone = 'fled';
-          events.push({ t: 'fled', unit: u.uid });
+          // a lieutenant who withdraws on his own (a map trigger set `flee`, story 9.9) is driven off like one who fell to 0 HP: loot, grudge, bounty, flee line
+          withdraw(s, u, events);
         } else {
           u.gone = 'escaped';
           events.push({ t: 'escaped', unit: u.uid });
         }
         return;
       }
-      return act(to ? { to, action: { kind: 'wait' }, score: 0 } : null);
+      // the way out is blocked (a figure stands in it): fight where he stands, like `guard`, instead of idling
+      if (!to) return act(attackPlans(data, s, u, here)[0] ?? null);
+      return act({ to, action: { kind: 'wait' }, score: 0 });
     }
     case 'follow': {
       const to = followStep(data, s, u);

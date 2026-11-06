@@ -453,6 +453,7 @@ export function resolveAttack(
       ranged,
       magic: side.magic,
     });
+    if (hit && dmg > 0 && fleesAtZero(opp)) opp.hitBy = me.uid;
     if (hit && dmg > 0) {
       if (me === a) landed.a = true;
       else landed.d = true;

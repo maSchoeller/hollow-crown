@@ -13,7 +13,7 @@
 | Groß | Rest, etwa ⅙ | 30 × 40 bis 40 × 30 | 10–15 | ~6 |
 
 - **Mehr, aber schwächere Gegner:** lieber viele Gegner unter dem Niveau der Truppe als wenige ebenbürtige. Richtwert für die Ausarbeitung: zwei- bis dreimal so viele Gegner wie eigene Einheiten, dafür niedrigere Werte (per `pnpm sim` abzustimmen).
-- **Annahme, noch zu bestätigen:** „10–15 Charaktere“ bei großen Leveln meint eigene Einheiten.
+- **Bestätigt (2026-11-06):** „10–15 Charaktere“ bei großen Leveln meint eigene Einheiten.
 - **Folgen, die mitzuplanen sind:** Leistung auf dem Handy (bis 1 200 Felder und 50+ Figuren, Architektur T8), Dauer der Gegnerphase (Schnelldurchlauf/Überspringen), Kamera und Übersicht auf großen Karten, Missionsdauer.
 
 ### Reittiere und Drachen → GDD, Narrative
@@ -66,3 +66,5 @@ Die Etappen 1, 2 und 5 hängen nicht voneinander ab und können parallel laufen.
 **Stand Etappe 8 (2026-11-05):** Sieben Entscheidungen des Produktinhabers und die Lücken in `umsetzung-lueckenliste.md`, Epic 15 „Umbau von Akt 1“ festgeschrieben in `26-epics/epics/epic-15.md`, Story 9.14 auf das Release danach umgeschrieben; Epic 10–12 sind noch nicht geändert. Die Etappen 6 (Akt 2 und 3) und 7 laufen noch.
 
 **Stand Etappe 3 (2026-11-05):** Noch nicht begonnen, eine Figuren-Bibel gibt es nicht. Bestandsliste und Vorschlag für die Neuanfertigung in `23-art-direction/figuren-bestand.md`; Umfang beschlossen: 12 Modelle, zuerst Lucan, Verwalter und Osric Dunn.
+
+**Stand Etappe 8 (2026-11-06, Akt 2):** Die 11 Entwürfe von Akt 2 sind abgenommen (PR #107), aber noch nicht im Spiel. Lücken und vier Fragen in `umsetzung-lueckenliste-akt2.md`; alle am selben Tag entschieden (Akt 2 geht nach Akt 1 Stück für Stück live; Brettfiguren nur Rowena neu); Epic 11 ist auf die Überarbeitung neu geschnitten (`26-epics/epics/epic-11.md`, 27 Stories), Epic 10 nachgezogen. Epic 12 ist noch nicht geändert.

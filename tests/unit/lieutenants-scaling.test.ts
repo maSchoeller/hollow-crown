@@ -199,7 +199,8 @@ describe('the lieutenant on the board', () => {
     expect(b.hask.stats).toEqual(a.hask.stats);
   });
 
-  it('replays to the same outcome from the same start', () => {
+  // plays a whole battle twice: 1.5 s alone, 9 s under coverage and load (2026-11-06)
+  it('replays to the same outcome from the same start', { timeout: 30_000 }, () => {
     const play = () => autoplay(data, startBattle(data, varnhold([4, 4, 3, 3], 2).s).state);
     const a = play();
     expect(play().state).toEqual(a.state);

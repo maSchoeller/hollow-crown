@@ -333,7 +333,8 @@ const triggerWhen = z.discriminatedUnion('type', [
 
 const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('dialogue'), id: z.string(), onBoard: z.string().optional() }),
-  z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile }),
+  // `area`: the new goal area of the units (the way out of `flee`, the zone of `hold`); without it they keep theirs
+  z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile, area: area.optional() }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
   z.object({ action: z.literal('set_terrain'), area, terrain: z.string(), level: z.number().int().min(0).max(2).optional() }),
@@ -431,8 +432,8 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
-  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): no haunt anchors, never haunted */
-  abandoned: z.boolean().optional(),
+  /** the map is never haunted (GDD log 2026-11-06): the company left the place for good (prologue), it caved in (1-7) or it became home (1-6); no haunt anchors */
+  noHaunts: z.boolean().optional(),
   haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
@@ -697,8 +698,11 @@ export const worldSchema = z.object({
     .array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos, areas: z.array(z.array(percentPos).min(3)).min(1) }))
     .min(1),
   home: z.object({ camp: percentPos, castle: percentPos }),
-  /** drawn paths between places (story 15.12): the geography, not the campaign order; tools/art/world_roads.py writes them */
-  roads: z.array(z.tuple([slugId, slugId])).default([]),
+  /**
+   * drawn paths between places (story 15.12): the geography, not the campaign order; tools/art/world_roads.py writes them.
+   * A third entry names the kind: `escape` is the flight of the prologue, drawn on its own and through the fog
+   */
+  roads: z.array(z.union([z.tuple([slugId, slugId]), z.tuple([slugId, slugId, z.enum(['road', 'escape'])])])).default([]),
   places: z
     .array(
       z.object({

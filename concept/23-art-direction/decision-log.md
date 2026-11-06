@@ -113,13 +113,20 @@
 - Zoomstufen auf das quadratische Bild umgestellt (`render.yaml worldMap.zoomSteps` 2,2 und 2,8): nah auf dem Handy rund 1,1-fache Vergrößerung der Quelle.
 - **Offen für den Produktinhaber: Zustandsvarianten der Stadtbilder.** Welche Orte bekommen Zustände (z. B. Erlbach verbrannt nach 1-2, Paktwacht als Ruine bis 1-6 und ausgebaut nach Burgstufe, Aurenhall im Belagerungszustand), ab wann wechseln sie, und kommen sie in Staffel 1? Das Datenmodell nimmt sie ohne Codeänderung auf (`places[].site.variants`: Bild plus Bedingungen, das erste zutreffende gewinnt, sonst das Grundbild). Bis zur Entscheidung zeigt jeder Ort sein Grundbild.
 - **Für Akt 1 erledigt (2026-11-06), sonst offen für den Produktinhaber: Heimsuchungen an Orten unter Nebel.** Eine Heimsuchung steht neben dem Stein ihrer Story-Karte. Die Prolog-Karte liegt jetzt in Aurenhall, also stehen Heimsuchungen dort in Akt 1 weit im Norden über dem Nebel von Akt 3, abseits der ersten Ansicht (erreichbar durch Verschieben). Bleibt das so, oder sollen sie in diesem Fall neben der Heimat stehen?
-  - **Erledigt für Akt 1 (2026-11-06):** Der Prolog ist eine verlassene Karte (`abandoned: true`, GDD-Log 2026-11-06) und hat keine Heimsuchungen mehr; damit steht in Akt 1 keine Heimsuchung unter dem Nebel von Aurenhall. Die allgemeine Regel (Story-Karte unter dem Nebel eines anderen Akts) bleibt offen, bis ein späterer Akt sie braucht.
+  - **Erledigt für Akt 1 (2026-11-06):** Der Prolog wird nie heimgesucht (`noHaunts: true`, GDD-Log 2026-11-06) und hat keine Heimsuchungen mehr; damit steht in Akt 1 keine Heimsuchung unter dem Nebel von Aurenhall. Die allgemeine Regel (Story-Karte unter dem Nebel eines anderen Akts) bleibt offen, bis ein späterer Akt sie braucht.
 
 ## 2026-11-05: Schritt 1a, Stand nach Story 15.9 (Teil 1)
 
 - **Tripo-Konto im Free-Tarif:** In Tripo Studio stehen **625 Credits**, das Konto läuft aber auf **Free** (Preisdialog zeigt „Free“ als aktuellen Tarif, Hinweis „Upgrade für Smart Mesh, Multi-Views“). Auflage A1 (`licensing.md` §6) verlangt Pro mit Datenschutz „Privat“; Free-Ausgaben werden nicht ausgeliefert. Deshalb **kein Tripo-Lauf, 0 Credits verbraucht**, nichts gekauft. Über das Abo entscheidet der Produktinhaber; danach kosten die drei Figuren wie geplant 420 Credits (Rest dann 205, also ein zweiter Lauf für eine Figur möglich).
 - **Brett-Turnarounds fertig und geprüft:** Lucan, Osric Dunn, Verwalter (`art/turnarounds/<id>_board/`, Prompts und Abnahme in `art/prompts/<id>_board_turnaround.md`). Neu gegenüber Oktober: Vorlage ist der Lieblings-Turnaround Ysolde statt Kaels Bogen; Statur steht im Prompt (Osric schwer und rund, Verwalter schlank); das **Teamtuch liegt auf kleinen Stücken** (Schärpe, Halstuch), Signaturteile behalten ihre Farbe.
 - **`archer` → `bandit_archer`:** alle 9 Stellen auf den Akt-1-Karten und die Testkarten zeigen den Bandit-Schützen; die Blender-Kastenfigur `archer` ist aus Repo und Build-Skript entfernt; auch der Klassen-Rückfall von Schütze und Scharfschütze zeigt `bandit_archer`. `content:check` prüft Figuren-IDs jetzt auch ohne Sprite-Ordner.
+
+## 2026-11-06: Schritt 1b gebaut, Dorfältester (Story 15.14)
+
+- **Freigabe Tripo:** Das Konto zeigt weiter den Free-Tarif (Preisdialog „Free – Included“, Banner „Upgrade to unlock Smart Mesh & Multi-Views“) bei 205 Credits. Der Produktinhaber hat den Lauf am 2026-11-06 im Chat trotzdem freigegeben („Trotzdem bauen“), wie bei Story 15.9: Die Credits stammen aus dem bezahlten Tarif. Datenschutz „Privat“. Damit gilt A1 (`licensing.md` §6) für diese Figur wie für die drei aus 15.9 als erfüllt; das Risiko trägt der Produktinhaber (§8). Smart-Mesh Multi-View lief trotz Banner, die gekauften Credits schalten es frei.
+- **Kein Doppelbau:** Vorher in Tripo „Assets“ geprüft: Außer der Oktober-Fassung (Glatze, Vollbart, 2026-10-26) gab es keinen Ältesten.
+- **Gebaut:** Dorfältester (`villager_elder`) mit Strohhut und Kinnbärtchen nach dem Porträt vom 2026-11-03; Smart-Mesh P2.0 Multi-View, Quad 3 000, Textur, Auto-Rig Humanoid = 140 Credits, ein Lauf. **Credits: 205 → 65.** Budget: 6 533 Dreiecke, 512 px, 0,28 MB gz. Ersetzt das Oktober-Modell an derselben Stelle, Karten unverändert.
+- **Rest:** 65 Credits reichen für keine weitere Figur (140). Schritt 2 und 3 brauchen einen Nachkauf; darüber entscheidet der Produktinhaber.
 
 ## 2026-11-06: Schritt 1a gebaut (Story 15.9, Teil 2)
 
@@ -157,6 +164,17 @@
 
 - Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
 - Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.
+
+## 2026-11-06: Zustandsvarianten Erlbach und Aurenhall, Fluchtweg des Prologs
+
+- **Produktinhaber 2026-11-06:** Zustandsvarianten auch für **Erlbach (verbrannt nach 1-2)** und **Aurenhall (belagert ab 3-5**, schon beim Anrücken vor der Stadtschlacht 3-6, und danach so). Die übrigen Orte behalten ihr Grundbild. Umgesetzt über `site.variants` in `content/world/valmora.yaml`: Erlbach `completed: m1_2`; Aurenhall, solange Akt 3 keine Knoten hat, `act: 3` und `storyCount: { min: 4 }` (vor 3-5 sind 3-1 bis 3-4 erledigt), später `completed` auf den Knoten von 3-4.
+- Bilder: `art/world/sites/erlbach_burnt.png` (Dächer verkohlt, Mühlrad gebrochen, Glut) und `aurenhall_siege.png` (Zelte, zwei Belagerungstürme und ein Katapult vor dem geschlossenen Tor, neutrale Farben ohne Wappen, weil noch offen ist, wer belagert); Prompt und Abnahme in `art/prompts/erlbach_burnt_site.md` und `aurenhall_siege_site.md`. Fehlt ein Bild, zeigt die Karte das Grundbild (Rückfall in `siteImage`).
+- **Fluchtweg (Produktinhaber 2026-11-06):** Die Flucht des Prologs (Lastkahn von Aurenhall durch die Aureklamm, dann zu Fuß über den Pass an der Paktwacht vorbei nach Varnhold) ist eine eigene gestrichelte Linie in Glutfarbe, auch durch den Nebel; sie bleibt in allen Akten sichtbar. In den Daten ist sie die Weg-Art `escape` (drittes Feld in `roads`, erzeugt von `tools/art/world_roads.py`); wo sie auf einer Straße liegt, wird nur sie gezeichnet. **Das ersetzt** den Satz im Eintrag „Wege zeigen die Geografie“ oben, der Prolog-Stein habe in Akt 1 keinen Weg mehr nach Varnhold. Die Anlegestelle des Kahns bei Kronfeld ist [ASSUMPTION]; sie ist im Narrative-Log (Story 15.6, Punkt 5) noch offen.
+- Die Bedingung für Aurenhall setzt voraus, dass `storyCount` nur die Story-Missionen des geladenen Akts zählt (so lädt `data.campaign` heute) und beide Missionen des Paars 3-2 ∥ 3-3 vor 3-4 gespielt werden. Für Akt 4 und später (Staffel 2) gilt sie nicht mehr; beim Anlegen der Akt-3-Knoten auf `completed` umstellen.
+
+## 2026-11-06: Keine Heimsuchungen in 1-6 und 1-7
+
+- Wie der Prolog tragen die Paktwacht (1-6, wird Heimat) und das Gewölbe (1-7, stürzt ein) `noHaunts: true` (GDD-Log 2026-11-06). Auf der Weltkarte stehen an der Paktwacht also nie rote Heimsuchungs-Steine; in Akt 1 gibt es Heimsuchungen nur noch an den Orten von 1-1 bis 1-5.
 
 ## 2026-11-06: Jahreszeiten-Boden umgesetzt (Story 15.15)
 

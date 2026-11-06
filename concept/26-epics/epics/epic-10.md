@@ -1,10 +1,10 @@
 ## Epic 10: Die Burg ausbauen (ab Akt 2)
 
-Spieler bauen die eroberte Paktwacht ab Akt 2 auf 11 Räume in drei Stufen aus, lassen ausgewählte Gefährten per Glutfunke auf einen von zwei Profi-Wegen aufsteigen und geben das Erbe der Gefallenen als Lektion weiter. Quellen: GDD „Rollenklassen“, „Heimat: Lager und Burg“, „Wirtschaft und Ressourcen“ und „Fortschritt“ (`concept/21-gdd/gdd.md`), `concept/25-ux/EXPERIENCE.md`, `DESIGN.md`, Mockups 04, 06 und 08, Architektur §5.3, §5.7, §5.10, §5.11, §8.1, §8.5, §8.7, die Entscheidungen des Produktinhabers vom 2026-10-31 (Verfeinerung Epic 10/11) und die Code-Bestandsaufnahme der Session epic10-castle (`_bmad-output/planning-artifacts/handoff-epic10.md`). Epic 10 hängt an Epic 11: Story 11.1 liefert den Akt-Übergang mit `c.act`, den Stufendeckel `levelCap: 20` für Akt 2 und die festen Ids der Akt-2-Gefährten, Story 11.5 die Akt-2-Quelle von `moonsteel` (`lieutenant.bounty.materialByAct`; das Item existiert schon) und den Inhalt der Händler-Liste mit `roomLevel: 2`, die Missions-Stories von Epic 11 die Akt-2-Gefährten `jory`, `odile`, `nell`, `brann`, `amos`, `ilka` (Raum-Gefährten für Stufe 3). Story 11.1 kommt vor allen Epic-10-Stories (Epic 10 hängt damit an einem Teil von Epic 11, benannt und entkoppelt); was spätere Epic-11-Stories liefern (Raum-Gefährten, Nebel-Karten, Händler-Liste), prüfen die Stories mit Fixture-Spielständen (`c.act = 2`, `c.home.kind = 'castle'`, gesetzte Raumstufen); die Burg oben bleibt bis Story 10.14 das gemalte Bild `paktwacht_ruine`.
+Spieler bauen die eroberte Paktwacht ab Akt 2 auf 11 Räume in drei Stufen aus, lassen ausgewählte Gefährten per Glutfunke auf einen von zwei Profi-Wegen aufsteigen und geben das Erbe der Gefallenen als Lektion weiter. Quellen: GDD „Rollenklassen“, „Heimat: Lager und Burg“, „Wirtschaft und Ressourcen“ und „Fortschritt“ (`concept/21-gdd/gdd.md`), `concept/25-ux/EXPERIENCE.md`, `DESIGN.md`, Mockups 04, 06 und 08, Architektur §5.3, §5.7, §5.10, §5.11, §8.1, §8.5, §8.7, die Entscheidungen des Produktinhabers vom 2026-10-31 (Verfeinerung Epic 10/11) und die Code-Bestandsaufnahme der Session epic10-castle (`_bmad-output/planning-artifacts/handoff-epic10.md`). Epic 10 hängt an Epic 11: Story 11.1 liefert den Akt-Übergang mit `c.act`, den Stufendeckel `levelCap: 20` für Akt 2 und die festen Ids der Akt-2-Gefährten, Story 11.5 die Akt-2-Quelle von `moonsteel` (`lieutenant.bounty.materialByAct`; das Item existiert schon) und den Inhalt der Händler-Liste mit `roomLevel: 2`, die Missions-Stories von Epic 11 die Akt-2-Gefährten `jory`, `odile`, `nell`, `brann`, `amos`, `ilka` (Raum-Gefährten für Stufe 3). Story 11.1 kommt vor allen Epic-10-Stories (Epic 10 hängt damit an einem Teil von Epic 11, benannt und entkoppelt); was spätere Epic-11-Stories liefern (Raum-Gefährten, Nebel-Karten, Händler-Liste), prüfen die Stories mit Fixture-Spielständen (`c.act = 2`, `c.home.kind = 'castle'`, gesetzte Raumstufen); die Burg ist seit PR 100 eine 3D-Szene mit Burgstufe (`castleTier`), den Rest liefert Story 10.14. **Nachgezogen am 2026-11-06 (Umbau von Epic 11):** Epic 10 beginnt nach dem Release von Akt 1 (Story 9.14) und nach 11.1; Varek (N2) und Brann (N5) treten nur optional bei, die Stufe 3 der Räume mit ihnen bleibt über den jeweils anderen Raum-Gefährten erreichbar; Verweise auf Epic 11 tragen die neuen Nummern (E7 in 11.15, N6 in 11.22, Supports in 11.23, Abstimmung in 11.27). **Entschieden am 2026-11-06 (F1, F3, F4):** Akt 2 geht nach dem Release von Akt 1 Stück für Stück live (Epic 11, „Stückweise live“); Epic-10-Stories sind damit ab ihrem Merge für Spieler mit Akt-2-Spielständen wirksam, jede Änderung am Speicherformat (ab 10.2) braucht Migration und Fixture aus dem letzten Live-Stand, gesperrte IDs ändern sich nur über `renames.yaml`. Die Akademie behält ihre gebaute Stufe, wenn Raum-Gefährten fehlen oder gehen; die Folgen-Karte von E5 bzw. E6 nennt den Wegfall von Stufe 3 (11.16, 11.17). Burgstufe 3 zeigt ein Vorwerk am Passfuß (10.14).
 
-**Reihenfolge:** nach Story 11.1: 10.2 → 10.3 → 10.4 (parallel zu 11.2–11.7) → 10.1 → 10.5 → 10.6 → 10.7 → 10.8 → 10.9 → 10.10 → 10.11 → 10.12. Akademie und Profi-Wege kommen zuerst, weil die Abstimmung von Akt 2 (Story 11.22) mit Aufstiegen simuliert; 10.2 bringt deshalb den Raum `academy` selbst mit, 10.1 ergänzt danach Kosten und Bedingungen aller Räume. 10.13 (Anhängeteile) geht jederzeit nach 10.3, 10.14 (Burg-Grafik) erst nach der 3D-Entscheidung des Produktinhabers. Story 11.22 (Abstimmung Akt 2) wartet auf 10.1–10.12, weil diese Stories Gold, EP, Glutfunken und Rabatte von Akt 2 verändern.
+**Reihenfolge:** nach Story 11.1: 10.2 → 10.3 → 10.4 (parallel zu 11.2–11.7) → 10.1 → 10.5 → 10.6 → 10.7 → 10.8 → 10.9 → 10.10 → 10.11 → 10.12. Akademie und Profi-Wege kommen zuerst, weil die Abstimmung von Akt 2 (Story 11.27) mit Aufstiegen simuliert; 10.2 bringt deshalb den Raum `academy` selbst mit, 10.1 ergänzt danach Kosten und Bedingungen aller Räume. 10.13 (Anhängeteile) geht jederzeit nach 10.3, 10.14 (Burg-Grafik) erst nach der 3D-Entscheidung des Produktinhabers. Story 11.27 (Abstimmung Akt 2) wartet auf 10.1–10.12, weil diese Stories Gold, EP, Glutfunken und Rabatte von Akt 2 verändern.
 
-**Für alle Stories gilt:** Fertig erst mit grünem `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build`. Jede Handlung ist ein Kampagnen- oder Kampf-Command im Journal, das beim Replay dasselbe Ergebnis liefert; UI und Command rufen dieselbe reine Vorschau-/Kostenfunktion (Architektur §8.1). Spielwerte stehen in YAML (Raumkosten und -bedingungen in `content/core/rooms.yaml`, Stufenwirkungen als Stufen-Arrays in `content/core/balance.yaml`), kein `if (act >= 2)` im Code, kein sichtbarer Text im Code, Beträge immer als Symbol + Zahl. Neue persistierte Felder bekommen einen Default in `normalizeCampaign` (Architektur §8.7). Akt 1 ist veröffentlicht (Story 9.14 mit `pnpm content:lock`): Entfernte oder umbenannte IDs brauchen einen Eintrag `alt: neu` in `content/renames.yaml`, eine geänderte gesperrte ID oder ein geändertes Speicherformat eine Migration in `src/persistence/save.ts` (`migrations`, `renamedId`) mit Fixture-Spielstand aus dem Akt-1-Release (`AGENTS.md`, „Akt-Release“ Schritt 3). Raum-Ausbau: Stufe 2 kostet nur Gold (ab Akt 2), erst Stufe 3 braucht zusätzlich einen der zwei Raum-Gefährten (Produktinhaber 2026-10-31, Readiness-Runde R2). Commands prüfen in der Reihenfolge, in der die Story ihre Fehlercodes aufzählt, und liefern den ersten zutreffenden (Architektur §8.1: Id → Verfügbarkeit → Ressourcen). Sichtbare Änderungen werden mit Screenshots bei 375 × 812 belegt. Neue Entscheidungen gehen in die Decision-Logs unter `concept/`. Werte mit `[ASSUMPTION]` sind abgeleitet und werden per `pnpm sim` geprüft. Audio-Kriterien sind als „später (Audio)“ markiert; bis dahin klingt der vorhandene Bestätigungs-Klang oder nichts.
+**Für alle Stories gilt:** Fertig erst mit grünem `pnpm lint`, `pnpm test`, `pnpm content:check` und `pnpm build`. Jede Handlung ist ein Kampagnen- oder Kampf-Command im Journal, das beim Replay dasselbe Ergebnis liefert; UI und Command rufen dieselbe reine Vorschau-/Kostenfunktion (Architektur §8.1). Spielwerte stehen in YAML (Raumkosten und -bedingungen in `content/core/rooms.yaml`, Stufenwirkungen als Stufen-Arrays in `content/core/balance.yaml`), kein `if (act >= 2)` im Code, kein sichtbarer Text im Code, Beträge immer als Symbol + Zahl. Neue persistierte Felder bekommen einen Default in `normalizeCampaign` (Architektur §8.7). Epic 10 beginnt nach dem Release von Akt 1 (Story 9.14 mit `pnpm content:lock`), Akt 1 ist dann veröffentlicht: Entfernte oder umbenannte IDs brauchen einen Eintrag `alt: neu` in `content/renames.yaml`, eine geänderte gesperrte ID oder ein geändertes Speicherformat eine Migration in `src/persistence/save.ts` (`migrations`, `renamedId`) mit Fixture-Spielstand aus dem Akt-1-Release (`AGENTS.md`, „Akt-Release“ Schritt 3). Raum-Ausbau: Stufe 2 kostet nur Gold (ab Akt 2), erst Stufe 3 braucht zusätzlich einen der zwei Raum-Gefährten (Produktinhaber 2026-10-31, Readiness-Runde R2). Commands prüfen in der Reihenfolge, in der die Story ihre Fehlercodes aufzählt, und liefern den ersten zutreffenden (Architektur §8.1: Id → Verfügbarkeit → Ressourcen). Sichtbare Änderungen werden mit Screenshots bei 375 × 812 belegt. Neue Entscheidungen gehen in die Decision-Logs unter `concept/`. Werte mit `[ASSUMPTION]` sind abgeleitet und werden per `pnpm sim` geprüft. Audio-Kriterien sind als „später (Audio)“ markiert; bis dahin klingt der vorhandene Bestätigungs-Klang oder nichts.
 
 ### Story 10.1: Räume ausbauen
 
@@ -43,7 +43,7 @@ damit die Burg neben den Figuren eine zweite Fortschrittsachse ist.
 - { id: training,  function: training,  icon: training,  fromAct: 2, homes: [castle], …,    Gefährten mira | ilka }
 ```
 
-**Und** die Icons `academy`, `workshop`, `training` stehen in `src/ui/icons.tsx`, Namen und Kurztexte als `room.<id>.name|desc` in `de.yaml`/`en.yaml`, Anker der drei neuen Räume in `content/home/home.yaml` (Position auf `paktwacht_ruine` setzt der Entwickler, Abnahme per Screenshot).
+**Und** die Icons `academy`, `workshop`, `training` stehen in `src/ui/icons.tsx`, Namen und Kurztexte als `room.<id>.name|desc` in `de.yaml`/`en.yaml`, Plätze der drei neuen Räume im Burg-Modell (`tools/art/blender_paktwacht.py`), Raumsteine über den Modellen wie in der 3D-Burg (UX-Log 2026-11-04; Abnahme per Screenshot).
 
 **Angenommen** die Heimat ist die Burg (`c.home.kind = 'castle'`), der Raum ist offen (`homeRooms`), hat eine nächste Stufe, alle `requires` dieser Stufe sind erfüllt und `c.gold ≥ cost.gold`
 **Wenn** der Spieler `{ type: 'buildRoom', room }` schickt
@@ -68,7 +68,7 @@ damit die Burg neben den Figuren eine zweite Fortschrittsachse ist.
 **Angenommen** die Heimat-Ansicht
 **Wenn** ein Raum ausgebaut wurde oder ausgebaut werden kann
 **Dann** zeigt sein Raumstein die Stufe als Punkte (`Pips`) und einen grünen Pfeil, solange ein Ausbau jetzt möglich ist (DESIGN `room-stone`), und die Kopfzeile lautet „Räume 11 · n ausbaubar“ (Mockup 04, Variante B)
-**Und** auf dem gemalten Bild trägt der Anker des Raums dieselben Punkte und denselben Pfeil; Ausbauteile oben gibt es in dieser Story nicht (Story 10.14)
+**Und** in der 3D-Burg trägt der Raumstein über dem Modell dieselben Punkte und denselben Pfeil (Anker werden nicht mehr angezeigt, UX-Log 2026-11-04); weitere Ausbauteile liefert Story 10.14
 **Und** ein Toast meldet „Schmied auf Stufe 2 ausgebaut“; Ausbau-Klang später (Audio).
 
 **Angenommen** die Stufenwirkungen, die nur Zahlen sind
@@ -173,7 +173,7 @@ academy:
 **Wenn** sie im Journal stehen
 **Dann** ergibt das Replay denselben Zustand, und die effektive Stufe zählt sofort mit +15 (`experience.advancedLevelOffset`) für EP, Leutnant-Skalierung und Heimsuchungs-Deckel
 **Und** `tests/unit/academy.test.ts` deckt gültigen Aufstieg (Stufe 1, Loadout 5, Glutfunke weg), jeden Fehlercode (auch Akt 1 ohne Akademie), Wechsel mit Rückrechnung bis zu den Caps, zweiten Effekt und Replay ab
-**Und** die Heimat-Heuristik in `tools/simulate.ts` lässt bei vorhandenem Glutfunken die Figur mit der höchsten Stufe ≥ 10 auf den ersten Weg aufsteigen (für Story 11.22)
+**Und** die Heimat-Heuristik in `tools/simulate.ts` lässt bei vorhandenem Glutfunken die Figur mit der höchsten Stufe ≥ 10 auf den ersten Weg aufsteigen (für Story 11.27)
 **Und** die Handbuch-Einträge `academy` (Kategorie Heimat, Werte als Verweise auf `balance.levels.promoteFrom`, `balance.skills.loadoutAdvanced`, `balance.academy`) und `ember_spark` verweisen aufeinander.
 
 ### Story 10.3: Profi-Klassen und Werte
@@ -235,7 +235,7 @@ damit ein Aufstieg die Spielweise ändert.
 
 **Angenommen** `tools/simulate.ts`
 **Wenn** `pnpm sim <mapId> --runs 50 --promote a|b` läuft
-**Dann** steigen vor der Mission alle Figuren ab Stufe 10 auf den ersten (`a`) bzw. zweiten (`b`) Weg auf, und die Ausgabe nennt Siegquote und Niedergestreckte je Option; die endgültigen Korridore prüft Story 11.22
+**Dann** steigen vor der Mission alle Figuren ab Stufe 10 auf den ersten (`a`) bzw. zweiten (`b`) Weg auf, und die Ausgabe nennt Siegquote und Niedergestreckte je Option; die endgültigen Korridore prüft Story 11.27
 **Und** `pnpm test:coverage` senkt die Coverage von `src/core` nicht.
 
 ### Story 10.4: Wirkungen der Profi-Wege
@@ -244,7 +244,7 @@ Als Spieler
 möchte ich, dass Schutz, Rückstoß, Konter zuerst, Flächen und Anfeuern der Profi-Wege in Vorschau, Kampf und KI gleich wirken,
 damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 
-**Abhängigkeiten:** nach 10.3 (Schema, Klassen) und 10.2 (Migration auf Format 3 für die Umbenennungen); Reichweiten-Kacheln aus Epic 13; Story 11.20 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
+**Abhängigkeiten:** nach 10.3 (Schema, Klassen) und 10.2 (Migration auf Format 3 für die Umbenennungen); Reichweiten-Kacheln aus Epic 13; Story 11.22 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
 
 **Akzeptanzkriterien:**
 
@@ -273,7 +273,7 @@ damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 
 **Und** jede Wirkung steht als Daten im Skill, kein `if (classId === …)`
 **Und** `addAuras` (`src/core/rules/skills.ts`) überträgt neben `effect.stats` zusätzlich `avoidBonus`, `hitBonus` und `ignoreGrief` an die Figuren im Radius (Bannerträger, Lektion `heritage_cheer` aus Story 10.7); die Kampfvorschau zeigt sie über dieselbe Funktion wie die Auflösung, ein Unit-Test belegt Vorschau = Auflösung für alle drei
-**Und** `cheerTargets` ist die einzige Mechanik für Anfeuern auf mehrere Ziele; auch die Laute `final_curtain` (Story 11.20) nutzt sie über `grantsSkill`. Treffen mehrere Quellen zusammen, gelten höchstens 2 Ziele und die größte Reichweite, nichts addiert sich `[ASSUMPTION]`.
+**Und** `cheerTargets` ist die einzige Mechanik für Anfeuern auf mehrere Ziele; auch die Laute `final_curtain` (Story 11.22) nutzt sie über `grantsSkill`. Treffen mehrere Quellen zusammen, gelten höchstens 2 Ziele und die größte Reichweite, nichts addiert sich `[ASSUMPTION]`.
 
 **Angenommen** eine Wirkung, die eine Zahl, eine Reihenfolge oder eine Fläche ändert
 **Wenn** der Spieler sie vorbereitet
@@ -375,7 +375,7 @@ damit Material aus Kopfgeld und Heimsuchungen einen Zweck hat.
 **Angenommen** `content/core/recipes.yaml` mit Schema `recipeSchema` (`{ id, item, roomLevel: 1–3, materials: Record<materialId, int ≥ 1>, gold: int ≥ 0 = 0 }`), Typ `RecipeDef`, geladen als `GameData.recipes` (`src/content/load.ts`)
 **Wenn** `pnpm content:check` läuft
 **Dann** prüft es: Ids eindeutig, `item` existiert in `items.yaml` oder `runes.yaml`, jedes Material hat `kind: material` und ein Bild
-**Und** die Datei enthält diese Rezepte `[ASSUMPTION]` (Materialwert = Preis in `items.yaml`; der Wert aus Material und Gold liegt bei 60–100 % des Kaufpreises: Verbrauchsgüter des Händlers 60–80 %, reine Werkstatt-Items ≈ 80 %, Runen I ≈ 100 %; kein Arkanstaub, er hat keine Quelle; Story 11.22 prüft die Spanne in der Abstimmung):
+**Und** die Datei enthält diese Rezepte `[ASSUMPTION]` (Materialwert = Preis in `items.yaml`; der Wert aus Material und Gold liegt bei 60–100 % des Kaufpreises: Verbrauchsgüter des Händlers 60–80 %, reine Werkstatt-Items ≈ 80 %, Runen I ≈ 100 %; kein Arkanstaub, er hat keine Quelle; Story 11.27 prüft die Spanne in der Abstimmung):
 
 ```yaml
 # Vorschlag für content/core/recipes.yaml
@@ -491,7 +491,7 @@ Als Spieler
 möchte ich, dass die Reserve mitwächst und Freundschaften am Lagerfeuer tiefer werden,
 damit nicht eingesetzte Gefährten nicht zurückfallen und Supports ihr Ende finden.
 
-**Abhängigkeiten:** nach 10.1 (Raum `training`, `buildRoom` für Lagerfeuer und Übungsplatz); `c.act` aus Story 11.1; A/S-Gespräche der Akt-2-Paare liefert Story 11.21 (Akt-1-Paare haben sie schon).
+**Abhängigkeiten:** nach 10.1 (Raum `training`, `buildRoom` für Lagerfeuer und Übungsplatz); `c.act` aus Story 11.1; A/S-Gespräche der Akt-2-Paare liefert Story 11.23 (Akt-1-Paare haben sie schon).
 
 **Akzeptanzkriterien:**
 
@@ -534,7 +534,7 @@ Als Spieler
 möchte ich, dass ein ausgebauter Händler mehr Ware, ein Angebot des Tages, Rabatt und Glutfunken bietet,
 damit sich der Ausbau des Händlers lohnt.
 
-**Abhängigkeiten:** nach 10.1 (Stufen) und 10.2 (`ember_spark` als Aufstiegs-Item, Funken-Moment); den Inhalt der Händler-Liste `roomLevel: 2` von Akt 2 nennt Story 11.5 (wer von 10.9 und 11.5 als Zweite gemergt wird, trägt die Liste ein, weil das nicht strikte Händler-Schema das Feld vorher still verwirft); den Rabatt aus E7 setzt Story 11.14 (der aus E4 existiert).
+**Abhängigkeiten:** nach 10.1 (Stufen) und 10.2 (`ember_spark` als Aufstiegs-Item, Funken-Moment); den Inhalt der Händler-Liste `roomLevel: 2` von Akt 2 nennt Story 11.5 (wer von 10.9 und 11.5 als Zweite gemergt wird, trägt die Liste ein, weil das nicht strikte Händler-Schema das Feld vorher still verwirft); den Rabatt aus E7 setzt Story 11.15 (der aus E4 existiert).
 
 **Akzeptanzkriterien:**
 
@@ -562,7 +562,7 @@ economy:
 **Wenn** der Spieler kauft
 **Dann** rechnet `shopPrice` den Gesamtrabatt als Summe aller aktiven `priceMod`-Prozente des Akts plus Händler-Rabatt der Stufe, höchstens 30 %; Verkaufen bleibt 50 % des Grundpreises
 **Und** das Panel zeigt den Gesamtrabatt als Marke („−20 %“); Tests decken −10, −20, −30 und eine Summe über 30 (gedeckelt) ab
-**Und** nur diese Story baut Summe und Deckel (Schlüssel `economy.maxDiscountPct`); Story 11.14 setzt nur den `priceMod` von E7 und legt keinen eigenen Schlüssel an.
+**Und** nur diese Story baut Summe und Deckel (Schlüssel `economy.maxDiscountPct`); Story 11.15 setzt nur den `priceMod` von E7 und legt keinen eigenen Schlüssel an.
 
 **Angenommen** der Händler auf Stufe 3 und `c.emberShop = { sold, lastSoldAtStory }` (Default `{ sold: 0, lastSoldAtStory: null }`)
 **Wenn** weniger als 3 Glutfunken verkauft sind und seit dem letzten Kauf mindestens eine weitere Story-Mission abgeschlossen ist (Zahl aller abgeschlossenen Story-Missionen über alle Akte > `lastSoldAtStory`)
@@ -736,20 +736,21 @@ Als Spieler
 möchte ich sehen, wie die Paktwacht mit jedem Ausbau und jedem Gefährten wächst und wo Gefallene fehlen,
 damit die Heimat lebendig wirkt.
 
-**Stand 2026-11-04:** Entschieden ist 3D (Art Direction §7). Schon gebaut: Szene als Produktionscode, Raumteile je Stufe, Burgstufe (`castleTier`), drei Gegenstände ohne Datenbindung. Offen aus dieser Story: `homeObject` und die übrigen Gegenstände, `castleScene` mit Gefallenen und Gegangenen, Messung auf echtem Gerät; Plätze und Teile stehen nicht in `home.yaml`, sondern im Modell (`tools/art/blender_paktwacht.py`), das Kriterium dazu ist anzupassen.
+**Stand 2026-11-04:** Entschieden ist 3D (Art Direction §7). Schon gebaut: Szene als Produktionscode (`src/render/home/castle.ts`), Raumteile je Stufe, Burgstufe (`castleTier` 0–3, Schwellen 1/6/14 als `[ASSUMPTION]` im Art-Log), drei Gegenstände ohne Datenbindung. Offen: `homeObject` und die übrigen Gegenstände, `castleScene` mit Gefallenen und Gegangenen, Messung auf echtem Gerät. **Nachgezogen am 2026-11-06:** Der Ausgang „Bild“ entfällt; Plätze und Teile stehen im Modell (`tools/art/blender_paktwacht.py`), nicht in `home.yaml`.
 
-**Abhängigkeiten:** erst nach der Entscheidung des Produktinhabers „3D oder Bild“ auf Grundlage des 3D-Testaufbaus der Session epic10-castle (Branch `claude/epic10-castle-2a96a1`: `src/render/home/castle.ts`, `src/app/screens/Castle3d.tsx`, Screenshots in `_bmad-output/planning-artifacts/handoff-epic10/`, Messung auf echtem Gerät); nach 10.1 (Stufen); die Liste der Gegenstände nimmt der Produktinhaber als Narrative-Vorschlag ab.
+**Abhängigkeiten:** nach 10.1 (Stufen); die Liste der Gegenstände nimmt der Produktinhaber als Narrative-Vorschlag ab; Vorwerk am Passfuß entschieden (F4, Produktinhaber 2026-11-06, `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`).
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Entscheidung des Produktinhabers
+**Angenommen** die gebaute 3D-Burg
 **Wenn** die Story beginnt
-**Dann** steht sie in `concept/23-art-direction/decision-log.md` und `concept/25-ux/.decision-log.md`; `EXPERIENCE.md` („Burg in 3D“) und Art Direction §7 sind nachgezogen; Raumsteine, Raum-Panels und ≤ 2 Taps bleiben unverändert
-**Und** der Spike-Code wird bei „3D“ zu Produktionscode umgebaut, bei „Bild“ gelöscht.
+**Dann** steht die Entscheidung „3D“ in den Logs von Art Direction und UX, `EXPERIENCE.md` („Burg in 3D“) und Art Direction §7 sind nachgezogen; Raumsteine, Raum-Panels und ≤ 2 Taps bleiben unverändert
+**Und** die Burgstufe ist als Kriterium verankert: `castleTier` ist eine reine Funktion des Kampagnenstands, ihre Schwellen stehen in YAML und sind getestet
+**Und** Burgstufe 3 zeigt ein Vorwerk am Passfuß als Ausbauteil, nur als Bild, ohne Regel und ohne Raum (F4); Modell und Prompt nach `licensing.md` §6, ein Bild belegt es.
 
-**Angenommen** die Daten (für beide Ausgänge)
+**Angenommen** die Daten
 **Wenn** `pnpm content:check` läuft
-**Dann** trägt jeder vorhandene Story-Gefährte (die 15 aus `content/acts/act1` und `act2`) in `charSchema` ein Feld `homeObject` (Id des Gegenstands; Pflicht für jeden Gefährten in `content/acts/*/units.yaml`), `content/home/home.yaml` hat unter `castle` je Gegenstand einen festen Platz (`objects: [{ id, char, at, asset }]`) und je Raum und Stufe ein Ausbauteil (`parts: [{ room, level, asset }]`), und jedes Asset existiert
+**Dann** trägt jeder vorhandene Story-Gefährte (die 15 aus `content/acts/act1` und `act2`) in `charSchema` ein Feld `homeObject` (Id des Gegenstands; Pflicht für jeden Gefährten in `content/acts/*/units.yaml`), das Burg-Modell hat je Gegenstand einen festen Platz und je Raum und Stufe ein Ausbauteil, und `content:check` (oder der Modell-Test) meldet jeden Gefährten ohne Platz
 **Und** die Gegenstände sind ein Narrative-Vorschlag `[ASSUMPTION]`, eingetragen in `concept/22-narrative/narrative.md` („Die Paktwacht wächst mit“) und dessen Decision-Log:
 
 | Gefährte | Gegenstand | Gefährte | Gegenstand |
@@ -773,17 +774,12 @@ damit die Heimat lebendig wirkt.
 **Und** je Raum das Ausbauteil seiner Stufe (Stufe 1 Gerüst und Planen, Stufe 2 Dach und Fenster, Stufe 3 Banner, Licht und Leben)
 **Und** Unit-Tests decken alle Zustände ab.
 
-**Angenommen** Ausgang „3D“
+**Angenommen** die 3D-Burg
 **Wenn** die Heimat die Burg ist
-**Dann** zeichnet `src/render/home/` die Burg als Diorama auf dem Szenen-Host mit eigenen Burg-Modellen (Blender/Tripo, Prompts und Eigenanteil nach `licensing.md` §6), Ausbauteilen und Gegenständen als Modelle an den Plätzen aus `home.yaml`, abendlichem Licht aus `render.yaml`; Antippen eines Raums öffnet sein Panel
+**Dann** zeichnet `src/render/home/` die Burg als Diorama auf dem Szenen-Host mit eigenen Burg-Modellen (Blender/Tripo, Prompts und Eigenanteil nach `licensing.md` §6), Ausbauteilen und Gegenständen als Modelle an ihren Plätzen im Modell, abendlichem Licht aus `render.yaml`; Antippen eines Raums öffnet sein Panel
 **Und** die Ansicht zeichnet nur bei Änderung neu (keine dauernd schwingende Kamera), zeigt beim Laden die Ladeanzeige aus Story 7.6, bleibt als eigener Chunk im Bundle-Budget und hält auf dem Referenzgerät die Ziele aus Story 7.8.
 
-**Angenommen** Ausgang „Bild“
-**Wenn** die Heimat die Burg ist
-**Dann** liegen über `paktwacht_ruine` je Raum und Stufe gemalte, freigestellte Ausbauteile am Anker und an jedem Platz der gemalte Gegenstand (ChatGPT über Claude in Chrome, Prompt und Abnahme in `art/prompts/<id>.md`, `licensing.md` §6, Bilder in Git LFS); Positionen in Prozent aus `home.yaml`
-**Und** jedes Bild liegt in mindestens doppelter Anzeigegröße vor (keine sichtbare Vergrößerung bei 375 × 812 und am Desktop) `[ASSUMPTION]`, die Anker-Punkte und -Pfeile aus Story 10.1 bleiben lesbar.
-
-**Angenommen** beide Ausgänge
+**Angenommen** die fertige Story
 **Wenn** die Story fertig ist
 **Dann** belegen Screenshots bei 375 × 812 die Burg mit allen Räumen auf Stufe 1, 2 und 3 sowie einen gefallenen und einen gegangenen Gefährten
 **Und** Burg-Atmosphäre und Raumklänge später (Audio).

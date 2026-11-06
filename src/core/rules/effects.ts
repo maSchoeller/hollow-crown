@@ -149,6 +149,17 @@ export function bleedsOut(data: GameData, s: BattleState, u: BattleUnit): boolea
  * 0 HP handling by death mode (concept/03 §9). `by` is the uid of the unit whose damage brought `u` down (story 3.2): a
  * fleeing lieutenant remembers it as `fledBy`; absent for burn, fire and the like.
  */
+/**
+ * A lieutenant who withdraws on foot (profile `flee`, reaching its area) is driven off like one at 0 HP: his loot drops,
+ * the unit that last hurt him (`hitBy`) is the one who drove him off, the flee line follows from the `fled` event.
+ */
+export function withdraw(s: BattleState, u: BattleUnit, events: GameEvent[]): void {
+  dropLoot(s, u, events);
+  u.gone = 'fled';
+  if (u.hitBy) u.fledBy = u.hitBy;
+  events.push({ t: 'fled', unit: u.uid, ...(u.hitBy ? { by: u.hitBy } : {}) });
+}
+
 export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[], by?: string): void {
   u.hp = 0;
   u.status = [];
@@ -200,7 +211,7 @@ export function knockOut(data: GameData, s: BattleState, u: BattleUnit, events: 
   }
 }
 
-function dropLoot(s: BattleState, u: BattleUnit, events: GameEvent[]): void {
+export function dropLoot(s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos) return;
   for (const uid of u.dropUids) {
     const item = allItems(u).find((i) => i.uid === uid);

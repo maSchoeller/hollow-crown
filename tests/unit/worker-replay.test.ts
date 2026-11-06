@@ -156,7 +156,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe('core worker client (src/app/coreWorker.ts) with the real worker module', () => {
+// each test evaluates two module graphs anew (app and worker side, with the packs) before its battle: 2–6 s alone, measured 2026-11-06
+describe('core worker client (src/app/coreWorker.ts) with the real worker module', { timeout: 30_000 }, () => {
   it('computes the enemy phase in the worker; the result equals the synchronous one', async () => {
     const c = await loadClient();
     const s = opening(FIRST);
