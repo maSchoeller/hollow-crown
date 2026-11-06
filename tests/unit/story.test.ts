@@ -96,6 +96,15 @@ describe('conditions (architecture §5.3)', () => {
     expect(evalCondition({ ...ctxOf(base), act: 2 }, { act: 2 })).toBe(true);
   });
 
+  it('castleTier is true from the given tier of the castle on (story 15.12)', () => {
+    expect(ctxOf(base).castleTier).toBe(0);
+    expect(holds(base, { castleTier: 1 })).toBe(false);
+    expect(evalCondition({ ...ctxOf(base), castleTier: 1 }, { castleTier: 1 })).toBe(true);
+    expect(evalCondition({ ...ctxOf(base), castleTier: 3 }, { castleTier: 2 })).toBe(true);
+    expect(conditionSchema.safeParse({ castleTier: 1 }).success).toBe(true);
+    expect(conditionSchema.safeParse({ castleTier: 0 }).success).toBe(false);
+  });
+
   it('support needs at least the rank, in either order of the pair', () => {
     const c = clone(base);
     expect(holds(c, { support: { pair: ['kael', 'brenna'], rank: 'C' } })).toBe(false);

@@ -483,6 +483,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
         .refine((r) => r.min !== undefined || r.max !== undefined, 'min or max'),
     }),
     z.strictObject({ act: z.number().int().min(1) }),
+    z.strictObject({ castleTier: z.number().int().min(1).max(3) }),
     z.strictObject({ support: z.strictObject({ pair: z.tuple([companion, companion]), rank }) }),
     z.strictObject({ stance }),
     z.strictObject({ met: z.string().min(1) }),
@@ -677,14 +678,17 @@ export const campaignSchema = z.object({
   ),
 });
 
-/** The world map (stories 5.2 and 15.7, architecture §5.12): the painted picture in tiles, regions with fog areas, places on it. */
+/** The world map (stories 5.2, 15.7 and 15.12, architecture §5.12): the painted picture in resolution levels, regions with fog areas, places on it. */
 const percentPos = z.tuple([z.number().min(0).max(100), z.number().min(0).max(100)]);
 const slugId = z.string().regex(/^[a-z0-9_]+$/);
 export const worldSchema = z.object({
   id: z.string(),
   image: slugId,
   size: z.tuple([z.number().int().positive(), z.number().int().positive()]),
-  tiles: z.number().int().min(1).max(8),
+  levels: z
+    .array(z.number().int().positive())
+    .min(1)
+    .refine((l) => l.every((w, i) => i === 0 || w > l[i - 1]!), 'levels ascending'),
   regions: z
     .array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos, areas: z.array(z.array(percentPos).min(3)).min(1) }))
     .min(1),
@@ -831,6 +835,7 @@ export const renderSchema = z.object({
     zoomSteps: z.array(z.number().positive()).length(2),
     zoomMs: z.number().min(0),
     focusZoom: z.number().positive(),
+    fog: z.object({ px: z.number().int().min(16).max(1024), blur: z.number().int().min(0).max(16), alpha: z.number().min(0).max(1) }),
   }),
 });
 

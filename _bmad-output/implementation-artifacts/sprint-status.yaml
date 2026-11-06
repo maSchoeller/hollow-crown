@@ -1,5 +1,5 @@
 # generated: 2026-10-23
-# last_updated: 2026-11-05
+# last_updated: 2026-11-06
 # project: Hollow Crown
 # project_key: NOKEY
 # tracking_system: file-system
@@ -45,7 +45,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -272,4 +272,5 @@ development_status:
   15-9-brettfiguren-zu-den-neuen-portraets-schritt-1: done  # Brettfiguren zu den neuen Porträts, Schritt 1
   15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen
   15-11-leistung-grosser-karten: review  # Leistung großer Karten
+  15-12-weltkarte-fluessig-paktwacht-ruine: in-progress  # Weltkarte flüssig auf dem Handy, Paktwacht als Ruine
   epic-15-retrospective: optional

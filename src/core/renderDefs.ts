@@ -172,6 +172,8 @@ export interface RenderDef {
     zoomMs: number;
     /** how much closer the map goes on a chosen place */
     focusZoom: number;
+    /** fog of later acts as a small picture under the map (story 15.12): `px` square, box blur radius `blur` (two passes), opacity */
+    fog: { px: number; blur: number; alpha: number };
   };
 }
 
@@ -278,11 +280,12 @@ export interface WorldRegion {
 /** The world map of Valmora (content/world/valmora.yaml, stories 5.2 and 15.7). */
 export interface WorldDef {
   id: string;
-  /** painted picture: `public/assets/world/<image>_r<row>c<col>.webp` in `tiles` × `tiles` tiles over the overview `<image>.webp` */
+  /** painted picture: `public/assets/world/<image>.webp` (overview, first level) and `<image>_<width>.webp` for the other levels */
   image: string;
   /** pixel size of the source picture (its aspect ratio) */
   size: [number, number];
-  tiles: number;
+  /** widths of the delivered pictures, ascending (story 15.12) */
+  levels: number[];
   regions: WorldRegion[];
   /** tip of the home stone per kind of home (camp until mission 1-6, then the castle) */
   home: Record<HomeKind, [number, number]>;
