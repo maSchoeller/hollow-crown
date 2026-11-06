@@ -25,17 +25,17 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await skipIntro(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
 
-  // a campaign with an open haunt on the prologue's map, then the world map (the test hook exists where `navigator.webdriver` is set)
+  // a campaign with an open haunt on the map of 1-1 (the prologue's map is abandoned and never haunted), then the world map (the test hook exists where `navigator.webdriver` is set)
   // the lieutenants and enemy pools come with the act pack, which loads in the background: ask until it is there
   await expect
-    .poll(() => page.evaluate(() => (window as unknown as { __hcTest: Hooks }).__hcTest.devHaunt('prologue_paktnacht', 'rout')), { timeout: 60_000 })
+    .poll(() => page.evaluate(() => (window as unknown as { __hcTest: Hooks }).__hcTest.devHaunt('m1_1_steckbriefe', 'boss')), { timeout: 60_000 })
     .toBeTruthy();
 
   // the red stone carries the NEU mark; opening its card takes the mark away
   const stone = page.getByRole('button', { name: /Heimsuchung: |Haunting: / });
   await expect(stone).toBeVisible({ timeout: 30_000 });
   await expect(stone.locator('.wm-node__new')).toBeVisible();
-  // the prologue's map lies in Aurenhall, far north of the first view (world map v5, story 15.7); a tap there glides the map to it
+  // a tap on the stone glides the map to it if it lies outside the first view (world map v5, story 15.7)
   await stone.dispatchEvent('click');
   const card = page.locator('.wm-card--haunt');
   await expect(card).toContainText(/Hask/, { timeout: 30_000 });

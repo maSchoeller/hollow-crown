@@ -55,6 +55,15 @@ describe('map m1_4_wolfslager', () => {
     expect(map.music).toBe('battle_a');
     expect(map.haunts?.map((h) => h.variant).sort()).toEqual(['boss', 'defend', 'rout']);
   });
+
+  it('the jailer carries and drops a key for each chest, also when Fenn has gone with E2 "hand over" (GDD log 2026-11-01)', () => {
+    const map = data.maps[MAP]!;
+    const jailer = map.units.find((u) => u.id === 'jailer')!;
+    const keys = jailer.items.flatMap((it, i) => (it.def === 'door_key' ? [i] : []));
+    expect(keys.length).toBe(map.objects.filter((o) => o.type === 'chest').length);
+    expect(jailer.drops).toEqual(keys);
+    expect(jailer.requires).toBeUndefined();
+  });
 });
 
 describe('the rockfall', () => {

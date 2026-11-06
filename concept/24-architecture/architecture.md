@@ -295,7 +295,7 @@ haunts:
 
 `target` und `chests` müssen begehbare Felder ohne Kartenobjekt sein und dürfen nicht in `deploy`/`enemySpawn` liegen (ein Brunnen oder eine Säule als Ziel ist ein Fehler). Gegner-Pools, Zivilist und Truhen-Inhalt je Akt in `content/acts/actN/haunts.yaml` (Paket des Akts, Schema `hauntPoolsSchema`, `GameData.hauntPools[act]`).
 
-Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
+Jede Story-Karte bekommt 2–3 Anker, außer sie trägt `abandoned: true` (die Truppe kehrt nie zurück, z. B. der Prolog; GDD-Log 2026-11-06): dort lehnt `content:check` Anker ab, der Generator überspringt sie, und `normalizeCampaign` lässt eine offene Heimsuchung ohne Anker aus einem alten Spielstand verfallen (ein laufender Kampf darin endet beim Laden auf der Weltkarte, `staleHauntMap`). `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
 
 **Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Kael). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
 
