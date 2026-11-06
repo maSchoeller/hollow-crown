@@ -2,4 +2,5 @@
 import { inject } from 'vitest';
 import { primeParsedContent } from '../../src/content/node';
 
-primeParsedContent(inject('parsedContent'));
+// empty when a run has no global setup (another config): then each worker parses as before
+primeParsedContent(inject('parsedContent') ?? {});

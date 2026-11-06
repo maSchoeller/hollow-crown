@@ -13,5 +13,5 @@ declare module 'vitest' {
 }
 
 export function setup(project: TestProject): void {
-  project.provide('parsedContent', parsedContent());
+  project.provide('parsedContent', parsedContent(project.config.root));
 }

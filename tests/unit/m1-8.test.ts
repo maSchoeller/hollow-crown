@@ -290,7 +290,8 @@ describe('the finale won and lost', () => {
     throw new Error('no victory in 40 seeds');
   }
 
-  it('gives two ember sparks in the convoy on a victory, saves and loads them, and the act is over', { timeout: 30000 }, () => {
+  // the heaviest test: a whole battle on the finale map and its replay, 7 s alone and 29 s under coverage and load (2026-11-06)
+  it('gives two ember sparks in the convoy on a victory, saves and loads them, and the act is over', { timeout: 60_000 }, () => {
     const { start, played, seed } = playToVictory(base);
     const r = applyCampaign(data, { ...base, seed }, { type: 'finishMission', start, commands: played.log });
     const sparks = (cc: CampaignState) => cc.convoy.filter((i) => i.def === 'ember_spark').length;

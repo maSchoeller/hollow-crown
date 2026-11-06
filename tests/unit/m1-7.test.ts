@@ -39,7 +39,8 @@ describe('node m1_7', () => {
     expect(availableNodes(data, { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5'] }).filter((n) => n.kind !== 'side').map((n) => n.id)).not.toContain('m1_7');
   });
 
-  it('sets wardens_chronicle on a victory only, never on the collapse', () => {
+  // plays at least two whole battles (the first win and the collapse), more if seed 5 stops winning: 2–4 s alone (2026-11-06)
+  it('sets wardens_chronicle on a victory only, never on the collapse', { timeout: 30_000 }, () => {
     let won: CampaignState | null = null;
     // starts at the first seed autoplay won (2026-11-06); seeds 1 to 4 lost and cost four whole battles. A balancing change that
     // makes seed 5 lose only moves the search on, the range is as wide as before.

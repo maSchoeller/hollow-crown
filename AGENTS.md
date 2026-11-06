@@ -58,7 +58,7 @@ Während der Entwicklung nicht sperren: `released-ids.json` entsteht erst beim e
 
 - PNGs unter `art/` liegen in Git LFS und sind in einem frischen Worktree nur Zeiger-Textdateien; vor dem Ansehen oder `pnpm art:build` erst `git lfs pull` ausführen.
 - In einem frischen Worktree kann `node_modules` hinter `package.json` zurückliegen (z. B. fehlt `@babylonjs/materials`); bei „Cannot find package“ erst `pnpm install --frozen-lockfile`.
-- Vitest läuft lokal mit halb so vielen Workern wie logische Kerne (CI: Standard) und parst den Content einmal je Lauf (`tests/setup/`). Läufe nicht mit weniger Workern oder größerem Timeout wiederholen: ein Timeout ist ein echter Befund. Tests, die ganze Schlachten spielen, brauchen allein 2–6 s; ein neuer solcher Test bekommt ein eigenes Timeout mit Begründung im Code, das globale bleibt.
+- Vitest läuft lokal mit halb so vielen Workern wie logische Kerne (CI: Standard) und parst den Content einmal je Lauf (`tests/setup/`). Das globale Timeout ist 15 s; Läufe nicht mit weniger Workern oder größerem Timeout wiederholen. Bei einem Timeout die Datei allein laufen lassen (`pnpm vitest run <datei> --reporter=verbose`): braucht der Test allein über 2 s, bekommt er ein eigenes Timeout mit Begründung im Code, sonst ist er langsamer geworden und das ist der Befund.
 
 <!-- /bmad:context -->
 

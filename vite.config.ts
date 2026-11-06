@@ -156,9 +156,9 @@ export default defineConfig(({ mode }) => {
       // cores, and several checkouts run their checks at the same time, so each battle took two to three times as long as alone and
       // tripped the timeout. Half the logical cores is about one worker per physical core. CI runners are dedicated: default there.
       ...(process.env.CI ? {} : { maxWorkers: '50%' }),
-      // Alone (one worker, 2026-11-06) every test but a handful stays under 2.5 s, so 10 s leaves four times that for a busy machine
-      // and still catches hangs. The few that play several whole battles (over 3 s alone) carry their own timeout, with the reason.
-      testTimeout: 10_000,
+      // Alone (one worker, 2026-11-06) all but 14 tests stay under 2 s; coverage on a busy machine made tests up to six times slower,
+      // so 15 s still catches hangs without tripping on load. The tests over 2 s alone (whole battles) carry their own timeout.
+      testTimeout: 15_000,
       coverage: {
         provider: 'v8',
         include: ['src/core/**/*.ts'],
