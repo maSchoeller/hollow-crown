@@ -141,7 +141,7 @@ development_status:
 
   # Epic 8: Chibi-Stil, Item-Bilder und Audio
   epic-8: in-progress
-  8-1-tonbruch-test-mit-einer-gedenkszene: backlog  # Tonbruch-Test mit einer Gedenkszene
+  8-1-tonbruch-test-mit-einer-gedenkszene: review  # Tonbruch-Test mit einer Gedenkszene
   8-2-tripo-pipeline-vervollstaendigen: done  # Tripo-Pipeline vervollständigen
   8-3-brettfiguren-fuer-akt-1: done  # Brettfiguren für Akt 1
   8-4-portraets-mit-stimmungen-fuer-akt-1: done  # Porträts mit Stimmungen für Akt 1
