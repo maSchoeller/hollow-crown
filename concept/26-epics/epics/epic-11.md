@@ -4,7 +4,7 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 
 **Grundlage:** abgenommene Entwürfe `concept/27-ueberarbeitung/levels/s2_*.yaml` mit Abnahmen in `levels/abnahme/s2_*.md`, `concept/22-narrative/missionsliste-s1.md` (Akt 2), `geografie-valmora.md`, `concept/23-art-direction/figuren-bestand.md`, `map-assets/matrix.md`, `map-assets/jahreszeiten-plan.md`. Was dort steht, gilt vor `narrative.md` (Missionsfolge, Leutnant-Tabelle) und vor der alten Fassung dieses Epics. Werte, Schlüssel und Formeln, die die Überarbeitung nicht berührt (Akt-Übergang, Positionsstufe, Stahl-Tier, Supports, Relikte), stammen aus den Entscheidungen des Produktinhabers vom 2026-10-31.
 
-**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor Story 11.27. Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. Stories mit **⚠ F1–F4** hängen an einer offenen Frage an den Produktinhaber (`umsetzung-lueckenliste-akt2.md`).
+**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor dem Release von Akt 1 (9.14), danach nach jedem Live-Schritt von Akt 2 (siehe „Stückweise live“). Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. F1, F3 und F4 hat der Produktinhaber am 2026-11-06 entschieden (`umsetzung-lueckenliste-akt2.md`); offen ist nur noch **⚠ F2** (Brettfiguren, Story 11.25).
 
 **Gemeinsame Regeln der Missions-Stories (11.12–11.22):**
 
@@ -13,12 +13,13 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 - **Entscheidungen:** Jede Antwort trägt eine Haltung (warm, nüchtern, trotzig) und zeigt ihre Folgen-Karte; Flags deklariert 11.5.
 - **Ortsbilder:** Vorhanden sind `grauwacht`, `salzpass`, `brandhang`, `kronfeld`. Fehlende (2-1, 2-4, 2-6, 2-7, N4–N6) sind je ein Grafik-Task (`art/prompts/<id>.md`, `licensing.md` §6) in der Story; bis dahin steht ein vorhandenes Ortsbild als Platzhalter, vermerkt in der Karten-YAML.
 - **Niederlage:** Avatar oder Lucan fallen, dazu die Schutzfigur der Mission laut Entwurf.
+- **Live-Schritt:** Mit dem Merge ist die Mission für Spieler spielbar (F1). Vorher prüft die Story mit Fixture-Spielständen aus dem letzten Live-Stand, dass offene Spielstände mitten in Akt 2 ohne Verlust laden; nach dem Merge läuft `pnpm content:lock` und sperrt die neuen IDs.
 
 **Reihenfolge:** Epic 11 beginnt nach dem Release von Akt 1 (Story 9.14). 11.1 zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die Gefährten-IDs braucht. Danach laufen 11.2–11.11 parallel zu 10.2–10.4. Die Missionen folgen der Kampagnenfolge; die Paare (2-2 ∥ 2-3, 2-5 ∥ 2-6) lassen sich in beliebiger Reihenfolge bauen. 11.23 nach 11.5, ihre Chronik-Szene nach 11.15. 11.24 läuft parallel zu den Karten, 11.25 hängt an F2, 11.26 nach 11.15 und 11.19. 11.27 kommt zuletzt, nach allen Stories dieses Epics und nach 10.1–10.12, weil diese Gold, EP, Glutfunken und Rabatte von Akt 2 verändern.
 
 ```text
 9.14 Release Akt 1 ──> 11.1 Akt-Übergang ──┬─> 11.2 Positionsstufe ──> 11.4 Simulation
-                                           ├─> 11.3 Paket, Weltkarte, Titeltafel ⚠F1
+                                           ├─> 11.3 Paket, Weltkarte, Titeltafel (erster Live-Schritt)
                                            ├─> 11.5 Gefährten, Leutnants, Flags
                                            ├─> 11.6 Balliste · 11.7 Gegner, Herbst
                                            ├─> 11.8 Ziel-Phasen · 11.9 Relikt-Stufen
@@ -31,8 +32,15 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 11.24 Galerie-Modelle (parallel zu den Karten) ───────────────────────────────────────────────────────────┤
 11.25 Brettfiguren, Schritt 3 ⚠F2 ────────────────────────────────────────────────────────────────────────┤
 11.26 Leistung von Akt 2 (nach 11.15 und 11.19) ──────────────────────────────────────────────────────────┤
-10.1–10.12 ───────────────────────────────────────────────────────────────────────────────────────────────┴─> 11.27 Abstimmung und Release ⚠F1
+10.1–10.12 ───────────────────────────────────────────────────────────────────────────────────────────────┴─> 11.27 Abstimmung und Abschluss
 ```
+
+**Stückweise live (F1, Produktinhaber 2026-11-06):** Akt 2 geht früh und Stück für Stück live, nicht erst mit 11.27. Erster Live-Schritt sind 11.1 und 11.3 nach dem Release von Akt 1 (9.14): `act2` wird `released: true`, wer Akt 1 beendet, landet in Akt 2 und sieht „Weitere Missionen folgen“. Danach ist jede Missions-Story mit ihrem Merge ein Live-Schritt. Folgen, die jede Story beachtet:
+
+- **Sperre:** Vor 9.14 wird nicht gesperrt. Ab dem ersten Live-Schritt sperrt `pnpm content:lock` die IDs von `act2` in `content/released-ids.json` (Knoten `m2_*`, Gefährten, Flags, Leutnants, Items, Szenen, Karten) und nach jedem weiteren Schritt die neuen. Danach heißt Umbenennen `alt: neu` in `content/renames.yaml`, Entfernen ist nicht mehr möglich; IDs deshalb vor dem Merge endgültig wählen. Flags und Gefährten legt 11.5 vollständig an, damit sie beim ersten Sperren feststehen.
+- **Speicherformat:** Spieler haben ab dem ersten Schritt Spielstände mitten in Akt 2, auch auf „Weitere Missionen folgen“. Jede Änderung am Format braucht eine Migration in `src/persistence/save.ts` und eine Fixture `tests/fixtures/saves/format<n>-act2-*.json` aus dem letzten Live-Stand (`tests/unit/migrations.test.ts`); das gilt auch für Epic 10 (Format 3 ab 10.2).
+- **Werte:** Jede Mission geht vorläufig abgestimmt live; 11.27 stimmt am Ende neu ab. Wertänderungen sind erlaubt, sie ändern laufende Spielstände nicht rückwirkend.
+- **Platzhalter:** Knoten ohne Karte bietet die Weltkarte nicht an (11.11); Platzhalter-Bilder und -Figuren (11.7, 11.25) dürfen live gehen.
 
 **Datei-Zuständigkeit:** Epic 11 besitzt `content/acts/act2/**`, den Akt-Übergang, Gegner, Leutnants und Stahl-Items; Epic 10 besitzt `content/core/rooms.yaml` (einzige Ausnahme: 11.1 ergänzt bei den Akt-1-Räumen `{ act: 2 }`), die Profi-Klassen und den Glutfunken. In gemeinsamen Dateien ändert Epic 11 nur eigene Blöcke: „Gegnertypen“ in `classes.yaml`, „Akt 2: Stahl-Tier“ in `items.yaml`, in `balance.yaml` nur Akt-Schlüssel und die hier genannten.
 
@@ -41,8 +49,6 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 Als Spieler
 möchte ich nach dem Finale von Akt 1 mit meinem Spielstand nahtlos in Akt 2 weiterziehen,
 damit die Kampagne über die Akte hinweg eine Geschichte bleibt.
-
-**⚠ F1** (wann Akt 2 live geht) betrifft nur das zweite Kriterium; der Rest ist davon unabhängig.
 
 **Akzeptanzkriterien:**
 
@@ -54,7 +60,8 @@ damit die Kampagne über die Akte hinweg eine Geschichte bleibt.
 **Angenommen** die Truppe gewinnt das Finale eines Akts und der nächste Akt ist freigeschaltet
 **Wenn** `finishMission` den Sieg verbucht
 **Dann** setzt es `c.act = act + 1` und meldet `actReached { act }`; sonst bleibt alles wie in Story 7.3 („erscheint bald“)
-**Und** „freigeschaltet“ heißt: Das Paket `act2` ist `released: true` (Beschluss 2026-11-05: Akt 2 erst nach dem Release von Akt 1; löst „sofort live ab 11.1“ ab). Bis dahin erreicht man Akt 2 nur über `__hc.devMap` und Fixture-Spielstände; die Kopfdateien von Akt 2 stehen deshalb nicht im Paket `core` ⚠ F1
+**Und** „freigeschaltet“ heißt: Das Paket `act2` ist `released: true`. Das wird es im ersten Live-Schritt nach dem Release von Akt 1 (F1, Produktinhaber 2026-11-06; Beschluss 2026-11-05 „erst nach Akt 1“ bleibt); bis dahin erreicht man Akt 2 nur über `__hc.devMap` und Fixture-Spielstände, die Kopfdateien von Akt 2 stehen nicht im Paket `core`
+**Und** `content:check` erlaubt in einem veröffentlichten Akt Knoten ohne Karte (Platzhalter aus 11.11); die Weltkarte bietet sie nicht an und zeigt „Weitere Missionen folgen“, solange kein offener Knoten eine Karte hat
 **Und** Replays und die Simulation (`simCampaign.ts`) führen den Übergang genauso aus; die Eingriffe in `apply.ts` und `commands.ts` bleiben klein, weil Epic 10 dieselben Dateien ändert.
 
 **Angenommen** ein Spielstand aus dem Akt-1-Release mit erledigtem `m1_8`, auch einer, der wegen „erscheint bald“ in Akt 1 stand
@@ -102,13 +109,13 @@ Als Spieler
 möchte ich beim Übergang eine Titeltafel sehen und die Eisenmark aus dem Nebel treten sehen,
 damit der neue Akt als Ereignis beginnt.
 
-**⚠ F1:** Ob `act2` mit dieser Story oder erst mit 11.27 `released: true` wird.
+Diese Story ist zusammen mit 11.1 der erste Live-Schritt von Akt 2 (F1).
 
 **Akzeptanzkriterien:**
 
 **Angenommen** das Paket `act2` in `content/packs.yaml`
 **Wenn** gebaut wird
-**Dann** hat es `load: background`, `act: 2`, ein Budget `[ASSUMPTION]` und `content: [acts/act2/**, locales/*/act2.*]`; Bilder und Modelle von Akt 2 stehen als Globs vor dem Paket `act1`; es bleibt `released: false` bis 11.27 (Empfehlung zu F1), Entwickler laden es lokal über einen Schalter
+**Dann** hat es `load: background`, `act: 2`, ein Budget `[ASSUMPTION]` und `content: [acts/act2/**, locales/*/act2.*]`; Bilder und Modelle von Akt 2 stehen als Globs vor dem Paket `act1`; es wird mit dieser Story `released: true`, sobald Story 9.14 (Release von Akt 1) auf `main` ist; vorher bleibt es `released: false`, Entwickler laden es lokal über einen Schalter
 **Und** Dateien unter `acts/actN/` kommen nur in den Build, wenn `actN` veröffentlicht ist (Test in `tests/unit/packs*.test.ts`); `core` und `act1` wachsen nicht
 **Und** `duePacks` lädt `act2`, sobald `c.act ≥ 2` ist; ist es noch nicht geladen, zeigt die Weltkarte den Ladezustand (Story 7.2).
 
@@ -116,6 +123,7 @@ damit der neue Akt als Ereignis beginnt.
 **Wenn** `c.act` gerade 2 geworden ist
 **Dann** erscheint einmal die Titeltafel „Akt 2 · Glut“ (`act.2.title`, Feld `c.actTitleSeen`), danach lichtet sich der Nebel über Hochland und Küste bis an Aurenhall; das Akt-Band zeigt „Akt 2 · Herbst – Glut“ (`act.2.season`)
 **Und** die Knoten von Akt 2 liegen an den Orten aus `geografie-valmora.md` (Windscharte, Salzpass, Rabenweide, Brandhang, Silberquell, Krähenholm, Kontor, Kronfeld, Kupferhall, Aue-Insel, Jagdgründe), Stadtbilder als Sprites wie in 15.12; Fehlendes zeigt den Rückfall aus 15.7
+**Und** nach dem Merge sperrt `pnpm content:lock` die IDs von `act2` (Kopfdateien, Knoten-Platzhalter); ein Fixture-Spielstand „Akt 2 ohne Missionen“ liegt unter `tests/fixtures/saves/` für die folgenden Live-Schritte
 **Und** Brandhang hat eine Zustandsvariante „verbrannt“ (`site.variants`, nach E7 `obey`); Bild und Prompt liegen unter `art/prompts/`; Tests decken `actTitleSeen`, `duePacks` und die Build-Regel ab.
 
 ### Story 11.4: Simulation über Akte
@@ -347,7 +355,7 @@ damit ich von Halvards Briefen erfahre.
 **Angenommen** die Nachszene
 **Wenn** E5 fällt
 **Dann** bietet Seraphine Odile die Rückkehr in die Garde an; bei `return` geht Odile mit Abschiedszeile, ihre Ausrüstung in den Konvoi, `e05` bestimmt ihre Zeile in Kronfeld
-**Und** die Akademie behält ihre gebaute Stufe; erreicht sie Stufe 3 nicht mehr, weil Varek fehlt oder bei E6 geht, nennt die Folgen-Karte das ⚠ F3.
+**Und** die Akademie behält ihre gebaute Stufe; erreicht sie Stufe 3 nicht mehr, weil Varek fehlt oder bei E6 geht, nennt die Folgen-Karte den Wegfall von Stufe 3 (F3, Produktinhaber 2026-11-06); hat die Akademie schon Stufe 3, entfällt der Hinweis.
 
 ### Story 11.17: Mission 2-6 „Gold für Banditen“ und Entscheidung E6
 
@@ -364,7 +372,7 @@ damit beide Spuren zusammenlaufen.
 
 **Angenommen** die Nachszene und Varek in der Truppe
 **Wenn** E6 fällt
-**Dann** bietet Dravns Bote Varek die Begnadigung im Heer an; ohne Varek entfällt E6 ohne Szene; zum Hinweis auf die Akademie gilt dasselbe wie in 11.16 ⚠ F3.
+**Dann** bietet Dravns Bote Varek die Begnadigung im Heer an; ohne Varek entfällt E6 ohne Szene; zum Hinweis auf die Akademie gilt dasselbe wie in 11.16 (F3): fällt E6 als zweite der beiden Entscheidungen, nennt ihre Folgen-Karte den Wegfall von Stufe 3.
 
 ### Story 11.18: Mission 2-7 „Das Kontor am Silbermeer“ und Entscheidung E8
 
@@ -459,7 +467,7 @@ Als Spieler
 möchte ich auf den Karten von Akt 2 die Kulisse sehen, die beim Leveldesign abgenommen wurde,
 damit Brett und Abnahme-Ansicht übereinstimmen.
 
-Kommt aus Story 15.8, läuft parallel zu den Karten-Stories und vor 11.27.
+Kommt aus Story 15.8, läuft parallel zu den Karten-Stories und vor 11.27. Weil jede Mission mit ihrem Merge live geht (F1), kommen die Modelle einer Karte am besten mit ihr; sonst geht die Karte mit Platzhaltern live.
 
 **Akzeptanzkriterien:**
 
@@ -474,7 +482,7 @@ Als Spieler
 möchte ich Rowena, Brann und die neuen Gegner auf dem Brett so sehen wie in ihren Porträts,
 damit ich sie wiedererkenne.
 
-**⚠ F2:** Umfang und Credits entscheidet der Produktinhaber; die Kriterien gelten für die Empfehlung (vier Modelle).
+**⚠ F2:** Der Produktinhaber entscheidet Umfang und Credits später (2026-11-06); bis dahin gelten die Platzhalter aus 11.7, auch live. Die Kriterien beschreiben die Empfehlung (vier Modelle).
 
 **Akzeptanzkriterien:**
 
@@ -496,13 +504,13 @@ damit die großen Schlachten von Akt 2 auf dem Handy funktionieren.
 **Dann** halten beide die Leistungsziele aus NFR1 in der Fassung von 15.11; reicht das nicht, sinkt erst die Gegnerzahl in Absprache mit der Abstimmung, dann wird optimiert
 **Und** Gegnerphase mit Schnelldurchlauf und Kamera auf 30 × 40 funktionieren wie in Akt 1; die Messung steht in der Story.
 
-### Story 11.27: Akt 2 abstimmen und veröffentlichen
+### Story 11.27: Akt 2 abstimmen und abschließen
 
 Als Produktinhaber
-möchte ich Akt 2 über alle Reihenfolgen abgestimmt und veröffentlicht sehen,
+möchte ich Akt 2 über alle Reihenfolgen abgestimmt und abgeschlossen sehen,
 damit Spieler aus Akt 1 ohne Brüche und im Korridor weiterspielen.
 
-**⚠ F1:** Kriterien gelten für die Empfehlung „Akt 2 als Ganzes“.
+Akt 2 ist zu diesem Zeitpunkt schon live, Mission für Mission (F1). Diese Story stimmt den ganzen Akt ab und schließt ihn ab.
 
 **Akzeptanzkriterien:**
 
@@ -512,7 +520,8 @@ damit Spieler aus Akt 1 ohne Brüche und im Korridor weiterspielen.
 **Und** geprüft sind beide Reihenfolgen beider Paare, je mit E7 `warn` und `obey`, mit und ohne Varek und Brann; N4–N6 an früher und später Position
 **Und** Wertänderungen stehen nur in YAML und im GDD-Log; die Rabatt-Summe bleibt ≤ −30 %, die Glutfunken von Akt 2 passen zur Rechnung des GDD; die Spielzeit von Akt 2 passt zu rund einem Drittel von 30–35 Stunden.
 
-**Angenommen** der Release
+**Angenommen** der Abschluss von Akt 2
 **Wenn** der Produktinhaber ihn auslöst
-**Dann** wird `act2` `released: true`, `pnpm content:lock` sperrt seine IDs, Fixtures aus dem Akt-1-Release laden ohne Verlust und landen mit Titeltafel in Akt 2; ändert sich das Speicherformat, gibt es Migration und Fixture
+**Dann** sperrt `pnpm content:lock` alle restlichen IDs, Fixtures aus dem Akt-1-Release und aus jedem Live-Schritt von Akt 2 laden ohne Verlust; ändert sich das Speicherformat, gibt es Migration und Fixture
+**Und** Wertänderungen der Abstimmung gelten für laufende Spielstände ab der nächsten Mission, ohne Migration
 **Und** ein Playtest-Plan für Akt 2 (Folge, Verrat in Kronfeld, Balliste, Höhen) liegt vor (`gds-playtest-plan`); alle Prüfungen sind grün, der Pull Request gegen `main` nennt die Ergebnisse.

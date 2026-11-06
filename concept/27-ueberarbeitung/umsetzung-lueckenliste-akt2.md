@@ -26,17 +26,26 @@
 | Entscheidungen | E5 nach 2-5, E6 nach 2-6 (nur mit Varek), E7 in 2-4, E8 nach 2-7; Beat 9 „Dorf brennt“ hat keinen offenen Fall mehr, weil 2-4 immer vor 2-6 liegt | Missionen |
 | Szenen | Alle Szenen von Akt 2 fehlen; Chronik-Szene „nach der 3. Mission“ heißt bei fester Folge „nach 2-4“ | Missionen, 11.23 |
 | Galerie-Modelle | Laut Matrix fehlen für Akt 2 u. a. Boden Herbst, Koppel, Stall, Gestüt, Getreideterrasse, Bergdorf, Hängebrücke, Wasserfall, Kai, Lagerhaus, Kran, Gaukelbühne, Stollen, Lore, Drachenknochen, Fackel; Deko-Pferd für 2-3 | 11.24 |
-| Figuren (Schritt 3) | Figuren-Bestand: Rowena ❌ (Helm, Pegasus-Figurenblatt), Brann 🟡, Brakka 🟡; neu nötig Ritter der Lanze und Kaperer (Schritt 3: 4 Modelle, 560 Credits). Guthaben 205 Credits. Figuren-Bibel (Schritt 0) fehlt | 11.25, **Frage F2** |
+| Figuren (Schritt 3) | Figuren-Bestand: Rowena ❌ (Helm, Pegasus-Figurenblatt), Brann 🟡, Brakka 🟡; neu nötig Ritter der Lanze und Kaperer (Schritt 3: 4 Modelle, 560 Credits). Guthaben 205 Credits. Figuren-Bibel (Schritt 0) fehlt | 11.25, **Frage F2 offen** |
 | Ortsbilder | Fehlen für 2-1, 2-4, 2-6, 2-7, N4–N6 (vorhanden: grauwacht, salzpass, brandhang, kronfeld) | Missionen |
 | Weltkarte | Akt-2-Knoten auf Weltkarte v5 (Story 15.7/15.12), Nebel je Akt, Stadtbilder der Akt-2-Orte, Brandhang als Zustandsvariante nach E7 „gehorchen“ | 11.3 |
-| Burg (Epic 10) | Einleitung und 10.1 überholt (gemaltes Bild, Anker), 10.14 nennt noch Ausgang „Bild“ und `home.yaml`; Verweise auf alte Epic-11-Nummern; Varek und Brann optional; Vorwerk am Passfuß ohne Story | Epic 10 nachgezogen, **Fragen F3, F4** |
+| Burg (Epic 10) | Einleitung und 10.1 überholt (gemaltes Bild, Anker), 10.14 nennt noch Ausgang „Bild“ und `home.yaml`; Verweise auf alte Epic-11-Nummern; Varek und Brann optional; Vorwerk am Passfuß ohne Story | Epic 10 nachgezogen, F3 und F4 entschieden |
 | Leistung | 2-4 und 2-8 sind 30 × 40; 2-8 hat bis 15 eigene, 40 Gegner und 4 Leutnants (rund 60 Figuren, über dem Ziel von 15.11), dazu Feuer und Ballisten | 11.26 |
-| Release | Beschluss 2026-11-05: Akt 2 erst nach dem Release von Akt 1 live; alte 11.1/11.3 schalten den Übergang „sofort ab Merge“ | 11.1, 11.3, 11.27, **Frage F1** |
+| Release | Beschluss 2026-11-05: Akt 2 erst nach dem Release von Akt 1 live; alte 11.1/11.3 schalten den Übergang „sofort ab Merge“ | 11.1, 11.3, 11.27, F1 entschieden |
 | Quer | `gdd.md` (Missionsfolge „Flieger und Balliste“, Gegner pro Akt), `narrative.md` (Leutnant-Tabelle Pegasus/Wyvern), Art Direction §4.3 (Signaturteile) noch auf altem Stand; FR17 nennt Pegasusritter | Requirements nachgezogen; GDD, Narrative, Art Direction bleiben Folgearbeit |
 
-## Offene Fragen an den Produktinhaber
+## Fragen an den Produktinhaber
 
-Gesammelt am 2026-11-06, gestellt über die planende Session. Bis zur Antwort tragen die betroffenen Stories die Marke **⚠ F1–F4**.
+Gesammelt und beantwortet am 2026-11-06. Offen ist nur F2; Story 11.25 trägt weiter **⚠ F2**.
+
+| # | Antwort (2026-11-06) |
+|---|---|
+| F1 | **Früh und Stück für Stück live**, nicht erst mit 11.27: erster Live-Schritt 11.1 und 11.3 nach dem Release von Akt 1, danach jede Mission mit ihrem Merge. Ab dann `content:lock` nach jedem Schritt, Migration und Fixture bei jeder Formatänderung (Epic 11, „Stückweise live“) |
+| F2 | **Später entscheiden.** 11.25 bleibt offen, Platzhalter gelten, auch live |
+| F3 | **Empfehlung A:** Die Akademie behält ihre Stufe, die Folgen-Karte nennt den Wegfall von Stufe 3 |
+| F4 | **Empfehlung A:** Burgstufe 3 zeigt ein Vorwerk am Passfuß, nur als Bild, ohne Regel (10.14) |
+
+Die ursprüngliche Fragestellung:
 
 | # | Frage | Empfehlung | Betrifft |
 |---|---|---|---|
