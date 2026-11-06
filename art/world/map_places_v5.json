@@ -322,7 +322,13 @@
     846
    ],
    "site": {
-    "image": "art/world/sites/paktwacht_v3.png",
+    "image": "art/world/sites/paktwacht_ruin.png",
+    "variants": [
+     {
+      "id": "paktwacht_built",
+      "image": "art/world/sites/paktwacht_v3.png"
+     }
+    ],
     "x": 831,
     "bottom": 860,
     "width": 72
