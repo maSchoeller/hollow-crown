@@ -26,10 +26,11 @@ export const toneTestScenes = (): string[] => [TONE_TEST.grave, `scn.farewell.${
 
 /**
  * Throwaway campaign with the company as it stands after the prologue (the grave's speakers), plus the grieving partners for
- * part 2 (Mira speaks first in the memorial variant of N1). Fenn is not in it: he has fallen.
+ * part 2 (Mira speaks first in the memorial variant of N1). Fenn is not in it: he has fallen. `avatarName`: the default name of
+ * a new campaign (`ui.new.defaultName`), so no visible text lives here.
  */
-export function toneTestCampaign(data: GameData): CampaignState {
-  const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+export function toneTestCampaign(data: GameData, avatarName: string): CampaignState {
+  const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: avatarName, pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   const order = data.campaign.nodes.map((n) => n.id);
   const upto = order.indexOf(TONE_TEST.companyAfter);
   for (const ch of Object.values(data.chars)) {

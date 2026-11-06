@@ -22,7 +22,7 @@ describe('tone test (story 8.1)', () => {
   });
 
   it('every speaking line at the grave and in the N1 memorial finds a speaker in the company; Fenn is not in it', () => {
-    const c = toneTestCampaign(data);
+    const c = toneTestCampaign(data, 'Rhen');
     const ids = new Set(c.roster.map((u) => u.id));
     expect(ids.has(TONE_TEST.fallen)).toBe(false);
     for (const id of [TONE_TEST.grave, TONE_TEST.memorial])

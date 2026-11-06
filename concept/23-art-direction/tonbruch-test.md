@@ -7,7 +7,7 @@ Prüft das Brief-Risiko „Tonbruch“: Verharmlost die runde Chibi-Optik den er
 - **Handy:** <https://maschoeller.github.io/hollow-crown/?tonbruch> (im Hochformat öffnen)
 - **Am Rechner (Entwicklung):** `pnpm dev`, dann <http://localhost:5173/?tonbruch> oder in der Konsole `__hc.toneTest()`
 
-Der Link startet eine Wegwerf-Kampagne, die nie gespeichert wird. Vorhandene Spielstände bleiben unberührt. Am Ende steht das Titelbild.
+Der Link startet eine Wegwerf-Kampagne. Lädt der zweite Teil noch, erscheint der Ladebildschirm des Spiels; er geht von selbst weiter. Die Kampagne wird nie gespeichert. Vorhandene Spielstände bleiben unberührt. Am Ende steht das Titelbild.
 
 Inhalt, etwa 3 Minuten:
 
@@ -25,6 +25,8 @@ Inhalt, etwa 3 Minuten:
 
 ## Bogen
 
+Name oder Kürzel: ______ · Datum: ______ · Gerät: ______ · Ton an: ja / nein · „Skip“ oder „Auto“ benutzt: ja / nein
+
 Skala: **1** = trifft gar nicht zu, **2** = eher nicht, **3** = teils, **4** = eher, **5** = trifft voll zu.
 
 | # | Aussage | 1 | 2 | 3 | 4 | 5 |
@@ -39,7 +41,7 @@ Skala: **1** = trifft gar nicht zu, **2** = eher nicht, **3** = teils, **4** = e
 **Freitext:**
 
 - Was hat am meisten gewirkt, was am meisten gestört (Bild, Satz, Moment)?
-- Falls F5 ≥ 3: Wo genau?
+- Falls F1 oder F5 ≥ 3: Wo genau, und woran lag es?
 
 ## Auswertung
 
@@ -57,7 +59,7 @@ Skala: **1** = trifft gar nicht zu, **2** = eher nicht, **3** = teils, **4** = e
 
 1. F1 (verharmlost) im Mittel **≤ 2,0** und bei keinem Tester 5. Das ist der Kern des Brief-Risikos.
 2. F5 (unfreiwillig niedlich) im Mittel **≤ 2,5**.
-3. F2 (berührt) im Mittel **≥ 3,0**. Ein Abschied, der nichts auslöst, gilt ebenfalls als Tonbruch.
+3. F2 (berührt) im Mittel **≥ 3,0**. Ein Abschied, der nichts auslöst, gilt ebenfalls als Tonbruch (Auslegung des Brief-Risikos: „ernster Ton“ heißt, der Tod muss wirken; beim Eintrag ins Log bestätigen).
 4. F3 und F4 im Mittel je **≥ 3,0**.
 
 **Nicht bestanden**, wenn eine Bedingung verfehlt ist. Dann die genannten Stellen aus dem Freitext sammeln und je Stelle die Ursache zuordnen: Porträt (Stimmung `sad` nachschärfen), Hintergrund oder Licht (dunkler, entsättigter), Text, Abschiedskarte oder Musik. Nach der Änderung mit neuen Testern wiederholen. Ohne bestandenen Test geht Akt 1 nicht ins Release (Story 9.14).
