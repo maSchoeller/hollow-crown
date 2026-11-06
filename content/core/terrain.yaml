@@ -3,7 +3,7 @@
 # ground: Bodenschicht fürs Dual-Grid-Rendering, prop: Requisite darüber (art/README.md).
 # level: Höhenstufe als Regel (GDD; Standard 0; 1 Wehrgang, Dach, Terrasse; 2 Turm, Felsnase). Eine Karte hebt beliebiges Gelände zusätzlich mit `levels:` (Wald auf der Terrasse bleibt Wald). Die Mauer selbst bleibt unbetretbar und Stufe 0, begehbar ist `rampart`.
 # connector: ramp|stairs|ladder führt von diesem Feld zum einen Nachbarn eine Stufe höher; wer sie nutzen darf, sagt cost. opensTo: geschlossener Durchgang, öffnet zu diesem Gelände.
-# 3D-Brett, nur Darstellung (concept/01-decisions.md D3, D6): stand = Standhöhe einer Figur über height; surface = Bodentextur, height = Oberkante in Feldern
+# 3D-Brett, nur Darstellung (concept/01-decisions.md D3, D6): stand = Standhöhe einer Figur über height (auf ramp/stairs/ladder gilt die Modellfläche aus render.yaml board.connectors, Story 15.13); surface = Bodentextur, height = Oberkante in Feldern
 # (Standard 0), cliff = Seitenwand earth|rock|wall (Standard earth), water = Wasserfläche darüber.
 - { id: plain,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: grass,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
@@ -53,9 +53,9 @@
 - { id: crag,     def: 1, avoid: 10,  heal: 0,  flammable: false, ground: grass, level: 2, cost: { foot: 1, armored: 2, mounted: 2, flier: 1, monster: 1 }, surface: grass, height: 1.7, cliff: rock }
 # Dach (Entwurf N1, Entscheidung 2026-11-05): Stufe 1, nur zu Fuß, Kosten 2, Ausweichen +20; die Figur steht auf der Dachmitte (Modell roof_tile_idle, Mitte auf rund 0,37).
 - { id: roof,     def: 0, avoid: 20,  heal: 0,  flammable: false, ground: wall,  prop: roof_tile, level: 1, stand: 0.37, cost: { foot: 2, armored: null, mounted: null, flier: 1, monster: null }, surface: stone, height: 0.85, cliff: wall }
-- { id: ramp,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: ramp, connector: ramp, stand: 0.42, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
-- { id: stairs,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: stairs, connector: stairs, stand: 0.42, cost: { foot: 1, armored: 2, mounted: null, flier: 1, monster: 2 }, surface: road }
-- { id: ladder,   def: 0, avoid: -10, heal: 0,  flammable: false, ground: plain, prop: ladder, connector: ladder, stand: 0.3, cost: { foot: 2, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
+- { id: ramp,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: ramp, connector: ramp, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
+- { id: stairs,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: stairs, connector: stairs, cost: { foot: 1, armored: 2, mounted: null, flier: 1, monster: 2 }, surface: road }
+- { id: ladder,   def: 0, avoid: -10, heal: 0,  flammable: false, ground: plain, prop: ladder, connector: ladder, cost: { foot: 2, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
 - { id: gate_closed, def: 0, avoid: 0, heal: 0, flammable: false, ground: road,  prop: gate, opensTo: gate, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: road }
 # Hebel: Objekt `lever` auf diesem Feld; man zieht ihn vom Nachbarfeld, die Requisite zeigt lever_up / lever_down nach dem Objektzustand.
 - { id: lever,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: lever, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
