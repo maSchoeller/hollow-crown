@@ -5,7 +5,7 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Abend an der Grenzmauer, dahinter im Dunst Kharesh. Davor ein Turm, über dem Tor Drache und Krone."
+    text: "Morgen an der Grenzmauer, dahinter im Dunst Kharesh. Davor ein Turm, über dem Tor Drache und Krone."
   - id: l02
     speaker: [liora, ysolde, avatar]
     mood: neutral

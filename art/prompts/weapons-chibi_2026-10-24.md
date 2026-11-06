@@ -1,5 +1,8 @@
 # weapons-chibi_2026-10-24 – Basiswaffen-Bilder und Brenna/Mira im Round-Chibi-Stil
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Beauftragt vom Produktinhaber am 2026-10-24: (1) je eine Basiswaffe für die Waffengruppen ohne Item (Dolch, leichter Bogen, Laute) samt Item-Bild, (2) Brenna und Mira, deren Neutralbilder aus dem ersten Moodboard-Durchlauf weniger „chibi“ waren als die übrigen, neu im Round-Chibi-Stil (B8) samt Stimmungsvarianten.
 
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome
@@ -25,11 +28,11 @@ Verdrahtung wie alle Items: Feld `image` entfällt (Standard = `id`), `pnpm art:
 
 ## Teil 2 – Brenna und Mira
 
-**Referenzen je Chat (Bildanhänge):** 1. das bisherige Neutralbild der Figur (`brenna.png` bzw. `mira.png`, Moodboard 2026-10-23) nur für die Identität; 2.–4. `tobin.png`, `lucan.png`, `halvard.png` (freigegebene Round-Chibi-Porträts aus `art/mockups/characters-s1/`) als Stilreferenz.
+**Referenzen je Chat (Bildanhänge):** 1. das bisherige Neutralbild der Figur (`brenna.png` bzw. `mira.png`, Moodboard 2026-10-23) nur für die Identität; 2.–4. `tobin.png`, `kael.png`, `halvard.png` (freigegebene Round-Chibi-Porträts aus `art/mockups/characters-s1/`) als Stilreferenz.
 
 **Erste Nachricht (Brenna):**
 
-> Create an image. The FIRST attached image shows BRENNA, a character of my original fantasy tactics RPG 'Hollow Crown' - use it ONLY for her identity (face, freckles, curly copper-red hair in a thick braid, broad grin, fur-trimmed leather and chain armour, ember-orange armband, huge double-bitted axe resting on her shoulder, all colours). The other three attached portraits (TOBIN, LUCAN, HALVARD) are the APPROVED STYLE REFERENCES. Redraw Brenna in EXACTLY their style: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body with chibi proportions (head clearly larger relative to the body than in her current image), soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms. She stays a big, strong, 41-year-old woman - show that with broad shoulders, sturdy build and laugh lines, never with realistic proportions, detailed muscles or detailed anatomy. Keep her outfit, axe and colours unchanged. FORMAT like the references: square 1:1, one single character, half-body dialogue portrait (head to hips), body turned slightly, centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text, no frame. Expression: neutral-friendly - motherly, rough, a warm broad grin.
+> Create an image. The FIRST attached image shows BRENNA, a character of my original fantasy tactics RPG 'Hollow Crown' - use it ONLY for her identity (face, freckles, curly copper-red hair in a thick braid, broad grin, fur-trimmed leather and chain armour, ember-orange armband, huge double-bitted axe resting on her shoulder, all colours). The other three attached portraits (TOBIN, KAEL, HALVARD) are the APPROVED STYLE REFERENCES. Redraw Brenna in EXACTLY their style: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body with chibi proportions (head clearly larger relative to the body than in her current image), soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms. She stays a big, strong, 41-year-old woman - show that with broad shoulders, sturdy build and laugh lines, never with realistic proportions, detailed muscles or detailed anatomy. Keep her outfit, axe and colours unchanged. FORMAT like the references: square 1:1, one single character, half-body dialogue portrait (head to hips), body turned slightly, centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text, no frame. Expression: neutral-friendly - motherly, rough, a warm broad grin.
 
 **Erste Nachricht (Mira):** gleich aufgebaut, Identität *24-year-old former poacher and archer: face, freckles, sharp hazel eyes, sly smirk, dark-brown hair in a messy side braid with a feather, hooded forest-green cloak, leather bracers, quiver with arrows over the shoulder, longbow in hand with ember-orange cloth tied to the bow, all colours*; Stilteil ohne den Satz zum Alter, dafür *never realistic proportions or detailed anatomy*; Ausdruck *neutral - sarcastic, skeptical, a sly smirk*.
 

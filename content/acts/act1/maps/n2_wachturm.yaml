@@ -124,7 +124,7 @@ design:
   intent: >
     Schatzkarte mit Zeitdruck: Zwei Truhen im Turm in 10 Runden, der Suchtrupp steht davor. Der Hügel in der Mitte teilt den Anmarsch
     in West und Ost. Lucan muss zu Varek in den Turm, sonst bleibt der Deserteur allein zurück.
-  mood: Abendlicht über kahlen Grenzhügeln, die bröckelnde Grenzmauer, hinter ihr im Dunst die Türme von Kharesh, Feuer des Suchtrupps.
+  mood: Morgenlicht über kahlen Grenzhügeln, die bröckelnde Grenzmauer, hinter ihr im Dunst das Land von Kharesh, Feuer des Suchtrupps.
   phases:
     - { id: p1, turns: [1, 3], label: Anmarsch, note: "Hügel teilt den Weg; Plänkler an den Flanken; Breschen-Welle R3." }
     - { id: p2, turns: [4, 7], label: Turm, note: "Lanzen vor der Treppe, Feldwebel am Ostrand, alle mit Schlüssel; Wellen R5 Ost, R7 West." }

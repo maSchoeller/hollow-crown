@@ -1,5 +1,8 @@
 # enemies_act1_2026-10-24 – Porträts der neuen Gegnertypen von Akt 1
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Generische Gegnerporträts für Wolfsreiterin, Söldner und Tempelwache (Story 8.3/8.4). Sie sind zugleich die Figurenvorlage der Brett-Turnarounds (`wolf_rider_board_turnaround.md`, `mercenary_board_turnaround.md`, `temple_guard_board_turnaround.md`). Vorgabe des Produktinhabers (2026-10-24): Porträts ohne Tripo-Figur dürfen neu gedacht werden, und nicht alle Gegner sollen Männer sein; deshalb sind Wolfsreiterin und Tempelwache Frauen, der Söldner ein Mann.
 
 - **Dateien:** `art/mockups/characters-s1/class_wolf_rider.png`, `class_mercenary.png` (ersetzt die Fassung vom 2026-10-24 13:21, siehe `missing_2026-10-24.md`), `class_temple_guard.png`; je 1254 × 1254, RGBA, echter Alphakanal
@@ -7,7 +10,7 @@ Generische Gegnerporträts für Wolfsreiterin, Söldner und Tempelwache (Story 8
 - **Tarif und Konto zum Erzeugungsdatum (A1):** ChatGPT **Plus**, Konto `maschoeller` (Seitenleiste, 2026-10-24 21:10)
 - **Modellversion:** ChatGPT-Bildgenerierung; die Oberfläche nennt keine Versionsnummer (Denkaufwand „Medium“)
 - **Datum:** 2026-10-24, 21:10–21:50
-- **Referenzen:** `art/mockups/characters-s1/rhen_a.png`, `lucan.png`, `tobin.png` (Stil), `class_soldier.png` (generischer Gegner)
+- **Referenzen:** `art/mockups/characters-s1/rhen_a.png`, `kael.png`, `tobin.png` (Stil), `class_soldier.png` (generischer Gegner)
 - **Originale (A3):** ChatGPT lieferte die Bilder im Zielformat; die Dateien sind die unveränderten Downloads (Git LFS), keine zweite Kopie
 - **Menschlicher Anteil (A2):** Figurenentwurf (Geschlecht, Fraktionsfarben nach Art Direction §2.2), Prompt, Auswahl und Abnahme; keine Nachbearbeitung
 - **A7:** Prompts ohne Namen geschützter Werke, Marken oder Künstler
@@ -16,15 +19,15 @@ Generische Gegnerporträts für Wolfsreiterin, Söldner und Tempelwache (Story 8
 
 **Erste Nachricht** (vier Referenzen angehängt):
 
-> Create an image. The four attached portraits (RHEN, LUCAN, TOBIN and a generic SOLDIER enemy) are the APPROVED STYLE REFERENCES for my original fantasy tactics RPG 'Hollow Crown'. Match their style EXACTLY: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body, soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms; friendly and readable even for enemies, never gritty or realistic. FORMAT: square 1:1, one single character, half-body dialogue portrait (head to hips), body turned slightly, centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text, no name, no logo, no frame. I will ask for three GENERIC ENEMY TYPES, one per message. Enemy type 1: WOLF RIDER (a woman, about 30) of a wild borderland raider band that fights on foot in Act 1: wiry and fierce, tanned skin, messy dark-blonde hair in two rough braids with small wolf-tooth beads, blue-grey war-paint stripe across the eyes; a big shaggy GREY WOLF-FUR MANTLE over both shoulders (just the pelt, NO wolf head and NO hood), patched brown leather armour, rust-red (#8E3B2E) cloth wrapped around her waist, leather bracers, holding a simple long hunting spear upright. Colours of the raider faction: earth brown, dirty olive, rust red. Expression: feral, confident grin.
+> Create an image. The four attached portraits (RHEN, KAEL, TOBIN and a generic SOLDIER enemy) are the APPROVED STYLE REFERENCES for my original fantasy tactics RPG 'Hollow Crown'. Match their style EXACTLY: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body, soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms; friendly and readable even for enemies, never gritty or realistic. FORMAT: square 1:1, one single character, half-body dialogue portrait (head to hips), body turned slightly, centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text, no name, no logo, no frame. I will ask for three GENERIC ENEMY TYPES, one per message. Enemy type 1: WOLF RIDER (a woman, about 30) of a wild borderland raider band that fights on foot in Act 1: wiry and fierce, tanned skin, messy dark-blonde hair in two rough braids with small wolf-tooth beads, blue-grey war-paint stripe across the eyes; a big shaggy GREY WOLF-FUR MANTLE over both shoulders (just the pelt, NO wolf head and NO hood), patched brown leather armour, rust-red (#8E3B2E) cloth wrapped around her waist, leather bracers, holding a simple long hunting spear upright. Colours of the raider faction: earth brown, dirty olive, rust red. Expression: feral, confident grin.
 
 **Korrektur 1** (Wolfsreiterin):
 
-> Close, but the style is too anime and too grown-up compared to the references. Please redo the SAME wolf rider so it matches the ROUND CHIBI references exactly: a much BIGGER, ROUNDER head (about 40% of the visible figure), short rounded body, chubby rounded hands, simpler rounded shapes, fewer small straps and buckles, the same soft dark-brown outline and simple glossy cel shading as RHEN and LUCAN. Keep her look (…). Her torso must be FULLY covered: a simple closed brown leather jerkin with a high neckline, no cleavage, no bare midriff. Same format: square 1:1, half-body, FULLY TRANSPARENT background (real alpha), no text.
+> Close, but the style is too anime and too grown-up compared to the references. Please redo the SAME wolf rider so it matches the ROUND CHIBI references exactly: a much BIGGER, ROUNDER head (about 40% of the visible figure), short rounded body, chubby rounded hands, simpler rounded shapes, fewer small straps and buckles, the same soft dark-brown outline and simple glossy cel shading as RHEN and KAEL. Keep her look (…). Her torso must be FULLY covered: a simple closed brown leather jerkin with a high neckline, no cleavage, no bare midriff. Same format: square 1:1, half-body, FULLY TRANSPARENT background (real alpha), no text.
 
 **Korrektur 2** (Wolfsreiterin):
 
-> Great, this style is right - approved design. Now the same character, identical design, style and colours, but framed as a HALF-BODY dialogue portrait exactly like the RHEN and LUCAN references: from the top of the head down to the hips only (legs and feet NOT visible), the figure filling the square canvas like in the references, body turned slightly, spear held upright beside her. Square 1:1, FULLY TRANSPARENT background (real alpha), no floor, no shadow, no text.
+> Great, this style is right - approved design. Now the same character, identical design, style and colours, but framed as a HALF-BODY dialogue portrait exactly like the RHEN and KAEL references: from the top of the head down to the hips only (legs and feet NOT visible), the figure filling the square canvas like in the references, body turned slightly, spear held upright beside her. Square 1:1, FULLY TRANSPARENT background (real alpha), no floor, no shadow, no text.
 
 **Söldner:**
 

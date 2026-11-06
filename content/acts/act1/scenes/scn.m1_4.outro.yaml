@@ -32,7 +32,7 @@ lines:
     mood: sad
     text: "Dunn ist tot. Wer den Bolzen schoss, bleibt im Dunkel."
   - id: o06b
-    speaker: [liora, ysolde, avatar]
+    speaker: [liora, avatar]
     mood: neutral
     text: "„Er hört auf die Krone, nicht auf Menschen.“ Wer hört auf eine Krone, die fort ist?"
   - id: o07

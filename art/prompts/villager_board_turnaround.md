@@ -1,5 +1,8 @@
 # villager_elder, villager_child – Zivilisten (Porträt, Brett-Turnaround, Tripo)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Zivilisten für die Klasse `civilian` (Produktinhaber 2026-10-26, Stories 9.3 und 9.6): der Dorfälteste in 1-2 „Asche über Erlbach“ und die Kinder im Hungerlager 1-5. Generische Figuren, keine Gefährten.
 
 - **Dateien:**
@@ -9,14 +12,14 @@ Zivilisten für die Klasse `civilian` (Produktinhaber 2026-10-26, Stories 9.3 un
 - **Datum:** 2026-10-26
 - **ChatGPT:** Bildgenerierung, Denkaufwand „Medium“, gesteuert über Claude in Chrome; **Tarif Plus**, Konto `maschoeller` (Anzeige im Profilmenü, A1). Chat: https://chatgpt.com/c/6adf8ca4-50cc-83eb-b437-ef3acf893a73
 - **Tripo:** Studio, Smart-Mesh aus Multi-View (Vorne, Rechts = Seitenansicht mit Blick nach rechts, Zurück), Quad, 3 000 Polygone, Datenschutz **Privat**, dann Textur, Auto-Rig „Humanoid“ (Mixamo), Export GLB 2k mit Skelett. Tarif laut Produktinhaber Pro (2026-10-26). Ergebnis: Ältester 3 659 Quads, Kind 3 742 Quads (Kind: erste von vier Varianten).
-- **Referenzen:** Porträts: `rhen_a.png`, `lucan.png`, `halvard.png`, `tobin.png` (Stilreferenz wie in `characters-s1/README.md`); Turnarounds: `art/turnarounds/soldier_board/sheet.png` als Formatreferenz und das jeweilige Porträt aus demselben Chat.
+- **Referenzen:** Porträts: `rhen_a.png`, `kael.png`, `halvard.png`, `tobin.png` (Stilreferenz wie in `characters-s1/README.md`); Turnarounds: `art/turnarounds/soldier_board/sheet.png` als Formatreferenz und das jeweilige Porträt aus demselben Chat.
 - **Iterationen:** je 1
 - **Menschlicher Anteil:** Figurenentwurf, Prompt, Auswahl, Abnahme; keine Retusche.
 - **A7:** Prompts ohne Namen geschützter Werke, Marken oder Künstler.
 
 ## Prompts
 
-**Porträt Ältester** (erste Nachricht): *Create an image. The four attached portraits (RHEN, LUCAN, HALVARD, TOBIN) are the APPROVED STYLE REFERENCES for my fantasy tactics RPG 'Hollow Crown'. Match their style EXACTLY: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body, soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms. Older characters stay in this SAME cute round style - show age only with beard, grey hair, wrinkles, never with realistic proportions, long faces or detailed anatomy. FORMAT: square 1:1, one single character, half-body dialogue portrait (head to hips), centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text. Character: VILLAGE ELDER of a small farming village in the borderland, about 70, a kind but worried old farmer: bald on top with a fluffy white fringe and a big round white beard, bushy white eyebrows, rosy cheeks, a simple undyed linen shirt, a brown wool vest, a sage-green neckerchief, a plain wooden walking stick in one hand, the other hand raised in a worried welcoming gesture. Not a soldier, not a priest, no weapon, no armour, no ember-orange (he is not a company member). Expression: tired relief and hope.*
+**Porträt Ältester** (erste Nachricht): *Create an image. The four attached portraits (RHEN, KAEL, HALVARD, TOBIN) are the APPROVED STYLE REFERENCES for my fantasy tactics RPG 'Hollow Crown'. Match their style EXACTLY: 'Round Chibi Cartoon' - big ROUND head, large expressive eyes, short rounded body, soft dark-brown outlines, simple glossy cel shading, bright warm colors, toy-like rounded forms. Older characters stay in this SAME cute round style - show age only with beard, grey hair, wrinkles, never with realistic proportions, long faces or detailed anatomy. FORMAT: square 1:1, one single character, half-body dialogue portrait (head to hips), centered, FULLY TRANSPARENT background (PNG with real alpha channel), no floor, no shadow, no text. Character: VILLAGE ELDER of a small farming village in the borderland, about 70, a kind but worried old farmer: bald on top with a fluffy white fringe and a big round white beard, bushy white eyebrows, rosy cheeks, a simple undyed linen shirt, a brown wool vest, a sage-green neckerchief, a plain wooden walking stick in one hand, the other hand raised in a worried welcoming gesture. Not a soldier, not a priest, no weapon, no armour, no ember-orange (he is not a company member). Expression: tired relief and hope.*
 
 **Porträt Kind:** *Approved. Next portrait - same style and format (round chibi like the references, square 1:1, half-body, FULLY TRANSPARENT background with real alpha, no text). Character: a CHILD from a hunger camp of poor refugees and bandits, about 8 years old, gender-neutral look: messy short brown hair, big hopeful eyes, a smudge of dirt on one round cheek, an oversized patched grey-brown tunic with a rope belt, a faded mustard-yellow cloth scarf, holding a small carved wooden toy horse to the chest. Thin but still cute and soft, NOT grim, no weapon, no ember-orange. Expression: shy, curious, a little scared.*
 

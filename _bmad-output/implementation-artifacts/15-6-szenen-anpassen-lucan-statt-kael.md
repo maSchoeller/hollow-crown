@@ -44,14 +44,14 @@ damit die überarbeitete Geschichte ankommt.
 - [x] **N3** Tobins Pachthof (Felder, Mühle, Fluss) statt Erlbach-Hintergrund, Tobins Vater (AC: 1, 3)
 - [x] EN in `content/locales/en/act1.dialogue.yaml` für jede geänderte/neue Zeile (`dlg.<sceneId>.<lineId>`) nachziehen (AC: 1)
 - [x] Offene Erzählpunkte (z. B. Gerrits Rolle auf dem Kahn, wie genau die Banden in der Ruine sitzen, Lucans Verstoßung – von wem, warum) in `concept/22-narrative/decision-log.md` als **offen für den Produktinhaber** eintragen, nicht selbst entscheiden (AC: 2)
-- [ ] Ortsbilder (AC: 3)
+- [x] Ortsbilder (AC: 3)
   - [x] Bedarf festlegen; Kandidaten: `aureklamm_lastkahn` (P-Nachszene statt `lager_unterwegs`), `schrein_weissdorn` (1-3; `silberbach` prüfen), `pachthof` (N3), Paktwacht im Spätsommer für 1-6-Nach, 1-7-Nach und 1-8 (`paktwacht_heimat` zeigt Herbst und ausgebaute Burg, gehört laut `backgrounds_act1.md` nicht zu Akt 1)
-  - [ ] Bilder per ChatGPT über Claude in Chrome, Stil an abgenommene Hintergründe angelehnt (Referenzbilder anhängen), 16:9 1672 × 941, Motiv im mittleren Drittel, unteres Drittel ruhig, keine Figuren/Text
-  - [ ] Prompt, Werkzeug, Tarif, Iterationen, menschlicher Anteil (A2), A7-Prüfung und Abnahme je Bild in `art/prompts/backgrounds_act1.md` (oder eigener Datei) dokumentieren; Original nach `art/mockups/locations-s1/`, `pnpm art:build` (vorher `git lfs pull`)
-- [ ] Ersatzsprecher-Prüfung und `pnpm content:check` grün (AC: 4)
-- [ ] Screenshots 375 × 812 der neuen/umgebauten Szenen (Spiel stumm, Lautstärken auf 0), Belege dem Nutzer zeigen (AC: 6)
-- [ ] `pnpm check` grün (AC: 6)
-- [ ] Code-Review (`gds-code-review`), Befunde einarbeiten
+  - [x] Bilder per ChatGPT über Claude in Chrome, Stil an abgenommene Hintergründe angelehnt (Referenzbilder anhängen), 16:9 1672 × 941, Motiv im mittleren Drittel, unteres Drittel ruhig, keine Figuren/Text
+  - [x] Prompt, Werkzeug, Tarif, Iterationen, menschlicher Anteil (A2), A7-Prüfung und Abnahme je Bild in `art/prompts/backgrounds_act1.md` (oder eigener Datei) dokumentieren; Original nach `art/mockups/locations-s1/`, `pnpm art:build` (vorher `git lfs pull`)
+- [x] Ersatzsprecher-Prüfung und `pnpm content:check` grün (AC: 4)
+- [x] Screenshots 375 × 812 der neuen/umgebauten Szenen (Spiel stumm, Lautstärken auf 0), Belege dem Nutzer zeigen (AC: 6)
+- [x] `pnpm check` grün (AC: 6)
+- [x] Code-Review (`gds-code-review`), Befunde einarbeiten
 - [ ] PR gegen `main`, nach grüner CI mergen
 
 ## Dev Notes
@@ -119,6 +119,17 @@ Claude Opus 5.5
 
 ### Completion Notes List
 
-- Story-Kontext erstellt (gds-create-story) am 2026-11-06. Teil B (Umbenennung) ist mit Commit `13b7f26` erledigt; Teil A offen.
+- Story-Kontext erstellt (gds-create-story) am 2026-11-06. Teil B (Umbenennung) mit Commit `13b7f26`.
+- Bestandsaufnahme (Lücken gegen Missionsliste/Geografie): P-Nachszene spielte am Waldrand statt auf dem Lastkahn, Glutleuchten fehlte; 1-1 ohne Wachpass/Ruine von fern; 1-2 und 1-4 ohne Rückzug in die Ruine; 1-4 ohne Dunns Stimme-Satz; 1-5 ohne Goldspur; 1-6 ohne Pass-Grund und Hasks Flucht durch die Ostpforte; 1-7 ohne Gräber-Zeile; 1-8 Morra „über den Wachpass“ statt Passstraße/Hangweg; N2 ohne Lucans Herkunft; N3 vor dem Erlbach-Bild; Halvard nannte Lucan „breiter“ (jetzt schlank). Alle behoben.
+- Ortsbilder neu: `aureklamm_lastkahn`, `pachthof`; ersetzt: `hungerlager` (Erlenmoor), `wachturm` (Grenzwall). `silberbach` zeigte schon seit 2026-11-05 den Weißdorn-Schrein und bleibt. Abnahme der Bilder durch den Produktinhaber steht aus (`art/prompts/loc_*.md`).
+- Offene Narrative-Punkte für den Produktinhaber: `concept/22-narrative/decision-log.md`, Einträge 2026-11-06.
+- Code-Review (bmad-code-review, 4 Ebenen): Sprecherkette o06b ohne Ysolde, Glutleuchten ergänzt, Herkunftsprotokolle der Bilder (Prompts, `licensing.md`, READMEs) im Wortlaut mit `kael` wiederhergestellt plus Hinweis, EN „Pactwatch“, Tageszeiten N2/N3 an die Bilder angepasst, veralteter Kommentar in `campaign.yaml`.
+- Folgearbeit (nicht in dieser Story): `paktwacht_heimat` zeigt Herbst und die ausgebaute Burg, wird aber schon in den Szenen 1-6 bis 1-8 genutzt; ein spätsommerliches Bild der eroberten Paktwacht fehlt. Der Weißdorn-Schrein (2026-11-05) hat noch kein eigenes §6-Protokoll unter `art/prompts/`. Keine Spielstand-Migration `kael`→`lucan` (vor dem ersten `content:lock` nicht verlangt).
+- Belege: `art/previews/story_15_6_szenen.png` (375 × 812, fünf Szenen). `pnpm check` grün.
 
 ### File List
+
+- `content/acts/act1/scenes/*.yaml` (Szenen P, 1-1 bis 1-8, N2, N3; Umbenennung `scn.bark.lucan`, `scn.support.*_lucan.*`), `content/acts/act1/campaign.yaml`, `content/acts/act1/maps/*.yaml`, `content/locales/en/act1.dialogue.yaml`, `content/core/**`
+- `art/mockups/locations-s1/{aureklamm_lastkahn,pachthof,hungerlager,wachturm}.png`, `README.md`; `art/prompts/loc_*.md`; umbenannte Porträts, Modelle, Turnarounds und Prompts `lucan*`; `tools/art/*.py`
+- `src/**` (IDs), `tests/**`, `tests/fixtures/saves/*.json` (neu erzeugt)
+- `concept/22-narrative/decision-log.md`, Dokumente unter `concept/` (Umbenennung), `art/previews/story_15_6_szenen.png`

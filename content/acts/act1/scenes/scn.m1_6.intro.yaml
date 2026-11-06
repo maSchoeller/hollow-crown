@@ -21,7 +21,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Darum sucht dort keiner. Ein Versteck, das keiner sucht, ist das beste."
+    text: "Darum vermutet dort keiner etwas. Ein Versteck, das keiner sucht, ist das beste."
   - id: l04
     speaker: [lucan]
     mood: neutral

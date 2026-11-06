@@ -1,9 +1,12 @@
 # app_icon – App-Icon und Favicon
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Datei:** `art/icon/icon.png` (1254 × 1254, RGB, unverändertes Original von ChatGPT; ersetzt die dunkle Navy-Krone vom 2026-10-22, die in der Git-Historie liegt)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif Plus, Konto maschoeller), gesteuert über Claude in Chrome
-- **Referenzen:** keine; Stil nach `concept/25-ux/DESIGN.md` (runder Chibi, dunkelbraune Kontur) und `art/mockups/style-2026-10/round_chibi_lucan.png`; Motiv nach Art Direction (hohle, gesprungene Goldkrone mit Glut)
+- **Referenzen:** keine; Stil nach `concept/25-ux/DESIGN.md` (runder Chibi, dunkelbraune Kontur) und `art/mockups/style-2026-10/round_chibi_kael.png`; Motiv nach Art Direction (hohle, gesprungene Goldkrone mit Glut)
 - **Iterationen:** 1
 - **Menschlicher Anteil:** keiner am Bild; Zuschnitte und Größen per `tools/art/icons.py`. Nach `licensing.md` §6 A8 ist das Logo vor dem Store-Release vom Menschen als Vektor neu zu zeichnen; dieses Icon ist bis dahin die Platzhalter-Marke.
 

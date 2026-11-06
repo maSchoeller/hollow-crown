@@ -13,6 +13,9 @@ lines:
     fallback: skip
     mood: neutral
     text: "Unterstadt, Kanäle, ein Kahn, der keine Fragen stellt. Wer da unten aufwächst, kennt den Weg hinaus, Küken."
+  - id: l01c
+    mood: neutral
+    text: "Über dem Glutdom steht ein Glutleuchten am Nachthimmel, rot wie ein schlechter Morgen."
   - id: l02
     speaker: [tobin]
     fallback: skip

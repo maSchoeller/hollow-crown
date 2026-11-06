@@ -1,5 +1,8 @@
 # portrait_tests_2026-11 – Herleitung des Porträtstils (Etappe 2 der Überarbeitung)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 > **Die Testbilder wurden am 2026-11-02 entfernt** und liegen im Git-Verlauf (`art/mockups/style-2026-11/` bis Merge von PR #94). Abgenommene Figuren stehen in `art/mockups/characters-s1/`.
 
 > **Abgelöst als Vorlage durch `art/prompts/portrait_master.md`.** Diese Datei bleibt als Herleitung und als Prompt-Protokoll der Testbilder in `art/mockups/style-2026-11/` (licensing.md §6, A2). Für neue Porträts nur `portrait_master.md` verwenden.
@@ -7,7 +10,7 @@
 - **Datum:** 2026-11-01
 - **Zweck:** Ein fester Stil-Block plus Regeln zur Individualisierung, damit die Dialog-Porträts aus einem Guss wirken, die Figuren aber nicht gleich aussehen (Roadmap `concept/27-ueberarbeitung/roadmap.md`, „Figuren-Stil“, Etappe 2).
 - **Gilt für:** Dialog-Porträts (`art/mockups/characters-s1/<id>.png` und ihre Stimmungen, Format `art-direction.md` §5.1). **Nicht** für die Brettfiguren: Die 3D-Figuren sind auf dem Brett so klein, dass ihr Stil im Großen und Ganzen passt (Produktinhaber, 2026-11-01); Körper sind zweitrangig.
-- **Status:** **Fassung v2.4 gewählt** (Produktinhaber, 2026-11-01), Decision-Log `concept/23-art-direction/decision-log.md`. Getestet an Brenna, Grosk, Liora und Lucan (§4); Alternativen in §5.
+- **Status:** **Fassung v2.4 gewählt** (Produktinhaber, 2026-11-01), Decision-Log `concept/23-art-direction/decision-log.md`. Getestet an Brenna, Grosk, Liora und Kael (§4); Alternativen in §5.
 - **Herkunft (licensing.md §6, A1–A3):** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto `maschoeller` (Seitenleiste, 2026-11-01); keine Modell-Versionsnummer sichtbar (Denkaufwand „Medium“). Originale unverändert in `art/mockups/style-2026-11/` (LFS), Download per `fetch` der Bildquelle im Chat. Menschlicher Anteil: Auswahl, Korrekturanweisungen, keine Retusche. Die Bilder sind Stiltests, keine Spiel-Assets.
 
 ## 1. Befund: vier Stile nebeneinander
@@ -17,7 +20,7 @@ Die 42 Porträts in `art/mockups/characters-s1/` stammen aus mehreren Chats mit 
 | Familie | Figuren (Beispiele) | Merkmale im Gesicht |
 |---|---|---|
 | **A – klares Chibi** (gefällt) | Rhen A und B, Fenn, Tobin, Ysolde, Pell, Kit | runder Kopf mit weichem Kinn, Augen mittelgroß mit kräftiger Oberlid-Linie und einfacher Iris, Nase als kurzer Strich, Mund als einfache Form, kaum Hautschatten, Haar in großen Büscheln, gleichmäßige Linie |
-| **B – halbrealistisch** | Lucan, Dravn, Torvald, Aldric | längeres Gesicht, kantiger Kiefer, modellierte Nase, Bartstoppeln als Textur, viele Hautschatten und Falten, Rüstung mit Glanz und Gravur |
+| **B – halbrealistisch** | Kael, Dravn, Torvald, Aldric | längeres Gesicht, kantiger Kiefer, modellierte Nase, Bartstoppeln als Textur, viele Hautschatten und Falten, Rüstung mit Glanz und Gravur |
 | **C – Cartoon-Karikatur** | Grosk, Osric, Brenna, Mira, Hask, Gerrit, Amos | Knollennase mit rotem Glanz, rosige Wangen, breites Zahn-Grinsen, dicke Wimpern (Brenna, Mira), große glänzende Augen mit mehreren Lichtern, „Animationsfilm-Look“ |
 | **D – Puppengesicht** | Seraphine, Liora, Eluned, Rowena, Vesna | sehr große, funkelnde Augen mit Wimpern, winziger Mund, porzellanglatte Haut, symmetrisch, Goldschmuck |
 
@@ -75,7 +78,7 @@ never covering the face.
 - **v2:** Gesichtsbau festgeschrieben, Kopf „40 % der Bildhöhe“. Gesichter gelangen, aber Körper zu erwachsen (3,5–4 Köpfe) und Kleidung mit Stoffstruktur, Kratzern und Abnutzung.
 - **v2.1:** Proportionen und Kleidungs-Machart ausdrücklich „wie die Anker“. Ergebnis passt zu Rhen und Fenn, wirkt aber zu flach.
 - **v2.2:** Schattierung mit Kernschatten und Okklusion statt „eine Schattenstufe“. Gefiel, aber die Gesichter waren erwachsener als bei Rhen und Fenn.
-- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Lucan war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block. Die Korrektur schoss über das Ziel (zu schmal, Kopf zu groß); erst die Proportions-Vorlage (§9) brachte Lucan im ersten Versuch auf Rhens Umriss (`v24_lucan_guide.png`). Weil dann alle Figuren denselben Körper bekämen, gibt es seither sechs Statur-Vorlagen (Regel 14).
+- **v2.4 (gewählt):** Gesichtsreife „exactly like the anchors“: junge Erwachsene im Chibi-Kopf, nicht kindlich; Ältere zeigen ihr Alter über wenige Linien, festeren Kiefer, Bart, graues Haar. Jede Figur in einem frischen Chat ohne Folgekorrektur (Produktinhaber: v2.3 zu kindlich; trägt v2.4 nicht, gilt v2.2). Ergebnis: Brenna, Grosk, Liora passen im ersten Versuch; Kael war zu groß und bekam per Folgekorrektur die Proportionen der Anker, daher der Satz zu großen und adligen Figuren im Block. Die Korrektur schoss über das Ziel (zu schmal, Kopf zu groß); erst die Proportions-Vorlage (§9) brachte Kael im ersten Versuch auf Rhens Umriss (`v24_kael_guide.png`). Weil dann alle Figuren denselben Körper bekämen, gibt es seither sechs Statur-Vorlagen (Regel 14).
 - **v2.3 (verworfen):** kindliches Gesichtsprofil wie die Anker (großer runder Kopf, große Stirn, runde Wangen, kleines Kinn, Augen tief und weit, kurze Nase). Rhen A und Fenn bleiben, wie sie sind, und sind wieder die Anker; alle anderen Porträts werden an sie angeglichen.
 
 Jede Korrektur lief als Folgenachricht im selben Chat und reichte in einem Schritt; die Bausteine stehen in §7.
@@ -135,7 +138,7 @@ SIGNATURE: <the one recognisable part>.
    | small | kleiner im Bild, Kopf tiefer | Tobin, Kit, Ysolde |
    | tall | kleinerer Kopf, längerer Rumpf, schmal | Lucan, Odile, Halvard |
 
-## 4. Test an Brenna, Grosk, Liora (und Lucan als Vergleich)
+## 4. Test an Brenna, Grosk, Liora (und Kael als Vergleich)
 
 ChatGPT (Bildgenerierung) über Claude in Chrome, je ein neuer Chat, Stil-Anker `rhen_a.png` + `fenn.png`, Stil-Block + Format-Block + Figurenblock. Bilder in `art/mockups/style-2026-11/`. Bewertung in §6.
 
@@ -196,10 +199,10 @@ EXPRESSION: guarded, chin down, eyes looking up from under the brows, mouth tigh
 SIGNATURE: the very long silver-white hair.
 ```
 
-### Lucan (auch Probefigur der Alternativen)
+### Kael (auch Probefigur der Alternativen)
 
 ```text
-CHARACTER: LUCAN, 38, captain of a mercenary company; border-war veteran whose unit was sacrificed by a noble commander; dry, reliable, a bear with a quiet voice.
+CHARACTER: KAEL, 38, captain of a mercenary company; border-war veteran whose unit was sacrificed by a noble commander; dry, reliable, a bear with a quiet voice.
 HEAD: blocky square head, heavy jaw.
 EYES: small, slightly droopy, tired amber.
 BROWS: low and heavy, dark brown.
@@ -215,10 +218,10 @@ EXPRESSION: calm, unimpressed, mouth a flat line, one corner slightly up.
 SIGNATURE: the big mismatched left pauldron and the low ponytail.
 ```
 
-### Lucan (neues Konzept ab v2.1, verstoßener Adliger)
+### Kael (neues Konzept ab v2.1, verstoßener Adliger)
 
 ```text
-CHARACTER: LUCAN, 38, captain of the mercenary company; a cast-out nobleman and former knight-captain of the border army who left after a noble commander sacrificed his unit; upright, calm, protective.
+CHARACTER: KAEL, 38, captain of the mercenary company; a cast-out nobleman and former knight-captain of the border army who left after a noble commander sacrificed his unit; upright, calm, protective.
 HEAD: well-proportioned head, refined face, slim jaw.
 EYES: medium, almond, calm and a little tired, amber.
 BROWS: straight, dark brown.
@@ -236,7 +239,7 @@ SIGNATURE: the royal-green surcoat with the unpicked emblem and the left pauldro
 
 ### Reproduzierbarkeit: Rhen A und Fenn frisch aus v2.2
 
-Neuer Chat je Figur, Anker `v22_brenna.png` + `v22_lucan.png`, Stil-Block v2.2 + Format-Block + Figurenblock, keine Folgekorrektur.
+Neuer Chat je Figur, Anker `v22_brenna.png` + `v22_kael.png`, Stil-Block v2.2 + Format-Block + Figurenblock, keine Folgekorrektur.
 
 ```text
 CHARACTER: RHEN, about 24, the player's tactician (masculine-read); expelled from the war academy over gambling debts, joined the company weeks ago and brought them the job that trapped them.
@@ -272,9 +275,9 @@ EXPRESSION: cheeky grin, one brow up, flipping a stolen coin with one hand.
 SIGNATURE: the plaster on the nose and the orange headband.
 ```
 
-## 5. Alternativstile (Vergleich, Probefigur Lucan)
+## 5. Alternativstile (Vergleich, Probefigur Kael)
 
-Drei bewusst andere Richtungen mit demselben Lucan-Figurenblock und demselben Format-Block, ohne Stil-Anker. Der Stil-Block wird ersetzt.
+Drei bewusst andere Richtungen mit demselben Kael-Figurenblock und demselben Format-Block, ohne Stil-Anker. Der Stil-Block wird ersetzt.
 
 ### Alt A – Bilderbuch, Tusche und Gouache
 
@@ -308,8 +311,8 @@ visible half-body), precise, calm and readable, like a classic adventure comic a
 
 ## 6. Ergebnis
 
-- **v2** (erste Runde): Gesichter aus einem Guss, Brenna, Grosk und Liora individuell; Körper zu erwachsen, Kleidung mit Struktur. Lucan wirkte zu bullig.
-- **v2.1:** Proportionen und Machart wie Rhen A und Fenn; zu flach. Lucan neu als verstoßener Adliger in königlichem Grün (Produktinhaber: „besonders der neue Lucan“), Name soll sich ändern (offen).
+- **v2** (erste Runde): Gesichter aus einem Guss, Brenna, Grosk und Liora individuell; Körper zu erwachsen, Kleidung mit Struktur. Kael wirkte zu bullig.
+- **v2.1:** Proportionen und Machart wie Rhen A und Fenn; zu flach. Kael neu als verstoßener Adliger in königlichem Grün (Produktinhaber: „besonders der neue Kael“), Name soll sich ändern (offen).
 - **v2.2:** mit Kernschatten und Okklusion; Zielstil. Bilder `art/mockups/style-2026-11/v22_*.png`.
 - **Reproduzierbarkeit:** Rhen A und Fenn frisch aus v2.2 (ein Versuch je Figur, keine Korrektur), Bilder `repro_rhen_a.png`, `repro_fenn.png`; Bewertung siehe Decision-Log.
 - **Alternativen** A–C (Bilderbuch, grafisch, klare Linie): nicht gewählt; B und C fielen einander ähnlich aus, weil der Figurenblock stärker wirkte als der Stil-Block.
@@ -358,7 +361,7 @@ Für den Fall, dass später ein anderer Stil gebraucht wird (neue Figurengruppe,
 
 ## 9. Maßnahmen gegen lange Iterationen
 
-Die fünf Runden (2026-11-01) zeigten: ChatGPT trifft Gesicht und Machart gut, aber Proportionen (Kopf zu Körper, Schulterbreite, Größe im Bild) schwanken von Bild zu Bild, und jede Folgekorrektur kann über das Ziel hinausschießen (Lucan: erst zu massig, dann zu schmal mit zu großem Kopf). Gegenmittel:
+Die fünf Runden (2026-11-01) zeigten: ChatGPT trifft Gesicht und Machart gut, aber Proportionen (Kopf zu Körper, Schulterbreite, Größe im Bild) schwanken von Bild zu Bild, und jede Folgekorrektur kann über das Ziel hinausschießen (Kael: erst zu massig, dann zu schmal mit zu großem Kopf). Gegenmittel:
 
 1. **Statur-Vorlage als dritter Anhang.** `art/mockups/style-2026-11/guide_build_<statur>.png` (Regel 14 in §3), erzeugt mit `python tools/art/portrait_guides.py template <datei> <statur>`: Rhens Silhouette, nach Statur verformt, hellgrau mit roten Linien TOP, EYES, CHIN, SHOULDERS, BELT (bei `average` 2/20/33/40/78 % der Bildhöhe, bei `small` und `tall` verschoben). Im Prompt nach dem Stil-Block der Absatz `PROPORTION TEMPLATE` (§9a). Die Figur soll die Silhouette füllen; die Linien selbst darf sie nicht zeichnen.
 2. **Prüfbogen statt Augenmaß.** Jedes neue Bild sofort mit `python tools/art/portrait_guides.py sheet <bogen.png> rhen_a.png fenn.png <neu>.png:<statur> …` prüfen (mit `:<statur>` wird gegen die Statur-Vorlage gemessen, Toleranz ±0,12): Hilfslinien, Rhens Umriss in Blau darüber, gemessene Breite bei 40/60/78 % mit `!`, wenn sie außerhalb der Spanne liegt. Arme, Umhänge und Requisiten verbreitern einzelne Zeilen; ein einzelnes `!` ist ein Hinweis zum Hinsehen, kein Ausschluss. Was hier durchfällt, sieht der Produktinhaber gar nicht erst.
