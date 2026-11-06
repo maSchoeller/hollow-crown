@@ -5,7 +5,7 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Nachmittag an der Erle, unter der Paktwacht. Felder, eine Mühle und Tobins Pachthof. Er gehört dem Grundherrn."
+    text: "Nachmittag an der Erle, unter der Burg. Felder, eine Mühle, Tobins Pachthof. Er gehört dem Grundherrn."
   - id: l02
     speaker: [tobin]
     fallback: skip
