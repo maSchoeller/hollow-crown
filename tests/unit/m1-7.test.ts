@@ -41,7 +41,9 @@ describe('node m1_7', () => {
 
   it('sets wardens_chronicle on a victory only, never on the collapse', () => {
     let won: CampaignState | null = null;
-    for (let seed = 1; seed < 20 && !won; seed++) {
+    // starts at the first seed autoplay won (2026-11-06); seeds 1 to 4 lost and cost four whole battles. A balancing change that
+    // makes seed 5 lose only moves the search on, the range is as wide as before.
+    for (let seed = 5; seed < 24 && !won; seed++) {
       const start = beginBattle(data, { ...base, seed }, 'm1_7', base.roster.map((u) => u.id)).state;
       const played = autoplay(data, start);
       if (played.state.outcome !== 'victory') continue;

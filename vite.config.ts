@@ -149,9 +149,16 @@ export default defineConfig(({ mode }) => {
     test: {
       include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts'],
       environment: 'node',
-      // story 15.11: tests that play whole battles (replays, worker protocol, now on 30×40 maps) take 2–4 s alone and broke the
-      // default 5 s under load (other checkouts, dev servers, CI runners); the limit only catches hangs, it checks nothing itself
-      testTimeout: 20_000,
+      // content YAML is parsed once per run, not once per test file (tests/setup)
+      globalSetup: ['tests/setup/content-global.ts'],
+      setupFiles: ['tests/setup/content-worker.ts'],
+      // The heavy tests play whole battles and are CPU-bound; the default of one worker per logical core put 11 of them on 6 physical
+      // cores, and several checkouts run their checks at the same time, so each battle took two to three times as long as alone and
+      // tripped the timeout. Half the logical cores is about one worker per physical core. CI runners are dedicated: default there.
+      ...(process.env.CI ? {} : { maxWorkers: '50%' }),
+      // Alone (one worker, 2026-11-06) every test but a handful stays under 2.5 s, so 10 s leaves four times that for a busy machine
+      // and still catches hangs. The few that play several whole battles (over 3 s alone) carry their own timeout, with the reason.
+      testTimeout: 10_000,
       coverage: {
         provider: 'v8',
         include: ['src/core/**/*.ts'],
