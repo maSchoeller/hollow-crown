@@ -45,7 +45,7 @@ Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Fi
 
 ## Offen, entscheidet der Produktinhaber
 
-1. **Nach Schritt 1a:** ob es weitergeht und ob Tripo-Credits nachgekauft werden.
+1. **Nach Schritt 1a:** ob es weitergeht und ob Tripo-Credits nachgekauft werden. Für Akt 2 entschieden am 2026-11-06: nur **Rowena** neu mit dem Rest-Guthaben (Story 11.25); Brann bleibt, Ritter der Lanze und Kaperfahrer bleiben Platzhalter, Brakka bleibt, wie sie ist (nur Figurenblatt berichtigen). Kein Nachkauf vorerst.
 2. **Seraphines Kampfrolle** (Funkenflug #9). Davon hängen ihre Stimmungen und ein mögliches Porträt mit Waffe ab.
 
 ## Beschlossen am 2026-11-05

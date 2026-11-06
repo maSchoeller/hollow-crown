@@ -4,7 +4,7 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 
 **Grundlage:** abgenommene Entwürfe `concept/27-ueberarbeitung/levels/s2_*.yaml` mit Abnahmen in `levels/abnahme/s2_*.md`, `concept/22-narrative/missionsliste-s1.md` (Akt 2), `geografie-valmora.md`, `concept/23-art-direction/figuren-bestand.md`, `map-assets/matrix.md`, `map-assets/jahreszeiten-plan.md`. Was dort steht, gilt vor `narrative.md` (Missionsfolge, Leutnant-Tabelle) und vor der alten Fassung dieses Epics. Werte, Schlüssel und Formeln, die die Überarbeitung nicht berührt (Akt-Übergang, Positionsstufe, Stahl-Tier, Supports, Relikte), stammen aus den Entscheidungen des Produktinhabers vom 2026-10-31.
 
-**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor dem Release von Akt 1 (9.14), danach nach jedem Live-Schritt von Akt 2 (siehe „Stückweise live“). Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. F1, F3 und F4 hat der Produktinhaber am 2026-11-06 entschieden (`umsetzung-lueckenliste-akt2.md`); offen ist nur noch **⚠ F2** (Brettfiguren, Story 11.25).
+**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor dem Release von Akt 1 (9.14), danach nach jedem Live-Schritt von Akt 2 (siehe „Stückweise live“). Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. F1, F3 und F4 hat der Produktinhaber am 2026-11-06 entschieden (`umsetzung-lueckenliste-akt2.md`); F2 (Brettfiguren) am selben Tag: nur Rowena neu, sonst Platzhalter (Story 11.25).
 
 **Gemeinsame Regeln der Missions-Stories (11.12–11.22):**
 
@@ -30,7 +30,7 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
                          └─> 11.20 N4        └─> 11.21 N5             11.22 N6 (mit 2-7) ─────────────────┤
 11.23 Supports, Barks, Chronik (nach 11.5, Chronik nach 11.15) ───────────────────────────────────────────┤
 11.24 Galerie-Modelle (parallel zu den Karten) ───────────────────────────────────────────────────────────┤
-11.25 Brettfiguren, Schritt 3 ⚠F2 ────────────────────────────────────────────────────────────────────────┤
+11.25 Brettfigur Rowena (F2) ─────────────────────────────────────────────────────────────────────────────┤
 11.26 Leistung von Akt 2 (nach 11.15 und 11.19) ──────────────────────────────────────────────────────────┤
 10.1–10.12 ───────────────────────────────────────────────────────────────────────────────────────────────┴─> 11.27 Abstimmung und Abschluss
 ```
@@ -222,7 +222,7 @@ damit der Akt sich anders anfühlt als Akt 1.
 **Angenommen** `content/acts/act2/haunts.yaml`
 **Wenn** Heimsuchungen entstehen
 **Dann** gibt es Pools je Fraktion ohne Flieger (`iron_march`, `silver_lance` mit `knight` statt `pegasus_knight`, `silver_sea`, `free_blades`) mit Stahl-Waffen, `civilian` und `chestLoot` `[ASSUMPTION]`; Gegner stehen auf `hauntLevel`
-**Und** Brettfiguren: Grenzheer nutzt `soldier`; Ritter der Lanze und Kaperfahrer nutzen vorhandene Modelle als Platzhalter, bis 11.25 sie liefert (vermerkt in `art/README.md`) ⚠ F2.
+**Und** Brettfiguren: Grenzheer nutzt `soldier`; Ritter der Lanze und Kaperfahrer nutzen vorhandene Modelle als Platzhalter, auch live und über Akt 2 hinaus, bis der Produktinhaber neu entscheidet (F2; vermerkt in `art/README.md`); Brann behält sein Modell.
 
 ### Story 11.8: Ziel-Phasen (Kern)
 
@@ -476,20 +476,20 @@ Kommt aus Story 15.8, läuft parallel zu den Karten-Stories und vor 11.27. Weil 
 **Dann** besteht jedes Modell die vier Lesbarkeitsregeln (art-direction §3.2), Dreiecks- und Paket-Budget halten
 **Und** `content:check` meldet kein fehlendes Modell; Modelle, die schon in `act1` liegen, stehen mit Paket-Entscheidung im Art-Log.
 
-### Story 11.25: Brettfiguren für Akt 2, Schritt 3
+### Story 11.25: Brettfigur Rowena (Schritt 3, verkleinert)
 
 Als Spieler
-möchte ich Rowena, Brann und die neuen Gegner auf dem Brett so sehen wie in ihren Porträts,
+möchte ich Rowena auf dem Brett so sehen wie in ihrem Porträt,
 damit ich sie wiedererkenne.
 
-**⚠ F2:** Der Produktinhaber entscheidet Umfang und Credits später (2026-11-06); bis dahin gelten die Platzhalter aus 11.7, auch live. Die Kriterien beschreiben die Empfehlung (vier Modelle).
+**F2 (Produktinhaber 2026-11-06):** Nur Rowena entsteht neu, mit dem Rest-Guthaben (205 Credits, eine Figur zu 140). Brann behält sein Modell, Ritter der Lanze und Kaperfahrer nutzen Platzhalter aus 11.7; über sie entscheidet der Produktinhaber später neu. Brakka bleibt, wie sie ist.
 
 **Akzeptanzkriterien:**
 
 **Angenommen** `concept/23-art-direction/figuren-bestand.md` und die Figurenblätter von Rowena (Lanzenritterin zu Fuß, Helm unterm Arm) und Brakka (Ballistenmeisterin) auf dem Stand der Missionsliste
-**Wenn** Rowena, Brann, ein Ritter der Silbernen Lanze und ein Kaperfahrer neu entstehen (Turnaround → Tripo → Pipeline nach Art Direction §4.6)
-**Dann** bestehen sie den Silhouettentest im Zoom „Mittel“ und bleiben im Budget (7 000 Dreiecke, 512er-Textur, 0,5 MB)
-**Und** Prompts und Abnahmen liegen unter `art/prompts/`; Figuren-Bestand und `art/README.md` sind nachgezogen; Platzhalter aus 11.7 sind ersetzt.
+**Wenn** Rowena neu entsteht (Turnaround → Tripo → Pipeline nach Art Direction §4.6) und Brakkas Figurenblatt ohne neues Modell auf Ballistenmeisterin berichtigt ist
+**Dann** besteht Rowena den Silhouettentest im Zoom „Mittel“ und bleibt im Budget (7 000 Dreiecke, 512er-Textur, 0,5 MB)
+**Und** Prompts und Abnahmen liegen unter `art/prompts/`; Figuren-Bestand und `art/README.md` sind nachgezogen; Rowenas Platzhalter ist ersetzt, die übrigen bleiben.
 
 ### Story 11.26: Leistung von Akt 2
 
