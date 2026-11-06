@@ -589,6 +589,18 @@ function validateMap(
   );
   for (const t of map.triggers)
     for (const a of t.then) if (a.action === 'set_terrain' && !data.terrain[a.terrain]) err(f, `${t.id}: set_terrain to unknown terrain ${a.terrain}`);
+  // `set_ai`: known units; `flee` needs a way out (the area of the action or the one the unit already has); its tiles lie on the map and can be walked
+  for (const t of map.triggers)
+    for (const a of t.then) {
+      if (a.action !== 'set_ai') continue;
+      for (const id of a.units) {
+        const u = allUnits(map).find((x) => x.id === id);
+        if (!u) err(f, `${t.id}: set_ai for unknown unit ${id}`);
+        else if (a.profile === 'flee' && !a.area && !u.ai?.area) err(f, `${t.id}: set_ai flee for ${id} without an area to flee to`);
+      }
+      for (const p of a.area ? areaTiles(a.area) : [])
+        if (!inside(p) || terr(p)?.cost.foot === null) err(f, `${t.id}: set_ai area ${p} is off the map or impassable`);
+    }
   const checkUnit = (u: MapUnitDef, ctx: string) => {
     if (!data.classes[u.class]) err(f, `${ctx}: unknown class ${u.class}`);
     if (u.char && !data.chars[u.char]) err(f, `${ctx}: unknown char ${u.char}`);
@@ -779,7 +791,7 @@ function validateTreasure(
 function validateHaunts(data: GameData, map: MapDef, err: (f: string, m: string) => void, g: Terr): void {
   const f = `maps/${map.id}`;
   const seen = new Set<string>();
-  if (map.abandoned && map.haunts?.length) err(f, 'haunts: the map is abandoned (the company never comes back), it takes no haunt anchors');
+  if (map.noHaunts && map.haunts?.length) err(f, 'haunts: the map has noHaunts (it is never haunted), it takes no haunt anchors');
   const pool = data.hauntPools?.[map.act];
   for (const a of map.haunts ?? []) {
     const ctx = `haunts ${a.variant}`;

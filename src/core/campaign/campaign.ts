@@ -108,9 +108,9 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
     // story 5.5
-    // a haunt whose anchor is gone lapses (the prologue became abandoned on 2026-11-06)
+    // a haunt whose anchor is gone lapses (prologue, 1-6 and 1-7 got noHaunts on 2026-11-06)
     haunts: (c.haunts ?? []).filter((h) => !hauntAnchorGone(data, h.map, h.variant)),
-    hauntLast: Object.fromEntries(Object.entries(c.hauntLast ?? {}).filter(([map]) => !data.maps[map]?.abandoned)),
+    hauntLast: Object.fromEntries(Object.entries(c.hauntLast ?? {}).filter(([map]) => !data.maps[map]?.noHaunts)),
     hauntsSinceStory: c.hauntsSinceStory ?? 0,
     // story 3.3: lieutenants of older saves hold only `met`
     ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),

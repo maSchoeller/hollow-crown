@@ -85,6 +85,8 @@ export interface BattleUnit extends UnitRecord {
   grudgeTarget?: string;
   /** uid of the unit that drove a lieutenant off (`gone: 'fled'`); set by story 3.2 */
   fledBy?: string;
+  /** uid of the unit whose blow last hurt a lieutenant: who drove him off when he withdraws on foot (`flee` to its area) */
+  hitBy?: string;
   dropUids: string[];
   quote?: string;
   recruit?: { by: string[] | 'any'; dialogue?: string };

@@ -1,0 +1,9 @@
+# Mission 1-6, Karten-Szene (Trigger t_hask_flight): Hask ruft unter 40 % TP den Rückzug, als Blase über ihm (nur solange er auf der Karte steht).
+# Die Flucht selbst ist das Profil flee zur Ostpforte (set_ai); die Flucht-Zeile beim Verlassen kommt aus scn.lt.hask.
+id: scn.m1_6.hask_flight
+lines:
+  - id: l01
+    speaker: [hask]
+    fallback: skip
+    mood: angry
+    text: "Genug! Die Pforte, los! Die Burg könnt ihr haben, mich nicht."
