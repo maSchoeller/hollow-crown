@@ -5,9 +5,9 @@
  * The picture moves by CSS transform: the overview picture with the 3 × 3 tiles over it, the town pictures on their plateaus
  * and the fog of later acts (story 15.7) move with it; stones, paths and region names are HTML over it that follow their places.
  */
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
+import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -22,7 +22,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
 import { UnitHead } from './unitArt';
-import { bleedArea, clampView, focusView, fogAreas, homeAt, labelOf, mapNotice, moreMissionsFollow, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type MapView, type Screen } from './worldMapView';
+import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, roadsOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -48,7 +48,11 @@ const INERTIA_DECAY = 0.92;
 /** Icon of the goal chip per victory type. */
 const GOAL_ICON: Record<string, string> = { rout: 'attack', boss: 'attack', reach: 'target', seize: 'seize', defend: 'shield', survive: 'wait', escape: 'escape', escort: 'escape', treasure: 'chest' };
 
-type Loaded = 'loading' | 'ready' | 'failed';
+/** The channels of a computed CSS colour (`rgb(r, g, b)`); the fog falls back to white. */
+const cssColor = (c: string): [number, number, number] => {
+  const m = c.match(/\d+(\.\d+)?/g);
+  return m && m.length >= 3 ? [Number(m[0]), Number(m[1]), Number(m[2])] : [255, 255, 255];
+};
 
 /** A chosen haunt is `haunt:<id>` in the selection (a node is its plain id). */
 const HAUNT = 'haunt:';
@@ -63,15 +67,17 @@ export function WorldMap() {
   const [menu, setMenu] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  // the overview picture under the tiles; the map counts as there as soon as it or every tile has loaded (fallback, story 15.7)
+  // the overview picture first, then the sharp level over it; once that shows the overview goes (story 15.12), if it fails the
+  // overview stays (fallback); the map counts as there as soon as either shows
   const [loaded, setLoaded] = useState<Loaded>('loading');
-  const [tilesLoaded, setTilesLoaded] = useState(0);
-  const [tilesFailed, setTilesFailed] = useState(0);
+  const [sharp, setSharp] = useState<Loaded>('loading');
   // town pictures that failed to load (by picture name): a variant falls back to the base picture, the base to a place sign
   const [missingSites, setMissingSites] = useState<readonly string[]>([]);
   const pan = useRef<HTMLDivElement>(null);
   const picture = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
+  const paths = useRef<SVGSVGElement>(null);
+  const fogCanvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => audio.music('worldmap'), []);
 
   // a new day (story 5.4): on opening the map and when the app comes back to it; new day packets show a short hint
@@ -98,8 +104,27 @@ export function WorldMap() {
     return n ? (placeOf(world, n.id)?.at ?? home) : undefined;
   };
   const fog = fogAreas(world, data.campaign.act);
-  const tiles = Array.from({ length: world.tiles * world.tiles }, (_, i) => [Math.floor(i / world.tiles), i % world.tiles] as const);
-  const notice = mapNotice(loaded, tilesLoaded, tilesFailed, tiles.length);
+  // the level of the picture that is not upscaled at the nearest zoom on this screen (story 15.12); a bigger screen (rotation)
+  // raises it, it never drops back
+  const levelOf = (scr: Screen) => levelFor(world, scr, conf, window.devicePixelRatio || 1);
+  const [level, setLevel] = useState(() => levelOf({ w: window.innerWidth, h: window.innerHeight }));
+  const sharpSrc = level > world.levels[0]! ? assetUrl(`world/${world.image}_${level}.webp`) : null;
+  // without a sharp level the overview alone decides the notice
+  const notice = mapNotice(loaded, sharpSrc ? sharp : 'failed');
+
+  // the fog of later acts: a small mask from the areas, drawn once per act into a canvas stretched over the picture
+  const fogKey = data.campaign.act;
+  useEffect(() => {
+    const cv = fogCanvas.current;
+    const g = cv?.getContext('2d');
+    if (!cv || !g) return;
+    const { px, blur, alpha } = conf.fog;
+    const m = fogMask(fog, px, blur);
+    const [r, gr, b] = cssColor(getComputedStyle(cv).color);
+    const img = g.createImageData(px, px);
+    for (let i = 0; i < m.length; i++) img.data.set([r, gr, b, Math.round(m[i]! * alpha * 255)], i * 4);
+    g.putImageData(img, 0, 0);
+  }, [fogKey]);
   const conds = conditionContext(data, c);
   const stones = stonesOf(
     world,
@@ -121,24 +146,40 @@ export function WorldMap() {
   const chosen = useRef<string | null>(null);
   const pad = () => (chosen.current ? CARD_PAD : PAD);
   const screenSize = (): Screen => ({ w: pan.current?.clientWidth ?? 1, h: pan.current?.clientHeight ?? 1 });
-  const apply = () => {
-    const v = view.current;
-    if (picture.current) picture.current.style.transform = `translate(${v.x}px, ${v.y}px) scale(${v.s})`;
+  // the scale the HTML pieces were last laid out for: dragging only moves two layers (picture and pieces) by a transform, so the
+  // browser composites and neither lays out nor paints (story 15.12); the pieces move to their places only when the scale changes
+  const laidOut = useRef(0);
+  const layOut = (s: number) => {
     const root = layer.current;
     if (!root) return;
+    laidOut.current = s;
+    // in the layer's own pixels: the layer itself is moved by the view's offset (apply)
+    const at = (x: number, y: number) => screenOf({ x: 0, y: 0, s }, size, [x, y]);
     for (const el of root.querySelectorAll<HTMLElement>('[data-x]')) {
-      const [x, y] = screenOf(v, size, [Number(el.dataset.x), Number(el.dataset.y)]);
+      const [x, y] = at(Number(el.dataset.x), Number(el.dataset.y));
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
     }
+    if (paths.current) {
+      paths.current.style.width = `${size[0] * s}px`;
+      paths.current.style.height = `${size[1] * s}px`;
+    }
     for (const line of root.querySelectorAll<SVGLineElement>('line[data-a]')) {
-      const [ax, ay] = screenOf(v, size, line.dataset.a!.split(',').map(Number) as [number, number]);
-      const [bx, by] = screenOf(v, size, line.dataset.b!.split(',').map(Number) as [number, number]);
+      const [ax, ay] = at(...(line.dataset.a!.split(',').map(Number) as [number, number]));
+      const [bx, by] = at(...(line.dataset.b!.split(',').map(Number) as [number, number]));
       line.setAttribute('x1', String(ax));
       line.setAttribute('y1', String(ay));
       line.setAttribute('x2', String(bx));
       line.setAttribute('y2', String(by));
     }
+  };
+  // pieces that a render adds (a haunt, the card's stone) get their place at once, not only at the next zoom
+  useLayoutEffect(() => layOut(view.current.s));
+  const apply = () => {
+    const v = view.current;
+    if (picture.current) picture.current.style.transform = `translate3d(${v.x}px, ${v.y}px, 0) scale(${v.s})`;
+    if (v.s !== laidOut.current) layOut(v.s);
+    if (layer.current) layer.current.style.transform = `translate3d(${v.x}px, ${v.y}px, 0)`;
   };
   const stopTween = () => {
     cancelAnimationFrame(tween.current);
@@ -178,7 +219,10 @@ export function WorldMap() {
     const first = shown.find((n) => open.includes(n.id));
     const at = (first && atOf(first.id)) ?? home;
     set(focusView(screenSize(), size, scaleOfStep(0), at, [0.5, START_Y], pad()));
-    const ro = new ResizeObserver(() => set({ ...view.current, s: scaleOfStep(step.current) }));
+    const ro = new ResizeObserver(() => {
+      set({ ...view.current, s: scaleOfStep(step.current) });
+      setLevel((l) => Math.max(l, levelOf(screenSize())));
+    });
     ro.observe(pan.current!);
     return () => {
       ro.disconnect();
@@ -308,35 +352,38 @@ export function WorldMap() {
           e.stopPropagation();
           e.preventDefault();
         }}
-        onClick={() => choose(null)}
+        // the capture above does not hold back the pan's own listener: a click on the bare map after a drag is no tap either
+        onClick={() => !drag.current.swallow && choose(null)}
       >
         <div class="wm__picture" ref={picture} style={{ width: `${size[0]}px`, height: `${size[1]}px` }}>
-          <img
-            class="wm__img"
-            src={assetUrl(`world/${world.image}.webp`)}
-            width={size[0]}
-            height={size[1]}
-            alt=""
-            draggable={false}
-            onLoad={() => setLoaded('ready')}
-            onError={() => setLoaded('failed')}
-          />
-          {/* the full picture in tiles over the overview: a tile that fails leaves the overview showing */}
-          {tiles.map(([r, col]) => (
+          {/* one picture for the whole map: the overview until the sharp level shows, then only the sharp one (story 15.12) */}
+          {sharp !== 'ready' && (
             <img
-              key={`${r}${col}`}
-              class="wm__tile"
-              src={assetUrl(`world/${world.image}_r${r}c${col}.webp`)}
-              style={{ left: `${(col * 100) / world.tiles}%`, top: `${(r * 100) / world.tiles}%`, width: `${100 / world.tiles}%`, height: `${100 / world.tiles}%` }}
+              class="wm__img"
+              src={assetUrl(`world/${world.image}.webp`)}
+              width={size[0]}
+              height={size[1]}
               alt=""
               draggable={false}
-              onLoad={() => setTilesLoaded((n) => n + 1)}
-              onError={(e) => {
-                e.currentTarget.style.visibility = 'hidden';
-                setTilesFailed((n) => n + 1);
-              }}
+              decoding="async"
+              onLoad={() => setLoaded('ready')}
+              onError={() => setLoaded('failed')}
             />
-          ))}
+          )}
+          {sharpSrc && sharp !== 'failed' && (
+            <img
+              class={`wm__img wm__img--sharp ${sharp === 'ready' ? '' : 'is-loading'}`}
+              src={sharpSrc}
+              width={size[0]}
+              height={size[1]}
+              alt=""
+              draggable={false}
+              decoding="async"
+              // decoded off the main thread before it replaces the overview, so the swap does not stall a frame
+              onLoad={(e) => void e.currentTarget.decode().then(() => setSharp('ready'), () => setSharp('ready'))}
+              onError={() => setSharp('failed')}
+            />
+          )}
           {/* town pictures on their painted plateaus; a missing one shows a place sign instead of an empty plateau */}
           {world.places.map((p) => {
             if (!p.site) return null;
@@ -358,33 +405,17 @@ export function WorldMap() {
               />
             );
           })}
-          {fog.length > 0 && (
-            <svg class="wm__fog" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <filter id="wm-fog-soft" x="-10%" y="-10%" width="120%" height="120%">
-                <feGaussianBlur stdDeviation="1.2" />
-              </filter>
-              <g filter="url(#wm-fog-soft)">
-                {fog.map((area, i) => (
-                  <polygon key={i} points={bleedArea(area).map(([x, y]) => `${x},${y}`).join(' ')} />
-                ))}
-              </g>
-            </svg>
-          )}
+          {fog.length > 0 && <canvas class="wm__fog" ref={fogCanvas} width={conf.fog.px} height={conf.fog.px} aria-hidden="true" />}
         </div>
         <div class="wm__world" ref={layer}>
-          <svg class="wm__paths" aria-hidden="true">
-            {nodeLinks(data).flatMap(([from, to]) => {
-              const a = shown.some((x) => x.id === from) && atOf(from);
-              const b = shown.some((x) => x.id === to) && atOf(to);
-              // nodes at the same place share a stone: no path between them
-              if (!a || !b || (a[0] === b[0] && a[1] === b[1])) return [];
-              return [
-                <g key={from + to}>
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path wm__path--edge" />
-                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path" />
-                </g>,
-              ];
-            })}
+          <svg class="wm__paths" ref={paths} aria-hidden="true">
+            {/* the road network (story 15.12): the geography, not the campaign order; dimmed towards places not unlocked yet */}
+            {roadsOf(world, data.campaign.act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
+              <g key={r.key} class={r.dim ? 'wm__road is-dim' : 'wm__road'}>
+                <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path wm__path--edge" />
+                <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path" />
+              </g>
+            ))}
           </svg>
           {fog.length > 0 &&
             world.regions

@@ -13,6 +13,7 @@ import { clone } from '../../core/util';
 import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
 import { wantedUid } from './wanted';
 import { playNode, beginMission, concludeBattle, storyContext, runEffects } from './flow';
+import { startToneTest } from './toneTest';
 
 /**
  * Puts a haunt on the world map for testing (story 5.6): `devHaunt('m1_1_steckbriefe', 'escort', 'hask')`. Opens an unsaved campaign when none is
@@ -140,6 +141,8 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
       },
       devNode,
+      /** tone test of story 8.1 (same as the URL parameter `?tonbruch`): Gerrit's grave, Fenn's farewell, N1 memorial */
+      toneTest: startToneTest,
       /**
        * the end of the act without Level-Design (story 7.3): adds a `fixed: finale` node to the running content when the act has
        * none (run time only, no file), marks the finale as done and shows the world map with the backup sheet and, without a
