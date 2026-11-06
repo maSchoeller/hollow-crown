@@ -74,15 +74,17 @@ export interface Road {
 /**
  * The paths to draw (story 15.12): the road network of the world, without roads into the fog of a later act. A road is full
  * when both its places hold a stone that is open or done (`known`), otherwise it is drawn dimmed. The flight of the prologue
- * (kind `escape`) shows always, through the fog too, and never dimmed.
+ * (kind `escape`) shows always, through the fog too, and never dimmed; where it runs along a road, only the flight is drawn.
  */
 export function roadsOf(world: WorldDef, act: number, known: ReadonlySet<string>): Road[] {
   const place = new Map(world.places.map((p) => [p.id, p]));
+  const pair = (a: string, b: string) => [a, b].sort().join('|');
+  const flight = new Set(world.roads.filter((r) => r[2] === 'escape').map(([a, b]) => pair(a, b)));
   const out: Road[] = [];
   for (const [a, b, kind = 'road'] of world.roads) {
     const pa = place.get(a);
     const pb = place.get(b);
-    if (!pa || !pb) continue;
+    if (!pa || !pb || (kind === 'road' && flight.has(pair(a, b)))) continue;
     if (kind === 'escape') {
       out.push({ key: `${kind}:${a}|${b}`, a: pa.at, b: pb.at, kind, dim: false });
       continue;

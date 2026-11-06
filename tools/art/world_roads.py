@@ -22,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 WORLD = os.path.join(ROOT, 'content', 'world', 'valmora.yaml')
 # The flight of the prologue (geografie-valmora.md, "Reise und Tore"): by barge from Aurenhall through the Aureklamm, past
 # Kronfeld, then on foot south over the pass (Windscharte) and past the Paktwacht to Varnhold. Kind `escape`: its own line.
+# Where the barge lands (Kronfeld or before) is still open (narrative log 2026-11-06, story 15.6): Kronfeld is an [ASSUMPTION].
 ESCAPE = [('aurenhall', 'aure_gorge'), ('aure_gorge', 'kronfeld'), ('kronfeld', 'wind_gap'), ('wind_gap', 'tobin_farm'), ('tobin_farm', 'varnhold')]
 MAX_LEN = 18.0  # percent of the map width: no long diagonals across the map
 
@@ -66,7 +67,8 @@ def build(at):
         return all(not cross(at[e[0]], at[e[1]], at[f[0]], at[f[1]]) for f in edges)
 
     for e in GEOGRAPHY:
-        assert e[0] in at and e[1] in at, e
+        if e[0] not in at or e[1] not in at:
+            raise SystemExit(f'geography road through unknown places: {e}')
         if not free(e):
             raise SystemExit(f'geography road {e} crosses another one')
         edges.append(e)
@@ -121,8 +123,9 @@ def main():
     edges = build(at)
     longest = max(math.dist(at[a], at[b]) for a, b in edges)
     print(f'{len(edges)} roads over {len(at)} places, longest {longest:.1f} % of the width, connected: {len(parts(at, edges)) == 1}')
-    for e in ESCAPE:
-        assert e[0] in at and e[1] in at, e
+    unknown = [e for e in ESCAPE if e[0] not in at or e[1] not in at]
+    if unknown:
+        raise SystemExit(f'escape route through unknown places: {unknown}')
     block = '\n'.join([f'  - [{a}, {b}]' for a, b in edges] + [f'  - [{a}, {b}, escape]' for a, b in ESCAPE])
     if '--write' not in sys.argv:
         print(block)

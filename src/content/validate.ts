@@ -113,6 +113,9 @@ export function validateContent(
       if (a === b || pairs.has(key)) err(f, `road ${a}-${b}: ${a === b ? 'leads nowhere' : 'drawn twice'}`);
       pairs.add(key);
     }
+    // the flight of the prologue (kind escape) is one line: each piece starts where the last one ended
+    const flight = w.roads.filter((r) => r[2] === 'escape');
+    for (const [i, [a]] of flight.entries()) if (i > 0 && flight[i - 1]![1] !== a) err(f, `escape route breaks before ${a}`);
     // stones must not touch at the overview of a phone: places with a slot and the homes at least WORLD_STONE_GAP of the width apart
     const [pw, ph] = w.size;
     const stones: Array<[string, readonly [number, number]]> = [

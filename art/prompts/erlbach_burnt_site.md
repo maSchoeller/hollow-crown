@@ -6,7 +6,7 @@
 - **Referenzen (eigene Bilder):** (1) Ausschnitt der Weltkarte um das Plateau von Erlbach aus `art/world/map_v5.png` (640 × 520 px), (2) `art/world/sites/erlbach.png` (Grundbild).
 - **Originaldatei, unverändert:** `art/world/v5/erlbach_burnt_chatgpt.png` (1278 × 1230, RGBA; Download „Verbranntes Dorf mit zerbrochener Wassermühle.png“).
 - **Abgeleitet:** `art/world/sites/erlbach_burnt.png` – Alphawerte unter 16 auf 0 (wie alle Stadtbilder); Laufzeitbild `world/sites/erlbach_burnt.webp` über `pnpm art:build`.
-- **Menschlicher Anteil:** Motiv und Zeitpunkt vom Produktinhaber; Prompt, Auswahl und Einpassung (Vorschau per Skript, Breite 70 von 1254 wie das Grundbild) im Agenten-Ablauf. Keine Retusche von Hand.
+- **Menschlicher Anteil:** Motiv und Zeitpunkt vom Produktinhaber; Prompt, Auswahl und Einpassung (Vorschau per Skript; das Spiel schneidet auf den Inhalt zu und setzt ihn auf die Breite des Grundbilds, 70 Einheiten der 1254er Karte) im Agenten-Ablauf. Keine Retusche von Hand.
 
 ## Prompt
 
@@ -18,6 +18,6 @@ Eine Iteration, erster Wurf übernommen.
 
 ## Abnahme
 
-- 2026-11-06, Agent (Abnahme an Agenten delegiert): gleicher Grundriss, Stil und Umriss wie das Grundbild; Dächer verkohlt, Mühlrad gebrochen, Glut und dünner Rauch. Auf dem Plateau geprüft.
+- 2026-11-06, Agent (Abnahme an Agenten delegiert): gleicher Grundriss, Stil und Umriss wie das Grundbild; Dächer verkohlt, Mühlrad gebrochen, Glut und dünner Rauch. Das Bild ist nicht quadratisch (1278 × 1230 statt 1:1); unschädlich, weil der Build auf den Inhalt zuschneidet. Auf dem Plateau geprüft.
 - Licensing §6 A7: generisches Motiv, keine Namen geschützter Werke im Prompt.
 - Der Produktinhaber sieht das Bild im PR; Änderungswünsche gehen in eine neue Iteration.

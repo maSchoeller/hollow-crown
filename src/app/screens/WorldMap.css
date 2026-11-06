@@ -112,7 +112,7 @@
   opacity: 0.45;
 }
 /* the flight of the prologue (roads kind `escape`): its own ember line, drawn through the fog */
-.wm__road--escape .wm__path {
+.wm__road--escape .wm__path:not(.wm__path--edge) {
   stroke: var(--hc-ember);
   stroke-dasharray: 3 7;
 }
