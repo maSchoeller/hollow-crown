@@ -8,6 +8,9 @@ lines:
   - id: l01
     mood: sad
     text: "Dieselbe Nacht. Zwischen Säcken auf einem Lastkahn treibt die Truppe durch die Aureklamm."
+  - id: l01a
+    mood: sad
+    text: "Zwischen ihnen liegt Gerrit. Lucan und Tobin haben ihn durch die Unterstadt getragen."
   - id: l01b
     speaker: [brenna]
     fallback: skip
