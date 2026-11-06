@@ -157,3 +157,7 @@
 
 - Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
 - Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.
+
+## 2026-11-06: Keine Heimsuchungen in 1-6 und 1-7
+
+- Wie der Prolog tragen die Paktwacht (1-6, wird Heimat) und das Gewölbe (1-7, stürzt ein) `noHaunts: true` (GDD-Log 2026-11-06). Auf der Weltkarte stehen an der Paktwacht also nie rote Heimsuchungs-Steine; in Akt 1 gibt es Heimsuchungen nur noch an den Orten von 1-1 bis 1-5.

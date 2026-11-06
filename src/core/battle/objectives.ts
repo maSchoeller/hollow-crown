@@ -4,7 +4,7 @@ import type { MapDef, MapUnitDef, SideObjectiveDef, TriggerDef } from '../mapDef
 import type { GameEvent } from '../events';
 import { burningTileHit, eventTerrain } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
+import { active, areaTiles, clone, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
 import { battleUnitFromPlan } from './create';
 import { noteLieutenantSight } from './lieutenantSight';
 
@@ -279,7 +279,7 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
           const u = findUnit(s, id);
           if (u?.ai) {
             u.ai.profile = a.profile;
-            if (a.area) u.ai.area = a.area;
+            if (a.area) u.ai.area = clone(a.area);
             u.ai.awake = true;
           }
         }

@@ -346,9 +346,33 @@ describe('maps with noHaunts (GDD log 2026-11-06): prologue, 1-6 and 1-7 are nev
     for (const id of ['m1_1_steckbriefe', 'm1_2_erlbach', 'm1_3_silberbach', 'm1_4_wolfslager', 'm1_5_hungerlager']) expect(data.maps[id]!.haunts!.length, id).toBeGreaterThanOrEqual(2);
   });
 
-  it('the dice never pick 1-6 or 1-7 once they are done', () => {
-    const all = { ...ready(), completed: data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
-    for (let day = 100; day < 160; day++) for (const h of advance(data, all, day).campaign.haunts) expect(['prologue_paktnacht', 'm1_6_paktwacht', 'm1_7_gewoelbe', 'm1_8_paktwacht_halten']).not.toContain(h.map);
+  it('the dice never pick 1-6 or 1-7 once they are done, even with anchors left in the data (the flag decides)', () => {
+    // 1-8 never had anchors; 1-6 and 1-7 get the anchors of 1-1 back for this test, flag on and off
+    const anchored = (noHaunts: boolean): GameData => ({
+      ...data,
+      maps: { ...data.maps, ...Object.fromEntries(['m1_6_paktwacht', 'm1_7_gewoelbe'].map((id) => [id, { ...data.maps[id]!, noHaunts, haunts: data.maps.m1_1_steckbriefe!.haunts }])) },
+    });
+    const maps = (d: GameData) => {
+      const all = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+      const seen = new Set<string>();
+      for (let day = 100; day < 160; day++) for (const h of advance(d, all, day).campaign.haunts) seen.add(h.map);
+      return seen;
+    };
+    expect([...maps(anchored(false))]).toEqual(expect.arrayContaining(['m1_6_paktwacht', 'm1_7_gewoelbe']));
+    for (const d of [data, anchored(true)]) for (const id of ['prologue_paktnacht', 'm1_6_paktwacht', 'm1_7_gewoelbe', 'm1_8_paktwacht_halten']) expect(maps(d).has(id), id).toBe(false);
+  });
+
+  it('an open 1-6 or 1-7 haunt of an old save lapses on load, with its hauntLast', () => {
+    const d: GameData = { ...data, maps: { ...data.maps, m1_6_paktwacht: { ...data.maps.m1_6_paktwacht!, noHaunts: false, haunts: data.maps.m1_1_steckbriefe!.haunts } } };
+    const c = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+    const day = [...Array(60).keys()].map((i) => 100 + i).find((n) => advance(d, c, n).campaign.haunts.some((h) => h.map === 'm1_6_paktwacht'))!;
+    const old = { ...advance(d, c, day).campaign, hauntLast: { m1_6_paktwacht: 'boss', m1_7_gewoelbe: 'rout', m1_2_erlbach: 'rout' } };
+    const h = old.haunts.find((x) => x.map === 'm1_6_paktwacht')!;
+    const now = normalizeCampaign(data, old);
+    expect(now.haunts.some((x) => x.map === 'm1_6_paktwacht')).toBe(false);
+    expect(now.haunts.length).toBe(old.haunts.length - 1);
+    expect(now.hauntLast).toEqual({ m1_2_erlbach: 'rout' });
+    expect(staleHauntMap(data, hauntMapId(h.map, h.variant, h.lt))).toBe(true);
   });
 
   it('the dice never pick the prologue, also on the days that hit it with the old anchors', () => {

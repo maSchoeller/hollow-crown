@@ -586,11 +586,18 @@ function validateMap(
   );
   for (const t of map.triggers)
     for (const a of t.then) if (a.action === 'set_terrain' && !data.terrain[a.terrain]) err(f, `${t.id}: set_terrain to unknown terrain ${a.terrain}`);
-  // `set_ai` to `flee` needs a way out: the area of the action or the one the unit already has
+  // `set_ai`: known units; `flee` needs a way out (the area of the action or the one the unit already has); its tiles lie on the map and can be walked
   for (const t of map.triggers)
-    for (const a of t.then)
-      if (a.action === 'set_ai' && a.profile === 'flee' && !a.area)
-        for (const id of a.units) if (!allUnits(map).find((u) => u.id === id)?.ai?.area) err(f, `${t.id}: set_ai flee for ${id} without an area to flee to`);
+    for (const a of t.then) {
+      if (a.action !== 'set_ai') continue;
+      for (const id of a.units) {
+        const u = allUnits(map).find((x) => x.id === id);
+        if (!u) err(f, `${t.id}: set_ai for unknown unit ${id}`);
+        else if (a.profile === 'flee' && !a.area && !u.ai?.area) err(f, `${t.id}: set_ai flee for ${id} without an area to flee to`);
+      }
+      for (const p of a.area ? areaTiles(a.area) : [])
+        if (!inside(p) || terr(p)?.cost.foot === null) err(f, `${t.id}: set_ai area ${p} is off the map or impassable`);
+    }
   const checkUnit = (u: MapUnitDef, ctx: string) => {
     if (!data.classes[u.class]) err(f, `${ctx}: unknown class ${u.class}`);
     if (u.char && !data.chars[u.char]) err(f, `${ctx}: unknown char ${u.char}`);
