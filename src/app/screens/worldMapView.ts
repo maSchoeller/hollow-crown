@@ -130,7 +130,7 @@ function inside(x: number, y: number, poly: ReadonlyArray<readonly [number, numb
   return hit;
 }
 
-/** One pass of a box blur of radius `r` along rows (`dx` 1) or columns (`dx` n), clamped at the picture edge. */
+/** One pass of a box blur of radius `r` along the rows (`x`) or the columns (`y`), clamped at the picture edge. */
 function boxBlur(src: Float32Array, n: number, r: number, along: 'x' | 'y'): Float32Array {
   const out = new Float32Array(n * n);
   const at = (line: number, k: number) => src[along === 'x' ? line * n + k : k * n + line]!;
@@ -168,6 +168,16 @@ export function fogMask(areas: ReadonlyArray<ReadonlyArray<readonly [number, num
  */
 export function pickLevel(levels: readonly number[], needPx: number): number {
   return levels.find((w) => w >= needPx) ?? levels[levels.length - 1]!;
+}
+
+/**
+ * The level for a screen: wide enough for the nearest zoom with the tap focus at the device's pixel density. One level per
+ * visit, not one per zoom step: on a phone with DPR 3 already the overview step needs the full picture, and a second picture
+ * would cost a decode and a swap in the middle of a zoom.
+ */
+export function levelFor(world: Pick<WorldDef, 'size' | 'levels'>, scr: Screen, zoom: { zoomSteps: readonly number[]; focusZoom: number }, dpr: number): number {
+  const near = stepScale(scr, world.size, zoom.zoomSteps, zoom.zoomSteps.length - 1, zoom.focusZoom);
+  return pickLevel(world.levels, world.size[0] * near * dpr);
 }
 
 /** What the map says while the overview and the sharp picture load: nothing once either shows, "missing" when both failed. */

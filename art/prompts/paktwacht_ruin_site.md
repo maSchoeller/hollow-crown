@@ -18,6 +18,6 @@ Eine Iteration, erster Wurf übernommen.
 
 ## Abnahme
 
-- 2026-11-06, Agent (Abnahme an Agenten delegiert): Stil, Umriss und Blickwinkel passen zu den übrigen Stadtbildern; Bergfried als Stumpf, Tor ohne Flügel, Lücken in der Mauer, Efeu und Gestrüpp wie in Art Direction §7 (Burgstufe 0). Auf dem Plateau in der Karte geprüft (Breite 72 von 1254, wie die Burg), Belege in `_bmad-output/implementation-artifacts/15-12-belege/`.
+- 2026-11-06, Agent (Abnahme an Agenten delegiert): Stil, Umriss und Blickwinkel passen zu den übrigen Stadtbildern; Bergfried als Stumpf, Tor ohne Flügel, Lücken in der Mauer, Efeu und Gestrüpp wie in Art Direction §7 (Burgstufe 0). Auf dem Plateau in der Karte geprüft (Breite 72 von 1254, wie die Burg); Schwelle „ausgebaut ab Burgstufe 1“ ist [ASSUMPTION]. Belege in `_bmad-output/implementation-artifacts/15-12-belege/`.
 - Prüfung auf Ähnlichkeit zu bekannten Werken (licensing §6 A7): generisches Burgmotiv, keine Namen im Prompt.
 - Der Produktinhaber sieht die Ruine im PR und auf dem Handy; Änderungswünsche gehen in eine neue Iteration.

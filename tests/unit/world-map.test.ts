@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { conditionContext, newCampaign, type WorldDef, type WorldPlace } from '../../src/core';
 import { loadContentFromDisk } from '../../src/content/node';
 import { validateContent } from '../../src/content/validate';
-import { clampView, coverScale, focusView, fogAreas, fogMask, homeAt, labelOf, mapNotice, moreMissionsFollow, pickLevel, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround } from '../../src/app/screens/worldMapView';
+import { clampView, coverScale, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, pickLevel, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround } from '../../src/app/screens/worldMapView';
 
 const { data, locales } = loadContentFromDisk();
 const size = [1024, 1536] as const; // the view maths take any picture size
@@ -192,6 +192,12 @@ describe('stones and town pictures', () => {
     expect(fogMask([], n, 2).every((v) => v === 0)).toBe(true);
   });
 
+  it('the stone layer sits in picture pixels times the scale and moves by the view offset', () => {
+    const v = { x: -120, y: 40, s: 0.3 };
+    const [lx, ly] = screenOf({ x: 0, y: 0, s: v.s }, size, [25, 50]);
+    expect(screenOf(v, size, [25, 50])).toEqual([lx + v.x, ly + v.y]);
+  });
+
   it('loads the smallest level that is not upscaled, the largest when none is big enough', () => {
     expect(pickLevel([1024, 2048, 3276], 900)).toBe(1024);
     expect(pickLevel([1024, 2048, 3276], 2048)).toBe(2048);
@@ -250,6 +256,12 @@ describe('world map assets and zoom', () => {
     expect(phone.w * zoomSteps[0]!).toBeGreaterThanOrEqual(phone.h); // a square picture: the overview step covers the height
     const nearDevicePx = stepScale(phone, square, zoomSteps, 1, focusZoom) * square[0] * 3;
     expect(nearDevicePx / square[0]).toBeLessThanOrEqual(1.1);
+    // the level the screen loads (story 15.12): the full source at DPR 3, and never more than 1.1 × upscaled at DPR 1–3
+    expect(levelFor(world, phone, data.render.worldMap, 3)).toBe(square[0]);
+    for (const dpr of [1, 1.5, 2, 2.625, 3]) {
+      const lv = levelFor(world, phone, data.render.worldMap, dpr);
+      expect((stepScale(phone, square, zoomSteps, 1, focusZoom) * square[0] * dpr) / lv, `DPR ${dpr}`).toBeLessThanOrEqual(1.1);
+    }
   });
 });
 

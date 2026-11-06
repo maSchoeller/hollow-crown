@@ -182,6 +182,9 @@ def build_world():
     if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
+    for old in os.listdir(dst):  # the 3 x 3 tiles of story 15.7 are gone; stale ones would land in the manifest
+        if re.fullmatch(r'valmora_r\d+c\d+\.webp', old):
+            os.remove(os.path.join(dst, old))
     im = Image.open(src).convert('RGB')
     built = []
     for i, w in enumerate(WORLD_LEVELS):
@@ -201,6 +204,10 @@ def build_world():
         if not site:
             continue
         # the base picture is sites/<place>.webp, a state variant sites/<variant id>.webp (site.variants in valmora.yaml)
+        ids = {q['id'] for q in places['places']}
+        for v in site.get('variants', []):
+            if not v.get('id') or v['id'] in ids:
+                raise SystemExit(f"world: variant of {p['id']} needs an id of its own, not {v.get('id')!r}")
         for name, image in [(p['id'], site['image'])] + [(v['id'], v['image']) for v in site.get('variants', [])]:
             path = os.path.join(ROOT, image)
             if not os.path.isfile(path):

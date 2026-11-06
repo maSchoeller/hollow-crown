@@ -5,7 +5,7 @@
  * The picture moves by CSS transform: the overview picture with the 3 × 3 tiles over it, the town pictures on their plateaus
  * and the fog of later acts (story 15.7) move with it; stones, paths and region names are HTML over it that follow their places.
  */
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
 import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
@@ -22,7 +22,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
 import { UnitHead } from './unitArt';
-import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, mapNotice, moreMissionsFollow, pickLevel, placeOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
+import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -104,14 +104,13 @@ export function WorldMap() {
     return n ? (placeOf(world, n.id)?.at ?? home) : undefined;
   };
   const fog = fogAreas(world, data.campaign.act);
-  const notice = mapNotice(loaded, sharp);
-  // the level of the picture that is not upscaled at the nearest zoom on this screen (story 15.12); worked out once per visit
-  const [level] = useState(() => {
-    const scr = { w: window.innerWidth, h: window.innerHeight };
-    const near = stepScale(scr, size, conf.zoomSteps, conf.zoomSteps.length - 1, conf.focusZoom);
-    return pickLevel(world.levels, size[0] * near * (window.devicePixelRatio || 1));
-  });
+  // the level of the picture that is not upscaled at the nearest zoom on this screen (story 15.12); a bigger screen (rotation)
+  // raises it, it never drops back
+  const levelOf = (scr: Screen) => levelFor(world, scr, conf, window.devicePixelRatio || 1);
+  const [level, setLevel] = useState(() => levelOf({ w: window.innerWidth, h: window.innerHeight }));
   const sharpSrc = level > world.levels[0]! ? assetUrl(`world/${world.image}_${level}.webp`) : null;
+  // without a sharp level the overview alone decides the notice
+  const notice = mapNotice(loaded, sharpSrc ? sharp : 'failed');
 
   // the fog of later acts: a small mask from the areas, drawn once per act into a canvas stretched over the picture
   const fogKey = data.campaign.act;
@@ -154,7 +153,8 @@ export function WorldMap() {
     const root = layer.current;
     if (!root) return;
     laidOut.current = s;
-    const at = (x: number, y: number): [number, number] => [(x / 100) * size[0] * s, (y / 100) * size[1] * s];
+    // in the layer's own pixels: the layer itself is moved by the view's offset (apply)
+    const at = (x: number, y: number) => screenOf({ x: 0, y: 0, s }, size, [x, y]);
     for (const el of root.querySelectorAll<HTMLElement>('[data-x]')) {
       const [x, y] = at(Number(el.dataset.x), Number(el.dataset.y));
       el.style.left = `${x}px`;
@@ -174,7 +174,7 @@ export function WorldMap() {
     }
   };
   // pieces that a render adds (a haunt, the card's stone) get their place at once, not only at the next zoom
-  useEffect(() => layOut(view.current.s));
+  useLayoutEffect(() => layOut(view.current.s));
   const apply = () => {
     const v = view.current;
     if (picture.current) picture.current.style.transform = `translate3d(${v.x}px, ${v.y}px, 0) scale(${v.s})`;
@@ -219,7 +219,10 @@ export function WorldMap() {
     const first = shown.find((n) => open.includes(n.id));
     const at = (first && atOf(first.id)) ?? home;
     set(focusView(screenSize(), size, scaleOfStep(0), at, [0.5, START_Y], pad()));
-    const ro = new ResizeObserver(() => set({ ...view.current, s: scaleOfStep(step.current) }));
+    const ro = new ResizeObserver(() => {
+      set({ ...view.current, s: scaleOfStep(step.current) });
+      setLevel((l) => Math.max(l, levelOf(screenSize())));
+    });
     ro.observe(pan.current!);
     return () => {
       ro.disconnect();

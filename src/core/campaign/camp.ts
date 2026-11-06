@@ -101,7 +101,6 @@ export function availableSupportTalks(data: GameData, c: CampaignState): Array<{
     .filter((x): x is { key: string; rank: SupportRank; dialogue: string } => !!x);
 }
 
-
 /** A room of the current home with its state: open, or locked by the first condition that fails. */
 export interface RoomStatus {
   room: RoomDef;

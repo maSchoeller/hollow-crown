@@ -12,7 +12,8 @@ import { chromium } from '@playwright/test';
 const args = process.argv.slice(2);
 const opt = (name, def) => {
   const i = args.indexOf(`--${name}`);
-  return i < 0 ? def : args[i + 1];
+  const v = i < 0 ? undefined : args[i + 1];
+  return v === undefined || v.startsWith('--') ? def : v;
 };
 const rate = Number(opt('rate', '4'));
 const node = opt('node', 'm1_2');
@@ -72,7 +73,7 @@ await page.evaluate(() => {
           phase: rec.phase,
           d: Math.round(e.duration),
           script: Math.round(e.scripts.reduce((x, sc) => x + sc.duration, 0)),
-          layout: Math.round(e.duration - (e.styleAndLayoutStart - e.startTime)),
+          layout: e.styleAndLayoutStart ? Math.round(e.duration - (e.styleAndLayoutStart - e.startTime)) : 0,
           render: Math.round(e.renderStart ? e.duration - (e.renderStart - e.startTime) : 0),
           top: e.scripts.map((sc) => `${sc.invoker}:${Math.round(sc.duration)}`).slice(0, 3),
         });

@@ -1,6 +1,6 @@
 # Story 15.12: Weltkarte flüssig auf dem Handy, Paktwacht als Ruine
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -29,7 +29,30 @@ Folge-Story zu 15.7 nach dem Handy-Test des Produktinhabers am 2026-11-06: Die K
 - [x] Bedingung `castleTier` (AC 5): Kern-Vokabular der Bedingungen, Schema, `content:check`, Unit-Test.
 - [x] Ruine (AC 5): Bild per ChatGPT über Claude in Chrome, Prompt/Abnahme `art/prompts/paktwacht_ruin_site.md`, `map_places_v5.json`/`valmora.yaml` (Grundbild Ruine, Variante ausgebaut).
 - [x] Doku (AC 7): Art-Decision-Log, Art Direction §6, Architektur §5.12, falls betroffen.
-- [ ] Messung nachher, Screenshots (AC 3, 8), `pnpm check`, Code-Review.
+- [x] Messung nachher, Screenshots (AC 3, 8), `pnpm check`, Code-Review.
+
+### Review Findings
+
+Code-Review 2026-11-06 (Blind Hunter, Edge Case Hunter, Verification Gap, Acceptance Auditor): 0 `decision-needed`, 14 `patch` (alle behoben), 2 `defer`, 9 verworfen.
+
+- [x] [Review][Patch] Gewählte Auflösungsstufe nur im Helfer getestet; Rechnung als `levelFor` in `worldMapView.ts`, Test „DPR 1–3 höchstens 1,1-fach, DPR 3 volle Quelle“ [src/app/screens/WorldMap.tsx]
+- [x] [Review][Patch] Stufe nach Drehen/Vergrößern nicht neu bestimmt; `ResizeObserver` hebt sie an, nie zurück [src/app/screens/WorldMap.tsx]
+- [x] [Review][Patch] `layOut` mit eigener Formel statt `screenOf`; jetzt `screenOf` mit Ursprung, Test für Ebene + Versatz [src/app/screens/WorldMap.tsx]
+- [x] [Review][Patch] Ohne Schärfe-Stufe blieb der Ladehinweis bei fehlender Übersicht ewig „lädt“ [src/app/screens/WorldMap.tsx]
+- [x] [Review][Patch] Neue Steine nach einem Render einen Frame am Ursprung; `useLayoutEffect` [src/app/screens/WorldMap.tsx]
+- [x] [Review][Patch] Klick nach dem Ziehen ohne Regressionstest; e2e in `haunt.spec.ts` (Karte bleibt nach Maus-Zug offen) [tests/e2e/haunt.spec.ts]
+- [x] [Review][Patch] Alte Kacheln blieben in `public/assets/world` und im Manifest; `build_world` räumt sie weg [tools/art/build.py]
+- [x] [Review][Patch] Varianten-Id ohne Prüfung (gleich einer Orts-Id überschreibt deren Bild); Build bricht ab [tools/art/build.py]
+- [x] [Review][Patch] Mess-Werkzeug: `--rate` ohne Wert ergab NaN, Layout-Anteil langer Frames falsch ohne Layout [tools/art/worldmap-perf.mjs]
+- [x] [Review][Patch] AR13 in der Architektur veraltet [concept/24-architecture/architecture.md]
+- [x] [Review][Patch] Burgstufe 1 als Schwelle in Art Direction und YAML als entschieden formuliert; jetzt [ASSUMPTION], Frage an den Produktinhaber; Stufen 1–2 ohne eigenes Bild als offen notiert [concept/23-art-direction/]
+- [x] [Review][Patch] Paketgröße und Budget nicht belegt; Zahlen in Art Direction §6 und Art-Log [concept/23-art-direction/]
+- [x] [Review][Patch] Story-Protokoll leer, Median und Phasen fehlten in der Messung [diese Datei]
+- [x] [Review][Patch] Kein Bild „Burg als Heimat, Paktwacht noch Ruine“; `15-12-belege/ruine-heimat-burg-m1_7-*.jpg`
+- [x] [Review][Defer] Zoom-Gleiten setzt Steine je Frame neu (Layout während ~260 ms) — deferred: bei 6× ohne langen Hauptthread-Frame; erst angehen, wenn der Handy-Test Zoomruckeln zeigt
+- [x] [Review][Defer] Mess-Werkzeug nicht in AGENTS.md „Ausführen und prüfen“ — deferred: Agenten-Kontextdatei, gesondert pflegen
+
+**Verworfen:** Nebel-Canvas zeichnet bei Mount nach dem Effekt nicht (false: Canvas und Effekt entstehen im selben Render, der Akt wechselt auf der Karte nicht); `cssColor` fällt auf Weiß (false: berechnete Farbe ist immer `rgb()`); `castleTier` `.max(3)` statt `tierAt.length` (low, vier Stufen sind Art Direction §7); Varianten nur yaml → json geprüft (low); `ROOMS` ungeprüft im Screenshot-Werkzeug (low, Entwicklerwerkzeug); Doppelpfad `castle.ts`/`camp.ts` (low, Re-Export hält bestehende Importe); Maus statt Touch im Messwerkzeug (low, beide laufen über dieselben Pointer-Handler; Touch prüft der Produktinhaber); Nebelkante vorher/nachher ohne Bildvergleich (low, Belege zeigen den Rand); Modellversion/Terms im Prompt-Protokoll (low, wie bei allen bisherigen ChatGPT-Protokollen; A5 läuft außerhalb des Repos).
 
 ## Dev Notes
 
@@ -60,7 +83,9 @@ Folge-Story zu 15.7 nach dem Handy-Test des Produktinhabers am 2026-11-06: Die K
 | Frames über 50 ms | **33** | **1** (Tipp auf Stein) | **270** | **5** (3 Zoom, 2 Tipp) |
 | Frames über 33 ms | 81 | 4 | 400 | 17 |
 | längster Frame | 283 ms | 183 ms | 1 383 ms | 317 ms |
+| Median Frame | 16,7 ms | 16,7 ms | 16,7 ms | 16,7 ms |
 | p95 Frame | 16,9 ms | 16,8 ms | 83,3 ms | 16,8 ms |
+| davon beim Ziehen über 50 ms | (nicht getrennt, Layout in jedem Zug-Frame) | 0 | (nicht getrennt) | 0 |
 | Long Animation Frames | 27 (max 277 ms) | 2 (max 186 ms) | 223 (max 1 414 ms) | 5 (max 281 ms) |
 | Layout (Anzahl / Zeit) | 358× / 834 ms | 54× / 174 ms | 265× / 1 665 ms | 33× / 186 ms |
 | Stil-Neuberechnung | 1 650 ms | 518 ms | 4 013 ms | 675 ms |
@@ -79,6 +104,8 @@ Folge-Story zu 15.7 nach dem Handy-Test des Produktinhabers am 2026-11-06: Die K
 
 **Umsetzung und Begründung:** Der Vorschlag des Produktinhabers (ein Grundbild in Stufen, nur die Gebäude als Sprites) ist umgesetzt, behebt aber allein nur Punkt 3 und 5. Die Messung zeigte Punkt 1 als größte Last, deshalb zusätzlich: Die HTML-Ebene wird beim Ziehen nur noch als Ganzes per Transform verschoben, Steine und Wege werden nur bei einem Maßstabswechsel neu gesetzt; der Nebel ist eine kleine weichgezeichnete Maske (160 × 160) in einem gestreckten Canvas; der Klick nach dem Ziehen ist abgefangen.
 
+**Grenzen der Messung:** Die Züge laufen als Maus-Pointer-Events (dieselben Handler wie Touch); Pinch-Zoom und das echte Rastern auf der Handy-GPU prüft der Produktinhaber auf dem Gerät. Die Vorher-Läufe zählen Frames bis zum Ende des Traces mit, daher die höhere Gesamtzahl.
+
 **Rest:** Ein langer Frame beim Antippen eines Steins (die Missionskarte rendert, einmalig, nicht beim Ziehen) und bei 6× kurze Wartezeiten beim Zoomen auf Raster/GPU (kein Long Animation Frame, also nicht der Hauptthread). Ziehen hat bei 4× und 6× keinen Frame über 50 ms mehr.
 
 ## Dev Agent Record
@@ -90,5 +117,18 @@ Claude Opus 5.5
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created
+- Umgesetzt 2026-11-06: Grundbild in Stufen (1024/2048/3276, `levelFor`), Ziehen nur per Transform, Nebel als Canvas-Maske (`fogMask`), Klick nach dem Ziehen abgefangen, Bedingung `castleTier`, Paktwacht-Ruine mit Variante `paktwacht_built` ab Burgstufe 1 [ASSUMPTION].
+- Das Grundbild enthielt die ausgebaute Burg nie (sie war das Stadtbild `paktwacht_v3`), daher keine Retusche nötig.
+- `pnpm check` grün (1374 Tests vor dem Review), `act1` 35,8 von 40 MB.
+- Belege: `15-12-belege/` (Ruine zu Beginn, nah an der Ruine, Burg als Heimat noch Ruine, ausgebaut ab Burgstufe 1 per gesetztem Raum-Ausbau, Übersicht).
 
 ### File List
+
+- `tools/art/build.py`, `tools/art/worldmap-perf.mjs` (neu), `tools/art/worldmap-shots.mjs`
+- `art/world/map_places_v5.json`, `art/world/sites/paktwacht_ruin.png` (neu), `art/world/v5/paktwacht_ruin_chatgpt.png` (neu), `art/prompts/paktwacht_ruin_site.md` (neu)
+- `content/world/valmora.yaml`, `content/core/render.yaml`
+- `src/core/campaign/castle.ts` (neu), `src/core/campaign/camp.ts`, `src/core/campaign/conditions.ts`, `src/core/storyDefs.ts`, `src/core/renderDefs.ts`, `src/content/schemas.ts`
+- `src/app/screens/WorldMap.tsx`, `src/app/screens/WorldMap.css`, `src/app/screens/worldMapView.ts`
+- `tests/unit/world-map.test.ts`, `tests/unit/story.test.ts`, `tests/e2e/haunt.spec.ts`
+- `concept/23-art-direction/art-direction.md`, `decision-log.md`; `concept/24-architecture/architecture.md`, `decision-log.md`; `concept/26-epics/epics/epic-15.md`, `index.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`, `15-12-belege/`

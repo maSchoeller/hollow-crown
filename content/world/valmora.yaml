@@ -25,7 +25,7 @@ home:
 # Knoten der Kampagne, Plätze ohne Knoten sind für spätere Akte vorgesehen. Teilen sich Knoten einen Ort, steht dort ein Stein.
 # site = Stadtbild auf dem gemalten Plateau (public/assets/world/sites/<id>.webp): foot = Mitte der Unterkante, width = Breite,
 # beides in Prozent der Karte. variants: Bilder für Zustände des Orts (sites/<image>.webp) mit Bedingungen, das erste zutreffende
-# gewinnt, sonst das Grundbild. Paktwacht (Produktinhaber 2026-11-06, Story 15.12): Grundbild Ruine, ausgebaut ab Burgstufe 1.
+# gewinnt, sonst das Grundbild. Paktwacht (Produktinhaber 2026-11-06, Story 15.12): Grundbild Ruine, ausgebaut ab Burgstufe 1 [ASSUMPTION].
 places:
   - { id: crater, act: 3, at: [53.19, 7.66], site: { foot: [50.96, 8.05], width: 3.43 }, slots: [{ label: "3-8" }] }   # Urtempel im Krater
   - { id: mountain_pass, act: 3, at: [48.41, 15.15], slots: [{ label: "3-7" }] }   # Pass ins Gebirge
