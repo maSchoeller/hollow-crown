@@ -2,11 +2,12 @@
  * The world map, the hub of the campaign (concept/25-ux/mockups/03-weltkarte.html, stories 5.2 and 5.3): Valmora as a flat
  * painted picture you pan and zoom, the stones of the nodes on it (places from `content/world/valmora.yaml`), the act pill,
  * the purse, the round menu, the bar of four stones, and the node card with "Aufstellung" and "Aufbrechen".
- * The picture moves by CSS transform; stones, paths and region names are HTML over it that follow their places.
+ * The picture moves by CSS transform: the overview picture with the 3 × 3 tiles over it, the town pictures on their plateaus
+ * and the fog of later acts (story 15.7) move with it; stones, paths and region names are HTML over it that follow their places.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
-import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
+import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, nodeLinks, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -21,7 +22,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
 import { UnitHead } from './unitArt';
-import { clampView, focusView, fogTop, moreMissionsFollow, placeOf, screenOf, stepScale, zoomAround, type MapView, type Screen } from './worldMapView';
+import { bleedArea, clampView, focusView, fogAreas, homeAt, labelOf, mapNotice, moreMissionsFollow, placeOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -39,6 +40,8 @@ const DRAG_THRESHOLD = 6;
 const SWALLOW_MS = 350;
 /** Fastest glide (px per frame) after a drag. */
 const MAX_GLIDE = 24;
+/** Horizontal distance of open stones that share a place (CSS px). */
+const FAN_PX = 46;
 /** Share of the release speed that is kept per frame while the map glides on after a drag. */
 const INERTIA_DECAY = 0.92;
 
@@ -60,7 +63,12 @@ export function WorldMap() {
   const [menu, setMenu] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  // the overview picture under the tiles; the map counts as there as soon as it or every tile has loaded (fallback, story 15.7)
   const [loaded, setLoaded] = useState<Loaded>('loading');
+  const [tilesLoaded, setTilesLoaded] = useState(0);
+  const [tilesFailed, setTilesFailed] = useState(0);
+  // town pictures that failed to load (by picture name): a variant falls back to the base picture, the base to a place sign
+  const [missingSites, setMissingSites] = useState<readonly string[]>([]);
   const pan = useRef<HTMLDivElement>(null);
   const picture = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -81,15 +89,25 @@ export function WorldMap() {
   const world = data.world;
   const conf = data.render.worldMap;
   const size = world.size;
-  const home = placeOf(world, { home: true }) ?? world.places[0]!;
-  /** the place of a node, or of the story node of a haunt's map (`haunt:<id>`) */
-  const placeById = (id: string) => {
-    if (!id.startsWith(HAUNT)) return placeOf(world, { node: id });
+  const home = homeAt(world, c.home.kind);
+  /** where the stone of a node points (a node without a place falls back to the home), or of the story node of a haunt's map (`haunt:<id>`) */
+  const atOf = (id: string): [number, number] | undefined => {
+    if (!id.startsWith(HAUNT)) return placeOf(world, id)?.at ?? home;
     const h = c.haunts.find((x) => x.id === id.slice(HAUNT.length));
     const n = h && storyNodeOf(data, h.map);
-    return n ? placeOf(world, { node: n.id }) : undefined;
+    return n ? (placeOf(world, n.id)?.at ?? home) : undefined;
   };
-  const fog = fogTop(world, data.campaign.act);
+  const fog = fogAreas(world, data.campaign.act);
+  const tiles = Array.from({ length: world.tiles * world.tiles }, (_, i) => [Math.floor(i / world.tiles), i % world.tiles] as const);
+  const notice = mapNotice(loaded, tilesLoaded, tilesFailed, tiles.length);
+  const conds = conditionContext(data, c);
+  const stones = stonesOf(
+    world,
+    shown.map((n) => n.id),
+    open,
+    c.completed,
+    home,
+  );
   // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
   const finished = actFinished(data, c);
   const backupDue = finished && !c.backupReminded.includes(data.campaign.act);
@@ -158,8 +176,8 @@ export function WorldMap() {
   // first view: the next mission (or the home) in the middle; the picture follows the screen when it is resized
   useEffect(() => {
     const first = shown.find((n) => open.includes(n.id));
-    const p = (first && placeById(first.id)) ?? home;
-    set(focusView(screenSize(), size, scaleOfStep(0), p.at, [0.5, START_Y], pad()));
+    const at = (first && atOf(first.id)) ?? home;
+    set(focusView(screenSize(), size, scaleOfStep(0), at, [0.5, START_Y], pad()));
     const ro = new ResizeObserver(() => set({ ...view.current, s: scaleOfStep(step.current) }));
     ro.observe(pan.current!);
     return () => {
@@ -262,8 +280,8 @@ export function WorldMap() {
     const seen = id?.startsWith(HAUNT) ? c.haunts.find((h) => h.id === id.slice(HAUNT.length)) : undefined;
     if (seen?.new) campaignCommand({ type: 'seeHaunt', id: seen.id });
     const scr = screenSize();
-    const p = id ? placeById(id) : null;
-    if (p) glide(focusView(scr, size, scaleOfStep(step.current, conf.focusZoom), p.at, [0.5, REST_Y], pad()));
+    const at = id ? atOf(id) : null;
+    if (at) glide(focusView(scr, size, scaleOfStep(step.current, conf.focusZoom), at, [0.5, REST_Y], pad()));
     else glide(zoomAround(view.current, scr, size, scaleOfStep(step.current), [scr.w / 2, scr.h * REST_Y], pad()));
   };
   const node = sel && !sel.startsWith(HAUNT) ? nodes.find((n) => n.id === sel)! : null;
@@ -303,23 +321,72 @@ export function WorldMap() {
             onLoad={() => setLoaded('ready')}
             onError={() => setLoaded('failed')}
           />
-          {fog !== null && <div class="wm__fog" style={{ height: `${fog}%` }} />}
+          {/* the full picture in tiles over the overview: a tile that fails leaves the overview showing */}
+          {tiles.map(([r, col]) => (
+            <img
+              key={`${r}${col}`}
+              class="wm__tile"
+              src={assetUrl(`world/${world.image}_r${r}c${col}.webp`)}
+              style={{ left: `${(col * 100) / world.tiles}%`, top: `${(r * 100) / world.tiles}%`, width: `${100 / world.tiles}%`, height: `${100 / world.tiles}%` }}
+              alt=""
+              draggable={false}
+              onLoad={() => setTilesLoaded((n) => n + 1)}
+              onError={(e) => {
+                e.currentTarget.style.visibility = 'hidden';
+                setTilesFailed((n) => n + 1);
+              }}
+            />
+          ))}
+          {/* town pictures on their painted plateaus; a missing one shows a place sign instead of an empty plateau */}
+          {world.places.map((p) => {
+            if (!p.site) return null;
+            const pic = siteImage(p, conds, missingSites);
+            const foot = { left: `${p.site.foot[0]}%`, top: `${p.site.foot[1]}%` };
+            return pic === null ? (
+              <span key={p.id} class="wm-site wm-site--missing" style={foot}>
+                <Icon name="home" size={72} />
+              </span>
+            ) : (
+              <img
+                key={p.id}
+                class="wm-site"
+                src={assetUrl(`world/sites/${pic}.webp`)}
+                style={{ ...foot, width: `${p.site.width}%` }}
+                alt=""
+                draggable={false}
+                onError={() => setMissingSites((m) => (m.includes(pic) ? m : [...m, pic]))}
+              />
+            );
+          })}
+          {fog.length > 0 && (
+            <svg class="wm__fog" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <filter id="wm-fog-soft" x="-10%" y="-10%" width="120%" height="120%">
+                <feGaussianBlur stdDeviation="1.2" />
+              </filter>
+              <g filter="url(#wm-fog-soft)">
+                {fog.map((area, i) => (
+                  <polygon key={i} points={bleedArea(area).map(([x, y]) => `${x},${y}`).join(' ')} />
+                ))}
+              </g>
+            </svg>
+          )}
         </div>
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" aria-hidden="true">
             {nodeLinks(data).flatMap(([from, to]) => {
-              const a = shown.some((x) => x.id === from) && placeById(from);
-              const b = shown.some((x) => x.id === to) && placeById(to);
-              if (!a || !b) return [];
+              const a = shown.some((x) => x.id === from) && atOf(from);
+              const b = shown.some((x) => x.id === to) && atOf(to);
+              // nodes at the same place share a stone: no path between them
+              if (!a || !b || (a[0] === b[0] && a[1] === b[1])) return [];
               return [
                 <g key={from + to}>
-                  <line data-a={ends(a.at)} data-b={ends(b.at)} class="wm__path wm__path--edge" />
-                  <line data-a={ends(a.at)} data-b={ends(b.at)} class="wm__path" />
+                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path wm__path--edge" />
+                  <line data-a={ends(a)} data-b={ends(b)} class="wm__path" />
                 </g>,
               ];
             })}
           </svg>
-          {fog !== null &&
+          {fog.length > 0 &&
             world.regions
               .filter((r) => r.act > data.campaign.act)
               .map((r) =>
@@ -338,7 +405,7 @@ export function WorldMap() {
           <button
             type="button"
             class="wm-node wm-node--home"
-            {...over(home.at)}
+            {...over(home)}
             aria-label={t(`home.${c.home.kind}.title`)}
             onClick={(e) => (e.stopPropagation(), (screen.value = { name: 'camp' }))}
           >
@@ -348,22 +415,21 @@ export function WorldMap() {
             <i class="wm-node__tail" />
             <span class="wm-node__label">{t(`home.${c.home.kind}.title`)}</span>
           </button>
-          {shown.map((n) => {
-            const done = c.completed.includes(n.id);
-            const p = placeById(n.id);
-            if (!p) return null;
+          {stones.map(({ node: id, at, done, fan }) => {
+            const n = nodes.find((x) => x.id === id)!;
             return (
               <button
                 key={n.id}
                 type="button"
                 class={`wm-node ${done ? 'wm-node--done' : 'wm-node--story'} ${n.kind === 'side' ? 'wm-node--side' : ''} ${sel === n.id ? 'is-sel' : ''}`}
-                {...over(p.at)}
+                style={fan ? { marginLeft: `${fan * FAN_PX}px` } : undefined}
+                {...over(at)}
                 aria-label={t(n.titleKey)}
                 aria-pressed={sel === n.id}
                 onClick={(e) => (e.stopPropagation(), choose(n.id))}
               >
                 <span class="wm-node__head">
-                  <b>{n.kind === 'side' && !done ? '!' : p.label}</b>
+                  <b>{n.kind === 'side' && !done ? '!' : (labelOf(world, n.id) ?? '·')}</b>
                 </span>
                 <i class="wm-node__tail" />
                 {!done && <span class="wm-node__label">{t(`map.${n.map}.name`)}</span>}
@@ -373,15 +439,15 @@ export function WorldMap() {
           {/* haunts: red stones with the face of their lieutenant beside the story stone of their map (DESIGN.md map-node) */}
           {c.haunts.map((h) => {
             const key = `${HAUNT}${h.id}`;
-            const p = placeById(key);
+            const at = atOf(key);
             const lt = data.lieutenants[h.lt];
-            if (!p || !lt) return null;
+            if (!at || !lt) return null;
             return (
               <button
                 key={key}
                 type="button"
                 class={`wm-node wm-node--haunt ${sel === key ? 'is-sel' : ''}`}
-                {...over(p.at)}
+                {...over(at)}
                 aria-label={t('ui.map.haunt.stone', { name: t(lt.nameKey), place: t(`map.${h.map}.name`) })}
                 aria-pressed={sel === key}
                 onClick={(e) => (e.stopPropagation(), choose(key))}
@@ -396,9 +462,9 @@ export function WorldMap() {
           })}
         </div>
       </div>
-      {loaded !== 'ready' && (
+      {notice && (
         <Piece class="wm__loading" role="status">
-          {t(loaded === 'failed' ? 'ui.map.mapMissing' : 'ui.map.loading')}
+          {t(notice === 'missing' ? 'ui.map.mapMissing' : 'ui.map.loading')}
         </Piece>
       )}
       <div class="wm__hud">

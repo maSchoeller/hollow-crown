@@ -106,6 +106,14 @@
 - Zuerst nur 3 Modelle mit dem vorhandenen Guthaben von rund 425 Credits: Lucan, Verwalter der Paktwacht, Osric Dunn. Über den Rest und über Nachkauf entscheidet der Produktinhaber nach Sichtung.
 - Pferde auf der Rabenweide (2-3) sind ein einfaches Deko-Modell ohne Reittier-Pipeline.
 
+## 2026-11-05: Weltkarte v5 im Spiel (Story 15.7)
+
+- `map_v5.png` ersetzt `map_flat_v1.png` im Spiel: 3 × 3 Kacheln über einem Übersichtsbild als Rückfall, 12 Stadtbilder auf ihren Plateaus, Nebel als Flächen je Akt (Grenzen am Grauen Kamm und am Moränenriegel, Krähenholm zu Akt 2). Startwerte [C].
+- Ein Stein je Ort; an Orten mit Stadtbild rechts vor dem Plateau, damit das Bild frei bleibt. Heimat-Stein: Lager im Wald zwischen Varnhold und Schrein (bis 1-6), danach auf dem Bergfried der Paktwacht. Der Prolog steht in Aurenhall unter dem Nebel von Akt 3 [ASSUMPTION].
+- Zoomstufen auf das quadratische Bild umgestellt (`render.yaml worldMap.zoomSteps` 2,2 und 2,8): nah auf dem Handy rund 1,1-fache Vergrößerung der Quelle.
+- **Offen für den Produktinhaber: Zustandsvarianten der Stadtbilder.** Welche Orte bekommen Zustände (z. B. Erlbach verbrannt nach 1-2, Paktwacht als Ruine bis 1-6 und ausgebaut nach Burgstufe, Aurenhall im Belagerungszustand), ab wann wechseln sie, und kommen sie in Staffel 1? Das Datenmodell nimmt sie ohne Codeänderung auf (`places[].site.variants`: Bild plus Bedingungen, das erste zutreffende gewinnt, sonst das Grundbild). Bis zur Entscheidung zeigt jeder Ort sein Grundbild.
+- **Offen für den Produktinhaber: Heimsuchungen an Orten unter Nebel.** Eine Heimsuchung steht neben dem Stein ihrer Story-Karte. Die Prolog-Karte liegt jetzt in Aurenhall, also stehen Heimsuchungen dort in Akt 1 weit im Norden über dem Nebel von Akt 3, abseits der ersten Ansicht (erreichbar durch Verschieben). Bleibt das so, oder sollen sie in diesem Fall neben der Heimat stehen?
+
 ## 2026-11-05: Schritt 1a, Stand nach Story 15.9 (Teil 1)
 
 - **Tripo-Konto im Free-Tarif:** In Tripo Studio stehen **625 Credits**, das Konto läuft aber auf **Free** (Preisdialog zeigt „Free“ als aktuellen Tarif, Hinweis „Upgrade für Smart Mesh, Multi-Views“). Auflage A1 (`licensing.md` §6) verlangt Pro mit Datenschutz „Privat“; Free-Ausgaben werden nicht ausgeliefert. Deshalb **kein Tripo-Lauf, 0 Credits verbraucht**, nichts gekauft. Über das Abo entscheidet der Produktinhaber; danach kosten die drei Figuren wie geplant 420 Credits (Rest dann 205, also ein zweiter Lauf für eine Figur möglich).

@@ -19,6 +19,9 @@ import { validateLieutenants, type LieutenantFiles } from './validateLieutenants
 import { validatePropVariants, validateStatusIcons, validateWeather } from './validateLook';
 import type { ContentIssue, Locales } from './load';
 
+/** Least distance of two stones on the world map in percent of its width (story 15.7: 55 px of the 1254 px plan, about 36 px at the overview of a 375 × 812 phone). */
+const WORLD_STONE_GAP = 4.4;
+
 /** Cross-reference checks that Zod cannot express (concept/11 §2 Validierung, §9). */
 export function validateContent(
   data: GameData,
@@ -74,36 +77,43 @@ export function validateContent(
   const companion = (file: string, id: string, ctx: string) => {
     if (!data.chars[id]) err(file, `${ctx}: unknown companion ${id}`);
   };
-  /** The flat world map (story 5.2): regions with their names, every node and the home placed once, spacing of the places. */
+  /**
+   * The world map (stories 5.2 and 15.7): regions with their names and areas, every node bound to one slot of one place, slot
+   * labels unique, conditions of the town picture variants, and the stones far enough apart to be tapped at the overview.
+   */
   const worldChecks = (camp: GameData['campaign']): void => {
     const w = data.world;
     const f = 'world/valmora.yaml';
     if (!w) return;
     const acts = new Set(w.regions.map((r) => r.act));
     for (const r of w.regions) for (const lang of ['de', 'en']) if (!locales[lang]?.[`world.region.${r.id}`]) err(`locales/${lang}`, `missing key world.region.${r.id}`);
-    for (const e of w.fog) if (!acts.has(e.act)) err(f, `fog: no region for act ${e.act}`);
     const seen = new Set<string>();
+    const labels = new Set<string>();
     const bound = new Set<string>();
-    let homes = 0;
     for (const p of w.places) {
       if (seen.has(p.id)) err(f, `${p.id}: placed twice`);
       seen.add(p.id);
       if (!acts.has(p.act)) err(f, `${p.id}: no region for act ${p.act}`);
-      if (p.kind === 'home') homes++;
-      if (p.node) {
-        if (!camp.nodes.some((n) => n.id === p.node)) err(f, `${p.id}: unknown node ${p.node}`);
-        if (bound.has(p.node)) err(f, `node ${p.node} is placed twice`);
-        bound.add(p.node);
-        if (p.kind === 'home') err(f, `${p.id}: the home has no node`);
+      for (const s of p.slots) {
+        if (labels.has(s.label)) err(f, `${p.id}: slot ${s.label} is planned twice`);
+        labels.add(s.label);
+        if (!s.node) continue;
+        if (!camp.nodes.some((n) => n.id === s.node)) err(f, `${p.id}: unknown node ${s.node}`);
+        if (bound.has(s.node)) err(f, `node ${s.node} is placed twice`);
+        bound.add(s.node);
       }
+      for (const [i, v] of (p.site?.variants ?? []).entries()) conditions(f, v.requires, `${p.id}: site variant ${i + 1}`);
     }
     for (const n of camp.nodes) if (!bound.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
-    if (homes !== 1) err(f, `${homes} home places, expected 1`);
-    // stones must not touch: at least 90 px apart in the picture
+    // stones must not touch at the overview of a phone: places with a slot and the homes at least WORLD_STONE_GAP of the width apart
     const [pw, ph] = w.size;
-    for (const [i, a] of w.places.entries())
-      for (const b of w.places.slice(i + 1))
-        if (Math.hypot(((a.at[0] - b.at[0]) * pw) / 100, ((a.at[1] - b.at[1]) * ph) / 100) < 90) err(f, `${a.id} and ${b.id} are less than 90 px apart`);
+    const stones: Array<[string, readonly [number, number]]> = [
+      ...w.places.filter((p) => p.slots.length > 0).map((p): [string, readonly [number, number]] => [p.id, p.at]),
+      ...Object.entries(w.home).map(([k, at]): [string, readonly [number, number]] => [`home ${k}`, at]),
+    ];
+    for (const [i, [a, pa]] of stones.entries())
+      for (const [b, pb] of stones.slice(i + 1))
+        if (Math.hypot(((pa[0] - pb[0]) * pw) / 100, ((pa[1] - pb[1]) * ph) / 100) < (WORLD_STONE_GAP / 100) * pw) err(f, `${a} and ${b} are less than ${WORLD_STONE_GAP} % of the width apart`);
   };
   /** Picture and room anchors of the homes (story 6.9): the image exists, every anchor names a room of that home, once. */
   const homeChecks = (): void => {

@@ -41,18 +41,41 @@
   user-select: none;
   -webkit-user-drag: none;
 }
-/* fog over the regions of later acts (DESIGN.md fog): opaque at the top, fading out at the edge of the current region */
+/* the full picture in tiles over the overview picture (story 15.7); the overview shows where a tile is missing */
+.wm__tile {
+  position: absolute;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* town pictures on their painted plateaus: placed by the middle of their bottom edge, they scale with the picture */
+.wm-site {
+  position: absolute;
+  display: block;
+  height: auto;
+  transform: translate(-50%, -100%);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* fallback for a missing town picture: a place sign on the plateau (the sign keeps its size in picture pixels) */
+.wm-site--missing {
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  border: 8px solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  transform: translate(-50%, -110%);
+}
+/* fog over the areas of the regions of later acts (DESIGN.md fog): polygons with a soft edge */
 .wm__fog {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--hc-fog) 94%, transparent) 0%,
-    color-mix(in srgb, var(--hc-fog) 90%, transparent) 70%,
-    transparent 100%
-  );
+  inset: 0;
+  overflow: hidden; /* the areas bleed past the picture edge (bleedArea); the picture ends here */
+  fill: var(--hc-fog);
+  fill-opacity: 0.92;
 }
 .wm__world {
   position: absolute;

@@ -1,5 +1,6 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { GearPiece, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { GearPiece, HomeKind, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { Condition } from './storyDefs';
 
 export interface PropVariant {
   model: string;
@@ -229,30 +230,61 @@ export interface LookDef {
   };
 }
 
-/** A place on the flat world map: a stone for a campaign node (or the home) on the painted picture. */
-export interface WorldPlace {
-  /** slot of the plan: `prologue`, `m1_1` … `m3_8`, `n1` … `n10`, `home` */
-  id: string;
-  /** short text on the stone: P, 1-1, N1 */
+/** A slot of the mission plan at a place of the world map: its short label (P, 1-1, N1) and the campaign node, once it exists. */
+export interface WorldSlot {
   label: string;
-  act: number;
-  kind: 'story' | 'side' | 'home';
-  /** position in percent of the picture's width and height */
-  at: [number, number];
-  /** campaign node placed here; a slot without a node is planned for a later act */
+  /** campaign node of this slot; a slot without a node is planned for a later act */
   node?: string;
 }
 
-/** The flat world map of Valmora (content/world/valmora.yaml, story 5.2). */
+/**
+ * A state of a town picture (story 15.7, open: which states exist is decided by the product owner): the first variant whose
+ * conditions hold replaces the base picture.
+ */
+export interface WorldSiteVariant {
+  /** picture `public/assets/world/sites/<image>.webp` */
+  image: string;
+  requires: Condition[];
+}
+
+/** The town picture on the painted plateau of a place, in percent of the map. */
+export interface WorldSite {
+  /** middle of the picture's bottom edge */
+  foot: [number, number];
+  /** width of the picture */
+  width: number;
+  variants?: WorldSiteVariant[];
+}
+
+/** A place on the world map (story 15.7): where its stone points, its town picture and the slots of the mission plan there. */
+export interface WorldPlace {
+  /** place id of `art/world/map_places_v5.json`; also the name of its town picture */
+  id: string;
+  act: number;
+  /** tip of the stone, in percent of the picture's width and height */
+  at: [number, number];
+  site?: WorldSite;
+  slots: WorldSlot[];
+}
+
+/** A region of the world map: the place of its name and its areas (polygons in percent), fogged while its act lies ahead. */
+export interface WorldRegion {
+  id: string;
+  act: number;
+  at: [number, number];
+  areas: Array<Array<[number, number]>>;
+}
+
+/** The world map of Valmora (content/world/valmora.yaml, stories 5.2 and 15.7). */
 export interface WorldDef {
   id: string;
-  /** painted picture, `public/assets/world/<image>.webp` */
+  /** painted picture: `public/assets/world/<image>_r<row>c<col>.webp` in `tiles` × `tiles` tiles over the overview `<image>.webp` */
   image: string;
-  /** pixel size of the picture (its aspect ratio) */
+  /** pixel size of the source picture (its aspect ratio) */
   size: [number, number];
-  /** regions with the place of their name; the region of a later act than the current one lies under fog */
-  regions: Array<{ id: string; act: number; at: [number, number] }>;
-  /** the region of `act` ends at `y` percent of the height: the fog of an earlier act reaches down to there */
-  fog: Array<{ act: number; y: number }>;
+  tiles: number;
+  regions: WorldRegion[];
+  /** tip of the home stone per kind of home (camp until mission 1-6, then the castle) */
+  home: Record<HomeKind, [number, number]>;
   places: WorldPlace[];
 }

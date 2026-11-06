@@ -1,60 +1,58 @@
-# Weltkarte von Valmora (Story 5.2, concept/23-art-direction §6, architecture §5.12): ein flaches, gemaltes Bild (Hochformat 2:3)
-# mit den Orten darauf. Das Bild zeigt keine Gebäude, Wege oder Schrift; Orte, Wege, Nebel und Namen legt das Spiel darüber.
-# Produktinhaber 2026-10-24: zurück zum Bild statt 3D-Szene. Bild: art/world/map_flat_v1.png (Prompt art/prompts/world_map.md),
-# Reise von unten nach oben: Akt 1 Grenzland (Spätsommer), Akt 2 Eisenmark (Herbst), Akt 3 Aurenhall und Drachengebirge (Winter).
-# Paket core. Startwerte [C].
+# Weltkarte von Valmora v5 (Story 15.7, concept/23-art-direction §6, architecture §5.12): das gemalte Bild art/world/map_v5.png
+# (3276 × 3276, Prompt und Abnahme art/prompts/world_map_v5.md, Geografie concept/22-narrative/geografie-valmora.md). Straßen,
+# Brücken und Weiler sind gemalt; Stadtbilder, Steine, Wege, Nebel und Namen legt das Spiel darüber. Paket core.
 id: valmora
-# Bild unter public/assets/world/<image>.webp (tools/art/build.py), size = Pixelmaße des Quellbilds (Seitenverhältnis)
+# Bild unter public/assets/world/ (tools/art/build.py): <image>_r<Zeile>c<Spalte>.webp als tiles × tiles Kacheln, darunter
+# <image>.webp als Übersicht (Rückfall, solange oder wo eine Kachel fehlt); size = Pixelmaße des Quellbilds
 image: valmora
-size: [1024, 1536]
-# Regionen mit dem Ort ihres Namens (Prozent von Breite und Höhe); die Region eines späteren Akts liegt unter Nebel
+size: [3276, 3276]
+tiles: 3
+# Regionen: Ort des Namens und Flächen (Polygone in Prozent von Breite und Höhe). Über den Flächen der Regionen späterer Akte
+# liegt Nebel. Grenzen nach dem Bild: Akt 3 nördlich des Moränenriegels (Aurenhall und Spiegelsee darin), Akt 1 südlich des
+# Grauen Kamms; Krähenholm vor der Küste gehört zu Akt 2. Startwerte [C].
 regions:
-  - { id: borderland, act: 1, at: [66, 86] }
-  - { id: eisenmark, act: 2, at: [60, 47] }
-  - { id: aurenhall, act: 3, at: [56, 15] }
-# Die Region von `act` endet bei y Prozent der Höhe: Nebel eines früheren Akts reicht von oben bis dorthin
-fog:
-  - { act: 3, y: 31 }
-  - { act: 2, y: 62.5 }
-# Orte: id = Platz im Plan der 35 Orte (25 Story-Missionen, 10 Nebenquests) und die Heimat, label = Text im Stein,
-# kind = story (Kreis), side (Raute), home; at = Prozent von Breite und Höhe, auf einer gemalten Lichtung (Mindestabstand
-# etwa 100 px im Quellbild). `node` bindet den Ort an einen Knoten der Kampagne; Orte ohne Knoten sind für spätere Akte
-# vorgesehen und erscheinen erst, wenn ihr Knoten angelegt ist. Lage: art/world/map_placed_v1.json.
+  - { id: borderland, act: 1, at: [72, 92], areas: [[[100.0, 63.8], [94.1, 63.8], [79.74, 63.4], [70.18, 63.8], [63.8, 63.8], [59.01, 64.99], [47.85, 66.59], [35.89, 67.38], [30.3, 69.38], [26.32, 71.77], [19.14, 78.15], [12.76, 84.53], [0.0, 86.12], [0.0, 100.0], [100.0, 100.0]]] }
+  - { id: eisenmark, act: 2, at: [57.42, 55.02], areas: [[[0.0, 23.52], [19.94, 23.92], [31.9, 24.72], [37.48, 26.71], [43.06, 28.87], [49.44, 29.35], [54.23, 29.11], [60.61, 27.51], [71.77, 25.92], [79.74, 25.52], [100.0, 26.32], [100.0, 63.8], [94.1, 63.8], [79.74, 63.4], [70.18, 63.8], [63.8, 63.8], [59.01, 64.99], [47.85, 66.59], [35.89, 67.38], [30.3, 69.38], [26.32, 71.77], [19.14, 78.15], [12.76, 84.53], [0.0, 86.12]]] }
+  - { id: aurenhall, act: 3, at: [62.2, 12.76], areas: [[[0.0, 0.0], [100.0, 0.0], [100.0, 26.32], [79.74, 25.52], [71.77, 25.92], [60.61, 27.51], [54.23, 29.11], [49.44, 29.35], [43.06, 28.87], [37.48, 26.71], [31.9, 24.72], [19.94, 23.92], [0.0, 23.52]]] }
+# Heimat: der Stein des Lagers (bis Mission 1-6, im Wald zwischen Varnhold und dem Schrein) und der Burg (auf dem Bergfried der Paktwacht)
+home:
+  camp: [63, 76.56]
+  castle: [66.27, 63.16]
+# Orte aus art/world/map_places_v5.json (Koordinaten dort in Pixeln einer 1254er Karte, hier in Prozent). at = Spitze des Steins;
+# an Orten mit Stadtbild steht er rechts vor dem Plateau (Kupferhall links, am Kartenrand), damit das Bild frei bleibt.
+# slots = Plätze der Missionsliste (concept/22-narrative/missionsliste-s1.md) an diesem Ort; `node` bindet einen Platz an einen
+# Knoten der Kampagne, Plätze ohne Knoten sind für spätere Akte vorgesehen. Teilen sich Knoten einen Ort, steht dort ein Stein.
+# site = Stadtbild auf dem gemalten Plateau (public/assets/world/sites/<id>.webp): foot = Mitte der Unterkante, width = Breite,
+# beides in Prozent der Karte. variants (offen, Art-Log 2026-11-05): Bilder für Zustände des Orts mit Bedingungen, das erste
+# zutreffende gewinnt, sonst das Grundbild; noch keine angelegt.
 places:
-  - { id: prologue, label: "P", act: 1, kind: story, at: [77.15, 94.08], node: prologue }
-  - { id: m1_1, label: "1-1", act: 1, kind: story, at: [59.57, 89.32], node: m1_1 }
-  - { id: m1_2, label: "1-2", act: 1, kind: story, at: [39.26, 91.15], node: m1_2 }   # Karte: m1_2_erlbach (Story 9.3)
-  - { id: m1_3, label: "1-3", act: 1, kind: story, at: [61.04, 80.08], node: m1_3 }   # Karte: m1_3_silberbach (Story 9.4)
-  - { id: m1_4, label: "1-4", act: 1, kind: story, at: [76.17, 73.44], node: m1_4 }   # Karte: m1_4_wolfslager (Story 9.5)
-  - { id: m1_5, label: "1-5", act: 1, kind: story, at: [27.83, 76.17], node: m1_5 }   # Karte: m1_5_hungerlager (Story 9.6)
-  - { id: m1_6, label: "1-6", act: 1, kind: story, at: [37.4, 70.64], node: m1_6 }   # Karte: m1_6_paktwacht (Layout, Story 9.7)
-  - { id: m1_7, label: "1-7", act: 1, kind: story, at: [49.8, 75.85], node: m1_7 }   # Karte: m1_7_gewoelbe (Layout, Story 9.8)
-  - { id: m1_8, label: "1-8", act: 1, kind: story, at: [62.5, 68.68], node: m1_8 }   # Karte: m1_8_paktwacht_halten (Layout, Story 9.9)
-
-  - { id: n1, label: "N1", act: 1, kind: side, at: [74.71, 83.46], node: n1 }   # Karte: n1_ring (Layout, Story 9.10)
-  - { id: n2, label: "N2", act: 1, kind: side, at: [93.26, 70.51], node: n2 }   # Karte: n2_wachturm (Layout, Story 9.11)
-  - { id: n3, label: "N3", act: 1, kind: side, at: [37.6, 82.36], node: n3 }   # Karte: n3_erbe (Layout, Story 9.12)
-  - { id: home, label: "H", act: 1, kind: home, at: [50.59, 68.49] }
-  - { id: m2_1, label: "2-1", act: 2, kind: story, at: [57.81, 42.64] }
-  - { id: m2_2, label: "2-2", act: 2, kind: story, at: [44.73, 52.41] }
-  - { id: m2_3, label: "2-3", act: 2, kind: story, at: [38.09, 44.92] }
-  - { id: m2_4, label: "2-4", act: 2, kind: story, at: [84.77, 50.46] }
-  - { id: m2_5, label: "2-5", act: 2, kind: story, at: [68.36, 58.59] }
-  - { id: m2_6, label: "2-6", act: 2, kind: story, at: [34.67, 60.35] }
-  - { id: m2_7, label: "2-7", act: 2, kind: story, at: [18.07, 50.46] }
-  - { id: m2_8, label: "2-8", act: 2, kind: story, at: [62.5, 50.13] }
-  - { id: n4, label: "N4", act: 2, kind: side, at: [88.87, 40.69] }
-  - { id: n5, label: "N5", act: 2, kind: side, at: [88.38, 61.85] }
-  - { id: n6, label: "N6", act: 2, kind: side, at: [52.73, 60.22] }
-  - { id: m3_1, label: "3-1", act: 3, kind: story, at: [18.55, 25.39] }
-  - { id: m3_2, label: "3-2", act: 3, kind: story, at: [69.63, 28.32] }
-  - { id: m3_3, label: "3-3", act: 3, kind: story, at: [88.18, 18.36] }
-  - { id: m3_4, label: "3-4", act: 3, kind: story, at: [70.51, 19.53] }
-  - { id: m3_5, label: "3-5", act: 3, kind: story, at: [33.98, 18.1] }
-  - { id: m3_6, label: "3-6", act: 3, kind: story, at: [47.36, 23.11] }
-  - { id: m3_7, label: "3-7", act: 3, kind: story, at: [53.52, 11.85] }
-  - { id: m3_8, label: "3-8", act: 3, kind: story, at: [57.81, 5.86] }
-  - { id: n7, label: "N7", act: 3, kind: side, at: [20.7, 15.62] }
-  - { id: n8, label: "N8", act: 3, kind: side, at: [88.87, 28.52] }
-  - { id: n9, label: "N9", act: 3, kind: side, at: [80.08, 8.66] }
-  - { id: n10, label: "N10", act: 3, kind: side, at: [30.76, 28.97] }
+  - { id: crater, act: 3, at: [53.19, 7.66], site: { foot: [50.96, 8.05], width: 3.43 }, slots: [{ label: "3-8" }] }   # Urtempel im Krater
+  - { id: mountain_pass, act: 3, at: [48.41, 15.15], slots: [{ label: "3-7" }] }   # Pass ins Gebirge
+  - { id: royal_crypt, act: 3, at: [34.45, 19.94], slots: [{ label: "N9" }] }   # Königsgruft
+  - { id: mirror_lake_camp, act: 3, at: [47.85, 21.53], slots: [{ label: "3-4" }] }   # Lager auf dem Spiegelsee
+  - { id: winter_forest_hut, act: 3, at: [68.58, 19.14], slots: [{ label: "3-3" }] }   # Vesnas Hütte
+  - { id: aurenhall, act: 3, at: [52.95, 27.11], site: { foot: [48.25, 27.83], width: 8.45 }, slots: [{ label: "P", node: prologue }, { label: "3-1" }, { label: "3-2" }, { label: "3-5" }, { label: "3-6" }, { label: "N7" }, { label: "N10" }] }   # Aurenhall
+  - { id: refugee_camp, act: 3, at: [40.67, 25.68], slots: [{ label: "N8" }] }   # Flüchtlingslager
+  - { id: aure_gorge, act: 2, at: [48.64, 30.7], slots: [] }   # Aureklamm
+  - { id: raven_meadow, act: 2, at: [51.04, 37.48], slots: [{ label: "2-3" }] }   # Rabenweide
+  - { id: kronfeld, act: 2, at: [52.39, 51.67], site: { foot: [47.77, 52.23], width: 8.29 }, slots: [{ label: "2-8" }] }   # Kronfeld
+  - { id: kontor, act: 2, at: [47.77, 46.73], site: { foot: [44.1, 47.29], width: 6.38 }, slots: [{ label: "2-7" }] }   # Kontor
+  - { id: aue_island, act: 2, at: [37.48, 47.85], slots: [{ label: "N6" }] }   # Aue-Insel
+  - { id: salt_pass, act: 2, at: [26.71, 33.89], slots: [{ label: "2-2" }] }   # Salzpass
+  - { id: pearl_court, act: 2, at: [14.75, 58.85], site: { foot: [14.75, 59.81], width: 4.94 }, slots: [] }   # Perlhof
+  - { id: crow_holm, act: 2, at: [8.85, 74.4], site: { foot: [6.78, 74.88], width: 3.27 }, slots: [{ label: "2-6" }] }   # Krähenholm
+  - { id: silverspring, act: 2, at: [66.51, 42.11], site: { foot: [63.96, 42.58], width: 4.07 }, slots: [{ label: "2-5" }] }   # Kloster Silberquell
+  - { id: greywatch, act: 2, at: [87.88, 46.17], site: { foot: [87.88, 47.45], width: 6.54 }, slots: [] }   # Grauwacht
+  - { id: burnt_slope, act: 2, at: [76.16, 32.3], slots: [{ label: "2-4" }] }   # Brandhang
+  - { id: copperhall, act: 2, at: [89.15, 41.63], site: { foot: [92.11, 42.11], width: 4.94 }, slots: [{ label: "N5" }] }   # Kupferhall
+  - { id: clan_grounds, act: 2, at: [89.31, 28.71], slots: [{ label: "N4" }] }   # Jagdgründe der Clans
+  - { id: wind_gap, act: 2, at: [61.56, 63.0], slots: [{ label: "2-1" }] }   # Windscharte
+  - { id: paktwacht, act: 1, at: [70.18, 68.74], site: { foot: [66.27, 68.58], width: 5.74 }, slots: [{ label: "1-6", node: m1_6 }, { label: "1-7", node: m1_7 }, { label: "1-8", node: m1_8 }] }   # Paktwacht
+  - { id: tobin_farm, act: 1, at: [61.4, 71.13], slots: [{ label: "N3", node: n3 }] }   # Tobins Pachthof
+  - { id: varnhold, act: 1, at: [51.99, 80.38], site: { foot: [48.88, 80.86], width: 5.26 }, slots: [{ label: "1-1", node: m1_1 }, { label: "N1", node: n1 }] }   # Varnhold
+  - { id: alder_moor, act: 1, at: [34.29, 77.75], slots: [{ label: "1-5", node: m1_5 }] }   # Erlenmoor
+  - { id: erlbach, act: 1, at: [57.81, 84.69], site: { foot: [54.55, 85.17], width: 5.58 }, slots: [{ label: "1-2", node: m1_2 }] }   # Erlbach
+  - { id: hawthorn_shrine, act: 1, at: [74.16, 76.56], slots: [{ label: "1-3", node: m1_3 }] }   # Schrein am Weißdorn
+  - { id: hask_camp, act: 1, at: [88.12, 85.73], slots: [] }   # Hasks Lager
+  - { id: wolf_hills, act: 1, at: [91.71, 90.51], slots: [{ label: "1-4", node: m1_4 }] }   # Wolfshügel
+  - { id: border_tower, act: 1, at: [94.9, 78.95], slots: [{ label: "N2", node: n2 }] }   # Wachturm am Wall

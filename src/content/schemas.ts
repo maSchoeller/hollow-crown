@@ -677,23 +677,32 @@ export const campaignSchema = z.object({
   ),
 });
 
-/** The flat world map (story 5.2, architecture §5.12): the painted picture, regions with fog, places on it. */
+/** The world map (stories 5.2 and 15.7, architecture §5.12): the painted picture in tiles, regions with fog areas, places on it. */
 const percentPos = z.tuple([z.number().min(0).max(100), z.number().min(0).max(100)]);
+const slugId = z.string().regex(/^[a-z0-9_]+$/);
 export const worldSchema = z.object({
   id: z.string(),
-  image: z.string().regex(/^[a-z0-9_]+$/),
+  image: slugId,
   size: z.tuple([z.number().int().positive(), z.number().int().positive()]),
-  regions: z.array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos })).min(1),
-  fog: z.array(z.object({ act: z.number().int().min(2), y: z.number().min(0).max(100) })).default([]),
+  tiles: z.number().int().min(1).max(8),
+  regions: z
+    .array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos, areas: z.array(z.array(percentPos).min(3)).min(1) }))
+    .min(1),
+  home: z.object({ camp: percentPos, castle: percentPos }),
   places: z
     .array(
       z.object({
-        id: z.string().regex(/^[a-z0-9_]+$/),
-        label: z.string().min(1).max(4),
+        id: slugId,
         act: z.number().int().min(1),
-        kind: z.enum(['story', 'side', 'home']),
         at: percentPos,
-        node: z.string().optional(),
+        site: z
+          .object({
+            foot: percentPos,
+            width: z.number().positive().max(100),
+            variants: z.array(z.object({ image: slugId, requires: z.array(z.lazy(() => conditionSchema)).min(1) })).optional(),
+          })
+          .optional(),
+        slots: z.array(z.object({ label: z.string().min(1).max(4), node: z.string().optional() })),
       }),
     )
     .min(1),

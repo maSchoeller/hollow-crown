@@ -91,7 +91,7 @@ describe('node m1_8', () => {
     expect(node()).toMatchObject({ fixed: 'finale', place: 'paktwacht_heimat', merchantTier: 2, expectedLevel: 9, titleKey: 'node.m1_8.title', pre: 'scn.m1_8.intro', post: 'scn.m1_8.outro' });
     expect(node().requires).toEqual([{ completed: 'm1_7' }]);
     expect(node().effects).toEqual([{ item: { def: 'ember_spark' } }, { item: { def: 'ember_spark' } }]);
-    expect(data.world.places.find((p) => p.id === NODE)!.node).toBe(NODE);
+    expect(data.world.places.find((p) => p.slots.some((x) => x.node === NODE))!.id).toBe('paktwacht');
     expect(data.campaign.act).toBe(1);
   });
 

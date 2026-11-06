@@ -1,6 +1,6 @@
 # world_map_v5 – Weltkarte von Valmora im Figurenstil
 
-- **Zweck:** Hintergrund der neuen Weltkarte nach `concept/22-narrative/geografie-valmora.md`. Löst `map_v4.png` ab (Produktinhaber: zu dunkel, zu realistisch, Burgplatz zu groß). Noch nicht ins Spiel eingebunden.
+- **Zweck:** Hintergrund der neuen Weltkarte nach `concept/22-narrative/geografie-valmora.md`. Löst `map_v4.png` ab (Produktinhaber: zu dunkel, zu realistisch, Burgplatz zu groß). Im Spiel seit Story 15.7 (`content/world/valmora.yaml`, Build in `tools/art/build.py`).
 - **Ergebnis:** `art/world/map_v5.png` (3276 × 3276, zusammengesetzt), Stadtbilder `art/world/sites/*.png` (Transparenz), Positionen `art/world/map_places_v5.json` (Quelle der Vorschau: `art/world/v5/sites.json`).
 - **Originale, unverändert aus ChatGPT:** Grundbild `art/world/v5/map_new_try2.png` (1254 × 1254), Kacheln und Plateaus `art/world/v5/tiles/`, Stadtbilder `art/world/sites/`. Verworfene Vorstufen: `map_style_try1.png`, `map_new_try1.png`, `castle_patch.png`, `tile_test_output.png`.
 - **Datum:** 2026-11-04
