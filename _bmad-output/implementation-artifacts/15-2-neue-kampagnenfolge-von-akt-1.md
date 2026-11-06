@@ -1,6 +1,6 @@
 # Story 15.2: Neue Kampagnenfolge von Akt 1
 
-Status: review
+Status: done
 
 ## Story
 
@@ -28,4 +28,4 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 ## Rest
 
-- Varek spricht an: `lucan` statt `kael` in `n2_wachturm.yaml:71` und im Test `act1-side-maps.test.ts:137`. Kommt mit Story 15.6; danach diese Zeile prüfen und die Story auf done setzen.
+- Varek spricht an: `lucan` statt `kael` in `n2_wachturm.yaml:71` und im Test `act1-side-maps.test.ts:137`. Kommt mit Story 15.6; danach diese Zeile prüfen und die Story auf done setzen. Geprüft in 15.10 (2026-11-06): `recruit: { by: [lucan] }`, Test `act1-side-maps.test.ts:140` – done.

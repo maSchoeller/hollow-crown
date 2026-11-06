@@ -21,6 +21,14 @@ const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
   cleared: 10,
   armyLevel: 20,
   deaths: 0,
+  turns: 0,
+  actions: 0,
+  deployed: 0,
+  phases: 0,
+  phaseSingle: 0,
+  phaseMarch: 0,
+  phaseSingleMax: 0,
+  phaseMarchMax: 0,
   ...over,
 });
 

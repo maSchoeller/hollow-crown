@@ -262,15 +262,15 @@ development_status:
   # Epic 15: Umbau von Akt 1 (festgeschrieben 2026-11-05, vor 9-14)
   epic-15: in-progress
   15-1-format-reste-fuer-die-entwuerfe: done  # Format-Reste für die Entwürfe
-  15-2-neue-kampagnenfolge-von-akt-1: review  # Neue Kampagnenfolge von Akt 1
+  15-2-neue-kampagnenfolge-von-akt-1: done  # Neue Kampagnenfolge von Akt 1
   15-3-kleine-karten: review  # Kleine Karten (P, 1-1, N1, N2, N3, 1-7)
   15-4-mittlere-karten: done  # Mittlere Karten (1-2, 1-3, 1-4, 1-5)
-  15-5-grosse-karten: review  # Große Karten (1-6, 1-8)
+  15-5-grosse-karten: done  # Große Karten (1-6, 1-8)
   15-6-szenen-anpassen-lucan-statt-kael: in-progress  # Szenen an Welt und Folge anpassen, Lucan statt Kael
   15-7-weltkarte-v5-einbinden: done  # Weltkarte v5 einbinden
   15-8-galerie-modelle-fuer-akt-1: done  # Galerie-Modelle für Akt 1
   15-9-brettfiguren-zu-den-neuen-portraets-schritt-1: done  # Brettfiguren zu den neuen Porträts, Schritt 1
-  15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen
+  15-10-akt-1-neu-abstimmen: review  # Akt 1 neu abstimmen
   15-11-leistung-grosser-karten: review  # Leistung großer Karten
   15-13-figuren-auf-treppen: done  # Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
   epic-15-retrospective: optional

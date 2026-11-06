@@ -1,4 +1,4 @@
-# Mission 1-7, Karten-Szene in Runde 4 (Trigger t_quake): das Beben aus dem Norden, Warnung vor dem Einsturz. Runde 5, 6 und 7 stürzen die Kammern ein (set_terrain), die Frist des Ziels sind 8 Runden.
+# Mission 1-7, Karten-Szene in Runde 4 (Trigger t_quake): das Beben aus dem Norden, Warnung vor dem Einsturz. Runde 5, 6 und 7 stürzen die Kammern ein (set_terrain), die Frist des Ziels sind 10 Runden (Story 15.10).
 id: scn.m1_7.quake
 lines:
   - id: l01

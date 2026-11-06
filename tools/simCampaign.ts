@@ -29,6 +29,7 @@ import {
   type Difficulty,
   type GameData,
 } from '../src/core';
+import { aiPhaseTimes } from './enemyPhase';
 
 export interface CampaignSimOptions {
   runs: number;
@@ -39,6 +40,8 @@ export interface CampaignSimOptions {
   haunts?: boolean;
   /** stops each run after this many missions, without counting it as finished (a whole run takes half a minute on the large maps) */
   maxMissions?: number;
+  /** story 15.10: called with the campaign right before each story mission (after the home heuristic), e.g. to keep it for tuning */
+  onMission?: (node: string, c: CampaignState, run: number) => void;
 }
 
 /** Per story mission, summed over all runs that reached it. */
@@ -61,6 +64,16 @@ export interface MissionSim {
   armyLevel: number;
   /** companions lost for good in the won attempt */
   deaths: number;
+  /** story 15.10, first attempts won: rounds, player actions (move, act, pursue) and units deployed, summed */
+  turns: number;
+  actions: number;
+  deployed: number;
+  /** story 15.10, AI phases of the first attempts (`tools/enemyPhase.ts`, ms at tempo 1×): count, sums and the longest */
+  phases: number;
+  phaseSingle: number;
+  phaseMarch: number;
+  phaseSingleMax: number;
+  phaseMarchMax: number;
 }
 
 export interface CampaignSim {
@@ -207,19 +220,35 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       const m =
         missions.get(id) ??
         missions
-          .set(id, { node: id, map: node.map, expectedLevel: node.expectedLevel, reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0 })
+          .set(id, {
+            node: id, map: node.map, expectedLevel: node.expectedLevel, reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0,
+            turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0,
+          })
           .get(id)!;
       m.reached++;
       m.armyLevel += armyLevel(data, c);
+      o.onMission?.(id, c, run);
       let won: { campaign: CampaignState; result: BattleResult } | null = null;
       for (let attempt = 0; attempt < MAX_ATTEMPTS && !won; attempt++) {
         // a restart plays the mission again with fresh luck (the battle RNG derives from the campaign seed; the real restart
         // keeps it, but a player plays differently). The campaign keeps its own seed afterwards.
         const from = attempt === 0 ? c : { ...c, seed: (c.seed + attempt * 104729) >>> 0 };
-        const { state } = autoplay(data, beginBattle(data, from, id, from.roster.map((u) => u.id)).state);
+        const { state, log, events } = autoplay(data, beginBattle(data, from, id, from.roster.map((u) => u.id)).state);
         if (attempt === 0) {
-          if (state.outcome === 'victory') m.wins++;
+          if (state.outcome === 'victory') {
+            m.wins++;
+            m.turns += state.turn;
+            m.actions += log.filter((cmd) => cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue').length;
+            m.deployed += state.units.filter((u) => u.team === 'player').length;
+          }
           m.downs += state.stats.downs; // every fall to 0 HP, also the ones rescued later
+          for (const p of aiPhaseTimes(data, events)) {
+            m.phases++;
+            m.phaseSingle += p.single;
+            m.phaseMarch += p.march;
+            m.phaseSingleMax = Math.max(m.phaseSingleMax, p.single);
+            m.phaseMarchMax = Math.max(m.phaseMarchMax, p.march);
+          }
         }
         if (state.outcome === 'victory') {
           won = finishBattle(data, from, state);

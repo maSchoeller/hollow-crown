@@ -150,9 +150,9 @@ describe('the collapse', () => {
 });
 
 describe('map m1_7_gewoelbe', () => {
-  it('is a treasure hunt for the chronicle alone in 8 turns without a placeholder defeat; the other chests are the side goal; the chronicle chest holds nothing', () => {
+  it('is a treasure hunt for the chronicle alone in 10 turns (story 15.10) without a placeholder defeat; the other chests are the side goal; the chronicle chest holds nothing', () => {
     const m = data.maps['m1_7_gewoelbe']!;
-    expect(m.objectives.victory).toEqual({ type: 'treasure', chests: ['c_chronicle'], turns: 8 });
+    expect(m.objectives.victory).toEqual({ type: 'treasure', chests: ['c_chronicle'], turns: 10 });
     expect(m.objectives.defeat.some((d) => d.type === 'turn_limit')).toBe(false);
     expect(m.objectives.side.some((s) => s.id === 's_chests' && s.type === 'open_chests')).toBe(true);
     expect(m.objects.find((o) => o.id === 'c_chronicle')!.contents).toBeUndefined();

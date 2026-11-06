@@ -1,6 +1,6 @@
 # Story 15.5: Große Karten (1-6, 1-8)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -24,6 +24,6 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 ## Rest
 
-- 1-8 liegt außerhalb des Korridors → Story 15.10.
+- 1-8 liegt außerhalb des Korridors → Story 15.10. Erledigt in 15.10 (2026-11-06): Leicht 0,36, Normal 1,21 Niedergestreckte je Lauf.
 - Hask durch die Ostpforte: Soll seine Flucht sichtbar werden (z. B. Profil `flee` zur Pforte bei niedrigen TP oder eine Kampfzeile), oder reicht die offene Pforte? Szenen gehören zu 15.6, ein Fluchtweg wäre eine neue Regel.
 - Söldner: bestätigen, dass „füllen freie Plätze auf“ das Anheuern in der Taverne meint und kein automatisches Auffüllen der Aufstellung.

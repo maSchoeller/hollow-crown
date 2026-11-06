@@ -41,7 +41,7 @@ const STORY = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6', 'm1_7
 const NODE = 'm1_8';
 /** enemies with Grosk's group on the map: easy, normal, hard */
 // balancing 2026-11-05: easy four fewer than the draft, hard one more (a marksman with Morra's people)
-const COUNTS = [29, 39, 44];
+const COUNTS = [26, 36, 44]; // story 15.10: three fewer on easy, three archers hard-only on normal
 
 beforeAll(() => {
   const loaded = loadContentFromDisk();
@@ -138,12 +138,13 @@ describe('map m1_8_paktwacht_halten', () => {
     expect((m as { haunts?: unknown }).haunts).toBeUndefined();
   });
 
-  it('counts 29 / 39 / 44 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
+  it('counts 26 / 36 / 44 enemies with Grosk on the map, riders as wolf_rider, lieutenants with iron weapons and no class of their own', () => {
     const m = data.maps['m1_8_paktwacht_halten']!;
     const all = [...m.units, ...m.reinforcements.flatMap((r) => r.units)].filter((u) => u.team === 'enemy');
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual(COUNTS);
-    expect(all.filter((u) => u.lieutenant).map((u) => u.lieutenant).sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
+    expect([...new Set(all.filter((u) => u.lieutenant).map((u) => u.lieutenant))].sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
+    // story 15.10: Hask and Morra have their own line on easy (one per difficulty, content:check)
     for (const u of all.filter((x) => x.lieutenant)) {
       // the loader takes the class of the lieutenant (the map names none)
       expect(u.class).toBe(data.lieutenants![u.lieutenant!]!.class);

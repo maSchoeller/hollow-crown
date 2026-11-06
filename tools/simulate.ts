@@ -2,7 +2,7 @@
  * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--chain normal] [--death standard] [--fresh] [--flag name=value]... [--leave id[,id]]
  * --chain spielt die Missionen vor der Zielkarte auf einer anderen Stufe (Schwer-Ziel mit Normal-Kette, damit genug Läufe ankommen).
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
- * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts]
+ * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts] [--action-s 12]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
  * --flag setzt vor dem Kampf ein Kampagnen-Flag (mehrfach möglich; Wert true, wenn nur der Name steht), --leave nimmt Begleiter aus der Truppe:
  *   so lassen sich die Zweige einer Entscheidung simulieren, z. B. Mission 1-4 mit „ausliefern“: `--flag e02=hand_over --leave fenn`
@@ -149,6 +149,25 @@ function runCampaign(act: string) {
     };
   });
   console.table(rows);
+  // story 15.10: rounds, player actions and the AI phases (tools/enemyPhase.ts) give an estimate of the battle time at tempo 1×
+  // with „Gegnerzüge: Gemeinsam“; --action-s is the time a player needs for one unit action (select, move, preview, confirm)
+  const actionS = Number(opt('action-s', '12'));
+  let battleMin = 0;
+  const times = sim.missions.map((m) => {
+    const min = (per(m.actions, m.wins) * actionS + per(m.phaseMarch, m.reached) / 1000) / 60;
+    battleMin += min;
+    return {
+      mission: m.node,
+      rounds: per(m.turns, m.wins).toFixed(1),
+      deployed: per(m.deployed, m.wins).toFixed(1),
+      actions: per(m.actions, m.wins).toFixed(0),
+      'AI phase s (single/march)': `${(per(m.phaseSingle, m.phases) / 1000).toFixed(1)} / ${(per(m.phaseMarch, m.phases) / 1000).toFixed(1)}`,
+      'longest s (single/march)': `${(m.phaseSingleMax / 1000).toFixed(1)} / ${(m.phaseMarchMax / 1000).toFixed(1)}`,
+      'battle min': min.toFixed(0),
+    };
+  });
+  console.table(times);
+  console.log(`battle time of the act ≈ ${(battleMin / 60).toFixed(1)} h (${actionS} s per unit action, AI phases marching, first attempt)`);
   console.log(
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
       `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}`,

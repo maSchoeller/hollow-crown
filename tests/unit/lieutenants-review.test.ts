@@ -99,7 +99,7 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
   it('match the line-up build exactly: the same lieutenant on the map start and as a late spawn', () => {
     const c = withGrudge();
     const map = data.maps[M18().map]!;
-    const copy: MapUnitDef = clone(map.reinforcements.flatMap((r) => r.units).find((u) => u.lieutenant === 'morra')!);
+    const copy: MapUnitDef = clone(map.reinforcements.flatMap((r) => r.units).find((u) => u.lieutenant === 'morra' && (!u.difficulty || u.difficulty.includes(c.settings.difficulty)))!); // story 15.10: one line per difficulty
     const early = createBattle(data, c, M18().id, ids(c));
     // the same unit as a line-up unit of the map
     map.units.push(copy);
@@ -251,7 +251,7 @@ describe('content rules (R8, R9)', () => {
 
   it('allows the same lieutenant on different difficulties', () => {
     const map = data.maps[M18().map]!;
-    const base = map.units.find((u) => u.lieutenant === 'hask')!;
+    const base = map.units.find((u) => u.lieutenant === 'ulvric')!;
     const was = base.difficulty;
     base.difficulty = ['easy'];
     const extra = clone(base);
