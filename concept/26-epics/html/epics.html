@@ -37,7 +37,7 @@ code { font-size:.88em; background:var(--soft); padding:0 4px; border-radius:4px
 @media (max-width:560px) { .user, .ac { margin-left:0; } .row { grid-template-columns:1fr; gap:2px; } .kw { justify-self:start; } }
 </style>
 <div class="wrap">
-<header><span class="eyebrow">Hollow Crown · Staffel 1 · Epics 1–15</span><h1>Hollow Crown Epics</h1><p>15 Epics, 163 Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics/</code>.</p><nav><a href="#epic1">Epic 1</a><a href="#epic2">Epic 2</a><a href="#epic3">Epic 3</a><a href="#epic4">Epic 4</a><a href="#epic5">Epic 5</a><a href="#epic6">Epic 6</a><a href="#epic7">Epic 7</a><a href="#epic8">Epic 8</a><a href="#epic9">Epic 9</a><a href="#epic10">Epic 10</a><a href="#epic11">Epic 11</a><a href="#epic12">Epic 12</a><a href="#epic13">Epic 13</a><a href="#epic14">Epic 14</a><a href="#epic15">Epic 15</a></nav></header>
+<header><span class="eyebrow">Hollow Crown · Staffel 1 · Epics 1–16</span><h1>Hollow Crown Epics</h1><p>16 Epics, 175 Stories. Tippe eine Story an, um ihre Akzeptanzkriterien zu sehen. Quelle: <code>concept/26-epics/epics/</code>.</p><nav><a href="#epic1">Epic 1</a><a href="#epic2">Epic 2</a><a href="#epic3">Epic 3</a><a href="#epic4">Epic 4</a><a href="#epic5">Epic 5</a><a href="#epic6">Epic 6</a><a href="#epic7">Epic 7</a><a href="#epic8">Epic 8</a><a href="#epic9">Epic 9</a><a href="#epic10">Epic 10</a><a href="#epic11">Epic 11</a><a href="#epic12">Epic 12</a><a href="#epic13">Epic 13</a><a href="#epic14">Epic 14</a><a href="#epic15">Epic 15</a><a href="#epic16">Epic 16</a></nav></header>
 <section class="epic" id="epic1"><h2><span>Epic 1</span>Kampagnen und Spielstände</h2><p class="intro">Spieler führen bis zu drei Kampagnen, sehen die neue Oberfläche (Stil B) zuerst auf Titel und Kampagnen, speichern nach jeder Aktion sicher und starten nach den Regeln ihres Tod-Modus neu. Grundlage für alle weiteren Epics: UI-Bausteine, Speicherformat 2, Kampagnen-Commands mit Journal, Fehlerbericht.</p>
 <details><summary><span class="id">1.1</span><span class="t">Neue Oberfläche – Steine, Tokens und Währung</span><span class="n">3 Kriterien</span></summary>
 <div class="user"><p>Als Spieler</p><p>möchte ich eine Oberfläche, die aussieht wie Spielzeug aus derselben Kiste wie die Welt,</p><p>damit sich Menüs nicht wie eine Website über dem Spiel anfühlen.</p></div>
@@ -968,6 +968,96 @@ code { font-size:.88em; background:var(--soft); padding:0 4px; border-radius:4px
 <details><summary><span class="id">15.13</span><span class="t">Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)</span><span class="n">1 Kriterium</span></summary>
 <div class="user"><p>Als Spieler</p><p>möchte ich meine Figuren auf Treppen, Rampen und Leitern sichtbar auf den Stufen stehen sehen,</p><p>damit ich Höhenwechsel auf dem Brett lesen kann.</p><p>Gemeldet vom Produktinhaber am 2026-11-06: Läuft eine Figur Treppen hoch, steht sie nicht auf der Treppe, und die Treppe wird durchsichtig.</p></div>
 <div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Karte mit Höhenstufen (1-4, Wehrgänge in 1-6)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>eine Figur auf einer Treppe, Rampe oder Leiter steht oder darüber läuft, auch über mehrere Stufen</span></div><div class="row"><span class="kw Dann">Dann</span><span>steht sie sichtbar auf der Oberfläche in der passenden Höhe, schwebt nicht und steckt nicht im Modell</span></div><div class="row"><span class="kw Und">Und</span><span>Treppen, Rampen und Leitern werden nie durchsichtig; Häuser, Dächer und andere Gebäude blenden bei Verdeckung weiter aus.</span></div></div>
+</details>
+</section>
+<section class="epic" id="epic16"><h2><span>Epic 16</span>Filmszenen</h2><p class="intro">Spieler erleben die wichtigsten Momente der Staffel nicht nur als Bild und Text, sondern als kurzen Film: Die Figuren laufen über die Karte, die Kamera geht nah heran, schneidet, fährt und folgt dem Dialog. Je Akt gibt es 4–5 solcher Filmszenen; später sprechen die Hauptfiguren mit eigener Stimme, und Musik und Klang tragen den Film. Angelegt am 2026-11-06 als Entwurf (Auftrag des Produktinhabers, autonom ausgearbeitet; Rückfragen offen, siehe unten).
+
+<b>Grundlage:</b> <code>concept/22-narrative/narrative.md</code> (Story Beats, Cutscenes), <code>missionsliste-s1.md</code>, Architektur §5.8 (Szenen) und §5.12 (Rendering), Art Direction (Chibi, Tripo-Brettfiguren §4.6). Entscheidungen im Decision-Log der Architektur (2026-11-06) und der Epics.
+
+<b>Leitidee:</b> Ein Film ist eine <b>Regie-Spur über einer bestehenden Szene</b>. Text, Sprecher, Stimmungen, Bedingungen, Gedenkzeilen und Antworten bleiben in der Szenen-YAML (eine Quelle, übersetzt wie bisher). Die Film-YAML (<code>content/acts/actN/films/film.&lt;…&gt;.yaml</code>) legt je Zeile einen Kamera-Shot fest, dazu Wege und Gesten der Darsteller auf der Karte der Mission. Gespielt wird <b>in Echtzeit in Babylon</b> auf dem Spielbrett als Bühne (gleiche Karten, gleiche Figuren, kein Video im Paket); Blender dient der Vorschau, dem Look und der Abnahme.
+
+<b>Gilt für alle Stories:</b> Bild- oder Videonachweis bei 375 × 812; der Film ist überspringbar (Skip und Log der Szene) und abschaltbar (Option „Filmszenen“, dann die Visual-Novel-Szene); keine Spielregel hängt am Film; Werte in YAML; Bundle- und Paketbudget halten; KI-Assets nur nach <code>licensing.md</code> §6.
+
+<b>Reihenfolge:</b>
+
+``<code>text
+16.1 Filmformat ──&gt; 16.2 Player ──&gt; 16.3 Kinolook ──┬─&gt; 16.9 Filme Akt 1 ──&gt; 16.12 Leistung
+16.6 Blender-Vorschau (parallel ab 16.1) ──────────┤
+16.4 Bühnen ohne Kampfkarte ───────────────────────┤
+16.5 Figuren für die Nähe ─────────────────────────┘
+16.7 Stimmen ──┬─&gt; in 16.9–16.11 einhängen
+16.8 Musik und Klang ┘
+16.10 Filme Akt 2 (mit Epic 11), 16.11 Filme Akt 3 (mit Epic 12)
+</code>`<code>
+
+<b>Stand des Entwurfs (2026-11-06):</b> 16.1 und 16.2 als Prototyp umgesetzt, 16.6 als Prototyp mit der Referenzszene „Ankunft in Varnhold“ (</code>film.m1_1.intro<code>, Renders in </code>art/previews/films/m1_1_intro/<code>).
+
+### Filmszenen der Staffel (Vorschlag)
+
+| # | Film | Szene | Bühne | Beat | Inhalt |
+|---|---|---|---|---|---|
+| A1-1 | Die Paktnacht | </code>scn.prologue.intro<code> | Karte des Prologs (Glutdom) | 1 | Alarm im Glutdom, der König tot, die Wachen wenden sich gegen das Aschenbanner |
+| A1-2 | Gerrits Grab | </code>scn.prologue.outro<code> | Bühne Lagerfeuer (16.4) | 2 | Die Truppe begräbt den Bannerträger; Nacht, Feuer, Stille |
+| A1-3 | Ankunft in Varnhold (<b>Referenz</b>) | </code>scn.m1_1.intro<code> | </code>m1_1_steckbriefe<code> | 3 | Die Truppe kommt von Süden, Steckbriefe an jeder Wand, Morras Häscher an der Brücke |
+| A1-4 | Der Fremde mit dem Siegel | </code>scn.m1_3.outro<code> | </code>m1_3_silberbach<code> (Schrein) | 4 | Halvard tritt aus dem Nebel, bringt Brot und einen Namen |
+| A1-5 | Das Banner auf der Ruine | </code>scn.m1_6.outro<code> | </code>m1_6_paktwacht` | 7 | Die Paktwacht ist erobert, das Banner geht hoch, Blick über den Wachpass |
+| A2-1 | Drei Angebote | Szene nach 2-1 | Karte 2-1 (Windscharte) | 8 | Seraphine und Dravn bieten Freispruch, die Truppe zwischen den Lagern |
+| A2-2 | Die Brandschneise | Szene nach 2-4 | Karte 2-4 | 9 | Dravns Lüge platzt, das Bergdorf brennt, Drachenschatten am Himmel |
+| A2-3 | Die Chronik der Wächter | Burg-Szene (Beat 10) | Bühne Burg (16.4) | 10 | Liora entziffert die Aufzeichnungen, Kerzenlicht, die Truppe hört zu |
+| A2-4 | Kronfeld: der Verrat | Szene in 2-8 | Karte 2-8 | 11 | Der „neutrale“ Treffpunkt wird zum Hinterhalt |
+| A2-5 | „Die Krone war hohl.“ | Szene nach 2-8 | Karte 2-8 (Abend) | 12 | Nach der Schlacht wird die Wahrheit ausgesprochen |
+| A3-1 | Winter über Aurenhall | Szene vor 3-1 | Karte 3-1 / Stadtbühne | 13 | Schnee über der Stadt, die Drachen erwachen sichtbar |
+| A3-2 | Die Krönung | Szene in 3-5 | Karte 3-5 (Glutdom) | 14 | Die Truppe sprengt die Krönung, Halvard wird enttarnt |
+| A3-3 | Das Südtor | Szene nach 3-6 | Karte 3-6 | 16 | Die Truppe hält das Tor für die Menschen, die sie gejagt haben |
+| A3-4 | Der Preis | Szene nach 3-8 | Karte 3-8 | 18 | Halvard gibt sich in den Pakt |
+| A3-5 | Wahrheit oder Frieden | Schluss-Szene | Bühne Glutdom (16.4) | 19 | Die letzte Entscheidung; der Film endet vor der Wahl |
+
+Die Szenen der Akte 2 und 3 entstehen erst mit Epic 11 und 12; die Film-IDs folgen dann deren Szenen-IDs.</p>
+<details><summary><span class="id">16.1</span><span class="t">Filmformat und Prüfung (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Autor</p><p>möchte ich zu einer Szene eine Regie-Spur schreiben, ohne den Text zu verdoppeln,</p><p>damit Film und Visual-Novel-Szene immer dasselbe sagen.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Szene mit Zeilen-IDs</span></div><div class="row"><span class="kw Wenn">Wenn</span><span><code>content/acts/actN/films/film.&lt;…&gt;.yaml</code> sie mit <code>scene</code>, <code>map</code>, <code>actors</code> und <code>shots</code> (je Zeile <code>camera</code> mit <code>from</code>, <code>to</code>, <code>end</code>, <code>fov</code>, <code>ms</code>; <code>moves</code>; <code>gestures</code>) begleitet</span></div><div class="row"><span class="kw Dann">Dann</span><span>lädt der Content-Loader den Film nach <code>data.films</code>, und <code>content:check</code> meldet unbekannte Szenen, Karten, Zeilen und Darsteller, doppelte Shots, Punkte weit außerhalb der Karte und eine zweite Regie-Spur zur selben Szene</span></div><div class="row"><span class="kw Und">Und</span><span>eine Zeile ohne eigenen Shot behält den vorigen; fällt eine Zeile über <code>requires</code> weg, stimmt die Position der Figuren trotzdem (<code>filmCuts</code>, <code>actorSpot</code>, getestet).</span></div></div>
+</details>
+<details><summary><span class="id">16.2</span><span class="t">Film-Player auf dem Spielbrett (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich die Szene als Film auf der Karte sehen, mit meiner Truppe in Ausrüstung und Aussehen,</p><p>damit sich die Geschichte wie ein Teil des Spiels anfühlt.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Szene mit Film, eine laufende Kampagne und die Option „Filmszenen“ an</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die Szene startet (Knoten <code>pre</code>/<code>post</code>, Raum, Weltkarte; nicht über einem laufenden Kampf)</span></div><div class="row"><span class="kw Dann">Dann</span><span>baut <code>FilmView</code> die Karte mit genau den Darstellern (<code>filmStage</code>), schaltet auf eine Perspektivkamera und schneidet je Zeile auf ihren Shot; Figuren laufen ihre Wege und spielen ihre Gesten</span></div><div class="row"><span class="kw Und">Und</span><span>Textbox, Auto, Log, Skip und Antworten sind die der Szene; ohne Kampagne oder mit Option aus läuft die Visual-Novel-Szene wie bisher.</span></div></div>
+</details>
+<details><summary><span class="id">16.3</span><span class="t">Kinolook (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich, dass die Filme wie aus einem Animationsstudio aussehen,</p><p>damit sich die Schlüsselszenen vom Spielbrett abheben.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>die Qualitätsstufen <code>low</code>, <code>mid</code>, <code>high</code></span></div><div class="row"><span class="kw Wenn">Wenn</span><span>ein Film läuft</span></div><div class="row"><span class="kw Dann">Dann</span><span>gibt es je Stufe abgestimmte Nachbearbeitung (Tiefenschärfe auf den Sprecher, Bloom, Vignette, Farbgrading je Akt und Tageszeit, Filmkorn), weiche Übergänge zwischen Shots (Schnitt, Blende, Abblende) und Kinobalken, alles in <code>render.yaml film</code></span></div><div class="row"><span class="kw Und">Und</span><span>die Kamera richtet die Tiefenschärfe automatisch auf den Kopf des Sprechers der Zeile, falls der Shot nichts anderes sagt.</span></div></div>
+</details>
+<details><summary><span class="id">16.4</span><span class="t">Bühnen ohne Kampfkarte (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Autor</p><p>möchte ich Filme auch am Lagerfeuer, in der Burg oder im Glutdom inszenieren,</p><p>damit Szenen ohne eigene Mission ebenfalls Filme sein können.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Bühne <code>content/acts/actN/stages/&lt;id&gt;.yaml</code> im Kartenformat ohne Gegner, Ziele und Trigger</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>ein Film <code>stage</code> statt <code>map</code> nennt</span></div><div class="row"><span class="kw Dann">Dann</span><span>spielt er dort, Licht und Tageszeit aus der Bühne (Nacht, Feuer als Punktlicht)</span></div><div class="row"><span class="kw Und">Und</span><span>Lager und Burg verwenden die vorhandenen Modelle (Heimat-Diorama, Requisiten).</span></div></div>
+</details>
+<details><summary><span class="id">16.5</span><span class="t">Figuren für die Nähe (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich in Nahaufnahmen Gefühle in den Gesichtern sehen,</p><p>damit Trauer, Wut und Freude im Chibi-Stil tragen (Risiko aus dem GDD).</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>die Stimmungen <code>neutral</code>, <code>happy</code>, <code>angry</code>, <code>sad</code> einer Zeile</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>der Sprecher in einem Shot unter <code>fov</code> 35 zu sehen ist</span></div><div class="row"><span class="kw Dann">Dann</span><span>zeigt seine Figur das passende Gesicht (Textur-Tausch oder Gesichts-Decal aus den Porträts) und ein paar zusätzliche Gesten (nicken, zeigen, knien, trauern) als gebackene Clips</span></div><div class="row"><span class="kw Und">Und</span><span>das Figurenbudget (<code>packs.yaml figureBudget</code>) gilt weiter; Nah-Varianten nur für die Hauptfiguren.</span></div></div>
+</details>
+<details><summary><span class="id">16.6</span><span class="t">Blender-Vorschau und Abnahme (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Entwickler</p><p>möchte ich jeden Film vorab in Blender als Standbilder und Animatic sehen,</p><p>damit Bildaufbau, Licht und Timing abgenommen sind, bevor sie ins Spiel gehen.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>eine Film-YAML und Blender 4.2</span></div><div class="row"><span class="kw Wenn">Wenn</span><span><code>tools/art/film_render.py &lt;film&gt;</code> läuft</span></div><div class="row"><span class="kw Dann">Dann</span><span>entstehen je Shot ein Standbild, ein Kontaktbogen und ein Animatic unter <code>art/previews/films/&lt;film&gt;/</code>, mit derselben Koordinaten-Umrechnung wie im Spiel</span></div><div class="row"><span class="kw Und">Und</span><span>jede Abnahme steht mit Kritik und Änderungen in <code>README.md</code> daneben.</span></div></div>
+</details>
+<details><summary><span class="id">16.7</span><span class="t">Stimmen der Hauptfiguren (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich die Hauptfiguren in den Filmen sprechen hören,</p><p>damit sie Persönlichkeit bekommen.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>je Hauptfigur ein Stimmprofil (ElevenLabs, <code>ELEVENLABS_API_KEY</code>, Prompts und Abnahme in <code>art/prompts/voice_&lt;id&gt;.md</code>)</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>eine Filmzeile spricht</span></div><div class="row"><span class="kw Dann">Dann</span><span>spielt der Clip <code>vo.&lt;sceneId&gt;.&lt;lineId&gt;.&lt;lang&gt;</code> aus dem Paket <code>voice</code> der Sprache, die Zeile wartet auf sein Ende, Auto schaltet danach weiter</span></div><div class="row"><span class="kw Und">Und</span><span>fehlt ein Clip, läuft die Zeile stumm wie bisher; Gedenkzeilen und Ersatzsprecher bekommen den Clip ihres tatsächlichen Sprechers.</span></div></div>
+</details>
+<details><summary><span class="id">16.8</span><span class="t">Musik und Klang der Filme (neu)</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich zu jedem Film eigene Musik und Geräusche hören,</p><p>damit die Momente Gewicht bekommen.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>ein Film</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>er läuft</span></div><div class="row"><span class="kw Dann">Dann</span><span>spielt sein Cue (<code>music</code> der Film-YAML, sonst der Szene), dazu Ambiente der Bühne und Schritte der laufenden Figuren</span></div><div class="row"><span class="kw Und">Und</span><span>Herkunft und Lizenz jedes Stücks stehen in <code>licensing.md</code>; Suno-Musik erst nach Klärung der Lizenzfrage (offen, siehe unten).</span></div></div>
+</details>
+<details><summary><span class="id">16.9</span><span class="t">Filme Akt 1</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler</p><p>möchte ich in Akt 1 fünf Filmszenen erleben (A1-1 bis A1-5),</p><p>damit Prolog und Akt 1 mit starken Momenten beginnen und enden.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>16.1–16.6</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>die fünf Film-YAMLs geschrieben, in Blender abgenommen und im Spiel geprüft sind</span></div><div class="row"><span class="kw Dann">Dann</span><span>laufen alle fünf auf einem Mittelklassegerät ohne Ruckler, überspringbar und mit Option aus</span></div><div class="row"><span class="kw Und">Und</span><span>jede Abnahme (Kontaktbogen, Video) liegt unter <code>art/previews/films/</code>.</span></div></div>
+</details>
+<details><summary><span class="id">16.10</span><span class="t">Filme Akt 2</span><span class="n">0 Kriterien</span></summary>
+<div class="user"><p>Wie 16.9 für A2-1 bis A2-5, sobald die Szenen von Epic 11 stehen.</p></div>
+</details>
+<details><summary><span class="id">16.11</span><span class="t">Filme Akt 3</span><span class="n">0 Kriterien</span></summary>
+<div class="user"><p>Wie 16.9 für A3-1 bis A3-5, sobald die Szenen von Epic 12 stehen; A3-5 endet vor der Entscheidung, die Schlusstafeln bleiben.</p></div>
+</details>
+<details><summary><span class="id">16.12</span><span class="t">Leistung und Rückfall</span><span class="n">1 Kriterium</span></summary>
+<div class="user"><p>Als Spieler mit einem schwächeren Gerät</p><p>möchte ich die Geschichte trotzdem flüssig erleben,</p><p>damit kein Film das Spiel blockiert.</p><p>### Offene Fragen an den Produktinhaber</p><p>1. <b>Tafeln oder Filme:</b> Ersetzen die Filme die geplanten Illustrationstafeln (Narrative „Cutscenes“, 11 Tafeln) ganz, teilweise, oder laufen beide (Tafel als Standbild am Filmende)?</p><p>2. <b>Suno:</b> Musik per Suno ist in <code>licensing.md</code> §6 noch nicht geregelt (Nutzungsrechte je Abo-Stufe, Kennzeichnung). Freigabe nötig, bevor 16.8 Suno-Stücke ausliefert; bis dahin ElevenLabs Music/SFX oder vorhandene Stücke.</p><p>3. <b>Englische Stimmen:</b> zuerst nur Deutsch, oder beide Sprachen zugleich?</p><p>4. <b>Format:</b> Hochformat bildfüllend (Vorschlag, wie der Prototyp) oder Querformat mit Balken?</p><p>5. <b>Fotorealismus:</b> Gewünscht ist ein Detailgrad „mal 3–4“, der filmisch wirkt. Umgesetzt ist das als Kino-Rendering im runden Chibi-Stil (Licht, Atmosphäre, Tiefenschärfe, Grading, Set-Dressing). Sollen auch die Figuren selbst realistischer werden, ist das eine Änderung der Art Direction (B8) und braucht deine Entscheidung.</p><p>6. <b>Szenenauswahl:</b> Die 15 Filme oben sind ein Vorschlag nach den Story Beats; Änderungen vor 16.9.</p></div>
+<div class="ac"><div class="row"><span class="kw Angenommen">Angenommen</span><span>die Leistungsmessung aus Story 15.11</span></div><div class="row"><span class="kw Wenn">Wenn</span><span>ein Film auf <code>low</code> oder mit Software-WebGL startet</span></div><div class="row"><span class="kw Dann">Dann</span><span>läuft er ohne Nachbearbeitung, oder die Szene fällt nach <code>render.yaml film.minFps</code> auf die Visual-Novel-Fassung zurück</span></div><div class="row"><span class="kw Und">Und</span><span>ein Film lädt nichts, was das Akt-Paket nicht schon hat (Karte, Figuren, Requisiten); Stimmen kommen aus dem Paket <code>voice</code>.</span></div></div>
 </details>
 </section>
 </div>

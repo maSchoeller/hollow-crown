@@ -188,4 +188,5 @@ damit kein Film das Spiel blockiert.
 2. **Suno:** Musik per Suno ist in `licensing.md` §6 noch nicht geregelt (Nutzungsrechte je Abo-Stufe, Kennzeichnung). Freigabe nötig, bevor 16.8 Suno-Stücke ausliefert; bis dahin ElevenLabs Music/SFX oder vorhandene Stücke.
 3. **Englische Stimmen:** zuerst nur Deutsch, oder beide Sprachen zugleich?
 4. **Format:** Hochformat bildfüllend (Vorschlag, wie der Prototyp) oder Querformat mit Balken?
-5. **Szenenauswahl:** Die 15 Filme oben sind ein Vorschlag nach den Story Beats; Änderungen vor 16.9.
+5. **Fotorealismus:** Gewünscht ist ein Detailgrad „mal 3–4“, der filmisch wirkt. Umgesetzt ist das als Kino-Rendering im runden Chibi-Stil (Licht, Atmosphäre, Tiefenschärfe, Grading, Set-Dressing). Sollen auch die Figuren selbst realistischer werden, ist das eine Änderung der Art Direction (B8) und braucht deine Entscheidung.
+6. **Szenenauswahl:** Die 15 Filme oben sind ein Vorschlag nach den Story Beats; Änderungen vor 16.9.
