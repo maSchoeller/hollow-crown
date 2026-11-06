@@ -14,6 +14,7 @@ import { iconsOf } from './statusIcons';
 import { disposeGoldRing, GrudgeLine, makeGoldRing, makePennant, pennantNotches, setPennantNotches } from './lieutenant';
 import type { GridLevel, PinOffset } from './boardTypes';
 import { type UnitView } from './boardBase';
+import type { LegibilityDef } from '../../core/renderDefs';
 import { BoardProps } from './boardProps';
 
 export abstract class BoardUnits extends BoardProps {
@@ -175,10 +176,16 @@ export abstract class BoardUnits extends BoardProps {
     this.wake();
   }
 
+  /** The grid's look: its colour of the season where the plain one would vanish on the ground (snow, story 15.15). */
+  protected gridLook(): LegibilityDef['grid'] {
+    const g = this.data.render.legibility.grid;
+    return { ...g, color: g.seasonColor?.[this.season()] ?? g.color };
+  }
+
   protected buildGrid(): void {
     this.gridMesh?.mesh.dispose();
     this.gridMesh?.mat.dispose();
-    this.gridMesh = this.state && this.terrain ? buildGridMesh(this.scene, this.state.width, this.state.height, (p) => this.tileTop(p), this.gridLevel, this.data.render.legibility.grid) : null;
+    this.gridMesh = this.state && this.terrain ? buildGridMesh(this.scene, this.state.width, this.state.height, (p) => this.tileTop(p), this.gridLevel, this.gridLook()) : null;
   }
 
   /**

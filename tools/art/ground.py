@@ -263,6 +263,24 @@ def tex_water(phase):
     return Image.fromarray(np.clip(c, 0, 255).astype(np.uint8), "RGB")
 
 
+def _graded(make, tint, sat=1.0, lift=0.0):
+    """A procedural texture recoloured: saturation, multiply RGB, then lifted towards white (frost, snow)."""
+    def f():
+        a = np.asarray(make(), dtype=np.float64)
+        grey = (a @ np.array([0.299, 0.587, 0.114]))[..., None]
+        a = (grey + (a - grey) * sat) * np.array(tint)
+        a = a + (255 - a) * lift
+        return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
+    return f
+
+
+def tex_snow():
+    n, drift = fbm(U, V, 3, 4, 909), fbm(U, V, 2, 2, 919)
+    c = mix(rgb("#cfdcea"), rgb("#f4f8fd"), np.clip(n * 1.2, 0, 1))
+    c = mix(c, rgb("#b9c9dc"), sstep(0.62, 0.8, drift) * 0.5)
+    return paint(n * 0.5, c, relief=3.0, ambient=0.8)
+
+
 TEXTURES = {
     "grass": tex_grass,
     "dirt": tex_dirt,
@@ -282,6 +300,12 @@ TEXTURES = {
     "vault": lambda: tex_cobble(4, 424, 0.55),
     **{f"mire_{k}": tex_riverbed for k in range(3)},
     **{f"creek_{k}": tex_riverbed for k in range(3)},
+    # seasons (story 15.15, concept/23-art-direction/map-assets/jahreszeiten-plan.md): painted on sheet6 (autumn) and sheet7 (winter);
+    # these fallbacks stand in without the sheets. Only the textures of the season shown are loaded (render.yaml board.seasonGround).
+    "grass_autumn": _graded(tex_grass, (1.25, 0.82, 0.45), sat=0.8),
+    "snow": tex_snow,
+    "dirt_frozen": _graded(tex_dirt, (0.95, 0.98, 1.06), sat=0.5, lift=0.25),
+    "road_snow": _graded(tex_cobble, (0.96, 0.99, 1.05), sat=0.4, lift=0.45),
 }
 
 
@@ -294,13 +318,17 @@ SHEETS = {
     # warm stone and rock after the target pictures (art/prompts/map_assets_textures.md); later sheets win
     "sheet4_stone_wall_rocktop_rockside.png": ("stone", "wall", "rock_top", "rock_side"),
     "sheet5_honey_oak_dirt_vault.png": ("kit_stone", "kit_oak", "dirt", "vault"),
-    # moor (art/prompts/map_assets_moor.md); the fourth quadrant is the autumn ground probe, not in the game yet
-    "sheet6_mire_creek_peat_autumn.png": ("mire", "creek", "peat", "autumn_probe"),
+    # moor (art/prompts/map_assets_moor.md); the fourth quadrant, fallen leaves over dull grass, is the autumn grass (story 15.15)
+    "sheet6_mire_creek_peat_autumn.png": ("mire", "creek", "peat", "grass_autumn"),
+    # winter ground (art/prompts/map_assets_winter_ground.md, story 15.15); the fourth quadrant is a spare, not in the game
+    # the rut road of the sheet runs one way only and would streak across roads that run the other: road_snow is the painted road with
+    # snow in its joints instead (`_snowed`); ruts and lake ice stay spares
+    "sheet7_snow_frozen_road_ice.png": ("snow", "dirt_frozen", "ruts_spare", "ice_spare"),
 }
 CROP_MARGIN = 10        # px dropped inside every quadrant edge (border artefacts)
 TARGET_LUMA = 118.0     # brightness the textures are pulled towards
 LUMA_PULL = 0.55        # 0 = keep each texture's own brightness, 1 = all equal
-LUMA_KEEP = {"rock_top": 0.6, "rock_side": 0.6, "wall": 0.5, "stone": 0.5, "ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
+LUMA_KEEP = {"snow": 0.55, "road_snow": 0.7, "dirt_frozen": 0.5, "rock_top": 0.6, "rock_side": 0.6, "wall": 0.5, "stone": 0.5, "ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
 SEAM_BAND = 0.5         # blend zone next to the borders (share of the size; 0.5 = whole half, least smearing of structure)
 FRAME_SHIFT = S // 16   # water: the shifted twin the frames cross-fade to
 
@@ -350,6 +378,8 @@ GRADE = {
     "wall": (0.72, (1.0, 0.95, 0.86)),
     "rock_side": (0.6, (0.92, 0.9, 0.88)),
     "rock_top": (0.6, (0.95, 0.93, 0.9)),
+    # story 15.15: the probe's leaves are loud against the red enemy rings; duller, with more of the grass under them
+    "grass_autumn": (0.62, (0.96, 0.97, 0.86)),
 }
 
 
@@ -393,7 +423,24 @@ def painted_textures():
                     out[f"{name}_{k}"] = Image.fromarray(np.clip(b * (1 - f) + twin * f, 0, 255).astype(np.uint8), "RGB")
             else:
                 out[name] = _finish(base)
+    if "road" in out and "snow" in out:
+        out["road_snow"] = _snowed(out["road"], out["snow"])
     return out
+
+
+def _snowed(road, snow):
+    """Snow in the joints of a paved road: the joints are the warm sandy texels (high saturation), the stones grey; the joints fill
+    with snow, the stones keep a cold frosted top. Has no direction, so it reads the same on roads in any direction."""
+    r = np.asarray(road, dtype=np.float64)
+    s = np.asarray(snow.resize(road.size, Image.LANCZOS), dtype=np.float64)
+    sat = r.max(axis=2) - r.min(axis=2)
+    lo, hi = np.percentile(sat, 35), np.percentile(sat, 85)
+    t = np.clip((sat - lo) / max(hi - lo, 1.0), 0, 1)
+    t = t * t * (3 - 2 * t)
+    w = (0.18 + 0.72 * t)[..., None]
+    grey = (r @ np.array([0.299, 0.587, 0.114]))[..., None]
+    cold = (grey + (r - grey) * 0.45) * np.array([0.95, 0.98, 1.05])
+    return Image.fromarray(np.clip(cold * (1 - w) + s * w, 0, 255).astype(np.uint8), "RGB")
 
 
 def build(out):

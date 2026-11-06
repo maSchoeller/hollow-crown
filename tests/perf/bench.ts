@@ -10,6 +10,7 @@ import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstr
 import { loadContent } from '../../src/content/browser';
 import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type MapDef } from '../../src/core';
 import { mapSchema } from '../../src/content/schemas';
+import type { Season } from '../../src/core/defs';
 import { setLocales } from '../../src/i18n';
 import { loadPack } from '../../src/packs/load';
 import { BoardView } from '../../src/render/board/board';
@@ -60,8 +61,9 @@ export interface EnemyPhaseResult {
  * `map` (story 15.11, env PERF_LARGE): a level draft of `concept/27-ueberarbeitung/levels/` instead of the reference battle, played
  * with the company of the act at node `m1_6` deployed in full and every foe set to advance (the worst case of a phase).
  * `march`: foes that only walk go together (option „Gegnerzüge: Gemeinsam“); off = one by one as before 15.11.
- * `whole`: the phase is watched on the zoom step "whole map" (the overview of story 15.11) instead of the opening view */
-type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean; map?: string; march?: boolean; whole?: boolean };
+ * `whole`: the phase is watched on the zoom step "whole map" (the overview of story 15.11) instead of the opening view
+ * `season`: the board in that season (story 15.15: autumn ground, snow ground and snow caps), else the map's own */
+type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean; map?: string; march?: boolean; whole?: boolean; season?: Season };
 
 /** the level drafts (story 15.11), parsed on demand; only the perf build has them */
 const drafts = import.meta.glob('../../concept/27-ueberarbeitung/levels/*.yaml');
@@ -115,7 +117,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   setLocales(loaded.locales);
   await loadPack('act1').catch(() => undefined); // models and sprites resolve without it; content is not needed
   const data = loaded.data;
-  data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null) };
+  data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null), ...(opts.season ? { season: opts.season } : {}) };
   const nodes = data.campaign.nodes;
   // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
   const at = opts.map ? nodes.findIndex((n) => n.id === 'm1_6') : 0;

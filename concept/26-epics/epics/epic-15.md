@@ -190,3 +190,20 @@ Gemeldet vom Produktinhaber am 2026-11-06: Läuft eine Figur Treppen hoch, steht
 **Dann** steht sie sichtbar auf der Oberfläche in der passenden Höhe, schwebt nicht und steckt nicht im Modell
 **Und** Treppen, Rampen und Leitern werden nie durchsichtig; Häuser, Dächer und andere Gebäude blenden bei Verdeckung weiter aus.
 
+
+### Story 15.15: Jahreszeiten-Boden (Vorbereitung für Akt 2 und 3)
+
+Als Spieler
+möchte ich in Akt 2 Herbstboden und in Akt 3 Schnee auf Boden, Felsen und Dächern sehen,
+damit die Jahreszeit erzählt (Art Direction §2.4) und kein Herbstlaub oder keine Schneefichte mehr auf Sommerwiese steht.
+
+Vorbereitung für Epic 11 und Akt 3 nach `concept/23-art-direction/map-assets/jahreszeiten-plan.md`; Akt-1-Karten bleiben unverändert.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Karte mit `season` in der YAML (`summer`, `autumn`, `winter`) oder ohne Angabe die Jahreszeit ihres Akts (`render.yaml board.actSeason`)
+**Wenn** das Brett sie zeigt
+**Dann** tauscht der Boden nach `board.seasonGround` nur die Texturen der Splat-Layer (Herbst: Gras mit Laub; Winter: Schnee, gefrorene Erde, Fahrspuren im Schnee), Innenräume (`interior: true`) tauschen nichts, und es lädt nur die Texturen der gezeigten Jahreszeit
+**Und** im Winter tragen Felsmasse, Häuser und Kleinkram Weiß auf nach oben zeigenden Flächen (Weg B, Material), Mauer und Turm ihre Schneehauben-Modelle (Weg A), der Wald seine Jahreszeit-Fassung
+**Und** Figuren, Teamfarben, Ringe und Markierungen bleiben ungefärbt und vom Boden unterscheidbar; die Wirkung eines Felds bleibt an derselben Form erkennbar (§3.2)
+**Und** `content:check` prüft `season` und die Texturen von `seasonGround`; Dreiecks- und Paket-Budget halten, die Bildrate großer Karten sinkt bei gedrosselter CPU nicht.

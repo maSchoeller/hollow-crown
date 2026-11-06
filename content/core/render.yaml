@@ -46,16 +46,33 @@ board:
     stall: [{ model: market_a, weight: 1 }, { model: market_b, weight: 1 }, { model: camp_tent_a, weight: 0 }]
     # Felsmasse (Terrain mountain): gefacettete Kappe bis an die Feldkante; der Felswall (rockwall) zeichnet rock_idle
     rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }]
-    # Waldfeld je Akt: 1 Spätsommer, 2 Herbst, 3 Winter; ein Akt ohne Eintrag nimmt den Wald des Akts 1. Bäume am Nord- und Westrand, die Feldmitte bleibt frei (§3.2).
+    # Waldfeld je Jahreszeit (Story 15.15, sonst die des Akts, siehe actSeason); eine Jahreszeit ohne Eintrag nimmt den Sommerwald. Bäume am Nord- und
+    # Westrand, die Feldmitte bleibt frei (§3.2): im Herbst und Winter je ein Waldfeld-Modell (grove_autumn_a, grove_snow_a), zwei Varianten fehlen noch
     tree:
-      1: [{ model: grove_a, weight: 3 }, { model: grove_b, weight: 3 }, { model: grove_c, weight: 2 }]
-      2: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }, { model: autumn_c, weight: 3 }, { model: tree_c, weight: 1 }]
-      3: [{ model: snowfir_a, weight: 5 }, { model: snowfir_b, weight: 4 }, { model: tree_c, weight: 1 }]
+      summer: [{ model: grove_a, weight: 3 }, { model: grove_b, weight: 3 }, { model: grove_c, weight: 2 }]
+      autumn: [{ model: grove_autumn_a, weight: 1 }]
+      winter: [{ model: grove_snow_a, weight: 1 }]
     # Landschaft um die Karte: Einzelbäume statt Waldfelder (ein Waldfeld hat rund das Vierfache an Dreiecken, die Landschaft Hunderte Waldfelder)
     sceneryTree:
-      1: [{ model: tree_a, weight: 3 }, { model: tree_b, weight: 3 }]
-      2: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }]
-      3: [{ model: snowfir_a, weight: 5 }, { model: snowfir_b, weight: 4 }]
+      summer: [{ model: tree_a, weight: 3 }, { model: tree_b, weight: 3 }]
+      autumn: [{ model: autumn_a, weight: 4 }, { model: autumn_b, weight: 4 }]
+      winter: [{ model: snowfir_a, weight: 5 }, { model: snowfir_b, weight: 4 }]
+  # Story 15.15, Jahreszeiten-Plan (concept/23-art-direction/map-assets/jahreszeiten-plan.md): Jahreszeit je Akt; eine Karte kann mit `season` abweichen (N4)
+  actSeason: { 1: summer, 2: autumn, 3: winter }
+  # Boden je Jahreszeit: tauscht nur die Textur eines Splat-Layers (Oberfläche -> Bodentextur aus tools/art/ground.py), die Layer bleiben;
+  # Innenräume (interior: true) tauschen nichts. Geladen werden nur die Texturen der gezeigten Jahreszeit.
+  seasonGround:
+    autumn: { grass: grass_autumn }
+    winter: { grass: snow, dirt: dirt_frozen, road: road_snow }
+  # Modelle mit eigener Jahreszeit-Fassung (Weg A, für das, was der Spieler lange ansieht): Modell -> Ersatz
+  seasonModels:
+    winter: { wallrim_idle: snowcap_wall_idle, tower_idle: snowcap_tower_idle }   # Mauerkante (Brüstung) und Mauerturm, gleiche Form
+  # Weg B (Entscheidung 2026-11-05): Weiß auf nach oben zeigenden Flächen der Requisiten, im Material. from/to = Normalen-Höhe (0 seitlich, 1 nach oben),
+  # wo der Schnee beginnt und deckt; ragged = wie stark Rauschen den Rand zerfranst (0–1), scale = Rauschen je Feld; cover = höchster Schneeanteil
+  # (unter 1 bleibt die Form des Modells auch auf ganz flachen Dächern lesbar); skip = Modelle (Präfix) mit eigenem Schnee
+  snow:
+    winter: { color: "#e6edf5", from: 0.72, to: 0.95, ragged: 0.5, scale: 3.5, cover: 0.82 }
+    skip: [snowfir_, grove_snow_, snowcap_]
   # Ersatzmodell, solange ein Modell noch nicht gebaut ist (Manifest kennt es nicht): sonst bliebe das Feld leer (Besuchshaus -> Haus, Brunnen -> Fels)
   propFallback: { well_idle: rock_idle, lodge_b_intact: lodge_intact, lodge_b_visited: lodge_visited, lodge_b_razed: lodge_razed }
   # Ziel markieren (Tipp auf ein Nebenziel im HUD): so lange (ms) stehen die Markierungen der offenen Ziel-Orte, ein zweiter Tipp nimmt sie früher weg
@@ -150,9 +167,9 @@ look:
   # Jahreszeit je Akt (§2.4), ueber jeder Tageszeit (nur mit timeOfDay): tint wird zu strength in Licht und Himmel gemischt,
   # sunElevationOffsetDeg verschiebt die Sonnenhoehe (Sommer hoeher, Winter flacher)
   season:
-    1: { tint: "#ffd89a", strength: 0.12, sunElevationOffsetDeg: 6 }   # Spaetsommer: warm-golden
-    2: { tint: "#f0a870", strength: 0.1,  sunElevationOffsetDeg: 0 }   # Herbst
-    3: { tint: "#d8e6ff", strength: 0.12, sunElevationOffsetDeg: -8 }  # Winter
+    summer: { tint: "#ffd89a", strength: 0.12, sunElevationOffsetDeg: 6 }   # Spaetsommer: warm-golden
+    autumn: { tint: "#f0a870", strength: 0.1,  sunElevationOffsetDeg: 0 }   # Herbst
+    winter: { tint: "#d8e6ff", strength: 0.12, sunElevationOffsetDeg: -8 }  # Winter
   # Effekte, Zeiten in ms bei 1x (bei 2x und in der Gegnerphase durch die Geschwindigkeit geteilt)
   fx:
     # Krit: Band gleitet ein (cutInInMs), steht (cutInHoldMs, bis zum Treffer), gleitet aus (cutInOutMs, ab dem Treffer, laeuft in den Freeze);
@@ -171,6 +188,8 @@ legibility:
   # Story 13.1: Raster. subtle = Creme-Kreuze an den Feldecken (arm = Armlänge, width = Strichbreite), strong = feine Linien rund um jedes Feld
   grid:
     color: "#FFF8EC"
+    # Story 15.15: auf Schnee verschwindet das helle Raster; im Winter ein kühles Schiefergrau
+    seasonColor: { winter: "#4d5d76" }
     subtle: { alpha: 0.55, arm: 0.12, width: 0.03 }
     strong: { alpha: 0.4, width: 0.022 }
   # Story 13.2: Bereiche als Einzelkacheln (gap = Lücke zwischen zwei Kacheln, corner = Eckradius) mit gemeinsamer Außenkante

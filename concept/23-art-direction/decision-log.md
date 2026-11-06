@@ -157,3 +157,12 @@
 
 - Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
 - Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.
+
+## 2026-11-06: Jahreszeiten-Boden umgesetzt (Story 15.15)
+
+- Nach `map-assets/jahreszeiten-plan.md`: Jahreszeit je Akt in `render.yaml board.actSeason`, eine Karte kann mit `season` abweichen (N4 liegt in Akt 2 im Schnee). Boden tauscht nur die Textur eines Splat-Layers (`board.seasonGround`), Innenräume nichts; geladen werden nur die Texturen der gezeigten Jahreszeit (Herbst 1, Winter 3, zusammen rund 350 KB).
+- Herbstgras ist das vierte Feld von `sheet6`, gedämpft (Sättigung 0,62): die Probe stand zu laut gegen die roten Gegnerringe. Winter aus dem neuen Blatt `sheet7` (`art/prompts/map_assets_winter_ground.md`): Schnee und gefrorene Erde gemalt.
+- Abweichung vom Plan: Der Schneeweg nimmt nicht die gemalten Fahrspuren. Spuren laufen in der Textur in eine Richtung und lägen auf Ost-West-Wegen quer; der Schneeweg ist das Pflaster des Sommerwegs mit Schnee in den Fugen (`_snowed` in `tools/art/ground.py`). Spuren und Seeeis bleiben Reserve (Eis für 3-3, 3-4, 3-7).
+- Schneehauben Weg B als Material-Plug-in (`src/render/shared/snow.ts`) auf allen Requisiten und den Kappen von Fels- und Mauerblöcken; höchstens 82 % Schnee, damit flache Dächer und Kisten ihre Form behalten. Weg A: Mauerkante `wallrim_idle` → `snowcap_wall_idle`, Turm → `snowcap_tower_idle` (`board.seasonModels`). Wald: im Herbst und Winter das Waldfeld `grove_autumn_a` bzw. `grove_snow_a` statt Einzelbäumen, damit ein Waldfeld in jeder Jahreszeit dieselbe Form hat (§3.2).
+- Lesbarkeit: Das helle Raster verschwindet auf Schnee; im Winter ist es schiefergrau (`legibility.grid.seasonColor`). Schneewetter ist erlaubt, wo das Brett Winter hat, nicht nur in Akt 3.
+- Belege: `_bmad-output/implementation-artifacts/15-15-belege/jahreszeiten_vergleich.jpg` (375 × 812, Sommer, Herbst, Winter auf der Testkarte `asset_catalog`).

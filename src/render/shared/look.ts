@@ -10,6 +10,7 @@
 import { TIMES_OF_DAY, WEATHERS, type TimeOfDay, type Weather } from '../../core/defs';
 import type { MapDef } from '../../core/mapDefs';
 import type { RenderDef, WeatherDef } from '../../core/renderDefs';
+import { seasonOf } from '../../content/season';
 
 type Quality = 'high' | 'mid' | 'low';
 
@@ -78,7 +79,7 @@ export function retint(base: string, tint: string, mix: number): string {
 const clampDeg = (v: number) => Math.min(90, Math.max(1, v));
 
 /** The light of `map` under `render.look`; see the file header for the order. */
-export function resolveLook(render: RenderDef, map: Pick<MapDef, 'act' | 'ambient' | 'sun' | 'timeOfDay' | 'weather'>): ResolvedLook {
+export function resolveLook(render: RenderDef, map: Pick<MapDef, 'act' | 'season' | 'ambient' | 'sun' | 'timeOfDay' | 'weather'>): ResolvedLook {
   const look = render.look;
   const weather = map.weather ?? 'clear';
   const weatherDef = look.weather[weather];
@@ -97,8 +98,8 @@ export function resolveLook(render: RenderDef, map: Pick<MapDef, 'act' | 'ambien
     figureFloor = p.figureFloor * look.figureReference;
     rim = { ...p.rim };
     pointBoost = p.pointBoost;
-    // the season of the act lies over the preset
-    const season = look.season[String(map.act)];
+    // the season of the board (its own or its act's) lies over the preset
+    const season = look.season[seasonOf(render, map)];
     if (season) {
       ambient.color = mixHex(ambient.color, season.tint, season.strength);
       sun.color = mixHex(sun.color, season.tint, season.strength);

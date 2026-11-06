@@ -7,23 +7,23 @@ import { hash3 } from '../../src/render/shared/terrain3d';
 const { data } = loadContentFromDisk();
 
 describe('season tree lists', () => {
-  it('act 1 is the summer list of three groves', () => {
-    expect(variantList(data, 'tree', 1).map((m) => m.model)).toEqual(['grove_a', 'grove_b', 'grove_c']);
+  it('summer is the list of three groves', () => {
+    expect(variantList(data, 'tree', 'summer').map((m) => m.model)).toEqual(['grove_a', 'grove_b', 'grove_c']);
   });
-  it('act 2 is autumn, act 3 winter', () => {
-    expect(variantList(data, 'tree', 2).map((m) => m.model)).toEqual(['autumn_a', 'autumn_b', 'autumn_c', 'tree_c']);
-    expect(variantList(data, 'tree', 3).map((m) => m.model)).toEqual(['snowfir_a', 'snowfir_b', 'tree_c']);
+  it('autumn and winter keep the grove form of a forest tile (story 15.15), the scenery its single trees', () => {
+    expect(variantList(data, 'tree', 'autumn').map((m) => m.model)).toEqual(['grove_autumn_a']);
+    expect(variantList(data, 'tree', 'winter').map((m) => m.model)).toEqual(['grove_snow_a']);
+    expect(variantList(data, 'tree', 'winter', true).map((m) => m.model)[0]).toBe('snowfir_a');
   });
-  it('an unknown act falls back to summer', () => {
-    expect(variantList(data, 'tree', undefined)).toEqual(variantList(data, 'tree', 1));
-    expect(variantList(data, 'tree', 9)).toEqual(variantList(data, 'tree', 1));
+  it('no season falls back to summer', () => {
+    expect(variantList(data, 'tree', undefined)).toEqual(variantList(data, 'tree', 'summer'));
   });
   it('the scenery uses light single trees and only the first sceneryVariants models, the map all of them', () => {
     const n = data.render.board.sceneryVariants;
     expect(n).toBeGreaterThanOrEqual(1);
-    expect(variantList(data, 'tree', 1, true).map((m) => m.model)).toEqual(['tree_a', 'tree_b'].slice(0, n));
-    expect(variantList(data, 'lodge', 1, true)).toEqual(variantList(data, 'lodge', 1));
-    expect(variantList(data, 'tree', 1).length).toBe(3);
+    expect(variantList(data, 'tree', 'summer', true).map((m) => m.model)).toEqual(['tree_a', 'tree_b'].slice(0, n));
+    expect(variantList(data, 'lodge', 'summer', true)).toEqual(variantList(data, 'lodge', 'summer'));
+    expect(variantList(data, 'tree', 'summer').length).toBe(3);
   });
   it('picks by weight over the roll', () => {
     const mix = [{ model: 'a', weight: 4 }, { model: 'b', weight: 1 }];
@@ -134,7 +134,7 @@ describe('prop variants', () => {
     expect(variantList(data, 'stall').map((v) => [v.model, v.weight > 0])).toEqual([['market_a', true], ['market_b', true], ['camp_tent_a', false]]);
     expect(variantList(data, 'house').find((v) => v.model === 'mill_idle')?.weight).toBe(0);
     // the scenery around the map takes the first entries of a list: never a hand-placed one
-    for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 1, true)) expect(v.weight).toBeGreaterThan(0);
+    for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 'summer', true)) expect(v.weight).toBeGreaterThan(0);
   });
 
   it('act 1 maps: every stand of the hunger camp is a camp tent, N3 has its mill, the market of 1-1 rolls market stalls (story 15.8)', () => {

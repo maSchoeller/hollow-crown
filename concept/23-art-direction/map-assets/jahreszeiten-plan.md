@@ -1,6 +1,6 @@
 # Plan: Herbst- und Winterboden, Schneehauben
 
-Status: Plan, nicht im Spiel. Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
+Status: im Spiel seit Story 15.15 (2026-11-06), Abweichungen und Stand im Decision-Log (`../decision-log.md`). Offen: Probe Weg B durch den Produktinhaber, je zwei weitere Waldvarianten. Vorher: Plan, nicht im Spiel. Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
 
 ## Ziel
 

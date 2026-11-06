@@ -1,5 +1,5 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { GearPiece, HomeKind, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { GearPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export interface PropVariant {
@@ -10,7 +10,8 @@ export interface PropVariant {
 /** Look of the board's legibility aids (render.yaml `legibility`, epic 13); lengths in tiles unless named px. */
 export interface LegibilityDef {
   /** story 13.1: cream crosses at the tile corners (subtle) or thin lines round every tile (strong) */
-  grid: { color: string; subtle: { alpha: number; arm: number; width: number }; strong: { alpha: number; width: number } };
+  /** seasonColor (story 15.15): the grid's colour where the season's ground swallows the plain one (snow) */
+  grid: { color: string; seasonColor?: Partial<Record<Season, string>>; subtle: { alpha: number; arm: number; width: number }; strong: { alpha: number; width: number } };
   /** story 13.2: single range tiles with a gap and round corners, and the shared outer edge (cream below the line) */
   range: { gap: number; corner: number; move: { color: string; alpha: number }; attack: { color: string; alpha: number }; heal: { color: string; alpha: number }; cream: string; edge: { cream: number; line: number } };
   /** story 13.2: the path arrow */
@@ -131,9 +132,27 @@ export interface RenderDef {
     decorOn: Record<string, Array<{ model: string; map: number; scenery: number; scale: [number, number] }>>;
     /**
      * prop variants (weighted `<prop>_<state>`, chosen by a field hash, see render/shared/scenery.ts): house (building), lodge (visitable
-     * house, state appended), rock, stall; tree per act (an act without an entry uses act 1). Weight 0 = only by a map's `propVariants`
+     * house, state appended), rock, stall; tree per season (a season without an entry uses summer). Weight 0 = only by a map's `propVariants`
      */
-    variants: { house: PropVariant[]; lodge: PropVariant[]; rock: PropVariant[]; field: PropVariant[]; relief: PropVariant[]; stall: PropVariant[]; sarcophagus: PropVariant[]; tree: Record<string, PropVariant[]>; sceneryTree: Record<string, PropVariant[]> };
+    variants: {
+      house: PropVariant[];
+      lodge: PropVariant[];
+      rock: PropVariant[];
+      field: PropVariant[];
+      relief: PropVariant[];
+      stall: PropVariant[];
+      sarcophagus: PropVariant[];
+      tree: Partial<Record<Season, PropVariant[]>>;
+      sceneryTree: Partial<Record<Season, PropVariant[]>>;
+    };
+    /** story 15.15: season of each act (key: act number); a map's `season` overrides it */
+    actSeason: Record<string, Season>;
+    /** story 15.15: per season the ground texture a splat layer draws instead of its own (surface -> texture of tools/art/ground.py); interiors keep theirs */
+    seasonGround: Partial<Record<Season, Record<string, string>>>;
+    /** story 15.15: per season a model's own seasonal version (model -> replacement), e.g. snow-capped wall and tower */
+    seasonModels: Partial<Record<Season, Record<string, string>>>;
+    /** story 15.15, way B: white on the upward faces of props in winter; `skip` = model id prefixes that bring their own snow */
+    snow: { winter: SnowDef; skip: string[] };
     /** stand-in model while a model is not built yet (the manifest does not know it) */
     propFallback: Record<string, string>;
     /** goal marking: how long the markings of a side objective stay (ms) */
@@ -224,7 +243,7 @@ export interface LookDef {
   timeOfDay: Record<TimeOfDay, TimeOfDayDef>;
   weather: Record<Weather, WeatherDef>;
   /** season per act (art-direction §2.4), above every time of day: tint of light and sky, offset of the sun's height */
-  season: Record<string, { tint: string; strength: number; sunElevationOffsetDeg: number }>;
+  season: Partial<Record<Season, { tint: string; strength: number; sunElevationOffsetDeg: number }>>;
   fx: {
     /** critical hit (story 8.6): times in ms at 1x, counted from the start of the attack */
     crit: { cutInInMs: number; cutInHoldMs: number; cutInOutMs: number; freezeMs: number; shakeMs: number; shake: number; recoilMs: number; returnMs: number; settleMs: number; numberScale: number };
@@ -295,4 +314,15 @@ export interface WorldDef {
   places: WorldPlace[];
   /** drawn paths between two places (ids), the geography and not the campaign order (story 15.12) */
   roads: Array<[string, string]>;
+}
+
+/** Snow on the props (story 15.15): colour, normal height where it starts and covers (0 = side, 1 = up), raggedness of the edge, noise per tile. */
+export interface SnowDef {
+  color: string;
+  from: number;
+  to: number;
+  ragged: number;
+  scale: number;
+  /** most share of snow in the colour (below 1 the model's form stays legible on flat tops) */
+  cover: number;
 }

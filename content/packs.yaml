@@ -74,8 +74,16 @@ packs:
       - lodge_razed
       - tree_d
       - tree_e
+      - autumn_a
+      - autumn_b
       - autumn_c
+      - snowfir_a
       - snowfir_b
+      # Story 15.15: Jahreszeit-Modelle (Waldfeld Herbst und Winter, Schneehauben von Mauer und Turm), erst ab Akt 2 gebraucht
+      - grove_autumn_a
+      - grove_snow_a
+      - snowcap_wall_idle
+      - snowcap_tower_idle
       - rock_b
       - rock_c
       - massif_c
@@ -113,6 +121,11 @@ packs:
     # bisher bei Bedarf geladen (Story 7.6): Orte, Halbfiguren, Weltkarte, Sprites, Item-Bilder, Modelle, Musik ohne Titel
     assets:
       - act1/**
+      # Story 15.15: Boden von Herbst und Winter, erst ab Akt 2 gebraucht (das Brett lädt nur die Texturen der gezeigten Jahreszeit)
+      - ground/grass_autumn.png
+      - ground/snow.png
+      - ground/dirt_frozen.png
+      - ground/road_snow.png
       - locations/**
       - busts/**
       - halves/**

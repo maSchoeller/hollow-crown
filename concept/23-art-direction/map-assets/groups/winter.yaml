@@ -1,11 +1,13 @@
 title: Winter, Aurenhall und Drachengebirge (Akt 3)
 items:
   - id: snowcap_wall_idle
+    ships: true
     name: Mauerkante im Schnee
     ref: { sheet: winter_1.png, box: [125, 90, 440, 285] }
     missions: [3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9]
     use: Gleiche Form wie die Mauerkante der Festung, kühles Blaugrau, Schnee auf Zinnen und Wehrgang; 1 Feld, reiht sich in Ost-West-Richtung.
   - id: snowcap_tower_idle
+    ships: true
     name: Mauerturm im Schnee
     ref: { sheet: winter_1.png, box: [655, 15, 880, 320] }
     missions: [3-5, 3-6]

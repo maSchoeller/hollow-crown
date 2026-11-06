@@ -16,7 +16,7 @@ import { standableTiles } from '../core/battle/hauntMap';
 import { BARK_LINES } from './barkLines';
 import { validateHandbook } from './validateHandbook';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
-import { validatePropVariants, validateStatusIcons, validateWeather } from './validateLook';
+import { validatePropVariants, validateSeasons, validateStatusIcons, validateWeather } from './validateLook';
 import type { ContentIssue, Locales } from './load';
 
 /** Least distance of two stones on the world map in percent of its width (story 15.7: 55 px of the 1254 px plan, about 36 px at the overview of a 375 × 812 phone). */
@@ -268,7 +268,7 @@ export function validateContent(
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
   for (const map of Object.values(data.maps)) validateMap(data, map, err, item, battleDialogue, reward, locales, conditions);
-  issues.push(...validateWeather(data), ...validatePropVariants(data), ...validateStatusIcons(data, statusImages));
+  issues.push(...validateWeather(data), ...validateSeasons(data), ...validatePropVariants(data), ...validateStatusIcons(data, statusImages));
   const camp = data.campaign;
   if (camp) {
     const place = (id: string, ctx: string) => {
