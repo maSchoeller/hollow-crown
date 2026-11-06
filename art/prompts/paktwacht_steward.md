@@ -56,4 +56,4 @@ SIGNATURE: the key ring and the raised old key.
 
 ## Brettfigur (Story 15.9)
 
-Brett-Turnaround vom 2026-11-05: `art/prompts/paktwacht_steward_board_turnaround.md`, Bilder `art/turnarounds/paktwacht_steward_board/`. Tripo-Lauf steht aus (Konto im Free-Tarif, Auflage A1); das Modell entsteht danach.
+Brett-Turnaround vom 2026-11-05: `art/prompts/paktwacht_steward_board_turnaround.md`, Bilder `art/turnarounds/paktwacht_steward_board/`. Tripo-Modell 2026-11-06 (`paktwacht_steward`, Schutzziel in 1-8), Einzelheiten in `paktwacht_steward_board_turnaround.md` §Tripo.

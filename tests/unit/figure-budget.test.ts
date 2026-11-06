@@ -18,8 +18,8 @@ describe('figure budget', () => {
     expect(parsePacks(raw).length).toBeGreaterThan(0);
   });
 
-  it.runIf(hasKael)('counts the triangles and the texture of a packed figure (Kael: 6385, art-direction §4.6)', () => {
-    expect(measureGlb(readFileSync(kael))).toEqual({ triangles: 6385, texture: [512, 512] });
+  it.runIf(hasKael)('counts the triangles and the texture of a packed figure (Kael: 6179, the Lucan model since story 15.9)', () => {
+    expect(measureGlb(readFileSync(kael))).toEqual({ triangles: 6179, texture: [512, 512] });
   });
 
   it.runIf(hasKael)('flags a figure over a limit and lets large ids have the factor', () => {
