@@ -77,3 +77,15 @@ Folgenachrichten: *Next location - same style and format (16:9, no people, no te
 - **Prompt:** *Create an image. The attached images are the APPROVED STYLE REFERENCES for my original fantasy tactics RPG 'Hollow Crown' (characters are round chibi cartoon; the location images are approved backgrounds of the same series - match their painting style, level of detail and warm colours). Visual-novel dialogue background: widescreen landscape 16:9, no characters, no people, no animals, no text, no logos; important content in the central third; lower third calm. Location: the SHRINE AT THE WHITETHORN, deep in a dense border forest in late summer, at soft MORNING light: a small sunlit clearing surrounded by a wall of old dark trees and thick white-flowering hawthorn bushes. At the centre, on a low raised grassy terrace with a short earthen ramp and a few worn stone steps, stands the SAME little round stone shrine as in the first attached image, with its mossy domed roof, the weathered dragon-and-crown relief, a few candles and flower offerings. Two small crumbled stone wall ruins flank the terrace. A narrow winding forest path of packed earth leads from the foreground up to the terrace. Shafts of warm sun through the leaves, drifting white petals, soft mist between the trunks. No brook, no bridge, no mill. Secret, peaceful and a little mysterious, warm and readable.*
 - **Abnahme:** offen.
 Hinweis zu `silberbach.png` (2026-11-05): Die Datei wurde einmal über Pillow als RGB-PNG gespeichert, die C2PA-Metadaten des ChatGPT-Originals fehlen daher; die Pixel sind unverändert. Das Original liegt im oben genannten Chat.
+
+## Nachtrag 2026-11-06 (Story 15.6)
+
+Fünf Dialoghintergründe für Akt 1 in einem Chat (https://chatgpt.com/c/6aedbf93-7be4-83eb-8da7-2900a487217b), ChatGPT-Bildgenerierung über Claude in Chrome, **Tarif Plus**, Konto `maschoeller`. Stilreferenzen: `lager_unterwegs.png`, `erlbach.png`, `varnhold.png`; bei den ersetzten Orten zusätzlich die alte Fassung für die Palette. Je 1 Versuch; alle 1672 × 941, RGB, unveränderte Downloads mit C2PA-Metadaten. Prompt, Prüfung und menschlicher Anteil je Datei in `art/prompts/loc_<id>.md`. Abnahme durch den Produktinhaber offen.
+
+| Datei | Ort | |
+|---|---|---|
+| `aureklamm_lastkahn.png` | Aureklamm bei Nacht, Flucht auf dem Lastkahn | neu |
+| `pachthof.png` | Tobins Pachthof an der Erle unter der Burg | neu |
+| `silberbach.png` | Schrein am Weißdorn mit altem Weißdornbaum am Pilgerpfad | ersetzt die Fassung vom 2026-11-05 |
+| `hungerlager.png` | Hungerlager auf Stegen im Erlenmoor an der Bucht | ersetzt die Waldfassung |
+| `wachturm.png` | Letzter Wachturm auf dem verfallenen Grenzwall | ersetzt die Moorfassung |
