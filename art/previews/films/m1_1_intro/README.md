@@ -45,7 +45,7 @@ mit `gltfpack` (der glTF-Import von Blender 4.2 kann `EXT_meshopt_compression` n
 - **Look**: AgX „Medium High Contrast“, Compositor: Dunst, Fog-Glow, Lift/Gamma/Gain (kühle Schatten, warme Lichter),
   leichte chromatische Dispersion; Vignette und Filmkorn danach im Wrapper (nur Standbilder).
 - **Render**: Cycles CPU, Standbilder 24 Samples adaptiv + OpenImageDenoise (≈ 1–2 min je Bild auf 4 Kernen);
-  Animatic 4 Samples, ohne Volumen-Dunst, mit Bewegungsunschärfe.
+  Animatic 3 Samples, ohne Volumen-Dunst, mit Bewegungsunschärfe (≈ 0,5 s je Bild, 640 Bilder).
 
 ## Review-Runden
 
@@ -64,6 +64,8 @@ mit `gltfpack` (der glTF-Import von Blender 4.2 kann `EXT_meshopt_compression` n
    Filmkorn jetzt mit numpy im Wrapper. l01 halb Himmel → Ziel tiefer. Schwarze Löcher an den Brückenenden → Widerlager aus Stein.
 4. **Schärfe und Nähe**: Nahe Gesichter weich, weil der Fokus in der Kopfmitte lag → Fokuspunkt auf die Gesichtsfläche, f/2.4.
    l03 erst zu nah und dann in Lucans Kopf → Kamera südöstlich auf Tobins Seite. l10 nur Stirn bis Kinn → etwas zurück.
+5. **Abnahme der 720er**: l09 – die Dreiviertel-Kamera stand im Kopf des Avatars (die Truppe steht eng) → zurück auf die
+   Profil-Kamera aus dem Film. l12 zeigte die Truppe nur am Bildrand → Kamera auf die Brücke (Untersicht über das Deck), fov 56.
 
 ## Offene Schwächen
 
@@ -72,5 +74,6 @@ mit `gltfpack` (der glTF-Import von Blender 4.2 kann `EXT_meshopt_compression` n
 - Fußrutschen beim Gehen (Schrittlänge der walk-Aktion nicht an die Wegstrecke angepasst).
 - Kein Schornsteinrauch, keine Wolken; der Himmel bleibt eine helle Fläche.
 - Brücke ist ein skaliertes Brett-Modell (doppelt breit), wirkt klobig; an den Enden bleibt ein dunkler Spalt.
-- Animatic ohne Volumen-Dunst, Vignette und Korn, mit 4 Samples: Rauschen/Flimmern des Denoisers, nur zur Prüfung von Timing und Schnitt.
+- Animatic ohne Volumen-Dunst, Vignette und Korn, mit 3 Samples: Rauschen/Flimmern des Denoisers, nur zur Prüfung von Timing und Schnitt.
+- l12 hat noch viel leeren Himmel, l01 einen leeren Vordergrund; die Totalen wirken flacher als die Nahen.
 - Kein Letterbox im Bild (der Film setzt `letterbox: true`, das Spiel zeichnet die Balken selbst).
