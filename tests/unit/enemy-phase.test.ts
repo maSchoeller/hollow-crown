@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import type { GameData, GameEvent, Pos } from '../../src/core';
-import { aiPhaseTimes } from '../../tools/enemyPhase';
+import { aiPhaseTimes, STRIKE_MS } from '../../tools/enemyPhase';
 import { simulateCampaign } from '../../tools/simCampaign';
 
 let data: GameData;
@@ -49,12 +49,12 @@ describe('AI phase time (story 15.10)', () => {
     const [p] = aiPhaseTimes(data, events);
     const walkMs = (tiles: number) => tiles * pace.stepMs + pace.afterMoveMs;
     const strikeOnly = p!.single - 3 * pace.focusMs - walkMs(4) - walkMs(2) - walkMs(3) - pace.focusMs;
-    expect(strikeOnly).toBeGreaterThan(pace.afterStrikeMs);
+    expect(strikeOnly).toBe(STRIKE_MS + pace.afterStrikeMs);
     expect(p!.march).toBe(walkMs(4) + pace.focusMs + strikeOnly);
     expect(p!.march).toBeLessThan(p!.single);
   });
 
-  it('the chained simulation records rounds, actions and AI phases of the first attempts', { timeout: 60000 }, () => {
+  it('the chained simulation records rounds, actions and AI phases of the first attempts won', { timeout: 60000 }, () => {
     const [m] = simulateCampaign(data, { runs: 1, seed: 3, difficulty: 'normal', deathMode: 'standard', maxMissions: 1 }).missions;
     expect(m!.wins).toBe(1);
     expect(m!.turns).toBeGreaterThan(0);

@@ -8,7 +8,7 @@ import type { GameData, GameEvent } from '../src/core';
 import { marchRun } from '../src/render/board/march';
 
 /** A strike on the board: wind-up to the hit frame (attack_s, 3 frames at 12 fps), lunge back 140 ms and 90 ms, then the pause. */
-const STRIKE_MS = 250 + 140 + 90;
+export const STRIKE_MS = 250 + 140 + 90; // copied from board.ts play() 'strike'; keep in step when the board's timing changes
 
 export interface PhaseTime {
   turn: number;
@@ -56,7 +56,7 @@ export function aiPhaseTimes(data: GameData, events: readonly GameEvent[]): Phas
       continue;
     }
     // the walkers of a run go at the same time: the longest way sets the time
-    cur.march += walkMs(data, Math.max(...run.marches.map((m) => m.path.length - 1)));
+    cur.march += walkMs(data, Math.max(0, ...run.marches.map((m) => m.path.length - 1)));
     for (let k = n; k < run.end; k++) cur.single += k === n ? 0 : eventMs(data, events, k);
     n = run.end - 1;
   }

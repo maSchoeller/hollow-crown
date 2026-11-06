@@ -64,11 +64,11 @@ export interface MissionSim {
   armyLevel: number;
   /** companions lost for good in the won attempt */
   deaths: number;
-  /** story 15.10, first attempts won: rounds, player actions (move, act, pursue) and units deployed, summed */
+  /** story 15.10, first attempts won: rounds, player actions (move, act, pursue) and units deployed at the start, summed */
   turns: number;
   actions: number;
   deployed: number;
-  /** story 15.10, AI phases of the first attempts (`tools/enemyPhase.ts`, ms at tempo 1×): count, sums and the longest */
+  /** story 15.10, AI phases of the first attempts won (`tools/enemyPhase.ts`, ms at tempo 1×): count, sums and the longest */
   phases: number;
   phaseSingle: number;
   phaseMarch: number;
@@ -233,22 +233,24 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         // a restart plays the mission again with fresh luck (the battle RNG derives from the campaign seed; the real restart
         // keeps it, but a player plays differently). The campaign keeps its own seed afterwards.
         const from = attempt === 0 ? c : { ...c, seed: (c.seed + attempt * 104729) >>> 0 };
-        const { state, log, events } = autoplay(data, beginBattle(data, from, id, from.roster.map((u) => u.id)).state);
+        const begun = beginBattle(data, from, id, from.roster.map((u) => u.id)).state;
+        const { state, log, events } = autoplay(data, begun);
         if (attempt === 0) {
           if (state.outcome === 'victory') {
             m.wins++;
             m.turns += state.turn;
             m.actions += log.filter((cmd) => cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue').length;
-            m.deployed += state.units.filter((u) => u.team === 'player').length;
+            // the line-up at the start: a unit recruited during the battle does not count
+            m.deployed += begun.units.filter((u) => u.team === 'player').length;
+            for (const p of aiPhaseTimes(data, events)) {
+              m.phases++;
+              m.phaseSingle += p.single;
+              m.phaseMarch += p.march;
+              m.phaseSingleMax = Math.max(m.phaseSingleMax, p.single);
+              m.phaseMarchMax = Math.max(m.phaseMarchMax, p.march);
+            }
           }
           m.downs += state.stats.downs; // every fall to 0 HP, also the ones rescued later
-          for (const p of aiPhaseTimes(data, events)) {
-            m.phases++;
-            m.phaseSingle += p.single;
-            m.phaseMarch += p.march;
-            m.phaseSingleMax = Math.max(m.phaseSingleMax, p.single);
-            m.phaseMarchMax = Math.max(m.phaseMarchMax, p.march);
-          }
         }
         if (state.outcome === 'victory') {
           won = finishBattle(data, from, state);

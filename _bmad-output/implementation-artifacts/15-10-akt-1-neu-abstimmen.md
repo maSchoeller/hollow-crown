@@ -1,6 +1,6 @@
 # Story 15.10: Akt 1 neu abstimmen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -40,14 +40,16 @@ damit Schwierigkeit und Spielzeit zum neuen Gegnerbild passen.
 | 1-8 | 100 % · **1,02** | 100 % · 0,36 | 96 % · **1,88** | 98 % · **1,36** / 94 % · 1,06 (zusammen 1,21) | **82 %** (n 11) | **75 %** (n 12) | **76–84 %** |
 | N3 (einzeln) | 100 % · 0,17 | 100 % · 0,10 | **72 %** · **0,28** | 81 % · 0,41 | – | – | **13–21 %** |
 
+Schwer verkettet: Ab 1-4 kommen nur noch 12–18 von 50 Läufen an, das sind die starken; 1-4 und 1-5 auf Schwer sind deshalb nicht fair gemessen (mit Normal-Kette nur ab 1-6 gespielt) und in dieser Story unverändert.
+
 N3 ist eine Nebenquest und läuft in `--campaign` nicht mit. Vorher: `pnpm sim n3_erbe --runs 50` (25 von 50 Läufen kamen an); nachher auf 40 Kampagnenständen nach 1-6, je dreimal gespielt (120 Läufe). Die Spalte „Normal-Kette“ spielt die Mission auf Schwer mit Normal-Ständen (wie `--chain normal`), 40–80 Läufe.
 
 Armee-Stufe vor der Mission (Normal, nachher): Prolog 1,5 · 1-1 1,7 · 1-2 2,9 · 1-3 3,4 · 1-4 4,0 · 1-5 5,1 · 1-6 5,9 · 1-7 7,2 · 1-8 7,8–7,9 (erwartet 1/2/3/3/4/5/6/8/9).
 
 ## Was geändert wurde (nur YAML)
 
-- **1-7 Gewölbe:** Frist 10 statt 8 Runden (alle Niederlagen lagen an der Frist; die Einstürze in Runde 5–7 bleiben). Drei Plünderer mehr aus den Seitenhallen (`p12`–`p14`) und einer in der Welle von Runde 3, nur Normal und Schwer; `p1`, `p9`, `p10` eine Stufe tiefer. Nur Schwer: zwei Wächter in der Königskammer (`p15`, `p16`), weil die längere Frist Schwer sonst auf 88 % hob.
-- **1-8 Die Paktwacht halten:** Fußvolk eine Stufe tiefer (4 → 3, 5 → 4); die Schützen [18,34], [11,34], [16,39] nur noch auf Schwer; auf Leicht ohne Späher und Schützen in Morras Trupp und ohne die Lanze in Runde 9. Morra kommt weiter in Runde 4 über den Pass, wartet dort auf Leicht und Normal bis Runde 9 (oder bis jemand herankommt), Rückzug in Runde 10 unverändert; Hask wartet auf Leicht und Normal in den Feldern, bis jemand herankommt. Schwer wie bisher. Dafür je Schwierigkeit eine eigene Leutnant-Zeile (vorgesehen, `content:check` erlaubt einen je Schwierigkeit).
+- **1-7 Gewölbe:** Frist 10 statt 8 Runden (alle Niederlagen lagen an der Frist; die Einstürze in Runde 5–7 bleiben). Drei Plünderer mehr aus den Seitenhallen (`p12`–`p14`) und einer in der Welle von Runde 3, nur Normal und Schwer; `p1`, `p9`, `p10` eine Stufe tiefer. Nur Schwer: zwei Wächter in der Königskammer (`p15`, `p16`), weil die längere Frist Schwer sonst auf 88 % hob; `p15` steht auf [8,3], einem der zwei Felder, die den Weg zur Chronik offen halten, ist aber schlagbar (Schwer 60 % Siege). Die neuen Plünderer tragen wie alle einen Schlüssel.
+- **1-8 Die Paktwacht halten:** Fußvolk eine Stufe tiefer (4 → 3, 5 → 4); die Schützen [18,34], [11,34], [16,39] nur noch auf Schwer; auf Leicht ohne Späher und Schützen in Morras Trupp und ohne die Lanze in Runde 9. Morra kommt weiter in Runde 4 über den Pass, wartet dort auf Leicht und Normal bis Runde 9 (oder bis jemand herankommt), Rückzug in Runde 10 unverändert; Hask wartet auf Leicht und Normal in den Feldern, bis jemand herankommt, spätestens bis Runde 6 (`ai.sleeperWakePercent` auf Verteidigungskarten). Schwer wie bisher. Test `m1-8.test.ts` prüft die Profile je Schwierigkeit. Dafür je Schwierigkeit eine eigene Leutnant-Zeile (vorgesehen, `content:check` erlaubt einen je Schwierigkeit).
 - **N3 Das Erbe:** Fußvolk Stufe 5 statt 6, ein Plünderer mehr in der Welle von Runde 4 (Normal, Schwer).
 - **1-1 Steckbriefe:** die Schwer-Gegner `h10`, `h11` schon ab Normal.
 - **Kampagne:** `expectedLevel` von 1-6 auf 6 (Kommentar sagte „technischer Startwert, final per Simulation“).
@@ -77,7 +79,13 @@ Geschätzt aus dem Ereignisprotokoll der Kämpfe (`tools/enemyPhase.ts`) mit den
 | 1-6 Paktwacht erobern | 2,6 s / 2,3 s | 11,6–13,2 s / 11,6–13,2 s |
 | 1-8 Paktwacht halten | 43,6 s / 9,0 s | 68–81 s / 34–55 s |
 
-Auf Schwer 1-8: Ø 57 s / 10 s, längste 87 s / 58 s. Das Zeitziel aus Story 15.11 (≤ 15 s mit „Gemeinsam“) hält 1-8 im Schnitt, die längsten Phasen (Runden mit vielen Schlägen nach den Wellen) nicht. 15.11 maß im Browser 9,4 s (1-6) und 2,5 s (1-8) im schlimmsten Fall mit allen Gegnern auf `aggressive`, aber mit 5 eigenen Figuren; hier stehen 5–7 eigene Figuren, und die Gegner schlagen zu.
+Auf Schwer 1-8: Ø 57 s / 10 s, längste 87 s / 58 s. Das Zeitziel aus Story 15.11 (≤ 15 s mit „Gemeinsam“) hält 1-8 im Schnitt, die längsten Phasen (Runden mit vielen Schlägen nach den Wellen) nicht. 15.11 maß im Browser 9,4 s (1-6) und 2,5 s (1-8) mit allen Gegnern auf `aggressive` in Runde 1, also fast nur Wege ohne Schläge; hier zählen alle Runden eines Kampfs, und die langen Phasen sind die nach den Wellen, in denen viele Gegner zuschlagen (je Schlag ≈ 0,9 s, einzeln abgespielt). Die Schlagzeit ist aus `board.ts` übernommen (`STRIKE_MS` in `tools/enemyPhase.ts`) und muss bei Änderungen dort mitgezogen werden.
+
+## Stand der Akzeptanzkriterien
+
+- AK 1 teilweise: Leicht erfüllt; Normal erfüllt bis auf den Prolog (Offen 1), 1-8 im Mittel knapp (1,21); Schwer nur bis 1-3 und für 1-6/1-7 erfüllt (Offen 2, 5); Goldkurve trägt; EP-Kurve trägt bis 1-6 (Offen 3).
+- AK 2 teilweise: Gegnerphase gemessen; die Spielzeit passt nicht zu 30–35 Stunden (Offen 4).
+- Die offenen Punkte brauchen Entscheidungen des Produktinhabers, keine weiteren Werte in dieser Story.
 
 ## Offen (Produktinhaber)
 
@@ -110,4 +118,8 @@ Auf Schwer 1-8: Ø 57 s / 10 s, längste 87 s / 58 s. Das Zeitziel aus Story 15.
 
 ### Rohdaten
 
-Simulator-Ausgaben vorher und nachher liegen im Notizordner der Sitzungsgruppe (`base-*.txt` vorher, `end-*.txt` nachher).
+Simulator-Ausgaben vorher und nachher liegen im Notizordner der Sitzungsgruppe (`base-*.txt` vorher, `end-*.txt` nachher). Die Kampagnen-Tabellen sind mit `pnpm sim --campaign act1 --runs 50 --difficulty <d> [--seed 51]` nachzurechnen. Die N3- und Normal-Ketten-Werte kamen aus einem Wegwerf-Skript: `simulateCampaign` mit `onMission` speichert die Stände vor 1-7/1-8 (40 Läufe), danach wird die Karte auf jedem Stand mit `beginBattle` + `autoplay` gespielt (bei Normal-Kette mit `settings.difficulty = 'hard'`); das Skript ist nicht eingecheckt.
+
+### Code-Review (bmad-code-review, 2026-11-06)
+
+Vier Prüfer (Blind Hunter, Edge Case Hunter, Verification Gap, Acceptance Auditor). Behoben: Test für die KI-Profile von Hask und Morra je Schwierigkeit; Hasks Aufwachen spätestens in Runde 6 in Kommentar, Story und Log; Spielzeit nur aus im ersten Versuch gewonnenen Kämpfen (vorher Aktionen je Sieg, Gegnerphasen je Lauf), „eingesetzt“ zum Kampfbeginn, Missionen ohne Sieg ohne Zahl; `--action-s` geprüft; Schlagzeit im Test exakt; Schlüssel für die neuen Plünderer in 1-7; veraltete Kommentare (1-7 Hauptgang, N3 `expectedLevel`); Zahlen im Entscheidungslog. Zurückgestellt: Brett-Zeiten mit `board.ts` teilen statt kopieren (nur Werkzeug). Die offenen Kriterien stehen oben unter „Stand der Akzeptanzkriterien“.

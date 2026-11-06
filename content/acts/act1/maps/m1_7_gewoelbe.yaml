@@ -6,7 +6,7 @@
 # Abweichung vom Entwurf: In Runde 5 bleiben zusätzlich [7,3] und [8,3] stehen, sonst wäre die Chronik abgeschnitten (die Entwurfsnotiz nannte nur [7–8,1–2]).
 # Abweichung vom Entwurf: Schlüssel. Die Mission bleibt ohne Späher lösbar (E2 „ausliefern“, Fenn fehlt): Jeder Plünderer trägt einen Schlüssel und lässt ihn fallen, nicht nur der Anführer.
 # Die Chronik ist kein Gegenstand: Die Truhe enthält nichts; das Flag wardens_chronicle setzt der Knoten m1_7 beim Sieg (campaign.yaml). Grabreliefs: Gelände `relief`, heilt nicht, [1,6] und [14,12] lösen je eine Szene aus.
-# Balancing 2026-11-05 [C]: Der Hauptgang bleibt leicht (Stufe 4–5), sonst scheitert der Simulator-Spieler an der Frist; die Kammern und Spaltenwellen sind mit Stufe 4–6 und Radius 4 die Gefahr (Entwurf Stufe 3–4 gab 0,15 Niedergestreckte).
+# Balancing 2026-11-05 [C]: Der Hauptgang bleibt leicht (Stufe 4–5, seit Story 15.10 3–5), sonst scheitert der Simulator-Spieler an der Frist; die Kammern und Spaltenwellen sind mit Stufe 4–6 und Radius 4 die Gefahr (Entwurf Stufe 3–4 gab 0,15 Niedergestreckte).
 # Story 15.10 [C]: drei Plünderer mehr aus den Seitenhallen (p12–p14, Normal und Schwer) und einer mehr in Runde 3; dafür p1, p9, p10 eine Stufe tiefer. Normal vorher 0,32 Niedergestreckte.
 id: m1_7_gewoelbe
 nameKey: map.m1_7_gewoelbe.name
@@ -109,12 +109,12 @@ units:
   # Nur Schwer
   - { id: p11, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 4, at: [8, 8], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   # Story 15.10 [C]: Plünderer aus den Seitenhallen (Normal, Schwer)
-  - { id: p12, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [2, 13], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: p13, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [13, 7], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: p14, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [1, 7], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: p12, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 5, at: [2, 13], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: p13, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, level: 5, at: [13, 7], items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: p14, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 4, at: [1, 7], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Story 15.10 [C]: nur Schwer, zwei Wächter in der Königskammer (die Frist von 10 Runden machte Schwer sonst zu leicht)
-  - { id: p15, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, level: 6, at: [8, 3], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
-  - { id: p16, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [6, 1], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: p15, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, level: 6, at: [8, 3], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: guard }, difficulty: [hard] }
+  - { id: p16, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, level: 5, at: [6, 1], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold }, difficulty: [hard] }
 pairs: []
 reinforcements:
   # aus Felsspalten

@@ -144,7 +144,7 @@ describe('map m1_8_paktwacht_halten', () => {
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual(COUNTS);
     expect([...new Set(all.filter((u) => u.lieutenant).map((u) => u.lieutenant))].sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
-    // story 15.10: Hask and Morra have their own line on easy (one per difficulty, content:check)
+    // story 15.10: Hask and Morra have one line for easy and normal and one for hard (one per difficulty, content:check)
     for (const u of all.filter((x) => x.lieutenant)) {
       // the loader takes the class of the lieutenant (the map names none)
       expect(u.class).toBe(data.lieutenants![u.lieutenant!]!.class);
@@ -162,6 +162,22 @@ describe('map m1_8_paktwacht_halten', () => {
     expect(lt(s, 'morra')).toBeUndefined();
     wave(s, 4);
     expect(lt(s, 'morra')?.pos).toEqual([5, 0]);
+  });
+
+  it('lets Hask and Morra wait on easy and normal and attack at once on hard (story 15.10)', () => {
+    for (const difficulty of ['easy', 'normal', 'hard'] as const) {
+      const s = begin({ ...base, settings: { ...base.settings, difficulty } });
+      wave(s, 4);
+      const hask = lt(s, 'hask')!.ai!;
+      const morra = lt(s, 'morra')!.ai!;
+      if (difficulty === 'hard') {
+        expect(hask.profile).toBe('aggressive');
+        expect(morra.profile).toBe('aggressive');
+      } else {
+        expect(hask).toMatchObject({ profile: 'trigger', radius: 4, then: 'aggressive' });
+        expect(morra).toMatchObject({ profile: 'trigger', radius: 3, wakeTurn: 9, then: 'aggressive' });
+      }
+    }
   });
 
   it('stands on the terrain of 1-6, with the gates open, no lever and the east postern walled up', () => {
