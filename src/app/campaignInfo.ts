@@ -2,7 +2,7 @@
 import { t } from '../i18n';
 import { metaFromCampaign, type SaveRecord } from '../persistence/save';
 import { ageParts, playtimeParts } from '../ui/format';
-import { availableNodes, normalizeCampaign } from '../core';
+import { availableNodes, normalizeCampaign, withoutStaleHauntBattle } from '../core';
 import { nodeDef } from './state/flow';
 import { campaign, data } from './state/session';
 
@@ -34,7 +34,7 @@ export function nodeShort(id: string): string {
 /** Where a save resumes: in a battle, before the next mission, or done. */
 export function resumeWhere(rec: SaveRecord): string {
   const c = rec.payload.campaign;
-  if (rec.payload.battle) return t('ui.title.where.battle', { node: nodeShort(rec.payload.battle.start.nodeId) });
+  if (withoutStaleHauntBattle(data, rec.payload).battle) return t('ui.title.where.battle', { node: nodeShort(rec.payload.battle!.start.nodeId) });
   const next = availableNodes(data, normalizeCampaign(data, c))[0];
   return next ? t('ui.title.where.before', { node: nodeShort(next.id) }) : t('ui.title.where.end');
 }

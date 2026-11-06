@@ -66,26 +66,8 @@ deploy:
   max: 4
   forced: [avatar, kael]
   slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
-# Heimsuchungs-Anker (Story 5.5, Architektur §5.6): je Variante höchstens einer; Startwerte [C].
-haunts:
-  # Grund: das innere Tor mitten im Tempelbezirk – alle Wege laufen hier zusammen. Der Leutnant hält den Säulengang davor, seine Leute stehen im Innenhof,
-  # die Truppe kommt aus dem unteren Hof zurück.
-  - variant: rout
-    target: { at: [6, 7] }
-    enemySpawn: { rect: [5, 1, 8, 3] }
-    deploy: { rect: [4, 12, 9, 13] }
-  # Grund: das Tempeltor – wer hier lauert, fängt jeden Flüchtenden ab. Die Truppe kommt von der Glutdom-Tür im Norden.
-  - variant: boss
-    target: { at: [6, 15] }
-    enemySpawn: { rect: [4, 12, 9, 13] }
-    deploy: { rect: [5, 1, 8, 2] }
-  # Grund: der Platz vor der verschlossenen Glutdom-Tür – der Ort, an dem die Paktnacht begann. Ein Zivilist wartet vor der Tür,
-  # die Truppe steht im Innenhof davor, die Angreifer kommen durch das innere Tor aus dem unteren Hof.
-  - variant: defend
-    target: { at: [6, 1] }
-    enemySpawn: { rect: [4, 10, 9, 11] }
-    deploy: { rect: [5, 2, 8, 3] }
-    turns: 8
+# Die Truppe flieht aus Aurenhall und kehrt nicht zurück: keine Heimsuchungen hier (GDD-Log 2026-11-06, content:check lehnt Anker ab).
+abandoned: true
 # Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle): Lanzen-Vorkämpfer und Schwert-Plänkler, dazu der eine Schütze. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
 units:
   # Säulengang: wachen auf, sobald die Truppe herankommt

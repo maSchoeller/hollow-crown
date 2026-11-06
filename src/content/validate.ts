@@ -768,6 +768,7 @@ function validateTreasure(
 function validateHaunts(data: GameData, map: MapDef, err: (f: string, m: string) => void, g: Terr): void {
   const f = `maps/${map.id}`;
   const seen = new Set<string>();
+  if (map.abandoned && map.haunts?.length) err(f, 'haunts: the map is abandoned (the company never comes back), it takes no haunt anchors');
   const pool = data.hauntPools?.[map.act];
   for (const a of map.haunts ?? []) {
     const ctx = `haunts ${a.variant}`;

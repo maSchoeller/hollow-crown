@@ -10,6 +10,7 @@ import {
   normalizeCampaign,
   renameLegacyBattleClasses,
   renameLegacyClasses,
+  withoutStaleHauntBattle,
   stateHash,
   turnStartIndex,
   validateCampaign,
@@ -283,6 +284,11 @@ export function adoptRecord(rec: SaveRecord, reason: 'load' | 'import'): SavePay
   // saves from before a field existed get its default (architecture §8.7)
   const p = { ...rec.payload, campaign: renameLegacyClasses(data, normalizeCampaign(data, rec.payload.campaign)) };
   if (p.battle) p.battle = { ...p.battle, start: renameLegacyBattleClasses(data, p.battle.start) };
+  // a running haunt battle whose anchor is gone lapses with its haunt (normalizeCampaign): back to the world map
+  if (p.battle && !withoutStaleHauntBattle(data, p).battle) {
+    log.info('save', 'a running haunt battle lapsed on load: its anchor is gone', { map: p.battle.start.mapId });
+    delete p.battle;
+  }
   campaignId.value = rec.campaignId;
   playClock.reset();
   trail.record({ kind: 'load', reason, campaignId: rec.campaignId, battle: !!p.battle });

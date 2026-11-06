@@ -193,6 +193,8 @@ export interface MapDef {
   goldReward: number;
   /** haunt anchors (story 5.5, architecture §5.6): at most one per variant; maps without any are never haunted */
   haunts?: HauntAnchor[];
+  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): it has no haunt anchors and is never haunted */
+  abandoned?: boolean;
   music?: string;
   devNote?: string;
   /** model of a prop variant for single fields (`board.variants` of render.yaml names the allowed models), overriding the hash pick */

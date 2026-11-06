@@ -172,7 +172,7 @@ function runHaunt(spec: string) {
   const map = data.maps[mapId ?? ''];
   const anchor = map?.haunts?.find((a) => a.variant === variant);
   const story = map && storyNodeOf(data, map.id);
-  if (!map || !anchor || !story) throw new Error(`no haunt anchor ${spec} (use <mapId>:<variant>, e.g. prologue_paktnacht:rout)`);
+  if (!map || !anchor || !story) throw new Error(`no haunt anchor ${spec} (use <mapId>:<variant>, e.g. m1_1_steckbriefe:boss)`);
   const ltId = opt('lt', 'hask');
   const lt = data.lieutenants[ltId];
   if (!lt) throw new Error(`unknown lieutenant ${ltId}`);
