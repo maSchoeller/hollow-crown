@@ -80,12 +80,11 @@ Hinweis zu `silberbach.png` (2026-11-05): Die Datei wurde einmal über Pillow al
 
 ## Nachtrag 2026-11-06 (Story 15.6)
 
-Fünf Dialoghintergründe für Akt 1 in einem Chat (https://chatgpt.com/c/6aedbf93-7be4-83eb-8da7-2900a487217b), ChatGPT-Bildgenerierung über Claude in Chrome, **Tarif Plus**, Konto `maschoeller`. Stilreferenzen: `lager_unterwegs.png`, `erlbach.png`, `varnhold.png`; bei den ersetzten Orten zusätzlich die alte Fassung für die Palette. Je 1 Versuch; alle 1672 × 941, RGB, unveränderte Downloads mit C2PA-Metadaten. Prompt, Prüfung und menschlicher Anteil je Datei in `art/prompts/loc_<id>.md`. Abnahme durch den Produktinhaber offen.
+Vier Dialoghintergründe für Akt 1 (ein fünftes Bild für `silberbach` wurde verworfen, die Fassung vom 2026-11-05 zeigt den Schrein am Weißdorn schon) in einem Chat (https://chatgpt.com/c/6aedbf93-7be4-83eb-8da7-2900a487217b), ChatGPT-Bildgenerierung über Claude in Chrome, **Tarif Plus**, Konto `maschoeller`. Stilreferenzen: `lager_unterwegs.png`, `erlbach.png`, `varnhold.png`; bei den ersetzten Orten zusätzlich die alte Fassung für die Palette. Je 1 Versuch; alle 1672 × 941, RGB, unveränderte Downloads mit C2PA-Metadaten. Prompt, Prüfung und menschlicher Anteil je Datei in `art/prompts/loc_<id>.md`. Abnahme durch den Produktinhaber offen.
 
 | Datei | Ort | |
 |---|---|---|
 | `aureklamm_lastkahn.png` | Aureklamm bei Nacht, Flucht auf dem Lastkahn | neu |
 | `pachthof.png` | Tobins Pachthof an der Erle unter der Burg | neu |
-| `silberbach.png` | Schrein am Weißdorn mit altem Weißdornbaum am Pilgerpfad | ersetzt die Fassung vom 2026-11-05 |
 | `hungerlager.png` | Hungerlager auf Stegen im Erlenmoor an der Bucht | ersetzt die Waldfassung |
 | `wachturm.png` | Letzter Wachturm auf dem verfallenen Grenzwall | ersetzt die Moorfassung |
