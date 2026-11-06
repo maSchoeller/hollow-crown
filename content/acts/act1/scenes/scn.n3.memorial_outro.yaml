@@ -7,14 +7,14 @@ lines:
     mood: sad
     text: "Die Marodeure sind fort. Tobins Vater nimmt eine alte Lanze vom Herd, mit einer Ähre an der Spitze."
   - id: l02
-    speaker: [brenna, kael, avatar]
+    speaker: [brenna, lucan, avatar]
     mood: sad
     text: "Das Erbstück. Helden sterben jung, sagte er. Er sagte es immer wie ein Versprechen."
   - id: l03
-    speaker: [brenna, kael, avatar]
+    speaker: [brenna, lucan, avatar]
     mood: sad
     text: "Ich hätte es ihm verbieten sollen."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Sie bleibt in der Kompanie. Und einer von uns trägt sie für ihn."

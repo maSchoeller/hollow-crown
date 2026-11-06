@@ -13,7 +13,7 @@ lines:
     mood: neutral
     text: "Ein Zettel ohne Namen, nur ein Siegel aus grauem Wachs. Und wir laufen ihm nach. Küken, Küken."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Jemand, der uns kennt und nicht aufhängen will. Das sind wenige. Ich sehe nach."
@@ -38,12 +38,12 @@ lines:
     mood: neutral
     text: "Kopfgeldjäger. Natürlich. Es ist noch nicht mal Mittag, und schon will uns jemand zu Geld machen."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Die Straße ist lang, die Wildwechsel sind eng. Wir müssen zum Schrein, und die Heilerin fällt nicht."
   - id: l12
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "{avatar}, ordne die Reihen. Du gehst hinauf zum Schrein, wir halten dir den Weg frei."

@@ -63,7 +63,7 @@ objects:
 initialEffects: []
 deploy:
   max: 6
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[7, 18], [8, 18], [6, 18], [9, 18], [7, 17], [8, 17], [6, 17], [9, 17]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante. Die Haunt-Karte hat keinen Einsturz.
 haunts:
@@ -125,7 +125,7 @@ objectives:
   # treasure löst die Niederlage durch die Rundenfrist selbst aus (kein defeat turn_limit)
   victory: { type: treasure, chests: [c_chronicle], turns: 8 }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_chests, type: open_chests, reward: { gold: 300 } }

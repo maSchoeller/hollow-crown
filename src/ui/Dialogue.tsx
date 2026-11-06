@@ -161,13 +161,13 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
     return () => clearTimeout(timer);
   }, [auto, readyToGo, idx, card, momentOpen]);
 
-  // sides follow the order of first appearance: kael and the avatar left, the others right (then left)
+  // sides follow the order of first appearance: lucan and the avatar left, the others right (then left)
   const sides = useMemo(() => {
     const m: Record<string, Side> = {};
     for (const l of lines) {
       if (l.kind !== 'line' || !l.speaker || m[l.speaker]) continue;
       const taken = new Set(Object.values(m));
-      m[l.speaker] = l.speaker === 'kael' || l.speaker === 'avatar' ? 'left' : !taken.has('right') ? 'right' : !taken.has('left') ? 'left' : 'right';
+      m[l.speaker] = l.speaker === 'lucan' || l.speaker === 'avatar' ? 'left' : !taken.has('right') ? 'right' : !taken.has('left') ? 'left' : 'right';
     }
     return m;
   }, [lines]);

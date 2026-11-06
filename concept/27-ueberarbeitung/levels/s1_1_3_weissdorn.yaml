@@ -49,7 +49,7 @@ objects:
   - { id: c_east, type: chest, at: [18, 7], contents: { gold: 300 } }
 deploy:
   max: 7
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[8, 22], [9, 22], [10, 22], [11, 22], [8, 23], [9, 23], [10, 23], [11, 23]]
 units:
   # Am Schrein: Halvard (unangreifbar) und Liora (heilt eigene, tritt nach dem Sieg bei)
@@ -94,7 +94,7 @@ objectives:
   victory: { type: reach, unit: avatar, area: { rect: [8, 1, 11, 2] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: liora }
   side:
     - { id: s_chests, type: open_chests, reward: { gold: 200 } }
@@ -125,6 +125,6 @@ design:
     - { at: [17, 13], label: A3, note: Hinterhalt am Wildwechsel Ost. }
   notes:
     - "Normal 18 Gegner (4 davon R4/R6) gegen 7 eigene, Stufe 2–3 plus Morra; Leicht 15, Schwer 22."
-    - "Aufstellbar 7: Rhen, Kael, Brenna, Tobin, Fenn + Mira, falls 1-2 zuerst gespielt; sonst Söldner."
+    - "Aufstellbar 7: Rhen, Lucan, Brenna, Tobin, Fenn + Mira, falls 1-2 zuerst gespielt; sonst Söldner."
     - "Halvard tritt hier zum ersten Mal auf und kennt jeden Namen (Szene am Schrein); Liora tritt nach dem Sieg bei."
     - Keine Geländeveränderung (nächste veränderliche Karte 1-4).

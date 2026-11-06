@@ -22,7 +22,7 @@ lines:
     mood: happy
     text: "Ein Held kehrt heim, wenn die Heimat ruft! Sie ruft nicht, sie schreit eher. Das zählt auch!"
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Hasks Versprengte. Sie plündern sich durchs Land, und die Felder brennen schon."
   - id: l06
@@ -36,6 +36,6 @@ lines:
     mood: happy
     text: "Dann sagen wir den Marodeuren, dass die Pacht heute in Prügeln fällig ist. Das ist ein Zahlungsmittel."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Waffen bereit. Tobin, zu deinem Vater. Wir halten den Hof, bis sie aufgeben."

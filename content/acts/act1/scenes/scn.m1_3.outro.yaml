@@ -1,5 +1,5 @@
-# Mission 1-3, Szene nach der Karte. Schlüsselgespräch 4 „Der Fremde mit dem Siegel“ (Narrative: Halvard, Kael, Liora; Trost, Vertrauen):
-# Halvards erster Auftritt. Er kommt heimlich, bringt Brot, kennt Kael lange, glaubt „an ihre Unschuld“ und nennt den Mittelsmann Osric Dunn
+# Mission 1-3, Szene nach der Karte. Schlüsselgespräch 4 „Der Fremde mit dem Siegel“ (Narrative: Halvard, Lucan, Liora; Trost, Vertrauen):
+# Halvards erster Auftritt. Er kommt heimlich, bringt Brot, kennt Lucan lange, glaubt „an ihre Unschuld“ und nennt den Mittelsmann Osric Dunn
 # (PO 2026-10-27: er weiß nicht, wo Dunn steckt; das Versteck erfährt die Truppe in Mission 1-4 vom Diebesring, E2), ohne zu sagen, dass er ihn selbst bezahlt hat. Seine Sätze sind im Rückblick doppeldeutig (Mörder, Hirte, der sein Opfer füttert).
 # Liora ist seine Ziehtochter und tritt bei (Beitritt im Kern: dritte Partei mit Charakter). Keine Entscheidung in dieser Szene.
 id: scn.m1_3.outro
@@ -20,7 +20,7 @@ lines:
     mood: neutral
     text: "Hauptmann. Hinter dem Weißdorn, ein Mann mit Kapuze. Allein. Und er hat ein Brot unterm Arm."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Hände von den Waffen. Den hat keiner angerührt."
@@ -31,9 +31,9 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: happy
-    text: "Kael. Mein Junge. Du bist breiter geworden, seit ich dich zuletzt gescholten habe."
+    text: "Lucan. Mein Junge. Du bist breiter geworden, seit ich dich zuletzt gescholten habe."
   - id: l07
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Halvard. Ihr solltet nicht hier sein."
@@ -65,7 +65,7 @@ lines:
     mood: neutral
     text: "Wer ist das?"
   - id: l13
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Halvard, Hüter des Paktes. Er war da, als sonst keiner da war."
@@ -75,7 +75,7 @@ lines:
     mood: neutral
     text: "Und du bist {avatar}. Setz dich, du zitterst. Ein volles Herz verträgt sich schlecht mit leerem Magen."
   - id: l15
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Auf jedem Zettel steht, wir hätten den König getötet. Glaubt Ihr das?"
@@ -83,7 +83,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: sad
-    text: "Nein, Kael. Ich glaube nicht, dass ihr es wart. Ich glaube, jemand wollte, dass ihr es wart."
+    text: "Nein, Lucan. Ich glaube nicht, dass ihr es wart. Ich glaube, jemand wollte, dass ihr es wart."
   - id: l17
     speaker: [halvard]
     fallback: skip
@@ -116,7 +116,7 @@ lines:
     text: "Hört zu. Wer euch den Auftrag für die Paktnacht gab, kam nicht selbst. Ein Makler schickte ihn: Osric Dunn."
   - id: l22
     requires: [{ not: { completed: m1_4 } }]
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Dunn. Wo finden wir ihn?"
@@ -129,7 +129,7 @@ lines:
   # Ist Mission 1-4 schon gespielt (Story 9.5), ersetzen l22d/l23d die Zeilen l22/l23: Halvard hat von Dunns Tod gehört, wirkt betroffen, doppeldeutig (er räumt hinter sich auf).
   - id: l22d
     requires: [{ completed: m1_4 }]
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Osric Dunn ist tot. Wir haben ihn nicht getötet."
@@ -140,7 +140,7 @@ lines:
     mood: sad
     text: "Ich habe davon gehört. Es geht mir nahe. Doch ein Hirte räumt auf, was seine Herde hinterlässt."
   - id: l24
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Warum sagt Ihr uns das? Der Tempel jagt uns, und Ihr tragt sein Siegel."
@@ -148,7 +148,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: happy
-    text: "Weil ich dich kenne, Kael. Und weil Brot und Rat das Einzige sind, was ein alter Mann noch geben kann."
+    text: "Weil ich dich kenne, Lucan. Und weil Brot und Rat das Einzige sind, was ein alter Mann noch geben kann."
   - id: l26
     speaker: [halvard]
     fallback: skip
@@ -158,7 +158,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Nimm sie mit, Kael. Bei dir ist sie sicherer als im Tempel. Ich vertraue sie dir an."
+    text: "Nimm sie mit, Lucan. Bei dir ist sie sicherer als im Tempel. Ich vertraue sie dir an."
   - id: l28
     speaker: [liora]
     fallback: skip
@@ -170,7 +170,7 @@ lines:
     mood: happy
     text: "Das ist mein Mädchen. Teilt das Brot, ihr alle. Brot teilt man mit denen, die man behüten will."
   - id: l30
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Das letzte Mal hat uns Gerrit gefüttert. Danke, Halvard."
@@ -181,14 +181,14 @@ lines:
     text: "Er war ein guter Mann. Geht jetzt, bevor der Nebel sich hebt. Ich finde euch wieder."
   - id: l32
     requires: [{ not: { completed: m1_4 } }]
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Willkommen im Aschenbanner, Liora. Wir suchen einen Makler."
   # 1-4 schon gespielt: Dunn ist tot, die Spur führt weiter zu dem, der ihn bezahlt hat
   - id: l32d
     requires: [{ completed: m1_4 }]
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Willkommen im Aschenbanner, Liora. Dunn ist tot. Wir suchen den, der ihn bezahlt hat."

@@ -16,7 +16,7 @@ function finaleSave(): string {
   const { data } = loadContentFromDisk();
   for (let seed = 1; seed < 30; seed++) {
     const c = newCampaign(data, seed, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-    for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, c, id);
+    for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, c, id);
     const level = data.campaign.nodes.find((n) => n.id === 'm1_8')!.expectedLevel;
     for (const u of c.roster) while (u.level < level) levelUp(data, u, c.rng);
     c.completed = data.campaign.nodes.filter((n) => n.id !== 'm1_8').map((n) => n.id);

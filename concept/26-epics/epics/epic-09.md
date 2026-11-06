@@ -12,7 +12,7 @@ damit ich weiß, worum es geht, bevor ich die Regeln kenne.
 
 **Angenommen** die Prolog-Karte (kompakt, Ziel `escape`, Tempelwachen, keine Leutnants) und die Szenen „Paktnacht“ und „Gerrits Grab“ (Illustrationstafeln)
 **Wenn** der Spieler den Prolog spielt
-**Dann** treten Rhen, Kael, Brenna und Tobin bei; die Lektionen zu Bewegung, Vorschau, Gefahrenzone und Heiltrank erscheinen höchstens einmal je Runde
+**Dann** treten Rhen, Lucan, Brenna und Tobin bei; die Lektionen zu Bewegung, Vorschau, Gefahrenzone und Heiltrank erscheinen höchstens einmal je Runde
 **Und** der Prolog liegt im Paket `core`; `pnpm sim prologue --runs 50` liegt im Korridor.
 
 ### Story 9.2: Mission 1-1 „Steckbriefe“
@@ -88,7 +88,7 @@ damit die Truppe mitten in Akt 1 ein Zuhause bekommt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Karte (Ziel `seize` durch Kael, Leutnants Hask und Ulvric), die Tafel „Das Banner auf der Ruine“ und Knoten `m1_6`, der sich nach 1-2 bis 1-5 öffnet
+**Angenommen** die Karte (Ziel `seize` durch Lucan, Leutnants Hask und Ulvric), die Tafel „Das Banner auf der Ruine“ und Knoten `m1_6`, der sich nach 1-2 bis 1-5 öffnet
 **Wenn** die Mission gewonnen ist
 **Dann** wechselt `setHome` die Heimat auf die Burg (Story 6.9), es folgt das Gespräch „Eine Burg für Niemande“, und E4 (Flüchtlinge aufnehmen oder geheim halten) fällt
 **Und** danach ist nur 1-7 wählbar; Akt 1 läuft ab hier fest bis zum Finale.

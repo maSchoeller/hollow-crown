@@ -3,7 +3,7 @@
 - **Dateien:** `art/turnarounds/lucan_board/sheet.png` (1536 × 1024, unveränderter Download, A3); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`, je 1024 × 1024)
 - **Datum:** 2026-11-05
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto `maschoeller` (Profilmenü, 2026-11-05); keine Modell-Versionsnummer sichtbar
-- **Anhänge:** `art/mockups/characters-s1/kael.png` (Porträt v2.5) und `art/turnarounds/ysolde_board/sheet.png` (Lieblings-Turnaround des Produktinhabers, nur als Format- und Stilvorlage)
+- **Anhänge:** `art/mockups/characters-s1/lucan.png` (Porträt v2.5) und `art/turnarounds/ysolde_board/sheet.png` (Lieblings-Turnaround des Produktinhabers, nur als Format- und Stilvorlage)
 - **Zweck:** Eingabe für Tripo Smart-Mesh (Multi-View vorn / rechts / hinten), `concept/23-art-direction/art-direction.md` §4.6; Story 15.9
 - **Menschlicher Anteil (A2):** Figurenbeschreibung, Wahl des Teamtuchs, Prompt, Prüfung und Abnahme durch den Assistenten im Auftrag des Produktinhabers; keine Retusche
 - **A7:** keine Namen fremder Werke, Marken oder Künstler im Prompt
@@ -29,4 +29,4 @@
 
 ## Tripo
 
-2026-11-06, Konto `maschoeller`, Credits aus dem bezahlten Tarif (Freigabe des Produktinhabers im Chat 2026-11-06), Datenschutz **Privat**. Smart-Mesh P2.0 Multi-View (Front = `front.png`, Right = `side.png`, Back = `back.png`), Quad, 3 000 Polygone, 4 Varianten (100), Textur (20), Auto-Rig Humanoid/Mixamo (20) = 140 Credits; Aufgabe `af14cdd8-b187-4f91-b254-1f42025ed43d`. Gewählt: Variante 2 von 4: sauberste Form, großes Schulterstück links, Pelzkragen, Umhang. Abweichung: Haar steht strubbelig ab, der kurze Zopf fehlt (alle vier Varianten ähnlich). Export GLB mit Skelett, Textur 2k → `art/models/source/kael_board_tripo.glb`; `pnpm art:tripo` → `art/models/units/kael.glb`, 6 179 Dreiecke, 512 px, 0,28 MB gz (Budget 7 000 / 512 / 0,5 MB). Vergleich: `art/previews/figuren_15_9_board.png`.
+2026-11-06, Konto `maschoeller`, Credits aus dem bezahlten Tarif (Freigabe des Produktinhabers im Chat 2026-11-06), Datenschutz **Privat**. Smart-Mesh P2.0 Multi-View (Front = `front.png`, Right = `side.png`, Back = `back.png`), Quad, 3 000 Polygone, 4 Varianten (100), Textur (20), Auto-Rig Humanoid/Mixamo (20) = 140 Credits; Aufgabe `af14cdd8-b187-4f91-b254-1f42025ed43d`. Gewählt: Variante 2 von 4: sauberste Form, großes Schulterstück links, Pelzkragen, Umhang. Abweichung: Haar steht strubbelig ab, der kurze Zopf fehlt (alle vier Varianten ähnlich). Export GLB mit Skelett, Textur 2k → `art/models/source/lucan_board_tripo.glb`; `pnpm art:tripo` → `art/models/units/lucan.glb`, 6 179 Dreiecke, 512 px, 0,28 MB gz (Budget 7 000 / 512 / 0,5 MB). Vergleich: `art/previews/figuren_15_9_board.png`.

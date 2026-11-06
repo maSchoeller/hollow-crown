@@ -29,7 +29,7 @@ describe('wantedView', () => {
     const cfg = data.balance.lieutenant.bounty;
     for (const g of [0, 1, 2, 3]) {
       const c = fresh();
-      knows(c, 'hask', g, 'kael');
+      knows(c, 'hask', g, 'lucan');
       const v = wantedView(data, c, 'hask')!;
       expect(v.bounty).toBe(bountyGold(data, g));
       expect(v.bounty).toBe(cfg.goldPerLevel * (g + 1));
@@ -41,7 +41,7 @@ describe('wantedView', () => {
   it('unlocks as many grudge skills as the grudge, in the order of the content', () => {
     for (const g of [0, 1, 2, 3]) {
       const c = fresh();
-      knows(c, 'morra', g, 'kael');
+      knows(c, 'morra', g, 'lucan');
       const v = wantedView(data, c, 'morra')!;
       expect(v.skills.map((s) => s.id)).toEqual(data.lieutenants.morra!.grudgeSkills);
       expect(v.skills.map((s) => s.free)).toEqual([g >= 1, g >= 2, g >= 3]);
@@ -51,23 +51,23 @@ describe('wantedView', () => {
 
   it('points at a target who is still in the company, who has fallen, who left, or at none', () => {
     const c = fresh();
-    const kael = c.roster.find((r) => r.id === 'kael')!;
-    knows(c, 'hask', 2, 'kael');
-    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'alive', id: 'kael', nameKey: kael.nameKey });
-    c.roster = c.roster.filter((r) => r.id !== 'kael');
-    c.fallen.push({ id: 'kael', nameKey: kael.nameKey, node: 'prologue' });
-    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'fallen', id: 'kael' });
+    const lucan = c.roster.find((r) => r.id === 'lucan')!;
+    knows(c, 'hask', 2, 'lucan');
+    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'alive', id: 'lucan', nameKey: lucan.nameKey });
+    c.roster = c.roster.filter((r) => r.id !== 'lucan');
+    c.fallen.push({ id: 'lucan', nameKey: lucan.nameKey, node: 'prologue' });
+    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'fallen', id: 'lucan' });
     c.fallen = [];
-    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'gone', id: 'kael' });
+    expect(wantedView(data, c, 'hask')!.target).toMatchObject({ kind: 'gone', id: 'lucan' });
     knows(c, 'hask', 2);
     expect(wantedView(data, c, 'hask')!.target).toEqual({ kind: 'none' });
-    knows(c, 'hask', 0, 'kael');
+    knows(c, 'hask', 0, 'lucan');
     expect(wantedView(data, c, 'hask')!.target).toEqual({ kind: 'none' });
   });
 
   it('counts meetings and routs from the campaign, level grudge and target from the unit on the board', () => {
     const c = fresh();
-    knows(c, 'hask', 1, 'kael', { encounters: 3, routs: 2 });
+    knows(c, 'hask', 1, 'lucan', { encounters: 3, routs: 2 });
     const v = wantedView(data, c, 'hask', { level: 6, grudge: 3, grudgeTarget: 'brenna' })!;
     expect(v).toMatchObject({ level: 6, grudge: 3, encounters: 3, routs: 2, met: true, bounty: bountyGold(data, 3) });
     expect(v.target).toMatchObject({ id: 'brenna' });
@@ -87,7 +87,7 @@ describe('wantedList', () => {
     const c = fresh();
     expect(wantedList(data, c)).toEqual([]);
     knows(c, 'morra', 0, undefined, { encounters: 1 });
-    knows(c, 'hask', 2, 'kael');
+    knows(c, 'hask', 2, 'lucan');
     (c.lieutenants ??= {}).ulvric = { met: false, encounters: 0, grudge: 0, routs: 0, signatureDropped: false };
     const order = Object.keys(data.lieutenants);
     const ids = wantedList(data, c).map((v) => v.id);

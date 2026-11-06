@@ -7,6 +7,6 @@ lines:
     mood: neutral
     text: "Schütze auf dem Wehrgang! Von oben reicht sein Bogen ein Feld weiter."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Klingen kommen nicht hinauf. Hinter dem Tor führt eine Treppe, von dort erreicht ihr ihn."

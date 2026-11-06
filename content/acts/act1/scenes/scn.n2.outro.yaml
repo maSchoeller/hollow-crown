@@ -10,7 +10,7 @@ lines:
     mood: neutral
     text: "Im Torstein glimmt ein Splitter Glut, vom Frost freigelegt. Ein Glutfunke."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Der Turm war der letzte seiner Art. Jemand muss ihn eine lange Zeit allein gehalten haben."
   - id: l04
@@ -22,4 +22,4 @@ lines:
     speaker: [varek]
     fallback: skip
     mood: happy
-    text: "Der Turm hat mich länger behalten, als die Würfel versprachen. Weiter, Kael?"
+    text: "Der Turm hat mich länger behalten, als die Würfel versprachen. Weiter, Lucan?"

@@ -128,21 +128,21 @@ Der **Treffer-Frame** der Angriffsanimation wird im Manifest markiert. Der Rende
 
 ```yaml
 # content/sprites/units.yaml
-- id: kael
-  base: captain                 # Klassenmodell, Kopf-/Haar-Variante „kael“
+- id: lucan
+  base: captain                 # Klassenmodell, Kopf-/Haar-Variante „lucan“
   frame: [32, 32]
   anchor: [16, 28]              # Fußpunkt
   palette: { hair: hair_brown, cloth_a: ash, cloth_b: leather, metal: steel }
   teamRamp: true
-  weapons: [sword, lance]       # erzeugt kael.sword.*, kael.lance.*
+  weapons: [sword, lance]       # erzeugt lucan.sword.*, lucan.lance.*
   anims:
     idle:        { dirs: [s], frames: 4, fps: 6, loop: pingpong }
     walk:        { dirs: [s, n, e], frames: 4, fps: 10, loop: true }
     attack:      { dirs: [s, n, e], frames: 6, fps: 12, hitFrame: 3, frame: [48, 48] }
     hit:         { dirs: [s], frames: 2, fps: 12 }
     downed:      { dirs: [s], frames: 1 }
-  portrait: kael                # → art/portraits/kael/<mood>.png
-  cutin: kael
+  portrait: lucan                # → art/portraits/lucan/<mood>.png
+  cutin: lucan
 ```
 
 ## 6. Formate & Kompression
@@ -208,7 +208,7 @@ Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optio
 
 ## 10. Benennung
 
-- IDs englisch, `snake_case`, identisch mit Content-IDs: `kael`, `captain`, `iron_sword`, `village`, `ch01_varnhold`.
+- IDs englisch, `snake_case`, identisch mit Content-IDs: `lucan`, `captain`, `iron_sword`, `village`, `ch01_varnhold`.
 - Dateien: `<id>.<variant>.<anim>.<dir>.png` in der Quelle; im Build nur Atlanten `units_<chapter>.png` + JSON.
 - Stimmungen: `neutral|happy|angry|sad|surprised|hurt` (wie `08` §7).
 
@@ -233,8 +233,8 @@ art/**/*.png   filter=lfs diff=lfs merge=lfs -text
 
 | # | Art-Meilenstein | Ergebnis | Benötigt für |
 |---|---|---|---|
-| A0 | Pipeline-Beweis | Palette Hollow-64, Render-Setup, `pixelize`, Kael idle/walk/attack, Varnhold-Ausschnitt (Beispiel am 2026-10-24 aus dem Repo entfernt, abrufbar in der Git-Historie unter `concept/art/`) | M2 (Sprite-Format fix) |
-| A1 | Prolog komplett | Tileset Sommer, Requisiten Paktnacht (Glutdom, Lager unterwegs), 4 Helden + Tempelwache, Porträts ×6 Stimmungen, 2 Hintergründe, Cut-ins Kael/Brenna | M3 |
+| A0 | Pipeline-Beweis | Palette Hollow-64, Render-Setup, `pixelize`, Lucan idle/walk/attack, Varnhold-Ausschnitt (Beispiel am 2026-10-24 aus dem Repo entfernt, abrufbar in der Git-Historie unter `concept/art/`) | M2 (Sprite-Format fix) |
+| A1 | Prolog komplett | Tileset Sommer, Requisiten Paktnacht (Glutdom, Lager unterwegs), 4 Helden + Tempelwache, Porträts ×6 Stimmungen, 2 Hintergründe, Cut-ins Lucan/Brenna | M3 |
 | A2 | UI-Kit | Icons, Rahmen, Schriften, Kampfvorschau, Dialogfenster, Lager | M4/M5 |
 | A3 | Kapitel 1–2 | Brand/Asche, Schrein, Mira, Liora, Varek, Hask, Morra, Lichtschicht | M6 |
 | A4 | Kapitel 3–5 | Nacht/Regen, Festung, Nebel, Ysolde, Sable, Ulvric, Cassian, Pegasus, Jungdrache | M6 |

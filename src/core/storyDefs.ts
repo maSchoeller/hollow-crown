@@ -104,9 +104,9 @@ export interface SceneOption {
 /** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
 export interface SceneSpeech {
   id: string;
-  /** replacement chain: the first companion still with the company speaks; avatar and kael always are */
+  /** replacement chain: the first companion still with the company speaks; avatar and lucan always are */
   speaker?: string[];
-  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/kael) */
+  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/lucan) */
   fallback?: 'skip';
   mood: Mood;
   text: string;

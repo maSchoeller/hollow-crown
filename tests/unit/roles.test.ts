@@ -195,7 +195,7 @@ describe('weapon groups on items and canEquip', () => {
 
 describe('PoC figures and maps after the remap', () => {
   const remap: Record<string, string> = {
-    avatar: 'tactician', kael: 'captain', brenna: 'vanguard', tobin: 'vanguard', mira: 'marksman', liora: 'healer', varek: 'skirmisher',
+    avatar: 'tactician', lucan: 'captain', brenna: 'vanguard', tobin: 'vanguard', mira: 'marksman', liora: 'healer', varek: 'skirmisher',
   };
 
   it('maps the PoC figures to their roles', () => {

@@ -22,7 +22,7 @@ describe('map m1_5_hungerlager', () => {
     const map = data.maps.m1_5_hungerlager!;
     expect(map.units.some((u) => u.id === 'grosk' && u.lieutenant === 'grosk')).toBe(true);
     for (const [d, n] of [['easy', 19], ['normal', 24], ['hard', 32]] as const) {
-      const s = createBattle(data, fresh(d), 'm1_5', ['avatar', 'kael']);
+      const s = createBattle(data, fresh(d), 'm1_5', ['avatar', 'lucan']);
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map.reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
       expect(start + waves, d).toBe(n);

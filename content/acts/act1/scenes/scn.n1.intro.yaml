@@ -13,7 +13,7 @@ lines:
     mood: happy
     text: "Bleibt dicht hinter mir. Im Nebel kenn ich jeden Pflasterstein. Die meisten hab ich selbst gelockert."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Du sagtest, es geht um etwas, das dir gehört."
   - id: l04
@@ -32,7 +32,7 @@ lines:
     mood: neutral
     text: "Der Ring wollte mich zurück, gegen eine Auskunft. Ihr habt nein gesagt. Das hat noch keiner für mich getan."
   - id: l07
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Du schuldest uns nichts. Wo hält er den Dolch?"
   - id: l08
@@ -46,6 +46,6 @@ lines:
     mood: happy
     text: "Dann steigen wir ihm aufs Dach. Wer nicht runterkommt, kriegt den Axtstiel. Ich nenne das Hausbesuch."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Waffen bereit. Wir bleiben beisammen."

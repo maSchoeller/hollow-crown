@@ -11,7 +11,7 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: neutral
-    text: "Im Heer. Du kennst Kael aus dem Heer."
+    text: "Im Heer. Du kennst Lucan aus dem Heer."
   - id: l03
     speaker: [varek]
     fallback: skip

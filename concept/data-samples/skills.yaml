@@ -16,8 +16,8 @@
 
 # --- Persönliche Skills ---
 - { id: strategist_eye, source: personal, trigger: on_attack, condition: { alliesAdjacentToTarget: 2 }, effect: { hitBonus: 10 } }          # Avatar
-- { id: steadfast,      source: personal, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { def: 3 } } }             # Kael
-- { id: veteran_grit,   source: personal, trigger: passive,   condition: { adjacentTo: kael }, effect: { stats: { str: 2 }, critBonus: 5 } } # Brenna
+- { id: steadfast,      source: personal, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { def: 3 } } }             # Lucan
+- { id: veteran_grit,   source: personal, trigger: passive,   condition: { adjacentTo: lucan }, effect: { stats: { str: 2 }, critBonus: 5 } } # Brenna
 - { id: underdog,       source: personal, trigger: passive,   condition: { enemyLevelHigher: true }, effect: { hitBonus: 10, avoidBonus: 10 } } # Tobin
 - { id: poacher,        source: personal, trigger: on_attack, condition: { distanceAtLeast: 2, selfOnTerrain: forest }, effect: { damageBonus: 2 } } # Mira
 - { id: foresight,      source: personal, trigger: on_defend, condition: { attackerDamageType: magical }, effect: { avoidBonus: 15 } } # Liora

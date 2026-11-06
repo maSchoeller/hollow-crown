@@ -39,7 +39,7 @@ const fake = (over: Partial<BattleResult> = {}): BattleResult => ({
   materials: { iron_ore: 2, none: 0 },
   items: [],
   units: [
-    { id: 'kael', nameKey: 'unit.kael.name', levelBefore: 8, levelAfter: 9, exp: 112, mastered: [] },
+    { id: 'lucan', nameKey: 'unit.lucan.name', levelBefore: 8, levelAfter: 9, exp: 112, mastered: [] },
     { id: 'brenna', nameKey: 'unit.brenna.name', levelBefore: 8, levelAfter: 8, exp: 48, mastered: [] },
   ],
   fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }],
@@ -55,7 +55,7 @@ describe('missionResultView (story 6.6)', () => {
   it('lists survivors with level-up and EP first, the fallen grey and last', () => {
     const v = missionResultView(fake());
     expect(v.figures.map((f) => [f.id, f.fallen, f.leveledUp, f.exp])).toEqual([
-      ['kael', false, true, 112],
+      ['lucan', false, true, 112],
       ['brenna', false, false, 48],
       ['fenn', true, false, 0],
     ]);
@@ -105,11 +105,11 @@ describe('defeatSentence (story 6.6)', () => {
 
   it('names the unit that had to survive', () => {
     const s = start();
-    const u = getUnit(s, 'kael');
+    const u = getUnit(s, 'lucan');
     u.hp = 0;
     knockOut(data, s, u, [] as GameEvent[]);
     expect(s.outcome).toBe('defeat');
-    expect(s.defeatReason).toBe('kael');
+    expect(s.defeatReason).toBe('lucan');
     expect(defeatSentence(data, s)).toEqual({ kind: 'unit', nameKey: u.nameKey, name: u.name });
   });
 

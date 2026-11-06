@@ -466,8 +466,8 @@ const flagRef = z.union([
   z.record(z.string(), flagValue).refine((r) => Object.keys(r).length === 1, 'exactly one flag'),
 ]);
 const companion = z.string().min(1);
-/** `recruit`/`leave` never apply to the avatar or Kael. */
-const movableCompanion = companion.refine((id) => !PERMANENT_COMPANIONS.includes(id), 'avatar and kael never join or leave');
+/** `recruit`/`leave` never apply to the avatar or Lucan. */
+const movableCompanion = companion.refine((id) => !PERMANENT_COMPANIONS.includes(id), 'avatar and lucan never join or leave');
 const stance = z.enum(['warm', 'sober', 'defiant']);
 
 export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>

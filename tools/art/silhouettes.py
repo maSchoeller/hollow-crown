@@ -49,7 +49,7 @@ OUT = os.path.join(ROOT, "art", "previews")
 
 # sheet groups (story 8.3 AC 1): company, lieutenants, generic enemies
 GROUPS = [
-    ("Company", ["avatar_a", "avatar_b", "kael", "brenna", "tobin", "fenn", "mira", "liora", "ysolde", "varek"]),
+    ("Company", ["avatar_a", "avatar_b", "lucan", "brenna", "tobin", "fenn", "mira", "liora", "ysolde", "varek"]),
     ("Lieutenants", ["grosk", "hask", "morra", "ulvric"]),
     ("Bosses and NPCs", ["osric", "paktwacht_steward"]),  # story 15.9
     ("Generic enemies", ["brigand", "bandit_archer", "soldier", "wolf_rider", "mercenary", "temple_guard"]),

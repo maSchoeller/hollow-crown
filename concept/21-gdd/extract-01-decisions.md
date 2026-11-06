@@ -13,8 +13,8 @@ Erstellt 2026-10-23 per Extraktion aus `01-decisions.md`, `02`–`07`, `content/
 
 **Zug & Kampf**
 - Phasen Spieler → Gegner → Dritte; je Einheit Bewegung + 1 Aktion; Bewegung bis zur Aktion zurücknehmbar (außer neue Info aufgedeckt). (03 §1)
-- Freie Aktionen: Tauschen 1×/Zug; Konvoi neben Kael 1×/Zug je ein Item nehmen/ablegen; Waffenwechsel unbegrenzt. (U7)
-- Avatar „Befehl“ 1×/Karte: erschöpften Nachbarn reaktivieren. Kael „Sammelruf“ 1×/Karte, Radius 2, +2 Angriff/+10 Treffer bis Ende nächster Gegnerphase.
+- Freie Aktionen: Tauschen 1×/Zug; Konvoi neben Lucan 1×/Zug je ein Item nehmen/ablegen; Waffenwechsel unbegrenzt. (U7)
+- Avatar „Befehl“ 1×/Karte: erschöpften Nachbarn reaktivieren. Lucan „Sammelruf“ 1×/Karte, Radius 2, +2 Angriff/+10 Treffer bis Ende nächster Gegnerphase.
 - Treffer = Hit + 2×SKL + ⌊LCK/2⌋ ± 15 Dreieck + Support + Skills; Ausweichen = 2×AS + LCK + Gelände + Support; 0–100; 2RN.
 - Schaden = ⌊(Angriff × Eff + Dreieck ±1 − DEF/RES) × ElementMult⌋ ≥ 0; Effektivität 3×Mt; immer `floor`.
 - Krit = Crit + ⌊SKL/2⌋ − LCK, ×3.
@@ -28,7 +28,7 @@ Erstellt 2026-10-23 per Extraktion aus `01-decisions.md`, `02`–`07`, `content/
 - Supports C10/B25/A45/S70; Nachbarbonus C +5 Treffer, B +5/+5, A +10/+10, S +15/+10/+5 Krit (max. +20/+20); +1 Punkt bei benachbartem Zugende, +2 bei Tandem/Heilen/Bergen; Rang erfordert Lagerfeuer-Gespräch; ein S-Partner. Tandem ab B (eigene Phase, 50 %, kein Krit/Konter, 1 Partner). Schutz ab A 20 %, S 30 %. Trauer −10 Treffer für 3 Missionen.
 
 **Tod**
-- Klassik sofort tot; Standard: niedergestreckt, weiterer Treffer tötet, Bergen → Narbe, liegt bei Missionsende → tot, nach 2 Narben nächster 0-TP-Fall tödlich; Casual: Rückzug ohne Narbe. Avatar/Kael bei 0 TP = Niederlage.
+- Klassik sofort tot; Standard: niedergestreckt, weiterer Treffer tötet, Bergen → Narbe, liegt bei Missionsende → tot, nach 2 Narben nächster 0-TP-Fall tödlich; Casual: Rückzug ohne Narbe. Avatar/Lucan bei 0 TP = Niederlage.
 - Narben: Lahmes Bein −1 MOV, Zittrige Hand −10 Treffer, Gebrochene Rippen −3 TP, Schwaches Auge −5 Krit/−5 Treffer, Zerschlagene Schulter −2 STR, Albträume −3 LCK/−5 Ausweichen.
 - KI-Todesstoß: Leicht nie, Normal Rückfall, Schwer bevorzugt.
 
@@ -50,9 +50,9 @@ Erstellt 2026-10-23 per Extraktion aus `01-decisions.md`, `02`–`07`, `content/
 - Taverne: Söldner Stufe Armeeschnitt −1, Wachstum ±10 %, 1–2 Traits (Zäh, Flink, Gierig, Feigling, Veteran, Elementkind, Unbeholfen), 3 Angebote, Armee-Limit 20, Kosten 600 + 150×Stufe.
 
 **Karten & Missionen**
-- Größen kompakt 8×12–12×18, mittel bis 16×24, groß bis 24×32, eher quadratisch. Einsatzplätze PoC 4/4/6, Avatar + Kael Pflicht.
+- Größen kompakt 8×12–12×18, mittel bis 16×24, groß bis 24×32, eher quadratisch. Einsatzplätze PoC 4/4/6, Avatar + Lucan Pflicht.
 - Gelände: Wald +1 DEF/+20 Ausweichen, Berg +2/+30, Festung/Thron +2–3/+20–30 + 20 % Heilung; Flieger ohne Bonus; Höhe nur optisch. Objekte: Tür, Truhe, Hebel, Balliste (3–10, Mt 12), Dorf (zerstörbar).
-- Ziele rout, boss, reach, seize (nur Kael), defend, survive, escape; Nebenziele visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc; Verstärkungen 1 Runde angekündigt; Hinterhalt nur Schwer.
+- Ziele rout, boss, reach, seize (nur Lucan), defend, survive, escape; Nebenziele visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc; Verstärkungen 1 Runde angekündigt; Hinterhalt nur Schwer.
 - Nebel Sicht 3, Schütze/Dieb +2, Flieger +1.
 - KI-Profile aggressive, hold, guard, trigger, hunt, raider, flee, support (heilt < 70 %, sich < 40 %); Wertung Schaden + 50×Kill − 0,5×Konter, Heiler +10, niedrigste TP +5, Ziel +30; Zugreihenfolge Kill-Chance, dann Distanz.
 - Schwierigkeit −15/0/+15 % Gegnerwerte, Schwer + Affixe/Hinterhalte, Aufstellung je Schwierigkeit, nur absenkbar. Sim-Ziel Leicht ≥ 95 % (≤ 0,5 Niedergestreckte), Normal 75–100 % (0,4–1,3), Schwer 30–70 %.
@@ -75,4 +75,4 @@ Erstellt 2026-10-23 per Extraktion aus `01-decisions.md`, `02`–`07`, `content/
 9. Scharmützel vs. Aufträge.
 10. Tod → leerer Raum, Epilog-Flags.
 11. Schwierigkeitskurve über 35 Karten.
-12. Kael als Pflicht vs. „Gefährten ziehen lassen“.
+12. Lucan als Pflicht vs. „Gefährten ziehen lassen“.

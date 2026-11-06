@@ -28,6 +28,6 @@ lines:
     mood: happy
     text: "Du bist nicht allein, Küken. Das ist der Witz an einer Kompanie. Naja. Nicht der gute."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Nimm sie mit, Tobin. Und komm wieder, solange das Tor offen steht."

@@ -10,7 +10,7 @@ damit Szenen tragen.
 
 ## Acceptance Criteria
 
-1. **Neutralbilder von Figuren mit Tripo-Modell bleiben final** (Antwort Produktinhaber 2026-10-24: Modell und Porträt gehören zusammen): Kael, Rhen (`rhen_a`, `rhen_b`), Brenna, Tobin, Mira, Fenn, Liora, Varek, Ysolde, Grosk, Hask, Morra, Ulvric und die generischen Gegner `brigand`, `soldier`, `bandit_archer`. Alle anderen Porträts dürfen von Grund auf neu gedacht werden; dabei sollen **einige Frauen** vertreten sein, nicht nur Männer.
+1. **Neutralbilder von Figuren mit Tripo-Modell bleiben final** (Antwort Produktinhaber 2026-10-24: Modell und Porträt gehören zusammen): Lucan, Rhen (`rhen_a`, `rhen_b`), Brenna, Tobin, Mira, Fenn, Liora, Varek, Ysolde, Grosk, Hask, Morra, Ulvric und die generischen Gegner `brigand`, `soldier`, `bandit_archer`. Alle anderen Porträts dürfen von Grund auf neu gedacht werden; dabei sollen **einige Frauen** vertreten sein, nicht nur Männer.
 2. **Vier Stimmungen für die Kernfiguren von Akt 1:** `neutral`, `happy`, `angry`, `sad` in gleicher Pose und gleichem Ausschnitt (nur Gesicht, Brauen, Schultern ändern sich), freigestellt (echter Alphakanal), quadratisch 1254 × 1254 (Art Direction §5.1). Es fehlen noch:
    - Mira: `sad`
    - Fenn: `happy`, `angry`, `sad`
@@ -23,7 +23,7 @@ damit Szenen tragen.
    - Ulvric: `happy`, `angry`, `sad`
    - Rhen (`rhen_a`, `rhen_b`): je `happy`, `angry`, `sad`
    - Halvard (kein Tripo-Modell, darf neu gedacht werden): `neutral` plus 3 Stimmungen
-   Kael, Brenna und Tobin sind vollständig.
+   Lucan, Brenna und Tobin sind vollständig.
 3. **Nebenfiguren nur `neutral`:** Gerrit (kein Tripo-Modell, darf neu gedacht werden). Osric Dunn (Boss von Mission 1-4) und König Aldric IV (Prolog, Paktnacht) bekommen jetzt je ein Porträt `neutral` (Entscheidung Produktinhaber 2026-10-24).
 4. **Generische Gegnerporträts** `art/mockups/characters-s1/class_*.png`: `class_wolf_rider` und `class_temple_guard` neu, `class_mercenary` neu passend zur neuen Tripo-Figur (gemeinsam mit Story 8.3: das Porträt entsteht vor dem Brett-Turnaround); `class_archer`, `class_mage`, `class_fighter`, `class_cleric` dürfen neu gedacht werden, auch mit Frauen.
 5. **Ablage und Build:** Die Bilder bleiben in `art/mockups/characters-s1/` (`<id>.png`, `<id>_<mood>.png`); `build_halves()` in `tools/art/build.py` baut daraus Halbfiguren, Büsten und Köpfe. Fehlende Stimmungen fallen in `src/ui/halfFigure.ts` auf `neutral` zurück; nach dieser Story gibt es für die Kernfiguren keinen Rückfall mehr.
@@ -56,9 +56,9 @@ damit Szenen tragen.
 
 ## Dev Notes
 
-- **Heute vorhanden** in `art/mockups/characters-s1/`: Stimmungen von Kael (`happy`, `angry`, `sad`), Brenna (`happy`, `angry`, `sad`), Tobin (`happy`, `angry`, `sad`), Mira (`happy`, `angry`), Grosk (`angry`), Hask (`happy`), Liora (`sad`), Varek (`happy`). Die Gegnerklassen `class_archer`, `class_brigand`, `class_cleric`, `class_fighter`, `class_mage`, `class_mercenary`, `class_soldier` liegen schon dort; `art/portraits/` ist gelöscht.
+- **Heute vorhanden** in `art/mockups/characters-s1/`: Stimmungen von Lucan (`happy`, `angry`, `sad`), Brenna (`happy`, `angry`, `sad`), Tobin (`happy`, `angry`, `sad`), Mira (`happy`, `angry`), Grosk (`angry`), Hask (`happy`), Liora (`sad`), Varek (`happy`). Die Gegnerklassen `class_archer`, `class_brigand`, `class_cleric`, `class_fighter`, `class_mage`, `class_mercenary`, `class_soldier` liegen schon dort; `art/portraits/` ist gelöscht.
 - **Regeln (Art Direction §5.1):** quadratisch 1:1, Halbfigur Kopf bis Hüfte, Körper leicht gedreht, freigestellt, kein Boden, kein Text, Quelle ≥ 1254 px. Stil Round-Chibi: großer runder Kopf, große Augen, dunkelbraune weiche Outlines, einfaches glänzendes Cel-Shading, warme Farben; Alter nur über Bart, graues Haar, Falten, Narben. Überrascht und verletzt entstehen im Dialog über Effekte, nicht über Bilder.
-- **Prompt-Muster:** `art/prompts/moods_2026-10-24.md` (erste Nachricht mit angehängtem Neutralbild, dann je Stimmung eine Folgenachricht „identical in everything … change ONLY the facial expression, eyebrows and shoulders“). Beim Neuentwurf Format und Stilteil aus der Stil- und Formatvorgabe in `art/mockups/characters-s1/README.md` übernehmen, Referenzen wie dort (`kael.png`, `rhen_a.png`, `tobin.png`).
+- **Prompt-Muster:** `art/prompts/moods_2026-10-24.md` (erste Nachricht mit angehängtem Neutralbild, dann je Stimmung eine Folgenachricht „identical in everything … change ONLY the facial expression, eyebrows and shoulders“). Beim Neuentwurf Format und Stilteil aus der Stil- und Formatvorgabe in `art/mockups/characters-s1/README.md` übernehmen, Referenzen wie dort (`lucan.png`, `rhen_a.png`, `tobin.png`).
 - **Zuordnung zu Story 8.3:** Das generische Porträt `class_<id>.png` ist die Vorlage des Brett-Turnarounds. Wer zuerst dran ist, legt die Prompt-Aufzeichnung an; die andere Story verweist darauf.
 - **Ersetzen, nicht ergänzen:** Neu gedachte Porträts ersetzen die alte Datei unter gleichem Namen; die abgelöste Fassung wird nicht im Arbeitsbaum behalten (Git-Historie genügt), wie bei Brenna und Mira am 2026-10-24.
 - **Build:** `pnpm art:build` braucht Python mit Pillow und numpy. PNGs unter `art/` liegen in Git LFS: im frischen Worktree zuerst `git lfs pull`.
@@ -88,7 +88,7 @@ Claude Opus 5.5 (Kontrolleur: Bilder per ChatGPT über Claude in Chrome, Abnahme
 
 ### Completion Notes List
 
-- 36 neue Stimmungsbilder: Mira `sad`; Fenn, Ysolde, Morra, Ulvric, Rhen (`rhen_a`, `rhen_b`), Halvard je `happy`, `angry`, `sad`; Liora `happy`, `angry`; Varek `angry`, `sad`; Grosk `happy`, `sad`; Hask `angry`, `sad`. Damit haben alle Kernfiguren von Akt 1 vier Stimmungen; Kael, Brenna, Tobin waren vollständig.
+- 36 neue Stimmungsbilder: Mira `sad`; Fenn, Ysolde, Morra, Ulvric, Rhen (`rhen_a`, `rhen_b`), Halvard je `happy`, `angry`, `sad`; Liora `happy`, `angry`; Varek `angry`, `sad`; Grosk `happy`, `sad`; Hask `angry`, `sad`. Damit haben alle Kernfiguren von Akt 1 vier Stimmungen; Lucan, Brenna, Tobin waren vollständig.
 - Halvard: Neutralbild beibehalten (war Stilreferenz der Vereinheitlichung vom 2026-10-23), nur die Stimmungen neu. Gerrit: Neutralbild beibehalten.
 - AC 3 geklärt (Produktinhaber 2026-10-24: „beide jetzt“): `osric.png` (Osric Dunn, 2 Iterationen) und `aldric.png` (König Aldric IV.), nur `neutral`.
 - Gegnerporträts: `class_wolf_rider` (Frau), `class_temple_guard` (Frau), `class_mercenary` (Mann) neu mit Story 8.3; `class_soldier` als Frau passend zur Tripo-Soldatin, `class_archer` und `class_cleric` als Frauen neu gedacht (die Klerikerin ohne die Kreuzsymbole der alten Fassung); `class_mage` und `class_fighter` bleiben.

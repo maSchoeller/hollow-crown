@@ -85,7 +85,7 @@ haunts:
     exit: { rect: [6, 1, 9, 1] }
 deploy:
   max: 4
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[6, 17], [7, 17], [8, 17], [9, 17], [7, 18], [8, 18], [6, 18]]
 units:
   # Brückenkopf: zwei Lanzen halten die Brücke (Engstelle)
@@ -118,7 +118,7 @@ reinforcements:
 objectives:
   victory: { type: rout }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 200 } }
@@ -160,5 +160,5 @@ design:
     - { at: [6, 1], label: T, note: "Treppe vom Markt auf den Wehrgang, Gegenstück [9,1]." }
     - { at: [4, 0], label: S, note: "Mauerturm, Stufe 2: Schütze trifft von oben auf 2–3 Felder. Treppe [5,0] vom Wehrgang, von dort auch Nahkampf." }
   notes:
-    - "Normal 12 Gegner (2 davon R4) gegen 4 eigene (Rhen, Kael, Brenna, Tobin); Fenn tritt nach dem Sieg bei."
-    - "Saat Kharesh im Händlerhaus [1,6]; Kael schweigt dazu in der Szene."
+    - "Normal 12 Gegner (2 davon R4) gegen 4 eigene (Rhen, Lucan, Brenna, Tobin); Fenn tritt nach dem Sieg bei."
+    - "Saat Kharesh im Händlerhaus [1,6]; Lucan schweigt dazu in der Szene."

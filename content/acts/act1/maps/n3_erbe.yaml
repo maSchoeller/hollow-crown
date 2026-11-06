@@ -3,7 +3,7 @@
 # Hasks versprengte Marodeure kommen von Süden über die brennenden Felder und von Norden über die Brücke. Zu schützen: Tobins Vater. Der Hauptmann trägt den Schlüssel zur Scheunentruhe.
 # Belohnung: Signaturlanze „Erbstück“ (heirloom) bei Sieg als Knotenwirkung in den Konvoi, kein Glutfunke (campaign.yaml n3 effects).
 # Gedenk-Variante (Tobin gefallen, memorialIf): keine Kartenänderung, volle Belohnung, Szenen scn.n3.memorial_intro/outro. Pflicht und Niederlage bleiben eingetragen: Die Aufstellung filtert forced auf die Truppe, `unit_dies` greift nur für Figuren auf dem Brett, das Zielblatt nennt nur diese.
-# Abweichungen vom Entwurf: Kornfeld als `field` statt Gras (Abnahme Karten-Assets 2026-11-05), Scheunen als `farm` und Mühle als `building` statt Mauerblock; Niederlage auch bei Kaels Tod, falls er mitkommt (Kael verlässt die Truppe nie, PERMANENT_COMPANIONS).
+# Abweichungen vom Entwurf: Kornfeld als `field` statt Gras (Abnahme Karten-Assets 2026-11-05), Scheunen als `farm` und Mühle als `building` statt Mauerblock; Niederlage auch bei Lucans Tod, falls er mitkommt (Lucan verlässt die Truppe nie, PERMANENT_COMPANIONS).
 # Balancing 2026-11-05 [C]: Marodeure Stufe 6 (Entwurf 3), Hauptmann und schwere Figuren 7 (Entwurf 4), expectedLevel des Knotens ist 7; Aufstellung rund um den Vater statt nur südlich, der Vater im Kettenhemd (sonst fiel er auf Stufe 6 in über der Hälfte der Läufe; Normal jetzt Sieg 86 %, 0,50 Niedergestreckte).
 # Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
 #   [6,7] Grund: der Platz vor dem Wohnhaus, wo Tobins Vater stand.
@@ -99,7 +99,7 @@ reinforcements:
 objectives:
   victory: { type: defend, unit: tobin_father, turns: 8 }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
     - { type: unit_dies, unit: tobin }
     - { type: unit_dies, unit: tobin_father }

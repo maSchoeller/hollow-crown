@@ -110,7 +110,7 @@ Renderer spielt Events als Animationen ab; UI liest State (Signals).
 
 ## 8. Tools
 
-- **Karten-Viewer/Validator** (Dev-Route `/#/dev/map/<id>`): rendert die Karte, zeigt Spawns, Ziele, Trigger-Bereiche, Gefahrenzonen der Gegner zu Runde 1, Erreichbarkeit (Pfad Kael → Ziel existiert), Fehlerliste.
+- **Karten-Viewer/Validator** (Dev-Route `/#/dev/map/<id>`): rendert die Karte, zeigt Spawns, Ziele, Trigger-Bereiche, Gefahrenzonen der Gegner zu Runde 1, Erreichbarkeit (Pfad Lucan → Ziel existiert), Fehlerliste.
 - **CLI** `pnpm content:check`: validiert alle YAML (Schema, Referenzen auf IDs, Rastergröße, Legende, i18n-Schlüssel).
 - **CLI** `pnpm sim <mapId> --runs 200 --seed 1 --difficulty normal`: Spieler-Seite wird von der KI (Profil `aggressive` + einfache Heuristik) gespielt; Ausgabe: Siegquote, Ø Runden, Ø Verluste, häufigste Todesursachen. Dient Balancing und KI-gestütztem Karten-Bau.
 

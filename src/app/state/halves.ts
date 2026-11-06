@@ -2,7 +2,7 @@
 import { signal } from '@preact/signals';
 import { loadManifest } from '../../render/shared/assets';
 
-/** Stems of the built half figures (`kael`, `kael_sad` ...); `null` until the manifest is read. */
+/** Stems of the built half figures (`lucan`, `lucan_sad` ...); `null` until the manifest is read. */
 export const halfFigures = signal<ReadonlySet<string> | null>(null);
 
 let started = false;

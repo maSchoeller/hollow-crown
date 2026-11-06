@@ -54,7 +54,7 @@ objects:
   - { id: v_s, type: village, at: [12, 11], reward: { gold: 100 } }
 deploy:
   max: 6
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[8, 12], [9, 12], [11, 12], [12, 12], [8, 13], [9, 13], [11, 13], [12, 13]]
 units:
   - { id: elder, nameKey: unit.erlbach_elder.name, team: other, class: civilian, level: 1, at: [9, 8], items: [], ai: { profile: hold } }
@@ -103,7 +103,7 @@ objectives:
   victory: { type: defend, unit: elder, turns: 8 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: elder }
   side:
     - { id: s_mira, type: recruit, unit: mira, reward: { gold: 200 } }
@@ -134,5 +134,5 @@ design:
     - { at: [17, 8], label: Mi, note: "Miras Haus: besuchen bringt Mira; Plünderer r8 und R3 zielen darauf." }
   notes:
     - "Normal 18 Gegner (6 davon R3/R5/R6) gegen 7 eigene (6 aufstellbar + Mira), Stufe 2–3 plus Hask; Leicht 15, Schwer 21."
-    - "Aufstellbar 6: Rhen, Kael, Brenna, Tobin, Fenn + Liora, falls 1-3 zuerst gespielt; sonst ein Söldner aus der Taverne."
+    - "Aufstellbar 6: Rhen, Lucan, Brenna, Tobin, Fenn + Liora, falls 1-3 zuerst gespielt; sonst ein Söldner aus der Taverne."
     - Keine Geländeveränderung über das vorhandene Feuer hinaus (nächste veränderliche Karte 1-4).

@@ -3,10 +3,10 @@ import { savedBeforeWin } from './lastMove';
 import { reachAction } from './lastMoveUi';
 
 /**
- * Story 9.7, AC 10: the player wins 1-6 "Die Paktwacht" (seize by Kael) on a production build (`pnpm preview` has no dev helpers).
+ * Story 9.7, AC 10: the player wins 1-6 "Die Paktwacht" (seize by Lucan) on a production build (`pnpm preview` has no dev helpers).
  * The way there is the player's own: an exported save is imported on the title screen's campaign list. The save is made here from the content on
  * disk: the company at the expected level, every earlier story node done, the battle played by the simulator's player up to the winning command.
- * Kael has only walked onto the throne field; the test gives "Seize" through the action bar, then goes through the outro: panel "Das Banner auf
+ * Lucan has only walked onto the throne field; the test gives "Seize" through the action bar, then goes through the outro: panel "Das Banner auf
  * der Ruine", the conversation, decision E4 (first tap marks, second confirms), the consequence card, the result screen ("New home") and the
  * world map, whose home node is now the castle.
  */
@@ -15,13 +15,13 @@ test('winning 1-6: panel, conversation, decision E4, consequence card, result, a
   test.skip(testInfo.project.name !== 'iphone13', 'a long run on software WebGL: one project is enough');
   test.setTimeout(300_000);
   const { save, unit } = savedBeforeWin('m1_6', 'e2e-m1-6', [1, 2, 3, 4, 5, 6, 7, 8]);
-  expect(unit).toBe('kael');
+  expect(unit).toBe('lucan');
 
   await page.goto('./');
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
   await page.locator('input[type=file]').setInputFiles({ name: 'm1-6.json', mimeType: 'application/json', buffer: Buffer.from(save) });
 
-  // the imported battle resumes with Kael standing on the throne field and nobody else ready: select him, tap his field, the action bar opens
+  // the imported battle resumes with Lucan standing on the throne field and nobody else ready: select him, tap his field, the action bar opens
   const seize = page.locator('.hud-ctx').filter({ hasText: /Seize|Einnehmen/ });
   await reachAction(page, seize);
   await seize.click();

@@ -79,14 +79,14 @@ describe('grief (story 6.7)', () => {
 
   it('costs hit while it lasts and wears off after griefMissions missions', () => {
     const { campaign } = wonWith(rankedWith(base, 'brenna'), ['brenna']);
-    const kael = campaign.roster.find((r) => r.id === 'kael')!;
-    const clear = { ...kael, grief: 0 };
-    expect(computeStats(data, clear).hit - computeStats(data, kael).hit).toBe(data.balance.supports.griefHitPenalty);
+    const lucan = campaign.roster.find((r) => r.id === 'lucan')!;
+    const clear = { ...lucan, grief: 0 };
+    expect(computeStats(data, clear).hit - computeStats(data, lucan).hit).toBe(data.balance.supports.griefHitPenalty);
     let c = campaign;
     for (let i = 0; i < data.balance.supports.griefMissions; i++) {
       c = wonWith({ ...c, completed: [] }, []).campaign;
     }
-    expect(c.roster.find((r) => r.id === 'kael')!.grief ?? 0).toBe(0);
+    expect(c.roster.find((r) => r.id === 'lucan')!.grief ?? 0).toBe(0);
   });
 });
 
@@ -97,8 +97,8 @@ describe('farewellView (story 6.7)', () => {
     expect(cards).toHaveLength(1);
     const card = cards[0]!;
     expect(card).toMatchObject({ id: 'brenna', mercenary: false, nodeId: firstNode(data).id, lastKey: lineKey(farewellScene('brenna'), 'last') });
-    const kael = card.grief.find((g) => g.id === 'kael')!;
-    expect(kael).toEqual({ id: 'kael', missions: 3, hitPenalty: 10, lineKey: lineKey('scn.farewell.brenna', 'grief_kael') });
+    const lucan = card.grief.find((g) => g.id === 'lucan')!;
+    expect(lucan).toEqual({ id: 'lucan', missions: 3, hitPenalty: 10, lineKey: lineKey('scn.farewell.brenna', 'grief_lucan') });
     expect(locales.en?.[card.lastKey!]).toBeTruthy();
   });
 
@@ -121,7 +121,7 @@ describe('farewellView (story 6.7)', () => {
   });
 
   it('every companion who can fall has a last line in German and English', () => {
-    for (const id of Object.keys(data.chars).filter((id) => id !== 'avatar' && id !== 'kael')) {
+    for (const id of Object.keys(data.chars).filter((id) => id !== 'avatar' && id !== 'lucan')) {
       const key = lineKey(farewellScene(id), 'last');
       expect(locales.de?.[key], id).toBeTruthy();
       expect(locales.en?.[key], id).toBeTruthy();

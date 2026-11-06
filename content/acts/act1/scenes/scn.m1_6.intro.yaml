@@ -11,14 +11,14 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: happy
-    text: "{avatar}, Kael. Ein Dach über dem Kopf ist der halbe Frieden. Dort oben steht eins, wenn auch ein löchriges."
+    text: "{avatar}, Lucan. Ein Dach über dem Kopf ist der halbe Frieden. Dort oben steht eins, wenn auch ein löchriges."
   - id: l03
     speaker: [halvard]
     fallback: skip
     mood: neutral
     text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Ein Versteck, das keiner sucht, ist das beste."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Und wer sitzt jetzt darin?"
   - id: l05
@@ -37,6 +37,6 @@ lines:
     mood: happy
     text: "Nehmt, was ihr braucht, Kinder. Und lasst die alten Steine schlafen. Sie haben ihre Ruhe verdient."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir nehmen die Burg. {avatar}, du führst."

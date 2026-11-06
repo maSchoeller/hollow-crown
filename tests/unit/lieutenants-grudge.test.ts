@@ -63,7 +63,7 @@ describe('after the mission (AC 3)', () => {
 
   it('a rout raises the grudge and sets the driver as target; again and again up to 3; a new driver changes the target', () => {
     let c = fresh();
-    for (const [by, grudge, target] of [['kael', 1, 'kael'], ['kael', 2, 'kael'], ['brenna', 3, 'brenna'], ['kael', 3, 'kael']] as const) {
+    for (const [by, grudge, target] of [['lucan', 1, 'lucan'], ['lucan', 2, 'lucan'], ['brenna', 3, 'brenna'], ['lucan', 3, 'lucan']] as const) {
       c = finishBattle(data, c, won(c, { fledBy: by })).campaign;
       expect(c.lieutenants!.hask).toMatchObject({ grudge, target, met: true });
     }
@@ -71,17 +71,17 @@ describe('after the mission (AC 3)', () => {
   });
 
   it('an allied NPC as driver leaves the target as it was', () => {
-    let c = finishBattle(data, fresh(), won(fresh(), { fledBy: 'kael' })).campaign;
-    const s = won(c, { fledBy: 'kael' });
+    let c = finishBattle(data, fresh(), won(fresh(), { fledBy: 'lucan' })).campaign;
+    const s = won(c, { fledBy: 'lucan' });
     s.units.find((u) => u.uid === 'lt1')!.fledBy = s.units.find((u) => u.id === 'brenna')!.uid;
     s.units.find((u) => u.id === 'brenna')!.team = 'other';
     c = finishBattle(data, c, s).campaign;
-    expect(c.lieutenants!.hask).toMatchObject({ grudge: 2, routs: 2, target: 'kael' });
+    expect(c.lieutenants!.hask).toMatchObject({ grudge: 2, routs: 2, target: 'lucan' });
   });
 
   it('a defeat changes nothing', () => {
     const c = fresh();
-    const s = won(c, { fledBy: 'kael' });
+    const s = won(c, { fledBy: 'lucan' });
     s.outcome = 'defeat';
     expect(finishBattle(data, c, s).campaign).toBe(c);
   });
@@ -183,15 +183,15 @@ describe('opening lines (AC 7)', () => {
   const lt = (over: Partial<BattleUnit> = {}): BattleUnit => ({ uid: 'u', id: 'hask', team: 'enemy', pos: [1, 1], lieutenant: 'hask', ...over }) as BattleUnit;
   const known = { hask: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false } };
   const camp = (lieutenants?: CampaignState['lieutenants']) =>
-    ({ lieutenants, flags: {}, roster: [{ id: 'kael' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
+    ({ lieutenants, flags: {}, roster: [{ id: 'lucan' }], fallen: [{ id: 'fenn', nameKey: 'unit.fenn.name' }] }) as unknown as CampaignState;
 
   it('not met: first; grudge and a living target: grudge_<n>; fallen target: mock; met without grudge: none', () => {
     expect(ltOpeningLine(data, camp(), lt())).toEqual({ line: 'first' });
-    expect(ltOpeningLine(data, camp(known), lt({ grudge: 2, grudgeTarget: 'kael' }))).toEqual({ line: 'grudge_2', target: 'kael' });
-    expect(ltOpeningLine(data, camp(known), lt({ grudge: 3, grudgeTarget: 'kael' }))!.line).toBe('grudge_3');
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 2, grudgeTarget: 'lucan' }))).toEqual({ line: 'grudge_2', target: 'lucan' });
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 3, grudgeTarget: 'lucan' }))!.line).toBe('grudge_3');
     expect(ltOpeningLine(data, camp(known), lt({ grudge: 1, grudgeTarget: 'fenn' }))).toEqual({ line: 'mock', target: 'fenn' });
     expect(ltOpeningLine(data, camp(known), lt())).toBeNull();
-    expect(ltOpeningLine(data, camp(known), lt({ grudge: 0, grudgeTarget: 'kael' }))).toBeNull();
+    expect(ltOpeningLine(data, camp(known), lt({ grudge: 0, grudgeTarget: 'lucan' }))).toBeNull();
   });
 
   it('grudge without target, a target who left, and a plain unit give no line', () => {

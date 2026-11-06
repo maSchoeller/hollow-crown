@@ -54,7 +54,7 @@ objects:
   - { id: v_hospice, type: village, at: [13, 19], reward: { item: { def: vulnerary } } }
 deploy:
   max: 9
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[6, 23], [7, 23], [8, 23], [11, 23], [12, 23], [13, 23], [6, 24], [7, 24], [8, 24], [11, 24], [12, 24], [13, 24]]
 units:
   # Klosterhof: Sables Leute sind schon drin
@@ -112,7 +112,7 @@ objectives:
   victory: { type: escort, unit: odile, area: { rect: [8, 0, 11, 1] }, join: true }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: odile }
   side:
     - { id: s_amos, type: recruit, unit: amos, reward: { gold: 300 } }

@@ -11,7 +11,7 @@
 
 - **Höhe:** Dächer `roof` Stufe 1, Leitern NW [4,3], NO [9,3] und [11,1], Ost [9,7], SW [4,12], Süd [6,12].
 - **Gedenken:** Fenn gefallen: Karte gleich, Aufstellung ohne ihn, seine Niederlage entfällt, Zielblatt nennt ihn nicht. Zwei Schlüssel beim Ringmeister, je Truhe einer.
-- **Abweichungen:** Gerberhallen als Häuser (`building`) statt Mauer, Bottiche als `well`, damit sie nicht begehbar wirken (sperren die Sicht im Nebel dadurch nicht mehr). Niederlage auch bei Kaels Tod, falls er mitkommt. Späher mit Dolch statt Schwert.
+- **Abweichungen:** Gerberhallen als Häuser (`building`) statt Mauer, Bottiche als `well`, damit sie nicht begehbar wirken (sperren die Sicht im Nebel dadurch nicht mehr). Niederlage auch bei Lucans Tod, falls er mitkommt. Späher mit Dolch statt Schwert.
 
 ![Raster](s1_n1_ring.png)
 

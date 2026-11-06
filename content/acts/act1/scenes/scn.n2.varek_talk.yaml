@@ -1,14 +1,14 @@
-# Nebenquest N2, Anwerben im Kampf: Kael spricht Varek an (recruit der Karte, by: [kael]). Varek, Deserteur des Grenzheers (Brücke General), kennt Kael und Dravn; er versteckt sich
-# im Turm an Kaels alter Front. Der Grund seiner Desertion bleibt in Akt 1 offen (Decision-Log 2026-10-24). Keine Antworten (Kampfszene). Brenna × Varek: Misstrauen gegenüber dem Deserteur.
+# Nebenquest N2, Anwerben im Kampf: Lucan spricht Varek an (recruit der Karte, by: [lucan]). Varek, Deserteur des Grenzheers (Brücke General), kennt Lucan und Dravn; er versteckt sich
+# im Turm an Lucans alter Front. Der Grund seiner Desertion bleibt in Akt 1 offen (Decision-Log 2026-10-24). Keine Antworten (Kampfszene). Brenna × Varek: Misstrauen gegenüber dem Deserteur.
 id: scn.n2.varek_talk
 background: wachturm
 lines:
   - id: l01
     speaker: [varek]
     mood: happy
-    text: "Kael! Ausgerechnet du, ausgerechnet an deiner alten Mauer. Die Würfel liegen heute wirklich schlecht."
+    text: "Lucan! Ausgerechnet du, ausgerechnet an deiner alten Mauer. Die Würfel liegen heute wirklich schlecht."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Varek. Es heißt, du hast dem Grenzheer den Rücken gekehrt."
   - id: l03
@@ -16,7 +16,7 @@ lines:
     mood: sad
     text: "Es heißt viel. Ich wollte nur über die Mauer. Jetzt stehen meine alten Kameraden vor der Tür."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Lange hält dieser Turm nicht. Komm mit uns, Varek."
   - id: l05

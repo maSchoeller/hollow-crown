@@ -15,7 +15,7 @@ lines:
     mood: neutral
     text: "Der Bote: „Ihr sucht den Makler Osric Dunn. Er sitzt bei den Wolfsreitern im Fels. Das Lager kennt jeder.“"
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wenn es jeder kennt, warum sagst du es uns?"
   - id: l04
@@ -34,7 +34,7 @@ lines:
     text: "Die haben mich rausgeworfen! Jetzt wollen sie mich zurück? Das ist schmeichelhaft. Und lebensgefährlich."
   - id: f03
     requires: [{ alive: fenn }]
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "{avatar}, dein Wort. Der Weg ins Lager oder der Junge."
   - id: c01
@@ -83,7 +83,7 @@ lines:
     mood: neutral
     text: "Der Bote: „Den wir wollten, ist nicht mehr bei euch. Dann behalten wir die Auskunft. Das Lager kennt ihr ja.“"
   - id: z01
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Das Lager liegt eine Nacht von hier. Ordnet die Reihen, wir holen den Makler."
   - id: z02

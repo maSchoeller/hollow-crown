@@ -168,7 +168,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 | `completed` | Knoten abgeschlossen | `{ completed: m1_3 }` |
 | `storyCount` | Zahl abgeschlossener Story-Missionen im Bereich | `{ storyCount: { min: 3 } }` |
 | `act` | aktueller Akt ≥ Wert | `{ act: 2 }` |
-| `support` | Paar hat mindestens den Rang | `{ support: { pair: [brenna, kael], rank: B } }` |
+| `support` | Paar hat mindestens den Rang | `{ support: { pair: [brenna, lucan], rank: B } }` |
 | `stance` | vorherrschende Haltung des Avatars | `{ stance: warm }` |
 | `met` | Leutnant schon begegnet | `{ met: hask }` |
 | `chronicle` | Chronik-Seiten gesammelt (Anzahl oder Liste) | `{ chronicle: { min: 12 } }` |
@@ -179,7 +179,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 | Schlüssel | Bedeutung |
 |---|---|
 | `setFlag` | `{ setFlag: { e03: spare } }` |
-| `recruit` / `leave` | Gefährte tritt bei / geht (Avatar und Kael nie, Schema verbietet es) |
+| `recruit` / `leave` | Gefährte tritt bei / geht (Avatar und Lucan nie, Schema verbietet es) |
 | `grudge` | `{ grudge: { lt: hask, delta: -1 } }`, begrenzt auf 0–3 |
 | `meet` | `{ meet: { lt: grosk } }` (Story 9.6): der Leutnant gilt als begegnet (`met`, `encounters` mindestens 1), ohne Kampf; einmalig, ändert den Groll nicht, keine Zeile auf der Folgen-Karte |
 | `gold`, `material`, `item` | Belohnungen |
@@ -271,7 +271,7 @@ Die App schickt beim Öffnen der Weltkarte und beim Fortsetzen `advanceDay{ day:
 
 **Heimsuchung spielen (Story 5.6):**
 
-- **Karte des Kampfes:** `buildHauntMap`/`hauntMap` (`core/battle/hauntMap.ts`) leitet aus Story-Karte, Variante und Leutnant eine `MapDef` ab (Gelände, Licht, Effekte der Story-Karte; Einsatzfelder und Plätze des Ankers; Siegziel je Variante; Niederlage bei Tod von Avatar/Kael, bei defend/escort auch des Zivilisten; keine Nebenziele, keine Häuser-Belohnungen, Truhen nur die des Ankers) und legt sie unter `haunt~<map>~<variante>~<leutnant>` in `data.maps` ab. `BattleState.mapId` trägt diese Id, so finden Regeln, KI und Brett Ziele und Gelände wie auf jeder Karte; `applyCommand` ruft `ensureHauntMap`, damit auch der Kern-Worker und ein wiederhergestellter Spielstand die Karte aus der Id neu bauen. `content:check` ignoriert diese Karten.
+- **Karte des Kampfes:** `buildHauntMap`/`hauntMap` (`core/battle/hauntMap.ts`) leitet aus Story-Karte, Variante und Leutnant eine `MapDef` ab (Gelände, Licht, Effekte der Story-Karte; Einsatzfelder und Plätze des Ankers; Siegziel je Variante; Niederlage bei Tod von Avatar/Lucan, bei defend/escort auch des Zivilisten; keine Nebenziele, keine Häuser-Belohnungen, Truhen nur die des Ankers) und legt sie unter `haunt~<map>~<variante>~<leutnant>` in `data.maps` ab. `BattleState.mapId` trägt diese Id, so finden Regeln, KI und Brett Ziele und Gelände wie auf jeder Karte; `applyCommand` ruft `ensureHauntMap`, damit auch der Kern-Worker und ein wiederhergestellter Spielstand die Karte aus der Id neu bauen. `content:check` ignoriert diese Karten.
 - **Kampf:** `createHauntBattle(data, c, hauntId, deployIds)` (`core/battle/hauntBattle.ts`) baut über dasselbe Gerüst wie `createBattle` (`battleSkeleton`, `deployPlayers`, `placeMapUnits`, `finishSetup` in `setup.ts`); die gespeicherten Gegner kommen als Kartenfiguren (Profil `trigger`, Radius `balance.haunt.triggerRadius.enemy`; der Zivilist auf der Stufe der Heimsuchung), der Leutnant aus der Vorlage seiner ersten Story-Karte (Waffen, Drops) über `planLieutenants` (Stufe, Groll, Waffenstufe, Groll-Fähigkeiten, Begegnungszeile wie dort), er wartet am Ort (`trigger`, `triggerRadius.lieutenant`). `BattleState.hauntId`/`hauntLevel`; `nodeId` ist der Story-Knoten der Karte (Name, Ort, Händlerstufe). Seed aus Kampagnen-Seed und Heimsuchungs-Id. Truhenjagd ohne Späher: je Truhe ein `door_key` im Beutel der Einheiten.
 - **Belohnung** (`finishBattle`): Gold = `hauntGold` (`goldPct` % des Mittelwerts von `goldReward` der Story-Karten des Akts, gerundet) plus Truhenfunde; ab der `halveFromNth`-ten Heimsuchung seit der letzten Story-Mission (`hauntsSinceStory >= halveFromNth − 1` vor dem Zählen) Gold und Kopfgeld-Gold halbiert; Material `haunt.material` des Akt-Materials des Leutnants zusätzlich zum Kopfgeld; EP über `expPercent` (`expPct`, für Einheiten über `hauntLevel` davon `catchUpExpPct`; Stufe zu Beginn des Kampfes) in `grantExp`. Folgen: Heimsuchung verschwindet, `hauntLast`, `hauntsSinceStory + 1`, nicht in `c.completed`, kein Händler-/Tavernen-Wechsel; Story-Sieg setzt `hauntsSinceStory = 0`; Niederlage oder Abbruch lässt sie offen. `restartTurn`/`restartMission` tragen `haunt`, `finishMission` prüft `start.hauntId`.
 - **App:** roter Stein am Ort des Story-Knotens (`valmora.yaml`), Porträt des Leutnants, „NEU“ bis zum Öffnen der Karte (`seeHaunt`); `playHaunt`/`beginHaunt` in `state/flow.ts`; keine Szenen davor und danach. Test-Haken: `__hc.devHaunt(map, variante)` (DEV) und `__hcTest` (`navigator.webdriver`) für die E2E-Tests.
@@ -296,7 +296,7 @@ haunts:
 
 Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und Erreichbarkeit (Pfad von jedem Einsatzfeld zu `target`, jeder Truhe bzw. einem `exit`-Feld; Zivilist → `exit` bei escort), `pnpm sim --haunt <mapId>:<variant>` prüft die Korridore.
 
-**Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Kael). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
+**Kartenfeld `noDeath: true` (Prolog, Produktinhaber 2026-10-25):** Niedergestreckte Spielereinheiten verbluten und sterben auf dieser Karte nie (jeder Todesmodus), bleiben liegen und kehren nach der Mission ohne Narbe zurück; ausgenommen sind Einheiten, deren Tod verliert (`unit_dies`-Niederlage, `mustSurvive`; im Prolog Rhen und Lucan). Regel `deathless` in `core/rules/effects.ts`, Verbluten-Zähler in HUD und Brett nur bei `bleedsOut`.
 
 ### 5.7 Rollenklassen (AR8)
 
@@ -306,7 +306,7 @@ Jede Story-Karte bekommt 2–3 Anker; `content:check` prüft Felder, Plätze und
 - **Vorschau:** `previewAction(state, unit, action)` für jede Aktion, auf demselben Code wie `apply`.
 - **Nebel:** `visibleTiles(state, team)` rein im Kern; Render und UI zeigen nur Sichtbares, Events auf unsichtbaren Feldern werden vor dem Abspielen gefiltert (`event.at`/`unit` gegen Sicht).
 - **Gegner-Sicht für Schatten und Fallen (Epic 10, Produktinhaber 2026-10-31):** Die Gegner-KI sieht weiter durch den Nebel; nur Schatten und Fallen blendet ein eigener reiner Filter aus (Gegner-Wissen), bevor die KI Ziele wertet und Wege sucht. Ein Schatten ist für Gegner unsichtbar, solange kein Gegner näher als 3 Felder steht, im Nebel immer; nach seinem Angriff ist er sichtbar bis zum Ende der nächsten Gegnerphase (Zähler im `BattleState`). Fallen stehen im `BattleState` (Feld, Besitzer, Reihenfolge des Legens), für Gegner immer unsichtbar; nur Gegner lösen aus (Bewegung endet, 8 Schaden + Verlangsamt, Werte in `balance.yaml`). Der Filter ist deterministisch, ohne Zufall, und läuft im Worker wie im synchronen Rückfall (§5.13, §8.5); die Vorschau nutzt denselben Code.
-- **Ziel-Phasen (Epic 11):** Ein Kartenziel kann eine zweite Phase haben (Kronfeld: `survive` n Runden, danach `escape` mit Fluchtzone und Mindestzahl Fliehender, Pflichtfiguren Avatar und Kael). Der Phasenwechsel ist ein Ereignis des Kerns, die aktive Phase steht im `BattleState`; Schema in `mapSchema`, `content:check` prüft Zone und Erreichbarkeit.
+- **Ziel-Phasen (Epic 11):** Ein Kartenziel kann eine zweite Phase haben (Kronfeld: `survive` n Runden, danach `escape` mit Fluchtzone und Mindestzahl Fliehender, Pflichtfiguren Avatar und Lucan). Der Phasenwechsel ist ein Ereignis des Kerns, die aktive Phase steht im `BattleState`; Schema in `mapSchema`, `content:check` prüft Zone und Erreichbarkeit.
 - **Eskorte mit Folgen-Profil (Epic 11):** neues KI-Profil `follow_ally` für die Begleitfigur bei `escort`: Sie zieht zur nächsten eigenen Figur statt allein zum Ausgang wie das vorhandene `follow` (feste Reihenfolge bei Gleichstand, kein Zufall).
 - **Balliste (Epic 11):** Kartenobjekt; seine Werte stehen im Item `ballista_bolt` in `items.yaml` (Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–10, kein Gegenangriff), der Schuss nutzt eine synthetische Waffen-Instanz; bedient von einer Fuß- oder gepanzerten Figur auf einem Nachbarfeld; Vorschau und Auflösung über denselben Formelcode.
 
@@ -342,7 +342,7 @@ lines:
 - **Illustrationstafel (`panel`):** optionales Feld einer Textzeile (Bild-ID aus `backgrounds/` oder `none`); ab dieser Zeile zeigt die Szene das Bild bildfüllend statt des Szenenhintergrunds, bis `panel: none`, die nächste Tafel oder das Szenenende kommt. Eine Tafel steht für 1–4 Textboxen (`content:check` lehnt mehr ab, `MAX_PANEL_LINES`); fehlt das Bild im Manifest, bleibt der Szenenhintergrund und die Halbfiguren bleiben (`panelAt` im Kern, Anzeige in `Dialogue.tsx`). Solange eine Tafel gezeigt wird, sind die Halbfiguren ausgeblendet (Textbox und Namensschild bleiben).
 - **Auflösung im Kern:** `resolveScene(data, ctx, sceneId, lang?) → ResolvedLine[]` wählt Sprecher, filtert `requires`, fügt Gedenkzeilen ein. Rein und getestet; die UI zeigt nur an. Gilt auch für Sprechblasen im Kampf (Kontext aus `BattleState`).
 - **Antworten** gibt es nur außerhalb des Kampfs (Schema: Szenen mit `choice` dürfen nicht von Karten-Triggern ausgelöst werden). Die Wahl ist das Kampagnen-Command `choose`. **Stand (Story 4.6):** Eine Antwort-Zeile mit `title` ist eine Entscheidung (Marke, zwei Tipps, Folgen-Karte, Eintrag in `c.decisions`); jede ihrer Antworten trägt `summary`. `choose` zählt die Haltung jeder Antwort und merkt sie in `c.choices`, eine Wahl wird nie zweimal gefragt.
-- **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
+- **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `lucan` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
 - Die PoC-Dialoge sind seit Story 4.4 ins neue Format überführt (`content/acts/act1/scenes/`, IDs `scn.<…>`); das alte Schema entfällt.
 
 ### 5.9 Story-Zustand: Flags, Haltung, Chronik, Epilog (AR10)
@@ -367,7 +367,7 @@ lines:
 
 - Stufendeckel aus `campaign.yaml` des Akts (`levelCap`), EP darüber verfallen (`exp`-Event meldet `capped`).
 - **Verbluten:** `BattleUnit.bleed` zählt eigene Phasen seit dem Niederstrecken; bei `balance.death.bleedOutTurns` (3) stirbt die Einheit; Zähler in State und Event, damit die UI ihn zeigt.
-- **Glutfunke** ist ein Item (`kind: promotion`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie. Er ersetzt das Siegel des Proof of Concept, auch für Avatar und Kael (Produktinhaber 2026-10-31).
+- **Glutfunke** ist ein Item (`kind: promotion`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie. Er ersetzt das Siegel des Proof of Concept, auch für Avatar und Lucan (Produktinhaber 2026-10-31).
 - Übungsplatz, Lektionen der Gedächtnishalle, Händler-Sortiment je Tier, Kopfgeld: alles in `balance.yaml` bzw. `rooms.yaml`, Code liest nur.
 - **Werkstatt-Rezepte** in `content/core/recipes.yaml` (Item, ab welcher Werkstatt-Stufe, Material, Gold) mit Zod-Schema und Referenzprüfung in `content:check`; das Command `craft{recipe}` liest nur diese Datei.
 - **Simulation:** `pnpm sim --campaign act1` spielt den Akt verkettet (KI auf beiden Seiten, Heimat-Heuristik kauft und wertet auf) und prüft die Korridore je Story-Mission aus dem GDD.

@@ -32,8 +32,8 @@ Branch `claude/epic10-castle-2a96a1`, kein PR. Epic 10 ist pausiert, bis Epic 10
 
 5. **10.1 teilen:** „Story 10.1 (Räume ausbauen) wäre mit allen Stufen-Wirkungen zu groß: Angebot des Tages und Glutfunke-Rotation beim Händler, Traits und Wunschrolle in der Taverne, Ausrüstungs-Vorlagen und ‚Bestes anlegen‘ im Konvoi sind teils nirgends genau beschrieben. Aufteilen?“
    Antwort: „Neue Story 10.8 (Recommended)“, also 10.1 = Ausbau-Command, Kosten, Gefährten-Bedingung, Schmied/Heiler-Stufen; Händler-, Taverne- und Konvoi-Stufen in eine neue Story 10.8.
-6. **Akademie:** „Akademie: Was bedeutet Stufe 3 ‚zweiter Profi-Weg für Aufgestiegene‘ ([ASSUMPTION] im GDD), und brauchen Avatar und Kael für Großstratege bzw. Bannerherr auch einen Glutfunken?“
-   Antwort: „Beide Effekte, Funke nötig (Recommended)“, also auf Stufe 3 kann eine Aufgestiegene für einen weiteren Glutfunken auch den Effekt des anderen Profi-Wegs lernen (Klasse bleibt). Avatar und Kael steigen wie alle mit Glutfunke auf; der Glutfunke ersetzt das alte Siegel.
+6. **Akademie:** „Akademie: Was bedeutet Stufe 3 ‚zweiter Profi-Weg für Aufgestiegene‘ ([ASSUMPTION] im GDD), und brauchen Avatar und Lucan für Großstratege bzw. Bannerherr auch einen Glutfunken?“
+   Antwort: „Beide Effekte, Funke nötig (Recommended)“, also auf Stufe 3 kann eine Aufgestiegene für einen weiteren Glutfunken auch den Effekt des anderen Profi-Wegs lernen (Klasse bleibt). Avatar und Lucan steigen wie alle mit Glutfunke auf; der Glutfunke ersetzt das alte Siegel.
 7. **Kampfpriester:** „Kampfpriester führt laut GDD ‚Stab + Hammer‘, im Spiel gibt es aber keine Waffengruppe Hammer (das Item hammer zählt als Axt). Was gilt?“
    Antwort: „Stab, Licht, Axt (Recommended)“.
 8. **Bollwerk:** „Bollwerk: ‚Schutz für Nachbarn +10 %‘ – wie gemeint?“ Optionen: eigener Schutz 10 % für jeden Nachbarn (mit Support-Schutz zusammen höchstens 30 %) oder +10 auf den Support-Schutz.

@@ -3,12 +3,12 @@ import { cutInName, cutInPortrait } from '../../src/app/battle/cutIn';
 import { iconsOf } from '../../src/render/board/statusIcons';
 
 describe('cut-in portrait (story 8.6)', () => {
-  const built = new Set(['brenna', 'brenna_angry', 'kael']);
+  const built = new Set(['brenna', 'brenna_angry', 'lucan']);
   it('takes the angry half figure when there is one', () => {
     expect(cutInPortrait('brenna', built, 'Brenna')).toEqual({ kind: 'half', stem: 'brenna_angry' });
   });
   it('falls back to the neutral figure', () => {
-    expect(cutInPortrait('kael', built, 'Kael')).toEqual({ kind: 'half', stem: 'kael' });
+    expect(cutInPortrait('lucan', built, 'Lucan')).toEqual({ kind: 'half', stem: 'lucan' });
   });
   it('falls back to a letter medallion without any half figure, or before the manifest is read', () => {
     expect(cutInPortrait('class_brigand', built, 'brigand')).toEqual({ kind: 'medallion', initial: 'B' });

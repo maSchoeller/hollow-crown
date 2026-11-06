@@ -70,7 +70,7 @@ objects:
   - { id: b_hill, type: ballista, at: [24, 13] }
 deploy:
   max: 15
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[11, 18], [12, 18], [13, 18], [14, 18], [15, 18], [16, 18], [17, 18], [18, 18], [11, 19], [12, 19], [17, 19], [18, 19], [11, 20], [12, 20], [17, 20], [18, 20], [11, 22], [12, 22], [13, 22], [14, 22], [15, 22], [16, 22], [17, 22], [18, 22]]
 units:
   # Norden: Rowena mit der Lanze vor dem Brückentor
@@ -150,7 +150,7 @@ objectives:
   victory: { type: escape, area: { rect: [0, 0, 29, 1] }, min: 6 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_all, type: no_downs, reward: { gold: 800 } }
     - { id: s_fast, type: turn_limit, turns: 14, reward: { gold: 500 } }

@@ -4,7 +4,7 @@
 # Der Ringmeister (ring_master) sitzt auf dem Dach des Diebesnests und trägt die Truhenschlüssel: zwei Schlüssel für zwei Truhen, je eine Ladung. Beim Fall scn.n1.ring (Trigger), Zeilen für beide Fälle.
 # Belohnung (Story 9.10): Glutfunke (ember_spark) und Elster (magpie) kommen mit dem Sieg als Knotenwirkung (campaign.yaml n1 effects), nicht aus einer Truhe.
 # Gedenk-Variante (Fenn gefallen, memorialIf): gleiche Karte, gleiche Belohnung, nur andere Szenen. Pflicht und Niederlage bleiben eingetragen: Die Aufstellung filtert forced auf die Truppe, `unit_dies` greift nur für Figuren auf dem Brett, das Zielblatt nennt nur diese.
-# Abweichungen vom Entwurf: Niederlage auch bei Kaels Tod, falls er mitkommt (Kael verlässt die Truppe nie, PERMANENT_COMPANIONS); zwei Schlüssel statt einem; IDs ring_master statt ringmaster.
+# Abweichungen vom Entwurf: Niederlage auch bei Lucans Tod, falls er mitkommt (Lucan verlässt die Truppe nie, PERMANENT_COMPANIONS); zwei Schlüssel statt einem; IDs ring_master statt ringmaster.
 # Gerberhallen als Häuser (`building`) statt Mauer, Gerbbottiche als `well`, damit die Blöcke nicht wie begehbare Flächen wirken.
 # Balancing 2026-11-05 [C]: Stufen wie im Entwurf; Normal Sieg 89 %, 1,30 Niedergestreckte (oberer Rand), Leicht 98 %, 0,62 (Korridor bis 0,5, offen).
 # Heimsuchungs-Anker (Story 5.5, noch ohne Schema):
@@ -89,7 +89,7 @@ reinforcements:
 objectives:
   victory: { type: rout }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
     - { type: unit_dies, unit: fenn }
   side:

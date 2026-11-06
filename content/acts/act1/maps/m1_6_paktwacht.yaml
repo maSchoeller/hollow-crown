@@ -104,7 +104,7 @@ objects:
 initialEffects: []
 deploy:
   max: 12
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[16, 38], [13, 38], [17, 38], [12, 38], [18, 38], [11, 38], [19, 38], [10, 38], [16, 39], [13, 39], [17, 39], [12, 39], [18, 39], [11, 39], [19, 39], [10, 39]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
@@ -196,7 +196,7 @@ objectives:
   victory: { type: seize, area: { rect: [15, 5, 15, 5] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 400 } }
     - { id: s_fast, type: turn_limit, turns: 18, reward: { item: { def: vulnerary } } }

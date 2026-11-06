@@ -22,7 +22,7 @@ Die Notizen `qa-2026-10-25.md` und `pages-deploy-2026-10-25.md` waren weder im R
 | 7.4 Stabile IDs und Release-Ablauf | done | `content:lock`/Sperrprüfung vorhanden (aktiv ab 9.14), Migrations-Fixtures, AGENTS.md |
 | 7.7 Große Schlachten flüssig | done | Produktinhaber hatte am 2026-10-25 mit Abweichung abgenommen; Rest in 7.8 |
 | 7.8 Große Schlachten ohne Ruckler | done | Zielmaß laut Endmessung erreicht. T10-Sichtabnahme an mich delegiert (2026-10-27): A/B-Bilder Skelett ↔ VAT (Idle, Gehen, Lanzenangriff, Treffer, Niedergestreckt, Hände/Waffen aller 6 Waffengruppen) deckungsgleich, im Durchspielen keine Fehldarstellung; Doku-Einträge vorhanden |
-| 8.2 Tripo-Pipeline | done | Prompt-Protokoll der KI-Animationen Flucht/Jubel nachgetragen (`art/prompts/kael_anims_flee_cheer.md`, licensing §6) |
+| 8.2 Tripo-Pipeline | done | Prompt-Protokoll der KI-Animationen Flucht/Jubel nachgetragen (`art/prompts/lucan_anims_flee_cheer.md`, licensing §6) |
 | 8.3 Brettfiguren Akt 1 | done | Figuren, Turnarounds, Silhouettentest (schwache Paare vom Produktinhaber abgenommen) |
 | 8.6 Licht, Wetter, Effekte | done | Entscheidungen 2026-10-26 umgesetzt; Nacht/Nebel in 1-7 gesehen |
 | 8.7 Titelbild, Logo, Hintergründe | done | Lizenzen-Seite mit OFL-Hinweis ergänzt (Entscheidung 2026-10-27, AC 3) |

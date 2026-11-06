@@ -134,7 +134,7 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 
 **Beschreibung:** Taktiker und jüngster Neuzugang des Aschenbanners.
 
-**Hintergrund:** Rhen wurde wegen Spielschulden von der Kriegsakademie in Aurenhall verwiesen und heuerte erst wenige Wochen vor der Paktnacht bei Kael an. Den lukrativen Paktnacht-Auftrag hat Rhen selbst vom Makler Osric Dunn angenommen. Die Truppe sitzt also seinetwegen in der Falle.
+**Hintergrund:** Rhen wurde wegen Spielschulden von der Kriegsakademie in Aurenhall verwiesen und heuerte erst wenige Wochen vor der Paktnacht bei Lucan an. Den lukrativen Paktnacht-Auftrag hat Rhen selbst vom Makler Osric Dunn angenommen. Die Truppe sitzt also seinetwegen in der Falle.
 
 **Motivation:** Wiedergutmachung: Rhen will alle heimbringen und den Auftraggeber finden.
 
@@ -149,11 +149,11 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 
 **Stimme:** In Schlüsselszenen gibt es 2–3 Antworthaltungen (warm, nüchtern, trotzig). Mechanische Folgen haben nur die 12 Entscheidungen.
 
-#### Kael, Hauptmann des Aschenbanners (38)
+#### Lucan, Hauptmann des Aschenbanners (38)
 
 **Beschreibung:** Gründer der Kompanie, trocken, verlässlich, ein Bär mit leiser Stimme.
 
-**Hintergrund:** Kael ist Veteran des Grenzkriegs. Dort ließ ein adliger Kommandant Kaels Einheit für einen Sieg verheizen. Danach gründete er das Aschenbanner aus Leuten, die niemand wollte.
+**Hintergrund:** Lucan ist Veteran des Grenzkriegs. Dort ließ ein adliger Kommandant Lucans Einheit für einen Sieg verheizen. Danach gründete er das Aschenbanner aus Leuten, die niemand wollte.
 
 **Motivation:** alle heimbringen.
 
@@ -180,7 +180,7 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 
 **Methoden:** Als Aldric ankündigte, das Opfer zu verweigern und alles öffentlich zu machen, tötete Halvard ihn und nahm die Krone. Über Osric Dunn hatte er das Aschenbanner als Sündenböcke angeheuert. Danach lenkt er die gejagte Truppe als heimlicher Mentor und führt Seraphine zum Thron, die das nächste Opfer bringen soll.
 
-**Beziehung zu den Protagonisten:** Er ist Kaels Vaterfigur und Lioras Ziehvater. Rhens Vertrag geht auf ihn zurück.
+**Beziehung zu den Protagonisten:** Er ist Lucans Vaterfigur und Lioras Ziehvater. Rhens Vertrag geht auf ihn zurück.
 
 **Sympathische Seite:** Er glaubt ehrlich, Valmora zu retten. Im Finale zahlt er den Preis selbst.
 
@@ -212,12 +212,12 @@ Bei den drei Seitenwechslern ist der Beitritt an eine **Story-Bedingung** geknü
 
 | # | Name | Rolle | Verstoßen von | Beitritt | Brücke/Kern |
 |---|---|---|---|---|---|
-| 1 | **Brenna** (41) | Vorkämpfer (Axt) | der eigenen Familie, weil sie die Schuld ihres Bruders auf sich nahm | Prolog | Kaels Stellvertreterin, mütterlich, schlechte Witze |
+| 1 | **Brenna** (41) | Vorkämpfer (Axt) | der eigenen Familie, weil sie die Schuld ihres Bruders auf sich nahm | Prolog | Lucans Stellvertreterin, mütterlich, schlechte Witze |
 | 2 | **Tobin** (17) | Vorkämpfer (Lanze) | vom Vater enterbt, weil er die Pacht nicht übernehmen wollte | Prolog | will ein Held werden; „Helden sterben jung“ |
 | 3 | **Mira** (24) | Schütze | ihrem Dorf, verbannt wegen Wilderei, mit der sie das Dorf ernährte | Akt 1 | sarkastisch, misstraut Adligen |
 | 4 | **Fenn** (19) | Späher | dem Diebesring von Varnhold, weil er ein Kind nicht bestehlen wollte | Akt 1 | Großmaul mit weichem Kern, sorgt für Witz |
 | 5 | **Liora** (22) | Heiler (Licht) | dem Pakttempel, weil sie nach den jungen Königen fragte | Akt 1 | **Brücke Hüter:** Halvards Ziehtochter, überbringt seine Nachrichten |
-| 6 | **Varek** (29) | Plänkler | dem Grenzheer als Deserteur | Akt 1 | **Brücke General:** kennt Kael und Dravn, Spieler |
+| 6 | **Varek** (29) | Plänkler | dem Grenzheer als Deserteur | Akt 1 | **Brücke General:** kennt Lucan und Dravn, Spieler |
 | 7 | **Ysolde** (20) | Elementarist (Feuer) | der Akademie, verwiesen wegen verbotener Forschung | Akt 1 | kennt Rhen von der Akademie, entziffert mit Liora die Chronik |
 | 8 | **Grosk** (44) | Vorkämpfer | dem Heer, als Invalide entlassen | Akt 1, *Seitenwechsel* | Banditenführer mit weichem Herzen. Bedingung: Akt-1-Entscheidung, das Hungerlager seiner Bande zu verschonen, statt das Kopfgeld zu kassieren |
 | 9 | **Jory** (26) | Spielmann | der Gauklertruppe | Akt 2 | Laute, Spottlieder, Seele der Burg |
@@ -253,15 +253,15 @@ Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten
 
 **Starting State:** Rhen beginnt als Schuldiger, der schweigt (positiver Bogen).
 
-**Transformation Moments:** das Geständnis an Kael in Akt 1; die Erkenntnis, dass Halvard Rhen benutzt hat.
+**Transformation Moments:** das Geständnis an Lucan in Akt 1; die Erkenntnis, dass Halvard Rhen benutzt hat.
 
 **Ending State:** ein Stratege, der Verantwortung teilt.
 
 **Lessons Learned:** Schuld trägt man gemeinsam.
 
-### Kael Arc
+### Lucan Arc
 
-**Starting State:** Kael trägt alles allein (flacher Bogen, geprüft).
+**Starting State:** Lucan trägt alles allein (flacher Bogen, geprüft).
 
 **Transformation Moments:** der Tod Gerrits, der Verrat durch den Mann, dem er vertraute, und die Burg als Heimat.
 
@@ -336,7 +336,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | vor ca. 300 Jahren | **Drachenkrieg.** Drachen verbrennen halb Valmora. König **Aldric I.** steigt ins Gebirge und schließt mit **Vhaelyra** den Pakt: Die Drachen schlafen, dafür gibt jeder König beim Paktfest einen Teil seiner Lebenszeit. Gefäß des Paktes ist die **Glutkrone**. |
 | bis vor ca. 80 Jahren | Der Orden der **Paktwächter** hütet die Wahrheit in der **Paktwacht** an der Grenze und schreibt in der **Chronik der Wächter** jedes Opfer auf. |
 | vor ca. 80 Jahren | Der Tempel löst den Orden auf und zieht das Geheimnis an sich. Die Paktwacht verfällt, die Chronik bleibt vergessen in ihren Mauern zurück. Seitdem kennt nur noch der jeweils oberste Paktwahrer die Wahrheit. |
-| vor 12 Jahren | **Grenzkrieg** gegen das Nachbarreich **Kharesh** jenseits der Grenzmarken. Valmora gewinnt teuer. Dravn wird zum Helden, Kaels Einheit wird von einem adligen Kommandanten verheizt. Danach gründet Kael das Aschenbanner. |
+| vor 12 Jahren | **Grenzkrieg** gegen das Nachbarreich **Kharesh** jenseits der Grenzmarken. Valmora gewinnt teuer. Dravn wird zum Helden, Lucans Einheit wird von einem adligen Kommandanten verheizt. Danach gründet Lucan das Aschenbanner. |
 | Paktnacht (Staffelbeginn) | König **Aldric IV.** (41) will das Opfer verweigern und die Wahrheit verkünden. Halvard tötet ihn, nimmt die Krone und belastet das Aschenbanner. Die Erde bebt. |
 
 **Major Events:** der Drachenkrieg, die Paktschließung, die Auflösung der Paktwächter, der Grenzkrieg, die Paktnacht.
@@ -364,7 +364,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | **Haus Silbermeer** | Herzogin Maelis, Kapitän Grell | Macht durch Geld, die Krone schwächen | Akt-2-Strang; hat heimlich die Banden aus Akt 1 finanziert |
 | **Pakttempel** und **Paktgarde** | Ehrwürden Halvard; Cassian, Torvald, Eluned | Pakt und Geheimnis um jeden Preis erhalten | Mentor in Akt 1, Antagonist in Akt 3 |
 | **Akademie von Aurenhall** | (Rektorat, offstage) | Wissen im Rahmen des Tempels | Hat Rhen, Ysolde und Vesna verwiesen |
-| **Aschenbanner** | Kael | alle heimbringen, Namen reinwaschen | Spielerfraktion |
+| **Aschenbanner** | Lucan | alle heimbringen, Namen reinwaschen | Spielerfraktion |
 | **Grenzlandbanden** und **Kopfgeldjäger** | Hask, Morra, Ulvric, Grosk | Beute und Kopfgeld auf die „Königsmörder“ | Gegner in Akt 1 |
 | **Die Drachen** | Vhaelyra | Ruhe, Einhaltung des Vertrags | Bedrohung, die sich steigert; Staffel 2 |
 | **Kharesh** | (offstage) | lauert jenseits der Grenze | nur Gerüchte; Haken für Staffel 2 |
@@ -410,7 +410,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | Figur | Stimme |
 |---|---|
 | Rhen | kurz, beobachtend; je nach Haltung warm, nüchtern oder trotzig |
-| Kael | wenige Worte, trocken, beendet Diskussionen mit einem Satz |
+| Lucan | wenige Worte, trocken, beendet Diskussionen mit einem Satz |
 | Brenna | laut, mütterlich, Wortwitze, nennt alle „Küken“ |
 | Tobin | begeistert, Heldensagen-Pathos, verhaspelt sich |
 | Mira | spitz, sarkastisch, Fragen statt Antworten |
@@ -428,18 +428,18 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 
 | # | Gespräch | Wer | Wann | Zweck | Ton |
 |---|---|---|---|---|---|
-| 1 | Die Wache am Ring | Kael, Rhen, Gerrit, Brenna, Tobin | Prolog, vor dem Alarm | Familie zeigen, Rhens Vertrag andeuten | warm, Vorabend |
+| 1 | Die Wache am Ring | Lucan, Rhen, Gerrit, Brenna, Tobin | Prolog, vor dem Alarm | Familie zeigen, Rhens Vertrag andeuten | warm, Vorabend |
 | 2 | Gerrits Grab | ganze Truppe | nach dem Prolog (Lagerfeuer) | erste Gedenkszene, Ton der Staffel | Trauer, leise |
-| 3 | Rhens Geständnis | Rhen, Kael | Akt 1, nach der Spur des Auftraggebers | Rhen hat den Vertrag geholt; Kaels Reaktion hängt am Haltungsprofil | Schuld, Vergebung |
-| 4 | Der Fremde mit dem Siegel | Halvard, Kael, Liora | Akt 1 | Mentor tritt auf; im Rückblick doppeldeutige Sätze | Trost, Vertrauen |
-| 5 | Eine Burg für Niemande | Kael, Truppe | nach 1-6 | die Paktwacht wird Heimat | Stolz, Aufbruch |
-| 6 | Drei Angebote | Seraphine, Dravn, Maelis, Kael | Akt-2-Einstieg | drei Verhandlungen, Freispruch gegen Auftrag | Politik, Misstrauen |
+| 3 | Rhens Geständnis | Rhen, Lucan | Akt 1, nach der Spur des Auftraggebers | Rhen hat den Vertrag geholt; Lucans Reaktion hängt am Haltungsprofil | Schuld, Vergebung |
+| 4 | Der Fremde mit dem Siegel | Halvard, Lucan, Liora | Akt 1 | Mentor tritt auf; im Rückblick doppeldeutige Sätze | Trost, Vertrauen |
+| 5 | Eine Burg für Niemande | Lucan, Truppe | nach 1-6 | die Paktwacht wird Heimat | Stolz, Aufbruch |
+| 6 | Drei Angebote | Seraphine, Dravn, Maelis, Lucan | Akt-2-Einstieg | drei Verhandlungen, Freispruch gegen Auftrag | Politik, Misstrauen |
 | 7 | Die Chronik | Liora, Ysolde, Rhen | Akt 2, Burg | „Der Pakt verlangt etwas von den Königen“ | Unruhe, Neugier |
-| 8 | Kronfeld | Seraphine, Kael | Akt-2-Finale | der Verrat, „Die Krone war hohl“ | Schock |
-| 9 | Die Krönung | Halvard, Seraphine, Kael, Liora | Akt 3 | Enttarnung des Mentors als Mörder | Herzbruch |
+| 8 | Kronfeld | Seraphine, Lucan | Akt-2-Finale | der Verrat, „Die Krone war hohl“ | Schock |
+| 9 | Die Krönung | Halvard, Seraphine, Lucan, Liora | Akt 3 | Enttarnung des Mentors als Mörder | Herzbruch |
 | 10 | Warum Aldric starb | Halvard, Rhen | Akt 3 | Motiv und Wahrheit, „Frieden über Wahrheit“ | tragisch, ruhig |
 | 11 | Der Preis | Halvard, Vhaelyra (Stimme), Truppe | Staffelfinale | Halvard opfert sich | erhaben, still |
-| 12 | Wahrheit oder Frieden | Rhen, Kael, überlebende Brückenfiguren | Schluss | letzte Entscheidung | offen |
+| 12 | Wahrheit oder Frieden | Rhen, Lucan, überlebende Brückenfiguren | Schluss | letzte Entscheidung | offen |
 
 **Weitere Gesprächsarten:**
 
@@ -457,11 +457,11 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 **Branch Triggers:**
 
 1. **12 Entscheidungen** (4 pro Akt): Antworten mit Flag in `campaign.flags`. Sie wirken auf Rekruten, Nebenquests, Groll, Preise und Epilog (zugeordnet in Schritt 9).
-2. **Rhens Haltungsprofil:** Jede Antwort zählt warm, nüchtern oder trotzig. Die vorherrschende Haltung färbt Rhens Epilog-Kachel und einzelne Antworten Kaels (jeweils ein Satz Unterschied). Mechanisch hat das keine Wirkung.
+2. **Rhens Haltungsprofil:** Jede Antwort zählt warm, nüchtern oder trotzig. Die vorherrschende Haltung färbt Rhens Epilog-Kachel und einzelne Antworten Lucans (jeweils ein Satz Unterschied). Mechanisch hat das keine Wirkung.
 3. **Wer lebt:** Tote und gegangene Gefährten sprechen nicht mehr. Ihre Zeilen fallen weg oder werden ersetzt.
 4. **Seitenwechsel:** Grosk, Sable und Mael haben eigene Zeilen, sobald sie beigetreten sind.
 
-**Ersatzsprecher-Kette:** Weil jeder Gefährte sterben kann, hat jede Story-Zeile, die ein Gefährte spricht, eine Kette möglicher Sprecher. Ein Beispiel: Die Chronik entziffern Liora, sonst Ysolde, sonst Vesna, sonst Rhen. Nur Rhen und Kael sind garantiert am Leben. Wer in der Kette fehlt, wird übersprungen. Ist eine Brückenfigur tot, gibt es zusätzlich eine Gedenkzeile („Liora hätte das lesen können …“).
+**Ersatzsprecher-Kette:** Weil jeder Gefährte sterben kann, hat jede Story-Zeile, die ein Gefährte spricht, eine Kette möglicher Sprecher. Ein Beispiel: Die Chronik entziffern Liora, sonst Ysolde, sonst Vesna, sonst Rhen. Nur Rhen und Lucan sind garantiert am Leben. Wer in der Kette fehlt, wird übersprungen. Ist eine Brückenfigur tot, gibt es zusätzlich eine Gedenkzeile („Liora hätte das lesen können …“).
 
 **Branch Scope:**
 
@@ -681,7 +681,7 @@ Je Akt 2 persönliche, 1 Gewissensfrage, 1 politische.
 
 Orte: E1 nach 1-2, E2 vor 1-4, E3 nach 1-5, E4 nach 1-6, E5 nach 2-3, E6 nach 2-4, E7 nach 2-5, E8 nach 2-7, E9 nach 3-3, E11 in 3-4, E10 und E12 im Finale 3-8.
 
-Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuft als Gedenk-Variante. Avatar und Kael gehen nie. Die Gold- und Preiswerte sind Startwerte für das Balancing. `[ASSUMPTION]`
+Fallen Brücken- oder Entscheidungsfiguren vorher, entfällt die Wahl oder läuft als Gedenk-Variante. Avatar und Lucan gehen nie. Die Gold- und Preiswerte sind Startwerte für das Balancing. `[ASSUMPTION]`
 
 ### Nebenquests
 
@@ -693,9 +693,9 @@ Die 10 Nebenquests stehen ebenfalls in `missionsliste-s1.md`, je Akt unter den S
 
 | Paar | Thema |
 |---|---|
-| ★ Kael × Rhen | Waffenbrüder (platonisch) |
-| ★ Kael × Brenna | alte Liebe, nie ausgesprochen (romantisch) |
-| Kael × Mael | Soldaten, die einer Lüge dienten |
+| ★ Lucan × Rhen | Waffenbrüder (platonisch) |
+| ★ Lucan × Brenna | alte Liebe, nie ausgesprochen (romantisch) |
+| Lucan × Mael | Soldaten, die einer Lüge dienten |
 | ★ Brenna × Tobin | Ziehmutter, „Helden sterben jung“ |
 | Brenna × Varek | Misstrauen gegenüber dem Deserteur |
 | Tobin × Mira | Bogenunterricht, Kabbelei |
@@ -719,7 +719,7 @@ Die 10 Nebenquests stehen ebenfalls in `missionsliste-s1.md`, je Akt unter den S
 | Amos × Grosk | Galgenhumor |
 | Amos × Mael | Glaube nach dem Verrat |
 
-Jeder Gefährte hat 2–3 Partner, Kael und Rhen je 3.
+Jeder Gefährte hat 2–3 Partner, Lucan und Rhen je 3.
 
 ---
 
@@ -805,7 +805,7 @@ Installiert ist `humanizer@humanizer` 3.1.0 (github.com/blader/humanizer, MIT, B
 
 **Approach:** Teilvertonung mit ElevenLabs; pro Figur eine mehrsprachige Stimme für Deutsch und Englisch.
 
-**Characters Needing Voices:** etwa 36 (20 Gefährten, Rhen in 2 Varianten, Kael, Halvard, Seraphine, Dravn, Maelis, 12 Leutnants, Vhaelyra als Stimme); Gerrit nur in seiner Szene.
+**Characters Needing Voices:** etwa 36 (20 Gefährten, Rhen in 2 Varianten, Lucan, Halvard, Seraphine, Dravn, Maelis, 12 Leutnants, Vhaelyra als Stimme); Gerrit nur in seiner Szene.
 
 **Dialogue Volume:** etwa 400 Zeilen je Sprache: Barks (~130), Groll- und Fluchtzeilen der Leutnants (~120), Boss-Zitate (~40), Schlüsselszenen Gerrits Grab und Der Preis (~60), Tod und Trauer (~50).
 
@@ -829,7 +829,7 @@ Installiert ist `humanizer@humanizer` 3.1.0 (github.com/blader/humanizer, MIT, B
                       Osric Dunn) │        ▼                                          │
                                   │     LIORA ──(S, romantisch)── RHEN ◄──────────────┘
                                   ▼                                │
-                     ASCHENBANNER: KAEL ──(S, Waffenbrüder)────────┘
+                     ASCHENBANNER: LUCAN ──(S, Waffenbrüder)────────┘
                          │   └─(S, romantisch)── BRENNA ──(S, Ziehmutter)── TOBIN
                          │
        DRAVN ◄─(Brücke: Varek, Sable)─┤
@@ -845,8 +845,8 @@ Installiert ist `humanizer@humanizer` 3.1.0 (github.com/blader/humanizer, MIT, B
 - Halvard → Liora: Ziehvater (Brückenfigur)
 - Halvard → Vhaelyra: hütet den Vertrag, zahlt am Ende selbst den Preis
 - Rhen → Aschenbanner: hat den Paktnacht-Vertrag geholt (Schuld)
-- Kael → Rhen: Waffenbrüder (S, platonisch)
-- Kael → Brenna: alte Liebe (S, romantisch)
+- Lucan → Rhen: Waffenbrüder (S, platonisch)
+- Lucan → Brenna: alte Liebe (S, romantisch)
 - Brenna → Tobin: Ziehmutter (S)
 - Liora → Rhen: Vision und Schuld (S, romantisch)
 - Varek → Odile: Pflicht gegen Freiheit (S, romantisch)
@@ -870,7 +870,7 @@ Installiert ist `humanizer@humanizer` 3.1.0 (github.com/blader/humanizer, MIT, B
 ├── vor ~300 J.: Drachenkrieg, Aldric I. schließt den Pakt mit Vhaelyra
 ├── bis vor ~80 J.: Paktwächter führen die Chronik in der Paktwacht
 ├── vor ~80 J.: Tempel löst den Orden auf, die Paktwacht verfällt
-└── vor 12 J.: Grenzkrieg gegen Kharesh, Kael gründet das Aschenbanner
+└── vor 12 J.: Grenzkrieg gegen Kharesh, Lucan gründet das Aschenbanner
 |
 v
 [PROLOG – Paktnacht]

@@ -15,7 +15,7 @@ lines:
     mood: neutral
     text: "Die Tore sind besetzt, die Wehrgänge bemannt, Hauptmann. Die Burg ist bereit."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Dann sollen sie kommen. Das hier ist unser Haus."
   - id: l04
@@ -41,7 +41,7 @@ lines:
     requires: [{ not: { flag: joined_grosk } }]
     text: "Auch Grosk ist dabei. Seine Hungernden haben sich Morra angeschlossen."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Der Verwalter bleibt im Bergfried. Ihm darf nichts geschehen, solange die Nacht dauert."
   - id: l09

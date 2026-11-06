@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 /**
  * Deployment before mission 1-1 (story 6.10). The mission is only reachable after the prologue battle, which runs on
  * software WebGL for minutes, so the test imports a generated export (tests/fixtures/saves/generate.ts): the world map after
- * the prologue with six companions (4 places, Rhen and Kael required), the same way a player restores a save file.
+ * the prologue with six companions (4 places, Rhen and Lucan required), the same way a player restores a save file.
  */
 const SAVE = join(process.cwd(), 'tests/fixtures/saves/prep-worldmap-export.json');
 
@@ -41,10 +41,10 @@ test('deployment: required units stay, places are counted, a full company gives 
   // six companions in the fixed order, four places, the first four are along
   await expect(page.locator('.prp-unit')).toHaveCount(6);
   await expect(places(page)).toHaveText(/4\/4/);
-  await expect(page.locator('.prp-unit b')).toHaveText(['Rhen', 'Kael', 'Brenna', 'Tobin', 'Fenn', 'Varek']);
+  await expect(page.locator('.prp-unit b')).toHaveText(['Rhen', 'Lucan', 'Brenna', 'Tobin', 'Fenn', 'Varek']);
 
   // required units carry the fixed reason and have no switch to tap
-  for (const name of ['Rhen', 'Kael']) {
+  for (const name of ['Rhen', 'Lucan']) {
     const card = unit(page, name);
     await expect(card).toContainText(/Required for this mission|Pflicht in dieser Mission/);
     await expect(card.locator('.prp-tog')).toHaveClass(/is-lock/);
@@ -65,7 +65,7 @@ test('deployment: required units stay, places are counted, a full company gives 
   await page.getByRole('button', { name: /Leave Brenna behind|Brenna zurücklassen/ }).click();
   await expect(places(page)).toHaveText(/3\/4/);
   await expect(unit(page, 'Brenna')).toHaveClass(/is-off/);
-  await expect(page.locator('.prp-unit b')).toHaveText(['Rhen', 'Kael', 'Brenna', 'Tobin', 'Fenn', 'Varek']);
+  await expect(page.locator('.prp-unit b')).toHaveText(['Rhen', 'Lucan', 'Brenna', 'Tobin', 'Fenn', 'Varek']);
 
   // take Fenn instead: full again
   await page.getByRole('button', { name: /Take Fenn|Fenn mitnehmen/ }).click();

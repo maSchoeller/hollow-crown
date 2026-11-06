@@ -184,7 +184,7 @@ describe('stats and weight', () => {
 
 describe('level up smoothing', () => {
   it('stays close to the expected growth over many levels', () => {
-    const u = structuredClone(campaign.roster.find((r) => r.id === 'kael')!);
+    const u = structuredClone(campaign.roster.find((r) => r.id === 'lucan')!);
     const rng = seedRng(3);
     const start = { ...u.stats };
     for (let i = 0; i < 15; i++) levelUp(data, u, rng);
@@ -206,26 +206,26 @@ describe('battle', () => {
     expect(start.phase).toBe('player');
   });
   it('movement range respects terrain and units', () => {
-    const kael = getUnit(start, 'kael');
-    const reach = reachable(data, start, kael);
+    const lucan = getUnit(start, 'lucan');
+    const reach = reachable(data, start, lucan);
     expect(reach.size).toBeGreaterThan(5);
     // wagons are impassable for foot units
     for (const k of reach.keys()) expect(start.terrain[Number(k.split(',')[1]) * start.width + Number(k.split(',')[0])]).not.toBe('wagon');
   });
   it('forecast equals resolution numbers', () => {
     let s = start;
-    // walk Kael next to a bandit via autoplay until an attack happens, then compare the forecast
+    // walk Lucan next to a bandit via autoplay until an attack happens, then compare the forecast
     for (let i = 0; i < 200; i++) {
-      const kael = getUnit(s, 'kael');
-      const foe = s.units.find((u) => u.team === 'enemy' && u.pos && !u.gone && Math.abs(u.pos[0] - kael.pos![0]) + Math.abs(u.pos[1] - kael.pos![1]) === 1);
-      if (foe && !kael.acted) {
-        const f = forecast(data, s, 'kael', foe.uid);
-        const r = applyCommand(data, s, { type: 'act', unit: 'kael', to: kael.pos!, action: { kind: 'attack', target: foe.uid } });
-        const strikes = r.events.filter((e) => e.t === 'strike' && e.attacker === 'kael' && e.hit && !e.crit);
+      const lucan = getUnit(s, 'lucan');
+      const foe = s.units.find((u) => u.team === 'enemy' && u.pos && !u.gone && Math.abs(u.pos[0] - lucan.pos![0]) + Math.abs(u.pos[1] - lucan.pos![1]) === 1);
+      if (foe && !lucan.acted) {
+        const f = forecast(data, s, 'lucan', foe.uid);
+        const r = applyCommand(data, s, { type: 'act', unit: 'lucan', to: lucan.pos!, action: { kind: 'attack', target: foe.uid } });
+        const strikes = r.events.filter((e) => e.t === 'strike' && e.attacker === 'lucan' && e.hit && !e.crit);
         for (const e of strikes) if (e.t === 'strike') expect(e.dmg).toBe(f.attacker.damage);
         return;
       }
-      const r = applyCommand(data, s, s.phase === 'player' && !kael.acted ? { type: 'act', unit: 'kael', to: kael.pos!, action: { kind: 'wait' } } : { type: 'endPhase' });
+      const r = applyCommand(data, s, s.phase === 'player' && !lucan.acted ? { type: 'act', unit: 'lucan', to: lucan.pos!, action: { kind: 'wait' } } : { type: 'endPhase' });
       s = r.state;
       if (s.outcome) break;
     }
@@ -259,11 +259,11 @@ describe('step-by-step mechanics (concept/06 §10)', () => {
   it('ignores the triangle while it is locked, in forecast and resolution alike', () => {
     const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
     expect(ruleOn(s, 'triangle')).toBe(false);
-    const kael = getUnit(s, 'kael');
-    const foe = s.units.find((u) => u.id === 'tg2')!; // lance guard: sword (Kael) loses against lance
-    const near = { ...s, units: s.units.map((u) => (u.uid === foe.uid ? { ...u, pos: [kael.pos![0], kael.pos![1] - 1] as [number, number] } : u)) };
-    expect(forecast(data, near, 'kael', foe.uid).attacker.triangle).toBe(0);
-    expect(forecast(data, { ...near, locked: [] }, 'kael', foe.uid).attacker.triangle).toBe(-1);
+    const lucan = getUnit(s, 'lucan');
+    const foe = s.units.find((u) => u.id === 'tg2')!; // lance guard: sword (Lucan) loses against lance
+    const near = { ...s, units: s.units.map((u) => (u.uid === foe.uid ? { ...u, pos: [lucan.pos![0], lucan.pos![1] - 1] as [number, number] } : u)) };
+    expect(forecast(data, near, 'lucan', foe.uid).attacker.triangle).toBe(0);
+    expect(forecast(data, { ...near, locked: [] }, 'lucan', foe.uid).attacker.triangle).toBe(-1);
   });
   it('places units and reinforcements per difficulty', () => {
     const at = (d: 'easy' | 'normal' | 'hard') =>

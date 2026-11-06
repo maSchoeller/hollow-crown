@@ -25,7 +25,7 @@ lines:
     mood: happy
     text: "Ein Dach, Mauern und ein Archiv, Küken. Jetzt fehlt nur noch, dass sich keiner dafür interessiert."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Das Banner hängt weithin sichtbar. Es wird sich jemand dafür interessieren."
   - id: l07

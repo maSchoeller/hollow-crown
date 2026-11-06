@@ -20,7 +20,7 @@
 ## 2. Konvoi
 
 - Gemeinsames Lager der Kompanie, V1: 200 Plätze, Stapel bei identischen Verbrauchsgütern (Ladungen werden nicht gestapelt, sondern pro Instanz geführt).
-- Zugriff im Kampf: Einheiten **neben Kael** (freie Aktion „Konvoi“).
+- Zugriff im Kampf: Einheiten **neben Lucan** (freie Aktion „Konvoi“).
 - Beim Tod einer Einheit wandert ihre Ausrüstung in den Konvoi, **außer** die Mission endet als Niederlage.
 - Sortieren/Filtern nach Slot, Waffenart, Seltenheit, „kann ausrüsten“, neu.
 

@@ -50,12 +50,12 @@ afterEach(() => {
 const M18 = () => data.campaign.nodes.find((n) => n.id === 'm1_8')!;
 const withGrudge = (): CampaignState => {
   const c = fresh();
-  c.lieutenants = { morra: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'kael', signatureDropped: false } };
+  c.lieutenants = { morra: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'lucan', signatureDropped: false } };
   return c;
 };
 /** the army of the finale (story 9.9): a company strong enough to still stand when wave 2 arrives in round 4 */
 const strong = (c: CampaignState): CampaignState => {
-  for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) if (!c.roster.some((r) => r.id === id)) addToRoster(data, c, id);
+  for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) if (!c.roster.some((r) => r.id === id)) addToRoster(data, c, id);
   for (const u of c.roster) while (u.level < 9) levelUp(data, u, c.rng);
   return c;
 };
@@ -85,13 +85,13 @@ describe('lieutenants of a reinforcement wave (R1)', () => {
     const s = createBattle(data, c, M18().id, ids(c));
     expect(s.units.find((u) => u.lieutenant === 'morra')).toBeUndefined(); // not on the board yet
     const plan = s.lieutenantPlan!.morra!;
-    expect(plan).toMatchObject({ grudge: 2, target: 'kael' });
+    expect(plan).toMatchObject({ grudge: 2, target: 'lucan' });
     expect(plan.skills.length).toBeGreaterThan(0);
     wave2(s);
     const u = s.units.find((x) => x.lieutenant === 'morra')!;
     expect(u.level).toBe(lieutenantLevel(data, c, 2));
     expect(u.grudge).toBe(2);
-    expect(u.grudgeTarget).toBe('kael');
+    expect(u.grudgeTarget).toBe('lucan');
     expect(u.mastered).toEqual(expect.arrayContaining(plan.skills));
     expect(u.loadout).toEqual(expect.arrayContaining(plan.skills));
   });

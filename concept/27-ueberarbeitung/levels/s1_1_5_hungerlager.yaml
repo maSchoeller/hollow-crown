@@ -53,7 +53,7 @@ objects:
   - { id: c_wreck, type: chest, at: [10, 22], contents: { item: { def: steel_axe } } }
 deploy:
   max: 8
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[8, 11], [11, 11], [8, 13], [9, 13], [10, 13], [11, 13], [9, 14], [10, 14], [8, 12], [11, 12]]
 units:
   # Lager im Norden: Grosk wartet, bis die ersten Wellen gebrochen sind
@@ -110,7 +110,7 @@ objectives:
   victory: { type: survive, turns: 8 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_chests, type: open_chests, reward: { gold: 200 } }
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }

@@ -152,7 +152,7 @@ Claude Sonnet 5.5 (claude-sonnet-5-5)
 
 - `pnpm lint` grün; `pnpm test` grün (45 Dateien, 461 Tests; `chronicle.test.ts` läuft unter Last gelegentlich in das 5-s-Zeitlimit, allein grün); `pnpm build` grün (Bundle 11,58 MB von 15 MB).
 - `pnpm content:check` ist **erwartet rot**, nur wegen der fehlenden Titeltexte `lt.{hask,morra,ulvric,grosk}.title` (DE und EN, 8 Meldungen). Mit vorläufigen Titeln (nur zum Prüfen, wieder entfernt) war alles grün: Schemas, Referenzen, die vier Szenen des anderen Agenten samt Zeilen-IDs und Länge mit `{target}`.
-- Brett im Dev-Server geprüft (`__hc.devLieutenant`): Goldring, Wimpel (0 und 2 Kerben), Linie von Morra zu Kael nach Tipp.
+- Brett im Dev-Server geprüft (`__hc.devLieutenant`): Goldring, Wimpel (0 und 2 Kerben), Linie von Morra zu Lucan nach Tipp.
 
 ### Completion Notes List
 
@@ -160,7 +160,7 @@ Claude Sonnet 5.5 (claude-sonnet-5-5)
 - `{target}`: `t(key, { target })` füllt es schon über die Parameter (kein Eingriff in `src/i18n` nötig); die Szenen-Anzeige im Kampf mit dem Namen des Ziels kommt mit Story 3.3.
 - `class` darf bei einer Karteneinheit mit `lieutenant:` fehlen (Schema optional, der Loader setzt sie aus dem Leutnant, fehlt beides, meldet er den Fehler); `MapUnitDef.class` bleibt `string`.
 - Brett: Logik in `src/render/board/lieutenant.ts` (+ `pennant.css`), `board.ts` ergänzt (Goldring je Leutnant, Wimpel-Element im Float-Layer wie der Verblutungs-Zähler, Linie zum Ziel als dünne Goldröhre, Tipp im Board setzt/löscht sie; `Battle.tsx` und `overlays.ts` unberührt).
-- Dev-Helfer: `__hc.devLieutenant('hask', 2)` oder `__hc.devLieutenant([['hask', 0], ['morra', 2, 'kael']])` (Leutnant-ID, Groll 0–3, Ziel-Einheit, Standard kael) öffnet auf dem Prolog-Boden einen Testkampf (ohne Speicherstand, Karte `dev_lieutenant`); `__hc.devGrudge('hask', 3, 'brenna')` ändert den Groll im laufenden Testkampf. Antippen eines Leutnants mit Groll 1+ zeigt die Linie (das Info-Panel verdeckt das Brett: schließen). Code in `src/app/state/devLieutenant.ts` und `flow.ts`.
+- Dev-Helfer: `__hc.devLieutenant('hask', 2)` oder `__hc.devLieutenant([['hask', 0], ['morra', 2, 'lucan']])` (Leutnant-ID, Groll 0–3, Ziel-Einheit, Standard lucan) öffnet auf dem Prolog-Boden einen Testkampf (ohne Speicherstand, Karte `dev_lieutenant`); `__hc.devGrudge('hask', 3, 'brenna')` ändert den Groll im laufenden Testkampf. Antippen eines Leutnants mit Groll 1+ zeigt die Linie (das Info-Panel verdeckt das Brett: schließen). Code in `src/app/state/devLieutenant.ts` und `flow.ts`.
 - Ulvric ist `vanguard` bis zur Wolfsreiter-Klasse (Story 2.9); Aushalten (Grosk) und Erneuerung haben dieselbe Wirkung, aber eigene IDs; Renewal am Kinderhand hat `masteryCost` 45 wie am Erdamulett.
 - Offen für den Kontrolleur/Produktinhaber: (1) Titeltexte `lt.<id>.title` DE/EN eintragen; (2) die Längenprüfung nimmt für den Avatar den Standardnamen „Rhen“ (Eingabe erlaubt bis 14 Zeichen), ein langer Avatar-Name als Groll-Ziel würde über die Blase laufen (wird auf Seiten umgebrochen); (3) `join` ist für Grosk fest in `lieutenantLines.ts` (`JOINING_LIEUTENANTS`), nicht im YAML; (4) Item-Bilder der vier Signaturen liegen schon unter `art/items/`; (5) Narrative-Decision-Log für die Zeilen trägt der Autor der Szenen nach.
 

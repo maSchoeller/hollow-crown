@@ -17,7 +17,7 @@ lines:
     mood: sad
     text: "Schon gut, Küken. Er hätte gelacht."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir kaufen Brot und Wasser und sind vor dem Abend wieder draußen."
   - id: l05
@@ -33,7 +33,7 @@ lines:
     mood: angry
     text: "Lebend oder tot. Gefragt hat uns keiner."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Ganz Valmora hält uns für die Mörder des Königs."
   - id: l09
@@ -42,7 +42,7 @@ lines:
     mood: sad
     text: "Wir waren's doch nicht, oder? Ich meine, wir wissen, dass wir's nicht waren."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir wissen es. Die da draußen nicht."
   - id: l11
@@ -51,6 +51,6 @@ lines:
     mood: angry
     text: "Morras Häscher, Küken, das ist ihre Stadt. An der Brücke stehen sie schon, die Zettel in der Hand."
   - id: l12
-    speaker: [kael]
+    speaker: [lucan]
     mood: angry
     text: "Waffen bereit. Wir bleiben beisammen. {avatar}, ordne die Reihen."

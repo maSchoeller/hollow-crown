@@ -19,7 +19,7 @@ lines:
     mood: sad
     text: "Dreißig Jahre hat er das Ding getragen. Und er hat es nicht losgelassen. Bis zuletzt nicht."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: sad
     text: "Gerrit hat dieses Banner getragen, seit es eins gibt."
   - id: l05
@@ -27,7 +27,7 @@ lines:
     mood: sad
     text: "Ich weiß nicht, was ich sagen soll."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: sad
     text: "Dann sag nichts. Bleib einfach hier."
   - id: l07
@@ -39,6 +39,6 @@ lines:
     mood: sad
     text: "Niemand spricht. In der Ferne läuten die Glocken von Aurenhall, als wäre nichts geschehen."
   - id: l09
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Morgen ziehen wir zur Grenze, nach Varnhold. Dort suchen sie uns zuletzt."

@@ -11,7 +11,7 @@ export function figureId(speaker: string, avatarPortrait: string): string {
 
 /**
  * The stem of the half figure to show, or `null` when the speaker has none (the caller shows no figure).
- * `built` = stems of the manifest (`kael`, `kael_sad` ...); without a manifest the neutral figure is tried.
+ * `built` = stems of the manifest (`lucan`, `lucan_sad` ...); without a manifest the neutral figure is tried.
  */
 export function pickHalf(id: string, mood: string, built: ReadonlySet<string> | null | undefined): string | null {
   if (mood !== 'neutral' && built?.has(`${id}_${mood}`)) return `${id}_${mood}`;

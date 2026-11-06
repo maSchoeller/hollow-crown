@@ -46,7 +46,7 @@ describe('units with requires at the creation of the battle', () => {
   it('the start state holds the filtered list and is the same for the same campaign (replay)', () => {
     const a = fresh();
     a.flags.e02 = 'hand_over';
-    expect(createBattle(data, clone(a), 'm1_4', ['avatar', 'kael'])).toEqual(createBattle(data, clone(a), 'm1_4', ['avatar', 'kael']));
+    expect(createBattle(data, clone(a), 'm1_4', ['avatar', 'lucan'])).toEqual(createBattle(data, clone(a), 'm1_4', ['avatar', 'lucan']));
   });
 
   it('onConditions keeps units without requires and those whose conditions hold', () => {

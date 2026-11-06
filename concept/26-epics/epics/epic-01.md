@@ -138,7 +138,7 @@ damit Bergen dringlich und lesbar wird.
 **Angenommen** eine Figur mit 2 Narben
 **Wenn** sie erneut auf 0 TP fällt
 **Dann** stirbt sie sofort
-**Und** Avatar oder Kael bei 0 TP bleiben eine Niederlage.
+**Und** Avatar oder Lucan bei 0 TP bleiben eine Niederlage.
 
 **Angenommen** eine niedergestreckte Figur
 **Wenn** der Spieler sie auf dem Brett sieht

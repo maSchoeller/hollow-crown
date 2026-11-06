@@ -3,7 +3,7 @@
 - **Dateien:** `art/items/<id>.png` (Master 512 × 512, RGBA, transparent; ChatGPT liefert 1024 × 1024)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome, parallel in mehreren Tabs
-- **Referenzen:** nur die aktuellen Charakterbilder `art/mockups/characters-s1/kael.png`, `brenna.png`, `mira.png`, `tobin.png` (zeigen Schwert, Axt, Bogen, Speer), in jedem Chat alle vier (vorher `git lfs pull`). Nicht verwenden: Stil-Mockup und `art/portraits/` (alter Stil)
+- **Referenzen:** nur die aktuellen Charakterbilder `art/mockups/characters-s1/lucan.png`, `brenna.png`, `mira.png`, `tobin.png` (zeigen Schwert, Axt, Bogen, Speer), in jedem Chat alle vier (vorher `git lfs pull`). Nicht verwenden: Stil-Mockup und `art/portraits/` (alter Stil)
 - **Ablauf:** 5 parallele Chats mit je 2 Items (erste Nachricht mit Referenzen, zweite als Folge-Nachricht); Download per Chrome, Rohbild 1254 × 1254 nach `art/items/source/<id>.png`, Master per Skript auf das Motiv zugeschnitten und auf 80 % von 512 × 512 gerahmt
 - **Regeln:** `concept/23-art-direction/art-direction.md` §5.6, Katalog `concept/21-gdd/items.md`
 - **Ziel:** Stil, Lesbarkeit bei 48 px und Tier-Unterschied prüfen; die abgenommenen Bilder werden Referenz für alle weiteren Icons
@@ -51,7 +51,7 @@ Deckt alle drei Tiers, lange und kompakte Items, Magie, Verbrauchsgut, eine Sign
 9. `homecoming`: „the signature two-handed double-bladed battle axe of Brenna (see attached character): two big crescent blades of dark steel with copper-red accents, the haft wrapped in ember-orange (#E8743B) cloth with a small braided leather charm hanging from it; unique and heroic, clearly more special than a normal axe“
 10. `pact_warden_shield_3`: „the fully awakened relic shield of the ancient Pact Wardens: a round-shouldered ivory (#F4EFE6) and gold (#D9A931) shield with a stylized hollow crown emblem; fine cracks run across the surface and glow with warm ember-orange (#E8743B) light, a few tiny sparks; ancient, sacred, powerful“
 
-Tatsächlich verwendete erste Nachricht (statt Basis-Prompt oben): *Create an image. The four attached character portraits (KAEL, BRENNA, MIRA, TOBIN) are the APPROVED STYLE REFERENCES for my fantasy tactics RPG 'Hollow Crown' ('Round Chibi Cartoon'). Match their style exactly, especially how their weapons and gear are drawn. Task: a game inventory icon showing a single item: {ITEM}. Style: chunky, slightly oversized, toy-like proportions with rounded tips and thick simple shapes, soft dark-brown outline (a bit bolder than in the portraits), simple glossy cel shading, warm colors, light from the top-left. Composition: square 1:1, the item centered and filling about 80% of the canvas, {ORIENTATION}. No hands, no character, no frame, no border, no text, no ground shadow, no background scenery. FULLY TRANSPARENT background (PNG with real alpha channel). It must stay readable at 48x48 pixels: bold silhouette, no thin details.*
+Tatsächlich verwendete erste Nachricht (statt Basis-Prompt oben): *Create an image. The four attached character portraits (LUCAN, BRENNA, MIRA, TOBIN) are the APPROVED STYLE REFERENCES for my fantasy tactics RPG 'Hollow Crown' ('Round Chibi Cartoon'). Match their style exactly, especially how their weapons and gear are drawn. Task: a game inventory icon showing a single item: {ITEM}. Style: chunky, slightly oversized, toy-like proportions with rounded tips and thick simple shapes, soft dark-brown outline (a bit bolder than in the portraits), simple glossy cel shading, warm colors, light from the top-left. Composition: square 1:1, the item centered and filling about 80% of the canvas, {ORIENTATION}. No hands, no character, no frame, no border, no text, no ground shadow, no background scenery. FULLY TRANSPARENT background (PNG with real alpha channel). It must stay readable at 48x48 pixels: bold silhouette, no thin details.*
 
 Folge-Nachricht: *Great. Next icon - exactly the same style, outline, shading and format (square 1:1, item centered at about 80%, FULLY TRANSPARENT background, no text, no hands). Item: …*
 
@@ -64,4 +64,4 @@ Erster Durchgang 2026-10-23, je 1 Versuch; Abnahme durch den Produktinhaber steh
 - ChatGPT ignoriert die 80 %: die Motive füllen 92–100 % des Bildes. Das gleicht das Zuschneiden im Skript aus
 - Lange, dünne Items (Jagdbogen, Lanze) sind bei 48 px schwach; künftig dickere Schäfte und Sehnen verlangen
 - Relikt: Die Krone im Wappen wirkt nicht hohl, die Glut ist dezent
-- Ein versehentlicher erster Durchgang mit Stil-Mockup und altem Kael-Porträt als Referenz wurde verworfen
+- Ein versehentlicher erster Durchgang mit Stil-Mockup und altem Lucan-Porträt als Referenz wurde verworfen

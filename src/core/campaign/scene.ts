@@ -29,7 +29,7 @@ export type ResolvedLine =
   | { kind: 'line'; uid: string; line: string; key: string; speaker?: string; mood: Mood; memorial: boolean; panel?: string; moment?: 'reward' }
   | { kind: 'choice'; uid: string; line: string; options: ResolvedOption[]; decision: boolean; titleKey?: string };
 
-/** Whether a companion can speak: avatar and kael always, everyone else unless fallen or gone (an NPC who never joined can). */
+/** Whether a companion can speak: avatar and lucan always, everyone else unless fallen or gone (an NPC who never joined can). */
 export function canSpeak(ctx: ConditionContext, id: string): boolean {
   return PERMANENT_COMPANIONS.includes(id) || !(ctx.fallen.includes(id) || ctx.left.includes(id));
 }

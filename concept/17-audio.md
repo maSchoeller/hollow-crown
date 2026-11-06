@@ -20,7 +20,7 @@ Jede Figur hat **eine Stimme pro Sprache**. DE und EN müssen dieselbe Person se
 
 | Figur | Stimmbild | Voice-Design-Beschreibung (EN, für ElevenLabs) |
 |---|---|---|
-| **Kael** | ruhiger Bariton, trocken, müde Autorität | *Male, mid-30s, warm low baritone, calm and dry, weary authority of a former knight, slight rasp, measured pace, understated emotion* |
+| **Lucan** | ruhiger Bariton, trocken, müde Autorität | *Male, mid-30s, warm low baritone, calm and dry, weary authority of a former knight, slight rasp, measured pace, understated emotion* |
 | **Brenna** | rauchiger Alt, laut, herzlich | *Female, early 40s, smoky alto, loud and hearty, rough around the edges, motherly warmth, quick to laugh, northern rural accent* |
 | **Tobin** | heller Tenor, eifrig, kippt manchmal | *Male, 17 years old, bright youthful tenor, eager and earnest, slightly breathless, voice occasionally cracks when excited* |
 | **Mira** | klar, schnell, sarkastisch | *Female, mid-20s, clear mid-range voice, fast and sardonic, playful edge, confident, slight country twang* |
@@ -44,7 +44,7 @@ Der **Erzähler** für das Prolog-Intro ist Liora (Vision) aus dem Off, damit wi
 
 Pro Story-Figur sind das **18 Zeilen pro Sprache**, meist 1–5 Wörter. Kurze Zeilen kosten wenig, und spätere Textänderungen sind billig.
 
-| Ereignis | Anzahl | Beispiel Kael (DE / EN) |
+| Ereignis | Anzahl | Beispiel Lucan (DE / EN) |
 |---|---|---|
 | Auswahl | 3 | „Befehl?“ / „Orders?“ · „Ich höre.“ / „Go on.“ · „Aschenbanner.“ / „Ashen Banner.“ |
 | Bewegung bestätigt | 2 | „Verstanden.“ / „Understood.“ · „Rücken frei halten.“ / „Watch our backs.“ |
@@ -53,7 +53,7 @@ Pro Story-Figur sind das **18 Zeilen pro Sprache**, meist 1–5 Wörter. Kurze Z
 | Treffer erlitten | 2 | (Ächzen) · „Nur ein Kratzer.“ / „Just a scratch.“ |
 | Ausgewichen | 1 | „Zu langsam.“ / „Too slow.“ |
 | Niedergestreckt | 1 | „Nicht… so…“ / „Not… like this…“ |
-| Tod (Klassik) | 1 | eigene, längere Zeile, z. B. Kael: „Brenna… führ sie heim.“ / „Brenna… take them home.“ |
+| Tod (Klassik) | 1 | eigene, längere Zeile, z. B. Lucan: „Brenna… führ sie heim.“ / „Brenna… take them home.“ |
 | Level-up | 1 | „Ich werde nicht langsamer.“ / „Not slowing down yet.“ |
 | Tandem | 1 | „Zusammen!“ / „Together!“ |
 | Geheilt | 1 | „Danke.“ / „Thanks.“ |
@@ -62,17 +62,17 @@ Pro Story-Figur sind das **18 Zeilen pro Sprache**, meist 1–5 Wörter. Kurze Z
 
 **Datenformat** (`content/audio/barks.yaml`):
 ```yaml
-kael:
-  voice: { de: voice_kael_de, en: voice_kael_en }
+lucan:
+  voice: { de: voice_lucan_de, en: voice_lucan_en }
   barks:
-    select:  [bark.kael.select.1, bark.kael.select.2, bark.kael.select.3]   # i18n-Schlüssel = Untertitel
-    attack:  [bark.kael.attack.1, bark.kael.attack.2, bark.kael.attack.3]
-    crit:    [bark.kael.crit.1, bark.kael.crit.2]
-    downed:  [bark.kael.downed.1]
-    death:   [bark.kael.death.1]
-  blips: { neutral: blip.kael.neutral, happy: blip.kael.happy }   # usw.
+    select:  [bark.lucan.select.1, bark.lucan.select.2, bark.lucan.select.3]   # i18n-Schlüssel = Untertitel
+    attack:  [bark.lucan.attack.1, bark.lucan.attack.2, bark.lucan.attack.3]
+    crit:    [bark.lucan.crit.1, bark.lucan.crit.2]
+    downed:  [bark.lucan.downed.1]
+    death:   [bark.lucan.death.1]
+  blips: { neutral: blip.lucan.neutral, happy: blip.lucan.happy }   # usw.
 ```
-Die Audiodatei heißt wie der i18n-Schlüssel plus Sprache: `bark.kael.crit.1.de.webm`. `content:check` prüft, dass zu jedem Schlüssel in beiden Sprachen eine Datei existiert.
+Die Audiodatei heißt wie der i18n-Schlüssel plus Sprache: `bark.lucan.crit.1.de.webm`. `content:check` prüft, dass zu jedem Schlüssel in beiden Sprachen eine Datei existiert.
 
 **Häufigkeit:** Auswahl-Barks höchstens bei jeder 3. Auswahl derselben Einheit, Angriffs-Barks 50 %, Krit/Niedergestreckt/Tod immer. Option „Stimmen: Alle / Nur wichtige / Aus“.
 
@@ -81,9 +81,9 @@ Die Audiodatei heißt wie der i18n-Schlüssel plus Sprache: `bark.kael.crit.1.de
 | Szene | Länge (Ziel) | Figuren |
 |---|---|---|
 | Prolog-Intro „Die hohle Krone“ (Vision, über Kartentisch-Bild) | 45–60 s | Liora (Erzählerin) |
-| Kap. 5 Cliffhanger „Die Krone war hohl“ | 60–90 s | Liora, Kael, Ysolde |
+| Kap. 5 Cliffhanger „Die Krone war hohl“ | 60–90 s | Liora, Lucan, Ysolde |
 | Boss-Zitate: Auftritt, Kampfbeginn, Niederlage | je 3 Zeilen | Grosk, Hask, Morra, Sable, Ulvric, Cassian |
-| Ansprechen-Dialog (Rekrutierung im Kampf) | 2–4 Zeilen | Kael × Varek |
+| Ansprechen-Dialog (Rekrutierung im Kampf) | 2–4 Zeilen | Lucan × Varek |
 
 Die übrigen Dialoge sind gelesen, ohne Vertonung. Eine spätere Vollvertonung ist möglich, weil das Schlüsselformat oben dafür schon passt.
 

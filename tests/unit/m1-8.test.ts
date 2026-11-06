@@ -48,7 +48,7 @@ beforeAll(() => {
   data = loaded.data;
   locales = loaded.locales;
   base = newCampaign(data, 7, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
+  for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
   // an army as strong as one that played its way here (node expectedLevel), like `__hc.devNode`
   const level = data.campaign.nodes.find((n) => n.id === NODE)!.expectedLevel;
   for (const u of base.roster) while (u.level < level) levelUp(data, u, base.rng);
@@ -211,13 +211,13 @@ describe('the steward heals', () => {
   it('stays in the keep and heals a wounded ally next to him in his phase', () => {
     const s = begin(base);
     for (const u of s.units) if (u.team === 'enemy') Object.assign(u, { gone: 'dead', pos: null });
-    const kael = s.units.find((u) => u.id === 'kael')!;
-    kael.pos = [15, 6];
-    kael.hp = 5;
+    const lucan = s.units.find((u) => u.id === 'lucan')!;
+    lucan.pos = [15, 6];
+    lucan.hp = 5;
     const r = applyCommand(data, s, { type: 'endPhase' });
     const steward = r.state.units.find((u) => u.id === 'steward')!;
     expect(steward.pos).toEqual([15, 5]);
-    expect(r.state.units.find((u) => u.id === 'kael')!.hp).toBeGreaterThan(5);
+    expect(r.state.units.find((u) => u.id === 'lucan')!.hp).toBeGreaterThan(5);
     expect(r.events.some((e) => e.t === 'heal')).toBe(true);
   });
 });

@@ -106,7 +106,7 @@ Als Spieler
 möchte ich ausgewählte Gefährten in der Akademie mit einem Glutfunken auf einen Profi-Weg aufsteigen lassen,
 damit die knappe Wahl, wer wächst, ein Moment wird.
 
-**Abhängigkeiten:** nach 11.1 (`levelCap: 20`, `c.act`); bringt Raum `academy` und Enum-Wert mit, solange 10.1 fehlt (10.1 ergänzt Kosten und Bedingungen); Stufe 2 und 3 der Akademie sind vor 10.1 mit Fixture `c.home.rooms.academy = 2|3` testbar; die übrigen 10 Profi-Wege liefern 10.3 (Klassen, darunter die von Avatar und Kael) und 10.4 (Wirkungen), bis dahin funktioniert der Aufstieg mit den sechs vorhandenen Profiklassen. Wird die Story zu groß, bei Bedarf Wegwechsel und Zweit-Effekt (Akademie Stufe 2/3) wie 10.9–10.11 abtrennen.
+**Abhängigkeiten:** nach 11.1 (`levelCap: 20`, `c.act`); bringt Raum `academy` und Enum-Wert mit, solange 10.1 fehlt (10.1 ergänzt Kosten und Bedingungen); Stufe 2 und 3 der Akademie sind vor 10.1 mit Fixture `c.home.rooms.academy = 2|3` testbar; die übrigen 10 Profi-Wege liefern 10.3 (Klassen, darunter die von Avatar und Lucan) und 10.4 (Wirkungen), bis dahin funktioniert der Aufstieg mit den sechs vorhandenen Profiklassen. Wird die Story zu groß, bei Bedarf Wegwechsel und Zweit-Effekt (Akademie Stufe 2/3) wie 10.9–10.11 abtrennen.
 
 **Akzeptanzkriterien:**
 
@@ -124,16 +124,16 @@ damit die knappe Wahl, wer wächst, ein Moment wird.
 **Wenn** Akt 2 erreicht ist und die Heimat die Burg ist
 **Dann** steht die Akademie als Raumstein mit Stufe als Punkten unter den Räumen und öffnet ihr Panel; in Akt 1 gibt es sie nicht (nur über `fromAct`, kein `if` im Code).
 
-**Angenommen** eine Figur der Truppe mit Stufe ≥ `balance.levels.promoteFrom` (10), deren Klasse nicht `tier: pro` ist und einen Profi-Weg hat (`promotionTargets` nicht leer; auch `tier: unique` von Avatar und Kael), mindestens ein `ember_spark` im Konvoi und eine offene Akademie (`academyOpen(data, c)` über `homeRooms`)
+**Angenommen** eine Figur der Truppe mit Stufe ≥ `balance.levels.promoteFrom` (10), deren Klasse nicht `tier: pro` ist und einen Profi-Weg hat (`promotionTargets` nicht leer; auch `tier: unique` von Avatar und Lucan), mindestens ein `ember_spark` im Konvoi und eine offene Akademie (`academyOpen(data, c)` über `homeRooms`)
 **Wenn** der Spieler `{ type: 'promote', unit, classId }` schickt
 **Dann** wird die Figur Profi der gewählten Klasse (Stufe → 1, EP → 0, `promotionBonus` bis zu den Caps der neuen Klasse), der tatsächlich gutgeschriebene Wertgewinn steht als `promotionGain` am `UnitRecord` (Default `{}`), ein Glutfunke verschwindet aus dem Konvoi, der Loadout fasst 5 statt 4 Skills (`skills.loadoutAdvanced`), Events `itemLost` und `promoted { unit, from, to, gain }`
 **Und** Fehler ohne Änderung, in dieser Reihenfolge: `unknown_unit`, `unknown_class` (kein Profi-Weg dieser Klasse), `not_available` (Stufe < 10, schon Profi, Akademie nicht offen), `not_enough_materials` (kein Glutfunke)
-**Und** Avatar (`tactician` → `grand_strategist`) und Kael (`captain` → `banner_lord`) steigen genauso auf, sobald Story 10.3 ihre Profiklassen anlegt (vorher Fixture-Klassen im Test): Stufe 10, ein Glutfunke, Akademie, eine Weg-Karte.
+**Und** Avatar (`tactician` → `grand_strategist`) und Lucan (`captain` → `banner_lord`) steigen genauso auf, sobald Story 10.3 ihre Profiklassen anlegt (vorher Fixture-Klassen im Test): Stufe 10, ein Glutfunke, Akademie, eine Weg-Karte.
 
 **Angenommen** das Panel der Akademie (UX-DR21, Mockup 08 „Akademie · Aufstieg“)
 **Wenn** der Spieler es öffnet
 **Dann** zeigt es oben den Vorrat an Glutfunken (Item-Bild + Zahl), darunter die Figuren ab Stufe 10 ohne Profi-Klasse, alle anderen gedimmt mit Grund („ab Stufe 10“, „schon aufgestiegen“)
-**Und** nach Wahl einer Figur zwei Weg-Karten (Avatar und Kael: eine) mit Name, Wirkung in einem Satz (`class.<id>.effect`), Wertgewinn aus `promotionPreview(data, u, classId)` in `src/core/rules/progression.ts`, die `promote` selbst benutzt („TP +4 · DEF +3 …“; es gelten die Daten, nicht die Beispielzahlen in Mockup 08), und dem Namen des Signaturteils (`part.<classId>.name`, Grafik in Story 10.13)
+**Und** nach Wahl einer Figur zwei Weg-Karten (Avatar und Lucan: eine) mit Name, Wirkung in einem Satz (`class.<id>.effect`), Wertgewinn aus `promotionPreview(data, u, classId)` in `src/core/rules/progression.ts`, die `promote` selbst benutzt („TP +4 · DEF +3 …“; es gelten die Daten, nicht die Beispielzahlen in Mockup 08), und dem Namen des Signaturteils (`part.<classId>.name`, Grafik in Story 10.13)
 **Und** die Haupttaste lautet „Aufsteigen · [Glutfunke] 1“; ohne Glutfunken ist sie gesperrt und nennt den Grund; Figur wählen und Weg wählen sind Auswahl, erst die Haupttaste führt aus.
 
 **Angenommen** ein gelungener Aufstieg
@@ -151,7 +151,7 @@ damit die knappe Wahl, wer wächst, ein Moment wird.
 **Angenommen** die Akademie auf Stufe 2 und ein Profi mit zwei Wegen seiner Rolle
 **Wenn** der Spieler `{ type: 'changeProPath', unit, classId }` mit dem anderen Weg derselben Rolle schickt
 **Dann** werden `promotionGain` abgezogen und der `promotionBonus` des neuen Wegs bis zu dessen Caps gutgeschrieben (neuer `promotionGain`; Werte über den neuen Caps werden auf sie gesenkt), die Klasse wechselt, Stufe, EP, Loadout und Ausrüstung bleiben, das Gold sinkt um 1 500, Events `goldChanged` und `proPathChanged { unit, from, to }`
-**Und** Fehler ohne Änderung, in dieser Reihenfolge: `unknown_class` (kein anderer Weg derselben Rolle, also auch Avatar und Kael), `not_available` (Akademie < 2, kein Profi, schon den Zweit-Effekt gelernt: Produktinhaber 2026-10-31, Readiness-Runde R1), `not_enough_gold`
+**Und** Fehler ohne Änderung, in dieser Reihenfolge: `unknown_class` (kein anderer Weg derselben Rolle, also auch Avatar und Lucan), `not_available` (Akademie < 2, kein Profi, schon den Zweit-Effekt gelernt: Produktinhaber 2026-10-31, Readiness-Runde R1), `not_enough_gold`
 **Und** im Panel erscheint bei einem gewählten Profi die zweite Weg-Karte mit „Weg wechseln · ● 1 500“.
 
 **Angenommen** die Akademie auf Stufe 3 und ein Profi, dessen Rolle zwei Wege hat
@@ -456,7 +456,7 @@ damit Verlust Bedeutung behält.
 
 **Angenommen** Akt 2 ist erreicht (`unlocks: [{ id: lessons, requires: [{ act: 2 }] }]` im Raum `memorial`)
 **Wenn** der Spieler `{ type: 'inheritHeritage', from, to, skill }` schickt
-**Dann** gilt: `from` ist ein Gedenkstein (gefallener Gefährte oder Söldner aus `c.fallen` mit `classId`, oder ein fester Stein mit `heritage` wie Gerrit), der noch nie vererbt hat; `to` ist ein lebender Story-Gefährte der Truppe einschließlich Avatar und Kael, kein Söldner, ohne Lektion; in `c.heritageGiven` gibt es für `c.act` noch keinen Eintrag
+**Dann** gilt: `from` ist ein Gedenkstein (gefallener Gefährte oder Söldner aus `c.fallen` mit `classId`, oder ein fester Stein mit `heritage` wie Gerrit), der noch nie vererbt hat; `to` ist ein lebender Story-Gefährte der Truppe einschließlich Avatar und Lucan, kein Söldner, ohne Lektion; in `c.heritageGiven` gibt es für `c.act` noch keinen Eintrag
 **Und** erlaubt ist je Stufe der Gedächtnishalle: Stufe 1 die feste Lektion der Rolle des Gefallenen (Gerrit: seine), Stufe 2 eine der zwei Lektionen seiner Rolle (Gerrit: nur seine), Stufe 3 jede der 14 Lektionen (auch bei Gerrit `[ASSUMPTION]`)
 **Und** danach trägt der Empfänger `heritage: { skill, from }` am `UnitRecord` (Default `null`), `c.heritageGiven` (Default `[]`) bekommt `{ act, from, to, skill }`, Event `heritageInherited`
 **Und** Fehler ohne Änderung, in dieser Reihenfolge: `unknown_unit` (Empfänger nicht in der Truppe oder Söldner), `not_available` (Akt < 2, in diesem Akt schon vererbt, Stein hat schon vererbt, Stein ohne Rolle, Empfänger hat schon eine Lektion), `unknown_choice` (Lektion auf dieser Stufe nicht erlaubt).

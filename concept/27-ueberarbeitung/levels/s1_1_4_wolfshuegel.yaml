@@ -50,7 +50,7 @@ objects:
   - { id: c_ruin, type: chest, at: [17, 8], contents: { gold: 300 } }
 deploy:
   max: 8
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[8, 22], [9, 22], [12, 22], [13, 22], [8, 23], [9, 23], [12, 23], [13, 23], [10, 24], [11, 24]]
 units:
   # Höhle im Norden: Dunn (Boss) mit zwei Wachen
@@ -104,7 +104,7 @@ objectives:
   victory: { type: boss, unit: osric }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_ysolde, type: recruit, unit: ysolde, reward: { gold: 200 } }
     - { id: s_chests, type: open_chests, reward: { item: { def: vulnerary } } }
