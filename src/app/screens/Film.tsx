@@ -2,7 +2,7 @@
  * Film scene (epic 16): the story scene's lines over a 3D stage (FilmView) instead of the visual-novel background. Each line
  * the box shows cuts to its shot; the text, speakers, answers, log and skip are the scene's own (Dialogue).
  */
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentProps } from 'preact';
 import { filmCuts, filmStage, type FilmDef } from '../../core';
 import { FilmView } from '../../render/film/filmView';
@@ -17,6 +17,8 @@ export function Film({ film, dialogue }: { film: FilmDef; dialogue: Omit<Dialogu
   const stageRef = useRef<HTMLDivElement>(null);
   const floatRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<FilmView | null>(null);
+  // the stage stays black until the first shot stands (else the tilted board shows while the film loads)
+  const [shown, setShown] = useState(false);
   const ready = useRef<Promise<void> | null>(null);
   // the box reports its first line before this effect has built the view (child effects run first): that cut waits here
   const pending = useRef<{ ids: readonly string[]; idx: number } | null>(null);
@@ -29,6 +31,11 @@ export function Film({ film, dialogue }: { film: FilmDef; dialogue: Omit<Dialogu
     view.calmMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     viewRef.current = view;
     ready.current = view.loadFilm(film, state);
+    void ready.current
+      .then(() => view.whenDrawn())
+      .then(() => {
+        if (viewRef.current === view) setShown(true);
+      });
     if (pending.current) onIndex(pending.current.ids, pending.current.idx);
     return () => {
       viewRef.current = null;
@@ -43,7 +50,7 @@ export function Film({ film, dialogue }: { film: FilmDef; dialogue: Omit<Dialogu
   };
   return (
     <div class={`film ${film.letterbox ? 'film--letterbox' : ''}`}>
-      <div class="film-stage" ref={stageRef} />
+      <div class={`film-stage ${shown ? 'is-shown' : ''}`} ref={stageRef} />
       <div class="film-float" ref={floatRef} />
       <Dialogue {...dialogue} film onIndex={onIndex} />
     </div>

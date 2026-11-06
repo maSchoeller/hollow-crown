@@ -8,3 +8,5 @@
 art/**/*.png                  filter=lfs diff=lfs merge=lfs -text
 art/**/*.glb                  filter=lfs diff=lfs merge=lfs -text
 art/**/*.vat                  filter=lfs diff=lfs merge=lfs -text
+art/**/*.mp4                         filter=lfs diff=lfs merge=lfs -text
+art/**/*.webm                       filter=lfs diff=lfs merge=lfs -text

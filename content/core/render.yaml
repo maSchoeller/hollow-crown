@@ -243,7 +243,7 @@ worldMap:
 # Epic 16, Story 16.3: Kinolook der Filmszenen (nur dort, nie auf dem Brett). Nachbearbeitung je Qualitätsstufe (low: keine).
 # exposure/contrast = Bildbearbeitung mit ACES-Tonemapping; vignette 0..1; grain = Filmkorn; bloom = Glanzlichter;
 # dof = Tiefenschärfe auf das Ziel des Shots (fStop klein = weicher Hintergrund, focalLength in mm, blur 0 low – 2 high);
-# haze = Luftperspektive (lineare Nebelstrecke in Feldern ab der Kamera, Farbe des Dunstes); sun = Licht der Filme (Stärke-Faktor, Farbe, Höhe in Grad).
+# Werte für Himmel, Grading und Staub stehen unten. haze = Luftperspektive (lineare Nebelstrecke in Feldern ab der Kamera, Farbe des Dunstes); sun = Licht der Filme (Stärke-Faktor, Farbe, Höhe in Grad).
 film:
   exposure: 1.0
   contrast: 1.32
@@ -253,7 +253,12 @@ film:
   chromatic: 18
   sharpen: 0.25
   bloom: { threshold: 0.78, weight: 0.32, kernel: 64, scale: 0.5 }
-  dof: { fStop: 1.6, focalLength: 85, blur: { mid: 1, high: 2 } }
-  haze: { near: 11, far: 48, color: "#d6c3a2" }
+  dof: { fStop: 1.1, focalLength: 120, blur: { mid: 1, high: 2 } }
+  haze: { near: 11, far: 48, color: "#e3d2b2" }
   sun: { intensity: 1.15, color: "#ffd9a8", hemi: 0.75, hemiColor: "#9fb4d8" }
   ssao: { high: true, mid: false, radius: 1.2, strength: 1.1 }
+  # Himmel von unten (Dunst am Horizont) nach oben; grade = Farbkurven (Schatten kühl, Lichter warm, Sättigung -100..100)
+  sky: { top: "#5b8fd0", mid: "#a9c3df", horizon: "#e3d2b2" }
+  grade: { shadowsHue: 200, shadowsDensity: 28, shadowsSaturation: 40, highlightsHue: 35, highlightsDensity: 24, highlightsSaturation: 45, saturation: 12 }
+  # Staub im Licht: Teilchen je Qualitätsstufe in einem Kasten um das Kamera-Ziel
+  dust: { low: 0, mid: 120, high: 260, size: 0.035, color: "#fff1d0" }

@@ -308,4 +308,7 @@ export interface FilmLookDef {
   haze: { near: number; far: number; color: string };
   sun: { intensity: number; color: string; hemi: number; hemiColor: string };
   ssao: { high: boolean; mid: boolean; radius: number; strength: number };
+  sky: { top: string; mid: string; horizon: string };
+  grade: { shadowsHue: number; shadowsDensity: number; shadowsSaturation: number; highlightsHue: number; highlightsDensity: number; highlightsSaturation: number; saturation: number };
+  dust: { low: number; mid: number; high: number; size: number; color: string };
 }

@@ -12,6 +12,18 @@
 .film-float {
   pointer-events: none;
 }
+.film-stage {
+  opacity: 0;
+  transition: opacity 700ms ease-out;
+}
+.film-stage.is-shown {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-stage {
+    transition: none;
+  }
+}
 .film--letterbox::before,
 .film--letterbox::after {
   content: '';

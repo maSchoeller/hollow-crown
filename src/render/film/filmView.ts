@@ -85,6 +85,23 @@ export class FilmView extends BoardView {
     this.wake(shot.camera.ms + 200);
   }
 
+  /**
+   * Resolves after the first frame with the film's camera and look is drawn, then restarts the running shot's clock: compiling
+   * the post-processing can take a while, and the opening move must not run out unseen behind the black.
+   */
+  whenDrawn(): Promise<void> {
+    return new Promise((resolve) => {
+      this.wake(1000);
+      this.scene.onAfterRenderObservable.addOnce(() => {
+        const now = performance.now();
+        const shift = now - this.shotStart;
+        this.shotStart = now;
+        for (const w of this.walks) w.start += shift;
+        resolve();
+      });
+    });
+  }
+
   /** The film is over or skipped: everyone at the last marks. */
   finishWalks(): void {
     for (const w of this.walks) {
@@ -111,6 +128,8 @@ export class FilmView extends BoardView {
     this.camera.position.copyFrom(world(from));
     this.camera.setTarget(world(to));
     this.filmLook?.focus(Math.hypot(to[0] - from[0], to[1] - from[1], to[2] - from[2]));
+    const t = world(to);
+    this.filmLook?.follow(t.x, 0, t.z);
     this.stepWalks(now);
   }
 

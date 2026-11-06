@@ -44,7 +44,7 @@ shots:
   - line: l06
     camera: { from: [3.4, 0.9, 13.2], to: [2.2, 0.7, 11.6], end: { from: [4.1, 0.85, 12.9], to: [2.4, 0.7, 11.4] }, fov: 32, ms: 6000 }
   - line: l07
-    camera: { from: [5.33, 0.9, 16.26], to: [5.8, 0.85, 18], fov: 28, ms: 3000 }
+    camera: { from: [5.2, 0.85, 15.75], to: [5.8, 0.8, 18], fov: 28, ms: 3000 }
     gestures: [{ actor: brenna, face: [7.5, 11.6], anim: hit }]
   # Lucan, jetzt nah: der Satz der Szene
   - line: l08

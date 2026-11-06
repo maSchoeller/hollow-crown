@@ -890,6 +890,17 @@ export const renderSchema = z.object({
       haze: z.object({ near: z.number().min(0), far: z.number().positive(), color: z.string().regex(/^#[0-9a-f]{6}$/i) }),
       sun: z.object({ intensity: z.number().min(0), color: z.string().regex(/^#[0-9a-f]{6}$/i), hemi: z.number().min(0), hemiColor: z.string().regex(/^#[0-9a-f]{6}$/i) }),
       ssao: z.object({ high: z.boolean(), mid: z.boolean(), radius: z.number().positive(), strength: z.number().positive() }),
+      sky: z.object({ top: z.string().regex(/^#[0-9a-f]{6}$/i), mid: z.string().regex(/^#[0-9a-f]{6}$/i), horizon: z.string().regex(/^#[0-9a-f]{6}$/i) }),
+      grade: z.object({
+        shadowsHue: z.number().min(0).max(360),
+        shadowsDensity: z.number().min(0).max(100),
+        shadowsSaturation: z.number().min(-100).max(100),
+        highlightsHue: z.number().min(0).max(360),
+        highlightsDensity: z.number().min(0).max(100),
+        highlightsSaturation: z.number().min(-100).max(100),
+        saturation: z.number().min(-100).max(100),
+      }),
+      dust: z.object({ low: z.number().int().min(0), mid: z.number().int().min(0), high: z.number().int().min(0), size: z.number().positive(), color: z.string().regex(/^#[0-9a-f]{6}$/i) }),
     })
     .optional(),
 });

@@ -12,24 +12,28 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { ParticleSystem } from '@babylonjs/core/Particles/particleSystem';
 import type { FilmLookDef } from '../../core';
 import type { Quality } from '../host';
 
 export interface FilmLook {
   /** focus on a point `distance` world units in front of the camera */
   focus(distance: number): void;
+  /** the dust drifts around this world point (the shot's target) */
+  follow(x: number, y: number, z: number): void;
   dispose(): void;
 }
 
 /** Sky dome with a vertical gradient: warm haze at the horizon, deeper blue above. */
-function skyDome(scene: Scene, horizon: Color3, zenith: Color3, centre: [number, number]): Mesh {
+function skyDome(scene: Scene, horizon: Color3, mid: Color3, zenith: Color3, centre: [number, number]): Mesh {
   const tex = new DynamicTexture('filmSky', { width: 4, height: 256 }, scene, false);
   const ctx = tex.getContext();
   const g = ctx.createLinearGradient(0, 0, 0, 256);
   g.addColorStop(0, zenith.toHexString());
-  g.addColorStop(0.42, Color3.Lerp(zenith, horizon, 0.55).toHexString());
-  g.addColorStop(0.5, horizon.toHexString());
-  g.addColorStop(1, horizon.scale(0.9).toHexString());
+  g.addColorStop(0.32, mid.toHexString());
+  g.addColorStop(0.49, horizon.toHexString());
+  g.addColorStop(1, horizon.scale(0.85).toHexString());
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 4, 256);
   tex.update(false);
@@ -44,6 +48,44 @@ function skyDome(scene: Scene, horizon: Color3, zenith: Color3, centre: [number,
   dome.isPickable = false;
   dome.infiniteDistance = true;
   return dome;
+}
+
+/** Motes of dust floating slowly in the light around the shot's target; none on `low`. */
+function makeDust(scene: Scene, def: FilmLookDef, quality: Quality): ParticleSystem | null {
+  const n = def.dust[quality];
+  if (n <= 0) return null;
+  const tex = new DynamicTexture('filmDustTex', { width: 32, height: 32 }, scene, false);
+  const ctx = tex.getContext();
+  const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 32, 32);
+  tex.hasAlpha = true;
+  tex.update(false);
+  const ps = new ParticleSystem('filmDust', n, scene);
+  ps.particleTexture = tex;
+  ps.emitter = new Vector3(0, 0, 0);
+  ps.minEmitBox = new Vector3(-3, 0.05, -3);
+  ps.maxEmitBox = new Vector3(3, 2.2, 3);
+  const c = Color3.FromHexString(def.dust.color);
+  ps.color1 = new Color4(c.r, c.g, c.b, 0.55);
+  ps.color2 = new Color4(c.r, c.g, c.b, 0.3);
+  ps.colorDead = new Color4(c.r, c.g, c.b, 0);
+  ps.minSize = def.dust.size * 0.5;
+  ps.maxSize = def.dust.size * 1.4;
+  ps.minLifeTime = 4;
+  ps.maxLifeTime = 9;
+  ps.emitRate = n / 6;
+  ps.direction1 = new Vector3(-0.05, 0.02, -0.03);
+  ps.direction2 = new Vector3(0.06, 0.06, 0.04);
+  ps.minEmitPower = 0.5;
+  ps.maxEmitPower = 1;
+  ps.updateSpeed = 0.01;
+  ps.blendMode = ParticleSystem.BLENDMODE_ADD;
+  ps.preWarmCycles = 300;
+  ps.start();
+  return ps;
 }
 
 export async function applyFilmLook(
@@ -69,14 +111,16 @@ export async function applyFilmLook(
     scene.fogEnd = def.haze.far;
   }
   scene.clearColor = new Color4(haze.r, haze.g, haze.b, 1);
-  const sky = skyDome(scene, haze, Color3.FromHexString(def.sun.hemiColor).scale(0.95), centre);
+  const sky = skyDome(scene, Color3.FromHexString(def.sky.horizon), Color3.FromHexString(def.sky.mid), Color3.FromHexString(def.sky.top), centre);
+  const dust = makeDust(scene, def, quality);
   if (quality === 'low') {
-    return { focus: () => undefined, dispose: () => sky.dispose(false, true) };
+    return { focus: () => undefined, follow: () => undefined, dispose: () => sky.dispose(false, true) };
   }
-  const [{ DefaultRenderingPipeline }, { ImageProcessingConfiguration }, { DepthOfFieldEffectBlurLevel }] = await Promise.all([
+  const [{ DefaultRenderingPipeline }, { ImageProcessingConfiguration }, { DepthOfFieldEffectBlurLevel }, { ColorCurves }] = await Promise.all([
     import('@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline'),
     import('@babylonjs/core/Materials/imageProcessingConfiguration'),
     import('@babylonjs/core/PostProcesses/depthOfFieldEffect'),
+    import('@babylonjs/core/Materials/colorCurves'),
   ]);
   const p = new DefaultRenderingPipeline('film', true, scene, [camera]);
   p.samples = quality === 'high' ? 4 : 1;
@@ -93,6 +137,18 @@ export async function applyFilmLook(
   const vc = Color3.FromHexString(def.vignetteColor);
   ip.vignetteColor = new Color4(vc.r, vc.g, vc.b, 0);
   ip.vignetteBlendMode = ImageProcessingConfiguration.VIGNETTEMODE_MULTIPLY;
+  // grade: cool shadows, warm highlights, a little more colour
+  const curves = new ColorCurves();
+  const gr = def.grade;
+  curves.shadowsHue = gr.shadowsHue;
+  curves.shadowsDensity = gr.shadowsDensity;
+  curves.shadowsSaturation = gr.shadowsSaturation;
+  curves.highlightsHue = gr.highlightsHue;
+  curves.highlightsDensity = gr.highlightsDensity;
+  curves.highlightsSaturation = gr.highlightsSaturation;
+  curves.globalSaturation = gr.saturation;
+  ip.colorCurvesEnabled = true;
+  ip.colorCurves = curves;
   p.bloomEnabled = true;
   p.bloomThreshold = def.bloom.threshold;
   p.bloomWeight = def.bloom.weight;
@@ -127,7 +183,9 @@ export async function applyFilmLook(
     focus: (distance) => {
       p.depthOfField.focusDistance = Math.max(100, distance * 1000);
     },
+    follow: (x, y, z) => dust?.emitter && (dust.emitter as Vector3).set(x, y, z),
     dispose: () => {
+      dust?.dispose();
       ssao?.dispose();
       p.dispose();
       sky.dispose(false, true);
