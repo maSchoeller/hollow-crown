@@ -250,7 +250,8 @@ describe('campaign commands', () => {
     expect(run(r.campaign, { type: 'effects', effects: [{ setFlag: 'avatar_honest' }] }).events).toEqual([]);
   });
 
-  it('finishMission replays the battle log and applies the result', () => {
+  // plays a whole battle and replays it in finishMission: over 2 s alone (2026-11-06)
+  it('finishMission replays the battle log and applies the result', { timeout: 30_000 }, () => {
     const start = beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state;
     const played = autoplay(data, start);
     expect(played.state.outcome).toBe('victory');
@@ -282,7 +283,8 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     return { start: s0, log };
   }
 
-  it('victory: applies them once, in order, together with the result', () => {
+  // plays a whole battle and replays it in finishMission: over 2 s alone (2026-11-06)
+  it('victory: applies them once, in order, together with the result', { timeout: 30_000 }, () => {
     const s0 = start();
     const played = autoplay(data, s0);
     const plain = run(base, { type: 'finishMission', start: s0, commands: played.log });
@@ -297,7 +299,8 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     expect(r.campaign.completed).toContain(firstNode(data).id);
   });
 
-  it('defeat: applies none and leaves the campaign unchanged', () => {
+  // plays a whole battle and replays it in finishMission: over 2 s alone (2026-11-06)
+  it('defeat: applies none and leaves the campaign unchanged', { timeout: 30_000 }, () => {
     // an idle company only loses on hard
     const hard = newCampaign(data, 7, { difficulty: 'hard', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     const l = lost(hard);

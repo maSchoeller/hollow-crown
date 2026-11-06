@@ -206,7 +206,8 @@ describe('met only when seen or fled (R2)', () => {
     expect(finishBattle(data, c, s).campaign.lieutenants!.hask).toMatchObject({ met: true, routs: 1, grudge: 1 });
   });
 
-  it('is kept up to date by the commands (a reinforcement included), so a replay gives the same list', () => {
+  // plays the large map 1-8 through a wave and replays it: over 2 s alone, 10 s under coverage and load (2026-11-06)
+  it('is kept up to date by the commands (a reinforcement included), so a replay gives the same list', { timeout: 30_000 }, () => {
     const c = strong(withGrudge());
     const start = startBattle(data, createBattle(data, c, M18().id, ids(c))).state;
     const played = throughWave(start);
