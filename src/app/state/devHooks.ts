@@ -18,7 +18,7 @@ import { playNode, beginMission, concludeBattle, storyContext, runEffects } from
  * Puts a haunt on the world map for testing (story 5.6): `devHaunt('m1_1_steckbriefe', 'escort', 'hask')`. Opens an unsaved campaign when none is
  * open, marks the story nodes up to the map's as done, lets the lieutenant have been met and shows the world map with the haunt.
  */
-function devHaunt(mapId = 'prologue_paktnacht', variant = 'rout', ltId = 'hask'): string | null {
+function devHaunt(mapId = 'm1_1_steckbriefe', variant = 'boss', ltId = 'hask'): string | null {
   campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   const c = clone(campaign.value);
   const map = data.maps[mapId];

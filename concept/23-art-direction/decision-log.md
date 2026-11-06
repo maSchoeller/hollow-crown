@@ -113,6 +113,7 @@
 - Zoomstufen auf das quadratische Bild umgestellt (`render.yaml worldMap.zoomSteps` 2,2 und 2,8): nah auf dem Handy rund 1,1-fache Vergrößerung der Quelle.
 - **Offen für den Produktinhaber: Zustandsvarianten der Stadtbilder.** Welche Orte bekommen Zustände (z. B. Erlbach verbrannt nach 1-2, Paktwacht als Ruine bis 1-6 und ausgebaut nach Burgstufe, Aurenhall im Belagerungszustand), ab wann wechseln sie, und kommen sie in Staffel 1? Das Datenmodell nimmt sie ohne Codeänderung auf (`places[].site.variants`: Bild plus Bedingungen, das erste zutreffende gewinnt, sonst das Grundbild). Bis zur Entscheidung zeigt jeder Ort sein Grundbild.
 - **Offen für den Produktinhaber: Heimsuchungen an Orten unter Nebel.** Eine Heimsuchung steht neben dem Stein ihrer Story-Karte. Die Prolog-Karte liegt jetzt in Aurenhall, also stehen Heimsuchungen dort in Akt 1 weit im Norden über dem Nebel von Akt 3, abseits der ersten Ansicht (erreichbar durch Verschieben). Bleibt das so, oder sollen sie in diesem Fall neben der Heimat stehen?
+  - **Erledigt 2026-11-06:** Der Prolog ist eine verlassene Karte (`abandoned: true`, GDD-Log 2026-11-06) und hat keine Heimsuchungen mehr; damit steht in Akt 1 keine Heimsuchung unter dem Nebel von Aurenhall.
 
 ## 2026-11-05: Schritt 1a, Stand nach Story 15.9 (Teil 1)
 

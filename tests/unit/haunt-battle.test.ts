@@ -35,7 +35,7 @@ function withTreasure(): GameData {
 
 function campaignWith(d: GameData, map: string, variant: HauntVariant, opts: { seed?: number; since?: number; difficulty?: 'easy' | 'normal' | 'hard' } = {}): CampaignState {
   const c = newCampaign(d, opts.seed ?? 7, { difficulty: opts.difficulty ?? 'normal', deathMode: 'standard' } as never, { name: 'Rhen', portrait: 'avatar_a' } as never);
-  c.completed = ['prologue', 'm1_1'];
+  c.completed = ['prologue', 'm1_1', 'm1_2'];
   c.lieutenants = { hask: { ...HASK } };
   c.hauntsSinceStory = opts.since ?? 0;
   const anchor = d.maps[map]!.haunts!.find((a) => a.variant === variant)!;
@@ -45,9 +45,9 @@ function campaignWith(d: GameData, map: string, variant: HauntVariant, opts: { s
 }
 
 const ANCHORS: Array<[string, HauntVariant]> = [
-  ['prologue_paktnacht', 'rout'],
-  ['prologue_paktnacht', 'boss'],
-  ['prologue_paktnacht', 'defend'],
+  ['m1_2_erlbach', 'rout'],
+  ['m1_2_erlbach', 'boss'],
+  ['m1_2_erlbach', 'defend'],
   ['m1_1_steckbriefe', 'defend'],
   ['m1_1_steckbriefe', 'boss'],
   ['m1_1_steckbriefe', 'escort'],
@@ -100,7 +100,7 @@ describe('haunt battle (story 5.6)', () => {
   });
 
   it('finds its map again from the id (core worker, restored save)', () => {
-    const c = campaignWith(d, 'prologue_paktnacht', 'defend');
+    const c = campaignWith(d, 'm1_2_erlbach', 'defend');
     const s = createHauntBattle(d, c, 'h1_0', c.roster.map((u) => u.id));
     const fresh = loadContentFromDisk().data;
     expect(fresh.maps[s.mapId]).toBeUndefined();
@@ -110,7 +110,7 @@ describe('haunt battle (story 5.6)', () => {
   });
 
   it('keeps the lieutenant scaled by his grudge, like on a story map', () => {
-    const c = campaignWith(d, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(d, 'm1_2_erlbach', 'rout');
     c.lieutenants = { hask: { ...HASK, grudge: 2, target: 'avatar' } };
     const s = createHauntBattle(d, c, 'h1_0', c.roster.map((u) => u.id));
     const lt = s.units.find((u) => u.lieutenant === 'hask')!;
@@ -120,7 +120,7 @@ describe('haunt battle (story 5.6)', () => {
   });
 
   it('a lieutenant who joined stays off the board', () => {
-    const c = campaignWith(d, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(d, 'm1_2_erlbach', 'rout');
     c.flags.joined_hask = true;
     const s = createHauntBattle(d, c, 'h1_0', c.roster.map((u) => u.id));
     expect(s.units.some((u) => u.lieutenant)).toBe(false);
@@ -150,7 +150,7 @@ describe('haunt reward (story 5.6)', () => {
 
   it('pays haunt.goldPct of the mean story gold and a share of the act material, never anything else', () => {
     expect(data.balance.haunt.goldPct).toBe(40);
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const { campaign, result } = win(c);
     const base = Math.round(mean() * 0.4);
     expect(hauntGold(data)).toBe(base);
@@ -169,7 +169,7 @@ describe('haunt reward (story 5.6)', () => {
   it('halves gold from the 4th haunt since the last story mission', () => {
     const base = hauntGold(data);
     for (const [since, gold, halved] of [[0, base, false], [1, base, false], [2, base, false], [3, Math.round(base / 2), true], [5, Math.round(base / 2), true]] as const) {
-      const { result } = win(campaignWith(data, 'prologue_paktnacht', 'rout', { since }));
+      const { result } = win(campaignWith(data, 'm1_2_erlbach', 'rout', { since }));
       expect(result.gold).toBe(gold);
       expect(result.haunt?.halved).toBe(halved);
     }
@@ -177,7 +177,7 @@ describe('haunt reward (story 5.6)', () => {
 
   it('halves the bounty too (a lieutenant who flees)', () => {
     const run = (since: number) => {
-      const c = campaignWith(data, 'prologue_paktnacht', 'rout', { since });
+      const c = campaignWith(data, 'm1_2_erlbach', 'rout', { since });
       const s = won(createHauntBattle(data, c, 'h1_0', ids(c)));
       s.units = s.units.map((u) => (u.lieutenant ? { ...u, gone: 'fled' as const, fledBy: s.units.find((x) => x.team === 'player')!.uid } : u));
       return finishBattle(data, c, s).result.bounty[0]!.gold;
@@ -187,7 +187,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('pays haunt.expPct of the EP, and catchUpExpPct of that to a unit above the expected level', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s = createHauntBattle(data, c, 'h1_0', ids(c));
     const u = s.units.find((x) => x.team === 'player')!;
     // the expected level of the next story node (after the prologue and 1-1: node m1_2)
@@ -207,7 +207,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('reports the cap in the result', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s = won(createHauntBattle(data, c, 'h1_0', ids(c)));
     const u = s.units.find((x) => x.team === 'player')!;
     u.level = 8;
@@ -229,7 +229,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('a lost haunt leaves the campaign and the haunt as they were', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s: BattleState = { ...createHauntBattle(data, c, 'h1_0', ids(c)), outcome: 'defeat' };
     const r = finishBattle(data, c, s);
     expect(r.campaign).toEqual(c);
@@ -244,7 +244,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('runs through the campaign command finishMission, and a haunt that is gone cannot be finished', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const start = startBattle(data, createHauntBattle(data, c, 'h1_0', ids(c))).state;
     const done = autoplay(data, start);
     const cmd = { type: 'finishMission' as const, start, commands: done.log };
@@ -258,7 +258,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('opening the card removes the NEU mark (seeHaunt), repeating changes nothing', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     expect(c.haunts[0]!.new).toBe(true);
     const a = applyCampaign(data, c, { type: 'seeHaunt', id: 'h1_0' }).campaign;
     expect(a.haunts[0]!.new).toBe(false);
@@ -267,7 +267,7 @@ describe('haunt reward (story 5.6)', () => {
   });
 
   it('restarting a haunt battle is allowed while it is open', () => {
-    const c = campaignWith(data, 'prologue_paktnacht', 'rout');
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     expect(validateCampaign(data, c, { type: 'restartMission', node: 'prologue', haunt: 'h1_0' })).toBeNull();
     expect(validateCampaign(data, c, { type: 'restartMission', node: 'prologue' })).toBe('node_unavailable');
   });

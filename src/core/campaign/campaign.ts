@@ -4,6 +4,7 @@ import type { Reward, SideObjectiveDef } from '../mapDefs';
 import type { Effect } from '../storyDefs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
+import { hauntAnchorGone } from '../battle/hauntMap';
 import { sideObjectiveDone, sideSubject } from '../battle/objectives';
 import { rollAffixes } from '../loot';
 import { nextInt, pick, seedRng } from '../rng';
@@ -107,7 +108,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     rolesSeen: [...(old.rolesSeen ?? [])],
     day: c.day ?? { last: null, pending: [] },
     // story 5.5
-    haunts: c.haunts ?? [],
+    // a haunt whose anchor is gone lapses (the prologue became abandoned on 2026-11-06)
+    haunts: (c.haunts ?? []).filter((h) => !hauntAnchorGone(data, h.map, h.variant)),
     hauntLast: c.hauntLast ?? {},
     hauntsSinceStory: c.hauntsSinceStory ?? 0,
     // story 3.3: lieutenants of older saves hold only `met`

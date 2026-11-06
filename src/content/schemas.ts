@@ -429,6 +429,8 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
+  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): no haunt anchors, never haunted */
+  abandoned: z.boolean().optional(),
   haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
