@@ -1,10 +1,12 @@
 # Varianten zu den offenen Story-Punkten aus Story 15.6
 
+> **Entschieden 2026-11-06:** Der Produktinhaber hat alle Empfehlungen gewählt, 1A, 2A, 3A, 4A und 5A (`decision-log.md`). Szenen, `narrative.md` und `staffelbogen.md` sind nachgezogen.
+>
 > Stand 2026-11-06, zur Wahl durch den Produktinhaber. Grundlage: Eintrag „Offen für den Produktinhaber (Story 15.6 …)“ im `decision-log.md`, `staffelbogen.md`, `missionsliste-s1.md`, `geografie-valmora.md`, `narrative.md` (Lucan, History, Fraktionen) und Art-Log 2026-11-01. Szenen sind noch nicht geändert; nach der Wahl ziehen die genannten Zeilen und `narrative.md` nach.
 
 ## Kurzfassung
 
-| Punkt | Empfehlung | Alternativen |
+| Punkt | Empfehlung (gewählt) | Alternativen |
 |---|---|---|
 | 1 · Lucans Haus | **A** Ritterhaus der Krone; verstoßen, weil er den Kommandanten öffentlich anklagte | B Haus der Eisenmark, verstoßen wegen Befehlsverweigerung · C Haus verstößt ihn, Halvard nimmt ihn auf |
 | 2 · Kommandant | **A** Dravn selbst gab den Befehl | B Dravns Vorgesetzter, Dravn schwieg · C ein Mann aus Lucans eigenem Haus |
@@ -14,7 +16,7 @@
 
 Empfehlungen hängen zusammen: 1A und 2A ergeben eine Geschichte (Lucan klagte Dravn an, das Haus wählte den Helden), 4A und 5A legen das Grab an das Tor zu Akt 3.
 
-## 1 · Lucans Haus und warum er verstoßen wurde
+## 1 · Lucans Haus und warum er verstoßen wurde (entschieden: A)
 
 Fest: ehemaliger Ritterhauptmann, verstoßener Adliger, königliches Grün mit aufgetrenntem Hauswappen (Art-Log 2026-11-01); Veteran des Grenzkriegs vor 12 Jahren, danach Gründer des Aschenbanners; Zeile N2: „Mein Haus wollte mich nicht mehr.“
 
@@ -31,7 +33,7 @@ Fest: ehemaliger Ritterhauptmann, verstoßener Adliger, königliches Grün mit a
 
 </details>
 
-## 2 · Ritterhauptmann und der Kommandant, der seine Leute verheizte
+## 2 · Ritterhauptmann und der Kommandant, der seine Leute verheizte (entschieden: A)
 
 Fest: „Dravn wird zum Helden, Lucans Einheit wird von einem adligen Kommandanten verheizt“ (`narrative.md`, History); Varek kennt Lucan und Dravn (N2); Dravn opfert in 2-4 seine eigenen Dörfer und wird in Staffel 2 Verbündeter (`staffelbogen.md`, Weiche D). Zeile N2: „Ein Kommandant von Stand“.
 
@@ -48,7 +50,7 @@ Fest: „Dravn wird zum Helden, Lucans Einheit wird von einem adligen Kommandant
 
 </details>
 
-## 3 · Wer das Bandengold über Krähenholm schickt und an wen
+## 3 · Wer das Bandengold über Krähenholm schickt und an wen (entschieden: A)
 
 Fest: Haus Silbermeer hat die Banden aus Akt 1 heimlich finanziert (`narrative.md`, Fraktionen); in 2-6 übergibt Sable auf Krähenholm Gold aus Dravns Kasse (Missionsliste); das Gold läuft von Krähenholm durch die Erlenbucht, die Hungernden in 1-5 sehen es (Geografie). Zeile 1-5: „Gold für die Banden.“
 
@@ -65,7 +67,7 @@ Fest: Haus Silbermeer hat die Banden aus Akt 1 heimlich finanziert (`narrative.m
 
 </details>
 
-## 4 · Gerrits Grab nach der Flucht per Kahn
+## 4 · Gerrits Grab nach der Flucht per Kahn (entschieden: A)
 
 Fest: Gerrit fällt in P, „das erste Grab“ (Missionsliste); Prolog-Nachszene: „Heute Nacht bleibt er bei uns“, „Im Morgengrauen legt der Kahn an. Am Ufer schichten sie Steine für Gerrit, das erste Grab.“ Gerrits Banner lebt in Akt 1 weiter (1-6, Unterstützungsgespräche).
 
@@ -80,7 +82,7 @@ Fest: Gerrit fällt in P, „das erste Grab“ (Missionsliste); Prolog-Nachszene
 
 </details>
 
-## 5 · Wo der Kahn anlegt
+## 5 · Wo der Kahn anlegt (entschieden: A)
 
 Fest: Lastkahn nachts durch die Aureklamm, danach zu Fuß über den Wachpass nach Varnhold (Geografie, Reise); Aurenhall–Kronfeld 101 km, Aurenhall–Varnhold 11,5 Tage zu Fuß; Zeile „Im Morgengrauen legt der Kahn an“; bestätigte Herleitung „elf Tage nach der Paktnacht“.
 

@@ -39,7 +39,7 @@ lines:
     speaker: [grosk]
     fallback: skip
     mood: angry
-    text: "Gold für die Banden. Wir sehen es vorbeifahren und bekommen nichts."
+    text: "Gold für Hask. Wir sehen es vorbeifahren und bekommen nichts."
   - id: o07
     speaker: [tobin]
     fallback: skip
