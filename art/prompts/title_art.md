@@ -1,5 +1,8 @@
 # title_art – Titelbild von Akt 1 (Story 8.7)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Datei:** `art/title/title_act1.png` (1024 × 1536, Hochformat 2:3, RGB, unverändertes Original von ChatGPT)
 - **Datum:** 2026-10-25
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif **Plus**, Konto `maschoeller`, Denkaufwand „Medium“), gesteuert über Claude in Chrome; Chat „Create fantasy key art“ (https://chatgpt.com/c/6add3af8-556c-83eb-bed3-09521b27922b)

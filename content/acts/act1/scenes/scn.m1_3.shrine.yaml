@@ -7,7 +7,7 @@ lines:
     mood: neutral
     text: "Ihr seid pünktlich, Hauptmann. Er sagte, ihr kämt. Kommt herauf, die Rampe ist der einzige Weg."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Er? Wer schickt dich?"

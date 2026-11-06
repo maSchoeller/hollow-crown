@@ -43,7 +43,7 @@ damit mir die Truppe ans Herz wächst.
 
 ### Fehlende Bilder (`art/mockups/characters-s1/<id>_<stimmung>.png`)
 
-brenna angry/happy/sad, grosk angry, hask happy, kael angry/happy/sad, liora sad, mira angry/happy, tobin angry/happy/sad, varek happy.
+brenna angry/happy/sad, grosk angry, hask happy, lucan angry/happy/sad, liora sad, mira angry/happy, tobin angry/happy/sad, varek happy.
 
 ### Project Structure Notes
 

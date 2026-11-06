@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { unitFigureId, modelId } from '../../src/core';
 
 const classes = { skirmisher: { art: 'mercenary' }, vanguard: { sprite: 'fighter', art: 'soldier' }, brigand: {} };
-const models = ['kael', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
+const models = ['lucan', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
 
 describe('unitFigureId', () => {
   it('prefers the unit own sprite, then its character', () => {
-    expect(unitFigureId({ sprite: 'brigand', charId: 'kael', classId: 'skirmisher' }, classes)).toBe('brigand');
-    expect(unitFigureId({ charId: 'kael', classId: 'skirmisher' }, classes)).toBe('kael');
+    expect(unitFigureId({ sprite: 'brigand', charId: 'lucan', classId: 'skirmisher' }, classes)).toBe('brigand');
+    expect(unitFigureId({ charId: 'lucan', classId: 'skirmisher' }, classes)).toBe('lucan');
   });
   it('falls back to the sprite or art of the class, then the class id (hired tavern mercenaries, renamed legacy classes)', () => {
     expect(unitFigureId({ classId: 'skirmisher' }, classes)).toBe('mercenary');
@@ -37,6 +37,6 @@ describe('class figures of the real content (story 15.9)', () => {
     const unknown = validateContent(data, locales, models).filter((i) => i.file === 'classes.yaml' && i.message.startsWith('unknown sprite'));
     // the healer roles have no figure yet (art-direction decision log 2026-10-24: the cleric stays without a model)
     expect(unknown.map((i) => i.message).filter((m) => !m.startsWith('unknown sprite cleric '))).toEqual([]);
-    expect(validateContent(data, locales, new Set(['kael'])).some((i) => i.message === 'unknown sprite bandit_archer (class marksman)')).toBe(true);
+    expect(validateContent(data, locales, new Set(['lucan'])).some((i) => i.message === 'unknown sprite bandit_archer (class marksman)')).toBe(true);
   }, 30000);
 });

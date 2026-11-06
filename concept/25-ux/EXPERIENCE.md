@@ -204,7 +204,7 @@ Lena (34) kennt Fire Emblem und spielt auf dem Weg zur Arbeit 20 Minuten, das Ha
 5. **Höhepunkt:** Brenna trifft. Hask springt zurück, Rauchwölkchen, sein Wimpel fällt, und er ruft „Das merk ich mir, Brenna!“. Lena weiß sofort: Er kommt wieder, und er hat jetzt Groll auf Brenna.
 6. Das Ergebnis zeigt Beute, Kopfgeld und EP je Figur mit Symbolen. Die Szene danach bietet die Wahl, ob Mira heimkehrt; die Folgen-Karte sagt genau, was passiert. Die S-Bahn hält, sie schließt die App. Gespeichert war schon nach dem letzten Tipp.
 
-**Fehlerweg:** Kael fällt → Niederlage mit Grund; in Standard „Runde neu“ oder „Mission neu“, beides setzt auch Tote zurück.
+**Fehlerweg:** Lucan fällt → Niederlage mit Grund; in Standard „Runde neu“ oder „Mission neu“, beides setzt auch Tote zurück.
 
 ### Jonas verliert in Klassik einen Gefährten
 

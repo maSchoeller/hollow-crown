@@ -192,14 +192,14 @@ describe('exclusion (AC 4)', () => {
     expect(activeLieutenants(data, after).map((l) => l.id)).toEqual(['hask', 'morra', 'ulvric']);
   });
 
-  /** A won prologue with Grosk (lieutenant) on the map, driven off by Kael. */
+  /** A won prologue with Grosk (lieutenant) on the map, driven off by Lucan. */
   const wonWithGrosk = (c: CampaignState): BattleState => {
     const s = beginBattle(data, c, 'prologue', c.roster.map((r) => r.id)).state;
     const lt = clone(s.units.find((u) => u.team === 'enemy')!);
     lt.uid = 'lt1';
     lt.lieutenant = 'grosk';
     lt.gone = 'fled';
-    lt.fledBy = s.units.find((u) => u.id === 'kael')!.uid;
+    lt.fledBy = s.units.find((u) => u.id === 'lucan')!.uid;
     lt.pos = null;
     s.units.push(lt);
     s.outcome = 'victory';
@@ -239,14 +239,14 @@ describe('the grudge lapses (AC 5)', () => {
   it('his own grudge and target are gone, the grudge against him loses its target', () => {
     const c = atLevel(6);
     c.lieutenants = {
-      grosk: { met: true, encounters: 2, grudge: 2, target: 'kael', routs: 2, signatureDropped: false },
+      grosk: { met: true, encounters: 2, grudge: 2, target: 'lucan', routs: 2, signatureDropped: false },
       hask: { met: true, encounters: 1, grudge: 1, target: 'grosk', routs: 1, signatureDropped: false },
-      morra: { met: true, encounters: 1, grudge: 1, target: 'kael', routs: 1, signatureDropped: false },
+      morra: { met: true, encounters: 1, grudge: 1, target: 'lucan', routs: 1, signatureDropped: false },
     };
     const r = join(c);
     expect(r.campaign.lieutenants!.grosk).toEqual({ met: true, encounters: 2, grudge: 0, routs: 2, signatureDropped: false });
     expect(r.campaign.lieutenants!.hask).toEqual({ met: true, encounters: 1, grudge: 1, routs: 1, signatureDropped: false });
-    expect(r.campaign.lieutenants!.morra!.target).toBe('kael');
+    expect(r.campaign.lieutenants!.morra!.target).toBe('lucan');
     expect(r.events).toContainEqual({ t: 'grudgeChanged', lt: 'grosk', grudge: 0 });
     // with no target the opening line of hask picks nothing
     const hask = { lieutenant: 'hask', grudge: 1 } as never;
@@ -255,7 +255,7 @@ describe('the grudge lapses (AC 5)', () => {
 });
 
 describe('army limit (AC 7)', () => {
-  /** A company at its limits: 20 companions (the avatar, Kael … and stand-ins), `mercs` hired mercenaries. */
+  /** A company at its limits: 20 companions (the avatar, Lucan … and stand-ins), `mercs` hired mercenaries. */
   const full = (mercs: number): CampaignState => {
     const c = fresh();
     const proto = c.roster.find((r) => r.id === 'tobin')!;
@@ -317,7 +317,7 @@ describe('army limit (AC 7)', () => {
 describe('wanted list (decision 2026-10-25)', () => {
   it('a joined lieutenant stays with his meetings, without grudge and bounty target, marked as joined', () => {
     const c = atLevel(6);
-    c.lieutenants = { grosk: { met: true, encounters: 2, grudge: 2, target: 'kael', routs: 3, signatureDropped: false } };
+    c.lieutenants = { grosk: { met: true, encounters: 2, grudge: 2, target: 'lucan', routs: 3, signatureDropped: false } };
     expect(wantedView(data, c, 'grosk')).toMatchObject({ joined: false, grudge: 2 });
     const after = join(c).campaign;
     const v = wantedView(data, after, 'grosk')!;

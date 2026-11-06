@@ -34,7 +34,7 @@ type Known = Record<string, { grudge: number; routs: number; signatureDropped?: 
 function known(over: Known = { hask: { grudge: 0, routs: 0 } }): CampaignState {
   const c = fresh();
   c.lieutenants = Object.fromEntries(
-    Object.entries(over).map(([id, v]) => [id, { met: true, encounters: v.routs, grudge: v.grudge, routs: v.routs, signatureDropped: v.signatureDropped ?? false, target: 'kael' }]),
+    Object.entries(over).map(([id, v]) => [id, { met: true, encounters: v.routs, grudge: v.grudge, routs: v.routs, signatureDropped: v.signatureDropped ?? false, target: 'lucan' }]),
   );
   return c;
 }
@@ -42,12 +42,12 @@ function known(over: Known = { hask: { grudge: 0, routs: 0 } }): CampaignState {
 /** A won prologue with the lieutenants on the map, each driven off (`fled`) or standing; `seed` sets the battle RNG. */
 function won(c: CampaignState, lts: Array<[string, boolean]> = [['hask', true]], seed = 1): BattleState {
   const s = beginBattle(data, c, 'prologue', c.roster.map((r) => r.id)).state;
-  const kael = s.units.find((u) => u.id === 'kael')!;
+  const lucan = s.units.find((u) => u.id === 'lucan')!;
   lts.forEach(([id, fled], i) => {
     const lt = clone(s.units.find((u) => u.team === 'enemy' && !u.lieutenant)!);
     lt.uid = `lt${i}`;
     lt.lieutenant = id;
-    if (fled) Object.assign(lt, { gone: 'fled', fledBy: kael.uid, pos: null });
+    if (fled) Object.assign(lt, { gone: 'fled', fledBy: lucan.uid, pos: null });
     s.units.push(lt);
   });
   s.outcome = 'victory';

@@ -52,7 +52,7 @@ objects:
   - { id: c_gold, type: chest, at: [9, 11], contents: { gold: 800 } }
 deploy:
   max: 10
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[6, 22], [7, 22], [8, 22], [9, 22], [10, 22], [11, 22], [12, 22], [13, 22], [14, 22], [7, 23], [8, 23], [9, 23], [10, 23], [11, 23], [12, 23]]
 units:
   # Strand und Dünen im Süden
@@ -115,7 +115,7 @@ objectives:
   victory: { type: rout }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_nell, type: recruit, unit: nell, reward: { gold: 300 } }
     - { id: s_gold, type: open_chests, reward: { item: { def: vulnerary } } }

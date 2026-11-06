@@ -11,7 +11,7 @@ damit ich die erste Chronik-Seite und Lore finde.
 ## Acceptance Criteria
 
 1. **Knoten:** `{ id: n2, kind: side, map: n2_wachturm, titleKey: node.n2.title, pre: scn.n2.intro, post: scn.n2.outro, requires: [{ completed: m1_3 }], … }`, Ort `n2` in `valmora.yaml` mit `node: n2`.
-2. **Karte:** Ziel `seize` Turmtor (Produktinhaber 2026-10-26, Kael besetzt); Platzhalter-Gold ersetzt: Chronik-Truhe (8,1) gibt die Chronik-Seite (Wirkung `{ chronicle: <id> }`, Szene `scn.n2.page`), Relikt-Truhe (5,1) das Relikt (Szene `scn.n2.relic`). Wer die Truhen vor dem Sieg nicht öffnet, verpasst Seite und Relikt für diese Kampagne (Produktinhaber 2026-10-26); der Glutfunke kommt mit dem Sieg (Knoten-`effects`).
+2. **Karte:** Ziel `seize` Turmtor (Produktinhaber 2026-10-26, Lucan besetzt); Platzhalter-Gold ersetzt: Chronik-Truhe (8,1) gibt die Chronik-Seite (Wirkung `{ chronicle: <id> }`, Szene `scn.n2.page`), Relikt-Truhe (5,1) das Relikt (Szene `scn.n2.relic`). Wer die Truhen vor dem Sieg nicht öffnet, verpasst Seite und Relikt für diese Kampagne (Produktinhaber 2026-10-26); der Glutfunke kommt mit dem Sieg (Knoten-`effects`).
 3. **Belohnung:** Glutfunke (`ember_spark`), Chronik-Seite (neue Seite in `content/acts/act1/chronicle.yaml`, Inhalt Akt 1 „dass die Könige jung starben und wie oft“, verfasst vom Wächter, DE + EN), Relikt **Schild der Paktwächter** Stufe 1 schlafend (`pact_warden_shield`, Nebenhand Schild, Werte wie `iron_shield` + Schutz für Nachbarn [C], Bild `pact_warden_shield_1.png`); Erwachen (Stufen 2/3) kommt in einer späteren Story (Produktinhaber 2026-10-26).
 4. **Chronik:** Die Chronik zeigt die Seite (Zähler 1 von 12).
 5. **Szenen DE + EN**, `content:check` grün, `pnpm sim n2_wachturm --runs 50` im Korridor, Screenshot.
@@ -33,7 +33,7 @@ Claude Sonnet 5.5
 
 ### Debug Log References
 
-- `pnpm sim n2_wachturm --runs 50`, Normal/Standard, verkettet (17 von 50 Ketten erreichen N2): **100 % Sieg**, Niedergestreckte 0,12, Mediane 2 Runden: Kael erreicht das Turmtor (Ziel `seize`) in 2 Runden, die Kette ignoriert die Plünderer. Gegnerstufen unverändert [C]. Hinweis: Das Ziel `seize` auf 6–7,3 ist vom Aufstellungsrand (Zeile 12–13) in 2 Runden zu erreichen; ein Spieler, der nur das Tor will, verpasst Truhen und Gefecht (so gewollt: Produktinhaber 2026-10-26).
+- `pnpm sim n2_wachturm --runs 50`, Normal/Standard, verkettet (17 von 50 Ketten erreichen N2): **100 % Sieg**, Niedergestreckte 0,12, Mediane 2 Runden: Lucan erreicht das Turmtor (Ziel `seize`) in 2 Runden, die Kette ignoriert die Plünderer. Gegnerstufen unverändert [C]. Hinweis: Das Ziel `seize` auf 6–7,3 ist vom Aufstellungsrand (Zeile 12–13) in 2 Runden zu erreichen; ein Spieler, der nur das Tor will, verpasst Truhen und Gefecht (so gewollt: Produktinhaber 2026-10-26).
 - `pnpm content:check`: nur die erwarteten Abhängigkeiten fehlen (`m1_3`, `ember_spark`).
 
 ### Completion Notes List
@@ -53,7 +53,7 @@ Claude Sonnet 5.5
 
 ### Nachtrag 2026-10-27 (Entscheidung Produktinhaber)
 
-Das Eroberungsfeld (`seize`, Kael) liegt jetzt im Turminneren `[6, 1, 7, 1]`, hinter den Wachen e1 (6,2) und e2 (7,2); das Turmtor (6–7,3) bleibt Engstelle. Vorher erreichte Kael das Tor in 2 Runden, bevor gekämpft wurde. `seize` verlangt kein bestimmtes Terrain, nur Kael (Flag `seizer`) auf einem Feld der Area; die Felder (6–7,1) sind Boden. Sim (`pnpm sim n2_wachturm --runs 50`, Standard, verkettet), vorher / nachher:
+Das Eroberungsfeld (`seize`, Lucan) liegt jetzt im Turminneren `[6, 1, 7, 1]`, hinter den Wachen e1 (6,2) und e2 (7,2); das Turmtor (6–7,3) bleibt Engstelle. Vorher erreichte Lucan das Tor in 2 Runden, bevor gekämpft wurde. `seize` verlangt kein bestimmtes Terrain, nur Lucan (Flag `seizer`) auf einem Feld der Area; die Felder (6–7,1) sind Boden. Sim (`pnpm sim n2_wachturm --runs 50`, Standard, verkettet), vorher / nachher:
 
 | Schwierigkeit | erreichte Läufe | Sieg | Runden (Ø) | Niedergestreckte (Ø) |
 |---|---|---|---|---|

@@ -1,5 +1,8 @@
 # kael – Dialog-Porträt (Stil v2.5)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Herkunft:** abgenommene Fassung `art/mockups/style-2026-11/w6_lucan.png` (identische Datei) aus den Stiltests; Prompt, Anhänge, Tarif, Konto und Iterationen in `art/prompts/portrait_tests_2026-11.md` §9e
 - **Übernahme:** 2026-11-01 nach `art/mockups/characters-s1/kael.png` (unverändert, Git LFS)
 - **Menschlicher Anteil:** Figurenblatt, Auswahl und Abnahme durch den Produktinhaber (2026-11-01/02); keine Retusche

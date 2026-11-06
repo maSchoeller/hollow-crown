@@ -75,7 +75,7 @@ objects:
   - { id: c_keep, type: chest, at: [12, 5], contents: { gold: 800 } }
 deploy:
   max: 12
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[19, 38], [18, 38], [17, 38], [16, 38], [13, 38], [12, 38], [11, 38], [10, 38], [19, 39], [18, 39], [17, 39], [16, 39], [13, 39], [12, 39], [11, 39], [10, 39]]
 units:
   # Felder und Brücke
@@ -139,7 +139,7 @@ objectives:
   victory: { type: seize, area: { rect: [15, 5, 15, 5] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 500 } }
     - { id: s_fast, type: turn_limit, turns: 18, reward: { item: { def: vulnerary } } }

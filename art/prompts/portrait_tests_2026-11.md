@@ -1,5 +1,8 @@
 # portrait_tests_2026-11 – Herleitung des Porträtstils (Etappe 2 der Überarbeitung)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 > **Die Testbilder wurden am 2026-11-02 entfernt** und liegen im Git-Verlauf (`art/mockups/style-2026-11/` bis Merge von PR #94). Abgenommene Figuren stehen in `art/mockups/characters-s1/`.
 
 > **Abgelöst als Vorlage durch `art/prompts/portrait_master.md`.** Diese Datei bleibt als Herleitung und als Prompt-Protokoll der Testbilder in `art/mockups/style-2026-11/` (licensing.md §6, A2). Für neue Porträts nur `portrait_master.md` verwenden.

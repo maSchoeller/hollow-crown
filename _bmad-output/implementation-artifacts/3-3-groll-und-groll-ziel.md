@@ -150,7 +150,7 @@ Claude Sonnet 5.5
 - Keine Migration nötig (additive Felder, `normalizeCampaign` füllt); im Decision-Log vermerkt.
 - Zeile bei Ziel, das die Truppe verlassen hat (`c.left`): keine Zeile (nicht in der Story entschieden, siehe Bericht).
 - KI-Bonus nur ab Groll >= 1 (Entscheidung des Produktinhabers).
-- Dev-Helfer: `__hc.devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'kael', 'first'], ['ulvric', 1, 'fenn', 'mock']])` (id, Groll, Ziel, Art `first|grudge|mock`).
+- Dev-Helfer: `__hc.devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'lucan', 'first'], ['ulvric', 1, 'fenn', 'mock']])` (id, Groll, Ziel, Art `first|grudge|mock`).
 
 ### File List
 

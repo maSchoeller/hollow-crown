@@ -61,7 +61,7 @@ describe('map m1_6_paktwacht', () => {
     const way = [[14, 25], [15, 25], [25, 25], [28, 25]] as const;
     expect(way.map(([x, y]) => ter(s, x, y))).toEqual(['ramp', 'ramp', 'ramp', 'stairs']);
     clearFoes(s);
-    const u = put(s, 'kael', [10, 26]);
+    const u = put(s, 'lucan', [10, 26]);
     expect([...reachable(data, s, u, [10, 26], 3).keys()]).not.toContain('10,25');
     const up = reachable(data, s, u, [15, 26], 2);
     expect([...up.keys()]).toContain('15,24');
@@ -70,7 +70,7 @@ describe('map m1_6_paktwacht', () => {
   it('keeps the wall walks to their stairs: no melee from the yard, one step up the stairs', () => {
     const s = battle();
     clearFoes(s);
-    const u = put(s, 'kael', [10, 16]);
+    const u = put(s, 'lucan', [10, 16]);
     const walk = [...reachable(data, s, u, [10, 16], 4).keys()];
     expect(walk).toContain('9,16'); // the stairs
     expect(walk).toContain('8,16'); // the wall walk
@@ -98,13 +98,13 @@ describe('the castle gate', () => {
     const s = ready();
     expect([ter(s, 14, 12), ter(s, 15, 12)]).toEqual(['gate_closed', 'gate_closed']);
     expect([ter(s, 14, 18), ter(s, 15, 18), ter(s, 21, 15)]).toEqual(['gate', 'gate', 'gate']);
-    const u = put(s, 'kael', [15, 13]);
+    const u = put(s, 'lucan', [15, 13]);
     expect([...reachable(data, s, u, [15, 13], 40).keys()]).not.toContain('15,11');
   });
 
   it('the lever is reached only over the wall walk, never from the yard below it', () => {
     const s = ready();
-    const u = put(s, 'kael', [19, 13]);
+    const u = put(s, 'lucan', [19, 13]);
     expect(availableActions(data, s, u, [19, 13]).some((a) => a.kind === 'lever')).toBe(false);
     expect(ter(s, 20, 13)).toBe('wall');
     expect(availableActions(data, s, u, [19, 12]).some((a) => a.kind === 'lever' && a.object === 'l_gate')).toBe(true);
@@ -113,11 +113,11 @@ describe('the castle gate', () => {
 
   it('pulling it opens both wings and plays the line; a foe cannot pull it', () => {
     const s = ready();
-    const u = put(s, 'kael', [19, 12]);
+    const u = put(s, 'lucan', [19, 12]);
     const r = applyCommand(data, s, { type: 'act', unit: u.uid, to: [19, 12], action: { kind: 'lever', object: 'l_gate' } });
     expect([ter(r.state, 14, 12), ter(r.state, 15, 12)]).toEqual(['gate', 'gate']);
     expect(r.events).toContainEqual({ t: 'dialogue', id: 'scn.m1_6.gate' });
-    const k = unit(r.state, 'kael');
+    const k = unit(r.state, 'lucan');
     expect([...reachable(data, r.state, k, [15, 13], 3).keys()]).toContain('15,11');
     expect(levelAt(data, r.state, [15, 12])).toBe(1);
   });

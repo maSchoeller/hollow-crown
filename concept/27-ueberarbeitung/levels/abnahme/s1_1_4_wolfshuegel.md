@@ -15,7 +15,7 @@
 | | |
 |---|---|
 | Gegner | L 18 · N 22 · S 26, Stufe 2–3 plus Ulvric, Dunn (St. 5) |
-| Aufstellung | 8 (Rhen, Kael, Brenna, Tobin, Fenn, Mira, Liora + 1), Ysolde als 9. |
+| Aufstellung | 8 (Rhen, Lucan, Brenna, Tobin, Fenn, Mira, Liora + 1), Ysolde als 9. |
 | Nebenziele | Ysolde gewinnen · beide Truhen |
 | Phasen | R1–3 erste Rampe · R4–7 Mittelterrasse + Hebel · R8–12 Dunns Höhle |
 | Formatwunsch | `set_terrain`: Der Hebel macht 4 Felder zu Felswand und streicht die Welle in Runde 6 |

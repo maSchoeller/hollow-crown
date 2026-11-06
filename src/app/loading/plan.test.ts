@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { ON_DEMAND_MUSIC } from './cacheName';
 import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
 
-const models = ['kael', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
+const models = ['lucan', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
 const classes = { skirmisher: { art: 'mercenary' }, archer: {}, brigand: {} };
 const defaultPlace = 'lager_unterwegs';
 const base = { models, classes, defaultPlace };
@@ -11,13 +11,13 @@ const base = { models, classes, defaultPlace };
 describe('missionAssets', () => {
   it('lists the place and each model once, sorted', () => {
     const list = missionAssets({
-      units: [{ charId: 'kael', classId: 'captain' }, { charId: 'kael', classId: 'captain' }, { classId: 'brigand' }, { portrait: 'avatar_a', classId: 't' }],
+      units: [{ charId: 'lucan', classId: 'captain' }, { charId: 'lucan', classId: 'captain' }, { classId: 'brigand' }, { portrait: 'avatar_a', classId: 't' }],
       models,
       classes,
       defaultPlace,
       place: 'varnhold',
     });
-    expect(list).toEqual(['locations/varnhold.webp', 'models/units/avatar_a.glb', 'models/units/brigand.glb', 'models/units/kael.glb']);
+    expect(list).toEqual(['locations/varnhold.webp', 'models/units/avatar_a.glb', 'models/units/brigand.glb', 'models/units/lucan.glb']);
   });
   it('uses the default place and skips units without a model file', () => {
     expect(missionAssets({ units: [{ classId: 'archer' }], ...base })).toEqual([`locations/${defaultPlace}.webp`]);
@@ -26,15 +26,15 @@ describe('missionAssets', () => {
     expect(missionAssets({ units: [{ classId: 'skirmisher' }], ...base })).toEqual([`locations/${defaultPlace}.webp`, 'models/units/mercenary.glb']);
   });
   it('puts a model in the folder of the pack it ships in (manifest unitPacks), else in models/units', () => {
-    const unitPacks = { kael: 'core', brigand: 'act1' };
-    expect(missionAssets({ units: [{ charId: 'kael', classId: 'captain' }, { classId: 'brigand' }, { classId: 'skirmisher' }], ...base, unitPacks, place: 'p' })).toEqual([
-      'core/models/units/kael.glb',
+    const unitPacks = { lucan: 'core', brigand: 'act1' };
+    expect(missionAssets({ units: [{ charId: 'lucan', classId: 'captain' }, { classId: 'brigand' }, { classId: 'skirmisher' }], ...base, unitPacks, place: 'p' })).toEqual([
+      'core/models/units/lucan.glb',
       'locations/p.webp',
       'act1/models/units/brigand.glb',
       'models/units/mercenary.glb',
     ].sort());
-    expect(unitModelPath('kael', unitPacks)).toBe('core/models/units/kael.glb');
-    expect(unitModelPath('kael')).toBe('models/units/kael.glb');
+    expect(unitModelPath('lucan', unitPacks)).toBe('core/models/units/lucan.glb');
+    expect(unitModelPath('lucan')).toBe('models/units/lucan.glb');
   });
   it('needs no models when the manifest has none (sprite figures)', () => {
     expect(missionAssets({ units: [{ classId: 'brigand' }], ...base, models: undefined })).toEqual([`locations/${defaultPlace}.webp`]);
@@ -58,20 +58,20 @@ describe('on-demand music, sprites and item images', () => {
     expect(laterMusicAssets(['camp'])).toEqual(['audio/camp.mp3']);
     expect(laterMusicAssets(undefined)).toEqual([]);
   });
-  const sprites = { kael: { normal: true }, archer: {}, ghost: {} };
+  const sprites = { lucan: { normal: true }, archer: {}, ghost: {} };
   it('needs the sprite sheet of a unit that has no model file', () => {
-    expect(missionAssets({ units: [{ classId: 'archer' }, { charId: 'kael', classId: 'captain' }], ...base, sprites })).toEqual([
+    expect(missionAssets({ units: [{ classId: 'archer' }, { charId: 'lucan', classId: 'captain' }], ...base, sprites })).toEqual([
       `locations/${defaultPlace}.webp`,
-      'models/units/kael.glb',
+      'models/units/lucan.glb',
       'sprites/units/archer/sheet.png',
     ]);
     expect(missionAssets({ units: [{ classId: 'unknown' }], ...base, sprites })).toEqual([`locations/${defaultPlace}.webp`]);
   });
   it('takes sprite sheets (with normal map) instead of models in the 2D setting', () => {
-    expect(missionAssets({ units: [{ charId: 'kael', classId: 'captain' }], ...base, sprites, figures: '2d' })).toEqual([
+    expect(missionAssets({ units: [{ charId: 'lucan', classId: 'captain' }], ...base, sprites, figures: '2d' })).toEqual([
       `locations/${defaultPlace}.webp`,
-      'sprites/units/kael/normal.png',
-      'sprites/units/kael/sheet.png',
+      'sprites/units/lucan/normal.png',
+      'sprites/units/lucan/sheet.png',
     ]);
   });
   it('lists the images of the gear the units hold', () => {
@@ -143,13 +143,13 @@ describe('weapon models', () => {
   });
   it('the mission plan adds the weapon files of the units with a model', () => {
     const list = missionAssets({
-      units: [{ charId: 'kael', classId: 'captain', gearItems: ['iron_sword', 'wooden_shield'] }, { classId: 'brigand', gearItems: ['iron_bow'] }, { classId: 'archer', gearItems: ['iron_bow'] }],
+      units: [{ charId: 'lucan', classId: 'captain', gearItems: ['iron_sword', 'wooden_shield'] }, { classId: 'brigand', gearItems: ['iron_bow'] }, { classId: 'archer', gearItems: ['iron_bow'] }],
       ...base,
       items,
       gear,
       weaponModels,
     });
-    expect(list.filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/kael.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
+    expect(list.filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/lucan.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
   });
   it('a unit without a model file (sprite figure) needs no weapon, and neither does a file the manifest lacks', () => {
     expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`]);

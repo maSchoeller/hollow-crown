@@ -36,7 +36,7 @@ damit die Paktgeschichte beginnt.
   - Händlerstufe: `merchant[].storyCount` (optional) in der `campaign.yaml`; `currentTier` = Maximum aus Knoten-`merchantTier` und erreichten `storyCount`-Stufen; `refreshOffers` nach der Mission nutzt `currentTier`. Tier 2: `storyCount: 4`.
   - `finishBattle`: eine eskortierte dritte Partei tritt nur bei, wenn sie noch nicht im Tross ist (Wiederholung der Mission).
   - Liora: Karten-Einheit mit `char`, daher zählen die Charakterwerte (die Stufe der Karte wirkt nicht); sie trägt zusätzlich `leather_vest` und `leather_cap` (bleiben beim Beitritt am Körper).
-  - Varek: `units.yaml` zeigt auf `m1_5` (`joins: m1_5`, `recruit: { chapter: m1_5, by: [kael] }` ohne Szene); Ansprechen und Szene baut Story 9.6 auf der Karte.
+  - Varek: `units.yaml` zeigt auf `m1_5` (`joins: m1_5`, `recruit: { chapter: m1_5, by: [lucan] }` ohne Szene); Ansprechen und Szene baut Story 9.6 auf der Karte.
   - Morra auf [14,14] (nicht neben dem Haus [12,11], sonst fällt Fenn beim Hausbesuch), Auslöseradius 4; h1/h2/h4/h8 lösen bei Radius 3–4 aus.
   - Ortsbild: `silberbach` in `ACT1_LOCATIONS` des Art-Builds.
   - Halvards Hinweis (Dunn bei den Wolfsreitern im Wald) folgt der Karte `m1_4_wolfslager`.
@@ -57,7 +57,7 @@ Claude Sonnet 5.5
 | verkettet | 100 % / 0,20 / 5 | 98 % / 0,15 / 6 | 85 % / 0,08 / 9 |
 | `--fresh` | 100 % / 0,00 / 4 | 88 % / 0,40 / 7 | 30 % / 0,26 / 11 |
 
-- Korridor: Leicht erfüllt; Normal fresh erfüllt, verkettet 98 % mit 0,15 unter der Untergrenze der Niedergestreckten (0,4); Schwer fresh erfüllt (30 %), verkettet 85 % über 70 %. Der Abstand verkettet/fresh kommt von den Stufen (frische Liste: Rhen und Kael Stufe 1); die Eskorte reagiert stark auf einzelne Schützen (Morra, h3). Der Autoplay führt Liora sinnvoll (bleibt im `follow`-Radius, läuft über die Brücke).
+- Korridor: Leicht erfüllt; Normal fresh erfüllt, verkettet 98 % mit 0,15 unter der Untergrenze der Niedergestreckten (0,4); Schwer fresh erfüllt (30 %), verkettet 85 % über 70 %. Der Abstand verkettet/fresh kommt von den Stufen (frische Liste: Rhen und Lucan Stufe 1); die Eskorte reagiert stark auf einzelne Schützen (Morra, h3). Der Autoplay führt Liora sinnvoll (bleibt im `follow`-Radius, läuft über die Brücke).
 - Frühe Fassung (Morra Radius 6, Stufe 3–4): Schwer fresh 5–20 %, Liora fiel auf der Brücke durch Morras Bogen; Fenn fiel beim Hausbesuch der Mühle.
 
 ### Completion Notes List

@@ -52,7 +52,7 @@ objects:
   - { id: c_page, type: chest, at: [13, 2], contents: { gold: 300, chronicle: chron_a2_ledger } }
 deploy:
   max: 10
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[6, 22], [7, 23], [8, 22], [11, 22], [12, 23], [13, 22], [6, 23], [8, 23], [11, 23], [13, 23], [7, 24], [8, 24], [11, 24], [12, 24]]
 units:
   # Südkai: Wachen zwischen den Lagerhäusern, zwei Lanzen an der Brücke
@@ -111,7 +111,7 @@ objectives:
   victory: { type: reach, area: { rect: [6, 2, 7, 3] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_page, type: open_chests, reward: { item: { def: vulnerary } } }
     - { id: s_fast, type: turn_limit, turns: 12, reward: { gold: 400 } }

@@ -6,7 +6,7 @@ lines:
     speaker: [liora]
     fallback: skip
     mood: neutral
-    text: "Ich weiß, was du Kael gesagt hast. Ich wollte nicht so tun, als wüsste ich nichts."
+    text: "Ich weiß, was du Lucan gesagt hast. Ich wollte nicht so tun, als wüsste ich nichts."
   - id: l02
     speaker: [avatar]
     fallback: skip
@@ -36,7 +36,7 @@ lines:
     speaker: [liora]
     fallback: skip
     mood: neutral
-    text: "Vergeben kann Kael, nicht ich. Ich sehe dich nur nicht anders als gestern. Ehrlicher, vielleicht."
+    text: "Vergeben kann Lucan, nicht ich. Ich sehe dich nur nicht anders als gestern. Ehrlicher, vielleicht."
   - id: l08
     speaker: [avatar]
     fallback: skip

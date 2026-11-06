@@ -1,5 +1,8 @@
 # enemies_act1_2026-10-24 – Porträts der neuen Gegnertypen von Akt 1
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Generische Gegnerporträts für Wolfsreiterin, Söldner und Tempelwache (Story 8.3/8.4). Sie sind zugleich die Figurenvorlage der Brett-Turnarounds (`wolf_rider_board_turnaround.md`, `mercenary_board_turnaround.md`, `temple_guard_board_turnaround.md`). Vorgabe des Produktinhabers (2026-10-24): Porträts ohne Tripo-Figur dürfen neu gedacht werden, und nicht alle Gegner sollen Männer sein; deshalb sind Wolfsreiterin und Tempelwache Frauen, der Söldner ein Mann.
 
 - **Dateien:** `art/mockups/characters-s1/class_wolf_rider.png`, `class_mercenary.png` (ersetzt die Fassung vom 2026-10-24 13:21, siehe `missing_2026-10-24.md`), `class_temple_guard.png`; je 1254 × 1254, RGBA, echter Alphakanal

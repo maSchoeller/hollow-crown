@@ -15,8 +15,8 @@
 | | |
 |---|---|
 | Gegner | L 18 · N 22 · S 26, Stufe P−3 bis P−1 (hier 12–14), Leutnants P+1 bis P+2; das Blatt zählt Sable und Hauptmann beide |
-| Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Kael |
-| Niederlage | Rhen, Kael oder Odile fallen |
+| Aufstellung | 9 von 12 Feldern, Pflicht Rhen und Lucan |
+| Niederlage | Rhen, Lucan oder Odile fallen |
 | Nebenziele | Amos gewinnen · binnen 11 Runden |
 | Phasen | R1–3 Klosterhof · R4–7 Brücken · R8–12 Ausgang |
 | Formatwünsche | Modelle Hängebrücke und Wasserfall, Flags für E7 |

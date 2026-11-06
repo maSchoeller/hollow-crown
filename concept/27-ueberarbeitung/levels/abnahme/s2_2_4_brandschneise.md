@@ -15,8 +15,8 @@
 | | |
 |---|---|
 | Gegner | L 33 · N 38 · S 44, Stufe P−3 bis P−1 (hier 11–13), Leutnants P+1 bis P+2 |
-| Aufstellung | 12 von 18 Feldern im Dorf, Pflicht Rhen und Kael, Brann als Gast |
-| Niederlage | Rhen, Kael oder Brann fallen |
+| Aufstellung | 12 von 18 Feldern im Dorf, Pflicht Rhen und Lucan, Brann als Gast |
+| Niederlage | Rhen, Lucan oder Brann fallen |
 | Nebenziele | alle 4 Häuser besuchen · Chronik-Seite in der Köhlerruine |
 | Phasen | R1–4 Brand · R5–8 Häuser halten · R9–12 Durchhalten |
 | Formatwünsche | Leutnant `grell`, Modelle Getreideterrasse und Stützmauer |

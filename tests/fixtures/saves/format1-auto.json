@@ -103,9 +103,9 @@
      "name": "Rhen"
     },
     {
-     "id": "kael",
-     "charId": "kael",
-     "nameKey": "unit.kael.name",
+     "id": "lucan",
+     "charId": "lucan",
+     "nameKey": "unit.lucan.name",
      "classId": "captain",
      "level": 1,
      "exp": 0,
@@ -194,8 +194,8 @@
      "mastered": [],
      "loadout": [],
      "sp": {},
-     "portrait": "kael",
-     "sprite": "kael"
+     "portrait": "lucan",
+     "sprite": "lucan"
     },
     {
      "id": "brenna",
@@ -402,6 +402,9 @@
    "choices": {},
    "decisions": [],
    "scenesSeen": [],
+   "backupReminded": [],
+   "priceMods": [],
+   "villageAid": null,
    "completed": [],
    "quests": [],
    "rolesSeen": [
@@ -410,11 +413,11 @@
     "vanguard"
    ],
    "supports": {
-    "avatar|kael": {
+    "avatar|lucan": {
      "points": 0,
      "rank": null
     },
-    "brenna|kael": {
+    "brenna|lucan": {
      "points": 0,
      "rank": null
     },
@@ -438,6 +441,10 @@
      "points": 0,
      "rank": null
     },
+    "grosk|tobin": {
+     "points": 0,
+     "rank": null
+    },
     "fenn|mira": {
      "points": 0,
      "rank": null
@@ -453,7 +460,10 @@
    "day": {
     "last": null,
     "pending": []
-   }
+   },
+   "haunts": [],
+   "hauntLast": {},
+   "hauntsSinceStory": 0
   },
   "screen": "worldmap"
  }

@@ -19,7 +19,7 @@ damit jeder seine eigene Geschichte in der Truppe hat.
 
 - [x] T1 Content und Schema (AC 1)
   - [x] `supports.yaml` je Akt: `pair`, `core`, `talks { C, B, A, S }`; `GameData.supports` (Schlüssel `pairKey`); `supportPairs`/`supportDialogues` in `campaign.yaml` entfallen
-  - [x] Akt 1: die 7 Paare der Gefährten von Akt 1 (Kael × Rhen ★, Kael × Brenna ★, Brenna × Tobin ★, Liora × Rhen ★, Brenna × Varek, Tobin × Mira, Liora × Ysolde) mit den PoC-Gesprächen
+  - [x] Akt 1: die 7 Paare der Gefährten von Akt 1 (Lucan × Rhen ★, Lucan × Brenna ★, Brenna × Tobin ★, Liora × Rhen ★, Brenna × Varek, Tobin × Mira, Liora × Ysolde) mit den PoC-Gesprächen
   - [x] `content:check`: Gefährten bekannt, Paar nur einmal, Gespräch `S` nur bei Kernpaaren, Szenen vorhanden, höchstens 6 Kernpaare und 25 Paare (`balance.supports.corePairs`, `seasonPairs`), Bedingung `support` nur mit bekanntem Paar
 - [x] T2 Kern (AC 2, 3)
   - [x] `maxRank(data, key)`: Kernpaar S, sonst A (Paare einer Karte, z. B. Gegner, bleiben bei S)

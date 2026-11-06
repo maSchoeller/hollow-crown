@@ -19,6 +19,6 @@ lines:
     mood: sad
     text: "Die Akademie nennt meine Forschung verboten. Ich nenne sie unvollständig. Ich komme mit."
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Willkommen im Aschenbanner. Bleib hinter der Linie, bis das Lager still ist."

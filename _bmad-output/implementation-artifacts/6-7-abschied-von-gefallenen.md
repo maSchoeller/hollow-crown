@@ -47,7 +47,7 @@ Claude Opus 5.5
 - Trauer war in `stats.ts` schon wirksam, wurde aber nie gesetzt; jetzt setzt `finishBattle` sie für alle überlebenden festen Support-Partner ab Support-Rang C (Produktinhaber 2026-10-24). Heiler-Stufe (Trauer 2) folgt mit dem Raumausbau.
 - Ergebnis: Haupttaste heißt bei Gefallenen „Weiter“ und führt in den Abschied, danach Weltkarte.
 - Glockenschlag: `audio.sfx('bell')` beim Erscheinen jeder Karte, Prompt in `tools/audio/elevenlabs.py`; die Datei wird laut Produktinhaber mit der Audio-Story erzeugt (bis dahin still).
-- Abschiedszeilen für die PoC-Besetzung (Brenna, Tobin, Mira, Liora, Varek, Ysolde) de/en; Avatar und Kael fallen nicht (Niederlage). Die endgültigen Zeilen der Akt-1-Gefährten schreibt Epic 9 in dieselbe Form.
+- Abschiedszeilen für die PoC-Besetzung (Brenna, Tobin, Mira, Liora, Varek, Ysolde) de/en; Avatar und Lucan fallen nicht (Niederlage). Die endgültigen Zeilen der Akt-1-Gefährten schreibt Epic 9 in dieselbe Form.
 - Gedenkstein: `c.fallen` merkt sich Klasse, Bild und Söldner-Kennung; die Gedächtnishalle selbst ist Story 6.9.
 - Im Browser geprüft (375 × 812): Ergebnis → „Weiter“ → Karte Brenna (Taste 2 s gesperrt, dann frei) → Söldner-Karte → Weltkarte. Screenshots an den Nutzer gesendet.
 - Prüfungen: lint, test (24 Dateien, 279 Tests), content:check, build grün.

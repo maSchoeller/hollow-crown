@@ -14,8 +14,8 @@
 | | |
 |---|---|
 | Gegner | L 13 · N 16 · S 19, Stufe P−3 bis P−1 (bei P 12: 9–11), Anführer ohne Leutnant-Rang |
-| Aufstellung | 7 von 10 Feldern, Pflicht Rhen, Kael, Jory |
-| Niederlage | Rhen, Kael oder die Meisterin fallen |
+| Aufstellung | 7 von 10 Feldern, Pflicht Rhen, Lucan, Jory |
+| Niederlage | Rhen, Lucan oder die Meisterin fallen |
 | Nebenziele | niemand fällt · beide Stände besuchen |
 | Phasen | R1–3 zur Bühne · R4–9 zurück zum Boot |
 | Formatwünsche | bedingte Pflichtfigur (Jory nur, wenn er lebt), Modelle Bühne, Boot |

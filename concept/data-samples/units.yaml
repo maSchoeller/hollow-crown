@@ -10,11 +10,11 @@
   growth: { hp: 70, str: 40, mag: 40, skl: 50, spd: 45, lck: 45, def: 30, res: 30 }
   items: [ { def: iron_sword }, { def: ember }, { def: leather_vest } ]
   flags: [avatar, mustSurvive]
-  supports: [kael, liora]
+  supports: [lucan, liora]
   joins: prologue
 
-- id: kael
-  nameKey: unit.kael.name
+- id: lucan
+  nameKey: unit.lucan.name
   class: captain
   level: 1
   affinity: earth
@@ -35,7 +35,7 @@
   base:   { hp: 27, str: 8, mag: 0, skl: 5, spd: 4, lck: 3, def: 5, res: 1 }
   growth: { hp: 85, str: 55, mag: 0, skl: 40, spd: 30, lck: 25, def: 35, res: 10 }
   items: [ { def: iron_axe }, { def: hand_axe }, { def: leather_cap }, { def: door_key } ]
-  supports: [kael, tobin, varek]
+  supports: [lucan, tobin, varek]
   joins: prologue
 
 - id: tobin
@@ -84,7 +84,7 @@
   base:   { hp: 21, str: 7, mag: 0, skl: 10, spd: 10, lck: 2, def: 4, res: 2 }
   growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
   items: [ { def: steel_sword }, { def: slim_sword }, { def: leather_vest } ]
-  recruit: { chapter: ch02, by: [kael], dialogue: dlg.ch02.varek_talk }   # startet als Gegner
+  recruit: { chapter: ch02, by: [lucan], dialogue: dlg.ch02.varek_talk }   # startet als Gegner
   supports: [brenna]
   joins: ch02
 

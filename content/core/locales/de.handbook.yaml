@@ -238,7 +238,7 @@ handbook:
       keywords: "Wasser, Fluss, seicht, Furt, Brücke"
     terrain_fort:
       title: "Festungen, Thron, Tor und Schrein"
-      text: "Diese Felder schützen am besten. Festung, Thron und Schrein heilen zu Beginn deiner Phase einen Teil der TP. Thron und Tor kann Kael einnehmen, wenn das Missionsziel es verlangt."
+      text: "Diese Felder schützen am besten. Festung, Thron und Schrein heilen zu Beginn deiner Phase einen Teil der TP. Thron und Tor kann Lucan einnehmen, wenn das Missionsziel es verlangt."
       where: "Die Heilung steht im Gelände-Chip; das Ziel „Einnehmen“ in den Ziel-Pillen."
       keywords: "Festung, Fort, Thron, Tor, Schrein, Heilung, Einnehmen"
     terrain_blocked:
@@ -336,7 +336,7 @@ handbook:
       keywords: "Narbe, Malus, Verletzung, Heiler"
     death_modes:
       title: "Klassik, Standard und Casual"
-      text: "Klassik: Wer fällt, ist tot, und es gibt nur einen Spielstand. Standard: Niederstrecken, Bergen und Verbluten wie beschrieben; Runde und Mission lassen sich neu starten. Casual: Wer fällt, zieht sich zurück und ist in der nächsten Mission ohne Narbe wieder da. Fällt der Avatar oder Kael, ist die Mission in jedem Modus verloren."
+      text: "Klassik: Wer fällt, ist tot, und es gibt nur einen Spielstand. Standard: Niederstrecken, Bergen und Verbluten wie beschrieben; Runde und Mission lassen sich neu starten. Casual: Wer fällt, zieht sich zurück und ist in der nächsten Mission ohne Narbe wieder da. Fällt der Avatar oder Lucan, ist die Mission in jedem Modus verloren."
       where: "Der Modus wird beim Anlegen der Kampagne gewählt und steht in der Kampagnen-Ansicht."
       keywords: "Klassik, Standard, Casual, Modus, Tod, permadeath, Neustart"
     # ------------------------------------------------------------ Heimat
@@ -357,7 +357,7 @@ handbook:
       keywords: "Ausbau, Stufe, Burg, Akademie, Werkstatt, Übungsplatz"
     trade:
       title: "Händler und Konvoi"
-      text: "Der Händler kauft deine Items für {sell} ihres Preises. Der Konvoi fasst {convoy} Items, auch die Ausrüstung Gefallener landet dort. Im Kampf erreicht ihn, wer neben Kael steht."
+      text: "Der Händler kauft deine Items für {sell} ihres Preises. Der Konvoi fasst {convoy} Items, auch die Ausrüstung Gefallener landet dort. Im Kampf erreicht ihn, wer neben Lucan steht."
       where: "Händler und Konvoi sind Räume der Heimat; im Kampf öffnet „Konvoi“ das Lager."
       keywords: "Händler, kaufen, verkaufen, Gold, Konvoi, Lager"
     ember_spark:
@@ -401,11 +401,11 @@ handbook:
       weak: { "1": "Keine Spitzenwerte.", "2": "Fällt der Avatar, ist die Mission verloren." }
     class_captain:
       title: "Hauptmann"
-      text: "Kaels Rolle: führt Schwert, Lanze und Schild und stärkt mit „Sammelruf“ alle Verbündeten in der Nähe bis zum Ende der nächsten Gegnerphase."
+      text: "Lucans Rolle: führt Schwert, Lanze und Schild und stärkt mit „Sammelruf“ alle Verbündeten in der Nähe bis zum Ende der nächsten Gegnerphase."
       where: "„Sammelruf“ steht im Klassen-Stein, einmal je Karte."
-      keywords: "Hauptmann, Kael, Sammelruf"
-      strong: { "1": "Sammelruf hebt Schaden und Treffer der ganzen Linie.", "2": "Robust und vielseitig bewaffnet.", "3": "Konvoi im Kampf über Kael." }
-      weak: { "1": "Fällt Kael, ist die Mission verloren.", "2": "Geringe RES." }
+      keywords: "Hauptmann, Lucan, Sammelruf"
+      strong: { "1": "Sammelruf hebt Schaden und Treffer der ganzen Linie.", "2": "Robust und vielseitig bewaffnet.", "3": "Konvoi im Kampf über Lucan." }
+      weak: { "1": "Fällt Lucan, ist die Mission verloren.", "2": "Geringe RES." }
     class_vanguard:
       title: "Vorkämpfer"
       text: "Gepanzerte Front mit Lanze, Axt und Schild. „Halten“: Gegner, die ein Nachbarfeld betreten, beenden dort ihre Bewegung. Die einzige Kontrollzone im Spiel."
@@ -511,7 +511,7 @@ handbook:
     lesson_heal:
       title: "Lektion: Heiltrank"
       text: "Aus dem Prolog: Wer verwundet ist, nimmt einen Heiltrank, bevor er wartet."
-      where: "Im Prolog „Die Paktnacht“, sobald Kael verwundet ist."
+      where: "Im Prolog „Die Paktnacht“, sobald Lucan verwundet ist."
       keywords: "Lektion, Prolog, Heiltrank, Item, heilen"
     lesson_height:
       title: "Lektion: Höhe"

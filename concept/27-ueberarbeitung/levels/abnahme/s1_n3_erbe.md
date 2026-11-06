@@ -12,7 +12,7 @@
 
 - **Höhe:** keine, bleibt flach.
 - **Gedenken:** Tobin gefallen: Karte gleich, seine Niederlage entfällt, Vater bleibt Ziel, Szenen ohne Humor.
-- **Abweichungen:** Kornfeld `field`, Scheunen `farm`, Mühle `building`. Aufstellung rund um den Vater statt nur südlich, Vater im Kettenhemd, Gegner Stufe 6–7 statt 3–4 (Sim). Niederlage auch bei Kaels Tod, falls er mitkommt. Vater übergibt die Lanze in der Szene, Marodeure statt Pachteintreiber.
+- **Abweichungen:** Kornfeld `field`, Scheunen `farm`, Mühle `building`. Aufstellung rund um den Vater statt nur südlich, Vater im Kettenhemd, Gegner Stufe 6–7 statt 3–4 (Sim). Niederlage auch bei Lucans Tod, falls er mitkommt. Vater übergibt die Lanze in der Szene, Marodeure statt Pachteintreiber.
 
 ![Raster](s1_n3_erbe.png)
 

@@ -2,7 +2,7 @@
 # eine Klassen-Aktion, Wachstum. Waffe, Element und Item-Skills kommen aus der Ausrüstung.
 # role      Kernrolle (vanguard, skirmisher, marksman, elementalist, healer, scout, minstrel), tactician, captain
 #           oder Gegnertyp; Profiklassen nennen die Rolle, aus der sie befördert werden.
-# tier      base | pro | unique (nur Avatar und Kael)
+# tier      base | pro | unique (nur Avatar und Lucan)
 # classAction  Klassen-Aktion als Daten (Story 2.3 ff. setzen sie um): id, kind passive|active, perMap = Einsätze je Karte.
 # proPaths  die zwei Profi-Wege; Ids ohne Eintrag hier kommen mit der Akademie (Epic 6) und sind bis dahin nicht wählbar.
 # base/growth/growthMod/caps: Startwerte [C], aus den PoC-Klassen abgeleitet (GDD-Annahme 3, Herleitung im Story-Log 2.2).

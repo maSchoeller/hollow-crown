@@ -1,4 +1,4 @@
-# Prolog, Szene vor der Karte. Schlüsselgespräch 1 „Die Wache am Ring“ (Narrative: Kael, Rhen, Gerrit, Brenna, Tobin; warm, Vorabend;
+# Prolog, Szene vor der Karte. Schlüsselgespräch 1 „Die Wache am Ring“ (Narrative: Lucan, Rhen, Gerrit, Brenna, Tobin; warm, Vorabend;
 # Familie zeigen, Rhens Vertrag andeuten), danach die Tafel „Die Paktnacht: Alarm im Glutdom“ (l17 ff.).
 # Die Tafel „Alarm im Glutdom“ ist ein Illustrationsbild (`panel`, l17 bis l20, vier Textboxen); danach (`panel: none`) gilt wieder der Szenenhintergrund.
 id: scn.prologue.intro
@@ -44,7 +44,7 @@ lines:
     mood: happy
     text: "Ich schnarche im Takt. Das nennt man Marschmusik."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Ring halten, Tür bewachen, nach Hause gehen. Der Sold ist gut."
   - id: l09
@@ -53,7 +53,7 @@ lines:
     mood: neutral
     text: "Dreifacher Sold für eine Nacht Türstehen. Ich traue Gold nicht, das so leicht kommt."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "{avatar} hat den Vertrag besorgt. Oder?"
   - id: l11
@@ -66,7 +66,7 @@ lines:
     mood: neutral
     text: "Wer fragt, bevor der Sold stimmt, bleibt hungrig. Mach dir keinen Kopf, {avatar}."
   - id: l13
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wochen bei uns, {avatar}, und ich weiß immer noch nicht, warum die Akademie dich gestrichen hat."
   - id: c01
@@ -80,12 +80,12 @@ lines:
         text: "„Vielleicht war ich zu gut für sie.“"
         effects: [{ setFlag: avatar_proud }]
   - id: l14
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Hm. Ehrlich, wenigstens. Das ist mehr, als die meisten bieten."
     requires: [{ flag: avatar_honest }]
   - id: l15
-    speaker: [kael]
+    speaker: [lucan]
     mood: happy
     text: "Bescheiden ist was anderes. Gut. Bescheidene Strategen hatten wir schon – die sind alle tot."
     requires: [{ flag: avatar_proud }]
@@ -106,7 +106,7 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: angry
-    text: "Das sind keine Ausrufer, Kael. Das sind gezogene Klingen!"
+    text: "Das sind keine Ausrufer, Lucan. Das sind gezogene Klingen!"
   - id: l20
     speaker: [gerrit]
     fallback: skip
@@ -114,6 +114,6 @@ lines:
     text: "Der Ring ist hin. Bringt alle hier raus. Ich gebe euch den Rücken frei!"
   - id: l21
     panel: none
-    speaker: [kael]
+    speaker: [lucan]
     mood: angry
     text: "Alle zum Tempeltor im Süden. Niemand bleibt zurück. Ich gehe als Letzter. {avatar}, führ uns."

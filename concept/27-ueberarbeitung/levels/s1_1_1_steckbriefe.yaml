@@ -51,7 +51,7 @@ objects:
   - { id: v_shore, type: village, at: [2, 11], reward: { gold: 150 } }
 deploy:
   max: 4
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[6, 17], [7, 17], [8, 17], [9, 17], [7, 18], [8, 18], [6, 18]]
 units:
   # Brückenkopf: zwei Lanzen halten die Brücke (Engstelle)
@@ -86,7 +86,7 @@ objectives:
   victory: { type: rout }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 200 } }
     - { id: s_fast, type: turn_limit, turns: 12, reward: { item: { def: vulnerary } } }
@@ -113,5 +113,5 @@ design:
     - { at: [1, 13], label: F, note: "Furt, nur zu Fuß, kostet Bewegung, umgeht die Brücke." }
     - { at: [13, 5], label: Fe, note: "Fenn reißt Steckbriefe ab; Ansprechen holt ihn in die Truppe." }
   notes:
-    - "Normal 12 Gegner (2 davon R4) gegen 5 eigene (Rhen, Kael, Brenna, Tobin + Fenn), Stufe 1–4; Leicht 10, Schwer 14."
-    - "Saat Kharesh im Händlerhaus [1,6]; Kael schweigt dazu in der Szene."
+    - "Normal 12 Gegner (2 davon R4) gegen 5 eigene (Rhen, Lucan, Brenna, Tobin + Fenn), Stufe 1–4; Leicht 10, Schwer 14."
+    - "Saat Kharesh im Händlerhaus [1,6]; Lucan schweigt dazu in der Szene."

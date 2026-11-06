@@ -17,7 +17,7 @@ import {
   type GameEvent,
 } from '../../src/core';
 
-/** Map flag `noDeath` (PO decision 2026-10-25): tutorial companions stay downed and return, Rhen and Kael still lose the mission. */
+/** Map flag `noDeath` (PO decision 2026-10-25): tutorial companions stay downed and return, Rhen and Lucan still lose the mission. */
 let data: GameData;
 
 function setup(deathMode: DeathMode): { c: CampaignState; s: BattleState } {
@@ -27,7 +27,7 @@ function setup(deathMode: DeathMode): { c: CampaignState; s: BattleState } {
 }
 
 const companion = (s: BattleState, skip?: BattleUnit): BattleUnit =>
-  s.units.find((x) => x.team === 'player' && x.pos && x !== skip && !x.flags.includes('mustSurvive') && !['avatar', 'kael'].includes(x.id))!;
+  s.units.find((x) => x.team === 'player' && x.pos && x !== skip && !x.flags.includes('mustSurvive') && !['avatar', 'lucan'].includes(x.id))!;
 
 const down = (s: BattleState, u: BattleUnit): GameEvent[] => {
   const events: GameEvent[] = [];
@@ -81,8 +81,8 @@ describe('noDeath map flag', () => {
     expect(u.gone).toBeUndefined();
   });
 
-  it('keeps Rhen and Kael as before: bleed out and death lose the mission', () => {
-    for (const id of ['avatar', 'kael']) {
+  it('keeps Rhen and Lucan as before: bleed out and death lose the mission', () => {
+    for (const id of ['avatar', 'lucan']) {
       const { s } = setup('standard');
       const u = getUnit(s, id);
       expect(deathless(data, s, u)).toBe(false);

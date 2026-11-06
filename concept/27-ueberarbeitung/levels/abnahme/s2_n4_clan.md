@@ -14,7 +14,7 @@
 | | |
 |---|---|
 | Gegner | L 17 · N 20 · S 23, Stufe P−3 bis P−1 (bei P 14: 11–13), Hauptmann ohne Leutnant-Rang |
-| Aufstellung | 8 von 10 Feldern, Pflicht Rhen, Kael, Ilka |
+| Aufstellung | 8 von 10 Feldern, Pflicht Rhen, Lucan, Ilka |
 | Nebenziele | niemand fällt · beide Zelte · Älteste schützen |
 | Phasen | R1–3 aus dem Nebel · R4–9 Lager halten |
 | Formatwünsche | bedingte Pflichtfigur (Ilka nur, wenn sie lebt) |

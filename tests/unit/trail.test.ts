@@ -29,7 +29,7 @@ let start: BattleState;
 beforeAll(() => {
   data = loadContentFromDisk().data;
   campaign = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  start = beginBattle(data, campaign, firstNode(data).id, ['kael']).state;
+  start = beginBattle(data, campaign, firstNode(data).id, ['lucan']).state;
 });
 
 const fixed = () => '2026-10-30T12:00:00.000Z';
@@ -186,11 +186,11 @@ describe('bug report version 2', () => {
   it('a report from the options has no error, carries the note, the screen and the trail', () => {
     const trail = createTrail({ run: 'r1', now: fixed });
     trail.record({ kind: 'screen', screen: { name: 'worldmap' } });
-    const r = assembleReport({ ...base, reason: 'manual', note: '  Kael did no damage  ', error: null, screen: { name: 'battle' }, trail: trail.recent() });
+    const r = assembleReport({ ...base, reason: 'manual', note: '  Lucan did no damage  ', error: null, screen: { name: 'battle' }, trail: trail.recent() });
     expect(r.version).toBe(REPORT_VERSION);
     expect(r.reason).toBe('manual');
     expect(r.error).toBeNull();
-    expect(r.note).toBe('Kael did no damage');
+    expect(r.note).toBe('Lucan did no damage');
     expect(r.screen).toEqual({ name: 'battle' });
     expect(r.trail.length).toBe(1);
     expect(r.history).toEqual([]);
@@ -217,7 +217,7 @@ describe('bug report version 2', () => {
 /** Plays `n` commands like the app does and records them in a trail; returns the report parts. */
 function playedBattle(n: number) {
   const trail = createTrail({ run: 'r1', now: fixed });
-  trail.record({ kind: 'battleStart', node: start.nodeId, deploy: ['kael'], hash: stateHash(start) });
+  trail.record({ kind: 'battleStart', node: start.nodeId, deploy: ['lucan'], hash: stateHash(start) });
   let s = start;
   const commands: Command[] = [];
   for (let i = 0; i < n && !s.outcome; i++) {

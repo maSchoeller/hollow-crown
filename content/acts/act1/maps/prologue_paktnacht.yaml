@@ -1,7 +1,7 @@
 # Prolog – Die Paktnacht (Knoten prologue). Entwurf s1_p_paktnacht, Missionsliste: K 14×18, escape, 4 / 10, keine Leutnants. Startwerte [C].
 # Tempelbezirk des Glutdoms, Aurenhall, Nacht des Paktfestes: Der König ist tot, die Tempelwachen wenden sich gegen die Söldner.
 # Von Norden nach Süden: Glutdom-Tür, Innenhof, Säulengang, innere Mauer, unterer Hof, Tempeltor. Gärten an den Flanken mit Seitentoren.
-# Ziel: Flucht in die Unterstadt (Südrand), alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Kael zuletzt (escape). Gerrit steht nur in den Szenen, nicht auf der Karte.
+# Ziel: Flucht in die Unterstadt (Südrand), alle, die noch stehen (nicht gefallen, nicht niedergestreckt), Lucan zuletzt (escape). Gerrit steht nur in den Szenen, nicht auf der Karte.
 # Lektionen: Bewegen, Angriff, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (bei Bedarf), Höhe (Wehrgang, sobald die Truppe das innere Tor erreicht).
 # Höhe, sanft: nur ein kurzes Stück Wehrgang auf der inneren Mauer (x 8–10, y 9, Stufe 1) mit einer Treppe vom unteren Hof ([9,10]) und einem Schützen ([9,9], Stufe 1, hält).
 # Er trifft von oben auf 2–3 Felder die letzten Felder des Säulengangs und das innere Tor; von der Treppe aus kann man ihn schlagen, das Ziel verlangt es nicht.
@@ -14,7 +14,7 @@ nameKey: map.prologue_paktnacht.name
 size: [14, 18]
 fog: false
 # Produktinhaber 2026-10-25: Im Prolog verbluten und sterben Niedergestreckte nicht (egal welcher Todesmodus), sie bleiben liegen
-# und kehren nach der Mission zurück. Rhen und Kael (Niederlage bei Tod) sind ausgenommen: ihr Tod verliert die Mission wie zuvor.
+# und kehren nach der Mission zurück. Rhen und Lucan (Niederlage bei Tod) sind ausgenommen: ihr Tod verliert die Mission wie zuvor.
 noDeath: true
 legend:
   ".": plain
@@ -64,7 +64,7 @@ objects:
 initialEffects: []
 deploy:
   max: 4
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
 # Die Truppe flieht aus Aurenhall und kehrt nicht zurück: keine Heimsuchungen hier (GDD-Log 2026-11-06, content:check lehnt Anker ab).
 abandoned: true
@@ -96,11 +96,11 @@ reinforcements:
       - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [13, 13], items: [{ def: iron_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.temple_guard.name, team: enemy, class: vanguard, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [12, 13], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  # Siegt, sobald alle eigenen Einheiten, die noch stehen, die Unterstadt erreicht haben (durch das Tempeltor oder die Gasse); Kael als Letzter (Regel im Kern: mustStayForRest).
+  # Siegt, sobald alle eigenen Einheiten, die noch stehen, die Unterstadt erreicht haben (durch das Tempeltor oder die Gasse); Lucan als Letzter (Regel im Kern: mustStayForRest).
   # Kein min: Niedergestreckte zählen nicht mit (Entscheidung Produktinhaber 2026-10-25).
   victory: { type: escape, area: { rect: [0, 17, 13, 17] } }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
@@ -117,7 +117,7 @@ triggers:
     then:
       - { action: dialogue, id: scn.prologue.tutorial_danger }
   - id: t_heal
-    when: { type: hp_below, unit: kael, percent: 60 }
+    when: { type: hp_below, unit: lucan, percent: 60 }
     then:
       - { action: dialogue, id: scn.prologue.tutorial_heal }
   # Das erste Beben: Brennas Pforte springt auf, Säulen fallen (Ruinen als Deckung)

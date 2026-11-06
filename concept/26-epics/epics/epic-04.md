@@ -31,7 +31,7 @@ damit Szenen, Knoten, Entscheidungen und Belohnungen ohne Code wirken.
 **Angenommen** die Bedingungen `flag`, `alive`, `dead`, `left`, `completed`, `storyCount`, `act`, `support`, `stance`, `met`, `chronicle`, `any`, `not` und die Wirkungen `setFlag`, `recruit`, `leave`, `grudge`, `gold`, `material`, `item`, `priceMod`, `villageAid`, `openQuest`, `stance`, `chronicle` (Architektur §5.3)
 **Wenn** sie in `src/core/campaign/conditions.ts` und `effects.ts` umgesetzt sind
 **Dann** sind sie per Zod-Schema validiert und jede Referenz wird von `content:check` geprüft
-**Und** `recruit`/`leave` für Avatar oder Kael lehnt das Schema ab; Tests decken jede Bedingung und Wirkung ab.
+**Und** `recruit`/`leave` für Avatar oder Lucan lehnt das Schema ab; Tests decken jede Bedingung und Wirkung ab.
 
 **Angenommen** ein Flag-Register `content/acts/act1/flags.yaml`
 **Wenn** ein Content-Element ein undeklariertes Flag nutzt
@@ -75,7 +75,7 @@ damit Permadeath nie eine Szene zerbricht.
 
 **Angenommen** `pnpm content:check`
 **Wenn** Szenen geprüft werden
-**Dann** scheitert es bei Boxen über 110 Zeichen (DE oder EN), Ketten ohne Avatar/Kael am Ende und ohne `fallback: skip`, fehlenden EN-Schlüsseln, unbekannten Stimmungen und Antworten in Kampf-Szenen
+**Dann** scheitert es bei Boxen über 110 Zeichen (DE oder EN), Ketten ohne Avatar/Lucan am Ende und ohne `fallback: skip`, fehlenden EN-Schlüsseln, unbekannten Stimmungen und Antworten in Kampf-Szenen
 **Und** die PoC-Dialoge sind ins neue Format überführt; das alte Schema entfällt.
 
 ### Story 4.5: Szenen im neuen Stil

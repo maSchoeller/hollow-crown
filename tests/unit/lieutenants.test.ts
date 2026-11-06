@@ -103,7 +103,7 @@ describe('lieutenant checks', () => {
   it('checks the speaker of every line', () => {
     const msgs = problems((d) => {
       const l = d.scenes['scn.lt.hask']!.lines[0]!;
-      if (!('choice' in l)) l.speaker = ['kael'];
+      if (!('choice' in l)) l.speaker = ['lucan'];
     });
     expect(msgs).toContain('scenes/scn.lt.hask: first: speaker chain must be exactly [hask]');
   });

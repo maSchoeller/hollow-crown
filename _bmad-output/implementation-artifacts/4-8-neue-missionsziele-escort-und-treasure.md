@@ -51,7 +51,7 @@ Alle Aufgaben sind erledigt; die Fragen F1–F11 sind am 2026-10-24 vom Produkti
 - **KI-Profil `flee`** (`ai.ts`): läuft zu `ai.area`, setzt dort `gone = 'escaped'` und das Event `escaped`. `finishMission` (`campaign.ts`) lässt einen überlebenden `other`-NPC mit Figur nach der Mission beitreten, auch wenn er `escaped` ist.
 - **`reach`** wertet nur Einheiten von `team: player`; die Aktion `escape` gibt es nur für Spielereinheiten im `escape`-Bereich (`actions.ts`).
 - **Truhen heute:** nur Spielereinheiten, stehend auf dem Truhenfeld, mit Schlüssel (`hasKey`, verbraucht eine Ladung); setzt `obj.state = 'open'`, `stats.chestsOpened`, gibt `contents` (`grantReward`). Nebenziel `open_chests` zählt alle Truhen der Karte. **Story 2.6 (backlog)** ersetzt das durch „Öffnen“ des Spähers ohne Schlüssel, vom Nachbarfeld; Kontext-Band in 2.7.
-- **Rundenpille:** `TurnPill` (`BattleHud.tsx`) bekommt Text `ui.world.goal.<typ>` und `progress` aus `Battle.tsx`. Die Zieltexte `ui.world.goal.*` nennen heute feste Namen („Beschütze Liora …“, „Kael muss …“).
+- **Rundenpille:** `TurnPill` (`BattleHud.tsx`) bekommt Text `ui.world.goal.<typ>` und `progress` aus `Battle.tsx`. Die Zieltexte `ui.world.goal.*` nennen heute feste Namen („Beschütze Liora …“, „Lucan muss …“).
 - **Knoten-Karte** ist `WorldMap.tsx` (`wm-card`, `GOAL_ICON`, `ui.map.tag.*`); die Vorschau vor dem Start ist `Prep` in `Camp.tsx`. Die Umbauten an `render/board` und `content/world/` (andere Session) berühren diese Story nicht; `WorldMap.tsx` selbst nur in `GOAL_ICON`/Tag-Zeile (kleiner Merge-Konflikt möglich, vorher Stand der Weltkarten-Arbeit prüfen).
 - **Autoplay/Sim:** `autoCommand` (`src/core/ai/autoplay.ts`) kennt `reach`, `seize`, `escape`, `defend` (Schützling) und Dörfer, aber weder Truhen noch Eskorte. `tools/simulate.ts` hat nur `--campaign … --haunts`; das in Architektur §5.6 genannte `pnpm sim --haunt <mapId>:<variant>` gehört zu Story 5.5/5.6.
 - **Inhalte:** Keine Karte nutzt `escort` oder `treasure`. Erste Karten kommen in Epic 9 (1-3 Liora, 1-7 Gewölbe), Epic 11/12 (2-2, 2-3, 3-2) und als Heimsuchungs-Anker (5.5).
@@ -186,7 +186,7 @@ Die Fragen unten bleiben als Herleitung stehen; die Entscheidung je Frage:
 ### Hinweise
 
 - Die Knoten-Karte (`WorldMap.tsx`: Chip, Icon) und die Aufstellung sind nur über Typ und Texte geprüft, da keine ausgelieferte Karte die Ziele nutzt.
-- Eine andere Session ändert `actions.ts`/`autoplay.ts` (Flucht-Regel, Kael zuletzt); die Änderungen hier in `autoplay.ts` sind auf den Block mit `openable`/`npc`, `errand(... chests)` und die Imports begrenzt.
+- Eine andere Session ändert `actions.ts`/`autoplay.ts` (Flucht-Regel, Lucan zuletzt); die Änderungen hier in `autoplay.ts` sind auf den Block mit `openable`/`npc`, `errand(... chests)` und die Imports begrenzt.
 
 ### File List
 

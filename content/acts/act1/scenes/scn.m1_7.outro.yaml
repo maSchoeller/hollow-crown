@@ -19,13 +19,21 @@ lines:
     speaker: [ysolde, liora, avatar]
     mood: neutral
     text: "Entziffern können wir sie später, bei Licht und Ruhe. Heute nicht."
+  - id: l04b
+    speaker: [avatar]
+    mood: neutral
+    text: "Alle reden von einer Passburg. Doch sie steht über den Gräbern junger Könige. Der Pass war nur der Vorwand."
+  - id: l04c
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann bewachen wir jetzt Gräber. Und wir wissen nicht, für wen."
   - id: l05
     speaker: [brenna]
     fallback: skip
     mood: happy
     text: "Ein Dach, Mauern und ein Archiv, Küken. Jetzt fehlt nur noch, dass sich keiner dafür interessiert."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Das Banner hängt weithin sichtbar. Es wird sich jemand dafür interessieren."
   - id: l07

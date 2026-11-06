@@ -38,7 +38,7 @@ damit ich unterwegs ohne Netz spielen kann.
 ### Prüfen im Browser (Preview, belegt 2026-10-24)
 
 1. Speicher leeren, laden: `hc-pack-act1-<hash>` mit 313 Einträgen (312 Dateien + Marker) neben dem Precache.
-2. Server gestoppt (Netz aus), neu geladen: Titel, neue Kampagne, Prolog-Dialog mit Halbfigur und Prolog-Schlacht mit Modellen laufen; `models/units/kael.glb` und der `act1`-Chunk kommen aus dem Cache.
+2. Server gestoppt (Netz aus), neu geladen: Titel, neue Kampagne, Prolog-Dialog mit Halbfigur und Prolog-Schlacht mit Modellen laufen; `models/units/lucan.glb` und der `act1`-Chunk kommen aus dem Cache.
 3. Paket-Cache gelöscht, Server aus, Spielstand auf der Weltkarte: Ring „Loading act 1 · 0 % · A few files did not arrive …“, Kapitel 1 zeigt „Still loading …“. Server an: nach dem nächsten Backoff verschwindet der Ring, die Karte zeigt „Deployment“/„Set out“ ohne Neuladen, Kapitel 1 startet mit seiner Szene.
 4. Update (Titelbild wechselt das Paket): neuer Cache `hc-pack-act1-6e0d…` mit 313 Einträgen, alter gelöscht, keine Asset-Anfrage ans Netz.
 

@@ -1,9 +1,9 @@
-# Nebenquest N2, Sichtungszeile im Kampf (Trigger t_varek_spotted): Kael sieht Varek im Turm und kündigt an, ihn anzusprechen. Keine Antworten (Kampfszene).
+# Nebenquest N2, Sichtungszeile im Kampf (Trigger t_varek_spotted): Lucan sieht Varek im Turm und kündigt an, ihn anzusprechen. Keine Antworten (Kampfszene).
 id: scn.n2.varek_spotted
 background: wachturm
 lines:
   - id: l01
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Im Turm steht einer in Heerstiefeln, und der Suchtrupp will ihn haben. Den Gang kenne ich."
   - id: l02
@@ -12,6 +12,6 @@ lines:
     mood: neutral
     text: "Ein Heerstiefel, den das eigene Heer jagt? Das riecht nach Ärger."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Ich rede mit ihm. Deckt mich."

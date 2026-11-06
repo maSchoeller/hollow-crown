@@ -24,7 +24,7 @@ function setup(deathMode: DeathMode): { c: CampaignState; s: BattleState } {
   return { c, s };
 }
 
-/** A deployed player unit that is neither the avatar nor Kael. */
+/** A deployed player unit that is neither the avatar nor Lucan. */
 function companion(s: BattleState): BattleUnit {
   const u = s.units.find((x) => x.team === 'player' && x.pos && !x.flags.includes('mustSurvive'));
   if (!u) throw new Error('no companion in the prologue');
@@ -136,8 +136,8 @@ describe('bleed-out (story 1.6)', () => {
     expect(events.some((e) => e.t === 'downed')).toBe(false);
   });
 
-  it('keeps the avatar and Kael at 0 HP a defeat', () => {
-    for (const id of ['avatar', 'kael']) {
+  it('keeps the avatar and Lucan at 0 HP a defeat', () => {
+    for (const id of ['avatar', 'lucan']) {
       const { s } = setup('standard');
       const u = getUnit(s, id);
       down(s, u);

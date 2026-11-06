@@ -45,8 +45,8 @@ describe('packOf', () => {
     expect(packOf(packs, 'acts/act1/maps/m1_2_erlbach.yaml', 'content').id).toBe('act1');
   });
   it('gives everything unnamed to core', () => {
-    expect(packOf(packs, 'avatars/kael.webp', 'assets').id).toBe('core');
-    expect(packOf(packs, 'models/units/kael.glb', 'assets').id).toBe('act1');
+    expect(packOf(packs, 'avatars/lucan.webp', 'assets').id).toBe('core');
+    expect(packOf(packs, 'models/units/lucan.glb', 'assets').id).toBe('act1');
     expect([...groupByPack(packs, ['a', 'models/x'], 'assets')]).toEqual([
       ['core', ['a']],
       ['act1', ['models/x']],

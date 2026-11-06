@@ -1,11 +1,11 @@
 id: scn.prologue.tutorial_move
 lines:
   - id: l01
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Raus durch das Tempeltor im Süden, alle vier. Ich gehe als Letzter."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Tipp eine Einheit an: Blau ist ihr Weg, Rot ihr Angriff. Tipp ein Feld für die Vorschau, dann nochmal."
   - id: l03

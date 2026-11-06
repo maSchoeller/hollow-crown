@@ -1,5 +1,10 @@
 # kael_board_turnaround – Brett-Turnaround mit Teamtuch-Maske
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+> Alter Brett-Turnaround des ersten Kael-Entwurfs (bis Story 15.6 `kael_board`). Aus ihm stammt die Animationsbibliothek `art/models/source/lucan_anims_base.glb`; Lucans heutige Figur steht in `lucan_board_turnaround.md`.
+
+
 - **Dateien:** `art/turnarounds/kael_board/sheet.png` (1536 × 1024, Original); daraus `front.png`, `side.png`, `back.png` (je 1024 × 1024, Hintergrund `#E2E4E3`)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Chats „Create simplified turnaround image“ (Stufe 1) und „Redraw Character Turnaround“ (Stufe 2)

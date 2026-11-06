@@ -54,27 +54,27 @@ describe('bubblePages', () => {
 });
 
 describe('half figures', () => {
-  const built = new Set(['kael', 'kael_sad', 'mira', 'rhen_a']);
+  const built = new Set(['lucan', 'lucan_sad', 'mira', 'rhen_a']);
   it('uses the mood variant when built, else the neutral figure, else nothing', () => {
-    expect(pickHalf('kael', 'sad', built)).toBe('kael_sad');
-    expect(pickHalf('kael', 'angry', built)).toBe('kael');
-    expect(pickHalf('kael', 'neutral', built)).toBe('kael');
+    expect(pickHalf('lucan', 'sad', built)).toBe('lucan_sad');
+    expect(pickHalf('lucan', 'angry', built)).toBe('lucan');
+    expect(pickHalf('lucan', 'neutral', built)).toBe('lucan');
     expect(pickHalf('grosk', 'neutral', built)).toBeNull();
     expect(pickHalf('grosk', 'neutral', null)).toBe('grosk');
   });
   it('mirrors the right speaker unless a figure facing left exists', () => {
-    const built = new Set(['kael', 'kael_sad', 'lucan', 'lucan_l', 'lucan_l_sad']);
-    expect(pickSideHalf('kael', 'sad', 'left', built)).toEqual({ stem: 'kael_sad', mirror: false });
-    expect(pickSideHalf('kael', 'sad', 'right', built)).toEqual({ stem: 'kael_sad', mirror: true });
-    expect(pickSideHalf('lucan', 'sad', 'right', built)).toEqual({ stem: 'lucan_l_sad', mirror: false });
-    expect(pickSideHalf('lucan', 'angry', 'right', built)).toEqual({ stem: 'lucan_l', mirror: false });
-    expect(pickSideHalf('lucan', 'neutral', 'left', built)).toEqual({ stem: 'lucan', mirror: false });
+    const built = new Set(['lucan', 'lucan_sad', 'tobin', 'tobin_l', 'tobin_l_sad']);
+    expect(pickSideHalf('lucan', 'sad', 'left', built)).toEqual({ stem: 'lucan_sad', mirror: false });
+    expect(pickSideHalf('lucan', 'sad', 'right', built)).toEqual({ stem: 'lucan_sad', mirror: true });
+    expect(pickSideHalf('tobin', 'sad', 'right', built)).toEqual({ stem: 'tobin_l_sad', mirror: false });
+    expect(pickSideHalf('tobin', 'angry', 'right', built)).toEqual({ stem: 'tobin_l', mirror: false });
+    expect(pickSideHalf('tobin', 'neutral', 'left', built)).toEqual({ stem: 'tobin', mirror: false });
     expect(pickSideHalf('grosk', 'neutral', 'right', built)).toBeNull();
     expect(pickSideHalf('grosk', 'neutral', 'right', null)).toEqual({ stem: 'grosk', mirror: true });
   });
   it('maps the avatar to its look', () => {
     expect(figureId('avatar', 'avatar_a')).toBe('rhen_a');
-    expect(figureId('kael', 'avatar_b')).toBe('kael');
+    expect(figureId('lucan', 'avatar_b')).toBe('lucan');
   });
   it('has a picture for every speaker of the scenes, so no dialogue shows an empty stage', () => {
     const dir = fileURLToPath(new URL('../../art/mockups/characters-s1/', import.meta.url));

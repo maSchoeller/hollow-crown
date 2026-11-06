@@ -25,7 +25,7 @@ lines:
     requires: [{ dead: fenn }]
     text: "Der Ringmeister: „Ein Dolch. Wegen eines Dolches stürmt ihr mein Haus.“"
   - id: m02
-    speaker: [mira, brenna, kael]
+    speaker: [mira, brenna, lucan]
     mood: sad
     requires: [{ dead: fenn }]
     text: "Er gehörte einem von uns. Das ist alles, was Ihr wissen müsst."

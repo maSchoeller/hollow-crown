@@ -23,11 +23,11 @@ describe('shared asset cache (story 5.1)', () => {
     const { cache, loads } = fakeCache(10);
     const board = {};
     const world = {};
-    await cache.use('models/units/kael.glb', board);
-    await cache.use('models/units/kael.glb', board);
-    await cache.use('models/units/kael.glb', world);
-    expect(loads).toEqual(['models/units/kael.glb']);
-    expect(cache.refs('models/units/kael.glb')).toBe(2);
+    await cache.use('models/units/lucan.glb', board);
+    await cache.use('models/units/lucan.glb', board);
+    await cache.use('models/units/lucan.glb', world);
+    expect(loads).toEqual(['models/units/lucan.glb']);
+    expect(cache.refs('models/units/lucan.glb')).toBe(2);
   });
 
   it('keeps a released file for the next scene: board → world map → board loads nothing again', async () => {

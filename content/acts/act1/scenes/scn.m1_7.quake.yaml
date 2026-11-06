@@ -5,7 +5,7 @@ lines:
     mood: neutral
     text: "Ein Beben aus dem Norden! Staub rieselt, irgendwo bricht Gestein. Die Decke hält nicht mehr lange."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: angry
     text: "Die Kammern gehen zuerst. Vier Runden, dann ist alles verschüttet. Zur Chronik!"
   - id: l03

@@ -105,9 +105,9 @@
      "name": "Ilsa"
     },
     {
-     "id": "kael",
-     "charId": "kael",
-     "nameKey": "unit.kael.name",
+     "id": "lucan",
+     "charId": "lucan",
+     "nameKey": "unit.lucan.name",
      "classId": "captain",
      "level": 1,
      "exp": 0,
@@ -196,8 +196,8 @@
      "mastered": [],
      "loadout": [],
      "sp": {},
-     "portrait": "kael",
-     "sprite": "kael"
+     "portrait": "lucan",
+     "sprite": "lucan"
     },
     {
      "id": "brenna",
@@ -404,6 +404,9 @@
    "choices": {},
    "decisions": [],
    "scenesSeen": [],
+   "backupReminded": [],
+   "priceMods": [],
+   "villageAid": null,
    "completed": [],
    "quests": [],
    "rolesSeen": [
@@ -412,11 +415,11 @@
     "vanguard"
    ],
    "supports": {
-    "avatar|kael": {
+    "avatar|lucan": {
      "points": 0,
      "rank": null
     },
-    "brenna|kael": {
+    "brenna|lucan": {
      "points": 0,
      "rank": null
     },
@@ -440,6 +443,10 @@
      "points": 0,
      "rank": null
     },
+    "grosk|tobin": {
+     "points": 0,
+     "rank": null
+    },
     "fenn|mira": {
      "points": 0,
      "rank": null
@@ -455,7 +462,10 @@
    "day": {
     "last": null,
     "pending": []
-   }
+   },
+   "haunts": [],
+   "hauntLast": {},
+   "hauntsSinceStory": 0
   },
   "battle": {
    "start": {
@@ -469,165 +479,220 @@
      208534691,
      3890712794
     ],
-    "width": 12,
-    "height": 16,
+    "width": 14,
+    "height": 18,
     "terrain": [
-     "mountain",
-     "mountain",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
      "wall",
      "wall",
      "door",
      "door",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "forest",
+     "forest",
+     "grass",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "brazier",
+     "road",
+     "road",
+     "road",
+     "road",
+     "brazier",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "grass",
+     "gate",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "gate",
+     "grass",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "wall",
+     "plain",
+     "road",
+     "road",
+     "road",
+     "road",
+     "plain",
+     "wall",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "grass",
+     "wall",
+     "plain",
+     "road",
+     "road",
+     "road",
+     "road",
+     "plain",
+     "wall",
+     "grass",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "forest",
+     "grass",
+     "wall",
+     "wall",
+     "gate",
+     "wall",
+     "wall",
+     "wall",
+     "gate",
+     "gate",
+     "rampart",
+     "rampart",
+     "rampart",
+     "gate",
+     "wall",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "fort",
+     "plain",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "stairs",
+     "fort",
+     "plain",
+     "plain",
+     "wall",
+     "road",
      "door",
-     "door",
-     "wall",
-     "wall",
-     "mountain",
-     "mountain",
-     "grass",
-     "forest",
-     "wall",
      "plain",
-     "plain",
-     "road",
-     "road",
-     "plain",
-     "plain",
-     "wall",
-     "forest",
-     "grass",
-     "grass",
-     "grass",
      "plain",
      "brazier",
      "plain",
      "road",
      "road",
      "plain",
-     "brazier",
-     "plain",
-     "grass",
-     "grass",
-     "forest",
-     "grass",
-     "plain",
-     "wall",
-     "plain",
-     "road",
-     "road",
-     "plain",
-     "wall",
-     "plain",
-     "grass",
-     "forest",
-     "grass",
-     "grass",
-     "plain",
-     "plain",
-     "road",
-     "road",
-     "road",
-     "road",
-     "plain",
-     "plain",
-     "grass",
-     "grass",
-     "forest",
-     "grass",
-     "grass",
      "plain",
      "brazier",
-     "road",
-     "road",
-     "brazier",
      "plain",
-     "grass",
-     "grass",
+     "plain",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "plain",
+     "ruins",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "plain",
+     "ruins",
+     "plain",
+     "plain",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "gate",
+     "road",
+     "wall",
      "forest",
-     "grass",
-     "grass",
-     "forest",
-     "plain",
-     "plain",
-     "road",
-     "road",
-     "plain",
-     "plain",
-     "forest",
-     "grass",
-     "grass",
-     "wall",
-     "grass",
-     "grass",
-     "plain",
-     "wall",
-     "road",
-     "road",
-     "wall",
-     "plain",
-     "grass",
-     "grass",
-     "wall",
-     "road",
-     "grass",
-     "grass",
-     "plain",
-     "plain",
-     "road",
-     "road",
-     "plain",
-     "plain",
-     "grass",
-     "grass",
-     "road",
-     "wall",
-     "grass",
      "forest",
      "plain",
-     "plain",
+     "wall",
      "road",
      "road",
+     "wall",
      "plain",
      "plain",
      "forest",
-     "grass",
-     "wall",
-     "grass",
-     "grass",
-     "grass",
-     "plain",
-     "brazier",
-     "road",
-     "road",
-     "brazier",
-     "plain",
-     "grass",
-     "grass",
-     "grass",
      "forest",
-     "grass",
-     "grass",
-     "plain",
+     "wall",
      "road",
-     "road",
-     "road",
-     "road",
-     "plain",
-     "grass",
-     "grass",
-     "forest",
-     "grass",
-     "grass",
-     "forest",
-     "plain",
-     "plain",
-     "road",
-     "road",
-     "plain",
-     "plain",
-     "forest",
-     "grass",
-     "grass",
      "wall",
      "grass",
      "grass",
@@ -639,31 +704,36 @@
      "plain",
      "grass",
      "grass",
-     "wall",
-     "wall",
-     "wall",
      "grass",
-     "grass",
-     "plain",
+     "wall",
+     "road",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "gate",
+     "gate",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
      "road",
      "road",
-     "plain",
      "grass",
      "grass",
-     "wall",
-     "wall",
-     "wall",
-     "wall",
-     "wall",
-     "wall",
-     "door_open",
-     "door_open",
-     "door_open",
-     "door_open",
-     "wall",
-     "wall",
-     "wall",
-     "wall"
+     "grass",
+     "grass",
+     "road",
+     "road",
+     "grass",
+     "grass",
+     "grass",
+     "grass",
+     "grass",
+     "grass"
     ],
     "timers": {},
     "units": [
@@ -768,9 +838,9 @@
       "fromRoster": true
      },
      {
-      "id": "kael",
-      "charId": "kael",
-      "nameKey": "unit.kael.name",
+      "id": "lucan",
+      "charId": "lucan",
+      "nameKey": "unit.lucan.name",
       "classId": "captain",
       "level": 1,
       "exp": 0,
@@ -859,9 +929,9 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "portrait": "kael",
-      "sprite": "kael",
-      "uid": "kael",
+      "portrait": "lucan",
+      "sprite": "lucan",
+      "uid": "lucan",
       "team": "player",
       "pos": [
        6,
@@ -976,11 +1046,11 @@
       "uid": "brenna",
       "team": "player",
       "pos": [
-       4,
+       7,
        1
       ],
       "startPos": [
-       4,
+       7,
        1
       ],
       "hp": 27,
@@ -1081,11 +1151,11 @@
       "uid": "tobin",
       "team": "player",
       "pos": [
-       7,
+       8,
        1
       ],
       "startPos": [
-       7,
+       8,
        1
       ],
       "hp": 19,
@@ -1105,7 +1175,7 @@
       "id": "tg1",
       "nameKey": "unit.temple_guard.name",
       "classId": "skirmisher",
-      "level": 1,
+      "level": 2,
       "exp": 0,
       "stats": {
        "hp": 20,
@@ -1162,16 +1232,17 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "mercenary",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
       "uid": "tg1",
       "team": "enemy",
       "pos": [
-       3,
-       6
+       5,
+       7
       ],
       "startPos": [
-       3,
-       6
+       5,
+       7
       ],
       "hp": 20,
       "acted": false,
@@ -1247,21 +1318,13 @@
         "runes": []
        }
       },
-      "bag": [
-       {
-        "uid": "i18",
-        "def": "vulnerary",
-        "upgrade": 0,
-        "affixes": [],
-        "runes": [],
-        "charges": 3
-       }
-      ],
+      "bag": [],
       "scars": [],
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "soldier",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
       "uid": "tg2",
       "team": "enemy",
       "pos": [
@@ -1281,9 +1344,7 @@
       "buffs": [],
       "usedPerMap": {},
       "freeUsed": {},
-      "dropUids": [
-       "i18"
-      ],
+      "dropUids": [],
       "generic": true,
       "fromRoster": false,
       "ai": {
@@ -1296,7 +1357,7 @@
       "id": "tg3",
       "nameKey": "unit.temple_guard.name",
       "classId": "skirmisher",
-      "level": 2,
+      "level": 1,
       "exp": 0,
       "stats": {
        "hp": 20,
@@ -1341,7 +1402,7 @@
       "flags": [],
       "equip": {
        "mainHand": {
-        "uid": "i19",
+        "uid": "i18",
         "def": "iron_sword",
         "upgrade": 0,
         "affixes": [],
@@ -1353,16 +1414,17 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "mercenary",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
       "uid": "tg3",
       "team": "enemy",
       "pos": [
-       3,
-       10
+       1,
+       5
       ],
       "startPos": [
-       3,
-       10
+       1,
+       5
       ],
       "hp": 20,
       "acted": false,
@@ -1378,18 +1440,107 @@
       "fromRoster": false,
       "ai": {
        "profile": "trigger",
-       "radius": 4,
+       "radius": 3,
        "then": "aggressive"
       }
      },
      {
       "id": "tg4",
       "nameKey": "unit.temple_guard.name",
-      "classId": "vanguard",
+      "classId": "marksman",
       "level": 1,
       "exp": 0,
       "stats": {
-       "hp": 21,
+       "hp": 19,
+       "str": 5,
+       "mag": 0,
+       "skl": 6,
+       "spd": 5,
+       "lck": 2,
+       "def": 3,
+       "res": 1
+      },
+      "growth": {
+       "hp": 65,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 40,
+       "lck": 25,
+       "def": 20,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i19",
+        "def": "iron_bow",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg4",
+      "team": "enemy",
+      "pos": [
+       9,
+       9
+      ],
+      "startPos": [
+       9,
+       9
+      ],
+      "hp": 19,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "hold"
+      }
+     },
+     {
+      "id": "tg5",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 23,
        "str": 5,
        "mag": 0,
        "skl": 4,
@@ -1438,23 +1589,33 @@
         "runes": []
        }
       },
-      "bag": [],
+      "bag": [
+       {
+        "uid": "i21",
+        "def": "vulnerary",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": [],
+        "charges": 3
+       }
+      ],
       "scars": [],
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "soldier",
-      "uid": "tg4",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg5",
       "team": "enemy",
       "pos": [
-       8,
-       11
+       6,
+       10
       ],
       "startPos": [
-       8,
-       11
+       6,
+       10
       ],
-      "hp": 21,
+      "hp": 23,
       "acted": false,
       "moved": false,
       "downed": false,
@@ -1463,20 +1624,20 @@
       "buffs": [],
       "usedPerMap": {},
       "freeUsed": {},
-      "dropUids": [],
+      "dropUids": [
+       "i21"
+      ],
       "generic": true,
       "fromRoster": false,
       "ai": {
-       "profile": "trigger",
-       "radius": 4,
-       "then": "aggressive"
+       "profile": "guard"
       }
      },
      {
-      "id": "tg5",
+      "id": "tg6",
       "nameKey": "unit.temple_guard.name",
       "classId": "skirmisher",
-      "level": 1,
+      "level": 2,
       "exp": 0,
       "stats": {
        "hp": 20,
@@ -1521,7 +1682,7 @@
       "flags": [],
       "equip": {
        "mainHand": {
-        "uid": "i21",
+        "uid": "i22",
         "def": "iron_sword",
         "upgrade": 0,
         "affixes": [],
@@ -1533,16 +1694,17 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "mercenary",
-      "uid": "tg5",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg6",
       "team": "enemy",
       "pos": [
-       6,
-       13
+       7,
+       10
       ],
       "startPos": [
-       6,
-       13
+       7,
+       10
       ],
       "hp": 20,
       "acted": false,
@@ -1557,17 +1719,17 @@
       "generic": true,
       "fromRoster": false,
       "ai": {
-       "profile": "hold"
+       "profile": "guard"
       }
      },
      {
-      "id": "tg6",
+      "id": "tg7",
       "nameKey": "unit.temple_guard.name",
       "classId": "vanguard",
-      "level": 1,
+      "level": 3,
       "exp": 0,
       "stats": {
-       "hp": 21,
+       "hp": 23,
        "str": 5,
        "mag": 0,
        "skl": 4,
@@ -1609,7 +1771,7 @@
       "flags": [],
       "equip": {
        "mainHand": {
-        "uid": "i22",
+        "uid": "i23",
         "def": "iron_lance",
         "upgrade": 0,
         "affixes": [],
@@ -1621,18 +1783,19 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
-      "sprite": "soldier",
-      "uid": "tg6",
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg7",
       "team": "enemy",
       "pos": [
-       5,
-       12
+       6,
+       15
       ],
       "startPos": [
-       5,
-       12
+       6,
+       15
       ],
-      "hp": 21,
+      "hp": 23,
       "acted": false,
       "moved": false,
       "downed": false,
@@ -1647,9 +1810,299 @@
       "ai": {
        "profile": "hold"
       }
+     },
+     {
+      "id": "tg8",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 23,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 4,
+       "lck": 2,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 40,
+       "spd": 35,
+       "lck": 25,
+       "def": 35,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i24",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg8",
+      "team": "enemy",
+      "pos": [
+       7,
+       15
+      ],
+      "startPos": [
+       7,
+       15
+      ],
+      "hp": 23,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "hold"
+      }
+     },
+     {
+      "id": "tg9",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i25",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg9",
+      "team": "enemy",
+      "pos": [
+       3,
+       12
+      ],
+      "startPos": [
+       3,
+       12
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 7,
+       "then": "aggressive"
+      }
+     },
+     {
+      "id": "tg10",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i26",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg10",
+      "team": "enemy",
+      "pos": [
+       10,
+       12
+      ],
+      "startPos": [
+       10,
+       12
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 4,
+       "then": "aggressive"
+      }
      }
     ],
-    "objects": [],
+    "objects": [
+     {
+      "id": "d_unterstadt",
+      "type": "door",
+      "at": [
+       1,
+       11
+      ],
+      "state": "closed"
+     },
+     {
+      "id": "c_garden",
+      "type": "chest",
+      "at": [
+       11,
+       1
+      ],
+      "state": "closed"
+     }
+    ],
     "loot": [],
     "firedTriggers": [
      "t_intro"
@@ -1687,11 +2140,11 @@
     "materialsGained": {},
     "itemsGained": [],
     "supports": {
-     "avatar|kael": {
+     "avatar|lucan": {
       "points": 0,
       "rank": null
      },
-     "brenna|kael": {
+     "brenna|lucan": {
       "points": 0,
       "rank": null
      },
@@ -1715,18 +2168,24 @@
       "points": 0,
       "rank": null
      },
+     "grosk|tobin": {
+      "points": 0,
+      "rank": null
+     },
      "fenn|mira": {
       "points": 0,
       "rank": null
      }
     },
     "flags": [],
-    "nextUid": 23,
+    "nextUid": 27,
     "avatarName": "Ilsa",
     "locked": [
      "triangle",
      "magic",
      "elements",
+     "status",
+     "runes",
      "supports"
     ],
     "lockedRoles": [
@@ -1736,15 +2195,16 @@
      "healer",
      "scout",
      "minstrel"
-    ]
+    ],
+    "lieutenantPlan": {}
    },
    "commands": [
     {
      "type": "act",
      "unit": "avatar",
      "to": [
-      5,
-      6
+      6,
+      5
      ],
      "action": {
       "kind": "wait"
@@ -1752,7 +2212,7 @@
     },
     {
      "type": "act",
-     "unit": "kael",
+     "unit": "lucan",
      "to": [
       6,
       6
@@ -1765,8 +2225,8 @@
      "type": "act",
      "unit": "brenna",
      "to": [
-      4,
-      4
+      7,
+      5
      ],
      "action": {
       "kind": "wait"
@@ -1790,8 +2250,8 @@
      "type": "act",
      "unit": "avatar",
      "to": [
-      6,
-      10
+      9,
+      5
      ],
      "action": {
       "kind": "wait"
@@ -1799,7 +2259,7 @@
     },
     {
      "type": "act",
-     "unit": "kael",
+     "unit": "lucan",
      "to": [
       6,
       6
@@ -1812,22 +2272,26 @@
      "type": "act",
      "unit": "brenna",
      "to": [
-      5,
-      7
+      6,
+      5
      ],
      "action": {
-      "kind": "wait"
+      "kind": "attack",
+      "target": "tg1",
+      "weapon": "i7"
      }
     },
     {
      "type": "act",
      "unit": "tobin",
      "to": [
-      6,
-      7
+      5,
+      5
      ],
      "action": {
-      "kind": "wait"
+      "kind": "attack",
+      "target": "tg2",
+      "weapon": "i11"
      }
     },
     {
@@ -1838,7 +2302,7 @@
      "unit": "avatar",
      "to": [
       6,
-      10
+      3
      ],
      "action": {
       "kind": "wait"

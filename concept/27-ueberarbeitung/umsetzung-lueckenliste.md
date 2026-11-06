@@ -25,7 +25,7 @@ Dazu ohne Eile zu bestätigen: „10–15 Charaktere“ meint eigene Einheiten (
 | 8.1 Tonbruch-Test | Weiter offen und nötig. Muss nun mit den Porträts v2.5 laufen, Ergebnis fehlt im Art-Log |
 | 8.3 Brettfiguren | Bleibt erledigt; die Nacharbeit läuft über Epic 15 (Entscheidung 2) |
 | 8.4 Porträts | Überholt durch die 51 Porträts nach `portrait_master.md` v2.5. Bleibt erledigt, kein Nacharbeiten |
-| 8.7 Titelbild | Zeigt laut Story Kael und Rhen; nicht mit Stil v2.5 und dem neuen Kael abgeglichen |
+| 8.7 Titelbild | Zeigt laut Story Lucan und Rhen; nicht mit Stil v2.5 und dem neuen Lucan abgeglichen |
 | 8.8, 8.9 Audio | Weiter offen. Im Repo liegen nur die 31 PoC-Klänge von 2026-10-22. Der Satz „Lizenzfrage GA26 bleibt offen“ ist seit 2026-10-24 falsch (AGENTS.md); dieselbe Altlast steht in Art Direction §13 |
 
 ## Epic 9 und Story 9.14

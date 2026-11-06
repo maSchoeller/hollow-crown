@@ -13,8 +13,8 @@ lines:
     speaker: [fenn]
     fallback: skip
     mood: neutral
-    text: "Verschlossen? Mit einer Nadel wäre das … schon gut, Kael. Ich fasse nichts an."
+    text: "Verschlossen? Mit einer Nadel wäre das … schon gut, Lucan. Ich fasse nichts an."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir brechen kein Siegel. Die Chronik kommt ins Burgarchiv."

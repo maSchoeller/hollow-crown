@@ -14,7 +14,7 @@
 | | |
 |---|---|
 | Gegner | L 13 · N 16 · S 19, Stufe P−3 bis P−1 (hier 9–11), Leutnants P+1 bis P+2 |
-| Aufstellung | 7 von 9 Feldern, Pflicht Rhen und Kael |
+| Aufstellung | 7 von 9 Feldern, Pflicht Rhen und Lucan |
 | Nebenziele | alle drei Truhen (eine mit Chronik-Seite) |
 | Phasen | R1–3 Südenge · R4–7 Mittelkammer · R8–11 Karawane |
 | Formatwünsche | Gegenstand Siegel, Chronik-Seite, Leutnant `grell` |

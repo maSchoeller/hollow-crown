@@ -1,5 +1,8 @@
 # lucan_board_turnaround – Brett-Turnaround Lucan
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/turnarounds/lucan_board/sheet.png` (1536 × 1024, unveränderter Download, A3); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`, je 1024 × 1024)
 - **Datum:** 2026-11-05
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Tarif **Plus**, Konto `maschoeller` (Profilmenü, 2026-11-05); keine Modell-Versionsnummer sichtbar
