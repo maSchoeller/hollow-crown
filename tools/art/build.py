@@ -17,8 +17,9 @@ python tools/art/build.py [--quality mid|high]
 - Status icons (art/status/source/<id>.png, painted in ChatGPT, story 8.6): WebP q85, 96 px square → public/assets/core/status/<id>.webp.
   Exception to the rule "new assets go into act1" (product owner 2026-10-26): the icons are a few KB and the prologue shows them, too.
 - Title image (art/title/title_act1.png, 2:3): WebP q72, 1024×1536 → public/assets/title/title_act1.webp (pack core).
-- World map v5 (art/world/map_v5.png, 3276 px square, story 15.7): 3 x 3 tiles → public/assets/world/valmora_r<r>c<c>.webp, an
-  overview picture valmora.webp (fallback under the tiles and backdrop of the deployment) and the town pictures of
+- World map v5 (art/world/map_v5.png, 3276 px square, stories 15.7/15.12): the whole picture in resolution levels → the
+  overview public/assets/world/valmora.webp (1024 px; first picture shown, fallback and backdrop of the deployment) and
+  valmora_<width>.webp and the town pictures of
   art/world/map_places_v5.json → world/sites/<place>.webp; all of it loads on demand with the act pack.
 - Writes public/assets/manifest.json describing everything that exists.
 Requires Pillow and PyYAML.
@@ -169,28 +170,28 @@ def build_title():
 
 WORLD_MAP = 'map_v5.png'  # source picture of the world map in art/world (prompt: art/prompts/world_map_v5.md)
 WORLD_PLACES = 'map_places_v5.json'  # places and town pictures; their coordinates are in pixels of a 1254 px map
-WORLD_TILES = 3  # tiles per side: each one is a third of the source, so the near zoom on a phone shows full detail
-WORLD_LOW = 1024  # width of the overview picture shown until (or where) a tile has not loaded
+WORLD_LEVELS = [1024, 2048, 3276]  # widths of the whole picture, one file each; the first is the overview <image>.webp (story 15.12)
 SITE_HEADROOM = 1.25  # town pictures are shipped this much wider than their width on the full-size map (zoom past 1:1)
 
 
 def build_world():
-    """World map v5 (story 15.7): tiles, overview picture and town pictures under public/assets/world/ (not precached)."""
+    """World map v5 (stories 15.7, 15.12): the whole picture in resolution levels (valmora.webp, valmora_<width>.webp; one
+    picture per level instead of tiles, so the map is one image layer) and the town pictures with their state variants under
+    public/assets/world/ (not precached)."""
     src = os.path.join(ART, 'world', WORLD_MAP)
     if not os.path.isfile(src):
         return []
     dst = ensure(os.path.join(OUT, 'world'))
+    for old in os.listdir(dst):  # the 3 x 3 tiles of story 15.7 are gone; stale ones would land in the manifest
+        if re.fullmatch(r'valmora_r\d+c\d+\.webp', old):
+            os.remove(os.path.join(dst, old))
     im = Image.open(src).convert('RGB')
     built = []
-    n = WORLD_TILES
-    for r in range(n):
-        for c in range(n):
-            box = (c * im.width // n, r * im.height // n, (c + 1) * im.width // n, (r + 1) * im.height // n)
-            im.crop(box).save(os.path.join(dst, f'valmora_r{r}c{c}.webp'), 'WEBP', quality=82, method=6)
-            built.append(f'valmora_r{r}c{c}')
-    low = im.resize((WORLD_LOW, round(im.height * WORLD_LOW / im.width)), Image.LANCZOS)
-    low.save(os.path.join(dst, 'valmora.webp'), 'WEBP', quality=72, method=6)
-    built.append('valmora')
+    for i, w in enumerate(WORLD_LEVELS):
+        name = 'valmora' if i == 0 else f'valmora_{w}'
+        level = im if w >= im.width else im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
+        level.save(os.path.join(dst, f'{name}.webp'), 'WEBP', quality=72 if i == 0 else 80, method=6)
+        built.append(name)
     places_path = os.path.join(ART, 'world', WORLD_PLACES)
     if not os.path.isfile(places_path):
         return built
@@ -200,19 +201,27 @@ def build_world():
     sites = ensure(os.path.join(dst, 'sites'))
     for p in places.get('places', []):
         site = p.get('site')
-        path = site and os.path.join(ROOT, site['image'])
-        if not path or not os.path.isfile(path):
+        if not site:
             continue
-        pic = Image.open(path).convert('RGBA')
-        box = pic.getbbox()
-        w = round(site['width'] * unit * SITE_HEADROOM)
-        if not box or w < 1:
-            print(f"  world: town picture {site['image']} is empty, skipped")
-            continue
-        pic = pic.crop(box)
-        pic = pic.resize((w, round(pic.height * w / pic.width)), Image.LANCZOS)
-        pic.save(os.path.join(sites, f"{p['id']}.webp"), 'WEBP', quality=86, method=6)
-        built.append(f"sites/{p['id']}")
+        # the base picture is sites/<place>.webp, a state variant sites/<variant id>.webp (site.variants in valmora.yaml)
+        ids = {q['id'] for q in places['places']}
+        for v in site.get('variants', []):
+            if not v.get('id') or v['id'] in ids:
+                raise SystemExit(f"world: variant of {p['id']} needs an id of its own, not {v.get('id')!r}")
+        for name, image in [(p['id'], site['image'])] + [(v['id'], v['image']) for v in site.get('variants', [])]:
+            path = os.path.join(ROOT, image)
+            if not os.path.isfile(path):
+                continue
+            pic = Image.open(path).convert('RGBA')
+            box = pic.getbbox()
+            w = round(site['width'] * unit * SITE_HEADROOM)
+            if not box or w < 1:
+                print(f"  world: town picture {image} is empty, skipped")
+                continue
+            pic = pic.crop(box)
+            pic = pic.resize((w, round(pic.height * w / pic.width)), Image.LANCZOS)
+            pic.save(os.path.join(sites, f"{name}.webp"), 'WEBP', quality=86, method=6)
+            built.append(f"sites/{name}")
     return built
 
 

@@ -41,12 +41,13 @@
   user-select: none;
   -webkit-user-drag: none;
 }
-/* the full picture in tiles over the overview picture (story 15.7); the overview shows where a tile is missing */
-.wm__tile {
+/* the sharp level lies over the overview and only replaces it once decoded (story 15.12) */
+.wm__img--sharp {
   position: absolute;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
+  inset: 0;
+}
+.wm__img--sharp.is-loading {
+  visibility: hidden;
 }
 /* town pictures on their painted plateaus: placed by the middle of their bottom edge, they scale with the picture */
 .wm-site {
@@ -69,17 +70,23 @@
   color: var(--hc-line);
   transform: translate(-50%, -110%);
 }
-/* fog over the areas of the regions of later acts (DESIGN.md fog): polygons with a soft edge */
+/* fog over the areas of the regions of later acts (DESIGN.md fog): a small soft mask stretched over the picture (story 15.12);
+   `color` only hands the fog colour to the canvas drawing */
 .wm__fog {
   position: absolute;
   inset: 0;
-  overflow: hidden; /* the areas bleed past the picture edge (bleedArea); the picture ends here */
-  fill: var(--hc-fog);
-  fill-opacity: 0.92;
+  width: 100%;
+  height: 100%;
+  color: var(--hc-fog);
 }
 .wm__world {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  /* moved by one transform while dragging; the pieces in it sit in picture pixels times the scale (story 15.12) */
+  will-change: transform;
   pointer-events: none;
 }
 .wm__world .wm-node {
@@ -87,9 +94,9 @@
 }
 .wm__paths {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: visible;
   pointer-events: none;
 }
 .wm__path {
@@ -103,6 +110,10 @@
   stroke-width: 6;
   stroke-dasharray: none;
   opacity: 0.45;
+}
+/* a road towards a place without an unlocked stone (story 15.12) */
+.wm__road.is-dim {
+  opacity: 0.6;
 }
 
 .wm__loading {

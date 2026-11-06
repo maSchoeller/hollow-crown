@@ -239,3 +239,6 @@ worldMap:
   zoomSteps: [2.2, 2.8]
   zoomMs: 260
   focusZoom: 1.12
+  # Nebel späterer Akte (Story 15.12): einmal je Akt als kleines Bild aus den Flächen gerechnet (px × px, Weichzeichnung mit Radius
+  # blur in zwei Durchgängen ≈ 1,2 % der Kartenbreite) und auf die Karte gestreckt; kein SVG-Filter über der ganzen Karte mehr.
+  fog: { px: 160, blur: 2, alpha: 0.92 }
