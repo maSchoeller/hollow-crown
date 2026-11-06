@@ -60,5 +60,6 @@ Claude Opus 5.5
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created
+- 2026-11-06: **Abbruch vor T2.** Tripo Studio zeigt 205 Credits, der Preisdialog führt das Konto aber als **Free** („Included“), Banner „Upgrade to unlock Smart Mesh & Multi-Views“. Nach Vorgabe der Auftrags-Session (Abbruch bei Free) kein Turnaround, kein Lauf, 0 Credits verbraucht, nichts gekauft. Weiter erst nach Entscheidung des Produktinhabers zum Tarif.
 
 ### File List
