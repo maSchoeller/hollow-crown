@@ -137,3 +137,8 @@
 - Gelände `stall` zeichnet Marktstände statt des Zelts; ein Stand sperrt in jeder Region gleich. Das Lagerzelt und die Mühle setzt die Karte von Hand: Gewicht 0 in `render.yaml board.variants` heißt „nur über `propVariants`, nie gewürfelt“.
 - Nicht übernommen, weil keine Karte von Akt 1 sie über ein Gelände zeichnen kann oder die Matrix sie einer späteren Etappe gibt: `house_town_a/b` (Varnhold behält die vier Kulissenhäuser; ein Stadt-Satz bräuchte eine Auswahl je Karte), `chest_b_*` (Truhe ist Etappe 3 und beträfe den Prolog im ersten Download), `field_burnt`, `hay_a`, `barn_a`, `vine_a`, `fence_wicker_a`, `sign_a`, `lantern_post_a`, `pillar_a`, `pillar_broken_a`, `rubble_a`, `banner_a`, `grove_autumn_a`, `fir_a`, `deadtree_b`, `stump_a`, `bush_low_a`, `boulder_a`, `camp_rack_a`, `wolf_cave_a`. Sie bleiben in der Galerie ohne `ships`.
 - `content:check` meldet jetzt jedes Modell, das `render.yaml` oder eine Karte für das Brett nennt und das als Datei fehlt oder als Galerie-Modell ohne `ships` nicht ausgeliefert wird.
+
+## 2026-11-06: Seraphine wird in Staffel 2 spielbar
+
+- Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
+- Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.
