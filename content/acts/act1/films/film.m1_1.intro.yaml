@@ -1,0 +1,71 @@
+# Filmszene zu scn.m1_1.intro (Epic 16, Referenzszene): Ankunft in Varnhold, die Steckbriefe (Beat 3).
+# Text, Sprecher und Stimmung kommen aus der Szene; der Film legt je Zeile Kamera, Wege und Gesten fest.
+# Koordinaten in Feldern der Karte: [x, y] auf dem Brett, Kamera [x, Höhe, y] (Höhe in Feldern, 0 = Boden).
+# Die Truppe kommt von Süden über die Straße (x 7–8), vor der Brücke (y 13–14) warten Morras Häscher (h1, h2).
+id: film.m1_1.intro
+scene: scn.m1_1.intro
+map: m1_1_steckbriefe
+letterbox: true
+actors:
+  - { id: kael, at: [7, 19.6], facing: n }
+  - { id: avatar, at: [8.3, 20], facing: n }
+  - { id: brenna, at: [5.8, 20.6], facing: n }
+  - { id: tobin, at: [8.9, 20.9], facing: n }
+  - { id: h1, model: soldier, team: enemy, at: [7, 11], facing: s }
+  - { id: h2, model: soldier, team: enemy, at: [8, 11], facing: s }
+# Maßstab: eine Brettfigur ist gut ein Feld hoch (render.yaml figureScale), der Kopf sitzt bei etwa 0,85.
+# Nahaufnahmen daher aus 1,6–2,4 Feldern Abstand, halbnah aus 2,5; Blickachsen sind auf Verdeckung geprüft.
+# fov ist vertikal: im Hochformat sieht die Kamera waagerecht nur gut die Hälfte davon, Gruppen brauchen Tiefe oder Abstand.
+shots:
+  # Establishing: hoch über dem Fluss, langsame Fahrt auf die Stadtmauer zu, die Truppe läuft ins Bild
+  - line: l01
+    camera: { from: [7.5, 2.6, 25], to: [7.5, 1.2, 12], end: { from: [7.5, 1.7, 21.2], to: [7.5, 0.9, 12] }, fov: 42, ms: 7000 }
+    moves:
+      - { actor: kael, path: [[7, 19.6], [7, 17]], ms: 6000 }
+      - { actor: avatar, path: [[8.3, 20], [8.3, 17.4]], ms: 6000 }
+      - { actor: brenna, path: [[5.8, 20.6], [5.8, 18]], ms: 6000 }
+      - { actor: tobin, path: [[8.9, 20.9], [8.9, 18.3]], ms: 6000 }
+  # Tobin, nah von vorn rechts, langsames Heranschieben: Vorfreude
+  - line: l02
+    camera: { from: [10.0, 0.62, 16.1], to: [8.9, 0.6, 18.3], end: { from: [9.9, 0.62, 16.4] }, fov: 30, ms: 4000 }
+    gestures: [{ actor: tobin, anim: attack }]
+  # Brenna von vorn links, sie sieht zu Tobin hinüber
+  - line: l03
+    camera: { from: [4.6, 0.95, 16.28], to: [5.8, 0.85, 18], fov: 30, ms: 4000 }
+    gestures: [{ actor: brenna, face: [8.9, 18.3] }]
+  # Lucan (kael) halbnah, ruhig, die Stadt im Rücken
+  - line: l04
+    camera: { from: [7.45, 0.85, 14.44], to: [7, 0.8, 17], end: { from: [7.16, 0.85, 14.71] }, fov: 30, ms: 4000 }
+  # Avatar: über die Schulter auf die Stadt, die Häscher an der Brücke klein im Hintergrund
+  - line: l05
+    camera: { from: [8.75, 1.25, 18.7], to: [7.6, 0.7, 11.6], fov: 36, ms: 4000 }
+    gestures: [{ actor: avatar, face: [7.5, 11.6] }]
+  # Steckbriefe: Fahrt an der Hauswand am Ufer entlang
+  - line: l06
+    camera: { from: [3.4, 0.9, 13.2], to: [2.2, 0.7, 11.6], end: { from: [4.1, 0.85, 12.9], to: [2.4, 0.7, 11.4] }, fov: 32, ms: 6000 }
+  - line: l07
+    camera: { from: [5.33, 0.9, 16.26], to: [5.8, 0.85, 18], fov: 28, ms: 3000 }
+    gestures: [{ actor: brenna, face: [7.5, 11.6], anim: hit }]
+  # Lucan, jetzt nah: der Satz der Szene
+  - line: l08
+    camera: { from: [6.5, 0.78, 14.7], to: [7, 0.78, 17], end: { from: [6.58, 0.78, 14.95] }, fov: 26, ms: 4500 }
+  - line: l09
+    camera: { from: [10.3, 0.62, 16.4], to: [8.9, 0.6, 18.3], fov: 28, ms: 3500 }
+    gestures: [{ actor: tobin, face: [7, 17] }]
+  - line: l10
+    camera: { from: [7.5, 0.78, 15.0], to: [7, 0.78, 17], fov: 24, ms: 3500 }
+    gestures: [{ actor: kael, face: [8.9, 18.3] }]
+  # Brenna zeigt zur Brücke: Schnitt auf die Häscher, sie treten vor
+  - line: l11
+    camera: { from: [7.5, 0.72, 16.8], to: [7.5, 0.75, 11.6], end: { from: [7.5, 0.72, 16.3] }, fov: 40, ms: 4500 }
+    moves:
+      - { actor: h1, path: [[7, 11], [7, 11.6]], ms: 1800 }
+      - { actor: h2, path: [[8, 11], [8, 11.6]], ms: 1800 }
+  # Gegenschuss aus Sicht der Häscher: Untersicht auf die Truppe, alle zur Brücke gewandt
+  - line: l12
+    camera: { from: [7.4, 0.35, 12.3], to: [7.4, 0.85, 17.6], end: { from: [7.6, 0.4, 12.0] }, fov: 50, ms: 5000 }
+    gestures:
+      - { actor: kael, face: [7.5, 11.6], anim: attack }
+      - { actor: avatar, face: [7.5, 11.6] }
+      - { actor: brenna, face: [7.5, 11.6] }
+      - { actor: tobin, face: [7.5, 11.6] }

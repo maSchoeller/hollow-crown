@@ -575,6 +575,46 @@ export const sceneSchema = z.strictObject({
   ),
 });
 
+const filmPoint = z.tuple([z.number(), z.number()]);
+const filmEye = z.tuple([z.number(), z.number().min(0), z.number()]);
+const filmFacing = z.enum(['n', 'e', 's', 'w']);
+const filmAnim = z.enum(['idle', 'walk', 'attack', 'hit']);
+
+/** Film scene `acts/actN/films/<id>.yaml` (epic 16): camera shots, walks and gestures over the lines of a story scene. */
+export const filmSchema = z.strictObject({
+  id: z.string().regex(/^film\.[a-z0-9_.]+$/),
+  scene: z.string().min(1),
+  map: z.string().min(1),
+  letterbox: z.boolean().optional(),
+  actors: z
+    .array(
+      z.strictObject({
+        id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+        model: z.string().regex(/^[a-z][a-z0-9_]*$/).optional(),
+        team: z.enum(['player', 'enemy', 'other']).optional(),
+        at: filmPoint,
+        facing: filmFacing.optional(),
+      }),
+    )
+    .min(1),
+  shots: z
+    .array(
+      z.strictObject({
+        line: lineId,
+        camera: z.strictObject({
+          from: filmEye,
+          to: filmEye,
+          end: z.strictObject({ from: filmEye.optional(), to: filmEye.optional() }).optional(),
+          fov: z.number().min(10).max(90),
+          ms: z.number().int().min(0).max(20000),
+        }),
+        moves: z.array(z.strictObject({ actor: z.string(), path: z.array(filmPoint).min(2), ms: z.number().int().min(100).max(20000) })).optional(),
+        gestures: z.array(z.strictObject({ actor: z.string(), anim: filmAnim.optional(), face: filmPoint.optional() })).optional(),
+      }),
+    )
+    .min(1),
+});
+
 /** A fixed support pair of an act (`acts/actN/supports.yaml`, story 4.9): `core` pairs reach S, the others stop at A. */
 export const supportPairSchema = z.strictObject({
   pair: z.tuple([z.string(), z.string()]),
@@ -836,6 +876,22 @@ export const renderSchema = z.object({
     zoomMs: z.number().min(0),
     focusZoom: z.number().positive(),
   }),
+  film: z
+    .object({
+      exposure: z.number().positive(),
+      contrast: z.number().positive(),
+      vignette: z.number().min(0).max(1),
+      vignetteColor: z.string().regex(/^#[0-9a-f]{6}$/i),
+      grain: z.number().min(0),
+      chromatic: z.number().min(0),
+      sharpen: z.number().min(0).max(1),
+      bloom: z.object({ threshold: z.number().min(0), weight: z.number().min(0), kernel: z.number().int().positive(), scale: z.number().positive().max(1) }),
+      dof: z.object({ fStop: z.number().positive(), focalLength: z.number().positive(), blur: z.object({ mid: z.number().int().min(0).max(2), high: z.number().int().min(0).max(2) }) }),
+      haze: z.object({ near: z.number().min(0), far: z.number().positive(), color: z.string().regex(/^#[0-9a-f]{6}$/i) }),
+      sun: z.object({ intensity: z.number().min(0), color: z.string().regex(/^#[0-9a-f]{6}$/i), hemi: z.number().min(0), hemiColor: z.string().regex(/^#[0-9a-f]{6}$/i) }),
+      ssao: z.object({ high: z.boolean(), mid: z.boolean(), radius: z.number().positive(), strength: z.number().positive() }),
+    })
+    .optional(),
 });
 
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */

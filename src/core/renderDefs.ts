@@ -176,6 +176,8 @@ export interface RenderDef {
     /** how much closer the map goes on a chosen place */
     focusZoom: number;
   };
+  /** cinema look of the film scenes (epic 16, story 16.3); absent in hand-built test data */
+  film?: FilmLookDef;
 }
 
 /** Light of a time of day or a season: colour, strength and (sun) the direction. */
@@ -290,4 +292,20 @@ export interface WorldDef {
   /** tip of the home stone per kind of home (camp until mission 1-6, then the castle) */
   home: Record<HomeKind, [number, number]>;
   places: WorldPlace[];
+}
+
+/** Post-processing and light of the film scenes (`render.yaml film`, story 16.3). */
+export interface FilmLookDef {
+  exposure: number;
+  contrast: number;
+  vignette: number;
+  vignetteColor: string;
+  grain: number;
+  chromatic: number;
+  sharpen: number;
+  bloom: { threshold: number; weight: number; kernel: number; scale: number };
+  dof: { fStop: number; focalLength: number; blur: { mid: number; high: number } };
+  haze: { near: number; far: number; color: string };
+  sun: { intensity: number; color: string; hemi: number; hemiColor: string };
+  ssao: { high: boolean; mid: boolean; radius: number; strength: number };
 }

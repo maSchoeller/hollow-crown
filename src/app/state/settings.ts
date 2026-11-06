@@ -20,6 +20,8 @@ export interface Settings {
   shake: boolean;
   /** scenes advance on their own (the Auto pill of a scene) */
   dialogueAuto: boolean;
+  /** epic 16: story scenes with a film play on their 3D stage (off: the visual-novel scene as before) */
+  films: boolean;
   /** board display (story 13.1, block "Brett-Anzeige"): grid marks, HP bars over the figures, enemy strip */
   grid: 'off' | 'subtle' | 'strong';
   hpBars: 'always' | 'hurt' | 'off';
@@ -47,6 +49,7 @@ export function defaultSettings(lang: Lang): Settings {
     keepAwake: true,
     shake: true,
     dialogueAuto: false,
+    films: true,
     grid: 'subtle',
     hpBars: 'always',
     enemyStrip: false,

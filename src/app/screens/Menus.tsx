@@ -158,6 +158,7 @@ export function Options({ back }: { back: Screen }) {
         <Piece class="options__stone">
           {seg(t('ui.opt.quality'), 'quality', [['low', t('ui.opt.q.low')], ['mid', t('ui.opt.q.mid')], ['high', t('ui.opt.q.high')]])}
           {seg(t('ui.opt.shake'), 'shake', ON_OFF())}
+          {seg(t('ui.opt.films'), 'films', ON_OFF())}
         </Piece>
         <Piece class="options__stone">
           {slider(t('ui.opt.music'), 'music')}

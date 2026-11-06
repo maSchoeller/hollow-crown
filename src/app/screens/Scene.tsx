@@ -11,6 +11,8 @@ import { settings, updateSettings } from '../state/settings';
 import { t } from '../../i18n';
 import { UnitHead } from './unitArt';
 import { HelpStone } from './HelpStone';
+import { Film } from './Film';
+import { filmOfScene } from '../../core';
 
 const avatarOf = (): string => campaign.value?.avatar.portrait ?? 'avatar_a';
 /** Round head of a company member (consequence card). */
@@ -23,26 +25,28 @@ const autoProps = () => ({ auto: settings.value.dialogueAuto, onAuto: () => upda
 export function Scene({ id, overlay, rewards, onDone }: { id: string; overlay?: boolean; rewards?: ConsequenceLine[]; onDone: () => void }) {
   useEffect(loadHalfFigures, []);
   useEffect(loadBuiltBackgrounds, []);
-  return (
-    <Dialogue
-      data={data}
-      id={id}
-      ctx={storyContext()}
-      avatarPortrait={avatarOf()}
-      overlay={overlay}
-      rewards={rewards}
-      seen={isSceneSeen(id)}
-      halves={halfFigures.value}
-      backgrounds={builtBackgrounds.value}
-      {...autoProps()}
-      onSeen={markSceneSeen}
-      onChoose={(line, option) => chooseAnswer(id, line, option)}
-      answered={answeredIn(id)}
-      head={head}
-      onDone={onDone}
-      aside={<HelpStone anchor={`lesson.${id}`} />}
-    />
-  );
+  const props = {
+    data,
+    id,
+    ctx: storyContext(),
+    avatarPortrait: avatarOf(),
+    overlay,
+    rewards,
+    seen: isSceneSeen(id),
+    halves: halfFigures.value,
+    backgrounds: builtBackgrounds.value,
+    ...autoProps(),
+    onSeen: markSceneSeen,
+    onChoose: (line: string, option: Parameters<typeof chooseAnswer>[2]) => chooseAnswer(id, line, option),
+    answered: answeredIn(id),
+    head,
+    onDone,
+    aside: <HelpStone anchor={`lesson.${id}`} />,
+  };
+  // epic 16: a scene with a film plays on its 3D stage (not over a battle, and only with a campaign to cast it from)
+  const film = !overlay && campaign.value && settings.value.films ? filmOfScene(data.films, id) : null;
+  if (film) return <Film film={film} dialogue={props} />;
+  return <Dialogue {...props} />;
 }
 
 /** Battle scene as a speech band fixed to the screen; `only` plays just those lines (a bark, never marked seen). */

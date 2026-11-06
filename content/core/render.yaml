@@ -239,3 +239,21 @@ worldMap:
   zoomSteps: [2.2, 2.8]
   zoomMs: 260
   focusZoom: 1.12
+
+# Epic 16, Story 16.3: Kinolook der Filmszenen (nur dort, nie auf dem Brett). Nachbearbeitung je Qualitätsstufe (low: keine).
+# exposure/contrast = Bildbearbeitung mit ACES-Tonemapping; vignette 0..1; grain = Filmkorn; bloom = Glanzlichter;
+# dof = Tiefenschärfe auf das Ziel des Shots (fStop klein = weicher Hintergrund, focalLength in mm, blur 0 low – 2 high);
+# haze = Luftperspektive (lineare Nebelstrecke in Feldern ab der Kamera, Farbe des Dunstes); sun = Licht der Filme (Stärke-Faktor, Farbe, Höhe in Grad).
+film:
+  exposure: 1.0
+  contrast: 1.32
+  vignette: 0.55
+  vignetteColor: "#1a0f08"
+  grain: 9
+  chromatic: 18
+  sharpen: 0.25
+  bloom: { threshold: 0.78, weight: 0.32, kernel: 64, scale: 0.5 }
+  dof: { fStop: 1.6, focalLength: 85, blur: { mid: 1, high: 2 } }
+  haze: { near: 11, far: 48, color: "#d6c3a2" }
+  sun: { intensity: 1.15, color: "#ffd9a8", hemi: 0.75, hemiColor: "#9fb4d8" }
+  ssao: { high: true, mid: false, radius: 1.2, strength: 1.1 }
