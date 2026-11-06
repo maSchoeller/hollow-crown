@@ -86,7 +86,7 @@ Spieler spielen Akt 3 in Aurenhall und im Drachengebirge bis zum Staffelfinale, 
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Auslöser aus der Narrative (E9, Brenna mit B-Support zu Kael oder Tobin, 3-2 gespielt, Kit und Pell in der Truppe)
+**Angenommen** die Auslöser aus der Narrative (E9, Brenna mit B-Support zu Lucan oder Tobin, 3-2 gespielt, Kit und Pell in der Truppe)
 **Wenn** der Spieler sie spielt
 **Dann** gibt es bei N7–N9 je Glutfunke und Sonderbelohnung, bei N10 die Signatur Turmfalke (keinen Glutfunken); N9 liefert die Zeile für „Vhaelyra fragen“.
 

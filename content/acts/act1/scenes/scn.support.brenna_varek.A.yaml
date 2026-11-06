@@ -51,12 +51,12 @@ lines:
     speaker: [varek]
     fallback: skip
     mood: neutral
-    text: "Das ist Kaels Platz."
+    text: "Das ist Lucans Platz."
   - id: l11
     speaker: [brenna]
     fallback: skip
     mood: happy
-    text: "Kael sitzt, wo ich ihn hinschicke. Und du bist jetzt eins von meinen Küken."
+    text: "Lucan sitzt, wo ich ihn hinschicke. Und du bist jetzt eins von meinen Küken."
   - id: l12
     speaker: [varek]
     fallback: skip

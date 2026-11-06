@@ -16,7 +16,7 @@ Ein **spielbarer Vertical Slice im Browser** (Handy hoch, Tablet, PC), der den K
 - [ ] Gelände laut `06` inkl. Türen, Truhen, Hebel, Ballisten, Dörfer, Beute; Nebel des Krieges
 - [ ] Missionsziele: rout, boss, reach, seize, defend, survive, escape; Nebenziele; Verstärkungen; Trigger
 - [ ] KI-Profile aggressive, hold, guard, trigger, hunt, raider, flee, support
-- [ ] Kampfvorschau, Gefahrenzonen, Info-Sheets, Rücknahme der Bewegung, Befehl (Avatar), Sammelruf (Kael), Ansprechen/Rekrutieren
+- [ ] Kampfvorschau, Gefahrenzonen, Info-Sheets, Rücknahme der Bewegung, Befehl (Avatar), Sammelruf (Lucan), Ansprechen/Rekrutieren
 - [ ] EP, Level-up mit geglättetem Wachstum, Klassenaufstieg (6 Profiklassen + Siegel)
 
 **Inventar & Items**
@@ -83,7 +83,7 @@ Mahlzeiten/Training (V1.1), S-Rang-Gespräche, Kapitel 6–10 + Fraktionsrouten,
 4. **Inventar**: Stahlaxt anlegen → Überlast → Tempo und Doppelangriff in der Vorschau ändern sich korrekt.
 5. **Runen**: Feuer-Rune III in Eisenschwert → Angriff auf Gegner im Wald → Brennen + Wald brennt → Brand breitet sich (Seed-reproduzierbar) aus.
 6. **Skill-Meisterung**: Eisenschild bis 20 FP tragen → „Schildwall gemeistert“ → Schild ablegen, Skill im Loadout aktiv.
-7. **Tandem**: Kael und Brenna mit Rang B benachbart → Angriff zeigt Tandem in der Vorschau und führt es aus.
+7. **Tandem**: Lucan und Brenna mit Rang B benachbart → Angriff zeigt Tandem in der Vorschau und führt es aus.
 8. **Unterbrechen**: Tab mitten in Gegnerphase schließen → Fortsetzen → exakt gleicher Zustand.
 9. **Export/Import**: Spielstand am Handy exportieren → am PC importieren → identischer Stand.
 10. **Determinismus**: Replay eines aufgezeichneten Kapitels ergibt identisches Endergebnis (CI-Test).

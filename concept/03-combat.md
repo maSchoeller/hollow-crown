@@ -6,7 +6,7 @@
 
 - **Phasen**: Spielerphase → Gegnerphase → Phase „Dritte“ (Verbündete NPCs, Banditen, Monster). Eine Runde = alle Phasen.
 - In der eigenen Phase handeln Einheiten in beliebiger Reihenfolge; jede Einheit: **Bewegen (optional) + 1 Aktion**.
-- Freie Aktionen (beenden den Zug nicht, je 1× pro Zug): **Tauschen** mit benachbarter Verbündeter, **Konvoi** (neben Kael), **Waffe wechseln** (aus Beutel, vor dem Angriff).
+- Freie Aktionen (beenden den Zug nicht, je 1× pro Zug): **Tauschen** mit benachbarter Verbündeter, **Konvoi** (neben Lucan), **Waffe wechseln** (aus Beutel, vor dem Angriff).
 - **Rücknahme**: Die Bewegung kann zurückgenommen werden, bis eine Aktion bestätigt wurde – *außer* die Bewegung hat neue Information aufgedeckt (Nebel gelichtet, Trigger ausgelöst, Hinterhalt).
 - **Befehl** (Avatar, 1× pro Karte): ein bereits erschöpfter benachbarter Verbündeter wird wieder aktiv.
 
@@ -142,7 +142,7 @@ Modus beim Spielstart wählbar (`deathMode`):
 | **Standard** | Einheit ist **niedergestreckt**: bleibt als Marker auf dem Feld, blockiert es, kann nicht handeln. Jeder weitere Treffer = Tod. Rettung durch **Bergen** (Aktion eines benachbarten Verbündeten → Einheit verlässt das Feld). Ist sie bei Missionsende noch niedergestreckt, stirbt sie. Gerettete Einheiten erhalten eine **Narbe**. Eine Einheit mit **2 Narben** stirbt beim nächsten Erreichen von 0 TP sofort. |
 | **Casual** | Einheit zieht sich zurück, keine Narbe, ab nächster Mission wieder verfügbar |
 
-- **Avatar oder Kael** bei 0 TP (alle Modi) → **Niederlage**. Neustart: Rundenbeginn (Standard/Casual) oder Missionsbeginn (Klassik) – siehe Offener Punkt O1.
+- **Avatar oder Lucan** bei 0 TP (alle Modi) → **Niederlage**. Neustart: Rundenbeginn (Standard/Casual) oder Missionsbeginn (Klassik) – siehe Offener Punkt O1.
 - **Narben** (zufällig aus Tabelle, dauerhaft, bis Heiler sie entfernt):
 
 | Narbe | Effekt |

@@ -13,7 +13,7 @@ lines:
     mood: angry
     text: "Das war kein Gewitter, Küken! Mir ist die Suppe vom Herd gesprungen."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Hält die Burg? Das ist unser Haus."
   - id: l04
@@ -38,7 +38,7 @@ lines:
     mood: neutral
     text: "Und wenn das Beben nicht das letzte war? Wer sagt uns, dass die Decke hält?"
   - id: l09
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir steigen hinab. Bergen, was zu bergen ist, bevor alles einstürzt."
   - id: l10

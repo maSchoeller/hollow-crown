@@ -27,7 +27,7 @@ Ergänzt, was die abgenommenen Entwürfe noch brauchen: Gelände `roof` samt Stu
 
 ### 15.2 Neue Kampagnenfolge von Akt 1
 
-`campaign.yaml` auf `P → 1-1 → (1-2 ∥ 1-3) → 1-4 → 1-5 → 1-6 → 1-7 → 1-8`, höchstens 2 Story-Missionen offen, Nebenquests zählen nicht mit. N1 nach E2 „schützen“, N2 nach 1-5, N3 nach 1-6. Varek tritt nur noch über N2 bei, Bedingung ist das Ansprechen durch Kael.
+`campaign.yaml` auf `P → 1-1 → (1-2 ∥ 1-3) → 1-4 → 1-5 → 1-6 → 1-7 → 1-8`, höchstens 2 Story-Missionen offen, Nebenquests zählen nicht mit. N1 nach E2 „schützen“, N2 nach 1-5, N3 nach 1-6. Varek tritt nur noch über N2 bei, Bedingung ist das Ansprechen durch Lucan.
 
 **Fertig, wenn:** ein Test jede erlaubte Reihenfolge prüft und keine Regel „kein Ziel zweimal hintereinander“ verletzt; der Weg ohne Varek durch alle Szenen läuft.
 
@@ -45,7 +45,7 @@ Die Entwürfe aus `levels/s1_*.yaml` ersetzen die alten Karten unter `content/ac
 
 ### 15.6 Szenen an Welt und Folge anpassen
 
-Szenen DE und EN nach `missionsliste-s1.md` und `geografie-valmora.md`: Flucht per Lastkahn, Banden in der Ruine, Gräber-Zeile in 1-7, Saaten Kharesh, Stimme und Pakt, Halvard und Liora, Goldspur durch die Erlenbucht, Kaels Herkunft. Fehlende Ortsbilder neuer Orte. Dabei `kael` überall zu `lucan` (Texte DE und EN, IDs, Dateien, Dokumente), vor dem ersten `content:lock`.
+Szenen DE und EN nach `missionsliste-s1.md` und `geografie-valmora.md`: Flucht per Lastkahn, Banden in der Ruine, Gräber-Zeile in 1-7, Saaten Kharesh, Stimme und Pakt, Halvard und Liora, Goldspur durch die Erlenbucht, Lucans Herkunft. Fehlende Ortsbilder neuer Orte. Dabei `lucan` überall zu `lucan` (Texte DE und EN, IDs, Dateien, Dokumente), vor dem ersten `content:lock`.
 
 **Fertig, wenn:** jede Mission Vor- und Nachszene passend zum Ort hat; die Prüfung auf Ersatzsprecher grün ist.
 
@@ -67,7 +67,7 @@ Von den 113 Modellen kommt nur in den Build, was eine abgenommene Karte braucht 
 
 ### 15.9 Brettfiguren zu den neuen Porträts
 
-Grundlage ist `concept/23-art-direction/figuren-bestand.md`. Zuerst nur Lucan, Verwalter der Paktwacht und Osric Dunn mit dem vorhandenen Guthaben; danach entscheidet der Produktinhaber über die übrigen 9 Modelle und den Nachkauf von Credits. Der kostenlose Tausch `archer` auf `bandit_archer` gehört mit hinein. Je Figur: Waffe, Statur, Palette und Signaturteil wie im Porträt (Art-Log: Kael schlank statt bullig, Halvard mit weißem Haar; was davon auf dem Brett auffällt, zeigt der Abgleich). Turnaround → Tripo → Pipeline nach Art Direction §4.6.
+Grundlage ist `concept/23-art-direction/figuren-bestand.md`. Zuerst nur Lucan, Verwalter der Paktwacht und Osric Dunn mit dem vorhandenen Guthaben; danach entscheidet der Produktinhaber über die übrigen 9 Modelle und den Nachkauf von Credits. Der kostenlose Tausch `archer` auf `bandit_archer` gehört mit hinein. Je Figur: Waffe, Statur, Palette und Signaturteil wie im Porträt (Art-Log: Lucan schlank statt bullig, Halvard mit weißem Haar; was davon auf dem Brett auffällt, zeigt der Abgleich). Turnaround → Tripo → Pipeline nach Art Direction §4.6.
 
 **Fertig, wenn:** die drei Figuren den Silhouettentest im Zoom „Mittel“ besteht; jede Figur im Budget bleibt (7 000 Dreiecke, 512er-Textur, 0,5 MB); Prompts und Abnahmen unter `art/prompts/` liegen.
 

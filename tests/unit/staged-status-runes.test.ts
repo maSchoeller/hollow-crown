@@ -28,10 +28,10 @@ beforeAll(() => {
 
 const battle = (locked: BattleState['locked']): BattleState => {
   const s = beginBattle(data, campaign, 'prologue', campaign.roster.map((u) => u.id)).state;
-  const kael = getUnit(s, 'kael');
+  const lucan = getUnit(s, 'lucan');
   const foe = s.units.find((u) => u.id === 'tg2')!;
-  foe.pos = [kael.pos![0], kael.pos![1] - 1];
-  kael.equip.mainHand!.runes = ['fire_rune_2'];
+  foe.pos = [lucan.pos![0], lucan.pos![1] - 1];
+  lucan.equip.mainHand!.runes = ['fire_rune_2'];
   return { ...s, locked };
 };
 
@@ -47,21 +47,21 @@ describe('status and runes are staged by completed story missions', () => {
   });
 
   it('a status is not applied while locked, and is applied once introduced', () => {
-    const kael = (s: BattleState) => getUnit(s, 'kael');
+    const lucan = (s: BattleState) => getUnit(s, 'lucan');
     const events: GameEvent[] = [];
     const locked = battle(['status']);
-    expect(applyStatus(data, locked, kael(locked), 'wet', events)).toBe(false);
-    expect(kael(locked).status).toEqual([]);
+    expect(applyStatus(data, locked, lucan(locked), 'wet', events)).toBe(false);
+    expect(lucan(locked).status).toEqual([]);
     expect(events).toEqual([]);
     const open = battle([]);
-    expect(applyStatus(data, open, kael(open), 'wet', events)).toBe(true);
-    expect(kael(open).status.map((x) => x.id)).toEqual(['wet']);
+    expect(applyStatus(data, open, lucan(open), 'wet', events)).toBe(true);
+    expect(lucan(open).status.map((x) => x.id)).toEqual(['wet']);
   });
 
   it('the forecast offers no status chance while status is locked (elements stay on), and one when open', () => {
     const f = (locked: BattleState['locked']) => {
       const s = battle(locked);
-      return forecast(data, s, 'kael', s.units.find((u) => u.id === 'tg2')!.uid).attacker;
+      return forecast(data, s, 'lucan', s.units.find((u) => u.id === 'tg2')!.uid).attacker;
     };
     expect(f(['status']).element).toBe('fire');
     expect(f(['status']).status).toEqual([]);
@@ -70,18 +70,18 @@ describe('status and runes are staged by completed story missions', () => {
 
   it('a set rune has no effect while runes are locked: no element, no status, no affinity', () => {
     const s = battle(['runes']);
-    const w = getUnit(s, 'kael').equip.mainHand!;
+    const w = getUnit(s, 'lucan').equip.mainHand!;
     expect(weaponProfile(data, w).element).toBe('fire'); // without a battle state the rune counts (camp, shop)
     expect(weaponProfile(data, w, s).element).toBeUndefined();
-    const f = forecast(data, s, 'kael', s.units.find((u) => u.id === 'tg2')!.uid).attacker;
+    const f = forecast(data, s, 'lucan', s.units.find((u) => u.id === 'tg2')!.uid).attacker;
     expect(f.element).toBeUndefined();
     expect(f.status).toEqual([]);
     expect(weaponProfile(data, w, { locked: [] }).element).toBe('fire');
-    const kael = getUnit(s, 'kael');
-    kael.equip.body = { uid: 'vest', def: 'leather_vest', upgrade: 0, affixes: [], runes: ['wind_rune_1'] };
-    expect(armorAffinity(data, kael)).toBe('wind');
-    expect(armorAffinity(data, kael, s)).toBeUndefined();
-    expect(computeStats(data, kael, { state: s }).affinity).toBe(kael.affinity);
+    const lucan = getUnit(s, 'lucan');
+    lucan.equip.body = { uid: 'vest', def: 'leather_vest', upgrade: 0, affixes: [], runes: ['wind_rune_1'] };
+    expect(armorAffinity(data, lucan)).toBe('wind');
+    expect(armorAffinity(data, lucan, s)).toBeUndefined();
+    expect(computeStats(data, lucan, { state: s }).affinity).toBe(lucan.affinity);
   });
 
   it('a battle with the new locks replays identically', () => {

@@ -3,8 +3,8 @@
 # talks: Szene des Lagerfeuer-Gesprächs, das den Rang freischaltet (Story 9.13: alle Ränge bis zum Höchstrang; A und S öffnet erst die Burg, Epic 10).
 # Tobin × Grosk (Story 3.7) steht hier; das Paar wirkt erst, wenn Grosk beigetreten ist (Wirkung recruit { lt: grosk }). Mira × Fenn steht seit Story 9.2 hier.
 # Schwellen und Lagerfeuer-Ränge: content/core/balance.yaml supports.
-- { pair: [kael, avatar], core: true, talks: { C: scn.support.avatar_kael.C, B: scn.support.avatar_kael.B, A: scn.support.avatar_kael.A, S: scn.support.avatar_kael.S } }  # Waffenbrüder
-- { pair: [kael, brenna], core: true, talks: { C: scn.support.brenna_kael.C, B: scn.support.brenna_kael.B, A: scn.support.brenna_kael.A, S: scn.support.brenna_kael.S } }  # alte Liebe, nie ausgesprochen
+- { pair: [lucan, avatar], core: true, talks: { C: scn.support.avatar_lucan.C, B: scn.support.avatar_lucan.B, A: scn.support.avatar_lucan.A, S: scn.support.avatar_lucan.S } }  # Waffenbrüder
+- { pair: [lucan, brenna], core: true, talks: { C: scn.support.brenna_lucan.C, B: scn.support.brenna_lucan.B, A: scn.support.brenna_lucan.A, S: scn.support.brenna_lucan.S } }  # alte Liebe, nie ausgesprochen
 - { pair: [brenna, tobin], core: true, talks: { C: scn.support.brenna_tobin.C, B: scn.support.brenna_tobin.B, A: scn.support.brenna_tobin.A, S: scn.support.brenna_tobin.S } }  # Ziehmutter
 - { pair: [liora, avatar], core: true, talks: { C: scn.support.avatar_liora.C, B: scn.support.avatar_liora.B, A: scn.support.avatar_liora.A, S: scn.support.avatar_liora.S } }  # Vision und Schuld
 - { pair: [brenna, varek], talks: { C: scn.support.brenna_varek.C, B: scn.support.brenna_varek.B, A: scn.support.brenna_varek.A } }  # Misstrauen gegenüber dem Deserteur

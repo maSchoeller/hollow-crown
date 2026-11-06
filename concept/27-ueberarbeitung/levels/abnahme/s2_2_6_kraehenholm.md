@@ -15,7 +15,7 @@
 | | |
 |---|---|
 | Gegner | L 24 · N 28 · S 32, Stufe P−3 bis P−1 (hier 12–14), Leutnants P+1 bis P+2; das Blatt zählt Sable und Hauptmann beide |
-| Aufstellung | 10 von 15 Feldern, Pflicht Rhen und Kael |
+| Aufstellung | 10 von 15 Feldern, Pflicht Rhen und Lucan |
 | Nebenziele | Nell gewinnen · Dravns Gold bergen |
 | Phasen | R1–3 Landung · R4–8 Ebbe · R9–14 Flut |
 | Formatwünsche | Modelle Schiff, Boot, Kai, Flags für E7 |

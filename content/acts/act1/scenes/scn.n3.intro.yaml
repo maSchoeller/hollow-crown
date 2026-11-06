@@ -1,11 +1,11 @@
 # Nebenquest N3 „Das Erbe“ (Story 9.12), Szene vor der Karte: Tobin kehrt auf den Pachthof seines Vaters zurück, Hasks Marodeure greifen an (Tobin: Heldensagen-Pathos, verhaspelt sich; Brenna als Ziehmutter). Gedenk-Variante: scn.n3.memorial_intro.
 id: scn.n3.intro
-background: erlbach
+background: pachthof
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Abend auf dem Land. Felder, ein Fluss mit Mühle, dazwischen ein Hof. Er gehört dem Grundherrn."
+    text: "Nachmittag an der Erle, unter der Burg. Felder, eine Mühle, Tobins Pachthof. Er gehört dem Grundherrn."
   - id: l02
     speaker: [tobin]
     fallback: skip
@@ -22,7 +22,7 @@ lines:
     mood: happy
     text: "Ein Held kehrt heim, wenn die Heimat ruft! Sie ruft nicht, sie schreit eher. Das zählt auch!"
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Hasks Versprengte. Sie plündern sich durchs Land, und die Felder brennen schon."
   - id: l06
@@ -36,6 +36,6 @@ lines:
     mood: happy
     text: "Dann sagen wir den Marodeuren, dass die Pacht heute in Prügeln fällig ist. Das ist ein Zahlungsmittel."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Waffen bereit. Tobin, zu deinem Vater. Wir halten den Hof, bis sie aufgeben."

@@ -20,7 +20,7 @@ export function savedBeforeWin(nodeId: string, campaignId: string, seeds: number
   const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
   for (const seed of seeds) {
     const c = newCampaign(data, seed, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-    for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, c, id);
+    for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, c, id);
     for (const u of c.roster) while (u.level < node.expectedLevel) levelUp(data, u, c.rng);
     // every story node before this one is done (side quests and the nodes after it are not)
     const order = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id);

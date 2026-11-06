@@ -50,7 +50,7 @@ else                     → +1 wenn rng() < Wachstumsrate/100
 ## 4. Klassenaufstieg
 
 - **Siegel des Aufstiegs** (Item, selten; Kapitelbelohnung, Scharmützel-Drop, Händler ab Kap. 5): ab Stufe 10 nutzbar, im Lager oder im Kampf (Aktion).
-- Wahl zwischen 2 Profiklassen (Avatar und Kael: je 1 eigene).
+- Wahl zwischen 2 Profiklassen (Avatar und Lucan: je 1 eigene).
 - Effekt: Stufe → 1, EP → 0, Aufstiegsboni der Profiklasse, neue Waffenarten, neuer Klassen-Skill (alter bleibt nicht – gemeisterte Item-Skills bleiben), Skill-Loadout 4 → 5 Plätze.
 
 ### Klassenbaum
@@ -68,7 +68,7 @@ else                     → +1 wenn rng() < Wachstumsrate/100
 | Ritter (`knight`) | Lanze | Gepanzert | General | Großritter (beritten, gepanzert) |
 | Wyvernreiter (`wyvern_rider`) | Axt | Flieger | Wyvernlord | Drachenjäger |
 | Taktiker (`tactician`, nur Avatar) | Schwert, Elementar | Fuß | Großstratege | – |
-| Hauptmann (`captain`, nur Kael) | Schwert, Lanze | Fuß | Bannerherr | – |
+| Hauptmann (`captain`, nur Lucan) | Schwert, Lanze | Fuß | Bannerherr | – |
 
 **Fett** = in V1 implementiert. **V1 spielbar**: Söldner, Soldat, Kämpfer, Schütze, Magier, Kleriker, Taktiker, Hauptmann. **V1 nur Gegner**: Ritter, Pegasusritter, Bandit (= Kämpfer-Variante), Jungdrache (`drake_young`, Monster/Flieger/Drache). Dieb, Wyvernreiter und restliche Profiklassen: spezifiziert, Implementierung nach V1.
 
@@ -86,10 +86,10 @@ Drei Quellen:
 - Doppelte Skills wirken nicht doppelt.
 - FP-Fortschritt bleibt pro (Charakter, Skill) gespeichert, auch wenn das Item abgelegt wird.
 
-## 6. Avatar & Kael
+## 6. Avatar & Lucan
 
 - **Avatar**: Name, Geschlecht (Pronomen: sie/er/they in Texten via i18n), Porträt-Auswahl (3–4 Vorlagen), Affinität wählbar (eines der 4 Grundelemente). Klasse Taktiker. Klassen-Skill **Befehl** (1×/Karte, siehe Kampf §1). Spricht in Dialogen nur über Auswahlantworten.
-- **Kael**: Hauptmann, Lord. Klassen-Skill **Sammelruf** (Aktion, 1×/Karte: Verbündete im Radius 2 +2 Angriff/+10 Treffer bis Ende der nächsten Gegnerphase). Nur neben Kael ist Konvoi-Zugriff möglich. Pflicht für „Einnehmen“-Ziele.
+- **Lucan**: Hauptmann, Lord. Klassen-Skill **Sammelruf** (Aktion, 1×/Karte: Verbündete im Radius 2 +2 Angriff/+10 Treffer bis Ende der nächsten Gegnerphase). Nur neben Lucan ist Konvoi-Zugriff möglich. Pflicht für „Einnehmen“-Ziele.
 
 ## 7. Generische Söldner (Taverne)
 

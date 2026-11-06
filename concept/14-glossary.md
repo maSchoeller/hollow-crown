@@ -34,7 +34,7 @@ Code, Datenschlüssel und Bezeichner verwenden die **englische** Spalte.
 | Phase | phase | player / enemy / other |
 | Profiklasse | advanced class | 2. Klassenstufe |
 | Rune | rune | Verzauberung im Runen-Slot |
-| Sammelruf | rally | Kaels Fähigkeit |
+| Sammelruf | rally | Lucans Fähigkeit |
 | Scharmützel | skirmish | wiederholbare Nebenkämpfe |
 | Schutz | guard (`pairGuard`) | Partner fängt Treffer ab (ab A) |
 | Siegel des Aufstiegs | promotion seal (`promotion_seal`) | |

@@ -22,7 +22,7 @@ const scene: SceneDef = sceneSchema.parse({
   lines: [
     {
       id: 'l01',
-      speaker: ['liora', 'ysolde', 'kael'],
+      speaker: ['liora', 'ysolde', 'lucan'],
       mood: 'sad',
       text: 'Diese Zeichen.',
       memorial: { speaker: ['avatar'], text: 'Liora hätte das lesen können.' },
@@ -54,7 +54,7 @@ describe('speakerTeam', () => {
     expect(speakerTeam(data, 'liora')).toBe('other');
   });
   it('puts everyone else on the player side', () => {
-    for (const id of ['avatar', 'kael', 'brenna', 'nobody']) expect(speakerTeam(data, id)).toBe('player');
+    for (const id of ['avatar', 'lucan', 'brenna', 'nobody']) expect(speakerTeam(data, id)).toBe('player');
   });
 });
 
@@ -64,8 +64,8 @@ describe('resolveScene', () => {
     const first = (c: ConditionContext) => resolveScene(d, c, scene.id).find((l) => l.kind === 'line' && l.line === 'l01' && !l.memorial) as { speaker: string };
     expect(first(ctx()).speaker).toBe('liora');
     expect(first(ctx({ fallen: ['liora'] })).speaker).toBe('ysolde');
-    expect(first(ctx({ fallen: ['liora'], left: ['ysolde'] })).speaker).toBe('kael');
-    expect(first(ctx({ fallen: ['liora', 'ysolde', 'kael'] })).speaker).toBe('kael'); // kael and the avatar never go
+    expect(first(ctx({ fallen: ['liora'], left: ['ysolde'] })).speaker).toBe('lucan');
+    expect(first(ctx({ fallen: ['liora', 'ysolde', 'lucan'] })).speaker).toBe('lucan'); // lucan and the avatar never go
   });
 
   it('a line with fallback skip vanishes when its chain is gone', () => {
@@ -137,7 +137,7 @@ describe('scene schema', () => {
   });
   it('rejects empty chains, repeated speakers, stray keys and answers without stance', () => {
     expect(parse({ speaker: [] })).toBe(false);
-    expect(parse({ speaker: ['kael', 'kael'] })).toBe(false);
+    expect(parse({ speaker: ['lucan', 'lucan'] })).toBe(false);
     expect(parse({ side: 'left' })).toBe(false);
     const choice = (o: Record<string, unknown>) => sceneSchema.safeParse({ id: 's', lines: [{ id: 'c01', choice: [{ id: 'a', text: 'x', ...o }, { id: 'b', text: 'y', stance: 'warm' }] }] }).success;
     expect(choice({ stance: 'warm' })).toBe(true);
@@ -168,8 +168,8 @@ describe('content:check for scenes', () => {
     expect(run((_d, l) => (l.en![lineKey(scene.id, 'l02')] = long))).toContainEqual(expect.stringContaining('l02: en text longer than 110'));
     expect(run((_d, l) => (l.en![lineKey(scene.id, 'l02')] = 'x'.repeat(110)))).toEqual([]);
   });
-  it('a chain must end with avatar or kael unless the line is skippable', () => {
-    expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { speaker: string[] }).speaker = ['liora', 'ysolde']))).toContainEqual(expect.stringContaining('must end with avatar or kael'));
+  it('a chain must end with avatar or lucan unless the line is skippable', () => {
+    expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { speaker: string[] }).speaker = ['liora', 'ysolde']))).toContainEqual(expect.stringContaining('must end with avatar or lucan'));
     expect(run((d) => ((d.scenes[scene.id]!.lines[1] as { speaker: string[] }).speaker = ['brenna', 'tobin']))).toEqual([]); // fallback: skip
     expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { memorial: { speaker: string[] } }).memorial.speaker = ['tobin']))).toContainEqual(expect.stringContaining('l01.memorial: speaker chain must end'));
   });
@@ -177,15 +177,15 @@ describe('content:check for scenes', () => {
     const lineAt = (d: GameData) => d.scenes[scene.id]!.lines[0] as { speaker: string[]; memorial?: unknown };
     expect(run((d) => ((lineAt(d).speaker = ['hask']), delete lineAt(d).memorial))).toEqual([]);
     expect(run((d) => ((lineAt(d).speaker = ['hask', 'morra']), delete lineAt(d).memorial))).toEqual([]);
-    expect(run((d) => ((lineAt(d).speaker = ['hask', 'brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or kael'));
-    expect(run((d) => ((lineAt(d).speaker = ['brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or kael'));
+    expect(run((d) => ((lineAt(d).speaker = ['hask', 'brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or lucan'));
+    expect(run((d) => ((lineAt(d).speaker = ['brenna']), delete lineAt(d).memorial))).toContainEqual(expect.stringContaining('must end with avatar or lucan'));
   });
   it('a missing English text fails', () => {
     expect(run((_d, l) => delete l.en![optionKey(scene.id, 'c01', 'b')])).toContainEqual(expect.stringContaining('missing en text dlg.scn.test.one.c01.b'));
     expect(run((_d, l) => delete l.en![memorialKey(scene.id, 'l01')])).toContainEqual(expect.stringContaining('missing en text'));
   });
   it('unknown speakers, bad references and duplicate ids fail', () => {
-    expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { speaker: string[] }).speaker = ['ghost', 'kael']))).toContainEqual(expect.stringContaining('unknown speaker ghost'));
+    expect(run((d) => ((d.scenes[scene.id]!.lines[0] as { speaker: string[] }).speaker = ['ghost', 'lucan']))).toContainEqual(expect.stringContaining('unknown speaker ghost'));
     expect(run((d) => ((d.scenes[scene.id]!.lines[2] as { requires: unknown[] }).requires = [{ flag: 'ghost' }]))).toContainEqual(expect.stringContaining('undeclared flag ghost'));
     expect(run((d) => ((d.scenes[scene.id]!.lines[1] as { id: string }).id = 'l01'))).toContainEqual(expect.stringContaining('duplicate line id'));
   });

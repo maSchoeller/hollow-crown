@@ -1,5 +1,8 @@
 # temple_guard_board_turnaround – Brett-Turnaround Tempelwache der Paktgarde (generischer Gegner, Akt 1)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/turnarounds/temple_guard_board/sheet.png` (1536 × 1024, unverändertes Original); daraus `front.png`, `side.png`, `back.png` (je 1024 × 1024, `tools/art/split_turnaround.py`)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif **Plus**, Konto `maschoeller`, Denkaufwand „Medium“), gesteuert über Claude in Chrome; Chat „Create Wolf Rider Turnaround“ (https://chatgpt.com/c/6add0aab-1ac0-83ed-ac20-80742b956d95, alle drei Gegnertypen nacheinander; Vorlage `brenna_board_turnaround.md`)

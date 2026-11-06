@@ -11,7 +11,7 @@ damit Szenen, Knoten, Entscheidungen und Belohnungen ohne Code wirken.
 ## Acceptance Criteria
 
 1. **Sprache:** Die Bedingungen `flag`, `alive`, `dead`, `left`, `completed`, `storyCount`, `act`, `support`, `stance`, `met`, `chronicle`, `any`, `not` und die Wirkungen `setFlag`, `recruit`, `leave`, `grudge`, `gold`, `material`, `item`, `priceMod`, `villageAid`, `openQuest`, `stance`, `chronicle` (Architektur §5.3) sind in `src/core/campaign/conditions.ts` und `effects.ts` umgesetzt, per Zod-Schema validiert, und jede Referenz prüft `content:check`. Tests decken jede Bedingung und Wirkung ab.
-2. **Avatar und Kael:** `recruit`/`leave` für Avatar oder Kael lehnt das Schema ab.
+2. **Avatar und Lucan:** `recruit`/`leave` für Avatar oder Lucan lehnt das Schema ab.
 3. **Flag-Register:** Ein Register `content/acts/act1/flags.yaml` deklariert die Flags; ein Content-Element mit undeklariertem Flag lässt `content:check` scheitern; `CampaignState.flags` ist ein Record mit Werten statt einer Liste.
 
 ## Tasks / Subtasks
@@ -31,7 +31,7 @@ damit Szenen, Knoten, Entscheidungen und Belohnungen ohne Code wirken.
   - [x] Dialogzeilen: `if` ist eine Bedingung oder Liste; Antworten tragen `effects` statt `setFlag`; `Dialogue.tsx` wertet Bedingungen aus und schickt Wirkungen als Command `effects`
   - [x] `flags.yaml` für Akt 1 (sechs Dialog-Flags des PoC)
 - [x] T5 Tests (AC 1, 2, 3)
-  - [x] `tests/unit/story.test.ts`: jede Bedingung wahr/falsch, UND-Listen, `any`/`not`, Wirkungen im Command, Fehlercodes, Schema (ein Schlüssel, Avatar/Kael), Referenzprüfung, nicht unterstützte Schlüssel, Spielstand-Normalisierung
+  - [x] `tests/unit/story.test.ts`: jede Bedingung wahr/falsch, UND-Listen, `any`/`not`, Wirkungen im Command, Fehlercodes, Schema (ein Schlüssel, Avatar/Lucan), Referenzprüfung, nicht unterstützte Schlüssel, Spielstand-Normalisierung
 
 ## Dev Notes
 

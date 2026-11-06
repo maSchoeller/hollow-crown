@@ -15,6 +15,6 @@ lines:
     mood: neutral
     text: "Die Pforte zur Unterstadt, Küken. Die Gasse führt am Tempeltor vorbei. Ich kenne den Weg."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Zwei Wege raus. Nehmt den, der uns alle lebend hinausbringt."

@@ -151,9 +151,9 @@ describe('staged rules count story missions (GDD)', () => {
 
   it('the battle takes the locks of the moment it starts', () => {
     const c = fresh();
-    expect(beginBattle(real, c, 'prologue', ['kael']).state.locked).toContain('triangle');
+    expect(beginBattle(real, c, 'prologue', ['lucan']).state.locked).toContain('triangle');
     c.completed = ['prologue'];
-    expect(beginBattle(real, c, 'm1_2', ['kael']).state.locked).not.toContain('triangle');
+    expect(beginBattle(real, c, 'm1_2', ['lucan']).state.locked).not.toContain('triangle');
   });
 });
 
@@ -190,7 +190,7 @@ describe('class actions per role (c.rolesSeen)', () => {
 describe('commands check the graph', () => {
   it('refuse to finish a node that is not available', () => {
     const c = fresh();
-    const start = beginBattle(data, c, 'a', ['kael']).state;
+    const start = beginBattle(data, c, 'a', ['lucan']).state;
     expect(validateCampaign(data, c, { type: 'finishMission', start, commands: [] })).toBeNull();
     const done = { ...clone(c), completed: ['a'] };
     expect(validateCampaign(data, done, { type: 'finishMission', start, commands: [] })).toBe('node_unavailable');

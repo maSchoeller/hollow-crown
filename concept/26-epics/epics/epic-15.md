@@ -95,7 +95,7 @@ damit die überarbeitete Geschichte ankommt.
 **Angenommen** `missionsliste-s1.md` und `geografie-valmora.md`
 **Wenn** die Szenen DE und EN nachgezogen sind (Flucht per Lastkahn, Banden in der Ruine, Gräber-Zeile in 1-7, Saaten Kharesh, Stimme und Pakt, Halvard und Liora, Goldspur durch die Erlenbucht, Lucans Herkunft) und fehlende Ortsbilder vorliegen
 **Dann** hat jede Mission eine Vor- und Nachszene passend zum Ort, und die Prüfung auf Ersatzsprecher ist grün
-**Und** `kael` heißt überall `lucan`: Texte DE und EN, IDs, Dateinamen, Porträts und Dokumente, vor dem ersten `content:lock`.
+**Und** `lucan` heißt überall `lucan`: Texte DE und EN, IDs, Dateinamen, Porträts und Dokumente, vor dem ersten `content:lock`.
 
 ### Story 15.7: Weltkarte v5 einbinden
 

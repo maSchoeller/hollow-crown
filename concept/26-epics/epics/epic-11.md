@@ -8,7 +8,7 @@ Spieler ziehen nach dem Finale von Akt 1 in die herbstliche Eisenmark, dienen na
 
 - **Positionsstufe P** (Story 11.2): P = 11 + Zahl der erledigten Story-Missionen von Akt 2 (+ `levelBonus` des Knotens, nur 2-8). Generische Kartengegner stehen relativ dazu mit `levelOffset` +0 bis +2; Leutnants skalieren wie in Akt 1 mit der Armee. Die Spalte „Position“ nennt, an welcher Stelle eine Mission frühestens und spätestens gespielt werden kann.
 - **Ausrüstung:** Generische Gegner tragen Stahl (Akt-Tier), Leutnants auf der Karte Eisen, damit „+1 Tier je Groll“ greift.
-- **Niederlage:** Tod von Avatar oder Kael (`unit_dies`), bei 2-3 zusätzlich Odile niedergestreckt oder tot.
+- **Niederlage:** Tod von Avatar oder Lucan (`unit_dies`), bei 2-3 zusätzlich Odile niedergestreckt oder tot.
 - **Herbst:** Karten liegen unter `content/acts/act2/maps/` (`map.act = 2`), Jahreszeit und Herbst-Boden aus Story 11.7.
 - **Szenen:** IDs nach Akt-1-Schema (`scn.<knoten>.intro|outro`, `scn.<knoten>.<lt>_battle`, `scn.<knoten>.<einheit>_talk`, Besuche `scn.<knoten>.house_*`, Lektionen `scn.<knoten>.tutorial_*`). Deutsch steht in der Szenen-YAML, Englisch in `content/locales/en/act2.dialogue.yaml`; Schreib-Pipeline der Narrative (Humanizer-Durchgang, dann Englisch). Gefährtenzeilen stehen unter `requires: alive` mit Ersatzsprecher-Kette. Tafeln sind `panel: <bild>`; fehlt das Bild, steht bis zum Grafik-Task eine Platzhalter-Tafel (Text auf Glutgrund wie die Titeltafel aus 11.3).
 - **Entscheidungen:** Jede Antwort trägt eine Haltung (warm, nüchtern, trotzig) wie in Akt 1 und zeigt ihre Folgen-Karte (Mockup 05). Flags sind in `content/acts/act2/flags.yaml` deklariert (Story 11.5).
@@ -313,11 +313,11 @@ damit eine große Schlacht wie Kronfeld erst Halten und dann Flucht verlangt.
 **Akzeptanzkriterien:**
 
 **Angenommen** die Kern-Erweiterung „Ziel-Phasen“
-**Wenn** eine Karte `victory: { type: survive, turns: 8, then: { type: escape, area, minShare: 50, must: [avatar, kael] } }` hat
+**Wenn** eine Karte `victory: { type: survive, turns: 8, then: { type: escape, area, minShare: 50, must: [avatar, lucan] } }` hat
 **Dann** gilt bis zum Ende von Runde 8 das Ziel `survive`; zu Beginn von Runde 9 wechselt das Ziel auf `escape` (Event `objectiveChanged`, Rundenpille und Zieltext wechseln, die Fluchtzone erscheint markiert), ein Trigger `objective_changed` kann eine Szene starten
-**Und** in der Fluchtphase dürfen Figuren in der Fluchtzone die Aktion `escape` nutzen; Kael flieht wie bisher als Letzter (`mustStayForRest`); der Sieg fällt, sobald Avatar und Kael geflohen sind und mindestens `ceil(minShare % × n)` Figuren geflohen sind
+**Und** in der Fluchtphase dürfen Figuren in der Fluchtzone die Aktion `escape` nutzen; Lucan flieht wie bisher als Letzter (`mustStayForRest`); der Sieg fällt, sobald Avatar und Lucan geflohen sind und mindestens `ceil(minShare % × n)` Figuren geflohen sind
 **Und** `n` ist die Zahl der Eingesetzten, die zu Beginn der Fluchtphase noch leben (Produktinhaber 2026-10-31, Readiness-Runde R3); was mit Niedergestreckten geschieht, die bei Sieg auf dem Brett liegen, regelt die vorhandene `escape`-Regel des Prologs
-**Und** Schema (`schemas.ts`), Typen (`defs.ts`), `objectives.ts`, KI-Ziele (`ai.ts`), Autoplay und `content:check` kennen die Phase; Vorschau, Gefahrenzone und Zielanzeige lesen das aktive Ziel; Tests decken Wechsel, Sieg, Niederlage (Avatar oder Kael fällt) und Replay ab
+**Und** Schema (`schemas.ts`), Typen (`defs.ts`), `objectives.ts`, KI-Ziele (`ai.ts`), Autoplay und `content:check` kennen die Phase; Vorschau, Gefahrenzone und Zielanzeige lesen das aktive Ziel; Tests decken Wechsel, Sieg, Niederlage (Avatar oder Lucan fällt) und Replay ab
 **Und** eine Fixture-Karte `tests/fixtures/maps/dev_phases.yaml` (`survive` 2 Runden, dann `escape`) zeigt den Wechsel über `__hc.devMap`; Architektur §5.7 bekommt einen Absatz „Stand (Story 11.8)“.
 
 ### Story 11.9: Relikt-Stufen
@@ -352,12 +352,12 @@ damit Akt 2 mit Fliegern, Balliste und einer politischen Wahl beginnt.
 | Gegner Normal (Leicht/Schwer) | 13 = 8 Start + 5 in Wellen (Runde 2, 4, 5): Brakka + 12 Söldner (4 skirmisher, 4 brigand, 3 marksman, 1 vanguard); Leicht 11 (−2 Wellen-Söldner), Schwer 15 (+2 Söldner in Runde 5) `[ASSUMPTION]` |
 | Position und Stufe | Position 0 (fest), P = 11; Start +0, Wellen +1 |
 | Leutnant | Brakka, erste Begegnung in Akt 2; von einem ungenannten Auftraggeber bezahlt `[ASSUMPTION]` |
-| Szenen | `scn.m2_1.intro`, `scn.m2_1.brakka_battle`, `scn.m2_1.tutorial_flier`, `scn.m2_1.tutorial_ballista`, `scn.m2_1.house_wagon`, `scn.m2_1.house_watch`, `scn.m2_1.outro` mit Jorys Beitritt und Tafel 5 „Drei Angebote“ (Key Conversation 6: Seraphine, Dravn, Maelis, Kael) |
+| Szenen | `scn.m2_1.intro`, `scn.m2_1.brakka_battle`, `scn.m2_1.tutorial_flier`, `scn.m2_1.tutorial_ballista`, `scn.m2_1.house_wagon`, `scn.m2_1.house_watch`, `scn.m2_1.outro` mit Jorys Beitritt und Tafel 5 „Drei Angebote“ (Key Conversation 6: Seraphine, Dravn, Maelis, Lucan) |
 | Beitritte | Jory per Knotenwirkung `recruit: jory` nach dem Sieg |
 | Entscheidungen und Flags | keine Entscheidung; die drei Angebote sind Gespräch, keine Wahl |
 | Freischaltung | `fixed: first`; danach öffnen `m2_2`, `m2_4`, `m2_6` und N6 |
 | Heimsuchungs-Anker | 3: `defend` (Gauklerwagen), `boss` (Passhöhe), `rout` (Grenzwacht) |
-| Einsatzplätze | 7 (Pflicht: Avatar, Kael) |
+| Einsatzplätze | 7 (Pflicht: Avatar, Lucan) |
 | Gold | 2 000 `[ASSUMPTION]`; `merchantTier: 0` |
 | Nebenziele | `kill_with` Bogen (300 Gold), `visit_villages` Wagen + Wachstube (`remedy_salve`), `no_downs` (`vulnerary`) `[ASSUMPTION]` |
 | Sim-Korridor | NFR12 bei Position 0 (`--position 0`), vorläufig ohne Aufstieg |
@@ -372,7 +372,7 @@ damit Akt 2 mit Fliegern, Balliste und einer politischen Wahl beginnt.
 **Angenommen** die Truppe hält 7 Runden
 **Wenn** die Mission gewonnen ist
 **Dann** tritt Jory bei (Stufe nach 11.2), die Truppe erhält 2 000 Gold und die Nebenziel-Belohnungen
-**Und** die Nachszene zeigt Tafel 5 „Drei Angebote“ (Bild per Grafik-Task `art/prompts/tafel_drei_angebote.md`, bis dahin Platzhalter); Seraphine bietet Freispruch gegen das Siegel im Salzpass, Dravn gegen den Wyvernhorst, Maelis gegen ihr verschwundenes Gold; Kael schließt das Gespräch mit einer eigenen Zeile (Abnahme per Screenshot)
+**Und** die Nachszene zeigt Tafel 5 „Drei Angebote“ (Bild per Grafik-Task `art/prompts/tafel_drei_angebote.md`, bis dahin Platzhalter); Seraphine bietet Freispruch gegen das Siegel im Salzpass, Dravn gegen den Wyvernhorst, Maelis gegen ihr verschwundenes Gold; Lucan schließt das Gespräch mit einer eigenen Zeile (Abnahme per Screenshot)
 **Und** auf der Weltkarte öffnen 2-2, 2-4, 2-6 und N6, jeder Knoten zeigt „Stufe ≈ 12“.
 
 **Angenommen** die Söldner und die Balliste
@@ -661,11 +661,11 @@ damit Akt 2 mit „Die Krone war hohl“ endet.
 | Feld | Inhalt |
 |---|---|
 | Kartenidee und Größe | `m2_8_kronfeld`, 24×28: weites Feld mit Bannern, Verhandlungszelt in der Mitte, Start der Truppe am Zelt, Fluchtzone am Nordrand (Waldsaum), zwei Ballisten am Feldrand; Abend, `clear` |
-| Ziel | Phasen (Story 11.8): `survive` 8 Runden, dann `escape`: Sieg, wenn Avatar, Kael und mindestens die Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten geflohen sind |
+| Ziel | Phasen (Story 11.8): `survive` 8 Runden, dann `escape`: Sieg, wenn Avatar, Lucan und mindestens die Hälfte der zu Beginn der Fluchtphase (Runde 9) noch lebenden Eingesetzten geflohen sind |
 | Gegner Normal (Leicht/Schwer) | ~30 = 15 Start + je 5 in Runde 2, 4, 6; in der Fluchtphase je 3 alle 2 Runden `[ASSUMPTION]`. Garde der Prinzessin als Hauptmacht (6 knight, 5 pegasus_knight, 3 skirmisher, 3 marksman), Grenzheer (3 vanguard, 2 marksman), Kaperfahrer (2 brigand, 2 skirmisher), dazu die Leutnants; Leicht 26, Schwer 34 |
 | Position und Stufe | Position 7 (fest), P = 11 + 7 + `levelBonus: 1` = 19 `[ASSUMPTION]`; Start +0, Wellen +1, Garde-Ritter +2 (Stufe 21 über `levelCap` 20 ist erlaubt, der Deckel gilt nur für die Truppe) |
 | Leutnants | Rowena (führt), Grell, Brakka, Sable (falls nicht gewechselt) |
-| Szenen | `scn.m2_8.intro` (Freispruch-Treffen, Erlass mit dem Siegel aus 2-2), `scn.m2_8.betrayal` mit Tafel 6 „Kronfeld: der Verrat“, Leutnant-Zeilen `scn.m2_8.<lt>_battle`, `scn.m2_8.escape_open` (Beginn Runde 9), `scn.m2_8.outro` mit Tafel 7 „Die Krone war hohl“ (Key Conversation 8: Seraphine, Kael; Beats 11 und 12); Seraphine und Halvard nur in Szenen |
+| Szenen | `scn.m2_8.intro` (Freispruch-Treffen, Erlass mit dem Siegel aus 2-2), `scn.m2_8.betrayal` mit Tafel 6 „Kronfeld: der Verrat“, Leutnant-Zeilen `scn.m2_8.<lt>_battle`, `scn.m2_8.escape_open` (Beginn Runde 9), `scn.m2_8.outro` mit Tafel 7 „Die Krone war hohl“ (Key Conversation 8: Seraphine, Lucan; Beats 11 und 12); Seraphine und Halvard nur in Szenen |
 | Beitritte | keine |
 | Entscheidungen und Flags | keine Entscheidung; Varianten: `e05: return` (Odile spricht eine Zeile auf der Gegenseite), `e06: pardon` (Varek ebenso), `e08: seraphine` (Seraphine hält die Beweise gegen Maelis) |
 | Freischaltung | `fixed: finale` (nach allen anderen Story-Knoten von Akt 2) |
@@ -678,7 +678,7 @@ damit Akt 2 mit „Die Krone war hohl“ endet.
 **Akzeptanzkriterien:**
 
 **Angenommen** die Ziel-Phasen aus Story 11.8
-**Wenn** die Karte `victory: { type: survive, turns: 8, then: { type: escape, area, minShare: 50, must: [avatar, kael] } }` trägt
+**Wenn** die Karte `victory: { type: survive, turns: 8, then: { type: escape, area, minShare: 50, must: [avatar, lucan] } }` trägt
 **Dann** wechselt das Ziel zu Beginn von Runde 9, `scn.m2_8.escape_open` läuft über den Trigger `objective_changed`, und der Sieg zählt die Hälfte der dann noch lebenden Eingesetzten.
 
 **Angenommen** die Karte, der Knoten `m2_8` (`place: kronfeld`, `levelBonus: 1`) und die Szenen
@@ -755,7 +755,7 @@ damit Akt 2 neben dem Hauptstrang eine Lore-Geschichte hat.
 | Leutnant | keiner |
 | Szenen | `scn.n5.intro` (Zeile je `brandhang_burned`), `scn.n5.relic`, `scn.n5.page`, `scn.n5.outro` |
 | Auslöser | `completed m2_5`; keine Gedenk-Variante (Lore); bleibt über Akte offen |
-| Einsatzplätze | 7, keine Pflichtfigur außer Avatar und Kael |
+| Einsatzplätze | 7, keine Pflichtfigur außer Avatar und Lucan |
 | Belohnung | Glutfunke (Knotenwirkung); Relikt, Rune und Seite aus den Ziel-Truhen |
 | Gold | 1 500 `[ASSUMPTION]` |
 | Nebenziele | `turn_limit` 9 (`remedy_salve`), `no_downs` (`vulnerary`) `[ASSUMPTION]` |

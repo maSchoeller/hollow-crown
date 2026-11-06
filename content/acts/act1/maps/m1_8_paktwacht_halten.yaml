@@ -102,7 +102,7 @@ objects:
 initialEffects: []
 deploy:
   max: 14
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   # Vorburg und Burghof wie im Entwurf, dazu Schützenplätze auf den Wehrgängen
   slots: [[16, 13], [13, 13], [12, 13], [9, 13], [16, 14], [13, 14], [12, 14], [17, 14], [12, 18], [17, 18], [11, 18], [18, 18], [13, 12], [18, 12], [16, 9], [13, 9], [16, 10], [13, 10]]
 units:
@@ -188,7 +188,7 @@ objectives:
   victory: { type: defend, unit: steward, turns: 12 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: steward }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 500 } }

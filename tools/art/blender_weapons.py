@@ -8,7 +8,7 @@ group (content/render.yaml `weapons`), instead of baking a weapon into every fig
 
 Socket frame (tools/art/prepare_tripo_unit.py sockets()): origin in the fist, +Z the grip axis pointing forward in
 the rest pose, +Y up along the forearm, +X = Y × Z (the figure's left, i.e. outward for the left hand).
-Units: 1 = one board tile before figureScale, like the figures (Kael is 0.8 tall).
+Units: 1 = one board tile before figureScale, like the figures (Lucan is 0.8 tall).
 Colours: vertex colours (COLOR_0, linear) from Hollow-64, team cloth as key K2 in vertex alpha like the figures.
 Round chibi look: chunky parts, smooth round ends, few hundred triangles each.
 """

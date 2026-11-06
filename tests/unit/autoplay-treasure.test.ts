@@ -86,9 +86,9 @@ describe('autoplay on a treasure hunt', () => {
 
   it('no longer empties a full bag into the convoy to make room for a key', () => {
     const s = hunt();
-    const kael = place(data, s, 'player', 'vanguard', [1, 10], 'iron_lance');
-    kael.flags.push('convoyAccess');
-    kael.bag.push(newItem(s, 'iron_sword', data), newItem(s, 'vulnerary', data), newItem(s, 'vulnerary', data));
+    const lucan = place(data, s, 'player', 'vanguard', [1, 10], 'iron_lance');
+    lucan.flags.push('convoyAccess');
+    lucan.bag.push(newItem(s, 'iron_sword', data), newItem(s, 'vulnerary', data), newItem(s, 'vulnerary', data));
     const cmd = autoCommand(data, s);
     expect(cmd.type).not.toBe('convoy');
   });

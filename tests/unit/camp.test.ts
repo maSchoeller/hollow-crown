@@ -50,7 +50,7 @@ describe('troop helpers (story 6.1)', () => {
   });
 
   it('counts the conversations of a unit', () => {
-    expect(supportTalksOf(data, base, 'kael')).toBe(0);
+    expect(supportTalksOf(data, base, 'lucan')).toBe(0);
   });
 });
 
@@ -70,7 +70,7 @@ describe('equip list and comparison (story 6.2)', () => {
   it('the bag place lists convoy items and blocks when the bag is full', () => {
     const c = clone(base);
     c.convoy.push(newItem(c, 'vulnerary', data));
-    const u = unit(c, 'kael');
+    const u = unit(c, 'lucan');
     expect(equipCandidates(data, c, u, 'bag').find((x) => x.inst.def === 'vulnerary')!.error).toBeNull();
     while (u.bag.length < data.balance.bag.size) u.bag.push(newItem(c, 'torch', data));
     expect(equipCandidates(data, c, u, 'bag').find((x) => x.inst.def === 'vulnerary')!.error).toBe('bag_full');
@@ -80,31 +80,31 @@ describe('equip list and comparison (story 6.2)', () => {
     const c = clone(base);
     const potion = newItem(c, 'vulnerary', data);
     c.convoy.push(potion);
-    const u = unit(c, 'kael');
+    const u = unit(c, 'lucan');
     while (u.bag.length < data.balance.bag.size) u.bag.push(newItem(c, 'torch', data));
     const old = u.bag[0]!;
     expect(equipCandidates(data, c, u, 'bag', old.uid).find((x) => x.inst.uid === potion.uid)!.error).toBeNull();
-    expect(validateCampaign(data, c, { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'bag' })).toBe('bag_full');
-    const cmd = { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'bag', replace: old.uid } as const;
+    expect(validateCampaign(data, c, { type: 'equip', unit: 'lucan', uid: potion.uid, slot: 'bag' })).toBe('bag_full');
+    const cmd = { type: 'equip', unit: 'lucan', uid: potion.uid, slot: 'bag', replace: old.uid } as const;
     expect(validateCampaign(data, c, cmd)).toBeNull();
     const r = applyCampaign(data, c, cmd).campaign;
-    expect(unit(r, 'kael').bag[0]!.uid).toBe(potion.uid);
-    expect(unit(r, 'kael').bag.map((i) => i.uid)).not.toContain(old.uid);
+    expect(unit(r, 'lucan').bag[0]!.uid).toBe(potion.uid);
+    expect(unit(r, 'lucan').bag.map((i) => i.uid)).not.toContain(old.uid);
     expect(r.convoy.some((i) => i.uid === old.uid)).toBe(true);
     // replace must name an item in that bag
     expect(validateCampaign(data, c, { ...cmd, replace: 'nope' })).toBe('unknown_item');
-    expect(validateCampaign(data, c, { type: 'equip', unit: 'kael', uid: potion.uid, slot: 'mainHand', replace: old.uid })).toBe('unknown_item');
+    expect(validateCampaign(data, c, { type: 'equip', unit: 'lucan', uid: potion.uid, slot: 'mainHand', replace: old.uid })).toBe('unknown_item');
   });
 
   it('an item in the bag can be put back into the convoy', () => {
     const c = clone(base);
-    const u = unit(c, 'kael');
+    const u = unit(c, 'lucan');
     const torch = newItem(c, 'torch', data);
     u.bag.push(torch);
     const cmd = { type: 'unequip', uid: torch.uid } as const;
     expect(validateCampaign(data, c, cmd)).toBeNull();
     const r = applyCampaign(data, c, cmd).campaign;
-    expect(unit(r, 'kael').bag.some((i) => i.uid === torch.uid)).toBe(false);
+    expect(unit(r, 'lucan').bag.some((i) => i.uid === torch.uid)).toBe(false);
     expect(r.convoy.some((i) => i.uid === torch.uid)).toBe(true);
   });
 
@@ -146,7 +146,7 @@ describe('equip list and comparison (story 6.2)', () => {
   it('"For whom?": only roles that can wield the weapon', () => {
     const who = usableBy(data, base, 'iron_axe').map((u) => u.id);
     expect(who).toContain('brenna');
-    expect(who).not.toContain('kael');
+    expect(who).not.toContain('lucan');
   });
 });
 

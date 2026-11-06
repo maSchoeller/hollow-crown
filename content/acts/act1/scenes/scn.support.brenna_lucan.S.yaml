@@ -1,4 +1,4 @@
-id: scn.support.brenna_kael.S
+id: scn.support.brenna_lucan.S
 background: lager_unterwegs
 music: camp
 lines:
@@ -8,7 +8,7 @@ lines:
     mood: neutral
     text: "Du stehst da seit einer Weile. Die Axt wird nicht schärfer davon."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Ich muss dir etwas sagen."
@@ -18,7 +18,7 @@ lines:
     mood: neutral
     text: "Du sagst nie „ich muss“. Du sagst „so“ oder „nein“."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Ich hab es zwölf Jahre lang nicht gesagt. Dachte, ich hätte kein Recht."
@@ -26,9 +26,9 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: neutral
-    text: "Kael …"
+    text: "Lucan …"
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Ich liebe dich, Brenna. Das ist alles. Mehr hab ich nicht vorbereitet."
@@ -43,7 +43,7 @@ lines:
     mood: sad
     text: "Gewusst hab ich es. Gehofft auch. Das ist nicht dasselbe."
   - id: l09
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Ich weiß."
@@ -53,7 +53,7 @@ lines:
     mood: sad
     text: "Ich hab keinen Witz. Zum ersten Mal seit Jahren nicht einen."
   - id: l11
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: happy
     text: "Dann spar ihn dir auf."
@@ -63,7 +63,7 @@ lines:
     mood: happy
     text: "Wenn ich einen finde, ist er schlecht."
   - id: l13
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: happy
     text: "Er ist immer schlecht."

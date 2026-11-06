@@ -1,5 +1,8 @@
 # avatar_a_board_turnaround – Brett-Turnaround Rhen maskulin (Avatar, Taktiker)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/turnarounds/avatar_a_board/sheet.png` (Original); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Folgenachricht im Chat „Create Brenna Turnaround Sheet“ (Stil und Format der vorigen Blätter, Vorlage `brenna_board_turnaround.md`)

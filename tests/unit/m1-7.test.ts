@@ -24,7 +24,7 @@ let base: CampaignState;
 beforeAll(() => {
   data = loadContentFromDisk().data;
   base = newCampaign(data, 7, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  for (const id of ['kael', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
+  for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
   base.completed = ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6'];
 });
 
@@ -116,19 +116,19 @@ describe('the collapse', () => {
     let s = battle();
     for (const turn of [4, 5, 6, 7]) s = at(s, turn);
     for (let y = 1; y <= 18; y++) expect(ter(s, 7, y), `7,${y}`).not.toBe('rockwall');
-    const kael = s.units.find((u) => u.id === 'kael')!;
-    kael.pos = [7, 18];
-    kael.acted = false;
-    kael.moved = false;
-    expect([...reachable(data, s, kael, [7, 18], 30).keys()]).toContain('7,2');
+    const lucan = s.units.find((u) => u.id === 'lucan')!;
+    lucan.pos = [7, 18];
+    lucan.acted = false;
+    lucan.moved = false;
+    expect([...reachable(data, s, lucan, [7, 18], 30).keys()]).toContain('7,2');
   });
 
   it('leaves a tile under a figure standing, and pushes nobody', () => {
     const s = battle();
-    const kael = s.units.find((u) => u.id === 'kael')!;
-    kael.pos = [4, 2];
+    const lucan = s.units.find((u) => u.id === 'lucan')!;
+    lucan.pos = [4, 2];
     const r5 = at(s, 5);
-    expect(r5.units.find((u) => u.id === 'kael')!.pos).toEqual([4, 2]);
+    expect(r5.units.find((u) => u.id === 'lucan')!.pos).toEqual([4, 2]);
     expect(ter(r5, 4, 2)).not.toBe('rockwall');
     expect(ter(r5, 4, 3)).toBe('rockwall');
   });

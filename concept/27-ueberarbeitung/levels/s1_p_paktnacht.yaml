@@ -50,7 +50,7 @@ objects:
   - { id: c_garden, type: chest, at: [11, 1], contents: { item: { def: vulnerary } } }
 deploy:
   max: 4
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
 units:
   # Säulengang: wachen auf, sobald die Truppe herankommt
@@ -77,11 +77,11 @@ reinforcements:
       - { nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, level: 2, at: [13, 13], items: [{ def: iron_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.temple_guard.name, team: enemy, class: vanguard, level: 2, at: [12, 13], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
-  # Sieg, sobald alle Stehenden die Unterstadt erreicht haben (Gasse oder Tempeltor), Kael zuletzt
+  # Sieg, sobald alle Stehenden die Unterstadt erreicht haben (Gasse oder Tempeltor), Lucan zuletzt
   victory: { type: escape, area: { rect: [0, 17, 13, 17] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_clean, type: no_downs, reward: { item: { def: vulnerary } } }
     - { id: s_fast, type: turn_limit, turns: 10, reward: { gold: 100 } }

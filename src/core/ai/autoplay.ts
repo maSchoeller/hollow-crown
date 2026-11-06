@@ -274,7 +274,7 @@ function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], dan
 /**
  * Picks a command for the player side (simulator / tests), playing like a careful human:
  * visit villages and talk to recruitable foes, heal when low, attack the best target without walking
- * into crowds, Kael walks to reach/seize goals, protect units that must survive. Deterministic.
+ * into crowds, Lucan walks to reach/seize goals, protect units that must survive. Deterministic.
  */
 export function autoCommand(data: GameData, s: BattleState): Command {
   const map = data.maps[s.mapId]!;

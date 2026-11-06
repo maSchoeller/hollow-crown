@@ -1,5 +1,8 @@
 # villager_elder, villager_child – Zivilisten (Porträt, Brett-Turnaround, Tripo)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Zivilisten für die Klasse `civilian` (Produktinhaber 2026-10-26, Stories 9.3 und 9.6): der Dorfälteste in 1-2 „Asche über Erlbach“ und die Kinder im Hungerlager 1-5. Generische Figuren, keine Gefährten.
 
 - **Dateien:**

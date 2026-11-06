@@ -73,7 +73,7 @@ objects:
   - { id: v_stable_w, type: village, at: [12, 16], reward: { item: { def: vulnerary } } }
 deploy:
   max: 14
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[20, 13], [17, 13], [16, 13], [13, 13], [12, 13], [9, 13], [17, 14], [16, 14], [13, 14], [12, 14], [20, 17], [19, 17], [10, 17], [9, 17], [16, 9], [13, 9], [16, 10], [13, 10]]
 units:
   - { id: steward, nameKey: unit.steward.name, team: other, class: civilian, level: 1, at: [15, 5], items: [], ai: { profile: hold } }
@@ -155,7 +155,7 @@ objectives:
   victory: { type: defend, unit: steward, turns: 12 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: steward }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 500 } }

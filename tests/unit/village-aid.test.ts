@@ -56,10 +56,10 @@ describe('effect villageAid', () => {
     const c = aid(base);
     const s = beginBattle(data, c, 'm1_1', c.roster.map((r) => r.id)).state;
     expect(potionCharges(s).every((n) => n === 4)).toBe(true);
-    s.units.find((u) => u.uid === 'kael')!.bag.find((i) => i.def === 'vulnerary')!.charges = 1;
+    s.units.find((u) => u.uid === 'lucan')!.bag.find((i) => i.def === 'vulnerary')!.charges = 1;
     s.outcome = 'victory';
     const done = finishBattle(data, c, s).campaign;
-    expect(done.roster.find((r) => r.id === 'kael')!.bag.find((i) => i.def === 'vulnerary')!.charges).toBe(4);
+    expect(done.roster.find((r) => r.id === 'lucan')!.bag.find((i) => i.def === 'vulnerary')!.charges).toBe(4);
   });
 });
 

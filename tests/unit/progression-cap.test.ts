@@ -27,7 +27,7 @@ beforeAll(() => {
   base = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
 });
 
-const kael = (): BattleUnit => getUnit(beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state, 'kael');
+const lucan = (): BattleUnit => getUnit(beginBattle(data, base, firstNode(data).id, base.roster.map((r) => r.id)).state, 'lucan');
 
 describe('level cap (story 6.5)', () => {
   it('comes from the act campaign and never exceeds the top level', () => {
@@ -38,7 +38,7 @@ describe('level cap (story 6.5)', () => {
   });
 
   it('forfeits EXP at the cap and reports capped', () => {
-    const u = kael();
+    const u = lucan();
     u.level = 10;
     u.exp = 0;
     u.battleExp = 0;
@@ -51,7 +51,7 @@ describe('level cap (story 6.5)', () => {
   });
 
   it('counts EXP up to the cap and drops the rest', () => {
-    const u = kael();
+    const u = lucan();
     u.level = 9;
     u.exp = 70;
     u.battleExp = 0;
@@ -66,7 +66,7 @@ describe('level cap (story 6.5)', () => {
   });
 
   it('levels normally below the cap without capped', () => {
-    const u = kael();
+    const u = lucan();
     u.level = 3;
     u.exp = 50;
     const events: GameEvent[] = [];
@@ -77,12 +77,12 @@ describe('level cap (story 6.5)', () => {
   });
 
   it('shows the cap in the figure and the result', () => {
-    const u = kael();
+    const u = lucan();
     u.level = 10;
     expect(expProgress(data, u)).toMatchObject({ full: true, capped: true, cap: 10, act: 1 });
     u.level = 9;
     expect(expProgress(data, u)).toMatchObject({ full: false, capped: false });
-    const r = { units: [{ id: 'kael', nameKey: 'unit.kael.name', levelBefore: 9, levelAfter: 10, exp: 30, capped: true, mastered: [] }], fallen: [] };
+    const r = { units: [{ id: 'lucan', nameKey: 'unit.lucan.name', levelBefore: 9, levelAfter: 10, exp: 30, capped: true, mastered: [] }], fallen: [] };
     const v = missionResultView({ ...r, outcome: 'victory', nodeId: 'prologue', turns: 3, side: [], gold: 0, materials: {}, items: [], bounty: [], scars: [], recruited: [], supportsReady: [], granted: [] } as BattleResult);
     expect(v.figures[0]).toMatchObject({ capped: true, leveledUp: true });
   });
@@ -92,7 +92,7 @@ describe('EXP rules (GDD Figurensystem)', () => {
   const at = (u: BattleUnit, level: number): BattleUnit => ({ ...u, level });
 
   it('combat 10 + delta within 1-30', () => {
-    const u = kael();
+    const u = lucan();
     expect(combatExp(data, at(u, 5), at(u, 5), false, false)).toBe(10);
     expect(combatExp(data, at(u, 5), at(u, 8), false, false)).toBe(13);
     expect(combatExp(data, at(u, 15), at(u, 1), false, false)).toBe(1);
@@ -100,7 +100,7 @@ describe('EXP rules (GDD Figurensystem)', () => {
   });
 
   it('defeat 30 + 3 delta within 10-100, boss and lieutenant +20', () => {
-    const u = kael();
+    const u = lucan();
     expect(combatExp(data, at(u, 5), at(u, 5), true, false)).toBe(30);
     expect(combatExp(data, at(u, 5), at(u, 7), true, false)).toBe(36);
     expect(combatExp(data, at(u, 20), at(u, 1), true, false)).toBe(10);
@@ -113,7 +113,7 @@ describe('EXP rules (GDD Figurensystem)', () => {
   it('pro classes count 15 levels higher', () => {
     const pro = Object.values(data.classes).find((c) => c.tier === 'pro');
     expect(pro).toBeDefined();
-    const u = kael();
+    const u = lucan();
     const foe = { ...at(u, 5), classId: pro!.id };
     expect(effectiveLevel(data, foe) - effectiveLevel(data, at(u, 5))).toBe(data.balance.experience.advancedLevelOffset);
   });

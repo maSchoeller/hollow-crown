@@ -25,7 +25,7 @@ lines:
     mood: neutral
     text: "Zwischen den Beutestücken liegt ein winziger, glimmender Splitter. Ein Glutfunke."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Den nehmen wir mit. Wer weiß, wofür er gut ist."
   - id: l07
@@ -34,6 +34,6 @@ lines:
     mood: neutral
     text: "Ihr habt mich nicht ausgeliefert. Das vergess ich euch nicht. Und ich vergesse sonst alles, Namen, Schulden …"
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Dann behalt das eine. Weiter."

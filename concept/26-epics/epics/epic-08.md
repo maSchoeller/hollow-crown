@@ -41,7 +41,7 @@ damit Porträt und Figur zusammengehören.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** die Story-Figuren von Akt 1 (Rhen in 2 Varianten, Kael, Brenna, Tobin, Fenn, Mira, Liora, Ysolde, Varek, Grosk), die Leutnants Hask, Morra, Ulvric, Grosk und die Gegnertypen Bandit, Wolfsreiter, Söldner, Tempelwache
+**Angenommen** die Story-Figuren von Akt 1 (Rhen in 2 Varianten, Lucan, Brenna, Tobin, Fenn, Mira, Liora, Ysolde, Varek, Grosk), die Leutnants Hask, Morra, Ulvric, Grosk und die Gegnertypen Bandit, Wolfsreiter, Söldner, Tempelwache
 **Wenn** sie über Turnaround → Tripo → Pipeline entstanden sind
 **Dann** besteht jede Rolle den Silhouettentest in Zoom „Mittel“ und trägt ihr Signaturteil (Art Direction §4.3)
 **Und** Prompts und Abnahmen liegen in `art/prompts/`.
@@ -93,7 +93,7 @@ damit der erste Eindruck stimmt.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** das Titelbild (Kael und Rhen am Lagerfeuer), das Logo mit Kronen-O und die Orte von Akt 1 aus dem Moodboard
+**Angenommen** das Titelbild (Lucan und Rhen am Lagerfeuer), das Logo mit Kronen-O und die Orte von Akt 1 aus dem Moodboard
 **Wenn** sie final sind
 **Dann** zeigen Titel und Szenen sie; Hintergründe im Spiel leicht weichgezeichnet und entsättigt, Hochformat-Sicherheitszone in der Mitte
 **Und** die Logo-Schrift ist aus den Kandidaten der Art Direction gewählt und im Log vermerkt.

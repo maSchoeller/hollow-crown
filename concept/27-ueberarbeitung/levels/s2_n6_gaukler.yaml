@@ -42,7 +42,7 @@ objects:
   - { id: v_stall_e, type: village, at: [12, 9], reward: { gold: 200 } }
 deploy:
   max: 7
-  forced: [avatar, kael, jory]
+  forced: [avatar, lucan, jory]
   slots: [[5, 15], [8, 15], [9, 15], [10, 15], [5, 16], [8, 16], [9, 16], [10, 16], [8, 17], [9, 17]]
 units:
   # Vor der Bühne
@@ -85,7 +85,7 @@ objectives:
   victory: { type: escort, unit: troupe_master, area: { rect: [1, 15, 4, 17] } }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: troupe_master }
   side:
     - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }

@@ -1,4 +1,4 @@
-# Mission 1-1, Besuch im Händlerhaus [1,6]: Saat Kharesh (Missionsliste): Marktgerücht über Unruhe am Grenzposten; Kael schweigt, seine Narben stammen von dort.
+# Mission 1-1, Besuch im Händlerhaus [1,6]: Saat Kharesh (Missionsliste): Marktgerücht über Unruhe am Grenzposten; Lucan schweigt, seine Narben stammen von dort.
 id: scn.m1_1.kharesh_rumor
 background: varnhold
 lines:
@@ -15,4 +15,4 @@ lines:
     text: "Kharesh? Hauptmann, warst du da nicht im Krieg?"
   - id: l04
     mood: sad
-    text: "Kael sieht zur Seite und reibt sich die Narbe am Arm. Er sagt nichts."
+    text: "Lucan sieht zur Seite und reibt sich die Narbe am Arm. Er sagt nichts."

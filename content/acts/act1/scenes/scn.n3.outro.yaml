@@ -1,6 +1,6 @@
 # Nebenquest N3, Szene nach der Karte: Der Vater übergibt das Erbstück. Belohnung selbst: Knotenwirkung (campaign.yaml). Kein Glutfunke. Gedenk-Variante: scn.n3.memorial_outro.
 id: scn.n3.outro
-background: erlbach
+background: pachthof
 music: camp
 lines:
   - id: l01
@@ -28,6 +28,6 @@ lines:
     mood: happy
     text: "Du bist nicht allein, Küken. Das ist der Witz an einer Kompanie. Naja. Nicht der gute."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Nimm sie mit, Tobin. Und komm wieder, solange das Tor offen steht."

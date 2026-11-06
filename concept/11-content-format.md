@@ -39,7 +39,7 @@ initialEffects:                # z. B. Feuer zu Kartenbeginn
   - { effect: burning, tiles: [[5, 11], [6, 11]], turns: 3 }
 deploy:
   max: 5
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[4, 17], [5, 17], [6, 17], [7, 17], [5, 16], [6, 16]]
 units:
   - id: hask
@@ -59,8 +59,8 @@ pairs: []                      # Gegner-Paare: [{ a: e1, b: e2, rank: B }]
 reinforcements:
   - { turn: 4, phase: enemy, announce: true, units: [ { class: fighter, level: 3, at: [0, 10], items: [{ def: hand_axe }], ai: { profile: aggressive } } ] }
 objectives:
-  victory: { type: reach, unit: kael, area: { tiles: [[5, 0], [6, 0]] } }
-  defeat:  [ { type: unit_dies, unit: kael }, { type: unit_dies, unit: avatar } ]
+  victory: { type: reach, unit: lucan, area: { tiles: [[5, 0], [6, 0]] } }
+  defeat:  [ { type: unit_dies, unit: lucan }, { type: unit_dies, unit: avatar } ]
   side:
     - { id: s1, type: visit_villages, reward: { gold: 500 } }
     - { id: s2, type: turn_limit, turns: 10, reward: { item: { def: fire_rune_1 } } }
@@ -75,7 +75,7 @@ music: battle_tense            # Platzhalter-ID
 devNote: "Tutorial Feuer: Brand breitet sich von der Stadtmitte aus."
 ```
 
-**Validierung**: Zeilenanzahl/-länge = `size`; jedes Zeichen in `legend`; Koordinaten in Grenzen; Einheiten nicht auf unpassierbarem Gelände (außer Flieger); `deploy.slots ≥ max`; Ziel erreichbar (Pfadsuche für `kael` vom Deploy-Bereich); IDs referenzieren existierende Klassen/Items/Dialoge.
+**Validierung**: Zeilenanzahl/-länge = `size`; jedes Zeichen in `legend`; Koordinaten in Grenzen; Einheiten nicht auf unpassierbarem Gelände (außer Flieger); `deploy.slots ≥ max`; Ziel erreichbar (Pfadsuche für `lucan` vom Deploy-Bereich); IDs referenzieren existierende Klassen/Items/Dialoge.
 
 ## 3. Klassen (`classes.yaml`)
 
@@ -98,8 +98,8 @@ devNote: "Tutorial Feuer: Brand breitet sich von der Stadtmitte aus."
 ## 4. Charaktere (`units.yaml`)
 
 ```yaml
-- id: kael
-  nameKey: unit.kael.name
+- id: lucan
+  nameKey: unit.lucan.name
   class: captain
   level: 1
   affinity: earth
@@ -109,7 +109,7 @@ devNote: "Tutorial Feuer: Brand breitet sich von der Stadtmitte aus."
   items: [ { def: iron_sword }, { def: leather_vest }, { def: vulnerary } ]
   flags: [lord]
   supports: [avatar, brenna]
-  portrait: kael
+  portrait: lucan
 ```
 
 ## 5. Items (`items.yaml`), Skills (`skills.yaml`), Affixe/Runen/Sets
@@ -132,12 +132,12 @@ Skill-Effekte werden als **kleine, kombinierbare Effekt-Bausteine** modelliert (
 id: dlg.ch01.intro
 background: erlbach
 lines:
-  - { speaker: kael,   mood: angry,  side: left,  key: dlg.ch01.intro.001 }
+  - { speaker: lucan,   mood: angry,  side: left,  key: dlg.ch01.intro.001 }
   - { speaker: brenna, mood: neutral, side: right, key: dlg.ch01.intro.002 }
   - choice:
       - { key: dlg.ch01.intro.c1, setFlag: avatar_cautious }
       - { key: dlg.ch01.intro.c2, setFlag: avatar_bold }
-  - { speaker: kael, mood: neutral, side: left, key: dlg.ch01.intro.003, if: { flag: avatar_bold } }
+  - { speaker: lucan, mood: neutral, side: left, key: dlg.ch01.intro.003, if: { flag: avatar_bold } }
 ```
 Text liegt in `locales/de.yaml` / `locales/en.yaml` unter denselben Schlüsseln.
 

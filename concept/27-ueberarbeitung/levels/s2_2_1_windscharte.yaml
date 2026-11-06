@@ -55,7 +55,7 @@ objects:
   - { id: c_pay, type: chest, at: [17, 9], contents: { gold: 400 } }
 deploy:
   max: 9
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[7, 21], [8, 21], [11, 21], [12, 21], [7, 22], [8, 22], [9, 22], [10, 22], [11, 22], [12, 22], [9, 23], [10, 23]]
 units:
   # Ostnase: Brakka an der Balliste, Wache oben, Söldner auf der Terrasse darunter
@@ -117,7 +117,7 @@ objectives:
   victory: { type: survive, turns: 10 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_jory, type: recruit, unit: jory, reward: { gold: 200 } }
     - { id: s_pay, type: open_chests, reward: { item: { def: vulnerary } } }

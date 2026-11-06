@@ -15,7 +15,7 @@ lines:
     mood: neutral
     text: "Die Tore sind besetzt, die Wehrgänge bemannt, Hauptmann. Die Burg ist bereit."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Dann sollen sie kommen. Das hier ist unser Haus."
   - id: l04
@@ -34,14 +34,17 @@ lines:
     text: "Ulvrics Wölfe haben unsere Fährte gewittert. Die Burg blieb geheim, die Spur nicht."
   - id: l07
     mood: neutral
-    text: "Von Süden steigen Hask und Ulvric die Terrassen herauf. Über den Wachpass kommt Morra."
+    text: "Von Süden steigen Hask und Ulvric die Terrassen herauf. Morra kommt die Passstraße hinauf."
+  - id: l07a
+    mood: neutral
+    text: "Ihr Weg führt über einen Hangweg zum Westtor."
   # Grosk nur, wenn er bei E3 nicht gewechselt ist
   - id: l07b
     mood: neutral
     requires: [{ not: { flag: joined_grosk } }]
     text: "Auch Grosk ist dabei. Seine Hungernden haben sich Morra angeschlossen."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Der Verwalter bleibt im Bergfried. Ihm darf nichts geschehen, solange die Nacht dauert."
   - id: l09

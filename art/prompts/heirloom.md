@@ -1,5 +1,8 @@
 # heirloom – Erbstück (Tobins Signaturlanze, N3)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/items/heirloom.png` (Master 512 × 512, RGBA, auf 80 % gerahmt), Rohbild `art/items/source/heirloom.png` (1254 × 1254)
 - **Datum:** 2026-10-26
 - **Werkzeug:** ChatGPT (Bildgenerierung, ChatGPT Plus), gesteuert über Claude in Chrome; ein Chat, 1 Versuch

@@ -11,7 +11,7 @@ beforeAll(() => {
 
 function battle(nodeId: string): BattleState {
   const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  return createBattle(data, c, nodeId, ['avatar', 'kael']);
+  return createBattle(data, c, nodeId, ['avatar', 'lucan']);
 }
 /** Takes every foe off the board, as if all were beaten. */
 function clearFoes(s: BattleState): void {

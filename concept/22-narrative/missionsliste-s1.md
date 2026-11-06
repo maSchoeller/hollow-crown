@@ -33,7 +33,7 @@ Die Mächte haben feste Sitze auf der Karte. Aus ihnen folgt, warum Missionen do
 | Vhaelyra | Hort unter dem Urtempel im Krater | Beben in P und 1-7, 3-8 |
 | Aldric I. | Königsgruft am Eisfjord, leer | N9 |
 
-**Herkunft der Gefährten:** Kael Grenzland bei Kharesh (seine Front im Grenzkrieg, N2 blickt auf sie) · Brenna Unterstadt von Aurenhall (ihr Bruder flieht in 3-6 durchs Südtor, N8) · Mira Erlbach · Fenn Varnhold · Tobin Pachthof · Liora Glutdom · Rhen, Ysolde, Vesna Akademie · Varek, Sable Grenzheer · Jory fahrende Gaukler · Odile, Kit, Harlan Palast · Pell Stadtwache · Nell Krähenholm · Brann Brandhang · Amos Kloster Silberquell · Ilka Clan in den Kupferbergen · Mael Paktgarde.
+**Herkunft der Gefährten:** Lucan Grenzland bei Kharesh (seine Front im Grenzkrieg, N2 blickt auf sie) · Brenna Unterstadt von Aurenhall (ihr Bruder flieht in 3-6 durchs Südtor, N8) · Mira Erlbach · Fenn Varnhold · Tobin Pachthof · Liora Glutdom · Rhen, Ysolde, Vesna Akademie · Varek, Sable Grenzheer · Jory fahrende Gaukler · Odile, Kit, Harlan Palast · Pell Stadtwache · Nell Krähenholm · Brann Brandhang · Amos Kloster Silberquell · Ilka Clan in den Kupferbergen · Mael Paktgarde.
 
 ## Akt 1 „Asche“ – Grenzland um Varnhold, Spätsommer
 
@@ -43,8 +43,8 @@ Folge: **P → 1-1 → (1-2 ∥ 1-3) → 1-4 → 1-5 → 1-6 → 1-7 → 1-8**
 
 | # | Mission | Ort und Landschaft | Ziel | Größe | Eigene / Gegner | Leutnant | Beitritt | Zweck in der Story | Saat, Entscheidung |
 |---|---|---|---|---|---|---|---|---|---|
-| P | Die Paktnacht | Tempelbezirk des Glutdoms, Aurenhall; enge Höfe, Säulengänge, Nacht | escape | K 14×18 | 4 / 10 | – (Tempelwachen) | Rhen, Kael, Brenna, Tobin | Auslöser: König tot, die Truppe gilt als Mörder. Gerrit fällt, das erste Grab. Brenna kennt den Fluchtweg aus der Unterstadt | Erstes Beben, Glutleuchten über dem Tempel |
-| 1-1 | Steckbriefe | Varnhold an der Erle; Markt, Brücke als Engstelle | rout | K 16×20 | 5 / 12 | – (Morras Häscher) | Fenn | Ganz Valmora jagt die Truppe; Morra hängt in ihrer Stadt die Steckbriefe auf. Neues Ziel: Wer hat uns angeheuert? | **Saat Kharesh:** Marktgerücht über Unruhe am Grenzposten; Kael schweigt, seine Narben stammen von dort |
+| P | Die Paktnacht | Tempelbezirk des Glutdoms, Aurenhall; enge Höfe, Säulengänge, Nacht | escape | K 14×18 | 4 / 10 | – (Tempelwachen) | Rhen, Lucan, Brenna, Tobin | Auslöser: König tot, die Truppe gilt als Mörder. Gerrit fällt, das erste Grab. Brenna kennt den Fluchtweg aus der Unterstadt | Erstes Beben, Glutleuchten über dem Tempel |
+| 1-1 | Steckbriefe | Varnhold an der Erle; Markt, Brücke als Engstelle | rout | K 16×20 | 5 / 12 | – (Morras Häscher) | Fenn | Ganz Valmora jagt die Truppe; Morra hängt in ihrer Stadt die Steckbriefe auf. Neues Ziel: Wer hat uns angeheuert? | **Saat Kharesh:** Marktgerücht über Unruhe am Grenzposten; Lucan schweigt, seine Narben stammen von dort |
 | 1-2 | Asche über Erlbach | Dorf Erlbach am Bach; brennbare Felder, Furten | defend | M 20×24 | 7 / 18 | **Hask** | Mira | Hask zieht aus seinem Lager im Süden gegen das Dorf. Die Truppe rettet ein Dorf, das sie eigentlich ausliefern müsste | E1 (Mira) |
 | 1-3 | Der Fremde mit dem Siegel | Schrein am Weißdorn im Grenzwald; dichter Wald, Lichtung | reach | M 20×25 | 7 / 18 | **Morra** | Liora | Morra stellt der Truppe im Wald nach. Halvard tritt auf, bietet Hilfe und Hinweise und wird zum Mentor | Halvard kennt jeden Namen; Liora, im Glutdom aufgewachsen, als seine Ziehtochter |
 | 1-4 | Die Spur des Maklers | Wolfshügel; Felsen, Höhlen, Anhöhen | boss (Osric Dunn) | M 22×26 | 8 / 22 | **Ulvric** | Ysolde (Gefangene) | Dunn versteckt sich bei Ulvrics Wolfsbande. Der Mittelsmann stirbt, bevor er alles sagen kann; danach Rhens Geständnis | **Saat Stimme:** Dunns letzte Worte: „Er hört auf die Krone, nicht auf Menschen.“ E2 (Fenn) davor |
@@ -58,7 +58,7 @@ Folge: **P → 1-1 → (1-2 ∥ 1-3) → 1-4 → 1-5 → 1-6 → 1-7 → 1-8**
 | # | Quest | Ort und Landschaft | Ziel | Größe | Öffnet | Inhalt |
 |---|---|---|---|---|---|---|
 | N1 | Der Ring von Varnhold | Varnhold bei Nacht; Dächer, Gassen | rout | K 14×18 | E2 „schützen“ (nach 1-4) | Fenns Vergangenheit |
-| N2 | Der letzte Wachturm | Wachturm an der Grenzmauer, Grenzhügel mit Blick nach Kharesh | treasure | K 16×20 | nach 1-5 | **Beitritt Varek** (Kael spricht ihn an): Der Deserteur des Grenzheers versteckt sich an Kaels alter Front und kennt Kael und Dravn. Chronik-Seite, Relikt Schild der Paktwächter; Kael erzählt vom Grenzkrieg (**Saat Kharesh**) |
+| N2 | Der letzte Wachturm | Wachturm an der Grenzmauer, Grenzhügel mit Blick nach Kharesh | treasure | K 16×20 | nach 1-5 | **Beitritt Varek** (Lucan spricht ihn an): Der Deserteur des Grenzheers versteckt sich an Lucans alter Front und kennt Lucan und Dravn. Chronik-Seite, Relikt Schild der Paktwächter; Lucan erzählt vom Grenzkrieg (**Saat Kharesh**) |
 | N3 | Das Erbe | Tobins Pachthof; Felder, Mühle, Fluss | defend | K 16×20 | Tobin lebt, nach 1-6 | Tobins Vater, Signaturlanze |
 
 ## Akt 2 „Glut“ – Hochland der Eisenmark und Küste, Herbst
@@ -83,7 +83,7 @@ Folge: **2-1 → (2-2 ∥ 2-3) → 2-4 → (2-5 ∥ 2-6) → 2-7 → 2-8**
 | # | Quest | Ort und Landschaft | Ziel | Größe | Öffnet | Inhalt |
 |---|---|---|---|---|---|---|
 | N4 | Der Clan im Schnee | Jagdgründe in den Kupferbergen; Bergwald, früher Schnee | survive | M 20×24 | Ilka in der Truppe (nach 2-3) | Ilkas Clan, Signaturbogen |
-| N5 | Glut unter dem Berg | Bergwerk bei Kupferhall; Loren, Schächte | treasure | K 16×20 | nach 2-4 | **Beitritt Brann** (Ilka spricht ihn an, sonst Kael): Er hat sich in den Stollen versteckt und fürchtet die eigene Glut. **Saat Drachen:** Drachenknochen im Fels; Relikt Drachenglut, Erd-Rune III |
+| N5 | Glut unter dem Berg | Bergwerk bei Kupferhall; Loren, Schächte | treasure | K 16×20 | nach 2-4 | **Beitritt Brann** (Ilka spricht ihn an, sonst Lucan): Er hat sich in den Stollen versteckt und fürchtet die eigene Glut. **Saat Drachen:** Drachenknochen im Fels; Relikt Drachenglut, Erd-Rune III |
 | N6 | Die Gauklertruppe | Herbstmarkt auf der Aue-Insel in der Mündung; Brücken, Boote, Gaukelbühne, Gezeiten | escort | K 14×18 | Jory in der Truppe, öffnet mit 2-7 | Jorys alte Truppe, Signaturlaute; liegt vor dem Kontor (2-7) in derselben Mündung |
 
 ## Akt 3 „Krone“ – Aurenhall und Drachengebirge, Winter
@@ -110,7 +110,7 @@ Folge: **3-1 → (3-2 ∥ 3-3) → 3-4 → 3-5 → 3-6 → 3-7 → 3-8**
 | N7 | Verwiesen | Akademie von Aurenhall; Bibliothek, Regale als Wände | treasure | K 16×20 | nach 3-1 | Rhen (und Ysolde, falls da) an der Akademie, Taktiker-Buch |
 | N10 | Die Unterstadt | Unterstadt von Aurenhall; Kanäle, Schleusen, Diebeswege | rout | K 16×20 | nach 3-1 | **Beitritt Pell** (Kit spricht ihn an): Er schützt die Unterstadt vor der Paktgarde. Signaturbogen; Brenna kennt die Wege. Beitritt nur bis zur Krönung; nachgeholt bringt N10 nur die Belohnung |
 | N9 | Das Grab Aldrics I. | Königsgruft am Ende des Eisfjords; Grabkammern in der Klippe, Absturzkanten | survive | M 20×25 | nach 3-6 | **Saat Grab:** Der Sarkophag ist leer, nur ein Abdruck der Krone. Relikt Aldrics Paktklinge, Zeile für „Vhaelyra fragen“ |
-| N8 | Brennas Bruder | Flüchtlingslager vor der Stadt; Winterfeld, Wäldchen, Wagenburg | defend | M 20×24 | Brenna lebt, B-Support mit Kael oder Tobin, nach 3-7 | Brennas Bruder ist mit den Flüchtlingen aus der Unterstadt gekommen (3-6). Er trägt die Schuld, die Brenna auf sich nahm; Signaturaxt. Er ist keine spielbare Figur, bekommt aber ein eigenes Porträt (Grafik-Aufgabe für später) |
+| N8 | Brennas Bruder | Flüchtlingslager vor der Stadt; Winterfeld, Wäldchen, Wagenburg | defend | M 20×24 | Brenna lebt, B-Support mit Lucan oder Tobin, nach 3-7 | Brennas Bruder ist mit den Flüchtlingen aus der Unterstadt gekommen (3-6). Er trägt die Schuld, die Brenna auf sich nahm; Signaturaxt. Er ist keine spielbare Figur, bekommt aber ein eigenes Porträt (Grafik-Aufgabe für später) |
 
 N7 und N10 spielen in der Stadt. Ab 3-5 ist Aurenhall im Akt verschlossen; wer sie bis dahin nicht gespielt hat, holt sie nach dem Akt über die Weltkarte nach.
 

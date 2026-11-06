@@ -5,10 +5,10 @@ lines:
     mood: neutral
     text: "In der Truhe ruht ein Schild mit Drache und Krone. Das Metall ist matt, als schliefe es."
   - id: l02
-    speaker: [brenna, kael]
+    speaker: [brenna, lucan]
     mood: happy
     text: "Ein Schild, der schläft. Wie Tobin nach dem Frühstück."
   - id: l03
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Er ist schwer und gut gearbeitet. Wer ihn trägt, deckt die Seinen."

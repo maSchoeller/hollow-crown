@@ -1,5 +1,8 @@
 # kael_anims_flee_cheer – KI-Animationen Flucht und Jubel (Tripo, Bibliothek für alle Brettfiguren)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 > Nachgetragen bei der Abnahme 2026-10-27 (Story 8.2, AC3; Auflage `concept/23-art-direction/licensing.md` §6: je KI-Erzeugnis ein Protokoll). Quelle aller Angaben ist der Eintrag vom 2026-10-24 in `concept/23-art-direction/decision-log.md` („Animationen Flucht und Jubel in der Bibliothek“) und Story 8.2; Prompt-Wortlaut und Chat-Verlauf sind dort nicht festgehalten.
 
 - **Datei:** `art/models/source/kael_anims_flee_cheer.glb` (unverändertes Original, Git LFS; der Name endet bewusst nicht auf `_board_tripo.glb`, die Datei ist keine Figur)

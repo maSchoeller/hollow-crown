@@ -19,7 +19,7 @@ lines:
     mood: neutral
     text: "Genug! Ich bin Grosk. Der Zettel will mich. Rührt die Kinder nicht an."
   - id: o04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Du führst diese Bande. Dein Kopf ist Gold wert."
   - id: o05
@@ -32,6 +32,14 @@ lines:
     fallback: skip
     mood: sad
     text: "Wir nahmen Brot, wo es lag. Mörder sind meine Leute nicht, nur hungrig."
+  - id: o06b
+    mood: neutral
+    text: "Draußen auf der Erlenbucht ziehen Kähne von Krähenholm vorbei, tief im Wasser. Am Lager legt keiner an."
+  - id: o06c
+    speaker: [grosk]
+    fallback: skip
+    mood: angry
+    text: "Gold für die Banden. Wir sehen es vorbeifahren und bekommen nichts."
   - id: o07
     speaker: [tobin]
     fallback: skip
@@ -50,7 +58,7 @@ lines:
     mood: sad
     text: "Das Kopfgeld füllt unsere Kasse. Aber wer füllt ihre Töpfe?"
   - id: o11
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir haben den Zettel angenommen. Du entscheidest, {avatar}."
   - id: c01
@@ -63,7 +71,7 @@ lines:
         effects: [{ setFlag: { e03: spare } }, { meet: { lt: grosk } }, { recruit: { lt: grosk } }, { grudge: { lt: hask, delta: -1 } }]
       - id: bounty
         stance: sober
-        text: "„Das Kopfgeld gehört uns. Kael, fessle ihn.“"
+        text: "„Das Kopfgeld gehört uns. Lucan, fessle ihn.“"
         summary: "Grosk wird abgeführt, die Kasse füllt sich"
         effects: [{ setFlag: { e03: bounty } }, { meet: { lt: grosk } }, { gold: 600 }]
   - id: s01
@@ -90,13 +98,13 @@ lines:
     text: "Er isst für drei, Küken. Aber er steht für vier."
   - id: s06
     requires: [{ flag: { e03: spare } }]
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wer heute Brot bekommt, vergisst es nicht. Weiter."
   - id: b01
     requires: [{ flag: { e03: bounty } }]
     mood: neutral
-    text: "Kael fesselt Grosk die Hände. Die Hungernden schweigen, ein Kind drückt sein Holzpferdchen an die Brust."
+    text: "Lucan fesselt Grosk die Hände. Die Hungernden schweigen, ein Kind drückt sein Holzpferdchen an die Brust."
   - id: b02
     requires: [{ flag: { e03: bounty } }]
     speaker: [grosk]
@@ -115,6 +123,6 @@ lines:
     text: "Das war nicht heldenhaft."
   - id: b06
     requires: [{ flag: { e03: bounty } }]
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Gold ist Gold. Es schmeckt nur nach weniger, als ich dachte."

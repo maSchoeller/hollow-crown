@@ -138,7 +138,7 @@ Siegquote % / Niedergestreckte je Lauf:
 
 Korridore (Leicht ≥ 95 % und ≤ 0,5; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %): alle neun Zellen nachher im Korridor. Der Prolog ist unverändert.
 
-Zwischenstände beim Einstellen (ch01 normal/hard): Wolfsreiter `hunt` auf Kael ließ Schwer auf 26–30 % fallen (Kael-Tod = Niederlage), deshalb `aggressive`; Wolfsreiter als Schwer-Verstärkung machte ch02 Schwer 8 % (er erreicht Liora). Beides verworfen. Beobachtung: ch02 hängt über die verkettete Armee an ch01 (ch02 Schwer 27 % → 42 % allein durch die ch01-Änderungen).
+Zwischenstände beim Einstellen (ch01 normal/hard): Wolfsreiter `hunt` auf Lucan ließ Schwer auf 26–30 % fallen (Lucan-Tod = Niederlage), deshalb `aggressive`; Wolfsreiter als Schwer-Verstärkung machte ch02 Schwer 8 % (er erreicht Liora). Beides verworfen. Beobachtung: ch02 hängt über die verkettete Armee an ch01 (ch02 Schwer 27 % → 42 % allein durch die ch01-Änderungen).
 
 ### Completion Notes List
 

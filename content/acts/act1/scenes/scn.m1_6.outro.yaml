@@ -1,5 +1,5 @@
 # Mission 1-6, Szene nach dem Sieg (ein Knoten hat nur ein `post`): Tafel 4 „Das Banner auf der Ruine“, Gespräch „Eine Burg für Niemande“
-# (Kael + Truppe, Stolz/Aufbruch), Einführung des Verwalters (Ausgedachtes: siehe Story 9.7, Dev Notes) und Entscheidung E4.
+# (Lucan + Truppe, Stolz/Aufbruch), Einführung des Verwalters (Ausgedachtes: siehe Story 9.7, Dev Notes) und Entscheidung E4.
 # Die Burg als Heimat ist die Knotenwirkung `setHome: castle` an m1_6 (campaign.yaml), nicht Teil der Szene.
 # Hintergrund = Gespräch (bewohnte Burg); die Tafel zeigt die Ruine.
 id: scn.m1_6.outro
@@ -14,13 +14,16 @@ lines:
   - id: l02
     mood: neutral
     text: "Die Mauern sind schwarz vom Brand, das Tor hängt schief. Doch die Ruine steht."
+  - id: l02b
+    mood: neutral
+    text: "Hask entkommt durch die Ostpforte. Seine Leute ziehen mit ihm nach Süden, in sein altes Lager."
   - id: l03
     mood: happy
     text: "Zum ersten Mal seit der Paktnacht hat die Truppe ein Dach, das ihr gehört."
   # Gespräch „Eine Burg für Niemande“
   - id: l04
     panel: none
-    speaker: [kael]
+    speaker: [lucan]
     mood: happy
     text: "Mauern, Dach, Tor. Und keiner, der uns hier vertreibt. Das ist jetzt unser Haus."
   - id: l05
@@ -55,7 +58,7 @@ lines:
   # der Verwalter
   - id: l11
     mood: neutral
-    text: "Ein grauhaariger Mann tritt aus dem Schatten des Tors und verneigt sich vor Kael."
+    text: "Ein grauhaariger Mann tritt aus dem Schatten des Tors und verneigt sich vor Lucan."
   - id: l12
     speaker: [paktwacht_steward]
     fallback: skip
@@ -67,7 +70,7 @@ lines:
     mood: sad
     text: "Hask sperrte mich in den Keller, doch die Schlüssel bekam er nicht. Nun gehören sie Euch."
   - id: l14
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Behalt sie. Du kennst die Mauern, wir nicht."
   - id: l15
@@ -87,7 +90,7 @@ lines:
     mood: neutral
     text: "Je mehr Leute wissen, wo wir wohnen, desto mehr Besuch kriegen wir. Meist mit Fackeln."
   - id: l18
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Es ist deine Burg, {avatar}. Du entscheidest."
   - id: l19

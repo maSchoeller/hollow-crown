@@ -68,7 +68,7 @@ describe('map m1_4_wolfslager', () => {
 
 describe('the rockfall', () => {
   const beside = (s: BattleState) => {
-    const u = s.units.find((x) => x.id === 'kael')!;
+    const u = s.units.find((x) => x.id === 'lucan')!;
     u.pos = [18, 11];
     u.acted = false;
     u.moved = false;

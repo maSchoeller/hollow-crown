@@ -7,14 +7,14 @@ lines:
     mood: sad
     text: "Varnhold bei Nacht. Nebel in den Gassen. Fenn kannte hier jeden Stein. Er ist nicht mehr bei uns."
   - id: l02
-    speaker: [mira, brenna, kael]
+    speaker: [mira, brenna, lucan]
     mood: sad
     text: "Er hat einmal erzählt, wo der Ring seinen Dolch hielt. Oben im Nest, auf den Dächern im Nordosten."
   - id: l03
-    speaker: [brenna, kael]
+    speaker: [brenna, lucan]
     mood: sad
     text: "Elster hieß er. Der Ring nahm ihn Fenn ab, als sie ihn rauswarfen. Er hat nie aufgehört, davon zu reden."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Dann holen wir ihn heim. Waffen bereit. Wir bleiben beisammen."

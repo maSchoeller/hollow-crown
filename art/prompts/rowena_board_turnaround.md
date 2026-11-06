@@ -1,5 +1,8 @@
 # rowena_board_turnaround – Brett-Turnaround Rowena (Leutnant)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/turnarounds/rowena_board/sheet.png` (Original); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; eigener Chat „Create Rowena Turnaround Sheet“ (Vorlage `brenna_board_turnaround.md`)

@@ -1,7 +1,7 @@
 """Load the Hollow Crown sprite pipeline into one namespace inside Blender.
 
     ns = {}; exec(open(r"<repo>/tools/art/blender_load.py").read(), ns)
-    ns["build_units"](["kael"]); ns["render_unit"]("kael", r"<raw_dir>")
+    ns["build_units"](["lucan"]); ns["render_unit"]("lucan", r"<raw_dir>")
 """
 import os
 

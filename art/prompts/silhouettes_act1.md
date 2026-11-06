@@ -1,5 +1,8 @@
 # silhouettes_act1 – Silhouettentest der Brettfiguren von Akt 1 (Story 8.3)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Art Direction §4.2: „Jede Rolle muss schwarz gefüllt in Zoom ‚Mittel‘ unterscheidbar sein“; §4.3: Signaturteile der Story-Figuren.
 
 - **Werkzeug:** `pnpm art:silhouettes` (`tools/art/silhouettes.py`, Blender 5.2), kein KI-Dienst

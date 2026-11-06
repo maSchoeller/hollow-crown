@@ -11,7 +11,7 @@ damit auch der Jüngste eine eigene Geschichte bekommt.
 ## Acceptance Criteria
 
 1. **Knoten:** `{ id: n3, kind: side, map: n3_erbe, titleKey: node.n3.title, pre: scn.n3.intro, post: scn.n3.outro, requires: [{ completed: m1_6 }, { any: [{ alive: tobin }, { dead: tobin }] }], memorialIf: [{ dead: tobin }], memorial: { pre: scn.n3.memorial_intro, post: scn.n3.memorial_outro } }` (Tobin in der Truppe oder gefallen; gegangen = kein N3), Ort `n3` mit `node: n3`. Bleibt über Akte offen.
-2. **Karte:** `n3_erbe.yaml` als Variante von Erlbach spielbar, Tobin Pflichtfigur (`deploy.forced: [avatar, kael, tobin]`, Produktinhaber 2026-10-26; fehlt er, weil gefallen, greift die bestehende Filterung `forced ∩ roster`). Platzhalter-Gold ersetzt.
+2. **Karte:** `n3_erbe.yaml` als Variante von Erlbach spielbar, Tobin Pflichtfigur (`deploy.forced: [avatar, lucan, tobin]`, Produktinhaber 2026-10-26; fehlt er, weil gefallen, greift die bestehende Filterung `forced ∩ roster`). Platzhalter-Gold ersetzt.
 3. **Belohnung:** Signaturlanze **Erbstück** (`heirloom`, items.md §6.2: Werte wie `iron_lance`, legendär, Preis 1 000 [C], Effekt: +Mt, solange ein Verbündeter in Reichweite 2 niedergestreckt ist – Regelcode im Kern, über dieselbe Formel wie die Kampfvorschau, Tests), **kein Glutfunke**. Auch in der Gedenk-Variante (Waffe in den Konvoi). Item-Bild `art/items/heirloom.png` per ChatGPT (Prompt und Abnahme in `art/prompts/`).
 4. **Szenen DE + EN** inkl. Gedenk-Varianten (Tobin gefallen: Brenna als Ziehmutter, Ersatzsprecher-Kette), `content:check` grün, `pnpm sim n3_erbe --runs 50` im Korridor, Screenshot.
 
@@ -38,7 +38,7 @@ Claude Sonnet 5.5
 
 ### Completion Notes List
 
-- Knoten `n3` (`kind: side`, `expectedLevel: 6` [C], Ort `erlbach`, Anforderung `completed: m1_6` und Tobin lebt oder ist gefallen, `memorialIf: { dead: tobin }`). Erbstück als Knotenwirkung in den Konvoi, auch in der Gedenk-Variante, kein Glutfunke. Die Karte hat `deploy.forced: [avatar, kael, tobin]`; ein gefallener Tobin wird von der bestehenden Aufstellungsfilterung entfernt (getestet).
+- Knoten `n3` (`kind: side`, `expectedLevel: 6` [C], Ort `erlbach`, Anforderung `completed: m1_6` und Tobin lebt oder ist gefallen, `memorialIf: { dead: tobin }`). Erbstück als Knotenwirkung in den Konvoi, auch in der Gedenk-Variante, kein Glutfunke. Die Karte hat `deploy.forced: [avatar, lucan, tobin]`; ein gefallener Tobin wird von der bestehenden Aufstellungsfilterung entfernt (getestet).
 - Regelcode: Item-Skill `young_heroes` (`allyDownedWithin: 2`, `damageBonus: 3` [C]) über `skillTotals`, also dieselbe Formel für Vorschau, Auflösung und Gegenschlag (getestet).
 - Szenen DE + EN: intro, outro, memorial_intro, memorial_outro (Brenna als Ziehmutter, kein Humor), home (Elternhaus, Dorfbelohnung `dialogue`). Der Vater bleibt abwesend, sein Verbleib ist offen [C].
 - Nebenquests verfallen nie (getestet).

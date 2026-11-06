@@ -184,7 +184,7 @@ Jede Rolle bzw. jeder Gegnertyp hat ein **gemeinsames Skelett mit gemeinsamen An
 | Späher | geduckt, Kapuze, viele Taschen | Dolch, leichter Bogen |
 | Spielmann | Federhut bzw. Mütze, Instrument auf dem Rücken | Dolch, Laute |
 | Taktiker (Rhen) | langer Mantel, Kartentasche | Schwert, Zauberbuch |
-| Hauptmann (Kael) | Umhang, großes Schulterstück links | Schwert, Lanze |
+| Hauptmann (Lucan) | Umhang, großes Schulterstück links | Schwert, Lanze |
 | Gegnertypen | Bandit (Kopftuch, Fellweste), Wolfsreiter (in Akt 1 zu Fuß mit Wolfsfell; Reittier erst nach dem MVP), Ritter (Vollrüstung, eckiger Schild), Pegasus- und Wyvernreiter (Reittier, großer Rahmen), Glut-Fanatiker (Kapuzenrobe, Flammenkrone), Untote (zerrissenes Tuch, Lichtaugen), Drache (eigenes Modell) | |
 
 - **Profi-Wege** bekommen auf dem Rumpf **ein** neues Großteil (z. B. Bollwerk: Turmschild; Scharfschütze: Langbogen + Federhut; Bischof: Mitra).
@@ -197,7 +197,7 @@ Das eine Teil, das auf dem Brett und im Porträt sofort erkennbar ist. Abgeleite
 
 | Figur | Signaturteil | Figur | Signaturteil |
 |---|---|---|---|
-| Kael | großes Schulterstück links, Zopf | Rhen | Kartentasche, Glutschal |
+| Lucan | großes Schulterstück links, Zopf | Rhen | Kartentasche, Glutschal |
 | Brenna | dicker roter Zopf, Doppelaxt | Tobin | zu großer Helm |
 | Mira | Seitenzopf mit Feder | Fenn | Kapuze mit Pflaster auf der Nase |
 | Liora | langes silberweißes Haar, Kristallstab | Varek | lange Strähne übers Auge, roter Mantel |
@@ -228,18 +228,18 @@ FE-Set aus GA8/D13 auf jedem Rumpf: Idle (atmen, gelegentlich blinzeln), Laufen,
 
 ### 4.6 Produktion (Bild-zu-3D) [A]
 
-Erprobt an Kael (Free-Tarif-Probe, Dateien am 2026-10-24 aus dem Repo entfernt; Ergebnis im Entscheidungslog).
+Erprobt an Lucan (Free-Tarif-Probe, Dateien am 2026-10-24 aus dem Repo entfernt; Ergebnis im Entscheidungslog).
 
 Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewusst vereinfachte Fassung derselben Figur. [A]
 
 1. **Porträt-Turnaround** per ChatGPT aus dem freigegebenen Porträt: vorn, Seite, hinten, A-Pose, gleiche Größe, grauer Grund (`art/turnarounds/<id>/`, Prompt in `art/prompts/<id>_turnaround.md`).
-2. **Brett-Turnaround** per ChatGPT aus dem Porträt-Turnaround, stark vereinfacht: große Farbflächen, glatte Rüstung ohne Dellen, wenige große Haarsträhnen, höchstens zwei Gürtel, eine Schattenstufe, etwas dickere Outline; **ohne Waffe und ohne Scheide**; das **Teamtuch flach in Magenta (#FF00FF)** als Schlüsselfarbe (`art/turnarounds/<id>_board/`, Prompt-Vorlage `art/prompts/kael_board_turnaround.md`). Die Seitenansicht geht in das Tripo-Feld, dessen Seite sie geometrisch zeigt (Blick nach rechts = rechte Seite).
-3. **Tripo** (Pro, Datenschutz „Privat“): Smart-Mesh P2.0 aus Multi-View, Quad, 3 000 Polygone, dann „Textur“. Ergebnis Kael: 3 772 Quads.
-4. **Rig** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett, Export GLB mit Skelett (ohne Animationen) nach `art/models/source/<id>_board_tripo.glb`. Die Animationen kommen aus der **Bibliothek** (Kaels alter Export `art/models/source/kael_anims_base.glb`, seit Story 15.9 getrennt von Lucans Figur): idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen (Presets), attack = KI „one-handed sword slash“, attack_cast = Preset Zauberspruch, attack_shoot / attack_chop / attack_thrust = KI-Animationen Bogenschuss, Axthieb, Speerstoß, flee (Flucht, Leutnants) und cheer (Jubel, Sieg und Stufenaufstieg) = KI-Animationen „Fearful Retreat Pose“ und „Happy Victory Cheer“ in der zweiten Bibliotheksdatei `kael_anims_flee_cheer.glb`. Neue Bibliotheks-Animationen entstehen an Kaels Rig und werden „an Ort und Stelle“ mit exportiert.
+2. **Brett-Turnaround** per ChatGPT aus dem Porträt-Turnaround, stark vereinfacht: große Farbflächen, glatte Rüstung ohne Dellen, wenige große Haarsträhnen, höchstens zwei Gürtel, eine Schattenstufe, etwas dickere Outline; **ohne Waffe und ohne Scheide**; das **Teamtuch flach in Magenta (#FF00FF)** als Schlüsselfarbe (`art/turnarounds/<id>_board/`, Prompt-Vorlage `art/prompts/lucan_anims_base_turnaround.md`). Die Seitenansicht geht in das Tripo-Feld, dessen Seite sie geometrisch zeigt (Blick nach rechts = rechte Seite).
+3. **Tripo** (Pro, Datenschutz „Privat“): Smart-Mesh P2.0 aus Multi-View, Quad, 3 000 Polygone, dann „Textur“. Ergebnis Lucan: 3 772 Quads.
+4. **Rig** in Tripo: Auto-Rig „Humanoid“ mit Mixamo-Skelett, Export GLB mit Skelett (ohne Animationen) nach `art/models/source/<id>_board_tripo.glb`. Die Animationen kommen aus der **Bibliothek** (Lucans alter Export `art/models/source/lucan_anims_base.glb`, seit Story 15.9 getrennt von Lucans Figur): idle = Inaktiv, walk = Gehen, hit = Körpertreffer_01, downed = fallen (Presets), attack = KI „one-handed sword slash“, attack_cast = Preset Zauberspruch, attack_shoot / attack_chop / attack_thrust = KI-Animationen Bogenschuss, Axthieb, Speerstoß, flee (Flucht, Leutnants) und cheer (Jubel, Sieg und Stufenaufstieg) = KI-Animationen „Fearful Retreat Pose“ und „Happy Victory Cheer“ in der zweiten Bibliotheksdatei `lucan_anims_flee_cheer.glb`. Neue Bibliotheks-Animationen entstehen an Lucans Rig und werden „an Ort und Stelle“ mit exportiert.
 5. **Aufbereitung** mit `pnpm art:tripo` (`tools/art/tripo_units.py` → `prepare_tripo_unit.py`, braucht Blender): Füße auf den Boden, Blick nach Süden, Höhe wie die bisherigen Figuren, Ränder der UV-Inseln auffüllen, nur Grundfarbe; Magenta → Teamtuch (Textur neutral, Vertex-Alpha mit Team-Schlüssel K2); fehlende Animationen ruheposen-relativ aus der Bibliothek übertragen, mit 12 fps und nur Rotationen neu abtasten, Angriffe und Treffer auf 0,5 s takten (Aufprall bei 0,25 s); Hand-Sockel `socket_r`/`socket_l`. Ergebnis `art/models/units/<id>.glb`, das `pnpm art:build` wie die Blender-Figuren übernimmt.
 6. **Waffen** (GA9): eigene kleine Modelle je Waffengruppe (`tools/art/blender_weapons.py` → `art/models/weapons/`), zur Laufzeit an den Hand-Sockel gehängt; Zuordnung Waffengruppe → Modell, Hand, Angriffsbewegung und Ruhehaltung in `content/render.yaml` `gear`. **Offen:** Reittiere und Vierbeiner; eigene Ruhehaltung des Bogens; Kapitelpakete fürs Größenbudget.
 
-**Budget je Brettfigur:** etwa **6 000–7 000 Dreiecke**, Textur **512 × 512** (nur Grundfarbe), **≤ 0,5 MB Transfergröße** (gzip, wie der Build-Check). Auf dem Handy ist eine Figur in der Zoomstufe „Nah“ nur rund 120 Gerätepixel hoch; mehr Auflösung ist nicht sichtbar. Große Einheiten (Reittiere, Drachen) dürfen das Doppelte haben. Kael: 6 385 Dreiecke, 0,91 MB roh, ≈ 0,4 MB übertragen; Lucan (seit Story 15.9 unter `kael`): 6 179 Dreiecke, 0,28 MB gz. [A]
+**Budget je Brettfigur:** etwa **6 000–7 000 Dreiecke**, Textur **512 × 512** (nur Grundfarbe), **≤ 0,5 MB Transfergröße** (gzip, wie der Build-Check). Auf dem Handy ist eine Figur in der Zoomstufe „Nah“ nur rund 120 Gerätepixel hoch; mehr Auflösung ist nicht sichtbar. Große Einheiten (Reittiere, Drachen) dürfen das Doppelte haben. Lucan: 6 385 Dreiecke, 0,91 MB roh, ≈ 0,4 MB übertragen; Lucan (seit Story 15.9 unter `lucan`): 6 179 Dreiecke, 0,28 MB gz. [A]
 
 **Credits:** sparsam (Decision Log). Je Figur Smart-Mesh (100, gleich ob 1 oder 4 Varianten, also immer 4), Textur (20) und Auto-Rig (20) = **140**; Presets kosten nichts, KI-Animationen (20) nur für die Bibliothek; Requisiten und Umgebung in Blender. Stand nach Brenna: 5 805 Credits.
 
@@ -272,7 +272,7 @@ Bei Krit, Tandem, Skill-Auslösung und Leutnant-Auftritt gleitet ein diagonales 
 ### 5.5 Key Art, Logo, App-Icon
 
 - **Logo:** „HOLLOW CROWN“ in einer freundlichen, weicheren Serifenschrift (Schrift: **Fraunces**, SIL OFL, gewählt am 2026-10-25 nach Vergleich mit Alegreya SC); das O von HOLLOW ist die gesprungene hohle Goldkrone mit Glut aus dem App-Icon (U22). [A]
-- **Titelbild:** Kael und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
+- **Titelbild:** Lucan und Rhen am Lagerfeuer, dahinter die Paktwacht und am Himmel die Drachensilhouette; Logo-Zone oben, Hochformat.
 - **Akt-Karten:** je Akt ein Vollbild zum Aktbeginn im Stil der Illustrationstafeln.
 
 ### 5.6 Item-Icons
@@ -306,7 +306,7 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 | Legendär | Gold `#D9A931` | 3 Rauten; Signatur zusätzlich mit Namensbanner des Besitzers |
 | Relikt | Gold `#D9A931` mit Glutorange `#E8743B` | hohle Krone statt Rauten |
 
-**Erzeugung:** ChatGPT über Claude in Chrome, parallel in mehreren Tabs; Referenzen sind nur die aktuellen Charakterbilder aus `art/mockups/characters-s1/` (Kael, Brenna, Mira, Tobin), bei Unikaten zusätzlich das Bild des Besitzers; nicht das Stil-Mockup und nicht `art/portraits/`. Zuerst 10 Testbilder (`art/prompts/items_test.md`). Die abgenommenen Tests werden zur Stilreferenz für alle weiteren. Ob danach Einzelbilder oder 3×3-Bögen entstehen, entscheidet der Test. Prompt und Abnahme je Durchgang in `art/prompts/items_<batch>.md`.
+**Erzeugung:** ChatGPT über Claude in Chrome, parallel in mehreren Tabs; Referenzen sind nur die aktuellen Charakterbilder aus `art/mockups/characters-s1/` (Lucan, Brenna, Mira, Tobin), bei Unikaten zusätzlich das Bild des Besitzers; nicht das Stil-Mockup und nicht `art/portraits/`. Zuerst 10 Testbilder (`art/prompts/items_test.md`). Die abgenommenen Tests werden zur Stilreferenz für alle weiteren. Ob danach Einzelbilder oder 3×3-Bögen entstehen, entscheidet der Test. Prompt und Abnahme je Durchgang in `art/prompts/items_<batch>.md`.
 
 ## 6. Weltkarte [A]
 
@@ -420,7 +420,7 @@ Startschätzung zur Planung der Epics. [C]
 - **Casting** der neuen Figuren in `17-audio.md` (Stimmbilder für 20 Gefährten und 12 Leutnants).
 - **Figuren:** Rig, Animationen und Teamtuch-Maske für Tripo-Figuren (§4.6); Feinabgleich von Licht, Toon-Look und Outline mit der Karte.
 - **Seraphine als Kämpferin (offen, Produktinhaber 2026-11-02):** ob sie später spielbar wird und welche Klasse bzw. Waffe sie dann hat, ist inhaltlich zu klären; bis dahin hält ihr Porträt (2026-11-02) keine Waffe. Maelis bleibt Nichtkämpferin.
-- **Datenschutz:** Kaels erstes HD-Modell liegt öffentlich in der Tripo-Galerie (kostenloser Tarif); ggf. dort auf privat stellen oder löschen.
+- **Datenschutz:** Lucans erstes HD-Modell liegt öffentlich in der Tripo-Galerie (kostenloser Tarif); ggf. dort auf privat stellen oder löschen.
 
 ## 14. Verhältnis zum Altbestand
 
