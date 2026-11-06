@@ -273,5 +273,5 @@ development_status:
   15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen
   15-11-leistung-grosser-karten: review  # Leistung großer Karten
   15-13-figuren-auf-treppen: done  # Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
-  15-14-brettfigur-dorfaeltester: review  # Brettfigur Dorfältester (Folge zu 15.9)
+  15-14-brettfigur-dorfaeltester: done  # Brettfigur Dorfältester (Folge zu 15.9)
   epic-15-retrospective: optional

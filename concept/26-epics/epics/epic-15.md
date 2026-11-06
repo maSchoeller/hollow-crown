@@ -187,7 +187,7 @@ Beschlossen vom Produktinhaber am 2026-11-06: die nach Story 15.9 übrigen 205 T
 
 **Akzeptanzkriterien:**
 
-**Angenommen** das Porträt `villager_elder` v2.5 (Strohhut, Kinnbärtchen, normal gebaut) und mindestens 140 Tripo-Credits im bezahlten Tarif
+**Angenommen** das Porträt `villager_elder` v2.5 (Strohhut, Kinnbärtchen, normal gebaut) und mindestens 140 Tripo-Credits aus dem bezahlten Tarif (Konto zeigt Free; Lauf vom Produktinhaber am 2026-11-06 freigegeben)
 **Wenn** der Dorfälteste neu entsteht (Turnaround → Tripo mit Datenschutz „Privat“ → Pipeline nach Art Direction §4.6)
 **Dann** besteht die Figur den Silhouettentest im Zoom „Mittel“ und bleibt im Budget (7 000 Dreiecke, 512er-Textur, 0,5 MB)
 **Und** sie steht auf allen Karten, auf denen der Dorfälteste vorkommt; Prompts und Abnahme liegen unter `art/prompts/`, der neue Credit-Stand im Decision-Log der Art Direction.

@@ -1,6 +1,6 @@
 # Figuren-Bestand Akt 1 und Akt 2
 
-Stand 2026-11-05. Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt. Die Beschlüsse des Produktinhabers vom selben Tag sind eingearbeitet.
+Stand 2026-11-05, Credits und Schritt 1a/1b nachgetragen am 2026-11-06 (Stories 15.9, 15.14). Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt. Die Beschlüsse des Produktinhabers vom selben Tag sind eingearbeitet.
 
 ## Kurzfassung
 
@@ -20,7 +20,7 @@ Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Fi
 |---|---|---|---|---|
 | 0 | **Bibel** für Akt 1 und 2 schreiben, Figurenblätter von Lucan, Rowena und Brakka berichtigen | 1 Dokument | 0 | Jeder neue Turnaround braucht sie; sonst wird zweimal gebaut |
 | 0 | ✅ `sprite: archer` auf `bandit_archer` umstellen | 9 Stellen auf 4 Karten, dazu der Klassen-Rückfall von Schütze und Scharfschütze | 0 | Erledigt in Story 15.9; Kastenfigur entfernt |
-| **1a** | ✅ **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn** | **3** | **420** | Erledigt in Story 15.9 (2026-11-06). Jetzt Sichtung und neue Entscheidung |
+| **1a** | ✅ **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn** | **3** | **420** | Erledigt in Story 15.9 (2026-11-06) |
 | 1b | ✅ **Dorfältester** | 1 | 140 | Erledigt in Story 15.14 (2026-11-06) |
 | 2 | **Brenna**, **Mira**, **Varek**, **Ysolde** | 4 | 560 | Signaturteil fehlt oder wird vom Teamtuch überdeckt |
 | 3 | **Rowena**, **Brann**, neu: **Ritter der Lanze**, **Kaperer** | 4 | 560 | Vor dem Bau von Akt 2 |
@@ -121,7 +121,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 | Tempelwache (`temple_guard`) | 1 | ja | ja | ✅ | 11 Stellen |
 | Schütze (`archer`) | 1 (`class_archer`) | ja | – | ✅ | seit Story 15.9 überall `bandit_archer`; Kastenfigur entfernt |
 
-**Ohne Modell, keines nötig:** Gerrit (Entscheidung 2026-10-24), Aldric I. Beide stehen auf keiner Karte. Halvard steht in Akt 1 ebenfalls auf keiner Karte, ist aber Boss von 3-8 und braucht für Akt 3 ein Modell.
+**Ohne Modell, keines nötig:** Gerrit (Entscheidung 2026-10-24), Aldric I. Beide stehen auf keiner Karte. Halvard steht in 1-3 mit der Platzhalterfigur `villager_elder` (seit Story 15.14 Strohhut-Bauer, passt nicht zum Bischof; ebenso Tobins Vater in N3), ist Boss von 3-8 und braucht für Akt 3 ein Modell.
 
 **Altbestand aus Blender ohne Einsatz auf Akt-1-Karten:** `fighter`, `mage`, `avatar`. Ein `class_cleric`-Porträt ist da, ein Modell nicht.
 
@@ -157,7 +157,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 
 **Stand 2026-11-06 (Story 15.9):** **205 Credits.** Schritt 1a hat 420 verbraucht (3 × 140, kein zweiter Lauf). Das Konto steht auf Free, die Credits stammen laut Produktinhaber aus dem bezahlten Tarif; er hat die Läufe am 2026-11-06 freigegeben (Decision-Log der Art Direction). Datenschutz je Lauf „Privat“.
 
-Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Die frühere Rechnung (705 am 2026-10-24 minus die beiden Dorffiguren, rund 425) ist durch die Ablesung überholt: Mit den restlichen 205 Credits ist noch eine Figur möglich (Schritt 1b, Dorfältester).
+Eine Figur kostet 140 Credits (`art-direction.md` §4.6). Die frühere Rechnung (705 am 2026-10-24 minus die beiden Dorffiguren, rund 425) ist durch die Ablesung überholt. Mit den 205 Credits nach 15.9 wurde Schritt 1b (Dorfältester) gebaut.
 
 ## Wie die Bilder entstanden
 

@@ -17,7 +17,7 @@
 
 ## Abnahme
 
-- Strohhut mit braunem Band und gezackter, geschlossener Krempe ✓; graue Haarbüschel, große Ohren, haselbraune Augen, hochgezogene Brauen, Zahnlücke, dünnes Kinnbärtchen ohne Schnurrbart ✓; normal gebaut, nicht dick, nicht dünn ✓; Leinenhemd mit aufgerollten Ärmeln, braune Weste mit Knöpfen, Gürtel mit Messingschnalle ✓; Halstuch flach Magenta vorn und hinten ✓; ohne Stab, Hände leer ✓; Seitenansicht blickt nach rechts, kein Text ✓.
+- Strohhut mit braunem Band und gezackter, geschlossener Krempe ✓; graue Haarbüschel, große Ohren, haselbraune Augen, hochgezogene Brauen, Zahnlücke (aus dem Porträt übernommen), dünnes Kinnbärtchen ohne Schnurrbart ✓; normal gebaut, nicht dick, nicht dünn ✓; Leinenhemd mit aufgerollten Ärmeln, braune Weste mit Knöpfen, Gürtel mit Messingschnalle ✓; Halstuch flach Magenta vorn und hinten ✓; ohne Stab, Hände leer ✓; Seitenansicht blickt nach rechts, kein Text ✓.
 - Kleinigkeiten: Die Beuge ist kaum zu sehen; die Krempe ist breit und reicht beim Teilen in die Nachbarspalte, die drei Ausschnitte bleiben aber sauber.
 
 ## Tripo
