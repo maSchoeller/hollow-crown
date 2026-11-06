@@ -272,5 +272,5 @@ development_status:
   15-9-brettfiguren-zu-den-neuen-portraets-schritt-1: done  # Brettfiguren zu den neuen Porträts, Schritt 1
   15-10-akt-1-neu-abstimmen: backlog  # Akt 1 neu abstimmen
   15-11-leistung-grosser-karten: review  # Leistung großer Karten
-  15-13-figuren-auf-treppen: review  # Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
+  15-13-figuren-auf-treppen: done  # Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
   epic-15-retrospective: optional

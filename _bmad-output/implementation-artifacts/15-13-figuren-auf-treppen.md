@@ -1,6 +1,6 @@
 # Story 15.13: Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
 
-Status: review
+Status: done
 
 ## Story
 
