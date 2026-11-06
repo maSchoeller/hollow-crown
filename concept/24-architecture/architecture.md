@@ -206,7 +206,7 @@ Höhe ist seit 2026-11-04 Regel (GDD; löst G21/D3 ab). `TerrainDef.level` (0–
 - **Angriff:** `canStrike` und `strikeTiles` sind die eine Regel für Vorschau, Auflösung, Konter, Tandem, Gefahrenzone und KI. Niemand prüft `dist` gegen eine Waffenreichweite selbst. Steht einer der beiden Kämpfenden in `elevation.freeMoveTypes`, gilt die Nahkampf-Stufenregel nicht. Darum kennt die Regel auch das Ziel (`target`, sonst wer auf dem Feld steht); `threatTiles` nimmt es für Felder, auf die eine Figur erst treten könnte.
 - **Geschlossene Durchgänge:** `TerrainDef.opensTo` macht ein Gelände zum Durchgang (`door`, `gate_closed`), Objekt vom Typ `door`. Objekte `lever` und Durchgänge öffnen über `links` mit.
 - **Ereignisse:** Trigger-Aktion `set_terrain` (`eventTerrain` in `rules/effects.ts`) ist der einzige Weg, wie Mauern fallen. Das Brett baut das Gelände über das Ereignis `terrain` neu auf.
-- **Darstellung:** `TerrainGrid.at` rechnet Kartenstufen in Höhe um (`render.board.levelHeight`), `figureAt` in `picking.ts` trifft Figuren auf oder hinter erhöhten Feldern zuerst. Inhaltsprüfung: Eine Verbindung braucht genau einen Nachbarn eine Stufe höher, daraus folgt ihre Richtung.
+- **Darstellung:** `TerrainGrid.at` rechnet Kartenstufen in Höhe um (`render.board.levelHeight`), `figureAt` in `picking.ts` trifft Figuren auf oder hinter erhöhten Feldern zuerst. Auf Rampe, Treppe und Leiter stehen die Füße auf der Modellfläche (`floorOf`/`surfaceAt` in `terrain3d.ts`, Form in `render.board.connectors`, Story 15.13); diese Modelle verblassen nie (`render.board.fade.solid`), Gebäude und Mauerteile weiter. Inhaltsprüfung: Eine Verbindung braucht genau einen Nachbarn eine Stufe höher, daraus folgt ihre Richtung.
 
 ### 5.4 Kampagnen-Graph und Akte (AR4)
 

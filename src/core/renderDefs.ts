@@ -154,7 +154,10 @@ export interface RenderDef {
     /** size of 3D figures relative to their Blender scale */
     figureScale: number;
     /** story 8.10: props hiding at least `cover` tiles of a figure turn see-through at `alpha`; `figureWidth` = half width of a figure in tiles */
-    fade: { alpha: number; cover: number; figureWidth: number };
+    /** solid: model classes that never fade, a figure stands on them (story 15.13) */
+    fade: { alpha: number; cover: number; figureWidth: number; solid: string[] };
+    /** shape of the connector models along their rise (story 15.13, `src/render/shared/connectors.ts`) */
+    connectors: Record<'ramp' | 'stairs' | 'ladder', { from: number; to: number; steps: number }>;
   };
   /** story 8.6: team colours, light by time of day, weather, season per act and the timing of the strike effects */
   look: LookDef;

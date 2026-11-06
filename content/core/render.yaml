@@ -85,8 +85,15 @@ board:
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
   # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten
   # Requisite, cover = so viele Felder der Figurenhöhe muss sie verdecken (aus Kameraneigung und Modellmaßen berechnet),
-  # figureWidth = halbe Breite der Figur in Feldern für die seitliche Überdeckung
-  fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3 }
+  # figureWidth = halbe Breite der Figur in Feldern für die seitliche Überdeckung.
+  # solid (Story 15.13): Modellklassen, die nie verblassen – Treppen, Rampen und Leitern tragen die Figur; Gebäude, Dächer und Mauerteile verblassen weiter
+  fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3, solid: [ramp, stairs, ladder] }
+  # Story 15.13: Form der Verbindungsmodelle (tools/art/props/interior.py) entlang ihres Anstiegs zum höheren Nachbarn.
+  # from/to = Anteil der Feldtiefe, wo die Steigung beginnt und endet; steps = Stufen der Treppe (0 = glatt). Die Figur steht auf der Fläche unter ihr.
+  connectors:
+    ramp:   { from: 0, to: 1, steps: 0 }       # glatte Schräge über das ganze Feld
+    stairs: { from: 0, to: 1, steps: 5 }       # fünf Stufen, die Figur steht auf dem Tritt unter ihr
+    ladder: { from: 0.24, to: 0.97, steps: 0 } # Leiter: Fuß 0,26 vor, Kopf 0,47 hinter der Feldmitte
 
 # Story 8.6: Licht und Wetter (Art Direction §2.1, §2.4, §2.5, §8). Startwerte [C], am Bildschirm eingestellt.
 # Eine Karte ohne timeOfDay und weather sieht aus wie bisher; Farben als Hex.
