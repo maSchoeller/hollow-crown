@@ -28,7 +28,7 @@ shots:
   # Tobin, nah von vorn rechts, langsames Heranschieben: Vorfreude
   - line: l02
     camera: { from: [10.0, 0.62, 16.1], to: [8.9, 0.6, 18.3], end: { from: [9.9, 0.62, 16.4] }, fov: 30, ms: 4000 }
-    gestures: [{ actor: tobin, anim: attack }]
+    gestures: [{ actor: tobin, face: [9.75, 16.5] }]
   # Brenna von vorn links, sie sieht zu Tobin hinüber
   - line: l03
     camera: { from: [4.6, 0.95, 16.28], to: [5.8, 0.85, 18], fov: 30, ms: 4000 }
