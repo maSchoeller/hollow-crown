@@ -1,7 +1,7 @@
 /** Mission 1-6 on the Pactwatch: levels and wall walks, the closed castle gate and its lever, archers above the bottlenecks. E4 and the node: tests/unit/m1-6-e4.test.ts. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { addToRoster, applyCommand, autoplay, availableActions, canStrike, createBattle, levelAt, newCampaign, reachable, type BattleState, type CampaignState, type GameData } from '../../src/core';
+import { addToRoster, applyCommand, autoplay, availableActions, canStrike, createBattle, levelAt, newCampaign, reachable, stateHash, type BattleState, type Command, type GameData, type GameEvent, type CampaignState } from '../../src/core';
 
 let data: GameData;
 const MAP = 'm1_6_paktwacht';
@@ -33,7 +33,7 @@ beforeAll(() => {
 });
 
 describe('map m1_6_paktwacht', () => {
-  it('is the large map of the act: 30 × 40, 12 places, seize the throne, Hask and Ulvric, 28 / 31 / 43 foes', () => {
+  it('is the large map of the act: 30 × 40, 12 places, seize the throne, Hask and Ulvric, 28 / 31 / 43 foes, never haunted', () => {
     // balancing 2026-11-05: normal without the two wolf riders at the forest edge, hard with three strong wolves in the turn-5 wave
     const m = data.maps[MAP]!;
     expect(m.size).toEqual([30, 40]);
@@ -43,7 +43,7 @@ describe('map m1_6_paktwacht', () => {
     const count = (d: 'easy' | 'normal' | 'hard') => all.filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual([28, 31, 43]);
     expect(all.filter((u) => u.lieutenant).map((u) => u.lieutenant).sort()).toEqual(['hask', 'ulvric']);
-    expect(m.haunts?.map((h) => h.variant).sort()).toEqual(['boss', 'escort', 'rout']);
+    expect([m.noHaunts, m.haunts]).toEqual([true, undefined]);
   });
 
   it('has the levels the owner set: fields 0, terraces and courtyards 1, wall walks and corner towers 2', () => {
@@ -136,5 +136,56 @@ describe('the castle gate', () => {
     const played = autoplay(data, s, 600);
     expect(played.state.outcome).toBe('victory');
     expect(played.log.some((cmd) => cmd.type === 'act' && cmd.action.kind === 'lever')).toBe(true);
+  });
+});
+
+describe('Hask withdraws through the east postern (product owner 2026-11-06)', () => {
+  /** Only Hask is left; he is brought below the threshold, a player figure waits (the trigger runs after an action), then phases end until he is gone. */
+  const flight = () => {
+    const start = battle();
+    for (const u of start.units) if (u.team === 'enemy' && u.id !== 'hask') Object.assign(u, { gone: 'dead', pos: null });
+    const hask = unit(start, 'hask');
+    hask.hp = Math.floor(hask.stats.hp * 0.3);
+    const waiter = start.units.find((u) => u.team === 'player' && u.pos)!;
+    const log: Command[] = [{ type: 'act', unit: waiter.uid, to: waiter.pos!, action: { kind: 'wait' } }];
+    let s = start;
+    const events: GameEvent[] = [];
+    const path: Array<[number, number]> = [];
+    for (let i = 0; i < 12 && !unit(s, 'hask').gone; i++) {
+      const r = applyCommand(data, s, log[log.length - 1]!);
+      s = r.state;
+      events.push(...r.events);
+      const at = unit(s, 'hask').pos;
+      if (at) path.push([...at]);
+      log.push({ type: 'endPhase' });
+    }
+    return { start, s, events, path, log: log.slice(0, -1) };
+  };
+
+  it('below 40 % HP he calls the retreat, walks to the postern and leaves there as driven off', () => {
+    const { s, events, path } = flight();
+    expect(events).toContainEqual({ t: 'dialogue', id: 'scn.m1_6.hask_flight' });
+    expect(unit(s, 'hask').gone).toBe('fled');
+    expect(events.some((e) => e.t === 'fled' && e.unit === unit(s, 'hask').uid)).toBe(true);
+    expect(path.length).toBeGreaterThan(1);
+    expect(path.at(-1)).toEqual([21, 15]);
+    // he walks, he does not vanish where he stood: more than one tile on the way
+    expect(new Set(path.map((p) => p.join(','))).size).toBeGreaterThan(1);
+  });
+
+  it('above the threshold nothing happens', () => {
+    const s = battle();
+    const waiter = s.units.find((u) => u.team === 'player' && u.pos)!;
+    const r = applyCommand(data, s, { type: 'act', unit: waiter.uid, to: waiter.pos!, action: { kind: 'wait' } });
+    expect(r.events).not.toContainEqual({ t: 'dialogue', id: 'scn.m1_6.hask_flight' });
+    expect(unit(r.state, 'hask').ai?.profile).toBe('guard');
+  });
+
+  it('replays to the same state from start and command log', () => {
+    const a = flight();
+    let s = a.start;
+    for (const cmd of a.log) s = applyCommand(data, s, cmd).state;
+    expect(stateHash(s)).toBe(stateHash(a.s));
+    expect(stateHash(flight().s)).toBe(stateHash(a.s));
   });
 });

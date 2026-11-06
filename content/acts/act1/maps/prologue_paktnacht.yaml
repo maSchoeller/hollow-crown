@@ -66,8 +66,8 @@ deploy:
   max: 4
   forced: [avatar, kael]
   slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
-# Die Truppe flieht aus Aurenhall und kehrt nicht zurück: keine Heimsuchungen hier (GDD-Log 2026-11-06, content:check lehnt Anker ab).
-abandoned: true
+# Keine Heimsuchungen: Die Truppe flieht aus Aurenhall und kehrt nicht zurück (GDD-Log 2026-11-06, content:check lehnt Anker ab).
+noHaunts: true
 # Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle): Lanzen-Vorkämpfer und Schwert-Plänkler, dazu der eine Schütze. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
 units:
   # Säulengang: wachen auf, sobald die Truppe herankommt

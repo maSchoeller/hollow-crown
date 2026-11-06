@@ -7,7 +7,9 @@
 #   Burgmauer Ost (Treppe [17,13] aus dem Vorburghof). Das ist die Hauptaussage der Karte: Engstelle mit Schützen darüber. Die Treppen laufen an der Seitenmauer hoch, weil die Kamera eine Treppe an der Nordseite einer Mauer nur von hinten sieht.
 # Burgtor [14–15,12] geschlossen: Der Hebel l_gate steht am Ostende des Wehrgangs Burgmauer Ost; der Hof darunter [20,13] ist Mauer, er lässt sich also nur von oben ziehen.
 #   Späher und Schlüssel öffnen das Tor auch (Decision Log 2026-11-05). Das Vorburgtor [14–15,18] steht offen.
-# Hask hält die Vorburg; bei 0 TP flieht er (Regel), erzählt durch die Ostpforte [21,15] über den Ziegenpfad (x 28) nach Süden; den Pfad nutzen auch Späher.
+# Hask hält die Vorburg. Unter 40 % TP ruft er den Rückzug (Trigger t_hask_flight: Zeile + Profil flee) und zieht sich sichtbar zur Ostpforte [21,15] zurück;
+#   dort verschwindet er und gilt als geschlagen wie bei 0 TP (Groll, Kopfgeld), weiter über den Ziegenpfad (x 28) nach Süden (Produktinhaber 2026-11-06).
+#   Fällt er vorher auf 0 TP, flieht er wie jeder Leutnant. Den Ziegenpfad nutzen auch Späher.
 # Abweichungen vom Entwurf: t7 steht über der Mittelrampe statt im Weinstock, t13/t14 auf dem Vorburg-Wehrgang statt auf Terrasse 3, k3/k4 auf dem Burg-Wehrgang statt auf den Forts.
 # Felder (`f`) als Gelände `field` statt Gras: gleiche Werte, zeigt die Felder. Gold kleiner als im Entwurf (Korridor Akt 1): goldReward 900, Truhe 300, Häuser 200 + 100, Nebenziel 400.
 # Balancing 2026-11-05 [C], Normal über die verkettete Kampagne: Stufen 2–5 wie im Entwurf, Schützen und Wölfe je 1 Stufe tiefer, Auslöse-Radien 3 statt 4–5, drei Figuren nur auf Schwer (siehe Notizen). Die Truppe ist kleiner als die 12 Plätze.
@@ -106,28 +108,8 @@ deploy:
   max: 12
   forced: [avatar, kael]
   slots: [[16, 38], [13, 38], [17, 38], [12, 38], [18, 38], [11, 38], [19, 38], [10, 38], [16, 39], [13, 39], [17, 39], [12, 39], [18, 39], [11, 39], [19, 39], [10, 39]]
-# Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
-haunts:
-  # Grund: der Burghof vor dem Bergfried, in dem Hasks Leute saßen; später treibt es ihn zurück.
-  - variant: boss
-    target: { at: [15, 10] }
-    enemySpawn: { rect: [7, 6, 10, 8] }
-    deploy: { rect: [16, 9, 18, 10] }
-    max: 5
-  # Grund: die Vorburg, Treffpunkt aller Wege von den Terrassen und durch die Ostpforte.
-  - variant: rout
-    target: { at: [15, 15] }
-    enemySpawn: { rect: [9, 16, 13, 17] }
-    deploy: { rect: [16, 19, 20, 19] }
-    max: 5
-  # Grund: die Straße durch die Felder: Hinterhalt auf dem Weg zur neuen Heimat. Der Zivilist wartet in den Feldern, die Räuber lauern hinter der Mittelrampe.
-  - variant: escort
-    target: { at: [15, 30] }
-    exit: { rect: [12, 26, 17, 26] }
-    enemySpawn: { rect: [10, 22, 19, 24] }
-    deploy: { tiles: [[16, 30], [14, 30], [15, 31], [14, 31], [16, 31], [13, 30], [13, 31]] }
-    max: 5
-    turns: 8
+# Keine Heimsuchungen: Die Paktwacht wird nach dieser Mission Heimat der Truppe (GDD-Log 2026-11-06, content:check lehnt Anker ab).
+noHaunts: true
 # Gegner: Stufen [C], Leutnants: Stufe und Klasse kommen aus `lieutenant` (flieht bei 0 TP, Groll, Kopfgeld); ihre Waffen auf der Karte sind Eisen, damit „+1 Stufe je Groll“ greift (Review R15/R35).
 units:
   # Felder und Brücke
@@ -207,7 +189,14 @@ triggers:
     when: { type: object_activated, object: l_gate }
     then:
       - { action: dialogue, id: scn.m1_6.gate }
-# Szenen (Knoten m1_6): scn.m1_6.intro vorher; scn.m1_6.gate beim Hebel; scn.m1_6.outro nachher.
+  # Hask unter 40 % TP [C]: Rückzug durch die Ostpforte (Produktinhaber 2026-11-06), Blase über ihm, nur solange er auf der Karte steht
+  - id: t_hask_flight
+    once: true
+    when: { type: hp_below, unit: hask, percent: 40 }
+    then:
+      - { action: dialogue, id: scn.m1_6.hask_flight, onBoard: hask }
+      - { action: set_ai, units: [hask], profile: flee, area: { tiles: [[21, 15]] } }
+# Szenen (Knoten m1_6): scn.m1_6.intro vorher; scn.m1_6.gate beim Hebel; scn.m1_6.hask_flight bei Hasks Rückzug; scn.m1_6.outro nachher.
 goldReward: 900
 music: battle_a
 design:

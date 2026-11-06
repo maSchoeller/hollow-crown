@@ -23,12 +23,12 @@ export function parseHauntMapId(id: string): { map: string; variant: string; lt:
 }
 
 /**
- * A haunt from a save whose anchor the content no longer has (the map became `abandoned`, the anchor was removed): it
+ * A haunt from a save whose anchor the content no longer has (the map got `noHaunts`, the anchor was removed): it
  * lapses on load instead of breaking the battle. A map that is not loaded (a pack still on its way) says nothing yet.
  */
 export function hauntAnchorGone(data: GameData, mapId: string, variant: string): boolean {
   const map = data.maps[mapId];
-  return !!map && (!!map.abandoned || !map.haunts?.some((a) => a.variant === variant));
+  return !!map && (!!map.noHaunts || !map.haunts?.some((a) => a.variant === variant));
 }
 
 /** The battle map `id` is a haunt map whose anchor is gone (`hauntAnchorGone`). */

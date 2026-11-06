@@ -279,6 +279,7 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
           const u = findUnit(s, id);
           if (u?.ai) {
             u.ai.profile = a.profile;
+            if (a.area) u.ai.area = a.area;
             u.ai.awake = true;
           }
         }
