@@ -1,4 +1,4 @@
-id: scn.support.brenna_kael.B
+id: scn.support.brenna_lucan.B
 background: lager_unterwegs
 music: camp
 lines:
@@ -8,7 +8,7 @@ lines:
     mood: neutral
     text: "Gib her. Das Banner. Du nähst, als wolltest du es bestrafen."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Gerrit hat den Faden immer selbst gewählt. Ich weiß nicht mal, welchen."
@@ -18,7 +18,7 @@ lines:
     mood: neutral
     text: "Den braunen. Hat er geschworen, hält besser. Stimmt nicht, aber er hat's geschworen."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Ich hätte bei ihm sein müssen."
@@ -28,7 +28,7 @@ lines:
     mood: sad
     text: "Du warst bei uns. Das ist auch eine Stelle, an der man sein muss."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Ich hab die Karte, den Sold, die Wache. Und jetzt auch noch …"
@@ -38,7 +38,7 @@ lines:
     mood: neutral
     text: "Die Wache übernehm ich. Die Karte morgen, die Münzen auch."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Das ist zu viel für eine."
@@ -46,9 +46,9 @@ lines:
     speaker: [brenna]
     fallback: skip
     mood: neutral
-    text: "Es ist weniger als das, was du schleppst. Setz dich einfach hin, Kael."
+    text: "Es ist weniger als das, was du schleppst. Setz dich einfach hin, Lucan."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "…"
@@ -58,7 +58,7 @@ lines:
     mood: happy
     text: "Und wenn du dich gleich nicht hinlegst, erzähl ich dir noch einen Witz."
   - id: l12
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: happy
     text: "Das ist eine Drohung."

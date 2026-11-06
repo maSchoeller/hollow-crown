@@ -49,7 +49,7 @@ export type HomeKind = (typeof HOME_KINDS)[number];
 /** A scene illustration panel stands for 1–4 text boxes (narrative); `content:check` refuses a longer one. */
 export const MAX_PANEL_LINES = 4;
 
-export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'kael'];
+export const PERMANENT_COMPANIONS: readonly string[] = ['avatar', 'lucan'];
 export type Pos = [number, number];
 
 export interface ItemUse {

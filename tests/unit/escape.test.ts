@@ -59,7 +59,7 @@ beforeAll(() => {
 });
 
 describe('escape objective', () => {
-  it('the prologue needs no minimum: everyone still standing leaves, Kael last', () => {
+  it('the prologue needs no minimum: everyone still standing leaves, Lucan last', () => {
     const v = base.maps.prologue_paktnacht!.objectives.victory;
     expect(v.type).toBe('escape');
     expect('min' in v ? v.min : undefined).toBeUndefined();
@@ -68,13 +68,13 @@ describe('escape objective', () => {
   it('does not offer escape to the lord while another able unit remains', () => {
     const { s, row } = arena();
     const exit = row[5]!;
-    const kael = put(s, exit, true);
+    const lucan = put(s, exit, true);
     const other = put(s, row[0]!, false);
-    expect(availableActions(data, s, kael, exit).some((a) => a.kind === 'escape')).toBe(false);
-    expect(validate(data, s, { type: 'act', unit: kael.uid, to: exit, action: { kind: 'escape' } })).toBe('not_allowed');
-    expect(() => applyCommand(data, s, { type: 'act', unit: kael.uid, to: exit, action: { kind: 'escape' } })).toThrow();
+    expect(availableActions(data, s, lucan, exit).some((a) => a.kind === 'escape')).toBe(false);
+    expect(validate(data, s, { type: 'act', unit: lucan.uid, to: exit, action: { kind: 'escape' } })).toBe('not_allowed');
+    expect(() => applyCommand(data, s, { type: 'act', unit: lucan.uid, to: exit, action: { kind: 'escape' } })).toThrow();
     // others may leave at once
-    const after = applyCommand(data, { ...s, units: s.units.map((u) => (u.uid === other.uid ? { ...u, pos: exit } : u.uid === kael.uid ? { ...u, pos: row[4]! } : u)) }, {
+    const after = applyCommand(data, { ...s, units: s.units.map((u) => (u.uid === other.uid ? { ...u, pos: exit } : u.uid === lucan.uid ? { ...u, pos: row[4]! } : u)) }, {
       type: 'act',
       unit: other.uid,
       to: exit,
@@ -86,11 +86,11 @@ describe('escape objective', () => {
   it('lets the lord escape once alone, or when the rest is downed, and wins', () => {
     const { s, row } = arena();
     const exit = row[5]!;
-    const kael = put(s, exit, true);
+    const lucan = put(s, exit, true);
     const other = put(s, row[0]!, false);
     other.downed = true;
-    expect(availableActions(data, s, kael, exit).some((a) => a.kind === 'escape')).toBe(true);
-    const r = applyCommand(data, s, { type: 'act', unit: kael.uid, to: exit, action: { kind: 'escape' } });
+    expect(availableActions(data, s, lucan, exit).some((a) => a.kind === 'escape')).toBe(true);
+    const r = applyCommand(data, s, { type: 'act', unit: lucan.uid, to: exit, action: { kind: 'escape' } });
     expect(r.state.outcome).toBe('victory');
   });
 

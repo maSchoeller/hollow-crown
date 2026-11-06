@@ -1,11 +1,11 @@
-# Nebenquest N2 „Der letzte Wachturm“, Szene vor der Karte: ein Turm der Paktwächter an der Grenzmauer, davor ein Suchtrupp des Grenzheers. Nach Mission 1-5. Kael erzählt vom Grenzkrieg (Saat Kharesh).
+# Nebenquest N2 „Der letzte Wachturm“, Szene vor der Karte: ein Turm der Paktwächter an der Grenzmauer, davor ein Suchtrupp des Grenzheers. Nach Mission 1-5. Lucan erzählt vom Grenzkrieg (Saat Kharesh).
 id: scn.n2.intro
 background: wachturm
 music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Abend an der Grenzmauer, dahinter im Dunst Kharesh. Davor ein Turm, über dem Tor Drache und Krone."
+    text: "Morgen an der Grenzmauer, dahinter im Dunst Kharesh. Davor ein Turm, über dem Tor Drache und Krone."
   - id: l02
     speaker: [liora, ysolde, avatar]
     mood: neutral
@@ -20,10 +20,14 @@ lines:
     mood: happy
     text: "Ein Turm der Paktwächter! Hüter der Wahrheit, Schützer der … äh … von irgendwas mit Wahrheit!"
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
-    text: "An dieser Mauer stand ich im Grenzkrieg. Kharesh sah damals genauso aus: still und viel zu nah."
+    text: "An dieser Mauer stand ich im Grenzkrieg, als Ritterhauptmann. Kharesh sah damals genauso aus."
+  - id: l05b
+    speaker: [lucan]
+    mood: neutral
+    text: "Still. Und viel zu nah."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Ein Suchtrupp des Grenzheers belagert den Turm. Holen wir, was dort liegt, bevor sie es tun."

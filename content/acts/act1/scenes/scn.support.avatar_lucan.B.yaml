@@ -1,4 +1,4 @@
-id: scn.support.avatar_kael.B
+id: scn.support.avatar_lucan.B
 background: lager_unterwegs
 music: camp
 lines:
@@ -8,7 +8,7 @@ lines:
     mood: neutral
     text: "Auf der Wachliste steht heute zweimal dein Name."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Es fehlt einer. Irgendwer muss."
@@ -18,7 +18,7 @@ lines:
     mood: angry
     text: "Ich weiß, wer fehlt."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Sein Platz am Feuer. Keiner setzt sich dorthin. Ich auch nicht."
@@ -28,7 +28,7 @@ lines:
     mood: neutral
     text: "Wir sitzen alle daneben und tun, als wäre da nichts."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Mhm."
@@ -38,7 +38,7 @@ lines:
     mood: neutral
     text: "Gib mir die zweite Wache. Heute und morgen."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Du bist nicht eingeteilt."
@@ -48,7 +48,7 @@ lines:
     mood: happy
     text: "Deshalb frage ich."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Ich hab das im Griff."
@@ -58,7 +58,7 @@ lines:
     mood: neutral
     text: "Man sieht es dir an den Augen an."
   - id: l12
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Zweite Wache. Wenn sich was regt, weckst du Brenna."
@@ -68,7 +68,7 @@ lines:
     mood: neutral
     text: "Und dich?"
   - id: l14
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Mich auch. Ich bleibe noch sitzen. Neben dem Platz, nicht darauf."

@@ -260,7 +260,7 @@ describe('buildPoses', () => {
  * The files `pnpm art:tripo` baked, when they are there (they live in Git LFS: a checkout without them skips this).
  */
 describe('baked figure files', () => {
-  const file = 'art/models/units/kael.vat';
+  const file = 'art/models/units/lucan.vat';
   const present = existsSync(file) && readFileSync(file).subarray(0, 2).toString('hex') === '1f8b';
   const maybe = present ? it : it.skip;
 

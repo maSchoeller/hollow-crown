@@ -61,7 +61,7 @@ Die Einträge dazu in den Decision-Logs von Art Direction und Narrative kommen m
 
 Drei Muster aus dem Vergleich, die über einzelne Figuren hinausgehen:
 
-- **Alle gleich groß:** Die 40 Tripo-Figuren messen 0,80–0,83 Felder. Tobin (0,813), Lucan (0,809) und Grosk (0,820) sind praktisch gleich hoch, obwohl `portrait_master.md` §5 sie als small, tall und heavy führt. Alle Turnarounds wurden mit Kaels Bogen als Vorlage erzeugt. Das erklärt vermutlich einen Teil von „die Figuren wirken generisch“ (Decision-Log 2026-11-01).
+- **Alle gleich groß:** Die 40 Tripo-Figuren messen 0,80–0,83 Felder. Tobin (0,813), Lucan (0,809) und Grosk (0,820) sind praktisch gleich hoch, obwohl `portrait_master.md` §5 sie als small, tall und heavy führt. Alle Turnarounds wurden mit Lucans Bogen als Vorlage erzeugt. Das erklärt vermutlich einen Teil von „die Figuren wirken generisch“ (Decision-Log 2026-11-01).
 - **Teamtuch frisst Signaturteile:** Varek verliert den roten Mantel, Ysolde die Akademie-Robe, Nell den Kapitänsrock. Die Bibel sollte je Figur festlegen, welches Stück das Teamtuch trägt.
 - **Waffen sind generisch:** Das Modell zeigt nur die Waffengruppe. Grosks Schild mit den Kinderhänden, Lioras Kristallstab und Brennas Doppelaxt gibt es auf dem Brett nicht.
 
@@ -71,7 +71,7 @@ Bausteine, die schon da sind:
 |---|---|---|
 | Figurenblätter (Statur, Kopf, Gesicht, Haar, Palette, Kleidung, Waffe, Signatur) | `art/prompts/<id>.md`; bei den 17 Figuren aus den Stiltests in `art/prompts/portrait_tests_2026-11.md` | v2.5, kommt der Bibel am nächsten; Rowena und Brakka veraltet |
 | Regeln für den Kader, Fraktions-Kits | `art/prompts/portrait_master.md` §5 | aktuell; §9 verweist die Kader-Zuordnung ausdrücklich auf Etappe 3 |
-| Signaturteile | `art-direction.md` §4.3 | teils veraltet: Rowena „Pegasus“, Brakka „Wyvern“, Sable „Stoppeln“, dazu noch der Name Kael |
+| Signaturteile | `art-direction.md` §4.3 | teils veraltet: Rowena „Pegasus“, Brakka „Wyvern“, Sable „Stoppeln“, dazu noch der Name Lucan |
 | Rollen, Motive, Biografien | `22-narrative/narrative.md`, `missionsliste-s1.md`, `staffelbogen.md` | die neuen Gefährten-Motive sind laut `staffelbogen.md` noch offen |
 
 ## Bestand
@@ -87,7 +87,7 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 |---|---|---|---|---|---|
 | Rhen A (`avatar_a`) | 4 | ja | ja | ✅ | |
 | Rhen B (`avatar_b`) | 4 | ja | ja | ✅ | Ziel sind 4 Avatar-Vorlagen (§5.1), vorhanden 2 |
-| Lucan (`kael`) | 4 | ja | ja | ✅ | Neues Tripo-Modell (Story 15.9, 2026-11-06): Grün, Pelzkragen, Schulterstück links; Haar strubbeliger als im Porträt, Zopf fehlt. Inhalts-IDs heißen noch `kael`, die Umbenennung macht Story 15.6 |
+| Lucan (`lucan`) | 4 | ja | ja | ✅ | Neues Tripo-Modell (Story 15.9, 2026-11-06): Grün, Pelzkragen, Schulterstück links; Haar strubbeliger als im Porträt, Zopf fehlt. Inhalts-IDs seit Story 15.6 `lucan` (vorher `kael`) |
 | Brenna | 4 | ja | ja | 🟡 | dicker Zopf fehlt schon im Turnaround |
 | Tobin | 4 | ja | ja | ✅ | |
 | Fenn | 4 | ja | ja | ✅ | |

@@ -13,6 +13,7 @@ import { clone } from '../../core/util';
 import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
 import { wantedUid } from './wanted';
 import { playNode, beginMission, concludeBattle, storyContext, runEffects } from './flow';
+import { startToneTest } from './toneTest';
 
 /**
  * Puts a haunt on the world map for testing (story 5.6): `devHaunt('m1_1_steckbriefe', 'escort', 'hask')`. Opens an unsaved campaign when none is
@@ -140,6 +141,8 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
       },
       devNode,
+      /** tone test of story 8.1 (same as the URL parameter `?tonbruch`): Gerrit's grave, Fenn's farewell, N1 memorial */
+      toneTest: startToneTest,
       /**
        * the end of the act without Level-Design (story 7.3): adds a `fixed: finale` node to the running content when the act has
        * none (run time only, no file), marks the finale as done and shows the world map with the backup sheet and, without a
@@ -170,7 +173,7 @@ if (import.meta.env.DEV) {
       devJoin: (view: 'card' | 'troop' | 'wanted' | 'map' | 'camp' = 'card', full = false) => {
         campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
         const c = clone(campaign.value);
-        c.lieutenants = { ...c.lieutenants, grosk: { met: true, encounters: 2, grudge: 2, target: 'kael', routs: 2, signatureDropped: false } };
+        c.lieutenants = { ...c.lieutenants, grosk: { met: true, encounters: 2, grudge: 2, target: 'lucan', routs: 2, signatureDropped: false } };
         if (full) {
           const proto = c.roster.find((r) => r.id === 'tobin') ?? c.roster[0]!;
           let n = 0;
@@ -189,7 +192,7 @@ if (import.meta.env.DEV) {
           const scene: SceneDef = {
             id: 'scn.dev.e3',
             lines: [
-              { id: 'l01', speaker: ['kael'], mood: 'neutral', text: 'Der Riese will mit.' },
+              { id: 'l01', speaker: ['lucan'], mood: 'neutral', text: 'Der Riese will mit.' },
               { id: 'c01', title: 'Grosk schliesst sich an', choice: [{ id: 'take', stance: 'warm', text: 'Komm mit uns.', summary: 'Grosk schliesst sich an', effects: join }, { id: 'no', stance: 'sober', text: 'Geh deiner Wege.', summary: 'Grosk bleibt zurueck' }] },
             ],
           };
@@ -211,13 +214,13 @@ if (import.meta.env.DEV) {
       },
       /**
        * opens a test battle with lieutenants on the prologue's ground (stories 3.1, 3.3) and sets what the campaign knows of them:
-       * `devLieutenant('hask', 2)` or `devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'kael', 'first'], ['ulvric', 1, 'fenn', 'mock']])`
-       * (id, grudge 0-3, target id, default kael; kind `first` = not met yet, `grudge` = met with the grudge, `mock` = the target has fallen;
+       * `devLieutenant('hask', 2)` or `devLieutenant([['hask', 2, 'brenna'], ['morra', 0, 'lucan', 'first'], ['ulvric', 1, 'fenn', 'mock']])`
+       * (id, grudge 0-3, target id, default lucan; kind `first` = not met yet, `grudge` = met with the grudge, `mock` = the target has fallen;
        * default kind: `grudge` for grudge 1+, else `first`). Each lieutenant speaks his line in the speech band when the first player phase begins.
        * Starts an unsaved campaign when none is open. Tap a lieutenant with grudge 1+ to see the line to his target.
        */
-      devLieutenant: async (spec: string | Array<[string, number?, string?, ('first' | 'grudge' | 'mock')?]>, grudge = 0, target = 'kael', kind?: 'first' | 'grudge' | 'mock') => {
-        const list: Array<DevLieutenant & { kind: 'first' | 'grudge' | 'mock' }> = (typeof spec === 'string' ? [[spec, grudge, target, kind] as [string, number?, string?, ('first' | 'grudge' | 'mock')?]] : spec).map(([id, g = 0, t = 'kael', k]) => ({
+      devLieutenant: async (spec: string | Array<[string, number?, string?, ('first' | 'grudge' | 'mock')?]>, grudge = 0, target = 'lucan', kind?: 'first' | 'grudge' | 'mock') => {
+        const list: Array<DevLieutenant & { kind: 'first' | 'grudge' | 'mock' }> = (typeof spec === 'string' ? [[spec, grudge, target, kind] as [string, number?, string?, ('first' | 'grudge' | 'mock')?]] : spec).map(([id, g = 0, t = 'lucan', k]) => ({
           id,
           grudge: g,
           target: t,
@@ -265,13 +268,13 @@ if (import.meta.env.DEV) {
         (window as unknown as { __hc: { autoWin: () => void } }).__hc.autoWin();
       },
       /**
-       * story 3.2: opens the test battle (see `devLieutenant`) and drives a lieutenant off: `devFlee('hask', 0, 'kael')` (id, routs so far
+       * story 3.2: opens the test battle (see `devLieutenant`) and drives a lieutenant off: `devFlee('hask', 0, 'lucan')` (id, routs so far
        * = grudge, target id). He has 1 HP, a company unit stands next to him. With `play = 'preview'` nothing more happens: select the
        * company unit that stands next to him, tap Attack and the lieutenant; the forecast shows "flees"
        * instead of 0. With `play = 'attack'` (default) the attack is played at once: backward jump, smoke, falling pennant and the flee
        * line (`flee_<routs % 3 + 1>`) in the speech band.
        */
-      devFlee: async (id = 'hask', grudge = 0, target = 'kael', play: 'attack' | 'preview' = 'attack') => {
+      devFlee: async (id = 'hask', grudge = 0, target = 'lucan', play: 'attack' | 'preview' = 'attack') => {
         await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);
         const b = battle.value;
         const setup = b && fleeSetup(data, b.state, id);
@@ -308,24 +311,24 @@ if (import.meta.env.DEV) {
       },
       /**
        * opens the wanted poster over the test battle as the long press on a lieutenant would (story 3.6), with his danger zone:
-       * `devWantedBattle('hask', 1, 'kael')` (id, grudge 0-3, target id; see `devLieutenant`). Close it with Back or a tap beside.
+       * `devWantedBattle('hask', 1, 'lucan')` (id, grudge 0-3, target id; see `devLieutenant`). Close it with Back or a tap beside.
        */
-      devWantedBattle: async (id = 'hask', grudge = 1, target = 'kael') => {
+      devWantedBattle: async (id = 'hask', grudge = 1, target = 'lucan') => {
         await (window as unknown as { __hc: { devLieutenant: (s: string, g: number, t: string) => Promise<void> } }).__hc.devLieutenant(id, grudge, target);
         const u = battle.value?.state.units.find((x) => x.lieutenant === id);
         if (u) wantedUid.value = u.uid;
       },
       /**
        * shows the list of the wanted posters with lieutenants the company has met (story 3.6):
-       * `devWantedList()` = Hask (grudge 2, target Kael) and Morra (no grudge yet); or
-       * `devWantedList([['hask', 2, 'kael'], ['ulvric', 3, 'fenn', true]])` (id, grudge, target id, true = the target has fallen).
+       * `devWantedList()` = Hask (grudge 2, target Lucan) and Morra (no grudge yet); or
+       * `devWantedList([['hask', 2, 'lucan'], ['ulvric', 3, 'fenn', true]])` (id, grudge, target id, true = the target has fallen).
        * Starts an unsaved campaign when none is open; tap an entry for the poster.
        */
-      devWantedList: (list: Array<[string, number?, string?, boolean?]> = [['hask', 2, 'kael'], ['morra', 0]]) => {
+      devWantedList: (list: Array<[string, number?, string?, boolean?]> = [['hask', 2, 'lucan'], ['morra', 0]]) => {
         campaign.value ??= newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
         const c = clone(campaign.value);
         c.lieutenants ??= {};
-        for (const [id, grudge = 0, target = 'kael', fallen = false] of list) {
+        for (const [id, grudge = 0, target = 'lucan', fallen = false] of list) {
           c.lieutenants[id] = { met: true, encounters: grudge + 1, grudge, routs: grudge, signatureDropped: false, ...(grudge > 0 ? { target } : {}) };
           if (fallen && !c.fallen.some((f) => f.id === target)) {
             const rec = c.roster.find((r) => r.id === target);

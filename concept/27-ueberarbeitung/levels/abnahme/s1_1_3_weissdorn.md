@@ -17,8 +17,8 @@
 | | |
 |---|---|
 | Gegner | L 15 · N 18 · S 22, Stufe 2–3 plus Morra |
-| Aufstellung | 7 (Rhen, Kael, Brenna, Tobin, Fenn + Mira oder Söldner) |
-| Niederlage | Rhen, Kael oder Liora fällt |
+| Aufstellung | 7 (Rhen, Lucan, Brenna, Tobin, Fenn + Mira oder Söldner) |
+| Niederlage | Rhen, Lucan oder Liora fällt |
 | Nebenziele | beide Truhen (Ruinen West/Ost) · in 10 Runden |
 | Phasen | R1–3 Waldrand · R4–6 Bach · R7–10 Lichtung |
 | Veränderung | keine (nächste: 1-4) |

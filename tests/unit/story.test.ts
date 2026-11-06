@@ -66,13 +66,13 @@ describe('conditions (architecture §5.3)', () => {
     c.roster = c.roster.filter((r) => r.id !== 'tobin');
     c.left.push('brenna');
     c.roster = c.roster.filter((r) => r.id !== 'brenna');
-    expect(holds(c, { alive: 'kael' })).toBe(true);
+    expect(holds(c, { alive: 'lucan' })).toBe(true);
     expect(holds(c, { alive: 'tobin' })).toBe(false);
     expect(holds(c, { alive: 'brenna' })).toBe(false);
     expect(holds(c, { dead: 'tobin' })).toBe(true);
-    expect(holds(c, { dead: 'kael' })).toBe(false);
+    expect(holds(c, { dead: 'lucan' })).toBe(false);
     expect(holds(c, { left: 'brenna' })).toBe(true);
-    expect(holds(c, { left: 'kael' })).toBe(false);
+    expect(holds(c, { left: 'lucan' })).toBe(false);
   });
 
   it('completed and storyCount count finished story missions', () => {
@@ -96,13 +96,22 @@ describe('conditions (architecture §5.3)', () => {
     expect(evalCondition({ ...ctxOf(base), act: 2 }, { act: 2 })).toBe(true);
   });
 
+  it('castleTier is true from the given tier of the castle on (story 15.12)', () => {
+    expect(ctxOf(base).castleTier).toBe(0);
+    expect(holds(base, { castleTier: 1 })).toBe(false);
+    expect(evalCondition({ ...ctxOf(base), castleTier: 1 }, { castleTier: 1 })).toBe(true);
+    expect(evalCondition({ ...ctxOf(base), castleTier: 3 }, { castleTier: 2 })).toBe(true);
+    expect(conditionSchema.safeParse({ castleTier: 1 }).success).toBe(true);
+    expect(conditionSchema.safeParse({ castleTier: 0 }).success).toBe(false);
+  });
+
   it('support needs at least the rank, in either order of the pair', () => {
     const c = clone(base);
-    expect(holds(c, { support: { pair: ['kael', 'brenna'], rank: 'C' } })).toBe(false);
-    c.supports['brenna|kael']!.rank = 'B';
-    expect(holds(c, { support: { pair: ['kael', 'brenna'], rank: 'C' } })).toBe(true);
-    expect(holds(c, { support: { pair: ['brenna', 'kael'], rank: 'B' } })).toBe(true);
-    expect(holds(c, { support: { pair: ['brenna', 'kael'], rank: 'A' } })).toBe(false);
+    expect(holds(c, { support: { pair: ['lucan', 'brenna'], rank: 'C' } })).toBe(false);
+    c.supports['brenna|lucan']!.rank = 'B';
+    expect(holds(c, { support: { pair: ['lucan', 'brenna'], rank: 'C' } })).toBe(true);
+    expect(holds(c, { support: { pair: ['brenna', 'lucan'], rank: 'B' } })).toBe(true);
+    expect(holds(c, { support: { pair: ['brenna', 'lucan'], rank: 'A' } })).toBe(false);
     expect(holds(c, { support: { pair: ['tobin', 'mira'], rank: 'C' } })).toBe(false);
   });
 
@@ -154,13 +163,13 @@ describe('conditions (architecture §5.3)', () => {
     const c = clone(base);
     c.flags.avatar_honest = true;
     const frozen = JSON.stringify(c);
-    for (const cond of [{ flag: 'avatar_honest' }, { alive: 'kael' }, { any: [{ dead: 'kael' }, { not: { act: 2 } }] }] as Condition[]) holds(c, cond);
+    for (const cond of [{ flag: 'avatar_honest' }, { alive: 'lucan' }, { any: [{ dead: 'lucan' }, { not: { act: 2 } }] }] as Condition[]) holds(c, cond);
     expect(JSON.stringify(c)).toBe(frozen);
   });
 
   it('an empty context (no campaign) is an empty story', () => {
     const ctx = conditionContext(data, null);
-    expect(evalCondition(ctx, { alive: 'kael' })).toBe(false);
+    expect(evalCondition(ctx, { alive: 'lucan' })).toBe(false);
     expect(evalCondition(ctx, { flag: 'avatar_honest' })).toBe(false);
     expect(evalCondition(conditionContext(data, null, { avatar_honest: true }), { flag: 'avatar_honest' })).toBe(true);
   });
@@ -267,16 +276,16 @@ describe('effects (architecture §5.3)', () => {
 
 describe('schemas', () => {
   it('a condition or effect has exactly one key', () => {
-    expect(conditionSchema.safeParse({ alive: 'kael' }).success).toBe(true);
-    expect(conditionSchema.safeParse({ alive: 'kael', dead: 'tobin' }).success).toBe(false);
+    expect(conditionSchema.safeParse({ alive: 'lucan' }).success).toBe(true);
+    expect(conditionSchema.safeParse({ alive: 'lucan', dead: 'tobin' }).success).toBe(false);
     expect(conditionSchema.safeParse({}).success).toBe(false);
     expect(conditionSchema.safeParse({ nonsense: 1 }).success).toBe(false);
     expect(conditionSchema.safeParse({ flag: { a: 1, b: 2 } }).success).toBe(false);
     expect(conditionSchema.safeParse({ flag: { e02: 'protect' } }).success).toBe(true);
     expect(conditionSchema.safeParse({ storyCount: {} }).success).toBe(false);
     expect(conditionSchema.safeParse({ storyCount: { min: 3 } }).success).toBe(true);
-    expect(conditionSchema.safeParse({ support: { pair: ['brenna', 'kael'], rank: 'B' } }).success).toBe(true);
-    expect(conditionSchema.safeParse({ support: { pair: ['brenna', 'kael'], rank: 'X' } }).success).toBe(false);
+    expect(conditionSchema.safeParse({ support: { pair: ['brenna', 'lucan'], rank: 'B' } }).success).toBe(true);
+    expect(conditionSchema.safeParse({ support: { pair: ['brenna', 'lucan'], rank: 'X' } }).success).toBe(false);
     expect(conditionSchema.safeParse({ stance: 'warm' }).success).toBe(true);
     expect(conditionSchema.safeParse({ stance: 'angry' }).success).toBe(false);
     expect(conditionSchema.safeParse({ chronicle: { min: 12 } }).success).toBe(true);
@@ -292,8 +301,8 @@ describe('schemas', () => {
     expect(effectSchema.safeParse({ item: { def: 'iron_sword' } }).success).toBe(true);
   });
 
-  it('recruit and leave refuse the avatar and Kael', () => {
-    for (const id of ['avatar', 'kael']) {
+  it('recruit and leave refuse the avatar and Lucan', () => {
+    for (const id of ['avatar', 'lucan']) {
       expect(effectSchema.safeParse({ recruit: id }).success).toBe(false);
       expect(effectSchema.safeParse({ leave: id }).success).toBe(false);
     }
@@ -329,7 +338,7 @@ describe('content references (content:check)', () => {
     const msgs = (cond: unknown) => problems(withDialogue(speech(cond)));
     expect(msgs({ alive: 'ghost' })).toContainEqual(expect.stringContaining('unknown companion ghost'));
     expect(msgs({ completed: 'm9_9' })).toContainEqual(expect.stringContaining('unknown node m9_9'));
-    expect(msgs({ support: { pair: ['kael', 'tobin'], rank: 'C' } })).toContainEqual(expect.stringContaining('unknown support pair'));
+    expect(msgs({ support: { pair: ['lucan', 'tobin'], rank: 'C' } })).toContainEqual(expect.stringContaining('unknown support pair'));
     expect(msgs({ not: { any: [{ dead: 'ghost' }] } })).toContainEqual(expect.stringContaining('unknown companion ghost'));
     const eff = (e: unknown) => problems(withDialogue(choose(e)));
     expect(eff({ recruit: 'ghost' })).toContainEqual(expect.stringContaining('unknown companion ghost'));
@@ -383,7 +392,7 @@ describe('content layout (story 4.1)', () => {
   it('the loader finds core, act 1 and the locales', () => {
     expect(Object.keys(data.maps).sort()).toEqual(expect.arrayContaining(['m1_2_erlbach', 'm1_3_silberbach', 'm1_1_steckbriefe', 'prologue_paktnacht']));
     expect(Object.keys(data.scenes).length).toBeGreaterThan(30);
-    expect(data.chars.kael).toBeDefined();
+    expect(data.chars.lucan).toBeDefined();
     expect(data.flags.avatar_honest).toBeDefined();
     expect(locales.de!['dlg.scn.prologue.intro.l01']).toBeTruthy();
     expect(locales.en!['dlg.scn.prologue.intro.l01']).toBeTruthy();

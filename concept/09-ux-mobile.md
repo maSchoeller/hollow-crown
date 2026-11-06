@@ -49,7 +49,7 @@
 │                               │
 │                               │
 ├───────────────────────────────┤
-│ ▣ Kael  Hauptmann  Lv 4       │  ← Bottom Sheet: ausgewählte Einheit
+│ ▣ Lucan  Hauptmann  Lv 4       │  ← Bottom Sheet: ausgewählte Einheit
 │ TP ███████░░ 18/22  ⚔Eisenschw│     (hochziehbar → volle Werte/Inventar)
 ├───────────────────────────────┤
 │ [Angriff][Item][Tausch][Warten]│  ← Aktionsleiste (kontextabhängig)
@@ -61,7 +61,7 @@
 
 ```
 ┌───────────────────────────────┐
-│  KAEL            vs     BANDIT │
+│  LUCAN            vs     BANDIT │
 │  Eisenschwert ▲        Eisenaxt▼│
 │  TP 22 → 22         TP 24 → 8  │
 │  Schaden 8 ×2       Schaden 6  │

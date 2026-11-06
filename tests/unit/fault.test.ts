@@ -27,7 +27,7 @@ beforeAll(() => {
     portrait: 'avatar_a',
     affinity: 'wind',
   });
-  battle = beginBattle(data, campaign, firstNode(data).id, ['kael']).state;
+  battle = beginBattle(data, campaign, firstNode(data).id, ['lucan']).state;
 });
 
 describe('CoreInvariantError', () => {

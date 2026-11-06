@@ -238,7 +238,7 @@ handbook:
       keywords: "water, river, shallows, ford, bridge"
     terrain_fort:
       title: "Forts, throne, gate and shrine"
-      text: "These tiles protect best. Fort, throne and shrine heal part of the HP at the start of your phase. Kael can seize throne and gate when the mission goal asks for it."
+      text: "These tiles protect best. Fort, throne and shrine heal part of the HP at the start of your phase. Lucan can seize throne and gate when the mission goal asks for it."
       where: "The healing is in the terrain chip; the goal “Seize” in the goal pills."
       keywords: "fort, throne, gate, shrine, healing, seize"
     terrain_blocked:
@@ -336,7 +336,7 @@ handbook:
       keywords: "scar, penalty, injury, healer"
     death_modes:
       title: "Classic, Standard and Casual"
-      text: "Classic: whoever falls is dead, and there is only one save. Standard: downed, rescue and bleeding out as described; round and mission can be restarted. Casual: whoever falls withdraws and is back for the next mission without a scar. If the avatar or Kael falls, the mission is lost in every mode."
+      text: "Classic: whoever falls is dead, and there is only one save. Standard: downed, rescue and bleeding out as described; round and mission can be restarted. Casual: whoever falls withdraws and is back for the next mission without a scar. If the avatar or Lucan falls, the mission is lost in every mode."
       where: "The mode is chosen when the campaign is created and shown in the campaign view."
       keywords: "classic, standard, casual, mode, death, permadeath, restart"
     # ------------------------------------------------------------ Home
@@ -357,7 +357,7 @@ handbook:
       keywords: "upgrade, level, castle, academy, workshop, training ground"
     trade:
       title: "Merchant and convoy"
-      text: "The merchant buys your items for {sell} of their price. The convoy holds {convoy} items; the equipment of the fallen ends up there too. In battle, whoever stands next to Kael can reach it."
+      text: "The merchant buys your items for {sell} of their price. The convoy holds {convoy} items; the equipment of the fallen ends up there too. In battle, whoever stands next to Lucan can reach it."
       where: "Merchant and convoy are rooms at home; in battle “Convoy” opens the store."
       keywords: "merchant, buy, sell, gold, convoy, store"
     ember_spark:
@@ -401,11 +401,11 @@ handbook:
       weak: { "1": "No standout stats.", "2": "If the avatar falls, the mission is lost." }
     class_captain:
       title: "Captain"
-      text: "Kael's role: wields sword, lance and shield and with “Rally” strengthens all nearby allies until the end of the next enemy phase."
+      text: "Lucan's role: wields sword, lance and shield and with “Rally” strengthens all nearby allies until the end of the next enemy phase."
       where: "“Rally” is in the class stone, once per map."
-      keywords: "captain, Kael, rally"
-      strong: { "1": "Rally raises damage and hit of the whole line.", "2": "Sturdy and widely armed.", "3": "Convoy in battle through Kael." }
-      weak: { "1": "If Kael falls, the mission is lost.", "2": "Low RES." }
+      keywords: "captain, Lucan, rally"
+      strong: { "1": "Rally raises damage and hit of the whole line.", "2": "Sturdy and widely armed.", "3": "Convoy in battle through Lucan." }
+      weak: { "1": "If Lucan falls, the mission is lost.", "2": "Low RES." }
     class_vanguard:
       title: "Vanguard"
       text: "Armored front line with lance, axe and shield. “Hold”: enemies entering a neighbouring tile end their movement there. The only zone of control in the game."
@@ -511,7 +511,7 @@ handbook:
     lesson_heal:
       title: "Lesson: vulnerary"
       text: "From the prologue: whoever is wounded drinks a vulnerary before waiting."
-      where: "In the prologue “The Pact Night”, as soon as Kael is wounded."
+      where: "In the prologue “The Pact Night”, as soon as Lucan is wounded."
       keywords: "lesson, prologue, vulnerary, potion, item, heal"
     lesson_height:
       title: "Lesson: height"

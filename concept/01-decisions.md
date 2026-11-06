@@ -72,7 +72,7 @@ Dieses Dokument hielt alle Entscheidungen des Proof of Concept fest.
 |---|---|---|---|
 | S1 | Setting | Klassische High Fantasy | A |
 | S2 | Prämisse | „Der gebrochene Drachenpakt“ | A |
-| S3 | Hauptfiguren | Avatar (Taktiker, auf dem Feld, Fähigkeit „Befehl“) + Lord **Kael**, Hauptmann des Aschenbanners | A |
+| S3 | Hauptfiguren | Avatar (Taktiker, auf dem Feld, Fähigkeit „Befehl“) + Lord **Lucan**, Hauptmann des Aschenbanners | A |
 | S4 | Verzweigung | Akt 1 linear, danach Fraktionswahl (3 Routen); V1 nur Datenmodell vorbereitet | A |
 | S5 | Darstellung | Visual-Novel-Dialoge mit Porträts, Kurzkampf auf dem Brett; Speed 1x/2x/Skip; 3D-Kampfszene später optional. **Ergänzt:** Krit-Cut-ins (Anime-Illustration) bei Krit/Tandem/Skill/Boss | A |
 
@@ -116,7 +116,7 @@ Details: `15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`.
 |---|---|---|---|
 | U1 | Umfang erster Wurf | Prolog + Kap. 1–2 spielbar: Kern-Kampf mit allen Regeln, Inventar/Paperdoll, Dialoge DE/EN, Lager (Kompanie, Konvoi, Händler, Schmied, Verzauberer, Heiler, Lagerfeuer, Speichern), Weltkarte, Auto-Save. **Noch nicht:** Taverne, Scharmützel/Übungsplatz, Nebel des Krieges, Krit-Cut-ins, Minikarte, Karten-Viewer (Dev-Route), Canto, Stimmungs-Porträts, Avatar-Vorlagen 3–4 | A |
 | U2 | Deployment | GitHub Pages per GitHub Action (`.github/workflows/pages.yml`), LFS-Objekte im Actions-Cache | A |
-| U3 | Bild-KI | Neutrale Halbfigur-Porträts (Avatar ×2, Kael, Brenna, Tobin, Mira, Liora, Varek, Grosk, Hask, Morra) + 3 VN-Hintergründe via ChatGPT; Stimmungen später | A |
+| U3 | Bild-KI | Neutrale Halbfigur-Porträts (Avatar ×2, Lucan, Brenna, Tobin, Mira, Liora, Varek, Grosk, Hask, Morra) + 3 VN-Hintergründe via ChatGPT; Stimmungen später | A |
 | U4 | Audio | ElevenLabs per API (`tools/audio/elevenlabs.py`, Key aus `ELEVENLABS_API_KEY`): 26 SFX (UI, Treffer mit Varianten, Elemente, Ereignisse) und 5 Musikstücke (Titel, Weltkarte, Lager, Spieler-/Gegnerphase). Noch nicht: Stimmen/Barks, Stimm-Laute, Ambiente, nahtlose Loop-Punkte. Lizenzprüfung GA26/O5 weiterhin offen | A |
 | U5 | Bedienung | Tippen auf einen Gegner, während eine Einheit gewählt ist, wählt automatisch das nächste Angriffsfeld und öffnet die Vorschau; zweites Tippen auf das Ziel greift an | C |
 | U6 | Phasenende | Haben alle Einheiten gehandelt, endet die Spielerphase automatisch | C |
@@ -135,7 +135,7 @@ Details: `15-art-direction.md`, `16-asset-pipeline.md`, `17-audio.md`.
 | U14 | Gestaffelte Mechaniken | Eine neue Regel pro Kapitel: `campaign.yaml` `mechanics` nennt pro Mechanik den ersten Knoten (Dreieck ab Kap. 1, Magie ab Kap. 2, Elemente/Status/Runen-Effekte und Unterstützungen ab Kap. 3). Vorher rechnet der Kern ohne sie (`BattleState.locked`), alte Spielstände ohne Feld = alles an. Details: `06` §10. Grund: Wunsch des Produktinhabers, Prolog bisher mit Dreieck, Magie und Affinität überladen | C |
 | U15 | Schwierigkeit über Aufstellung | Karteneinheiten und Verstärkungen haben optional `difficulty: [...]`. Leicht = weniger Gegner/kleinere Wellen, Schwer = Zusatzgegner und Flanken. `enemyStatPercent` bleibt −15/0/+15 | C |
 | U16 | Rhens Zauberbuch | Der Avatar startet ohne Glut; das Glut-Folio gibt es nach Kap. 1 (`grants` am Kampagnenknoten, Ergebnisbildschirm zeigt es). Händler: Glut ab Stufe 1, Feuerbombe ab Stufe 2. Dorf West in Kap. 1 gibt einen Wurfspieß statt einer Feuerrune | C |
-| U17 | Lektionen | Tutorial-Dialoge: höchstens eine Lektion pro Runde, max. drei Zeilen, situativ ausgelöst. Prolog: Bewegen/Vorschau (R1), Gefahrenzone + Deckung (R2), Heiltrank (Kael < 60 % TP). Kap. 1: Ziel + Dreieck (R1), Feuer beim Betreten der Stadtmitte. Kap. 2: Beschützen + Magie (R1), Varek-Hinweis beim Überqueren des Bachs. Kap. 1 ohne Truhe, ohne Nebenziel „keine Verluste“; Kap. 2 ohne Gegner-Unterstützungspaar | C |
+| U17 | Lektionen | Tutorial-Dialoge: höchstens eine Lektion pro Runde, max. drei Zeilen, situativ ausgelöst. Prolog: Bewegen/Vorschau (R1), Gefahrenzone + Deckung (R2), Heiltrank (Lucan < 60 % TP). Kap. 1: Ziel + Dreieck (R1), Feuer beim Betreten der Stadtmitte. Kap. 2: Beschützen + Magie (R1), Varek-Hinweis beim Überqueren des Bachs. Kap. 1 ohne Truhe, ohne Nebenziel „keine Verluste“; Kap. 2 ohne Gegner-Unterstützungspaar | C |
 | U18 | Balancing-Stand | (Werte vor dem Neu-Layout, siehe D18) Sim (40 Läufe, verkettete Kampagne, Tod-Modus Standard; Sim-Spieler besucht jetzt Dörfer und wirbt an): **Leicht** 100 / 100 / 97 %, **Normal** 100 / 100 / 83 % (0,07 / 0,42 / 1,30 Niedergestreckte), **Schwer** 70 / 36 / 40 %. Vorher: Leicht 100/100/73, Normal 100/95/39, Schwer 90/86/29. Zielkorridore in `06` §10 | C |
 | U19 | Audio-Mischung | Vier SFX-Kanäle: UI (1 Stimme, ersetzt), Kampf (max. 2), Ereignis (1 Stimme + kurze Warteschlange), Jingle (Phase, Stufenaufstieg, Anwerben, Sieg, Niederlage; senkt die Musik um ≈ −9 dB). Sieg/Niederlage blenden die Kampfmusik aus und halten den nächsten Titel bis zum Ende des Jingles an. Gleicher Sound nicht öfter als alle 60 ms. Behoben: Musik startete bei Taps während des Ladens mehrfach übereinander. Tab im Hintergrund → Audio pausiert (`17` §7) | C |
 | U20 | Bedienführung (Vorschlag) | Ein Hub „Kriegslager“ statt Weltkarte + Lager, „Aufbrechen“ als Haupttaste, Aufstellung nur wenn nötig, Kampfleiste mit max. 4 Aktionen, „Phase beenden“ nie neben „Zurück“, Neues Spiel nur Name/Porträt/Schwierigkeit, Affinität erst mit den Elementen, Lager-Einrichtungen schalten sich frei. Mockups A/B/C: Design-Leinwand „Hollow Crown – UI-Richtungen“. **Umgesetzt:** Hub `Camp` mit Haupttaste „Aufbrechen“ und „Aufstellung“, Einrichtungen per `campaign.yaml` `facilities` (Kompanie/Konvoi/Händler ab Start, Schmied/Heiler nach Kap. 1, Lagerfeuer nach Kap. 2, Verzauberer ab Kap. 3); Aufstellung wird übersprungen, wenn die Kompanie nicht größer als die Einsatzplätze ist; Kampf-Dock in vier Zuständen (Leerlauf: Gefahr / Nächste / Phase beenden mit Rückfrage bei bereiten Einheiten), Zoom-Tasten entfallen (Pinch/Mausrad); Affinität vorerst fest „Wind“, Wahl folgt mit den Elementen; eigenes Linien-Icon-Set statt Emoji (`src/ui/icons.tsx`) | A |
@@ -180,7 +180,7 @@ Grundlage: `concept/20-game-brief/brief.md` (BMAD `gds-create-game-brief`), Herl
 | B5 | Kampagnenstruktur | Akte mit je einer Region auf der Weltkarte, Missionsreihenfolge innerhalb eines Akts teils frei. Löst S4 ab: **keine Fraktionsrouten**, stattdessen viele kleine Entscheidungen → Epilog-Mosaik, Flags wirken in Staffel 2 weiter | A |
 | B6 | Heimat-Burg | Suikoden-Prinzip ab Akt 2 (Akt 1 wanderndes Lager). Ein Raum pro spielerischer Funktion, keine feste Raumzahl. Erweitert G24 | A |
 | B7 | Nemesis-Leutnants | 12 handgeschriebene Leutnants (4 pro Akt), fliehen nach sichtbarer Regel, kehren stärker zurück, endgültig besiegbar. Deterministisch, nicht prozedural | A |
-| B8 | Zeichenstil | **Runder Chibi-Cartoon** für Porträts und Figuren (Mockup `art/mockups/style-2026-10/round_chibi_kael.png`). Löst GA5 und GA14 (Anime-Halbfiguren/-Ebene) ab; Ausarbeitung in der Art-Etappe | A |
+| B8 | Zeichenstil | **Runder Chibi-Cartoon** für Porträts und Figuren (Mockup `art/mockups/style-2026-10/round_chibi_lucan.png`). Löst GA5 und GA14 (Anime-Halbfiguren/-Ebene) ab; Ausarbeitung in der Art-Etappe | A |
 | B9 | Audio | Folk-lastig und wärmer, Orchester nur bei Bossen/Drama, Leitmotive pro Figur/Truppe statt pro Fraktion (präzisiert GA19); Hub-, Weltkarten- und Menümusik dezent, ohne Gesang | A |
 
 ## Von Claude gesetzte Detail-Defaults [C]
@@ -191,7 +191,7 @@ Diese Werte wurden nicht einzeln abgestimmt, sondern als **Startwerte** gesetzt.
 - Tragkraft = STR + Bewegungstyp-Bonus (statt reiner STR), damit Startausrüstung nicht sofort überlädt.
 - Beutel-Gegenstände zählen nicht zum Gewicht.
 - Tauschen und Konvoi-Zugriff beenden den Zug nicht (einmal pro Zug).
-- Niederlage (Avatar/Kael fällt): Neustart ab Rundenbeginn (Standard/Casual) bzw. Missionsbeginn (Klassik). → siehe Offene Punkte.
+- Niederlage (Avatar/Lucan fällt): Neustart ab Rundenbeginn (Standard/Casual) bzw. Missionsbeginn (Klassik). → siehe Offene Punkte.
 - Einheit mit 2 Narben stirbt beim nächsten Erreichen von 0 TP sofort.
 - Skill-Loadout: max. 4 gemeisterte Skills ausgerüstet (5 nach Klassenaufstieg).
 - V1 implementiert pro Basisklasse **eine** Profiklasse; alle 12 sind spezifiziert.

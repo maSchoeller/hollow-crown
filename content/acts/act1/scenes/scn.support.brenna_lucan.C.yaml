@@ -1,4 +1,4 @@
-id: scn.support.brenna_kael.C
+id: scn.support.brenna_lucan.C
 background: lager_unterwegs
 music: camp
 lines:
@@ -8,7 +8,7 @@ lines:
     mood: happy
     text: "Was macht eine Axt, wenn sie müde ist, Hauptmann? Sie haut sich aufs Ohr!"
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Gestern war es eine Schaufel."
@@ -18,7 +18,7 @@ lines:
     mood: happy
     text: "Die hat sich zur Ruhe gesetzt. Du lachst nie. Das ist kein Mangel am Witz."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Ich lache, wenn es einen Grund gibt."
@@ -28,7 +28,7 @@ lines:
     mood: neutral
     text: "Du hast auch nicht gelacht, als ich damals ans erste Feuer kam. Nur genickt."
   - id: l06
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Du hast genug geredet für zwei."
@@ -38,7 +38,7 @@ lines:
     mood: neutral
     text: "Und du hast nie gefragt, warum ich allein kam. Kein einziges Mal."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Wolltest du es erzählen?"
@@ -48,7 +48,7 @@ lines:
     mood: neutral
     text: "Nein."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: happy
     text: "Siehst du."
@@ -58,7 +58,7 @@ lines:
     mood: happy
     text: "Zwölf Jahre, und es ist immer noch dieselbe Nicht-Frage."
   - id: l12
-    speaker: [kael]
+    speaker: [lucan]
     fallback: skip
     mood: neutral
     text: "Sie hat sich bewährt. Gib mir den Löffel, der Eintopf brennt an."

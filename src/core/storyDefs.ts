@@ -9,6 +9,8 @@ export type Condition =
   | { completed: string }
   | { storyCount: { min?: number; max?: number } }
   | { act: number }
+  /** the castle has reached at least this tier (0 ruin … 3 fortress; story 15.12) */
+  | { castleTier: number }
   | { support: { pair: [string, string]; rank: SupportRank } }
   | { stance: Stance }
   | { met: string }
@@ -104,9 +106,9 @@ export interface SceneOption {
 /** A spoken line (or narration without `speaker`); its text key is `dlg.<scene>.<line>`. */
 export interface SceneSpeech {
   id: string;
-  /** replacement chain: the first companion still with the company speaks; avatar and kael always are */
+  /** replacement chain: the first companion still with the company speaks; avatar and lucan always are */
   speaker?: string[];
-  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/kael) */
+  /** `skip` = the line vanishes when nobody of the chain is left (allowed instead of ending the chain with avatar/lucan) */
   fallback?: 'skip';
   mood: Mood;
   text: string;

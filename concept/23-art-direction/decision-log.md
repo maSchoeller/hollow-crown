@@ -137,3 +137,23 @@
 - Gelände `stall` zeichnet Marktstände statt des Zelts; ein Stand sperrt in jeder Region gleich. Das Lagerzelt und die Mühle setzt die Karte von Hand: Gewicht 0 in `render.yaml board.variants` heißt „nur über `propVariants`, nie gewürfelt“.
 - Nicht übernommen, weil keine Karte von Akt 1 sie über ein Gelände zeichnen kann oder die Matrix sie einer späteren Etappe gibt: `house_town_a/b` (Varnhold behält die vier Kulissenhäuser; ein Stadt-Satz bräuchte eine Auswahl je Karte), `chest_b_*` (Truhe ist Etappe 3 und beträfe den Prolog im ersten Download), `field_burnt`, `hay_a`, `barn_a`, `vine_a`, `fence_wicker_a`, `sign_a`, `lantern_post_a`, `pillar_a`, `pillar_broken_a`, `rubble_a`, `banner_a`, `grove_autumn_a`, `fir_a`, `deadtree_b`, `stump_a`, `bush_low_a`, `boulder_a`, `camp_rack_a`, `wolf_cave_a`. Sie bleiben in der Galerie ohne `ships`.
 - `content:check` meldet jetzt jedes Modell, das `render.yaml` oder eine Karte für das Brett nennt und das als Datei fehlt oder als Galerie-Modell ohne `ships` nicht ausgeliefert wird.
+
+## 2026-11-06: Weltkarte nach dem Handy-Test, Paktwacht als Ruine (Story 15.12)
+
+- **Produktinhaber 2026-11-06 (Handy-Test):** Die Karte ruckelte stark. Vorschlag umgesetzt: die Karte als ein vorab zusammengefügtes Grundbild in Auflösungsstufen (1024, 2048, 3276 px), darauf nur die Stadtbilder als einzelne Bilder. Die Messung zeigte als Hauptlast Layout und Paint der Steine-Ebene bei jedem Frame und den SVG-Weichzeichner des Nebels; beides ist mit umgebaut (Werte in der Story-Datei 15.12).
+- **Produktinhaber 2026-11-06: Die Paktwacht ist ab Spielbeginn eine Ruine, ausgebaut erst später; Zustandsvarianten zumindest für die Paktwacht.** Neues Stadtbild `art/world/sites/paktwacht_ruin.png` (Prompt und Abnahme `art/prompts/paktwacht_ruin_site.md`), die ausgebaute Burg `paktwacht_v3.png` ist die Variante `paktwacht_built`. Das Grundbild enthielt die Burg nie (nur das leere Plateau), eine Retusche war nicht nötig. Das „P“ und der Rest der Karte bleiben unverändert.
+- Ausgebaut erscheint die Burg ab **Burgstufe 1** (`castleTier: 1`, neue Bedingung), also mit dem ersten Raum-Ausbau; Räume lassen sich erst ab Akt 2 ausbauen, nach 1-6 bleibt die Burg in Akt 1 eine Ruine wie in §7 [ASSUMPTION: Stufe 1 statt einer späteren Stufe; die Variante zeigt schon die volle Festung].
+- **Offen beim Produktinhaber:** Varianten für weitere Orte (Erlbach verbrannt nach 1-2, Aurenhall belagert); bis zur Entscheidung zeigen sie ihr Grundbild. Ebenso offen: ob die Burgstufen 1 und 2 (gesichert, wehrhaft) eigene Stadtbilder bekommen; bis dahin zeigt jede Stufe ab 1 die volle Festung.
+- Paket: die drei Stufen zusammen 4,6 MB statt 3,4 MB (Kacheln + Übersicht); ein Handy mit DPR 3 lädt davon Übersicht und volle Stufe, rund 3,3 MB. `act1` 35,8 von 40 MB.
+
+## 2026-11-06: Wege zeigen die Geografie, nicht die Missionsfolge (Story 15.12)
+
+- **Produktinhaber 2026-11-06:** Die gezeichneten Wege liefen in der Reihenfolge der Kampagne kreuz und quer über die Karte. Gewünscht ist eine Straßenkarte: **Wege verbinden Orte, die nah beieinander liegen; sie zeigen die Geografie, nicht die Missionsfolge.** Kampagnenfolge, Freischaltung und Knoten bleiben unverändert.
+- Umsetzung: Wegenetz als Daten (`roads` in `content/world/valmora.yaml`, erzeugt mit `tools/art/world_roads.py`). Zuerst die Straßen aus `geografie-valmora.md` (Klammstraße Aurenhall–Kronfeld, Passstraße Kronfeld–Windscharte–Paktwacht, Paktwacht–Tobins Hof–Varnhold, Speichen von Kronfeld, Weg über den Spiegelsee zum Krater), dann Nachbarn per Gabriel-Graph: keine Kreuzungen, kein Weg länger als 18 % der Kartenbreite (die Küstenstrecke Aue-Insel–Perlhof 25 %, sonst wäre Perlhof abgeschnitten), jeder Ort erreichbar. 41 Wege über 30 Orte.
+- Wege in den Nebel eines späteren Akts zeichnet die Karte nicht. Damit hat der Prolog-Stein in Aurenhall in Akt 1 keinen Weg mehr nach Varnhold (bisher zeigte die Linie die Flucht nach Süden); die Flucht erzählt die Prolog-Szene. Wege zu einem Ort ohne offenen oder erledigten Stein sind gedämpft (60 % Deckkraft).
+- Belege: `_bmad-output/implementation-artifacts/15-12-belege/wege-vergleich.jpg` (375 × 812, vorher und nachher bei 1-6).
+
+## 2026-11-06: Seraphine wird in Staffel 2 spielbar
+
+- Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
+- Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.

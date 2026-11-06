@@ -13,7 +13,7 @@ lines:
     mood: neutral
     text: "Er steht, weil er sich gehalten hat. Wie jemand, den ich kenne."
   - id: m01
-    speaker: [brenna, kael, avatar]
+    speaker: [brenna, lucan, avatar]
     requires: [{ dead: tobin }]
     mood: sad
     text: "Hier am Tisch saß er als Kind. Das Haus erinnert sich an ihn, auch wenn es keiner sagt."

@@ -1,5 +1,8 @@
 # brenna_board_turnaround – Brett-Turnaround mit Teamtuch-Maske
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/turnarounds/brenna_board/sheet.png` (1536 × 1024, Original); daraus `front.png`, `side.png`, `back.png` (je 1024 × 1024, `tools/art/split_turnaround.py`)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome; Chat „Create Brenna Turnaround Sheet“

@@ -7,9 +7,9 @@ import { figureBudgetSchema, parsePacks } from '../../src/content/packs';
 // @ts-expect-error plain ES module of the build tooling, without type declarations
 import { checkFigures, imageSize, measureGlb, readFigureBudget } from '../../tools/figure-budget.mjs';
 
-const kael = join(process.cwd(), 'art', 'models', 'units', 'kael.glb');
+const lucan = join(process.cwd(), 'art', 'models', 'units', 'lucan.glb');
 /** Checkouts without Git LFS (the CI check job) hold only a pointer text file instead of the model */
-const hasKael = readFileSync(kael).readUInt32LE(0) === 0x46546c67;
+const hasLucan = readFileSync(lucan).readUInt32LE(0) === 0x46546c67;
 
 describe('figure budget', () => {
   it('packs.yaml carries a valid figureBudget and still parses as packs', () => {
@@ -18,14 +18,14 @@ describe('figure budget', () => {
     expect(parsePacks(raw).length).toBeGreaterThan(0);
   });
 
-  it.runIf(hasKael)('counts the triangles and the texture of a packed figure (Kael: 6179, the Lucan model since story 15.9)', () => {
-    expect(measureGlb(readFileSync(kael))).toEqual({ triangles: 6179, texture: [512, 512] });
+  it.runIf(hasLucan)('counts the triangles and the texture of a packed figure (Lucan: 6179, the Lucan model since story 15.9)', () => {
+    expect(measureGlb(readFileSync(lucan))).toEqual({ triangles: 6179, texture: [512, 512] });
   });
 
-  it.runIf(hasKael)('flags a figure over a limit and lets large ids have the factor', () => {
+  it.runIf(hasLucan)('flags a figure over a limit and lets large ids have the factor', () => {
     const budget = { ...readFigureBudget(), triangles: 6000, large: [] as string[] };
-    expect(checkFigures([kael], budget).outliers.map((r: { why: string[] }) => r.why)).toEqual([['triangles > 6000']]);
-    expect(checkFigures([kael], { ...budget, large: ['kael'] }).outliers).toEqual([]);
+    expect(checkFigures([lucan], budget).outliers.map((r: { why: string[] }) => r.why)).toEqual([['triangles > 6000']]);
+    expect(checkFigures([lucan], { ...budget, large: ['lucan'] }).outliers).toEqual([]);
   });
 
   it('reads the size from PNG, JPEG and WebP headers', () => {

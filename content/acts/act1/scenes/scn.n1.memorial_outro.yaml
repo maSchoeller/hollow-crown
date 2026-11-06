@@ -7,17 +7,17 @@ lines:
     mood: sad
     text: "Der Ring ist zerschlagen. Vom Dach des Nests holen sie ein schmales Bündel herunter."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Die Elster. Fenns Dolch."
   - id: l03
-    speaker: [mira, brenna, kael]
+    speaker: [mira, brenna, lucan]
     mood: sad
     text: "Elf Dietriche und ein Dolch. Mehr hat er nicht besessen. Und er hat jeden Beutel zurückgegeben."
   - id: l04
     mood: neutral
     text: "Zwischen den Beutestücken liegt ein winziger, glimmender Splitter. Ein Glutfunke."
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: sad
     text: "Wir nehmen beides mit. Die Elster bleibt in der Kompanie. Für ihn."

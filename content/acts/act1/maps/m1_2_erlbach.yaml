@@ -68,7 +68,7 @@ objects:
   - { id: v_elder, type: village, at: [12, 11], reward: { gold: 100, dialogue: scn.m1_2.house_elder } }
 deploy:
   max: 6
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[8, 12], [9, 12], [11, 12], [12, 12], [8, 13], [9, 13], [11, 13], [12, 13]]
 # Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante, die Gründe stehen als Kommentar darüber
 haunts:
@@ -147,7 +147,7 @@ reinforcements:
 objectives:
   victory: { type: defend, unit: elder, turns: 8 }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
     - { type: unit_dies, unit: elder }
   side:
@@ -188,5 +188,5 @@ design:
     - { at: [17, 8], label: Mi, note: "Miras Haus (v_e): besuchen bringt Mira; Plünderer r8 und die Welle R4 zielen darauf." }
   notes:
     - "Normal 17 Gegner (6 davon R4/R6) gegen 7 eigene (6 aufstellbar + Mira), Stufe 1–2 plus Hask."
-    - "Aufstellbar 6: Rhen, Kael, Brenna, Tobin, Fenn + Liora, falls 1-3 zuerst gespielt; sonst ein Söldner aus der Taverne."
+    - "Aufstellbar 6: Rhen, Lucan, Brenna, Tobin, Fenn + Liora, falls 1-3 zuerst gespielt; sonst ein Söldner aus der Taverne."
     - Keine Geländeveränderung über das vorhandene Feuer hinaus (nächste veränderliche Karte 1-4).

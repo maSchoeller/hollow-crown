@@ -11,7 +11,7 @@ damit Bergen dringlich und lesbar wird.
 ## Acceptance Criteria
 
 1. Fällt eine Figur in Standard auf 0 TP, zählt `BattleUnit.bleed` ihre eigenen Phasen; nach `balance.death.bleedOutTurns` (3) stirbt sie, jeder weitere Treffer tötet sofort; ein Event meldet den Zähler.
-2. Eine Figur mit 2 Narben stirbt bei 0 TP sofort; Avatar oder Kael bei 0 TP bleiben eine Niederlage.
+2. Eine Figur mit 2 Narben stirbt bei 0 TP sofort; Avatar oder Lucan bei 0 TP bleiben eine Niederlage.
 3. Auf dem Brett ist die niedergestreckte Figur grau mit Puls-Symbol und Verblutungs-Zähler (`downed`); Tests decken Zähler, Tod, Bergen mit Narbe und Zwei-Narben-Regel ab.
 
 ## Tasks / Subtasks
@@ -41,7 +41,7 @@ Claude Sonnet 5.5
 
 ### Completion Notes List
 
-- 11 Tests: Zähler, nur eigene Phasen, Tod nach 3, zweiter Treffer, Bergen mit Narbe, Zwei-Narben-Regel, Avatar/Kael, Klassik/Casual, Datenwert.
+- 11 Tests: Zähler, nur eigene Phasen, Tod nach 3, zweiter Treffer, Bergen mit Narbe, Zwei-Narben-Regel, Avatar/Lucan, Klassik/Casual, Datenwert.
 
 ### File List
 

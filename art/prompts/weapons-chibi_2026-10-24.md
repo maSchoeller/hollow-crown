@@ -1,5 +1,8 @@
 # weapons-chibi_2026-10-24 – Basiswaffen-Bilder und Brenna/Mira im Round-Chibi-Stil
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Beauftragt vom Produktinhaber am 2026-10-24: (1) je eine Basiswaffe für die Waffengruppen ohne Item (Dolch, leichter Bogen, Laute) samt Item-Bild, (2) Brenna und Mira, deren Neutralbilder aus dem ersten Moodboard-Durchlauf weniger „chibi“ waren als die übrigen, neu im Round-Chibi-Stil (B8) samt Stimmungsvarianten.
 
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome

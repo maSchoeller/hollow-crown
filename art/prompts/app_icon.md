@@ -1,5 +1,8 @@
 # app_icon – App-Icon und Favicon
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Datei:** `art/icon/icon.png` (1254 × 1254, RGB, unverändertes Original von ChatGPT; ersetzt die dunkle Navy-Krone vom 2026-10-22, die in der Git-Historie liegt)
 - **Datum:** 2026-10-24
 - **Werkzeug:** ChatGPT (Bildgenerierung, Tarif Plus, Konto maschoeller), gesteuert über Claude in Chrome

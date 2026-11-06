@@ -16,7 +16,7 @@
 | | |
 |---|---|
 | Gegner | L 15 · N 18 · S 21, Stufe 2–3 plus Hask |
-| Aufstellung | 6 (Rhen, Kael, Brenna, Tobin, Fenn + Liora oder ein Söldner), Mira als 7. |
+| Aufstellung | 6 (Rhen, Lucan, Brenna, Tobin, Fenn + Liora oder ein Söldner), Mira als 7. |
 | Nebenziele | Mira gewinnen · alle Häuser besuchen |
 | Phasen | R1–2 am Bach · R3–5 Flanken · R6–8 letzter Ansturm |
 | Veränderung | nur das Feuer in den Feldern (vorhandene Mechanik) |

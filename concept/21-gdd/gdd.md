@@ -83,7 +83,7 @@ Der Proof of Concept (Prolog, Kap. 1–2) hat Kampfgefühl und Bedienung bestät
 ### Sieg und Niederlage
 
 - **Mission gewonnen:** Hauptziel erfüllt (siehe Missionsziele). Leutnants und Bosse mit Fluchtregel gelten als besiegt, sobald sie geflohen sind.
-- **Mission verloren:** Avatar oder Kael fällt auf 0 TP; ein Schutzziel fällt (`defend`, `escort`, `protect_npc` als Pflicht); bei `defend` erreicht ein Gegner das Verteidigungsfeld; bei `treasure` läuft das Rundenlimit ab. `survive` gewinnt man durch Erreichen des Rundenlimits. **`defend` und `survive` enden vorzeitig mit dem Sieg**, sobald kein Gegner mehr auf dem Feld steht und keine Verstärkungswelle oder kein Spawn-Trigger mehr aussteht (leere Runden müssen nicht übersprungen werden); ein gefallenes Schutzziel verliert weiterhin zuerst.
+- **Mission verloren:** Avatar oder Lucan fällt auf 0 TP; ein Schutzziel fällt (`defend`, `escort`, `protect_npc` als Pflicht); bei `defend` erreicht ein Gegner das Verteidigungsfeld; bei `treasure` läuft das Rundenlimit ab. `survive` gewinnt man durch Erreichen des Rundenlimits. **`defend` und `survive` enden vorzeitig mit dem Sieg**, sobald kein Gegner mehr auf dem Feld steht und keine Verstärkungswelle oder kein Spawn-Trigger mehr aussteht (leere Runden müssen nicht übersprungen werden); ein gefallenes Schutzziel verliert weiterhin zuerst.
 - **Neustart:** setzt alles auf den Missionsbeginn bzw. Rundenbeginn zurück, auch Tode.
 
 | Tod-Modus | Runde neu starten | Mission neu starten | Spielstände |
@@ -108,9 +108,9 @@ Die Kampfregeln des Proof of Concept gelten unverändert; Formeln und alle Werte
 - **Elemente** Feuer > Wind > Erde > Wasser > Feuer, Licht ↔ Dunkel (×1,2 / ×0,8), Element + Dreieck max. +40 %.
 - **Status** (2 Runden): Brennen 10 % max. TP, Nass −3 SPD, Verlangsamt −1 MOV, Rückstoß 1 Feld.
 - **Supports** C/B/A/S mit Nachbarbonus, Tandem ab B (50 %), Schutz ab A (20 %/30 %), Trauer −10 Treffer für 3 Missionen.
-- **Tod-Modi:** Klassik sofort tot; Standard niedergestreckt → Bergen (Narbe) → sonst Tod; Casual Rückzug ohne Narbe. Avatar oder Kael bei 0 TP = Niederlage.
+- **Tod-Modi:** Klassik sofort tot; Standard niedergestreckt → Bergen (Narbe) → sonst Tod; Casual Rückzug ohne Narbe. Avatar oder Lucan bei 0 TP = Niederlage.
 - **Verbluten (Standard):** Niedergestreckte sterben nach **3 eigenen Phasen** ohne Bergen; jeder weitere Treffer tötet sofort; der Zähler ist sichtbar. Nach 2 Narben ist der nächste 0-TP-Fall tödlich.
-- **Befehl** (Avatar) und **Sammelruf** (Kael), je 1×/Karte.
+- **Befehl** (Avatar) und **Sammelruf** (Lucan), je 1×/Karte.
 
 ### Leutnants
 
@@ -144,7 +144,7 @@ Die **Klasse ist eine Rolle**: Bewegungstyp, erlaubte Waffengruppen, eine Klasse
 | **Späher** | Fuß (6), Kletterer | Dolch, leichter Bogen | **Öffnen/Stehlen:** Türen und Truhen ohne Schlüssel; ein nicht ausgerüstetes Item eines Nachbarn stehlen; +2 Sicht im Nebel | Schatten (für Gegner unsichtbar, solange kein Gegner näher als 3 Felder steht, im Nebel immer; nach einem eigenen Angriff sichtbar bis zum Ende der nächsten Gegnerphase, Konter enthüllen nicht; die Gegner-KI plant Wege, als wäre sein Feld frei, ihre Bewegung endet davor) / Fallensteller (legt Fallen auf Nachbarfelder, max. 2 gleichzeitig, eine dritte ersetzt die älteste; für Gegner unsichtbar, bis Missionsende; nur Gegner lösen aus: Bewegung endet, 8 Schaden + Verlangsamt; nimmt eigene Fallen zurück) |
 | **Spielmann** | Fuß (5) | Dolch, Laute | **Anfeuern:** ein Nachbar erhält bis Zugende +1 MOV und +10 Treffer | Barde (Radius 2, max. 2 Ziele) / Bannerträger (Aura Radius 1: Nachbarn ignorieren Trauer und erhalten +5 Ausweichen) |
 | **Taktiker** (nur Avatar) | Fuß (5) | Schwert, Zauber | **Befehl** 1×/Karte | Großstratege (Befehl 2×/Karte) |
-| **Hauptmann** (nur Kael) | Fuß (5) | Schwert, Lanze | **Sammelruf** 1×/Karte | Bannerherr (Sammelruf Radius 3) |
+| **Hauptmann** (nur Lucan) | Fuß (5) | Schwert, Lanze | **Sammelruf** 1×/Karte | Bannerherr (Sammelruf Radius 3) |
 
 - 20 Story-Gefährten, 2–3 je Rolle; sie unterscheiden sich über Wachstum, persönlichen Skill und Startausrüstung.
 - PoC-Klassen werden umgemappt: Söldner/Held → Plänkler, Soldat/Ritter → Vorkämpfer, Kämpfer → Vorkämpfer oder Plänkler, Schütze → Schütze, Magier → Elementarist, Kleriker → Heiler. `[ASSUMPTION: Basiswerte und Wachstum je Rolle aus den PoC-Klassen abgeleitet]`
@@ -185,7 +185,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 ### Aktionsökonomie
 
 - Je Einheit pro Spielerphase: Bewegung + 1 Aktion (Angriff, aktive Klassen-Aktion, Item, Ansprechen, Bergen, Interagieren, Warten).
-- Freie Aktionen ohne Zugende: Tauschen 1×, Konvoi 1× (neben Kael), Waffenwechsel unbegrenzt.
+- Freie Aktionen ohne Zugende: Tauschen 1×, Konvoi 1× (neben Lucan), Waffenwechsel unbegrenzt.
 - Keine Gelegenheitsangriffe; einzige Bewegungssperre ist Halten des Vorkämpfers.
 - Feste Phasenreihenfolge; kein Zeitlimit pro Zug. Haben alle Einheiten gehandelt, endet die Spielerphase automatisch.
 
@@ -229,7 +229,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 - **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 2 öffnen nach 2-1 die drei Strang-Anfänge 2-2, 2-4 und 2-6, die zweite Mission eines Strangs braucht die erste (2-3 nach 2-2, 2-5 nach 2-4, 2-7 nach 2-6), das Finale 2-8 öffnet nach allen; in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
 - **Missionsgrößen:** 19 der 25 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
-- **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Kael), defend, survive, escape, **escort** (NPC zum Ausgang bringen; mit dem Profil `follow_ally` bleibt er bei der nächsten eigenen Figur), **treasure** (Truhen vor Rundenlimit bergen). Ein Ziel kann in eine zweite Phase wechseln: Im Akt-2-Finale gilt erst `survive`, danach öffnet sich eine Fluchtzone (`escape`). 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
+- **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Lucan), defend, survive, escape, **escort** (NPC zum Ausgang bringen; mit dem Profil `follow_ally` bleibt er bei der nächsten eigenen Figur), **treasure** (Truhen vor Rundenlimit bergen). Ein Ziel kann in eine zweite Phase wechseln: Im Akt-2-Finale gilt erst `survive`, danach öffnet sich eine Fluchtzone (`escape`). 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
 
 ### Missionszustände
 
@@ -257,7 +257,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übernimmt die verkettete Simulation (Story 6.8).
 
 - **Wachstum:** Wachstumsraten mit Glättung (Ist ≤ Erwartung − 1,0 → garantiert +1; Ist ≥ Erwartung + 1,5 → 0; mindestens 1 Wert pro Level-up).
-- **Aufstieg:** ab Stufe 10 mit einem **Glutfunken** in der Akademie (ab Akt 2); Wahl Profi A oder B; Stufe wird 1, Loadout 4 → 5. Avatar und Kael steigen genauso mit einem Glutfunken auf. Der Glutfunke ersetzt das Siegel des Proof of Concept.
+- **Aufstieg:** ab Stufe 10 mit einem **Glutfunken** in der Akademie (ab Akt 2); Wahl Profi A oder B; Stufe wird 1, Loadout 4 → 5. Avatar und Lucan steigen genauso mit einem Glutfunken auf. Der Glutfunke ersetzt das Siegel des Proof of Concept.
 - **Skills:** persönlicher Skill + Klassen-Skills + Item-Skills. Item-Skills werden durch Tragen gemeistert: FP +1 je Kampfsequenz, +5 bei Missionsende; Meisterung nach Seltenheit 20/30/40/60 FP (Gewöhnlich/Selten/Episch/Legendär) `[ASSUMPTION]`.
 - **Narben:** sechs Narben mit dauerhaftem Malus (`extract-01-decisions.md`); der Heiler entfernt sie.
 
@@ -278,7 +278,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - **Nebenquests** (10): optional, dauerhaft offen; 7 geben einen Glutfunken plus besondere Ausrüstung, einen besonderen Gefährten oder einen Vorteil für die Hauptstory, die 3 persönlichen Quests von Tobin, Jory sowie Kit und Pell eine Signaturwaffe statt des Glutfunkens.
 - **Heimsuchungen:** wiederholbar, ohne Story (siehe Welt und Erkundung).
 - **Gestaffelte Regeln** nach Zahl abgeschlossener Story-Missionen: Bewegung und Angriff (Prolog) → Waffendreieck (nach 1) → Magie (nach 2) → Elemente, Status, Runen, Supports (nach 3); Klassen-Aktionen einer Rolle, sobald der erste Gefährte dieser Rolle beitritt. Höchstens eine Lektion pro Runde, maximal 3 Zeilen.
-- **Entscheidungen:** 12 Wahlpunkte (4 pro Akt), je 2–3 Antworten, nur außerhalb des Kampfs. Wirkungen: Ein Gefährte kommt oder geht, eine Nebenquest öffnet sich, Groll eines Leutnants −1, Händlerpreise ±10 % oder Dorfhilfe (Heiltrank +1 Ladung für einen Akt). Avatar und Kael verlassen die Truppe nie. Jede Wahl wird im Spielstand vermerkt und trägt in Staffel 2.
+- **Entscheidungen:** 12 Wahlpunkte (4 pro Akt), je 2–3 Antworten, nur außerhalb des Kampfs. Wirkungen: Ein Gefährte kommt oder geht, eine Nebenquest öffnet sich, Groll eines Leutnants −1, Händlerpreise ±10 % oder Dorfhilfe (Heiltrank +1 Ladung für einen Akt). Avatar und Lucan verlassen die Truppe nie. Jede Wahl wird im Spielstand vermerkt und trägt in Staffel 2.
 - **Epilog-Mosaik:** eine Kachel je Story-Gefährte (lebt, gefallen, gegangen, und eine Wendung aus seinen Entscheidungen und Supports) und je Region (3).
 
 ### Welt und Erkundung
@@ -329,7 +329,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 | Gedächtnishalle (Gedenksteine ab 1-6, Lektionen ab Akt 2) | Liora, Amos | Gedenksteine; einmal pro Akt vererbt ein Gefallener eine Lektion (passiver Skill seiner Rolle, z. B. +5 Treffer, +1 MOV im Wald) an einen Gefährten | feste Lektion der Rolle des Gefallenen → Wahl aus 2 Lektionen seiner Rolle → freie Wahl aus allen Lektionen |
 | Übungsplatz (ab Akt 2) | Mira, Ilka | Reserve (auch Söldner) erhält EP | 20 % → 35 % → 50 % der Durchschnitts-EP der Mission |
 
-- **Lektionen:** Je Akt gibt es genau eine Vererbung, unabhängig von der Stufe; die Stufe bestimmt nur die Auswahl. Auch gefallene Söldner vererben; Gerrit vererbt eine feste Lektion. Empfänger sind alle Story-Gefährten einschließlich Avatar und Kael, keine Söldner. Jede Figur trägt höchstens eine Lektion; sie belegt keinen Loadout-Platz.
+- **Lektionen:** Je Akt gibt es genau eine Vererbung, unabhängig von der Stufe; die Stufe bestimmt nur die Auswahl. Auch gefallene Söldner vererben; Gerrit vererbt eine feste Lektion. Empfänger sind alle Story-Gefährten einschließlich Avatar und Lucan, keine Söldner. Jede Figur trägt höchstens eine Lektion; sie belegt keinen Loadout-Platz.
 - **Starkes Gegengift:** heilt alle Zustände und macht 1 Runde immun; nur in der Werkstatt herstellbar. „Trank verstärken“ bleibt beim Schmied.
 - **Runen in Akt 1:** Der Verzauberer kommt erst mit Akt 2; in Akt 1 gibt es Runen nur als Beute.
 - **Söldner-Traits** (Taverne Stufe 2; Liste in `extract-01-decisions.md`) werden als eigener Baustein gebaut.

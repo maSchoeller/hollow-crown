@@ -12,7 +12,7 @@ damit Permadeath nie eine Szene zerbricht.
 
 1. **Szene und Auflösung:** Eine Szene `content/acts/act1/scenes/<id>.yaml` hat Zeilen (`id`, `speaker` als Kette, `mood`, `text`, `requires`, `memorial`) und Antworten (`choice` mit `id`, `text`, `stance`, `effects`) (Architektur §5.8). `resolveScene(data, ctx, id)` wählt den ersten lebenden Sprecher der Kette, lässt Zeilen mit unerfüllten Bedingungen weg und fügt eine Gedenkzeile ein, wenn die erste Figur der Kette tot ist. Bedingungen und Wirkungen sind die aus Story 4.2 (kein zweiter Code).
 2. **Schlüssel:** Sie entstehen automatisch (`dlg.<szene>.<zeile>`, `….memorial`, `….<zeile>.<antwort>`); Englisch steht in `content/locales/en/act1.dialogue.yaml`.
-3. **`pnpm content:check`** scheitert bei Boxen über 110 Zeichen (DE oder EN), Ketten ohne Avatar/Kael am Ende und ohne `fallback: skip`, fehlenden EN-Schlüsseln, unbekannten Stimmungen und Antworten in Kampf-Szenen.
+3. **`pnpm content:check`** scheitert bei Boxen über 110 Zeichen (DE oder EN), Ketten ohne Avatar/Lucan am Ende und ohne `fallback: skip`, fehlenden EN-Schlüsseln, unbekannten Stimmungen und Antworten in Kampf-Szenen.
 4. **Migration:** Die PoC-Dialoge sind ins neue Format überführt, das alte Schema entfällt; der Dialog-Screen läuft weiter (neue Darstellung ist Story 4.5).
 
 ## Tasks / Subtasks
@@ -27,8 +27,8 @@ damit Permadeath nie eine Szene zerbricht.
 ## Dev Notes
 
 - **Muster:** Architektur §5.8, §8.2. Auflösung rein im Kern; die UI zeigt nur an und löst bei jeder Antwort neu auf (Flags der Antwort gelten sofort, `uid` hält die Position).
-- **Wer kann sprechen:** Avatar und Kael immer; sonst jeder, der weder gefallen (`fallen`) noch gegangen (`left`) ist. Wer nie beitrat (Gegner, noch nicht Rekrutierte), spricht. Gedenkzeile nur bei `fallen` der ersten Figur, direkt nach der Hauptzeile.
-- **Migration:** Einzelsprecher wurden zu Ketten `[x]`; alle außer Kael mit `fallback: skip` (Verhalten bei Tod: Zeile entfällt statt Geistersprecher). `surprised` wurde `neutral` (nur vier Stimmungen erlaubt). Elf Boxen über 110 Zeichen wurden in zwei Zeilen geteilt (`lNN`, `lNNb`). `side` entfällt; `Dialogue.tsx` leitet die Seite aus der Reihenfolge ab (Kael/Avatar links).
+- **Wer kann sprechen:** Avatar und Lucan immer; sonst jeder, der weder gefallen (`fallen`) noch gegangen (`left`) ist. Wer nie beitrat (Gegner, noch nicht Rekrutierte), spricht. Gedenkzeile nur bei `fallen` der ersten Figur, direkt nach der Hauptzeile.
+- **Migration:** Einzelsprecher wurden zu Ketten `[x]`; alle außer Lucan mit `fallback: skip` (Verhalten bei Tod: Zeile entfällt statt Geistersprecher). `surprised` wurde `neutral` (nur vier Stimmungen erlaubt). Elf Boxen über 110 Zeichen wurden in zwei Zeilen geteilt (`lNN`, `lNNb`). `side` entfällt; `Dialogue.tsx` leitet die Seite aus der Reihenfolge ab (Lucan/Avatar links).
 - **Antworten:** `stance` ist Pflicht; die sechs PoC-Antworten bekamen warm (ehrlich, „hinterfragen“), nüchtern (vorsichtig, „halten“), trotzig (stolz, mutig). Gezählt wird die Haltung erst mit dem Command `choose` (Story 4.6).
 - **Kampf-Szene:** Szene, die eine Karte nennt (Trigger, Zitat, Gespräch, Belohnung).
 - **Alte Spielstände:** Gespeicherte Kämpfe mit `quote: dlg.…` finden die Szene nicht mehr und zeigen sie nicht (Battle.tsx ignoriert unbekannte IDs).

@@ -27,7 +27,7 @@ lines:
     mood: happy
     text: "Fenn. Bester Dieb von Varnhold. Na ja, zweitbester. Der beste sitzt im Turm, und nicht wegen mir."
   - id: l05
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Du hast vom Dach aus zugesehen."
   - id: l06
@@ -41,7 +41,7 @@ lines:
     mood: neutral
     text: "So viele Zettel druckt man nicht über Nacht. Das war vorbereitet. Lange vorher."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Dann wusste jemand vorher, was in der Paktnacht geschehen würde."
   - id: l09
@@ -49,7 +49,7 @@ lines:
     mood: sad
     text: "Jemand, der uns den Auftrag gegeben hat."
   - id: l10
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wer hat uns angeheuert? Das ist ab jetzt unsere Frage."
   - id: l11
@@ -68,7 +68,7 @@ lines:
     mood: happy
     text: "Welchen Beutel? Der war eh leer!"
   - id: l14
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Willkommen im Aschenbanner, Fenn."
   - id: l15

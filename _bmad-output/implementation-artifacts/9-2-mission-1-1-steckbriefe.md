@@ -37,7 +37,7 @@ damit der Antrieb „Sündenbock“ greift.
   - Varnhold am Mittag, klar: Sonne hoch, neutral-warm; Staub, Markt. Beat 3: ganz Valmora hält die Truppe für die Mörder des Königs, Steckbriefe hängen in der Stadt, neues Ziel: Wer hat uns angeheuert?
   - Gegner: freie Kopfgeldjäger, nicht Morras Leute (Morra erst in 1-3), Axt/Lanze/Schwert gemischt, ein Anführer ohne Leutnant (`boss` nicht gesetzt, kein `lieutenant`). Zahlen: Leicht 6, Normal 7, Schwer 8 + Welle von hinten.
   - Fenn tritt **nach dem Sieg** in der Nachszene bei, nicht auf der Karte.
-  - Karte: Südstraße (Aufstellung 6 Plätze, max. 4, Avatar + Kael erzwungen), Markt mit Ständen, Brunnen, Steckbriefwand in der Mitte, Kopfgeldjäger aus Nord-, West- und Ostgasse, besuchbare Häuser am Rand mit Gold, kleinen Gegenständen und einem Satz über die Steckbriefe.
+  - Karte: Südstraße (Aufstellung 6 Plätze, max. 4, Avatar + Lucan erzwungen), Markt mit Ständen, Brunnen, Steckbriefwand in der Mitte, Kopfgeldjäger aus Nord-, West- und Ostgasse, besuchbare Häuser am Rand mit Gold, kleinen Gegenständen und einem Satz über die Steckbriefe.
   - Brunnen: kein Modell, bis dahin der Felsblock (`well` → `prop: rock`); Marktstände `stall` → Requisite `tent`.
   - Brücke im Graphen: `prologue → m1_1 → ch01 → ch02`; `mechanics` in `campaign.yaml` unverändert (Dreieck nach 1, Magie nach 2, Elemente/Unterstützungen nach 3 Story-Missionen). Folge: Magie ist durch die zusätzliche Mission schon in `ch01` frei, Elemente/Unterstützungen in `ch02`.
   - Gold: Akt-1-Story-Mission 800–1 500; `goldReward` 800 [C].
@@ -75,7 +75,7 @@ Claude Sonnet 5.5
 ### Debug Log References
 
 - `pnpm sim m1_1 --runs 50`, Standard-Tod. **Verkettet:** Leicht 100 % / 0,02; Normal 69 % / 0,51 (49 Läufe); Schwer 0 % (nur 21 von 50 Läufen gewinnen den Prolog, danach stirbt Rhen in 20 von 21). **Mit `--fresh`** (volle Truppe): Leicht 100 % / 0,00; Normal 78 % / 0,64 (Median 8 Runden); Schwer 56 % / 1,24 (Median 15). Kette über den Akt (`--campaign act1 --runs 30`, Normal): Prolog 97 % / 0,40, 1-1 100 % / 0,17 (Downs unter dem Korridor), ch01 100 % / 0,40, ch02 83 % / 0,77.
-- Grenze: In der Kette fehlen nach dem Prolog oft Brenna und Tobin (Standard-Tod: Niedergestreckte scheiden aus); Rhen und Kael allein verlieren auf Schwer fast immer und auf Normal etwa jede dritte Kette. Das lässt sich über Gegnerstufen nicht beheben, ohne die volle Truppe (Korridor mit `--fresh`) zu leicht oder zu schwer zu machen (Anführer Stufe 4 und stärkerer Hold-Jäger: 40 bis 56 % Sieg bei voller Truppe).
+- Grenze: In der Kette fehlen nach dem Prolog oft Brenna und Tobin (Standard-Tod: Niedergestreckte scheiden aus); Rhen und Lucan allein verlieren auf Schwer fast immer und auf Normal etwa jede dritte Kette. Das lässt sich über Gegnerstufen nicht beheben, ohne die volle Truppe (Korridor mit `--fresh`) zu leicht oder zu schwer zu machen (Anführer Stufe 4 und stärkerer Hold-Jäger: 40 bis 56 % Sieg bei voller Truppe).
 - Abstimmung: Gegnerstufen 2 bis 3 (Anführer 3), Flanken-Jäger bh2/bh3 greifen erst auf Radius 5 an, Hart-Jäger bh7 ist Wächter (Stufe 1), die Welle aus dem Süden (Stufe 2) bleibt in Runde 3. Nebenziele: Dörfer 200 und schnell 100 Gold (Anteil am Missionsgold im GDD-Korridor).
 
 ### Completion Notes List

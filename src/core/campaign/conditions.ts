@@ -3,6 +3,7 @@ import type { GameData } from '../gameData';
 import type { Condition } from '../storyDefs';
 import { STANCES, SUPPORT_RANKS } from '../defs';
 import type { CampaignState, LieutenantState } from '../state';
+import { castleTier } from './castle';
 import { pairKey } from '../util';
 
 /**
@@ -24,6 +25,8 @@ export interface ConditionContext {
   chronicle: readonly string[];
   /** what the company knows of each lieutenant it has met (story 3.3) */
   lieutenants: Readonly<Record<string, LieutenantState>>;
+  /** stage of the castle's walls (0 ruin … 3 fortress, `castleTier`; story 15.12) */
+  castleTier: number;
 }
 
 /** Condition keys whose state does not exist yet; `content:check` rejects them, `evalCondition` throws. */
@@ -44,6 +47,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
       stance: { warm: 0, sober: 0, defiant: 0 },
       chronicle: [],
       lieutenants: {},
+      castleTier: 0,
     };
   return {
     act: data.campaign.act,
@@ -57,6 +61,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
     stance: c.stance,
     chronicle: c.chronicle,
     lieutenants: c.lieutenants ?? {},
+    castleTier: castleTier(data, c),
   };
 }
 
@@ -101,6 +106,8 @@ export function evalCondition(ctx: ConditionContext, cond: Condition): boolean {
     }
     case 'act':
       return ctx.act >= (v as number);
+    case 'castleTier':
+      return ctx.castleTier >= (v as number);
     case 'support': {
       const s = v as { pair: [string, string]; rank: SupportRank };
       const have = ctx.supports[pairKey(s.pair[0], s.pair[1])]?.rank;

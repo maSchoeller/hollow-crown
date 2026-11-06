@@ -105,6 +105,14 @@ export function validateContent(
       for (const [i, v] of (p.site?.variants ?? []).entries()) conditions(f, v.requires, `${p.id}: site variant ${i + 1}`);
     }
     for (const n of camp.nodes) if (!bound.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
+    // roads (story 15.12): between two known, different places, each pair once
+    const pairs = new Set<string>();
+    for (const [a, b] of w.roads) {
+      for (const id of [a, b]) if (!seen.has(id)) err(f, `road ${a}-${b}: unknown place ${id}`);
+      const key = [a, b].sort().join('|');
+      if (a === b || pairs.has(key)) err(f, `road ${a}-${b}: ${a === b ? 'leads nowhere' : 'drawn twice'}`);
+      pairs.add(key);
+    }
     // stones must not touch at the overview of a phone: places with a slot and the homes at least WORLD_STONE_GAP of the width apart
     const [pw, ph] = w.size;
     const stones: Array<[string, readonly [number, number]]> = [
@@ -351,7 +359,7 @@ export function validateContent(
   const isEnemy = (id: string) => speakerTeam(data, id) === 'enemy' || !!data.chars[id]?.flags.includes('enemy');
   const chain = (f: string, c: readonly string[], ctx: string, mustEnd: boolean) => {
     for (const id of c) if (!data.chars[id] && !locales.de?.[`unit.${id}.name`]) err(f, `${ctx}: unknown speaker ${id}`);
-    if (mustEnd && !c.every(isEnemy) && !PERMANENT_COMPANIONS.includes(c[c.length - 1]!)) err(f, `${ctx}: speaker chain must end with avatar or kael (or the line needs fallback: skip)`);
+    if (mustEnd && !c.every(isEnemy) && !PERMANENT_COMPANIONS.includes(c[c.length - 1]!)) err(f, `${ctx}: speaker chain must end with avatar or lucan (or the line needs fallback: skip)`);
   };
   const text = (f: string, key: string, de: string, ctx: string) => {
     if (de.length > MAX_BOX) err(f, `${ctx}: de text longer than ${MAX_BOX} characters (${de.length})`);

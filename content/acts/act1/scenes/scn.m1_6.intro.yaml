@@ -11,21 +11,26 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: happy
-    text: "{avatar}, Kael. Ein Dach über dem Kopf ist der halbe Frieden. Dort oben steht eins, wenn auch ein löchriges."
+    text: "{avatar}, Lucan. Ein Dach über dem Kopf ist der halbe Frieden. Dort oben steht eins, wenn auch ein löchriges."
   - id: l03
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Ein Versteck, das keiner sucht, ist das beste."
+    text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Sie überblickt den Pass, sperrt ihn aber nicht."
+  - id: l03b
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Darum vermutet dort keiner etwas. Ein Versteck, das keiner sucht, ist das beste."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Und wer sitzt jetzt darin?"
   - id: l05
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Hask und seine Bande, fürchte ich. Und Ulvrics Reiter streifen am Hang. Aber ihr seid mehr als sie."
+    text: "Hask hat sich nach Erlbach dort verkrochen, Ulvrics Wolfsbande ist ihm gefolgt. Aber ihr seid mehr."
   - id: l06
     speaker: [brenna]
     fallback: skip
@@ -37,6 +42,6 @@ lines:
     mood: happy
     text: "Nehmt, was ihr braucht, Kinder. Und lasst die alten Steine schlafen. Sie haben ihre Ruhe verdient."
   - id: l08
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Wir nehmen die Burg. {avatar}, du führst."

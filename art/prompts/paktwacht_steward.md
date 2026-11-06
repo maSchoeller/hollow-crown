@@ -1,5 +1,8 @@
 # paktwacht_steward – Verwalter der Paktwacht (Porträt)
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 Nebenfigur der Paktwacht-Missionen (langjähriger Schlüsselverwalter der Ruine). Sprecher-/Porträt-ID in Szenen: `paktwacht_steward`.
 
 - **Datei:** `art/mockups/characters-s1/paktwacht_steward.png` (1254 × 1254, RGBA, echter Alphakanal 0–255, unverändertes Original, Git LFS; A3). Nur Stimmung `neutral` (wie Osric und Aldric); Stimmungsvarianten gibt es nicht, die App fällt auf neutral zurück.

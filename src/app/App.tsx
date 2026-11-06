@@ -103,7 +103,7 @@ function Screens() {
     case 'result':
       return <Result result={sc.result} />;
     case 'farewell':
-      return <Farewell result={sc.result} index={sc.index} />;
+      return <Farewell result={sc.result} index={sc.index} then={sc.then} />;
     case 'defeat':
       return <Defeat />;
     case 'camp':

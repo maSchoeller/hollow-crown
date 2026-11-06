@@ -6,8 +6,8 @@ lines:
     fallback: skip
     mood: sad
     text: "Der Esel, der … den Rest kennt ihr. Erzählt ihn schlecht, Küken."
-  - id: grief_kael
-    speaker: [kael]
+  - id: grief_lucan
+    speaker: [lucan]
     fallback: skip
     mood: sad
     text: "Zwölf Jahre hat sie geredet. Jetzt hör ich hin, und da ist nichts."

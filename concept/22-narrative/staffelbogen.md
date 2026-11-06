@@ -31,7 +31,7 @@ Die Hintergrund-Wahrheit hinter allen drei Staffeln: Aldric I. hat vor 300 Jahre
 | Das leere Grab | – | Saat: Chronik, erste und letzte Seite in derselben Hand | Saat: N9, das Grab Aldrics I. ist leer | Spurensuche, Rückkehr | **Endgegner** |
 | Drachen | Saat: Beben, Asche | Saat: Drachenschatten, Knochenfeld | schlafender Drache im Pass (3-7), Vhaelyra erwacht (3-8) | Drachen als Gefährten und Reittiere | **Kampf für die Drachen**, feindlicher Drache |
 | Feinde werden Freunde | Grosk wechselt (bleibt) | Dravns Brandschneise, Seraphines Verrat in Kronfeld, Rowena als Gegnerin | Seraphines Weg hängt an E12 „Wahrheit oder Frieden“ | **Seraphine, Dravn, Rowena** verbündet gegen Kharesh | gemeinsames Finale |
-| Kharesh | Saat: Gerüchte, Kaels Kriegsnarben | Saat: Kundschafter im Salzpass | Saat: Krieger aus Kharesh bei der Krönung | Einmarsch | Kharesh wählt eine Seite |
+| Kharesh | Saat: Gerüchte, Lucans Kriegsnarben | Saat: Kundschafter im Salzpass | Saat: Krieger aus Kharesh bei der Krönung | Einmarsch | Kharesh wählt eine Seite |
 
 **Schutzregel für die Verbündeten:** Seraphine, Dravn und Rowena dürfen in Staffel 1 nicht sterben. Seraphine und Dravn sind NSC ohne Kampfrolle; Rowena ist Leutnant und flieht wie alle Leutnants. Jede Figur bekommt in Staffel 1 mindestens eine Szene, die den Seitenwechsel glaubhaft macht (Rowena zum Beispiel: Sie verschont nach 2-4 einen Gefährten oder wird von Seraphine in Kronfeld verraten).
 

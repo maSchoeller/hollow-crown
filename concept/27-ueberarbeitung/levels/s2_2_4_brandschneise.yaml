@@ -75,7 +75,7 @@ initialEffects:
   - { effect: burning, tiles: [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [12, 3], [13, 3], [16, 3], [17, 3], [18, 3], [19, 3], [20, 3], [21, 3], [22, 3], [23, 3], [24, 3], [25, 3], [26, 3], [27, 3]], turns: 3 }
 deploy:
   max: 12
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[11, 21], [12, 21], [13, 20], [14, 20], [15, 20], [16, 20], [17, 20], [18, 21], [11, 22], [12, 22], [18, 22], [11, 24], [12, 24], [13, 24], [14, 24], [15, 24], [16, 24], [17, 24]]
 units:
   # Oberste Terrasse: Schützen schießen von Stufe 2 ins Dorf (Reichweite +1)
@@ -166,7 +166,7 @@ objectives:
   victory: { type: defend, unit: brann, turns: 12 }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: brann }
   side:
     - { id: s_houses, type: visit_villages, reward: { gold: 500 } }

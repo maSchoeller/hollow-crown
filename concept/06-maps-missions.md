@@ -59,12 +59,12 @@ Flieger erhalten keine Gelände-Boni (DEF/Ausweichen).
 | `rout` – Besiegen | alle Gegner (ohne `ignoreForRout`) besiegt | – |
 | `boss` – Anführer besiegen | bestimmte Einheit besiegt | `unit` |
 | `reach` – Erreichen | bestimmte Einheit (oder beliebige) erreicht Zielfeld/-bereich | `unit?`, `area` |
-| `seize` – Einnehmen | **Kael** wartet auf Thron/Tor | `area` |
+| `seize` – Einnehmen | **Lucan** wartet auf Thron/Tor | `area` |
 | `defend` – Beschützen | NPC/Objekt überlebt bis Runde N **oder** bis anderes Ziel erfüllt | `unit`, `turns?` |
 | `survive` – Wellen überleben | Runde N erreichen | `turns`, `waves` |
-| `escape` – Entkommen | alle (oder min. N) Einheiten verlassen über Ausgangsfelder die Karte (Aktion „Fliehen“), Kael zuletzt | `area`, `min?` |
+| `escape` – Entkommen | alle (oder min. N) Einheiten verlassen über Ausgangsfelder die Karte (Aktion „Fliehen“), Lucan zuletzt | `area`, `min?` |
 
-**Niederlage** (immer): Avatar oder Kael fällt; plus missionsspezifisch (`defend`-Ziel stirbt, Zuglimit überschritten).
+**Niederlage** (immer): Avatar oder Lucan fällt; plus missionsspezifisch (`defend`-Ziel stirbt, Zuglimit überschritten).
 
 **Nebenziele** (1–3 pro Mission, optional, im Ergebnis sichtbar):
 - `visit_villages` (alle Dörfer besucht), `no_downs` (niemand niedergestreckt), `turn_limit` (in ≤ N Runden), `kill_with` (Boss mit Waffenart X besiegt), `recruit` (Charakter X rekrutiert), `open_chests`, `protect_npc` (NPC überlebt).
@@ -119,9 +119,9 @@ score = erwarteterSchaden + 50 × Killchance − 0.5 × erwarteterKonterschaden
 
 | Karte | Neu | Nebenbei | Gesperrt |
 |---|---|---|---|
-| Prolog – Die letzte Wacht | Bewegen, Angreifen, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (wenn Kael verwundet ist) | – | Dreieck, Magie, Elemente, Unterstützungen |
+| Prolog – Die letzte Wacht | Bewegen, Angreifen, Kampfvorschau (Runde 1), Gefahrenzone + Deckung (Runde 2), Heiltrank (wenn Lucan verwundet ist) | – | Dreieck, Magie, Elemente, Unterstützungen |
 | Kap. 1 – Asche über Varnhold | **Waffendreieck**: Gegner mit Axt, Lanze und Schwert gemischt | Dörfer besuchen (Zeitdruck durch Plünderer), Feuer (Hinweis beim ersten Betreten) | Magie, Elemente, Unterstützungen |
-| Kap. 2 – Der Schrein am Silberbach | **Magie** (Rhens Glut-Folio aus Kap. 1, gegnerische Magierin, Lioras Stab), **Anwerben durch Ansprechen** (Kael → Varek), Beschützen | Wellen von Verstärkungen | Elemente, Unterstützungen |
+| Kap. 2 – Der Schrein am Silberbach | **Magie** (Rhens Glut-Folio aus Kap. 1, gegnerische Magierin, Lioras Stab), **Anwerben durch Ansprechen** (Lucan → Varek), Beschützen | Wellen von Verstärkungen | Elemente, Unterstützungen |
 | ab Kap. 3 | Element-Kreis, Statuseffekte, Runen; Unterstützungen und Tandem | | |
 
 Regeln für Lektionen: höchstens eine Lektion pro Runde, höchstens drei Zeilen, ausgelöst genau dann, wenn sie gebraucht wird (Runde, Feld betreten, TP-Schwelle).

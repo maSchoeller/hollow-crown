@@ -33,7 +33,7 @@ damit Ausrüstung der Charakter ist.
 - **Klassen-Aktionen** sind nur Daten (`classAction: {id, kind, perMap?}`); Umsetzung in Story 2.3 ff. Platzhalter-Skills der PoC-Klassen bleiben.
 - **Porträt generischer Einheiten:** `art` verweist auf die vorhandenen `class_<art>`-Bilder, es wurde nichts umbenannt.
 - **Speicherstände:** Klassen-Ids der Fixtures neu erzeugt; ältere Test-Saves mit PoC-Ids laden nicht mehr (Prototyp, keine veröffentlichten Akt-Builds).
-- **Nebenhand-Regel neu:** Schilde nur Vorkämpfer, Fokus nur Elementarist/Weiser; Der Avatar (Taktiker) kann keinen Schild führen; Kael (Hauptmann) schon (Produktinhaber 2026-10-24, siehe Log unten).
+- **Nebenhand-Regel neu:** Schilde nur Vorkämpfer, Fokus nur Elementarist/Weiser; Der Avatar (Taktiker) kann keinen Schild führen; Lucan (Hauptmann) schon (Produktinhaber 2026-10-24, siehe Log unten).
 
 ### Offene Fragen für den Produktinhaber
 
@@ -85,7 +85,7 @@ Korridor Normal 75–100 % Sieg und 0,4–1,3 Niedergestreckte: alle drei Siegqu
 - **Ursache des Einbruchs:** Mit MOV 4 bleiben Brenna und Tobin hinter dem Avatar zurück, den die Autoplay-Gruppe allein nach vorn schickt (ch01: 2 % Siegquote, der Avatar fällt in Runde 3). Die Gegner-Plänkler laufen jetzt mit MOV 6 und erreichen Avatar und Liora früher.
 - **Karten (nur Inhalte, keine Klassenwerte):**
   - `ch01_varnhold`: Gegner e2 hält (Position [8, 9], Straßen-Engstelle) statt anzugreifen; e6 startet bei [4, 5] und ist Stufe 3, Archer e3 Stufe 3, e8 Stufe 4; vierter Aufstellungsplatz [13, 15], damit Tobin das Dorf mit Mira (hinter den Mauern bei [15, 11]) in Runde 2 erreicht (Mira wird in 48 von 50 Läufen angeworben).
-  - `ch02_silverbrook`: Varek wartet (`hold`) statt den Schrein anzugreifen (er tötete Liora in 7 Läufen, solange Kael ihn nicht ansprach); Morra Stufe 5; m1–m6 Stufe 2; die Söldner m1, m5 und der Nachzügler in Runde 3 sind Banditen (MOV 5, Axt) statt Plänkler (MOV 6); Welle in Runde 7 Stufe 3.
+  - `ch02_silverbrook`: Varek wartet (`hold`) statt den Schrein anzugreifen (er tötete Liora in 7 Läufen, solange Lucan ihn nicht ansprach); Morra Stufe 5; m1–m6 Stufe 2; die Söldner m1, m5 und der Nachzügler in Runde 3 sind Banditen (MOV 5, Axt) statt Plänkler (MOV 6); Welle in Runde 7 Stufe 3.
   - `prologue_caravan`: unverändert auf Normal; Schwer verliert einen Nachzügler (Siegquote 20 % → 62 %).
 - **Messung** (`pnpm sim <map> --runs 50`, verkettet, standard). Korridore: Leicht ≥ 95 % und ≤ 0,5; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 

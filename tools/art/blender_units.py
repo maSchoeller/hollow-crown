@@ -85,12 +85,12 @@ def glow_fx(col, R, kind, role="glow", core="glow_core"):
 
 
 # ------------------------------------------------------------------------------------------------
-# Kael – captain. Longsword, ash cape, big left pauldron, scratched lance emblem, team sash.
+# Lucan – captain. Longsword, ash cape, big left pauldron, scratched lance emblem, team sash.
 # ------------------------------------------------------------------------------------------------
 
 
-def build_kael(sc):
-    uid = "kael"
+def build_lucan(sc):
+    uid = "lucan"
     col = new_collection(sc, f"U_{uid}")
     R = build_rig(col, uid)
     top, hip = R["top"], R["body"]["hip"]
@@ -664,7 +664,7 @@ def build_soldier(sc):
 
 
 UNITS = {
-    "kael": build_kael,
+    "lucan": build_lucan,
     "avatar": build_avatar,
     "brenna": build_brenna,
     "tobin": build_tobin,

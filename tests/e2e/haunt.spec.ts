@@ -41,6 +41,12 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await expect(card).toContainText(/Hask/, { timeout: 30_000 });
   await expect(card).toContainText(/flieht bei 0 TP|flees at 0 HP/, { timeout: 30_000 });
   await expect(card.locator('.hc-amount').first()).toBeVisible();
+  // dragging the bare map with a mouse is no tap: the card stays open (story 15.12, the click after the drag)
+  await page.mouse.move(187, 260);
+  await page.mouse.down();
+  await page.mouse.move(150, 300, { steps: 8 });
+  await page.mouse.up();
+  await expect(card).toBeVisible();
   await expect(stone.locator('.wm-node__new')).toHaveCount(0);
 
   // set out: no scene, straight to the battle

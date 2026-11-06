@@ -17,7 +17,7 @@ lines:
     mood: happy
     text: "Kein Stein fehlt, Hauptmann. Die Mauern haben gehalten."
   - id: l04
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Sie kommen wieder. Aber diese Nacht gehört uns."
   - id: l05

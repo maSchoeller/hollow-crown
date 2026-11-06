@@ -9,7 +9,7 @@ lines:
     mood: neutral
     text: "Morgennebel über dem Erlenmoor. Hinter dem Nordsteg lagert eine Bande, auf ihrem Anführer ein Kopfgeld."
   - id: l02
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Grosk. Das Heer hat ihn als Invalide entlassen. Seitdem hält er sich mit Raub über Wasser."
   - id: l03
@@ -53,7 +53,7 @@ lines:
     mood: neutral
     text: "Mangelernährung trübt das Urteil. Man darf ihnen nicht trauen, aber man sollte sie verstehen."
   - id: l11
-    speaker: [kael]
+    speaker: [lucan]
     mood: neutral
     text: "Auf den alten Wachhügel! Wir halten die Rampen, bis sich der Sturm legt. Tötet nur, wer euch zwingt."
   - id: l12

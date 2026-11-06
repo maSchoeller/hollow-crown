@@ -134,7 +134,7 @@ async function pump(): Promise<void> {
 }
 
 /** Waits until the first install is over, so the pack download does not compete with it. */
-function afterPrepare(): Promise<void> {
+export function afterPrepare(): Promise<void> {
   return new Promise((resolve) => {
     if (prepare.value.phase === 'off') return resolve();
     const stop = prepare.subscribe((p) => {

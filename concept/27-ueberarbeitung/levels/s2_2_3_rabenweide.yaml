@@ -50,7 +50,7 @@ objects:
   - { id: v_east, type: village, at: [17, 7], reward: { gold: 300 } }
 deploy:
   max: 9
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[7, 22], [8, 22], [9, 22], [11, 22], [12, 22], [13, 22], [7, 23], [8, 23], [9, 23], [11, 23], [12, 23], [13, 23]]
 units:
   # Gestütshof: Rowena mit Rittern auf den Festen
@@ -107,7 +107,7 @@ objectives:
   victory: { type: boss, unit: rowena }
   defeat:
     - { type: unit_dies, unit: avatar }
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
   side:
     - { id: s_ilka, type: recruit, unit: ilka, reward: { gold: 300 } }
     - { id: s_stables, type: visit_villages, reward: { item: { def: vulnerary } } }

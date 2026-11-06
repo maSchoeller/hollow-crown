@@ -118,7 +118,7 @@ describe('N2 at the border wall', () => {
 
   it('the hill still splits the march: no way north across it, a bow stands over the ramp', () => {
     const s = battle('n2');
-    const unit = s.units.find((u) => u.id === 'kael')!;
+    const unit = s.units.find((u) => u.id === 'lucan')!;
     expect([...reachable(data, s, unit, [7, 12], 20).keys()]).not.toContain('7,10');
     const b8 = data.maps[MAP]!.units.find((u) => u.id === 'b8')!;
     expect(b8.at).toEqual([8, 11]);
@@ -134,22 +134,22 @@ describe('N2 at the border wall', () => {
     expect(m.objects.find((o) => o.id === 'c_page')!.contents?.chronicle).toBe('a1_watchtower');
   });
 
-  it('only Kael talks Varek over, across the levels, and he joins with his own gear', () => {
+  it('only Lucan talks Varek over, across the levels, and he joins with his own gear', () => {
     const s = battle('n2', 'fenn');
     const varek = s.units.find((u) => u.id === 'varek')!;
-    expect(data.maps[MAP]!.units.find((u) => u.id === 'varek')!.recruit).toEqual({ by: ['kael'], dialogue: 'scn.n2.varek_talk' });
+    expect(data.maps[MAP]!.units.find((u) => u.id === 'varek')!.recruit).toEqual({ by: ['lucan'], dialogue: 'scn.n2.varek_talk' });
     expect(data.chars.varek!.joins).toBe('n2');
     expect(varek.ignoreForRout).toBe(true);
     expect(varek.equip.mainHand?.def).toBe('steel_sword');
-    const kael = s.units.find((u) => u.id === 'kael')!;
+    const lucan = s.units.find((u) => u.id === 'lucan')!;
     const other = s.units.find((u) => u.id === 'fenn')!;
-    // Kael stands on the platform (level 2), Varek on the floor (level 1)
-    kael.pos = [7, 3];
+    // Lucan stands on the platform (level 2), Varek on the floor (level 1)
+    lucan.pos = [7, 3];
     other.pos = [8, 2];
     expect(availableActions(data, s, other, [8, 2]).some((a) => a.kind === 'talk')).toBe(false);
-    const talk = availableActions(data, s, kael, [7, 3]).find((a) => a.kind === 'talk');
+    const talk = availableActions(data, s, lucan, [7, 3]).find((a) => a.kind === 'talk');
     expect(talk?.targets).toEqual([varek.uid]);
-    const r = applyCommand(data, s, { type: 'act', unit: kael.uid, to: [7, 3], action: { kind: 'talk', target: varek.uid } });
+    const r = applyCommand(data, s, { type: 'act', unit: lucan.uid, to: [7, 3], action: { kind: 'talk', target: varek.uid } });
     expect(r.state.units.find((u) => u.id === 'varek')!.team).toBe('player');
     expect(r.events).toContainEqual({ t: 'dialogue', id: 'scn.n2.varek_talk' });
   });
@@ -235,8 +235,8 @@ describe('N1 on the roofs', () => {
     expect(check(s)).toBe('victory');
   });
 
-  it('Fenn on the board loses the battle when he dies, and so does Kael', () => {
-    for (const id of ['fenn', 'kael', 'avatar']) {
+  it('Fenn on the board loses the battle when he dies, and so does Lucan', () => {
+    for (const id of ['fenn', 'lucan', 'avatar']) {
       const s = battle('n1', 'fenn');
       s.units.find((u) => u.id === id)!.gone = 'dead';
       expect(check(s), id).toBe('defeat');

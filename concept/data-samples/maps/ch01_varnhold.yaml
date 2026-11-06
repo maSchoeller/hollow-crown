@@ -1,4 +1,4 @@
-# Kapitel 1 – Asche über Varnhold. Ziel: Kael erreicht die Brücke im Norden.
+# Kapitel 1 – Asche über Varnhold. Ziel: Lucan erreicht die Brücke im Norden.
 # Referenzkarte für das Format (concept/11-content-format.md §2). Werte = Startwerte [C].
 id: ch01_varnhold
 nameKey: map.ch01_varnhold.name
@@ -46,7 +46,7 @@ initialEffects:
 
 deploy:
   max: 4
-  forced: [avatar, kael]
+  forced: [avatar, lucan]
   slots: [[4, 17], [5, 17], [6, 17], [7, 17], [5, 16], [6, 16]]
 
 units:
@@ -80,9 +80,9 @@ reinforcements:
       - { class: brigand, level: 2, at: [11, 8], items: [{ def: iron_axe }], ai: { profile: aggressive } }
 
 objectives:
-  victory: { type: reach, unit: kael, area: { tiles: [[5, 0], [6, 0]] } }
+  victory: { type: reach, unit: lucan, area: { tiles: [[5, 0], [6, 0]] } }
   defeat:
-    - { type: unit_dies, unit: kael }
+    - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
   side:
     - { id: s_villages, type: visit_villages, reward: { gold: 500 } }

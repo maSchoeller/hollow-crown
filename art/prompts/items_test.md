@@ -1,5 +1,8 @@
 # items_test – 10 Testbilder für Item-Icons
 
+> Seit Story 15.6 (2026-11-06) heißen Kaels Dateien und IDs `lucan` (`kael_board` → `lucan_anims_base`, sonst `kael*` → `lucan*`). Dieses Protokoll bleibt im Wortlaut der Erzeugung.
+
+
 - **Dateien:** `art/items/<id>.png` (Master 512 × 512, RGBA, transparent; ChatGPT liefert 1024 × 1024)
 - **Datum:** 2026-10-23
 - **Werkzeug:** ChatGPT (Bildgenerierung), gesteuert über Claude in Chrome, parallel in mehreren Tabs

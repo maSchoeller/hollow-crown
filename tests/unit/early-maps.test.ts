@@ -60,21 +60,21 @@ describe('prologue', () => {
 
   it('the archer reaches one tile farther from above, and a blade gets at him from the stair only', () => {
     const s = clear(open('prologue'), 'tg4');
-    const kael = place(s, 'kael', [7, 8]); // 3 tiles from the rampart: the bow (range 2) carries that far only from above
+    const lucan = place(s, 'lucan', [7, 8]); // 3 tiles from the rampart: the bow (range 2) carries that far only from above
     const archer = unit(s, 'tg4');
-    expect(Object.keys(attackTargets(data, s, archer, [9, 9]))).toContain(kael.uid);
+    expect(Object.keys(attackTargets(data, s, archer, [9, 9]))).toContain(lucan.uid);
     archer.pos = [9, 10];
-    place(s, 'kael', [7, 9]); // the same 3 tiles on one level
-    expect(Object.keys(attackTargets(data, s, archer, [9, 10]))).not.toContain(kael.uid);
+    place(s, 'lucan', [7, 9]); // the same 3 tiles on one level
+    expect(Object.keys(attackTargets(data, s, archer, [9, 10]))).not.toContain(lucan.uid);
     archer.pos = [8, 9];
-    place(s, 'kael', [8, 8]); // neighbours, but a level apart without a stair
-    expect(Object.keys(attackTargets(data, s, kael, [8, 8]))).not.toContain(archer.uid);
+    place(s, 'lucan', [8, 8]); // neighbours, but a level apart without a stair
+    expect(Object.keys(attackTargets(data, s, lucan, [8, 8]))).not.toContain(archer.uid);
     archer.pos = [9, 9];
-    place(s, 'kael', [9, 10]);
-    expect(Object.keys(attackTargets(data, s, kael, [9, 10]))).toContain(archer.uid);
+    place(s, 'lucan', [9, 10]);
+    expect(Object.keys(attackTargets(data, s, lucan, [9, 10]))).toContain(archer.uid);
     archer.pos = [10, 9];
-    expect(reach(s, kael, [9, 10], 2)).toContain('9,9');
-    expect(reach(s, kael, [10, 10], 2)).not.toContain('10,9');
+    expect(reach(s, lucan, [9, 10], 2)).toContain('9,9');
+    expect(reach(s, lucan, [10, 10], 2)).not.toContain('10,9');
   });
 
   it('keeps the lessons of the first mission and adds the one on height', () => {
@@ -141,11 +141,11 @@ describe('1-1 Steckbriefe', () => {
 
   it('a walker climbs by the stairs, not through the wall, and strikes the tower archer from the upper stair', () => {
     const s = clear(open('m1_1'), 'h8');
-    const kael = place(s, 'kael', [6, 2]);
-    expect(reach(s, kael, [6, 2], 3)).toEqual(expect.arrayContaining(['6,1', '6,0', '5,0']));
-    expect(reach(s, kael, [3, 1], 4)).not.toContain('3,0');
+    const lucan = place(s, 'lucan', [6, 2]);
+    expect(reach(s, lucan, [6, 2], 3)).toEqual(expect.arrayContaining(['6,1', '6,0', '5,0']));
+    expect(reach(s, lucan, [3, 1], 4)).not.toContain('3,0');
     const archer = unit(s, 'h8');
-    expect(Object.keys(attackTargets(data, s, kael, [5, 0]))).toContain(archer.uid);
+    expect(Object.keys(attackTargets(data, s, lucan, [5, 0]))).toContain(archer.uid);
   });
 
   it('keeps the triangle lesson and the posters, Fenn joins by the node, the rumour lies in the merchant’s house', () => {
@@ -231,9 +231,9 @@ describe('1-3 the shrine at the hawthorn', () => {
     for (const [x, y] of [[8, 1], [11, 2], [9, 2]] as const) expect(levelAt(data, s, [x, y])).toBe(1);
     expect(levelAt(data, s, [9, 3])).toBe(0);
     expect([at(s, 9, 3), at(s, 10, 3), at(s, 9, 1), at(s, 10, 1)]).toEqual(['ramp', 'ramp', 'shrine', 'shrine']);
-    const kael = place(s, 'kael', [9, 4]);
-    expect(reach(s, kael, [9, 4], 3)).toContain('9,2');
-    expect(reach(s, kael, [7, 3], 2)).not.toContain('7,2');
+    const lucan = place(s, 'lucan', [9, 4]);
+    expect(reach(s, lucan, [9, 4], 3)).toContain('9,2');
+    expect(reach(s, lucan, [7, 3], 2)).not.toContain('7,2');
   });
 
   it('the rest of the forest is flat', () => {

@@ -14,7 +14,8 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung (`concept/
 15.7 Weltkarte v5 ─────────────────────────────────────────────────────────────────────┤
 15.8 Galerie-Modelle (parallel zu 15.3–15.5)                                           │
 15.9 Brettfiguren, Schritt 1 ──────────────────────────────────────────────────────────┤
-15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┘
+15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┤
+15.12 Weltkarte flüssig, Paktwacht als Ruine (nach 15.7) ──────────────────────────────┘
 15.13 Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5, unabhängig)
 ```
 
@@ -94,7 +95,7 @@ damit die überarbeitete Geschichte ankommt.
 **Angenommen** `missionsliste-s1.md` und `geografie-valmora.md`
 **Wenn** die Szenen DE und EN nachgezogen sind (Flucht per Lastkahn, Banden in der Ruine, Gräber-Zeile in 1-7, Saaten Kharesh, Stimme und Pakt, Halvard und Liora, Goldspur durch die Erlenbucht, Lucans Herkunft) und fehlende Ortsbilder vorliegen
 **Dann** hat jede Mission eine Vor- und Nachszene passend zum Ort, und die Prüfung auf Ersatzsprecher ist grün
-**Und** `kael` heißt überall `lucan`: Texte DE und EN, IDs, Dateinamen, Porträts und Dokumente, vor dem ersten `content:lock`.
+**Und** `lucan` heißt überall `lucan`: Texte DE und EN, IDs, Dateinamen, Porträts und Dokumente, vor dem ersten `content:lock`.
 
 ### Story 15.7: Weltkarte v5 einbinden
 
@@ -160,6 +161,19 @@ damit die Schlachten auf dem Handy funktionieren.
 **Wenn** auf dem Referenzgerät Karten bis 1 200 Felder mit 50+ Figuren und die Burg gemessen werden
 **Dann** halten sie die Leistungsziele; NFR1 ist auf den neuen Maßstab gehoben
 **Und** Kamera und Übersicht funktionieren auf 30 × 40, die Gegnerphase lässt sich beschleunigen.
+
+### Story 15.12: Weltkarte flüssig auf dem Handy, Paktwacht als Ruine
+
+Als Spieler
+möchte ich die Weltkarte auf dem Handy ruckelfrei ziehen und zoomen und die Paktwacht zu Beginn als Ruine sehen,
+damit die Karte sich gut anfühlt und zur Geschichte passt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Weltkarte v5 aus Story 15.7 und der Handy-Test des Produktinhabers vom 2026-11-06 (starkes Ruckeln)
+**Wenn** die Ursache gemessen (CPU 4–6× gedrosselt, 375 × 812) und die Karte als vorab zusammengefügtes Grundbild in Auflösungsstufen mit den Stadtbildern als einzelnen Sprites ausgeliefert ist
+**Dann** laufen Ziehen und Zoomen ohne lange Frames, die Karte bleibt scharf, und das Paket-Budget hält; Messung vorher und nachher steht in der Story
+**Und** die Paktwacht zeigt ab Spielbeginn eine Ruine; die ausgebaute Burg ist eine Zustandsvariante (`site.variants`), die erst mit der Burgstufe erscheint; das „P“ und der Rest der Karte bleiben unverändert.
 
 ### Story 15.13: Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
 
