@@ -2,7 +2,7 @@
  * Dev and browser-test hooks of the mission flow (`__hc` in dev builds, `__hcTest` under Playwright): throwaway haunts and
  * story nodes, auto-win and the fault and save-failure switches. Imported once by App.tsx.
  */
-import type { Season } from '../../core/defs';
+import { SEASONS, type Season } from '../../core/defs';
 import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, chronicleTexts, sceneTexts } from '../../core';
 import { autosave, campaign, data } from './session';
 import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle } from './battle';
@@ -120,6 +120,7 @@ if (import.meta.env.DEV) {
         if (!load) throw new Error(`no fixture map "${id}"; there are: ${Object.keys(files).map((f) => /([^/]+)\.yaml$/.exec(f)![1]).join(', ')}`);
         const { mapSchema } = await import('../../content/schemas');
         const raw = ((await load()) as { default: unknown }).default;
+        if (opts.season && !SEASONS.includes(opts.season)) throw new Error(`no season "${opts.season}"; there are: ${SEASONS.join(', ')}`);
         const parsed = mapSchema.parse(raw);
         const season = opts.season ?? parsed.season ?? data.render.board.actSeason[/^s(\d+)_/.exec(id)?.[1] ?? '1'];
         data.maps[id] = { ...parsed, act: 1, ...(season ? { season } : {}), ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;

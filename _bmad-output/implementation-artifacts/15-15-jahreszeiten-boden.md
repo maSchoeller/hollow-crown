@@ -49,11 +49,15 @@ Grundlage: `concept/26-epics/epics/epic-15.md` Story 15.15, Plan `concept/23-art
 
 | 1-8 Heimat 30×40, Gegner gemeinsam | Ø FPS | p95 ms | max ms | Gegnerphase |
 |---|---|---|---|---|
+| Lauf 1 (Sommer, Winter, Herbst) | | | | |
 | Sommer | 17,9 | 83,4 | 100,1 | 2 698 ms |
-| Herbst | 22,2 | 66,7 | 83,4 | 2 609 ms |
 | Winter | 23,3 | 58,4 | 83,3 | 2 606 ms |
+| Herbst | 22,2 | 66,7 | 83,4 | 2 609 ms |
+| Lauf 2 (Winter zuerst, nach dem Review) | | | | |
+| Winter | 19,3 | 75,0 | 83,4 | 2 648 ms |
+| Sommer | 15,1 | 116,7 | 233,2 | 2 812 ms |
 
-Winter und Herbst sind nicht langsamer als Sommer (der Sommer-Lauf lief als erster, kalt). Das Schnee-Plug-in kostet keinen Draw Call, nur eine Shader-Variante je Requisiten-Material.
+Winter und Herbst sind in beiden Reihenfolgen nicht langsamer als Sommer (vermutlich, weil die Waldfelder von Herbst und Winter je ein Modell sind, der Sommer drei). Das Schnee-Plug-in kostet keinen Draw Call, nur eine Shader-Variante je Requisiten-Material.
 
 Pakete (`pnpm build`): erster Download 13,25 MB wie vor der Story (Budget 30 MB; die Warnung über dem Ziel von 12 MB bestand schon). Die vier Jahreszeit-Texturen (zusammen rund 350 KB) und die Jahreszeit-Modelle liegen im Paket `act1` (37,0 von 40 MB), nicht im ersten Download. Figuren-Budget unverändert (45 geprüft, keine darüber).
 
@@ -64,6 +68,10 @@ Pakete (`pnpm build`): erster Download 13,25 MB wie vor der Story (Budget 30 MB;
 3. **Büsche im Winter:** Die niedrige Deko (`decor.bushes`) bleibt grün auf Schnee. Empfehlung: Folge-Story mit einer Winter-Deko (verschneite Büsche oder nur Steine), Schlüssel wie `seasonModels`.
 4. **Fehlende Waldvarianten:** je zwei weitere Waldfelder für Herbst und Winter (Plan, Schritt 4); bis dahin wiederholt sich ein Modell.
 5. **Eis aus `sheet7`:** das vierte Feld (Seeeis) liegt als Reserve für „Eis mit Bruchstellen“ (3-3, 3-4, 3-7).
+
+### Review (bmad-code-review, 4 Ebenen)
+
+Behoben: Innenräume bekommen auch auf Requisiten, Raster und Mauerteilen keine Jahreszeit; `content:check` prüft die Ziele von `seasonGround` gegen `tools/art/ground.py` und die Modelle von `seasonModels` (existieren, werden ausgeliefert); Status in `sprint-status.yaml`; wirkungsloser Schema-Test; Epic-Text „Schneeweg“; Klammern im Shader; tote `LUMA_KEEP`-Angabe; Eingabeprüfung für `devMap` und `PERF_SEASON`; eine Karte ohne Jahreszeit (unbekannter Akt) bekommt wie vorher keine Licht-Tönung; Abweichungen im Decision-Log; Messung in zweiter Reihenfolge. Zurückgestellt: NullEngine-Test für die Verdrahtung im Brett (Belege sind die Bilder), Lesbarkeit von Weg- und Bereichsmarken auf Schnee im Handy-Test von Akt 3, die alten Herbst-Einzelbäume `autumn_c`/`tree_c` im Paket. Verworfen: Leck von `prop:snow` (Materialien ohne Textur räumt die Bühne ab wie `props`), geteiltes Template-Material (`loadStaticMesh` baut je Brett ein eigenes).
 
 ### File List
 
@@ -77,7 +85,7 @@ Pakete (`pnpm build`): erster Download 13,25 MB wie vor der Story (Budget 30 MB;
 - `concept/27-ueberarbeitung/levels/s2_n4_clan.yaml`, `concept/23-art-direction/map-assets/groups/nature.yaml`, `winter.yaml`
 - `concept/23-art-direction/art-direction.md`, `decision-log.md`, `map-assets/jahreszeiten-plan.md`, `map-assets/matrix.md`
 - `concept/26-epics/epics/epic-15.md`, `index.md`, `_bmad-output/implementation-artifacts/sprint-status.yaml`
-- `tests/unit/season.test.ts` (neu), `scenery.test.ts`, `look.test.ts`, `tests/perf/bench.ts`, `perf.spec.ts`
+- `tests/unit/season.test.ts` (neu), `scenery.test.ts`, `look.test.ts`, `tests/perf/bench.ts`, `perf.spec.ts`, `tools/content-check.ts`
 - Belege `_bmad-output/implementation-artifacts/15-15-belege/`
 
 ### Change Log

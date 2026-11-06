@@ -76,7 +76,7 @@ float hcSnowNoise(vec2 p) {
   float hcUp = normalW.y + (hcN - 0.5) * hcSnow.z;
   float hcS = smoothstep(hcSnow.x, hcSnow.y, hcUp) * hcSnowCover;
   vec3 hcWhite = hcSnowColor;
-#if defined(VERTEXCOLOR) || defined(INSTANCESCOLOR) && defined(INSTANCES)
+#if defined(VERTEXCOLOR) || (defined(INSTANCESCOLOR) && defined(INSTANCES))
   hcWhite *= max(vColor.r, max(vColor.g, vColor.b));
 #endif
   baseColor.rgb = mix(baseColor.rgb, hcWhite, hcS);

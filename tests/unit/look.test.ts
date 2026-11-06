@@ -264,6 +264,7 @@ describe('content:check: board models exist and ship (story 15.8)', () => {
     for (const d of Object.values(b.decor)) out.add(d.model);
     for (const list of Object.values(b.decorOn)) for (const d of list) out.add(d.model);
     for (const m of Object.values(b.propFallback)) out.add(m);
+    for (const swap of Object.values(b.seasonModels)) for (const m of Object.values(swap ?? {})) out.add(m);
     for (const t of Object.values(data.terrain)) if (t.prop) out.add(`${t.prop}_idle`);
     for (const e of b.variants.lodge) for (const s of ['visited', 'razed']) out.add(e.model.replace(/intact$/, s));
     return out;

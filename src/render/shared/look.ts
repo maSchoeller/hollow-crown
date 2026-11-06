@@ -99,7 +99,7 @@ export function resolveLook(render: RenderDef, map: Pick<MapDef, 'act' | 'season
     rim = { ...p.rim };
     pointBoost = p.pointBoost;
     // the season of the board (its own or its act's) lies over the preset
-    const season = look.season[seasonOf(render, map)];
+    const season = map.season || render.board.actSeason[String(map.act)] ? look.season[seasonOf(render, map)] : undefined;
     if (season) {
       ambient.color = mixHex(ambient.color, season.tint, season.strength);
       sun.color = mixHex(sun.color, season.tint, season.strength);

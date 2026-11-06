@@ -78,9 +78,10 @@ export abstract class BoardProps extends BoardSetup {
     return p;
   }
 
-  /** Season of the board shown (story 15.15): the map's own or that of its act. */
+  /** Season of the board shown (story 15.15): the map's own or that of its act; under a roof none, the board looks as in summer. */
   protected season(): Season {
-    return seasonOf(this.data.render, this.data.maps[this.state.mapId]!);
+    const map = this.data.maps[this.state.mapId]!;
+    return map.interior ? 'summer' : seasonOf(this.data.render, map);
   }
 
   /** A prop material with snow: a template's own material gets the plug-in, the shared prop material a winter twin. */

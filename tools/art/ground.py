@@ -328,7 +328,7 @@ SHEETS = {
 CROP_MARGIN = 10        # px dropped inside every quadrant edge (border artefacts)
 TARGET_LUMA = 118.0     # brightness the textures are pulled towards
 LUMA_PULL = 0.55        # 0 = keep each texture's own brightness, 1 = all equal
-LUMA_KEEP = {"snow": 0.55, "road_snow": 0.7, "dirt_frozen": 0.5, "rock_top": 0.6, "rock_side": 0.6, "wall": 0.5, "stone": 0.5, "ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
+LUMA_KEEP = {"snow": 0.55, "dirt_frozen": 0.5, "rock_top": 0.6, "rock_side": 0.6, "wall": 0.5, "stone": 0.5, "ash": 0.0, "riverbed": 0.25, "water": 0.35}  # moody textures keep more of their own value
 SEAM_BAND = 0.5         # blend zone next to the borders (share of the size; 0.5 = whole half, least smearing of structure)
 FRAME_SHIFT = S // 16   # water: the shifted twin the frames cross-fade to
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { seasonGround, seasonModel, seasonOf, seasonTextures, takesSnow } from '../../src/content/season';
-import { validateSeasons } from '../../src/content/validateLook';
+import { validateBoardModels, validateSeasons } from '../../src/content/validateLook';
 import { mapSchema } from '../../src/content/schemas';
 import type { GameData } from '../../src/core/gameData';
 
@@ -54,8 +54,6 @@ describe('seasons of the board (story 15.15)', () => {
   });
 
   it('the map schema knows the season', () => {
-    const base = { id: 't', nameKey: 'k', size: [1, 1], fog: false, legend: { '.': 'grass' }, terrain: '.', units: [], deploy: { slots: [] }, reinforcements: [], objectives: [] };
-    expect(mapSchema.safeParse({ ...base, season: 'winter' }).success).toBeDefined();
     expect(mapSchema.shape.season.safeParse('winter').success).toBe(true);
     expect(mapSchema.shape.season.safeParse('spring').success).toBe(false);
   });
@@ -73,5 +71,13 @@ describe('seasons of the board (story 15.15)', () => {
     expect(msgs.some((m) => m.includes('no season for act 7'))).toBe(true);
     expect(msgs.some((m) => m.includes('surface lava'))).toBe(true);
     expect(msgs.some((m) => m.includes('swaps the texture for itself'))).toBe(true);
+  });
+
+  it('content:check: a season texture tools/art/ground.py does not build and a missing snow-cap model are errors', () => {
+    expect(validateSeasons(data, new Set(['grass_autumn', 'snow', 'dirt_frozen', 'road_snow']))).toEqual([]);
+    expect(validateSeasons(data, new Set(['snow', 'dirt_frozen', 'road_snow'])).map((i) => i.message)).toEqual([expect.stringContaining('grass_autumn is no ground texture')]);
+    const models = (skip: string) => new Set([...validateBoardModels(data, new Set(), new Set()).map((i) => /missing model (\S+)/.exec(i.message)![1]!)].filter((m) => m !== skip));
+    const issues = validateBoardModels(data, models('snowcap_wall_idle'), new Set()).map((i) => i.file + ' ' + i.message);
+    expect(issues).toEqual([expect.stringContaining('board.seasonModels.winter missing model snowcap_wall_idle')]);
   });
 });

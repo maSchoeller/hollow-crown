@@ -9,7 +9,7 @@
  * `PERF_VAT=0|1` overrides `board.vat`: 0 = every figure plays its skeleton (the path before the baked animation of story 7.8).
  * `PERF_STAGES=1,2,4` overrides the throttling levels (levels without a target are only reported).
  */
-import type { Season } from '../../src/core/defs';
+import { SEASONS, type Season } from '../../src/core/defs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
@@ -206,6 +206,7 @@ interface LargeRow {
  * limits the rows (`whole` = 1-6 watched in the overview). `PERF_SEASON=winter` (story 15.15) shows every draft in that season.
  */
 const SEASON = process.env.PERF_SEASON as Season | undefined;
+if (SEASON && !SEASONS.includes(SEASON)) throw new Error(`PERF_SEASON=${SEASON}: no season (${SEASONS.join(', ')})`);
 test('large maps and the castle (story 15.11)', async ({ page }, info) => {
   test.skip(process.env.PERF_LARGE !== '1', 'set PERF_LARGE=1');
   test.setTimeout(3_600_000);

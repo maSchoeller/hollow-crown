@@ -22,9 +22,10 @@ export function validateWeather(data: GameData): ContentIssue[] {
 
 /**
  * Seasons (story 15.15): every act a map lives in has a season in `render.yaml board.actSeason`, a map's own `season` is not set on an
- * interior (a place under a roof has none), and `board.seasonGround` only swaps the ground of surfaces that terrains draw.
+ * interior (a place under a roof has none), and `board.seasonGround` only swaps the ground of surfaces that terrains draw, for a texture
+ * that `tools/art/ground.py` builds (`groundTextures`, read by content:check; left out, the names are not checked).
  */
-export function validateSeasons(data: GameData): ContentIssue[] {
+export function validateSeasons(data: GameData, groundTextures?: ReadonlySet<string>): ContentIssue[] {
   const out: ContentIssue[] = [];
   const board = data.render.board;
   for (const map of Object.values(data.maps)) {
@@ -36,6 +37,7 @@ export function validateSeasons(data: GameData): ContentIssue[] {
     for (const [surface, texture] of Object.entries(swap ?? {})) {
       if (!surfaces.has(surface)) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}: no terrain draws the surface ${surface}` });
       if (texture === surface) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}.${surface}: swaps the texture for itself` });
+      else if (groundTextures && !groundTextures.has(texture)) out.push({ file: 'render.yaml', message: `board.seasonGround.${season}.${surface}: ${texture} is no ground texture of tools/art/ground.py (TEXTURES)` });
     }
   return out;
 }
@@ -103,6 +105,7 @@ export function validateBoardModels(data: Pick<GameData, 'render' | 'maps' | 'te
   for (const [k, d] of Object.entries(b.decor)) name(d.model, `render.yaml board.decor.${k}`);
   for (const [t, list] of Object.entries(b.decorOn)) for (const d of list) name(d.model, `render.yaml board.decorOn.${t}`);
   for (const m of Object.values(b.propFallback)) name(m, 'render.yaml board.propFallback');
+  for (const [season, swap] of Object.entries(b.seasonModels)) for (const m of Object.values(swap ?? {})) name(m, `render.yaml board.seasonModels.${season}`);
   for (const map of Object.values(data.maps)) for (const pv of map.propVariants ?? []) name(pv.model, `maps/${map.id}`);
   const out: ContentIssue[] = [];
   for (const [model, file] of named) {

@@ -3,7 +3,7 @@
 - **Datei (Original, unverändert aus ChatGPT heruntergeladen):** `art/ground/refs/sheet7_snow_frozen_road_ice.png` (1254 × 1254, 2 × 2 mit weißem Spalt), erzeugt am 2026-11-06.
 - **Abgeleitet:** Bodentexturen `snow`, `dirt_frozen`, `road_snow` über `tools/art/ground.py` (`SHEETS`). Das vierte Feld (Seeeis) ist eine Reserve für das Eis mit Bruchstellen (3-3, 3-4, 3-7) und noch nicht im Spiel.
 - **Plan:** `concept/23-art-direction/map-assets/jahreszeiten-plan.md`. Herbstgras kommt aus dem vierten Feld von `sheet6` (`map_assets_moor.md`).
-- **Abnahme:** im Spiel auf dem Akt-2-Entwurf 2-8 (`__hc.devMap('s2_2_8_kronfeld', { season: 'winter' })`), Belege in `_bmad-output/implementation-artifacts/15-15-belege/`.
+- **Abnahme:** im Spiel auf der Testkarte `asset_catalog` (`__hc.devMap('asset_catalog', { season: 'winter', fog: false })`), geprüft auch auf 2-8 und N4; Belege in `_bmad-output/implementation-artifacts/15-15-belege/`. Erzeugt nach `concept/23-art-direction/licensing.md` §6 (ChatGPT, Prompt und Original hier protokolliert).
 
 ## Prompt
 

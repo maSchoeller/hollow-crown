@@ -203,7 +203,7 @@ Vorbereitung für Epic 11 und Akt 3 nach `concept/23-art-direction/map-assets/ja
 
 **Angenommen** eine Karte mit `season` in der YAML (`summer`, `autumn`, `winter`) oder ohne Angabe die Jahreszeit ihres Akts (`render.yaml board.actSeason`)
 **Wenn** das Brett sie zeigt
-**Dann** tauscht der Boden nach `board.seasonGround` nur die Texturen der Splat-Layer (Herbst: Gras mit Laub; Winter: Schnee, gefrorene Erde, Fahrspuren im Schnee), Innenräume (`interior: true`) tauschen nichts, und es lädt nur die Texturen der gezeigten Jahreszeit
+**Dann** tauscht der Boden nach `board.seasonGround` nur die Texturen der Splat-Layer (Herbst: Gras mit Laub; Winter: Schnee, gefrorene Erde, Schneeweg), Innenräume (`interior: true`) tauschen nichts, und es lädt nur die Texturen der gezeigten Jahreszeit
 **Und** im Winter tragen Felsmasse, Häuser und Kleinkram Weiß auf nach oben zeigenden Flächen (Weg B, Material), Mauer und Turm ihre Schneehauben-Modelle (Weg A), der Wald seine Jahreszeit-Fassung
 **Und** Figuren, Teamfarben, Ringe und Markierungen bleiben ungefärbt und vom Boden unterscheidbar; die Wirkung eines Felds bleibt an derselben Form erkennbar (§3.2)
 **Und** `content:check` prüft `season` und die Texturen von `seasonGround`; Dreiecks- und Paket-Budget halten, die Bildrate großer Karten sinkt bei gedrosselter CPU nicht.
