@@ -152,3 +152,8 @@
 - Umsetzung: Wegenetz als Daten (`roads` in `content/world/valmora.yaml`, erzeugt mit `tools/art/world_roads.py`). Zuerst die Straßen aus `geografie-valmora.md` (Klammstraße Aurenhall–Kronfeld, Passstraße Kronfeld–Windscharte–Paktwacht, Paktwacht–Tobins Hof–Varnhold, Speichen von Kronfeld, Weg über den Spiegelsee zum Krater), dann Nachbarn per Gabriel-Graph: keine Kreuzungen, kein Weg länger als 18 % der Kartenbreite (die Küstenstrecke Aue-Insel–Perlhof 25 %, sonst wäre Perlhof abgeschnitten), jeder Ort erreichbar. 41 Wege über 30 Orte.
 - Wege in den Nebel eines späteren Akts zeichnet die Karte nicht. Damit hat der Prolog-Stein in Aurenhall in Akt 1 keinen Weg mehr nach Varnhold (bisher zeigte die Linie die Flucht nach Süden); die Flucht erzählt die Prolog-Szene. Wege zu einem Ort ohne offenen oder erledigten Stein sind gedämpft (60 % Deckkraft).
 - Belege: `_bmad-output/implementation-artifacts/15-12-belege/wege-vergleich.jpg` (375 × 812, vorher und nachher bei 1-6).
+
+## 2026-11-06: Seraphine wird in Staffel 2 spielbar
+
+- Produktinhaber: Prinzessin Seraphine wird in Staffel 2 spielbar; Klasse und Waffe entscheidet die Planung von Staffel 2 (Funkenflug #9). Herzogin Maelis bleibt Nichtkämpferin. §13 „Seraphine als Kämpferin“ ist damit entschieden.
+- Folge für Staffel 1: keine. Seraphine bleibt NSC ohne Kampfrolle (Schutzregel in `concept/22-narrative/staffelbogen.md`), ihr Porträt hält keine Waffe; Brettfigur und Kampfposen erst mit der Klasse in Staffel 2.
