@@ -29,6 +29,23 @@ export function contentFiles(root = process.cwd()): string[] {
  */
 const parsed = new Map<string, { stamp: string; doc: unknown }>();
 
+/** Parsed documents per absolute path with their stamps, for handing to other processes (the test workers, see tests/setup). */
+export type ParsedContent = Record<string, { stamp: string; doc: unknown }>;
+
+/** Parses every content file once (if not kept yet) and returns what is kept. */
+export function parsedContent(root = process.cwd()): ParsedContent {
+  readContentFiles(root);
+  return Object.fromEntries(parsed);
+}
+
+/**
+ * Fills the kept documents from another process. Each vitest test file runs in a fresh worker, so without this every file parsed all
+ * content YAML again (about 1.1 s each, the larger part of a cold load). Stamps are still checked, a file changed since is parsed anew.
+ */
+export function primeParsedContent(entries: ParsedContent): void {
+  for (const [path, entry] of Object.entries(entries)) parsed.set(path, entry);
+}
+
 /** The parsed YAML documents of content/, keyed like the browser loader (`content/<path>`); each call returns its own copy. */
 export function readContentFiles(root = process.cwd()): Record<string, unknown> {
   const dir = join(root, 'content');

@@ -51,7 +51,7 @@ OUT = os.path.join(ROOT, "art", "previews")
 GROUPS = [
     ("Company", ["avatar_a", "avatar_b", "lucan", "brenna", "tobin", "fenn", "mira", "liora", "ysolde", "varek"]),
     ("Lieutenants", ["grosk", "hask", "morra", "ulvric"]),
-    ("Bosses and NPCs", ["osric", "paktwacht_steward"]),  # story 15.9
+    ("Bosses and NPCs", ["osric", "paktwacht_steward", "villager_elder"]),  # stories 15.9, 15.14
     ("Generic enemies", ["brigand", "bandit_archer", "soldier", "wolf_rider", "mercenary", "temple_guard"]),
 ]
 # no unit data in content for these: agreed fallback weapon group (None = no weapon, flagged on the sheet)

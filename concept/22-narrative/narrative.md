@@ -153,7 +153,7 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 
 **Beschreibung:** Gründer der Kompanie, trocken, verlässlich, ein Bär mit leiser Stimme.
 
-**Hintergrund:** Lucan ist Veteran des Grenzkriegs. Dort ließ ein adliger Kommandant Lucans Einheit für einen Sieg verheizen. Danach gründete er das Aschenbanner aus Leuten, die niemand wollte.
+**Hintergrund:** Lucan stammt aus einem kleinen Ritterhaus, das der Krone dient; sein Grün ist die Hausfarbe, nicht die der Krone. Er ist Veteran des Grenzkriegs und war dort Ritterhauptmann. Der Kommandant, damals Dravn, ließ Lucans Einheit als Köder stehen und gewann so seinen berühmten Sieg. Lucan klagte ihn danach vor Hof an; weil Dravn der Held des Sieges war, trennte sein Haus ihm das Wappen ab, statt den Sieg zu beschmutzen. Danach gründete er das Aschenbanner aus Leuten, die niemand wollte. In Akt 1 fällt Dravns Name dazu nicht; Varek weiß Bescheid (N2).
 
 **Motivation:** alle heimbringen.
 
@@ -198,8 +198,8 @@ Die Spannung verläuft in **Wellen mit steigender Grundlinie**. Jede Mission ist
 
 | Figur | Wer | Lüge in Akt 2 |
 |---|---|---|
-| **General Dravn** (45) | Aldrics Halbbruder, führt das Grenzheer der Eisenmark, hält den Pakt für Aberglauben | Er will Grenzdörfer als Brandschneise gegen die Drachen opfern |
-| **Herzogin Maelis vom Silbermeer** (50) | Reichste Adlige, entfernte Cousine, kauft Loyalität | Sie hat die Banden aus Akt 1 finanziert, um das Kronland zu schwächen |
+| **General Dravn** (45) | Aldrics Halbbruder, führt das Grenzheer der Eisenmark, hält den Pakt für Aberglauben. Als Kommandant im Grenzkrieg ließ er Lucans Einheit als Köder stehen und wurde damit zum Helden; seine Kasse zahlt das Bandengold aus Akt 1 mit, damit die Unruhe der Krone sein Heer teuer macht | Er will Grenzdörfer als Brandschneise gegen die Drachen opfern |
+| **Herzogin Maelis vom Silbermeer** (50) | Reichste Adlige, entfernte Cousine, kauft Loyalität | Sie hat die Banden aus Akt 1 finanziert, um das Kronland zu schwächen: Grells Schiff bringt das Gold von Krähenholm durch die Erlenbucht zu Hasks Lager im Süden |
 | **Seraphine** | siehe oben | Der Freispruch ist eine Falle. Ihr Strang (2-2, 2-3) deckt keinen eigenen Betrug auf, er sät Zweifel: Odile weiß von Halvards Briefen an die Prinzessin, und das Siegel aus dem Salzpass ist für den Freispruch-Erlass bestimmt. Die Lüge platzt erst in Kronfeld (2-8) |
 
 ---
@@ -240,7 +240,7 @@ Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte tre
 | Akt | Lager | Leutnants |
 |---|---|---|
 | 1 | Kopfgeldjäger und Banditen | **Grosk** (Banditenführer, Seitenwechsler), **Hask** (Marodeur-Hauptmann), **Morra** (Kopfgeldjägerin), **Ulvric** (Wolfsreiter) |
-| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden; die einzige Wyvernreiterin des Spiels, Wyvernreiter gibt es nicht als Gegnertyp) |
+| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin; fährt in Akt 1 ungesehen das Bandengold zu Hask), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden; die einzige Wyvernreiterin des Spiels, Wyvernreiter gibt es nicht als Gegnertyp) |
 | 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
 
 Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
@@ -336,7 +336,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 | vor ca. 300 Jahren | **Drachenkrieg.** Drachen verbrennen halb Valmora. König **Aldric I.** steigt ins Gebirge und schließt mit **Vhaelyra** den Pakt: Die Drachen schlafen, dafür gibt jeder König beim Paktfest einen Teil seiner Lebenszeit. Gefäß des Paktes ist die **Glutkrone**. |
 | bis vor ca. 80 Jahren | Der Orden der **Paktwächter** hütet die Wahrheit in der **Paktwacht** an der Grenze und schreibt in der **Chronik der Wächter** jedes Opfer auf. |
 | vor ca. 80 Jahren | Der Tempel löst den Orden auf und zieht das Geheimnis an sich. Die Paktwacht verfällt, die Chronik bleibt vergessen in ihren Mauern zurück. Seitdem kennt nur noch der jeweils oberste Paktwahrer die Wahrheit. |
-| vor 12 Jahren | **Grenzkrieg** gegen das Nachbarreich **Kharesh** jenseits der Grenzmarken. Valmora gewinnt teuer. Dravn wird zum Helden, Lucans Einheit wird von einem adligen Kommandanten verheizt. Danach gründet Lucan das Aschenbanner. |
+| vor 12 Jahren | **Grenzkrieg** gegen das Nachbarreich **Kharesh** jenseits der Grenzmarken. Valmora gewinnt teuer. Dravn wird zum Helden, weil er Lucans Einheit als Köder verheizt. Lucan klagt ihn vor Hof an, und sein Ritterhaus verstößt ihn. Danach gründet Lucan das Aschenbanner. |
 | Paktnacht (Staffelbeginn) | König **Aldric IV.** (41) will das Opfer verweigern und die Wahrheit verkünden. Halvard tötet ihn, nimmt die Krone und belastet das Aschenbanner. Die Erde bebt. |
 
 **Major Events:** der Drachenkrieg, die Paktschließung, die Auflösung der Paktwächter, der Grenzkrieg, die Paktnacht.
@@ -359,9 +359,9 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 
 | Fraktion | Führung | Ziel | Rolle in der Story |
 |---|---|---|---|
-| **Die Krone** und die Ritter der **Silbernen Lanze** | Prinzessin Seraphine, Pegasusritterin Dame Rowena | Thronfolge, Rache für Aldric | Akt-2-Strang, Verrat im Akt-2-Finale |
-| **Grenzheer der Eisenmark** | General Dravn, Hauptfrau Sable | Drachen bekämpfen statt Pakt | Akt-2-Strang (Brandschneise), Sables Wechsel |
-| **Haus Silbermeer** | Herzogin Maelis, Kapitän Grell | Macht durch Geld, die Krone schwächen | Akt-2-Strang; hat heimlich die Banden aus Akt 1 finanziert |
+| **Die Krone** und die Ritter der **Silbernen Lanze** | Prinzessin Seraphine, Pegasusritterin Dame Rowena | Thronfolge, Rache für Aldric | Akt-2-Strang, Verrat im Akt-2-Finale; Lucans verstoßenes Ritterhaus dient der Krone (Staffel 2) |
+| **Grenzheer der Eisenmark** | General Dravn, Hauptfrau Sable | Drachen bekämpfen statt Pakt | Akt-2-Strang (Brandschneise), Sables Wechsel; Dravns Kasse zahlt das Bandengold aus Akt 1 mit |
+| **Haus Silbermeer** | Herzogin Maelis, Kapitän Grell | Macht durch Geld, die Krone schwächen | Akt-2-Strang; hat heimlich die Banden aus Akt 1 finanziert (über Grell an Hask) |
 | **Pakttempel** und **Paktgarde** | Ehrwürden Halvard; Cassian, Torvald, Eluned | Pakt und Geheimnis um jeden Preis erhalten | Mentor in Akt 1, Antagonist in Akt 3 |
 | **Akademie von Aurenhall** | (Rektorat, offstage) | Wissen im Rahmen des Tempels | Hat Rhen, Ysolde und Vesna verwiesen |
 | **Aschenbanner** | Lucan | alle heimbringen, Namen reinwaschen | Spielerfraktion |

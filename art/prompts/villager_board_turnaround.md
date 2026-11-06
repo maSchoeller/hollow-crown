@@ -5,6 +5,8 @@
 
 Zivilisten für die Klasse `civilian` (Produktinhaber 2026-10-26, Stories 9.3 und 9.6): der Dorfälteste in 1-2 „Asche über Erlbach“ und die Kinder im Hungerlager 1-5. Generische Figuren, keine Gefährten.
 
+> **Abgelöst für den Ältesten:** Turnaround und Modell des Ältesten wurden am 2026-11-06 nach dem neuen Porträt ersetzt (`villager_elder_board_turnaround.md`, Story 15.14). Das Protokoll unten beschreibt die Oktober-Fassung (Commit `08b771a`).
+
 - **Dateien:**
   - Porträts `art/mockups/characters-s1/villager_elder.png`, `villager_child.png` (1254 × 1254, RGBA, unveränderte Downloads)
   - Brett-Turnarounds `art/turnarounds/villager_elder_board/sheet.png`, `art/turnarounds/villager_child_board/sheet.png` (1536 × 1024, Originale); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`)

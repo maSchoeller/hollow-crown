@@ -8,7 +8,7 @@ import { areaTiles } from '../../src/core/util';
 const { data, locales } = loadContentFromDisk();
 const HASK = { met: true, encounters: 1, grudge: 0, routs: 1, signatureDropped: false };
 
-/** A campaign that has met Hask and finished P, 1-1 and 1-2 (the prologue has no anchors: abandoned), on `difficulty`. */
+/** A campaign that has met Hask and finished P, 1-1 and 1-2 (the prologue has no anchors: noHaunts), on `difficulty`. */
 function ready(d: GameData = data, difficulty: 'easy' | 'normal' | 'hard' = 'normal', seed = 7): CampaignState {
   const c = newCampaign(d, seed, { difficulty, deathMode: 'standard' } as never, { name: 'Rhen', portrait: 'avatar_a' } as never);
   return { ...c, completed: ['prologue', 'm1_1', 'm1_2'], lieutenants: { hask: { ...HASK } } };
@@ -324,23 +324,55 @@ describe('haunt content', () => {
   });
 });
 
-describe('abandoned maps (GDD log 2026-11-06): the company never comes back to the prologue', () => {
+describe('maps with noHaunts (GDD log 2026-11-06): prologue, 1-6 and 1-7 are never haunted', () => {
   /** the anchors the prologue had until 2026-11-06 */
   const OLD: NonNullable<MapDef['haunts']> = [
     { variant: 'rout', target: { at: [6, 7] }, enemySpawn: { rect: [5, 1, 8, 3] }, deploy: { rect: [4, 12, 9, 13] } },
     { variant: 'boss', target: { at: [6, 15] }, enemySpawn: { rect: [4, 12, 9, 13] }, deploy: { rect: [5, 1, 8, 2] } },
     { variant: 'defend', target: { at: [6, 1] }, enemySpawn: { rect: [4, 10, 9, 11] }, deploy: { rect: [5, 2, 8, 3] }, turns: 8 },
   ];
-  const withOld = (abandoned: boolean): GameData => ({ ...data, maps: { ...data.maps, prologue_paktnacht: { ...data.maps.prologue_paktnacht!, abandoned, haunts: OLD } } });
+  const withOld = (noHaunts: boolean): GameData => ({ ...data, maps: { ...data.maps, prologue_paktnacht: { ...data.maps.prologue_paktnacht!, noHaunts, haunts: OLD } } });
   const prologueDays = (d: GameData) => {
     const days: number[] = [];
     for (let day = 100; day < 160; day++) if (advance(d, ready(d), day).campaign.haunts.some((h) => h.map === 'prologue_paktnacht')) days.push(day);
     return days;
   };
 
-  it('the prologue map is abandoned and has no anchors', () => {
-    expect(data.maps.prologue_paktnacht!.abandoned).toBe(true);
-    expect(data.maps.prologue_paktnacht!.haunts ?? []).toEqual([]);
+  it('prologue, 1-6 and 1-7 have noHaunts and no anchors; the other story maps of act 1 keep theirs', () => {
+    for (const id of ['prologue_paktnacht', 'm1_6_paktwacht', 'm1_7_gewoelbe']) {
+      expect(data.maps[id]!.noHaunts, id).toBe(true);
+      expect(data.maps[id]!.haunts ?? [], id).toEqual([]);
+    }
+    for (const id of ['m1_1_steckbriefe', 'm1_2_erlbach', 'm1_3_silberbach', 'm1_4_wolfslager', 'm1_5_hungerlager']) expect(data.maps[id]!.haunts!.length, id).toBeGreaterThanOrEqual(2);
+  });
+
+  it('the dice never pick 1-6 or 1-7 once they are done, even with anchors left in the data (the flag decides)', () => {
+    // 1-8 never had anchors; 1-6 and 1-7 get the anchors of 1-1 back for this test, flag on and off
+    const anchored = (noHaunts: boolean): GameData => ({
+      ...data,
+      maps: { ...data.maps, ...Object.fromEntries(['m1_6_paktwacht', 'm1_7_gewoelbe'].map((id) => [id, { ...data.maps[id]!, noHaunts, haunts: data.maps.m1_1_steckbriefe!.haunts }])) },
+    });
+    const maps = (d: GameData) => {
+      const all = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+      const seen = new Set<string>();
+      for (let day = 100; day < 160; day++) for (const h of advance(d, all, day).campaign.haunts) seen.add(h.map);
+      return seen;
+    };
+    expect([...maps(anchored(false))]).toEqual(expect.arrayContaining(['m1_6_paktwacht', 'm1_7_gewoelbe']));
+    for (const d of [data, anchored(true)]) for (const id of ['prologue_paktnacht', 'm1_6_paktwacht', 'm1_7_gewoelbe', 'm1_8_paktwacht_halten']) expect(maps(d).has(id), id).toBe(false);
+  });
+
+  it('an open 1-6 or 1-7 haunt of an old save lapses on load, with its hauntLast', () => {
+    const d: GameData = { ...data, maps: { ...data.maps, m1_6_paktwacht: { ...data.maps.m1_6_paktwacht!, noHaunts: false, haunts: data.maps.m1_1_steckbriefe!.haunts } } };
+    const c = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+    const day = [...Array(60).keys()].map((i) => 100 + i).find((n) => advance(d, c, n).campaign.haunts.some((h) => h.map === 'm1_6_paktwacht'))!;
+    const old = { ...advance(d, c, day).campaign, hauntLast: { m1_6_paktwacht: 'boss', m1_7_gewoelbe: 'rout', m1_2_erlbach: 'rout' } };
+    const h = old.haunts.find((x) => x.map === 'm1_6_paktwacht')!;
+    const now = normalizeCampaign(data, old);
+    expect(now.haunts.some((x) => x.map === 'm1_6_paktwacht')).toBe(false);
+    expect(now.haunts.length).toBe(old.haunts.length - 1);
+    expect(now.hauntLast).toEqual({ m1_2_erlbach: 'rout' });
+    expect(staleHauntMap(data, hauntMapId(h.map, h.variant, h.lt))).toBe(true);
   });
 
   it('the dice never pick the prologue, also on the days that hit it with the old anchors', () => {
@@ -352,9 +384,9 @@ describe('abandoned maps (GDD log 2026-11-06): the company never comes back to t
     expect(prologueDays(withOld(true))).toEqual([]);
   });
 
-  it('content:check refuses haunt anchors on an abandoned map', () => {
-    expect(validateContent(withOld(true), locales).map((i) => i.message)).toContain('haunts: the map is abandoned (the company never comes back), it takes no haunt anchors');
-    expect(validateContent(withOld(false), locales).some((i) => /abandoned/.test(i.message))).toBe(false);
+  it('content:check refuses haunt anchors on a map with noHaunts', () => {
+    expect(validateContent(withOld(true), locales).map((i) => i.message)).toContain('haunts: the map has noHaunts (it is never haunted), it takes no haunt anchors');
+    expect(validateContent(withOld(false), locales).some((i) => /noHaunts/.test(i.message))).toBe(false);
   });
 
   it('an open prologue haunt of an old save lapses on load, the others stay; its running battle is stale', () => {

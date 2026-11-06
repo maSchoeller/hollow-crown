@@ -83,6 +83,12 @@
    ],
    "site": {
     "image": "art/world/sites/aurenhall_v2.png",
+    "variants": [
+     {
+      "id": "aurenhall_siege",
+      "image": "art/world/sites/aurenhall_siege.png"
+     }
+    ],
     "x": 605,
     "bottom": 349,
     "width": 106
@@ -322,7 +328,13 @@
     846
    ],
    "site": {
-    "image": "art/world/sites/paktwacht_v3.png",
+    "image": "art/world/sites/paktwacht_ruin.png",
+    "variants": [
+     {
+      "id": "paktwacht_built",
+      "image": "art/world/sites/paktwacht_v3.png"
+     }
+    ],
     "x": 831,
     "bottom": 860,
     "width": 72
@@ -386,6 +398,12 @@
    ],
    "site": {
     "image": "art/world/sites/erlbach.png",
+    "variants": [
+     {
+      "id": "erlbach_burnt",
+      "image": "art/world/sites/erlbach_burnt.png"
+     }
+    ],
     "x": 684,
     "bottom": 1068,
     "width": 70

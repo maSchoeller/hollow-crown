@@ -2,11 +2,12 @@
 # (3276 × 3276, Prompt und Abnahme art/prompts/world_map_v5.md, Geografie concept/22-narrative/geografie-valmora.md). Straßen,
 # Brücken und Weiler sind gemalt; Stadtbilder, Steine, Wege, Nebel und Namen legt das Spiel darüber. Paket core.
 id: valmora
-# Bild unter public/assets/world/ (tools/art/build.py): <image>_r<Zeile>c<Spalte>.webp als tiles × tiles Kacheln, darunter
-# <image>.webp als Übersicht (Rückfall, solange oder wo eine Kachel fehlt); size = Pixelmaße des Quellbilds
+# Bild unter public/assets/world/ (tools/art/build.py): das ganze Bild in Auflösungsstufen (Story 15.12), levels = Breiten in px.
+# Die erste Stufe ist <image>.webp (Übersicht, zuerst gezeigt und Rückfall), jede weitere <image>_<Breite>.webp; geladen wird die
+# kleinste Stufe, die bei der nächsten Zoomstufe und der Pixeldichte des Geräts nicht hochskaliert wird. size = Pixelmaße der Quelle
 image: valmora
 size: [3276, 3276]
-tiles: 3
+levels: [1024, 2048, 3276]
 # Regionen: Ort des Namens und Flächen (Polygone in Prozent von Breite und Höhe). Über den Flächen der Regionen späterer Akte
 # liegt Nebel. Grenzen nach dem Bild: Akt 3 nördlich des Moränenriegels (Aurenhall und Spiegelsee darin), Akt 1 südlich des
 # Grauen Kamms; Krähenholm vor der Küste gehört zu Akt 2. Startwerte [C].
@@ -23,15 +24,17 @@ home:
 # slots = Plätze der Missionsliste (concept/22-narrative/missionsliste-s1.md) an diesem Ort; `node` bindet einen Platz an einen
 # Knoten der Kampagne, Plätze ohne Knoten sind für spätere Akte vorgesehen. Teilen sich Knoten einen Ort, steht dort ein Stein.
 # site = Stadtbild auf dem gemalten Plateau (public/assets/world/sites/<id>.webp): foot = Mitte der Unterkante, width = Breite,
-# beides in Prozent der Karte. variants (offen, Art-Log 2026-11-05): Bilder für Zustände des Orts mit Bedingungen, das erste
-# zutreffende gewinnt, sonst das Grundbild; noch keine angelegt.
+# beides in Prozent der Karte. variants: Bilder für Zustände des Orts (sites/<image>.webp) mit Bedingungen, das erste zutreffende
+# gewinnt, sonst das Grundbild. Paktwacht (Produktinhaber 2026-11-06, Story 15.12): Grundbild Ruine, ausgebaut ab Burgstufe 1 [ASSUMPTION].
+# Erlbach verbrannt nach 1-2; Aurenhall belagert ab 3-5 (Produktinhaber 2026-11-06): solange Akt 3 keine Knoten hat, als
+# „Akt 3 und vier erledigte Story-Missionen“ (3-1 bis 3-4 vor 3-5), später `completed: <Knoten von 3-4>`.
 places:
   - { id: crater, act: 3, at: [53.19, 7.66], site: { foot: [50.96, 8.05], width: 3.43 }, slots: [{ label: "3-8" }] }   # Urtempel im Krater
   - { id: mountain_pass, act: 3, at: [48.41, 15.15], slots: [{ label: "3-7" }] }   # Pass ins Gebirge
   - { id: royal_crypt, act: 3, at: [34.45, 19.94], slots: [{ label: "N9" }] }   # Königsgruft
   - { id: mirror_lake_camp, act: 3, at: [47.85, 21.53], slots: [{ label: "3-4" }] }   # Lager auf dem Spiegelsee
   - { id: winter_forest_hut, act: 3, at: [68.58, 19.14], slots: [{ label: "3-3" }] }   # Vesnas Hütte
-  - { id: aurenhall, act: 3, at: [52.95, 27.11], site: { foot: [48.25, 27.83], width: 8.45 }, slots: [{ label: "P", node: prologue }, { label: "3-1" }, { label: "3-2" }, { label: "3-5" }, { label: "3-6" }, { label: "N7" }, { label: "N10" }] }   # Aurenhall
+  - { id: aurenhall, act: 3, at: [52.95, 27.11], site: { foot: [48.25, 27.83], width: 8.45, variants: [{ image: aurenhall_siege, requires: [{ act: 3 }, { storyCount: { min: 4 } }] }] }, slots: [{ label: "P", node: prologue }, { label: "3-1" }, { label: "3-2" }, { label: "3-5" }, { label: "3-6" }, { label: "N7" }, { label: "N10" }] }   # Aurenhall
   - { id: refugee_camp, act: 3, at: [40.67, 25.68], slots: [{ label: "N8" }] }   # Flüchtlingslager
   - { id: aure_gorge, act: 2, at: [48.64, 30.7], slots: [] }   # Aureklamm
   - { id: raven_meadow, act: 2, at: [51.04, 37.48], slots: [{ label: "2-3" }] }   # Rabenweide
@@ -47,12 +50,65 @@ places:
   - { id: copperhall, act: 2, at: [89.15, 41.63], site: { foot: [92.11, 42.11], width: 4.94 }, slots: [{ label: "N5" }] }   # Kupferhall
   - { id: clan_grounds, act: 2, at: [89.31, 28.71], slots: [{ label: "N4" }] }   # Jagdgründe der Clans
   - { id: wind_gap, act: 2, at: [61.56, 63.0], slots: [{ label: "2-1" }] }   # Windscharte
-  - { id: paktwacht, act: 1, at: [70.18, 68.74], site: { foot: [66.27, 68.58], width: 5.74 }, slots: [{ label: "1-6", node: m1_6 }, { label: "1-7", node: m1_7 }, { label: "1-8", node: m1_8 }] }   # Paktwacht
+  - { id: paktwacht, act: 1, at: [70.18, 68.74], site: { foot: [66.27, 68.58], width: 5.74, variants: [{ image: paktwacht_built, requires: [{ castleTier: 1 }] }] }, slots: [{ label: "1-6", node: m1_6 }, { label: "1-7", node: m1_7 }, { label: "1-8", node: m1_8 }] }   # Paktwacht
   - { id: tobin_farm, act: 1, at: [61.4, 71.13], slots: [{ label: "N3", node: n3 }] }   # Tobins Pachthof
   - { id: varnhold, act: 1, at: [51.99, 80.38], site: { foot: [48.88, 80.86], width: 5.26 }, slots: [{ label: "1-1", node: m1_1 }, { label: "N1", node: n1 }] }   # Varnhold
   - { id: alder_moor, act: 1, at: [34.29, 77.75], slots: [{ label: "1-5", node: m1_5 }] }   # Erlenmoor
-  - { id: erlbach, act: 1, at: [57.81, 84.69], site: { foot: [54.55, 85.17], width: 5.58 }, slots: [{ label: "1-2", node: m1_2 }] }   # Erlbach
+  - { id: erlbach, act: 1, at: [57.81, 84.69], site: { foot: [54.55, 85.17], width: 5.58, variants: [{ image: erlbach_burnt, requires: [{ completed: m1_2 }] }] }, slots: [{ label: "1-2", node: m1_2 }] }   # Erlbach
   - { id: hawthorn_shrine, act: 1, at: [74.16, 76.56], slots: [{ label: "1-3", node: m1_3 }] }   # Schrein am Weißdorn
   - { id: hask_camp, act: 1, at: [88.12, 85.73], slots: [] }   # Hasks Lager
   - { id: wolf_hills, act: 1, at: [91.71, 90.51], slots: [{ label: "1-4", node: m1_4 }] }   # Wolfshügel
   - { id: border_tower, act: 1, at: [94.9, 78.95], slots: [{ label: "N2", node: n2 }] }   # Wachturm am Wall
+# Wege zwischen den Orten (Story 15.12, Produktinhaber 2026-11-06): sie zeigen die Geografie, nicht die Missionsfolge. Wege in
+# den Nebel eines späteren Akts zeichnet die Karte nicht; Wege zu einem Ort ohne offenen oder erledigten Stein gedämpft.
+# Erzeugt mit `python tools/art/world_roads.py --write`: zuerst die Straßen aus geografie-valmora.md, dann Nachbarn per
+# Gabriel-Graph ohne Kreuzungen und ohne lange Diagonalen; jeder Ort ist erreichbar. Nicht von Hand pflegen, sondern dort.
+# Ein drittes Feld `escape` markiert die Flucht des Prologs (Kahn durch die Aureklamm, dann über den Pass nach Varnhold):
+# eigene Linie, auch durch den Nebel.
+roads:
+  - [aurenhall, aure_gorge]
+  - [aure_gorge, raven_meadow]
+  - [raven_meadow, kronfeld]
+  - [refugee_camp, aure_gorge]
+  - [kronfeld, wind_gap]
+  - [wind_gap, paktwacht]
+  - [paktwacht, tobin_farm]
+  - [tobin_farm, varnhold]
+  - [kronfeld, kontor]
+  - [kronfeld, silverspring]
+  - [silverspring, greywatch]
+  - [aurenhall, mirror_lake_camp]
+  - [mirror_lake_camp, mountain_pass]
+  - [mountain_pass, crater]
+  - [copperhall, greywatch]
+  - [hask_camp, wolf_hills]
+  - [erlbach, varnhold]
+  - [tobin_farm, wind_gap]
+  - [mirror_lake_camp, refugee_camp]
+  - [refugee_camp, royal_crypt]
+  - [hawthorn_shrine, paktwacht]
+  - [aure_gorge, mirror_lake_camp]
+  - [border_tower, hask_camp]
+  - [kontor, raven_meadow]
+  - [aue_island, kontor]
+  - [clan_grounds, copperhall]
+  - [burnt_slope, clan_grounds]
+  - [burnt_slope, silverspring]
+  - [erlbach, tobin_farm]
+  - [mountain_pass, royal_crypt]
+  - [burnt_slope, winter_forest_hut]
+  - [royal_crypt, salt_pass]
+  - [burnt_slope, copperhall]
+  - [raven_meadow, silverspring]
+  - [refugee_camp, salt_pass]
+  - [crow_holm, pearl_court]
+  - [hask_camp, hawthorn_shrine]
+  - [aurenhall, winter_forest_hut]
+  - [aue_island, salt_pass]
+  - [alder_moor, varnhold]
+  - [aue_island, pearl_court]
+  - [aurenhall, aure_gorge, escape]
+  - [aure_gorge, kronfeld, escape]
+  - [kronfeld, wind_gap, escape]
+  - [wind_gap, tobin_farm, escape]
+  - [tobin_farm, varnhold, escape]

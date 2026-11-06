@@ -12,7 +12,7 @@ import { audio } from '../audio';
 import { nodeDef } from '../state/flow';
 import { data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
-import { screen } from '../state/screen';
+import { screen, type Screen } from '../state/screen';
 import { UnitBust, UnitHead } from './unitArt';
 import './Farewell.css';
 
@@ -53,7 +53,8 @@ function Card({ card }: { card: FarewellCard }) {
 }
 
 /** One fallen figure after another; after the last one the campaign goes on to the world map. */
-export function Farewell({ result, index }: { result: BattleResult; index: number }) {
+export function Farewell({ result, index, then }: { result: BattleResult; index: number; then?: Screen }) {
+  const after: Screen = then ?? { name: 'worldmap' };
   const cards = farewellView(data, result);
   const card = cards[index];
   const [locked, setLocked] = useState(true);
@@ -64,10 +65,10 @@ export function Farewell({ result, index }: { result: BattleResult; index: numbe
     return () => clearTimeout(id);
   }, [index]);
   if (!card) {
-    screen.value = { name: 'worldmap' };
+    screen.value = after;
     return null;
   }
-  const next = () => (screen.value = index + 1 < cards.length ? { name: 'farewell', result, index: index + 1 } : { name: 'worldmap' });
+  const next = () => (screen.value = index + 1 < cards.length ? { name: 'farewell', result, index: index + 1, then } : after);
   return (
     <div class="hc-view fw-view" key={card.id}>
       <Backdrop image={homeBackdrop()} />

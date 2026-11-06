@@ -333,7 +333,8 @@ const triggerWhen = z.discriminatedUnion('type', [
 
 const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('dialogue'), id: z.string(), onBoard: z.string().optional() }),
-  z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile }),
+  // `area`: the new goal area of the units (the way out of `flee`, the zone of `hold`); without it they keep theirs
+  z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile, area: area.optional() }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
   z.object({ action: z.literal('set_terrain'), area, terrain: z.string(), level: z.number().int().min(0).max(2).optional() }),
@@ -429,8 +430,8 @@ export const mapSchema = z.object({
   }),
   triggers: z.array(z.object({ id: z.string(), once: z.boolean().optional(), when: triggerWhen, then: z.array(triggerAction) })).default([]),
   goldReward: z.number().default(0),
-  /** the company leaves this place for good and never comes back (GDD log 2026-11-06): no haunt anchors, never haunted */
-  abandoned: z.boolean().optional(),
+  /** the map is never haunted (GDD log 2026-11-06): the company left the place for good (prologue), it caved in (1-7) or it became home (1-6); no haunt anchors */
+  noHaunts: z.boolean().optional(),
   haunts: z.array(hauntAnchorSchema).optional(),
   music: z.string().optional(),
   devNote: z.string().optional(),
@@ -485,6 +486,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
         .refine((r) => r.min !== undefined || r.max !== undefined, 'min or max'),
     }),
     z.strictObject({ act: z.number().int().min(1) }),
+    z.strictObject({ castleTier: z.number().int().min(1).max(3) }),
     z.strictObject({ support: z.strictObject({ pair: z.tuple([companion, companion]), rank }) }),
     z.strictObject({ stance }),
     z.strictObject({ met: z.string().min(1) }),
@@ -679,18 +681,26 @@ export const campaignSchema = z.object({
   ),
 });
 
-/** The world map (stories 5.2 and 15.7, architecture §5.12): the painted picture in tiles, regions with fog areas, places on it. */
+/** The world map (stories 5.2, 15.7 and 15.12, architecture §5.12): the painted picture in resolution levels, regions with fog areas, places on it. */
 const percentPos = z.tuple([z.number().min(0).max(100), z.number().min(0).max(100)]);
 const slugId = z.string().regex(/^[a-z0-9_]+$/);
 export const worldSchema = z.object({
   id: z.string(),
   image: slugId,
   size: z.tuple([z.number().int().positive(), z.number().int().positive()]),
-  tiles: z.number().int().min(1).max(8),
+  levels: z
+    .array(z.number().int().positive())
+    .min(1)
+    .refine((l) => l.every((w, i) => i === 0 || w > l[i - 1]!), 'levels ascending'),
   regions: z
     .array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos, areas: z.array(z.array(percentPos).min(3)).min(1) }))
     .min(1),
   home: z.object({ camp: percentPos, castle: percentPos }),
+  /**
+   * drawn paths between places (story 15.12): the geography, not the campaign order; tools/art/world_roads.py writes them.
+   * A third entry names the kind: `escape` is the flight of the prologue, drawn on its own and through the fog
+   */
+  roads: z.array(z.union([z.tuple([slugId, slugId]), z.tuple([slugId, slugId, z.enum(['road', 'escape'])])])).default([]),
   places: z
     .array(
       z.object({
@@ -837,6 +847,7 @@ export const renderSchema = z.object({
     zoomSteps: z.array(z.number().positive()).length(2),
     zoomMs: z.number().min(0),
     focusZoom: z.number().positive(),
+    fog: z.object({ px: z.number().int().min(16).max(1024), blur: z.number().int().min(0).max(16), alpha: z.number().min(0).max(1) }),
   }),
 });
 

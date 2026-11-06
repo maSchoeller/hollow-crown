@@ -4,7 +4,8 @@
  * For every node: the campaign up to that node (`__hc.devNode`), straight back to the world map, then
  *   <prefix>-<node>-overview.png  the first view (the open node in the middle)
  *   <prefix>-<node>-near.png      after a tap on the open stone (near zoom step plus focus zoom)
- * Base URL from BASE (default http://localhost:5173/); HOME_KIND=castle shows the castle as home.
+ * Base URL from BASE (default http://localhost:5173/); HOME_KIND=castle shows the castle as home; ROOMS='{"<room>":<level>}' sets room
+ * levels (castle tier, e.g. the built Paktwacht of story 15.12); SHOT=jpg writes JPEG instead of PNG.
  */
 import { chromium } from '@playwright/test';
 
@@ -12,6 +13,8 @@ const [prefix, ...nodes] = process.argv.slice(2);
 if (!prefix) throw new Error('usage: node tools/art/worldmap-shots.mjs <out-prefix> [nodeId …]');
 const base = process.env.BASE ?? 'http://localhost:5173/';
 const homeKind = process.env.HOME_KIND ?? null;
+const rooms = process.env.ROOMS ? JSON.parse(process.env.ROOMS) : null;
+const ext = process.env.SHOT === 'jpg' ? 'jpg' : 'png';
 if (homeKind && !['camp', 'castle'].includes(homeKind)) throw new Error('HOME_KIND must be camp or castle');
 const browser = await chromium.launch({ channel: 'chromium' });
 const page = await browser.newPage({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
@@ -32,16 +35,17 @@ for (const node of nodes.length ? nodes : ['m1_2']) {
     await page.waitForTimeout(1000);
   }
   // devNode starts the node's scene: leave it at once and show the world map of that campaign
-  await page.evaluate((home) => {
+  await page.evaluate(([home, rooms]) => {
     // HOME_KIND=castle: the castle as home (devNode does not run the effects of the completed nodes, e.g. setHome after 1-6)
     if (home) window.__hc.campaign.value = { ...window.__hc.campaign.value, home: { ...window.__hc.campaign.value.home, kind: home } };
+    if (rooms) window.__hc.campaign.value = { ...window.__hc.campaign.value, home: { ...window.__hc.campaign.value.home, rooms: { ...window.__hc.campaign.value.home.rooms, ...rooms } } };
     window.__hc.battle.value = null;
     window.__hc.screen.value = { name: 'worldmap' };
-  }, homeKind);
+  }, [homeKind, rooms]);
   await page.waitForSelector('.wm');
   await page.waitForFunction(() => !document.querySelector('.wm__loading'), null, { timeout: 60_000 }).catch(() => console.warn(`${node}: the map still shows its loading notice`));
   await page.waitForTimeout(2500);
-  await page.screenshot({ path: `${prefix}-${node}-overview.png` });
+  await page.screenshot({ path: `${prefix}-${node}-overview.${ext}`, ...(ext === 'jpg' ? { quality: 80 } : {}) });
   const stone = page.locator('.wm-node--story:not(.wm-node--done), .wm-node--side:not(.wm-node--done)').first();
   if (await stone.count()) {
     // near zoom step first (wheel), then the tap on the stone adds the focus zoom
@@ -50,7 +54,7 @@ for (const node of nodes.length ? nodes : ['m1_2']) {
     await page.waitForTimeout(600);
     await stone.click();
     await page.waitForTimeout(1200);
-    await page.screenshot({ path: `${prefix}-${node}-near.png` });
+    await page.screenshot({ path: `${prefix}-${node}-near.${ext}`, ...(ext === 'jpg' ? { quality: 80 } : {}) });
   }
 }
 await browser.close();

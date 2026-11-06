@@ -14,8 +14,10 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung (`concept/
 15.7 Weltkarte v5 ─────────────────────────────────────────────────────────────────────┤
 15.8 Galerie-Modelle (parallel zu 15.3–15.5)                                           │
 15.9 Brettfiguren, Schritt 1 ──────────────────────────────────────────────────────────┤
-15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┘
+15.11 Leistung großer Karten (nach 15.5) ──────────────────────────────────────────────┤
+15.12 Weltkarte flüssig, Paktwacht als Ruine (nach 15.7) ──────────────────────────────┘
 15.13 Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5, unabhängig)
+15.14 Brettfigur Dorfältester (Folge zu 15.9, unabhängig)
 ```
 
 ### Story 15.1: Format-Reste für die Entwürfe
@@ -161,6 +163,19 @@ damit die Schlachten auf dem Handy funktionieren.
 **Dann** halten sie die Leistungsziele; NFR1 ist auf den neuen Maßstab gehoben
 **Und** Kamera und Übersicht funktionieren auf 30 × 40, die Gegnerphase lässt sich beschleunigen.
 
+### Story 15.12: Weltkarte flüssig auf dem Handy, Paktwacht als Ruine
+
+Als Spieler
+möchte ich die Weltkarte auf dem Handy ruckelfrei ziehen und zoomen und die Paktwacht zu Beginn als Ruine sehen,
+damit die Karte sich gut anfühlt und zur Geschichte passt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Weltkarte v5 aus Story 15.7 und der Handy-Test des Produktinhabers vom 2026-11-06 (starkes Ruckeln)
+**Wenn** die Ursache gemessen (CPU 4–6× gedrosselt, 375 × 812) und die Karte als vorab zusammengefügtes Grundbild in Auflösungsstufen mit den Stadtbildern als einzelnen Sprites ausgeliefert ist
+**Dann** laufen Ziehen und Zoomen ohne lange Frames, die Karte bleibt scharf, und das Paket-Budget hält; Messung vorher und nachher steht in der Story
+**Und** die Paktwacht zeigt ab Spielbeginn eine Ruine; die ausgebaute Burg ist eine Zustandsvariante (`site.variants`), die erst mit der Burgstufe erscheint; das „P“ und der Rest der Karte bleiben unverändert.
+
 ### Story 15.13: Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
 
 Als Spieler
@@ -176,3 +191,17 @@ Gemeldet vom Produktinhaber am 2026-11-06: Läuft eine Figur Treppen hoch, steht
 **Dann** steht sie sichtbar auf der Oberfläche in der passenden Höhe, schwebt nicht und steckt nicht im Modell
 **Und** Treppen, Rampen und Leitern werden nie durchsichtig; Häuser, Dächer und andere Gebäude blenden bei Verdeckung weiter aus.
 
+### Story 15.14: Brettfigur Dorfältester (Folge zu 15.9)
+
+Als Spieler
+möchte ich den Dorfältesten auf dem Brett so sehen wie in seinem Porträt,
+damit ich ihn wiedererkenne.
+
+Beschlossen vom Produktinhaber am 2026-11-06: die nach Story 15.9 übrigen 205 Tripo-Credits für Schritt 1b in `concept/23-art-direction/figuren-bestand.md` einsetzen.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** das Porträt `villager_elder` v2.5 (Strohhut, Kinnbärtchen, normal gebaut) und mindestens 140 Tripo-Credits aus dem bezahlten Tarif (Konto zeigt Free; Lauf vom Produktinhaber am 2026-11-06 freigegeben)
+**Wenn** der Dorfälteste neu entsteht (Turnaround → Tripo mit Datenschutz „Privat“ → Pipeline nach Art Direction §4.6)
+**Dann** besteht die Figur den Silhouettentest im Zoom „Mittel“ und bleibt im Budget (7 000 Dreiecke, 512er-Textur, 0,5 MB)
+**Und** sie steht auf allen Karten, auf denen der Dorfälteste vorkommt; Prompts und Abnahme liegen unter `art/prompts/`, der neue Credit-Stand im Decision-Log der Art Direction.

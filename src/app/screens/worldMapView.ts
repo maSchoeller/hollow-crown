@@ -1,9 +1,9 @@
 /**
- * View maths of the flat world map (stories 5.2 and 15.7): the painted picture lies under the screen at scale `s` (screen px
+ * View maths of the flat world map (stories 5.2, 15.7 and 15.12): the painted picture lies under the screen at scale `s` (screen px
  * per picture px) with its top-left corner at (x, y); places are percentages of the picture. Which stone stands at a place,
- * the fog areas and the town picture of a place are worked out here too. Pure, so it is unit tested.
+ * the fog areas and their soft mask, the picture level to load and the town picture of a place are worked out here too. Pure, so it is unit tested.
  */
-import { evalConditions, type ConditionContext, type HomeKind, type WorldDef, type WorldPlace } from '../../core';
+import { evalConditions, type ConditionContext, type HomeKind, type WorldDef, type WorldPlace, type WorldRoadKind } from '../../core';
 
 export type Size = readonly [number, number];
 export interface Screen {
@@ -60,6 +60,39 @@ export function zoomAround(v: MapView, scr: Screen, size: Size, s2: number, anch
 /** The fog: the areas of every region whose act lies after `act` (polygons in percent of the picture). */
 export function fogAreas(world: WorldDef, act: number): Array<Array<[number, number]>> {
   return world.regions.filter((r) => r.act > act).flatMap((r) => r.areas);
+}
+
+/** A drawn path between two places: its ends (percent), its kind and whether it leads to a place without an unlocked stone. */
+export interface Road {
+  key: string;
+  a: [number, number];
+  b: [number, number];
+  kind: WorldRoadKind;
+  dim: boolean;
+}
+
+/**
+ * The paths to draw (story 15.12): the road network of the world, without roads into the fog of a later act. A road is full
+ * when both its places hold a stone that is open or done (`known`), otherwise it is drawn dimmed. The flight of the prologue
+ * (kind `escape`) shows always, through the fog too, and never dimmed; where it runs along a road, only the flight is drawn.
+ */
+export function roadsOf(world: WorldDef, act: number, known: ReadonlySet<string>): Road[] {
+  const place = new Map(world.places.map((p) => [p.id, p]));
+  const pair = (a: string, b: string) => [a, b].sort().join('|');
+  const flight = new Set(world.roads.filter((r) => r[2] === 'escape').map(([a, b]) => pair(a, b)));
+  const out: Road[] = [];
+  for (const [a, b, kind = 'road'] of world.roads) {
+    const pa = place.get(a);
+    const pb = place.get(b);
+    if (!pa || !pb || (kind === 'road' && flight.has(pair(a, b)))) continue;
+    if (kind === 'escape') {
+      out.push({ key: `${kind}:${a}|${b}`, a: pa.at, b: pb.at, kind, dim: false });
+      continue;
+    }
+    if (pa.act > act || pb.act > act) continue;
+    out.push({ key: `${kind}:${a}|${b}`, a: pa.at, b: pb.at, kind, dim: !known.has(a) || !known.has(b) });
+  }
+  return out;
 }
 
 /** The place whose slot holds a campaign node. */
@@ -119,19 +152,73 @@ export function siteImage(place: WorldPlace, ctx: ConditionContext, missing: rea
   return missing.includes(place.id) ? null : place.id;
 }
 
-/** A fog area pushed past the picture edge where it touches it, so the soft edge does not thin the fog along the border. */
-export function bleedArea(area: ReadonlyArray<readonly [number, number]>, bleed = 5): Array<[number, number]> {
-  const out = (v: number) => (v <= 0 ? -bleed : v >= 100 ? 100 + bleed : v);
-  return area.map(([x, y]) => [out(x), out(y)]);
+/** Whether a point (percent of the picture) lies inside a polygon (even-odd rule). */
+function inside(x: number, y: number, poly: ReadonlyArray<readonly [number, number]>): boolean {
+  let hit = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i]!;
+    const [xj, yj] = poly[j]!;
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) hit = !hit;
+  }
+  return hit;
 }
 
-/** What the map says while the overview picture and the tiles load: nothing once either covers the map. */
-export function mapNotice(overview: 'loading' | 'ready' | 'failed', tilesLoaded: number, tilesFailed: number, tiles: number): 'loading' | 'missing' | null {
-  if (overview === 'ready' || tilesLoaded === tiles) return null;
-  if (overview === 'loading' || tilesLoaded + tilesFailed < tiles) return 'loading';
-  // the overview failed and every tile has answered: some tiles show (no notice), none show (the map is missing)
-  return tilesLoaded > 0 ? null : 'missing';
+/** One pass of a box blur of radius `r` along the rows (`x`) or the columns (`y`), clamped at the picture edge. */
+function boxBlur(src: Float32Array, n: number, r: number, along: 'x' | 'y'): Float32Array {
+  const out = new Float32Array(n * n);
+  const at = (line: number, k: number) => src[along === 'x' ? line * n + k : k * n + line]!;
+  for (let line = 0; line < n; line++) {
+    for (let k = 0; k < n; k++) {
+      let sum = 0;
+      for (let d = -r; d <= r; d++) sum += at(line, Math.min(n - 1, Math.max(0, k + d)));
+      out[along === 'x' ? line * n + k : k * n + line] = sum / (2 * r + 1);
+    }
+  }
+  return out;
 }
+
+/**
+ * The fog of later acts as a small square alpha mask (story 15.12): `n` × `n` cells over the picture, 1 inside an area, softened
+ * by two box blur passes of radius `blur` (close to a Gaussian). The edge is clamped, so fog that touches the picture border stays
+ * dense there. Drawn once per act into a small canvas that is stretched over the map, instead of an SVG blur filter over the
+ * whole picture, which the phone had to rasterise again and again.
+ */
+export function fogMask(areas: ReadonlyArray<ReadonlyArray<readonly [number, number]>>, n: number, blur: number): Float32Array {
+  let m: Float32Array = new Float32Array(n * n);
+  for (let y = 0; y < n; y++)
+    for (let x = 0; x < n; x++) {
+      const px = ((x + 0.5) / n) * 100;
+      const py = ((y + 0.5) / n) * 100;
+      if (areas.some((a) => inside(px, py, a))) m[y * n + x] = 1;
+    }
+  if (blur > 0) for (let pass = 0; pass < 2; pass++) m = boxBlur(boxBlur(m, n, blur, 'x'), n, blur, 'y');
+  return m;
+}
+
+/**
+ * Which resolution level of the picture to load (story 15.12): the smallest that is at least `needPx` wide (the picture width in
+ * device pixels at the nearest zoom), else the largest.
+ */
+export function pickLevel(levels: readonly number[], needPx: number): number {
+  return levels.find((w) => w >= needPx) ?? levels[levels.length - 1]!;
+}
+
+/**
+ * The level for a screen: wide enough for the nearest zoom with the tap focus at the device's pixel density. One level per
+ * visit, not one per zoom step: on a phone with DPR 3 already the overview step needs the full picture, and a second picture
+ * would cost a decode and a swap in the middle of a zoom.
+ */
+export function levelFor(world: Pick<WorldDef, 'size' | 'levels'>, scr: Screen, zoom: { zoomSteps: readonly number[]; focusZoom: number }, dpr: number): number {
+  const near = stepScale(scr, world.size, zoom.zoomSteps, zoom.zoomSteps.length - 1, zoom.focusZoom);
+  return pickLevel(world.levels, world.size[0] * near * dpr);
+}
+
+/** What the map says while the overview and the sharp picture load: nothing once either shows, "missing" when both failed. */
+export function mapNotice(overview: Loaded, sharp: Loaded): 'loading' | 'missing' | null {
+  if (overview === 'ready' || sharp === 'ready') return null;
+  return overview === 'failed' && sharp === 'failed' ? 'missing' : 'loading';
+}
+export type Loaded = 'loading' | 'ready' | 'failed';
 
 /**
  * Whether the map should say "more missions follow": no node is open, the act is not finished, and no act pack is loading

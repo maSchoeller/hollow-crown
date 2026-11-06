@@ -9,6 +9,8 @@ export type Condition =
   | { completed: string }
   | { storyCount: { min?: number; max?: number } }
   | { act: number }
+  /** the castle has reached at least this tier (0 ruin … 3 fortress; story 15.12) */
+  | { castleTier: number }
   | { support: { pair: [string, string]; rank: SupportRank } }
   | { stance: Stance }
   | { met: string }

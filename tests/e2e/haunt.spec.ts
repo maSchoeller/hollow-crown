@@ -25,7 +25,7 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await skipIntro(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
 
-  // a campaign with an open haunt on the map of 1-1 (the prologue's map is abandoned and never haunted), then the world map (the test hook exists where `navigator.webdriver` is set)
+  // a campaign with an open haunt on the map of 1-1 (the prologue's map has noHaunts), then the world map (the test hook exists where `navigator.webdriver` is set)
   // the lieutenants and enemy pools come with the act pack, which loads in the background: ask until it is there
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { __hcTest: Hooks }).__hcTest.devHaunt('m1_1_steckbriefe', 'boss')), { timeout: 60_000 })
@@ -41,6 +41,12 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await expect(card).toContainText(/Hask/, { timeout: 30_000 });
   await expect(card).toContainText(/flieht bei 0 TP|flees at 0 HP/, { timeout: 30_000 });
   await expect(card.locator('.hc-amount').first()).toBeVisible();
+  // dragging the bare map with a mouse is no tap: the card stays open (story 15.12, the click after the drag)
+  await page.mouse.move(187, 260);
+  await page.mouse.down();
+  await page.mouse.move(150, 300, { steps: 8 });
+  await page.mouse.up();
+  await expect(card).toBeVisible();
   await expect(stone.locator('.wm-node__new')).toHaveCount(0);
 
   // set out: no scene, straight to the battle

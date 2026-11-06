@@ -15,6 +15,10 @@ lines:
     speaker: [lucan]
     mood: neutral
     text: "Mein Haus wollte mich nicht mehr. Mehr musst du nicht wissen."
+  - id: l01d
+    speaker: [varek]
+    mood: neutral
+    text: "Weil du den Mund aufgemacht hast."
   - id: l02
     speaker: [lucan]
     mood: neutral

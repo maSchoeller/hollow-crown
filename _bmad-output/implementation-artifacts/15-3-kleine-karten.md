@@ -25,10 +25,10 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 ## Zusatzauftrag Produktinhaber 2026-11-06: keine Heimsuchung im Prolog
 
-- Kennzeichen `abandoned: true` im Kartenschema (`src/content/schemas.ts`, `src/core/mapDefs.ts`), gesetzt im Prolog (`prologue_paktnacht.yaml`), dessen drei Anker entfernt sind.
+- Kennzeichen `noHaunts: true` im Kartenschema (zuerst `abandoned`, umbenannt am selben Tag, weil es auch für 1-6 und 1-7 gilt) (`src/content/schemas.ts`, `src/core/mapDefs.ts`), gesetzt im Prolog (`prologue_paktnacht.yaml`), dessen drei Anker entfernt sind.
 - `content:check` lehnt Anker auf solchen Karten ab (`validateHaunts`), der Generator überspringt sie (`src/core/campaign/haunts.ts`, `spawnHaunts`).
 - Alte Spielstände: eine offene Prolog-Heimsuchung verfällt beim Laden (`normalizeCampaign`, `hauntAnchorGone`; auch `hauntLast` des Prologs), ein laufender Kampf darin endet auf der Weltkarte (`adoptRecord` über `withoutStaleHauntBattle`, Eintrag im Log), der Titel zeigt ihn nicht mehr als „im Kampf“ (`campaignInfo.ts`). Keine Migration und kein neues Speicherformat nötig. Allgemein gilt: Verschwindet ein Anker aus einer Karte, verfällt eine offene Heimsuchung darauf ebenso.
-- Tests `tests/unit/haunts.test.ts` („abandoned maps“): mit den alten Ankern trifft der Würfel den Prolog an mehreren Tagen, mit dem neuen Stand an keinem; `content:check` lehnt Anker ab; alte Spielstände verfallen sauber. Die übrigen Heimsuchungs-Tests und der E2E-Test laufen jetzt auf 1-1 und 1-2.
+- Tests `tests/unit/haunts.test.ts` („maps with noHaunts“): mit den alten Ankern trifft der Würfel den Prolog an mehreren Tagen, mit dem neuen Stand an keinem; `content:check` lehnt Anker ab; alte Spielstände verfallen sauber. Die übrigen Heimsuchungs-Tests und der E2E-Test laufen jetzt auf 1-1 und 1-2.
 - GDD-Decision-Log 2026-11-06, Art-Decision-Log (offene Frage „Heimsuchungen unter Nebel“ erledigt), Architektur §5.6.
 
 ## Rest
@@ -36,4 +36,4 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 - Bekannte Grenze: `pnpm report` auf einem Fehlerbericht aus einer älteren Version, dessen Protokoll eine Prolog-Heimsuchung spielt, bricht beim Nachspielen an diesem Befehl ab (die Heimsuchung verfällt beim Normalisieren). Betrifft nur das Werkzeug, nicht Spieler.
 
 - P, 1-7 und N3 liegen außerhalb des Korridors → Story 15.10 (keine Abstimmung in diesem Abgleich). Stand nach 15.10 (2026-11-06): 1-7 und N3 auf Leicht und Normal im Korridor; der Prolog bleibt auf Normal bei 0,12–0,20 Niedergestreckten (Entscheidung Produktinhaber, siehe 15.10 „Offen“); N3 auf Schwer 13–21 %.
-- Für den Produktinhaber: weitere Akt-1-Karten, die die Truppe aus Story-Gründen nicht wieder betritt (Kandidaten, nicht entschieden): 1-7 Gewölbe (stürzt ein), 1-6 Paktwacht (wird Heimat; eine Heimsuchung in der eigenen Burg).
+- ~~Weitere Karten ohne Heimsuchung~~: entschieden am 2026-11-06, 1-6 und 1-7 tragen ebenfalls `noHaunts: true` (PR nach #115). Folge für den Produktinhaber: Mit 1-7 fiel der einzige `treasure`-Anker von Akt 1 weg; die Truhen-Heimsuchung kommt in Akt 1 nicht mehr vor (übrig: boss, defend, rout, escort).

@@ -17,7 +17,8 @@ export type Screen =
   | { name: 'loading' }
   | { name: 'battle' }
   | { name: 'result'; result: BattleResult }
-  | { name: 'farewell'; result: BattleResult; index: number }
+  /** `then`: where the last card leads (default the world map; the tone test of story 8.1 goes on to a scene) */
+  | { name: 'farewell'; result: BattleResult; index: number; then?: Screen }
   | { name: 'defeat' }
   | { name: 'camp'; tab?: string }
   | { name: 'troop'; unit?: string; from?: From }

@@ -66,29 +66,8 @@ deploy:
   max: 6
   forced: [avatar, lucan]
   slots: [[7, 18], [8, 18], [6, 18], [9, 18], [7, 17], [8, 17], [6, 17], [9, 17]]
-# Heimsuchungs-Anker (Story 5.5): höchstens einer je Variante. Die Haunt-Karte hat keinen Einsturz.
-haunts:
-  # Grund: der Hauptgang unter der Burg, alles Plündern läuft hier durch.
-  - variant: rout
-    target: { at: [7, 12] }
-    enemySpawn: { rect: [1, 12, 4, 14] }
-    deploy: { rect: [6, 17, 9, 18] }
-    max: 5
-  # Grund: die Eingangshalle, ein Zivilist sucht am Westende Schutz, die Plünderer kommen aus der unteren Ostkammer.
-  - variant: defend
-    target: { at: [6, 18] }
-    enemySpawn: { rect: [11, 12, 14, 14] }
-    deploy: { tiles: [[5, 18], [7, 18], [7, 17], [6, 17], [5, 17], [8, 18], [8, 17]] }
-    max: 5
-    turns: 8
-  # Grund: die Kammern mit den Gräbern junger Könige, Beutegut, das die Plünderer noch nicht fanden. Die Truppe steht schon im Hauptgang.
-  - variant: treasure
-    target: { at: [12, 13] }
-    enemySpawn: { rect: [7, 8, 8, 11] }
-    deploy: { tiles: [[7, 13], [8, 13], [6, 13], [9, 13], [7, 14], [8, 14], [7, 12]] }
-    chests: [[2, 12], [13, 8]]
-    max: 5
-    turns: 10
+# Keine Heimsuchungen: Das Gewölbe stürzt ein (GDD-Log 2026-11-06, content:check lehnt Anker ab).
+noHaunts: true
 # Plünderer: Stufen [C]. Jeder trägt einen Schlüssel (siehe oben, Prüfung in tests/unit/m1-7.test.ts).
 units:
   # Hauptgang

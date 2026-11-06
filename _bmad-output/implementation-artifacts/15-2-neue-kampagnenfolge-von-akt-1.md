@@ -19,7 +19,7 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 | N1 nach E2 „schützen“, N2 nach 1-5, N3 nach 1-6 | `campaign.yaml` (Knoten `m1_4` mit `openQuest: n1` bei `e02: protect`, `n1`, `n2`, `n3`); Tests `act1-campaign-order.test.ts` („opens the side quests where the list puts them“), `tests/unit/m1-4-wolfshuegel.test.ts:133` | erfüllt |
 | Ein Test prüft jede erlaubte Reihenfolge, keine hat dasselbe Ziel zweimal hintereinander | Test `act1-campaign-order.test.ts` („no order has the same goal twice in a row, also across the pair“): escape → rout → defend/reach → reach/defend → boss → survive → seize → treasure → defend | erfüllt (neu) |
 | Varek tritt nur noch über N2 bei | `content/acts/act1/units.yaml:105` (`joins: n2`), einzige Kartenfigur `content/acts/act1/maps/n2_wachturm.yaml:71`; Tests `tests/unit/act1-side-maps.test.ts:74` (1-5 ohne Varek), `:137` | erfüllt |
-| … wenn **Lucan** ihn anspricht | `n2_wachturm.yaml:71` hat `recruit: { by: [kael] }`; die Umbenennung Kael → Lucan gehört zu Story 15.6 (läuft parallel) | offen, hängt an 15.6 |
+| … wenn **Lucan** ihn anspricht | `n2_wachturm.yaml:71` `recruit: { by: [lucan] }` (seit Story 15.6, PR #116); Test `tests/unit/act1-side-maps.test.ts:140` | erfüllt |
 | Der Weg ohne Varek läuft durch alle Szenen | Prüfung `src/content/validate.ts:354` (jede Sprecherkette endet bei Avatar/Kael oder hat `fallback: skip`), Test `tests/unit/scene.test.ts:121` (alle Szenen auch ohne Gefährten); neuer Test `act1-campaign-order.test.ts` („runs through every scene of every node without Varek“) für beide Reihenfolgen samt N1–N3 | erfüllt (neu) |
 
 ## Änderungen in diesem Abgleich
@@ -28,4 +28,4 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 ## Rest
 
-- Varek spricht an: `lucan` statt `kael` in `n2_wachturm.yaml:71` und im Test `act1-side-maps.test.ts:137`. Kommt mit Story 15.6; danach diese Zeile prüfen und die Story auf done setzen. Geprüft in 15.10 (2026-11-06): `recruit: { by: [lucan] }`, Test `act1-side-maps.test.ts:140` – done.
+Keiner (der Punkt „Lucan spricht Varek an“ ist mit Story 15.6 erledigt).
