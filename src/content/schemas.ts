@@ -695,8 +695,11 @@ export const worldSchema = z.object({
     .array(z.object({ id: z.string(), act: z.number().int().min(1), at: percentPos, areas: z.array(z.array(percentPos).min(3)).min(1) }))
     .min(1),
   home: z.object({ camp: percentPos, castle: percentPos }),
-  /** drawn paths between places (story 15.12): the geography, not the campaign order; tools/art/world_roads.py writes them */
-  roads: z.array(z.tuple([slugId, slugId])).default([]),
+  /**
+   * drawn paths between places (story 15.12): the geography, not the campaign order; tools/art/world_roads.py writes them.
+   * A third entry names the kind: `escape` is the flight of the prologue, drawn on its own and through the fog
+   */
+  roads: z.array(z.union([z.tuple([slugId, slugId]), z.tuple([slugId, slugId, z.enum(['road', 'escape'])])])).default([]),
   places: z
     .array(
       z.object({

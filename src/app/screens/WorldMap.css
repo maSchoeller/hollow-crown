@@ -111,6 +111,11 @@
   stroke-dasharray: none;
   opacity: 0.45;
 }
+/* the flight of the prologue (roads kind `escape`): its own ember line, drawn through the fog */
+.wm__road--escape .wm__path:not(.wm__path--edge) {
+  stroke: var(--hc-ember);
+  stroke-dasharray: 3 7;
+}
 /* a road towards a place without an unlocked stone (story 15.12) */
 .wm__road.is-dim {
   opacity: 0.6;
