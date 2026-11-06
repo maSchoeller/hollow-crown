@@ -1,6 +1,6 @@
 # Nebenquest N3, Gedenk-Variante nach der Karte (Tobin ist gefallen): Der Vater gibt das Erbstück der Kompanie (volle Belohnung, Produktinhaber 2026-10-26). Kein Humor.
 id: scn.n3.memorial_outro
-background: erlbach
+background: pachthof
 music: camp
 lines:
   - id: l01

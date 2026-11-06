@@ -14,6 +14,9 @@ lines:
   - id: l02
     mood: neutral
     text: "Die Mauern sind schwarz vom Brand, das Tor hängt schief. Doch die Ruine steht."
+  - id: l02b
+    mood: neutral
+    text: "Hask entkommt durch die Ostpforte. Seine Leute ziehen mit ihm nach Süden, in sein altes Lager."
   - id: l03
     mood: happy
     text: "Zum ersten Mal seit der Paktnacht hat die Truppe ein Dach, das ihr gehört."

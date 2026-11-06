@@ -34,7 +34,10 @@ lines:
     text: "Ulvrics Wölfe haben unsere Fährte gewittert. Die Burg blieb geheim, die Spur nicht."
   - id: l07
     mood: neutral
-    text: "Von Süden steigen Hask und Ulvric die Terrassen herauf. Über den Wachpass kommt Morra."
+    text: "Von Süden steigen Hask und Ulvric die Terrassen herauf. Morra kommt die Passstraße hinauf."
+  - id: l07a
+    mood: neutral
+    text: "Ihr Weg führt über einen Hangweg zum Westtor."
   # Grosk nur, wenn er bei E3 nicht gewechselt ist
   - id: l07b
     mood: neutral

@@ -13,6 +13,10 @@ lines:
     speaker: [lucan]
     mood: neutral
     text: "Der Turm war der letzte seiner Art. Jemand muss ihn eine lange Zeit allein gehalten haben."
+  - id: l03b
+    speaker: [lucan]
+    mood: sad
+    text: "Valmora hat hier teuer gewonnen. Ein Kommandant von Stand hat meine Leute für seinen Sieg verheizt."
   - id: l04
     speaker: [liora, ysolde, avatar]
     mood: neutral

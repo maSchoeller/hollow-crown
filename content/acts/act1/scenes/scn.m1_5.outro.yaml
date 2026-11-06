@@ -32,6 +32,14 @@ lines:
     fallback: skip
     mood: sad
     text: "Wir nahmen Brot, wo es lag. Mörder sind meine Leute nicht, nur hungrig."
+  - id: o06b
+    mood: neutral
+    text: "Draußen auf der Erlenbucht ziehen Kähne von Krähenholm vorbei, tief im Wasser. Am Lager legt keiner an."
+  - id: o06c
+    speaker: [grosk]
+    fallback: skip
+    mood: angry
+    text: "Gold für die Banden. Wir sehen es vorbeifahren und bekommen nichts."
   - id: o07
     speaker: [tobin]
     fallback: skip

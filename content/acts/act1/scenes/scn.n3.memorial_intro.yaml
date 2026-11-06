@@ -1,6 +1,6 @@
 # Nebenquest N3, Gedenk-Variante vor der Karte (Tobin ist gefallen; memorialIf in campaign.yaml). Brenna als Ziehmutter, Ersatzsprecher-Kette, kein Humor.
 id: scn.n3.memorial_intro
-background: erlbach
+background: pachthof
 music: camp
 lines:
   - id: l01

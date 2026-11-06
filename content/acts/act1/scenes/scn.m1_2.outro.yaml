@@ -7,7 +7,7 @@ music: camp
 lines:
   - id: l01
     mood: neutral
-    text: "Die Marodeure ziehen sich in den Wald zurück. Die Felder rauchen noch, aber Erlbach steht."
+    text: "Die Marodeure fliehen nach Norden, zur Burgruine am Grauen Kamm. Die Felder rauchen, doch Erlbach steht."
   - id: l02
     speaker: [villager_elder]
     fallback: skip

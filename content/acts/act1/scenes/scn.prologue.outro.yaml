@@ -1,13 +1,18 @@
-# Prolog, Szene nach der Karte. Schlüsselgespräch 2 „Gerrits Grab“ (Narrative: ganze Truppe, Lagerfeuer, erste Gedenkszene, Trauer, leise)
-# am Lagerfeuer. Humor setzt in Trauerszenen nie ein (Narrative, Dialogue Style).
-# Keine Tafel: es gibt kein eigenes Grabbild (Ortsbild lager_unterwegs), eine Tafel gleich dem Hintergrund würde nur die Halbfiguren verdecken.
+# Prolog, Szene nach der Karte. Schlüsselgespräch 2 „Gerrits Grab“ (Narrative: ganze Truppe, erste Gedenkszene, Trauer, leise), jetzt auf dem
+# Lastkahn durch die Aureklamm (geografie-valmora.md, Reise: Brenna führt durch die Unterstadt zu den Kanälen). Humor setzt in Trauerszenen nie ein.
+# Keine Tafel: Ortsbild aureklamm_lastkahn; eine Tafel gleich dem Hintergrund würde nur die Halbfiguren verdecken.
 id: scn.prologue.outro
-background: lager_unterwegs
+background: aureklamm_lastkahn
 music: camp
 lines:
   - id: l01
     mood: sad
-    text: "Eine Nacht später. Ein Waldrand südlich von Aurenhall. Am Feuer ein frisches Grab und ein Banner."
+    text: "Dieselbe Nacht. Zwischen Säcken auf einem Lastkahn treibt die Truppe durch die Aureklamm."
+  - id: l01b
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Unterstadt, Kanäle, ein Kahn, der keine Fragen stellt. Wer da unten aufwächst, kennt den Weg hinaus, Küken."
   - id: l02
     speaker: [tobin]
     fallback: skip
@@ -37,8 +42,11 @@ lines:
     text: "Die Wache übernehme ich. Schlaft, Küken. Heute Nacht bleibt er bei uns."
   - id: l08
     mood: sad
-    text: "Niemand spricht. In der Ferne läuten die Glocken von Aurenhall, als wäre nichts geschehen."
+    text: "Im Morgengrauen legt der Kahn an. Am Ufer schichten sie Steine für Gerrit, das erste Grab."
+  - id: l08b
+    mood: sad
+    text: "Hinter der Klamm läuten die Glocken von Aurenhall, als wäre nichts geschehen."
   - id: l09
     speaker: [lucan]
     mood: neutral
-    text: "Morgen ziehen wir zur Grenze, nach Varnhold. Dort suchen sie uns zuletzt."
+    text: "Ab hier zu Fuß. Nach Süden, über den Wachpass bis nach Varnhold. Dort suchen sie uns zuletzt."

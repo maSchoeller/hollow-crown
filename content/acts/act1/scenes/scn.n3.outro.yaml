@@ -1,6 +1,6 @@
 # Nebenquest N3, Szene nach der Karte: Der Vater übergibt das Erbstück. Belohnung selbst: Knotenwirkung (campaign.yaml). Kein Glutfunke. Gedenk-Variante: scn.n3.memorial_outro.
 id: scn.n3.outro
-background: erlbach
+background: pachthof
 music: camp
 lines:
   - id: l01

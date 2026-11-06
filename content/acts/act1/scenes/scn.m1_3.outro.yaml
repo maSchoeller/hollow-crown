@@ -31,7 +31,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: happy
-    text: "Lucan. Mein Junge. Du bist breiter geworden, seit ich dich zuletzt gescholten habe."
+    text: "Lucan. Mein Junge. Schmal bist du geworden, seit ich dich zuletzt gescholten habe."
   - id: l07
     speaker: [lucan]
     fallback: skip
@@ -93,7 +93,7 @@ lines:
     speaker: [liora]
     fallback: skip
     mood: neutral
-    text: "Er hat mich großgezogen, als sonst keiner fragte. Auch das ist ein Grund, warum ich ihm vertraue."
+    text: "Er hat mich im Glutdom großgezogen, als sonst keiner fragte. Auch das ist ein Grund, warum ich ihm vertraue."
   - id: l19
     speaker: [liora]
     fallback: skip

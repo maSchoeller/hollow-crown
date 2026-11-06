@@ -16,7 +16,12 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Ein Versteck, das keiner sucht, ist das beste."
+    text: "Die Paktwacht gehört seit achtzig Jahren niemandem. Sie überblickt den Pass, sperrt ihn aber nicht."
+  - id: l03b
+    speaker: [halvard]
+    fallback: skip
+    mood: neutral
+    text: "Darum sucht dort keiner. Ein Versteck, das keiner sucht, ist das beste."
   - id: l04
     speaker: [lucan]
     mood: neutral
@@ -25,7 +30,7 @@ lines:
     speaker: [halvard]
     fallback: skip
     mood: neutral
-    text: "Hask und seine Bande, fürchte ich. Und Ulvrics Reiter streifen am Hang. Aber ihr seid mehr als sie."
+    text: "Hask hat sich nach Erlbach dort verkrochen, Ulvrics Wolfsbande ist ihm gefolgt. Aber ihr seid mehr."
   - id: l06
     speaker: [brenna]
     fallback: skip

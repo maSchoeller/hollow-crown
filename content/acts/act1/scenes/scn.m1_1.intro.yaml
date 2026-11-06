@@ -5,7 +5,10 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Varnhold an der Erle. Spätsommer, Mittag, Staub auf der Straße. Einige Tage nach der Paktnacht."
+    text: "Varnhold an der Erle. Spätsommer, Mittag, Staub auf der Straße. Elf Tage nach der Paktnacht."
+  - id: l01b
+    mood: neutral
+    text: "Vom Wachpass aus sahen sie eine Burgruine am Grauen Kamm, nur von fern."
   - id: l02
     speaker: [tobin]
     fallback: skip

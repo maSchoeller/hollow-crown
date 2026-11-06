@@ -22,7 +22,11 @@ lines:
   - id: l05
     speaker: [lucan]
     mood: neutral
-    text: "An dieser Mauer stand ich im Grenzkrieg. Kharesh sah damals genauso aus: still und viel zu nah."
+    text: "An dieser Mauer stand ich im Grenzkrieg, als Ritterhauptmann. Kharesh sah damals genauso aus."
+  - id: l05b
+    speaker: [lucan]
+    mood: neutral
+    text: "Still. Und viel zu nah."
   - id: l06
     speaker: [lucan]
     mood: neutral

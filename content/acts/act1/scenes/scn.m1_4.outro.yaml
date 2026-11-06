@@ -10,12 +10,12 @@ music: camp
 lines:
   - id: o01
     mood: neutral
-    text: "Die Wolfsreiter sind geflohen oder gefesselt. Dunn sinkt gegen den Fels, die Hand an der Seite."
+    text: "Ulvrics Wolfsreiter fliehen nach Norden, zur Ruine am Kamm. Dunn sinkt gegen den Fels, die Hand an der Seite."
   - id: o02
     speaker: [osric]
     fallback: skip
     mood: sad
-    text: "Genug. Ihr wollt den Namen. Der Mann, der mich bezahlt hat, hat die Paktnacht –"
+    text: "Genug. Ihr wollt den Namen? Er hört auf die Krone, nicht auf Menschen. Der Mann, der mich bezahlt hat –"
   - id: o03
     mood: sad
     text: "Ein Schnappen von den Felsen. Ein Armbrustbolzen trifft Dunn in die Brust, mitten im Satz."
@@ -31,6 +31,10 @@ lines:
   - id: o06
     mood: sad
     text: "Dunn ist tot. Wer den Bolzen schoss, bleibt im Dunkel."
+  - id: o06b
+    speaker: [liora, ysolde, avatar]
+    mood: neutral
+    text: "„Er hört auf die Krone, nicht auf Menschen.“ Wer hört auf eine Krone, die fort ist?"
   - id: o07
     speaker: [brenna]
     fallback: skip
