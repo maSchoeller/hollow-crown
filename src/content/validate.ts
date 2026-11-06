@@ -107,12 +107,15 @@ export function validateContent(
     for (const n of camp.nodes) if (!bound.has(n.id)) err(f, `node ${n.id} has no place on the world map`);
     // roads (story 15.12): between two known, different places, each pair once
     const pairs = new Set<string>();
-    for (const [a, b] of w.roads) {
+    for (const [a, b, kind = 'road'] of w.roads) {
       for (const id of [a, b]) if (!seen.has(id)) err(f, `road ${a}-${b}: unknown place ${id}`);
-      const key = [a, b].sort().join('|');
+      const key = `${kind}:${[a, b].sort().join('|')}`;
       if (a === b || pairs.has(key)) err(f, `road ${a}-${b}: ${a === b ? 'leads nowhere' : 'drawn twice'}`);
       pairs.add(key);
     }
+    // the flight of the prologue (kind escape) is one line: each piece starts where the last one ended
+    const flight = w.roads.filter((r) => r[2] === 'escape');
+    for (const [i, [a]] of flight.entries()) if (i > 0 && flight[i - 1]![1] !== a) err(f, `escape route breaks before ${a}`);
     // stones must not touch at the overview of a phone: places with a slot and the homes at least WORLD_STONE_GAP of the width apart
     const [pw, ph] = w.size;
     const stones: Array<[string, readonly [number, number]]> = [

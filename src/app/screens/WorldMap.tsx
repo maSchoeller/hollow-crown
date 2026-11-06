@@ -411,7 +411,7 @@ export function WorldMap() {
           <svg class="wm__paths" ref={paths} aria-hidden="true">
             {/* the road network (story 15.12): the geography, not the campaign order; dimmed towards places not unlocked yet */}
             {roadsOf(world, data.campaign.act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
-              <g key={r.key} class={r.dim ? 'wm__road is-dim' : 'wm__road'}>
+              <g key={r.key} class={`wm__road wm__road--${r.kind}${r.dim ? ' is-dim' : ''}`}>
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path wm__path--edge" />
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path" />
               </g>
