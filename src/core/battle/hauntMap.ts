@@ -37,6 +37,13 @@ export function staleHauntMap(data: GameData, id: string): boolean {
   return !!p && hauntAnchorGone(data, p.map, p.variant);
 }
 
+/** A saved payload without its running battle when that battle is a haunt whose anchor is gone: loading goes to the world map. */
+export function withoutStaleHauntBattle<T extends { battle?: { start: { mapId: string } } }>(data: GameData, p: T): T {
+  if (!p.battle || !staleHauntMap(data, p.battle.start.mapId)) return p;
+  const { battle: _gone, ...rest } = p;
+  return rest as T;
+}
+
 /**
  * The tiles of `area` a unit of move type `moveType` can stand on (the terrain lets it in, no object on it, a closed door
  * is no place to stand). Shared with `content:check`.

@@ -14,7 +14,7 @@ Umgesetzt ohne Story-Prozess mit PR #104, abgeglichen am 2026-11-06 gegen `main`
 
 | Kriterium | Nachweis | Status |
 | --- | --- | --- |
-| Übernommen wie in 15.3 (Entwurf, `design:`, Anker) | `m1_2_erlbach.yaml:166`, `m1_3_silberbach.yaml:143`, `m1_4_wolfslager.yaml:175`, `m1_5_hungerlager.yaml:171` (`design:`); Anker je drei (`:73`, `:67`, `:73`, `:75`), `content:check` grün | erfüllt |
+| Übernommen wie in 15.3 (Entwurf, `design:`, Anker) | `m1_2_erlbach.yaml:166`, `m1_3_silberbach.yaml:143`, `m1_4_wolfslager.yaml:175`, `m1_5_hungerlager.yaml:171` (`design:`); Anker je drei (`:74`, `:68`, `:74`, `:76`), `content:check` grün | erfüllt |
 | Gegner 2–3× so viele, schwächer | Gegner (Normal) zu Plätzen: 1-2 22/6, 1-3 19/7, 1-4 24/8, 1-5 27/8, je wie im Entwurf | erfüllt (Feinabstimmung 15.10) |
 | Jede Karte gewinnbar, vorläufig im Korridor | 1-2 91 % / 0,57; 1-3 100 % / 1,03; 1-4 100 % / 1,06; 1-5 100 % / 1,10 (Sieg / Niedergestreckte je Lauf; Korridor 75–100 %, 0,4–1,3) | erfüllt |
 | 1-3 hat das Ziel `reach` | `m1_3_silberbach.yaml:126`; Test `tests/unit/early-maps.test.ts:227` | erfüllt |

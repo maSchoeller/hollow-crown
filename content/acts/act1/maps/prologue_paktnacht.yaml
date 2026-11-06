@@ -68,6 +68,7 @@ deploy:
   slots: [[5, 1], [6, 1], [7, 1], [8, 1], [5, 2], [6, 2]]
 # Die Truppe flieht aus Aurenhall und kehrt nicht zurück: keine Heimsuchungen hier (GDD-Log 2026-11-06, content:check lehnt Anker ab).
 abandoned: true
+# Tempelwachen (Modell/Porträt temple_guard; Waffen kommen als Socket-Modelle): Lanzen-Vorkämpfer und Schwert-Plänkler, dazu der eine Schütze. Das Waffendreieck ist hier noch aus (campaign.yaml mechanics).
 units:
   # Säulengang: wachen auf, sobald die Truppe herankommt
   - { id: tg1, nameKey: unit.temple_guard.name, team: enemy, class: skirmisher, sprite: temple_guard, portrait: class_temple_guard, level: 2, at: [5, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyCampaign, hash32, hauntMapId, newCampaign, normalizeCampaign, replayCampaign, staleHauntMap, type CampaignCommand, type CampaignEvent, type CampaignState, type GameData, type MapDef } from '../../src/core';
+import { applyCampaign, hash32, hauntMapId, newCampaign, normalizeCampaign, replayCampaign, staleHauntMap, withoutStaleHauntBattle, type CampaignCommand, type CampaignEvent, type CampaignState, type GameData, type MapDef } from '../../src/core';
 import { hauntAnchorSchema, hauntPoolsSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
 import { loadContentFromDisk } from '../../src/content/node';
@@ -358,14 +358,32 @@ describe('abandoned maps (GDD log 2026-11-06): the company never comes back to t
   });
 
   it('an open prologue haunt of an old save lapses on load, the others stay; its running battle is stale', () => {
-    const old = advance(withOld(false), ready(withOld(false)), prologueDays(withOld(false))[0]!).campaign;
+    const d = withOld(false);
+    // a day whose packet haunts the prologue and another map
+    const day = prologueDays(d).find((n) => advance(d, ready(d), n).campaign.haunts.length > 1)!;
+    const old = { ...advance(d, ready(d), day).campaign, hauntLast: { prologue_paktnacht: 'rout', m1_1_steckbriefe: 'boss' } };
     const gone = old.haunts.find((h) => h.map === 'prologue_paktnacht')!;
     const kept = old.haunts.filter((h) => h.map !== 'prologue_paktnacht');
-    expect(normalizeCampaign(data, old).haunts).toEqual(kept);
+    expect(kept.length).toBeGreaterThan(0);
+    const now = normalizeCampaign(data, old);
+    expect(now.haunts).toEqual(kept);
+    expect(now.hauntLast).toEqual({ m1_1_steckbriefe: 'boss' });
     expect(staleHauntMap(data, hauntMapId(gone.map, gone.variant, gone.lt))).toBe(true);
     for (const h of kept) expect(staleHauntMap(data, hauntMapId(h.map, h.variant, h.lt))).toBe(false);
     // a map that is not loaded yet (a pack on its way) keeps its haunt
     expect(normalizeCampaign({ ...data, maps: {} }, old).haunts).toEqual(old.haunts);
     expect(staleHauntMap(data, 'm1_1_steckbriefe')).toBe(false);
+  });
+
+  it('a haunt whose anchor was taken off a map that stays lapses too', () => {
+    expect(data.maps.m1_1_steckbriefe!.haunts!.some((a) => a.variant === 'rout')).toBe(false);
+    expect(staleHauntMap(data, hauntMapId('m1_1_steckbriefe', 'rout', 'hask'))).toBe(true);
+    expect(staleHauntMap(data, hauntMapId('m1_1_steckbriefe', 'boss', 'hask'))).toBe(false);
+  });
+
+  it('a save with a running prologue haunt battle loads without it, a battle on a map that keeps its anchor stays', () => {
+    const save = (mapId: string) => ({ campaign: ready(), screen: 'battle', battle: { start: { mapId }, commands: [] } });
+    expect(withoutStaleHauntBattle(data, save(hauntMapId('prologue_paktnacht', 'rout', 'hask')))).toEqual({ campaign: ready(), screen: 'battle' });
+    for (const id of [hauntMapId('m1_2_erlbach', 'rout', 'hask'), 'prologue_paktnacht', 'm1_1_steckbriefe']) expect(withoutStaleHauntBattle(data, save(id)).battle).toBeDefined();
   });
 });

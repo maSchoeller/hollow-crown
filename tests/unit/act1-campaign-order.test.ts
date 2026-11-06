@@ -4,6 +4,7 @@ import { loadContentFromDisk } from '../../src/content/node';
 import { availableNodes, conditionContext, newCampaign, resolveScene, type CampaignState, type GameData } from '../../src/core';
 
 let data: GameData;
+let walked: Walk;
 
 const fresh = (): CampaignState => newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
 const isStory = (id: string) => data.campaign.nodes.find((n) => n.id === id)!.kind === 'story';
@@ -32,12 +33,13 @@ function walk(): Walk {
 
 beforeAll(() => {
   data = loadContentFromDisk().data;
+  walked = walk();
 });
 
 describe('act 1 campaign order (story 15.2)', () => {
   it('allows exactly P, 1-1, the pair 1-2 and 1-3 either way round, then 1-4 to 1-8', () => {
     const tail = ['m1_4', 'm1_5', 'm1_6', 'm1_7', 'm1_8'];
-    expect(walk().orders).toEqual([
+    expect(walked.orders).toEqual([
       ['prologue', 'm1_1', 'm1_2', 'm1_3', ...tail],
       ['prologue', 'm1_1', 'm1_3', 'm1_2', ...tail],
     ]);
@@ -45,32 +47,33 @@ describe('act 1 campaign order (story 15.2)', () => {
 
   it('every order plays every story mission of the act once and ends with the finale', () => {
     const story = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id).sort();
-    for (const order of walk().orders) {
+    for (const order of walked.orders) {
       expect([...order].sort()).toEqual(story);
       expect(data.campaign.nodes.find((n) => n.id === order.at(-1))!.fixed).toBe('finale');
     }
   });
 
   it('never has more than 2 story missions open at once', () => {
-    expect(walk().mostOpen).toBe(2);
+    expect(walked.mostOpen).toBe(2);
   });
 
   it('no order has the same goal twice in a row, also across the pair', () => {
-    for (const order of walk().orders)
+    for (const order of walked.orders)
       for (let i = 1; i < order.length; i++) expect(goal(order[i]!), `${order[i - 1]} → ${order[i]}`).not.toBe(goal(order[i - 1]!));
   });
 
   it('opens the side quests where the list puts them: N1 after 1-4 with E2 "protect", N2 after 1-5, N3 after 1-6', () => {
     const after = (id: string) => {
-      const order = walk().orders[0]!;
+      const order = walked.orders[0]!;
       return order.slice(0, order.indexOf(id) + 1);
     };
-    const opens = (completed: string[], quest: string, flags: CampaignState['flags'] = {}) => {
+    const opens = (completed: string[], quest: string, flags: CampaignState['flags'] = {}, tobin = true) => {
       const c = fresh();
       c.completed = completed;
       c.flags = flags;
-      // N3 needs Tobin in the company, alive or fallen; the fresh company of the test does not have him yet
-      c.roster.push({ ...c.roster[0]!, id: 'tobin' });
+      // N3 needs Tobin in the company, alive or fallen; gone (not in the company) closes it
+      c.roster = c.roster.filter((r) => r.id !== 'tobin');
+      if (tobin) c.roster.push({ ...c.roster[0]!, id: 'tobin' });
       return availableNodes(data, c).some((n) => n.id === quest);
     };
     const before = (id: string) => after(id).slice(0, -1);
@@ -81,11 +84,16 @@ describe('act 1 campaign order (story 15.2)', () => {
     expect(opens(after('m1_5'), 'n2')).toBe(true);
     expect(opens(before('m1_6'), 'n3')).toBe(false);
     expect(opens(after('m1_6'), 'n3')).toBe(true);
+    expect(opens(after('m1_6'), 'n3', {}, false)).toBe(false);
     for (const q of ['n1', 'n2', 'n3']) expect(isStory(q)).toBe(false);
   });
 
   it('runs through every scene of every node without Varek: no line falls to him, none goes empty', () => {
-    for (const order of walk().orders) {
+    // the check can bite: with Varek in the company the N2 outro gives him a line
+    const withVarek = fresh();
+    withVarek.roster.push({ ...withVarek.roster[0]!, id: 'varek' });
+    expect(resolveScene(data, conditionContext(data, withVarek), 'scn.n2.outro').some((l) => l.kind === 'line' && l.speaker === 'varek')).toBe(true);
+    for (const order of walked.orders) {
       const c = fresh();
       for (const id of [...order, 'n1', 'n2', 'n3']) {
         const node = data.campaign.nodes.find((n) => n.id === id)!;

@@ -190,8 +190,8 @@ describe('haunt reward (story 5.6)', () => {
     const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s = createHauntBattle(data, c, 'h1_0', ids(c));
     const u = s.units.find((x) => x.team === 'player')!;
-    // the expected level of the next story node (after the prologue and 1-1: node m1_2)
-    expect(s.hauntLevel).toBe(data.campaign.nodes.find((n) => n.id === 'm1_2')!.expectedLevel);
+    // the expected level of the next story node (after the prologue, 1-1 and 1-2: node m1_3)
+    expect(s.hauntLevel).toBe(data.campaign.nodes.find((n) => n.id === 'm1_3')!.expectedLevel);
     expect(expPercent(data, s, u)).toBe(60);
     u.level = 5;
     expect(expPercent(data, s, u)).toBe(30);
@@ -268,8 +268,8 @@ describe('haunt reward (story 5.6)', () => {
 
   it('restarting a haunt battle is allowed while it is open', () => {
     const c = campaignWith(data, 'm1_2_erlbach', 'rout');
-    expect(validateCampaign(data, c, { type: 'restartMission', node: 'prologue', haunt: 'h1_0' })).toBeNull();
-    expect(validateCampaign(data, c, { type: 'restartMission', node: 'prologue' })).toBe('node_unavailable');
+    expect(validateCampaign(data, c, { type: 'restartMission', node: 'm1_2', haunt: 'h1_0' })).toBeNull();
+    expect(validateCampaign(data, c, { type: 'restartMission', node: 'm1_2' })).toBe('node_unavailable');
   });
 });
 

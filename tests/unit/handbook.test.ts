@@ -156,6 +156,10 @@ describe('handbook anchors and search', () => {
     expect(searchHandbook(hb, 'Dach', t)[0]?.id).toBe('heights');
     expect(searchHandbook(hb, 'Hebel', t)[0]?.id).toBe('doors');
     expect(searchHandbook(hb, 'Tor', t).map((e) => e.id)).toContain('doors');
+    const en = (k: string) => locales.en![k] ?? '';
+    expect(searchHandbook(hb, 'roof', en)[0]?.id).toBe('heights');
+    expect(searchHandbook(hb, 'lever', en)[0]?.id).toBe('doors');
+    expect(searchHandbook(hb, 'gate', en).map((e) => e.id)).toContain('doors');
   });
 });
 
