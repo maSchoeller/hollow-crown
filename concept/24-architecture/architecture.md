@@ -345,6 +345,16 @@ lines:
 - **`content:check`:** Box ≤ 110 Zeichen in DE und EN; jede Sprecherkette endet mit `avatar` oder `kael` oder hat `fallback: skip`; EN-Abdeckung 100 % je veröffentlichtem Akt; Stimmungen ∈ {neutral, happy, angry, sad}; Bedingungen referenzieren nur Bekanntes.
 - Die PoC-Dialoge sind seit Story 4.4 ins neue Format überführt (`content/acts/act1/scenes/`, IDs `scn.<…>`); das alte Schema entfällt.
 
+### 5.8a Filmszenen (Epic 16, Entwurf 2026-11-06)
+
+Eine Filmszene ist eine **Regie-Spur über einer Szene**, keine zweite Szene: `content/acts/actN/films/film.<…>.yaml` nennt `scene`, `map`, `actors` (Gefährten per Einheiten-ID, Statisten mit `model`) und `shots` (je Zeilen-ID eine Kamera `from`/`to`/`end` in Feldern `[x, Höhe, y]`, `fov` vertikal in Grad, `ms`; dazu `moves` und `gestures`). Text, Sprecher, Bedingungen und Antworten kommen weiter aus `resolveScene`; eine Zeile ohne Shot behält den vorigen (`filmCuts`), Positionen nach übersprungenen Zeilen rechnet `actorSpot`. Stimmen werden später als `vo.<sceneId>.<lineId>` an die Zeile gehängt.
+
+- **Kern:** `core/filmDefs.ts` (Typen, reine Zeitachse), `core/battle/filmStage.ts` (Kartenzustand nur mit den Darstellern, aus der Kampagne). Kein Command, kein Speicherfeld.
+- **Content:** `filmSchema`, Laden nach `data.films`, Prüfung `content/validateFilms.ts`.
+- **Rendering:** `render/film/filmView.ts` erbt vom Brett (`BoardView`) und nutzt es als Bühne: gleiche Karte, Figuren, Licht; statt der Ortho-Kamera eine Perspektivkamera je Shot, keine Ringe und Lebensleisten. `render/film/filmLook.ts` legt den Kinolook aus `render.yaml film` an (ACES, Tiefenschärfe auf das Shot-Ziel, Bloom, Vignette, Korn, Dunst, Verlaufshimmel, SSAO nur `high`); die Nachbearbeitung lädt per dynamischem Import, das Brett-Bundle wächst nicht.
+- **App:** `Scene.tsx` spielt eine Szene mit Film über `Film.tsx` (Dialogbox der Szene über der Bühne), nicht über einem laufenden Kampf, nur mit Kampagne und Option `films` an; sonst die Visual-Novel-Szene.
+- **Vorschau:** `tools/art/film_render.py` rendert dieselbe Film-YAML in Blender (Standbilder, Kontaktbogen, Animatic) nach `art/previews/films/<film>/`.
+
 ### 5.9 Story-Zustand: Flags, Haltung, Chronik, Epilog (AR10)
 
 - **Flag-Register** `content/acts/actN/flags.yaml`: `id`, erlaubte Werte, `kind: decision|story|quest|battle`, `season2: true|false`. Undeklarierte Flags lehnt `content:check` ab.

@@ -1,0 +1,14 @@
+# Korrekturen der Filmkamera (film.m1_1.intro.yaml) aus den Review-Runden; tools/art/film_render.py legt sie über die Shots.
+# camera-Schlüssel ersetzen die gleichnamigen des Shots ganz (end also vollständig angeben). hero = Anteil des Shots für das Standbild.
+# Koordinaten wie im Film: [x, Höhe, y] in Feldern.
+l01:  # Ende tiefer und weiter hinten: die Truppe von hinten im unteren Drittel, die Stadt dahinter
+  camera: { end: { from: [7.5, 1.35, 20.6], to: [7.5, 0.45, 12] } }
+  hero: 1.0
+l03:  # Brenna dreht sich zu Tobin (Osten): Kamera südöstlich auf Tobins Seite, Dreiviertelprofil statt Hinterkopf
+  camera: { from: [6.95, 0.95, 18.95], to: [5.8, 0.8, 18] }
+l10:  # Lucan schaut zu Tobin (Südosten): Kamera auf Tobins Seite, sonst nur Hinterkopf
+  camera: { from: [8.55, 0.9, 16.95], to: [7.0, 0.82, 17.0] }
+l11:  # die Häscher standen links und rechts außerhalb des Hochformats: weiter zurück, weiter
+  camera: { from: [7.5, 0.75, 15.6], to: [7.5, 0.8, 11.6], end: { from: [7.5, 0.75, 15.2] }, fov: 46 }
+l12:  # Kamera stand in der Brückenrampe (schwarzes Bild); im Hochformat passt nur Lucan + Avatar: Untersicht von der Brücke
+  camera: { from: [7.65, 0.45, 13.9], to: [7.65, 0.75, 17.3], end: { from: [7.75, 0.47, 14.1] }, fov: 56 }

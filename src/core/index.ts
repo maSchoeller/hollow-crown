@@ -2,6 +2,7 @@
 export * from './errors';
 export * from './defs';
 export * from './storyDefs';
+export * from './filmDefs';
 export * from './mapDefs';
 export * from './balanceDefs';
 export * from './renderDefs';
@@ -33,6 +34,7 @@ export * from './battle/objectives';
 export * from './battle/lieutenantSight';
 export * from './battle/apply';
 export * from './battle/setup';
+export * from './battle/filmStage';
 export * from './battle/terrain';
 export * from './battle/hauntMap';
 export * from './battle/hauntBattle';

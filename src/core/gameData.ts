@@ -1,6 +1,7 @@
 /** All content of the game in one object, as the content layer (src/content) builds it from the YAML. */
 import type { Balance } from './balanceDefs';
 import type { AffixDef, CharDef, ClassDef, HomeKind, ItemDef, RuneDef, SetDef, SkillDef } from './defs';
+import type { FilmDef } from './filmDefs';
 import type { HauntPoolsDef, MapDef, TerrainDef } from './mapDefs';
 import type { HandbookDef, RenderDef, WorldDef } from './renderDefs';
 import type { CampaignDef, ChroniclePageDef, FlagDef, HomeViewDef, LieutenantDef, MemorialDef, RoomDef, SceneDef, SupportPairDef } from './storyDefs';
@@ -20,6 +21,8 @@ export interface GameData {
   terrain: Record<string, TerrainDef>;
   maps: Record<string, MapDef>;
   scenes: Record<string, SceneDef>;
+  /** film scenes of the acts by id (`acts/actN/films/`, epic 16); absent in hand-built test data */
+  films?: Record<string, FilmDef>;
   /** flag register of the acts */
   flags: Record<string, FlagDef>;
   /** fixed support pairs of the acts by `pairKey` (`acts/actN/supports.yaml`) */

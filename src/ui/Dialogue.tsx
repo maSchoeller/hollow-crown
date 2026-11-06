@@ -54,6 +54,9 @@ export interface DialogueProps {
   /** ids of the built backgrounds (manifest), `null` while unknown: a panel whose picture is not built is not shown */
   backgrounds?: ReadonlySet<string> | null;
   onLine?: (speaker?: string, mood?: string) => void;
+  /** film scene (epic 16): the 3D stage lies behind the box, so no background, panel or half figures; `onIndex` reports the line shown */
+  film?: boolean;
+  onIndex?: (lineIds: readonly string[], idx: number) => void;
 }
 
 type Line = Extract<ResolvedLine, { kind: 'line' }>;
@@ -102,7 +105,7 @@ function Sparks() {
 }
 
 /** Visual-novel scene: blurred place, speaker as a bright half figure, listeners dimmed, glow-pill name tag, Log/Auto/Skip, tap to go on (mockup 05). */
-export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, rewards, head = noHead, onDone, onSeen, onLine, aside }: DialogueProps) {
+export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen = false, auto, onAuto, halves, backgrounds, onChoose, answered = NONE, rewards, head = noHead, onDone, onSeen, onLine, aside, film, onIndex }: DialogueProps) {
   const def = data.scenes[id];
   // the story as the scene began: an answer that sends a companion away must not change who spoke the lines before it;
   // later lines follow the answer through the flags it sets (`local`)
@@ -125,7 +128,9 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   const line = lines[idx];
   // illustration panel (scene line `panel`): shown full-screen once its picture is known to be built, else the scene background stays
   const panelId = panelAt(lines, idx);
-  const panel = panelId && backgrounds?.has(panelId) ? panelId : undefined;
+  const panel = panelId && backgrounds?.has(panelId) && !film ? panelId : undefined;
+  const lineIds = useMemo(() => lines.map((l) => l.line), [lines]);
+  useEffect(() => onIndex?.(lineIds, idx), [lineIds, idx]);
 
   const finish = () => {
     onSeen?.(id);
@@ -229,11 +234,11 @@ export function Dialogue({ data, id, ctx: ctxIn, avatarPortrait, overlay, seen =
   const teamOf = (sp: string) => speakerTeam(data, sp);
 
   return (
-    <div class={`vn ${overlay ? 'vn--overlay' : ''}`} onClick={advance}>
-      {def.background && !overlay && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`locations/${def.background}.webp`)})` }} />}
+    <div class={`vn ${overlay ? 'vn--overlay' : ''} ${film ? 'vn--film' : ''}`} onClick={advance}>
+      {def.background && !overlay && !film && <div class="vn-bg" style={{ backgroundImage: `url(${asset(`locations/${def.background}.webp`)})` }} />}
       {panel && !overlay && <div class="vn-panel" style={{ backgroundImage: `url(${asset(`locations/${panel}.webp`)})` }} />}
       <div class="vn-shade" />
-      <div class={`vn-stage ${panel && !overlay ? 'vn-stage--hidden' : ''}`}>
+      <div class={`vn-stage ${(panel && !overlay) || film ? 'vn-stage--hidden' : ''}`}>
         {(['left', 'right'] as const).map((side) => {
           const l = stage[side];
           if (!l?.speaker) return null;
