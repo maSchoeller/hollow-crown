@@ -193,7 +193,7 @@ Jede Rolle bzw. jeder Gegnertyp hat ein **gemeinsames Skelett mit gemeinsamen An
 
 ### 4.3 Signaturteile der Story-Figuren
 
-Das eine Teil, das auf dem Brett und im Porträt sofort erkennbar ist. Abgeleitet aus den Figuren-Moodboards. [C]
+Das eine Teil, das auf dem Brett und im Porträt sofort erkennbar ist. Abgeleitet aus den Figuren-Moodboards. [C] Stand 2026-11-07: Sable nach Porträt und Modell; Rowena und Brakka nach der Missionsliste (keine Flieger, niemand reitet, Log 2026-11-05); ihre Figurenblätter in `art/prompts/` sind noch nachzuziehen (`figuren-bestand.md`).
 
 | Figur | Signaturteil | Figur | Signaturteil |
 |---|---|---|---|
@@ -205,12 +205,12 @@ Das eine Teil, das auf dem Brett und im Porträt sofort erkennbar ist. Abgeleite
 | Jory | Federschlapphut, Laute | Odile | strenger Dutt, weißer Gardistenrock |
 | Nell | rotes Bandana, Fernrohr | Brann | sehr groß, leuchtende Steinadern |
 | Amos | Glatze, Brille, Schürze | Ilka | weiße Wolfsfellkapuze |
-| Sable | aschblonde Stoppeln, Rundschild | Mael | weiße Paktgarden-Rüstung, Hammer |
+| Sable | aschblondes, längeres Haar, Rundschild | Mael | weiße Paktgarden-Rüstung, Hammer |
 | Pell | blaue Stadtwachen-Mütze | Vesna | wehendes weißes Haar, Bänderstab |
 | Kit | Schlüsselbund, Kopftuch | Harlan | Harfe |
 | Hask | roter Irokese, Fackel | Morra | Augenklappe, Armbrust |
-| Ulvric | Wolfskopf-Kapuze | Rowena | Flügelhelm, Pegasus |
-| Grell | Dreispitz, Goldhaken | Brakka | türkiser Haarschnitt, Wyvern |
+| Ulvric | Wolfskopf-Kapuze | Rowena | Ritterhelm, langer Zopf, Lanze (zu Fuß) |
+| Grell | Dreispitz, Goldhaken | Brakka | türkiser Haarschnitt, Bogen (Ballistenmeisterin) |
 | Cassian | hoher Kragen, Lichtbuch | Torvald | Turmschild, weißer Bart |
 | Eluned | Porzellan-Halbmaske | Gerrit (kein Kämpfer) | Kompaniebanner |
 
@@ -414,7 +414,7 @@ Startschätzung zur Planung der Epics. [C]
 
 ## 13. Offene Punkte
 
-- **Lizenzen (GA26/O5):** kommerzielle Nutzungsrechte von ChatGPT-Bildern und ElevenLabs bleiben offen; nichts kommerziell veröffentlichen.
+- **Lizenzen (GA26/O5):** geklärt seit 2026-10-24, Auflagen in `licensing.md` §6. **O4** Namensrecherche und Marke vor der Capacitor-Arbeit (`licensing.md` A8, Produktinhaber 2026-11-07).
 - **Kamerawinkel (D2):** 35° vs. 40–50° weiter im Playtest.
 - **Logo-Schrift:** entschieden am 2026-10-25: Fraunces (Entscheidungslog).
 - **Casting** der neuen Figuren in `17-audio.md` (Stimmbilder für 20 Gefährten und 12 Leutnants).
