@@ -10,9 +10,9 @@ describe('season tree lists', () => {
   it('summer is the list of three groves', () => {
     expect(variantList(data, 'tree', 'summer').map((m) => m.model)).toEqual(['grove_a', 'grove_b', 'grove_c']);
   });
-  it('autumn and winter keep the grove form of a forest tile (story 15.15), the scenery its single trees', () => {
-    expect(variantList(data, 'tree', 'autumn').map((m) => m.model)).toEqual(['grove_autumn_a']);
-    expect(variantList(data, 'tree', 'winter').map((m) => m.model)).toEqual(['grove_snow_a']);
+  it('autumn and winter keep the grove form of a forest tile (story 15.15, three each since 15.16), the scenery its single trees', () => {
+    expect(variantList(data, 'tree', 'autumn').map((m) => m.model)).toEqual(['grove_autumn_a', 'grove_autumn_b', 'grove_autumn_c']);
+    expect(variantList(data, 'tree', 'winter').map((m) => m.model)).toEqual(['grove_snow_a', 'grove_snow_b', 'grove_snow_c']);
     expect(variantList(data, 'tree', 'winter', true).map((m) => m.model)[0]).toBe('snowfir_a');
   });
   it('no season falls back to summer', () => {

@@ -191,3 +191,10 @@
 - Produktinhaber: Schnee per Material (Weg B) ist abgenommen, nach dem Vergleichsbild `_bmad-output/implementation-artifacts/15-15-belege/jahreszeiten_vergleich.jpg`. Weg A bleibt für Mauerkante, Turm und Wald.
 - Rote Gegnerringe auf Herbstlaub: im Handy-Test von Akt 2 prüfen und das Laub nur bei Bedarf weiter entsättigen (Prüfpunkt in Story 11.7).
 - Winter-Büsche und je zwei weitere Waldfelder für Herbst und Winter kommen in die Folge-Story 15.16.
+
+## 2026-11-07: Winter-Deko und Waldvarianten (Story 15.16)
+
+- Winter-Deko über `render.yaml board.seasonModels.winter` (`bush_a: bush_snow_a`): die Deko läuft im Brett schon durch dieselbe Ersatz-Auflösung wie Mauer und Turm, kein eigener Schlüssel und kein Code nötig. Verschneiter Busch statt „nur Steine“, damit die Dichte der Deko gleich bleibt. Herbst behält den grünen Busch (nur der Winter ist entschieden).
+- Je zwei weitere Waldfelder für Herbst und Winter mit den Baumstellungen von `grove_b` und `grove_c` (Nord- und Westrand, Mitte frei, §3.2), Gewichte 3/3/2 wie im Sommer. Herbst bekommt als dritte Farbe Bernstein. Gebaut in Blender (`tools/art/props/nature_map.py`), kein Tripo und kein neues ChatGPT-Bild: Referenz sind die Blätter von `grove_autumn_a` und `grove_snow_a`.
+- Dreiecks-Budget eines Waldfelds: höchstens so viel wie das größte vorhandene (`grove_snow_a`, 2 029); der Busch 285 (Budget Büsche 600). Die Modelle kommen mit dem Paket `act1` wie die Jahreszeit-Modelle aus 15.15, der erste Download bleibt 13,25 MB.
+- Belege: `_bmad-output/implementation-artifacts/15-16-belege/` (375 × 812, Sommer, Herbst, Winter auf `asset_catalog`).

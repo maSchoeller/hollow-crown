@@ -280,5 +280,5 @@ development_status:
   15-13-figuren-auf-treppen: done  # Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5)
   15-14-brettfigur-dorfaeltester: done  # Brettfigur Dorfältester (Folge zu 15.9)
   15-15-jahreszeiten-boden: done  # Jahreszeiten-Boden (Vorbereitung für Akt 2 und 3)
-  15-16-winter-deko-und-waldvarianten: backlog  # Winter-Deko und Waldvarianten (Folge zu 15.15)
+  15-16-winter-deko-und-waldvarianten: review  # Winter-Deko und Waldvarianten (Folge zu 15.15)
   epic-15-retrospective: optional

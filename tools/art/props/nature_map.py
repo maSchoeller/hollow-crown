@@ -3,7 +3,9 @@
     "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe" -b --factory-startup -P tools/art/props/nature_map.py [-- id ...]
 
 (nature.py is the older prop library of season 1; this kit lives next to it.)
-- grove_a/b/c, grove_autumn_a, grove_snow_a: walkable forest tile, 2 to 3 clump trees on the back and side edges, centre free.
+- grove_a/b/c, grove_autumn_a/b/c, grove_snow_a/b/c: walkable forest tile, 2 to 3 clump trees on the back and side edges, centre free
+  (the b and c layouts of autumn and winter follow grove_b and grove_c, story 15.16).
+- bush_snow_a: the winter decoration in place of bush_a, three dark clumps under snow lobes (story 15.16).
 - fir_a, deadtree_b, stump_a: single trees and a stump.
 - bush_low_a, reed_a, reed_b, lily_a, tussock_a: flat dressing for meadow and swamp.
 - boardwalk_straight, boardwalk_corner, boardwalk_end: slim jetty on posts; open towards -y (corner also +x), one tile.
@@ -374,6 +376,7 @@ FRESH = [(0.0, (46, 86, 30)), (0.35, (84, 128, 40)), (0.65, (126, 164, 52)), (1.
 OLIVE = [(0.0, (70, 84, 24)), (0.4, (108, 124, 32)), (0.7, (144, 158, 44)), (1.0, (186, 188, 64))]
 ORANGE = [(0.0, (120, 66, 18)), (0.35, (180, 104, 24)), (0.65, (226, 142, 32)), (1.0, (248, 186, 66))]
 RUST = [(0.0, (92, 36, 20)), (0.35, (146, 58, 26)), (0.65, (190, 84, 36)), (1.0, (226, 124, 62))]
+AMBER = [(0.0, (112, 78, 20)), (0.35, (168, 124, 28)), (0.65, (214, 168, 42)), (1.0, (244, 208, 88))]
 SNOWLEAF = [(0.0, (52, 60, 22)), (0.4, (84, 92, 30)), (0.75, (116, 122, 44)), (1.0, (146, 150, 66))]
 
 
@@ -475,6 +478,26 @@ def grove_autumn_a():
     finish(join(parts, 'grove_autumn_a'), 'grove_autumn_a', size=512)
 
 
+def fallen_leaves(parts, rng, spots, col=((176, 92, 24), (240, 160, 52)), name='fallen'):
+    mat = solid(name, col[0], col[1], wn=0.4)
+    for k, (x, y) in enumerate(spots):
+        parts.append(leaf_plate(f'lf{k}', (x, y, 0.012), rng.uniform(0, 3.14), 0.08, rng.uniform(0.03, 0.04), rng.uniform(0.018, 0.024), mat))
+
+
+def grove_autumn_b():
+    """Layout of grove_b: one big tree at the back, a small one on the west edge; orange and rust."""
+    parts, rng = grove('grove_autumn_b', 206, [(0.14, 0.32, 1.2, 0.41, ORANGE, (7, 4, 1)), (-0.33, -0.12, 0.66, 0.21, RUST, (4, 2, 1))])
+    fallen_leaves(parts, rng, ((0.1, -0.22), (-0.06, -0.36), (0.3, -0.1), (0.4, 0.04), (-0.12, 0.12), (0.22, -0.32), (-0.4, 0.22)))
+    finish(join(parts, 'grove_autumn_b'), 'grove_autumn_b', size=512)
+
+
+def grove_autumn_c():
+    """Layout of grove_c: three smaller trees in an arc on the north rim; rust in the middle, amber and orange at the sides."""
+    parts, rng = grove('grove_autumn_c', 207, [(0.0, 0.37, 0.95, 0.27, RUST, (5, 3, 1)), (-0.36, 0.1, 0.72, 0.21, AMBER, (4, 2, 1)), (0.36, 0.08, 0.72, 0.21, ORANGE, (4, 2, 1))])
+    fallen_leaves(parts, rng, ((-0.18, -0.2), (0.0, -0.08), (0.16, -0.26), (0.32, -0.16), (-0.34, -0.3), (0.08, 0.12)), col=((168, 110, 26), (236, 192, 70)), name='fallen_amber')
+    finish(join(parts, 'grove_autumn_c'), 'grove_autumn_c', size=512)
+
+
 def snow_cap(parts, c, h, r, mat, rng, prefix):
     """Overlapping white lobes on the upper half of a crown, hanging down at the rim."""
     zc = h - r
@@ -498,6 +521,53 @@ def grove_snow_a():
         snow_cap(parts, (x, y), h, r, snow, rng, f's{i}')
         parts.append(plate(f'sf{i}', blob((x + 0.02, y - 0.04), r * 0.3 + 0.06, rng, 9, z=0.012), snow))
     finish(join(parts, 'grove_snow_a'), 'grove_snow_a', size=512)
+
+
+def snow_mat():
+    return with_ao(paint('snow', [(0.0, lin(150, 158, 182)), (0.5, lin(198, 202, 216)), (1.0, lin(232, 232, 232))], wn=0.85, noise=0.02, nscale=8, seed=6.0, bias=0.02), 0.09, 0.62)
+
+
+def snow_grove(pid, seed, trees):
+    """trees: (x, y, height, crown radius, clump counts); dark crowns under snow lobes, a snow patch at each foot."""
+    parts, rng = grove(pid, seed, [(x, y, h, r, SNOWLEAF, cl) for x, y, h, r, cl in trees])
+    snow = snow_mat()
+    for i, (x, y, h, r, _) in enumerate(trees):
+        snow_cap(parts, (x, y), h, r, snow, rng, f's{i}')
+        parts.append(plate(f'sf{i}', blob((x + 0.02, y - 0.04), r * 0.3 + 0.06, rng, 9, z=0.012), snow))
+    finish(join(parts, pid), pid, size=512)
+
+
+def grove_snow_b():
+    """Layout of grove_b under snow."""
+    snow_grove('grove_snow_b', 208, [(0.14, 0.32, 1.2, 0.41, (7, 1, 0)), (-0.33, -0.12, 0.66, 0.21, (4, 1, 0))])
+
+
+def grove_snow_c():
+    """Layout of grove_c under snow."""
+    snow_grove('grove_snow_c', 209, [(0.0, 0.37, 0.95, 0.27, (5, 1, 0)), (-0.36, 0.1, 0.72, 0.2, (4, 1, 0)), (0.36, 0.08, 0.72, 0.2, (4, 1, 0))])
+
+
+def bush_snow_a():
+    """Winter decoration in place of bush_a (render.yaml board.seasonModels): three dark clumps, each under a snow lobe, no berries."""
+    reset()
+    rng = random.Random(405)
+    mat = leaf('bushw', SNOWLEAF, 0.0, 0.36, 4.0)
+    snow = snow_mat()
+    parts, balls = [], []
+    blobs = (((-0.16, -0.05, 0.15), 0.17), ((0.17, -0.06, 0.14), 0.16), ((0.0, 0.1, 0.19), 0.18))
+    for i, (c, r) in enumerate(blobs):
+        o = ico(f'c{i}', c, r, rng, mat, squash=(1.0, 1.0, 0.92), jitter=0.07, subdiv=2)
+        balls.append((o, c, r))
+        parts.append(o)
+    cull_inside(balls)
+    caps = []
+    for i, (c, r) in enumerate(blobs):
+        q = (c[0], c[1], c[2] + r * 0.42)
+        caps.append((ico(f's{i}', q, r * 0.8, rng, snow, squash=(1.12, 1.12, 0.6), jitter=0.04, subdiv=2), q, r * 0.55))
+    cull_inside(caps, 0.72)
+    parts.extend(b[0] for b in caps)
+    parts.append(plate('sf', blob((0.0, -0.06), 0.3, rng, 10, z=0.01), snow))
+    finish(join(parts, 'bush_snow_a'), 'bush_snow_a', size=256)
 
 
 # ---------------------------------------------------------------- fir, dead tree, stump
@@ -1137,6 +1207,11 @@ if __name__ == '__main__':
         'grove_c': grove_c,
         'grove_autumn_a': grove_autumn_a,
         'grove_snow_a': grove_snow_a,
+        'grove_autumn_b': grove_autumn_b,
+        'grove_autumn_c': grove_autumn_c,
+        'grove_snow_b': grove_snow_b,
+        'grove_snow_c': grove_snow_c,
+        'bush_snow_a': bush_snow_a,
         'fir_a': fir_a,
         'deadtree_b': deadtree_b,
         'stump_a': stump_a,

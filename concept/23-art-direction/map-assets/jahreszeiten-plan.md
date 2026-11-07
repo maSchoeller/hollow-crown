@@ -1,6 +1,6 @@
 # Plan: Herbst- und Winterboden, Schneehauben
 
-Status: im Spiel seit Story 15.15 (2026-11-06), Abweichungen und Stand im Decision-Log (`../decision-log.md`). Weg B am 2026-11-07 abgenommen; Winter-Deko und je zwei weitere Waldvarianten folgen in Story 15.16. Vorher: Plan, nicht im Spiel. Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
+Status: im Spiel seit Story 15.15 (2026-11-06), Abweichungen und Stand im Decision-Log (`../decision-log.md`). Weg B am 2026-11-07 abgenommen; Winter-Deko und je zwei weitere Waldvarianten seit Story 15.16 (2026-11-07). Vorher: Plan, nicht im Spiel. Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
 
 ## Ziel
 
@@ -23,7 +23,8 @@ Akt 2 steht heute mit Herbstlaub auf Sommerwiese, Akt 3 mit Schneefichten. Boden
 
 | Klasse | Akt 2 | Akt 3 | Stand |
 |---|---|---|---|
-| Wald | `grove_autumn_a`, zwei Varianten fehlen | `grove_snow_a`, zwei Varianten fehlen | je ein Modell gebaut |
+| Wald | `grove_autumn_a`–`c` | `grove_snow_a`–`c` | je drei Modelle gebaut (Story 15.16) |
+| Busch (Deko) | `bush_a` bleibt | `bush_snow_a` | gebaut (Story 15.16) |
 | Felsmasse | `massif_*` bleibt | Schneehaube | offen, siehe unten |
 | Häuser | bleiben | Schneehaube auf den Dächern | offen, siehe unten |
 | Mauer, Turm | bleiben | `snowcap_wall_idle`, `snowcap_tower_idle` | gebaut, Brett wählt sie noch nicht |
@@ -40,4 +41,4 @@ Entschieden (Produktinhaber, 2026-11-05): B als Grundlage, A nur für das, was d
 1. Herbstboden mit dem Probe-Feld auf einem Entwurf aus Akt 2 zeigen, sobald die Entwürfe von Akt 2 stehen.
 2. Blätter `sheet7` und `sheet8`, `seasonGround` im Brett.
 3. Probe Schneehaube Weg B auf einer Karte aus Akt 3, Entscheidung des Produktinhabers.
-4. Fehlende Waldvarianten für Herbst und Schnee.
+4. Fehlende Waldvarianten für Herbst und Schnee (erledigt, Story 15.16).

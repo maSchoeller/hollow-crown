@@ -47,11 +47,11 @@ board:
     # Felsmasse (Terrain mountain): gefacettete Kappe bis an die Feldkante; der Felswall (rockwall) zeichnet rock_idle
     rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }]
     # Waldfeld je Jahreszeit (Story 15.15, sonst die des Akts, siehe actSeason); eine Jahreszeit ohne Eintrag nimmt den Sommerwald. Bäume am Nord- und
-    # Westrand, die Feldmitte bleibt frei (§3.2): im Herbst und Winter je ein Waldfeld-Modell (grove_autumn_a, grove_snow_a), zwei Varianten fehlen noch
+    # Westrand, die Feldmitte bleibt frei (§3.2): je Jahreszeit drei Waldfelder, b und c im Herbst und Winter mit dem Aufbau von grove_b und grove_c (Story 15.16)
     tree:
       summer: [{ model: grove_a, weight: 3 }, { model: grove_b, weight: 3 }, { model: grove_c, weight: 2 }]
-      autumn: [{ model: grove_autumn_a, weight: 1 }]
-      winter: [{ model: grove_snow_a, weight: 1 }]
+      autumn: [{ model: grove_autumn_a, weight: 3 }, { model: grove_autumn_b, weight: 3 }, { model: grove_autumn_c, weight: 2 }]
+      winter: [{ model: grove_snow_a, weight: 3 }, { model: grove_snow_b, weight: 3 }, { model: grove_snow_c, weight: 2 }]
     # Landschaft um die Karte: Einzelbäume statt Waldfelder (ein Waldfeld hat rund das Vierfache an Dreiecken, die Landschaft Hunderte Waldfelder)
     sceneryTree:
       summer: [{ model: tree_a, weight: 3 }, { model: tree_b, weight: 3 }]
@@ -64,15 +64,16 @@ board:
   seasonGround:
     autumn: { grass: grass_autumn }
     winter: { grass: snow, dirt: dirt_frozen, road: road_snow }
-  # Modelle mit eigener Jahreszeit-Fassung (Weg A, für das, was der Spieler lange ansieht): Modell -> Ersatz
+  # Modelle mit eigener Jahreszeit-Fassung (Weg A, für das, was der Spieler lange ansieht): Modell -> Ersatz. Gilt auch für die Deko (decor):
+  # im Winter der verschneite Busch statt des grünen (Story 15.16)
   seasonModels:
-    winter: { wallrim_idle: snowcap_wall_idle, tower_idle: snowcap_tower_idle }   # Mauerkante (Brüstung) und Mauerturm, gleiche Form
+    winter: { wallrim_idle: snowcap_wall_idle, tower_idle: snowcap_tower_idle, bush_a: bush_snow_a }   # Mauerkante (Brüstung) und Mauerturm, gleiche Form
   # Weg B (Entscheidung 2026-11-05): Weiß auf nach oben zeigenden Flächen der Requisiten, im Material. from/to = Normalen-Höhe (0 seitlich, 1 nach oben),
   # wo der Schnee beginnt und deckt; ragged = wie stark Rauschen den Rand zerfranst (0–1), scale = Rauschen je Feld; cover = höchster Schneeanteil
   # (unter 1 bleibt die Form des Modells auch auf ganz flachen Dächern lesbar); skip = Modelle (Präfix) mit eigenem Schnee
   snow:
     winter: { color: "#e6edf5", from: 0.72, to: 0.95, ragged: 0.5, scale: 3.5, cover: 0.82 }
-    skip: [snowfir_, grove_snow_, snowcap_]
+    skip: [snowfir_, grove_snow_, snowcap_, bush_snow_]
   # Ersatzmodell, solange ein Modell noch nicht gebaut ist (Manifest kennt es nicht): sonst bliebe das Feld leer (Besuchshaus -> Haus, Brunnen -> Fels)
   propFallback: { well_idle: rock_idle, lodge_b_intact: lodge_intact, lodge_b_visited: lodge_visited, lodge_b_razed: lodge_razed }
   # Ziel markieren (Tipp auf ein Nebenziel im HUD): so lange (ms) stehen die Markierungen der offenen Ziel-Orte, ein zweiter Tipp nimmt sie früher weg
