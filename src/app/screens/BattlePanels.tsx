@@ -21,7 +21,7 @@ import {
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
 import { bagUsed } from '../../core/rules/items';
-import { mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
+import { activeVictory, mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
@@ -201,14 +201,14 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
 
 export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () => void }) {
   const map = mapOf(data, s);
-  const v = map.objectives.victory;
+  const v = activeVictory(map, s);
   return (
     <Sheet title={t(map.nameKey)} aside={t('ui.obj.title')} onClose={onClose}>
       <div class="bp-goal is-win">
         <small>{t('ui.obj.victory')}</small>
         <b>{goalLine(v, map)}</b>
         {(v.type === 'defend' || v.type === 'survive') && <span>{t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })}</span>}
-        {v.type === 'treasure' && <span>{goalStand(v, s)}</span>}
+        {(v.type === 'treasure' || (v.type === 'escape' && v.min)) && <span>{goalStand(v, s)}</span>}
       </div>
       <div class="bp-goal is-lose">
         <small>{t('ui.obj.defeat')}</small>

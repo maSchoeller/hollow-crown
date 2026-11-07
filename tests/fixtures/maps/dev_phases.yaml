@@ -1,0 +1,64 @@
+# Entwicklerkarte für Ziel-Phasen (Story 11.8, Vorbild Kronfeld 2-8: erst überleben, dann fliehen). Gehört zu keinem Paket,
+# steht in keinem Kampagnen-Graph und kommt nicht in den Build: Tests laden sie über tests/fixtures/devObjectiveMaps.ts, im
+# Browser startet sie `await __hc.devMap('dev_phases')`.
+#
+# Die Kompanie (Rhen und Lucan als Pflichtaufstellung, dazu zwei Kartenfiguren) steht in der Mitte und hält 3 Runden gegen
+# Gegner aus dem Süden. Danach (oder sobald jemand vor das Tor in der Mauer tritt, Trigger t_gate) gilt die Flucht über den
+# Nordrand (Zeile 0): mindestens 3 entkommen, Rhen und Lucan müssen dabei sein, Lucan zuletzt. Beim Wechsel spielt t_flee
+# eine vorhandene Szene als Platzhalter.
+#          x: 0123456789AB
+terrain: |
+  ............
+  ............
+  #####..#####
+  ............
+  ..T......T..
+  ............
+  ....T..T....
+  ............
+  ............
+  ............
+id: dev_phases
+nameKey: map.prologue_paktnacht.name
+size: [12, 10]
+fog: false
+legend:
+  ".": plain
+  "T": forest
+  "#": wall
+objects: []
+initialEffects: []
+deploy: { max: 2, forced: [avatar, lucan], slots: [[5, 6], [6, 6], [5, 7], [6, 7]] }
+units:
+  - { id: dev_vanguard, team: player, class: vanguard, level: 4, at: [4, 7], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 4, at: [7, 7], sprite: bandit_archer, items: [{ def: iron_bow }] }
+  - { id: dev_brigand_w, team: enemy, class: brigand, level: 1, at: [2, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: dev_brigand_e, team: enemy, class: brigand, level: 1, at: [9, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+pairs: []
+reinforcements:
+  - turn: 2
+    phase: enemy
+    announce: true
+    units:
+      - { team: enemy, class: brigand, level: 1, at: [5, 9], sprite: brigand, items: [{ def: iron_axe }], ai: { profile: aggressive } }
+objectives:
+  victory:
+    type: survive
+    turns: 3
+    then: { type: escape, area: { rect: [0, 0, 11, 0] }, min: 3, must: [avatar, lucan] }
+  defeat:
+    - { type: unit_dies, unit: lucan }
+    - { type: unit_dies, unit: avatar }
+  side: []
+triggers:
+  - id: t_gate
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [5, 3, 6, 3] } }
+    then:
+      - { action: advance_objective }
+  - id: t_flee
+    once: true
+    when: { type: objective_changed }
+    then:
+      - { action: dialogue, id: scn.prologue.quake }
+goldReward: 0

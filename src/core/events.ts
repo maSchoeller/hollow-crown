@@ -67,6 +67,8 @@ export type GameEvent =
   | { t: 'equipped'; unit: string; item: string }
   | { t: 'seized'; unit: string }
   | { t: 'objective'; id: string; done: boolean }
+  /** story 11.8: the victory goal changed to its phase `phase` (1 = the `then` of a `survive` goal) */
+  | { t: 'objectiveChanged'; phase: number }
   | { t: 'battleEnd'; outcome: 'victory' | 'defeat'; reason?: string }
   | { t: 'aiTurn'; unit: string }
   | { t: 'promoted'; unit: string; classId: string };

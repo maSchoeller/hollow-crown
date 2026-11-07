@@ -5,7 +5,10 @@ import type { GameEvent } from '../events';
 import { burningTileHit, eventTerrain } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, clone, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
+import { activeVictory } from './activeVictory';
 import { battleUnitFromPlan } from './create';
+
+export { activeVictory };
 import { noteLieutenantSight } from './lieutenantSight';
 
 export function mapOf(data: GameData, s: BattleState): MapDef {
@@ -19,6 +22,18 @@ function endBattle(s: BattleState, outcome: 'victory' | 'defeat', events: GameEv
   events.push({ t: 'battleEnd', outcome, reason });
 }
 
+/**
+ * Changes the victory goal to its second phase (story 11.8): when the `survive` part is over or a trigger `advance_objective`
+ * says so. Does nothing on a goal without `then` or once changed. The triggers `objective_changed` run right after.
+ */
+export function advanceObjective(data: GameData, s: BattleState, events: GameEvent[]): void {
+  const v = mapOf(data, s).objectives.victory;
+  if (s.outcome || v.type !== 'survive' || !v.then || (s.objectivePhase ?? 0) > 0) return;
+  s.objectivePhase = 1;
+  events.push({ t: 'objectiveChanged', phase: 1 });
+  runTriggers(data, s, { kind: 'objective' }, events);
+}
+
 /** Checks victory/defeat conditions (concept/06 §5). `phaseStart` is set when a new round begins. */
 export function checkObjectives(data: GameData, s: BattleState, events: GameEvent[], phaseStart = false): void {
   if (s.outcome) return;
@@ -29,7 +44,7 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       if (u && (u.gone === 'dead' || (u.team !== 'player' && u.downed))) return endBattle(s, 'defeat', events, d.unit);
     } else if (d.type === 'turn_limit' && phaseStart && s.turn > d.turns) return endBattle(s, 'defeat', events, 'turns');
   }
-  const v = map.objectives.victory;
+  const v = activeVictory(map, s);
   switch (v.type) {
     case 'rout':
       if (!s.units.some((u) => u.team === 'enemy' && onMap(u) && !u.ignoreForRout)) endBattle(s, 'victory', events);
@@ -48,12 +63,19 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
     }
     case 'defend':
     case 'survive':
-      if ((phaseStart && s.turn > v.turns) || noFoesToCome(map, s)) endBattle(s, 'victory', events);
+      if ((phaseStart && s.turn > v.turns) || noFoesToCome(map, s)) {
+        // story 11.8: a goal with a second phase is not won here, it changes to its escape
+        if (v.type === 'survive' && v.then) {
+          advanceObjective(data, s, events);
+          if (!s.outcome) checkObjectives(data, s, events);
+        } else endBattle(s, 'victory', events);
+      }
       break;
     case 'escape': {
       const left = s.units.filter((u) => u.team === 'player' && onMap(u) && !u.downed);
       const escaped = s.units.filter((u) => u.team === 'player' && u.gone === 'escaped').length;
-      if (left.length === 0 && escaped >= (v.min ?? 1)) endBattle(s, 'victory', events);
+      const mustOut = !v.must || v.must.every((id) => leftAlive(s, id));
+      if (left.length === 0 && escaped >= (v.min ?? 1) && mustOut) endBattle(s, 'victory', events);
       break;
     }
     case 'seize':
@@ -73,6 +95,12 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       break;
     }
   }
+}
+
+/** A unit of an escape's `must` has left the map alive: escaped, or carried off by a rescue (story 11.8). */
+function leftAlive(s: BattleState, id: string): boolean {
+  const u = findUnit(s, id);
+  return !!u && (u.gone === 'escaped' || u.gone === 'rescued');
 }
 
 const PHASE_ORDER: Record<Team, number> = { player: 0, enemy: 1, other: 2 };
@@ -256,11 +284,14 @@ function whenMatches(s: BattleState, t: TriggerDef, ctx: TriggerCtx): boolean {
       const u = findUnit(s, w.unit);
       return !!u && onMap(u) && u.hp > 0 && (u.hp * 100) / Math.max(1, u.stats.hp) < w.percent;
     }
+    case 'objective_changed':
+      return ctx.kind === 'objective';
   }
 }
 
 export interface TriggerCtx {
-  kind: 'phase' | 'moved' | 'action';
+  /** `objective`: the victory goal has just changed to its second phase (story 11.8) */
+  kind: 'phase' | 'moved' | 'action' | 'objective';
   unit?: BattleUnit;
 }
 
@@ -286,6 +317,7 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
         }
       } else if (a.action === 'spawn') spawnUnits(data, s, a.units, true, events);
       else if (a.action === 'set_terrain') for (const p of areaTiles(a.area)) eventTerrain(data, s, p, a.terrain, a.level, events);
+      else if (a.action === 'advance_objective') advanceObjective(data, s, events);
     }
   }
 }

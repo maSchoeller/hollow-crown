@@ -9,9 +9,11 @@ import { openTargets, stealPreview, stealTargets, type StealPreview } from '../r
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds } from '../rules/skills';
+import type { ObjectiveDef } from '../mapDefs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
 import type { Action } from './commands';
+import { activeVictory } from './activeVictory';
 import { mapOf } from './objectives';
 
 export { classActionId };
@@ -171,9 +173,15 @@ export function passivePreview(data: GameData, s: BattleState, u: BattleUnit, po
   }
 }
 
-/** Escape maps: the lord leaves last (concept/06 §5), i.e. not while another able player unit is still on the map. */
-export function mustStayForRest(s: BattleState, u: BattleUnit): boolean {
-  return u.flags.includes('lord') && s.units.some((o) => o !== u && o.team === 'player' && onMap(o) && !o.downed);
+/**
+ * Escape maps: the lord leaves last (concept/06 §5), i.e. not while another able player unit is still on the map, nor (story
+ * 11.8) while a unit the goal's `must` names still lies on it, downed included: it has to be carried off first.
+ */
+export function mustStayForRest(s: BattleState, u: BattleUnit, v?: ObjectiveDef): boolean {
+  if (!u.flags.includes('lord')) return false;
+  if (s.units.some((o) => o !== u && o.team === 'player' && onMap(o) && !o.downed)) return true;
+  const must = v?.type === 'escape' ? v.must : undefined;
+  return !!must && s.units.some((o) => o !== u && must.includes(o.id) && onMap(o));
 }
 
 /** All actions the unit could take from `pos` (UI action bar and AI share this). */
@@ -219,9 +227,9 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
     const trade = adj.filter((o) => active(o) && o.team === 'player');
     if (trade.length && !u.freeUsed.trade) out.push({ kind: 'trade', targets: trade.map((o) => o.uid) });
     if (nearConvoy(s, u, pos) && !u.freeUsed.convoy) out.push({ kind: 'convoy' });
-    const v = map.objectives.victory;
+    const v = activeVictory(map, s);
     if (v.type === 'seize' && u.flags.includes('seizer') && inArea(v.area, pos)) out.push({ kind: 'seize' });
-    if (v.type === 'escape' && inArea(v.area, pos) && !mustStayForRest(s, u)) out.push({ kind: 'escape' });
+    if (v.type === 'escape' && inArea(v.area, pos) && !mustStayForRest(s, u, v)) out.push({ kind: 'escape' });
   }
   for (const id of activeSkillIds(data, u)) {
     const sk = data.skills[id]!;

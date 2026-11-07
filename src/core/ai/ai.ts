@@ -4,6 +4,7 @@ import type { GameEvent } from '../events';
 import { attackTargets, staffTargets } from '../battle/actions';
 import { applyAct, moveAfterAction } from '../battle/apply';
 import type { Action } from '../battle/commands';
+import { activeVictory } from '../battle/activeVictory';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero, withdraw } from '../rules/effects';
 import { expectedDamage, forecast, type Forecast } from '../rules/combat';
@@ -209,7 +210,7 @@ const CAST_PROFILES = new Set(['aggressive', 'hold', 'guard', 'hunt', 'trigger']
 
 /** Goal tiles of the mission the player walks to (reach, seize, escape); none for rout, boss, defend and survive. */
 function goalTiles(data: GameData, s: BattleState): Pos[] {
-  const v = mapOf(data, s).objectives.victory;
+  const v = activeVictory(mapOf(data, s), s);
   return v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? areaTiles(v.area) : [];
 }
 

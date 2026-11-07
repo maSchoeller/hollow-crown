@@ -2,6 +2,7 @@ import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
+import { activeVictory } from '../battle/activeVictory';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
@@ -278,7 +279,7 @@ function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], dan
  */
 export function autoCommand(data: GameData, s: BattleState): Command {
   const map = data.maps[s.mapId]!;
-  const v = map.objectives.victory;
+  const v = activeVictory(map, s);
   const goal = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? areaTiles(v.area) : null;
   const danger = dangerCounts(data, s);
   const enemies = s.units.filter((o) => o.team === 'enemy' && active(o) && o.pos);
@@ -314,7 +315,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const isGoalUnit =
       goal && (v.type !== 'reach' || !v.unit || v.unit === u.id) && (v.type !== 'seize' || u.flags.includes('seizer'));
     // the lord leaves last: until then he walks up to the exit but keeps its tiles free for the others
-    if (isGoalUnit && v.type === 'escape' && mustStayForRest(s, u)) {
+    if (isGoalUnit && v.type === 'escape' && mustStayForRest(s, u, v)) {
       const exit = new Set(goal.map(posKey));
       dests = dests.filter((p) => !exit.has(posKey(p)));
     }

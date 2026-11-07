@@ -1,6 +1,6 @@
 /**
  * The developer maps of story 4.8 (`tests/fixtures/maps/dev_escort.yaml`, `dev_treasure.yaml`): small maps with the new goals
- * `escort` and `treasure`. Like `dev_fog` they are no content (no pack lists them, the campaign graph does not know them,
+ * `escort` and `treasure`, and of story 11.8 (`dev_phases.yaml`: survive, then escape). Like `dev_fog` they are no content (no pack lists them, the campaign graph does not know them,
  * nothing ships); tests register them with `addDevObjectiveMap`, the browser starts them with `await __hc.devMap('dev_escort')`.
  */
 import { readFileSync } from 'node:fs';
@@ -9,7 +9,7 @@ import { parse } from 'yaml';
 import { mapSchema } from '../../src/content/schemas';
 import { createBattle, newCampaign, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
 
-export type DevObjectiveMapId = 'dev_escort' | 'dev_treasure';
+export type DevObjectiveMapId = 'dev_escort' | 'dev_treasure' | 'dev_phases';
 
 /** The map as the game reads it; throws with the schema message when content changes break it. */
 export function devObjectiveMap(id: DevObjectiveMapId, root = process.cwd()): MapDef {

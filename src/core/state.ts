@@ -153,6 +153,8 @@ export interface BattleState {
   loot: Array<{ at: Pos; item: ItemInstance }>;
   firedTriggers: string[];
   reinforcementsDone: number[];
+  /** story 11.8: index of the active phase of the victory goal (1 = its `then`); set only when it changes, missing = 0 (also in older saves) */
+  objectivePhase?: number;
   stats: {
     villagesVisited: string[];
     chestsOpened: string[];

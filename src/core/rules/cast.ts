@@ -14,6 +14,7 @@ import { applyStatus, extinguishTile, igniteTile, raiseRockwall } from './effect
 import { itemDef, weaponProfile } from './items';
 import { tilesInRange, weaponRange } from './movement';
 import { classActionId } from './roles';
+import { activeVictory } from '../battle/activeVictory';
 
 /** The elements Wirken can use; light and dark come with the pro paths. */
 export const CAST_ELEMENTS = ['fire', 'water', 'earth', 'wind'] as const;
@@ -71,7 +72,8 @@ function canCastOn(data: GameData, s: BattleState, u: BattleUnit, element: CastE
       // only ground a foot unit can enter, and never a goal of the mission (throne, gate, the tiles a seize/reach/escape goal names)
       const def = data.terrain[cur];
       if (!def || def.cost.foot === null || def.seizable) return false;
-      const v = data.maps[s.mapId]?.objectives.victory;
+      const m = data.maps[s.mapId];
+      const v = m && activeVictory(m, s);
       return !(v && (v.type === 'reach' || v.type === 'seize' || v.type === 'escape') && areaTiles(v.area).some((g) => samePos(g, p)));
     }
   }
