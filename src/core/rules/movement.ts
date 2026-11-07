@@ -279,7 +279,7 @@ export function strikeTiles(data: GameData, s: BattleState, unit: BattleUnit, fr
   return tilesInRange(s, from, [range[0], far]).filter((p) => canStrike(data, s, unit, from, p, range, target));
 }
 
-/** Attack range of a weapon for a unit, including skill range bonuses (longshot) and `extraRange` (Zielen). */
+/** Attack range of a weapon for a unit, including skill range bonuses (pro_far_shot) and `extraRange` (Zielen). */
 export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string, extraRange = 0): [number, number] {
   const inst = [unit.equip.mainHand, ...unit.bag].find((i) => i?.uid === weaponUid);
   if (!inst) return [1, 1];

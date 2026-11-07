@@ -37,21 +37,21 @@ beforeAll(() => {
 });
 
 /** A campaign copy with extra gold, materials and convoy items. */
-function rich(opts: { gold?: number; materials?: Record<string, number>; items?: string[] } = {}): CampaignState {
+function rich(opts: { gold?: number; materials?: Record<string, number>; items?: string[] } = {}, d: GameData = data): CampaignState {
   const c = clone(base);
   c.gold = opts.gold ?? 100000;
   c.materials = { ...(opts.materials ?? {}) };
-  for (const id of opts.items ?? []) c.convoy.push(newItem(c, id, data));
+  for (const id of opts.items ?? []) c.convoy.push(newItem(c, id, d));
   return c;
 }
 
 const lastUid = (c: CampaignState) => c.convoy[c.convoy.length - 1]!.uid;
 
 /** Applies twice from the same state: same result (determinism, concept/24-architecture §8.1). */
-function run(c: CampaignState, cmd: CampaignCommand) {
-  expect(validateCampaign(data, c, cmd)).toBeNull();
-  const a = applyCampaign(data, c, cmd);
-  const b = applyCampaign(data, clone(c), cmd);
+function run(c: CampaignState, cmd: CampaignCommand, d: GameData = data) {
+  expect(validateCampaign(d, c, cmd)).toBeNull();
+  const a = applyCampaign(d, c, cmd);
+  const b = applyCampaign(d, clone(c), cmd);
   expect(b).toEqual(a);
   return a;
 }
@@ -224,23 +224,25 @@ describe('campaign commands', () => {
   });
 
   it('promote spends a seal and changes the class', () => {
-    const c = rich({ items: ['promotion_seal'] });
-    const u = c.roster.find((r) => promotionTargets(data, r.classId).length > 0)!;
-    const target = promotionTargets(data, u.classId)[0]!;
-    expect(validateCampaign(data, c, { type: 'promote', unit: u.id, classId: target })).toBe('not_available');
-    u.level = data.balance.levels.promoteFrom;
-    const r = run(c, { type: 'promote', unit: u.id, classId: target });
+    // No seal in the content promotes yet (ember_spark gets `use.promote` with story 10.2), so the test adds one.
+    const sd: GameData = { ...data, items: { ...data.items, test_seal: { ...data.items.ember_spark!, id: 'test_seal', tags: [], use: { promote: true, minLevel: 10 }, charges: 1 } } };
+    const c = rich({ items: ['test_seal'] }, sd);
+    const u = c.roster.find((r) => promotionTargets(sd, r.classId).length > 0)!;
+    const target = promotionTargets(sd, u.classId)[0]!;
+    expect(validateCampaign(sd, c, { type: 'promote', unit: u.id, classId: target })).toBe('not_available');
+    u.level = sd.balance.levels.promoteFrom;
+    const r = run(c, { type: 'promote', unit: u.id, classId: target }, sd);
     expect(r.campaign.roster.find((x) => x.id === u.id)!.classId).toBe(target);
-    expect(r.campaign.convoy.some((i) => i.def === 'promotion_seal')).toBe(false);
+    expect(r.campaign.convoy.some((i) => i.def === 'test_seal')).toBe(false);
     expect(r.events).toContainEqual({ t: 'promoted', unit: u.id, classId: target });
-    expect(validateCampaign(data, c, { type: 'promote', unit: u.id, classId: 'nonsense' })).toBe('unknown_class');
-    expect(validateCampaign(data, { ...c, convoy: [] }, { type: 'promote', unit: u.id, classId: target })).toBe('not_enough_materials');
-    expect(validateCampaign(data, c, { type: 'promote', unit: 'nobody', classId: target })).toBe('unknown_unit');
+    expect(validateCampaign(sd, c, { type: 'promote', unit: u.id, classId: 'nonsense' })).toBe('unknown_class');
+    expect(validateCampaign(sd, { ...c, convoy: [] }, { type: 'promote', unit: u.id, classId: target })).toBe('not_enough_materials');
+    expect(validateCampaign(sd, c, { type: 'promote', unit: 'nobody', classId: target })).toBe('unknown_unit');
     // a seal in the unit's bag works too
     const bagged = clone(c);
     const bu = bagged.roster.find((x) => x.id === u.id)!;
     bu.bag.push(bagged.convoy.pop()!);
-    expect(run(bagged, { type: 'promote', unit: u.id, classId: target }).campaign.roster.find((x) => x.id === u.id)!.bag.some((i) => i.def === 'promotion_seal')).toBe(false);
+    expect(run(bagged, { type: 'promote', unit: u.id, classId: target }, sd).campaign.roster.find((x) => x.id === u.id)!.bag.some((i) => i.def === 'test_seal')).toBe(false);
   });
 
   it('setFlag effect is idempotent', () => {

@@ -73,14 +73,14 @@ describe('content', () => {
     expect(validateContent(data, locales)).toEqual([]);
   });
 
-  it('knows the item ember_spark: a seal that stays in the convoy, no promote yet (story 10.2); promotion_seal is untouched', () => {
+  it('knows the item ember_spark: a seal that stays in the convoy, no promote yet (story 10.2); the old promotion_seal is gone (story 9.14)', () => {
     const d = data.items.ember_spark!;
     expect(d.kind).toBe('seal');
     expect(d.slot).toBe('bag');
     expect(d.tags).toContain('convoyOnly');
     expect(d.price).toBe(3000);
     expect(d.use).toBeUndefined();
-    expect(data.items.promotion_seal!.use).toEqual({ promote: true, minLevel: 10 });
+    expect(data.items.promotion_seal).toBeUndefined();
   });
 });
 
