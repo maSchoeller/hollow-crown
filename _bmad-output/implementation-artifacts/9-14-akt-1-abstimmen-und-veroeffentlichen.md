@@ -26,7 +26,8 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 - [ ] 👤 **15.6** Szenen: offen ist ein spätsommerliches Bild der eroberten Paktwacht (die Szenen 1-6 nach, 1-7 nach, 1-8 vor und nach zeigen `paktwacht_heimat` = Herbst und ausgebaute Burg, AK 3) und die Abnahme der vier neuen Ortsbilder (`art/prompts/loc_*.md`)
 - [ ] 👤 **15.11** Leistung großer Karten: Handy-Test des Produktinhabers auf dem Referenzgerät (Status review)
 - [ ] 👤 **15.12** Weltkarte flüssig, Paktwacht als Ruine: Handy-Test des Produktinhabers (Status review)
-- [ ] **15.15** Jahreszeiten-Boden: in PR #130 gemergt, Abschluss in eigener Session (Status review); betrifft Akt 1 nicht (Akt-1-Karten bleiben Sommer), blockiert das Release nur formal als Story von Epic 15
+- [x] **15.15** Jahreszeiten-Boden: done (PR #130, #131)
+- [ ] 👤 **15.16** Winter-Deko und Waldvarianten (backlog, Folge zu 15.15): betrifft nur Akt 2 und 3; laut Epic 15 kommt 9.14 nach allen Stories des Epics. Produktinhaber entscheidet, ob 15.16 vor dem Release nötig ist
 - [ ] 👤 **8.1** Tonbruch-Test: Bögen von Produktinhaber und 2–3 Testern auswerten (`concept/23-art-direction/tonbruch-test.md`); ohne bestandenen Test kein Release
 
 ### B. Inhalt und Prüfungen (ohne Sperre)
@@ -70,7 +71,7 @@ Claude Opus 5.5 (Vorbereitung, gds-create-story)
 
 ### Completion Notes List
 
-- 2026-11-07: Story-Datei mit Release-Checkliste angelegt; Playtest-Plan geschrieben; alles ohne Sperre erledigt. Offen beim Produktinhaber: 15.6 (Bild Paktwacht Spätsommer, Abnahme Ortsbilder), Handy-Test 15.11 und 15.12, Tonbruch-Test 8.1, Nemesis-Prüfung, Freigabe für `content:lock`; 15.15 schließt eine andere Session ab.
+- 2026-11-07: Story-Datei mit Release-Checkliste angelegt; Playtest-Plan geschrieben; alles ohne Sperre erledigt. Offen beim Produktinhaber: 15.6 (Bild Paktwacht Spätsommer, Abnahme Ortsbilder), Handy-Test 15.11 und 15.12, Tonbruch-Test 8.1, Nemesis-Prüfung, EP vor 1-8, ob 15.16 das Release blockiert, Freigabe für `content:lock`.
 
 ### File List
 
