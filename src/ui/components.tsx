@@ -19,6 +19,7 @@ import { asset } from './asset';
 export { asset };
 export { itemName, rarityOf };
 
+/** A unit's name; a name key without a text shows the fallback of `t` (never the raw key). */
 export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);
 }

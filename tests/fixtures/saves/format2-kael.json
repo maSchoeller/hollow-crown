@@ -1,0 +1,2332 @@
+{
+ "format": 2,
+ "campaignId": "00000000-0000-4000-8000-000000000004",
+ "slot": "auto",
+ "createdAt": "2026-10-01T12:00:00.000Z",
+ "appVersion": "0.3.0",
+ "contentVersion": "fixture",
+ "payload": {
+  "campaign": {
+   "version": 1,
+   "seed": 22,
+   "rng": [
+    2674784459,
+    3496812090,
+    1000132221,
+    3884899623
+   ],
+   "settings": {
+    "difficulty": "hard",
+    "deathMode": "classic"
+   },
+   "avatar": {
+    "name": "Ilsa",
+    "pronoun": "she",
+    "portrait": "avatar_b",
+    "affinity": "wind"
+   },
+   "roster": [
+    {
+     "id": "avatar",
+     "charId": "avatar",
+     "nameKey": "unit.avatar.name",
+     "classId": "tactician",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 20,
+      "str": 5,
+      "mag": 5,
+      "skl": 6,
+      "spd": 6,
+      "lck": 5,
+      "def": 4,
+      "res": 4
+     },
+     "growth": {
+      "hp": 70,
+      "str": 40,
+      "mag": 40,
+      "skl": 50,
+      "spd": 45,
+      "lck": 45,
+      "def": 30,
+      "res": 30
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "wind",
+     "personalSkill": "strategist_eye",
+     "flags": [
+      "avatar",
+      "mustSurvive"
+     ],
+     "equip": {
+      "mainHand": {
+       "uid": "i1",
+       "def": "iron_sword",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "body": {
+       "uid": "i2",
+       "def": "leather_vest",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "avatar_b",
+     "sprite": "avatar",
+     "name": "Ilsa"
+    },
+    {
+     "id": "kael",
+     "charId": "kael",
+     "nameKey": "unit.kael.name",
+     "classId": "captain",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 22,
+      "str": 6,
+      "mag": 1,
+      "skl": 7,
+      "spd": 7,
+      "lck": 5,
+      "def": 5,
+      "res": 2
+     },
+     "growth": {
+      "hp": 80,
+      "str": 45,
+      "mag": 10,
+      "skl": 50,
+      "spd": 45,
+      "lck": 40,
+      "def": 35,
+      "res": 20
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "earth",
+     "personalSkill": "steadfast",
+     "flags": [
+      "lord",
+      "mustSurvive",
+      "convoyAccess",
+      "seizer"
+     ],
+     "equip": {
+      "mainHand": {
+       "uid": "i3",
+       "def": "iron_sword",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "body": {
+       "uid": "i5",
+       "def": "leather_vest",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i4",
+       "def": "iron_lance",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      {
+       "uid": "i6",
+       "def": "vulnerary",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 3
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "kael",
+     "sprite": "kael"
+    },
+    {
+     "id": "brenna",
+     "charId": "brenna",
+     "nameKey": "unit.brenna.name",
+     "classId": "vanguard",
+     "level": 3,
+     "exp": 0,
+     "stats": {
+      "hp": 27,
+      "str": 8,
+      "mag": 0,
+      "skl": 5,
+      "spd": 4,
+      "lck": 3,
+      "def": 5,
+      "res": 1
+     },
+     "growth": {
+      "hp": 85,
+      "str": 55,
+      "mag": 0,
+      "skl": 40,
+      "spd": 30,
+      "lck": 25,
+      "def": 35,
+      "res": 10
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "fire",
+     "personalSkill": "veteran_grit",
+     "flags": [],
+     "equip": {
+      "mainHand": {
+       "uid": "i7",
+       "def": "iron_axe",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "head": {
+       "uid": "i9",
+       "def": "leather_cap",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i8",
+       "def": "hand_axe",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      {
+       "uid": "i10",
+       "def": "door_key",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 1
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "brenna",
+     "sprite": "brenna"
+    },
+    {
+     "id": "tobin",
+     "charId": "tobin",
+     "nameKey": "unit.tobin.name",
+     "classId": "vanguard",
+     "level": 1,
+     "exp": 0,
+     "stats": {
+      "hp": 19,
+      "str": 5,
+      "mag": 0,
+      "skl": 4,
+      "spd": 6,
+      "lck": 6,
+      "def": 4,
+      "res": 1
+     },
+     "growth": {
+      "hp": 75,
+      "str": 50,
+      "mag": 5,
+      "skl": 45,
+      "spd": 50,
+      "lck": 55,
+      "def": 40,
+      "res": 20
+     },
+     "gained": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "expected": {
+      "hp": 0,
+      "str": 0,
+      "mag": 0,
+      "skl": 0,
+      "spd": 0,
+      "lck": 0,
+      "def": 0,
+      "res": 0
+     },
+     "affinity": "wind",
+     "personalSkill": "underdog",
+     "flags": [],
+     "equip": {
+      "mainHand": {
+       "uid": "i11",
+       "def": "iron_lance",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      },
+      "offHand": {
+       "uid": "i12",
+       "def": "wooden_shield",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": []
+      }
+     },
+     "bag": [
+      {
+       "uid": "i13",
+       "def": "vulnerary",
+       "upgrade": 0,
+       "affixes": [],
+       "runes": [],
+       "charges": 3
+      }
+     ],
+     "scars": [],
+     "mastered": [],
+     "loadout": [],
+     "sp": {},
+     "portrait": "tobin",
+     "sprite": "tobin"
+    }
+   ],
+   "fallen": [],
+   "convoy": [
+    {
+     "uid": "i14",
+     "def": "vulnerary",
+     "upgrade": 0,
+     "affixes": [],
+     "runes": [],
+     "charges": 3
+    },
+    {
+     "uid": "i15",
+     "def": "iron_lance",
+     "upgrade": 0,
+     "affixes": [],
+     "runes": []
+    }
+   ],
+   "gold": 500,
+   "materials": {},
+   "flags": {},
+   "left": [],
+   "stance": {
+    "warm": 0,
+    "sober": 0,
+    "defiant": 0
+   },
+   "chronicle": [],
+   "choices": {
+    "scn.m1_5.varek_talk#3": "spare",
+    "scn.support.avatar_kael.A#5": "b"
+   },
+   "decisions": [
+    {
+     "act": 1,
+     "scene": "scn.m1_5.varek_talk",
+     "line": "3",
+     "option": "spare"
+    }
+   ],
+   "scenesSeen": [
+    "scn.prologue.intro",
+    "scn.bark.kael",
+    "scn.m1_5.varek_talk",
+    "scn.support.avatar_kael.A",
+    "scn.m1_3.house_mill"
+   ],
+   "backupReminded": [],
+   "priceMods": [],
+   "villageAid": null,
+   "completed": [],
+   "quests": [],
+   "rolesSeen": [
+    "tactician",
+    "captain",
+    "vanguard"
+   ],
+   "supports": {
+    "avatar|kael": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|kael": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|tobin": {
+     "points": 0,
+     "rank": null
+    },
+    "avatar|liora": {
+     "points": 0,
+     "rank": null
+    },
+    "brenna|varek": {
+     "points": 0,
+     "rank": null
+    },
+    "mira|tobin": {
+     "points": 0,
+     "rank": null
+    },
+    "liora|ysolde": {
+     "points": 0,
+     "rank": null
+    },
+    "grosk|tobin": {
+     "points": 0,
+     "rank": null
+    },
+    "fenn|mira": {
+     "points": 0,
+     "rank": null
+    }
+   },
+   "nextUid": 16,
+   "offers": [],
+   "home": {
+    "kind": "camp",
+    "rooms": {}
+   },
+   "tavern": [],
+   "day": {
+    "last": null,
+    "pending": []
+   },
+   "haunts": [],
+   "hauntLast": {},
+   "hauntsSinceStory": 0
+  },
+  "battle": {
+   "start": {
+    "mapId": "prologue_paktnacht",
+    "nodeId": "prologue",
+    "turn": 1,
+    "phase": "player",
+    "rng": [
+     1628990259,
+     2517623759,
+     208534691,
+     3890712794
+    ],
+    "width": 14,
+    "height": 18,
+    "terrain": [
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "door",
+     "door",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "forest",
+     "forest",
+     "grass",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "brazier",
+     "road",
+     "road",
+     "road",
+     "road",
+     "brazier",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "grass",
+     "gate",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "road",
+     "gate",
+     "grass",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "wall",
+     "plain",
+     "road",
+     "road",
+     "road",
+     "road",
+     "plain",
+     "wall",
+     "grass",
+     "forest",
+     "forest",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "grass",
+     "wall",
+     "plain",
+     "road",
+     "road",
+     "road",
+     "road",
+     "plain",
+     "wall",
+     "grass",
+     "grass",
+     "grass",
+     "forest",
+     "grass",
+     "grass",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "road",
+     "road",
+     "wall",
+     "wall",
+     "grass",
+     "forest",
+     "grass",
+     "wall",
+     "wall",
+     "gate",
+     "wall",
+     "wall",
+     "wall",
+     "gate",
+     "gate",
+     "rampart",
+     "rampart",
+     "rampart",
+     "gate",
+     "wall",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "fort",
+     "plain",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "stairs",
+     "fort",
+     "plain",
+     "plain",
+     "wall",
+     "road",
+     "door",
+     "plain",
+     "plain",
+     "brazier",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "plain",
+     "brazier",
+     "plain",
+     "plain",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "plain",
+     "ruins",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "plain",
+     "ruins",
+     "plain",
+     "plain",
+     "wall",
+     "road",
+     "wall",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "road",
+     "road",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "plain",
+     "gate",
+     "road",
+     "wall",
+     "forest",
+     "forest",
+     "plain",
+     "wall",
+     "road",
+     "road",
+     "wall",
+     "plain",
+     "plain",
+     "forest",
+     "forest",
+     "wall",
+     "road",
+     "wall",
+     "grass",
+     "grass",
+     "plain",
+     "wall",
+     "road",
+     "road",
+     "wall",
+     "plain",
+     "grass",
+     "grass",
+     "grass",
+     "wall",
+     "road",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "gate",
+     "gate",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "wall",
+     "road",
+     "road",
+     "grass",
+     "grass",
+     "grass",
+     "grass",
+     "road",
+     "road",
+     "grass",
+     "grass",
+     "grass",
+     "grass",
+     "grass",
+     "grass"
+    ],
+    "timers": {},
+    "units": [
+     {
+      "id": "avatar",
+      "charId": "avatar",
+      "nameKey": "unit.avatar.name",
+      "classId": "tactician",
+      "level": 1,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 5,
+       "skl": 6,
+       "spd": 6,
+       "lck": 5,
+       "def": 4,
+       "res": 4
+      },
+      "growth": {
+       "hp": 70,
+       "str": 40,
+       "mag": 40,
+       "skl": 50,
+       "spd": 45,
+       "lck": 45,
+       "def": 30,
+       "res": 30
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "affinity": "wind",
+      "personalSkill": "strategist_eye",
+      "flags": [
+       "avatar",
+       "mustSurvive"
+      ],
+      "equip": {
+       "mainHand": {
+        "uid": "i1",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       "body": {
+        "uid": "i2",
+        "def": "leather_vest",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "portrait": "avatar_b",
+      "sprite": "avatar",
+      "name": "Ilsa",
+      "uid": "avatar",
+      "team": "player",
+      "pos": [
+       5,
+       1
+      ],
+      "startPos": [
+       5,
+       1
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": false,
+      "fromRoster": true
+     },
+     {
+      "id": "kael",
+      "charId": "kael",
+      "nameKey": "unit.kael.name",
+      "classId": "captain",
+      "level": 1,
+      "exp": 0,
+      "stats": {
+       "hp": 22,
+       "str": 6,
+       "mag": 1,
+       "skl": 7,
+       "spd": 7,
+       "lck": 5,
+       "def": 5,
+       "res": 2
+      },
+      "growth": {
+       "hp": 80,
+       "str": 45,
+       "mag": 10,
+       "skl": 50,
+       "spd": 45,
+       "lck": 40,
+       "def": 35,
+       "res": 20
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "affinity": "earth",
+      "personalSkill": "steadfast",
+      "flags": [
+       "lord",
+       "mustSurvive",
+       "convoyAccess",
+       "seizer"
+      ],
+      "equip": {
+       "mainHand": {
+        "uid": "i3",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       "body": {
+        "uid": "i5",
+        "def": "leather_vest",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [
+       {
+        "uid": "i4",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       {
+        "uid": "i6",
+        "def": "vulnerary",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": [],
+        "charges": 3
+       }
+      ],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "portrait": "kael",
+      "sprite": "kael",
+      "uid": "kael",
+      "team": "player",
+      "pos": [
+       6,
+       1
+      ],
+      "startPos": [
+       6,
+       1
+      ],
+      "hp": 22,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": false,
+      "fromRoster": true
+     },
+     {
+      "id": "brenna",
+      "charId": "brenna",
+      "nameKey": "unit.brenna.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 27,
+       "str": 8,
+       "mag": 0,
+       "skl": 5,
+       "spd": 4,
+       "lck": 3,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 85,
+       "str": 55,
+       "mag": 0,
+       "skl": 40,
+       "spd": 30,
+       "lck": 25,
+       "def": 35,
+       "res": 10
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "affinity": "fire",
+      "personalSkill": "veteran_grit",
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i7",
+        "def": "iron_axe",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       "head": {
+        "uid": "i9",
+        "def": "leather_cap",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [
+       {
+        "uid": "i8",
+        "def": "hand_axe",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       {
+        "uid": "i10",
+        "def": "door_key",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": [],
+        "charges": 1
+       }
+      ],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "portrait": "brenna",
+      "sprite": "brenna",
+      "uid": "brenna",
+      "team": "player",
+      "pos": [
+       7,
+       1
+      ],
+      "startPos": [
+       7,
+       1
+      ],
+      "hp": 27,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": false,
+      "fromRoster": true
+     },
+     {
+      "id": "tobin",
+      "charId": "tobin",
+      "nameKey": "unit.tobin.name",
+      "classId": "vanguard",
+      "level": 1,
+      "exp": 0,
+      "stats": {
+       "hp": 19,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 6,
+       "lck": 6,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 50,
+       "mag": 5,
+       "skl": 45,
+       "spd": 50,
+       "lck": 55,
+       "def": 40,
+       "res": 20
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "affinity": "wind",
+      "personalSkill": "underdog",
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i11",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       },
+       "offHand": {
+        "uid": "i12",
+        "def": "wooden_shield",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [
+       {
+        "uid": "i13",
+        "def": "vulnerary",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": [],
+        "charges": 3
+       }
+      ],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "portrait": "tobin",
+      "sprite": "tobin",
+      "uid": "tobin",
+      "team": "player",
+      "pos": [
+       8,
+       1
+      ],
+      "startPos": [
+       8,
+       1
+      ],
+      "hp": 19,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": false,
+      "fromRoster": true
+     },
+     {
+      "id": "tg1",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i16",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg1",
+      "team": "enemy",
+      "pos": [
+       5,
+       7
+      ],
+      "startPos": [
+       5,
+       7
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 4,
+       "then": "aggressive"
+      }
+     },
+     {
+      "id": "tg2",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 21,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 4,
+       "lck": 2,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 40,
+       "spd": 35,
+       "lck": 25,
+       "def": 35,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i17",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg2",
+      "team": "enemy",
+      "pos": [
+       8,
+       7
+      ],
+      "startPos": [
+       8,
+       7
+      ],
+      "hp": 21,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 4,
+       "then": "aggressive"
+      }
+     },
+     {
+      "id": "tg3",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 1,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i18",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg3",
+      "team": "enemy",
+      "pos": [
+       1,
+       5
+      ],
+      "startPos": [
+       1,
+       5
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 3,
+       "then": "aggressive"
+      }
+     },
+     {
+      "id": "tg4",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "marksman",
+      "level": 1,
+      "exp": 0,
+      "stats": {
+       "hp": 19,
+       "str": 5,
+       "mag": 0,
+       "skl": 6,
+       "spd": 5,
+       "lck": 2,
+       "def": 3,
+       "res": 1
+      },
+      "growth": {
+       "hp": 65,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 40,
+       "lck": 25,
+       "def": 20,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i19",
+        "def": "iron_bow",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg4",
+      "team": "enemy",
+      "pos": [
+       9,
+       9
+      ],
+      "startPos": [
+       9,
+       9
+      ],
+      "hp": 19,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "hold"
+      }
+     },
+     {
+      "id": "tg5",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 23,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 4,
+       "lck": 2,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 40,
+       "spd": 35,
+       "lck": 25,
+       "def": 35,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i20",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [
+       {
+        "uid": "i21",
+        "def": "vulnerary",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": [],
+        "charges": 3
+       }
+      ],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg5",
+      "team": "enemy",
+      "pos": [
+       6,
+       10
+      ],
+      "startPos": [
+       6,
+       10
+      ],
+      "hp": 23,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [
+       "i21"
+      ],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "guard"
+      }
+     },
+     {
+      "id": "tg6",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i22",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg6",
+      "team": "enemy",
+      "pos": [
+       7,
+       10
+      ],
+      "startPos": [
+       7,
+       10
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "guard"
+      }
+     },
+     {
+      "id": "tg7",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 23,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 4,
+       "lck": 2,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 40,
+       "spd": 35,
+       "lck": 25,
+       "def": 35,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i23",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg7",
+      "team": "enemy",
+      "pos": [
+       6,
+       15
+      ],
+      "startPos": [
+       6,
+       15
+      ],
+      "hp": 23,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "hold"
+      }
+     },
+     {
+      "id": "tg8",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "vanguard",
+      "level": 3,
+      "exp": 0,
+      "stats": {
+       "hp": 23,
+       "str": 5,
+       "mag": 0,
+       "skl": 4,
+       "spd": 4,
+       "lck": 2,
+       "def": 5,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 40,
+       "spd": 35,
+       "lck": 25,
+       "def": 35,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i24",
+        "def": "iron_lance",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg8",
+      "team": "enemy",
+      "pos": [
+       7,
+       15
+      ],
+      "startPos": [
+       7,
+       15
+      ],
+      "hp": 23,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "hold"
+      }
+     },
+     {
+      "id": "tg9",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i25",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg9",
+      "team": "enemy",
+      "pos": [
+       3,
+       12
+      ],
+      "startPos": [
+       3,
+       12
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 7,
+       "then": "aggressive"
+      }
+     },
+     {
+      "id": "tg10",
+      "nameKey": "unit.temple_guard.name",
+      "classId": "skirmisher",
+      "level": 2,
+      "exp": 0,
+      "stats": {
+       "hp": 20,
+       "str": 5,
+       "mag": 0,
+       "skl": 8,
+       "spd": 8,
+       "lck": 2,
+       "def": 4,
+       "res": 1
+      },
+      "growth": {
+       "hp": 75,
+       "str": 40,
+       "mag": 5,
+       "skl": 50,
+       "spd": 50,
+       "lck": 25,
+       "def": 25,
+       "res": 15
+      },
+      "gained": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "expected": {
+       "hp": 0,
+       "str": 0,
+       "mag": 0,
+       "skl": 0,
+       "spd": 0,
+       "lck": 0,
+       "def": 0,
+       "res": 0
+      },
+      "flags": [],
+      "equip": {
+       "mainHand": {
+        "uid": "i26",
+        "def": "iron_sword",
+        "upgrade": 0,
+        "affixes": [],
+        "runes": []
+       }
+      },
+      "bag": [],
+      "scars": [],
+      "mastered": [],
+      "loadout": [],
+      "sp": {},
+      "sprite": "temple_guard",
+      "portrait": "class_temple_guard",
+      "uid": "tg10",
+      "team": "enemy",
+      "pos": [
+       10,
+       12
+      ],
+      "startPos": [
+       10,
+       12
+      ],
+      "hp": 20,
+      "acted": false,
+      "moved": false,
+      "downed": false,
+      "bleed": 0,
+      "status": [],
+      "buffs": [],
+      "usedPerMap": {},
+      "freeUsed": {},
+      "dropUids": [],
+      "generic": true,
+      "fromRoster": false,
+      "ai": {
+       "profile": "trigger",
+       "radius": 4,
+       "then": "aggressive"
+      }
+     }
+    ],
+    "objects": [
+     {
+      "id": "d_unterstadt",
+      "type": "door",
+      "at": [
+       1,
+       11
+      ],
+      "state": "closed"
+     },
+     {
+      "id": "c_garden",
+      "type": "chest",
+      "at": [
+       11,
+       1
+      ],
+      "state": "closed"
+     }
+    ],
+    "loot": [],
+    "firedTriggers": [
+     "t_intro"
+    ],
+    "reinforcementsDone": [],
+    "stats": {
+     "villagesVisited": [],
+     "chestsOpened": [],
+     "downs": 0,
+     "recruited": []
+    },
+    "outcome": null,
+    "settings": {
+     "difficulty": "hard",
+     "deathMode": "classic"
+    },
+    "convoy": [
+     {
+      "uid": "i14",
+      "def": "vulnerary",
+      "upgrade": 0,
+      "affixes": [],
+      "runes": [],
+      "charges": 3
+     },
+     {
+      "uid": "i15",
+      "def": "iron_lance",
+      "upgrade": 0,
+      "affixes": [],
+      "runes": []
+     }
+    ],
+    "goldGained": 0,
+    "materialsGained": {},
+    "itemsGained": [],
+    "supports": {
+     "avatar|kael": {
+      "points": 0,
+      "rank": null
+     },
+     "brenna|kael": {
+      "points": 0,
+      "rank": null
+     },
+     "brenna|tobin": {
+      "points": 0,
+      "rank": null
+     },
+     "avatar|liora": {
+      "points": 0,
+      "rank": null
+     },
+     "brenna|varek": {
+      "points": 0,
+      "rank": null
+     },
+     "mira|tobin": {
+      "points": 0,
+      "rank": null
+     },
+     "liora|ysolde": {
+      "points": 0,
+      "rank": null
+     },
+     "grosk|tobin": {
+      "points": 0,
+      "rank": null
+     },
+     "fenn|mira": {
+      "points": 0,
+      "rank": null
+     }
+    },
+    "flags": [],
+    "nextUid": 27,
+    "avatarName": "Ilsa",
+    "locked": [
+     "triangle",
+     "magic",
+     "elements",
+     "status",
+     "runes",
+     "supports"
+    ],
+    "lockedRoles": [
+     "skirmisher",
+     "marksman",
+     "elementalist",
+     "healer",
+     "scout",
+     "minstrel"
+    ],
+    "lieutenantPlan": {}
+   },
+   "commands": [
+    {
+     "type": "act",
+     "unit": "avatar",
+     "to": [
+      6,
+      5
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "kael",
+     "to": [
+      6,
+      6
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "brenna",
+     "to": [
+      7,
+      5
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "tobin",
+     "to": [
+      7,
+      4
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "endPhase"
+    },
+    {
+     "type": "act",
+     "unit": "avatar",
+     "to": [
+      9,
+      5
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "kael",
+     "to": [
+      6,
+      6
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "brenna",
+     "to": [
+      6,
+      5
+     ],
+     "action": {
+      "kind": "attack",
+      "target": "tg1",
+      "weapon": "i7"
+     }
+    },
+    {
+     "type": "act",
+     "unit": "tobin",
+     "to": [
+      5,
+      5
+     ],
+     "action": {
+      "kind": "attack",
+      "target": "tg2",
+      "weapon": "i11"
+     }
+    },
+    {
+     "type": "endPhase"
+    },
+    {
+     "type": "act",
+     "unit": "avatar",
+     "to": [
+      6,
+      3
+     ],
+     "action": {
+      "kind": "wait"
+     }
+    }
+   ],
+   "turnStartIndex": 10
+  },
+  "screen": "battle"
+ }
+}
