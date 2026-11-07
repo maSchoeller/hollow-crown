@@ -288,8 +288,9 @@ export function missionFlags(data: GameData, m: MissionSim, difficulty: Difficul
   const downs = m.downs / Math.max(1, m.reached);
   if (cor.winMin !== undefined && win < cor.winMin) f.win = 'low';
   if (cor.winMax !== undefined && win > cor.winMax) f.win = 'high';
-  if (cor.downsMin !== undefined && downs < cor.downsMin) f.downs = 'low';
-  if (cor.downsMax !== undefined && downs > cor.downsMax) f.downs = 'high';
+  const countDowns = !sim.winOnly.includes(m.node);
+  if (countDowns && cor.downsMin !== undefined && downs < cor.downsMin) f.downs = 'low';
+  if (countDowns && cor.downsMax !== undefined && downs > cor.downsMax) f.downs = 'high';
   if (m.cleared) {
     const [lo, hi] = sim.gold.perNode[m.node] ?? sim.gold.perAct[String(data.campaign.act)] ?? [0, Infinity];
     const base = (m.gold - m.sideGold) / m.cleared;

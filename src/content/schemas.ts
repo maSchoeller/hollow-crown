@@ -927,6 +927,7 @@ export const balanceSchema = z.object({
       z.enum(['easy', 'normal', 'hard']),
       z.object({ winMin: z.number().optional(), winMax: z.number().optional(), downsMin: z.number().optional(), downsMax: z.number().optional() }),
     ),
+    winOnly: z.array(z.string().min(1)).default([]),
     gold: z.object({
       perNode: z.record(z.string(), z.tuple([z.number(), z.number()])),
       perAct: z.record(z.string(), z.tuple([z.number(), z.number()])),

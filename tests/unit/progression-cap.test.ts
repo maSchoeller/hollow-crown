@@ -91,23 +91,30 @@ describe('level cap (story 6.5)', () => {
 describe('EXP rules (GDD Figurensystem)', () => {
   const at = (u: BattleUnit, level: number): BattleUnit => ({ ...u, level });
 
-  it('combat 10 + delta within 1-30', () => {
+  // values from balance.yaml `experience` (story 15.10, 2026-11-07: combatBase 11, killBase 34, killPerLevelDiff 0)
+  const e = () => data.balance.experience;
+  const clampTo = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
+  it('combat = base + level delta within min-max', () => {
     const u = lucan();
-    expect(combatExp(data, at(u, 5), at(u, 5), false, false)).toBe(10);
-    expect(combatExp(data, at(u, 5), at(u, 8), false, false)).toBe(13);
-    expect(combatExp(data, at(u, 15), at(u, 1), false, false)).toBe(1);
-    expect(combatExp(data, at(u, 1), at(u, 20), false, false)).toBe(29);
+    expect(combatExp(data, at(u, 5), at(u, 5), false, false)).toBe(e().combatBase);
+    expect(combatExp(data, at(u, 5), at(u, 8), false, false)).toBe(e().combatBase + 3);
+    expect(combatExp(data, at(u, 15), at(u, 1), false, false)).toBe(e().combatMin);
+    expect(combatExp(data, at(u, 1), at(u, 20), false, false)).toBe(clampTo(e().combatBase + 19, e().combatMin, e().combatMax));
   });
 
-  it('defeat 30 + 3 delta within 10-100, boss and lieutenant +20', () => {
+  it('defeat = base + killPerLevelDiff · delta within min-max, boss and lieutenant + bossBonus', () => {
     const u = lucan();
-    expect(combatExp(data, at(u, 5), at(u, 5), true, false)).toBe(30);
-    expect(combatExp(data, at(u, 5), at(u, 7), true, false)).toBe(36);
-    expect(combatExp(data, at(u, 20), at(u, 1), true, false)).toBe(10);
-    expect(combatExp(data, at(u, 5), at(u, 5), true, true)).toBe(50);
-    expect(combatExp(data, at(u, 5), { ...at(u, 5), lieutenant: 'hask' }, true, false)).toBe(50);
+    const kill = (delta: number) => clampTo(e().killBase + e().killPerLevelDiff * delta, e().killMin, e().killMax);
+    expect(combatExp(data, at(u, 5), at(u, 5), true, false)).toBe(e().killBase);
+    expect(combatExp(data, at(u, 5), at(u, 7), true, false)).toBe(kill(2));
+    expect(combatExp(data, at(u, 20), at(u, 1), true, false)).toBe(kill(-19));
+    expect(combatExp(data, at(u, 5), at(u, 5), true, true)).toBe(e().killBase + e().bossBonus);
+    expect(combatExp(data, at(u, 5), { ...at(u, 5), lieutenant: 'hask' }, true, false)).toBe(e().killBase + e().bossBonus);
     // a lieutenant only adds the bonus when driven off, not for a plain exchange
-    expect(combatExp(data, at(u, 5), { ...at(u, 5), lieutenant: 'hask' }, false, false)).toBe(10);
+    expect(combatExp(data, at(u, 5), { ...at(u, 5), lieutenant: 'hask' }, false, false)).toBe(e().combatBase);
+    // weaker foes are worth as much as equal ones (killPerLevelDiff 0): late in act 1 the foes stand below the army
+    expect(e().killPerLevelDiff).toBe(0);
   });
 
   it('pro classes count 15 levels higher', () => {

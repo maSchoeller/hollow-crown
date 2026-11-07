@@ -92,7 +92,7 @@ units:
   - { id: h1, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [7, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: h2, nameKey: unit.bounty_hunter.name, team: enemy, class: vanguard, sprite: soldier, level: 2, at: [8, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
   # Uferstraße: kommen von den Seiten an die Brücke
-  - { id: h3, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [3, 11], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: h3, nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [3, 11], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
   - { id: h4, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [12, 11], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
   # Markt: hinter den Ständen
   - { id: h5, nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 6], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
@@ -113,8 +113,8 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [0, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 1, at: [15, 16], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [0, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.bounty_hunter.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [15, 16], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
   victory: { type: rout }
   defeat:

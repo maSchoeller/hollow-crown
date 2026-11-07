@@ -106,9 +106,9 @@ units:
   - { id: r8, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 1, at: [16, 21], items: [{ def: iron_axe }], ai: { profile: raider, target: v_e } }
   - { id: r9, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
   - { id: r10, nameKey: unit.marauder.name, team: enemy, class: marksman, sprite: bandit_archer, level: 2, at: [17, 21], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 } }
-  # Nur Schwer
-  - { id: r11, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 22], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
-  - { id: r12, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [12, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [hard] }
+  # r11 ab Normal (Story 15.10, Nachtrag 2026-11-07: mehr EP machten 1-2 auf Normal zu leicht), r12 ebenso
+  - { id: r11, nameKey: unit.marauder.name, team: enemy, class: brigand, sprite: brigand, level: 2, at: [5, 22], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [normal, hard] }
+  - { id: r12, nameKey: unit.marauder.name, team: enemy, class: skirmisher, sprite: mercenary, level: 2, at: [12, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive, wakeTurn: 7 }, difficulty: [normal, hard] }
 pairs: []
 reinforcements:
   # Flanke Ost am Nordufer

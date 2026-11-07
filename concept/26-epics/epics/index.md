@@ -86,7 +86,7 @@ Spieler sehen die Welt im Round-Chibi-Stil der Art Direction: Tripo-Figuren, Por
 **FRs covered:** FR42, FR63 (Teil) · UX-DR16
 
 ### Epic 9: Akt 1 „Asche“ (MVP)
-Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest.
+Spieler spielen Prolog und Akt 1 komplett: 9 Story-Missionen (Prolog + 8), 3 Nebenquests, 4 Leutnants, 4 Entscheidungen, Akt-1-Supports, Eroberung und Verteidigung der Paktwacht. Eine Story je Mission; endet mit dem MVP-Release und Playtest. Nach dem Release stimmt Story 9.15 Schwer ab (aus 15.10, 2026-11-07).
 **FRs covered:** FR55, FR60, FR63
 
 ### Epic 10: Die Burg ausbauen (ab Akt 2)

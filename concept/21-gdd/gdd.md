@@ -245,7 +245,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 
 - **Werte:** TP, STR, MAG, SKL, SPD, LCK, DEF, RES, MOV, Tragkraft.
 - **Stufen:** 1–20 je Klassenstufe, 100 EP pro Stufe. In Akt 1 Deckel bei Stufe 10; EP darüber verfallen. Nach Akt 1 offen bis 20.
-- **EP:** Kampf 10 + Δ (1–30), Besiegen/Vertreiben 30 + 3Δ (10–100), Boss oder Leutnant +20, Heilen 12 + 3 je Zusatzziel, Bergen/Ansprechen 10; Profiklasse zählt 15 Stufen höher (effektive Stufe).
+- **EP:** Kampf 11 + Δ (1–30), Besiegen/Vertreiben 34 ohne Stufenabschlag (10–100; bis 2026-11-07 30 + 3Δ, Story 15.10), Boss oder Leutnant +20, Heilen 12 + 3 je Zusatzziel, Bergen/Ansprechen 10; Profiklasse zählt 15 Stufen höher (effektive Stufe).
 - **Erwartete effektive Armee-Stufe** (Durchschnitt der 6 stärksten) `[ASSUMPTION, per Simulation]`:
 
 | Akt | Story-Mission 1 → letzte |
