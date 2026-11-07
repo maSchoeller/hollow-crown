@@ -31,6 +31,8 @@ const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
   phaseMarchMax: 0,
   phaseShown: 0,
   phaseShownMax: 0,
+  winTurns: [],
+  side: {},
   ...over,
 });
 

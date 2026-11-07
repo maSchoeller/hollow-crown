@@ -9,20 +9,44 @@
  *   (Einheiten mit `requires` auf der Karte hängen am Flag; ohne --flag gilt der Weg ohne Entscheidung = „schützen“).
  * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
+ *
+ * Testlabor S1/S2 (concept/24-architecture/testlabor-2026-11-07.md), für eine Karte und für --campaign:
+ *   Die Ausgabe zeigt die Nebenziele (erfüllt nur bei Sieg; die KI verfolgt sie nicht, was sie nicht versucht, steht als 0 %)
+ *   und die Runden der Siege als p10/p50/p90 samt Verteilung.
+ * --json <datei>   schreibt alles maschinenlesbar (Karte: jeder Lauf mit seinen Nebenzielen in `perRun`), z. B. `--json .sim/base.json`.
+ * --set pfad=wert  ändert balance.yaml nur für diesen Aufruf (mehrfach möglich), z. B. `--set experience.killBase=38`;
+ *                  der Wert wird als YAML gelesen, der Pfad muss existieren, das Schema prüft das Ergebnis.
+ * --workers n      verteilt die Läufe auf n Threads (Standard: Kerne − 1, höchstens einer je Lauf; 1 = seriell im Prozess).
+ *                  Jeder Lauf hängt nur an seinem Seed (seed + Lauf), seriell und parallel ergeben dasselbe. --haunt läuft seriell.
+ * pnpm sim:diff a.json b.json [--threshold 0.02] [--all] vergleicht zwei --json-Ausgaben (tools/simDiff.ts).
  */
-import { addToRoster, autoplay, beginBattle, createHauntBattle, finishBattle, hauntLevel, makeHaunt, newCampaign, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty, type GameData } from '../src/core';
-import { loadContentFromDisk } from '../src/content/node';
-import { applyNodeRewards, missionFlags, simulateCampaign, type MissionFlags } from './simCampaign';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { autoplay, createHauntBattle, hauntLevel, makeHaunt, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty } from '../src/core';
+import { mergeCampaignSims, missionFlags, simulateCampaign, type CampaignSim, type MissionFlags } from './simCampaign';
+import { campaignChained, printMap, simulateMapRun, summarizeMap, turnStats, type MapRun, type MapSimOptions } from './simMap';
+import { loadContentWithSets, parseSets } from './simOverrides';
+import { runParallel, workerCount } from './simPool';
 
 const args = process.argv.slice(2);
 const opt = (name: string, def: string) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 ? args[i + 1]! : def;
 };
-const { data } = loadContentFromDisk();
+const sets = parseSets(args);
+const { data } = loadContentWithSets(sets);
+const jsonOut = args.includes('--json') ? opt('json', '') : null;
+if (jsonOut === '' || jsonOut?.startsWith('--')) throw new Error('--json needs a file name');
+const writeJson = (value: unknown) => {
+  if (!jsonOut) return;
+  mkdirSync(dirname(jsonOut), { recursive: true });
+  writeFileSync(jsonOut, `${JSON.stringify(value, null, 2)}\n`);
+  console.log(`json → ${jsonOut}`);
+};
+const workersArg = args.includes('--workers') ? opt('workers', '') : undefined;
 const campaignArg = args.includes('--campaign') ? opt('campaign', `act${data.campaign.act}`) : null;
 if (campaignArg) {
-  runCampaign(campaignArg);
+  await runCampaign(campaignArg);
   process.exit(0);
 }
 const mapId = args.find((a) => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) ?? 'prologue_paktnacht';
@@ -34,105 +58,51 @@ const difficulty = opt('difficulty', 'normal') as Difficulty;
 const chainDifficulty = opt('chain', difficulty) as Difficulty;
 const deathMode = opt('death', 'standard') as DeathMode;
 
-function campaignAt(d: GameData, seed: number, nodeId: string) {
-  const c = newCampaign(d, seed, { difficulty, deathMode }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  // recruit chars who would have joined before this node
-  const order = d.campaign.nodes.map((n) => n.id);
-  const idx = order.indexOf(nodeId);
-  for (const ch of Object.values(d.chars)) {
-    const j = order.indexOf(ch.joins);
-    if (j >= 0 && j < idx) addToRoster(d, c, ch.id);
-  }
-  c.completed = order.slice(0, idx);
-  return c;
-}
-
-/** Plays the campaign up to the target node with autoplay so units carry their progression. */
-function campaignChained(d: GameData, seed: number, nodeId: string) {
-  // --chain plays the missions before the target on another difficulty (e.g. hard target with a normal chain, so enough runs arrive)
-  let c = newCampaign(d, seed, { difficulty: chainDifficulty, deathMode }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  for (const n of d.campaign.nodes) {
-    if (n.id === nodeId) {
-      c.settings.difficulty = difficulty;
-      return c;
-    }
-    const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state);
-    if (state.outcome !== 'victory') return null;
-    c = finishBattle(d, c, state).campaign;
-    applyNodeRewards(d, c, n.id);
-  }
-  return c;
-}
-
 if (args.includes('--haunt')) {
   runHaunt(opt('haunt', ''));
   process.exit(0);
 }
 
-const chained = !args.includes('--fresh');
-const flagArgs = args.flatMap((a, i) => (a === '--flag' ? [args[i + 1]!] : []));
-const leaveArgs = opt('leave', '').split(',').filter(Boolean);
-let wins = 0;
-let turns = 0;
-const winTurns: number[] = [];
-let losses = 0;
-let ms = 0;
-let played = 0;
-const causes: Record<string, number> = {};
-const recruits: Record<string, number> = {};
-let villages = 0;
-for (let r = 0; r < runs; r++) {
-  const c = chained ? campaignChained(data, seed0 + r, node.id) : campaignAt(data, seed0 + r, node.id);
-  if (!c) continue;
-  for (const f of flagArgs) {
-    const [name, value] = f.split('=');
-    c.flags[name!] = value === undefined ? true : /^-?\d+$/.test(value) ? Number(value) : value;
-  }
-  c.roster = c.roster.filter((u) => !leaveArgs.includes(u.id));
-  played++;
-  const deploy = c.roster.map((u) => u.id);
+const mapOptions: MapSimOptions = {
+  node: node.id,
+  difficulty,
+  chainDifficulty,
+  deathMode,
+  chained: !args.includes('--fresh'),
+  flags: args.flatMap((a, i) => (a === '--flag' ? [args[i + 1]!] : [])),
+  leave: opt('leave', '').split(',').filter(Boolean),
+};
+{
+  const workers = workerCount(workersArg, runs);
   const t0 = performance.now();
-  const start = beginBattle(data, c, node.id, deploy).state;
-  const { state } = autoplay(data, start);
-  ms += performance.now() - t0;
-  if (state.outcome === 'victory') {
-    wins++;
-    turns += state.turn;
-    winTurns.push(state.turn);
-  }
-  // downs = every fall to 0 HP during the battle (stats.downs), also those rescued later; the tally names who is still down or dead at the end
-  losses += state.stats.downs;
-  for (const u of state.units) if (u.team === 'player' && (u.gone === 'dead' || u.downed)) causes[u.id] = (causes[u.id] ?? 0) + 1;
-  if (state.outcome !== 'victory') {
-    const key = `outcome:${state.outcome ?? 'timeout'}${state.defeatReason ? `:${state.defeatReason}` : ''}`;
-    causes[key] = (causes[key] ?? 0) + 1;
-  }
-  if (state.outcome === 'defeat') {
-    const map = data.maps[state.mapId]!;
-    for (const d of map.objectives.defeat) {
-      const u = 'unit' in d ? state.units.find((x) => x.id === d.unit) : undefined;
-      if (u && (u.downed || u.gone === 'dead')) causes[`lost:${u.id}`] = (causes[`lost:${u.id}`] ?? 0) + 1;
-    }
-  }
-  villages += state.stats.villagesVisited.length;
-  for (const r of state.stats.recruited) recruits[r] = (recruits[r] ?? 0) + 1;
+  const results: MapRun[] =
+    workers > 1
+      ? await runParallel({ kind: 'map', options: mapOptions }, runs, seed0, workers, sets)
+      : Array.from({ length: runs }, (_, r) => simulateMapRun(data, mapOptions, r, seed0 + r));
+  const arrived = results.filter((r) => r.arrived);
+  const timing = { msPerRun: arrived.reduce((a, r) => a + (r.ms ?? 0), 0) / Math.max(1, arrived.length), seconds: (performance.now() - t0) / 1000, workers };
+  const summary = summarizeMap(data, { ...mapOptions, runs, seed: seed0 }, sets, results, timing);
+  printMap(summary);
+  writeJson(summary);
 }
-console.log(`${node.id} (${mapId}) – ${played}/${runs} runs ${chained ? '(chained campaign)' : '(fresh roster)'}, ${difficulty}/${deathMode}`);
-console.log(`win rate ${((wins / Math.max(1, played)) * 100).toFixed(0)} %, avg turns ${(turns / Math.max(1, wins)).toFixed(1)}, median turns ${[...winTurns].sort((a, b) => a - b)[Math.floor(winTurns.length / 2)] ?? '-'}, avg losses ${(losses / Math.max(1, played)).toFixed(2)}, avg ${(ms / Math.max(1, played)).toFixed(0)} ms/run`);
-console.log('downs/deaths:', JSON.stringify(causes));
-console.log(`villages/run ${(villages / Math.max(1, played)).toFixed(1)}, recruited: ${JSON.stringify(recruits)}`);
 
-function runCampaign(act: string) {
+async function runCampaign(act: string) {
   if (act !== `act${data.campaign.act}`) throw new Error(`content has ${`act${data.campaign.act}`}, not ${act}`);
   const runs = Number(opt('runs', '50'));
+  const seed = Number(opt('seed', '1'));
   const difficulty = opt('difficulty', 'normal') as Difficulty;
   const deathMode = opt('death', 'standard') as DeathMode;
   const haunts = args.includes('--haunts');
+  const workers = workerCount(workersArg, runs);
   const t0 = performance.now();
-  const sim = simulateCampaign(data, { runs, seed: Number(opt('seed', '1')), difficulty, deathMode, haunts });
+  const sim: CampaignSim =
+    workers > 1
+      ? mergeCampaignSims(await runParallel({ kind: 'campaign', options: { difficulty, deathMode, haunts } }, runs, seed, workers, sets))
+      : simulateCampaign(data, { runs, seed, difficulty, deathMode, haunts });
+  const seconds = (performance.now() - t0) / 1000;
   const per = (n: number, d: number) => n / Math.max(1, d);
   const mark = (f: MissionFlags, k: keyof MissionFlags) => (f[k] ? (f[k] === 'low' ? ' ↓' : ' ↑') : '');
-  console.log(`${act} chained – ${runs} runs, ${difficulty}/${deathMode}, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
+  console.log(`${act} chained – ${runs} runs, ${difficulty}/${deathMode}, ${seconds.toFixed(1)} s (${workers} worker${workers === 1 ? '' : 's'})`);
   const rows = sim.missions.map((m) => {
     const f = missionFlags(data, m, difficulty);
     return {
@@ -182,6 +152,55 @@ function runCampaign(act: string) {
     );
   }
   console.log('↓/↑ = below/above the NFR12 corridor, the GDD gold curve (gold without side objectives; side gold share of the map reward) or the expected army level');
+  // Testlabor S1: rounds of the first attempts won, side objectives of the won attempt (share of the runs that cleared the mission)
+  console.table(
+    sim.missions.map((m) => {
+      const t = turnStats(m.winTurns);
+      return {
+        mission: m.node,
+        'rounds p10/p50/p90': `${t.p10 ?? '-'}/${t.p50 ?? '-'}/${t.p90 ?? '-'}`,
+        cleared: m.cleared,
+        'side objectives': Object.entries(m.side)
+          .map(([id, n]) => `${id} ${(per(n, m.cleared) * 100).toFixed(0)} %`)
+          .join(', '),
+      };
+    }),
+  );
+  if (Object.keys(sets).length) console.log(`--set ${JSON.stringify(sets)}`);
+  writeJson({
+    kind: 'campaign',
+    act,
+    options: { runs, seed, difficulty, deathMode, haunts, actionS },
+    sets,
+    finished: sim.finished,
+    finishRate: per(sim.finished, runs),
+    endGold: per(sim.endGold, sim.finished),
+    endArmyLevel: per(sim.endArmyLevel, sim.finished),
+    spentPerRun: Object.fromEntries(Object.entries(sim.spent).map(([k, v]) => [k, per(v, runs)])),
+    ...(haunts
+      ? { haunts: { perRun: per(sim.haunts.played, runs), winRate: per(sim.haunts.won, sim.haunts.played), goldPerRun: per(sim.haunts.gold, runs), fallenPerRun: per(sim.haunts.fallen, runs) } }
+      : {}),
+    battleHours: battleMin / 60,
+    missions: sim.missions.map((m) => ({
+      node: m.node,
+      map: m.map,
+      reached: m.reached,
+      cleared: m.cleared,
+      winRate: per(m.wins, m.reached),
+      downs: per(m.downs, m.reached),
+      gold: per(m.gold, m.cleared),
+      sideGold: per(m.sideGold, m.cleared),
+      armyLevel: per(m.armyLevel, m.reached),
+      expectedLevel: m.expectedLevel,
+      deaths: per(m.deaths, m.cleared),
+      rounds: per(m.turns, m.wins),
+      turns: turnStats(m.winTurns),
+      actions: per(m.actions, m.wins),
+      side: Object.fromEntries(Object.entries(m.side).map(([id, n]) => [id, { done: n, rate: per(n, m.cleared) }])),
+      flags: missionFlags(data, m, difficulty),
+    })),
+    timing: { seconds, workers },
+  });
 }
 
 /**
@@ -209,7 +228,7 @@ function runHaunt(spec: string) {
   let armyLevel = 0;
   let expected = 0;
   for (let r = 0; r < runs; r++) {
-    const c = after ? campaignChained(data, seed0 + r, after) : campaignChained(data, seed0 + r, '');
+    const c = campaignChained(data, seed0 + r, after ?? '', difficulty, chainDifficulty, deathMode);
     if (!c) continue;
     played++;
     c.lieutenants = { ...c.lieutenants, [ltId]: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false, ...c.lieutenants?.[ltId] } };

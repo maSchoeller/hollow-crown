@@ -16,3 +16,5 @@ concept/23-art-direction/map-assets/gallery/
 concept/23-art-direction/map-assets/gallery_game/
 # Story 15.11: Kampfstaende vor der laengsten Gegnerphase (tools/phase-state.ts)
 .phase/
+# Testlabor S2: Ausgaben von pnpm sim --json
+.sim/
