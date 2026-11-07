@@ -148,6 +148,11 @@ describe('models that may fade (story 15.13)', () => {
     for (const k of ['stairs_idle', 'ramp_idle', 'ladder_idle']) expect(mayFade(k, solid)).toBe(false);
   });
 
+  it('never fades a boardwalk or footbridge, whose deck a figure crosses', () => {
+    // the key is the model name: class `boardwalk`, piece after the last underscore
+    for (const k of ['boardwalk_straight', 'boardwalk_corner', 'boardwalk_end']) expect(mayFade(k, solid)).toBe(false);
+  });
+
   it('still fades buildings, roofs, walls and trees', () => {
     for (const k of ['house_a_intact', 'lodge_b_intact', 'roof_idle', 'wallrim_idle', 'tower_idle', 'gatehouse_open', 'tree_a_idle', 'fort_idle', 'massif_a'])
       expect(mayFade(k, solid)).toBe(true);

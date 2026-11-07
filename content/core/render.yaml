@@ -114,8 +114,9 @@ board:
   # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten
   # Requisite, cover = so viele Felder der Figurenhöhe muss sie verdecken (aus Kameraneigung und Modellmaßen berechnet),
   # figureWidth = halbe Breite der Figur in Feldern für die seitliche Überdeckung.
-  # solid (Story 15.13): Modellklassen, die nie verblassen – Treppen, Rampen und Leitern tragen die Figur; Gebäude, Dächer und Mauerteile verblassen weiter
-  fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3, solid: [ramp, stairs, ladder] }
+  # solid (Story 15.13): Modellklassen, die nie verblassen – Treppen, Rampen und Leitern tragen die Figur; Gebäude, Dächer und Mauerteile verblassen weiter.
+  # boardwalk (Steg und Fußbrücke): die Figur steht auf dem Deck; sonst wurde die Brücke beim Betreten durchsichtig und flackerte (iPhone, 1-3)
+  fade: { alpha: 0.35, cover: 0.2, figureWidth: 0.3, solid: [ramp, stairs, ladder, boardwalk] }
   # Story 15.13: Form der Verbindungsmodelle (tools/art/props/interior.py) entlang ihres Anstiegs zum höheren Nachbarn.
   # from/to = Anteil der Feldtiefe, wo die Steigung beginnt und endet; steps = Stufen der Treppe (0 = glatt). Die Figur steht auf der Fläche unter ihr.
   connectors:
