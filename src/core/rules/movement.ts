@@ -70,9 +70,14 @@ export function moveCost(data: GameData, s: BattleState, unit: BattleUnit, p: Po
 
 export interface ReachNode {
   cost: number;
+  /** harmful tiles (`isHazard`) entered on the way here: among ways of the same cost the search keeps the one with the fewest */
+  hazard: number;
   prev: string | null;
   pos: Pos;
 }
+
+/** A tile that hurts a unit entering it (`burningTileHit`): the path search walks around it when a way of the same cost exists. */
+export const isHazard = (s: BattleState, p: Pos): boolean => terrainAt(s, p) === 'burning';
 
 /**
  * Halten (Vorkämpfer, story 2.4): the neighbour tiles of every active unit hostile to `team` whose class action is `hold`.
@@ -96,6 +101,8 @@ export function moveBudget(data: GameData, s: BattleState, unit: BattleUnit, fro
  * Dijkstra over the grid. Allies can be passed, hostile units (also downed ones) block. Entering a tile of a hostile
  * hold zone ends the move there: the tile is reachable (normal cost) but nothing is explored behind it, and an occupied
  * one is neither passed nor entered. A unit that starts inside a zone moves freely; only entering counts.
+ * Of two ways of the same cost it keeps the one over fewer harmful tiles (`isHazard`); what is reachable and at what cost
+ * does not depend on it, and on a map without such tiles the ways are the same as without the tie-breaker.
  */
 export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from?: Pos, mov?: number): Map<string, ReachNode> {
   const start = from ?? unit.pos;
@@ -113,9 +120,11 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
     const i = o.pos![1] * s.width + o.pos![0];
     if (!standing.has(i)) standing.set(i, o);
   }
-  out.set(posKey(start), { cost: 0, prev: null, pos: start });
-  const open: ReachNode[] = [{ cost: 0, prev: null, pos: start }];
+  out.set(posKey(start), { cost: 0, hazard: 0, prev: null, pos: start });
+  const open: ReachNode[] = [{ cost: 0, hazard: 0, prev: null, pos: start }];
   while (open.length) {
+    // the order leaves `hazard` out on purpose: tiles are found in the same order as without the tie-breaker (the AI breaks its own
+    // ties by that order, so its play stays as it was); a way over fewer harmful tiles found later is queued again and passed on
     open.sort((a, b) => a.cost - b.cost || a.pos[1] - b.pos[1] || a.pos[0] - b.pos[0]);
     const cur = open.shift()!;
     for (const n of neighbors(cur.pos)) {
@@ -128,9 +137,10 @@ export function reachable(data: GameData, s: BattleState, unit: BattleUnit, from
       const k = posKey(n);
       const held = hold.has(k);
       if (held && occ && occ.uid !== unit.uid) continue;
+      const hazard = cur.hazard + (isHazard(s, n) ? 1 : 0);
       const prev = out.get(k);
-      if (prev && prev.cost <= total) continue;
-      const node = { cost: total, prev: posKey(cur.pos), pos: n };
+      if (prev && (prev.cost < total || (prev.cost === total && prev.hazard <= hazard))) continue;
+      const node = { cost: total, hazard, prev: posKey(cur.pos), pos: n };
       out.set(k, node);
       if (!held) open.push(node);
     }
@@ -201,7 +211,7 @@ export function walkPath(data: GameData, s: BattleState, unit: BattleUnit, path:
 /** What the player may still walk this turn: the unit's own tile once it has moved (trade, convoy), otherwise its full reach. */
 export function reachNow(data: GameData, s: BattleState, unit: BattleUnit): Map<string, ReachNode> {
   if (!unit.moved || !unit.pos) return reachable(data, s, unit);
-  return new Map([[posKey(unit.pos), { cost: 0, prev: null, pos: unit.pos }]]);
+  return new Map([[posKey(unit.pos), { cost: 0, hazard: 0, prev: null, pos: unit.pos }]]);
 }
 
 /** Nachsetzen (story 2.4): what the skirmisher may still walk right after its attack; null when the possibility is not open for it. */
