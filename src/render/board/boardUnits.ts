@@ -81,52 +81,10 @@ export abstract class BoardUnits extends BoardProps {
     for (const u of state.units) {
       if (!u.pos || u.gone) continue;
       seen.add(u.uid);
-      let v = this.units.get(u.uid);
-      if (v && (v.team !== u.team || v.sprite !== this.unitSpriteId(u) || v.gear !== this.gearKey(u))) {
-        this.removeUnit(v);
-        v = undefined;
+      if (!(await this.placeFigure(u, u.pos, state, fresh.get(u.uid)))) {
+        for (const f of fresh.values()) void f.then((g) => g.dispose());
+        return;
       }
-      if (!v) {
-        const figure = await (fresh.get(u.uid) ?? this.makeFigure(u, `unit:${u.uid}:${u.team}`));
-        if (this.disposed) {
-          for (const f of fresh.values()) void f.then((g) => g.dispose());
-          return;
-        }
-        v = {
-          uid: u.uid,
-          team: u.team,
-          sprite: this.unitSpriteId(u),
-          gear: this.gearKey(u),
-          figure,
-          gold: u.lieutenant ? makeGoldRing(this.scene, u.uid) : undefined,
-          x: u.pos[0],
-          y: u.pos[1],
-          offX: 0,
-          offY: 0,
-          lift: 0,
-          facing: 's',
-          anim: 'idle',
-          desat: 0,
-          flash: 0,
-          alpha: 1,
-          visible: true,
-          downed: false,
-          fadeX: NaN,
-          fadeY: NaN,
-          fadeSeen: false,
-        };
-        this.units.set(u.uid, v);
-        this.rings.add(u.uid, u.team);
-      }
-      v.x = u.pos[0];
-      v.y = u.pos[1];
-      v.offX = v.offY = v.lift = 0;
-      v.downed = u.downed;
-      v.desat = u.downed ? 1 : u.acted && u.team === state.phase ? 0.65 : 0;
-      v.alpha = 1;
-      v.visible = true;
-      v.facing = 's';
-      this.setAnim(v, u.downed ? 'downed' : 'idle');
     }
     for (const [uid, v] of [...this.units]) if (!seen.has(uid)) this.removeUnit(v);
     for (const u of state.units) this.setBleedLabel(u.uid, u.downed && !u.gone && bleedsOut(this.data, state, u) ? u.bleed ?? 0 : null);
@@ -136,6 +94,71 @@ export abstract class BoardUnits extends BoardProps {
     this.done = new Set(state.units.filter((u) => u.acted && u.team === state.phase && !u.downed && !u.gone && this.units.has(u.uid)).map((u) => u.uid));
     this.badges.setDone(this.done);
     if (this.grudgeFor && !this.grudgeTargetView()) this.grudgeFor = null;
+  }
+
+  /**
+   * A unit that joins while events play (`spawned`): only its figure is made and set on its tile. The other figures stay where
+   * the playback has walked them so far; a full `syncUnits` from the state the playback started with would put every one of them
+   * back on its old tile, and show the fallen again, until the final sync (fix 1-3: figures jumping back in the enemy phase).
+   */
+  protected async addUnit(u: BattleUnit): Promise<void> {
+    this.state = { ...this.state, units: [...this.state.units.filter((x) => x.uid !== u.uid), u] };
+    if (!u.pos || u.gone || !(await this.placeFigure(u, u.pos, this.state))) return;
+    this.setBleedLabel(u.uid, u.downed && bleedsOut(this.data, this.state, u) ? u.bleed ?? 0 : null);
+    this.setPennant(u);
+    this.setStatuses(u);
+    this.setBadge(u);
+  }
+
+  /** Makes the figure of `u` (or rebuilds it when team, sprite or gear changed) and sets it on its tile; false when the board was disposed meanwhile. */
+  private async placeFigure(u: BattleUnit, pos: Pos, state: BattleState, loading?: Promise<Figure>): Promise<boolean> {
+    let v = this.units.get(u.uid);
+    if (v && (v.team !== u.team || v.sprite !== this.unitSpriteId(u) || v.gear !== this.gearKey(u))) {
+      this.removeUnit(v);
+      v = undefined;
+    }
+    if (!v) {
+      const figure = await (loading ?? this.makeFigure(u, `unit:${u.uid}:${u.team}`));
+      if (this.disposed) {
+        if (!loading) figure.dispose(); // a figure the caller loaded is disposed by the caller
+        return false;
+      }
+      v = {
+        uid: u.uid,
+        team: u.team,
+        sprite: this.unitSpriteId(u),
+        gear: this.gearKey(u),
+        figure,
+        gold: u.lieutenant ? makeGoldRing(this.scene, u.uid) : undefined,
+        x: pos[0],
+        y: pos[1],
+        offX: 0,
+        offY: 0,
+        lift: 0,
+        facing: 's',
+        anim: 'idle',
+        desat: 0,
+        flash: 0,
+        alpha: 1,
+        visible: true,
+        downed: false,
+        fadeX: NaN,
+        fadeY: NaN,
+        fadeSeen: false,
+      };
+      this.units.set(u.uid, v);
+      this.rings.add(u.uid, u.team);
+    }
+    v.x = pos[0];
+    v.y = pos[1];
+    v.offX = v.offY = v.lift = 0;
+    v.downed = u.downed;
+    v.desat = u.downed ? 1 : u.acted && u.team === state.phase ? 0.65 : 0;
+    v.alpha = 1;
+    v.visible = true;
+    v.facing = 's';
+    this.setAnim(v, u.downed ? 'downed' : 'idle');
+    return true;
   }
 
   /** The badge of a unit from its state: units on the board that stand (not downed, fled, gone) have one (story 13.3). */
