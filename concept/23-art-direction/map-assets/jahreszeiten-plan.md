@@ -1,6 +1,6 @@
 # Plan: Herbst- und Winterboden, Schneehauben
 
-Status: im Spiel seit Story 15.15 (2026-11-06), Abweichungen und Stand im Decision-Log (`../decision-log.md`). Weg B am 2026-11-07 abgenommen; Winter-Deko und je zwei weitere Waldvarianten seit Story 15.16 (2026-11-07). Vorher: Plan, nicht im Spiel. Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
+Status: im Spiel seit Story 15.15 (2026-11-06), Abweichungen und Stand im Decision-Log (`../decision-log.md`). Weg B am 2026-11-07 abgenommen; Winter-Deko und je zwei weitere Waldvarianten seit Story 15.16 (2026-11-07). Gehört zu Etappe 3 der Matrix (`matrix.md`). Probe: Herbstlaub im vierten Feld von `art/ground/refs/sheet6_mire_creek_peat_autumn.png`.
 
 ## Ziel
 
@@ -27,7 +27,7 @@ Akt 2 steht heute mit Herbstlaub auf Sommerwiese, Akt 3 mit Schneefichten. Boden
 | Busch (Deko) | `bush_a` bleibt | `bush_snow_a` | gebaut (Story 15.16) |
 | Felsmasse | `massif_*` bleibt | Schneehaube | offen, siehe unten |
 | Häuser | bleiben | Schneehaube auf den Dächern | offen, siehe unten |
-| Mauer, Turm | bleiben | `snowcap_wall_idle`, `snowcap_tower_idle` | gebaut, Brett wählt sie noch nicht |
+| Mauer, Turm | bleiben | `snowcap_wall_idle`, `snowcap_tower_idle` | im Spiel seit Story 15.15 (`board.seasonModels`) |
 
 ## Schneehauben: zwei Wege
 

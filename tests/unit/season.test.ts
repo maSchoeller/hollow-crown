@@ -62,10 +62,10 @@ describe('seasons of the board (story 15.15)', () => {
   });
 
   it('story 15.16: a forest tile rolls from three groves in every season, autumn and winter only from their own', () => {
-    for (const [season, prefix] of [['summer', 'grove_'], ['autumn', 'grove_autumn_'], ['winter', 'grove_snow_']] as const) {
+    for (const [season, own] of [['summer', /^grove_[a-z]$/], ['autumn', /^grove_autumn_[a-z]$/], ['winter', /^grove_snow_[a-z]$/]] as const) {
       const list = variantList(data, 'tree', season);
-      expect(list.filter((e) => e.weight > 0)).toHaveLength(3);
-      for (const e of list) expect(e.model.startsWith(prefix)).toBe(true);
+      expect(list.map((e) => e.weight)).toEqual([3, 3, 2]);
+      for (const e of list) expect(e.model).toMatch(own);
     }
   });
 

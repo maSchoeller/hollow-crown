@@ -385,8 +385,9 @@ def leaf(name, ramp, z0, z1, seed, wz=0.82, wn=0.26):
     return with_ao(paint(name, stops, z=(z0, z1), wz=wz, wn=wn, noise=0.05, nscale=7, seed=seed, bias=-0.1), 0.11, 0.42)
 
 
-def cull_inside(objs, shrink=0.8):
-    """Removes clump faces buried in a neighbouring clump or turned away from every camera (objs: [(object, centre, radius)]). Groves are authored for the fixed camera from the south."""
+def cull_inside(objs, shrink=0.8, facing=True):
+    """Removes clump faces buried in a neighbouring clump or turned away from every camera (objs: [(object, centre, radius)]). Groves are authored for the fixed camera from the south.
+    facing=False keeps the faces turned away: for models the board turns (decoration gets a random rotation)."""
     for o, _, _ in objs:
         bm = bmesh.new()
         bm.from_mesh(o.data)
@@ -394,7 +395,7 @@ def cull_inside(objs, shrink=0.8):
         for f in bm.faces:
             p = f.calc_center_median()
             nz = f.normal
-            if nz.dot(Vector((0, -0.57, 0.82))) < -0.12 and nz.dot(Vector((-0.46, -0.67, 0.58))) < -0.12:
+            if facing and nz.dot(Vector((0, -0.57, 0.82))) < -0.12 and nz.dot(Vector((-0.46, -0.67, 0.58))) < -0.12:
                 drop.append(f)
                 continue
             for other, c2, r2 in objs:
@@ -559,12 +560,13 @@ def bush_snow_a():
         o = ico(f'c{i}', c, r, rng, mat, squash=(1.0, 1.0, 0.92), jitter=0.07, subdiv=2)
         balls.append((o, c, r))
         parts.append(o)
-    cull_inside(balls)
+    # the board turns decoration at random: keep the back of every clump (only the buried faces go)
+    cull_inside(balls, facing=False)
     caps = []
     for i, (c, r) in enumerate(blobs):
         q = (c[0], c[1], c[2] + r * 0.42)
         caps.append((ico(f's{i}', q, r * 0.8, rng, snow, squash=(1.12, 1.12, 0.6), jitter=0.04, subdiv=2), q, r * 0.55))
-    cull_inside(caps, 0.72)
+    cull_inside(caps, 0.72, facing=False)
     parts.extend(b[0] for b in caps)
     parts.append(plate('sf', blob((0.0, -0.06), 0.3, rng, 10, z=0.01), snow))
     finish(join(parts, 'bush_snow_a'), 'bush_snow_a', size=256)
