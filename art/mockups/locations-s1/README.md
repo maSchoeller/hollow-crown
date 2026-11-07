@@ -91,3 +91,17 @@ Vier Dialoghintergründe für Akt 1 (ein fünftes Bild für `silberbach` wurde v
 | `pachthof.png` | Tobins Pachthof an der Erle unter der Burg | neu |
 | `hungerlager.png` | Hungerlager auf Stegen im Erlenmoor an der Bucht | ersetzt die Waldfassung |
 | `wachturm.png` | Letzter Wachturm auf dem verfallenen Grenzwall | ersetzt die Moorfassung |
+
+## Nachtrag 2026-11-07: sieben Orte von Akt 2 (vorgezogen)
+
+Ortsbilder für die Missionen von Akt 2, die noch keins hatten (Frage 8 an den Produktinhaber, Antwort A), in einem Chat (https://chatgpt.com/c/6aeef3ce-f978-83eb-a104-7f42c320ecb8), ChatGPT-Bildgenerierung über Claude in Chrome, **Tarif Plus**, Konto `maschoeller`. Stilreferenzen: `erlbach.png`, `wachturm.png`, `brandhang.png`. Je 1 Versuch; alle 1672 × 941, RGB, unveränderte Downloads mit C2PA-Metadaten. Prompt, Prüfung und menschlicher Anteil je Datei in `art/prompts/loc_<id>.md`; Abnahme-Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md` (offen). Noch nicht im Build (nicht in `ACT1_LOCATIONS`); Einbindung über Paket act2, siehe Epic 11 „Ortsbilder“.
+
+| Datei | Mission | Ort |
+|---|---|---|
+| `windscharte.png` | 2-1 | Windscharte, Passscheitel mit zwei Ballisten, Herbstmorgen |
+| `brandschneise.png` | 2-4 | Dorf am Brandhang beim Waldbrand mit Schneise, Abend |
+| `kraehenholm.png` | 2-6 | Schmugglerinsel Krähenholm, Abend |
+| `kontor.png` | 2-7 | Kontor am Silbermeer, Regenmorgen |
+| `clanlager.png` | N4 | Clanlager im ersten Schnee, Morgen |
+| `kupfermine.png` | N5 | Bergwerk bei Kupferhall mit Drachenknochen, innen |
+| `auemarkt.png` | N6 | Herbstmarkt auf der Aue-Insel mit Gauklerbühne, Mittag |
