@@ -1,6 +1,6 @@
 # Story 15.15: Jahreszeiten-Boden (Vorbereitung für Akt 2 und 3)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -63,6 +63,8 @@ Pakete (`pnpm build`): erster Download 13,25 MB wie vor der Story (Budget 30 MB;
 
 ### Offene Punkte für den Produktinhaber
 
+Entschieden am 2026-11-07: (1) Weg B abgenommen nach `jahreszeiten_vergleich.jpg`; (2) Prüfpunkt im Handy-Test von Akt 2, eingetragen in Story 11.7; (3) und (4) Folge-Story 15.16 „Winter-Deko und Waldvarianten“.
+
 1. **Probe Weg B (Plan, Schritt 3):** Schnee per Material auf Fels, Dächern, Kleinkram. Probe auf `asset_catalog` und N4 (`15-15-belege/asset_catalog_winter.jpg`). Empfehlung: annehmen; Stärke über `render.yaml board.snow.winter` (`cover`, `from`, `to`) nachstellbar ohne Code.
 2. **Herbst-Lesbarkeit:** Rote Gegnerringe stehen auf Laub schwächer als auf Gras oder Schnee. Das Laub ist schon gedämpft (Sättigung 0,62). Empfehlung: so lassen und im Handy-Test von Akt 2 prüfen; sonst Sättigung weiter senken (`GRADE` in `tools/art/ground.py`).
 3. **Büsche im Winter:** Die niedrige Deko (`decor.bushes`) bleibt grün auf Schnee. Empfehlung: Folge-Story mit einer Winter-Deko (verschneite Büsche oder nur Steine), Schlüssel wie `seasonModels`.
@@ -91,3 +93,4 @@ Behoben: Innenräume bekommen auch auf Requisiten, Raster und Mauerteilen keine 
 ### Change Log
 
 - 2026-11-06: Story angelegt und umgesetzt (Status review: Probe Weg B wartet auf den Produktinhaber).
+- 2026-11-07: Antworten des Produktinhabers eingetragen, Status done.
