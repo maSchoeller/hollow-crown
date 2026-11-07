@@ -5,6 +5,7 @@ import { applyRenames, checkLockedIds, collectIds, mergeLock, renamedId, renames
 import { loadContentFromDisk } from '../../src/content/node';
 import { migrate, migrationFormats, SAVE_FORMAT, type SaveRecord } from '../../src/persistence/save';
 import { saveRecordSchema } from '../../src/persistence/schema';
+import { readRenames } from '../../tools/build/packs-plugin';
 
 const dir = join(process.cwd(), 'tests/fixtures/saves');
 const fixtures = readdirSync(dir).filter((f) => /^format\d+-.+\.json$/.test(f));
@@ -59,8 +60,19 @@ describe('rename migration 2 → 3 (story 15.6: Kael is Lucan)', () => {
     expect(c.avatar.name).toBe(old.payload.campaign.avatar.name);
     const b = out.payload.battle!;
     expect(b.start.units.some((u) => u.id === 'lucan')).toBe(true);
-    expect(JSON.stringify(b.commands)).toBe(JSON.stringify(old.payload.battle!.commands).replace(/\bkael\b/g, 'lucan'));
+    expect(JSON.stringify(b.commands)).toBe(JSON.stringify(old.payload.battle!.commands).replace(/(?<![A-Za-z0-9])kael(?![A-Za-z0-9])/g, 'lucan'));
     expect(migrate(out)).toEqual(out);
+  });
+
+  it('refuses a save of a newer format', () => {
+    expect(() => migrate({ ...old, format: SAVE_FORMAT + 1 })).toThrow('format');
+  });
+
+  it('renames only to IDs that exist (the check content:check runs before the first lock)', () => {
+    const none = ids();
+    const renames = readRenames(process.cwd());
+    expect(Object.keys(renames.chars ?? {})).toContain('kael');
+    expect(checkLockedIds({ lockedAt: '', packs: [], ids: none }, collectIds(data), renames)).toEqual([]);
   });
 
   it('leaves every migrated fixture without unknown characters, texts or support pairs', () => {

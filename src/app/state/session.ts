@@ -29,6 +29,7 @@ import { loadContent } from '../../content/browser';
 import { setAvatar, setLocales, setMissingHandler } from '../../i18n';
 import { createAutoSaver, createPlayClock } from '../../persistence/autosave';
 import { createJournalWriter, needsUpdateCheckpoint, type CheckpointReason } from '../../persistence/journal';
+import { renames } from 'virtual:hc-packs';
 import { log } from '../log';
 import { compactCommand, trail, trailEvents } from '../trail';
 import {
@@ -36,6 +37,7 @@ import {
   contentVersionOf,
   APP_VERSION,
   SAVE_FORMAT,
+  setMigrationRenames,
   createCampaign,
   deleteCampaign,
   listCampaigns,
@@ -54,6 +56,7 @@ const loaded = loadContent();
 export const data: GameData = loaded.data;
 setLocales(loaded.locales);
 setMissingHandler((key) => log.warn('content', 'missing text', key));
+setMigrationRenames(renames);
 export const contentVersion = contentVersionOf(data);
 
 export const campaign = signal<CampaignState | null>(null);

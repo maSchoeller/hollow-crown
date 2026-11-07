@@ -48,6 +48,8 @@ export function t(key: string, params: Record<string, string | number> = {}): st
     s = dicts.en?.[key];
     if (s === undefined) {
       reportMissing(key);
+      // a unit name (an ID renamed without migration) never shows its raw key
+      if (/^unit\.[^.]+\.name$/.test(key)) return dicts[l]?.['ui.unit.unknown'] ?? dicts.en?.['ui.unit.unknown'] ?? '?';
       return key;
     }
   }

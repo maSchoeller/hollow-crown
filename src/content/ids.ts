@@ -96,7 +96,7 @@ export function renamedId(renames: Renames, kind: IdKind, id: string): string {
   return cur;
 }
 
-const escape = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRe = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /**
  * A save value with every renamed ID replaced (story 7.4, for the save migrations): an ID of any kind is replaced where
@@ -109,7 +109,7 @@ export function applyRenames<T>(value: T, renames: Renames): T {
   for (const kind of ID_KINDS) for (const from of Object.keys(renames[kind] ?? {})) exact.set(from, renamedId(renames, kind, from));
   const chars = Object.keys(renames.chars ?? {});
   if (exact.size === 0) return value;
-  const word = chars.length ? new RegExp(`(?<![A-Za-z0-9])(${chars.map(escape).join('|')})(?![A-Za-z0-9])`, 'g') : null;
+  const word = chars.length ? new RegExp(`(?<![A-Za-z0-9])(${chars.map(escapeRe).join('|')})(?![A-Za-z0-9])`, 'g') : null;
   const str = (s: string): string => {
     const hash = s.indexOf('#');
     const head = hash < 0 ? s : s.slice(0, hash);

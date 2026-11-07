@@ -9,7 +9,7 @@ import {
   type GameData,
   type ItemInstance,
 } from '../core';
-import { has, reportMissing, t } from '../i18n';
+import { t } from '../i18n';
 import { itemName, rarityOf } from './itemInfo';
 import { Icon } from './icons';
 import { ItemImage } from './pieces';
@@ -19,12 +19,9 @@ import { asset } from './asset';
 export { asset };
 export { itemName, rarityOf };
 
-/** A unit's name; a name key without a text (an ID renamed without migration) never shows the raw key. */
+/** A unit's name; a name key without a text shows the fallback of `t` (never the raw key). */
 export function unitName(u: { name?: string; nameKey: string }): string {
-  if (u.name !== undefined) return u.name;
-  if (has(u.nameKey)) return t(u.nameKey);
-  reportMissing(u.nameKey);
-  return t('ui.unit.unknown');
+  return u.name ?? t(u.nameKey);
 }
 
 export function Modal({ title, onClose, children, wide }: { title?: ComponentChildren; onClose?: () => void; children: ComponentChildren; wide?: boolean }) {
