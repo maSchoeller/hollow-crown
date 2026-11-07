@@ -79,6 +79,8 @@ export interface AiDef {
   wakeTurn?: number;
   target?: string;
   area?: Area;
+  /** target preference: the unit attacks and approaches only units of this team while any of them is active on the map (fix 1-3: Morra spares the guest Liora) */
+  prefer?: Team;
 }
 
 export interface MapObjectDef {
