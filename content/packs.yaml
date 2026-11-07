@@ -82,6 +82,12 @@ packs:
       # Story 15.15: Jahreszeit-Modelle (Waldfeld Herbst und Winter, Schneehauben von Mauer und Turm), erst ab Akt 2 gebraucht
       - grove_autumn_a
       - grove_snow_a
+      # Story 15.16: je zwei weitere Waldfelder für Herbst und Winter, der verschneite Busch (Deko im Winter)
+      - grove_autumn_b
+      - grove_autumn_c
+      - grove_snow_b
+      - grove_snow_c
+      - bush_snow_a
       - snowcap_wall_idle
       - snowcap_tower_idle
       - rock_b

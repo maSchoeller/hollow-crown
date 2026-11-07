@@ -156,7 +156,7 @@ Der Look wird auf dieser Basis an das Stil-Mockup angeglichen:
 
 Vier Regeln für jedes Asset: Was sperrt, füllt das Feld und ist höher als eine Figur. Ist etwas begehbar, bleibt die Feldmitte frei und der Boden sichtbar. Deko bleibt flach. Gleiche Wirkung hat in jeder Region die gleiche Form, nur Material und Farbe wechseln. Mauer, Tor und Tür wählen ihre Bauteile aus den Nachbarfeldern (`src/render/board/wallKit.ts`, Modelle `tools/art/props/fortify.py`). Bericht, Matrix Mission × Asset und Galerie: `concept/23-art-direction/map-assets/`.
 
-Hebel (`lever_up`, `lever_down`) und Balliste (`ballista_idle`) zeichnet das Brett seit 2026-11-05. Herbst, Winter und Schneehauben nach `map-assets/jahreszeiten-plan.md` seit Story 15.15 (`render.yaml board.actSeason`, `seasonGround`, `seasonModels`, `snow`; Karte: `season`).
+Hebel (`lever_up`, `lever_down`) und Balliste (`ballista_idle`) zeichnet das Brett seit 2026-11-05. Herbst, Winter und Schneehauben nach `map-assets/jahreszeiten-plan.md` seit Story 15.15 (`render.yaml board.actSeason`, `seasonGround`, `seasonModels`, `snow`; Karte: `season`); je drei Waldfelder in Herbst und Winter und der verschneite Busch als Winter-Deko seit Story 15.16.
 
 Interaktive Objekte (Türen, Truhen, Hebel, Ballisten, Dörfer) haben zwei Zustände mit kurzem Übergang und im Zielmodus ein pulsierendes Glanzlicht.
 

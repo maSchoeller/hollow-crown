@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { variantList } from '../../src/content/propVariants';
 import { seasonGround, seasonModel, seasonOf, seasonTextures, takesSnow } from '../../src/content/season';
 import { validateBoardModels, validateSeasons } from '../../src/content/validateLook';
 import { mapSchema } from '../../src/content/schemas';
@@ -50,7 +51,22 @@ describe('seasons of the board (story 15.15)', () => {
     expect(takesSnow(render, 'winter', 'massif_a')).toBe(true);
     expect(takesSnow(render, 'winter', 'house_intact')).toBe(true);
     expect(takesSnow(render, 'autumn', 'massif_a')).toBe(false);
-    for (const own of ['snowfir_a', 'grove_snow_a', 'snowcap_wall_idle']) expect(takesSnow(render, 'winter', own)).toBe(false);
+    for (const own of ['snowfir_a', 'grove_snow_a', 'snowcap_wall_idle', 'bush_snow_a']) expect(takesSnow(render, 'winter', own)).toBe(false);
+  });
+
+  it('story 15.16: in winter the low decoration is the snowy bush, the stones stay', () => {
+    const bushes = render.board.decor.bushes.model;
+    expect(seasonModel(render, 'winter', bushes)).toBe('bush_snow_a');
+    expect(seasonModel(render, 'autumn', bushes)).toBe(bushes);
+    expect(seasonModel(render, 'winter', render.board.decor.stones.model)).toBe(render.board.decor.stones.model);
+  });
+
+  it('story 15.16: a forest tile rolls from three groves in every season, autumn and winter only from their own', () => {
+    for (const [season, own] of [['summer', /^grove_[a-z]$/], ['autumn', /^grove_autumn_[a-z]$/], ['winter', /^grove_snow_[a-z]$/]] as const) {
+      const list = variantList(data, 'tree', season);
+      expect(list.map((e) => e.weight)).toEqual([3, 3, 2]);
+      for (const e of list) expect(e.model).toMatch(own);
+    }
   });
 
   it('the map schema knows the season', () => {

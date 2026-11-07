@@ -30,6 +30,30 @@ items:
     ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
     missions: [N4, 3-3, 3-4]
     use: Dunkle Bäume unter dicken Schneehauben am Feldrand; Mitte frei, für den Winter.
+  - id: grove_autumn_b
+    ships: true
+    name: Waldfeld Herbst B
+    ref: { sheet: nature_1.png, box: [1160, 85, 1510, 415] }
+    missions: [2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6]
+    use: Aufbau von Waldfeld B (ein großer, ein kleiner Baum am Feldrand) in Orange und Rost mit Fallaub; Mitte frei (Story 15.16).
+  - id: grove_autumn_c
+    ships: true
+    name: Waldfeld Herbst C, Bogen
+    ref: { sheet: nature_1.png, box: [1160, 85, 1510, 415] }
+    missions: [2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6]
+    use: Aufbau von Waldfeld C (drei kleinere Bäume im Bogen am Nordrand) in Rost, Bernstein und Orange; Mitte frei (Story 15.16).
+  - id: grove_snow_b
+    ships: true
+    name: Waldfeld Schnee B
+    ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
+    missions: [N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9]
+    use: Aufbau von Waldfeld B unter Schneehauben; Mitte frei, für den Winter (Story 15.16).
+  - id: grove_snow_c
+    ships: true
+    name: Waldfeld Schnee C, Bogen
+    ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
+    missions: [N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9]
+    use: Aufbau von Waldfeld C unter Schneehauben; Mitte frei, für den Winter (Story 15.16).
   - id: fir_a
     name: Fichte, hell
     ref: { sheet: nature_1.png, box: [460, 530, 730, 875] }
@@ -45,6 +69,12 @@ items:
     ref: { sheet: nature_1.png, box: [1200, 670, 1495, 860] }
     missions: [1-2, 1-3, 1-5]
     use: Niedriger bemooster Stumpf mit Jahresringen als Deko am Waldrand.
+  - id: bush_snow_a
+    ships: true
+    name: Busch im Schnee
+    ref: { sheet: nature_1.png, box: [25, 530, 370, 875] }
+    missions: [N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9]
+    use: Niedrige Winter-Deko statt des grünen Buschs bush_a (render.yaml board.seasonModels); drei dunkle Ballen unter Schneehauben (Story 15.16).
   - id: bush_low_a
     name: Flacher Busch
     ref: { sheet: nature_2.png, box: [75, 245, 345, 415] }

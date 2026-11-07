@@ -75,6 +75,18 @@ describe('prop lists of packs', () => {
     const files = new Set(readdirSync(join(process.cwd(), 'art', 'models', 'props')).filter((f) => f.endsWith('.glb')).map((f) => f.slice(0, -4)));
     expect(checkPackProps(realPacks, files)).toEqual([]);
   });
+  it('autumn and winter models ship with a later pack, never in the first download (stories 15.15, 15.16)', () => {
+    const { data } = loadContentFromDisk();
+    const b = data.render.board;
+    const seasonal = new Set<string>();
+    for (const season of ['autumn', 'winter'] as const) {
+      for (const e of [...(b.variants.tree[season] ?? []), ...(b.variants.sceneryTree[season] ?? [])]) seasonal.add(e.model);
+      for (const m of Object.values(b.seasonModels[season] ?? {})) seasonal.add(m);
+    }
+    expect(seasonal.size).toBeGreaterThan(0);
+    const later = new Set(realPacks.filter((p) => p.id !== 'core').flatMap((p) => p.props));
+    expect([...seasonal].filter((m) => !later.has(m))).toEqual([]);
+  });
   it('reports a missing file and a prop in two packs', () => {
     const packs = [pack('core'), pack('a', { props: ['x_idle', 'gone_idle'] }), pack('b', { props: ['x_idle'] })];
     const msgs = checkPackProps(packs, new Set(['x_idle'])).map((i) => i.message);
