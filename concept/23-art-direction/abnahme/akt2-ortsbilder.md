@@ -1,6 +1,6 @@
 # Abnahme: Ortsbilder Akt 2 (2026-11-07)
 
-**Kurzfassung:** Die 7 fehlenden Ortsbilder von Akt 2 sind da (2-1, 2-4, 2-6, 2-7, N4, N5, N6), jedes im ersten Versuch und im Stil der vorhandenen Orte. Akt 2 spielt im Herbst, nur N4 hat frühen Schnee wie seine Karte. Im Spiel sind sie noch nicht, weil es Akt 2 im Content noch nicht gibt. Die Missions-Stories binden sie ein, den Weg beschreibt Epic 11 unter „Ortsbilder“. **Status: wartet auf deine Abnahme.**
+**Kurzfassung:** Die 7 fehlenden Ortsbilder von Akt 2 sind da (2-1, 2-4, 2-6, 2-7, N4, N5, N6), jedes im ersten Versuch und im Stil der vorhandenen Orte. Akt 2 spielt im Herbst, nur N4 hat frühen Schnee wie seine Karte. Im Spiel sind sie noch nicht, weil es Akt 2 im Content noch nicht gibt. Die Missions-Stories binden sie ein, den Weg beschreibt Epic 11 unter „Ortsbilder“. **Status: abgenommen vom Produktinhaber am 2026-11-07, alle sieben ohne Änderung.**
 
 Gesamtansicht: [akt2-ortsbilder-kontaktbogen.jpg](akt2-ortsbilder-kontaktbogen.jpg)
 

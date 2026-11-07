@@ -18,4 +18,4 @@
 ## Abnahme
 
 - Dorf in drei Stufen mit Rampen und Treppen ✓, Feuer aus dem Wald oben ✓, Schneise aus aufgerissener Erde vor der Dorfterrasse ✓, kleiner Rundschrein in der Mitte ✓; Abendlicht, nicht düster ✓. Dasselbe Dorf wie `brandhang.png` nur sinngemäß (gleiche Bauweise, andere Ansicht). Keine Menschen oder Tiere, kein Text ✓.
-- Abnahme durch den Produktinhaber: offen (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-07 (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).

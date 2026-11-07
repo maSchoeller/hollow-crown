@@ -18,4 +18,4 @@
 ## Abnahme
 
 - Flache Insel in der Mündung ✓, Marktstände und Gauklerbühne mit Wagen im Norden ✓, Steinbrücke in der Mitte und Holzsteg im Westen ✓, Boot unten links ✓; Mittag, fröhlich ✓; keine Schrift ✓. Keine Menschen oder Tiere, kein Text ✓.
-- Abnahme durch den Produktinhaber: offen (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-07 (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).

@@ -18,4 +18,4 @@
 ## Abnahme
 
 - Lichtung im Bergwald, früher Schnee mit letztem Herbstlaub ✓ (passt zu `season: winter` der Karte und zum Herbst von Akt 2), Zeltring und Langhaus ✓, Feuerstelle ✓, Hochsitz auf der Felsnase rechts ✓, Nebel am Waldrand ✓. Keine Menschen oder Tiere, kein Text ✓.
-- Abnahme durch den Produktinhaber: offen (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-07 (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
