@@ -2,6 +2,7 @@
 import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, visibleTiles } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
+import { activeVictory } from '../../core/battle/activeVictory';
 import { mapOf } from '../../core/battle/objectives';
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { BattleScreen } from './useBattleScreen';
@@ -66,7 +67,7 @@ export function useBoardOverlays(b: BattleScreen) {
     const board = boardRef.current;
     if (!board) return;
     const goal = (() => {
-      const v = mapOf(data, s).objectives.victory;
+      const v = activeVictory(mapOf(data, s), s); // story 11.8: the escape zone appears with the change of phase
       if (v.type === 'reach' || v.type === 'seize' || v.type === 'escape' || v.type === 'escort') {
         return 'rect' in v.area ? tilesInRect(v.area.rect) : v.area.tiles;
       }

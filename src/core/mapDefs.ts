@@ -106,12 +106,21 @@ export type ObjectiveDef =
   | { type: 'reach'; unit?: string; area: Area }
   | { type: 'seize'; area: Area }
   | { type: 'defend'; unit: string; turns: number }
-  | { type: 'survive'; turns: number }
-  | { type: 'escape'; area: Area; min?: number }
+  /** story 11.8: with `then` the goal changes to that escape after round `turns` (or a trigger `advance_objective`) instead of being won */
+  | { type: 'survive'; turns: number; then?: EscapeObjectiveDef }
+  | EscapeObjectiveDef
   /** story 4.8: the third-party NPC `unit` (AI profile `follow`) walks into `area` and leaves the map there; it joins the company after the mission unless `join` is false. Its fall loses the mission. */
   | { type: 'escort'; unit: string; area: Area; join?: boolean }
   /** story 4.8: every chest of `chests` (object ids) is open within `turns` rounds (won up to the last player phase of round `turns`, lost at the start of the next) */
   | { type: 'treasure'; chests: string[]; turns: number };
+
+/** `min`: how many units must escape (default 1); `must` (story 11.8): these units must have left the map (escaped or carried off) too */
+export interface EscapeObjectiveDef {
+  type: 'escape';
+  area: Area;
+  min?: number;
+  must?: string[];
+}
 
 export type DefeatDef = { type: 'unit_dies'; unit: string } | { type: 'turn_limit'; turns: number };
 
@@ -131,7 +140,9 @@ export type TriggerWhen =
   | { type: 'object_destroyed'; object: string }
   | { type: 'object_activated'; object: string }
   | { type: 'talked'; unit: string }
-  | { type: 'hp_below'; unit: string; percent: number };
+  | { type: 'hp_below'; unit: string; percent: number }
+  /** story 11.8: the goal has just changed to its second phase (`then` of the victory goal) */
+  | { type: 'objective_changed' };
 
 export type TriggerAction =
   /** `onBoard`: plays only while this unit still stands on the map (a lieutenant's call must not come from one who has left) */
@@ -141,7 +152,9 @@ export type TriggerAction =
   | { action: 'spawn'; units: MapUnitDef[] }
   | { action: 'set_flag'; flag: string }
   /** the map changes by an event (a wall falls, a gate shuts): `level` sets the height level of the tiles, without it they take their terrain's */
-  | { action: 'set_terrain'; area: Area; terrain: string; level?: number };
+  | { action: 'set_terrain'; area: Area; terrain: string; level?: number }
+  /** story 11.8: the victory goal changes to its second phase now (nothing on a map without `then` or once changed) */
+  | { action: 'advance_objective' };
 
 export interface TriggerDef {
   id: string;

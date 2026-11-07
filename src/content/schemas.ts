@@ -309,14 +309,18 @@ const reward = z
   })
   .partial();
 
+// story 11.8: `must` names units that have to leave the map too (Kronfeld: avatar and Lucan)
+const escapeObjective = z.object({ type: z.literal('escape'), area, min: z.number().int().optional(), must: z.array(z.string()).min(1).optional() });
+
 const objective = z.discriminatedUnion('type', [
   z.object({ type: z.literal('rout') }),
   z.object({ type: z.literal('boss'), unit: z.string() }),
   z.object({ type: z.literal('reach'), unit: z.string().optional(), area }),
   z.object({ type: z.literal('seize'), area }),
   z.object({ type: z.literal('defend'), unit: z.string(), turns: z.number().int() }),
-  z.object({ type: z.literal('survive'), turns: z.number().int() }),
-  z.object({ type: z.literal('escape'), area, min: z.number().int().optional() }),
+  // story 11.8: `then` is the second phase of the goal, it applies after round `turns` (or a trigger `advance_objective`)
+  z.object({ type: z.literal('survive'), turns: z.number().int(), then: escapeObjective.optional() }),
+  escapeObjective,
   z.object({ type: z.literal('escort'), unit: z.string(), area, join: z.boolean().optional() }),
   z.object({ type: z.literal('treasure'), chests: z.array(z.string()).min(1), turns: z.number().int().min(1) }),
 ]);
@@ -329,6 +333,7 @@ const triggerWhen = z.discriminatedUnion('type', [
   z.object({ type: z.literal('object_activated'), object: z.string() }),
   z.object({ type: z.literal('talked'), unit: z.string() }),
   z.object({ type: z.literal('hp_below'), unit: z.string(), percent: z.number() }),
+  z.object({ type: z.literal('objective_changed') }),
 ]);
 
 const triggerAction = z.discriminatedUnion('action', [
@@ -338,6 +343,7 @@ const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
   z.object({ action: z.literal('set_terrain'), area, terrain: z.string(), level: z.number().int().min(0).max(2).optional() }),
+  z.object({ action: z.literal('advance_objective') }),
 ]);
 
 /**

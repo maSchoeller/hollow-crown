@@ -191,6 +191,11 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
 
   const name = ctx.text(map.nameKey) ?? map.design?.title ?? map.id;
   const v = map.objectives.victory;
+  // story 11.8: minimum and the units that must get out (`must`)
+  const escapeExtra = (e: { min?: number; must?: string[] }) => {
+    const parts = [...(e.min ? [`mind. ${e.min}`] : []), ...(e.must?.length ? [`mit ${e.must.map(unitName).join(', ')}`] : [])];
+    return parts.length ? ` (${parts.join(', ')})` : '';
+  };
   const victory = (() => {
     switch (v.type) {
       case 'rout':
@@ -204,9 +209,9 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
       case 'defend':
         return `${unitName(v.unit)} ${v.turns} Runden schützen`;
       case 'survive':
-        return `${v.turns} Runden überstehen`;
+        return `${v.turns} Runden überstehen${v.then ? `, dann über das Zielgebiet fliehen${escapeExtra(v.then)}` : ''}`;
       case 'escape':
-        return `Über das Zielgebiet fliehen${v.min ? ` (mind. ${v.min})` : ''}`;
+        return `Über das Zielgebiet fliehen${escapeExtra(v)}`;
       case 'escort':
         return `${unitName(v.unit)} ins Zielgebiet geleiten`;
       case 'treasure':
@@ -505,7 +510,7 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
     spawnLines.push(`R${r.turn} (${TEAM_NAME[r.phase]}phase${r.announce ? ', angekündigt' : ''}): ${r.units.map((u) => `${unitLine(u)} ${fmt(u.at)}${u.difficulty ? ` [${u.difficulty.map((d) => DIFF_SHORT[d]).join('')}]` : ''}`).join(', ')}`);
   map.triggers.forEach((t, i) => {
     const spawns = t.then.flatMap((a) => (a.action === 'spawn' ? a.units : []));
-    const what = t.then.map((a) => (a.action === 'spawn' ? `${a.units.length} Figuren` : a.action === 'dialogue' ? 'Dialog' : a.action === 'set_ai' ? `KI ${a.units.join(', ')} → ${AI_NAME[a.profile] ?? a.profile}` : a.action === 'set_terrain' ? `Gelände ${a.terrain}` : `Flag ${a.flag}`));
+    const what = t.then.map((a) => (a.action === 'spawn' ? `${a.units.length} Figuren` : a.action === 'dialogue' ? 'Dialog' : a.action === 'set_ai' ? `KI ${a.units.join(', ')} → ${AI_NAME[a.profile] ?? a.profile}` : a.action === 'set_terrain' ? `Gelände ${a.terrain}` : a.action === 'advance_objective' ? 'Ziel wechselt' : `Flag ${a.flag}`));
     spawnLines.push(`${spawns.length ? `A${i + 1} ` : ''}${t.id}: wenn ${whenText(t.when, unitName)} → ${what.join(', ')}${spawns.length ? ` (${spawns.map((u) => `${unitLine(u)} ${fmt(u.at)}`).join(', ')})` : ''}`);
   });
   section('Verstärkungen und Auslöser', spawnLines);
@@ -566,6 +571,8 @@ function whenText(w: LevelMap['triggers'][number]['when'], unitName: (id: string
       return `Gespräch mit ${unitName(w.unit)}`;
     case 'hp_below':
       return `${unitName(w.unit)} unter ${w.percent} % TP`;
+    case 'objective_changed':
+      return 'das Ziel wechselt';
   }
 }
 

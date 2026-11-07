@@ -12,7 +12,8 @@ import { Toast } from '../../ui/components';
 import { WantedDock } from './Wanted';
 import { abandonBattle, canAbandon, canRestart, pendingEvents, restartBattle } from '../state/battle';
 import { campaign, data } from '../state/session';
-import { goalLine, goalStand } from '../../ui/goalText';
+import { escapeCounts, goalLine, goalStand } from '../../ui/goalText';
+import { activeVictory } from '../../core/battle/activeVictory';
 import { mapOf } from '../../core/battle/objectives';
 import { markedGoal, toggleGoalMark } from '../state/goalMarks';
 import { openHandbook } from '../state/handbook';
@@ -79,7 +80,8 @@ export function Battle() {
   const passivePre = mode.k === 'passive' ? passivePreview(data, s, unit(mode.uid), mode.to) : null;
 
   const map = mapOf(data, s);
-  const victory = map.objectives.victory;
+  // story 11.8: after the change of phase the pill and the goal line show the escape
+  const victory = activeVictory(map, s);
   // how many foes are left is not known under fog
   const enemiesLeft = full.units.filter((u) => u.team === 'enemy' && active(u) && !u.ignoreForRout).length;
   // defend: the goal line already names the rounds ("Verwalter schützen · 10 Runden"), the round pill above counts them; a second count would not fit at 375 px
@@ -91,8 +93,12 @@ export function Battle() {
       : victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
         : '';
-  // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)
-  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory, map).replace(/\.$/, '');
+  // a treasure hunt and a counting escape (story 11.8) show their stand instead of the long sentence: "2/5 chests · turn 3 of 8",
+  // "0/6 out" (the sentence is on the goals sheet); the survive part of a two-phase goal says only "Survive 3 turns" (the sheet says "then escape")
+  const goalText =
+    victory.type === 'treasure' || escapeCounts(victory)
+      ? goalStand(victory, s)
+      : goalLine(victory.type === 'survive' ? { type: 'survive', turns: victory.turns } : victory, map).replace(/\.$/, '');
 
   const shownPhase = phaseView?.phase ?? s.phase;
   const shownTurn = phaseView?.turn ?? s.turn;

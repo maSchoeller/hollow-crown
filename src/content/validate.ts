@@ -18,6 +18,7 @@ import { BARK_LINES } from './barkLines';
 import { validateHandbook } from './validateHandbook';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import { validatePropVariants, validateSeasons, validateStatusIcons, validateWeather } from './validateLook';
+import { validatePhases } from './validatePhases';
 import type { ContentIssue, Locales } from './load';
 
 /** Least distance of two stones on the world map in percent of its width (story 15.7: 55 px of the 1254 px plan, about 36 px at the overview of a 375 × 812 phone). */
@@ -670,7 +671,8 @@ function validateMap(
   const v = map.objectives.victory;
   const start = map.deploy.slots[0];
   const fromDeploy = start ? walkable(start, 'foot', g) : undefined;
-  const goalArea: Area | undefined = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? v.area : undefined;
+  // story 11.8: the escape of a second phase counts like any escape goal
+  const goalArea: Area | undefined = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? v.area : v.type === 'survive' ? v.then?.area : undefined;
   if (goalArea && fromDeploy && !areaTiles(goalArea).some((p) => fromDeploy.has(posKey(p)))) err(f, 'victory area not reachable on foot from the deploy area');
   if (v.type === 'boss' && fromDeploy) {
     const boss = map.units.find((u) => u.id === v.unit || u.char === v.unit);
@@ -690,6 +692,7 @@ function validateMap(
   }
   if (v.type === 'escort') validateEscort(data, map, v, err, g, locales);
   if (v.type === 'treasure') validateTreasure(data, map, v, err, g);
+  validatePhases(map, err);
   validateHaunts(data, map, err, g);
 }
 

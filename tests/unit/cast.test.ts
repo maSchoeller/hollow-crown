@@ -388,6 +388,15 @@ describe('Wirken: Felswall, Ziele und Reichweite', () => {
     expect(tiles).toContain('6,4');
   });
 
+  it('keeps the exit of a later escape phase free while the survive part runs (story 11.8)', () => {
+    const s = arena();
+    withObjective(s, { type: 'survive', turns: 3, then: { type: 'escape', area: { tiles: [[5, 4]] } } });
+    const mage = place(s, 'player', 'elementalist', [4, 4], 'rockfall');
+    const tiles = castTargets(data, s, mage, [4, 4]).map(posKey);
+    expect(tiles).not.toContain('5,4');
+    expect(tiles).toContain('6,4');
+  });
+
   it('uses utility.rng of the tome as the range (stone_wall: 1 to 3), else the weapon range', () => {
     const s = arena();
     const mage = place(s, 'player', 'elementalist', [4, 4], 'stone_wall');
