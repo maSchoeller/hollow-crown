@@ -111,14 +111,14 @@ Jeder Akt ist ein eigenständig spielbares Release. Die Akte sind als Rahmen bes
 
 ## Offene Fragen
 
-> Die Fragen für das GDD sind in `concept/21-gdd/gdd.md` beantwortet. Die Fragen für die Narrative bleiben offen.
+> Stand 2026-11-07: Alle Fragen dieses Briefs sind beantwortet; hier steht nur noch, wo. Offen bleiben O3 (Kosmetik, bis zum Store-Release) und O4 (Name und Marke, vor der Capacitor-Arbeit, `concept/23-art-direction/licensing.md` A8).
 
-**Für das GDD**
-- Welche Funktionen braucht die Burg, und welche Wirkung hat jeder Raum?
-- Wie lauten Fluchtregel und Wiederkehr-Skalierung der Leutnants?
-- Wie funktioniert die Wirtschaft über 25 Missionen (Gold, Ausrüstungskurve, Aufträge als Ventil)?
-- Behält die 3D-Diorama-Karte ihre Richtung (D1–D16)? Wie passen sich Licht und Farbe an den neuen Stil an?
+**Für das GDD (beantwortet in `concept/21-gdd/gdd.md`)**
+- Funktionen und Wirkung der Burg-Räume: GDD „Heimat: Lager und Burg“.
+- Fluchtregel und Wiederkehr der Leutnants: GDD, Leutnants und Groll.
+- Wirtschaft über die Missionen (Gold, Ausrüstung, Heimsuchungen als Ventil): GDD „Wirtschaft und Ressourcen“.
+- 3D-Diorama-Karte und Licht im neuen Stil: Art Direction §3 und §6.
 
-**Für die Narrative**
-- Welche Entscheidungen gibt es, und wie zeigt das Epilog-Mosaik sie (Datenmodell `campaign.flags`)?
-- Was übernimmt Staffel 2 aus Staffel 1: Spielstand, Truppe, Ausrüstung?
+**Für die Narrative (beantwortet in `concept/22-narrative/narrative.md`)**
+- Entscheidungen und Epilog-Mosaik: Narrative „Die 12 Entscheidungen“ und „Ending Structure“ (Daten in `campaign.flags`).
+- Übernahme in Staffel 2: Staffel 2 übernimmt alles, Truppe, Ausrüstung, Burgstufen und Flags (Produktinhaber 2026-11-07, Narrative-Log); endgültig vor Epic 12.

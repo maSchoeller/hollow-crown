@@ -71,7 +71,7 @@ Bausteine, die schon da sind:
 |---|---|---|
 | Figurenblätter (Statur, Kopf, Gesicht, Haar, Palette, Kleidung, Waffe, Signatur) | `art/prompts/<id>.md`; bei den 17 Figuren aus den Stiltests in `art/prompts/portrait_tests_2026-11.md` | v2.5, kommt der Bibel am nächsten; Rowena und Brakka veraltet |
 | Regeln für den Kader, Fraktions-Kits | `art/prompts/portrait_master.md` §5 | aktuell; §9 verweist die Kader-Zuordnung ausdrücklich auf Etappe 3 |
-| Signaturteile | `art-direction.md` §4.3 | teils veraltet: Rowena „Pegasus“, Brakka „Wyvern“, Sable „Stoppeln“, dazu noch der Name Lucan |
+| Signaturteile | `art-direction.md` §4.3 | nachgezogen am 2026-11-07 (Rowena, Brakka, Sable) |
 | Rollen, Motive, Biografien | `22-narrative/narrative.md`, `missionsliste-s1.md`, `staffelbogen.md` | die neuen Gefährten-Motive sind laut `staffelbogen.md` noch offen |
 
 ## Bestand
