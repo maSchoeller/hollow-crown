@@ -370,7 +370,8 @@ export class BoardView extends BoardFrame implements HostedView {
           // the board is shown without but lets in for a moment (fog filter, story 2.6)
           const u = final && e.at ? { ...final, pos: e.at } : final;
           if (u) {
-            await this.syncUnits({ ...this.state, units: [...this.state.units.filter((x) => x.uid !== u.uid), u] });
+            // only the new figure: a full sync from `this.state` (the state before the playback) would put back the others (fix 1-3)
+            await this.addUnit(u);
             const v = this.units.get(u.uid);
             if (v) {
               if (u.pos && !this.isVisible(u.pos)) await this.centerOn(u.pos);
