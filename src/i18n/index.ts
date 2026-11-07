@@ -7,6 +7,20 @@ export const lang = signal<Lang>('de');
 let dicts: Record<string, Record<string, string>> = {};
 let avatar = { name: 'Rhen', pronoun: 'they' as 'she' | 'he' | 'they' };
 const missing = new Set<string>();
+let onMissing: (key: string) => void = () => undefined;
+
+/** Called once per missing key, in every build (the app writes it to the log that goes along with a bug report). */
+export function setMissingHandler(fn: (key: string) => void): void {
+  onMissing = fn;
+}
+
+/** Notes a missing key once: console in dev, the missing handler always. */
+export function reportMissing(key: string): void {
+  if (missing.has(key)) return;
+  missing.add(key);
+  if (import.meta.env.DEV) console.warn('[i18n] missing', key);
+  onMissing(key);
+}
 
 export function setLocales(l: Record<string, Record<string, string>>): void {
   dicts = l;
@@ -33,10 +47,9 @@ export function t(key: string, params: Record<string, string | number> = {}): st
   if (s === undefined) {
     s = dicts.en?.[key];
     if (s === undefined) {
-      if (import.meta.env.DEV && !missing.has(key)) {
-        missing.add(key);
-        console.warn('[i18n] missing', key);
-      }
+      reportMissing(key);
+      // a unit name (an ID renamed without migration) never shows its raw key
+      if (/^unit\.[^.]+\.name$/.test(key)) return dicts[l]?.['ui.unit.unknown'] ?? dicts.en?.['ui.unit.unknown'] ?? '?';
       return key;
     }
   }
