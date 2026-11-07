@@ -21,3 +21,5 @@
 | Datei | `levels/s2_2_2_salzpass.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Der zweite Steinschlag (Runde 5) trägt `warn: true`: Ab Runde 4 zeigt der HUD die Warnzeile und das Brett schraffiert die Felder. Das Flag `m2_2_seal` ist im Paket `act2` deklariert (Platzhalter bis 11.5).

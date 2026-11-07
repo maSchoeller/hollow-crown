@@ -199,6 +199,7 @@ export function battleUnitFromMap(
   u.recruit = def.recruit ?? (char?.recruit ? { by: char.recruit.by, dialogue: char.recruit.dialogue } : undefined);
   u.ignoreForRout = def.ignoreForRout;
   if (def.untargetable) u.untargetable = true;
+  if (def.guest) u.guest = true;
   if (def.ai) u.ai = { ...def.ai };
   u.dropUids = (def.drops ?? []).map((idx) => insts[idx]?.uid).filter((x): x is string => !!x);
   return u;

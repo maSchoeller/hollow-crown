@@ -111,7 +111,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
   ];
   if (u.team === 'player') cells.push(['exp', <Amount resource="exp" value={u.exp} />]);
   return (
-    <Sheet title={unitName(u)} aside={u.team === 'player' ? undefined : t(`ui.phaseShort.${u.team}`)} onClose={onClose}>
+    <Sheet title={unitName(u)} aside={u.team === 'player' ? undefined : u.guest && u.team === 'other' ? t('ui.hud.guest') : t(`ui.phaseShort.${u.team}`)} onClose={onClose}>
       <div class="bp-info">
         <div class="bp-info__top">
           <Medallion u={u} hp={hp} max={st.maxHp} size={92} />

@@ -21,3 +21,5 @@
 | Datei | `levels/s2_n5_mine.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Brann ist Gast: Er tritt nur bei, wenn Ilka oder Lucan ihn ansprechen.

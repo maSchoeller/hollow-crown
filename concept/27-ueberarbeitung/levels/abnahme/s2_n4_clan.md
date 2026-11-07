@@ -21,3 +21,5 @@
 | Datei | `levels/s2_n4_clan.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Ilka ist Pflicht, solange sie in der Truppe ist; gefallen oder gegangen entfällt sie (gilt ohne Formatänderung, `presentForced`).

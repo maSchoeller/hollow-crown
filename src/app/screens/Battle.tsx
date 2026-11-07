@@ -4,7 +4,7 @@ import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCar
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 import { CLASS_KINDS, type Mode } from './battleMode';
 import { CutIn } from './CutIn';
-import { EnemyStrip, RecapStone, TerrainChip, ThreatPill } from './BattleLegibility';
+import { EnemyStrip, RecapStone, TerrainChip, TerrainWarnPills, ThreatPill } from './BattleLegibility';
 import { Icon } from '../../ui/icons';
 import { ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { Scene, SceneBand } from './Scene';
@@ -368,6 +368,7 @@ export function Battle() {
                 onMark={(o) => toggleGoalMark(o.id, data.render.board.markMs)}
                 onClick={() => setObjectives(true)}
               />
+              <TerrainWarnPills data={data} s={s} onShow={(at) => void boardRef.current?.centerOn(at)} />
               {checkTile && <ThreatPill n={checkFoes.length} />}
               {opt.enemyStrip && !wide && <EnemyStrip data={data} s={s} hp={hp} onCenter={(u) => void boardRef.current?.centerOn(u.pos!)} onInfo={foeInfo} />}
             </>

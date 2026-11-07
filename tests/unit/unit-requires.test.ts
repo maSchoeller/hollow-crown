@@ -99,11 +99,12 @@ describe('content:check for requires', () => {
     expect(problems((d) => (d.maps.m1_4_wolfslager!.units.find((u) => u.id === 'wr3')!.requires = [{ flag: { e02: 'maybe' } }]))).toContainEqual(expect.stringContaining('maybe'));
   });
 
-  it('refuses requires on the boss, a lieutenant, a reinforcement and a unit of a side objective', () => {
+  it('refuses requires on the boss, a reinforcement and a unit of a side objective, allows it on a lieutenant (story 11.10)', () => {
     const req = [{ flag: { e02: 'protect' } }] as never;
     const map = (d: GameData) => d.maps.m1_4_wolfslager!;
     expect(problems((d) => (map(d).units.find((u) => u.id === 'osric')!.requires = req))).toContainEqual(expect.stringContaining('boss'));
-    expect(problems((d) => (map(d).units.find((u) => u.id === 'ulvric')!.requires = req))).toContainEqual(expect.stringContaining('lieutenant'));
+    // Sable after E7 (story 11.10): a lieutenant left out has no unit, his plan for the map has no effect
+    expect(problems((d) => (map(d).units.find((u) => u.id === 'ulvric')!.requires = req))).toEqual([]);
     expect(problems((d) => (map(d).units.find((u) => u.id === 'ysolde')!.requires = req))).toContainEqual(expect.stringContaining('side objective'));
     expect(problems((d) => (map(d).reinforcements[0]!.units[0]!.requires = req))).toContainEqual(expect.stringContaining('only for the line-up'));
   });

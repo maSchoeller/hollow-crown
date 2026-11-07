@@ -32,6 +32,7 @@ export * from './battle/actions';
 export * from './battle/contextBand';
 export * from './battle/objectives';
 export * from './battle/activeVictory';
+export * from './battle/terrainWarn';
 export * from './battle/lieutenantSight';
 export * from './battle/apply';
 export * from './battle/setup';

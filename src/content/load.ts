@@ -221,7 +221,18 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
   const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
-  const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
+  // act 1 always; the registers of later acts where their pack is loaded (story 11.10: act 2, unreleased, for the drafts)
+  const later = Object.keys(files)
+    .map(contentPath)
+    .filter((p) => /^acts\/act([2-9]|\d{2,})\/flags\.yaml$/.test(p))
+    .sort();
+  const flagList: FlagDef[] = [];
+  for (const p of ['acts/act1/flags.yaml', ...later])
+    for (const f of parseList<FlagDef>(p, get(p), flagSchema, issues)) {
+      // one flag lives in one register: an id twice across the acts is an error (the later one is dropped)
+      if (flagList.some((x) => x.id === f.id)) issues.push({ file: p, message: `flag ${f.id} is declared twice (acts/*/flags.yaml)` });
+      else flagList.push(f);
+    }
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);

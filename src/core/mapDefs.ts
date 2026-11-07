@@ -62,6 +62,8 @@ export interface MapUnitDef {
   ignoreForRout?: boolean;
   /** no foe ever targets this unit (children in the camp of mission 1-5, Story 9.6): not by the AI, not by attacks or damaging items */
   untargetable?: boolean;
+  /** a guest (story 11.10, team `other` only): led by the AI, never joins the company after the mission unless talked over */
+  guest?: boolean;
   /** unit only appears on these difficulties (default: all) */
   difficulty?: Difficulty[];
   /**
@@ -152,7 +154,8 @@ export type TriggerAction =
   | { action: 'spawn'; units: MapUnitDef[] }
   | { action: 'set_flag'; flag: string }
   /** the map changes by an event (a wall falls, a gate shuts): `level` sets the height level of the tiles, without it they take their terrain's */
-  | { action: 'set_terrain'; area: Area; terrain: string; level?: number }
+  /** `warn` (story 11.10): the tiles are marked and a line shows from the round before (`true`: the general line, else its locale key) */
+  | { action: 'set_terrain'; area: Area; terrain: string; level?: number; warn?: true | string }
   /** story 11.8: the victory goal changes to its second phase now (nothing on a map without `then` or once changed) */
   | { action: 'advance_objective' };
 

@@ -22,3 +22,5 @@
 | Datei | `levels/s2_2_7_kontor.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Die Balliste am Kai steht jetzt auf dem Gelände `ballista`.

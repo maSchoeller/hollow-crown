@@ -168,7 +168,8 @@ look:
       mist: { color: "#c9d2d8", near: -4, far: 16 }
       ground: { layers: 1, height: 0.22, alpha: 0.28, driftSpeed: 0.05, color: "#dfe5e8" }
     ash:
-      acts: [1, 3]
+      # Akt 2 seit Story 11.10: die Brandschneise (2-4) brennt unter Aschehimmel
+      acts: [1, 2, 3]
       grade: { ambientScale: 0.92, sky: "#8d8a90", skyMix: 0.5 }
       particles: { high: 260, mid: 130, low: 0, fallSpeed: 0.9, size: 0.1, color: "#5b5a5e", alpha: 0.9, emberShare: 0.1 }
     snow:
@@ -224,6 +225,8 @@ legibility:
     watch: { color: "#7A2219", cream: 0.1, line: 0.06 }
   # Story 13.6: die Gegner, die das Zielfeld erreichen, leuchten rötlich (color, Stärke 0–1 des Leuchtens) statt Linien zum Feld (Playtest 2026-10-30)
   reach: { color: "#E0473A", strength: 0.38 }
+  # Story 11.10: Warnung vor einem Geländewechsel (set_terrain mit warn): Streifen auf dem Brett und Kante der HUD-Zeile, eine Farbe
+  terrainWarn: { color: "#E8A317", alpha: 0.75, pulse: 0.2 }
   # Story 13.3: Lebensleiste über dem Kopf. tick = Teilstrich je so viele TP, ab wideFrom max. TP je tickWide; critical = Anteil der max. TP,
   # unter dem der Glutrand pulsiert; Breite = widthTiles Felder, begrenzt auf minPx..maxPx CSS-px; heightPx = Höhe; lift = Höhe über dem Feld (Felder)
   hpBar: { tick: 5, tickWide: 10, wideFrom: 40, critical: 0.25, widthTiles: 0.8, minPx: 24, maxPx: 54, heightPx: 8, lift: 1.0 }

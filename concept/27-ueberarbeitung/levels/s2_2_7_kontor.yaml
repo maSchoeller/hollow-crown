@@ -5,6 +5,7 @@ id: s2_2_7_kontor
 nameKey: map.s2_2_7_kontor.name
 size: [20, 25]
 legend:
+  "Q": ballista
   ".": plain
   "_": road
   "~": river
@@ -24,7 +25,7 @@ terrain: |
   ~....MMMMddMMMM....~
   ~........__........~
   ~........__........~
-  ~.bbbb...__...bbbb.~
+  ~.bbbb..._Q...bbbb.~
   ~.bbbb.W.__.W.bbbb.~
   ~.bbbb...__...bbbb.~
   ~........__........~

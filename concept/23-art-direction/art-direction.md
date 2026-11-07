@@ -96,7 +96,7 @@ Jede Karten-YAML wählt `timeOfDay` und `weather` aus festen Listen; die Werte (
 | `clear` | – | alle |
 | `rain` | Regenstriche, nasser Glanz auf Blöcken, Pfützen | 1, 2 |
 | `fog` | Bodennebel zwischen Blöcken, Fernsicht weich | 1, 2 |
-| `ash` | fallende Ascheflocken, leicht grauer Himmel | 1, 3 |
+| `ash` | fallende Ascheflocken, leicht grauer Himmel | 1, 2 (Brandschneise 2-4), 3 |
 | `snow` | Schneeflocken, Schneehauben | 3 |
 
 **Lesbarkeitsregel:** Teamfarben, Bodenringe und Markierungen werden nie vom Szenenlicht gefärbt (ungelit), nachts bekommen Figuren ein schwaches Rim-Licht. Die Untergrenze in der Tabelle gilt für Figuren, nicht für die Landschaft.

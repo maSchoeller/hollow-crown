@@ -910,3 +910,9 @@
     animation: none;
   }
 }
+
+/* guest of the company (story 11.10): led by the AI, a goal to protect, never joins after the mission */
+.hud-chip--guest {
+  color: var(--hc-team-other);
+  font-weight: 700;
+}

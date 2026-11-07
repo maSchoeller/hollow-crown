@@ -215,3 +215,10 @@
   font-style: normal;
   font-variant-numeric: tabular-nums;
 }
+
+/* story 11.10: warning before a map event changes the ground (colour from render.yaml legibility.terrainWarn, set inline as --lg-warn) */
+.lg-warn {
+  cursor: pointer;
+  border: 0;
+  border-left: 4px solid var(--lg-warn, var(--hc-gold));
+}

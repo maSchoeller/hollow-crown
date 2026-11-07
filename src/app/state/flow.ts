@@ -11,6 +11,7 @@ import {
   createHauntBattle,
   firstNode,
   hauntMap,
+  presentForced,
   storyNodeOf,
   metLieutenant,
   nodeScenes,
@@ -68,7 +69,7 @@ export function nodeDef(id: string) {
 export function defaultDeploy(nodeId: string): string[] {
   const c = campaign.value!;
   const map = data.maps[nodeDef(nodeId).map]!;
-  const list = map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id));
+  const list = presentForced(map, c);
   for (const r of c.roster) if (list.length < map.deploy.max && !list.includes(r.id)) list.push(r.id);
   return list;
 }
@@ -168,7 +169,7 @@ export function defaultHauntDeploy(hauntId: string): string[] {
   const c = campaign.value!;
   const h = c.haunts.find((x) => x.id === hauntId)!;
   const map = hauntMap(data, h.map, h.variant, h.lt);
-  const list = map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id));
+  const list = presentForced(map, c);
   for (const r of c.roster) if (list.length < map.deploy.max && !list.includes(r.id)) list.push(r.id);
   return list;
 }

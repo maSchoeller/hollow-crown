@@ -103,7 +103,7 @@ triggers:
     once: true
     when: { type: turn_start, turn: 5, phase: enemy }
     then:
-      - { action: set_terrain, area: { tiles: [[12, 6], [12, 7]] }, terrain: rockwall }
+      - { action: set_terrain, area: { tiles: [[12, 6], [12, 7]] }, terrain: rockwall, warn: true }
   - id: t_rock3
     once: true
     when: { type: turn_start, turn: 8, phase: enemy }

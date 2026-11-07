@@ -5,6 +5,7 @@ id: s2_2_8_kronfeld
 nameKey: map.s2_2_8_kronfeld.name
 size: [30, 40]
 legend:
+  "Q": ballista
   ",": grass
   "_": road
   "T": forest
@@ -35,7 +36,7 @@ terrain: |
   ,,,,,,,,,,,,W,__,W,,,,,,,,,,,,
   ,,,TTTTT,,,,,,__,,,,,,,,,,,,,,
   ,,,TTTTT,,,,,,__,,,,,,%%%%%,,,
-  ,,,TTTTT,,,,,,__,,,,,,%ccc%,,,
+  ,,,TTTTT,,,,,,__,,,,,,%cQc%,,,
   ,,,TTTTT,,,,,,__,,,,,,%ccc%,,,
   ,,,,,,,,,,,,,,__,,,,,,%%s%%,,,
   ,,,,,,,,,,,,,,__,,,,,,,,/,,,,,
@@ -63,6 +64,8 @@ terrain: |
   ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
   ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
 levels:
+  # Balliste auf der Felsnase (Story 11.10): das Gelände ballista hat keine eigene Stufe
+  - { level: 2, area: { tiles: [[24, 13]] } }
   - { level: 1, area: { tiles: [[24, 15]] } }
 timeOfDay: evening
 weather: clear
@@ -99,8 +102,8 @@ units:
   - { id: e5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [21, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: e6, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Süden: Sable oder, wenn sie bei E7 gewechselt hat, der Hauptmann mit dem Grenzheer
-  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_order }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_warned }] }
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ not: { flag: e7_warned } }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_warned }] }
   - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 17, levelOffset: -2, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { id: s3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [18, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }

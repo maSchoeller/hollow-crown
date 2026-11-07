@@ -70,7 +70,7 @@ units:
   - { id: h2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
   - { id: h3, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [11, 7], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [hard] }
   # Brann versteckt sich im Westgang, fürchtet die eigene Glut; Ilka oder Lucan sprechen ihn an
-  - { id: brann, char: brann, team: other, class: elementalist, level: 8, at: [1, 13], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: [ilka, lucan], dialogue: scn.n5.brann_talk } }
+  - { id: brann, char: brann, team: other, class: elementalist, level: 8, at: [1, 13], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: [ilka, lucan], dialogue: scn.n5.brann_talk } }
 reinforcements:
   # Vom Eingang
   - turn: 4

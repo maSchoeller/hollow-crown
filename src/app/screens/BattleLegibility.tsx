@@ -5,7 +5,7 @@
  */
 import { useRef } from 'preact/hooks';
 import type { BattleState, BattleUnit, GameData, Pos, RecapRow } from '../../core';
-import { levelAt, maxHpOf, onMap, active } from '../../core';
+import { levelAt, maxHpOf, onMap, active, terrainWarnings } from '../../core';
 import { t } from '../../i18n';
 import { unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -22,6 +22,30 @@ export function ThreatPill({ n }: { n: number }) {
       <Icon name="danger" size={16} />
       <span>{t('ui.threat.reach', { count: n })}</span>
     </div>
+  );
+}
+
+/**
+ * Lines under the goal pills while a map event will change the ground next round (story 11.10, `terrainWarnings`): "Geländewechsel
+ * in Runde n: Felswall" or the map's own line; the board stripes the fields in the same colour (render.yaml
+ * `legibility.terrainWarn`). A tap brings the fields into view.
+ */
+export function TerrainWarnPills({ data, s, onShow }: { data: GameData; s: BattleState; onShow: (at: Pos) => void }) {
+  const list = terrainWarnings(data, s);
+  if (!list.length) return null;
+  const style = { '--lg-warn': data.render.legibility.terrainWarn.color };
+  return (
+    <>
+      {list.map((w, i) => {
+        const vars = { n: w.turn, terrain: t(`terrain.${w.terrain}`) };
+        return (
+          <button key={`${w.trigger}:${i}`} type="button" class="hc-piece lg-threat lg-warn" style={style} onClick={() => w.tiles[0] && onShow(w.tiles[0])}>
+            <Icon name="danger" size={16} />
+            <span>{w.key ? t(w.key, vars) : t('ui.terrainWarn.line', vars)}</span>
+          </button>
+        );
+      })}
+    </>
   );
 }
 

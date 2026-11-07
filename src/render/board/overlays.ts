@@ -26,6 +26,8 @@ export interface Overlays {
   ghost?: { uid: string; pos: Pos } | null;
   goal?: Pos[];
   reinforce?: Pos[];
+  /** story 11.10: fields a map event changes next round (`terrainWarnings`): amber diagonal stripes */
+  terrainWarn?: Pos[];
   /** hold zones of vanguards (Halten, story 2.4): diagonal hatching */
   hold?: Pos[];
   /** fields Wirken would change (story 2.5) */
@@ -97,6 +99,7 @@ const LAYER = {
   watchCream: 16,
   watchLine: 17,
   cast: 18,
+  terrainWarn: 19,
   pathCream: 21,
   path: 22,
   targets: 23,
@@ -200,6 +203,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     goal: o.goal ?? [],
     reinforce: o.reinforce ?? [],
     hold: o.hold ?? [],
+    terrainWarn: o.terrainWarn ?? [],
     cast: o.cast ?? [],
     targets: o.targets ?? [],
   };
@@ -273,13 +277,14 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
   }
   for (const [key, tiles] of Object.entries(lists)) {
     if (!tiles.length) continue;
-    const spec = OVERLAY[key]!;
+    // the warning stripes take their colour from render.yaml legibility.terrainWarn (shared with the HUD line, story 11.10)
+    const spec = key === 'terrainWarn' ? { ...leg.terrainWarn, inset: 0 } : OVERLAY[key]!;
     const layer = LAYER[key as keyof typeof LAYER];
     const p: number[] = [];
     const idx: number[] = [];
     for (const t of tiles) {
       const h = top(t) + 0.02 + layer * 0.001;
-      if (key === 'hold') {
+      if (key === 'hold' || key === 'terrainWarn') {
         // diagonal stripes inside the tile (u right, v down)
         const w = 0.05;
         for (const d of [-0.6, -0.3, 0, 0.3, 0.6]) {

@@ -23,3 +23,7 @@
 | Datei | `levels/s2_2_5_silberquell.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Der Hauptmann ist kein Leutnant mehr (`lieutenant: sable` entfernt, sonst wäre er Sable); Sable darf als Leutnant `requires` tragen. Das Kappen der Westbrücke trägt `warn: true` (Warnung ab Runde 5). Amos ist Gast. Flags `e7_order`/`e7_warned` im Paket `act2` (Platzhalter bis 11.5).
+
+**Nachtrag Review 11.10:** Genau eine Figur hält die Stelle: der Hauptmann mit `e7_warned`, sonst Sable (`requires: [{ not: { flag: e7_warned } }]`), auch ohne E7 und wenn beide Flags gesetzt wären.

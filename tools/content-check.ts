@@ -6,6 +6,7 @@ import { loadContentFromDisk, contentFiles } from '../src/content/node';
 import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/content/packs';
 import { checkLockedIds, collectIds, ID_KINDS, releasedIdsSchema, renamesSchema, type IdSets, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
+import { checkDrafts, draftAct } from '../src/content/drafts';
 import { unshippedGalleryModels, validateBoardModels, validateSeasons } from '../src/content/validateLook';
 
 const { data, locales, issues } = loadContentFromDisk();
@@ -69,6 +70,19 @@ try {
   idIssues.push({ file: 'released-ids.json / renames.yaml', message: e instanceof Error ? e.message : String(e) });
 }
 const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, locales, sprites, itemImages, placeImages, lieutenantFiles, statusImages)];
+// story 11.10: the level drafts of every act whose pack is not released yet, checked as if they lay in it (src/content/drafts.ts)
+const draftDir = join(process.cwd(), 'concept', '27-ueberarbeitung', 'levels');
+const planned = new Set(packs.filter((p) => !p.released && p.id === `act${p.act}`).map((p) => p.act));
+const draftFiles = existsSync(draftDir) ? readdirSync(draftDir).filter((f) => planned.has(draftAct(f) ?? -1)).sort() : [];
+const drafts = checkDrafts(
+  data,
+  locales,
+  Object.fromEntries(draftFiles.map((f) => [f, parse(readFileSync(join(draftDir, f), 'utf8'))])),
+  [sprites, itemImages, placeImages, lieutenantFiles, statusImages],
+);
+// the message stays as validateContent words it, so the warning filter below treats a draft like content (missing sprites)
+for (const d of drafts) found.push(...d.issues.map((i) => ({ file: `levels/${d.file} ${i.file}`, message: i.message })));
+const openRefs = drafts.reduce((n, d) => n + d.open.length, 0);
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite') || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing portrait')) || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing model')));
 const all = found.filter((i) => !warnings.includes(i));
@@ -82,6 +96,8 @@ const counts = {
   en: Object.keys(locales.en ?? {}).length,
   packs: packs.length,
   lockedIds: lockedCount,
+  drafts: drafts.length,
+  draftOpen: openRefs,
 };
 console.log('content:', JSON.stringify(counts));
 if (all.length) {

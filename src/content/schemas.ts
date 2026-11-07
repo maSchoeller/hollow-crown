@@ -293,6 +293,8 @@ export const mapUnitSchema = z.object({
   recruit: z.object({ by: z.union([z.array(z.string()), z.literal('any')]), dialogue: z.string().optional() }).optional(),
   ignoreForRout: z.boolean().optional(),
   untargetable: z.boolean().optional(),
+  /** story 11.10: a guest of team `other` (Brann in 2-4): AI-led, does not join the company after the mission unless talked over */
+  guest: z.boolean().optional(),
   difficulty: z.array(z.enum(['easy', 'normal', 'hard'])).optional(),
   /** conditions against the campaign at the creation of the battle (story 9.5); `conditionSchema` is defined further down */
   requires: z.array(z.lazy(() => conditionSchema)).optional(),
@@ -342,7 +344,14 @@ const triggerAction = z.discriminatedUnion('action', [
   z.object({ action: z.literal('set_ai'), units: z.array(z.string()), profile: aiProfile, area: area.optional() }),
   z.object({ action: z.literal('spawn'), units: z.array(mapUnitSchema) }),
   z.object({ action: z.literal('set_flag'), flag: z.string() }),
-  z.object({ action: z.literal('set_terrain'), area, terrain: z.string(), level: z.number().int().min(0).max(2).optional() }),
+  // `warn` (story 11.10): marking and HUD line from the round before the change (`true` = the general line, else a locale key)
+  z.object({
+    action: z.literal('set_terrain'),
+    area,
+    terrain: z.string(),
+    level: z.number().int().min(0).max(2).optional(),
+    warn: z.union([z.literal(true), z.string().min(1)]).optional(),
+  }),
   z.object({ action: z.literal('advance_objective') }),
 ]);
 
@@ -790,6 +799,7 @@ const legibilitySchema = z.object({
     watch: z.object({ color: hex, cream: z.number().min(0), line: z.number().min(0) }),
   }),
   reach: z.object({ color: hex, strength: unit }),
+  terrainWarn: z.object({ color: hex, alpha: unit, pulse: unit }),
   hpBar: z.object({ tick: z.number().int().positive(), tickWide: z.number().int().positive(), wideFrom: z.number().int().positive(), critical: unit, widthTiles: z.number().positive(), minPx: z.number().positive(), maxPx: z.number().positive(), heightPx: z.number().positive(), lift: z.number().min(0) }),
   view: z.object({ wholeMapMargin: z.number().min(0) }),
   doubleTapMs: ms,

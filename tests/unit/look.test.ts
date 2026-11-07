@@ -39,7 +39,7 @@ describe('render.yaml look (story 8.6)', () => {
     expect(w.clear.acts).toEqual([1, 2, 3]);
     expect(w.rain.acts).toEqual([1, 2]);
     expect(w.fog.acts).toEqual([1, 2]);
-    expect(w.ash.acts).toEqual([1, 3]);
+    expect(w.ash.acts).toEqual([1, 2, 3]); // act 2 for the firebreak 2-4 (story 11.10)
     expect(w.snow.acts).toEqual([3]);
   });
 

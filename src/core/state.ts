@@ -93,6 +93,8 @@ export interface BattleUnit extends UnitRecord {
   ignoreForRout?: boolean;
   /** no foe targets this unit (map unit field `untargetable`, Story 9.6) */
   untargetable?: boolean;
+  /** a guest of the company (map unit field `guest`, story 11.10): never joins after the mission unless recruited in it */
+  guest?: boolean;
   /** generic map unit (no company record) */
   generic: boolean;
   /** unit was in the company before the battle */

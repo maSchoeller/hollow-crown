@@ -22,3 +22,5 @@
 | Datei | `levels/s2_n6_gaukler.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Die Gauklermeisterin ist keine Gefährtin: `escort` mit `join: false`. Der Steg trägt `warn: true` (Warnung ab Runde 5). Jory ist Pflicht, solange er in der Truppe ist (gilt ohne Formatänderung).

@@ -19,6 +19,7 @@ import { validateHandbook } from './validateHandbook';
 import { validateLieutenants, type LieutenantFiles } from './validateLieutenants';
 import { validatePropVariants, validateSeasons, validateStatusIcons, validateWeather } from './validateLook';
 import { validatePhases } from './validatePhases';
+import { validateFormat } from './validateFormat';
 import type { ContentIssue, Locales } from './load';
 
 /** Least distance of two stones on the world map in percent of its width (story 15.7: 55 px of the 1254 px plan, about 36 px at the overview of a 375 × 812 phone). */
@@ -620,10 +621,10 @@ function validateMap(
   map.units.forEach((u, i) => {
     const ctx = u.id ?? `unit ${i}`;
     checkUnit(u, ctx);
-    // a unit with `requires` (story 9.5) is left out at the creation of the battle: nothing may depend on it
+    // a unit with `requires` (story 9.5) is left out at the creation of the battle: nothing may depend on it. A lieutenant may carry
+    // it too (story 11.10, Sable after E7): left out, he has no unit, so his plan for the map stays without effect
     if (u.requires) {
       conditions(f, u.requires, `${ctx}.requires`);
-      if (u.lieutenant) err(f, `${ctx}: a lieutenant cannot have requires (his plan is made for the whole map)`);
       const ids = [u.id, u.char].filter((x): x is string => !!x);
       const v = map.objectives.victory;
       if (v.type === 'boss' && ids.includes(v.unit)) err(f, `${ctx}: the boss of the victory goal cannot have requires`);
@@ -693,6 +694,7 @@ function validateMap(
   if (v.type === 'escort') validateEscort(data, map, v, err, g, locales);
   if (v.type === 'treasure') validateTreasure(data, map, v, err, g);
   validatePhases(map, err);
+  validateFormat(data, map, locales, err);
   validateHaunts(data, map, err, g);
 }
 
@@ -744,7 +746,8 @@ function validateEscort(
   if (!npc) return err(f, `escort: unit ${v.unit} not on the map`);
   if (npc.team !== 'other') err(f, `escort: ${v.unit} must be team other`);
   if (npc.ai?.profile !== 'follow') err(f, `escort: ${v.unit} needs the AI profile follow`);
-  if (v.join !== false && !data.chars[v.unit]) err(f, `escort: ${v.unit} joins afterwards, so it needs a character of the same id (or join: false)`);
+  // a unit with `char: <id>` names its character already; a missing one is reported as unknown char (story 11.10)
+  if (v.join !== false && !data.chars[v.unit] && npc.char !== v.unit) err(f, `escort: ${v.unit} joins afterwards, so it needs a character of the same id (or join: false)`);
   // the goal sentence and the defeat line name the NPC (`unit.<id>.name`)
   for (const lang of ['de', 'en']) if (!locales[lang]?.[`unit.${v.unit}.name`]) err(f, `escort: missing locale key unit.${v.unit}.name in ${lang}`);
   const exit = areaTiles(v.area);
