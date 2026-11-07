@@ -77,6 +77,10 @@ export interface MissionSim {
   /** story 15.11: what the board plays with „Gemeinsam“ after the time budget of an enemy phase (`PhaseTime.shown`) */
   phaseShown: number;
   phaseShownMax: number;
+  /** Testlabor S1: rounds of each first attempt won, in run order (for p10/p50/p90) */
+  winTurns: number[];
+  /** Testlabor S1: side objective id → runs whose won attempt fulfilled it (out of `cleared`) */
+  side: Record<string, number>;
 }
 
 export interface CampaignSim {
@@ -226,6 +230,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
           .set(id, {
             node: id, map: node.map, expectedLevel: node.expectedLevel, reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
+            winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])),
           })
           .get(id)!;
       m.reached++;
@@ -242,6 +247,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
           if (state.outcome === 'victory') {
             m.wins++;
             m.turns += state.turn;
+            m.winTurns.push(state.turn);
             m.actions += log.filter((cmd) => cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue').length;
             // the line-up at the start: a unit recruited during the battle does not count
             m.deployed += begun.units.filter((u) => u.team === 'player').length;
@@ -272,6 +278,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.gold += won.result.gold;
       m.sideGold += sideGoldOf(won.result);
       m.deaths += won.result.fallen.length;
+      for (const so of won.result.side) if (so.done) m.side[so.id] = (m.side[so.id] ?? 0) + 1;
       c = homeHeuristic(data, won.campaign, out.spent);
       if (o.haunts) c = playHaunts(data, c, 1000 + day++, out.haunts);
     }
@@ -279,6 +286,40 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       out.finished++;
       out.endGold += c.gold;
       out.endArmyLevel += armyLevel(data, c);
+    }
+  }
+  out.missions = [...missions.values()];
+  return out;
+}
+
+/**
+ * Sums simulations of consecutive runs (in run order) into one, exactly as one `simulateCampaign` over all of them would
+ * (Testlabor S2: the worker threads play one run each). Missions keep the order in which the runs first reached them.
+ */
+export function mergeCampaignSims(parts: CampaignSim[]): CampaignSim {
+  const out: CampaignSim = { missions: [], finished: 0, endGold: 0, endArmyLevel: 0, spent: { heal: 0, buy: 0, upgrade: 0 }, haunts: { played: 0, won: 0, gold: 0, fallen: 0 } };
+  const missions = new Map<string, MissionSim>();
+  const sumInto = <T extends object>(to: T, from: T) => {
+    for (const k of Object.keys(from) as (keyof T)[]) if (typeof from[k] === 'number') (to[k] as number) = (to[k] as number) + (from[k] as number);
+  };
+  for (const p of parts) {
+    out.finished += p.finished;
+    out.endGold += p.endGold;
+    out.endArmyLevel += p.endArmyLevel;
+    sumInto(out.spent, p.spent);
+    sumInto(out.haunts, p.haunts);
+    for (const pm of p.missions) {
+      const m = missions.get(pm.node);
+      if (!m) {
+        missions.set(pm.node, structuredClone(pm));
+        continue;
+      }
+      for (const k of Object.keys(pm) as (keyof MissionSim)[]) {
+        if (k === 'expectedLevel' || typeof pm[k] !== 'number') continue;
+        (m[k] as number) = k.endsWith('Max') ? Math.max(m[k] as number, pm[k] as number) : (m[k] as number) + (pm[k] as number);
+      }
+      m.winTurns.push(...pm.winTurns);
+      for (const [id, n] of Object.entries(pm.side)) m.side[id] = (m.side[id] ?? 0) + n;
     }
   }
   out.missions = [...missions.values()];

@@ -26,7 +26,7 @@ Die Dokumente unten sind lang. Von ihnen die Gliederung lesen (`grep -n '^#' <da
 ## Ausführen und prüfen
 
 - Fertig ist eine Aufgabe erst, wenn `pnpm lint` (inkl. Typecheck), `pnpm test`, `pnpm content:check` und `pnpm build` grün sind; `build` bricht auch bei überschrittenem Bundle-Budget ab. `pnpm check` führt alle vier mit knapper Ausgabe nacheinander aus.
-- Balancing mit `pnpm sim <mapId> --runs 50` prüfen (weitere Optionen `--seed`, `--difficulty`, `--death` im Kopf von `tools/simulate.ts`).
+- Balancing mit `pnpm sim <mapId> --runs 50` prüfen (zeigt Nebenziele und Rundenverteilung, läuft parallel). Varianten mit `--set pfad=wert` statt `balance.yaml` zu ändern, mit `--json <datei>` sichern und per `pnpm sim:diff a.json b.json` vergleichen; weitere Optionen im Kopf von `tools/simulate.ts`.
 - Gemeldete Fehlerberichte (Optionen → „Fehler melden“) mit `pnpm report <datei>` lesen: Aktionsprotokoll als Zeilen plus Replay-Prüfung bis zur ersten Abweichung (Architektur §6.2a).
 - `pnpm art:build` braucht Python 3.12+ mit den Paketen aus `pip install -r tools/art/requirements.txt` (Pillow, numpy, PyYAML).
 - Node ≥ 22, pnpm 10 (`packageManager` in `package.json`).
