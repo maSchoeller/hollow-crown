@@ -133,6 +133,8 @@ export interface Balance {
     /** army level further than this from a node's `expectedLevel` is marked */
     levelTolerance: number;
     corridors: Record<Difficulty, { winMin?: number; winMax?: number; downsMin?: number; downsMax?: number }>;
+    /** nodes where only the win rate of the corridor counts, not the downs (prologue: Rhen's fall is the defeat, story 15.10) */
+    winOnly: string[];
     /** gold per story mission without side objectives [min, max]: by node id, else by act; side objectives' gold as share of the map reward */
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
   };
