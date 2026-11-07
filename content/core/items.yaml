@@ -114,8 +114,7 @@
 - { id: fire_bomb,      kind: consumable, slot: bag, use: { damage: 8, element: fire, rng: [1,2], status: burning, terrain: ignite }, charges: 1, wt: 0, rarity: common, price: 400 }
 - { id: haste_scroll,   kind: consumable, slot: bag, use: { target: ally, rng: [0,1], statMods: { mov: 2 }, duration: round }, charges: 1, wt: 0, rarity: rare, price: 800 }
 - { id: torch,          kind: consumable, slot: bag, use: { vision: 4, duration: 3 }, charges: 1, wt: 0, rarity: common, price: 150 }
-- { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000 }
-# Glutfunke (Story 9.9; GDD: 12 in Staffel 1, Händler 3000 Gold ab Stufe 3, Architektur §5.11 `kind: promotion` – das Schema kennt nur `seal`): nur Konvoi, wird beim Aufstieg verbraucht. Der Aufstieg selbst (`use`/`promote`) kommt mit Story 10.2; promotion_seal bleibt unberührt.
+# Glutfunke (Story 9.9; GDD: 12 in Staffel 1, Händler 3000 Gold ab Stufe 3, Architektur §5.11 `kind: promotion` – das Schema kennt nur `seal`): nur Konvoi, wird beim Aufstieg verbraucht. Der Aufstieg selbst (`use`/`promote`) kommt mit Story 10.2; das alte promotion_seal ist vor der ersten ID-Sperre entfernt (Story 9.14).
 - { id: ember_spark,    kind: seal,       slot: bag, wt: 0, rarity: rare, price: 3000, tags: [convoyOnly] }
 - { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
 

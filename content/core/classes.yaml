@@ -220,7 +220,7 @@
   classAction: { id: pursue, kind: passive }
   proPaths: []
   tags: []
-  skill: sol
+  skill: pro_duel
   base: { hp: 28, str: 9, mag: 1, skl: 11, spd: 11, lck: 4, def: 8, res: 3 }
   growth: { hp: 85, str: 50, mag: 5, skl: 50, spd: 50, lck: 25, def: 30, res: 15 }
   growthMod: { hp: 15, str: 10, mag: 0, skl: 10, spd: 10, lck: 0, def: 5, res: 0 }
@@ -243,7 +243,7 @@
   classAction: { id: hold, kind: passive }
   proPaths: []
   tags: []
-  skill: impale
+  skill: pro_guard
   base: { hp: 29, str: 9, mag: 0, skl: 8, spd: 7, lck: 3, def: 11, res: 3 }
   growth: { hp: 85, str: 50, mag: 5, skl: 40, spd: 35, lck: 25, def: 45, res: 15 }
   growthMod: { hp: 15, str: 10, mag: 0, skl: 5, spd: 5, lck: 0, def: 15, res: 0 }
@@ -276,7 +276,7 @@
   art: soldier
   v1: true
 
-# Scharfschütze (PoC); longshot: +1 max. Reichweite mit Bögen
+# Scharfschütze (PoC); pro_far_shot: +1 max. Reichweite mit Bögen
 - id: sharpshooter
   nameKey: class.sharpshooter.name
   legacyIds: [sniper]   # Klassen-IDs vor Story 2.2 (alte Spielstände)
@@ -289,7 +289,7 @@
   classAction: { id: aim, kind: active }
   proPaths: []
   tags: []
-  skill: longshot
+  skill: pro_far_shot
   base: { hp: 26, str: 8, mag: 1, skl: 12, spd: 9, lck: 3, def: 6, res: 3 }
   growth: { hp: 75, str: 45, mag: 5, skl: 60, spd: 45, lck: 25, def: 25, res: 15 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 20, spd: 10, lck: 0, def: 5, res: 0 }

@@ -120,7 +120,7 @@
   mov: 6
   weapons: [sword, axe]
   tags: []
-  skill: sol
+  skill: pro_duel
   growthMod: { hp: 15, str: 10, mag: 0, skl: 10, spd: 10, lck: 0, def: 5, res: 0 }
   caps: { hp: 65, str: 30, mag: 15, skl: 32, spd: 30, lck: 30, def: 27, res: 20 }
   promotionBonus: { hp: 4, str: 2, skl: 2, spd: 1, def: 2, res: 1 }
@@ -134,7 +134,7 @@
   mov: 6
   weapons: [lance]
   tags: []
-  skill: impale
+  skill: pro_guard
   growthMod: { hp: 15, str: 10, mag: 0, skl: 5, spd: 5, lck: 0, def: 15, res: 0 }
   caps: { hp: 65, str: 30, mag: 15, skl: 28, spd: 26, lck: 30, def: 32, res: 20 }
   promotionBonus: { hp: 4, str: 2, skl: 1, spd: 1, def: 3, res: 1 }
@@ -162,7 +162,7 @@
   mov: 6
   weapons: [bow]
   tags: []
-  skill: longshot      # +1 max. Reichweite mit Bögen
+  skill: pro_far_shot  # +1 max. Reichweite mit Bögen
   growthMod: { hp: 10, str: 5, mag: 0, skl: 20, spd: 10, lck: 0, def: 5, res: 0 }
   caps: { hp: 60, str: 28, mag: 15, skl: 35, spd: 30, lck: 30, def: 25, res: 20 }
   promotionBonus: { hp: 3, str: 1, skl: 3, spd: 2, def: 1, res: 1 }

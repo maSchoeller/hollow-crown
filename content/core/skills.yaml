@@ -9,9 +9,9 @@
 - { id: elemental_focus,   source: class, trigger: passive, effect: { statusChanceBonus: 20 } }
 - { id: blessing,          source: class, trigger: passive, effect: { healBonus: 5 } }
 - { id: heavy_armor,       source: class, trigger: passive, effect: { allowArmorClass: heavy } }
-- { id: sol,               source: class, trigger: on_hit, chanceFrom: skl, effect: { lifestealPercent: 50 } }
-- { id: impale,            source: class, trigger: on_hit, chanceFrom: skl, chanceDivisor: 2, effect: { ignoreDefPercent: 50 } }
-- { id: longshot,          source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1 } }
+- { id: pro_duel,          source: class, trigger: on_hit, chanceFrom: skl, effect: { lifestealPercent: 50 } }
+- { id: pro_guard,         source: class, trigger: on_hit, chanceFrom: skl, chanceDivisor: 2, effect: { ignoreDefPercent: 50 } }
+- { id: pro_far_shot,      source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1 } }
 - { id: dragonhide,        source: class, trigger: on_defend, condition: { attackerNoElement: true, notEffective: true }, effect: { damageTakenPercent: 50 } }
 
 # --- Persönliche Skills ---
