@@ -4,20 +4,22 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 
 **Grundlage:** abgenommene Entwürfe `concept/27-ueberarbeitung/levels/s2_*.yaml` mit Abnahmen in `levels/abnahme/s2_*.md`, `concept/22-narrative/missionsliste-s1.md` (Akt 2), `geografie-valmora.md`, `concept/23-art-direction/figuren-bestand.md`, `map-assets/matrix.md`, `map-assets/jahreszeiten-plan.md`. Was dort steht, gilt vor `narrative.md` (Missionsfolge, Leutnant-Tabelle) und vor der alten Fassung dieses Epics. Werte, Schlüssel und Formeln, die die Überarbeitung nicht berührt (Akt-Übergang, Positionsstufe, Stahl-Tier, Supports, Relikte), stammen aus den Entscheidungen des Produktinhabers vom 2026-10-31.
 
-**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor dem Release von Akt 1 (9.14), danach nach jedem Live-Schritt von Akt 2 (siehe „Stückweise live“). Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. F1, F3 und F4 hat der Produktinhaber am 2026-11-06 entschieden (`umsetzung-lueckenliste-akt2.md`); F2 (Brettfiguren) am selben Tag: nur Rowena neu, sonst Platzhalter (Story 11.25).
+**Gilt für alle Stories:** Fertig erst mit grünem `pnpm check`; sichtbare Änderungen als Bild bei 375 × 812 belegt; Karten mit `pnpm sim` geprüft (Optionen aus 11.4); Werte in YAML, als `[ASSUMPTION]` markierte Werte per Simulation zu prüfen; kein `content:lock` vor dem Release von Akt 1 (9.14), danach nach jedem Live-Schritt von Akt 2 (siehe „Stückweise live“). Keine Flieger und keine Pferde auf dem Brett, Pferde nur als Kulisse (GDD-Log 2026-11-05); die Flieger-Regel bleibt ungenutzt und getestet im Code. Mehr, aber schwächere Gegner: Gegner P−3 bis P−1, Leutnants P+1, Boss P+2 (GDD-Log 2026-11-05). Szenen DE und EN, jede Box ≤ 110 Zeichen, Schreib-Pipeline der Narrative; Gefährtenzeilen unter `requires: alive` mit Ersatzsprecher-Kette. Neue Entscheidungen ins zuständige Decision-Log unter `concept/`. Musik, Klang und Vertonung von Akt 2 kommen später und blockieren nichts. F1, F3 und F4 hat der Produktinhaber am 2026-11-06 entschieden (`umsetzung-lueckenliste-akt2.md`); F2 (Brettfiguren) am selben Tag: nur Rowena neu, sonst Platzhalter (Story 11.25). Die Antworten zum Readiness-Check vom 2026-11-07 (`concept/26-epics/fragen-po-2026-11-07.md`) sind eingearbeitet.
 
 **Gemeinsame Regeln der Missions-Stories (11.12–11.22):**
 
 - **Karte:** Der Entwurf ersetzt nichts, er wird übernommen: `content/acts/act2/maps/<id>.yaml` mit Feld `design:` auf den Entwurf, `map.act = 2`, Höhenstufen, Tore, Hebel und `set_terrain` wie im Entwurf. Die Karte ist im Spiel gewinnbar, liegt vorläufig im Korridor (NFR12, an der frühesten und spätesten Position laut 11.4, vorläufig ohne Aufstieg) und wird vom Produktinhaber im Spiel per Bild gesichtet; Abweichungen vom Entwurf stehen in der Abnahme-Datei.
 - **Szenen:** IDs nach Akt-1-Schema (`scn.<knoten>.intro|outro`, `scn.<knoten>.<lt>_battle`, `scn.<knoten>.<einheit>_talk`, Besuche `scn.<knoten>.house_*`). Jede Mission hat Vor- und Nachszene passend zu Ort und Folge, die Prüfung auf Ersatzsprecher ist grün. Beitritte geschehen durch Ansprechen im Kampf, wie im Entwurf.
 - **Entscheidungen:** Jede Antwort trägt eine Haltung (warm, nüchtern, trotzig) und zeigt ihre Folgen-Karte; Flags deklariert 11.5.
-- **Ortsbilder:** Vorhanden sind `grauwacht`, `salzpass`, `brandhang`, `kronfeld`. Fehlende (2-1, 2-4, 2-6, 2-7, N4–N6) sind je ein Grafik-Task (`art/prompts/<id>.md`, `licensing.md` §6) in der Story; bis dahin steht ein vorhandenes Ortsbild als Platzhalter, vermerkt in der Karten-YAML.
+- **Ortsbilder:** Vorhanden sind `grauwacht`, `salzpass`, `brandhang`, `kronfeld`. Die sieben fehlenden (2-1, 2-4, 2-6, 2-7, N4–N6) entstehen vorab als eigene Grafik-Aufgabe (`art/prompts/<id>.md`, `licensing.md` §6; Produktinhaber 2026-11-07, Frage 8); die Missions-Stories binden sie nur ein und brauchen keinen Platzhalter.
 - **Niederlage:** Avatar oder Lucan fallen, dazu die Schutzfigur der Mission laut Entwurf.
 - **Live-Schritt:** Mit dem Merge ist die Mission für Spieler spielbar (F1). Vorher prüft die Story mit Fixture-Spielständen aus dem letzten Live-Stand, dass offene Spielstände mitten in Akt 2 ohne Verlust laden; nach dem Merge läuft `pnpm content:lock` und sperrt die neuen IDs.
 
-**Reihenfolge:** Epic 11 beginnt nach dem Release von Akt 1 (Story 9.14). 11.1 zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die Gefährten-IDs braucht. Danach laufen 11.2–11.11 parallel zu 10.2–10.4. Die Missionen folgen der Kampagnenfolge; die Paare (2-2 ∥ 2-3, 2-5 ∥ 2-6) lassen sich in beliebiger Reihenfolge bauen. 11.23 nach 11.5, ihre Chronik-Szene nach 11.15. 11.24 läuft parallel zu den Karten, 11.25 hängt an F2, 11.26 nach 11.15 und 11.19. 11.27 kommt zuletzt, nach allen Stories dieses Epics und nach 10.1–10.12, weil diese Gold, EP, Glutfunken und Rabatte von Akt 2 verändern.
+**Reihenfolge:** Epic 11 beginnt nach dem Release von Akt 1 (Story 9.14). Ausnahme (Produktinhaber 2026-11-07, Frage 1): 11.6 Balliste, 11.8 Ziel-Phasen und 11.10 Format-Reste dürfen als Vorarbeit vor 9.14 beginnen, nacheinander in dieser Folge und nicht parallel zu den 9.14-Änderungen an `schemas.ts`/`validate.ts`; sie ändern nichts an Akt 1 und gehen erst nach 9.14 mit dem ersten Live-Schritt live. Danach 11.1 zuerst, weil Epic 10 `c.act`, `levelCap` 20 und die Gefährten-IDs braucht. Danach laufen 11.2–11.11 parallel zu 10.2–10.4. Die Missionen folgen der Kampagnenfolge; die Paare (2-2 ∥ 2-3, 2-5 ∥ 2-6) lassen sich in beliebiger Reihenfolge bauen. 11.23 nach 11.5, ihre Chronik-Szene nach 11.15. 11.24 läuft parallel zu den Karten, 11.25 hängt an F2, 11.26 nach 11.15 und 11.19. 11.27 kommt zuletzt, nach allen Stories dieses Epics und nach 10.1–10.12, weil diese Gold, EP, Glutfunken und Rabatte von Akt 2 verändern.
 
 ```text
+Vorarbeit vor 9.14: 11.6 Balliste ──> 11.8 Ziel-Phasen ──> 11.10 Format-Reste (live erst nach 9.14)
+
 9.14 Release Akt 1 ──> 11.1 Akt-Übergang ──┬─> 11.2 Positionsstufe ──> 11.4 Simulation
                                            ├─> 11.3 Paket, Weltkarte, Titeltafel (erster Live-Schritt)
                                            ├─> 11.5 Gefährten, Leutnants, Flags
@@ -37,10 +39,11 @@ Spieler ziehen nach dem Finale von Akt 1 durch die Windscharte ins herbstliche H
 
 **Stückweise live (F1, Produktinhaber 2026-11-06):** Akt 2 geht früh und Stück für Stück live, nicht erst mit 11.27. Erster Live-Schritt sind 11.1 und 11.3 nach dem Release von Akt 1 (9.14): `act2` wird `released: true`, wer Akt 1 beendet, landet in Akt 2 und sieht „Weitere Missionen folgen“. Danach ist jede Missions-Story mit ihrem Merge ein Live-Schritt. Folgen, die jede Story beachtet:
 
-- **Sperre:** Vor 9.14 wird nicht gesperrt. Ab dem ersten Live-Schritt sperrt `pnpm content:lock` die IDs von `act2` in `content/released-ids.json` (Knoten `m2_*`, Gefährten, Flags, Leutnants, Items, Szenen, Karten) und nach jedem weiteren Schritt die neuen. Danach heißt Umbenennen `alt: neu` in `content/renames.yaml`, Entfernen ist nicht mehr möglich; IDs deshalb vor dem Merge endgültig wählen. Flags und Gefährten legt 11.5 vollständig an, damit sie beim ersten Sperren feststehen.
-- **Speicherformat:** Spieler haben ab dem ersten Schritt Spielstände mitten in Akt 2, auch auf „Weitere Missionen folgen“. Jede Änderung am Format braucht eine Migration in `src/persistence/save.ts` und eine Fixture `tests/fixtures/saves/format<n>-act2-*.json` aus dem letzten Live-Stand (`tests/unit/migrations.test.ts`); das gilt auch für Epic 10 (Format 3 ab 10.2).
+- **Sperre:** Vor 9.14 wird nicht gesperrt. Ab dem ersten Live-Schritt sperrt `pnpm content:lock` die IDs von `act2` in `content/released-ids.json` (Knoten `m2_*`, Gefährten, Flags, Leutnants, Items, Szenen, Karten) und nach jedem weiteren Schritt die neuen. Danach heißt Umbenennen `alt: neu` in `content/renames.yaml`, Entfernen ist nicht mehr möglich; IDs deshalb vor dem Merge endgültig wählen. Erster Live-Schritt bleiben 11.1 und 11.3; IDs späterer Stories (auch die Flags und Gefährten aus 11.5) werden nach ihrem Merge dazugesperrt (`mergeLock`), kritisch ist nur späteres Umbenennen (Produktinhaber 2026-11-07, Frage 3).
+- **Speicherformat:** Spieler haben ab dem ersten Schritt Spielstände mitten in Akt 2, auch auf „Weitere Missionen folgen“. Jede Änderung am Format braucht eine Migration in `src/persistence/save.ts` und eine Fixture `tests/fixtures/saves/format<n>-act2-*.json` aus dem letzten Live-Stand (`tests/unit/migrations.test.ts`); das gilt auch für Epic 10. Neue persistierte Felder bekommen möglichst Defaults in `normalizeCampaign` statt eines Formatwechsels; die alten Core-IDs räumt 9.14 vor der ersten Sperre auf, 10.2 und 10.4 brauchen daher keine Umbenennungs-Migration (Produktinhaber 2026-11-07, Frage 2).
 - **Werte:** Jede Mission geht vorläufig abgestimmt live; 11.27 stimmt am Ende neu ab. Wertänderungen sind erlaubt, sie ändern laufende Spielstände nicht rückwirkend.
-- **Platzhalter:** Knoten ohne Karte bietet die Weltkarte nicht an (11.11); Platzhalter-Bilder und -Figuren (11.7, 11.25) dürfen live gehen.
+- **Platzhalter:** Knoten ohne Karte bietet die Weltkarte nicht an (11.11); Platzhalter-Figuren (11.7, 11.25) dürfen live gehen, Ortsbilder liegen vorab vor.
+- **Leerer Akt 2:** Alles Gemergte wirkt sofort, auch für Spieler auf „Weitere Missionen folgen“: Heimsuchungen (11.7), Akademie (10.2), Ausbau (10.1); 11.27 stimmt die Werte am Ende über alle Reihenfolgen ab (Produktinhaber 2026-11-07, Frage 4).
 
 **Datei-Zuständigkeit:** Epic 11 besitzt `content/acts/act2/**`, den Akt-Übergang, Gegner, Leutnants und Stahl-Items; Epic 10 besitzt `content/core/rooms.yaml` (einzige Ausnahme: 11.1 ergänzt bei den Akt-1-Räumen `{ act: 2 }`), die Profi-Klassen und den Glutfunken. In gemeinsamen Dateien ändert Epic 11 nur eigene Blöcke: „Gegnertypen“ in `classes.yaml`, „Akt 2: Stahl-Tier“ in `items.yaml`, in `balance.yaml` nur Akt-Schlüssel und die hier genannten.
 
@@ -87,7 +90,7 @@ damit jede Mission fordert, ohne zu überfordern.
 
 **Akzeptanzkriterien:**
 
-**Angenommen** `acts/act2/campaign.yaml` mit `positionLevel: { base: 11 }` `[ASSUMPTION]`
+**Angenommen** `acts/act2/campaign.yaml` mit `positionLevel: { base: 11 }` `[ASSUMPTION]` als Startwert; den endgültigen Wert setzt 11.4 nach der Messung (Produktinhaber 2026-11-07, Frage 6)
 **Wenn** ein Knoten seine Stufe braucht
 **Dann** liefert die reine Funktion `nodeLevel(data, c, node)` für Akte ohne `positionLevel` das Knotenfeld `expectedLevel` (Akt 1 unverändert) und sonst P = `base` + Zahl der erledigten Story-Knoten des Akts + `levelBonus` des Knotens; das gilt für Story- und Nebenquest-Knoten und ist replay-sicher
 **Und** alle Leser von `expectedLevel` (Taverne, Heimsuchung, Weltkarte, Vorbereitung, Dev-Start, Simulation) lesen danach `nodeLevel`; die Weltkarte zeigt auf Knoten von Akt 2 „Stufe ≈ P“ über `ui.map.level`.
@@ -121,7 +124,7 @@ Diese Story ist zusammen mit 11.1 der erste Live-Schritt von Akt 2 (F1).
 
 **Angenommen** die Weltkarte v5 (Stories 15.7, 15.12)
 **Wenn** `c.act` gerade 2 geworden ist
-**Dann** erscheint einmal die Titeltafel „Akt 2 · Glut“ (`act.2.title`, Feld `c.actTitleSeen`), danach lichtet sich der Nebel über Hochland und Küste bis an Aurenhall; das Akt-Band zeigt „Akt 2 · Herbst – Glut“ (`act.2.season`)
+**Dann** erscheint einmal die Titeltafel „Akt 2 · Glut“ (`act.2.title`, Feld `c.actTitleSeen`), danach lichtet sich der Nebel über Hochland und Küste bis an Aurenhall; Orte ohne spielbare Mission bleiben unter Nebel, und solange keine Mission offen ist, zeigt die Weltkarte das Band „Weitere Missionen folgen“ (`EXPERIENCE.md` State Patterns, UX-Log 2026-11-07); das Akt-Band zeigt „Akt 2 · Herbst – Glut“ (`act.2.season`)
 **Und** die Knoten von Akt 2 liegen an den Orten aus `geografie-valmora.md` (Windscharte, Salzpass, Rabenweide, Brandhang, Silberquell, Krähenholm, Kontor, Kronfeld, Kupferhall, Aue-Insel, Jagdgründe), Stadtbilder als Sprites wie in 15.12; Fehlendes zeigt den Rückfall aus 15.7
 **Und** nach dem Merge sperrt `pnpm content:lock` die IDs von `act2` (Kopfdateien, Knoten-Platzhalter); ein Fixture-Spielstand „Akt 2 ohne Missionen“ liegt unter `tests/fixtures/saves/` für die folgenden Live-Schritte
 **Und** Brandhang hat eine Zustandsvariante „verbrannt“ (`site.variants`, nach E7 `obey`); Bild und Prompt liegen unter `art/prompts/`; Tests decken `actTitleSeen`, `duePacks` und die Build-Regel ab.
@@ -138,7 +141,8 @@ damit jede Missions-Story ihren Korridor prüfen kann.
 **Wenn** ein Lauf startet
 **Dann** spielt er Akt 1 bis zum Finale, wechselt per Übergang in Akt 2 und spielt dessen Folge; der Bericht nennt Armee-Stufe und Gold beim Eintritt, die Goldkurve prüft `perAct['2']`
 **Und** neue Optionen: `--start expected` (Startarmee auf P ohne Akt-1-Lauf), `--position <k>` (setzt P), `--order` (Reihenfolge innerhalb der Paare), `--flags e07=warn` (Ausgang einer Entscheidung), `--map-file <pfad>`; sie stehen im Kopf von `tools/simulate.ts`
-**Und** `tests/unit/sim-acts.test.ts` belegt gleichen Bericht bei gleichem Seed sowie die Wirkung von `--position`, `--order` und `--flags`.
+**Und** `tests/unit/sim-acts.test.ts` belegt gleichen Bericht bei gleichem Seed sowie die Wirkung von `--position`, `--order` und `--flags`
+**Und** aus der gemessenen Armee-Stufe beim Eintritt (Akt 1 bleibt, wie er ist: vor 1-8 auf Normal 8,6, mit Heimsuchungen 9,5; 1-7 bekommt keine eigene EP-Quelle, GDD-Log 2026-11-07) setzt die Story `positionLevel.base` von Akt 2 und trägt Wert und Messung ins GDD-Log ein (Produktinhaber 2026-11-07, Frage 6).
 
 ### Story 11.5: Gefährten, Leutnants und Flags von Akt 2
 
@@ -223,7 +227,7 @@ damit der Akt sich anders anfühlt als Akt 1.
 **Angenommen** `content/acts/act2/haunts.yaml`
 **Wenn** Heimsuchungen entstehen
 **Dann** gibt es Pools je Fraktion ohne Flieger (`iron_march`, `silver_lance` mit `knight` statt `pegasus_knight`, `silver_sea`, `free_blades`) mit Stahl-Waffen, `civilian` und `chestLoot` `[ASSUMPTION]`; Gegner stehen auf `hauntLevel`
-**Und** Brettfiguren: Grenzheer nutzt `soldier`; Ritter der Lanze und Kaperfahrer nutzen vorhandene Modelle als Platzhalter, auch live und über Akt 2 hinaus, bis der Produktinhaber neu entscheidet (F2; vermerkt in `art/README.md`); Brann behält sein Modell.
+**Und** Brettfiguren: Grenzheer nutzt `soldier`; Ritter der Lanze und Kaperfahrer nutzen vorhandene Modelle als Platzhalter, auch live und über Akt 2 hinaus; neu entschieden wird erst nach 11.27 (F2, Produktinhaber 2026-11-07, Frage 10; vermerkt in `art/README.md`); Brann behält sein Modell.
 
 ### Story 11.8: Ziel-Phasen (Kern)
 
@@ -250,7 +254,7 @@ damit besondere Fundstücke mit dem Akt mitwachsen.
 **Angenommen** Relikte nach `items.md` §5
 **Wenn** ein Relikt eine Stufe erreicht
 **Dann** beschreibt das Item `stages` mit Bedingung, Bild und Wirkung; die Stufe ist eine reine Funktion des Kampagnenstands, Vorschau und Werte lesen sie
-**Und** `dragon_ember` (Stufe 1 schlafend MAG +2) und `pactwarden_shield` (Stufe 2 ab `completed m1_6`) sind angelegt `[ASSUMPTION]`; Stufen ab `completed m2_8` trägt 11.19 ein
+**Und** `dragon_ember` (Stufe 1 schlafend MAG +2) und `pact_warden_shield` (Stufe 2 ab `completed m1_6`; Id aus Akt 1, mit 9.14 gesperrt) sind angelegt `[ASSUMPTION]`; Stufen ab `completed m2_8` trägt 11.19 ein
 **Und** ein Spielstand aus dem Akt-1-Release mit Schild und erledigtem `m1_6` zeigt sofort Stufe 2; Tests decken Stufenwechsel und Vorschau = Auflösung ab.
 
 ### Story 11.10: Format-Reste für die Akt-2-Entwürfe
@@ -429,7 +433,8 @@ damit er sich der Truppe anschließt, statt sich vor seiner Glut zu verstecken.
 **Angenommen** der Entwurf `s2_n5_mine` (K 16 × 20, `treasure` 4 Truhen in 12 Runden, 7 gegen 15, Innen, Nebel)
 **Wenn** er übernommen ist
 **Dann** führt die verschlossene Mitteltür (Schlüssel beim Vorarbeiter, Fenn braucht keinen) oder das Gatter mit Hebel in die Knochenhalle; Brann im Westgang tritt bei, wenn Ilka ihn anspricht, sonst Lucan; wer ihn nicht anspricht, hat ihn für die Staffel nicht, die Quest ist trotzdem gewonnen
-**Und** die Drachenknochen im Fels tragen die Saat Drachen; die Truhen enthalten `dragon_ember` (11.9), Erd-Rune III, eine Chronik-Seite und Mondstahl.
+**Und** die Drachenknochen im Fels tragen die Saat Drachen; die Truhen enthalten `dragon_ember` (11.9), Erd-Rune III, eine Chronik-Seite und Mondstahl
+**Und** N5 gibt als Belohnung einen Glutfunken wie N4 (Entwurf `s2_n5_mine`, GDD „7 der 10 Nebenquests“; Produktinhaber 2026-11-07, Frage 9).
 
 ### Story 11.22: Nebenquest N6 „Die Gauklertruppe“
 
@@ -483,7 +488,7 @@ Als Spieler
 möchte ich Rowena auf dem Brett so sehen wie in ihrem Porträt,
 damit ich sie wiedererkenne.
 
-**F2 (Produktinhaber 2026-11-06):** Nur Rowena entsteht neu, mit dem Rest-Guthaben (205 Credits, eine Figur zu 140). Brann behält sein Modell, Ritter der Lanze und Kaperfahrer nutzen Platzhalter aus 11.7; über sie entscheidet der Produktinhaber später neu. Brakka bleibt, wie sie ist.
+**F2 (Produktinhaber 2026-11-06):** Nur Rowena entsteht neu, mit dem Rest-Guthaben (205 Credits, eine Figur zu 140). Brann behält sein Modell, Ritter der Lanze und Kaperfahrer nutzen Platzhalter aus 11.7; über sie entscheidet der Produktinhaber erst nach 11.27 (Frage 10 vom 2026-11-07). Brakka bleibt, wie sie ist.
 
 **Akzeptanzkriterien:**
 

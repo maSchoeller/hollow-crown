@@ -60,7 +60,7 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 
 **Akt 1 „Asche“ (Grenzland um Varnhold, Spätsommer):** Die Truppe ist auf der Flucht und gesucht. Im zerfallenden Grenzland plündern Banditen, und die Truppe findet sich: Neue Gefährten stoßen dazu, die ersten Leutnants tauchen auf. Erste Hinweise auf den Pakt zeigen sich, etwa dass die Könige jung starben und ein Ritual niemand versteht. Mitten im Akt erobert die Truppe eine Burgruine und hat damit eine Zuflucht und eine Heimat; darunter liegen die Gräber junger Könige. Im Finale muss sie die neue Heimat gegen die Kopfgeldjäger halten.
 
-**Akt 2 „Glut“ (Hochland der Eisenmark, Herbst):** Drei Thronanwärter bieten der Kompanie Freispruch gegen einen Auftrag. Die Truppe arbeitet für jeden einen Strang ab, in freier Reihenfolge, und deckt bei jedem eine Lüge auf. Der Verrat beginnt. Die Wende im Akt-Finale (große Schlacht) lautet: *„Die Krone war hohl.“*
+**Akt 2 „Glut“ (Hochland der Eisenmark, Herbst):** Drei Thronanwärter bieten der Kompanie Freispruch gegen einen Auftrag, nacheinander statt gleichzeitig: Seraphine und Dravn in 2-1, Maelis erst, als Dravns Lüge in 2-4 platzt. Die Truppe deckt bei jedem eine Lüge auf (Folge 2-1 → 2-2 ∥ 2-3 → 2-4 → 2-5 ∥ 2-6 → 2-7 → 2-8, `missionsliste-s1.md`). Der Verrat beginnt. Die Wende im Akt-Finale (große Schlacht) lautet: *„Die Krone war hohl.“*
 
 **Akt 3 „Krone“ (Aurenhall und Drachengebirge, Winter):** Die Drachen erwachen sichtbar. Die Truppe erfährt, wie der Opferpakt wirklich funktioniert und warum Aldric sterben musste. Zwei große Schlachten führen zum Finale. Der Mörder wird enttarnt und gestellt, der Name der Truppe ist reingewaschen. Die letzte Entscheidung lautet: **Wahrheit öffentlich machen oder verschweigen.** Danach folgt das Epilog-Mosaik, und die Wahl trägt in Staffel 2.
 
@@ -79,7 +79,7 @@ In der Nacht des Paktfestes stirbt König Aldric IV., und die Glutkrone verschwi
 7. **Zuflucht Paktwacht** (Mission 1-6): Der Hüter rät der Truppe zur verlassenen Paktwacht als Versteck. Sie erobert die Ruine und hat eine Heimat. Was er übersieht: In den Mauern liegen die Aufzeichnungen der alten Wächter.
 7b. **Die Heimat halten** (Akt-1-Finale): Die Kopfgeldjägerin Morra findet das Versteck und greift mit allen Banden an. Die Truppe verteidigt zum ersten Mal etwas, das ihr gehört.
 8. **Drei Angebote** (Akt-2-Einstieg): Drei Thronanwärter bieten Freispruch gegen einen Auftrag.
-9. **Drei Lügen:** In jedem Strang deckt die Truppe eine Lüge ihres Auftraggebers auf. Am Himmel ziehen Drachenschatten, ein Dorf brennt.
+9. **Drei Lügen:** Bei jedem Auftraggeber deckt die Truppe eine Lüge auf. Am Himmel ziehen Drachenschatten, ein Dorf brennt.
 10. **Die Chronik der Wächter:** Ein Gefährte entziffert in der Burg die Aufzeichnungen, die die Truppe in 1-7 versiegelt gefunden hat. Der Pakt verlangt etwas von den Königen, nur was genau, bleibt unklar.
 11. **Der Hinterhalt** (Akt-2-Finale, große Schlacht): Die Marionette des Hüters liefert die Truppe aus, der Freispruch war gelogen.
 12. **„Die Krone war hohl.“** (Mitte der Staffel): Nach der Schlacht wird die Wahrheit ausgesprochen: Der Pakt hält nicht durch Magie, sondern durch ein Opfer. Die Marionette glaubt, sie werde König. Sie ahnt nicht, dass der Hüter sie als nächstes Opfer ausersehen hat.
@@ -240,7 +240,7 @@ Pro Rolle sind das 3 Gefährten, nur beim Spielmann 2. Verteilt auf die Akte tre
 | Akt | Lager | Leutnants |
 |---|---|---|
 | 1 | Kopfgeldjäger und Banditen | **Grosk** (Banditenführer, Seitenwechsler), **Hask** (Marodeur-Hauptmann), **Morra** (Kopfgeldjägerin), **Ulvric** (Wolfsreiter) |
-| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Pegasusritterin der Prinzessin), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin; fährt in Akt 1 ungesehen das Bandengold zu Hask), **Brakka** (Wyvernreiterin, Söldnerin für den Meistbietenden; die einzige Wyvernreiterin des Spiels, Wyvernreiter gibt es nicht als Gegnertyp) |
+| 2 | Champions der Anwärter, dazu ein Wildcard | **Dame Rowena** (Lanzenritterin der Prinzessin, kämpft zu Fuß, verteidigt ihr Gestüt), **Sable** (Dravns Hauptfrau, Seitenwechslerin), **Kapitän Grell** (Kaperkapitän der Herzogin; fährt in Akt 1 ungesehen das Bandengold zu Hask), **Brakka** (Ballistenmeisterin zu Fuß, Söldnerin für den Meistbietenden). Keine Flieger und keine Reiter in Staffel 1 (Narrative-Log 2026-11-05) |
 | 3 | Paktgarde des Hüters | **Inquisitor Cassian**, **Mael** (Seitenwechsler), **Hauptmann Torvald**, **Wächterin Eluned** |
 
 Signaturwaffen: Vorschlag in `concept/21-gdd/items.md` §6.3. Groll-Fähigkeiten und Groll-Zeilen folgen in Schritt 6 (Dialog) bzw. 9 (Integration).
@@ -359,7 +359,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 
 | Fraktion | Führung | Ziel | Rolle in der Story |
 |---|---|---|---|
-| **Die Krone** und die Ritter der **Silbernen Lanze** | Prinzessin Seraphine, Pegasusritterin Dame Rowena | Thronfolge, Rache für Aldric | Akt-2-Strang, Verrat im Akt-2-Finale; Lucans verstoßenes Ritterhaus dient der Krone (Staffel 2) |
+| **Die Krone** und die Ritter der **Silbernen Lanze** | Prinzessin Seraphine, Lanzenritterin Dame Rowena | Thronfolge, Rache für Aldric | Akt-2-Strang, Verrat im Akt-2-Finale; Lucans verstoßenes Ritterhaus dient der Krone (Staffel 2) |
 | **Grenzheer der Eisenmark** | General Dravn, Hauptfrau Sable | Drachen bekämpfen statt Pakt | Akt-2-Strang (Brandschneise), Sables Wechsel; Dravns Kasse zahlt das Bandengold aus Akt 1 mit |
 | **Haus Silbermeer** | Herzogin Maelis, Kapitän Grell | Macht durch Geld, die Krone schwächen | Akt-2-Strang; hat heimlich die Banden aus Akt 1 finanziert (über Grell an Hask) |
 | **Pakttempel** und **Paktgarde** | Ehrwürden Halvard; Cassian, Torvald, Eluned | Pakt und Geheimnis um jeden Preis erhalten | Mentor in Akt 1, Antagonist in Akt 3 |
@@ -480,7 +480,7 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 **Set Dressing:**
 
 - **Die Glutfarbe:** Jedes Mitglied der Truppe trägt ein glutorangefarbenes Stoffstück (#E8743B). Neue Gefährten bekommen es beim Beitritt, und Seitenwechsler binden es sich sichtbar um.
-- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel. Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein. Wer die Truppe verlässt, nimmt seinen Gegenstand mit. Am Platz steht nur der Gegenstand, nicht die Figur.
+- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel (vollständige Liste mit Raum und Platz als Vorschlag zur Abnahme in `burg-gegenstaende-vorschlag.md`). Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein. Wer die Truppe verlässt, nimmt seinen Gegenstand mit. Am Platz steht nur der Gegenstand, nicht die Figur.
 - **Steckbriefe:** In Akt 1 hängen in Dörfern Steckbriefe der Truppe, in Akt 3 werden sie abgerissen oder übermalt.
 
 **Environmental Details:**
@@ -612,7 +612,7 @@ Gespielte Karten bleiben als Miniatur-Dioramen auf der Weltkarte und verändern 
 
 **Heimsuchungen:** Groll-Zeilen und Steckbriefe der Leutnants.
 
-**Nach dem Staffelfinale:** Es geht auf der Weltkarte weiter: Heimsuchungen, offene Nebenquests, Supports, Burg ausbauen. Der Spielstand trägt in Staffel 2. Kein NG+.
+**Nach dem Staffelfinale:** Es geht auf der Weltkarte weiter: Heimsuchungen, offene Nebenquests, Supports, Burg ausbauen. Der Spielstand trägt in Staffel 2: Staffel 2 übernimmt alles, Truppe, Ausrüstung, Burgstufen und Flags (Produktinhaber 2026-11-07; endgültig vor Epic 12). Kein NG+.
 
 ---
 
