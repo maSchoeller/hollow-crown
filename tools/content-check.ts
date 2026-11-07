@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 import { loadContentFromDisk, contentFiles } from '../src/content/node';
 import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/content/packs';
-import { checkLockedIds, collectIds, releasedIdsSchema, renamesSchema, type Renames } from '../src/content/ids';
+import { checkLockedIds, collectIds, ID_KINDS, releasedIdsSchema, renamesSchema, type IdSets, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
 import { unshippedGalleryModels, validateBoardModels, validateSeasons } from '../src/content/validateLook';
 
@@ -60,6 +60,10 @@ try {
     const locked = releasedIdsSchema.parse(JSON.parse(readFileSync(lockFile, 'utf8')));
     lockedCount = Object.values(locked.ids).reduce((n, l) => n + l.length, 0);
     idIssues.push(...checkLockedIds(locked, collectIds(data), renames));
+  } else {
+    // before the first lock the save migration already applies renames.yaml (players keep their saves): its targets must exist
+    const none = Object.fromEntries(ID_KINDS.map((k) => [k, []])) as unknown as IdSets;
+    idIssues.push(...checkLockedIds({ lockedAt: '', packs: [], ids: none }, collectIds(data), renames));
   }
 } catch (e) {
   idIssues.push({ file: 'released-ids.json / renames.yaml', message: e instanceof Error ? e.message : String(e) });

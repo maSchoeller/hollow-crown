@@ -16,6 +16,7 @@ import {
   deleteCampaign,
   exportSave,
   importSave,
+  SAVE_FORMAT,
   listCampaigns,
   listLegacy,
   listSaves,
@@ -79,7 +80,7 @@ describe('save format 2 (concept/24 §5.15)', () => {
     });
     const rec = await writeSave(meta.id, 'auto', format2.payload, opts('2026-10-23T11:00:00.000Z', 1500));
     expect(rec).toMatchObject({
-      format: 2,
+      format: SAVE_FORMAT,
       campaignId: meta.id,
       slot: 'auto',
       contentVersion: 'cv1',
@@ -133,8 +134,8 @@ describe('save format 2 (concept/24 §5.15)', () => {
     await expect(newCampaignMeta()).resolves.toBeDefined();
   });
 
-  it('exports and imports format 2 and rejects PoC saves and tampered files', () => {
-    expect(importSave(exportSave(format2))).toEqual(format2);
+  it('exports and imports (migrating format 2) and rejects PoC saves and tampered files', () => {
+    expect(importSave(exportSave(format2))).toEqual({ ...format2, format: SAVE_FORMAT });
     expect(() => importSave(exportSave(format1))).toThrow('legacy');
     const tampered = JSON.parse(exportSave(format2)) as { body: string };
     tampered.body = tampered.body.replace('"Ilsa"', '"Eve"');

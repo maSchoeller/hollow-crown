@@ -1,0 +1,16 @@
+# Renamed content IDs (architecture §5.16, story 7.4): per kind, old ID → new ID. The save migration (format 2 → 3)
+# replaces them in every save; `content:check` checks that each target exists.
+chars:
+  kael: lucan          # story 15.6 (PR #116): Kael is Lucan now
+scenes:
+  scn.bark.kael: scn.bark.lucan
+  scn.support.avatar_kael.A: scn.support.avatar_lucan.A
+  scn.support.avatar_kael.B: scn.support.avatar_lucan.B
+  scn.support.avatar_kael.C: scn.support.avatar_lucan.C
+  scn.support.avatar_kael.S: scn.support.avatar_lucan.S
+  scn.support.brenna_kael.A: scn.support.brenna_lucan.A
+  scn.support.brenna_kael.B: scn.support.brenna_lucan.B
+  scn.support.brenna_kael.C: scn.support.brenna_lucan.C
+  scn.support.brenna_kael.S: scn.support.brenna_lucan.S
+  scn.m1_5.varek_spotted: scn.n2.varek_spotted   # story 15.6: the Varek scenes moved to the watchtower (n2)
+  scn.m1_5.varek_talk: scn.n2.varek_talk

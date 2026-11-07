@@ -24,6 +24,7 @@ import {
   type PackFile,
   type PacksManifest,
 } from '../../src/content/packs.ts';
+import { renamesSchema, type Renames } from '../../src/content/ids.ts';
 
 const INDEX_ID = 'virtual:hc-packs';
 const PACK_PREFIX = packModuleId('');
@@ -68,6 +69,12 @@ export function builtPack(def: PackDef, files: PackFile[]): BuiltPack {
   };
 }
 
+/** `content/renames.yaml` (story 7.4), validated; empty when the file is missing. The save migrations read it. */
+export function readRenames(root: string): Renames {
+  const file = join(root, 'content', 'renames.yaml');
+  return existsSync(file) ? renamesSchema.parse(parse(readFileSync(file, 'utf8')) ?? {}) : {};
+}
+
 export interface PacksPlugin extends Plugin {
   /** dist paths that belong to a pack other than core (filled after the build) */
   nonCorePaths(): ReadonlySet<string>;
@@ -108,6 +115,7 @@ export function packsPlugin(root = process.cwd()): PacksPlugin {
       `export const packs = ${JSON.stringify(meta)};`,
       `export const contentIndex = ${JSON.stringify({ maps, scenes })};`,
       `export const loaders = {\n${loaders}\n};`,
+      `export const renames = ${JSON.stringify(readRenames(root))};`,
     ].join('\n');
   };
 
@@ -122,6 +130,7 @@ export function packsPlugin(root = process.cwd()): PacksPlugin {
       packs = readPacks(root);
       chunkPack.clear();
       this.addWatchFile(join(root, 'content', 'packs.yaml'));
+      this.addWatchFile(join(root, 'content', 'renames.yaml'));
     },
     resolveId(id) {
       if (id === INDEX_ID || id.startsWith(PACK_PREFIX)) return `\0${id}`;

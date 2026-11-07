@@ -1,12 +1,14 @@
 /**
- * Save games, format 2 (concept/24-architecture §5.15): IndexedDB `hollow-crown` v2 with up to three
+ * Save games, format 3 (concept/24-architecture §5.15; format 3 = format 2 with the IDs of content/renames.yaml): IndexedDB `hollow-crown` v2 with up to three
  * campaigns, an auto slot + 3 manual slots each, a command journal and the untouched PoC saves (`legacy`).
  */
 import { openDB, type IDBPDatabase, type IDBPTransaction } from 'idb';
+import { renames } from 'virtual:hc-packs';
+import { applyRenames } from '../content/ids';
 import { saveRecordSchema } from './schema';
 import type { BattleState, CampaignState, Command, DeathMode, Difficulty, QueuedEffects } from '../core';
 
-export const SAVE_FORMAT = 2;
+export const SAVE_FORMAT = 3;
 export const DB_NAME = 'hollow-crown';
 export const DB_VERSION = 2;
 export const MAX_CAMPAIGNS = 3;
@@ -26,7 +28,8 @@ export interface SavePayload {
 }
 
 export interface SaveRecord {
-  format: 2;
+  /** 3 since the rename migration; older records (2) are migrated on reading */
+  format: number;
   campaignId: string;
   slot: SlotId;
   createdAt: string;
@@ -80,7 +83,11 @@ export const APP_VERSION: string = import.meta.env?.VITE_APP_VERSION ?? '0.1.0';
  * tests/fixtures/saves/ written by the release it migrates from; `tests/unit/migrations.test.ts` fails without one.
  * A migration that follows a rename reads `content/renames.yaml` through `renamedId` (src/content/ids.ts, story 7.4).
  */
-const migrations: Record<number, (r: SaveRecord) => SaveRecord> = {};
+const migrations: Record<number, (r: SaveRecord) => SaveRecord> = {
+  // story 15.6 renamed Kael to Lucan (and moved scenes) after players had saves: roster, fallen, flags, supports, answers,
+  // seen scenes, the running battle and its command log all carry the old IDs. Replacing is idempotent.
+  2: (r) => ({ ...applyRenames(r, renames), format: 3 }),
+};
 
 /** From-formats that have a migration (for the fixture test). */
 export const migrationFormats = (): number[] => Object.keys(migrations).map(Number);

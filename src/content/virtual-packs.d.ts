@@ -13,4 +13,6 @@ declare module 'virtual:hc-packs' {
   export const contentIndex: { maps: Record<string, string>; scenes: Record<string, string> };
   /** content import per pack other than core */
   export const loaders: Record<string, () => Promise<Record<string, unknown>>>;
+  /** content/renames.yaml: per ID kind, old ID → new ID (the save migrations apply it) */
+  export const renames: import('./ids').Renames;
 }

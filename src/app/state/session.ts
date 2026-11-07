@@ -26,7 +26,7 @@ import {
   type QueuedEffects,
 } from '../../core';
 import { loadContent } from '../../content/browser';
-import { setAvatar, setLocales } from '../../i18n';
+import { setAvatar, setLocales, setMissingHandler } from '../../i18n';
 import { createAutoSaver, createPlayClock } from '../../persistence/autosave';
 import { createJournalWriter, needsUpdateCheckpoint, type CheckpointReason } from '../../persistence/journal';
 import { log } from '../log';
@@ -35,6 +35,7 @@ import {
   CampaignLimitError,
   contentVersionOf,
   APP_VERSION,
+  SAVE_FORMAT,
   createCampaign,
   deleteCampaign,
   listCampaigns,
@@ -52,6 +53,7 @@ import { afterFirstSave, devSaveFailure, noteSaveResult } from './protection';
 const loaded = loadContent();
 export const data: GameData = loaded.data;
 setLocales(loaded.locales);
+setMissingHandler((key) => log.warn('content', 'missing text', key));
 export const contentVersion = contentVersionOf(data);
 
 export const campaign = signal<CampaignState | null>(null);
@@ -99,7 +101,7 @@ export function currentSaveRecord(): SaveRecord | null {
   const id = campaignId.value;
   if (!c || !id) return null;
   return {
-    format: 2,
+    format: SAVE_FORMAT,
     campaignId: id,
     slot: 'auto',
     createdAt: nowIso(),

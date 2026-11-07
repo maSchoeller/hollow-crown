@@ -95,3 +95,35 @@ export function renamedId(renames: Renames, kind: IdKind, id: string): string {
   }
   return cur;
 }
+
+const escape = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * A save value with every renamed ID replaced (story 7.4, for the save migrations): an ID of any kind is replaced where
+ * a string is that ID or starts with it plus `#` (answers are keyed `<scene>#<line>`); a character ID also inside the
+ * keys built from it (`unit.<id>.name`, support pairs `a|b`, `scn.support.a_b.A`, bark scenes), as a whole word between
+ * non-alphanumerics. Object keys are treated like strings; the custom names of the avatar and recruits (`name`) stay.
+ */
+export function applyRenames<T>(value: T, renames: Renames): T {
+  const exact = new Map<string, string>();
+  for (const kind of ID_KINDS) for (const from of Object.keys(renames[kind] ?? {})) exact.set(from, renamedId(renames, kind, from));
+  const chars = Object.keys(renames.chars ?? {});
+  if (exact.size === 0) return value;
+  const word = chars.length ? new RegExp(`(?<![A-Za-z0-9])(${chars.map(escape).join('|')})(?![A-Za-z0-9])`, 'g') : null;
+  const str = (s: string): string => {
+    const hash = s.indexOf('#');
+    const head = hash < 0 ? s : s.slice(0, hash);
+    const hit = exact.get(head);
+    if (hit !== undefined) return hit + s.slice(head.length);
+    return word ? s.replace(word, (id) => renamedId(renames, 'chars', id)) : s;
+  };
+  const walk = (v: unknown): unknown => {
+    if (typeof v === 'string') return str(v);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === 'object') {
+      return Object.fromEntries(Object.entries(v).map(([k, x]) => [str(k), k === 'name' ? x : walk(x)]));
+    }
+    return v;
+  };
+  return walk(value) as T;
+}
