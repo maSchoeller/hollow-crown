@@ -6,8 +6,9 @@ import { applyAct, moveAfterAction } from '../battle/apply';
 import type { Action } from '../battle/commands';
 import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero, withdraw } from '../rules/effects';
-import { expectedDamage, forecast } from '../rules/combat';
-import { holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
+import { expectedDamage, forecast, type Forecast } from '../rules/combat';
+import { ballistaForecast, ballistaTargets } from '../rules/ballista';
+import { crewSpots, holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -124,40 +125,82 @@ export function bestApproach(data: GameData, s: BattleState, u: BattleUnit, goal
   return samePos(best, u.pos) ? null : best;
 }
 
-export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[], onlyTarget?: string): Plan[] {
+/** What scoring a plan needs once per unit (`attackPlans`, `ballistaPlans`). */
+function scoreContext(data: GameData, s: BattleState, u: BattleUnit) {
   const diff = data.balance.difficulty[s.settings.difficulty];
-  const w = data.balance.ai;
-  const plans: Plan[] = [];
-  const map = mapOf(data, s);
-  const victory = map.objectives.victory;
+  const victory = mapOf(data, s).objectives.victory;
   const objectiveUnit = victory.type === 'defend' || victory.type === 'escort' ? victory.unit : undefined;
   const danger = diff.aiDangerAware ? dangerMap(data, s, u) : undefined;
+  return { diff, w: data.balance.ai, objectiveUnit, danger };
+}
+type ScoreContext = ReturnType<typeof scoreContext>;
+
+/** A downed target where finishing is off, or nothing dies (noDeath map), is worth no plan. */
+const skipTarget = (data: GameData, s: BattleState, ctx: ScoreContext, t: BattleUnit): boolean =>
+  t.downed && (ctx.diff.aiFinishDowned === 'never' || deathless(data, s, t));
+
+/** Score of striking `t` from `pos` with the forecast `f`: one formula for attacks and ballista shots. */
+function planScore(data: GameData, s: BattleState, u: BattleUnit, ctx: ScoreContext, t: BattleUnit, pos: Pos, f: Forecast): number {
+  const { diff, w, objectiveUnit, danger } = ctx;
+  const e = expectedDamage(f);
+  let score = e.dealt + w.killChanceWeight * e.killChance - w.counterWeight * e.taken;
+  const tCls = data.classes[t.classId]!;
+  if (tCls.weaponGroups.includes('staff') || tCls.weaponGroups.includes('anima')) score += w.healerBonus;
+  if (t.hp <= Math.min(...hostileUnits(s, u).filter(active).map((o) => o.hp))) score += w.lowestHpBonus;
+  if (objectiveUnit && (t.id === objectiveUnit || t.uid === objectiveUnit)) score += w.objectiveBonus;
+  if (u.lieutenant && (u.grudge ?? 0) >= 1 && u.grudgeTarget && t.id === u.grudgeTarget) score += w.grudgeTargetBonus;
+  if (t.downed) score = diff.aiFinishDowned === 'prefer' ? score + w.objectiveBonus : -1000 + score;
+  const terr = data.terrain[terrainAt(s, pos)];
+  score += ((terr?.def ?? 0) + (terr?.avoid ?? 0) / 10) * 0.5;
+  score += levelAt(data, s, pos) * w.highGroundBonus;
+  if (danger) score -= (danger.get(posKey(pos)) ?? 0) * w.dangerPerAttacker;
+  return score;
+}
+
+const byScore = (a: Plan, b: Plan) => b.score - a.score || a.to[1] - b.to[1] || a.to[0] - b.to[0];
+
+export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[], onlyTarget?: string): Plan[] {
+  const ctx = scoreContext(data, s, u);
+  const plans: Plan[] = [];
   for (const pos of origins) {
     const targets = attackTargets(data, s, u, pos);
     for (const [tid, weapons] of Object.entries(targets)) {
       if (onlyTarget && tid !== onlyTarget) continue;
       const t = getUnit(s, tid);
-      if (t.downed && (diff.aiFinishDowned === 'never' || deathless(data, s, t))) continue; // nothing to finish on a noDeath map
+      if (skipTarget(data, s, ctx, t)) continue; // nothing to finish on a noDeath map
       for (const wid of weapons) {
         const f = forecast(data, s, u.uid, tid, wid, pos);
-        const e = expectedDamage(f);
-        let score = e.dealt + w.killChanceWeight * e.killChance - w.counterWeight * e.taken;
-        const tCls = data.classes[t.classId]!;
-        if (tCls.weaponGroups.includes('staff') || tCls.weaponGroups.includes('anima')) score += w.healerBonus;
-        if (t.hp <= Math.min(...hostileUnits(s, u).filter(active).map((o) => o.hp))) score += w.lowestHpBonus;
-        if (objectiveUnit && (t.id === objectiveUnit || t.uid === objectiveUnit)) score += w.objectiveBonus;
-        if (u.lieutenant && (u.grudge ?? 0) >= 1 && u.grudgeTarget && t.id === u.grudgeTarget) score += w.grudgeTargetBonus;
-        if (t.downed) score = diff.aiFinishDowned === 'prefer' ? score + w.objectiveBonus : -1000 + score;
-        const terr = data.terrain[terrainAt(s, pos)];
-        score += ((terr?.def ?? 0) + (terr?.avoid ?? 0) / 10) * 0.5;
-        score += levelAt(data, s, pos) * w.highGroundBonus;
-        if (danger) score -= (danger.get(posKey(pos)) ?? 0) * w.dangerPerAttacker;
-        plans.push({ to: pos, action: { kind: 'attack', target: tid, weapon: wid }, score });
+        plans.push({ to: pos, action: { kind: 'attack', target: tid, weapon: wid }, score: planScore(data, s, u, ctx, t, pos, f) });
       }
     }
   }
-  plans.sort((a, b) => b.score - a.score || a.to[1] - b.to[1] || a.to[0] - b.to[0]);
+  plans.sort(byScore);
   // fallback rule on Normal: finish downed units only if nothing else is attackable
+  return plans;
+}
+
+/**
+ * Balliste (story 11.6): the shots the unit could fire from `origins` (tiles beside a ballista), scored like attacks, best first.
+ * The enemy AI passes its `crewSpots` (hold walks to a ballista, the others shoot only from where they stand), the autoplay its walk.
+ */
+export function ballistaPlans(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[]): Plan[] {
+  const plans: Plan[] = [];
+  if (!origins.length || !s.objects.some((o) => o.type === 'ballista')) return plans;
+  const ctx = scoreContext(data, s, u);
+  const done = new Set<string>();
+  for (const pos of origins) {
+    if (done.has(posKey(pos))) continue;
+    done.add(posKey(pos));
+    for (const [object, targets] of Object.entries(ballistaTargets(data, s, u, pos))) {
+      for (const tid of targets) {
+        const t = getUnit(s, tid);
+        if (skipTarget(data, s, ctx, t)) continue;
+        const f = ballistaForecast(data, s, u.uid, object, tid, pos);
+        plans.push({ to: pos, action: { kind: 'ballista', object, target: tid }, score: planScore(data, s, u, ctx, t, pos, f) });
+      }
+    }
+  }
+  plans.sort(byScore);
   return plans;
 }
 
@@ -391,6 +434,24 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     // Wirken instead of attacking: hold-like profiles cast where they stand, the others from any tile they can reach
     const cast = castPlan(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here);
     if (cast) return act(cast);
+  }
+  // Balliste (story 11.6): a crew fires when the shot beats its best attack; without a ballista nothing is planned here
+  const spots = crewSpots(data, s, u);
+  if (spots.length) {
+    // a healer heals first when it can
+    const healer = profile === 'support' || data.classes[u.classId]!.weaponGroups.includes('staff');
+    const heal = healer ? healPlan(data, s, u, profile === 'support' ? all : here) : null;
+    if (heal) return act(heal);
+    let shots = ballistaPlans(data, s, u, spots.map((c) => c.from));
+    // a hunter shoots only at its target while the ballista reaches it, and weighs it against the blows at that target
+    const prey = profile === 'hunt' && ai.target ? s.units.find((o) => (o.id === ai.target || o.uid === ai.target) && onMap(o)) : undefined;
+    const atPrey = prey ? shots.filter((p) => p.action.kind === 'ballista' && p.action.target === prey.uid) : [];
+    if (atPrey.length) shots = atPrey;
+    const shot = shots[0];
+    if (shot) {
+      const best = attackPlans(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here, atPrey.length ? prey!.uid : undefined)[0];
+      if (!best || shot.score > best.score) return act(shot);
+    }
   }
   switch (profile) {
     case 'trigger':

@@ -8,7 +8,7 @@ import type { BattleState, BattleUnit } from '../state';
 import type { ActionOption } from './actions';
 
 /** Order of the context bands: Bergen, Ansprechen, Besuchen, Öffnen, then the older ones of story 2.1. */
-export const CONTEXT_ORDER = ['rescue', 'talk', 'visit', 'open', 'chest', 'door', 'lever', 'seize', 'escape', 'trade', 'convoy'] as const;
+export const CONTEXT_ORDER = ['rescue', 'talk', 'visit', 'open', 'chest', 'door', 'lever', 'ballista', 'seize', 'escape', 'trade', 'convoy'] as const;
 export type ContextKind = (typeof CONTEXT_ORDER)[number];
 
 /** Locale key (and its parameters) of the short reason under the title; never names the reward. */
@@ -66,6 +66,7 @@ export function contextEntries(data: GameData, s: BattleState, options: ActionOp
       case 'chest':
       case 'door':
       case 'lever':
+      case 'ballista':
         out.push({ id: `${kind}:${o.object ?? ''}`, kind, option: o, reason: { key: `ui.ctx.${kind}Sub` }, urgency: 0 });
         break;
       case 'trade':

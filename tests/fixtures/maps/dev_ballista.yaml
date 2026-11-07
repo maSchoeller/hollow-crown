@@ -1,0 +1,51 @@
+# Probekarte der Balliste (Story 11.6). Gehört zu keinem Paket, kommt nicht in den Build. Im Spiel: `await __hc.devMap('dev_ballista')`.
+#
+# Süden: die Truppe, die Spielerballiste [4,9] auf dem Feld, der Späher steht schon daneben. Norden: eine Gegnerballiste [9,2] auf dem Wehrgang
+# (Stufe 1, von oben +1 Reichweite) mit einem Bediener im Profil hold daneben; ein Plünderer ohne Profil zieht auf die Truppe zu.
+#          x: 0123456789AB
+terrain: |
+  ,,,,,,,,,,,,
+  ,,,,,,,,====
+  ,,,,,,,,,b==
+  ,,,,,,,,,,s,
+  ,,,,,,,,,,,,
+  ,,,T,,,,,,,,
+  ,,,,,,,,,,,,
+  ,,,,,,,T,,,,
+  ,,,,,,,,,,,,
+  ,,,,b,,,,,,,
+  ,,,,,,,,,,,,
+  ,,,,,,,,,,,,
+id: dev_ballista
+nameKey: map.prologue_paktnacht.name
+size: [12, 12]
+fog: false
+legend:
+  ",": grass
+  "T": forest
+  "=": rampart
+  "s": stairs
+  "b": ballista
+levels:
+  - { level: 1, area: { tiles: [[9, 2]] } }
+objects:
+  - { id: dev_ballista_s, type: ballista, at: [4, 9] }
+  - { id: dev_ballista_n, type: ballista, at: [9, 2] }
+initialEffects: []
+deploy: { max: 0, forced: [], slots: [] }
+units:
+  - { id: dev_scout, team: player, class: scout, level: 5, at: [4, 10], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
+  - { id: dev_vanguard, team: player, class: vanguard, level: 5, at: [3, 10], sprite: soldier, items: [{ def: iron_lance }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, level: 5, at: [6, 10], sprite: bandit_archer, items: [{ def: iron_bow }, { def: vulnerary }] }
+  - { id: dev_crew, team: enemy, class: brigand, level: 3, at: [10, 1], sprite: brigand, ai: { profile: hold }, items: [{ def: iron_axe }] }
+  - { id: dev_raider, team: enemy, class: brigand, level: 3, at: [5, 4], sprite: brigand, items: [{ def: iron_axe }] }
+  - { id: dev_archer, team: enemy, class: marksman, level: 3, at: [2, 3], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: iron_bow }] }
+pairs: []
+reinforcements: []
+objectives:
+  victory: { type: rout }
+  defeat:
+    - { type: unit_dies, unit: dev_vanguard }
+  side: []
+triggers: []
+goldReward: 0

@@ -95,6 +95,9 @@ handbook:
     elemMax: "At most"
     fireRounds: "Fire: rounds"
     rangeFromAbove: "From above: range"
+    boltMight: "Bolt: might"
+    rangeMin: "Range from"
+    rangeMax: "Range to"
     enter: "Damage on entering"
     spread: "Spread per round"
     wallRounds: "Rock wall: rounds"
@@ -251,6 +254,11 @@ handbook:
       text: "There are three levels: the field, wall walks, roofs and terraces, towers and crags. Roofs are for those on foot only. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs. Not with a flier in the fight: it strikes and is struck across any level."
       where: "A tile's level is shown in the terrain info; the board shows the reach."
       keywords: "height, level, wall walk, roof, terrace, ramp, stairs, ladder, tower"
+    ballista:
+      title: "Ballista"
+      text: "A siege engine any unit on foot or in armour works from a neighbouring tile; nobody steps onto its tile. The bolt has might {boltMight} plus the crew's strength, hit {boltHit}, range {rangeMin} to {rangeMax} from the engine, {rangeFromAbove} further from a higher level. No counter, the bolts never run out; one shot per phase and engine, the shot is the action. Foes use it too."
+      where: "“Fire the ballista” appears in the green context band when a unit stands next to the engine."
+      keywords: "ballista, siege, siege engine, engine, bolt, ranged, height"
     doors:
       title: "Doors and gates"
       text: "Closed doors and gates block the way and the view. A key opens them, the scout manages without, a lever or an event may too; open ones are free passage."
@@ -518,6 +526,11 @@ handbook:
       text: "From the prologue: from above a bow reaches one tile farther; the stairs lead up."
       where: "In the prologue “The Pact Night”, before the inner gate."
       keywords: "lesson, prologue, height, rampart, stairs, archer"
+    lesson_ballista:
+      title: "Lesson: Ballista"
+      text: "From the second act: how to work a siege engine from a neighbouring tile and why it never strikes back."
+      where: "In the first mission of the second act, once the company reaches the ballista."
+      keywords: "lesson, ballista, siege, siege engine, engine, bolt, ranged"
     lesson_triangle:
       title: "Lesson: weapon triangle"
       text: "From the first mission: which weapon beats which and how the forecast shows it."

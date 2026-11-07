@@ -248,7 +248,8 @@ function whenMatches(s: BattleState, t: TriggerDef, ctx: TriggerCtx): boolean {
     case 'object_destroyed':
       return s.objects.some((o) => o.id === w.object && o.state === 'razed');
     case 'object_activated':
-      return s.objects.some((o) => o.id === w.object && (o.state === 'open' || o.state === 'visited'));
+      // a ballista is never activated: its `open` only means it has fired this phase (story 11.6)
+      return s.objects.some((o) => o.id === w.object && o.type !== 'ballista' && (o.state === 'open' || o.state === 'visited'));
     case 'talked':
       return s.stats.recruited.includes(w.unit);
     case 'hp_below': {
@@ -298,6 +299,8 @@ export function beginPhase(data: GameData, s: BattleState, team: Team, events: G
     u.moved = false;
     u.freeUsed = {};
   }
+  // a ballista is loaded again for the new phase (story 11.6)
+  for (const o of s.objects) if (o.type === 'ballista' && o.state === 'open') o.state = 'closed';
   events.push({ t: 'phase', phase: team, turn: s.turn });
   runReinforcements(data, s, events);
   runTriggers(data, s, { kind: 'phase' }, events);

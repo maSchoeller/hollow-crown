@@ -259,7 +259,8 @@ export function itemInfo(data: GameData, item: ItemInstance | string): ItemInfo 
   return {
     def: d,
     type: type.join(' · '),
-    desc: t(`item.${d.id}.desc`),
+    // a description may name the item's range (ballista bolt, story 11.6): the numbers come from items.yaml
+    desc: t(`item.${d.id}.desc`, d.rng ? { rngMin: d.rng[0], rngMax: d.rng[1] } : undefined),
     facts,
     effects,
     skill: d.grantsSkill && {

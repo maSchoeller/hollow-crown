@@ -56,7 +56,7 @@ describe('packOf', () => {
 
 describe('parsePacks', () => {
   it('reads content/packs.yaml with core first', () => {
-    expect(realPacks.map((p) => p.id)).toEqual(['core', 'act1', 'voice.act1.de', 'voice.act1.en']);
+    expect(realPacks.map((p) => p.id)).toEqual(['core', 'act1', 'act2', 'voice.act1.de', 'voice.act1.en']);
     expect(realPacks.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act1']);
   });
   it('rejects a file without core first or with duplicate ids', () => {

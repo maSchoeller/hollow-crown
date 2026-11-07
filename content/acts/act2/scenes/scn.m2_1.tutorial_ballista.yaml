@@ -1,0 +1,25 @@
+# 2-1: Lektion Balliste (Story 11.6), ausgelöst von Story 11.12 per Karten-Trigger, sobald die Truppe die erste Balliste erreicht.
+# Die Regeln sagt Lucan (immer dabei); Brenna ergänzt nur, wenn sie lebt (fallback: skip). Die Akt-2-Gefährten kommen mit Story 11.5.
+id: scn.m2_1.tutorial_ballista
+lines:
+  - id: l01
+    speaker: [brenna]
+    fallback: skip
+    mood: neutral
+    text: "Eine Balliste! Damit holen wir sie von weitem herunter."
+  - id: l02
+    speaker: [lucan]
+    mood: neutral
+    text: "Wer zu Fuß daneben steht, kann sie richten. Auf ihr Feld selbst kommt keiner."
+  - id: l03
+    speaker: [lucan]
+    mood: neutral
+    text: "Ein Schuss je Runde, und er ist die ganze Tat dessen, der sie richtet."
+  - id: l04
+    speaker: [lucan]
+    mood: neutral
+    text: "Der Bolzen fliegt weit, nie ins Nachbarfeld, und wen er trifft, der schlägt nicht zurück."
+  - id: l05
+    speaker: [lucan]
+    mood: neutral
+    text: "Von oben trägt sie weiter. Und Vorsicht: Steht ein Gegner daneben, zielt sie auf uns."

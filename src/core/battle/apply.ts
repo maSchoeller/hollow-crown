@@ -8,6 +8,7 @@ import { resolveAttack } from '../rules/combat';
 import { applyStatus, damageUnit, endOfPhase, extinguishTile, igniteTile, startOfPhase, tickTerrain } from '../rules/effects';
 import { addToBag, bagIsFull, canEquip, itemDef, weaponProfile } from '../rules/items';
 import { resolveCast } from '../rules/cast';
+import { ballistaMods } from '../rules/ballista';
 import { goesToConvoy } from '../rules/scout';
 import { destinations, pathTo, pursueReach, reachable, walkPath, type Walk } from '../rules/movement';
 import { expPercent, grantExp } from '../rules/progression';
@@ -79,6 +80,8 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
       return opts.some((o) => o.kind === 'open' && o.object === a.object) ? null : 'invalid_target';
     case 'steal':
       return opt.stealable?.[a.target]?.includes(a.item) ? null : 'invalid_target';
+    case 'ballista':
+      return opts.some((o) => o.kind === 'ballista' && o.object === a.object && o.targets?.includes(a.target)) ? null : 'invalid_target';
     default:
       return null;
   }
@@ -356,6 +359,13 @@ function pullLinks(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectSta
   }
 }
 
+/** The first blow at a unit with a battle line: the line once (`quote:<uid>` in `firedTriggers`). */
+function quoteOnce(s: BattleState, target: BattleUnit, events: GameEvent[]): void {
+  if (!target.quote || s.firedTriggers.includes(`quote:${target.uid}`)) return;
+  s.firedTriggers.push(`quote:${target.uid}`);
+  events.push({ t: 'quote', unit: target.uid, id: target.quote });
+}
+
 function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, events: GameEvent[]): void {
   const b = data.balance;
   switch (a.kind) {
@@ -364,10 +374,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
     case 'attack': {
       const target = getUnit(s, a.target);
       const weapon = a.weapon ?? attackTargets(data, s, u, u.pos!)[a.target]?.[0];
-      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
-        s.firedTriggers.push(`quote:${target.uid}`);
-        events.push({ t: 'quote', unit: target.uid, id: target.quote });
-      }
+      quoteOnce(s, target, events);
       resolveAttack(data, s, u.uid, target.uid, weapon, events);
       break;
     }
@@ -375,11 +382,17 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       const target = getUnit(s, a.target);
       const weapon = a.weapon ?? aimTargets(data, s, u, u.pos!)[a.target]?.[0];
       events.push({ t: 'classAction', unit: u.uid, action: 'aim', target: target.uid });
-      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
-        s.firedTriggers.push(`quote:${target.uid}`);
-        events.push({ t: 'quote', unit: target.uid, id: target.quote });
-      }
+      quoteOnce(s, target, events);
       resolveAttack(data, s, u.uid, target.uid, weapon, events, { hit: b.classActions.aim.hit });
+      break;
+    }
+    case 'ballista': {
+      // Balliste (story 11.6): the ballista has fired for this phase; the shot is an attack with its fixed weapon
+      const obj = s.objects.find((o) => o.id === a.object)!;
+      const target = getUnit(s, a.target);
+      obj.state = 'open';
+      quoteOnce(s, target, events);
+      resolveAttack(data, s, u.uid, target.uid, undefined, events, ballistaMods(data, s, obj.id));
       break;
     }
     case 'staff': {

@@ -61,6 +61,7 @@ const P: Record<string, string> = {
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
   blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
+  ballista: 'M4 9c5-4 11-4 16 0M12 7v9M3 13h15M15 10l3 3-3 3M8 20l4-4 4 4',
   danger: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   target: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
   next: 'M5 12h12M13 6l6 6-6 6',

@@ -4,6 +4,7 @@ import { itemDef, usableStaves, usableWeapons, weaponProfile } from '../rules/it
 import { forecast, type Forecast } from '../rules/combat';
 import { castArea, castTargets, type CastArea } from '../rules/cast';
 import { classActionId } from '../rules/roles';
+import { ballistaTargets } from '../rules/ballista';
 import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
@@ -240,6 +241,8 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
   if (casts.length) out.push({ kind: 'cast', tiles: casts });
   const steal = stealTargets(data, s, u, pos);
   if (Object.keys(steal).length) out.push({ kind: 'steal', targets: Object.keys(steal), stealable: steal });
+  // Balliste (story 11.6): one option per ballista beside the tile, for a unit of any team
+  for (const [object, targets] of Object.entries(ballistaTargets(data, s, u, pos))) out.push({ kind: 'ballista', object, targets });
   out.push({ kind: 'wait' });
   return out;
 }

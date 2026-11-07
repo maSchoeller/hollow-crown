@@ -10,7 +10,7 @@ import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos } from '../util';
-import { asleep, attackPlans, bestApproach } from './ai';
+import { asleep, attackPlans, ballistaPlans, bestApproach } from './ai';
 import { wardLine } from './wardLine';
 
 /** Farther than any walk of a unit plus any walk and reach of a foe, boosts included. */
@@ -367,9 +367,10 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const post = line?.posts.get(u.uid);
     // holding the line: the holders fight only from their tile, the rest from behind the line
     const placed = (to: Pos) => (!line ? true : post ? posKey(to) === posKey(post) : line.inside.has(posKey(to)));
-    const plans = attackPlans(data, s, u, dests)
+    // a ballista shot counts like an attack and is taken when it scores better (story 11.6)
+    const plans = [...attackPlans(data, s, u, dests), ...ballistaPlans(data, s, u, dests)]
       .filter((p) => placed(p.to))
-      .filter((p) => p.action.kind !== 'attack' || !spare.has(posKey(s.units.find((o) => o.uid === (p.action as { target: string }).target)!.pos!)))
+      .filter((p) => (p.action.kind !== 'attack' && p.action.kind !== 'ballista') || !spare.has(posKey(s.units.find((o) => o.uid === (p.action as { target: string }).target)!.pos!)))
       .map((p) => ({ ...p, score: p.score - (danger.get(posKey(p.to)) ?? 0) * (vip || hpPct < 60 ? 12 : 4) }))
       .sort((a, b) => b.score - a.score);
     const plan = plans.find((p) => p.score > 0);

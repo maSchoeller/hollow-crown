@@ -115,7 +115,8 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
     const tags = ctx.opponent ? (data.classes[ctx.opponent.classId]?.tags ?? []) : [];
     if (!tags.includes(c.targetTag)) return false;
   }
-  if (c.weaponType !== undefined && ctx.ownWeapon?.weaponType !== c.weaponType) return false;
+  // a skill bound to a weapon type never counts for a fixed weapon (ballista, story 11.6)
+  if (c.weaponType !== undefined && (ctx.ownWeapon?.fixed || ctx.ownWeapon?.weaponType !== c.weaponType)) return false;
   if (c.attackerNoElement && ctx.opponentWeapon?.element) return false;
   if (c.notEffective && ctx.opponentEffective) return false;
   if (c.allyDownedWithin !== undefined) {

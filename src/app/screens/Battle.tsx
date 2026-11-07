@@ -1,5 +1,5 @@
 /** The battle screen: HUD, sheets and panels over the 3D board. State, board, overlays, presentation, commands and input live in the hooks next to it. */
-import { type ActionOption, type BattleUnit, active, availableActions, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
+import { type ActionOption, type BattleUnit, active, availableActions, ballistaForecast, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
 import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 import { CLASS_KINDS, type Mode } from './battleMode';
@@ -56,7 +56,13 @@ export function Battle() {
       ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'aim', target: mode.target, weapon: mode.weapon })
       : null;
   const fc =
-    aimPre?.kind === 'aim' ? aimPre.forecast : mode.k === 'forecast' ? forecast(data, s, mode.uid, mode.target, mode.weapon, mode.to) : null;
+    aimPre?.kind === 'aim'
+      ? aimPre.forecast
+      : mode.k === 'forecast' && mode.ballista
+        ? ballistaForecast(data, s, mode.uid, mode.ballista, mode.target, mode.to)
+        : mode.k === 'forecast'
+          ? forecast(data, s, mode.uid, mode.target, mode.weapon, mode.to)
+          : null;
   // the part of the target's HP bar the attack takes at hit (story 13.4), from the forecast
   const previewAfter = fc && mode.k === 'forecast' ? Math.max(0, fc.defender.hpBefore - damageAtHit(data, fc)) : null;
   const previewUid = mode.k === 'forecast' ? mode.target : null;
@@ -64,7 +70,7 @@ export function Battle() {
     boardRef.current?.setHpPreview(previewUid && previewAfter !== null ? { uid: previewUid, after: previewAfter } : null);
   }, [previewUid, previewAfter]);
   const weaponsForTarget =
-    mode.k === 'forecast'
+    mode.k === 'forecast' && !mode.ballista
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
       : [];
   const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;

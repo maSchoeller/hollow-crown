@@ -23,6 +23,8 @@ export type Action =
   | { kind: 'open'; object: string }
   /** Stehlen (story 2.6, scout): takes `item` out of the bag of the adjacent foe `target` */
   | { kind: 'steal'; target: string; item: string }
+  /** Balliste (story 11.6): fire the ballista `object` on a neighbouring tile at `target`; the shot is the unit's action */
+  | { kind: 'ballista'; object: string; target: string }
   | { kind: 'seize' }
   | { kind: 'escape' };
 

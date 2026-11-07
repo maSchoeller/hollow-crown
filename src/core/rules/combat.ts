@@ -35,6 +35,11 @@ export interface SideForecast {
 /** Extra numbers of the attacker for one attack (class action Zielen); the same object feeds forecast and resolution. */
 export interface AttackMods {
   hit?: number;
+  /**
+   * Balliste (story 11.6): the shot comes from the fixed weapon `weapon` (`ballista:<objectId>`, never carried) standing on `from`;
+   * the distance counts from there. One strike: no counter, no double, no tandem; the crew's own stats (STR) and tile count.
+   */
+  siege?: { weapon: ItemInstance; from: Pos };
 }
 
 export interface Forecast {
@@ -249,8 +254,9 @@ export function forecast(
   const d = getUnit(s, defenderUid);
   const aPos = fromPos ?? a.pos!;
   const dPos = d.pos!;
-  const distance = dist(aPos, dPos);
-  const aWeapon = weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === weaponUid) : equippedWeapon(a);
+  const siege = mods?.siege;
+  const distance = dist(siege?.from ?? aPos, dPos);
+  const aWeapon = siege ? siege.weapon : weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === weaponUid) : equippedWeapon(a);
   const dWeapon = equippedWeapon(d);
   // temporarily stand on the preview tile so adjacency-based effects use it
   const savedPos = a.pos;
@@ -259,13 +265,13 @@ export function forecast(
     const ac = calcSide(data, s, a, aPos, d, dPos, aWeapon, dWeapon, true, distance, mods?.hit ?? 0);
     const dc = calcSide(data, s, d, dPos, a, aPos, dWeapon, aWeapon, false, distance);
     ac.side.canStrike = !!ac.wp;
-    let dCan = !!dc.wp && !d.downed && active(d);
+    let dCan = !siege && !!dc.wp && !d.downed && active(d);
     if (dCan && dWeapon) {
       dCan = canStrike(data, s, d, dPos, aPos, weaponRange(data, s, d, dWeapon.uid), a);
     }
     dc.side.canStrike = dCan;
     const th = data.balance.combat.doubleAttackThreshold;
-    const aDouble = ac.stats.as >= dc.stats.as + th;
+    const aDouble = !siege && ac.stats.as >= dc.stats.as + th;
     const dDouble = dCan && dc.stats.as >= ac.stats.as + th;
     const order: Array<'a' | 'd'> = [];
     if (dCan && dc.stats.skills.strikeFirst) order.push('d', 'a');
@@ -281,7 +287,7 @@ export function forecast(
     }
     ac.side.strikes = order.filter((x) => x === 'a').length;
     dc.side.strikes = dCan ? order.filter((x) => x === 'd').length : 0;
-    const tandem = ownPhase ? tandemPartner(data, s, a, aPos, d, dPos) : undefined;
+    const tandem = ownPhase && !siege ? tandemPartner(data, s, a, aPos, d, dPos) : undefined;
     const guard = guardOf(data, s, d, dPos);
     let aHp = a.hp;
     let dHp = d.hp;
@@ -382,14 +388,17 @@ export function resolveAttack(
 ): void {
   const a = getUnit(s, attackerUid);
   const d = getUnit(s, defenderUid);
-  if (weaponUid) equipWeapon(data, a, weaponUid, events);
+  const siege = mods?.siege;
+  if (weaponUid && !siege) equipWeapon(data, a, weaponUid, events);
   const ownPhase = a.team === s.phase;
-  const f = forecast(data, s, a.uid, d.uid, a.equip.mainHand?.uid, undefined, ownPhase, mods);
-  const aWp = a.equip.mainHand ? weaponProfile(data, a.equip.mainHand, s) : undefined;
+  // the weapon of the attack: the carried one, or the fixed weapon of a ballista
+  const aInst = siege?.weapon ?? a.equip.mainHand;
+  const f = forecast(data, s, a.uid, d.uid, siege ? undefined : a.equip.mainHand?.uid, undefined, ownPhase, mods);
+  const aWp = aInst ? weaponProfile(data, aInst, s) : undefined;
   const dWp = d.equip.mainHand ? weaponProfile(data, d.equip.mainHand, s) : undefined;
   const aProcs = computeStats(data, a, { state: s, opponent: d, initiator: true, distance: f.distance }, 'combat_attack').skills.procs;
   const dProcs = computeStats(data, d, { state: s, opponent: a, initiator: false, distance: f.distance }, 'combat_defend').skills.procs;
-  events.push({ t: 'combat', attacker: a.uid, defender: d.uid, weapon: a.equip.mainHand?.uid });
+  events.push({ t: 'combat', attacker: a.uid, defender: d.uid, weapon: aInst?.uid });
   let guardUsed = false;
   const landed = { a: false, d: false };
   const ranged = f.distance > 1;
@@ -508,8 +517,11 @@ export function resolveAttack(
     grantSp(data, me, sp, events);
     if (me.team !== 'player' || !active(me)) continue;
     const killed = foe.gone === 'dead' || foe.gone === 'fled' || (!wasDowned && foe.downed);
-    if (killed && foe.boss && me.equip.mainHand) {
-      s.stats.bossKilledWith = itemDef(data, me.equip.mainHand).weaponType;
+    const used = me === a ? aInst : me.equip.mainHand;
+    if (killed && foe.boss && used) {
+      // a ballista kill counts as its group (siege), which no `kill_with` weapon type matches
+      const d = itemDef(data, used);
+      s.stats.bossKilledWith = d.tags?.includes('fixed') ? d.group : d.weaponType;
     }
     grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events, expPercent(data, s, me));
   }

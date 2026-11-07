@@ -1,3 +1,4 @@
+import { ballistaItemIssues } from './validateBallista';
 import { HOME_KINDS, MAX_PANEL_LINES, PERMANENT_COMPANIONS, type FlagValue, type ItemRef, type Pos } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import type { Area, MapDef, MapUnitDef, Reward } from '../core/mapDefs';
@@ -239,6 +240,7 @@ export function validateContent(
   // Nebel (story 2.6): bonuses name roles that exist, blockers name terrain that exists
   for (const r of Object.keys(data.balance.fog.roleBonus)) if (!(CORE_ROLES as readonly string[]).includes(r)) err('balance.yaml', `fog.roleBonus: unknown role ${r}`);
   for (const t of data.balance.fog.blockers) if (!data.terrain[t]) err('balance.yaml', `fog.blockers: unknown terrain ${t}`);
+  for (const m of ballistaItemIssues(data)) err('balance.yaml', m);
   for (const it of Object.values(data.items)) {
     // weapons, tomes, staves and shields carry a weapon group (items.md section 4)
     if (['weapon', 'tome', 'staff', 'shield'].includes(it.kind) && !it.group) err('items.yaml', `${it.id}: no weapon group`);
@@ -643,11 +645,22 @@ function validateMap(
     // a door or gate is terrain and object at once (story 2.6): it blocks the path and sight until opened
     if (o.type === 'door' && inside(o.at) && !terr(o.at)?.opensTo) err(f, `${o.id}: a door object needs a closed passage (door, gate_closed) on its tile`);
     if (o.type === 'lever' && inside(o.at) && terr(o.at)?.prop !== 'lever') err(f, `${o.id}: a lever object needs the terrain "lever" on its tile`);
+    if (o.type === 'ballista' && inside(o.at) && terr(o.at)?.id !== 'ballista') err(f, `${o.id}: a ballista object needs the terrain "ballista" on its tile`);
     for (const id of o.links ?? []) if (!map.objects.some((m) => m.id === id)) err(f, `${o.id}: links unknown object ${id}`);
+    for (const id of o.links ?? []) if (map.objects.some((m) => m.id === id && m.type === 'ballista')) err(f, `${o.id}: links the ballista ${id}, which nothing opens`);
     reward(f, o.reward, o.id);
     reward(f, o.contents, o.id);
   }
   for (const t of map.triggers) for (const a of t.then) if (a.action === 'dialogue') dialogue(f, a.id, t.id);
+  // Balliste (story 11.6): its tile and its object come together; it is never "activated" (its open state means: fired this phase)
+  grid.forEach((row, y) =>
+    row.forEach((id, x) => {
+      if (id === 'ballista' && !map.objects.some((o) => o.type === 'ballista' && o.at[0] === x && o.at[1] === y)) err(f, `terrain ballista at ${x},${y} without a ballista object`);
+    }),
+  );
+  for (const t of map.triggers)
+    if (t.when.type === 'object_activated' && map.objects.some((o) => o.id === (t.when as { object: string }).object && o.type === 'ballista'))
+      err(f, `${t.id}: object_activated never fires for a ballista`);
   for (const s of map.objectives.side) {
     reward(f, s.reward, s.id);
     if (s.reward.chronicle) err(f, `${s.id}: a side objective cannot pay a chronicle page (chests and villages can)`);
