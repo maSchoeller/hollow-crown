@@ -23,3 +23,5 @@
 | Datei | `levels/s2_2_4_brandschneise.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Brann ist Gast (`guest: true`): nicht steuerbar, Schutzziel, tritt nach der Mission nicht bei (das geschieht in N5). Wetter Asche ist jetzt auch in Akt 2 erlaubt (`render.yaml`).

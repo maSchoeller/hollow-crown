@@ -73,7 +73,7 @@ units:
   - { id: o2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [17, 17], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Am Ausgang: Sable oder, wenn sie bei E7 gewechselt hat, ein Hauptmann des Grenzheers (gleiche Werte, gleiches Feld)
   - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_order }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
   - { id: e1, nameKey: unit.border_soldier.name, team: enemy, class: healer, level: 12, levelOffset: -3, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
   - { id: e2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 12, levelOffset: -3, at: [8, 2], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: e3, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 12, levelOffset: -3, at: [11, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
@@ -84,7 +84,7 @@ units:
   - { id: h4, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [12, 14], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   # Odile folgt der nächsten eigenen Figur; Amos im Hospiz, wer ihn anspricht, gewinnt ihn
   - { id: odile, char: odile, team: other, class: skirmisher, level: 7, at: [10, 18], items: [{ def: steel_sword }], ai: { profile: follow }, ignoreForRout: true }
-  - { id: amos, char: amos, team: other, class: healer, level: 7, at: [12, 19], items: [{ def: heal_staff }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_5.amos_talk } }
+  - { id: amos, char: amos, team: other, class: healer, level: 7, at: [12, 19], items: [{ def: heal_staff }], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: any, dialogue: scn.s2_5.amos_talk } }
 reinforcements:
   # Von hinten um die Mauer
   - turn: 3
@@ -127,7 +127,7 @@ triggers:
     once: true
     when: { type: turn_start, turn: 6, phase: enemy }
     then:
-      - { action: set_terrain, area: { tiles: [[4, 10], [4, 11]] }, terrain: river }
+      - { action: set_terrain, area: { tiles: [[4, 10], [4, 11]] }, terrain: river, warn: true }
 goldReward: 1200
 design:
   title: Die verstoßene Leibwache

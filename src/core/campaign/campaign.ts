@@ -281,7 +281,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   // an escorted NPC joins like any third-party character, unless the goal says `join: false` (story 4.8)
   const victory = map.objectives.victory; // `join` belongs to an escort, which has no second phase (story 11.8)
   const stays = victory.type === 'escort' && victory.join === false ? victory.unit : undefined;
-  const playerUnits = s.units.filter((u) => u.team === 'player' || (u.team === 'other' && !u.generic && u.gone !== 'dead' && u.id !== stays));
+  // a guest (story 11.10) stays behind; talked over in the battle he is of team `player` by then
+  const playerUnits = s.units.filter((u) => u.team === 'player' || (u.team === 'other' && !u.generic && !u.guest && u.gone !== 'dead' && u.id !== stays));
   for (const u of playerUnits) {
     const before = c0.roster.find((r) => r.id === u.id);
     const isNew = !before;

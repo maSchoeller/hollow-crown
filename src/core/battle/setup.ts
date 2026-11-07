@@ -14,11 +14,19 @@ import { parseLevels, parseTerrain } from './terrain';
 
 export { parseTerrain };
 
+/**
+ * The forced deploy of `map` that is in the company: a forced companion who fell or left is no longer forced (story 11.10, Ilka
+ * in N4 and Jory in N6 only while they live). The one rule for the preparation, the default deploy and the battle.
+ */
+export function presentForced(map: Pick<MapDef, 'deploy'>, c: Pick<CampaignState, 'roster'>): string[] {
+  return map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id));
+}
+
 /** Units that must / can be deployed for a node. */
 export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
   const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
   const map = data.maps[node.map]!;
-  return { map, max: map.deploy.max, forced: map.deploy.forced.filter((id) => c.roster.some((r) => r.id === id)) };
+  return { map, max: map.deploy.max, forced: presentForced(map, c) };
 }
 
 /**
@@ -77,7 +85,7 @@ export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, no
 /** The company on the deploy slots of `map`: forced units first, then the chosen ones, up to the map's limit. */
 export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, map: MapDef, deployIds: string[]): void {
   const forced = map.deploy.forced;
-  const chosen = [...forced.filter((id) => c.roster.some((r) => r.id === id)), ...deployIds.filter((id) => !forced.includes(id))];
+  const chosen = [...presentForced(map, c), ...deployIds.filter((id) => !forced.includes(id))];
   const slots = map.deploy.slots;
   chosen.slice(0, Math.min(map.deploy.max, slots.length)).forEach((id, i) => {
     const rec = c.roster.find((r) => r.id === id);

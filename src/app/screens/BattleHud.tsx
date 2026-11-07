@@ -214,6 +214,7 @@ export function UnitCardB({ data, state, u, hp, onClick }: { data: GameData; sta
         <div class="hud-sub">{t(`class.${u.classId}.name`)}</div>
         <div class="hud-chips">
           <WeaponChip data={data} item={w} />
+          {u.guest && u.team === 'other' && <span class="hud-chip hud-chip--guest">{t('ui.hud.guest')}</span>}
           {affinity && (
             <span class="hud-chip">
               <ElementIcon el={affinity} size={15} />

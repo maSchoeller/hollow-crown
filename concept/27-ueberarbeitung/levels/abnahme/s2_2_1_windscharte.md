@@ -22,3 +22,5 @@
 | Datei | `levels/s2_2_1_windscharte.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Beide Ballisten stehen jetzt auf dem Gelände `ballista` (Regel aus Story 11.6), auf Stufe 2 wie die Felsnase. Jory ist Gast (`guest: true`): Er tritt nur bei, wenn man ihn anspricht.

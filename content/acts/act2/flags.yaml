@@ -1,0 +1,8 @@
+# Flag-Register Akt 2 (Architektur §5.9). Vorläufig (Story 11.10, [ASSUMPTION]): nur die Flags, die die Entwürfe
+# concept/27-ueberarbeitung/levels/s2_*.yaml schon lesen oder setzen, damit content:check sie prüfen kann. Story 11.5 legt das
+# Register von Akt 2 an und darf diese Platzhalter umbenennen (Paket act2 ist unveröffentlicht, nichts ist gesperrt).
+# E7 (nach 2-4): Sable folgt Dravns Befehl (e7_order, sie bleibt Leutnantin) oder wird gewarnt (e7_warned, ein Hauptmann tritt an ihre Stelle)
+- { id: e7_order, kind: decision, season2: false }
+- { id: e7_warned, kind: decision, season2: false }
+# Mission 2-2: das Siegel aus der Truhe c_seal ist gefunden (Karten-Trigger t_seal)
+- { id: m2_2_seal, kind: battle, season2: false }

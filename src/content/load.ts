@@ -221,7 +221,12 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
   const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
-  const flagList = parseList<FlagDef>('flags.yaml', get('acts/act1/flags.yaml'), flagSchema, issues);
+  // act 1 always; the registers of later acts where their pack is loaded (story 11.10: act 2, unreleased, for the drafts)
+  const later = Object.keys(files)
+    .map(contentPath)
+    .filter((p) => /^acts\/act([2-9]|\d{2,})\/flags\.yaml$/.test(p))
+    .sort();
+  const flagList = ['acts/act1/flags.yaml', ...later].flatMap((p) => parseList<FlagDef>(later.includes(p) ? p : 'flags.yaml', get(p), flagSchema, issues));
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);

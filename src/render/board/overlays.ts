@@ -26,6 +26,8 @@ export interface Overlays {
   ghost?: { uid: string; pos: Pos } | null;
   goal?: Pos[];
   reinforce?: Pos[];
+  /** story 11.10: fields a map event changes next round (`terrainWarnings`): amber diagonal stripes */
+  terrainWarn?: Pos[];
   /** hold zones of vanguards (Halten, story 2.4): diagonal hatching */
   hold?: Pos[];
   /** fields Wirken would change (story 2.5) */
@@ -70,6 +72,7 @@ const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pul
   goal: { color: '#f2cc4d', alpha: 0.3, inset: 0, pulse: 0.15 },
   reinforce: { color: '#f2802e', alpha: 0.25, inset: 0.16, pulse: 0.2 },
   hold: { color: '#8a2be2', alpha: 0.5, inset: 0 },
+  terrainWarn: { color: '#e8a317', alpha: 0.75, inset: 0, pulse: 0.2 },
   cast: { color: '#2ec4d6', alpha: 0.5, inset: 0.06, pulse: 0.2 },
   targets: { color: '#ffd959', alpha: 0.35, inset: 0.04, pulse: 0.35 },
 };
@@ -86,6 +89,7 @@ const LAYER = {
   goal: 5,
   reinforce: 6,
   hold: 7,
+  terrainWarn: 7,
   threatCream: 8,
   threatLine: 9,
   sleeping: 10,
@@ -200,6 +204,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     goal: o.goal ?? [],
     reinforce: o.reinforce ?? [],
     hold: o.hold ?? [],
+    terrainWarn: o.terrainWarn ?? [],
     cast: o.cast ?? [],
     targets: o.targets ?? [],
   };
@@ -279,7 +284,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     const idx: number[] = [];
     for (const t of tiles) {
       const h = top(t) + 0.02 + layer * 0.001;
-      if (key === 'hold') {
+      if (key === 'hold' || key === 'terrainWarn') {
         // diagonal stripes inside the tile (u right, v down)
         const w = 0.05;
         for (const d of [-0.6, -0.3, 0, 0.3, 0.6]) {

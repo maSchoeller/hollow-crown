@@ -82,7 +82,7 @@ reinforcements:
       - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, level: 10, levelOffset: -2, at: [1, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [1, 6], items: [{ def: iron_sword }], ai: { profile: aggressive } }
 objectives:
-  victory: { type: escort, unit: troupe_master, area: { rect: [1, 15, 4, 17] } }
+  victory: { type: escort, unit: troupe_master, area: { rect: [1, 15, 4, 17] }, join: false }
   defeat:
     - { type: unit_dies, unit: avatar }
     - { type: unit_dies, unit: lucan }
@@ -100,7 +100,7 @@ triggers:
     once: true
     when: { type: turn_start, turn: 6, phase: enemy }
     then:
-      - { action: set_terrain, area: { tiles: [[2, 14]] }, terrain: river }
+      - { action: set_terrain, area: { tiles: [[2, 14]] }, terrain: river, warn: true }
 goldReward: 1300
 design:
   title: Die Gauklertruppe

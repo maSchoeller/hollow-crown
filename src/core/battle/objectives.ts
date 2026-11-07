@@ -101,7 +101,7 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
 const PHASE_ORDER: Record<Team, number> = { player: 0, enemy: 1, other: 2 };
 
 /** Whether (turn, phase) still lies ahead of the battle clock, the phase in progress included. */
-function notPast(s: BattleState, turn: number, phase: Team): boolean {
+export function notPast(s: BattleState, turn: number, phase: Team): boolean {
   return turn > s.turn || (turn === s.turn && PHASE_ORDER[phase] >= PHASE_ORDER[s.phase]);
 }
 

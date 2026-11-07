@@ -22,3 +22,5 @@
 | Datei | `levels/s2_2_3_rabenweide.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Gepanzerte kommen nicht durch die Furten (`shallows` ist für `armored` gesperrt). Rowena und die Lanzen r1, r3, r5 bleiben nach dem Wecken in ihren Koppeln (`then: guard` statt `aggressive`), der Ausfall in Runde 7 kommt mit einem Plänkler statt eines Vorkämpfers. [ASSUMPTION], bei 11.14 per `pnpm sim` prüfen.

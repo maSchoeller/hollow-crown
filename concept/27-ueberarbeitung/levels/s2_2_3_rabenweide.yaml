@@ -54,16 +54,16 @@ deploy:
   slots: [[7, 22], [8, 22], [9, 22], [11, 22], [12, 22], [13, 22], [7, 23], [8, 23], [9, 23], [11, 23], [12, 23], [13, 23]]
 units:
   # Gestütshof: Rowena mit Rittern auf den Festen
-  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, level: 14, levelOffset: 2, at: [10, 3], boss: true, lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, level: 14, levelOffset: 2, at: [10, 3], boss: true, lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 5, then: guard } }
   - { id: k1, nameKey: unit.silver_lance.name, team: enemy, class: knight, level: 10, levelOffset: -2, at: [9, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: k2, nameKey: unit.silver_lance.name, team: enemy, class: knight, level: 10, levelOffset: -2, at: [11, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: heal, nameKey: unit.silver_lance.name, team: enemy, class: healer, level: 10, levelOffset: -2, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
   # Koppeln: Lanzen warten, bis jemand nah kommt
-  - { id: r1, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [5, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: r1, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [5, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard } }
   - { id: r2, nameKey: unit.silver_lance.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [6, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
-  - { id: r3, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [14, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: r3, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [14, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard } }
   - { id: r4, nameKey: unit.silver_lance.name, team: enemy, class: skirmisher, level: 10, levelOffset: -2, at: [15, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: r5, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [16, 6], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: r5, nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 10, levelOffset: -2, at: [16, 6], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard }, difficulty: [normal, hard] }
   # Nordufer: Lanzen und ein Bogen hinter der mittleren Furt
   - { id: f1, nameKey: unit.silver_lance.name, team: enemy, class: knight, level: 10, levelOffset: -2, at: [9, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: f2, nameKey: unit.silver_lance.name, team: enemy, class: knight, level: 10, levelOffset: -2, at: [11, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
@@ -101,7 +101,7 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.silver_lance.name, team: enemy, class: vanguard, level: 11, levelOffset: -1, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.silver_lance.name, team: enemy, class: skirmisher, level: 11, levelOffset: -1, at: [10, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.silver_lance.name, team: enemy, class: skirmisher, level: 11, levelOffset: -1, at: [11, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
 objectives:
   victory: { type: boss, unit: rowena }

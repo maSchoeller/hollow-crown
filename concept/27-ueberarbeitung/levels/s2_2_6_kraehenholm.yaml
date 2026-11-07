@@ -70,7 +70,7 @@ units:
   - { id: b6, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Felsnase (Stufe 2): Goldübergabe. Sable oder, wenn sie bei E7 gewechselt hat, ein Hauptmann des Grenzheers
   - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_order }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [8, 12], items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
   - { id: c1, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [10, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: c2, nameKey: unit.smuggler.name, team: enemy, class: healer, level: 13, levelOffset: -2, at: [7, 12], items: [{ def: heal_staff }], ai: { profile: support } }
   # Nordbucht: Grell am Schiff
@@ -88,7 +88,7 @@ units:
   - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [8, 9], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
   - { id: h4, nameKey: unit.smuggler.name, team: enemy, class: vanguard, level: 13, levelOffset: -2, at: [9, 6], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
   # Nell, von Maelis fallen gelassen, versteckt in der Nordwestecke; kennt die Insel
-  - { id: nell, char: nell, team: other, class: scout, level: 8, at: [3, 5], items: [{ def: iron_dagger }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_6.nell_talk } }
+  - { id: nell, char: nell, team: other, class: scout, level: 8, at: [3, 5], items: [{ def: iron_dagger }], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: any, dialogue: scn.s2_6.nell_talk } }
 reinforcements:
   # Boote von Westen
   - turn: 3
@@ -135,7 +135,7 @@ triggers:
     once: true
     when: { type: turn_start, turn: 9, phase: player }
     then:
-      - { action: set_terrain, area: { rect: [16, 8, 18, 15] }, terrain: river }
+      - { action: set_terrain, area: { rect: [16, 8, 18, 15] }, terrain: river, warn: true }
 goldReward: 1400
 design:
   title: Gold für Banditen

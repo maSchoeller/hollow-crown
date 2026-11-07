@@ -30,7 +30,7 @@ const MIN_W = 640;
 const LINE = 17;
 
 /** terrain look on the sheet: fill and glyph; the board itself is the art direction's business (§3.1) */
-const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; name: string; level?: number }> = {
+export const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; name: string; level?: number }> = {
   plain: { fill: '#e6dcb8', name: 'Ebene' },
   grass: { fill: '#c3d99a', name: 'Gras' },
   road: { fill: '#d4b47c', name: 'Weg' },
@@ -71,6 +71,15 @@ const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: boolean; na
   ladder: { fill: '#d3bb8e', glyph: '☰', name: 'Leiter' },
   gate_closed: { fill: '#6b5a48', glyph: '∏', dark: true, name: 'Tor zu' },
   lever: { fill: '#c9bfb0', glyph: '⍿', name: 'Hebel' },
+  // story 11.10: every terrain of terrain.yaml has a look (tests/unit/level-sheet.test.ts)
+  ballista: { fill: '#8c6a4a', glyph: '➶', dark: true, name: 'Balliste' },
+  swamp: { fill: '#8fae8a', glyph: '≈', name: 'Sumpf' },
+  creek: { fill: '#5d9cc8', glyph: '~', dark: true, name: 'Priel' },
+  boardwalk: { fill: '#a98256', glyph: '=', dark: true, name: 'Steg' },
+  footbridge: { fill: '#b68b5a', glyph: '≍', dark: true, name: 'Hängesteg' },
+  vault: { fill: '#9d968c', name: 'Gewölbe' },
+  sarcophagus: { fill: '#7d766d', glyph: '▭', dark: true, name: 'Sarkophag' },
+  torch: { fill: '#a39a8c', glyph: '♆', name: 'Fackel' },
 };
 
 const COL = {

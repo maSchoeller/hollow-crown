@@ -6,6 +6,7 @@ id: s2_2_1_windscharte
 nameKey: map.s2_2_1_windscharte.name
 size: [20, 25]
 legend:
+  "Q": ballista
   ".": plain
   ",": grass
   "_": road
@@ -30,10 +31,10 @@ terrain: |
   ^^^,,,,,,__,,,,,,,^^
   ^^^^^,,,,__,,,,^^^^^
   ^^^^^^^,,__,,^^ccc^^
-  ^^^^^^^^,__,^^^ccc^^
+  ^^^^^^^^,__,^^^cQc^^
   ^^^^^^^^,__,^^^ccc^^
   ^^ccc^^^,__,^^^^s^^^
-  ^^ccc^^^,__,^^^%%%^^
+  ^^cQc^^^,__,^^^%%%^^
   ^^ccc^^^,__,^^^%%%^^
   ^^^s^^^,,__,,^^%%%^^
   ^%%%%^,,,__,,,^^/^^^
@@ -46,6 +47,8 @@ terrain: |
   ^^,,,,,,,__,,,,,,,^^
   ^^^^,,,,,__,,,,,^^^^
 levels:
+  # Balliste auf der Felsnase (Story 11.10): das Gelände ballista hat keine eigene Stufe
+  - { level: 2, area: { tiles: [[3, 13], [16, 10]] } }
   - { level: 1, area: { tiles: [[16, 12], [3, 15]] } }
 timeOfDay: morning
 weather: clear
@@ -79,7 +82,7 @@ units:
   - { id: h1, nameKey: unit.mercenary.name, team: enemy, class: vanguard, level: 9, levelOffset: -2, at: [9, 8], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: h2, nameKey: unit.mercenary.name, team: enemy, class: marksman, level: 9, levelOffset: -2, at: [10, 8], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   # Jory am liegengebliebenen Gauklerwagen, in Reichweite der Ostballiste
-  - { id: jory, char: jory, team: other, class: minstrel, level: 5, at: [16, 19], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.s2_1.jory_talk } }
+  - { id: jory, char: jory, team: other, class: minstrel, level: 5, at: [16, 19], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: any, dialogue: scn.s2_1.jory_talk } }
 reinforcements:
   # Erste Welle über die Ebene
   - turn: 3

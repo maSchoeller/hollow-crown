@@ -22,3 +22,5 @@
 | Datei | `levels/s2_2_6_kraehenholm.yaml` |
 
 </details>
+
+**Korrektur Story 11.10 (2026-11-07):** Der Hauptmann ist kein Leutnant mehr. Die Flut trägt `warn: true` (Warnung ab Runde 8). Nell ist Gast.

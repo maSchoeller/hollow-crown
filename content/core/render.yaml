@@ -168,7 +168,8 @@ look:
       mist: { color: "#c9d2d8", near: -4, far: 16 }
       ground: { layers: 1, height: 0.22, alpha: 0.28, driftSpeed: 0.05, color: "#dfe5e8" }
     ash:
-      acts: [1, 3]
+      # Akt 2 seit Story 11.10: die Brandschneise (2-4) brennt unter Aschehimmel
+      acts: [1, 2, 3]
       grade: { ambientScale: 0.92, sky: "#8d8a90", skyMix: 0.5 }
       particles: { high: 260, mid: 130, low: 0, fallSpeed: 0.9, size: 0.1, color: "#5b5a5e", alpha: 0.9, emberShare: 0.1 }
     snow:

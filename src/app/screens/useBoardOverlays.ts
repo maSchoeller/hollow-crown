@@ -1,5 +1,5 @@
 /** Board overlays of the battle screen (Battle.tsx). */
-import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, visibleTiles } from '../../core';
+import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { activeVictory } from '../../core/battle/activeVictory';
@@ -84,6 +84,8 @@ export function useBoardOverlays(b: BattleScreen) {
       watch: watchTiles,
       goal,
       reinforce,
+      // story 11.10: the ground a map event changes next round
+      terrainWarn: terrainWarnings(data, s).flatMap((w) => w.tiles),
       hold,
       fog: fogTiles.fog,
       fogEdge: fogTiles.edge,
