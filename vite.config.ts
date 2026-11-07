@@ -165,7 +165,7 @@ export default defineConfig(({ mode }) => {
         exclude: ['src/core/**/*.test.ts'],
         reporter: ['text-summary', 'html'],
         // Ratchet at the current level (target 90 %, see AGENTS.md); raise whenever coverage improves, never lower.
-        thresholds: { statements: 70, branches: 60, functions: 75, lines: 76 },
+        thresholds: { statements: 95, branches: 90, functions: 96, lines: 97 },
       },
     },
   };

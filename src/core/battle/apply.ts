@@ -136,6 +136,12 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
     case 'convoy':
       if (u.freeUsed.convoy) return 'already_used';
       if (!u.pos || !nearConvoy(s, u, u.pos)) return 'not_adjacent';
+      if (cmd.take && cmd.slot && cmd.slot !== 'bag') {
+        // taking straight into a slot follows the same rules as `equip`
+        const inst = s.convoy.find((i) => i.uid === cmd.take);
+        if (!inst) return 'invalid_target';
+        if (canEquip(data, u, inst, cmd.slot, activeSkillIds(data, u))) return 'cannot_equip';
+      }
       return null;
   }
 }
