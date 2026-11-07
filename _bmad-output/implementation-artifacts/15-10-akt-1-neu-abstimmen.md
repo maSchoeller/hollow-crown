@@ -48,6 +48,34 @@ N3 ist eine Nebenquest und läuft in `--campaign` nicht mit. Vorher: `pnpm sim n
 
 Armee-Stufe vor der Mission (Normal, nachher): Prolog 1,5 · 1-1 1,7 · 1-2 2,9 · 1-3 3,4 · 1-4 4,0 · 1-5 5,1 · 1-6 5,9 · 1-7 7,2 · 1-8 7,8–7,9 (erwartet 1/2/3/3/4/5/6/8/9).
 
+## Nachtrag 2026-11-07: Antworten des Produktinhabers
+
+Eingetragen im GDD-Log (2026-11-07).
+
+1. **Prolog:** Es zählt nur die Siegquote. Neu `simulation.winOnly: [prologue]` in `balance.yaml`; `missionFlags` (`tools/simCampaign.ts`) markiert dort keine Niedergestreckten mehr (Test in `sim-campaign.test.ts`). Prolog Normal 78–88 % Siege: im Korridor.
+2. **EP-Kurve:** mehr EP, erwartete Stufen bleiben. `balance.yaml` `experience`: `combatBase` 10 → 11, `killBase` 30 → 34, `killPerLevelDiff` 3 → 0 (Besiegen zählt unabhängig vom Stufenunterschied). Grund: Ab 1-6 stehen die Gegner 2–5 Stufen unter der Truppe, der Abschlag kostete dort die meisten EP. Reine Anhebung der Grund-EP (bis 45/15) hob 1-3 bis 1-6 über die Toleranz von 1 Stufe, bevor 1-8 Stufe 9 erreichte. Die höhere Stufe machte 1-1 und 1-2 auf Normal zu leicht (0,30 Niedergestreckte), deshalb: 1-1 `h3` und die Welle in Runde 4 Stufe 2 statt 1; 1-2 `r11` und `r12` ab Normal statt nur Schwer. GDD „EP“ nachgezogen.
+3. **Spielzeit:** Messpunkt im Playtest-Plan von Story 9.14 (`concept/21-gdd/playtest-akt1.md`).
+4. **Schwer:** Story 9.15 nach dem Release (N3, 1-4, 1-5, 1-8).
+5. **Annahmen abgenommen:** Morra wartet in 1-8 bis Runde 9, Hask bis Runde 6, Frist 1-7 zehn Runden.
+
+**Ergebnis** (`pnpm sim --campaign act1 --runs 50`, Seed 1 / 51; Rohdaten `xp3-*.txt` im Notizordner):
+
+| Mission | Normal vorher (Seed 1) | Normal nachher Seed 1 | Normal nachher Seed 51 | Leicht nachher | Stufe Normal vorher → nachher (erwartet) | Stufe Leicht vorher → nachher |
+|---|---|---|---|---|---|---|
+| Prolog | 88 % · 0,12 (zählt nicht) | 88 % · 0,12 | 78 % · 0,22 | 100 % · 0,00 | 1,5 → 1,5 (1) | 1,5 → 1,5 |
+| 1-1 | 98 % · 0,44 | 98 % · 0,48 | 90 % · **0,34** | 100 % · 0,02 | 1,7 → 1,8 (2) | 1,5 → 1,6 |
+| 1-2 | 100 % · 0,58 | 90 % · 0,44 | 88 % · 0,40 | 100 % · 0,06 | 2,9 → 3,2 (3) | 2,4 → 2,6 |
+| 1-3 | 100 % · 0,84 | 96 % · 1,09 | 98 % · 0,78 | 100 % · 0,12 | 3,4 → 3,8 (3) | 3,1 → 3,4 |
+| 1-4 | 100 % · 1,12 | 100 % · 1,06 | 100 % · 0,88 | 100 % · 0,14 | 4,0 → 4,6 (4) | 3,7 → 4,0 |
+| 1-5 | 98 % · 1,10 | 100 % · 0,94 | 100 % · 0,70 | 100 % · 0,40 | 5,1 → 5,9–6,0 (5) | 4,4 → 5,0 |
+| 1-6 | 98 % · 0,90 | 100 % · 1,13 | 100 % · **1,34** | 100 % · 0,36 | 5,9 → 6,9–7,0 (6) | 5,2 → 6,2 |
+| 1-7 | 94 % · 0,36 | 89 % · 0,49 | 94 % · 0,74 | 100 % · 0,06 | 7,2 → **8,1–8,2** (8) | 6,3 → 7,6 |
+| 1-8 | 98 % · 1,06 | 96 % · 0,98 | 96 % · 1,00 | 100 % · 0,36 | 7,9 → **8,6** (9) | 6,7 → 7,9 |
+
+Vorher Normal 1-7/1-8 aus dem Lauf nach dem Merge mit `main` (oben). Fett = außerhalb. 1-1 (Seed 51) und 1-6 (Seed 51) liegen knapp draußen, über beide Seeds im Korridor (1-1 0,41, 1-6 1,24); Streuung eines 50er-Laufs ±0,2. Leicht bleibt überall im Korridor.
+
+**Stand EP-Ziel:** Vor 1-7 erreicht Normal Stufe 8 (8,1–8,2). **Vor 1-8 bleibt Normal bei 8,6 statt 9** (innerhalb der Toleranz von 1, nicht markiert). 1-7 bringt in jeder Variante nur ≈ 0,5 Stufen, weil der Kampf mit der Chronik endet, bevor die meisten Gegner fallen; zwei zusätzliche Wellen in 1-7 brachten keine EP, nur mehr Niedergestreckte (verworfen). Höhere Grund-EP schieben 1-3 bis 1-6 über die Toleranz. Echte Spieler liegen höher: Mit Heimsuchungen (`--haunts`, 20 Läufe) steht die Truppe vor 1-7 auf 9,2 und vor 1-8 auf 9,5, dann allerdings 1-3 bis 1-7 über der Toleranz; N3 (zwischen 1-6 und 1-8) spielt die Simulation nicht mit. **Entscheidung Produktinhaber:** so lassen (8,6 mit Simulation ohne Heimsuchungen und Nebenquests) oder 1-7 eine eigene EP-Quelle geben (z. B. EP für die geborgene Chronik; braucht eine Regel, kein Wert).
+
 ## Was geändert wurde (nur YAML)
 
 - **1-7 Gewölbe:** Frist 10 statt 8 Runden (alle Niederlagen lagen an der Frist; die Einstürze in Runde 5–7 bleiben). Drei Plünderer mehr aus den Seitenhallen (`p12`–`p14`) und einer in der Welle von Runde 3, nur Normal und Schwer; `p1`, `p9`, `p10` eine Stufe tiefer. Nur Schwer: zwei Wächter in der Königskammer (`p15`, `p16`), weil die längere Frist Schwer sonst auf 88 % hob; `p15` steht auf [8,3], einem der zwei Felder, die den Weg zur Chronik offen halten, ist aber schlagbar (Schwer 60 % Siege). Die neuen Plünderer tragen wie alle einen Schlüssel.

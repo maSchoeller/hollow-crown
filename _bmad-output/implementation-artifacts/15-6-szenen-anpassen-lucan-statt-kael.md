@@ -52,7 +52,14 @@ damit die überarbeitete Geschichte ankommt.
 - [x] Screenshots 375 × 812 der neuen/umgebauten Szenen (Spiel stumm, Lautstärken auf 0), Belege dem Nutzer zeigen (AC: 6)
 - [x] `pnpm check` grün (AC: 6)
 - [x] Code-Review (`gds-code-review`), Befunde einarbeiten
-- [ ] PR gegen `main`, nach grüner CI mergen
+- [x] PR gegen `main`, nach grüner CI mergen (PR #116; Varianten 1A–5A mit PR #127)
+
+### Stand 2026-11-07 (Prüfung der Akzeptanzkriterien, bleibt in-progress)
+
+- AK 1, 2, 4, 5, 6 erfüllt: Szenen und Varianten 1A–5A auf `main` (PR #116, #127), Ersatzsprecher-Prüfung und `pnpm check` grün.
+- **AK 3 offen:** Die Szenen `scn.m1_6.outro`, `scn.m1_7.outro`, `scn.m1_8.intro` und `scn.m1_8.outro` zeigen `paktwacht_heimat`, also Herbst und die ausgebaute Burg (`art/prompts/backgrounds_act1.md`: gehört nicht zu Akt 1). Seit Story 15.12 ist die Paktwacht in Akt 1 eine Ruine. Es fehlt ein spätsommerliches Bild der eroberten, noch nicht ausgebauten Paktwacht (§6-Protokoll unter `art/prompts/`).
+- **Abnahme durch den Produktinhaber offen** für `aureklamm_lastkahn`, `pachthof`, `hungerlager`, `wachturm` (`art/prompts/loc_*.md`, „Abnahme durch den Produktinhaber: offen“).
+- Beide Punkte stehen in der Release-Checkliste von Story 9.14.
 
 ## Dev Notes
 

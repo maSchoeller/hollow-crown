@@ -72,4 +72,10 @@ describe('chained act simulation (story 6.8)', () => {
     expect(missionFlags(data, mission({ gold: 30000, sideGold: 0 }), 'normal').gold).toBe('high');
     expect(missionFlags(data, mission({ armyLevel: 50 }), 'normal').level).toBe('high');
   });
+
+  it('counts only the win rate on winOnly nodes (prologue)', () => {
+    expect(data.balance.simulation.winOnly).toContain('prologue');
+    expect(missionFlags(data, mission({ node: 'prologue', downs: 0 }), 'normal').downs).toBeUndefined();
+    expect(missionFlags(data, mission({ node: 'prologue', downs: 0, wins: 5 }), 'normal').win).toBe('low');
+  });
 });
