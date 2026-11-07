@@ -480,7 +480,26 @@ Jeder Gefährte hat einen eigenen Bogen zwischen der alten Gemeinschaft, die ihn
 **Set Dressing:**
 
 - **Die Glutfarbe:** Jedes Mitglied der Truppe trägt ein glutorangefarbenes Stoffstück (#E8743B). Neue Gefährten bekommen es beim Beitritt, und Seitenwechsler binden es sich sichtbar um.
-- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel (vollständige Liste mit Raum und Platz als Vorschlag zur Abnahme in `burg-gegenstaende-vorschlag.md`). Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein. Wer die Truppe verlässt, nimmt seinen Gegenstand mit. Am Platz steht nur der Gegenstand, nicht die Figur.
+- **Die Paktwacht wächst mit:** Jeder Gefährte bringt einen persönlichen Gegenstand in die Burg, etwa Brennas Axtständer, Jorys Laute oder Ysoldes Bücherstapel. Die Liste unten ist abgenommen (Produktinhaber 2026-11-07; Herleitung in `burg-gegenstaende-vorschlag.md`); Avatar und Lucan bekommen keinen Gegenstand, die Gegenstände der Akt-3-Gefährten legt Epic 12 fest. Stirbt jemand, bleibt der Gegenstand liegen. Der Platz bleibt leer, und in der Gedächtnishalle steht ein Gedenkstein. Wer die Truppe verlässt, nimmt seinen Gegenstand mit. Am Platz steht nur der Gegenstand, nicht die Figur.
+
+  | Gefährte | Gegenstand | Raum | Platz im Modell |
+  |---|---|---|---|
+  | Brenna | Axtständer mit Doppelaxt | Schmiede | Hof, neben der Esse |
+  | Tobin | Holzschild mit selbstgemaltem Wappen | Konvoi | an der Wagenwand beim Tor |
+  | Mira | Trockengestell mit Fellen | Übungsplatz | Rand der Schießbahn |
+  | Fenn | Kiste voller Krimskrams mit Dietrichrolle | Werkstatt | unter der Werkbank |
+  | Liora | kleiner Hausaltar mit Kerzen | Gedächtnishalle | Felsabsatz, neben dem Eingang |
+  | Varek | Würfelbrett | Taverne | auf dem Tisch vor der Tür |
+  | Ysolde | Bücherstapel | Verzauberer | Felsabsatz |
+  | Grosk | großer Kochkessel | Schmiede | Hof, zwischen Esse und Lagerfeuer |
+  | Jory | Laute | Lagerfeuer | Bank am Feuer |
+  | Odile | polierter Brustpanzer auf Ständer | Akademie | Felsabsatz, vor der Tür |
+  | Nell | Seekarte mit Kompass | Händler | auf dem Ladentisch |
+  | Brann | Steinbrocken mit Glutader | Verzauberer | Felsabsatz, an der Felswand |
+  | Amos | Feldschertasche mit Kräuterbund | Heiler | an der Tür, Kräuter zum Trocknen |
+  | Ilka | weißes Wolfsfell über einer Bank | Übungsplatz | neben Miras Gestell |
+  | Sable | Säbel des Grenzheers auf Ständer | kein Raum | im Tor, Wachstube |
+
 - **Steckbriefe:** In Akt 1 hängen in Dörfern Steckbriefe der Truppe, in Akt 3 werden sie abgerissen oder übermalt.
 
 **Environmental Details:**

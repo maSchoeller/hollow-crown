@@ -18,4 +18,4 @@
 ## Abnahme
 
 - Hafenbecken quer durchs Bild ✓, eine Steinbrücke ✓, Balliste an der Brücke ✓, Kran mit hochgeklapptem Steg rechts ✓, Kontor mit zwei Türen, Salzsäcken, Laternen ✓; Regen, nasses Pflaster ✓; keine Schrift ✓. Keine Menschen oder Tiere, kein Text ✓.
-- Abnahme durch den Produktinhaber: offen (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-07 (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).

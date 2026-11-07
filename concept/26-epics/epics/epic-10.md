@@ -738,7 +738,7 @@ damit die Heimat lebendig wirkt.
 
 **Stand 2026-11-04:** Entschieden ist 3D (Art Direction §7). Schon gebaut: Szene als Produktionscode (`src/render/home/castle.ts`), Raumteile je Stufe, Burgstufe (`castleTier` 0–3, Schwellen 1/6/14 als `[ASSUMPTION]` im Art-Log), drei Gegenstände ohne Datenbindung. Offen: `homeObject` und die übrigen Gegenstände, `castleScene` mit Gefallenen und Gegangenen, Messung auf echtem Gerät. **Nachgezogen am 2026-11-06:** Der Ausgang „Bild“ entfällt; Plätze und Teile stehen im Modell (`tools/art/blender_paktwacht.py`), nicht in `home.yaml`.
 
-**Abhängigkeiten:** nach 10.1 (Stufen); die Liste der Gegenstände nimmt der Produktinhaber ohne Bilder ab, die Bilder und Modelle entstehen mit dieser Story (Frage 7, Variante B, 2026-11-07; Entwurf mit Raum und Platz in `concept/22-narrative/burg-gegenstaende-vorschlag.md`, Abnahme offen); Vorwerk am Passfuß entschieden (F4, Produktinhaber 2026-11-06, `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`).
+**Abhängigkeiten:** nach 10.1 (Stufen); die Liste der Gegenstände ist ohne Bilder abgenommen (Produktinhaber 2026-11-07, `concept/22-narrative/burg-gegenstaende-vorschlag.md`), Bilder und Modelle entstehen mit dieser Story; Vorwerk am Passfuß entschieden (F4, Produktinhaber 2026-11-06, `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`).
 
 **Akzeptanzkriterien:**
 
@@ -751,22 +751,27 @@ damit die Heimat lebendig wirkt.
 **Angenommen** die Daten
 **Wenn** `pnpm content:check` läuft
 **Dann** trägt jeder vorhandene Story-Gefährte (die 15 aus `content/acts/act1` und `act2`) in `charSchema` ein Feld `homeObject` (Id des Gegenstands; Pflicht für jeden Gefährten in `content/acts/*/units.yaml`), das Burg-Modell hat je Gegenstand einen festen Platz und je Raum und Stufe ein Ausbauteil, und `content:check` (oder der Modell-Test) meldet jeden Gefährten ohne Platz
-**Und** die Gegenstände sind ein Narrative-Vorschlag `[ASSUMPTION]`, eingetragen in `concept/22-narrative/narrative.md` („Die Paktwacht wächst mit“) und dessen Decision-Log:
+**Und** die Gegenstände sind abgenommen (Produktinhaber 2026-11-07, ohne Bilder; `concept/22-narrative/burg-gegenstaende-vorschlag.md`, `narrative.md` „Die Paktwacht wächst mit“); jeder Gegenstand steht im Raum seines Gefährten, Avatar und Lucan bekommen keinen:
 
-| Gefährte | Gegenstand | Gefährte | Gegenstand |
+| Gefährte | Gegenstand | Raum | Platz im Modell |
 |---|---|---|---|
-| Brenna | Axtständer | Nell | Seekarte mit Kompass |
-| Tobin | Holzschild mit selbstgemaltem Wappen | Brann | aufgeschichtetes Steinmännchen |
-| Mira | Trockengestell mit Fellen | Amos | Feldschertasche mit Kräuterbund |
-| Fenn | Kiste voller Krimskrams mit Dietrichrolle | Ilka | Hirschgeweih an der Wand |
-| Liora | kleiner Hausaltar mit Kerzen | Sable | Säbel des Grenzheers auf Ständer |
-| Varek | Würfelbrett | Mael | Gardehelm der Paktgarde |
-| Ysolde | Bücherstapel | Pell | Laterne der Stadtwache |
-| Grosk | großer Kochkessel | Vesna | Drachenknochen auf Sockel |
-| Jory | Laute | Kit | Schlüsselbund des Palasts |
-| Odile | polierter Brustpanzer auf Ständer | Harlan | Notenständer mit Pergament |
+| Brenna | Axtständer mit Doppelaxt | Schmiede | Hof, neben der Esse |
+| Tobin | Holzschild mit selbstgemaltem Wappen | Konvoi | an der Wagenwand beim Tor |
+| Mira | Trockengestell mit Fellen | Übungsplatz | Rand der Schießbahn |
+| Fenn | Kiste voller Krimskrams mit Dietrichrolle | Werkstatt | unter der Werkbank |
+| Liora | kleiner Hausaltar mit Kerzen | Gedächtnishalle | Felsabsatz, neben dem Eingang |
+| Varek | Würfelbrett | Taverne | auf dem Tisch vor der Tür |
+| Ysolde | Bücherstapel | Verzauberer | Felsabsatz |
+| Grosk | großer Kochkessel | Schmiede | Hof, zwischen Esse und Lagerfeuer |
+| Jory | Laute | Lagerfeuer | Bank am Feuer |
+| Odile | polierter Brustpanzer auf Ständer | Akademie | Felsabsatz, vor der Tür |
+| Nell | Seekarte mit Kompass | Händler | auf dem Ladentisch |
+| Brann | Steinbrocken mit Glutader | Verzauberer | Felsabsatz, an der Felswand |
+| Amos | Feldschertasche mit Kräuterbund | Heiler | an der Tür, Kräuter zum Trocknen |
+| Ilka | weißes Wolfsfell über einer Bank | Übungsplatz | neben Miras Gestell |
+| Sable | Säbel des Grenzheers auf Ständer | kein Raum | im Tor, Wachstube |
 
-**Und** die Gegenstände der Akt-3-Gefährten (Mael, Pell, Vesna, Kit, Harlan) sind hier nur ein Hinweis für Epic 12: Daten, Plätze und Assets dafür liefert Epic 12 mit den Gefährten; diese Story prüft sie nicht.
+**Und** die Gegenstände der Akt-3-Gefährten (Mael Gardehelm, Pell Laterne der Stadtwache, Vesna Drachenknochen auf Sockel, Kit Schlüsselbund des Palasts, Harlan Notenständer) sind hier nur ein Hinweis für Epic 12: Daten, Plätze und Assets dafür liefert Epic 12 mit den Gefährten; diese Story prüft sie nicht.
 
 **Angenommen** die reine Funktion `castleScene(data, c)` (liest nur `c.roster`, `c.fallen`, `c.left`, `c.home`, kein neuer Zustand)
 **Wenn** ein Gefährte beitritt, fällt oder geht

@@ -1,6 +1,6 @@
-# Burg-Gegenstände: Vorschlag zur Abnahme (Story 10.14)
+# Burg-Gegenstände (Story 10.14)
 
-> **Status: Vorschlag [C], nicht abgenommen.** Der Produktinhaber nimmt die Liste ohne Bilder ab (Frage 7, Variante B, 2026-11-07); Bilder und Modelle entstehen mit Story 10.14. Nach der Abnahme wird die Tabelle in `narrative.md` („Die Paktwacht wächst mit“) und in Story 10.14 übernommen.
+> **Status: abgenommen 2026-11-07** (Produktinhaber, ohne Bilder, Frage 7 Variante B), mit allen drei Änderungen (Grosk an der Schmiede, Ilka mit Wolfsfell, Brann mit Stein mit Glutader); Avatar und Lucan bekommen keinen Gegenstand. Übernommen in `narrative.md` („Die Paktwacht wächst mit“) und Story 10.14; Bilder und Modelle entstehen mit Story 10.14.
 
 ## Kurzfassung
 
@@ -59,6 +59,6 @@ Bleibt es beim Geweih oder Steinmännchen, ändert sich nur die Spalte „Gegens
 
 **Akt 3 (nur Hinweis für Epic 12):** Mael – Gardehelm der Paktgarde (Gedächtnishalle), Pell – Laterne der Stadtwache (Brücke), Vesna – Drachenknochen auf Sockel (Felsabsatz am Rundturm), Kit – Schlüsselbund des Palasts (Bergfried-Tür), Harlan – Notenständer mit Pergament (Taverne).
 
-**Regeln aus Story 10.14, unverändert:** beigetreten → Gegenstand steht; gefallen → Gegenstand bleibt liegen, Platz entsättigt, Gedenkstein in der Gedächtnishalle; gegangen → Gegenstand fehlt, kein Stein; nie beigetreten → nichts; Söldner haben keinen Platz. Avatar und Lucan stehen wie in Story 10.14 nicht in der Liste (keine Gefährten im Sinne von `units.yaml`); ob sie einen Gegenstand bekommen, wäre eine eigene Frage.
+**Regeln aus Story 10.14, unverändert:** beigetreten → Gegenstand steht; gefallen → Gegenstand bleibt liegen, Platz entsättigt, Gedenkstein in der Gedächtnishalle; gegangen → Gegenstand fehlt, kein Stein; nie beigetreten → nichts; Söldner haben keinen Platz. Avatar und Lucan bekommen keinen Gegenstand (Produktinhaber 2026-11-07).
 
 </details>
