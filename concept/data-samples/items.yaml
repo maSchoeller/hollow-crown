@@ -107,7 +107,6 @@
 - { id: fire_bomb,      kind: consumable, slot: bag, use: { damage: 8, element: fire, rng: [1,2], status: burning, terrain: ignite }, charges: 1, wt: 0, rarity: common, price: 400 }
 - { id: haste_scroll,   kind: consumable, slot: bag, use: { target: ally, rng: [0,1], statMods: { mov: 2 }, duration: round }, charges: 1, wt: 0, rarity: rare, price: 800 }
 - { id: torch,          kind: consumable, slot: bag, use: { vision: 4, duration: 3 }, charges: 1, wt: 0, rarity: common, price: 150 }
-- { id: promotion_seal, kind: seal,       slot: bag, use: { promote: true, minLevel: 10 }, charges: 1, wt: 0, rarity: rare, price: 3000 }
 - { id: seers_herb,     kind: consumable, slot: bag, use: { removeScar: true }, charges: 1, wt: 0, rarity: epic, price: 0, tags: [campOnly] }
 
 # --- Materialien (nur Konvoi) ---

@@ -242,7 +242,7 @@ describe('on-hit and on-lethal procs', () => {
     const ev: GameEvent[] = [];
     resolveAttack(data, s, a.uid, d.uid, undefined, ev);
     const [st] = strikes(ev);
-    expect(st).toMatchObject({ skill: 'sol', dmg: f.attacker.damage });
+    expect(st).toMatchObject({ skill: 'pro_duel', dmg: f.attacker.damage });
     expect(a.hp).toBe(5 + Math.floor(f.attacker.damage / 2));
 
     const s2 = field();
@@ -263,7 +263,7 @@ describe('on-hit and on-lethal procs', () => {
     expect([f.attacker.hit, f.attacker.crit, f.attacker.strikes]).toEqual([100, 0, 1]);
     const ev: GameEvent[] = [];
     resolveAttack(data, s, a.uid, d.uid, undefined, ev);
-    expect(strikes(ev)[0]).toMatchObject({ skill: 'impale', dmg: f.attacker.damage + 4 });
+    expect(strikes(ev)[0]).toMatchObject({ skill: 'pro_guard', dmg: f.attacker.damage + 4 });
     expect(d.hp).toBe(60 - f.attacker.damage - 4);
   });
 

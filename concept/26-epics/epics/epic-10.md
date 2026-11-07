@@ -112,13 +112,13 @@ damit die knappe Wahl, wer wächst, ein Moment wird.
 
 **Angenommen** `content/core/items.yaml`
 **Wenn** die Story umgesetzt ist
-**Dann** ist der Glutfunke das einzige Aufstiegs-Item: `ember_spark` trägt `use: { promote: true, minLevel: 10 }` (weiter `kind: seal`, `tags: [convoyOnly]`, `price: 3000`), `promotion_seal` ist mit Locales, Bild, `itemInfo.ts`-Eintrag und Handbuch-Verweisen entfernt und steht als `promotion_seal: ember_spark` in `content/renames.yaml` (Akt 1 ist veröffentlicht, die Id ist gesperrt; im MVP ist das Siegel nirgends erhältlich)
+**Dann** ist der Glutfunke das einzige Aufstiegs-Item: `ember_spark` trägt `use: { promote: true, minLevel: 10 }` (weiter `kind: seal`, `tags: [convoyOnly]`, `price: 3000`), `promotion_seal` gibt es nicht mehr: Es wurde vor der ersten ID-Sperre in der Vorbereitung von Story 9.14 mit Item, Locales und Bild entfernt (2026-11-07, Entscheidung des Produktinhabers), ein Eintrag in `content/renames.yaml` entfällt
 **Und** `pnpm content:check` ist mit der gesperrten Id grün; Architektur §5.11 nennt `kind: seal` statt `kind: promotion`.
 
 **Angenommen** ein Spielstand aus dem Akt-1-Release (Speicherformat 2)
 **Wenn** er nach dieser Story geladen wird
-**Dann** hebt `src/persistence/save.ts` das Speicherformat auf 3 mit einer generischen Migration 2 → 3, die jede Umbenennung aus `content/renames.yaml` über `renamedId` auf alle Item-, Skill- und Klassen-Ids im Spielstand anwendet (Konvoi, Ausrüstung, Taschen, `loadout`, `mastered`, Klassen der Einheiten); spätere Stories ergänzen nur Einträge in `renames.yaml`, keine eigene Migration
-**Und** eine Fixture `tests/fixtures/saves/format2-*.json` aus dem Akt-1-Release liegt bei, und `tests/unit/migrations.test.ts` belegt Migration und Umbenennung (`promotion_seal` → `ember_spark`) mit ihr (`AGENTS.md`, „Akt-Release“ Schritt 3).
+**Dann** braucht er für `promotion_seal` und die PoC-Skills `sol`, `impale`, `longshot` keine Migration und keinen Eintrag in `content/renames.yaml`: Die IDs sind vor der ersten Sperre entfernt bzw. in `pro_duel`, `pro_guard`, `pro_far_shot` umbenannt (Vorbereitung Story 9.14, 2026-11-07); kein Akt-1-Spielstand kann sie tragen (das Siegel war in Akt 1 nirgends erhältlich, Klassen-Skills stehen nicht im Spielstand, sondern folgen aus `classId`)
+**Und** ändert die Story das Speicherformat aus anderen Gründen, gilt weiter: Migration in `src/persistence/save.ts` und Fixture `tests/fixtures/saves/format2-*.json` aus dem Akt-1-Release, belegt in `tests/unit/migrations.test.ts` (`AGENTS.md`, „Akt-Release“ Schritt 3).
 
 **Angenommen** `rooms.yaml` mit `{ id: academy, function: academy, icon: academy, fromAct: 2, homes: [castle] }`
 **Wenn** Akt 2 erreicht ist und die Heimat die Burg ist
@@ -244,7 +244,7 @@ Als Spieler
 möchte ich, dass Schutz, Rückstoß, Konter zuerst, Flächen und Anfeuern der Profi-Wege in Vorschau, Kampf und KI gleich wirken,
 damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 
-**Abhängigkeiten:** nach 10.3 (Schema, Klassen) und 10.2 (Migration auf Format 3 für die Umbenennungen); Reichweiten-Kacheln aus Epic 13; Story 11.22 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
+**Abhängigkeiten:** nach 10.3 (Schema, Klassen) und 10.2; Reichweiten-Kacheln aus Epic 13; Story 11.22 nutzt das Anfeuern auf zwei Ziele (`cheerTargets`) für die Laute `final_curtain`.
 
 **Akzeptanzkriterien:**
 
@@ -252,7 +252,7 @@ damit ich jede Profi-Wirkung vor dem Zug richtig einschätzen kann.
 **Wenn** die Story umgesetzt ist
 **Dann** kennt `skillSchema.effect` die neuen Bausteine `guardNeighbors`, `statusOnHit: { status, chance }`, `rangeCap`, `castRadius`, `healRadius`, `cheerRange`, `cheerTargets`, `ignoreGrief`; `proSkills` ist für jede spielbare Profiklasse Pflicht (1–2), und `bard` und `standard_bearer` sind `playable: true`
 **Und** die sechs vorhandenen Profiklassen tragen als `skill` den Rollen-Skill (`duelist` `counter_instinct`, `bulwark`/`breaker` `phalanx`, `sharpshooter` `eagle_eye`, `sage` `elemental_focus`, `bishop` `blessing`) und ihre `proSkills` aus der Tabelle; der PoC-Klassen-Skill `climber` entfällt nur am Sturmbrecher (Späher und Brigand behalten ihn)
-**Und** die PoC-Skills `sol`, `impale`, `longshot` sind aus `skills.yaml` gelöscht und stehen in `content/renames.yaml` als `sol: pro_duel`, `impale: pro_guard`, `longshot: pro_far_shot` (Akt 1 ist veröffentlicht, die Ids sind gesperrt); `pnpm content:check` ist grün; Spielstände übernehmen die Umbenennung über die generische Migration aus Story 10.2 (Format 3), diese Story legt keine eigene Migration an, sondern nur die drei Einträge und einen Testfall in `tests/unit/migrations.test.ts` (Fixture-Stand mit `sol`, `impale`, `longshot` in `loadout`/`mastered` → `pro_duel`, `pro_guard`, `pro_far_shot`).
+**Und** die PoC-Skills `sol`, `impale`, `longshot` heißen seit der Vorbereitung von Story 9.14 (2026-11-07, vor der ersten ID-Sperre) schon `pro_duel`, `pro_guard`, `pro_far_shot` mit unveränderter PoC-Wirkung; diese Story gibt ihnen die neuen Wirkungen, ein Eintrag in `content/renames.yaml`, eine Migration und ein Testfall in `tests/unit/migrations.test.ts` für diese IDs entfallen; `pnpm content:check` ist grün.
 
 **Angenommen** die übrigen Profi-Skills in `content/core/skills.yaml` (`source: class`)
 **Wenn** eine aufgestiegene Figur handelt oder angegriffen wird

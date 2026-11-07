@@ -35,6 +35,7 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 - [x] Abstimmung Leicht und Normal im Korridor (Story 15.10, Nachtrag 2026-11-07); Schwer nach dem Release (Story 9.15)
 - [x] `pnpm check` grün auf dem Stand vom 2026-11-07
 - [x] Playtest-Plan `concept/21-gdd/playtest-akt1.md` mit Spielzeit-Messung (AK 2)
+- [x] Alte IDs vor der ersten Sperre aufgeräumt (Produktinhaber 2026-11-07): `promotion_seal` entfernt (Item, Locales, Bild), Skills `sol` → `pro_duel`, `impale` → `pro_guard`, `longshot` → `pro_far_shot` umbenannt, Wirkung unverändert. Kein Akt-1-Spielstand kann sie tragen: das Siegel steht in keinem Händler, keiner Beute und keiner Wirkung von `act1`, Profiklassen entstehen nur per Aufstieg mit `use.promote` (in Akt 1 hat kein erhältliches Item das), Klassen-Skills folgen aus `classId` und stehen nicht im Spielstand. Damit entfallen Migration und `renames.yaml` in Story 10.2 und 10.4.
 - [ ] Nach Abschluss von A: `pnpm check`, `pnpm sim --campaign act1 --runs 50` auf Leicht und Normal erneut, Tabelle in diese Story
 - [ ] 👤 **EP vor 1-8:** Normal erreicht 8,6 statt 9 (Simulation ohne Heimsuchungen und Nebenquests); so lassen oder 1-7 eine eigene EP-Quelle geben (Story 15.10, Nachtrag 2026-11-07)
 - [ ] 👤 **Rechtliche Prüfung Nemesis-Patent** vor der Veröffentlichung (GDD „Risiken“, `[ASSUMPTION: Prüfung nötig]`)
@@ -70,6 +71,8 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 Claude Opus 5.5 (Vorbereitung, gds-create-story)
 
 ### Completion Notes List
+
+- 2026-11-07: Alte IDs vor der Sperre aufgeräumt (siehe Checkliste B); `pnpm check` grün, `pnpm sim --campaign act1 --runs 50` auf Normal unverändert gegenüber `main`.
 
 - 2026-11-07: Story-Datei mit Release-Checkliste angelegt; Playtest-Plan geschrieben; alles ohne Sperre erledigt. Offen beim Produktinhaber: 15.6 (Bild Paktwacht Spätsommer, Abnahme Ortsbilder), Handy-Test 15.11 und 15.12, Tonbruch-Test 8.1, Nemesis-Prüfung, EP vor 1-8, ob 15.16 das Release blockiert, Freigabe für `content:lock`.
 
