@@ -33,5 +33,8 @@ export function ballistaWeapon(data: GameData, objectId: string): ItemInstance {
   return { uid: `${BALLISTA_PREFIX}${objectId}`, def: data.balance.ballista.item, upgrade: 0, affixes: [], runes: [] };
 }
 
-/** AI profiles that fire a ballista at all (story 11.6): `hold` also walks to one, the others only fire when they already stand beside it. */
-export const CREW_PROFILES: readonly string[] = ['aggressive', 'hold', 'guard', 'hunt'];
+/**
+ * Whether a foe with this AI profile fires a ballista at all (story 11.6, Epic/GDD: a foe beside it uses it): every waking profile
+ * but `flee`; a `trigger` foe is asleep while it has that profile (waking gives it its `then` profile).
+ */
+export const firesBallista = (profile: string): boolean => profile !== 'flee' && profile !== 'trigger';

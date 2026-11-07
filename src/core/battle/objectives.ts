@@ -248,7 +248,8 @@ function whenMatches(s: BattleState, t: TriggerDef, ctx: TriggerCtx): boolean {
     case 'object_destroyed':
       return s.objects.some((o) => o.id === w.object && o.state === 'razed');
     case 'object_activated':
-      return s.objects.some((o) => o.id === w.object && (o.state === 'open' || o.state === 'visited'));
+      // a ballista is never activated: its `open` only means it has fired this phase (story 11.6)
+      return s.objects.some((o) => o.id === w.object && o.type !== 'ballista' && (o.state === 'open' || o.state === 'visited'));
     case 'talked':
       return s.stats.recruited.includes(w.unit);
     case 'hp_below': {

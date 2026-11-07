@@ -4,7 +4,7 @@ import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, ObjectState } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
-import { ballistaRange, ballistasOf, canCrew, CREW_PROFILES } from './ballistaBase';
+import { ballistaRange, ballistasOf, canCrew, firesBallista } from './ballistaBase';
 import { classActionId } from './roles';
 import { computeStats } from './stats';
 
@@ -308,32 +308,42 @@ export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ig
   const out = new Set<string>();
   if (!unit.pos || !active(unit) || waitsToJoin(unit)) return out;
   const range = combinedRange(data, s, unit);
+  const siege = ballistasOf(s).length > 0;
+  // one path search for the weapons and the ballistas (story 11.6)
+  const dests = !ignoreMove && (range || siege) ? destinations(s, unit, reachable(data, s, unit)) : undefined;
   if (range) {
-    const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
+    const origins = dests ?? [unit.pos];
     for (const o of origins) for (const t of strikeTiles(data, s, unit, o, range, target)) out.add(posKey(t));
   }
   // a crew beside a ballista reaches what the ballista reaches (story 11.6)
-  for (const c of crewSpots(data, s, unit, ignoreMove)) for (const t of strikeTiles(data, s, unit, c.ballista.at, ballistaRange(data), target)) out.add(posKey(t));
+  if (siege)
+    for (const c of crewSpots(data, s, unit, ignoreMove, dests)) for (const t of strikeTiles(data, s, unit, c.ballista.at, ballistaRange(data), target)) out.add(posKey(t));
   return out;
 }
 
 /**
- * Balliste (story 11.6): the tiles from which the unit would fire a ballista this turn, with the ballista. A foe fires only with a
- * profile of `CREW_PROFILES` (none means aggressive): `hold` walks to a ballista for it, the others only fire when they stand beside
- * one already. A unit of the player may walk to one, unless `ignoreMove`. Empty on a map without ballista. Shared by the AI and the danger zone.
+ * Balliste (story 11.6): the tiles from which the unit would fire a ballista this turn, with the ballista: a neighbouring tile on
+ * the ballista's own level. A foe fires with any waking profile but `flee` (`firesBallista`; none means aggressive): `hold` walks
+ * to a ballista for it, the others only fire when they stand beside one already. A unit of the player may walk to one, unless
+ * `ignoreMove`. `dests`: the unit's destinations when the caller has them already. Empty on a map without ballista. Shared by
+ * the AI and the danger zone.
  */
-export function crewSpots(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false): Array<{ ballista: ObjectState; from: Pos }> {
+export function crewSpots(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false, dests?: Pos[]): Array<{ ballista: ObjectState; from: Pos }> {
   const list = ballistasOf(s);
   if (!list.length || !unit.pos || !canCrew(data, unit)) return [];
   // the AI moves every unit but the player's; a foe without a profile is aggressive (as in `aiAct`)
   const profile = unit.ai?.profile ?? (unit.team === 'player' ? undefined : 'aggressive');
-  if (profile !== undefined && !CREW_PROFILES.includes(profile)) return [];
+  if (profile !== undefined && !firesBallista(profile)) return [];
   const walks = profile === undefined ? !ignoreMove : profile === 'hold';
-  const origins = walks ? destinations(s, unit, reachable(data, s, unit)) : [unit.pos];
+  const origins = walks ? (dests ?? destinations(s, unit, reachable(data, s, unit))) : [unit.pos];
   const out: Array<{ ballista: ObjectState; from: Pos }> = [];
-  for (const from of origins) for (const b of list) if (dist(from, b.at) === 1) out.push({ ballista: b, from });
+  for (const from of origins)
+    for (const b of list) if (dist(from, b.at) === 1 && crewLevelFits(data, s, from, b.at)) out.push({ ballista: b, from });
   return out;
 }
+
+/** The crew stands on the level of the ballista (story 11.6), so the shot's reach and the crew's tile agree on the height. */
+export const crewLevelFits = (data: GameData, s: BattleState, from: Pos, ballistaAt: Pos): boolean => levelAt(data, s, from) === levelAt(data, s, ballistaAt);
 
 /** A foe on `hold` who can be talked over (Varek in N2, Ysolde in 1-4) strikes nobody until then; a blow against it is still countered. */
 export const waitsToJoin = (u: Pick<BattleUnit, 'recruit' | 'ai'>): boolean => !!u.recruit && u.ai?.profile === 'hold';

@@ -258,7 +258,7 @@ handbook:
       title: "Ballista"
       text: "A siege engine any unit on foot or in armour works from a neighbouring tile; nobody steps onto its tile. The bolt has might {boltMight} plus the crew's strength, hit {boltHit}, range {rangeMin} to {rangeMax} from the engine, {rangeFromAbove} further from a higher level. No counter, the bolts never run out; one shot per phase and engine, the shot is the action. Foes use it too."
       where: "“Fire the ballista” appears in the green context band when a unit stands next to the engine."
-      keywords: "ballista, siege, bolt, ranged, height"
+      keywords: "ballista, siege, siege engine, engine, bolt, ranged, height"
     doors:
       title: "Doors and gates"
       text: "Closed doors and gates block the way and the view. A key opens them, the scout manages without, a lever or an event may too; open ones are free passage."
@@ -530,7 +530,7 @@ handbook:
       title: "Lesson: Ballista"
       text: "From the second act: how to work a siege engine from a neighbouring tile and why it never strikes back."
       where: "In the first mission of the second act, once the company reaches the ballista."
-      keywords: "lesson, ballista, siege, bolt, ranged"
+      keywords: "lesson, ballista, siege, siege engine, engine, bolt, ranged"
     lesson_triangle:
       title: "Lesson: weapon triangle"
       text: "From the first mission: which weapon beats which and how the forecast shows it."

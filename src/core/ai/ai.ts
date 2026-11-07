@@ -436,10 +436,22 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     if (cast) return act(cast);
   }
   // Balliste (story 11.6): a crew fires when the shot beats its best attack; without a ballista nothing is planned here
-  const shot = ballistaPlans(data, s, u, crewSpots(data, s, u).map((c) => c.from))[0];
-  if (shot) {
-    const best = attackPlans(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here)[0];
-    if (!best || shot.score > best.score) return act(shot);
+  const spots = crewSpots(data, s, u);
+  if (spots.length) {
+    // a healer heals first when it can
+    const healer = profile === 'support' || data.classes[u.classId]!.weaponGroups.includes('staff');
+    const heal = healer ? healPlan(data, s, u, profile === 'support' ? all : here) : null;
+    if (heal) return act(heal);
+    let shots = ballistaPlans(data, s, u, spots.map((c) => c.from));
+    // a hunter shoots only at its target while the ballista reaches it, and weighs it against the blows at that target
+    const prey = profile === 'hunt' && ai.target ? s.units.find((o) => (o.id === ai.target || o.uid === ai.target) && onMap(o)) : undefined;
+    const atPrey = prey ? shots.filter((p) => p.action.kind === 'ballista' && p.action.target === prey.uid) : [];
+    if (atPrey.length) shots = atPrey;
+    const shot = shots[0];
+    if (shot) {
+      const best = attackPlans(data, s, u, profile === 'aggressive' || profile === 'hunt' ? all : here, atPrey.length ? prey!.uid : undefined)[0];
+      if (!best || shot.score > best.score) return act(shot);
+    }
   }
   switch (profile) {
     case 'trigger':

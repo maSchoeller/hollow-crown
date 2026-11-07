@@ -33,6 +33,23 @@ damit Geschütze den Akt taktisch prägen.
 - [x] Tests (AC 8, 9): `tests/unit/ballista.test.ts`, `pnpm check`, Coverage, Sim-Diff Akt 1, Bild 375 × 812.
 - [x] Decision-Log `concept/21-gdd/decision-log.md` mit den Annahmen.
 
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][High] `bossKilledWith`: Ballistenschuss zählt als `siege`, nie als `bow` (`kill_with: bow` bleibt unerfüllt).
+- [x] [AI-Review][High] Waffenart-gebundene Skills gelten nicht für den Bolzen (`WeaponProfile.fixed`, `conditionMet`); eine Verteidiger-Bedingung „gegen Bogen“ gibt es im Skill-Schema nicht.
+- [x] [AI-Review][High] Bediener steht auf der Höhenstufe der Balliste (`crewLevelFits`).
+- [x] [AI-Review][Med] Validierung: `balance.ballista.item` (bekannt, Waffe mit `mt`/`rng`, Tag `fixed`), Gelände `ballista` ohne Objekt, `links` auf eine Balliste, `object_activated` auf eine Balliste; `object_activated` nimmt Ballisten in `objectives.ts` aus.
+- [x] [AI-Review][Med] KI-Bediener: jedes wache Profil außer `flee` schießt, wenn es daneben steht (schlafende `trigger` nicht), `hold` darf hinlaufen; Heiler/`support` heilen zuerst; `hunt` mit erreichbarem Ziel schießt nur auf das Ziel.
+- [x] [AI-Review][Med] Tests der Abwägung (bewaffneter Bediener: besserer Schlag gegen Schuss, Spiegelfall), Autoplay mit bewaffnetem Bediener und Schonung rekrutierbarer Ziele.
+- [x] [AI-Review][Med] Probekarte: Sieg und eigener Ballistenschuss im Autoplay; `afterAll` setzt `data.maps`/`data.campaign` zurück; leere Asserts ersetzt; Reiter bedient nicht.
+- [x] [AI-Review][Low] `BattleHud.tsx`: Chip über einen Schlüssel `ui.fc.ballista`, kein Doppelpunkt im Code.
+- [x] [AI-Review][Low] `threatTiles`/`crewSpots`: eine Pfadsuche, Ursprünge werden übergeben.
+- [x] [AI-Review][Low] `apply.ts`: Helfer `quoteOnce` statt dreifach kopiertem Block.
+- [x] [AI-Review][Low] `canEquip`: `fixed` vor dem Taschen-Return; der Bolzen kommt in keine Tasche.
+- [x] [AI-Review][Med] Nebel in der Vorschau nach Bewegung: Sicht vom Zielfeld des Bedieners.
+- [x] [AI-Review][Low] UI: Guards für fehlendes `object`; `useBoardOverlays` markiert im Modus „moved“ auch Ballisten-Ziele.
+- [x] [AI-Review][Low] Texte: EN „Siege engine“, EN-Stichwort „engine“, Bolzen-Beschreibung mit Reichweite als Parameter (`{rngMin}`/`{rngMax}` aus items.yaml) und „einmal je Phase“; Lektion: die Regeln sagt Lucan (kein `fallback: skip`), Brenna nur als Auftakt.
+
 ## Dev Notes
 
 - **Quellen:** Epic 11 Story 11.6 und Einleitung; GDD „Gelände und Umwelteffekte“ (Balliste: Mt 12 + STR, Treffer 70, Reichweite 3–10, kein Gegenangriff, unbegrenzt, Fuß- oder gepanzerte Figur auf Nachbarfeld, kein Flieger, keine Effektivität gegen Flieger, KI nur `hold` oder schon daneben); Architektur §8 (Vorschau = Auflösung, Spielwerte im Content, RNG nur im State, Konsistenzregeln §8.7).
@@ -41,10 +58,11 @@ damit Geschütze den Akt taktisch prägen.
 - **Höhe/Nebel:** `canStrike(data, s, unit, ballista.at, target, rng, target)` – Distanz ≥ 3, also nur die Fernkampf-Regel. Nebel: `fogOn` → `visibleTiles(team)`.
 - **Act-1-Sicherheit:** Jede neue Verzweigung prüft zuerst, ob der Kampf eine Balliste hat; ohne Balliste keine neuen RNG-Züge, keine neuen KI-Kandidaten, gleiche Sortierung.
 - **Parallel-Session:** `schemas.ts`/`validate.ts` nur minimal (Balance-Schlüssel, eine Prüfzeile).
-- **[ASSUMPTION] weaponType:** `ballista_bolt` hat `weaponType: bow` (physischer Fernkampf, außerhalb des Dreiecks), damit kein neuer Regeltyp nötig ist; Reichweiten-Skills (Weitschuss) gelten nicht, weil die Reichweite fest aus dem Item kommt; keine `effectiveVs`.
+- **[ASSUMPTION] weaponType:** `ballista_bolt` hat `weaponType: bow` (physischer Fernkampf, außerhalb des Dreiecks), damit kein neuer Regeltyp nötig ist; als feste Waffe (`fixed`) gelten keine an eine Waffenart gebundenen Skills (Review), Reichweiten-Skills ohnehin nicht; keine `effectiveVs`. Ein Bosskill mit der Balliste zählt als `siege`.
+- **[ASSUMPTION] Höhe des Bedieners (Review):** Der Bediener steht auf derselben Höhenstufe wie die Balliste (z. B. beide auf dem Wehrgang); so passen Reichweite vom Ballistenfeld und Höhenbonus zusammen.
 - **[ASSUMPTION] Ein Schuss je Balliste und Phase:** „ein Schuss je Zug“ gilt je Balliste: nach dem Schuss steht das Objekt auf `open`, zu Beginn jeder Phase wieder `closed` (kein neues Feld im Speicherformat). Ein Trigger `object_activated` auf die Balliste feuert beim ersten Schuss.
 - **[ASSUMPTION] Bediener:** Bewegungsart aus `balance.ballista.crew` (`foot`, `armored`); Reiter, Flieger, Monster bedienen nicht (GDD).
-- **[ASSUMPTION] Hold-KI zieht zur Balliste:** Profil `hold` darf auf ein freies Nachbarfeld einer Balliste ziehen, um zu schießen; andere Profile (`aggressive`, `guard`, `hunt`) schießen nur, wenn sie schon daneben stehen; `flee`, `follow`, `raider`, `support`, schlafende `trigger` nie.
+- **[ASSUMPTION] KI-Bediener (nach Review, Epic/GDD „wenn er schon daneben steht“):** Jeder wache Gegner außer `flee` schießt, wenn er schon daneben steht und der Schuss besser bewertet ist als sein bester Angriff; schlafende `trigger` nie. `hold` darf dafür auf ein freies Nachbarfeld ziehen. Heiler und `support` heilen zuerst, wenn sie können. `hunt` mit Ziel schießt nur auf das Ziel, solange die Balliste es erreicht, sonst normale Bewertung.
 - **[ASSUMPTION] Gelände:** Unter jeder Balliste liegt das neue Gelände `ballista` (unbetretbar für alle Bewegungsarten, wie ein Hebel-Feld, ohne eigene Requisite: das Objekt zeichnet das Modell).
 - **[ASSUMPTION] Bild des Items:** `image: iron_bow` (Platzhalter), da kein Item-Bild der Balliste existiert; das Item liegt nie in einem Inventar.
 - **[ASSUMPTION] Paket act2:** minimal mit `released: false` angelegt (nur Szene und EN-Texte); 11.1/11.3 bauen Kampagne und Freischaltung. Die Handbuch-Einträge stehen in `core/handbook.yaml` mit `fromAct: 2`; im veröffentlichten Build fehlt die Szene, die Lektion zeigt dann `handbook.ui.lessonMissing` (vorhandenes Verhalten), bis `act2` veröffentlicht ist.
@@ -102,16 +120,29 @@ Claude Opus 5.5
 - content/core/balance.yaml, handbook.yaml, items.yaml, terrain.yaml
 - content/core/locales/de.yaml, en.yaml, de.handbook.yaml, en.handbook.yaml, de.items.yaml, en.items.yaml, de.names.yaml, en.names.yaml
 - content/packs.yaml
-- src/content/schemas.ts, src/content/validate.ts
+- src/content/schemas.ts, src/content/validate.ts, src/content/validateBallista.ts (neu, Review)
 - src/core/defs.ts, balanceDefs.ts, index.ts
-- src/core/rules/ballista.ts (neu), ballistaBase.ts (neu), combat.ts, items.ts, movement.ts
+- src/core/rules/ballista.ts (neu), ballistaBase.ts (neu), combat.ts, items.ts, movement.ts, skills.ts
 - src/core/battle/actions.ts, apply.ts, commands.ts, contextBand.ts, objectives.ts
 - src/core/ai/ai.ts, autoplay.ts
-- src/app/screens/Battle.tsx, BattleHud.tsx, battleMode.ts, useBattleInput.ts
+- src/app/screens/Battle.tsx, BattleHud.tsx, battleMode.ts, useBattleInput.ts, useBoardOverlays.ts
+- src/ui/itemInfo.ts
 - src/ui/icons.tsx
 - tests/unit/ballista.test.ts (neu), tests/unit/packs.test.ts
 - tests/fixtures/maps/dev_ballista.yaml (neu), tests/fixtures/maps/asset_catalog.yaml
 
+### Senior Developer Review (AI)
+
+- **Datum:** 2026-11-07, vier Reviewer (Koordinator). **Ergebnis:** Changes Requested → alle 14 PATCH-Punkte erledigt (siehe „Review Follow-ups (AI)“), Tests in `tests/unit/ballista.test.ts` ergänzt (36 Fälle).
+- **Behalten, offene Fragen an den Produktinhaber:**
+  - Ein Schuss je Balliste und Phase (statt je Zug eines Bedieners): mehrere Bediener an einer Balliste schießen nicht mehrmals.
+  - Nebel begrenzt nur die Ziele der Spielerseite; die Gegner-KI sieht wie bei jedem ihrer Angriffe alles.
+- **Deferred (Follow-up):**
+  - Das Brett zeigt eine verschossene Balliste nicht anders an, und es gibt kein eigenes Reichweiten-Overlay der Balliste.
+  - Der UI-Fluss (Kontext-Band → Ziel → Vorschau → Schuss) hat keinen automatischen Test; ein e2e-Test mit `__hc.devMap('dev_ballista')` fehlt.
+
 ### Change Log
+
+- 2026-11-07: Review-Befunde behoben (14 Punkte), Tests ergänzt; Status bleibt review.
 
 - 2026-11-07: Story 11.6 umgesetzt (Regel, KI, Autoplay, Gefahrenzone, UI, Lektion, Tests); Status review.

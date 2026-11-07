@@ -116,8 +116,9 @@ export function useBoardOverlays(b: BattleScreen) {
     const path = samePos(to, u.pos) ? [] : pathTo(reach, to);
     if (mode.k === 'moved') {
       const opts = availableActions(data, s, u, to);
-      const atk = opts.find((o) => o.kind === 'attack');
-      const targets = (atk?.targets ?? []).map((id) => unit(id).pos!).filter(Boolean);
+      // the foes an attack or a ballista beside the tile reaches (story 11.6)
+      const ids = new Set(opts.filter((o) => o.kind === 'attack' || o.kind === 'ballista').flatMap((o) => o.targets ?? []));
+      const targets = [...ids].map((id) => unit(id).pos!).filter(Boolean);
       return board.setOverlays({ ...base, move: dests, path, ghost, targets, cursor: to });
     }
     if (mode.k === 'target') {

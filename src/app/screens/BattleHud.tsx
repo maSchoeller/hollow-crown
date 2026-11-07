@@ -577,7 +577,7 @@ export function ForecastCard({
         {siege && (
           <span class="hud-chip is-gold">
             <Icon name="ballista" size={14} />
-            {t('ui.action.ballista')}: {t('ui.ctx.ballistaSub')}
+            {t('ui.fc.ballista')}
             <HelpStone anchor="terrain.ballista" />
           </span>
         )}

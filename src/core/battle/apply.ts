@@ -359,6 +359,13 @@ function pullLinks(data: GameData, s: BattleState, u: BattleUnit, obj: ObjectSta
   }
 }
 
+/** The first blow at a unit with a battle line: the line once (`quote:<uid>` in `firedTriggers`). */
+function quoteOnce(s: BattleState, target: BattleUnit, events: GameEvent[]): void {
+  if (!target.quote || s.firedTriggers.includes(`quote:${target.uid}`)) return;
+  s.firedTriggers.push(`quote:${target.uid}`);
+  events.push({ t: 'quote', unit: target.uid, id: target.quote });
+}
+
 function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, events: GameEvent[]): void {
   const b = data.balance;
   switch (a.kind) {
@@ -367,10 +374,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
     case 'attack': {
       const target = getUnit(s, a.target);
       const weapon = a.weapon ?? attackTargets(data, s, u, u.pos!)[a.target]?.[0];
-      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
-        s.firedTriggers.push(`quote:${target.uid}`);
-        events.push({ t: 'quote', unit: target.uid, id: target.quote });
-      }
+      quoteOnce(s, target, events);
       resolveAttack(data, s, u.uid, target.uid, weapon, events);
       break;
     }
@@ -378,10 +382,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       const target = getUnit(s, a.target);
       const weapon = a.weapon ?? aimTargets(data, s, u, u.pos!)[a.target]?.[0];
       events.push({ t: 'classAction', unit: u.uid, action: 'aim', target: target.uid });
-      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
-        s.firedTriggers.push(`quote:${target.uid}`);
-        events.push({ t: 'quote', unit: target.uid, id: target.quote });
-      }
+      quoteOnce(s, target, events);
       resolveAttack(data, s, u.uid, target.uid, weapon, events, { hit: b.classActions.aim.hit });
       break;
     }
@@ -390,10 +391,7 @@ function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Action, even
       const obj = s.objects.find((o) => o.id === a.object)!;
       const target = getUnit(s, a.target);
       obj.state = 'open';
-      if (target.quote && !s.firedTriggers.includes(`quote:${target.uid}`)) {
-        s.firedTriggers.push(`quote:${target.uid}`);
-        events.push({ t: 'quote', unit: target.uid, id: target.quote });
-      }
+      quoteOnce(s, target, events);
       resolveAttack(data, s, u.uid, target.uid, undefined, events, ballistaMods(data, s, obj.id));
       break;
     }

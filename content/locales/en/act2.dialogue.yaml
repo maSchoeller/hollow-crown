@@ -1,4 +1,6 @@
 # English texts of the act 2 scenes (the German text sits in the scene files).
-dlg.scn.m2_1.tutorial_ballista.l01: "A ballista! Whoever stands beside it can aim it. Nobody gets onto its tile."
-dlg.scn.m2_1.tutorial_ballista.l02: "The bolt flies far, but never at the next tile. And whoever it hits can't strike back."
-dlg.scn.m2_1.tutorial_ballista.l03: "From above it carries even farther. Careful: with a foe beside it, it aims at us."
+dlg.scn.m2_1.tutorial_ballista.l01: "A ballista! With that we bring them down from afar."
+dlg.scn.m2_1.tutorial_ballista.l02: "Anyone on foot beside it can aim it. Nobody gets onto its tile."
+dlg.scn.m2_1.tutorial_ballista.l03: "One shot a round, and it is the whole deed of whoever aims it."
+dlg.scn.m2_1.tutorial_ballista.l04: "The bolt flies far, never at the next tile, and whoever it hits can't strike back."
+dlg.scn.m2_1.tutorial_ballista.l05: "From above it carries farther. And careful: with a foe beside it, it aims at us."

@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
@@ -18,8 +18,10 @@ import {
   computeStats,
   contextEntries,
   crewSpots,
+  conditionMet,
   dangerZone,
   forecast,
+  weaponProfile,
   moveCost,
   newCampaign,
   newItem,
@@ -168,15 +170,16 @@ describe('range from the ballista tile', () => {
   });
   it('reaches one tile further from a higher level onto a lower one (elevation.rangedBonus), not from below', () => {
     const s = arena();
-    s.levels = { [posKey(BALLISTA)]: 1 };
+    // the crew stands on the ballista's level (a wall walk beside it)
+    s.levels = { [posKey(BALLISTA)]: 1, [posKey([4, 2])]: 1 };
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     const at11 = place(s, 'enemy', 'brigand', [5, 13], 'iron_axe');
     const at12 = place(s, 'enemy', 'brigand', [5, 14], 'iron_axe');
     expect(targetsOf(s, crew)).toEqual([at11.uid]);
     expect(data.balance.elevation.rangedBonus).toBe(1);
-    s.levels = { [posKey(BALLISTA)]: 0, [posKey([5, 13])]: 1 };
+    s.levels = { [posKey([5, 13])]: 1 };
     expect(targetsOf(s, crew)).toEqual([]);
-    expect(at12.uid).toBeTruthy();
+    expect(targetsOf(s, crew)).not.toContain(at12.uid);
   });
   it('under fog the player crew aims only at foes it sees; the AI sees all as for any attack', () => {
     const s = arena(true);
@@ -184,10 +187,10 @@ describe('range from the ballista tile', () => {
     const near = place(s, 'enemy', 'brigand', [4, 5], 'iron_axe');
     const far = place(s, 'enemy', 'brigand', [5, 11], 'iron_axe');
     expect(targetsOf(s, crew)).toEqual([near.uid]);
+    expect(targetsOf(s, crew)).not.toContain(far.uid);
     const foeCrew = place(s, 'enemy', 'brigand', [6, 2], 'iron_axe');
     const mark = place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
     expect(targetsOf(s, foeCrew)).toContain(mark.uid);
-    expect(far.uid).toBeTruthy();
   });
 });
 
@@ -341,14 +344,20 @@ describe('replay', () => {
 
 describe('probe map dev_ballista', () => {
   let locales: ReturnType<typeof loadContentFromDisk>['locales'];
+  let campaignBefore: GameData['campaign'];
   beforeAll(() => {
     const loaded = loadContentFromDisk();
     data = loaded.data;
     locales = loaded.locales;
     const raw = parse(readFileSync(join(process.cwd(), 'tests', 'fixtures', 'maps', 'dev_ballista.yaml'), 'utf8'));
     data.maps.dev_ballista = { ...mapSchema.parse(raw), act: 1 } as MapDef;
+    campaignBefore = data.campaign;
     const first = data.campaign.nodes[0]!;
     data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id: 'dev_ballista', map: 'dev_ballista', pre: undefined, post: undefined }] };
+  });
+  afterAll(() => {
+    delete data.maps.dev_ballista;
+    data.campaign = campaignBefore;
   });
   const start = () => {
     const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
@@ -371,10 +380,173 @@ describe('probe map dev_ballista', () => {
     expect(replayBattle(data, s, log)).toEqual(r.state);
   });
 
-  it('autoplay wins the probe map from the start, deterministically', () => {
+  it('autoplay wins the probe map from the start with a shot of its own ballista, deterministically', () => {
     const a = autoplay(data, start(), 600);
     const b = autoplay(data, start(), 600);
     expect(a.log).toEqual(b.log);
-    expect(a.log.length).toBeGreaterThan(0);
+    expect(a.state.outcome).toBe('victory');
+    expect(a.events.some((e) => e.t === 'combat' && e.weapon === 'ballista:dev_ballista_s')).toBe(true);
+  });
+
+  it('refuses a bad ballista: unknown or unfixed item, terrain without object, links to it, object_activated on it', () => {
+    const map = data.maps.dev_ballista!;
+    const check = (d: GameData) => validateContent(d, locales).map((i) => i.message);
+    const lone = { ...map, objects: map.objects.filter((o) => o.id !== 'dev_ballista_s') };
+    expect(check({ ...data, maps: { ...data.maps, dev_ballista: lone } })).toContain('terrain ballista at 4,9 without a ballista object');
+    const linked = { ...map, objects: [...map.objects.map((o) => (o.id === 'dev_ballista_n' ? o : o)), { id: 'dev_lever', type: 'lever' as const, at: [0, 0] as Pos, links: ['dev_ballista_n'] }] };
+    expect(check({ ...data, maps: { ...data.maps, dev_ballista: linked } })).toContain('dev_lever: links the ballista dev_ballista_n, which nothing opens');
+    const trig = { ...map, triggers: [{ id: 't_fire', when: { type: 'object_activated' as const, object: 'dev_ballista_n' }, then: [] }] };
+    expect(check({ ...data, maps: { ...data.maps, dev_ballista: trig } as GameData['maps'] })).toContain('t_fire: object_activated never fires for a ballista');
+    const bolt = data.items.ballista_bolt!;
+    expect(check({ ...data, items: { ...data.items, ballista_bolt: { ...bolt, tags: [] } } })).toContain('ballista.item: ballista_bolt needs the tag fixed');
+    expect(check({ ...data, balance: { ...data.balance, ballista: { ...data.balance.ballista, item: 'nope' } } })).toContain('ballista.item: unknown item nope');
+  });
+});
+
+describe('review follow-ups', () => {
+  const enemyPhase = (s: BattleState) => applyCommand(data, s, { type: 'endPhase' });
+
+  it('a ballista kill of a boss counts as siege, never as bow (kill_with)', () => {
+    for (let seed = 1; seed < 40; seed++) {
+      const s = arena();
+      s.rng = seedRng(seed);
+      const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
+      const boss = place(s, 'enemy', 'brigand', [5, 7], 'iron_axe');
+      boss.boss = true;
+      boss.hp = 1;
+      const r = applyCommand(data, s, { type: 'act', unit: crew.uid, to: crew.pos!, action: { kind: 'ballista', object: 'b1', target: boss.uid } });
+      if (r.state.units.find((u) => u.uid === boss.uid)!.hp === 0) {
+        expect(r.state.stats.bossKilledWith).toBe('siege');
+        return;
+      }
+    }
+    throw new Error('no hit in 40 seeds');
+  });
+
+  it('skills bound to a weapon type do not count for the bolt', () => {
+    const s = arena();
+    const crew = place(s, 'player', 'marksman', [4, 2], 'iron_bow');
+    const bolt = weaponProfile(data, newItemLike('b1'));
+    expect(bolt.fixed).toBe(true);
+    expect(conditionMet(data, { weaponType: 'bow' }, { unit: crew, ownWeapon: bolt })).toBe(false);
+    expect(conditionMet(data, { weaponType: 'bow' }, { unit: crew, ownWeapon: weaponProfile(data, crew.equip.mainHand!) })).toBe(true);
+    // a personal "+5 STR with a bow" leaves the shot alone
+    data.skills.test_bow_str = { id: 'test_bow_str', source: 'personal', trigger: 'passive', condition: { weaponType: 'bow' }, effect: { stats: { str: 5 } } } as GameData['skills'][string];
+    restore.push(() => delete data.skills.test_bow_str);
+    const foe = place(s, 'enemy', 'brigand', [5, 7], 'iron_axe');
+    const before = ballistaForecast(data, s, crew.uid, 'b1', foe.uid).attacker.damage;
+    crew.personalSkill = 'test_bow_str';
+    expect(ballistaForecast(data, s, crew.uid, 'b1', foe.uid).attacker.damage).toBe(before);
+  });
+
+  it('a crew one level below the ballista cannot work it', () => {
+    const s = arena();
+    s.levels = { [posKey(BALLISTA)]: 1 };
+    const low = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
+    place(s, 'enemy', 'brigand', [5, 8], 'iron_axe');
+    expect(targetsOf(s, low)).toEqual([]);
+    s.levels = { [posKey(BALLISTA)]: 1, [posKey([4, 2])]: 1 };
+    expect(targetsOf(s, low)).toHaveLength(1);
+  });
+
+  it('lets no rider work it', () => {
+    const s = arena();
+    data.classes.test_rider = { ...data.classes.vanguard!, id: 'test_rider', moveType: 'mounted' };
+    restore.push(() => delete data.classes.test_rider);
+    place(s, 'enemy', 'brigand', [5, 8], 'iron_axe');
+    expect(targetsOf(s, place(s, 'player', 'test_rider', [4, 2], 'iron_lance'))).toEqual([]);
+  });
+
+  it('keeps the bolt out of every bag', () => {
+    const s = arena();
+    const u = place(s, 'player', 'vanguard', [1, 1]);
+    expect(canEquip(data, u, newItem(s, 'ballista_bolt', data), 'bag')).toBe('wrong_slot');
+  });
+
+  it('under fog the preview after a move sees from the crew\'s new tile', () => {
+    const s = arena(true);
+    const crew = place(s, 'player', 'vanguard', [4, 7], 'iron_sword');
+    const foe = place(s, 'enemy', 'brigand', [3, 0], 'iron_axe');
+    expect(targetsOf(s, crew, [4, 2])).toEqual([foe.uid]);
+    expect(crew.pos).toEqual([4, 7]);
+  });
+
+  it('a foe beside it fires with any waking profile but flee; a sleeping trigger foe does not', () => {
+    for (const profile of ['guard', 'support', 'raider', 'follow', 'hunt'] as const) {
+      const s = arena();
+      const u = place(s, 'enemy', 'brigand', [4, 2], undefined, profile);
+      expect(crewSpots(data, s, u).length).toBe(1);
+    }
+    const s = arena();
+    const sleeper = place(s, 'enemy', 'brigand', [4, 2], undefined, 'trigger');
+    expect(crewSpots(data, s, sleeper)).toEqual([]);
+  });
+
+  it('a healer beside it heals first', () => {
+    const s = arena();
+    place(s, 'enemy', 'healer', [4, 2], 'heal_staff', 'guard');
+    const hurt = place(s, 'enemy', 'brigand', [3, 2], 'iron_axe', 'guard');
+    hurt.hp = 3;
+    place(s, 'player', 'vanguard', [5, 9], 'iron_sword').hp = 999;
+    const r = enemyPhase(s);
+    expect(shotsOf(r.events)).toEqual([]);
+    expect(r.state.units.find((u) => u.uid === hurt.uid)!.hp).toBeGreaterThan(3);
+  });
+
+  it('a hunter shoots only at its target while the ballista reaches it', () => {
+    const s = arena();
+    const prey = place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
+    const other = place(s, 'player', 'marksman', [5, 6], 'iron_bow');
+    other.hp = 1;
+    prey.hp = 999;
+    const hunter = place(s, 'enemy', 'brigand', [4, 2], undefined, 'hunt');
+    hunter.ai = { profile: 'hunt', target: prey.id };
+    const shots = enemyPhase(s).events.filter((e) => e.t === 'combat' && e.weapon === 'ballista:b1');
+    expect(shots).toHaveLength(1);
+    expect(shots[0]).toMatchObject({ defender: prey.uid });
+  });
+
+  it('an armed crew with a better blow at hand strikes instead of shooting; with a weak blow it shoots', () => {
+    // better blow: a nearly dead foe beside it
+    const s = arena();
+    place(s, 'enemy', 'brigand', [4, 2], 'iron_axe', 'guard');
+    const near = place(s, 'player', 'vanguard', [3, 2], 'iron_sword');
+    near.hp = 1;
+    place(s, 'player', 'vanguard', [5, 9], 'iron_sword').hp = 999;
+    const r = enemyPhase(s);
+    expect(shotsOf(r.events)).toEqual([]);
+    expect(r.events.some((e) => e.t === 'combat' && e.defender === near.uid)).toBe(true);
+    // mirror: the foe beside it is sturdy, the one in reach of the ballista nearly dead
+    const s2 = arena();
+    place(s2, 'enemy', 'brigand', [4, 2], 'iron_axe', 'guard');
+    place(s2, 'player', 'vanguard', [3, 2], 'iron_sword').hp = 999;
+    const far = place(s2, 'player', 'marksman', [5, 9], 'iron_bow');
+    far.hp = 1;
+    const r2 = enemyPhase(s2);
+    expect(shotsOf(r2.events)).toHaveLength(1);
+    expect(shotsOf(r2.events)[0]).toMatchObject({ defender: far.uid });
+  });
+
+  it('the autoplay weighs the shot against an armed crew\'s blow, and spares a recruitable foe', () => {
+    const s = arena();
+    // a rout map: on the prologue's escape map every unit heads for the exit unless a plan scores very high
+    const map = data.maps[s.mapId]!;
+    const objectives = map.objectives;
+    map.objectives = { ...objectives, victory: { type: 'rout' } };
+    restore.push(() => (map.objectives = objectives));
+    const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_lance');
+    const weak = place(s, 'enemy', 'brigand', [3, 2], 'iron_axe');
+    weak.hp = 1;
+    // the foe in the ballista's reach is an armoured knight: the bolt does little there
+    place(s, 'enemy', 'knight', [5, 9], 'iron_lance');
+    expect(autoCommand(data, s)).toMatchObject({ unit: crew.uid, action: { kind: 'attack', target: weak.uid } });
+    weak.pos = null;
+    weak.gone = 'retreated';
+    const far = s.units.find((u) => u.pos && u.team === 'enemy')!;
+    far.hp = 2;
+    expect(autoCommand(data, s)).toMatchObject({ unit: crew.uid, action: { kind: 'ballista', target: far.uid } });
+    far.recruit = { by: 'any' } as BattleUnit['recruit'];
+    const cmd = autoCommand(data, s);
+    expect(cmd.type === 'act' && cmd.action.kind === 'ballista').toBe(false);
   });
 });

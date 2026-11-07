@@ -519,7 +519,9 @@ export function resolveAttack(
     const killed = foe.gone === 'dead' || foe.gone === 'fled' || (!wasDowned && foe.downed);
     const used = me === a ? aInst : me.equip.mainHand;
     if (killed && foe.boss && used) {
-      s.stats.bossKilledWith = itemDef(data, used).weaponType;
+      // a ballista kill counts as its group (siege), which no `kill_with` weapon type matches
+      const d = itemDef(data, used);
+      s.stats.bossKilledWith = d.tags?.includes('fixed') ? d.group : d.weaponType;
     }
     grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events, expPercent(data, s, me));
   }

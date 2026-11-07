@@ -101,7 +101,10 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         if (mode.action === 'farRescue' || mode.action === 'cheer')
           return setMode({ k: 'classPreview', uid: mode.uid, to: mode.to, action: mode.action, target: at.uid });
         if (mode.action === 'steal') return setMode({ k: 'steal', uid: mode.uid, to: mode.to, target: at.uid });
-        if (mode.action === 'ballista') return setMode({ k: 'forecast', uid: mode.uid, to: mode.to, target: at.uid, ballista: mode.object });
+        if (mode.action === 'ballista') {
+          if (!mode.object) return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+          return setMode({ k: 'forecast', uid: mode.uid, to: mode.to, target: at.uid, ballista: mode.object });
+        }
         const action: Action =
           mode.action === 'item' ? { kind: 'item', item: mode.item!, target: at.uid } : ({ kind: mode.action, target: at.uid } as Action);
         void run({ type: 'act', unit: mode.uid, to: mode.to, action });
@@ -325,6 +328,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
       case 'ballista': {
         // Balliste (story 11.6): the preview first; with several targets the player picks one on the board
         const targets = opt.targets ?? [];
+        if (!opt.object || !targets.length) return;
         if (targets.length === 1) return setMode({ k: 'forecast', uid: u.uid, to: mode.to, target: targets[0]!, ballista: opt.object });
         return setMode({ k: 'target', uid: u.uid, to: mode.to, action: 'ballista', targets, object: opt.object });
       }

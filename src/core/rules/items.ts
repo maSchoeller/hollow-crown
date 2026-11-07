@@ -121,6 +121,8 @@ export interface WeaponProfile {
   statusOnHit: Array<{ status: StatusId; chance: number }>;
   terrainOnHit?: 'ignite' | 'extinguish';
   damageVsTag: Array<{ tag: string; bonus: number }>;
+  /** a fixed weapon of a map object (the ballista's bolt, story 11.6): skills bound to a weapon type never count for it */
+  fixed?: boolean;
 }
 
 export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): WeaponProfile {
@@ -181,6 +183,7 @@ export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): 
     statusOnHit,
     terrainOnHit,
     damageVsTag,
+    ...(d.tags?.includes('fixed') ? { fixed: true } : {}),
   };
 }
 
@@ -257,9 +260,10 @@ export function canEquip(
   classSkills: string[] = [],
 ): EquipError | null {
   const d = itemDef(data, inst);
+  // a fixed weapon (the ballista's bolt, story 11.6) belongs to its map object, never to a unit, not even to its bag
+  if (d.tags?.includes('fixed')) return 'wrong_slot';
   if (slot === 'bag') return null;
-  // a fixed weapon (the ballista's bolt, story 11.6) belongs to its map object, never to a unit
-  if (d.tags?.includes('convoyOnly') || d.tags?.includes('fixed')) return 'wrong_slot';
+  if (d.tags?.includes('convoyOnly')) return 'wrong_slot';
   if (!slotFits(d, slot)) return 'wrong_slot';
   const cls = data.classes[unit.classId]!;
   if (d.tags?.includes('monsterOnly') && !cls.tags.includes('monster')) return 'monster_only';

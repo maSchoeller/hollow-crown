@@ -8,15 +8,16 @@ import type { BattleState, BattleUnit } from '../state';
 import { dist, isHostile, onMap, posKey, unitAt } from '../util';
 import { ballistaRange, ballistaReady, ballistasOf, ballistaWeapon, canCrew } from './ballistaBase';
 import { forecast, type AttackMods, type Forecast } from './combat';
-import { strikeTiles } from './movement';
+import { crewLevelFits, strikeTiles } from './movement';
 import { fogOn, visibleTiles } from './vision';
 
-export { BALLISTA_PREFIX, ballistaRange, ballistasOf, ballistaWeapon, canCrew, ballistaReady } from './ballistaBase';
+export { BALLISTA_PREFIX, ballistaRange, ballistasOf, ballistaWeapon, canCrew, ballistaReady, firesBallista } from './ballistaBase';
 
 /**
  * The ballistas the unit can fire from `pos`, with their targets: ballista id → uids of the foes in reach. A ballista stands on a
- * neighbouring tile and has not fired this phase; reach is measured from its tile, a higher level adds `elevation.rangedBonus`
- * (`canStrike`). Under fog the player's crew sees its targets (the AI sees everything, as for any attack, balance.yaml `fog`).
+ * neighbouring tile on the crew's level and has not fired this phase; reach is measured from its tile, a higher level adds
+ * `elevation.rangedBonus` (`canStrike`). Under fog the player's crew sees its targets, with the crew standing on `pos` (the AI
+ * sees everything, as for any attack, balance.yaml `fog`).
  */
 export function ballistaTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Record<string, string[]> {
   const out: Record<string, string[]> = {};
@@ -25,8 +26,8 @@ export function ballistaTargets(data: GameData, s: BattleState, u: BattleUnit, p
   const range = ballistaRange(data);
   let seen: Set<string> | null | undefined;
   for (const b of list) {
-    if (!ballistaReady(b) || dist(b.at, pos) !== 1) continue;
-    if (seen === undefined) seen = u.team === 'player' && fogOn(data, s) ? visibleTiles(data, s, 'player') : null;
+    if (!ballistaReady(b) || dist(b.at, pos) !== 1 || !crewLevelFits(data, s, pos, b.at)) continue;
+    if (seen === undefined) seen = u.team === 'player' && fogOn(data, s) ? sightFrom(data, s, u, pos) : null;
     const targets: string[] = [];
     for (const t of strikeTiles(data, s, u, b.at, range)) {
       const o = unitAt(s, t);
@@ -37,6 +38,17 @@ export function ballistaTargets(data: GameData, s: BattleState, u: BattleUnit, p
     if (targets.length) out[b.id] = targets;
   }
   return out;
+}
+
+/** What the player's side sees with `u` standing on `pos` (the preview after a move, as `forecast` does with its ghost tile). */
+function sightFrom(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Set<string> {
+  const saved = u.pos;
+  u.pos = pos;
+  try {
+    return visibleTiles(data, s, 'player');
+  } finally {
+    u.pos = saved;
+  }
 }
 
 /** The attack options of a shot from ballista `objectId`; the one object for preview and resolution. */
