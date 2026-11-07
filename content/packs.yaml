@@ -144,6 +144,17 @@ packs:
       - audio/camp.*
       - audio/worldmap.*
 
+  # Akt 2 (Epic 11). Story 11.6 legt das Paket minimal an (nur die Lektion der Balliste); Kampagne, Weltkarte und Freischaltung kommen
+  # mit 11.1/11.3, veröffentlicht wird es mit dem ersten Live-Schritt nach dem Release von Akt 1 (9.14).
+  - id: act2
+    released: false
+    load: background
+    act: 2
+    budgetMb: 40
+    content:
+      - acts/act2/**
+      - locales/*/act2.*
+
   - id: voice.act1.de
     released: false
     load: voice

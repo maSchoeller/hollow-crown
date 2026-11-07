@@ -176,6 +176,10 @@ elevation:
   rangedBonus: 1
   freeMoveTypes: [flier]
   meleeConnectors: [ramp, stairs]
+# Balliste (Story 11.6, GDD Gelände): Werte im Item (items.yaml ballista_bolt); bedienen darf eine Fuß- oder gepanzerte Figur vom Nachbarfeld.
+ballista:
+  item: ballista_bolt
+  crew: [foot, armored]
 fog:
   baseVision: 3
   roleBonus: { marksman: 2, scout: 2 }

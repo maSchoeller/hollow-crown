@@ -95,6 +95,9 @@ handbook:
     elemMax: "Höchstens"
     fireRounds: "Brand: Runden"
     rangeFromAbove: "Von oben: Reichweite"
+    boltMight: "Bolzen: Macht"
+    rangeMin: "Reichweite ab"
+    rangeMax: "Reichweite bis"
     enter: "Schaden beim Betreten"
     spread: "Ausbreitung je Runde"
     wallRounds: "Felswall: Runden"
@@ -251,6 +254,11 @@ handbook:
       text: "Es gibt drei Stufen: das Feld, Wehrgang, Dach und Terrasse, Turm und Felsnase. Aufs Dach kommt man nur zu Fuß. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
       where: "Die Stufe eines Felds steht in der Geländeanzeige; die Reichweite zeigt das Spielbrett."
       keywords: "Höhe, Stufe, Wehrgang, Dach, Terrasse, Rampe, Treppe, Leiter, Turm"
+    ballista:
+      title: "Balliste"
+      text: "Ein Geschütz, das jede Fuß- oder gepanzerte Figur vom Nachbarfeld bedient; sein Feld betritt niemand. Der Bolzen hat Macht {boltMight} plus Kraft des Bedieners, Treffer {boltHit}, Reichweite {rangeMin} bis {rangeMax} vom Geschütz aus, von höherer Stufe {rangeFromAbove} weiter. Kein Gegenangriff, Bolzen gehen nie aus; ein Schuss je Phase und Geschütz, der Schuss ist die Aktion. Gegner nutzen sie auch."
+      where: "„Balliste abfeuern“ erscheint im grünen Kontext-Band, wenn eine Figur neben dem Geschütz steht."
+      keywords: "Balliste, Geschütz, Bolzen, Fernkampf, Höhe, Belagerung"
     doors:
       title: "Türen und Tore"
       text: "Geschlossene Türen und Tore versperren Weg und Sicht. Ein Schlüssel öffnet sie, der Späher schafft es ohne, manche öffnet ein Hebel oder ein Ereignis; offen sind sie freier Weg."
@@ -518,6 +526,11 @@ handbook:
       text: "Aus dem Prolog: Von oben reicht ein Bogen ein Feld weiter, hinauf führt die Treppe."
       where: "Im Prolog „Die Paktnacht“, vor dem inneren Tor."
       keywords: "Lektion, Prolog, Höhe, Wehrgang, Treppe, Schütze"
+    lesson_ballista:
+      title: "Lektion: Balliste"
+      text: "Aus dem zweiten Akt: wie man ein Geschütz vom Nachbarfeld bedient und warum es nie zurückschlägt."
+      where: "In der ersten Mission des zweiten Akts, sobald die Truppe die Balliste erreicht."
+      keywords: "Lektion, Balliste, Geschütz, Bolzen, Fernkampf"
     lesson_triangle:
       title: "Lektion: Waffendreieck"
       text: "Aus der ersten Mission: welche Waffe welche schlägt und wie die Vorschau es zeigt."

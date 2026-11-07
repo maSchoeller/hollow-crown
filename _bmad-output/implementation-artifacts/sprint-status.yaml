@@ -45,7 +45,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-11-06
+last_updated: 2026-11-07
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -198,7 +198,7 @@ development_status:
   11-3-paket-act2-weltkarte-und-titeltafel: backlog  # Paket act2, Weltkarte und Titeltafel
   11-4-simulation-ueber-akte: backlog  # Simulation über Akte
   11-5-gefaehrten-leutnants-und-flags-von-akt-2: backlog  # Gefährten, Leutnants und Flags von Akt 2
-  11-6-balliste: backlog  # Balliste
+  11-6-balliste: review  # Balliste
   11-7-gegner-herbst-und-heimsuchungen-von-akt-2: backlog  # Gegner, Herbst und Heimsuchungen von Akt 2 (Figuren: Platzhalter außer Rowena)
   11-8-ziel-phasen-kern: backlog  # Ziel-Phasen (Kern)
   11-9-relikt-stufen: backlog  # Relikt-Stufen

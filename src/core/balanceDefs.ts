@@ -141,6 +141,8 @@ export interface Balance {
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
   /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */
   elevation: { rangedBonus: number; freeMoveTypes: MoveType[]; meleeConnectors: TerrainConnector[] };
+  /** Balliste (story 11.6): the fixed weapon (item id) and the move types that may work it from a neighbouring tile */
+  ballista: { item: string; crew: MoveType[] };
   fog: { baseVision: number; roleBonus: Record<string, number>; moveTypeBonus: Partial<Record<MoveType, number>>; blockers: string[] };
   rally: { radius: number; damage: number; hit: number };
   /** numbers of the class actions: Zielen, Fernbergen, Anfeuern (story 2.3) and the AI's detour limit around hold zones (story 2.4) */

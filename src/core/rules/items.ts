@@ -258,7 +258,8 @@ export function canEquip(
 ): EquipError | null {
   const d = itemDef(data, inst);
   if (slot === 'bag') return null;
-  if (d.tags?.includes('convoyOnly')) return 'wrong_slot';
+  // a fixed weapon (the ballista's bolt, story 11.6) belongs to its map object, never to a unit
+  if (d.tags?.includes('convoyOnly') || d.tags?.includes('fixed')) return 'wrong_slot';
   if (!slotFits(d, slot)) return 'wrong_slot';
   const cls = data.classes[unit.classId]!;
   if (d.tags?.includes('monsterOnly') && !cls.tags.includes('monster')) return 'monster_only';

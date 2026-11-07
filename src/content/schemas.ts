@@ -940,6 +940,7 @@ export const balanceSchema = z.object({
     freeMoveTypes: z.array(moveType),
     meleeConnectors: z.array(z.enum(['ramp', 'stairs', 'ladder'])),
   }),
+  ballista: z.object({ item: z.string(), crew: z.array(moveType).min(1) }),
   fog: z.object({
     baseVision: z.number().int().min(1),
     roleBonus: z.record(z.string(), z.number().int().min(0)),

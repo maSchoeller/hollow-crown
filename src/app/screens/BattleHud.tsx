@@ -2,6 +2,8 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import {
+  BALLISTA_PREFIX,
+  ballistaWeapon,
   computeStats,
   ruleOn,
   type BattleState,
@@ -472,7 +474,13 @@ export function ForecastCard({
 }) {
   const a = state.units.find((u) => u.uid === f.attacker.uid)!;
   const d = state.units.find((u) => u.uid === f.defender.uid)!;
-  const aw = f.attacker.weaponUid ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === f.attacker.weaponUid) : undefined;
+  // a ballista shot (story 11.6) names the fixed weapon of the ballista, which no unit carries
+  const siege = f.attacker.weaponUid?.startsWith(BALLISTA_PREFIX) ? f.attacker.weaponUid.slice(BALLISTA_PREFIX.length) : undefined;
+  const aw = siege
+    ? ballistaWeapon(data, siege)
+    : f.attacker.weaponUid
+      ? [a.equip.mainHand, ...a.bag].find((i) => i?.uid === f.attacker.weaponUid)
+      : undefined;
   const dw = d.equip.mainHand;
   const elements = ruleOn(state, 'elements');
   const who = (s: Forecast['attacker'], u: BattleUnit, w: ItemInstance | undefined, right: boolean) => (
@@ -566,6 +574,13 @@ export function ForecastCard({
         </div>
       </div>
       <div class="hud-chips hud-fc__notes">
+        {siege && (
+          <span class="hud-chip is-gold">
+            <Icon name="ballista" size={14} />
+            {t('ui.action.ballista')}: {t('ui.ctx.ballistaSub')}
+            <HelpStone anchor="terrain.ballista" />
+          </span>
+        )}
         {aim && (
           <span class="hud-chip is-gold">
             <Icon name="aim" size={14} />

@@ -59,6 +59,8 @@
 - { id: gate_closed, def: 0, avoid: 0, heal: 0, flammable: false, ground: road,  prop: gate, opensTo: gate, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: road }
 # Hebel: Objekt `lever` auf diesem Feld; man zieht ihn vom Nachbarfeld, die Requisite zeigt lever_up / lever_down nach dem Objektzustand.
 - { id: lever,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: lever, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: stone }
+# Balliste (Story 11.6): Objekt `ballista` auf diesem Feld; unbetretbar, bedient wird vom Nachbarfeld. Keine Requisite: das Objekt zeichnet ballista_idle.
+- { id: ballista, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: stone }
 # Moor (Erlenmoor 1-5, Matrix map-assets): Werte wie Furt und Fluss, eigener Boden und eigenes Wasser. Sumpf begehbar wie die Furt, Priel gesperrt wie der Fluss.
 # Steg: Werte wie die Brücke, Modell aus boardwalk_* nach den Nachbarfeldern (src/render/board/wallKit.ts). footbridge ist derselbe Steg über klarem Bach.
 - { id: swamp,    def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 }, surface: peat, height: -0.15, water: true, waterLook: mire }

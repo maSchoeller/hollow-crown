@@ -15,7 +15,7 @@ export type WeaponType = 'sword' | 'lance' | 'axe' | 'dagger' | 'bow' | 'anima' 
  * (triangle, ranged/melee); the group decides who may equip it, so shields, foci and lutes have a group, too.
  */
 export const WEAPON_GROUPS = [
-  'sword', 'lance', 'axe', 'dagger', 'bow', 'light_bow', 'anima', 'light', 'dark', 'staff', 'shield', 'focus', 'lute', 'breath',
+  'sword', 'lance', 'axe', 'dagger', 'bow', 'light_bow', 'anima', 'light', 'dark', 'staff', 'shield', 'focus', 'lute', 'breath', 'siege',
 ] as const;
 export type WeaponGroup = (typeof WEAPON_GROUPS)[number];
 /** The seven core roles plus the two single roles of the main characters (GDD Rollenklassen). */

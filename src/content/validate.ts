@@ -643,6 +643,7 @@ function validateMap(
     // a door or gate is terrain and object at once (story 2.6): it blocks the path and sight until opened
     if (o.type === 'door' && inside(o.at) && !terr(o.at)?.opensTo) err(f, `${o.id}: a door object needs a closed passage (door, gate_closed) on its tile`);
     if (o.type === 'lever' && inside(o.at) && terr(o.at)?.prop !== 'lever') err(f, `${o.id}: a lever object needs the terrain "lever" on its tile`);
+    if (o.type === 'ballista' && inside(o.at) && terr(o.at)?.id !== 'ballista') err(f, `${o.id}: a ballista object needs the terrain "ballista" on its tile`);
     for (const id of o.links ?? []) if (!map.objects.some((m) => m.id === id)) err(f, `${o.id}: links unknown object ${id}`);
     reward(f, o.reward, o.id);
     reward(f, o.contents, o.id);

@@ -34,6 +34,7 @@ item.horseslayer.desc: "Eine Lanze mit Widerhaken. Besonders tödlich gegen Beri
 item.hunting_bow.desc: "Ein leichter Jagdbogen für Späher. Wenig Schaden, aber sehr treffsicher und kaum Gewicht."
 item.iron_axe.desc: "Eine einfache Axt. Viel Schaden, aber ungenauer als Schwert und Lanze. Schlägt die Lanze im Waffendreieck."
 item.iron_bow.desc: "Ein solider Bogen. Schießt nur auf Abstand, nie ins Nachbarfeld."
+item.ballista_bolt.desc: "Bolzen der Balliste. Vom Nachbarfeld bedient, mit Kraft des Bedieners, ohne Gegenangriff."
 item.iron_dagger.desc: "Ein leichter Dolch. Wenig Schaden, aber hohe Chance auf kritische Treffer."
 item.iron_helm.desc: "Ein einfacher Helm. Teil des Sets der Aschenbanner-Wacht."
 item.iron_lance.desc: "Eine einfache Lanze. Ausgewogen und verlässlich. Schlägt das Schwert im Waffendreieck."

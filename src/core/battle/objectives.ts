@@ -298,6 +298,8 @@ export function beginPhase(data: GameData, s: BattleState, team: Team, events: G
     u.moved = false;
     u.freeUsed = {};
   }
+  // a ballista is loaded again for the new phase (story 11.6)
+  for (const o of s.objects) if (o.type === 'ballista' && o.state === 'open') o.state = 'closed';
   events.push({ t: 'phase', phase: team, turn: s.turn });
   runReinforcements(data, s, events);
   runTriggers(data, s, { kind: 'phase' }, events);

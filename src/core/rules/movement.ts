@@ -1,9 +1,10 @@
 import { CoreInvariantError } from '../errors';
 import type { MoveType, Pos } from '../defs';
 import type { GameData } from '../gameData';
-import type { BattleState, BattleUnit } from '../state';
+import type { BattleState, BattleUnit, ObjectState } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
+import { ballistaRange, ballistasOf, canCrew, CREW_PROFILES } from './ballistaBase';
 import { classActionId } from './roles';
 import { computeStats } from './stats';
 
@@ -307,9 +308,30 @@ export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ig
   const out = new Set<string>();
   if (!unit.pos || !active(unit) || waitsToJoin(unit)) return out;
   const range = combinedRange(data, s, unit);
-  if (!range) return out;
-  const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
-  for (const o of origins) for (const t of strikeTiles(data, s, unit, o, range, target)) out.add(posKey(t));
+  if (range) {
+    const origins = ignoreMove ? [unit.pos] : destinations(s, unit, reachable(data, s, unit));
+    for (const o of origins) for (const t of strikeTiles(data, s, unit, o, range, target)) out.add(posKey(t));
+  }
+  // a crew beside a ballista reaches what the ballista reaches (story 11.6)
+  for (const c of crewSpots(data, s, unit, ignoreMove)) for (const t of strikeTiles(data, s, unit, c.ballista.at, ballistaRange(data), target)) out.add(posKey(t));
+  return out;
+}
+
+/**
+ * Balliste (story 11.6): the tiles from which the unit would fire a ballista this turn, with the ballista. A foe fires only with a
+ * profile of `CREW_PROFILES` (none means aggressive): `hold` walks to a ballista for it, the others only fire when they stand beside
+ * one already. A unit of the player may walk to one, unless `ignoreMove`. Empty on a map without ballista. Shared by the AI and the danger zone.
+ */
+export function crewSpots(data: GameData, s: BattleState, unit: BattleUnit, ignoreMove = false): Array<{ ballista: ObjectState; from: Pos }> {
+  const list = ballistasOf(s);
+  if (!list.length || !unit.pos || !canCrew(data, unit)) return [];
+  // the AI moves every unit but the player's; a foe without a profile is aggressive (as in `aiAct`)
+  const profile = unit.ai?.profile ?? (unit.team === 'player' ? undefined : 'aggressive');
+  if (profile !== undefined && !CREW_PROFILES.includes(profile)) return [];
+  const walks = profile === undefined ? !ignoreMove : profile === 'hold';
+  const origins = walks ? destinations(s, unit, reachable(data, s, unit)) : [unit.pos];
+  const out: Array<{ ballista: ObjectState; from: Pos }> = [];
+  for (const from of origins) for (const b of list) if (dist(from, b.at) === 1) out.push({ ballista: b, from });
   return out;
 }
 

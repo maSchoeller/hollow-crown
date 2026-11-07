@@ -154,6 +154,19 @@ entries:
     values:
       - { id: rangeFromAbove, ref: balance.elevation.rangedBonus, icon: wait }
     see: [terrain_cover, doors]
+  # Balliste (Story 11.6): Werte aus dem Item ballista_bolt, die Höhenregel aus balance.elevation
+  - id: ballista
+    category: terrain
+    graphic: terrain
+    terrain: [ballista]
+    fromAct: 2
+    values:
+      - { id: boltMight, ref: items.ballista_bolt.mt, icon: attack }
+      - { id: boltHit, ref: items.ballista_bolt.hit, label: hit, icon: aim }
+      - { id: rangeMin, ref: items.ballista_bolt.rng.0, icon: wait }
+      - { id: rangeMax, ref: items.ballista_bolt.rng.1, icon: wait }
+      - { id: rangeFromAbove, ref: balance.elevation.rangedBonus, icon: wait }
+    see: [heights, lesson_ballista]
   - id: fire
     category: terrain
     graphic: terrain
@@ -373,3 +386,5 @@ entries:
   - { id: lesson_heal, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_heal, see: [rescue, phases] }
   - { id: lesson_height, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_height, see: [movement, forecast] }
   - { id: lesson_triangle, category: lessons, graphic: lesson, lesson: scn.m1_1.tutorial_triangle, see: [triangle, forecast] }
+  # Story 11.6: die Szene liegt im Paket act2 (unveröffentlicht); bis dahin zeigt das Handbuch handbook.ui.lessonMissing
+  - { id: lesson_ballista, category: lessons, graphic: lesson, lesson: scn.m2_1.tutorial_ballista, fromAct: 2, see: [ballista, heights] }
