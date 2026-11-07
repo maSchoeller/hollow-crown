@@ -2,7 +2,8 @@
 import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, visibleTiles } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
-import { activeVictory, mapOf } from '../../core/battle/objectives';
+import { activeVictory } from '../../core/battle/activeVictory';
+import { mapOf } from '../../core/battle/objectives';
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { BattleScreen } from './useBattleScreen';
 

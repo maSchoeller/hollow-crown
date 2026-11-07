@@ -14,7 +14,7 @@ import { applyStatus, extinguishTile, igniteTile, raiseRockwall } from './effect
 import { itemDef, weaponProfile } from './items';
 import { tilesInRange, weaponRange } from './movement';
 import { classActionId } from './roles';
-import { activeVictory } from '../battle/activeVictory';
+import { activeVictory, escapeOf } from '../battle/activeVictory';
 
 /** The elements Wirken can use; light and dark come with the pro paths. */
 export const CAST_ELEMENTS = ['fire', 'water', 'earth', 'wind'] as const;
@@ -74,7 +74,10 @@ function canCastOn(data: GameData, s: BattleState, u: BattleUnit, element: CastE
       if (!def || def.cost.foot === null || def.seizable) return false;
       const m = data.maps[s.mapId];
       const v = m && activeVictory(m, s);
-      return !(v && (v.type === 'reach' || v.type === 'seize' || v.type === 'escape') && areaTiles(v.area).some((g) => samePos(g, p)));
+      if (v && (v.type === 'reach' || v.type === 'seize' || v.type === 'escape') && areaTiles(v.area).some((g) => samePos(g, p))) return false;
+      // story 11.8: the exit of a later escape phase stays free from the start, no wall can wait on it
+      const later = m && escapeOf(m);
+      return !(later && areaTiles(later.area).some((g) => samePos(g, p)));
     }
   }
 }

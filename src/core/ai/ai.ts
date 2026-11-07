@@ -129,7 +129,7 @@ export function bestApproach(data: GameData, s: BattleState, u: BattleUnit, goal
 /** What scoring a plan needs once per unit (`attackPlans`, `ballistaPlans`). */
 function scoreContext(data: GameData, s: BattleState, u: BattleUnit) {
   const diff = data.balance.difficulty[s.settings.difficulty];
-  const victory = mapOf(data, s).objectives.victory;
+  const victory = activeVictory(mapOf(data, s), s);
   const objectiveUnit = victory.type === 'defend' || victory.type === 'escort' ? victory.unit : undefined;
   const danger = diff.aiDangerAware ? dangerMap(data, s, u) : undefined;
   return { diff, w: data.balance.ai, objectiveUnit, danger };
@@ -297,7 +297,7 @@ function castPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[])
 
 /** The exit of an escort goal (story 4.8); none for any other goal. */
 function exitTiles(data: GameData, s: BattleState): Pos[] {
-  const v = mapOf(data, s).objectives.victory;
+  const v = mapOf(data, s).objectives.victory; // an escort has no second phase (story 11.8)
   return v.type === 'escort' ? areaTiles(v.area) : [];
 }
 
@@ -386,6 +386,7 @@ function healPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[])
  * mission's rounds.
  */
 export function wakesByTime(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  // the map's goal, not the active one: after a change to escape (story 11.8) the rounds of the survive part still wake sleepers
   const v = mapOf(data, s).objectives.victory;
   if (v.type !== 'defend' && v.type !== 'survive') return false;
   return s.turn >= (u.ai?.wakeTurn ?? Math.ceil((v.turns * data.balance.ai.sleeperWakePercent) / 100));

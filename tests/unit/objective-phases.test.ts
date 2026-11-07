@@ -7,8 +7,11 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
+import { addTexts } from '../../src/i18n';
+import { goalKey, goalLine, goalStand, mustLine } from '../../src/ui/goalText';
 import {
   activeVictory,
+  advanceObjective,
   applyCommand,
   autoplay,
   availableActions,
@@ -104,6 +107,19 @@ describe('schema and content check', () => {
     v.then = { ...v.then, min: 3 };
     expect(issuesOf(m)).toContain('victory area not reachable on foot from the deploy area');
   });
+  it('rejects a must unit named twice, of another team or one that can be left out; must without min is fine', () => {
+    const m = devObjectiveMap('dev_phases');
+    const v = m.objectives.victory as Extract<MapDef['objectives']['victory'], { type: 'survive' }>;
+    v.then = { type: 'escape', area: v.then!.area, must: ['avatar', 'lucan', 'avatar'] };
+    expect(issuesOf(m)).toContain('escape: must names a unit twice');
+    v.then = { type: 'escape', area: v.then.area, must: ['avatar', 'lucan'] };
+    expect(issuesOf(m)).toEqual([]);
+    v.then = { ...v.then, must: ['dev_brigand_w'] };
+    expect(issuesOf(m)).toContain('escape: must names dev_brigand_w, who is not of team player');
+    m.units = m.units.map((u) => (u.id === 'dev_marksman' ? { ...u, difficulty: ['hard' as const] } : u));
+    v.then = { ...v.then, must: ['dev_marksman'] };
+    expect(issuesOf(m)).toContain('escape: must names dev_marksman, who can be left out (requires or difficulty)');
+  });
   it('rejects advance_objective and objective_changed on a goal without a second phase', () => {
     const m = devObjectiveMap('dev_phases');
     m.objectives.victory = { type: 'survive', turns: 3 };
@@ -140,6 +156,32 @@ describe('change of phase', () => {
     expect(after).toContainEqual({ t: 'dialogue', id: 'scn.prologue.quake' });
     expect(activeVictory(data.maps.dev_phases!, s)).toMatchObject({ type: 'escape', min: 3 });
     expect(s.firedTriggers).toContain('t_flee');
+  });
+  it('changes early even when a spawn trigger waits on objective_changed (those foes come after the change)', () => {
+    const chaser = { team: 'enemy', class: 'brigand', level: 1, at: [5, 9], items: [{ def: 'iron_axe' }], ai: { profile: 'aggressive' } } as MapDef['units'][number];
+    const s = start((m) => {
+      m.reinforcements = [];
+      m.triggers.push({ id: 't_chasers', when: { type: 'objective_changed' }, then: [{ action: 'spawn', units: [chaser] }] });
+    });
+    remove(s, ...enemies(s).map((u) => u.id!));
+    const r = endPhase(s);
+    expect(r.state.objectivePhase).toBe(1);
+    expect(r.state.outcome).toBeNull();
+    expect(r.events.some((e) => e.t === 'spawned')).toBe(true);
+  });
+  it('a second change does nothing: direct call or a trigger without once', () => {
+    const s = start((m) => (m.triggers[0] = { ...m.triggers[0]!, once: false }));
+    const events: GameEvent[] = [];
+    advanceObjective(data, s, events);
+    expect(changed(events)).toHaveLength(1);
+    const again: GameEvent[] = [];
+    advanceObjective(data, s, again);
+    expect(again).toEqual([]);
+    unit(s, 'dev_marksman').pos = [6, 4];
+    const r = applyCommand(data, s, { type: 'act', unit: unit(s, 'dev_marksman').uid, to: [6, 3], action: { kind: 'wait' } });
+    expect(r.state.firedTriggers).toContain('t_gate');
+    expect(changed(r.events)).toEqual([]);
+    expect(r.state.objectivePhase).toBe(1);
   });
   it('changes early when no foe is left and none is due', () => {
     const s = start((m) => (m.reinforcements = []));
@@ -235,6 +277,64 @@ describe('escape phase', () => {
     expect(r.state.outcome).toBe('defeat');
     expect(r.state.defeatReason).toBe('avatar');
   });
+  it('is lost when a downed must unit is left with nobody to carry it; carried off and the carrier out, it is won', () => {
+    let s = escapePhase();
+    remove(s, 'dev_marksman');
+    const spots: Record<string, Pos> = { dev_vanguard: [4, 1], lucan: [5, 1], avatar: [6, 1] };
+    for (const [id, p] of Object.entries(spots)) unit(s, id).pos = p;
+    const avatar = unit(s, 'avatar');
+    avatar.hp = 0;
+    avatar.downed = true;
+    // the vanguard leaves; Lucan may not while Rhen lies there: no win, no loss yet
+    s = escapeAt(s, 'dev_vanguard', [4, 0]).state;
+    expect(s.outcome).toBeNull();
+    expect(availableActions(data, s, unit(s, 'lucan'), [5, 0]).some((o) => o.kind === 'escape')).toBe(false);
+    // were Lucan gone anyway, Rhen would lie alone with nobody to carry him: lost
+    const lost = structuredClone(s);
+    unit(lost, 'lucan').pos = null;
+    unit(lost, 'lucan').gone = 'escaped';
+    const r = endPhase(lost);
+    expect(r.state.outcome).toBe('defeat');
+    expect(r.state.defeatReason).toBe('avatar');
+    // instead Lucan carries Rhen off (rescued) and leaves next round: must met, min (one per must unit) met
+    s = start((m) => {
+      m.reinforcements = [];
+      const v = m.objectives.victory as Extract<MapDef['objectives']['victory'], { type: 'survive' }>;
+      v.then = { ...v.then!, min: undefined };
+    });
+    remove(s, ...enemies(s).map((u) => u.id!), 'dev_marksman', 'dev_vanguard');
+    s.objectivePhase = 1;
+    unit(s, 'lucan').pos = [5, 1];
+    const rhen = unit(s, 'avatar');
+    rhen.pos = [6, 1];
+    rhen.hp = 0;
+    rhen.downed = true;
+    s = applyCommand(data, s, { type: 'act', unit: unit(s, 'lucan').uid, to: [5, 1], action: { kind: 'rescue', target: rhen.uid } }).state;
+    expect(unit(s, 'avatar').gone).toBe('rescued');
+    expect(s.outcome).toBeNull();
+    s = endPhase(s).state;
+    const won = escapeAt(s, 'lucan', [5, 0]);
+    expect(won.state.outcome).toBe('victory');
+  });
+  it('is lost when a must unit is gone another way (retreated)', () => {
+    const s = escapePhase();
+    const u = unit(s, 'avatar');
+    u.pos = null;
+    u.gone = 'retreated';
+    const r = endPhase(s);
+    expect(r.state.outcome).toBe('defeat');
+    expect(r.state.defeatReason).toBe('avatar');
+  });
+  it('is lost on a turn limit in either phase', () => {
+    for (const phase of [undefined, 1]) {
+      const s = start((m) => (m.objectives.defeat = [...m.objectives.defeat, { type: 'turn_limit', turns: 1 }]));
+      if (phase) s.objectivePhase = phase;
+      for (const u of s.units) if (u.team === 'player') u.stats.def = 99;
+      const r = endPhase(s);
+      expect(r.state.outcome).toBe('defeat');
+      expect(r.state.defeatReason).toBe('turns');
+    }
+  });
   it('is lost when Lucan falls in either phase', () => {
     for (const phase of [undefined, 1]) {
       const s = start();
@@ -246,6 +346,28 @@ describe('escape phase', () => {
       expect(r.state.outcome).toBe('defeat');
       expect(r.state.defeatReason).toBe('lucan');
     }
+  });
+});
+
+describe('goal texts', () => {
+  it('names both phases before, the escape stand and who still has to get out after the change', () => {
+    addTexts('de', locales.de ?? {});
+    const s = start();
+    const map = data.maps.dev_phases!;
+    expect(goalKey(map.objectives.victory)).toBe('survive_escape');
+    expect(goalLine(map.objectives.victory, map)).toBe('Überlebt 3 Runden, dann flieht.');
+    expect(goalStand(activeVictory(map, s), s)).toBe('');
+    s.objectivePhase = 1;
+    const v = activeVictory(map, s);
+    expect(goalLine(v, map)).toBe('Entkommt über die Ausgänge.');
+    expect(goalStand(v, s)).toBe('0/3 entkommen');
+    expect(mustLine(v, s)).toMatch(/^Müssen noch entkommen: .+, Lucan$/);
+    const lucan = unit(s, 'lucan');
+    lucan.pos = null;
+    lucan.gone = 'escaped';
+    unit(s, 'dev_vanguard').gone = 'rescued';
+    expect(goalStand(v, s)).toBe('2/3 entkommen');
+    expect(mustLine(v, s)).not.toContain('Lucan');
   });
 });
 

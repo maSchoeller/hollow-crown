@@ -11,6 +11,8 @@ import { halfFigures } from '../state/halves';
 import { itemName, unitName } from '../../ui/components';
 import { settings } from '../state/settings';
 import { t } from '../../i18n';
+import { activeVictory } from '../../core/battle/activeVictory';
+import { goalLine } from '../../ui/goalText';
 import type { BattleScreen } from './useBattleScreen';
 
 /** Banner, cut-in, event presentation and barks of the battle screen; sets the board's event and cut-in handlers. */
@@ -94,6 +96,13 @@ export function useBattlePresentation(b: BattleScreen) {
       case 'razed':
         setToast(t('ui.toast.razed'));
         break;
+      case 'objectiveChanged': {
+        // story 11.8: the goal changes mid-battle (survive, then escape); say so, the pill and the escape zone follow the state
+        const st = battle.value!.state;
+        const map = data.maps[st.mapId]!;
+        setToast(t('ui.toast.objectiveChanged', { goal: goalLine(activeVictory(map, { ...st, objectivePhase: e.phase }), map).replace(/\.$/, '') }));
+        break;
+      }
       case 'downed':
         audio.sfx('downed');
         break;

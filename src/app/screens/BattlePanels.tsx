@@ -21,11 +21,12 @@ import {
 } from '../../core';
 import { activeSkillIds } from '../../core/rules/skills';
 import { bagUsed } from '../../core/rules/items';
-import { activeVictory, mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
+import { activeVictory } from '../../core/battle/activeVictory';
+import { mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
-import { goalLine, goalStand, sideLine } from '../../ui/goalText';
+import { escapeCounts, goalLine, goalStand, mustLine, sideLine } from '../../ui/goalText';
 import { Sheet } from '../../ui/Sheet';
 import { ItemInfoButton, ItemSheetPortal, useLongPress } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
@@ -208,7 +209,8 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
         <small>{t('ui.obj.victory')}</small>
         <b>{goalLine(v, map)}</b>
         {(v.type === 'defend' || v.type === 'survive') && <span>{t('ui.obj.turnOf', { turn: s.turn, turns: v.turns })}</span>}
-        {(v.type === 'treasure' || (v.type === 'escape' && v.min)) && <span>{goalStand(v, s)}</span>}
+        {(v.type === 'treasure' || escapeCounts(v)) && <span>{goalStand(v, s)}</span>}
+        {mustLine(v, s) && <span>{mustLine(v, s)}</span>}
       </div>
       <div class="bp-goal is-lose">
         <small>{t('ui.obj.defeat')}</small>

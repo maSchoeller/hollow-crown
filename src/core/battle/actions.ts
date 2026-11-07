@@ -13,7 +13,7 @@ import type { ObjectiveDef } from '../mapDefs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
 import type { Action } from './commands';
-import { activeVictory } from './activeVictory';
+import { activeVictory, mustUnits } from './activeVictory';
 import { mapOf } from './objectives';
 
 export { classActionId };
@@ -180,8 +180,7 @@ export function passivePreview(data: GameData, s: BattleState, u: BattleUnit, po
 export function mustStayForRest(s: BattleState, u: BattleUnit, v?: ObjectiveDef): boolean {
   if (!u.flags.includes('lord')) return false;
   if (s.units.some((o) => o !== u && o.team === 'player' && onMap(o) && !o.downed)) return true;
-  const must = v?.type === 'escape' ? v.must : undefined;
-  return !!must && s.units.some((o) => o !== u && must.includes(o.id) && onMap(o));
+  return mustUnits(s, v).some((o) => o !== u && onMap(o));
 }
 
 /** All actions the unit could take from `pos` (UI action bar and AI share this). */

@@ -5,10 +5,8 @@ import type { GameEvent } from '../events';
 import { burningTileHit, eventTerrain } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, clone, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
-import { activeVictory } from './activeVictory';
+import { activeVictory, escapeProgress, leftAlive, mustUnits } from './activeVictory';
 import { battleUnitFromPlan } from './create';
-
-export { activeVictory };
 import { noteLieutenantSight } from './lieutenantSight';
 
 export function mapOf(data: GameData, s: BattleState): MapDef {
@@ -73,9 +71,12 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       break;
     case 'escape': {
       const left = s.units.filter((u) => u.team === 'player' && onMap(u) && !u.downed);
-      const escaped = s.units.filter((u) => u.team === 'player' && u.gone === 'escaped').length;
-      const mustOut = !v.must || v.must.every((id) => leftAlive(s, id));
-      if (left.length === 0 && escaped >= (v.min ?? 1) && mustOut) endBattle(s, 'victory', events);
+      const must = mustUnits(s, v);
+      // story 11.8: a unit of `must` that can no longer leave loses: it is gone another way, or it lies downed with nobody left to carry it
+      const lost = must.find((u) => u.gone === 'dead' || u.gone === 'retreated' || u.gone === 'fled' || (left.length === 0 && onMap(u)));
+      if (lost) return endBattle(s, 'defeat', events, lost.id);
+      const { have, min } = escapeProgress(s, v);
+      if (left.length === 0 && have >= min && must.every(leftAlive)) endBattle(s, 'victory', events);
       break;
     }
     case 'seize':
@@ -97,12 +98,6 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
   }
 }
 
-/** A unit of an escape's `must` has left the map alive: escaped, or carried off by a rescue (story 11.8). */
-function leftAlive(s: BattleState, id: string): boolean {
-  const u = findUnit(s, id);
-  return !!u && (u.gone === 'escaped' || u.gone === 'rescued');
-}
-
 const PHASE_ORDER: Record<Team, number> = { player: 0, enemy: 1, other: 2 };
 
 /** Whether (turn, phase) still lies ahead of the battle clock, the phase in progress included. */
@@ -122,6 +117,8 @@ function noFoesToCome(map: MapDef, s: BattleState): boolean {
   return !map.triggers.some(
     (t) =>
       t.then.some((a) => a.action === 'spawn') &&
+      // story 11.8: foes that come with the change of phase come after it; they cannot hold the survive part open
+      t.when.type !== 'objective_changed' &&
       !((t.once ?? true) && s.firedTriggers.includes(t.id)) &&
       (t.when.type !== 'turn_start' || notPast(s, t.when.turn, t.when.phase)),
   );
@@ -204,7 +201,7 @@ export function sideObjectiveSpots(data: GameData, s: BattleState, o: SideObject
     case 'protect_npc':
       return where(o.unit);
     case 'kill_with': {
-      const v = mapOf(data, s).objectives.victory;
+      const v = activeVictory(mapOf(data, s), s);
       return v.type === 'boss' ? where(v.unit) : [];
     }
     default:

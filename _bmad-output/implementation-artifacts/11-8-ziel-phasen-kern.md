@@ -34,6 +34,20 @@ damit eine große Schlacht wie Kronfeld erst Halten und dann Flucht verlangt.
 - [x] Fixture, Tests, Coverage, Sim-Diff, Bild (AC 9, 10).
 - [x] Architektur §5.7, Decision-Log `concept/21-gdd/decision-log.md`.
 
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][High] Sackgasse der Flucht: Eine `must`-Figur, die nicht mehr hinauskommt (`dead`/`retreated`/`fled`, oder niedergestreckt auf dem Brett ohne handlungsfähige eigene Figur), verliert die Mission (Grund = Figur); `validatePhases` verlangt Team `player`, kein `requires`/`difficulty`.
+- [x] [AI-Review][Med] Eine Auflösung der `must`-IDs: `mustIds`/`mustUnits` (über `findUnit`) in `activeVictory.ts` für `checkObjectives`, `mustStayForRest`, Zieltexte; `validatePhases` löst wie `findUnit` (id, dann char) auf.
+- [x] [AI-Review][Med] `min` zählt Gerettete wie `must` (`escapeProgress` für Sieg und Stand); `must` ohne `min` heißt `min = max(1, must)`; doppelte `must`-Einträge sind ein Fehler.
+- [x] [AI-Review][Med] Felswall (`cast.ts`) nie auf der Fluchtzone der späteren Phase, auch während `survive` (`escapeOf`); die KI-Wandplanung hat in der `survive`-Phase keine Zielfelder und baut dort keine.
+- [x] [AI-Review][Med] Früher Wechsel: Spawn-Trigger mit `when: objective_changed` halten `noFoesToCome` nicht auf.
+- [x] [AI-Review][Low] Übrige Leser von `objectives.victory`: `scoreContext` und `sideObjectiveSpots` über `activeVictory`; `wakesByTime`, `exitTiles`, `campaign.ts`, `Prep.tsx`, Heimsuchungs-Karte mit Kommentar, warum das Kartenziel gilt.
+- [x] [AI-Review][Med] Weltkarte: eigener Tag `ui.map.tag.survive_escape` (`goalKey`).
+- [x] [AI-Review][Low] Texte: DE `ui.world.goal.survive_escape` in ihr-Form; Zielblatt nennt fehlende `must`-Figuren (`ui.obj.mustLeft`); die Pille zeigt bei zählender Flucht nur den Stand („0/3 entkommen“), in der `survive`-Phase nur „Überlebe 3 Runden“; Level-Blatt nennt `must`.
+- [x] [AI-Review][Med] Rückmeldung beim Wechsel: Toast `ui.toast.objectiveChanged` („Neues Ziel: …“).
+- [x] [AI-Review][Low] Kein Re-Export von `activeVictory` aus `objectives.ts`; alle importieren aus `./activeVictory` (Index exportiert das Modul).
+- [x] [AI-Review][Med] Tests: niedergestreckte `must`-Figur allein ⇒ Niederlage, gerettet und Retter flieht ⇒ Sieg; zweiter Wechsel (direkt, Trigger ohne `once`) wirkungslos; `turn_limit` in beiden Phasen; `goalLine`/`goalStand`/`mustLine`; Felswall auf späterer Fluchtzone; früher Wechsel trotz `objective_changed`-Spawn; Prüfungen `must` doppelt/Team/`difficulty`.
+
 ## Dev Notes
 
 - **Quellen:** Epic 11 Story 11.8 und Einleitung; GDD „Missionsziele“ (Z. 232: „Ein Ziel kann in eine zweite Phase wechseln“) und „Mission gewonnen/verloren“ (Z. 85 f.); Architektur §5.7 „Ziel-Phasen (Epic 11)“, §8.7 (neue Felder mit Default, Plain-JSON); Entwurf `concept/27-ueberarbeitung/levels/s2_2_8_kronfeld.yaml` (Ziel `escape` Nordufer `rect [0,0,29,1]`, `min: 6`, Tor per `set_terrain` in Runde 6).
@@ -45,8 +59,10 @@ damit eine große Schlacht wie Kronfeld erst Halten und dann Flucht verlangt.
 - **[ASSUMPTION] Vorzeitiges Ende:** Schließt `survive` vorzeitig (kein Gegner mehr, keiner kommt), wechselt das Ziel ebenfalls auf `escape` statt zu siegen.
 - **[ASSUMPTION] Wechsel per Trigger:** neue Aktion `advance_objective` (ohne Felder); ein zweiter Aufruf in Phase `escape` tut nichts. Kronfeld kann sie an `t_hesitate` (Runde 6) hängen.
 - **[ASSUMPTION] Trigger `objective_changed`:** ohne Felder; feuert direkt nach dem Wechsel, z. B. mit `dialogue`.
-- **[ASSUMPTION] `must`:** zählt als geflohen, wer `gone: escaped` oder `rescued` (vom Feld getragen) ist; `min` zählt wie bisher nur `escaped`. Der Lord wartet, solange eine andere `must`-Figur auf dem Brett liegt, damit ein niedergestreckter Avatar nicht zurückbleibt.
-- **[ASSUMPTION] Texte:** Zieltext der Flucht-Phase ist das vorhandene `ui.world.goal.escape`; neu sind der Fortschritt `ui.obj.escapedOf` und der Satz der ersten Phase `ui.world.goal.survive_escape`.
+- **[ASSUMPTION] `must`:** zählt als hinaus, wer `gone: escaped` oder `rescued` (vom Feld getragen) ist; seit dem Review zählt auch `min` beide (für jede Flucht, auch den Prolog; Akt-1-Simulation unverändert). Der Lord wartet, solange eine andere `must`-Figur auf dem Brett liegt, damit ein niedergestreckter Avatar nicht zurückbleibt. Eine `must`-Id ohne Figur im Kampf (Gefährte daheim) verlangt nichts.
+- **[ASSUMPTION] Sackgasse (Review):** Kann eine `must`-Figur nicht mehr hinaus (tot, zurückgezogen, geflohen, oder niedergestreckt ohne handlungsfähige eigene Figur auf dem Brett), ist die Mission verloren; Grund ist die Id der Figur. Eine Flucht ohne `must` bleibt wie bisher.
+- **[ASSUMPTION] `min` ohne Angabe (Review):** eine je `must`-Figur, mindestens 1.
+- **[ASSUMPTION] Texte:** Zieltext der Flucht-Phase ist das vorhandene `ui.world.goal.escape`; neu sind der Stand `ui.obj.escapedOf`, `ui.obj.mustLeft`, der Satz der ersten Phase `ui.world.goal.survive_escape` (ihr-Form), der Weltkarten-Tag `ui.map.tag.survive_escape` und der Toast `ui.toast.objectiveChanged`. Die Pille zeigt bei zählender Flucht nur den Stand, weil der Satz bei 375 px abgeschnitten würde.
 - **[ASSUMPTION] Speicherformat:** `objectivePhase` optional, Default `?? 0` beim Lesen; Format 2 bleibt, weil vor 9.14 nichts gesperrt ist und alte Kämpfe kein Phasenziel haben (AGENTS.md „Akt-Release“ 3 greift nicht).
 
 ### Project Structure Notes
@@ -80,6 +96,9 @@ Claude Opus 5.5
 - Coverage `src/core`: vorher 95,67 % Anweisungen / 90,41 % Zweige, nachher 95,68 % / 90,45 %.
 - Bild: Probekarte `__hc.devMap('dev_phases')` bei 375 × 812, Rhen und Lucan vor das Tor gezogen (Trigger `t_gate` → `advance_objective` → Szene über `objective_changed`), danach Rundenpille „Entkommt über die Ausgänge · 0/3 entkommen“ und Fluchtzone am Nordrand. Brett ohne gebaute Assets im Worktree (Figuren als Platzhalter). Die Vorschau startete zuerst den Dev-Server des falschen Worktrees (Ordner der Sitzung); der Server lief deshalb von Hand aus diesem Worktree.
 
+- Nach dem Review (Rebase auf main mit 11.6): Sim Akt 1 weiter zeilengleich; Coverage `src/core` 95,86 % / 90,81 %; `pnpm check` grün (1591 Tests). Bild neu: Pille „0/3 entkommen“ nach dem Wechsel, in der `survive`-Phase „Überlebe 3 Runden · Runde 1 von 3“. Der Toast beim Wechsel liegt unter der Szene von `objective_changed` und ist im Bild nicht zu sehen.
+- Gefunden beim Bild: Ein mitten im Kampf gespeicherter Spielstand auf einer Probekarte lässt sich nach Neuladen nicht fortsetzen (Karte nur zur Laufzeit registriert); unverändert seit vor 11.8, nur Dev.
+
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created
@@ -107,6 +126,12 @@ Claude Opus 5.5
 - tests/unit/objective-phases.test.ts (neu)
 - tests/fixtures/maps/dev_phases.yaml (neu), tests/fixtures/devObjectiveMaps.ts
 
+### Senior Developer Review (AI)
+
+- **Datum:** 2026-11-07, Koordinator. **Ergebnis:** Changes Requested → alle 11 PATCH-Punkte erledigt (siehe „Review Follow-ups (AI)“), Tests ergänzt (23 Fälle in `objective-phases.test.ts`, einer in `cast.test.ts`).
+
 ### Change Log
+
+- 2026-11-07: Review-Befunde behoben (11 Punkte) nach Rebase auf main mit 11.6; Status bleibt review.
 
 - 2026-11-07: Story 11.8 umgesetzt (Schema, Kern, KI, Autoplay, UI, content:check, Tests, Probekarte, Architektur, Decision-Log); Status review.

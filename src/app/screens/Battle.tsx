@@ -12,8 +12,9 @@ import { Toast } from '../../ui/components';
 import { WantedDock } from './Wanted';
 import { abandonBattle, canAbandon, canRestart, pendingEvents, restartBattle } from '../state/battle';
 import { campaign, data } from '../state/session';
-import { goalLine, goalStand } from '../../ui/goalText';
-import { activeVictory, mapOf } from '../../core/battle/objectives';
+import { escapeCounts, goalLine, goalStand } from '../../ui/goalText';
+import { activeVictory } from '../../core/battle/activeVictory';
+import { mapOf } from '../../core/battle/objectives';
 import { markedGoal, toggleGoalMark } from '../state/goalMarks';
 import { openHandbook } from '../state/handbook';
 import { screen } from '../state/screen';
@@ -91,11 +92,13 @@ export function Battle() {
         : t('ui.hud.left', { n: enemiesLeft })
       : victory.type === 'survive'
         ? t('ui.obj.turnOf', { turn: s.turn, turns: victory.turns })
-        : victory.type === 'escape'
-          ? goalStand(victory, s)
-          : '';
-  // a treasure hunt shows its stand instead of the long sentence: "2/5 chests · turn 3 of 8" (the sentence is on the goals sheet)
-  const goalText = victory.type === 'treasure' ? goalStand(victory, s) : goalLine(victory, map).replace(/\.$/, '');
+        : '';
+  // a treasure hunt and a counting escape (story 11.8) show their stand instead of the long sentence: "2/5 chests · turn 3 of 8",
+  // "0/6 out" (the sentence is on the goals sheet); the survive part of a two-phase goal says only "Survive 3 turns" (the sheet says "then escape")
+  const goalText =
+    victory.type === 'treasure' || escapeCounts(victory)
+      ? goalStand(victory, s)
+      : goalLine(victory.type === 'survive' ? { type: 'survive', turns: victory.turns } : victory, map).replace(/\.$/, '');
 
   const shownPhase = phaseView?.phase ?? s.phase;
   const shownTurn = phaseView?.turn ?? s.turn;

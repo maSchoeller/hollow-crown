@@ -7,6 +7,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
+import { goalKey } from '../../ui/goalText';
 import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
@@ -593,7 +594,9 @@ function NodeCard({ id }: { id: string }) {
     );
   }
   const done = c.completed.includes(id);
+  // story 11.8: a goal with a second phase has its own tag ("Survive, then escape"); the icon is that of the first part
   const goal = map.objectives.victory.type;
+  const tag = goalKey(map.objectives.victory);
   // a lieutenant who joined into a full company: mercenaries have to go before the next mission (story 3.7)
   const over = armyOverLimit(data, c);
   return (
@@ -603,7 +606,7 @@ function NodeCard({ id }: { id: string }) {
       <div class="wm-card__tags">
         <span class="wm-tag">
           <Icon name={GOAL_ICON[goal] ?? 'target'} size={15} />
-          {t(`ui.map.tag.${goal}`)}
+          {t(`ui.map.tag.${tag}`)}
         </span>
         <span class="wm-tag">
           <Icon name="company" size={15} />
@@ -654,7 +657,7 @@ function HauntCard({ id }: { id: string }) {
     );
   }
   const map = hauntMap(data, h.map, h.variant, h.lt);
-  const goal = map.objectives.victory;
+  const goal = map.objectives.victory; // haunt maps have no second phase (story 11.8)
   const lt = data.lieutenants[h.lt]!;
   const gold = hauntGold(data);
   const material = bountyMaterialId(data, h.lt);

@@ -191,6 +191,11 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
 
   const name = ctx.text(map.nameKey) ?? map.design?.title ?? map.id;
   const v = map.objectives.victory;
+  // story 11.8: minimum and the units that must get out (`must`)
+  const escapeExtra = (e: { min?: number; must?: string[] }) => {
+    const parts = [...(e.min ? [`mind. ${e.min}`] : []), ...(e.must?.length ? [`mit ${e.must.map(unitName).join(', ')}`] : [])];
+    return parts.length ? ` (${parts.join(', ')})` : '';
+  };
   const victory = (() => {
     switch (v.type) {
       case 'rout':
@@ -204,9 +209,9 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
       case 'defend':
         return `${unitName(v.unit)} ${v.turns} Runden schützen`;
       case 'survive':
-        return `${v.turns} Runden überstehen${v.then ? `, dann über das Zielgebiet fliehen${v.then.min ? ` (mind. ${v.then.min})` : ''}` : ''}`;
+        return `${v.turns} Runden überstehen${v.then ? `, dann über das Zielgebiet fliehen${escapeExtra(v.then)}` : ''}`;
       case 'escape':
-        return `Über das Zielgebiet fliehen${v.min ? ` (mind. ${v.min})` : ''}`;
+        return `Über das Zielgebiet fliehen${escapeExtra(v)}`;
       case 'escort':
         return `${unitName(v.unit)} ins Zielgebiet geleiten`;
       case 'treasure':
