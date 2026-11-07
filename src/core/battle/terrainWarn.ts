@@ -28,7 +28,9 @@ export function terrainWarnings(data: GameData, s: BattleState): TerrainWarning[
   for (const t of mapOf(data, s).triggers) {
     const w = t.when;
     if (w.type !== 'turn_start' || s.turn < w.turn - 1 || !notPast(s, w.turn, w.phase)) continue;
-    if ((t.once ?? true) && s.firedTriggers.includes(t.id)) continue;
+    // a trigger on the start of a round fires once at most, so a fired one (also with `once: false`) has changed the ground already;
+    // its only condition is the moment (`whenMatches` in objectives.ts), checked above as by `runTriggers`
+    if (s.firedTriggers.includes(t.id)) continue;
     for (const a of t.then) {
       if (a.action !== 'set_terrain' || !a.warn) continue;
       out.push({ trigger: t.id, turn: w.turn, terrain: a.terrain, tiles: areaTiles(a.area), ...(a.warn === true ? {} : { key: a.warn }) });

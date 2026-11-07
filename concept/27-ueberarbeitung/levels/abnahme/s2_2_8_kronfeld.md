@@ -25,3 +25,5 @@
 </details>
 
 **Korrektur Story 11.10 (2026-11-07):** Die Balliste auf dem Hügel steht jetzt auf dem Gelände `ballista`, auf Stufe 2. Der Hauptmann ist kein Leutnant mehr.
+
+**Nachtrag Review 11.10:** Genau eine Figur hält die Stelle: der Hauptmann mit `e7_warned`, sonst Sable (`requires: [{ not: { flag: e7_warned } }]`), auch ohne E7 und wenn beide Flags gesetzt wären.

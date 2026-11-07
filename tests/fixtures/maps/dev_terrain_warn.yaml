@@ -18,7 +18,7 @@ terrain: |
   ,,,,,,,,,,
   ,,,,,,,,,,
 id: dev_terrain_warn
-nameKey: map.prologue_paktnacht.name
+nameKey: map.dev_terrain_warn.name
 size: [10, 12]
 fog: false
 legend:

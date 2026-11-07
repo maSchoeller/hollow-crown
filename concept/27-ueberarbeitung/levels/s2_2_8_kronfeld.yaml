@@ -102,7 +102,7 @@ units:
   - { id: e5, nameKey: unit.mercenary.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [21, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: e6, nameKey: unit.mercenary.name, team: enemy, class: skirmisher, level: 16, levelOffset: -3, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Süden: Sable oder, wenn sie bei E7 gewechselt hat, der Hauptmann mit dem Grenzheer
-  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_order }] }
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ not: { flag: e7_warned } }] }
   - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 20, levelOffset: 1, at: [15, 34], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: e7_warned }] }
   - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 17, levelOffset: -2, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 16, levelOffset: -3, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }

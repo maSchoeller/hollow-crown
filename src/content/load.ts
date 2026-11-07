@@ -226,7 +226,13 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     .map(contentPath)
     .filter((p) => /^acts\/act([2-9]|\d{2,})\/flags\.yaml$/.test(p))
     .sort();
-  const flagList = ['acts/act1/flags.yaml', ...later].flatMap((p) => parseList<FlagDef>(later.includes(p) ? p : 'flags.yaml', get(p), flagSchema, issues));
+  const flagList: FlagDef[] = [];
+  for (const p of ['acts/act1/flags.yaml', ...later])
+    for (const f of parseList<FlagDef>(p, get(p), flagSchema, issues)) {
+      // one flag lives in one register: an id twice across the acts is an error (the later one is dropped)
+      if (flagList.some((x) => x.id === f.id)) issues.push({ file: p, message: `flag ${f.id} is declared twice (acts/*/flags.yaml)` });
+      else flagList.push(f);
+    }
   const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);

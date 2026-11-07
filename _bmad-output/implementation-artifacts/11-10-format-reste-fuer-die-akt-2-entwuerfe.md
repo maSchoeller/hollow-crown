@@ -34,6 +34,22 @@ damit keine Karte einen Sonderfall im Code braucht.
 - [x] Level-Blatt (AC 7): fehlende Gelände, Test, Abnahme-PNGs.
 - [x] Doku: Architektur §5.3a „Stand (Story 11.10)“, Decision-Log, Sim-Vergleich, Coverage, Bild.
 
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][High] ID-Sperre: `content:lock` sperrt nur IDs veröffentlichter Pakete, auch Flags, Leutnants und Figuren aus Listendateien (`tools/build/lockIds.ts`, `collectIds` mit Filter je Art); Test: Akt 2 trägt nichts bei.
+- [x] [AI-Review][High] `drafts.ts`: „offen“ nur für die Meldungen aus AC 1 (Szene, Figur, Leutnant, Chronik-Seite, Item, Name der Karte bzw. der Eskorte); Datei ohne Akt und doppelte Karten-ID zwischen Entwürfen sind Fehler; Asset-Prüfungen laufen mit, Warnfilter in `content-check.ts` greift; Test prüft die erwarteten IDs statt einer Zahl. Eskorte mit `char: <id>` meldet nur noch die fehlende Figur.
+- [x] [AI-Review][Med] Doppelte Flag-ID über zwei Akt-Register ist ein Fehler; Dateiname einheitlich `acts/act<n>/flags.yaml`.
+- [x] [AI-Review][Med] `forced`: Prüfung und `presentForced` gleich (Avatar oder Gefährte aus `units.yaml`, keine Kartenfigur).
+- [x] [AI-Review][Med] Gast: angesprochener Gast tritt bei (Test), ein Gast mit `char`, der schon in der Truppe ist, erscheint nicht doppelt (`placeMapUnits`, Test), ein gefallener Gast ist kein gefallener Gefährte (Test, [ASSUMPTION]).
+- [x] [AI-Review][Med] E7: genau einer hält die Stelle (Sable `not e7_warned`, Hauptmann `e7_warned`), auch ohne E7 und mit beiden Flags (Test); `planLieutenants` bekommt nur die Aufstellung mit erfüllten `requires` (Test mit Ulvric auf einer Kopie von m1_4).
+- [x] [AI-Review][Med] `terrainWarnings`: ein schon gefeuerter Trigger warnt nicht mehr, auch mit `once: false` (Test); einzige Bedingung eines `turn_start`-Triggers ist der Zeitpunkt.
+- [x] [AI-Review][Low] Overlay `terrainWarn` auf eigenem Layer 19; Farbe aus `render.yaml legibility.terrainWarn` für Streifen und HUD-Kante (`--lg-warn`).
+- [x] [AI-Review][Low] Mojibake im Kommentar von `BattleLegibility.tsx` behoben, Key `${trigger}:${i}`.
+- [x] [AI-Review][Low] Text nach AC: „Geländewechsel in Runde {n}: {terrain}“ / „Ground change in round {n}: {terrain}“, Schlüssel neben `ui.threat.reach.*`.
+- [x] [AI-Review][Low] Fixture mit eigenem Namen `map.dev_terrain_warn.name`.
+- [x] [AI-Review][Low] Abnahme-PNGs neu erzeugt; `s2_2_3_rabenweide.png` ist bitgleich (das Blatt zeigt die geänderten KI-Profile nicht).
+- [ ] [AI-Review][Defer] UI-Verdrahtung (Warnzeile, Overlay, Gast-Chip und Infoblatt) hat keinen automatischen Test; belegt durch das Bild bei 375 × 812.
+
 ## Dev Notes
 
 - Heute prüft nur `pnpm levels` die Entwürfe, und nur gegen `mapSchema` (`tools/levels/atlas.ts` `readDraft`); `content:check` kennt sie nicht. Ausgangsliste (validateContent mit dem Entwurf in `data.maps`, `act` aus dem Dateinamen): 2-1 Balliste ohne Gelände ×2, 2-2 Flag `m2_2_seal`, 2-3 fünf Gegner „cannot walk to the deploy area“ (gepanzert, Furten `armored: null`), 2-4 Wetter `ash` nicht in Akt 2, 2-5/2-6/2-8 Leutnant mit `requires`, Hauptmann als zweiter `sable`, Flags E7, 2-7/2-8 Balliste ohne Gelände; N4–N6 nur offene Inhalte.
@@ -86,7 +102,13 @@ Claude Opus 5.5
 - src/render/board/overlays.ts, src/ui/hud.css
 - tests/fixtures/maps/dev_terrain_warn.yaml (neu), tests/unit/act2-drafts.test.ts (neu), tests/unit/level-sheet.test.ts, tests/unit/look.test.ts, tests/unit/unit-requires.test.ts
 - tools/content-check.ts, tools/levels/sheet.ts
+- Review: src/content/ids.ts, tools/content-lock.ts, tools/build/lockIds.ts (neu), src/core/renderDefs.ts
+
+### Senior Developer Review (AI)
+
+- 2026-11-07, 4 Reviewer: Changes Requested, 12 Punkte zum Beheben, 1 zurückgestellt (siehe Review Follow-ups). Alle 12 behoben, Tests ergänzt.
 
 ### Change Log
 
 - 2026-11-07: Story 11.10 umgesetzt (Format-Reste der Akt-2-Entwürfe), Status review.
+- 2026-11-07: Review-Befunde behoben (12 Punkte, 1 zurückgestellt).

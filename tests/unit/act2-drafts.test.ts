@@ -10,7 +10,10 @@ import { join } from 'node:path';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { checkDrafts, draftAct } from '../../src/content/drafts';
-import { loadContentFromDisk } from '../../src/content/node';
+import { buildContent } from '../../src/content/load';
+import { loadContentFromDisk, readContentFiles } from '../../src/content/node';
+import { readPacks } from '../../tools/build/packs-plugin';
+import { releasedIdSets } from '../../tools/build/lockIds';
 import { mapSchema } from '../../src/content/schemas';
 import { validateContent } from '../../src/content/validate';
 import {
@@ -82,8 +85,20 @@ const rect = (x0: number, y0: number, x1: number, y1: number): Pos[] => {
 };
 
 describe('act-2 drafts in content:check', () => {
-  it('finds the 11 drafts and none of them has a format issue', () => {
-    expect(files).toHaveLength(11);
+  it('finds the drafts of act 2 and none of them has a format issue', () => {
+    expect(files.map((f) => f.replace(/\.yaml$/, ''))).toEqual([
+      's2_2_1_windscharte',
+      's2_2_2_salzpass',
+      's2_2_3_rabenweide',
+      's2_2_4_brandschneise',
+      's2_2_5_silberquell',
+      's2_2_6_kraehenholm',
+      's2_2_7_kontor',
+      's2_2_8_kronfeld',
+      's2_n4_clan',
+      's2_n5_mine',
+      's2_n6_gaukler',
+    ]);
     const raw = Object.fromEntries(files.map((f) => [f, parse(readFileSync(join(dir, f), 'utf8'))]));
     const results = checkDrafts(data, locales, raw);
     expect(results.flatMap((r) => r.issues.map((i) => `${r.file}: ${i.message}`))).toEqual([]);
@@ -103,6 +118,22 @@ describe('act-2 drafts in content:check', () => {
     const [dup] = checkDrafts(data, locales, { 's2_z.yaml': { ...raw, id: Object.keys(data.maps)[0] } });
     expect(dup!.issues[0]!.message).toContain('already content');
     expect(draftAct('muster_mittel_20x25.yaml')).toBeUndefined();
+    // no act in the name is an issue, not act 1; two drafts with one map id are an issue
+    expect(checkDrafts(data, locales, { 'muster.yaml': raw })[0]!.issues[0]!.message).toContain('s<act>_');
+    const twice = checkDrafts(data, locales, { 's2_a.yaml': raw, 's2_b.yaml': raw });
+    expect(twice[1]!.issues[0]!.message).toBe('map id s2_2_2_salzpass is also the id of the draft s2_a.yaml');
+  });
+
+  it('counts only missing content as open, never the format', () => {
+    const map = structuredClone(parse(readFileSync(join(dir, 's2_n6_gaukler.yaml'), 'utf8'))) as { objectives: { victory: { join?: boolean } }; triggers: unknown[] };
+    map.objectives.victory.join = true; // the troupe master has no char: a format issue, not missing content
+    map.triggers.push({ id: 't_key', when: { type: 'turn_start', turn: 3, phase: 'player' }, then: [{ action: 'set_terrain', area: { tiles: [[0, 0]] }, terrain: 'river', warn: 'ui.no_such_line' }] });
+    const [r] = checkDrafts(data, locales, { 's2_n6_gaukler.yaml': map });
+    expect(r!.issues.map((i) => i.message)).toEqual(
+      expect.arrayContaining(['escort: troupe_master joins afterwards, so it needs a character of the same id (or join: false)', 't_key: missing key ui.no_such_line']),
+    );
+    // Jory comes with story 11.5: his forced deploy only waits for the character
+    expect(r!.open.map((i) => i.message)).toContain('deploy.forced: unknown char jory');
   });
 
   it('checks warn, guest and the forced deploy of a map', () => {
@@ -203,6 +234,26 @@ describe('changing maps of act 2 run on set_terrain, levers and triggers', () =>
   });
 });
 
+describe('the lock and the flag registers', () => {
+  it('locks only IDs of released packs: the unreleased act 2 adds nothing', () => {
+    const { packs, ids } = releasedIdSets(process.cwd(), data, readPacks(process.cwd()));
+    expect(packs).not.toContain('act2');
+    expect(ids.flags).toContain('e04');
+    expect(ids.flags.filter((f) => ['e7_order', 'e7_warned', 'm2_2_seal'].includes(f))).toEqual([]);
+    expect(ids.scenes.filter((x) => x.startsWith('scn.m2_'))).toEqual([]);
+    expect(ids.maps.every((m) => data.maps[m]!.act === 1)).toBe(true);
+    expect(ids.chars).toContain('lucan');
+  });
+
+  it('reports a flag declared in two act registers', () => {
+    const files = readContentFiles();
+    const act1 = Object.keys(files).find((k) => k.split('\\').join('/').endsWith('acts/act1/flags.yaml'))!;
+    const act2 = act1.replace('act1', 'act2');
+    const { issues } = buildContent({ ...files, [act2]: [...(files[act2] as unknown[]), { id: 'e04', kind: 'decision', values: ['a', 'b'], season2: false }] });
+    expect(issues).toContainEqual({ file: 'acts/act2/flags.yaml', message: 'flag e04 is declared twice (acts/*/flags.yaml)' });
+  });
+});
+
 describe('forced deploy, lieutenants with requires and guests', () => {
   it('N4: Ilka is forced only while she is in the company', () => {
     const map = addMap(join(dir, 's2_n4_clan.yaml'));
@@ -217,16 +268,35 @@ describe('forced deploy, lieutenants with requires and guests', () => {
     expect(s2.units.some((u) => u.id === 'ilka' && u.team === 'player' && u.pos)).toBe(true);
   });
 
-  it('2-5: Sable stands only after E7 order, the captain only after warned', () => {
-    const order = campaign();
-    order.flags.e7_order = true;
-    const s1 = battle('s2_2_5_silberquell.yaml', order);
-    expect(s1.units.map((u) => u.uid).filter((id) => id === 'sable' || id === 'captain')).toEqual(['sable']);
-    const warned = campaign();
-    warned.flags.e7_warned = true;
-    const s2 = startBattle(data, createBattle(data, warned, s1.mapId, [])).state;
-    expect(s2.units.map((u) => u.uid).filter((id) => id === 'sable' || id === 'captain')).toEqual(['captain']);
-    expect(s2.units.find((u) => u.uid === 'captain')!.lieutenant).toBeUndefined();
+  it('2-5: exactly one holds the exit: the captain after E7 warned, else Sable (also without E7 or with both flags)', () => {
+    const holder = (flags: Record<string, true>) => {
+      const c = campaign();
+      Object.assign(c.flags, flags);
+      if (!data.maps.s2_2_5_silberquell) addMap(join(dir, 's2_2_5_silberquell.yaml'));
+      const s = startBattle(data, createBattle(data, c, 's2_2_5_silberquell', [])).state;
+      return s.units.map((u) => u.uid).filter((id) => id === 'sable' || id === 'captain');
+    };
+    expect(holder({})).toEqual(['sable']);
+    expect(holder({ e7_order: true })).toEqual(['sable']);
+    expect(holder({ e7_warned: true })).toEqual(['captain']);
+    expect(holder({ e7_order: true, e7_warned: true })).toEqual(['captain']);
+  });
+
+  it('a lieutenant left out by requires gets no plan (Ulvric on a copy of m1_4)', () => {
+    const was = data.maps.m1_4_wolfslager!;
+    const copy = structuredClone(was);
+    copy.units.find((u) => u.id === 'ulvric')!.requires = [{ flag: { e02: 'protect' } }];
+    data.maps.m1_4_wolfslager = copy;
+    try {
+      expect(createBattle(data, campaign(), 'm1_4', []).lieutenantPlan?.ulvric).toBeUndefined();
+      const protect = campaign();
+      protect.flags.e02 = 'protect';
+      const s = createBattle(data, protect, 'm1_4', []);
+      expect(s.lieutenantPlan?.ulvric).toBeDefined();
+      expect(s.units.some((u) => u.lieutenant === 'ulvric')).toBe(true);
+    } finally {
+      data.maps.m1_4_wolfslager = was;
+    }
   });
 
   it('a guest is led by the AI, warned ground is marked, and after the victory the guest stays behind', () => {
@@ -244,5 +314,41 @@ describe('forced deploy, lieutenants with requires and guests', () => {
     const plain = structuredClone(won);
     delete plain.units.find((u) => u.uid === 'liora')!.guest;
     expect(finishBattle(data, c, plain).campaign.roster.some((r) => r.id === 'liora')).toBe(true);
+  });
+  it('a guest the company talked over joins; one already in the company is not placed twice; a fallen guest is no fallen companion', () => {
+    const c = campaign();
+    const s = battle('tests/fixtures/maps/dev_terrain_warn.yaml', c);
+    const won = structuredClone(s);
+    won.outcome = 'victory';
+    const liora = won.units.find((u) => u.uid === 'liora')!;
+    liora.team = 'player'; // what talking over does (apply.ts, recruit)
+    won.stats.recruited.push('liora');
+    const joined = finishBattle(data, c, won).campaign;
+    expect(joined.roster.some((r) => r.id === 'liora')).toBe(true);
+    // with Liora in the company the map does not place its guest Liora again (placeMapUnits skips a recruited char)
+    const again = startBattle(data, createBattle(data, joined, s.mapId, [])).state;
+    expect(again.units.filter((u) => u.id === 'liora' && u.team === 'other')).toEqual([]);
+    // [ASSUMPTION] a guest who dies is not a fallen companion: the campaign keeps nothing of him, the map's defeat decides
+    const lost = structuredClone(s);
+    lost.outcome = 'victory';
+    const g = lost.units.find((u) => u.uid === 'liora')!;
+    g.gone = 'dead';
+    g.pos = null;
+    const after = finishBattle(data, c, lost).campaign;
+    expect(after.fallen.some((f) => f.id === 'liora')).toBe(false);
+    expect(after.roster.some((r) => r.id === 'liora')).toBe(false);
+  });
+
+  it('no warning for a fired trigger, also with once: false', () => {
+    const s = battle('tests/fixtures/maps/dev_terrain_warn.yaml');
+    const map = data.maps[s.mapId]!;
+    map.triggers[0] = { ...map.triggers[0]!, once: false };
+    expect(terrainWarnings(data, s)).toHaveLength(1);
+    s.turn = 2;
+    s.phase = 'enemy';
+    expect(terrainWarnings(data, s)).toHaveLength(1);
+    phaseStart(s, 2, 'enemy');
+    expect(terrainAt(s, [2, 3])).toBe('river');
+    expect(terrainWarnings(data, s)).toEqual([]);
   });
 });

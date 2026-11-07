@@ -33,24 +33,26 @@ export type Renames = z.infer<typeof renamesSchema>;
 const sorted = (ids: Iterable<string>): string[] => [...new Set(ids)].sort();
 
 /**
- * The IDs of loaded content, per kind. `released` limits maps and scenes to those of released packs (the content on disk
- * also holds unreleased ones); everything else lives in core or in the act's campaign files.
+ * The IDs of loaded content, per kind. `released` limits a kind to the IDs of released packs (the content on disk also holds
+ * unreleased ones: maps, scenes, and since story 11.10 the flag registers, lieutenants and characters of later acts); a kind
+ * without a test takes every loaded ID (core and the act's campaign files).
  */
-export function collectIds(data: GameData, released: { maps: (id: string) => boolean; scenes: (id: string) => boolean } = { maps: () => true, scenes: () => true }): IdSets {
-  return {
-    chars: sorted(Object.keys(data.chars)),
-    classes: sorted(Object.keys(data.classes)),
-    items: sorted(Object.keys(data.items)),
-    skills: sorted(Object.keys(data.skills)),
-    affixes: sorted(Object.keys(data.affixes)),
-    sets: sorted(Object.keys(data.sets)),
-    nodes: sorted(data.campaign.nodes.map((n) => n.id)),
-    maps: sorted(Object.keys(data.maps).filter(released.maps)),
-    flags: sorted(Object.keys(data.flags)),
-    rooms: sorted(Object.keys(data.rooms)),
-    scenes: sorted(Object.keys(data.scenes).filter(released.scenes)),
-    lieutenants: sorted(Object.keys(data.lieutenants ?? {})),
+export function collectIds(data: GameData, released: Partial<Record<IdKind, (id: string) => boolean>> = {}): IdSets {
+  const all: IdSets = {
+    chars: Object.keys(data.chars),
+    classes: Object.keys(data.classes),
+    items: Object.keys(data.items),
+    skills: Object.keys(data.skills),
+    affixes: Object.keys(data.affixes),
+    sets: Object.keys(data.sets),
+    nodes: data.campaign.nodes.map((n) => n.id),
+    maps: Object.keys(data.maps),
+    flags: Object.keys(data.flags),
+    rooms: Object.keys(data.rooms),
+    scenes: Object.keys(data.scenes),
+    lieutenants: Object.keys(data.lieutenants ?? {}),
   };
+  return Object.fromEntries(ID_KINDS.map((k) => [k, sorted(all[k].filter(released[k] ?? (() => true)))])) as IdSets;
 }
 
 /** A new lock: the earlier locked IDs stay locked (a renamed ID too), the current ones join. */

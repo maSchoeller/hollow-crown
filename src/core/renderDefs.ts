@@ -26,6 +26,8 @@ export interface LegibilityDef {
   };
   /** story 13.6: the foes that reach the chosen field glow in this colour at this strength (0–1) */
   reach: { color: string; strength: number };
+  /** story 11.10: warning before a map event changes the ground: amber stripes on the board and the edge of the HUD line */
+  terrainWarn: { color: string; alpha: number; pulse: number };
   /** story 13.3: HP bar over the head */
   hpBar: { tick: number; tickWide: number; wideFrom: number; critical: number; widthTiles: number; minPx: number; maxPx: number; heightPx: number; lift: number };
   /** story 13.9: the whole-map zoom step */

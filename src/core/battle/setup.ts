@@ -37,8 +37,10 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
   const map = data.maps[node.map]!;
   const seed = (c.seed * 31 + c.completed.length * 7919 + node.id.length * 131) >>> 0;
-  // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1)
-  const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, map, c.settings.difficulty));
+  // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1);
+  // one whose `requires` fails stays off the board and gets no plan either (story 11.10, Sable after E7)
+  const lineUp = onConditions(conditionContext(data, c), map.units);
+  const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, { ...map, units: lineUp }, c.settings.difficulty));
   deployPlayers(data, c, s, map, deployIds);
   placeMapUnits(data, c, s, map.units);
   finishSetup(data, s, map);

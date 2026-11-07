@@ -746,7 +746,8 @@ function validateEscort(
   if (!npc) return err(f, `escort: unit ${v.unit} not on the map`);
   if (npc.team !== 'other') err(f, `escort: ${v.unit} must be team other`);
   if (npc.ai?.profile !== 'follow') err(f, `escort: ${v.unit} needs the AI profile follow`);
-  if (v.join !== false && !data.chars[v.unit]) err(f, `escort: ${v.unit} joins afterwards, so it needs a character of the same id (or join: false)`);
+  // a unit with `char: <id>` names its character already; a missing one is reported as unknown char (story 11.10)
+  if (v.join !== false && !data.chars[v.unit] && npc.char !== v.unit) err(f, `escort: ${v.unit} joins afterwards, so it needs a character of the same id (or join: false)`);
   // the goal sentence and the defeat line name the NPC (`unit.<id>.name`)
   for (const lang of ['de', 'en']) if (!locales[lang]?.[`unit.${v.unit}.name`]) err(f, `escort: missing locale key unit.${v.unit}.name in ${lang}`);
   const exit = areaTiles(v.area);

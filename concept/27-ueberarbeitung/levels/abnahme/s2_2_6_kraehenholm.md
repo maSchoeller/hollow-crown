@@ -24,3 +24,5 @@
 </details>
 
 **Korrektur Story 11.10 (2026-11-07):** Der Hauptmann ist kein Leutnant mehr. Die Flut trägt `warn: true` (Warnung ab Runde 8). Nell ist Gast.
+
+**Nachtrag Review 11.10:** Genau eine Figur hält die Stelle: der Hauptmann mit `e7_warned`, sonst Sable (`requires: [{ not: { flag: e7_warned } }]`), auch ohne E7 und wenn beide Flags gesetzt wären.

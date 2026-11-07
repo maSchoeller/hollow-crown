@@ -74,8 +74,14 @@ const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, l
 const draftDir = join(process.cwd(), 'concept', '27-ueberarbeitung', 'levels');
 const planned = new Set(packs.filter((p) => !p.released && p.id === `act${p.act}`).map((p) => p.act));
 const draftFiles = existsSync(draftDir) ? readdirSync(draftDir).filter((f) => planned.has(draftAct(f) ?? -1)).sort() : [];
-const drafts = checkDrafts(data, locales, Object.fromEntries(draftFiles.map((f) => [f, parse(readFileSync(join(draftDir, f), 'utf8'))])));
-for (const d of drafts) found.push(...d.issues.map((i) => ({ file: `levels/${d.file}`, message: `${i.file}: ${i.message}` })));
+const drafts = checkDrafts(
+  data,
+  locales,
+  Object.fromEntries(draftFiles.map((f) => [f, parse(readFileSync(join(draftDir, f), 'utf8'))])),
+  [sprites, itemImages, placeImages, lieutenantFiles, statusImages],
+);
+// the message stays as validateContent words it, so the warning filter below treats a draft like content (missing sprites)
+for (const d of drafts) found.push(...d.issues.map((i) => ({ file: `levels/${d.file} ${i.file}`, message: i.message })));
 const openRefs = drafts.reduce((n, d) => n + d.open.length, 0);
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite') || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing portrait')) || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing model')));
