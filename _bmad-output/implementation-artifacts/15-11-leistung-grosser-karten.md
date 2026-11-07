@@ -97,6 +97,52 @@ Zeilen „gemeinsam“ aus Lauf 2 (Kamera hält die Zoomstufe). Figuren: 1-6 = 3
 
 **Bewertung:** Die Gegnerphase ist mit „Gemeinsam“ auf allen Karten unter dem Zeitziel (≤ 15 s; vorher 44–82 s). Referenzschlacht und Burg halten das FPS-Ziel (60/30). **Die 30 × 40-Entwürfe halten es nicht**: schon „einzeln“ kostet 1-6 rund 60 % mehr Thread-Zeit je Frame als die Referenz (83 statt 48 Draw Calls: mehr Gelände, Mauern, Requisiten im Bild), bei 4× und vielen gleichzeitig laufenden Figuren fällt 1-6 auf 14 FPS. Das ist Folgearbeit an den Zeichenkosten großer Karten (Requisiten/Mauern bündeln, Figuren außerhalb der Sicht, Schattenkarte), nicht Teil dieser Story. **Offen: Messung auf dem Referenzgerät** (Pixel 6a / iPhone 12) – Release-Check Story 9.14.
 
+### Nachtrag 2026-11-07: Gegnerphase ≤ 15 s (Zeitgrenze)
+
+Anlass: Messung aus Story 15.10 – 1-8 mit „Gemeinsam“, Tempo 1× im Schnitt 9 s, längste Phasen 34–55 s.
+
+**Ursache (gemessen):**
+- **Schläge, nicht Wege:** Die längste 1-8-Phase (Normal, Runde 9) hat 16 Schläge in 7 Kämpfen und 22 Wege; die reinen Läufer laufen schon gemeinsam. Je Kampf kosten Kameraschwenk (220 ms), Pulsieren (450 ms), Weg, und je Schlag ≈ 0,93 s. Allein die Schläge brauchen ≈ 15 s.
+- **KI-Rechenzeit ist es nicht:** `endPhase` 1-8 Ø 0,19 s / max 0,33 s (Node, Desktop), im Browser bei 4× Drosselung ≈ 0,9 s.
+- **Leerlauf:** Die Kamera glitt auch zu Gegnern, die nur warten (220 ms je Gegner außerhalb der Sicht).
+- **Nicht vom Tempo erfasst:** Jeder Geländewechsel baut das ganze 30 × 40-Gelände neu (1,3 s, bei 4× ≈ 3,4 s), und `setState` baute es am Ende der Phase noch einmal, weil sich nur die Restrunden eines Feuers geändert hatten. In 1-6 Runde 9 waren das 2,7 s bzw. bei 4× ≈ 6 s.
+- **Bildrate:** Jeder Tween endet erst im ersten Frame nach seiner Zeit; bei niedriger FPS wird die Phase länger als geplant. Mit Software-Rendering (SwiftShader, 6–9 FPS) dauerte 1-8 trotz Zeitgrenze 25–28 s, mit GPU (34–60 FPS) passt der Plan auf ±1 s.
+
+**Änderung (reine Darstellung, Kern, Balance, Karten, KI unverändert; Replays gleich):**
+- `src/render/board/aiPacing.ts` (neu): eine Tabelle der Brett-Zeiten (`PLAY_MS`, vorher verstreute Zahlen in `board.ts`/`boardCamera.ts`) und der Plan einer Gegnerphase aus den Ereignissen (`planMs`), dieselbe Rechnung für Brett und Simulation (`tools/enemyPhase.ts`, ersetzt die Kopie `STRIKE_MS`).
+- **Zeitgrenze** [ASSUMPTION, UX-Decision-Log 2026-11-07]: Mit „Gemeinsam“ vergleicht das Brett bei jedem Ereignis den Plan des Rests mit der Zeit, die von `render.yaml aiPace.phaseBudgetMs` (13 s) übrig ist, und spielt die ganze Phase so viel schneller (`speed`-Getter in `boardBase.ts`), höchstens `maxBoost` (4×). Schläge bleiben einzeln und in ihrer Reihenfolge, nichts wird übersprungen. „Einzeln“ bleibt unverändert (die längste 1-8-Phase dort 55–73 s), Tempo 2× und Überspringen wirken wie bisher.
+- Kamera gleitet nicht mehr zu Gegnern, die nur warten (in beiden Modi, also auch bei „Einzeln“); aufeinanderfolgende Geländewechsel bauen einmal neu; `setState` baut nur neu, wenn sich am Gelände etwas Sichtbares ändert (Feld, Art, Rückfall; `timerLook`), nicht die Restrunden.
+- Warten auf den Spieler (Stufenaufstieg, Dialog, Fluchtzeile) zählt nicht gegen die Zeitgrenze (`pausedFor`). Figuren animieren erst ab Tempo 1,6 schneller (vorher ab > 1), damit ein leichter Aufschlag ihre Bildrate nicht umschaltet; bei 2× unverändert.
+- Werte in `render.yaml aiPace`: `phaseBannerMs` (700, vorher im Code von `battlePresentation.ts`), `phaseBudgetMs` 13000, `maxBoost` 4 und `play` (die festen Brett-Zeiten, vorher Zahlen in `board.ts`/`boardCamera.ts`). In `src/core` nur der Typ `RenderDef.aiPace` erweitert (`renderDefs.ts`), keine Regel.
+- `pnpm sim --campaign`: „battle min“ und die Akt-Stunden rechnen jetzt mit „shown“ (nach Zeitgrenze) statt „march“, die Akt-Spielzeit fällt dadurch gegenüber Story 15.10 etwas.
+
+**Messung, reproduzierbar:**
+- Kampagne: `pnpm sim --campaign act1 --runs 12 --difficulty <stufe>` – Spalten „single / march / shown“ (Plan bei Tempo 1×: einzeln / gemeinsam ohne Zeitgrenze / wie gezeigt).
+- Browser: `pnpm tsx tools/phase-state.ts m1_8` (und `m1_6`) speichert den Kampf vor der längsten Phase nach `.phase/`, `PERF_GPU=1 PERF_PHASE=.phase/m1_8.json,.phase/m1_6.json PERF_STAGES=2,4 PERF_RUNS=2 pnpm perf --project pixel6a --grep "saved battle"` spielt sie ohne (= vorher) und mit Zeitgrenze, Ergebnis in `test-results/perf/phase-pixel6a.md`, Zeit je Ereignistyp im Log.
+
+Kampagne (12 Läufe, Plan „Gemeinsam“, Tempo 1×, inkl. Phasen-Pille und Kameraschwenks), Ø / längste Phase in s:
+
+| Karte | Leicht vorher | Leicht nachher | Normal vorher | Normal nachher | Schwer vorher | Schwer nachher |
+|---|---|---|---|---|---|---|
+| 1-6 | 2,7 / 10,7 | 2,7 / 10,7 | 3,5 / 11,9 | 3,5 / 11,9 | 6,3 / 23,8 | 5,5 / 13,0 |
+| 1-8 | 9,6 / 25,8 | 8,4 / 13,0 | 11,6 / 34,4 | 9,0 / 13,0 | 13,5 / 40,0 | 9,4 / 13,0 |
+| übrige Akt-1-Karten, längste | 17,4 (1-5) | 13,0 | 25,6 (1-5) | 13,0 | 43,6 (1-5) | 13,0 |
+
+Browser (Pixel-6a-Profil, GPU Intel UHD 630, „Gemeinsam“, Tempo 1×, längste Phase Normal Runde 9, Median aus 2 Läufen, nur Brett ohne Phasen-Pille). „Vorher“ wurde mit dem Brett-Verhalten von `main` gemessen (Kamera zu Wartenden zurückgedreht, Lauf vor den Gelände-Änderungen, `maxBoost` 1). Die Zeile „ohne (vorher)“ des Skripts setzt nur `maxBoost` 1 und enthält die übrigen Änderungen; ein echtes Vorher braucht einen Checkout von `main`. Gemessen wird je Mission die längste Phase; Durchschnitte kommen aus der Kampagnen-Simulation (Plan), nicht aus dem Browser:
+
+| Phase | Drossel | vorher s | nachher s | Ø FPS nachher |
+|---|---|---|---|---|
+| 1-8 Runde 9 | 2× | 32,7 | 12,5 | 60 |
+| 1-8 Runde 9 | 4× | 34,7 | 13,0 | 34 |
+| 1-6 Runde 9 | 2× | 16,0 | 12,5 | 53 |
+| 1-6 Runde 9 | 4× | 21,6 | 14,6–15,2 | 35–40 |
+
+Review (`bmad-code-review`, vier Ebenen, 2026-11-07): behoben – Warten auf den Spieler zählt nicht gegen die Zeitgrenze, Bildrate der Figuren springt nicht bei leichtem Aufschlag, Option wird zu Beginn der Phase gelesen, unbekannte Figuren nach Endzustand zugeordnet, `phase-state.ts` nur aus gewonnenen ersten Versuchen (wie die Simulation), Brett-Zeiten in YAML, Kommentar zum Puffer, Perf-Prüfung mit `PERF_STRICT=1` (≤ 15 s), Tests für Phasenuhr und `timerLook`. Zurückgestellt: Brett gegen Plan im CI messen (braucht einen Browser-Lauf mit gespeichertem Stand); Gelände-Neubau nur der geänderten Felder.
+
+Grenzen der Zusage: 15 s gelten für „Gemeinsam“ (Standard). „Einzeln“ bleibt beim gewählten Tempo. Der Aufschlag endet bei `maxBoost` (Phasen über ≈ 52 s Plan blieben darüber; in Akt 1 ist die längste 43,6 s). Rechenstopps (Gelände-Neubau, Endabgleich) und kritische Treffer verkürzt kein Tempo; dafür sind 2 s Puffer vorgesehen.
+
+Offen: Bei 4× Drosselung bleibt in 1-6 ein Gelände-Neubau von ≈ 3,4 s am Ende der Phase, den kein Tempo verkürzt; mit Phasen-Pille liegt die Phase dort bei ≈ 15 s. Abhilfe wäre ein Neubau nur der geänderten Felder (Folgearbeit an `buildTerrain`). Das Gerät (Pixel 6a / iPhone 12) bleibt Release-Check (9.14).
+
 ### Belege (375 × 812, stumm, echte 1-6 aus `main`)
 
 - `15-11-belege/1-6-start.jpg` – Eröffnung mit Übersicht-Stein in der Kopfzeile
@@ -115,7 +161,11 @@ Zeilen „gemeinsam“ aus Lauf 2 (Kamera hält die Zoomstufe). Figuren: 1-6 = 3
 - Code-Review (`bmad-code-review`, vier Ebenen) 2026-11-06: behoben – Tipp in der Übersicht nur in der Spielerphase und auf Figuren weiter als Auswahl (`largeMap.ts`, Test), Start- und Zielfelder im Kamerablick, Läufer werden beim Ankommen abgehakt, `marchMin` in `render.yaml`, `zoomInAt` im Überspringen-Modus ohne Gleiten, unbekannter Einstellungswert fällt auf den Standard, Bench prüft Knoten und Figurenzahl, fehlende Messwerte als „–“, Cache-Stempel mit ctime. Bewusst offen: kein Test der Brett-Wiedergabe selbst (es gibt kein Babylon-Testgerüst; `marchRun` und die Schalter sind getestet), keine E2E-Prüfung des Übersicht-Steins, globales Vitest-Limit statt je Datei.
 - AC 8: Gerät offen. Status `review`, weil das FPS-Ziel auf den 30 × 40-Entwürfen im Desktop-Ersatz nicht erreicht ist.
 
+- Nachtrag 2026-11-07 (Zeitgrenze der Gegnerphase): siehe Abschnitt oben; Status bleibt `review`.
+
 ### File List
+
+- Nachtrag 2026-11-07: `src/render/board/aiPacing.ts` (neu), `board.ts`, `boardBase.ts`, `boardCamera.ts`, `boardUnits.ts`, `lieutenant.ts`; `src/app/screens/battlePresentation.ts`; `src/content/schemas.ts`, `src/core/renderDefs.ts`, `content/core/render.yaml`; `tools/enemyPhase.ts`, `tools/phase-state.ts` (neu), `tools/simCampaign.ts`, `tools/simulate.ts`; `tests/unit/enemy-phase.test.ts`, `sim-campaign.test.ts`; `tests/perf/bench.ts`, `perf.spec.ts`; `concept/25-ux/EXPERIENCE.md`, `.decision-log.md`; `.gitignore`
 
 - `src/render/board/march.ts` (neu), `src/render/board/board.ts`, `boardCamera.ts`, `boardTypes.ts`
 - `src/app/screens/Battle.tsx`, `BattleHud.tsx`, `Menus.tsx`, `battleCommands.ts`, `useBattleScreen.ts`, `useBoardLifecycle.ts`; `src/app/state/settings.ts`; `src/ui/hud.css`

@@ -156,20 +156,20 @@ function runCampaign(act: string) {
   let battleMin = 0;
   const times = sim.missions.map((m) => {
     // both parts per won first attempt; a mission no run won at the first attempt has no figure and stays out of the sum
-    const min = (per(m.actions, m.wins) * actionS + per(m.phaseMarch, m.wins) / 1000) / 60;
+    const min = (per(m.actions, m.wins) * actionS + per(m.phaseShown, m.wins) / 1000) / 60;
     if (m.wins) battleMin += min;
     return {
       mission: m.node,
       rounds: per(m.turns, m.wins).toFixed(1),
       deployed: per(m.deployed, m.wins).toFixed(1),
       actions: per(m.actions, m.wins).toFixed(0),
-      'AI phase s (single/march)': `${(per(m.phaseSingle, m.phases) / 1000).toFixed(1)} / ${(per(m.phaseMarch, m.phases) / 1000).toFixed(1)}`,
-      'longest s (single/march)': `${(m.phaseSingleMax / 1000).toFixed(1)} / ${(m.phaseMarchMax / 1000).toFixed(1)}`,
+      'AI phase s (single/march/shown)': `${(per(m.phaseSingle, m.phases) / 1000).toFixed(1)} / ${(per(m.phaseMarch, m.phases) / 1000).toFixed(1)} / ${(per(m.phaseShown, m.phases) / 1000).toFixed(1)}`,
+      'longest s (single/march/shown)': `${(m.phaseSingleMax / 1000).toFixed(1)} / ${(m.phaseMarchMax / 1000).toFixed(1)} / ${(m.phaseShownMax / 1000).toFixed(1)}`,
       'battle min': m.wins ? min.toFixed(0) : '-',
     };
   });
   console.table(times);
-  console.log(`battle time of the act ≈ ${(battleMin / 60).toFixed(1)} h (${actionS} s per unit action, AI phases marching, first attempts won)`);
+  console.log(`battle time of the act ≈ ${(battleMin / 60).toFixed(1)} h (${actionS} s per unit action, AI phases as shown with „Gemeinsam“, first attempts won)`);
   console.log(
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
       `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}`,

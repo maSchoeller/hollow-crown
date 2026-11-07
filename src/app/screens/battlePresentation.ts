@@ -52,7 +52,7 @@ export function useBattlePresentation(b: BattleScreen) {
         audio.music(e.phase === 'player' ? 'battle_player' : 'battle_enemy');
         audio.sfx('phase');
         setPhaseView({ phase: e.phase, turn: e.turn });
-        if (!boardRef.current?.skip) await new Promise((resolve) => setTimeout(resolve, 700 / (boardRef.current?.speed ?? 1)));
+        if (!boardRef.current?.skip) await new Promise((resolve) => setTimeout(resolve, data.render.aiPace.phaseBannerMs / (boardRef.current?.speed ?? 1)));
         break;
       case 'dialogue':
       case 'quote':

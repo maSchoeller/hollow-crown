@@ -797,7 +797,8 @@ export const renderSchema = z.object({
     zoomMs: z.number().min(0),
     markFrameMargin: z.number().min(0),
   }),
-  aiPace: z.object({ stepMs: ms, focusMs: ms, afterMoveMs: ms, afterStrikeMs: ms, marchMin: z.number().int().min(2) }),
+  aiPace: z.object({ stepMs: ms, focusMs: ms, afterMoveMs: ms, afterStrikeMs: ms, marchMin: z.number().int().min(2), phaseBannerMs: ms, phaseBudgetMs: z.number().positive(), maxBoost: z.number().min(1),
+    play: z.object({ glide: ms, hit: ms, recoil: ms, lungeBack: ms, playerStrikePause: ms, ownStep: ms, damage: ms, heal: ms, downed: ms, bleed: ms, knockback: ms, terrain: ms, rally: ms, spawn: ms, vanish: ms }) }),
   board: z.object({
     skirt: z.number().int().min(0),
     skirtDim: z.number().min(0).max(1),

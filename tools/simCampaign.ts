@@ -74,6 +74,9 @@ export interface MissionSim {
   phaseMarch: number;
   phaseSingleMax: number;
   phaseMarchMax: number;
+  /** story 15.11: what the board plays with „Gemeinsam“ after the time budget of an enemy phase (`PhaseTime.shown`) */
+  phaseShown: number;
+  phaseShownMax: number;
 }
 
 export interface CampaignSim {
@@ -222,7 +225,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         missions
           .set(id, {
             node: id, map: node.map, expectedLevel: node.expectedLevel, reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0,
-            turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0,
+            turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
           })
           .get(id)!;
       m.reached++;
@@ -242,12 +245,15 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
             m.actions += log.filter((cmd) => cmd.type === 'move' || cmd.type === 'act' || cmd.type === 'pursue').length;
             // the line-up at the start: a unit recruited during the battle does not count
             m.deployed += begun.units.filter((u) => u.team === 'player').length;
-            for (const p of aiPhaseTimes(data, events)) {
+            const teams = new Map([...begun.units, ...state.units].map((u) => [u.uid, u.team]));
+            for (const p of aiPhaseTimes(data, events, (uid) => teams.get(uid))) {
               m.phases++;
               m.phaseSingle += p.single;
               m.phaseMarch += p.march;
               m.phaseSingleMax = Math.max(m.phaseSingleMax, p.single);
               m.phaseMarchMax = Math.max(m.phaseMarchMax, p.march);
+              m.phaseShown += p.shown;
+              m.phaseShownMax = Math.max(m.phaseShownMax, p.shown);
             }
           }
           m.downs += state.stats.downs; // every fall to 0 HP, also the ones rescued later

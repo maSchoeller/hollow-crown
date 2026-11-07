@@ -24,6 +24,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
 import type { BattleState, GameData, Pos, StatusId, Team, TimeOfDay, Weather } from '../../core';
 import type { FxInfo } from '../shared/assets';
+import { phaseBoost, type PhaseClock } from './aiPacing';
 import type { GroundTextures, TerrainView } from '../shared/terrain3d';
 import type { Glow } from '../shared/models';
 import type { Facing, Figure, FigureAnim } from '../shared/figures';
@@ -122,7 +123,23 @@ export abstract class BoardBase implements HostedView {
   protected canvas: HTMLCanvasElement;
   protected floatLayer: HTMLDivElement;
   protected disposed = false;
-  speed = 1;
+  /** the tempo the player chose (1×, 2×; skipping is `skip`) */
+  private chosenSpeed = 1;
+  /** story 15.11: the clock of the enemy phase being played with „Gegnerzüge: Gemeinsam“ (`phaseClock`), null outside of one */
+  protected phase: PhaseClock | null = null;
+  /** the tempo the board plays at: the chosen one, faster in an enemy phase that would overrun its time budget (`phaseBoost`) */
+  get speed(): number {
+    if (!this.phase) return this.chosenSpeed;
+    const left = this.data.render.aiPace.phaseBudgetMs - (performance.now() - this.phase.start);
+    return this.chosenSpeed * phaseBoost(this.data, this.phase.leftMs, this.chosenSpeed, left);
+  }
+  /** figures animate faster from tempo 1.6 on (2× and a strong boost), so a slight boost does not switch their rate */
+  protected get animRate(): number {
+    return this.speed >= 1.6 ? 1.6 : 1;
+  }
+  set speed(v: number) {
+    this.chosenSpeed = v;
+  }
   skip = false;
   quality: Quality = 'mid';
   figures: FigureStyle = '3d';

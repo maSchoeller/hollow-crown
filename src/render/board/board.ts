@@ -13,6 +13,7 @@ import { critTimeline } from './critTimeline';
 import { dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, fleeTarget } from './lieutenant';
 import { BoardFrame } from './boardFrame';
 import { marchRun, type March } from './march';
+import { announces, pausedFor, phaseClock } from './aiPacing';
 
 export class BoardView extends BoardFrame implements HostedView {
   /** story 15.11: turns of the foes that only walk are played at the same time (option „Gegnerzüge: Gemeinsam“) */
@@ -77,10 +78,36 @@ export class BoardView extends BoardFrame implements HostedView {
   /** Plays core events as board animations, then syncs to the final state. */
   async play(events: GameEvent[], finalState: BattleState, pool?: readonly BattleUnit[]): Promise<void> {
     if (this.readyPromise) await this.readyPromise;
+    try {
+      await this.playEvents(events, finalState, pool);
+    } finally {
+      this.phase = null;
+    }
+  }
+
+  /**
+   * Story 15.11: with „Gemeinsam“ the AI phases up to the next player phase keep within `aiPace.phaseBudgetMs`. At every event the
+   * plan of what is still to come and the time already gone set how much faster than the chosen tempo they play (`speed`); the
+   * player's phase plays at the chosen tempo.
+   */
+  private notePhase(events: GameEvent[], n: number, finalState: BattleState): void {
+    const team = (uid: string) => this.units.get(uid)?.team ?? finalState.units.find((u) => u.uid === uid)?.team;
+    this.phase = phaseClock(this.data, events, n, this.march && !this.skip, this.phase, performance.now(), team);
+  }
+
+  /** Waits for something the player answers or reads (level-up panel, dialogue, flee line); that time is not part of the budget. */
+  private async forPlayer(p: Promise<void> | void): Promise<void> {
+    const t0 = performance.now();
+    await p;
+    this.phase = pausedFor(this.phase, performance.now() - t0);
+  }
+
+  private async playEvents(events: GameEvent[], finalState: BattleState, pool?: readonly BattleUnit[]): Promise<void> {
     const pace = this.data.render.aiPace;
     for (let n = 0; n < events.length; n++) {
       const e = events[n]!;
       if (this.disposed) return;
+      this.notePhase(events, n, finalState);
       switch (e.t) {
         case 'moved': {
           const v = this.units.get(e.unit);
@@ -93,7 +120,7 @@ export class BoardView extends BoardFrame implements HostedView {
             const b = e.path[i]!;
             v.facing = this.facingOf(a, b);
             this.setAnim(v, 'walk');
-            await this.tween(own ? 140 : pace.stepMs, (t) => {
+            await this.tween(own ? this.data.render.aiPace.play.ownStep : pace.stepMs, (t) => {
               v.x = a[0] + (b[0] - a[0]) * t;
               v.y = a[1] + (b[1] - a[1]) * t;
             });
@@ -111,11 +138,10 @@ export class BoardView extends BoardFrame implements HostedView {
             n = run.end - 1; // the loop's n++ goes on with the first event after the run
             break;
           }
+          // a unit that only waits (no event of its own follows) is not announced, and the camera does not go to it (story 15.11)
+          if (!announces(events, n)) break;
           const p = this.unitPos(e.unit);
           if (p && !this.isVisible(p)) await this.centerOn(p);
-          // a unit that only waits (no event of its own follows) is not announced
-          const next = events[n + 1];
-          if (!next || next.t === 'aiTurn' || next.t === 'phase' || next.t === 'exhausted' || next.t === 'battleEnd') break;
           // the acting unit pulses before it moves or strikes, so the player sees who is about to act
           const v = this.units.get(e.unit);
           if (v && !this.skip) {
@@ -173,7 +199,7 @@ export class BoardView extends BoardFrame implements HostedView {
               });
               d.offY = 0;
             } else
-              await this.tween(140, (t) => {
+              await this.tween(this.data.render.aiPace.play.recoil, (t) => {
                 d.flash = 1 - t;
                 d.offX = Math.sin(t * Math.PI * 3) * 0.04;
               });
@@ -181,7 +207,7 @@ export class BoardView extends BoardFrame implements HostedView {
             this.floatText(dp[0], dp[1], 'miss', 'hc-float-miss');
             await this.hooks.onEvent?.(e);
             const side = a.facing === 'w' ? -1 : 1;
-            await this.tween(140, (t) => {
+            await this.tween(this.data.render.aiPace.play.recoil, (t) => {
               d.offX = Math.sin(t * Math.PI) * 0.1 * side;
             });
           }
@@ -190,13 +216,13 @@ export class BoardView extends BoardFrame implements HostedView {
             a.offX = lx * (1 - t);
             a.offY = ly * (1 - t);
           });
-          else await this.tween(90, (t) => {
+          else await this.tween(this.data.render.aiPace.play.lungeBack, (t) => {
             a.offX = lx * (1 - t);
             a.offY = ly * (1 - t);
           });
           this.setAnim(a, 'idle');
           if (!d.downed) this.setAnim(d, 'idle');
-          await (crit ? this.waitReal(crit.settleMs) : this.wait(a.team === 'player' ? 60 : pace.afterStrikeMs));
+          await (crit ? this.waitReal(crit.settleMs) : this.wait(a.team === 'player' ? this.data.render.aiPace.play.playerStrikePause : pace.afterStrikeMs));
           break;
         }
         case 'combatEnd':
@@ -212,7 +238,7 @@ export class BoardView extends BoardFrame implements HostedView {
           this.hooks.onUnitHp?.(e.unit, e.hpAfter);
           this.badges.setHp(e.unit, e.hpAfter);
           if (e.t === 'heal') void this.hooks.onEvent?.(e);
-          await this.wait(e.t === 'heal' ? 350 : 250);
+          await this.wait(e.t === 'heal' ? this.data.render.aiPace.play.heal : this.data.render.aiPace.play.damage);
           break;
         }
         case 'status': {
@@ -232,7 +258,7 @@ export class BoardView extends BoardFrame implements HostedView {
           if (v && !e.blocked) {
             const fx = v.x;
             const fy = v.y;
-            await this.tween(140, (t) => {
+            await this.tween(this.data.render.aiPace.play.knockback, (t) => {
               v.x = fx + (e.to[0] - fx) * t;
               v.y = fy + (e.to[1] - fy) * t;
             });
@@ -248,8 +274,10 @@ export class BoardView extends BoardFrame implements HostedView {
             this.state.timers[k] = finalState.timers[k] ?? { kind: 'burning', turns: 1, revertTo: 'grass' };
             this.spawnFx('smoke', e.at[0], e.at[1]);
           } else delete this.state.timers[`${e.at[0]},${e.at[1]}`];
+          // story 15.11: tiles that change in a row (a fire burning out) are rebuilt once; a rebuild of a 30 × 40 map takes > 1 s
+          if (events[n + 1]?.t === 'terrain') break;
           await this.buildTerrain();
-          await this.wait(200);
+          await this.wait(this.data.render.aiPace.play.terrain);
           break;
         case 'downed': {
           const v = this.units.get(e.unit);
@@ -262,13 +290,13 @@ export class BoardView extends BoardFrame implements HostedView {
             if (!du || bleedsOut(this.data, this.state, du)) this.setBleedLabel(e.unit, 0);
           }
           await this.hooks.onEvent?.(e);
-          await this.wait(350);
+          await this.wait(this.data.render.aiPace.play.downed);
           break;
         }
         case 'bleed':
           this.setBleedLabel(e.unit, e.turns);
           await this.hooks.onEvent?.(e);
-          await this.wait(250);
+          await this.wait(this.data.render.aiPace.play.bleed);
           break;
         case 'fled': {
           // a lieutenant at 0 HP: backward jump away from the one who drove him off, smoke, the pennant falls, then he is gone;
@@ -295,7 +323,7 @@ export class BoardView extends BoardFrame implements HostedView {
             pennant?.remove();
             this.pennants.delete(e.unit);
           }
-          await this.hooks.onEvent?.(e);
+          await this.forPlayer(this.hooks.onEvent?.(e));
           if (v) {
             await this.tween(FLEE_FADE_MS, (t) => {
               v.alpha = 1 - t;
@@ -320,7 +348,7 @@ export class BoardView extends BoardFrame implements HostedView {
               this.ash?.burst(g.x, g.y - 0.1, g.z);
               this.kick(death.shake, death.shakeMs / this.speed);
             }
-            await this.tween(e.t === 'died' ? death.fadeMs : 300, (t) => {
+            await this.tween(e.t === 'died' ? death.fadeMs : this.data.render.aiPace.play.vanish, (t) => {
               v.alpha = 1 - t;
               v.desat = t;
               v.lift = e.t === 'died' ? t * death.rise : 0;
@@ -333,7 +361,7 @@ export class BoardView extends BoardFrame implements HostedView {
         case 'levelUp': {
           const p = this.unitPos(e.unit);
           if (p) this.spawnFx('levelup', p[0], p[1]);
-          await this.hooks.onEvent?.(e);
+          await this.forPlayer(this.hooks.onEvent?.(e));
           break;
         }
         case 'spawned': {
@@ -346,7 +374,7 @@ export class BoardView extends BoardFrame implements HostedView {
             const v = this.units.get(u.uid);
             if (v) {
               if (u.pos && !this.isVisible(u.pos)) await this.centerOn(u.pos);
-              await this.tween(260, (t) => (v.alpha = t));
+              await this.tween(this.data.render.aiPace.play.spawn, (t) => (v.alpha = t));
             }
           }
           await this.hooks.onEvent?.(e);
@@ -371,7 +399,7 @@ export class BoardView extends BoardFrame implements HostedView {
             if (p) this.spawnFx('light_pillar', p[0], p[1]);
           }
           await this.hooks.onEvent?.(e);
-          await this.wait(400);
+          await this.wait(this.data.render.aiPace.play.rally);
           break;
         }
         case 'recruited': {
@@ -387,7 +415,8 @@ export class BoardView extends BoardFrame implements HostedView {
           break;
         }
         default:
-          await this.hooks.onEvent?.(e);
+          if (e.t === 'dialogue' || e.t === 'quote') await this.forPlayer(this.hooks.onEvent?.(e));
+          else await this.hooks.onEvent?.(e);
       }
     }
     await this.setState(finalState);

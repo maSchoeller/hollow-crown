@@ -109,6 +109,14 @@ export interface RenderDef {
     marchMin: number;
     /** pause after a foe's strike before the next action */
     afterStrikeMs: number;
+    /** the phase pill at the start of every enemy and third-party phase */
+    phaseBannerMs: number;
+    /** story 15.11: with „Gemeinsam“ an enemy phase that would take longer at the chosen tempo plays faster to end within this */
+    phaseBudgetMs: number;
+    /** at most this much faster than the chosen tempo */
+    maxBoost: number;
+    /** fixed playback times at 1× (story 15.11, before in board.ts), ms; `hit` is for the plan only (the board uses the figure's hit frame) */
+    play: Record<'glide' | 'hit' | 'recoil' | 'lungeBack' | 'playerStrikePause' | 'ownStep' | 'damage' | 'heal' | 'downed' | 'bleed' | 'knockback' | 'terrain' | 'rally' | 'spawn' | 'vanish', number>;
   };
   board: {
     /** scenery tiles around the map (D10) and how much it is darkened */
