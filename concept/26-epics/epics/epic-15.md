@@ -222,3 +222,23 @@ Vorbereitung für Epic 11 und Akt 3 nach `concept/23-art-direction/map-assets/ja
 **Und** im Winter tragen Felsmasse, Häuser und Kleinkram Weiß auf nach oben zeigenden Flächen (Weg B, Material), Mauer und Turm ihre Schneehauben-Modelle (Weg A), der Wald seine Jahreszeit-Fassung
 **Und** Figuren, Teamfarben, Ringe und Markierungen bleiben ungefärbt und vom Boden unterscheidbar; die Wirkung eines Felds bleibt an derselben Form erkennbar (§3.2)
 **Und** `content:check` prüft `season` und die Texturen von `seasonGround`; Dreiecks- und Paket-Budget halten, die Bildrate großer Karten sinkt bei gedrosselter CPU nicht.
+
+### Story 15.16: Winter-Deko und Waldvarianten (Folge zu 15.15)
+
+Als Spieler
+möchte ich im Winter keine grünen Büsche auf Schnee und in Herbst und Winter abwechslungsreiche Waldfelder sehen,
+damit die Jahreszeit stimmig bleibt und sich ein Waldfeld nicht über die ganze Karte wiederholt.
+
+Entschieden vom Produktinhaber am 2026-11-07 (offene Punkte 3 und 4 aus Story 15.15).
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Karte im Winter (`season: winter` oder Akt 3)
+**Wenn** das Brett niedrige Deko auf freiem Boden setzt (`render.yaml board.decor`)
+**Dann** stehen dort verschneite Büsche oder nur Steine statt grüner Büsche, gewählt in YAML nach Jahreszeit wie `board.seasonModels`, kein Sonderfall im Code; Innenräume bleiben ohne Jahreszeit.
+
+**Angenommen** ein Waldfeld im Herbst oder Winter
+**Wenn** das Brett es zeichnet
+**Dann** würfelt es aus drei Modellen je Jahreszeit (`grove_autumn_a`–`c`, `grove_snow_a`–`c`), alle mit Bäumen am Nord- und Westrand und freier Feldmitte (§3.2), gebaut in Blender (`tools/art/props/nature_map.py` bzw. `winter.py`) und in der Galerie mit `ships: true`
+**Und** die Modelle halten das Dreiecks-Budget eines Waldfelds und kommen mit dem Paket des Akts, nicht im ersten Download
+**Und** Belege bei 375 × 812 zeigen Herbst und Winter auf derselben Testkarte; `pnpm check` ist grün.

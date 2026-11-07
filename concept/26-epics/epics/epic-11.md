@@ -217,7 +217,8 @@ damit der Akt sich anders anfühlt als Akt 1.
 **Angenommen** Herbst auf dem Brett
 **Wenn** eine Karte von Akt 2 oder eine Heimsuchung in Akt 2 läuft
 **Dann** folgen Boden, Bäume und Tönung `map-assets/jahreszeiten-plan.md` (Herbst), die Jahreszeit richtet sich nach `c.act`, nicht nach dem Ordner der Karte; Wetter `clear`, `fog`, `rain`, Ausnahmen `ash` in 2-4 und `snow` in N4
-**Und** ein Bild vergleicht dieselbe Testkarte in Akt 1 und Akt 2.
+**Und** ein Bild vergleicht dieselbe Testkarte in Akt 1 und Akt 2
+**Und** im Handy-Test von Akt 2 ist geprüft, dass rote Gegnerringe auf Herbstlaub gut zu sehen sind; nur bei Bedarf wird das Laub weiter entsättigt (`GRADE` in `tools/art/ground.py`; Produktinhaber 2026-11-07 zu Story 15.15).
 
 **Angenommen** `content/acts/act2/haunts.yaml`
 **Wenn** Heimsuchungen entstehen

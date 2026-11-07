@@ -185,3 +185,9 @@
 - Weitere Abweichungen vom Plan: ein Blatt (`sheet7`) statt zwei, weil Herbstgras schon in `sheet6` liegt; die Erde bleibt im Herbst wie im Sommer (das Licht der Jahreszeit kühlt sie schon). Innenräume haben auch für Requisiten, Raster und Mauerteile keine Jahreszeit.
 - Lesbarkeit: Das helle Raster verschwindet auf Schnee; im Winter ist es schiefergrau (`legibility.grid.seasonColor`). Schneewetter ist erlaubt, wo das Brett Winter hat, nicht nur in Akt 3.
 - Belege: `_bmad-output/implementation-artifacts/15-15-belege/jahreszeiten_vergleich.jpg` (375 × 812, Sommer, Herbst, Winter auf der Testkarte `asset_catalog`).
+
+## 2026-11-07: Jahreszeiten-Boden abgenommen (Story 15.15)
+
+- Produktinhaber: Schnee per Material (Weg B) ist abgenommen, nach dem Vergleichsbild `_bmad-output/implementation-artifacts/15-15-belege/jahreszeiten_vergleich.jpg`. Weg A bleibt für Mauerkante, Turm und Wald.
+- Rote Gegnerringe auf Herbstlaub: im Handy-Test von Akt 2 prüfen und das Laub nur bei Bedarf weiter entsättigen (Prüfpunkt in Story 11.7).
+- Winter-Büsche und je zwei weitere Waldfelder für Herbst und Winter kommen in die Folge-Story 15.16.
