@@ -17,6 +17,7 @@ import {
   type BattleUnit,
   type CampaignState,
   type GameData,
+  type GameEvent,
 } from '../../src/core';
 
 let data: GameData;
@@ -255,5 +256,43 @@ describe('1-3 the shrine at the hawthorn', () => {
     expect(morra.lieutenant).toBe('morra');
     expect(morra.quote).toBe('scn.m1_3.morra_battle');
     expect(map.fog).toBe(true);
+  });
+
+  // fix 1-3: Morra struck Liora first and fell to her counter before the company met her; `ai.prefer: player` keeps her on the company
+  const morraAwake = (s: BattleState) => {
+    const morra = unit(s, 'morra');
+    morra.ai = { ...morra.ai!, profile: 'aggressive', awake: true };
+    return morra;
+  };
+  const enemyPhase = (s: BattleState) => {
+    const events: GameEvent[] = [];
+    runAiPhase(data, s, 'enemy', events);
+    return events.filter((e) => e.t === 'combat');
+  };
+
+  it('Morra strikes the company, not Liora, when both stand in her reach', () => {
+    const s = clear(open('m1_3'), 'morra', 'liora', 'halvard');
+    expect(data.maps.m1_3_silberbach!.units.find((u) => u.id === 'morra')!.ai).toMatchObject({ prefer: 'player' });
+    morraAwake(s);
+    place(s, 'liora', [10, 8]);
+    const lucan = place(s, 'lucan', [12, 6]);
+    expect(enemyPhase(s)).toEqual([expect.objectContaining({ attacker: unit(s, 'morra').uid, defender: lucan.uid })]);
+  });
+
+  it('with only Liora in reach Morra leaves her alone and closes in on the company', () => {
+    const s = clear(open('m1_3'), 'morra', 'liora', 'halvard');
+    const morra = morraAwake(s);
+    place(s, 'liora', [10, 8]);
+    const y0 = morra.pos![1];
+    expect(enemyPhase(s)).toEqual([]);
+    expect(morra.pos![1]).toBeGreaterThan(y0);
+  });
+
+  it('without the preference she would go for Liora (the field is what keeps her off)', () => {
+    const s = clear(open('m1_3'), 'morra', 'liora', 'halvard');
+    const morra = morraAwake(s);
+    morra.ai!.prefer = undefined;
+    const liora = place(s, 'liora', [10, 8]);
+    expect(enemyPhase(s)).toEqual([expect.objectContaining({ attacker: morra.uid, defender: liora.uid })]);
   });
 });

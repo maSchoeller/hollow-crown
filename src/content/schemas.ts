@@ -271,6 +271,8 @@ const aiSchema = z.object({
   wakeTurn: z.number().int().min(1).optional(),
   target: z.string().optional(),
   area: area.optional(),
+  /** target preference (fix 1-3): attack and approach only units of this team while any of it is on the map */
+  prefer: team.optional(),
 });
 
 export const mapUnitSchema = z.object({

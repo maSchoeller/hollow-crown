@@ -58,6 +58,15 @@ function hostileUnits(s: BattleState, u: BattleUnit): BattleUnit[] {
   return s.units.filter((o) => onMap(o) && isHostile(o.team, u.team) && !o.untargetable);
 }
 
+/** The hostiles the unit goes for: those of its preferred team (`ai.prefer`) while any of them is active, else every hostile. */
+function preyUnits(s: BattleState, u: BattleUnit): BattleUnit[] {
+  const all = hostileUnits(s, u);
+  const prefer = u.ai?.prefer;
+  if (!prefer) return all;
+  const preferred = all.filter((o) => o.team === prefer && active(o));
+  return preferred.length ? preferred : all;
+}
+
 /** The goal tile the field leads to from `from` (follows the falling values down to 0). */
 function descendToGoal(field: Map<string, number>, from: Pos): Pos | null {
   let p = from;
@@ -163,10 +172,12 @@ const byScore = (a: Plan, b: Plan) => b.score - a.score || a.to[1] - b.to[1] || 
 export function attackPlans(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[], onlyTarget?: string): Plan[] {
   const ctx = scoreContext(data, s, u);
   const plans: Plan[] = [];
+  const prey = u.ai?.prefer ? new Set(preyUnits(s, u).map((o) => o.uid)) : undefined;
   for (const pos of origins) {
     const targets = attackTargets(data, s, u, pos);
     for (const [tid, weapons] of Object.entries(targets)) {
       if (onlyTarget && tid !== onlyTarget) continue;
+      if (prey && !prey.has(tid)) continue; // ai.prefer: no strike at another team while the preferred one is on the map
       const t = getUnit(s, tid);
       if (skipTarget(data, s, ctx, t)) continue; // nothing to finish on a noDeath map
       for (const wid of weapons) {
@@ -541,7 +552,7 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
   const plans = attackPlans(data, s, u, all);
   plan = plans.find((p) => p.score > -500) ?? plans[0] ?? null;
   if (plan) return act(plan);
-  const goals = hostileUnits(s, u)
+  const goals = preyUnits(s, u)
     .filter(active)
     .flatMap((o) => neighbors(o.pos!));
   const to = bestApproach(data, s, u, goals);
