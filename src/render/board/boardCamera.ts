@@ -181,7 +181,7 @@ export abstract class BoardCamera extends BoardUnits {
     }
     const fx = this.camX;
     const fy = this.camY;
-    return this.tween(220, (t) => {
+    return this.tween(this.data.render.aiPace.play.glide, (t) => {
       this.camX = fx + (tx - fx) * t;
       this.camY = fy + (ty - fy) * t;
       this.clampCamera();

@@ -10,7 +10,7 @@
  * `PERF_STAGES=1,2,4` overrides the throttling levels (levels without a target are only reported).
  */
 import { SEASONS, type Season } from '../../src/core/defs';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
 import { PROFILE } from './profile';
@@ -66,7 +66,7 @@ type Bench = {
  * One run: loads the bench page, the battle, and plays the enemy phase under `rate`× CPU throttling. `units`: the count the battle
  * must have (the reference battle 40; null for a level draft, which brings what it brings).
  */
-async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: object = BENCH_OPTIONS, units: number | null = 40): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number }> {
+async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: object = BENCH_OPTIONS, units: number | null = 40): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number; byEvent: Record<string, number> }> {
   await setCpu(cdp, rate);
   await page.goto('./tests/perf/bench.html');
   await page.waitForFunction(() => document.body.dataset.ready === '1');
@@ -103,7 +103,7 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: obje
     layoutMs: r.layoutMs,
     newEffectInfo: r.newEffectInfo,
   };
-  return { run, prepared, events: r.events };
+  return { run, prepared, events: r.events, byEvent: r.byEvent };
 }
 
 /** ms since navigation start until the title answers (its buttons, not the "preparing" stone). */
@@ -122,7 +122,7 @@ async function untilTitle(page: Page, timeout: number): Promise<number> {
 
 /** `PERF_LARGE=1` (story 15.11) runs only the large-map test below, not this one. */
 test('enemy phase of the large battle and cold start', async ({ page, context }, info) => {
-  test.skip(process.env.PERF_LARGE === '1', 'PERF_LARGE=1 measures the large maps and the castle only');
+  test.skip(process.env.PERF_LARGE === '1' || !!process.env.PERF_PHASE, 'PERF_LARGE=1 or PERF_PHASE measure the large maps, the castle or saved phases only');
   test.setTimeout(3_600_000);
   const device = info.project.name;
 
@@ -285,4 +285,52 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
     ...rows.map((r) => `| ${r.scenario} | ${r.cpuSlowdown}× | ${r.units || '–'} | ${r.avgFps} | ${r.p95Ms} | ${r.maxMs} | ${r.drawCalls ?? '–'} | ${r.threadMsPerFrame ?? '–'} | ${r.phaseMs === null ? '–' : (r.phaseMs / 1000).toFixed(1)} |`),
   ].join('\n');
   writeFileSync(join(OUT, `large-${device}.md`), md + '\n');
+});
+
+/**
+ * Story 15.11: `PERF_PHASE=.phase/m1_8.json[,…] pnpm perf` plays the enemy phase of a saved battle state (the longest of a
+ * mission, `tools/phase-state.ts`) with „Gegnerzüge: Gemeinsam“ at tempo 1×, without and with the time budget of `render.yaml
+ * aiPace`, and compares the wall time with the plan. The board only: the phase pill of the battle screen (`aiPace.phaseBannerMs` per
+ * phase, in the plan) and panels that wait for the player are not part of the bench. Writes `test-results/perf/phase-<device>.md`.
+ */
+test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
+  test.skip(!process.env.PERF_PHASE, 'set PERF_PHASE=<file>[,<file>]');
+  test.setTimeout(3_600_000);
+  const device = info.project.name;
+  const cdp = await throttle(page);
+  const lines: string[] = [];
+  const s = (ms: number) => (ms / 1000).toFixed(1);
+  let renderer = '';
+  for (const file of process.env.PERF_PHASE!.split(',')) {
+    const saved = JSON.parse(readFileSync(file, 'utf8')) as { node: string; turn: number; planMarchMs: number; planShownMs: number; state: object };
+    for (const stage of stages()) {
+      for (const budget of [false, true]) {
+        const runs: PhaseRun[] = [];
+        for (let i = 0; i < RUNS; i++) {
+          const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, march: true, state: saved.state, budget }, null);
+          runs.push(r.run);
+          renderer = r.prepared.renderer;
+          console.log(device, saved.node, budget ? 'budget' : 'no budget', `${stage.cpuSlowdown}×`, JSON.stringify(r.byEvent));
+        }
+        const plan = budget ? saved.planShownMs : saved.planMarchMs;
+        const ms = runs.map((r) => r.durationMs);
+        // release check (PERF_STRICT=1, story 9.14): with the budget no phase over 15 s (NFR1)
+        if (budget && process.env.PERF_STRICT === '1') expect(Math.max(...ms)).toBeLessThanOrEqual(15_000);
+        const line = `| ${saved.node} Runde ${saved.turn} | ${budget ? 'mit Zeitgrenze' : 'ohne (vorher)'} | ${stage.cpuSlowdown}× | ${s(plan)} | ${s(median(ms))} | ${s(Math.max(...ms))} | ${median(runs.map((r) => r.aiMs ?? 0))} | ${median(runs.map((r) => r.avgFps))} |`;
+        lines.push(line);
+        console.log(device, line);
+      }
+    }
+  }
+  mkdirSync(OUT, { recursive: true });
+  const md = [
+    `# Gegnerphase gespeicherter Kämpfe – ${device}`,
+    '',
+    `Renderer: ${renderer}; ${RUNS} Läufe je Zeile; „Gemeinsam“, Tempo 1×; Plan = tools/enemyPhase.ts mit Phasen-Pille, Brett = gemessene Wiedergabe ohne Pille.`,
+    '',
+    '| Phase | Zeitgrenze | Drosselung | Plan s | Brett s (Median) | Brett s (max) | KI ms | Ø FPS |',
+    '|---|---|---|---|---|---|---|---|',
+    ...lines,
+  ].join('\n');
+  writeFileSync(join(OUT, `phase-${device}.md`), md + '\n');
 });

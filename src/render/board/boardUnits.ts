@@ -2,6 +2,7 @@
  * Figures of the battle board and what hangs on them: badges, pins, pennants, status icons, bleed labels; plus the overlays and the move ghost.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
+import { timerLook } from './aiPacing';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { BattleState, BattleUnit, GearPiece, Pos, StatusId } from '../../core';
 import { bleedsOut, itemDef, maxHpOf, modelId, unitFigureId, unitVatPath } from '../../core';
@@ -367,12 +368,14 @@ export abstract class BoardUnits extends BoardProps {
 
   protected setAnim(v: UnitView, anim: FigureAnim): void {
     v.anim = anim;
-    v.figure.play(anim, v.facing, this.speed > 1 ? 1.6 : 1);
+    v.figure.play(anim, v.facing, this.animRate);
   }
 
   /** Full refresh after a command: terrain, props, units. */
   async setState(state: BattleState): Promise<void> {
-    const terrainChanged = !this.state || this.state.terrain.join() !== state.terrain.join() || JSON.stringify(this.state.timers) !== JSON.stringify(state.timers);
+    // story 15.11: only what the terrain shows of a timer needs a rebuild, not its turns left (`timerLook`)
+    const terrainChanged =
+      !this.state || this.state.terrain.join() !== state.terrain.join() || timerLook(this.state.timers) !== timerLook(state.timers);
     const objChanged = !this.state || JSON.stringify(this.state.objects) !== JSON.stringify(state.objects);
     this.state = state;
     if (terrainChanged) await this.buildTerrain();

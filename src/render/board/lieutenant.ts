@@ -110,9 +110,8 @@ export class GrudgeLine {
   }
 }
 
-/** Flight of a lieutenant at 0 HP (story 3.2): the backward jump, the falling pennant and the fade-out add up to under 600 ms at speed 1. */
-export const FLEE_JUMP_MS = 320;
-export const FLEE_FADE_MS = 160;
+// Flight of a lieutenant at 0 HP (story 3.2): times in aiPacing.ts, with the board's other playback times
+export { FLEE_FADE_MS, FLEE_JUMP_MS } from './aiPacing';
 
 /**
  * The tile the fleeing lieutenant jumps to: one tile straight away from the unit that drove him off (along the longer

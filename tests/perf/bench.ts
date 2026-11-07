@@ -8,7 +8,7 @@
  */
 import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstrumentation';
 import { loadContent } from '../../src/content/browser';
-import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type MapDef } from '../../src/core';
+import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type BattleState, type MapDef } from '../../src/core';
 import { mapSchema } from '../../src/content/schemas';
 import type { Season } from '../../src/core/defs';
 import { setLocales } from '../../src/i18n';
@@ -35,6 +35,8 @@ export interface EnemyPhaseResult {
   events: number;
   /** wall time of the enemy phase playback */
   durationMs: number;
+  /** story 15.11: wall time per event type (from one event to the next, the last one to the end of the playback), ms */
+  byEvent: Record<string, number>;
   /** time between consecutive animation frames during the playback */
   frames: number[];
   /** draw calls per rendered frame (Babylon counter), if readable */
@@ -61,9 +63,11 @@ export interface EnemyPhaseResult {
  * `map` (story 15.11, env PERF_LARGE): a level draft of `concept/27-ueberarbeitung/levels/` instead of the reference battle, played
  * with the company of the act at node `m1_6` deployed in full and every foe set to advance (the worst case of a phase).
  * `march`: foes that only walk go together (option „Gegnerzüge: Gemeinsam“); off = one by one as before 15.11.
+ * `state` (story 15.11, env PERF_PHASE): a battle of the act at the start of its enemy phase (`tools/phase-state.ts`), played as it is.
+ * `budget`: false plays that phase without the time budget of `render.yaml aiPace` (as before), to compare.
  * `whole`: the phase is watched on the zoom step "whole map" (the overview of story 15.11) instead of the opening view
  * `season`: the board in that season (story 15.15: autumn ground, snow ground and snow caps), else the map's own */
-type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean; map?: string; march?: boolean; whole?: boolean; season?: Season };
+type Options = { quality?: 'low' | 'mid' | 'high'; figures?: '3d' | '2d'; speed?: number; look?: string; warm?: 0 | 1 | 2; vat?: boolean; vatWorker?: boolean; map?: string; march?: boolean; whole?: boolean; season?: Season; state?: BattleState; budget?: boolean };
 
 /** the level drafts (story 15.11), parsed on demand; only the perf build has them */
 const drafts = import.meta.glob('../../concept/27-ueberarbeitung/levels/*.yaml');
@@ -117,6 +121,8 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   setLocales(loaded.locales);
   await loadPack('act1').catch(() => undefined); // models and sprites resolve without it; content is not needed
   const data = loaded.data;
+  if (opts.budget === false) data.render.aiPace.maxBoost = 1;
+  if (opts.state) return prepareBoard(data, opts.state, opts);
   data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null), ...(opts.season ? { season: opts.season } : {}) };
   const nodes = data.campaign.nodes;
   // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
@@ -137,8 +143,12 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
     c.completed = order.slice(0, at);
     deploy = c.roster.map((u) => u.id).slice(0, data.maps[BENCH_MAP_ID]!.deploy.max);
   }
-  const state = startBattle(data, createBattle(data, c, 'perf', deploy)).state;
+  return prepareBoard(data, startBattle(data, createBattle(data, c, 'perf', deploy)).state, opts);
+}
 
+/** Puts the battle on a new board, lets textures and shaders settle and keeps it for the measurement. */
+async function prepareBoard(data: ReturnType<typeof loadContent>['data'], state: BattleState, opts: Options): Promise<PreparedBattle> {
+  if (!data.maps[state.mapId]) throw new Error(`no map ${state.mapId} in the loaded content`);
   const board = new BoardView(document.getElementById('board') as HTMLDivElement, document.getElementById('float') as HTMLDivElement, data, {});
   board.quality = opts.quality ?? 'mid';
   board.figures = opts.figures ?? '3d';
@@ -263,9 +273,20 @@ async function enemyPhase(): Promise<EnemyPhaseResult> {
     last = now;
     requestAnimationFrame(tick);
   });
+  // the board notes every event it plays (`notePhase`): the time until the next one is that event's
+  const eventStamps: Array<[string, number]> = [];
+  // (a march run is noted once, at its first turn: its time counts under `aiTurn`)
+  type Note = (ev: typeof result.events, n: number, ...rest: unknown[]) => void;
+  const note = (board as unknown as { notePhase: Note }).notePhase.bind(board);
+  (board as unknown as { notePhase: Note }).notePhase = (ev, n, ...rest) => {
+    eventStamps.push([ev[n]!.t, performance.now()]);
+    note(ev, n, ...rest);
+  };
   const p0 = performance.now();
   await board.play(result.events, result.state);
   const durationMs = performance.now() - p0;
+  const byEvent: Record<string, number> = {};
+  eventStamps.forEach(([t, at], i) => (byEvent[t] = (byEvent[t] ?? 0) + Math.round((eventStamps[i + 1]?.[1] ?? p0 + durationMs) - at)));
   running = false;
   // the observers deliver their entries asynchronously
   await new Promise((r) => setTimeout(r, 100));
@@ -303,7 +324,7 @@ async function enemyPhase(): Promise<EnemyPhaseResult> {
     spike.causes = classify(spike);
     spikes.push(spike);
   });
-  return { events: result.events.length, durationMs, frames, drawCalls, newEffects: effectCount(board) - effects0, spikes, aiMs: result.aiMs, newEffectInfo: describeNewEffects(board, effectKeys0),
+  return { events: result.events.length, durationMs, byEvent, frames, drawCalls, newEffects: effectCount(board) - effects0, spikes, aiMs: result.aiMs, newEffectInfo: describeNewEffects(board, effectKeys0),
     gcEvents: hostFrames.filter((h) => h.heapFreedKb >= 256).length,
     gcFreedKb: hostFrames.reduce((n, h) => n + (h.heapFreedKb >= 256 ? h.heapFreedKb : 0), 0),
     layoutMs: Math.round(layouts.reduce((n, l) => n + l.ms, 0)),

@@ -263,7 +263,7 @@ export abstract class BoardFrame extends BoardCamera {
     let kept = 0;
     for (const f of list) {
       const a = fx.anims[f.anim]!;
-      const n = Math.floor(((now - f.start) / 1000) * a.fps * (this.speed > 1 ? 1.6 : 1));
+      const n = Math.floor(((now - f.start) / 1000) * a.fps * this.animRate);
       if (!f.loop && n >= a.frames) {
         this.disposeFx(f);
         continue;
@@ -352,6 +352,6 @@ export abstract class BoardFrame extends BoardCamera {
   /** Seconds until the hit frame of an attack (sprite row timing, shared by the 3D animation). */
   protected hitDelay(): number {
     const row = UNIT_ROWS.find((r) => r.name === 'attack_s')!;
-    return ((row.hitFrame ?? 3) / (row.fps ?? 12) / (this.speed > 1 ? 1.6 : 1)) * 1000;
+    return ((row.hitFrame ?? 3) / (row.fps ?? 12) / this.animRate) * 1000;
   }
 }
