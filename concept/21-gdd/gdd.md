@@ -150,8 +150,8 @@ Die **Klasse ist eine Rolle**: Bewegungstyp, erlaubte Waffengruppen, eine Klasse
 - PoC-Klassen werden umgemappt: Söldner/Held → Plänkler, Soldat/Ritter → Vorkämpfer, Kämpfer → Vorkämpfer oder Plänkler, Schütze → Schütze, Magier → Elementarist, Kleriker → Heiler. `[ASSUMPTION: Basiswerte und Wachstum je Rolle aus den PoC-Klassen abgeleitet]`
 - **Profi-Wege:** Der Profi behält den Skill seiner Rolle; die Profi-Wirkung kommt als zweiter Skill dazu. Die Skills der Profiklassen aus dem Proof of Concept entfallen. Profis behalten den Bewegungstyp der Rolle, MOV = Rolle + 1, höchstens 6; die Vorkämpfer-Profis bleiben gepanzert mit MOV 5 `[ASSUMPTION]`. Auf dem Brett trägt jeder Profi-Weg ein eigenes Anhängeteil an der Figur der Rolle (16 Teile), es gilt für alle Figuren der Klasse.
 - **Fallen-Set** (Werkstatt): Jede Figur legt damit eine Falle mit denselben Werten wie der Fallensteller, zusätzlich zu dessen 2 Fallen.
-- Gegnerklassen (Bandit, Wolfsreiter, Pegasusritter, Ritter, Glut-Fanatiker, Drache, Monster) dürfen eigene Regeln haben. Wyvernreiter sind keine Gegnerklasse; die einzige Wyvernreiterin ist die Leutnantin Brakka (Unikat).
-- Flieger gelten auf dem Brett nach den Regeln für Flieger; bis eigene Pegasus- und Wyvern-Modelle da sind, stehen sie zu Fuß mit einer Flieger-Kennung.
+- Gegnerklassen (Bandit, Wolfsreiter zu Fuß, Ritter, Glut-Fanatiker, Drache, Monster) dürfen eigene Regeln haben.
+- **Keine Flieger und keine Reiter in Staffel 1 (Log 2026-11-05):** Niemand fliegt oder reitet auf dem Brett, auch kein Gegner; Pferde gibt es nur als Kulisse. Rowena kämpft als Lanzenritterin zu Fuß, Brakka ist Ballistenmeisterin. Die Flieger-Regel und der Bewegungstyp `mounted` bleiben ungenutzt und getestet im Code für Staffel 2.
 - Eine Kontrollzone hat nur der Vorkämpfer.
 
 ### Steuerung und Eingabe
@@ -180,7 +180,7 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 
 ### Einheitentypen und Klassen
 
-Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsreiter (zu Fuß mit Wolfsfell; Reittiere und Vierbeiner erst nach dem MVP), Söldner; Akt 2 Eisenmark-Truppen, Ritter, Pegasusritter, Ballisten; Akt 3 Glut-Orden, Untote in Ruinen, Drachen. Rund 10 Gegnertypen.
+Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsreiter (zu Fuß mit Wolfsfell; Reittiere und Vierbeiner erst nach dem MVP), Söldner; Akt 2 Grenzheer der Eisenmark, Ritter der Lanze, Kaperfahrer, Ballisten (keine Flieger, keine Reiter); Akt 3 Glut-Orden, Untote in Ruinen, Drachen. Rund 10 Gegnertypen.
 
 ### Aktionsökonomie
 
@@ -227,8 +227,8 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 | Stufendeckel | 10 | 20 | 20 |
 | Release | MVP | 2. Release | 3. Release |
 
-- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 2 öffnen nach 2-1 die drei Strang-Anfänge 2-2, 2-4 und 2-6, die zweite Mission eines Strangs braucht die erste (2-3 nach 2-2, 2-5 nach 2-4, 2-7 nach 2-6), das Finale 2-8 öffnet nach allen; in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
-- **Missionsgrößen:** 19 der 25 Story-Missionen mittel bis mittelgroß (12×12 bis 16×24); 3 kompakt (Prolog, Einstiege); 3 große Schlachten bis 24×32 mit 30–45 Min. Spielzeit.
+- **Reihenfolge:** Die erste Mission jedes Akts ist fest. Danach sind 2–3 Story-Missionen gleichzeitig wählbar; das Akt-Finale öffnet sich, wenn alle anderen Story-Missionen des Akts gespielt sind. Ausnahmen: In Akt 1 folgen nach der freien Mitte (1-2 bis 1-5) Eroberung der Paktwacht, das Gewölbe und das Finale fest aufeinander (1-6 → 1-7 → 1-8); in Akt 2 gilt die Folge 2-1 → (2-2 ∥ 2-3) → 2-4 → (2-5 ∥ 2-6) → 2-7 → 2-8, die Paare sind in beliebiger Reihenfolge spielbar (Missionsliste, Epic 11); in Akt 3 folgen nach den drei frei wählbaren Missionen Krönung, Drachenangriff, der Weg ins Gebirge und das Finale (3-5 bis 3-8, siehe `concept/22-narrative/narrative.md`).
+- **Missionsgrößen (Log 2026-11-01):** etwa ⅓ kleine Karten (bis etwa 16×20, 6–8 eigene Einheiten), etwa ½ mittlere bis groß-mittlere (um 20×25, 8–12), der Rest große Schlachten (30×40 bis 40×30, 10–15 eigene Einheiten, 30–45 Min.); Gegner zwei- bis dreimal so viele wie eigene Einheiten, dafür schwächer.
 - **Missionsziele:** rout, boss (Leutnant oder Boss vertreiben), reach, seize (nur Lucan), defend, survive, escape, **escort** (NPC zum Ausgang bringen; mit dem Profil `follow_ally` bleibt er bei der nächsten eigenen Figur), **treasure** (Truhen vor Rundenlimit bergen). Ein Ziel kann in eine zweite Phase wechseln: Im Akt-2-Finale gilt erst `survive`, danach öffnet sich eine Fluchtzone (`escape`). 1–3 Nebenziele (visit_villages, no_downs, turn_limit, kill_with, recruit, open_chests, protect_npc).
 
 ### Missionszustände
@@ -359,8 +359,8 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 
 | Typ | Anzahl | Größe | Dauer |
 |---|---|---|---|
-| Story-Mission | 22 | kompakt bis mittelgroß, eher quadratisch | 15–30 Min. |
-| Große Schlacht | 3 (Teil der 25 Story-Missionen) | bis 24×32, 15 eigene Einheiten | 30–45 Min. |
+| Story-Mission | 22 | klein (bis etwa 16×20) bis groß-mittel (um 20×25), Hochformat | 15–30 Min. |
+| Große Schlacht | 3 (Teil der 25 Story-Missionen) | 30×40 bis 40×30, 10–15 eigene Einheiten | 30–45 Min. |
 | Nebenquest | 10 (2 als Variante einer Story-Karte) | kompakt bis mittel | 10–25 Min. |
 | Heimsuchung | Varianten auf gespielten Karten | Größe der Vorlage | 10–20 Min. |
 
@@ -368,7 +368,7 @@ Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle
 
 ### Missionsfolge
 
-- Pro Akt steht eine neue Regel oder Rolle im Fokus. Akt 2: Flieger und Balliste; 2-1 führt beides mit einer Lektion ein.
+- Pro Akt steht eine neue Regel oder Rolle im Fokus. Akt 2: die Balliste (keine Flieger, Log 2026-11-05); 2-1 führt sie mit einer Lektion ein.
 - Jeder Leutnant eines Akts tritt in mindestens 2 Story-Missionen auf, einer davon auch im Akt-Finale.
 - Kein Missionsziel kommt im selben Akt mehr als zweimal hintereinander vor.
 - Jeder Beitritt hat in seinem Akt mindestens eine weitere Story-Mission; Gefährten aus Akt 3 treten spätestens in dessen vierter Mission bei.

@@ -27,7 +27,7 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 - [ ] 👤 **15.11** Leistung großer Karten: Handy-Test des Produktinhabers auf dem Referenzgerät (Status review)
 - [ ] 👤 **15.12** Weltkarte flüssig, Paktwacht als Ruine: Handy-Test des Produktinhabers (Status review)
 - [x] **15.15** Jahreszeiten-Boden: done (PR #130, #131)
-- [ ] 👤 **15.16** Winter-Deko und Waldvarianten (backlog, Folge zu 15.15): betrifft nur Akt 2 und 3; laut Epic 15 kommt 9.14 nach allen Stories des Epics. Produktinhaber entscheidet, ob 15.16 vor dem Release nötig ist
+- [x] **15.16** Winter-Deko und Waldvarianten: blockiert das Release nicht (Produktinhaber 2026-11-07); betrifft nur Akt 2 und 3
 - [ ] 👤 **8.1** Tonbruch-Test: Bögen von Produktinhaber und 2–3 Testern auswerten (`concept/23-art-direction/tonbruch-test.md`); ohne bestandenen Test kein Release
 
 ### B. Inhalt und Prüfungen (ohne Sperre)
@@ -36,7 +36,8 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 - [x] `pnpm check` grün auf dem Stand vom 2026-11-07
 - [x] Playtest-Plan `concept/21-gdd/playtest-akt1.md` mit Spielzeit-Messung (AK 2)
 - [ ] Nach Abschluss von A: `pnpm check`, `pnpm sim --campaign act1 --runs 50` auf Leicht und Normal erneut, Tabelle in diese Story
-- [ ] 👤 **EP vor 1-8:** Normal erreicht 8,6 statt 9 (Simulation ohne Heimsuchungen und Nebenquests); so lassen oder 1-7 eine eigene EP-Quelle geben (Story 15.10, Nachtrag 2026-11-07)
+- [x] **EP vor 1-8:** bleibt bei 8,6 auf Normal, 1-7 bekommt keine eigene EP-Quelle (Produktinhaber 2026-11-07, GDD-Log)
+- [ ] **Alte IDs vor der Sperre aufräumen** (Produktinhaber 2026-11-07, Frage 2 in `concept/26-epics/fragen-po-2026-11-07.md`; eigene Session): `promotion_seal` entfernen, `sol`/`impale`/`longshot` in `pro_duel`/`pro_guard`/`pro_far_shot` umbenennen; prüfen, dass kein Akt-1-Spielstand diese IDs tragen kann. Danach brauchen 10.2 und 10.4 weder `renames.yaml` noch Migration
 - [ ] 👤 **Rechtliche Prüfung Nemesis-Patent** vor der Veröffentlichung (GDD „Risiken“, `[ASSUMPTION: Prüfung nötig]`)
 
 ### C. Sperren und veröffentlichen (🔒, erst nach A und B)
