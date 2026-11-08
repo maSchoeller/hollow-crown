@@ -2,6 +2,7 @@
 import { type Action, type ActionOption, type BattleUnit, type Command, type Pos, active, availableActions, destinations, itemDef, itemTargets, killMarks, longPressView, perilWarnings, posKey, pursueReach, samePos, unitAt } from '../../core';
 import type { KillKind } from '../../render/board/badges';
 import { overviewTap } from './largeMap';
+import { backFromMoved, selectMode } from './battleMode';
 import { audio } from '../audio';
 import { battle } from '../state/battle';
 import { data } from '../state/session';
@@ -60,7 +61,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     switch (mode.k) {
       case 'idle': {
         if (selectable(at)) {
-          setMode({ k: 'selected', uid: at!.uid });
+          setMode(selectMode(at!));
           setInfo(null);
           setTileInfo(null);
         } else if (at) {
@@ -88,7 +89,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
           return;
         }
         if (dests.some((d) => samePos(d, p))) return setMode({ k: 'moved', uid: u.uid, to: p });
-        if (selectable(at)) return setMode({ k: 'selected', uid: at!.uid });
+        if (selectable(at)) return setMode(selectMode(at!));
         setMode({ k: 'idle' });
         return;
       }
@@ -117,7 +118,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         if (rest && !samePos(p, u.pos) && destinations(s, u, rest).some((d) => samePos(d, p))) return setMode({ k: 'pursue', uid: u.uid, to: p });
         if (selectable(at)) {
           leavePursue();
-          setMode({ k: 'selected', uid: at!.uid });
+          setMode(selectMode(at!));
         }
         return;
       }
@@ -177,7 +178,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
       case 'pursue':
         return finishPursue();
       case 'moved':
-        return setMode({ k: 'selected', uid: mode.uid });
+        return setMode(backFromMoved(unit(mode.uid)));
       case 'selected':
         return setMode({ k: 'idle' });
       default:
@@ -231,7 +232,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     const cur = mode.k !== 'idle' ? ready.findIndex((u) => u.uid === mode.uid) : -1;
     const next = ready[(cur + 1) % ready.length]!;
     audio.sfx('tap');
-    setMode({ k: 'selected', uid: next.uid });
+    setMode(selectMode(next));
     setTileInfo(null);
     void boardRef.current?.centerOn(next.pos!);
   };
