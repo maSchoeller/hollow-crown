@@ -16,6 +16,7 @@ import { newItem } from './create';
 import { HAUNT_CIVILIAN, hauntMap } from './hauntMap';
 import { nodesUpTo } from '../campaign/acts';
 import { battleSkeleton, deployPlayers, finishSetup, placeMapUnits } from './setup';
+import type { Deploy } from './deploy';
 import { startBattle, type ApplyResult } from './apply';
 
 const textHash = (text: string): number => [...text].reduce((h, ch) => hash32(h, ch.charCodeAt(0)), 0);
@@ -86,7 +87,7 @@ export function hauntUnitDefs(data: GameData, h: HauntState, base: MapDef): MapU
  * a replay is reproducible. A treasure hunt gives the company keys when it brings no scout (every chest needs one, a scout
  * needs none).
  */
-export function createHauntBattle(data: GameData, c: CampaignState, hauntId: string, deployIds: string[]): BattleState {
+export function createHauntBattle(data: GameData, c: CampaignState, hauntId: string, deployIds: Deploy): BattleState {
   const h = c.haunts.find((x) => x.id === hauntId)!;
   const base = data.maps[h.map]!;
   const map = hauntMap(data, h.map, h.variant, h.lt);
@@ -109,6 +110,6 @@ export function createHauntBattle(data: GameData, c: CampaignState, hauntId: str
 }
 
 /** Creates the haunt battle and plays the opening events. */
-export function beginHauntBattle(data: GameData, c: CampaignState, hauntId: string, deployIds: string[]): ApplyResult {
+export function beginHauntBattle(data: GameData, c: CampaignState, hauntId: string, deployIds: Deploy): ApplyResult {
   return startBattle(data, createHauntBattle(data, c, hauntId, deployIds));
 }

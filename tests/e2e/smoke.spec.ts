@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { startFromDeploy } from './deploy';
 
 /** Skip halts at the first answer of the intro scene; pick one, then skip the rest (decision 2026-10-24). */
 async function skipIntro(page: Page): Promise<void> {
@@ -13,7 +14,7 @@ async function skipTutorial(page: Page, timeout = 60_000): Promise<void> {
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout });
 }
 
-/** Title → campaigns → new campaign → prologue dialogue → battle (no preparation: deployment is fixed) → enemy phase (concept/13 §6.1, shortened). */
+/** Title → campaigns → new campaign → prologue dialogue → deploy board (story 6.11) → battle → enemy phase (concept/13 §6.1, shortened). */
 test('new game reaches the prologue battle and survives a round', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: /^(Campaigns|Kampagnen)/ }).click();
@@ -21,6 +22,7 @@ test('new game reaches the prologue battle and survives a round', async ({ page 
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   // prologue intro dialogue → skip to the answer, choose, skip on; the prologue has no choice of units, so the battle starts at once
   await skipIntro(page);
+  await startFromDeploy(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
   // turn-1 tutorial dialogue
   await skipTutorial(page);
@@ -41,6 +43,7 @@ test('the last map row can be pulled clear of the bottom sheet (concept/01 D10)'
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
+  await startFromDeploy(page);
   await skipTutorial(page);
   const box = (await page.locator('canvas.hc-stage').boundingBox())!;
   // drag the map upwards as far as it goes, i.e. towards its southern edge; the board fits its camera once its assets have
@@ -84,6 +87,7 @@ test('autosave restores the running battle after reload (concept/13 §6.8)', asy
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
+  await startFromDeploy(page);
   await skipTutorial(page);
   await page.reload();
   await page.getByRole('button', { name: /Continue|Fortsetzen/ }).click();

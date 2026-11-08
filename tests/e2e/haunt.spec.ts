@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { startFromDeploy } from './deploy';
 
 /** Story 5.6: a haunt on the world map is opened (card with lieutenant and reward), played and won; the result names it. */
 
@@ -23,6 +24,7 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await page.getByRole('button', { name: /^(Easy|Leicht)$/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
+  await startFromDeploy(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
 
   // a campaign with an open haunt on the map of 1-1 (the prologue's map has noHaunts), then the world map (the test hook exists where `navigator.webdriver` is set)
@@ -49,8 +51,9 @@ test('a haunt can be opened on the world map, played and won', async ({ page }, 
   await expect(card).toBeVisible();
   await expect(stone.locator('.wm-node__new')).toHaveCount(0);
 
-  // set out: no scene, straight to the battle
+  // set out: no scene, the deploy board (story 6.11), then the battle
   await card.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
+  await startFromDeploy(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible({ timeout: 90_000 });
 
   // the company wins (the simulator's player side), the result names the haunt, and the stone is gone

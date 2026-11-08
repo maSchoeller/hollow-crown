@@ -21,6 +21,9 @@ test('a tap on the house goal marks the houses of mission 1-1, a second tap clea
   await expect
     .poll(async () => {
       if (await pill.count()) return true;
+      // story 6.11: the deploy board comes before the battle
+      const begin = page.locator('.prp .prp-start');
+      if (await begin.count()) await begin.click({ timeout: 2000 }).catch(() => undefined);
       const option = page.locator('.vn-option').first();
       if (await option.count()) await option.click({ timeout: 2000 }).catch(() => undefined);
       const skip = page.getByRole('button', { name: /Skip|Überspringen/ });

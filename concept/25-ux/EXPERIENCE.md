@@ -45,7 +45,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Händler, Konvoi, Verzauberer, Akademie, Werkstatt | Raumstein | gleiche Listen-Muster wie Ausrüsten |
 | Steckbriefe | Leiste | alle Leutnants mit Groll, Ziel, Begegnungen |
 | Chronik | Leiste | Entscheidungen, Folgen, Chronik-Seiten |
-| Aufstellung | Knoten-Karte („Aufstellung“, von selbst bei Truppe > Plätze) | Einsatzplätze besetzen, Pflicht-Figuren gesperrt, Ausrüsten über die Tasche |
+| Aufstellung | Knoten-Karte („Aufbrechen“, immer; Story 6.11) | das Brett der Karte: Startfelder markiert, Figur tippen, dann Feld (umziehen/tauschen), Bank-Leiste für die übrigen, Pflicht-Figuren mit Schloss, Tasche, Standard, Mission starten |
 | Kampf | Aufbrechen | Brett, HUD, Vorschau, Gegnerphase |
 | Szene | vor/nach Missionen, Trigger, Lagerfeuer | Dialog, Entscheidung, Folgen |
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene |

@@ -116,7 +116,7 @@ export function describeEntry(e: TrailEntry): string {
     case 'load':
       return `${head} campaign ${e.reason} ${e.campaignId}${e.battle ? ' (with running battle)' : ''}`;
     case 'battleStart':
-      return `${head} BATTLE START ${e.node}${e.haunt ? ` haunt ${e.haunt}` : ''} deploy ${e.deploy.join(',')} #${e.hash}`;
+      return `${head} BATTLE START ${e.node}${e.haunt ? ` haunt ${e.haunt}` : ''} deploy ${e.deploy.map((id, i) => (e.at?.[i] ? `${id}@${e.at[i]![0]},${e.at[i]![1]}` : id)).join(',')} #${e.hash}`;
     case 'battle':
       return `${head} battle[${e.i}] T${e.turn} ${e.phase} ${e.cmd.type}${args(e.cmd)} ${mark(e.ok, e.error)}${eventTypes(e.events, e.eventCount)}${e.hash ? ` #${e.hash}` : ''}`;
     case 'campaign':

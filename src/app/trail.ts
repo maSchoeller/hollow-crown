@@ -18,7 +18,8 @@ export type TrailRecord =
   | { kind: 'app'; appVersion: string; contentVersion: string; device: Plain }
   | { kind: 'screen'; screen: Plain }
   | { kind: 'load'; reason: 'new' | 'load' | 'import'; campaignId: string; battle: boolean }
-  | { kind: 'battleStart'; node: string; haunt?: string; deploy: string[]; hash: string }
+  /** `at`: the start field of each unit in `deploy` (story 6.11; missing in older trails) */
+  | { kind: 'battleStart'; node: string; haunt?: string; deploy: string[]; at?: Array<[number, number]>; hash: string }
   | {
       kind: 'battle';
       /** index of the command in the battle's log */

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { startFromDeploy } from './deploy';
 
 /** Story 2.8: in the browser the enemy phase runs in the core worker, and it ends in the very state the main thread computes. */
 
@@ -20,6 +21,7 @@ async function playFirstEnemyPhase(page: Page): Promise<string> {
   await page.getByRole('button', { name: /New campaign|Neue Kampagne/ }).click();
   await page.getByRole('button', { name: /Set out|Aufbrechen/ }).click();
   await skipIntro(page);
+  await startFromDeploy(page);
   await expect(page.locator('canvas.hc-stage')).toBeVisible();
   await page.getByRole('button', { name: /Skip|Überspringen/ }).click({ timeout: 40_000 });
   await page.getByRole('button', { name: /End phase|Phase beenden/ }).click();
