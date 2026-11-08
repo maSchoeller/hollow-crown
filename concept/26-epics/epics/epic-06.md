@@ -164,3 +164,44 @@ damit der Weg von der Knoten-Karte in den Kampf nicht durch einen Bildschirm aus
 **Angenommen** ein Mockup in `concept/25-ux/mockups/` (fehlt noch, UX liefert es zuerst)
 **Wenn** die Story umgesetzt ist
 **Dann** passt der Screen bei 375 × 812 und am Desktop zum Mockup, alle Texte stehen in `de.yaml`/`en.yaml`.
+
+### Story 6.11: Aufstellung auf dem Brett (neu, ändert 6.10)
+
+Als Spieler
+möchte ich vor jeder Mission auf dem Spielbrett selbst festlegen, wer mitkommt und auf welchem Startfeld jede Figur steht,
+damit ich die Aufstellung an Karte und Gegner anpassen kann, statt eine feste Reihenfolge hinzunehmen.
+
+Entschieden vom Produktinhaber am 2026-11-08 (Fragetool, Decision-Log): Auswahl und Positionen auf dem Brett, die Liste aus 6.10 entfällt; Tippen, dann Feld; Pflichtfiguren frei positionierbar; keine Aufstellung je Karte gemerkt; Gegner wie zu Beginn von Runde 1; Rechtsklick und Escape wählen ab.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** eine Story-Mission oder eine Heimsuchung, egal wie groß die Truppe ist
+**Wenn** der Spieler auf der Knoten-Karte „Aufbrechen“ tippt (eine Szene davor läuft wie bisher zuerst)
+**Dann** öffnet sich das Brett der Karte im Aufstellungsmodus: alle Startfelder (`deploy.slots` bzw. die `deploy`-Felder des Heimsuchungs-Ankers) sind markiert, die Standardaufstellung (Pflichtfiguren zuerst, dann die Truppe in ihrer Reihenfolge bis zu den Plätzen) steht schon darauf
+**Und** oben stehen Zurück-Stein, Missionsname und Ziel sowie die Plätze als Symbol + Zahl (x/y); die Knoten-Karte hat nur noch „Aufbrechen“, der Listen-Screen `prep` aus 6.10 entfällt.
+
+**Angenommen** der Aufstellungsmodus
+**Wenn** der Spieler eine Figur auf dem Brett antippt und dann ein anderes Startfeld
+**Dann** zieht sie auf das freie Feld bzw. tauscht mit der Figur auf dem besetzten Feld; ein erneuter Tipp auf die Figur, ein Tipp neben die Startfelder, Rechtsklick oder Escape heben die Auswahl auf.
+
+**Angenommen** eine Bank-Leiste unten mit allen Figuren, die nicht auf dem Brett stehen (Kopf, Name, Stufe)
+**Wenn** der Spieler eine Bankfigur antippt und dann ein freies Startfeld (bzw. eine Brettfigur antippt und dann „Abziehen“)
+**Dann** kommt sie aufs Brett (geht zurück auf die Bank); sind alle Plätze belegt, setzt ein Tipp auf ein besetztes Feld die Bankfigur gegen die dortige Figur ein, ein freies Feld meldet „Alle Plätze belegt“
+**Und** Pflichtfiguren tragen ein Schloss und lassen sich nicht abziehen, aber frei auf jedes Startfeld stellen; „Tasche“ öffnet für die gewählte Figur das Ausrüsten wie bisher; „Standard“ stellt die Standardaufstellung wieder her.
+
+**Angenommen** der Aufstellungsmodus
+**Wenn** das Brett gezeigt wird
+**Dann** sind die Gegner zu sehen wie zu Beginn von Runde 1: auf Nebelkarten nur, was die gerade aufgestellten Figuren sehen würden, und das läuft beim Umstellen mit; die Gefahrenzone lässt sich wie im Kampf ein- und ausschalten.
+
+**Angenommen** mindestens eine Figur steht auf dem Brett und die Truppe ist nicht über ihren Grenzen
+**Wenn** der Spieler „Mission starten“ tippt (Desktop: Enter)
+**Dann** beginnt Runde 1 mit genau dieser Aufstellung (Eröffnung, Dialoge, Leutnant-Zeilen wie bisher); ohne Figur auf dem Brett ist die Taste gesperrt.
+
+**Angenommen** der Kern (`src/core`)
+**Wenn** eine Mission mit Aufstellung beginnt
+**Dann** ist die Aufstellung Teil des Startzustands (`createBattle`/`createHauntBattle` nehmen Figur → Startfeld), ungültige Felder oder Figuren fallen auf die Standardaufstellung zurück, Pflichtfiguren fehlen nie
+**Und** Replays aus Startzustand + Command-Log stimmen weiter, das Aktionsprotokoll (`battleStart`) nennt die Felder, und Autoplay, Simulation, `pnpm lab` und alte Aufrufe mit einer bloßen ID-Liste nutzen unverändert die Standardaufstellung; das Speicherformat ändert sich nicht.
+
+**Angenommen** 375 × 812 und Desktop
+**Wenn** die Story umgesetzt ist
+**Dann** passen Brett, Bank und Tasten ohne Überlappung, alle Texte stehen in `de.yaml`/`en.yaml`, Styles in einer eigenen CSS-Datei neben der Komponente; Core-Tests für die Aufstellungsregeln und ein e2e-Test für Story-Mission und Heimsuchung.

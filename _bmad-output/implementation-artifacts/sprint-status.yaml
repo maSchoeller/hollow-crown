@@ -125,6 +125,7 @@ development_status:
   6-8-wirtschaftskurve-und-verkettete-simulation: done  # Wirtschaftskurve und verkettete Simulation
   6-9-die-paktwacht-als-heimat: done  # Die Paktwacht als Heimat
   6-10-aufstellung-vor-der-mission-im-stil-b: done  # Aufstellung vor der Mission im Stil B (nachgetragen 2026-10-25, QA)
+  6-11-aufstellung-auf-dem-brett: in-progress  # Aufstellung auf dem Brett (neu 2026-11-08, PO-Wunsch; ersetzt die Liste aus 6-10)
   epic-6-retrospective: optional
 
   # Epic 7: Akt-Pakete und Offline
