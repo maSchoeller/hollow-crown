@@ -1,0 +1,15 @@
+# Testlabor M1, Maßstabsfrage 3: „Wählt die Wegsuche den Weg ums Feuer?“
+#   pnpm lab feuer-weg --path dev_marksman 6,8    Feuer- und Waldweg kosten gleich viel (5): die Wegsuche nimmt den Wald
+#   pnpm lab feuer-weg --path dev_marksman 7,9    durchs Feuer ist billiger (5 gegen 7): sie geht hindurch
+# Ein brennendes Feld kostet zu Fuß 2 Bewegung wie Wald; der Eintrittsschaden (balance terrainEffects.burningEnterDamage)
+# zählt nicht in die Wegkosten, er bricht nur Gleichstände (src/core/rules/movement.ts `isHazard`). Der Schütze geht zu Fuß;
+# die gepanzerte Vorhut zahlt im Wald 3 und nähme in beiden Fällen das Feuer.
+question: Wählt die Wegsuche den Weg ums Feuer?
+map: dev_terrain_warn
+company: none
+units:
+  dev_marksman: { at: [3, 9] }
+  dev_vanguard: { at: [0, 11] }
+remove: [liora, dev_raider]
+fire: [[5, 9], [5, 10]]
+terrain: { "5,8": forest }

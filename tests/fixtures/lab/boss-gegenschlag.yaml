@@ -1,0 +1,12 @@
+# Testlabor M1, Maßstabsfrage 2: „Stirbt der Boss am Gegenschlag von Liora?“
+#   pnpm lab boss-gegenschlag --forecast osric liora     Osric greift Liora an: fällt er an ihrem Gegenschlag?
+#   pnpm lab boss-gegenschlag --forecast liora osric     umgekehrt: Liora greift an, Osric schlägt zurück
+# Liora trägt hier nur ihren Lichtzauber `shine` (sonst hält sie den Heilstab und kann gar nicht zurückschlagen),
+# Osric ist auf 6 TP angeschlagen.
+question: Stirbt der Boss am Gegenschlag von Liora?
+map: m1_4_wolfslager
+seed: 3
+turn: 4
+units:
+  liora: { at: [10, 3], items: [shine] }
+  osric: { hp: 6 }

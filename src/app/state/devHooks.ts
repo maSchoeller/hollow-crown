@@ -146,6 +146,8 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
       },
       devNode,
+      /** Testlabor M1: opens the battle of `tests/fixtures/lab/<name>.yaml` (`await __hc.lab('boss-gegenschlag')`, also `?lab=<name>`; src/app/state/devLab.ts) */
+      lab: (name: string) => import('./devLab').then((m) => m.openLab(name)),
       /** tone test of story 8.1 (same as the URL parameter `?tonbruch`): Gerrit's grave, Fenn's farewell, N1 memorial */
       toneTest: startToneTest,
       /**
@@ -346,4 +348,5 @@ if (import.meta.env.DEV) {
       },
     };
   });
+  if (new URLSearchParams(location.search).has('lab')) void import('./devLab').then((m) => m.labFromUrl(location.search));
 }
