@@ -1,6 +1,6 @@
 import { unitModelPath } from '../../core';
 import { describe, expect, it } from 'vitest';
-import { ON_DEMAND_MUSIC } from './cacheName';
+import { ON_DEMAND_MUSIC } from '../../packs/cacheName';
 import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
 
 const models = ['lucan', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];

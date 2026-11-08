@@ -32,7 +32,7 @@ jobs:
         run: pnpm lint
       - name: Content
         run: pnpm content:check
-      - name: Unit tests (incl. replay determinism, core coverage ratchet)
+      - name: Unit tests (incl. replay determinism, coverage ratchets core/persistence/content)
         run: pnpm test:coverage
       - name: Balancing smoke (KI vs. KI)
         run: pnpm sim prologue_paktnacht --runs 5

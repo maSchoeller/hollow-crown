@@ -4,7 +4,7 @@
  * first (vite.config.ts), so pages and the content import read these files offline.
  */
 import type { BuiltPack, PackFile } from '../content/packs';
-import { ON_DEMAND_CACHE } from '../app/loading/cacheName';
+import { ON_DEMAND_CACHE } from './cacheName';
 import { isTrustedCache, packCacheName, planDownload, staleCaches } from './plan';
 
 /** Header that tells the service worker not to copy the response into the on-demand cache (the pack cache keeps it). */

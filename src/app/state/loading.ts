@@ -4,7 +4,7 @@
  * flow (`flow.ts`) decides which files and what happens afterwards.
  */
 import { signal } from '@preact/signals';
-import { ON_DEMAND_CACHE } from '../loading/cacheName';
+import { ON_DEMAND_CACHE } from '../../packs/cacheName';
 import { failureStatus, missingAssets, type MissionLoadStatus } from '../loading/plan';
 import { isPackRegistered } from '../../content/browser';
 import { ensurePack, packStates, retryPacksNow, type PackState } from './packs';

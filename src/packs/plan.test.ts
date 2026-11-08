@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
-import { ON_DEMAND_MUSIC } from '../app/loading/cacheName';
+import { ON_DEMAND_MUSIC } from './cacheName';
 import { packOf, parsePacks } from '../content/packs';
 import { backoffMs, byteRatio, duePacks, isTrustedCache, packBytes, packCacheName, packIdOfCache, planDownload, staleCaches } from './plan';
 
