@@ -1,0 +1,11 @@
+# Story 10.3: Wirkungen der Profi-Wege, die nur Einsätze und Radien ändern.
+#   pnpm lab profi-wege    Ein Bannerherr ruft im Abstand 3 noch einen Schützen zusammen; ein Großstratege befiehlt zweimal je Karte.
+question: Reichen Sammelruf und Befehl der Profi-Wege weiter?
+map: dev_terrain_warn
+company: none
+add:
+  - { id: lab_lord, team: player, class: banner_lord, level: 5, at: [5, 8] }
+  - { id: lab_archer, team: player, class: marksman, level: 5, at: [5, 11] }
+  - { id: lab_far, team: player, class: marksman, level: 5, at: [9, 11] }
+  - { id: lab_strategist, team: player, class: grand_strategist, level: 5, at: [1, 8] }
+remove: [liora, dev_raider, dev_archer, dev_marksman, dev_vanguard]

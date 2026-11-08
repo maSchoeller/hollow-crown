@@ -14,7 +14,8 @@ beforeAll(() => {
 
 function unit(weapon?: string): BattleUnit {
   const s = arena(data);
-  return place(data, s, 'player', 'breaker', [5, 5], weapon);
+  // a foot class with axes (the breaker is armored since story 10.3: its carry bonus would hide the hammer's weight)
+  return place(data, s, 'player', 'brigand', [5, 5], weapon);
 }
 
 describe('scars and grief', () => {

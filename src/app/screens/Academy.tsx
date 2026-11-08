@@ -39,11 +39,12 @@ function gainText(gain: Partial<Stats>): string {
 }
 
 /** A path card: name, effect in one sentence, gain, signature piece; tapping selects it. */
-function PathCard({ classId, gain, selected, current, onSelect }: { classId: string; gain: Partial<Stats>; selected: boolean; current?: boolean; onSelect?: () => void }) {
+function PathCard({ classId, gain, selected, current, locked, onSelect }: { classId: string; gain: Partial<Stats>; selected: boolean; current?: boolean; locked?: boolean; onSelect?: () => void }) {
   return (
-    <button type="button" class={`ac-path ${current ? 'is-current' : ''}`} aria-pressed={selected} disabled={!onSelect} onClick={onSelect}>
+    <button type="button" class={`ac-path ${current ? 'is-current' : ''} ${locked ? 'is-locked' : ''}`} aria-pressed={selected} disabled={!onSelect} onClick={onSelect}>
       <b>{t(`class.${classId}.name`)}</b>
       {current && <small class="ac-path__tag">{t('ui.academy.current')}</small>}
+      {locked && <small class="ac-path__tag">{t('ui.academy.comingSoon')}</small>}
       <span>{t(`class.${classId}.effect`)}</span>
       <span class="hm-stat-line">{gainText(gain)}</span>
       <small>{t('ui.academy.part', { name: t(`part.${classId}.name`) })}</small>
@@ -148,6 +149,12 @@ export function AcademyRoom({ room, apply, onClose, unit: initial }: { room: Roo
               {targets.map((id) => (
                 <PathCard key={id} classId={id} gain={promotionPreview(data, u, id)} selected={chosen === id} onSelect={targets.length > 1 ? () => setPath(id) : undefined} />
               ))}
+              {/* paths of the role that are in the content but not playable yet (stories 10.4, 10.5): shown locked */}
+              {(data.classes[u.classId]?.proPaths ?? [])
+                .filter((id) => data.classes[id] && !targets.includes(id))
+                .map((id) => (
+                  <PathCard key={id} classId={id} gain={promotionPreview(data, u, id)} selected={false} locked />
+                ))}
             </div>
             {sparks < 1 ? <p class="hm-hint">{t('ui.academy.noSpark')}</p> : !chosen && <p class="hm-hint">{t('ui.academy.pickPath')}</p>}
           </>

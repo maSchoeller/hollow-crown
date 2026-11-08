@@ -251,6 +251,28 @@ export function groupAllowed(cls: ClassDef, d: ItemDef): boolean {
   return !d.group || cls.weaponGroups.includes(d.group);
 }
 
+/**
+ * The skills a unit has from its class (story 10.3): the role skill, the pro skills of its pro path and those of the second
+ * path learned in the academy (story 10.2). Item, personal and loadout skills come on top in `activeSkillIds`.
+ */
+export function classSkillIds(data: GameData, unit: Pick<UnitRecord, 'classId' | 'secondPath'>): string[] {
+  const cls = data.classes[unit.classId];
+  const second = unit.secondPath ? data.classes[unit.secondPath] : undefined;
+  return [...(cls?.skill ? [cls.skill] : []), ...(cls?.proSkills ?? []), ...(second?.proSkills ?? [])];
+}
+
+/** Weapon groups a unit may carry: its role's plus `addWeaponGroups` of its class skills (a pro path, story 10.3). */
+export function weaponGroupsOf(data: GameData, unit: Pick<UnitRecord, 'classId' | 'secondPath'>): string[] {
+  const groups = new Set<string>(data.classes[unit.classId]?.weaponGroups ?? []);
+  for (const id of classSkillIds(data, unit)) for (const g of data.skills[id]?.effect.addWeaponGroups ?? []) groups.add(g);
+  return [...groups];
+}
+
+/** `groupAllowed` for a unit: the groups of its role and pro path. */
+export function unitGroupAllowed(data: GameData, unit: Pick<UnitRecord, 'classId' | 'secondPath'>, d: ItemDef): boolean {
+  return !d.group || weaponGroupsOf(data, unit).includes(d.group);
+}
+
 /** Checks whether `unit` may hold `inst` in `slot` (class weapons, two-handed, armor class …). */
 export function canEquip(
   data: GameData,
@@ -267,7 +289,7 @@ export function canEquip(
   if (!slotFits(d, slot)) return 'wrong_slot';
   const cls = data.classes[unit.classId]!;
   if (d.tags?.includes('monsterOnly') && !cls.tags.includes('monster')) return 'monster_only';
-  if ((slot === 'mainHand' || slot === 'offHand') && !groupAllowed(cls, d)) return 'weapon_group';
+  if ((slot === 'mainHand' || slot === 'offHand') && !unitGroupAllowed(data, unit, d)) return 'weapon_group';
   if (slot === 'offHand') {
     const main = unit.equip.mainHand;
     if (main && itemDef(data, main).twoHanded) return 'two_handed';
@@ -288,20 +310,18 @@ export function canEquip(
 
 /** Weapons a unit could fight with: equipped main hand plus usable weapons in the bag. */
 export function usableWeapons(data: GameData, unit: UnitRecord): ItemInstance[] {
-  const cls = data.classes[unit.classId]!;
   const list = [unit.equip.mainHand, ...unit.bag].filter((i): i is ItemInstance => !!i);
   return list.filter((i) => {
     const d = itemDef(data, i);
-    return isWeapon(d) && !!d.weaponType && groupAllowed(cls, d) && (d.mt !== undefined || !!d.damageType);
+    return isWeapon(d) && !!d.weaponType && unitGroupAllowed(data, unit, d) && (d.mt !== undefined || !!d.damageType);
   });
 }
 
 export function usableStaves(data: GameData, unit: UnitRecord): ItemInstance[] {
-  const cls = data.classes[unit.classId]!;
   const list = [unit.equip.mainHand, ...unit.bag].filter((i): i is ItemInstance => !!i);
   return list.filter((i) => {
     const d = itemDef(data, i);
-    return isStaff(d) && groupAllowed(cls, d);
+    return isStaff(d) && unitGroupAllowed(data, unit, d);
   });
 }
 

@@ -4,7 +4,8 @@
 #           oder Gegnertyp; Profiklassen nennen die Rolle, aus der sie befördert werden.
 # tier      base | pro | unique (nur Avatar und Lucan)
 # classAction  Klassen-Aktion als Daten (Story 2.3 ff. setzen sie um): id, kind passive|active, perMap = Einsätze je Karte.
-# proPaths  die zwei Profi-Wege; Ids ohne Eintrag hier kommen mit der Akademie (Epic 6) und sind bis dahin nicht wählbar.
+# proPaths  die zwei Profi-Wege (Akademie, Epic 10); nicht spielbare Wege (playable: false) zeigt die Akademie gesperrt mit „folgt“.
+# proSkills Profi-Skills eines Profi-Wegs (Präfix pro_, Story 10.3); Akademie-Stufe 3 gibt sie als zweiten Weg mit.
 # base/growth/growthMod/caps: Startwerte [C], aus den PoC-Klassen abgeleitet (GDD-Annahme 3, Herleitung im Story-Log 2.2).
 #   growthMod wird zur Charakter-Wachstumsrate addiert (Prozentpunkte); base/growth gelten für generische Einheiten.
 # art       Porträt generischer Einheiten: art/mockups/characters-s1/class_<art>.png (Standard: die Klassen-Id).
@@ -204,7 +205,7 @@
   v1: true
 
 
-# --- Profiklassen (V1: sechs; die übrigen Profi-Wege aus proPaths folgen mit der Akademie) ---
+# --- Profiklassen (Epic 10: die sechs ersten, ihre Skills stellt Story 10.4 um) ---
 # MOV = Rolle +1 wie im PoC (Basisklasse 5 -> Profi 6).
 
 # Held (PoC) -> Duellant
@@ -237,8 +238,8 @@
   role: vanguard
   tier: pro
   roleGroup: melee
-  moveType: foot
-  mov: 6
+  moveType: armored
+  mov: 5   # Story 10.3: Vorkämpfer gepanzert 4 + 1
   weaponGroups: [lance, axe, shield]
   classAction: { id: hold, kind: passive }
   proPaths: []
@@ -260,8 +261,8 @@
   role: vanguard
   tier: pro
   roleGroup: melee
-  moveType: foot
-  mov: 6
+  moveType: armored
+  mov: 5   # Story 10.3: Vorkämpfer gepanzert 4 + 1
   weaponGroups: [lance, axe, shield]
   classAction: { id: hold, kind: passive }
   proPaths: []
@@ -343,6 +344,224 @@
   art: cleric
   v1: true
 
+# --- Profi-Wege der Akademie (Story 10.3, Werte [ASSUMPTION] nach dem Muster der sechs ersten; per Sim zu prüfen) ---
+# Waffengruppen = Rolle (Zusatzgruppen nur über addWeaponGroups des Profi-Skills), MOV = Rolle + 1, skill = Rollen-Skill.
+
+# Klingentänzer
+- id: blade_dancer
+  nameKey: class.blade_dancer.name
+  role: skirmisher
+  tier: pro
+  roleGroup: melee
+  moveType: foot
+  mov: 6
+  weaponGroups: [sword, dagger]
+  classAction: { id: pursue, kind: passive }
+  proPaths: []
+  tags: []
+  skill: counter_instinct
+  proSkills: [pro_blade_dance]
+  base: { hp: 27, str: 8, mag: 1, skl: 11, spd: 12, lck: 5, def: 6, res: 3 }
+  growth: { hp: 80, str: 45, mag: 5, skl: 55, spd: 60, lck: 30, def: 25, res: 15 }
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 10, spd: 15, lck: 5, def: 0, res: 0 }
+  caps: { hp: 62, str: 28, mag: 15, skl: 32, spd: 32, lck: 30, def: 24, res: 20 }
+  promotionBonus: { hp: 3, str: 1, skl: 2, spd: 3, lck: 1, def: 1 }
+  playable: true
+  art: mercenary
+
+# Waldläufer
+- id: ranger
+  nameKey: class.ranger.name
+  role: marksman
+  tier: pro
+  roleGroup: ranged
+  moveType: foot
+  mov: 6
+  weaponGroups: [bow]
+  classAction: { id: aim, kind: active }
+  proPaths: []
+  tags: []
+  skill: eagle_eye
+  proSkills: [pro_woodsman]
+  base: { hp: 26, str: 8, mag: 1, skl: 10, spd: 9, lck: 4, def: 6, res: 3 }
+  growth: { hp: 75, str: 45, mag: 5, skl: 55, spd: 50, lck: 25, def: 25, res: 15 }
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 15, spd: 10, lck: 0, def: 0, res: 0 }
+  caps: { hp: 60, str: 28, mag: 15, skl: 32, spd: 30, lck: 30, def: 24, res: 20 }
+  promotionBonus: { hp: 3, str: 2, skl: 2, spd: 2, def: 1, res: 1 }
+  playable: true
+  art: bandit_archer
+
+# Hexer
+- id: hexer
+  nameKey: class.hexer.name
+  role: elementalist
+  tier: pro
+  roleGroup: ranged
+  moveType: foot
+  mov: 6
+  weaponGroups: [anima, focus]
+  classAction: { id: cast, kind: active }
+  proPaths: []
+  tags: []
+  skill: elemental_focus
+  proSkills: [pro_hex]
+  base: { hp: 24, str: 1, mag: 11, skl: 8, spd: 7, lck: 3, def: 2, res: 8 }
+  growth: { hp: 65, str: 5, mag: 65, skl: 45, spd: 40, lck: 25, def: 15, res: 40 }
+  growthMod: { hp: 5, str: 0, mag: 20, skl: 5, spd: 5, lck: 0, def: 0, res: 15 }
+  caps: { hp: 55, str: 15, mag: 33, skl: 30, spd: 26, lck: 30, def: 20, res: 30 }
+  promotionBonus: { hp: 3, mag: 4, skl: 1, res: 2 }
+  playable: true
+  art: mage
+
+# Kampfpriester
+- id: battle_priest
+  nameKey: class.battle_priest.name
+  role: healer
+  tier: pro
+  roleGroup: support
+  moveType: foot
+  mov: 6
+  weaponGroups: [staff, light]
+  classAction: { id: far_rescue, kind: active }
+  proPaths: []
+  tags: [holy]
+  skill: blessing
+  proSkills: [pro_battle_faith]
+  base: { hp: 26, str: 4, mag: 8, skl: 6, spd: 7, lck: 6, def: 5, res: 8 }
+  growth: { hp: 70, str: 30, mag: 45, skl: 35, spd: 40, lck: 45, def: 30, res: 45 }
+  growthMod: { hp: 5, str: 10, mag: 5, skl: 0, spd: 5, lck: 5, def: 5, res: 10 }
+  caps: { hp: 58, str: 24, mag: 28, skl: 26, spd: 26, lck: 30, def: 24, res: 27 }
+  promotionBonus: { hp: 4, str: 3, mag: 1, def: 2, res: 1 }
+  playable: true
+  art: cleric
+
+# Barde (spielbar ab Story 10.4)
+- id: bard
+  nameKey: class.bard.name
+  role: minstrel
+  tier: pro
+  roleGroup: support
+  moveType: foot
+  mov: 6
+  weaponGroups: [dagger, lute]
+  classAction: { id: inspire, kind: active }
+  proPaths: []
+  tags: []
+  proSkills: []
+  base: { hp: 25, str: 4, mag: 5, skl: 8, spd: 10, lck: 7, def: 3, res: 6 }
+  growth: { hp: 75, str: 23, mag: 35, skl: 45, spd: 50, lck: 40, def: 20, res: 35 }
+  growthMod: { hp: 5, str: 3, mag: 5, skl: 5, spd: 10, lck: 10, def: 0, res: 10 }
+  caps: { hp: 58, str: 20, mag: 22, skl: 28, spd: 30, lck: 33, def: 22, res: 26 }
+  promotionBonus: { hp: 3, skl: 1, spd: 2, lck: 2, res: 2 }
+  playable: false
+  art: cleric
+
+# Bannerträger (spielbar ab Story 10.4)
+- id: standard_bearer
+  nameKey: class.standard_bearer.name
+  role: minstrel
+  tier: pro
+  roleGroup: support
+  moveType: foot
+  mov: 6
+  weaponGroups: [dagger, lute]
+  classAction: { id: inspire, kind: active }
+  proPaths: []
+  tags: []
+  proSkills: []
+  base: { hp: 27, str: 6, mag: 3, skl: 8, spd: 8, lck: 6, def: 6, res: 5 }
+  growth: { hp: 80, str: 33, mag: 30, skl: 40, spd: 45, lck: 35, def: 30, res: 30 }
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 5, spd: 5, lck: 5, def: 5, res: 5 }
+  caps: { hp: 60, str: 22, mag: 20, skl: 26, spd: 26, lck: 30, def: 24, res: 22 }
+  promotionBonus: { hp: 4, str: 2, spd: 1, def: 3, res: 1 }
+  playable: false
+  art: cleric
+
+# Schatten (spielbar ab Story 10.5)
+- id: shadow
+  nameKey: class.shadow.name
+  role: scout
+  tier: pro
+  roleGroup: melee
+  moveType: foot
+  mov: 6
+  weaponGroups: [dagger, light_bow]
+  classAction: { id: open_steal, kind: active }
+  proPaths: []
+  tags: []
+  skill: climber
+  proSkills: []
+  base: { hp: 25, str: 8, mag: 1, skl: 10, spd: 12, lck: 5, def: 5, res: 3 }
+  growth: { hp: 75, str: 45, mag: 5, skl: 55, spd: 55, lck: 30, def: 23, res: 15 }
+  growthMod: { hp: 7, str: 5, mag: 0, skl: 12, spd: 13, lck: 5, def: 0, res: 0 }
+  caps: { hp: 60, str: 27, mag: 15, skl: 31, spd: 31, lck: 32, def: 23, res: 20 }
+  promotionBonus: { hp: 3, str: 1, skl: 2, spd: 3, lck: 2 }
+  playable: false
+  art: mercenary
+
+# Fallensteller (spielbar ab Story 10.5)
+- id: trapper
+  nameKey: class.trapper.name
+  role: scout
+  tier: pro
+  roleGroup: melee
+  moveType: foot
+  mov: 6
+  weaponGroups: [dagger, light_bow]
+  classAction: { id: open_steal, kind: active }
+  proPaths: []
+  tags: []
+  skill: climber
+  proSkills: []
+  base: { hp: 26, str: 7, mag: 1, skl: 11, spd: 9, lck: 4, def: 6, res: 3 }
+  growth: { hp: 80, str: 40, mag: 5, skl: 60, spd: 40, lck: 25, def: 30, res: 15 }
+  growthMod: { hp: 10, str: 5, mag: 0, skl: 15, spd: 8, lck: 0, def: 5, res: 0 }
+  caps: { hp: 62, str: 26, mag: 15, skl: 32, spd: 28, lck: 30, def: 24, res: 20 }
+  promotionBonus: { hp: 4, str: 1, skl: 3, spd: 1, def: 2 }
+  playable: false
+  art: mercenary
+
+# Großstratege
+- id: grand_strategist
+  nameKey: class.grand_strategist.name
+  role: tactician
+  tier: pro
+  roleGroup: support
+  moveType: foot
+  mov: 6
+  weaponGroups: [sword, anima]
+  classAction: { id: command, kind: active, perMap: 1 }
+  proPaths: []
+  tags: []
+  skill: tactician_command
+  proSkills: [pro_grand_command]
+  base: { hp: 27, str: 7, mag: 7, skl: 8, spd: 8, lck: 6, def: 6, res: 6 }
+  growth: { hp: 80, str: 45, mag: 45, skl: 50, spd: 45, lck: 40, def: 35, res: 35 }
+  growthMod: { hp: 5, str: 5, mag: 5, skl: 5, spd: 5, lck: 5, def: 5, res: 5 }
+  caps: { hp: 62, str: 28, mag: 28, skl: 30, spd: 29, lck: 30, def: 26, res: 26 }
+  promotionBonus: { hp: 3, str: 1, mag: 2, skl: 2, spd: 1, def: 1, res: 1 }
+  playable: true
+
+# Bannerherr
+- id: banner_lord
+  nameKey: class.banner_lord.name
+  role: captain
+  tier: pro
+  roleGroup: melee
+  moveType: foot
+  mov: 6
+  weaponGroups: [sword, lance, shield]
+  classAction: { id: rally, kind: active, perMap: 1 }
+  proPaths: []
+  tags: []
+  skill: rally
+  proSkills: [pro_banner_lord]
+  base: { hp: 30, str: 9, mag: 2, skl: 9, spd: 9, lck: 6, def: 9, res: 4 }
+  growth: { hp: 90, str: 50, mag: 10, skl: 45, spd: 45, lck: 35, def: 45, res: 25 }
+  growthMod: { hp: 15, str: 5, mag: 0, skl: 5, spd: 5, lck: 5, def: 10, res: 0 }
+  caps: { hp: 68, str: 31, mag: 15, skl: 29, spd: 28, lck: 30, def: 30, res: 21 }
+  promotionBonus: { hp: 4, str: 2, skl: 1, spd: 1, def: 3, res: 1 }
+  playable: true
 
 # --- Gegnertypen (nur Gegner in V1; eigene Regeln erlaubt) ---
 

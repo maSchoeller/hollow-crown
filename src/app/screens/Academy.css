@@ -98,3 +98,7 @@
 .ac .hc-btns {
   flex-direction: column;
 }
+.ac-path.is-locked {
+  opacity: 0.55;
+  border-style: dashed;
+}

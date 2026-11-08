@@ -7,6 +7,7 @@
  * --flag setzt vor dem Kampf ein Kampagnen-Flag (mehrfach möglich; Wert true, wenn nur der Name steht), --leave nimmt Begleiter aus der Truppe:
  *   so lassen sich die Zweige einer Entscheidung simulieren, z. B. Mission 1-4 mit „ausliefern“: `--flag e02=hand_over --leave fenn`
  *   (Einheiten mit `requires` auf der Karte hängen am Flag; ohne --flag gilt der Weg ohne Entscheidung = „schützen“).
+ * --promote a|b   lässt vor der Mission alle Figuren ab Stufe 10 auf den ersten (a) bzw. zweiten (b) Profi-Weg aufsteigen (Story 10.3).
  * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
  *
@@ -71,7 +72,9 @@ const mapOptions: MapSimOptions = {
   chained: !args.includes('--fresh'),
   flags: args.flatMap((a, i) => (a === '--flag' ? [args[i + 1]!] : [])),
   leave: opt('leave', '').split(',').filter(Boolean),
+  ...(args.includes('--promote') ? { promote: opt('promote', 'a') as 'a' | 'b' } : {}),
 };
+if (mapOptions.promote && !['a', 'b'].includes(mapOptions.promote)) throw new Error(`--promote takes a or b, got ${mapOptions.promote}`);
 {
   const workers = workerCount(workersArg, runs);
   const t0 = performance.now();

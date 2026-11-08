@@ -275,6 +275,12 @@ export interface SkillEffect {
   /** Stehlen also takes equipped items of the foe (Elster, story 9.10) */
   stealEquipped?: boolean;
   until?: string;
+  /** pro paths (story 10.3): weapon groups the bearer may carry besides the role's */
+  addWeaponGroups?: WeaponGroup[];
+  /** more uses per map of a class action, keyed by the class action id of classes.yaml (e.g. `command`) */
+  usesBonus?: Record<string, number>;
+  /** a larger area of an action skill, keyed by its skill id (e.g. `rally`) */
+  radiusBonus?: Record<string, number>;
 }
 
 export interface SkillDef {

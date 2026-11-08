@@ -209,6 +209,9 @@ export const skillSchema = z.object({
       allowArmorClass: z.string(),
       stealEquipped: z.boolean(),
       until: z.string(),
+      addWeaponGroups: z.array(weaponGroup).min(1),
+      usesBonus: z.record(z.string(), z.number().int().min(1)),
+      radiusBonus: z.record(z.string(), z.number().int().min(1)),
     })
     .partial(),
   usesPerMap: z.number().optional(),

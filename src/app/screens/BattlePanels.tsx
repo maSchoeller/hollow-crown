@@ -6,7 +6,7 @@ import {
   applyCommand,
   computeStats,
   dist,
-  groupAllowed,
+  unitGroupAllowed,
   itemDef,
   nearConvoy,
   ruleOn,
@@ -163,7 +163,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
           {items.length === 0 && <div class="bp-empty">{t('ui.unarmed')}</div>}
           {items.map(({ inst, slot }) => {
             const d = itemDef(data, inst);
-            const canSwap = canEdit && slot === 'bag' && d.slot === 'mainHand' && !!d.weaponType && groupAllowed(data.classes[u.classId]!, d);
+            const canSwap = canEdit && slot === 'bag' && d.slot === 'mainHand' && !!d.weaponType && unitGroupAllowed(data, u, d);
             return (
               <ItemLine
                 key={inst.uid}
