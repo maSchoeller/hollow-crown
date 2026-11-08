@@ -1,0 +1,11 @@
+# Testlabor: Truhe c_stores in Mission 1-5 (PO-Fund 2026-11-08: sie stand im Vorratszelt [8,0] und ließ sich nie öffnen).
+#   Dev-Server, dann bei 375×812: http://localhost:5173/hollow-crown/?lab=truhe-1-5
+# Der Avatar steht mit einem Schlüssel unter der neuen Position [7,0] neben dem Zelt [8,0]; die Gegner sind weg, die Kinder bleiben.
+question: Lässt sich die Vorratstruhe neben dem Zelt öffnen?
+map: m1_5_hungerlager
+seed: 1
+turn: 1
+units:
+  avatar: { at: [7, 1], items: [door_key] }
+  lucan: { at: [6, 0] }
+remove: [enemy:*]

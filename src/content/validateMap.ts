@@ -8,7 +8,7 @@ import { validateFormat } from './validateFormat';
 import { validateHaunts } from './validateHaunts';
 import { validatePhases } from './validatePhases';
 import type { ContentRefs } from './validateRefs';
-import { allUnits, walkable, type Terr } from './validateWalk';
+import { allUnits, validateObjectAccess, walkable, type Terr } from './validateWalk';
 
 /** Terrain grid, units, objects, objectives, triggers and reachability of one battle map. */
 export function validateMap(
@@ -160,6 +160,7 @@ export function validateMap(
   if (v.type === 'treasure') validateTreasure(data, map, v, err, g);
   validatePhases(map, err);
   validateFormat(data, map, locales, err);
+  validateObjectAccess(data, map, g, err);
   validateHaunts(data, map, err, g);
 }
 

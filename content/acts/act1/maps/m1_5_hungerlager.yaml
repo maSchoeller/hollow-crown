@@ -65,7 +65,8 @@ propVariants:
   - { at: [6, 3], model: camp_tent_a }
 objects:
   - { id: v_old, type: village, at: [1, 16], reward: { dialogue: scn.m1_5.watchtower_hint } }
-  - { id: c_stores, type: chest, at: [8, 0], contents: { item: { def: vulnerary } } }
+  # Vorräte neben dem Vorratszelt [8,0] (PO-Fund 2026-11-08: im Zelt war die Truhe nie zu öffnen), weiter am Nordrand des Lagers
+  - { id: c_stores, type: chest, at: [7, 0], contents: { item: { def: vulnerary } } }
   - { id: c_wreck, type: chest, at: [10, 22], contents: { item: { def: steel_axe } } }
 initialEffects: []
 deploy:
