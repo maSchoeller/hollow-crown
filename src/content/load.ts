@@ -9,31 +9,12 @@ import type { HauntPoolsDef, MapDef, MapUnitDef, TerrainDef } from '../core/mapD
 import type { HandbookDef, RenderDef, WorldDef } from '../core/renderDefs';
 import type { CampaignDef, ChroniclePageDef, FlagDef, HomeViewDef, LieutenantDef, MemorialDef, RoomDef, SceneDef, SupportPairDef } from '../core/storyDefs';
 import { pairKey } from '../core/util';
-import {
-  affixSchema,
-  balanceSchema,
-  campaignSchema,
-  worldSchema,
-  charSchema,
-  chroniclePageSchema,
-  classSchema,
-  sceneSchema,
-  supportPairSchema,
-  flagSchema,
-  handbookSchema,
-  homeSchema,
-  itemSchema,
-  lieutenantSchema,
-  hauntPoolsSchema,
-  mapSchema,
-  memorialSchema,
-  renderSchema,
-  roomSchema,
-  runeSchema,
-  setSchema,
-  skillSchema,
-  terrainSchema,
-} from './schemas';
+import { balanceSchema } from './schemaBalance';
+import { campaignSchema, chroniclePageSchema, hauntPoolsSchema, homeSchema, lieutenantSchema, memorialSchema, roomSchema, sceneSchema, supportPairSchema, worldSchema } from './schemaCampaign';
+import { flagSchema } from './schemaConditions';
+import { mapSchema, terrainSchema } from './schemaMap';
+import { handbookSchema, renderSchema } from './schemaRender';
+import { affixSchema, charSchema, classSchema, itemSchema, runeSchema, setSchema, skillSchema } from './schemaUnits';
 
 export type Locales = Record<string, Record<string, string>>;
 

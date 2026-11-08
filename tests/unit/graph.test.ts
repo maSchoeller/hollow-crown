@@ -1,7 +1,8 @@
 /** Campaign graph of an act (story 4.3, architecture §5.4): availability, staged rules, roles, side quests. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { minStoryCount, validateContent } from '../../src/content/validate';
+import { validateContent } from '../../src/content/validate';
+import { minStoryCount } from '../../src/content/validateCampaign';
 import type { Locales } from '../../src/content/load';
 import {
   applyCampaign,

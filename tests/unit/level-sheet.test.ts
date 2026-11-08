@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { enemyCounts, renderSheet, sizeClass, TERRAIN } from '../../tools/levels/sheet';
 
 const draft = mapSchema.parse(parse(readFileSync('concept/27-ueberarbeitung/levels/muster_mittel_20x25.yaml', 'utf8')));

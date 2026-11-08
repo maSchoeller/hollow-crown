@@ -8,7 +8,7 @@
 import type { GameData } from '../core/gameData';
 import type { MapDef } from '../core/mapDefs';
 import type { ContentIssue, Locales } from './load';
-import { mapSchema } from './schemas';
+import { mapSchema } from './schemaMap';
 import { validateContent } from './validate';
 
 /** Messages about content a later story brings (missions, 11.5 companions and lieutenants), exactly as `validateContent` words them. */

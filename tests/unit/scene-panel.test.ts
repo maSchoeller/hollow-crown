@@ -2,7 +2,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import type { Locales } from '../../src/content/load';
-import { sceneSchema } from '../../src/content/schemas';
+import { sceneSchema } from '../../src/content/schemaCampaign';
 import { validateContent } from '../../src/content/validate';
 import { conditionContext, MAX_PANEL_LINES, newCampaign, panelAt, resolveScene, type GameData } from '../../src/core';
 
