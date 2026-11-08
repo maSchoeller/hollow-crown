@@ -1,7 +1,7 @@
 /** Role model and weapon groups (story 2.2, GDD Rollenklassen, architecture 5.7). */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { classSchema } from '../../src/content/schemas';
+import { classSchema } from '../../src/content/schemaUnits';
 import { validateContent } from '../../src/content/validate';
 import {
   applyCommand,

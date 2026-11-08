@@ -5,7 +5,7 @@ import { parse } from 'yaml';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { loadContentFromDisk } from '../../src/content/node';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { validateContent } from '../../src/content/validate';
 import {
   applyCommand,

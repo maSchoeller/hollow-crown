@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { createBattle, newCampaign, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
 
 export const DEV_FOG_MAP_ID = 'dev_fog';
