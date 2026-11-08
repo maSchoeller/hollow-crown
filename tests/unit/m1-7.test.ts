@@ -30,7 +30,7 @@ beforeAll(() => {
 
 describe('node m1_7', () => {
   it('follows m1_6 and is the only node open after it; the world map place is bound to it', () => {
-    const node = data.campaign.nodes.find((n) => n.id === 'm1_7')!;
+    const node = data.acts[1]!.nodes.find((n) => n.id === 'm1_7')!;
     expect(node.requires).toEqual([{ completed: 'm1_6' }]);
     expect(node.effects).toEqual([{ setFlag: 'wardens_chronicle' }]);
     expect(availableNodes(data, base).filter((n) => n.kind !== 'side').map((n) => n.id)).toEqual(['m1_7']);

@@ -129,7 +129,7 @@ describe('effect grudge and condition met (AC 4)', () => {
       const d = clone(data);
       const l = clone(locales);
       for (const x of Object.values(d.lieutenants)) for (const lang of ['de', 'en']) l[lang]![x.titleKey] ??= 'Title';
-      if (effect) d.campaign.nodes[0]!.requires = [{ met: lt }];
+      if (effect) d.acts[1]!.nodes[0]!.requires = [{ met: lt }];
       else d.rooms.smith!.requires = [{ met: lt }];
       return validateContent(d, l).map((i) => i.message);
     };

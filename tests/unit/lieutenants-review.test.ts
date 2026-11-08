@@ -47,7 +47,7 @@ afterEach(() => {
 });
 
 /** the finale node m1_8 (story 9.9): its map has Morra in the wave of round 4, Ulvric and Grosk from the start */
-const M18 = () => data.campaign.nodes.find((n) => n.id === 'm1_8')!;
+const M18 = () => data.acts[1]!.nodes.find((n) => n.id === 'm1_8')!;
 const withGrudge = (): CampaignState => {
   const c = fresh();
   c.lieutenants = { morra: { met: true, encounters: 2, grudge: 2, routs: 2, target: 'lucan', signatureDropped: false } };
@@ -218,9 +218,9 @@ describe('met only when seen or fled (R2)', () => {
 
 describe('bounty material by the act of the lieutenant (R5)', () => {
   it('wantedView and the payout use the act of the lieutenant, not of the campaign', () => {
-    const saved = data.campaign.act;
-    data.campaign.act = 2;
-    restore.push(() => (data.campaign.act = saved));
+    const saved = data.acts[1]!.act;
+    data.acts[1]!.act = 2;
+    restore.push(() => (data.acts[1]!.act = saved));
     expect(wantedView(data, fresh(), 'hask')!.material).toMatchObject({ id: 'iron_ore' });
     const c = fresh();
     const s = beginBattle(data, c, 'prologue', ids(c)).state;

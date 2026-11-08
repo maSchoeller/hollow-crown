@@ -14,14 +14,15 @@ import { dismissError, hireCost, hireError, unlockableRank, locateItem, offerPri
 import { shopPrice } from './aid';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
-import { actFinished, isAvailable, noteRoles } from './graph';
+import { actFinished, enterNextAct, isAvailable, noteRoles } from './graph';
+import { actOf, findNode } from './acts';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import { conditionContext, evalConditions } from './conditions';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
-  const stock = merchantStock(data, currentTier(data, c));
+  const stock = merchantStock(data, currentTier(data, c), actOf(c));
   const runeForSale = data.runes[defId]?.price !== undefined && (data.runes[defId]?.tier ?? 0) <= 1;
   if (!stock.includes(defId) && !runeForSale) return null;
   return shopPrice(data, c, itemDef(data, defId).price);
@@ -156,7 +157,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
     case 'markBackupReminded':
       // only the running act, and only once its finale is done
-      return cmd.act === data.campaign.act && actFinished(data, c) ? null : 'not_available';
+      return cmd.act === actOf(c) && actFinished(data, c) ? null : 'not_available';
     case 'advanceDay':
       return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
     case 'seeHaunt':
@@ -214,7 +215,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       for (const q of cmd.effects ?? []) if (validateEffects(data, campaign, q.effects) === null) applyEffects(data, campaign, q.effects, effectEvents);
       // the reward of the node itself (`effects` in campaign.yaml, e.g. the move to the castle) comes last, as one list;
       // the result carries it so the screens can name the consequences
-      const reward = s.hauntId ? [] : (data.campaign.nodes.find((n) => n.id === s.nodeId)?.effects ?? []);
+      const reward = s.hauntId ? [] : (findNode(data, s.nodeId)?.effects ?? []);
       // chronicle pages found in chests of this battle go through the same effect, so `chronicleAdded` fires and the result names them
       const pages: Effect[] = s.hauntId ? [] : (s.stats.pages ?? []).map((page) => ({ chronicle: page }));
       if (pages.length) {
@@ -228,12 +229,14 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       }
       // conditional node rewards (`effectsIf`): a group runs when its conditions hold after the battle, so flags set by the map's
       // triggers count (e.g. Mira joins unless her house burned down)
-      for (const g of data.campaign.nodes.find((n) => n.id === s.nodeId)?.effectsIf ?? []) {
+      for (const g of findNode(data, s.nodeId)?.effectsIf ?? []) {
         if (!evalConditions(conditionContext(data, campaign), g.requires) || validateEffects(data, campaign, g.effects) !== null) continue;
         applyEffects(data, campaign, g.effects, effectEvents);
         result.effects = [...(result.effects ?? []), ...g.effects];
         for (const e of g.effects) if ('recruit' in e && typeof e.recruit === 'string' && !result.recruited.includes(e.recruit)) result.recruited.push(e.recruit);
       }
+      // the finale of an act moves the company on to the next act, where the build has it (story 11.1)
+      enterNextAct(data, campaign, effectEvents);
     }
     return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };
   }
@@ -414,7 +417,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       const { choice, option } = findChoice(data, cmd.scene, cmd.line, cmd.option)!;
       const decision = !!choice.title;
       c.choices[choiceKey(cmd.scene, cmd.line)] = cmd.option;
-      if (decision) c.decisions.push({ act: data.campaign.act, scene: cmd.scene, line: cmd.line, option: cmd.option });
+      if (decision) c.decisions.push({ act: actOf(c), scene: cmd.scene, line: cmd.line, option: cmd.option });
       events.push({ t: 'choiceMade', scene: cmd.scene, line: cmd.line, option: cmd.option, decision });
       c.stance[option.stance] += 1;
       events.push({ t: 'stanceGained', stance: option.stance });

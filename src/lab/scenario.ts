@@ -123,17 +123,17 @@ function resolveNode(data: GameData, sc: LabScenario, fixtures: FixtureMapSource
     data.maps[sc.map] = { ...mapSchema.parse(raw), act: 1 } as MapDef;
   }
   if (sc.node) {
-    const n = data.campaign.nodes.find((x) => x.id === sc.node);
-    if (!n) fail(`no node "${sc.node}"`, data.campaign.nodes.map((x) => x.id));
+    const n = data.acts[1]!.nodes.find((x) => x.id === sc.node);
+    if (!n) fail(`no node "${sc.node}"`, data.acts[1]!.nodes.map((x) => x.id));
     if (n.map !== sc.map) fail(`node "${sc.node}" plays map "${n.map}", not "${sc.map}"`);
     return n.id;
   }
-  const own = data.campaign.nodes.find((x) => x.map === sc.map);
+  const own = data.acts[1]!.nodes.find((x) => x.map === sc.map);
   if (own) return own.id;
   const id = `lab_${sc.map}`;
-  if (!data.campaign.nodes.some((n) => n.id === id)) {
-    const first = data.campaign.nodes[0]!;
-    data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id, map: sc.map, pre: undefined, post: undefined }] };
+  if (!data.acts[1]!.nodes.some((n) => n.id === id)) {
+    const first = data.acts[1]!.nodes[0]!;
+    data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...first, id, map: sc.map, pre: undefined, post: undefined }] };
   }
   return id;
 }
@@ -141,9 +141,9 @@ function resolveNode(data: GameData, sc: LabScenario, fixtures: FixtureMapSource
 /** The campaign the battle is built from: a throwaway one, as `__hc.devNode` and `pnpm sim --fresh` build it. */
 function labCampaign(data: GameData, sc: LabScenario, nodeId: string): CampaignState {
   const c = newCampaign(data, sc.seed, { difficulty: sc.difficulty, deathMode: 'standard' }, { ...AVATAR });
-  const order = data.campaign.nodes.map((n) => n.id);
+  const order = data.acts[1]!.nodes.map((n) => n.id);
   const idx = order.indexOf(nodeId);
-  const node = data.campaign.nodes[idx]!;
+  const node = data.acts[1]!.nodes[idx]!;
   const stand = node.id.startsWith('lab_');
   if (Array.isArray(sc.company)) {
     for (const id of sc.company) {

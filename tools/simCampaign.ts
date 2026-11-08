@@ -4,6 +4,9 @@
  * difficulty are checked across the whole act. Targets (NFR12 corridors, GDD gold curve) come from `balance.yaml` `simulation`.
  */
 import {
+  actOf,
+  enterNextAct,
+  findNode,
   applyCampaign,
   applyEffects,
   availableNodes,
@@ -124,9 +127,11 @@ function tryCmd(data: GameData, c: CampaignState, cmd: CampaignCommand): Campaig
 /** Between missions: unlock ready supports, heal scars, buy one healing item per strong unit, then upgrade weapons. */
 /** The node's own reward (campaign.yaml `effects`, e.g. Fenn's recruit): `finishBattle` leaves it to the `finishMission` command, the simulations apply it here. */
 export function applyNodeRewards(data: GameData, c: CampaignState, nodeId: string): void {
-  const node = data.campaign.nodes.find((n) => n.id === nodeId);
+  const node = findNode(data, nodeId);
   applyEffects(data, c, node?.effects ?? [], []);
   for (const g of node?.effectsIf ?? []) if (evalConditions(conditionContext(data, c), g.requires)) applyEffects(data, c, g.effects, []);
+  // like finishMission: after the finale the company moves on where the next act is released (story 11.1)
+  enterNextAct(data, c);
 }
 
 export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent']): CampaignState {
@@ -146,7 +151,7 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
     }
   }
   // buy: the cheapest healing item in stock for each strong unit without one
-  const stock = merchantStock(data, currentTier(data, c))
+  const stock = merchantStock(data, currentTier(data, c), actOf(c))
     .filter((id) => itemDef(data, id).use?.heal)
     .sort((a, b) => itemDef(data, a).price - itemDef(data, b).price);
   const healing = stock[0];
@@ -223,7 +228,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         finished = false;
         break;
       }
-      const node = data.campaign.nodes.find((n) => n.id === id)!;
+      const node = data.acts[1]!.nodes.find((n) => n.id === id)!;
       const m =
         missions.get(id) ??
         missions
@@ -339,7 +344,7 @@ export function missionFlags(data: GameData, m: MissionSim, difficulty: Difficul
   if (countDowns && cor.downsMin !== undefined && downs < cor.downsMin) f.downs = 'low';
   if (countDowns && cor.downsMax !== undefined && downs > cor.downsMax) f.downs = 'high';
   if (m.cleared) {
-    const [lo, hi] = sim.gold.perNode[m.node] ?? sim.gold.perAct[String(data.campaign.act)] ?? [0, Infinity];
+    const [lo, hi] = sim.gold.perNode[m.node] ?? sim.gold.perAct[String(data.acts[1]!.act)] ?? [0, Infinity];
     const base = (m.gold - m.sideGold) / m.cleared;
     if (base < lo) f.gold = 'low';
     if (base > hi) f.gold = 'high';

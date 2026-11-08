@@ -8,7 +8,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
 import { goalKey } from '../../ui/goalText';
-import { actFinished, armyOverLimit, availableNodes, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
+import { actFinished, actOf, armyOverLimit, availableNodes, findNode, nodesUpTo, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -16,7 +16,7 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playHaunt, playNode } from '../state/flow';
-import { loadingActPack, nextActInBuild, packNeededFor } from '../state/packs';
+import { loadingActPack, mapInBuild, nextActInBuild, packNeededFor } from '../state/packs';
 import { BackupSheet } from './BackupSheet';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
@@ -60,8 +60,13 @@ const HAUNT = 'haunt:';
 
 export function WorldMap() {
   const c = campaign.value!;
-  const nodes = data.campaign.nodes;
-  const open = availableNodes(data, c).map((n) => n.id);
+  const act = actOf(c);
+  // the nodes of every act up to the running one (story 11.1): done ones stay on the map
+  const nodes = nodesUpTo(data, act);
+  // a node whose map is in no pack of this build is a placeholder (story 11.1): the map does not offer it
+  const open = availableNodes(data, c)
+    .filter((n) => mapInBuild(n.map))
+    .map((n) => n.id);
   const knowsWanted = wantedList(data, c).length > 0;
   const shown = nodes.filter((n) => c.completed.includes(n.id) || open.includes(n.id));
   const [sel, setSel] = useState<string | null>(null);
@@ -104,7 +109,7 @@ export function WorldMap() {
     const n = h && storyNodeOf(data, h.map);
     return n ? (placeOf(world, n.id)?.at ?? home) : undefined;
   };
-  const fog = fogAreas(world, data.campaign.act);
+  const fog = fogAreas(world, act);
   // the level of the picture that is not upscaled at the nearest zoom on this screen (story 15.12); a bigger screen (rotation)
   // raises it, it never drops back
   const levelOf = (scr: Screen) => levelFor(world, scr, conf, window.devicePixelRatio || 1);
@@ -114,7 +119,7 @@ export function WorldMap() {
   const notice = mapNotice(loaded, sharpSrc ? sharp : 'failed');
 
   // the fog of later acts: a small mask from the areas, drawn once per act into a canvas stretched over the picture
-  const fogKey = data.campaign.act;
+  const fogKey = act;
   useEffect(() => {
     const cv = fogCanvas.current;
     const g = cv?.getContext('2d');
@@ -136,9 +141,9 @@ export function WorldMap() {
   );
   // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
   const finished = actFinished(data, c);
-  const backupDue = finished && !c.backupReminded.includes(data.campaign.act);
+  const backupDue = finished && !c.backupReminded.includes(act);
   const waiting = moreMissionsFollow(open.length, finished, loadingActPack() !== null);
-  const soonAct = finished && !nextActInBuild() ? data.campaign.act + 1 : null;
+  const soonAct = finished && !nextActInBuild() ? act + 1 : null;
 
   // the view: where the picture lies (offset and scale) and the zoom step; every change puts the HTML pieces over their places
   const view = useRef<MapView>({ x: 0, y: 0, s: 1 });
@@ -411,7 +416,7 @@ export function WorldMap() {
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" ref={paths} aria-hidden="true">
             {/* the road network (story 15.12): the geography, not the campaign order; dimmed towards places not unlocked yet */}
-            {roadsOf(world, data.campaign.act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
+            {roadsOf(world, act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
               <g key={r.key} class={`wm__road wm__road--${r.kind}${r.dim ? ' is-dim' : ''}`}>
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path wm__path--edge" />
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path" />
@@ -420,7 +425,7 @@ export function WorldMap() {
           </svg>
           {fog.length > 0 &&
             world.regions
-              .filter((r) => r.act > data.campaign.act)
+              .filter((r) => r.act > act)
               .map((r) =>
                 r.act === soonAct ? (
                   <Piece key={r.id} class="wm-soon" {...over(r.at)} role="status">
@@ -502,10 +507,10 @@ export function WorldMap() {
       <div class="wm__hud">
         <div class="wm__top">
           <Piece class="wm-act">
-            <span class="wm-act__badge">{data.campaign.act}</span>
+            <span class="wm-act__badge">{act}</span>
             <span>
-              <small>{t('ui.map.act', { act: data.campaign.act, season: t(`act.${data.campaign.act}.season`) })}</small>
-              <b>{t(`act.${data.campaign.act}.name`)}</b>
+              <small>{t('ui.map.act', { act, season: t(`act.${act}.season`) })}</small>
+              <b>{t(`act.${act}.name`)}</b>
             </span>
           </Piece>
           <button type="button" class="wm__round" aria-label={t('ui.menu')} aria-expanded={menu} onClick={() => setMenu(!menu)}>
@@ -580,7 +585,7 @@ export function WorldMap() {
 /** The card of a chosen node: kicker, title, goal / places / level chips, reward, "Aufstellung" and "Aufbrechen". */
 function NodeCard({ id }: { id: string }) {
   const c = campaign.value!;
-  const n = data.campaign.nodes.find((x) => x.id === id)!;
+  const n = findNode(data, id)!;
   // a mission of an act pack that is still loading is visible, but starts only afterwards (story 7.2)
   const pack = packNeededFor(n);
   const map = data.maps[n.map];

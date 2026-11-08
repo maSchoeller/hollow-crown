@@ -20,7 +20,7 @@ export const AVATAR_LOOKS = [
 export const avatarHead = (portrait: string): string => (AVATAR_LOOKS.find((l) => l.portrait === portrait) ?? AVATAR_LOOKS[0]).head;
 
 /** Place image behind the full-screen views: the picture of the current home (`content/home/home.yaml`), the camp without a campaign. */
-export const homeBackdrop = (): string => `locations/${data.home[campaign.value?.home.kind ?? data.campaign.home].image}`;
+export const homeBackdrop = (): string => `locations/${data.home[campaign.value?.home.kind ?? 'camp'].image}`;
 
 /** "Mission 1-3" of a node, without the title behind the dash. */
 export function nodeShort(id: string): string {

@@ -2,6 +2,8 @@ import { CORE_ROLES, type Mechanic } from '../defs';
 import type { GameData } from '../gameData';
 import type { CampaignNodeDef } from '../storyDefs';
 import type { CampaignState } from '../state';
+import type { CampaignEvent } from './commands';
+import { actCampaign, actOf, actUnlocked, findNode, nodesUpTo } from './acts';
 import { conditionContext, evalCondition, evalConditions } from './conditions';
 
 /**
@@ -9,27 +11,44 @@ import { conditionContext, evalCondition, evalConditions } from './conditions';
  * time, nothing is stored. Pure.
  */
 
-/** Completed story missions of the act (side quests do not count). */
-export function storyCount(data: GameData, completed: readonly string[]): number {
-  return data.campaign.nodes.filter((n) => n.kind === 'story' && completed.includes(n.id)).length;
+/** Completed story missions of the act the campaign is in (side quests do not count). */
+export function storyCount(data: GameData, c: Pick<CampaignState, 'completed'> & { act?: number }): number {
+  return actCampaign(data, c).nodes.filter((n) => n.kind === 'story' && c.completed.includes(n.id)).length;
 }
 
 /**
  * The act is over: its `fixed: finale` node is completed (story 7.3). An act without a finale node is never over. The
- * act number stays as it is; moving on to the next act is a matter of the build having its pack (architecture §5.4).
+ * act moves on only where the build has the next act's pack (`enterNextAct`, story 11.1).
  */
-export function actFinished(data: GameData, c: Pick<CampaignState, 'completed'>): boolean {
-  return data.campaign.nodes.some((n) => n.fixed === 'finale' && c.completed.includes(n.id));
+export function actFinished(data: GameData, c: Pick<CampaignState, 'completed'> & { act?: number }): boolean {
+  return actCampaign(data, c).nodes.some((n) => n.fixed === 'finale' && c.completed.includes(n.id));
+}
+
+/**
+ * The move to the next act (story 11.1, architecture §5.4): once the finale of the act is done and the next act is released in this
+ * build, `c.act` goes up by one and `actReached` is reported. Otherwise nothing changes (story 7.3, "coming soon"). Changes `c` in
+ * place; returns whether it moved. Called by `finishMission` after a victory and by `normalizeCampaign` for saves of an older build.
+ */
+export function enterNextAct(data: GameData, c: CampaignState, events?: CampaignEvent[]): boolean {
+  const act = actOf(c);
+  if (!actFinished(data, c) || !actUnlocked(data, act + 1)) return false;
+  c.act = act + 1;
+  events?.push({ t: 'actReached', act: c.act });
+  return true;
 }
 
 /** Whether node `n` is open right now; see `availableNodes`. */
 function open(data: GameData, c: CampaignState, n: CampaignNodeDef, done: number): boolean {
   if (c.completed.includes(n.id)) return false;
-  if (done === 0) return n.fixed === 'first';
+  const own = actCampaign(data, c).nodes;
+  const here = own.includes(n);
+  // story nodes of another act are never open; side quests of earlier acts stay open over the acts (architecture §5.4)
+  if (!here && n.kind === 'story') return false;
+  if (here && done === 0) return n.fixed === 'first';
   if (n.fixed === 'first') return false;
   const ctx = conditionContext(data, c);
   if (n.kind === 'side') return c.quests.includes(n.id) || (!!n.requires?.length && evalConditions(ctx, n.requires));
-  if (n.fixed === 'finale' && data.campaign.nodes.some((o) => o.kind === 'story' && o.id !== n.id && !c.completed.includes(o.id))) return false;
+  if (n.fixed === 'finale' && own.some((o) => o.kind === 'story' && o.id !== n.id && !c.completed.includes(o.id))) return false;
   return evalConditions(ctx, n.requires);
 }
 
@@ -39,18 +58,20 @@ function open(data: GameData, c: CampaignState, n: CampaignNodeDef, done: number
  * (non-empty) `requires`. Completed nodes never come back. Empty = the act is over.
  */
 export function availableNodes(data: GameData, c: CampaignState): CampaignNodeDef[] {
-  const done = storyCount(data, c.completed);
-  return data.campaign.nodes.filter((n) => open(data, c, n, done));
+  const done = storyCount(data, c);
+  // the story nodes of the running act and the side quests of every act up to it (story 11.1)
+  const own = actCampaign(data, c).nodes;
+  const nodes = [...nodesUpTo(data, actOf(c) - 1).filter((n) => n.kind === 'side'), ...own];
+  return nodes.filter((n) => open(data, c, n, done));
 }
 
 export function isAvailable(data: GameData, c: CampaignState, nodeId: string): boolean {
-  const n = data.campaign.nodes.find((x) => x.id === nodeId);
-  return !!n && open(data, c, n, storyCount(data, c.completed));
+  return availableNodes(data, c).some((n) => n.id === nodeId);
 }
 
 /** The node's scenes before and after the mission; the memorial variant when `memorialIf` holds (a fallen trigger). */
 export function nodeScenes(data: GameData, c: CampaignState | null, nodeId: string): { pre?: string; post?: string } {
-  const n = data.campaign.nodes.find((x) => x.id === nodeId);
+  const n = findNode(data, nodeId);
   if (!n) return {};
   if (n.memorialIf && n.memorial && evalCondition(conditionContext(data, c), n.memorialIf)) return { pre: n.memorial.pre ?? n.pre, post: n.memorial.post ?? n.post };
   return { pre: n.pre, post: n.post };
@@ -61,8 +82,8 @@ export function nodeScenes(data: GameData, c: CampaignState | null, nodeId: stri
  * as many completed story missions as `mechanics` names; unlisted mechanics are always on.
  */
 export function lockedMechanics(data: GameData, c: CampaignState): Mechanic[] {
-  const done = storyCount(data, c.completed);
-  return (Object.entries(data.campaign.mechanics) as Array<[Mechanic, number]>).filter(([, from]) => done < from).map(([m]) => m);
+  const done = storyCount(data, c);
+  return (Object.entries(actCampaign(data, c).mechanics) as Array<[Mechanic, number]>).filter(([, from]) => done < from).map(([m]) => m);
 }
 
 /** Role of a class (a pro class names the role it promotes from). */
@@ -82,17 +103,17 @@ export function lockedRoles(data: GameData, c: Pick<CampaignState, 'rolesSeen' |
   return CORE_ROLES.filter((r) => !c.rolesSeen.includes(r) && !here.includes(r));
 }
 
-/** Paths for the world map: `[from, to]` for every top-level `completed` requirement of a node. */
+/** Paths for the world map: `[from, to]` for every top-level `completed` requirement of a node (every loaded act). */
 export function nodeLinks(data: GameData): Array<[string, string]> {
   const out: Array<[string, string]> = [];
-  for (const n of data.campaign.nodes)
+  for (const n of nodesUpTo(data, Infinity))
     for (const r of n.requires ?? []) if ('completed' in r) out.push([r.completed, n.id]);
   return out;
 }
 
-/** The act's fixed opening mission. */
-export function firstNode(data: GameData): CampaignNodeDef {
-  const n = data.campaign.nodes.find((x) => x.fixed === 'first');
+/** The fixed opening mission of an act (act 1 unless given). */
+export function firstNode(data: GameData, act = 1): CampaignNodeDef {
+  const n = data.acts[act]?.nodes.find((x) => x.fixed === 'first');
   if (!n) throw new Error('campaign has no fixed: first node');
   return n;
 }

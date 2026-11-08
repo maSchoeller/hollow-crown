@@ -31,7 +31,7 @@ export const toneTestScenes = (): string[] => [TONE_TEST.grave, `scn.farewell.${
  */
 export function toneTestCampaign(data: GameData, avatarName: string): CampaignState {
   const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: avatarName, pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  const order = data.campaign.nodes.map((n) => n.id);
+  const order = data.acts[1]!.nodes.map((n) => n.id);
   const upto = order.indexOf(TONE_TEST.companyAfter);
   for (const ch of Object.values(data.chars)) {
     const j = order.indexOf(ch.joins);

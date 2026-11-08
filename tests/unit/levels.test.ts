@@ -72,8 +72,8 @@ beforeAll(() => {
   locales = loaded.locales;
   const raw = parse(readFileSync(join(process.cwd(), 'tests', 'fixtures', 'maps', 'dev_levels.yaml'), 'utf8'));
   data.maps.dev_levels = { ...mapSchema.parse(raw), act: 1 } as MapDef;
-  const first = data.campaign.nodes[0]!;
-  data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id: 'dev_levels', map: 'dev_levels', pre: undefined, post: undefined }] };
+  const first = data.acts[1]!.nodes[0]!;
+  data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...first, id: 'dev_levels', map: 'dev_levels', pre: undefined, post: undefined }] };
 });
 
 describe('levels of the map', () => {

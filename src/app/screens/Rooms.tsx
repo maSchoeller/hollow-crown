@@ -6,6 +6,7 @@ import { useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import {
+  actOf,
   armyCount,
   armyOverLimit,
   isMercenary,
@@ -168,7 +169,7 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
   const [tab, setTab] = useState<'buy' | 'sell'>('buy');
   const [sel, setSel] = useState<string | null>(null);
   const [who, setWho] = useState(false);
-  const stock = merchantStock(data, currentTier(data, c));
+  const stock = merchantStock(data, currentTier(data, c), actOf(c));
   const chosenDef = tab === 'buy' && sel ? sel : null;
   const price = chosenDef ? shopPrice(data, c, itemDef(data, chosenDef).price) : 0;
   const owned = tab === 'sell' && sel ? c.convoy.find((i) => i.uid === sel) : undefined;

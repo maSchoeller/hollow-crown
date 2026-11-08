@@ -50,7 +50,7 @@ beforeAll(() => {
   base = newCampaign(data, 7, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
   // an army as strong as one that played its way here (node expectedLevel), like `__hc.devNode`
-  const level = data.campaign.nodes.find((n) => n.id === NODE)!.expectedLevel;
+  const level = data.acts[1]!.nodes.find((n) => n.id === NODE)!.expectedLevel;
   for (const u of base.roster) while (u.level < level) levelUp(data, u, base.rng);
   base.completed = [...STORY];
 });
@@ -85,14 +85,14 @@ describe('content', () => {
 });
 
 describe('node m1_8', () => {
-  const node = () => data.campaign.nodes.find((n) => n.id === NODE)!;
+  const node = () => data.acts[1]!.nodes.find((n) => n.id === NODE)!;
 
   it('is the finale after m1_7 with the Pactwatch as home, two ember sparks and the world map place bound to it', () => {
     expect(node()).toMatchObject({ fixed: 'finale', place: 'paktwacht_heimat', merchantTier: 2, expectedLevel: 9, titleKey: 'node.m1_8.title', pre: 'scn.m1_8.intro', post: 'scn.m1_8.outro' });
     expect(node().requires).toEqual([{ completed: 'm1_7' }]);
     expect(node().effects).toEqual([{ item: { def: 'ember_spark' } }, { item: { def: 'ember_spark' } }]);
     expect(data.world.places.find((p) => p.slots.some((x) => x.node === NODE))!.id).toBe('paktwacht');
-    expect(data.campaign.act).toBe(1);
+    expect(data.acts[1]!.act).toBe(1);
   });
 
   it('opens only after every other story node and then is the only one open', () => {
@@ -105,7 +105,7 @@ describe('node m1_8', () => {
     expect(actFinished(data, base)).toBe(false);
     expect(actFinished(data, { completed: [...STORY, NODE] })).toBe(true);
     // the build ships act 1 only (content/packs.yaml): nobody has act 2, so the hint shows
-    expect(hasPackForAct([{ act: 1, load: 'precache' }, { act: 1, load: 'background' }], data.campaign.act + 1)).toBe(false);
+    expect(hasPackForAct([{ act: 1, load: 'precache' }, { act: 1, load: 'background' }], data.acts[1]!.act + 1)).toBe(false);
   });
 });
 
@@ -345,7 +345,7 @@ describe('the finale won and lost', () => {
 
 describe('reward card and scene moment', () => {
   it('sums repeated identical items into one line with an amount, single items and other lines unchanged', () => {
-    const lines = consequenceLines(data.campaign.nodes.find((n) => n.id === NODE)!.effects ?? []);
+    const lines = consequenceLines(data.acts[1]!.nodes.find((n) => n.id === NODE)!.effects ?? []);
     expect(lines).toEqual([{ kind: 'item', def: 'ember_spark', amount: 2 }, { kind: 'noted' }]);
     expect(consequenceLines([{ item: { def: 'vulnerary' } }])[0]).toEqual({ kind: 'item', def: 'vulnerary' });
     expect(consequenceLines([{ item: { def: 'vulnerary' } }, { gold: 5 }, { item: { def: 'vulnerary' } }]).filter((l) => l.kind === 'item')).toHaveLength(2);

@@ -77,6 +77,11 @@ export function hasPackForAct(packs: readonly Pick<PackMeta, 'act' | 'load'>[], 
   return packs.some((p) => p.act === act && p.load !== 'voice');
 }
 
+/** Acts that have a content pack (not only voice), ascending: `GameData.releasedActs` (story 11.1). */
+export function packActs(packs: readonly Pick<PackMeta, 'act' | 'load'>[]): number[] {
+  return [...new Set(packs.filter((p) => p.load !== 'voice').map((p) => p.act))].sort((a, b) => a - b);
+}
+
 /** Delay before retry number `attempt` (1, 2, …): doubles from `baseMs` up to `maxMs`. */
 export function backoffMs(attempt: number, baseMs: number, maxMs: number): number {
   return Math.min(maxMs, baseMs * 2 ** Math.max(0, attempt - 1));

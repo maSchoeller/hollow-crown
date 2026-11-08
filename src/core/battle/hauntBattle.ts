@@ -14,6 +14,7 @@ import { addToBag } from '../rules/items';
 import { isScout } from '../rules/scout';
 import { newItem } from './create';
 import { HAUNT_CIVILIAN, hauntMap } from './hauntMap';
+import { nodesUpTo } from '../campaign/acts';
 import { battleSkeleton, deployPlayers, finishSetup, placeMapUnits } from './setup';
 import { startBattle, type ApplyResult } from './apply';
 
@@ -21,7 +22,7 @@ const textHash = (text: string): number => [...text].reduce((h, ch) => hash32(h,
 
 /** The story node of a map: the haunt takes its place on the world map, its name and its merchant tier (the first story node that uses the map). */
 export function storyNodeOf(data: GameData, mapId: string) {
-  return data.campaign.nodes.find((n) => n.kind === 'story' && n.map === mapId);
+  return nodesUpTo(data, Infinity).find((n) => n.kind === 'story' && n.map === mapId);
 }
 
 /**

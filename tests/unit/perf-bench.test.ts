@@ -9,7 +9,7 @@ describe('performance bench map (story 7.5)', () => {
     const map = benchMap();
     expect(map.size).toEqual([24, 32]);
     data.maps[BENCH_MAP_ID] = map;
-    data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...data.campaign.nodes[0]!, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined }] };
+    data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...data.acts[1]!.nodes[0]!, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined }] };
     const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     const s = createBattle(data, c, 'perf', []);
     expect(s.units.filter((u) => u.team === 'player')).toHaveLength(12);

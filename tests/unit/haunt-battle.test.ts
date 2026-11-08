@@ -148,7 +148,7 @@ function won(s: BattleState): BattleState {
 describe('haunt reward (story 5.6)', () => {
   const ids = (c: CampaignState) => c.roster.map((u) => u.id);
   const mean = () => {
-    const maps = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => data.maps[n.map]!.goldReward);
+    const maps = data.acts[1]!.nodes.filter((n) => n.kind === 'story').map((n) => data.maps[n.map]!.goldReward);
     return maps.reduce((a, b) => a + b, 0) / maps.length;
   };
   const win = (c: CampaignState, h = c.haunts[0]!) => finishBattle(data, c, won(createHauntBattle(data, c, h.id, ids(c))));
@@ -206,7 +206,7 @@ describe('haunt reward (story 5.6)', () => {
     const s = createHauntBattle(data, c, 'h1_0', ids(c));
     const u = s.units.find((x) => x.team === 'player')!;
     // the expected level of the next story node (after the prologue, 1-1 and 1-2: node m1_3)
-    expect(s.hauntLevel).toBe(data.campaign.nodes.find((n) => n.id === 'm1_3')!.expectedLevel);
+    expect(s.hauntLevel).toBe(data.acts[1]!.nodes.find((n) => n.id === 'm1_3')!.expectedLevel);
     expect(expPercent(d, s, u)).toBe(60);
     u.level = 5;
     expect(expPercent(d, s, u)).toBe(30);

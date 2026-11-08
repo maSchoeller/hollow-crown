@@ -134,6 +134,8 @@ export interface BattleSettings {
 
 export interface BattleState {
   mapId: string;
+  /** the act of the campaign when the battle started (story 11.1: level cap, village aid); missing = act 1 (older saves) */
+  act?: number;
   /** the campaign node; of a haunt the story node of its map (story 5.6) */
   nodeId: string;
   /** set when the battle is a haunt (story 5.6): its id in `c.haunts` */
@@ -239,6 +241,8 @@ export interface DecisionRecord {
 
 export interface CampaignState {
   version: number;
+  /** the act the company is in (story 11.1): starts at 1, `finishMission` raises it after an act's finale; saves before it hold none (= 1) */
+  act: number;
   seed: number;
   rng: RngState;
   settings: BattleSettings;

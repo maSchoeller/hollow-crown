@@ -151,22 +151,20 @@ describe('the rooms of the castle (story 6.9)', () => {
 
   it('with act 2 reached the step is open, at level 3 there is no next step', () => {
     const d = structuredClone(data);
-    d.campaign.act = 2;
-    const c = castle(base);
+    const c = { ...castle(base), act: 2 };
     expect(nextRoomLevel(d, c, d.rooms.smith!)).toEqual({ level: 2, unmet: undefined });
     c.home.rooms = { smith: 3 };
     expect(nextRoomLevel(d, c, d.rooms.smith!)).toBeNull();
     // a room without levels has no step at all
     d.rooms.smith!.levels = [];
-    expect(nextRoomLevel(d, castle(base), d.rooms.smith!)).toBeNull();
+    expect(nextRoomLevel(d, { ...castle(base), act: 2 }, d.rooms.smith!)).toBeNull();
   });
 
   it('the lessons of the memorial hall are locked until act 2', () => {
     const room = data.rooms.memorial!;
     expect(roomUnlocks(data, castle(base), room)).toEqual([{ id: 'lessons', open: false, unmet: { act: 2 } }]);
     const d = structuredClone(data);
-    d.campaign.act = 2;
-    expect(roomUnlocks(d, castle(base), d.rooms.memorial!)).toEqual([{ id: 'lessons', open: true, unmet: undefined }]);
+    expect(roomUnlocks(d, { ...castle(base), act: 2 }, d.rooms.memorial!)).toEqual([{ id: 'lessons', open: true, unmet: undefined }]);
   });
 });
 

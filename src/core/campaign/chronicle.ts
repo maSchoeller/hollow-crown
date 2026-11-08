@@ -55,7 +55,7 @@ export function chronicleView(data: GameData, c: CampaignState): ChronicleView {
     if (!a) byAct.set(n, (a = { act: n, decisions: [], pages: [], sealed: [] }));
     return a;
   };
-  actOf(data.campaign.act);
+  actOf(c.act ?? 1);
   for (const d of c.decisions) {
     const found = findChoice(data, d.scene, d.line, d.option);
     if (!found) continue;

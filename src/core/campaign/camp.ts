@@ -245,11 +245,12 @@ export function canPromote(data: GameData, u: UnitRecord): boolean {
 export function expProgress(
   data: GameData,
   u: UnitRecord,
+  act = 1,
 ): { exp: number; need: number; full: boolean; capped: boolean; cap: number; act: number } {
   const need = data.balance.experience.levelUpAt;
-  const cap = levelCap(data);
+  const cap = levelCap(data, act);
   const full = u.level >= cap;
-  return { exp: u.exp, need, full, capped: full && cap < data.balance.levels.max, cap, act: data.campaign.act };
+  return { exp: u.exp, need, full, capped: full && cap < data.balance.levels.max, cap, act };
 }
 
 /** Pairs of the unit with a conversation ready at the campfire. */

@@ -45,7 +45,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-11-07
+last_updated: 2026-11-08
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -192,8 +192,8 @@ development_status:
   epic-10-retrospective: optional
 
   # Epic 11: Akt 2 „Glut“ – neu geschnitten 2026-11-06 auf die Überarbeitung (Schlüssel neu, alte 11-* ersetzt); F1, F3, F4 entschieden 2026-11-06 (Akt 2 stückweise live), F2 nur Rowena neu (concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md)
-  epic-11: backlog
-  11-1-akt-uebergang-und-spielstand: backlog  # Akt-Übergang und Spielstand
+  epic-11: in-progress
+  11-1-akt-uebergang-und-spielstand: review  # Akt-Übergang und Spielstand
   11-2-positionsstufe-der-akt-2-missionen: backlog  # Positionsstufe der Akt-2-Missionen
   11-3-paket-act2-weltkarte-und-titeltafel: backlog  # Paket act2, Weltkarte und Titeltafel
   11-4-simulation-ueber-akte: backlog  # Simulation über Akte

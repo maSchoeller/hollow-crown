@@ -45,7 +45,7 @@ const AVATAR = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 
 export function campaignAt(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, deathMode: DeathMode) {
   const c = newCampaign(d, seed, { difficulty, deathMode }, { ...AVATAR });
   // recruit chars who would have joined before this node
-  const order = d.campaign.nodes.map((n) => n.id);
+  const order = d.acts[1]!.nodes.map((n) => n.id);
   const idx = order.indexOf(nodeId);
   for (const ch of Object.values(d.chars)) {
     const j = order.indexOf(ch.joins);
@@ -59,7 +59,7 @@ export function campaignAt(d: GameData, seed: number, nodeId: string, difficulty
 export function campaignChained(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, chainDifficulty: Difficulty, deathMode: DeathMode) {
   // the missions before the target can run on another difficulty (e.g. hard target with a normal chain, so enough runs arrive)
   let c = newCampaign(d, seed, { difficulty: chainDifficulty, deathMode }, { ...AVATAR });
-  for (const n of d.campaign.nodes) {
+  for (const n of d.acts[1]!.nodes) {
     if (n.id === nodeId) {
       c.settings.difficulty = difficulty;
       return c;
@@ -170,7 +170,7 @@ export function summarizeMap(data: GameData, o: MapSimOptions & { runs: number; 
     for (const u of r.lost ?? []) add(causes, `lost:${u}`);
     for (const u of r.recruited ?? []) add(recruited, u);
   }
-  const node = data.campaign.nodes.find((n) => n.id === o.node)!;
+  const node = data.acts[1]!.nodes.find((n) => n.id === o.node)!;
   const sideDefs = data.maps[node.map]!.objectives.side;
   const side = Object.fromEntries(
     sideDefs.map((s) => {

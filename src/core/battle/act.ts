@@ -131,7 +131,7 @@ function doRescue(data: GameData, s: BattleState, u: BattleUnit, t: BattleUnit, 
   t.gone = 'rescued';
   t.downed = false;
   events.push({ t: 'rescued', unit: t.uid, by: u.uid });
-  grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u));
+  grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u), s.act);
   const gained = addSupportPoints(data, s.supports, pairKey(u.id, t.id), b.supports.pointsTandemHealRescue);
   if (gained) events.push({ t: 'support', a: u.uid, b: t.uid, points: gained });
 }
@@ -220,7 +220,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
         for (const x of target.status) events.push({ t: 'status', unit: target.uid, status: x.id, on: false });
         target.status = [];
       }
-      if (u.team === 'player') grantExp(data, u, b.experience.heal, s.rng, events, expPercent(data, s, u));
+      if (u.team === 'player') grantExp(data, u, b.experience.heal, s.rng, events, expPercent(data, s, u), s.act);
       const gained = addSupportPoints(data, s.supports, pairKey(u.id, target.id), b.supports.pointsTandemHealRescue);
       if (gained) events.push({ t: 'support', a: u.uid, b: target.uid, points: gained });
       break;
@@ -323,7 +323,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       t.dropUids = [];
       s.stats.recruited.push(t.id);
       events.push({ t: 'recruited', unit: t.uid, by: u.uid });
-      grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u));
+      grantExp(data, u, b.experience.rescueOrTalk, s.rng, events, expPercent(data, s, u), s.act);
       runTriggers(data, s, { kind: 'action', unit: u }, events);
       break;
     }

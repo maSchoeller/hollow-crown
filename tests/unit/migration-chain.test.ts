@@ -41,6 +41,8 @@ const golden: Record<string, Golden> = {
   'format2-auto.json': { roster: company, units: prologueUnits, commands: 11, turn: 3 },
   // the same battle with the IDs before story 15.6 (kael): after the rename migration it is the same company
   'format2-kael.json': { roster: company, units: prologueUnits, commands: 11, turn: 3 },
+  // act 1 played to its finale on main before story 11.1 (generate-act1-finale.ts), on the world map without a battle
+  'format3-act1-finale-done.json': { roster: ['avatar', 'lucan', 'brenna', 'tobin', 'mira', 'liora'], units: [], commands: 0, turn: 0 },
 };
 
 /** The core side of loading a save, as the app does it. */

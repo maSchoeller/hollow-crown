@@ -5,7 +5,7 @@
  * In the castle the top is the 3D scene (`Castle3d`) with the room stones over their buildings; the list shows their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { availableSupportTalks, castleTier, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { actOf, availableSupportTalks, castleTier, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -86,7 +86,7 @@ export function Camp({ tab }: { tab?: string }) {
               <Icon name={mourn ? 'stone' : castle ? 'castle' : 'camp'} size={20} />
             </span>
             <span>
-              <small>{castle ? t('ui.map.act', { act: data.campaign.act, season: t(`act.${data.campaign.act}.season`) }) : t('ui.campaign.act', { act: data.campaign.act })}</small>
+              <small>{castle ? t('ui.map.act', { act: actOf(c), season: t(`act.${actOf(c)}.season`) }) : t('ui.campaign.act', { act: actOf(c) })}</small>
               <b>{mourn ? t(`room.${room.id}.name`) : t(`home.${kind}.name`)}</b>
             </span>
           </Piece>

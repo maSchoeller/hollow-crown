@@ -3,7 +3,8 @@
  * Core is part of the app bundle; the other packs register later (story 7.2) and are merged into the same objects.
  */
 import core from 'virtual:hc-pack/core';
-import { contentIndex } from 'virtual:hc-packs';
+import { contentIndex, packs } from 'virtual:hc-packs';
+import { packActs } from '../packs/plan';
 import { CORE_PACK } from './packs';
 import { buildContent, mergePackContent, type LoadedContent } from './load';
 
@@ -13,6 +14,8 @@ const registered = new Set<string>([CORE_PACK]);
 export function loadContent(): LoadedContent {
   if (!cached) {
     cached = buildContent(core);
+    // only released packs are in the build (story 11.1: the next act opens where its pack is)
+    cached.data.releasedActs = packActs(packs);
     if (cached.issues.length) console.warn('[content]', cached.issues);
   }
   return cached;

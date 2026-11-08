@@ -45,7 +45,7 @@ export function collectIds(data: GameData, released: Partial<Record<IdKind, (id:
     skills: Object.keys(data.skills),
     affixes: Object.keys(data.affixes),
     sets: Object.keys(data.sets),
-    nodes: data.campaign.nodes.map((n) => n.id),
+    nodes: Object.values(data.acts).flatMap((a) => a.nodes.map((n) => n.id)),
     maps: Object.keys(data.maps),
     flags: Object.keys(data.flags),
     rooms: Object.keys(data.rooms),

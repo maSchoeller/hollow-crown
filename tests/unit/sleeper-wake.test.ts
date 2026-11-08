@@ -11,7 +11,7 @@ beforeAll(() => {
 
 function begin(nodeId: string, mapOf: string): BattleState {
   const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-  c.completed = data.campaign.nodes.map((n) => n.id).slice(0, data.campaign.nodes.findIndex((n) => n.id === nodeId));
+  c.completed = data.acts[1]!.nodes.map((n) => n.id).slice(0, data.acts[1]!.nodes.findIndex((n) => n.id === nodeId));
   const s = beginBattle(data, c, nodeId, c.roster.map((u) => u.id)).state;
   expect(s.mapId).toBe(mapOf);
   return s;

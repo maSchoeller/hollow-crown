@@ -6,11 +6,12 @@
 import { t } from '../../i18n';
 import { PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { Sheet } from '../../ui/Sheet';
-import { campaignCommand, currentSaveRecord, data } from '../state/session';
+import { actOf } from '../../core';
+import { campaign, campaignCommand, currentSaveRecord } from '../state/session';
 import { downloadSave } from './Menus';
 
 export function BackupSheet() {
-  const note = () => void campaignCommand({ type: 'markBackupReminded', act: data.campaign.act });
+  const note = () => void campaignCommand({ type: 'markBackupReminded', act: actOf(campaign.value) });
   const exportSave = () => {
     note(); // first, so the exported file already carries the note and does not ask again after an import
     const rec = currentSaveRecord();

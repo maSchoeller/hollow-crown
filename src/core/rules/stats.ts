@@ -3,6 +3,7 @@ import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { armorAffinity, itemStatMods, itemWeight } from './items';
 import { setBonuses, skillTotals, type SkillCtx, type SkillTotals } from './skills';
+import { scarDef } from '../campaign/acts';
 
 export interface EffectiveStats {
   stats: Stats;
@@ -57,7 +58,8 @@ export function computeStats(
   }
   for (const sb of setBonuses(data, unit)) addMods(mods, sb.stats);
   for (const scarId of unit.scars) {
-    const scar = data.campaign.scars.find((s) => s.id === scarId);
+    // scars are the same in every act (story 11.1); the first act that lists one describes it
+    const scar = scarDef(data, scarId);
     if (!scar) continue;
     const { hit: h, crit: c, avoid: a, ...rest } = scar.mods;
     hit += h ?? 0;

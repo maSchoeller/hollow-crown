@@ -154,7 +154,7 @@ describe('1-1 Steckbriefe', () => {
     const ids = map.triggers.map((t) => t.id);
     expect(ids).toEqual(expect.arrayContaining(['t_intro_triangle', 't_posters']));
     expect(map.units.some((u) => u.id === 'fenn')).toBe(false);
-    expect(data.campaign.nodes.find((n) => n.id === 'm1_1')!.effects).toContainEqual({ recruit: 'fenn' });
+    expect(data.acts[1]!.nodes.find((n) => n.id === 'm1_1')!.effects).toContainEqual({ recruit: 'fenn' });
     const rumor = map.objects.find((o) => o.id === 'v_rumor')!;
     expect(rumor.at).toEqual([1, 6]);
     expect(rumor.reward?.dialogue).toBe('scn.m1_1.kharesh_rumor');
@@ -199,7 +199,7 @@ describe('1-2 Erlbach', () => {
       expect(razedAt).toBeGreaterThanOrEqual(4);
       expect(s.flags).toContain('mira_house_razed');
     }
-    const node = data.campaign.nodes.find((n) => n.id === 'm1_2')!;
+    const node = data.acts[1]!.nodes.find((n) => n.id === 'm1_2')!;
     expect(node.effectsIf).toEqual([{ requires: [{ not: { flag: 'mira_house_razed' } }], effects: [{ recruit: 'mira' }] }]);
     expect(data.maps.m1_2_erlbach!.units.some((u) => u.ai?.profile === 'raider' && u.ai.target === 'v_e')).toBe(true);
   });

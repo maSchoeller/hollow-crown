@@ -22,8 +22,8 @@ const rounds = opt('rounds', 6);
 
 const { data } = loadContentFromDisk();
 data.maps[BENCH_MAP_ID] = benchMap();
-const first = data.campaign.nodes[0]!;
-data.campaign.nodes.push({ ...first, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
+const first = data.acts[1]!.nodes[0]!;
+data.acts[1]!.nodes.push({ ...first, id: 'perf', map: BENCH_MAP_ID, pre: undefined, post: undefined });
 
 const avatar = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
 const settings = { difficulty: 'normal', deathMode: 'standard' } as const;
@@ -32,7 +32,7 @@ const settings = { difficulty: 'normal', deathMode: 'standard' } as const;
 function opening(d: GameData, nodeId: string, seed: number): BattleState {
   const c = newCampaign(d, seed, settings, avatar);
   if (nodeId === 'perf') return startBattle(d, createBattle(d, c, nodeId, [])).state;
-  const order = d.campaign.nodes.map((n) => n.id);
+  const order = d.acts[1]!.nodes.map((n) => n.id);
   const idx = order.indexOf(nodeId);
   for (const ch of Object.values(d.chars)) {
     const j = order.indexOf(ch.joins);
@@ -82,7 +82,7 @@ function measure(nodeId: string, mapId: string): Result {
 }
 
 const reference = measure('perf', BENCH_MAP_ID);
-const largest = data.campaign.nodes.filter((n) => n.map === 'm1_6_paktwacht' || n.map === 'm1_8_paktwacht_halten');
+const largest = data.acts[1]!.nodes.filter((n) => n.map === 'm1_6_paktwacht' || n.map === 'm1_8_paktwacht_halten');
 const results = [reference, ...largest.map((n) => measure(n.id, n.map))];
 console.log(`enemy phase per enemy unit, ${runs} runs after ${warmup} warm-up, up to ${rounds} rounds each (budget ${TARGETS.aiMsPerUnit} ms):`);
 console.table(results);

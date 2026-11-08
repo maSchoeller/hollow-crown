@@ -91,7 +91,7 @@ describe('conditions (architecture §5.3)', () => {
   });
 
   it('act is true from the given act on', () => {
-    expect(data.campaign.act).toBe(1);
+    expect(data.acts[1]!.act).toBe(1);
     expect(holds(base, { act: 1 })).toBe(true);
     expect(holds(base, { act: 2 })).toBe(false);
     expect(evalCondition({ ...ctxOf(base), act: 2 }, { act: 2 })).toBe(true);
@@ -361,7 +361,7 @@ describe('content references (content:check)', () => {
 });
 
 describe('expectedLevel (story 4.1)', () => {
-  const nodes = () => clone(data.campaign.nodes);
+  const nodes = () => clone(data.acts[1]!.nodes);
   const problems = (mutate: (d: GameData) => void) => {
     const d = clone(data);
     mutate(d);
@@ -376,14 +376,14 @@ describe('expectedLevel (story 4.1)', () => {
   });
 
   it('a falling curve fails content:check', () => {
-    const msgs = problems((d) => (d.campaign.nodes[2]!.expectedLevel = 1));
+    const msgs = problems((d) => (d.acts[1]!.nodes[2]!.expectedLevel = 1));
     expect(msgs).toContainEqual(expect.stringContaining('expectedLevel 1 falls below 2'));
-    const next = problems((d) => (d.campaign.nodes[1]!.expectedLevel = 9));
+    const next = problems((d) => (d.acts[1]!.nodes[1]!.expectedLevel = 9));
     expect(next).toContainEqual(expect.stringContaining('lower expectedLevel'));
   });
 
   it('a missing expectedLevel fails the schema', () => {
-    const raw = JSON.parse(JSON.stringify(data.campaign)) as { nodes: Array<Record<string, unknown>> };
+    const raw = JSON.parse(JSON.stringify(data.acts[1]!)) as { nodes: Array<Record<string, unknown>> };
     delete raw.nodes[0]!.expectedLevel;
     expect(campaignSchema.safeParse(raw).success).toBe(false);
   });

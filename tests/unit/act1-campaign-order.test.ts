@@ -7,8 +7,8 @@ let data: GameData;
 let walked: Walk;
 
 const fresh = (): CampaignState => newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-const isStory = (id: string) => data.campaign.nodes.find((n) => n.id === id)!.kind === 'story';
-const goal = (id: string) => data.maps[data.campaign.nodes.find((n) => n.id === id)!.map]!.objectives.victory.type;
+const isStory = (id: string) => data.acts[1]!.nodes.find((n) => n.id === id)!.kind === 'story';
+const goal = (id: string) => data.maps[data.acts[1]!.nodes.find((n) => n.id === id)!.map]!.objectives.victory.type;
 
 interface Walk {
   orders: string[][];
@@ -46,10 +46,10 @@ describe('act 1 campaign order (story 15.2)', () => {
   });
 
   it('every order plays every story mission of the act once and ends with the finale', () => {
-    const story = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id).sort();
+    const story = data.acts[1]!.nodes.filter((n) => n.kind === 'story').map((n) => n.id).sort();
     for (const order of walked.orders) {
       expect([...order].sort()).toEqual(story);
-      expect(data.campaign.nodes.find((n) => n.id === order.at(-1))!.fixed).toBe('finale');
+      expect(data.acts[1]!.nodes.find((n) => n.id === order.at(-1))!.fixed).toBe('finale');
     }
   });
 
@@ -96,7 +96,7 @@ describe('act 1 campaign order (story 15.2)', () => {
     for (const order of walked.orders) {
       const c = fresh();
       for (const id of [...order, 'n1', 'n2', 'n3']) {
-        const node = data.campaign.nodes.find((n) => n.id === id)!;
+        const node = data.acts[1]!.nodes.find((n) => n.id === id)!;
         expect(c.roster.some((r) => r.id === 'varek')).toBe(false);
         for (const scene of [node.pre, node.post].filter((s): s is string => !!s)) {
           const lines = resolveScene(data, conditionContext(data, c), scene);

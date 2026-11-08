@@ -1,6 +1,7 @@
 import { CORE_ROLES } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import { groupAllowed } from '../core/rules/items';
+import { findNode } from '../core/campaign/acts';
 import { ballistaItemIssues } from './validateBallista';
 import type { ContentRefs, Err } from './validateRefs';
 
@@ -40,7 +41,7 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
   for (const ch of Object.values(data.chars)) {
     if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
     // chapters that are not built yet (ch03 ff.) may name scenes that are still to be written
-    if (ch.recruit && data.campaign?.nodes.some((n) => n.id === ch.recruit!.chapter)) battleDialogue('units.yaml', ch.recruit.dialogue, `${ch.id} recruit.dialogue`);
+    if (ch.recruit && findNode(data, ch.recruit.chapter)) battleDialogue('units.yaml', ch.recruit.dialogue, `${ch.id} recruit.dialogue`);
     if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);
     ch.items.forEach((r) => {
       item('units.yaml', r, ch.id);

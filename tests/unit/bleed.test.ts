@@ -129,7 +129,7 @@ describe('bleed-out (story 1.6)', () => {
   it('a unit with two scars dies at once instead of bleeding', () => {
     const { s } = setup('standard');
     const u = companion(s);
-    u.scars = data.campaign.scars.slice(0, data.balance.death.scarsUntilInstantDeath).map((x) => x.id);
+    u.scars = data.acts[1]!.scars.slice(0, data.balance.death.scarsUntilInstantDeath).map((x) => x.id);
     const events = down(s, u);
     expect(u.gone).toBe('dead');
     expect(u.downed).toBe(false);

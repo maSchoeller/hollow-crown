@@ -99,7 +99,7 @@ describe('Nebenquest N3 als Knoten', () => {
   /** the real content plus a made-up story node m1_6 (it comes with another session) */
   const withM16 = (): GameData => {
     const d = structuredClone(data);
-    d.campaign.nodes.push({ id: 'm1_6', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 6 });
+    d.acts[1]!.nodes.push({ id: 'm1_6', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 6 });
     return d;
   };
   const ids = (d: GameData, c: CampaignState) => availableNodes(d, c).map((n) => n.id);
@@ -149,7 +149,7 @@ describe('Nebenquest N3 als Knoten', () => {
   });
 
   it('gives the heirloom and no ember spark, in both variants', () => {
-    const n = data.campaign.nodes.find((x) => x.id === 'n3')!;
+    const n = data.acts[1]!.nodes.find((x) => x.id === 'n3')!;
     expect(n.effects).toEqual([{ item: { def: 'heirloom' } }]);
   });
 
@@ -157,7 +157,7 @@ describe('Nebenquest N3 als Knoten', () => {
     const m = data.maps.n3_erbe!;
     expect(m.deploy.forced).toEqual(['avatar', 'tobin']);
     const d = structuredClone(data);
-    d.campaign.nodes.push({ id: 'm1_6', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 6 });
+    d.acts[1]!.nodes.push({ id: 'm1_6', map: 'prologue_paktnacht', titleKey: 'node.prologue.title', kind: 'story', merchantTier: 0, expectedLevel: 6 });
     const c = fresh();
     addToRoster(d, c, 'tobin');
     const on = beginBattle(d, c, 'n3', c.roster.map((u) => u.id)).state;

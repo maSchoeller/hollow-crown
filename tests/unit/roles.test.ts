@@ -210,7 +210,7 @@ describe('PoC figures and maps after the remap', () => {
   });
 
   it('every figure and every map unit carries the weapon it was written with in its hands', () => {
-    for (const node of data.campaign.nodes) {
+    for (const node of data.acts[1]!.nodes) {
       const s = beginBattle(data, base, node.id, base.roster.map((u) => u.id)).state;
       for (const u of s.units) {
         const planned = u.team === 'player' ? undefined : data.maps[node.map]!.units.find((m) => (m.id ?? m.class) === u.id || m.id === u.id);

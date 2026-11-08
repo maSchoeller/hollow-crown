@@ -430,7 +430,7 @@ describe('the developer map', () => {
   it('is not part of the game: no pack, no campaign node besides the test node', () => {
     const fresh = loadContentFromDisk().data;
     expect(fresh.maps[DEV_FOG_MAP_ID]).toBeUndefined();
-    expect(fresh.campaign.nodes.some((n) => n.map === DEV_FOG_MAP_ID)).toBe(false);
+    expect(fresh.acts[1]!.nodes.some((n) => n.map === DEV_FOG_MAP_ID)).toBe(false);
   });
 });
 

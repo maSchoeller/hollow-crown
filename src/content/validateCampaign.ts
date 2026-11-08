@@ -1,7 +1,8 @@
 import { HOME_KINDS } from '../core/defs';
 import type { ItemRef } from '../core/defs';
 import type { GameData } from '../core/gameData';
-import type { CampaignNodeDef } from '../core/storyDefs';
+import type { CampaignDef, CampaignNodeDef } from '../core/storyDefs';
+import { loadedActs, nodeAct, nodesUpTo } from '../core/campaign/acts';
 import { nodeLinks } from '../core/campaign/graph';
 import type { Locales } from './load';
 import type { ContentRefs, Err } from './validateRefs';
@@ -16,7 +17,7 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
    * The world map (stories 5.2 and 15.7): regions with their names and areas, every node bound to one slot of one place, slot
    * labels unique, conditions of the town picture variants, and the stones far enough apart to be tapped at the overview.
    */
-  const worldChecks = (camp: GameData['campaign']): void => {
+  const worldChecks = (camp: Pick<CampaignDef, 'nodes'>): void => {
     const w = data.world;
     const f = 'world/valmora.yaml';
     if (!w) return;
@@ -78,15 +79,33 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
       }
     }
   };
-  const camp = data.campaign;
-  if (camp) {
+  // story 11.1: one node id lives in one act
+  const nodeSeen = new Map<string, number>();
+  for (const act of loadedActs(data))
+    for (const n of data.acts[act]!.nodes) {
+      const was = nodeSeen.get(n.id);
+      if (was !== undefined) err(`acts/act${act}/campaign.yaml`, `node ${n.id} is declared twice (act ${was} and act ${act})`);
+      else nodeSeen.set(n.id, act);
+    }
+  for (const r of Object.values(data.rooms)) {
+    conditions('rooms.yaml', r.requires, `${r.id}.requires`);
+    r.levels.forEach((l, i) => conditions('rooms.yaml', l.requires, `${r.id}.levels[${i}].requires`));
+    for (const u of r.unlocks) conditions('rooms.yaml', u.requires, `${r.id}.unlocks.${u.id}.requires`);
+  }
+  homeChecks();
+  // one world map for all acts: its slots name the nodes of every act
+  worldChecks({ nodes: nodesUpTo(data, Infinity) });
+  for (const m of Object.values(data.memorials)) conditions('memorials.yaml', m.requires, `${m.id}.requires`);
+  for (const act of loadedActs(data)) {
+    const camp = data.acts[act]!;
     const place = (id: string, ctx: string) => {
       if (placeImages && !placeImages.has(id)) err('campaign.yaml', `${ctx}: no place image art/mockups/locations-s1/${id}.png`);
     };
     place(camp.defaultPlace, 'defaultPlace');
     for (const n of camp.nodes) {
       if (n.place) place(n.place, `${n.id} place`);
-      if (!data.maps[n.map]) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
+      // a later act may hold nodes whose map is not built yet (placeholders, story 11.1/11.11): the world map does not offer them
+      if (!data.maps[n.map] && act === 1) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
       dialogue('campaign.yaml', n.pre, n.id);
       dialogue('campaign.yaml', n.post, n.id);
       conditions('campaign.yaml', n.requires, `${n.id}.requires`);
@@ -102,7 +121,8 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
     }
     for (const m of camp.merchant) for (const id of m.items) if (!data.items[id]) err('campaign.yaml', `merchant: unknown item ${id}`);
     const firsts = camp.nodes.filter((n) => n.fixed === 'first');
-    if (firsts.length !== 1) err('campaign.yaml', `exactly one node must be fixed: first (found ${firsts.length})`);
+    // an act without nodes yet (act 2 before story 11.11) has no opening mission either
+    if (firsts.length !== 1 && camp.nodes.length) err('campaign.yaml', `exactly one node must be fixed: first (found ${firsts.length})`);
     if (camp.nodes.filter((n) => n.fixed === 'finale').length > 1) err('campaign.yaml', 'at most one node can be fixed: finale');
     for (const n of camp.nodes)
       for (const g of n.grants ?? []) {
@@ -115,14 +135,6 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
         conditions('campaign.yaml', g.requires, `${n.id} effectsIf[${i}].requires`);
         effects('campaign.yaml', g.effects, `${n.id} effectsIf[${i}]`);
       });
-    for (const r of Object.values(data.rooms)) {
-      conditions('rooms.yaml', r.requires, `${r.id}.requires`);
-      r.levels.forEach((l, i) => conditions('rooms.yaml', l.requires, `${r.id}.levels[${i}].requires`));
-      for (const u of r.unlocks) conditions('rooms.yaml', u.requires, `${r.id}.unlocks.${u.id}.requires`);
-    }
-    homeChecks();
-    for (const m of Object.values(data.memorials)) conditions('memorials.yaml', m.requires, `${m.id}.requires`);
-    worldChecks(camp);
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
     // nodes nor along a `completed` requirement
     let top = 0;
@@ -136,14 +148,13 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
       const b = camp.nodes.find((x) => x.id === to);
       if (a && b && a.kind === 'story' && b.expectedLevel < a.expectedLevel) err('campaign.yaml', `${to}: lower expectedLevel than ${from} it requires (${b.expectedLevel} < ${a.expectedLevel})`);
     }
-    validateMechanics(data, err);
+    validateMechanics(data, camp, err);
   }
 }
 
 /** A side quest opens through its own requires or an openQuest somewhere in the content (run after the scenes). */
 export function validateSideQuests(data: GameData, err: Err, openedQuests: readonly string[]): void {
-  const camp = data.campaign;
-  for (const n of camp?.nodes ?? [])
+  for (const n of nodesUpTo(data, Infinity))
     if (n.kind === 'side' && !n.requires?.length && !openedQuests.includes(n.id)) err('campaign.yaml', `${n.id}: side quest without requires that no openQuest opens`);
 }
 
@@ -151,8 +162,7 @@ export function validateSideQuests(data: GameData, err: Err, openedQuests: reado
  * Step-by-step introduction (concept/06 §10): before magic is introduced no map unit, starting character
  * or merchant tier may carry a tome, otherwise the player meets the mechanic before it is explained.
  */
-function validateMechanics(data: GameData, err: (f: string, m: string) => void): void {
-  const camp = data.campaign;
+function validateMechanics(data: GameData, camp: CampaignDef, err: (f: string, m: string) => void): void {
   const from = camp.mechanics.magic;
   if (from === undefined) return;
   const magical = (r: ItemRef) => data.items[r.def]?.damageType === 'magical';
@@ -179,7 +189,7 @@ function validateMechanics(data: GameData, err: (f: string, m: string) => void):
  * finale, else the story nodes its `completed` requirements need (transitively).
  */
 export function minStoryCount(data: GameData, node: CampaignNodeDef): number {
-  const nodes = data.campaign.nodes;
+  const nodes = data.acts[nodeAct(data, node.id) ?? 1]?.nodes ?? [];
   if (node.fixed === 'first') return 0;
   if (node.fixed === 'finale') return nodes.filter((n) => n.kind === 'story' && n.id !== node.id).length;
   const need = new Set<string>();

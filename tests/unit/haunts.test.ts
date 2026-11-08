@@ -19,16 +19,16 @@ function ready(d: GameData = data, difficulty: 'easy' | 'normal' | 'hard' = 'nor
 function bigData(n: number, patch?: (m: MapDef) => void): GameData {
   const base = data.maps.m1_1_steckbriefe!;
   const maps = { ...data.maps };
-  const nodes = [...data.campaign.nodes];
+  const nodes = [...data.acts[1]!.nodes];
   for (let i = 0; i < n; i++) {
     const m = { ...structuredClone(base), id: `x${i}_map` };
     patch?.(m);
     maps[m.id] = m;
-    nodes.push({ ...data.campaign.nodes.find((x) => x.id === 'm1_1')!, id: `x${i}`, map: m.id, requires: [] });
+    nodes.push({ ...data.acts[1]!.nodes.find((x) => x.id === 'm1_1')!, id: `x${i}`, map: m.id, requires: [] });
   }
-  return { ...data, maps, campaign: { ...data.campaign, nodes } };
+  return { ...data, maps, acts: { ...data.acts, 1: { ...data.acts[1]!, nodes } } };
 }
-const withAll = (c: CampaignState, d: GameData): CampaignState => ({ ...c, completed: d.campaign.nodes.filter((n) => n.kind === 'story' && n.id.startsWith('x')).map((n) => n.id).concat(c.completed) });
+const withAll = (c: CampaignState, d: GameData): CampaignState => ({ ...c, completed: d.acts[1]!.nodes.filter((n) => n.kind === 'story' && n.id.startsWith('x')).map((n) => n.id).concat(c.completed) });
 
 const advance = (d: GameData, c: CampaignState, day: number) => applyCampaign(d, c, { type: 'advanceDay', day });
 const spawned = (events: CampaignEvent[]) => events.flatMap((e) => (e.t === 'hauntSpawned' ? [e] : []));
@@ -208,7 +208,7 @@ describe('haunt generator (story 5.5)', () => {
       const pool = data.hauntPools[1]!.factions.border_bands!;
       expect(c.haunts.length).toBeGreaterThan(0);
       for (const h of c.haunts) {
-        expect(h.level).toBe(data.campaign.nodes.find((n) => n.id === 'm1_2')!.expectedLevel);
+        expect(h.level).toBe(data.acts[1]!.nodes.find((n) => n.id === 'm1_2')!.expectedLevel);
         for (const e of h.enemies.filter((x) => !x.lieutenant)) {
           const t = pool.find((p) => p.class === e.class && p.sprite === e.sprite)!;
           expect(t).toBeDefined();
@@ -354,7 +354,7 @@ describe('maps with noHaunts (GDD log 2026-11-06): prologue, 1-6 and 1-7 are nev
       maps: { ...data.maps, ...Object.fromEntries(['m1_6_paktwacht', 'm1_7_gewoelbe'].map((id) => [id, { ...data.maps[id]!, noHaunts, haunts: data.maps.m1_1_steckbriefe!.haunts }])) },
     });
     const maps = (d: GameData) => {
-      const all = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+      const all = { ...ready(d), completed: d.acts[1]!.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
       const seen = new Set<string>();
       for (let day = 100; day < 160; day++) for (const h of advance(d, all, day).campaign.haunts) seen.add(h.map);
       return seen;
@@ -365,7 +365,7 @@ describe('maps with noHaunts (GDD log 2026-11-06): prologue, 1-6 and 1-7 are nev
 
   it('an open 1-6 or 1-7 haunt of an old save lapses on load, with its hauntLast', () => {
     const d: GameData = { ...data, maps: { ...data.maps, m1_6_paktwacht: { ...data.maps.m1_6_paktwacht!, noHaunts: false, haunts: data.maps.m1_1_steckbriefe!.haunts } } };
-    const c = { ...ready(d), completed: d.campaign.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
+    const c = { ...ready(d), completed: d.acts[1]!.nodes.filter((n) => n.kind === 'story').map((n) => n.id) };
     const day = [...Array(60).keys()].map((i) => 100 + i).find((n) => advance(d, c, n).campaign.haunts.some((h) => h.map === 'm1_6_paktwacht'))!;
     const old = { ...advance(d, c, day).campaign, hauntLast: { m1_6_paktwacht: 'boss', m1_7_gewoelbe: 'rout', m1_2_erlbach: 'rout' } };
     const h = old.haunts.find((x) => x.map === 'm1_6_paktwacht')!;

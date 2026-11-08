@@ -15,13 +15,11 @@ import {
 } from '../../src/core';
 
 let data: GameData;
-let data2: GameData;
 let base: CampaignState;
 
 beforeAll(() => {
   data = loadContentFromDisk().data;
   // the same content, but the running act is 2 (there is no act 2 package yet)
-  data2 = { ...data, campaign: { ...data.campaign, act: 2 } };
   base = newCampaign(data, 3, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
 });
 
@@ -30,20 +28,20 @@ const choose = (c: CampaignState, option: string) => applyCampaign(data, c, { ty
 describe('priceMod', () => {
   it('lowers merchant prices by pct in its act only, rounded down; selling is untouched', () => {
     const c = applyCampaign(data, base, { type: 'effects', effects: [{ priceMod: { pct: -10, act: 2 } }] }).campaign;
-    expect(shopPrice(data2, c, 300)).toBe(270);
-    expect(shopPrice(data2, c, 255)).toBe(229);
+    expect(shopPrice(data, { ...c, act: 2 }, 300)).toBe(270);
+    expect(shopPrice(data, { ...c, act: 2 }, 255)).toBe(229);
     expect(shopPrice(data, c, 300)).toBe(300);
-    expect(shopPrice(data2, base, 300)).toBe(300);
+    expect(shopPrice(data, { ...base, act: 2 }, 300)).toBe(300);
   });
 
   it('the purchase charges the discounted price in act 2 and the full price in act 1', () => {
     const c = applyCampaign(data, base, { type: 'effects', effects: [{ priceMod: { pct: -10, act: 2 } }] }).campaign;
     const rich = { ...c, gold: 1000 };
-    expect(applyCampaign(data2, rich, { type: 'buy', item: 'vulnerary' }).campaign.gold).toBe(1000 - 270);
+    expect(applyCampaign(data, { ...rich, act: 2 }, { type: 'buy', item: 'vulnerary' }).campaign.gold).toBe(1000 - 270);
     expect(applyCampaign(data, rich, { type: 'buy', item: 'vulnerary' }).campaign.gold).toBe(1000 - 300);
     // not enough for the full price but enough for the reduced one
     const poor = { ...c, gold: 280 };
-    expect(validateCampaign(data2, poor, { type: 'buy', item: 'vulnerary' })).toBeNull();
+    expect(validateCampaign(data, { ...poor, act: 2 }, { type: 'buy', item: 'vulnerary' })).toBeNull();
     expect(validateCampaign(data, poor, { type: 'buy', item: 'vulnerary' })).toBe('not_enough_gold');
   });
 });
@@ -54,7 +52,7 @@ describe('villageAid in act 2 (rules: tests/unit/village-aid.test.ts)', () => {
     const potion = data.items.vulnerary!;
     const bonus = data.balance.economy.villageAid.healCharges;
     expect(c.villageAid).toBe(2);
-    expect(maxCharges(data2, c.villageAid, potion)).toBe(potion.charges! + bonus);
+    expect(maxCharges(data, c.villageAid, potion, 2)).toBe(potion.charges! + bonus);
     expect(maxCharges(data, c.villageAid, potion)).toBe(potion.charges);
   });
 
@@ -69,7 +67,7 @@ describe('villageAid in act 2 (rules: tests/unit/village-aid.test.ts)', () => {
 
 describe('node m1_6 and decision E4', () => {
   it('moves the company to the castle and follows ch02; nothing opens after it yet', () => {
-    const node = data.campaign.nodes.find((n) => n.id === 'm1_6')!;
+    const node = data.acts[1]!.nodes.find((n) => n.id === 'm1_6')!;
     expect(node.effects).toEqual([{ setHome: 'castle' }]);
     expect(node.map).toBe('m1_6_paktwacht');
     const afterCh02 = { ...base, completed: ['prologue', 'm1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5'] };
