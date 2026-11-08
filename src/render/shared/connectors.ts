@@ -44,3 +44,24 @@ export function connectorSurface(shape: ConnectorShape, base: number, top: numbe
   if (shape.steps > 0 && share > 0) share = Math.min(shape.steps, Math.floor(share * shape.steps) + 1) / shape.steps;
   return base + (top - base) * share;
 }
+
+/**
+ * The surface of a connector as a polyline along its rise, from the low edge (0) to the high edge (1): the same heights as
+ * `connectorSurface`, with each tread's riser as a vertical step (two points at the same place). The fog lies on it (story 2.6).
+ */
+export function connectorProfile(shape: ConnectorShape, base: number, top: number): Array<[number, number]> {
+  const out: Array<[number, number]> = [
+    [0, base],
+    [shape.from, base],
+  ];
+  if (shape.steps > 0) {
+    const span = shape.to - shape.from;
+    for (let j = 0; j < shape.steps; j++) {
+      const a = shape.from + (span * j) / shape.steps;
+      out.push([a, base + ((top - base) * j) / shape.steps], [a, base + ((top - base) * (j + 1)) / shape.steps]);
+    }
+  } else out.push([shape.to, top]);
+  out.push([1, top]);
+  // drop points that repeat the one before (a slope from the low edge, a riser of height 0)
+  return out.filter((p, i) => i === 0 || p[0] !== out[i - 1]![0] || p[1] !== out[i - 1]![1]);
+}

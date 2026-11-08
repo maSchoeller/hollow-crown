@@ -16,7 +16,7 @@ import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
 import type { BattleState, GameData, TerrainDef, TerrainSurface, TerrainWaterLook } from '../../core';
 import type { AssetStore } from '../host';
 import { BOARDWALK_DECK } from '../board/wallKit';
-import { connectorSurface, riseDir } from './connectors';
+import { connectorProfile, connectorSurface, riseDir } from './connectors';
 import { seasonGround, seasonOf } from '../../content/season';
 import { addSnow } from './snow';
 
@@ -150,6 +150,18 @@ export interface Floor {
   standOn(x: number, y: number): number;
   /** the same at a point between tiles (x, y in tiles, whole numbers = tile centres): a connector's surface under it */
   surfaceAt(x: number, y: number): number;
+  /** the block of map tile (x, y), off the map too (story 2.6: the fog lies on it like on the terrain) */
+  shapeOf(x: number, y: number): TileShape;
+}
+
+/** The terrain block of a tile: its cliff faces end at `height`, its top lies at `stand`, on a connector along `rise.profile`. */
+export interface TileShape {
+  /** height of the block: its cliff faces run from here down to a lower neighbour's */
+  height: number;
+  /** where its flat top is: where a figure stands (`standOn`, a bridge's deck), on water its surface */
+  stand: number;
+  /** a ramp, stairs or ladder: direction of the rise (map tiles, x east, y south) and its surface from the low edge (0) to the high edge (1) */
+  rise: { dir: readonly [number, number]; profile: ReadonlyArray<readonly [number, number]> } | null;
 }
 
 export function floorOf(data: GameData, grid: TerrainGrid, width: number, height: number): Floor {
@@ -187,6 +199,15 @@ export function floorOf(data: GameData, grid: TerrainGrid, width: number, height
       const tx = Math.min(Math.max(Math.round(x), 0), width - 1);
       const ty = Math.min(Math.max(Math.round(y), 0), height - 1);
       return surface(tx, ty, Math.min(0.5, Math.max(-0.5, x - tx)), Math.min(0.5, Math.max(-0.5, y - ty)));
+    },
+    shapeOf: (x, y) => {
+      const def = grid.at(x + S, y + S);
+      if (!def) return { height: -board.baseDepth, stand: -board.baseDepth, rise: null };
+      const shape = def.connector ? board.connectors[def.connector] : undefined;
+      const rise = shape ? riseOf(x + S, y + S) : null;
+      // water: on its surface, not where feet sink in (that lies under the water and its fog would not show)
+      const stand = def.water ? Math.max(flat(def), board.waterLevel) : flat(def);
+      return { height: def.height, stand, rise: shape && rise ? { dir: rise.dir, profile: connectorProfile(shape, def.height, rise.top) } : null };
     },
   };
 }

@@ -429,7 +429,7 @@ export abstract class BoardUnits extends BoardProps {
       o.mesh.dispose();
       o.mat.dispose();
     }
-    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg, this.data.render.legibility);
+    this.overlayMeshes = buildOverlayMeshes(this.scene, this.overlays, (p) => this.tileTop(p), this.data.render.look.marker, this.data.render.camera.tiltDeg, this.data.render.legibility, this.terrain ? (x, y) => this.terrain!.shapeOf(x, y) : undefined);
   }
 
   protected async updateGhost(): Promise<void> {

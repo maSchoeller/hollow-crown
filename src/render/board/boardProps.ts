@@ -38,6 +38,8 @@ export abstract class BoardProps extends BoardSetup {
     this.castShadows(this.terrain.casters);
     this.weather.terrainChanged(this.terrain);
     this.buildGrid();
+    // the markings lie on the terrain: ones set before it stood (the fog of the first sync) would stay at height 0 (story 2.6)
+    this.buildOverlays();
     await this.buildProps();
     if (!this.disposed) this.buildFires();
   }
