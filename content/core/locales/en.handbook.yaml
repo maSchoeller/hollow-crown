@@ -71,6 +71,10 @@ handbook:
     classes: { name: "Classes", sub: "Strengths, weaknesses" }
     lessons: { name: "Lessons", sub: "from the prologue" }
   label:
+    loadoutPro: "Skills of a pro"
+    changePath: "Change path from academy level"
+    changeGold: "Changing the path costs"
+    secondPath: "Second path from academy level"
     perSkl: "Hit per SKL"
     lckDiv: "LCK divided by"
     perAs: "Avoid per AS"
@@ -369,6 +373,11 @@ handbook:
       text: "The merchant buys your items for {sell} of their price. The convoy holds {convoy} items; the equipment of the fallen ends up there too. In battle, whoever stands next to Lucan can reach it."
       where: "Merchant and convoy are rooms at home; in battle “Convoy” opens the store."
       keywords: "merchant, buy, sell, gold, convoy, store"
+    academy:
+      title: "Academy"
+      text: "In the academy a figure of level {level} or more is promoted to a pro path for an ember spark: it starts again at level one, gains stats and carries {loadoutPro} skills instead of four. From academy level {changePath} a pro changes its path for {changeGold} gold; from level {secondPath} it also learns the effect of the other path for one more ember spark."
+      where: "The academy is a room of the castle in the second act; in the troop, “Promote” leads there."
+      keywords: "academy, promotion, pro, change path, second path, ember spark"
     ember_spark:
       title: "Ember spark and promotion"
       text: "With an ember spark a unit from level {level} promotes in the academy to one of the two pro paths of its role and starts again at level one. Ember sparks are rare: from the finale and side quests, later at the merchant for {price} gold."

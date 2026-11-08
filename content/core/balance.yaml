@@ -89,6 +89,12 @@ skills:
   spPerMissionEnd: 5
   loadoutBase: 4
   loadoutAdvanced: 5
+# Akademie (Story 10.2, Produktinhaber 2026-10-31): Weg wechseln ab Stufe 2 für Gold, zweiten Weg lernen ab Stufe 3 für Glutfunken
+academy:
+  changePathFromLevel: 2
+  changePathGold: 1500
+  secondPathFromLevel: 3
+  secondPathSparks: 1
 death:
   scarsUntilInstantDeath: 2
   # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)

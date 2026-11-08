@@ -2,7 +2,7 @@ import { SUPPORT_RANKS, type EquipSlot, type RuneDef, type SupportRank } from '.
 import type { GameData } from '../gameData';
 import type { Condition, RoomDef } from '../storyDefs';
 import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
-import { levelCap, promotionTargets } from '../rules/progression';
+import { levelCap, otherProPath, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { computeStats } from '../rules/stats';
 import { pendingRank, rankIndex } from '../rules/supports';
@@ -233,9 +233,66 @@ export function upgradePreview(data: GameData, inst: ItemInstance): Array<{ key:
   return out;
 }
 
-/** A unit may be promoted: level reached and the class has a promotion (the seal is checked by the command). */
-export function canPromote(data: GameData, u: UnitRecord): boolean {
-  return u.level >= data.balance.levels.promoteFrom && promotionTargets(data, u.classId).length > 0;
+/** Ember spark used for a promotion: convoy first, then the unit's bag. */
+export function sealOf(data: GameData, c: CampaignState, unitId: string): { from: 'convoy' | 'bag'; index: number } | null {
+  const conv = c.convoy.findIndex((i) => itemDef(data, i).use?.promote);
+  if (conv >= 0) return { from: 'convoy', index: conv };
+  const u = c.roster.find((r) => r.id === unitId);
+  const bag = u ? u.bag.findIndex((i) => itemDef(data, i).use?.promote) : -1;
+  return bag >= 0 ? { from: 'bag', index: bag } : null;
+}
+
+/** Ember sparks the company holds (convoy and bags): the academy shows them, its commands spend them. */
+export function sparkCount(data: GameData, c: CampaignState): number {
+  const isSpark = (i: ItemInstance) => !!itemDef(data, i).use?.promote;
+  return c.convoy.filter(isSpark).length + c.roster.reduce((n, u) => n + u.bag.filter(isSpark).length, 0);
+}
+
+/** Level of the academy of the current home (story 10.2): 0 while it does not exist or is locked (`homeRooms`, `fromAct`). */
+export function academyLevel(data: GameData, c: CampaignState): number {
+  const st = homeRooms(data, c).find((r) => r.room.function === 'academy' && r.open);
+  return st ? roomLevel(c, st.room.id) : 0;
+}
+
+export const academyOpen = (data: GameData, c: CampaignState): boolean => academyLevel(data, c) > 0;
+
+/** Why a unit cannot be promoted yet, apart from the class chosen and the spark: 'level', 'pro' (no path left), or null. */
+export function promoteBlock(data: GameData, u: UnitRecord): 'level' | 'pro' | null {
+  if (promotionTargets(data, u.classId).length === 0) return 'pro';
+  return u.level < data.balance.levels.promoteFrom ? 'level' : null;
+}
+
+/** A unit may be promoted: level reached, the class has a pro path and an academy is open (the spark is checked by the command). */
+export function canPromote(data: GameData, c: CampaignState, u: UnitRecord): boolean {
+  return academyOpen(data, c) && promoteBlock(data, u) === null;
+}
+
+/** Check of `promote` (story 10.2), in the order of the story: unit, class, availability, spark. */
+export function promoteError(data: GameData, c: CampaignState, unitId: string, classId: string): 'unknown_unit' | 'unknown_class' | 'not_available' | 'not_enough_materials' | null {
+  const u = c.roster.find((r) => r.id === unitId);
+  if (!u) return 'unknown_unit';
+  if (!promotionTargets(data, u.classId).includes(classId)) return 'unknown_class';
+  if (!canPromote(data, c, u)) return 'not_available';
+  return sealOf(data, c, unitId) ? null : 'not_enough_materials';
+}
+
+/** Check of `changeProPath` (academy level 2): another path of the same role, a pro without a second path, the gold. */
+export function changePathError(data: GameData, c: CampaignState, unitId: string, classId: string): 'unknown_unit' | 'unknown_class' | 'not_available' | 'not_enough_gold' | null {
+  const u = c.roster.find((r) => r.id === unitId);
+  if (!u) return 'unknown_unit';
+  if (otherProPath(data, u.classId) !== classId) return 'unknown_class';
+  const cfg = data.balance.academy;
+  if (academyLevel(data, c) < cfg.changePathFromLevel || data.classes[u.classId]?.tier !== 'pro' || u.secondPath) return 'not_available';
+  return c.gold < cfg.changePathGold ? 'not_enough_gold' : null;
+}
+
+/** Check of `learnSecondPath` (academy level 3): a pro whose role has a second path not learned yet, and the sparks. */
+export function secondPathError(data: GameData, c: CampaignState, unitId: string): 'unknown_unit' | 'not_available' | 'not_enough_materials' | null {
+  const u = c.roster.find((r) => r.id === unitId);
+  if (!u) return 'unknown_unit';
+  const cfg = data.balance.academy;
+  if (academyLevel(data, c) < cfg.secondPathFromLevel || data.classes[u.classId]?.tier !== 'pro' || u.secondPath || !otherProPath(data, u.classId)) return 'not_available';
+  return sparkCount(data, c) >= cfg.secondPathSparks ? null : 'not_enough_materials';
 }
 
 /**

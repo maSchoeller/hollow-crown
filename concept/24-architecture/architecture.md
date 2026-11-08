@@ -374,7 +374,7 @@ lines:
 
 - Stufendeckel aus `campaign.yaml` des Akts (`levelCap`), EP darüber verfallen (`exp`-Event meldet `capped`).
 - **Verbluten:** `BattleUnit.bleed` zählt eigene Phasen seit dem Niederstrecken; bei `balance.death.bleedOutTurns` (3) stirbt die Einheit; Zähler in State und Event, damit die UI ihn zeigt.
-- **Glutfunke** ist ein Item (`kind: promotion`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie. Er ersetzt das Siegel des Proof of Concept, auch für Avatar und Lucan (Produktinhaber 2026-10-31).
+- **Glutfunke** ist ein Item (`kind: seal`, `use: { promote: true, minLevel: 10 }`); `promote` verbraucht ihn, prüft Stufe ≥ 10 und Akademie (Story 10.2). Er ersetzt das Siegel des Proof of Concept, auch für Avatar und Lucan (Produktinhaber 2026-10-31).
 - Übungsplatz, Lektionen der Gedächtnishalle, Händler-Sortiment je Tier, Kopfgeld: alles in `balance.yaml` bzw. `rooms.yaml`, Code liest nur.
 - **Werkstatt-Rezepte** in `content/core/recipes.yaml` (Item, ab welcher Werkstatt-Stufe, Material, Gold) mit Zod-Schema und Referenzprüfung in `content:check`; das Command `craft{recipe}` liest nur diese Datei.
 - **Simulation:** `pnpm sim --campaign act1` spielt den Akt verkettet (KI auf beiden Seiten, Heimat-Heuristik kauft und wertet auf) und prüft die Korridore je Story-Mission aus dem GDD.

@@ -1,4 +1,4 @@
-import type { EquipSlot, FlagValue, HomeKind, Stance, SupportRank } from '../defs';
+import type { EquipSlot, FlagValue, HomeKind, Stance, Stats, SupportRank } from '../defs';
 import type { HauntVariant } from '../mapDefs';
 import type { Effect } from '../storyDefs';
 import type { Command } from '../battle/commands';
@@ -35,7 +35,12 @@ export type CampaignCommand =
   | { type: 'healScar'; unit: string; index: number; herb?: boolean }
   | { type: 'unlockSupport'; pair: string }
   | { type: 'setLoadout'; unit: string; skills: string[] }
+  /** promote `unit` to the pro path `classId` in the academy for an ember spark (story 10.2) */
   | { type: 'promote'; unit: string; classId: string }
+  /** switch a pro to the other path of its role (academy level 2, gold) */
+  | { type: 'changeProPath'; unit: string; classId: string }
+  /** a pro also learns the effect of the other path of its role (academy level 3, ember spark) */
+  | { type: 'learnSecondPath'; unit: string }
   /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
   | { type: 'hire'; offer: string }
   /** let go of the hired mercenary `unit` (a record id `merc<n>` of `c.roster`); his gear goes to the convoy (story 3.7: the way out of an over-full company) */
@@ -120,7 +125,9 @@ export type CampaignEvent =
   | { t: 'itemChanged'; uid: string }
   | { t: 'equipped'; unit: string; uid: string; slot: EquipSlot | 'bag' }
   | { t: 'unitChanged'; unit: string }
-  | { t: 'promoted'; unit: string; classId: string }
+  | { t: 'promoted'; unit: string; from: string; to: string; gain: Partial<Stats> }
+  | { t: 'proPathChanged'; unit: string; from: string; to: string }
+  | { t: 'secondPathLearned'; unit: string; path: string }
   | { t: 'supportUnlocked'; pair: string; rank: SupportRank }
   | { t: 'flagSet'; flag: string; value: FlagValue }
   | { t: 'unitJoined'; unit: string }

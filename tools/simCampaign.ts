@@ -16,6 +16,8 @@ import {
   createHauntBattle,
   currentTier,
   effectiveLevel,
+  promoteError,
+  promotionTargets,
   evalConditions,
   finishBattle,
   itemCategory,
@@ -140,6 +142,16 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
   for (const pair of Object.keys(c.supports)) c = tryCmd(data, c, { type: 'unlockSupport', pair });
   const strong = () =>
     [...c.roster].sort((a, b) => effectiveLevel(data, b) - effectiveLevel(data, a)).slice(0, data.balance.simulation.armySize);
+  // promote (story 10.2, for story 11.27): with an ember spark the highest unit of level 10 or more rises on its first path
+  for (;;) {
+    const cand = [...c.roster]
+      .filter((u) => promotionTargets(data, u.classId).length > 0 && !promoteError(data, c, u.id, promotionTargets(data, u.classId)[0]!))
+      .sort((a, b) => b.level - a.level)[0];
+    if (!cand) break;
+    const next = tryCmd(data, c, { type: 'promote', unit: cand.id, classId: promotionTargets(data, cand.classId)[0]! });
+    if (next === c) break;
+    c = next;
+  }
   // heal: scars first, they cost the most and weigh on every battle
   for (const u of strong()) {
     while ((c.roster.find((r) => r.id === u.id)?.scars.length ?? 0) > 0) {

@@ -12,3 +12,5 @@
 - { id: memorial,  function: memorial,  icon: stone,     fromAct: 1, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }], unlocks: [{ id: lessons, requires: [{ act: 2 }] }] }
 # Verzauberer (Runen): Raum ab Akt 2, Geschichte in Epic 10 (10.5); das Panel funktioniert schon
 - { id: enchanter, function: enchanter, icon: enchanter, fromAct: 2, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+# Akademie (Story 10.2): Aufstieg mit Glutfunke ab Akt 2; Stufe 2 Weg wechseln, Stufe 3 zweiten Weg lernen (Kosten und Gefährten mit 10.1)
+- { id: academy,   function: academy,   icon: academy,   fromAct: 2, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }

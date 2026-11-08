@@ -127,6 +127,8 @@ export const classSchema = z.object({
   legacyIds: z.array(z.string()).default([]),
   tags: z.array(z.string()),
   skill: z.string().optional(),
+  /** skills of a pro path (story 10.2/10.3): active for the class and for a unit that learned it as its second path */
+  proSkills: z.array(z.string()).max(2).default([]),
   base: statsSchema,
   growth: statsSchema,
   growthMod: partialStats,

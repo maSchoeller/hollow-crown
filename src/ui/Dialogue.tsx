@@ -20,6 +20,7 @@ import { ConsequenceCard } from './ConsequenceCard';
 import { figureId, halfUrl, pickSideHalf } from './halfFigure';
 import { Icon } from './icons';
 import { SceneTools } from './SceneTools';
+import { Sparks } from './Sparks';
 import './Dialogue.css';
 
 export interface DialogueProps {
@@ -84,19 +85,6 @@ function Figure({ speaker, mood, avatarPortrait, side, active, halves }: { halve
   return (
     <div class={`vn-fig vn-fig--${side} ${active ? 'is-speaker' : 'is-listener'}`}>
       <img class={pick.mirror ? 'is-mirrored' : undefined} src={halfUrl(pick.stem)} alt="" draggable={false} onError={() => setFailed(true)} />
-    </div>
-  );
-}
-
-/**
- * Two sparks rising over the scene (the reward moment): decorative, a second and a half at most; under reduced motion they stand still.
- * The crackle of the embers comes with the audio story (EXPERIENCE: Funkenknistern): hook for `audio.sfx('sparks')` here.
- */
-function Sparks() {
-  return (
-    <div class="vn-sparks" aria-hidden="true">
-      <i class="vn-spark vn-spark--a" />
-      <i class="vn-spark vn-spark--b" />
     </div>
   );
 }

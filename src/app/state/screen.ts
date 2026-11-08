@@ -20,7 +20,8 @@ export type Screen =
   /** `then`: where the last card leads (default the world map; the tone test of story 8.1 goes on to a scene) */
   | { name: 'farewell'; result: BattleResult; index: number; then?: Screen }
   | { name: 'defeat' }
-  | { name: 'camp'; tab?: string }
+  /** `tab`: a room opened at once; `unit`: the figure preselected in it (the academy, story 10.2) */
+  | { name: 'camp'; tab?: string; unit?: string }
   | { name: 'troop'; unit?: string; from?: From }
   | { name: 'chronicle'; from?: From }
   | { name: 'wanted'; unit?: string; from?: From }

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { applyRenames, checkLockedIds, collectIds, mergeLock, renamedId, renamesSchema, type IdSets, type ReleasedIds } from '../../src/content/ids';
 import { loadContentFromDisk } from '../../src/content/node';
+import { normalizeCampaign } from '../../src/core';
 import { migrate, migrationFormats, SAVE_FORMAT, type SaveRecord } from '../../src/persistence/save';
 import { saveRecordSchema } from '../../src/persistence/schema';
 import { readRenames } from '../../tools/build/packs-plugin';
@@ -85,6 +86,16 @@ describe('rename migration 2 → 3 (story 15.6: Kael is Lucan)', () => {
       }
       for (const pair of Object.keys(c.supports)) for (const id of pair.split('|')) expect(id === 'avatar' || !!data.chars[id], `${f}: support ${pair}`).toBe(true);
     }
+  });
+
+  it('loads the act 1 finale save with the academy defaults, without a migration (story 10.2)', () => {
+    const rec = JSON.parse(readFileSync(join(dir, 'format3-act1-finale-done.json'), 'utf8')) as SaveRecord;
+    expect(rec.format).toBe(SAVE_FORMAT);
+    const raw = rec.payload.campaign;
+    const c = normalizeCampaign(data, migrate(rec).payload.campaign);
+    expect(c.roster.length).toBe(raw.roster.length);
+    expect(c.roster.map((u) => u.classId)).toEqual(raw.roster.map((u) => u.classId));
+    expect(c.roster.every((u) => JSON.stringify(u.promotionGain) === '{}' && u.secondPath === null)).toBe(true);
   });
 });
 

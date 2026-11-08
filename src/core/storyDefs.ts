@@ -177,7 +177,7 @@ export interface CampaignNodeDef {
 export interface RoomDef {
   id: string;
   /** what the room does; the UI opens the matching panel */
-  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'memorial' | 'enchanter';
+  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'memorial' | 'enchanter' | 'academy';
   /** line icon of the room stone (icons.tsx) */
   icon: string;
   /** first act in which the room exists */

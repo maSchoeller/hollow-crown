@@ -35,6 +35,12 @@ export const balanceSchema = z.object({
   growth: z.record(z.string(), z.union([z.number(), z.boolean()])),
   levels: z.record(z.string(), z.number()),
   skills: z.record(z.string(), z.number()),
+  academy: z.strictObject({
+    changePathFromLevel: z.number().int().min(1).max(3),
+    changePathGold: z.number().int().min(0),
+    secondPathFromLevel: z.number().int().min(1).max(3),
+    secondPathSparks: z.number().int().min(1),
+  }),
   death: z.record(z.string(), z.number()),
   day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
   haunt: z.strictObject({
