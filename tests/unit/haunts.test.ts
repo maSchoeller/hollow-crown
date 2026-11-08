@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { applyCampaign, hash32, hauntMapId, newCampaign, normalizeCampaign, replayCampaign, staleHauntMap, withoutStaleHauntBattle, type CampaignCommand, type CampaignEvent, type CampaignState, type GameData, type MapDef } from '../../src/core';
-import { hauntAnchorSchema, hauntPoolsSchema } from '../../src/content/schemas';
+import { hauntPoolsSchema } from '../../src/content/schemaCampaign';
+import { hauntAnchorSchema } from '../../src/content/schemaMap';
 import { validateContent } from '../../src/content/validate';
 import { loadContentFromDisk } from '../../src/content/node';
 import { areaTiles } from '../../src/core/util';

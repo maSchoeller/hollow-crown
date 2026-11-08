@@ -160,6 +160,13 @@ loading:
   # Akt-Pakete im Hintergrund (Story 7.2): Pause vor dem n-ten neuen Versuch = base · 2^(n−1), höchstens max
   packRetryBaseMs: 2000
   packRetryMaxMs: 60000
+# Kampagnen-Journal (Review 2026-11-07, M2): dient dem Fehlerbericht und Replays ab einem Checkpoint, nicht dem Spiel.
+# Nach compactAfter Kampagnen-Commands seit dem letzten Checkpoint schreibt die App einen neuen (Grund `compact`);
+# jeder Checkpoint löscht alles vor den letzten keepCheckpoints Checkpoints. So bleiben höchstens
+# keepCheckpoints volle Zustände und rund keepCheckpoints · compactAfter Commands je Kampagne.
+journal:
+  compactAfter: 500
+  keepCheckpoints: 2
 rally: { radius: 2, damage: 2, hit: 10 }
 # Klassen-Aktionen (Story 2.3): Zielen = ohne Bewegung angreifen, Fernbergen = Niedergestreckte auf bis zu range Feldern, Anfeuern = Nachbar bis Zugende
 # Halten (Story 2.4): die KI umgeht eine Haltezone, wenn der Umweg in Bewegungskosten höchstens detourMax länger ist als der kürzeste Weg ohne Rücksicht auf Haltezonen

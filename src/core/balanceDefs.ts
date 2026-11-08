@@ -120,6 +120,8 @@ export interface Balance {
   };
   /** loading of on-demand files before a mission, and the retry pause of the act packs (story 7.2) */
   loading: { fetchTimeoutMs: number; packRetryBaseMs: number; packRetryMaxMs: number };
+  /** campaign journal bounds (review 2026-11-07, M2): a `compact` checkpoint after this many commands, checkpoints kept */
+  journal: { compactAfter: number; keepCheckpoints: number };
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
   chronicle: {
     seasonPages: number;

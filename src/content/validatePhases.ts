@@ -9,7 +9,7 @@ function lineUpUnit(map: MapDef, id: string): MapUnitDef | undefined {
 /**
  * Checks of the objective phases (story 11.8): an escape's `min` and `must`, and that the trigger action `advance_objective` and
  * the trigger `objective_changed` only stand on a map whose victory goal has a second phase. Whether the escape area of the
- * second phase can be reached is part of the goal-area check in `validate.ts`.
+ * second phase can be reached is part of the goal-area check in `validateMap.ts`.
  */
 export function validatePhases(map: MapDef, err: (f: string, m: string) => void): void {
   const f = `maps/${map.id}`;

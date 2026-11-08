@@ -14,7 +14,7 @@ import { buildContent } from '../../src/content/load';
 import { loadContentFromDisk, readContentFiles } from '../../src/content/node';
 import { readPacks } from '../../tools/build/packs-plugin';
 import { releasedIdSets } from '../../tools/build/lockIds';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { validateContent } from '../../src/content/validate';
 import {
   applyCommand,

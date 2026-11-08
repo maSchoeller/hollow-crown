@@ -166,10 +166,13 @@ function showCampaign(c: CampaignState): void {
   setAvatar(c.avatar.name, c.avatar.pronoun);
 }
 
-const journal = createJournalWriter((e) => log.warn('save', 'journal write failed', e));
+const journal = createJournalWriter((e) => log.warn('save', 'journal write failed', e), data.balance.journal);
+/** Commands journaled since the last checkpoint; every new, load and import writes one, so this starts at 0. */
+let sinceCheckpoint = 0;
 
-/** Full campaign state into the journal; replays of this campaign start here. */
+/** Full campaign state into the journal; replays of this campaign start here (older entries go, `balance.journal`). */
 function checkpoint(id: string, c: CampaignState, reason: CheckpointReason): void {
+  sinceCheckpoint = 0;
   void journal.append(id, { kind: 'checkpoint', reason, contentVersion, campaign: c });
 }
 
@@ -200,7 +203,11 @@ export function campaignCommand(cmd: CampaignCommand): CampaignCommandResult {
   trail.record({ kind: 'campaign', cmd: compactCommand(cmd), ok: true, ...trailEvents(r.events), hash: stateHash(r.campaign) });
   showCampaign(r.campaign);
   const id = campaignId.value;
-  if (id) void journal.append(id, { kind: 'command', cmd });
+  if (id) {
+    void journal.append(id, { kind: 'command', cmd });
+    // bounded journal (review 2026-11-07, M2): a fresh checkpoint lets the oldest segment go
+    if (++sinceCheckpoint >= data.balance.journal.compactAfter) checkpoint(id, r.campaign, 'compact');
+  }
   autosave(live().where);
   return { ok: true, events: r.events };
 }

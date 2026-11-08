@@ -2,7 +2,7 @@
  * The reference battle of the performance run (story 7.5, NFR1): 24×32 tiles, 40 units (12 player, 28 enemies that
  * all advance in the enemy phase). Built here instead of in content/ so it never ships; checked with the map schema.
  */
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import type { MapDef } from '../../src/core/mapDefs';
 
 export const BENCH_MAP_ID = 'perf_bench_large';

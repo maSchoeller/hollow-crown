@@ -1,7 +1,11 @@
 /**
  * Campaign journal (concept/24-architecture §5.2): every applied campaign command with a running number,
  * plus checkpoints (full state) where replays begin. Lives in the `journal` store of the save database.
+ * Bounded (review 2026-11-07, M2): it serves the bug report and replays from a checkpoint, so a checkpoint
+ * drops every entry before the last `keepCheckpoints` checkpoints, and the app writes a `compact` checkpoint
+ * after `compactAfter` commands (`balance.journal`).
  */
+import type { IDBPObjectStore } from 'idb';
 import type { CampaignCommand, CampaignState } from '../core';
 import { APP_VERSION, saveDb } from './save';
 
@@ -9,7 +13,13 @@ import { APP_VERSION, saveDb } from './save';
  * Why a checkpoint was written: a new campaign, a load (the loaded state need not match the journal's end),
  * a load after an app or content update (commands may replay differently), or an import.
  */
-export type CheckpointReason = 'new' | 'load' | 'update' | 'import';
+export type CheckpointReason = 'new' | 'load' | 'update' | 'import' | 'compact';
+
+/** How much of a campaign's journal stays (`balance.journal`). */
+export interface JournalRetention {
+  /** checkpoints kept with the commands after them, the newest included (at least 1) */
+  keepCheckpoints: number;
+}
 
 export type JournalEntry =
   | { campaignId: string; seq: number; kind: 'command'; cmd: CampaignCommand }
@@ -30,8 +40,11 @@ export type NewJournalEntry =
 const plain = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 const range = (id: string) => IDBKeyRange.bound([id, -Infinity], [id, Infinity]);
 
-/** Appends one entry with the next running number; returns the stored entry. */
-export async function appendJournal(campaignId: string, e: NewJournalEntry): Promise<JournalEntry> {
+/**
+ * Appends one entry with the next running number; returns the stored entry. With `retention`, a checkpoint
+ * also deletes the entries before the oldest checkpoint kept (same transaction).
+ */
+export async function appendJournal(campaignId: string, e: NewJournalEntry, retention?: JournalRetention): Promise<JournalEntry> {
   const tx = (await saveDb()).transaction('journal', 'readwrite');
   const store = tx.objectStore('journal');
   const last = await store.openCursor(range(campaignId), 'prev');
@@ -40,8 +53,26 @@ export async function appendJournal(campaignId: string, e: NewJournalEntry): Pro
     e.kind === 'command'
       ? { campaignId, seq, kind: 'command', cmd: plain(e.cmd) }
       : { campaignId, seq, kind: 'checkpoint', reason: e.reason, appVersion: APP_VERSION, contentVersion: e.contentVersion, campaign: plain(e.campaign) };
-  await Promise.all([store.add(entry), tx.done]);
+  await store.add(entry);
+  if (entry.kind === 'checkpoint' && retention) await prune(store, campaignId, Math.max(1, retention.keepCheckpoints));
+  await tx.done;
   return entry;
+}
+
+type JournalStore = IDBPObjectStore<unknown, ['journal'], 'journal', 'readwrite'>;
+
+/** Deletes everything before the `keep`-th newest checkpoint. */
+async function prune(store: JournalStore, campaignId: string, keep: number): Promise<void> {
+  let seen = 0;
+  let cur = await store.openCursor(range(campaignId), 'prev');
+  while (cur) {
+    const e = cur.value as JournalEntry;
+    if (e.kind === 'checkpoint' && ++seen === keep) {
+      if (e.seq > 0) await store.delete(IDBKeyRange.bound([campaignId, -Infinity], [campaignId, e.seq], false, true));
+      return;
+    }
+    cur = await cur.continue();
+  }
 }
 
 /** Entries of a campaign in order. */
@@ -75,11 +106,11 @@ export async function needsUpdateCheckpoint(campaignId: string, contentVersion: 
  * Serial writer: entries keep their order although callers do not wait. A failed write is reported and
  * does not stop later ones (the auto-save still holds the state).
  */
-export function createJournalWriter(onError: (e: unknown) => void = (e) => console.warn('journal write failed', e)) {
+export function createJournalWriter(onError: (e: unknown) => void = (e) => console.warn('journal write failed', e), retention?: JournalRetention) {
   let chain: Promise<unknown> = Promise.resolve();
   return {
     append(campaignId: string, e: NewJournalEntry): Promise<void> {
-      const next = chain.then(() => appendJournal(campaignId, e)).then(() => undefined, onError);
+      const next = chain.then(() => appendJournal(campaignId, e, retention)).then(() => undefined, onError);
       chain = next;
       return next;
     },

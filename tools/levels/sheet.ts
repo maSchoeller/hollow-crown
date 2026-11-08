@@ -4,7 +4,7 @@
  * planning notes of `design:` (paths, phases, zones, marks), legend and a header with the key figures. Pure functions, no I/O.
  */
 import type { z } from 'zod';
-import type { mapSchema, mapUnitSchema } from '../../src/content/schemas';
+import type { mapSchema, mapUnitSchema } from '../../src/content/schemaMap';
 
 export type LevelMap = z.infer<typeof mapSchema>;
 type MapUnit = z.infer<typeof mapUnitSchema>;
