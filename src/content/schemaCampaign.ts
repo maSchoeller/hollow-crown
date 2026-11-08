@@ -6,7 +6,7 @@ import { itemRefSchema } from './schemaUnits';
 
 export const roomSchema = z.object({
   id: z.string(),
-  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter']),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter', 'academy']),
   icon: z.string(),
   fromAct: z.number().int().min(1).default(1),
   homes: z.array(z.enum(['camp', 'castle'])).min(1),

@@ -8,9 +8,7 @@ import {
   expProgress,
   isMercenary,
   itemDef,
-  lineKey,
   loadoutSlots,
-  promotionTargets,
   ROLE_GROUPS,
   supportTalksOf,
   type CampaignCommand,
@@ -23,9 +21,8 @@ import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
 import { Toast, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
-import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, SecondaryButton, Tabs } from '../../ui/pieces';
+import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
-import { barkChar, barkScene, hasBark } from '../battle/barks';
 import { campaign, campaignCommand, data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
@@ -91,7 +88,7 @@ export function Troop({ from = 'worldmap' }: { from?: From }) {
 function Mate({ unit, onOpen }: { unit: UnitRecord; onOpen: () => void }) {
   const c = campaign.value!;
   const talks = supportTalksOf(data, c, unit.id);
-  const promote = canPromote(data, unit);
+  const promote = canPromote(data, c, unit);
   return (
     <button type="button" class="trp-mate" onClick={onOpen} aria-label={t('ui.troop.open', { name: unitName(unit) })}>
       {(promote || talks > 0 || unit.scars.length > 0) && (
@@ -155,9 +152,6 @@ export function Figure({
 }) {
   const c = campaign.value!;
   const [toast, setToast] = useState<string | null>(null);
-  /** the companion's ember line after a promotion (story 9.13), shown as a quote toast */
-  const [ember, setEmber] = useState<{ text: string; portrait?: string; name: string } | null>(null);
-  const [promoting, setPromoting] = useState(false);
   const start = useRef<{ x: number; y: number } | null>(null);
   const pos = units.indexOf(unit.id);
   const step = (d: number) => {
@@ -174,7 +168,9 @@ export function Figure({
   });
   const st = computeStats(data, unit);
   const exp = expProgress(data, unit);
-  const promotable = canPromote(data, unit);
+  const promotable = canPromote(data, c, unit);
+  const academy = Object.values(data.rooms).find((r) => r.function === 'academy');
+  const second = unit.secondPath ? data.classes[unit.secondPath] : undefined;
   const apply = (cmd: CampaignCommand) => {
     const r = campaignCommand(cmd);
     if (r.ok) audio.sfx('confirm');
@@ -340,29 +336,14 @@ export function Figure({
             .map((id) => t(`skill.${id}.name`))
             .join(' · ')}
         </span>
-        {promoting && (
-          <div class="trp-pick">
-            {promotionTargets(data, unit.classId).map((cl) => (
-              <SecondaryButton
-                key={cl}
-                onClick={() => {
-                  setPromoting(false);
-                  if (apply({ type: 'promote', unit: unit.id, classId: cl }) && hasBark(data, barkChar(unit), 'ember')) setEmber({ text: lineKey(barkScene(barkChar(unit)), 'ember'), portrait: unit.portrait, name: unitName(unit) });
-                }}
-              >
-                {t(`class.${cl}.name`)}
-              </SecondaryButton>
-            ))}
-          </div>
-        )}
+        {second && <span class="trp-chips">{t('ui.figure.also', { effect: t(`class.${second.id}.effect`) })}</span>}
       </Piece>
       {promotable && !readOnly && c.roster.some((u) => u.id === unit.id) && (
         <div class="hc-btns">
-          <PrimaryButton onClick={() => setPromoting(!promoting)}>{t('ui.figure.promote')}</PrimaryButton>
+          <PrimaryButton onClick={() => (screen.value = { name: 'camp', tab: academy?.id, unit: unit.id })}>{t('ui.figure.promote')}</PrimaryButton>
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
-      {ember && !toast && <Toast text={t('ui.farewell.quote', { text: t(ember.text) })} lead={<UnitHead portrait={ember.portrait} name={ember.name} size={32} />} onDone={() => setEmber(null)} />}
     </div>
   );
 }

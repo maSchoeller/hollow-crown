@@ -180,6 +180,8 @@ export interface ClassDef {
   legacyIds?: string[];
   tags: string[];
   skill?: string;
+  /** skills of the pro path (story 10.2/10.3); a unit that learned this path second gets them too */
+  proSkills?: string[];
   base: Stats;
   growth: Stats;
   growthMod: Partial<Stats>;

@@ -65,6 +65,8 @@ export function recordFromChar(data: GameData, def: CharDef, src: UidSource, ava
     mastered: [],
     loadout: [],
     sp: {},
+    promotionGain: {},
+    secondPath: null,
     portrait: def.portrait ?? def.id,
     sprite: def.sprite ?? def.id,
   };
@@ -169,6 +171,8 @@ export function battleUnitFromMap(
       mastered: [],
       loadout: [],
       sp: {},
+      promotionGain: {},
+      secondPath: null,
       sprite: def.sprite,
       portrait: def.portrait,
     };

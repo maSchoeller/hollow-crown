@@ -147,16 +147,61 @@ export function promotionTargets(data: GameData, classId: string): string[] {
   return (data.classes[classId]?.proPaths ?? []).filter((id) => !!data.classes[id]);
 }
 
-/** Class promotion with a seal (concept/04 §4). Mutates the unit. */
+/**
+ * The stat gain a promotion to `classId` actually credits (story 10.2): the class's `promotionBonus`, each stat only up to
+ * the caps of the new class. The academy panel shows it, `promote` credits it: the same function.
+ */
+export function promotionPreview(data: GameData, u: Pick<UnitRecord, 'stats'>, classId: string): Partial<Stats> {
+  const target = data.classes[classId];
+  if (!target) return {};
+  const out: Partial<Stats> = {};
+  for (const k of STAT_KEYS) {
+    const gain = Math.max(0, Math.min(target.caps[k], u.stats[k] + (target.promotionBonus?.[k] ?? 0)) - u.stats[k]);
+    if (gain > 0) out[k] = gain;
+  }
+  return out;
+}
+
+/** Class promotion with an ember spark (story 10.2). Mutates the unit; returns the stat gain credited (`promotionGain`). */
 export function promote(data: GameData, u: UnitRecord, classId: string): Partial<Stats> {
   if (!promotionTargets(data, u.classId).includes(classId)) throw new CoreInvariantError('invalid_promotion', { from: u.classId, to: classId });
-  const target = data.classes[classId]!;
-  const bonus = target.promotionBonus ?? {};
-  for (const k of STAT_KEYS) {
-    u.stats[k] = Math.min(target.caps[k], u.stats[k] + (bonus[k] ?? 0));
-  }
+  const gain = promotionPreview(data, u, classId);
+  for (const k of STAT_KEYS) u.stats[k] += gain[k] ?? 0;
   u.classId = classId;
   u.level = 1;
   u.exp = 0;
-  return bonus;
+  u.promotionGain = gain;
+  return gain;
+}
+
+/** The other pro path of the role a pro class belongs to (the class whose `proPaths` names it), or null with only one path. */
+export function otherProPath(data: GameData, proClassId: string): string | null {
+  for (const cls of Object.values(data.classes)) {
+    if (!cls.proPaths.includes(proClassId)) continue;
+    const other = promotionTargets(data, cls.id).find((id) => id !== proClassId);
+    if (other) return other;
+  }
+  return null;
+}
+
+/**
+ * The stat gain a change of pro path credits (story 10.2): the old gain is taken back, the new path's bonus is credited up
+ * to its caps, stats above the new caps fall to them. Returns the new stats and the new `promotionGain`.
+ */
+export function proPathPreview(data: GameData, u: UnitRecord, classId: string): { stats: Stats; gain: Partial<Stats> } {
+  const base = { ...u.stats };
+  for (const k of STAT_KEYS) base[k] -= u.promotionGain?.[k] ?? 0;
+  const gain = promotionPreview(data, { stats: base }, classId);
+  const caps = data.classes[classId]!.caps;
+  const stats = { ...base };
+  for (const k of STAT_KEYS) stats[k] = Math.min(caps[k], base[k] + (gain[k] ?? 0));
+  return { stats, gain };
+}
+
+/** Change to the other pro path of the role (academy level 2): class and stats change, level, exp, loadout and gear stay. */
+export function changeProPath(data: GameData, u: UnitRecord, classId: string): void {
+  const { stats, gain } = proPathPreview(data, u, classId);
+  u.stats = stats;
+  u.promotionGain = gain;
+  u.classId = classId;
 }

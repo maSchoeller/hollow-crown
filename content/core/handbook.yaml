@@ -321,7 +321,18 @@ entries:
     values:
       - { id: level, ref: balance.levels.promoteFrom, icon: star }
       - { id: price, ref: items.ember_spark.price, icon: gold }
-    see: [rooms_upgrade, class_vanguard]
+    see: [academy, rooms_upgrade, class_vanguard]
+  - id: academy
+    category: home
+    icon: academy
+    fromAct: 2
+    values:
+      - { id: level, ref: balance.levels.promoteFrom, icon: star }
+      - { id: loadoutPro, ref: balance.skills.loadoutAdvanced }
+      - { id: changePath, ref: balance.academy.changePathFromLevel }
+      - { id: changeGold, ref: balance.academy.changePathGold, icon: gold }
+      - { id: secondPath, ref: balance.academy.secondPathFromLevel }
+    see: [ember_spark, rooms_upgrade]
 
   # ------------------------------------------------------------------ Items
   - id: rarity

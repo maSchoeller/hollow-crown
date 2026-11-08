@@ -107,7 +107,7 @@ function Screens() {
     case 'defeat':
       return <Defeat />;
     case 'camp':
-      return <Camp tab={sc.tab} />;
+      return <Camp tab={sc.tab} unit={sc.unit} />;
     case 'troop':
       return <Troop from={sc.from} />;
     case 'wanted':

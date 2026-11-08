@@ -40,12 +40,15 @@ describe('troop helpers (story 6.1)', () => {
     expect(Object.values(data.classes).every((c) => ['melee', 'ranged', 'support'].includes(c.roleGroup))).toBe(true);
   });
 
-  it('promotion needs the level and a promotion of the class', () => {
+  it('promotion needs the level, a promotion of the class and an open academy (story 10.2)', () => {
     const c = clone(base);
     const brenna = unit(c, 'brenna');
-    expect(canPromote(data, brenna)).toBe(false);
+    expect(canPromote(data, c, brenna)).toBe(false);
     brenna.level = data.balance.levels.promoteFrom;
-    expect(canPromote(data, brenna)).toBe(true);
+    // act 1: no academy, so no promotion
+    expect(canPromote(data, c, brenna)).toBe(false);
+    const castle = { ...clone(c), act: 2, home: { kind: 'castle' as const, rooms: {} } };
+    expect(canPromote(data, castle, unit(castle, 'brenna'))).toBe(true);
     expect(expProgress(data, brenna).need).toBe(data.balance.experience.levelUpAt);
   });
 

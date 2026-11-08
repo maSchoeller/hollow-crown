@@ -71,6 +71,10 @@ handbook:
     classes: { name: "Klassen", sub: "Stärken, Schwächen" }
     lessons: { name: "Lektionen", sub: "aus dem Prolog" }
   label:
+    loadoutPro: "Skills eines Profis"
+    changePath: "Weg wechseln ab Akademie-Stufe"
+    changeGold: "Weg wechseln kostet"
+    secondPath: "Zweiter Weg ab Akademie-Stufe"
     perSkl: "Treffer je GES"
     lckDiv: "GLÜ geteilt durch"
     perAs: "Ausweichen je AT"
@@ -369,6 +373,11 @@ handbook:
       text: "Der Händler kauft deine Items für {sell} ihres Preises. Der Konvoi fasst {convoy} Items, auch die Ausrüstung Gefallener landet dort. Im Kampf erreicht ihn, wer neben Lucan steht."
       where: "Händler und Konvoi sind Räume der Heimat; im Kampf öffnet „Konvoi“ das Lager."
       keywords: "Händler, kaufen, verkaufen, Gold, Konvoi, Lager"
+    academy:
+      title: "Akademie"
+      text: "In der Akademie steigt eine Figur ab Stufe {level} für einen Glutfunken auf einen Profi-Weg auf: Sie beginnt wieder bei Stufe eins, gewinnt Werte und trägt {loadoutPro} statt vier Skills. Ab Akademie-Stufe {changePath} wechselt ein Profi für {changeGold} Gold den Weg, ab Stufe {secondPath} lernt er für einen weiteren Glutfunken auch die Wirkung des anderen Wegs."
+      where: "Die Akademie ist ein Raum der Burg im zweiten Akt; in der Truppe führt „Aufsteigen“ dorthin."
+      keywords: "Akademie, Aufstieg, Profi, Weg wechseln, zweiter Weg, Glutfunke"
     ember_spark:
       title: "Glutfunke und Aufstieg"
       text: "Mit einem Glutfunken steigt eine Figur ab Stufe {level} in der Akademie zu einem der zwei Profi-Wege ihrer Rolle auf und beginnt wieder bei Stufe eins. Glutfunken sind selten: aus dem Finale und aus Nebenquests, später beim Händler für {price} Gold."
