@@ -20,6 +20,7 @@ export * from './rules/movement';
 export * from './rules/combat';
 export * from './rules/effects';
 export * from './rules/cast';
+export * from './rules/heal';
 export * from './rules/ballista';
 export * from './rules/scout';
 export * from './rules/vision';

@@ -9,7 +9,7 @@ export type Mode =
   /** `ballista`: the shot of that ballista (story 11.6) instead of an attack with a carried weapon */
   | { k: 'forecast'; uid: string; to: Pos; target: string; weapon?: string; aim?: boolean; ballista?: string }
   /** preview of Fernbergen / Anfeuern before it is confirmed */
-  | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string }
+  | { k: 'classPreview'; uid: string; to: Pos; action: 'farRescue' | 'cheer'; target: string; second?: string }
   /** Nachsetzen right after an attack (story 2.4): `to` is the chosen tile, null until one is tapped */
   | { k: 'pursue'; uid: string; to: Pos | null }
   /** rule card of a passive role (Halten, Nachsetzen), reached by a tap on its dock slot */

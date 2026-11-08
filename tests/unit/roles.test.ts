@@ -110,7 +110,7 @@ describe('role model in classes.yaml', () => {
   it('pro classes hang off their role; paths that are not playable yet are not selectable (story 10.3)', () => {
     expect(promotionTargets(data, 'vanguard')).toEqual(['bulwark', 'breaker']);
     expect(promotionTargets(data, 'skirmisher')).toEqual(['blade_dancer', 'duelist']);
-    expect(promotionTargets(data, 'minstrel')).toEqual([]);
+    expect(promotionTargets(data, 'minstrel')).toEqual(['bard', 'standard_bearer']);
     expect(promotionTargets(data, 'duelist')).toEqual([]);
     for (const c of Object.values(data.classes).filter((x) => x.tier === 'pro')) {
       expect(data.classes[c.role]!.proPaths).toContain(c.id);

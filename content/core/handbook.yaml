@@ -385,7 +385,7 @@ entries:
   - { id: class_elementalist, category: classes, graphic: class, class: elementalist, see: [class_sage, class_hexer, magic, elements] }
   - { id: class_healer, category: classes, graphic: class, class: healer, see: [class_bishop, class_battle_priest, rescue] }
   - { id: class_scout, category: classes, graphic: class, class: scout, see: [doors, fog, terrain_mountain] }
-  - { id: class_minstrel, category: classes, graphic: class, class: minstrel, see: [class_captain, supports] }
+  - { id: class_minstrel, category: classes, graphic: class, class: minstrel, see: [class_bard, class_standard_bearer, class_captain, supports] }
   - { id: class_duelist, category: classes, graphic: class, class: duelist, fromAct: 2, see: [class_skirmisher, ember_spark] }
   - { id: class_bulwark, category: classes, graphic: class, class: bulwark, fromAct: 2, see: [class_vanguard, ember_spark] }
   - { id: class_breaker, category: classes, graphic: class, class: breaker, fromAct: 2, see: [class_vanguard, ember_spark] }
@@ -397,6 +397,8 @@ entries:
   - { id: class_hexer, category: classes, graphic: class, class: hexer, fromAct: 2, see: [class_elementalist, academy] }
   - { id: class_battle_priest, category: classes, graphic: class, class: battle_priest, fromAct: 2, see: [class_healer, academy] }
   - { id: class_grand_strategist, category: classes, graphic: class, class: grand_strategist, fromAct: 2, see: [class_tactician, academy] }
+  - { id: class_bard, category: classes, graphic: class, class: bard, fromAct: 2, see: [class_minstrel, academy] }
+  - { id: class_standard_bearer, category: classes, graphic: class, class: standard_bearer, fromAct: 2, see: [class_minstrel, academy] }
   - { id: class_banner_lord, category: classes, graphic: class, class: banner_lord, fromAct: 2, see: [class_captain, academy] }
 
   # ------------------------------------------------------------------ Lektionen (Text aus den Szenen selbst, keine Kopie)

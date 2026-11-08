@@ -281,6 +281,22 @@ export interface SkillEffect {
   usesBonus?: Record<string, number>;
   /** a larger area of an action skill, keyed by its skill id (e.g. `rally`) */
   radiusBonus?: Record<string, number>;
+  /** pro paths (story 10.4): every ally next to the bearer has this guard chance through him, also without a support */
+  guardNeighbors?: number;
+  /** a status every landed fight inflicts on the foe (after the fight, like weapon statuses), e.g. knockback */
+  statusOnHit?: { status: StatusId; chance: number };
+  /** the whole reach of an attack, Zielen included, is at most this (the smallest cap counts) */
+  rangeCap?: number;
+  /** Wirken also lays its field on every tile within this Manhattan radius of the target where it may arise */
+  castRadius?: number;
+  /** staff healing also heals every ally within this radius of the target by the same amount */
+  healRadius?: number;
+  /** Anfeuern reaches allies up to this distance (the largest source counts) */
+  cheerRange?: number;
+  /** Anfeuern may cheer up to this many allies, at most 2 (the largest source counts) */
+  cheerTargets?: number;
+  /** the grief hit penalty does not apply (an aura gives it to the neighbours) */
+  ignoreGrief?: boolean;
 }
 
 export interface SkillDef {

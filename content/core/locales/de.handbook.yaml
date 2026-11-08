@@ -476,10 +476,10 @@ handbook:
       weak: { "1": "Wenig eigener Schaden.", "2": "Wenig VER." }
     class_duelist:
       title: "Duellant"
-      text: "Profi-Weg des Plänklers mit Schwert und Dolch. Sein Skill heilt ihn mit etwas Glück um einen Teil des Schadens, den er austeilt."
+      text: "Profi-Weg des Plänklers mit Schwert und Dolch. Wird er angegriffen, schlägt sein Konter zuerst zu."
       where: "Der Aufstieg geschieht in der Akademie; im Spiel tragen ihn erfahrene Gegner."
       keywords: "Duellant, Profi, Plänkler"
-      strong: { "1": "Sehr schnell und treffsicher.", "2": "Heilt sich im Angriff." }
+      strong: { "1": "Sehr schnell und treffsicher.", "2": "Kontert vor dem Angriff." }
       weak: { "1": "Weiterhin wenig RES.", "2": "Axtkämpfer sind ihm überlegen." }
     class_blade_dancer:
       title: "Klingentänzer"
@@ -516,6 +516,20 @@ handbook:
       keywords: "Großstratege, Profi, Taktiker, Befehl"
       strong: { "1": "Zwei Befehle je Karte.", "2": "Ausgewogene Werte." }
       weak: { "1": "Kein Spezialist im Kampf.", "2": "Nur ein Weg." }
+    class_bard:
+      title: "Barde"
+      text: "Profi-Weg des Spielmanns mit Dolch und Laute. Sein Anfeuern reicht zwei Felder weit und erreicht bis zu zwei Verbündete."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Barde, Profi, Spielmann, Anfeuern"
+      strong: { "1": "Feuert zwei Verbündete an.", "2": "Reicht weiter als der Spielmann." }
+      weak: { "1": "Wenig eigener Schaden.", "2": "Wenig VER." }
+    class_standard_bearer:
+      title: "Bannerträger"
+      text: "Profi-Weg des Spielmanns. Seine Nachbarn ignorieren Trauer und weichen besser aus; er selbst nicht."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Bannerträger, Profi, Spielmann, Trauer, Ausweichen"
+      strong: { "1": "Hält trauernde Verbündete im Kampf.", "2": "Mehr TP und VER als der Barde." }
+      weak: { "1": "Wirkt nur auf Nachbarn.", "2": "Kein Anfeuern auf Abstand." }
     class_banner_lord:
       title: "Bannerherr"
       text: "Profi-Weg des Hauptmanns. Sein Sammelruf erreicht Verbündete ein Feld weiter."
@@ -525,35 +539,35 @@ handbook:
       weak: { "1": "Wenig RES.", "2": "Langsam." }
     class_bulwark:
       title: "Bollwerk"
-      text: "Profi-Weg des Vorkämpfers mit Lanze, Axt und Schild und mehr Bewegung als zuvor. Mit etwas Glück durchschlägt er einen Teil der Rüstung."
+      text: "Profi-Weg des Vorkämpfers mit Lanze, Axt und Schild und mehr Bewegung als zuvor. Jeder Nachbar hat durch ihn etwas Schutz, mit Support zusammen gedeckelt."
       where: "Der Aufstieg geschieht in der Akademie."
       keywords: "Bollwerk, Profi, Vorkämpfer"
-      strong: { "1": "Die höchste VER im Spiel.", "2": "Durchschlägt Rüstung.", "3": "Hält wie der Vorkämpfer." }
+      strong: { "1": "Die höchste VER im Spiel.", "2": "Schützt seine Nachbarn.", "3": "Hält wie der Vorkämpfer." }
       weak: { "1": "Geringe RES.", "2": "Nicht schnell." }
     class_breaker:
       title: "Sturmbrecher"
-      text: "Profi-Weg des Vorkämpfers für den Angriff: viele TP, große Kraft, und als Kletterer kommt er auch auf Berge."
+      text: "Profi-Weg des Vorkämpfers für den Angriff: viele TP, große Kraft, und trifft er, stößt er das Ziel ein Feld weg."
       where: "Der Aufstieg geschieht in der Akademie."
-      keywords: "Sturmbrecher, Profi, Vorkämpfer, Kletterer"
-      strong: { "1": "Die meisten TP und viel STÄ.", "2": "Klettert auf Berge." }
+      keywords: "Sturmbrecher, Profi, Vorkämpfer, Rückstoß"
+      strong: { "1": "Die meisten TP und viel STÄ.", "2": "Stößt Gegner weg." }
       weak: { "1": "Sehr geringe RES.", "2": "Weniger VER als das Bollwerk." }
     class_sharpshooter:
       title: "Scharfschütze"
-      text: "Profi-Weg des Schützen: Mit Bögen reicht er ein Feld weiter und trifft noch genauer."
+      text: "Profi-Weg des Schützen: Mit Bögen reicht er ein Feld weiter, aber nicht beliebig weit, und trifft noch genauer."
       where: "Der Aufstieg geschieht in der Akademie."
       keywords: "Scharfschütze, Profi, Bogen, Reichweite"
       strong: { "1": "Größte Reichweite der Truppe.", "2": "Sehr hohe GES." }
       weak: { "1": "Weiter wehrlos im Nahkampf.", "2": "Nur Bögen." }
     class_sage:
       title: "Weiser"
-      text: "Profi-Weg des Elementaristen: stärkere Zauber, und er darf zusätzlich Stäbe führen und heilen."
+      text: "Profi-Weg des Elementaristen: stärkere Zauber, und sein Wirken legt das Elementfeld auch auf die Felder um das Ziel."
       where: "Der Aufstieg geschieht in der Akademie."
       keywords: "Weiser, Profi, Elementarist, Magier"
       strong: { "1": "Viel MAG und RES.", "2": "Heilt mit Stäben." }
       weak: { "1": "Wenig TP und VER.", "2": "Kaum STÄ: nur Zauber und Stäbe." }
     class_bishop:
       title: "Bischof"
-      text: "Profi-Weg des Heilers: heilt mehr, ist schneller und hat die höchste RES."
+      text: "Profi-Weg des Heilers: heilt mehr, auch alle Verbündeten neben dem Ziel, ist schneller und hat die höchste RES."
       where: "Der Aufstieg geschieht in der Akademie."
       keywords: "Bischof, Profi, Heiler"
       strong: { "1": "Stärkere Heilung.", "2": "Sehr hohe RES und GLÜ." }

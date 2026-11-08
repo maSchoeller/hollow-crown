@@ -74,7 +74,7 @@ export function Battle() {
     mode.k === 'forecast' && !mode.ballista
       ? (availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === (mode.aim ? 'aim' : 'attack'))?.weapons?.[mode.target] ?? [])
       : [];
-  const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: mode.action, target: mode.target }) : null;
+  const cls = mode.k === 'classPreview' ? classPreview(data, s, unit(mode.uid), mode.to, mode.action === 'cheer' ? { kind: 'cheer', target: mode.target, second: mode.second } : { kind: mode.action, target: mode.target }) : null;
   const classPre = mode.k === 'steal' ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'steal', target: mode.target }) : null;
   const castPre = mode.k === 'cast' && mode.at ? classPreview(data, s, unit(mode.uid), mode.to, { kind: 'cast', at: mode.at }) : null;
   const passivePre = mode.k === 'passive' ? passivePreview(data, s, unit(mode.uid), mode.to) : null;
@@ -283,7 +283,8 @@ export function Battle() {
           <ClassPreviewCard data={data} state={s} p={cls} />
           <div class="hud-confirm">
             <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.cancel')}</SecondaryButton>
-            <PrimaryButton onClick={() => void confirmClassAction()}>{t(`ui.action.${mode.action}`)}</PrimaryButton>
+            {/* Barde (story 10.4): while a second ally may still be picked, the button ends Anfeuern after one */}
+            <PrimaryButton onClick={() => void confirmClassAction()}>{cls.kind === 'cheer' && cls.more > 0 ? t('ui.done') : t(`ui.action.${mode.action}`)}</PrimaryButton>
           </div>
         </>
       )}

@@ -15,6 +15,7 @@ import { ballistaMods } from '../rules/ballista';
 import { goesToConvoy } from '../rules/scout';
 import { pathTo, reachable, type Walk } from '../rules/movement';
 import { expPercent, grantExp } from '../rules/progression';
+import { healStaff, staffHeal } from '../rules/heal';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
 import { activeSkillIds, skillRadius } from '../rules/skills';
@@ -206,21 +207,21 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
     }
     case 'staff': {
       const target = getUnit(s, a.target);
-      const staff =
-        (a.staff ? [u.equip.mainHand, ...u.bag].find((i) => i?.uid === a.staff) : undefined) ??
-        [u.equip.mainHand, ...u.bag].find((i) => i && itemDef(data, i).kind === 'staff');
+      const staff = healStaff(data, u, a.staff);
       if (!staff) break;
       const d = itemDef(data, staff);
-      const st = computeStats(data, u, { state: s });
-      const tmax = computeStats(data, target).maxHp;
-      const amount = Math.min(tmax - target.hp, (d.heal ?? 0) + st.stats.mag + st.skills.healBonus);
-      target.hp += amount;
-      events.push({ t: 'heal', unit: target.uid, amount, hpAfter: target.hp, by: u.uid, cause: 'staff' });
+      // the target, and with `healRadius` (Bischof, story 10.4) every hurt ally next to it, by the same amount
+      const heal = staffHeal(data, s, u, target, staff);
+      for (const h of heal.heals) {
+        const o = getUnit(s, h.uid);
+        o.hp += h.amount;
+        events.push({ t: 'heal', unit: o.uid, amount: h.amount, hpAfter: o.hp, by: u.uid, cause: 'staff' });
+      }
       if (d.cureStatus && target.status.length) {
         for (const x of target.status) events.push({ t: 'status', unit: target.uid, status: x.id, on: false });
         target.status = [];
       }
-      if (u.team === 'player') grantExp(data, u, b.experience.heal, s.rng, events, expPercent(data, s, u), s.act);
+      if (u.team === 'player') grantExp(data, u, heal.exp, s.rng, events, expPercent(data, s, u), s.act);
       const gained = addSupportPoints(data, s.supports, pairKey(u.id, target.id), b.supports.pointsTandemHealRescue);
       if (gained) events.push({ t: 'support', a: u.uid, b: target.uid, points: gained });
       break;
@@ -305,9 +306,11 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       doRescue(data, s, u, getUnit(s, a.target), events);
       break;
     case 'cheer': {
-      const t = getUnit(s, a.target);
-      t.buffs.push({ source: CHEER_BUFF, mov: b.classActions.cheer.mov, hit: b.classActions.cheer.hit, untilTurn: s.turn, untilPhase: t.team });
-      events.push({ t: 'classAction', unit: u.uid, action: 'cheer', target: t.uid });
+      for (const uid of a.second ? [a.target, a.second] : [a.target]) {
+        const t = getUnit(s, uid);
+        t.buffs.push({ source: CHEER_BUFF, mov: b.classActions.cheer.mov, hit: b.classActions.cheer.hit, untilTurn: s.turn, untilPhase: t.team });
+        events.push({ t: 'classAction', unit: u.uid, action: 'cheer', target: t.uid });
+      }
       break;
     }
     case 'cast':

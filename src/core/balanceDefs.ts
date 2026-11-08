@@ -54,6 +54,8 @@ export interface Balance {
     tandemMinRank: SupportRank;
     tandemDamagePercent: number;
     guardChance: Partial<Record<SupportRank, number>>;
+    /** highest guard chance from supports and `guardNeighbors` together (Bollwerk, story 10.4) */
+    guardMaxTotal: number;
     griefHitPenalty: number;
     griefMissions: number;
     /** highest rank the campfire unlocks, by its level (index 0 = level 1) */

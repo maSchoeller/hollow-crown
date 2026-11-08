@@ -67,12 +67,13 @@ export function computeStats(
     avoid += a ?? 0;
     addMods(mods, rest);
   }
-  if (unit.grief && unit.grief > 0) hit -= b.supports.griefHitPenalty;
 
   // first pass without skills to get max HP for HP-based skill conditions
   const baseMaxHp = unit.stats.hp + (mods.hp ?? 0);
   const skills = skillTotals(data, { ...ctx, unit, maxHp: baseMaxHp }, phase);
   addMods(mods, skills.stats);
+  // grief costs hit, unless a skill or an aura (Bannerträger, story 10.4) lifts it
+  if (unit.grief && unit.grief > 0 && !skills.ignoreGrief) hit -= b.supports.griefHitPenalty;
   hit += skills.hit;
   avoid += skills.avoid;
   crit += skills.crit;

@@ -4,7 +4,7 @@ import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
-import { active, clamp, dist, getUnit, inBounds, pairKey, ruleOn, terrainAt, unitAt } from '../util';
+import { active, clamp, dist, getUnit, inBounds, isAlly, neighbors, pairKey, ruleOn, terrainAt, unitAt } from '../util';
 import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
 import { itemDef, weaponProfile, type WeaponProfile } from './items';
 import { canStrike, stepCost, weaponRange } from './movement';
@@ -30,6 +30,8 @@ export interface SideForecast {
   maxHp: number;
   magic: boolean;
   skills: string[];
+  /** where a knockback of this side would push the foe (story 10.4: the preview shows the tile) */
+  knockback?: { to: Pos; blocked: boolean };
 }
 
 /** Extra numbers of the attacker for one attack (class action Zielen); the same object feeds forecast and resolution. */
@@ -49,6 +51,7 @@ export interface Forecast {
   /** strike order: 'a' attacker, 'd' defender */
   order: Array<'a' | 'd'>;
   tandem?: { uid: string; damage: number; hit: number };
+  /** chance that the first landed strike of the attacker is guarded: supports and `guardNeighbors` (Bollwerk) together */
   guard?: { uid: string; chance: number };
   /** HP after if every strike hits (no crits) */
   attackerHpAfter: number;
@@ -182,6 +185,16 @@ function calcSide(
     const immune = oppStats.affinity && el === oppStats.affinity;
     return { status: x.status, chance: immune ? 0 : clamp(x.chance + statusChanceBonus + setB, 0, 100) };
   });
+  // statuses of on_hit skills (Sturmbrecher, story 10.4): no element, so no immunity; the higher chance counts
+  if (wp && ruleOn(s, 'status')) {
+    for (const x of stats.skills.statusOnHit) {
+      const chance = clamp(x.chance + statusChanceBonus, 0, 100);
+      const cur = status.find((y) => y.status === x.status);
+      if (cur) cur.chance = Math.max(cur.chance, chance);
+      else status.push({ status: x.status, chance });
+    }
+  }
+  const knock = status.some((x) => x.status === 'knockback' && x.chance > 0) ? knockbackTarget(data, s, myPos, opp, oppPos) : undefined;
   return {
     side: {
       uid: me.uid,
@@ -200,6 +213,7 @@ function calcSide(
       maxHp: stats.maxHp,
       magic,
       skills: stats.skills.used,
+      knockback: knock,
     },
     wp,
     stats,
@@ -227,13 +241,26 @@ function tandemPartner(data: GameData, s: BattleState, attacker: BattleUnit, aPo
   return best;
 }
 
+/**
+ * Guard of the defender: the best support partner next to him, plus `guardNeighbors` of the best ally next to him who
+ * gives it (Bollwerk, story 10.4), at most `supports.guardMaxTotal` together. One roll against the sum; the bulwark
+ * guards when he contributes, else the support partner.
+ */
 function guardOf(data: GameData, s: BattleState, defender: BattleUnit, dPos: Pos) {
-  let best: { uid: string; chance: number } | undefined;
+  let support: { uid: string; chance: number } | undefined;
   for (const { unit: p, rank } of adjacentPartners(s, defender, dPos)) {
     const chance = data.balance.supports.guardChance[rank];
-    if (chance && (!best || chance > best.chance)) best = { uid: p.uid, chance };
+    if (chance && (!support || chance > support.chance)) support = { uid: p.uid, chance };
   }
-  return best;
+  let wall: { uid: string; chance: number } | undefined;
+  for (const p of neighbors(dPos)) {
+    const o = unitAt(s, p);
+    if (!o || o.uid === defender.uid || !active(o) || !isAlly(o.team, defender.team)) continue;
+    const chance = computeStats(data, o, { state: s }).skills.guardNeighbors;
+    if (chance > 0 && (!wall || chance > wall.chance)) wall = { uid: o.uid, chance };
+  }
+  if (!wall) return support;
+  return { uid: wall.uid, chance: Math.min(data.balance.supports.guardMaxTotal, wall.chance + (support?.chance ?? 0)) };
 }
 
 /**
@@ -330,13 +357,20 @@ export function equipWeapon(data: GameData, u: BattleUnit, weaponUid: string, ev
   events.push({ t: 'equipped', unit: u.uid, item: w.uid });
 }
 
+/** Where a knockback from `fromPos` pushes `target` standing on `targetPos`, and whether the way is blocked: shared by preview and resolution. */
+export function knockbackTarget(data: GameData, s: BattleState, fromPos: Pos, target: BattleUnit, targetPos: Pos): { to: Pos; blocked: boolean } {
+  const dx = Math.sign(targetPos[0] - fromPos[0]);
+  const dy = dx !== 0 ? 0 : Math.sign(targetPos[1] - fromPos[1]);
+  const to: Pos = [targetPos[0] + dx, targetPos[1] + dy];
+  const other = inBounds(s, to) ? unitAt(s, to) : undefined;
+  const blocked = !inBounds(s, to) || (!!other && other.uid !== target.uid) || stepCost(data, s, target, targetPos, to) === null;
+  return { to, blocked };
+}
+
 function knockback(data: GameData, s: BattleState, attacker: BattleUnit, target: BattleUnit, events: GameEvent[]): void {
   if (!attacker.pos || !target.pos || !active(target)) return;
-  const dx = Math.sign(target.pos[0] - attacker.pos[0]);
-  const dy = dx !== 0 ? 0 : Math.sign(target.pos[1] - attacker.pos[1]);
-  const to: Pos = [target.pos[0] + dx, target.pos[1] + dy];
   const from: Pos = [target.pos[0], target.pos[1]];
-  const blocked = !inBounds(s, to) || !!unitAt(s, to) || stepCost(data, s, target, target.pos!, to) === null;
+  const { to, blocked } = knockbackTarget(data, s, attacker.pos, target, target.pos);
   if (blocked && target.untargetable) {
     events.push({ t: 'knockback', unit: target.uid, from, to: from, blocked: true });
   } else if (blocked) {
@@ -531,7 +565,9 @@ export function resolveAttack(
 export function expectedDamage(f: Forecast): { dealt: number; taken: number; killChance: number } {
   const a = f.attacker;
   const d = f.defender;
-  const dealt = (a.damage * a.strikes * a.hit) / 100;
+  // guard (supports, Bollwerk, story 10.4) may void the first landed strike: it lowers the damage and the chance to kill
+  const g = (f.guard?.chance ?? 0) / 100;
+  const dealt = (a.damage * Math.max(0, a.strikes - g) * a.hit) / 100;
   const taken = d.canStrike ? (d.damage * d.strikes * d.hit) / 100 : 0;
   let killChance = 0;
   if (a.damage > 0) {
@@ -541,7 +577,9 @@ export function expectedDamage(f: Forecast): { dealt: number; taken: number; kil
       killChance = need === 1 ? 1 - Math.pow(1 - p, a.strikes) : Math.pow(p, need);
     }
   }
-  return { dealt, taken, killChance };
+  // a counter that strikes first (Duellant, story 10.4) may fell the attacker before he strikes at all
+  const first = f.order[0] === 'd' && d.canStrike && d.damage >= a.hpBefore ? d.hit / 100 : 0;
+  return { dealt: dealt * (1 - first), taken, killChance: killChance * (1 - g) * (1 - first) };
 }
 
 export { setTerrain };

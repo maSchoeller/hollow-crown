@@ -14,6 +14,7 @@ import { applyStatus, extinguishTile, igniteTile, raiseRockwall } from './effect
 import { itemDef, weaponProfile } from './items';
 import { tilesInRange, weaponRange } from './movement';
 import { classActionId } from './roles';
+import { computeStats } from './stats';
 import { activeVictory, escapeOf } from '../battle/activeVictory';
 
 /** The elements Wirken can use; light and dark come with the pro paths. */
@@ -109,6 +110,8 @@ export interface CastArea {
   /** rounds the effect lasts (`burningDuration`, `rockwallDuration`, `classActions.cast.fogDuration`; water: wet status) */
   turns: number;
   radius: number;
+  /** the tiles the field itself is laid on: the target, and with `castRadius` (Weiser, story 10.4) every tile around it where it may arise */
+  centers: Pos[];
   /** the field already has this effect, so its duration is renewed */
   renews: boolean;
   /** burning fields water puts out */
@@ -124,23 +127,31 @@ export function castArea(data: GameData, s: BattleState, u: BattleUnit, at: Pos,
   const cast = data.balance.classActions.cast;
   const on = (tiles: Pos[]) => s.units.filter((o) => active(o) && tiles.some((p) => samePos(p, o.uid === u.uid ? from : o.pos))).map((o) => o.uid);
   const cur = terrainAt(s, at);
+  // Weiter Wirken (story 10.4): the field also arises on the tiles around the target where it may, water and wind reach further
+  const wide = computeStats(data, u, { state: s }).skills.castRadius;
+  const centers = [at, ...(wide ? diamond(s, at, wide).filter((p) => !samePos(p, at) && canCastOn(data, s, u, src.element, p)) : [])];
   switch (src.element) {
-    case 'fire':
-      return { element: 'fire', at, effect: 'ignite', tiles: fireArea(data, s, at), units: on([at]), turns: te.burningDuration, radius: 1, renews: cur === 'burning', extinguished: 0 };
+    case 'fire': {
+      const tiles = uniq(centers.flatMap((c) => fireArea(data, s, c)));
+      return { element: 'fire', at, effect: 'ignite', tiles, units: on(centers), turns: te.burningDuration, radius: 1 + wide, centers, renews: cur === 'burning', extinguished: 0 };
+    }
     case 'water': {
-      const tiles = diamond(s, at, cast.waterRadius);
+      const radius = cast.waterRadius + wide;
+      const tiles = diamond(s, at, radius);
       const units = on(tiles.filter((p) => terrainAt(s, p) !== 'rockwall'));
       const extinguished = tiles.filter((p) => s.timers[posKey(p)]?.kind === 'burning').length;
-      return { element: 'water', at, effect: 'extinguish', tiles, units, turns: data.balance.status.durationRounds, radius: cast.waterRadius, renews: false, extinguished };
+      return { element: 'water', at, effect: 'extinguish', tiles, units, turns: data.balance.status.durationRounds, radius, centers: [at], renews: false, extinguished };
     }
     case 'earth':
-      return { element: 'earth', at, effect: 'rockwall', tiles: [at], units: [], turns: te.rockwallDuration, radius: 0, renews: cur === 'rockwall', extinguished: 0 };
+      return { element: 'earth', at, effect: 'rockwall', tiles: centers, units: [], turns: te.rockwallDuration, radius: wide, centers, renews: cur === 'rockwall', extinguished: 0 };
     case 'wind': {
-      const radius = te.windFogClearRadius;
-      return { element: 'wind', at, effect: 'fog', tiles: diamond(s, at, radius), units: [], turns: cast.fogDuration, radius, renews: liftedAt(s, u.team, at, radius), extinguished: 0 };
+      const radius = te.windFogClearRadius + wide;
+      return { element: 'wind', at, effect: 'fog', tiles: diamond(s, at, radius), units: [], turns: cast.fogDuration, radius, centers: [at], renews: liftedAt(s, u.team, at, radius), extinguished: 0 };
     }
   }
 }
+
+const uniq = (ps: Pos[]): Pos[] => ps.filter((p, i) => ps.findIndex((q) => samePos(p, q)) === i);
 
 const liftedAt = (s: BattleState, team: BattleUnit['team'], at: Pos, radius: number) =>
   !!s.fogLifted?.some((l) => l.team === team && l.radius === radius && samePos(l.at, at));
@@ -158,7 +169,7 @@ export function resolveCast(data: GameData, s: BattleState, u: BattleUnit, at: P
   events.push({ t: 'classAction', unit: u.uid, action: 'cast', at, element: area.element });
   switch (area.element) {
     case 'fire':
-      igniteTile(data, s, at, 'ignite', events, true);
+      for (const c of area.centers) igniteTile(data, s, c, 'ignite', events, true);
       break;
     case 'water':
       for (const p of area.tiles) extinguishTile(s, p, events);
@@ -168,7 +179,7 @@ export function resolveCast(data: GameData, s: BattleState, u: BattleUnit, at: P
       }
       break;
     case 'earth':
-      raiseRockwall(data, s, at, events);
+      for (const c of area.centers) raiseRockwall(data, s, c, events);
       break;
     case 'wind': {
       const lifted = (s.fogLifted ??= []);

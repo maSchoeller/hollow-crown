@@ -29,7 +29,7 @@ beforeAll(() => {
 });
 
 const NEW = ['blade_dancer', 'ranger', 'hexer', 'battle_priest', 'bard', 'standard_bearer', 'shadow', 'trapper', 'grand_strategist', 'banner_lord'];
-const LATER = ['bard', 'standard_bearer', 'shadow', 'trapper'];
+const LATER = ['shadow', 'trapper'];
 
 /** A company member of `role`, promoted to `classId` (rules only, no academy). */
 function proOf(role: string, classId: string): UnitRecord {
@@ -54,7 +54,7 @@ describe('pro classes (story 10.3)', () => {
       expect(c.playable).toBe(!LATER.includes(id));
       for (const r of c.proSkills ?? []) expect(r.startsWith('pro_') && data.skills[r]?.source === 'class').toBe(true);
     }
-    expect(promotionTargets(data, 'minstrel')).toEqual([]);
+    expect(promotionTargets(data, 'minstrel')).toEqual(['bard', 'standard_bearer']);
     expect(promotionTargets(data, 'scout')).toEqual([]);
     expect(promotionTargets(data, 'tactician')).toEqual(['grand_strategist']);
     expect(promotionTargets(data, 'captain')).toEqual(['banner_lord']);

@@ -606,6 +606,14 @@ export function ForecastCard({
             {t('ui.guard')}: {unitName(guard)} {f.guard!.chance}%
           </span>
         )}
+        {f.order[0] === 'd' && <span class="hud-chip is-dis">{t('ui.fc.counterFirst')}</span>}
+        {f.attacker.knockback && (
+          <span class="hud-chip">
+            {f.attacker.knockback.blocked
+              ? t('ui.fc.knockbackBlocked', { n: data.balance.status.knockbackBlockedDamage })
+              : t('ui.fc.knockback')}
+          </span>
+        )}
         {/* the forecast's "?" in its own spot below the table, never over the names and weapons of the head (story 14.7) */}
         <HelpStone anchor="forecast" />
       </div>
@@ -633,6 +641,7 @@ export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; s
             )}
             {a.effect === 'extinguish' && a.extinguished > 0 && <span class="hud-chip is-adv">{t('ui.preview.cast.extinguished', { n: a.extinguished })}</span>}
             {a.renews && <span class="hud-chip">{t('ui.preview.cast.renews')}</span>}
+            {a.centers.length > 1 && <span class="hud-chip is-adv">{t('ui.preview.cast.wide', { n: a.centers.length })}</span>}
           </span>
         </div>
         <p class="hud-sub">{t(`ui.preview.cast.${a.element}`, { r: a.radius, n: a.turns })}</p>
@@ -663,7 +672,11 @@ export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; s
           </span>
         </div>
       </div>
+      {p.kind === 'cheer' && p.second && (
+        <p class="hud-sub">{t('ui.preview.cheerAlso', { name: unitName(state.units.find((u) => u.uid === p.second)!) })}</p>
+      )}
       <p class="hud-sub">{p.kind === 'cheer' ? t('ui.preview.cheer') : t('ui.preview.farRescueText')}</p>
+      {p.kind === 'cheer' && p.more > 0 && <p class="hud-sub">{t('ui.preview.cheerSecond')}</p>}
     </div>
   );
 }

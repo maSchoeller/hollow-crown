@@ -274,7 +274,7 @@ describe('Anfeuern (Spielmann)', () => {
 
   it('previews the bonus and can be used after moving next to the ally', () => {
     const { s, bard, ally, x0, y } = scene();
-    expect(classPreview(data, s, bard, bard.pos!, { kind: 'cheer', target: ally.uid })).toEqual({ kind: 'cheer', target: ally.uid, mov: 1, hit: 10 });
+    expect(classPreview(data, s, bard, bard.pos!, { kind: 'cheer', target: ally.uid })).toEqual({ kind: 'cheer', target: ally.uid, second: undefined, mov: 1, hit: 10, more: 0 });
     bard.pos = [x0 + 3, y];
     const to: Pos = [x0 + 2, y];
     expect(availableActions(data, s, bard, to).find((o) => o.kind === 'cheer')?.targets).toEqual([ally.uid]);

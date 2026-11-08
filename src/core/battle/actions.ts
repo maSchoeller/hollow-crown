@@ -101,11 +101,22 @@ export function farRescueTargets(data: GameData, s: BattleState, u: BattleUnit, 
     .map((o) => o.uid);
 }
 
-/** Anfeuern (Spielmann): adjacent allies that have not acted and are not cheered already. */
+/**
+ * Reach and number of targets of Anfeuern (story 10.4): 1 and 1, or the largest `cheerRange`/`cheerTargets` of the unit's
+ * active skills (Barde, Laute `final_curtain`); several sources never add up, at most 2 targets.
+ */
+export function cheerReach(data: GameData, s: BattleState, u: BattleUnit): { range: number; targets: number } {
+  const sk = computeStats(data, u, { state: s }).skills;
+  return { range: Math.max(1, sk.cheerRange), targets: Math.min(2, Math.max(1, sk.cheerTargets)) };
+}
+
+/** Anfeuern (Spielmann): allies within its reach that have not acted and are not cheered already. */
 export function cheerTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): string[] {
   if (classActionId(data, u, s) !== 'inspire') return [];
-  return adjacentUnits(s, pos, u)
-    .filter((o) => active(o) && o.team === u.team && !o.acted && !o.buffs.some((b) => b.source === CHEER_BUFF))
+  const { range } = cheerReach(data, s, u);
+  return s.units
+    .filter((o) => o.uid !== u.uid && o.pos && active(o) && o.team === u.team && dist(o.pos, pos) <= range)
+    .filter((o) => !o.acted && !o.buffs.some((b) => b.source === CHEER_BUFF))
     .map((o) => o.uid);
 }
 
@@ -116,7 +127,8 @@ export const CHEER_BUFF = 'cheer';
 export type ClassPreview =
   | { kind: 'aim'; forecast: Forecast; hit: number; rangeBonus: number }
   | { kind: 'farRescue'; target: string; distance: number }
-  | { kind: 'cheer'; target: string; mov: number; hit: number }
+  /** `more`: how many further allies may still be cheered with the same action (Barde) */
+  | { kind: 'cheer'; target: string; second?: string; mov: number; hit: number; more: number }
   | { kind: 'cast'; area: CastArea }
   | ({ kind: 'steal' } & StealPreview);
 
@@ -135,7 +147,7 @@ export function classPreview(data: GameData, s: BattleState, u: BattleUnit, pos:
       return t?.pos ? { kind: 'farRescue', target: t.uid, distance: dist(t.pos, pos) } : null;
     }
     case 'cheer':
-      return { kind: 'cheer', target: a.target, mov: cfg.cheer.mov, hit: cfg.cheer.hit };
+      return { kind: 'cheer', target: a.target, second: a.second, mov: cfg.cheer.mov, hit: cfg.cheer.hit, more: cheerReach(data, s, u).targets - 1 - (a.second ? 1 : 0) };
     case 'cast': {
       const area = castArea(data, s, u, a.at, pos);
       return area ? { kind: 'cast', area } : null;

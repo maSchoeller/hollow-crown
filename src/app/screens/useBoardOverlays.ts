@@ -1,5 +1,5 @@
 /** Board overlays of the battle screen (Battle.tsx). */
-import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles } from '../../core';
+import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { activeVictory } from '../../core/battle/activeVictory';
@@ -125,7 +125,9 @@ export function useBoardOverlays(b: BattleScreen) {
       return board.setOverlays({ ...base, move: dests, path, ghost, targets, cursor: to });
     }
     if (mode.k === 'target') {
-      return board.setOverlays({ ...base, path, ghost, targets: mode.targets.map((id) => unit(id).pos!).filter(Boolean), cursor: to });
+      // staff healing that reaches further allies (Bischof, story 10.4): their fields as heal tiles
+      const heal = mode.action === 'staff' ? mode.targets.flatMap((id) => healTiles(data, s, unit(mode.uid), id)) : [];
+      return board.setOverlays({ ...base, path, ghost, heal: heal.length > mode.targets.length ? heal : undefined, targets: mode.targets.map((id) => unit(id).pos!).filter(Boolean), cursor: to });
     }
     if (mode.k === 'cast') {
       const tiles = availableActions(data, s, u, to).find((o) => o.kind === 'cast')?.tiles ?? [];
@@ -136,6 +138,19 @@ export function useBoardOverlays(b: BattleScreen) {
       const pre = passivePreview(data, s, u, to);
       const zone = pre?.kind === 'hold' ? pre.tiles : [];
       return board.setOverlays({ ...base, hold: [...base.hold, ...zone], path, ghost, cursor: to });
+    }
+    if (mode.k === 'forecast') {
+      // Rückstoß (story 10.4): the field the target would be pushed to, from the forecast of the resolution
+      const f = mode.ballista ? null : forecast(data, s, mode.uid, mode.target, mode.weapon, to);
+      const push = f?.attacker.knockback && !f.attacker.knockback.blocked ? [f.attacker.knockback.to] : [];
+      return board.setOverlays({ ...base, path, ghost, cast: push, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
+    }
+    if (mode.k === 'classPreview' && mode.action === 'cheer' && !mode.second) {
+      // Barde: the allies a second Anfeuern could still reach
+      const u = unit(mode.uid);
+      const pre = classPreview(data, s, u, to, { kind: 'cheer', target: mode.target });
+      const more = pre?.kind === 'cheer' && pre.more > 0 ? (availableActions(data, s, u, to).find((o) => o.kind === 'cheer')?.targets ?? []) : [mode.target];
+      return board.setOverlays({ ...base, path, ghost, targets: more.map((id) => unit(id).pos!).filter(Boolean), cursor: unit(mode.target).pos });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
   }, [mode, s, threat, watchTiles, tileInfo, markTiles, checkKey]);
