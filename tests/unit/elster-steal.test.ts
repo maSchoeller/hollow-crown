@@ -186,7 +186,7 @@ describe('Nebenquest N1 als Knoten', () => {
   });
 
   it('gives the full reward in both variants: Elster and ember spark as the effects of the node', () => {
-    const n = data.campaign.nodes.find((x) => x.id === 'n1')!;
+    const n = data.acts[1]!.nodes.find((x) => x.id === 'n1')!;
     expect(n.effects).toEqual([{ item: { def: 'magpie' } }, { item: { def: 'ember_spark' } }]);
     expect(n.kind).toBe('side');
   });

@@ -6,6 +6,7 @@ import { nextFloat, type RngState } from '../rng';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { clamp } from '../util';
 import { itemDef } from './items';
+import { campaignOfAct } from '../campaign/acts';
 import { effectiveLevel } from './skills';
 
 export function growthRate(data: GameData, u: UnitRecord, k: StatKey): number {
@@ -53,21 +54,21 @@ export function levelUp(data: GameData, u: UnitRecord, rng: RngState): Partial<S
   return gains;
 }
 
-/** Highest level of the current act (`campaign.yaml` levelCap, never above `balance.levels.max`). */
-export function levelCap(data: GameData): number {
+/** Highest level of act `act` (`campaign.yaml` levelCap, never above `balance.levels.max`; story 11.1: act 2 has 20). */
+export function levelCap(data: GameData, act = 1): number {
   const max = data.balance.levels.max;
-  return Math.min(data.campaign.levelCap ?? max, max);
+  return Math.min(campaignOfAct(data, act).levelCap ?? max, max);
 }
 
 /**
  * Grants EXP, levelling up as often as needed. At the act's level cap further EXP are forfeited:
  * the `exp` event reports `capped` and only the EXP that still counted go into `battleExp`.
  */
-export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: RngState, events: GameEvent[], percent = 100): void {
+export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: RngState, events: GameEvent[], percent = 100, act = 1): void {
   const e = data.balance.experience;
   // a haunt pays a part of the EP (story 5.6, `expPercent`); a gain that counts is never rounded down to nothing
   if (percent !== 100 && amount > 0) amount = Math.max(1, Math.round((amount * percent) / 100));
-  const cap = levelCap(data);
+  const cap = levelCap(data, act);
   if (amount <= 0) return;
   const before = u.exp;
   if (u.level >= cap) {

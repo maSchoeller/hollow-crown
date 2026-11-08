@@ -162,6 +162,11 @@ export function checkPacks(
       if (s && !inCore('scenes', s)) issues.push({ file: 'packs.yaml', message: `scene ${s} of the first node must be in core` });
     }
   }
+  // story 11.1: the head files of a later act come with that act's pack; in core they would reach players before the act is released
+  for (const f of contentFiles) {
+    const later = /^acts\/act(\d+)\/(campaign|units|flags)\.yaml$/.exec(f);
+    if (later && Number(later[1]) > 1 && packOf(packs, f, 'content').id === CORE_PACK) issues.push({ file: 'packs.yaml', message: `${f} belongs to the pack of act ${later[1]}, not to core` });
+  }
   for (const p of packs) if (p.load === 'voice' && !p.lang) issues.push({ file: 'packs.yaml', message: `voice pack ${p.id} needs a lang` });
   return issues;
 }

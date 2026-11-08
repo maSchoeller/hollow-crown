@@ -4,6 +4,8 @@
  */
 import {
   CoreInvariantError,
+  actCampaign,
+  findNode,
   applyCommand,
   armyOverLimit,
   conditionContext,
@@ -62,7 +64,7 @@ bindLive(() => ({
 }));
 
 export function nodeDef(id: string) {
-  return data.campaign.nodes.find((n) => n.id === id)!;
+  return findNode(data, id)!;
 }
 
 /** Default deployment: forced units first, then the company in roster order up to the map's limit. */
@@ -88,7 +90,7 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
   const pack = packNeededFor(node);
   if (pack) {
     const back: Screen = opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
-    void ensureMissionPack({ node: nodeId, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back }).then((ok) => {
+    void ensureMissionPack({ node: nodeId, place: placePath(node.place ?? actCampaign(data, campaign.value).defaultPlace), pack, back }).then((ok) => {
       if (ok) playNode(nodeId, opts);
     });
     return;
@@ -130,7 +132,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
   // a haunt has no reinforcements or trigger spawns: its units are all on the board
   const later = haunt ? [] : [...map.reinforcements.flatMap((r) => r.units), ...map.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
   const manifest = await loadManifest().catch(() => ({}) as Awaited<ReturnType<typeof loadManifest>>);
-  const place = placePath(node.place ?? data.campaign.defaultPlace);
+  const place = placePath(node.place ?? actCampaign(data, campaign.value).defaultPlace);
   const paths = missionAssets({
     units: [...units.map(battleSource), ...later.map(defSource)],
     models: manifest.models?.units,
@@ -144,7 +146,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
     gear: data.render.gear,
     classes: data.classes,
     place: node.place,
-    defaultPlace: data.campaign.defaultPlace,
+    defaultPlace: actCampaign(data, campaign.value).defaultPlace,
   });
   const ok = await ensureMissionAssets({ node: nodeId, place, paths, back });
   // camp and world map music come after the battle: fetch it in the background while the player is busy
@@ -186,7 +188,7 @@ export function playHaunt(hauntId: string, opts: { prep?: boolean; from?: From }
   const back: Screen = opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
   const pack = packNeededFor(node);
   if (pack) {
-    void ensureMissionPack({ node: node.id, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back }).then((ok) => {
+    void ensureMissionPack({ node: node.id, place: placePath(node.place ?? actCampaign(data, campaign.value).defaultPlace), pack, back }).then((ok) => {
       if (ok) playHaunt(hauntId, opts);
     });
     return;
@@ -221,10 +223,10 @@ export async function startNewGame(settingsIn: BattleSettings, avatar: AvatarSet
  */
 export async function ensureRecordContent(rec: SaveRecord): Promise<boolean> {
   const nodeId = rec.payload.battle?.start.nodeId;
-  const node = nodeId ? data.campaign.nodes.find((n) => n.id === nodeId) : undefined;
+  const node = nodeId ? findNode(data, nodeId) : undefined;
   const pack = node ? packNeededFor(node) : null;
   if (!node || !pack) return true;
-  return ensureMissionPack({ node: node.id, place: placePath(node.place ?? data.campaign.defaultPlace), pack, back: { name: 'title' } });
+  return ensureMissionPack({ node: node.id, place: placePath(node.place ?? actCampaign(data, campaign.value).defaultPlace), pack, back: { name: 'title' } });
 }
 
 /** Restores a slot of a campaign (default: the active one): replays a running battle's command log (concept/13 acceptance 8). */

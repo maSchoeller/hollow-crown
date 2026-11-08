@@ -124,7 +124,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   if (opts.budget === false) data.render.aiPace.maxBoost = 1;
   if (opts.state) return prepareBoard(data, opts.state, opts);
   data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null), ...(opts.season ? { season: opts.season } : {}) };
-  const nodes = data.campaign.nodes;
+  const nodes = data.acts[1]!.nodes;
   // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
   const at = opts.map ? nodes.findIndex((n) => n.id === 'm1_6') : 0;
   if (at < 0) throw new Error('the campaign has no node m1_6 to take the company from');

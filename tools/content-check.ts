@@ -35,7 +35,7 @@ let packs: PackDef[] = [];
 const packIssues: { file: string; message: string }[] = [];
 try {
   packs = parsePacks(parse(readFileSync(join(process.cwd(), 'content', 'packs.yaml'), 'utf8')));
-  packIssues.push(...checkPacks(packs, contentFiles(), data.campaign));
+  packIssues.push(...checkPacks(packs, contentFiles(), data.acts[1]!));
   packIssues.push(...checkPackProps(packs, stems(join(process.cwd(), 'art', 'models', 'props'), '.glb') ?? new Set()));
 } catch (e) {
   packIssues.push({ file: 'packs.yaml', message: e instanceof Error ? e.message : String(e) });

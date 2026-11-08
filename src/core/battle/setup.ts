@@ -6,6 +6,7 @@ import type { BattleState, CampaignState, ObjectState } from '../state';
 import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
+import { actOf, findNode } from '../campaign/acts';
 import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
@@ -24,7 +25,7 @@ export function presentForced(map: Pick<MapDef, 'deploy'>, c: Pick<CampaignState
 
 /** Units that must / can be deployed for a node. */
 export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
-  const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
+  const node = findNode(data, nodeId)!;
   const map = data.maps[node.map]!;
   return { map, max: map.deploy.max, forced: presentForced(map, c) };
 }
@@ -34,7 +35,7 @@ export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
  * The battle RNG is derived from the campaign seed and the node so replays are reproducible.
  */
 export function createBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: string[]): BattleState {
-  const node = data.campaign.nodes.find((n) => n.id === nodeId)!;
+  const node = findNode(data, nodeId)!;
   const map = data.maps[node.map]!;
   const seed = (c.seed * 31 + c.completed.length * 7919 + node.id.length * 131) >>> 0;
   // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1);
@@ -51,8 +52,11 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
 export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, nodeId: string, seed: number, lieutenantPlan: BattleState['lieutenantPlan']): BattleState {
   const [w, h] = map.size;
   const objects: ObjectState[] = map.objects.map((o) => ({ id: o.id, type: o.type, at: [o.at[0], o.at[1]] as Pos, state: 'closed' }));
+  const act = actOf(c);
   return {
     mapId: map.id,
+    // act 1 leaves the field out, so the start states of act 1 stay as they were (story 11.1)
+    ...(act > 1 ? { act } : {}),
     nodeId,
     turn: 1,
     phase: 'player',
@@ -93,7 +97,7 @@ export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, 
     const rec = c.roster.find((r) => r.id === id);
     if (!rec) return;
     const unit = battleUnitFromRecord(data, rec, 'player', slots[i]!);
-    applyVillageAid(data, c.villageAid, unit.bag);
+    applyVillageAid(data, c.villageAid, unit.bag, actOf(c));
     s.units.push(unit);
   });
 }

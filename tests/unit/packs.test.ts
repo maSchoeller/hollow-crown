@@ -100,7 +100,7 @@ describe('checkPacks', () => {
   const campaign = { nodes: [{ id: 'prologue', map: 'prologue_paktnacht', pre: 'scn.prologue.intro', fixed: 'first' }] };
   it('accepts the real content', () => {
     const { data } = loadContentFromDisk();
-    expect(checkPacks(realPacks, contentFiles(), data.campaign)).toEqual([]);
+    expect(checkPacks(realPacks, contentFiles(), data.acts[1]!)).toEqual([]);
   });
   it('reports files in no pack and a first node outside core', () => {
     const packs = [pack('core', { content: ['core/**'] }), pack('act1', { content: ['acts/act1/**'] }), pack('voice.x', { load: 'voice' })];

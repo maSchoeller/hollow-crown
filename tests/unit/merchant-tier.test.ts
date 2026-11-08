@@ -25,7 +25,7 @@ describe('shop tier by story mission count', () => {
 
   it('keeps the merchantTier of a node as an alternative way to a tier', () => {
     const d = clone(data);
-    d.campaign.nodes.find((n) => n.id === 'm1_1')!.merchantTier = 2;
+    d.acts[1]!.nodes.find((n) => n.id === 'm1_1')!.merchantTier = 2;
     const c = newCampaign(d, 1, { difficulty: 'normal', deathMode: 'standard' }, avatar);
     c.completed = ['prologue', 'm1_1'];
     expect(currentTier(d, c)).toBe(2);

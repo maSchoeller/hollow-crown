@@ -35,7 +35,7 @@ describe('wantedView', () => {
       expect(v.bounty).toBe(cfg.goldPerLevel * (g + 1));
     }
     const v = wantedView(data, fresh(), 'morra')!;
-    expect(v.material).toEqual({ id: cfg.materialByAct[String(data.campaign.act)], min: cfg.materials.min, max: cfg.materials.max });
+    expect(v.material).toEqual({ id: cfg.materialByAct[String(data.acts[1]!.act)], min: cfg.materials.min, max: cfg.materials.max });
   });
 
   it('unlocks as many grudge skills as the grudge, in the order of the content', () => {

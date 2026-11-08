@@ -1,0 +1,27 @@
+# Akt 2 „Glut“ (Paket act2, unveröffentlicht bis zum ersten Live-Schritt nach 9.14). Kopf des Akts aus Story 11.1; die Folge
+# m2_1 → (m2_2 ∥ m2_3) → m2_4 → (m2_5 ∥ m2_6) → m2_7 → m2_8 (Finale) und die Nebenquests N4–N6 kommen mit 11.11 und den Missions-Stories.
+# Der Übergang (Architektur §5.4): nach dem Finale von Akt 1 setzt finishMission c.act = 2, wenn dieses Paket im Build ist.
+act: 2
+# Stufendeckel von Akt 2 (Produktinhaber 2026-10-31): EP darüber verfallen
+levelCap: 20
+# alle Regeln sind aus Akt 1 bekannt: keine gestaffelte Einführung mehr
+mechanics: {}
+# die Truppe lebt seit 1-6 in der Burg; home gilt nur als Startwert einer neuen Kampagne, die Heimat bleibt beim Übergang, wie sie ist
+home: castle
+# wird nie gelesen (Gold trägt aus Akt 1 weiter; nur der erste Akt gibt Startgold), vom Schema verlangt
+startGold: 0
+defaultPlace: grauwacht
+startConvoy: []
+nodes: []
+# Händler von Akt 2 [ASSUMPTION]: Stufe 0 aus vorhandenen Teilen (Stahl, Heilung, Rüstung); Stufen 1 und 2 mit dem Stahl-Tier (11.7 ff.)
+merchant:
+  - tier: 0
+    items: [vulnerary, remedy_salve, iron_sword, iron_lance, iron_axe, iron_bow, iron_dagger, steel_sword, steel_lance, steel_axe, steel_bow, heal_staff, mend_staff, chainmail, iron_helm, iron_shield, door_key]
+# Narben wie in Akt 1 (dieselben Ids; eine Narbe trägt über die Akte)
+scars:
+  - { id: lame_leg, mods: { mov: -1 } }
+  - { id: shaky_hand, mods: { hit: -10 } }
+  - { id: broken_ribs, mods: { hp: -3 } }
+  - { id: weak_eye, mods: { crit: -5, hit: -5 } }
+  - { id: shattered_shoulder, mods: { str: -2 } }
+  - { id: nightmares, mods: { lck: -3, avoid: -5 } }

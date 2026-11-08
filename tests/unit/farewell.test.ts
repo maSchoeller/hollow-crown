@@ -121,7 +121,8 @@ describe('farewellView (story 6.7)', () => {
   });
 
   it('every companion who can fall has a last line in German and English', () => {
-    for (const id of Object.keys(data.chars).filter((id) => id !== 'avatar' && id !== 'lucan')) {
+    // the companions of act 2 get their lines with their missions (stories 11.5 and 11.12 ff.)
+    for (const id of Object.keys(data.chars).filter((id) => id !== 'avatar' && id !== 'lucan' && (data.chars[id]!.act ?? 1) === 1)) {
       const key = lineKey(farewellScene(id), 'last');
       expect(locales.de?.[key], id).toBeTruthy();
       expect(locales.en?.[key], id).toBeTruthy();

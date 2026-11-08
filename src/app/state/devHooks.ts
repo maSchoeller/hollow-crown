@@ -28,8 +28,8 @@ function devHaunt(mapId = 'm1_1_steckbriefe', variant = 'boss', ltId = 'hask'): 
   const lt = data.lieutenants[ltId];
   const node = storyNodeOf(data, mapId);
   if (!map || !anchor || !lt || !node) return null;
-  const upto = data.campaign.nodes.findIndex((n) => n.id === node.id);
-  for (const n of data.campaign.nodes.slice(0, upto + 1)) if (n.kind === 'story' && !c.completed.includes(n.id)) c.completed.push(n.id);
+  const upto = data.acts[1]!.nodes.findIndex((n) => n.id === node.id);
+  for (const n of data.acts[1]!.nodes.slice(0, upto + 1)) if (n.kind === 'story' && !c.completed.includes(n.id)) c.completed.push(n.id);
   c.lieutenants = { ...c.lieutenants, [ltId]: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false, ...c.lieutenants?.[ltId] } };
   const id = `dev${c.haunts.length}_${mapId}`;
   const h = makeHaunt(data, c, map, anchor, lt, id, c.day.last ?? 0, seedRng(c.seed + c.haunts.length));
@@ -53,7 +53,7 @@ function winBattle(autoCommand: (d: typeof data, s: BattleState) => Parameters<t
  * pre scene, then the battle; win it with `__hc.autoWin()`. Second argument: difficulty (default `normal`).
  */
 async function devNode(nodeId: string, difficulty: BattleSettings['difficulty'] = 'normal'): Promise<void> {
-  const nodes = data.campaign.nodes;
+  const nodes = data.acts[1]!.nodes;
   const idx = nodes.findIndex((n) => n.id === nodeId);
   if (idx < 0) throw new Error(`no node "${nodeId}"; there are: ${nodes.map((n) => n.id).join(', ')}`);
   devSaveFailure.on = true;
@@ -124,7 +124,7 @@ if (import.meta.env.DEV) {
         const parsed = mapSchema.parse(raw);
         const season = opts.season ?? parsed.season ?? data.render.board.actSeason[/^s(\d+)_/.exec(id)?.[1] ?? '1'];
         data.maps[id] = { ...parsed, act: 1, ...(season ? { season } : {}), ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;
-        if (!data.campaign.nodes.some((n) => n.id === id)) data.campaign.nodes.push({ ...data.campaign.nodes[0]!, id, map: id, pre: undefined, post: undefined });
+        if (!data.acts[1]!.nodes.some((n) => n.id === id)) data.acts[1]!.nodes.push({ ...data.acts[1]!.nodes[0]!, id, map: id, pre: undefined, post: undefined });
         devSaveFailure.on = true;
         const r = beginBattle(data, c, id, []);
         r.state.lockedRoles = []; // every role's class action works on a fixture map
@@ -158,12 +158,12 @@ if (import.meta.env.DEV) {
       devActEnd: () => {
         const c = campaign.value;
         if (!c) return;
-        let finale = data.campaign.nodes.find((n) => n.fixed === 'finale');
+        let finale = data.acts[1]!.nodes.find((n) => n.fixed === 'finale');
         if (!finale) {
           const first = firstNode(data);
           const { map, titleKey, merchantTier, expectedLevel } = first;
           finale = { id: 'dev_finale', map, titleKey, kind: 'story', fixed: 'finale', merchantTier, expectedLevel };
-          data.campaign.nodes.push(finale);
+          data.acts[1]!.nodes.push(finale);
         }
         const id = finale.id;
         if (!c.completed.includes(id)) campaign.value = { ...c, completed: [...c.completed, id] };
@@ -245,9 +245,9 @@ if (import.meta.env.DEV) {
           }
         }
         campaign.value = c;
-        const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
+        const first = data.acts[1]!.nodes.find((n) => n.fixed === 'first')!;
         data.maps[DEV_MAP_ID] = devLieutenantMap(data.maps[first.map]!, data.lieutenants, list.map((l) => l.id), data.maps);
-        if (!data.campaign.nodes.some((n) => n.id === DEV_MAP_ID)) data.campaign.nodes.push(devLieutenantNode(first));
+        if (!data.acts[1]!.nodes.some((n) => n.id === DEV_MAP_ID)) data.acts[1]!.nodes.push(devLieutenantNode(first));
         await beginMission(DEV_MAP_ID, c.roster.slice(0, 4).map((u) => u.id), { name: 'worldmap' });
       },
       /**
@@ -270,7 +270,7 @@ if (import.meta.env.DEV) {
         flee(state);
         battle.value = { ...b, start, state };
         // only the fixed first node is open while nothing is completed, so the test node could not be finished
-        const first = data.campaign.nodes.find((n) => n.fixed === 'first')!;
+        const first = data.acts[1]!.nodes.find((n) => n.fixed === 'first')!;
         if (!campaign.value!.completed.includes(first.id)) campaign.value = { ...campaign.value!, completed: [...campaign.value!.completed, first.id] };
         (window as unknown as { __hc: { autoWin: () => void } }).__hc.autoWin();
       },

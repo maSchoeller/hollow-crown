@@ -20,9 +20,9 @@ export function devObjectiveMap(id: DevObjectiveMapId, root = process.cwd()): Ma
 /** Adds the map and a node that plays it to `data` (in place) and starts the battle with the units the map names. */
 export function addDevObjectiveMap(data: GameData, id: DevObjectiveMapId, seed = 7): BattleState {
   data.maps[id] = devObjectiveMap(id);
-  const first = data.campaign.nodes[0]!;
-  if (!data.campaign.nodes.some((n) => n.id === id)) {
-    data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id, map: id, pre: undefined, post: undefined }] };
+  const first = data.acts[1]!.nodes[0]!;
+  if (!data.acts[1]!.nodes.some((n) => n.id === id)) {
+    data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...first, id, map: id, pre: undefined, post: undefined }] };
   }
   const c = newCampaign(data, seed, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   const s = startBattle(data, createBattle(data, c, id, [])).state;

@@ -14,7 +14,8 @@ import { expPercent, grantSp, levelCap } from '../rules/progression';
 import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
-import { availableNodes, noteRoles, storyCount } from './graph';
+import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
+import { actCampaign, actOf, campaignOfAct, findNode } from './acts';
 import { availableSupportTalks } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
@@ -25,6 +26,7 @@ export const SAVE_VERSION = 1;
 export function newCampaign(data: GameData, seed: number, settings: BattleSettings, avatar: AvatarSettings): CampaignState {
   const c: CampaignState = {
     version: SAVE_VERSION,
+    act: 1,
     seed,
     rng: seedRng(seed ^ 0x5eed),
     settings: clone(settings),
@@ -32,7 +34,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     roster: [],
     fallen: [],
     convoy: [],
-    gold: data.campaign.startGold,
+    gold: campaignOfAct(data, 1).startGold,
     materials: {},
     flags: {},
     left: [],
@@ -50,7 +52,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     supports: {},
     nextUid: 1,
     offers: [],
-    home: { kind: data.campaign.home, rooms: {} },
+    home: { kind: campaignOfAct(data, 1).home, rooms: {} },
     tavern: [],
     day: { last: null, pending: [] },
     haunts: [],
@@ -62,7 +64,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     c.roster.push(recordFromChar(data, def, c, avatar));
   }
   noteRoles(data, c);
-  for (const ref of data.campaign.startConvoy) c.convoy.push(newItem(c, ref, data));
+  for (const ref of campaignOfAct(data, 1).startConvoy) c.convoy.push(newItem(c, ref, data));
   for (const key of Object.keys(data.supports)) c.supports[key] = { points: 0, rank: null };
   return c;
 }
@@ -87,6 +89,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
   const { available: _available, ...rest } = old as unknown as CampaignState & { available?: string[] };
   const out: CampaignState = {
     ...rest,
+    // story 11.1: saves from before the acts are in act 1 (the move on is caught up below)
+    act: c.act ?? 1,
     // format 2 as the PoC wrote it kept a list of flag names
     flags: Array.isArray(old.flags) ? Object.fromEntries((old.flags as string[]).map((f) => [f, true as const])) : c.flags,
     left: old.left ?? [],
@@ -116,6 +120,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     ...(c.lieutenants ? { lieutenants: Object.fromEntries(Object.entries(c.lieutenants).map(([id]) => [id, lieutenantState(c, id)])) } : {}),
   };
   noteRoles(data, out);
+  // a save that finished an act's finale while the next act was not in the build ("coming soon") moves on now (story 11.1)
+  enterNextAct(data, out);
   return out;
 }
 
@@ -211,10 +217,10 @@ export interface BattleResult {
   haunt?: { id: string; variant: string; halved: boolean; catchUp: boolean };
 }
 
-function refill(data: GameData, villageAid: number | null, items: ItemInstance[]): void {
+function refill(data: GameData, villageAid: number | null, items: ItemInstance[], act: number): void {
   for (const i of items) {
     const d = itemDef(data, i);
-    if (d.refillAfterMission && d.charges) i.charges = maxCharges(data, villageAid, d);
+    if (d.refillAfterMission && d.charges) i.charges = maxCharges(data, villageAid, d, act);
   }
 }
 
@@ -252,7 +258,7 @@ function toRecord(u: BattleUnit): UnitRecord {
  * a defeat leaves the campaign as it was before the battle.
  */
 export function finishBattle(data: GameData, c0: CampaignState, s: BattleState): { campaign: CampaignState; result: BattleResult } {
-  const node = data.campaign.nodes.find((n) => n.id === s.nodeId)!;
+  const node = findNode(data, s.nodeId)!;
   const map = data.maps[s.mapId]!;
   const haunt = s.hauntId ? c0.haunts.find((h) => h.id === s.hauntId) : undefined;
   const result: BattleResult = {
@@ -277,7 +283,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   const events: GameEvent[] = [];
   c.convoy = clone(s.convoy);
   c.nextUid = s.nextUid;
-  const scarIds = data.campaign.scars.map((x) => x.id);
+  const scarIds = actCampaign(data, c0).scars.map((x) => x.id);
   // an escorted NPC joins like any third-party character, unless the goal says `join: false` (story 4.8)
   const victory = map.objectives.victory; // `join` belongs to an escort, which has no second phase (story 11.8)
   const stays = victory.type === 'escort' && victory.join === false ? victory.unit : undefined;
@@ -309,7 +315,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     if (u.pos || u.gone === 'rescued' || u.gone === 'escaped' || u.gone === 'retreated') {
       grantSp(data, u, data.balance.skills.spPerMissionEnd, events);
     }
-    refill(data, c.villageAid, allItems(u));
+    refill(data, c.villageAid, allItems(u), actOf(c));
     if (u.grief && u.grief > 0) u.grief -= 1;
     const rec = toRecord(u);
     if (u.team === 'other') {
@@ -336,7 +342,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       levelBefore: before?.level ?? u.levelAtExpStart ?? u.level,
       levelAfter: u.level,
       exp: u.battleExp ?? 0,
-      capped: u.level >= levelCap(data) && levelCap(data) < data.balance.levels.max,
+      capped: u.level >= levelCap(data, s.act) && levelCap(data, s.act) < data.balance.levels.max,
       portrait: u.portrait,
       classId: u.classId,
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
@@ -379,7 +385,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   }
   // a haunt pays a share of the story maps' gold, halved from the `halveFromNth`-th since the last story mission (story 5.6)
   const halved = !!s.hauntId && hauntHalved(data, c0);
-  const base = s.hauntId ? (halved ? Math.round(hauntGold(data) / 2) : hauntGold(data)) : map.goldReward;
+  const base = s.hauntId ? (halved ? Math.round(hauntGold(data, actOf(c0)) / 2) : hauntGold(data, actOf(c0))) : map.goldReward;
   const gold = base + s.goldGained;
   c.gold += gold;
   result.gold = gold;
@@ -425,7 +431,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     refreshTavern(data, c);
   }
   // dead units' gear in the convoy gets refilled as well
-  refill(data, c.villageAid, c.convoy);
+  refill(data, c.villageAid, c.convoy, actOf(c));
   return { campaign: c, result };
 }
 
@@ -471,7 +477,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
 
 /** Merchant special offers: 1–2 affixed items per chapter (concept/07 §1). */
 export function refreshOffers(data: GameData, c: CampaignState, tier: number): void {
-  const stock = merchantStock(data, tier).filter((id) => {
+  const stock = merchantStock(data, tier, actOf(c)).filter((id) => {
     const d = data.items[id]!;
     return ['weapon', 'armor', 'shield', 'accessory', 'tome'].includes(d.kind);
   });
@@ -486,21 +492,26 @@ export function refreshOffers(data: GameData, c: CampaignState, tier: number): v
   }
 }
 
-export function merchantStock(data: GameData, tier: number): string[] {
+/** Items of the merchant up to `tier`, from the merchant of act `act` (story 11.1: each act has its own tiers). */
+export function merchantStock(data: GameData, tier: number, act = 1): string[] {
   const out = new Set<string>();
-  for (const s of data.campaign.merchant) if (s.tier <= tier) for (const id of s.items) out.add(id);
+  for (const s of campaignOfAct(data, act).merchant) if (s.tier <= tier) for (const id of s.items) out.add(id);
   return [...out];
 }
 
-/** The shop tier: the highest `merchantTier` of the finished nodes, or a tier whose `storyCount` of finished story missions is reached. */
+/**
+ * The shop tier: the highest `merchantTier` of the finished nodes of the running act, or a tier whose `storyCount` of finished story
+ * missions is reached (each act starts its merchant anew, story 11.1).
+ */
 export function currentTier(data: GameData, c: CampaignState): number {
   let t = 0;
+  const camp = actCampaign(data, c);
   for (const id of c.completed) {
-    const n = data.campaign.nodes.find((x) => x.id === id);
+    const n = camp.nodes.find((x) => x.id === id);
     if (n) t = Math.max(t, n.merchantTier);
   }
-  const done = storyCount(data, c.completed);
-  for (const m of data.campaign.merchant) if (m.storyCount !== undefined && done >= m.storyCount) t = Math.max(t, m.tier);
+  const done = storyCount(data, c);
+  for (const m of camp.merchant) if (m.storyCount !== undefined && done >= m.storyCount) t = Math.max(t, m.tier);
   return t;
 }
 

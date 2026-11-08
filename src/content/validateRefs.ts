@@ -6,6 +6,7 @@ import type { Condition, Effect } from '../core/storyDefs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { pairKey } from '../core/util';
+import { findNode } from '../core/campaign/acts';
 
 export type Err = (file: string, message: string) => void;
 export type ContentRefs = ReturnType<typeof contentRefs>;
@@ -35,7 +36,7 @@ export function contentRefs(data: GameData, err: Err) {
     for (const m of Object.keys(r.material ?? {})) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
   };
   // conditions and effects (architecture §5.3): every reference must exist, unfinished keys are refused
-  const nodeKnown = (id: string) => !!data.campaign?.nodes.some((n) => n.id === id) || /^ch\d+$/.test(id);
+  const nodeKnown = (id: string) => !!findNode(data, id) || /^ch\d+$/.test(id);
   const flag = (file: string, ref: string | Record<string, FlagValue>, ctx: string) => {
     const [name, value] = flagEntry(ref);
     const def = data.flags[name];
@@ -118,7 +119,7 @@ export function contentRefs(data: GameData, err: Err) {
       else if (key === 'chronicle') page(file, v as string, ctx);
       else if (key === 'openQuest') {
         openedQuests.push(v as string);
-        if (data.campaign?.nodes.find((n) => n.id === v)?.kind !== 'side') err(file, `${ctx}: openQuest ${v as string} is not a side quest`);
+        if (findNode(data, v as string)?.kind !== 'side') err(file, `${ctx}: openQuest ${v as string} is not a side quest`);
       }
       else if (key === 'material') for (const m of Object.keys(v as Record<string, number>)) if (!data.items[m]) err(file, `${ctx}: unknown material ${m}`);
     }

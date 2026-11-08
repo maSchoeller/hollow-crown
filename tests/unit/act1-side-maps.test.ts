@@ -89,7 +89,7 @@ describe('1-5 on the Alder Moor', () => {
     const grosk = data.maps[MAP]!.units.find((u) => u.id === 'grosk')!;
     expect(grosk.lieutenant).toBe('grosk');
     expect(grosk.ai).toMatchObject({ profile: 'trigger', wakeTurn: 4, then: 'aggressive' });
-    expect(data.campaign.nodes.find((n) => n.id === 'm1_5')!.post).toBe('scn.m1_5.outro');
+    expect(data.acts[1]!.nodes.find((n) => n.id === 'm1_5')!.post).toBe('scn.m1_5.outro');
     const lines = resolveScene(data, conditionContext(data, fresh('varek')), 'scn.m1_5.outro').map((l) => l.uid);
     expect(lines).toContain('c01');
     expect(lines).not.toContain('s05');

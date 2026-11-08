@@ -344,20 +344,20 @@ describe('replay', () => {
 
 describe('probe map dev_ballista', () => {
   let locales: ReturnType<typeof loadContentFromDisk>['locales'];
-  let campaignBefore: GameData['campaign'];
+  let campaignBefore: GameData['acts'][number];
   beforeAll(() => {
     const loaded = loadContentFromDisk();
     data = loaded.data;
     locales = loaded.locales;
     const raw = parse(readFileSync(join(process.cwd(), 'tests', 'fixtures', 'maps', 'dev_ballista.yaml'), 'utf8'));
     data.maps.dev_ballista = { ...mapSchema.parse(raw), act: 1 } as MapDef;
-    campaignBefore = data.campaign;
-    const first = data.campaign.nodes[0]!;
-    data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id: 'dev_ballista', map: 'dev_ballista', pre: undefined, post: undefined }] };
+    campaignBefore = data.acts[1]!;
+    const first = data.acts[1]!.nodes[0]!;
+    data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...first, id: 'dev_ballista', map: 'dev_ballista', pre: undefined, post: undefined }] };
   });
   afterAll(() => {
     delete data.maps.dev_ballista;
-    data.campaign = campaignBefore;
+    data.acts[1]! = campaignBefore;
   });
   const start = () => {
     const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });

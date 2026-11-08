@@ -3,7 +3,8 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { parse } from 'yaml';
 import { buildContent, type LoadedContent } from './load';
-import { META_FILES } from './packs';
+import { META_FILES, parsePacks } from './packs';
+import { packActs } from '../packs/plan';
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const f of readdirSync(dir)) {
@@ -66,5 +67,12 @@ export function readContentFiles(root = process.cwd()): Record<string, unknown> 
 }
 
 export function loadContentFromDisk(root = process.cwd()): LoadedContent {
-  return buildContent(readContentFiles(root));
+  const loaded = buildContent(readContentFiles(root));
+  loaded.data.releasedActs = releasedActsOnDisk(root);
+  return loaded;
+}
+
+/** Acts whose pack `content/packs.yaml` releases (story 11.1): the content on disk also holds unreleased acts, these may not be entered. */
+export function releasedActsOnDisk(root = process.cwd()): number[] {
+  return packActs(parsePacks(parse(readFileSync(join(root, 'content', 'packs.yaml'), 'utf8'))).filter((p) => p.released));
 }

@@ -195,13 +195,13 @@ export function migrate(rec: SaveRecord): SaveRecord {
 export function metaFromCampaign(
   c: CampaignState,
 ): Pick<CampaignMeta, 'name' | 'avatar' | 'deathMode' | 'difficulty' | 'act' | 'progress'> {
-  // acts arrive with Epic 4; until then the whole PoC campaign counts as act 1
+  // story 11.1: the act the campaign is in (saves before it hold none: act 1)
   return {
     name: c.avatar.name,
     avatar: c.avatar.portrait,
     deathMode: c.settings.deathMode,
     difficulty: c.settings.difficulty,
-    act: 1,
+    act: c.act ?? 1,
     progress: c.completed.length,
   };
 }

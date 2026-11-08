@@ -90,7 +90,7 @@ describe('world map content', () => {
     expect([at('n2'), at('n3')]).toEqual(['border_tower', 'tobin_farm']);
     expect(labelOf(world, 'm1_7')).toBe('1-7');
     expect(labelOf(world, 'nowhere')).toBeNull();
-    for (const n of data.campaign.nodes) expect(placeOf(world, n.id), n.id).toBeDefined();
+    for (const n of data.acts[1]!.nodes) expect(placeOf(world, n.id), n.id).toBeDefined();
   });
 
   it('twelve places carry a town picture on their plateau', () => {

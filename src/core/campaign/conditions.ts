@@ -5,6 +5,7 @@ import { STANCES, SUPPORT_RANKS } from '../defs';
 import type { CampaignState, LieutenantState } from '../state';
 import { castleTier } from './castle';
 import { pairKey } from '../util';
+import { actCampaign, actOf } from './acts';
 
 /**
  * Narrow view of the campaign that conditions read (architecture §5.3), so one function serves the camp,
@@ -36,7 +37,7 @@ export const UNSUPPORTED_CONDITIONS: readonly string[] = [];
 export function conditionContext(data: GameData, c: CampaignState | null, extraFlags: Record<string, FlagValue> = {}): ConditionContext {
   if (!c)
     return {
-      act: data.campaign.act,
+      act: 1,
       flags: extraFlags,
       roster: [],
       fallen: [],
@@ -50,13 +51,13 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
       castleTier: 0,
     };
   return {
-    act: data.campaign.act,
+    act: actOf(c),
     flags: { ...c.flags, ...extraFlags },
     roster: c.roster.map((r) => r.id),
     fallen: c.fallen.map((f) => f.id),
     left: c.left,
     completed: c.completed,
-    storyCount: c.completed.filter((id) => data.campaign.nodes.some((n) => n.id === id && n.kind === 'story')).length,
+    storyCount: c.completed.filter((id) => actCampaign(data, c).nodes.some((n) => n.id === id && n.kind === 'story')).length,
     supports: c.supports,
     stance: c.stance,
     chronicle: c.chronicle,

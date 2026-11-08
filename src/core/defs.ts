@@ -200,6 +200,8 @@ export interface ItemRef {
 
 export interface CharDef {
   id: string;
+  /** the act whose `units.yaml` holds the character (set by the loader, story 11.1); missing = act 1 */
+  act?: number;
   class: string;
   level: number;
   affinity: Element | 'chosen';

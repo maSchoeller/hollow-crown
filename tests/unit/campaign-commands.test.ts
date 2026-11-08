@@ -195,7 +195,7 @@ describe('campaign commands', () => {
   it('healScar with gold or with a herb', () => {
     const c = rich({ gold: 5000, items: ['seers_herb'] });
     const u = c.roster[0]!;
-    u.scars = [data.campaign.scars[0]!.id];
+    u.scars = [data.acts[1]!.scars[0]!.id];
     const gold = run(c, { type: 'healScar', unit: u.id, index: 0 });
     expect(gold.campaign.roster[0]!.scars).toEqual([]);
     expect(gold.campaign.gold).toBe(5000 - data.balance.economy.scarRemoval.gold);

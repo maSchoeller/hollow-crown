@@ -45,15 +45,15 @@ beforeAll(() => {
 
 describe('place images and recruit dialogues', () => {
   const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
-  const places = () => new Set([data.campaign.defaultPlace, ...Object.values(data.home).map((h) => h.image), ...data.campaign.nodes.flatMap((n) => (n.place ? [n.place] : [])),
+  const places = () => new Set([...Object.values(data.acts).map((a) => a.defaultPlace), ...Object.values(data.home).map((h) => h.image), ...data.acts[1]!.nodes.flatMap((n) => (n.place ? [n.place] : [])),
     ...Object.values(data.scenes).flatMap((sc) => [...(sc.background ? [sc.background] : []), ...sc.lines.flatMap((l) => ('panel' in l && l.panel && l.panel !== 'none' ? [l.panel] : []))]), 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken']);
   it('accepts the shipped places', () => {
     expect(msgs(data, places())).toEqual([]);
   });
   it('reports a node place and a default place without an image', () => {
     const d = structuredClone(data);
-    d.campaign.nodes[0]!.place = 'nowhere';
-    d.campaign.defaultPlace = 'also_nowhere';
+    d.acts[1]!.nodes[0]!.place = 'nowhere';
+    d.acts[1]!.defaultPlace = 'also_nowhere';
     const out = msgs(d, places().add('lager_unterwegs'));
     expect(out).toContain('campaign.yaml: prologue place: no place image art/mockups/locations-s1/nowhere.png');
     expect(out).toContain('campaign.yaml: defaultPlace: no place image art/mockups/locations-s1/also_nowhere.png');
@@ -68,8 +68,8 @@ describe('place images and recruit dialogues', () => {
 describe('place images of campaign nodes (story 7.6) and scene backdrops (story 8.7)', () => {
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
-    loaded.data.campaign.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'])).map((i) => `${i.file}: ${i.message}`);
+    loaded.data.acts[1]!.nodes[0]!.place = place;
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['grauwacht', 'silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);
@@ -85,7 +85,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   });
   it('the shipped missions use the places of their chapters', () => {
     const loaded = loadContentFromDisk();
-    const places = Object.fromEntries(loaded.data.campaign.nodes.map((n) => [n.id, n.place]));
+    const places = Object.fromEntries(loaded.data.acts[1]!.nodes.map((n) => [n.id, n.place]));
     expect(places).toEqual({ prologue: 'paktnacht_glutdom', m1_1: 'varnhold', m1_2: 'erlbach', m1_3: 'silberbach', m1_4: 'wolfslager', m1_5: 'hungerlager', m1_6: 'paktwacht_ruine', m1_7: 'paktwacht_gewoelbe', m1_8: 'paktwacht_heimat', n1: 'varnhold_nacht', n2: 'wachturm', n3: 'pachthof' });
   });
 });

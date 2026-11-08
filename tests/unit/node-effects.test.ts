@@ -33,7 +33,7 @@ beforeAll(() => {
 
 describe('node effects', () => {
   it('m1_1 recruits Fenn on a victory and lists him with the other recruits', () => {
-    expect(data.campaign.nodes.find((n) => n.id === 'm1_1')!.effects).toEqual([{ recruit: 'fenn' }]);
+    expect(data.acts[1]!.nodes.find((n) => n.id === 'm1_1')!.effects).toEqual([{ recruit: 'fenn' }]);
     expect(c.roster.some((u) => u.id === 'fenn')).toBe(false);
     const r = finish(data, c);
     expect(r.campaign.roster.some((u) => u.id === 'fenn')).toBe(true);
@@ -45,7 +45,7 @@ describe('node effects', () => {
 
   it('applies the list in order (gold, item, recruit) and a list that no longer fits is skipped', () => {
     const d = structuredClone(data);
-    const node = d.campaign.nodes.find((n) => n.id === 'm1_1')!;
+    const node = d.acts[1]!.nodes.find((n) => n.id === 'm1_1')!;
     node.effects = [{ gold: 111 }, { item: { def: 'vulnerary' } }, { recruit: 'fenn' }];
     const plain = finish(data, c).campaign;
     const r = finish(d, c).campaign;
@@ -67,7 +67,7 @@ describe('node effects', () => {
   it('content:check rejects unknown node effects like scene effects', () => {
     const problems = (effects: unknown[]) => {
       const d = structuredClone(data);
-      d.campaign.nodes.find((n) => n.id === 'm1_1')!.effects = effects as never;
+      d.acts[1]!.nodes.find((n) => n.id === 'm1_1')!.effects = effects as never;
       return validateContent(d, locales).map((i) => i.message);
     };
     expect(problems([{ priceMod: { pct: -10, act: 2 } }, { villageAid: { act: 2 } }])).toEqual([]);

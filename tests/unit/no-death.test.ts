@@ -42,7 +42,7 @@ describe('noDeath map flag', () => {
   });
 
   it('is set on the prologue map', () => {
-    expect(data.maps[data.campaign.nodes.find((n) => n.id === 'prologue')!.map]!.noDeath).toBe(true);
+    expect(data.maps[data.acts[1]!.nodes.find((n) => n.id === 'prologue')!.map]!.noDeath).toBe(true);
   });
 
   it.each<DeathMode>(['standard', 'classic', 'casual'])('downs a companion without death in %s and never bleeds', (mode) => {
@@ -75,7 +75,7 @@ describe('noDeath map flag', () => {
   it('survives two scars (no instant death)', () => {
     const { s } = setup('standard');
     const u = companion(s);
-    u.scars = data.campaign.scars.slice(0, data.balance.death.scarsUntilInstantDeath).map((x) => x.id);
+    u.scars = data.acts[1]!.scars.slice(0, data.balance.death.scarsUntilInstantDeath).map((x) => x.id);
     down(s, u);
     expect(u.downed).toBe(true);
     expect(u.gone).toBeUndefined();

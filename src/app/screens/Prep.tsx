@@ -4,7 +4,7 @@
  * come first and stay; the others switch with a tap. Nothing moves when a card switches (fixed order, fixed height).
  */
 import { useState } from 'preact/hooks';
-import { armyOverLimit, computeStats, hauntMap, presentForced, type UnitRecord } from '../../core';
+import { armyOverLimit, computeStats, findNode, hauntMap, presentForced, type UnitRecord } from '../../core';
 import { t } from '../../i18n';
 import { itemName, Toast, unitName } from '../../ui/components';
 import { goalLine } from '../../ui/goalText';
@@ -74,7 +74,7 @@ function UnitRow({ unit, on, locked, full, onToggle, onBag }: { unit: UnitRecord
 /** Preparation before a mission: choose units (required ones fixed), check equipment, start. */
 export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: string }) {
   const c = campaign.value!;
-  const nd = data.campaign.nodes.find((n) => n.id === node)!;
+  const nd = findNode(data, node)!;
   // a haunt (story 5.6) prepares on its own map: the deploy fields and places of its anchor
   const h = haunt ? c.haunts.find((x) => x.id === haunt) : undefined;
   const map = h ? hauntMap(data, h.map, h.variant, h.lt) : data.maps[nd.map]!;

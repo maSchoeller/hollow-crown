@@ -13,7 +13,8 @@ import { fetchPacksManifest, loadPack } from '../../packs/load';
 import { backoffMs, duePacks, hasPackForAct } from '../../packs/plan';
 import { log } from '../log';
 import { prepare } from './prepare';
-import { data } from './session';
+import { actOf } from '../../core/campaign/acts';
+import { campaign, data } from './session';
 import { settings } from './settings';
 
 export type PackPhase =
@@ -55,7 +56,7 @@ let manifest: PacksManifest | null = null;
 let wake: (() => void) | null = null;
 
 /** Act whose packs should be on the device (the content of the running build knows one act so far). */
-const reachedAct = (): number => data.campaign.act;
+const reachedAct = (): number => actOf(campaign.value);
 
 function enqueue(id: string, first = false): void {
   if (isPackRegistered(id) || queue.includes(id)) {
@@ -146,7 +147,7 @@ export function afterPrepare(): Promise<void> {
 }
 
 /** Whether this build has a pack for the act after the campaign's (story 7.3); false = the next act is "coming soon". */
-export const nextActInBuild = (): boolean => hasPackForAct(packList, data.campaign.act + 1);
+export const nextActInBuild = (): boolean => hasPackForAct(packList, actOf(campaign.value) + 1);
 
 /** Starts the background download of every pack the campaign has reached (call once at start-up). */
 export async function startPacks(): Promise<void> {
@@ -177,6 +178,9 @@ export function packNeededFor(node: { map: string; pre?: string; post?: string }
   for (const s of [node.pre, node.post]) if (s && !data.scenes[s]) return packOfScene(s);
   return null;
 }
+
+/** Whether a map is loaded or comes with a pack of this build; a node of a later act without one is a placeholder (story 11.1). */
+export const mapInBuild = (id: string): boolean => !!data.maps[id] || packOfMap(id) !== null;
 
 /** The act pack that is loading right now (for the progress ring), or null when none is. */
 export function loadingActPack(): { id: string; act: number; state: PackState } | null {

@@ -222,7 +222,7 @@ describe('exclusion (AC 4)', () => {
 
   it('a map unit of a joined lieutenant is not built', () => {
     const d = clone(data);
-    const node = d.campaign.nodes.find((n) => n.id === 'm1_2')!;
+    const node = d.acts[1]!.nodes.find((n) => n.id === 'm1_2')!;
     const map = d.maps[node.map]!;
     const hask = map.units.find((u) => u.lieutenant === 'hask')!;
     map.units.push({ ...hask, id: 'grosk_unit', lieutenant: 'grosk' });

@@ -31,10 +31,10 @@ const lucan = (): BattleUnit => getUnit(beginBattle(data, base, firstNode(data).
 
 describe('level cap (story 6.5)', () => {
   it('comes from the act campaign and never exceeds the top level', () => {
-    expect(data.campaign.levelCap).toBe(10);
+    expect(data.acts[1]!.levelCap).toBe(10);
     expect(levelCap(data)).toBe(10);
-    expect(levelCap({ ...data, campaign: { ...data.campaign, levelCap: undefined } })).toBe(data.balance.levels.max);
-    expect(levelCap({ ...data, campaign: { ...data.campaign, levelCap: 99 } })).toBe(data.balance.levels.max);
+    expect(levelCap({ ...data, acts: { ...data.acts, 1: { ...data.acts[1]!, levelCap: undefined } } })).toBe(data.balance.levels.max);
+    expect(levelCap({ ...data, acts: { ...data.acts, 1: { ...data.acts[1]!, levelCap: 99 } } })).toBe(data.balance.levels.max);
   });
 
   it('forfeits EXP at the cap and reports capped', () => {

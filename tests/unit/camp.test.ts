@@ -165,7 +165,7 @@ describe('the camp rooms (story 6.3)', () => {
   it('requires per station replaces the U20 unlock list: locked ones name the first open condition', () => {
     const open = (c: CampaignState) => Object.fromEntries(homeRooms(data, c).map((r) => [r.room.id, r.open]));
     expect(open(base)).toEqual({ convoy: true, merchant: true, smith: false, healer: false, tavern: false, campfire: false });
-    expect(homeRooms(data, base).find((r) => r.room.id === 'smith')!.unmet).toEqual({ storyCount: { min: 3 } });
+    expect(homeRooms(data, base).find((r) => r.room.id === 'smith')!.unmet).toEqual({ any: [{ act: 2 }, { storyCount: { min: 3 } }] });
     const c = clone(base);
     c.completed = ['prologue', 'm1_1', 'm1_2'];
     expect(open(c)).toMatchObject({ smith: true, healer: true, tavern: true, campfire: false });
@@ -177,9 +177,8 @@ describe('the camp rooms (story 6.3)', () => {
     const c = clone(base);
     c.home.kind = 'castle';
     expect(ids(c)).not.toContain('enchanter');
-    data.campaign.act = 2;
+    c.act = 2;
     expect(ids(c)).toContain('enchanter');
-    data.campaign.act = 1;
   });
 });
 
@@ -219,7 +218,7 @@ describe('smith, tavern and army limits (story 6.4)', () => {
     refreshTavern(data, b);
     expect(a.tavern).toEqual(b.tavern);
     expect(a.tavern).toHaveLength(data.balance.economy.tavernOffersPerChapter);
-    const expected = data.campaign.nodes.find((n) => n.id === 'm1_3')!.expectedLevel;
+    const expected = data.acts[1]!.nodes.find((n) => n.id === 'm1_3')!.expectedLevel;
     for (const u of a.tavern) {
       expect(u.level).toBeGreaterThanOrEqual(expected - data.balance.economy.tavern.levelSpread);
       expect(u.level).toBeLessThanOrEqual(expected);

@@ -12,6 +12,7 @@ import { hash32, nextInt, pick, seedRng, type RngState } from '../rng';
 import { areaTiles, clone, posKey } from '../util';
 import { hauntPlaces, standableTiles } from '../battle/hauntMap';
 import { availableNodes } from './graph';
+import { actOf, nodesUpTo } from './acts';
 import type { CampaignEvent } from './commands';
 import { activeLieutenants, lieutenantState } from './lieutenants';
 
@@ -25,7 +26,8 @@ export function hauntEnemyCount(data: Pick<GameData, 'balance'>, places: number,
 export function hauntLevel(data: GameData, c: CampaignState): number {
   const next = availableNodes(data, c).find((n) => n.kind === 'story');
   if (next) return next.expectedLevel;
-  const done = data.campaign.nodes.filter((n) => n.kind === 'story' && c.completed.includes(n.id));
+  // story 11.1: in an act without a mission done yet, the last one of the act before counts
+  const done = nodesUpTo(data, actOf(c)).filter((n) => n.kind === 'story' && c.completed.includes(n.id));
   return done.length ? done[done.length - 1]!.expectedLevel : 1;
 }
 
@@ -103,12 +105,13 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
   const n = cfg.perDay.min + nextInt(rng, cfg.perDay.max - cfg.perDay.min + 1);
   const taken = new Set(c.haunts.map((h) => h.map));
   const maps: MapDef[] = [];
-  for (const node of data.campaign.nodes) {
+  // the maps of every act up to the running one: haunts go on over the acts (story 11.1)
+  for (const node of nodesUpTo(data, actOf(c))) {
     const map = data.maps[node.map];
     if (node.kind !== 'story' || !c.completed.includes(node.id) || !map?.haunts?.length || map.noHaunts) continue;
     if (!maps.includes(map)) maps.push(map);
   }
-  const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= data.campaign.act && hauntPool(data, lt)?.length);
+  const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= actOf(c) && hauntPool(data, lt)?.length);
   let made = 0;
   for (let i = 0; i < n; i++) {
     const free = maps.filter((m) => !taken.has(m.id));
@@ -131,9 +134,12 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
   return made;
 }
 
-/** The gold of a haunt before the halving: `haunt.goldPct` percent of the mean `goldReward` of the story maps of the act, rounded. */
-export function hauntGold(data: GameData): number {
-  const maps = data.campaign.nodes.filter((n) => n.kind === 'story').map((n) => data.maps[n.map]).filter((m): m is MapDef => !!m);
+/**
+ * The gold of a haunt before the halving: `haunt.goldPct` percent of the mean `goldReward` of the story maps of the acts up to `act`,
+ * rounded (story 11.1: in act 1 its own maps, as before).
+ */
+export function hauntGold(data: GameData, act = 1): number {
+  const maps = nodesUpTo(data, act).filter((n) => n.kind === 'story').map((n) => data.maps[n.map]).filter((m): m is MapDef => !!m);
   const mean = maps.length ? maps.reduce((a, m) => a + m.goldReward, 0) / maps.length : 0;
   return Math.round((mean * data.balance.haunt.goldPct) / 100);
 }

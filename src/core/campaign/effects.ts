@@ -8,6 +8,7 @@ import { addToRoster } from './campaign';
 import { soleKey } from './conditions';
 import { clampGrudge, joinLieutenant, lieutenantState } from './lieutenants';
 import type { CampaignError, CampaignEvent, QueuedEffects } from './commands';
+import { findNode } from './acts';
 
 /** Effect keys whose state or rules do not exist yet; `content:check` rejects them, `applyEffects` throws. */
 export const UNSUPPORTED_EFFECTS: readonly string[] = [];
@@ -95,7 +96,7 @@ export function validateEffects(data: GameData, c: CampaignState, effects: reado
         if (!data.items[(v as { def: string }).def]) return 'unknown_item';
         break;
       case 'openQuest':
-        if (data.campaign.nodes.find((n) => n.id === v)?.kind !== 'side') return 'effect_invalid';
+        if (findNode(data, v as string)?.kind !== 'side') return 'effect_invalid';
         break;
       case 'setHome':
         // moving to the home the company lives in already is no fault; an unknown kind is

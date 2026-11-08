@@ -3,6 +3,7 @@
  * variant of N1, then back to the title. Plays on a throwaway campaign without a campaign id, so nothing is ever saved
  * and no real save is touched. What the run shows lives in toneTestPlan.ts; the test sheet is concept/23-art-direction/tonbruch-test.md.
  */
+import { actCampaign, findNode } from '../../core';
 import { t } from '../../i18n';
 import { placePath } from '../loading/plan';
 import { TONE_TEST, toneTestCampaign, toneTestResult } from '../toneTestPlan';
@@ -27,8 +28,8 @@ export async function startToneTest(): Promise<void> {
   };
   const toFarewell = async () => {
     // not there yet (slow or offline phone): the loading screen with progress and retry, as before a mission; its back stone ends the run
-    const node = data.campaign.nodes.find((n) => n.id === TONE_TEST.fellAt);
-    const ok = await ensureMissionPack({ node: TONE_TEST.fellAt, place: placePath(node?.place ?? data.campaign.defaultPlace), pack: PART2_PACK, back: { name: 'title' } });
+    const node = findNode(data, TONE_TEST.fellAt);
+    const ok = await ensureMissionPack({ node: TONE_TEST.fellAt, place: placePath(node?.place ?? actCampaign(data, campaign.value).defaultPlace), pack: PART2_PACK, back: { name: 'title' } });
     if (!ok) return end();
     screen.value = { name: 'farewell', result: toneTestResult(data), index: 0, then: { name: 'dialogue', id: TONE_TEST.memorial, next: end } };
   };

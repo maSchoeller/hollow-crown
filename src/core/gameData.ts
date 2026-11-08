@@ -30,7 +30,13 @@ export interface GameData {
   memorials: Record<string, MemorialDef>;
   /** picture and room anchors per kind of home (`content/home/home.yaml`) */
   home: Record<HomeKind, HomeViewDef>;
-  campaign: CampaignDef;
+  /** the campaign of every loaded act (`acts/actN/campaign.yaml`, story 11.1); read the running one with `actCampaign(data, c)` */
+  acts: Record<number, CampaignDef>;
+  /**
+   * acts whose pack is released in this build (story 11.1): `finishMission` moves on to act n + 1 only when it is listed. Node tools read
+   * it from `content/packs.yaml`, the browser from the pack list of the build; missing = act 1 only
+   */
+  releasedActs?: number[];
   world: WorldDef;
   /** enemy lieutenants of the acts (`acts/actN/lieutenants.yaml`, story 3.1) */
   lieutenants: Record<string, LieutenantDef>;

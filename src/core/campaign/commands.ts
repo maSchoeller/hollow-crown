@@ -150,7 +150,9 @@ export type CampaignEvent =
   /** the grudge of a lieutenant changed (effect `grudge`); `grudge` = the new value */
   | { t: 'grudgeChanged'; lt: string; grudge: number }
   /** the backup reminder of an act was noted (story 7.3) */
-  | { t: 'backupReminded'; act: number };
+  | { t: 'backupReminded'; act: number }
+  /** the company moved on to act `act` after the finale of the act before (story 11.1) */
+  | { t: 'actReached'; act: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

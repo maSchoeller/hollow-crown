@@ -192,6 +192,6 @@ describe('content:check for scenes', () => {
   it('answers are not allowed in scenes that play during a battle', () => {
     const msgs = run((d) => d.maps.prologue_paktnacht!.triggers[0]!.then.push({ action: 'dialogue', id: scene.id }));
     expect(msgs).toContainEqual(expect.stringContaining('scenes shown in a battle cannot have answers'));
-    expect(run((d) => (d.campaign.nodes[0]!.pre = scene.id))).toEqual([]); // before a mission is fine
+    expect(run((d) => (d.acts[1]!.nodes[0]!.pre = scene.id))).toEqual([]); // before a mission is fine
   });
 });

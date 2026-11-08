@@ -1,5 +1,6 @@
 import type { GameData } from '../gameData';
 import type { CampaignState } from '../state';
+import { actOf } from './acts';
 
 /**
  * What the merchant asks for an item that costs `base`: the sum of the `priceMod` percentages granted for the running
@@ -7,6 +8,6 @@ import type { CampaignState } from '../state';
  * at `sellRatio` of the base price.
  */
 export function shopPrice(data: GameData, c: CampaignState, base: number): number {
-  const pct = c.priceMods.filter((m) => m.act === data.campaign.act).reduce((sum, m) => sum + m.pct, 0);
+  const pct = c.priceMods.filter((m) => m.act === actOf(c)).reduce((sum, m) => sum + m.pct, 0);
   return Math.max(0, Math.floor((base * (100 + pct)) / 100));
 }

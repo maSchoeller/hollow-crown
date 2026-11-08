@@ -44,13 +44,13 @@ const writeJson = (value: unknown) => {
   console.log(`json → ${jsonOut}`);
 };
 const workersArg = args.includes('--workers') ? opt('workers', '') : undefined;
-const campaignArg = args.includes('--campaign') ? opt('campaign', `act${data.campaign.act}`) : null;
+const campaignArg = args.includes('--campaign') ? opt('campaign', `act${data.acts[1]!.act}`) : null;
 if (campaignArg) {
   await runCampaign(campaignArg);
   process.exit(0);
 }
 const mapId = args.find((a) => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) ?? 'prologue_paktnacht';
-const node = data.campaign.nodes.find((n) => n.map === mapId || n.id === mapId);
+const node = data.acts[1]!.nodes.find((n) => n.map === mapId || n.id === mapId);
 if (!node) throw new Error(`no campaign node for ${mapId}`);
 const runs = Number(opt('runs', '50'));
 const seed0 = Number(opt('seed', '1'));
@@ -87,7 +87,7 @@ const mapOptions: MapSimOptions = {
 }
 
 async function runCampaign(act: string) {
-  if (act !== `act${data.campaign.act}`) throw new Error(`content has ${`act${data.campaign.act}`}, not ${act}`);
+  if (act !== `act${data.acts[1]!.act}`) throw new Error(`content has ${`act${data.acts[1]!.act}`}, not ${act}`);
   const runs = Number(opt('runs', '50'));
   const seed = Number(opt('seed', '1'));
   const difficulty = opt('difficulty', 'normal') as Difficulty;
@@ -216,7 +216,7 @@ function runHaunt(spec: string) {
   const ltId = opt('lt', 'hask');
   const lt = data.lieutenants[ltId];
   if (!lt) throw new Error(`unknown lieutenant ${ltId}`);
-  const order = data.campaign.nodes.map((n) => n.id);
+  const order = data.acts[1]!.nodes.map((n) => n.id);
   // the army after the story node: the chain up to the node that follows it (or all of them)
   const after = order[order.indexOf(story.id) + 1];
   let wins = 0;

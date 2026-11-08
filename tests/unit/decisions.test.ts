@@ -224,7 +224,7 @@ describe('E2 in scn.m1_4.intro (side quest N1)', () => {
     const scene = loadContentFromDisk().data.scenes['scn.m1_4.intro']!;
     const protect = scene.lines.flatMap((l) => ('choice' in l ? (l.choice ?? []) : [])).find((o) => o.id === 'protect')!;
     expect(protect.effects).toEqual([{ setFlag: { e02: 'protect' } }]);
-    const opens = loadContentFromDisk().data.campaign.nodes.find((n) => n.id === 'm1_4')!.effectsIf![0]!;
+    const opens = loadContentFromDisk().data.acts[1]!.nodes.find((n) => n.id === 'm1_4')!.effectsIf![0]!;
     expect(opens.requires).toEqual([{ flag: { e02: 'protect' } }]);
     expect(opens.effects).toEqual([{ openQuest: 'n1' }]);
     expect(consequenceLines(opens.effects)).toContainEqual({ kind: 'quest', node: 'n1' });

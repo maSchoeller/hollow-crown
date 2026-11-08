@@ -18,13 +18,13 @@ const node = (id: string, extra: Partial<CampaignNodeDef> = {}): CampaignNodeDef
 });
 
 const fresh = (): CampaignState => newCampaign(data, 3, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
-const remind = (c: CampaignState, act = data.campaign.act) => applyCampaign(data, c, { type: 'markBackupReminded', act });
+const remind = (c: CampaignState, act = data.acts[1]!.act) => applyCampaign(data, c, { type: 'markBackupReminded', act });
 const over = (c: CampaignState): CampaignState => ({ ...c, completed: ['a', 'z'] });
 
 beforeAll(() => {
   data = clone(loadContentFromDisk().data);
   // a made-up act (fixtures, not the real act 1): an opening mission, a finale and a side quest
-  data.campaign.nodes = [node('a', { fixed: 'first' }), node('z', { fixed: 'finale' }), node('s', { kind: 'side' })];
+  data.acts[1]!.nodes = [node('a', { fixed: 'first' }), node('z', { fixed: 'finale' }), node('s', { kind: 'side' })];
 });
 
 describe('actFinished', () => {
@@ -37,7 +37,7 @@ describe('actFinished', () => {
 
   it('an act without a finale node is never over', () => {
     const d = clone(data);
-    d.campaign.nodes = d.campaign.nodes.filter((n) => n.fixed !== 'finale');
+    d.acts[1]!.nodes = d.acts[1]!.nodes.filter((n) => n.fixed !== 'finale');
     expect(actFinished(d, { completed: ['a', 'z', 's'] })).toBe(false);
   });
 });
@@ -62,24 +62,24 @@ describe('next act in the build', () => {
 describe('markBackupReminded', () => {
   it('starts empty and is refused before the finale or for another act', () => {
     expect(fresh().backupReminded).toEqual([]);
-    expect(validateCampaign(data, fresh(), { type: 'markBackupReminded', act: data.campaign.act })).toBe('not_available');
-    expect(validateCampaign(data, over(fresh()), { type: 'markBackupReminded', act: data.campaign.act + 1 })).toBe('not_available');
-    expect(validateCampaign(data, over(fresh()), { type: 'markBackupReminded', act: data.campaign.act })).toBeNull();
+    expect(validateCampaign(data, fresh(), { type: 'markBackupReminded', act: data.acts[1]!.act })).toBe('not_available');
+    expect(validateCampaign(data, over(fresh()), { type: 'markBackupReminded', act: data.acts[1]!.act + 1 })).toBe('not_available');
+    expect(validateCampaign(data, over(fresh()), { type: 'markBackupReminded', act: data.acts[1]!.act })).toBeNull();
   });
 
   it('notes the act once with one event; asking again changes nothing', () => {
     const first = remind(over(fresh()));
-    expect(first.campaign.backupReminded).toEqual([data.campaign.act]);
-    expect(first.events).toContainEqual({ t: 'backupReminded', act: data.campaign.act });
+    expect(first.campaign.backupReminded).toEqual([data.acts[1]!.act]);
+    expect(first.events).toContainEqual({ t: 'backupReminded', act: data.acts[1]!.act });
     const again = remind(first.campaign);
-    expect(again.campaign.backupReminded).toEqual([data.campaign.act]);
+    expect(again.campaign.backupReminded).toEqual([data.acts[1]!.act]);
     expect(again.events.filter((e) => e.t === 'backupReminded')).toEqual([]);
   });
 
   it('is deterministic and replays from the journal', () => {
     const c = over(fresh());
     expect(remind(c).campaign).toEqual(remind(c).campaign);
-    expect(replayCampaign(data, c, [{ type: 'markBackupReminded', act: data.campaign.act }]).backupReminded).toEqual([data.campaign.act]);
+    expect(replayCampaign(data, c, [{ type: 'markBackupReminded', act: data.acts[1]!.act }]).backupReminded).toEqual([data.acts[1]!.act]);
   });
 
   it('a save from before the field gets the default on load', () => {

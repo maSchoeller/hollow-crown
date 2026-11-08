@@ -137,7 +137,7 @@ describe('Nebenquest N2 als Knoten', () => {
   });
 
   it('pays the ember spark with the victory, the page and the relic are the chests of the goal, plays no memorial variant', () => {
-    const n = data.campaign.nodes.find((x) => x.id === 'n2')!;
+    const n = data.acts[1]!.nodes.find((x) => x.id === 'n2')!;
     expect(n.effects).toEqual([{ item: { def: 'ember_spark' } }]);
     expect(n.memorialIf).toBeUndefined();
     expect(n.place).toBe('wachturm');

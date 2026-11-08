@@ -70,6 +70,28 @@ function parseOne<T>(file: string, raw: unknown, schema: z.ZodType, issues: Cont
 
 const byId = <T extends { id: string }>(list: T[]): Record<string, T> => Object.fromEntries(list.map((x) => [x.id, x]));
 
+/** The document of `path` (relative to content/) in a set of files, or undefined. */
+const fileAt = (files: Record<string, unknown>, path: string): unknown => files[Object.keys(files).find((k) => contentPath(k) === path) ?? ''];
+
+/** Act numbers of the folders that hold `acts/actN/<file>`, ascending. */
+function actFolders(files: Record<string, unknown>, file: string): number[] {
+  const out = new Set<number>();
+  for (const k of Object.keys(files)) {
+    const [root, folder, name, ...more] = contentPath(k).split('/');
+    const m = /^act(\d+)$/.exec(folder ?? '');
+    if (root === 'acts' && m && name === file && !more.length) out.add(Number(m[1]));
+  }
+  return [...out].sort((a, b) => a - b);
+}
+
+/** Adds companions of one act; one id in two acts is an error (the later one is dropped, story 11.1). */
+function addChars(into: CharDef[], list: CharDef[], file: string, issues: ContentIssue[]): void {
+  for (const ch of list) {
+    if (into.some((x) => x.id === ch.id)) issues.push({ file, message: `companion ${ch.id} is declared twice (acts/*/units.yaml)` });
+    else into.push(ch);
+  }
+}
+
 const RUNE_RARITY: Record<number, Rarity> = { 1: 'common', 2: 'rare', 3: 'epic' };
 
 interface PackParts {
@@ -171,6 +193,22 @@ export function mergePackContent(loaded: LoadedContent, files: Record<string, un
   const issues: ContentIssue[] = [];
   const { maps, scenes, chronicle, memorials, supports, lieutenants, hauntPools, locales } = parsePackFiles(files, issues);
   resolveLieutenantClasses(maps, { ...loaded.data.lieutenants, ...lieutenants }, issues);
+  // story 11.1: the head files of a later act (campaign, companions, flags) come with its pack, not with core
+  for (const act of actFolders(files, 'campaign.yaml')) {
+    const camp = parseOne<CampaignDef>(`acts/act${act}/campaign.yaml`, fileAt(files, `acts/act${act}/campaign.yaml`), campaignSchema, issues);
+    if (camp) loaded.data.acts[act] = { ...camp, act };
+  }
+  for (const act of actFolders(files, 'units.yaml')) {
+    const list: CharDef[] = Object.values(loaded.data.chars);
+    const before = list.length;
+    addChars(list, parseList<CharDef>(`acts/act${act}/units.yaml`, fileAt(files, `acts/act${act}/units.yaml`), charSchema, issues).map((ch) => ({ ...ch, act })), `acts/act${act}/units.yaml`, issues);
+    for (const ch of list.slice(before)) loaded.data.chars[ch.id] = ch;
+  }
+  for (const act of actFolders(files, 'flags.yaml'))
+    for (const f of parseList<FlagDef>(`acts/act${act}/flags.yaml`, fileAt(files, `acts/act${act}/flags.yaml`) ?? [], flagSchema, issues)) {
+      if (loaded.data.flags[f.id]) issues.push({ file: `acts/act${act}/flags.yaml`, message: `flag ${f.id} is declared twice (acts/*/flags.yaml)` });
+      else loaded.data.flags[f.id] = f;
+    }
   Object.assign(loaded.data.maps, maps);
   Object.assign(loaded.data.scenes, scenes);
   Object.assign(loaded.data.chronicle, chronicle);
@@ -194,7 +232,6 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const balance = parseOne<Balance>('balance.yaml', get('core/balance.yaml'), balanceSchema, issues);
   const render = parseOne<RenderDef>('render.yaml', get('core/render.yaml'), renderSchema, issues);
   const classes = parseList<ClassDef>('classes.yaml', get('core/classes.yaml'), classSchema, issues);
-  const chars = parseList<CharDef>('units.yaml', get('acts/act1/units.yaml'), charSchema, issues);
   const items = parseList<ItemDef>('items.yaml', get('core/items.yaml'), itemSchema, issues);
   const skills = parseList<SkillDef>('skills.yaml', get('core/skills.yaml'), skillSchema, issues);
   const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
@@ -214,7 +251,15 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
       if (flagList.some((x) => x.id === f.id)) issues.push({ file: p, message: `flag ${f.id} is declared twice (acts/*/flags.yaml)` });
       else flagList.push(f);
     }
-  const campaign = parseOne<CampaignDef>('campaign.yaml', get('acts/act1/campaign.yaml'), campaignSchema, issues);
+  // story 11.1: the campaign and the companions of every act folder whose files are here (act 1 always; act 2 in Node and once its
+  // pack is released and loaded in the browser, then through mergePackContent)
+  const acts: Record<number, CampaignDef> = {};
+  const chars: CharDef[] = [];
+  for (const act of [1, ...actFolders(files, 'campaign.yaml').filter((a) => a !== 1)]) {
+    const camp = parseOne<CampaignDef>(`acts/act${act}/campaign.yaml`, get(`acts/act${act}/campaign.yaml`), campaignSchema, issues);
+    if (camp) acts[act] = { ...camp, act };
+  }
+  for (const act of [1, ...actFolders(files, 'units.yaml').filter((a) => a !== 1)]) addChars(chars, parseList<CharDef>(`acts/act${act}/units.yaml`, get(`acts/act${act}/units.yaml`), charSchema, issues).map((ch) => ({ ...ch, act })), `acts/act${act}/units.yaml`, issues);
   const world = parseOne<WorldDef>('valmora.yaml', get('world/valmora.yaml'), worldSchema, issues);
   const home = parseOne<Record<HomeKind, HomeViewDef>>('home.yaml', get('home/home.yaml'), homeSchema, issues);
   const handbook = parseOne<HandbookDef>('handbook.yaml', get('core/handbook.yaml'), handbookSchema, issues);
@@ -251,7 +296,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     chronicle,
     memorials,
     home: home as Record<HomeKind, HomeViewDef>,
-    campaign: campaign as CampaignDef,
+    acts,
     world: world as WorldDef,
     lieutenants,
     hauntPools,

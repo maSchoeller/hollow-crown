@@ -1,0 +1,80 @@
+# Gefährten von Akt 2 (Story 11.1). Werte [ASSUMPTION]: Basis = Akt-1-Figur derselben Klasse, um ihr Wachstum bis zur Stufe des
+# Entwurfs (concept/27-ueberarbeitung/levels/s2_*.yaml) fortgeschrieben; Story 11.5 legt Werte, Talente, Supports und Beitritte endgültig fest.
+# joins nennt den Knoten des Beitritts (die Knoten m2_* legt 11.11 an); die Beitrittsstufe wächst ab 11.2 mit der Positionsstufe.
+
+# Spielmann, tritt in 2-1 bei (Ansprechen im Kampf, scn.m2_1.jory_talk)
+- id: jory
+  nameKey: unit.jory.name
+  class: minstrel
+  level: 5
+  affinity: wind
+  base:   { hp: 18, str: 5, mag: 0, skl: 8, spd: 11, lck: 9, def: 3, res: 3 }
+  growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
+  items: [ { def: iron_dagger }, { def: travel_lute }, { def: vulnerary } ]
+  joins: m2_1
+
+# Schützin der Rabenweide, tritt in 2-3 bei (Ansprechen)
+- id: ilka
+  nameKey: unit.ilka.name
+  class: marksman
+  level: 11
+  affinity: wind
+  base:   { hp: 23, str: 8, mag: 2, skl: 13, spd: 12, lck: 7, def: 5, res: 4 }
+  growth: { hp: 60, str: 40, mag: 10, skl: 60, spd: 55, lck: 35, def: 20, res: 25 }
+  items: [ { def: iron_bow }, { def: leather_cap } ]
+  joins: m2_3
+
+# Leibwächterin, tritt in 2-5 bei
+- id: odile
+  nameKey: unit.odile.name
+  class: skirmisher
+  level: 7
+  affinity: water
+  base:   { hp: 22, str: 8, mag: 0, skl: 11, spd: 11, lck: 2, def: 4, res: 2 }
+  growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
+  items: [ { def: steel_sword }, { def: leather_vest } ]
+  joins: m2_5
+
+# Heiler, tritt in 2-5 bei (Ansprechen)
+- id: amos
+  nameKey: unit.amos.name
+  class: healer
+  level: 7
+  affinity: light
+  base:   { hp: 19, str: 1, mag: 8, skl: 5, spd: 8, lck: 10, def: 3, res: 9 }
+  growth: { hp: 55, str: 10, mag: 55, skl: 35, spd: 45, lck: 60, def: 15, res: 50 }
+  items: [ { def: heal_staff }, { def: vulnerary } ]
+  joins: m2_5
+
+# Kapitänin, tritt in 2-6 bei (Ansprechen)
+- id: nell
+  nameKey: unit.nell.name
+  class: scout
+  level: 8
+  affinity: water
+  base:   { hp: 20, str: 6, mag: 0, skl: 9, spd: 13, lck: 10, def: 3, res: 3 }
+  growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
+  items: [ { def: iron_dagger }, { def: leather_cap } ]
+  joins: m2_6
+
+# Steinrufer, Schutzfigur in 2-4, tritt danach bei
+- id: brann
+  nameKey: unit.brann.name
+  class: elementalist
+  level: 8
+  affinity: earth
+  base:   { hp: 18, str: 0, mag: 11, skl: 7, spd: 8, lck: 4, def: 2, res: 7 }
+  growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
+  items: [ { def: rockfall }, { def: vulnerary } ]
+  joins: m2_4
+
+# Leutnantin Dravns; tritt als Leutnant über recruit { lt: sable } bei (Seitenwechsel, Architektur §5.5), Basis = Stufe 16
+- id: sable
+  nameKey: unit.sable.name
+  class: duelist
+  level: 16
+  affinity: dark
+  base:   { hp: 28, str: 11, mag: 1, skl: 16, spd: 16, lck: 4, def: 7, res: 4 }
+  growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
+  items: [ { def: steel_sword }, { def: vulnerary } ]
+  joins: lieutenant

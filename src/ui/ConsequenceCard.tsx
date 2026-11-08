@@ -1,6 +1,6 @@
 /** Consequence card after a decision (concept/25-ux/DESIGN.md `consequence-card`, mockup 05): one line per effect. */
 import type { ComponentChildren } from 'preact';
-import type { ConsequenceLine, GameData } from '../core';
+import { findNode, type ConsequenceLine, type GameData } from '../core';
 import { t } from '../i18n';
 import { Icon } from './icons';
 import { Amount, ItemImage, itemImageSrc, Piece, PrimaryButton } from './pieces';
@@ -38,7 +38,7 @@ export function consequenceView(
     case 'chronicle':
       return { icon: <Icon name="log" size={22} />, title: t('ui.consequence.chronicle.title'), desc: t('ui.consequence.chronicle.desc') };
     case 'quest': {
-      const node = data.campaign.nodes.find((n) => n.id === l.node);
+      const node = findNode(data, l.node);
       return { icon: <Icon name="map" size={22} />, title: t('ui.consequence.quest.title', { name: node ? t(node.titleKey) : l.node }), desc: t('ui.consequence.quest.desc') };
     }
     case 'grudge': {

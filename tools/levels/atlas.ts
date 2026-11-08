@@ -57,7 +57,7 @@ function readDraft(file: string): Entry {
 const contentEntry = (id: string): Entry | undefined => {
   const map = data.maps[id] as unknown as LevelMap | undefined;
   if (!map) return undefined;
-  const node = data.campaign.nodes.find((n) => n.map === id);
+  const node = data.acts[1]!.nodes.find((n) => n.map === id);
   return { map, title: (node && de[node.titleKey]) ?? (node ? node.id : 'Nebenquest / ohne Knoten'), source: `content/acts/act${data.maps[id]!.act}/maps/${id}.yaml` };
 };
 
@@ -70,7 +70,7 @@ if (targets.length) {
     return e;
   });
 } else {
-  const ordered = [...data.campaign.nodes.map((n) => n.map).filter((m): m is string => !!m), ...Object.keys(data.maps).sort()];
+  const ordered = [...data.acts[1]!.nodes.map((n) => n.map).filter((m): m is string => !!m), ...Object.keys(data.maps).sort()];
   entries = [...new Set(ordered)].map(contentEntry).filter((e): e is Entry => !!e);
   if (existsSync(draftDir)) for (const f of readdirSync(draftDir).filter((f) => /\.ya?ml$/.test(f)).sort()) entries.push(readDraft(join(draftDir, f)));
 }

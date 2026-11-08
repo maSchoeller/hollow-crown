@@ -523,7 +523,7 @@ export function resolveAttack(
       const d = itemDef(data, used);
       s.stats.bossKilledWith = d.tags?.includes('fixed') ? d.group : d.weaponType;
     }
-    grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events, expPercent(data, s, me));
+    grantExp(data, me, combatExp(data, me, foe, killed, !!foe.boss), s.rng, events, expPercent(data, s, me), s.act);
   }
 }
 

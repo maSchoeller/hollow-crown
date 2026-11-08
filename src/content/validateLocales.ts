@@ -8,7 +8,6 @@ import { allUnits } from './validateWalk';
 
 /** i18n: names of all content and parity between DE and EN; chronicle limits; sprites of map units and classes. */
 export function validateLocales(data: GameData, locales: Locales, err: Err, spriteIds?: Set<string>): void {
-  const camp = data.campaign;
   const need: string[] = [];
   for (const c of Object.values(data.classes)) need.push(`class.${c.id}.name`);
   // the detail sheet shows a description of every item and the name of its set
@@ -23,9 +22,12 @@ export function validateLocales(data: GameData, locales: Locales, err: Err, spri
   for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`, ...r.unlocks.map((u) => `room.${r.id}.unlock.${u.id}`));
   for (const m of Object.values(data.memorials)) need.push(...Object.keys(memorialTexts(m)));
   for (const k of HOME_KINDS) need.push(`home.${k}.name`, `home.${k}.title`);
-  for (const n of camp?.nodes ?? []) need.push(n.titleKey);
-  if (camp) need.push(`act.${camp.act}.name`, `act.${camp.act}.season`);
-  for (const sc of camp?.scars ?? []) need.push(`scar.${sc.id}`);
+  // every loaded act (story 11.1)
+  for (const camp of Object.values(data.acts)) {
+    for (const n of camp.nodes) need.push(n.titleKey);
+    need.push(`act.${camp.act}.name`, `act.${camp.act}.season`);
+    for (const sc of camp.scars) need.push(`scar.${sc.id}`);
+  }
   // chronicle pages: English texts, and no more pages than the season has (narrative: 12)
   for (const p of Object.values(data.chronicle)) need.push(pageTitleKey(p.id), pageTextKey(p.id));
   for (const e of data.balance.chronicle.sealed) {

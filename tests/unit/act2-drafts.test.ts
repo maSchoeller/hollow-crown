@@ -50,7 +50,7 @@ beforeAll(() => {
 afterEach(() => {
   for (const id of added.splice(0)) {
     delete data.maps[id];
-    data.campaign = { ...data.campaign, nodes: data.campaign.nodes.filter((n) => n.id !== id) };
+    data.acts[1]! = { ...data.acts[1]!, nodes: data.acts[1]!.nodes.filter((n) => n.id !== id) };
   }
 });
 
@@ -61,8 +61,8 @@ const campaign = (): CampaignState =>
 function addMap(file: string, act = 2): MapDef {
   const map = { ...mapSchema.parse(parse(readFileSync(file, 'utf8'))), act } as MapDef;
   data.maps[map.id] = map;
-  const first = data.campaign.nodes[0]!;
-  data.campaign = { ...data.campaign, nodes: [...data.campaign.nodes, { ...first, id: map.id, map: map.id, pre: undefined, post: undefined }] };
+  const first = data.acts[1]!.nodes[0]!;
+  data.acts[1]! = { ...data.acts[1]!, nodes: [...data.acts[1]!.nodes, { ...first, id: map.id, map: map.id, pre: undefined, post: undefined }] };
   added.push(map.id);
   return map;
 }
@@ -132,8 +132,8 @@ describe('act-2 drafts in content:check', () => {
     expect(r!.issues.map((i) => i.message)).toEqual(
       expect.arrayContaining(['escort: troupe_master joins afterwards, so it needs a character of the same id (or join: false)', 't_key: missing key ui.no_such_line']),
     );
-    // Jory comes with story 11.5: his forced deploy only waits for the character
-    expect(r!.open.map((i) => i.message)).toContain('deploy.forced: unknown char jory');
+    // Jory's character exists since story 11.1: his forced deploy is no longer open
+    expect(r!.open.map((i) => i.message)).not.toContain('deploy.forced: unknown char jory');
   });
 
   it('checks warn, guest and the forced deploy of a map', () => {
