@@ -49,9 +49,12 @@
   gap: 6px;
   margin: 0;
 }
+/* Flex with wrap: a long value (e.g. "Magisch (gegen RES)") drops below the
+   label instead of squeezing the label column to zero and overlapping it. */
 .its__fact {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
   align-content: start;
   gap: 0 8px;
   padding: 6px 10px;
@@ -64,9 +67,13 @@
   font-weight: 700;
   font-size: var(--hc-size-label);
   color: var(--hc-soft);
+  flex: 1 0 auto;
 }
 .its__fact dd {
-  margin: 0;
+  margin: 0 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   font-family: var(--hc-font-label);
   font-weight: 700;
   font-size: var(--hc-size-number);
@@ -74,7 +81,7 @@
   text-align: right;
 }
 .its__fact small {
-  grid-column: 1 / -1;
+  flex: 1 0 100%;
   color: var(--hc-soft);
   font-size: 12px;
   line-height: 1.3;

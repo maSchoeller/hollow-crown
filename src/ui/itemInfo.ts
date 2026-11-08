@@ -128,7 +128,12 @@ function weaponFacts(data: GameData, inst: ItemInstance, d: ItemDef): { facts: I
     },
     { key: 'rng', label: statLabel('rng'), value: range(w.range), hint: t('ui.itemInfo.hint.rng') },
     { key: 'wt', label: statLabel('wt'), value: `${w.weight}`, hint: t('ui.itemInfo.hint.wt') },
-    { key: 'damageType', label: t('ui.itemInfo.damageType'), value: t(`ui.itemInfo.damage.${w.damageType}`) },
+    {
+      key: 'damageType',
+      label: t('ui.itemInfo.damageType'),
+      value: t(`ui.itemInfo.damage.${w.damageType}`),
+      hint: t('ui.itemInfo.hint.damageType'),
+    },
   ];
   if (w.element)
     facts.push({
