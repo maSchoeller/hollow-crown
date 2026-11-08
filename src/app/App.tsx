@@ -22,9 +22,10 @@ import { nodeDef } from './state/flow';
 import './state/devHooks';
 import { missionLoad } from './state/loading';
 import { prepare } from './state/prepare';
-import { battle } from './state/battle';
+import { battle, battleRun } from './state/battle';
+import { dropBoard } from './state/boardKeep';
 import { fault, reportFault } from './state/fault';
-import { screen } from './state/screen';
+import { screen, type Screen } from './state/screen';
 import { settings } from './state/settings';
 import { lang, t } from '../i18n';
 
@@ -68,6 +69,9 @@ export function App() {
   );
 }
 
+/** Screens after which the battle board can come back unchanged (options, licenses from there, a mission's loading). */
+const KEEPS_BOARD = new Set<Screen['name']>(['battle', 'options', 'licenses', 'handbook', 'loading']);
+
 function Screens() {
   void lang.value; // re-render on language change
   useWakeLock();
@@ -81,6 +85,10 @@ function Screens() {
       if (cue) audio.music(cue);
     }
   }, [sc.name, sc.name === 'dialogue' ? sc.id : '']);
+  // the board waits behind the options and the loading of a mission start; any other screen has no use for it
+  useEffect(() => {
+    if (!KEEPS_BOARD.has(sc.name)) dropBoard();
+  }, [sc.name]);
   switch (sc.name) {
     case 'title':
       return <Title />;
@@ -99,7 +107,7 @@ function Screens() {
     case 'loading':
       return <MissionLoading title={missionLoad.value ? t(nodeDef(missionLoad.value.node).titleKey) : ''} />;
     case 'battle':
-      return battle.value ? <Battle /> : <WorldMap />;
+      return battle.value ? <Battle key={battleRun.value} /> : <WorldMap />;
     case 'result':
       return <Result result={sc.result} />;
     case 'farewell':

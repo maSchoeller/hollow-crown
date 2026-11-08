@@ -319,6 +319,41 @@ export abstract class BoardBase implements HostedView {
     this.host.hold(mode);
   }
 
+  /** Still on the stage: not disposed, neither by its screen nor by the next scene the host activated. */
+  get alive(): boolean {
+    return !this.disposed;
+  }
+
+  /**
+   * Moves the built board to another screen instead of building it again (the deploy board into the battle, the battle
+   * back from the options): the canvas goes into `slot`, the labels over the figures into `floatLayer`, input reaches `hooks`.
+   */
+  adopt(slot: HTMLElement, floatLayer: HTMLDivElement, hooks: BoardHooks): void {
+    this.host.mount(slot);
+    if (floatLayer !== this.floatLayer) {
+      const from = this.floatLayer;
+      // the sizes the badges and status icons set as custom properties on their layer
+      for (const name of Array.from(from.style)) if (name.startsWith('--')) floatLayer.style.setProperty(name, from.style.getPropertyValue(name));
+      floatLayer.append(...Array.from(from.childNodes));
+      this.floatLayer = floatLayer;
+      this.badges.moveTo(floatLayer);
+      this.statusIcons.moveTo(floatLayer);
+    }
+    this.hooks = hooks;
+    this.host.hold('run');
+    this.resize();
+  }
+
+  /** Resolves when `load` has built the board (at once when it never started). */
+  async whenReady(): Promise<void> {
+    await this.readyPromise;
+  }
+
+  /** Frames the whole map as after `load` (a new battle on a board taken over from the deploy screen or a restart). */
+  refit(): void {
+    this.fitCamera();
+  }
+
   /** The host calls this when the canvas changed size. */
   resize(): void {
     this.size = null;

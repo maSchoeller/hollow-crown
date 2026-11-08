@@ -76,6 +76,11 @@ export class Badges {
     private look: LegibilityDef['hpBar'],
   ) {}
 
+  /** The board moved to another screen's layer (`BoardBase.adopt`); the elements went along. */
+  moveTo(layer: HTMLElement): void {
+    this.layer = layer;
+  }
+
   setMode(mode: HpBarMode): void {
     if (mode === this.mode) return;
     this.mode = mode;

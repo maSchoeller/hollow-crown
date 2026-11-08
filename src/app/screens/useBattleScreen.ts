@@ -6,6 +6,7 @@ import type { CutInShown } from './CutIn';
 import { type GameEvent, type ItemInstance, type Pos, type RecapRow, type Stats, type Team, fogOn, resolveScene, visibleState } from '../../core';
 import type { Mode } from './battleMode';
 import { battle } from '../state/battle';
+import { boardKey, boardWaits } from '../state/boardKeep';
 import { data } from '../state/session';
 import { settings } from '../state/settings';
 import { storyContext } from '../state/flow';
@@ -25,8 +26,8 @@ export function useBattleScreen() {
   const boardRef = useRef<BoardView | null>(null);
   const [mode, setMode] = useState<Mode>({ k: 'idle' });
   const [busy, setBusy] = useState(true);
-  /** the board is still being built: a cover says so, because nothing on the map reacts yet */
-  const [loading, setLoading] = useState(true);
+  /** the board is still being built: a cover says so, because nothing on the map reacts yet (not when a built one is taken over) */
+  const [loading, setLoading] = useState(() => !boardWaits(boardKey(full.mapId)));
   const [danger, setDanger] = useState(settings.value.dangerDefault);
   const [watch, setWatch] = useState<string[]>([]);
   const [info, setInfo] = useState<string | null>(null);

@@ -10,7 +10,7 @@ import { ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/piece
 import { Scene, SceneBand } from './Scene';
 import { Toast } from '../../ui/components';
 import { WantedDock } from './Wanted';
-import { abandonBattle, canAbandon, canRestart, pendingEvents, restartBattle } from '../state/battle';
+import { abandonBattle, battleRun, canAbandon, canRestart, pendingEvents, restartBattle } from '../state/battle';
 import { campaign, data } from '../state/session';
 import { escapeCounts, goalLine, goalStand } from '../../ui/goalText';
 import { activeVictory } from '../../core/battle/activeVictory';
@@ -470,10 +470,9 @@ export function Battle() {
   );
 }
 
-/** Re-mounts the battle screen after a restart (fresh board). */
+/** Re-mounts the battle screen after a restart (fresh HUD state; the board of the same map is taken over). */
 function remount(): void {
-  screen.value = { name: 'camp' };
-  queueMicrotask(() => (screen.value = { name: 'battle' }));
+  battleRun.value++;
 }
 
 export { weaponRange };
