@@ -230,7 +230,7 @@ export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], r
       u.acted = true;
     }
     s.units.push(u);
-    events.push({ t: 'spawned', unit: u.uid, reinforcement });
+    events.push({ t: 'spawned', unit: u.uid, reinforcement, hp: u.hp });
   }
   noteLieutenantSight(data, s);
 }

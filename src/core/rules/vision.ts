@@ -129,6 +129,7 @@ export function fogBands(s: Pick<BattleState, 'width' | 'height'>, seen: Readonl
  *   the fight begins and faded out with `retreated` when it ends, so it is on the board for the duration of the fight only. A
  *   fight between two fighters in the fog is dropped.
  * - `ambush`: the foe that stopped the player's unit is let in with `spawned` and stays (it is next to the unit).
+ * - every `spawned` it adds carries the unit's HP at that moment (`hp`), followed through the blows it took unseen before.
  * - `quote` of an unseen unit becomes a `dialogue` (the speech band is fixed to the screen, so nothing of the fog is shown).
  * - events of an unseen unit (`aiTurn`, `status`, `damage`, `died`, `fled`, ...) and on unseen tiles (`terrain`, `lootDropped`) are dropped.
  * Everything else (phase, gold, objectives, battle end, ...) stays.
@@ -141,6 +142,9 @@ export function filterEvents(data: GameData, s: BattleState, events: GameEvent[]
   const teams = new Map<string, BattleUnit['team']>();
   for (const u of [...start.units, ...s.units]) teams.set(u.uid, u.team);
   const where = new Map<string, Pos | null>(start.units.map((u) => [u.uid, u.pos]));
+  // HP as the events go, so a unit let in shows the HP it has then, not those after the command (fix HP timing)
+  const hpNow = new Map<string, number>(start.units.map((u) => [u.uid, u.hp]));
+  const letIn = (uid: string, at: Pos): GameEvent => ({ t: 'spawned', unit: uid, reinforcement: false, at, hp: hpNow.get(uid) });
   // the units the board holds now: those the UI showed (`visibleState`), kept up to date as the events let units in and out
   const board = new Set(visibleState(data, start, team).units.filter(onMap).map((u) => u.uid));
   const mine = (uid: string) => {
@@ -156,6 +160,9 @@ export function filterEvents(data: GameData, s: BattleState, events: GameEvent[]
   const guests = new Set<string>();
   const out: GameEvent[] = [];
   for (const e of events) {
+    if (e.t === 'strike') hpNow.set(e.defender, e.hpAfter);
+    else if (e.t === 'damage' || e.t === 'heal') hpNow.set(e.unit, e.hpAfter);
+    else if (e.t === 'spawned' && e.hp !== undefined) hpNow.set(e.unit, e.hp);
     switch (e.t) {
       case 'moved': {
         const end = e.path[e.path.length - 1];
@@ -172,7 +179,7 @@ export function filterEvents(data: GameData, s: BattleState, events: GameEvent[]
         if (!board.has(e.unit)) {
           // comes out of the fog; a foe that ends in the fog is never shown
           if (last < e.path.length - 1) break;
-          out.push({ t: 'spawned', unit: e.unit, reinforcement: false, at: path[0]! });
+          out.push(letIn(e.unit, path[0]!));
           board.add(e.unit);
         }
         if (path.length >= 2) out.push({ t: 'moved', unit: e.unit, path });
@@ -187,7 +194,7 @@ export function filterEvents(data: GameData, s: BattleState, events: GameEvent[]
           for (const uid of [e.attacker, e.defender]) {
             const p = where.get(uid);
             if (board.has(uid) || mine(uid) || !p) continue;
-            out.push({ t: 'spawned', unit: uid, reinforcement: false, at: p });
+            out.push(letIn(uid, p));
             board.add(uid);
             guests.add(uid);
           }
@@ -211,7 +218,7 @@ export function filterEvents(data: GameData, s: BattleState, events: GameEvent[]
       case 'ambush': {
         const p = where.get(e.by);
         if (p && !board.has(e.by)) {
-          out.push({ t: 'spawned', unit: e.by, reinforcement: false, at: p });
+          out.push(letIn(e.by, p));
           board.add(e.by);
         }
         out.push(e);

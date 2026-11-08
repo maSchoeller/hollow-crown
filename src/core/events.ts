@@ -52,8 +52,12 @@ export type GameEvent =
   | { t: 'recruited'; unit: string; by?: string }
   | { t: 'dialogue'; id: string }
   | { t: 'quote'; unit: string; id: string }
-  /** `at`: only set by the fog filter (`filterEvents`, story 2.6) for a foe that comes out of the fog: it appears on that tile */
-  | { t: 'spawned'; unit: string; reinforcement: boolean; at?: Pos }
+  /**
+   * `at`: only set by the fog filter (`filterEvents`, story 2.6) for a foe that comes out of the fog: it appears on that tile.
+   * `hp`: its HP when it appears. The board shows the unit with these, not with the HP of the state after the command, which
+   * already holds the blows it takes later in the same command (fix HP timing: the bar showed the counter while it walked).
+   */
+  | { t: 'spawned'; unit: string; reinforcement: boolean; at?: Pos; hp?: number }
   | { t: 'phase'; phase: Team; turn: number }
   | { t: 'exhausted'; unit: string }
   | { t: 'refreshed'; unit: string; by: string }

@@ -305,7 +305,7 @@ describe('the events the player sees played', () => {
     const out = filterEvents(data, st, ev, 'player', before);
     // radius 5 from [1,1]: [6,3] is at distance 7 (fog), [5,3] distance 6, [4,3] distance 5 (seen)
     expect(out).toEqual([
-      { t: 'spawned', unit: far.uid, reinforcement: false, at: [4, 3] },
+      { t: 'spawned', unit: far.uid, reinforcement: false, at: [4, 3], hp: far.hp },
       { t: 'moved', unit: far.uid, path: [[4, 3], [3, 3]] },
     ]);
   });
@@ -334,7 +334,7 @@ describe('the events the player sees played', () => {
     const fromFog: GameEvent[] = [{ t: 'combat', attacker: far.uid, defender: me.uid }, strike(far.uid, me.uid), { t: 'combatEnd', attacker: far.uid, defender: me.uid }];
     // a foe that fights a seen unit is on the board for the fight only
     expect(filterEvents(data, st, fromFog, 'player')).toEqual([
-      { t: 'spawned', unit: far.uid, reinforcement: false, at: [10, 10] },
+      { t: 'spawned', unit: far.uid, reinforcement: false, at: [10, 10], hp: far.hp },
       ...fromFog,
       { t: 'retreated', unit: far.uid },
     ]);

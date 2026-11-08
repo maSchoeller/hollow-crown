@@ -13,6 +13,7 @@ import { critTimeline } from './critTimeline';
 import { dropPennant, fleeArc, FLEE_FADE_MS, FLEE_JUMP_MS, fleeTarget } from './lieutenant';
 import { BoardFrame } from './boardFrame';
 import { marchRun, type March } from './march';
+import { unitAtSpawn } from './spawnUnit';
 import { announces, pausedFor, phaseClock } from './aiPacing';
 
 export class BoardView extends BoardFrame implements HostedView {
@@ -368,8 +369,10 @@ export class BoardView extends BoardFrame implements HostedView {
           const final = finalState.units.find((x) => x.uid === e.unit) ?? pool?.find((x) => x.uid === e.unit);
           // `e.at`: a foe coming out of the fog appears where it first comes into sight, `pool`: the units of the whole state, for foes
           // the board is shown without but lets in for a moment (fog filter, story 2.6)
-          const u = final && e.at ? { ...final, pos: e.at } : final;
+          // as it is when it appears, not after the command: the final state already holds the counter it takes (fix HP timing)
+          const u = final && unitAtSpawn(final, e, events, n);
           if (u) {
+            this.hooks.onUnitHp?.(u.uid, u.hp);
             // only the new figure: a full sync from `this.state` (the state before the playback) would put back the others (fix 1-3)
             await this.addUnit(u);
             const v = this.units.get(u.uid);

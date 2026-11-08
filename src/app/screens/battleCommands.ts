@@ -1,5 +1,5 @@
 /** Command execution of the battle screen (Battle.tsx). */
-import { type Command, type GameEvent, active, filterEvents, pathTo, phaseRecap, pursueReach, samePos, visibleState } from '../../core';
+import { type BattleState, type Command, type GameEvent, active, filterEvents, pathTo, phaseRecap, pursueReach, samePos, visibleState } from '../../core';
 import { audio } from '../audio';
 import { battle, command, commandOffThread } from '../state/battle';
 import { concludeBattle } from '../state/flow';
@@ -10,6 +10,11 @@ import { t } from '../../i18n';
 import type { BattleScreen } from './useBattleScreen';
 import type { BattlePresentation } from './battlePresentation';
 import type { BoardOverlays } from './useBoardOverlays';
+
+/** HP of every unit in `s`: what the HUD shows while the events of a command play, until each one's own event moves it on. */
+function hpOf(s: BattleState): Record<string, number> {
+  return Object.fromEntries(s.units.map((u) => [u.uid, u.hp]));
+}
 
 /** The command runner of the battle screen: runs a command, plays its events, ends the phase or the battle. */
 export function makeRun(b: BattleScreen, reachOf: BoardOverlays['reachOf'], show: BattlePresentation) {
@@ -34,6 +39,9 @@ export function makeRun(b: BattleScreen, reachOf: BoardOverlays['reachOf'], show
     setRecap(null);
     const enemy = cmd.type === 'endPhase';
     const before = battle.value!.state;
+    // the HUD (foe strip, company, unit card) reads the state after the command; until the playback reaches a unit's blow it
+    // shows the HP of before it (`onUnitHp` moves them on per event, the reset below hands back to the state) (fix HP timing)
+    setHp(hpOf(before));
     if (enemy) setPhaseView({ phase: 'enemy', turn: s.turn });
     const sp = enemy ? settings.value.enemySpeed : settings.value.speed;
     board.speed = sp === 2 ? 2 : 1;

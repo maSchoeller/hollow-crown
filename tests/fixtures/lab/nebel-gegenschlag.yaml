@@ -1,0 +1,12 @@
+# Fix TP-Timing (Gegnerphase): Ein Räuber kommt im Hungerlager aus dem Nebel, schlägt Kael an und fängt sich den Gegenschlag.
+#   pnpm lab nebel-gegenschlag --enemy      die Gegnerphase: `spawned` aus dem Nebel, dann Kampf
+# Im Dev-Build `?lab=nebel-gegenschlag`: die Lebensleiste des Räubers bleibt voll, bis der Gegenschlag trifft.
+question: Zeigt der Räuber aus dem Nebel schon beim Laufen den Schaden des Gegenschlags?
+map: m1_5_hungerlager
+seed: 3
+turn: 2
+units:
+  lucan: { at: [11, 9] }
+remove: [enemy:*]
+add:
+  - { id: lab_raider, team: enemy, class: brigand, level: 6, at: [10, 6], items: [{ def: iron_axe }], ai: { profile: aggressive } }

@@ -15,7 +15,7 @@ beforeAll(() => {
   data = loadContentFromDisk().data;
 });
 
-const unit = (uid: string, team: BattleUnit['team'], pos: Pos): BattleUnit => ({ uid, team, pos, downed: false, gone: false, acted: false }) as unknown as BattleUnit;
+const unit = (uid: string, team: BattleUnit['team'], pos: Pos): BattleUnit => ({ uid, team, pos, downed: false, gone: false, acted: false, status: [] }) as unknown as BattleUnit;
 
 const view = (u: BattleUnit): UnitView =>
   ({ uid: u.uid, team: u.team, sprite: 'x', gear: '', x: u.pos![0], y: u.pos![1], offX: 0, offY: 0, lift: 0, alpha: 1, visible: true, desat: 0, flash: 0, downed: false }) as unknown as UnitView;
