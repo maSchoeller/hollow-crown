@@ -13,6 +13,7 @@ import { areaTiles, clone, posKey } from '../util';
 import { hauntPlaces, standableTiles } from '../battle/hauntMap';
 import { availableNodes } from './graph';
 import { actOf, nodesUpTo } from './acts';
+import { nodeLevel } from './position';
 import type { CampaignEvent } from './commands';
 import { activeLieutenants, lieutenantState } from './lieutenants';
 
@@ -22,13 +23,16 @@ export function hauntEnemyCount(data: Pick<GameData, 'balance'>, places: number,
   return Math.max(1, places + data.balance.haunt.extraEnemies + shift);
 }
 
-/** The army level the haunts are made for: the expected level of the next story node to play, else that of the last one done. */
+/**
+ * The army level the haunts are made for: the level (`nodeLevel`) of the next story node to play that has a map, else that of the
+ * last one done. Story 11.2: an act whose story nodes have no map yet (act 2 on "more missions to come") does not fall back to
+ * level 1 but takes the last act with maps.
+ */
 export function hauntLevel(data: GameData, c: CampaignState): number {
-  const next = availableNodes(data, c).find((n) => n.kind === 'story');
-  if (next) return next.expectedLevel;
-  // story 11.1: in an act without a mission done yet, the last one of the act before counts
-  const done = nodesUpTo(data, actOf(c)).filter((n) => n.kind === 'story' && c.completed.includes(n.id));
-  return done.length ? done[done.length - 1]!.expectedLevel : 1;
+  const next = availableNodes(data, c).find((n) => n.kind === 'story' && !!data.maps[n.map]);
+  if (next) return nodeLevel(data, c, next);
+  const done = nodesUpTo(data, actOf(c)).filter((n) => n.kind === 'story' && c.completed.includes(n.id) && !!data.maps[n.map]);
+  return done.length ? nodeLevel(data, c, done[done.length - 1]!) : 1;
 }
 
 /** Picks an enemy type by its `share` (percent; the shares add up to 100). */

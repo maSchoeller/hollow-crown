@@ -28,11 +28,13 @@ import { z } from 'zod';
 import { mapSchema, mapUnitSchema } from '../content/schemaMap';
 import {
   addToRoster,
+  atPosition,
   autoEquip,
   battleUnitFromPlan,
   beginBattle,
   computeStats,
   levelUp,
+  nodeLevel,
   newCampaign,
   newItem,
   posKey,
@@ -156,7 +158,7 @@ function labCampaign(data: GameData, sc: LabScenario, nodeId: string): CampaignS
       if (j >= 0 && j < idx) addToRoster(data, c, ch.id);
     }
   }
-  const level = sc.level ?? (stand ? 1 : node.expectedLevel);
+  const level = sc.level ?? (stand ? 1 : nodeLevel(data, { completed: order.slice(0, idx) }, node));
   for (const u of c.roster) while (u.level < level) levelUp(data, u, c.rng);
   if (!stand) c.completed = order.slice(0, idx);
   for (const [k, v] of Object.entries(sc.flags)) c.flags[k] = v;
@@ -248,7 +250,7 @@ export function buildLab(data: GameData, raw: unknown, fixtures?: FixtureMapSour
     const uid = def.id ?? def.char ?? `lab${i}`;
     if (s.units.some((u) => u.uid === uid)) fail(`add[${i}]: uid "${uid}" is taken`);
     const pct = def.team === 'enemy' ? data.balance.difficulty[sc.difficulty].enemyStatPercent : 0;
-    s.units.push(battleUnitFromPlan(data, def, s, pct, uid));
+    s.units.push(battleUnitFromPlan(data, atPosition(def, s.positionLevel), s, pct, uid));
   });
 
   for (const [ref, p] of Object.entries(sc.units)) patchUnit(data, s, findUnit(s, ref), p, ref);

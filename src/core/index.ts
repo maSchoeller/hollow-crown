@@ -58,6 +58,7 @@ export * from './campaign/day';
 export * from './campaign/haunts';
 export * from './campaign/graph';
 export * from './campaign/acts';
+export * from './campaign/position';
 export * from './campaign/consequences';
 export * from './campaign/chronicle';
 export * from './campaign/lieutenants';

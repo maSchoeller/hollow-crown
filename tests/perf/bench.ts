@@ -139,7 +139,7 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
       const j = order.indexOf(ch.joins);
       if (j >= 0 && j < at) addToRoster(data, c, ch.id);
     }
-    for (const u of c.roster) while (u.level < nodes[at]!.expectedLevel) levelUp(data, u, c.rng);
+    for (const u of c.roster) while (u.level < nodes[at]!.expectedLevel!) levelUp(data, u, c.rng);
     c.completed = order.slice(0, at);
     deploy = c.roster.map((u) => u.id).slice(0, data.maps[BENCH_MAP_ID]!.deploy.max);
   }

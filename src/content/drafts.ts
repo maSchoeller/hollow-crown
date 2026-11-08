@@ -19,6 +19,8 @@ const OPEN_MESSAGES = [
   /: unknown chronicle page \w+ \(acts\/\*\/chronicle\.yaml\)$/,
   /: unknown item \w+$/,
   /^escort: missing locale key unit\.\w+\.name in (de|en)$/,
+  // story 11.2: a draft keeps its `level`; the mission story turns it into `levelOffset` when it takes the map over
+  /: levelOffset missing \(act \d+ has a positionLevel\)$/,
 ];
 /** the name of the map itself (`map.<id>.name`): the mission story writes it */
 const openIssue = (i: ContentIssue, mapId: string) =>

@@ -221,7 +221,7 @@ describe('smith, tavern and army limits (story 6.4)', () => {
     refreshTavern(data, b);
     expect(a.tavern).toEqual(b.tavern);
     expect(a.tavern).toHaveLength(data.balance.economy.tavernOffersPerChapter);
-    const expected = data.acts[1]!.nodes.find((n) => n.id === 'm1_3')!.expectedLevel;
+    const expected = data.acts[1]!.nodes.find((n) => n.id === 'm1_3')!.expectedLevel!;
     for (const u of a.tavern) {
       expect(u.level).toBeGreaterThanOrEqual(expected - data.balance.economy.tavern.levelSpread);
       expect(u.level).toBeLessThanOrEqual(expected);

@@ -50,7 +50,7 @@ beforeAll(() => {
   base = newCampaign(data, 7, { difficulty: 'easy', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
   for (const id of ['lucan', 'brenna', 'tobin', 'fenn', 'mira', 'liora', 'varek']) addToRoster(data, base, id);
   // an army as strong as one that played its way here (node expectedLevel), like `__hc.devNode`
-  const level = data.acts[1]!.nodes.find((n) => n.id === NODE)!.expectedLevel;
+  const level = data.acts[1]!.nodes.find((n) => n.id === NODE)!.expectedLevel!;
   for (const u of base.roster) while (u.level < level) levelUp(data, u, base.rng);
   base.completed = [...STORY];
 });

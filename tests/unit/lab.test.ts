@@ -25,7 +25,7 @@ describe('lab scenario loader', () => {
     expect(s.timers['10,6']).toMatchObject({ kind: 'burning' });
     // the company is raised to the node's expectedLevel
     const node = data.acts[1]!.nodes.find((n) => n.id === 'm1_4')!;
-    expect(labUnit(s, 'avatar').level).toBeGreaterThanOrEqual(node.expectedLevel);
+    expect(labUnit(s, 'avatar').level).toBeGreaterThanOrEqual(node.expectedLevel!);
   });
 
   it('is deterministic: the same file gives the same battle', () => {

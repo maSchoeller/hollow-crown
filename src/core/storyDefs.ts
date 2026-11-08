@@ -159,8 +159,13 @@ export interface CampaignNodeDef {
   /** place image shown while the mission loads: a location (`locations/<place>`); default: the camp on the road */
   place?: string;
   merchantTier: number;
-  /** expected effective army level when the node starts (GDD Figurensystem); never falls within an act */
-  expectedLevel: number;
+  /**
+   * expected effective army level when the node starts (GDD Figurensystem); never falls within an act. Required in an act without
+   * `positionLevel`; read it through `nodeLevel` (story 11.2), never directly
+   */
+  expectedLevel?: number;
+  /** story 11.2: added to the position level of an act with `positionLevel` (e.g. a side quest that is meant to be harder) */
+  levelBonus?: number;
   /** items handed to company members when the node is won (e.g. the avatar's first tome) */
   grants?: Array<{ unit: string; item: ItemRef }>;
   /** effects applied when the node is won (node reward, architecture §5.3), e.g. `recruit`; never on a defeat */
@@ -244,6 +249,11 @@ export interface CampaignDef {
   home: HomeKind;
   /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
   levelCap?: number;
+  /**
+   * story 11.2: the level of a node of this act is its position, not a field of the node: P = `base` + story nodes of the act done +
+   * the node's `levelBonus` (`nodeLevel`); acts without it (act 1) read `expectedLevel`
+   */
+  positionLevel?: { base: number };
   startGold: number;
   startConvoy: ItemRef[];
   /** `storyCount`: the tier also opens once that many story missions of the act are done, whichever they are (besides the `merchantTier` of the nodes) */

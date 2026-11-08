@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { buildContent } from '../../src/content/load';
-import { campaignSchema } from '../../src/content/schemaCampaign';
 import { conditionSchema, effectSchema } from '../../src/content/schemaConditions';
 import { validateContent } from '../../src/content/validate';
 import {
@@ -369,7 +368,7 @@ describe('expectedLevel (story 4.1)', () => {
   };
 
   it('every node of act 1 carries one and the curve never falls', () => {
-    const levels = nodes().map((n) => n.expectedLevel);
+    const levels = nodes().map((n) => n.expectedLevel!);
     expect(levels.every((l) => Number.isInteger(l) && l >= 1)).toBe(true);
     expect([...levels].sort((a, b) => a - b)).toEqual(levels);
     expect(levels[0]).toBe(1);
@@ -382,10 +381,9 @@ describe('expectedLevel (story 4.1)', () => {
     expect(next).toContainEqual(expect.stringContaining('lower expectedLevel'));
   });
 
-  it('a missing expectedLevel fails the schema', () => {
-    const raw = JSON.parse(JSON.stringify(data.acts[1]!)) as { nodes: Array<Record<string, unknown>> };
-    delete raw.nodes[0]!.expectedLevel;
-    expect(campaignSchema.safeParse(raw).success).toBe(false);
+  it('a missing expectedLevel fails content:check in an act without positionLevel (story 11.2: the schema allows it)', () => {
+    const msgs = problems((d) => delete d.acts[1]!.nodes[0]!.expectedLevel);
+    expect(msgs).toContainEqual(expect.stringContaining(`${data.acts[1]!.nodes[0]!.id}: expectedLevel missing`));
   });
 });
 

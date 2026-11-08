@@ -33,6 +33,7 @@ import {
   type DeathMode,
   type Difficulty,
   type GameData,
+  nodeLevel,
 } from '../src/core';
 import { aiPhaseTimes } from './enemyPhase';
 
@@ -245,7 +246,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         missions.get(id) ??
         missions
           .set(id, {
-            node: id, map: node.map, expectedLevel: node.expectedLevel, reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0,
+            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, deaths: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
             winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])),
           })

@@ -146,6 +146,11 @@ export interface BattleState {
   hauntId?: string;
   /** haunt only: the expected army level of the next story mission; units above it earn a part of the haunt EP (`haunt.catchUpExpPct`) */
   hauntLevel?: number;
+  /**
+   * story 11.2: the position level P of the node (`nodeLevel`) in an act with `positionLevel`; map units with `levelOffset` stand at
+   * P + offset, also those that arrive later. Missing in act 1, so its start states stay as they were
+   */
+  positionLevel?: number;
   turn: number;
   phase: Team;
   rng: RngState;

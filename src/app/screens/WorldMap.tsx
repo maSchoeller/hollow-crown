@@ -8,7 +8,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
 import { goalKey } from '../../ui/goalText';
-import { actFinished, actOf, armyOverLimit, availableNodes, findNode, nodesUpTo, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
+import { actFinished, actOf, armyOverLimit, availableNodes, findNode, nodesUpTo, nodeLevel, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -617,7 +617,7 @@ function NodeCard({ id }: { id: string }) {
           <Icon name="company" size={15} />
           {t('ui.map.places', { n: map.deploy.max })}
         </span>
-        <span class="wm-tag">{t('ui.map.level', { n: n.expectedLevel })}</span>
+        <span class="wm-tag">{t('ui.map.level', { n: nodeLevel(data, c, n) })}</span>
       </div>
       {done ? (
         <p class="wm-card__done">{t('ui.map.done')}</p>

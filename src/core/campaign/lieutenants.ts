@@ -3,20 +3,20 @@
  * against whoever drove him off; and which line he speaks at first sight. Pure: no Babylon, no DOM, no randomness.
  */
 import type { BattleState, BattleUnit, CampaignState, ItemInstance, LieutenantPlan, LieutenantState } from '../state';
-import { STAT_KEYS, type Difficulty, type ItemRef } from '../defs';
+import type { Difficulty, ItemRef } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapDef, MapUnitDef } from '../mapDefs';
 import type { LieutenantDef } from '../storyDefs';
 import { autoEquip, newItem, recordFromChar, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
 import { allItems } from '../rules/items';
-import { growthRate } from '../rules/progression';
 import { effectiveLevel } from '../rules/skills';
 import { fogOn, visibleTiles } from '../rules/vision';
 import { onDifficulty, posKey } from '../util';
 import type { BountyResult } from './campaign';
 import { takeItem } from './camp';
 import type { CampaignEvent } from './commands';
+import { raiseToLevel } from './position';
 
 /** The highest grudge (GDD: Groll 0-3), from `balance.lieutenant.grudge.max`. */
 export const grudgeMax = (data: Pick<GameData, 'balance'>): number => data.balance.lieutenant.grudge.max;
@@ -131,7 +131,7 @@ export function planLieutenants(data: GameData, c: Pick<CampaignState, 'roster' 
     const scaled = lieutenantUnit(data, c, def);
     const st = c.lieutenants?.[id];
     plan[id] = {
-      level: scaled.def.level,
+      level: scaled.def.level ?? 1,
       items: scaled.def.items,
       ...(scaled.def.drops ? { drops: scaled.def.drops } : {}),
       skills: scaled.skills,
@@ -160,16 +160,7 @@ export function joinLieutenant(data: GameData, c: CampaignState, id: string, eve
   const rec = recordFromChar(data, { ...def, items: [] }, c, c.avatar);
   const left = autoEquip(data, rec, def.items.map((r) => (r.def === lt.signatureItem && kept ? kept : newItem(c, r, data))));
   c.convoy.push(...left);
-  rec.level = level;
-  const steps = level - def.level;
-  const caps = data.classes[def.class]!.caps;
-  for (const k of STAT_KEYS) {
-    const rate = Math.max(0, growthRate(data, rec, k));
-    const gain = Math.min(roundDiv(rate * steps, 100), Math.max(0, caps[k] - def.base[k]));
-    rec.stats[k] = def.base[k] + gain;
-    rec.gained[k] = gain;
-    rec.expected[k] = (rate * steps) / 100;
-  }
+  raiseToLevel(data, rec, def.base, def.level, level);
   c.roster.push(rec);
   c.left = c.left.filter((x) => x !== id);
   // the grudge lapses on both sides: his own, and the target of any other lieutenant's that was he

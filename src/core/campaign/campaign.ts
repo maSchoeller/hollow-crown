@@ -16,6 +16,7 @@ import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
 import { actCampaign, actOf, campaignOfAct, findNode } from './acts';
+import { nodeLevel, positionNow, raiseOnJoin } from './position';
 import { availableSupportTalks } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
@@ -326,6 +327,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       if (!isNew) continue;
       const def = data.chars[u.id]!;
       const fresh = recordFromChar(data, def, c);
+      raiseOnJoin(data, def, fresh, s.positionLevel);
       fresh.equip = rec.equip;
       fresh.bag = rec.bag;
       c.roster.push(fresh);
@@ -444,7 +446,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
   const ctx = conditionContext(data, c);
   const classes = tav.classes.filter((k) => evalConditions(ctx, k.requires));
   const next = availableNodes(data, c).find((n) => n.kind === 'story') ?? availableNodes(data, c)[0];
-  const expected = next?.expectedLevel ?? Math.max(1, ...c.roster.map((u) => u.level));
+  const expected = next ? nodeLevel(data, c, next) : Math.max(1, ...c.roster.map((u) => u.level));
   c.tavern = [];
   if (!classes.length) return;
   for (let i = 0; i < data.balance.economy.tavernOffersPerChapter; i++) {
@@ -523,7 +525,10 @@ export function currentTier(data: GameData, c: CampaignState): number {
 export function addToRoster(data: GameData, c: CampaignState, charId: string): void {
   const def = data.chars[charId];
   if (!def || c.roster.some((r) => r.id === charId)) return;
-  c.roster.push(recordFromChar(data, def, c, c.avatar));
+  const rec = recordFromChar(data, def, c, c.avatar);
+  // story 11.2: a companion of an act with a position level joins one below the position of the act now
+  raiseOnJoin(data, def, rec, positionNow(data, c));
+  c.roster.push(rec);
 }
 
 export function statTotal(s: Stats): number {
