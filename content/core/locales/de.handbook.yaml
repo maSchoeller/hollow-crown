@@ -480,6 +480,48 @@ handbook:
       keywords: "Duellant, Profi, Plänkler"
       strong: { "1": "Sehr schnell und treffsicher.", "2": "Heilt sich im Angriff." }
       weak: { "1": "Weiterhin wenig RES.", "2": "Axtkämpfer sind ihm überlegen." }
+    class_blade_dancer:
+      title: "Klingentänzer"
+      text: "Profi-Weg des Plänklers mit Schwert und Dolch. Er weicht öfter aus und trifft öfter kritisch."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Klingentänzer, Profi, Plänkler, Ausweichen, Krit"
+      strong: { "1": "Sehr schnell, schwer zu treffen.", "2": "Viele kritische Treffer." }
+      weak: { "1": "Wenig VER und RES.", "2": "Wenig TP." }
+    class_ranger:
+      title: "Waldläufer"
+      text: "Profi-Weg des Schützen. Im Wald kommt er so schnell voran wie auf freiem Feld und greift im Nahkampf zum Schwert."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Waldläufer, Profi, Schütze, Wald, Schwert"
+      strong: { "1": "Beweglich im Wald.", "2": "Kämpft auch auf ein Feld." }
+      weak: { "1": "Weniger Reichweite als der Scharfschütze.", "2": "Wenig RES." }
+    class_hexer:
+      title: "Hexer"
+      text: "Profi-Weg des Elementarmagiers. Er löst Zustände noch öfter aus und wirkt neben Elementen auch dunkle Magie."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Hexer, Profi, Elementarmagier, dunkle Magie, Zustand"
+      strong: { "1": "Zustände fast sicher.", "2": "Dunkle Magie gegen gepanzerte Ziele." }
+      weak: { "1": "Sehr wenig VER.", "2": "Wenig TP." }
+    class_battle_priest:
+      title: "Kampfpriester"
+      text: "Profi-Weg des Heilers. Er heilt mit dem Stab und schlägt mit Hammer oder Axt selbst zu."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Kampfpriester, Profi, Heiler, Axt, Hammer"
+      strong: { "1": "Heilt und kämpft.", "2": "Mehr TP und VER als der Bischof." }
+      weak: { "1": "Weniger Heilkraft als der Bischof.", "2": "Langsam." }
+    class_grand_strategist:
+      title: "Großstratege"
+      text: "Profi-Weg des Taktikers. Sein Befehl lässt je Karte zweimal einen Verbündeten noch einmal handeln."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Großstratege, Profi, Taktiker, Befehl"
+      strong: { "1": "Zwei Befehle je Karte.", "2": "Ausgewogene Werte." }
+      weak: { "1": "Kein Spezialist im Kampf.", "2": "Nur ein Weg." }
+    class_banner_lord:
+      title: "Bannerherr"
+      text: "Profi-Weg des Hauptmanns. Sein Sammelruf erreicht Verbündete ein Feld weiter."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Bannerherr, Profi, Hauptmann, Sammelruf"
+      strong: { "1": "Sammelruf über eine größere Fläche.", "2": "Viele TP und VER." }
+      weak: { "1": "Wenig RES.", "2": "Langsam." }
     class_bulwark:
       title: "Bollwerk"
       text: "Profi-Weg des Vorkämpfers mit Lanze, Axt und Schild und mehr Bewegung als zuvor. Mit etwas Glück durchschlägt er einen Teil der Rüstung."

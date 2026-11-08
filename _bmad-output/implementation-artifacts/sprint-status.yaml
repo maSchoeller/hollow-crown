@@ -177,7 +177,7 @@ development_status:
   epic-10: in-progress  # nur durch 10-14 (Burg in 3D, PR 100); Reihenfolge sonst unverändert
   10-1-raeume-ausbauen: backlog  # Räume ausbauen
   10-2-akademie-und-aufstieg-mit-glutfunke: review  # Akademie und Aufstieg mit Glutfunke
-  10-3-profi-klassen-und-werte: backlog  # Profi-Klassen und Werte
+  10-3-profi-klassen-und-werte: review  # Profi-Klassen und Werte
   10-4-wirkungen-der-profi-wege: backlog  # Wirkungen der Profi-Wege
   10-5-fallensteller-und-schatten: backlog  # Fallensteller und Schatten
   10-6-verzauberer-und-werkstatt: backlog  # Verzauberer und Werkstatt

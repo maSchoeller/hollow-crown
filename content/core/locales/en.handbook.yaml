@@ -480,6 +480,48 @@ handbook:
       keywords: "duelist, pro, skirmisher"
       strong: { "1": "Very fast and accurate.", "2": "Heals while attacking." }
       weak: { "1": "Still little RES.", "2": "Axe fighters have the upper hand." }
+    class_blade_dancer:
+      title: "Blade Dancer"
+      text: "The skirmisher's pro path with sword and dagger. Evades more often and lands more critical hits."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "blade dancer, pro, skirmisher, avoid, crit"
+      strong: { "1": "Very fast and hard to hit.", "2": "Many critical hits." }
+      weak: { "1": "Little DEF and RES.", "2": "Few HP." }
+    class_ranger:
+      title: "Ranger"
+      text: "The marksman's pro path. Moves through forest as fast as over open ground and draws a sword up close."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "ranger, pro, marksman, forest, sword"
+      strong: { "1": "Mobile in forest.", "2": "Also fights at one field." }
+      weak: { "1": "Less range than the sharpshooter.", "2": "Little RES." }
+    class_hexer:
+      title: "Hexer"
+      text: "The elementalist's pro path. Inflicts conditions even more often and casts dark magic as well as elements."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "hexer, pro, elementalist, dark magic, condition"
+      strong: { "1": "Conditions almost certain.", "2": "Dark magic against armoured targets." }
+      weak: { "1": "Very little DEF.", "2": "Few HP." }
+    class_battle_priest:
+      title: "Battle Priest"
+      text: "The healer's pro path. Heals with the staff and strikes with hammer or axe."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "battle priest, pro, healer, axe, hammer"
+      strong: { "1": "Heals and fights.", "2": "More HP and DEF than the bishop." }
+      weak: { "1": "Weaker healing than the bishop.", "2": "Slow." }
+    class_grand_strategist:
+      title: "Grand Strategist"
+      text: "The tactician's pro path. His command lets an ally act again twice per map."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "grand strategist, pro, tactician, command"
+      strong: { "1": "Two commands per map.", "2": "Balanced stats." }
+      weak: { "1": "No combat specialist.", "2": "Only one path." }
+    class_banner_lord:
+      title: "Banner Lord"
+      text: "The captain's pro path. His rally reaches allies one field further."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "banner lord, pro, captain, rally"
+      strong: { "1": "Rally over a larger area.", "2": "Lots of HP and DEF." }
+      weak: { "1": "Little RES.", "2": "Slow." }
     class_bulwark:
       title: "Bulwark"
       text: "Pro path of the vanguard with lance, axe and shield and more movement than before. With some luck it pierces part of the armor."

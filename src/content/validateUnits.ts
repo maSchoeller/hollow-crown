@@ -9,9 +9,17 @@ import type { ContentRefs, Err } from './validateRefs';
 export function validateUnits(data: GameData, err: Err, { item, conditions, battleDialogue }: ContentRefs, itemImages?: Set<string>): void {
   for (const c of Object.values(data.classes)) {
     if (c.skill && !data.skills[c.skill]) err('classes.yaml', `${c.id}: unknown skill ${c.skill}`);
+    // pro skills (story 10.3): only on pro classes, `pro_` skills of source class
+    for (const id of c.proSkills ?? []) {
+      if (c.tier !== 'pro') err('classes.yaml', `${c.id}: proSkills only on pro classes`);
+      const sk = data.skills[id];
+      if (!sk) err('classes.yaml', `${c.id}: unknown pro skill ${id}`);
+      else if (!id.startsWith('pro_') || sk.source !== 'class') err('classes.yaml', `${c.id}: pro skill ${id} needs the prefix pro_ and source: class`);
+    }
     if (c.tier === 'pro') {
       const base = data.classes[c.role];
-      if (!base || base.tier !== 'base' || !base.proPaths.includes(c.id)) err('classes.yaml', `${c.id}: pro class must be a proPath of its base role ${c.role}`);
+      // the role a pro path comes from: a base role, or the unique role of Avatar and Lucan (story 10.3)
+      if (!base || base.tier === 'pro' || !base.proPaths.includes(c.id)) err('classes.yaml', `${c.id}: pro class must be a proPath of its base role ${c.role}`);
     }
     if (c.tier !== 'pro') {
       for (const p of c.proPaths) {

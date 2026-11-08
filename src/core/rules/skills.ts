@@ -3,7 +3,7 @@ import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { active, dist, isAlly, neighbors, onMap, samePos, terrainAt, unitAt } from '../util';
 import type { WeaponProfile } from './items';
-import { itemDef } from './items';
+import { classSkillIds, itemDef } from './items';
 
 /** Skills granted by an equipped set (count thresholds). */
 export function setBonuses(data: GameData, unit: UnitRecord) {
@@ -26,11 +26,8 @@ export function setBonuses(data: GameData, unit: UnitRecord) {
 export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
   const ids = new Set<string>();
   if (unit.personalSkill) ids.add(unit.personalSkill);
-  const cls = data.classes[unit.classId];
-  if (cls?.skill) ids.add(cls.skill);
-  // pro paths (story 10.2): the class's own pro skills and those of the second path learned in the academy
-  for (const id of cls?.proSkills ?? []) ids.add(id);
-  for (const id of (unit.secondPath ? data.classes[unit.secondPath]?.proSkills : undefined) ?? []) ids.add(id);
+  // role skill and pro skills, also those of the second path learned in the academy (stories 10.2, 10.3)
+  for (const id of classSkillIds(data, unit)) ids.add(id);
   for (const inst of Object.values(unit.equip)) {
     if (!inst) continue;
     const g = itemDef(data, inst).grantsSkill;
@@ -129,6 +126,24 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
     if (!s.units.some((o) => o.uid !== bu.uid && o.downed && onMap(o) && isAlly(o.team, bu.team) && dist(o.pos!, pos) <= range)) return false;
   }
   return true;
+}
+
+/**
+ * Uses per map of an action skill (story 10.3): its `usesPerMap`, plus `usesBonus` of the unit's active skills keyed by the
+ * class action the skill belongs to (the role skill of a class with `classAction`, e.g. `command` for `tactician_command`).
+ */
+export function skillUses(data: GameData, u: UnitRecord, skillId: string): number {
+  const base = data.skills[skillId]?.usesPerMap ?? Infinity;
+  const cls = data.classes[u.classId];
+  const action = cls?.classAction && cls.skill === skillId ? cls.classAction.id : undefined;
+  if (!action) return base;
+  return base + activeSkillIds(data, u).reduce((n, id) => n + (data.skills[id]!.effect.usesBonus?.[action] ?? 0), 0);
+}
+
+/** Radius of the area of an action skill (story 10.3): `area.radius` plus `radiusBonus` of the unit's active skills. */
+export function skillRadius(data: GameData, u: UnitRecord, skillId: string): number {
+  const base = data.skills[skillId]?.area?.radius ?? 0;
+  return base + activeSkillIds(data, u).reduce((n, id) => n + (data.skills[id]!.effect.radiusBonus?.[skillId] ?? 0), 0);
 }
 
 export function effectiveLevel(data: GameData, u: UnitRecord): number {

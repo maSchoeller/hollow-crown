@@ -142,9 +142,9 @@ export function loadoutSlots(data: GameData, u: UnitRecord): number {
   return cls.tier === 'pro' ? data.balance.skills.loadoutAdvanced : data.balance.skills.loadoutBase;
 }
 
-/** Pro classes a unit of `classId` can be promoted to: the role's pro paths that exist in the content. */
+/** Pro classes a unit of `classId` can be promoted to: the role's pro paths that exist in the content and are playable (story 10.3). */
 export function promotionTargets(data: GameData, classId: string): string[] {
-  return (data.classes[classId]?.proPaths ?? []).filter((id) => !!data.classes[id]);
+  return (data.classes[classId]?.proPaths ?? []).filter((id) => !!data.classes[id]?.playable);
 }
 
 /**

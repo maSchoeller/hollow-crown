@@ -8,7 +8,7 @@ import { ballistaTargets } from '../rules/ballista';
 import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
-import { activeSkillIds } from '../rules/skills';
+import { activeSkillIds, skillUses } from '../rules/skills';
 import type { ObjectiveDef } from '../mapDefs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
@@ -39,8 +39,7 @@ export function hasKey(data: GameData, u: BattleUnit): string | undefined {
 
 export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boolean {
   if (!activeSkillIds(data, u).includes(skillId)) return false;
-  const sk = data.skills[skillId]!;
-  return (u.usedPerMap[skillId] ?? 0) < (sk.usesPerMap ?? Infinity);
+  return (u.usedPerMap[skillId] ?? 0) < skillUses(data, u, skillId);
 }
 
 export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {

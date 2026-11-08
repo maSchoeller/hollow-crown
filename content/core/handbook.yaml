@@ -376,13 +376,13 @@ entries:
     see: [double_attack, movement]
 
   # ------------------------------------------------------------------ Klassen (nur spielbare, content:check verlangt jede)
-  - { id: class_tactician, category: classes, graphic: class, class: tactician, see: [class_captain, phases] }
-  - { id: class_captain, category: classes, graphic: class, class: captain, see: [class_tactician, supports] }
+  - { id: class_tactician, category: classes, graphic: class, class: tactician, see: [class_grand_strategist, class_captain, phases] }
+  - { id: class_captain, category: classes, graphic: class, class: captain, see: [class_banner_lord, class_tactician, supports] }
   - { id: class_vanguard, category: classes, graphic: class, class: vanguard, see: [class_bulwark, class_breaker, terrain_cover] }
-  - { id: class_skirmisher, category: classes, graphic: class, class: skirmisher, see: [class_duelist, double_attack] }
-  - { id: class_marksman, category: classes, graphic: class, class: marksman, see: [class_sharpshooter, fog] }
-  - { id: class_elementalist, category: classes, graphic: class, class: elementalist, see: [class_sage, magic, elements] }
-  - { id: class_healer, category: classes, graphic: class, class: healer, see: [class_bishop, rescue] }
+  - { id: class_skirmisher, category: classes, graphic: class, class: skirmisher, see: [class_duelist, class_blade_dancer, double_attack] }
+  - { id: class_marksman, category: classes, graphic: class, class: marksman, see: [class_sharpshooter, class_ranger, fog] }
+  - { id: class_elementalist, category: classes, graphic: class, class: elementalist, see: [class_sage, class_hexer, magic, elements] }
+  - { id: class_healer, category: classes, graphic: class, class: healer, see: [class_bishop, class_battle_priest, rescue] }
   - { id: class_scout, category: classes, graphic: class, class: scout, see: [doors, fog, terrain_mountain] }
   - { id: class_minstrel, category: classes, graphic: class, class: minstrel, see: [class_captain, supports] }
   - { id: class_duelist, category: classes, graphic: class, class: duelist, fromAct: 2, see: [class_skirmisher, ember_spark] }
@@ -391,6 +391,12 @@ entries:
   - { id: class_sharpshooter, category: classes, graphic: class, class: sharpshooter, fromAct: 2, see: [class_marksman, ember_spark] }
   - { id: class_sage, category: classes, graphic: class, class: sage, fromAct: 2, see: [class_elementalist, ember_spark] }
   - { id: class_bishop, category: classes, graphic: class, class: bishop, fromAct: 2, see: [class_healer, ember_spark] }
+  - { id: class_blade_dancer, category: classes, graphic: class, class: blade_dancer, fromAct: 2, see: [class_skirmisher, academy] }
+  - { id: class_ranger, category: classes, graphic: class, class: ranger, fromAct: 2, see: [class_marksman, academy] }
+  - { id: class_hexer, category: classes, graphic: class, class: hexer, fromAct: 2, see: [class_elementalist, academy] }
+  - { id: class_battle_priest, category: classes, graphic: class, class: battle_priest, fromAct: 2, see: [class_healer, academy] }
+  - { id: class_grand_strategist, category: classes, graphic: class, class: grand_strategist, fromAct: 2, see: [class_tactician, academy] }
+  - { id: class_banner_lord, category: classes, graphic: class, class: banner_lord, fromAct: 2, see: [class_captain, academy] }
 
   # ------------------------------------------------------------------ Lektionen (Text aus den Szenen selbst, keine Kopie)
   - { id: lesson_move, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_move, see: [movement, forecast] }

@@ -17,7 +17,7 @@ import { pathTo, reachable, type Walk } from '../rules/movement';
 import { expPercent, grantExp } from '../rules/progression';
 import { computeStats } from '../rules/stats';
 import { addSupportPoints, adjacentPartners } from '../rules/supports';
-import { activeSkillIds } from '../rules/skills';
+import { activeSkillIds, skillRadius } from '../rules/skills';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, getUnit, neighbors, onMap, pairKey, posKey, samePos } from '../util';
 import { aimTargets, attackTargets, CHEER_BUFF, hasKey } from './actions';
@@ -343,7 +343,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       const affected: string[] = [];
       for (const o of s.units) {
         if (!active(o) || o.team !== u.team || !o.pos || !u.pos) continue;
-        if (Math.abs(o.pos[0] - u.pos[0]) + Math.abs(o.pos[1] - u.pos[1]) > (def.area?.radius ?? 0)) continue;
+        if (Math.abs(o.pos[0] - u.pos[0]) + Math.abs(o.pos[1] - u.pos[1]) > skillRadius(data, u, sk)) continue;
         o.buffs.push({
           source: sk,
           damage: def.effect.damageBonus,

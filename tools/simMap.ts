@@ -2,7 +2,7 @@
  * One mission, many runs (`pnpm sim <mapId>`): each run is a pure function of its seed (`simulateMapRun`), so the runs can go to
  * worker threads in any order and are summed up in run order afterwards (`summarizeMap`, Testlabor S1/S2).
  */
-import { addToRoster, autoplay, beginBattle, finishBattle, newCampaign, sideObjectiveDone, type DeathMode, type Difficulty, type GameData } from '../src/core';
+import { addToRoster, autoplay, beginBattle, finishBattle, newCampaign, promote, promotionTargets, sideObjectiveDone, type DeathMode, type Difficulty, type GameData } from '../src/core';
 import { applyNodeRewards } from './simCampaign';
 
 export interface MapSimOptions {
@@ -17,6 +17,8 @@ export interface MapSimOptions {
   flags: string[];
   /** `--leave` companions */
   leave: string[];
+  /** `--promote a|b` (story 10.3): before the mission every unit of the promotion level rises to its first (a) or second (b) path */
+  promote?: 'a' | 'b';
 }
 
 /** One run. `arrived` is false when a chained run lost a mission before the target. */
@@ -80,6 +82,12 @@ export function simulateMapRun(data: GameData, o: MapSimOptions, run: number, se
     c.flags[name!] = value === undefined ? true : /^-?\d+$/.test(value) ? Number(value) : value;
   }
   c.roster = c.roster.filter((u) => !o.leave.includes(u.id));
+  if (o.promote)
+    for (const u of c.roster) {
+      const paths = promotionTargets(data, u.classId);
+      if (u.level < data.balance.levels.promoteFrom || paths.length === 0) continue;
+      promote(data, u, paths[o.promote === 'b' ? paths.length - 1 : 0]!);
+    }
   const t0 = performance.now();
   const start = beginBattle(data, c, o.node, c.roster.map((u) => u.id)).state;
   const { state } = autoplay(data, start);
@@ -208,7 +216,7 @@ const pct = (x: number) => `${(x * 100).toFixed(0)} %`;
 /** Text output: the three lines of before, then rounds, side objectives and a hint when few chained runs arrive. */
 export function printMap(s: MapSummary): void {
   const o = s.options;
-  console.log(`${s.node} (${s.map}) – ${s.arrived}/${s.runs} runs ${o.chained ? '(chained campaign)' : '(fresh roster)'}, ${o.difficulty}/${o.deathMode}`);
+  console.log(`${s.node} (${s.map}) – ${s.arrived}/${s.runs} runs ${o.chained ? '(chained campaign)' : '(fresh roster)'}, ${o.difficulty}/${o.deathMode}${o.promote ? `, promoted to path ${o.promote}` : ''}`);
   console.log(
     `win rate ${pct(s.winRate)}, avg turns ${(s.avgTurns ?? 0).toFixed(1)}, median turns ${s.turns.p50 ?? '-'}, avg losses ${s.avgDowns.toFixed(2)}, avg ${s.timing.msPerRun.toFixed(0)} ms/run`,
   );

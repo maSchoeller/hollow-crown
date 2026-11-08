@@ -12,6 +12,13 @@
 - { id: pro_duel,          source: class, trigger: on_hit, chanceFrom: skl, effect: { lifestealPercent: 50 } }
 - { id: pro_guard,         source: class, trigger: on_hit, chanceFrom: skl, chanceDivisor: 2, effect: { ignoreDefPercent: 50 } }
 - { id: pro_far_shot,      source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1 } }
+# Profi-Wege (Story 10.3): nur Werte, Waffengruppen, Einsätze oder Radien; die Wirkungen mit Vorschau/KI-Folgen bringt Story 10.4
+- { id: pro_blade_dance,   source: class, trigger: passive, effect: { avoidBonus: 15, critBonus: 10 } }
+- { id: pro_woodsman,      source: class, trigger: passive, effect: { terrainCost: { forest: 1 }, addWeaponGroups: [sword] } }
+- { id: pro_hex,           source: class, trigger: passive, effect: { statusChanceBonus: 20, addWeaponGroups: [dark] } }
+- { id: pro_battle_faith,  source: class, trigger: passive, effect: { addWeaponGroups: [axe] } }
+- { id: pro_grand_command, source: class, trigger: passive, effect: { usesBonus: { command: 1 } } }
+- { id: pro_banner_lord,   source: class, trigger: passive, effect: { radiusBonus: { rally: 1 } } }
 - { id: dragonhide,        source: class, trigger: on_defend, condition: { attackerNoElement: true, notEffective: true }, effect: { damageTakenPercent: 50 } }
 
 # --- Persönliche Skills ---
