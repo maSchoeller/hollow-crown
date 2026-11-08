@@ -25,7 +25,7 @@
  * The battle always starts in the player's phase of `turn`: the enemy phase is one core command (`endPhase`), `pnpm lab --enemy` plays it.
  */
 import { z } from 'zod';
-import { mapSchema, mapUnitSchema } from '../content/schemas';
+import { mapSchema, mapUnitSchema } from '../content/schemaMap';
 import {
   addToRoster,
   autoEquip,

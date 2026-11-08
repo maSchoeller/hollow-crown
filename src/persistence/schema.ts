@@ -1,23 +1,37 @@
 /**
  * Shape check of an imported save (concept/24-architecture §5.15: size limit, Zod validation). It checks what the
- * app dereferences when it loads a save; the inner content (items, units) is checked by the rules when played.
+ * app dereferences when it loads a save and what the migrations rewrite; whether the IDs exist in the build is checked
+ * by the rules when played (and for the fixtures by tests/unit/migrations.test.ts).
  */
 import { z } from 'zod';
 
 const deathMode = z.enum(['classic', 'standard', 'casual']);
 const difficulty = z.enum(['easy', 'normal', 'hard']);
 
+// review 2026-11-07 (M7, first step): what the migrations rename and the load dereferences has a shape now – units,
+// items, flags. Further fields stay loose, so saves from before a field existed still load (normalizeCampaign fills them).
+const item = z.looseObject({ uid: z.string(), def: z.string() });
+const unitRecord = z.looseObject({
+  id: z.string(),
+  nameKey: z.string(),
+  classId: z.string(),
+  equip: z.record(z.string(), item).optional(),
+  bag: z.array(item).optional(),
+});
+// a record of flag values (architecture §5.9); saves from before flags had values stored a list of names
+const flags = z.union([z.record(z.string(), z.union([z.string(), z.number(), z.literal(true)])), z.array(z.string())]);
+
 const campaignState = z.looseObject({
   settings: z.looseObject({ difficulty, deathMode }),
   avatar: z.looseObject({ name: z.string(), portrait: z.string() }),
-  roster: z.array(z.looseObject({ id: z.string() })),
-  convoy: z.array(z.unknown()),
+  roster: z.array(unitRecord),
+  convoy: z.array(item),
   gold: z.number(),
   materials: z.record(z.string(), z.number()),
   completed: z.array(z.string()),
   // saves from before story 4.3 stored the available nodes; the graph works them out now
   available: z.array(z.string()).optional(),
-  flags: z.unknown().optional(),
+  flags: flags.optional(),
 });
 
 const battleState = z.looseObject({ nodeId: z.string(), units: z.array(z.looseObject({ id: z.string() })) });

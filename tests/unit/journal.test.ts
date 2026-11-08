@@ -97,6 +97,37 @@ describe('journal', () => {
     expect(errors).toHaveLength(1);
   });
 
+  it('keeps only the last checkpoints with their commands (review 2026-11-07, M2)', async () => {
+    const id = await campaignId();
+    const other = await campaignId();
+    const keep = { keepCheckpoints: 2 };
+    const w = createJournalWriter(undefined, keep);
+    const cmd = (f: string): CampaignCommand => ({ type: 'effects', effects: [{ setFlag: f }] });
+    void w.append(other, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: start });
+    void w.append(id, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: start });
+    void w.append(id, { kind: 'command', cmd: cmd('a') });
+    void w.append(id, { kind: 'checkpoint', reason: 'load', contentVersion: 'cv1', campaign: start });
+    void w.append(id, { kind: 'command', cmd: cmd('b') });
+    await w.flush();
+    expect((await readJournal(id)).map((e) => e.seq)).toEqual([0, 1, 2, 3]); // two checkpoints: nothing to drop yet
+    void w.append(id, { kind: 'checkpoint', reason: 'compact', contentVersion: 'cv1', campaign: start });
+    void w.append(id, { kind: 'command', cmd: cmd('c') });
+    await w.flush();
+    const left = await readJournal(id);
+    expect(left.map((e) => e.seq)).toEqual([2, 3, 4, 5]); // numbering goes on after the cut
+    expect(left.map((e) => (e.kind === 'checkpoint' ? e.reason : e.cmd))).toEqual(['load', cmd('b'), 'compact', cmd('c')]);
+    expect((await journalSinceCheckpoint(id))!.commands).toEqual([cmd('c')]);
+    expect(await readJournal(other)).toHaveLength(1); // other campaigns stay untouched
+  });
+
+  it('without retention keeps every entry', async () => {
+    const id = await campaignId();
+    for (let i = 0; i < 3; i++) await appendJournal(id, { kind: 'checkpoint', reason: 'load', contentVersion: 'cv1', campaign: start });
+    expect(await readJournal(id)).toHaveLength(3);
+    await appendJournal(id, { kind: 'checkpoint', reason: 'load', contentVersion: 'cv1', campaign: start }, { keepCheckpoints: 1 });
+    expect((await readJournal(id)).map((e) => e.seq)).toEqual([3]);
+  });
+
   it('is removed with its campaign', async () => {
     const id = await campaignId();
     await appendJournal(id, { kind: 'checkpoint', reason: 'new', contentVersion: 'cv1', campaign: start });

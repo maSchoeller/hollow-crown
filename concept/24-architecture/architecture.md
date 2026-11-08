@@ -128,12 +128,13 @@ render    ← core, content
 ui        ← core, content, i18n
 worker    ← core, content            (NEU, AR14)
 packs     ← content                  (NEU, AR15: Laden, Cache, Fortschritt)
-persistence ← core (Typen)
+persistence ← core (Typen), content (nur `ids`: Umbenennungen für Migrationen)
+lab       ← core, content            (Testlabor, `pnpm lab`; nur Dev-Hooks und Werkzeuge nutzen es)
 app       ← alles (Controller, Screens, Store)
 tools     ← core, content (Node)
 ```
 
-ESLint-Schichtregeln (`eslint.config.js`) bekommen Einträge für `worker` und `packs`. `src/core` bleibt frei von DOM, Babylon, Preact, `Math.random` und `Date.now`.
+ESLint-Schichtregeln (`eslint.config.js`) haben Einträge für `worker`, `packs`, `persistence` und `lab` (seit 2026-11-08). `src/core` bleibt frei von DOM, Babylon, Preact, `Math.random` und `Date.now`.
 
 ### 5.2 Zwei Command-Ebenen (AR2) [A]
 
@@ -153,7 +154,7 @@ UI ─CampaignCommand─▶ validateCampaign(c, cmd) ─ok─▶ applyCampaign(c
 - `validateCampaign` liefert strukturierte Fehler wie `validate` im Kampf (`not_enough_gold`, `room_locked`, `unknown_room`, `not_allowed_in_mode` …). Ein fehlender Raum-Gefährte ist `room_locked` (offene `requires` der Stufe), kein eigener Code.
 - **`CampaignEvent`**: `goldChanged`, `itemGained`, `companionJoined`, `companionLeft`, `grudgeChanged`, `questOpened`, `hauntSpawned`, `hauntExpired`, `roomBuilt`, `promoted`, `lessonInherited`, `flagSet`, `stanceChanged`, `actReached`, `seasonEnded`. Die UI zeigt Folgen daraus an („Folgen werden immer sichtbar gemacht“, Narrative).
 - `src/core/campaign/camp.ts` wird in Command-Handler zerlegt; die heutigen Funktionen (`buy`, `upgrade`, `promoteUnit` …) werden zu Handlern von `applyCampaign`. Rechenhilfen wie `upgradeCost` bleiben exportiert (Vorschau = gleicher Code, Konvention aus AGENTS.md).
-- **Journal:** Jedes angewendete Kampagnen-Command wird mit laufender Nummer in den IndexedDB-Store `journal` geschrieben; `finishMission` enthält das vollständige Kampf-Command-Log. Startzustand + Journal ergibt die Kampagne exakt neu, solange die Content-Version gleich ist. Bei einem App-Update schreibt die App einen **Checkpoint** (voller `CampaignState`) ins Journal; Replays beginnen am letzten Checkpoint.
+- **Journal:** Jedes angewendete Kampagnen-Command wird mit laufender Nummer in den IndexedDB-Store `journal` geschrieben; `finishMission` enthält das vollständige Kampf-Command-Log. Startzustand + Journal ergibt die Kampagne exakt neu, solange die Content-Version gleich ist. Bei einem App-Update schreibt die App einen **Checkpoint** (voller `CampaignState`) ins Journal; Replays beginnen am letzten Checkpoint. **Aufbewahrung (2026-11-08):** Das Journal dient dem Fehlerbericht und Replays ab einem Checkpoint; jeder Checkpoint löscht alles vor den letzten `balance.journal.keepCheckpoints` Checkpoints, und nach `compactAfter` Commands schreibt die App einen Checkpoint `compact`.
 
 ### 5.3 Bedingungen und Wirkungen (AR3)
 
