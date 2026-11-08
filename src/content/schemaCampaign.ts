@@ -193,6 +193,7 @@ export const worldSchema = z.object({
           .object({
             foot: percentPos,
             width: z.number().positive().max(100),
+            base: z.boolean().optional(),
             variants: z.array(z.object({ image: slugId, requires: z.array(z.lazy(() => conditionSchema)).min(1) })).optional(),
           })
           .optional(),

@@ -276,7 +276,19 @@
    "missions": [
     "2-4"
    ],
-   "note": "Noerdlich der Grauwacht, zwischen Drachen und Festung"
+   "note": "Noerdlich der Grauwacht, zwischen Drachen und Festung",
+   "site": {
+    "variants": [
+     {
+      "id": "burnt_slope_burnt",
+      "image": "art/world/sites/burnt_slope_burnt.png"
+     }
+    ],
+    "x": 959,
+    "bottom": 406,
+    "width": 43,
+    "note": "kein Grundbild: das gemalte Dorf ist der Grundzustand (Story 11.3)"
+   }
   },
   {
    "id": "copperhall",

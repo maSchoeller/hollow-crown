@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:act2": "vite --mode act2",
     "build": "tsc -p tsconfig.json --noEmit && vite build && node tools/check-bundle-size.mjs",
     "preview": "vite preview",
     "check": "pnpm lint && vitest run --reporter=dot && pnpm content:check && pnpm build",

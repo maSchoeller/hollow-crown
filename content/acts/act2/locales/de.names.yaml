@@ -6,3 +6,18 @@ unit.amos.name: "Amos"
 unit.nell.name: "Nell"
 unit.brann.name: "Brann"
 unit.sable.name: "Sable"
+
+# Story 11.3: Titeltafel beim Erreichen von Akt 2 (kommt mit dem Paket, die Tafel wartet darauf)
+act.2.title: "Akt 2 · Glut"
+# Titel der Knoten von Akt 2 (Platzhalter bis zu ihrer Missions-Story; Titel aus concept/22-narrative/missionsliste-s1.md)
+node.m2_1.title: "Wind über der Eisenmark"
+node.m2_2.title: "Das Siegel im Salzpass"
+node.m2_3.title: "Die Rabenweide"
+node.m2_4.title: "Die Brandschneise"
+node.m2_5.title: "Die verstoßene Leibwache"
+node.m2_6.title: "Gold für Banditen"
+node.m2_7.title: "Das Kontor am Silbermeer"
+node.m2_8.title: "Kronfeld"
+node.n4.title: "Der Clan im Schnee"
+node.n5.title: "Glut unter dem Berg"
+node.n6.title: "Die Gauklertruppe"

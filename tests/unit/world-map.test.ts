@@ -94,7 +94,8 @@ describe('world map content', () => {
   });
 
   it('twelve places carry a town picture on their plateau', () => {
-    expect(world.places.filter((p) => p.site).map((p) => p.id).sort()).toEqual(
+    // Brandhang (story 11.3) has a site without a base picture of its own: only its burnt variant draws
+    expect(world.places.filter((p) => p.site && p.site.base !== false).map((p) => p.id).sort()).toEqual(
       ['aurenhall', 'copperhall', 'crater', 'crow_holm', 'erlbach', 'greywatch', 'kontor', 'kronfeld', 'paktwacht', 'pearl_court', 'silverspring', 'varnhold'],
     );
   });

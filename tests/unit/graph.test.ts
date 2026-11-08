@@ -118,7 +118,8 @@ describe('availableNodes', () => {
   });
 
   it('the world map draws a path along each completed requirement', () => {
-    expect(nodeLinks(data)).toEqual([
+    // only the test nodes of act 1 (story 11.3 put placeholder nodes into act 2)
+    expect(nodeLinks({ ...data, acts: { 1: data.acts[1]! } })).toEqual([
       ['a', 'b'],
       ['a', 'c'],
     ]);

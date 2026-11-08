@@ -276,3 +276,8 @@ worldMap:
   # Nebel späterer Akte (Story 15.12): einmal je Akt als kleines Bild aus den Flächen gerechnet (px × px, Weichzeichnung mit Radius
   # blur in zwei Durchgängen ≈ 1,2 % der Kartenbreite) und auf die Karte gestreckt; kein SVG-Filter über der ganzen Karte mehr.
   fog: { px: 160, blur: 2, alpha: 0.92 }
+  # Story 11.3: nach der Titeltafel eines neuen Akts blendet der Nebel des Vorakts so lange aus (ms) [ASSUMPTION]
+  fogLiftMs: 2400
+  # Story 11.3: Nebelfleck über einem Ort des laufenden Akts (ab Akt 2) ohne spielbare Mission: Radius in Prozent der Kartenbreite,
+  # Ecken des Vielecks (der Fleck wird mit dem übrigen Nebel weichgezeichnet) [ASSUMPTION]
+  veil: { radius: 3.2, corners: 16 }

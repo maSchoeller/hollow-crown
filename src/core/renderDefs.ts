@@ -206,6 +206,10 @@ export interface RenderDef {
     focusZoom: number;
     /** fog of later acts as a small picture under the map (story 15.12): `px` square, box blur radius `blur` (two passes), opacity */
     fog: { px: number; blur: number; alpha: number };
+    /** story 11.3: how long the fog of the act before fades after the title card of a new act (ms) */
+    fogLiftMs: number;
+    /** story 11.3: fog patch over a place of the running act (from act 2) without a playable mission: radius in percent of the width, corners of the polygon */
+    veil: { radius: number; corners: number };
   };
 }
 
@@ -287,6 +291,8 @@ export interface WorldSite {
   foot: [number, number];
   /** width of the picture */
   width: number;
+  /** false: the place has no base picture of its own, the painted map shows it (story 11.3, Brandhang); only a variant draws */
+  base?: boolean;
   variants?: WorldSiteVariant[];
 }
 

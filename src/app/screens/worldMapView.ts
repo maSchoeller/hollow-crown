@@ -62,6 +62,23 @@ export function fogAreas(world: WorldDef, act: number): Array<Array<[number, num
   return world.regions.filter((r) => r.act > act).flatMap((r) => r.areas);
 }
 
+/**
+ * Fog patches over the places of the running act that hold no playable mission yet (story 11.3: act 2 goes live mission by
+ * mission, unfinished places stay under fog). Only from act 2: act 1 is complete and keeps its look. A place with slots counts
+ * as known when one of its nodes shows a stone (open or done); `radius` is in percent of the width (the map is square).
+ */
+export function veilAreas(world: WorldDef, act: number, known: ReadonlySet<string>, veil: { radius: number; corners: number }): Array<Array<[number, number]>> {
+  if (act < 2) return [];
+  return world.places
+    .filter((p) => p.act === act && p.slots.length > 0 && !known.has(p.id))
+    .map((p) =>
+      Array.from({ length: veil.corners }, (_, i): [number, number] => {
+        const a = (i / veil.corners) * 2 * Math.PI;
+        return [p.at[0] + veil.radius * Math.cos(a), p.at[1] + veil.radius * Math.sin(a)];
+      }),
+    );
+}
+
 /** A drawn path between two places: its ends (percent), its kind and whether it leads to a place without an unlocked stone. */
 export interface Road {
   key: string;
@@ -144,11 +161,13 @@ export function stonesOf(world: WorldDef, shown: readonly string[], open: readon
 /**
  * The town picture of a place: the first variant whose conditions hold, otherwise the base picture named like the place.
  * A picture in `missing` (it failed to load) is skipped, so a missing variant falls back to the base picture; null when the
- * base picture is missing too (the plateau then shows a place sign).
+ * base picture is missing too (the plateau then shows a place sign). `'none'` when nothing is to be drawn: the place has no
+ * base picture of its own (`site.base: false`, the painted map shows it; story 11.3) and no variant holds.
  */
-export function siteImage(place: WorldPlace, ctx: ConditionContext, missing: readonly string[] = []): string | null {
+export function siteImage(place: WorldPlace, ctx: ConditionContext, missing: readonly string[] = []): string | null | 'none' {
   const variant = place.site?.variants?.find((v) => evalConditions(ctx, v.requires))?.image;
   if (variant && !missing.includes(variant)) return variant;
+  if (place.site?.base === false) return 'none';
   return missing.includes(place.id) ? null : place.id;
 }
 

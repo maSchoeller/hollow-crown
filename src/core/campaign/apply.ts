@@ -148,6 +148,9 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     case 'markBackupReminded':
       // only the running act, and only once its finale is done
       return cmd.act === actOf(c) && actFinished(data, c) ? null : 'not_available';
+    case 'markActTitleSeen':
+      // only the act the company is in (a later act cannot be seen before it is reached)
+      return cmd.act === actOf(c) ? null : 'not_available';
     case 'advanceDay':
       return Number.isInteger(cmd.day) && cmd.day >= 0 ? null : 'invalid_day';
     case 'seeHaunt':
@@ -441,6 +444,12 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       if (!c.backupReminded.includes(cmd.act)) {
         c.backupReminded.push(cmd.act);
         events.push({ t: 'backupReminded', act: cmd.act });
+      }
+      break;
+    case 'markActTitleSeen':
+      if (cmd.act > c.actTitleSeen) {
+        c.actTitleSeen = cmd.act;
+        events.push({ t: 'actTitleSeen', act: cmd.act });
       }
       break;
     case 'advanceDay':

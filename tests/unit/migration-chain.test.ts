@@ -43,6 +43,8 @@ const golden: Record<string, Golden> = {
   'format2-kael.json': { roster: company, units: prologueUnits, commands: 11, turn: 3 },
   // act 1 played to its finale on main before story 11.1 (generate-act1-finale.ts), on the world map without a battle
   'format3-act1-finale-done.json': { roster: ['avatar', 'lucan', 'brenna', 'tobin', 'mira', 'liora'], units: [], commands: 0, turn: 0 },
+  // the same company moved on to act 2, title card closed, no mission of act 2 yet (story 11.3, generate-act2-no-missions.ts)
+  'format3-act2-no-missions.json': { roster: ['avatar', 'lucan', 'brenna', 'tobin', 'mira', 'liora'], units: [], commands: 0, turn: 0 },
 };
 
 /** The core side of loading a save, as the app does it. */

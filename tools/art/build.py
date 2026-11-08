@@ -45,6 +45,8 @@ LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # places of act 1: the camp is the app shell (pack core), the rest are dialogue backdrops and ship with act1 (Epic 7, initial-download budget);
 # paktwacht_heimat (autumn) belongs to act 2, the other moodboard places to later acts
 ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'wolfslager', 'rhen_confession', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'}
+# story 11.3: the places of act 2 (pack act2 in content/packs.yaml names each locations/<id>.webp, so they stay out of act1)
+ACT2_LOCATIONS = {'grauwacht', 'salzpass', 'brandhang', 'kronfeld', 'windscharte', 'brandschneise', 'kraehenholm', 'kontor', 'clanlager', 'kupfermine', 'auemarkt'}
 TITLE_PX = (1024, 1536)
 # the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')
@@ -147,7 +149,7 @@ def build_locations():
         return result
     dst = ensure(os.path.join(OUT, 'locations'))
     for f in sorted(os.listdir(base)):
-        if not f.endswith('.png') or f[:-4] not in ACT1_LOCATIONS:
+        if not f.endswith('.png') or f[:-4] not in ACT1_LOCATIONS | ACT2_LOCATIONS:
             continue
         im = Image.open(os.path.join(base, f)).convert('RGB')
         im.thumbnail(LOCATION_SIZE, Image.LANCZOS)
@@ -208,7 +210,9 @@ def build_world():
         for v in site.get('variants', []):
             if not v.get('id') or v['id'] in ids:
                 raise SystemExit(f"world: variant of {p['id']} needs an id of its own, not {v.get('id')!r}")
-        for name, image in [(p['id'], site['image'])] + [(v['id'], v['image']) for v in site.get('variants', [])]:
+        # a site without a base picture (story 11.3, Brandhang: the painted map shows the village) only has its variants
+        base = [(p['id'], site['image'])] if site.get('image') else []
+        for name, image in base + [(v['id'], v['image']) for v in site.get('variants', [])]:
             path = os.path.join(ROOT, image)
             if not os.path.isfile(path):
                 continue

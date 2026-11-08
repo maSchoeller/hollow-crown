@@ -53,6 +53,33 @@ packs:
       - title/title_act1.webp
       - core/**
 
+  # Akt 2 (Epic 11). Steht vor act1 (Story 11.3): eine Datei gehört zum ersten passenden Paket, so greift act1s `world/**` die
+  # Bilder von Akt 2 nicht. Geladen wird trotzdem act1 vor act2 (duePacks ordnet nach Akt). Veröffentlicht wird es mit dem ersten
+  # Live-Schritt nach dem Release von Akt 1 (9.14); bis dahin lädt es nur der Dev-Server mit `pnpm dev:act2` (VITE_HC_PACKS).
+  - id: act2
+    released: false
+    load: background
+    act: 2
+    # [ASSUMPTION] wie act1; 11.26 (Leistung von Akt 2) misst nach
+    budgetMb: 40
+    content:
+      - acts/act2/**
+      - locales/*/act2.*
+    # Ortsbilder von Akt 2 (tools/art/build.py ACT2_LOCATIONS) und Zustandsbilder der Weltkarte, die erst Akt 2 zeigt
+    assets:
+      - locations/grauwacht.webp
+      - locations/salzpass.webp
+      - locations/brandhang.webp
+      - locations/kronfeld.webp
+      - locations/windscharte.webp
+      - locations/brandschneise.webp
+      - locations/kraehenholm.webp
+      - locations/kontor.webp
+      - locations/clanlager.webp
+      - locations/kupfermine.webp
+      - locations/auemarkt.webp
+      - world/sites/burnt_slope_burnt.webp
+
   - id: act1
     released: true
     load: background
@@ -132,7 +159,25 @@ packs:
       - ground/snow.png
       - ground/dirt_frozen.png
       - ground/road_snow.png
-      - locations/**
+      # Ortsbilder von Akt 1 einzeln (Story 11.3, tools/art/build.py ACT1_LOCATIONS; lager_unterwegs liegt in core), damit die
+      # von Akt 2 nicht in act1 landen
+      - locations/varnhold.webp
+      - locations/erlbach.webp
+      - locations/hungerlager.webp
+      - locations/silberbach.webp
+      - locations/wolfslager.webp
+      - locations/rhen_confession.webp
+      - locations/paktwacht_ruine.webp
+      - locations/paktwacht_heimat.webp
+      - locations/paktwacht_gewoelbe.webp
+      - locations/paktwacht_banner.webp
+      - locations/glutfunken.webp
+      - locations/grabreliefs.webp
+      - locations/paktnacht_glutdom.webp
+      - locations/wachturm.webp
+      - locations/varnhold_nacht.webp
+      - locations/aureklamm_lastkahn.webp
+      - locations/pachthof.webp
       - busts/**
       - halves/**
       - world/**
@@ -143,17 +188,6 @@ packs:
       - audio/battle_enemy.*
       - audio/camp.*
       - audio/worldmap.*
-
-  # Akt 2 (Epic 11). Story 11.6 legt das Paket minimal an (nur die Lektion der Balliste); Kampagne, Weltkarte und Freischaltung kommen
-  # mit 11.1/11.3, veröffentlicht wird es mit dem ersten Live-Schritt nach dem Release von Akt 1 (9.14).
-  - id: act2
-    released: false
-    load: background
-    act: 2
-    budgetMb: 40
-    content:
-      - acts/act2/**
-      - locales/*/act2.*
 
   - id: voice.act1.de
     released: false

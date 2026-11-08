@@ -82,7 +82,9 @@ export type CampaignCommand =
   /** the player opened the card of haunt `id` on the world map: its "new" mark goes (story 5.6; idempotent) */
   | { type: 'seeHaunt'; id: string }
   /** the backup reminder of act `act` was shown (exported or put off); once per act, after its finale (story 7.3, AR21; idempotent) */
-  | { type: 'markBackupReminded'; act: number };
+  | { type: 'markBackupReminded'; act: number }
+  /** the title card of act `act` was shown on the world map (story 11.3): once, for the act the company is in (idempotent) */
+  | { type: 'markActTitleSeen'; act: number };
 
 export type CampaignError =
   | 'not_enough_gold'
@@ -159,7 +161,9 @@ export type CampaignEvent =
   /** the backup reminder of an act was noted (story 7.3) */
   | { t: 'backupReminded'; act: number }
   /** the company moved on to act `act` after the finale of the act before (story 11.1) */
-  | { t: 'actReached'; act: number };
+  | { t: 'actReached'; act: number }
+  /** the title card of an act was shown (story 11.3) */
+  | { t: 'actTitleSeen'; act: number };
 
 export interface CampaignApplyResult {
   campaign: CampaignState;

@@ -1,0 +1,67 @@
+/* Title card of a new act (story 11.3): a calm banner over the veiled map, no hard shadows (studio look B). */
+.act-title {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 28px;
+  padding: 24px 16px;
+  background: color-mix(in srgb, var(--hc-cream) 72%, transparent);
+  animation: act-title-in 900ms ease-out both;
+}
+.act-title__banner {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: min(300px, 100%);
+  padding: 28px 28px 22px;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: var(--hc-r-piece);
+  background: var(--hc-cream);
+  box-shadow: var(--hc-soft-shadow);
+  text-align: center;
+}
+.act-title__badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: 50%;
+  background: var(--hc-ember);
+  color: #fff;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 30px;
+}
+.act-title__name {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+}
+.act-title__season {
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+@keyframes act-title-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .act-title {
+    animation: none;
+  }
+}

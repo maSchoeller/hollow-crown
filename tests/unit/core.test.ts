@@ -45,7 +45,7 @@ beforeAll(() => {
 
 describe('place images and recruit dialogues', () => {
   const msgs = (d: GameData, places?: Set<string>) => validateContent(d, loadContentFromDisk().locales, undefined, undefined, places).map((i) => `${i.file}: ${i.message}`);
-  const places = () => new Set([...Object.values(data.acts).map((a) => a.defaultPlace), ...Object.values(data.home).map((h) => h.image), ...data.acts[1]!.nodes.flatMap((n) => (n.place ? [n.place] : [])),
+  const places = () => new Set([...Object.values(data.acts).map((a) => a.defaultPlace), ...Object.values(data.home).map((h) => h.image), ...Object.values(data.acts).flatMap((a) => a.nodes.flatMap((n) => (n.place ? [n.place] : []))),
     ...Object.values(data.scenes).flatMap((sc) => [...(sc.background ? [sc.background] : []), ...sc.lines.flatMap((l) => ('panel' in l && l.panel && l.panel !== 'none' ? [l.panel] : []))]), 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken']);
   it('accepts the shipped places', () => {
     expect(msgs(data, places())).toEqual([]);
@@ -69,7 +69,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.acts[1]!.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set(['grauwacht', 'silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set([...loaded.data.acts[2]!.nodes.flatMap((n) => (n.place ? [n.place] : [])), 'grauwacht', 'silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);

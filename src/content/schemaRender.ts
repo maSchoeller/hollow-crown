@@ -141,6 +141,8 @@ export const renderSchema = z.object({
     zoomMs: z.number().min(0),
     focusZoom: z.number().positive(),
     fog: z.object({ px: z.number().int().min(16).max(1024), blur: z.number().int().min(0).max(16), alpha: z.number().min(0).max(1) }),
+    fogLiftMs: z.number().int().min(0),
+    veil: z.object({ radius: z.number().positive().max(20), corners: z.number().int().min(6).max(48) }),
   }),
 });
 

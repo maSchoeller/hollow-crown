@@ -57,6 +57,11 @@ describe('duePacks', () => {
     expect(duePacks(packs, 1, 'de').map((p) => p.id)).toEqual(['act1', 'voice.act1.de']);
     expect(duePacks(packs, 2, 'en').map((p) => p.id)).toEqual(['act1', 'act2', 'voice.act1.en']);
   });
+  it('orders the act packs by act, whatever their order in packs.yaml (story 11.3: act2 stands before act1 there)', () => {
+    const file = [packs[0]!, packs[2]!, packs[1]!, packs[3]!];
+    expect(duePacks(file, 2, 'de').map((p) => p.id)).toEqual(['act1', 'act2', 'voice.act1.de']);
+    expect(duePacks(file, 1, 'de').map((p) => p.id)).toEqual(['act1', 'voice.act1.de']);
+  });
 });
 
 describe('backoff and progress', () => {
