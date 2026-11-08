@@ -18,6 +18,7 @@ import {
   metLieutenant,
   nodeScenes,
   createBattle,
+  battleUnitFromRecord,
   withoutLeavers,
   queuedFlags,
   validateEffects,
@@ -29,6 +30,7 @@ import {
   type BattleUnit,
   type ConditionContext,
   type CampaignEvent,
+  type Deploy,
   type Effect,
   type MapUnitDef,
   type ResolvedOption,
@@ -76,14 +78,14 @@ export function defaultDeploy(nodeId: string): string[] {
   return list;
 }
 
-/**
- * World map → pre dialogue → battle (U20). The preparation screen only appears when asked for or when
- * there is a real choice (more company members than deployment slots); `from` is where its back stone leads.
- */
 /** The company is over its limits (story 3.7): no mission starts until mercenaries have been dismissed. The screens show the same check. */
 export const armyBlocksMission = (): ArmyOver | null => (campaign.value ? armyOverLimit(data, campaign.value) : null);
 
-export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } = {}): void {
+/**
+ * World map → pre dialogue → deploy on the board → battle (U20, story 6.11): the deploy board comes before every mission;
+ * `from` is where its back stone leads.
+ */
+export function playNode(nodeId: string, opts: { from?: From } = {}): void {
   if (armyBlocksMission()) return;
   const node = nodeDef(nodeId);
   // map and dialogues of later missions come with their act pack (story 7.2): wait for it on the loading screen
@@ -95,12 +97,7 @@ export function playNode(nodeId: string, opts: { prep?: boolean; from?: From } =
     });
     return;
   }
-  const map = data.maps[node.map]!;
-  const choice = campaign.value!.roster.length > map.deploy.max;
-  const go = () => {
-    if (opts.prep || choice) screen.value = { name: 'prep', node: nodeId, from: opts.from };
-    else void beginMission(nodeId, defaultDeploy(nodeId), opts.from === 'camp' ? { name: 'camp' } : { name: 'worldmap' });
-  };
+  const go = () => void openPrep(nodeId, opts.from);
   const { pre } = nodeScenes(data, campaign.value, nodeId);
   if (pre) screen.value = { name: 'dialogue', id: pre, next: go };
   else go();
@@ -155,11 +152,24 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
 }
 
 /**
- * Starts the battle of a node with the chosen units. Places and unit models load on demand (decision 2026-10-24); when
+ * Opens the deploy board of a node or haunt (story 6.11). The figures of the whole company load first (the loading screen when
+ * some are missing), so a figure from the bench stands on the board at once.
+ */
+async function openPrep(nodeId: string, from?: From, hauntId?: string): Promise<void> {
+  const c = campaign.value!;
+  const back: Screen = from === 'camp' ? { name: 'camp' } : { name: 'worldmap' };
+  const preview = hauntId ? createHauntBattle(data, c, hauntId, defaultHauntDeploy(hauntId)) : createBattle(data, c, nodeId, defaultDeploy(nodeId));
+  const bench = c.roster.filter((r) => !preview.units.some((u) => u.uid === r.id)).map((r) => battleUnitFromRecord(data, r, 'player', [0, 0]));
+  if (!(await ensureBattleAssets(nodeId, [...preview.units, ...bench], back, !!hauntId))) return;
+  screen.value = { name: 'prep', node: nodeId, from, haunt: hauntId };
+}
+
+/**
+ * Starts the battle of a node with the chosen units (ids on the default fields, or the placement of the deploy board). Places and unit models load on demand (decision 2026-10-24); when
  * some are not cached yet, the loading screen shows until they are there (story 7.6), then the battle starts by itself.
  * `back` is where the loading screen's back stone leads.
  */
-export async function beginMission(nodeId: string, deploy: string[], back: Screen): Promise<void> {
+export async function beginMission(nodeId: string, deploy: Deploy, back: Screen): Promise<void> {
   if (armyBlocksMission()) return;
   const start = createBattle(data, campaign.value!, nodeId, deploy);
   if (!(await ensureBattleAssets(nodeId, start.units, back))) return;
@@ -178,9 +188,9 @@ export function defaultHauntDeploy(hauntId: string): string[] {
 
 /**
  * World map → battle of a haunt (story 5.6): the same way as a story node (act pack, deployment, loading, battle, result), but
- * without scenes before or after. The preparation screen appears when asked for or when the company is larger than the places.
+ * without scenes before or after; the deploy board comes first (story 6.11).
  */
-export function playHaunt(hauntId: string, opts: { prep?: boolean; from?: From } = {}): void {
+export function playHaunt(hauntId: string, opts: { from?: From } = {}): void {
   if (armyBlocksMission()) return;
   const h = campaign.value?.haunts.find((x) => x.id === hauntId);
   const node = h && storyNodeOf(data, h.map);
@@ -193,13 +203,11 @@ export function playHaunt(hauntId: string, opts: { prep?: boolean; from?: From }
     });
     return;
   }
-  const choice = campaign.value!.roster.length > hauntMap(data, h.map, h.variant, h.lt).deploy.max;
-  if (opts.prep || choice) screen.value = { name: 'prep', node: node.id, from: opts.from, haunt: hauntId };
-  else void beginHaunt(hauntId, defaultHauntDeploy(hauntId), back);
+  void openPrep(node.id, opts.from, hauntId);
 }
 
 /** Starts the battle of a haunt with the chosen units; loads what is missing first, like `beginMission`. */
-export async function beginHaunt(hauntId: string, deploy: string[], back: Screen): Promise<void> {
+export async function beginHaunt(hauntId: string, deploy: Deploy, back: Screen): Promise<void> {
   if (armyBlocksMission()) return;
   const c = campaign.value!;
   const h = c.haunts.find((x) => x.id === hauntId);

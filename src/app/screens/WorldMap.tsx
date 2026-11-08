@@ -633,7 +633,6 @@ function NodeCard({ id }: { id: string }) {
             </p>
           )}
           <div class="wm-card__buttons">
-            <SecondaryButton disabled={!!over} onClick={() => playNode(id, { prep: true, from: 'worldmap' })}>{t('ui.hub.prep')}</SecondaryButton>
             <PrimaryButton disabled={!!over} onClick={() => playNode(id)}>{t('ui.hub.setOut')}</PrimaryButton>
           </div>
         </>
@@ -699,7 +698,6 @@ function HauntCard({ id }: { id: string }) {
         </p>
       )}
       <div class="wm-card__buttons">
-        <SecondaryButton disabled={!!over} onClick={() => playHaunt(id, { prep: true, from: 'worldmap' })}>{t('ui.hub.prep')}</SecondaryButton>
         <PrimaryButton disabled={!!over} onClick={() => playHaunt(id)}>{t('ui.hub.setOut')}</PrimaryButton>
       </div>
     </Piece>

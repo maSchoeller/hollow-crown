@@ -13,6 +13,7 @@ import {
   type BattleState,
   type CampaignCommand,
   type CampaignState,
+  type Deploy,
   type Command,
   type GameEvent,
   type QueuedEffects,
@@ -39,11 +40,13 @@ export const battle = signal<BattleSession | null>(null);
 /** Events from startBattle waiting for the board (opening phase banner, turn-1 dialogue). */
 export const pendingEvents = signal<GameEvent[]>([]);
 
-export function startBattle(nodeId: string, deploy: string[], hauntId?: string): GameEvent[] {
+export function startBattle(nodeId: string, deploy: Deploy, hauntId?: string): GameEvent[] {
   const c = campaign.value!;
   const r = hauntId ? beginHauntBattle(data, c, hauntId, deploy) : beginBattle(data, c, nodeId, deploy);
   battle.value = { start: r.state, state: r.state, log: [], effects: [] };
-  trail.record({ kind: 'battleStart', node: nodeId, ...(hauntId ? { haunt: hauntId } : {}), deploy, hash: stateHash(r.state) });
+  // the trail names who stands where (story 6.11), as the start state has it
+  const placed = r.state.units.filter((u) => u.team === 'player' && u.pos);
+  trail.record({ kind: 'battleStart', node: nodeId, ...(hauntId ? { haunt: hauntId } : {}), deploy: placed.map((u) => u.uid), at: placed.map((u) => [u.pos![0], u.pos![1]] as [number, number]), hash: stateHash(r.state) });
   screen.value = { name: 'battle' };
   autosave('battle');
   return r.events;
