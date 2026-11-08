@@ -53,6 +53,7 @@ supports:
   tandemMinRank: B
   tandemDamagePercent: 50
   guardChance: { A: 20, S: 30 }
+  guardMaxTotal: 30   # Schutz aus Support und Bollwerk (guardNeighbors, Story 10.4) zusammen höchstens
   griefHitPenalty: 10
   griefMissions: 3
   # highest rank the campfire unlocks, by its level (story 4.9): the camp of act 1 = level 1 → C and B; A and S come with the castle (Epic 10)

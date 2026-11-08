@@ -94,6 +94,9 @@ function main(): void {
     console.log(`  ${f.attacker.uid}: TP ${f.attacker.hpBefore}/${f.attacker.maxHp}, ${side(f.attacker)}`);
     console.log(`  ${f.defender.uid} (Gegenschlag): TP ${f.defender.hpBefore}/${f.defender.maxHp}, ${side(f.defender)}`);
     console.log(`  Reihenfolge ${f.order.join(' ')}; wenn alles trifft: ${f.attacker.uid} ${f.attackerHpAfter} TP, ${f.defender.uid} ${f.defenderHpAfter} TP`);
+    if (f.guard) console.log(`  Schutz: ${f.guard.uid} ${f.guard.chance} %`);
+    const kb = f.attacker.knockback;
+    if (kb) console.log(`  Rückstoß nach ${kb.to.join(',')}${kb.blocked ? ' (blockiert)' : ''}`);
     console.log(`  Aufgelöst über ${r.seeds} Seeds: ${f.defender.uid} fällt ${pct(r.targetFalls)}, ${f.attacker.uid} fällt am Gegenschlag ${pct(r.attackerFalls)}`);
     if (data.balance.combat.twoRnHit) console.log('  (Treffer wie angezeigt, gewürfelt mit 2RN: hohe Werte treffen öfter, niedrige seltener)');
     out.forecast = { forecast: f, targetFalls: r.targetFalls, attackerFalls: r.attackerFalls, seeds: r.seeds };

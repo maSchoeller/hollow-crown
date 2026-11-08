@@ -1,0 +1,15 @@
+# Story 10.4: Wirkungen der Profi-Wege mit Folgen für Vorschau und KI.
+#   pnpm lab profi-wirkungen --forecast lab_breaker lab_foe    Rückstoß-Zielfeld (nur wo die Mechanik „status“ eingeführt ist; auf dieser Testkarte nicht)
+#   pnpm lab profi-wirkungen --forecast lab_foe lab_guarded    Bollwerk neben dem Ziel: Schutz 10 %; Bannerträger daneben: kein Trauer-Malus
+#   pnpm lab profi-wirkungen --forecast lab_foe lab_duelist    Duellant: Konter zuerst
+question: Zeigt die Vorschau Schutz, Rückstoß und Konter zuerst der Profi-Wege?
+map: dev_terrain_warn
+company: none
+add:
+  - { id: lab_breaker, team: player, class: breaker, level: 5, at: [5, 8], items: [{ def: iron_axe }] }
+  - { id: lab_foe, team: enemy, class: brigand, level: 5, at: [6, 8], items: [{ def: iron_axe }] }
+  - { id: lab_guarded, team: player, class: captain, level: 5, at: [7, 8], items: [{ def: iron_sword }] }
+  - { id: lab_wall, team: player, class: bulwark, level: 5, at: [8, 8] }
+  - { id: lab_banner, team: player, class: standard_bearer, level: 5, at: [7, 9] }
+  - { id: lab_duelist, team: player, class: duelist, level: 5, at: [6, 7], items: [{ def: iron_sword }] }
+remove: [liora, dev_raider, dev_archer, dev_marksman, dev_vanguard]

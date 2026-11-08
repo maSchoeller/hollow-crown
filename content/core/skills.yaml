@@ -9,9 +9,15 @@
 - { id: elemental_focus,   source: class, trigger: passive, effect: { statusChanceBonus: 20 } }
 - { id: blessing,          source: class, trigger: passive, effect: { healBonus: 5 } }
 - { id: heavy_armor,       source: class, trigger: passive, effect: { allowArmorClass: heavy } }
-- { id: pro_duel,          source: class, trigger: on_hit, chanceFrom: skl, effect: { lifestealPercent: 50 } }
-- { id: pro_guard,         source: class, trigger: on_hit, chanceFrom: skl, chanceDivisor: 2, effect: { ignoreDefPercent: 50 } }
-- { id: pro_far_shot,      source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1 } }
+# Profi-Wege mit Vorschau-/KI-Folgen (Story 10.4)
+- { id: pro_duel,          source: class, trigger: on_defend, effect: { strikeFirst: true } }
+- { id: pro_guard,         source: class, trigger: passive, effect: { guardNeighbors: 10 } }
+- { id: pro_knockback,     source: class, trigger: on_hit, effect: { statusOnHit: { status: knockback, chance: 100 } } }
+- { id: pro_far_shot,      source: class, trigger: passive, condition: { weaponType: bow }, effect: { rangeBonus: 1, rangeCap: 4 } }
+- { id: pro_wide_cast,     source: class, trigger: passive, effect: { castRadius: 1 } }
+- { id: pro_wide_heal,     source: class, trigger: passive, effect: { healRadius: 1 } }
+- { id: pro_song,          source: class, trigger: passive, effect: { cheerRange: 2, cheerTargets: 2 } }
+- { id: pro_banner,        source: class, trigger: passive, aura: { radius: 1 }, effect: { ignoreGrief: true, avoidBonus: 5 } }
 # Profi-Wege (Story 10.3): nur Werte, Waffengruppen, Einsätze oder Radien; die Wirkungen mit Vorschau/KI-Folgen bringt Story 10.4
 - { id: pro_blade_dance,   source: class, trigger: passive, effect: { avoidBonus: 15, critBonus: 10 } }
 - { id: pro_woodsman,      source: class, trigger: passive, effect: { terrainCost: { forest: 1 }, addWeaponGroups: [sword] } }

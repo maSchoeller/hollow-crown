@@ -231,10 +231,22 @@ describe('knockback (wind on hit)', () => {
   });
 });
 
+const procData = (): typeof data => ({
+  ...data,
+  skills: {
+    ...data.skills,
+    test_sol: { id: 'test_sol', source: 'personal', trigger: 'on_hit', chanceFrom: 'skl', effect: { lifestealPercent: 50 } },
+    test_impale: { id: 'test_impale', source: 'personal', trigger: 'on_hit', chanceFrom: 'skl', chanceDivisor: 2, effect: { ignoreDefPercent: 50 } },
+  },
+});
+
 describe('on-hit and on-lethal procs', () => {
-  it('Sol (duelist) heals the attacker by half the damage dealt, never above max HP', () => {
+  // the PoC skills Sol and Impale became the pro paths of story 10.4; the proc mechanics stay, tested with skills of their own
+  it('a lifesteal proc (Sol) heals the attacker by half the damage dealt, never above max HP', () => {
+    const data = procData();
     const s = field();
-    const { a, d } = duel(s, 'iron_sword', 'duelist');
+    const { a, d } = duel(s, 'iron_sword', 'captain');
+    a.personalSkill = 'test_sol';
     a.stats.skl = 120; // chance = SKL → certain
     a.hp = 5;
     const f = forecast(data, s, a.uid, d.uid);
@@ -242,20 +254,23 @@ describe('on-hit and on-lethal procs', () => {
     const ev: GameEvent[] = [];
     resolveAttack(data, s, a.uid, d.uid, undefined, ev);
     const [st] = strikes(ev);
-    expect(st).toMatchObject({ skill: 'pro_duel', dmg: f.attacker.damage });
+    expect(st).toMatchObject({ skill: 'test_sol', dmg: f.attacker.damage });
     expect(a.hp).toBe(5 + Math.floor(f.attacker.damage / 2));
 
     const s2 = field();
-    const b = duel(s2, 'iron_sword', 'duelist');
+    const b = duel(s2, 'iron_sword', 'captain');
+    b.a.personalSkill = 'test_sol';
     b.a.stats.skl = 120;
     b.a.hp = b.a.stats.hp - 1;
     resolveAttack(data, s2, b.a.uid, b.d.uid, undefined, []);
     expect(b.a.hp).toBe(b.a.stats.hp);
   });
 
-  it('Impale (bulwark) adds half the target DEF to the damage when it procs', () => {
+  it('an ignore-DEF proc (Impale) adds half the target DEF to the damage when it procs', () => {
+    const data = procData();
     const s = field();
-    const { a, d } = duel(s, 'iron_lance', 'bulwark');
+    const { a, d } = duel(s, 'iron_sword', 'captain');
+    a.personalSkill = 'test_impale';
     a.stats.skl = 200; // chance = SKL / 2 → certain
     d.stats.def = 8;
     d.stats.lck = 150; // no crits
@@ -263,7 +278,7 @@ describe('on-hit and on-lethal procs', () => {
     expect([f.attacker.hit, f.attacker.crit, f.attacker.strikes]).toEqual([100, 0, 1]);
     const ev: GameEvent[] = [];
     resolveAttack(data, s, a.uid, d.uid, undefined, ev);
-    expect(strikes(ev)[0]).toMatchObject({ skill: 'pro_guard', dmg: f.attacker.damage + 4 });
+    expect(strikes(ev)[0]).toMatchObject({ skill: 'test_impale', dmg: f.attacker.damage + 4 });
     expect(d.hp).toBe(60 - f.attacker.damage - 4);
   });
 

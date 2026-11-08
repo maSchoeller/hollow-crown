@@ -16,6 +16,7 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
       if (!sk) err('classes.yaml', `${c.id}: unknown pro skill ${id}`);
       else if (!id.startsWith('pro_') || sk.source !== 'class') err('classes.yaml', `${c.id}: pro skill ${id} needs the prefix pro_ and source: class`);
     }
+    if (c.tier === 'pro' && c.playable && !(c.proSkills?.length)) err('classes.yaml', `${c.id}: a playable pro class needs 1–2 proSkills`);
     if (c.tier === 'pro') {
       const base = data.classes[c.role];
       // the role a pro path comes from: a base role, or the unique role of Avatar and Lucan (story 10.3)

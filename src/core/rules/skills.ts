@@ -1,4 +1,4 @@
-import type { Pos, SkillCondition, SkillDef, StatMods, StatKey } from '../defs';
+import type { Pos, SkillCondition, SkillDef, StatMods, StatKey, StatusId } from '../defs';
 import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { active, dist, isAlly, neighbors, onMap, samePos, terrainAt, unitAt } from '../util';
@@ -165,6 +165,18 @@ export interface SkillTotals {
   strikeFirst: boolean;
   moveThroughEnemies: boolean;
   terrainCost: Record<string, number>;
+  /** the smallest `rangeCap` of the active skills (Infinity without one) */
+  rangeCap: number;
+  /** largest radii of Wirken and staff healing, cheer reach and targets of the pro paths (story 10.4) */
+  castRadius: number;
+  healRadius: number;
+  cheerRange: number;
+  cheerTargets: number;
+  /** the guard chance this unit gives each neighbour (Bollwerk) */
+  guardNeighbors: number;
+  ignoreGrief: boolean;
+  /** statuses a landed fight inflicts (`statusOnHit` of on_hit skills) */
+  statusOnHit: Array<{ status: StatusId; chance: number }>;
   procs: Array<{ skill: string; chance: number; effect: SkillDef['effect'] }>;
   /** skills that contributed (for UI) */
   used: string[];
@@ -190,6 +202,14 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     strikeFirst: false,
     moveThroughEnemies: false,
     terrainCost: {},
+    rangeCap: Infinity,
+    castRadius: 0,
+    healRadius: 0,
+    cheerRange: 0,
+    cheerTargets: 0,
+    guardNeighbors: 0,
+    ignoreGrief: false,
+    statusOnHit: [],
     procs: [],
     used: [],
   };
@@ -226,6 +246,14 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     if (e.strikeFirst) t.strikeFirst = true;
     if (e.moveThroughEnemies) t.moveThroughEnemies = true;
     if (e.terrainCost) Object.assign(t.terrainCost, e.terrainCost);
+    if (e.rangeCap !== undefined) t.rangeCap = Math.min(t.rangeCap, e.rangeCap);
+    t.castRadius = Math.max(t.castRadius, e.castRadius ?? 0);
+    t.healRadius = Math.max(t.healRadius, e.healRadius ?? 0);
+    t.cheerRange = Math.max(t.cheerRange, e.cheerRange ?? 0);
+    t.cheerTargets = Math.min(2, Math.max(t.cheerTargets, e.cheerTargets ?? 0));
+    t.guardNeighbors = Math.max(t.guardNeighbors, e.guardNeighbors ?? 0);
+    if (e.ignoreGrief) t.ignoreGrief = true;
+    if (e.statusOnHit) t.statusOnHit.push(e.statusOnHit);
     if (
       e.stats ||
       e.hitBonus ||
@@ -233,7 +261,8 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
       e.critBonus ||
       e.damageBonus ||
       e.damageTakenPercent !== undefined ||
-      e.strikeFirst
+      e.strikeFirst ||
+      e.statusOnHit
     )
       t.used.push(id);
   }
@@ -242,7 +271,7 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
 }
 
 /**
- * Auras (Schild der Paktwächter): the stat bonuses of the aura skills of allies standing within their radius of this unit.
+ * Auras (Schild der Paktwächter, Bannerträger): stats, `hitBonus`, `avoidBonus` and `ignoreGrief` of the aura skills of allies standing within their radius of this unit.
  * The bearer has to stand (on the map, not downed); the radius is measured from the tiles they stand on now, so the
  * preview of a fight sees the aura of the tile the attacker would fight from. Needs the battle (`ctx.state`).
  */
@@ -262,6 +291,9 @@ function addAuras(data: GameData, ctx: SkillCtx, t: SkillTotals): void {
         const key = k as keyof StatMods;
         t.stats[key] = (t.stats[key] ?? 0) + (v ?? 0);
       }
+      t.hit += sk.effect.hitBonus ?? 0;
+      t.avoid += sk.effect.avoidBonus ?? 0;
+      if (sk.effect.ignoreGrief) t.ignoreGrief = true;
       t.used.push(id);
     }
   }

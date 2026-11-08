@@ -1,5 +1,5 @@
 /** Input handling of the battle screen (Battle.tsx). */
-import { type Action, type ActionOption, type BattleUnit, type Command, type Pos, active, availableActions, destinations, itemDef, itemTargets, killMarks, longPressView, perilWarnings, posKey, pursueReach, samePos, unitAt } from '../../core';
+import { type Action, type ActionOption, type BattleUnit, type Command, type Pos, active, availableActions, classPreview, destinations, healTiles, itemDef, itemTargets, killMarks, longPressView, perilWarnings, posKey, pursueReach, samePos, unitAt } from '../../core';
 import type { KillKind } from '../../render/board/badges';
 import { overviewTap } from './largeMap';
 import { backFromMoved, selectMode } from './battleMode';
@@ -131,7 +131,14 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       }
       case 'classPreview': {
-        if (at && at.uid === mode.target) return void confirmClassAction();
+        if (at && (at.uid === mode.target || at.uid === mode.second)) return void confirmClassAction();
+        // Barde (story 10.4): a tap on a further ally in reach adds it as the second target of Anfeuern
+        if (at && mode.action === 'cheer' && !mode.second) {
+          const u = unit(mode.uid);
+          const more = classPreview(data, s, u, mode.to, { kind: 'cheer', target: mode.target });
+          const opt = availableActions(data, s, u, mode.to).find((o) => o.kind === 'cheer');
+          if (more?.kind === 'cheer' && more.more > 0 && opt?.targets?.includes(at.uid)) return setMode({ ...mode, second: at.uid });
+        }
         setMode({ k: 'moved', uid: mode.uid, to: mode.to });
         return;
       }
@@ -194,7 +201,8 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
 
   const confirmClassAction = async () => {
     if (mode.k !== 'classPreview') return;
-    await run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, target: mode.target } });
+    const action: Action = mode.action === 'cheer' && mode.second ? { kind: 'cheer', target: mode.target, second: mode.second } : { kind: mode.action, target: mode.target };
+    await run({ type: 'act', unit: mode.uid, to: mode.to, action });
   };
 
   const confirmCast = async () => {
@@ -349,7 +357,8 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
       case 'talk':
       case 'rescue':
       case 'command':
-        if (opt.targets?.length === 1 && opt.kind !== 'attack') {
+        // a heal that reaches further allies (Bischof, story 10.4) shows its area on the board before it runs
+        if (opt.targets?.length === 1 && opt.kind !== 'attack' && !(opt.kind === 'staff' && healTiles(data, s, u, opt.targets[0]!).length > 1)) {
           return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: opt.kind, target: opt.targets[0]! } as Action });
         }
         return setMode({ k: 'target', uid: u.uid, to: mode.to, action: opt.kind, targets: opt.targets ?? [] });

@@ -9,7 +9,7 @@ import { ensureHauntMap } from './hauntMap';
 import { activeSkillIds, afterActionMove } from '../rules/skills';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clone, getUnit, neighbors, onMap, posKey, samePos } from '../util';
-import { availableActions, classActionId, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
+import { availableActions, cheerReach, classActionId, itemTargets, nearConvoy, pursueRest, staffTargets } from './actions';
 import type { Action, Command, CommandError } from './commands';
 import { noteLieutenantSight } from './lieutenantSight';
 import { beginPhase, checkObjectives } from './objectives';
@@ -51,10 +51,14 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
     case 'staff':
     case 'rescue':
     case 'farRescue':
-    case 'cheer':
     case 'talk':
     case 'command':
       return opt.targets?.includes(a.target) ? null : 'invalid_target';
+    case 'cheer':
+      if (!opt.targets?.includes(a.target)) return 'invalid_target';
+      if (a.second === undefined) return null;
+      // a second target only with `cheerTargets: 2`, never the first one again
+      return a.second !== a.target && opt.targets.includes(a.second) && cheerReach(data, s, u).targets >= 2 ? null : 'invalid_target';
     case 'item': {
       if (!opt.items?.includes(a.item)) return 'invalid_target';
       const targets = itemTargets(data, s, u, to, a.item);

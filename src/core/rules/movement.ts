@@ -303,13 +303,15 @@ export function strikeTiles(data: GameData, s: BattleState, unit: BattleUnit, fr
   return tilesInRange(s, from, [range[0], far]).filter((p) => canStrike(data, s, unit, from, p, range, target));
 }
 
-/** Attack range of a weapon for a unit, including skill range bonuses (pro_far_shot) and `extraRange` (Zielen). */
+/** Attack range of a weapon for a unit, including skill range bonuses (pro_far_shot) and `extraRange` (Zielen), capped by `rangeCap`. */
 export function weaponRange(data: GameData, s: BattleState, unit: BattleUnit, weaponUid: string, extraRange = 0): [number, number] {
   const inst = [unit.equip.mainHand, ...unit.bag].find((i) => i?.uid === weaponUid);
   if (!inst) return [1, 1];
   const wp = weaponProfile(data, inst, s);
   const st = computeStats(data, unit, { state: s, ownWeapon: wp });
-  return [wp.range[0], wp.range[1] + st.skills.rangeBonus + extraRange];
+  // Scharfschütze (story 10.4): `rangeCap` limits the whole reach, Zielen included
+  const max = Math.min(wp.range[1] + st.skills.rangeBonus + extraRange, Math.max(wp.range[1], st.skills.rangeCap));
+  return [wp.range[0], max];
 }
 
 /** Union of min/max range over all usable weapons (or staves). */

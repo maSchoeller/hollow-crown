@@ -16,7 +16,8 @@ export type Action =
   /** class actions (story 2.3) */
   | { kind: 'aim'; target: string; weapon?: string }
   | { kind: 'farRescue'; target: string }
-  | { kind: 'cheer'; target: string }
+  /** `second`: a further ally for a unit whose skills give `cheerTargets: 2` (Barde, story 10.4) */
+  | { kind: 'cheer'; target: string; second?: string }
   /** Wirken (story 2.5): the tile must be in `castTargets` */
   | { kind: 'cast'; at: Pos }
   /** Öffnen (story 2.6, scout): opens a closed door or chest of `availableActions` without a key */

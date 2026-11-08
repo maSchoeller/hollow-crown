@@ -476,10 +476,10 @@ handbook:
       weak: { "1": "Little damage of its own.", "2": "Little DEF." }
     class_duelist:
       title: "Duelist"
-      text: "Pro path of the skirmisher with sword and dagger. With some luck the duelist's skill heals a share of the damage dealt."
+      text: "Pro path of the skirmisher with sword and dagger. When attacked, the duelist's counter strikes first."
       where: "Promotion happens in the academy; in the game, seasoned enemies carry it."
       keywords: "duelist, pro, skirmisher"
-      strong: { "1": "Very fast and accurate.", "2": "Heals while attacking." }
+      strong: { "1": "Very fast and accurate.", "2": "Counters before the attack." }
       weak: { "1": "Still little RES.", "2": "Axe fighters have the upper hand." }
     class_blade_dancer:
       title: "Blade Dancer"
@@ -516,6 +516,20 @@ handbook:
       keywords: "grand strategist, pro, tactician, command"
       strong: { "1": "Two commands per map.", "2": "Balanced stats." }
       weak: { "1": "No combat specialist.", "2": "Only one path." }
+    class_bard:
+      title: "Bard"
+      text: "Pro path of the minstrel with dagger and lute. Cheer reaches two fields and up to two allies."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "bard, pro, minstrel, cheer"
+      strong: { "1": "Cheers two allies.", "2": "Reaches further than the minstrel." }
+      weak: { "1": "Little damage of its own.", "2": "Little DEF." }
+    class_standard_bearer:
+      title: "Standard Bearer"
+      text: "Pro path of the minstrel. Neighbours ignore grief and evade better; the bearer does not."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "standard bearer, pro, minstrel, grief, avoid"
+      strong: { "1": "Keeps grieving allies in the fight.", "2": "More HP and DEF than the bard." }
+      weak: { "1": "Works on neighbours only.", "2": "No cheer at range." }
     class_banner_lord:
       title: "Banner Lord"
       text: "The captain's pro path. His rally reaches allies one field further."
@@ -525,35 +539,35 @@ handbook:
       weak: { "1": "Little RES.", "2": "Slow." }
     class_bulwark:
       title: "Bulwark"
-      text: "Pro path of the vanguard with lance, axe and shield and more movement than before. With some luck it pierces part of the armor."
+      text: "Pro path of the vanguard with lance, axe and shield and more movement than before. Every neighbour has some guard through it, capped together with a support."
       where: "Promotion happens in the academy."
       keywords: "bulwark, pro, vanguard"
-      strong: { "1": "The highest DEF in the game.", "2": "Pierces armor.", "3": "Holds like the vanguard." }
+      strong: { "1": "The highest DEF in the game.", "2": "Guards its neighbours.", "3": "Holds like the vanguard." }
       weak: { "1": "Low RES.", "2": "Not fast." }
     class_breaker:
       title: "Breaker"
-      text: "The vanguard's attacking pro path: lots of HP, great strength, and as a climber it gets onto mountains too."
+      text: "The vanguard's attacking pro path: lots of HP, great strength, and a hit pushes the target one field away."
       where: "Promotion happens in the academy."
-      keywords: "breaker, pro, vanguard, climber"
-      strong: { "1": "The most HP and plenty of STR.", "2": "Climbs mountains." }
+      keywords: "breaker, pro, vanguard, knockback"
+      strong: { "1": "The most HP and plenty of STR.", "2": "Pushes foes away." }
       weak: { "1": "Very low RES.", "2": "Less DEF than the bulwark." }
     class_sharpshooter:
       title: "Sharpshooter"
-      text: "Pro path of the marksman: with bows it reaches one tile further and hits even more precisely."
+      text: "Pro path of the marksman: with bows it reaches one tile further, though not without limit, and hits even more precisely."
       where: "Promotion happens in the academy."
       keywords: "sharpshooter, pro, bow, range"
       strong: { "1": "Longest range of the company.", "2": "Very high SKL." }
       weak: { "1": "Still defenceless in melee.", "2": "Bows only." }
     class_sage:
       title: "Sage"
-      text: "Pro path of the elementalist: stronger spells, and it may also wield staves and heal."
+      text: "Pro path of the elementalist: stronger spells, and casting lays the element field on the fields around the target too."
       where: "Promotion happens in the academy."
       keywords: "sage, pro, elementalist, mage"
       strong: { "1": "Plenty of MAG and RES.", "2": "Heals with staves." }
       weak: { "1": "Little HP and DEF.", "2": "Hardly any STR: spells and staves only." }
     class_bishop:
       title: "Bishop"
-      text: "Pro path of the healer: heals more, is faster and has the highest RES."
+      text: "Pro path of the healer: heals more, also every ally next to the target, is faster and has the highest RES."
       where: "Promotion happens in the academy."
       keywords: "bishop, pro, healer"
       strong: { "1": "Stronger healing.", "2": "Very high RES and LCK." }
