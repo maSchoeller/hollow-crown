@@ -261,6 +261,7 @@ export abstract class BoardBase implements HostedView {
   protected abstract fadeTwin(set: PropSet): Mesh;
   protected abstract writeProps(set: PropSet): void;
   protected abstract buildGrid(): void;
+  protected abstract buildOverlays(): void;
   protected abstract pptFor(step: number): number;
   protected abstract fitCamera(): void;
   protected abstract clampCamera(margin?: number): void;

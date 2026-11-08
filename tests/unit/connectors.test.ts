@@ -3,7 +3,7 @@ import type { BattleState } from '../../src/core';
 import { loadContentFromDisk } from '../../src/content/node';
 import { mayFade } from '../../src/render/board/fade';
 import { connectorRot } from '../../src/render/board/wallKit';
-import { connectorSurface, riseDir } from '../../src/render/shared/connectors';
+import { connectorProfile, connectorSurface, riseDir } from '../../src/render/shared/connectors';
 import { floorOf, terrainGrid } from '../../src/render/shared/terrain3d';
 
 const { data } = loadContentFromDisk();
@@ -138,6 +138,56 @@ describe('floor of the board (story 15.13)', () => {
     const f = floor('stairs');
     expect(f.surfaceAt(0.3, 2.2)).toBe(f.standOn(0, 2));
     expect(f.surfaceAt(0, 0)).toBeCloseTo(L);
+  });
+});
+
+describe('the terrain the fog lies on (story 2.6)', () => {
+  /** height of a profile at `s` along the rise; on a riser the upper end */
+  const heightOf = (profile: ReadonlyArray<readonly [number, number]>, s: number) => {
+    let h = profile[0]![1];
+    for (let i = 1; i < profile.length; i++) {
+      const [s0, h0] = profile[i - 1]!;
+      const [s1, h1] = profile[i]!;
+      if (s >= s1) h = h1;
+      else if (s > s0) h = h0 + ((h1 - h0) * (s - s0)) / (s1 - s0);
+    }
+    return h;
+  };
+
+  for (const [name, shape] of Object.entries(board.connectors))
+    it(`follows the surface a figure stands on: ${name}`, () => {
+      const profile = connectorProfile(shape, 0.2, 1.05);
+      expect(profile[0]).toEqual([0, 0.2]);
+      expect(profile.at(-1)).toEqual([1, 1.05]);
+      // never back along the rise nor down
+      for (let i = 1; i < profile.length; i++) {
+        expect(profile[i]![0]).toBeGreaterThanOrEqual(profile[i - 1]![0]);
+        expect(profile[i]![1]).toBeGreaterThanOrEqual(profile[i - 1]![1]);
+      }
+      for (let s = 0.013; s < 1; s += 0.05) expect(heightOf(profile, s)).toBeCloseTo(connectorSurface(shape, 0.2, 1.05, [1, 0], s - 0.5, 0));
+    });
+
+  it('gives a stairs tile its treads and risers, rising to the terrace', () => {
+    const f = floor('stairs');
+    const t = f.shapeOf(1, 1);
+    expect(t.height).toBeCloseTo(0);
+    expect(t.rise?.dir).toEqual([0, -1]);
+    // the foot at the low edge, then five risers, each with its tread (the last one runs to the high edge)
+    expect(t.rise?.profile).toHaveLength(1 + 2 * 5);
+    expect(t.rise?.profile.at(-1)![1]).toBeCloseTo(L);
+  });
+
+  it('gives flat tiles their block height and where a figure stands, the water its surface', () => {
+    const f = floor('stairs');
+    expect(f.shapeOf(1, 0)).toEqual({ height: L, stand: f.standOn(1, 0), rise: null });
+    expect(f.shapeOf(0, 2).rise).toBeNull();
+    // beyond the board's skirt: the diorama's bottom
+    expect(f.shapeOf(-50, 0).height).toBe(-board.baseDepth);
+    const rows = [['shallows', 'grass']];
+    const state = { mapId: 'test', width: 2, height: 1, terrain: rows.flat(), timers: {}, levels: {} } as unknown as BattleState;
+    const w = floorOf(data, terrainGrid(data, state, 7), 2, 1);
+    expect(w.shapeOf(0, 0).stand).toBeCloseTo(Math.max(board.waterLevel, data.terrain.shallows!.height));
+    expect(w.shapeOf(0, 0).stand).toBeGreaterThan(w.standOn(0, 0));
   });
 });
 

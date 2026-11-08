@@ -8,6 +8,7 @@ import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import type { LegibilityDef, Pos } from '../../core';
+import type { TileShape } from '../shared/terrain3d';
 import { arrow, dashes, edgeRibbons, geo, gridTile, outerEdges, ribbon, roundedTile, type Geo } from './shapes';
 
 export interface Overlays {
@@ -135,6 +136,59 @@ function shapeMesh(scene: Scene, out: OverlayMesh[], name: string, g: Geo, color
   if (g.idx.length) out.push(overlayMesh(scene, name, g.p, g.idx, color, alpha, pulse, layer));
 }
 
+/** How far the fog's cliff faces stand out from the terrain's own (tiles), so they never flicker into it */
+const FACE_OUT = 0.004;
+
+/**
+ * Fog on one field (story 2.6), shaped like its terrain block: the top along a ramp's slope or a staircase's treads, and the
+ * cliff faces down to each lower neighbour, the way `buildTerrain` builds them. A flat square at standing height cut a ramp in
+ * half and left the faces bright, so a fogged slope read as flat or turned the wrong way round.
+ */
+function fogBlock(g: Geo, t: Pos, shapeOf: (x: number, y: number) => TileShape, lift: number): void {
+  const f = shapeOf(t[0], t[1]);
+  const dir = f.rise?.dir ?? ([0, -1] as const);
+  const side = [-dir[1], dir[0]] as const;
+  // the top lies where a figure stands, the faces end at the block's height (a roof's ridge gets no walls of fog)
+  const top = f.rise?.profile ?? [[0, f.stand], [1, f.stand]];
+  const faces = f.rise?.profile ?? [[0, f.height], [1, f.height]];
+  // point at `s` along the rise (0 = low edge) and `u` across it, `out` tiles past the edge in the direction (ox, oy)
+  const at = (s: number, u: number, h: number, ox = 0, oy = 0): [number, number, number] => {
+    const mx = t[0] + 0.5 + dir[0] * (s - 0.5) + side[0] * (u - 0.5) + ox * FACE_OUT;
+    const my = t[1] + 0.5 + dir[1] * (s - 0.5) + side[1] * (u - 0.5) + oy * FACE_OUT;
+    return [mx, h, -my];
+  };
+  const quad = (a: number[], b: number[], c: number[], d: number[]) => {
+    const k = g.p.length / 3;
+    g.p.push(...a, ...b, ...c, ...d);
+    g.idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
+  };
+  for (let i = 1; i < top.length; i++) {
+    const [s0, h0] = top[i - 1]!;
+    const [s1, h1] = top[i]!;
+    quad(at(s0, 0, h0 + lift), at(s1, 0, h1 + lift), at(s1, 1, h1 + lift), at(s0, 1, h0 + lift));
+  }
+  // the two edges across the rise: one face each, from the block's height there down to the neighbour's
+  for (const [s, e] of [[0, -1], [1, 1]] as const) {
+    const h = faces[e < 0 ? 0 : faces.length - 1]![1];
+    const ox = dir[0] * e;
+    const oy = dir[1] * e;
+    const low = shapeOf(t[0] + ox, t[1] + oy).height;
+    if (low < h) quad(at(s, 0, h, ox, oy), at(s, 1, h, ox, oy), at(s, 1, low, ox, oy), at(s, 0, low, ox, oy));
+  }
+  // the two edges along it: a face under each piece of the surface, so a ramp's side darkens with its slope
+  for (const [u, e] of [[0, -1], [1, 1]] as const) {
+    const ox = side[0] * e;
+    const oy = side[1] * e;
+    const low = shapeOf(t[0] + ox, t[1] + oy).height;
+    for (let i = 1; i < faces.length; i++) {
+      const [s0, h0] = faces[i - 1]!;
+      const [s1, h1] = faces[i]!;
+      if (low >= h0 && low >= h1) continue;
+      quad(at(s0, u, h0, ox, oy), at(s1, u, h1, ox, oy), at(s1, u, Math.min(low, h1), ox, oy), at(s0, u, Math.min(low, h0), ox, oy));
+    }
+  }
+}
+
 const keySet = (tiles: readonly Pos[]) => new Set(tiles.map((t) => `${t[0]},${t[1]}`));
 
 /** Grid marks of a map (story 13.1): one mesh, at the height of each tile; nothing for `off`. */
@@ -192,9 +246,10 @@ export function addChevron(p: number[], idx: number[], tile: Pos, base: number, 
 
 /**
  * Builds the meshes for `o`; `top` gives the height a marking lies on; `marker` styles `o.mark` (its arrow stands tilted by
- * `tiltDeg`, the camera's); `leg` styles the range tiles, path arrow and danger zone (render.yaml `legibility`).
+ * `tiltDeg`, the camera's); `leg` styles the range tiles, path arrow and danger zone (render.yaml `legibility`); `shapeOf` gives
+ * the terrain block the fog lies on (without it, the fog is a flat square at `top`).
  */
-export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number, marker: MarkerStyle | undefined, tiltDeg: number, leg: LegibilityDef): OverlayMesh[] {
+export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => number, marker: MarkerStyle | undefined, tiltDeg: number, leg: LegibilityDef, shapeOf?: (x: number, y: number) => TileShape): OverlayMesh[] {
   const out: OverlayMesh[] = [];
   const top2 = (x: number, y: number) => top([x, y]);
   const lists: Record<string, Pos[]> = {
@@ -283,6 +338,10 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     const p: number[] = [];
     const idx: number[] = [];
     for (const t of tiles) {
+      if (shapeOf && (key === 'fog' || key === 'fogEdge')) {
+        fogBlock({ p, idx }, t, shapeOf, 0.02 + layer * 0.001);
+        continue;
+      }
       const h = top(t) + 0.02 + layer * 0.001;
       if (key === 'hold' || key === 'terrainWarn') {
         // diagonal stripes inside the tile (u right, v down)
