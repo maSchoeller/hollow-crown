@@ -122,6 +122,7 @@ handbook:
     perDayMin: "Per day from"
     perDayMax: "Per day up to"
     hauntOpen: "Open at most"
+    hauntPlaces: "Places from"
     hauntGold: "Gold"
     hauntExp: "EXP"
     halve: "Half loot from"
@@ -318,7 +319,7 @@ handbook:
       keywords: "bounty, reward, signature, loot, material"
     haunts:
       title: "Haunts"
-      text: "Every day {perDayMin} to {perDayMax} known maps return as haunts, with a lieutenant and enemies at your level; at most {hauntOpen} stay open. They bring {hauntGold} of the gold and {hauntExp} of the EXP of a story mission, plus bounty and material. From haunt number {halve} since the last story mission on, you get only half."
+      text: "Every day {perDayMin} to {perDayMax} known maps return as haunts, with a lieutenant and enemies at your level; at most {hauntOpen} stay open. You choose the company freely, with no required units and at least {hauntPlaces} places; your own character and Lucan are only knocked out there. They bring {hauntGold} of the gold and {hauntExp} of the EXP of a story mission, plus bounty and material. From haunt number {halve} since the last story mission on, you get only half."
       where: "Haunts appear as nodes of their own on the world map."
       keywords: "haunt, daily, day, repeat, lieutenant, world map"
     # ------------------------------------------------------------ Death & rescue

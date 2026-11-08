@@ -89,6 +89,8 @@ export interface Balance {
     perDay: { min: number; max: number };
     /** more than this open: the oldest one lapses */
     maxOpen: number;
+    /** fewest places of a haunt; an anchor or map with fewer gets this many (Produktinhaber 2026-11-08) */
+    minPlaces: number;
     /** foes = places + this, the lieutenant included (easy -1, hard +1 as on story maps) */
     extraEnemies: number;
     /** reward in percent of the story map: gold, experience */

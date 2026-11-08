@@ -53,7 +53,7 @@ describe('map m1_4_wolfslager', () => {
     expect(osric.quote).toBe('scn.m1_4.dunn_battle');
     expect(map.units.find((u) => u.id === 'ysolde')!.recruit).toEqual({ by: ['avatar'], dialogue: 'scn.m1_4.ysolde_talk' });
     expect(map.music).toBe('battle_a');
-    expect(map.haunts?.map((h) => h.variant).sort()).toEqual(['boss', 'defend', 'rout']);
+    expect(map.haunts?.map((h) => h.variant).sort()).toEqual(['boss', 'defend', 'rout', 'treasure']);
   });
 
   it('the jailer carries and drops a key for each chest, also when Fenn has gone with E2 "hand over" (GDD log 2026-11-01)', () => {

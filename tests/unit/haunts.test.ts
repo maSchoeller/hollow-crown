@@ -169,7 +169,7 @@ describe('haunt generator (story 5.5)', () => {
   });
 
   describe('enemies', () => {
-    const places = (m: MapDef, anchor: { max?: number }) => anchor.max ?? m.deploy.max;
+    const places = (m: MapDef, anchor: { max?: number }) => Math.max(5, anchor.max ?? m.deploy.max);
     it('are places + 2 including the lieutenant (easy -1, hard +1), on their spawn area', () => {
       const d = bigData(6);
       for (const [diff, delta] of [['easy', -1], ['normal', 0], ['hard', 1]] as const) {
@@ -297,14 +297,14 @@ describe('haunt content', () => {
       patched((m) => {
         const a = m.haunts!;
         a[0]!.target.at = [50, 50];
-        a[1]!.deploy = { rect: [6, 15, 6, 15] }; // 1 field for 4 places
+        a[1]!.deploy = { rect: [6, 15, 6, 15] }; // 1 field for 5 places (haunt.minPlaces)
         a[2]!.enemySpawn = { rect: [1, 3, 1, 3] }; // 1 spawn field
         a.push({ ...a[1]! });
       }),
     );
     expect(p.some((x) => /target \[50,50\] out of bounds|target 50,50 out of bounds/.test(x))).toBe(true);
-    expect(p.some((x) => /1 deploy fields for 4 places/.test(x))).toBe(true);
-    expect(p.some((x) => /1 spawn fields for 7 foes on hard/.test(x))).toBe(true);
+    expect(p.some((x) => /1 deploy fields for 5 places/.test(x))).toBe(true);
+    expect(p.some((x) => /1 spawn fields for 8 foes on hard/.test(x))).toBe(true);
     expect(p.some((x) => /listed twice \(one anchor per variant\)/.test(x))).toBe(true);
   });
 

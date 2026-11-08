@@ -10,7 +10,7 @@ import type { LieutenantDef } from '../storyDefs';
 import type { CampaignState, HauntEnemy, HauntState } from '../state';
 import { hash32, nextInt, pick, seedRng, type RngState } from '../rng';
 import { areaTiles, clone, posKey } from '../util';
-import { standableTiles } from '../battle/hauntMap';
+import { hauntPlaces, standableTiles } from '../battle/hauntMap';
 import { availableNodes } from './graph';
 import type { CampaignEvent } from './commands';
 import { activeLieutenants, lieutenantState } from './lieutenants';
@@ -20,9 +20,6 @@ export function hauntEnemyCount(data: Pick<GameData, 'balance'>, places: number,
   const shift = difficulty === 'easy' ? -1 : difficulty === 'hard' ? 1 : 0;
   return Math.max(1, places + data.balance.haunt.extraEnemies + shift);
 }
-
-/** The places of a haunt: the anchor's `max`, else `deploy.max` of the map. */
-export const hauntPlaces = (map: Pick<MapDef, 'deploy'>, anchor: Pick<HauntAnchor, 'max'>): number => anchor.max ?? map.deploy.max;
 
 /** The army level the haunts are made for: the expected level of the next story node to play, else that of the last one done. */
 export function hauntLevel(data: GameData, c: CampaignState): number {
@@ -51,9 +48,18 @@ function takeTile(data: GameData, map: MapDef, anchor: HauntAnchor, rng: RngStat
   return at;
 }
 
-/** The enemies of one haunt: the lieutenant, then the rest by the pool of his faction. */
+/**
+ * The enemy types a lieutenant brings into a haunt: the pool under his own id, else the pool of his faction
+ * (Produktinhaber 2026-11-08: each lieutenant of act 1 his own band, `acts/actN/haunts.yaml`).
+ */
+export function hauntPool(data: GameData, lt: Pick<LieutenantDef, 'id' | 'act' | 'faction'>): readonly HauntEnemyType[] | undefined {
+  const pools = data.hauntPools?.[lt.act]?.factions;
+  return pools?.[lt.id] ?? pools?.[lt.faction];
+}
+
+/** The enemies of one haunt: the lieutenant, then the rest by his pool (`hauntPool`). */
 function makeEnemies(data: GameData, c: CampaignState, map: MapDef, anchor: HauntAnchor, lt: LieutenantDef, types: readonly HauntEnemyType[], level: number, rng: RngState): HauntEnemy[] {
-  const count = hauntEnemyCount(data, hauntPlaces(map, anchor), c.settings.difficulty);
+  const count = hauntEnemyCount(data, hauntPlaces(data, map, anchor), c.settings.difficulty);
   const free = new Set(areaTiles(anchor.enemySpawn).map(posKey));
   const mtOf = (cls: string) => data.classes[cls]?.moveType ?? 'foot';
   const out: HauntEnemy[] = [];
@@ -82,7 +88,7 @@ function variantsFor(map: MapDef, last: string | undefined): HauntAnchor[] {
 /** One haunt on `map` at `anchor` against `lt`: the enemies are made now and stay as they are. Null when the spawn area holds no place for the lieutenant. */
 export function makeHaunt(data: GameData, c: CampaignState, map: MapDef, anchor: HauntAnchor, lt: LieutenantDef, id: string, day: number, rng: RngState): HauntState | null {
   const level = hauntLevel(data, c);
-  const enemies = makeEnemies(data, c, map, anchor, lt, data.hauntPools[lt.act]!.factions[lt.faction]!, level, rng);
+  const enemies = makeEnemies(data, c, map, anchor, lt, hauntPool(data, lt)!, level, rng);
   return enemies.length ? { id, day, map: map.id, variant: anchor.variant, lt: lt.id, level, enemies, new: true } : null;
 }
 
@@ -102,7 +108,7 @@ export function spawnHaunts(data: GameData, c: CampaignState, day: number, event
     if (node.kind !== 'story' || !c.completed.includes(node.id) || !map?.haunts?.length || map.noHaunts) continue;
     if (!maps.includes(map)) maps.push(map);
   }
-  const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= data.campaign.act && data.hauntPools?.[lt.act]?.factions[lt.faction]?.length);
+  const lieutenants = activeLieutenants(data, c).filter((lt) => lieutenantState(c, lt.id).met && lt.act <= data.campaign.act && hauntPool(data, lt)?.length);
   let made = 0;
   for (let i = 0; i < n; i++) {
     const free = maps.filter((m) => !taken.has(m.id));

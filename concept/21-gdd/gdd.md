@@ -287,9 +287,10 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - **Knoten:** Story-Mission, Nebenquest, Heimsuchung, Heimat. Jede Aktion ist ein Tap auf einen Knoten.
 - **Heimsuchungen:**
   - Takt: einmal pro Kalendertag 1–3 bereits gespielte Karten, reproduzierbar aus dem Datum. Verpasste Tage stauen sich bis maximal 3 Tagespakete; höchstens 6 offen. Der Tageswechsel zählt nur vorwärts; eine zurückgestellte Uhr erzeugt nichts Neues, eine vorgestellte höchstens den Stau von 3 Paketen.
-  - Inhalt: eine Ziel-Variante (boss, defend, rout als Banditennest, escort, treasure), mindestens ein Leutnant aus einem bereits erreichten Akt, Gegner auf Armee-Stufe.
-  - Belohnung: Gold 40 % des Mittelwerts der Story-Missionen des aktuellen Akts, Kopfgeld, Material, 60 % EP. Ab der 4. Heimsuchung seit der letzten Story-Mission halbieren sich Gold und Kopfgeld. Keine Glutfunken.
-  - Deckel „aufholen, nicht überholen“: Liegt eine Einheit über der erwarteten Armee-Stufe der nächsten Story-Mission, erhält sie 50 % der Heimsuchungs-EP.
+  - Inhalt: eine Ziel-Variante (boss, defend, rout als Banditennest, escort, treasure), mindestens ein Leutnant aus einem bereits erreichten Akt mit seiner eigenen Bande (Figuren und Namen wie auf seinen Story-Karten), Gegner auf Armee-Stufe.
+  - Truppe: keine Pflichtfiguren, der Spieler wählt frei (mindestens eine Figur). Mindestens 5 Plätze (`haunt.minPlaces`), Gegner = Plätze + 2 (leicht −1, schwer +1). Avatar und Lucan können mit, fallen dort aber nur kampfunfähig aus; verloren ist die Heimsuchung, wenn die ganze Truppe liegt (bei defend/escort auch, wenn der Zivilist fällt). Für alle anderen gilt der Todesmodus wie in der Story.
+  - Belohnung: Gold 40 % des Mittelwerts der Story-Missionen des aktuellen Akts, Kopfgeld, Material, volle EP (100 %) für jede Figur. Ab der 4. Heimsuchung seit der letzten Story-Mission halbieren sich Gold und Kopfgeld. Keine Glutfunken.
+  - Kein EP-Deckel mehr: Der frühere Deckel „aufholen, nicht überholen“ (50 % über der erwarteten Stufe) ist aufgehoben, damit sich Hochziehen lohnt (Log 2026-11-08). Der Mechanismus bleibt in `balance.yaml` (`catchUpExpPct`) einstellbar.
 
 ### NPC und Dialog
 
@@ -422,7 +423,7 @@ Die Epics und Stories stehen in `concept/26-epics/epics/` (Epic 1–12; Sprint-S
 |---|---|
 | **Nemesis-Patent:** Warner Bros. hält in den USA ein Patent auf das Nemesis-System (bis ca. 2036). Unbegrenzt wiederkehrende, mitwachsende Leutnants liegen näher daran als die Brief-Fassung | feste, handgeschriebene Leutnant-Liste; keine prozedurale Erzeugung von Gegnern oder Persönlichkeiten; keine Rangordnung oder Machtkämpfe unter Gegnern; keine Beförderung durch Spielerniederlagen. Vor einer Veröffentlichung rechtlich prüfen `[ASSUMPTION: Prüfung nötig]` |
 | **Täglich-Druck:** Heimsuchungen erzeugen das Gefühl, täglich spielen zu müssen | Stau bis 3 Tagespakete; Heimsuchungen sind optional; Story und Nebenquests brauchen sie nicht |
-| **Fortschritt läuft davon** zwischen Akt-Releases | Deckel „aufholen, nicht überholen“, halbiertes Gold ab der 4. Heimsuchung, Leutnant-Stufe nach den 6 stärksten |
+| **Fortschritt läuft davon** zwischen Akt-Releases | Stufenobergrenze je Akt, halbiertes Gold ab der 4. Heimsuchung, Leutnant-Stufe nach den 6 stärksten (EP-Deckel der Heimsuchungen seit 2026-11-08 aufgehoben) |
 | **Nemesis-Frust:** Ein Feind, der immer wiederkommt, nervt | Groll gedeckelt bei 3; Kopfgeld und Signatur-Item belohnen jede Vertreibung; Entscheidungen können Groll senken |
 | **Umfang:** 20 Gefährten mit Porträts, Supports und Burg-Räumen | Lieferung in Akten; 25 feste Paare; Stimmungsporträts nur für Kernfiguren; Inhalte als Daten |
 | **Stil-Konsistenz:** Chibi-Figuren wirken gleichförmig, ChatGPT driftet | Model Sheets, feste Farbpalette je Figur, Silhouetten-Regeln, Prompt-Bibliothek in `art/prompts/` |

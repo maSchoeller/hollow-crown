@@ -2,7 +2,33 @@
 # factions: je Fraktion der Leutnants des Akts (lieutenants.yaml faction) die Gegnertypen mit Anteil (share, %, Summe 100);
 # items = Ausrüstungs-Tier des Akts (Akt 1: Eisen). Der Leutnant selbst kommt aus lieutenants.yaml (Klasse, Modell); seine Waffe
 # nimmt er aus dem Eintrag seiner Klasse.
+# Ein Pool unter der Id eines Leutnants geht dem Pool seiner Fraktion vor: jeder Leutnant von Akt 1 bringt seine eigene Bande mit,
+# Figuren und Namen wie auf seinen Story-Karten (Produktinhaber 2026-11-08, GDD-Log). border_bands bleibt der Pool der Fraktion.
 factions:
+  # Hask: Plünderer aus 1-1/1-2, viel Axt
+  hask:
+    - { class: brigand,    sprite: brigand,       nameKey: unit.marauder.name, items: [{ def: iron_axe }],   share: 35 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.marauder.name, items: [{ def: iron_sword }], share: 20 }
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.marauder.name, items: [{ def: iron_lance }], share: 20 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.marauder.name, items: [{ def: iron_bow }],   share: 25 }
+  # Morra: Kopfgeldjäger aus 1-3, viele Schützen und ein flinker Späher
+  morra:
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.bounty_hunter.name, items: [{ def: iron_sword }],  share: 30 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.bounty_hunter.name, items: [{ def: iron_bow }],    share: 30 }
+    - { class: brigand,    sprite: brigand,       nameKey: unit.bounty_hunter.name, items: [{ def: iron_axe }],    share: 20 }
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.bounty_hunter.name, items: [{ def: iron_lance }],  share: 10 }
+    - { class: scout,      sprite: mercenary,     nameKey: unit.bounty_hunter.name, items: [{ def: iron_dagger }], share: 10 }
+  # Ulvric: Wolfsbande aus 1-4 mit Wolfsreitern
+  ulvric:
+    - { class: wolf_rider, sprite: wolf_rider,    nameKey: unit.wolf_rider.name,  items: [{ def: iron_lance }], share: 30 }
+    - { class: brigand,    sprite: brigand,       nameKey: unit.wolf_bandit.name, items: [{ def: iron_axe }],   share: 25 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.wolf_bandit.name, items: [{ def: iron_bow }],   share: 25 }
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.wolf_bandit.name, items: [{ def: iron_lance }], share: 20 }
+  # Grosk: Hungernde aus 1-5, leicht gerüstet, viele
+  grosk:
+    - { class: brigand,    sprite: brigand,       nameKey: unit.starving_raider.name, items: [{ def: iron_axe }],   share: 40 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.starving_raider.name, items: [{ def: iron_sword }], share: 35 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.starving_raider.name, items: [{ def: iron_bow }],   share: 25 }
   border_bands:
     - { class: brigand,    sprite: brigand,       nameKey: unit.marauder.name, items: [{ def: iron_axe }],   share: 40 }
     - { class: skirmisher, sprite: mercenary,     nameKey: unit.marauder.name, items: [{ def: iron_sword }], share: 20 }

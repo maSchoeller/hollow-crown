@@ -917,6 +917,7 @@ export const balanceSchema = z.object({
   haunt: z.strictObject({
     perDay: z.strictObject({ min: z.number().int().min(1), max: z.number().int().min(1) }).refine((p) => p.min <= p.max, 'perDay: min above max'),
     maxOpen: z.number().int().min(1),
+    minPlaces: z.number().int().min(1),
     extraEnemies: z.number().int().min(0),
     goldPct: z.number().min(0),
     expPct: z.number().min(0),

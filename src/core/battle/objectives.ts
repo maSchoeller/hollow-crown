@@ -9,6 +9,9 @@ import { activeVictory, escapeProgress, leftAlive, mustUnits } from './activeVic
 import { battleUnitFromPlan } from './create';
 import { noteLieutenantSight } from './lieutenantSight';
 
+/** `defeatReason` of a haunt in which the whole company is down. */
+export const HAUNT_COMPANY_LOST = 'company';
+
 export function mapOf(data: GameData, s: BattleState): MapDef {
   return data.maps[s.mapId]!;
 }
@@ -42,6 +45,8 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
       if (u && (u.gone === 'dead' || (u.team !== 'player' && u.downed))) return endBattle(s, 'defeat', events, d.unit);
     } else if (d.type === 'turn_limit' && phaseStart && s.turn > d.turns) return endBattle(s, 'defeat', events, 'turns');
   }
+  // a haunt has no required units (Produktinhaber 2026-11-08): it is lost when no one of the company still stands
+  if (s.hauntId && !s.units.some((u) => u.team === 'player' && active(u))) return endBattle(s, 'defeat', events, HAUNT_COMPANY_LOST);
   const v = activeVictory(map, s);
   switch (v.type) {
     case 'rout':

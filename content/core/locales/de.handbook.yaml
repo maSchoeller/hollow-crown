@@ -122,6 +122,7 @@ handbook:
     perDayMin: "Je Tag ab"
     perDayMax: "Je Tag bis"
     hauntOpen: "Höchstens offen"
+    hauntPlaces: "Plätze ab"
     hauntGold: "Gold"
     hauntExp: "EP"
     halve: "Halbe Beute ab"
@@ -318,7 +319,7 @@ handbook:
       keywords: "Kopfgeld, Belohnung, Signatur, Beute, Material"
     haunts:
       title: "Heimsuchungen"
-      text: "Jeden Tag kehren {perDayMin} bis {perDayMax} bekannte Karten als Heimsuchung zurück, mit einem Leutnant und Gegnern auf deiner Stufe; höchstens {hauntOpen} bleiben offen. Sie bringen {hauntGold} des Golds und {hauntExp} der EP einer Story-Mission, dazu Kopfgeld und Material. Ab der {halve}. Heimsuchung seit der letzten Story-Mission gibt es nur noch die Hälfte."
+      text: "Jeden Tag kehren {perDayMin} bis {perDayMax} bekannte Karten als Heimsuchung zurück, mit einem Leutnant und Gegnern auf deiner Stufe; höchstens {hauntOpen} bleiben offen. Die Truppe wählst du frei, ohne Pflichtfiguren, mit mindestens {hauntPlaces} Plätzen; deine eigene Figur und Lucan fallen dort nur aus. Sie bringen {hauntGold} des Golds und {hauntExp} der EP einer Story-Mission, dazu Kopfgeld und Material. Ab der {halve}. Heimsuchung seit der letzten Story-Mission gibt es nur noch die Hälfte."
       where: "Heimsuchungen erscheinen als eigene Knoten auf der Weltkarte."
       keywords: "Heimsuchung, täglich, Tag, wiederholen, Leutnant, Weltkarte"
     # ------------------------------------------------------------ Tod & Bergen

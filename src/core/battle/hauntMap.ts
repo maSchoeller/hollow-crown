@@ -4,11 +4,18 @@
  * battle state needs it (`ensureHauntMap`: the core worker, a restored save), so the rules and the board find terrain,
  * objects, goal and defeat conditions through `data.maps[state.mapId]` like on any map.
  */
-import { PERMANENT_COMPANIONS, type Pos } from '../defs';
+import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { Area, HauntAnchor, MapDef, MapObjectDef, ObjectiveDef, Reward } from '../mapDefs';
 import { areaTiles, posKey } from '../util';
 import { parseTerrain } from './terrain';
+
+/**
+ * The places of a haunt: the anchor's `max`, else `deploy.max` of the map, and never fewer than `haunt.minPlaces`
+ * (Produktinhaber 2026-11-08: at least 5). The foes follow the places (`hauntEnemyCount`).
+ */
+export const hauntPlaces = (data: Pick<GameData, 'balance'>, map: Pick<MapDef, 'deploy'>, anchor: Pick<HauntAnchor, 'max'>): number =>
+  Math.max(data.balance.haunt.minPlaces, anchor.max ?? map.deploy.max);
 
 /** Unit ids of the civilian and the chests in a haunt battle. */
 export const HAUNT_CIVILIAN = 'civilian';
@@ -92,7 +99,9 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
     // no spoils from the houses of the story map: the reward of a haunt is set by `balance.haunt`
     .map((o) => (o.type === 'village' ? { id: o.id, type: o.type, at: o.at } : o));
   if (anchor.chests) anchor.chests.forEach((at, i) => objects.push({ id: hauntChestId(i), type: 'chest', at, contents: hauntChestLoot(pool?.chestLoot ?? [{ gold: 100 }], i) }));
-  const defeat: MapDef['objectives']['defeat'] = PERMANENT_COMPANIONS.map((unit) => ({ type: 'unit_dies' as const, unit }));
+  // no required units in a haunt (Produktinhaber 2026-11-08): avatar and lucan go along by choice and are only downed there
+  // (`deathless`); the battle is lost when the whole company is down (`checkObjectives`) or the civilian falls
+  const defeat: MapDef['objectives']['defeat'] = [];
   if (anchor.variant === 'defend' || anchor.variant === 'escort') defeat.push({ type: 'unit_dies', unit: HAUNT_CIVILIAN });
   return {
     id: hauntMapId(mapId, variant, lt),
@@ -108,7 +117,7 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
     ...(base.sun ? { sun: base.sun } : {}),
     objects,
     initialEffects: base.initialEffects,
-    deploy: { max: anchor.max ?? base.deploy.max, forced: base.deploy.forced, slots: standableTiles(data, base, anchor.deploy, 'foot') },
+    deploy: { max: hauntPlaces(data, base, anchor), forced: [], slots: standableTiles(data, base, anchor.deploy, 'foot') },
     units: [],
     pairs: [],
     reinforcements: [],

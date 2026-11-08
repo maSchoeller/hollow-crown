@@ -257,6 +257,7 @@ entries:
       - { id: perDayMin, ref: balance.haunt.perDay.min, icon: map }
       - { id: perDayMax, ref: balance.haunt.perDay.max, icon: map }
       - { id: hauntOpen, ref: balance.haunt.maxOpen, icon: map }
+      - { id: hauntPlaces, ref: balance.haunt.minPlaces, icon: company }
       - { id: hauntGold, ref: balance.haunt.goldPct, format: percent, icon: gold }
       - { id: hauntExp, ref: balance.haunt.expPct, format: percent, icon: star }
       - { id: halve, ref: balance.haunt.halveFromNth, icon: gold }
