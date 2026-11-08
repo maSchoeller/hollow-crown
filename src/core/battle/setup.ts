@@ -12,6 +12,7 @@ import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 import { parseLevels, parseTerrain } from './terrain';
+import { deployRules, placementFor, type Deploy } from './deploy';
 
 export { parseTerrain };
 
@@ -31,10 +32,10 @@ export function deployInfo(data: GameData, c: CampaignState, nodeId: string) {
 }
 
 /**
- * Builds the battle state for a campaign node with the chosen units (concept/02 Vorbereitung).
- * The battle RNG is derived from the campaign seed and the node so replays are reproducible.
+ * Builds the battle state for a campaign node with the chosen units (concept/02 Vorbereitung): a list of ids on the default
+ * fields, or a placement from the deploy screen (story 6.11). The battle RNG is derived from the campaign seed and the node so replays are reproducible.
  */
-export function createBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: string[]): BattleState {
+export function createBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: Deploy): BattleState {
   const node = findNode(data, nodeId)!;
   const map = data.maps[node.map]!;
   const seed = (c.seed * 31 + c.completed.length * 7919 + node.id.length * 131) >>> 0;
@@ -88,18 +89,21 @@ export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, no
   };
 }
 
-/** The company on the deploy slots of `map`: forced units first, then the chosen ones, up to the map's limit. */
-export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, map: MapDef, deployIds: string[]): void {
-  const forced = map.deploy.forced;
-  const chosen = [...presentForced(map, c), ...deployIds.filter((id) => !forced.includes(id))];
-  const slots = map.deploy.slots;
-  chosen.slice(0, Math.min(map.deploy.max, slots.length)).forEach((id, i) => {
+/**
+ * The company on the deploy slots of `map`: a list of ids goes on the default fields (forced units first, then the chosen ones, up
+ * to the map's limit); a placement (story 6.11) puts every unit on its field, see `placementFor`.
+ */
+export function deployPlayers(data: GameData, c: CampaignState, s: BattleState, map: MapDef, deploy: Deploy): void {
+  const known = (id: string) => c.roster.some((r) => r.id === id);
+  // a forced unit who fell or left takes no place of the list (as before story 6.11)
+  const d = deploy.some((x) => typeof x === 'string') ? (deploy as readonly string[]).filter((id) => !map.deploy.forced.includes(id)) : deploy;
+  for (const { id, at } of placementFor(deployRules(map, presentForced(map, c)), d, known)) {
     const rec = c.roster.find((r) => r.id === id);
-    if (!rec) return;
-    const unit = battleUnitFromRecord(data, rec, 'player', slots[i]!);
+    if (!rec) continue;
+    const unit = battleUnitFromRecord(data, rec, 'player', at);
     applyVillageAid(data, c.villageAid, unit.bag, actOf(c));
     s.units.push(unit);
-  });
+  }
 }
 
 /**
@@ -135,7 +139,7 @@ export function finishSetup(data: GameData, s: BattleState, map: MapDef): void {
 }
 
 /** Creates the battle and plays the opening events. */
-export function beginBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: string[]): ApplyResult {
+export function beginBattle(data: GameData, c: CampaignState, nodeId: string, deployIds: Deploy): ApplyResult {
   return startBattle(data, createBattle(data, c, nodeId, deployIds));
 }
 

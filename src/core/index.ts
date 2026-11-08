@@ -37,6 +37,7 @@ export * from './battle/lieutenantSight';
 export * from './battle/apply';
 export { applyAct, giveItem, moveAfterAction } from './battle/act';
 export * from './battle/setup';
+export * from './battle/deploy';
 export * from './battle/terrain';
 export * from './battle/hauntMap';
 export * from './battle/hauntBattle';
