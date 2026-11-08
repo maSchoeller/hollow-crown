@@ -40,7 +40,12 @@ export function topPieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
   return out;
 }
 
-/** Turn of a ramp, stairs or ladder: its models rise to the north as modelled (like every prop, at `rot` = pi), so it faces the neighbour higher than it (`heightAt`). */
+/** Turn of a ladder (fix 2026-11-08): modelled against a wall to the north like a ramp, turned towards the tile it leads up to. */
+export function ladderRot(up: 'n' | 'e' | 's' | 'w'): number {
+  return { n: SOUTH, e: WEST, w: EAST, s: NORTH }[up];
+}
+
+/** Turn of a ramp or stairs: its models rise to the north as modelled (like every prop, at `rot` = pi), so it faces the neighbour higher than it (`heightAt`). */
 export function connectorRot(heightAt: (gx: number, gy: number) => number, gx: number, gy: number): number {
   const h = heightAt(gx, gy);
   if (heightAt(gx, gy - 1) > h) return SOUTH;

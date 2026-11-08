@@ -102,7 +102,8 @@ describe('handbook anchors and search', () => {
     const hb = data.handbook;
     expect(entryByAnchor(hb, 'forecast')?.id).toBe('forecast');
     for (const s of ['burning', 'wet', 'slowed', 'knockback']) expect(entryByAnchor(hb, `status.${s}`)).toBeDefined();
-    for (const id of Object.keys(data.terrain)) expect(entryByAnchor(hb, `terrain.${id}`), id).toBeDefined();
+    // a legacy terrain (the old ladder tile) stands on no map and needs no entry
+    for (const [id, t] of Object.entries(data.terrain)) if (!t.legacy) expect(entryByAnchor(hb, `terrain.${id}`), id).toBeDefined();
     for (const scene of [
       'scn.prologue.tutorial_move',
       'scn.prologue.tutorial_danger',

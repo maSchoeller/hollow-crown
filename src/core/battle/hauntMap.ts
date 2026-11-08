@@ -112,6 +112,7 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
     ...(base.noDeath ? { noDeath: true } : {}),
     legend: base.legend,
     terrain: base.terrain,
+    ...(base.ladders ? { ladders: base.ladders } : {}),
     ...(base.ambient ? { ambient: base.ambient } : {}),
     ...(base.lights ? { lights: base.lights } : {}),
     ...(base.sun ? { sun: base.sun } : {}),

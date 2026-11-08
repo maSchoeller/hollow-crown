@@ -2,13 +2,14 @@ import { type ItemRef, type Pos } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import type { Area, MapDef, MapUnitDef, Reward } from '../core/mapDefs';
 import type { Condition } from '../core/storyDefs';
+import { ladderTop } from '../core/ladders';
 import { areaTiles, posKey } from '../core/util';
 import type { Locales } from './load';
 import { validateFormat } from './validateFormat';
 import { validateHaunts } from './validateHaunts';
 import { validatePhases } from './validatePhases';
 import type { ContentRefs } from './validateRefs';
-import { allUnits, validateObjectAccess, walkable, type Terr } from './validateWalk';
+import { allUnits, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
 
 /** Terrain grid, units, objects, objectives, triggers and reachability of one battle map. */
 export function validateMap(
@@ -46,7 +47,22 @@ export function validateMap(
       levels.set(`${p[0]},${p[1]}`, l.level);
     }
   const level = (p: Pos) => levels.get(`${p[0]},${p[1]}`) ?? terr(p)?.level ?? 0;
-  const g: Terr = { inside, terr, level, freeMoveTypes: data.balance.elevation.freeMoveTypes };
+  const g: Terr = { inside, terr, level, ...elevationOf(data, map) };
+  // a ladder leans against the face of a tile exactly one level above its foot; the foot is ground everyone may stand on (fix 2026-11-08)
+  const seenLadders = new Set<string>();
+  for (const l of map.ladders ?? []) {
+    const top = ladderTop(l);
+    const k = `${l.at}>${top}`;
+    if (seenLadders.has(k)) err(f, `ladder at ${l.at} up ${l.up}: listed twice`);
+    seenLadders.add(k);
+    if (!inside(l.at) || !inside(top)) err(f, `ladder at ${l.at} up ${l.up}: off the map`);
+    else if (level(top) !== level(l.at) + 1) err(f, `ladder at ${l.at} up ${l.up}: needs the tile above one level higher, is ${level(l.at)} → ${level(top)}`);
+    else if (terr(l.at)?.cost.foot == null || terr(top)?.cost.foot == null) err(f, `ladder at ${l.at} up ${l.up}: foot or top not walkable`);
+  }
+  // a legacy terrain (the old ladder tile) is left for battles saved before it went; a map leans its ladders against the wall with `ladders:`
+  for (const [ch, t] of Object.entries(map.legend)) if (data.terrain[t]?.legacy) err(f, `legend '${ch}': terrain ${t} is legacy${t === 'ladder' ? ', list the ladder under ladders: instead' : ''}`);
+  for (const t of map.triggers)
+    for (const a of t.then) if (a.action === 'set_terrain' && data.terrain[a.terrain]?.legacy) err(f, `${t.id}: set_terrain to legacy terrain ${a.terrain}`);
   // a connector leads to exactly one tile a level above it: that is how it knows which way it faces
   grid.forEach((line, y) =>
     line.forEach((_, x) => {

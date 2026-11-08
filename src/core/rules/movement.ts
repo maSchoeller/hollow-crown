@@ -5,6 +5,7 @@ import type { BattleState, BattleUnit, ObjectState } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
 import { ballistaRange, ballistasOf, canCrew, firesBallista } from './ballistaBase';
+import { ladderBetween, laddersOf } from '../ladders';
 import { classActionId } from './roles';
 import { computeStats } from './stats';
 
@@ -41,22 +42,34 @@ export function levelAt(data: GameData, s: BattleState, p: Pos): number {
 }
 
 /**
- * Whether a unit of this move type can step between two neighbouring tiles as far as their levels go (both ways): the same level,
- * or one level with a connector on the lower tile. Who may use the connector at all is its movement cost; fliers need none.
+ * What the step between two neighbouring tiles costs a unit of this move type on top of entering the tile, as far as their levels
+ * go (both ways): nothing on the same level or across one level with a connector on the lower tile (who may use a ramp or stairs
+ * at all is its movement cost); `balance.elevation.climb` across a ladder the map leans against that edge (fix 2026-11-08);
+ * null = the levels part them. Fliers (`freeMoveTypes`) need neither.
  */
-export function levelsLink(data: GameData, s: BattleState, a: Pos, b: Pos, moveType: MoveType): boolean {
+export function levelStep(data: GameData, s: BattleState, a: Pos, b: Pos, moveType: MoveType): number | null {
   const la = levelAt(data, s, a);
   const lb = levelAt(data, s, b);
-  if (la === lb || data.balance.elevation.freeMoveTypes.includes(moveType)) return true;
-  if (Math.abs(la - lb) !== 1) return false;
-  return !!data.terrain[terrainAt(s, la < lb ? a : b)]?.connector;
+  if (la === lb || data.balance.elevation.freeMoveTypes.includes(moveType)) return 0;
+  if (Math.abs(la - lb) !== 1) return null;
+  const [low, high] = la < lb ? [a, b] : [b, a];
+  if (data.terrain[terrainAt(s, low)]?.connector) return 0;
+  if (!ladderBetween(laddersOf(data.maps, s.mapId), low, high)) return null;
+  return data.balance.elevation.climb[moveType] ?? null;
 }
 
-/** Movement cost of the step from `from` onto its neighbour `to`; null = this unit cannot make it. */
+/** Whether a unit of this move type can step between two neighbouring tiles as far as their levels go (both ways); see `levelStep`. */
+export function levelsLink(data: GameData, s: BattleState, a: Pos, b: Pos, moveType: MoveType): boolean {
+  return levelStep(data, s, a, b, moveType) !== null;
+}
+
+/** Movement cost of the step from `from` onto its neighbour `to`, a climb up or down a ladder included; null = this unit cannot make it. */
 export function stepCost(data: GameData, s: BattleState, unit: BattleUnit, from: Pos, to: Pos, overrides?: Record<string, number>): number | null {
   if (!inBounds(s, to)) return null;
-  if (!levelsLink(data, s, from, to, data.classes[unit.classId]!.moveType)) return null;
-  return moveCost(data, s, unit, to, overrides);
+  const climb = levelStep(data, s, from, to, data.classes[unit.classId]!.moveType);
+  if (climb === null) return null;
+  const enter = moveCost(data, s, unit, to, overrides);
+  return enter === null ? null : enter + climb;
 }
 
 /** Movement cost of entering tile p for this unit, whatever the level of the tile it comes from; null = impassable. */
@@ -256,7 +269,7 @@ export function tilesInRange(s: BattleState, from: Pos, range: [number, number])
 /**
  * Whether an attack with this range can be made from `from` on `to`: the one rule for preview, resolution, counter, threat zones and AI.
  * A ranged weapon (reach of 2 or more) reaches `elevation.rangedBonus` further from above. A blow between neighbours lands
- * on the same level, or across one level when the lower one stands on a connector made for it (ramp, stairs).
+ * on the same level, or across one level when the lower one stands on a connector made for it (ramp, stairs), never up or down a ladder.
  * The level rule for a blow holds for no fight with a flier (`elevation.freeMoveTypes`) in it, on either side. `target`: who is struck,
  * by default whoever stands on `to`; pass it for a tile the target would only move to.
  */

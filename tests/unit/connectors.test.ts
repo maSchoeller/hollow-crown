@@ -15,16 +15,17 @@ const L = board.levelHeight;
  * `level` lifts the whole map (1-4 has its stairs on level 1, leading to level 2).
  */
 function floor(connector: 'ramp' | 'stairs' | 'ladder', level = 0, upper = 'grass') {
+  // a ladder is no terrain (fix 2026-11-08): grass at (1, 1) with a ladder leaning against the face of the tile north of it
   const rows = [
     ['grass', upper, 'grass'],
-    ['grass', connector, 'grass'],
+    ['grass', connector === 'ladder' ? 'grass' : connector, 'grass'],
     ['grass', 'grass', 'grass'],
     ['grass', 'grass', 'grass'],
   ];
   const levels: Record<string, number> = {};
   rows.forEach((r, y) => r.forEach((_, x) => (levels[`${x},${y}`] = level + (y === 0 ? 1 : 0))));
   const state = { mapId: 'test', width: 3, height: 4, terrain: rows.flat(), timers: {}, levels } as unknown as BattleState;
-  return floorOf(data, terrainGrid(data, state, 7), 3, 4);
+  return floorOf(data, terrainGrid(data, state, 7), 3, 4, connector === 'ladder' ? [{ at: [1, 1], up: 'n' }] : []);
 }
 
 describe('connector surface (story 15.13)', () => {
@@ -113,12 +114,15 @@ describe('floor of the board (story 15.13)', () => {
     expect(f.surfaceAt(1, 0.5)).toBeCloseTo(L);
   });
 
-  it('keeps a figure on the ground in front of a ladder and lifts it along the rungs', () => {
+  it('keeps a figure on the ground of the tile in front of a ladder and lifts it along the rungs at the wall', () => {
     const f = floor('ladder');
     expect(f.surfaceAt(1, 1.4)).toBeCloseTo(0);
-    expect(f.standOn(1, 1)).toBeGreaterThan(0.25 * L);
-    expect(f.standOn(1, 1)).toBeLessThan(0.45 * L);
+    // the tile in front is ground: a figure stands on it, and one passing sideways stays down (fix 2026-11-08)
+    expect(f.standOn(1, 1)).toBeCloseTo(0);
+    expect(f.surfaceAt(0.6, 1)).toBeCloseTo(0);
+    expect(f.surfaceAt(1, 0.65)).toBeGreaterThan(0.2 * L);
     expect(f.surfaceAt(1, 0.5)).toBeCloseTo(L);
+    expect(f.shapeOf(1, 1).rise?.dir).toEqual([0, -1]);
   });
 
   it('ends a ladder at the roof edge, not at the ridge a figure stands on up there', () => {

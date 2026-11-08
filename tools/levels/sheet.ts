@@ -68,7 +68,7 @@ export const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: bool
   crag: { fill: '#a89f8f', glyph: '△', name: 'Felsnase', level: 2 },
   ramp: { fill: '#c6a26a', glyph: '◢', name: 'Rampe' },
   stairs: { fill: '#b89a70', glyph: '≡', name: 'Treppe' },
-  ladder: { fill: '#d3bb8e', glyph: '☰', name: 'Leiter' },
+  ladder: { fill: '#9c6a3a', glyph: '☰', name: 'Leiter (an der Kante)' },
   gate_closed: { fill: '#6b5a48', glyph: '∏', dark: true, name: 'Tor zu' },
   lever: { fill: '#c9bfb0', glyph: '⍿', name: 'Hebel' },
   // story 11.10: every terrain of terrain.yaml has a look (tests/unit/level-sheet.test.ts)
@@ -302,6 +302,16 @@ export function renderSheet(map: LevelMap, ctx: SheetContext): Sheet {
   for (let x = 0; x <= w; x++) parts.push(`<line x1="${bx + x * C}" y1="${by}" x2="${bx + x * C}" y2="${by + h * C}" stroke="${COL.grid}" stroke-width="${x % 5 === 0 ? 1.2 : 0.5}"/>`);
   for (let yy = 0; yy <= h; yy++) parts.push(`<line x1="${bx}" y1="${by + yy * C}" x2="${bx + w * C}" y2="${by + yy * C}" stroke="${COL.grid}" stroke-width="${yy % 5 === 0 ? 1.2 : 0.5}"/>`);
   parts.push(`<rect x="${bx}" y="${by}" width="${w * C}" height="${h * C}" fill="none" stroke="${COL.ink}" stroke-width="1.5"/>`);
+  // ladders (fix 2026-11-08): a bar on the edge of the foot tile they lean against, the tile itself stays its ground
+  const step = { n: [0, -1], e: [1, 0], s: [0, 1], w: [-1, 0] } as const;
+  for (const l of map.ladders ?? []) {
+    const [dx, dy] = step[l.up];
+    const thick = C * 0.22;
+    const lx = bx + l.at[0] * C + (dx > 0 ? C - thick : 0);
+    const ly = by + l.at[1] * C + (dy > 0 ? C - thick : 0);
+    parts.push(`<rect x="${lx}" y="${ly}" width="${dx ? thick : C}" height="${dy ? thick : C}" fill="${TERRAIN.ladder!.fill}"/>`);
+    used.set('ladder', (used.get('ladder') ?? 0) + 1);
+  }
 
   const areaOutline = (a: Area, stroke: string, dash: string, fill = 'none', label?: string) => {
     const tiles = tilesOf(a);

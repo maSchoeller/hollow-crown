@@ -1,6 +1,6 @@
 # Nebenquest N2 – Der letzte Wachturm (Knoten n2, öffnet nach 1-5). Entwurf s1_n2_wachturm (abgenommen 2026-11-01), Missionsliste: K 16×20, treasure, Beitritt Varek. Startwerte [C].
 # Grenzhügel an der Grenzmauer, dahinter liegt Kharesh. Im Norden die Ruine des Wachturms, in der sich Varek verschanzt hat; ein Suchtrupp des Grenzheers belagert ihn.
-# Stufen (Höhenstufen, GDD): Turminneres x 6–9, y 2–4 ist Stufe 1, die Treppe im Süden [7,5]/[8,5] und die Leiter in der Westbresche [5,3] führen hinein; die alte Plattform [7,3] ist `tower_top` (Stufe 2) über die innere Treppe [7,4].
+# Stufen (Höhenstufen, GDD): Turminneres x 6–9, y 2–4 ist Stufe 1, die Treppe im Süden [7,5]/[8,5] und die Leiter in der Westbresche (Fuß [5,3], lehnt an [6,3]; das Breschenfeld ist Gras für alle, hinauf nur zu Fuß) führen hinein; die alte Plattform [7,3] ist `tower_top` (Stufe 2) über die innere Treppe [7,4].
 # Der Grenzhügel [6–8, 10–11] ist Fels auf Stufe 1 mit einer Rampe im Osten [9,11]: Er teilt den Anmarsch weiter in West und Ost (oben führt kein Weg nach Norden hinab), oben steht ein Schütze.
 # Lucan spricht Varek an (recruit, Szene scn.n2.varek_talk), Sichtungszeile scn.n2.varek_spotted. Wer es versäumt, hat ihn für die Staffel nicht; die Quest bleibt gewonnen (Missionsliste).
 # Truhen wie bisher: c_page (Chronik-Seite a1_watchtower, Szene scn.n2.page) und c_relic (Schild der Paktwächter, Szene scn.n2.relic); der Entwurf nennt sie c_chronicle/c_shield, pactwarden_shield heißt im Spiel pact_warden_shield.
@@ -25,7 +25,6 @@ legend:
   "R": ruins
   "P": tower_top
   "S": stairs
-  "L": ladder
   "C": crag
   "/": ramp
 #          x: 0123456789012345
@@ -33,7 +32,7 @@ terrain: |
   WWWRWWWWWWWWRWWW
   ,,,,,WWWWWW,,,,,
   ,R,,,W....W,,R,,
-  ,,,,,L.P..W,,,,,
+  ,,,,,,.P..W,,,,,
   ,,R,,W.S..W,,,R,
   ,,,,,WWSSWW,,,,,
   ,,,,,,,__,,,,,,,
@@ -54,6 +53,8 @@ levels:
   - { level: 1, area: { rect: [6, 2, 9, 4] } }
   - { level: 2, area: { tiles: [[7, 3]] } }
   - { level: 1, area: { rect: [6, 10, 8, 11] } }
+ladders:
+  - { at: [5, 3], up: e }
 timeOfDay: evening
 weather: clear
 lights: []
@@ -141,6 +142,6 @@ design:
     - { at: [11, 3], label: S, note: "Feldwebel mit Schlüssel für die dritte Truhe; die Lanzen an der Treppe tragen die anderen beiden." }
     - { at: [7, 10], label: Hü, note: "Grenzhügel: Stufe 1, Rampe im Osten, teilt den Anmarsch in West und Ost." }
     - { at: [7, 3], label: P, note: "Turmplattform Stufe 2 über die Treppe [7,4]." }
-    - { at: [5, 3], label: L, note: "Leiter in der Westbresche, nur zu Fuß." }
+    - { at: [5, 3], label: L, note: "Leiter in der Westbresche, hinauf nur zu Fuß." }
   notes:
     - "Normal 15 Gegner (5 davon R3/R5/R7) gegen 6 eigene; Leicht 12, Schwer 17. Varek zählt nicht mit."

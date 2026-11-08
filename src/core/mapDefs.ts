@@ -6,8 +6,18 @@ export type TerrainSurface = 'grass' | 'dirt' | 'road' | 'sand' | 'ash' | 'stone
 /** Colour of a water plane: the clear river, the murky shallow mire, the dark deep creek of a moor. */
 export type TerrainWaterLook = 'clear' | 'mire' | 'creek';
 export type TerrainCliff = 'earth' | 'rock' | 'wall';
-/** What leads from a tile up to the neighbouring tile one level higher (GDD, height levels). */
-export type TerrainConnector = 'ramp' | 'stairs' | 'ladder';
+/** What leads from a tile up to the neighbouring tile one level higher (GDD, height levels). A ladder is no terrain: see `LadderDef`. */
+export type TerrainConnector = 'ramp' | 'stairs';
+/** Compass direction on the map (north = y - 1). */
+export type MapDir = 'n' | 'e' | 's' | 'w';
+/**
+ * A ladder leaning against the wall face between tile `at` and its neighbour `up`, one level higher (fix 2026-11-08). The tile
+ * keeps its own terrain, everyone may stand on it and pass it; only the climb across that edge needs `balance.elevation.climb`.
+ */
+export interface LadderDef {
+  at: Pos;
+  up: MapDir;
+}
 
 export interface TerrainDef {
   id: string;
@@ -37,6 +47,8 @@ export interface TerrainDef {
   opensTo?: string;
   /** render only: how far above `height` a unit stands (half way up a ramp or stairs) */
   stand: number;
+  /** kept only so battles saved before it went still load (the ladder tile, fix 2026-11-08); no map may use it */
+  legacy?: boolean;
 }
 
 export type Area = { rect: [number, number, number, number] } | { tiles: Pos[] };
@@ -190,6 +202,8 @@ export interface MapDef {
   terrain: string;
   /** tiles standing a level other than their terrain's (a stairs on the wall walk, a terrace of ordinary ground) */
   levels?: Array<{ level: number; area: Area }>;
+  /** ladders against wall faces (fix 2026-11-08): the climb from `at` to its neighbour `up` */
+  ladders?: LadderDef[];
   /** a place under a roof (render only): rock instead of wild land around the map, no bushes on the floor */
   interior?: boolean;
   /** story 15.15: season of the board (ground, trees, snow caps, light) when it differs from that of the act (N4 lies in act 2 with snow) */

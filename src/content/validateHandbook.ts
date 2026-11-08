@@ -93,7 +93,7 @@ export function validateHandbook(data: GameData, locales: Locales, err: (file: s
       if (k.startsWith('handbook.') && /\d/.test(text.replace(/\{[\w.]+\}/g, '')))
         err(`locales/${lang}`, `${k}: numbers come from values ({id}), not from the text`);
   // every terrain is explained once, every playable class has a profile
-  for (const id of Object.keys(data.terrain)) if (!terrainOf.has(id)) err(f, `terrain ${id} has no handbook entry`);
+  for (const [id, t] of Object.entries(data.terrain)) if (!t.legacy && !terrainOf.has(id)) err(f, `terrain ${id} has no handbook entry`);
   for (const cls of Object.values(data.classes))
     if (cls.playable && !hb.entries.some((e) => e.class === cls.id))
       err(f, `playable class ${cls.id} has no profile (class entry)`);

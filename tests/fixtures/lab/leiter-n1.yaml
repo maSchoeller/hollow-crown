@@ -1,0 +1,14 @@
+# Fix 2026-11-08 (Produktinhaber): Leitern lehnen an der Wand, das Feld davor ist Gassenboden.
+#   Dev-Server, dann im Browser bei 375×812: http://localhost:5173/hollow-crown/?lab=leiter-n1
+#   CLI: pnpm lab leiter-n1 --path brenna 4,2   (Brenna, gepanzert, geht über den Leiterfuß [4,3] hinweg)
+#        pnpm lab leiter-n1 --path fenn 3,3     (Fenn, zu Fuß, klettert über die Leiter aufs Dach)
+# N1, Nordwestblock: Leiter mit Fuß [4,3], lehnt an der Dachkante von [3,3]. Nur der Schütze auf dem Dach und der Ringmeister bleiben.
+question: Läuft Brenna über das Feld vor der Leiter, steigt Fenn hinauf?
+map: n1_ring
+company: [brenna, fenn]
+seed: 1
+units:
+  avatar: { at: [6, 5] }
+  brenna: { at: [4, 5] }
+  fenn: { at: [5, 4] }
+remove: [t2, t3, t4, t5, t6, t7, t8, t9, t10, t11]

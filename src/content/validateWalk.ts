@@ -1,6 +1,7 @@
 import type { Pos } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import type { MapDef, MapUnitDef } from '../core/mapDefs';
+import { ladderBetween } from '../core/ladders';
 import { areaTiles, posKey } from '../core/util';
 
 /** All units of a map: the placed ones, reinforcements and those triggers spawn. */
@@ -17,13 +18,25 @@ export type Terr = {
   terr: (p: Pos) => { id: string; cost: Record<string, number | null>; opensTo?: string; connector?: string } | undefined;
   level: (p: Pos) => number;
   freeMoveTypes: readonly string[];
+  /** whether a ladder of the map leans from `low` against its neighbour `high` (fix 2026-11-08) */
+  ladder: (low: Pos, high: Pos) => boolean;
+  /** move types that may climb a ladder (`balance.elevation.climb`) */
+  climb: Partial<Record<string, number>>;
 };
+
+/** The `Terr` parts every map shares: the elevation rules of the balance and the ladders of the map. */
+export const elevationOf = (data: GameData, map: MapDef): Pick<Terr, 'freeMoveTypes' | 'ladder' | 'climb'> => ({
+  freeMoveTypes: data.balance.elevation.freeMoveTypes,
+  ladder: (low, high) => ladderBetween(map.ladders, low, high),
+  climb: data.balance.elevation.climb,
+});
 
 /**
  * The tiles a unit of move type `mt` can reach from `from`, ignoring units (story 4.8). A closed door counts as passable
- * (a scout or a key opens it); every other tile follows the move cost of the terrain.
+ * (a scout or a key opens it); every other tile follows the move cost of the terrain. Across one level it takes a connector on
+ * the lower tile or a ladder this move type may climb.
  */
-export function walkable(from: Pos, mt: string, { inside, terr, level, freeMoveTypes }: Terr): Set<string> {
+export function walkable(from: Pos, mt: string, { inside, terr, level, freeMoveTypes, ladder, climb }: Terr): Set<string> {
   const seen = new Set<string>();
   const queue: Pos[] = [from];
   while (queue.length) {
@@ -36,7 +49,8 @@ export function walkable(from: Pos, mt: string, { inside, terr, level, freeMoveT
     for (const n of [[p[0] + 1, p[1]], [p[0] - 1, p[1]], [p[0], p[1] + 1], [p[0], p[1] - 1]] as Pos[]) {
       if (!inside(n)) continue;
       const [a, b] = [level(p), level(n)];
-      if (a === b || freeMoveTypes.includes(mt) || (Math.abs(a - b) === 1 && terr(a < b ? p : n)?.connector)) queue.push(n);
+      const [low, high] = a < b ? [p, n] : [n, p];
+      if (a === b || freeMoveTypes.includes(mt) || (Math.abs(a - b) === 1 && (terr(low)?.connector || (climb[mt] !== undefined && ladder(low, high))))) queue.push(n);
     }
   }
   return seen;
@@ -51,7 +65,7 @@ export function mapTerr(data: GameData, map: MapDef): Terr {
   const levels = new Map<string, number>();
   for (const l of map.levels ?? []) for (const p of areaTiles(l.area)) levels.set(posKey(p), l.level);
   const level = (p: Pos) => levels.get(posKey(p)) ?? terr(p)?.level ?? 0;
-  return { inside, terr, level, freeMoveTypes: data.balance.elevation.freeMoveTypes };
+  return { inside, terr, level, ...elevationOf(data, map) };
 }
 
 /**

@@ -95,6 +95,7 @@ handbook:
     elemMax: "At most"
     fireRounds: "Fire: rounds"
     rangeFromAbove: "From above: range"
+    climb: "Ladder: extra movement"
     boltMight: "Bolt: might"
     rangeMin: "Range from"
     rangeMax: "Range to"
@@ -252,7 +253,7 @@ handbook:
       keywords: "wall, obstacle, wagon, fence, well, stall, building, blocked"
     heights:
       title: "Heights"
-      text: "There are three levels: the field, wall walks, roofs and terraces, towers and crags. Roofs are for those on foot only. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs. Not with a flier in the fight: it strikes and is struck across any level."
+      text: "There are three levels: the field, wall walks, roofs and terraces, towers and crags. Roofs are for those on foot only. Only ramps (everyone), stairs (no riders) and ladders (on foot) lead up; fliers need none of them. A ladder leans against the wall: the tile in front is plain ground anyone may stand on and cross; only climbing up or down costs {climb} extra movement and is for those on foot. Ranged weapons reach {rangeFromAbove} tile further from above. Melee works on the same level, or one level across a ramp or stairs. Not with a flier in the fight: it strikes and is struck across any level."
       where: "A tile's level is shown in the terrain info; the board shows the reach."
       keywords: "height, level, wall walk, roof, terrace, ramp, stairs, ladder, tower"
     ballista:

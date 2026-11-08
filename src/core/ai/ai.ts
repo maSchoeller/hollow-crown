@@ -9,7 +9,7 @@ import { mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero, withdraw } from '../rules/effects';
 import { expectedDamage, forecast, type Forecast } from '../rules/combat';
 import { ballistaForecast, ballistaTargets } from '../rules/ballista';
-import { crewSpots, holdZone, levelAt, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
+import { crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -29,6 +29,7 @@ interface Plan {
  */
 function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], avoid?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
+  const mt = data.classes[u.classId]!.moveType;
   // one bucket per cost instead of a sorted list: the frontier of a 30×40 map is too long to sort for every tile
   const buckets: Pos[][] = [];
   for (const g of goals) {
@@ -41,9 +42,11 @@ function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos
       const key = posKey(p);
       if (out.get(key) !== c || (avoid && c > 0 && avoid.has(key))) continue;
       // cost of stepping from n into p (symmetric enough for grids)
-      const total = c + Math.max(1, moveCost(data, s, u, p) ?? 1);
+      const enter = c + Math.max(1, moveCost(data, s, u, p) ?? 1);
       for (const n of neighbors(p)) {
         if (stepCost(data, s, u, p, n) === null) continue;
+        // a climb up or down a ladder costs the same both ways
+        const total = enter + levelStep(data, s, p, n, mt)!;
         const k = posKey(n);
         if ((out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);

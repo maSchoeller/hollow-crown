@@ -18,7 +18,6 @@ legend:
   "c": crag
   "/": ramp
   "s": stairs
-  "l": ladder
 #          x: 01234567890123456789
 terrain: |
   ,,,,,,,,,__,,,,,,,,,
@@ -38,7 +37,7 @@ terrain: |
   ^^ccc^^^,__,^^^%%%^^
   ^^^s^^^,,__,,^^%%%^^
   ^%%%%^,,,__,,,^^/^^^
-  ^%%%%l,,,__,FF,,,,^^
+  ^%%%%,,,,__,FF,,,,^^
   ^^/^^^,,,__,,,,,,,,^
   ,,,,,,,,T__T,,,,,W,,
   ,,TT,,,,,__,,,,TT,,,
@@ -50,6 +49,9 @@ levels:
   # Balliste auf der Felsnase (Story 11.10): das Gelände ballista hat keine eigene Stufe
   - { level: 2, area: { tiles: [[3, 13], [16, 10]] } }
   - { level: 1, area: { tiles: [[16, 12], [3, 15]] } }
+# Leiter an der Kante der Westterrasse (Fix 2026-11-08): Fuß [5,17] ist Gras für alle, hinauf nur zu Fuß
+ladders:
+  - { at: [5, 17], up: w }
 timeOfDay: morning
 weather: clear
 objects:
@@ -167,7 +169,7 @@ design:
   marks:
     - { at: [3, 13], label: BW, note: "Balliste West. Reichweite 3–10, von Stufe 2 aus 11: deckt die Straße bis etwa y 18." }
     - { at: [16, 10], label: BO, note: "Balliste Ost mit Brakka. Reicht bis zum Hospiz und bis zu Jorys Wagen." }
-    - { at: [5, 17], label: L, note: "Leiter: nur zu Fuß, zwei Felder Kosten; der kurze Weg auf die Westterrasse." }
+    - { at: [5, 17], label: L, note: "Leiter an der Terrassenkante: hinauf nur zu Fuß, 1 Bewegung extra; der kurze Weg auf die Westterrasse." }
     - { at: [12, 17], label: H, note: "Passhospiz: heilt, liegt aber in Reichweite der Ostballiste." }
   notes:
     - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 11 und bleibt fürs Schema."

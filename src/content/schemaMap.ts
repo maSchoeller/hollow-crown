@@ -23,10 +23,12 @@ export const terrainSchema = z.object({
   cliff: z.enum(['earth', 'rock', 'wall']).default('earth'),
   water: z.boolean().default(false),
   level: z.number().int().min(0).max(2).default(0),
-  connector: z.enum(['ramp', 'stairs', 'ladder']).optional(),
+  connector: z.enum(['ramp', 'stairs']).optional(),
   opensTo: z.string().optional(),
   stand: z.number().min(0).default(0),
   waterLook: z.enum(['clear', 'mire', 'creek']).default('clear'),
+  /** kept only so battles saved before it went still load; no map may use it, the handbook leaves it out */
+  legacy: z.boolean().optional(),
 });
 
 const aiProfile = z.enum(['aggressive', 'hold', 'guard', 'trigger', 'hunt', 'raider', 'flee', 'support', 'follow']);
@@ -160,6 +162,8 @@ export const mapSchema = z.object({
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
   levels: z.array(z.object({ level: z.number().int().min(0).max(2), area })).optional(),
+  /** ladders against wall faces (fix 2026-11-08): from tile `at` up to its neighbour in direction `up`, one level higher */
+  ladders: z.array(z.object({ at: pos, up: z.enum(['n', 'e', 's', 'w']) })).optional(),
   ambient: z.object({ color: z.string().optional(), intensity: z.number().optional() }).optional(),
   lights: z.array(z.object({ at: pos, color: z.string(), radius: z.number() })).optional(),
   sun: z
