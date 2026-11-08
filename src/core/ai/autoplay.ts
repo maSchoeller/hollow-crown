@@ -6,7 +6,7 @@ import { activeVictory } from '../battle/activeVictory';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
-import { destinations, levelsLink, moveCost, reachable, stepCost, threatTiles } from '../rules/movement';
+import { destinations, levelStep, levelsLink, moveCost, reachable, stepCost, threatTiles } from '../rules/movement';
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
@@ -36,6 +36,7 @@ function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
  */
 function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], doorsOpen: boolean, blocked?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
+  const mt = data.classes[u.classId]!.moveType;
   const over = doorsOpen ? Object.fromEntries(Object.values(data.terrain).filter((t) => t.opensTo).map((t) => [t.id, 1])) : undefined;
   const buckets: Pos[][] = [];
   for (const g of goals) {
@@ -46,9 +47,11 @@ function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], 
   for (let c = 0; c < buckets.length; c++) {
     for (const p of buckets[c] ?? []) {
       if (out.get(posKey(p)) !== c) continue;
-      const total = c + Math.max(1, moveCost(data, s, u, p, over) ?? 1);
+      const enter = c + Math.max(1, moveCost(data, s, u, p, over) ?? 1);
       for (const n of neighbors(p)) {
         if (stepCost(data, s, u, p, n, over) === null) continue;
+        // a climb up or down a ladder costs the same both ways
+        const total = enter + levelStep(data, s, p, n, mt)!;
         const k = posKey(n);
         if (blocked?.has(k) || (out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);

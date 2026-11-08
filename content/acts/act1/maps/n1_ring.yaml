@@ -1,6 +1,6 @@
 # Nebenquest N1 – Der Ring von Varnhold (Knoten n1, öffnet nach 1-4 mit E2 „schützen“). Entwurf s1_n1_ring (abgenommen 2026-11-01), Missionsliste: K 14×18, rout, Nacht. Startwerte [C].
 # Gerberviertel von Varnhold am Fluss: Gassen im Raster, Häuserblöcke mit begehbaren Dächern (`roof`, Stufe 1, nur zu Fuß) und geschlossene Gerberhallen.
-# Jeder Dachblock hat Leitern in den Gassen (`ladder`, untere Stufe, genau ein Nachbar oben): NW [4,3], NO [9,3] und [11,1], Ost [9,7], SW [4,12], Süd [6,12]. Nahkampf geht nicht über die Leiter: Wer die Schützen will, muss hinauf.
+# Jeder Dachblock hat Leitern, die von der Gasse an der Dachkante lehnen (`ladders:`, Fuß in der Gasse, Fix 2026-11-08: das Gassenfeld bleibt für alle begehbar, hinauf nur zu Fuß): NW [4,3], NO [9,3] und [11,1], Ost [9,7], SW [4,12], Süd [6,12]. Nahkampf geht nicht über die Leiter: Wer die Schützen will, muss hinauf.
 # Der Ringmeister (ring_master) sitzt auf dem Dach des Diebesnests und trägt die Truhenschlüssel: zwei Schlüssel für zwei Truhen, je eine Ladung. Beim Fall scn.n1.ring (Trigger), Zeilen für beide Fälle.
 # Belohnung (Story 9.10): Glutfunke (ember_spark) und Elster (magpie) kommen mit dem Sieg als Knotenwirkung (campaign.yaml n1 effects), nicht aus einer Truhe.
 # Gedenk-Variante (Fenn gefallen, memorialIf): gleiche Karte, gleiche Belohnung, nur andere Szenen. Pflicht und Niederlage bleiben eingetragen: Die Aufstellung filtert forced auf die Truppe, `unit_dies` greift nur für Figuren auf dem Brett, das Zielblatt nennt nur diese.
@@ -27,27 +27,33 @@ legend:
   "B": building
   "O": well
   "r": roof
-  "L": ladder
 #          x: 01234567890123
 terrain: |
   WWWWWWGGWWWWWW
-  ...........L..
+  ..............
   .rrr.BBBB.rrr.
-  .rrrLBBBBLrrr.
+  .rrr.BBBB.rrr.
   .rrr......rrr.
   ..............
   .BBB......rrr.
-  .BBB..OO.Lrrr.
+  .BBB..OO..rrr.
   .BBB......rrr.
   ..............
   .rrr.rrrr.BBB.
   .rrr.rrrr.BBB.
-  .rrrL.L...BBB.
+  .rrr......BBB.
   ..............
   ______________
   ______________
   ~~~=~~~~~~=~~~
   ~~~=~~~~~~=~~~
+ladders:
+  - { at: [11, 1], up: s }
+  - { at: [4, 3], up: w }
+  - { at: [9, 3], up: e }
+  - { at: [9, 7], up: e }
+  - { at: [4, 12], up: w }
+  - { at: [6, 12], up: n }
 lights:
   - { at: [6, 14], color: "#ffb35c", radius: 3 }
   - { at: [6, 6], color: "#ffb35c", radius: 2 }
@@ -122,6 +128,6 @@ design:
   marks:
     - { at: [11, 3], label: R, note: "Ringmeister mit Schlüsseln; ohne Fenn sind die Truhen erst nach ihm offen." }
     - { at: [2, 3], label: D, note: "Dächer: begehbar zu Fuß, Ausweichen-Bonus, gute Schussposition." }
-    - { at: [4, 3], label: L, note: "Leiter: nur zu Fuß, je Block mindestens eine." }
+    - { at: [4, 3], label: L, note: "Leiter an der Dachkante: hinauf nur zu Fuß, je Block mindestens eine." }
   notes:
     - "Normal 14 Gegner (2 davon R4) gegen 6 eigene; Leicht 12, Schwer 15."

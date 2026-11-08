@@ -94,6 +94,20 @@ describe('levels of the map', () => {
     const d = { ...data, maps: { ...data.maps, dev_levels: bad } };
     expect(validateContent(d, locales).map((i) => i.message).join()).toContain('stairs at 12,5');
   });
+
+  it('a ladder must lean against a tile one level up, and no map may still use the old ladder tile (fix 2026-11-08)', () => {
+    const check = (patch: Partial<MapDef>) => {
+      const d = { ...data, maps: { ...data.maps, dev_levels: { ...data.maps.dev_levels!, ...patch } } };
+      return validateContent(d, locales)
+        .filter((i) => i.file.includes('dev_levels'))
+        .map((i) => i.message)
+        .join();
+    };
+    expect(check({ ladders: [{ at: [12, 7], up: 'e' }] })).toContain('ladder at 12,7 up e: needs the tile above one level higher');
+    expect(check({ ladders: [{ at: [0, 11], up: 's' }] })).toContain('off the map');
+    expect(check({ ladders: [{ at: [12, 7], up: 'n' }, { at: [12, 7], up: 'n' }] })).toContain('listed twice');
+    expect(check({ legend: { ...data.maps.dev_levels!.legend, l: 'ladder' } })).toContain("legend 'l': terrain ladder is legacy");
+  });
 });
 
 describe('moving between levels', () => {
@@ -127,9 +141,28 @@ describe('moving between levels', () => {
     u.classId = classOf('foot');
     expect(reachable(data, s, u, undefined, 9).has(posKey([10, 6]))).toBe(true);
     place(s, 'dev_scout', [12, 8]);
+    // the ladder leans against the wall walk: foot [12,7], plain grass; the climb costs `elevation.climb` on top (fix 2026-11-08)
     expect(reachable(data, s, u, undefined, 3).has(posKey([12, 6]))).toBe(true);
+    expect(reachable(data, s, u, undefined, 2).has(posKey([12, 6]))).toBe(false);
     u.classId = classOf('armored');
-    expect(reachable(data, s, u, undefined, 2).has(posKey([12, 7]))).toBe(false);
+    expect(reachable(data, s, u, undefined, 3).has(posKey([12, 6]))).toBe(false); // the ramp far west would carry it
+    // but everyone stands on and passes the tile in front of it
+    expect(reachable(data, s, u, undefined, 1).has(posKey([12, 7]))).toBe(true);
+    place(s, 'dev_scout', [11, 7]);
+    expect(reachable(data, s, u, undefined, 2).get(posKey([13, 7]))?.prev).toBe(posKey([12, 7]));
+  });
+
+  it('a climb down a ladder costs the same as up, and only the edge it leans against is a way', () => {
+    const s = start();
+    alone(s, 'dev_scout');
+    const u = unit(s, 'dev_scout');
+    u.classId = classOf('foot');
+    place(s, 'dev_scout', [12, 6]);
+    const down = reachable(data, s, u, undefined, 9);
+    expect(down.get(posKey([12, 7]))?.cost).toBe(1 + data.balance.elevation.climb.foot!);
+    // the wall walk beside it has no ladder: no way down there
+    place(s, 'dev_scout', [11, 6]);
+    expect(reachable(data, s, u, undefined, 1).has(posKey([11, 7]))).toBe(false);
   });
 
   it('fliers need no connector, but two levels stay out of reach of anyone else', () => {

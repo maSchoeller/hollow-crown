@@ -110,7 +110,9 @@ describe('N2 at the border wall', () => {
     expect(at(7, 3)).toBe(2);
     expect(tile(MAP, 7, 3)).toBe('tower_top');
     for (const [x, y] of [[7, 5], [8, 5], [7, 4]] as const) expect(tile(MAP, x, y)).toBe('stairs');
-    expect(tile(MAP, 5, 3)).toBe('ladder');
+    // the breach is grass; the ladder leans against the tower interior (fix 2026-11-08)
+    expect(tile(MAP, 5, 3)).toBe('grass');
+    expect(data.maps[MAP]!.ladders).toEqual([{ at: [5, 3], up: 'e' }]);
     expect([at(6, 10), at(8, 11)]).toEqual([1, 1]);
     expect(tile(MAP, 7, 10)).toBe('crag');
     expect(tile(MAP, 9, 11)).toBe('ramp');
@@ -209,11 +211,17 @@ describe('N1 on the roofs', () => {
     expect([...reachable(data, noFoes, unit, [0, 3], 2).keys()]).not.toContain('1,3');
   });
 
-  it('armoured figures cannot climb; a blade below cannot strike over a ladder', () => {
+  it('armoured figures cannot climb but pass the alley below; a blade below cannot strike over a ladder', () => {
     const s = battle('n1', 'fenn');
-    const ladder = data.terrain.ladder!;
-    expect(ladder.cost.armored).toBeNull();
-    expect(ladder.cost.foot).toBe(2);
+    expect(data.balance.elevation.climb.armored).toBeUndefined();
+    expect(data.balance.elevation.climb.foot).toBe(1);
+    // fix 2026-11-08 (PO): the foot of a ladder is alley ground; an armoured figure walks across it, only the climb is barred
+    const noFoes = { ...s, units: s.units.filter((u) => u.team === 'player') };
+    const armored = { ...noFoes.units[0]!, classId: Object.values(data.classes).find((c) => c.moveType === 'armored')!.id };
+    const walk = reachable(data, noFoes, armored, [4, 4], 3);
+    expect(walk.has('4,3')).toBe(true);
+    expect(walk.has('4,2')).toBe(true);
+    expect(walk.has('3,3')).toBe(false);
     const blade = s.units.find((u) => u.id === 't5')!;
     const top = s.units.find((u) => u.team === 'player')!;
     top.pos = [3, 3];

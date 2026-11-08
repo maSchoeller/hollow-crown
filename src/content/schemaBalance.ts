@@ -87,7 +87,8 @@ export const balanceSchema = z.object({
   elevation: z.object({
     rangedBonus: z.number().int().min(0),
     freeMoveTypes: z.array(moveType),
-    meleeConnectors: z.array(z.enum(['ramp', 'stairs', 'ladder'])),
+    meleeConnectors: z.array(z.enum(['ramp', 'stairs'])),
+    climb: z.partialRecord(moveType, z.number().int().min(0)),
   }),
   ballista: z.object({ item: z.string(), crew: z.array(moveType).min(1) }),
   fog: z.object({

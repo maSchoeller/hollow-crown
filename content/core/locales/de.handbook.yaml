@@ -99,6 +99,7 @@ handbook:
     elemMax: "Höchstens"
     fireRounds: "Brand: Runden"
     rangeFromAbove: "Von oben: Reichweite"
+    climb: "Leiter: Bewegung extra"
     boltMight: "Bolzen: Macht"
     rangeMin: "Reichweite ab"
     rangeMax: "Reichweite bis"
@@ -256,7 +257,7 @@ handbook:
       keywords: "Mauer, Hindernis, Wagen, Zaun, Brunnen, Stand, Gebäude, blockiert"
     heights:
       title: "Höhen"
-      text: "Es gibt drei Stufen: das Feld, Wehrgang, Dach und Terrasse, Turm und Felsnase. Aufs Dach kommt man nur zu Fuß. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
+      text: "Es gibt drei Stufen: das Feld, Wehrgang, Dach und Terrasse, Turm und Felsnase. Aufs Dach kommt man nur zu Fuß. Hinauf führen nur Rampe (alle), Treppe (ohne Reiter) und Leiter (nur zu Fuß); Flieger brauchen nichts davon. Eine Leiter lehnt an der Wand: Das Feld davor ist gewöhnlicher Boden, auf dem jeder stehen und den jeder überqueren darf; nur das Klettern hinauf oder hinab kostet {climb} Bewegung extra und bleibt Figuren zu Fuß vorbehalten. Fernwaffen reichen von oben {rangeFromAbove} Feld weiter. Nahkampf geht auf gleicher Stufe oder eine Stufe über Rampe und Treppe. Ist ein Flieger beteiligt, gilt das nicht: Er trifft und wird getroffen über jede Stufe."
       where: "Die Stufe eines Felds steht in der Geländeanzeige; die Reichweite zeigt das Spielbrett."
       keywords: "Höhe, Stufe, Wehrgang, Dach, Terrasse, Rampe, Treppe, Leiter, Turm"
     ballista:

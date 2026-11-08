@@ -13,7 +13,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { MixMaterial } from '@babylonjs/materials/mix/mixMaterial';
-import type { BattleState, GameData, TerrainDef, TerrainSurface, TerrainWaterLook } from '../../core';
+import { DIR_STEP, type BattleState, type GameData, type LadderDef, type TerrainDef, type TerrainSurface, type TerrainWaterLook } from '../../core';
 import type { AssetStore } from '../host';
 import { BOARDWALK_DECK } from '../board/wallKit';
 import { connectorProfile, connectorSurface, riseDir } from './connectors';
@@ -144,7 +144,7 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
   };
 }
 
-/** Where feet stand on the board: per tile and, on ramps, stairs and ladders, per point of the tile (story 15.13). */
+/** Where feet stand on the board: per tile and, on ramps, stairs and the foot of a ladder, per point of the tile (story 15.13). */
 export interface Floor {
   /** where a unit's feet are on map tile (x, y): bridges carry their deck, water its surface, a connector its middle */
   standOn(x: number, y: number): number;
@@ -160,13 +160,16 @@ export interface TileShape {
   height: number;
   /** where its flat top is: where a figure stands (`standOn`, a bridge's deck), on water its surface */
   stand: number;
-  /** a ramp, stairs or ladder: direction of the rise (map tiles, x east, y south) and its surface from the low edge (0) to the high edge (1) */
+  /** a ramp, stairs or the foot of a ladder: direction of the rise (map tiles, x east, y south) and its surface from the low edge (0) to the high edge (1) */
   rise: { dir: readonly [number, number]; profile: ReadonlyArray<readonly [number, number]> } | null;
 }
 
-export function floorOf(data: GameData, grid: TerrainGrid, width: number, height: number): Floor {
+export function floorOf(data: GameData, grid: TerrainGrid, width: number, height: number, ladders: readonly LadderDef[] = []): Floor {
   const board = data.render.board;
   const S = grid.skirt;
+  // the foot of a ladder (fix 2026-11-08) is flat ground; only in front of the wall, under the rungs, do the feet climb to the tile above
+  const ladderAt = new Map<number, LadderDef>();
+  for (const l of ladders) if (!ladderAt.has((l.at[1] + S) * grid.w + l.at[0] + S)) ladderAt.set((l.at[1] + S) * grid.w + l.at[0] + S, l);
   const flat = (def: TerrainDef) => {
     if (def.prop === 'bridge') return 0.02;
     if (def.prop === 'boardwalk') return BOARDWALK_DECK;
@@ -178,20 +181,23 @@ export function floorOf(data: GameData, grid: TerrainGrid, width: number, height
     const k = gy * grid.w + gx;
     let r = rises.get(k);
     if (r === undefined) {
-      const dir = riseDir((ax, ay) => grid.at(ax, ay)?.height ?? 0, gx, gy);
+      const ladder = ladderAt.get(k);
+      const dir = ladder ? ([...DIR_STEP[ladder.up]] as [number, number]) : riseDir((ax, ay) => grid.at(ax, ay)?.height ?? 0, gx, gy);
       // the model ends one level up, at the higher tile's top: a roof's ridge (`stand`) or the next connector's foot start there
       r = dir ? { dir, top: grid.at(gx + dir[0], gy + dir[1])!.height } : null;
       rises.set(k, r);
     }
     return r;
   };
+  const shapeAt = (x: number, y: number, def: TerrainDef) =>
+    def.connector ? board.connectors[def.connector] : ladderAt.has((y + S) * grid.w + x + S) ? board.connectors.ladder : undefined;
   const surface = (x: number, y: number, ox: number, oy: number): number => {
     const def = grid.at(x + S, y + S);
     if (!def) return 0;
-    const shape = def.connector ? board.connectors[def.connector] : undefined;
+    const shape = shapeAt(x, y, def);
     const rise = shape ? riseOf(x + S, y + S) : null;
     if (!shape || !rise) return flat(def);
-    return connectorSurface(shape, def.height, rise.top, rise.dir, ox, oy);
+    return connectorSurface(shape, flat(def), rise.top, rise.dir, ox, oy);
   };
   return {
     standOn: (x, y) => surface(x, y, 0, 0),
@@ -203,11 +209,11 @@ export function floorOf(data: GameData, grid: TerrainGrid, width: number, height
     shapeOf: (x, y) => {
       const def = grid.at(x + S, y + S);
       if (!def) return { height: -board.baseDepth, stand: -board.baseDepth, rise: null };
-      const shape = def.connector ? board.connectors[def.connector] : undefined;
+      const shape = shapeAt(x, y, def);
       const rise = shape ? riseOf(x + S, y + S) : null;
       // water: on its surface, not where feet sink in (that lies under the water and its fog would not show)
       const stand = def.water ? Math.max(flat(def), board.waterLevel) : flat(def);
-      return { height: def.height, stand, rise: shape && rise ? { dir: rise.dir, profile: connectorProfile(shape, def.height, rise.top) } : null };
+      return { height: def.height, stand, rise: shape && rise ? { dir: rise.dir, profile: connectorProfile(shape, flat(def), rise.top) } : null };
     },
   };
 }
@@ -511,7 +517,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   add(rails, 'terrain-rails', wood, true);
 
   let frame = -1;
-  const floor = floorOf(data, grid, state.width, state.height);
+  const floor = floorOf(data, grid, state.width, state.height, data.maps[state.mapId]?.ladders);
   return {
     grid,
     casters,

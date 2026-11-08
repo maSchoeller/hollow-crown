@@ -2,7 +2,7 @@
  * Terrain, props with their see-through twins (story 8.10), static-material freezing and fires of the battle board.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
-import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, topPieces, wallPieces } from './wallKit';
+import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, ladderRot, topPieces, wallPieces } from './wallKit';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -172,9 +172,13 @@ export abstract class BoardProps extends BoardSetup {
     for (const o of s.objects) reserved.add(`${o.at[0]},${o.at[1]}`);
     for (const u of [...map.units, ...map.reinforcements.flatMap((rf) => rf.units)]) reserved.add(`${u.at[0]},${u.at[1]}`);
     for (const p of map.deploy.slots) reserved.add(`${p[0]},${p[1]}`);
+    // no bush under a ladder (fix 2026-11-08: it leans against the wall, its foot is ground of the map)
+    const ladderFeet = new Set((map.ladders ?? []).map((l) => `${l.at[0] + grid.skirt},${l.at[1] + grid.skirt}`));
+    for (const l of map.ladders ?? []) reserved.add(`${l.at[0]},${l.at[1]}`);
     const decor = this.data.render.board.decor;
     const decorOn = this.data.render.board.decorOn;
-    const terrainId = (gx: number, gy: number) => grid.at(gx, gy)?.id ?? null;
+    // the wall kit leaves the parapet open where a ladder comes up, as it did for the ladder tile before the fix
+    const terrainId = (gx: number, gy: number) => (ladderFeet.has(`${gx},${gy}`) ? 'ladder' : (grid.at(gx, gy)?.id ?? null));
     const waterLevel = this.data.render.board.waterLevel;
     // a boardwalk reaches another boardwalk or dry ground a figure can stand on
     const boardwalkJoins = (gx: number, gy: number) => {
@@ -262,7 +266,6 @@ export abstract class BoardProps extends BoardSetup {
             break;
           case 'ramp':
           case 'stairs':
-          case 'ladder':
             put(`${def.prop}_idle`, { ...base, rot: connectorRot((ax, ay) => grid.at(ax, ay)?.height ?? 0, gx, gy) });
             break;
           case 'lever': {
@@ -281,6 +284,8 @@ export abstract class BoardProps extends BoardSetup {
             put(`${def.prop}_idle`, base);
         }
       }
+    // ladders lean against the wall face above their foot tile, turned towards the tile they lead up to
+    for (const l of map.ladders ?? []) put('ladder_idle', { x: l.at[0], y: l.at[1], h: this.terrain!.standOn(l.at[0], l.at[1]), rot: ladderRot(l.up), scale: 1, dim: false });
     // objects drawn over their tile; a lever stands up until it is pulled (state open), a ballista looks south like its model
     const objectModel: Partial<Record<(typeof s.objects)[number]['type'], (state: string) => string>> = {
       chest: (state) => `chest_${state === 'open' ? 'open' : 'closed'}`,

@@ -192,6 +192,9 @@ elevation:
   rangedBonus: 1
   freeMoveTypes: [flier]
   meleeConnectors: [ramp, stairs]
+  # Leiter (Fix 2026-11-08): lehnt an der Wand zwischen zwei Stufen (Karte `ladders:`), das Feld davor ist gewöhnlicher Boden für alle.
+  # Hinauf oder hinab über die Leiter dürfen nur diese Bewegungstypen; der Wert kommt zu den Kosten des Zielfelds hinzu (1: wie früher das Leiterfeld zu 2).
+  climb: { foot: 1 }
 # Balliste (Story 11.6, GDD Gelände): Werte im Item (items.yaml ballista_bolt); bedienen darf eine Fuß- oder gepanzerte Figur vom Nachbarfeld.
 ballista:
   item: ballista_bolt

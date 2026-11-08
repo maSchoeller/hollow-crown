@@ -4,7 +4,7 @@
 
 Crypt: sarcophagus_a, relief_a, pillar_a, pillar_broken_a, pillar_temple_a, rubble_a, torch_idle, brazier_b_idle, banner_a.
 Interactive: lever_up, lever_down, chest_b_closed, chest_b_open, ballista_idle.
-Height rule: ramp_idle, stairs_idle, ladder_idle climb inside one tile from z = 0 at the south edge to the wall top z = 0.85 at the north edge.
+Height rule: ramp_idle, stairs_idle climb inside one tile from z = 0 at the south edge to the wall top z = 0.85 at the north edge; ladder_idle leans steeply against the north edge (foot y = 0.20).
 Palace: bookshelf_a (works as wall), carpet_a (flat). Mine: mine_cart_idle, mine_track_a, mine_support_a, mine_entrance_a, dragon_bones_a (2 tiles wide).
 
 Textures: art/props/textures/interior_*.png, cut from the sheets interior_tex1.png, interior_tex2.png, plus kit_stone.png, kit_oak.png.
@@ -868,12 +868,12 @@ def stairs_idle():
 
 
 def ladder_idle():
-    """Narrow log ladder in the middle of the tile, only on foot: the ground stays visible on both sides."""
+    """Narrow log ladder leaning steeply against the wall at the north edge (fix 2026-11-08): the tile in front stays free ground, the ground stays visible on both sides."""
     reset()
     M = IM()
-    foot, topz = -0.26, WALL_H + 0.14
+    foot, head, topz = 0.20, 0.42, WALL_H + 0.14
     def Y(z):
-        return foot + z * (0.47 - foot) / WALL_H
+        return foot + z * (head - foot) / WALL_H
     parts = []
     for s in (-1, 1):
         parts.append(tube(f'rail{s}', [(s * 0.17, Y(0.0), 0.0), (s * 0.17, Y(topz / 2), topz / 2), (s * 0.17, Y(topz), topz)], 0.042, M.woodr, sides=7))

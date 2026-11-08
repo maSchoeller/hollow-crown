@@ -150,9 +150,10 @@ entries:
   - id: heights
     category: terrain
     graphic: terrain
-    terrain: [rampart, roof, terrace, tower_top, crag, ramp, stairs, ladder]
+    terrain: [rampart, roof, terrace, tower_top, crag, ramp, stairs]
     values:
       - { id: rangeFromAbove, ref: balance.elevation.rangedBonus, icon: wait }
+      - { id: climb, ref: balance.elevation.climb.foot, icon: forward }
     see: [terrain_cover, doors]
   # Balliste (Story 11.6): Werte aus dem Item ballista_bolt, die Höhenregel aus balance.elevation
   - id: ballista

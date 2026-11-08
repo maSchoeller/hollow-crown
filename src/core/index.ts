@@ -3,6 +3,7 @@ export * from './errors';
 export * from './defs';
 export * from './storyDefs';
 export * from './mapDefs';
+export * from './ladders';
 export * from './balanceDefs';
 export * from './renderDefs';
 export * from './gameData';

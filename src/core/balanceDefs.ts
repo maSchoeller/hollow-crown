@@ -146,7 +146,13 @@ export interface Balance {
   };
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
   /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */
-  elevation: { rangedBonus: number; freeMoveTypes: MoveType[]; meleeConnectors: TerrainConnector[] };
+  elevation: {
+    rangedBonus: number;
+    freeMoveTypes: MoveType[];
+    meleeConnectors: TerrainConnector[];
+    /** move types that may climb a ladder (fix 2026-11-08) and what the climb costs on top of the tile it reaches; missing = may not */
+    climb: Partial<Record<MoveType, number>>;
+  };
   /** Balliste (story 11.6): the fixed weapon (item id) and the move types that may work it from a neighbouring tile */
   ballista: { item: string; crew: MoveType[] };
   fog: { baseVision: number; roleBonus: Record<string, number>; moveTypeBonus: Partial<Record<MoveType, number>>; blockers: string[] };

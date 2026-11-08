@@ -1,7 +1,7 @@
 # Probekarte der Höhenstufen und des Tors (Entscheidung 2026-11-04). Gehört zu keinem Paket, kommt nicht in den Build.
 # Im Spiel: `await __hc.devMap('dev_levels')`.
 #
-# Süden: Feld (Stufe 0) mit Rampe, Treppe, Leiter hinauf auf den Wehrgang (Stufe 1). Der Hebel öffnet das Torhaus.
+# Süden: Feld (Stufe 0) mit Rampe, Treppe, Leiter (an der Wehrgangkante, Fuß [12,7]) hinauf auf den Wehrgang (Stufe 1). Der Hebel öffnet das Torhaus.
 # Mitte: Treppe auf Stufe 1 hinauf zum Turm (Stufe 2). Norden: Hof mit Thron; in Runde 4 stürzt ein Stück Mauer ein.
 #          x: 01234567890123
 terrain: |
@@ -12,11 +12,13 @@ terrain: |
   ######GG#xx###
   ======__====^O
   ======__=====O
-  ,,r,,,,,,,s,l,
+  ,,r,,,,,,,s,,,
   ,,,,,,,,,,,,,,
   ,,,,,,,,,,,,,,
   ,,,,,,H,,,,,,,
   ,,,,,,,,,,,,,,
+ladders:
+  - { at: [12, 7], up: n }
 id: dev_levels
 nameKey: map.prologue_paktnacht.name
 size: [14, 12]
@@ -32,7 +34,6 @@ legend:
   "K": throne
   "r": ramp
   "s": stairs
-  "l": ladder
   "^": stairs
   "H": lever
   "x": wall

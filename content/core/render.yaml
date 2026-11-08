@@ -122,7 +122,7 @@ board:
   connectors:
     ramp:   { from: 0, to: 1, steps: 0 }       # glatte Schräge über das ganze Feld
     stairs: { from: 0, to: 1, steps: 5 }       # fünf Stufen, die Figur steht auf dem Tritt unter ihr
-    ladder: { from: 0.24, to: 0.97, steps: 0 } # Leiter: Fuß 0,26 vor, Kopf 0,47 hinter der Feldmitte
+    ladder: { from: 0.70, to: 0.92, steps: 0 } # Leiter lehnt an der Wand (Fix 2026-11-08): Fuß 0,20, Kopf 0,42 hinter der Feldmitte; die Feldmitte bleibt Boden
 
 # Story 8.6: Licht und Wetter (Art Direction §2.1, §2.4, §2.5, §8). Startwerte [C], am Bildschirm eingestellt.
 # Eine Karte ohne timeOfDay und weather sieht aus wie bisher; Farben als Hex.
