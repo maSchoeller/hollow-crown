@@ -10,6 +10,7 @@ import { checkDrafts, draftAct } from '../src/content/drafts';
 import { mapSchema } from '../src/content/schemaMap';
 import { checkReachability } from '../src/content/validateReach';
 import type { MapDef } from '../src/core/mapDefs';
+import { mapTerr, validateObjectAccess } from '../src/content/validateWalk';
 import { unshippedGalleryModels, validateBoardModels, validateSeasons } from '../src/content/validateLook';
 
 const { data, locales, issues } = loadContentFromDisk();
@@ -86,6 +87,17 @@ const drafts = checkDrafts(
 );
 // the message stays as validateContent words it, so the warning filter below treats a draft like content (missing sprites)
 for (const d of drafts) found.push(...d.issues.map((i) => ({ file: `levels/${d.file} ${i.file}`, message: i.message })));
+// the fixture maps of tests and the lab (tests/fixtures/maps): chests, villages, doors and levers must be usable there too
+const fixtureDir = join(process.cwd(), 'tests', 'fixtures', 'maps');
+for (const file of existsSync(fixtureDir) ? readdirSync(fixtureDir).filter((n) => n.endsWith('.yaml')).sort() : []) {
+  const p = mapSchema.safeParse(parse(readFileSync(join(fixtureDir, file), 'utf8')));
+  if (!p.success) {
+    found.push({ file: `fixtures/${file}`, message: `schema: ${p.error.issues[0]?.path.join('.')}: ${p.error.issues[0]?.message}` });
+    continue;
+  }
+  const map = p.data as MapDef;
+  validateObjectAccess(data, map, mapTerr(data, map), (f, message) => found.push({ file: `fixtures/${file} ${f}`, message }));
+}
 const openRefs = drafts.reduce((n, d) => n + d.open.length, 0);
 // missing sprites are warnings: the renderer draws placeholders in the final format (concept/16 §12.1)
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite') || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing portrait')) || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing model')));
