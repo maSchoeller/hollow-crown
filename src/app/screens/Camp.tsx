@@ -34,7 +34,7 @@ function Pips({ level, max }: { level: number; max: number }) {
  * troop and map. "Set out" and deployment live on the node card of the map, saving in the map's round menu (product owner
  * 2026-10-24).
  */
-export function Camp({ tab }: { tab?: string }) {
+export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   const c = campaign.value!;
   const [open, setOpen] = useState<string | null>(tab ?? null);
   const [toast, setToast] = useState<string | null>(null);
@@ -98,7 +98,7 @@ export function Camp({ tab }: { tab?: string }) {
       </div>
       <div class="hm__spacer" />
       {room ? (
-        <Room key={room.id} room={room} apply={apply} onClose={close} />
+        <Room key={room.id} room={room} apply={apply} onClose={close} unit={room.id === tab ? unit : undefined} />
       ) : (
         <div class="hm__stack">
           <Piece class="hm-rooms">

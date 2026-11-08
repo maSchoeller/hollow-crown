@@ -6,11 +6,11 @@ import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
 import { addToBag, allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
-import { loadoutSlots, promote, promotionTargets } from '../rules/progression';
+import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { dismissError, hireCost, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { changePathError, dismissError, hireCost, promoteError, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { shopPrice } from './aid';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
@@ -26,15 +26,6 @@ function buyPrice(data: GameData, c: CampaignState, defId: string): number | nul
   const runeForSale = data.runes[defId]?.price !== undefined && (data.runes[defId]?.tier ?? 0) <= 1;
   if (!stock.includes(defId) && !runeForSale) return null;
   return shopPrice(data, c, itemDef(data, defId).price);
-}
-
-/** Seal used for a promotion: convoy first, then the unit's bag. */
-function sealOf(data: GameData, c: CampaignState, unitId: string): { from: 'convoy' | 'bag'; index: number } | null {
-  const conv = c.convoy.findIndex((i) => itemDef(data, i).use?.promote);
-  if (conv >= 0) return { from: 'convoy', index: conv };
-  const u = c.roster.find((r) => r.id === unitId);
-  const bag = u ? u.bag.findIndex((i) => itemDef(data, i).use?.promote) : -1;
-  return bag >= 0 ? { from: 'bag', index: bag } : null;
 }
 
 /** Checks a campaign command without changing anything (concept/24-architecture §8.1). */
@@ -128,13 +119,12 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return unlockableRank(data, c, cmd.pair) ? null : 'not_available';
     case 'setLoadout':
       return c.roster.some((r) => r.id === cmd.unit) ? null : 'unknown_unit';
-    case 'promote': {
-      const u = c.roster.find((r) => r.id === cmd.unit);
-      if (!u) return 'unknown_unit';
-      if (u.level < data.balance.levels.promoteFrom) return 'not_available';
-      if (!promotionTargets(data, u.classId).includes(cmd.classId)) return 'unknown_class';
-      return sealOf(data, c, cmd.unit) ? null : 'not_enough_materials';
-    }
+    case 'promote':
+      return promoteError(data, c, cmd.unit, cmd.classId);
+    case 'changeProPath':
+      return changePathError(data, c, cmd.unit, cmd.classId);
+    case 'learnSecondPath':
+      return secondPathError(data, c, cmd.unit);
     case 'hire':
       return hireError(data, c, cmd.offer);
     case 'dismiss':
@@ -393,8 +383,28 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       const seal = sealOf(data, c, cmd.unit)!;
       const [used] = (seal.from === 'convoy' ? c.convoy : u.bag).splice(seal.index, 1);
       lost(used!.uid, used!.def);
-      promote(data, u, cmd.classId);
-      events.push({ t: 'promoted', unit: u.id, classId: cmd.classId });
+      const from = u.classId;
+      const gain = promote(data, u, cmd.classId);
+      events.push({ t: 'promoted', unit: u.id, from, to: cmd.classId, gain });
+      break;
+    }
+    case 'changeProPath': {
+      const u = c.roster.find((r) => r.id === cmd.unit)!;
+      const from = u.classId;
+      c.gold -= data.balance.academy.changePathGold;
+      changeProPath(data, u, cmd.classId);
+      events.push({ t: 'proPathChanged', unit: u.id, from, to: cmd.classId });
+      break;
+    }
+    case 'learnSecondPath': {
+      const u = c.roster.find((r) => r.id === cmd.unit)!;
+      for (let n = 0; n < data.balance.academy.secondPathSparks; n++) {
+        const seal = sealOf(data, c, cmd.unit)!;
+        const [used] = (seal.from === 'convoy' ? c.convoy : u.bag).splice(seal.index, 1);
+        lost(used!.uid, used!.def);
+      }
+      u.secondPath = otherProPath(data, u.classId);
+      events.push({ t: 'secondPathLearned', unit: u.id, path: u.secondPath! });
       break;
     }
     case 'hire': {

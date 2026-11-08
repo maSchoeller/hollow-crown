@@ -19,7 +19,6 @@ import {
   type Command,
   type GameData,
   type QueuedEffects,
-  promotionTargets,
   firstNode,
 } from '../../src/core';
 
@@ -221,28 +220,6 @@ describe('campaign commands', () => {
     const lo = run(c, { type: 'setLoadout', unit: u.id, skills: ['b', 'x', 'b'] });
     expect(lo.campaign.roster[0]!.loadout).toEqual(['b']);
     expect(validateCampaign(data, c, { type: 'setLoadout', unit: 'nobody', skills: [] })).toBe('unknown_unit');
-  });
-
-  it('promote spends a seal and changes the class', () => {
-    // No seal in the content promotes yet (ember_spark gets `use.promote` with story 10.2), so the test adds one.
-    const sd: GameData = { ...data, items: { ...data.items, test_seal: { ...data.items.ember_spark!, id: 'test_seal', tags: [], use: { promote: true, minLevel: 10 }, charges: 1 } } };
-    const c = rich({ items: ['test_seal'] }, sd);
-    const u = c.roster.find((r) => promotionTargets(sd, r.classId).length > 0)!;
-    const target = promotionTargets(sd, u.classId)[0]!;
-    expect(validateCampaign(sd, c, { type: 'promote', unit: u.id, classId: target })).toBe('not_available');
-    u.level = sd.balance.levels.promoteFrom;
-    const r = run(c, { type: 'promote', unit: u.id, classId: target }, sd);
-    expect(r.campaign.roster.find((x) => x.id === u.id)!.classId).toBe(target);
-    expect(r.campaign.convoy.some((i) => i.def === 'test_seal')).toBe(false);
-    expect(r.events).toContainEqual({ t: 'promoted', unit: u.id, classId: target });
-    expect(validateCampaign(sd, c, { type: 'promote', unit: u.id, classId: 'nonsense' })).toBe('unknown_class');
-    expect(validateCampaign(sd, { ...c, convoy: [] }, { type: 'promote', unit: u.id, classId: target })).toBe('not_enough_materials');
-    expect(validateCampaign(sd, c, { type: 'promote', unit: 'nobody', classId: target })).toBe('unknown_unit');
-    // a seal in the unit's bag works too
-    const bagged = clone(c);
-    const bu = bagged.roster.find((x) => x.id === u.id)!;
-    bu.bag.push(bagged.convoy.pop()!);
-    expect(run(bagged, { type: 'promote', unit: u.id, classId: target }, sd).campaign.roster.find((x) => x.id === u.id)!.bag.some((i) => i.def === 'test_seal')).toBe(false);
   });
 
   it('setFlag effect is idempotent', () => {

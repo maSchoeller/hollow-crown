@@ -41,6 +41,10 @@ export interface UnitRecord {
   sprite?: string;
   /** missions left with grief penalty */
   grief?: number;
+  /** the stat gain actually credited by the promotion (story 10.2), taken back when the pro path changes; default {} */
+  promotionGain?: Partial<Stats>;
+  /** the other pro path of the role, learned in the academy at level 3 (story 10.2): its proSkills count too; default null */
+  secondPath?: string | null;
 }
 
 export interface Buff {

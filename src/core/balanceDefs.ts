@@ -80,6 +80,8 @@ export interface Balance {
   growth: { smoothingLower: number; smoothingUpper: number; minOneStatPerLevel: boolean };
   levels: { max: number; promoteFrom: number };
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
+  /** the academy (story 10.2): change the pro path from this room level for gold, learn the second path from that level for sparks */
+  academy: { changePathFromLevel: number; changePathGold: number; secondPathFromLevel: number; secondPathSparks: number };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
   day: { resetHour: number; catchUp: number };

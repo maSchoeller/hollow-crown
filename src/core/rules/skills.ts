@@ -28,6 +28,9 @@ export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
   if (unit.personalSkill) ids.add(unit.personalSkill);
   const cls = data.classes[unit.classId];
   if (cls?.skill) ids.add(cls.skill);
+  // pro paths (story 10.2): the class's own pro skills and those of the second path learned in the academy
+  for (const id of cls?.proSkills ?? []) ids.add(id);
+  for (const id of (unit.secondPath ? data.classes[unit.secondPath]?.proSkills : undefined) ?? []) ids.add(id);
   for (const inst of Object.values(unit.equip)) {
     if (!inst) continue;
     const g = itemDef(data, inst).grantsSkill;

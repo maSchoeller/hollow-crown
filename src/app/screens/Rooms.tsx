@@ -47,6 +47,7 @@ import { ItemInfoButton } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton, Tabs } from '../../ui/pieces';
 import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
+import { AcademyRoom } from './Academy';
 import { campaign, data } from '../state/session';
 import { StoneImage, UnitHead } from './unitArt';
 import '../../ui/camp.css';
@@ -641,7 +642,7 @@ export function MemorialRoom({ room, onClose }: { room: RoomDef; apply: Apply; o
 }
 
 /** Dispatch by room function. */
-export function Room({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
+export function Room({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string }) {
   switch (room.function) {
     case 'convoy':
       return <ConvoyRoom room={room} apply={apply} onClose={onClose} />;
@@ -659,6 +660,8 @@ export function Room({ room, apply, onClose }: { room: RoomDef; apply: Apply; on
       return <MemorialRoom room={room} apply={apply} onClose={onClose} />;
     case 'enchanter':
       return <EnchanterRoom room={room} apply={apply} onClose={onClose} />;
+    case 'academy':
+      return <AcademyRoom room={room} apply={apply} onClose={onClose} unit={unit} />;
   }
 }
 

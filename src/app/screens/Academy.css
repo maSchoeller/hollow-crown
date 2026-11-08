@@ -1,0 +1,100 @@
+/* Academy panel (story 10.2, mockup 08 "Akademie · Aufstieg"): spark stock, figures, path cards */
+.hm-panel:has(.ac) {
+  position: relative;
+}
+.ac {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ac-stock {
+  padding-right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+}
+.ac-stock b {
+  margin-left: auto;
+  font-size: 20px;
+}
+.ac-units {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ac-unit {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-height: var(--hc-touch-min);
+  padding: 4px 8px;
+  border: 1px solid var(--hc-line);
+  border-radius: var(--hc-r-card-inner);
+  background: var(--hc-fill);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+}
+.ac-unit[aria-pressed='true'] {
+  border-color: var(--hc-gold);
+  box-shadow: inset 0 0 0 1px var(--hc-gold);
+}
+.ac-unit.is-dim {
+  opacity: 0.55;
+}
+.ac-unit__name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ac-unit__name small,
+.ac-unit__why {
+  color: var(--hc-soft);
+  font-size: 12px;
+}
+.ac-paths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+.ac-path {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--hc-line);
+  border-radius: var(--hc-r-card-inner);
+  background: var(--hc-fill);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+}
+.ac-path:disabled {
+  cursor: default;
+}
+.ac-path[aria-pressed='true'] {
+  border-color: var(--hc-gold);
+  box-shadow: inset 0 0 0 1px var(--hc-gold);
+}
+.ac-path.is-current {
+  border-style: dashed;
+}
+.ac-path small {
+  color: var(--hc-soft);
+  font-size: 12px;
+}
+.ac-path__tag {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ac-path > span:not(.hm-stat-line) {
+  font-family: var(--hc-font-body);
+  font-weight: 400;
+  font-size: var(--hc-size-body);
+}
+.ac .hc-btns {
+  flex-direction: column;
+}

@@ -102,7 +102,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     villageAid: (c as Partial<CampaignState>).villageAid ?? null,
     home: c.home ?? { kind: 'camp', rooms: {} },
     // keys stack into one bag entry (key ring, decision 2026-10-27); older saves held one entry per key
-    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
+    // story 10.2: promotion gain and second pro path, absent in saves from before the academy
+    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null })),
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
@@ -249,6 +250,8 @@ function toRecord(u: BattleUnit): UnitRecord {
     portrait: u.portrait,
     sprite: u.sprite,
     grief: u.grief,
+    promotionGain: clone(u.promotionGain ?? {}),
+    secondPath: u.secondPath ?? null,
   };
   return rec;
 }
@@ -469,6 +472,8 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
       mastered: [],
       loadout: [],
       sp: {},
+      promotionGain: {},
+      secondPath: null,
     };
     autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
     c.tavern.push(rec);
