@@ -1,5 +1,5 @@
 /** Selection modes of the battle screen (Battle.tsx). */
-import type { ActionOption, Pos } from '../../core';
+import type { ActionOption, BattleUnit, Pos } from '../../core';
 
 export type Mode =
   | { k: 'idle' }
@@ -23,3 +23,16 @@ export type Mode =
 export const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'steal', 'staff', 'command', 'rally'];
 /** Class actions with a preview and a confirmation before they run. */
 export type ClassKind = 'aim' | 'farRescue' | 'cheer';
+
+/**
+ * Choosing a unit: one whose move is already done (Tauschen and Konvoi walk first and stay free actions, GDD Aktionsökonomie) goes
+ * straight to its action bar on its own field. "Choose a destination" would promise a move the core no longer allows.
+ */
+export function selectMode(u: BattleUnit): Mode {
+  return u.moved && u.pos ? { k: 'moved', uid: u.uid, to: u.pos } : { k: 'selected', uid: u.uid };
+}
+
+/** "Back" from the action bar: to the destination choice while the move is only planned, else the unit is let go (it stays ready). */
+export function backFromMoved(u: BattleUnit): Mode {
+  return u.moved ? { k: 'idle' } : { k: 'selected', uid: u.uid };
+}

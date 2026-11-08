@@ -2,7 +2,7 @@
 import { type ActionOption, type BattleUnit, active, availableActions, ballistaForecast, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
 import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
-import { CLASS_KINDS, type Mode } from './battleMode';
+import { CLASS_KINDS, type Mode, selectMode } from './battleMode';
 import { CutIn } from './CutIn';
 import { EnemyStrip, RecapStone, TerrainChip, TerrainWarnPills, ThreatPill } from './BattleLegibility';
 import { Icon } from '../../ui/icons';
@@ -332,7 +332,7 @@ export function Battle() {
             onPick={(u) => {
               if (selectable(u) && playerTurn) {
                 leavePursue();
-                setMode({ k: 'selected', uid: u.uid });
+                setMode(selectMode(u));
               }
               void boardRef.current?.centerOn(u.pos!);
             }}
