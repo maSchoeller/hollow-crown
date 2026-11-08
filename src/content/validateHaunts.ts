@@ -1,8 +1,8 @@
 import type { GameData } from '../core/gameData';
 import type { ItemRef, Pos } from '../core/defs';
 import type { Area, MapDef } from '../core/mapDefs';
-import { hauntEnemyCount, hauntPlaces } from '../core/campaign/haunts';
-import { standableTiles } from '../core/battle/hauntMap';
+import { hauntEnemyCount } from '../core/campaign/haunts';
+import { hauntPlaces, standableTiles } from '../core/battle/hauntMap';
 import { areaTiles, posKey } from '../core/util';
 import type { Locales } from './load';
 import { walkable, type Terr } from './validateWalk';
@@ -22,7 +22,7 @@ export function validateHaunts(data: GameData, map: MapDef, err: (f: string, m: 
     const ctx = `haunts ${a.variant}`;
     if (seen.has(a.variant)) err(f, `${ctx}: listed twice (one anchor per variant)`);
     seen.add(a.variant);
-    const places = hauntPlaces(map, a);
+    const places = hauntPlaces(data, map, a);
     const onMap = (area: Area, what: string): boolean => {
       const tiles = areaTiles(area);
       if (!tiles.length || tiles.some((p) => !g.inside(p))) {

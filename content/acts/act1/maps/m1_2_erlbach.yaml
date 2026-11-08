@@ -89,6 +89,14 @@ haunts:
     target: { at: [10, 22] }
     enemySpawn: { rect: [8, 20, 12, 21] }
     deploy: { rect: [8, 12, 12, 13] }
+  # Grund: die Felder südlich des Bachs, in denen Hasks Leute ihre Beute vergraben haben – wer die Kisten will, muss über die Brücke
+  # (Produktinhaber 2026-11-08: Truhenjagd für mehr Abwechslung).
+  - variant: treasure
+    target: { at: [10, 20] }
+    enemySpawn: { rect: [7, 16, 13, 18] }
+    deploy: { rect: [7, 12, 12, 13] }
+    turns: 12
+    chests: [[5, 20], [14, 20]]
 units:
   - { id: elder, nameKey: unit.erlbach_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: villager_elder, level: 1, at: [9, 8], items: [], ai: { profile: hold } }
   # Hask auf der Straße, rückt ab Runde 3 nach

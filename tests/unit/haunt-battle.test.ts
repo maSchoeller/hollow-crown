@@ -3,13 +3,18 @@ import {
   applyCampaign,
   applyCommand,
   autoplay,
+  checkObjectives,
   createBattle,
   createHauntBattle,
   expPercent,
   finishBattle,
+  deathless,
   grantExp,
+  HAUNT_COMPANY_LOST,
   hauntGold,
   hauntMapId,
+  hauntPool,
+  knockOut,
   makeHaunt,
   newCampaign,
   seedRng,
@@ -186,37 +191,50 @@ describe('haunt reward (story 5.6)', () => {
     expect(run(3)).toBe(data.balance.lieutenant.bounty.goldPerLevel / 2);
   });
 
+  it('pays every unit the full EP (Produktinhaber 2026-11-08: expPct 100, catchUpExpPct 100)', () => {
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
+    const s = createHauntBattle(data, c, 'h1_0', ids(c));
+    const u = s.units.find((x) => x.team === 'player')!;
+    expect(expPercent(data, s, u)).toBe(100);
+    u.level = 9;
+    expect(expPercent(data, s, u)).toBe(100);
+  });
+
   it('pays haunt.expPct of the EP, and catchUpExpPct of that to a unit above the expected level', () => {
+    const d: GameData = { ...data, balance: { ...data.balance, haunt: { ...data.balance.haunt, expPct: 60, catchUpExpPct: 50 } } };
     const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s = createHauntBattle(data, c, 'h1_0', ids(c));
     const u = s.units.find((x) => x.team === 'player')!;
     // the expected level of the next story node (after the prologue, 1-1 and 1-2: node m1_3)
     expect(s.hauntLevel).toBe(data.campaign.nodes.find((n) => n.id === 'm1_3')!.expectedLevel);
-    expect(expPercent(data, s, u)).toBe(60);
+    expect(expPercent(d, s, u)).toBe(60);
     u.level = 5;
-    expect(expPercent(data, s, u)).toBe(30);
+    expect(expPercent(d, s, u)).toBe(30);
     // a level gained on the way does not cut the rest: the level the unit began with counts
     u.level = 1;
     const ev: never[] = [];
-    grantExp(data, u, 10, seedRng(1), ev, expPercent(data, s, u));
+    grantExp(d, u, 10, seedRng(1), ev, expPercent(d, s, u));
     expect(u.battleExp).toBe(6);
     u.level = 5;
-    expect(expPercent(data, { hauntId: undefined, hauntLevel: undefined }, u)).toBe(100);
+    expect(expPercent(d, { hauntId: undefined, hauntLevel: undefined }, u)).toBe(100);
     const story = createBattle(data, c, 'prologue', ids(c));
     expect(expPercent(data, story, story.units[0]!)).toBe(100);
   });
 
   it('reports the cap in the result', () => {
+    const d: GameData = { ...data, balance: { ...data.balance, haunt: { ...data.balance.haunt, expPct: 60, catchUpExpPct: 50 } } };
     const c = campaignWith(data, 'm1_2_erlbach', 'rout');
     const s = won(createHauntBattle(data, c, 'h1_0', ids(c)));
     const u = s.units.find((x) => x.team === 'player')!;
     u.level = 8;
     u.levelAtExpStart = 8;
     u.battleExp = 5;
-    expect(finishBattle(data, c, s).result.haunt?.catchUp).toBe(true);
+    expect(finishBattle(d, c, s).result.haunt?.catchUp).toBe(true);
+    // with the act 1 values nobody is capped
+    expect(finishBattle(data, c, s).result.haunt?.catchUp).toBe(false);
     u.levelAtExpStart = 1;
     u.level = 1;
-    expect(finishBattle(data, c, s).result.haunt?.catchUp).toBe(false);
+    expect(finishBattle(d, c, s).result.haunt?.catchUp).toBe(false);
   });
 
   it('a won haunt goes, notes its variant, counts, and is no completed node', () => {
@@ -311,3 +329,64 @@ function hauntMapIdFor(d: GameData, map: string, variant: HauntVariant): string 
   const c = campaignWith(d, map, variant);
   return createHauntBattle(d, c, 'h1_0', c.roster.map((u) => u.id)).mapId;
 }
+
+describe('haunts without required units (Produktinhaber 2026-11-08)', () => {
+  it('have no forced units and at least haunt.minPlaces places', () => {
+    for (const m of Object.values(data.maps)) {
+      for (const a of m.haunts ?? []) {
+        const c = campaignWith(data, m.id, a.variant);
+        const map = data.maps[createHauntBattle(data, c, 'h1_0', ['avatar']).mapId]!;
+        expect(map.deploy.forced).toEqual([]);
+        expect(map.deploy.max).toBeGreaterThanOrEqual(data.balance.haunt.minPlaces);
+        expect(map.objectives.defeat.some((d) => d.type === 'unit_dies' && (d.unit === 'avatar' || d.unit === 'lucan'))).toBe(false);
+      }
+    }
+    // 1-1 has 4 places as a story map, 5 as a haunt
+    expect(data.maps.m1_1_steckbriefe!.deploy.max).toBe(4);
+  });
+
+  it('start with the chosen units only, without avatar and lucan', () => {
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
+    const others = c.roster.map((r) => r.id).filter((id) => id !== 'avatar' && id !== 'lucan');
+    expect(others.length).toBeGreaterThan(0);
+    const s = createHauntBattle(data, c, 'h1_0', others);
+    expect(s.units.filter((u) => u.team === 'player').map((u) => u.id).sort()).toEqual([...others].sort());
+  });
+
+  it('avatar and lucan are only downed there; the haunt is lost when the whole company is down', () => {
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
+    const s = createHauntBattle(data, c, 'h1_0', c.roster.map((r) => r.id));
+    const players = s.units.filter((u) => u.team === 'player');
+    const avatar = players.find((u) => u.id === 'avatar')!;
+    expect(deathless(data, s, avatar)).toBe(true);
+    expect(deathless(data, s, players.find((u) => u.id !== 'avatar' && u.id !== 'lucan')!)).toBe(false);
+    const events: never[] = [];
+    knockOut(data, s, avatar, events);
+    knockOut(data, s, avatar, events); // a second blow does not kill him either
+    expect(avatar.downed).toBe(true);
+    expect(avatar.gone).toBeFalsy();
+    checkObjectives(data, s, events);
+    expect(s.outcome).toBeFalsy();
+    for (const u of players) if (!u.downed) u.downed = true;
+    checkObjectives(data, s, events);
+    expect(s.outcome).toBe('defeat');
+    expect(s.defeatReason).toBe(HAUNT_COMPANY_LOST);
+    // after the battle he is still in the company
+    const r = finishBattle(data, c, { ...s, outcome: 'victory' });
+    expect(r.campaign.roster.some((u) => u.id === 'avatar')).toBe(true);
+    expect(r.result.fallen.some((f) => f.id === 'avatar')).toBe(false);
+  });
+
+  it('a story map keeps avatar mortal and the company rule off', () => {
+    const c = campaignWith(data, 'm1_2_erlbach', 'rout');
+    const s = createBattle(data, c, 'm1_3', c.roster.map((r) => r.id));
+    expect(deathless(data, s, s.units.find((u) => u.id === 'avatar')!)).toBe(false);
+  });
+
+  it('each lieutenant of act 1 brings his own band, the faction pool stays as fallback', () => {
+    const pools = data.hauntPools[1]!.factions;
+    for (const lt of Object.values(data.lieutenants).filter((l) => l.act === 1)) expect(hauntPool(data, lt)).toBe(pools[lt.id]);
+    expect(hauntPool(data, { id: 'nobody', act: 1, faction: 'border_bands' })).toBe(pools.border_bands);
+    expect(new Set(Object.values(data.lieutenants).filter((l) => l.act === 1).map((l) => hauntPool(data, l)![0]!.nameKey)).size).toBeGreaterThan(1);
+  });
+});

@@ -85,12 +85,21 @@ haunts:
     deploy: { rect: [8, 22, 13, 22] }
     max: 5
   # Grund: der Fuß der ersten Rampe, über die die Truppe heraufkam – hier hält sie den Rückzug.
+  # 2026-11-08: die Angreifer kommen von der oberen Terrasse (vorher Mittelterrasse, der Zivilist fiel zu oft, Sim 67 %)
   - variant: defend
     target: { at: [10, 21] }
-    enemySpawn: { rect: [6, 11, 15, 13] }
+    enemySpawn: { rect: [6, 6, 15, 8] }
     deploy: { rect: [8, 22, 13, 22] }
     max: 5
     turns: 8
+  # Grund: Ulvrics Vorräte – auf den Felsabsätzen der Mittelterrasse versteckt (Produktinhaber 2026-11-08: Truhenjagd).
+  - variant: treasure
+    target: { at: [11, 16] }
+    enemySpawn: { rect: [6, 6, 15, 8] }
+    deploy: { rect: [8, 22, 13, 22] }
+    max: 5
+    turns: 12
+    chests: [[1, 14], [20, 15], [2, 17]]
 # Epic 3: Ulvric flieht bei 0 TP (gone: fled), Groll, Kopfgeld; Signaturwaffe Wolfszahn (wolf_fang) ist Beute (Story 3.5). Seine Kartenwaffe ist Eisen
 # (Review R14/R15), damit „+1 Tier je Groll“ greift; Klasse wolf_rider (kein Reittier, Wolfsfell nur Optik; Figur ulvric).
 # Osric Dunn: eigene Brettfigur osric seit Story 15.9; Halbfigur osric ist da, eine Büste fehlt (Klassenbild).

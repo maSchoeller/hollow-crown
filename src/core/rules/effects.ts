@@ -1,4 +1,4 @@
-import type { Element, Pos, StatusId, Team } from '../defs';
+import { PERMANENT_COMPANIONS, type Element, type Pos, type StatusId, type Team } from '../defs';
 import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { nextInt, roll1 } from '../rng';
@@ -132,11 +132,16 @@ export const fleesAtZero = (u: Pick<BattleUnit, 'team' | 'lieutenant'>): boolean
 /**
  * Map flag `noDeath` (tutorial): downed player units never die in this battle, no matter the death mode; they stay
  * downed and return after the mission. Exempt are units whose death loses the battle (`unit_dies` defeat objectives,
- * `mustSurvive`): for them everything stays as before.
+ * `mustSurvive`): for them everything stays as before. In a haunt avatar and lucan are no required units and never
+ * die: at 0 HP they are only downed (Produktinhaber 2026-11-08).
  */
 export function deathless(data: GameData, s: BattleState, u: BattleUnit): boolean {
+  if (u.team !== 'player') return false;
+  // their flag `mustSurvive` loses a story battle; a haunt they only leave downed
+  if (s.hauntId && PERMANENT_COMPANIONS.includes(u.id)) return true;
+  if (u.flags.includes('mustSurvive')) return false;
   const map = data.maps[s.mapId];
-  if (!map?.noDeath || u.team !== 'player' || u.flags.includes('mustSurvive')) return false;
+  if (!map?.noDeath) return false;
   return !map.objectives.defeat.some((d) => d.type === 'unit_dies' && (d.unit === u.id || d.unit === u.uid));
 }
 

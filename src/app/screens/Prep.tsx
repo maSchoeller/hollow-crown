@@ -124,7 +124,8 @@ export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: 
       </div>
       <div class="prp-bottom">
         <PrimaryButton
-          disabled={!!over}
+          // a haunt has no required units: at least one has to go (Produktinhaber 2026-11-08)
+          disabled={!!over || !chosen.length}
           onClick={() => {
             void (h ? beginHaunt(h.id, chosen, screen.value) : beginMission(node, chosen, screen.value));
           }}
