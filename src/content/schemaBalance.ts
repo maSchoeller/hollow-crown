@@ -1,0 +1,126 @@
+import { z } from 'zod';
+import { moveType, statusId } from './schemaBase';
+import { conditionSchema } from './schemaConditions';
+
+/** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
+export const balanceSchema = z.object({
+  /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
+  castle: z.object({ tierAt: z.tuple([z.number().int().positive(), z.number().int().positive(), z.number().int().positive()]) }),
+  combat: z.record(z.string(), z.union([z.number(), z.boolean()])),
+  triangle: z.object({ hit: z.number(), damage: z.number(), beats: z.record(z.string(), z.string()) }),
+  element: z.object({
+    cycle: z.record(z.string(), z.string()),
+    opposed: z.array(z.tuple([z.string(), z.string()])),
+    advantage: z.number(),
+    disadvantage: z.number(),
+    sameElement: z.number(),
+    maxBonusPercent: z.number(),
+    lightEffectiveVs: z.array(z.string()),
+    darkBonusVs: z.array(z.string()),
+    statusOf: z.record(z.string(), statusId),
+  }),
+  status: z.record(z.string(), z.number()),
+  terrainEffects: z.record(z.string(), z.number()),
+  weight: z.object({
+    carryBonus: z.record(z.string(), z.number()),
+    movPenalty: z.array(z.object({ overload: z.number(), mov: z.number() })),
+  }),
+  supports: z.looseObject({
+    thresholds: z.record(z.string(), z.number()),
+    campfireMaxRank: z.array(z.enum(['C', 'B', 'A', 'S'])).min(1),
+    seasonPairs: z.number().int().min(1),
+    corePairs: z.number().int().min(0),
+  }),
+  experience: z.record(z.string(), z.number()),
+  growth: z.record(z.string(), z.union([z.number(), z.boolean()])),
+  levels: z.record(z.string(), z.number()),
+  skills: z.record(z.string(), z.number()),
+  death: z.record(z.string(), z.number()),
+  day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
+  haunt: z.strictObject({
+    perDay: z.strictObject({ min: z.number().int().min(1), max: z.number().int().min(1) }).refine((p) => p.min <= p.max, 'perDay: min above max'),
+    maxOpen: z.number().int().min(1),
+    extraEnemies: z.number().int().min(0),
+    goldPct: z.number().min(0),
+    expPct: z.number().min(0),
+    catchUpExpPct: z.number().min(0),
+    halveFromNth: z.number().int().min(1),
+    material: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'material: min above max'),
+    triggerRadius: z.strictObject({ enemy: z.number().int().min(1), lieutenant: z.number().int().min(1) }),
+  }),
+  scene: z.strictObject({
+    autoBaseMs: z.number().int().min(0),
+    autoPerCharMs: z.number().int().min(0),
+    typeCharsPerTick: z.number().int().min(1),
+    typeTickMs: z.number().int().min(1),
+    bubbleAutoMs: z.number().int().min(500),
+    bubbleMaxChars: z.number().int().min(20),
+  }),
+  loading: z.object({ fetchTimeoutMs: z.number().int().min(1000), packRetryBaseMs: z.number().int().min(100), packRetryMaxMs: z.number().int().min(100) }),
+  journal: z.object({ compactAfter: z.number().int().min(10), keepCheckpoints: z.number().int().min(1) }),
+  chronicle: z.strictObject({
+    seasonPages: z.number().int().min(1),
+    sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1) })).default([]),
+  }),
+  farewell: z.object({ lockMs: z.number().int().min(0) }),
+  simulation: z.object({
+    armySize: z.number().int().min(1),
+    levelTolerance: z.number().min(0),
+    corridors: z.record(
+      z.enum(['easy', 'normal', 'hard']),
+      z.object({ winMin: z.number().optional(), winMax: z.number().optional(), downsMin: z.number().optional(), downsMax: z.number().optional() }),
+    ),
+    winOnly: z.array(z.string().min(1)).default([]),
+    gold: z.object({
+      perNode: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      perAct: z.record(z.string(), z.tuple([z.number(), z.number()])),
+      sideShare: z.tuple([z.number(), z.number()]),
+    }),
+  }),
+  elevation: z.object({
+    rangedBonus: z.number().int().min(0),
+    freeMoveTypes: z.array(moveType),
+    meleeConnectors: z.array(z.enum(['ramp', 'stairs', 'ladder'])),
+  }),
+  ballista: z.object({ item: z.string(), crew: z.array(moveType).min(1) }),
+  fog: z.object({
+    baseVision: z.number().int().min(1),
+    roleBonus: z.record(z.string(), z.number().int().min(0)),
+    moveTypeBonus: z.partialRecord(moveType, z.number().int().min(0)),
+    blockers: z.array(z.string()),
+  }),
+  rally: z.record(z.string(), z.number()),
+  classActions: z.object({
+    aim: z.object({ rangeBonus: z.number().int().min(0), hit: z.number() }),
+    farRescue: z.object({ range: z.number().int().min(1) }),
+    cheer: z.object({ mov: z.number().int(), hit: z.number() }),
+    hold: z.object({ detourMax: z.number().int().min(0) }),
+    cast: z.object({ waterRadius: z.number().int().min(0), fogDuration: z.number().int().min(1) }),
+  }),
+  bag: z.object({ size: z.number().int() }),
+  economy: z.looseObject({
+    rarityAffixes: z.record(z.string(), z.number()),
+    rarityRuneSlots: z.record(z.string(), z.number()),
+    mercenaryLimit: z.number().int().min(0),
+    smithMaxUpgrade: z.array(z.number().int().min(0)).min(1),
+    rerollFromSmithLevel: z.number().int().min(1),
+    villageAid: z.object({ healCharges: z.number().int().min(1) }),
+    tavern: z.object({
+      levelSpread: z.number().int().min(0),
+      names: z.array(z.string()).min(1),
+      classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
+    }),
+  }),
+  difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number() })),
+  ai: z.record(z.string(), z.number()),
+  lieutenant: z.strictObject({
+    grudge: z.strictObject({ max: z.number().int().min(1) }),
+    scaling: z.strictObject({ armySize: z.number().int().min(1), tierUp: z.record(z.string(), z.string()) }),
+    bounty: z.strictObject({
+      goldPerLevel: z.number().int().min(0),
+      materials: z.strictObject({ min: z.number().int().min(0), max: z.number().int().min(0) }).refine((m) => m.min <= m.max, 'materials: min above max'),
+      materialByAct: z.record(z.string(), z.string()),
+    }),
+    signature: z.strictObject({ chance: z.number().min(0).max(1), guaranteedRout: z.number().int().min(1) }),
+  }),
+});

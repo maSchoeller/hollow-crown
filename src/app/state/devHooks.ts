@@ -118,7 +118,7 @@ if (import.meta.env.DEV) {
         const files = { ...import.meta.glob('../../../tests/fixtures/maps/*.yaml'), ...import.meta.glob('../../../concept/27-ueberarbeitung/levels/*.yaml') };
         const load = files[`../../../tests/fixtures/maps/${id}.yaml`] ?? files[`../../../concept/27-ueberarbeitung/levels/${id}.yaml`];
         if (!load) throw new Error(`no fixture map "${id}"; there are: ${Object.keys(files).map((f) => /([^/]+)\.yaml$/.exec(f)![1]).join(', ')}`);
-        const { mapSchema } = await import('../../content/schemas');
+        const { mapSchema } = await import('../../content/schemaMap');
         const raw = ((await load()) as { default: unknown }).default;
         if (opts.season && !SEASONS.includes(opts.season)) throw new Error(`no season "${opts.season}"; there are: ${SEASONS.join(', ')}`);
         const parsed = mapSchema.parse(raw);
@@ -146,6 +146,8 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'dialogue', id: scene.id, next: () => (screen.value = { name: 'worldmap' }) };
       },
       devNode,
+      /** Testlabor M1: opens the battle of `tests/fixtures/lab/<name>.yaml` (`await __hc.lab('boss-gegenschlag')`, also `?lab=<name>`; src/app/state/devLab.ts) */
+      lab: (name: string) => import('./devLab').then((m) => m.openLab(name)),
       /** tone test of story 8.1 (same as the URL parameter `?tonbruch`): Gerrit's grave, Fenn's farewell, N1 memorial */
       toneTest: startToneTest,
       /**
@@ -346,4 +348,5 @@ if (import.meta.env.DEV) {
       },
     };
   });
+  if (new URLSearchParams(location.search).has('lab')) void import('./devLab').then((m) => m.labFromUrl(location.search));
 }

@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { buildContent } from '../../src/content/load';
-import { conditionSchema, effectSchema, campaignSchema } from '../../src/content/schemas';
+import { campaignSchema } from '../../src/content/schemaCampaign';
+import { conditionSchema, effectSchema } from '../../src/content/schemaConditions';
 import { validateContent } from '../../src/content/validate';
 import {
   applyCampaign,

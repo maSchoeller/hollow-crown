@@ -3,7 +3,7 @@ import { loadContentFromDisk } from '../../src/content/node';
 import { variantList } from '../../src/content/propVariants';
 import { seasonGround, seasonModel, seasonOf, seasonTextures, takesSnow } from '../../src/content/season';
 import { validateBoardModels, validateSeasons } from '../../src/content/validateLook';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import type { GameData } from '../../src/core/gameData';
 
 const { data } = loadContentFromDisk();

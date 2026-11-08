@@ -129,11 +129,12 @@ ui        ← core, content, i18n
 worker    ← core, content            (NEU, AR14)
 packs     ← content                  (NEU, AR15: Laden, Cache, Fortschritt)
 persistence ← core (Typen), content (nur `ids`: Umbenennungen für Migrationen)
+lab       ← core, content            (Testlabor, `pnpm lab`; nur Dev-Hooks und Werkzeuge nutzen es)
 app       ← alles (Controller, Screens, Store)
 tools     ← core, content (Node)
 ```
 
-ESLint-Schichtregeln (`eslint.config.js`) haben Einträge für `worker`, `packs` und `persistence` (seit 2026-11-08). `src/core` bleibt frei von DOM, Babylon, Preact, `Math.random` und `Date.now`.
+ESLint-Schichtregeln (`eslint.config.js`) haben Einträge für `worker`, `packs`, `persistence` und `lab` (seit 2026-11-08). `src/core` bleibt frei von DOM, Babylon, Preact, `Math.random` und `Date.now`.
 
 ### 5.2 Zwei Command-Ebenen (AR2) [A]
 

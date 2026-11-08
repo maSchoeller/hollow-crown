@@ -2,7 +2,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import type { Locales } from '../../src/content/load';
-import { campaignSchema } from '../../src/content/schemas';
+import { campaignSchema } from '../../src/content/schemaCampaign';
 import { validateContent } from '../../src/content/validate';
 import { applyCampaign, autoplay, beginBattle, missionResultView, newCampaign, type BattleResult, type CampaignState, type GameData } from '../../src/core';
 

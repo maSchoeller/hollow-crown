@@ -7,6 +7,9 @@ import { checkPackProps, checkPacks, parsePacks, type PackDef } from '../src/con
 import { checkLockedIds, collectIds, ID_KINDS, releasedIdsSchema, renamesSchema, type IdSets, type Renames } from '../src/content/ids';
 import { validateContent } from '../src/content/validate';
 import { checkDrafts, draftAct } from '../src/content/drafts';
+import { mapSchema } from '../src/content/schemaMap';
+import { checkReachability } from '../src/content/validateReach';
+import type { MapDef } from '../src/core/mapDefs';
 import { unshippedGalleryModels, validateBoardModels, validateSeasons } from '../src/content/validateLook';
 
 const { data, locales, issues } = loadContentFromDisk();
@@ -74,10 +77,11 @@ const found = [...issues, ...packIssues, ...idIssues, ...validateContent(data, l
 const draftDir = join(process.cwd(), 'concept', '27-ueberarbeitung', 'levels');
 const planned = new Set(packs.filter((p) => !p.released && p.id === `act${p.act}`).map((p) => p.act));
 const draftFiles = existsSync(draftDir) ? readdirSync(draftDir).filter((f) => planned.has(draftAct(f) ?? -1)).sort() : [];
+const draftYaml: Record<string, unknown> = Object.fromEntries(draftFiles.map((f) => [f, parse(readFileSync(join(draftDir, f), 'utf8'))]));
 const drafts = checkDrafts(
   data,
   locales,
-  Object.fromEntries(draftFiles.map((f) => [f, parse(readFileSync(join(draftDir, f), 'utf8'))])),
+  draftYaml,
   [sprites, itemImages, placeImages, lieutenantFiles, statusImages],
 );
 // the message stays as validateContent words it, so the warning filter below treats a draft like content (missing sprites)
@@ -87,6 +91,13 @@ const openRefs = drafts.reduce((n, d) => n + d.open.length, 0);
 const warnings = found.filter((i) => i.message.startsWith('unknown sprite') || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing portrait')) || (i.file === 'lieutenants.yaml' && i.message.startsWith('missing model')));
 const all = found.filter((i) => !warnings.includes(i));
 for (const w of warnings) console.warn(`! ${w.file}: ${w.message} (placeholder)`);
+// reachability (review 2026-11-07, M6): dead scenes and one-sided flags, warnings until the content is clean
+const draftMaps = Object.values(draftYaml).flatMap((y) => {
+  const p = mapSchema.safeParse(y);
+  return p.success ? [p.data as MapDef] : [];
+});
+const unreachable = checkReachability(data, draftMaps);
+for (const w of unreachable) console.warn(`! ${w.file}: ${w.message} (reachability)`);
 const counts = {
   maps: Object.keys(data.maps).length,
   scenes: Object.keys(data.scenes).length,
@@ -98,6 +109,7 @@ const counts = {
   lockedIds: lockedCount,
   drafts: drafts.length,
   draftOpen: openRefs,
+  unreachable: unreachable.length,
 };
 console.log('content:', JSON.stringify(counts));
 if (all.length) {

@@ -37,6 +37,8 @@ export default tseslint.config(
   // architecture §5.1: packs ← content (loading, cache, progress); persistence ← core (types), content (ids: renames for migrations)
   layer('packs', ['core', 'render', 'ui', 'app', 'input', 'persistence', 'i18n', 'worker'], ['@babylonjs/*', 'preact', '@preact/*']),
   layer('persistence', ['render', 'ui', 'app', 'input', 'packs', 'i18n', 'worker', 'platform'], ['@babylonjs/*', 'preact', '@preact/*']),
+  // Testlabor (pnpm lab, __hc.lab): lab ← core, content; the app's dev hooks and tools/lab.ts call it, never the other way round
+  layer('lab', ['render', 'ui', 'app', 'input', 'persistence', 'packs', 'i18n', 'worker', 'platform'], ['@babylonjs/*', 'preact', '@preact/*']),
   {
     files: ['src/core/**/*.ts'],
     rules: {
