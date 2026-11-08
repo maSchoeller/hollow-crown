@@ -109,10 +109,34 @@ test('deploy board: default deploy, move and swap on the fields, bench in and ou
 
   // the ember button starts the mission with exactly this placement
   const placed = (await deployView(page)).at;
+  // the battle takes the deploy board over: the same board, no second loading cover (only its state changes)
+  await page.evaluate(() => {
+    const w = window as unknown as { __deployBoard: unknown; __board: unknown; __covers: number };
+    w.__deployBoard = w.__board;
+    w.__covers = 0;
+    new MutationObserver(() => {
+      if (document.querySelector('.battle:not(.prp) .ld-stone')) w.__covers++;
+    }).observe(document.body, { subtree: true, childList: true });
+  });
   await page.getByRole('button', { name: /^(Start mission|Mission starten)$/ }).click();
   await expect(page.locator('.prp')).toHaveCount(0, { timeout: 90_000 });
   await expect(page.locator('canvas.hc-stage')).toBeVisible({ timeout: 90_000 });
   await expect.poll(async () => (await deployView(page)).at, { timeout: 90_000 }).toEqual(placed);
+  const kept = await page.evaluate(() => {
+    const w = window as unknown as { __deployBoard: unknown; __board: unknown; __covers: number };
+    return { same: w.__board === w.__deployBoard, covers: w.__covers };
+  });
+  expect(kept).toEqual({ same: true, covers: 0 });
+
+  // the options over the battle and back: the board is kept, nothing loads again
+  await page.getByRole('button', { name: /^(Menu|Menü)$/ }).click();
+  await page.getByRole('button', { name: /^(Options|Optionen)$/ }).click();
+  await page.getByRole('button', { name: /^(Back|Zurück)$/ }).first().click();
+  await expect(page.locator('canvas.hc-stage')).toBeVisible();
+  expect(await page.evaluate(() => {
+    const w = window as unknown as { __deployBoard: unknown; __board: unknown; __covers: number };
+    return { same: w.__board === w.__deployBoard, covers: w.__covers };
+  })).toEqual({ same: true, covers: 0 });
 });
 
 test('leaving a running mission (story 1.9): the menu asks first, then the world map shows and the mission can be started again', async ({ page }, testInfo) => {

@@ -28,6 +28,7 @@ import {
   type Pos,
 } from '../../core';
 import { BoardView } from '../../render/board/board';
+import { boardKey, parkBoard } from '../state/boardKeep';
 import { t } from '../../i18n';
 import { Toast, unitName } from '../../ui/components';
 import { goalLine } from '../../ui/goalText';
@@ -122,7 +123,8 @@ export function Prep({ node, from, haunt }: { node: string; from: From; haunt?: 
     return () => {
       alive = false;
       hud.disconnect();
-      board.dispose();
+      // "Mission starten": the battle takes the built board over (only its state changes); any other way out drops it
+      parkBoard(board, boardKey(s.mapId));
       boardRef.current = null;
     };
   }, []);

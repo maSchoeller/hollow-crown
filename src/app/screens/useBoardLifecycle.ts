@@ -1,8 +1,10 @@
 /** Lifecycle of the 3D board on the battle screen (Battle.tsx). */
 import { type BattleState, filterEvents, visibleState } from '../../core';
 import { BoardView } from '../../render/board/board';
+import type { BoardHooks } from '../../render/board/boardTypes';
+import { boardKey, claimBoard, parkBoard } from '../state/boardKeep';
 import { audio } from '../audio';
-import { battle, pendingEvents } from '../state/battle';
+import { battle, battleRun, pendingEvents } from '../state/battle';
 import { clearGoalMark } from '../state/goalMarks';
 import { data } from '../state/session';
 import { loadHalfFigures } from '../state/halves';
@@ -21,7 +23,10 @@ export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): vo
   const { playBark, playLieutenantLines } = show;
   useEffect(loadHalfFigures, []);
   useEffect(() => {
-    const board = new BoardView(stageRef.current!, floatRef.current!, data, {
+    const st0 = battle.value!.state;
+    const run = battleRun.value;
+    const key = boardKey(st0.mapId);
+    const hooks: BoardHooks = {
       onTap: (p) => tapRef.current(p),
       onWholeMap: (on) => setWhole(on),
       onLongPress: (p) => longRef.current(p),
@@ -43,7 +48,11 @@ export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): vo
           left: 0,
         };
       },
-    });
+    };
+    // the deploy board of this battle, or this battle's own board back from the options or a restart: taken over, not built again
+    const kept = claimBoard(key);
+    const board = kept?.board ?? new BoardView(stageRef.current!, floatRef.current!, data, hooks);
+    if (kept) board.adopt(stageRef.current!, floatRef.current!, hooks);
     boardRef.current = board;
     preloadHeads(battle.value!.state.units);
     board.quality = settings.value.quality;
@@ -54,9 +63,14 @@ export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): vo
     board.calmMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let alive = true;
     void (async () => {
-      const st0 = battle.value!.state;
       try {
-        await board.load(visibleState(data, st0, 'player'));
+        if (kept) {
+          await board.whenReady();
+          board.setOverlays({});
+          await board.setState(visibleState(data, st0, 'player'));
+          // a new battle (from the deploy board, a restart) starts with the whole map in view; back from the options it stays as it was
+          if (kept.tag !== run) board.refit();
+        } else await board.load(visibleState(data, st0, 'player'));
       } finally {
         if (alive) setLoading(false);
       }
@@ -83,7 +97,8 @@ export function useBoardLifecycle(b: BattleScreen, show: BattlePresentation): vo
     return () => {
       alive = false;
       clearGoalMark();
-      board.dispose();
+      // the options or a restart bring this board back; a screen without a board drops it (App)
+      parkBoard(board, key, run);
     };
   }, []);
 

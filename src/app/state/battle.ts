@@ -37,6 +37,9 @@ export interface BattleSession {
 }
 export const battle = signal<BattleSession | null>(null);
 
+/** Counts the runs of the battle screen: a restart raises it, the screen mounts anew (fresh HUD state, the board is kept). */
+export const battleRun = signal(0);
+
 /** Events from startBattle waiting for the board (opening phase banner, turn-1 dialogue). */
 export const pendingEvents = signal<GameEvent[]>([]);
 

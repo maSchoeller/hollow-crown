@@ -33,6 +33,11 @@ export class StatusIcons {
     layer.style.setProperty('--hc-status-fade', `${fadeMs}ms`);
   }
 
+  /** The board moved to another screen's layer (`BoardBase.adopt`); the elements went along. */
+  moveTo(layer: HTMLElement): void {
+    this.layer = layer;
+  }
+
   /** Shows `ids` over unit `uid`; icons that stay are left alone, new ones fade in, gone ones fade out. */
   set(uid: string, ids: readonly StatusId[]): void {
     let row = this.rows.get(uid);
