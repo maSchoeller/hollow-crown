@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { validateContent } from '../../src/content/validate';
 import {
   applyCommand,

@@ -2,7 +2,7 @@ import type { Pos, Team } from '../defs';
 import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { attackTargets, staffTargets } from '../battle/actions';
-import { applyAct, moveAfterAction } from '../battle/apply';
+import { applyAct, moveAfterAction } from '../battle/act';
 import type { Action } from '../battle/commands';
 import { activeVictory } from '../battle/activeVictory';
 import { mapOf, runTriggers } from '../battle/objectives';

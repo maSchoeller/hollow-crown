@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { basename, extname, join } from 'node:path';
 import { parse } from 'yaml';
 import { loadContentFromDisk } from '../../src/content/node';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { renderSheet, type LevelMap, type Sheet, type SheetContext } from './sheet';
 
 const args = process.argv.slice(2);

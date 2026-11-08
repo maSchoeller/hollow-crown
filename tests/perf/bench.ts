@@ -9,7 +9,7 @@
 import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstrumentation';
 import { loadContent } from '../../src/content/browser';
 import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type BattleState, type MapDef } from '../../src/core';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import type { Season } from '../../src/core/defs';
 import { setLocales } from '../../src/i18n';
 import { loadPack } from '../../src/packs/load';

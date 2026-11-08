@@ -1,0 +1,19 @@
+# Testlabor M1, Maßstabsfrage 4: „Wie sieht diese Lage auf dem Handy aus?“
+#   Dev-Server, dann im Browser bei 375×812: http://localhost:5173/hollow-crown/?lab=handy-ansicht
+#   oder in der Konsole: await __hc.lab('handy-ansicht')
+# Mission 1-4, Runde 5: die Kompanie steht vor Osrics Lager, Feuer auf dem Weg, Liora brennt und ist angeschlagen,
+# Lucan hat schon gehandelt. Dieselbe Lage befragt die CLI: pnpm lab handy-ansicht --enemy
+question: Wie sieht diese Lage auf dem Handy aus?
+map: m1_4_wolfslager
+seed: 5
+turn: 5
+units:
+  avatar: { at: [7, 6] }
+  lucan: { at: [8, 6], acted: true }
+  tobin: { at: [6, 6] }
+  brenna: { at: [12, 6] }
+  liora: { at: [9, 7], hp: 9, status: [burning] }
+  mira: { at: [13, 7] }
+  fenn: { at: [14, 6], hp: 8 }
+  osric: { hp: 14 }
+fire: [[10, 6], [11, 6], [10, 5]]

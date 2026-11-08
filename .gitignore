@@ -18,3 +18,4 @@ concept/23-art-direction/map-assets/gallery_game/
 .phase/
 # Testlabor S2: Ausgaben von pnpm sim --json
 .sim/
+.lab/

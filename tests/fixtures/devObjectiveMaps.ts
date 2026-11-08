@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { createBattle, newCampaign, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
 
 export type DevObjectiveMapId = 'dev_escort' | 'dev_treasure' | 'dev_phases';

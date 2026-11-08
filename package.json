@@ -22,6 +22,7 @@
     "content:lock": "tsx tools/content-lock.ts",
     "sim": "tsx tools/simulate.ts",
     "sim:diff": "tsx tools/simDiff.ts",
+    "lab": "tsx tools/lab.ts",
     "report": "tsx tools/report.ts",
     "levels": "tsx tools/levels/atlas.ts",
     "bench:ai": "tsx tools/bench-ai.ts",

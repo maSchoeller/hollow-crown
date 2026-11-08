@@ -94,7 +94,7 @@ export default defineConfig(({ mode }) => {
                * Everything under assets/ that is not precached: the files of the other packs (act1: places, half figures,
                * world map, sprites, item images, models, music; the pack's content chunk). Cache first across all caches,
                * so a pack cache `hc-pack-<id>-<hash>` (story 7.2) answers as well as the on-demand cache. A miss is fetched
-               * and kept in `hc-on-demand` (ON_DEMAND_CACHE in src/app/loading/cacheName.ts, story 7.6), except requests
+               * and kept in `hc-on-demand` (ON_DEMAND_CACHE in src/packs/cacheName.ts, story 7.6), except requests
                * of the pack download (header x-hc-pack), which the pack cache keeps. The functions are copied into sw.js
                * as source text: they must not use anything from this file. `ignoreVary`: files are stored under their URL
                * alone, while a module import sends an Origin header that a `Vary` answer would otherwise compare.
@@ -161,11 +161,18 @@ export default defineConfig(({ mode }) => {
       testTimeout: 15_000,
       coverage: {
         provider: 'v8',
-        include: ['src/core/**/*.ts'],
-        exclude: ['src/core/**/*.test.ts'],
+        // core, and since review 2026-11-07 (M4) the release-critical persistence (migrations, import) and content
+        // (loading, validation). src/packs stays out: its cache and loader need the browser's Cache API (tests/e2e).
+        include: ['src/core/**/*.ts', 'src/persistence/**/*.ts', 'src/content/**/*.ts'],
+        exclude: ['src/**/*.test.ts', 'src/**/*.d.ts'],
         reporter: ['text-summary', 'html'],
-        // Ratchet at the current level (target 90 %, see AGENTS.md); raise whenever coverage improves, never lower.
-        thresholds: { statements: 95, branches: 90, functions: 96, lines: 97 },
+        // Ratchet per layer at the level measured (core: target 90 %, see AGENTS.md); raise whenever coverage improves, never lower.
+        // Vitest counts every included file into a global threshold too, so there is none: each layer has its own.
+        thresholds: {
+          'src/core/**/*.ts': { statements: 95, branches: 90, functions: 96, lines: 97 },
+          'src/persistence/**/*.ts': { statements: 91, branches: 92, functions: 85, lines: 92 }, // measured 2026-11-08: 91.3 / 92.3 / 85.9 / 93.0
+          'src/content/**/*.ts': { statements: 94, branches: 88, functions: 98, lines: 99 }, // measured 2026-11-08: 94.8 / 88.7 / 98.5 / 99.4
+        },
       },
     },
   };

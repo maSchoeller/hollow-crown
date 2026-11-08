@@ -5,7 +5,7 @@
  */
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { mapSchema } from '../../src/content/schemas';
+import { mapSchema } from '../../src/content/schemaMap';
 import { validateContent } from '../../src/content/validate';
 import { addTexts } from '../../src/i18n';
 import { goalKey, goalLine, goalStand, mustLine } from '../../src/ui/goalText';
