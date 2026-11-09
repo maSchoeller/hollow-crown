@@ -50,3 +50,8 @@ unit.dravn_envoy.name: "Border Army Envoy"
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
 map.m2_5_silberquell.name: "Silverspring Abbey"
+
+# Story 11.21: side quest N5 (map and foes of the mine)
+map.n5_kupfermine.name: "The Copper Mine"
+unit.duchess_looter.name: "Duchess's Looter"
+unit.foreman.name: "Foreman"

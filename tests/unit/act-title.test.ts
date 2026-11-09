@@ -70,7 +70,8 @@ describe('act 2 on the world map', () => {
     const ids = availableNodes(open, c).map((n) => n.id);
     expect(ids).toContain('m2_1');
     expect(ids).not.toContain('m2_2');
-    for (const n of open.acts[2]!.nodes) expect(!!open.maps[n.map], n.id).toBe(['m2_1', 'm2_5'].includes(n.id));
+    // built so far: 2-1 (story 11.12), 2-5 (story 11.16), N5 (story 11.21)
+    for (const n of open.acts[2]!.nodes) expect(!!open.maps[n.map], n.id).toBe(['m2_1', 'm2_5', 'n5'].includes(n.id));
   });
 
   it('places of act 2 without a stone lie under a fog patch; none in act 1', () => {
