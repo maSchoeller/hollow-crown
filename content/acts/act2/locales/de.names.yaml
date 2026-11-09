@@ -49,6 +49,10 @@ unit.dravn_envoy.name: "Bote des Grenzheers"
 # Story 11.12: Mission 2-1 (Karte)
 map.m2_1_windscharte.name: "Die Windscharte"
 
+# Story 11.20: Nebenquest N4 (Karte, Hauptmann der Vorposten, Clanälteste)
+map.n4_clanlager.name: "Das Clanlager"
+unit.outpost_captain.name: "Hauptmann des Vorpostens"
+unit.clan_elder.name: "Clanälteste"
 # Story 11.21: Nebenquest N5 (Karte und Gegner der Mine)
 map.n5_kupfermine.name: "Die Kupfermine"
 unit.duchess_looter.name: "Plünderer der Herzogin"
