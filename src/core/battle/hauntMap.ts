@@ -112,19 +112,15 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
   // (`deathless`); the battle is lost when the whole company is down (`checkObjectives`) or the civilian falls
   const defeat: MapDef['objectives']['defeat'] = [];
   if (anchor.variant === 'defend' || anchor.variant === 'escort') defeat.push({ type: 'unit_dies', unit: HAUNT_CIVILIAN });
+  // the place itself comes over whole (terrain, `levels`, ladders, props); a field listed one by one got lost the day it was
+  // added to the map (fix 2026-11-09: the terraces of 1-5 rendered flat and their rules were level 0). Left behind: the
+  // story's cast, goals and texts, and the hour and weather of the story day (a haunt has always had plain light)
+  const { haunts: _haunts, noHaunts: _noHaunts, devNote: _devNote, timeOfDay: _timeOfDay, weather: _weather, ...place } = base;
   return {
+    ...place,
     id: hauntMapId(mapId, variant, lt),
-    act: base.act,
-    nameKey: base.nameKey,
-    size: base.size,
-    fog: base.fog,
-    ...(base.noDeath ? { noDeath: true } : {}),
-    legend: base.legend,
-    terrain: base.terrain,
-    ...(base.ladders ? { ladders: base.ladders } : {}),
-    ...(base.ambient ? { ambient: base.ambient } : {}),
-    ...(base.lights ? { lights: base.lights } : {}),
-    ...(base.sun ? { sun: base.sun } : {}),
+    // fix 2026-11-09: a haunt's foes stand far from the company; under fog it found no one to fight (balance.haunt.fog)
+    fog: base.fog && data.balance.haunt.fog,
     objects,
     initialEffects: base.initialEffects,
     deploy: { max: hauntPlaces(data, base, anchor), forced: [], slots: standableTiles(data, base, anchor.deploy, 'foot') },
@@ -134,7 +130,6 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
     objectives: { victory: victoryOf(anchor, lt), defeat, side: [] },
     triggers: [],
     goldReward: 0,
-    ...(base.music ? { music: base.music } : {}),
   };
 }
 
