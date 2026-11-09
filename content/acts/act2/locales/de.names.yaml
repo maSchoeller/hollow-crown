@@ -35,8 +35,10 @@ faction.free_blades.name: "Freie Klingen"
 faction.silver_sea.name: "Haus Silbermeer"
 faction.iron_march.name: "Grenzheer der Eisenmark"
 
-# Story 11.5: Gegner der vorläufigen Heimsuchungs-Pools von Akt 2 (11.7 legt sie fest)
+# Gegner von Akt 2 auf Karten und in Heimsuchungen (Story 11.5, festgelegt in 11.7)
 unit.border_soldier.name: "Grenzsoldat"
 unit.lance_squire.name: "Lanzenknecht"
 unit.privateer.name: "Kaperfahrer"
 unit.free_blade.name: "Freie Klinge"
+unit.lance_knight.name: "Lanzenritter"
+unit.counting_guard.name: "Kontorwache"

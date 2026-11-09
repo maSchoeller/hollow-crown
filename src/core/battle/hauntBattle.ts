@@ -8,12 +8,13 @@ import type { GameData } from '../gameData';
 import type { MapDef, MapUnitDef } from '../mapDefs';
 import type { BattleState, CampaignState, HauntState } from '../state';
 import { hash32 } from '../rng';
-import { hauntLevel } from '../campaign/haunts';
+import { clone } from '../util';
+import { hauntLevel, hauntPool } from '../campaign/haunts';
 import { planLieutenants } from '../campaign/lieutenants';
 import { addToBag } from '../rules/items';
 import { isScout } from '../rules/scout';
 import { newItem } from './create';
-import { HAUNT_CIVILIAN, hauntMap } from './hauntMap';
+import { HAUNT_CIVILIAN, hauntMap, hauntPoolsFor } from './hauntMap';
 import { nodesUpTo } from '../campaign/acts';
 import { battleSkeleton, deployPlayers, finishSetup, placeMapUnits } from './setup';
 import type { Deploy } from './deploy';
@@ -48,6 +49,8 @@ export function hauntUnitDefs(data: GameData, h: HauntState, base: MapDef): MapU
     if (e.lieutenant) {
       const tpl = lieutenantTemplate(data, e.lieutenant);
       const def = data.lieutenants[e.lieutenant]!;
+      // story 11.7: a lieutenant who stands on no story map yet (act 2 before its missions) carries the kit of his class in his band
+      const kit = tpl?.items ?? clone(hauntPool(data, def)?.find((t) => t.class === def.class)?.items ?? []);
       // he waits at his place until the company comes close, then goes for it
       return {
         id: e.lieutenant,
@@ -56,14 +59,14 @@ export function hauntUnitDefs(data: GameData, h: HauntState, base: MapDef): MapU
         class: def.class,
         level: tpl?.level ?? 1,
         at: e.at,
-        items: tpl?.items ?? [],
+        items: kit,
         ...(tpl?.drops ? { drops: tpl.drops } : {}),
         ai: { profile: 'trigger', radius: data.balance.haunt.triggerRadius.lieutenant, then: 'aggressive' },
       } as MapUnitDef;
     }
     return { id: `e${i}`, team: 'enemy', class: e.class!, level: e.level!, at: e.at, nameKey: e.nameKey!, sprite: e.sprite!, items: e.items ?? [], ai: { profile: 'trigger', radius: data.balance.haunt.triggerRadius.enemy, then: 'aggressive' } } as MapUnitDef;
   });
-  const civilian = data.hauntPools?.[base.act]?.civilian;
+  const civilian = hauntPoolsFor(data, base.act, h.lt)?.civilian;
   if (civilian && (anchor.variant === 'defend' || anchor.variant === 'escort')) {
     defs.push({
       id: HAUNT_CIVILIAN,

@@ -1,0 +1,16 @@
+# Story 11.7: „Ist der Ritter der Silbernen Lanze (knight, Stahllanze) verwundbar gegen Axt, Magie und Panzerstecher?“
+#   pnpm lab ritter-akt2 --forecast lab_axe lab_knight       Vorkämpfer mit Stahlaxt (Waffendreieck)
+#   pnpm lab ritter-akt2 --forecast lab_mage lab_knight      Elementarist mit Glut (Magie gegen RES)
+#   pnpm lab ritter-akt2 --forecast lab_piercer lab_knight   Plänkler mit Panzerstecher (effektiv gegen armored)
+#   pnpm lab ritter-akt2 --forecast lab_sword lab_knight     Vergleich: Plänkler mit Stahlschwert
+# Alle auf Stufe 12 (Positionsstufe von Akt 2); tests/unit/knight-act2.test.ts prüft dasselbe auf Stufe 8 bis 20.
+question: Ist der Ritter verwundbar gegen Axt, Magie und Panzerstecher?
+map: m1_4_wolfslager
+company: none
+remove: ['*']
+add:
+  - { id: lab_knight,  team: enemy,  class: knight,      level: 12, at: [5, 5], sprite: soldier,   nameKey: unit.lance_knight.name, items: [{ def: steel_lance }] }
+  - { id: lab_axe,     team: player, class: vanguard,    level: 12, at: [5, 6], sprite: soldier,   items: [{ def: steel_axe }] }
+  - { id: lab_mage,    team: player, class: elementalist, level: 12, at: [5, 3], sprite: mercenary, items: [{ def: blaze }] }
+  - { id: lab_piercer, team: player, class: skirmisher,  level: 12, at: [4, 5], sprite: mercenary, items: [{ def: armorpiercer }] }
+  - { id: lab_sword,   team: player, class: skirmisher,  level: 12, at: [6, 5], sprite: mercenary, items: [{ def: steel_sword }] }

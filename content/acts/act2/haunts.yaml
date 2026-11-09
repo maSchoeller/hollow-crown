@@ -1,30 +1,36 @@
-# Gegner-Pools der Heimsuchungen von Akt 2 (Paket act2). VORLÄUFIG (Story 11.5) [ASSUMPTION]: content:check verlangt für jede Fraktion
-# eines Leutnants einen Pool; Story 11.7 (Gegner, Herbst, Heimsuchungen von Akt 2) legt Klassen, Anteile, Figuren und Truhen endgültig fest.
-# Abgeleitet aus der Fassung vom 2026-10-31 (Story 11.7), ohne Flieger und Reittiere: Ausrüstungs-Tier des Akts ist Stahl.
+# Gegner-Pools der Heimsuchungen von Akt 2 (Paket act2), festgelegt in Story 11.7 (Epic 11, „Gegner, Herbst und Heimsuchungen von Akt 2“).
+# Alle zu Fuß: keine Flieger, keine Reiter, keine Klasse cavalier; pegasus_knight bleibt für Staffel 2 im Code, steht aber in keinem Pool
+# und auf keiner Karte (content:check). Ausrüstungs-Tier des Akts ist Stahl. Gegner stehen auf hauntLevel.
+# Brettfiguren: vorhandene Modelle als Platzhalter (Ritter der Lanze und Kaperfahrer, auch live; neu entschieden nach 11.27, art/README.md).
+# Anteile, Namen der Kontorwachen, Zivilist und Truhen [ASSUMPTION] (Story 11.7).
+# Zivilist und Truhen gelten für Heimsuchungen mit einem Leutnant von Akt 2, auch auf Karten von Akt 1 (hauntPoolsFor).
 factions:
-  # Grenzheer der Eisenmark (Sable)
+  # Grenzheer der Eisenmark (Sable): Eisenmark-Soldaten
   iron_march:
-    - { class: vanguard,   sprite: soldier,       nameKey: unit.border_soldier.name, items: [{ def: steel_lance }], share: 30 }
-    - { class: knight,     sprite: soldier,       nameKey: unit.border_soldier.name, items: [{ def: steel_lance }], share: 20 }
-    - { class: marksman,   sprite: bandit_archer, nameKey: unit.border_soldier.name, items: [{ def: steel_bow }],   share: 25 }
-    - { class: skirmisher, sprite: mercenary,     nameKey: unit.border_soldier.name, items: [{ def: steel_sword }], share: 25 }
-  # Silberne Lanze (Rowena), zu Fuß
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.border_soldier.name, items: [{ def: steel_lance }], share: 35 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.border_soldier.name, items: [{ def: steel_sword }], share: 35 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.border_soldier.name, items: [{ def: steel_bow }],   share: 30 }
+  # Silberne Lanze (Rowena), zu Fuß: Ritter (knight statt pegasus_knight) und ihre Knechte
   silver_lance:
-    - { class: knight,     sprite: soldier,       nameKey: unit.lance_squire.name, items: [{ def: steel_lance }], share: 40 }
+    - { class: knight,     sprite: soldier,       nameKey: unit.lance_knight.name, items: [{ def: steel_lance }], share: 40 }
     - { class: skirmisher, sprite: mercenary,     nameKey: unit.lance_squire.name, items: [{ def: steel_sword }], share: 30 }
     - { class: marksman,   sprite: bandit_archer, nameKey: unit.lance_squire.name, items: [{ def: steel_bow }],   share: 30 }
-  # Haus Silbermeer (Grell): Kaperfahrer
+  # Haus Silbermeer (Grell): Kaperfahrer und die Wachen des Kontors
   silver_sea:
-    - { class: brigand,    sprite: brigand,       nameKey: unit.privateer.name, items: [{ def: steel_axe }],   share: 35 }
-    - { class: skirmisher, sprite: mercenary,     nameKey: unit.privateer.name, items: [{ def: steel_sword }], share: 35 }
-    - { class: marksman,   sprite: bandit_archer, nameKey: unit.privateer.name, items: [{ def: steel_bow }],   share: 30 }
+    - { class: brigand,    sprite: brigand,       nameKey: unit.privateer.name,      items: [{ def: steel_axe }],   share: 35 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.privateer.name,      items: [{ def: steel_sword }], share: 25 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.privateer.name,      items: [{ def: steel_bow }],   share: 20 }
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.counting_guard.name, items: [{ def: steel_lance }], share: 20 }
   # Freie Klingen (Brakka): Söldner
   free_blades:
     - { class: skirmisher, sprite: mercenary,     nameKey: unit.free_blade.name, items: [{ def: steel_sword }], share: 35 }
-    - { class: brigand,    sprite: brigand,       nameKey: unit.free_blade.name, items: [{ def: steel_axe }],   share: 35 }
-    - { class: marksman,   sprite: bandit_archer, nameKey: unit.free_blade.name, items: [{ def: steel_bow }],   share: 30 }
+    - { class: brigand,    sprite: brigand,       nameKey: unit.free_blade.name, items: [{ def: steel_axe }],   share: 30 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.free_blade.name, items: [{ def: steel_bow }],   share: 35 }
+# Der Mensch, den defend und escort schützen: wie in Akt 1 ein Zivilist (Nichtkämpfer), Figur und Porträt villager_elder.
 civilian: { class: civilian, sprite: villager_elder, portrait: villager_elder, nameKey: unit.civilian.name }
+# Inhalt der Truhen bei treasure, reihum: rund das Doppelte von Akt 1, dazu das Material des Akts
 chestLoot:
   - { gold: 300 }
   - { item: { def: moonsteel } }
+  - { item: { def: vulnerary } }
   - { gold: 500 }

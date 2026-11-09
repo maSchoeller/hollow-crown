@@ -642,6 +642,8 @@
   growthMod: { hp: 0, str: 0, mag: 5, skl: 10, spd: 15, lck: 5, def: -5, res: 15 }
   caps: { hp: 45, str: 20, mag: 18, skl: 24, spd: 26, lck: 25, def: 16, res: 22 }
   playable: false
+  # Story 11.7: bleibt für Staffel 2 im Code, steht in Staffel 1 auf keiner Karte und in keinem Pool (content:check)
+  season2: true
   v1: true
 
 # Monster-Waffe nur für Monster; dragonhide: -50 % Schaden von Waffen ohne Element, außer effektive

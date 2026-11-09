@@ -116,4 +116,28 @@ export function validateHauntPools(data: GameData, locales: Locales, err: (f: st
   // a map with anchors belongs to an act that has pools (the civilian of defend and escort)
   for (const m of Object.values(data.maps)) if (m.haunts?.length && !data.hauntPools?.[m.act]) err(`maps/${m.id}`, `haunts: act ${m.act} has no haunts.yaml`);
   // the haunt material of an act is the bounty material of the act's lieutenants (checked by validateLieutenants)
+  validateFoeClasses(data, err);
+}
+
+/** Move types no foe of act 2 or later has: Staffel 1 has no fliers and no riders from act 2 on (GDD-Log 2026-11-05, story 11.7). */
+const NO_FOE_MOVE_FROM_ACT2 = ['flier', 'mounted'];
+
+/**
+ * Story 11.7: a class kept for season 2 (`season2`, `pegasus_knight`) stands on no map and in no haunt pool; from act 2 on no foe
+ * flies or rides, on the maps and in the pools of the act.
+ */
+function validateFoeClasses(data: GameData, err: (f: string, m: string) => void): void {
+  const check = (file: string, ctx: string, cls: string, act: number) => {
+    const def = data.classes[cls];
+    if (!def) return;
+    if (def.season2) err(file, `${ctx}: class ${cls} is kept for season 2 (on no map and in no pool)`);
+    else if (act >= 2 && NO_FOE_MOVE_FROM_ACT2.includes(def.moveType)) err(file, `${ctx}: class ${cls} (${def.moveType}) does not occur from act 2 on (no fliers, no riders)`);
+  };
+  for (const [act, pools] of Object.entries(data.hauntPools ?? {}))
+    for (const [faction, types] of Object.entries(pools.factions)) for (const t of types) check('haunts.yaml', `act ${act} ${faction}`, t.class, Number(act));
+  for (const m of Object.values(data.maps)) {
+    const defs = [...m.units, ...m.reinforcements.flatMap((r) => r.units), ...m.triggers.flatMap((t) => t.then.flatMap((a) => (a.action === 'spawn' ? a.units : [])))];
+    for (const d of defs) check(`maps/${m.id}`, `unit ${d.id ?? d.char ?? d.class}`, d.class, m.act);
+  }
+  for (const lt of Object.values(data.lieutenants ?? {})) check('lieutenants.yaml', lt.id, lt.class, lt.act);
 }

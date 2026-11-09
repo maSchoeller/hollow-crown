@@ -6,7 +6,7 @@
  */
 import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
-import type { Area, HauntAnchor, MapDef, MapObjectDef, ObjectiveDef, Reward } from '../mapDefs';
+import type { Area, HauntAnchor, HauntPoolsDef, MapDef, MapObjectDef, ObjectiveDef, Reward } from '../mapDefs';
 import { areaTiles, posKey } from '../util';
 import { parseTerrain } from './terrain';
 
@@ -66,6 +66,15 @@ export function standableTiles(data: GameData, map: MapDef, area: Area, moveType
   });
 }
 
+/**
+ * The pools a haunt takes its civilian and chests from (story 11.7): those of the lieutenant's act, like his band (`hauntPool`),
+ * else those of the map's act. A haunt of act 2 on a map of act 1 so brings the steel-tier loot of act 2; in act 1 both are act 1.
+ */
+export function hauntPoolsFor(data: GameData, mapAct: number, lt: string): HauntPoolsDef | undefined {
+  const own = data.lieutenants?.[lt]?.act;
+  return (own !== undefined ? data.hauntPools?.[own] : undefined) ?? data.hauntPools?.[mapAct];
+}
+
 /** What chest `i` holds: the entries of the act's `chestLoot`, in turn. */
 export function hauntChestLoot(loot: readonly { gold?: number; item?: Reward['item'] }[], i: number): Reward {
   const e = loot[i % loot.length]!;
@@ -93,7 +102,7 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
   const base = data.maps[mapId];
   const anchor = base?.haunts?.find((a) => a.variant === variant);
   if (!base || !anchor) return null;
-  const pool = data.hauntPools?.[base.act];
+  const pool = hauntPoolsFor(data, base.act, lt);
   const objects: MapObjectDef[] = base.objects
     .filter((o) => o.type !== 'chest')
     // no spoils from the houses of the story map: the reward of a haunt is set by `balance.haunt`
