@@ -1,0 +1,7 @@
+# Chronik-Seiten der Paktwächter in Akt 2 (Format wie acts/act1/chronicle.yaml; Narrative „Found Documents“: 4 je Akt, 12 in Staffel 1).
+# Akt-2-Schwerpunkt: „dass die Könige beim Paktfest etwas gaben“ (Quellen: N5 und je eine Truhe in 2-2, 2-4, 2-7). Englisch in content/locales/en/act2.chronicle.yaml.
+# 2-2 „Das Siegel im Salzpass“ (Story 11.13), Truhe c_page: [PO offen F3] Vorschlag A – eine Seite aus dem Tempelarchiv, die Grell für Maelis schmuggelt;
+# ein Wächter erzählt eine Paktnacht, in der der König „gab“, ohne zu sagen, was. Text der Schreib-Pipeline als Vorschlag zur Abnahme.
+- id: a2_salzpass
+  title: "Was der König gab"
+  text: "Paktnacht. Der König kniete am Altar, die Glutkrone auf den Knien, und gab. Was, darf ich nicht schreiben; ich sah nur, dass er danach langsamer aufstand. Die Herzöge jubelten. Am Morgen war der Altar warm und der König grau an den Schläfen, mit dreißig Jahren. Ich schreibe es auf, damit einer zählt."

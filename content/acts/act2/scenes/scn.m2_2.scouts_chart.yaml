@@ -1,0 +1,18 @@
+# Mission 2-2, Truhe der Kundschafter c_scouts (Saat Kharesh): eine Seekarte mit Silbermeers Zeichen, Lucan erkennt Kharesh
+# (Rückgriff auf scn.m1_1.kharesh_rumor). [PO offen F4] Vorschlag A: nur Szene und 200 Gold, kein Gegenstand. Vorschlag der Schreib-Pipeline.
+id: scn.m2_2.scouts_chart
+lines:
+  - id: l01
+    mood: neutral
+    text: "In der Truhe der Kundschafter liegt eine Seekarte. Am Rand das Zeichen des Hauses Silbermeer."
+  - id: l02
+    mood: neutral
+    text: "Eingezeichnet sind der Salzpass, die Auremündung und ein Kurs übers Meer, ohne Namen am Ende."
+  - id: l03
+    speaker: [lucan]
+    mood: sad
+    text: "Kharesh. So zeichnen sie ihre Wege. Solche Karten habe ich im Krieg verbrannt."
+  - id: l04
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "Silbermeer verkauft also Überfahrten. Fragt sich nur, an wen noch."

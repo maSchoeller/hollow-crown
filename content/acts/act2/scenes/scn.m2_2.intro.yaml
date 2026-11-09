@@ -1,0 +1,43 @@
+# Mission 2-2, Szene vor der Karte (Knoten pre, Story 11.13): Ankunft im Nebel des Salzpasses; ein Lanzenreiter der Prinzessin nennt den Auftrag
+# (Seraphines Siegel wurde auf dem Weg zur Kanzlei abgefangen, Grell bringt es über den Pass zu Maelis; dafür der Freispruch) [ASSUMPTION, keine Quelle].
+# Gefährtenzeilen mit Ersatzsprecher-Kette, Fenns eigene Zeile nur, wenn er in der Truppe ist (er kann gegangen oder gefallen sein).
+# Text nach der Schreib-Pipeline der Narrative als Vorschlag, Abnahme beim Durchspielen.
+id: scn.m2_2.intro
+background: salzpass
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Nebel hängt im Salzpass, so dicht, dass die Felswände nur noch Schatten sind."
+  - id: l02
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Die Prinzessin schickt mich. Ihr Siegel wurde auf dem Weg zur Kanzlei abgefangen."
+  - id: l03
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Kapitän Grell schafft es über den Pass zu Maelis. Holt es zurück, ehe jemand damit siegelt."
+  - id: l04
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Dann schreibt Ihre Hoheit Euren Freispruch. Mit eben diesem Siegel."
+  - id: l05
+    mood: neutral
+    text: "Weiter oben knarren Wagenräder. Salz rieselt von den Planen, dann ist es wieder still."
+  - id: l06
+    speaker: [tobin, brenna, avatar]
+    mood: neutral
+    text: "Drei Schritte weit sieht man noch. Danach ist da nur Weiß, und irgendwer darin."
+  - id: l07
+    speaker: [fenn]
+    fallback: skip
+    requires: [{ alive: fenn }]
+    mood: happy
+    text: "Lasst mich vorn gehen. Ich seh im Nebel weiter, und Truhen frag ich nicht nach Schlüsseln."
+  - id: l08
+    speaker: [lucan]
+    mood: neutral
+    text: "Grell rechnet in Gold, nicht in Zeit. Seine Karawane wartet nicht auf uns. Wir gehen."
