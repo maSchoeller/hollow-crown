@@ -5,7 +5,7 @@
 ## Regeln
 
 - **Parallelität:** Höchstens 2 Story-Missionen sind gleichzeitig offen. Ein Paar (∥) läuft in freier Reihenfolge und führt danach wieder zusammen. Pro Akt gibt es zwei Paare, sonst läuft die Folge fest.
-- **Nebenquests:** Sie zählen nicht mit und öffnen nach ihrem Auslöser ohne Warteschlange. Offene Nebenquests bleiben bis zum Akt-Finale spielbar. Wird ihr Ort im Akt verschlossen (Aurenhall ab der Krönung), sind sie nach dem Akt über die Weltkarte nachholbar.
+- **Nebenquests:** Sie zählen nicht mit und öffnen nach ihrem Auslöser ohne Warteschlange. Offene Nebenquests bleiben bis zum Akt-Finale spielbar und danach über die Weltkarte nachholbar, auch wenn ihr Ort im Akt verschlossen wird (Aurenhall ab der Krönung; Produktinhaber 2026-11-09, Story 11.11).
 - **Größenklassen:** **K** klein (bis 16 × 20), **M** mittel (um 20 × 25), **G** groß (30 × 40). Angegeben ist Breite × Höhe im Hochformat.
 - **Gegner:** zwei- bis dreimal so viele wie eigene Einheiten, dafür schwächer. Große Karten füllen fehlende Plätze mit Söldnern aus der Taverne auf.
 - **Verteilung:** 12 K, 17 M, 6 G, entsprechend den Anteilen ⅓, ½ und ⅙.
