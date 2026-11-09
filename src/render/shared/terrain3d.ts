@@ -17,7 +17,7 @@ import { DIR_STEP, type BattleState, type GameData, type LadderDef, type Terrain
 import type { AssetStore } from '../host';
 import { BOARDWALK_DECK } from '../board/wallKit';
 import { connectorProfile, connectorSurface, riseDir } from './connectors';
-import { seasonGround, seasonOf } from '../../content/season';
+import { battleSeason, seasonGround } from '../../content/season';
 import { addSnow } from './snow';
 
 /** Ground textures by name (tools/art/ground.py). */
@@ -426,7 +426,7 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
   mix.mixTexture2 = mix2;
   // the season's ground (story 15.15) swaps the texture of a layer, never the layer: a tile keeps its surface and its look of the rules
   const map = data.maps[state.mapId];
-  const season = map ? seasonOf(data.render, map) : 'summer';
+  const season = map ? battleSeason(data.render, map, state) : 'summer';
   const layer = (k: number, surface: string) => {
     const name = seasonGround(data.render, season, surface, !!map?.interior);
     const t = (tex[name] ?? tex[surface]!).clone();

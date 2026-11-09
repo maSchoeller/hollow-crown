@@ -12,6 +12,17 @@ export function seasonOf(render: Pick<RenderDef, 'board'>, map: Pick<MapDef, 'ac
 }
 
 /**
+ * Story 11.7: the act a battle board takes its season from is the campaign's (`BattleState.act`, left out in act 1), not the folder
+ * of the map, so a haunt of act 2 on a map of act 1 shows autumn. The map's own `season` still wins (N4 with snow).
+ */
+export const boardAct = (s: { act?: number }): number => s.act ?? 1;
+
+/** The season of a battle board: the map's own, else that of the campaign's act (`boardAct`), else summer. */
+export function battleSeason(render: Pick<RenderDef, 'board'>, map: Pick<MapDef, 'season'>, s: { act?: number }): Season {
+  return seasonOf(render, { season: map.season, act: boardAct(s) });
+}
+
+/**
  * The ground texture a splat layer draws in `season` (render.yaml `board.seasonGround`); interiors have no season and keep their own.
  * `surface` is the layer's own texture name.
  */

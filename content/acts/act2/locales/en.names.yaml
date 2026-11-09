@@ -35,8 +35,10 @@ faction.free_blades.name: "Free Blades"
 faction.silver_sea.name: "House Silversea"
 faction.iron_march.name: "Border Army of the Eisenmark"
 
-# Story 11.5: foes of the provisional haunt pools of act 2 (11.7 settles them)
+# Foes of act 2 on maps and in haunts (story 11.5, settled in 11.7)
 unit.border_soldier.name: "Border Soldier"
 unit.lance_squire.name: "Lance Squire"
 unit.privateer.name: "Privateer"
 unit.free_blade.name: "Free Blade"
+unit.lance_knight.name: "Lance Knight"
+unit.counting_guard.name: "Counting-House Guard"

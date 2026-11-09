@@ -10,6 +10,7 @@
  *   (Einheiten mit `requires` auf der Karte hängen am Flag; ohne --flag gilt der Weg ohne Entscheidung = „schützen“).
  * --promote a|b   lässt vor der Mission alle Figuren ab Stufe 10 auf den ersten (a) bzw. zweiten (b) Profi-Weg aufsteigen (Story 10.3).
  * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
+ *         Ein Leutnant eines späteren Akts (--lt rowena) spielt mit der Armee nach ganz Akt 1 in seinem Akt (Story 11.7).
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
  * --campaign act2 (Story 11.4) spielt je Lauf Akt 1 bis zum Finale (dieselben Seeds wie act1), wechselt per Übergang in Akt 2
  *   und spielt dessen Folge. Knoten ohne gebaute Karte (Platzhalter) zählen als erledigt und stehen als „skipped“ im Bericht.
@@ -267,7 +268,8 @@ function runHaunt(spec: string) {
   if (!lt) throw new Error(`unknown lieutenant ${ltId}`);
   const order = data.acts[1]!.nodes.map((n) => n.id);
   // the army after the story node: the chain up to the node that follows it (or all of them)
-  const after = order[order.indexOf(story.id) + 1];
+  // story 11.7: a lieutenant of a later act haunts with the army after the whole of act 1, in his act (season, pools, level cap)
+  const after = lt.act > 1 ? undefined : order[order.indexOf(story.id) + 1];
   let wins = 0;
   let played = 0;
   let downs = 0;
@@ -280,6 +282,7 @@ function runHaunt(spec: string) {
     const c = campaignChained(data, seed0 + r, after ?? '', difficulty, chainDifficulty, deathMode);
     if (!c) continue;
     played++;
+    if (lt.act > 1) c.act = lt.act;
     c.lieutenants = { ...c.lieutenants, [ltId]: { met: true, encounters: 1, grudge: 0, routs: 0, signatureDropped: false, ...c.lieutenants?.[ltId] } };
     const h = makeHaunt(data, c, map, anchor, lt, 'sim', 1, seedRng(seed0 + r));
     if (!h) throw new Error('the spawn area holds no place for the lieutenant');

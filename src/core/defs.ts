@@ -188,6 +188,8 @@ export interface ClassDef {
   caps: Stats;
   promotionBonus?: Partial<Stats>;
   playable: boolean;
+  /** story 11.7: kept for season 2 only, on no map and in no haunt pool of season 1 (content:check) */
+  season2?: boolean;
   sprite?: string;
   /** portrait id for generic units: art class_<art> (defaults to the class id) */
   art?: string;

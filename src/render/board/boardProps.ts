@@ -14,7 +14,7 @@ import { loadManifest } from '../shared/assets';
 import { buildTerrain, hash3 } from '../shared/terrain3d';
 import { loadPropMesh } from '../shared/models';
 import { variantClassOf, variantList } from '../../content/propVariants';
-import { seasonModel, seasonOf, takesSnow } from '../../content/season';
+import { battleSeason, seasonModel, takesSnow } from '../../content/season';
 import type { Season } from '../../core/defs';
 import { addSnow } from '../shared/snow';
 import { isPackRegistered } from '../../content/browser';
@@ -80,10 +80,10 @@ export abstract class BoardProps extends BoardSetup {
     return p;
   }
 
-  /** Season of the board shown (story 15.15): the map's own or that of its act; under a roof none, the board looks as in summer. */
+  /** Season of the board shown (story 15.15): the map's own or that of the campaign's act (story 11.7); under a roof none, the board looks as in summer. */
   protected season(): Season {
     const map = this.data.maps[this.state.mapId]!;
-    return map.interior ? 'summer' : seasonOf(this.data.render, map);
+    return map.interior ? 'summer' : battleSeason(this.data.render, map, this.state);
   }
 
   /** A prop material with snow: a template's own material gets the plug-in, the shared prop material a winter twin. */

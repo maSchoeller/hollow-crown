@@ -111,7 +111,7 @@ if (import.meta.env.DEV) {
        * plays a fixture map of `tests/fixtures/maps/<id>.yaml` (default `dev_fog`, story 2.6) with the loaded campaign's company:
        * `await __hc.devMap()`. Saving is switched off for the battle (`failSaves`), so no real save is overwritten. The files are
        * imported on demand and exist in the dev build only; a new fixture map is picked up by its file name. The board shows the season
-       * of `opts.season`, else the map's own, else that of the act in the draft's name (`s2_…` autumn, `s3_…` winter; story 15.15).
+       * of `opts.season`, else the map's own, else that of the act in the draft's name (`s2_…` autumn, `s3_…` winter; story 15.15), else that of the act played (story 11.7).
        * Story 11.2: `__hc.devMap('dev_eisenmark', 2)` plays the map as a node of act 2: units with `levelOffset` stand on the position
        * level of act 2 (`positionLevel`, its `campaign.yaml` is loaded in the dev build when the pack is not); options come third.
        */
@@ -134,7 +134,9 @@ if (import.meta.env.DEV) {
         const raw = ((await load()) as { default: unknown }).default;
         if (opts.season && !SEASONS.includes(opts.season)) throw new Error(`no season "${opts.season}"; there are: ${SEASONS.join(', ')}`);
         const parsed = mapSchema.parse(raw);
-        const season = opts.season ?? parsed.season ?? data.render.board.actSeason[/^s(\d+)_/.exec(id)?.[1] ?? String(act)];
+        // a draft's own act (`s2_…`) sets its season; otherwise the board takes that of the battle's act like in the campaign (story 11.7)
+        const draftAct = /^s(\d+)_/.exec(id)?.[1];
+        const season = opts.season ?? parsed.season ?? (draftAct ? data.render.board.actSeason[draftAct] : undefined);
         data.maps[id] = { ...parsed, act, ...(season ? { season } : {}), ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;
         if (act === 1 && !data.acts[1]!.nodes.some((n) => n.id === id)) data.acts[1]!.nodes.push({ ...data.acts[1]!.nodes[0]!, id, map: id, pre: undefined, post: undefined });
         // a node of a later act: a plain story node (no `fixed`), so the act's own graph stays as it is
@@ -142,6 +144,9 @@ if (import.meta.env.DEV) {
         devSaveFailure.on = true;
         const r = beginBattle(data, c, id, []);
         r.state.lockedRoles = []; // every role's class action works on a fixture map
+        // played as a node of a later act: the battle carries that act (level cap, season of the board) as in the campaign (story 11.7)
+        if (act > 1) r.state.act = act;
+        else delete r.state.act;
         battle.value = { start: r.state, state: r.state, log: [], effects: [] };
         pendingEvents.value = r.events;
         screen.value = { name: 'battle' };

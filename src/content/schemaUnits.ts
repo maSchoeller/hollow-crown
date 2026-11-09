@@ -135,6 +135,8 @@ export const classSchema = z.object({
   caps: statsSchema,
   promotionBonus: partialStats.optional(),
   playable: z.boolean(),
+  /** story 11.7: kept for season 2 only, on no map and in no haunt pool of season 1 (content:check) */
+  season2: z.boolean().optional(),
   sprite: z.string().optional(),
   art: z.string().optional(),
 });

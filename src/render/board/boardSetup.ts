@@ -13,7 +13,7 @@ import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTa
 import type { BattleState, TimeOfDay, Weather } from '../../core';
 import { loadFx } from '../shared/assets';
 import { loadGroundTextures } from '../shared/terrain3d';
-import { seasonOf, seasonTextures } from '../../content/season';
+import { battleSeason, boardAct, seasonTextures } from '../../content/season';
 import { warmTints } from '../shared/figures';
 import { applyLight } from '../shared/season';
 import { lookOverride, resolveLook, weatherPlan } from '../shared/look';
@@ -81,7 +81,8 @@ export abstract class BoardSetup extends BoardBase {
     // a time of day tried out through `?look=` or the console shows the pure preset: the map's own ambient and sun would hide it
     const tried = !!o.timeOfDay;
     return {
-      act: map.act,
+      // the season's tint follows the campaign's act, not the map's folder (story 11.7)
+      act: boardAct(this.state),
       season: map.season,
       ambient: tried ? undefined : map.ambient,
       sun: tried ? undefined : map.sun,
@@ -130,7 +131,7 @@ export abstract class BoardSetup extends BoardBase {
       this.applyQuality();
       this.applyMapLight();
       const map = this.data.maps[state.mapId]!;
-      this.textures = await loadGroundTextures(this.store, seasonTextures(this.data.render, seasonOf(this.data.render, map), !!map.interior));
+      this.textures = await loadGroundTextures(this.store, seasonTextures(this.data.render, battleSeason(this.data.render, map, state), !!map.interior));
       this.fx = await loadFx();
       // the player may leave before the assets arrive: a disposed board builds nothing into the next view's stage
       if (this.disposed) return;
