@@ -59,9 +59,9 @@ Claude Opus 5.5
 
 ### Completion Notes List
 
-- `[ASSUMPTION]` Kontorwachen als `vanguard` mit Stahllanze im Pool von Haus Silbermeer (20 %); Söldner heißen weiter „Freie Klinge“; Iron-March ohne `knight` (Ritter gehören der Lanze).
-- `[ASSUMPTION]` Zivilist und Truhen einer Heimsuchung kommen aus den Pools des Akts ihres Leutnants (wie seine Bande), nicht aus dem Akt der Karte; Truhen Akt 2: 300 Gold, Mondstahl, Heiltrank, 500 Gold.
-- `[ASSUMPTION]` Ein Leutnant ohne Story-Karte (Akt 2 vor seinen Missionen) trägt in Heimsuchungen die Ausrüstung seiner Klasse aus seinem Pool (Rowena Stahllanze), Stufe nach der Leutnant-Regel.
+- **PO bestätigt 2026-11-09:** Kontorwachen als `vanguard` mit Stahllanze im Pool von Haus Silbermeer (20 %); Söldner heißen weiter „Freie Klinge“; Iron-March ohne `knight` (Ritter gehören der Lanze).
+- **PO bestätigt 2026-11-09:** Zivilist und Truhen einer Heimsuchung kommen aus den Pools des Akts ihres Leutnants (wie seine Bande), nicht aus dem Akt der Karte; Truhen Akt 2: 300 Gold, Mondstahl, Heiltrank, 500 Gold.
+- **PO bestätigt 2026-11-09:** Ein Leutnant ohne Story-Karte (Akt 2 vor seinen Missionen) trägt in Heimsuchungen die Ausrüstung seiner Klasse aus seinem Pool (Rowena Stahllanze), Stufe nach der Leutnant-Regel.
 - Gegnerringe auf Herbstlaub: als rote Scheiben gut von den blauen zu unterscheiden, dazu rote Lebensbalken; `GRADE` bleibt.
 - Befund: `defend` gegen Rowena verliert den Zivilisten oft (Ritter halten die Truppe auf); Balancing gehört zu den Missions-Stories von Akt 2.
 
