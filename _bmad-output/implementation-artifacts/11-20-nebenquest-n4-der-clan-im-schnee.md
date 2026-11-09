@@ -3,7 +3,7 @@ baseline_commit: fdb901f
 ---
 # Story 11.20: Nebenquest N4 „Der Clan im Schnee“
 
-Status: ready-for-dev
+Status: review
 
 <!-- Erstellt 2026-11-09 mit gds-create-story, autonom (orchestrierende Session): offene Design-Fragen nicht zurückgegeben, sondern mit der empfohlenen Option als [ASSUMPTION] gesetzt; Liste unten unter „Offene Fragen“. -->
 
@@ -31,24 +31,24 @@ damit Ilkas Herkunft ein Gesicht bekommt.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Karte `content/acts/act2/maps/n4_clanlager.yaml` (AC 1, 2, 4, 5, 10)
-  - [ ] Aus dem Entwurf: `id: n4_clanlager`, `nameKey: map.n4_clanlager.name`, Kopfkommentar nach Muster `m2_1_windscharte.yaml:1-10`, `design:` = Entwurfsblock.
-  - [ ] Gegner: `level` streichen, nur `levelOffset`; Namen `unit.border_soldier.name` (Fraktion `iron_march`, Dravns Grenzheer) statt des nicht vorhandenen `unit.dravn_outpost.name`, Sprites wie Pool `iron_march`; Hauptmann `unit.outpost_captain.name` (neu) [ASSUMPTION]. `knight` hat im Pool keine Figur – Sprite `soldier`.
-  - [ ] Waffen: Eisen wie Entwurf (P−3/P−2), Stahl nur beim Hauptmann (wie Entwurf).
-  - [ ] Älteste: `unit.clan_elder.name` (neu), Sprite/Porträt `villager_elder` wie der Zivilist in `haunts.yaml`.
-  - [ ] Höhen: `crag` ist von sich aus Stufe 2, `terrace` Stufe 1; Entwurf setzt nur `[4,7]` (Treppe) auf 1 – prüfen, ob die Treppe zwischen Terrasse (1) und Felsnase (2) verbindet; Rampe `[2,8]` Gras→Terrasse.
-  - [ ] Heimsuchungs-Anker (Muster 11.12, nach PO-Wunsch je Karte): `rout` im Lager [ASSUMPTION].
-  - [ ] Namen in `content/acts/act2/locales/{de,en}.names.yaml`.
-- [ ] T2 Sicht über den Nebel (AC 3, 7)
-  - [ ] `src/core/rules/vision.ts`: `visionRadius` bekommt Höhe (`levelAt` × `balance.fog.levelBonus`) und den höchsten `visionBonus` der aktiven Skills (`activeSkillIds`).
-  - [ ] `balance.yaml fog.levelBonus` [ASSUMPTION 2], Schema `schemaBalance.ts`, Typ `balanceDefs.ts`; Skill-Effekt `visionBonus` in `schemaUnits.ts` und `defs.ts`.
-  - [ ] Akt 1 prüfen: Nebelkarten mit Höhen (`m1_3_silberbach`, `m1_5_hungerlager`) – die KI und die Simulation lesen den Nebel nicht; Act-1-Basislauf muss gleich bleiben.
-  - [ ] Unit-Tests für Höhe und Skill.
-- [ ] T3 Weißwolf (AC 6, 7): `white_wolf` im Signatur-Block, Skill `white_wolf_sight` in `skills.yaml`, Locale-Schlüssel (Item, Skill) DE/EN; Bild fehlt noch → prüfen, wie `magpie`/`heirloom` Bilder auflösen (ggf. `image: iron_bow` vorläufig).
-- [ ] T4 Szenen DE/EN (AC 8): intro, outro, memorial_intro, memorial_outro; Text als Vorschlag (Schreib-Pipeline), Ilka-Zeilen `speaker: [ilka]` + `requires: alive`, Ersatz `[lucan, avatar]` in der Gedenk-Variante.
-- [ ] T5 Knoten (AC 9): `n4` in `content/acts/act2/campaign.yaml` mit pre/post/memorial/effects; nur diese Zeile.
-- [ ] T6 Tests und Lab: `tests/unit/n4-clanlager.test.ts` (Knoten, Gegnerzahl je Schwierigkeit, Wellen, Älteste keine Niederlage, Ilka Pflicht/gefallen, Belohnung in beiden Varianten, Sicht von der Felsnase); Lab-Szenario `tests/fixtures/lab/clanlager-n4.yaml`.
-- [ ] T7 Simulation (AC 11), Sichtprüfung (AC 13), Abnahme-Abschnitt, Decision-Logs, Sprint-Status `review`, `pnpm check`.
+- [x] T1 Karte `content/acts/act2/maps/n4_clanlager.yaml` (AC 1, 2, 4, 5, 10)
+  - [x] Aus dem Entwurf: `id: n4_clanlager`, `nameKey: map.n4_clanlager.name`, Kopfkommentar nach Muster `m2_1_windscharte.yaml:1-10`, `design:` = Entwurfsblock.
+  - [x] Gegner: `level` streichen, nur `levelOffset`; Namen `unit.border_soldier.name` (Fraktion `iron_march`, Dravns Grenzheer) statt des nicht vorhandenen `unit.dravn_outpost.name`, Sprites wie Pool `iron_march`; Hauptmann `unit.outpost_captain.name` (neu) [ASSUMPTION]. `knight` hat im Pool keine Figur – Sprite `soldier`.
+  - [x] Waffen: Eisen wie Entwurf (P−3/P−2), Stahl nur beim Hauptmann (wie Entwurf).
+  - [x] Älteste: `unit.clan_elder.name` (neu), Sprite/Porträt `villager_elder` wie der Zivilist in `haunts.yaml`.
+  - [x] Höhen: `crag` ist von sich aus Stufe 2, `terrace` Stufe 1; Entwurf setzt nur `[4,7]` (Treppe) auf 1 – prüfen, ob die Treppe zwischen Terrasse (1) und Felsnase (2) verbindet; Rampe `[2,8]` Gras→Terrasse.
+  - [x] Heimsuchungs-Anker: keine – Heimsuchungen kommen nur auf Karten von Story-Knoten (`haunts.ts`), wie N1–N3.
+  - [x] Namen in `content/acts/act2/locales/{de,en}.names.yaml`.
+- [x] T2 Sicht über den Nebel (AC 3, 7)
+  - [x] `src/core/rules/vision.ts`: `visionRadius` bekommt Höhe (`levelAt` × `balance.fog.levelBonus`) und den höchsten `visionBonus` der aktiven Skills (`activeSkillIds`).
+  - [x] `balance.yaml fog.levelBonus` [ASSUMPTION 2], Schema `schemaBalance.ts`, Typ `balanceDefs.ts`; Skill-Effekt `visionBonus` in `schemaUnits.ts` und `defs.ts`.
+  - [x] Akt 1 prüfen: Nebelkarten mit Höhen (`m1_3_silberbach`, `m1_5_hungerlager`) – die KI und die Simulation lesen den Nebel nicht; Act-1-Basislauf muss gleich bleiben.
+  - [x] Unit-Tests für Höhe und Skill.
+- [x] T3 Weißwolf (AC 6, 7): `white_wolf` im Signatur-Block, Skill `white_wolf_sight` in `skills.yaml`, Locale-Schlüssel (Item, Skill) DE/EN; Bild fehlt noch → prüfen, wie `magpie`/`heirloom` Bilder auflösen (ggf. `image: iron_bow` vorläufig).
+- [x] T4 Szenen DE/EN (AC 8): intro, outro, memorial_intro, memorial_outro; Text als Vorschlag (Schreib-Pipeline), Ilka-Zeilen `speaker: [ilka]` + `requires: alive`, Ersatz `[lucan, avatar]` in der Gedenk-Variante.
+- [x] T5 Knoten (AC 9): `n4` in `content/acts/act2/campaign.yaml` mit pre/post/memorial/effects; nur diese Zeile.
+- [x] T6 Tests und Lab: `tests/unit/n4-clanlager.test.ts` (Knoten, Gegnerzahl je Schwierigkeit, Wellen, Älteste keine Niederlage, Ilka Pflicht/gefallen, Belohnung in beiden Varianten, Sicht von der Felsnase); Lab-Szenario `tests/fixtures/lab/clanlager-n4.yaml`.
+- [x] T7 Simulation (AC 11), Sichtprüfung (AC 13), Abnahme-Abschnitt, Decision-Logs, Sprint-Status `review`, `pnpm check`.
 
 ## Dev Notes
 
@@ -105,18 +105,45 @@ damit Ilkas Herkunft ein Gesicht bekommt.
 
 ## Offene Fragen an den Produktinhaber (autonom als [ASSUMPTION] gesetzt)
 
-Siehe Dev Agent Record → Completion Notes; die Liste wird beim Umsetzen ergänzt.
+- **F1 Sicht über den Nebel:** A) je Höhenstufe `fog.levelBonus` 2 ab Stufe 2 (überall; Akt-1-Nebelkarten haben nur Stufe 1, bleiben gleich) – **gesetzt**; B) nur ein Kartenfeld „Ausguck“ in N4; C) Sichtbonus am Gelände `crag`. Wert in `balance.yaml`.
+- **F2 Weißwolf-Effekt:** A) +3 Sicht unter Nebel (`visionBonus`) – **gesetzt**; B) Träger sieht unter Nebel alles; C) +2 Sicht und +10 Treffer unter Nebel. Wert in `skills.yaml`.
+- **F3 Clanälteste spricht:** A) nur in Erzählzeilen – **gesetzt**; B) eigene Halbfigur (ChatGPT, wie Lanzenreiter in 11.12); C) Figur `villager_elder` als Sprecher („Dorfältester“).
+- **F4 Gold:** A) 1 400 wie Entwurf – **gesetzt** (Sim: unter der Akt-2-Kurve); B) 2 000 wie 2-1 nach der Abnahme.
+- **F5 Älteste auf Normal:** Sim schützt sie nur in 2 % (Leicht 92 %): A) bis 11.27 lassen – **gesetzt**; B) Älteste Stufe/Rüstung hoch (wie Tobins Vater mit Kettenhemd); C) einen der drei Normal-Schützen streichen.
 
 ## Dev Agent Record
 
 ### Agent Model Used
 
+Claude Opus 5.5 (gds-dev-story), autonom; Szenentext selbst geschrieben (Vorschlag, Abnahme beim Durchspielen).
+
 ### Debug Log References
+
+- `pnpm sim --campaign act2 --start expected --order n4 --runs 50 [--difficulty easy|hard]` (neu: Nebenquest-Knoten über `--order`; Beitritte übersprungener Karten). `pnpm sim n4_clanlager` direkt geht nicht (Einzelkarten-Modus kennt nur Akt 1).
+- Act-1-Basis: `pnpm sim --campaign act1 --runs 50 --seed 1` mit und ohne `--set fog.levelBonus=0`, `sim:diff`: kein Wert bewegt sich um mehr als 0,02.
 
 ### Completion Notes List
 
+- T1: Karte aus dem Entwurf (Abweichungen in der Abnahme-Datei): `season: winter` + `weather: snow` (Akt 2 sonst Herbst; `validateLook` erlaubt Schnee nur mit Winter), Gegner „Grenzsoldat“ mit Pool-Figuren `iron_march`, Hauptmann `unit.outpost_captain.name`, Älteste mit Figur `villager_elder`, keine Heimsuchungs-Anker (Nebenquest-Karten werden nie heimgesucht), Gold 1 400.
+- T2: `visionRadius(data, s, u)` mit Höhe (`levelAt` × `fog.levelBonus` ab `levelBonusFrom`) und höchstem `visionBonus`; Schema/Typen; Tests in `fog.test.ts`.
+- T3: `white_wolf` (Werte Eisenbogen, Bild `art/items/white_wolf.png` lag schon vor), Skill `white_wolf_sight`, Locale-Schlüssel.
+- T4: Szenen intro/outro/memorial_intro/memorial_outro DE+EN, alle Boxen ≤ 110, Ilka-Zeilen `requires: alive` + `fallback: skip`, Ketten enden auf avatar/lucan.
+- T5: Knoten `n4` mit pre/post/memorial/effects; „gegangen bleibt zu“ war schon da (11.11).
+- T6: `tests/unit/n4-clanlager.test.ts` (8 Tests), Lab `tests/fixtures/lab/clanlager-n4.yaml` (Gegner stehen im Lab auf P des ganzen Akts, Lab-Grenze bei Nebenquests).
+- T7: Sim [C]: Leicht 100 % / 0,24 Niedergestreckte / 0 Tote / Älteste 92 %; Normal 100 % / 1,88 / 0,41 / 2 %; Schwer 59 % / 4,04 / 1,95 / 0 %; Gold unter der Kurve. Nur berichtet (11.27). Sichtprüfung 375 × 812 im Dev-Build act2, Lautstärken 0: Schnee, Nebel, Felsnase. Decision-Logs GDD/Narrative als [ASSUMPTION]. Ilkas Beitritt (11.14) ist noch nicht auf main – gebaut gegen die Gefährten-Definition aus 11.5.
 - Ultimate context engine analysis completed - comprehensive developer guide created (gds-create-story, 2026-11-09).
 
 ### File List
 
+- content/acts/act2/maps/n4_clanlager.yaml, scenes/scn.n4.{intro,outro,memorial_intro,memorial_outro}.yaml (neu)
+- content/acts/act2/campaign.yaml, locales/{de,en}.names.yaml, content/locales/en/act2.dialogue.yaml
+- content/core/{balance,items,skills}.yaml, content/core/locales/{de,en}.{names,items}.yaml
+- src/core/rules/vision.ts, src/core/defs.ts, src/core/balanceDefs.ts, src/content/schemaBalance.ts, src/content/schemaUnits.ts
+- tools/simCampaign.ts, tools/simulate.ts
+- tests/unit/n4-clanlager.test.ts, tests/fixtures/lab/clanlager-n4.yaml (neu), tests/unit/fog.test.ts
+- concept/27-ueberarbeitung/levels/abnahme/s2_n4_clan.md, concept/21-gdd/decision-log.md, concept/22-narrative/decision-log.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml, 11-20-nebenquest-n4-der-clan-im-schnee.md
+
 ### Change Log
+
+- 2026-11-09: Story 11.20 umgesetzt (Karte, Sicht je Höhe, Weißwolf, Szenen DE/EN, Knoten, Sim-Option, Tests, Lab, Abnahme); Annahmen F1–F5; Status review.

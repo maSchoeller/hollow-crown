@@ -32,7 +32,7 @@ describe('season tree lists', () => {
     expect(pickWeighted(mix, 0.81).model).toBe('b');
   });
   it('the loader sets the act of every map from its folder', () => {
-    for (const m of Object.values(data.maps)) expect(m.act, m.id).toBe(m.id.startsWith('m2_') ? 2 : 1);
+    for (const m of Object.values(data.maps)) expect(m.act, m.id).toBe(m.id.startsWith('m2_') || m.id.startsWith('n4_') ? 2 : 1);
   });
 });
 

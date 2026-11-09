@@ -84,8 +84,8 @@ afterEach(() => {
 });
 
 describe('fog numbers come from balance.yaml', () => {
-  it('has base 3, +2 for marksman and scout, +1 for fliers, +2 per height level, and the blockers wall, door and rockwall', () => {
-    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'gate_closed', 'rockwall'], levelBonus: 2 });
+  it('has base 3, +2 for marksman and scout, +1 for fliers, +2 per height level from level 2 on, and the blockers wall, door and rockwall', () => {
+    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'gate_closed', 'rockwall'], levelBonus: 2, levelBonusFrom: 2 });
   });
   it('keeps the bonus keys to roles and terrain that exist (content:check)', () => {
     expect(validateContent(data, locales).filter((i) => i.file === 'balance.yaml' && /fog\./.test(i.message))).toEqual([]);
@@ -110,12 +110,12 @@ describe('vision radius', () => {
     restore.push(() => (cls.moveType = was));
     expect(visionRadius(data, st, u)).toBe(5);
   });
-  it('sees farther from higher ground: levelBonus per height level of the own tile (story 11.20, Felsnase)', () => {
+  it('sees farther from higher ground: levelBonus per height level of the own tile from level 2 on (story 11.20, Felsnase)', () => {
     const st = s();
     setTile(st, [2, 2], 'crag');
     setTile(st, [4, 4], 'terrace');
     expect(visionRadius(data, st, place(st, 'player', 'vanguard', [2, 2]))).toBe(3 + 2 * 2);
-    expect(visionRadius(data, st, place(st, 'player', 'vanguard', [4, 4]))).toBe(3 + 2);
+    expect(visionRadius(data, st, place(st, 'player', 'vanguard', [4, 4]))).toBe(3);
     expect(visionRadius(data, st, place(st, 'player', 'marksman', [6, 6]))).toBe(5);
   });
   it('adds the highest visionBonus of the active skills: the bow Weißwolf (story 11.20)', () => {

@@ -1,7 +1,7 @@
 /**
  * Nebel des Krieges (story 2.6). On a map with `fog: true` a team sees the tiles within a radius of its active units, as far as
  * the line of sight reaches: the radius is `balance.fog.baseVision` plus the highest bonus that applies (class role or movement
- * type, bonuses do not stack), plus `balance.fog.levelBonus` per height level of the unit's tile and the highest `visionBonus` of its
+ * type, bonuses do not stack), plus `balance.fog.levelBonus` per height level of the unit's tile (from `levelBonusFrom`) and the highest `visionBonus` of its
  * active skills (story 11.20: the Felsnase of N4, the bow Weißwolf), and sight ends behind terrain of `balance.fog.blockers` (wall, closed door, rock wall; the blocking
  * tile itself is seen). Fields lifted by Wirken with wind (`liftedTiles`) count as seen. Without `fog` everything is seen.
  *
@@ -23,13 +23,14 @@ export const fogOn = (data: GameData, s: Pick<BattleState, 'mapId'>): boolean =>
 
 /**
  * How far the unit sees: base radius plus the highest bonus of its class role and its movement type, plus `levelBonus` per height
- * level of its tile (story 11.20) and the highest `visionBonus` of its active skills.
+ * level of its tile from level `levelBonusFrom` on (story 11.20) and the highest `visionBonus` of its active skills.
  */
 export function visionRadius(data: GameData, s: BattleState, u: BattleUnit): number {
   const f = data.balance.fog;
   const cls = data.classes[u.classId];
   const bonus = Math.max(f.roleBonus[cls?.role ?? ''] ?? 0, f.moveTypeBonus[cls?.moveType ?? 'foot'] ?? 0);
-  const height = u.pos ? levelAt(data, s, u.pos) * f.levelBonus : 0;
+  const level = u.pos ? levelAt(data, s, u.pos) : 0;
+  const height = level >= f.levelBonusFrom ? level * f.levelBonus : 0;
   const skill = Math.max(0, ...activeSkillIds(data, u, s).map((id) => data.skills[id]?.effect.visionBonus ?? 0));
   return f.baseVision + bonus + height + skill;
 }

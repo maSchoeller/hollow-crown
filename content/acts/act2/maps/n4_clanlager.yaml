@@ -3,12 +3,12 @@
 # Ilkas Clanlager auf einer Lichtung im Bergwald der Kupferberge, früher Schnee (season winter, weather snow; Akt 2 ist sonst Herbst) und Nebel.
 # Dravns Vorposten (Grenzheer, Fraktion iron_march) kommen im Nebel aus dem Wald von allen vier Seiten, Wellen R3 Nord, R5 Süd, R7 West.
 # Felsnase (crag, Stufe 2) im Nordwesten über Rampe [3,8], Terrasse und Treppe [4,7]: Unter Nebel sieht man je Höhenstufe weiter
-# (balance.yaml fog.levelBonus, Story 11.20 [ASSUMPTION]); sie ist der einzige hohe Punkt der Karte und damit der einzige Blick über den Nebel.
+# (balance.yaml fog.levelBonus ab Stufe 2, Story 11.20 [ASSUMPTION]); sie ist der einzige hohe Punkt der Karte und damit der einzige Blick über den Nebel.
 # Die Clanälteste (dritte Partei, civilian) steht mitten im Lager; fällt sie, scheitert nur das Nebenziel s_elder, keine Niederlage.
 # Ilka ist Pflicht, solange sie in der Truppe ist; gefallen filtert die Aufstellung sie heraus (presentForced, Story 11.10), die Gedenk-Variante
 # (memorialIf dead ilka) ändert die Karte nicht. Belohnung als Knotenwirkung: Glutfunke und Signaturbogen Weißwolf (white_wolf), in beiden Varianten.
 # Abweichungen vom Entwurf (Story 11.20, alle in levels/abnahme/s2_n4_clan.md): Karten-Id n4_clanlager, Gegner nur mit levelOffset und als
-# „Grenzsoldat“ mit den Figuren des Pools iron_march, Hauptmann mit eigenem Namen, Älteste mit Figur des Dorfältesten, ein Heimsuchungs-Anker.
+# „Grenzsoldat“ mit den Figuren des Pools iron_march, Hauptmann mit eigenem Namen, Älteste mit Figur des Dorfältesten.
 # Balancing [C] siehe Abschnitt „Übernahme Story 11.20“ der Abnahme-Datei (pnpm sim n4_clanlager --campaign act2 --start expected).
 # Szenen: scn.n4.intro vor der Karte, scn.n4.outro nach Runde 9; Gedenk-Variante scn.n4.memorial_intro/outro.
 id: n4_clanlager
@@ -66,13 +66,7 @@ deploy:
   max: 8
   forced: [avatar, lucan, ilka]
   slots: [[8, 10], [9, 10], [10, 10], [11, 10], [8, 11], [9, 11], [11, 11], [8, 12], [9, 12], [11, 12]]
-# Heimsuchungs-Anker (Story 5.5) [ASSUMPTION]: einer im Lager, der Grund steht als Kommentar darüber
-haunts:
-  # Grund: das Clanlager selbst – Dravns Vorposten kommen wieder aus dem Wald, die Truppe steht wie in der Mission zwischen den Zelten.
-  - variant: rout
-    target: { at: [10, 12] }
-    enemySpawn: { rect: [7, 1, 12, 4] }
-    deploy: { rect: [7, 13, 12, 15] }
+# Keine Heimsuchungs-Anker: Heimsuchungen kommen nur auf Karten von Story-Knoten (haunts.ts), wie bei N1–N3 von Akt 1
 units:
   # Dravns Vorposten aus dem Wald, Hauptmann im Norden
   - { id: capt, nameKey: unit.outpost_captain.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -1, at: [9, 3], items: [{ def: steel_sword }], ai: { profile: aggressive } }

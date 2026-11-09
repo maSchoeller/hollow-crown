@@ -94,7 +94,7 @@ dlg.scn.m2_1.outro.l14: "The envoys ride ahead. The company descends into the Ir
 dlg.scn.m2_1.outro.l15: "One last look at the sky. Where the shadow passed, only gray wind remains."
 
 # Story 11.20: side quest N4 (Clan in the Snow; memorial variant when Ilka has fallen)
-dlg.scn.n4.intro.l01: "Early snow in the Copper Mountains. Between dark firs, smoke rises from hide tents."
+dlg.scn.n4.intro.l01: "Early snow in the Copper Mountains. Between dark firs, smoke rises over the clan camp."
 dlg.scn.n4.intro.l02: "My clan. They camp here every autumn, before the passes freeze."
 dlg.scn.n4.intro.l03: "Tracks in the white, many, from hobnailed boots. They come out of the woods on every side."
 dlg.scn.n4.intro.l04: "Border Army. Dravn's outposts. He wants the hunting grounds, and the people who know them."
@@ -110,7 +110,7 @@ dlg.scn.n4.outro.l04: "I'm going with you. But now I remember what for."
 dlg.scn.n4.outro.l05: "Dravn takes horses, hunting grounds, people. Someday we take something back."
 dlg.scn.n4.outro.l06: "In the ashes of the campfire a spark glows that will not die: an ember spark."
 dlg.scn.n4.outro.l07: "A spark and a bow. Not a bad wage for a morning in the snow."
-dlg.scn.n4.memorial_intro.l01: "Early snow in the Copper Mountains. Between dark firs, smoke rises from hide tents."
+dlg.scn.n4.memorial_intro.l01: "Early snow in the Copper Mountains. Between dark firs, smoke rises over the clan camp."
 dlg.scn.n4.memorial_intro.l02: "Ilka spoke of this camp. Every autumn, right here, before the passes freeze."
 dlg.scn.n4.memorial_intro.l03: "Tracks in the white, many, from hobnailed boots. They come out of the woods on every side."
 dlg.scn.n4.memorial_intro.l04: "Border Army. Dravn's men. They want the hunting grounds, and the clan stands in the way."

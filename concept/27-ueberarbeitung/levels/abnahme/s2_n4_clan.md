@@ -35,10 +35,10 @@
 | `id: s2_n4_clan` | `n4_clanlager` | Karten-Id des Knotens |
 | `unit.dravn_outpost.name` | `unit.border_soldier.name` („Grenzsoldat“), Figuren des Pools `iron_march` | Dravns Grenzheer (11.7); Ritter mit Figur `soldier` |
 | `level` + `levelOffset` | nur `levelOffset` | 11.2 |
-| Felsnase „sieht über den Nebel“ (nur Text) | Regel `balance.yaml fog.levelBonus: 2` je Höhenstufe [ASSUMPTION]: Felsnase +4, Terrasse +2 | Format kannte keine Höhensicht |
+| Felsnase „sieht über den Nebel“ (nur Text) | Regel `balance.yaml fog.levelBonus: 2` je Höhenstufe ab Stufe 2 (`levelBonusFrom`) [ASSUMPTION]: Felsnase +4, Terrasse und Wehrgang ohne (Akt-1-Nebelkarten unverändert) | Format kannte keine Höhensicht |
 | Signaturbogen `white_wolf` | Item mit Werten des Eisenbogens, Skill `white_wolf_sight` (+3 Sicht unter Nebel) [ASSUMPTION] | items.md §6.2 |
 | Älteste ohne Figur | Figur und Porträt `villager_elder`, spricht in den Szenen nur in Erzählzeilen [ASSUMPTION] | keine eigene Halbfigur |
-| keine Heimsuchungs-Anker | ein Anker `rout` im Lager [ASSUMPTION] | Muster 11.12 |
+| keine Heimsuchungs-Anker | keine | Heimsuchungen nur auf Story-Karten (wie N1–N3) |
 | Szenen `scn.s2_n4.*` (keine) | `scn.n4.intro/outro`, Gedenk-Variante `scn.n4.memorial_intro/outro` | Akt-1-Schema, Muster N3 |
 
 **Simulation** (`pnpm sim --campaign act2 --start expected --order n4 --runs 50`; N4 nach 2-1, 2-2/2-3 ohne Karte übersprungen, Ilka tritt beim übersprungenen 2-3 bei; erwartete Stufe 15):

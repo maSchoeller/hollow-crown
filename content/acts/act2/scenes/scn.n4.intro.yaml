@@ -7,7 +7,7 @@ music: tense
 lines:
   - id: l01
     mood: neutral
-    text: "Früher Schnee in den Kupferbergen. Zwischen dunklen Tannen steigt Rauch aus Fellzelten."
+    text: "Früher Schnee in den Kupferbergen. Zwischen dunklen Tannen steigt Rauch über dem Clanlager."
   - id: l02
     speaker: [ilka]
     fallback: skip
