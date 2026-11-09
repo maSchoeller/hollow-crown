@@ -28,7 +28,7 @@ let data: GameData;
 let locales: ReturnType<typeof loadContentFromDisk>['locales'];
 
 const avatar = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
-const BASE = 11;
+const BASE = 12; // positionLevel.base in acts/act2/campaign.yaml (story 11.4, product owner 2026-11-09)
 const FIXTURE = 'dev_eisenmark';
 
 /** Act 2 with the opening, the first pair, a side quest (one with `levelBonus`) and the fixture map as nodes. */

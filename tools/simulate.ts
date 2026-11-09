@@ -3,6 +3,7 @@
  * --chain spielt die Missionen vor der Zielkarte auf einer anderen Stufe (Schwer-Ziel mit Normal-Kette, damit genug Läufe ankommen).
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts] [--action-s 12]
+ * pnpm sim --campaign act2 [dieselben] [--start expected] [--position k] [--order m2_3,m2_6] [--flags e7_warned] [--map-file <pfad> [--node m2_4]]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
  * --flag setzt vor dem Kampf ein Kampagnen-Flag (mehrfach möglich; Wert true, wenn nur der Name steht), --leave nimmt Begleiter aus der Truppe:
  *   so lassen sich die Zweige einer Entscheidung simulieren, z. B. Mission 1-4 mit „ausliefern“: `--flag e02=hand_over --leave fenn`
@@ -10,6 +11,19 @@
  * --promote a|b   lässt vor der Mission alle Figuren ab Stufe 10 auf den ersten (a) bzw. zweiten (b) Profi-Weg aufsteigen (Story 10.3).
  * --haunt spielt den Heimsuchungs-Anker einer Karte (Story 5.6) mit der verketteten Armee nach dieser Karte gegen den Leutnant --lt.
  * --campaign spielt den Akt verkettet mit Heimat-Heuristik und prüft Korridore und Goldkurve (Story 6.8, tools/simCampaign.ts).
+ * --campaign act2 (Story 11.4) spielt je Lauf Akt 1 bis zum Finale (dieselben Seeds wie act1), wechselt per Übergang in Akt 2
+ *   und spielt dessen Folge. Knoten ohne gebaute Karte (Platzhalter) zählen als erledigt und stehen als „skipped“ im Bericht.
+ *   Der Bericht nennt Armee-Stufe und Gold beim Eintritt (wenn der erste Knoten von Akt 2 ansteht, nach Lager und Heimsuchungen);
+ *   die Goldkurve prüft die Missionen von Akt 2 gegen simulation.gold.perAct['2'].
+ * --start expected  kein Akt-1-Lauf: die Truppe von Akt 1 (alle Akt-1-Knoten erledigt) steigt per Stufenaufstieg auf P der ersten
+ *                   gespielten Mission; Gold aus simulation.startExpected['2'] in balance.yaml.
+ * --position k      setzt P des Zielknotens (--node, sonst der Knoten von --map-file bzw. der erste Story-Knoten von Akt 2 ohne Karte)
+ *                   auf k; die übrigen Knoten folgen (positionLevel.base wird nur für diesen Aufruf verschoben).
+ * --order a,b       Reihenfolge innerhalb der Paare: sind mehrere Story-Knoten offen, kommen die genannten zuerst (sonst Dateireihenfolge).
+ * --flags a=b,c     setzt Kampagnen-Flags zu Beginn jedes Laufs (Ausgang einer Entscheidung, z. B. --flags e7_warned); ohne Wert = true,
+ *                   der Name muss im Flag-Register stehen.
+ * --map-file <pfad> spielt eine Karten-YAML (z. B. tests/fixtures/maps/dev_eisenmark.yaml) als Knoten von Akt 2: am Knoten mit ihrer
+ *                   Karten-Id, sonst an --node (Standard: erster Story-Knoten ohne Karte). Akt 2 bleibt dabei unveröffentlicht.
  *
  * Testlabor S1/S2 (concept/24-architecture/testlabor-2026-11-07.md), für eine Karte und für --campaign:
  *   Die Ausgabe zeigt die Nebenziele (erfüllt nur bei Sieg; die KI verfolgt sie nicht, was sie nicht versucht, steht als 0 %)
@@ -24,7 +38,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { autoplay, createHauntBattle, hauntLevel, makeHaunt, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty } from '../src/core';
-import { mergeCampaignSims, missionFlags, simulateCampaign, type CampaignSim, type MissionFlags } from './simCampaign';
+import { mergeCampaignSims, missionFlags, prepareActData, simulateCampaign, type CampaignSim, type MissionFlags } from './simCampaign';
 import { campaignChained, printMap, simulateMapRun, summarizeMap, turnStats, type MapRun, type MapSimOptions } from './simMap';
 import { loadContentWithSets, parseSets } from './simOverrides';
 import { runParallel, workerCount } from './simPool';
@@ -45,7 +59,7 @@ const writeJson = (value: unknown) => {
   console.log(`json → ${jsonOut}`);
 };
 const workersArg = args.includes('--workers') ? opt('workers', '') : undefined;
-const campaignArg = args.includes('--campaign') ? opt('campaign', `act${data.acts[1]!.act}`) : null;
+const campaignArg = args.includes('--campaign') ? opt('campaign', 'act1') : null;
 if (campaignArg) {
   await runCampaign(campaignArg);
   process.exit(0);
@@ -90,24 +104,44 @@ if (mapOptions.promote && !['a', 'b'].includes(mapOptions.promote)) throw new Er
 }
 
 async function runCampaign(act: string) {
-  if (act !== `act${data.acts[1]!.act}`) throw new Error(`content has ${`act${data.acts[1]!.act}`}, not ${act}`);
+  const actNo = Number(/^act(\d+)$/.exec(act)?.[1]);
+  if (!data.acts[actNo]) throw new Error(`content has ${Object.keys(data.acts).map((a) => `act${a}`).join(', ')}, not ${act}`);
   const runs = Number(opt('runs', '50'));
   const seed = Number(opt('seed', '1'));
   const difficulty = opt('difficulty', 'normal') as Difficulty;
   const deathMode = opt('death', 'standard') as DeathMode;
   const haunts = args.includes('--haunts');
+  // story 11.4: the options of a later act, each only when given, so `--campaign act1` runs exactly as before
+  const start = opt('start', 'chained');
+  if (start !== 'chained' && start !== 'expected') throw new Error(`--start takes expected or chained, got ${start}`);
+  const position = args.includes('--position') ? Number(opt('position', '')) : undefined;
+  if (position !== undefined && !Number.isInteger(position)) throw new Error(`--position needs a whole number, got ${opt('position', '')}`);
+  const list = (name: string) => (args.includes(`--${name}`) ? opt(name, '').split(',').filter(Boolean) : undefined);
+  const order = list('order');
+  const flags = list('flags');
+  const acts = {
+    ...(actNo > 1 ? { act: actNo } : {}),
+    ...(start === 'expected' ? { start: 'expected' as const } : {}),
+    ...(position !== undefined ? { position } : {}),
+    ...(order ? { order } : {}),
+    ...(flags ? { flags } : {}),
+    ...(args.includes('--map-file') ? { mapFile: opt('map-file', '') } : {}),
+    ...(args.includes('--node') ? { node: opt('node', '') } : {}),
+  };
+  const options = { difficulty, deathMode, haunts, ...acts };
+  const actData = prepareActData(data, options);
   const workers = workerCount(workersArg, runs);
   const t0 = performance.now();
   const sim: CampaignSim =
     workers > 1
-      ? mergeCampaignSims(await runParallel({ kind: 'campaign', options: { difficulty, deathMode, haunts } }, runs, seed, workers, sets))
-      : simulateCampaign(data, { runs, seed, difficulty, deathMode, haunts });
+      ? mergeCampaignSims(await runParallel({ kind: 'campaign', options }, runs, seed, workers, sets))
+      : simulateCampaign(actData, { runs, seed, ...options });
   const seconds = (performance.now() - t0) / 1000;
   const per = (n: number, d: number) => n / Math.max(1, d);
   const mark = (f: MissionFlags, k: keyof MissionFlags) => (f[k] ? (f[k] === 'low' ? ' ↓' : ' ↑') : '');
-  console.log(`${act} chained – ${runs} runs, ${difficulty}/${deathMode}, ${seconds.toFixed(1)} s (${workers} worker${workers === 1 ? '' : 's'})`);
+  console.log(`${act} ${start === 'expected' ? '(--start expected)' : 'chained'} – ${runs} runs, ${difficulty}/${deathMode}, ${seconds.toFixed(1)} s (${workers} worker${workers === 1 ? '' : 's'})`);
   const rows = sim.missions.map((m) => {
-    const f = missionFlags(data, m, difficulty);
+    const f = missionFlags(actData, m, difficulty);
     return {
       mission: m.node,
       reached: m.reached,
@@ -147,6 +181,15 @@ async function runCampaign(act: string) {
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
       `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}`,
   );
+  if (actNo > 1) {
+    const e = sim.entry;
+    console.log(
+      `entry into ${act} (${start === 'expected' ? '--start expected' : 'chained after act 1'}${haunts ? ', with haunts' : ''}): ${e.runs}/${runs} runs, ` +
+        `army lv ${per(e.armyLevel, e.runs).toFixed(2)}, gold ${per(e.gold, e.runs).toFixed(0)}`,
+    );
+  }
+  const skipped = Object.entries(sim.skipped);
+  if (skipped.length) console.log(`skipped, no playable map yet: ${skipped.map(([id, n]) => `${id} (${n} runs)`).join(', ')}`);
   if (haunts) {
     const h = sim.haunts;
     console.log(
@@ -183,6 +226,9 @@ async function runCampaign(act: string) {
     ...(haunts
       ? { haunts: { perRun: per(sim.haunts.played, runs), winRate: per(sim.haunts.won, sim.haunts.played), goldPerRun: per(sim.haunts.gold, runs), fallenPerRun: per(sim.haunts.fallen, runs) } }
       : {}),
+    ...(actNo > 1
+      ? { acts, entry: { runs: sim.entry.runs, armyLevel: per(sim.entry.armyLevel, sim.entry.runs), gold: per(sim.entry.gold, sim.entry.runs) }, skipped: sim.skipped }
+      : {}),
     battleHours: battleMin / 60,
     missions: sim.missions.map((m) => ({
       node: m.node,
@@ -200,7 +246,7 @@ async function runCampaign(act: string) {
       turns: turnStats(m.winTurns),
       actions: per(m.actions, m.wins),
       side: Object.fromEntries(Object.entries(m.side).map(([id, n]) => [id, { done: n, rate: per(n, m.cleared) }])),
-      flags: missionFlags(data, m, difficulty),
+      flags: missionFlags(actData, m, difficulty),
     })),
     timing: { seconds, workers },
   });

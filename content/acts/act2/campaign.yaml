@@ -6,8 +6,8 @@ act: 2
 levelCap: 20
 # Positionsstufe (Story 11.2, Architektur §5.4): die Stufe eines Knotens ist P = base + erledigte Story-Knoten von Akt 2 + levelBonus
 # des Knotens; Gegner stehen per levelOffset (−3…+2) darauf, Gefährten von Akt 2 treten mit max(Stufe, P − 1) bei.
-# base 11 [ASSUMPTION] (Produktinhaber 2026-11-07, Frage 6): den endgültigen Wert setzt Story 11.4 nach der Messung.
-positionLevel: { base: 11 }
+# base 12 (Story 11.4, Produktinhaber 2026-11-09): gemessene effektive Armee-Stufe beim Eintritt, Normal ohne Heimsuchungen 12,0 (Beförderte zählen +15).
+positionLevel: { base: 12 }
 # alle Regeln sind aus Akt 1 bekannt: keine gestaffelte Einführung mehr
 mechanics: {}
 # die Truppe lebt seit 1-6 in der Burg; home gilt nur als Startwert einer neuen Kampagne, die Heimat bleibt beim Übergang, wie sie ist
