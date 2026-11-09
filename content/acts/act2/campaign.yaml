@@ -18,7 +18,7 @@ startGold: 0
 defaultPlace: grauwacht
 startConvoy: []
 # Knoten von Akt 2 (Story 11.3): Platzhalter, deren Karte noch nicht gebaut ist; die Weltkarte bietet sie nicht an (mapInBuild),
-# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], außer m2_1 (Karte seit Story 11.12); die Folge der Missionsliste
+# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], außer m2_1 und m2_5 (Karten seit Story 11.12 bzw. 11.16); die Folge der Missionsliste
 # in requires ist mit Story 11.11 geprüft. Nebenquests (Produktinhaber 2026-11-09): N4 und N6 wie N3/Tobin offen, wenn Ilka bzw.
 # Jory in der Truppe oder gefallen ist, zu, wenn die Figur gegangen ist (Gedenk-Variante memorialIf/memorial mit 11.20 bzw. 11.22,
 # die Szenen fehlen noch); N6 öffnet gleichzeitig mit 2-7 (nach 2-5 und 2-6); offene Nebenquests bleiben nach 2-8 nachholbar.
@@ -27,7 +27,7 @@ nodes:
   - { id: m2_2, map: m2_2_salzpass, titleKey: node.m2_2.title, requires: [{ completed: m2_1 }], place: salzpass, merchantTier: 1 }
   - { id: m2_3, map: m2_3_rabenweide, titleKey: node.m2_3.title, requires: [{ completed: m2_1 }], merchantTier: 1 }
   - { id: m2_4, map: m2_4_brandschneise, titleKey: node.m2_4.title, requires: [{ completed: m2_2 }, { completed: m2_3 }], place: brandschneise, merchantTier: 1 }
-  - { id: m2_5, map: m2_5_silberquell, titleKey: node.m2_5.title, requires: [{ completed: m2_4 }], merchantTier: 1 }
+  - { id: m2_5, map: m2_5_silberquell, titleKey: node.m2_5.title, requires: [{ completed: m2_4 }], place: silberquell, merchantTier: 1, pre: scn.m2_5.intro, post: scn.m2_5.outro }
   - { id: m2_6, map: m2_6_kraehenholm, titleKey: node.m2_6.title, requires: [{ completed: m2_4 }], place: kraehenholm, merchantTier: 1 }
   - { id: m2_7, map: m2_7_kontor, titleKey: node.m2_7.title, requires: [{ completed: m2_5 }, { completed: m2_6 }], place: kontor, merchantTier: 1 }
   - { id: m2_8, fixed: finale, map: m2_8_kronfeld, titleKey: node.m2_8.title, requires: [{ completed: m2_7 }], place: kronfeld, merchantTier: 1 }

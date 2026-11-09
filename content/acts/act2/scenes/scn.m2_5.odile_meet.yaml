@@ -1,0 +1,18 @@
+# Mission 2-5, Begegnung im Kampf (Trigger t_odile, Story 11.16 [ASSUMPTION]): die erste eigene Figur erreicht Odile im Klosterhof.
+# Odile ist noch keine Gefährtin (team other, folgt der nächsten eigenen Figur); sie tritt erst am Ausgang bei (escort).
+id: scn.m2_5.odile_meet
+lines:
+  - id: l01
+    speaker: [odile]
+    fallback: skip
+    mood: angry
+    text: "Wer seid ihr? Gleich, ihr kämpft gegen sie. Das reicht mir fürs Erste."
+  - id: l02
+    speaker: [avatar]
+    mood: neutral
+    text: "Wir bringen dich über die Schlucht. Bleib dicht bei uns."
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Odile. Leibwache der Prinzessin, bis vor einem Jahr jedenfalls. Geht voran, ich folge."

@@ -1,0 +1,39 @@
+# Mission 2-5, Szene vor der Karte (Knoten pre, Story 11.16): Ankunft am Kloster Silberquell in der Eisenschlucht; das Grenzheer ist schon im Hof.
+# Ohne E7 warn jagt Sable die Truppe (sie ruft als Feindin über die Schlucht), mit e07: warn ist Sable in der Truppe und erkennt ihre alten Leute.
+# Text als Vorschlag der Schreib-Pipeline (Story 11.16), Abnahme durch den Produktinhaber offen.
+id: scn.m2_5.intro
+background: silberquell
+lines:
+  - id: l01
+    mood: neutral
+    text: "Mittag in der Eisenschlucht. Unten rauscht der Fluss, oben hängen zwei Brücken an Seilen."
+  - id: l02
+    mood: neutral
+    text: "Vor dem Kloster Silberquell stehen Pferde des Grenzheers. Das Tor ist offen, im Hof klirrt Stahl."
+  - id: l03
+    speaker: [lucan]
+    mood: angry
+    text: "Dravns Leute. In einem Kloster. Die suchen nicht nach Brot."
+  - id: l04
+    speaker: [sable]
+    fallback: skip
+    requires: [{ not: { flag: { e07: warn } } }]
+    mood: neutral
+    text: "Aschenbanner! Ihr seid weit gelaufen. Hier endet es, an meiner Schlucht."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: { e07: warn } }]
+    mood: sad
+    text: "Das sind meine alten Leute. Ihr Hauptmann hält jetzt den Ausgang, den ich halten sollte."
+  - id: l06
+    mood: neutral
+    text: "Im Hof steht eine Frau in poliertem Brustpanzer, das Schwert gezogen, allein gegen drei."
+  - id: l07
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "Die ist keine Nonne. Und die Soldaten wollen sie, nicht das Kloster."
+  - id: l08
+    speaker: [lucan]
+    mood: neutral
+    text: "Wir holen sie raus und bringen sie über die Schlucht. Vorwärts!"

@@ -38,11 +38,13 @@ const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => 
 // on a busy machine, hence the own timeout.
 describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
-    const a = sim(opts());
-    expect(sim(opts())).toEqual(a);
+    // one mission only: 2-5 has its real map since story 11.16 and would play a whole second battle
+    const a = sim(opts({ maxMissions: 1 }));
+    expect(sim(opts({ maxMissions: 1 }))).toEqual(a);
     expect(a.missions.map((m) => m.node)).toEqual(['m2_1']);
     expect(a.missions[0]!.map).toBe('dev_eisenmark');
-    expect(Object.keys(a.skipped)).toEqual(['m2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8']);
+    // the placeholders up to the next real map (m2_5) are skipped, the run stops there
+    expect(Object.keys(a.skipped)).toEqual(['m2_2', 'm2_3', 'm2_4']);
     // the company starts act 2 on P of its first mission
     expect(a.entry.runs).toBe(1);
     expect(a.entry.armyLevel).toBe(base);
@@ -70,8 +72,8 @@ describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
   it('--flags sets the outcome of a decision for the whole run, only registered flags', () => {
     const seen: Array<CampaignState['flags']> = [];
     const onMission = (_: string, c: CampaignState) => void seen.push({ ...c.flags });
-    sim(opts({ onMission }));
-    sim(opts({ flags: ['e07=warn'], onMission }));
+    sim(opts({ onMission, maxMissions: 1 }));
+    sim(opts({ flags: ['e07=warn'], onMission, maxMissions: 1 }));
     expect(seen[0]!.e07).toBeUndefined();
     expect(seen[1]!.e07).toBe('warn');
     expect(() => sim(opts({ flags: ['e7_warned'] }))).toThrow(/no flag "e7_warned"/);
