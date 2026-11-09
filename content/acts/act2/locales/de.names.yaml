@@ -53,3 +53,7 @@ map.m2_1_windscharte.name: "Die Windscharte"
 map.n4_clanlager.name: "Das Clanlager"
 unit.outpost_captain.name: "Hauptmann des Vorpostens"
 unit.clan_elder.name: "Clanälteste"
+# Story 11.21: Nebenquest N5 (Karte und Gegner der Mine)
+map.n5_kupfermine.name: "Die Kupfermine"
+unit.duchess_looter.name: "Plünderer der Herzogin"
+unit.foreman.name: "Vorarbeiter"

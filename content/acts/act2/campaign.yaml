@@ -33,7 +33,8 @@ nodes:
   - { id: m2_8, fixed: finale, map: m2_8_kronfeld, titleKey: node.m2_8.title, requires: [{ completed: m2_7 }], place: kronfeld, merchantTier: 1 }
   # N4 (Story 11.20): Gedenk-Variante wie N3/Tobin, wenn Ilka gefallen ist (gegangen bleibt zu); Glutfunke und Weißwolf in beiden Varianten
   - { id: n4, kind: side, map: n4_clanlager, titleKey: node.n4.title, pre: scn.n4.intro, post: scn.n4.outro, requires: [{ completed: m2_3 }, { any: [{ alive: ilka }, { dead: ilka }] }], memorialIf: { dead: ilka }, memorial: { pre: scn.n4.memorial_intro, post: scn.n4.memorial_outro }, place: clanlager, merchantTier: 1, effects: [{ item: { def: ember_spark } }, { item: { def: white_wolf } }] }
-  - { id: n5, kind: side, map: n5_kupfermine, titleKey: node.n5.title, requires: [{ completed: m2_4 }], place: kupfermine, merchantTier: 1 }
+  # N5 (Story 11.21): Belohnung Glutfunke als Knotenwirkung (nur bei Sieg), Brann tritt nur im Kampf durch Ansprechen bei (Ilka, sonst Lucan)
+  - { id: n5, kind: side, map: n5_kupfermine, titleKey: node.n5.title, pre: scn.n5.intro, post: scn.n5.outro, requires: [{ completed: m2_4 }], place: kupfermine, merchantTier: 1, effects: [{ item: { def: ember_spark } }] }
   - { id: n6, kind: side, map: n6_auemarkt, titleKey: node.n6.title, requires: [{ completed: m2_5 }, { completed: m2_6 }, { any: [{ alive: jory }, { dead: jory }] }], place: auemarkt, merchantTier: 1 }
 # Händler von Akt 2 [ASSUMPTION]: Stufe 0 aus vorhandenen Teilen (Stahl, Heilung, Rüstung); Stufe 1 mit dem Stahl-Tier (Story 11.5, Fassung 2026-10-31),
 # offen über merchantTier 1 der Knoten ab 2-2; Stufe 2 mit der 4. Story-Mission. shade (Dunkel) nie beim Händler (items.md §4). Stufe 3 und roomLevel 2: Story 10.9.
