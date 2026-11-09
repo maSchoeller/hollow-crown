@@ -3,7 +3,7 @@ baseline_commit: 3aa069b
 ---
 # Story 11.17: Mission 2-6 „Gold für Banditen“ und Entscheidung E6
 
-Status: ready-for-dev
+Status: review
 
 <!-- Erstellt 2026-11-09 mit gds-create-story (Nachtbetrieb, PO schläft): offene Punkte als [ASSUMPTION] mit der empfohlenen Option, gesammelt unter „Offene Fragen an den Produktinhaber“. Gestapelt auf Story 11.16 (Branch claude/story-11-16-mission-2-5, noch nicht gemergt). -->
 
@@ -36,24 +36,26 @@ damit beide Spuren zusammenlaufen.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Nachspiel-Szenen am Knoten (AC 11, 14; F1 = A)
-  - [ ] Knotenfeld `epilogues: [{ scene, requires? }]` in `src/core/storyDefs.ts` (`CampaignNodeDef`) und `src/content/schemaCampaign.ts`; Prüfung der Szene und Bedingungen in `src/content/validateCampaign.ts`; `nodeEpilogues(data, c, nodeId)` in `src/core/campaign/graph.ts` (Bedingungen zum Zeitpunkt nach der Nachszene); `concludeBattle` in `src/app/state/flow.ts` spielt sie nach `post` vor dem Ergebnis (nicht in Heimsuchungen); `packNeededFor` kennt sie.
-  - [ ] Tests (graph-nah in `tests/unit/`), Architektur und Decision-Log.
-- [ ] T2 Karte (AC 1–9)
-  - [ ] `m2_6_kraehenholm.yaml` aus dem Entwurf, Kopfkommentar nach Muster `m2_5_silberquell.yaml`; `nameKey: map.m2_6_kraehenholm.name`, `unit.smuggler.name` neu (DE/EN `content/acts/act2/locales/*.names.yaml`).
-  - [ ] Gegner ohne `level`, Sprites wie 2-5 (brigand→brigand, skirmisher→mercenary, marksman→bandit_archer, vanguard→soldier, healer→cleric).
-  - [ ] Grell `class: skirmisher`, `steel_sword` (Klasse der Leutnant-Definition, Signatur `gold_hook` ist Schwert) statt brigand/steel_axe des Entwurfs [ASSUMPTION].
-  - [ ] Sable/Hauptmann wie 2-5, plus `door_key` + `drops`.
-  - [ ] Nell `char: nell`, `team: other`, `guest: true`, `recruit: { by: any, dialogue: scn.m2_6.nell_talk }`, ohne eigene Stufe/Waffe.
-  - [ ] Trigger `t_ebb` (R4 player), `t_flood_warn` (R8 player, Szene), `t_flood` (R9 player, `river`, `warn: true`), `t_proof` (`unit_enters` player auf `rect [7,11,10,12]`, once → `scn.m2_6.gold_proof`).
-  - [ ] `goldReward: 2000` statt 1 400 [ASSUMPTION], Truhe 800 wie Entwurf; zwei Heimsuchungs-Anker [ASSUMPTION].
-- [ ] T3 Szenen DE/EN (AC 8, 10–13)
-  - [ ] intro, nell_talk, ebb, flood_warn, gold_proof, outro (Maelis' Brief, Nell, E6 c01/c01_capped), burnt_village (`background: brandhang`, Erzähltext, Sable unter `e07: warn`).
-  - [ ] EN in `content/locales/en/act2.dialogue.yaml`.
-- [ ] T4 Knoten verdrahten (AC 14, 17)
-- [ ] T5 Tests und Lab (AC 2–14): `tests/unit/m2-6-kraehenholm.test.ts`, Lab `kraehenholm-2-6` und `kraehenholm-2-6-warn`, nachziehen `act-title`, `act-transition`, `sim-acts`.
-- [ ] T6 Sim Normal (AC 15), beide `e07`-Varianten.
-- [ ] T7 Abnahme, Decision-Logs, `pnpm check`, Status review (AC 16, 18).
+- [x] T1 Nachspiel-Szenen am Knoten (AC 11, 14; F1 = A)
+  - [x] Knotenfeld `epilogues: [{ scene, requires? }]` in `src/core/storyDefs.ts` (`CampaignNodeDef`) und `src/content/schemaCampaign.ts`; Prüfung der Szene und Bedingungen in `src/content/validateCampaign.ts`; `nodeEpilogues(data, c, nodeId)` in `src/core/campaign/graph.ts` (Bedingungen zum Zeitpunkt nach der Nachszene); `concludeBattle` in `src/app/state/flow.ts` spielt sie nach `post` vor dem Ergebnis (nicht in Heimsuchungen); `packNeededFor` kennt sie.
+  - [x] Tests (graph-nah in `tests/unit/`), Architektur und Decision-Log.
+- [x] T2 Karte (AC 1–9)
+  - [x] `m2_6_kraehenholm.yaml` aus dem Entwurf, Kopfkommentar nach Muster `m2_5_silberquell.yaml`; `nameKey: map.m2_6_kraehenholm.name`, `unit.smuggler.name` neu (DE/EN `content/acts/act2/locales/*.names.yaml`).
+  - [x] Gegner ohne `level`, Sprites wie 2-5 (brigand→brigand, skirmisher→mercenary, marksman→bandit_archer, vanguard→soldier, healer→cleric).
+  - [x] Grell `class: skirmisher`, `steel_sword` (Klasse der Leutnant-Definition, Signatur `gold_hook` ist Schwert) statt brigand/steel_axe des Entwurfs [ASSUMPTION].
+  - [x] Sable/Hauptmann wie 2-5, plus `door_key` + `drops`.
+  - [x] Nell `char: nell`, `team: other`, `guest: true`, `recruit: { by: any, dialogue: scn.m2_6.nell_talk }`, ohne eigene Stufe/Waffe.
+  - [x] Trigger `t_ebb` (R4 player), `t_flood_warn` (R8 player, Szene), `t_flood` (R9 player, `river`, `warn: true`), `t_proof` (`unit_enters` player auf `rect [7,11,10,12]`, once → `scn.m2_6.gold_proof`).
+  - [x] `goldReward: 2000` statt 1 400 [ASSUMPTION], Truhe 800 wie Entwurf; zwei Heimsuchungs-Anker [ASSUMPTION].
+- [x] T3 Szenen DE/EN (AC 8, 10–13)
+  - [x] intro, nell_talk, ebb, flood_warn, gold_proof, outro (Maelis' Brief, Nell, E6 c01/c01_capped), burnt_village (`background: brandhang`, Erzähltext, Sable unter `e07: warn`).
+  - [x] EN in `content/locales/en/act2.dialogue.yaml`.
+- [x] T4 Knoten verdrahten (AC 14, 17)
+- [x] T5 Tests und Lab (AC 2–14): `tests/unit/m2-6-kraehenholm.test.ts`, Lab `kraehenholm-2-6` und `kraehenholm-2-6-warn`, nachziehen `act-title`, `act-transition`, `sim-acts`.
+- [x] T6 Sim Normal (AC 15), beide `e07`-Varianten.
+  - [ ] (lenkende Session) Leicht/Schwer, `--haunts`, Kampagnen-Sim.
+- [x] T7 Abnahme, Decision-Logs, `pnpm check`, Status review (AC 16, 18).
+  - [ ] (lenkende Session) Spielbild 375 × 812, Folgen-Karte E6 mit und ohne Hinweis, Nachspiel im Spiel.
 
 ## Dev Notes
 
@@ -120,14 +122,59 @@ damit beide Spuren zusammenlaufen.
 
 ### Agent Model Used
 
+Claude Opus 5.5 (gds-dev-story, 2026-11-10). Szenentexte selbst entworfen (Schreib-Pipeline: Vorschlag, Abnahme durch den Produktinhaber offen).
+
 ### Debug Log References
+
+- `pnpm sim m2_6_kraehenholm --campaign act2 --start expected --runs 50` (Normal) und mit `--flags e07=warn`: spielt m2_1, m2_5, m2_6; 2-2 bis 2-4 übersprungen (keine Karte).
+- `pnpm lab kraehenholm-2-6-warn`: Hauptmann auf der Felsnase, Sable fehlt; Grell am Schiff.
 
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created (gds-create-story, 2026-11-09).
+- T1: Knotenfeld `epilogues` (Typ, Schema, content:check), `nodeEpilogues` in `graph.ts`, `concludeBattle` spielt die Nachspiele nach `post` (nicht in Heimsuchungen), `packNeededFor` kennt sie. Architektur §5.4 und Decision-Log ergänzt. Getestet über `m2-6-kraehenholm.test.ts` (warn/obey/ungesetzt, fremder Knoten, unbekannter Knoten); der App-Ablauf selbst ist ungetestet (keine Flow-Tests im Repo), Sichtprüfung bei der lenkenden Session.
+- T2: Karte aus dem Entwurf; Abweichungen in der Abnahme-Datei. content:check verlangt je Heimsuchungs-Variante einen Anker → `rout` (Südstrand) und `treasure` (Nordbucht). Neue Namen `unit.smuggler.name`, `unit.maelis.name` (Sprecher), `map.m2_6_kraehenholm.name`.
+- T3: Szenen intro, nell_talk, ebb, flood_warn, gold_proof, outro (Maelis' Brief, E6 als `c01`/`c01_capped`), burnt_village (`background: brandhang`); EN in `act2.dialogue.yaml`. Sable-Zeilen hängen an `e07: warn` (wie 11.16; `joined_sable` setzt 11.15 noch nicht). `stay` senkt Sables Groll um 1 (auch nach ihrem Übertritt harmlos).
+- T4: Knoten `m2_6` mit `pre`, `post`, `epilogues`; `kraehenholm` stand schon in `ACT2_LOCATIONS` und `packs.yaml`.
+- T5: `tests/unit/m2-6-kraehenholm.test.ts` (17 Tests); Lab `kraehenholm-2-6`, `kraehenholm-2-6-warn`; nachgezogen `act-title`, `act-transition` (m2_6 hat eine Karte), `core.test.ts` (Ortsbild `brandhang` in der Testmenge). `sim-acts.test.ts` brauchte nichts: `maxMissions` hält die Läufe schon vor 2-5 an.
+- T6 [C]: Normal 50 Läufe, 2-6 erreicht 49: **Sieg 100 %, Runden p10/p50/p90 12/13/19 (Schnitt 14,2), Niedergestreckte 1,61, Tote 0,08, Gold 2 000 + 6 Nebenziele**; mit `e07=warn` 100 %, 12/14/18, 1,73, 0,10. Über dem Korridor: Sieg (≤ 95 %) und Niedergestreckte (0,4–1,3). Nell nur 2 %, Truhe 0 % (KI geht nicht nach Nordwesten, kein Schlüsselträger an der Truhe). Armee-Stufe 16,3 statt 17 (2-2 bis 2-4 fehlen). Nur berichtet, Abstimmung 11.27. Act-1-Basis unverändert (keine Akt-1-Datei, Regelcode nur das neue Knotenfeld).
+- T7: Abschnitt „Übernahme Story 11.17“ in der Abnahme-Datei, Decision-Logs Narrative und Architektur, `pnpm check` grün. Kein `released: true`, kein `content:lock`; Live-Schritt entfällt bis Release.
+- Abhängigkeiten von 2-2 bis 2-4 (andere Session): `e07` wird nirgends gesetzt, `joinLieutenant` für Sable fehlt; beide Zweige über Test-Flags, Sim `--flags` und Lab geprüft.
 
 ### File List
+
+- src/core/storyDefs.ts
+- src/content/schemaCampaign.ts
+- src/content/validateCampaign.ts
+- src/core/campaign/graph.ts
+- src/app/state/flow.ts
+- src/app/state/packs.ts
+- content/acts/act2/maps/m2_6_kraehenholm.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.intro.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.nell_talk.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.ebb.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.flood_warn.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.gold_proof.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.outro.yaml (neu)
+- content/acts/act2/scenes/scn.m2_6.burnt_village.yaml (neu)
+- content/acts/act2/campaign.yaml
+- content/acts/act2/locales/de.names.yaml
+- content/acts/act2/locales/en.names.yaml
+- content/locales/en/act2.dialogue.yaml
+- tests/unit/m2-6-kraehenholm.test.ts (neu)
+- tests/fixtures/lab/kraehenholm-2-6.yaml (neu)
+- tests/fixtures/lab/kraehenholm-2-6-warn.yaml (neu)
+- tests/unit/act-title.test.ts
+- tests/unit/act-transition.test.ts
+- tests/unit/core.test.ts
+- concept/27-ueberarbeitung/levels/abnahme/s2_2_6_kraehenholm.md
+- concept/22-narrative/decision-log.md
+- concept/24-architecture/decision-log.md
+- concept/24-architecture/architecture.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml
+- _bmad-output/implementation-artifacts/11-17-mission-2-6-gold-fuer-banditen-und-e6.md
 
 ### Change Log
 
 - 2026-11-09: Story 11.17 angelegt (ready-for-dev), fünf PO-Fragen als [ASSUMPTION] markiert.
+- 2026-11-10: Umgesetzt (Knotenfeld `epilogues`, Karte, Szenen DE/EN mit E6, Akademie-Hinweis und verbranntem Dorf, Tests, Lab, Abnahme, Decision-Logs); Sim Normal 100 % / 1,61 / 0,08 Tote / 13 Runden (Median) / 2 006 Gold; Status review. Sichtprüfung, Kampagnen-Sim und PR bei der lenkenden Session.
