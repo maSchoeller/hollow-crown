@@ -3,7 +3,7 @@ import type { GameData } from '../gameData';
 import type { Condition } from '../storyDefs';
 import { STANCES, SUPPORT_RANKS } from '../defs';
 import type { CampaignState, LieutenantState } from '../state';
-import { castleTier } from './castle';
+import { castleTier, roomLevel } from './castle';
 import { pairKey } from '../util';
 import { actCampaign, actOf } from './acts';
 
@@ -28,6 +28,8 @@ export interface ConditionContext {
   lieutenants: Readonly<Record<string, LieutenantState>>;
   /** stage of the castle's walls (0 ruin … 3 fortress, `castleTier`; story 15.12) */
   castleTier: number;
+  /** level of every room of the current home that its act has opened (`roomLevel`), others are absent (story 11.16) */
+  rooms: Readonly<Record<string, number>>;
 }
 
 /** Condition keys whose state does not exist yet; `content:check` rejects them, `evalCondition` throws. */
@@ -49,6 +51,7 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
       chronicle: [],
       lieutenants: {},
       castleTier: 0,
+      rooms: {},
     };
   return {
     act: actOf(c),
@@ -63,10 +66,22 @@ export function conditionContext(data: GameData, c: CampaignState | null, extraF
     chronicle: c.chronicle,
     lieutenants: c.lieutenants ?? {},
     castleTier: castleTier(data, c),
+    rooms: homeRoomLevels(data, c),
   };
 }
 
 /** The prevailing stance; a tie is decided warm > sober > defiant, no points = none. */
+/**
+ * Levels of the rooms of the current home that exist by act (`homes`, `fromAct`), read by the condition `roomLevel`. The rooms'
+ * own `requires` are not evaluated here (they are conditions themselves); a room that is closed by them still shows its level.
+ */
+function homeRoomLevels(data: GameData, c: CampaignState): Record<string, number> {
+  const act = actOf(c);
+  const out: Record<string, number> = {};
+  for (const room of Object.values(data.rooms)) if (room.homes.includes(c.home.kind) && room.fromAct <= act) out[room.id] = roomLevel(c, room.id);
+  return out;
+}
+
 export function dominantStance(stance: Readonly<Record<Stance, number>>): Stance | null {
   let best: Stance | null = null;
   for (const s of STANCES) if (stance[s] > 0 && (best === null || stance[s] > stance[best])) best = s;
@@ -109,6 +124,11 @@ export function evalCondition(ctx: ConditionContext, cond: Condition): boolean {
       return ctx.act >= (v as number);
     case 'castleTier':
       return ctx.castleTier >= (v as number);
+    case 'roomLevel': {
+      const r = v as { id: string; min?: number; max?: number };
+      const level = ctx.rooms[r.id] ?? 0;
+      return level >= (r.min ?? 0) && level <= (r.max ?? Infinity);
+    }
     case 'support': {
       const s = v as { pair: [string, string]; rank: SupportRank };
       const have = ctx.supports[pairKey(s.pair[0], s.pair[1])]?.rank;

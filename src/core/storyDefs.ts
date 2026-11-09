@@ -11,6 +11,8 @@ export type Condition =
   | { act: number }
   /** the castle has reached at least this tier (0 ruin … 3 fortress; story 15.12) */
   | { castleTier: number }
+  /** a room of the current home stands on a level within these bounds; 0 = not in this home or not yet open by act (story 11.16) */
+  | { roomLevel: { id: string; min?: number; max?: number } }
   | { support: { pair: [string, string]; rank: SupportRank } }
   | { stance: Stance }
   | { met: string }
