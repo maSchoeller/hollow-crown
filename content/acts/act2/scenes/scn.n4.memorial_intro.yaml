@@ -1,0 +1,30 @@
+# Nebenquest N4, Gedenk-Variante vor der Karte (Ilka ist gefallen; memorialIf in campaign.yaml, Muster scn.n3.memorial_intro).
+# Ersatzsprecher-Kette, kein Humor; die Clanälteste spricht in der Erzählzeile [ASSUMPTION].
+id: scn.n4.memorial_intro
+background: clanlager
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Früher Schnee in den Kupferbergen. Zwischen dunklen Tannen steigt Rauch aus Fellzelten."
+  - id: l02
+    speaker: [lucan, avatar]
+    mood: sad
+    text: "Ilka hat von diesem Lager erzählt. Jeden Herbst, hier, bevor die Pässe zufrieren."
+  - id: l03
+    mood: neutral
+    text: "Spuren im Weiß, viele, von genagelten Stiefeln. Sie kommen von allen Seiten aus dem Wald."
+  - id: l04
+    speaker: [lucan]
+    mood: angry
+    text: "Grenzheer. Dravns Leute. Sie wollen die Jagdgründe, und der Clan steht im Weg."
+  - id: l05
+    mood: neutral
+    text: "Eine alte Frau tritt aus dem größten Zelt, auf einen Speer gestützt: die Clanälteste."
+  - id: l06
+    mood: neutral
+    text: "Sie fragt nach Ilka. Niemand antwortet, sie senkt den Kopf. „Dann kämpft ihr an ihrer Stelle.“"
+  - id: l07
+    speaker: [brenna, fenn, avatar]
+    mood: sad
+    text: "Für Ilka. Wir halten das Lager."
