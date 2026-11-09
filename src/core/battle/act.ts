@@ -108,7 +108,7 @@ function grantReward(data: GameData, s: BattleState, u: BattleUnit, r: Reward | 
 }
 
 function useCharge(data: GameData, u: BattleUnit, inst: ItemInstance): void {
-  const save = activeSkillIds(data, u)
+  const save = activeSkillIds(data, u, null)
     .map((id) => data.skills[id]!.effect.bagChargeSaveChance ?? 0)
     .reduce((a, b) => Math.max(a, b), 0);
   void save;
@@ -119,7 +119,7 @@ function useCharge(data: GameData, u: BattleUnit, inst: ItemInstance): void {
 }
 
 function useChargeRolled(data: GameData, s: BattleState, u: BattleUnit, inst: ItemInstance): void {
-  const save = activeSkillIds(data, u)
+  const save = activeSkillIds(data, u, s)
     .map((id) => data.skills[id]!.effect.bagChargeSaveChance ?? 0)
     .reduce((a, b) => Math.max(a, b), 0);
   if (save > 0 && roll1(s.rng, save)) return;
@@ -332,7 +332,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
     }
     case 'command': {
       const t = getUnit(s, a.target);
-      const sk = activeSkillIds(data, u).find((id) => data.skills[id]!.effect.refreshAction)!;
+      const sk = activeSkillIds(data, u, s).find((id) => data.skills[id]!.effect.refreshAction)!;
       u.usedPerMap[sk] = (u.usedPerMap[sk] ?? 0) + 1;
       t.acted = false;
       t.moved = false;
@@ -340,13 +340,13 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       break;
     }
     case 'rally': {
-      const sk = activeSkillIds(data, u).find((id) => data.skills[id]!.trigger === 'action' && data.skills[id]!.area)!;
+      const sk = activeSkillIds(data, u, s).find((id) => data.skills[id]!.trigger === 'action' && data.skills[id]!.area)!;
       const def = data.skills[sk]!;
       u.usedPerMap[sk] = (u.usedPerMap[sk] ?? 0) + 1;
       const affected: string[] = [];
       for (const o of s.units) {
         if (!active(o) || o.team !== u.team || !o.pos || !u.pos) continue;
-        if (Math.abs(o.pos[0] - u.pos[0]) + Math.abs(o.pos[1] - u.pos[1]) > skillRadius(data, u, sk)) continue;
+        if (Math.abs(o.pos[0] - u.pos[0]) + Math.abs(o.pos[1] - u.pos[1]) > skillRadius(data, u, sk, s)) continue;
         o.buffs.push({
           source: sk,
           damage: def.effect.damageBonus,

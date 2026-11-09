@@ -185,10 +185,10 @@ describe('skillTotals and active skills', () => {
     expect(computeStats(data, me).stats.def).toBe(bare + 2 + 4 + 2);
 
     me.loadout = ['miracle'];
-    expect(activeSkillIds(data, me)).not.toContain('miracle');
+    expect(activeSkillIds(data, me, null)).not.toContain('miracle');
     me.mastered = ['miracle'];
-    expect(activeSkillIds(data, me)).toContain('miracle');
+    expect(activeSkillIds(data, me, null)).toContain('miracle');
     me.personalSkill = 'no_such_skill';
-    expect(activeSkillIds(data, me)).not.toContain('no_such_skill');
+    expect(activeSkillIds(data, me, null)).not.toContain('no_such_skill');
   });
 });

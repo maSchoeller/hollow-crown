@@ -1,5 +1,5 @@
 /** The running battle: session signal, player commands, restart. Mission flow around it lives in flow.ts. */
-import { signal } from '@preact/signals';
+import { effect, signal } from '@preact/signals';
 import {
   CoreInvariantError,
   applyCommand,
@@ -21,7 +21,8 @@ import {
 } from '../../core';
 import { applyCommandInWorker } from '../coreWorker';
 import { trail, trailEvents } from '../trail';
-import { autosave, campaign, campaignCommand, data } from './session';
+import { autosave, campaign, campaignCommand, campaignRelics, data } from './session';
+import { shownRelics } from '../../ui/relicView';
 import { reportFault } from './fault';
 import { screen } from './screen';
 
@@ -36,6 +37,12 @@ export interface BattleSession {
   effects: QueuedEffects[];
 }
 export const battle = signal<BattleSession | null>(null);
+
+// story 11.9: the item pieces show the relic stages the rules use: in a battle those of its start state, else the campaign's
+effect(() => {
+  const b = battle.value;
+  shownRelics.value = b ? { relicStages: b.start.relicStages } : campaignRelics.value;
+});
 
 /** Counts the runs of the battle screen: a restart raises it, the screen mounts anew (fresh HUD state, the board is kept). */
 export const battleRun = signal(0);

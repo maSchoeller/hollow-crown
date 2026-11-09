@@ -3,6 +3,7 @@ import type { AffixDef, ClassDef, Element, Mechanic, EquipSlot, ItemDef, RuneDef
 import type { GameData } from '../gameData';
 import type { ItemInstance, UnitRecord } from '../state';
 import { ruleOn } from '../util';
+import { stagedItemDef, type RelicCtx } from './relics';
 
 export function itemDef(data: GameData, inst: ItemInstance | string): ItemDef {
   const id = typeof inst === 'string' ? inst : inst.def;
@@ -197,8 +198,9 @@ export function itemWeight(data: GameData, inst: ItemInstance, s?: RuleCtx): num
 }
 
 /** Stat modifiers an equipped item grants (armor upgrades, affixes, item stat mods). */
-export function itemStatMods(data: GameData, inst: ItemInstance): StatMods & { hit?: number; avoid?: number; crit?: number } {
-  const d = itemDef(data, inst);
+export function itemStatMods(data: GameData, inst: ItemInstance, rc: RelicCtx): StatMods & { hit?: number; avoid?: number; crit?: number } {
+  // a relic counts with the stat mods of its current stage (story 11.9)
+  const d = stagedItemDef(data, inst, rc);
   const out: StatMods & { hit?: number; avoid?: number; crit?: number } = {};
   const add = (k: keyof typeof out, v: number | undefined) => {
     if (v) out[k] = (out[k] ?? 0) + v;

@@ -5,6 +5,7 @@ import './notices.css';
 import {
   itemDef,
   runeSlotCount,
+  stagedItemDef,
   weaponProfile,
   type GameData,
   type ItemInstance,
@@ -13,6 +14,7 @@ import { t } from '../i18n';
 import { itemName, rarityOf } from './itemInfo';
 import { Icon } from './icons';
 import { ItemImage } from './pieces';
+import { shownRelics } from './relicView';
 import { ItemInfoButton, ItemSheetPortal, useLongPress } from './ItemSheet';
 import { asset } from './asset';
 
@@ -46,7 +48,8 @@ export function Modal({ title, onClose, children, wide }: { title?: ComponentChi
 
 /** Value line of an item as short parts ("Mt 9", "Tr 70" ...), shared by details and item lines. */
 export function itemParts(data: GameData, inst: ItemInstance): string[] {
-  const d = itemDef(data, inst);
+  // an awakened relic lists the values of its stage (story 11.9)
+  const d = stagedItemDef(data, inst, shownRelics.value);
   const parts: string[] = [];
   if (d.mt !== undefined) {
     const w = weaponProfile(data, inst);

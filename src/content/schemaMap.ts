@@ -2,9 +2,8 @@
 import { z } from 'zod';
 import { SEASONS, TIMES_OF_DAY, WEATHERS } from '../core/defs';
 import { HAUNT_VARIANTS } from '../core/mapDefs';
-import { area, pos, range, rank, team, weaponType } from './schemaBase';
+import { area, itemRefSchema, pos, range, rank, team, weaponType } from './schemaBase';
 import { conditionSchema } from './schemaConditions';
-import { itemRefSchema } from './schemaUnits';
 
 const nullableCost = z.number().nullable();
 export const terrainSchema = z.object({

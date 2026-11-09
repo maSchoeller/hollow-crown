@@ -1,13 +1,7 @@
 /** Schemas of items, affixes, runes, sets, classes, characters and skills. */
 import { z } from 'zod';
-import { element, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
-
-export const itemRefSchema = z.object({
-  def: z.string(),
-  upgrade: z.number().int().min(0).max(5).optional(),
-  affixes: z.array(z.string()).optional(),
-  runes: z.array(z.string()).optional(),
-});
+import { element, itemRefSchema, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
+import { conditionsListSchema } from './schemaConditions';
 
 export const itemSchema = z.object({
   id: z.string(),
@@ -62,6 +56,15 @@ export const itemSchema = z.object({
   tags: z.array(z.string()).optional(),
   /** painted image art/items/<image>.png; defaults to the id */
   image: z.string().optional(),
+  /**
+   * Relic stages (story 11.9, items.md §5): stage 1 is the item itself, `stages[0]` stage 2, `stages[1]` stage 3. A stage holds
+   * while its `when` and those of all stages before it hold; it replaces image and `statMods` and adds passive `skills`.
+   */
+  stages: z
+    .array(z.strictObject({ when: conditionsListSchema, image: z.string(), statMods: statMods.optional(), skills: z.array(z.string()).optional() }))
+    .min(1)
+    .max(2)
+    .optional(),
 });
 
 const affixMods = z

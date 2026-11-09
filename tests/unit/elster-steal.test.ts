@@ -53,7 +53,7 @@ describe('Elster: Stehlen auch von Ausgerüstetem', () => {
 
   it('offers the equipped items after the bag, marked as taken from the hand', () => {
     const { s, fenn, foe } = duel();
-    const items = stealableItems(data, foe, fenn);
+    const items = stealableItems(data, foe, fenn, null);
     expect(items.map((i) => i.def)).toEqual(['vulnerary', 'iron_axe', 'wooden_shield']);
     const prev = classPreview(data, s, fenn, fenn.pos!, { kind: 'steal', target: foe.uid });
     expect(prev).toMatchObject({ kind: 'steal', takesEquipped: true });
@@ -115,16 +115,16 @@ describe('Elster: Stehlen auch von Ausgerüstetem', () => {
 
   it('is only for the Elster: a scout with an iron dagger still leaves the equipped gear alone', () => {
     const { s, fenn, foe } = duel(false);
-    expect(stealableItems(data, foe, fenn).map((i) => i.def)).toEqual(['vulnerary']);
+    expect(stealableItems(data, foe, fenn, null).map((i) => i.def)).toEqual(['vulnerary']);
     expect(validate(data, s, { type: 'act', unit: fenn.uid, to: fenn.pos!, action: { kind: 'steal', target: foe.uid, item: foe.equip.mainHand!.uid } })).toBe('invalid_target');
   });
 
   it('also works with the skill mastered and in the loadout, and not before', () => {
     const { foe, fenn } = duel(false);
     fenn.mastered = ['long_fingers'];
-    expect(stealableItems(data, foe, fenn).map((i) => i.def)).toEqual(['vulnerary']);
+    expect(stealableItems(data, foe, fenn, null).map((i) => i.def)).toEqual(['vulnerary']);
     fenn.loadout = ['long_fingers'];
-    expect(stealableItems(data, foe, fenn).map((i) => i.def)).toEqual(['vulnerary', 'iron_axe', 'wooden_shield']);
+    expect(stealableItems(data, foe, fenn, null).map((i) => i.def)).toEqual(['vulnerary', 'iron_axe', 'wooden_shield']);
   });
 
   it('leaves the signature items of lieutenants and convoy-only goods with the foe', () => {
@@ -134,7 +134,7 @@ describe('Elster: Stehlen auch von Ausgerüstetem', () => {
     expect(Object.keys(data.lieutenants).length).toBeGreaterThan(0);
     for (const lt of Object.values(data.lieutenants)) {
       foe.equip.mainHand = newItem(s, lt.signatureItem, data);
-      expect(stealableItems(data, foe, fenn).map((i) => i.def)).toEqual(['wooden_shield']);
+      expect(stealableItems(data, foe, fenn, null).map((i) => i.def)).toEqual(['wooden_shield']);
     }
   });
 

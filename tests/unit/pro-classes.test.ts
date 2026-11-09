@@ -80,7 +80,7 @@ describe('pro classes (story 10.3)', () => {
     expect(skillTotals(data, { unit: u }, 'stats').terrainCost.forest).toBe(1);
     expect(weaponGroupsOf(data, u)).toEqual(expect.arrayContaining(['bow', 'sword']));
     const c = clone(base);
-    expect(canEquip(data, u, newItem(c, 'iron_sword', data), 'mainHand', activeSkillIds(data, u))).toBeNull();
+    expect(canEquip(data, u, newItem(c, 'iron_sword', data), 'mainHand', activeSkillIds(data, u, null))).toBeNull();
     expect(canEquip(data, { ...u, classId: 'marksman' }, newItem(c, 'iron_sword', data), 'mainHand')).toBe('weapon_group');
   });
 
@@ -102,9 +102,9 @@ describe('pro classes (story 10.3)', () => {
     const { state } = labState(data, 'profi-wege');
     const lucan = labUnit(state, 'lab_lord');
     const avatar = labUnit(state, 'lab_strategist');
-    expect(skillUses(data, avatar, 'tactician_command')).toBe(2);
-    expect(skillUses(data, { ...avatar, classId: 'tactician' }, 'tactician_command')).toBe(1);
-    expect(skillRadius(data, lucan, 'rally')).toBe(3);
+    expect(skillUses(data, avatar, 'tactician_command', null)).toBe(2);
+    expect(skillUses(data, { ...avatar, classId: 'tactician' }, 'tactician_command', null)).toBe(1);
+    expect(skillRadius(data, lucan, 'rally', null)).toBe(3);
     const r = applyCommand(data, state, { type: 'act', unit: lucan.uid, to: lucan.pos!, action: { kind: 'rally' } });
     const rally = r.events.find((e) => e.t === 'rally') as { affected: string[] } | undefined;
     expect(rally?.affected).toContain(labUnit(state, 'lab_archer').uid);
@@ -112,8 +112,8 @@ describe('pro classes (story 10.3)', () => {
     // command: two uses
     const a = labUnit(r.state, 'lab_strategist');
     a.usedPerMap.tactician_command = 1;
-    expect(skillUsable(data, a, 'tactician_command')).toBe(true);
+    expect(skillUsable(data, a, 'tactician_command', null)).toBe(true);
     a.usedPerMap.tactician_command = 2;
-    expect(skillUsable(data, a, 'tactician_command')).toBe(false);
+    expect(skillUsable(data, a, 'tactician_command', null)).toBe(false);
   });
 });

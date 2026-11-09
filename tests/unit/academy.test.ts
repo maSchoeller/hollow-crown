@@ -171,13 +171,13 @@ describe('academy (story 10.2)', () => {
     const [a, b] = promotionTargets(data, u.classId) as [string, string];
     const d: GameData = { ...data, classes: { ...data.classes, [b]: { ...data.classes[b]!, proSkills: [skill] } } };
     const pro = run(c0, { type: 'promote', unit: u.id, classId: a }, d).campaign;
-    expect(activeSkillIds(d, pro.roster.find((x) => x.id === u.id)!)).not.toContain(skill);
+    expect(activeSkillIds(d, pro.roster.find((x) => x.id === u.id)!, null)).not.toContain(skill);
     const r = run(pro, { type: 'learnSecondPath', unit: u.id }, d);
     const p = r.campaign.roster.find((x) => x.id === u.id)!;
     expect(p.secondPath).toBe(b);
     expect(p.classId).toBe(a);
     expect(p.stats).toEqual(pro.roster.find((x) => x.id === u.id)!.stats);
-    expect(activeSkillIds(d, p)).toContain(skill);
+    expect(activeSkillIds(d, p, null)).toContain(skill);
     expect(sparks(r.campaign)).toBe(0);
     expect(r.events).toContainEqual({ t: 'secondPathLearned', unit: u.id, path: b });
     // errors

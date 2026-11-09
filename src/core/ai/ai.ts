@@ -359,7 +359,7 @@ function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, n
  * its own. Ties go to the shorter walk, then to the lower tile key, so the choice is fixed (no randomness).
  */
 function retreatAfterAction(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
-  const fields = afterActionMove(data, u);
+  const fields = afterActionMove(data, u, s);
   if (fields <= 0 || !active(u) || !u.pos || s.outcome) return;
   const danger = dangerMap(data, s, u);
   const reach = reachable(data, s, u, u.pos, fields);

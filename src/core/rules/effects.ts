@@ -297,7 +297,7 @@ export function startOfPhase(data: GameData, s: BattleState, team: Team, events:
       if (!onMap(u) || u.downed) continue;
     }
     let healPct = u.pos ? (data.terrain[terrainAt(s, u.pos)]?.heal ?? 0) : 0;
-    for (const id of activeSkillIds(data, u)) {
+    for (const id of activeSkillIds(data, u, s)) {
       const sk = data.skills[id]!;
       if (sk.trigger === 'on_turn_start' && sk.effect.healPercent) healPct += sk.effect.healPercent;
     }

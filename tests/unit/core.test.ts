@@ -91,7 +91,8 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
 });
 
 describe('item images (story 8.5)', () => {
-  const images = () => new Set(Object.values(data.items).map((i) => i.image ?? i.id));
+  // a relic also needs the images of its stages (story 11.9)
+  const images = () => new Set(Object.values(data.items).flatMap((i) => [i.image ?? i.id, ...(i.stages ?? []).map((st) => st.image)]));
   it('accepts content where every item and rune has its image', () => {
     const loaded = loadContentFromDisk();
     expect(validateContent(loaded.data, loaded.locales, undefined, images())).toEqual([]);

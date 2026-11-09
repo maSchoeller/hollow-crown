@@ -12,6 +12,7 @@ import { Icon } from './icons';
 import { asInstance, itemInfo, itemName, rarityOf } from './itemInfo';
 import { Amount, ItemImage } from './pieces';
 import { Sheet } from './Sheet';
+import { shownRelics } from './relicView';
 import './item-sheet.css';
 
 /** Hold time of a long press (EXPERIENCE.md Interaction Primitives). */
@@ -27,14 +28,17 @@ export function ItemSheet({
   onClose: () => void;
 }) {
   const inst = asInstance(item);
-  const info = itemInfo(data, inst);
+  const info = itemInfo(data, inst, shownRelics.value);
   const rarity = rarityOf(data, inst);
   return (
     <Sheet title={itemName(data, inst)} onClose={onClose} class="its">
       <div class="its__top">
         <ItemImage data={data} item={inst} size={72} />
         <div class="its__id">
-          <span class={`its__rarity r-${rarity}`}>{t(`ui.itemInfo.rarity.${rarity}`)}</span>
+          <span class={`its__rarity r-${rarity}`}>
+            {t(`ui.itemInfo.rarity.${rarity}`)}
+            {info.relic && ` · ${info.relic.label}`}
+          </span>
           <span class="its__type">{info.type}</span>
         </div>
       </div>
@@ -74,6 +78,16 @@ export function ItemSheet({
             <b>{info.skill.name}</b> – {info.skill.desc}
           </p>
           <p class="its__note">{t('ui.itemInfo.skillMastery', { n: info.skill.cost })}</p>
+        </Section>
+      )}
+
+      {info.relic && info.relic.skills.length > 0 && (
+        <Section title={t('ui.relic.awakened')}>
+          {info.relic.skills.map((s) => (
+            <p key={s.name} class="its__line">
+              <b>{s.name}</b> – {s.desc}
+            </p>
+          ))}
         </Section>
       )}
 
