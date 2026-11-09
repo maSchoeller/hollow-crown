@@ -26,3 +26,19 @@ Gesamtansicht: [akt2-ortsbilder-kontaktbogen.jpg](akt2-ortsbilder-kontaktbogen.j
 - **Vorschaubilder** hier sind verkleinerte JPGs (480 × 270), nicht die Spieldateien.
 
 </details>
+
+## Nachtrag 2026-11-09: 2-5 Silberquell (Story 11.16)
+
+**Kurz:** Das achte Ortsbild, für 2-5 „Die verstoßene Leibwache“. Erzeugt und geprüft von der lenkenden Session, eingebunden mit Story 11.16 (`ACT2_LOCATIONS`, Paket act2, `place` und Szenen-`background` `silberquell`). **Status: Abnahme durch den Produktinhaber offen.**
+
+| Mission | Bild | Kurz |
+|---|---|---|
+| 2-5 Silberquell | ![](akt2-orte-silberquell.jpg) | Klosterhof mit Schrein und Hospiz, dahinter die Eisenschlucht mit zwei Hängebrücken und Wasserfall im Osten, der Nordrand eine Stufe höher. Mittag. |
+
+<details>
+<summary>Details</summary>
+
+- **Herkunft:** `art/prompts/loc_silberquell.md` (Prompt, Tarif, Konto, eigener Chat, Referenzen `windscharte.png`, `kraehenholm.png`, `brandhang.png`, 1 Versuch); Original `art/mockups/locations-s1/silberquell.png` (1672 × 941) in Git LFS.
+- **Prüfung:** Landmarken des Entwurfs `s2_2_5_silberquell` sichtbar (Hof, Tor, Schrein, Hospiz, zwei Hängebrücken, Wasserfall, Nordrand mit Treppe); keine Menschen, kein Text.
+
+</details>
