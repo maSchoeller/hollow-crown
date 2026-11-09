@@ -161,6 +161,9 @@ simulation:
     perNode: { prologue: [300, 300] }
     perAct: { '1': [800, 1500], '2': [2000, 3000], '3': [3000, 4500] }
     sideShare: [0.3, 0.5]
+  # --start expected (Story 11.4): Gold der Truppe, die Akt N ohne die Akte davor beginnt; gemessen 2026-11-09 beim Eintritt in Akt 2
+  # (Normal, ohne Heimsuchungen, nach dem Lager: 6 022; mit Heimsuchungen 15 555) [ASSUMPTION]
+  startExpected: { '2': { gold: 6000 } }
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000

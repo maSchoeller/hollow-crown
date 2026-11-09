@@ -2,8 +2,22 @@
  * Chained act simulation (story 6.8): plays the story missions of an act one after another with AI on both sides and a
  * simple home heuristic in between (heal scars, buy healing items, upgrade the strongest units' weapons), so gold, EP and
  * difficulty are checked across the whole act. Targets (NFR12 corridors, GDD gold curve) come from `balance.yaml` `simulation`.
+ *
+ * Story 11.4: over the acts. `prepareActData` opens the later act for the run (`releasedActs`), loads a map from a file and moves the
+ * position level; a run then plays act 1 to its finale, moves on with the act transition (story 11.1) and plays the next act. A node
+ * whose map is not built yet is skipped (counted as done, so the sequence goes on) and reported.
  */
+import { readFileSync } from 'node:fs';
+import { parse } from 'yaml';
+import { mapSchema } from '../src/content/schemaMap';
 import {
+  addToRoster,
+  levelUp,
+  nodeAct,
+  positionNow,
+  type CampaignNodeDef,
+  type FlagValue,
+  type MapDef,
   actOf,
   enterNextAct,
   findNode,
@@ -48,6 +62,20 @@ export interface CampaignSimOptions {
   maxMissions?: number;
   /** story 15.10: called with the campaign right before each story mission (after the home heuristic), e.g. to keep it for tuning */
   onMission?: (node: string, c: CampaignState, run: number) => void;
+  /** story 11.4: the act the run aims at (`--campaign actN`); acts before it are played chained, unless `start` is `expected` */
+  act?: number;
+  /** story 11.4, `--start expected`: no run through the acts before; the company of act 1 starts the act on the level P of its first mission */
+  start?: 'chained' | 'expected';
+  /** story 11.4, `--order a,b`: among the story nodes open at once (the pairs), these come first, in this order; else file order */
+  order?: string[];
+  /** story 11.4, `--flags name=value,…`: campaign flags set at the start of each run (the outcome of a decision; no value = true) */
+  flags?: string[];
+  /** story 11.4, `--position k`: P of the target node (`node`) is k; `prepareActData` moves `positionLevel.base` to match */
+  position?: number;
+  /** story 11.4, `--map-file`: a map YAML; it plays at the node whose map has its id, else at `node` */
+  mapFile?: string;
+  /** story 11.4, `--node`: the target node for `--map-file` and `--position` (default: the first story node of the act without a map) */
+  node?: string;
 }
 
 /** Per story mission, summed over all runs that reached it. */
@@ -100,6 +128,10 @@ export interface CampaignSim {
   spent: { heal: number; buy: number; upgrade: number };
   /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
   haunts: { played: number; won: number; gold: number; fallen: number };
+  /** story 11.4: runs that reached the aimed act, summed army level and gold when its first node comes up (after the camp and haunts) */
+  entry: { runs: number; armyLevel: number; gold: number };
+  /** story 11.4: node → runs that skipped it, its map is not built (placeholders of a later act) */
+  skipped: Record<string, number>;
 }
 
 export interface MissionFlags {
@@ -203,10 +235,114 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
 
 const sideGoldOf = (r: BattleResult): number => r.side.filter((s) => s.done).reduce((a, s) => a + (s.reward.gold ?? 0), 0);
 
-/** Story nodes of the act in a valid order: always the first available story node not yet played (`availableNodes`). */
-function nextNode(data: GameData, c: CampaignState): string | undefined {
-  return availableNodes(data, c).find((n) => n.kind === 'story' && !c.completed.includes(n.id))?.id;
+/**
+ * Story nodes of the act in a valid order: the first available story node not yet played (`availableNodes`); with `order`
+ * (story 11.4) the listed nodes go first when several are open at once, so either mission of a pair can come first.
+ */
+function nextNode(data: GameData, c: CampaignState, order: string[] = []): string | undefined {
+  const open = availableNodes(data, c).filter((n) => n.kind === 'story' && !c.completed.includes(n.id));
+  return (order.map((id) => open.find((n) => n.id === id)).find(Boolean) ?? open[0])?.id;
 }
+
+/** `--flags a=b,c` → `{ a: 'b', c: true }` (a whole number becomes a number); every flag must be in the register, a value among its `values`. */
+export function parseFlags(data: GameData, specs: string[] = []): Record<string, FlagValue> {
+  const out: Record<string, FlagValue> = {};
+  for (const spec of specs.flatMap((s) => s.split(',')).filter(Boolean)) {
+    const [name, raw] = spec.split('=') as [string, string | undefined];
+    const def = data.flags[name];
+    if (!def) throw new Error(`--flags: no flag "${name}" in the register (flags.yaml)`);
+    const value: FlagValue = raw === undefined ? true : /^-?\d+$/.test(raw) ? Number(raw) : raw;
+    if (def.values && !def.values.includes(value as string | number)) throw new Error(`--flags: ${name} takes ${def.values.join(', ')}, got ${raw}`);
+    out[name] = value;
+  }
+  return out;
+}
+
+/**
+ * The data for a run aimed at act `o.act` (story 11.4): the acts up to it are open (`releasedActs`, the transition needs it),
+ * `--map-file` adds its map (as `devMap` does) and stands in for the target node, `--position` moves `positionLevel.base` so the
+ * target node stands on P = k in the order the runs play. Act 1 gets the data back unchanged. Pure apart from reading the map file.
+ */
+export function prepareActData(
+  data: GameData,
+  o: Pick<CampaignSimOptions, 'act' | 'position' | 'mapFile' | 'node' | 'order' | 'flags' | 'difficulty' | 'deathMode'>,
+): GameData {
+  const act = o.act ?? 1;
+  if (act === 1) {
+    if (o.position !== undefined || o.mapFile || o.node) throw new Error('--position, --map-file and --node need a later act (--campaign act2)');
+    return data;
+  }
+  const head = data.acts[act];
+  if (!head) throw new Error(`act ${act} is not loaded`);
+  const d: GameData = { ...data, releasedActs: Array.from({ length: act }, (_, i) => i + 1), acts: { ...data.acts }, maps: { ...data.maps } };
+  let nodes: CampaignNodeDef[] = head.nodes;
+  const story = nodes.filter((n) => n.kind === 'story');
+  if (o.node && !story.some((n) => n.id === o.node)) throw new Error(`--node ${o.node} is no story node of act ${act} (${story.map((n) => n.id).join(', ')})`);
+  let target = o.node ?? story.find((n) => !d.maps[n.map])?.id ?? story[0]?.id;
+  if (o.mapFile) {
+    const parsed = mapSchema.parse(parse(readFileSync(o.mapFile, 'utf8'))) as Omit<MapDef, 'act'>;
+    d.maps[parsed.id] = { ...parsed, act } as MapDef;
+    const own = nodes.find((n) => n.map === parsed.id);
+    if (own) target = o.node ?? own.id;
+    else nodes = nodes.map((n) => (n.id === target ? { ...n, map: parsed.id } : n));
+  }
+  d.acts[act] = { ...head, nodes };
+  if (o.position !== undefined) {
+    if (!head.positionLevel) throw new Error(`--position: act ${act} has no positionLevel`);
+    // the story nodes of the act done before the target, in the order the runs play them
+    const c = entryCampaign(d, 1, o);
+    let done = 0;
+    for (let id = nextNode(d, c, o.order); id && id !== target; id = nextNode(d, c, o.order)) {
+      c.completed.push(id);
+      done++;
+    }
+    const node = nodes.find((n) => n.id === target)!;
+    d.acts[act] = { ...d.acts[act]!, positionLevel: { ...head.positionLevel, base: o.position - done - (node.levelBonus ?? 0) } };
+  }
+  return d;
+}
+
+/**
+ * `--start expected` (story 11.4): a campaign at the start of act `o.act` without playing what comes before, like `devNode`: every
+ * companion who joins at a node of an earlier act is in the company, those nodes are done with their rewards (castle, sparks), and
+ * the move to the act follows from the finale. Gold comes from `simulation.startExpected`; the levels are raised by the caller.
+ */
+function entryCampaign(data: GameData, seed: number, o: Pick<CampaignSimOptions, 'act' | 'flags' | 'difficulty' | 'deathMode'>): CampaignState {
+  const act = o.act ?? 1;
+  const c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
+  Object.assign(c.flags, parseFlags(data, o.flags));
+  for (const ch of Object.values(data.chars)) if ((nodeAct(data, ch.joins) ?? act) < act) addToRoster(data, c, ch.id);
+  for (let a = 1; a < act; a++)
+    for (const n of data.acts[a]?.nodes ?? []) {
+      c.completed.push(n.id);
+      applyNodeRewards(data, c, n.id);
+    }
+  const gold = data.balance.simulation.startExpected[String(act)]?.gold;
+  if (gold !== undefined) c.gold = gold;
+  return c;
+}
+
+/** The first node a run from `c` plays (skipping the ones without a map), or undefined. Leaves `c` as it is. */
+function firstPlayable(data: GameData, c0: CampaignState, order?: string[]): CampaignNodeDef | undefined {
+  const c = { ...c0, completed: [...c0.completed] };
+  for (let id = nextNode(data, c, order); id; id = nextNode(data, c, order)) {
+    const n = findNode(data, id)!;
+    if (data.maps[n.map]) return n;
+    c.completed.push(id);
+  }
+  return undefined;
+}
+
+const emptySim = (): CampaignSim => ({
+  missions: [],
+  finished: 0,
+  endGold: 0,
+  endArmyLevel: 0,
+  spent: { heal: 0, buy: 0, upgrade: 0 },
+  haunts: { played: 0, won: 0, gold: 0, fallen: 0 },
+  entry: { runs: 0, armyLevel: 0, gold: 0 },
+  skipped: {},
+});
 
 /**
  * A day goes by (the packet of `day`), then every haunt that is open is played once with the whole company, oldest first; a
@@ -229,19 +365,46 @@ function playHaunts(data: GameData, c0: CampaignState, day: number, stats: Campa
 
 export function simulateCampaign(data: GameData, o: CampaignSimOptions): CampaignSim {
   const missions = new Map<string, MissionSim>();
-  const out: CampaignSim = { missions: [], finished: 0, endGold: 0, endArmyLevel: 0, spent: { heal: 0, buy: 0, upgrade: 0 }, haunts: { played: 0, won: 0, gold: 0, fallen: 0 } };
+  const out = emptySim();
+  const act = o.act ?? 1;
+  if (o.start === 'expected' && act === 1) throw new Error('--start expected needs a later act (--campaign act2)');
+  const flags = parseFlags(data, o.flags);
   for (let run = 0; run < o.runs; run++) {
     const seed = o.seed + run;
-    let c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
+    let c: CampaignState;
+    if (o.start === 'expected') {
+      c = entryCampaign(data, seed, o);
+      // everyone stands on P of the first mission the run plays, raised with the game's own level-up (as devNode)
+      const first = firstPlayable(data, c, o.order);
+      const level = first ? nodeLevel(data, c, first) : (positionNow(data, c) ?? 1);
+      for (const u of c.roster) while (u.level < level) levelUp(data, u, c.rng);
+    } else {
+      c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
+      Object.assign(c.flags, flags);
+    }
     let finished = true;
     let day = 0;
     let played = 0;
-    for (let id = nextNode(data, c); id; id = nextNode(data, c)) {
+    let entered = false;
+    for (let id = nextNode(data, c, o.order); id; id = nextNode(data, c, o.order)) {
+      if (!entered && act > 1 && actOf(c) >= act) {
+        entered = true;
+        out.entry.runs++;
+        out.entry.armyLevel += armyLevel(data, c);
+        out.entry.gold += c.gold;
+      }
+      const node = findNode(data, id)!;
+      if (!data.maps[node.map]) {
+        // a placeholder of a later act (story 11.3): counted as done so the sequence goes on, reported
+        out.skipped[id] = (out.skipped[id] ?? 0) + 1;
+        c.completed.push(id);
+        applyNodeRewards(data, c, id);
+        continue;
+      }
       if (o.maxMissions !== undefined && played++ >= o.maxMissions) {
         finished = false;
         break;
       }
-      const node = data.acts[1]!.nodes.find((n) => n.id === id)!;
       const m =
         missions.get(id) ??
         missions
@@ -315,7 +478,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
  * (Testlabor S2: the worker threads play one run each). Missions keep the order in which the runs first reached them.
  */
 export function mergeCampaignSims(parts: CampaignSim[]): CampaignSim {
-  const out: CampaignSim = { missions: [], finished: 0, endGold: 0, endArmyLevel: 0, spent: { heal: 0, buy: 0, upgrade: 0 }, haunts: { played: 0, won: 0, gold: 0, fallen: 0 } };
+  const out = emptySim();
   const missions = new Map<string, MissionSim>();
   const sumInto = <T extends object>(to: T, from: T) => {
     for (const k of Object.keys(from) as (keyof T)[]) if (typeof from[k] === 'number') (to[k] as number) = (to[k] as number) + (from[k] as number);
@@ -326,6 +489,8 @@ export function mergeCampaignSims(parts: CampaignSim[]): CampaignSim {
     out.endArmyLevel += p.endArmyLevel;
     sumInto(out.spent, p.spent);
     sumInto(out.haunts, p.haunts);
+    sumInto(out.entry, p.entry);
+    for (const [id, n] of Object.entries(p.skipped)) out.skipped[id] = (out.skipped[id] ?? 0) + n;
     for (const pm of p.missions) {
       const m = missions.get(pm.node);
       if (!m) {
@@ -357,7 +522,8 @@ export function missionFlags(data: GameData, m: MissionSim, difficulty: Difficul
   if (countDowns && cor.downsMin !== undefined && downs < cor.downsMin) f.downs = 'low';
   if (countDowns && cor.downsMax !== undefined && downs > cor.downsMax) f.downs = 'high';
   if (m.cleared) {
-    const [lo, hi] = sim.gold.perNode[m.node] ?? sim.gold.perAct[String(data.acts[1]!.act)] ?? [0, Infinity];
+    // the gold curve of the node's own act (story 11.4: missions of act 2 against perAct['2'])
+    const [lo, hi] = sim.gold.perNode[m.node] ?? sim.gold.perAct[String(nodeAct(data, m.node) ?? 1)] ?? [0, Infinity];
     const base = (m.gold - m.sideGold) / m.cleared;
     if (base < lo) f.gold = 'low';
     if (base > hi) f.gold = 'high';
