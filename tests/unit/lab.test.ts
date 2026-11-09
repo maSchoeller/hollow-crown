@@ -28,6 +28,14 @@ describe('lab scenario loader', () => {
     expect(labUnit(s, 'avatar').level).toBeGreaterThanOrEqual(node.expectedLevel!);
   });
 
+  it('plays a map of act 2 in act 2: the board takes the autumn of the act, the company is the one expected there (story 11.12)', () => {
+    const { state: s } = labState(data, 'windscharte-2-1');
+    expect(s.mapId).toBe('m2_1_windscharte');
+    expect(s.act).toBe(2);
+    expect(data.render.board.actSeason['2']).toBe('autumn');
+    expect(s.units.some((u) => u.fromRoster && u.charId === 'liora')).toBe(true);
+  });
+
   it('is deterministic: the same file gives the same battle', () => {
     expect(labState(data, 'boss-gegenschlag').state).toEqual(labState(data, 'boss-gegenschlag').state);
   });

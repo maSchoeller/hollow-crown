@@ -34,7 +34,9 @@ const sim = (o: CampaignSimOptions) => simulateCampaign(prepareActData(data, o),
 /** the mission played on the probe map */
 const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
 
-describe('simulation over the acts (story 11.4)', () => {
+// Each of these plays whole battles of 2-1 (a real map since story 11.12) and the probe map: 2.3–4.4 s alone, over 15 s under coverage
+// on a busy machine, hence the own timeout.
+describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
     const a = sim(opts());
     expect(sim(opts())).toEqual(a);

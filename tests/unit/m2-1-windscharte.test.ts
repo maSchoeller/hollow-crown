@@ -127,6 +127,16 @@ describe('map m2_1_windscharte', () => {
     expect(map().objectives.side).toContainEqual({ id: 's_jory', type: 'recruit', unit: 'jory', reward: { gold: 200 } });
   });
 
+  it('pays 2 000 gold, inside the act 2 gold curve of 2 000–3 000 (PO 2026-11-09)', () => {
+    expect(map().goldReward).toBe(2000);
+  });
+
+  it('has two haunt anchors (rout in the gap, treasure on the plain), none in the start area of the mission', () => {
+    const anchors = map().haunts ?? [];
+    expect(anchors.map((a) => a.variant)).toEqual(['rout', 'treasure']);
+    for (const a of anchors) expect(map().deploy.slots.some((p) => dist(p, a.target.at) < 6), a.variant).toBe(false);
+  });
+
   it('has the pass hospice: two fort tiles that heal, within reach of the east ballista', () => {
     const s = battle();
     for (const p of [[12, 17], [13, 17]] as Pos[]) {
@@ -141,13 +151,13 @@ describe('map m2_1_windscharte', () => {
 describe('scenes of 2-1', () => {
   const ids = (c: CampaignState, scene: string) => resolveScene(data, conditionContext(data, c), scene).flatMap((l) => (l.kind === 'line' ? [l.line] : []));
 
-  it('the outro offers both pardons through the lancers and Dravn’s envoy (told, no half figure), Maelis not', () => {
+  it('the outro offers both pardons through a lance rider and Dravn’s envoy as speakers with own half figures (PO 2026-11-09), Maelis not', () => {
     const lines = resolveScene(data, conditionContext(data, inAct2()), 'scn.m2_1.outro');
     const speakers = new Set(lines.flatMap((l) => (l.kind === 'line' && l.speaker ? [l.speaker] : [])));
     expect(speakers.has('brakka') && speakers.has('lucan')).toBe(true);
     for (const who of ['maelis', 'rowena', 'seraphine', 'dravn']) expect(speakers.has(who), who).toBe(false);
-    const ids = lines.flatMap((l) => (l.kind === 'line' ? [l.line] : []));
-    expect(ids).toEqual(expect.arrayContaining(['l07', 'l07b', 'l08']));
+    const by = new Map(lines.flatMap((l) => (l.kind === 'line' ? [[l.line, l.speaker] as const] : [])));
+    expect([by.get('l07'), by.get('l07b'), by.get('l08')]).toEqual(['lance_rider', 'lance_rider', 'dravn_envoy']);
   });
 
   it('Rhen answers with a stance and a consequence card, no flag and no other effect', () => {

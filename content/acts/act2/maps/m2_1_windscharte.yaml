@@ -5,6 +5,7 @@
 # Abweichungen vom Entwurf (Story 11.12, alle in levels/abnahme/s2_2_1_windscharte.md): Karten-Id m2_1_windscharte, Szenen scn.m2_1.*, Reiter-Lektion gestrichen (keine Reiter),
 # Gegner nur mit levelOffset und als „Freie Klinge“ (Fraktion free_blades) mit den Figuren des Pools, Söldner-Plänkler der Wellen mit Schwert statt Lanze (Klasse führt keine Lanze),
 # Brakkas Stufe nach der Leutnant-Regel, Jory ohne eigene Stufe/Waffen (Gefährten-Definition).
+# Nach der Abnahme (PO 2026-11-09): Gold 2 000 statt 1 100, zwei Heimsuchungs-Anker (rout, treasure), Niedergestreckte auf Normal bleiben bis Story 11.27.
 # Balancing [C] siehe Abschnitt „Übernahme Story 11.12“ der Abnahme-Datei (pnpm sim m2_1_windscharte --campaign act2 --start expected).
 # Szenen: scn.m2_1.intro vor der Karte (Knoten pre), scn.m2_1.tutorial_ballista (Felsnase), scn.m2_1.jory_talk (Ansprechen), scn.m2_1.dragon_shadow (Runde 8), scn.m2_1.outro nach Runde 10 (Angebote, Haltung).
 id: m2_1_windscharte
@@ -68,6 +69,22 @@ deploy:
   max: 9
   forced: [avatar, lucan]
   slots: [[7, 21], [8, 21], [11, 21], [12, 21], [7, 22], [8, 22], [9, 22], [10, 22], [11, 22], [12, 22], [9, 23], [10, 23]]
+# Heimsuchungs-Anker (Story 5.5, Produktinhaber 2026-11-09: zwei auf der Windscharte), die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: die Scharte selbst – hier hat Brakka den Pass gesperrt, hier sperren ihre Söldner ihn wieder. Die Truppe kommt die Passstraße
+  # herauf wie in der Mission, die Gegner halten den Scheitel zwischen den Felsnasen.
+  - variant: rout
+    target: { at: [9, 13] }
+    enemySpawn: { rect: [7, 8, 12, 11] }
+    deploy: { rect: [7, 19, 12, 20] }
+  # Grund: Brakkas Sold – auf der Ebene vor dem Pass haben die Freien Klingen Beute verscharrt; wer die Kisten will, muss durch die Scharte
+  # hinaus in die offene Ebene.
+  - variant: treasure
+    target: { at: [9, 3] }
+    enemySpawn: { rect: [5, 4, 14, 6] }
+    deploy: { rect: [7, 14, 12, 16] }
+    turns: 12
+    chests: [[4, 2], [15, 2]]
 units:
   # Ostnase: Brakka an der Balliste (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format), Wache oben, Söldner auf der Terrasse darunter
   - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, levelOffset: 1, at: [15, 10], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
@@ -148,7 +165,8 @@ triggers:
     when: { type: turn_start, turn: 8, phase: player }
     then:
       - { action: dialogue, id: scn.m2_1.dragon_shadow }
-goldReward: 1100
+# Gold nach der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie), Produktinhaber 2026-11-09
+goldReward: 2000
 design:
   title: Wind über der Eisenmark
   intent: >

@@ -1,5 +1,6 @@
 # Mission 2-1, Szene nach der Karte (Knoten post, Story 11.12): Brakka zieht ab, sie wurde bezahlt (Auftraggeber ungenannt, PO 2026-11-09 F4 = A).
-# Die Angebote überbringen Lanzenreiter der Prinzessin ohne Rowena und ein Bote Dravns (F2 = A), als Erzähltext mit wörtlicher Rede (beide ohne Halbfigur);
+# Die Angebote überbringen Lanzenreiter der Prinzessin ohne Rowena und ein Bote Dravns (F2 = A); seit PO 2026-11-09 sprechen beide selbst
+# mit eigener Halbfigur (Sprecher lance_rider und dravn_envoy, art/prompts/lance_rider.md und dravn_envoy.md);
 # Maelis noch nicht (Narrative §63, Epic 11).
 # Rhen antwortet mit einer Haltung (F1 = B): Antwort mit Titel und Folgen-Karte (Chronik), Wirkung nur die Haltung, kein Flag; beide Angebote
 # bleiben offen bis E5/E6. Lucans Satz danach folgt der vorherrschenden Haltung (Narrative „Branching“). Jory spricht nur, wenn er beigetreten ist.
@@ -28,16 +29,22 @@ lines:
     text: "Dicht hinter ihnen ein einzelner Bote, das Zeichen des Grenzheers auf dem Umhang."
   - id: l06
     mood: neutral
-    text: "Beide Gruppen halten am Scheitel. Niemand legt die Hand an die Waffe."
+    text: "Beide Gruppen halten am Scheitel. Niemand legt die Hand an die Waffe. Ein Ritter senkt die Lanze zum Gruß."
   - id: l07
+    speaker: [lance_rider]
+    fallback: skip
     mood: neutral
-    text: "Ein Ritter senkt die Lanze zum Gruß: „Ihre Hoheit Prinzessin Seraphine bietet Euch Freispruch an.“"
+    text: "Ihre Hoheit Prinzessin Seraphine bietet Euch Freispruch an."
   - id: l07b
+    speaker: [lance_rider]
+    fallback: skip
     mood: neutral
-    text: "„Gegen einen Auftrag. Das Nähere folgt, wenn Ihr annehmt.“"
+    text: "Gegen einen Auftrag. Das Nähere folgt, wenn Ihr annehmt."
   - id: l08
+    speaker: [dravn_envoy]
+    fallback: skip
     mood: neutral
-    text: "Der Bote grüßt knapp: „General Dravn bietet dem Aschenbanner Freispruch. Gegen einen Auftrag.“"
+    text: "General Dravn bietet dem Aschenbanner Freispruch. Gegen einen Auftrag."
   - id: l09
     speaker: [lucan]
     mood: angry

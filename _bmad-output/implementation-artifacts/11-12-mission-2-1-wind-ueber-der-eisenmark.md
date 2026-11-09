@@ -158,8 +158,8 @@ Claude Opus 5.5 (gds-dev-story); Szenenentwurf und Übersetzung per Haiku-Subage
 
 ### Completion Notes List
 
-- T1: Karte aus dem Entwurf übernommen (Abweichungen in der Abnahme-Datei): Gegner nur mit `levelOffset` als „Freie Klinge“ mit Pool-Figuren, Plänkler der Wellen mit Schwert (skirmisher führt keine Lanze), Brakka behält `steel_bow` (Signatur `wasp_sting` filtert `lieutenantItems` aus den Kartenwaffen, sie ist Beute), Jory `char: jory` ohne eigene Stufe/Waffen (Stufe 11 = P − 1 über `raiseMapChar`). Höhen passten schon (crag = Stufe 2). Lektion per `unit_enters` auf Felsnasen und Treppen, Drachenschatten R8. Keine Heimsuchungs-Anker (Entwurf hat keine).
-- T2: Szenen intro/jory_talk/dragon_shadow/outro DE in `content/acts/act2/scenes/`, EN in `content/locales/en/act2.dialogue.yaml`; Entwurf Haiku, danach von Hand überarbeitet (Floskeln, Sprecher-neutrale Kettenzeilen, Brakkas Formel nicht doppelt zur Begegnungszeile). Outro: Antwort `c01` mit Titel (Folgen-Karte, Chronik-Eintrag), drei Haltungen ohne Wirkung; Lucans Satz danach folgt der vorherrschenden Haltung; Jory nur mit `requires: alive`. Lanzenritter und Bote sprechen als Erzähltext mit wörtlicher Rede (für sie gibt es keine Halbfigur, `scene-view.test.ts` verlangt eine je Sprecher); Kartenname `map.m2_1_windscharte.name`.
+- T1: Karte aus dem Entwurf übernommen (Abweichungen in der Abnahme-Datei): Gegner nur mit `levelOffset` als „Freie Klinge“ mit Pool-Figuren, Plänkler der Wellen mit Schwert (skirmisher führt keine Lanze), Brakka behält `steel_bow` (Signatur `wasp_sting` filtert `lieutenantItems` aus den Kartenwaffen, sie ist Beute), Jory `char: jory` ohne eigene Stufe/Waffen (Stufe 11 = P − 1 über `raiseMapChar`). Höhen passten schon (crag = Stufe 2). Lektion per `unit_enters` auf Felsnasen und Treppen, Drachenschatten R8. Keine Heimsuchungs-Anker (Entwurf hat keine; zwei nach der Abnahme ergänzt, siehe unten).
+- T2: Szenen intro/jory_talk/dragon_shadow/outro DE in `content/acts/act2/scenes/`, EN in `content/locales/en/act2.dialogue.yaml`; Entwurf Haiku, danach von Hand überarbeitet (Floskeln, Sprecher-neutrale Kettenzeilen, Brakkas Formel nicht doppelt zur Begegnungszeile). Outro: Antwort `c01` mit Titel (Folgen-Karte, Chronik-Eintrag), drei Haltungen ohne Wirkung; Lucans Satz danach folgt der vorherrschenden Haltung; Jory nur mit `requires: alive`. Lanzenritter und Bote sprachen zuerst als Erzähltext mit wörtlicher Rede (keine Halbfigur, `scene-view.test.ts` verlangt eine je Sprecher); nach der Abnahme eigene Sprecher mit Halbfigur; Kartenname `map.m2_1_windscharte.name`.
 - T3: `m2_1` mit `pre`/`post`; Weltkarten-Slot `wind_gap` unverändert.
 - T4 [C]: Normal 78 % Sieg / 4,64 Niedergestreckte / 1,65 Tote (Niedergestreckte über dem Korridor 0,4–1,3), Leicht 86 % / 1,36, Schwer 70 % / 8,12; verkettet nach Akt 1 87 % / 1,63 / 0,54. Gold 1 300 unter der Akt-2-Kurve (2 000–3 000). Ohne Ballisten 100 % / 2,40: die Ballisten treiben die Niedergestreckten. Nicht still geändert, als PO-Frage gemeldet. Akt 1: keine Datei von Akt 1 und kein Code geändert, Basislauf damit unverändert (kein sim:diff nötig).
 - T5: `pnpm levels` neu erzeugt, Abschnitt „Übernahme Story 11.12“ in der Abnahme-Datei; Lab-Szenario `tests/fixtures/lab/windscharte-2-1.yaml` für die Sichtprüfung.
@@ -167,6 +167,7 @@ Claude Opus 5.5 (gds-dev-story); Szenenentwurf und Übersetzung per Haiku-Subage
 - Bestehende Tests nachgezogen, die „Akt 2 hat noch keine Karte“ annahmen: `act-title`, `act-transition`, `scenery` (Akt der Karte aus dem Ordner), `sim-acts` (Probekarte jetzt ausdrücklich an `m2_1`).
 - Sichtprüfung 375 × 812 (Dev-Build act2, Lautstärken 0): Karte zu Beginn, Nachszene mit den drei Haltungen und Folgen-Karte.
 - T7: Decision-Logs `concept/22-narrative/decision-log.md` und `concept/21-gdd/decision-log.md`; act2 bleibt `released: false`, kein content:lock.
+- Nach der Abnahme (PO 2026-11-09): (1) Niedergestreckte auf Normal (4,64) bleiben, Abstimmung in 11.27; (2) Gold 1 100 → 2 000, Test; (3) Lanzenreiter `lance_rider` und Bote `dravn_envoy` als Sprecher mit eigener Halbfigur (ChatGPT über Claude in Chrome, Protokolle `art/prompts/`), Gruß des Ritters in l06; (4) Anker `rout` (Scharte) und `treasure` (Ebene), Test. Sim Normal: 78 % / 4,64 / 1,65 Tote, Gold 2 200. Nebenbei: Das Lab spielt eine Karte von Akt 2 jetzt in Akt 2 (`src/lab/scenario.ts`: Knoten aus allen geladenen Akten, `c.act`), vorher zeigte `windscharte-2-1` Sommer statt Herbst und keine erwartete Truppe; im echten Spielfluss war 2-1 schon herbstlich (`BattleState.act` aus der Kampagne).
 - Ultimate context engine analysis completed - comprehensive developer guide created (gds-create-story, 2026-11-09). Sprint-Status bewusst nicht geändert (paralleler Auftrag 11.11).
 
 ### File List
@@ -191,7 +192,9 @@ Claude Opus 5.5 (gds-dev-story); Szenenentwurf und Übersetzung per Haiku-Subage
 - concept/21-gdd/decision-log.md
 - _bmad-output/implementation-artifacts/sprint-status.yaml
 - _bmad-output/implementation-artifacts/11-12-mission-2-1-wind-ueber-der-eisenmark.md
+- Nach der Abnahme (PO 2026-11-09): art/mockups/characters-s1/lance_rider.png, dravn_envoy.png (neu, LFS), art/prompts/lance_rider.md, dravn_envoy.md (neu), src/lab/scenario.ts, tests/unit/lab.test.ts
 
 ### Change Log
 
 - 2026-11-09: Story 11.12 umgesetzt (Karte, Szenen DE/EN, Knoten, Tests, Abnahme, Decision-Logs); PO-Antworten F1–F4 eingearbeitet; Status review.
+- 2026-11-09: PO-Entscheidungen nach der Abnahme: Niedergestreckte bleiben bis 11.27, Gold 2 000, Lanzenreiter und Bote mit eigener Halbfigur als Sprecher, zwei Heimsuchungs-Anker; Lab spielt Akt-2-Karten in Akt 2 (Herbst).

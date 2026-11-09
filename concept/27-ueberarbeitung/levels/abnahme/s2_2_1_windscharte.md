@@ -52,9 +52,21 @@ Verkettet nach Akt 1 (`pnpm sim --campaign act2 --runs 50`, Normal): 46 von 50 L
 | Plänkler der Wellen mit `iron_lance` | `iron_sword` | Klasse skirmisher führt keine Lanze |
 | Brakka Stufe 12 | Stufe nach der Leutnant-Regel, `steel_bow` bleibt (Signatur `wasp_sting` ist Beute, nie Kartenwaffe) | 11.5 |
 | Jory Stufe 5, `iron_dagger` | Gefährten-Definition: max(10, P − 1) = 11, `steel_dagger`, `travel_lute`, `vulnerary` | 11.5, 11.2 |
-| Nachszene „Boten“ | Lanzenreiter der Prinzessin ohne Rowena + Bote des Grenzheers; Rhen antwortet mit Haltung (Folgen-Karte, kein Flag) | PO 2026-11-09 (F1 = B, F2 = A) |
+| Nachszene „Boten“ | Lanzenreiter der Prinzessin ohne Rowena + Bote des Grenzheers, beide als Sprecher mit eigener Halbfigur (`lance_rider`, `dravn_envoy`); Rhen antwortet mit Haltung (Folgen-Karte, kein Flag) | PO 2026-11-09 (F1 = B, F2 = A; Sprecher nach der Abnahme) |
 | Höhen | unverändert: crag ist Stufe 2, die Nachbarfelder der Ballisten taugen zum Bedienen | Test `m2-1-windscharte.test.ts` |
 
-Ohne Heimsuchungs-Anker (der Entwurf hat keine).
+Heimsuchungs-Anker: der Entwurf hat keine; zwei ergänzt nach der Abnahme (PO 2026-11-09), siehe unten.
 
 </details>
+
+## Nach der Abnahme (Produktinhaber 2026-11-09)
+
+- **Niedergestreckte auf Normal (4,64)** bleiben vorerst so; die Ballisten treiben sie. Abstimmung in Story 11.27 (Balancing Akt 2).
+- **Gold** 1 100 → **2 000** (Goldkurve Akt 2: 2 000–3 000). Sim Normal (`pnpm sim --campaign act2 --start expected --runs 50`): Sieg 78 %, 4,64 Niedergestreckte, 1,65 Tote, Gold 2 200 mit Jory; Nebenziel-Gold 200 liegt jetzt unter dem Anteil von 30–50 % (Hinweis „side“, offen für 11.27).
+- **Sprecher:** Lanzenreiter (`lance_rider`) und Bote des Grenzheers (`dravn_envoy`) sprechen in der Nachszene selbst, mit eigener Halbfigur (`art/prompts/lance_rider.md`, `dravn_envoy.md`).
+- **Heimsuchungs-Anker** (zwei, beide außerhalb des Startbereichs):
+
+| Variante | Ziel | Gegner | Truppe | Grund |
+|---|---|---|---|---|
+| rout | Scharte [9,13] | Scheitel [7–12, 8–11] | Passstraße [7–12, 19–20] | Söldner sperren den Pass erneut |
+| treasure, 12 Runden | Ebene [9,3], Truhen [4,2] und [15,2] | Ebene [5–14, 4–6] | unter der Scharte [7–12, 14–16] | Brakkas verscharrte Beute vor dem Pass |

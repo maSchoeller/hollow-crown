@@ -42,6 +42,9 @@ unit.privateer.name: "Privateer"
 unit.free_blade.name: "Free Blade"
 unit.lance_knight.name: "Lance Knight"
 unit.counting_guard.name: "Counting-House Guard"
+# Story 11.12: speakers of the 2-1 outro (own half figures, PO 2026-11-09)
+unit.lance_rider.name: "Lance Rider"
+unit.dravn_envoy.name: "Border Army Envoy"
 
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"

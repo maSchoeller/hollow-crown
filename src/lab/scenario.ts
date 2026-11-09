@@ -33,6 +33,10 @@ import {
   battleUnitFromPlan,
   beginBattle,
   computeStats,
+  findNode,
+  loadedActs,
+  nodeAct,
+  nodesUpTo,
   levelUp,
   nodeLevel,
   newCampaign,
@@ -124,13 +128,16 @@ function resolveNode(data: GameData, sc: LabScenario, fixtures: FixtureMapSource
     if (raw === undefined) fail(`no map "${sc.map}"`, [...Object.keys(data.maps)].sort());
     data.maps[sc.map] = { ...mapSchema.parse(raw), act: 1 } as MapDef;
   }
+  // story 11.12: nodes of every loaded act, so a map of act 2 plays in act 2 (season, position level) once its pack is loaded
   if (sc.node) {
-    const n = data.acts[1]!.nodes.find((x) => x.id === sc.node);
-    if (!n) fail(`no node "${sc.node}"`, data.acts[1]!.nodes.map((x) => x.id));
+    const n = findNode(data, sc.node);
+    if (!n) fail(`no node "${sc.node}"`, nodesUpTo(data, Infinity).map((x) => x.id));
     if (n.map !== sc.map) fail(`node "${sc.node}" plays map "${n.map}", not "${sc.map}"`);
     return n.id;
   }
-  const own = data.acts[1]!.nodes.find((x) => x.map === sc.map);
+  const own = loadedActs(data)
+    .map((a) => data.acts[a]!.nodes.find((x) => x.map === sc.map))
+    .find((x) => x);
   if (own) return own.id;
   const id = `lab_${sc.map}`;
   if (!data.acts[1]!.nodes.some((n) => n.id === id)) {
@@ -143,9 +150,12 @@ function resolveNode(data: GameData, sc: LabScenario, fixtures: FixtureMapSource
 /** The campaign the battle is built from: a throwaway one, as `__hc.devNode` and `pnpm sim --fresh` build it. */
 function labCampaign(data: GameData, sc: LabScenario, nodeId: string): CampaignState {
   const c = newCampaign(data, sc.seed, { difficulty: sc.difficulty, deathMode: 'standard' }, { ...AVATAR });
-  const order = data.acts[1]!.nodes.map((n) => n.id);
+  // the campaign stands in the node's act (story 11.12: the board of 2-1 shows autumn, BattleState.act), with every earlier act done
+  const act = nodeAct(data, nodeId) ?? 1;
+  if (act > 1) c.act = act;
+  const order = nodesUpTo(data, act).map((n) => n.id);
   const idx = order.indexOf(nodeId);
-  const node = data.acts[1]!.nodes[idx]!;
+  const node = findNode(data, nodeId)!;
   const stand = node.id.startsWith('lab_');
   if (Array.isArray(sc.company)) {
     for (const id of sc.company) {
