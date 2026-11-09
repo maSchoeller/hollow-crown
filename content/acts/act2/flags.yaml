@@ -1,8 +1,19 @@
-# Flag-Register Akt 2 (Architektur §5.9). Vorläufig (Story 11.10, [ASSUMPTION]): nur die Flags, die die Entwürfe
-# concept/27-ueberarbeitung/levels/s2_*.yaml schon lesen oder setzen, damit content:check sie prüfen kann. Story 11.5 legt das
-# Register von Akt 2 an und darf diese Platzhalter umbenennen (Paket act2 ist unveröffentlicht, nichts ist gesperrt).
-# E7 (nach 2-4): Sable folgt Dravns Befehl (e7_order, sie bleibt Leutnantin) oder wird gewarnt (e7_warned, ein Hauptmann tritt an ihre Stelle)
-- { id: e7_order, kind: decision, season2: false }
-- { id: e7_warned, kind: decision, season2: false }
+# Flag-Register Akt 2 (Architektur §5.9; Story 11.5): alle Flags des Akts, bevor eine Missions-Story sie setzt oder abfragt, damit sich
+# die Missions- und Nebenquest-Stories in jeder Reihenfolge bauen lassen. kind und values wie in Akt 1; season2: wirkt in Staffel 2 weiter.
+# Die Platzhalter e7_order/e7_warned der Entwürfe (Story 11.10) sind auf e07 umgestellt. Werte [ASSUMPTION] nach Narrative „Entscheidungen“.
+# E5 (nach 2-5): Seraphine bietet Odile die Rückkehr in die Garde an – return = Odile geht (ihre Kronfeld-Zeile wechselt), stay = sie bleibt
+- { id: e05, kind: decision, values: [return, stay], season2: false }
+# E6 (nach 2-6, nur mit Varek): Dravn bietet Varek Begnadigung an – pardon = Varek geht, stay = er bleibt und Sables Groll −1 (bei Groll 0 entfällt ihre nächste Steigerung)
+- { id: e06, kind: decision, values: [pardon, stay], season2: false }
+# E7 (nach 2-4): Brandhang – warn = die Truppe warnt das Dorf, Sable tritt bei; obey = der Befehl wird ausgeführt, Brandhang brennt, Händler −10 % in Akt 2
+- { id: e07, kind: decision, values: [warn, obey], season2: false }
+# E8 (nach 2-7): die Beweise gegen Maelis – seraphine = an die Prinzessin (Grell-Groll −1), sell = an Maelis zurück (+1 000 Gold)
+- { id: e08, kind: decision, values: [seraphine, sell], season2: false }
+# Sable ist als Leutnantin übergelaufen (Wirkung recruit { lt: sable }, Story 3.7); Heimsuchungen und Kronfeld lesen es über isJoined
+- { id: joined_sable, kind: story, season2: true }
+# Mission 2-7: die Geschäftsbücher des Hauses Silbermeer sind gesichert (Beweis gegen Maelis, wirkt in Staffel 2)
+- { id: maelis_ledgers, kind: story, season2: true }
+# Die versiegelte Chronik der Wächter ist gelesen (Akt 2, Beat 10; Chronik-Szene Story 11.23)
+- { id: chronicle_read, kind: story, season2: true }
 # Mission 2-2: das Siegel aus der Truhe c_seal ist gefunden (Karten-Trigger t_seal)
 - { id: m2_2_seal, kind: battle, season2: false }

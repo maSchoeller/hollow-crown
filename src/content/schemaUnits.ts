@@ -177,6 +177,7 @@ const skillCondition = z
     attackerNoElement: z.boolean(),
     notEffective: z.boolean(),
     allyDownedWithin: z.number().int().min(1),
+    besideBallista: z.literal(true),
   })
   .partial();
 
@@ -220,6 +221,7 @@ export const skillSchema = z.object({
       cheerRange: z.number().int().min(1),
       cheerTargets: z.number().int().min(1).max(2),
       ignoreGrief: z.boolean(),
+      siegeRangeBonus: z.number().int().min(1),
     })
     .partial(),
   usesPerMap: z.number().optional(),

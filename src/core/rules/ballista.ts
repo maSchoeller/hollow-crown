@@ -6,24 +6,24 @@ import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit } from '../state';
 import { dist, isHostile, onMap, posKey, unitAt } from '../util';
-import { ballistaRange, ballistaReady, ballistasOf, ballistaWeapon, canCrew } from './ballistaBase';
+import { ballistaReady, ballistasOf, ballistaWeapon, canCrew, crewRange } from './ballistaBase';
 import { forecast, type AttackMods, type Forecast } from './combat';
 import { crewLevelFits, strikeTiles } from './movement';
 import { fogOn, visibleTiles } from './vision';
 
-export { BALLISTA_PREFIX, ballistaRange, ballistasOf, ballistaWeapon, canCrew, ballistaReady, firesBallista } from './ballistaBase';
+export { BALLISTA_PREFIX, ballistaRange, crewRange, ballistasOf, ballistaWeapon, canCrew, ballistaReady, firesBallista } from './ballistaBase';
 
 /**
  * The ballistas the unit can fire from `pos`, with their targets: ballista id → uids of the foes in reach. A ballista stands on a
  * neighbouring tile on the crew's level and has not fired this phase; reach is measured from its tile, a higher level adds
- * `elevation.rangedBonus` (`canStrike`). Under fog the player's crew sees its targets, with the crew standing on `pos` (the AI
+ * `elevation.rangedBonus` (`canStrike`), a crew skill with `siegeRangeBonus` adds to the far end (Brakka, story 11.5). Under fog the player's crew sees its targets, with the crew standing on `pos` (the AI
  * sees everything, as for any attack, balance.yaml `fog`).
  */
 export function ballistaTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   const list = ballistasOf(s);
   if (!list.length || !canCrew(data, u)) return out;
-  const range = ballistaRange(data);
+  const range = crewRange(data, s, u, pos);
   let seen: Set<string> | null | undefined;
   for (const b of list) {
     if (!ballistaReady(b) || dist(b.at, pos) !== 1 || !crewLevelFits(data, s, pos, b.at)) continue;

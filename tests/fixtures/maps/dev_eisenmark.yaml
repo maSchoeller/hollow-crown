@@ -2,6 +2,7 @@
 # spielt sie als Knoten von Akt 2: P = positionLevel.base von Akt 2 (+ erledigte Story-Knoten des Akts), alle Einheiten stehen per levelOffset darauf.
 #
 # Süden: die Truppe auf P−1 bis P. Norden: Start P−3, Elite P−1, der Hauptmann als Boss P+2; Welle in Runde 2 (P−2), Spawn beim Betreten der Brücke (P−2).
+# Story 11.5: dazu die Leutnants Brakka und Grell (Stufe nach der Leutnant-Regel).
 #          x: 0123456789AB
 terrain: |
   ,,,,,,,,,,,,
@@ -34,6 +35,9 @@ units:
   - { id: dev_soldier_b, team: enemy, class: skirmisher, levelOffset: -3, at: [8, 2], sprite: soldier, items: [{ def: iron_sword }] }
   - { id: dev_elite, team: enemy, class: marksman, levelOffset: -1, at: [6, 1], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: steel_bow }] }
   - { id: dev_captain, team: enemy, class: vanguard, levelOffset: 2, boss: true, at: [5, 0], sprite: soldier, ai: { profile: hold }, items: [{ def: steel_lance }] }
+  # Story 11.5: zwei Leutnants von Akt 2 (Steckbrief, Groll, Flucht, Kopfgeld); ihre Stufe folgt der Leutnant-Regel, levelOffset ist nur Format
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, sprite: brakka, portrait: brakka, levelOffset: 1, at: [9, 1], lieutenant: brakka, items: [{ def: iron_bow }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, sprite: grell, portrait: grell, levelOffset: 1, at: [2, 1], lieutenant: grell, items: [{ def: iron_sword }, { def: vulnerary }], drops: [1], ai: { profile: hold } }
 pairs: []
 reinforcements:
   - turn: 2

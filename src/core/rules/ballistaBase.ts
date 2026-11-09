@@ -4,7 +4,9 @@
  * (`balance.ballista.item`) instead of its action. Targets, preview and resolution are in `ballista.ts`.
  */
 import type { GameData } from '../gameData';
+import type { Pos } from '../defs';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
+import { skillTotals } from './skills';
 
 /** The ballistas of the battle (none on any map of act 1). */
 export function ballistasOf(s: Pick<BattleState, 'objects'>): ObjectState[] {
@@ -23,6 +25,12 @@ export function canCrew(data: GameData, u: Pick<BattleUnit, 'classId'>): boolean
 /** Range of the fixed weapon, from the item. */
 export function ballistaRange(data: GameData): [number, number] {
   return data.items[data.balance.ballista.item]?.rng ?? [1, 1];
+}
+
+/** The reach of a shot by `u` from `pos`: the fixed weapon's range, the far end raised by the crew's `siegeRangeBonus` (Brakka, story 11.5). */
+export function crewRange(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): [number, number] {
+  const [min, max] = ballistaRange(data);
+  return [min, max + skillTotals(data, { unit: u, state: s, pos }, 'stats').siegeRange];
 }
 
 /** Prefix of the uid of a ballista's synthetic weapon. */

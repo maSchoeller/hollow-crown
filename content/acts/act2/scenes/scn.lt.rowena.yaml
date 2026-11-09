@@ -1,0 +1,43 @@
+# Leutnant-Zeilen (Story 11.5): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott
+id: scn.lt.rowena
+lines:
+  - id: first
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Für Aldric und die Silberne Lanze! Das Gestüt hält."
+  - id: grudge_1
+    speaker: [rowena]
+    fallback: skip
+    mood: angry
+    text: "{target}. Ich kenne dein Gesicht von der Weide."
+  - id: grudge_2
+    speaker: [rowena]
+    fallback: skip
+    mood: angry
+    text: "{target}! Die Silberne Lanze vergisst keinen Schimpf."
+  - id: grudge_3
+    speaker: [rowena]
+    fallback: skip
+    mood: angry
+    text: "{target}! Für Aldric. Heute endet es."
+  - id: flee_1
+    speaker: [rowena]
+    fallback: skip
+    mood: sad
+    text: "Zurück zu den Ställen! Die Lanze sammelt sich."
+  - id: flee_2
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Ein Ritter weiß, wann er weicht. Nicht, wann er aufgibt."
+  - id: flee_3
+    speaker: [rowena]
+    fallback: skip
+    mood: sad
+    text: "Für Aldric … ich stehe wieder auf."
+  - id: mock
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "{target} ist gefallen. Ich bete für jeden Toten."

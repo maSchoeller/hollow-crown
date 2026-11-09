@@ -1,0 +1,43 @@
+# Leutnant-Zeilen (Story 11.5): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott
+id: scn.lt.grell
+lines:
+  - id: first
+    speaker: [grell]
+    fallback: skip
+    mood: happy
+    text: "Alles hat seinen Preis. Eure Haut auch."
+  - id: grudge_1
+    speaker: [grell]
+    fallback: skip
+    mood: angry
+    text: "{target}. Du stehst in meinem Buch."
+  - id: grudge_2
+    speaker: [grell]
+    fallback: skip
+    mood: angry
+    text: "{target}! Deine Schuld wächst mit Zinsen."
+  - id: grudge_3
+    speaker: [grell]
+    fallback: skip
+    mood: angry
+    text: "{target}! Heute wird abgerechnet."
+  - id: flee_1
+    speaker: [grell]
+    fallback: skip
+    mood: angry
+    text: "Ablegen! Das Geschäft lohnt sich nicht mehr."
+  - id: flee_2
+    speaker: [grell]
+    fallback: skip
+    mood: neutral
+    text: "Alles hat seinen Preis. Der hier war zu hoch."
+  - id: flee_3
+    speaker: [grell]
+    fallback: skip
+    mood: sad
+    text: "Die See nimmt, die See gibt. Wir sehen uns."
+  - id: mock
+    speaker: [grell]
+    fallback: skip
+    mood: happy
+    text: "{target} ist bezahlt. Alles hat seinen Preis."

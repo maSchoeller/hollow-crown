@@ -1,7 +1,7 @@
 /**
  * Reachability of scenes and flags (architecture review 2026-11-07, M6): scenes nothing plays, flags set but never read
  * and flags read but never set. Content plays a scene when any other content names its id; the game code plays the
- * scenes it builds from ids (`scn.bark.<char>`, `scn.farewell.<char>`, `scn.lt.<lieutenant>`) and sets `joined_<lieutenant>`.
+ * scenes it builds from ids (`scn.bark.<char>`, `scn.farewell.<char>`, `scn.lt.<lieutenant>`) and sets and reads `joined_<lieutenant>`.
  */
 import type { FlagValue } from '../core/defs';
 import type { GameData } from '../core/gameData';
@@ -50,7 +50,11 @@ export function checkReachability(data: GameData, drafts: readonly MapDef[] = []
   for (const sc of Object.values(scenes)) walk(sc.lines, () => {}, onObject);
   // sealed chronicle pages read their flag in the code (src/core/campaign/chronicle.ts)
   for (const e of data.balance.chronicle.sealed) read.add(e.flag);
-  for (const lt of Object.keys(data.lieutenants)) set.add(joinedFlag(lt));
+  // the code sets `joined_<lt>` and reads it (isJoined: haunts, finale line-ups, lines), so a joined flag counts as set and read (story 11.5)
+  for (const lt of Object.keys(data.lieutenants)) {
+    set.add(joinedFlag(lt));
+    read.add(joinedFlag(lt));
+  }
 
   for (const id of Object.keys(scenes)) {
     if (named.has(id)) continue;

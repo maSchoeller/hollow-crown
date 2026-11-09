@@ -21,3 +21,22 @@ node.m2_8.title: "Kronfeld"
 node.n4.title: "The Clan in the Snow"
 node.n5.title: "Embers under the Mountain"
 node.n6.title: "The Troupe of Jugglers"
+
+# Story 11.5: lieutenants of act 2 (names, titles, factions)
+unit.rowena.name: "Dame Rowena"
+unit.brakka.name: "Brakka"
+unit.grell.name: "Captain Grell"
+lt.rowena.title: "Knight of the Silver Lance"
+lt.brakka.title: "Ballista Master to the Highest Bidder"
+lt.grell.title: "Privateer Captain of House Silversea"
+lt.sable.title: "Captain of the Border Army"
+faction.silver_lance.name: "Silver Lance"
+faction.free_blades.name: "Free Blades"
+faction.silver_sea.name: "House Silversea"
+faction.iron_march.name: "Border Army of the Eisenmark"
+
+# Story 11.5: foes of the provisional haunt pools of act 2 (11.7 settles them)
+unit.border_soldier.name: "Border Soldier"
+unit.lance_squire.name: "Lance Squire"
+unit.privateer.name: "Privateer"
+unit.free_blade.name: "Free Blade"

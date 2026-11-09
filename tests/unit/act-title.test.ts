@@ -89,7 +89,8 @@ describe('act 2 on the world map', () => {
     const slope = data.world.places.find((p) => p.id === 'burnt_slope')!;
     const c = { ...finaleDone(), act: 2 };
     expect(siteImage(slope, conditionContext(open, c))).toBe('none');
-    const obeyed = { ...c, flags: { ...c.flags, e7_order: true as const } };
+    const obeyed = { ...c, flags: { ...c.flags, e07: 'obey' } };
+    expect(siteImage(slope, conditionContext(open, { ...c, flags: { ...c.flags, e07: 'warn' } }))).toBe('none');
     expect(siteImage(slope, conditionContext(open, obeyed))).toBe('burnt_slope_burnt');
     // the picture not delivered: the fallback of story 15.7 without a base picture is to draw nothing
     expect(siteImage(slope, conditionContext(open, obeyed), ['burnt_slope_burnt'])).toBe('none');

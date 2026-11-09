@@ -249,6 +249,8 @@ export interface SkillCondition {
   notEffective?: boolean;
   /** an ally of the bearer lies downed on the field within this many tiles (Erbstück, story 9.12) */
   allyDownedWithin?: number;
+  /** the bearer stands on a tile next to a ballista of the map, fired or not (Brakka, story 11.5) */
+  besideBallista?: true;
 }
 
 export interface SkillEffect {
@@ -297,6 +299,8 @@ export interface SkillEffect {
   cheerTargets?: number;
   /** the grief hit penalty does not apply (an aura gives it to the neighbours) */
   ignoreGrief?: boolean;
+  /** a ballista this unit fires reaches this many tiles further (Brakka, story 11.5); the largest source counts */
+  siegeRangeBonus?: number;
 }
 
 export interface SkillDef {

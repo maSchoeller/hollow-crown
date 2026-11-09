@@ -140,3 +140,28 @@
 # --- Akt 2: Balliste (Story 11.6, GDD Gelände): feste Waffe eines Ballisten-Objekts, liegt nie in einem Inventar (Tag fixed). Gruppe siege
 # steht außerhalb des Dreiecks; weaponType bow nur als Regeltyp (physischer Fernkampf), Reichweite fest aus rng. Bild vorläufig iron_bow ---
 - { id: ballista_bolt, kind: weapon, slot: mainHand, weaponType: bow, group: siege, damageType: physical, mt: 12, hit: 70, crit: 0, rng: [3,10], wt: 0, rarity: common, price: 0, tags: [fixed, unsellable, convoyOnly], image: iron_bow }
+
+# --- Akt 2: Stahl-Tier (Story 11.5; items.md §6.1/§6.6, Ableitungsregel der Fassung 2026-10-31) [ASSUMPTION]: Waffen gegenüber dem
+# Eisen-Pendant Mt +3, Treffer −10 bis −15, Gewicht ×1,5–2, Preis 900–1 200; Zauber mit Element und Zustand des Eisen-Pendants;
+# Rüstung VER +1–2 über Eisen. shade ist der Dunkel-Zauber (nicht shadow, das ist eine Klasse; Bild shadow.png); nur Drop (items.md §4).
+- { id: steel_dagger,  kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 7, hit: 75, crit: 10, rng: [1,1], wt: 6, rarity: common, price: 900 }
+- { id: stiletto,      kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 5, hit: 80, crit: 25, rng: [1,1], wt: 4, rarity: rare,   price: 1200 }
+- { id: armorpiercer,  kind: weapon, slot: mainHand, weaponType: sword,  group: sword,  damageType: physical, mt: 6, hit: 75, crit: 0,  rng: [1,1], wt: 8, rarity: rare,   price: 1100, effectiveVs: [armored] }
+- { id: blaze,       kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: fire,  mt: 8,  hit: 80, crit: 0, rng: [1,2], wt: 7,  rarity: common, price: 1000, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite }
+- { id: gale_blade,  kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: wind,  mt: 6,  hit: 90, crit: 5, rng: [1,2], wt: 4,  rarity: common, price: 1000, statusOnHit: { status: knockback, chance: 100 } }
+- { id: stone_fist,  kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: earth, mt: 10, hit: 65, crit: 0, rng: [1,2], wt: 11, rarity: common, price: 1100, statusOnHit: { status: slowed, chance: 50 } }
+- { id: whirlpool,   kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: water, mt: 7,  hit: 75, crit: 0, rng: [1,2], wt: 7,  rarity: common, price: 1000, statusOnHit: { status: wet, chance: 100 }, terrainOnHit: extinguish }
+- { id: light_lance, kind: tome, slot: mainHand, weaponType: light, group: light, damageType: magical, element: light, mt: 7,  hit: 85, crit: 5, rng: [1,2], wt: 5,  rarity: common, price: 1100, effectiveVs: [monster, undead] }
+- { id: shade,       kind: tome, slot: mainHand, weaponType: dark,  group: dark,  damageType: magical, element: dark,  mt: 8,  hit: 80, crit: 0, rng: [1,2], wt: 6,  rarity: rare,   price: 1200, image: shadow }
+- { id: physic_staff, kind: staff, slot: mainHand, weaponType: staff, group: staff, heal: 10, rng: [1,3], wt: 4, rarity: rare, price: 1200 }
+- { id: round_shield,  kind: shield,    slot: offHand, group: shield, statMods: { def: 2 }, combatMods: { avoid: 10 }, wt: 3, rarity: common, price: 900 }
+- { id: crystal_focus, kind: accessory, slot: offHand, group: focus,  statMods: { res: 3 }, wt: 1, rarity: common, price: 900 }
+- { id: steel_helm,    kind: armor, slot: head, statMods: { def: 3 }, wt: 4, rarity: common, price: 800 }
+- { id: scale_mail,    kind: armor, slot: body, armorClass: medium, statMods: { def: 6 }, wt: 8, rarity: common, price: 1300 }
+
+# --- Signaturen der Leutnants von Akt 2 (Story 11.5; items.md §6.3, umgestellt ohne Flieger): Werte der Stahlwaffe der Gruppe plus ein Effekt,
+# Seltenheit legendary, Preis 1 500 [ASSUMPTION]. Rowena: rowenas_lance statt wing_lance (Bild vorläufig wing_lance; silver_lance bleibt die Silberlanze von Akt 3, Produktinhaber 2026-11-09); Brakka: Armbrust statt wyvern_cleaver (Bild vorläufig steel_bow) ---
+- { id: rowenas_lance, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 9, hit: 70, crit: 0,  rng: [1,1], wt: 12, rarity: legendary, price: 1500, grantsSkill: { skill: stud_ward, masteryCost: 40 }, image: wing_lance }   # Rowena
+- { id: dravns_oath,  kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 8, hit: 75, crit: 0,  rng: [1,1], wt: 10, rarity: legendary, price: 1500, grantsSkill: { skill: last_order, masteryCost: 45 } }  # Sable
+- { id: gold_hook,    kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 8, hit: 75, crit: 20, rng: [1,1], wt: 10, rarity: legendary, price: 1500 }                                                       # Grell (Entersäbel)
+- { id: wasp_sting,   kind: weapon, slot: mainHand, weaponType: bow,   group: bow,   damageType: physical, mt: 9, hit: 70, crit: 0,  rng: [2,2], wt: 8,  rarity: legendary, price: 1500, twoHanded: true, effectiveVs: [flier, armored], image: steel_bow }  # Brakka (Armbrust)

@@ -1,80 +1,97 @@
-# Gefährten von Akt 2 (Story 11.1). Werte [ASSUMPTION]: Basis = Akt-1-Figur derselben Klasse, um ihr Wachstum bis zur Stufe des
-# Entwurfs (concept/27-ueberarbeitung/levels/s2_*.yaml) fortgeschrieben; Story 11.5 legt Werte, Talente, Supports und Beitritte endgültig fest.
-# joins nennt den Knoten des Beitritts (die Knoten m2_* legt 11.11 an); die Beitrittsstufe wächst ab 11.2 mit der Positionsstufe.
+# Gefährten von Akt 2 (Story 11.1, Werte Story 11.5). Werte [ASSUMPTION] nach der Fassung vom 2026-10-31 (Epic 11, Story 11.5): Basiswerte
+# auf Stufe 10, persönliches Wachstum (Summe 320–340 % wie Akt 1), Affinität, persönliche Fähigkeit (skills.yaml, Quelle personal),
+# Ausrüstung und Support-Partner; per Simulation zu prüfen. joins nennt den Knoten des Beitritts (Ansprechen im Kampf, Missionsliste);
+# die Beitrittsstufe ist max(10, P − 1) (Story 11.2). Sable tritt als Leutnantin bei (Seitenwechsel bei E7 warn, joinLieutenant):
+# ihre Stufe folgt der Leutnant-Regel (Produktinhaber 2026-11-09).
 
-# Spielmann, tritt in 2-1 bei (Ansprechen im Kampf, scn.m2_1.jory_talk)
+# Spielmann der fahrenden Gaukler, tritt in 2-1 bei (scn.m2_1.jory_talk)
 - id: jory
   nameKey: unit.jory.name
   class: minstrel
-  level: 5
+  level: 10
   affinity: wind
-  base:   { hp: 18, str: 5, mag: 0, skl: 8, spd: 11, lck: 9, def: 3, res: 3 }
-  growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
-  items: [ { def: iron_dagger }, { def: travel_lute }, { def: vulnerary } ]
+  personalSkill: stage_presence
+  base:   { hp: 23, str: 6, mag: 6, skl: 10, spd: 11, lck: 10, def: 4, res: 7 }
+  growth: { hp: 60, str: 30, mag: 35, skl: 45, spd: 50, lck: 55, def: 20, res: 40 }
+  items: [ { def: steel_dagger }, { def: travel_lute }, { def: vulnerary } ]
+  supports: [nell]
   joins: m2_1
 
-# Schützin der Rabenweide, tritt in 2-3 bei (Ansprechen)
+# Fährtenleserin aus dem Clan der Kupferberge, wechselt in 2-3 die Seite (Ansprechen)
 - id: ilka
   nameKey: unit.ilka.name
   class: marksman
-  level: 11
+  level: 10
   affinity: wind
-  base:   { hp: 23, str: 8, mag: 2, skl: 13, spd: 12, lck: 7, def: 5, res: 4 }
-  growth: { hp: 60, str: 40, mag: 10, skl: 60, spd: 55, lck: 35, def: 20, res: 25 }
-  items: [ { def: iron_bow }, { def: leather_cap } ]
+  personalSkill: still_hunter
+  base:   { hp: 24, str: 9, mag: 0, skl: 13, spd: 10, lck: 5, def: 5, res: 3 }
+  growth: { hp: 65, str: 45, mag: 5, skl: 60, spd: 50, lck: 45, def: 25, res: 35 }
+  items: [ { def: steel_bow }, { def: vulnerary } ]
+  supports: [sable, brann]
   joins: m2_3
 
-# Leibwächterin, tritt in 2-5 bei
+# Verstoßene Leibwache der Prinzessin, tritt in 2-5 bei (Schutzfigur)
 - id: odile
   nameKey: unit.odile.name
   class: skirmisher
-  level: 7
+  level: 10
   affinity: water
-  base:   { hp: 22, str: 8, mag: 0, skl: 11, spd: 11, lck: 2, def: 4, res: 2 }
-  growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
-  items: [ { def: steel_sword }, { def: leather_vest } ]
+  personalSkill: sworn_guard
+  base:   { hp: 26, str: 9, mag: 1, skl: 12, spd: 12, lck: 5, def: 7, res: 3 }
+  growth: { hp: 70, str: 45, mag: 5, skl: 50, spd: 50, lck: 40, def: 35, res: 35 }
+  items: [ { def: steel_sword }, { def: iron_helm }, { def: vulnerary } ]
+  supports: [varek, sable]
   joins: m2_5
 
-# Heiler, tritt in 2-5 bei (Ansprechen)
+# Feldscher des Klosters Silberquell, tritt in 2-5 bei (Ansprechen)
 - id: amos
   nameKey: unit.amos.name
   class: healer
-  level: 7
-  affinity: light
-  base:   { hp: 19, str: 1, mag: 8, skl: 5, spd: 8, lck: 10, def: 3, res: 9 }
-  growth: { hp: 55, str: 10, mag: 55, skl: 35, spd: 45, lck: 60, def: 15, res: 50 }
-  items: [ { def: heal_staff }, { def: vulnerary } ]
+  level: 10
+  affinity: earth
+  personalSkill: field_surgeon
+  base:   { hp: 22, str: 2, mag: 9, skl: 6, spd: 6, lck: 9, def: 5, res: 10 }
+  growth: { hp: 70, str: 20, mag: 45, skl: 35, spd: 30, lck: 45, def: 30, res: 55 }
+  items: [ { def: mend_staff }, { def: heal_staff }, { def: vulnerary } ]
+  supports: [liora, grosk]
   joins: m2_5
 
-# Kapitänin, tritt in 2-6 bei (Ansprechen)
+# Schmugglerin von Krähenholm, von Maelis fallen gelassen, tritt in 2-6 bei (Ansprechen)
 - id: nell
   nameKey: unit.nell.name
   class: scout
-  level: 8
+  level: 10
   affinity: water
-  base:   { hp: 20, str: 6, mag: 0, skl: 9, spd: 13, lck: 10, def: 3, res: 3 }
-  growth: { hp: 60, str: 35, mag: 0, skl: 50, spd: 60, lck: 55, def: 20, res: 20 }
-  items: [ { def: iron_dagger }, { def: leather_cap } ]
+  personalSkill: smugglers_stash
+  base:   { hp: 24, str: 8, mag: 0, skl: 12, spd: 12, lck: 7, def: 5, res: 3 }
+  growth: { hp: 70, str: 40, mag: 5, skl: 55, spd: 55, lck: 50, def: 25, res: 30 }
+  items: [ { def: steel_dagger }, { def: door_key }, { def: vulnerary } ]
+  supports: [jory, varek]
   joins: m2_6
 
-# Steinrufer, Schutzfigur in 2-4, tritt danach bei
+# Steinrufer vom Brandhang, Gast in 2-4; tritt erst in N5 bei (Ilka spricht ihn an, sonst Lucan), optional
 - id: brann
   nameKey: unit.brann.name
   class: elementalist
-  level: 8
+  level: 10
   affinity: earth
-  base:   { hp: 18, str: 0, mag: 11, skl: 7, spd: 8, lck: 4, def: 2, res: 7 }
-  growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
-  items: [ { def: rockfall }, { def: vulnerary } ]
-  joins: m2_4
+  personalSkill: buried_glow
+  base:   { hp: 22, str: 2, mag: 10, skl: 7, spd: 7, lck: 4, def: 6, res: 7 }
+  growth: { hp: 70, str: 15, mag: 55, skl: 35, spd: 35, lck: 35, def: 45, res: 40 }
+  items: [ { def: stone_fist }, { def: rockfall }, { def: vulnerary } ]
+  supports: [ilka]
+  joins: n5
 
-# Leutnantin Dravns; tritt als Leutnant über recruit { lt: sable } bei (Seitenwechsel, Architektur §5.5), Basis = Stufe 16
+# Dravns Hauptfrau; tritt nur bei E7 „warnen“ als Leutnantin über recruit { lt: sable } bei (Seitenwechsel, Architektur §5.5).
+# Klasse duelist laut Epic (2026-11-06; die Narrative nennt die Rolle Plänkler, duelist ist ihr Profi-Weg) [ASSUMPTION]
 - id: sable
   nameKey: unit.sable.name
   class: duelist
-  level: 16
-  affinity: dark
-  base:   { hp: 28, str: 11, mag: 1, skl: 16, spd: 16, lck: 4, def: 7, res: 4 }
-  growth: { hp: 65, str: 40, mag: 5, skl: 55, spd: 55, lck: 20, def: 25, res: 20 }
-  items: [ { def: steel_sword }, { def: vulnerary } ]
+  level: 10
+  affinity: fire
+  personalSkill: old_orders
+  base:   { hp: 30, str: 12, mag: 1, skl: 13, spd: 12, lck: 6, def: 9, res: 4 }
+  growth: { hp: 75, str: 50, mag: 5, skl: 50, spd: 45, lck: 35, def: 40, res: 30 }
+  items: [ { def: steel_sword }, { def: dravns_oath }, { def: vulnerary } ]
+  supports: [odile, ilka]
   joins: lieutenant

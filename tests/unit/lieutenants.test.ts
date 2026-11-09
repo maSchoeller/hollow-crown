@@ -31,9 +31,12 @@ function problems(change: (d: GameData, l: Locales) => void): string[] {
   return validateContent(d, l).map((i) => `${i.file}: ${i.message}`);
 }
 
+const act1 = () => Object.values(data.lieutenants).filter((lt) => lt.act === 1);
+
 describe('lieutenants.yaml', () => {
   it('holds the four lieutenants of act 1 with the values of the product owner', () => {
-    expect(Object.keys(data.lieutenants).sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
+    // act 1 only: act 2 brings its own four (story 11.5, tests/unit/act2-companions.test.ts)
+    expect(act1().map((lt) => lt.id).sort()).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
     const hask = data.lieutenants.hask!;
     expect(hask).toMatchObject({ act: 1, class: 'brigand', faction: 'border_bands', signatureItem: 'tinder', scene: 'scn.lt.hask', titleKey: 'lt.hask.title' });
     expect(data.lieutenants.morra!.class).toBe('marksman');
@@ -42,7 +45,7 @@ describe('lieutenants.yaml', () => {
   });
 
   it('names twelve grudge skills (source grudge), three per lieutenant in order, and legendary signature items', () => {
-    const skills = Object.values(data.lieutenants).flatMap((lt) => lt.grudgeSkills);
+    const skills = act1().flatMap((lt) => lt.grudgeSkills);
     expect(new Set(skills).size).toBe(12);
     for (const id of skills) expect(data.skills[id]!.source, id).toBe('grudge');
     for (const lt of Object.values(data.lieutenants)) expect(data.items[lt.signatureItem]!.rarity).toBe('legendary');
@@ -58,7 +61,7 @@ describe('lieutenants.yaml', () => {
   });
 
   it('is a stable ID kind', () => {
-    expect(collectIds(data).lieutenants).toEqual(['grosk', 'hask', 'morra', 'ulvric']);
+    expect(collectIds(data).lieutenants).toEqual(['brakka', 'grell', 'grosk', 'hask', 'morra', 'rowena', 'sable', 'ulvric']);
   });
 
   it('passes the checks (titles aside)', () => {

@@ -185,11 +185,12 @@ describe('exclusion (AC 4)', () => {
   it('isJoined reads the flag; activeLieutenants leaves the joined out, in content order', () => {
     const c = fresh();
     expect(isJoined(c, 'grosk')).toBe(false);
-    expect(activeLieutenants(data, c).map((l) => l.id)).toEqual(['hask', 'morra', 'ulvric', 'grosk']);
+    // act 2 follows in the order of the content (story 11.5)
+    expect(activeLieutenants(data, c).map((l) => l.id)).toEqual(['hask', 'morra', 'ulvric', 'grosk', 'rowena', 'brakka', 'grell', 'sable']);
     const after = join(c).campaign;
     expect(isJoined(after, 'grosk')).toBe(true);
     expect(isJoined(after, 'hask')).toBe(false);
-    expect(activeLieutenants(data, after).map((l) => l.id)).toEqual(['hask', 'morra', 'ulvric']);
+    expect(activeLieutenants(data, after).map((l) => l.id)).toEqual(['hask', 'morra', 'ulvric', 'rowena', 'brakka', 'grell', 'sable']);
   });
 
   /** A won prologue with Grosk (lieutenant) on the map, driven off by Lucan. */

@@ -37,6 +37,14 @@
 - { id: gamblers_luck,  source: personal, trigger: passive,   effect: { critBonus: 10, hitBonus: -5 } }                                     # Varek
 - { id: prodigy,        source: personal, trigger: passive,   effect: { statusChanceBonus: 15 } }                                           # Ysolde
 - { id: for_the_little_ones, source: personal, trigger: on_attack, condition: { adjacentAllies: 1 }, effect: { hitBonus: 10, damageBonus: 2 } }   # Grosk
+# Gefährten von Akt 2 (Story 11.5, Fassung 2026-10-31) [ASSUMPTION]
+- { id: stage_presence,  source: personal, trigger: passive,   condition: { adjacentAllies: 1 }, effect: { avoidBonus: 15 } }               # Jory
+- { id: sworn_guard,     source: personal, trigger: passive,   condition: { adjacentAllies: 1 }, effect: { stats: { def: 2, res: 2 } } }    # Odile
+- { id: smugglers_stash, source: personal, trigger: passive,   effect: { bagChargeSaveChance: 30 } }                                       # Nell
+- { id: buried_glow,     source: personal, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { mag: 3 } } }           # Brann
+- { id: field_surgeon,   source: personal, trigger: passive,   effect: { healBonus: 5 } }                                                  # Amos
+- { id: still_hunter,    source: personal, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { hitBonus: 10, critBonus: 5 } } # Ilka
+- { id: old_orders,      source: personal, trigger: on_attack, condition: { hpBelowPercent: 50 }, effect: { damageBonus: 2 } }             # Sable
 
 # --- Item-Skills (meisterbar) ---
 - { id: shield_wall,  source: item, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }
@@ -69,6 +77,23 @@
 - { id: bulwark,        source: grudge, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }
 - { id: tough,          source: grudge, trigger: passive,   condition: { hpBelowPercent: 50 }, effect: { stats: { def: 3 } } }
 - { id: endure,         source: grudge, trigger: on_turn_start, effect: { healPercent: 10 } }
+# --- Groll-Fähigkeiten der Leutnants von Akt 2 (Story 11.5) [ASSUMPTION]: zu Fuß, ohne Flieger- und Reittier-Bezug (GDD-Log 2026-11-05) ---
+# Rowena (Lanzenritterin, verteidigt ihr Gestüt)
+- { id: lance_charge,    source: grudge, trigger: on_attack, condition: { initiator: true }, effect: { damageBonus: 3 } }
+- { id: silver_resolve,  source: grudge, trigger: passive,   effect: { hitBonus: 15 } }
+- { id: stud_ward,       source: grudge, trigger: on_defend, condition: { adjacentAllies: 1 }, effect: { damageTakenPercent: 80 } }
+# Brakka (Ballistenmeisterin): Schuss +1 Reichweite, der Bediener hält stand
+- { id: ballista_reach,  source: grudge, trigger: passive,   effect: { siegeRangeBonus: 1 } }
+- { id: steady_crew,     source: grudge, trigger: passive,   condition: { besideBallista: true }, effect: { stats: { def: 3, res: 3 } } }
+- { id: paid_in_full,    source: grudge, trigger: on_attack, condition: { distanceAtLeast: 2 }, effect: { damageBonus: 3 } }
+# Grell (Kaperkapitän)
+- { id: boarding_party,  source: grudge, trigger: on_attack, condition: { alliesAdjacentToTarget: 2 }, effect: { hitBonus: 10, damageBonus: 2 } }
+- { id: dirty_hook,      source: grudge, trigger: on_attack, effect: { critBonus: 10 } }
+- { id: sea_legs,        source: grudge, trigger: on_turn_start, effect: { healPercent: 10 } }
+# Sable (Dravns Hauptfrau)
+- { id: oath_guard,      source: grudge, trigger: passive,   condition: { notMovedThisTurn: true }, effect: { stats: { def: 3, res: 3 } } }
+- { id: last_order,      source: grudge, trigger: on_defend, condition: { hpBelowPercent: 50 }, effect: { strikeFirst: true } }
+- { id: iron_discipline, source: grudge, trigger: passive,   aura: { radius: 1 }, effect: { stats: { def: 2 } } }
 
 # --- Item-Skills der Gefährten-Signaturen (items.md §6.2; Story 9.10) ---
 - { id: long_fingers, source: item, trigger: passive, effect: { stealEquipped: true } }   # Elster (Fenn): Stehlen nimmt auch, was der Gegner in der Hand hält

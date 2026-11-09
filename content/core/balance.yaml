@@ -276,11 +276,11 @@ lieutenant:
   grudge: { max: 3 }   # Groll 0-3; je Stufe eine Groll-Fähigkeit und eine Zeile grudge_<n> (content:check prüft)
   scaling:
     armySize: 6
-    tierUp: { iron_sword: steel_sword, iron_lance: steel_lance, iron_axe: steel_axe, iron_bow: steel_bow }
+    tierUp: { iron_sword: steel_sword, iron_lance: steel_lance, iron_axe: steel_axe, iron_bow: steel_bow, iron_dagger: steel_dagger }   # iron_dagger: Story 11.5
   bounty:
     goldPerLevel: 200
     materials: { min: 1, max: 2 }
-    materialByAct: { 1: iron_ore }
+    materialByAct: { 1: iron_ore, 2: moonsteel }   # Akt 2: Story 11.5
   signature: { chance: 0.1, guaranteedRout: 4 }
 
 # Burgstufe (Art Direction §7): Zahl der Raum-Ausbauten für Gesichert, Wehrhaft, Festung [ASSUMPTION]

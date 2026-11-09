@@ -198,7 +198,7 @@ development_status:
   11-2-positionsstufe-der-akt-2-missionen: review  # Positionsstufe der Akt-2-Missionen
   11-3-paket-act2-weltkarte-und-titeltafel: review  # Paket act2, Weltkarte und Titeltafel
   11-4-simulation-ueber-akte: review  # Simulation über Akte
-  11-5-gefaehrten-leutnants-und-flags-von-akt-2: backlog  # Gefährten, Leutnants und Flags von Akt 2
+  11-5-gefaehrten-leutnants-und-flags-von-akt-2: review  # Gefährten, Leutnants und Flags von Akt 2
   11-6-balliste: review  # Balliste
   11-7-gegner-herbst-und-heimsuchungen-von-akt-2: backlog  # Gegner, Herbst und Heimsuchungen von Akt 2 (Figuren: Platzhalter außer Rowena)
   11-8-ziel-phasen-kern: review  # Ziel-Phasen (Kern)
