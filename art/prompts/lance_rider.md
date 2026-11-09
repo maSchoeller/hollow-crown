@@ -6,7 +6,7 @@
 - **Vorlage:** `art/prompts/portrait_master.md` v2.5, mit Absatz GENERIC ENEMY (§4a): namenloser Sprecher (Lanzenreiter der Silbernen Lanze), Story 11.12
 - **Anhänge:** `art/mockups/style-2026-11/anchor_rhen.png`, `anchor_fenn.png` (Stil-Anker), `art/mockups/style-2026-11/guide_build_average.png` (Statur-Vorlage)
 - **Original (A3):** `art/mockups/characters-s1/lance_rider.png` ist der unveränderte Download (1254 × 1254, RGBA, echter Alphakanal, Git LFS)
-- **Menschlicher Anteil:** Figurenblatt (Session nach Vorgabe des Produktinhabers 2026-11-09: eigene Halbfigur für den Sprecher der Nachszene von 2-1), Auswahl; keine Retusche. Abnahme durch den Produktinhaber steht aus.
+- **Menschlicher Anteil:** Figurenblatt (Session nach Vorgabe des Produktinhabers 2026-11-09: eigene Halbfigur für den Sprecher der Nachszene von 2-1), Auswahl; keine Retusche. Vom Produktinhaber abgenommen am 2026-11-09.
 - **Chats:** https://chatgpt.com/c/6af22b56-0e20-83ed-89aa-eab241d47d73
 - **Iterationen:** 1 Chat, kein Neuversuch; keine Stimmungen (die App zeigt für jede Stimmung die neutrale Figur)
 
@@ -36,6 +36,8 @@ GENERIC ENEMY (a nameless unit, NOT a story character): draw this figure deliber
 ```
 
 ## Abnahme
+
+- **Abgenommen** vom Produktinhaber am 2026-11-09 (Bild und Nachszene von 2-1).
 
 - Prüfbogen (`portrait_guides.py sheet`, average): 40 % 0.36 !, 60 % 0.61 !, 78 % 0.67. Die schmalen Werte oben erklärt der runde Helm (Kopf schmaler als Rhens Haar), Schultern und Gürtel liegen auf den Linien.
 - Fraktions-Kit der Silbernen Lanze (Silber, Himmelblau, Weiß, Flügellanze an Brosche und Wimpel), Lanze gerade auf einer Achse, Spitze im Bild; Kopf gleich groß wie die Anker, schlicht nach §4a.

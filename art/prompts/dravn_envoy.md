@@ -6,7 +6,7 @@
 - **Vorlage:** `art/prompts/portrait_master.md` v2.5, mit Absatz GENERIC ENEMY (§4a): namenloser Sprecher (Bote des Grenzheers), Story 11.12
 - **Anhänge:** `art/mockups/style-2026-11/anchor_rhen.png`, `anchor_fenn.png` (Stil-Anker), `art/mockups/style-2026-11/guide_build_slim.png` (Statur-Vorlage)
 - **Original (A3):** `art/mockups/characters-s1/dravn_envoy.png` ist der unveränderte Download (1254 × 1254, RGBA, echter Alphakanal, Git LFS)
-- **Menschlicher Anteil:** Figurenblatt (Session nach Vorgabe des Produktinhabers 2026-11-09: eigene Halbfigur für den Sprecher der Nachszene von 2-1), Auswahl; keine Retusche. Abnahme durch den Produktinhaber steht aus.
+- **Menschlicher Anteil:** Figurenblatt (Session nach Vorgabe des Produktinhabers 2026-11-09: eigene Halbfigur für den Sprecher der Nachszene von 2-1), Auswahl; keine Retusche. Vom Produktinhaber abgenommen am 2026-11-09.
 - **Chats:** https://chatgpt.com/c/6af22d0c-15f0-83eb-a06d-5497f7f61c3f
 - **Iterationen:** 1 Chat, kein Neuversuch; keine Stimmungen (die App zeigt für jede Stimmung die neutrale Figur)
 
@@ -36,6 +36,8 @@ GENERIC ENEMY (a nameless unit, NOT a story character): draw this figure deliber
 ```
 
 ## Abnahme
+
+- **Abgenommen** vom Produktinhaber am 2026-11-09 (Bild und Nachszene von 2-1).
 
 - Prüfbogen (`portrait_guides.py sheet`, slim): 40 % 0.49, 60 % 0.55, 78 % 0.57, ohne `!`.
 - Fraktions-Kit des Grenzheers (Eisenrot mit Wyvernschädel, Kiefergrün, Pelzkragen), als Bote ohne Waffe (Rollenstück: Brief mit Wyvernschädel-Siegel, `portrait_master.md` §5 Regel 3a für Nicht-Kämpfer). Der „Staub am Saum“ kam als flache Flecken unten am Mantel, im Halbbild kaum sichtbar.
