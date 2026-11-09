@@ -60,10 +60,10 @@ Claude Opus 5.5 (claude-opus-5-5)
 
 - `nodeLevel`, `positionNow`, `atPosition`, `joinLevel`, `raiseToLevel`, `raiseOnJoin`, `raiseMapChar` in `src/core/campaign/position.ts`; `joinLieutenant` nutzt `raiseToLevel` (gleiche Rechnung wie vorher).
 - `[ASSUMPTION]` `positionLevel.base: 11` (vom Epic vorgegeben, 11.4 misst).
-- `[ASSUMPTION]` Der Akt eines Knotens ist der seiner `campaign.yaml`: eine Akt-1-Nebenquest (N1–N3), die erst in Akt 2 gespielt wird, behält ihr `expectedLevel` und steigt nicht mit P mit.
+- **PO bestätigt 2026-11-09:** Der Akt eines Knotens ist der seiner `campaign.yaml`: eine Akt-1-Nebenquest (N1–N3), die erst in Akt 2 gespielt wird, behält ihr `expectedLevel` und steigt nicht mit P mit.
 - `[ASSUMPTION]` Ein erledigter Story-Knoten des Akts zählt für P, der Knoten selbst nicht; Nebenquests zählen nicht.
 - `[ASSUMPTION]` Beitritt über die Wirkung `recruit` nach dem Sieg nimmt P des Akts im Moment des Beitritts (= P des gespielten Story-Knotens + 1, Beitrittsstufe also P des Knotens); Beitritt über die Karte (Charakter auf dem Brett, Team `other` oder Ansprechen) nimmt P − 1 des Kampfes. Gilt nur für Gefährten aus `acts/act2/units.yaml` (Akt mit `positionLevel`), Akt-1-Gefährten treten wie bisher bei.
-- `[ASSUMPTION]` Leutnants behalten ihre Stufenregel (§5.5, Durchschnitt der stärksten + Groll); ihr `levelOffset` ist auf Akt-2-Karten Pflicht, wird aber wie bisher `level` überschrieben. „Leutnants P+1“ aus dem GDD-Log ist damit nur angenähert.
+- **PO bestätigt 2026-11-09:** Leutnants behalten ihre Stufenregel (§5.5, Durchschnitt der stärksten + Groll); ihr `levelOffset` ist auf Akt-2-Karten Pflicht, wird aber wie bisher `level` überschrieben. „Leutnants P+1“ aus dem GDD-Log ist damit nur angenähert.
 - `[ASSUMPTION]` Die Spanne −3…+2 steht als Prüfregel in `validateLevels.ts` (GDD-Regel, kein Spielwert). Die Entwürfe tragen schon `level` und `levelOffset` nebeneinander; `level` gilt dann nur als Kommentar, beides zusammen ist erlaubt.
 - `hauntLevel` nimmt nur Knoten mit gebauter Karte (`data.maps`), sonst den letzten erledigten Story-Knoten mit Karte (Akt 2 auf „Weitere Missionen folgen“: m1_8, Stufe 9).
 - Die Vorbereitung zeigt keine erwartete Stufe; dort gab es nichts umzustellen. Simulation: `simCampaign` meldet `nodeLevel` beim ersten Erreichen; über Akte rechnet erst 11.4.
