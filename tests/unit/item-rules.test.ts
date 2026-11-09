@@ -88,18 +88,18 @@ describe('weapon profile: affixes and runes', () => {
 describe('armor and accessories', () => {
   it('armor affixes add stats, avoid, and weight changes; upgrades raise the main defence', () => {
     const helm = item('iron_helm', { affixes: ['sturdy', 'of_the_watch', 'featherlight'], upgrade: 1 });
-    const m = itemStatMods(data, helm);
+    const m = itemStatMods(data, helm, null);
     expect(m.def).toBe(data.items.iron_helm!.statMods!.def! + 1 + data.balance.economy.upgradePerLevel.armorDefOrRes);
     expect(m.avoid).toBe(5);
     expect(itemWeight(data, helm)).toBe(Math.max(0, data.items.iron_helm!.wt - 2));
     // the hood guards mainly against magic: its upgrade goes to RES
-    const hood = itemStatMods(data, item('mage_hood', { upgrade: 2 }));
+    const hood = itemStatMods(data, item('mage_hood', { upgrade: 2 }), null);
     expect(hood.res).toBe(data.items.mage_hood!.statMods!.res! + 2 * data.balance.economy.upgradePerLevel.armorDefOrRes);
     expect(hood.def).toBeUndefined();
   });
 
   it('a weapon affix with hit counts in the weapon profile, not again in the stat mods', () => {
-    expect(itemStatMods(data, item('iron_sword', { affixes: ['accurate', 'of_might'] }))).toEqual({ str: 1 });
+    expect(itemStatMods(data, item('iron_sword', { affixes: ['accurate', 'of_might'] }), null)).toEqual({ str: 1 });
   });
 
   it('body armor with an element rune gives the wearer its affinity; rune slots by rarity or explicit', () => {
@@ -119,7 +119,7 @@ describe('armor and accessories', () => {
 describe('canEquip', () => {
   it('names every reason to refuse', () => {
     const cap = place(data, s, 'player', 'captain', [2, 2]);
-    const sk = () => activeSkillIds(data, cap);
+    const sk = () => activeSkillIds(data, cap, null);
     expect(canEquip(data, cap, item('iron_sword'), 'bag')).toBeNull();
     expect(canEquip(data, cap, item('iron_ore'), 'mainHand')).toBe('wrong_slot');
     expect(canEquip(data, cap, item('iron_helm'), 'body')).toBe('wrong_slot');
@@ -142,7 +142,7 @@ describe('canEquip', () => {
 
   it('heavy armor fits an armored class or a unit with the heavy-armor skill', () => {
     const knight = place(data, s, 'player', 'knight', [5, 5]);
-    expect(canEquip(data, knight, item('plate_armor'), 'body', activeSkillIds(data, knight))).toBeNull();
+    expect(canEquip(data, knight, item('plate_armor'), 'body', activeSkillIds(data, knight, null))).toBeNull();
     const drake = place(data, s, 'enemy', 'drake_young', [6, 6]);
     expect(canEquip(data, drake, item('drake_breath'), 'mainHand')).toBeNull();
   });

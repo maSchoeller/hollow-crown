@@ -8,6 +8,7 @@ import { rollAffixes } from '../loot';
 import { addToBag, allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
+import { relicCtx } from './relics';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { changePathError, dismissError, hireCost, promoteError, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
@@ -59,7 +60,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
         return bagIsFull(data, bag, loc.inst) && loc.owner !== u ? 'bag_full' : null;
       }
       if (cmd.replace !== undefined) return 'unknown_item';
-      const err = canEquip(data, u, loc.inst, cmd.slot, activeSkillIds(data, u));
+      const err = canEquip(data, u, loc.inst, cmd.slot, activeSkillIds(data, u, relicCtx(data, c)));
       return err && err !== 'two_handed' ? 'cannot_equip' : null;
     }
     case 'unequip':

@@ -649,7 +649,7 @@ export function ClassPreviewCard({ data, state, p, caster }: { data: GameData; s
     );
   }
   const target = state.units.find((u) => u.uid === p.target)!;
-  const base = computeStats(data, target);
+  const base = computeStats(data, target, { state });
   return (
     <div class="hc-piece hud-fc">
       <div class="hud-fc__head">
@@ -717,11 +717,11 @@ export function RosterPanel({
         .filter((u) => u.team === 'player' && u.pos && !u.gone)
         .map((u) => (
           <button key={u.uid} type="button" class="hc-piece hud-roster__row" onClick={() => onPick(u)}>
-            <Medallion u={u} hp={hp[u.uid] ?? u.hp} max={computeStats(data, u).maxHp} size={48} level={false} />
+            <Medallion u={u} hp={hp[u.uid] ?? u.hp} max={computeStats(data, u, { state: s }).maxHp} size={48} level={false} />
             <span class="hud-roster__text">
               <span class="hud-name hud-name--small">{unitName(u)}</span>
               <span class="hud-sub">
-                {t('ui.lv')} {u.level} · {t('ui.hud.hp', { hp: hp[u.uid] ?? u.hp, max: computeStats(data, u).maxHp })}
+                {t('ui.lv')} {u.level} · {t('ui.hud.hp', { hp: hp[u.uid] ?? u.hp, max: computeStats(data, u, { state: s }).maxHp })}
               </span>
             </span>
           </button>

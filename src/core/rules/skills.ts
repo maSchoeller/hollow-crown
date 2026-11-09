@@ -4,6 +4,7 @@ import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { active, dist, isAlly, neighbors, onMap, samePos, terrainAt, unitAt } from '../util';
 import type { WeaponProfile } from './items';
 import { classSkillIds, itemDef } from './items';
+import { stageSkills, type RelicCtx } from './relics';
 
 /** Skills granted by an equipped set (count thresholds). */
 export function setBonuses(data: GameData, unit: UnitRecord) {
@@ -23,7 +24,7 @@ export function setBonuses(data: GameData, unit: UnitRecord) {
 }
 
 /** All skill ids currently active on a unit: personal, class, equipped item skills, loadout, set skills. */
-export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
+export function activeSkillIds(data: GameData, unit: UnitRecord, rc: RelicCtx): string[] {
   const ids = new Set<string>();
   if (unit.personalSkill) ids.add(unit.personalSkill);
   // role skill and pro skills, also those of the second path learned in the academy (stories 10.2, 10.3)
@@ -32,6 +33,8 @@ export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
     if (!inst) continue;
     const g = itemDef(data, inst).grantsSkill;
     if (g) ids.add(g.skill);
+    // passive skills of an awakened relic's stage (story 11.9)
+    for (const id of stageSkills(data, inst, rc)) ids.add(id);
   }
   for (const s of unit.loadout) if (unit.mastered.includes(s)) ids.add(s);
   for (const m of setBonuses(data, unit)) if (m.grantSkill) ids.add(m.grantSkill);
@@ -42,9 +45,9 @@ export function activeSkillIds(data: GameData, unit: UnitRecord): string[] {
  * Wolfslauf / Weiterziehen (review R3): the fields a unit may walk on after a real action (not after waiting), the highest
  * `extraMove` of its active `after_action` skills; 0 without one. A fixed number of fields, not the rest of the movement.
  */
-export function afterActionMove(data: GameData, unit: UnitRecord): number {
+export function afterActionMove(data: GameData, unit: UnitRecord, rc: RelicCtx): number {
   let best = 0;
-  for (const id of activeSkillIds(data, unit)) {
+  for (const id of activeSkillIds(data, unit, rc)) {
     const sk = data.skills[id]!;
     if (sk.trigger === 'after_action') best = Math.max(best, sk.effect.extraMove ?? 0);
   }
@@ -53,6 +56,8 @@ export function afterActionMove(data: GameData, unit: UnitRecord): number {
 
 export interface SkillCtx {
   state?: BattleState;
+  /** relic stages outside a battle (camp, troop; story 11.9); in a battle `state` carries them */
+  relics?: RelicCtx;
   unit: UnitRecord | BattleUnit;
   pos?: Pos | null;
   opponent?: BattleUnit;
@@ -134,18 +139,18 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
  * Uses per map of an action skill (story 10.3): its `usesPerMap`, plus `usesBonus` of the unit's active skills keyed by the
  * class action the skill belongs to (the role skill of a class with `classAction`, e.g. `command` for `tactician_command`).
  */
-export function skillUses(data: GameData, u: UnitRecord, skillId: string): number {
+export function skillUses(data: GameData, u: UnitRecord, skillId: string, rc: RelicCtx): number {
   const base = data.skills[skillId]?.usesPerMap ?? Infinity;
   const cls = data.classes[u.classId];
   const action = cls?.classAction && cls.skill === skillId ? cls.classAction.id : undefined;
   if (!action) return base;
-  return base + activeSkillIds(data, u).reduce((n, id) => n + (data.skills[id]!.effect.usesBonus?.[action] ?? 0), 0);
+  return base + activeSkillIds(data, u, rc).reduce((n, id) => n + (data.skills[id]!.effect.usesBonus?.[action] ?? 0), 0);
 }
 
 /** Radius of the area of an action skill (story 10.3): `area.radius` plus `radiusBonus` of the unit's active skills. */
-export function skillRadius(data: GameData, u: UnitRecord, skillId: string): number {
+export function skillRadius(data: GameData, u: UnitRecord, skillId: string, rc: RelicCtx): number {
   const base = data.skills[skillId]?.area?.radius ?? 0;
-  return base + activeSkillIds(data, u).reduce((n, id) => n + (data.skills[id]!.effect.radiusBonus?.[skillId] ?? 0), 0);
+  return base + activeSkillIds(data, u, rc).reduce((n, id) => n + (data.skills[id]!.effect.radiusBonus?.[skillId] ?? 0), 0);
 }
 
 export function effectiveLevel(data: GameData, u: UnitRecord): number {
@@ -218,7 +223,8 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     procs: [],
     used: [],
   };
-  for (const id of activeSkillIds(data, ctx.unit)) {
+  // outside a battle the caller passes the campaign's relic stages in `ctx.relics` (story 11.9)
+  for (const id of activeSkillIds(data, ctx.unit, ctx.state ?? ctx.relics ?? null)) {
     const sk = data.skills[id]!;
     // an aura skill works on the neighbours of its bearer, not on the bearer (see `addAuras`)
     if (sk.aura) continue;
@@ -290,7 +296,7 @@ function addAuras(data: GameData, ctx: SkillCtx, t: SkillTotals): void {
   for (const o of s.units) {
     if (o.uid === u.uid || !active(o) || !isAlly(o.team, u.team) || !o.pos) continue;
     const d = dist(o.pos, pos);
-    for (const id of activeSkillIds(data, o)) {
+    for (const id of activeSkillIds(data, o, s)) {
       const sk = data.skills[id]!;
       if (!sk.aura || d > sk.aura.radius || !conditionMet(data, sk.condition, { ...ctx, unit: o, pos: o.pos })) continue;
       for (const [k, v] of Object.entries(sk.effect.stats ?? {})) {

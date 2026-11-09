@@ -155,8 +155,8 @@ describe('the lieutenant on the board', () => {
     expect(hask.level).toBe(lieutenantLevel(data, c, 2));
     expect(hask.level).toBe(7);
     expect(hask.stats).toEqual(genericStats(data, 'brigand', 7, data.balance.difficulty.normal.enemyStatPercent, 'nearest'));
-    expect(activeSkillIds(data, hask)).toEqual(expect.arrayContaining(['brute_blow', 'brand_mark']));
-    expect(activeSkillIds(data, hask)).not.toContain('fire_eats_all');
+    expect(activeSkillIds(data, hask, null)).toEqual(expect.arrayContaining(['brute_blow', 'brand_mark']));
+    expect(activeSkillIds(data, hask, null)).not.toContain('fire_eats_all');
   });
 
   it('ignores the level of the map', () => {
@@ -170,8 +170,8 @@ describe('the lieutenant on the board', () => {
     const none = varnhold([3, 3], 0).hask;
     const all = varnhold([3, 3], 3).hask;
     for (const sk of data.lieutenants.hask!.grudgeSkills) {
-      expect(activeSkillIds(data, none)).not.toContain(sk);
-      expect(activeSkillIds(data, all)).toContain(sk);
+      expect(activeSkillIds(data, none, null)).not.toContain(sk);
+      expect(activeSkillIds(data, all, null)).toContain(sk);
     }
   });
 

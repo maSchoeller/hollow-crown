@@ -2,6 +2,7 @@
  * Content definitions as the rules core sees them. The content layer (src/content) parses YAML,
  * validates it with Zod and produces a GameData object of these types.
  */
+import type { Condition } from './storyDefs';
 export const STAT_KEYS = ['hp', 'str', 'mag', 'skl', 'spd', 'lck', 'def', 'res'] as const;
 export type StatKey = (typeof STAT_KEYS)[number];
 export type Stats = Record<StatKey, number>;
@@ -108,6 +109,16 @@ export interface ItemDef {
   tags?: string[];
   /** painted image art/items/<image>.png; defaults to the id (concept/25-ux/DESIGN.md item-image) */
   image?: string;
+  /** relic stages 2 and 3 (story 11.9): see `stagedItemDef` */
+  stages?: ItemStage[];
+}
+
+/** One awakened stage of a relic (story 11.9): reached while `when` holds; replaces image and `statMods`, adds passive `skills`. */
+export interface ItemStage {
+  when: Condition[];
+  image: string;
+  statMods?: StatMods;
+  skills?: string[];
 }
 
 export interface AffixMods {

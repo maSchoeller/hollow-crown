@@ -3,11 +3,12 @@
  * campaign list (new, import, delete). Knows nothing about screens or battles; whatever it needs from them
  * (what to save, where to resume) it asks through `bindLive`, which flow.ts wires up.
  */
-import { signal } from '@preact/signals';
+import { computed, signal } from '@preact/signals';
 import {
   applyCampaign,
   newCampaign,
   normalizeCampaign,
+  relicCtx,
   renameLegacyBattleClasses,
   renameLegacyClasses,
   withoutStaleHauntBattle,
@@ -24,6 +25,7 @@ import {
   type Command,
   type GameData,
   type QueuedEffects,
+  type RelicCtx,
 } from '../../core';
 import { loadContent } from '../../content/browser';
 import { setAvatar, setLocales, setMissingHandler } from '../../i18n';
@@ -60,6 +62,8 @@ setMigrationRenames(renames);
 export const contentVersion = contentVersionOf(data);
 
 export const campaign = signal<CampaignState | null>(null);
+/** Relic stages of the active campaign outside a battle (story 11.9): camp, troop, merchant; in a battle the BattleState carries them. */
+export const campaignRelics = computed<RelicCtx>(() => relicCtx(data, campaign.value));
 /** id of the active campaign in the save database (format 2); lives outside CampaignState */
 export const campaignId = signal<string | null>(null);
 

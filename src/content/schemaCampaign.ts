@@ -1,8 +1,7 @@
 /** Schemas of the campaign: rooms, scenes, supports, lieutenants, haunt pools, chronicle, memorials, homes, nodes and the world map. */
 import { z } from 'zod';
-import { slugId, statMods } from './schemaBase';
+import { itemRefSchema, slugId, statMods } from './schemaBase';
 import { conditionSchema, conditionsListSchema, effectSchema } from './schemaConditions';
-import { itemRefSchema } from './schemaUnits';
 
 export const roomSchema = z.object({
   id: z.string(),

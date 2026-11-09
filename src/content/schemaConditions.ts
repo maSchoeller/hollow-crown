@@ -2,8 +2,7 @@
 import { z } from 'zod';
 import type { Condition, Effect } from '../core/storyDefs';
 import { PERMANENT_COMPANIONS } from '../core/defs';
-import { rank } from './schemaBase';
-import { itemRefSchema } from './schemaUnits';
+import { itemRefSchema, rank } from './schemaBase';
 
 // --- conditions and effects (architecture §5.3): an object with exactly one key; a list of conditions means AND ---
 const flagValue = z.union([z.string(), z.number(), z.literal(true)]);

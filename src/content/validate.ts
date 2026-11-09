@@ -7,6 +7,7 @@ import { validateLocales } from './validateLocales';
 import { validatePropVariants, validateSeasons, validateStatusIcons, validateWeather } from './validateLook';
 import { validateMap, validateMapFlags } from './validateMap';
 import { contentRefs } from './validateRefs';
+import { validateRelics } from './validateRelics';
 import { validateScenes, validateSupports } from './validateScenes';
 import { validateUnits } from './validateUnits';
 import type { ContentIssue, Locales } from './load';
@@ -32,6 +33,7 @@ export function validateContent(
   const err = (file: string, message: string) => issues.push({ file, message });
   const refs = contentRefs(data, err);
   validateUnits(data, err, refs, itemImages);
+  validateRelics(data, err, refs, itemImages);
   for (const map of Object.values(data.maps)) validateMap(data, map, err, refs.item, refs.battleDialogue, refs.reward, locales, refs.conditions);
   issues.push(...validateWeather(data), ...validateSeasons(data), ...validatePropVariants(data), ...validateStatusIcons(data, statusImages));
   validateCampaign(data, locales, err, refs, placeImages);

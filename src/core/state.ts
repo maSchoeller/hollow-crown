@@ -192,6 +192,11 @@ export interface BattleState {
   /** mechanics not introduced yet at this point of the campaign (missing in old saves = none locked) */
   locked?: Mechanic[];
   /**
+   * Stage of each awakened relic (story 11.9, `relicStages`): worked out from the campaign when the battle is set up, since
+   * `completed` never changes during a battle. Only relics past stage 1; missing (older saves) = every relic sleeps.
+   */
+  relicStages?: Record<string, number>;
+  /**
    * Nachsetzen (story 2.4): set by the attack of a skirmisher, with the movement it has left; the next command of any kind
    * clears it. Plain JSON, so the replay needs nothing besides the command log.
    */

@@ -269,7 +269,7 @@ describe('Stehlen', () => {
   it('does not take equipped gear or convoyOnly goods, and says why a slot is dimmed', () => {
     const { s, scout, foe } = duel();
     foe.bag = [newItem(s, 'iron_ore', data)];
-    expect(stealableItems(data, foe)).toEqual([]);
+    expect(stealableItems(data, foe, undefined, null)).toEqual([]);
     expect(stealTargets(data, s, scout, scout.pos!)).toEqual({});
     expect(kinds(s, scout)).not.toContain('steal');
     expect(stealBlock(data, s, scout, scout.pos!)).toBe('loot');

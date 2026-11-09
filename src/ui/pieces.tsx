@@ -1,6 +1,7 @@
 /** Building blocks of style B (concept/25-ux/DESIGN.md): stone, buttons with a pressable bottom edge, amounts, item images. */
 import type { ComponentChildren, JSX } from 'preact';
-import { instanceRarity, itemDef, type GameData, type ItemDef, type ItemInstance, type Rarity } from '../core';
+import { instanceRarity, itemDef, stagedItemDef, type GameData, type ItemDef, type ItemInstance, type Rarity } from '../core';
+import { isRelic, shownRelics } from './relicView';
 import { asset } from './asset';
 import { lang, t } from '../i18n';
 import { Icon } from './icons';
@@ -166,6 +167,7 @@ type ItemImageProps = {
 };
 
 function rarityOfItem(data: GameData, item: ItemInstance | string, rarity?: Rarity | 'relic'): Rarity | 'relic' {
+  if (!rarity && isRelic(data, item)) return 'relic';
   return rarity ?? instanceRarity(data, itemDef(data, item).id, typeof item === 'string' ? 0 : item.affixes.length);
 }
 
@@ -213,7 +215,8 @@ export function ItemImage({ data, item, size = 44, rarity, label, bare, class: c
       aria-label={label}
       aria-hidden={label ? undefined : 'true'}
     >
-      <img src={itemImageSrc(d)} alt="" draggable={false} />
+      {/* an awakened relic shows the image of its stage (story 11.9) */}
+      <img src={itemImageSrc(stagedItemDef(data, item, shownRelics.value))} alt="" draggable={false} />
       {!bare && <Gems r={r} />}
       {num && !small && !bare && <span class="hc-item-image__num">{num}</span>}
     </span>

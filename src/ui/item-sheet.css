@@ -32,6 +32,10 @@
 .its__rarity.r-legendary {
   color: var(--hc-lieutenant);
 }
+/* story 11.9: relic (hollow crown in the frame) – gold with the ember accent of DESIGN.md */
+.its__rarity.r-relic {
+  color: var(--hc-rarity-relic-accent);
+}
 .its__type {
   font-family: var(--hc-font-label);
   font-weight: 700;

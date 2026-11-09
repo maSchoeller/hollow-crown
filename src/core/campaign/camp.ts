@@ -4,6 +4,7 @@ import type { Condition, RoomDef } from '../storyDefs';
 import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { levelCap, otherProPath, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
+import { relicCtx } from './relics';
 import { computeStats } from '../rules/stats';
 import { pendingRank, rankIndex } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
@@ -225,8 +226,9 @@ export function upgradePreview(data: GameData, inst: ItemInstance): Array<{ key:
     if (a.might !== b.might) out.push({ key: 'mt', delta: a.might - b.might });
     if (a.hit !== b.hit) out.push({ key: 'hit', delta: a.hit - b.hit });
   } else {
-    const a = itemStatMods(data, next);
-    const b = itemStatMods(data, inst);
+    // a difference: the relic stage replaces the same base on both sides, so the sleeping item is enough (story 11.9)
+    const a = itemStatMods(data, next, null);
+    const b = itemStatMods(data, inst, null);
     if ((a.def ?? 0) !== (b.def ?? 0)) out.push({ key: 'def', delta: (a.def ?? 0) - (b.def ?? 0) });
     if ((a.res ?? 0) !== (b.res ?? 0)) out.push({ key: 'res', delta: (a.res ?? 0) - (b.res ?? 0) });
   }
@@ -329,7 +331,7 @@ export interface EquipCandidate {
  * item in the tapped bag place: it leaves when another comes in, so it does not count towards a full bag.
  */
 export function equipCandidates(data: GameData, c: CampaignState, unit: UnitRecord, slot: EquipSlot | 'bag', replace?: string): EquipCandidate[] {
-  const skills = activeSkillIds(data, unit);
+  const skills = activeSkillIds(data, unit, relicCtx(data, c));
   const bag = unit.bag.filter((i) => i.uid !== replace);
   const out: EquipCandidate[] = [];
   const consider = (inst: ItemInstance, where: 'convoy' | 'bag') => {
@@ -402,8 +404,9 @@ export function usableBy(data: GameData, c: CampaignState, defId: string): UnitR
   if (d.slot === 'bag') return c.roster;
   const slots: EquipSlot[] = d.slot === 'accessory' ? ['accessory1', 'accessory2'] : [d.slot as EquipSlot];
   const probe: ItemInstance = { uid: 'probe', def: defId, upgrade: 0, affixes: [], runes: [] };
+  const rc = relicCtx(data, c);
   return c.roster.filter((u) => {
-    const skills = activeSkillIds(data, u);
+    const skills = activeSkillIds(data, u, rc);
     return slots.some((sl) => {
       const err = canEquip(data, u, probe, sl, skills);
       return !err || err === 'two_handed' || err === 'duplicate_accessory';

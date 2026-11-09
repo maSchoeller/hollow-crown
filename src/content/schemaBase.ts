@@ -23,3 +23,11 @@ export const area = z.union([
   z.object({ tiles: z.array(pos) }),
 ]);
 export const slugId = z.string().regex(/^[a-z0-9_]+$/);
+
+/** Reference to an item in content (chest, reward, starting kit): definition plus optional upgrade, affixes and runes. */
+export const itemRefSchema = z.object({
+  def: z.string(),
+  upgrade: z.number().int().min(0).max(5).optional(),
+  affixes: z.array(z.string()).optional(),
+  runes: z.array(z.string()).optional(),
+});

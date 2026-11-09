@@ -10,6 +10,7 @@ import { actOf, findNode, nodeAct } from '../campaign/acts';
 import { atPosition, nodeLevel, positionOf, raiseMapChar } from '../campaign/position';
 import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
+import { relicStages } from '../campaign/relics';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
 import { startBattle, type ApplyResult } from './apply';
 import { parseLevels, parseTerrain } from './terrain';
@@ -57,6 +58,8 @@ export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, no
   const [w, h] = map.size;
   const objects: ObjectState[] = map.objects.map((o) => ({ id: o.id, type: o.type, at: [o.at[0], o.at[1]] as Pos, state: 'closed' }));
   const act = actOf(c);
+  // story 11.9: awakened relics, from the campaign; left out while every relic sleeps, so older start states stay as they were
+  const relics = relicStages(data, conditionContext(data, c));
   return {
     mapId: map.id,
     // act 1 leaves the field out, so the start states of act 1 stay as they were (story 11.1)
@@ -89,6 +92,7 @@ export function battleSkeleton(data: GameData, c: CampaignState, map: MapDef, no
     locked: lockedMechanics(data, c),
     lockedRoles: lockedRoles(data, c),
     lieutenantPlan,
+    ...(Object.keys(relics).length ? { relicStages: relics } : {}),
   };
 }
 

@@ -96,7 +96,7 @@ export function ItemLine({
 
 export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s: BattleState; onClose: () => void; onEquip: (item: string, slot: 'mainHand' | 'bag') => void; canEdit: boolean }) {
   const st = computeStats(data, u, { state: s });
-  const skills = activeSkillIds(data, u);
+  const skills = activeSkillIds(data, u, s);
   const hp = u.hp;
   const affinity = st.affinity && ruleOn(s, 'elements') ? st.affinity : undefined;
   const items = [

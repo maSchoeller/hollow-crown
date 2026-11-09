@@ -9,6 +9,7 @@ import { openTargets, stealPreview, stealTargets, type StealPreview } from '../r
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
 import { activeSkillIds, skillUses } from '../rules/skills';
+import type { RelicCtx } from '../rules/relics';
 import type { ObjectiveDef } from '../mapDefs';
 import type { BattleState, BattleUnit } from '../state';
 import { active, dist, inArea, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, unitAt } from '../util';
@@ -37,9 +38,9 @@ export function hasKey(data: GameData, u: BattleUnit): string | undefined {
   return u.bag.find((i) => itemDef(data, i).use?.open)?.uid;
 }
 
-export function skillUsable(data: GameData, u: BattleUnit, skillId: string): boolean {
-  if (!activeSkillIds(data, u).includes(skillId)) return false;
-  return (u.usedPerMap[skillId] ?? 0) < skillUses(data, u, skillId);
+export function skillUsable(data: GameData, u: BattleUnit, skillId: string, rc: RelicCtx): boolean {
+  if (!activeSkillIds(data, u, rc).includes(skillId)) return false;
+  return (u.usedPerMap[skillId] ?? 0) < skillUses(data, u, skillId, rc);
 }
 
 export function attackTargets(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, extraRange = 0): Record<string, string[]> {
@@ -241,9 +242,9 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
     if (v.type === 'seize' && u.flags.includes('seizer') && inArea(v.area, pos)) out.push({ kind: 'seize' });
     if (v.type === 'escape' && inArea(v.area, pos) && !mustStayForRest(s, u, v)) out.push({ kind: 'escape' });
   }
-  for (const id of activeSkillIds(data, u)) {
+  for (const id of activeSkillIds(data, u, s)) {
     const sk = data.skills[id]!;
-    if (sk.trigger !== 'action' || !skillUsable(data, u, id)) continue;
+    if (sk.trigger !== 'action' || !skillUsable(data, u, id, s)) continue;
     if (sk.effect.refreshAction) {
       const t = adj.filter((o) => active(o) && o.acted && isAlly(o.team, u.team) && o.team === u.team);
       if (t.length) out.push({ kind: 'command', targets: t.map((o) => o.uid) });

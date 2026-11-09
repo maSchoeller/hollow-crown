@@ -49,7 +49,7 @@ export function computeStats(
   let crit = 0;
   for (const inst of Object.values(unit.equip)) {
     if (!inst) continue;
-    const m = itemStatMods(data, inst);
+    const m = itemStatMods(data, inst, ctx.state ?? ctx.relics ?? null);
     hit += m.hit ?? 0;
     avoid += m.avoid ?? 0;
     crit += m.crit ?? 0;

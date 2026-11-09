@@ -122,7 +122,7 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
       const inst = [...Object.values(u.equip), ...u.bag].find((i) => i?.uid === cmd.item);
       if (!inst) return 'invalid_target';
       if (cmd.slot === 'bag') return null;
-      return canEquip(data, u, inst, cmd.slot, activeSkillIds(data, u)) ? 'cannot_equip' : null;
+      return canEquip(data, u, inst, cmd.slot, activeSkillIds(data, u, s)) ? 'cannot_equip' : null;
     }
     case 'trade': {
       if (u.freeUsed.trade) return 'already_used';
@@ -138,7 +138,7 @@ export function validate(data: GameData, s: BattleState, cmd: Command): CommandE
         // taking straight into a slot follows the same rules as `equip`
         const inst = s.convoy.find((i) => i.uid === cmd.take);
         if (!inst) return 'invalid_target';
-        if (canEquip(data, u, inst, cmd.slot, activeSkillIds(data, u))) return 'cannot_equip';
+        if (canEquip(data, u, inst, cmd.slot, activeSkillIds(data, u, s))) return 'cannot_equip';
       }
       return null;
   }
@@ -171,7 +171,7 @@ export function applyCommand(data: GameData, prev: BattleState, cmd: Command): A
       const w = cmd.path && !samePos(u.pos, cmd.to) ? (walkPath(data, s, u, cmd.path) ?? undefined) : undefined;
       if (!w?.cut && cmd.action.kind === 'attack' && classActionId(data, u, s) === 'pursue') pursueLeft = pursueRest(data, s, u, cmd.to);
       // Wolfslauf / Weiterziehen: after a real action a fixed number of fields more; with Nachsetzen the higher of the two (review R3)
-      const afterAction = !w?.cut && cmd.action.kind !== 'wait' ? afterActionMove(data, u) : 0;
+      const afterAction = !w?.cut && cmd.action.kind !== 'wait' ? afterActionMove(data, u, s) : 0;
       doMove(data, s, u, cmd.to, events, undefined, w);
       if (w?.cut) ambush(u, w, events);
       else if (active(u) && !s.outcome) doAction(data, s, u, cmd.action, events);
@@ -262,7 +262,7 @@ function doTrade(data: GameData, s: BattleState, cmd: Extract<Command, { type: '
     const from = fromA ?? findInventory(b, op.item);
     if (!from) continue;
     const to = op.to === a.uid ? a : b;
-    if (op.slot !== 'bag' && canEquip(data, to, from.inst, op.slot, activeSkillIds(data, to))) continue;
+    if (op.slot !== 'bag' && canEquip(data, to, from.inst, op.slot, activeSkillIds(data, to, s))) continue;
     if (op.slot === 'bag' && bagIsFull(data, to.bag, from.inst)) continue;
     from.remove();
     const rest = place(data, to, from.inst, op.slot);

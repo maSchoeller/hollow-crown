@@ -23,7 +23,7 @@ import { Toast, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
-import { campaign, campaignCommand, data } from '../state/session';
+import { campaign, campaignCommand, campaignRelics, data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
 import { EquipView } from './Equip';
@@ -166,7 +166,7 @@ export function Figure({
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   });
-  const st = computeStats(data, unit);
+  const st = computeStats(data, unit, { relics: campaignRelics.value });
   const exp = expProgress(data, unit);
   const promotable = canPromote(data, c, unit);
   const academy = Object.values(data.rooms).find((r) => r.function === 'academy');
@@ -332,7 +332,7 @@ export function Figure({
           </div>
         )}
         <span class="trp-chips" style={{ color: 'var(--hc-soft)' }}>
-          {activeSkillIds(data, unit)
+          {activeSkillIds(data, unit, campaignRelics.value)
             .map((id) => t(`skill.${id}.name`))
             .join(' · ')}
         </span>

@@ -11,6 +11,7 @@
 import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import { activeSkillIds } from './skills';
+import type { RelicCtx } from './relics';
 import type { BattleState, BattleUnit, ItemInstance, ObjectState } from '../state';
 import { active, isHostile, neighbors, samePos, unitAt } from '../util';
 import { bagIsFull, isRune, itemDef } from './items';
@@ -34,7 +35,7 @@ export function goesToConvoy(data: GameData, u: Pick<BattleUnit, 'bag'>, item: I
 }
 
 /** The thief has a skill that lets Stehlen take equipped items (the Elster, `stealEquipped`). */
-export const stealsEquipped = (data: GameData, thief: BattleUnit): boolean => activeSkillIds(data, thief).some((id) => !!data.skills[id]?.effect.stealEquipped);
+export const stealsEquipped = (data: GameData, thief: BattleUnit, rc: RelicCtx): boolean => activeSkillIds(data, thief, rc).some((id) => !!data.skills[id]?.effect.stealEquipped);
 
 /** The signature item of a lieutenant (`lieutenants.yaml`): never stolen from a hand, only dropped. */
 const isLieutenantSignature = (data: GameData, i: ItemInstance): boolean => Object.values(data.lieutenants ?? {}).some((lt) => lt.signatureItem === i.def);
@@ -43,9 +44,9 @@ const isLieutenantSignature = (data: GameData, i: ItemInstance): boolean => Obje
  * What can be stolen from `target`: the items of its bag, not the `convoyOnly` ones; with `thief` holding the Elster also
  * the equipped items (after the bag, in slot order), except the signature items of lieutenants.
  */
-export function stealableItems(data: GameData, target: BattleUnit, thief?: BattleUnit): ItemInstance[] {
+export function stealableItems(data: GameData, target: BattleUnit, thief: BattleUnit | undefined, rc: RelicCtx): ItemInstance[] {
   const out = target.bag.filter((i) => !itemDef(data, i).tags?.includes('convoyOnly'));
-  if (thief && stealsEquipped(data, thief)) {
+  if (thief && stealsEquipped(data, thief, rc)) {
     for (const i of Object.values(target.equip)) {
       if (i && !itemDef(data, i).tags?.includes('convoyOnly') && !isLieutenantSignature(data, i)) out.push(i);
     }
@@ -60,7 +61,7 @@ export function stealTargets(data: GameData, s: BattleState, u: BattleUnit, pos:
   for (const p of neighbors(pos)) {
     const o = unitAt(s, p);
     if (!o || o.uid === u.uid || !active(o) || !isHostile(o.team, u.team)) continue;
-    const items = stealableItems(data, o, u);
+    const items = stealableItems(data, o, u, s);
     if (items.length) out[o.uid] = items.map((i) => i.uid);
   }
   return out;
@@ -93,8 +94,8 @@ export function stealPreview(data: GameData, s: BattleState, u: BattleUnit, targ
   if (!o) return null;
   return {
     target,
-    items: stealableItems(data, o, u).map((item) => ({ item, toConvoy: goesToConvoy(data, u, item), equipped: !o.bag.some((b) => b.uid === item.uid) })),
-    takesEquipped: stealsEquipped(data, u),
+    items: stealableItems(data, o, u, s).map((item) => ({ item, toConvoy: goesToConvoy(data, u, item), equipped: !o.bag.some((b) => b.uid === item.uid) })),
+    takesEquipped: stealsEquipped(data, u, s),
     bagFull: bagIsFull(data, u.bag),
   };
 }

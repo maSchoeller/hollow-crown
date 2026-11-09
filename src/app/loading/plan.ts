@@ -15,7 +15,7 @@ export type ModelSource = FigureSource;
 export type MissionUnit = ModelSource & { gearItems?: readonly string[] };
 
 /** `GameData.items` as far as the gear rules read it. */
-type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'group' | 'image'>>;
+type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'group' | 'image' | 'stages'>>;
 type Gear = GameData['render']['gear'];
 
 export interface MissionAssetInput {
@@ -62,10 +62,15 @@ export function laterMusicAssets(music: readonly string[] | undefined): string[]
   return music ? LATER_MUSIC.filter((id) => music.includes(id)).map(musicPath) : [];
 }
 
-/** Item images (`items/<image>.webp`) of the given items, as the battle HUD and the unit cards show them. */
+/** Item images (`items/<image>.webp`) of the given items, as the battle HUD and the unit cards show them; a relic with all its stage images (story 11.9). */
 export function itemImages(itemIds: readonly string[], items: GearItems): string[] {
   const out = new Set<string>();
-  for (const id of itemIds) if (items[id]) out.add(`items/${items[id].image ?? id}.webp`);
+  for (const id of itemIds) {
+    const d = items[id];
+    if (!d) continue;
+    out.add(`items/${d.image ?? id}.webp`);
+    for (const st of d.stages ?? []) out.add(`items/${st.image}.webp`);
+  }
   return [...out];
 }
 

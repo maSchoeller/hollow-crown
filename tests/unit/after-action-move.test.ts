@@ -74,11 +74,11 @@ describe('afterActionMove', () => {
     const s = arena();
     const none = place(s, 'player', 'vanguard', [1, 1], 'iron_lance');
     const wolf = place(s, 'player', 'vanguard', [2, 1], 'iron_lance', 'wolf_run');
-    expect(afterActionMove(data, none)).toBe(0);
-    expect(afterActionMove(data, wolf)).toBe(2);
+    expect(afterActionMove(data, none, null)).toBe(0);
+    expect(afterActionMove(data, wolf, null)).toBe(2);
     wolf.mastered.push('canto');
     wolf.loadout.push('canto');
-    expect(afterActionMove(data, wolf)).toBe(2);
+    expect(afterActionMove(data, wolf, null)).toBe(2);
   });
 });
 

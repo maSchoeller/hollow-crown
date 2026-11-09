@@ -8,15 +8,19 @@ import {
   itemStatMods,
   itemWeight,
   runeSlotCount,
+  relicStageOf,
   sellPrice,
+  stageSkills,
   weaponProfile,
   type GameData,
   type ItemDef,
   type ItemInstance,
+  type RelicCtx,
   type StatusId,
 } from '../core';
-import { t } from '../i18n';
+import { has, t } from '../i18n';
 import { instanceRarity } from '../core/loot';
+import { isRelic } from './relicView';
 
 export interface ItemFact {
   key: string;
@@ -37,6 +41,8 @@ export interface ItemInfo {
   /** what the item does beyond the numbers, one sentence each */
   effects: string[];
   skill?: { name: string; desc: string; cost: number };
+  /** relic (story 11.9): its stage (1 sleeping … 3 awake) as a word, and the passive skills that stage adds */
+  relic?: { stage: number; label: string; skills: Array<{ name: string; desc: string }> };
   set?: { name: string; pieces: string[]; bonuses: string[] };
   /** rune slots in order, `null` = free */
   runes: Array<string | null>;
@@ -58,6 +64,8 @@ export function itemName(data: GameData, inst: ItemInstance): string {
 }
 
 export function rarityOf(data: GameData, inst: ItemInstance): string {
+  // a relic shows its own rarity line and frame (DESIGN.md item-image: hollow crown)
+  if (isRelic(data, inst)) return 'relic';
   return instanceRarity(data, inst.def, inst.affixes.length);
 }
 
@@ -213,7 +221,8 @@ function runeEffects(data: GameData, d: ItemDef): { facts: ItemFact[]; effects: 
   return { facts, effects };
 }
 
-export function itemInfo(data: GameData, item: ItemInstance | string): ItemInfo {
+/** `rc`: relic stages to show (story 11.9); without, a relic is shown sleeping. */
+export function itemInfo(data: GameData, item: ItemInstance | string, rc: RelicCtx = null): ItemInfo {
   const inst = asInstance(item);
   const d = itemDef(data, inst);
   const type = [t(`ui.itemInfo.kind.${d.kind}`)];
@@ -244,7 +253,7 @@ export function itemInfo(data: GameData, item: ItemInstance | string): ItemInfo 
     if (d.element && d.slot === 'body')
       effects.push(t('ui.itemInfo.affinity', { element: t(`ui.element.${d.element}`) }));
     else if (d.element) facts.push({ key: 'element', label: t('ui.element'), value: t(`ui.element.${d.element}`) });
-    facts.push(...statFacts(itemStatMods(data, inst)));
+    facts.push(...statFacts(itemStatMods(data, inst, rc)));
     const wt = itemWeight(data, inst);
     if (wt || d.slot !== 'bag')
       facts.push({ key: 'wt', label: statLabel('wt'), value: `${wt}`, hint: t('ui.itemInfo.hint.wt') });
@@ -261,13 +270,19 @@ export function itemInfo(data: GameData, item: ItemInstance | string): ItemInfo 
     .filter((x) => ['unsellable', 'convoyOnly', 'campOnly', 'monsterOnly'].includes(x))
     .map((x) => t(`ui.itemInfo.tag.${x}`));
   const slots = d.kind === 'rune' ? 0 : runeSlotCount(data, inst);
+  const stage = d.stages ? Math.min(relicStageOf(rc, d.id), d.stages.length + 1) : 1;
   return {
     def: d,
     type: type.join(' · '),
     // a description may name the item's range (ballista bolt, story 11.6): the numbers come from items.yaml
-    desc: t(`item.${d.id}.desc`, d.rng ? { rngMin: d.rng[0], rngMax: d.rng[1] } : undefined),
+    desc: t(stageDescKey(d, stage), d.rng ? { rngMin: d.rng[0], rngMax: d.rng[1] } : undefined),
     facts,
     effects,
+    relic: !isRelic(data, inst) ? undefined : {
+      stage,
+      label: t(`ui.relic.stage.${stage}`),
+      skills: stageSkills(data, inst, rc).map((id) => ({ name: t(`skill.${id}.name`), desc: t(`skill.${id}.desc`) })),
+    },
     skill: d.grantsSkill && {
       name: t(`skill.${d.grantsSkill.skill}.name`),
       desc: t(`skill.${d.grantsSkill.skill}.desc`),
@@ -299,4 +314,10 @@ export function itemInfo(data: GameData, item: ItemInstance | string): ItemInfo 
     buy: d.price,
     sell: sellPrice(data, inst),
   };
+}
+
+/** Description of a relic's stage (`item.<id>.stage<n>.desc`, story 11.9); stage 1 and stages without their own text use `item.<id>.desc`. */
+function stageDescKey(d: ItemDef, stage: number): string {
+  const key = `item.${d.id}.stage${stage}.desc`;
+  return stage > 1 && has(key) ? key : `item.${d.id}.desc`;
 }
