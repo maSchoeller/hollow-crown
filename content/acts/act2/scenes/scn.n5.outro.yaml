@@ -1,0 +1,38 @@
+# Nebenquest N5, Szene nach der Karte (Knoten post, Story 11.21). Zwei Fassungen: Brann ist beigetreten (alive) oder nicht (not alive);
+# wer ihn nicht angesprochen hat, hat ihn für die Staffel nicht (Missionsliste), die Quest bleibt gewonnen. Der Glutfunke ist die
+# Knotenwirkung (campaign.yaml n5 effects), die Szene zeigt ihn nur, wie N1/N2. Text Vorschlag [ASSUMPTION].
+id: scn.n5.outro
+background: kupfermine
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Plünderer sind fort. Im Schacht wird es still, nur die Glutadern leuchten weiter."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    requires: [{ alive: brann }]
+    mood: neutral
+    text: "Ich gehe mit euch. Aber wenn der Stein heiß wird, sagt es mir. Sofort."
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }, { alive: brann }]
+    mood: happy
+    text: "Wir sagen es dir. Und dann gehen wir ein Stück weiter weg. Mehr nicht."
+  - id: l04
+    requires: [{ not: { alive: brann } }]
+    mood: sad
+    text: "Im Westgang liegt nur noch eine leere Decke. Die Spur führt tiefer in den Berg und verliert sich."
+  - id: l05
+    speaker: [lucan]
+    requires: [{ not: { alive: brann } }]
+    mood: sad
+    text: "Er wollte nicht gefunden werden. Wir lassen ihn. Manche Wege geht man allein."
+  - id: l06
+    mood: neutral
+    text: "In einer Kiste der Plünderer glimmt ein Splitter, sorgsam in Wolle gewickelt. Ein Glutfunke."
+  - id: l07
+    speaker: [avatar]
+    mood: neutral
+    text: "Zurück ans Licht. Die Herzogin wird merken, dass ihr etwas fehlt."
