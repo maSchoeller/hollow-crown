@@ -125,6 +125,9 @@ haunt:
   material: { min: 1, max: 2 }
   # Gegner warten (Profil trigger), bis die Truppe so nah kommt (Story-Karten: 3-5); der Leutnant hat seinen eigenen Radius [C]
   triggerRadius: { enemy: 4, lieutenant: 5 }
+  # Nebel des Krieges auf Heimsuchungen: false = auch Nebelkarten (1-3, 1-5) zeigen das ganze Brett; die Gegner stehen dort
+  # weit vor der Truppe, im Nebel fand sie niemanden (Fehler 2026-11-09) [C]
+  fog: false
 scene:
   autoBaseMs: 1200
   autoPerCharMs: 45

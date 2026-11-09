@@ -108,6 +108,8 @@ export interface Balance {
     material: { min: number; max: number };
     /** the enemies of a haunt wait (profile `trigger`) until the company comes this close, then attack; the lieutenant has his own radius (story maps use 3-5) */
     triggerRadius: { enemy: number; lieutenant: number };
+    /** fog of war on haunts: false lifts it even on fog maps, where the foes stand far from the company (fix 2026-11-09) */
+    fog: boolean;
   };
   /** timing and size of scenes and speech bubbles (story 4.5) */
   scene: {
