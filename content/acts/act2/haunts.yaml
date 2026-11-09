@@ -1,0 +1,30 @@
+# Gegner-Pools der Heimsuchungen von Akt 2 (Paket act2). VORLÄUFIG (Story 11.5) [ASSUMPTION]: content:check verlangt für jede Fraktion
+# eines Leutnants einen Pool; Story 11.7 (Gegner, Herbst, Heimsuchungen von Akt 2) legt Klassen, Anteile, Figuren und Truhen endgültig fest.
+# Abgeleitet aus der Fassung vom 2026-10-31 (Story 11.7), ohne Flieger und Reittiere: Ausrüstungs-Tier des Akts ist Stahl.
+factions:
+  # Grenzheer der Eisenmark (Sable)
+  iron_march:
+    - { class: vanguard,   sprite: soldier,       nameKey: unit.border_soldier.name, items: [{ def: steel_lance }], share: 30 }
+    - { class: knight,     sprite: soldier,       nameKey: unit.border_soldier.name, items: [{ def: steel_lance }], share: 20 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.border_soldier.name, items: [{ def: steel_bow }],   share: 25 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.border_soldier.name, items: [{ def: steel_sword }], share: 25 }
+  # Silberne Lanze (Rowena), zu Fuß
+  silver_lance:
+    - { class: knight,     sprite: soldier,       nameKey: unit.lance_squire.name, items: [{ def: steel_lance }], share: 40 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.lance_squire.name, items: [{ def: steel_sword }], share: 30 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.lance_squire.name, items: [{ def: steel_bow }],   share: 30 }
+  # Haus Silbermeer (Grell): Kaperfahrer
+  silver_sea:
+    - { class: brigand,    sprite: brigand,       nameKey: unit.privateer.name, items: [{ def: steel_axe }],   share: 35 }
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.privateer.name, items: [{ def: steel_sword }], share: 35 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.privateer.name, items: [{ def: steel_bow }],   share: 30 }
+  # Freie Klingen (Brakka): Söldner
+  free_blades:
+    - { class: skirmisher, sprite: mercenary,     nameKey: unit.free_blade.name, items: [{ def: steel_sword }], share: 35 }
+    - { class: brigand,    sprite: brigand,       nameKey: unit.free_blade.name, items: [{ def: steel_axe }],   share: 35 }
+    - { class: marksman,   sprite: bandit_archer, nameKey: unit.free_blade.name, items: [{ def: steel_bow }],   share: 30 }
+civilian: { class: civilian, sprite: villager_elder, portrait: villager_elder, nameKey: unit.civilian.name }
+chestLoot:
+  - { gold: 300 }
+  - { item: { def: moonsteel } }
+  - { gold: 500 }

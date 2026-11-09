@@ -72,8 +72,8 @@ units:
   - { id: o1, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [2, 17], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: o2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [17, 17], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Am Ausgang: Sable oder, wenn sie bei E7 gewechselt hat, ein Hauptmann des Grenzheers (gleiche Werte, gleiches Feld)
-  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ not: { flag: e7_warned } }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: e7_warned }] }
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ not: { flag: { e07: warn } } }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, level: 16, levelOffset: 1, at: [9, 4], items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: { e07: warn } }] }
   - { id: e1, nameKey: unit.border_soldier.name, team: enemy, class: healer, level: 12, levelOffset: -3, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
   - { id: e2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, level: 12, levelOffset: -3, at: [8, 2], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: e3, nameKey: unit.border_soldier.name, team: enemy, class: knight, level: 12, levelOffset: -3, at: [11, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
@@ -155,5 +155,5 @@ design:
   notes:
     - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 15 und bleibt fürs Schema."
     - "Normal 22 Gegner (7 davon R3/R5/R7), P−3 bis P−1 (hier P = 15, Stufe 12–14), Leutnants P+1 bis P+2, gegen 9 eigene; Leicht 18, Schwer 26. Das Blatt zählt Sable und den Hauptmann beide, im Spiel steht nur einer."
-    - "Bedingung: Flags e7_order und e7_warned sind Platzhalter für den Ausgang von E7 (Produktinhaber 2026-11-05)."
+    - "Bedingung: Ausgang von E7 über den Flag e07 (warn | obey; Platzhalter e7_order/e7_warned in Story 11.5 umgestellt)."
     - "Formatwunsch: Klasse-Zuordnung Leutnant sable, Modell Hängebrücke (footbridge bis dahin mit Steg), Wasserfall."

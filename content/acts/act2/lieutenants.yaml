@@ -1,0 +1,54 @@
+# Die vier Leutnants von Akt 2 (Story 11.5; Narrative „Leutnants“, Missionsliste Akt 2). Alle zu Fuß: keine Flieger, keine Reittiere
+# (GDD-Log 2026-11-05), keine Klasse brakka_wyvern. Stufe nach der Leutnant-Regel (Schnitt der stärksten + Groll; Produktinhaber 2026-11-09),
+# nicht nach levelOffset. grudgeSkills = Groll 1, 2, 3 (Quelle grudge in core/skills.yaml); Zeilen in scenes/scn.lt.<id>.yaml; Titel und
+# Fraktionen in acts/act2/locales. Porträts und Modelle: vorhandene Platzhalter (Rowenas Brettfigur kommt mit Story 11.25).
+# Werte [ASSUMPTION] (Fassung 2026-10-31, Fähigkeiten mit Flieger-Bezug ersetzt).
+
+# Dame Rowena, Lanzenritterin der Prinzessin, verteidigt ihr Gestüt (2-3, 2-8)
+- id: rowena
+  nameKey: unit.rowena.name
+  portrait: rowena
+  model: rowena
+  class: knight
+  faction: silver_lance
+  signatureItem: silver_lance
+  grudgeSkills: [lance_charge, silver_resolve, stud_ward]
+  titleKey: lt.rowena.title
+  scene: scn.lt.rowena
+
+# Brakka, Ballistenmeisterin zu Fuß, Söldnerin für den Meistbietenden (2-1, 2-7, 2-8)
+- id: brakka
+  nameKey: unit.brakka.name
+  portrait: brakka
+  model: brakka
+  class: marksman
+  faction: free_blades
+  signatureItem: wasp_sting
+  grudgeSkills: [ballista_reach, steady_crew, paid_in_full]
+  titleKey: lt.brakka.title
+  scene: scn.lt.brakka
+
+# Kapitän Grell, Kaperkapitän der Herzogin, fuhr das Bandengold zu Hask (2-2, 2-4, 2-6, 2-8)
+- id: grell
+  nameKey: unit.grell.name
+  portrait: grell
+  model: grell
+  class: skirmisher
+  faction: silver_sea
+  signatureItem: gold_hook
+  grudgeSkills: [boarding_party, dirty_hook, sea_legs]
+  titleKey: lt.grell.title
+  scene: scn.lt.grell
+
+# Sable, Dravns Hauptfrau; wechselt bei E7 „warnen“ die Seite (2-4 ohne Kampf, 2-5, 2-6, 2-8)
+- id: sable
+  nameKey: unit.sable.name
+  portrait: sable
+  model: sable
+  class: duelist
+  faction: iron_march
+  signatureItem: dravns_oath
+  grudgeSkills: [oath_guard, last_order, iron_discipline]
+  titleKey: lt.sable.title
+  scene: scn.lt.sable
+  joins: true

@@ -1,0 +1,43 @@
+# Leutnant-Zeilen (Story 11.5): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott
+id: scn.lt.brakka
+lines:
+  - id: first
+    speaker: [brakka]
+    fallback: skip
+    mood: happy
+    text: "Wer mehr zahlt, hat recht. Heute zahlt der andere."
+  - id: grudge_1
+    speaker: [brakka]
+    fallback: skip
+    mood: angry
+    text: "{target}. Dich hab ich im Visier gehabt."
+  - id: grudge_2
+    speaker: [brakka]
+    fallback: skip
+    mood: angry
+    text: "{target}! Du kostest mich Bolzen. Und Lohn."
+  - id: grudge_3
+    speaker: [brakka]
+    fallback: skip
+    mood: angry
+    text: "{target}! Den Schuss auf dich mach ich umsonst."
+  - id: flee_1
+    speaker: [brakka]
+    fallback: skip
+    mood: angry
+    text: "Zu wenig Lohn für so viel Ärger. Ich bin weg."
+  - id: flee_2
+    speaker: [brakka]
+    fallback: skip
+    mood: neutral
+    text: "Der Vertrag läuft weiter. Ich nicht."
+  - id: flee_3
+    speaker: [brakka]
+    fallback: skip
+    mood: sad
+    text: "Wer mehr zahlt, hat recht. Heute zahl ich drauf."
+  - id: mock
+    speaker: [brakka]
+    fallback: skip
+    mood: happy
+    text: "{target}? Ein Treffer. Wer mehr zahlt, hat recht."

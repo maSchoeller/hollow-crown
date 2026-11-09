@@ -66,10 +66,11 @@ describe('simulation over the acts (story 11.4)', () => {
     const seen: Array<CampaignState['flags']> = [];
     const onMission = (_: string, c: CampaignState) => void seen.push({ ...c.flags });
     sim(opts({ onMission }));
-    sim(opts({ flags: ['e7_warned'], onMission }));
-    expect(seen[0]!.e7_warned).toBeUndefined();
-    expect(seen[1]!.e7_warned).toBe(true);
-    expect(() => sim(opts({ flags: ['e07=warn'] }))).toThrow(/no flag "e07"/);
+    sim(opts({ flags: ['e07=warn'], onMission }));
+    expect(seen[0]!.e07).toBeUndefined();
+    expect(seen[1]!.e07).toBe('warn');
+    expect(() => sim(opts({ flags: ['e7_warned'] }))).toThrow(/no flag "e7_warned"/);
+    expect(() => sim(opts({ flags: ['e07=maybe'] }))).toThrow(/e07 takes warn, obey/);
   });
 
   it('act 1 keeps its data; options of a later act need one', () => {

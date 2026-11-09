@@ -1,0 +1,48 @@
+# Leutnant-Zeilen (Story 11.5): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott, Seitenwechsel
+id: scn.lt.sable
+lines:
+  - id: first
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Befehl ist Befehl. Nehmt es nicht persönlich."
+  - id: grudge_1
+    speaker: [sable]
+    fallback: skip
+    mood: angry
+    text: "{target}. Ich habe dich nicht vergessen."
+  - id: grudge_2
+    speaker: [sable]
+    fallback: skip
+    mood: angry
+    text: "{target}! Befehl ist Befehl. Dieser macht mir Freude."
+  - id: grudge_3
+    speaker: [sable]
+    fallback: skip
+    mood: angry
+    text: "{target}! Kein Befehl hält mich heute zurück."
+  - id: flee_1
+    speaker: [sable]
+    fallback: skip
+    mood: angry
+    text: "Rückzug! Das Grenzheer steht noch."
+  - id: flee_2
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Befehl ist Befehl. Er lautet: überleben."
+  - id: flee_3
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Ich weiche. Aber ich frage mich, wofür."
+  - id: mock
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "{target} ist tot. Befehl ist Befehl."
+  - id: join
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Ihr habt mein Dorf gewarnt. Kein Befehl wiegt mehr."

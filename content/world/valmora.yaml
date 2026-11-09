@@ -29,7 +29,7 @@ home:
 # Erlbach verbrannt nach 1-2; Aurenhall belagert ab 3-5 (Produktinhaber 2026-11-06): solange Akt 3 keine Knoten hat, als
 # „Akt 3 und vier erledigte Story-Missionen“ (3-1 bis 3-4 vor 3-5), später `completed: <Knoten von 3-4>`.
 # base: false = kein eigenes Grundbild, die gemalte Karte zeigt den Ort; nur die Varianten zeichnen. Brandhang (Story 11.3): das
-# gemalte Dorf ist der Grundzustand, verbrannt nach E7 „gehorchen“ (vorläufiger Flag e7_order, 11.5 darf ihn umbenennen) [ASSUMPTION].
+# gemalte Dorf ist der Grundzustand, verbrannt nach E7 „gehorchen“ (Flag e07 obey, Story 11.5) [ASSUMPTION].
 places:
   - { id: crater, act: 3, at: [53.19, 7.66], site: { foot: [50.96, 8.05], width: 3.43 }, slots: [{ label: "3-8" }] }   # Urtempel im Krater
   - { id: mountain_pass, act: 3, at: [48.41, 15.15], slots: [{ label: "3-7" }] }   # Pass ins Gebirge
@@ -48,7 +48,7 @@ places:
   - { id: crow_holm, act: 2, at: [8.85, 74.4], site: { foot: [6.78, 74.88], width: 3.27 }, slots: [{ label: "2-6", node: m2_6 }] }   # Krähenholm
   - { id: silverspring, act: 2, at: [66.51, 42.11], site: { foot: [63.96, 42.58], width: 4.07 }, slots: [{ label: "2-5", node: m2_5 }] }   # Kloster Silberquell
   - { id: greywatch, act: 2, at: [87.88, 46.17], site: { foot: [87.88, 47.45], width: 6.54 }, slots: [] }   # Grauwacht
-  - { id: burnt_slope, act: 2, at: [76.16, 32.3], site: { foot: [76.5, 32.4], width: 3.4, base: false, variants: [{ image: burnt_slope_burnt, requires: [{ flag: e7_order }] }] }, slots: [{ label: "2-4", node: m2_4 }] }   # Brandhang
+  - { id: burnt_slope, act: 2, at: [76.16, 32.3], site: { foot: [76.5, 32.4], width: 3.4, base: false, variants: [{ image: burnt_slope_burnt, requires: [{ flag: { e07: obey } }] }] }, slots: [{ label: "2-4", node: m2_4 }] }   # Brandhang
   - { id: copperhall, act: 2, at: [89.15, 41.63], site: { foot: [92.11, 42.11], width: 4.94 }, slots: [{ label: "N5", node: n5 }] }   # Kupferhall
   - { id: clan_grounds, act: 2, at: [89.31, 28.71], slots: [{ label: "N4", node: n4 }] }   # Jagdgründe der Clans
   - { id: wind_gap, act: 2, at: [61.56, 63.0], slots: [{ label: "2-1", node: m2_1 }] }   # Windscharte

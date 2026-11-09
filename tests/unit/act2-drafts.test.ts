@@ -239,7 +239,7 @@ describe('the lock and the flag registers', () => {
     const { packs, ids } = releasedIdSets(process.cwd(), data, readPacks(process.cwd()));
     expect(packs).not.toContain('act2');
     expect(ids.flags).toContain('e04');
-    expect(ids.flags.filter((f) => ['e7_order', 'e7_warned', 'm2_2_seal'].includes(f))).toEqual([]);
+    expect(ids.flags.filter((f) => ['e07', 'joined_sable', 'm2_2_seal'].includes(f))).toEqual([]);
     expect(ids.scenes.filter((x) => x.startsWith('scn.m2_'))).toEqual([]);
     expect(ids.maps.every((m) => data.maps[m]!.act === 1)).toBe(true);
     expect(ids.chars).toContain('lucan');
@@ -269,7 +269,7 @@ describe('forced deploy, lieutenants with requires and guests', () => {
   });
 
   it('2-5: exactly one holds the exit: the captain after E7 warned, else Sable (also without E7 or with both flags)', () => {
-    const holder = (flags: Record<string, true>) => {
+    const holder = (flags: Record<string, string | true>) => {
       const c = campaign();
       Object.assign(c.flags, flags);
       if (!data.maps.s2_2_5_silberquell) addMap(join(dir, 's2_2_5_silberquell.yaml'));
@@ -277,9 +277,8 @@ describe('forced deploy, lieutenants with requires and guests', () => {
       return s.units.map((u) => u.uid).filter((id) => id === 'sable' || id === 'captain');
     };
     expect(holder({})).toEqual(['sable']);
-    expect(holder({ e7_order: true })).toEqual(['sable']);
-    expect(holder({ e7_warned: true })).toEqual(['captain']);
-    expect(holder({ e7_order: true, e7_warned: true })).toEqual(['captain']);
+    expect(holder({ e07: 'obey' })).toEqual(['sable']);
+    expect(holder({ e07: 'warn' })).toEqual(['captain']);
   });
 
   it('a lieutenant left out by requires gets no plan (Ulvric on a copy of m1_4)', () => {

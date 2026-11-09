@@ -80,7 +80,7 @@ describe('content of the acts', () => {
     expect(a2.nodes.map((n) => n.id)).toEqual(['m2_1', 'm2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8', 'n4', 'n5', 'n6']);
     for (const n of a2.nodes) expect(data.maps[n.map], n.id).toBeUndefined();
     expect(a2.scars).toEqual(data.acts[1]!.scars);
-    expect(a2.merchant.map((m) => m.tier)).toEqual([0]);
+    expect(a2.merchant.map((m) => m.tier)).toEqual([0, 1, 2]);
   });
 
   it('loads the companions of act 2 with names in German and English', () => {
@@ -140,12 +140,12 @@ describe('content of the acts', () => {
     expect(mergePackContent(loaded, pack)).toEqual([]);
     expect(loaded.data.acts[2]).toMatchObject({ act: 2, levelCap: 20 });
     expect(loaded.data.chars.jory).toMatchObject({ act: 2, class: 'minstrel' });
-    expect(loaded.data.flags.e7_order).toBeDefined();
+    expect(loaded.data.flags.e07).toBeDefined();
     expect(loaded.locales.de?.['unit.jory.name']).toBe('Jory');
     // a second pack naming known companions and flags again is refused, the first ones stay
     const again = mergePackContent(loaded, pack).map((i) => i.message);
     expect(again).toContain('companion jory is declared twice (acts/*/units.yaml)');
-    expect(again).toContain('flag e7_order is declared twice (acts/*/flags.yaml)');
+    expect(again).toContain('flag e07 is declared twice (acts/*/flags.yaml)');
   });
 
   it('allows a node of a later act whose map is not built yet, never in act 1', () => {

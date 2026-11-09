@@ -4,7 +4,7 @@ import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, ObjectState } from '../state';
 import { active, dist, inBounds, isHostile, neighbors, onMap, posKey, samePos, terrainAt, unitAt } from '../util';
 import { usableStaves, usableWeapons, weaponProfile } from './items';
-import { ballistaRange, ballistasOf, canCrew, firesBallista } from './ballistaBase';
+import { ballistasOf, canCrew, crewRange, firesBallista } from './ballistaBase';
 import { ladderBetween, laddersOf } from '../ladders';
 import { classActionId } from './roles';
 import { computeStats } from './stats';
@@ -342,7 +342,7 @@ export function threatTiles(data: GameData, s: BattleState, unit: BattleUnit, ig
   }
   // a crew beside a ballista reaches what the ballista reaches (story 11.6)
   if (siege)
-    for (const c of crewSpots(data, s, unit, ignoreMove, dests)) for (const t of strikeTiles(data, s, unit, c.ballista.at, ballistaRange(data), target)) out.add(posKey(t));
+    for (const c of crewSpots(data, s, unit, ignoreMove, dests)) for (const t of strikeTiles(data, s, unit, c.ballista.at, crewRange(data, s, unit, c.from), target)) out.add(posKey(t));
   return out;
 }
 

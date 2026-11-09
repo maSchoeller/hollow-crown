@@ -3,7 +3,7 @@
  * --chain spielt die Missionen vor der Zielkarte auf einer anderen Stufe (Schwer-Ziel mit Normal-Kette, damit genug Läufe ankommen).
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts] [--action-s 12]
- * pnpm sim --campaign act2 [dieselben] [--start expected] [--position k] [--order m2_3,m2_6] [--flags e7_warned] [--map-file <pfad> [--node m2_4]]
+ * pnpm sim --campaign act2 [dieselben] [--start expected] [--position k] [--order m2_3,m2_6] [--flags e07=warn] [--map-file <pfad> [--node m2_4]]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
  * --flag setzt vor dem Kampf ein Kampagnen-Flag (mehrfach möglich; Wert true, wenn nur der Name steht), --leave nimmt Begleiter aus der Truppe:
  *   so lassen sich die Zweige einer Entscheidung simulieren, z. B. Mission 1-4 mit „ausliefern“: `--flag e02=hand_over --leave fenn`
@@ -20,7 +20,7 @@
  * --position k      setzt P des Zielknotens (--node, sonst der Knoten von --map-file bzw. der erste Story-Knoten von Akt 2 ohne Karte)
  *                   auf k; die übrigen Knoten folgen (positionLevel.base wird nur für diesen Aufruf verschoben).
  * --order a,b       Reihenfolge innerhalb der Paare: sind mehrere Story-Knoten offen, kommen die genannten zuerst (sonst Dateireihenfolge).
- * --flags a=b,c     setzt Kampagnen-Flags zu Beginn jedes Laufs (Ausgang einer Entscheidung, z. B. --flags e7_warned); ohne Wert = true,
+ * --flags a=b,c     setzt Kampagnen-Flags zu Beginn jedes Laufs (Ausgang einer Entscheidung, z. B. --flags e07=warn für E7 „warnen“); ohne Wert = true,
  *                   der Name muss im Flag-Register stehen.
  * --map-file <pfad> spielt eine Karten-YAML (z. B. tests/fixtures/maps/dev_eisenmark.yaml) als Knoten von Akt 2: am Knoten mit ihrer
  *                   Karten-Id, sonst an --node (Standard: erster Story-Knoten ohne Karte). Akt 2 bleibt dabei unveröffentlicht.

@@ -21,3 +21,22 @@ node.m2_8.title: "Kronfeld"
 node.n4.title: "Der Clan im Schnee"
 node.n5.title: "Glut unter dem Berg"
 node.n6.title: "Die Gauklertruppe"
+
+# Story 11.5: Leutnants von Akt 2 (Namen, Titel, Fraktionen)
+unit.rowena.name: "Dame Rowena"
+unit.brakka.name: "Brakka"
+unit.grell.name: "Kapitän Grell"
+lt.rowena.title: "Ritterin der Silbernen Lanze"
+lt.brakka.title: "Ballistenmeisterin der Meistbietenden"
+lt.grell.title: "Kaperkapitän des Hauses Silbermeer"
+lt.sable.title: "Hauptfrau des Grenzheers"
+faction.silver_lance.name: "Silberne Lanze"
+faction.free_blades.name: "Freie Klingen"
+faction.silver_sea.name: "Haus Silbermeer"
+faction.iron_march.name: "Grenzheer der Eisenmark"
+
+# Story 11.5: Gegner der vorläufigen Heimsuchungs-Pools von Akt 2 (11.7 legt sie fest)
+unit.border_soldier.name: "Grenzsoldat"
+unit.lance_squire.name: "Lanzenknecht"
+unit.privateer.name: "Kaperfahrer"
+unit.free_blade.name: "Freie Klinge"

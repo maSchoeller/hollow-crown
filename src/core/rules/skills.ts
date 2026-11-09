@@ -125,6 +125,8 @@ export function conditionMet(data: GameData, c: SkillCondition | undefined, ctx:
     const range = c.allyDownedWithin;
     if (!s.units.some((o) => o.uid !== bu.uid && o.downed && onMap(o) && isAlly(o.team, bu.team) && dist(o.pos!, pos) <= range)) return false;
   }
+  // Brakka (story 11.5): a ballista stands on a neighbouring tile
+  if (c.besideBallista && (!s || !pos || !s.objects.some((o) => o.type === 'ballista' && dist(o.at, pos) === 1))) return false;
   return true;
 }
 
@@ -175,6 +177,8 @@ export interface SkillTotals {
   /** the guard chance this unit gives each neighbour (Bollwerk) */
   guardNeighbors: number;
   ignoreGrief: boolean;
+  /** extra reach of a ballista this unit fires (story 11.5) */
+  siegeRange: number;
   /** statuses a landed fight inflicts (`statusOnHit` of on_hit skills) */
   statusOnHit: Array<{ status: StatusId; chance: number }>;
   procs: Array<{ skill: string; chance: number; effect: SkillDef['effect'] }>;
@@ -209,6 +213,7 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     cheerTargets: 0,
     guardNeighbors: 0,
     ignoreGrief: false,
+    siegeRange: 0,
     statusOnHit: [],
     procs: [],
     used: [],
@@ -253,6 +258,7 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     t.cheerTargets = Math.min(2, Math.max(t.cheerTargets, e.cheerTargets ?? 0));
     t.guardNeighbors = Math.max(t.guardNeighbors, e.guardNeighbors ?? 0);
     if (e.ignoreGrief) t.ignoreGrief = true;
+    t.siegeRange = Math.max(t.siegeRange, e.siegeRangeBonus ?? 0);
     if (e.statusOnHit) t.statusOnHit.push(e.statusOnHit);
     if (
       e.stats ||
