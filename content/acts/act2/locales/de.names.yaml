@@ -53,3 +53,7 @@ map.m2_1_windscharte.name: "Die Windscharte"
 map.m2_2_salzpass.name: "Der Salzpass"
 unit.smuggler.name: "Schmuggler"
 unit.kharesh_scout.name: "Kundschafter aus Kharesh"
+# Story 11.21: Nebenquest N5 (Karte und Gegner der Mine)
+map.n5_kupfermine.name: "Die Kupfermine"
+unit.duchess_looter.name: "Plünderer der Herzogin"
+unit.foreman.name: "Vorarbeiter"

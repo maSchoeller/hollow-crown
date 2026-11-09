@@ -53,3 +53,7 @@ map.m2_1_windscharte.name: "The Wind Gap"
 map.m2_2_salzpass.name: "The Salt Pass"
 unit.smuggler.name: "Smuggler"
 unit.kharesh_scout.name: "Kharesh Scout"
+# Story 11.21: side quest N5 (map and foes of the mine)
+map.n5_kupfermine.name: "The Copper Mine"
+unit.duchess_looter.name: "Duchess's Looter"
+unit.foreman.name: "Foreman"
