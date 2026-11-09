@@ -1,0 +1,24 @@
+# Mission 2-6, Beweis auf der Felsnase (Trigger t_proof, Story 11.17): die erste eigene Figur dort sieht Dravns Prägung auf dem Bandengold.
+# Nach E7 warn belastet Sable Dravn aus der Truppe (Epic 11.17), sonst erkennt Lucan die Prägung. Kampfszene ohne Antworten.
+id: scn.m2_6.gold_proof
+lines:
+  - id: l01
+    mood: neutral
+    text: "Auf der Felsnase stehen offene Kisten. In jede Münze ist der Hammer der Eisenmark geprägt."
+  - id: l02
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: { e07: warn } }]
+    mood: angry
+    text: "Dravns Sold, aus seiner eigenen Kasse. Solche Kisten habe ich selbst gezählt und versiegelt."
+  - id: l03
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: { e07: warn } }]
+    mood: angry
+    text: "Er bezahlte die Banden, die sein eigenes Land plünderten. Das bezeuge ich vor jedem Gericht."
+  - id: l04
+    speaker: [lucan]
+    requires: [{ not: { flag: { e07: warn } } }]
+    mood: angry
+    text: "Grenzheer-Sold. Dravn bezahlt die Banden, und das Silbermeer fährt das Gold zu ihnen."

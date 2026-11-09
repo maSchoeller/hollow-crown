@@ -1,0 +1,33 @@
+# Mission 2-6, auf dem Rückweg (Knoten epilogues, Story 11.17): nur nach E7 warn ein von Drachenschatten verbranntes Dorf (Beat 9; narrative
+# decision-log 2026-10-31). Bei obey brannte schon Brandhang, dann entfällt die Szene (nie zwei brennende Dörfer).
+# Ein eigenes Ortsbild gibt es nicht: Hintergrund ist das vorhandene brandhang [ASSUMPTION F4 der Story].
+# Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
+id: scn.m2_6.burnt_village
+background: brandhang
+lines:
+  - id: l01
+    mood: neutral
+    text: "Auf dem Rückweg über die Möwenzunge riecht es nach Rauch. Ein Dorf am Hang ist nur noch Asche."
+  - id: l02
+    mood: neutral
+    text: "Keine Fackelspuren, keine Stiefelabdrücke. Die Dächer sind von oben eingebrochen, wie unter großer Hitze."
+  - id: l03
+    speaker: [mira, brenna, avatar]
+    mood: sad
+    text: "Hier hat niemand gekämpft. Hier ist einfach alles verbrannt, auf einmal."
+  - id: l04
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Brandhang haben wir gewarnt, und trotzdem brennt ein Dorf. Das war nicht Dravn."
+  - id: l05
+    mood: neutral
+    text: "Hoch über den Wolken zieht ein Schatten nach Osten, größer als jedes Schiff. Dann ist der Himmel leer."
+  - id: l06
+    speaker: [lucan]
+    mood: sad
+    text: "Drachenschatten. Die Alten haben davon erzählt. Ich habe es nie geglaubt."
+  - id: l07
+    speaker: [liora, ysolde, avatar]
+    mood: neutral
+    text: "Wir erzählen es in der Burg. Was immer das war, es kommt wieder."

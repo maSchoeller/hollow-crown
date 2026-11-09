@@ -1,0 +1,10 @@
+# Mission 2-6, Warnung zu Beginn der Spielerphase von Runde 8 (Trigger t_flood_warn, Story 11.17): in Runde 9 ist die Sandbank wieder Wasser.
+id: scn.m2_6.flood_warn
+lines:
+  - id: l01
+    mood: neutral
+    text: "Draußen rollt die erste Welle heran. Bald ist die Sandbank wieder Meer."
+  - id: l02
+    speaker: [nell, lucan]
+    mood: angry
+    text: "Die Flut kommt! Wer noch auf der Sandbank steht, muss jetzt hinüber oder zurück."

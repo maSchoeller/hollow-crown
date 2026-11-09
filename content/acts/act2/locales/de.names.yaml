@@ -38,6 +38,8 @@ faction.iron_march.name: "Grenzheer der Eisenmark"
 # Gegner von Akt 2 auf Karten und in Heimsuchungen (Story 11.5, festgelegt in 11.7)
 unit.border_soldier.name: "Grenzsoldat"
 unit.border_captain.name: "Hauptmann des Grenzheers"
+unit.smuggler.name: "Schmuggler"
+unit.maelis.name: "Herzogin Maelis"
 unit.lance_squire.name: "Lanzenknecht"
 unit.privateer.name: "Kaperfahrer"
 unit.free_blade.name: "Freie Klinge"
@@ -50,3 +52,4 @@ unit.dravn_envoy.name: "Bote des Grenzheers"
 # Story 11.12: Mission 2-1 (Karte)
 map.m2_1_windscharte.name: "Die Windscharte"
 map.m2_5_silberquell.name: "Kloster Silberquell"
+map.m2_6_kraehenholm.name: "Krähenholm"

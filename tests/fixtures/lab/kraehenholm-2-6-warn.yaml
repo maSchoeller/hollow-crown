@@ -1,0 +1,7 @@
+# Story 11.17: Mission 2-6 nach E7 warn: auf der Felsnase steht der Hauptmann des Grenzheers statt Sable (Sichtprüfung).
+#   pnpm lab kraehenholm-2-6-warn
+#   im Dev-Build: await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('kraehenholm-2-6-warn')
+question: Wer übergibt das Gold, wenn Sable bei E7 gewechselt hat?
+map: m2_6_kraehenholm
+company: expected
+flags: { e07: warn }

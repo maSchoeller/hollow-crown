@@ -1,0 +1,7 @@
+# Story 11.17: Mission 2-6 „Gold für Banditen“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812).
+#   pnpm lab kraehenholm-2-6                     Lage zu Beginn (Sable auf der Felsnase; Hauptmann statt Sable: kraehenholm-2-6-warn)
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('kraehenholm-2-6')
+question: Wie sieht Krähenholm zu Beginn aus?
+map: m2_6_kraehenholm
+company: expected
