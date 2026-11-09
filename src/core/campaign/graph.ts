@@ -78,6 +78,17 @@ export function nodeScenes(data: GameData, c: CampaignState | null, nodeId: stri
 }
 
 /**
+ * The node's epilogues (story 11.17) whose conditions hold now: read after the scene before them has ended, so an answer
+ * given there counts. Empty for a node without any.
+ */
+export function nodeEpilogues(data: GameData, c: CampaignState | null, nodeId: string): string[] {
+  const n = findNode(data, nodeId);
+  if (!n?.epilogues?.length) return [];
+  const ctx = conditionContext(data, c);
+  return n.epilogues.filter((e) => evalConditions(ctx, e.requires)).map((e) => e.scene);
+}
+
+/**
  * Mechanics not introduced yet when a mission starts (GDD gestaffelte Regeln): a mechanic applies once the act has
  * as many completed story missions as `mechanics` names; unlisted mechanics are always on.
  */

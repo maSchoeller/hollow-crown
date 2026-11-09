@@ -143,6 +143,8 @@ export const campaignSchema = z.object({
       requires: conditionsListSchema.optional(),
       memorialIf: conditionSchema.optional(),
       memorial: z.object({ pre: z.string().optional(), post: z.string().optional() }).optional(),
+      // story 11.17: scenes after post on the way back, each under its own conditions
+      epilogues: z.array(z.strictObject({ scene: z.string(), requires: conditionsListSchema.optional() })).optional(),
       place: z.string().optional(),
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1).optional(),
