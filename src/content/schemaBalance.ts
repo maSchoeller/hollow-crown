@@ -98,6 +98,7 @@ export const balanceSchema = z.object({
     roleBonus: z.record(z.string(), z.number().int().min(0)),
     moveTypeBonus: z.partialRecord(moveType, z.number().int().min(0)),
     blockers: z.array(z.string()),
+    levelBonus: z.number().int().min(0),
   }),
   rally: z.record(z.string(), z.number()),
   classActions: z.object({

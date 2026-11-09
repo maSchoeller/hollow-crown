@@ -84,8 +84,8 @@ afterEach(() => {
 });
 
 describe('fog numbers come from balance.yaml', () => {
-  it('has base 3, +2 for marksman and scout, +1 for fliers, and the blockers wall, door and rockwall', () => {
-    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'gate_closed', 'rockwall'] });
+  it('has base 3, +2 for marksman and scout, +1 for fliers, +2 per height level, and the blockers wall, door and rockwall', () => {
+    expect(data.balance.fog).toEqual({ baseVision: 3, roleBonus: { marksman: 2, scout: 2 }, moveTypeBonus: { flier: 1 }, blockers: ['wall', 'door', 'gate_closed', 'rockwall'], levelBonus: 2 });
   });
   it('keeps the bonus keys to roles and terrain that exist (content:check)', () => {
     expect(validateContent(data, locales).filter((i) => i.file === 'balance.yaml' && /fog\./.test(i.message))).toEqual([]);
@@ -96,10 +96,10 @@ describe('vision radius', () => {
   const s = () => arena();
   it('is 3 for a vanguard, 5 for a marksman and a scout, 4 for a flier', () => {
     const st = s();
-    expect(visionRadius(data, place(st, 'player', 'vanguard', [1, 1]))).toBe(3);
-    expect(visionRadius(data, place(st, 'player', 'marksman', [1, 2]))).toBe(5);
-    expect(visionRadius(data, place(st, 'player', 'scout', [1, 3]))).toBe(5);
-    expect(visionRadius(data, place(st, 'player', 'pegasus_knight', [1, 4]))).toBe(4);
+    expect(visionRadius(data, st, place(st, 'player', 'vanguard', [1, 1]))).toBe(3);
+    expect(visionRadius(data, st, place(st, 'player', 'marksman', [1, 2]))).toBe(5);
+    expect(visionRadius(data, st, place(st, 'player', 'scout', [1, 3]))).toBe(5);
+    expect(visionRadius(data, st, place(st, 'player', 'pegasus_knight', [1, 4]))).toBe(4);
   });
   it('does not stack: the highest bonus counts (a flying scout sees 5, not 6)', () => {
     const st = s();
@@ -108,7 +108,22 @@ describe('vision radius', () => {
     const was = cls.moveType;
     cls.moveType = 'flier';
     restore.push(() => (cls.moveType = was));
-    expect(visionRadius(data, u)).toBe(5);
+    expect(visionRadius(data, st, u)).toBe(5);
+  });
+  it('sees farther from higher ground: levelBonus per height level of the own tile (story 11.20, Felsnase)', () => {
+    const st = s();
+    setTile(st, [2, 2], 'crag');
+    setTile(st, [4, 4], 'terrace');
+    expect(visionRadius(data, st, place(st, 'player', 'vanguard', [2, 2]))).toBe(3 + 2 * 2);
+    expect(visionRadius(data, st, place(st, 'player', 'vanguard', [4, 4]))).toBe(3 + 2);
+    expect(visionRadius(data, st, place(st, 'player', 'marksman', [6, 6]))).toBe(5);
+  });
+  it('adds the highest visionBonus of the active skills: the bow Weißwolf (story 11.20)', () => {
+    const st = s();
+    const u = place(st, 'player', 'marksman', [6, 6], 'white_wolf');
+    expect(visionRadius(data, st, u)).toBe(5 + 3);
+    setTile(st, [6, 6], 'crag');
+    expect(visionRadius(data, st, u)).toBe(5 + 4 + 3);
   });
   it('sees a diamond of tiles on open ground: 25 for radius 3, 61 for radius 5', () => {
     const st = s();
