@@ -252,6 +252,8 @@ export interface CampaignState {
   version: number;
   /** the act the company is in (story 11.1): starts at 1, `finishMission` raises it after an act's finale; saves before it hold none (= 1) */
   act: number;
+  /** the highest act whose title card was shown (story 11.3): the world map shows it once when `act` is higher; starts at 1 */
+  actTitleSeen: number;
   seed: number;
   rng: RngState;
   settings: BattleSettings;

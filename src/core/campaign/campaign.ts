@@ -28,6 +28,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
   const c: CampaignState = {
     version: SAVE_VERSION,
     act: 1,
+    actTitleSeen: 1,
     seed,
     rng: seedRng(seed ^ 0x5eed),
     settings: clone(settings),
@@ -92,6 +93,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     ...rest,
     // story 11.1: saves from before the acts are in act 1 (the move on is caught up below)
     act: c.act ?? 1,
+    // story 11.3: the title card of act 1 is never shown (the prologue opens it); older saves have seen none since
+    actTitleSeen: (c as Partial<CampaignState>).actTitleSeen ?? 1,
     // format 2 as the PoC wrote it kept a list of flag names
     flags: Array.isArray(old.flags) ? Object.fromEntries((old.flags as string[]).map((f) => [f, true as const])) : c.flags,
     left: old.left ?? [],

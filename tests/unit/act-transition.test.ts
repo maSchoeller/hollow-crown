@@ -73,10 +73,12 @@ beforeAll(() => {
 });
 
 describe('content of the acts', () => {
-  it('loads the campaign of every act folder; act 2 holds its head and no nodes yet', () => {
+  it('loads the campaign of every act folder; act 2 holds its head and placeholder nodes without maps (story 11.3)', () => {
     expect(Object.keys(data.acts).map(Number)).toEqual([1, 2]);
     const a2 = data.acts[2]!;
-    expect(a2).toMatchObject({ act: 2, levelCap: 20, mechanics: {}, home: 'castle', defaultPlace: 'grauwacht', nodes: [] });
+    expect(a2).toMatchObject({ act: 2, levelCap: 20, mechanics: {}, home: 'castle', defaultPlace: 'grauwacht' });
+    expect(a2.nodes.map((n) => n.id)).toEqual(['m2_1', 'm2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8', 'n4', 'n5', 'n6']);
+    for (const n of a2.nodes) expect(data.maps[n.map], n.id).toBeUndefined();
     expect(a2.scars).toEqual(data.acts[1]!.scars);
     expect(a2.merchant.map((m) => m.tier)).toEqual([0]);
   });

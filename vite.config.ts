@@ -17,8 +17,8 @@ const packs = packsPlugin();
  * app's instance) and the YAML transform.
  */
 function workerPlugins(): Plugin[] {
-  const { buildStart, resolveId, load } = packsPlugin();
-  return [{ name: 'hc-packs-worker', enforce: 'pre', buildStart, resolveId, load } as Plugin, yamlPlugin()];
+  const { configResolved, buildStart, resolveId, load } = packsPlugin();
+  return [{ name: 'hc-packs-worker', enforce: 'pre', configResolved, buildStart, resolveId, load } as Plugin, yamlPlugin()];
 }
 
 /** Compiles content YAML to JSON modules at build time (content is validated by Zod at load). */

@@ -75,12 +75,23 @@ export function readRenames(root: string): Renames {
   return existsSync(file) ? renamesSchema.parse(parse(readFileSync(file, 'utf8')) ?? {}) : {};
 }
 
+/**
+ * The developer switch (story 11.3): on the dev server, the packs named in `VITE_HC_PACKS` (comma list, e.g. `act2` from
+ * `.env.act2` via `pnpm dev:act2`) count as released, so an act that players do not get yet can be played locally. `vite build`
+ * never reads it: what reaches players is decided by `released` in packs.yaml alone.
+ */
+export function withDevPacks(packs: readonly PackDef[], list: string | undefined): PackDef[] {
+  const ids = new Set((list ?? '').split(',').map((s) => s.trim()).filter(Boolean));
+  return packs.map((p) => (ids.has(p.id) ? { ...p, released: true } : p));
+}
+
 export interface PacksPlugin extends Plugin {
   /** dist paths that belong to a pack other than core (filled after the build) */
   nonCorePaths(): ReadonlySet<string>;
 }
 
 export function packsPlugin(root = process.cwd()): PacksPlugin {
+  let devPacks: string | undefined;
   let packs: PackDef[] = readPacks(root);
   let outDir = join(root, 'dist');
   const released = () => packs.filter((p) => p.released);
@@ -124,10 +135,13 @@ export function packsPlugin(root = process.cwd()): PacksPlugin {
     enforce: 'pre',
     nonCorePaths: () => nonCore,
     configResolved(config) {
+      devPacks = config.command === 'serve' ? (config.env.VITE_HC_PACKS as string | undefined) : undefined;
+      if (devPacks) config.logger.info(`hc-packs: unreleased packs on for this dev server: ${devPacks}`);
+      packs = withDevPacks(readPacks(root), devPacks);
       outDir = config.build.outDir.startsWith('/') || /^[A-Za-z]:/.test(config.build.outDir) ? config.build.outDir : join(config.root, config.build.outDir);
     },
     buildStart() {
-      packs = readPacks(root);
+      packs = withDevPacks(readPacks(root), devPacks);
       chunkPack.clear();
       this.addWatchFile(join(root, 'content', 'packs.yaml'));
       this.addWatchFile(join(root, 'content', 'renames.yaml'));

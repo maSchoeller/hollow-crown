@@ -6,3 +6,18 @@ unit.amos.name: "Amos"
 unit.nell.name: "Nell"
 unit.brann.name: "Brann"
 unit.sable.name: "Sable"
+
+# Story 11.3: Titeltafel beim Erreichen von Akt 2 (kommt mit dem Paket, die Tafel wartet darauf)
+act.2.title: "Act 2 · Embers"
+# Titel der Knoten von Akt 2 (Platzhalter bis zu ihrer Missions-Story; Titel aus concept/22-narrative/missionsliste-s1.md)
+node.m2_1.title: "Wind over the Eisenmark"
+node.m2_2.title: "The Seal in the Salt Pass"
+node.m2_3.title: "The Raven Pasture"
+node.m2_4.title: "The Firebreak"
+node.m2_5.title: "The Cast-Out Guard"
+node.m2_6.title: "Gold for Bandits"
+node.m2_7.title: "The Counting House on the Silver Sea"
+node.m2_8.title: "Kronfeld"
+node.n4.title: "The Clan in the Snow"
+node.n5.title: "Embers under the Mountain"
+node.n6.title: "The Troupe of Jugglers"

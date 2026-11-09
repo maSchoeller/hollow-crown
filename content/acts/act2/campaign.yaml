@@ -16,7 +16,21 @@ home: castle
 startGold: 0
 defaultPlace: grauwacht
 startConvoy: []
-nodes: []
+# Knoten von Akt 2 (Story 11.3): Platzhalter, deren Karte noch nicht gebaut ist; die Weltkarte bietet sie nicht an (mapInBuild),
+# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], ebenso die Folge der
+# Missionsliste in requires: 11.11 prüft sie und ergänzt die Bedingungen der Nebenquests (Ilka bzw. Jory in der Truppe).
+nodes:
+  - { id: m2_1, fixed: first, map: m2_1_windscharte, titleKey: node.m2_1.title, place: windscharte, merchantTier: 0 }
+  - { id: m2_2, map: m2_2_salzpass, titleKey: node.m2_2.title, requires: [{ completed: m2_1 }], place: salzpass, merchantTier: 0 }
+  - { id: m2_3, map: m2_3_rabenweide, titleKey: node.m2_3.title, requires: [{ completed: m2_1 }], merchantTier: 0 }
+  - { id: m2_4, map: m2_4_brandschneise, titleKey: node.m2_4.title, requires: [{ completed: m2_2 }, { completed: m2_3 }], place: brandschneise, merchantTier: 0 }
+  - { id: m2_5, map: m2_5_silberquell, titleKey: node.m2_5.title, requires: [{ completed: m2_4 }], merchantTier: 0 }
+  - { id: m2_6, map: m2_6_kraehenholm, titleKey: node.m2_6.title, requires: [{ completed: m2_4 }], place: kraehenholm, merchantTier: 0 }
+  - { id: m2_7, map: m2_7_kontor, titleKey: node.m2_7.title, requires: [{ completed: m2_5 }, { completed: m2_6 }], place: kontor, merchantTier: 0 }
+  - { id: m2_8, fixed: finale, map: m2_8_kronfeld, titleKey: node.m2_8.title, requires: [{ completed: m2_7 }], place: kronfeld, merchantTier: 0 }
+  - { id: n4, kind: side, map: n4_clanlager, titleKey: node.n4.title, requires: [{ completed: m2_3 }], place: clanlager, merchantTier: 0 }
+  - { id: n5, kind: side, map: n5_kupfermine, titleKey: node.n5.title, requires: [{ completed: m2_4 }], place: kupfermine, merchantTier: 0 }
+  - { id: n6, kind: side, map: n6_auemarkt, titleKey: node.n6.title, requires: [{ completed: m2_7 }], place: auemarkt, merchantTier: 0 }
 # Händler von Akt 2 [ASSUMPTION]: Stufe 0 aus vorhandenen Teilen (Stahl, Heilung, Rüstung); Stufen 1 und 2 mit dem Stahl-Tier (11.7 ff.)
 merchant:
   - tier: 0

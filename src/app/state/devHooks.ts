@@ -185,6 +185,23 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'worldmap' };
       },
       /**
+       * the start of the next act (story 11.3): an throwaway campaign with every story node of act 1 done, in act 2 (castle home),
+       * the title card not seen yet, on the world map. Needs act 2 in the build: `pnpm dev:act2`. `seen = true` skips the card.
+       */
+      devActStart: (seen = false) => {
+        if (!data.releasedActs?.includes(2)) return console.warn('[dev] act 2 is not in this build: start the dev server with pnpm dev:act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { ...c.home, kind: 'castle' };
+        c.act = 2;
+        c.actTitleSeen = seen ? 2 : 1;
+        // a throwaway campaign like devNode: saving is switched off (QA note B22)
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'worldmap' };
+      },
+      /**
        * a lieutenant changes sides (story 3.7): `devJoin(view, full)` with view `card` (default: plays a test decision whose answer is
        * `recruit: { lt: grosk }` and shows the consequence card), `troop` (applies the effect, opens his figure), `wanted` (the list of
        * wanted posters with the mark "In der Truppe"), `map` or `camp` (the world map with the army-limit notice and the locked buttons /

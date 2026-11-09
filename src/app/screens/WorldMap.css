@@ -79,6 +79,15 @@
   height: 100%;
   color: var(--hc-fog);
 }
+/* story 11.3: the fog of the act before lifts after the title card of a new act (duration from render.yaml fogLiftMs) */
+.wm__fog--lift {
+  opacity: 1;
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+}
+.wm__fog--lift.is-lifting {
+  opacity: 0;
+}
 .wm__world {
   position: absolute;
   left: 0;

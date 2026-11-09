@@ -55,9 +55,6 @@ let running = false;
 let manifest: PacksManifest | null = null;
 let wake: (() => void) | null = null;
 
-/** Act whose packs should be on the device (the content of the running build knows one act so far). */
-const reachedAct = (): number => actOf(campaign.value);
-
 function enqueue(id: string, first = false): void {
   if (isPackRegistered(id) || queue.includes(id)) {
     if (first && queue.includes(id)) queue.splice(0, 0, ...queue.splice(queue.indexOf(id), 1));
@@ -149,10 +146,19 @@ export function afterPrepare(): Promise<void> {
 /** Whether this build has a pack for the act after the campaign's (story 7.3); false = the next act is "coming soon". */
 export const nextActInBuild = (): boolean => hasPackForAct(packList, actOf(campaign.value) + 1);
 
-/** Starts the background download of every pack the campaign has reached (call once at start-up). */
+/**
+ * Starts the background download of every pack the campaign has reached (call once at start-up), and again whenever the
+ * campaign reaches a new act (story 11.3: the next act's pack loads right after the move, not only at the next start).
+ */
 export async function startPacks(): Promise<void> {
   await afterPrepare();
-  for (const p of duePacks(packList, reachedAct(), settings.value.lang)) enqueue(p.id);
+  let act = 0;
+  campaign.subscribe((c) => {
+    const now = actOf(c);
+    if (now === act) return;
+    act = now;
+    for (const p of duePacks(packList, now, settings.value.lang)) enqueue(p.id);
+  });
 }
 
 /** "Erneut versuchen": the waiting pack tries again now instead of after its pause. */

@@ -196,7 +196,7 @@ development_status:
   epic-11: in-progress
   11-1-akt-uebergang-und-spielstand: review  # Akt-Übergang und Spielstand
   11-2-positionsstufe-der-akt-2-missionen: review  # Positionsstufe der Akt-2-Missionen
-  11-3-paket-act2-weltkarte-und-titeltafel: backlog  # Paket act2, Weltkarte und Titeltafel
+  11-3-paket-act2-weltkarte-und-titeltafel: review  # Paket act2, Weltkarte und Titeltafel
   11-4-simulation-ueber-akte: backlog  # Simulation über Akte
   11-5-gefaehrten-leutnants-und-flags-von-akt-2: backlog  # Gefährten, Leutnants und Flags von Akt 2
   11-6-balliste: review  # Balliste

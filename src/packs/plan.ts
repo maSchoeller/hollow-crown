@@ -61,11 +61,13 @@ export interface PackMeta {
 
 /**
  * Packs that should be on the device: background packs of every act reached so far, then the voice packs of those acts
- * in the chosen language (after their act pack, by order). Core comes with the service worker and is never listed.
+ * in the chosen language (after their act pack). Both by act, earliest first, whatever their order in packs.yaml (story 11.3:
+ * act2 stands before act1 there so its pictures win over act1's globs). Core comes with the service worker and is never listed.
  */
 export function duePacks<P extends PackMeta>(packs: readonly P[], reachedAct: number, lang: string): P[] {
-  const acts = packs.filter((p) => p.load === 'background' && p.act <= reachedAct);
-  const voice = packs.filter((p) => p.load === 'voice' && p.act <= reachedAct && p.lang === lang);
+  const byAct = (a: P, b: P) => a.act - b.act;
+  const acts = packs.filter((p) => p.load === 'background' && p.act <= reachedAct).sort(byAct);
+  const voice = packs.filter((p) => p.load === 'voice' && p.act <= reachedAct && p.lang === lang).sort(byAct);
   return [...acts, ...voice];
 }
 

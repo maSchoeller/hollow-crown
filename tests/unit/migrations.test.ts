@@ -121,7 +121,8 @@ describe('stable IDs (architecture §5.16)', () => {
     const { data } = loadContentFromDisk();
     const got = collectIds(data);
     expect(got.chars).toContain('lucan');
-    expect(got.nodes).toEqual(['m1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6', 'm1_7', 'm1_8', 'n1', 'n2', 'n3', 'prologue']);
+    // act 2 is loaded on disk with its placeholder nodes (story 11.3); content:lock takes only released packs (releasedIdSets)
+    expect(got.nodes).toEqual(['m1_1', 'm1_2', 'm1_3', 'm1_4', 'm1_5', 'm1_6', 'm1_7', 'm1_8', 'm2_1', 'm2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'prologue']);
     expect(got.scenes).toContain('scn.prologue.intro');
     expect(collectIds(data, { maps: (m) => m.startsWith('prologue'), scenes: () => false }).maps).toEqual(['prologue_paktnacht']);
   });

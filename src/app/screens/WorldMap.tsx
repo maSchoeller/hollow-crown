@@ -16,14 +16,15 @@ import { Amount, Piece, PrimaryButton, SecondaryButton, Wallet } from '../../ui/
 import { audio } from '../audio';
 import { nodeShort } from '../campaignInfo';
 import { advanceToToday, playHaunt, playNode } from '../state/flow';
-import { loadingActPack, mapInBuild, nextActInBuild, packNeededFor } from '../state/packs';
+import { contentRevision, loadingActPack, mapInBuild, nextActInBuild, packNeededFor } from '../state/packs';
+import { ActTitle } from './ActTitle';
 import { BackupSheet } from './BackupSheet';
 import { PackRing, PackWait } from './PackStatus';
 import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { SaveSheet } from './SaveSheet';
 import { UnitHead } from './unitArt';
-import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, roadsOf, screenOf, siteImage, stepScale, stonesOf, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
+import { clampView, focusView, fogAreas, fogMask, homeAt, labelOf, levelFor, mapNotice, moreMissionsFollow, placeOf, roadsOf, screenOf, siteImage, stepScale, stonesOf, veilAreas, zoomAround, type Loaded, type MapView, type Screen } from './worldMapView';
 import './WorldMap.css';
 
 /** Where on the screen (share of the height) a chosen node comes to rest above the card, and the first view's node. */
@@ -109,7 +110,30 @@ export function WorldMap() {
     const n = h && storyNodeOf(data, h.map);
     return n ? (placeOf(world, n.id)?.at ?? home) : undefined;
   };
-  const fog = fogAreas(world, act);
+  // places with a stone (open or done): roads to them are full, and from act 2 the others stay under a fog patch (story 11.3)
+  const known = new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []));
+  const veils = veilAreas(world, act, known, conf.veil);
+  const fog = [...fogAreas(world, act), ...veils];
+  // story 11.3: the title card of a new act, once, as soon as the act's pack (which holds its title) is there; until it is
+  // closed the map keeps the fog of the act before, then that fog fades (`lift`)
+  void contentRevision.value;
+  const titleDue = act > c.actTitleSeen && !!data.acts[act];
+  const [lift, setLift] = useState<'title' | 'lifting' | null>(titleDue ? 'title' : null);
+  useEffect(() => {
+    if (titleDue && lift === null) setLift('title');
+  }, [titleDue]);
+  const closeTitle = () => {
+    if (lift !== 'title') return;
+    campaignCommand({ type: 'markActTitleSeen', act });
+    setLift('lifting');
+  };
+  // the fading fog goes when its transition ends; a fallback in case the browser skips it (reduced motion, hidden tab)
+  useEffect(() => {
+    if (lift !== 'lifting') return;
+    const done = window.setTimeout(() => setLift(null), conf.fogLiftMs * 2);
+    return () => window.clearTimeout(done);
+  }, [lift]);
+  const liftCanvas = useRef<HTMLCanvasElement>(null);
   // the level of the picture that is not upscaled at the nearest zoom on this screen (story 15.12); a bigger screen (rotation)
   // raises it, it never drops back
   const levelOf = (scr: Screen) => levelFor(world, scr, conf, window.devicePixelRatio || 1);
@@ -118,19 +142,24 @@ export function WorldMap() {
   // without a sharp level the overview alone decides the notice
   const notice = mapNotice(loaded, sharpSrc ? sharp : 'failed');
 
-  // the fog of later acts: a small mask from the areas, drawn once per act into a canvas stretched over the picture
-  const fogKey = act;
-  useEffect(() => {
-    const cv = fogCanvas.current;
+  // the fog of later acts: a small mask from the areas, drawn once per act (and set of fog patches) into a canvas stretched over the picture
+  const drawFog = (cv: HTMLCanvasElement | null, areas: Array<Array<[number, number]>>) => {
     const g = cv?.getContext('2d');
     if (!cv || !g) return;
     const { px, blur, alpha } = conf.fog;
-    const m = fogMask(fog, px, blur);
+    const m = fogMask(areas, px, blur);
     const [r, gr, b] = cssColor(getComputedStyle(cv).color);
     const img = g.createImageData(px, px);
     for (let i = 0; i < m.length; i++) img.data.set([r, gr, b, Math.round(m[i]! * alpha * 255)], i * 4);
     g.putImageData(img, 0, 0);
-  }, [fogKey]);
+  };
+  const fogKey = `${act}|${veils.length}|${[...known].sort().join(',')}`;
+  useEffect(() => drawFog(fogCanvas.current, fog), [fogKey]);
+  // the fog of the act before, over the new act's map while the title card shows and while it fades
+  const liftOn = lift !== null;
+  useEffect(() => {
+    if (liftOn) drawFog(liftCanvas.current, fogAreas(world, act - 1));
+  }, [liftOn, act]);
   const conds = conditionContext(data, c);
   const stones = stonesOf(
     world,
@@ -394,6 +423,7 @@ export function WorldMap() {
           {world.places.map((p) => {
             if (!p.site) return null;
             const pic = siteImage(p, conds, missingSites);
+            if (pic === 'none') return null;
             const foot = { left: `${p.site.foot[0]}%`, top: `${p.site.foot[1]}%` };
             return pic === null ? (
               <span key={p.id} class="wm-site wm-site--missing" style={foot}>
@@ -412,11 +442,22 @@ export function WorldMap() {
             );
           })}
           {fog.length > 0 && <canvas class="wm__fog" ref={fogCanvas} width={conf.fog.px} height={conf.fog.px} aria-hidden="true" />}
+          {liftOn && (
+            <canvas
+              class={`wm__fog wm__fog--lift ${lift === 'lifting' ? 'is-lifting' : ''}`}
+              style={{ transitionDuration: `${conf.fogLiftMs}ms` }}
+              ref={liftCanvas}
+              onTransitionEnd={() => setLift(null)}
+              width={conf.fog.px}
+              height={conf.fog.px}
+              aria-hidden="true"
+            />
+          )}
         </div>
         <div class="wm__world" ref={layer}>
           <svg class="wm__paths" ref={paths} aria-hidden="true">
             {/* the road network (story 15.12): the geography, not the campaign order; dimmed towards places not unlocked yet */}
-            {roadsOf(world, act, new Set(shown.flatMap((n) => placeOf(world, n.id)?.id ?? []))).map((r) => (
+            {roadsOf(world, act, known).map((r) => (
               <g key={r.key} class={`wm__road wm__road--${r.kind}${r.dim ? ' is-dim' : ''}`}>
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path wm__path--edge" />
                 <line data-a={ends(r.a)} data-b={ends(r.b)} class="wm__path" />
@@ -575,6 +616,7 @@ export function WorldMap() {
           </>
         )}
       </div>
+      {lift === 'title' && <ActTitle act={act} onDone={closeTitle} />}
       {backupDue && !saving && <BackupSheet />}
       {saving && <SaveSheet onClose={() => setSaving(false)} onToast={setToast} />}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}

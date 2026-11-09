@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { checkPackProps, checkPacks, globToRegExp, groupByPack, matchesGlob, packOf, parsePacks, type PackDef } from '../../src/content/packs';
 import { contentFiles, loadContentFromDisk } from '../../src/content/node';
-import { builtPack, contentByPack } from '../../tools/build/packs-plugin';
+import { builtPack, contentByPack, withDevPacks } from '../../tools/build/packs-plugin';
 
 const realPacks = parsePacks(parse(readFileSync(join(process.cwd(), 'content', 'packs.yaml'), 'utf8')));
 
@@ -56,7 +56,8 @@ describe('packOf', () => {
 
 describe('parsePacks', () => {
   it('reads content/packs.yaml with core first', () => {
-    expect(realPacks.map((p) => p.id)).toEqual(['core', 'act1', 'act2', 'voice.act1.de', 'voice.act1.en']);
+    // act2 before act1 (story 11.3): its pictures win over act1's `world/**`
+    expect(realPacks.map((p) => p.id)).toEqual(['core', 'act2', 'act1', 'voice.act1.de', 'voice.act1.en']);
     expect(realPacks.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act1']);
   });
   it('rejects a file without core first or with duplicate ids', () => {
@@ -136,5 +137,38 @@ describe('packs plugin helpers', () => {
     expect(a.bytes).toBe(8);
     expect(a.files.map((f) => f.path)).toEqual(['a', 'b']);
     expect(builtPack(pack('act1'), [{ path: 'a', hash: 'x', size: 3 }]).hash).not.toBe(a.hash);
+  });
+});
+
+describe('act packs in the build (story 11.3)', () => {
+  const byPack = contentByPack(process.cwd(), realPacks);
+  const released = new Set(realPacks.filter((p) => p.released).map((p) => p.id));
+
+  it('a file under acts/actN/ belongs to the pack of act N, so it is in the build only once actN is released', () => {
+    for (const [id, files] of byPack)
+      for (const f of files) {
+        const act = /^acts\/act(\d+)\//.exec(f)?.[1];
+        // the head files and the prologue of act 1 come with core (first download); every other act stays in its own pack
+        if (act && act !== '1') expect(id, f).toBe(`act${act}`);
+      }
+    // act 2 is not released before act 1 is (story 9.14): none of its files is in the build
+    expect(released.has('act2')).toBe(false);
+    expect((byPack.get('act2') ?? []).some((f) => f.startsWith('acts/act2/'))).toBe(true);
+    expect(byPack.get('act2')).toEqual(expect.arrayContaining(['acts/act2/campaign.yaml', 'acts/act2/locales/de.names.yaml']));
+  });
+
+  it('core and act1 take nothing of act 2, its pictures included (act2 stands before act1)', () => {
+    for (const id of ['core', 'act1']) expect((byPack.get(id) ?? []).filter((f) => /act2/.test(f)), id).toEqual([]);
+    for (const asset of ['world/sites/burnt_slope_burnt.webp', 'locations/windscharte.webp', 'locations/kronfeld.webp']) expect(packOf(realPacks, asset, 'assets').id, asset).toBe('act2');
+    // act 1 keeps its own pictures
+    for (const asset of ['world/sites/erlbach_burnt.webp', 'world/valmora.webp', 'locations/varnhold.webp', 'locations/paktwacht_heimat.webp']) expect(packOf(realPacks, asset, 'assets').id, asset).toBe('act1');
+    expect(packOf(realPacks, 'locations/lager_unterwegs.webp', 'assets').id).toBe('core');
+  });
+
+  it('the developer switch releases the named packs for the dev server only', () => {
+    expect(withDevPacks(realPacks, undefined)).toEqual(realPacks);
+    const dev = withDevPacks(realPacks, ' act2 ,nothing');
+    expect(dev.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act2', 'act1']);
+    expect(realPacks.find((p) => p.id === 'act2')!.released).toBe(false);
   });
 });

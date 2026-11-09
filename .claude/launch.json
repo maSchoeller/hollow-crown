@@ -2,6 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     { "name": "dev", "runtimeExecutable": "pnpm", "runtimeArgs": ["dev", "--port", "5173", "--strictPort"], "port": 5173 },
+    { "name": "dev-act2", "runtimeExecutable": "pnpm", "runtimeArgs": ["dev:act2", "--port", "5175", "--strictPort"], "port": 5175 },
     { "name": "preview", "runtimeExecutable": "pnpm", "runtimeArgs": ["preview", "--port", "4174", "--strictPort"], "port": 4174 }
   ]
 }
