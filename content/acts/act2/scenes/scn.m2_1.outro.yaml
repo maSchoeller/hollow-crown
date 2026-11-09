@@ -1,0 +1,108 @@
+# Mission 2-1, Szene nach der Karte (Knoten post, Story 11.12): Brakka zieht ab, sie wurde bezahlt (Auftraggeber ungenannt, PO 2026-11-09 F4 = A).
+# Die Angebote überbringen Lanzenreiter der Prinzessin ohne Rowena und ein Bote Dravns (F2 = A); seit PO 2026-11-09 sprechen beide selbst
+# mit eigener Halbfigur (Sprecher lance_rider und dravn_envoy, art/prompts/lance_rider.md und dravn_envoy.md);
+# Maelis noch nicht (Narrative §63, Epic 11).
+# Rhen antwortet mit einer Haltung (F1 = B): Antwort mit Titel und Folgen-Karte (Chronik), Wirkung nur die Haltung, kein Flag; beide Angebote
+# bleiben offen bis E5/E6. Lucans Satz danach folgt der vorherrschenden Haltung (Narrative „Branching“). Jory spricht nur, wenn er beigetreten ist.
+id: scn.m2_1.outro
+background: windscharte
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Wind legt sich. Die Freien Klingen ziehen die Ballisten von den Felsnasen."
+  - id: l02
+    speaker: [brakka]
+    fallback: skip
+    mood: neutral
+    text: "Die Zeit ist um. Bezahlt war der Pass bis heute Mittag, nicht länger."
+  - id: l03
+    speaker: [brakka]
+    fallback: skip
+    mood: neutral
+    text: "Der Scheitel gehört euch. Wer mehr zahlt, hat recht, und heute zahlt keiner mehr."
+  - id: l04
+    mood: neutral
+    text: "Aus der Ebene reiten Lanzenreiter herauf, Silber auf den Wimpeln: die Lanze der Prinzessin."
+  - id: l05
+    mood: neutral
+    text: "Dicht hinter ihnen ein einzelner Bote, das Zeichen des Grenzheers auf dem Umhang."
+  - id: l06
+    mood: neutral
+    text: "Beide Gruppen halten am Scheitel. Niemand legt die Hand an die Waffe. Ein Ritter senkt die Lanze zum Gruß."
+  - id: l07
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Ihre Hoheit Prinzessin Seraphine bietet Euch Freispruch an."
+  - id: l07b
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Gegen einen Auftrag. Das Nähere folgt, wenn Ihr annehmt."
+  - id: l08
+    speaker: [dravn_envoy]
+    fallback: skip
+    mood: neutral
+    text: "General Dravn bietet dem Aschenbanner Freispruch. Gegen einen Auftrag."
+  - id: l09
+    speaker: [lucan]
+    mood: angry
+    text: "Dravn. Den Namen kenne ich. Bei dem ist Freispruch nie umsonst."
+  - id: l10
+    mood: neutral
+    text: "Die Lanzenreiter warten mit gesenkten Spitzen, der Bote mit der Hand am Zügel. Beide wollen eine Antwort."
+  - id: l11
+    speaker: [brenna, tobin, avatar]
+    mood: happy
+    text: "Gestern noch Galgen, heute zwei Freisprüche. Ich glaub es erst, wenn ein Siegel drauf ist."
+  - id: l12
+    speaker: [jory]
+    fallback: skip
+    requires: [{ alive: jory }]
+    mood: happy
+    text: "Zwei Herren, zwei Angebote. Einer trägt Silber, der andere Staub. Mir gefällt keiner."
+  - id: l13
+    speaker: [lucan]
+    mood: neutral
+    text: "Du redest mit ihnen, {avatar}. Was sagen wir?"
+  - id: c01
+    title: "Zwei Angebote auf Freispruch"
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Habt Dank, beide. Wir kommen und hören uns an, was ihr verlangt.“"
+        summary: "Beide Angebote bleiben offen – mit Zuversicht"
+      - id: sober
+        stance: sober
+        text: "„Wir hören beide Aufträge an, bevor wir irgendwem etwas versprechen.“"
+        summary: "Beide Angebote bleiben offen – erst prüfen"
+      - id: defiant
+        stance: defiant
+        text: "„Das Aschenbanner kauft sich nicht frei. Freispruch hin oder her, wir entscheiden selbst.“"
+        summary: "Beide Angebote bleiben offen – auf eigene Art"
+  - id: lw1
+    speaker: [lucan]
+    requires: [{ stance: warm }]
+    mood: neutral
+    text: "Du glaubst noch an Leute, {avatar}. Gut. Pass nur auf, wer es verdient."
+  - id: ls1
+    speaker: [lucan]
+    requires: [{ stance: sober }]
+    mood: neutral
+    text: "Du rechnest wie ein Händler. Gut so, hier wird gefeilscht."
+  - id: ld1
+    speaker: [lucan]
+    requires: [{ stance: defiant }]
+    mood: neutral
+    text: "Du beugst dich nicht. Bleib so, aber reiß uns nicht mit."
+  - id: l13b
+    speaker: [lucan]
+    mood: neutral
+    text: "Zwei Herren, ein Aschenbanner. Wir gehen hinab."
+  - id: l14
+    mood: neutral
+    text: "Die Boten reiten voraus. Die Truppe steigt in die Eisenmark hinab."
+  - id: l15
+    mood: neutral
+    text: "Ein letzter Blick zum Himmel. Dort, wo der Schatten zog, ist nur noch grauer Wind."
