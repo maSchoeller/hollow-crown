@@ -1,0 +1,7 @@
+# Chronik-Seiten der Paktwächter in Akt 2 (Narrative „Found Documents“: 4 je Akt; Quellen N5 und je eine Truhe in 2-2, 2-4 und 2-7).
+# Je Seite: id, title, text (Deutsch); Englisch in content/locales/en/act2.chronicle.yaml unter chronicle.<id>.title|text.
+# Akt-2-Schwerpunkt: dass die Könige beim Paktfest etwas „gaben“. Die übrigen drei Seiten kommen mit 2-2, 2-4 und 2-7.
+# N5 „Glut unter dem Berg“ (Story 11.21): Truhe c_page im Ostgang der Kupfermine. Text Vorschlag (Schreib-Pipeline der Narrative) [ASSUMPTION].
+- id: a2_mine
+  title: "Was der Berg nimmt"
+  text: "Paktnacht unter dem Kupferberg. Der König stieg allein in die Halle der Rippen, mit der Glutkrone und leeren Händen. Er kam zurück, und die Krone glühte heller als zuvor. Er selbst war blasser. Er sagte, er habe gegeben, was der Pakt verlangt. Was es war, sagte er nicht. Ich habe es aufgeschrieben, damit einer fragt."
