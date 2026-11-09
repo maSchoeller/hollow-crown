@@ -163,7 +163,7 @@ damit der Akt neue Gesichter, Rivalen und Beute bringt.
 
 | ID | Klasse | Fraktion | Rolle | Signatur (neu, wo Flieger-Bezug) | Missionen |
 |---|---|---|---|---|---|
-| `rowena` | `knight` | `silver_lance` | Lanzenritterin, verteidigt ihr Gestüt | `silver_lance` statt `wing_lance` | 2-3, 2-8 |
+| `rowena` | `knight` | `silver_lance` | Lanzenritterin, verteidigt ihr Gestüt | `rowenas_lance` statt `wing_lance` (`silver_lance` bleibt die Silberlanze von Akt 3, Produktinhaber 2026-11-09) | 2-3, 2-8 |
 | `brakka` | `marksman` | `free_blades` | Ballistenmeisterin, Söldnerin | Bogen statt `wyvern_cleaver` | 2-1, 2-7, 2-8 |
 | `grell` | `skirmisher` | `silver_sea` | Kaperkapitän, Maelis' Schmuggler | `gold_hook` | 2-2, 2-4, 2-6, 2-8 |
 | `sable` | `duelist` | `iron_march` | Dravns Offizierin, `joins: true` | `dravns_oath` | 2-4 (ohne Kampf), 2-5, 2-6, 2-8 |
@@ -177,7 +177,7 @@ damit der Akt neue Gesichter, Rivalen und Beute bringt.
 
 **Angenommen** `content/acts/act2/flags.yaml`
 **Wenn** `content:check` läuft
-**Dann** sind alle Flags deklariert, bevor eine Missions-Story sie nutzt: `e05`, `e06`, `e07`, `e08`, `joined_sable`, `brandhang_burned`, `maelis_ledgers` (`season2: true`), `chronicle_read` (`season2: true`); die Platzhalter `e7_order`/`e7_warned` der Entwürfe sind auf `e07` umgestellt
+**Dann** sind alle Flags deklariert, bevor eine Missions-Story sie nutzt: `e05`, `e06`, `e07`, `e08`, `joined_sable`, `maelis_ledgers` (`season2: true`), `chronicle_read` (`season2: true`); die Platzhalter `e7_order`/`e7_warned` der Entwürfe sind auf `e07` umgestellt; Brandhang brennt allein über `e07: obey`, ohne eigenen Flag (Produktinhaber 2026-11-09)
 **Und** auf `dev_eisenmark` zeigen Steckbrief, Groll, Flucht und Kopfgeld die neuen Daten; Tests decken Beitrittsstufe und Groll-Fähigkeiten ab.
 
 ### Story 11.6: Balliste

@@ -170,12 +170,14 @@ describe('Brakka at the ballista', () => {
 
 describe('flag register of act 2', () => {
   it('declares every flag of the act before a mission uses it; the placeholders of the drafts are gone', () => {
-    const want = ['e05', 'e06', 'e07', 'e08', 'joined_sable', 'brandhang_burned', 'maelis_ledgers', 'chronicle_read', 'm2_2_seal'];
+    const want = ['e05', 'e06', 'e07', 'e08', 'joined_sable', 'maelis_ledgers', 'chronicle_read', 'm2_2_seal'];
     for (const f of want) expect(data.flags[f], f).toBeDefined();
     expect(data.flags.e07!.values).toEqual(['warn', 'obey']);
     expect(data.flags.maelis_ledgers!.season2).toBe(true);
     expect(data.flags.chronicle_read!.season2).toBe(true);
     expect(data.flags.e7_order).toBeUndefined();
     expect(data.flags.e7_warned).toBeUndefined();
+    // Brandhang burns over e07 obey alone (product owner 2026-11-09)
+    expect(data.flags.brandhang_burned).toBeUndefined();
   });
 });

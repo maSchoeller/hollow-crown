@@ -11,7 +11,7 @@
   model: rowena
   class: knight
   faction: silver_lance
-  signatureItem: silver_lance
+  signatureItem: rowenas_lance
   grudgeSkills: [lance_charge, silver_resolve, stud_ward]
   titleKey: lt.rowena.title
   scene: scn.lt.rowena

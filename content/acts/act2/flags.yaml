@@ -11,8 +11,6 @@
 - { id: e08, kind: decision, values: [seraphine, sell], season2: false }
 # Sable ist als Leutnantin übergelaufen (Wirkung recruit { lt: sable }, Story 3.7); Heimsuchungen und Kronfeld lesen es über isJoined
 - { id: joined_sable, kind: story, season2: true }
-# Brandhang ist abgebrannt (E7 obey); Szenen und Besuche der Folge-Missionen lesen es, die Weltkarte zeigt die Variante über e07 obey
-- { id: brandhang_burned, kind: story, season2: false }
 # Mission 2-7: die Geschäftsbücher des Hauses Silbermeer sind gesichert (Beweis gegen Maelis, wirkt in Staffel 2)
 - { id: maelis_ledgers, kind: story, season2: true }
 # Die versiegelte Chronik der Wächter ist gelesen (Akt 2, Beat 10; Chronik-Szene Story 11.23)

@@ -160,8 +160,8 @@
 - { id: scale_mail,    kind: armor, slot: body, armorClass: medium, statMods: { def: 6 }, wt: 8, rarity: common, price: 1300 }
 
 # --- Signaturen der Leutnants von Akt 2 (Story 11.5; items.md §6.3, umgestellt ohne Flieger): Werte der Stahlwaffe der Gruppe plus ein Effekt,
-# Seltenheit legendary, Preis 1 500 [ASSUMPTION]. Rowena: silver_lance statt wing_lance; Brakka: Armbrust statt wyvern_cleaver (Bild vorläufig steel_bow) ---
-- { id: silver_lance, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 9, hit: 70, crit: 0,  rng: [1,1], wt: 12, rarity: legendary, price: 1500, grantsSkill: { skill: stud_ward, masteryCost: 40 } }   # Rowena
+# Seltenheit legendary, Preis 1 500 [ASSUMPTION]. Rowena: rowenas_lance statt wing_lance (Bild vorläufig wing_lance; silver_lance bleibt die Silberlanze von Akt 3, Produktinhaber 2026-11-09); Brakka: Armbrust statt wyvern_cleaver (Bild vorläufig steel_bow) ---
+- { id: rowenas_lance, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 9, hit: 70, crit: 0,  rng: [1,1], wt: 12, rarity: legendary, price: 1500, grantsSkill: { skill: stud_ward, masteryCost: 40 }, image: wing_lance }   # Rowena
 - { id: dravns_oath,  kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 8, hit: 75, crit: 0,  rng: [1,1], wt: 10, rarity: legendary, price: 1500, grantsSkill: { skill: last_order, masteryCost: 45 } }  # Sable
 - { id: gold_hook,    kind: weapon, slot: mainHand, weaponType: sword, group: sword, damageType: physical, mt: 8, hit: 75, crit: 20, rng: [1,1], wt: 10, rarity: legendary, price: 1500 }                                                       # Grell (Entersäbel)
 - { id: wasp_sting,   kind: weapon, slot: mainHand, weaponType: bow,   group: bow,   damageType: physical, mt: 9, hit: 70, crit: 0,  rng: [2,2], wt: 8,  rarity: legendary, price: 1500, twoHanded: true, effectiveVs: [flier, armored], image: steel_bow }  # Brakka (Armbrust)
