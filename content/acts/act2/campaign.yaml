@@ -1,5 +1,6 @@
 # Akt 2 „Glut“ (Paket act2, unveröffentlicht bis zum ersten Live-Schritt nach 9.14). Kopf des Akts aus Story 11.1; die Folge
-# m2_1 → (m2_2 ∥ m2_3) → m2_4 → (m2_5 ∥ m2_6) → m2_7 → m2_8 (Finale) und die Nebenquests N4–N6 kommen mit 11.11 und den Missions-Stories.
+# m2_1 → (m2_2 ∥ m2_3) → m2_4 → (m2_5 ∥ m2_6) → m2_7 → m2_8 (Finale) und die Nebenquests N4–N6 prüft Story 11.11
+# (tests/unit/act2-campaign-order.test.ts); die Karten und Szenen kommen mit den Missions-Stories.
 # Der Übergang (Architektur §5.4): nach dem Finale von Akt 1 setzt finishMission c.act = 2, wenn dieses Paket im Build ist.
 act: 2
 # Stufendeckel von Akt 2 (Produktinhaber 2026-10-31): EP darüber verfallen
@@ -17,8 +18,10 @@ startGold: 0
 defaultPlace: grauwacht
 startConvoy: []
 # Knoten von Akt 2 (Story 11.3): Platzhalter, deren Karte noch nicht gebaut ist; die Weltkarte bietet sie nicht an (mapInBuild),
-# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], ebenso die Folge der
-# Missionsliste in requires: 11.11 prüft sie und ergänzt die Bedingungen der Nebenquests (Ilka bzw. Jory in der Truppe).
+# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION]; die Folge der Missionsliste
+# in requires ist mit Story 11.11 geprüft. Nebenquests (Produktinhaber 2026-11-09): N4 und N6 wie N3/Tobin offen, wenn Ilka bzw.
+# Jory in der Truppe oder gefallen ist, zu, wenn die Figur gegangen ist (Gedenk-Variante memorialIf/memorial mit 11.20 bzw. 11.22,
+# die Szenen fehlen noch); N6 öffnet gleichzeitig mit 2-7 (nach 2-5 und 2-6); offene Nebenquests bleiben nach 2-8 nachholbar.
 nodes:
   - { id: m2_1, fixed: first, map: m2_1_windscharte, titleKey: node.m2_1.title, place: windscharte, merchantTier: 0 }
   - { id: m2_2, map: m2_2_salzpass, titleKey: node.m2_2.title, requires: [{ completed: m2_1 }], place: salzpass, merchantTier: 1 }
@@ -28,9 +31,9 @@ nodes:
   - { id: m2_6, map: m2_6_kraehenholm, titleKey: node.m2_6.title, requires: [{ completed: m2_4 }], place: kraehenholm, merchantTier: 1 }
   - { id: m2_7, map: m2_7_kontor, titleKey: node.m2_7.title, requires: [{ completed: m2_5 }, { completed: m2_6 }], place: kontor, merchantTier: 1 }
   - { id: m2_8, fixed: finale, map: m2_8_kronfeld, titleKey: node.m2_8.title, requires: [{ completed: m2_7 }], place: kronfeld, merchantTier: 1 }
-  - { id: n4, kind: side, map: n4_clanlager, titleKey: node.n4.title, requires: [{ completed: m2_3 }], place: clanlager, merchantTier: 1 }
+  - { id: n4, kind: side, map: n4_clanlager, titleKey: node.n4.title, requires: [{ completed: m2_3 }, { any: [{ alive: ilka }, { dead: ilka }] }], place: clanlager, merchantTier: 1 }
   - { id: n5, kind: side, map: n5_kupfermine, titleKey: node.n5.title, requires: [{ completed: m2_4 }], place: kupfermine, merchantTier: 1 }
-  - { id: n6, kind: side, map: n6_auemarkt, titleKey: node.n6.title, requires: [{ completed: m2_7 }], place: auemarkt, merchantTier: 1 }
+  - { id: n6, kind: side, map: n6_auemarkt, titleKey: node.n6.title, requires: [{ completed: m2_5 }, { completed: m2_6 }, { any: [{ alive: jory }, { dead: jory }] }], place: auemarkt, merchantTier: 1 }
 # Händler von Akt 2 [ASSUMPTION]: Stufe 0 aus vorhandenen Teilen (Stahl, Heilung, Rüstung); Stufe 1 mit dem Stahl-Tier (Story 11.5, Fassung 2026-10-31),
 # offen über merchantTier 1 der Knoten ab 2-2; Stufe 2 mit der 4. Story-Mission. shade (Dunkel) nie beim Händler (items.md §4). Stufe 3 und roomLevel 2: Story 10.9.
 merchant:
