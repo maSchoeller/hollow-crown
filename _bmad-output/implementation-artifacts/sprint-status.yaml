@@ -195,7 +195,7 @@ development_status:
   # Epic 11: Akt 2 „Glut“ – neu geschnitten 2026-11-06 auf die Überarbeitung (Schlüssel neu, alte 11-* ersetzt); F1, F3, F4 entschieden 2026-11-06 (Akt 2 stückweise live), F2 nur Rowena neu (concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md)
   epic-11: in-progress
   11-1-akt-uebergang-und-spielstand: review  # Akt-Übergang und Spielstand
-  11-2-positionsstufe-der-akt-2-missionen: backlog  # Positionsstufe der Akt-2-Missionen
+  11-2-positionsstufe-der-akt-2-missionen: review  # Positionsstufe der Akt-2-Missionen
   11-3-paket-act2-weltkarte-und-titeltafel: backlog  # Paket act2, Weltkarte und Titeltafel
   11-4-simulation-ueber-akte: backlog  # Simulation über Akte
   11-5-gefaehrten-leutnants-und-flags-von-akt-2: backlog  # Gefährten, Leutnants und Flags von Akt 2

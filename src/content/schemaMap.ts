@@ -49,7 +49,10 @@ export const mapUnitSchema = z.object({
   team,
   /** may be left out when `lieutenant` is set: the loader takes the class of the lieutenant (story 3.1) */
   class: z.string().optional(),
-  level: z.number().int(),
+  /** fixed level; on maps of an act with `positionLevel` foes use `levelOffset` instead (story 11.2) */
+  level: z.number().int().optional(),
+  /** story 11.2: level relative to the node's position level P (`nodeLevel`), resolved by `createBattle` and spawns */
+  levelOffset: z.number().int().optional(),
   at: pos,
   boss: z.boolean().optional(),
   lieutenant: z.string().optional(),

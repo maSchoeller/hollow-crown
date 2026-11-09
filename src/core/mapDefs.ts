@@ -58,7 +58,10 @@ export interface MapUnitDef {
   char?: string;
   team: Team;
   class: string;
-  level: number;
+  /** fixed level; a unit with `levelOffset` gets it at battle time (story 11.2) */
+  level?: number;
+  /** story 11.2: level = the battle's position level (`BattleState.positionLevel`) + this; maps of an act with `positionLevel` only */
+  levelOffset?: number;
   at: Pos;
   boss?: boolean;
   /** lieutenant id (Epic 3): flees at 0 HP and counts like a boss for EP */

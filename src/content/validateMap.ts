@@ -7,6 +7,7 @@ import { areaTiles, posKey } from '../core/util';
 import type { Locales } from './load';
 import { validateFormat } from './validateFormat';
 import { validateHaunts } from './validateHaunts';
+import { validateUnitLevels } from './validateLevels';
 import { validatePhases } from './validatePhases';
 import type { ContentRefs } from './validateRefs';
 import { allUnits, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
@@ -121,6 +122,7 @@ export function validateMap(
   );
   for (const t of map.triggers)
     for (const a of t.then) if (a.action === 'spawn') for (const u of a.units) if (u.requires) err(f, `${t.id}: requires is only for the line-up units of a map`);
+  validateUnitLevels(data, map, err);
   if (map.deploy.slots.length < map.deploy.max) err(f, 'deploy.slots < deploy.max');
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);
   for (const o of map.objects) {

@@ -6,7 +6,8 @@ import type { BattleState, CampaignState, ObjectState } from '../state';
 import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
-import { actOf, findNode } from '../campaign/acts';
+import { actOf, findNode, nodeAct } from '../campaign/acts';
+import { atPosition, nodeLevel, positionOf, raiseMapChar } from '../campaign/position';
 import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { battleUnitFromPlan, battleUnitFromRecord } from './create';
@@ -43,6 +44,8 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   // one whose `requires` fails stays off the board and gets no plan either (story 11.10, Sable after E7)
   const lineUp = onConditions(conditionContext(data, c), map.units);
   const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, { ...map, units: lineUp }, c.settings.difficulty));
+  // story 11.2: in an act with a position level the battle keeps P, so foes with `levelOffset` (also later ones) and companions stand on it
+  if (positionOf(data, nodeAct(data, node.id) ?? actOf(c))) s.positionLevel = nodeLevel(data, c, node);
   deployPlayers(data, c, s, map, deployIds);
   placeMapUnits(data, c, s, map.units);
   finishSetup(data, s, map);
@@ -118,7 +121,8 @@ export function placeMapUnits(data: GameData, c: CampaignState, s: BattleState, 
     const uid = def.id ?? def.char ?? `m${i}`;
     // a lieutenant is scaled to the company and its grudge (story 3.4); everything else is built as the map says
     const plan = def.lieutenant ? s.lieutenantPlan![def.lieutenant] : undefined;
-    const unit = battleUnitFromPlan(data, def, s, def.team === 'enemy' ? pct : 0, uid, plan);
+    const unit = battleUnitFromPlan(data, atPosition(def, s.positionLevel), s, def.team === 'enemy' ? pct : 0, uid, plan);
+    raiseMapChar(data, unit, def.char, s.positionLevel);
     s.units.push(unit);
   });
 }

@@ -3,7 +3,7 @@
  * story nodes, auto-win and the fault and save-failure switches. Imported once by App.tsx.
  */
 import { SEASONS, type Season } from '../../core/defs';
-import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, chronicleTexts, sceneTexts } from '../../core';
+import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
 import { autosave, campaign, data } from './session';
 import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle } from './battle';
 import { reportFault } from './fault';
@@ -49,7 +49,7 @@ function winBattle(autoCommand: (d: typeof data, s: BattleState) => Parameters<t
 
 /**
  * plays any story node on a throwaway campaign, never the player's slot (saving is switched off, QA note B22): the nodes before it in
- * campaign.yaml count as completed and everyone who has joined by then is in the company, raised to the node's `expectedLevel`. `await __hc.devNode('m1_6')` opens the
+ * campaign.yaml count as completed and everyone who has joined by then is in the company, raised to the node's level (`nodeLevel`). `await __hc.devNode('m1_6')` opens the
  * pre scene, then the battle; win it with `__hc.autoWin()`. Second argument: difficulty (default `normal`).
  */
 async function devNode(nodeId: string, difficulty: BattleSettings['difficulty'] = 'normal'): Promise<void> {
@@ -63,8 +63,9 @@ async function devNode(nodeId: string, difficulty: BattleSettings['difficulty'] 
     const j = order.indexOf(ch.joins);
     if (j >= 0 && j < idx) addToRoster(data, c, ch.id);
   }
-  // everyone is as strong as an army that played its way here would be: raised to the node's expectedLevel with the game's own level-up
-  for (const u of c.roster) while (u.level < nodes[idx]!.expectedLevel) levelUp(data, u, c.rng);
+  // everyone is as strong as an army that played its way here would be: raised to the node's level with the game's own level-up
+  const level = nodeLevel(data, { completed: order.slice(0, idx) }, nodes[idx]!);
+  for (const u of c.roster) while (u.level < level) levelUp(data, u, c.rng);
   c.completed = order.slice(0, idx);
   campaign.value = c;
   battle.value = null;
@@ -111,10 +112,21 @@ if (import.meta.env.DEV) {
        * `await __hc.devMap()`. Saving is switched off for the battle (`failSaves`), so no real save is overwritten. The files are
        * imported on demand and exist in the dev build only; a new fixture map is picked up by its file name. The board shows the season
        * of `opts.season`, else the map's own, else that of the act in the draft's name (`s2_…` autumn, `s3_…` winter; story 15.15).
+       * Story 11.2: `__hc.devMap('dev_eisenmark', 2)` plays the map as a node of act 2: units with `levelOffset` stand on the position
+       * level of act 2 (`positionLevel`, its `campaign.yaml` is loaded in the dev build when the pack is not); options come third.
        */
-      devMap: async (id = 'dev_fog', opts: { fog?: boolean; season?: Season } = {}) => {
+      devMap: async (id = 'dev_fog', actOrOpts: number | { fog?: boolean; season?: Season } = {}, more: { fog?: boolean; season?: Season } = {}) => {
         const c = campaign.value;
         if (!c) throw new Error('load a campaign first');
+        const act = typeof actOrOpts === 'number' ? actOrOpts : 1;
+        const opts = typeof actOrOpts === 'number' ? more : actOrOpts;
+        if (!data.acts[act]) {
+          const heads = import.meta.glob('../../../content/acts/*/campaign.yaml');
+          const head = heads[`../../../content/acts/act${act}/campaign.yaml`];
+          if (!head) throw new Error(`no act ${act}`);
+          const { campaignSchema } = await import('../../content/schemaCampaign');
+          data.acts[act] = campaignSchema.parse(((await head()) as { default: unknown }).default) as CampaignDef;
+        }
         const files = { ...import.meta.glob('../../../tests/fixtures/maps/*.yaml'), ...import.meta.glob('../../../concept/27-ueberarbeitung/levels/*.yaml') };
         const load = files[`../../../tests/fixtures/maps/${id}.yaml`] ?? files[`../../../concept/27-ueberarbeitung/levels/${id}.yaml`];
         if (!load) throw new Error(`no fixture map "${id}"; there are: ${Object.keys(files).map((f) => /([^/]+)\.yaml$/.exec(f)![1]).join(', ')}`);
@@ -122,9 +134,11 @@ if (import.meta.env.DEV) {
         const raw = ((await load()) as { default: unknown }).default;
         if (opts.season && !SEASONS.includes(opts.season)) throw new Error(`no season "${opts.season}"; there are: ${SEASONS.join(', ')}`);
         const parsed = mapSchema.parse(raw);
-        const season = opts.season ?? parsed.season ?? data.render.board.actSeason[/^s(\d+)_/.exec(id)?.[1] ?? '1'];
-        data.maps[id] = { ...parsed, act: 1, ...(season ? { season } : {}), ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;
-        if (!data.acts[1]!.nodes.some((n) => n.id === id)) data.acts[1]!.nodes.push({ ...data.acts[1]!.nodes[0]!, id, map: id, pre: undefined, post: undefined });
+        const season = opts.season ?? parsed.season ?? data.render.board.actSeason[/^s(\d+)_/.exec(id)?.[1] ?? String(act)];
+        data.maps[id] = { ...parsed, act, ...(season ? { season } : {}), ...(opts.fog === undefined ? {} : { fog: opts.fog }) } as MapDef;
+        if (act === 1 && !data.acts[1]!.nodes.some((n) => n.id === id)) data.acts[1]!.nodes.push({ ...data.acts[1]!.nodes[0]!, id, map: id, pre: undefined, post: undefined });
+        // a node of a later act: a plain story node (no `fixed`), so the act's own graph stays as it is
+        if (act > 1 && !data.acts[act]!.nodes.some((n) => n.id === id)) data.acts[act]!.nodes.push({ id, map: id, titleKey: data.acts[1]!.nodes[0]!.titleKey, kind: 'story', merchantTier: 0 });
         devSaveFailure.on = true;
         const r = beginBattle(data, c, id, []);
         r.state.lockedRoles = []; // every role's class action works on a fixture map

@@ -1,0 +1,55 @@
+# Probekarte der Positionsstufe (Story 11.2). Gehört zu keinem Paket, kommt nicht in den Build. Im Spiel: `await __hc.devMap('dev_eisenmark', 2)`
+# spielt sie als Knoten von Akt 2: P = positionLevel.base von Akt 2 (+ erledigte Story-Knoten des Akts), alle Einheiten stehen per levelOffset darauf.
+#
+# Süden: die Truppe auf P−1 bis P. Norden: Start P−3, Elite P−1, der Hauptmann als Boss P+2; Welle in Runde 2 (P−2), Spawn beim Betreten der Brücke (P−2).
+#          x: 0123456789AB
+terrain: |
+  ,,,,,,,,,,,,
+  ,,TT,,,,,TT,
+  ,,,,,,,,,,,,
+  ,,,,,,,,,,,,
+  ~~~~~==~~~~~
+  ,,,,,,,,,,,,
+  ,,,T,,,,,,,,
+  ,,,,,,,T,,,,
+  ,,,,,,,,,,,,
+  ,,,,,,,,,,,,
+id: dev_eisenmark
+nameKey: map.prologue_paktnacht.name
+size: [12, 10]
+fog: false
+legend:
+  ",": grass
+  "T": forest
+  "~": river
+  "=": bridge
+initialEffects: []
+objects: []
+deploy: { max: 0, forced: [], slots: [] }
+units:
+  - { id: dev_vanguard, team: player, class: vanguard, levelOffset: 0, at: [5, 8], sprite: soldier, items: [{ def: steel_lance }, { def: vulnerary }] }
+  - { id: dev_scout, team: player, class: scout, levelOffset: -1, at: [4, 9], sprite: mercenary, items: [{ def: iron_dagger }, { def: vulnerary }] }
+  - { id: dev_marksman, team: player, class: marksman, levelOffset: -1, at: [7, 9], sprite: bandit_archer, items: [{ def: steel_bow }, { def: vulnerary }] }
+  - { id: dev_soldier_a, team: enemy, class: vanguard, levelOffset: -3, at: [3, 2], sprite: soldier, items: [{ def: iron_lance }] }
+  - { id: dev_soldier_b, team: enemy, class: skirmisher, levelOffset: -3, at: [8, 2], sprite: soldier, items: [{ def: iron_sword }] }
+  - { id: dev_elite, team: enemy, class: marksman, levelOffset: -1, at: [6, 1], sprite: bandit_archer, ai: { profile: hold }, items: [{ def: steel_bow }] }
+  - { id: dev_captain, team: enemy, class: vanguard, levelOffset: 2, boss: true, at: [5, 0], sprite: soldier, ai: { profile: hold }, items: [{ def: steel_lance }] }
+pairs: []
+reinforcements:
+  - turn: 2
+    phase: enemy
+    announce: true
+    units:
+      - { id: dev_wave, team: enemy, class: skirmisher, levelOffset: -2, at: [0, 0], sprite: soldier, items: [{ def: iron_sword }] }
+objectives:
+  victory: { type: boss, unit: dev_captain }
+  defeat:
+    - { type: unit_dies, unit: dev_vanguard }
+  side: []
+triggers:
+  - id: t_bridge
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [5, 4, 6, 4] } }
+    then:
+      - { action: spawn, units: [{ id: dev_ambush, team: enemy, class: skirmisher, levelOffset: -2, at: [11, 0], sprite: soldier, items: [{ def: iron_sword }] }] }
+goldReward: 0

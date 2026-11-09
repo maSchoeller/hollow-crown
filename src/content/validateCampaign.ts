@@ -137,16 +137,25 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
       });
     // expectedLevel (GDD: army level per story mission) never falls within an act, neither in file order of the story
     // nodes nor along a `completed` requirement
+    // story 11.2: an act with `positionLevel` has no level per node (`nodeLevel`); `levelBonus` only means something there
+    if (camp.positionLevel) {
+      validateMechanics(data, camp, err);
+      continue;
+    }
+    for (const n of camp.nodes) {
+      if (n.expectedLevel === undefined) err('campaign.yaml', `${n.id}: expectedLevel missing (act ${camp.act} has no positionLevel)`);
+      if (n.levelBonus !== undefined) err('campaign.yaml', `${n.id}: levelBonus needs a positionLevel in act ${camp.act}`);
+    }
     let top = 0;
     for (const n of camp.nodes) {
-      if (n.kind !== 'story') continue;
+      if (n.kind !== 'story' || n.expectedLevel === undefined) continue;
       if (n.expectedLevel < top) err('campaign.yaml', `${n.id}: expectedLevel ${n.expectedLevel} falls below ${top} of an earlier node`);
       top = Math.max(top, n.expectedLevel);
     }
     for (const [from, to] of nodeLinks(data)) {
       const a = camp.nodes.find((x) => x.id === from);
       const b = camp.nodes.find((x) => x.id === to);
-      if (a && b && a.kind === 'story' && b.expectedLevel < a.expectedLevel) err('campaign.yaml', `${to}: lower expectedLevel than ${from} it requires (${b.expectedLevel} < ${a.expectedLevel})`);
+      if (a?.expectedLevel !== undefined && b?.expectedLevel !== undefined && a.kind === 'story' && b.expectedLevel < a.expectedLevel) err('campaign.yaml', `${to}: lower expectedLevel than ${from} it requires (${b.expectedLevel} < ${a.expectedLevel})`);
     }
     validateMechanics(data, camp, err);
   }

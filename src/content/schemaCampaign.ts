@@ -128,6 +128,7 @@ export const homeSchema = z.strictObject({ camp: homeViewSchema, castle: homeVie
 export const campaignSchema = z.object({
   act: z.number().int().min(1).default(1),
   levelCap: z.number().int().min(1).optional(),
+  positionLevel: z.strictObject({ base: z.number().int().min(1) }).optional(),
   startGold: z.number(),
   defaultPlace: z.string(),
   startConvoy: z.array(itemRefSchema).default([]),
@@ -145,7 +146,8 @@ export const campaignSchema = z.object({
       memorial: z.object({ pre: z.string().optional(), post: z.string().optional() }).optional(),
       place: z.string().optional(),
       merchantTier: z.number().int(),
-      expectedLevel: z.number().int().min(1),
+      expectedLevel: z.number().int().min(1).optional(),
+      levelBonus: z.number().int().optional(),
       grants: z.array(z.object({ unit: z.string(), item: itemRefSchema })).optional(),
       effects: z.array(effectSchema).optional(),
       effectsIf: z.array(z.strictObject({ requires: z.array(conditionSchema).min(1), effects: z.array(effectSchema).min(1) })).optional(),
