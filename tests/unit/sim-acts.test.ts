@@ -9,7 +9,7 @@ import {
   type MissionSim,
 } from '../../tools/simCampaign';
 
-/** Story 11.4: the simulation over the acts, on the probe map of story 11.2 (act 2 has no playable maps yet). */
+/** Story 11.4: the simulation over the acts, on the probe map of story 11.2, played at node m2_1 in place of its map (story 11.12) unless a test names another node. */
 let data: GameData;
 let base: number;
 
@@ -27,9 +27,12 @@ const opts = (over: Partial<CampaignSimOptions> = {}): CampaignSimOptions => ({
   act: 2,
   start: 'expected',
   mapFile: MAP,
+  node: 'm2_1',
   ...over,
 });
 const sim = (o: CampaignSimOptions) => simulateCampaign(prepareActData(data, o), o);
+/** the mission played on the probe map */
+const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
 
 describe('simulation over the acts (story 11.4)', () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
@@ -50,16 +53,16 @@ describe('simulation over the acts (story 11.4)', () => {
     expect(a.entry.armyLevel).toBe(base + 3);
     // the target is the node of --node; the skipped nodes before it count for P
     const d = sim(opts({ node: 'm2_4', position: base + 1 }));
-    expect(d.missions.map((m) => m.node)).toEqual(['m2_4']);
-    expect(d.missions[0]!.expectedLevel).toBe(base + 1);
+    expect(probe(d).node).toBe('m2_4');
+    expect(probe(d).expectedLevel).toBe(base + 1);
   });
 
   it('--order puts a mission of a pair first: m2_3 at the first or the second position after m2_1', () => {
     const late = sim(opts({ node: 'm2_3' }));
     const early = sim(opts({ node: 'm2_3', order: ['m2_3'] }));
     // file order plays m2_2 (skipped) before m2_3; with --order m2_3 comes right after m2_1 (skipped)
-    expect(late.missions[0]!.expectedLevel).toBe(base + 2);
-    expect(early.missions[0]!.expectedLevel).toBe(base + 1);
+    expect(probe(late).expectedLevel).toBe(base + 2);
+    expect(probe(early).expectedLevel).toBe(base + 1);
   });
 
   it('--flags sets the outcome of a decision for the whole run, only registered flags', () => {

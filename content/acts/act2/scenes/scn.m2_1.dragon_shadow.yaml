@@ -1,0 +1,18 @@
+# Mission 2-1, Runde 8 (Trigger t_shadow): Saat Drachen. Ein Schatten zieht über die Scharte, Wind und Kampf halten inne;
+# niemand sieht das Tier, nichts wird erklärt (nur Szene, keine Figur). Liora mit Ersatzsprecher-Kette.
+id: scn.m2_1.dragon_shadow
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Wind bricht ab. Mitten im Sturm wird es still, und alle halten inne, auch die Söldner."
+  - id: l02
+    mood: neutral
+    text: "Ein Schatten zieht über die Scharte und verdunkelt die Ebene. Niemand sieht das Tier."
+  - id: l03
+    speaker: [liora, avatar]
+    mood: neutral
+    text: "Wo der Wind schweigt, spricht das Ewige. Haltet den Atem, bis es vorüber ist."
+  - id: l04
+    speaker: [lucan]
+    mood: neutral
+    text: "Weiter. Der Wind kommt wieder."

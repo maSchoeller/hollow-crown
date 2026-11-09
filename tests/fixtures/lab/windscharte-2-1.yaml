@@ -1,0 +1,7 @@
+# Story 11.12: Mission 2-1 „Wind über der Eisenmark“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812).
+#   pnpm lab windscharte-2-1                     Lage zu Beginn
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('windscharte-2-1')
+question: Wie sieht die Windscharte zu Beginn aus?
+map: m2_1_windscharte
+company: expected

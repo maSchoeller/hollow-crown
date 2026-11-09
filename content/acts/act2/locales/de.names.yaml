@@ -42,3 +42,6 @@ unit.privateer.name: "Kaperfahrer"
 unit.free_blade.name: "Freie Klinge"
 unit.lance_knight.name: "Lanzenritter"
 unit.counting_guard.name: "Kontorwache"
+
+# Story 11.12: Mission 2-1 (Karte)
+map.m2_1_windscharte.name: "Die Windscharte"

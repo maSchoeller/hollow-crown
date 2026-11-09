@@ -1,0 +1,29 @@
+# Mission 2-1, Anwerben im Kampf (recruit der Karte, by: any): Jory, Spielmann der Gaukler, blieb beim liegengebliebenen Wagen
+# und tritt bei. Keine Antworten (Kampfszene). Jory spricht hier als Gast (fallback: skip), Rhen und Lucan sind immer da.
+id: scn.m2_1.jory_talk
+lines:
+  - id: l01
+    mood: neutral
+    text: "Hinter dem Wagen sitzt Jory auf einer umgestürzten Kiste. Die Laute liegt quer über seinen Knien."
+  - id: l02
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Brakka zählt Münzen und zielt nach dem Preis. Der Wind weiß es besser: Gold fliegt nicht weit."
+  - id: l03
+    speaker: [avatar]
+    mood: neutral
+    text: "Deine Truppe ist fort. Warum bist du geblieben?"
+  - id: l04
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Bei Tagesanbruch sind sie mit den Pferden fort. Mir blieben Laute und ein Wagen ohne Rad."
+  - id: l05
+    speaker: [avatar]
+    mood: neutral
+    text: "Dann komm mit uns. Ein Lied gegen Brakka können wir heute gut brauchen."
+  - id: l06
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann kommst du mit. Das Lied kannst du unterwegs singen."

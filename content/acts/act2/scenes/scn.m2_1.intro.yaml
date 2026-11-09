@@ -1,0 +1,40 @@
+# Mission 2-1, Szene vor der Karte (Knoten pre, Story 11.12): Ankunft am Scheitel des Grauen Kamms, erster Blick auf die Eisenmark,
+# Brakkas Sperre (Auftraggeber bleibt ungenannt, PO 2026-11-09 F4 = A), Jory noch ohne Namen am Gauklerwagen. Gefährtenzeilen mit Ersatzsprecher-Kette.
+# Text nach der Schreib-Pipeline der Narrative (Entwurf Haiku, überarbeitet), Abnahme beim Durchspielen.
+id: scn.m2_1.intro
+background: windscharte
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Wind zerrt an den Mänteln. Die Windscharte liegt vor der Truppe, kahl und grau."
+  - id: l02
+    mood: neutral
+    text: "Hinter dem Scheitel öffnet sich die Ebene der Eisenmark. Goldbraun, weit, fremd."
+  - id: l03
+    mood: neutral
+    text: "Auf beiden Felsnasen stehen Ballisten. Freie Klingen sperren den Pass."
+  - id: l04
+    speaker: [brakka]
+    fallback: skip
+    mood: angry
+    text: "Der Pass ist bezahlt, Aschenbanner. Kehrt um, oder ihr lernt meine Ballisten kennen."
+  - id: l05
+    mood: neutral
+    text: "Unter der Ostnase steht ein bunter Gauklerwagen im Graben. Eine Laute spielt trotzig dagegen an."
+  - id: l06
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "Kein Weg an den Nasen vorbei. Wer da hinaufwill, bekommt die Bolzen zuerst."
+  - id: l07
+    speaker: [fenn, avatar]
+    mood: happy
+    text: "Drei Bolzen bisher, alle daneben. Gib mir die Nase, {avatar}, und ich dreh das Ding um."
+  - id: l08
+    speaker: [avatar]
+    mood: neutral
+    text: "Frisch geölt, die Ballisten. Jemand hat sie für diesen Pass bezahlt."
+  - id: l09
+    speaker: [lucan]
+    mood: neutral
+    text: "Wir halten, bis der Wind dreht. Oder bis niemand mehr für diesen Pass zahlt."
