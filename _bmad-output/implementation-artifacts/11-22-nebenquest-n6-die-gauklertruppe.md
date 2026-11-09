@@ -3,7 +3,7 @@ baseline_commit: fdb901f41e15cae411cb14ec8b27d0a93da827ef
 ---
 # Story 11.22: Nebenquest N6 „Die Gauklertruppe“
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Erstellt 2026-11-09 mit gds-create-story (headless, für die orchestrierende Session). Offene Design-Fragen nicht zurückgegeben,
 sondern mit der empfohlenen Option als [ASSUMPTION] umgesetzt; Liste unten unter „Offene Fragen an den Produktinhaber“.

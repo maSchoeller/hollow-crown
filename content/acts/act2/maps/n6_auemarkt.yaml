@@ -1,0 +1,143 @@
+# Nebenquest N6 – Die Gauklertruppe (Knoten n6, Story 11.22). Entwurf concept/27-ueberarbeitung/levels/s2_n6_gaukler.yaml, Missionsliste: K 14×18, escort, 7 / 16.
+# Herbstmarkt auf der Aue-Insel in der Auremündung (Jahreszeit des Akts: Herbst). Die Truppe kommt von Süden über die Steinbrücke, holt die
+# Gauklermeisterin von der Bühne im Norden (Terrasse Stufe 1 mit Treppe) und bringt sie zum Boot im Südwesten. Die Meisterin folgt der nächsten
+# eigenen Figur (KI follow) und tritt nicht bei (join: false); fällt sie, ist die Mission verloren.
+# Veränderliche Karte: Der Steg [2,14] steht ab Runde 6 unter Wasser (set_terrain mit warn: Markierung und HUD-Zeile ab Runde 5, dazu scn.n6.tide_warn).
+# Schuldeneintreiber landen mit Booten in Runde 3 im Osten und in Runde 5 im Westen (Boote ohne eigenes Modell, Formatwunsch des Entwurfs).
+# Jory ist Pflicht, solange er in der Truppe ist: Die Aufstellung filtert forced auf die Truppe, so trägt dieselbe Karte die Gedenk-Variante
+# (Jory gefallen, memorialIf in campaign.yaml); Belohnung Signaturlaute final_curtain als Knotenwirkung in beiden Varianten.
+# Abweichungen vom Entwurf (Story 11.22, alle in levels/abnahme/s2_n6_gaukler.md): Karten-Id n6_auemarkt, Szenen scn.n6.*, Gegner nur mit
+# levelOffset, Meisterin levelOffset −3 [ASSUMPTION], Flut zu Beginn der Spielerrunde 6 statt der Gegnerrunde [ASSUMPTION], Gold 2 000 statt 1 300 [ASSUMPTION],
+# Szene scn.n6.master_talk beim Betreten der Bühne. Keine Heimsuchungs-Anker (Heimsuchungen nur auf Story-Knoten, wie N1–N5).
+# Balancing [C] siehe Abschnitt „Übernahme Story 11.22“ der Abnahme-Datei (Probe an Stelle von 2-7, P 18).
+id: n6_auemarkt
+nameKey: map.n6_auemarkt.name
+size: [14, 18]
+legend:
+  ",": grass
+  "_": road
+  "~": river
+  "B": bridge
+  "h": footbridge
+  "%": terrace
+  "s": stairs
+  "n": stall
+  "W": wagon
+  "v": village
+#          x: 01234567890123
+terrain: |
+  ~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~
+  ~,,,,,,,,,,,,~
+  ~,,,,,,,,%%%%~
+  ~,,nn,n,s%%%%~
+  ~,,,,,,,,%%%%~
+  ~,v,,,__,W,,,~
+  ~,,,,,__,,,,,~
+  ~,,nn,__,nn,v~
+  ~,,,,,__,,,,,~
+  ~,,,,W__,,,,,~
+  ~,W,,,__,,nn,~
+  ~,,,,,__,,,,,~
+  ~~h~~~BB~~~~~~
+  ~,,,,,__,,,,,~
+  ~,,,,,__,,,,,~
+  ~,,,,,__,,,,,~
+timeOfDay: noon
+weather: clear
+objects:
+  # Zwei Marktstände zum Besuchen (Nebenziel), Gold wie im Entwurf
+  - { id: v_stall_w, type: village, at: [2, 7], reward: { gold: 200 } }
+  - { id: v_stall_e, type: village, at: [12, 9], reward: { gold: 200 } }
+deploy:
+  max: 7
+  forced: [avatar, lucan, jory]
+  slots: [[5, 15], [8, 15], [9, 15], [10, 15], [5, 16], [8, 16], [9, 16], [10, 16], [8, 17], [9, 17]]
+units:
+  # Vor der Bühne: der Anführer der Eintreiber (kein Leutnant, P−1) mit seinen Leuten
+  - { id: boss, nameKey: unit.debt_boss.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -1, at: [8, 6], items: [{ def: steel_axe }], ai: { profile: aggressive } }
+  - { id: a1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 7], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: a2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 4], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: a3, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 6], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: a4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [11, 8], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  # Auf dem Markt zwischen Buden und Wagen
+  - { id: b1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [4, 10], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: b2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: b3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [11, 11], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: b4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [3, 7], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # An den Brücken
+  - { id: c1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 13], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: c2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [2, 13], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [3, 3], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 3], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [9, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Die Gauklermeisterin auf der Bühne, folgt der nächsten eigenen Figur (Stufe P − 3 [ASSUMPTION]; der Entwurf nannte 7 bei P 12)
+  - { id: troupe_master, nameKey: unit.troupe_master.name, team: other, class: minstrel, levelOffset: -3, at: [10, 5], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: follow }, ignoreForRout: true }
+reinforcements:
+  # Boote im Osten
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [12, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 17], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  # Boote im Westen
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [1, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [1, 6], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+objectives:
+  victory: { type: escort, unit: troupe_master, area: { rect: [1, 15, 4, 17] }, join: false }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+    - { type: unit_dies, unit: troupe_master }
+  side:
+    - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }
+    - { id: s_stalls, type: visit_villages, reward: { item: { def: vulnerary } } }
+triggers:
+  # Jory (oder, in der Gedenk-Variante, Lucan) spricht die Meisterin an, sobald eine eigene Figur die Bühne betritt
+  - id: t_stage
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [8, 4, 12, 6] } }
+    then:
+      - { action: dialogue, id: scn.n6.master_talk }
+  - id: t_tide_warn
+    once: true
+    when: { type: turn_start, turn: 5, phase: player }
+    then:
+      - { action: dialogue, id: scn.n6.tide_warn }
+  # Die Flut nimmt den Steg: ab der Spielerrunde 6 bleibt nur die Steinbrücke in der Mitte (steht dort eine Figur, bleibt der Steg)
+  - id: t_tide
+    once: true
+    when: { type: turn_start, turn: 6, phase: player }
+    then:
+      - { action: set_terrain, area: { tiles: [[2, 14]] }, terrain: river, warn: true }
+# Gold nach der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie, wie 2-1) [ASSUMPTION]; der Entwurf nannte 1 300
+goldReward: 2000
+design:
+  title: Die Gauklertruppe
+  intent: >
+    Jorys alte Truppe steht bei den Schuldeneintreibern in der Kreide. Hin und zurück über den Markt: Die Meisterin folgt der nächsten eigenen Figur, und die Flut nimmt den kurzen Weg. Buden und Wagen geben Deckung und versperren den Blick.
+  mood: Bunter Herbstmarkt auf einer flachen Flussinsel, Wimpel, eine bemalte Gaukelbühne, Buden voller Äpfel und Stoffe, Boote am Ufer, die Flut steigt.
+  phases:
+    - { id: p1, turns: [1, 3], label: Zur Bühne, note: "Über die Steinbrücke und den Markt, R3 Boote im Osten." }
+    - { id: p2, turns: [4, 9], label: Zurück zum Boot, note: "Warnung R5, R6 fällt der Steg. R5 Boote im Westen." }
+  paths:
+    - { team: player, points: [[6, 15], [6, 8], [8, 5], [10, 5]], label: Hin }
+    - { team: player, points: [[9, 5], [6, 8], [3, 12], [2, 14], [2, 16]], phase: p2, label: Steg }
+    - { team: player, points: [[6, 13], [6, 15], [4, 16]], phase: p2, label: Brücke }
+  zones:
+    - { area: { rect: [1, 15, 4, 17] }, label: Boot }
+    - { area: { rect: [9, 4, 12, 6] }, label: Bühne St.1 }
+  marks:
+    - { at: [2, 14], label: F, note: "Steg, ab Runde 6 unter Wasser. Eine Warnung in Runde 5." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). N6 öffnet mit 2-7: P 18, nach 2-7 P 19."
+    - "Normal 16 Gegner (5 davon R3/R5), gegen 7 eigene; Leicht 13, Schwer 19. Der Anführer ist kein Leutnant."
+    - "Belohnung als Knotenwirkung: Signaturlaute final_curtain (Anfeuern auf zwei Ziele, Story 10.4), auch in der Gedenk-Variante. Jory ist Pflicht, solange er in der Truppe ist."

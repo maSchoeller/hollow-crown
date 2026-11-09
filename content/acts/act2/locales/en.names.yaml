@@ -48,3 +48,9 @@ unit.dravn_envoy.name: "Border Army Envoy"
 
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
+
+# Story 11.22: side quest N6 (map, troupe master and debt collectors)
+map.n6_auemarkt.name: "The Meadow Market"
+unit.troupe_master.name: "Master Maren"
+unit.debt_collector.name: "Debt Collector"
+unit.debt_boss.name: "Head Collector"
