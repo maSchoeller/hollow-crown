@@ -170,6 +170,7 @@ Eine Sprache für alles, was „wenn“ oder „dann“ in Content braucht: Knot
 | `storyCount` | Zahl abgeschlossener Story-Missionen im Bereich | `{ storyCount: { min: 3 } }` |
 | `act` | aktueller Akt ≥ Wert | `{ act: 2 }` |
 | `castleTier` | Burgstufe ≥ Wert (`castleTier`, 0 Ruine … 3 Festung; Story 15.12) | `{ castleTier: 1 }` |
+| `roomLevel` | Stufe eines Raums der aktuellen Heimat in den Grenzen (0 = nicht in dieser Heimat oder vor `fromAct`; Story 11.16) | `{ roomLevel: { id: academy, max: 2 } }` |
 | `support` | Paar hat mindestens den Rang | `{ support: { pair: [brenna, lucan], rank: B } }` |
 | `stance` | vorherrschende Haltung des Avatars | `{ stance: warm }` |
 | `met` | Leutnant schon begegnet | `{ met: hask }` |

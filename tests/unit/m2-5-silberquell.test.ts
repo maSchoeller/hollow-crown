@@ -62,7 +62,7 @@ describe('map m2_5_silberquell', () => {
   it('puts the foes on the position level: start P−3, waves P−2 (hard elite P−2), the captain P+1; no riders or fliers', () => {
     const s = battle();
     const y1 = s.units.find((u) => u.uid === 'y1')!;
-    expect(y1.level).toBe(s.positionLevel - 3);
+    expect(y1.level).toBe(s.positionLevel! - 3);
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset, u.id).toBeGreaterThanOrEqual(-3);
@@ -93,7 +93,7 @@ describe('map m2_5_silberquell', () => {
 
   it('has the north rim one level up, with marksmen holding it and knights guarding the ramps', () => {
     const s = battle();
-    expect(s.levels['9,4'] ?? map().levels.find((l) => 'rect' in l.area)?.level).toBe(1);
+    expect(map().levels).toEqual([{ level: 1, area: { rect: [0, 0, 19, 7] } }]);
     for (const id of ['r1', 'r2']) expect(s.units.find((u) => u.uid === id)).toMatchObject({ classId: 'marksman' });
     expect(map().units.find((u) => u.id === 'k1')).toMatchObject({ class: 'knight', at: [4, 7], ai: { profile: 'guard' } });
     expect(map().units.find((u) => u.id === 'k2')).toMatchObject({ class: 'knight', at: [15, 7], ai: { profile: 'guard' } });
@@ -139,7 +139,7 @@ describe('map m2_5_silberquell', () => {
   it('has Odile following the company on P − 1; she wins the mission at the exit and losing her loses it', () => {
     const s = battle();
     const odile = s.units.find((u) => u.id === 'odile')!;
-    expect(odile).toMatchObject({ team: 'other', level: s.positionLevel - 1 });
+    expect(odile).toMatchObject({ team: 'other', level: s.positionLevel! - 1 });
     expect(odile.ai?.profile).toBe('follow');
     expect(Object.values(odile.equip).map((i) => i?.def)).toContain('steel_sword');
     odile.pos = [9, 1];
@@ -156,7 +156,7 @@ describe('map m2_5_silberquell', () => {
   it('has Amos as a guest at the hospice who joins only when talked to, on P − 1; side goals Amos and 11 rounds', () => {
     const s = battle();
     const amos = s.units.find((u) => u.id === 'amos')!;
-    expect(amos).toMatchObject({ team: 'other', guest: true, level: s.positionLevel - 1, recruit: { by: 'any', dialogue: 'scn.m2_5.amos_talk' } });
+    expect(amos).toMatchObject({ team: 'other', guest: true, level: s.positionLevel! - 1, recruit: { by: 'any', dialogue: 'scn.m2_5.amos_talk' } });
     expect(map().objectives.side).toEqual([
       { id: 's_amos', type: 'recruit', unit: 'amos', reward: { gold: 300 } },
       { id: 's_fast', type: 'turn_limit', turns: 11, reward: { gold: 300 } },

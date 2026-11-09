@@ -33,9 +33,8 @@ const opts = (over: Partial<CampaignSimOptions> = {}): CampaignSimOptions => ({
 const sim = (o: CampaignSimOptions) => simulateCampaign(prepareActData(data, o), o);
 /** the mission played on the probe map */
 const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
-
 // Each of these plays whole battles of 2-1 (a real map since story 11.12) and the probe map: 2.3–4.4 s alone, over 15 s under coverage
-// on a busy machine, hence the own timeout.
+// on a busy machine, hence the own timeout. 2-5 has its real map since story 11.16: maxMissions stops each run before it.
 describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
     // one mission only: 2-5 has its real map since story 11.16 and would play a whole second battle
@@ -52,18 +51,18 @@ describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
   });
 
   it('--position sets P of the target node, and the expected start raises the company to it', () => {
-    const a = sim(opts({ position: base + 3 }));
+    const a = sim(opts({ position: base + 3, maxMissions: 1 }));
     expect(a.missions[0]!.expectedLevel).toBe(base + 3);
     expect(a.entry.armyLevel).toBe(base + 3);
     // the target is the node of --node; the skipped nodes before it count for P
-    const d = sim(opts({ node: 'm2_4', position: base + 1 }));
+    const d = sim(opts({ node: 'm2_4', position: base + 1, maxMissions: 2 }));
     expect(probe(d).node).toBe('m2_4');
     expect(probe(d).expectedLevel).toBe(base + 1);
   });
 
   it('--order puts a mission of a pair first: m2_3 at the first or the second position after m2_1', () => {
-    const late = sim(opts({ node: 'm2_3' }));
-    const early = sim(opts({ node: 'm2_3', order: ['m2_3'] }));
+    const late = sim(opts({ node: 'm2_3', maxMissions: 2 }));
+    const early = sim(opts({ node: 'm2_3', order: ['m2_3'], maxMissions: 2 }));
     // file order plays m2_2 (skipped) before m2_3; with --order m2_3 comes right after m2_1 (skipped)
     expect(probe(late).expectedLevel).toBe(base + 2);
     expect(probe(early).expectedLevel).toBe(base + 1);
