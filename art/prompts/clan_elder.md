@@ -41,4 +41,4 @@ SIGNATURE: the white hair knot with bone pins and the spear she leans on.
 - Prüfbogen: Kopf auf TOP/EYES/CHIN wie die Anker; Breite bei 60 % und 78 % über der Vorlage (`!`), erklärbar durch den weiten Wolfspelzmantel.
 - Weißer Haarknoten mit zwei Knochennadeln ✓, Speer gerade auf einer Achse, Spitze im Bild ✓, Wangentätowierung, Bernsteinkette, Geweihmesser ✓; Alter über Falten lesbar, Kopf in Chibi-Größe ✓. Alphakanal, 1254 px, kein Text ✓.
 - Hinweis: ChatGPT hat dem Chat sechs statt drei Anhänge mitgegeben (Entwurfsreste anderer Tabs); das Ergebnis folgt trotzdem Ankern und Statur.
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 (Kontaktbogen am Handy, über die orchestrierende Session).

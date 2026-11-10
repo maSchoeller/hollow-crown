@@ -30,4 +30,4 @@ Very good. Now the SAD version, again based on the FIRST attached approved portr
 
 - Pose, Ausschnitt, Kleid, Hände mit Medaillon, Kronenzopf und Reif deckungsgleich mit `seraphine.png` ✓; nur Brauen, Augen, Mund und Schultern geändert ✓; Alphakanal, 1254 px, kein Text ✓.
 - Zornig: Brauen tief, Zähne zusammengebissen, Schultern hoch ✓. Traurig: Brauen innen hoch, Blick gesenkt, Mundwinkel unten ✓ (die Träne ist kaum sichtbar, stört nicht).
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 (Kontaktbogen am Handy, über die orchestrierende Session).

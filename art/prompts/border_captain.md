@@ -41,4 +41,4 @@ SIGNATURE: the iron half-helm and the officer's red sash.
 - Prüfbogen: Kopf und Breiten innerhalb der Vorlage `average`, kein `!`.
 - Eiserne Halbhelm-Silhouette mit Nasenschutz ✓, eisenroter Wappenrock mit weißem Lindwurmschädel, Pelzmantel, grünes Futter, rote Offiziersschärpe ✓ (Kit wie Sable); Langschwert gerade auf einer Achse über der rechten Schulter ✓; Bart als flache Form ✓. Alphakanal, 1254 px, kein Text ✓.
 - Die Narbe auf der Wange ist kaum zu sehen; stört die Lesbarkeit nicht.
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 (Kontaktbogen am Handy, über die orchestrierende Session).

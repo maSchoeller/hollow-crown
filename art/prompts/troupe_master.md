@@ -8,7 +8,7 @@
 - **Original (A3):** `art/mockups/characters-s1/troupe_master.png` ist der unveränderte Download (1254 × 1254, RGBA, echter Alphakanal, Git LFS)
 - **Menschlicher Anteil:** Auftrag durch den Produktinhaber (2026-11-10), Figurenblatt, Prompt und Prüfung (Prüfbogen `portrait_guides.py sheet`) durch den Assistenten; keine Retusche
 - **Chat:** https://chatgpt.com/c/6af3620c-8ad0-83eb-bf1e-ece7224dadb8
-- **Iterationen:** 1 Chat, kein Neuversuch. Abweichend von §1 Schritt 4 nur ein Chat statt zwei parallel: der Rechner lief voll ausgelastet und ChatGPT fror in Chrome mit mehreren Tabs ein.
+- **Iterationen:** 1 Chat, 1 Folgekorrektur (Alter, siehe unten). Abweichend von §1 Schritt 4 nur ein Chat statt zwei parallel: der Rechner lief voll ausgelastet und ChatGPT fror in Chrome mit mehreren Tabs ein.
 - **A7:** keine Namen fremder Werke, Marken, Studios oder Künstler im Prompt
 - **Zweck:** Halbfigur der Meisterin Maren in N6 (`scn.n6.master_talk`, `scn.n6.outro`, `scn.n6.memorial_outro`) und Porträt der Einheit `troupe_master` auf `n6_auemarkt`; bisher sprach sie nur in Erzählzeilen (T8-N6F4).
 
@@ -40,5 +40,15 @@ SIGNATURE: the patchwork coat and the wine-red headscarf.
 
 - Prüfbogen: Kopf auf TOP/EYES/CHIN wie die Anker; Breite bei 40 % über der Vorlage (`!`), erklärbar durch die Lockenmähne.
 - Flickenmantel in Weinrot, Senf, Petrol und Pflaume mit Goldfransen an den Schultern ✓, weinrotes Kopftuch mit Knoten ✓, Wurfmesser gerade zwischen zwei Fingern, drei Messer am Gürtel ✓, Hand an der Hüfte ✓, Muttermal, graue Strähnen ✓. Alphakanal, 1254 px, kein Text ✓.
-- Sie wirkt eher jünger als 50 (graue Strähnen, wenige Falten); bei Bedarf Folgekorrektur „Merkmal/Alter“ (§7).
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Erste Fassung wirkte jünger als 50; der Produktinhaber verlangte am 2026-11-10 „älter, gleiches Kostüm“.
+
+## Folgekorrektur 2026-11-10 (gilt)
+
+Im selben Chat, Baustein „Merkmal/Alter“ (§7); `troupe_master.png` ist jetzt dieser unveränderte Download (1254 × 1254, RGBA):
+
+```text
+Keep this exact image (same character, pose, crop, patchwork coat, headscarf, raised throwing knife, hand on hip, colours, line and cel shading, FULLY TRANSPARENT background) with one fix: make her clearly look about 50 years old: much more grey in the curly mane (about half grey, with grey streaks throughout and grey at the temples), clear crow's feet at the eyes, two clean smile lines beside the mouth, a few fine lines on the forehead and slightly sagging lower eyelids, a firmer jaw. Keep the same chibi head size and face construction as before; age only through these few clean lines and the grey hair, never a longer or realistic face.
+```
+
+- Kostüm, Pose, Messer und Farben unverändert ✓; Mähne überwiegend grau, Krähenfüße, Lachfalten, Stirnlinien ✓; Kopf in Chibi-Größe ✓. Alphakanal, 1254 px ✓.
+- Abnahme durch den Produktinhaber: offen (Kontaktbogen `akt2-bilder-maren-v2.jpg` an die orchestrierende Session, 2026-11-10).
