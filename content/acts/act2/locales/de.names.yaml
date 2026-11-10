@@ -38,7 +38,6 @@ faction.iron_march.name: "Grenzheer der Eisenmark"
 # Gegner von Akt 2 auf Karten und in Heimsuchungen (Story 11.5, festgelegt in 11.7)
 unit.border_soldier.name: "Grenzsoldat"
 unit.border_captain.name: "Hauptmann des Grenzheers"
-unit.smuggler.name: "Schmuggler"
 unit.maelis.name: "Herzogin Maelis"
 unit.lance_squire.name: "Lanzenknecht"
 unit.privateer.name: "Kaperfahrer"
