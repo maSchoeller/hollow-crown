@@ -9,13 +9,20 @@ lines:
     text: "Das Boot liegt am Ufer. Die Eintreiber sind fort, ihre Schuldbriefe treiben im Wasser."
   - id: l02
     mood: sad
-    text: "Maren schweigt lange. „Wir sind fort, damit die Schuld nicht an ihm hängt.“"
+    text: "Maren schweigt lange."
+  - id: l02b
+    speaker: [troupe_master]
+    fallback: skip
+    mood: sad
+    text: "Wir sind fort, damit die Schuld nicht an ihm hängt."
   - id: l03
     mood: sad
     text: "Maren holt eine alte Laute aus dem Wagen. Auf ihrem Bauch ist der rote Vorhang der Bühne gemalt."
   - id: l04
+    speaker: [troupe_master]
+    fallback: skip
     mood: sad
-    text: "„Sie war immer seine. Nehmt sie mit, dorthin, wo er zuletzt gespielt hat.“"
+    text: "Sie war immer seine. Nehmt sie mit, dorthin, wo er zuletzt gespielt hat."
   - id: l05
     speaker: [brenna, lucan, avatar]
     mood: sad

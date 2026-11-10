@@ -92,7 +92,7 @@ units:
   - { id: o2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [17, 17], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
   # Am Ausgang genau eine Figur: Sable (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format; auch ohne E7) oder, nach E7 warn, der Hauptmann auf P + 1
   - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, levelOffset: 1, at: [9, 4], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ not: { flag: { e07: warn } } }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, sprite: mercenary, levelOffset: 1, at: [9, 4], items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: { e07: warn } }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, sprite: mercenary, portrait: border_captain, levelOffset: 1, at: [9, 4], items: [{ def: steel_sword }], ai: { profile: guard }, requires: [{ flag: { e07: warn } }] }
   - { id: e1, nameKey: unit.border_soldier.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
   - { id: e2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [8, 2], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: e3, nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -3, at: [11, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }

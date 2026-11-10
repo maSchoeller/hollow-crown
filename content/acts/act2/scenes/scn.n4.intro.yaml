@@ -1,6 +1,6 @@
 # Nebenquest N4, Szene vor der Karte (Knoten pre, Story 11.20): Ankunft im Clanlager der Kupferberge, früher Schnee, Dravns Vorposten im Wald.
-# Ilka spricht nur unter requires: alive (Gedenk-Variante scn.n4.memorial_intro). Die Clanälteste hat keine eigene Halbfigur und spricht
-# deshalb in der Erzählzeile [ASSUMPTION]. Text nach der Schreib-Pipeline der Narrative (Vorschlag), Abnahme beim Durchspielen.
+# Ilka spricht nur unter requires: alive (Gedenk-Variante scn.n4.memorial_intro). Die Clanälteste spricht mit eigener Halbfigur
+# (clan_elder, art/prompts/clan_elder.md, 2026-11-10). Text nach der Schreib-Pipeline der Narrative (Vorschlag), Abnahme beim Durchspielen.
 id: scn.n4.intro
 background: clanlager
 music: tense
@@ -27,8 +27,10 @@ lines:
     mood: neutral
     text: "Eine alte Frau tritt aus dem größten Zelt, auf einen Speer gestützt: die Clanälteste."
   - id: l06
+    speaker: [clan_elder]
+    fallback: skip
     mood: neutral
-    text: "Sie mustert Ilka, dann die Fremden. „Du bringst Freunde mit. Dann bleiben sie zum Kämpfen.“"
+    text: "Du bringst Freunde mit, Ilka. Dann bleiben sie zum Kämpfen."
   - id: l07
     speaker: [ilka]
     fallback: skip

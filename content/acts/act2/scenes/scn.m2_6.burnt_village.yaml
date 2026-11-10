@@ -1,9 +1,9 @@
 # Mission 2-6, auf dem Rückweg (Knoten epilogues, Story 11.17): nur nach E7 warn ein von Drachenschatten verbranntes Dorf (Beat 9; narrative
 # decision-log 2026-10-31). Bei obey brannte schon Brandhang, dann entfällt die Szene (nie zwei brennende Dörfer).
-# Ein eigenes Ortsbild gibt es nicht: Hintergrund ist das vorhandene brandhang [ASSUMPTION F4 der Story].
+# Eigenes Ortsbild aschedorf (art/prompts/loc_aschedorf.md, 2026-11-10); vorher lief brandhang als Platzhalter (F4 der Story).
 # Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
 id: scn.m2_6.burnt_village
-background: brandhang
+background: aschedorf
 lines:
   - id: l01
     mood: neutral

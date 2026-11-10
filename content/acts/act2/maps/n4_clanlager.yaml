@@ -88,7 +88,7 @@ units:
   - { id: h2, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [11, 3], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   - { id: h3, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 20], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Die Clanälteste, Zivilistin; das Nebenziel hängt an ihr
-  - { id: elder, nameKey: unit.clan_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: villager_elder, level: 5, at: [10, 12], items: [], ai: { profile: hold }, ignoreForRout: true }
+  - { id: elder, nameKey: unit.clan_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: clan_elder, level: 5, at: [10, 12], items: [], ai: { profile: hold }, ignoreForRout: true }
 reinforcements:
   # Nord
   - turn: 3
