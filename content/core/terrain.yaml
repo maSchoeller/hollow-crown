@@ -42,6 +42,10 @@
 # Feld wie Gras (brennbar, begehbar); Zaun und Hof wie Marktstand (nur Flieger kommen drüber).
 - { id: field,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, prop: field, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
 - { id: fence,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: fence, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
+# Koppelzaun und Koppeltor (Story 11.14, Rabenweide; PO 2026-11-09 F6 = D): Werte wie der Zaun (sperrt, nur Flieger kommen drüber), nur das Modell
+# ist anders: paddock_straight/_corner nach den Nachbarfeldern, das Tor (geschlossen, sperrt) in der Zaunlinie (src/render/board/wallKit.ts paddockPiece).
+- { id: paddock,  def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: paddock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
+- { id: paddock_gate, def: 0, avoid: 0, heal: 0, flammable: false, ground: grass, prop: paddock_gate, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: grass }
 - { id: farm,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, prop: farm,  cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: dirt }
 # Wohnhaus als Kulisse (Story 9.2): Requisite house ohne Objekt, nicht besuchbar, nur Flieger kommen drüber; das Modell wählt ein Feld-Hash
 # aus render.yaml board.variants.house (house_intact, house_b_intact …). Startwerte [C].

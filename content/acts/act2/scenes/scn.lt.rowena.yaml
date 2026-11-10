@@ -1,4 +1,5 @@
 # Leutnant-Zeilen (Story 11.5): erste Begegnung, Groll 1-3, Flucht, Gedenk-Spott
+# flee_2 umformuliert (Story 11.14, PO 2026-11-09 F1 = A): Rowena gibt in 2-3 auf, die Zeile passt auch zur Flucht in 2-8
 id: scn.lt.rowena
 lines:
   - id: first
@@ -30,7 +31,7 @@ lines:
     speaker: [rowena]
     fallback: skip
     mood: neutral
-    text: "Ein Ritter weiß, wann er weicht. Nicht, wann er aufgibt."
+    text: "Ein Ritter weiß, wann er weicht. Das ist keine Schande."
   - id: flee_3
     speaker: [rowena]
     fallback: skip

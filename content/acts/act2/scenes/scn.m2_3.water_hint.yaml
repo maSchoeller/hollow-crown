@@ -1,0 +1,15 @@
+# Mission 2-3, Runde 2 (Trigger t_water, Story 11.14): Die Furten sind die Engstellen; Gepanzerte kommen nicht durch die Furt, nur über den Steg
+# an der Straße (PO 2026-11-09 F5 = C). Gefährtenzeilen mit Ersatzsprecher-Kette.
+id: scn.m2_3.water_hint
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Aure ist flach, aber schnell. Drei Furten führen hinüber, an der Straße ein schmaler Holzsteg."
+  - id: l02
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "In voller Rüstung kommt keiner durch die Furt. Wer Eisen trägt, muss über den Steg."
+  - id: l03
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann halten die Schweren den Steg. Wer leicht geht, nimmt die Furten und fällt ihnen in die Flanke."

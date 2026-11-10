@@ -1,0 +1,30 @@
+# Mission 2-3, Anwerben im Kampf (recruit der Karte, by: any; PO 2026-11-09 F3 = A): Ilka, von der Lanze als Fährtenleserin für die Pferdezüge
+# angeheuert, wechselt die Seite. Keine Antworten (Kampfszene). Ilka spricht als Gegnerin auf dem Brett (fallback: skip), Rhen und Lucan sind immer da.
+id: scn.m2_3.ilka_talk
+lines:
+  - id: l01
+    mood: neutral
+    text: "Zwischen den Bäumen kniet eine Schützin. Der Bogen ist gespannt, der Pfeil zeigt zu Boden."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich lese Spuren, keine Wappen. Die Lanze zahlt mich für die Pferdezüge, nicht fürs Töten."
+  - id: l03
+    speaker: [avatar]
+    mood: neutral
+    text: "Dann lies unsere. Wir sind keine Pferdediebe, auch wenn es heute so aussieht."
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Eure Spur kommt vom Grenzheer. Die riecht nach Lüge. Aber ihr lauft nicht wie Lügner."
+  - id: l05
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann lauf ein Stück mit uns. Wer Spuren liest, sieht früher, wohin sie führen."
+  - id: l06
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ein Stück. Wenn es mir nicht gefällt, bin ich fort, bevor ihr es merkt."
