@@ -237,6 +237,14 @@ export interface MemorialDef {
   requires: Condition[];
 }
 
+/** A scene that plays once at home (story 11.23, `campaign.yaml` homeScenes). */
+export interface HomeSceneDef {
+  scene: string;
+  home?: HomeKind;
+  requires: Condition[];
+  effects: Effect[];
+}
+
 export interface CampaignDef {
   /** act number of this campaign file (`content/acts/actN/campaign.yaml`) */
   act: number;
@@ -247,6 +255,11 @@ export interface CampaignDef {
   mechanics: Partial<Record<Mechanic, number>>;
   /** where the company lives at the start of the act (`setHome` later switches camp → castle); rooms: `content/core/rooms.yaml` */
   home: HomeKind;
+  /**
+   * story 11.23: scenes that play once at home (`pendingHomeScene`), in file order: in the home `home` (any when absent), once
+   * `requires` holds and the scene has not been seen; `effects` run when it ends (e.g. `setFlag: chronicle_read`)
+   */
+  homeScenes: HomeSceneDef[];
   /** highest level in this act; EP above it are forfeited (falls back to `balance.levels.max`) */
   levelCap?: number;
   /**

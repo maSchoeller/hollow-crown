@@ -68,7 +68,7 @@ export const balanceSchema = z.object({
   journal: z.object({ compactAfter: z.number().int().min(10), keepCheckpoints: z.number().int().min(1) }),
   chronicle: z.strictObject({
     seasonPages: z.number().int().min(1),
-    sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1) })).default([]),
+    sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1), readFlag: z.string().min(1).optional() })).default([]),
   }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
   simulation: z.object({

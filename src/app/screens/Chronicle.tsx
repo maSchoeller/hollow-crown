@@ -1,6 +1,6 @@
 /** Chronicle (story 4.7, EXPERIENCE.md "Chronik"): per act the decisions with the answer given and their consequences, and the pages found. */
 import { useState } from 'preact/hooks';
-import { chronicleView, pageTextKey, pageTitleKey, sealedTextKey, sealedTitleKey, type ChronicleAct, type ChronicleDecision } from '../../core';
+import { chronicleView, pageTextKey, pageTitleKey, readTextKey, readTitleKey, sealedTextKey, sealedTitleKey, type ChronicleAct, type ChronicleDecision } from '../../core';
 import { t } from '../../i18n';
 import { consequenceView } from '../../ui/ConsequenceCard';
 import { Icon } from '../../ui/icons';
@@ -29,6 +29,8 @@ export function Chronicle({ from = 'worldmap' }: { from?: From }) {
   const [page, setPage] = useState<string | null>(null);
   const [sealed, setSealed] = useState<string | null>(null);
   const decisions = view.acts.reduce((n, a) => n + a.decisions.length, 0);
+  // story 11.23: a sealed entry deciphered by Beat 10 shows its read texts
+  const read = (flag: string) => view.acts.some((a) => a.deciphered.includes(flag));
   return (
     <>
       <div class="hc-view">
@@ -66,8 +68,8 @@ export function Chronicle({ from = 'worldmap' }: { from?: From }) {
         </Piece>
       </div>
       {sealed && (
-        <Sheet title={t(sealedTitleKey(sealed))} onClose={() => setSealed(null)}>
-          <p class="chr-page">{t(sealedTextKey(sealed))}</p>
+        <Sheet title={t(read(sealed) ? readTitleKey(sealed) : sealedTitleKey(sealed))} onClose={() => setSealed(null)}>
+          <p class="chr-page">{t(read(sealed) ? readTextKey(sealed) : sealedTextKey(sealed))}</p>
         </Sheet>
       )}
       {page && (
@@ -136,8 +138,8 @@ function Pages({ act, onOpen, onOpenSealed }: { act: ChronicleAct; onOpen: (id: 
               <Icon name="log" size={22} />
             </span>
             <span style={{ minWidth: 0 }}>
-              <span class="hc-line-item__name">{t(sealedTitleKey(flag))}</span>
-              <span class="hc-line-item__sub">{t('ui.chronicle.sealed')}</span>
+              <span class="hc-line-item__name">{t(act.deciphered.includes(flag) ? readTitleKey(flag) : sealedTitleKey(flag))}</span>
+              <span class="hc-line-item__sub">{t(act.deciphered.includes(flag) ? 'ui.chronicle.deciphered' : 'ui.chronicle.sealed')}</span>
             </span>
             <span class="hc-line-item__side">
               <Icon name="forward" size={18} />

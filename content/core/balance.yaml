@@ -141,7 +141,8 @@ chronicle:
   # entries that appear in the chronicle with their story flag but are no pages and do not count towards the 12 (story 9.8: the sealed chronicle of the wardens)
   # texts: chronicle.sealed.<flag>.title|text in locales/<lang>.yaml
   sealed:
-    - { flag: wardens_chronicle, act: 1 }
+    # readFlag (story 11.23): Beat 10 „Die Chronik“ (scn.castle.chronicle) sets chronicle_read, the entry then shows as deciphered
+    - { flag: wardens_chronicle, act: 1, readFlag: chronicle_read }
 # farewell card after a death (story 6.7, UX: the first 2 s cannot be skipped)
 farewell:
   lockMs: 2000

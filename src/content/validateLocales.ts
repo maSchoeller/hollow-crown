@@ -1,6 +1,6 @@
 import { HOME_KINDS } from '../core/defs';
 import type { GameData } from '../core/gameData';
-import { pageTextKey, pageTitleKey, sealedTextKey, sealedTitleKey } from '../core/campaign/chronicle';
+import { pageTextKey, pageTitleKey, readTextKey, readTitleKey, sealedTextKey, sealedTitleKey } from '../core/campaign/chronicle';
 import { memorialTexts } from '../core/campaign/memorial';
 import type { Locales } from './load';
 import type { Err } from './validateRefs';
@@ -33,6 +33,10 @@ export function validateLocales(data: GameData, locales: Locales, err: Err, spri
   for (const e of data.balance.chronicle.sealed) {
     need.push(sealedTitleKey(e.flag), sealedTextKey(e.flag));
     if (!data.flags[e.flag]) err('balance.yaml', `chronicle.sealed: undeclared flag ${e.flag} (acts/*/flags.yaml)`);
+    if (e.readFlag) {
+      need.push(readTitleKey(e.flag), readTextKey(e.flag));
+      if (!data.flags[e.readFlag]) err('balance.yaml', `chronicle.sealed: undeclared readFlag ${e.readFlag} (acts/*/flags.yaml)`);
+    }
   }
   if (Object.keys(data.chronicle).length > data.balance.chronicle.seasonPages)
     err('chronicle.yaml', `${Object.keys(data.chronicle).length} chronicle pages, the season has ${data.balance.chronicle.seasonPages}`);

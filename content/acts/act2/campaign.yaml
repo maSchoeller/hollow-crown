@@ -36,6 +36,11 @@ nodes:
   # N5 (Story 11.21): Belohnung Glutfunke als Knotenwirkung (nur bei Sieg), Brann tritt nur im Kampf durch Ansprechen bei (Ilka, sonst Lucan)
   - { id: n5, kind: side, map: n5_kupfermine, titleKey: node.n5.title, pre: scn.n5.intro, post: scn.n5.outro, requires: [{ completed: m2_4 }], place: kupfermine, merchantTier: 1, effects: [{ item: { def: ember_spark } }] }
   - { id: n6, kind: side, map: n6_auemarkt, titleKey: node.n6.title, requires: [{ completed: m2_5 }, { completed: m2_6 }, { any: [{ alive: jory }, { dead: jory }] }], place: auemarkt, merchantTier: 1 }
+# Szenen daheim (Story 11.23): spielen einmal in der Heimat, sobald requires gilt; effects laufen am Ende. Beat 10 „Die Chronik“ in der
+# Burg bei der Rückkehr nach 2-4 (Epic 11; bei fester Folge die 3. Story-Mission nach 2-1, 2-2/2-3). Der Narrative-Log 2026-10-31
+# nannte „nach der dritten abgeschlossenen Akt-2-Story-Mission“; dafür hieße es storyCount { min: 3 } statt completed m2_4 [ASSUMPTION].
+homeScenes:
+  - { scene: scn.castle.chronicle, home: castle, requires: [{ completed: m2_4 }, { flag: wardens_chronicle }], effects: [{ setFlag: chronicle_read }] }
 # Händler von Akt 2 [ASSUMPTION]: Stufe 0 aus vorhandenen Teilen (Stahl, Heilung, Rüstung); Stufe 1 mit dem Stahl-Tier (Story 11.5, Fassung 2026-10-31),
 # offen über merchantTier 1 der Knoten ab 2-2; Stufe 2 mit der 4. Story-Mission. shade (Dunkel) nie beim Händler (items.md §4). Stufe 3 und roomLevel 2: Story 10.9.
 merchant:

@@ -14,6 +14,7 @@ import { clone } from '../../core/util';
 import { DEV_MAP_ID, devLieutenantMap, devLieutenantNode, fleeSetup, type DevLieutenant } from './devLieutenant';
 import { wantedUid } from './wanted';
 import { playNode, beginMission, concludeBattle, storyContext, runEffects } from './flow';
+import { ensurePack } from './packs';
 import { startToneTest } from './toneTest';
 
 /**
@@ -205,6 +206,27 @@ if (import.meta.env.DEV) {
         campaign.value = c;
         battle.value = null;
         screen.value = { name: 'worldmap' };
+      },
+      /**
+       * story 11.23 (act 2 build): the castle of act 2 after 2-4. `chronicle` (default): Beat 10 is due and plays over the castle;
+       * `talk`: Jory, Nell, Ilka and Brann have joined and every act-2 pair has a C talk ready at the campfire (open it there).
+       */
+      devAct2Home: async (mode: 'chronicle' | 'talk' = 'chronicle') => {
+        if (!data.releasedActs?.includes(2)) return console.warn('[dev] act 2 is not in this build: start the dev server with pnpm dev:act2');
+        await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = [...data.acts[1]!.nodes.map((n) => n.id), 'm2_1', 'm2_2', 'm2_3', ...(mode === 'chronicle' ? ['m2_4'] : [])];
+        c.home = { ...c.home, kind: 'castle' };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.flags = { ...c.flags, wardens_chronicle: true };
+        if (mode === 'talk') c.scenesSeen = [...c.scenesSeen, 'scn.castle.chronicle'];
+        for (const id of ['liora', 'ysolde', 'jory', 'nell', 'ilka', 'brann']) addToRoster(data, c, id);
+        if (mode === 'talk') for (const key of ['jory|nell', 'brann|ilka']) c.supports[key] = { points: data.balance.supports.thresholds.C, rank: null };
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', ...(mode === 'talk' ? { tab: 'campfire' } : {}) };
       },
       /**
        * a lieutenant changes sides (story 3.7): `devJoin(view, full)` with view `card` (default: plays a test decision whose answer is
