@@ -1,0 +1,21 @@
+# Mission 2-4, Runde 6 Gegnerphase (Trigger t_grell, nur solange Grell auf dem Brett steht): Grell kommt über das Verbrannte. Erste Spur Dravn–Maelis:
+# Dravn lässt Grells Leute hinter seinem Feuer plündern, die Beute geht an die Herzogin (Narrative-Log 2026-10-31). Vorschlag der Schreib-Pipeline [ASSUMPTION].
+id: scn.m2_4.grell_battle
+lines:
+  - id: l01
+    mood: neutral
+    text: "Über das Verbrannte im Norden kommt Kapitän Grell mit seinen Leuten, die Säcke schon halb voll."
+  - id: l02
+    speaker: [grell]
+    fallback: skip
+    mood: happy
+    text: "Hinter dem Feuer plündert es sich gut. Der General hat versprochen, dass uns keiner stört."
+  - id: l03
+    speaker: [lucan]
+    mood: angry
+    text: "Dravn lässt Grell hinter seinem eigenen Feuer plündern?"
+  - id: l04
+    speaker: [grell]
+    fallback: skip
+    mood: neutral
+    text: "Feuer für den General, Beute für die Herzogin. So ist es abgemacht."

@@ -1,0 +1,10 @@
+# Story 11.15: Mission 2-4 „Die Brandschneise“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812:
+# Feuer im Norden, angekündigte Feuerfront der Runde 2, Brann auf dem Schrein, Sable auf der Lichtung).
+#   pnpm lab brandschneise-2-4                    Lage zu Beginn
+#   pnpm lab brandschneise-2-4 --play             spielt die Runden mit der Sieg-KI (Feuerfront, Schneise R3/R6, Sable geht in R7)
+#   pnpm lab brandschneise-2-4 --forecast <a> <b> Kampfvorschau zweier Figuren
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('brandschneise-2-4')
+question: Wie sieht die Brandschneise zu Beginn aus?
+map: m2_4_brandschneise
+company: expected

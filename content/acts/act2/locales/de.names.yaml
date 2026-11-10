@@ -68,6 +68,8 @@ unit.clan_elder.name: "Clanälteste"
 map.n5_kupfermine.name: "Die Kupfermine"
 unit.duchess_looter.name: "Plünderer der Herzogin"
 unit.foreman.name: "Vorarbeiter"
+# Story 11.15: Mission 2-4
+map.m2_4_brandschneise.name: "Die Brandschneise"
 # Story 11.22: Nebenquest N6 (Karte, Gauklermeisterin und Schuldeneintreiber)
 map.n6_auemarkt.name: "Der Auemarkt"
 unit.troupe_master.name: "Meisterin Maren"

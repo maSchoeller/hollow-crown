@@ -1,0 +1,11 @@
+# Mission 2-4, Szene beim Öffnen der Köhlertruhe c_page (läuft in der Schlacht, ohne Antworten). Die Seite selbst ist die Truhenbelohnung
+# `chronicle: a2_brandhang` ([ASSUMPTION] PO F6 vorläufig A). Vorschlag der Schreib-Pipeline.
+id: scn.m2_4.page
+lines:
+  - id: l01
+    mood: neutral
+    text: "Unter verkohlten Brettern der Köhlerhütte steht eine eiserne Kiste. Darin ein Blatt, kaum angesengt."
+  - id: l02
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Eine Seite der Paktwächter. Hier hat ein König nichts genommen, sondern etwas zurückgebracht."

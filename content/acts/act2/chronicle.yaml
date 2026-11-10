@@ -10,3 +10,9 @@
 - id: a2_salzpass
   title: "Was der König gab"
   text: "Paktnacht. Der König kniete am Altar, die Glutkrone auf den Knien, und gab. Was, darf ich nicht schreiben; ich sah nur, dass er danach langsamer aufstand. Die Herzöge jubelten. Am Morgen war der Altar warm und der König grau an den Schläfen, mit dreißig Jahren. Ich schreibe es auf, damit einer zählt."
+# 2-4 „Die Brandschneise“ (Story 11.15), Köhlertruhe c_page: [ASSUMPTION] PO F6 vorläufig A – die Köhler hüteten eine Seite über ein Paktfest, bei dem
+# ein König Glut in den Berg zurückgab (Brücke zu N5, Glut unter dem Berg). Anders als a2_salzpass und a2_mine: kein König, der etwas hergibt und
+# dabei verliert, sondern einer, der dem Berg etwas zurückbringt, und ein Hang, der danach nicht mehr brannte. Text der Schreib-Pipeline als Vorschlag zur Abnahme.
+- id: a2_brandhang
+  title: "Was der König zurückgab"
+  text: "Paktfest am Brandhang, im Jahr nach dem großen Feuer. Der König kam zu Fuß herauf, ohne Krone, einen Tonkrug voll Glut im Arm. Er goss sie in den Spalt über dem Köhlerwald und sprach: Was wir dem Berg genommen haben, bringe ich zurück. Vierzig Jahre brannte am Hang kein Baum. Wir Köhler tragen keine Fackel in den Nordwald. Wer es tut, hat den Pakt vergessen."

@@ -1,0 +1,45 @@
+# Mission 2-4, Szene vor der Karte (Knoten pre, Story 11.15): Ankunft am Brandhang am Abend. Der Bote Dravns löst den Auftrag aus 2-1 ein
+# und nennt das Feuer „Drachenfeuer“ (Dravns Lüge, sie platzt im Lauf der Mission). Brann steht schon auf dem Schrein; das Dorf hat ihn einst verjagt.
+# Gefährtenzeilen mit Ersatzsprecher-Kette. Text nach der Schreib-Pipeline der Narrative als Vorschlag [ASSUMPTION], Abnahme beim Durchspielen.
+id: scn.m2_4.intro
+background: brandschneise
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Abend am Brandhang. Über dem Bergwald hängt Asche, im Norden steht eine rote Wand aus Feuer."
+  - id: l02
+    speaker: [dravn_envoy]
+    fallback: skip
+    mood: neutral
+    text: "Drachenfeuer, sagt der General. Haltet das Dorf, bis das Grenzheer kommt. Das ist der Auftrag."
+  - id: l03
+    speaker: [lucan]
+    mood: angry
+    text: "Drachen? Ich sehe keinen Schatten am Himmel. Nur Fackeln am Waldrand."
+  - id: l04
+    mood: neutral
+    text: "Auf dem Schrein am Dorfplatz steht ein junger Mann, beide Hände am Fels. Der Stein unter ihm glimmt."
+  - id: l05
+    speaker: [villager_elder]
+    fallback: skip
+    mood: sad
+    text: "Das ist Brann, der Steinrufer. Wir haben ihn fortgejagt. Jetzt ist er trotzdem zurückgekommen."
+  - id: l06
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Ich reiße den Hang auf. Eine Schneise aus Asche, da kommt kein Feuer durch. Gebt mir nur Zeit."
+  - id: l07
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Bis die Nacht ganz da ist. Holen sie mich vom Schrein, brennt das ganze Dorf."
+  - id: l08
+    speaker: [brenna, tobin, avatar]
+    mood: angry
+    text: "Plünderer in den Flanken. Die wollen die Häuser, nicht uns."
+  - id: l09
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann halten wir beides. Brann auf dem Schrein, die Häuser an den Rändern. Los."

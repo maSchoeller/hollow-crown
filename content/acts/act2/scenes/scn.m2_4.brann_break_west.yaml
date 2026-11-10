@@ -1,0 +1,11 @@
+# Mission 2-4, Runde 3 (Trigger t_break_west, nur solange Brann steht): die Schneise im Westen wird Asche. Vorschlag der Schreib-Pipeline [ASSUMPTION].
+id: scn.m2_4.brann_break_west
+lines:
+  - id: l01
+    mood: neutral
+    text: "Brann schlägt beide Hände auf den Schrein. Am Westrand der Terrasse reißt die Erde auf."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Der Westen steht. Dort findet das Feuer nur noch Asche."

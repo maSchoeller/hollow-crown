@@ -4,3 +4,6 @@ chronicle.a2_salzpass.text: "Pact Night. The king knelt at the altar, the Ember 
 # Story 11.21: page a2_mine (side quest N5)
 chronicle.a2_mine.title: "What the Mountain Takes"
 chronicle.a2_mine.text: "Pact Night beneath the copper mountain. The king went down alone into the hall of ribs, with the Ember Crown and empty hands. He came back, and the crown burned brighter than before. He himself was paler. He said he had given what the pact demands. What it was, he did not say. I have written it down so that someone will ask."
+# Story 11.15: page a2_brandhang (mission 2-4, charcoal burners' chest)
+chronicle.a2_brandhang.title: "What the King Gave Back"
+chronicle.a2_brandhang.text: "Pact Feast on the Burnt Slope, the year after the great fire. The king came up on foot, without his crown, a clay jar of embers in his arms. He poured them into the cleft above the charcoal wood and said: what we took from the mountain, I bring back. For forty years no tree burned on the slope. We charcoal burners carry no torch into the north wood. Whoever does has forgotten the pact."

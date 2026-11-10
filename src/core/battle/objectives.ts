@@ -2,7 +2,7 @@ import type { Pos, Team, WeaponType } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapDef, MapUnitDef, SideObjectiveDef, TriggerDef } from '../mapDefs';
 import type { GameEvent } from '../events';
-import { burningTileHit, eventTerrain } from '../rules/effects';
+import { burningTileHit, eventTerrain, igniteTile } from '../rules/effects';
 import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, clone, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
 import { activeVictory, escapeProgress, leftAlive, mustUnits } from './activeVictory';
@@ -321,6 +321,7 @@ export function runTriggers(data: GameData, s: BattleState, ctx: TriggerCtx, eve
         }
       } else if (a.action === 'spawn') spawnUnits(data, s, a.units, true, events);
       else if (a.action === 'set_terrain') for (const p of areaTiles(a.area)) eventTerrain(data, s, p, a.terrain, a.level, events);
+      else if (a.action === 'ignite') for (const p of areaTiles(a.area)) igniteTile(data, s, p, 'ignite', events);
       else if (a.action === 'advance_objective') advanceObjective(data, s, events);
     }
   }

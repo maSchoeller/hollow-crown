@@ -173,6 +173,11 @@ export type TriggerAction =
   /** the map changes by an event (a wall falls, a gate shuts): `level` sets the height level of the tiles, without it they take their terrain's */
   /** `warn` (story 11.10): the tiles are marked and a line shows from the round before (`true`: the general line, else its locale key) */
   | { action: 'set_terrain'; area: Area; terrain: string; level?: number; warn?: true | string }
+  /**
+   * story 11.15: the flammable tiles of the area catch fire now, as by a fire spell (`igniteTile`: burning for `burningDuration`, then ash);
+   * a fixed, announced fire front is a row of these triggers. No dice: only the spread at the round start rolls (seeded). `warn` as for `set_terrain`.
+   */
+  | { action: 'ignite'; area: Area; warn?: true | string }
   /** story 11.8: the victory goal changes to its second phase now (nothing on a map without `then` or once changed) */
   | { action: 'advance_objective' };
 

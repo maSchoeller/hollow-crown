@@ -1,0 +1,11 @@
+# Mission 2-4, Runde 6 (Trigger t_break_east, nur solange Brann steht): die Schneise im Osten wird Asche. Vorschlag der Schreib-Pipeline [ASSUMPTION].
+id: scn.m2_4.brann_break_east
+lines:
+  - id: l01
+    mood: neutral
+    text: "Wieder bebt der Hang. Im Osten wirft der Boden eine Furche aus Asche und Geröll auf."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Jetzt ist die Schneise ganz. Haltet sie mir nur noch vom Leib."
