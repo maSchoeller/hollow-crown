@@ -5,7 +5,7 @@ import { variantClassOf, variantList } from './propVariants';
 import { seasonOf } from './season';
 
 /** Terrain props the board builds from pieces or names itself (walls, gates, boardwalks, the rock wall, the lever), not from `<prop>_idle`. */
-const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'rockwall', 'lever']);
+const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'rockwall', 'lever', 'paddock', 'paddock_gate']);
 
 /** A map's weather must be one that `render.yaml look.weather[..].acts` allows in the map's act (art-direction §2.5): an error. */
 export function validateWeather(data: GameData): ContentIssue[] {
@@ -74,8 +74,14 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
         continue;
       }
       const season = seasonOf(data.render, map);
-      if (!variantList(data, cls, season).some((e) => e.model === pv.model)) {
+      const entry = variantList(data, cls, season).find((e) => e.model === pv.model);
+      if (!entry) {
         out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is not a ${cls} variant of ${season} (render.yaml board.variants.${cls}: ${variantList(data, cls, season).map((e) => e.model).join(', ')})` });
+      } else if (entry.wide) {
+        // a two-field model covers its east neighbour: the same terrain there, and no model of its own set by hand
+        const east = map.legend[rows[pv.at[1]]?.[pv.at[0] + 1] ?? ''];
+        const taken = (map.propVariants ?? []).some((o) => o.at[0] === pv.at[0] + 1 && o.at[1] === pv.at[1]);
+        if (east !== id || taken) out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is two fields wide and needs the east neighbour as ${id} without a model of its own` });
       }
     }
   }

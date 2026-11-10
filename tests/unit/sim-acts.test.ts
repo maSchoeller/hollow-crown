@@ -34,16 +34,17 @@ const sim = (o: CampaignSimOptions) => simulateCampaign(prepareActData(data, o),
 /** the mission played on the probe map */
 const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
 
-// Each of these plays whole battles of the probe map (at m2_1) and of 2-2 (a real map since story 11.13): 2.3–8 s alone, over 15 s under coverage
-// on a busy machine, hence the own timeout.
-describe('simulation over the acts (story 11.4)', { timeout: 30_000 }, () => {
+// Each of these plays whole battles of the probe map (at m2_1) and of 2-2 and 2-3 (real maps since stories 11.13, 11.14): 9–10.5 s alone
+// (story 11.14, was 2.3–8 s with 2-2 only), about twice that under coverage on a busy machine, hence the own timeout.
+describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
     const a = sim(opts());
     expect(sim(opts())).toEqual(a);
-    expect(a.missions.map((m) => m.node)).toEqual(['m2_1', 'm2_2']);
+    expect(a.missions.map((m) => m.node)).toEqual(['m2_1', 'm2_2', 'm2_3']);
     expect(a.missions[0]!.map).toBe('dev_eisenmark');
     expect(a.missions[1]!.map).toBe('m2_2_salzpass');
-    expect(Object.keys(a.skipped)).toEqual(['m2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8']);
+    expect(a.missions[2]!.map).toBe('m2_3_rabenweide');
+    expect(Object.keys(a.skipped)).toEqual(['m2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8']);
     // the company starts act 2 on P of its first mission
     expect(a.entry.runs).toBe(1);
     expect(a.entry.armyLevel).toBe(base);
