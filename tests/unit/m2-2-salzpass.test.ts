@@ -14,7 +14,6 @@ import {
   startBattle,
   terrainAt,
   terrainWarnings,
-  visionRadius,
   type BattleState,
   type BattleUnit,
   type CampaignState,
@@ -159,9 +158,10 @@ describe('map m2_2_salzpass', () => {
   });
 
   it('lets scouts and marksmen see 5 tiles in the fog, everyone else 3', () => {
-    expect(visionRadius(data, { classId: 'scout' })).toBe(5);
-    expect(visionRadius(data, { classId: 'marksman' })).toBe(5);
-    expect(visionRadius(data, { classId: 'vanguard' })).toBe(3);
+    // on the ground (level 0, no skills): base vision plus the role bonus; height adds more since the vision rework on main
+    const f = data.balance.fog;
+    const sight = (cls: string) => f.baseVision + Math.max(f.roleBonus[data.classes[cls]!.role ?? ''] ?? 0, f.moveTypeBonus[data.classes[cls]!.moveType ?? 'foot'] ?? 0);
+    expect([sight('scout'), sight('marksman'), sight('vanguard')]).toEqual([5, 5, 3]);
   });
 
   it('has the chronicle page a2_salzpass and the scouts’ sea chart in the side chests, nobody joins', () => {

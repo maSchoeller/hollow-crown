@@ -227,6 +227,7 @@ export const skillSchema = z.object({
       cheerTargets: z.number().int().min(1).max(2),
       ignoreGrief: z.boolean(),
       siegeRangeBonus: z.number().int().min(1),
+      visionBonus: z.number().int().min(1),
     })
     .partial(),
   usesPerMap: z.number().optional(),

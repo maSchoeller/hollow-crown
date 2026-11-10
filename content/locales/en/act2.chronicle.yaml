@@ -1,3 +1,6 @@
 # English texts of the act 2 chronicle pages (chronicle.<id>.title|text); German sits in acts/act2/chronicle.yaml.
 chronicle.a2_salzpass.title: "What the King Gave"
 chronicle.a2_salzpass.text: "Pact Night. The king knelt at the altar, the Ember Crown on his knees, and gave. What, I may not write; I only saw that he rose more slowly afterwards. The dukes cheered. By morning the altar was warm and the king grey at the temples, at thirty. I write it down so that someone keeps count."
+# Story 11.21: page a2_mine (side quest N5)
+chronicle.a2_mine.title: "What the Mountain Takes"
+chronicle.a2_mine.text: "Pact Night beneath the copper mountain. The king went down alone into the hall of ribs, with the Ember Crown and empty hands. He came back, and the crown burned brighter than before. He himself was paler. He said he had given what the pact demands. What it was, he did not say. I have written it down so that someone will ask."

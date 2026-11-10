@@ -240,7 +240,8 @@ const sideGoldOf = (r: BattleResult): number => r.side.filter((s) => s.done).red
  * (story 11.4) the listed nodes go first when several are open at once, so either mission of a pair can come first.
  */
 function nextNode(data: GameData, c: CampaignState, order: string[] = []): string | undefined {
-  const open = availableNodes(data, c).filter((n) => n.kind === 'story' && !c.completed.includes(n.id));
+  // story 11.20: a side node named in `--order` is played too, as soon as it is open (e.g. N4 after 2-3 with Ilka in the company)
+  const open = availableNodes(data, c).filter((n) => (n.kind === 'story' || order.includes(n.id)) && !c.completed.includes(n.id));
   return (order.map((id) => open.find((n) => n.id === id)).find(Boolean) ?? open[0])?.id;
 }
 
@@ -277,7 +278,10 @@ export function prepareActData(
   const d: GameData = { ...data, releasedActs: Array.from({ length: act }, (_, i) => i + 1), acts: { ...data.acts }, maps: { ...data.maps } };
   let nodes: CampaignNodeDef[] = head.nodes;
   const story = nodes.filter((n) => n.kind === 'story');
-  if (o.node && !story.some((n) => n.id === o.node)) throw new Error(`--node ${o.node} is no story node of act ${act} (${story.map((n) => n.id).join(', ')})`);
+  // story 11.20: a side node may be the target too, it is played when `--order` names it
+  const named = nodes.find((n) => n.id === o.node);
+  if (o.node && (!named || (named.kind !== 'story' && !o.order?.includes(o.node))))
+    throw new Error(`--node ${o.node} is no story node of act ${act} (${story.map((n) => n.id).join(', ')}); a side node needs --order ${o.node}`);
   let target = o.node ?? story.find((n) => !d.maps[n.map])?.id ?? story[0]?.id;
   if (o.mapFile) {
     const parsed = mapSchema.parse(parse(readFileSync(o.mapFile, 'utf8'))) as Omit<MapDef, 'act'>;
@@ -399,6 +403,8 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         out.skipped[id] = (out.skipped[id] ?? 0) + 1;
         c.completed.push(id);
         applyNodeRewards(data, c, id);
+        // story 11.20: whoever joins on that map joins here (Ilka at 2-3), so the side quests that need him can open
+        for (const ch of Object.values(data.chars)) if (ch.joins === id) addToRoster(data, c, ch.id);
         continue;
       }
       if (o.maxMissions !== undefined && played++ >= o.maxMissions) {

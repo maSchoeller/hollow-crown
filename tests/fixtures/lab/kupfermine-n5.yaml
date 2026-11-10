@@ -1,0 +1,7 @@
+# Story 11.21: Nebenquest N5 „Glut unter dem Berg“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung Innen-Look, Bild 375 × 812).
+#   pnpm lab kupfermine-n5                       Lage zu Beginn
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('kupfermine-n5')
+question: Wie sieht die Kupfermine zu Beginn aus?
+map: n5_kupfermine
+company: expected
