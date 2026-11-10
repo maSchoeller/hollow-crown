@@ -15,8 +15,8 @@ export function validateFormat(data: GameData, map: MapDef, locales: Locales, er
   for (const u of all) if (u.guest && u.team !== 'other') err(f, `${u.id ?? u.char ?? u.class}: guest is only for units of team other`);
   for (const t of map.triggers)
     for (const a of t.then) {
-      if (a.action !== 'set_terrain' || !a.warn) continue;
-      if (t.when.type !== 'turn_start' || t.when.turn < 2) err(f, `${t.id}: a warned set_terrain needs a trigger on turn_start from round 2 on`);
+      if ((a.action !== 'set_terrain' && a.action !== 'ignite') || !a.warn) continue;
+      if (t.when.type !== 'turn_start' || t.when.turn < 2) err(f, `${t.id}: a warned ${a.action} needs a trigger on turn_start from round 2 on`);
       if (a.warn !== true) for (const lang of ['de', 'en']) if (!locales[lang]?.[a.warn]) err(`locales/${lang}`, `${t.id}: missing key ${a.warn}`);
     }
 }

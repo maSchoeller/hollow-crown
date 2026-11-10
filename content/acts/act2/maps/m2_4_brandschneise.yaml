@@ -1,0 +1,268 @@
+# Mission 2-4 – Die Brandschneise (Knoten m2_4). Entwurf concept/27-ueberarbeitung/levels/s2_2_4_brandschneise.yaml, Missionsliste: G 30×40, defend Brann 12, 12 / 38, Leutnant Grell.
+# Bergdorf am Brandhang, drei Stufen von Nord nach Süd: oben Wald und Getreide (Stufe 2), das Dorf auf der Mittelterrasse (Stufe 1), unten Felder und Weide (Stufe 0);
+# zwischen den Stufen nur Rampen und Treppen. Dravns Feuer kommt von Norden, Grells Plünderer dahinter und in den Flanken. Brann (Gast, nicht steuerbar) steht
+# auf dem Schrein und reißt in Runde 3 (West) und 6 (Ost) die Schneise auf y 17 (ash); fällt er, ist die Mission verloren. Sable sieht von der Lichtung zu.
+# Feuer [ASSUMPTION] PO F1 vorläufig A: eine feste, angekündigte Feuerfront (Trigger-Aktion ignite mit warn) frisst sich nach Süden, im Westen schneller
+# (R2 y 4–7, R3 y 8–11, R4 y 12–16) als im Osten (je zwei Reihen, R7 y 14–16); jede Kante brennt erst eine Runde nach ihrer Schneise. Die Straße x 14–15 trennt
+# beide Hälften, Berg und Rampen brennen nicht: südlich der Schneise kommt kein Feuer an. Schneller oder langsamer: nur die Runden der t_fire_*-Trigger ändern.
+# Abweichungen vom Entwurf (Story 11.15, alle in levels/abnahme/s2_2_4_brandschneise.md): Karten-Id m2_4_brandschneise, Szenen scn.m2_4.*, Gegner nur mit levelOffset
+# und mit den Figuren des Pools silver_sea, Grell als skirmisher mit steel_sword (Leutnant-Regel), Brann mit Stufe und Werten aus units.yaml,
+# Sable ohne Waffe auf einer Lichtung aus plain (F4), a0 mit Truhenschlüssel, Feuerfront (F1), Chronik a2_brandhang (F6), Gold 2 500 (F5), zwei Heimsuchungs-Anker.
+# Balancing [C] siehe Abschnitt „Übernahme Story 11.15“ der Abnahme-Datei (pnpm sim m2_4_brandschneise --campaign act2 --start expected, P = 15).
+# Szenen: scn.m2_4.intro (Knoten pre), scn.m2_4.brann_break_west (R3), scn.m2_4.grell_battle (R6, Gegnerphase), scn.m2_4.brann_break_east (R6),
+# scn.m2_4.sable_watches (R7), scn.m2_4.page (Köhlertruhe), scn.m2_4.outro mit E7 (Knoten post).
+id: m2_4_brandschneise
+nameKey: map.m2_4_brandschneise.name
+size: [30, 40]
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "b": building
+  "v": village
+  "k": field
+  "S": shrine
+  "R": ruins
+  "/": ramp
+  "s": stairs
+#          x: 012345678901234567890123456789
+terrain: |
+  ^^TTTTTTTTTTTT__TTTTTTTTTTTT^^
+  ^^TTTTTTTTTTTT__TTTTTTTTTTTT^^
+  ^^TTTTTTTTTTTT__TTTTTTTTTTTT^^
+  ^^TTTTTT,,,,TT__TTTTTTTTTTTT^^
+  ^^TTTTTT,R,,TT__TTTTTTTTTTTT^^
+  ^^TTTTTT,,,,TT__TTTTTTTTTTTT^^
+  ^^TTTTTTTTTTTT__TTT.....TTTT^^
+  ^^TTTTTTTTTTTT__TTT.....TTTT^^
+  ^^TTTTTTTTTTTT__TTT.....TTTT^^
+  ^^TTTTTTTTTTTT__TTTTTTTTTTTT^^
+  ^^^TTTTTTTTTTT__TTTTTTTTTTT^^^
+  ^^^TTTTTTTTTTT__TTTTTTTTTTT^^^
+  ^^^,,,,,,,,,,,__,,,,,,,,,,,^^^
+  ^^^,kkkkkkkkkk__kkkkkkkkkk,^^^
+  ^^^,kkkkkkkkkk__kkkkkkkkkk,^^^
+  ^^^,kkkkkkkkkk__kkkkkkkkkk,^^^
+  ^^^,kkkkkkkkkk__kkkkkkkkkk,^^^
+  ^^^,,,/,,,,,,,//,,,,,,,/,,,^^^
+  ^^^,,,,,,,,,,,__,,,,,,,,,,,^^^
+  ^^^,,,bb,,,,b,__,b,,,bb,,,,^^^
+  ^^^,,,,,v,,,,,__,,,,,v,,,,,^^^
+  ^^^,,,,,,,,,,.._..,,,,,,,,,^^^
+  ^^^,,,,,,,,,,..S..,,,,,,,,,^^^
+  ^^kkkk,,,bb,,.._..,bb,,,kkkk^^
+  ^^kkkk,,,,,,,,__,,,,,,,,kkkk^^
+  ^^kkkk,,,,,v,,__,,v,,,,,kkkk^^
+  ^^kkkk,,,,,,,,__,,,,,,,,kkkk^^
+  ^^,,,,/,,,s,,,//,,,s,,,/,,,,^^
+  ^^,,kkkkkkkkkk__kkkkkkkkkk,,^^
+  ^^,,kkkkkkkkkk__kkkkkkkkkk,,^^
+  ^^,,kkkkkkkkkk__kkkkkkkkkk,,^^
+  ^^,,kkkkkkkkkk__kkkkkkkkkk,,^^
+  ^^,,,,,,,,,,,,__,,,,,,,,,,,,^^
+  ^^,TTTT,,,,,,,__,,,,,,,,,,,,^^
+  ^^,TTTT,,,,,,,__,,,,,,,,TTTT^^
+  ^^,TTTT,,,,,,,__,,,,,,,,TTTT^^
+  ^^,TTTT,,TTT,,__,,TTT,,,TTTT^^
+  ^^,,,,,,,TTT,,__,,TTT,,,TTTT^^
+  ^^,,,,,,,TTT,,__,,TTT,,,,,,,^^
+  ^^,,,,,,,,,,,,__,,,,,,,,,,,,^^
+levels:
+  - { level: 2, area: { rect: [0, 0, 29, 16] } }
+  - { level: 1, area: { rect: [0, 17, 29, 26] } }
+timeOfDay: evening
+weather: ash
+objects:
+  - { id: v_nw, type: village, at: [8, 20], reward: { gold: 300 } }
+  - { id: v_ne, type: village, at: [21, 20], reward: { gold: 300 } }
+  - { id: v_sw, type: village, at: [11, 25], reward: { item: { def: vulnerary } } }
+  - { id: v_se, type: village, at: [18, 25], reward: { gold: 300 } }
+  - { id: c_page, type: chest, at: [10, 4], contents: { gold: 300, chronicle: a2_brandhang, dialogue: scn.m2_4.page } }
+initialEffects:
+  - { effect: burning, tiles: [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [12, 3], [13, 3], [16, 3], [17, 3], [18, 3], [19, 3], [20, 3], [21, 3], [22, 3], [23, 3], [24, 3], [25, 3], [26, 3], [27, 3]], turns: 3 }
+deploy:
+  max: 12
+  forced: [avatar, lucan]
+  slots: [[11, 21], [12, 21], [13, 20], [14, 20], [15, 20], [16, 20], [17, 20], [18, 21], [11, 22], [12, 22], [18, 22], [11, 24], [12, 24], [13, 24], [14, 24], [15, 24], [16, 24], [17, 24]]
+haunts:
+  # Grund: Grells Nachzügler plündern die unteren Felder; die Truppe kommt vom Waldrand im Südwesten, nicht vom Dorfplatz.
+  - variant: rout
+    target: { at: [14, 33] }
+    enemySpawn: { rect: [8, 28, 20, 31] }
+    deploy: { rect: [4, 36, 12, 38] }
+  # Grund: das Lager der Köhler im Nordwald, das nach dem Brand noch Vorräte birgt; die Truppe steigt über die Getreideterrasse hinauf.
+  - variant: treasure
+    target: { at: [9, 4] }
+    enemySpawn: { rect: [16, 4, 22, 8] }
+    deploy: { rect: [12, 12, 17, 15] }
+    turns: 10
+    chests: [[8, 3], [24, 7]]
+units:
+  # Oberste Terrasse: Schützen schießen von Stufe 2 ins Dorf (Reichweite +1); a0 trägt den Schlüssel der Köhlertruhe [ASSUMPTION] (Truhen brauchen Schlüssel oder Späher)
+  - { id: a0, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 16], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: a1, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a2, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [19, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: a3, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [24, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  # Oberer Weg durch Wald und Felder
+  - { id: n1, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [13, 15], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n2, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: n3, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [13, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: n4, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 12], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Plünderer in den Flanken: gehen auf die Häuser, nicht auf die Truppe
+  - { id: r0, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: raider } }
+  - { id: r1, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 21], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r2, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [4, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
+  - { id: r3, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r4, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [26, 23], items: [{ def: iron_axe }], ai: { profile: raider } }
+  - { id: r5, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [26, 25], items: [{ def: iron_sword }], ai: { profile: raider } }
+  - { id: r6, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [25, 24], items: [{ def: iron_axe }], ai: { profile: raider }, difficulty: [normal, hard] }
+  - { id: r7, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [26, 26], items: [{ def: iron_sword }], ai: { profile: raider } }
+  # Süden: Grells Fußvolk kommt die Straße herauf
+  - { id: s0, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [8, 33], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: s1, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 35], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [18, 35], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [21, 33], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  # Nur Schwer: warten, bis jemand nah kommt (trigger statt aggressive wie im Entwurf) [ASSUMPTION] – sonst fiel Brann auf Schwer in allen Läufen der Sim in Runde 3 (Story 11.15)
+  - { id: h0, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [7, 29], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: h1, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [22, 29], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 33], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [17, 33], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  - { id: h5, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [16, 10], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
+  # Brann auf dem Schrein im Dorf: Gast, nicht steuerbar. Fällt er, ist die Mission verloren
+  - { id: brann, char: brann, team: other, class: elementalist, at: [15, 22], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true, guest: true }
+  # Sable als Dravns Offizierin auf der Lichtung im Nordosten (plain, brennt nicht): generisch ohne char/lieutenant, damit sie nicht über die Mission beitritt
+  # (Beitritt nur über E7). [ASSUMPTION] PO F4 vorläufig D: ohne Waffe (greift mit hold nie an), unangreifbar, geht in Runde 7 nach ihrer Szene (t_sable).
+  - { id: sable, nameKey: unit.sable.name, team: other, class: duelist, sprite: sable, portrait: sable, levelOffset: 0, at: [21, 7], items: [], ai: { profile: hold }, ignoreForRout: true, untargetable: true }
+reinforcements:
+  # Hinter dem Feuer: über das Verbrannte von Norden
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [15, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 1], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Westflanke
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [2, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [2, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [2, 32], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  # Grell selbst mit seinen Leuten
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [14, 1], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  # Von Süden
+  - turn: 8
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [14, 38], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Letzte Welle Nord
+  - turn: 9
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  # Ostflanke
+  - turn: 10
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [27, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
+      - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [27, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
+objectives:
+  victory: { type: defend, unit: brann, turns: 12 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+    - { type: unit_dies, unit: brann }
+  side:
+    - { id: s_houses, type: visit_villages, reward: { gold: 500 } }
+    - { id: s_page, type: open_chests, reward: { item: { def: vulnerary } } }
+triggers:
+  # [ASSUMPTION] PO F1 vorläufig A: Feuerfront, je eine Runde vorher angekündigt (warn). Nur brennbare Felder fangen Feuer (igniteTile), schon Verbranntes nicht.
+  - { id: t_fire_w2, once: true, when: { type: turn_start, turn: 2, phase: player }, then: [{ action: ignite, area: { rect: [2, 4, 13, 7] }, warn: true }] }
+  - { id: t_fire_e2, once: true, when: { type: turn_start, turn: 2, phase: player }, then: [{ action: ignite, area: { rect: [16, 4, 27, 5] }, warn: true }] }
+  - { id: t_fire_w3, once: true, when: { type: turn_start, turn: 3, phase: player }, then: [{ action: ignite, area: { rect: [2, 8, 13, 11] }, warn: true }] }
+  - { id: t_fire_e3, once: true, when: { type: turn_start, turn: 3, phase: player }, then: [{ action: ignite, area: { rect: [16, 6, 27, 7] }, warn: true }] }
+  - { id: t_fire_w4, once: true, when: { type: turn_start, turn: 4, phase: player }, then: [{ action: ignite, area: { rect: [2, 12, 13, 16] }, warn: true }] }
+  - { id: t_fire_e4, once: true, when: { type: turn_start, turn: 4, phase: player }, then: [{ action: ignite, area: { rect: [16, 8, 27, 9] }, warn: true }] }
+  - { id: t_fire_e5, once: true, when: { type: turn_start, turn: 5, phase: player }, then: [{ action: ignite, area: { rect: [16, 10, 27, 11] }, warn: true }] }
+  - { id: t_fire_e6, once: true, when: { type: turn_start, turn: 6, phase: player }, then: [{ action: ignite, area: { rect: [16, 12, 27, 13] }, warn: true }] }
+  - { id: t_fire_e7, once: true, when: { type: turn_start, turn: 7, phase: player }, then: [{ action: ignite, area: { rect: [16, 14, 27, 16] }, warn: true }] }
+  # Brann reißt die Schneise; die Szene spielt nur, solange er auf dem Brett steht (fällt er, ist die Mission ohnehin verloren)
+  - id: t_break_west
+    once: true
+    when: { type: turn_start, turn: 3, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_4.brann_break_west, onBoard: brann }
+      - { action: set_terrain, area: { tiles: [[3, 17], [4, 17], [5, 17], [7, 17], [8, 17], [9, 17], [10, 17], [11, 17], [12, 17], [13, 17]] }, terrain: ash }
+  - id: t_break_east
+    once: true
+    when: { type: turn_start, turn: 6, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_4.brann_break_east, onBoard: brann }
+      - { action: set_terrain, area: { tiles: [[16, 17], [17, 17], [18, 17], [19, 17], [20, 17], [21, 17], [22, 17], [24, 17], [25, 17], [26, 17]] }, terrain: ash }
+  # Grell kommt mit der Welle der Runde 6 von Norden (Wellen laufen vor den Triggern)
+  - id: t_grell
+    once: true
+    when: { type: turn_start, turn: 6, phase: enemy }
+    then:
+      - { action: dialogue, id: scn.m2_4.grell_battle, onBoard: grell }
+  # [ASSUMPTION] PO F4 vorläufig D: Sable sieht zu und geht nach ihrer Szene (flee aus der Lichtung: sie verlässt das Brett in ihrer Phase)
+  - id: t_sable
+    once: true
+    when: { type: turn_start, turn: 7, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_4.sable_watches, onBoard: sable }
+      - { action: set_ai, units: [sable], profile: flee, area: { rect: [19, 6, 23, 8] } }
+# [ASSUMPTION] PO F5 vorläufig B: 2 500 Gold (Mitte der Akt-2-Kurve 2 000–3 000, erste G-Karte des Akts); Abstimmung in 11.27
+goldReward: 2500
+design:
+  title: Die Brandschneise
+  intent: >
+    Dravns Lüge platzt: Er opfert seine eigenen Dörfer, Grells Leute plündern hinter dem Feuer. Die Truppe verteidigt Brann, der mit Erdmagie die Schneise reißt und das Dorf rettet, das ihn verstieß.
+    Drei Stufen machen die Höhe zur Regel: Schützen oben schießen weiter, durch die Terrassenkante kommt man nur an Rampen und Treppen, und die Plünderer gehen auf die Häuser, nicht auf die Truppe.
+  mood: Abend unter Aschehimmel, eine rote Feuerwand im Bergwald, goldene Getreideterrassen vor dem Brand, ein steinernes Bergdorf mit Schieferdächern, Funkenflug.
+  phases:
+    - { id: p1, turns: [1, 4], label: Der Brand kommt, note: "Feuer im Wald, Schützen auf der Oberkante, R3 Plünderer über das Verbrannte. Schneise West (R3)." }
+    - { id: p2, turns: [5, 8], label: Häuser halten, note: "R5 West, R6 Grell und Schneise Ost, R7 Sable sieht zu (E7), R8 Süden." }
+    - { id: p3, turns: [9, 12], label: Durchhalten, note: "R9 Nord, R10 Ost. Danach nennen sie Brann wieder Hexenkind, er flieht in die Minen." }
+  paths:
+    - { team: enemy, points: [[14, 0], [14, 12], [14, 17], [14, 20]], phase: p1, label: Nord }
+    - { team: enemy, points: [[3, 19], [7, 21]], phase: p1, label: Plünderer }
+    - { team: enemy, points: [[26, 24], [20, 24]], phase: p1, label: Plünderer }
+    - { team: enemy, points: [[14, 39], [14, 28], [14, 25]], phase: p2, label: Süd }
+    - { team: player, points: [[12, 21], [8, 18], [6, 17], [6, 12], [10, 5]], phase: p2, label: zur Chronik }
+  zones:
+    - { area: { rect: [12, 20, 18, 24] }, label: Dorfplatz }
+    - { area: { rect: [3, 17, 13, 17] }, label: Schneise R3, phase: p1 }
+    - { area: { rect: [16, 17, 26, 17] }, label: Schneise R6, phase: p2 }
+    - { area: { rect: [4, 13, 25, 16] }, label: Obere Terrasse St.2 }
+    - { area: { rect: [4, 28, 25, 31] }, label: Untere Felder St.0 }
+  marks:
+    - { at: [15, 22], label: B, note: "Brann auf dem Schrein (Gast). Heilt 20 %, steht aber in Reichweite der Schützen auf der Kante." }
+    - { at: [21, 7], label: S, note: "Sable schaut zu, greift nicht an, kann nicht angegriffen werden. E7 „warnen“ nach der Mission entscheidet ihren Beitritt." }
+    - { at: [10, 4], label: C, note: "Chronik-Seite in der Köhlerruine. Der Wald brennt dorthin: früh losgehen." }
+    - { at: [14, 17], label: R, note: "Rampen der Oberkante bei x 6, 14, 15, 23; Unterkante ebenso, dazu Treppen bei x 10, 19." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); 2-4 kommt immer nach drei Story-Missionen, P = 15."
+    - "Normal 38 Gegner (18 davon in Wellen), P−3 bis P−1 (P = 15, Stufe 12–14), Leutnants P+1 bis P+2, gegen 12 eigene; Leicht 33, Schwer 44. Die Gegnerstufen sind per pnpm sim abzustimmen."
+    - "Plünderer (AI raider) zerstören Besuchshäuser; ohne Einsatz geht das Nebenziel Häuser verloren."
+    - "Feuer: Wald, Gras und Feld brennen; feste Feuerfront über ignite-Trigger (Story 11.15, F1 = A vorläufig), dazu die Ausbreitung der Regel. Asche, Straße, Rampen und die Lichtung (plain) brennen nicht. Die Schneise liegt auf y 17."
+    - "Modell Getreideterrasse, Rampe, Stützmauer laut Matrix fehlend; Boden Herbst ausstehend."

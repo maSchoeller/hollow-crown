@@ -30,7 +30,16 @@ const opts = (over: Partial<CampaignSimOptions> = {}): CampaignSimOptions => ({
   node: 'm2_1',
   ...over,
 });
-const sim = (o: CampaignSimOptions) => simulateCampaign(prepareActData(data, o), o);
+/**
+ * Story 11.15: the map of 2-4 (G 30×40, 12 against 38) is left out here, one battle of it takes several seconds; its node is then skipped like a
+ * placeholder, and tests/unit/m2-4-brandschneise.test.ts checks the map itself.
+ */
+const withoutBrandschneise = (d: GameData): GameData => {
+  const maps = { ...d.maps };
+  delete maps.m2_4_brandschneise;
+  return { ...d, maps };
+};
+const sim = (o: CampaignSimOptions) => simulateCampaign(withoutBrandschneise(prepareActData(data, o)), o);
 /** the mission played on the probe map */
 const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
 

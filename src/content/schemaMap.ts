@@ -124,6 +124,8 @@ const triggerAction = z.discriminatedUnion('action', [
     level: z.number().int().min(0).max(2).optional(),
     warn: z.union([z.literal(true), z.string().min(1)]).optional(),
   }),
+  // story 11.15: the flammable tiles of the area catch fire (`igniteTile`); `warn` as for set_terrain
+  z.object({ action: z.literal('ignite'), area, warn: z.union([z.literal(true), z.string().min(1)]).optional() }),
   z.object({ action: z.literal('advance_objective') }),
 ]);
 

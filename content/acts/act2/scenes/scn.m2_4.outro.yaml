@@ -1,0 +1,172 @@
+# Mission 2-4, Szene nach der Karte (Knoten post, Story 11.15) mit Entscheidung E7 (Narrative „Entscheidungen“): Das Dorf ist gerettet, nennt Brann
+# wieder Hexenkind, er flieht in die Minen von Kupferhall (N5). [ASSUMPTION] PO F2 vorläufig A: Sable bringt Dravns eigentlichen Befehl, ihr Heimatdorf
+# Brandhang weiter oben am Hang wird die zweite Schneise. `warn`: die Truppe holt die Leute heraus, Sable bindet sich das glutorange Tuch um und tritt bei
+# (recruit: { lt: sable }, Groll 0, joined_sable). `obey`: die Truppe hält die Straße, Sables Soldaten zünden, Dravns Quartiermeister geben −10 % in Akt 2;
+# Brandhang brennt (Weltkarten-Variante burnt_slope_burnt bei e07: obey). Haltungen warn = warm, obey = sober [ASSUMPTION].
+# [ASSUMPTION] PO F3 vorläufig A: in beiden Zweigen jagt das Grenzheer die Truppe (Zeugen von Grells Plünderung), Maelis schreibt einen Brief in ihrer
+# Stimme, Rhen antwortet mit Haltung und Folgen-Karte wie in 2-1 (kein Flag). Gefährtenzeilen mit Ersatzsprecher-Kette.
+# Text nach der Schreib-Pipeline der Narrative als Vorschlag, Abnahme beim Durchspielen.
+id: scn.m2_4.outro
+background: brandschneise
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Nacht kommt. Hinter der Schneise sinkt das Feuer zu Glut, und das Dorf steht."
+  - id: l02
+    speaker: [villager_elder]
+    fallback: skip
+    mood: angry
+    text: "Das Dorf lebt. Aber das war kein Steinrufen mehr, das war Hexerei."
+  - id: l03
+    mood: neutral
+    text: "Einer ruft es zuerst, dann rufen es alle: Hexenkind. Brann lässt die Hände vom Schrein sinken."
+  - id: l04
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Wie früher. Ich gehe in die Minen von Kupferhall. Da unten nennt mich keiner so."
+  - id: l05
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Bleib, Brann! Du hast sie gerettet. Das war keine Hexerei."
+  - id: l06
+    mood: neutral
+    text: "Doch Brann ist schon zwischen den Felsen verschwunden, den Hang hinauf nach Osten."
+  - id: l07
+    mood: neutral
+    text: "Aus dem Rauch tritt Sable, allein, die Hand fern vom Schwert."
+  - id: l08
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Der General lässt euch danken. Und er hat einen zweiten Befehl."
+  - id: l09
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Weiter oben liegt Brandhang, mein Dorf. Es soll die nächste Schneise werden, gegen die Drachen."
+  - id: l10
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Meine Leute zünden im Morgengrauen. Ihr haltet die Straße, damit keiner hineinläuft."
+  - id: l11
+    speaker: [lucan]
+    mood: angry
+    text: "Er brennt seine eigenen Dörfer nieder. Und Grell plündert hinter seinem Feuer."
+  - id: l12
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Drachen hält nur Feuer auf. Das sagt er seit Jahren. Heute zweifle ich zum ersten Mal."
+  - id: l13
+    speaker: [varek, lucan]
+    mood: neutral
+    text: "Man rettet Leute nicht vor Drachen, indem man sie verbrennt, Hauptfrau."
+  - id: l14
+    speaker: [lucan]
+    mood: neutral
+    text: "Du entscheidest, {avatar}. Brandhang warnen oder den Befehl geschehen lassen?"
+  - id: c01
+    title: "Brandhang: warnen oder gehorchen"
+    choice:
+      - id: warn
+        stance: warm
+        text: "„Wir warnen Brandhang. Bis zum Morgen ist jeder draußen.“"
+        summary: "Brandhang wird gewarnt, Sable kommt mit"
+        effects: [{ setFlag: { e07: warn } }, { meet: { lt: sable } }, { recruit: { lt: sable } }]
+      - id: obey
+        stance: sober
+        text: "„Befehl ist Befehl. Wir halten die Straße, mehr nicht.“"
+        summary: "Brandhang brennt, das Grenzheer gibt Rabatt"
+        effects: [{ setFlag: { e07: obey } }, { meet: { lt: sable } }, { priceMod: { pct: -10, act: 2 } }]
+  - id: w01
+    requires: [{ flag: { e07: warn } }]
+    mood: neutral
+    text: "Die Truppe läuft durch die Nacht den Hang hinauf. Sable klopft an jede Tür, ihr Name öffnet sie."
+  - id: w02
+    requires: [{ flag: { e07: warn } }]
+    mood: neutral
+    text: "Im Morgengrauen zieht ein langer Zug aus Brandhang ins Tal. Sables Soldaten stehen da, ohne Fackeln."
+  - id: w03
+    requires: [{ flag: { e07: warn } }]
+    mood: neutral
+    text: "Sable reißt einen Streifen glutorangen Stoffs von einem Banner und bindet ihn sich um den Arm."
+  - id: w04
+    requires: [{ flag: { e07: warn } }]
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Zwanzig Jahre habe ich dem Grenzheer gedient. Ab heute gehe ich mit euch. Soll Dravn mich jagen."
+  - id: b01
+    requires: [{ flag: { e07: obey } }]
+    mood: neutral
+    text: "Die Truppe hält die Straße. Im Morgengrauen tragen Sables Soldaten Fackeln den Hang hinauf."
+  - id: b02
+    requires: [{ flag: { e07: obey } }]
+    mood: sad
+    text: "Brandhang brennt. Der Rauch steht bis Mittag über den Bergen."
+  - id: b03
+    requires: [{ flag: { e07: obey } }]
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Befehl ist Befehl. Ich hoffe, die Drachen wissen es zu schätzen."
+  - id: b04
+    requires: [{ flag: { e07: obey } }]
+    mood: neutral
+    text: "Ein Quartiermeister bringt ein Schreiben: Bei den Händlern des Grenzheers kauft die Truppe billiger."
+  - id: b05
+    requires: [{ flag: { e07: obey } }]
+    speaker: [brenna, tobin, avatar]
+    mood: sad
+    text: "Billiger einkaufen. Bezahlt mit Asche."
+  - id: h01
+    mood: neutral
+    text: "Zwei Tage später: Reiter des Grenzheers auf der Straße hinter euch. Sie suchen das Aschenbanner."
+  - id: h02
+    speaker: [lucan]
+    mood: angry
+    text: "Wir haben Grell hinter Dravns Feuer plündern sehen. Zeugen lässt der General nicht laufen."
+  - id: h03
+    mood: neutral
+    text: "Am Abend bringt ein Junge einen Brief, versiegelt mit grünem Wachs und einer Welle."
+  - id: h04
+    speaker: [maelis]
+    fallback: skip
+    mood: neutral
+    text: "An das Aschenbanner. Der General jagt euch, weil ihr zu viel gesehen habt."
+  - id: h05
+    speaker: [maelis]
+    fallback: skip
+    mood: neutral
+    text: "Auch ich biete euch Freispruch, gegen einen Auftrag. Kommt ans Silbermeer, dann reden wir."
+  - id: h06
+    speaker: [maelis]
+    fallback: skip
+    mood: neutral
+    text: "Maelis, Herzogin vom Silbermeer."
+  - id: h07
+    speaker: [lucan]
+    mood: neutral
+    text: "Grell plündert für sie, Dravn lässt ihn. Und jetzt bietet sie uns Freispruch. Was antworten wir?"
+  - id: c02
+    title: "Der Brief der Herzogin"
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Ein Freund am Meer kann nicht schaden. Wir antworten höflich.“"
+        summary: "Maelis' Angebot bleibt offen – mit Zuversicht"
+      - id: sober
+        stance: sober
+        text: "„Wir antworten, aber zuerst wollen wir wissen, was Grell für sie trägt.“"
+        summary: "Maelis' Angebot bleibt offen – erst prüfen"
+      - id: defiant
+        stance: defiant
+        text: "„Wer Grell bezahlt, kauft uns nicht. Sie bekommt keine Antwort.“"
+        summary: "Maelis' Angebot bleibt offen – auf eigene Art"
+  - id: l15
+    speaker: [lucan]
+    mood: neutral
+    text: "Hinter uns das Grenzheer, vor uns das Meer. Wenigstens wird es nicht langweilig."

@@ -64,3 +64,6 @@ unit.clan_elder.name: "Clanälteste"
 map.n5_kupfermine.name: "Die Kupfermine"
 unit.duchess_looter.name: "Plünderer der Herzogin"
 unit.foreman.name: "Vorarbeiter"
+# Story 11.15: Mission 2-4 (Karte; Maelis spricht ihren Brief selbst, Halbfigur maelis)
+map.m2_4_brandschneise.name: "Die Brandschneise"
+unit.maelis.name: "Herzogin Maelis"

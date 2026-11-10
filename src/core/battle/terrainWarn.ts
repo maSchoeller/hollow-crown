@@ -1,5 +1,5 @@
 /**
- * Warnings before a map event changes the ground (story 11.10, architecture §5.3a): a `set_terrain` action with `warn` in a
+ * Warnings before a map event changes the ground (story 11.10, architecture §5.3a): a `set_terrain` (or `ignite`, story 11.15) action with `warn` in a
  * trigger on `turn_start` is announced from the start of the round before its round until it happens. Pure: the board marks the
  * tiles and the HUD shows one line per warning, both from this function; nothing is stored in the battle state.
  */
@@ -32,8 +32,10 @@ export function terrainWarnings(data: GameData, s: BattleState): TerrainWarning[
     // its only condition is the moment (`whenMatches` in objectives.ts), checked above as by `runTriggers`
     if (s.firedTriggers.includes(t.id)) continue;
     for (const a of t.then) {
-      if (a.action !== 'set_terrain' || !a.warn) continue;
-      out.push({ trigger: t.id, turn: w.turn, terrain: a.terrain, tiles: areaTiles(a.area), ...(a.warn === true ? {} : { key: a.warn }) });
+      if ((a.action !== 'set_terrain' && a.action !== 'ignite') || !a.warn) continue;
+      // an `ignite` (story 11.15) marks the whole area; the tiles that cannot burn simply stay as they are
+      const terrain = a.action === 'ignite' ? 'burning' : a.terrain;
+      out.push({ trigger: t.id, turn: w.turn, terrain, tiles: areaTiles(a.area), ...(a.warn === true ? {} : { key: a.warn }) });
     }
   }
   return out;

@@ -64,3 +64,6 @@ unit.clan_elder.name: "Clan Elder"
 map.n5_kupfermine.name: "The Copper Mine"
 unit.duchess_looter.name: "Duchess's Looter"
 unit.foreman.name: "Foreman"
+# Story 11.15: mission 2-4 (map; Maelis speaks her letter herself, portrait maelis)
+map.m2_4_brandschneise.name: "The Firebreak"
+unit.maelis.name: "Duchess Maelis"

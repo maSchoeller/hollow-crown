@@ -1,0 +1,19 @@
+# Mission 2-4, Runde 7 (Trigger t_sable, nur solange Sable auf dem Brett steht): Sable sieht von der Lichtung zu und geht danach ([ASSUMPTION] PO F4
+# vorläufig D). Saat Dravn: „Drachen hält nur Feuer auf.“ Varek diente unter Sable (Ersatz Lucan). Vorschlag der Schreib-Pipeline [ASSUMPTION].
+id: scn.m2_4.sable_watches
+lines:
+  - id: l01
+    mood: neutral
+    text: "Auf der Lichtung im Nordwald steht eine Offizierin des Grenzheers. Sie zieht nicht blank, sie sieht nur zu."
+  - id: l02
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Drachen hält nur Feuer auf, sagt der General. Ich sehe hier keinen Drachen."
+  - id: l03
+    speaker: [varek, lucan]
+    mood: neutral
+    text: "Das ist Sable, Dravns Hauptfrau. Sie greift nicht ein. Vielleicht schämt sie sich."
+  - id: l04
+    mood: neutral
+    text: "Sable wendet sich ab und verschwindet zwischen den verkohlten Stämmen."
