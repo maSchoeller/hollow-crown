@@ -54,8 +54,9 @@ describe('map m2_8_kronfeld', () => {
     expect([map().size, map().timeOfDay]).toEqual([[30, 40], 'evening']);
   });
 
-  it('has 36 / 40 / 46 foes with the waves', () => {
-    for (const [d, n] of [['easy', 36], ['normal', 40], ['hard', 46]] as const) {
+  // story 11.27: thinned for the balance (before 36 / 40 / 46)
+  it('has 20 / 26 / 33 foes with the waves', () => {
+    for (const [d, n] of [['easy', 20], ['normal', 26], ['hard', 33]] as const) {
       const s = battle(inAct2({}, d));
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
