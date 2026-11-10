@@ -49,6 +49,10 @@ unit.dravn_envoy.name: "Bote des Grenzheers"
 # Story 11.12: Mission 2-1 (Karte)
 map.m2_1_windscharte.name: "Die Windscharte"
 
+# Story 11.13: Mission 2-2 (Karte, Gegner; Schmuggler und Kundschafter [ASSUMPTION])
+map.m2_2_salzpass.name: "Der Salzpass"
+unit.smuggler.name: "Schmuggler"
+unit.kharesh_scout.name: "Kundschafter aus Kharesh"
 # Story 11.20: Nebenquest N4 (Karte, Hauptmann der Vorposten, Clanälteste)
 map.n4_clanlager.name: "Das Clanlager"
 unit.outpost_captain.name: "Hauptmann des Vorpostens"

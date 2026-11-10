@@ -1,0 +1,10 @@
+# Mission 2-2, Runde 8 (Trigger t_rock3): die Felsleiste bricht ab, der kurze Weg im Osten ist zu. Vorschlag der Schreib-Pipeline.
+id: scn.m2_2.rockfall_ledge
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Felsleiste bricht ab. Brocken poltern hinab, der Weg über die Leiste ist zu."
+  - id: l02
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "Dann eben die Straße. Hauptsache, die Wagen sind noch da."

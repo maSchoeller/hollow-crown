@@ -1,0 +1,37 @@
+# Mission 2-2, Szene nach der Karte (Knoten post, Story 11.13): der Nebel lichtet sich, Grells Karawane zieht ab, die Spur Maelis–Kharesh bleibt leise
+# („andere Kunden“). Der Zweifel „Wer schreibt der Prinzessin?“ wächst, ohne Halvard zu nennen ([PO offen F2] Vorschlag C). Keine Entscheidung, keine Haltung.
+# Gefährtenzeilen mit Ersatzsprecher-Kette, Jory nur, wenn er in der Truppe ist. Vorschlag der Schreib-Pipeline.
+id: scn.m2_2.outro
+background: salzpass
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Der Nebel lichtet sich. Weiter oben ziehen Grells Wagen ab, schneller, als sie gekommen sind."
+  - id: l02
+    speaker: [grell]
+    fallback: skip
+    mood: angry
+    text: "Behaltet euer Siegel, Aschenbanner. Silbermeer hat noch andere Kunden."
+  - id: l03
+    speaker: [lucan]
+    mood: neutral
+    text: "Andere Kunden. Ich frage mich, wer außer Grell noch über diesen Pass kommt."
+  - id: l04
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Ein Siegel für unseren Freispruch. Und ein Brief, den keiner von uns lesen soll."
+  - id: l05
+    speaker: [brenna, tobin, avatar]
+    mood: neutral
+    text: "Ich glaub es erst, wenn das Siegel unter dem Freispruch steht. Bis dahin ist es nur Metall."
+  - id: l06
+    speaker: [jory]
+    fallback: skip
+    requires: [{ alive: jory }]
+    mood: happy
+    text: "Ein Lied über ein gestohlenes Siegel? Singt sich schlecht, solange keiner weiß, wer es stahl."
+  - id: l07
+    speaker: [lucan]
+    mood: neutral
+    text: "Wir bringen es der Prinzessin. Und wir merken uns, wer ihr außer uns noch schreibt."
