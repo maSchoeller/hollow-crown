@@ -1,0 +1,45 @@
+# Nebenquest N4, Szene vor der Karte (Knoten pre, Story 11.20): Ankunft im Clanlager der Kupferberge, früher Schnee, Dravns Vorposten im Wald.
+# Ilka spricht nur unter requires: alive (Gedenk-Variante scn.n4.memorial_intro). Die Clanälteste hat keine eigene Halbfigur und spricht
+# deshalb in der Erzählzeile [ASSUMPTION]. Text nach der Schreib-Pipeline der Narrative (Vorschlag), Abnahme beim Durchspielen.
+id: scn.n4.intro
+background: clanlager
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Früher Schnee in den Kupferbergen. Zwischen dunklen Tannen steigt Rauch über dem Clanlager."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: happy
+    text: "Mein Clan. Sie lagern hier jeden Herbst, bevor die Pässe zufrieren."
+  - id: l03
+    mood: neutral
+    text: "Spuren im Weiß, viele, von genagelten Stiefeln. Sie kommen von allen Seiten aus dem Wald."
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: angry
+    text: "Grenzheer. Dravns Vorposten. Er will die Jagdgründe und die Leute, die sie kennen."
+  - id: l05
+    mood: neutral
+    text: "Eine alte Frau tritt aus dem größten Zelt, auf einen Speer gestützt: die Clanälteste."
+  - id: l06
+    mood: neutral
+    text: "Sie mustert Ilka, dann die Fremden. „Du bringst Freunde mit. Dann bleiben sie zum Kämpfen.“"
+  - id: l07
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Auf der Felsnase steht mein alter Hochsitz. Von dort sieht man über den Nebel."
+  - id: l08
+    speaker: [lucan]
+    mood: neutral
+    text: "Nebel im Wald, Feinde ringsum. Wir halten das Lager, bis sie aufgeben."
+  - id: l09
+    speaker: [brenna, fenn, avatar]
+    mood: neutral
+    text: "Wer oben steht, fehlt unten. Teilen wir uns gut auf."

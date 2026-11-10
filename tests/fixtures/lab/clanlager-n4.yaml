@@ -1,0 +1,12 @@
+# Story 11.20: Nebenquest N4 „Der Clan im Schnee“ zu Beginn: früher Schnee, Nebel, Ilka auf der Felsnase (Sichtprüfung, Bild 375 × 812).
+#   pnpm lab clanlager-n4                        Lage zu Beginn
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('clanlager-n4')
+# Die Gegner stehen auf P des ganzen Akts (das Lab zählt alle Knoten vor n4 in Dateireihenfolge als erledigt, auch 2-4 bis 2-8); für die Sichtprüfung egal.
+# Ilka steht auf der Felsnase [4,5] (Stufe 2): unter Nebel sieht sie über den Wald bis zu den Vorposten im Norden und Westen.
+question: Wie sieht das Clanlager im Schnee aus, und was sieht Ilka von der Felsnase?
+map: n4_clanlager
+company: [lucan, ilka, brenna, fenn, mira, tobin, jory]
+level: 15
+units:
+  ilka: { at: [4, 5] }
