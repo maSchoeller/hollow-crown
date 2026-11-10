@@ -16,3 +16,9 @@
 - id: a2_brandhang
   title: "Was der König zurückgab"
   text: "Paktfest am Brandhang, im Jahr nach dem großen Feuer. Der König kam zu Fuß herauf, ohne Krone, einen Tonkrug voll Glut im Arm. Er goss sie in den Spalt über dem Köhlerwald und sprach: Was wir dem Berg genommen haben, bringe ich zurück. Vierzig Jahre brannte am Hang kein Baum. Wir Köhler tragen keine Fackel in den Nordwald. Wer es tut, hat den Pakt vergessen."
+# 2-7 „Das Kontor am Silbermeer“ (Story 11.18), Truhe c_page in der Schreibstube: [ASSUMPTION] die letzte Seite der Chronik, die das Haus Silbermeer
+# mit den Büchern der Wächter aufgekauft hat. Saat Pakt: sie stammt aus derselben Hand wie die erste Seite (scn.m2_7.page sagt es, die Seite selbst
+# nur andeutungsweise). Text der Schreib-Pipeline als Vorschlag zur Abnahme.
+- id: a2_kontor
+  title: "Die letzte Seite"
+  text: "Letzter Eintrag der Wache. Die Herzöge wollen keine Zeugen mehr, und das Haus am Silbermeer kauft unsere Bücher und nennt es Schutz. Ich schreibe, was ich am Anfang schrieb: Der König gab, was der Pakt verlangt. Ich war dabei, als es begann. Ich bin dabei, wenn es endet. Wer dies findet, vergleiche die Schrift."

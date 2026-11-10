@@ -1,0 +1,182 @@
+# Mission 2-7 – Das Kontor am Silbermeer (Knoten m2_7). Entwurf concept/27-ueberarbeitung/levels/s2_2_7_kontor.yaml, Missionsliste: M 20×25, reach Schreibstube, 10 / 26, Leutnant Brakka, Regen.
+# Kontor des Hauses Silbermeer an der Auremündung: Ein Hafenbecken teilt die Karte, nur die Steinbrücke führt hinüber, und Brakkas Balliste hält sie unter Feuer.
+# Höhen: Der Nordkai mit Kontor und Balliste liegt eine Stufe höher (Stufe 1, rect [1,0,18,10]); vom Kaifuß (y 11) führen Treppen an der Brücke ([9,11], [10,11]) und im Osten ([18,11]) hinauf.
+# Veränderliche Karte: Der Hebel am Kran im Osten [16,15] legt einen Steg über das Becken (rect [15,12,15,14]), zweiter Weg zur Ostseite und zum Zahlmeister mit dem Türschlüssel (Fenn braucht keinen).
+# Abweichungen vom Entwurf (Story 11.18, alle in levels/abnahme/s2_2_7_kontor.md): Karten-Id m2_7_kontor, Szenen scn.m2_7.*, Gegner nur mit levelOffset, Nordkai auf Stufe 1 mit drei Treppen,
+# Schützen n3/n4 eine Reihe höher auf dem Kai, Chronik-Seite a2_kontor, Gold 2 000 statt 1 300, zwei Heimsuchungs-Anker.
+# Balancing [C] siehe Abschnitt „Übernahme Story 11.18“ der Abnahme-Datei (pnpm sim --campaign act2 --runs 50).
+# Szenen: scn.m2_7.intro vor der Karte (Knoten pre), scn.m2_7.crane (Hebel), scn.m2_7.page (Chronik-Truhe, Saat Pakt), scn.m2_7.outro nach der Karte (Geschäftsbücher, E8).
+id: m2_7_kontor
+nameKey: map.m2_7_kontor.name
+size: [20, 25]
+legend:
+  "Q": ballista
+  ".": plain
+  "_": road
+  "~": river
+  "B": bridge
+  "M": wall
+  "d": door
+  "b": building
+  "W": wagon
+  "L": lever
+  "s": stairs
+#          x: 01234567890123456789
+terrain: |
+  ~..................~
+  ~....MMMMMMMMMM....~
+  ~....M........M....~
+  ~....M........d....~
+  ~....M........M....~
+  ~....MMMMddMMMM....~
+  ~........__........~
+  ~........__........~
+  ~.bbbb..._Q...bbbb.~
+  ~.bbbb.W.__.W.bbbb.~
+  ~.bbbb...__...bbbb.~
+  ~........ss.......s~
+  ~~~~~~~~~BB~~~~~~~~~
+  ~~~~~~~~~BB~~~~~~~~~
+  ~~~~~~~~~BB~~~~~~~~~
+  ~........__.....L..~
+  ~.W......__........~
+  ~..bbbb..__..bbbb..~
+  ~..bbbb..__..bbbb..~
+  ~..bbbb..__..bbbb..~
+  ~.......W__W.......~
+  ~........__........~
+  ~........__........~
+  ~........__........~
+  ~........__........~
+# Nordkai mit Kontor und Balliste auf Stufe 1 (Schützen von oben +1 Reichweite); der Kaifuß y 11 bleibt Stufe 0, die Treppen führen hinauf
+levels:
+  - { level: 1, area: { rect: [1, 0, 18, 10] } }
+timeOfDay: morning
+weather: rain
+objects:
+  # zwei verschlossene Eingänge vorn, einer an der Ostseite; den Schlüssel trägt der Zahlmeister, Fenn öffnet ohne
+  - { id: d_front_w, type: door, at: [9, 5] }
+  - { id: d_front_e, type: door, at: [10, 5] }
+  - { id: d_side, type: door, at: [14, 3] }
+  - { id: b_quay, type: ballista, at: [10, 8] }
+  - { id: l_crane, type: lever, at: [16, 15] }
+  # Chronik-Seite in der Nordostecke der Schreibstube (Saat Pakt: erste und letzte Seite aus derselben Hand)
+  - { id: c_page, type: chest, at: [13, 2], contents: { gold: 300, chronicle: a2_kontor, dialogue: scn.m2_7.page } }
+deploy:
+  max: 10
+  forced: [avatar, lucan]
+  slots: [[6, 22], [7, 23], [8, 22], [11, 22], [12, 23], [13, 22], [6, 23], [8, 23], [11, 23], [13, 23], [7, 24], [8, 24], [11, 24], [12, 24]]
+# Heimsuchungs-Anker (Story 5.5; Story 11.18 [ASSUMPTION], nach dem Muster von 2-1, 2-5 und 2-6 gleich mitgeliefert), die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: der Südkai – nach dem Kontor-Überfall heuert das Haus Silbermeer neue Klingen an, sie halten die Lagerhäuser an der Brücke.
+  - variant: rout
+    target: { at: [9, 18] }
+    enemySpawn: { rect: [3, 15, 14, 16] }
+    deploy: { rect: [6, 22, 13, 23] }
+  # Grund: der Nordkai – Kisten mit Silbermeer-Siegel warten auf das nächste Schiff; die Truppe landet im Westen und muss sie vor den Wachen bergen.
+  - variant: treasure
+    target: { at: [2, 3] }
+    enemySpawn: { rect: [11, 6, 18, 7] }
+    deploy: { rect: [1, 6, 6, 7] }
+    turns: 10
+    chests: [[3, 2], [16, 2]]
+units:
+  # Südkai: Brakkas Freie Klingen zwischen den Lagerhäusern, zwei Lanzen an der Brücke
+  - { id: s1, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [5, 21], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: s4, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [14, 21], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: s5, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [9, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: s6, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  # Nordkai: Brückenkopf auf den Treppen, Schützen oben auf dem Kai (Stufe 1)
+  - { id: n1, nameKey: unit.free_blade.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [9, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n2, nameKey: unit.free_blade.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [10, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n3, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [7, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: n4, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: n5, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n6, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 7], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n7, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [7, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n8, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [12, 8], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  # Brakka an der Balliste vor dem Kontor (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format), diesmal von Maelis bezahlt
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, levelOffset: 1, at: [10, 7], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
+  # Der Zahlmeister trägt den Türschlüssel, an der Ostseite
+  - { id: purser, nameKey: unit.purser.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [16, 6], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  # Im Kontor: Kontorwachen des Hauses Silbermeer
+  - { id: i1, nameKey: unit.counting_guard.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: i2, nameKey: unit.counting_guard.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [11, 3], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [normal, hard] }
+  - { id: i3, nameKey: unit.counting_guard.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [9, 2], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: i4, nameKey: unit.counting_guard.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [10, 4], items: [{ def: heal_staff }], ai: { profile: support } }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [3, 15], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 16], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [4, 6], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.counting_guard.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [12, 2], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
+reinforcements:
+  # Boote am Westkai
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [1, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [1, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  # Schiff am Ostkai
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [18, 16], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [18, 17], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Von der Stadt her
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+objectives:
+  # eine eigene Figur in der Schreibstube genügt
+  victory: { type: reach, area: { rect: [6, 2, 7, 3] } }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+  side:
+    - { id: s_page, type: open_chests, reward: { item: { def: vulnerary } } }
+    - { id: s_fast, type: turn_limit, turns: 12, reward: { gold: 400 } }
+triggers:
+  # Hebel am Kran: der Ausleger schwenkt einen Steg über das Becken
+  - id: t_crane
+    once: true
+    when: { type: object_activated, object: l_crane }
+    then:
+      - { action: dialogue, id: scn.m2_7.crane }
+      - { action: set_terrain, area: { rect: [15, 12, 15, 14] }, terrain: footbridge }
+# Gold nach der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie) wie 2-1, 2-5 und 2-6 [ASSUMPTION, Story 11.27 stimmt ab]; dazu 300 aus der Truhe und 400 fürs Nebenziel
+goldReward: 2000
+design:
+  title: Das Kontor am Silbermeer
+  intent: >
+    Beweis gegen Maelis: Eine Figur muss in die Schreibstube und die Bücher holen. Wer stur über die Brücke geht, läuft in die Balliste; wer den Kran bedient, kommt über den Steg an die Ostseite und an den Zahlmeister mit dem Schlüssel.
+    Brakka kehrt zurück, diesmal von Maelis bezahlt.
+  mood: Regnerischer Morgen am Hafen, nasses Kopfsteinpflaster, hohe Lagerhäuser, hölzerne Kräne, Masten im Becken, ein prächtiges Kontorhaus mit Silbermeer-Wappen.
+  phases:
+    - { id: p1, turns: [1, 4], label: Südkai, note: "Wachen zwischen den Lagerhäusern, R3 Boote im Westen. Hebel am Kran erreichbar." }
+    - { id: p2, turns: [5, 8], label: Über das Becken, note: "Brücke unter Feuer oder Steg; R5 Ostkai, R7 von hinten. Zahlmeister mit Schlüssel." }
+    - { id: p3, turns: [9, 13], label: Das Kontor, note: "Tür öffnen, Schreibstube erreichen, Chronik-Seite in der Nordostecke." }
+  paths:
+    - { team: player, points: [[9, 22], [9, 15], [9, 11], [9, 6]], label: Brücke }
+    - { team: player, points: [[12, 22], [17, 21], [17, 16], [15, 15], [15, 11], [18, 11], [18, 7], [15, 4]], phase: p2, label: Steg }
+    - { team: enemy, points: [[1, 16], [7, 21]], phase: p1, label: R3 }
+    - { team: enemy, points: [[18, 16], [13, 21]], phase: p2, label: R5 }
+  zones:
+    - { area: { rect: [6, 2, 7, 3] }, label: Schreibstube }
+    - { area: { rect: [15, 12, 15, 14] }, label: Steg nach Hebel, phase: p2 }
+    - { area: { rect: [1, 0, 18, 10] }, label: Nordkai St.1 }
+  marks:
+    - { at: [10, 8], label: BA, note: "Balliste auf dem Kai (Stufe 1). Deckt Brücke und Südkai. Wer Brakka vertreibt, kann sie umdrehen." }
+    - { at: [16, 15], label: H, note: "Hebel am Kran, vom Nachbarfeld zu ziehen, nur Spielerfiguren: Steg über das Becken." }
+    - { at: [16, 6], label: Z, note: "Zahlmeister mit Türschlüssel. Fenn öffnet ohne." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2)."
+    - "Normal 26 Gegner (6 davon R3/R5/R7) gegen 10 eigene; Leicht 22, Schwer 30."
+    - "Formatwunsch: Modelle Kai, Lagerhaus, Kran, Schiff, Boot fehlen laut Matrix; Regel Balliste wie in 2-1."
+    - "E8 und Saat Pakt (erste und letzte Seite der Chronik aus derselben Hand) stehen in der Truhe der Schreibstube und in der Szene nach der Mission. N6 öffnet mit 2-7."

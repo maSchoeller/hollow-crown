@@ -1,0 +1,7 @@
+# Story 11.18: Mission 2-7 „Das Kontor am Silbermeer“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812).
+#   pnpm lab kontor-2-7                          Lage zu Beginn (Brakka an der Balliste, Nordkai auf Stufe 1, Kran im Osten)
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('kontor-2-7')
+question: Wie sieht das Kontor am Silbermeer zu Beginn aus?
+map: m2_7_kontor
+company: expected

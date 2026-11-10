@@ -7,3 +7,6 @@ chronicle.a2_mine.text: "Pact Night beneath the copper mountain. The king went d
 # Story 11.15: page a2_brandhang (mission 2-4, charcoal burners' chest)
 chronicle.a2_brandhang.title: "What the King Gave Back"
 chronicle.a2_brandhang.text: "Pact Feast on the Burnt Slope, the year after the great fire. The king came up on foot, without his crown, a clay jar of embers in his arms. He poured them into the cleft above the charcoal wood and said: what we took from the mountain, I bring back. For forty years no tree burned on the slope. We charcoal burners carry no torch into the north wood. Whoever does has forgotten the pact."
+# Story 11.18: page a2_kontor (mission 2-7, chest in the writing room)
+chronicle.a2_kontor.title: "The Last Page"
+chronicle.a2_kontor.text: "Last entry of the watch. The dukes want no more witnesses, and the house on the Silver Sea buys our books and calls it protection. I write what I wrote at the beginning: the king gave what the pact demands. I was there when it began. I am there when it ends. Whoever finds this, compare the hand."

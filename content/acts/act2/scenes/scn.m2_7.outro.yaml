@@ -1,0 +1,85 @@
+# Mission 2-7, Szene nach der Karte (Knoten post, Story 11.18): Die Geschäftsbücher beweisen, dass Maelis die Banden aus Akt 1 bezahlt hat.
+# E8 (narrative.md, Entscheidungen): an Seraphine geben (Grell-Groll −1, Zeile in Kronfeld mit 11.19) oder an Maelis zurückverkaufen (+1 000 Gold,
+# Wert nur in den effects unten [ASSUMPTION]). Das Angebot der Herzogin überbringt Brakka unter weißem Tuch, Seraphines Reiter warten am Stadttor
+# [ASSUMPTION F1]. Drei Haltungen auf zwei Werte wie E5/E6 [ASSUMPTION F2]: warm → seraphine, sober → sell, defiant → seraphine.
+# maelis_ledgers setzt der Knoten (effects bei Sieg), unabhängig von der Wahl. Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
+id: scn.m2_7.outro
+background: kontor
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Schreibstube riecht nach Tinte und nassem Salz. Auf dem Pult liegen die Bücher des Hauses Silbermeer."
+  - id: l02
+    speaker: [lucan]
+    mood: angry
+    text: "Hier: Zahlungen an Hask, jeden Mond, zwei Jahre lang. Die Banden im Grenzland lebten von ihrem Geld."
+  - id: l03
+    speaker: [nell]
+    fallback: skip
+    requires: [{ alive: nell }]
+    mood: neutral
+    text: "Gebucht als Ankauf von Salz. Die Herzogin lügt sogar in ihren eigenen Büchern."
+  - id: l04
+    speaker: [avatar]
+    mood: neutral
+    text: "Damit haben wir sie. Fragt sich nur, wem wir diesen Beweis in die Hand geben."
+  - id: l05
+    mood: neutral
+    text: "Am Kai wartet Brakka unter einem weißen Tuch, triefend vor Regen, einen schweren Beutel am Gürtel."
+  - id: l06
+    speaker: [brakka]
+    fallback: skip
+    mood: neutral
+    text: "Vertrag erfüllt, Kampf verloren. Die Herzogin kauft ihre Bücher zurück. Ich habe nachgezählt, es lohnt sich."
+  - id: l07
+    speaker: [lucan]
+    mood: neutral
+    text: "Und am Stadttor warten Seraphines Reiter. Ein Wort, und die Bücher liegen vor der Prinzessin."
+  - id: c01
+    title: "Die Bücher der Herzogin: Beweis oder Gold"
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Die Prinzessin soll sie haben. Vor ihr muss Maelis sich verantworten.“"
+        summary: "Die Bücher gehen an Prinzessin Seraphine"
+        effects: [{ setFlag: { e08: seraphine } }, { grudge: { lt: grell, delta: -1 } }]
+      - id: sober
+        stance: sober
+        text: "„Gold wiegt mehr als Papier. Zähl nach, Brakka, dann gehören die Bücher wieder ihr.“"
+        summary: "Die Bücher gehen gegen Gold an Maelis zurück"
+        effects: [{ setFlag: { e08: sell } }, { gold: 1000 }]
+      - id: defiant
+        stance: defiant
+        text: "„Sag deiner Herzogin: Dieser Beweis ist unverkäuflich. Er reitet zur Prinzessin.“"
+        summary: "Die Bücher gehen an Seraphine, Maelis' Angebot ist abgewiesen"
+        effects: [{ setFlag: { e08: seraphine } }, { grudge: { lt: grell, delta: -1 } }]
+  - id: r01
+    requires: [{ flag: { e08: seraphine } }]
+    mood: neutral
+    text: "Ein Lanzenreiter schlägt die Bücher in Ölzeug ein und reitet in den Regen davon."
+  - id: r02
+    speaker: [brakka]
+    fallback: skip
+    requires: [{ flag: { e08: seraphine } }]
+    mood: angry
+    text: "Schade ums Gold. Ihr seid die Ersten, die mir etwas abschlagen. Das merke ich mir."
+  - id: s01
+    requires: [{ flag: { e08: sell } }]
+    mood: neutral
+    text: "Brakka wiegt den Beutel in der Hand und reicht ihn hinüber. Die Bücher verschwinden unter ihrem Mantel."
+  - id: s02
+    speaker: [lucan]
+    requires: [{ flag: { e08: sell } }]
+    mood: sad
+    text: "Gold für die Kasse. Hoffentlich brauchen wir diesen Beweis nie wieder."
+  - id: l08
+    speaker: [jory]
+    fallback: skip
+    requires: [{ alive: jory }]
+    mood: happy
+    text: "Und drüben auf der Aue spielt meine alte Truppe. Einen Abend hätten wir doch, oder?"
+  - id: l09
+    speaker: [avatar]
+    mood: neutral
+    text: "Packt zusammen. Nach Kronfeld ist es nicht mehr weit."

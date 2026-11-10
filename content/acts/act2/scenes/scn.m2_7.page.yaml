@@ -1,0 +1,16 @@
+# Mission 2-7, Szene beim Öffnen der Truhe c_page in der Schreibstube (läuft in der Schlacht, ohne Antworten). Die Seite selbst ist die
+# Truhenbelohnung `chronicle: a2_kontor`. Saat Pakt (Missionsliste 2-7): erste und letzte Seite der Chronik stammen aus derselben Hand.
+# Wer es bemerkt: Liora, sonst Ysolde, sonst Rhen (wie scn.m2_4.page). Vorschlag der Schreib-Pipeline [ASSUMPTION], Abnahme offen.
+id: scn.m2_7.page
+lines:
+  - id: l01
+    mood: neutral
+    text: "Zwischen den Geschäftsbüchern steckt ein loses Blatt, älter als jedes Siegel im Raum."
+  - id: l02
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Eine Seite der Paktwächter, die letzte nach dem Datum. Und diese Schrift kenne ich."
+  - id: l03
+    speaker: [liora, ysolde, avatar]
+    mood: sad
+    text: "Dieselbe Hand wie auf der ersten Seite der Chronik. Dazwischen liegen dreihundert Jahre."
