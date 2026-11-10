@@ -1,0 +1,86 @@
+# Beat 10 „Die Chronik“ (Story 11.23, Narrative Key Conversation 7): spielt einmal in der 3D-Burg bei der Rückkehr nach 2-4
+# (campaign.yaml homeScenes; setzt chronicle_read, der versiegelte Eintrag der Chronik wechselt auf „entziffert“).
+# Wer entziffert: Liora, sonst Ysolde, sonst Rhen. Die Kette steht als requires: alive (eine Ysolde, die nie beigetreten ist, liest nicht).
+# Kern: „Der Pakt verlangt etwas von den Königen.“ Was genau, bleibt für Akt 3 offen (Found Documents). Text Vorschlag [ASSUMPTION].
+id: scn.castle.chronicle
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Im Burgarchiv liegt die Chronik der Wächter, so wie sie aus dem Gewölbe kam. Rotes Wachs, unversehrt."
+  - id: l02
+    speaker: [lucan]
+    mood: neutral
+    text: "Lange genug versiegelt. Wer immer sie geschrieben hat, wollte, dass jemand sie liest."
+  # Liora liest
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    requires: [{ alive: liora }]
+    mood: neutral
+    text: "Lass mich. Die Wächter schrieben in der alten Tempelschrift. Ich habe sie als Novizin abgeschrieben."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    requires: [{ alive: liora }]
+    mood: neutral
+    text: "Jede Seite eine Paktnacht. Jedes Mal dasselbe: „Der König gab, was der Pakt verlangt.“"
+  - id: l05
+    speaker: [ysolde]
+    fallback: skip
+    requires: [{ alive: liora }, { alive: ysolde }]
+    mood: happy
+    text: "Eine Formel! Dreihundert Jahre, und kein Wächter wagt es, das Wort dahinter zu schreiben."
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    requires: [{ alive: liora }]
+    mood: sad
+    text: "Im Tempel heißt es, die Krone schütze den König. Hier steht es umgekehrt."
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    requires: [{ alive: liora }]
+    mood: sad
+    text: "Der Pakt verlangt etwas von den Königen. Und keiner von ihnen kam ganz zurück."
+  # sonst Ysolde
+  - id: l08
+    speaker: [ysolde]
+    fallback: skip
+    requires: [{ not: { alive: liora } }, { alive: ysolde }]
+    mood: neutral
+    text: "Alte Tempelschrift, Kanzleihand. Liora hätte das schneller gelesen. Ich lese es genauer."
+  - id: l09
+    speaker: [ysolde]
+    fallback: skip
+    requires: [{ not: { alive: liora } }, { alive: ysolde }]
+    mood: neutral
+    text: "Jede Paktnacht endet mit derselben Formel: „Der König gab, was der Pakt verlangt.“"
+  - id: l10
+    speaker: [ysolde]
+    fallback: skip
+    requires: [{ not: { alive: liora } }, { alive: ysolde }]
+    mood: sad
+    text: "Das ist kein Sieg über Drachen. Das ist eine Rechnung. Der Pakt verlangt etwas von den Königen."
+  # sonst Rhen
+  - id: l11
+    speaker: [avatar]
+    requires: [{ not: { alive: liora } }, { not: { alive: ysolde } }]
+    mood: neutral
+    text: "Die Schrift ist alt, aber die Zahlen kann ich lesen. Jede Seite eine Paktnacht."
+  - id: l12
+    speaker: [avatar]
+    requires: [{ not: { alive: liora } }, { not: { alive: ysolde } }]
+    mood: sad
+    text: "Und jedes Mal: „Der König gab, was der Pakt verlangt.“ Der Pakt verlangt etwas von den Königen."
+  - id: l13
+    speaker: [lucan]
+    mood: neutral
+    text: "Was gab Aldric in der Paktnacht? Oder wollte er nicht geben?"
+  - id: l14
+    speaker: [avatar]
+    mood: neutral
+    text: "Das steht hier nicht. Aber jemand im Tempel weiß es."
+  - id: l15
+    mood: neutral
+    text: "Die Chronik bleibt aufgeschlagen im Archiv liegen. Draußen fällt das erste Laub in den Burghof."

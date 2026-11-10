@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Odile als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.odile
+lines:
+  - id: battle_start
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Posten bezogen. Niemand kommt an mir vorbei."
+  - id: crit
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Sauber geführt, wie es sich gehört."
+  - id: downed
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Verzeiht … ich habe meinen Posten verloren."
+  - id: rescued
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Danke. Ich stehe in deiner Schuld."
+  - id: level_up
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Die Haltung wird fester."
+  - id: ember
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Die Glut ist meine Pflicht. Ich trage sie."

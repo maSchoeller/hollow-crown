@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Liora × Amos, Rang B (Heiler ohne Orden, Annäherung). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_liora.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du warst die halbe Nacht im Krankensaal. Ich habe das Licht unter der Tür gesehen."
+  - id: l02
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Alte Männer schlafen schlecht. Da kann ich auch Salbe rühren."
+  - id: l03
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Du nimmst Thymian vom Burghang. Im Tempel hätten sie das Bauernkraut genannt."
+  - id: l04
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Der Tempel nennt alles Bauernkraut, was nicht in Silber gefasst ist. Der Thymian hilft trotzdem."
+  - id: l05
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Bei mir half die Glut in den Händen. Kräuter habe ich kaum gebraucht."
+  - id: l06
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab keine Glut in den Händen. Nur Kräuter und Zwirn. Und Neid ist eine Sünde, heißt es."
+  - id: l07
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Welcher Spruch ist das?"
+  - id: l08
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Meiner. Ich mache sie mir selbst, seit der Orden mir keine mehr schickt."
+  - id: l09
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Fehlt er dir? Silberquell?"
+  - id: l10
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Die Glocke fehlt mir. Früh um vier, über dem Tal. Den Prior vermisse ich weniger."
+  - id: l11
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Mir fehlt der Weihrauch. Seltsam, nicht? Ausgerechnet der Rauch."
+  - id: l12
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Nicht seltsam. Man vermisst, was nach Zuhause riecht. Auch wenn das Zuhause einen vor die Tür setzt."
+  - id: l13
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Zeig mir die Salbe, Amos. Morgen nehme ich den Thymian mit, wenn ich heile."
+  - id: l14
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Dann rühren wir ab jetzt zu zweit. Bring Wasser mit, ich hab nur zwei Hände und eine davon Gicht."

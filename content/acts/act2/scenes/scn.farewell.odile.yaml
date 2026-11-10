@@ -1,0 +1,18 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.odile
+lines:
+  - id: last
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Mein Posten … übernehmt ihn. Ich habe ihn gern gehalten. Bei euch."
+  - id: grief_varek
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Sie hat mich nie gewinnen lassen. Ich hätte alles gesetzt, damit sie bleibt."
+  - id: grief_sable
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Zwei Herren, hat sie gesagt. Am Ende hatte sie nur uns. Ich halte ihre Wache."

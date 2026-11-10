@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Jory als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.jory
+lines:
+  - id: battle_start
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Saiten gestimmt, Klingen gewetzt. Auf zum Tanz!"
+  - id: crit
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Das traf den Ton! Und den Kerl gleich mit."
+  - id: downed
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Mein Lied … reißt mitten im Vers."
+  - id: rescued
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Dafür kriegst du eine eigene Strophe!"
+  - id: level_up
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Eine Saite mehr auf meiner Laute."
+  - id: ember
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Glut im Bauch, Feuer im Kehrreim!"

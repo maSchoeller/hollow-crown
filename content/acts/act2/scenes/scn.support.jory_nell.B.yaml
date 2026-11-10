@@ -1,0 +1,65 @@
+# Story 11.23: Lagerfeuer-Gespräch Jory × Nell, Rang B (Seemannslieder). Text Vorschlag [ASSUMPTION].
+id: scn.support.jory_nell.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Ich hab dein Lied fertig. Sieben Strophen, ein Kehrreim, und kein Steuermann ertrinkt."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Dann ist es kein Seemannslied mehr. Da ertrinkt immer einer."
+  - id: l03
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Hier ertrinkt die Herzogin. Langsam. In ihrem eigenen Gold."
+  - id: l04
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "… Woher weißt du von ihr?"
+  - id: l05
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Du sprichst im Schlaf. Und die Burgmauern sind dünner, als sie aussehen."
+  - id: l06
+    speaker: [nell]
+    fallback: skip
+    mood: angry
+    text: "Drachendreck. Was hab ich gesagt?"
+  - id: l07
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Nur ihren Namen. Und dass sie dich auf einer Sandbank zurückgelassen hat."
+  - id: l08
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Mit leerem Kahn und vollen Schulden. Sie nannte es Abfindung."
+  - id: l09
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Meine Truppe ist bei Nacht los. Mir blieb eine Laute. Dir wenigstens ein Kahn."
+  - id: l10
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Der Kahn ist gesunken. Die Laute hast du noch. Du hast gewonnen."
+  - id: l11
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Dann sing ich das Lied erst, wenn du sagst, sie hat es verdient."
+  - id: l12
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Sing es. Aber leise. Ich will den Kehrreim lernen."

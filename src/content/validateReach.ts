@@ -49,7 +49,10 @@ export function checkReachability(data: GameData, drafts: readonly MapDef[] = []
   // scene lines carry conditions and the answers effects; a scene naming itself does not play it
   for (const sc of Object.values(scenes)) walk(sc.lines, () => {}, onObject);
   // sealed chronicle pages read their flag in the code (src/core/campaign/chronicle.ts)
-  for (const e of data.balance.chronicle.sealed) read.add(e.flag);
+  for (const e of data.balance.chronicle.sealed) {
+    read.add(e.flag);
+    if (e.readFlag) read.add(e.readFlag);
+  }
   // the code sets `joined_<lt>` and reads it (isJoined: haunts, finale line-ups, lines), so a joined flag counts as set and read (story 11.5)
   for (const lt of Object.keys(data.lieutenants)) {
     set.add(joinedFlag(lt));

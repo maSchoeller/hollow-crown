@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Varek, Rang A (Pflicht gegen Freiheit). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_varek.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Was schreibst du da? Jede Woche schreibst du, und nie geht ein Bote."
+  - id: l02
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Berichte. An die Prinzessin. Wie viele Klingen wir haben, wie die Mauern stehen."
+  - id: l03
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Du verrätst uns?"
+  - id: l04
+    speaker: [odile]
+    fallback: skip
+    mood: angry
+    text: "Nein! Ich schicke sie nie ab. Ich schreibe sie, weil ich sonst nicht weiß, wem ich gehöre."
+  - id: l05
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Du gehörst niemandem, Odile. Das lernt man als Erstes, wenn man davonläuft."
+  - id: l06
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Und als Zweites?"
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Dass man dann auch niemanden hat. Ich bin aus dem Heer gelaufen. Und dann immer weiter."
+  - id: l08
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Ich hab mich nie irgendwo hingesetzt, ohne die Tür im Rücken zu haben."
+  - id: l09
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Du sitzt mit dem Rücken zur Tür. Gerade jetzt."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ja. Das ist mir auch eben aufgefallen."
+  - id: l11
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Dann sage ich dir etwas, das ich der Prinzessin nie gesagt habe."
+  - id: l12
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Als man mich entließ, war ich erleichtert. Eine Nacht lang. Dann habe ich mich geschämt."
+  - id: l13
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Schäm dich nicht. Erleichterung ist kein Verrat. Sie ist nur ehrlicher als ein Eid."
+  - id: l14
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ich schreibe die Berichte weiter. Aber den nächsten zeige ich zuerst dir."

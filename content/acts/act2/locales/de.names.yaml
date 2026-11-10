@@ -38,6 +38,7 @@ faction.iron_march.name: "Grenzheer der Eisenmark"
 # Gegner von Akt 2 auf Karten und in Heimsuchungen (Story 11.5, festgelegt in 11.7)
 unit.border_soldier.name: "Grenzsoldat"
 unit.border_captain.name: "Hauptmann des Grenzheers"
+unit.maelis.name: "Herzogin Maelis"
 unit.lance_squire.name: "Lanzenknecht"
 unit.privateer.name: "Kaperfahrer"
 unit.free_blade.name: "Freie Klinge"
@@ -50,6 +51,7 @@ unit.dravn_envoy.name: "Bote des Grenzheers"
 # Story 11.12: Mission 2-1 (Karte)
 map.m2_1_windscharte.name: "Die Windscharte"
 map.m2_5_silberquell.name: "Kloster Silberquell"
+map.m2_6_kraehenholm.name: "Krähenholm"
 
 # Story 11.13: Mission 2-2 (Karte, Gegner; Schmuggler und Kundschafter [ASSUMPTION])
 map.m2_2_salzpass.name: "Der Salzpass"
@@ -66,9 +68,8 @@ unit.clan_elder.name: "Clanälteste"
 map.n5_kupfermine.name: "Die Kupfermine"
 unit.duchess_looter.name: "Plünderer der Herzogin"
 unit.foreman.name: "Vorarbeiter"
-# Story 11.15: Mission 2-4 (Karte; Maelis spricht ihren Brief selbst, Halbfigur maelis)
+# Story 11.15: Mission 2-4
 map.m2_4_brandschneise.name: "Die Brandschneise"
-unit.maelis.name: "Herzogin Maelis"
 # Story 11.22: Nebenquest N6 (Karte, Gauklermeisterin und Schuldeneintreiber)
 map.n6_auemarkt.name: "Der Auemarkt"
 unit.troupe_master.name: "Meisterin Maren"

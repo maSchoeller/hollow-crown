@@ -5,7 +5,8 @@
  * In the castle the top is the 3D scene (`Castle3d`) with the room stones over their buildings; the list shows their level as dots.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { actOf, availableSupportTalks, castleTier, homeRooms, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { createPortal } from 'preact/compat';
+import { actOf, availableSupportTalks, castleTier, homeRooms, pendingHomeScene, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -16,6 +17,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
 import { Castle3d, castle3dFlag, CastleDevBar } from './Castle3d';
+import { Scene } from './Scene';
 import '../../ui/camp.css';
 
 /** Level of a castle room as dots (filled up to the level; three at most). */
@@ -59,6 +61,8 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   const rooms = homeRooms(data, c);
   const last = c.completed[c.completed.length - 1];
   const talks = availableSupportTalks(data, c).length;
+  // story 11.23: a scene due at home (Beat 10 „Die Chronik“) plays once over the home, the castle showing through; its effects run when it ends
+  const homeScene = pendingHomeScene(data, c);
   const room: RoomDef | undefined = open ? (data.rooms[open] ?? undefined) : undefined;
   const close = () => setOpen(null);
   const mourn = room?.function === 'memorial';
@@ -143,6 +147,11 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
         </div>
       )}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
+      {homeScene &&
+        createPortal(
+          <Scene key={homeScene.scene} id={homeScene.scene} overlay onDone={() => void campaignCommand({ type: 'effects', effects: homeScene.effects })} />,
+          document.getElementById('app') ?? document.body,
+        )}
     </div>
   );
 }

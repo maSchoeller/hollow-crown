@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Sable, Rang A (zwei Klingen, zwei Herren: Vertrauen). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_sable.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Sable. Wenn Seraphine morgen nach mir schickt, was tust du?"
+  - id: l02
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Kommt darauf an. Gehst du?"
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ich weiß es nicht. Darum frage ich dich und nicht mich."
+  - id: l04
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Dann sage ich dir etwas, das hier noch keiner weiß."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Die Brandschneise. Ich habe die Karte dafür gezeichnet. Mit meiner Hand, auf Dravns Tisch."
+  - id: l06
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Mein Dorf lag mittendrin. Ich habe es gesehen und weitergezeichnet. Bis zum Rand."
+  - id: l07
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Und dann?"
+  - id: l08
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Dann habt ihr es gewarnt. Und ich stand da mit Tinte an den Fingern."
+  - id: l09
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Du hast dich trotzdem umgedreht. Das wiegt mehr als die Tinte."
+  - id: l10
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Vielleicht. Aber seither weiß ich, wie leicht man einem Herrn bis zum Rand folgt."
+  - id: l11
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Auch ich trage etwas vom Hof mit mir. Etwas, das ich gesehen habe und nicht sagen darf."
+  - id: l12
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Behalt es. Nur nicht so lange, bis es dich auffrisst."
+  - id: l13
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Wenn ich je wieder bis zum Rand gehe, hältst du mich auf?"
+  - id: l14
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Mit dem Säbel, wenn es sein muss. Von oben, so wie du es mir beigebracht hast."

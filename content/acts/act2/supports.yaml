@@ -1,0 +1,14 @@
+# Feste Support-Paare von Akt 2 (Story 11.23, Narrative „Die 25 Support-Paare“). Ein Paar steht im Akt, in dem sein später
+# beitretender Gefährte dazukommt; core: true = Kernpaar (★), erreicht S, alle anderen enden bei A.
+# Ein Gespräch steht am Lagerfeuer nur bereit, wenn beide in der Truppe sind (supportTalk): wer fehlt (Varek ohne N2, Brann ohne N5),
+# gefallen, gegangen (Odile nach E5 return, Varek nach E6 pardon) oder noch nicht beigetreten ist (Sable ohne E7 warn), hat keins.
+# Der höchste Rang folgt der Stufe des Lagerfeuers (balance.yaml supports.campfireMaxRank: Stufe 1 = B, 2 = A, 3 = S; Epic 10).
+# Texte Vorschlag (Schreib-Pipeline der Narrative) [ASSUMPTION].
+- { pair: [jory, nell], talks: { C: scn.support.jory_nell.C, B: scn.support.jory_nell.B, A: scn.support.jory_nell.A } }  # Seemannslieder
+- { pair: [nell, varek], talks: { C: scn.support.nell_varek.C, B: scn.support.nell_varek.B, A: scn.support.nell_varek.A } }  # Spieler gegen Schmugglerin
+- { pair: [varek, odile], core: true, talks: { C: scn.support.odile_varek.C, B: scn.support.odile_varek.B, A: scn.support.odile_varek.A, S: scn.support.odile_varek.S } }  # Pflicht gegen Freiheit (romantisch)
+- { pair: [odile, sable], talks: { C: scn.support.odile_sable.C, B: scn.support.odile_sable.B, A: scn.support.odile_sable.A } }  # zwei Klingen, zwei Herren
+- { pair: [sable, ilka], talks: { C: scn.support.ilka_sable.C, B: scn.support.ilka_sable.B, A: scn.support.ilka_sable.A } }  # Eisenmark-Heimweh
+- { pair: [ilka, brann], core: true, talks: { C: scn.support.brann_ilka.C, B: scn.support.brann_ilka.B, A: scn.support.brann_ilka.A, S: scn.support.brann_ilka.S } }  # zwei Stille (romantisch)
+- { pair: [liora, amos], talks: { C: scn.support.amos_liora.C, B: scn.support.amos_liora.B, A: scn.support.amos_liora.A } }  # Heiler ohne Orden
+- { pair: [amos, grosk], talks: { C: scn.support.amos_grosk.C, B: scn.support.amos_grosk.B, A: scn.support.amos_grosk.A } }  # Galgenhumor

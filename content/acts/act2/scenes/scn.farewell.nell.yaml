@@ -1,0 +1,18 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.nell
+lines:
+  - id: last
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Nehmt die Karte. Der Kompass zeigt nach Hause. Für mich nicht mehr."
+  - id: grief_jory
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Ich hab ihr ein Lied versprochen, eins ohne Meer. Es bleibt ungesungen."
+  - id: grief_varek
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Sie hat nie gesagt, wo ihr Geld lag. Ich hätte nie danach gefragt, Nell."

@@ -38,6 +38,7 @@ faction.iron_march.name: "Border Army of the Eisenmark"
 # Foes of act 2 on maps and in haunts (story 11.5, settled in 11.7)
 unit.border_soldier.name: "Border Soldier"
 unit.border_captain.name: "Border Army Captain"
+unit.maelis.name: "Duchess Maelis"
 unit.lance_squire.name: "Lance Squire"
 unit.privateer.name: "Privateer"
 unit.free_blade.name: "Free Blade"
@@ -50,6 +51,7 @@ unit.dravn_envoy.name: "Border Army Envoy"
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
 map.m2_5_silberquell.name: "Silverspring Abbey"
+map.m2_6_kraehenholm.name: "Krähenholm"
 
 # Story 11.13: mission 2-2 (map, foes)
 map.m2_2_salzpass.name: "The Salt Pass"
@@ -66,9 +68,8 @@ unit.clan_elder.name: "Clan Elder"
 map.n5_kupfermine.name: "The Copper Mine"
 unit.duchess_looter.name: "Duchess's Looter"
 unit.foreman.name: "Foreman"
-# Story 11.15: mission 2-4 (map; Maelis speaks her letter herself, portrait maelis)
+# Story 11.15: mission 2-4
 map.m2_4_brandschneise.name: "The Firebreak"
-unit.maelis.name: "Duchess Maelis"
 # Story 11.22: side quest N6 (map, troupe master and debt collectors)
 map.n6_auemarkt.name: "The Meadow Market"
 unit.troupe_master.name: "Master Maren"

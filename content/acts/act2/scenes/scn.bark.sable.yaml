@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Sable als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.sable
+lines:
+  - id: battle_start
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Reihen schließen. Vorwärts."
+  - id: crit
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Säbel durch. Nächster."
+  - id: downed
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Getroffen … haltet die Linie."
+  - id: rescued
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Verstanden. Ich bin wieder dabei."
+  - id: level_up
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Besser. Weiter so."
+  - id: ember
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Glut aufgenommen. Zum Angriff."

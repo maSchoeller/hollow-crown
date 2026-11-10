@@ -178,10 +178,10 @@ export function ensurePack(id: string): Promise<void> {
  * The pack a node still needs (its map or its dialogues are not loaded), or null when it can be played now. Reads
  * `contentRevision`, so a component asking this re-renders when a pack arrives.
  */
-export function packNeededFor(node: { map: string; pre?: string; post?: string }): string | null {
+export function packNeededFor(node: { map: string; pre?: string; post?: string; epilogues?: Array<{ scene: string }> }): string | null {
   void contentRevision.value;
   if (!data.maps[node.map]) return packOfMap(node.map);
-  for (const s of [node.pre, node.post]) if (s && !data.scenes[s]) return packOfScene(s);
+  for (const s of [node.pre, node.post, ...(node.epilogues ?? []).map((e) => e.scene)]) if (s && !data.scenes[s]) return packOfScene(s);
   return null;
 }
 

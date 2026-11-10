@@ -1,0 +1,25 @@
+# Mission 2-6, Anwerben im Kampf (recruit der Karte, by: any): Nell, einst Kaperfahrerin der Herzogin, von Maelis fallen gelassen, kennt die Insel.
+# Keine Antworten (Kampfszene). Nell spricht als Gast (fallback: skip), Rhen und Lucan sind immer da.
+id: scn.m2_6.nell_talk
+lines:
+  - id: l01
+    mood: neutral
+    text: "Zwischen Netzen und Tauwerk kauert eine Frau mit Seekarte und Dolch."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Ruhig. Ich gehöre nicht zu Grell. Nicht mehr. Die Herzogin hat mich fallen lassen."
+  - id: l03
+    speaker: [avatar]
+    mood: neutral
+    text: "Dann kämpf mit uns. Du kennst die Insel besser als wir."
+  - id: l04
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Jeden Felsen, jede Sandbank. Und ich hab einen Schlüssel für Truhen, die mir nicht gehören."
+  - id: l05
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann komm. Bleib hinter der Linie, bis wir das Schiff haben."

@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Amos als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.amos
+lines:
+  - id: battle_start
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Na dann. Verbände hab ich genug dabei."
+  - id: crit
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Das näht keiner mehr zusammen."
+  - id: downed
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Heiler, heil dich selbst … später."
+  - id: rescued
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Noch nicht mein Tag. Der Totengräber wartet."
+  - id: level_up
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Alte Knochen, neue Kniffe."
+  - id: ember
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Glut in alten Adern. Wer hätte das gedacht."

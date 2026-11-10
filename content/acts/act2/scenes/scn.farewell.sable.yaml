@@ -1,0 +1,18 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.sable
+lines:
+  - id: last
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Sagt der Eisenmark … ich bin heimgekommen. Auf meine Art."
+  - id: grief_odile
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Sie stand neben mir wie eine Mauer. Jetzt ist da eine Lücke, und der Wind zieht durch."
+  - id: grief_ilka
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Sie sprach von daheim. Ich hab nur genickt. Jetzt fehlt mir jedes Wort davon."

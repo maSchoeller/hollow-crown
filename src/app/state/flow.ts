@@ -16,6 +16,7 @@ import {
   presentForced,
   storyNodeOf,
   metLieutenant,
+  nodeEpilogues,
   nodeScenes,
   createBattle,
   battleUnitFromRecord,
@@ -318,8 +319,18 @@ export function concludeBattle(): void {
   const toResult = () => (screen.value = { name: 'result', result: withoutLeavers(result, campaign.value) });
   // what the node gave (items, gold ...) for a scene line with `moment: reward`
   const rewards = consequenceLines(result.effects ?? []).filter((l) => l.kind !== 'noted');
-  if (post) screen.value = { name: 'dialogue', id: post, next: toResult, ...(rewards.length ? { rewards } : {}) };
-  else toResult();
+  // the epilogues (story 11.17, the way back) follow the scene after the mission; their conditions are read once it has ended
+  const epilogues = (ids: string[]): void => {
+    const [id, ...rest] = ids;
+    if (!id) {
+      toResult();
+      return;
+    }
+    screen.value = { name: 'dialogue', id, next: () => epilogues(rest) };
+  };
+  const afterPost = () => epilogues(b.state.hauntId ? [] : nodeEpilogues(data, campaign.value, b.state.nodeId));
+  if (post) screen.value = { name: 'dialogue', id: post, next: afterPost, ...(rewards.length ? { rewards } : {}) };
+  else afterPost();
 }
 
 /** What conditions in dialogues and the camp read: the running campaign (or an empty story). */

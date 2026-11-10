@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Amos × Grosk, Rang B (Galgenhumor, Annäherung). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_grosk.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Du lachst im Krankensaal."
+  - id: l02
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Einer muss. Die Verwundeten tun es nicht, und die Toten erst recht nicht."
+  - id: l03
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Banden lachten auch. Vor dem Überfall."
+  - id: l04
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Und danach?"
+  - id: l05
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Danach nicht."
+  - id: l06
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Siehst du, das ist der Unterschied. Ich lache vorher und nachher. Dazwischen nähe ich."
+  - id: l07
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Ich lache nicht."
+  - id: l08
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Doch. Dein Bart wackelt dabei. Ich bin Feldscher, ich sehe so was."
+  - id: l09
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hm. Bart."
+  - id: l10
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Mein Lehrmeister sagte: Wer am Bett nicht lacht, weint nachts in die Schüssel."
+  - id: l11
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Weinst du?"
+  - id: l12
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Manchmal. Dann ist die Schüssel voll, und ich habe wieder Platz für Witze."
+  - id: l13
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Ich trag die Schüssel. Nachts."
+  - id: l14
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Ein Riese als Schüsselträger. Das lasse ich mir auf den Grabstein schreiben."

@@ -143,6 +143,8 @@ export const campaignSchema = z.object({
       requires: conditionsListSchema.optional(),
       memorialIf: conditionSchema.optional(),
       memorial: z.object({ pre: z.string().optional(), post: z.string().optional() }).optional(),
+      // story 11.17: scenes after post on the way back, each under its own conditions
+      epilogues: z.array(z.strictObject({ scene: z.string(), requires: conditionsListSchema.optional() })).optional(),
       place: z.string().optional(),
       merchantTier: z.number().int(),
       expectedLevel: z.number().int().min(1).optional(),
@@ -154,6 +156,17 @@ export const campaignSchema = z.object({
   ),
   mechanics: z.partialRecord(z.enum(['triangle', 'magic', 'elements', 'status', 'runes', 'supports']), z.number().int().min(0)).default({}),
   home: z.enum(['camp', 'castle']).default('camp'),
+  /** story 11.23: scenes that play once at home when their conditions hold (Beat 10 „Die Chronik“ in the castle) */
+  homeScenes: z
+    .array(
+      z.strictObject({
+        scene: z.string().min(1),
+        home: z.enum(['camp', 'castle']).optional(),
+        requires: z.array(conditionSchema).default([]),
+        effects: z.array(effectSchema).default([]),
+      }),
+    )
+    .default([]),
   merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()), storyCount: z.number().int().min(1).optional() })),
   scars: z.array(
     z.object({
