@@ -52,7 +52,7 @@ describe('stage as a function of the campaign', () => {
 
   it('counts stages in a row: a later stage needs the earlier ones', () => {
     const d = structuredClone(data);
-    d.items[shield]!.stages!.push({ when: [{ completed: 'm1_1' }], image: 'pact_warden_shield_3' });
+    d.items[shield]!.stages![1]!.when = [{ completed: 'm1_1' }];
     expect(relicStage(d, conditionContext(d, { ...fresh(), completed: ['m1_1'] }), shield)).toBe(1);
     expect(relicStage(d, conditionContext(d, after16()), shield)).toBe(3);
   });
@@ -61,7 +61,8 @@ describe('stage as a function of the campaign', () => {
     const rc = relicCtx(data, after16());
     expect(stagedItemDef(data, 'iron_shield', rc)).toBe(data.items.iron_shield);
     const ember = data.items.dragon_ember!;
-    expect([ember.slot, ember.statMods, ember.image, ember.price, ember.stages]).toEqual(['accessory', { mag: 2 }, 'dragon_ember_1', 0, undefined]);
+    expect([ember.slot, ember.statMods, ember.image, ember.price, ember.stages?.length]).toEqual(['accessory', { mag: 2 }, 'dragon_ember_1', 0, 1]);
+    expect(relicStage(data, conditionContext(data, after16()), 'dragon_ember')).toBe(1);
     expect(ember.tags).toContain('unsellable');
     expect(relicCtx(data, null)).toBeNull();
     // both relics carry the hollow-crown frame (PO 2026-11-09), an ordinary legendary item does not
@@ -159,7 +160,7 @@ describe('content:check', () => {
   const issues = (edit: (d: GameData) => void) => {
     const d = structuredClone(data);
     edit(d);
-    return validateContent(d, locales, undefined, new Set(Object.values(d.items).flatMap((i) => [i.image ?? i.id]).concat(['pact_warden_shield_2'])))
+    return validateContent(d, locales, undefined, new Set(Object.values(d.items).flatMap((i) => [i.image ?? i.id]).concat(['pact_warden_shield_2', 'pact_warden_shield_3', 'dragon_ember_2'])))
       .map((i) => i.message)
       .filter((m) => m.includes('stage'));
   };

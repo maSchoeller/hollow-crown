@@ -1,0 +1,7 @@
+# Mission 2-8, Szene beim ersten Schritt in die Furt (Trigger t_ford, läuft in der Schlacht, ohne Antworten): die Flucht beginnt vor dem Tor.
+id: scn.m2_8.ford
+lines:
+  - id: l01
+    speaker: [nell, fenn, lucan]
+    mood: happy
+    text: "Die Furt trägt! Wer drüben ist, ist frei. Alle anderen hinterher!"

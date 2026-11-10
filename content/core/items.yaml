@@ -136,11 +136,13 @@
 
 # --- Relikte (items.md §5; Story 9.11, Stufen Story 11.9): Stufe 1 schlafend ist das Item selbst, `stages` sind Stufe 2 (erwachend) und 3 (erwacht).
 # Eine Stufe gilt, solange ihr `when` und das aller Stufen davor gilt; sie ersetzt Bild und statMods und fügt passive `skills` hinzu.
-# Schild: Werte wie der Eisenschild, unverkäuflich; Stufe 2 ab 1-6 VER 5 und Aura +2 RES (Produktinhaber 2026-11-09); Stufe 3 ab 2-8 trägt Story 11.19 ein.
+# Schild: Werte wie der Eisenschild, unverkäuflich; Stufe 2 ab 1-6 VER 5 und Aura +2 RES (Produktinhaber 2026-11-09); Stufe 3 ab 2-8 (Story 11.19 [ASSUMPTION]): VER 6, Aura +2 RES bleibt, dazu Halten ohne Vorkämpfer-Rolle (10 % Schutz je Nachbar wie der Schildwall).
 - { id: pact_warden_shield, kind: shield, slot: offHand, group: shield, statMods: { def: 4 }, wt: 7, rarity: legendary, price: 0, tags: [unsellable, relic], image: pact_warden_shield_1, grantsSkill: { skill: warden_ward, masteryCost: 45 },
-    stages: [ { when: [{ completed: m1_6 }], image: pact_warden_shield_2, statMods: { def: 5 }, skills: [warden_ward_awake] } ] }   # Relikt Akt 1 (N2)
-# Drachenglut: Accessoire (Amulett), Stufe 1 schlafend nur MAG +2 (Produktinhaber 2026-11-09), unverkäuflich; Truhe in N5 legt Story 11.21 an, Stufen ab 2-8 trägt 11.19 ein.
-- { id: dragon_ember, kind: accessory, slot: accessory, statMods: { mag: 2 }, wt: 0, rarity: legendary, price: 0, tags: [unsellable, relic], image: dragon_ember_1 }   # Relikt Akt 2 (N5)
+    stages: [ { when: [{ completed: m1_6 }], image: pact_warden_shield_2, statMods: { def: 5 }, skills: [warden_ward_awake] },
+              { when: [{ completed: m2_8 }], image: pact_warden_shield_3, statMods: { def: 6 }, skills: [warden_ward_awake, warden_hold] } ] }   # Relikt Akt 1 (N2)
+# Drachenglut: Accessoire (Amulett), Stufe 1 schlafend nur MAG +2 (Produktinhaber 2026-11-09), unverkäuflich; Truhe in N5 legt Story 11.21 an; Stufe 2 erwachend ab 2-8 (Story 11.19 [ASSUMPTION]): MAG +3 und +10 % Zustandschance, Stufe 3 ab 3-6 mit Akt 3.
+- { id: dragon_ember, kind: accessory, slot: accessory, statMods: { mag: 2 }, wt: 0, rarity: legendary, price: 0, tags: [unsellable, relic], image: dragon_ember_1,
+    stages: [ { when: [{ completed: m2_8 }], image: dragon_ember_2, statMods: { mag: 3 }, skills: [ember_stir] } ] }   # Relikt Akt 2 (N5)
 - { id: heirloom, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7, rarity: legendary, price: 1000, grantsSkill: { skill: young_heroes, masteryCost: 40 } }   # Tobin: Erbstück (N3), +Mt neben einem Niedergestreckten
 - { id: final_curtain, kind: accessory, slot: offHand, group: lute, statMods: { lck: 2 }, wt: 2, rarity: legendary, price: 1000, image: silver_lute, grantsSkill: { skill: final_curtain, masteryCost: 40 } }   # Jory: Letzter Vorhang (N6, Story 11.22), Werte der Wanderlaute; Bild vorläufig das der Silberlaute [ASSUMPTION]; Anfeuern auf zwei Verbündete (cheerTargets aus Story 10.4) [C]
 

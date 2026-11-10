@@ -102,6 +102,8 @@
 # --- Relikt Schild der Paktwächter (Story 9.11): Schutz für Nachbarn, solange der Träger steht (Aura, Stufe 1) ---
 - { id: warden_ward, source: item, trigger: passive, aura: { radius: 1 }, effect: { stats: { def: 2 } } }   # Verbündete auf Nachbarfeldern des Trägers: +2 VER [C]
 - { id: warden_ward_awake, source: item, trigger: passive, aura: { radius: 1 }, effect: { stats: { res: 2 } } }   # Stufe 2 erwachend (Story 11.9, Produktinhaber 2026-11-09): Nachbarn zusätzlich +2 RES
+- { id: warden_hold, source: item, trigger: passive, effect: { guardNeighbors: 10 } }   # Stufe 3 erwacht (Story 11.19 [ASSUMPTION]): Halten ohne Vorkämpfer-Rolle, 10 % Schutz je Nachbar wie der Schildwall
+- { id: ember_stir, source: item, trigger: passive, effect: { statusChanceBonus: 10 } }   # Drachenglut Stufe 2 erwachend (Story 11.19 [ASSUMPTION]): +10 % Zustandschance der Zauber
 
 # --- Item-Skill der Signatur Erbstück (Story 9.12) ---
 - { id: young_heroes, source: item, trigger: passive, condition: { allyDownedWithin: 2 }, effect: { damageBonus: 3 } }   # Erbstück (Tobin): „Helden sterben jung“ – +3 Schaden, solange ein Verbündeter in Reichweite 2 niedergestreckt ist [C]

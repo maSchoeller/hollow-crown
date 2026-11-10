@@ -78,3 +78,6 @@ unit.debt_boss.name: "Head Collector"
 # Story 11.18: Mission 2-7 (Karte, Zahlmeister mit dem Kontorschlüssel)
 map.m2_7_kontor.name: "The Counting House"
 unit.purser.name: "Purser"
+# Story 11.19: Mission 2-8 (Karte, Prinzessin Seraphine spricht im Finale selbst)
+map.m2_8_kronfeld.name: "Kronfeld"
+unit.seraphine.name: "Princess Seraphine"

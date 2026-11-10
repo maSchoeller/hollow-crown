@@ -1,0 +1,21 @@
+# Mission 2-8, Szene in Runde 6 (Trigger t_hesitate, läuft in der Schlacht, ohne Antworten): Saat Rowena – sie zögert, als Seraphine den Angriff befiehlt,
+# das Brückentor geht auf. Vorschlag der Schreib-Pipeline [ASSUMPTION], Abnahme offen.
+id: scn.m2_8.rowena_hesitates
+lines:
+  - id: l01
+    speaker: [seraphine]
+    fallback: skip
+    mood: angry
+    text: "Rowena! Die Lanzen vor! Worauf wartest du?"
+  - id: l02
+    speaker: [rowena]
+    fallback: skip
+    mood: sad
+    text: "Unter weißem Banner geladen und dann erschlagen? So kämpft die Silberne Lanze nicht."
+  - id: l03
+    mood: neutral
+    text: "Rowena senkt die Lanze. Ihre Ritter treten zur Seite, und das Brückentor schwingt auf."
+  - id: l04
+    speaker: [ilka, fenn, lucan]
+    mood: happy
+    text: "Das Tor ist offen! Zur Brücke, solange sie zögert!"
