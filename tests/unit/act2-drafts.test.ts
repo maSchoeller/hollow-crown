@@ -104,7 +104,8 @@ describe('act-2 drafts in content:check', () => {
     expect(results.flatMap((r) => r.issues.map((i) => `${r.file}: ${i.message}`))).toEqual([]);
     // what the mission stories still write is counted, not hidden: scenes, figures, lieutenants, names
     expect(results.every((r) => r.open.length > 0)).toBe(true);
-  });
+    // own timeout: parsing and checking all eleven drafts takes about 2.3 s alone (over 2 s), under full load it passed 15 s
+  }, 45_000);
 
   it('reports a format issue of a draft and keeps open content apart', () => {
     const raw = parse(readFileSync(join(dir, 's2_2_2_salzpass.yaml'), 'utf8')) as { triggers: { then: unknown[] }[] };
