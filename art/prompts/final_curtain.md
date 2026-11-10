@@ -20,4 +20,4 @@ Create an image. The first two attached images are APPROVED inventory icons (two
 
 - Stil wie Silber- und Wanderlaute (Outline, Glanz, Licht von links oben) ✓; diagonal, Wirbelkasten oben rechts ✓; weinroter Vorhang mit Goldfransen und zwei Quasten, Stern als Rosette, Band mit senffarbenem Flicken ✓; klar von beiden Referenzlauten unterscheidbar ✓; bei 48 px als rote Laute lesbar ✓. Alphakanal, kein Text ✓.
 - ChatGPT füllte das Bild ganz (wie in `items_test.md` beobachtet); der Master ist deshalb per Skript auf das Motiv zugeschnitten und auf 80 % gerahmt.
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 (Kontaktbogen am Handy, über die orchestrierende Session).

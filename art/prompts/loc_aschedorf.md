@@ -6,7 +6,7 @@
 - **Chat:** https://chatgpt.com/c/6af36a09-2880-83eb-9410-1da66ab98142
 - **Referenzen:** `art/mockups/locations-s1/brandhang.png`, `kraehenholm.png`, `silberquell.png` (eigene, abgenommene Ortsbilder von Akt 2)
 - **Zweck:** Dialoghintergrund der Szene `scn.m2_6.burnt_village` (Rückweg aus 2-6, nur nach E7 „warnen“): ein Dorf, das ohne Kampf von oben verbrannt ist (Drachenschatten). Vorher lief `brandhang` als Platzhalter (T7-17F4). Die Id `aschedorf` ist ein Arbeitsname, das Dorf hat im Narrative keinen Namen.
-- **Iterationen:** 1 (keine Korrektur)
+- **Iterationen:** 2 (Folgekorrektur „düsterer“ auf Wunsch des Produktinhabers, siehe unten)
 - **Menschlicher Anteil (A2):** Ortsbeschreibung nach Szene und Geografie (Möwenzunge), Wahl der Referenzen, Prompt, Prüfung durch den Assistenten; keine Retusche
 - **A7:** keine Namen fremder Werke, Marken, Studios oder Künstler im Prompt
 - **Einbindung:** `ACT2_LOCATIONS` in `tools/art/build.py`, Paket act2 in `content/packs.yaml` (`locations/aschedorf.webp`), `background: aschedorf` in der Szene.
@@ -19,4 +19,13 @@
 
 - Fünf Ruinen mit von oben eingebrochenen Dächern und verkohlten Balken ✓, dünner Rauch ✓, Brunnen und Zäune unversehrt, keine Kampfspuren ✓, verbrannter runder Fleck im Gras, Heide ringsum unversehrt ✓, Apfelbäume oben versengt ✓, Meer und Küste der Halbinsel ✓; Weg in der Mitte, unteres Drittel ruhig ✓. Keine Menschen oder Tiere, kein Text ✓.
 - Abweichung: Himmel eher warm-golden statt bedeckt; der Flügelschatten in den Wolken ist kaum zu erkennen (die Szene erzählt ihn ohnehin im Text, l05).
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen an die orchestrierende Session, 2026-11-10).
+- Der Produktinhaber verlangte am 2026-11-10 eine düsterere Fassung (gleicher Aufbau, Asche, grauer Rauchhimmel, verkohlte Bäume, kaum Herbstfarben).
+
+## Folgekorrektur 2026-11-10 (gilt)
+
+Im selben Chat; `aschedorf.png` ist jetzt dieser unveränderte Download (1672 × 941, RGB):
+
+> Good layout. Now make the same location much GLOOMIER, keeping the exact same composition (the same road, the same ruined cottages in the same places, the well, the fences, the sea and coastline on the right): the whole slope around the village is covered in grey ASH and black burnt ground, the burnt patch reaches much further; the apple trees and other trees are CHARRED black and leafless, only stumps and bare black branches; almost no autumn colours left - the heather and grass are grey-brown and dull, only a few small muted rust tones far away at the edges. Sky: a low GREY, SMOKY overcast with drifting smoke and ash in the air, no golden sunset, no warm sunlight, only a pale cold light; more grey smoke rising from the ruins. The sea is dull grey-blue. High in the smoky clouds a faint, huge dark shadow shape like a wing, only half visible. Same painting style as before (stylised cartoon, soft rounded shapes, clean soft outlines), 16:9, no people, no animals, no text. Quiet, sad and eerie.
+
+- Aufbau deckungsgleich (Weg, Ruinen, Brunnen, Zäune, Küste) ✓; Hang in Asche, Bäume verkohlt und kahl, kaum Herbstfarben ✓; grauer Rauchhimmel, kaltes Licht, mehr Rauch ✓; Flügelschatten oben rechts angedeutet ✓. Keine Menschen, kein Text ✓.
+- Abnahme durch den Produktinhaber: offen (Kontaktbogen `akt2-bilder-aschedorf-v2.jpg` an die orchestrierende Session, 2026-11-10).
