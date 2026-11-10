@@ -1,0 +1,13 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.brann
+lines:
+  - id: last
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Die Glut … ist endlich still. Habt keine Angst. Ich hab keine mehr."
+  - id: grief_ilka
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Er hatte Angst vor sich selbst. Ich nie vor ihm. Ich hätte es öfter sagen sollen."

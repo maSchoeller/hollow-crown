@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Ilka als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.ilka
+lines:
+  - id: battle_start
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Frische Spuren. Viele."
+  - id: crit
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Die Fährte endet hier."
+  - id: downed
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Wolf … liegt."
+  - id: rescued
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Danke."
+  - id: level_up
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Schärfer. Der Blick."
+  - id: ember
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Glut. Ich sehe weiter."

@@ -7,6 +7,9 @@ import { decisionTitleKey, findChoice, optionKey, summaryKey } from './scene';
 /** Text keys of a sealed entry (shown once its flag is set, story 9.8). */
 export const sealedTitleKey = (flag: string): string => `chronicle.sealed.${flag}.title`;
 export const sealedTextKey = (flag: string): string => `chronicle.sealed.${flag}.text`;
+/** Text keys of a sealed entry once deciphered (its `readFlag` is set, story 11.23). */
+export const readTitleKey = (flag: string): string => `chronicle.sealed.${flag}.read.title`;
+export const readTextKey = (flag: string): string => `chronicle.sealed.${flag}.read.text`;
 
 /** Text keys of a chronicle page. */
 export const pageTitleKey = (id: string): string => `chronicle.${id}.title`;
@@ -34,6 +37,8 @@ export interface ChronicleAct {
   pages: string[];
   /** flags of the sealed entries shown in this act (set story flags from `balance.chronicle.sealed`); they are no pages and are not counted */
   sealed: string[];
+  /** of `sealed`, the entries already deciphered (their `readFlag` is set, story 11.23) */
+  deciphered: string[];
 }
 
 export interface ChronicleView {
@@ -52,7 +57,7 @@ export function chronicleView(data: GameData, c: CampaignState): ChronicleView {
   const byAct = new Map<number, ChronicleAct>();
   const actOf = (n: number) => {
     let a = byAct.get(n);
-    if (!a) byAct.set(n, (a = { act: n, decisions: [], pages: [], sealed: [] }));
+    if (!a) byAct.set(n, (a = { act: n, decisions: [], pages: [], sealed: [], deciphered: [] }));
     return a;
   };
   actOf(c.act ?? 1);
@@ -76,6 +81,10 @@ export function chronicleView(data: GameData, c: CampaignState): ChronicleView {
     found += 1;
   }
   // sealed entries come from story flags: derived, no saved state, never counted as pages
-  for (const e of data.balance.chronicle.sealed) if (c.flags[e.flag] !== undefined) actOf(e.act).sealed.push(e.flag);
+  for (const e of data.balance.chronicle.sealed) {
+    if (c.flags[e.flag] === undefined) continue;
+    actOf(e.act).sealed.push(e.flag);
+    if (e.readFlag && c.flags[e.readFlag] !== undefined) actOf(e.act).deciphered.push(e.flag);
+  }
   return { acts: [...byAct.values()].sort((a, b) => a.act - b.act), found, total: data.balance.chronicle.seasonPages };
 }

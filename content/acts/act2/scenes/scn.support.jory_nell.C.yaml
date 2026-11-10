@@ -1,0 +1,55 @@
+# Story 11.23: Lagerfeuer-Gespräch Jory × Nell, Rang C (Seemannslieder). Text Vorschlag [ASSUMPTION].
+id: scn.support.jory_nell.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Halt. So geht die Strophe nicht. Bei dir ertrinkt der Steuermann schon im zweiten Vers."
+  - id: l02
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Er ertrinkt im dritten. Ich hab ihn nur früher ins Wasser geschubst. Der Reim wollte es so."
+  - id: l03
+    speaker: [nell]
+    fallback: skip
+    mood: angry
+    text: "Der Reim weiß nichts vom Meer. Du warst nie weiter draußen als bis zur Pferdetränke."
+  - id: l04
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Stimmt. Aber ich hab Fischer so singen hören. In Krähenholm, auf dem Markt."
+  - id: l05
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Fischer singen für die Fische. Auf einem Kaperschiff singt man, damit keiner an den Galgen denkt."
+  - id: l06
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Das ist ein trauriger Grund zum Singen."
+  - id: l07
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Es ist der einzige, den ich kenne. Gib her, ich summ dir die richtige Weise."
+  - id: l08
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Summen? Du willst nicht singen? Ich dachte, Schmuggler sind laut."
+  - id: l09
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Schmuggler sind leise, Spielmann. Darum leben wir länger als Spielleute."
+  - id: l10
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Dann summ. Ich spiel leise mit. Auf dein langes Leben."

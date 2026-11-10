@@ -1,0 +1,55 @@
+# Story 11.23: Lagerfeuer-Gespräch Nell × Varek, Rang C (Spieler gegen Schmugglerin). Text Vorschlag [ASSUMPTION].
+id: scn.support.nell_varek.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Krähenholm, was? Ich wette eine Silbermünze, du hast schon mal Würfel geschmuggelt."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Gewonnen. Gezinkte, in Salzfässern. Deine sehen aus, als kämen sie von meinem Schiff."
+  - id: l03
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Unsinn. Die hab ich einem Feldwebel abgenommen. Ehrlich, beim Spiel."
+  - id: l04
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Dann hat dein Feldwebel bei mir gekauft. Schau unter die Fünf. Da ist ein kleiner Anker."
+  - id: l05
+    speaker: [varek]
+    fallback: skip
+    mood: angry
+    text: "… Asche und Glut. Da ist ein Anker."
+  - id: l06
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Die Silbermünze, bitte. Ich wette nie, ohne die Ladung zu kennen."
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Das ist kein Wetten, das ist Betrug mit Seekarte."
+  - id: l08
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Sagt der Mann mit den gezinkten Würfeln."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Eine Münze für dich. Aber nächstes Mal wähle ich das Spiel."
+  - id: l10
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Wähl ruhig. Ich wähle den Hafen, in dem du es spielst."

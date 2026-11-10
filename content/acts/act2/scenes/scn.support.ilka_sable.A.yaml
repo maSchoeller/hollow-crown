@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Sable × Ilka, Rang A (Eisenmark-Heimweh: Vertrauen). Text Vorschlag [ASSUMPTION].
+id: scn.support.ilka_sable.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Wenn der Krieg vorbei ist, gehe ich zurück an den Brandhang. Das weiß ich jetzt."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Dann hast du ein Ziel."
+  - id: l03
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Und du?"
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich kann nicht zurück. Der Clan hat meinen Namen aus dem Feuer genommen."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Was heißt das?"
+  - id: l06
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Am Feuer ruft man jeden Abend die Namen. Meinen ruft keiner mehr. Dort bin ich tot."
+  - id: l07
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Beim Pakt. Wofür?"
+  - id: l08
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe eine Spur gelesen, die keiner sehen wollte. Und sie laut gesagt."
+  - id: l09
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Dann warst du die Einzige, die ihre Arbeit getan hat."
+  - id: l10
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "So habe ich es nie gesehen."
+  - id: l11
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Ich war Hauptfrau. Ich weiß, wie es ist, wenn einer Meldung macht und alle wegschauen."
+  - id: l12
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Komm mit an den Brandhang, wenn es so weit ist. Bei uns ruft man abends auch Namen."
+  - id: l13
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Meinen auch?"
+  - id: l14
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Deinen zuerst. Ich rede viel und laut, das hast du selbst gesagt."

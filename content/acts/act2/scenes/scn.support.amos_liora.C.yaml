@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Liora × Amos, Rang C (Heiler ohne Orden, Kennenlernen). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_liora.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Du wickelst den Verband von links nach rechts. So lernt man es nur im Tempel."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Und im Kloster lernt man, anderen über die Schulter zu sehen?"
+  - id: l03
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Vierzig Jahre Feldscher. Ich sehe jedem über die Schulter. Meist liegt dahinter einer und blutet."
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Man sagt, Silberquell hat dich fortgeschickt."
+  - id: l05
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Man sagt richtig. Ich habe einen Grenzer genäht, der vorher drei von unseren erschlagen hatte."
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "„Die Glut wärmt, wen die Krone wärmt.“ So steht es über dem Tempeltor."
+  - id: l07
+    speaker: [amos]
+    fallback: skip
+    mood: angry
+    text: "Und wen sie nicht wärmt, der friert eben. Schöner Spruch. Hat noch keinen Bauch zugenäht."
+  - id: l08
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Ich habe ihn oft gesagt. Laut, am Krankenlager. Damals klang er tröstlich."
+  - id: l09
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Sprüche trösten den, der sie sagt. Der Kranke will heißes Wasser und eine ruhige Hand."
+  - id: l10
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Meine Hand ist ruhig, Bruder Amos. Nur der Knoten war schief. Das meinst du doch."
+  - id: l11
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Erwischt. Zeig her, ich bring dir den Feldscherknoten bei. Der hält auch, wenn einer schreit."

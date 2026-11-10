@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Sable, Rang B (zwei Klingen, zwei Herren: Annäherung). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_sable.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Du polierst den Brustpanzer jeden Abend. Für wen eigentlich?"
+  - id: l02
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Für niemanden mehr. Eine Leibwächterin ohne Leib ist eine lächerliche Gestalt."
+  - id: l03
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Lächerlich ist nur, wie ernst du dabei schaust. Als stünde sie hinter dir."
+  - id: l04
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Manchmal tut sie das. Ich höre Schritte auf dem Wehrgang und drehe mich um."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Mir geht es so mit Trommeln. Ich wache auf und will antreten. Da ist kein Zug mehr."
+  - id: l06
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "War Dravn ein guter Herr? Ehe er die Fackeln verteilte?"
+  - id: l07
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Ein guter Feldherr. Das ist nicht dasselbe. Ich habe es zu spät gemerkt."
+  - id: l08
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Seraphine war eine gute Herrin. Und sie hat mich trotzdem gehen lassen."
+  - id: l09
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Gehen lassen oder fortgeschickt?"
+  - id: l10
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ich weiß es nicht. Das hält mich nachts wach."
+  - id: l11
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Dann polier weiter. Aber rück auf der Bank. Ich habe Öl für den Säbel dabei."

@@ -1,0 +1,65 @@
+# Story 11.23: Lagerfeuer-Gespräch Sable × Ilka, Rang B (Eisenmark-Heimweh: Annäherung). Text Vorschlag [ASSUMPTION].
+id: scn.support.ilka_sable.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Du gehst jeden Abend zur Nordmauer. Immer dieselbe Stelle. Die Steine dort sind schon blank."
+  - id: l02
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Liest du jetzt auch meine Fährte?"
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Sie ist leicht zu lesen."
+  - id: l04
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Von dort sieht man die Kupferberge, wenn es klar ist. Dahinter läge der Brandhang."
+  - id: l05
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Liegt. Nicht läge. Dein Dorf steht noch."
+  - id: l06
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Stimmt. Ich vergesse es manchmal. Man rechnet so lange mit dem Schlimmsten."
+  - id: l07
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Bei uns heißt es: Wer zu lange nach Hause schaut, tritt in die Falle vor seinen Füßen."
+  - id: l08
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Klingt nach meinem alten Feldwebel. Nur kürzer."
+  - id: l09
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich schaue auch. Nur nicht zur Mauer. Ich warte auf den ersten Schnee."
+  - id: l10
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Der kommt hier spät. Das Hochland ist weich gegen die Eisenmark."
+  - id: l11
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "Weich. Ja. Das ist das richtige Wort."
+  - id: l12
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Komm morgen mit zur Mauer. Zu zweit friert man weniger beim Heimweh."

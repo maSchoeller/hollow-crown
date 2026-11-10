@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Amos × Grosk, Rang C (Galgenhumor, Kennenlernen). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_grosk.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Setz dich, Großer. Nein, nicht auf die Bank, die hält dich nicht. Auf den Boden."
+  - id: l02
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hm."
+  - id: l03
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Der Schnitt am Unterarm. Wer hat den genäht? Ein Blinder mit Hufnagel?"
+  - id: l04
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Ich."
+  - id: l05
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Dann warst du der Blinde. Beim Pakt, das hält nur, weil deine Haut zu stur zum Reißen ist."
+  - id: l06
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hielt drei Winter."
+  - id: l07
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Ich hab Leute genäht, die hielten drei Tage. Danach brauchten sie nur noch den Totengräber."
+  - id: l08
+    speaker: [grosk]
+    fallback: skip
+    mood: happy
+    text: "Du auch Totengräber?"
+  - id: l09
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Im Kloster schon. Wer näht, gräbt auch. Spart einen Mann."
+  - id: l10
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Grab mich nicht."
+  - id: l11
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Dich? Da bräuchte ich eine Woche und drei Esel. Halt still, das wird kalt."

@@ -134,6 +134,13 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
         if (!data.chars[g.unit]) err('campaign.yaml', `${n.id} grants: unknown unit ${g.unit}`);
       }
     for (const n of camp.nodes) effects('campaign.yaml', n.effects, `${n.id} effects`);
+    // story 11.23: home scenes (Beat 10) need their scene, their conditions and effects; one scene plays once, so only once listed
+    (camp.homeScenes ?? []).forEach((h, i) => {
+      if (!data.scenes[h.scene]) err('campaign.yaml', `homeScenes[${i}]: unknown scene ${h.scene}`);
+      conditions('campaign.yaml', h.requires, `homeScenes[${i}].requires`);
+      effects('campaign.yaml', h.effects, `homeScenes[${i}] effects`);
+      if (camp.homeScenes.findIndex((x) => x.scene === h.scene) !== i) err('campaign.yaml', `homeScenes[${i}]: scene ${h.scene} listed twice`);
+    });
     for (const n of camp.nodes)
       (n.effectsIf ?? []).forEach((g, i) => {
         conditions('campaign.yaml', g.requires, `${n.id} effectsIf[${i}].requires`);

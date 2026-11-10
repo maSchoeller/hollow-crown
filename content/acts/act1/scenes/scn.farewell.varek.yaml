@@ -11,3 +11,14 @@ lines:
     fallback: skip
     mood: sad
     text: "Ich wollte seine Würfel immer haben. Jetzt will ich sie nicht mehr."
+  # Story 11.23: Partner aus Akt 2
+  - id: grief_nell
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Er hat jede Wette verloren, die zählte, nur nicht die auf uns. Ruhiges Wasser, Varek."
+  - id: grief_odile
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ich habe ihm Pflicht gepredigt. Er hat mich lachen gelehrt. Ich halte sein Lachen fest."

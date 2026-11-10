@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Nell als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.nell
+lines:
+  - id: battle_start
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Klar zum Entern! Haltet Kurs."
+  - id: crit
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Breitseite! Volltreffer mittschiffs."
+  - id: downed
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Leck im Rumpf … ich sinke."
+  - id: rescued
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Mann über Bord, und du ziehst mich raus."
+  - id: level_up
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Frischer Wind in den Segeln."
+  - id: ember
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Volle Fahrt voraus, Glut im Kielwasser!"

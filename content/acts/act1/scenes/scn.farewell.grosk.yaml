@@ -11,3 +11,9 @@ lines:
     fallback: skip
     mood: sad
     text: "„Bart“, habt Ihr gesagt. Ich wusste, dass es ein Lächeln war, Grosk."
+  # Story 11.23: Partner aus Akt 2
+  - id: grief_amos
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Der Riese ließ mich nie allein lachen. Jetzt lache ich gar nicht mehr, Grosk."

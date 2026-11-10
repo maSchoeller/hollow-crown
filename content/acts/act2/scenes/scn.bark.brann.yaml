@@ -1,0 +1,33 @@
+# Barks (Story 11.23): kurze Kampfsprüche von Brann als Sprechblase. Text Vorschlag [ASSUMPTION].
+id: scn.bark.brann
+lines:
+  - id: battle_start
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Ich … bleib bei euch. Der Stein auch."
+  - id: crit
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Zu stark … verzeih."
+  - id: downed
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Der Boden … lässt mich los."
+  - id: rescued
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Du hast mich nicht allein gelassen."
+  - id: level_up
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Der Fels hört mich. Ruhiger jetzt."
+  - id: ember
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Nicht so heiß … ich halte sie. Ich muss."

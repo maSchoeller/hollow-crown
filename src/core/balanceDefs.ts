@@ -131,8 +131,11 @@ export interface Balance {
   /** the chronicle (story 4.7): pages of the whole season (narrative: 4 per act) */
   chronicle: {
     seasonPages: number;
-    /** entries the chronicle shows once their story flag is set; they are no pages and do not count towards `seasonPages` (story 9.8) */
-    sealed: Array<{ flag: string; act: number }>;
+    /**
+     * entries the chronicle shows once their story flag is set; they are no pages and do not count towards `seasonPages` (story 9.8).
+     * `readFlag` (story 11.23): once that flag is set too, the entry shows as deciphered (`chronicle.sealed.<flag>.read.title|text`)
+     */
+    sealed: Array<{ flag: string; act: number; readFlag?: string }>;
   };
   /** farewell card after a death (story 6.7): the button stays locked this long */
   farewell: { lockMs: number };

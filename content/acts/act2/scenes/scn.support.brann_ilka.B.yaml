@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Ilka × Brann, Rang B (zwei Stille: Annäherung). Text Vorschlag [ASSUMPTION].
+id: scn.support.brann_ilka.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Letzte Nacht hast du ruhig geatmet. Die ganze Wache lang."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Du hast mitgezählt?"
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich konnte nicht schlafen. Zählen ist besser als Grübeln."
+  - id: l04
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Zu Hause hat man gezählt, wie oft ich die Erde beben ließ. Für den Priester."
+  - id: l05
+    speaker: [ilka]
+    fallback: skip
+    mood: angry
+    text: "Drachendreck. Das ist kein Zählen. Das ist Anklagen."
+  - id: l06
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Ich weiß. Ich war acht."
+  - id: l07
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Das Fell hier. Willst du wissen, woher es ist?"
+  - id: l08
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Wenn du es erzählen willst."
+  - id: l09
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ein weißer Wolf. Er ist mir drei Winter gefolgt. Ich habe ihn nie gejagt. Er starb alt."
+  - id: l10
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Und du trägst ihn, statt ihn liegen zu lassen."
+  - id: l11
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Er war der Einzige, der mitkam."
+  - id: l12
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Gib mir deine Hände. Keine Angst. Ich mache nur den Stein warm."
+  - id: l13
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "… Warm. Nicht heiß."
+  - id: l14
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Nicht heiß. Zum ersten Mal habe ich es genau so gewollt."

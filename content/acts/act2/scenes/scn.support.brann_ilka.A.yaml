@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Ilka × Brann, Rang A (zwei Stille: Vertrauen). Text Vorschlag [ASSUMPTION].
+id: scn.support.brann_ilka.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Ilka. Darf ich dir sagen, warum sie mich fortgejagt haben?"
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich höre."
+  - id: l03
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Mein Bruder stürzte in eine Felsspalte. Ich rief den Berg, damit er ihn hält."
+  - id: l04
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Der Berg hielt ihn. Aber der Stein glühte, und seine Hand war verbrannt."
+  - id: l05
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Er lebt. Er spricht nur nicht mehr mit mir. Im Dorf tut das keiner."
+  - id: l06
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Du hast ihn gerettet."
+  - id: l07
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Und gezeichnet. Beides. Das ist es ja."
+  - id: l08
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Spuren sind nie nur eins. Der Wolf reißt ein Reh, und die Krähen werden satt."
+  - id: l09
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Tröstest du mich gerade?"
+  - id: l10
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "Ich versuche es. Ich bin schlecht darin."
+  - id: l11
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Nein. Bist du nicht."
+  - id: l12
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Jetzt ich. Ich fürchte, du gehst, wenn du die Glut beherrschst. Dann brauchst du mich nicht mehr."
+  - id: l13
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Ich brauche dich nicht wegen der Glut, Ilka."
+  - id: l14
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "… Gut. Dann sage ich nichts mehr. Bei mir ist das ein gutes Zeichen."

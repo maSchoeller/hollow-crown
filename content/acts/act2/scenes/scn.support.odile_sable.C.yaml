@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Sable, Rang C (zwei Klingen, zwei Herren: Reibung). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_sable.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ihr haltet den Säbel zu tief, Hauptfrau. So pariert man keinen Stich von oben."
+  - id: l02
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Im Grenzheer sticht keiner von oben. Da kommt alles von vorn, und zwar reichlich."
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Bei Hofe kommt es von überall. Meist mit einem Lächeln dazu."
+  - id: l04
+    speaker: [sable]
+    fallback: skip
+    mood: angry
+    text: "Und du hast zurückgelächelt, bis man dich vor die Tür gesetzt hat."
+  - id: l05
+    speaker: [odile]
+    fallback: skip
+    mood: angry
+    text: "Man hat mich entlassen. Verraten habe ich niemanden."
+  - id: l06
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Ich auch nicht. Ich habe nur aufgehört, für Dravn zu brennen."
+  - id: l07
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ein Eid endet nicht, nur weil der Herr unbequem wird."
+  - id: l08
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Meiner schon. Er endete, als Dravn die Fackel an mein Dorf legen wollte."
+  - id: l09
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Das … wusste ich nicht."
+  - id: l10
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Jetzt weißt du es. Und lass das „Hauptfrau“. Hier bin ich Sable."
+  - id: l11
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Jetzt zeig mir deinen Stich von oben. Langsam, ich bin aus der Übung."
