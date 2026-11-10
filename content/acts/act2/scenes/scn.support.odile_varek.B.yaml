@@ -1,0 +1,65 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Varek, Rang B (Pflicht gegen Freiheit). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_varek.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Du warst heute Morgen auf der Mauer. Vor allen anderen. Warum?"
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich schlaf schlecht. Und von oben sieht man die Straße, bevor sie einen sieht."
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Das ist Wachdienst. Ich dachte, du hältst nichts von Pflicht."
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Nichts von befohlener. Wenn ich sie mir selbst aussuche, ist es ein Spiel."
+  - id: l05
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Bei der Prinzessin stand ich jede Nacht vor der Tür. Gespielt hat da niemand."
+  - id: l06
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Hat sie dich je gefragt, ob du müde bist?"
+  - id: l07
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "… Einmal. Im ersten Winter. Ich habe nein gesagt."
+  - id: l08
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Und? Warst du es?"
+  - id: l09
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Natürlich. Aber eine Leibwächterin sagt das nicht."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Hier darfst du. Ich übernehm die Mauer bis Sonnenaufgang. Ohne Befehl."
+  - id: l11
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Das ist kein Tausch, den ich annehmen sollte."
+  - id: l12
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Ich nehme ihn trotzdem. Und morgen poliere ich deine Klinge. Sie ist eine Schande."

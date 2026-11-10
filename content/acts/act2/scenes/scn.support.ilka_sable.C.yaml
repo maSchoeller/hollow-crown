@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Sable × Ilka, Rang C (Eisenmark-Heimweh: Kennenlernen). Text Vorschlag [ASSUMPTION].
+id: scn.support.ilka_sable.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Du riechst nach Harz und Rauch. Wie ein Wintermorgen in den Kupferbergen."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Das Wolfsfell. Es riecht so, wenn es nass wird."
+  - id: l03
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Ich kenne die Clans dort oben. Reden wenig, schießen gut."
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Und du redest viel. Für eine vom Heer."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    mood: happy
+    text: "Asche und Glut! Das hat mir in zwanzig Jahren keiner gesagt."
+  - id: l06
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Dann hat keiner zugehört."
+  - id: l07
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Welcher Clan?"
+  - id: l08
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Keiner mehr."
+  - id: l09
+    speaker: [sable]
+    fallback: skip
+    mood: neutral
+    text: "Verstehe. Ich frage nicht weiter."
+  - id: l10
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Das Fell kommt von dort oben. Wenn du die Berge vermisst, kannst du es anfassen."
+  - id: l11
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "… Danke. Es riecht wirklich nach zu Hause."

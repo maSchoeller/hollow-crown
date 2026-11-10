@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Liora × Amos, Rang A (Heiler ohne Orden, Geständnis). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_liora.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Du fragst nie, warum ich Feinde verbinde. Alle anderen fragen das zuerst."
+  - id: l02
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Weil ich weiß, wie es ist, für eine Frage fortgeschickt zu werden."
+  - id: l03
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Ach. Welche Frage war es bei dir?"
+  - id: l04
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Wo die jungen Könige begraben liegen. Niemand im Tempel wollte es wissen. Ich schon."
+  - id: l05
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Gute Frage. Gefährlich gut. Eine Antwort hat dir keiner gegeben, nehme ich an."
+  - id: l06
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "Nur das Tor. Jetzt du. Warum Feinde?"
+  - id: l07
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Vor zwanzig Jahren lag nach einem Grenzgefecht ein Junge aus dem Grenzheer vor mir. Bauchwunde."
+  - id: l08
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Der Prior sagte: erst die eigenen. Ich gehorchte. Als ich zu ihm kam, war er still."
+  - id: l09
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Er war jünger als du. Seither frage ich nicht mehr, wessen Farben einer trägt."
+  - id: l10
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Und der Orden hat zwanzig Jahre gebraucht, um dich dafür fortzuschicken."
+  - id: l11
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Ich war lange ein gehorsamer Bruder. Gehorsam ist bequem. Irgendwann ging es nicht mehr."
+  - id: l12
+    speaker: [liora]
+    fallback: skip
+    mood: neutral
+    text: "„Die Glut heilt, wen sie erwählt.“ Ich glaube das nicht mehr. Ich glaube, wir wählen."
+  - id: l13
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Dann wähl gut, Liora. Und schnell. Die Wunde wartet nicht, bis wir uns einig sind."
+  - id: l14
+    speaker: [liora]
+    fallback: skip
+    mood: happy
+    text: "Wir sind uns einig, Amos. Das ist ja das Seltsame."

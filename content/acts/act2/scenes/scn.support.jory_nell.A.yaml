@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Jory × Nell, Rang A (Seemannslieder). Text Vorschlag [ASSUMPTION].
+id: scn.support.jory_nell.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Du spielst heute nicht. Das erste Mal, seit du in der Burg bist."
+  - id: l02
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Die tiefe Saite ist gerissen. Ohne sie klingt alles wie ein Witz ohne Schluss."
+  - id: l03
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Hier. Takelgarn. Hält auf See jeden Sturm, dann hält es auch deine Laute."
+  - id: l04
+    speaker: [jory]
+    fallback: skip
+    mood: happy
+    text: "Du trägst Garn mit dir herum? Was noch, einen Anker?"
+  - id: l05
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Eine Seekarte. Und einen Kompass. Den hat mir die Herzogin geschenkt, am ersten Tag."
+  - id: l06
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Und den behältst du? Nach allem?"
+  - id: l07
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Er zeigt immer noch nach Norden. Er kann nichts dafür, wem er gehört hat."
+  - id: l08
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Auf meinem ersten Schiff gab es einen Schiffsjungen, der sang. Falsch, laut, jeden Abend."
+  - id: l09
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Was ist aus ihm geworden?"
+  - id: l10
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Ein Zollkutter kam. Ich hielt das Ruder, er das Seil. Zurückgekommen bin nur ich."
+  - id: l11
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Seitdem singe ich nicht mehr. Ich summe. Da kann man weniger verlieren."
+  - id: l12
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Ich singe für die, die es nicht mehr können. So hab ich es mir beigebracht."
+  - id: l13
+    speaker: [jory]
+    fallback: skip
+    mood: neutral
+    text: "Sag mir seinen Namen. Dann bekommt er die tiefe Saite. Die hält ja jetzt."
+  - id: l14
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Tamm. Er hieß Tamm. Spiel ihm etwas Falsches. Und laut."

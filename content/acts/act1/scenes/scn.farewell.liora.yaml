@@ -16,3 +16,9 @@ lines:
     fallback: skip
     mood: sad
     text: "Sie wollte nie nachsehen, ob es Gnade war. Ich hätte ihr gern Tabellen vorgelesen."
+  # Story 11.23: Partner aus Akt 2
+  - id: grief_amos
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Sie fragte, ob Gnade Regeln braucht. Ich hatte keine Antwort. Jetzt fehlt mir die Frage."

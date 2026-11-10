@@ -1,0 +1,65 @@
+# Story 11.23: Lagerfeuer-Gespräch Nell × Varek, Rang B (Spieler gegen Schmugglerin). Text Vorschlag [ASSUMPTION].
+id: scn.support.nell_varek.B
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Du setzt zu früh. Bei jedem guten Blatt rückst du deinen Hut zurecht."
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Ich habe keinen Hut."
+  - id: l03
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Eben. Du greifst trotzdem hin. Drei Runden lang hab ich zugesehen."
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Und du schaust aufs Wasser, wenn du blufft. Auch wenn da keins ist."
+  - id: l05
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Alte Gewohnheit. Auf See schaut man zum Horizont, dann liest einem keiner die Augen."
+  - id: l06
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Im Grenzheer schaut man auf die Stiefel. Dann liest auch keiner was."
+  - id: l07
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Warum bist du gegangen? Spieler bleiben am Tisch, solange noch Münzen liegen."
+  - id: l08
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Weil die Münzen Dörfer waren. Und nicht ich derjenige war, der setzte."
+  - id: l09
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Mich hat man vom Tisch geworfen. Mein Einsatz steckt in den Taschen der Herzogin."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Dann sind wir zwei ohne Tisch. Bleibt nur die Burg."
+  - id: l11
+    speaker: [nell]
+    fallback: skip
+    mood: happy
+    text: "Die Burg hat einen Tisch. Und du hast gerade eine Sieben. Du hast an den Hut gefasst."
+  - id: l12
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Beim Pakt! Ich muss mir einen Hut kaufen, damit es wenigstens Sinn ergibt."

@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Ilka × Brann, Rang S (zwei Stille: feste Bindung, leises Liebesgeständnis). Text Vorschlag [ASSUMPTION].
+id: scn.support.brann_ilka.S
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Es schneit. Der erste Schnee im Hochland."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Du hast ihn gerochen, bevor er kam."
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "Schon gestern. Ich wollte, dass du ihn siehst."
+  - id: l04
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Am Brandhang schmolz er auf unserem Dach immer zuerst. Die Leute hielten das für ein Zeichen."
+  - id: l05
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "War es eins?"
+  - id: l06
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Nur dafür, dass ich warm schlafe."
+  - id: l07
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Brann. Seit Wochen lese ich deine Spur. Sie führt jeden Abend hierher."
+  - id: l08
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Deine auch."
+  - id: l09
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich weiß. Ich wollte nur wissen, ob du es weißt."
+  - id: l10
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Ich bin nicht gut mit Worten. Aber der Stein unter dir ist warm, weil ich es will."
+  - id: l11
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Seit du da bist, kommt die Glut kaum noch aus Angst."
+  - id: l12
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "Dann sag es. Einmal. Ich behalte es."
+  - id: l13
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "Ich liebe dich, Ilka. Leise. Aber ganz."
+  - id: l14
+    speaker: [ilka]
+    fallback: skip
+    mood: happy
+    text: "Ich dich auch. Rück näher. Um uns schmilzt er schon."

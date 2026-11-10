@@ -1,0 +1,60 @@
+# Story 11.23: Lagerfeuer-Gespräch Ilka × Brann, Rang C (zwei Stille: Kennenlernen). Text Vorschlag [ASSUMPTION].
+id: scn.support.brann_ilka.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Du musst dich nicht zu mir setzen. Der Stein unter mir ist warm."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Darum sitze ich hier. Die Burg ist kalt."
+  - id: l03
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Die anderen sitzen am Feuer."
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Am Feuer reden sie."
+  - id: l05
+    speaker: [brann]
+    fallback: skip
+    mood: happy
+    text: "… Ja. Sehr viel."
+  - id: l06
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "In der Mine hast du gesagt, ich soll Abstand halten. Ich halte ihn. Eine Armlänge."
+  - id: l07
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Eine Armlänge reicht nicht, wenn es schlimm wird."
+  - id: l08
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Dann rücke ich weg. Ich sehe es kommen. Dein Atem wird flach, bevor der Stein glüht."
+  - id: l09
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Das weißt du schon?"
+  - id: l10
+    speaker: [ilka]
+    fallback: skip
+    mood: neutral
+    text: "Ich lese Spuren. Du bist auch eine."
+  - id: l11
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Dann bleib sitzen. Aber sag es mir, wenn ich flach atme."

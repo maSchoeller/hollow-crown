@@ -36,8 +36,9 @@ beforeAll(() => {
 
 describe('supports.yaml', () => {
   it('holds the nine pairs of act 1, four of them core pairs (narrative)', () => {
-    expect(Object.keys(data.supports).sort()).toEqual(['avatar|liora', 'avatar|lucan', 'brenna|lucan', 'brenna|tobin', 'brenna|varek', 'fenn|mira', 'grosk|tobin', 'liora|ysolde', 'mira|tobin']);
-    expect(Object.values(data.supports).filter((p) => p.core).map((p) => p.key).sort()).toEqual(['avatar|liora', 'avatar|lucan', 'brenna|lucan', 'brenna|tobin']);
+    const act1 = Object.values(data.supports).filter((p) => p.pair.every((id) => (data.chars[id]?.act ?? 1) === 1));
+    expect(act1.map((p) => p.key).sort()).toEqual(['avatar|liora', 'avatar|lucan', 'brenna|lucan', 'brenna|tobin', 'brenna|varek', 'fenn|mira', 'grosk|tobin', 'liora|ysolde', 'mira|tobin']);
+    expect(act1.filter((p) => p.core).map((p) => p.key).sort()).toEqual(['avatar|liora', 'avatar|lucan', 'brenna|lucan', 'brenna|tobin']); // act 2 (story 11.23): act2-supports.test.ts
     expect(data.supports['avatar|lucan']!.talks).toEqual({ C: 'scn.support.avatar_lucan.C', B: 'scn.support.avatar_lucan.B', A: 'scn.support.avatar_lucan.A', S: 'scn.support.avatar_lucan.S' });
   });
 
@@ -155,14 +156,14 @@ describe('content:check of the pairs', () => {
     expect(problems((d) => (d.supports['mira|tobin']!.talks.B = 'scn.nope'))).toContainEqual(expect.stringContaining('unknown scene scn.nope'));
     expect(
       problems((d) => {
-        for (const k of ['mira|tobin', 'brenna|varek', 'liora|ysolde']) d.supports[k]!.core = true;
+        d.supports['mira|tobin']!.core = true;
       }),
     ).toContainEqual(expect.stringContaining('7 core pairs, the season has 6'));
     expect(
       problems((d) => {
         for (let i = 0; i < 20; i++) d.supports[`lucan|x${i}`] = { key: `lucan|x${i}`, pair: ['lucan', 'lucan'], core: false, talks: {} };
       }),
-    ).toEqual(expect.arrayContaining([expect.stringContaining('29 support pairs, the season has 25'), expect.stringContaining('cannot be its own partner')]));
+    ).toEqual(expect.arrayContaining([expect.stringContaining(`${Object.keys(data.supports).length + 20} support pairs, the season has 25`), expect.stringContaining('cannot be its own partner')]));
   });
 
   it('a support condition needs a known pair', () => {

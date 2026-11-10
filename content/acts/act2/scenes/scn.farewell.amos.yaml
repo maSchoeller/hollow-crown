@@ -1,0 +1,18 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.amos
+lines:
+  - id: last
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Ich hab jeden behandelt, der blutete. Bereut hab ich keinen. Nicht einen."
+  - id: grief_liora
+    speaker: [liora]
+    fallback: skip
+    mood: sad
+    text: "Er hat Feinde verbunden und dafür seinen Orden verloren. Ich bete für ihn, auch ohne Tempel."
+  - id: grief_grosk
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Er hat gelacht. Über alles. Ich nicht mehr."

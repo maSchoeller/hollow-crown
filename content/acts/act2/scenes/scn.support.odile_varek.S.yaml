@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Varek, Rang S (Pflicht gegen Freiheit, Liebesgeständnis). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_varek.S
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ich habe die Berichte verbrannt. Alle. Gestern Abend, im Kamin der Wachstube."
+  - id: l02
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Alle? Auch den, in dem ich gut wegkam?"
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Du kamst in keinem gut weg. Ich habe dich als Gefahr für die Ordnung geführt."
+  - id: l04
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Das ist das Schönste, was je einer über mich geschrieben hat."
+  - id: l05
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ich lag die halbe Nacht wach. Ohne Tür, vor der ich stehen musste."
+  - id: l06
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Und trotzdem habe ich auf etwas gewartet. Auf deine Schritte oben auf der Mauer."
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich war heute Nacht nicht oben."
+  - id: l08
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ich weiß. Ich habe es gehört. Es war zu still."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich hatte einen Würfel in der Hand. Gerade Zahl, ich sag es dir. Ungerade, ich geh."
+  - id: l10
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Und?"
+  - id: l11
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Ich hab ihn nicht geworfen. Zum ersten Mal wollte ich es nicht dem Glück überlassen."
+  - id: l12
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich liebe dich, Odile. Darauf wette ich nicht. Das weiß ich."
+  - id: l13
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Dann ist es eine Pflicht, die ich mir selbst aussuche. Ich liebe dich auch."
+  - id: l14
+    speaker: [odile]
+    fallback: skip
+    mood: happy
+    text: "Und jetzt geh auf die Mauer. Ich komme mit."

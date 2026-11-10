@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Amos × Grosk, Rang A (Galgenhumor, Geständnis). Text Vorschlag [ASSUMPTION].
+id: scn.support.amos_grosk.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Du stehst seit einer Stunde an der Tür. Entweder du blutest, oder du willst was sagen."
+  - id: l02
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Kein Blut."
+  - id: l03
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Schade. Blut kann ich. Reden ist schwerer. Komm rein."
+  - id: l04
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Bei den Banden. Wer nicht mehr laufen konnte, blieb liegen."
+  - id: l05
+    speaker: [grosk]
+    fallback: skip
+    mood: sad
+    text: "Ich hab das befohlen. Oft."
+  - id: l06
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Und jetzt stehst du in meiner Tür und willst hören, dass es nicht so schlimm war."
+  - id: l07
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Nein. Will wissen, wie man’s trägt."
+  - id: l08
+    speaker: [amos]
+    fallback: skip
+    mood: sad
+    text: "Ich hab auch einen liegen lassen. Weil der Prior es wollte. Ich trage ihn bis heute."
+  - id: l09
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Leichter wird es nicht. Nur der Rücken wird stärker. Den hast du ja schon."
+  - id: l10
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Hm. Und dann?"
+  - id: l11
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Dann hebt man den Nächsten auf. Und den danach. Bis die Rechnung nicht mehr so laut ist."
+  - id: l12
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Ich heb sie auf. Du nähst."
+  - id: l13
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Abgemacht. Und wenn ich mal liegen bleibe, Großer?"
+  - id: l14
+    speaker: [grosk]
+    fallback: skip
+    mood: neutral
+    text: "Dann trag ich dich. Nicht graben. Tragen."

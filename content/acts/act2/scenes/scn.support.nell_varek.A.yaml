@@ -1,0 +1,75 @@
+# Story 11.23: Lagerfeuer-Gespräch Nell × Varek, Rang A (Spieler gegen Schmugglerin). Text Vorschlag [ASSUMPTION].
+id: scn.support.nell_varek.A
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Mitternacht, und du schreibst noch. Ich dachte, Schmuggler schreiben nichts auf."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Diese hier schon. Setz dich. Und schwör, dass du nicht wettest auf das, was ich dir zeige."
+  - id: l03
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich schwöre beim Einzigen, was mir heilig ist. Bei der doppelten Sechs."
+  - id: l04
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Das sind die Geldwege der Herzogin. Jede Bucht, jeder Zöllner, jede Kiste, die nie im Hafenbuch stand."
+  - id: l05
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Das ist kein Blatt mehr. Das ist der ganze Tisch."
+  - id: l06
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Damit könnte ich mich zurückkaufen. Ein Brief an Maelis, und ich hätte wieder ein Schiff."
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Und warum hast du den Brief nicht geschrieben?"
+  - id: l08
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Ich wollte sehen, was du tust, wenn du das liest. Du bist der, der immer den Preis im Blick hat."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    mood: sad
+    text: "Früher hätte ich nachgerechnet. Was es bringt, wer es kauft, wie weit man damit kommt."
+  - id: l10
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Ich rechne immer noch. Nur kommt jetzt jedes Mal dasselbe raus: Ich bleib hier."
+  - id: l11
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Das ist eine schlechte Quote für einen Spieler."
+  - id: l12
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Die schlechteste. Darum gefällt sie mir. Schreib den Brief nicht, Nell. Aber behalt die Karte."
+  - id: l13
+    speaker: [nell]
+    fallback: skip
+    mood: neutral
+    text: "Wozu?"
+  - id: l14
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Falls wir je gegen Maelis spielen müssen. Dann setzen wir zusammen. Und zwar alles."

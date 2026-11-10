@@ -1,0 +1,18 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.ilka
+lines:
+  - id: last
+    speaker: [ilka]
+    fallback: skip
+    mood: sad
+    text: "Die Spur … endet hier. Nicht weinen. Weitergehen."
+  - id: grief_sable
+    speaker: [sable]
+    fallback: skip
+    mood: sad
+    text: "Sie redete wenig. Ich noch weniger. Das reichte. Jetzt ist es zu still."
+  - id: grief_brann
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Sie hat mich aus der Mine geholt. Ich konnte sie nicht halten. Der Stein ist kalt."

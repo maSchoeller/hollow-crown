@@ -1,0 +1,13 @@
+# Abschied (Story 11.23): letzte Zeile beim Tod und Trauerzeilen der Support-Partner. Text Vorschlag [ASSUMPTION].
+id: scn.farewell.jory
+lines:
+  - id: last
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Spielt das Lied zu Ende. Nicht schön. Nur laut genug, dass ich es höre."
+  - id: grief_nell
+    speaker: [nell]
+    fallback: skip
+    mood: sad
+    text: "Er sang meine Lieder falsch, mit Absicht. Ich hab ihn jedes Mal verbessert. Jetzt singt keiner."

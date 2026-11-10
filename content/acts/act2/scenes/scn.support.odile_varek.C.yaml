@@ -1,0 +1,55 @@
+# Story 11.23: Lagerfeuer-Gespräch Odile × Varek, Rang C (Pflicht gegen Freiheit). Text Vorschlag [ASSUMPTION].
+id: scn.support.odile_varek.C
+background: paktwacht_heimat
+music: camp
+lines:
+  - id: l01
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Du polierst den Panzer seit einer Stunde. Ich seh mich schon darin. Gut seh ich aus."
+  - id: l02
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Dann tritt bitte zur Seite. Du stehst mir im Licht."
+  - id: l03
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Die Prinzessin ist weit weg, Odile. Hier sieht keiner, ob er glänzt."
+  - id: l04
+    speaker: [odile]
+    fallback: skip
+    mood: angry
+    text: "Ich sehe es. Das genügt."
+  - id: l05
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Man hat dich entlassen. Wem hältst du da noch Wache?"
+  - id: l06
+    speaker: [odile]
+    fallback: skip
+    mood: angry
+    text: "Einer Pflicht. Ein Wort, das du nachschlagen kannst. Im Heer gab es doch Bücher."
+  - id: l07
+    speaker: [varek]
+    fallback: skip
+    mood: happy
+    text: "Ich kenne das Wort. Ich hab es zurückgelassen, mit dem Rest der Ausrüstung."
+  - id: l08
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ein Deserteur. Natürlich. Die Wache an der Pforte hat mich gewarnt."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    mood: neutral
+    text: "Die Wache an der Pforte schuldet mir drei Kupfer. Sie warnt jeden vor mir."
+  - id: l10
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Dann sind wir uns einig. Ich traue dir nicht. Und du stehst immer noch im Licht."
