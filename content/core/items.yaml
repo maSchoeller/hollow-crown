@@ -144,7 +144,7 @@
 - { id: dragon_ember, kind: accessory, slot: accessory, statMods: { mag: 2 }, wt: 0, rarity: legendary, price: 0, tags: [unsellable, relic], image: dragon_ember_1,
     stages: [ { when: [{ completed: m2_8 }], image: dragon_ember_2, statMods: { mag: 3 }, skills: [ember_stir] } ] }   # Relikt Akt 2 (N5)
 - { id: heirloom, kind: weapon, slot: mainHand, weaponType: lance, group: lance, damageType: physical, mt: 6, hit: 80, crit: 0, rng: [1,1], wt: 7, rarity: legendary, price: 1000, grantsSkill: { skill: young_heroes, masteryCost: 40 } }   # Tobin: Erbstück (N3), +Mt neben einem Niedergestreckten
-- { id: final_curtain, kind: accessory, slot: offHand, group: lute, statMods: { lck: 2 }, wt: 2, rarity: legendary, price: 1000, image: silver_lute, grantsSkill: { skill: final_curtain, masteryCost: 40 } }   # Jory: Letzter Vorhang (N6, Story 11.22), Werte der Wanderlaute; Bild vorläufig das der Silberlaute [ASSUMPTION]; Anfeuern auf zwei Verbündete (cheerTargets aus Story 10.4) [C]
+- { id: final_curtain, kind: accessory, slot: offHand, group: lute, statMods: { lck: 2 }, wt: 2, rarity: legendary, price: 1000, image: final_curtain, grantsSkill: { skill: final_curtain, masteryCost: 40 } }   # Jory: Letzter Vorhang (N6, Story 11.22), Werte der Wanderlaute; eigenes Bild seit 2026-11-10 (art/prompts/final_curtain.md); Anfeuern auf zwei Verbündete (cheerTargets aus Story 10.4) [C]
 
 # --- Akt 2: Balliste (Story 11.6, GDD Gelände): feste Waffe eines Ballisten-Objekts, liegt nie in einem Inventar (Tag fixed). Gruppe siege
 # steht außerhalb des Dreiecks; weaponType bow nur als Regeltyp (physischer Fernkampf), Reichweite fest aus rng. Bild vorläufig iron_bow ---

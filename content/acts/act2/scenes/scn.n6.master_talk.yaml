@@ -1,6 +1,6 @@
 # Nebenquest N6, Bühne (Trigger t_stage, Story 11.22): Die erste eigene Figur auf der Bühne. Jory spricht Maren an (requires alive);
 # in der Gedenk-Variante (Jory gefallen) spricht Lucan, Kette bis Avatar. Die Meisterin tritt nicht bei (escort join: false).
-# Maren spricht als Erzählzeile, bis sie eine eigene Halbfigur hat (art/mockups/characters-s1, Frage an den Produktinhaber). Text Vorschlag [ASSUMPTION].
+# Maren spricht mit eigener Halbfigur (troupe_master, art/prompts/troupe_master.md, 2026-11-10). Text Vorschlag [ASSUMPTION].
 id: scn.n6.master_talk
 background: auemarkt
 lines:
@@ -14,9 +14,11 @@ lines:
     mood: happy
     text: "Maren! Leg das weg, du triffst damit eh nur den Vorhang."
   - id: l03
+    speaker: [troupe_master]
+    fallback: skip
     requires: [{ alive: jory }]
     mood: sad
-    text: "„Jory. Wir sind fort, damit die Schuld nicht auch an dir hängt.“"
+    text: "Jory. Wir sind fort, damit die Schuld nicht auch an dir hängt."
   - id: l04
     speaker: [jory]
     fallback: skip
@@ -32,7 +34,13 @@ lines:
   - id: l06
     requires: [{ not: { alive: jory } }]
     mood: sad
-    text: "Maren senkt das Messer. „Dann geh ich mit euch. Für ihn.“"
+    text: "Maren senkt das Messer."
+  - id: l06b
+    speaker: [troupe_master]
+    fallback: skip
+    requires: [{ not: { alive: jory } }]
+    mood: sad
+    text: "Dann geh ich mit euch. Für ihn."
   - id: l07
     mood: neutral
     text: "Die Meisterin folgt der nächsten Figur der Truppe. Bringt sie zum Boot."

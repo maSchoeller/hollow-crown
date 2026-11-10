@@ -46,7 +46,7 @@ LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # paktwacht_heimat (autumn) belongs to act 2, the other moodboard places to later acts
 ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'wolfslager', 'rhen_confession', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'}
 # story 11.3: the places of act 2 (pack act2 in content/packs.yaml names each locations/<id>.webp, so they stay out of act1)
-ACT2_LOCATIONS = {'grauwacht', 'salzpass', 'brandhang', 'kronfeld', 'windscharte', 'rabenweide', 'brandschneise', 'kraehenholm', 'kontor', 'clanlager', 'kupfermine', 'auemarkt', 'silberquell'}
+ACT2_LOCATIONS = {'grauwacht', 'salzpass', 'brandhang', 'kronfeld', 'windscharte', 'rabenweide', 'brandschneise', 'kraehenholm', 'kontor', 'clanlager', 'kupfermine', 'auemarkt', 'silberquell', 'aschedorf'}
 TITLE_PX = (1024, 1536)
 # the two avatar looks of the new-campaign form (art/mockups/characters-s1/<id>.png)
 AVATAR_LOOKS = ('rhen_a', 'rhen_b')

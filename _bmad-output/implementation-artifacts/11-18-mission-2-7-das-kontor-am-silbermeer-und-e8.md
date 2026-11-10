@@ -16,15 +16,15 @@ damit ich einen Beweis gegen die Herzogin in der Hand habe.
 ## Acceptance Criteria
 
 1. **Karte übernommen:** `content/acts/act2/maps/m2_7_kontor.yaml` übernimmt den Entwurf `concept/27-ueberarbeitung/levels/s2_2_7_kontor.yaml` (M 20 × 25, Regen, Morgen, `reach` Schreibstube `rect [6,2,7,3]`, 10 eigene gegen 26 auf Normal, L 22 / S 30) mit Feld `design:`, `map.act = 2`. Gegner nur mit `levelOffset` (−3…−2, Brakka über die Leutnant-Regel), keine Flieger, keine Reiter.
-2. **Höhen [ASSUMPTION F4]:** Nordkai mit Kontor und Balliste auf Stufe 1 (`levels` rect [1,0,18,10]), Kaifuß y 11 auf Stufe 0, Treppen [9,11], [10,11] (Brückenkopf) und [18,11] (Ostseite).
+2. **Höhen:** Nordkai mit Kontor und Balliste auf Stufe 1 (`levels` rect [1,0,18,10]), Kaifuß y 11 auf Stufe 0, Treppen [9,11], [10,11] (Brückenkopf) und [18,11] (Ostseite).
 3. **Balliste:** Brakka (`lieutenant: brakka`, `hold`) steht neben der Balliste `b_quay` [10,8] und hält die Steinbrücke unter Feuer.
 4. **Kran:** Hebel `l_crane` [16,15]; gezogen spielt `scn.m2_7.crane` und `rect [15,12,15,14]` wird `footbridge` (Steg über das Becken).
 5. **Schlüssel:** Das Kontor hat zwei Türen vorn und eine an der Ostseite; der Zahlmeister (`unit.purser.name`, [16,6]) trägt `door_key` mit `drops`. Fenn (Kundschafter) öffnet ohne Schlüssel.
 6. **Wellen:** angekündigt R3 (Westkai), R5 (Ostkai), R7 (von der Stadt), P−2.
-7. **Chronik-Seite:** Truhe `c_page` [13,2] in der Schreibstube mit `chronicle: a2_kontor` und `scn.m2_7.page`; Saat Pakt: erste und letzte Seite aus derselben Hand [ASSUMPTION F3]. Nebenziele Seite und 12 Runden.
+7. **Chronik-Seite:** Truhe `c_page` [13,2] in der Schreibstube mit `chronicle: a2_kontor` und `scn.m2_7.page`; Saat Pakt: erste und letzte Seite aus derselben Hand. Nebenziele Seite und 12 Runden.
 8. **Niederlage:** Avatar oder Lucan fallen.
 9. **Szenen:** `scn.m2_7.intro`, `scn.m2_7.crane`, `scn.m2_7.page`, `scn.m2_7.outro` in DE und EN, jede Box ≤ 110 Zeichen, Gefährtenzeilen mit `requires: alive` bzw. Ersatzsprecher-Kette, Hintergrund `kontor`.
-10. **E8 in der Nachszene:** Wahl mit Titel, drei Haltungen mit `summary` (Folgen-Karte): `seraphine` → `setFlag { e08: seraphine }`, `grudge { lt: grell, delta: -1 }`; `sell` → `setFlag { e08: sell }`, `gold: 1000` [ASSUMPTION]. `maelis_ledgers` setzt der Knoten mit dem Sieg (`effects`) [ASSUMPTION F5]. Die Zeile in Kronfeld kommt mit 11.19.
+10. **E8 in der Nachszene:** Wahl mit Titel, drei Haltungen mit `summary` (Folgen-Karte): `seraphine` → `setFlag { e08: seraphine }`, `grudge { lt: grell, delta: -1 }`; `sell` → `setFlag { e08: sell }`, `gold: 1000` [ASSUMPTION]. `maelis_ledgers` setzt der Knoten mit dem Sieg (`effects`). Die Zeile in Kronfeld kommt mit 11.19.
 11. **Knoten:** `m2_7` bekommt `pre`, `post`, `effects`; N6 öffnet mit 2-7 (schon in `campaign.yaml`).
 12. **Gold:** `goldReward` 2 000 (Korridor 2 000–3 000) [ASSUMPTION F6], Truhe 300, Nebenziel 400.
 13. **Heimsuchungen:** zwei Anker (`rout` Südkai, `treasure` Nordkai).
@@ -51,7 +51,7 @@ damit ich einen Beweis gegen die Herzogin in der Hand habe.
 | `id: s2_2_7_kontor`, `scn.s2_7.*` | `m2_7_kontor`, `scn.m2_7.*` | Karten-Id des Knotens, Szenen-Schema |
 | `level` + `levelOffset` | nur `levelOffset`, Figuren per `sprite` | 11.2, 11.7 |
 | `unit.mercenary.name`, `unit.kontor_guard.name` | `unit.free_blade.name`, `unit.counting_guard.name`, Zahlmeister `unit.purser.name` | vorhandene Schlüssel (11.7), Brakkas Fraktion |
-| flach | Nordkai Stufe 1, drei Treppen, Schützen n3/n4 auf y 10 | Höhenstufen [ASSUMPTION F4] |
+| flach | Nordkai Stufe 1, drei Treppen, Schützen n3/n4 auf y 10 | Höhenstufen |
 | `chron_a2_ledger` | `a2_kontor` | Schema der Akt-2-Seiten |
 | `goldReward: 1300` | 2 000 | Korridor Akt 2 [ASSUMPTION F6] |
 | keine Anker | `rout`, `treasure` | Muster 2-1/2-5/2-6 |
@@ -70,11 +70,11 @@ damit ich einen Beweis gegen die Herzogin in der Hand habe.
 
 ## Offene Fragen an den Produktinhaber
 
-- **F1 [ASSUMPTION A] Wer überbringt Maelis' Rückkauf-Angebot?** A) Brakka unter weißem Tuch, Seraphines Reiter am Stadttor; B) Brief mit Möwensiegel; C) Faktor als Erzähltext. **Angenommen A.**
-- **F2 [ASSUMPTION A] Haltungen bei E8:** A) warm/trotzig → Seraphine, nüchtern → verkaufen; B) trotzig → verkaufen; C) zwei Antworten. **Angenommen A.**
-- **F3 [ASSUMPTION A] Seite `a2_kontor` und Saat Pakt:** A) Silbermeer kaufte die Wächterbücher, letzter Eintrag deutet an, Gefährten erkennen dieselbe Hand; B) nur die Szene vergleicht; C) eigener Text. **Angenommen A.**
-- **F4 [ASSUMPTION A] Höhen:** A) Nordkai Stufe 1 mit drei Treppen; B) flach wie Entwurf. **Angenommen A.**
-- **F5 [ASSUMPTION A] `maelis_ledgers`:** A) immer mit dem Sieg; B) nur bei `seraphine`. **Angenommen A.**
+- **F1 Wer überbringt Maelis' Rückkauf-Angebot?** A) Brakka unter weißem Tuch, Seraphines Reiter am Stadttor; B) Brief mit Möwensiegel; C) Faktor als Erzähltext. **Bestätigt (PO 2026-11-10): A.**
+- **F2 Haltungen bei E8:** A) warm/trotzig → Seraphine, nüchtern → verkaufen; B) trotzig → verkaufen; C) zwei Antworten. **Bestätigt (PO 2026-11-10): A.**
+- **F3 Seite `a2_kontor` und Saat Pakt:** A) Silbermeer kaufte die Wächterbücher, letzter Eintrag deutet an, Gefährten erkennen dieselbe Hand; B) nur die Szene vergleicht; C) eigener Text. **Bestätigt (PO 2026-11-10): A.**
+- **F4 Höhen:** A) Nordkai Stufe 1 mit drei Treppen; B) flach wie Entwurf. **Bestätigt (PO 2026-11-10): A.**
+- **F5 `maelis_ledgers`:** A) immer mit dem Sieg; B) nur bei `seraphine`. **Bestätigt (PO 2026-11-10): A.**
 - **F6 [ASSUMPTION A] Gold:** A) 2 000 + 300 + 400, Verkauf +1 000; B) Entwurf 1 300. **Angenommen A.**
 
 ## Dev Agent Record

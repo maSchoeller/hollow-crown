@@ -97,8 +97,12 @@ export function checkObjectives(data: GameData, s: BattleState, events: GameEven
     }
     case 'treasure': {
       const { have, total } = chestProgress(s, v.chests);
-      if (have >= total) endBattle(s, 'victory', events);
-      else if (phaseStart && s.turn > v.turns) endBattle(s, 'defeat', events, 'turns');
+      const late = phaseStart && s.turn > v.turns;
+      // T6-13F6: with the goal chests secured the battle runs on while the side objective `open_chests` can still be met; the round
+      // limit then ends it as a victory, the goal is already won
+      if (have >= total) {
+        if (late || !chestHuntPending(data, s)) endBattle(s, 'victory', events);
+      } else if (late) endBattle(s, 'defeat', events, 'turns');
       break;
     }
   }
@@ -134,6 +138,22 @@ function noFoesToCome(map: MapDef, s: BattleState): boolean {
 export function chestProgress(s: BattleState, chests: string[]): { have: number; total: number } {
   const have = chests.filter((id) => s.objects.some((o) => o.id === id && o.state === 'open')).length;
   return { have, total: chests.length };
+}
+
+/**
+ * Whether the side objective `open_chests` of the map is still to be met and can be (T6-13F6): it is on the map, not done yet,
+ * and every chest not opened by the company still stands closed on a tile a unit can walk on (a cave-in, `set_terrain` to
+ * `rockwall` as in 1-7, buries it). A `treasure` goal keeps the battle going after its goal chests while this holds, and autoplay
+ * then goes for the other chests. False on maps without that side objective (haunts have none).
+ */
+export function chestHuntPending(data: GameData, s: BattleState): boolean {
+  const side = mapOf(data, s).objectives.side.find((o) => o.type === 'open_chests');
+  if (!side || sideObjectiveDone(data, s, side)) return false;
+  const left = mapOf(data, s).objects.filter((x) => x.type === 'chest' && !s.stats.chestsOpened.includes(x.id));
+  return left.every((x) => {
+    const o = s.objects.find((c) => c.id === x.id);
+    return o?.state === 'closed' && data.terrain[s.terrain[o.at[1] * s.width + o.at[0]]!]?.cost.foot != null;
+  });
 }
 
 /** Name key of a unit of the map by its id (map `nameKey`, else the character's name, else `unit.<id>.name`), for goal texts that name someone. */

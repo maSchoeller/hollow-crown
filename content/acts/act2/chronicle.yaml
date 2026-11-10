@@ -5,13 +5,14 @@
 - id: a2_mine
   title: "Was der Berg nimmt"
   text: "Paktnacht unter dem Kupferberg. Der König stieg allein in die Halle der Rippen, mit der Glutkrone und leeren Händen. Er kam zurück, und die Krone glühte heller als zuvor. Er selbst war blasser. Er sagte, er habe gegeben, was der Pakt verlangt. Was es war, sagte er nicht. Ich habe es aufgeschrieben, damit einer fragt."
-# 2-2 „Das Siegel im Salzpass“ (Story 11.13), Truhe c_page: [PO offen F3] Vorschlag A – eine Seite aus dem Tempelarchiv, die Grell für Maelis schmuggelt;
-# ein Wächter erzählt eine Paktnacht, in der der König „gab“, ohne zu sagen, was. Text der Schreib-Pipeline als Vorschlag zur Abnahme.
+# 2-2 „Das Siegel im Salzpass“ (Story 11.13), Truhe c_page: eine Seite aus dem Tempelarchiv, die Grell für Maelis schmuggelt (PO 2026-11-10, T6-13F3).
+# Thema „wer zusah“ (PO 2026-11-10, T6-F7): ein Wächter zählt die Zeugen einer Paktnacht. Anders als a2_mine (der König allein im Berg) zeigt sie,
+# wer dabei war und wegsah; die Gabe selbst bleibt ungenannt (T8-S5).
 - id: a2_salzpass
-  title: "Was der König gab"
-  text: "Paktnacht. Der König kniete am Altar, die Glutkrone auf den Knien, und gab. Was, darf ich nicht schreiben; ich sah nur, dass er danach langsamer aufstand. Die Herzöge jubelten. Am Morgen war der Altar warm und der König grau an den Schläfen, mit dreißig Jahren. Ich schreibe es auf, damit einer zählt."
+  title: "Wer zusah"
+  text: "Paktnacht im Tempel. Ich stand hinter der dritten Säule und zählte, wer zusah. Die Herzöge sahen ins Feuer, als die Krone heller wurde, und jubelten erst, als es vorbei war. Der Priester am Altar sah zu Boden, die Schreiber auf ihre Hände. Nur der Sohn des Königs, sieben Jahre alt, sah seinen Vater an, die ganze Zeit. Er hat nicht geweint. Ich schreibe auf, wer wegsah, damit einer weiß, dass es Zeugen gab."
 # 2-4 „Die Brandschneise“ (Story 11.15), Köhlertruhe c_page: [ASSUMPTION] PO F6 vorläufig A – die Köhler hüteten eine Seite über ein Paktfest, bei dem
-# ein König Glut in den Berg zurückgab (Brücke zu N5, Glut unter dem Berg). Anders als a2_salzpass und a2_mine: kein König, der etwas hergibt und
+# ein König Glut in den Berg zurückgab (Brücke zu N5, Glut unter dem Berg). Anders als a2_mine: kein König, der etwas hergibt und
 # dabei verliert, sondern einer, der dem Berg etwas zurückbringt, und ein Hang, der danach nicht mehr brannte. Text der Schreib-Pipeline als Vorschlag zur Abnahme.
 - id: a2_brandhang
   title: "Was der König zurückgab"

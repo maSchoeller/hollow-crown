@@ -1,5 +1,5 @@
 # Nebenquest N4, Gedenk-Variante vor der Karte (Ilka ist gefallen; memorialIf in campaign.yaml, Muster scn.n3.memorial_intro).
-# Ersatzsprecher-Kette, kein Humor; die Clanälteste spricht in der Erzählzeile [ASSUMPTION].
+# Ersatzsprecher-Kette, kein Humor; die Clanälteste spricht mit eigener Halbfigur (clan_elder, 2026-11-10).
 id: scn.n4.memorial_intro
 background: clanlager
 music: tense
@@ -23,7 +23,12 @@ lines:
     text: "Eine alte Frau tritt aus dem größten Zelt, auf einen Speer gestützt: die Clanälteste."
   - id: l06
     mood: neutral
-    text: "Sie fragt nach Ilka. Niemand antwortet, sie senkt den Kopf. „Dann kämpft ihr an ihrer Stelle.“"
+    text: "Sie fragt nach Ilka. Niemand antwortet, sie senkt den Kopf."
+  - id: l06b
+    speaker: [clan_elder]
+    fallback: skip
+    mood: sad
+    text: "Dann kämpft ihr an ihrer Stelle."
   - id: l07
     speaker: [brenna, fenn, avatar]
     mood: sad

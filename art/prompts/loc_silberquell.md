@@ -17,4 +17,4 @@
 ## Abnahme
 
 - Klosterhof mit Steinplatten, Mauer mit Bogentor, Schrein mit Kerzen, Hospiz mit Kräutergarten ✓; Schlucht mit Bach und Wasserfall ✓, zwei Hängebrücken (West, Ost) ✓, höherer Nordrand mit Treppen und Straße nach Norden ✓; Herbst, Mittag ✓. Keine Menschen oder Tiere, kein Text ✓.
-- Abnahme durch den Produktinhaber: offen (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 ohne Änderung (Übersicht `concept/23-art-direction/abnahme/akt2-ortsbilder.md`).
