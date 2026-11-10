@@ -34,9 +34,10 @@ const weatherDef = z.object({
 const ms = z.number().min(0);
 // weight 0: the model is only placed by hand (a map's `propVariants`), never by the field hash; at least one entry must be rollable
 const propVariantList = z
-  .array(z.object({ model: z.string().min(1), weight: z.number().min(0) }))
+  .array(z.object({ model: z.string().min(1), weight: z.number().min(0), wide: z.boolean().optional() }))
   .min(1)
-  .refine((list) => list.some((e) => e.weight > 0), { message: 'at least one variant needs a weight above 0' });
+  .refine((list) => list.some((e) => e.weight > 0), { message: 'at least one variant needs a weight above 0' })
+  .refine((list) => list.every((e) => !e.wide || e.weight === 0), { message: 'a wide (two-field) variant is placed by hand only: weight 0' });
 const lookSchema = z.object({
   teams: z.object({ player: teamLook, enemy: teamLook, other: teamLook }),
   marker: z.object({ color: hex, outline: hex, alpha: unit, pulse: unit, radius: z.number().positive(), width: z.number().positive(), outlineWidth: z.number().min(0), chevronHeight: z.number().min(0), chevronSize: z.number().positive(), bobTiles: z.number().min(0) }),

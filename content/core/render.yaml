@@ -44,8 +44,9 @@ board:
   # gilt das erste der Liste. Zustände (besucht, zerstört) hängt das Brett an das Modell der Liste: `lodge_intact` -> `lodge_visited`.
   variants:
     # Gewicht 0: nur von Hand gesetzt (propVariants der Karte), nie vom Feld-Hash gewürfelt (Story 15.8)
-    # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser; die Mühle mit Rad (N3) setzt die Karte von Hand
-    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }, { model: mill_idle, weight: 0 }]
+    # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser; die Mühle mit Rad (N3) setzt die Karte von Hand, ebenso Stall, Scheune und Heu
+    # des Gestüts (2-3, Story 11.14); wide: zwei Felder breit (Stall), steht zwischen seinem Feld und dem östlichen Nachbarn, der dann nichts zeichnet
+    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }, { model: mill_idle, weight: 0 }, { model: stable_a, weight: 0, wide: true }, { model: barn_a, weight: 0 }, { model: hay_a, weight: 0 }]
     # Besuchshaus (Terrain village, Objekt village): eigenes, deutlich anderes Modell mit den Zuständen intact, visited, razed
     lodge: [{ model: lodge_b_intact, weight: 1 }]
     # Kornfeld ohne Rahmen (begehbar, Boden sichtbar), Grabrelief und Sarkophag: je ein eigenes Modell (Art Direction §3.2)

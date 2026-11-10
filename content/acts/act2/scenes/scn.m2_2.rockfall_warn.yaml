@@ -1,0 +1,11 @@
+# Mission 2-2, Runde 4 (Trigger t_rock2_warn): Warnung vor dem Steinschlag in der Nordenge (fällt in Runde 5, Brett und HUD warnen mit).
+# Späher-Zeile mit Ersatzsprecher-Kette. Vorschlag der Schreib-Pipeline.
+id: scn.m2_2.rockfall_warn
+lines:
+  - id: l01
+    mood: neutral
+    text: "Von der Nordenge rieselt Kies. Die Wand über der Straße knirscht."
+  - id: l02
+    speaker: [fenn, tobin, avatar]
+    mood: neutral
+    text: "Da oben gibt gleich was nach. Wer in der Nordenge steht, sollte bald woanders stehen."

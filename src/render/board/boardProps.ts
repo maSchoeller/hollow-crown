@@ -2,7 +2,7 @@
  * Terrain, props with their see-through twins (story 8.10), static-material freezing and fires of the battle board.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
-import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, ladderRot, topPieces, wallPieces } from './wallKit';
+import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, ladderRot, paddockPiece, topPieces, wallPieces } from './wallKit';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -185,6 +185,14 @@ export abstract class BoardProps extends BoardSetup {
       const n = grid.at(gx, gy);
       return !!n && (n.prop === 'boardwalk' || (!n.water && n.cost.foot !== null));
     };
+    // a paddock fence joins the paddock fences and gates beside it (story 11.14)
+    const paddockJoins = (gx: number, gy: number) => {
+      const p = grid.at(gx, gy)?.prop;
+      return p === 'paddock' || p === 'paddock_gate';
+    };
+    // a two-field house model (render.yaml board.variants.house `wide`, the stable) stands between its field and the east neighbour, which then draws nothing
+    const wide = new Set(this.data.render.board.variants.house.filter((e) => e.wide).map((e) => e.model));
+    const covered = new Set<string>();
     for (let gy = 0; gy < grid.h; gy++)
       for (let gx = 0; gx < grid.w; gx++) {
         const def = grid.at(gx, gy)!;
@@ -225,6 +233,7 @@ export abstract class BoardProps extends BoardSetup {
           put(`${kind.model}`, { x: x + ox, y: y + oy, h: def.water ? waterLevel : def.height, rot: ((d >>> 8) % 360) * (Math.PI / 180), scale: lo + (((d >>> 4) % 100) / 100) * (hi - lo), dim: !inMap });
           continue;
         }
+        if (covered.has(`${gx},${gy}`)) continue;
         const r = hash3(gx, gy, this.seed + 5);
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
         switch (def.prop) {
@@ -241,6 +250,10 @@ export abstract class BoardProps extends BoardSetup {
             put(k.model, { ...base, h: BOARDWALK_DECK - BOARDWALK_MODEL_DECK, rot: k.rot });
             break;
           }
+          case 'paddock':
+          case 'paddock_gate':
+            for (const k of paddockPiece(paddockJoins, gx, gy, def.prop === 'paddock_gate')) put(k.model, { ...base, rot: k.rot });
+            break;
           case 'field':
           case 'relief':
           case 'sarcophagus':
@@ -258,7 +271,13 @@ export abstract class BoardProps extends BoardSetup {
           case 'lodge': {
             // the visitable house: its object's state picks intact / visited / razed
             const obj = s.objects.find((o) => o.at[0] === x && o.at[1] === y);
-            put(withState(variant(def.prop, gx, gy, x, y), obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
+            const model = variant(def.prop, gx, gy, x, y);
+            if (wide.has(model)) {
+              covered.add(`${gx + 1},${gy}`);
+              put(model, { ...base, x: x + 0.5 });
+              break;
+            }
+            put(withState(model, obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
             break;
           }
           case 'gate':

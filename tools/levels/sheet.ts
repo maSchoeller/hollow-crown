@@ -59,6 +59,8 @@ export const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: bool
   well: { fill: '#c7b088', glyph: '◎', name: 'Brunnen' },
   field: { fill: '#e2c96e', glyph: '‖', name: 'Feld' },
   fence: { fill: '#c3d99a', glyph: '#', name: 'Zaun' },
+  paddock: { fill: '#e6ecd8', glyph: '#', name: 'Koppelzaun' },
+  paddock_gate: { fill: '#e6ecd8', glyph: '∏', name: 'Koppeltor' },
   farm: { fill: '#c99a62', glyph: '■', name: 'Hof' },
   building: { fill: '#b5876a', glyph: '■', dark: true, name: 'Gebäude' },
   rampart: { fill: '#a8a095', glyph: '▤', name: 'Wehrgang', level: 1 },

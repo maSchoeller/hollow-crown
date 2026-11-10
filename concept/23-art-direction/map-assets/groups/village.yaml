@@ -12,6 +12,7 @@ items:
     missions: [1-2, N3]
     use: Dasselbe Feld nach dem Brand, schwarze Stoppeln, Asche und Glut, begehbar.
   - id: hay_a
+    ships: true
     name: Heuhaufen
     ref: { sheet: village_3.png, box: [645, 120, 890, 410] }
     missions: [1-2, N3, 2-3]
@@ -23,6 +24,7 @@ items:
     missions: [N3]
     use: 1 Feld, Rad und Rinne ragen nach Osten etwas über den Feldrand; Rad zum Südosten gedreht, damit es aus der Spielkamera als Rad lesbar bleibt.
   - id: barn_a
+    ships: true
     name: Scheune
     ref: { sheet: village_1.png, box: [540, 5, 870, 325] }
     missions: [N3, 2-3]
@@ -74,21 +76,25 @@ items:
     missions: [1-1, N1]
     use: Ockerfarbenes Fachwerk, Stufengiebel nach Süden, dunkles Pflaumendach, Schild ohne Schrift, sperrt.
   - id: stable_a
+    ships: true
     name: Pferdestall
     ref: { sheet: village_1.png, box: [925, 50, 1490, 320] }
     missions: [2-3]
     use: 2 Felder breit, Ursprung in der Mitte; Halbtüren mit Heu, Heuraufe, Ziegeldach, sperrt.
   - id: paddock_straight
+    ships: true
     name: Koppelzaun gerade
     ref: { sheet: village_3.png, box: [40, 665, 295, 835] }
     missions: [2-3]
     use: Weißer Koppelzaun über die ganze Feldbreite (Ost-West), Holme stoßen an die Nachbarfelder.
   - id: paddock_corner
+    ships: true
     name: Koppelzaun Ecke
     ref: { sheet: village_3.png, box: [345, 625, 595, 845] }
     missions: [2-3]
     use: Ecke in der Feldmitte, Holme nach Westen und Norden; Drehung legt das Brett fest.
   - id: paddock_gate
+    ships: true
     name: Koppeltor
     ref: { sheet: village_3.png, box: [635, 650, 905, 865] }
     missions: [2-3]

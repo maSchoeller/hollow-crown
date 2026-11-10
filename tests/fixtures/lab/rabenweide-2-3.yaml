@@ -1,0 +1,8 @@
+# Story 11.14: Mission 2-3 „Die Rabenweide“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812: Furten, Steg, Koppeln, Gestütshof).
+#   pnpm lab rabenweide-2-3                         Lage zu Beginn
+#   pnpm lab rabenweide-2-3 --path ilka 17,11       Ilkas Weg aus dem Wald
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('rabenweide-2-3')
+question: Wie sieht die Rabenweide zu Beginn aus?
+map: m2_3_rabenweide
+company: expected

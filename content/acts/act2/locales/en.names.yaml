@@ -49,6 +49,13 @@ unit.dravn_envoy.name: "Border Army Envoy"
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
 
+# Story 11.13: mission 2-2 (map, foes)
+map.m2_2_salzpass.name: "The Salt Pass"
+unit.smuggler.name: "Smuggler"
+unit.kharesh_scout.name: "Kharesh Scout"
+
+# Story 11.14: mission 2-3 (map)
+map.m2_3_rabenweide.name: "The Raven Pasture"
 # Story 11.20: side quest N4 (map, outpost captain, clan elder)
 map.n4_clanlager.name: "The Clan Camp"
 unit.outpost_captain.name: "Outpost Captain"

@@ -1,0 +1,71 @@
+# Mission 2-3, Szene nach der Karte (Knoten post, Story 11.14): Rowena gibt auf (sie floh als Leutnantin bei 0 KP, PO 2026-11-09 F1 = A), lässt den
+# verwundeten Lucan versorgen, statt ihn gefangen zu nehmen (Saat Rowena, F2 = A), und deckt Dravns kleine Lüge auf: Die Krone hat ihm die Pferde
+# verweigert (F4 = A). Die große Lüge (Brandschneise, 2-4) bleibt unberührt; Lucans Haus wird nur angedeutet (Staffel-2-Strang bleibt offen).
+# Lucan ist in der Szene immer verwundet, gleich wie der Kampf lief (keine Bedingung „in diesem Kampf niedergestreckt“) [ASSUMPTION A4].
+# Keine Entscheidung, keine Haltung, kein Flag (2-8 lässt Rowena bedingungslos zögern). Ilka spricht nur, wenn sie beigetreten ist.
+# Gefährtenzeilen mit Ersatzsprecher-Kette. Text nach der Schreib-Pipeline der Narrative als Vorschlag, Abnahme beim Durchspielen.
+id: scn.m2_3.outro
+background: rabenweide
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Am Gestütshof senkt sich die Lanze. Rowena kommt zu Fuß zurück, den Helm unter dem Arm."
+  - id: l02
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Genug. Ich gebe das Gestüt für heute auf. Für Pferde stirbt hier keiner mehr."
+  - id: l03
+    mood: neutral
+    text: "Lucan lehnt am Koppelzaun, die Hand auf einer blutenden Seite. Zwei Ritter treten auf ihn zu."
+  - id: l04
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Lasst ihn. Holt Leinen und Wasser. Die Lanze nimmt keinen Verwundeten gefangen."
+  - id: l05
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Du hältst das Schwert wie einer aus einem Haus der Krone. Wer hat dich so weit gebracht?"
+  - id: l06
+    speaker: [lucan]
+    mood: sad
+    text: "Dieselben Leute, die euch heute die Pferde nehmen. Lange Geschichte, Dame Rowena."
+  - id: l07
+    speaker: [rowena]
+    fallback: skip
+    mood: angry
+    text: "Dann sag deinem General: Die Krone hat ihm die Pferde verweigert. Zweimal, mit Siegel."
+  - id: l08
+    speaker: [avatar]
+    mood: neutral
+    text: "Sein Bote sagte, sie seien längst zugesprochen. Wir sollten sie nur abholen."
+  - id: l09
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Dann hat er euch belogen. Aus dem Gestüt der Lanze holt niemand etwas nur ab."
+  - id: l10
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Ich hab es gesagt. Die Spur vom Grenzheer riecht nach Lüge."
+  - id: l11
+    speaker: [brenna, tobin, avatar]
+    mood: angry
+    text: "Wir kämpfen für einen Freispruch und klauen dabei Pferde, die keiner hergeben wollte. Großartig."
+  - id: l12
+    mood: neutral
+    text: "Rowena sammelt ihre Ritter und zieht nach Norden ab. Am Tor dreht sie sich noch einmal um."
+  - id: l13
+    speaker: [rowena]
+    fallback: skip
+    mood: neutral
+    text: "Wir sehen uns wieder, Aschenbanner. Dann hoffentlich nicht über Pferde."
+  - id: l14
+    speaker: [lucan]
+    mood: neutral
+    text: "Dravn lügt also schon bei Kleinigkeiten. Merken wir uns das, {avatar}."

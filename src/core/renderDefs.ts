@@ -5,6 +5,8 @@ import type { Condition } from './storyDefs';
 export interface PropVariant {
   model: string;
   weight: number;
+  /** two fields wide, east-west (story 11.14, the stable): only by hand (weight 0), stands between its field and the east neighbour */
+  wide?: boolean;
 }
 
 /** Look of the board's legibility aids (render.yaml `legibility`, epic 13); lengths in tiles unless named px. */
