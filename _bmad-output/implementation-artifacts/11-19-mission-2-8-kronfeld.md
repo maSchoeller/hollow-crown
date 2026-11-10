@@ -5,7 +5,7 @@ baseline_commit: 656280a3
 
 Status: review
 
-<!-- Erstellt und umgesetzt 2026-11-10 (Nachtbetrieb, PO schläft): offene Punkte als [ASSUMPTION] mit der empfohlenen Option, gesammelt unter „Offene Fragen an den Produktinhaber“. Branch claude/story-11-19-mission-2-8 auf origin/main, gestapelt auf PR #186 (2-7, noch nicht gemergt). -->
+<!-- Erstellt und umgesetzt 2026-11-10 (Nachtbetrieb, PO schläft): offene Punkte als [ASSUMPTION] mit der empfohlenen Option, gesammelt unter „Offene Fragen an den Produktinhaber“. Branch claude/story-11-19-mission-2-8 auf origin/main (2-7 als PR #186 inzwischen gemergt). -->
 
 ## Story
 
