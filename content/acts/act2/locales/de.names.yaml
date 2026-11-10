@@ -75,3 +75,6 @@ map.n6_auemarkt.name: "Der Auemarkt"
 unit.troupe_master.name: "Meisterin Maren"
 unit.debt_collector.name: "Schuldeneintreiber"
 unit.debt_boss.name: "Oberster Eintreiber"
+# Story 11.18: Mission 2-7 (Karte, Zahlmeister mit dem Kontorschlüssel)
+map.m2_7_kontor.name: "Das Kontor am Silbermeer"
+unit.purser.name: "Zahlmeister"

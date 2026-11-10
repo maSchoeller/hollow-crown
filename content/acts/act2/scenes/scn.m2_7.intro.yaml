@@ -1,0 +1,35 @@
+# Mission 2-7, Szene vor der Karte (Knoten pre, Story 11.18): Regenmorgen an der Auremündung, das Kontor des Hauses Silbermeer jenseits des Beckens.
+# Brakka ist zurück, diesmal von Maelis bezahlt. Hinweise auf Zahlmeister und Kran über die Ersatzsprecher-Kette Nell → Fenn → Lucan.
+# Jory sieht den Wimpel seiner alten Truppe auf der Aue-Insel (N6 öffnet mit 2-7). Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
+id: scn.m2_7.intro
+background: kontor
+lines:
+  - id: l01
+    mood: neutral
+    text: "Regen über der Auremündung. Lagerhäuser, Kräne und Masten, dahinter das Kontor des Hauses Silbermeer."
+  - id: l02
+    mood: neutral
+    text: "Ein Hafenbecken teilt den Kai. Nur eine Steinbrücke führt hinüber, oben vor dem Kontor steht eine Balliste."
+  - id: l03
+    speaker: [lucan]
+    mood: angry
+    text: "Maelis lässt uns fallen und hofft, dass wir nichts beweisen. In ihren Büchern steht, wen sie bezahlt hat."
+  - id: l04
+    speaker: [brakka]
+    fallback: skip
+    mood: happy
+    text: "Ihr schon wieder! Die Herzogin zahlt besser als der Wind. Wer über die Brücke kommt, kommt nicht weit."
+  - id: l05
+    speaker: [nell, fenn, lucan]
+    mood: neutral
+    text: "Der Zahlmeister trägt den Kontorschlüssel. Und der Kran im Osten schwenkt bis übers Becken."
+  - id: l06
+    speaker: [jory]
+    fallback: skip
+    requires: [{ alive: jory }]
+    mood: sad
+    text: "Drüben auf der Aue-Insel weht ein bunter Wimpel. Meine alte Truppe, wenn mich nicht alles täuscht."
+  - id: l07
+    speaker: [avatar]
+    mood: neutral
+    text: "Erst die Bücher. Wer zuerst in der Schreibstube steht, nimmt sie mit. Mehr braucht es nicht."

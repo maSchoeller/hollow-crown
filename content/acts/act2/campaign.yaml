@@ -18,7 +18,7 @@ startGold: 0
 defaultPlace: grauwacht
 startConvoy: []
 # Knoten von Akt 2 (Story 11.3): Platzhalter, deren Karte noch nicht gebaut ist; die Weltkarte bietet sie nicht an (mapInBuild),
-# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], außer m2_1 (Karte seit Story 11.12), m2_2 (Karte seit Story 11.13), m2_3 (Karte seit Story 11.14), m2_4 (Karte seit Story 11.15), m2_5 (Karte seit Story 11.16) und m2_6 (Karte seit Story 11.17); die Folge der Missionsliste
+# bis ihre Missions-Story (11.12–11.22) die Karte anlegt. Die Karten-Ids sind vorläufig [ASSUMPTION], außer m2_1 (Karte seit Story 11.12), m2_2 (Karte seit Story 11.13), m2_3 (Karte seit Story 11.14), m2_4 (Karte seit Story 11.15), m2_5 (Karte seit Story 11.16) m2_6 (Karte seit Story 11.17) und m2_7 (Karte seit Story 11.18); die Folge der Missionsliste
 # in requires ist mit Story 11.11 geprüft. Nebenquests (Produktinhaber 2026-11-09): N4 und N6 wie N3/Tobin offen, wenn Ilka bzw.
 # Jory in der Truppe oder gefallen ist, zu, wenn die Figur gegangen ist (Gedenk-Variante memorialIf/memorial mit 11.20 bzw. 11.22,
 # die Szenen fehlen noch); N6 öffnet gleichzeitig mit 2-7 (nach 2-5 und 2-6); offene Nebenquests bleiben nach 2-8 nachholbar.
@@ -30,7 +30,8 @@ nodes:
   - { id: m2_5, map: m2_5_silberquell, titleKey: node.m2_5.title, requires: [{ completed: m2_4 }], place: silberquell, merchantTier: 1, pre: scn.m2_5.intro, post: scn.m2_5.outro }
   # 2-6 (Story 11.17): das verbrannte Dorf auf dem Rückweg nur nach E7 warn (Beat 9; bei obey brannte schon Brandhang)
   - { id: m2_6, map: m2_6_kraehenholm, titleKey: node.m2_6.title, requires: [{ completed: m2_4 }], place: kraehenholm, merchantTier: 1, pre: scn.m2_6.intro, post: scn.m2_6.outro, epilogues: [{ scene: scn.m2_6.burnt_village, requires: [{ flag: { e07: warn } }] }] }
-  - { id: m2_7, map: m2_7_kontor, titleKey: node.m2_7.title, requires: [{ completed: m2_5 }, { completed: m2_6 }], place: kontor, merchantTier: 1 }
+  # 2-7 (Story 11.18): die Geschäftsbücher sind mit dem Sieg gesichert (maelis_ledgers), wohin sie gehen, entscheidet E8 in der Nachszene
+  - { id: m2_7, map: m2_7_kontor, titleKey: node.m2_7.title, requires: [{ completed: m2_5 }, { completed: m2_6 }], place: kontor, merchantTier: 1, pre: scn.m2_7.intro, post: scn.m2_7.outro, effects: [{ setFlag: maelis_ledgers }] }
   - { id: m2_8, fixed: finale, map: m2_8_kronfeld, titleKey: node.m2_8.title, requires: [{ completed: m2_7 }], place: kronfeld, merchantTier: 1 }
   # N4 (Story 11.20): Gedenk-Variante wie N3/Tobin, wenn Ilka gefallen ist (gegangen bleibt zu); Glutfunke und Weißwolf in beiden Varianten
   - { id: n4, kind: side, map: n4_clanlager, titleKey: node.n4.title, pre: scn.n4.intro, post: scn.n4.outro, requires: [{ completed: m2_3 }, { any: [{ alive: ilka }, { dead: ilka }] }], memorialIf: { dead: ilka }, memorial: { pre: scn.n4.memorial_intro, post: scn.n4.memorial_outro }, place: clanlager, merchantTier: 1, effects: [{ item: { def: ember_spark } }, { item: { def: white_wolf } }] }

@@ -1,0 +1,10 @@
+# Mission 2-7, Szene am Hebel des Krans (Trigger t_crane, läuft in der Schlacht, ohne Antworten): der Steg über das Becken.
+id: scn.m2_7.crane
+lines:
+  - id: l01
+    mood: neutral
+    text: "Ketten rasseln, der Ausleger des Krans schwenkt über das Becken. Ein Steg aus Planken legt sich aufs Wasser."
+  - id: l02
+    speaker: [nell, fenn, lucan]
+    mood: happy
+    text: "Ein zweiter Weg hinüber. Und die Balliste zielt auf die Brücke, nicht hierher."
