@@ -3,7 +3,7 @@ baseline_commit: fdb901f41e15cae411cb14ec8b27d0a93da827ef
 ---
 # Story 11.22: Nebenquest N6 „Die Gauklertruppe“
 
-Status: in-progress
+Status: review
 
 <!-- Erstellt 2026-11-09 mit gds-create-story (headless, für die orchestrierende Session). Offene Design-Fragen nicht zurückgegeben,
 sondern mit der empfohlenen Option als [ASSUMPTION] umgesetzt; Liste unten unter „Offene Fragen an den Produktinhaber“.
@@ -27,19 +27,19 @@ damit Jory seine Laute und seine Geschichte zurückbekommt.
 8. **Szenen:** `scn.n6.intro`, `scn.n6.outro`, `scn.n6.tide_warn`, `scn.n6.master_talk` (Jory spricht die Meisterin an, Szene beim Betreten der Bühne), `scn.n6.memorial_intro`, `scn.n6.memorial_outro` in DE und EN, jede Box ≤ 110 Zeichen, Gefährtenzeilen unter `requires: alive` bzw. mit Ersatzsprecher-Kette bis Avatar/Lucan, Hintergrund `auemarkt`.
 9. **Knoten:** `n6` bekommt `pre`/`post`/`memorialIf`/`memorial`/`effects`; `requires` und `place: auemarkt` bleiben.
 10. **Heimsuchung:** keine Anker (Heimsuchungen nur auf Story-Knoten, `storyNodeOf`, wie N1–N5).
-11. **Simulation:** `pnpm sim --campaign act2 --runs 50` läuft; N6 als Probe an Stelle von 2-7 (`--map-file <kopie> --node m2_7 --position 18`) je Schwierigkeit 50 Läufe mit Sieg, Runden p10/p50/p90, Niedergestreckten, Toten, Meisterin überlebt; Abweichungen nur berichten (11.27).
+11. **Simulation:** `pnpm sim --campaign act2 --runs 50` läuft; N6 als Probe an Stelle von 2-2 (`--map-file <kopie> --node m2_2 --position 18`, damit die Truppe auf P 17 ankommt) je Schwierigkeit 50 Läufe mit Sieg, Runden p10/p50/p90, Niedergestreckten, Toten, Meisterin überlebt; Abweichungen nur berichten (11.27).
 12. **Unveröffentlicht:** `act2` bleibt `released: false`, kein `content:lock`.
 13. **Abnahme:** Lab-Szenario `tests/fixtures/lab/auemarkt-n6.yaml`, Bilder 375 × 812 (Herbst-Look, Höhen, Steg vor/nach Runde 6), Abschnitt „Übernahme Story 11.22“ in `concept/27-ueberarbeitung/levels/abnahme/s2_n6_gaukler.md`; `pnpm check` grün.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Karte `content/acts/act2/maps/n6_auemarkt.yaml` (AC 1–5, 10): Terrain/Legende/Objekte aus dem Entwurf, `level` streichen, Sprites wie 2-1 (brigand/mercenary/bandit_archer), Namen `unit.debt_collector.name`, `unit.debt_boss.name`, `unit.troupe_master.name`, Karte `map.n6_auemarkt.name` in `content/acts/act2/locales/{de,en}.names.yaml` (eigener Block „N6“). Trigger Flut + Warnszene + Bühnen-Szene.
-- [ ] T2 Signaturlaute (AC 7): `final_curtain` in `content/core/items.yaml` (Block „Signaturen der Gefährten“), Skill in `content/core/skills.yaml` (eigene Zeile), Namen/Beschreibung in `content/core/locales/{de,en}.{names,items}.yaml`.
-- [ ] T3 Szenen DE/EN (AC 2, 6, 8): `content/acts/act2/scenes/scn.n6.*.yaml`, EN in `content/locales/en/act2.dialogue.yaml` (eigener Block am Ende).
-- [ ] T4 Knoten `n6` in `content/acts/act2/campaign.yaml` (AC 6, 7, 9): nur diese Zeile.
-- [ ] T5 Tests `tests/unit/n6-auemarkt.test.ts`; act-title/act-transition/scenery an die neue Karte anpassen (nur die eine Zeile).
-- [ ] T6 Simulation (AC 11), Lab-Szenario und Sichtprüfung (AC 13), Abnahme-Abschnitt.
-- [ ] T7 Abschluss: Decision-Logs (Narrative, GDD), `sprint-status.yaml` 11-22 → review, `pnpm check`.
+- [x] T1 Karte `content/acts/act2/maps/n6_auemarkt.yaml` (AC 1–5, 10): Terrain/Legende/Objekte aus dem Entwurf, `level` streichen, Sprites wie 2-1 (brigand/mercenary/bandit_archer), Namen `unit.debt_collector.name`, `unit.debt_boss.name`, `unit.troupe_master.name`, Karte `map.n6_auemarkt.name` in `content/acts/act2/locales/{de,en}.names.yaml` (eigener Block „N6“). Trigger Flut + Warnszene + Bühnen-Szene.
+- [x] T2 Signaturlaute (AC 7): `final_curtain` in `content/core/items.yaml` (Block „Signaturen der Gefährten“), Skill in `content/core/skills.yaml` (eigene Zeile), Namen/Beschreibung in `content/core/locales/{de,en}.{names,items}.yaml`.
+- [x] T3 Szenen DE/EN (AC 2, 6, 8): `content/acts/act2/scenes/scn.n6.*.yaml`, EN in `content/locales/en/act2.dialogue.yaml` (eigener Block am Ende).
+- [x] T4 Knoten `n6` in `content/acts/act2/campaign.yaml` (AC 6, 7, 9): nur diese Zeile.
+- [x] T5 Tests `tests/unit/n6-auemarkt.test.ts`; act-title/act-transition/scenery an die neue Karte anpassen (nur die eine Zeile).
+- [x] T6 Simulation (AC 11), Lab-Szenario und Sichtprüfung (AC 13), Abnahme-Abschnitt.
+- [x] T7 Abschluss: Decision-Logs (Narrative, GDD), `sprint-status.yaml` 11-22 → review, `pnpm check`.
 
 ## Dev Notes
 
@@ -85,7 +85,14 @@ damit Jory seine Laute und seine Geschichte zurückbekommt.
 
 ## Offene Fragen an den Produktinhaber
 
-Werden in der Umsetzung als [ASSUMPTION] (empfohlene Option) entschieden und unten im Dev Agent Record nachgetragen.
+Alle als [ASSUMPTION] umgesetzt (empfohlene Option), Werte leicht änderbar in Karte, Szenen bzw. `items.yaml`:
+
+- **A1 Wen greifen die Eintreiber an?** Ohne Eingriff fällt die Meisterin in Gegnerrunde 1–2 (0 von 20 Siegen). A) Startgegner `ai.prefer: player`, Boote und Schwer-Zusatz jagen die Meisterin (gewählt), B) Meisterin stärker (P, Kettenhemd), C) Startgegner schlafen (trigger) bis die Truppe kommt.
+- **A2 Flut:** A) zu Beginn der Spielerrunde 6 (gewählt), B) Gegnerrunde 6 wie Entwurf.
+- **A3 Gold:** A) 2 000 nach Goldkurve Akt 2 (gewählt), B) 1 300 wie Entwurf.
+- **A4 Meisterin:** A) Name Maren, P−3, spricht als Erzählzeile bis zur Halbfigur (gewählt), B) Halbfigur jetzt per ChatGPT erzeugen und als Sprecherin führen.
+- **A5 Bild der Laute:** A) vorläufig Silberlaute (gewählt), B) eigenes Bild `final_curtain` per ChatGPT.
+- **A6 Schwer 20 % Sieg:** A) bis 11.27 so lassen (gewählt), B) Schwer-Zusatz ebenfalls `prefer: player`, C) eine Bootswelle weniger auf Schwer.
 
 ## Dev Agent Record
 
@@ -95,12 +102,38 @@ Claude Opus 5.5 (gds-create-story, gds-dev-story), headless für die orchestrier
 
 ### Debug Log References
 
+- `pnpm lab <tmp> --play`: mit den Profilen des Entwurfs 0/20 Siege, die Meisterin fällt in Gegnerrunde 1–2 (Startgegner wählen sie über `objectiveBonus`); mit `prefer: player` 20/20.
+- Probe an Stelle von 2-7 (`--node m2_7`) bringt die Truppe nur auf P 12 → Probe an Stelle von 2-2 mit `--position 18` (Truppe P 17).
+- Szenen-Sprecher brauchen eine Halbfigur (`scene-view.test.ts`), Kampfszenen höchstens zwei Sprechblasen-Seiten je Zeile.
+
 ### Completion Notes List
 
 - Ultimate context engine analysis completed - comprehensive developer guide created (gds-create-story, 2026-11-09).
+- T1: Karte aus dem Entwurf (Abweichungen in der Abnahme-Datei), Flut per `set_terrain` mit `warn`, Bühnen-Szene, keine Heimsuchungs-Anker.
+- T2: Laute `final_curtain` als Item mit Item-Skill `cheerTargets: 2`; 10.4 ist auf main, kein Code nötig (`cheerReach`).
+- T3: Szenen intro/master_talk/tide_warn/outro/memorial_intro/memorial_outro DE+EN, content:check grün.
+- T4: Knoten n6 mit pre/post/memorialIf/memorial/effects; „gegangen“ hält N6 zu (schon in campaign.yaml, getestet).
+- T5: `tests/unit/n6-auemarkt.test.ts` (9 Tests); act-title, act-transition, scenery, home an die neue Karte angepasst.
+- T6 [C] Probe P 18, 50 Läufe: Leicht 100 %, 5/6/7 Runden, 0,02 Niedergestreckte, 0,02 Tote; Normal 98 %, 7/8/10, 0,80, 0,08; Schwer 20 %, 9/10/16, 1,57, 1,04 (Truppe Stufe 16,3, sechs Figuren). `pnpm sim --campaign act2 --runs 50`: 46/50 erreichen Akt 2, N6 wird als Nebenquest nicht gespielt. Bilder Runde 5/6 bei 375 × 812 im Dev-Build (Port 5182).
+- 2-5 und 2-6 baut eine andere Session; N6 setzt nur voraus, dass beide erledigt sind (Nell spricht nur mit `requires: alive`).
 
 ### File List
+
+- content/acts/act2/maps/n6_auemarkt.yaml (neu)
+- content/acts/act2/scenes/scn.n6.intro.yaml, scn.n6.master_talk.yaml, scn.n6.tide_warn.yaml, scn.n6.outro.yaml, scn.n6.memorial_intro.yaml, scn.n6.memorial_outro.yaml (neu)
+- content/acts/act2/campaign.yaml
+- content/acts/act2/locales/de.names.yaml, en.names.yaml
+- content/locales/en/act2.dialogue.yaml
+- content/core/items.yaml, skills.yaml, locales/de.items.yaml, en.items.yaml, de.names.yaml, en.names.yaml
+- tests/unit/n6-auemarkt.test.ts (neu)
+- tests/unit/act-title.test.ts, act-transition.test.ts, scenery.test.ts, home.test.ts
+- tests/fixtures/lab/auemarkt-n6.yaml (neu)
+- concept/27-ueberarbeitung/levels/abnahme/s2_n6_gaukler.md
+- concept/21-gdd/decision-log.md, concept/22-narrative/decision-log.md
+- _bmad-output/implementation-artifacts/sprint-status.yaml
+- _bmad-output/implementation-artifacts/11-22-nebenquest-n6-die-gauklertruppe.md
 
 ### Change Log
 
 - 2026-11-09: Story 11.22 angelegt (ready-for-dev).
+- 2026-11-10: umgesetzt (Karte, Laute, Szenen DE/EN, Knoten, Tests, Lab, Simulation, Abnahme, Decision-Logs); Status review.

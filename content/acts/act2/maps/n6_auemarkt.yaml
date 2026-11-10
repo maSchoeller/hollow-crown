@@ -55,20 +55,23 @@ deploy:
   forced: [avatar, lucan, jory]
   slots: [[5, 15], [8, 15], [9, 15], [10, 15], [5, 16], [8, 16], [9, 16], [10, 16], [8, 17], [9, 17]]
 units:
+  # Die Eintreiber auf der Insel wollen ihr Pfand lebend: Sie schlagen nur auf die Truppe (ai.prefer: player), solange eine eigene Figur auf der Karte
+  # steht; auf die Meisterin gehen die Bootsleute der Runden 3 und 5 und die Zusatzgegner auf Schwer [ASSUMPTION, Abweichung: ohne prefer fällt die
+  # Meisterin in der Simulation schon in der ersten oder zweiten Gegnerrunde, 0 von 20 Siegen].
   # Vor der Bühne: der Anführer der Eintreiber (kein Leutnant, P−1) mit seinen Leuten
-  - { id: boss, nameKey: unit.debt_boss.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -1, at: [8, 6], items: [{ def: steel_axe }], ai: { profile: aggressive } }
-  - { id: a1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 7], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: a2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 4], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: a3, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 6], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: a4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [11, 8], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: boss, nameKey: unit.debt_boss.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -1, at: [8, 6], items: [{ def: steel_axe }], ai: { profile: aggressive, prefer: player } }
+  - { id: a1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 7], items: [{ def: iron_axe }], ai: { profile: aggressive, prefer: player } }
+  - { id: a2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 4], items: [{ def: iron_sword }], ai: { profile: aggressive, prefer: player } }
+  - { id: a3, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 6], items: [{ def: iron_bow }], ai: { profile: aggressive, prefer: player } }
+  - { id: a4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [11, 8], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive, prefer: player }, difficulty: [normal, hard] }
   # Auf dem Markt zwischen Buden und Wagen
-  - { id: b1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [4, 10], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: b2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: b3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [11, 11], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: b4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [3, 7], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: b1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [4, 10], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 5, then: aggressive, prefer: player } }
+  - { id: b2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive, prefer: player } }
+  - { id: b3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [11, 11], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive, prefer: player } }
+  - { id: b4, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [3, 7], items: [{ def: iron_bow }], ai: { profile: hold, prefer: player }, difficulty: [normal, hard] }
   # An den Brücken
-  - { id: c1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 13], items: [{ def: iron_axe }], ai: { profile: guard } }
-  - { id: c2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [2, 13], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [normal, hard] }
+  - { id: c1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 13], items: [{ def: iron_axe }], ai: { profile: guard, prefer: player } }
+  - { id: c2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [2, 13], items: [{ def: iron_sword }], ai: { profile: guard, prefer: player }, difficulty: [normal, hard] }
   # Nur Schwer
   - { id: h1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [3, 3], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: h2, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 3], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
