@@ -11,7 +11,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { ParticleSystem } from '@babylonjs/core/Particles/particleSystem';
 import { loadManifest } from '../shared/assets';
-import { buildTerrain, hash3 } from '../shared/terrain3d';
+import { buildTerrain, hash3, sameBlocks, terrainGrid } from '../shared/terrain3d';
 import { loadPropMesh } from '../shared/models';
 import { variantClassOf, variantList } from '../../content/propVariants';
 import { battleSeason, seasonModel, takesSnow } from '../../content/season';
@@ -27,12 +27,41 @@ import { BoardSetup } from './boardSetup';
 export abstract class BoardProps extends BoardSetup {
   // ------------------------------------------------------------------ terrain & props
 
+  /** story 11.26: the burning tiles the flames and lights stand on (`fireKey` when `buildFires` last ran) */
+  private firesShown = '';
+
+  /** The tiles that get flames (the first `MAX_FIRES` burning ones), as one string. */
+  private fireKey(): string {
+    return Object.entries(this.state.timers)
+      .filter(([, t]) => t.kind === 'burning')
+      .slice(0, MAX_FIRES)
+      .map(([k]) => k)
+      .join(';');
+  }
+
   protected lightsMax(): number {
     return this.data.render.board.lightsMax[this.quality];
   }
 
   protected async buildTerrain(): Promise<void> {
     this.thawStatic();
+    // story 11.26: a change that keeps every block (fire catching or burning out, ash) repaints the ground and rebuilds only what
+    // stands on it; a full rebuild of a 30 × 40 map stalled the enemy phase of 2-4 for 2 s at 2× CPU throttling
+    const next = this.terrain ? terrainGrid(this.data, this.state, this.seed) : null;
+    if (this.terrain && next && sameBlocks(this.terrain.grid, next)) {
+      const before = this.terrain.grid;
+      // the same terrain on every tile (a tile caught fire: it shows what burns) leaves ground and props as they are
+      const changed = before.ids.some((id, i) => id !== next.ids[i]);
+      if (changed) {
+        this.terrain.repaint(next);
+        // puddles avoid props: they follow the new ground like after a rebuild
+        this.weather.terrainChanged(this.terrain);
+        await this.buildProps();
+      } else this.terrain.grid = next;
+      // the flames and their lights stay when the same tiles burn (a new light count compiles every lit material anew)
+      if (!this.disposed && this.fireKey() !== this.firesShown) this.buildFires();
+      return;
+    }
     this.terrain?.dispose();
     this.terrain = buildTerrain(this.scene, this.data, this.state, this.textures, this.seed, this.lightsMax());
     this.castShadows(this.terrain.casters);
@@ -504,6 +533,7 @@ export abstract class BoardProps extends BoardSetup {
 
   protected buildFires(): void {
     this.thawStatic();
+    this.firesShown = this.fireKey();
     // keep the texture: all flames share `flameTexture`, and a system disposes its texture by default
     for (const f of this.fires) f.dispose(false);
     this.fires = [];

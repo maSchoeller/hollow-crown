@@ -66,7 +66,7 @@ type Bench = {
  * One run: loads the bench page, the battle, and plays the enemy phase under `rate`× CPU throttling. `units`: the count the battle
  * must have (the reference battle 40; null for a level draft, which brings what it brings).
  */
-async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: object = BENCH_OPTIONS, units: number | null = 40): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number; byEvent: Record<string, number> }> {
+async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: object = BENCH_OPTIONS, units: number | null = 40): Promise<{ run: PhaseRun; prepared: PreparedBattle; events: number; byEvent: Record<string, number>; builds: EnemyPhaseResult['builds'] }> {
   await setCpu(cdp, rate);
   await page.goto('./tests/perf/bench.html');
   await page.waitForFunction(() => document.body.dataset.ready === '1');
@@ -103,7 +103,7 @@ async function phaseRun(page: Page, cdp: CDPSession, rate: number, options: obje
     layoutMs: r.layoutMs,
     newEffectInfo: r.newEffectInfo,
   };
-  return { run, prepared, events: r.events, byEvent: r.byEvent };
+  return { run, prepared, events: r.events, byEvent: r.byEvent, builds: r.builds };
 }
 
 /** ms since navigation start until the title answers (its buttons, not the "preparing" stone). */
@@ -196,6 +196,9 @@ interface LargeRow {
   /** wall time of the enemy phase playback at speed 1×, ms (none for the castle) */
   phaseMs: number | null;
   threadMsPerFrame: number | null;
+  /** story 11.26: board load until ready, ms (median), and the JS heap once settled, MB (median) */
+  loadMs: number | null;
+  heapMb: number | null;
 }
 
 /**
@@ -204,6 +207,9 @@ interface LargeRow {
  * castle with every room built. Writes `test-results/perf/large-<device>.json` and `.md`. Desktop throttling stands in for the phone;
  * the reference devices stay a release check (story 9.14). `PERF_LARGE_MAPS=reference,s1_1_6_paktwacht,s1_1_8_heimat,whole,castle`
  * limits the rows (`whole` = 1-6 watched in the overview). `PERF_SEASON=winter` (story 15.15) shows every draft in that season.
+ * Story 11.26: the large maps of act 2, 2-4 Brandschneise and 2-8 Kronfeld (30×40, the content maps of the act-2 pack that the
+ * perf build carries), at their own node with the company that has joined by then; `m2_4_brandschneise`, `m2_8_kronfeld` in
+ * `PERF_LARGE_MAPS`.
  */
 const SEASON = process.env.PERF_SEASON as Season | undefined;
 if (SEASON && !SEASONS.includes(SEASON)) throw new Error(`PERF_SEASON=${SEASON}: no season (${SEASONS.join(', ')})`);
@@ -218,6 +224,8 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
     { label: '1-6 Paktwacht 30×40', map: 's1_1_6_paktwacht' },
     { label: '1-8 Heimat 30×40', map: 's1_1_8_heimat' },
     { label: '1-6 Paktwacht 30×40 in der Übersicht', map: 's1_1_6_paktwacht', whole: true },
+    { label: '2-4 Brandschneise 30×40', map: 'm2_4_brandschneise' },
+    { label: '2-8 Kronfeld 30×40', map: 'm2_8_kronfeld' },
   ].filter((m) => !only || only.includes(m.whole ? 'whole' : (m.map ?? 'reference')));
   // `PERF_LARGE_MARCH=1`: only the foes marching together (the rows one by one do not change with the march)
   const marches = process.env.PERF_LARGE_MARCH === '1' ? [true] : [false, true];
@@ -227,10 +235,13 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
     for (const m of maps) {
       for (const march of marches) {
         const runs: PhaseRun[] = [];
+        const heaps: number[] = [];
         let units = 0;
         for (let i = 0; i < RUNS; i++) {
           const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, map: m.map, march, whole: m.whole, ...(SEASON ? { season: SEASON } : {}) }, m.map ? null : 40);
           runs.push(r.run);
+          heaps.push(r.prepared.heapMb);
+          console.log(`  ${m.label} run ${i + 1}: rebuilds ${JSON.stringify(r.builds)}`);
           units = r.prepared.units;
           renderer = r.prepared.renderer;
         }
@@ -244,9 +255,14 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
           drawCalls: medianOrNull(runs.map((r) => r.drawCallsAvg)),
           phaseMs: median(runs.map((r) => r.durationMs)),
           threadMsPerFrame: medianOrNull(runs.map((r) => r.threadMsPerFrame)),
+          loadMs: median(runs.map((r) => r.loadMs ?? 0)),
+          heapMb: median(heaps),
         };
         rows.push(row);
-        console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, phase ${row.phaseMs} ms, ${row.units} units`);
+        console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, ${row.drawCalls} draw calls, phase ${row.phaseMs} ms, ${row.units} units, load ${row.loadMs} ms, heap ${row.heapMb} MB`);
+        // story 11.26: what the long frames were (new shaders, enabled meshes, garbage collection, …) and their length
+        const spikes = runs.flatMap((r) => r.spikes ?? []).sort((a, b) => b.dtMs - a.dtMs).slice(0, 5);
+        console.log(`  new shaders ${runs.map((r) => r.newEffects).join('/')}; longest frames ${spikes.map((x) => `${Math.round(x.dtMs)} ms [${x.causes.join(',')}]`).join(', ')}`);
       }
     }
     if (only && !only.includes('castle')) continue;
@@ -269,6 +285,8 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
       drawCalls: median(castles.map((c) => c.drawCalls)),
       phaseMs: null,
       threadMsPerFrame: null,
+      loadMs: null,
+      heapMb: null,
     };
     rows.push(row);
     console.log(`${device} ${stage.cpuSlowdown}× ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms, ${row.drawCalls} draw calls`);
@@ -280,9 +298,9 @@ test('large maps and the castle (story 15.11)', async ({ page }, info) => {
     '',
     `Renderer: ${renderer}; ${RUNS} Läufe je Zeile (Median, max = über alle Läufe); Gegnerphase bei Tempo 1×.`,
     '',
-    '| Szenario | Drosselung | Figuren | Ø FPS | p95 ms | max ms | Draw Calls | Thread ms/Frame | Gegnerphase s |',
-    '|---|---|---|---|---|---|---|---|---|',
-    ...rows.map((r) => `| ${r.scenario} | ${r.cpuSlowdown}× | ${r.units || '–'} | ${r.avgFps} | ${r.p95Ms} | ${r.maxMs} | ${r.drawCalls ?? '–'} | ${r.threadMsPerFrame ?? '–'} | ${r.phaseMs === null ? '–' : (r.phaseMs / 1000).toFixed(1)} |`),
+    '| Szenario | Drosselung | Figuren | Ø FPS | p95 ms | max ms | Draw Calls | Thread ms/Frame | Gegnerphase s | Laden s | JS-Heap MB |',
+    '|---|---|---|---|---|---|---|---|---|---|---|',
+    ...rows.map((r) => `| ${r.scenario} | ${r.cpuSlowdown}× | ${r.units || '–'} | ${r.avgFps} | ${r.p95Ms} | ${r.maxMs} | ${r.drawCalls ?? '–'} | ${r.threadMsPerFrame ?? '–'} | ${r.phaseMs === null ? '–' : (r.phaseMs / 1000).toFixed(1)} | ${r.loadMs === null ? '–' : (r.loadMs / 1000).toFixed(1)} | ${r.heapMb ?? '–'} |`),
   ].join('\n');
   writeFileSync(join(OUT, `large-${device}.md`), md + '\n');
 });
@@ -310,13 +328,13 @@ test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
           const r = await phaseRun(page, cdp, stage.cpuSlowdown, { ...BENCH_OPTIONS, march: true, state: saved.state, budget }, null);
           runs.push(r.run);
           renderer = r.prepared.renderer;
-          console.log(device, saved.node, budget ? 'budget' : 'no budget', `${stage.cpuSlowdown}×`, JSON.stringify(r.byEvent));
+          console.log(device, saved.node, budget ? 'budget' : 'no budget', `${stage.cpuSlowdown}×`, JSON.stringify(r.byEvent), 'rebuilds', JSON.stringify(r.builds));
         }
         const plan = budget ? saved.planShownMs : saved.planMarchMs;
         const ms = runs.map((r) => r.durationMs);
         // release check (PERF_STRICT=1, story 9.14): with the budget no phase over 15 s (NFR1)
         if (budget && process.env.PERF_STRICT === '1') expect(Math.max(...ms)).toBeLessThanOrEqual(15_000);
-        const line = `| ${saved.node} Runde ${saved.turn} | ${budget ? 'mit Zeitgrenze' : 'ohne (vorher)'} | ${stage.cpuSlowdown}× | ${s(plan)} | ${s(median(ms))} | ${s(Math.max(...ms))} | ${median(runs.map((r) => r.aiMs ?? 0))} | ${median(runs.map((r) => r.avgFps))} |`;
+        const line = `| ${saved.node} Runde ${saved.turn} | ${budget ? 'mit Zeitgrenze' : 'ohne (vorher)'} | ${stage.cpuSlowdown}× | ${s(plan)} | ${s(median(ms))} | ${s(Math.max(...ms))} | ${median(runs.map((r) => r.aiMs ?? 0))} | ${median(runs.map((r) => r.avgFps))} | ${median(runs.map((r) => r.p95Ms))} | ${Math.max(...runs.map((r) => r.maxMs))} | ${medianOrNull(runs.map((r) => r.drawCallsAvg)) ?? '–'} |`;
         lines.push(line);
         console.log(device, line);
       }
@@ -328,8 +346,8 @@ test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
     '',
     `Renderer: ${renderer}; ${RUNS} Läufe je Zeile; „Gemeinsam“, Tempo 1×; Plan = tools/enemyPhase.ts mit Phasen-Pille, Brett = gemessene Wiedergabe ohne Pille.`,
     '',
-    '| Phase | Zeitgrenze | Drosselung | Plan s | Brett s (Median) | Brett s (max) | KI ms | Ø FPS |',
-    '|---|---|---|---|---|---|---|---|',
+    '| Phase | Zeitgrenze | Drosselung | Plan s | Brett s (Median) | Brett s (max) | KI ms | Ø FPS | p95 ms | max ms | Draw Calls |',
+    '|---|---|---|---|---|---|---|---|---|---|---|',
     ...lines,
   ].join('\n');
   writeFileSync(join(OUT, `phase-${device}.md`), md + '\n');

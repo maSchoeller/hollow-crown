@@ -8,7 +8,7 @@
  */
 import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstrumentation';
 import { loadContent } from '../../src/content/browser';
-import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, startBattle, type BattleState, type MapDef } from '../../src/core';
+import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, nodeLevel, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
 import { mapSchema } from '../../src/content/schemaMap';
 import type { Season } from '../../src/core/defs';
 import { setLocales } from '../../src/i18n';
@@ -29,6 +29,8 @@ export interface PreparedBattle {
   renderer: string;
   /** baked animation textures the board made at load (story 7.8): models, main thread time of the texture upload (ms), texture memory (KB), time the workers spent (ms), files a worker read */
   vat: { models: number; ms: number; kb: number; workerMs: number; byWorker: number };
+  /** story 11.26: used JS heap once the board has settled, MB (Chromium with precise memory info; 0 where unknown) */
+  heapMb: number;
 }
 
 export interface EnemyPhaseResult {
@@ -54,6 +56,8 @@ export interface EnemyPhaseResult {
   gcFreedKb: number;
   /** style and layout work of all long animation frames in the playback, ms */
   layoutMs: number;
+  /** story 11.26: the board's rebuild steps during the playback (terrain, props, fires, grid, markings): calls and main thread ms */
+  builds: Record<string, { n: number; ms: number }>;
 }
 
 /** `look`: time of day and weather of the bench map, e.g. `night,rain` (story 8.6, env PERF_LOOK of the runner); none: the map as it is.
@@ -61,7 +65,9 @@ export interface EnemyPhaseResult {
  * `vat`: overrides `board.vat` (env PERF_VAT): false = every figure plays its skeleton, to compare the two paths.
  * `vatWorker`: false (env PERF_VATWORKER=0) = the baked animations are read and worked out on the main thread, not in workers.
  * `map` (story 15.11, env PERF_LARGE): a level draft of `concept/27-ueberarbeitung/levels/` instead of the reference battle, played
- * with the company of the act at node `m1_6` deployed in full and every foe set to advance (the worst case of a phase).
+ * with the company of the act at node `m1_6` deployed in full and every foe set to advance (the worst case of a phase). Story 11.26:
+ * a map of the content (e.g. `m2_8_kronfeld`; the perf build carries the unreleased pack act2, `.env.perf`) is played at its own
+ * node, with everyone who has joined before it on the level of that node, and every foe set to advance.
  * `march`: foes that only walk go together (option „Gegnerzüge: Gemeinsam“); off = one by one as before 15.11.
  * `state` (story 15.11, env PERF_PHASE): a battle of the act at the start of its enemy phase (`tools/phase-state.ts`), played as it is.
  * `budget`: false plays that phase without the time budget of `render.yaml aiPace` (as before), to compare.
@@ -78,6 +84,48 @@ async function draftMap(id: string): Promise<MapDef> {
   if (!load) throw new Error(`no level draft ${id}`);
   const map = mapSchema.parse(((await load()) as { default: unknown }).default) as MapDef;
   return { ...map, id: BENCH_MAP_ID, act: 1, units: map.units.map((u) => (u.team === 'enemy' ? { ...u, ai: { profile: 'aggressive' as const } } : u)) } as MapDef;
+}
+
+/** Story 11.26: a map of the content at its own node: the company that has joined before it (all acts before and the nodes of its act before it) on the node's level, every foe advancing. */
+function actMapBattle(data: GameData, mapId: string): BattleState {
+  const acts = Object.keys(data.acts).map(Number).sort((a, b) => a - b);
+  const act = acts.find((a) => data.acts[a]!.nodes.some((n) => n.map === mapId));
+  if (act === undefined) throw new Error(`no node plays the map ${mapId}`);
+  const map = data.maps[mapId]!;
+  data.maps[mapId] = { ...map, units: map.units.map((u) => (u.team === 'enemy' ? { ...u, ai: { profile: 'aggressive' as const } } : u)) } as MapDef;
+  const nodes = data.acts[act]!.nodes;
+  const at = nodes.findIndex((n) => n.map === mapId);
+  const order = [...acts.filter((a) => a < act).flatMap((a) => data.acts[a]!.nodes.map((n) => n.id)), ...nodes.slice(0, at).map((n) => n.id)];
+  const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+  c.act = act;
+  for (const ch of Object.values(data.chars)) if (order.includes(ch.joins)) addToRoster(data, c, ch.id);
+  c.completed = order;
+  const level = nodeLevel(data, c, nodes[at]!);
+  for (const u of c.roster) while (u.level < level) levelUp(data, u, c.rng);
+  const deploy = c.roster.map((u) => u.id).slice(0, map.deploy.max);
+  return startBattle(data, createBattle(data, c, nodes[at]!.id, deploy)).state;
+}
+
+/** Story 11.26: calls and time of the board's rebuild steps, counted from `enemyPhase` on (`builds` of its result). */
+const builds: Record<string, { n: number; ms: number }> = {};
+function timeBuilds(board: BoardView): void {
+  const b = board as unknown as Record<string, (...a: unknown[]) => unknown>;
+  for (const name of ['buildTerrain', 'buildProps', 'buildFires', 'buildGrid', 'buildOverlays', 'castShadows']) {
+    const own = b[name]!.bind(board);
+    b[name] = (...a: unknown[]) => {
+      const t = performance.now();
+      const add = () => {
+        const e = (builds[name] ??= { n: 0, ms: 0 });
+        e.n++;
+        e.ms += performance.now() - t;
+      };
+      const r = own(...a);
+      // an async step counts until it resolves (it may wait on a model); the synchronous ones are their main thread time
+      if (r instanceof Promise) return r.finally(add);
+      add();
+      return r;
+    };
+  }
 }
 
 let prepared: { board: BoardView; data: ReturnType<typeof loadContent>['data']; state: ReturnType<typeof startBattle>['state'] } | null = null;
@@ -120,9 +168,12 @@ async function prepare(opts: Options = {}): Promise<PreparedBattle> {
   const loaded = loadContent();
   setLocales(loaded.locales);
   await loadPack('act1').catch(() => undefined); // models and sprites resolve without it; content is not needed
+  // story 11.26: the maps and companions of act 2 (only in the perf build, `.env.perf`; a build without it measures act 1 only)
+  await loadPack('act2').catch(() => undefined);
   const data = loaded.data;
   if (opts.budget === false) data.render.aiPace.maxBoost = 1;
   if (opts.state) return prepareBoard(data, opts.state, opts);
+  if (opts.map && data.maps[opts.map]) return prepareBoard(data, actMapBattle(data, opts.map), opts);
   data.maps[BENCH_MAP_ID] = { ...(opts.map ? await draftMap(opts.map) : benchMap()), ...parseLookParam(opts.look ?? null), ...(opts.season ? { season: opts.season } : {}) };
   const nodes = data.acts[1]!.nodes;
   // a draft is played at the place of 1-6 in the act: who has joined by then and their level (as `__hc.devNode` does)
@@ -159,6 +210,7 @@ async function prepareBoard(data: ReturnType<typeof loadContent>['data'], state:
   vatBuild.models = vatBuild.ms = vatBuild.bytes = 0;
   if (opts.vatWorker !== undefined) vatLoad.workers = opts.vatWorker;
   vatLoad.workerMs = vatLoad.mainMs = vatLoad.files = vatLoad.byWorker = 0;
+  timeBuilds(board);
   const t0 = performance.now();
   await board.load(state);
   const loadMs = performance.now() - t0;
@@ -166,7 +218,7 @@ async function prepareBoard(data: ReturnType<typeof loadContent>['data'], state:
   // let textures settle before measuring
   await new Promise((r) => setTimeout(r, 1500));
   prepared = { board, data, state };
-  return { units: state.units.length, loadMs, renderer: board.engine.getGlInfo().renderer, vat: { models: vatBuild.models, ms: Math.round(vatBuild.ms), kb: Math.round(vatBuild.bytes / 1024), workerMs: Math.round(vatLoad.workerMs), byWorker: vatLoad.byWorker } };
+  return { units: state.units.length, loadMs, heapMb: Math.round(heapUsed() / 1024 / 1024), renderer: board.engine.getGlInfo().renderer, vat: { models: vatBuild.models, ms: Math.round(vatBuild.ms), kb: Math.round(vatBuild.bytes / 1024), workerMs: Math.round(vatLoad.workerMs), byWorker: vatLoad.byWorker } };
 }
 
 /** One call of `board.frame`, recorded for the trace. */
@@ -207,6 +259,7 @@ async function enemyPhase(): Promise<EnemyPhaseResult> {
   const { board } = prepared;
   const result = planned;
   planned = null;
+  for (const k of Object.keys(builds)) delete builds[k];
   const frames: number[] = [];
   const stamps: Array<[number, number]> = []; // [frame timestamp, previous frame timestamp]
   const drawCalls: number[] = [];
@@ -324,7 +377,7 @@ async function enemyPhase(): Promise<EnemyPhaseResult> {
     spike.causes = classify(spike);
     spikes.push(spike);
   });
-  return { events: result.events.length, durationMs, byEvent, frames, drawCalls, newEffects: effectCount(board) - effects0, spikes, aiMs: result.aiMs, newEffectInfo: describeNewEffects(board, effectKeys0),
+  return { builds: Object.fromEntries(Object.entries(builds).map(([k, v]) => [k, { n: v.n, ms: Math.round(v.ms) }])), events: result.events.length, durationMs, byEvent, frames, drawCalls, newEffects: effectCount(board) - effects0, spikes, aiMs: result.aiMs, newEffectInfo: describeNewEffects(board, effectKeys0),
     gcEvents: hostFrames.filter((h) => h.heapFreedKb >= 256).length,
     gcFreedKb: hostFrames.reduce((n, h) => n + (h.heapFreedKb >= 256 ? h.heapFreedKb : 0), 0),
     layoutMs: Math.round(layouts.reduce((n, l) => n + l.ms, 0)),
@@ -377,5 +430,25 @@ async function castle(opts: { quality?: 'low' | 'mid' | 'high'; ms?: number } = 
   return { loadMs, renderer: (view as unknown as { host: { engine: { getGlInfo(): { renderer: string } } } }).host.engine.getGlInfo().renderer, frames, drawCalls: stats.drawCalls, meshes: stats.meshes, vertices: stats.vertices };
 }
 
-(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase; castle: typeof castle } }).__bench = { prepare, startEnemyPhase, enemyPhase, castle };
+/**
+ * Story 11.26 (diagnosis): times one terrain rebuild of the prepared board, ms. `full`: the whole terrain as on load (a block
+ * changed: a gate, a razed house); else the first flammable tile with a prop burns out to ash (the repaint of a fire).
+ */
+async function terrainRebuild(opts: { full?: boolean } = {}): Promise<{ ms: number; builds: Record<string, { n: number; ms: number }> }> {
+  if (!prepared) throw new Error('prepare() first');
+  const b = prepared.board as unknown as { state: BattleState; terrain?: { dispose(): void }; buildTerrain(): Promise<void> };
+  for (const k of Object.keys(builds)) delete builds[k];
+  if (opts.full) {
+    b.terrain?.dispose();
+    b.terrain = undefined;
+  } else {
+    const i = b.state.terrain.findIndex((t) => prepared!.data.terrain[t]?.flammable && prepared!.data.terrain[t]?.prop);
+    b.state = { ...b.state, terrain: b.state.terrain.map((t, k) => (k === i ? 'ash' : t)) };
+  }
+  const t0 = performance.now();
+  await b.buildTerrain();
+  return { ms: Math.round(performance.now() - t0), builds: Object.fromEntries(Object.entries(builds).map(([k, v]) => [k, { n: v.n, ms: Math.round(v.ms) }])) };
+}
+
+(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase; castle: typeof castle; terrainRebuild: typeof terrainRebuild; board: () => BoardView | undefined } }).__bench = { prepare, startEnemyPhase, enemyPhase, castle, terrainRebuild, board: () => prepared?.board };
 document.body.dataset.ready = '1';

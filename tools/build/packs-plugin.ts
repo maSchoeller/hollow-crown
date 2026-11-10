@@ -77,8 +77,10 @@ export function readRenames(root: string): Renames {
 
 /**
  * The developer switch (story 11.3): on the dev server, the packs named in `VITE_HC_PACKS` (comma list, e.g. `act2` from
- * `.env.act2` via `pnpm dev:act2`) count as released, so an act that players do not get yet can be played locally. `vite build`
- * never reads it: what reaches players is decided by `released` in packs.yaml alone.
+ * `.env.act2` via `pnpm dev:act2`) count as released, so an act that players do not get yet can be played locally. Story 11.26:
+ * the performance build (`vite build --mode perf`, `.env.perf`, output `dist-perf`, never deployed) reads it too, so the bench
+ * measures the maps of an unreleased act. The normal `vite build` never reads it: what reaches players is decided by `released`
+ * in packs.yaml alone.
  */
 export function withDevPacks(packs: readonly PackDef[], list: string | undefined): PackDef[] {
   const ids = new Set((list ?? '').split(',').map((s) => s.trim()).filter(Boolean));
@@ -135,8 +137,8 @@ export function packsPlugin(root = process.cwd()): PacksPlugin {
     enforce: 'pre',
     nonCorePaths: () => nonCore,
     configResolved(config) {
-      devPacks = config.command === 'serve' ? (config.env.VITE_HC_PACKS as string | undefined) : undefined;
-      if (devPacks) config.logger.info(`hc-packs: unreleased packs on for this dev server: ${devPacks}`);
+      devPacks = config.command === 'serve' || config.mode === 'perf' ? (config.env.VITE_HC_PACKS as string | undefined) : undefined;
+      if (devPacks) config.logger.info(`hc-packs: unreleased packs on for this ${config.command === 'serve' ? 'dev server' : 'perf build'}: ${devPacks}`);
       packs = withDevPacks(readPacks(root), devPacks);
       outDir = config.build.outDir.startsWith('/') || /^[A-Za-z]:/.test(config.build.outDir) ? config.build.outDir : join(config.root, config.build.outDir);
     },
