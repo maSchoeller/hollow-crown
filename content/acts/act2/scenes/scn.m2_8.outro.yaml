@@ -1,0 +1,65 @@
+# Mission 2-8, Szene nach der Karte (Knoten post, Story 11.19): Ende von Akt 2. Nachts am Nordufer: Rowenas dritte Saat-Szene („Ende von Kronfeld“),
+# Beat 12 „Die Krone war hohl“ (der Pakt hält durch ein Opfer; was genau die Könige geben, bleibt für Akt 3), Ausblick auf Aurenhall (Tor zu Akt 3, Aureklamm).
+# Die Chronik-Zeilen nur, wenn die Chronik gelesen ist (chronicle_read, Story 11.23), sprechen Liora, sonst Ysolde, sonst Rhen.
+# Amos und Brann nur, wenn beigetreten. Keine Entscheidung. Vorschlag der Schreib-Pipeline [ASSUMPTION], Abnahme offen.
+id: scn.m2_8.outro
+background: kronfeld
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Nacht am Nordufer. Drüben brennen die Feuer von vier Heeren, die sich heute nicht bekriegt haben."
+  - id: l02
+    mood: neutral
+    text: "Am Brückenkopf steht Rowena allein, die Lanze gesenkt."
+  - id: l03
+    speaker: [rowena]
+    fallback: skip
+    mood: sad
+    text: "Ich habe gezögert. Beim nächsten Mal nicht. Geht, bevor ich es mir anders überlege."
+  - id: l04
+    speaker: [rowena]
+    fallback: skip
+    mood: sad
+    text: "Den Befehl las sie von einem Brief ab. Er trug das Siegel ihres Lehrers."
+  - id: l05
+    speaker: [lucan]
+    mood: sad
+    text: "Für keinen von ihnen waren wir je mehr als ein Name auf einem Steckbrief."
+  - id: l06
+    speaker: [liora, ysolde, avatar]
+    requires: [{ flag: chronicle_read }]
+    mood: sad
+    text: "Alle Seiten sagen dasselbe: Beim Paktfest gaben die Könige. Danach waren sie grau, mit dreißig."
+  - id: l07
+    speaker: [liora, ysolde, avatar]
+    requires: [{ flag: chronicle_read }]
+    mood: sad
+    text: "Der Pakt hält nicht durch Magie. Er hält durch ein Opfer, und die Könige bringen es."
+  - id: l08
+    speaker: [avatar]
+    mood: sad
+    text: "Dann bannt die Glutkrone gar nichts. Die Krone war hohl. Die ganze Zeit."
+  - id: l09
+    speaker: [lucan]
+    mood: sad
+    text: "Und Seraphine soll sie als Nächste tragen."
+  - id: l10
+    speaker: [amos]
+    fallback: skip
+    requires: [{ alive: amos }]
+    mood: neutral
+    text: "Erst die Wunden. Wer heute noch läuft, trägt morgen die anderen."
+  - id: l11
+    speaker: [brann]
+    fallback: skip
+    requires: [{ alive: brann }]
+    mood: sad
+    text: "Der Boden hier ist warm, wie in der Mine. Unter uns wacht etwas auf."
+  - id: l12
+    mood: neutral
+    text: "Im Norden liegt die Aureklamm, dahinter Aurenhall. In den Bergen wartet der erste Schnee."
+  - id: l13
+    speaker: [avatar]
+    mood: neutral
+    text: "Ruht euch aus. Morgen gehen wir dorthin, wo die Krone ist."

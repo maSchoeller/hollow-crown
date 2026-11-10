@@ -1,0 +1,48 @@
+# Mission 2-8, Szene vor der Karte (Knoten pre, Story 11.19): Abend auf dem Kronfeld, der „neutrale“ Treffpunkt für den Freispruch.
+# Folgen aus Akt 2: das Siegel aus dem Salzpass (m2_2_seal), Odile nach E5, Sable nach E7 warn (joined_sable), Varek nach E6 pardon, Jory wenn beigetreten.
+# Seraphine, Halvard und Dravn treten hier nicht auf. Text als Vorschlag der Schreib-Pipeline [ASSUMPTION], Abnahme offen.
+id: scn.m2_8.intro
+background: kronfeld
+lines:
+  - id: l01
+    mood: neutral
+    text: "Kronfeld an der Aure. Ein Festzelt auf dem Hügel, vier Banner im Abendwind, das Feld golden und leer."
+  - id: l02
+    speaker: [lucan]
+    mood: neutral
+    text: "Ein neutraler Ort, sagt die Prinzessin. Freispruch vor allen vier Häusern. Ich traue keinem davon."
+  - id: l03
+    speaker: [fenn, lucan]
+    requires: [{ flag: m2_2_seal }]
+    mood: neutral
+    text: "Das Siegel aus dem Salzpass gehört an den Erlass. Und der Erlass liegt nirgends aus."
+  - id: l04
+    speaker: [odile]
+    fallback: skip
+    requires: [{ flag: { e05: stay } }, { alive: odile }]
+    mood: sad
+    text: "Seraphines Garde trägt Trauerflor. So reitet niemand zu einer Begnadigung."
+  - id: l05
+    requires: [{ flag: { e05: return } }]
+    mood: sad
+    text: "Unter den Gardisten am Zelt steht Odile in Weiß. Sie sieht nicht herüber."
+  - id: l06
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: joined_sable }, { alive: sable }]
+    mood: angry
+    text: "Im Süden Dravns Grenzheer. Zu einem Freispruch schickt er keine Speere."
+  - id: l07
+    requires: [{ flag: { e06: pardon } }]
+    mood: sad
+    text: "Unter Dravns Bannern steht ein Begnadigter: Varek, den Blick auf den Boden."
+  - id: l08
+    speaker: [jory]
+    fallback: skip
+    requires: [{ alive: jory }]
+    mood: neutral
+    text: "Vier Banner und kein einziger Spielmann. Das ist kein Fest, Leute."
+  - id: l09
+    speaker: [avatar]
+    mood: neutral
+    text: "Wir gehen hinauf. Aber jeder weiß, wo der Fluss ist."

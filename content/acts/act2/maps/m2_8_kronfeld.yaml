@@ -1,0 +1,242 @@
+# Mission 2-8 – Kronfeld (Knoten m2_8, Finale von Akt 2). Entwurf concept/27-ueberarbeitung/levels/s2_2_8_kronfeld.yaml, Missionsliste: G 30×40, survive → escape, 15 / 40,
+# Leutnants Rowena, Grell, Brakka, Sable. Der neutrale Treffpunkt wird zur Falle: Die Truppe steht auf dem Hügel mit dem Festzelt (Terrasse, Stufe 1), die vier Mächte
+# kommen von allen Seiten. Erst überleben (Runde 1–5), dann ausbrechen: Fluchtziel ist das Nordufer der Aure (Zeilen 0–1), mindestens 6 Figuren, Rhen und Lucan dabei.
+# Höhen: Treffpunkt und Osthügel sind Terrasse (Stufe 1), die Felsnase des Osthügels crag (Stufe 2); die Balliste [24,13] steht auf Stufe 2 und reicht bis zum Treffpunkt.
+# Veränderliche Karte: Das Brückentor [14,6]/[15,6] ist zu. In Runde 6 zögert Rowena (Saat Rowena), das Tor geht auf, sie und ihre beiden Lanzen halten still (hold).
+# Wer früher weg will, geht durch die Furt im Osten (rect [23,2,25,5]): Betritt eine eigene Figur sie, beginnt die Flucht sofort (advance_objective); ab Runde 9 sperren Lanzen sie.
+# Abweichungen vom Entwurf (Story 11.19, alle in levels/abnahme/s2_2_8_kronfeld.md): Karten-Id m2_8_kronfeld, Szenen scn.m2_8.*, Gegner nur mit levelOffset und vorhandenen
+# Namen (Lanzenritter/Lanzenknecht, Kaperfahrer, Freie Klinge, Grenzsoldat), Grell als skirmisher mit steel_sword (Leutnant-Regel), Ziel survive 5 → escape (Story 11.8)
+# statt escape mit Tor, Trigger an der Furt, Gold 3 000 statt 2 000, zwei Heimsuchungs-Anker.
+# Balancing [C] siehe Abschnitt „Übernahme Story 11.19“ der Abnahme-Datei (pnpm sim --campaign act2 --runs 50).
+# Szenen: scn.m2_8.intro (Knoten pre), scn.m2_8.hollow_crown (R1, die Falle), scn.m2_8.rowena_hesitates (R6, Tor), scn.m2_8.ford (Furt betreten),
+# scn.m2_8.outro (Knoten post: Nordufer, Rowena, „Die Krone war hohl“, Ende von Akt 2).
+id: m2_8_kronfeld
+nameKey: map.m2_8_kronfeld.name
+size: [30, 40]
+legend:
+  "Q": ballista
+  ",": grass
+  "_": road
+  "T": forest
+  "~": river
+  "f": shallows
+  "B": bridge
+  "M": wall
+  "g": gate_closed
+  "%": terrace
+  "c": crag
+  "/": ramp
+  "s": stairs
+  "n": stall
+  "k": field
+  "W": wagon
+#          x: 012345678901234567890123456789
+terrain: |
+  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  ~~~~~~~~~~~~~~BB~~~~~~~fff~~~~
+  ~~~~~~~~~~~~~~BB~~~~~~~fff~~~~
+  ~~~~~~~~~~~~~~BB~~~~~~~fff~~~~
+  ~~~~~~~~~~~~~~BB~~~~~~~fff~~~~
+  ,,,,,,,,,,,MMMggMMM,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,W,__,W,,,,,,,,,,,,
+  ,,,TTTTT,,,,,,__,,,,,,,,,,,,,,
+  ,,,TTTTT,,,,,,__,,,,,,%%%%%,,,
+  ,,,TTTTT,,,,,,__,,,,,,%cQc%,,,
+  ,,,TTTTT,,,,,,__,,,,,,%ccc%,,,
+  ,,,,,,,,,,,,,,__,,,,,,%%s%%,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,/,,,,,
+  ,,,,,,,,,,,,,,//,,,,,,,,,,,,,,
+  ,,,,,,,,,,,%%%%%%%%,,,,,,,,,,,
+  ,,,,kkkkk,,%%%%%%%%,,,,,,,,,,,
+  ,,,,kkkkk,,%%nnnn%%,,,,,,,,,,,
+  ,,,,kkkkk,/%%nnnn%%/,,,,,,,,,,
+  ,,,,kkkkk,,%%%%%%%%,,TTTTT,,,,
+  ,,,,kkkkk,,%%%%%%%%,,TTTTT,,,,
+  ,,,,,,,,,,,%%%%%%%%,,TTTTT,,,,
+  ,,,,,,,,,,,,,,//,,,,,TTTTT,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,W,,,,__,,,,W,,,,,,,,,
+  ______________________________
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,TTTTTT,kkkk,__,kkkk,,,,,,,,,
+  ,,TTTTTT,kkkk,__,kkkk,TTTTTT,,
+  ,,TTTTTT,kkkk,__,kkkk,TTTTTT,,
+  ,,TTTTTT,kkkk,__,kkkk,TTTTTT,,
+  ,,TTTTTT,,,,,,__,,,,,,TTTTTT,,
+  ,,,,,,,,,,,,,,__,,,,,,TTTTTT,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,__,,,,,,,,,,,,,,
+# Terrasse (Stufe 1) und Felsnase (crag, Stufe 2) tragen ihre Stufe selbst; die Balliste hat keine eigene Stufe, die Treppe am Osthügel liegt auf Stufe 1
+levels:
+  - { level: 2, area: { tiles: [[24, 13]] } }
+  - { level: 1, area: { tiles: [[24, 15]] } }
+timeOfDay: evening
+weather: clear
+objects:
+  - { id: b_hill, type: ballista, at: [24, 13] }
+deploy:
+  max: 15
+  forced: [avatar, lucan]
+  slots: [[11, 18], [12, 18], [13, 18], [14, 18], [15, 18], [16, 18], [17, 18], [18, 18], [11, 19], [12, 19], [17, 19], [18, 19], [11, 20], [12, 20], [17, 20], [18, 20], [11, 22], [12, 22], [13, 22], [14, 22], [15, 22], [16, 22], [17, 22], [18, 22]]
+# Heimsuchungs-Anker (Story 5.5; Story 11.19 [ASSUMPTION], nach dem Muster von 2-1, 2-5 bis 2-7 gleich mitgeliefert), die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: der Treffpunkt – nach dem Verrat sammeln sich Versprengte aller vier Banner auf den Feldern im Süden und halten den Hügel mit dem Zelt.
+  - variant: rout
+    target: { at: [14, 18] }
+    enemySpawn: { rect: [9, 30, 20, 33] }
+    deploy: { rect: [3, 8, 10, 9] }
+  # Grund: der Osthügel – die Freien Klingen haben ihren Sold in Kisten bei der Balliste zurückgelassen; die Truppe kommt über die Furt und muss sie bergen.
+  - variant: treasure
+    target: { at: [22, 13] }
+    enemySpawn: { rect: [2, 24, 10, 26] }
+    deploy: { rect: [20, 7, 27, 8] }
+    turns: 10
+    chests: [[22, 12], [26, 14]]
+units:
+  # Norden: Rowena mit der Lanze vor dem Brückentor, ihre Lanzenritter und die Lanzenknechte der Krone
+  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, levelOffset: 2, at: [14, 9], lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: n1, nameKey: unit.lance_knight.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n2, nameKey: unit.lance_knight.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [19, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: n3, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n4, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [15, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n5, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 12], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: n6, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [17, 12], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: n7, nameKey: unit.lance_squire.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [15, 10], items: [{ def: heal_staff }], ai: { profile: support } }
+  # Westen: Grell und seine Kaperfahrer (Maelis)
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [2, 21], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: aggressive } }
+  - { id: w1, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w2, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w3, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: w4, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [7, 26], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w5, nameKey: unit.privateer.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [2, 15], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+  - { id: w6, nameKey: unit.privateer.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [2, 27], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  # Osten: Brakka an der Balliste auf der Felsnase (Stufe 2), ihre Freien Klingen darunter
+  - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, levelOffset: 1, at: [23, 13], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
+  - { id: e1, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [24, 15], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: e2, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [22, 14], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: e3, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [27, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: e4, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [27, 21], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: e5, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [21, 19], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: e6, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  # Süden: Sable mit dem Grenzheer, oder nach E7 warn (Sable ist übergelaufen) der Hauptmann mit gleichen Werten; genau eine Figur hält die Stelle
+  - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ not: { flag: { e07: warn } } }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, sprite: mercenary, levelOffset: 1, at: [15, 34], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: { e07: warn } }] }
+  - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [18, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s4, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [13, 36], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: s5, nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [16, 36], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.lance_knight.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -1, at: [6, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.lance_knight.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -1, at: [23, 9], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [6, 25], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [25, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  - { id: h5, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 37], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h6, nameKey: unit.border_soldier.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [21, 37], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+reinforcements:
+  # Lanzenknechte von Westen
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [0, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [0, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [0, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Lanzenknechte von Osten
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [29, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [29, 22], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [29, 26], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Grenzheer von Süden
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.border_soldier.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 39], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [15, 39], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [13, 39], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  # Letzte Lanzen sperren die Furt
+  - turn: 9
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [23, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [25, 6], items: [{ def: iron_lance }], ai: { profile: guard } }
+      - { nameKey: unit.lance_knight.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [24, 7], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+objectives:
+  # Ziel-Phasen (Story 11.8): 5 Runden halten, dann über die Aure; 6 Figuren am Nordufer ist der Vorschlag des Entwurfs (per Sim geprüft, Abnahme-Datei)
+  victory:
+    type: survive
+    turns: 5
+    then: { type: escape, area: { rect: [0, 0, 29, 1] }, min: 6, must: [avatar, lucan] }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+  side:
+    - { id: s_all, type: no_downs, reward: { gold: 800 } }
+    - { id: s_fast, type: turn_limit, turns: 14, reward: { gold: 500 } }
+triggers:
+  # Runde 1: die Falle schnappt zu (Seraphines Befehl, die vier Banner)
+  - id: t_trap
+    once: true
+    when: { type: turn_start, turn: 1, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_8.hollow_crown }
+  # Runde 6: Rowena zögert (Saat Rowena), das Brückentor geht auf, sie und ihre beiden Lanzen halten still
+  - id: t_hesitate
+    once: true
+    when: { type: turn_start, turn: 6, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_8.rowena_hesitates }
+      - { action: set_terrain, area: { tiles: [[14, 6], [15, 6]] }, terrain: gate }
+      - { action: set_ai, units: [rowena, n1, n2], profile: hold }
+  # Wer vorher durch die Furt kommt, beginnt die Flucht sofort
+  - id: t_ford
+    once: true
+    when: { type: unit_enters, team: player, area: { rect: [23, 2, 25, 5] } }
+    then:
+      - { action: dialogue, id: scn.m2_8.ford }
+      - { action: advance_objective }
+# Gold nach der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie), als Finale am oberen Rand [ASSUMPTION, Story 11.27 stimmt ab]; dazu 800 + 500 aus den Nebenzielen (Anteil 43 %)
+goldReward: 3000
+design:
+  title: Kronfeld
+  intent: >
+    Das Finale von Akt 2: Alle vier Anwärter-Linien schließen sich um die Truppe, „Die Krone war hohl“. Erst überleben, dann ausbrechen: In Runde 6 öffnet Rowenas Zögern das Brückentor, wer schneller sein will, kämpft sich zur Furt durch.
+    Alles, was die Spieler in Akt 2 gelernt haben, kommt zusammen: offene Ebene, Balliste auf dem Hügel, Höhe, Furt.
+  mood: Weite goldene Ebene im letzten Abendlicht, ein Festzelt auf einem Hügel unter vier Bannern, die Aure mit steinerner Brücke im Norden, Speerlinien am Horizont, Rauch.
+  phases:
+    - { id: p1, turns: [1, 5], label: Überleben, note: "Falle schnappt zu, R3 Welle West, R5 Welle Ost. Hügel halten, Rampen sind die Engstellen." }
+    - { id: p2, turns: [6, 9], label: Das Tor, note: "R6 Rowena zögert, Tor offen, ihre Leute halten still. R7 Süden, R9 sperren Lanzen die Furt." }
+    - { id: p3, turns: [10, 15], label: Ausbruch, note: "Sechs Figuren über die Brücke oder durch die Furt aufs Nordufer." }
+  paths:
+    - { team: player, points: [[14, 17], [14, 7], [14, 2], [14, 1]], phase: p2, label: Brücke }
+    - { team: player, points: [[18, 18], [24, 18], [28, 16], [28, 8], [24, 6], [24, 1]], phase: p1, label: Furt }
+    - { team: enemy, points: [[2, 21], [9, 21]], phase: p1, label: Grell }
+    - { team: enemy, points: [[27, 19], [20, 21]], phase: p1, label: Söldner }
+    - { team: enemy, points: [[15, 34], [15, 26]], phase: p1, label: Grenzheer }
+    - { team: enemy, points: [[14, 12], [14, 17]], phase: p1, label: Krone }
+  zones:
+    - { area: { rect: [0, 0, 29, 1] }, label: Nordufer Flucht }
+    - { area: { rect: [11, 18, 18, 24] }, label: Treffpunkt St.1 }
+    - { area: { rect: [22, 12, 26, 15] }, label: Hügel St.1–2 }
+    - { area: { rect: [23, 2, 25, 5] }, label: Furt }
+  marks:
+    - { at: [14, 6], label: T, note: "Brückentor, geschlossen bis Runde 6. Niemand trägt hier einen Schlüssel, nur Fenn kann es laut Regel früher öffnen, wenn er bis dorthin durchkommt." }
+    - { at: [24, 13], label: BA, note: "Brakkas Balliste, deckt Hügel und Ostseite. Reicht bis zum Treffpunkt." }
+    - { at: [14, 9], label: R, note: "Rowena. Ab Runde 6 hält sie still, wenn niemand sie angreift." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2)."
+    - "Normal 40 Gegner (12 davon in Wellen) gegen 15 eigene; Leicht 36, Schwer 46. Sable und Hauptmann schließen sich aus (e07)."
+    - "Ziel: survive 5 → escape (Story 11.8), min 6, Rhen und Lucan müssen hinaus; die Furt beginnt die Flucht früher."
+    - "Leistung: 1 200 Felder und bis zu 46 Gegner, Architektur T8 (Story 11.26 misst)."
+    - "Odiles Zeile wechselt nach E5, Seraphines nach E8, Sable spricht nach E7 warn als Gefährtin; Saat Rowena als Szene in R6 und am Ende von Kronfeld."

@@ -56,8 +56,11 @@ function goal(id: string): string {
   const planned = draft(id).objectives.victory.type;
   const map = data.maps[node(id).map];
   if (!map) return planned;
-  expect(map.objectives.victory.type, `${id}: goal of the map against its draft`).toBe(planned);
-  return map.objectives.victory.type;
+  // story 11.19: Kronfeld holds first and escapes then (survive → escape, story 11.8); its draft names only the escape
+  const v = map.objectives.victory;
+  const built = v.type === 'survive' && v.then ? v.then.type : v.type;
+  expect(built, `${id}: goal of the map against its draft`).toBe(planned);
+  return built;
 }
 
 interface Walk {

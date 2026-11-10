@@ -1,0 +1,48 @@
+# Mission 2-8, Szene in Runde 1 (Trigger t_trap, läuft in der Schlacht, ohne Antworten): die Falle schnappt zu, Seraphines Verrat (Key Conversation 8).
+# Seraphine spricht mit eigener Halbfigur (art/mockups/characters-s1/seraphine.png); „mein Lehrer“ ist Halvard (Saat Stimme, Enttarnung erst in Akt 3).
+# Folgen: E8 (Seraphines Zeile zu den Büchern), E5 (Odile bei der Garde oder in der Truppe). Vorschlag der Schreib-Pipeline [ASSUMPTION], Abnahme offen.
+id: scn.m2_8.hollow_crown
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die Prinzessin tritt aus dem Zelt, in Weiß, ohne Krone. Hinter ihr schließen sich die Reihen."
+  - id: l02
+    speaker: [seraphine]
+    fallback: skip
+    mood: angry
+    text: "Mein Lehrer hat mich gewarnt. Ihr habt meinen Vater getötet. Einen Freispruch gibt es nicht."
+  - id: l03
+    speaker: [seraphine]
+    fallback: skip
+    requires: [{ flag: maelis_ledgers }, { flag: { e08: seraphine } }]
+    mood: neutral
+    text: "Maelis' Bücher habe ich gelesen. Sie verurteilen die Herzogin. Euch sprechen sie nicht frei."
+  - id: l04
+    speaker: [seraphine]
+    fallback: skip
+    requires: [{ flag: { e08: sell } }]
+    mood: angry
+    text: "Ihr verkauft sogar Beweise. So handeln Leute, die einen König töten."
+  - id: l05
+    speaker: [lucan]
+    mood: angry
+    text: "Grell im Westen, Brakka im Osten, das Grenzheer im Süden. Alle vier sind sich auf einmal einig."
+  - id: l06
+    speaker: [brakka]
+    fallback: skip
+    mood: neutral
+    text: "Diesmal zahlen alle vier. Nehmt es nicht persönlich."
+  - id: l07
+    requires: [{ flag: { e05: return } }]
+    mood: sad
+    text: "Odile zieht das Schwert nicht. Sie bleibt neben der Prinzessin stehen, die Hand am Griff."
+  - id: l08
+    speaker: [odile]
+    fallback: skip
+    requires: [{ flag: { e05: stay } }, { alive: odile }]
+    mood: angry
+    text: "Hoheit, hört mich an! Ihr wisst doch, wer Euch nachts die Briefe schreibt!"
+  - id: l09
+    speaker: [avatar]
+    mood: angry
+    text: "Auf den Hügel, Schulter an Schulter. Wir halten, bis sich eine Lücke auftut."
