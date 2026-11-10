@@ -1,0 +1,135 @@
+# Mission 2-6, Szene nach der Karte (Knoten post, Story 11.17): In Grells Kajüte liegt Maelis' Brief, sie lässt die Truppe fallen (Lagewechsel,
+# Missionsliste 2-6; F5 = A: Brief in ihrer Stimme). Dravns Gold und Maelis' Schiffe: beide Spuren laufen zusammen.
+# E6 (nur mit Varek, sonst ohne Szene): Dravns Bote bietet Varek die Begnadigung im Heer an. Drei Haltungen auf zwei Werte (F2 = A, wie E5):
+# warm → stay, sober → pardon, defiant → stay. pardon: Varek geht (leave: seine Ausrüstung bleibt im Konvoi); stay: Sables Groll −1 (F3 = A:
+# die Regel „bei Groll 0 entfällt die nächste Steigerung“ kommt mit 11.27).
+# Akademie-Hinweis (F3 vom 2026-11-06, wie 11.16): fällt E6 als zweite der beiden Entscheidungen (2-5 erledigt), steht die Akademie unter
+# Stufe 3 und fehlt Odile, gilt c01_capped – dort nennt die Folgen-Karte von pardon den Wegfall von Stufe 3; sonst c01 ohne Hinweis.
+# Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
+id: scn.m2_6.outro
+background: kraehenholm
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Grells Schiff liegt leer in der Bucht. In der Kajüte findet sich ein Brief mit Möwensiegel."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    requires: [{ alive: nell }]
+    mood: neutral
+    text: "Das Siegel des Hauses Silbermeer. So schreibt die Herzogin, wenn sie jemanden fallen lässt."
+  - id: l03
+    speaker: [maelis]
+    fallback: skip
+    mood: neutral
+    text: "An Kapitän Grell: Die Lieferungen enden. Das Aschenbanner ist dem Haus Silbermeer unbekannt."
+  - id: l04
+    speaker: [maelis]
+    fallback: skip
+    mood: neutral
+    text: "Wer fragt, hört von uns nur dies: Wir handeln nicht mit Räubern. Gezeichnet, Maelis."
+  - id: l05
+    speaker: [lucan]
+    mood: angry
+    text: "Dravns Gold auf Maelis' Schiffen. Beide Spuren laufen hier zusammen, in denselben Kisten."
+  - id: l06
+    speaker: [avatar]
+    mood: neutral
+    text: "Und jetzt tut sie, als kenne sie uns nicht. Ihr Angebot ist also vom Tisch."
+  - id: l07
+    speaker: [nell]
+    fallback: skip
+    requires: [{ alive: nell }]
+    mood: happy
+    text: "Willkommen bei den Fallengelassenen. Es lebt sich hier gar nicht so übel."
+  - id: l08
+    requires: [{ alive: varek }]
+    mood: neutral
+    text: "Am Strand legt ein Boot mit dem Wimpel des Grenzheers an. Ein Bote steigt aus, allein."
+  - id: l09
+    speaker: [dravn_envoy]
+    fallback: skip
+    requires: [{ alive: varek }]
+    mood: neutral
+    text: "Ich suche den Deserteur Varek. General Dravn lässt ihm etwas ausrichten."
+  - id: l10
+    speaker: [dravn_envoy]
+    fallback: skip
+    requires: [{ alive: varek }]
+    mood: neutral
+    text: "Kehrt er ins Heer zurück, ist die Fahnenflucht vergessen. Rang, Sold und sein alter Name."
+  - id: l11
+    speaker: [varek]
+    fallback: skip
+    requires: [{ alive: varek }]
+    mood: neutral
+    text: "Die Würfel fallen seltsam. Gestern Deserteur, heute begnadigt, wenn ich nur Ja sage."
+  - id: l12
+    speaker: [varek]
+    fallback: skip
+    requires: [{ alive: varek }]
+    mood: sad
+    text: "Du führst diese Truppe, {avatar}. Sag du mir, was ich tun soll."
+  - id: c01
+    title: "Dravns Gnade: Varek zurück ins Heer"
+    requires: [{ alive: varek }, { any: [{ roomLevel: { id: academy, min: 3 } }, { alive: odile }, { not: { completed: m2_5 } }] }]
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Bleib. Deinen Platz hast du dir bei uns verdient, nicht bei Dravn.“"
+        summary: "Varek bleibt in der Truppe"
+        effects: [{ setFlag: { e06: stay } }, { grudge: { lt: sable, delta: -1 } }]
+      - id: sober
+        stance: sober
+        text: "„Nimm sie an. Ein Freispruch ist mehr, als wir dir je bieten können.“"
+        summary: "Varek kehrt begnadigt ins Grenzheer zurück"
+        effects: [{ setFlag: { e06: pardon } }, { leave: varek }]
+      - id: defiant
+        stance: defiant
+        text: "„Dravns Gnade ist ein Strick mit Schleife. Schick den Boten heim.“"
+        summary: "Varek bleibt, Dravns Angebot ist abgewiesen"
+        effects: [{ setFlag: { e06: stay } }, { grudge: { lt: sable, delta: -1 } }]
+  - id: c01_capped
+    title: "Dravns Gnade: Varek zurück ins Heer"
+    requires: [{ alive: varek }, { roomLevel: { id: academy, max: 2 } }, { not: { alive: odile } }, { completed: m2_5 }]
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Bleib. Deinen Platz hast du dir bei uns verdient, nicht bei Dravn.“"
+        summary: "Varek bleibt in der Truppe"
+        effects: [{ setFlag: { e06: stay } }, { grudge: { lt: sable, delta: -1 } }]
+      - id: sober
+        stance: sober
+        text: "„Nimm sie an. Ein Freispruch ist mehr, als wir dir je bieten können.“"
+        summary: "Varek geht, die Akademie erreicht Stufe 3 nicht mehr"
+        effects: [{ setFlag: { e06: pardon } }, { leave: varek }]
+      - id: defiant
+        stance: defiant
+        text: "„Dravns Gnade ist ein Strick mit Schleife. Schick den Boten heim.“"
+        summary: "Varek bleibt, Dravns Angebot ist abgewiesen"
+        effects: [{ setFlag: { e06: stay } }, { grudge: { lt: sable, delta: -1 } }]
+  - id: r01
+    speaker: [varek]
+    fallback: skip
+    requires: [{ flag: { e06: pardon } }]
+    mood: sad
+    text: "Dann gehe ich. Treffen wir uns im Feld, ziele ich daneben. Versprochen."
+  - id: r02
+    requires: [{ flag: { e06: pardon } }]
+    mood: neutral
+    text: "Varek steigt ins Boot des Boten. Seine Ausrüstung lässt er am Strand zurück."
+  - id: s01
+    speaker: [varek]
+    fallback: skip
+    requires: [{ flag: { e06: stay } }]
+    mood: happy
+    text: "Sag deinem General, der Deserteur bleibt desertiert. Den Weg hinaus kennt er ja."
+  - id: s02
+    requires: [{ flag: { e06: stay } }]
+    mood: neutral
+    text: "Der Bote rudert allein zurück und sieht sich kein einziges Mal um."
+  - id: l13
+    speaker: [lucan]
+    mood: neutral
+    text: "Packt das Gold ein. Einen besseren Beweis hatten wir nie. Zurück zum Festland."

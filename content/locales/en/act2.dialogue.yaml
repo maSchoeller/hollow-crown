@@ -185,6 +185,78 @@ dlg.scn.m2_5.outro.r03: "Odile mounts behind the lancer. On the rock path she do
 dlg.scn.m2_5.outro.s01: "Then I stay. Tell your mistress her bodyguard has another company now."
 dlg.scn.m2_5.outro.s02: "The lancer puts the letter away and rides off without a word."
 dlg.scn.m2_5.outro.l15: "Halvard's letters. Remember that, {avatar}. Move on, before the Border Army comes back."
+
+# Story 11.17: scn.m2_6.intro (before the map: landing on Krähenholm, gold changes hands on the crag)
+dlg.scn.m2_6.intro.l01: "Evening over Krähenholm. The boats grind onto the south beach, the sea lies grey and heavy."
+dlg.scn.m2_6.intro.l02: "Torches burn on the cliff ridge. Men stack crates up there, a ship lies at anchor in the north bay."
+dlg.scn.m2_6.intro.l03: "Grell's ship. The gold for Hask's gangs ran across this island. Now we see whose gold it was."
+dlg.scn.m2_6.intro.l04: "On the crag a woman in a Border Army cloak hands crate after crate to the smugglers."
+dlg.scn.m2_6.intro.l05: "That was my post. Whoever stands up there now hands over Dravn's gold. That used to be my job."
+dlg.scn.m2_6.intro.l06: "If that is Dravn's gold, we need one of those crates. As proof."
+dlg.scn.m2_6.intro.l07: "Then up the cliff. And mind the water, the tide comes and goes fast here."
+
+# Story 11.17: scn.m2_6.nell_talk (talk in battle: Nell joins)
+dlg.scn.m2_6.nell_talk.l01: "Between nets and rigging crouches a woman with a sea chart and a dagger."
+dlg.scn.m2_6.nell_talk.l02: "Easy. I'm not with Grell. Not anymore. The duchess dropped me."
+dlg.scn.m2_6.nell_talk.l03: "Then fight with us. You know the island better than we do."
+dlg.scn.m2_6.nell_talk.l04: "Every rock, every sandbank. And I've got a key for chests that aren't mine."
+dlg.scn.m2_6.nell_talk.l05: "Then come. Stay behind the line until we have the ship."
+
+# Story 11.17: scn.m2_6.ebb (round 4: the channel turns into a sandbank)
+dlg.scn.m2_6.ebb.l01: "In the east the water draws back. Where the channel was, a long sandbank gleams."
+dlg.scn.m2_6.ebb.l02: "Low tide! Over the sandbank you reach the bay dry-shod. But only until the tide returns."
+
+# Story 11.17: scn.m2_6.flood_warn (round 8: the sandbank floods in round 9)
+dlg.scn.m2_6.flood_warn.l01: "Out at sea the first wave rolls in. Soon the sandbank will be sea again."
+dlg.scn.m2_6.flood_warn.l02: "The tide is coming! Whoever is still on the sandbank must cross now or turn back."
+
+# Story 11.17: scn.m2_6.gold_proof (the crag: Dravn's mark on the gangs' gold)
+dlg.scn.m2_6.gold_proof.l01: "Open crates stand on the crag. Every coin bears the hammer of the Iron March."
+dlg.scn.m2_6.gold_proof.l02: "Dravn's pay, from his own coffers. I counted and sealed crates like these myself."
+dlg.scn.m2_6.gold_proof.l03: "He paid the gangs that plundered his own land. I'll swear to that before any court."
+dlg.scn.m2_6.gold_proof.l04: "Border Army pay. Dravn pays the gangs, and the Silver Sea ships the gold to them."
+
+# Story 11.17: scn.m2_6.outro (after the map: Maelis drops the company, decision E6)
+dlg.scn.m2_6.outro.l01: "Grell's ship lies empty in the bay. In the cabin there is a letter with a gull seal."
+dlg.scn.m2_6.outro.l02: "The seal of House Silver Sea. That's how the duchess writes when she drops someone."
+dlg.scn.m2_6.outro.l03: "To Captain Grell: the deliveries end. The Ashen Banner is unknown to House Silver Sea."
+dlg.scn.m2_6.outro.l04: "Whoever asks hears only this from us: we do not deal with robbers. Signed, Maelis."
+dlg.scn.m2_6.outro.l05: "Dravn's gold on Maelis's ships. Both trails meet here, in the same crates."
+dlg.scn.m2_6.outro.l06: "And now she acts as if she never knew us. So her offer is off the table."
+dlg.scn.m2_6.outro.l07: "Welcome to the dropped. It's not such a bad life here."
+dlg.scn.m2_6.outro.l08: "A boat with the Border Army pennant lands on the beach. An envoy steps out, alone."
+dlg.scn.m2_6.outro.l09: "I'm looking for the deserter Varek. General Dravn sends him word."
+dlg.scn.m2_6.outro.l10: "If he returns to the army, the desertion is forgotten. Rank, pay and his old name."
+dlg.scn.m2_6.outro.l11: "The dice fall strangely. Yesterday a deserter, today pardoned, if I only say yes."
+dlg.scn.m2_6.outro.l12: "You lead this company, {avatar}. You tell me what to do."
+dlg.scn.m2_6.outro.c01.title: "Dravn's mercy: Varek back to the army"
+dlg.scn.m2_6.outro.c01.warm: "\"Stay. You earned your place with us, not with Dravn.\""
+dlg.scn.m2_6.outro.c01.warm.summary: "Varek stays with the company"
+dlg.scn.m2_6.outro.c01.sober: "\"Take it. A pardon is more than we can ever offer you.\""
+dlg.scn.m2_6.outro.c01.sober.summary: "Varek returns to the Border Army, pardoned"
+dlg.scn.m2_6.outro.c01.defiant: "\"Dravn's mercy is a noose with a bow on it. Send the envoy home.\""
+dlg.scn.m2_6.outro.c01.defiant.summary: "Varek stays, Dravn's offer is refused"
+dlg.scn.m2_6.outro.c01_capped.title: "Dravn's mercy: Varek back to the army"
+dlg.scn.m2_6.outro.c01_capped.warm: "\"Stay. You earned your place with us, not with Dravn.\""
+dlg.scn.m2_6.outro.c01_capped.warm.summary: "Varek stays with the company"
+dlg.scn.m2_6.outro.c01_capped.sober: "\"Take it. A pardon is more than we can ever offer you.\""
+dlg.scn.m2_6.outro.c01_capped.sober.summary: "Varek leaves, the academy can no longer reach level 3"
+dlg.scn.m2_6.outro.c01_capped.defiant: "\"Dravn's mercy is a noose with a bow on it. Send the envoy home.\""
+dlg.scn.m2_6.outro.c01_capped.defiant.summary: "Varek stays, Dravn's offer is refused"
+dlg.scn.m2_6.outro.r01: "Then I go. If we meet in the field, I'll aim wide. I promise."
+dlg.scn.m2_6.outro.r02: "Varek steps into the envoy's boat. He leaves his gear behind on the beach."
+dlg.scn.m2_6.outro.s01: "Tell your general the deserter stays deserted. He knows the way out."
+dlg.scn.m2_6.outro.s02: "The envoy rows back alone and does not look back once."
+dlg.scn.m2_6.outro.l13: "Pack the gold. We never had better proof. Back to the mainland."
+
+# Story 11.17: scn.m2_6.burnt_village (the way back, only after E7 warn: a village burnt by dragon shadows, beat 9)
+dlg.scn.m2_6.burnt_village.l01: "On the way back over the Gull's Tongue there is smoke in the air. A village on the slope is only ash."
+dlg.scn.m2_6.burnt_village.l02: "No torch marks, no boot prints. The roofs caved in from above, as if under great heat."
+dlg.scn.m2_6.burnt_village.l03: "Nobody fought here. Everything simply burnt, all at once."
+dlg.scn.m2_6.burnt_village.l04: "We warned Brandhang, and still a village burns. That wasn't Dravn."
+dlg.scn.m2_6.burnt_village.l05: "High above the clouds a shadow moves east, bigger than any ship. Then the sky is empty."
+dlg.scn.m2_6.burnt_village.l06: "Dragon shadows. The old ones told of them. I never believed it."
+dlg.scn.m2_6.burnt_village.l07: "We'll tell them at the castle. Whatever that was, it will come back."
 # Story 11.14: mission 2-3 "The Raven Pasture" (drafts of the writing pipeline, accepted on play-through)
 dlg.scn.m2_3.intro.l01: "Golden pastures down to the Aure. Across it white paddocks, stables and silver pennants."
 dlg.scn.m2_3.intro.l02: "The stud of the Silver Lance. The general needs the horses for the border army."

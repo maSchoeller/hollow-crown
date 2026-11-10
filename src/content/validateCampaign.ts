@@ -108,6 +108,10 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
       if (!data.maps[n.map] && act === 1) err('campaign.yaml', `${n.id}: unknown map ${n.map}`);
       dialogue('campaign.yaml', n.pre, n.id);
       dialogue('campaign.yaml', n.post, n.id);
+      for (const [i, e] of (n.epilogues ?? []).entries()) {
+        dialogue('campaign.yaml', e.scene, `${n.id} epilogue`);
+        conditions('campaign.yaml', e.requires, `${n.id}.epilogues[${i}].requires`);
+      }
       conditions('campaign.yaml', n.requires, `${n.id}.requires`);
       if (n.memorialIf) {
         conditions('campaign.yaml', n.memorialIf, `${n.id}.memorialIf`);

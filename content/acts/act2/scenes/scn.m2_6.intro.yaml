@@ -1,0 +1,34 @@
+# Mission 2-6, Szene vor der Karte (Knoten pre, Story 11.17): Landung am Südstrand von Krähenholm, oben auf der Felsnase wird Gold übergeben.
+# Ohne E7 warn steht Sable selbst dort (sie spricht erst im Kampf über ihre Leutnant-Zeilen), mit e07: warn ist sie in der Truppe und erkennt ihren alten Posten.
+# Text als Vorschlag der Schreib-Pipeline (Story 11.17), Abnahme durch den Produktinhaber offen.
+id: scn.m2_6.intro
+background: kraehenholm
+lines:
+  - id: l01
+    mood: neutral
+    text: "Abend über Krähenholm. Die Boote knirschen auf den Südstrand, das Meer liegt grau und schwer."
+  - id: l02
+    mood: neutral
+    text: "Auf dem Klippenrücken brennen Fackeln. Oben stapeln Männer Kisten, in der Nordbucht ankert ein Schiff."
+  - id: l03
+    speaker: [lucan]
+    mood: angry
+    text: "Grells Schiff. Über diese Insel lief das Gold für Hasks Banden. Jetzt sehen wir, wessen Gold es war."
+  - id: l04
+    requires: [{ not: { flag: { e07: warn } } }]
+    mood: neutral
+    text: "Auf der Felsnase reicht eine Frau in Grenzheer-Mantel den Schmugglern Kiste um Kiste hinüber."
+  - id: l05
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: { e07: warn } }]
+    mood: sad
+    text: "Das war mein Posten. Wer jetzt da oben steht, übergibt Dravns Gold. Früher war das meine Arbeit."
+  - id: l06
+    speaker: [avatar]
+    mood: neutral
+    text: "Wenn das Dravns Gold ist, brauchen wir eine dieser Kisten. Als Beweis."
+  - id: l07
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann hinauf über die Klippe. Und achtet aufs Wasser, hier kommt und geht die Flut schnell."

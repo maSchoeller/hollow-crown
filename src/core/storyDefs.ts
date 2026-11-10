@@ -158,6 +158,11 @@ export interface CampaignNodeDef {
   /** when this holds (the quest's trigger has fallen …), `memorial` replaces the node's scenes */
   memorialIf?: Condition;
   memorial?: { pre?: string; post?: string };
+  /**
+   * scenes after `post` (story 11.17, the way back): played in order before the result screen, each only when its conditions hold
+   * once the scenes before it have ended (answers given there count); never after a haunt
+   */
+  epilogues?: Array<{ scene: string; requires?: Condition[] }>;
   /** place image shown while the mission loads: a location (`locations/<place>`); default: the camp on the road */
   place?: string;
   merchantTier: number;
