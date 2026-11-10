@@ -114,7 +114,7 @@ Gemessen unter Fremdlast (CPU gesamt 30–60 %, andere Sitzungen). Die Spalte �
 | act1 (`pnpm build`) | 477 | 34,75 MB | 40 MB |
 | act2 (Perf-Build, unveröffentlicht) | 15 | 2,29 MB (Content-Chunk 0,34 MB + Ortsbilder) | 40 MB |
 
-Akt 2 bringt bisher keine eigenen Figuren oder Requisiten mit, das Brett lädt die aus core/act1. Bleibt act2 bei 40 MB stehen, ist Platz für die Brettfiguren von Akt 2 **[ASSUMPTION]**.
+Akt 2 bringt bisher keine eigenen Figuren oder Requisiten mit, das Brett lädt die aus core/act1. Bleibt act2 bei 40 MB stehen, ist Platz für die Brettfiguren von Akt 2.
 
 ### Bewertung gegen NFR1 (Fassung 15.11)
 

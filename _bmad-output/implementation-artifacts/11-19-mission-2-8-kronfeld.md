@@ -23,11 +23,11 @@ damit Akt 2 mit „Die Krone war hohl“ endet.
 6. **Furt:** Wer die Furt `rect [23,2,25,5]` betritt, beginnt die Flucht sofort (`advance_objective`, `scn.m2_8.ford`); Wellen R3 West, R5 Ost, R7 Süd, R9 Lanzen an der Furt, angekündigt.
 7. **Szenen DE/EN, Box ≤ 110:** `scn.m2_8.intro`, `.hollow_crown` (R1), `.rowena_hesitates` (R6), `.ford`, `.outro`; Hintergrund `kronfeld`; Seraphine spricht mit Halbfigur (`unit.seraphine.name` neu).
 8. **Folgen:** `e05` (Odile bei Seraphine bzw. in der Truppe), `e06: pardon` (Varek unter Dravns Bannern), `e07`/`joined_sable` (Sable spricht als Gefährtin bzw. Hauptmann im Süden), `e08` + `maelis_ledgers` (Seraphines Zeile), `m2_2_seal`, `chronicle_read`; Gefährten von Akt 2 (Jory, Ilka, Nell, Amos, Brann, Odile, Sable) nur mit `requires: alive` bzw. Ersatzsprecher-Kette.
-9. **Relikt-Stufen (11.9):** ab `completed m2_8` Schild der Paktwächter Stufe 3 (VER 6, `warden_ward_awake` + `warden_hold`), Drachenglut Stufe 2 (MAG +3, `ember_stir`) [ASSUMPTION].
+9. **Relikt-Stufen (11.9):** ab `completed m2_8` Schild der Paktwächter Stufe 3 (VER 6, `warden_ward_awake` + `warden_hold`), Drachenglut Stufe 2 (MAG +3, `ember_stir`).
 10. **Akt-Ende (11.1):** `m2_8` ist `fixed: finale` mit `pre`/`post` und zwei Glutfunken [ASSUMPTION]; danach ist Akt 2 vorbei, ohne Paket act3 bleibt `c.act = 2` („Weitere Missionen folgen“), offene Nebenquests bleiben.
 11. **Gold:** `goldReward` 3 000 (oberer Rand des Korridors 2 000–3 000), Nebenziele „niemand fällt“ 800 und „14 Runden“ 500 (Anteil 43 %) [ASSUMPTION].
 12. **Heimsuchungen:** zwei Anker (`rout` Treffpunkt, `treasure` Osthügel).
-13. **Chronik:** keine fünfte Akt-2-Seite (Narrative: 4 je Akt, alle vergeben); die Nachszene fasst die Seiten zusammen, wenn die Chronik gelesen ist [ASSUMPTION F1].
+13. **Chronik:** keine fünfte Akt-2-Seite (Narrative: 4 je Akt, alle vergeben); die Nachszene fasst die Seiten zusammen, wenn die Chronik gelesen ist.
 14. **Unveröffentlicht:** `act2` bleibt `released: false`; kein `content:lock`.
 15. **Prüfung:** `pnpm check` grün; Kampagnen-Sim act2 Normal und Schwer, Abweichungen nur berichtet (11.27).
 
@@ -72,13 +72,13 @@ damit Akt 2 mit „Die Krone war hohl“ endet.
 
 Gesammelt in der Übergabe `morgen-fragen-11-19.md` (Notizordner der Session).
 
-- **F1 [ASSUMPTION A] Chronik-Seite in 2-8:** A) keine neue Seite (4 je Akt sind vergeben), die Nachszene fasst zusammen; B) fünfte Seite `a2_kronfeld` im Festzelt. **Angenommen A.**
-- **F2 [ASSUMPTION A] Wer spricht „Die Krone war hohl“?** A) Rhen nach Lioras Zusammenfassung der Seiten, Lucan: „Seraphine soll sie als Nächste tragen“; B) Rowena; C) nur Erzähltext. **Angenommen A.**
-- **F3 [ASSUMPTION A] Odile nach E5 `return`:** A) steht stumm neben Seraphine (Erzählzeile); B) kämpft als Gegnerin in der Garde; C) warnt die Truppe. **Angenommen A.**
+- **F1 Chronik-Seite in 2-8:** A) keine neue Seite (4 je Akt sind vergeben), die Nachszene fasst zusammen; B) fünfte Seite `a2_kronfeld` im Festzelt. **Bestätigt (PO 2026-11-10): A.**
+- **F2 Wer spricht „Die Krone war hohl“?** A) Rhen nach Lioras Zusammenfassung der Seiten, Lucan: „Seraphine soll sie als Nächste tragen“; B) Rowena; C) nur Erzähltext. **Bestätigt (PO 2026-11-10): A.**
+- **F3 Odile nach E5 `return`:** A) steht stumm neben Seraphine (Erzählzeile); B) kämpft als Gegnerin in der Garde; C) warnt die Truppe. **Bestätigt (PO 2026-11-10): A.**
 - **F4 [ASSUMPTION A] Gold:** A) 3 000 + 800 + 500; B) Entwurf 2 000. **Angenommen A.**
-- **F5 [ASSUMPTION A] Relikt-Stufen ab 2-8:** A) Schild Stufe 3 VER 6 + Schutz 10 % je Nachbar, Drachenglut Stufe 2 MAG +3 und +10 % Zustandschance; B) nur Werte ohne neue Skills. **Angenommen A.**
+- **F5 Relikt-Stufen ab 2-8:** A) Schild Stufe 3 VER 6 + Schutz 10 % je Nachbar, Drachenglut Stufe 2 MAG +3 und +10 % Zustandschance; B) nur Werte ohne neue Skills. **Bestätigt (PO 2026-11-10): A.**
 - **F6 [ASSUMPTION A] Belohnung des Finales:** A) zwei Glutfunken wie 1-8; B) keine. **Angenommen A.**
-- **F7 [ASSUMPTION A] Furt:** A) Betreten der Furt beginnt die Flucht sofort; B) Flucht erst ab Runde 6 für alle. **Angenommen A.**
+- **F7 Furt:** A) Betreten der Furt beginnt die Flucht sofort; B) Flucht erst ab Runde 6 für alle. **Bestätigt (PO 2026-11-10): A.**
 - **Bilder:** Halbfigur `seraphine` (nur neutral) und `rowena` vorhanden, keine neuen Bilder; Stimmungsbilder (traurig/zornig) für Seraphine fehlen, Platzhalter ist die neutrale Figur.
 
 ## Dev Agent Record
@@ -90,7 +90,7 @@ Claude Opus 5.5 (2026-11-10). Szenentexte selbst entworfen (Schreib-Pipeline: Vo
 ### Completion Notes List
 
 - Karte, Szenen, Folgen, Relikt-Stufen und Knoten wie in den AC; 14 neue Tests, vier Testtabellen nachgezogen.
-- Sim [C]: Normal verkettet 38/50 erreicht, Sieg 8 %, Niedergestreckte 6,0; `--start expected` 19 % (Probe min 4: 31 %); Schwer 2/50 erreicht, 0 %. Weit unter dem Korridor, nur berichtet (11.27). Details in der Abnahme-Datei.
+- Sim [C]: Normal verkettet 38/50 erreicht, Sieg 8 %, Niedergestreckte 6,0; `--start expected` 19 % (Probe min 4: 31 %); Schwer 2/50 erreicht, 0 %. Weit unter dem Korridor, nur berichtet (11.27; PO 2026-11-10: 11.27 vorgezogen). Details in der Abnahme-Datei.
 - Doppelte Locale-Schlüssel: keine neuen; vorbestehend `unit.border_soldier.name` in core- und act2-Namen (gleicher Text).
 
 ### File List

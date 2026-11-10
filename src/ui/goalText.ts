@@ -9,12 +9,14 @@ export function goalKey(v: ObjectiveDef): string {
 }
 
 /**
- * Fills the blanks of `ui.world.goal.<type>`: the round limit and, for an escort or a defence, the name of the NPC. A `survive`
+ * Fills the blanks of `ui.world.goal.<type>` (`treasure_target` for a treasure goal with further chests on the map): the round limit and, for an escort or a defence, the name of the NPC. A `survive`
  * goal with a second phase (story 11.8) says both parts ("Survive 5 turns, then escape.").
  */
 export function goalLine(v: ObjectiveDef, map: MapDef): string {
   const unit = v.type === 'escort' || v.type === 'defend' ? t(mapUnitNameKey(map, v.unit)) : '';
-  return t(`ui.world.goal.${goalKey(v)}`, { turns: 'turns' in v ? v.turns : 0, name: unit });
+  // T6-13F6: a treasure hunt with more chests on the map than its goal names only asks for the target chest
+  const more = v.type === 'treasure' && map.objects.filter((o) => o.type === 'chest').length > v.chests.length;
+  return t(`ui.world.goal.${more ? 'treasure_target' : goalKey(v)}`, { turns: 'turns' in v ? v.turns : 0, name: unit });
 }
 
 /** What a side objective names: the unit as name key and the weapon group (see `sideSubject`). */

@@ -11,6 +11,7 @@ import {
   applyCommand,
   attackPlans,
   autoplay,
+  chestHuntPending,
   chestProgress,
   createBattle,
   defeatSentence,
@@ -57,7 +58,11 @@ function remove(s: BattleState, ...ids: string[]): void {
 }
 const foes = (s: BattleState) => s.units.filter((u) => u.team === 'enemy').map((u) => u.id);
 const endPhase = (s: BattleState) => applyCommand(data, s, { type: 'endPhase' });
-const open = (s: BattleState, id: string) => (s.objects.find((o) => o.id === id)!.state = 'open');
+/** Opens a chest as the company would: shut no more and counted for the side objective `open_chests`. */
+const open = (s: BattleState, id: string) => {
+  s.objects.find((o) => o.id === id)!.state = 'open';
+  s.stats.chestsOpened.push(id);
+};
 const key = (p: Pos) => `${p[0]},${p[1]}`;
 /** The validation messages of the map `m` registered in `data` (undone after the test). */
 function issuesOf(m: MapDef): string[] {
@@ -341,7 +346,7 @@ describe('treasure: victory, defeat, limit', () => {
   it('is won with the last chest, whether a scout opens it or a unit with a key stands on it', () => {
     for (const how of ['scout', 'key'] as const) {
       const s = quiet();
-      for (const id of ['dev_chest_a', 'dev_chest_b', 'dev_chest_c']) open(s, id);
+      for (const id of ['dev_chest_a', 'dev_chest_b', 'dev_chest_c', 'dev_chest_extra']) open(s, id);
       put(s, 'dev_vanguard', [12, 7]);
       put(s, 'dev_scout', [11, 7]);
       const r =
@@ -361,7 +366,7 @@ describe('treasure: victory, defeat, limit', () => {
   it('can still be won in the last player phase of round N', () => {
     const s = quiet();
     s.turn = 10;
-    for (const id of ['dev_chest_a', 'dev_chest_b', 'dev_chest_c']) open(s, id);
+    for (const id of ['dev_chest_a', 'dev_chest_b', 'dev_chest_c', 'dev_chest_extra']) open(s, id);
     put(s, 'dev_scout', [11, 7]);
     const r = applyCommand(data, s, { type: 'act', unit: unit(s, 'dev_scout').uid, to: [11, 7], action: { kind: 'open', object: 'dev_chest_d' } });
     expect(r.state.outcome).toBe('victory');
@@ -437,5 +442,91 @@ describe('autoplay and replay', () => {
     expect(unit(e.state, 'liora').gone).toBe('escaped');
     const t = autoplay(data, addDevObjectiveMap(data, 'dev_treasure'));
     expect(chestProgress(t.state, (data.maps.dev_treasure!.objectives.victory as { chests: string[] }).chests)).toEqual({ have: 4, total: 4 });
+    // T6-13F6: with the goal secured the autoplayer goes on for the extra chest of the side objective
+    expect(t.state.stats.chestsOpened).toContain('dev_chest_extra');
+  });
+});
+
+describe('treasure goal with more chests than it lists (T6-13F6)', () => {
+  /** dev_treasure without foes, the goal on one chest only; the other four chests are left to the side objective `open_chests`. */
+  const single = () => {
+    const s = addDevObjectiveMap(data, 'dev_treasure');
+    remove(s, ...foes(s));
+    const map = data.maps.dev_treasure!;
+    const was = map.objectives.victory;
+    map.objectives.victory = { type: 'treasure', chests: ['dev_chest_d'], turns: 10 };
+    restore.push(() => (map.objectives.victory = was));
+    put(s, 'dev_scout', [11, 7]);
+    return s;
+  };
+  const openGoal = (s: BattleState) =>
+    applyCommand(data, s, { type: 'act', unit: unit(s, 'dev_scout').uid, to: [11, 7], action: { kind: 'open', object: 'dev_chest_d' } }).state;
+  const others = ['dev_chest_a', 'dev_chest_b', 'dev_chest_c'];
+
+  it('goes on after the goal chest while other chests are still shut', () => {
+    const s = openGoal(single());
+    expect(s.outcome).toBeNull();
+    expect(chestHuntPending(data, s)).toBe(true);
+  });
+  it('is won when the last chest is opened', () => {
+    const s = single();
+    for (const id of others) open(s, id);
+    put(s, 'dev_vanguard', [3, 7]);
+    const a = openGoal(s);
+    expect(a.outcome).toBeNull();
+    const r = applyCommand(data, a, { type: 'act', unit: unit(a, 'dev_vanguard').uid, to: [3, 7], action: { kind: 'chest' } });
+    expect(r.state.stats.chestsOpened).toContain('dev_chest_extra');
+    expect(r.state.outcome).toBe('victory');
+  });
+  it('is won, not lost, at the round limit once the goal chest is open', () => {
+    const s = openGoal(single());
+    s.turn = 9;
+    const mid = endPhase(s).state;
+    expect(mid.turn).toBe(10);
+    expect(mid.outcome).toBeNull();
+    const r = endPhase(mid);
+    expect(r.state.outcome).toBe('victory');
+    expect(r.events).toContainEqual(expect.objectContaining({ t: 'battleEnd', outcome: 'victory' }));
+  });
+  it('still loses at the round limit while the goal chest is shut', () => {
+    const s = single();
+    s.turn = 9;
+    expect(endPhase(endPhase(s).state).state.outcome).toBe('defeat');
+  });
+  it('ends at once when a remaining chest can no longer be opened', () => {
+    const s = single();
+    s.objects.find((o) => o.id === 'dev_chest_extra')!.state = 'open'; // gone without the company: the side objective is lost
+    expect(chestHuntPending(data, s)).toBe(false);
+    expect(openGoal(s).outcome).toBe('victory');
+  });
+  it('ends at once when a remaining chest lies buried under a cave-in', () => {
+    const s = single();
+    const at = s.objects.find((o) => o.id === 'dev_chest_extra')!.at;
+    s.terrain[at[1] * s.width + at[0]] = 'rockwall';
+    expect(chestHuntPending(data, s)).toBe(false);
+    expect(openGoal(s).outcome).toBe('victory');
+  });
+  it('ends at once when the map has no side objective open_chests', () => {
+    const s = single();
+    const map = data.maps.dev_treasure!;
+    const was = map.objectives.side;
+    map.objectives.side = [];
+    restore.push(() => (map.objectives.side = was));
+    expect(openGoal(s).outcome).toBe('victory');
+  });
+  it('names the target chest in the goal sentence, the goal key stays treasure', async () => {
+    const { goalKey, goalLine } = await import('../../src/ui/goalText');
+    const { setLocales, lang } = await import('../../src/i18n');
+    setLocales(locales);
+    const map = data.maps.dev_treasure!;
+    const target = { type: 'treasure' as const, chests: ['dev_chest_d'], turns: 7 };
+    const all = { type: 'treasure' as const, chests: map.objects.filter((o) => o.type === 'chest').map((o) => o.id), turns: 7 };
+    for (const l of ['de', 'en'] as const) {
+      lang.value = l;
+      expect(goalLine(target, map)).toBe(locales[l]!['ui.world.goal.treasure_target']!.replace('{turns}', '7'));
+      expect(goalLine(all, map)).toBe(locales[l]!['ui.world.goal.treasure']!.replace('{turns}', '7'));
+    }
+    lang.value = 'de';
+    expect(goalKey(target)).toBe('treasure');
   });
 });

@@ -203,7 +203,7 @@ Claude Opus 5.5 (Subagent der orchestrierenden Session, gds-dev-story), 2026-11-
 - F6 = D: neue Gelände `paddock`, `paddock_gate` (Werte wie `fence`), Renderer wählt `paddock_straight/_corner/_gate` nach den Nachbarn (`wallKit.ts paddockPiece`); Hausvarianten `stable_a` (`wide: true`, zwei Felder, steht zwischen Feld und Ostnachbar), `barn_a`, `hay_a` mit Gewicht 0, per `propVariants` im Hof; Galerie `ships: true`, Modelle im Paket act1 wie die Herbstmodelle.
 - F7 = A: `rabenweide` in `ACT2_LOCATIONS`, `locations/rabenweide.webp` im Paket act2, `place`/`background`; Abnahme-Zeile in `akt2-ortsbilder.md`.
 - Szenen intro, water_hint, ilka_talk, outro (DE/EN), kein Boss-Zitat (F1 = A); `flee_2` DE/EN umformuliert.
-- [ASSUMPTION] A1 Steg-Lage auf der Straße; A2 Koppeltore geschlossen in der Nordlinie, Lücken offen; A3 `defend`-Anker 5 Runden; A4 Lucan ist in der Nachszene immer verwundet.
+- A1 Steg-Lage auf der Straße; A2 Koppeltore geschlossen in der Nordlinie, Lücken offen; A3 `defend`-Anker 5 Runden; A4 Lucan ist in der Nachszene immer verwundet.
 - Tests: `m2-3-rabenweide.test.ts` (neu), `wall-kit` (Koppelstücke), `look` (Zwei-Feld-Modell), nachgezogen `act-title`, `act-transition`, `sim-acts` (Timeout 45 s mit Begründung), `act2-campaign-order` (Kommentar).
 - Balancing: Schwer über dem Korridor (Sieg 82/92 %, Niedergestreckte 2,49/1,36), nicht weggetunt (11.27).
 - Offen: Spielbild 375 × 812 (Browser-Ansicht während der Arbeit verborgen).

@@ -85,13 +85,13 @@ damit Jory seine Laute und seine Geschichte zurückbekommt.
 
 ## Offene Fragen an den Produktinhaber
 
-Alle als [ASSUMPTION] umgesetzt (empfohlene Option), Werte leicht änderbar in Karte, Szenen bzw. `items.yaml`:
+Alle mit der empfohlenen Option umgesetzt, A1, A4 und A5 bestätigt (PO 2026-11-10), A2, A3 und A6 bleiben [ASSUMPTION]; Werte leicht änderbar in Karte, Szenen bzw. `items.yaml`:
 
 - **A1 Wen greifen die Eintreiber an?** Ohne Eingriff fällt die Meisterin in Gegnerrunde 1–2 (0 von 20 Siegen). A) Startgegner `ai.prefer: player`, Boote und Schwer-Zusatz jagen die Meisterin (gewählt), B) Meisterin stärker (P, Kettenhemd), C) Startgegner schlafen (trigger) bis die Truppe kommt.
 - **A2 Flut:** A) zu Beginn der Spielerrunde 6 (gewählt), B) Gegnerrunde 6 wie Entwurf.
 - **A3 Gold:** A) 2 000 nach Goldkurve Akt 2 (gewählt), B) 1 300 wie Entwurf.
 - **A4 Meisterin:** A) Name Maren, P−3, spricht als Erzählzeile bis zur Halbfigur (gewählt), B) Halbfigur jetzt per ChatGPT erzeugen und als Sprecherin führen.
-- **A5 Bild der Laute:** A) vorläufig Silberlaute (gewählt), B) eigenes Bild `final_curtain` per ChatGPT.
+- **A5 Bild der Laute:** A) bestätigt (PO 2026-11-10) Silberlaute (gewählt), B) eigenes Bild `final_curtain` per ChatGPT.
 - **A6 Schwer 20 % Sieg:** A) bis 11.27 so lassen (gewählt), B) Schwer-Zusatz ebenfalls `prefer: player`, C) eine Bootswelle weniger auf Schwer.
 
 ## Dev Agent Record

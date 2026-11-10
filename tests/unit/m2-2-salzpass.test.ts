@@ -5,6 +5,7 @@ import { newItem } from '../../src/core/battle/create';
 import {
   applyCommand,
   beginPhase,
+  chestHuntPending,
   conditionContext,
   createBattle,
   newCampaign,
@@ -126,7 +127,9 @@ describe('map m2_2_salzpass', () => {
     expect(r.state.objects.find((o) => o.id === 'c_seal')!.state).toBe('open');
     expect(dialogues(r.events)).toContain('scn.m2_2.seal_found');
     expect(r.state.flags).toContain('m2_2_seal');
-    expect(r.state.outcome).toBe('victory');
+    // T6-13F6: the goal is secured, the battle goes on for the other chests of the side objective s_chests
+    expect(chestHuntPending(data, r.state)).toBe(true);
+    expect(r.state.outcome).toBeNull();
   });
 
   it('without a scout the seal chest needs the purser’s key, which he drops', () => {
@@ -138,7 +141,7 @@ describe('map m2_2_salzpass', () => {
     lucan.bag.push(newItem(s, 'door_key', data));
     const r = applyCommand(data, s, { type: 'act', unit: lucan.uid, to: [4, 2], action: { kind: 'chest' } });
     expect(r.state.flags).toContain('m2_2_seal');
-    expect(r.state.outcome).toBe('victory');
+    expect(r.state.outcome).toBeNull();
   });
 
   it('is lost when round 11 ends with the seal chest shut', () => {

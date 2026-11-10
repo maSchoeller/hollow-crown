@@ -1,5 +1,5 @@
 import { loadContentFromDisk } from '../../src/content/node';
-import { addToRoster, applyCommand, autoCommand, beginBattle, levelUp, newCampaign, turnStartIndex, type BattleState, type Command } from '../../src/core';
+import { addToRoster, applyCommand, autoCommand, beginBattle, chestHuntPending, levelUp, newCampaign, turnStartIndex, type BattleState, type Command } from '../../src/core';
 import { APP_VERSION, contentVersionOf, exportSave } from '../../src/persistence/save';
 
 /**
@@ -31,7 +31,18 @@ export function savedBeforeWin(nodeId: string, campaignId: string, seeds: number
     let before: BattleState | null = null;
     let last: Command | null = null;
     for (let i = 0; i < 4000 && !s.outcome; i++) {
-      const cmd = autoCommand(data, s);
+      let cmd = autoCommand(data, s);
+      // T6-13F6: opening the goal chest of a treasure hunt only wins once the side objective `open_chests` cannot be met any more (in 1-7 the
+      // cave-in buries the other chests); until then the unit that would open it waits, so that "Open" stays the winning command
+      const v = data.maps[s.mapId]!.objectives.victory;
+      const goalChest = (id: string | undefined) => v.type === 'treasure' && !!id && v.chests.includes(id);
+      if (cmd.type === 'act') {
+        const to = cmd.to;
+        const opens =
+          (cmd.action.kind === 'open' && goalChest(cmd.action.object)) ||
+          (cmd.action.kind === 'chest' && goalChest(s.objects.find((o) => o.type === 'chest' && o.at[0] === to[0] && o.at[1] === to[1])?.id));
+        if (opens && chestHuntPending(data, s)) cmd = { ...cmd, action: { kind: 'wait' } };
+      }
       const next = applyCommand(data, s, cmd).state;
       if (next.outcome) {
         before = s;
