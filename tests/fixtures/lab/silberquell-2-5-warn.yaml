@@ -1,0 +1,7 @@
+# Story 11.16: Mission 2-5 nach E7 warn: am Ausgang steht der Hauptmann des Grenzheers statt Sable (Sichtprüfung).
+#   pnpm lab silberquell-2-5-warn
+#   im Dev-Build: await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('silberquell-2-5-warn')
+question: Wer hält den Ausgang, wenn Sable bei E7 gewechselt hat?
+map: m2_5_silberquell
+company: expected
+flags: { e07: warn }

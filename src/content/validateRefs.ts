@@ -71,6 +71,9 @@ export function contentRefs(data: GameData, err: Err) {
         if (!data.supports[pairKey(a, b)]) err(file, `${ctx}: unknown support pair ${a}|${b}`);
         return;
       }
+      case 'roomLevel':
+        if (!data.rooms[(v as { id: string }).id]) err(file, `${ctx}: unknown room ${(v as { id: string }).id} (core/rooms.yaml)`);
+        return;
       case 'met':
         if (!data.lieutenants[v as string]) err(file, `${ctx}: unknown lieutenant ${v as string}`);
         return;

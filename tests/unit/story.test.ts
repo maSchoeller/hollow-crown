@@ -105,6 +105,22 @@ describe('conditions (architecture §5.3)', () => {
     expect(conditionSchema.safeParse({ castleTier: 0 }).success).toBe(false);
   });
 
+  it('roomLevel reads the level of a room of the current home, 0 while the home or the act has none (story 11.16)', () => {
+    const academy = (c: CampaignState, cond: { min?: number; max?: number }) => holds(c, { roomLevel: { id: 'academy', ...cond } });
+    // act 1 in the camp: no academy
+    expect(ctxOf(base).rooms.academy).toBeUndefined();
+    expect(academy(base, { max: 0 })).toBe(true);
+    expect(academy(base, { min: 1 })).toBe(false);
+    const castle = (level?: number): CampaignState => ({ ...clone(base), act: 2, home: { kind: 'castle', rooms: level ? { academy: level } : {} } });
+    expect(ctxOf(castle()).rooms.academy).toBe(1);
+    expect(academy(castle(), { max: 2 })).toBe(true);
+    expect(academy(castle(2), { min: 2, max: 2 })).toBe(true);
+    expect(academy(castle(3), { max: 2 })).toBe(false);
+    expect(academy(castle(3), { min: 3 })).toBe(true);
+    expect(conditionSchema.safeParse({ roomLevel: { id: 'academy', max: 2 } }).success).toBe(true);
+    expect(conditionSchema.safeParse({ roomLevel: { id: 'academy' } }).success).toBe(false);
+  });
+
   it('support needs at least the rank, in either order of the pair', () => {
     const c = clone(base);
     expect(holds(c, { support: { pair: ['lucan', 'brenna'], rank: 'C' } })).toBe(false);

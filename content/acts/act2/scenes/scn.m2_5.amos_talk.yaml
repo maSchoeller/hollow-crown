@@ -1,0 +1,25 @@
+# Mission 2-5, Anwerben im Kampf (recruit der Karte, by: any): Bruder Amos, Feldscher des Klosters, vom Orden verstoßen, weil er Feinde behandelte.
+# Keine Antworten (Kampfszene). Amos spricht als Gast (fallback: skip), Rhen und Lucan sind immer da.
+id: scn.m2_5.amos_talk
+lines:
+  - id: l01
+    mood: neutral
+    text: "Im Hospiz verbindet ein alter Mann einen Grenzsoldaten. Er schaut nicht einmal auf."
+  - id: l02
+    speaker: [amos]
+    fallback: skip
+    mood: happy
+    text: "Bluten tun sie alle gleich. Der Orden fand das falsch, drum bin ich nur noch Bruder Amos."
+  - id: l03
+    speaker: [avatar]
+    mood: neutral
+    text: "Draußen fallen gleich mehr. Wir könnten einen Feldscher brauchen."
+  - id: l04
+    speaker: [amos]
+    fallback: skip
+    mood: neutral
+    text: "Dann nehmt mich mit. Hier flicke ich Leute, damit sie euch jagen. Schlechte Arbeit."
+  - id: l05
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann pack die Tasche. Ein Platz hinter der Linie ist frei."
