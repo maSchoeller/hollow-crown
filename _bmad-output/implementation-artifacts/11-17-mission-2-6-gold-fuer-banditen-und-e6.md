@@ -112,11 +112,11 @@ damit beide Spuren zusammenlaufen.
 
 ## Offene Fragen an den Produktinhaber
 
-- **F1 [ASSUMPTION A] Wie spielt `scn.m2_6.burnt_village` „auf dem Rückweg“?** Ein Knoten hat nur eine Nachszene. A) neues Knotenfeld `epilogues` (Szenen mit Bedingung, nach der Nachszene vor dem Ergebnis); B) Zeilen mit `panel: brandhang` am Ende der Nachszene, ohne eigene Szenen-Id; C) Szene beim nächsten Besuch der Burg. **Angenommen A.**
-- **F2 [ASSUMPTION A] Wie verteilen sich die Haltungen auf E6?** A) warm → stay, nüchtern → pardon, trotzig → stay (wie E5); B) warm → pardon („ich lasse dich gehen“); C) nur zwei Antworten. **Angenommen A.**
+- **F1 Wie spielt `scn.m2_6.burnt_village` „auf dem Rückweg“?** Ein Knoten hat nur eine Nachszene. A) neues Knotenfeld `epilogues` (Szenen mit Bedingung, nach der Nachszene vor dem Ergebnis); B) Zeilen mit `panel: brandhang` am Ende der Nachszene, ohne eigene Szenen-Id; C) Szene beim nächsten Besuch der Burg. **Bestätigt (PO 2026-11-10): A.**
+- **F2 Wie verteilen sich die Haltungen auf E6?** A) warm → stay, nüchtern → pardon, trotzig → stay (wie E5); B) warm → pardon („ich lasse dich gehen“); C) nur zwei Antworten. **Bestätigt (PO 2026-11-10): A.**
 - **F3 [ASSUMPTION A] „Hat Sable Groll 0, entfällt ihre nächste Steigerung“ (narrative.md:693):** A) vorerst nur `grudge −1` (bei 0 ohne Wirkung), die Regel kommt mit der Groll-Abstimmung (11.27); B) jetzt ein Merker „nächste Steigerung entfällt“ (neues persistiertes Feld). **Angenommen A.**
-- **F4 [ASSUMPTION A] Bild des verbrannten Dorfs:** A) vorhandenes Ortsbild `brandhang`; B) eigenes Ortsbild per ChatGPT nachziehen. **Angenommen A.**
-- **F5 [ASSUMPTION A] Wie lässt Maelis die Truppe fallen?** A) ein Brief mit Möwensiegel in Grells Kajüte, in ihrer Stimme (Halbfigur `maelis`); B) Grell sagt es im Kampf; C) Nell überbringt es. **Angenommen A.**
+- **F4 Bild des verbrannten Dorfs:** A) vorhandenes Ortsbild `brandhang`; B) eigenes Ortsbild per ChatGPT nachziehen. **Bestätigt (PO 2026-11-10): A.**
+- **F5 Wie lässt Maelis die Truppe fallen?** A) ein Brief mit Möwensiegel in Grells Kajüte, in ihrer Stimme (Halbfigur `maelis`); B) Grell sagt es im Kampf; C) Nell überbringt es. **Bestätigt (PO 2026-11-10): A.**
 
 ## Dev Agent Record
 

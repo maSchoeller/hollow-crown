@@ -17,7 +17,7 @@ damit Ilkas Herkunft ein Gesicht bekommt.
 
 1. **Karte übernommen:** `content/acts/act2/maps/n4_clanlager.yaml` übernimmt den Entwurf `concept/27-ueberarbeitung/levels/s2_n4_clan.yaml` (M 20 × 24, `survive` 9 Runden, 8 eigene gegen 20 auf Normal, L 17 / S 23, kein Leutnant) mit Feld `design:` auf den Entwurf, Höhenstufen (Felsnase `crag` Stufe 2, Terrasse Stufe 1, Treppe/Rampe), `fog: true`, `weather: snow`, `season: winter` (früher Schnee, Story 15.15; Akt 2 ist sonst Herbst). Gegner nur mit `levelOffset` (P−3…P−1), keine Flieger, keine Reiter.
 2. **Nebel von allen Seiten:** Startgegner stehen im Wald im Norden, Westen, Osten und Süden; angekündigte Wellen R3 Nord, R5 Süd, R7 West wie im Entwurf.
-3. **Felsnase:** Unter Nebel sieht eine Figur weiter, je höher sie steht (`balance.fog.levelBonus` je Höhenstufe, [ASSUMPTION] 2); auf dieser Karte ist die Felsnase (Stufe 2) der einzige hohe Punkt und damit der einzige Blick über den Nebel.
+3. **Felsnase:** Unter Nebel sieht eine Figur weiter, je höher sie steht (`balance.fog.levelBonus` je Höhenstufe, 2); auf dieser Karte ist die Felsnase (Stufe 2) der einzige hohe Punkt und damit der einzige Blick über den Nebel.
 4. **Clanälteste:** steht als `team: other`, Klasse `civilian`, `ignoreForRout`, mitten im Lager; ihr Fall ist keine Niederlage, nur das Nebenziel `protect_npc` scheitert.
 5. **Ilka Pflicht, solange sie lebt:** `deploy.forced: [avatar, lucan, ilka]`; ist sie gefallen, filtert die Aufstellung sie heraus (`presentForced`, 11.10). Ist sie gegangen, bleibt N4 zu (Bedingung in `campaign.yaml`, schon aus 11.11, Test vorhanden).
 6. **Belohnung:** Knotenwirkungen Glutfunke (`ember_spark`) und Ilkas Signaturbogen Weißwolf (`white_wolf`), auch in der Gedenk-Variante (`memorialIf: { dead: ilka }`, Szenen `scn.n4.memorial_intro/outro`, Muster N3/Tobin).
@@ -41,7 +41,7 @@ damit Ilkas Herkunft ein Gesicht bekommt.
   - [x] Namen in `content/acts/act2/locales/{de,en}.names.yaml`.
 - [x] T2 Sicht über den Nebel (AC 3, 7)
   - [x] `src/core/rules/vision.ts`: `visionRadius` bekommt Höhe (`levelAt` × `balance.fog.levelBonus`) und den höchsten `visionBonus` der aktiven Skills (`activeSkillIds`).
-  - [x] `balance.yaml fog.levelBonus` [ASSUMPTION 2], Schema `schemaBalance.ts`, Typ `balanceDefs.ts`; Skill-Effekt `visionBonus` in `schemaUnits.ts` und `defs.ts`.
+  - [x] `balance.yaml fog.levelBonus` 2, Schema `schemaBalance.ts`, Typ `balanceDefs.ts`; Skill-Effekt `visionBonus` in `schemaUnits.ts` und `defs.ts`.
   - [x] Akt 1 prüfen: Nebelkarten mit Höhen (`m1_3_silberbach`, `m1_5_hungerlager`) – die KI und die Simulation lesen den Nebel nicht; Act-1-Basislauf muss gleich bleiben.
   - [x] Unit-Tests für Höhe und Skill.
 - [x] T3 Weißwolf (AC 6, 7): `white_wolf` im Signatur-Block, Skill `white_wolf_sight` in `skills.yaml`, Locale-Schlüssel (Item, Skill) DE/EN; Bild fehlt noch → prüfen, wie `magpie`/`heirloom` Bilder auflösen (ggf. `image: iron_bow` vorläufig).
@@ -105,9 +105,9 @@ damit Ilkas Herkunft ein Gesicht bekommt.
 
 ## Offene Fragen an den Produktinhaber (autonom als [ASSUMPTION] gesetzt)
 
-- **F1 Sicht über den Nebel:** A) je Höhenstufe `fog.levelBonus` 2 ab Stufe 2 (überall; Akt-1-Nebelkarten haben nur Stufe 1, bleiben gleich) – **gesetzt**; B) nur ein Kartenfeld „Ausguck“ in N4; C) Sichtbonus am Gelände `crag`. Wert in `balance.yaml`.
+- **F1 Sicht über den Nebel:** A) je Höhenstufe `fog.levelBonus` 2 ab Stufe 2 (überall; Akt-1-Nebelkarten haben nur Stufe 1, bleiben gleich) – **bestätigt (PO 2026-11-10)**; B) nur ein Kartenfeld „Ausguck“ in N4; C) Sichtbonus am Gelände `crag`. Wert in `balance.yaml`.
 - **F2 Weißwolf-Effekt:** A) +3 Sicht unter Nebel (`visionBonus`) – **gesetzt**; B) Träger sieht unter Nebel alles; C) +2 Sicht und +10 Treffer unter Nebel. Wert in `skills.yaml`.
-- **F3 Clanälteste spricht:** A) nur in Erzählzeilen – **gesetzt**; B) eigene Halbfigur (ChatGPT, wie Lanzenreiter in 11.12); C) Figur `villager_elder` als Sprecher („Dorfältester“).
+- **F3 Clanälteste spricht:** A) nur in Erzählzeilen – **bestätigt (PO 2026-11-10)**; B) eigene Halbfigur (ChatGPT, wie Lanzenreiter in 11.12); C) Figur `villager_elder` als Sprecher („Dorfältester“).
 - **F4 Gold:** A) 1 400 wie Entwurf – **gesetzt** (Sim: unter der Akt-2-Kurve); B) 2 000 wie 2-1 nach der Abnahme.
 - **F5 Älteste auf Normal:** Sim schützt sie nur in 2 % (Leicht 92 %): A) bis 11.27 lassen – **gesetzt**; B) Älteste Stufe/Rüstung hoch (wie Tobins Vater mit Kettenhemd); C) einen der drei Normal-Schützen streichen.
 

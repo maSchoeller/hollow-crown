@@ -35,8 +35,8 @@ damit er sich der Truppe anschließt, statt sich vor seiner Glut zu verstecken.
 
 - [x] T1 Karte `content/acts/act2/maps/n5_kupfermine.yaml` (AC 1, 2, 3, 9, 10)
   - [x] Terrain/Legende/Objekte aus dem Entwurf; Türflügel `d_mid_w`/`d_mid_e` mit `links` aufeinander (Muster `m1_6_paktwacht.yaml:103-105`), Gatter per Trigger `object_activated l_gate` → `set_terrain` `gate` (wie Entwurf, damit kein Schlüssel das Gatter öffnet).
-  - [x] Gegner: `level` streichen, nur `levelOffset`; Name `unit.duchess_looter.name` („Plünderer der Herzogin“, Fraktion Haus Silbermeer), Vorarbeiter `unit.foreman.name`, Figuren aus dem Pool `silver_sea` (`content/acts/act2/haunts.yaml`) [ASSUMPTION]. Eisenwaffen wie 2-1.
-  - [x] Schlüssel: Truhen brauchen einen Schlüssel oder einen Späher (`src/core/rules/scout.ts`); damit die Jagd nicht an Fenn hängt (Regel 9.8, m1_7), tragen außer dem Vorarbeiter je ein Plünderer in jedem Winkel einen Schlüssel (`drops`) [ASSUMPTION, Abweichung].
+  - [x] Gegner: `level` streichen, nur `levelOffset`; Name `unit.duchess_looter.name` („Plünderer der Herzogin“, Fraktion Haus Silbermeer), Vorarbeiter `unit.foreman.name`, Figuren aus dem Pool `silver_sea` (`content/acts/act2/haunts.yaml`). Eisenwaffen wie 2-1.
+  - [x] Schlüssel: Truhen brauchen einen Schlüssel oder einen Späher (`src/core/rules/scout.ts`); damit die Jagd nicht an Fenn hängt (Regel 9.8, m1_7), tragen außer dem Vorarbeiter je ein Plünderer in jedem Winkel einen Schlüssel (`drops`) [Abweichung].
   - [x] Brann: `char: brann`, ohne eigene Stufe/Waffen (Werte `content/acts/act2/units.yaml`, Stufe P − 1 über `raiseMapChar`, Muster Jory in 2-1).
   - [x] Innen: `interior: true`, `fog: true`, `timeOfDay: indoor`, `lights` als rote Glutadern und Fackeln (Muster `m1_7_gewoelbe.yaml:47-56`); keine Höhenstufen (Entwurf eben).
   - [x] Haunts: keine (Nebenquest-Karte, wie N1–N3).
@@ -91,7 +91,7 @@ damit er sich der Truppe anschließt, statt sich vor seiner Glut zu verstecken.
 
 ## Offene Fragen an den Produktinhaber
 
-Alle als [ASSUMPTION] umgesetzt (empfohlene Option), Werte leicht änderbar in der Karte bzw. den Szenen:
+Alle mit der empfohlenen Option umgesetzt, A1 und A3–A7 bestätigt (PO 2026-11-10), A2 bleibt [ASSUMPTION]; Werte leicht änderbar in der Karte bzw. den Szenen:
 
 - **A1 Schlüssel:** Truhen brauchen Schlüssel oder Späher. A) mehrere Plünderer lassen Schlüssel fallen (gewählt), B) nur der Vorarbeiter, Truhen nur mit Fenn/Händler-Schlüsseln, C) Truhen in N5 ohne Schlüssel (Regeländerung).
 - **A2 Gold:** A) 2 000 nach Goldkurve Akt 2 (gewählt), B) 1 500 wie Entwurf.

@@ -3,6 +3,7 @@ import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { availableActions, hasKey, mustStayForRest } from '../battle/actions';
 import { activeVictory } from '../battle/activeVictory';
+import { chestHuntPending, chestProgress } from '../battle/objectives';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
@@ -290,9 +291,12 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   const recruitable = (u: BattleUnit) =>
     enemies.filter((o) => o.recruit && (o.recruit.by === 'any' || o.recruit.by.includes(u.id))).map((o) => o.pos!);
   // story 4.8: the chests of a treasure hunt still shut, and the escort NPC with the radius it follows within
+  // T6-13F6: once the goal chests are open while the side objective `open_chests` still runs, the hunt goes on for every chest
+  const secured = v.type === 'treasure' && chestProgress(s, v.chests).have >= v.chests.length;
+  const wanted = v.type !== 'treasure' ? [] : secured && chestHuntPending(data, s) ? s.objects.filter((o) => o.type === 'chest').map((o) => o.id) : v.chests;
   const openable =
     v.type === 'treasure'
-      ? new Set([...v.chests, ...s.objects.filter((o) => o.type === 'door').map((o) => o.id)].filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed')))
+      ? new Set([...wanted, ...s.objects.filter((o) => o.type === 'door').map((o) => o.id)].filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed')))
       : undefined;
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;

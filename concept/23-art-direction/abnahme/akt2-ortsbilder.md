@@ -30,7 +30,7 @@ Gesamtansicht: [akt2-ortsbilder-kontaktbogen.jpg](akt2-ortsbilder-kontaktbogen.j
 
 ## Nachtrag 2026-11-09: 2-5 Silberquell (Story 11.16)
 
-**Kurz:** Das achte Ortsbild, für 2-5 „Die verstoßene Leibwache“. Erzeugt und geprüft von der lenkenden Session, eingebunden mit Story 11.16 (`ACT2_LOCATIONS`, Paket act2, `place` und Szenen-`background` `silberquell`). **Status: Abnahme durch den Produktinhaber offen.**
+**Kurz:** Das achte Ortsbild, für 2-5 „Die verstoßene Leibwache“. Erzeugt und geprüft von der lenkenden Session, eingebunden mit Story 11.16 (`ACT2_LOCATIONS`, Paket act2, `place` und Szenen-`background` `silberquell`). **Status: abgenommen vom Produktinhaber am 2026-11-10, ohne Änderung.**
 
 | Mission | Bild | Kurz |
 |---|---|---|

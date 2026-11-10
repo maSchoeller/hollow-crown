@@ -48,11 +48,11 @@ terrain: |
 timeOfDay: morning
 weather: fog
 objects:
-  # Siegeltruhe: [PO offen F1] Vorschlag A – das Siegel ist kein Gegenstand, die Truhe ist leer; Szene und Flag m2_2_seal tragen es (t_seal)
+  # Siegeltruhe: PO 2026-11-10 bestätigt F1 A – das Siegel ist kein Gegenstand, die Truhe ist leer; Szene und Flag m2_2_seal tragen es (t_seal)
   - { id: c_seal, type: chest, at: [4, 2] }
-  # [PO offen F3] Vorschlag A – Chronik-Seite a2_salzpass aus dem Tempelarchiv, die Grell für Maelis schmuggelt
+  # PO 2026-11-10 bestätigt F3 A – Chronik-Seite a2_salzpass aus dem Tempelarchiv, die Grell für Maelis schmuggelt
   - { id: c_page, type: chest, at: [9, 2], contents: { gold: 300, chronicle: a2_salzpass } }
-  # [PO offen F4] Vorschlag A – Saat Kharesh: 200 Gold und die Szene der Seekarte, kein Gegenstand
+  # PO 2026-11-10 bestätigt F4 A – Saat Kharesh: 200 Gold und die Szene der Seekarte, kein Gegenstand
   - { id: c_scouts, type: chest, at: [3, 9], contents: { gold: 200, dialogue: scn.m2_2.scouts_chart } }
 deploy:
   max: 7
@@ -134,7 +134,7 @@ triggers:
     then:
       - { action: dialogue, id: scn.m2_2.rockfall_ledge }
       - { action: set_terrain, area: { tiles: [[14, 7], [14, 8]] }, terrain: rockwall }
-  # [PO offen F1] Vorschlag A – das Siegel als Flag und Szene; [PO offen F2] Vorschlag C steht in der Szene (grauer Wachsbrief, niemand benennt ihn)
+  # PO 2026-11-10 bestätigt F1 A – das Siegel als Flag und Szene; PO 2026-11-10 bestätigt F2 C steht in der Szene (grauer Wachsbrief, niemand benennt ihn)
   - id: t_seal
     once: true
     when: { type: object_activated, object: c_seal }
@@ -172,6 +172,6 @@ design:
     - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); P = 13 nach 2-1, 14 nach 2-1 und 2-3."
     - "Normal 16 Gegner (2 davon R6) gegen 7 eigene, P−3 bis P−1, Grell nach der Leutnant-Regel; Leicht 13, Schwer 19."
     - "Die Straße bleibt immer offen: Steinschlag engt nur ein, sperrt nie ganz. Laut Regel bleibt ein besetztes Feld unverändert."
-    - "Das Siegel ist kein Gegenstand: die Truhe c_seal ist leer, Szene und Flag m2_2_seal tragen es [PO offen F1]. c_page trägt die Chronik-Seite a2_salzpass [PO offen F3]."
+    - "Das Siegel ist kein Gegenstand: die Truhe c_seal ist leer, Szene und Flag m2_2_seal tragen es. c_page trägt die Chronik-Seite a2_salzpass."
     - "Grell steht als Leutnant (lieutenants.yaml, skirmisher, Fraktion silver_sea); seine Signatur gold_hook ist Beute, nicht Kartenwaffe."
     - "Saat Kharesh und Zweifel „Wer schreibt der Prinzessin?“ stehen in den Szenen; die Kundschafter kamen per Schiff, Silbermeer verkaufte die Überfahrt."

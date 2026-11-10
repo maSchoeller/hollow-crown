@@ -71,19 +71,19 @@ Abgang über die Wirkungen `recruit`/`leave`, die die Missions-Stories setzen we
 
 1. **Zeitpunkt der Chronik-Szene.** Epic: „nach 2-4“; Narrative-Log 2026-10-31: „nach der dritten Akt-2-Story-Mission, egal welcher“
    (wäre nach dem zweiten Missions-Paar-Teil). Optionen: A nach 2-4 · B nach der 3. Story-Mission (`storyCount { min: 3 }`).
-   [ASSUMPTION] A (Epic gilt vor narrative.md); eine Zeile in `campaign.yaml`.
+   Bestätigt (PO 2026-11-10): A (Epic gilt vor narrative.md); eine Zeile in `campaign.yaml`.
 2. **Chronik nicht gefunden.** Die Szene verlangt `wardens_chronicle` (1-7 setzt es immer beim Sieg). Optionen: A verlangen · B ohne
-   Bedingung. [ASSUMPTION] A.
+   Bedingung. Bestätigt (PO 2026-11-10): A.
 3. **Ysolde nie beigetreten.** Die Sprecherkette der Engine lässt eine nie beigetretene Figur sprechen; die Szene nutzt deshalb
    `requires: alive`-Varianten. Optionen: A so lassen · B Kettenregel allgemein auf „in der Truppe“ ändern (betrifft Akt-1-Szenen).
    [ASSUMPTION] A.
-4. **Hintergrund der Gespräche.** Optionen: A Burg `paktwacht_heimat` · B Lager `lager_unterwegs` wie Akt 1. [ASSUMPTION] A.
+4. **Hintergrund der Gespräche.** Optionen: A Burg `paktwacht_heimat` · B Lager `lager_unterwegs` wie Akt 1. Bestätigt (PO 2026-11-10): A.
 5. **Erfundene Details in den Gesprächen** (Vorschläge, leicht änderbar): Nell auf einer Sandbank ausgesetzt, Schiffsjunge Tamm;
    Vareks „die Münzen waren Dörfer“; Sable zeichnete die Karte der Brandschneise; Brann verbrannte seinem Bruder die Hand; Ilkas Name
    wird am Clanfeuer nicht mehr gerufen, ihr Wolfsfell; Amos' Schuld (ein Junge aus dem Grenzheer starb auf Befehl des Priors);
-   Liora wurde verstoßen, weil sie nach den jungen Königen fragte. Optionen: A behalten · B streichen/ersetzen. [ASSUMPTION] A.
+   Liora wurde verstoßen, weil sie nach den jungen Königen fragte. Optionen: A behalten · B streichen/ersetzen. Bestätigt (PO 2026-11-10): A.
 6. **Entzifferter Chronik-Text** (Karte im Chronik-Bildschirm): Kern wie Szene, ohne zu verraten, *was* die Könige geben (Akt 3).
-   [ASSUMPTION] Vorschlagstext.
+   Bestätigt (PO 2026-11-10): Vorschlagstext.
 
 ## Dev Agent Record
 

@@ -43,7 +43,7 @@ damit Dravns Lüge platzt und die Lage der Truppe kippt.
   - [x] Gegner: `level` streichen, nur `levelOffset` (11.2). Name `unit.looter.name` („Plünderer“, `content/core/locales/de.names.yaml`) bleibt; Figur (`sprite`) nach Pool `silver_sea` (`haunts.yaml:19-23`: brigand → `brigand`, skirmisher → `mercenary`, marksman → `bandit_archer`, vanguard → `soldier`), Muster `m2_2_salzpass.yaml:78`. Eisenwaffen wie Entwurf; Stahl nur, wenn die Sim es verlangt [ASSUMPTION].
   - [x] Grell: `lieutenant: grell`, **Klasse `skirmisher`, Waffe `steel_sword`** laut `lieutenants.yaml` (Entwurf: `brigand`/`steel_axe`, wie schon in 2-2 korrigiert), `levelOffset: 1` nur fürs Schema; `id: grell` in der Welle R6.
   - [x] Brann: `char: brann` ohne `level` (die Stufe kommt aus `units.yaml:73-83`, Stufe 10; Kartenstufe 8 des Entwurfs fällt weg, Befund 5), `items: [{ def: rockfall }]`, `guest: true`, `ai: { profile: hold }`, `ignoreForRout: true`.
-  - [x] Sable: generische Einheit (`nameKey: unit.sable.name`, **ohne** `char`/`lieutenant`, damit sie nach der Mission nicht über `campaign.ts:298` mitkommt), `team: other`, `untargetable: true`, `ignoreForRout: true`, **`items: []`** (sonst schlägt sie mit `hold` zu, Befund 4), Lichtung `[19..23, 6..8]` als `plain` statt `grass` oder Feuer-Abstand nach F1 [ASSUMPTION]; Halbfigur `sable` vorhanden.
+  - [x] Sable: generische Einheit (`nameKey: unit.sable.name`, **ohne** `char`/`lieutenant`, damit sie nach der Mission nicht über `campaign.ts:298` mitkommt), `team: other`, `untargetable: true`, `ignoreForRout: true`, **`items: []`** (sonst schlägt sie mit `hold` zu, Befund 4), Lichtung `[19..23, 6..8]` als `plain` statt `grass` oder Feuer-Abstand nach F1; Halbfigur `sable` vorhanden.
   - [x] Objekte: vier Häuser (`v_nw`, `v_ne`, `v_sw`, `v_se`) wie Entwurf; `c_page` mit `chronicle: <Id nach F6>` und `dialogue: scn.m2_4.page` (Muster `n2_wachturm.yaml:62`), Gold 300.
   - [x] Feuer nach F1 (Vorschlag: deterministische Feuerfront über Trigger, siehe Befund 1).
   - [x] Trigger: `t_break_west` R3 player, `t_break_east` R6 player (`dialogue` mit `onBoard: brann`, dann `set_terrain … ash`), `t_grell` R6 enemy nach der Welle (`scn.m2_4.grell_battle`, `onBoard: grell`), `t_sable` R7 player (`scn.m2_4.sable_watches`). Szenen-Ids `scn.m2_4.*`.
@@ -179,19 +179,19 @@ damit Dravns Lüge platzt und die Lage der Truppe kippt.
 - **F1 Wie gefährlich ist das Feuer?** Mit der vorhandenen Regel (25 % Ausbreitung, 2 Runden Brenndauer) erlischt der Waldbrand nach wenigen Reihen und erreicht die Schneise nie; sie wäre nur Kulisse.
   A) neue Trigger-Aktion `ignite`: eine feste Feuerfront rückt angekündigt etwa zwei Reihen je Runde vor und steht ab Runde 3 an der Westkante, ab Runde 6 an der Ostkante (planbar, kleiner Code); B) Ausbreitung und Brenndauer je Karte höher (z. B. 60 % und 3 Runden), bleibt zufällig; C) Regel bleibt, das Feuer ist Stimmung, Brann und die Schneise wirken nur in der Szene; D) A und B zusammen.
   **Vorschlag A**: das Feuer wird zur lesbaren Uhr, die Schneise rettet sichtbar das Dorf, keine zufälligen Niederlagen.
-  **Vorläufig umgesetzt: Vorschlag A** [ASSUMPTION] (Trigger-Aktion `ignite` mit `warn`; Front West R2–R4, Ost R2–R7, Runden nur in den `t_fire_*`-Triggern der Karte).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (Trigger-Aktion `ignite` mit `warn`; Front West R2–R4, Ost R2–R7 [ASSUMPTION], Runden nur in den `t_fire_*`-Triggern der Karte).
 - **F2 Was entscheidet E7?** Die Mission rettet das Dorf am Brandhang; trotzdem soll bei „gehorchen“ Brandhang brennen, und keine Quelle sagt, wer den Befehl gibt und ausführt.
   A) Nach dem Sieg bringt Sable Dravns eigentlichen Befehl: Ihr Heimatdorf weiter oben am Hang wird zur zweiten Schneise gegen die Drachen; „warnen“ = die Truppe holt die Leute heraus, Sable geht mit; „gehorchen“ = die Truppe sieht zu, Sables Soldaten zünden, Dravns Quartiermeister geben −10 %; B) dasselbe Dorf: Dravn will das gerettete Dorf trotzdem brennen lassen; C) die Truppe soll selbst zünden; D) A, aber Dravn erscheint selbst (Halbfigur `dravn` vorhanden).
   **Vorschlag A**: passt zu `narrative.md:229,385` (Sables Heimatdorf), die Truppe macht sich bei „gehorchen“ nicht selbst die Hände schmutzig.
-  **Vorläufig umgesetzt: Vorschlag A** [ASSUMPTION] (`scn.m2_4.outro`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (`scn.m2_4.outro`).
 - **F3 Jagd und Maelis' Angebot:** Das Grenzheer jagt die Truppe in beiden Zweigen (2-5), obwohl „gehorchen“ Dravns Gunst bringt; Maelis' Angebot ist noch ohne Form.
   A) Jagd in beiden Zweigen, weil die Truppe Grells Plünderung unter Dravns Augen gesehen hat (Zeugen); Maelis schickt einen Brief, gelesen in ihrer Stimme (Sprecher `maelis`), Rhen antwortet mit Haltung und Folgen-Karte wie in 2-1, kein neues Flag; B) wie A, aber Grell überbringt das Angebot bei seiner Flucht (Spur Dravn–Maelis wird sichtbar); C) Jagd nur bei „warnen“, bei „gehorchen“ erst nach 2-5; D) A ohne Antwort Rhens.
   **Vorschlag A**: hält die Missionsliste in beiden Zweigen ein und folgt dem Muster der Angebote aus 2-1.
-  **Vorläufig umgesetzt: Vorschlag A** [ASSUMPTION] (Brief mit Sprecher `maelis`, Entscheidung `c02` mit drei Haltungen, kein Flag).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (Brief mit Sprecher `maelis`, Entscheidung `c02` mit drei Haltungen, kein Flag).
 - **F4 Sables Rolle auf dem Brett:** Sie soll zusehen, wäre aber mit Schwert und Profil `hold` sofort im Kampf und kann im Feuer stehen.
   A) ohne Waffe auf einer nicht brennbaren Lichtung, sieht nur zu; B) sie verlässt in Runde 7 nach ihrer Szene das Brett (wie eine fliehende Figur); C) sie steht außerhalb des Feuers am Nordostrand und hält Grells Leute von sich fern (darf sich wehren); D) A plus B.
   **Vorschlag D**: sie sieht zu, solange es brennt, und ist weg, bevor die Wellen der Runden 8–10 kommen; die Nachszene holt sie wieder.
-  **Vorläufig umgesetzt: Vorschlag D** [ASSUMPTION] (`items: []`, Lichtung `plain`, `t_sable` setzt `flee`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag D** (`items: []`, Lichtung `plain`, `t_sable` setzt `flee`).
 - **F5 Gold:** Entwurf 1 600 + 900 aus Häusern + 300 Truhe + 500 Nebenziel; Akt-2-Kurve 2 000–3 000, 2-1/2-2 je 2 000.
   A) 2 000 wie 2-1/2-2; B) 2 500 (Mitte der Kurve, erste G-Karte des Akts); C) 1 600 wie Entwurf; D) 2 500 und Häuser-Gold auf je 200 senken.
   **Vorschlag B**, 11.27 stimmt am Ende ab.
@@ -199,7 +199,7 @@ damit Dravns Lüge platzt und die Lage der Truppe kippt.
 - **F6 Chronik-Seite in der Köhlerruine:** Akt 2 erzählt, „dass die Könige beim Paktfest etwas gaben“; `a2_salzpass` erzählt schon eine Paktnacht.
   A) Id `a2_brandhang`, die Köhler hüteten eine Seite über ein Paktfest, bei dem ein König Glut aus dem Berg „zurückgab“ (Brücke zu N5, Glut unter dem Berg); B) wie A, aber die Seite erzählt, wer nach dem Fest das Feuer hütete (Vorgriff auf Brann und die Erdmagie); C) Seite erst in 11.23 schreiben, hier Platzhaltertext; D) keine Seite in 2-4, Akt-2-Seiten anders verteilen.
   **Vorschlag A**, Text per Schreib-Pipeline als Vorschlag zur Abnahme.
-  **Vorläufig umgesetzt: Vorschlag A** [ASSUMPTION] (`a2_brandhang` „Was der König zurückgab“: ein König bringt dem Berg Glut zurück, kein Verlust wie in `a2_salzpass`/`a2_mine`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (`a2_brandhang` „Was der König zurückgab“: ein König bringt dem Berg Glut zurück, kein Verlust wie in `a2_salzpass`/`a2_mine`).
 
 ## Dev Agent Record
 
@@ -211,10 +211,10 @@ Claude Opus 5.5 (Nachtbetrieb, Subagent der orchestrierenden Session)
 
 ### Completion Notes List
 
-- PO-Fragen F1–F6 nicht abgewartet (Nachtbetrieb): jeweils der Vorschlag umgesetzt und mit `[ASSUMPTION]` markiert (F1 A, F2 A, F3 A, F4 D, F5 B, F6 A); Einträge in `concept/21-gdd/decision-log.md` und `concept/22-narrative/decision-log.md`.
+- PO-Fragen F1–F6 nicht abgewartet (Nachtbetrieb): jeweils der Vorschlag umgesetzt (F1 A, F2 A, F3 A, F4 D, F5 B, F6 A); F1–F4 und F6 bestätigt (PO 2026-11-10), F5 und das Feuertempo aus F1 bleiben `[ASSUMPTION]`; Einträge in `concept/21-gdd/decision-log.md` und `concept/22-narrative/decision-log.md`.
 - Neuer Regelcode: Trigger-Aktion `ignite` (Fläche, optional `warn`), löst über `igniteTile` auf, keine eigene Zufallsquelle; Warnung über `terrainWarnings`, Schema in `schemaMap.ts`, Prüfung `validateFormat.ts`. Act-1-Basislauf unverändert (`sim:diff` ohne Wert über 0,02), Coverage-Sperrklinken grün.
 - Neue Annahmen: Schwer-Zusätze h0–h5 warten (`trigger`, Radius 4), weil Brann auf Schwer sonst immer in Runde 3 fiel; a0 trägt den Truhenschlüssel; Sprecher `maelis` mit Namen „Herzogin Maelis“.
-- Sim (Start expected, P = 15): Leicht 100 %, Normal 92 % (Niedergestreckte 2,27 ↑), Schwer 21 % (↓). Verkettet: Leicht 100 %, Normal 54 % (↓), Schwer 0 % – verkettet Schwer nicht gewinnbar, für 11.27 gemeldet. Sieg-KI öffnet die Köhlertruhe nie.
+- Sim (Start expected, P = 15): Leicht 100 %, Normal 92 % (Niedergestreckte 2,27 ↑), Schwer 21 % (↓). Verkettet: Leicht 100 %, Normal 54 % (↓), Schwer 0 % – verkettet Schwer nicht gewinnbar, für 11.27 gemeldet (PO 2026-11-10: 11.27 vorgezogen). Sieg-KI öffnet die Köhlertruhe nie.
 - Weltkarten-Bild `burnt_slope_burnt` vom Bild-Agenten geliefert; `valmora.yaml`, `map_places_v5.json` und `packs.yaml` waren schon verdrahtet (Breite 43 / bottom 406 = `width 3.4`, `foot [76.5, 32.4]`, passt). `pnpm art:build` nicht ausgeführt (LFS, Laufzeitbild entsteht beim Build).
 - Offen: Spielbild bei 375 × 812 und Bild der Folgen-Karte (T9), Sim mit `--haunts`.
 - `sim-acts.test.ts` lässt die 2-4-Karte weg (eine Schlacht dauert mehrere Sekunden), die Karte prüft `m2-4-brandschneise.test.ts`.

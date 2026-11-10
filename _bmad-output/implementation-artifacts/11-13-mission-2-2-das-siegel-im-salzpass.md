@@ -159,19 +159,19 @@ damit der erste Zweifel an Seraphine wächst.
 - **F1 Siegel: Gegenstand oder Flag?** Es gibt kein Item-Kind für Story-Gegenstände; das Flag `m2_2_seal` ist deklariert und fällt mit dem Sieg zusammen.
   A) nur Flag + Szene, die Truhe ist sonst leer (Vorbild Chronik 1-7); B) neuer Gegenstand „Siegel der Prinzessin“ im Konvoi (`convoyOnly`, unverkäuflich), braucht Item, Bild und Konvoi-Prüfung; C) A, und das Siegel erscheint nur als Zeile in der Chronik/Folgen-Karte; D) B mit Abgabe in 2-8.
   **Vorschlag A**: billig, kein neues Format, 2-8 kann das Flag lesen.
-  **Vorläufig umgesetzt: Vorschlag A** (Truhe `c_seal` leer, `t_seal` spielt `scn.m2_2.seal_found` und setzt `m2_2_seal`; markiert `[PO offen F1]`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (Truhe `c_seal` leer, `t_seal` spielt `scn.m2_2.seal_found` und setzt `m2_2_seal`).
 - **F2 Der Zweifel „Wer schreibt der Prinzessin?“** Keine Quelle sagt, was die Truppe beim Siegel findet; Odiles Wissen um Halvards Briefe kommt erst in 2-5.
   A) beim Siegel liegt ein Begleitbrief mit grauem Wachs (Halvards Zeichen aus 1-3), Liora erkennt es und schweigt; B) nur Grells Spott („Eure Prinzessin zahlt gut für ihr eigenes Siegel“), kein Brief; C) Begleitbrief mit grauem Wachs, niemand benennt es (wer 1-3 kennt, merkt es); D) kein Brief, nur Rhens Frage, wozu ein Erlass ein gestohlenes Siegel braucht.
   **Vorschlag C**: sät den Zweifel, ohne 2-5 und Halvards Enttarnung vorwegzunehmen.
-  **Vorläufig umgesetzt: Vorschlag C** (Zeilen l02/l03 in `scn.m2_2.seal_found`, Nachklang l04 in `scn.m2_2.outro`; markiert `[PO offen F2]`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag C** (Zeilen l02/l03 in `scn.m2_2.seal_found`, Nachklang l04 in `scn.m2_2.outro`).
 - **F3 Chronik-Seite in `c_page`:** Akt 2 erzählt, „dass die Könige beim Paktfest etwas gaben“; Id und Herkunft sind offen.
   A) Id `a2_salzpass`, eine Seite aus dem Tempelarchiv, die Grell für Maelis schmuggelt, Wächter erzählt eine Paktnacht, in der der König „gab“ (ohne zu sagen, was); B) wie A, aber die Seite liegt in der Truhe der Kundschafter (Kharesh sucht dasselbe Wissen); C) Seite erst in 11.23 schreiben, hier nur Platzhaltertext; D) keine Seite in 2-2, die Akt-2-Seiten anders verteilen.
   **Vorschlag A**, Text per Schreib-Pipeline als Vorschlag zur Abnahme.
-  **Vorläufig umgesetzt: Vorschlag A** (`a2_salzpass` in `content/acts/act2/chronicle.yaml`, EN in `content/locales/en/act2.chronicle.yaml`; markiert `[PO offen F3]`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (`a2_salzpass` in `content/acts/act2/chronicle.yaml`, EN in `content/locales/en/act2.chronicle.yaml`).
 - **F4 Saat-Truhe der Kundschafter (`c_scouts`):** Der Entwurf hat nur 200 Gold, die Mark nennt eine Seekarte aus Silbermeer.
   A) 200 Gold + Szene `scn.m2_2.scouts_chart` (Seekarte mit Silbermeers Zeichen, Lucan erkennt Kharesh), kein Gegenstand; B) Seekarte als Gegenstand im Konvoi (wie F1 B); C) Szene erst, wenn die Kundschafter fallen, Truhe nur Gold; D) A plus Merk-Flag für Staffel 2.
   **Vorschlag A**: Saat ohne neues Format, wie die Gerücht-Szene in 1-1.
-  **Vorläufig umgesetzt: Vorschlag A** (`c_scouts`: 200 Gold + `dialogue: scn.m2_2.scouts_chart`; markiert `[PO offen F4]`).
+  **Bestätigt (PO 2026-11-10) umgesetzt: Vorschlag A** (`c_scouts`: 200 Gold + `dialogue: scn.m2_2.scouts_chart`).
 - **F5 Gold:** Entwurf 900 + 500 in Truhen; Akt-2-Kurve 2 000–3 000, 2-1 hat 2 000.
   A) 2 000 (Kurvenboden wie 2-1, kleine K-Karte); B) 2 300 (steigt mit der Position); C) 900 wie Entwurf; D) 2 000 und Truhengold auf je 100 senken.
   **Vorschlag A**, 11.27 stimmt am Ende ab.
@@ -190,7 +190,7 @@ Claude Opus 5.5 (Subagent der orchestrierenden Session)
 ### Completion Notes List
 
 - Karte aus dem Entwurf übernommen, Gelände unverändert; Abweichungen im Kopfkommentar und in `levels/abnahme/s2_2_2_salzpass.md`.
-- F1–F5 vorläufig mit dem Vorschlag umgesetzt, jede Stelle mit `[PO offen F<n>]` markiert (Karte, Szenen, Chronik); ein Wechsel betrifft nur Karte/Szene/Chronik-YAML.
+- F1–F5 mit dem Vorschlag umgesetzt, F1–F4 bestätigt (PO 2026-11-10), F5 vorläufig und mit `[PO offen F5]` markiert (Karte, Szenen, Chronik); ein Wechsel betrifft nur Karte/Szene/Chronik-YAML.
 - Kein Code und kein Akt-1-Content geändert; nachgezogen wurden Tests, die „m2_2 ohne Karte“ annahmen (`sim-acts`, `act-title`, `act-transition`, `chronicle`). `act2-campaign-order` blieb grün.
 - Heimsuchungs-Anker abweichend vom Vorschlag der Dev Notes: `treasure` in der Nordkammer (Ziel [7,2]) statt Südkammer [9,16], weil [9,16] zwei Felder neben dem Startbereich liegt; `rout` mit Spawn [7,11]–[11,12], weil das Ziel nicht im Spawn liegen darf.
 - Befund Sim-KI: Nebenziel `s_chests` 0 % auf allen Stufen (die KI öffnet nur die Siegeltruhe). Schwer unter dem Korridor (Zeitlimit), Normal-Niedergestreckte am unteren Rand – nur berichtet, Abstimmung in 11.27.
