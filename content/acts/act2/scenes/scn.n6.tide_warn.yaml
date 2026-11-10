@@ -1,0 +1,18 @@
+# Nebenquest N6, Runde 5 (Trigger t_tide_warn, Story 11.22): Warnung vor der Flut, der Steg [2,14] fällt zu Beginn von Runde 6
+# (set_terrain mit warn markiert ihn schon). Nell nur, wenn sie beigetreten ist; sonst die Kette bis Avatar. Text Vorschlag [ASSUMPTION].
+id: scn.n6.tide_warn
+lines:
+  - id: l01
+    mood: neutral
+    text: "Das Wasser steigt. Am Westufer schwappt die Flut schon über die Bretter des Stegs."
+  - id: l02
+    speaker: [nell]
+    fallback: skip
+    requires: [{ alive: nell }]
+    mood: neutral
+    text: "Noch eine Runde, dann ist der Steg weg. Wer da rüber will, geht jetzt."
+  - id: l03
+    speaker: [lucan, avatar]
+    requires: [{ not: { alive: nell } }]
+    mood: neutral
+    text: "Der Steg säuft ab. Nächste Runde bleibt nur die Steinbrücke in der Mitte."

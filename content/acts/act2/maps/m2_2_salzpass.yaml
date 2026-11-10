@@ -1,0 +1,177 @@
+# Mission 2-2 – Das Siegel im Salzpass (Knoten m2_2). Entwurf concept/27-ueberarbeitung/levels/s2_2_2_salzpass.yaml, Missionsliste: K 16×20, treasure 11, 7 / 16, Leutnant Grell.
+# Enger Schmugglerpass im Nebel: drei Kammern, zwei Engstellen auf der Straße, im Osten eine schmale Felsleiste (terrace, Stufe 1) als kurzer zweiter Weg,
+# hinauf über die Rampe [14,15], hinab in die Nordkammer über die Treppe [13,5]. Grells Karawane zieht nach Runde 11 weiter; bis dahin muss die Siegeltruhe offen sein.
+# Steinschlag (rockwall) in Runde 3 (Südenge), 5 (Nordenge, mit Warnung ab Runde 4) und 8 (Leiste); ein besetztes Feld bleibt, die Straße bleibt offen.
+# Nebel: Sicht 3, Späher und Schützen 5 (balance.fog); Fenn öffnet die Siegeltruhe ohne Schlüssel (open_steal), ohne Späher der Schlüssel des Zahlmeisters.
+# Abweichungen vom Entwurf (Story 11.13, alle in levels/abnahme/s2_2_2_salzpass.md): Karten-Id m2_2_salzpass, Szenen scn.m2_2.*, Gegner nur mit levelOffset,
+# als „Schmuggler“ mit den Figuren des Pools silver_sea, Grell als skirmisher mit steel_sword (lieutenants.yaml, Stufe nach der Leutnant-Regel),
+# Kundschafter mit Profil trigger → aggressive statt „fliehen nach Westen“ (der Westwinkel ist eine Sackgasse), zwei Heimsuchungs-Anker.
+# Balancing [C] siehe Abschnitt „Übernahme Story 11.13“ der Abnahme-Datei (pnpm sim m2_2_salzpass --campaign act2 --start expected).
+# Szenen: scn.m2_2.intro vor der Karte (Knoten pre), scn.m2_2.rockfall_south (R3), scn.m2_2.rockfall_warn (R4), scn.m2_2.rockfall_ledge (R8),
+# scn.m2_2.seal_found (Siegeltruhe), scn.m2_2.scouts_chart (Truhe der Kundschafter), scn.m2_2.outro nach dem Sieg.
+id: m2_2_salzpass
+nameKey: map.m2_2_salzpass.name
+size: [16, 20]
+fog: true
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "^": mountain
+  "W": wagon
+  "%": terrace
+  "/": ramp
+  "s": stairs
+#          x: 0123456789012345
+terrain: |
+  ^^^^^^^^^^^__^^^
+  ^^^^,,,,,,,__,^^
+  ^^^,,W,,W,,__,^^
+  ^^^,,,,,,,,__,,^
+  ^^^^^^,,,,,__,,^
+  ^^^^^^^^^,,__s%^
+  ^^^^^^^^^^^__^%^
+  ^^^^^^^^^^,__^%^
+  ^^^^^^^,,,,__^%^
+  ^^^,,,,,,,,__^%^
+  ^^,,,,T,,,,__^%^
+  ^^,,,,,,____^^%^
+  ^^,,,_____,,^^%^
+  ^^^,,__^^^^^^^%^
+  ^^^^,__,^^^^^^%^
+  ^^,,,__,,,,,,^/^
+  ^,,T,__,,,,,,,,^
+  ^,,,,__,,TT,,,,^
+  ^^,,,__,,TT,,,^^
+  ^^^^,__,,,,,^^^^
+timeOfDay: morning
+weather: fog
+objects:
+  # Siegeltruhe: [PO offen F1] Vorschlag A – das Siegel ist kein Gegenstand, die Truhe ist leer; Szene und Flag m2_2_seal tragen es (t_seal)
+  - { id: c_seal, type: chest, at: [4, 2] }
+  # [PO offen F3] Vorschlag A – Chronik-Seite a2_salzpass aus dem Tempelarchiv, die Grell für Maelis schmuggelt
+  - { id: c_page, type: chest, at: [9, 2], contents: { gold: 300, chronicle: a2_salzpass } }
+  # [PO offen F4] Vorschlag A – Saat Kharesh: 200 Gold und die Szene der Seekarte, kein Gegenstand
+  - { id: c_scouts, type: chest, at: [3, 9], contents: { gold: 200, dialogue: scn.m2_2.scouts_chart } }
+deploy:
+  max: 7
+  forced: [avatar, lucan]
+  slots: [[4, 17], [7, 17], [8, 17], [5, 18], [6, 18], [7, 18], [8, 18], [5, 19], [6, 19]]
+# Heimsuchungs-Anker (Story 5.5, wie 2-1 zwei), die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: die Mittelkammer, in der Grells Leute im Nebel warten. Die Truppe kommt von der Karawane herab, nicht aus dem Startbereich.
+  - variant: rout
+    target: { at: [8, 10] }
+    enemySpawn: { rect: [7, 11, 11, 12] }
+    deploy: { rect: [3, 3, 10, 3] }
+  # Grund: Schmuggelgut, das Grells Leute bei den Wagen der Nordkammer zurückgelassen haben; die Truppe steigt aus der Mittelkammer hinauf.
+  - variant: treasure
+    target: { at: [7, 2] }
+    enemySpawn: { rect: [9, 1, 13, 4] }
+    deploy: { rect: [7, 9, 10, 11] }
+    turns: 10
+    chests: [[4, 1], [6, 3]]
+units:
+  # Nordkammer: Grell bei den Wagen (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format), der Zahlmeister mit dem Schlüssel
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [6, 3], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: guard } }
+  - { id: purser, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [8, 3], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
+  - { id: n1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [11, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [12, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # Felsleiste: Schützen schießen von Stufe 1 in die Mittelkammer
+  - { id: l1, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 9], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: l2, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Mittelkammer: warten im Nebel
+  - { id: m1, nameKey: unit.smuggler.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [6, 11], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: m2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [9, 9], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: m3, nameKey: unit.smuggler.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [10, 12], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [normal, hard] }
+  # Südenge
+  - { id: s1, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [5, 13], items: [{ def: iron_sword }], ai: { profile: guard } }
+  - { id: s2, nameKey: unit.smuggler.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [6, 13], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [normal, hard] }
+  # Kundschafter aus Kharesh im Westwinkel bei ihrer Truhe (Saat); Profil des Entwurfs, der Winkel ist eine Sackgasse. Niemand tritt bei.
+  - { id: k1, nameKey: unit.kharesh_scout.name, team: enemy, class: scout, sprite: mercenary, levelOffset: -1, at: [4, 9], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: k2, nameKey: unit.kharesh_scout.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -1, at: [3, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 6], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+reinforcements:
+  # Grells Nachhut schließt von Süden auf, sobald die Truppe in der Mittelkammer steht
+  - turn: 6
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.smuggler.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [5, 19], items: [{ def: iron_axe }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [6, 19], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [7, 19], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+objectives:
+  victory: { type: treasure, chests: [c_seal], turns: 11 }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+  side:
+    - { id: s_chests, type: open_chests, reward: { item: { def: vulnerary } } }
+triggers:
+  - id: t_rock1
+    once: true
+    when: { type: turn_start, turn: 3, phase: enemy }
+    then:
+      - { action: dialogue, id: scn.m2_2.rockfall_south }
+      - { action: set_terrain, area: { tiles: [[4, 14], [7, 14]] }, terrain: rockwall }
+  - id: t_rock2_warn
+    once: true
+    when: { type: turn_start, turn: 4, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_2.rockfall_warn }
+  - id: t_rock2
+    once: true
+    when: { type: turn_start, turn: 5, phase: enemy }
+    then:
+      - { action: set_terrain, area: { tiles: [[12, 6], [12, 7]] }, terrain: rockwall, warn: true }
+  - id: t_rock3
+    once: true
+    when: { type: turn_start, turn: 8, phase: enemy }
+    then:
+      - { action: dialogue, id: scn.m2_2.rockfall_ledge }
+      - { action: set_terrain, area: { tiles: [[14, 7], [14, 8]] }, terrain: rockwall }
+  # [PO offen F1] Vorschlag A – das Siegel als Flag und Szene; [PO offen F2] Vorschlag C steht in der Szene (grauer Wachsbrief, niemand benennt ihn)
+  - id: t_seal
+    once: true
+    when: { type: object_activated, object: c_seal }
+    then:
+      - { action: dialogue, id: scn.m2_2.seal_found }
+      - { action: set_flag, flag: m2_2_seal }
+# [PO offen F5] Vorschlag A – 2 000 Gold wie 2-1, Boden der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie); Abstimmung in 11.27
+goldReward: 2000
+design:
+  title: Das Siegel im Salzpass
+  intent: >
+    Kurze, enge Jagd gegen die Zeit: Grells Karawane zieht bald weiter, im Nebel sieht man nur, was der Späher sieht. Die Straße ist sicher, aber langsam und fällt enger zu; die Felsleiste ist kurz, aber schmal, von Schützen besetzt und in Runde 8 weg.
+    Fenn glänzt: Er sieht weiter im Nebel und öffnet die Truhe ohne Schlüssel. Saat Kharesh: Kundschafter, die hier nichts zu suchen haben.
+  mood: Dichter weißer Nebel in einem engen grauen Felspass, salzverkrustete Schmugglerwagen, herabstürzendes Geröll, Morgenlicht nur als fahler Schein.
+  phases:
+    - { id: p1, turns: [1, 3], label: Südenge, note: "Wachen in der Enge, R3 Steinschlag engt sie hinter der Truppe ein." }
+    - { id: p2, turns: [4, 7], label: Mittelkammer, note: "Warnung R4, R5 Nordenge auf ein Feld, R6 Nachhut von Süden. Kundschafter im Westwinkel." }
+    - { id: p3, turns: [8, 11], label: Karawane, note: "R8 fällt die Leiste, Grell bei den Wagen. Zahlmeister trägt den Schlüssel." }
+  paths:
+    - { team: player, points: [[5, 18], [5, 13], [8, 11], [11, 10], [11, 5], [7, 4], [5, 3]], label: Straße }
+    - { team: player, points: [[10, 16], [14, 16], [14, 14], [14, 5], [13, 5], [12, 4]], label: Felsleiste }
+    - { team: enemy, points: [[6, 19], [6, 15]], phase: p2, label: Nachhut }
+  zones:
+    - { area: { rect: [3, 1, 13, 4] }, label: Grells Karawane, phase: p3 }
+    - { area: { rect: [14, 9, 14, 14] }, label: Felsleiste St.1 }
+    - { area: { tiles: [[4, 14], [7, 14]] }, label: Steinschlag R3, phase: p1 }
+    - { area: { tiles: [[12, 6], [12, 7]] }, label: Steinschlag R5, phase: p2 }
+    - { area: { tiles: [[14, 7], [14, 8]] }, label: Steinschlag R8, phase: p3 }
+  marks:
+    - { at: [4, 2], label: S, note: "Truhe mit dem Siegel. Fenn öffnet ohne Schlüssel, sonst der Schlüssel des Zahlmeisters." }
+    - { at: [14, 15], label: R, note: "Rampe auf die Felsleiste (Stufe 1), oben nur ein Feld breit." }
+    - { at: [13, 5], label: T, note: "Treppe von der Leiste in die Nordkammer." }
+    - { at: [3, 9], label: K, note: "Kundschafter aus Kharesh, in ihrer Truhe die Seekarte aus Silbermeer (Saat)." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); P = 13 nach 2-1, 14 nach 2-1 und 2-3."
+    - "Normal 16 Gegner (2 davon R6) gegen 7 eigene, P−3 bis P−1, Grell nach der Leutnant-Regel; Leicht 13, Schwer 19."
+    - "Die Straße bleibt immer offen: Steinschlag engt nur ein, sperrt nie ganz. Laut Regel bleibt ein besetztes Feld unverändert."
+    - "Das Siegel ist kein Gegenstand: die Truhe c_seal ist leer, Szene und Flag m2_2_seal tragen es [PO offen F1]. c_page trägt die Chronik-Seite a2_salzpass [PO offen F3]."
+    - "Grell steht als Leutnant (lieutenants.yaml, skirmisher, Fraktion silver_sea); seine Signatur gold_hook ist Beute, nicht Kartenwaffe."
+    - "Saat Kharesh und Zweifel „Wer schreibt der Prinzessin?“ stehen in den Szenen; die Kundschafter kamen per Schiff, Silbermeer verkaufte die Überfahrt."

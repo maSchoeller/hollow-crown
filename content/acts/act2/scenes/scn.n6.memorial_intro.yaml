@@ -1,0 +1,24 @@
+# Nebenquest N6, Gedenk-Variante vor der Karte (Jory ist gefallen; memorialIf in campaign.yaml, Story 11.22). Muster N3/Tobin und N4/Ilka:
+# Karte und Belohnung unverändert, Brenna als Freundin am Feuer, Ersatzsprecher-Kette, kein Humor. Text Vorschlag [ASSUMPTION].
+id: scn.n6.memorial_intro
+background: auemarkt
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Herbstmarkt auf der Aue-Insel. Über allem eine bemalte Bühne, wie Jory sie oft beschrieben hat."
+  - id: l02
+    speaker: [brenna, lucan, avatar]
+    mood: sad
+    text: "Das ist sein Wagen, mit dem roten Vorhang. Seine alte Truppe. Er hätte sie sofort erkannt."
+  - id: l03
+    mood: neutral
+    text: "Um die Bühne stehen Bewaffnete mit Schuldbriefen. Sie zählen Kostüme, Pferde, Menschen."
+  - id: l04
+    speaker: [brenna, lucan, avatar]
+    mood: angry
+    text: "Eintreiber. Jory hätte gesungen und dann zugeschlagen. Wir schlagen nur zu."
+  - id: l05
+    speaker: [lucan]
+    mood: neutral
+    text: "Die Meisterin auf der Bühne, dann zum Boot im Südwesten. Für Jory."

@@ -1,0 +1,18 @@
+# Story 11.22: Nebenquest N6 „Die Gauklertruppe“ in Runde 5: Herbstmarkt, Bühne (Terrasse Stufe 1), Steg im Westen markiert (Flut ab Runde 6).
+#   pnpm lab auemarkt-n6                         Lage in Runde 5 (der Steg [2,14] ist gewarnt)
+#   pnpm lab auemarkt-n6 --enemy                 spielt die Gegnerrunde 5; danach beginnt Runde 6 und der Steg steht unter Wasser
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('auemarkt-n6')
+# Die Gegner stehen auf P des ganzen Akts (das Lab zählt alle Knoten vor n6 in Dateireihenfolge als erledigt); für die Sichtprüfung egal.
+# Die Truppe steht schon auf dem Rückweg: Jory mit der Meisterin vor der Bühne, Lucan am Steg.
+question: Wie sieht der Auemarkt im Herbst aus, und was passiert mit dem Steg in Runde 6?
+map: n6_auemarkt
+company: [lucan, jory, brenna, fenn, mira, tobin]
+level: 18
+turn: 5
+units:
+  jory: { at: [6, 8] }
+  troupe_master: { at: [6, 9] }
+  lucan: { at: [3, 13] }
+  avatar: { at: [7, 9] }
+remove: [boss, a1, a2, a3, a4, b1, b2, b4]

@@ -7,6 +7,7 @@ Gesamtansicht: [akt2-ortsbilder-kontaktbogen.jpg](akt2-ortsbilder-kontaktbogen.j
 | Mission | Bild | Kurz |
 |---|---|---|
 | 2-1 Windscharte | ![](akt2-orte-windscharte.jpg) | Passscheitel im trockenen Flusstal, zwei Ballisten auf Felsnasen, dahinter die Herbstebene. Morgen, Wind. |
+| 2-3 Rabenweide | ![](akt2-orte-rabenweide.jpg) | Gestüt der Silbernen Lanze an der Aure: drei Furten und ein Holzsteg, weiße Koppeln, Stall und Scheune, kleine Pferde nur fern. Mittag. Nachgezogen 2026-11-09 (Story 11.14). |
 | 2-4 Brandschneise | ![](akt2-orte-brandschneise.jpg) | Das Dorf am Brandhang auf drei Stufen, oben brennt der Wald, vor dem Schrein die frische Schneise. Abend. |
 | 2-6 Krähenholm | ![](akt2-orte-kraehenholm.jpg) | Schmugglerinsel: Strand mit Boot, Klippe mit Goldkisten und Signalfeuer, Grells Schiff in der Bucht. Abend. |
 | 2-7 Kontor | ![](akt2-orte-kontor.jpg) | Kontor der Herzogin am Hafenbecken, eine Steinbrücke mit Balliste, Kran mit Klappsteg. Regenmorgen. |

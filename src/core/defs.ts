@@ -314,6 +314,8 @@ export interface SkillEffect {
   ignoreGrief?: boolean;
   /** a ballista this unit fires reaches this many tiles further (Brakka, story 11.5); the largest source counts */
   siegeRangeBonus?: number;
+  /** story 11.20: extra sight under fog (Weißwolf, Ilka); the highest of the active skills counts */
+  visionBonus?: number;
 }
 
 export interface SkillDef {

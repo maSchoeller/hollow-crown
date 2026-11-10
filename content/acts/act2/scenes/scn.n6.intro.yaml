@@ -1,0 +1,37 @@
+# Nebenquest N6, Szene vor der Karte (Knoten pre, Story 11.22): Herbstmarkt auf der Aue-Insel in der Auremündung, Jorys alte Truppe
+# steht bei Schuldeneintreibern in der Kreide (Gläubiger ungenannt [ASSUMPTION]), die Meisterin auf der Bühne. Jory ist Pflicht und in der
+# Truppe (sonst spielt scn.n6.memorial_intro). Nell nur, wenn sie beigetreten ist (requires alive); Text Vorschlag [ASSUMPTION].
+id: scn.n6.intro
+background: auemarkt
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Herbstmarkt auf der Aue-Insel. Wimpel, Äpfel, Stoffe, und über allem eine bemalte Bühne."
+  - id: l02
+    speaker: [jory]
+    fallback: skip
+    mood: sad
+    text: "Das ist unser Wagen. Und das da oben ist Maren. Sie hat mir das Spielen beigebracht."
+  - id: l03
+    mood: neutral
+    text: "Um die Bühne stehen Bewaffnete mit Schuldbriefen. Sie zählen Kostüme, Pferde, Menschen."
+  - id: l04
+    speaker: [jory]
+    fallback: skip
+    mood: angry
+    text: "Eintreiber. Deshalb sind sie im Morgengrauen fort. Sie haben mir nie etwas gesagt."
+  - id: l05
+    speaker: [nell]
+    fallback: skip
+    requires: [{ alive: nell }]
+    mood: neutral
+    text: "Die Flut kommt bald. Dann steht der kleine Steg im Westen unter Wasser. Merkt euch das."
+  - id: l06
+    speaker: [brenna, lucan, avatar]
+    mood: neutral
+    text: "Wir holen die Meisterin von der Bühne und bringen sie zum Boot im Südwesten."
+  - id: l07
+    speaker: [avatar]
+    mood: neutral
+    text: "Über die Steinbrücke hinein. Und Jory: Heute spielst du laut."

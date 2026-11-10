@@ -211,6 +211,10 @@ fog:
   roleBonus: { marksman: 2, scout: 2 }
   moveTypeBonus: { flier: 1 }
   blockers: [wall, door, gate_closed, rockwall]
+  # Story 11.20 [ASSUMPTION]: Sicht je Höhenstufe des eigenen Felds ab Stufe levelBonusFrom (Felsnase/Turm Stufe 2 = +4; Wehrgang und
+  # Terrasse Stufe 1 bleiben ohne, so ändert sich auf den Nebelkarten von Akt 1 nichts); der Blick über den Nebel in N4
+  levelBonus: 2
+  levelBonusFrom: 2
 economy:
   sellRatio: 0.5
   upgradeCost:
