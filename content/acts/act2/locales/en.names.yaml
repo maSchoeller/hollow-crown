@@ -49,6 +49,14 @@ unit.dravn_envoy.name: "Border Army Envoy"
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
 
+# Story 11.20: side quest N4 (map, outpost captain, clan elder)
+map.n4_clanlager.name: "The Clan Camp"
+unit.outpost_captain.name: "Outpost Captain"
+unit.clan_elder.name: "Clan Elder"
+# Story 11.21: side quest N5 (map and foes of the mine)
+map.n5_kupfermine.name: "The Copper Mine"
+unit.duchess_looter.name: "Duchess's Looter"
+unit.foreman.name: "Foreman"
 # Story 11.22: side quest N6 (map, troupe master and debt collectors)
 map.n6_auemarkt.name: "The Meadow Market"
 unit.troupe_master.name: "Master Maren"

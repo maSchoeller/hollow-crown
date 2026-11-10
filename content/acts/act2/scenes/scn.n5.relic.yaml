@@ -1,0 +1,11 @@
+# Nebenquest N5, Szene beim Öffnen der Truhe c_ember (Inhalt dragon_ember, Relikt Stufe 1 schlafend, Story 11.9). Kampfszene ohne Antworten.
+# Kette Ysolde → Liora → Rhen.
+id: scn.n5.relic
+lines:
+  - id: l01
+    mood: neutral
+    text: "In der Truhe liegt ein Amulett. Der Stein darin ist warm, als läge er noch in der Glut."
+  - id: l02
+    speaker: [ysolde, liora, avatar]
+    mood: neutral
+    text: "Drachenglut. Es schläft. Aber es weiß, woher es kommt."

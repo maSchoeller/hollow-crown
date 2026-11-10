@@ -1,0 +1,44 @@
+# Nebenquest N5 „Glut unter dem Berg“, Szene vor der Karte (Knoten pre, Story 11.21): Kupferhall nach der Brandschneise (2-4).
+# Brann ist nach 2-4 in die Minen geflohen, als ihn das Dorf wieder Hexenkind nannte (Missionsliste); Plünderer der Herzogin (Haus Silbermeer) räumen die Mine aus.
+# Text Vorschlag (Schreib-Pipeline der Narrative) [ASSUMPTION]. Ilka und Fenn nur, wenn sie da sind; l07 spricht Ilka, wenn sie in der Truppe ist, sonst Lucan (l07b).
+id: scn.n5.intro
+background: kupfermine
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Kupferhall, tief in den Kupferbergen. Vor dem Stollenmund stehen leere Loren, die Schienen sind kalt."
+  - id: l02
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Hier ist er hinein. Die Spur ist zwei Tage alt, und er hat sie nicht verwischt."
+  - id: l03
+    speaker: [lucan]
+    mood: sad
+    text: "Brann hat in der Brandschneise das Feuer gehalten. Und dann nannten sie ihn wieder Hexenkind."
+  - id: l04
+    mood: neutral
+    text: "Aus dem Stollen dringen Hacken und Stimmen. Auf einer Kiste prangt das Wappen des Hauses Silbermeer."
+  - id: l05
+    speaker: [fenn]
+    fallback: skip
+    requires: [{ alive: fenn }]
+    mood: happy
+    text: "Die Herzogin lässt ausräumen, was der Berg hergibt. Vier Kisten, wenn ich richtig zähle."
+  - id: l06
+    speaker: [avatar]
+    mood: neutral
+    text: "Wir holen, was sie suchen, bevor sie es finden. Und wir holen Brann heraus."
+  - id: l07
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Sprich ihn leise an. Wer Angst vor sich selbst hat, läuft vor lauten Stimmen davon."
+  - id: l07b
+    speaker: [lucan]
+    requires: [{ not: { alive: ilka } }]
+    mood: neutral
+    text: "Sprich ihn leise an. Wer Angst vor sich selbst hat, läuft vor lauten Stimmen davon."

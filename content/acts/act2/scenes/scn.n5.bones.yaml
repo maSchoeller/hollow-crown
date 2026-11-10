@@ -1,0 +1,18 @@
+# Nebenquest N5, Karten-Szene, sobald eine eigene Figur die Knochenhalle betritt (Trigger t_bones, einmal). Saat Drachen:
+# Drachenknochen im Fels (Drachenort Erde, geografie-valmora.md), nur Szene, keine Erklärung. Kette Ysolde → Liora → Rhen.
+id: scn.n5.bones
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die obere Halle ist kein Stollen. Aus dem Fels ragen Rippen, jede so lang wie ein Wagen."
+  - id: l02
+    mood: neutral
+    text: "Zwischen ihnen glimmen die Adern rot, als atme der Berg noch."
+  - id: l03
+    speaker: [ysolde, liora, avatar]
+    mood: sad
+    text: "Das sind Knochen. Kein Tier, das ich kenne, war je so groß."
+  - id: l04
+    speaker: [lucan]
+    mood: neutral
+    text: "Rührt nichts an. Was hier liegt, schläft seit langer Zeit. So soll es bleiben."

@@ -65,13 +65,13 @@ describe('act 2 on the world map', () => {
     });
   });
 
-  it('in act 2 the nodes stand open in the graph (m2_1 first); only m2_1 has its map so far (story 11.12)', () => {
+  it('in act 2 the nodes stand open in the graph (m2_1 first); only m2_1, n4, n5 and n6 have their maps so far (stories 11.12, 11.20-11.22)', () => {
     const c = normalizeCampaign(open, finaleDone());
     const ids = availableNodes(open, c).map((n) => n.id);
     expect(ids).toContain('m2_1');
     expect(ids).not.toContain('m2_2');
-    // built so far: 2-1 (story 11.12), N6 (story 11.22)
-    for (const n of open.acts[2]!.nodes) expect(!!open.maps[n.map], n.id).toBe(['m2_1', 'n6'].includes(n.id));
+    // built so far: 2-1 (story 11.12), N4 (story 11.20), N5 (story 11.21), N6 (story 11.22)
+    for (const n of open.acts[2]!.nodes) expect(!!open.maps[n.map], n.id).toBe(['m2_1', 'n4', 'n5', 'n6'].includes(n.id));
   });
 
   it('places of act 2 without a stone lie under a fog patch; none in act 1', () => {

@@ -32,6 +32,7 @@ item.hand_axe.desc: "A throwing axe. Hits at a distance too, but less accurate t
 item.haste_scroll.desc: "A scroll that lightens the legs. A nearby ally moves farther this round."
 item.heal_staff.desc: "A simple healing staff. Heals an adjacent ally; the figure's magic adds to the healing."
 item.heirloom.desc: "Tobin's heirloom, an old lance. Grows stronger while a companion nearby is down."
+item.white_wolf.desc: "Ilka's bow of the clan hunters, wrapped in white wolf fur. Fog and snow cost no sight."
 item.horseslayer.desc: "A barbed lance. Especially deadly against mounted foes."
 item.hunting_bow.desc: "A light hunting bow for scouts. Little damage, but very accurate and barely any weight."
 item.iron_axe.desc: "A plain axe. Lots of damage, but less accurate than sword and lance. Beats the lance in the weapon triangle."

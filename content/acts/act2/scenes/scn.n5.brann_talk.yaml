@@ -1,0 +1,45 @@
+# Nebenquest N5, Anwerben im Kampf (recruit der Karte, by: [ilka, lucan]): Brann versteckt sich im Westgang und fürchtet die eigene Glut.
+# Keine Antworten (Kampfszene). Brann spricht als Gast (fallback: skip); Ilka spricht, wenn sie in der Truppe ist
+# (requires alive), sonst Lucan mit derselben Zeile (Zeilen …b); Sprecherketten prüfen nur gefallen/gegangen, nicht den Beitritt. Text Vorschlag [ASSUMPTION].
+id: scn.n5.brann_talk
+lines:
+  - id: l01
+    mood: neutral
+    text: "Hinter einer umgekippten Lore kauert Brann. Unter seinen Händen glimmt der Fels rot."
+  - id: l02
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Bleib weg. Wenn ich mich fürchte, wird der Stein heiß. Ich weiß nicht, wann es aufhört."
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "In der Brandschneise hat dein Fels ein Dorf gerettet. Das war keine Hexerei."
+  - id: l03b
+    speaker: [lucan]
+    requires: [{ not: { alive: ilka } }]
+    mood: neutral
+    text: "In der Brandschneise hat dein Fels ein Dorf gerettet. Das war keine Hexerei."
+  - id: l04
+    speaker: [brann]
+    fallback: skip
+    mood: sad
+    text: "Sie haben mich trotzdem so genannt. Hexenkind. Wie früher."
+  - id: l05
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Bei uns nennt dich keiner so. Komm mit, dann bist du mit der Glut nicht mehr allein."
+  - id: l05b
+    speaker: [lucan]
+    requires: [{ not: { alive: ilka } }]
+    mood: neutral
+    text: "Bei uns nennt dich keiner so. Komm mit, dann bist du mit der Glut nicht mehr allein."
+  - id: l06
+    speaker: [brann]
+    fallback: skip
+    mood: neutral
+    text: "Gut. Aber halte Abstand, wenn es heiß wird."

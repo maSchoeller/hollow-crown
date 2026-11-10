@@ -21,6 +21,8 @@
  * --position k      setzt P des Zielknotens (--node, sonst der Knoten von --map-file bzw. der erste Story-Knoten von Akt 2 ohne Karte)
  *                   auf k; die übrigen Knoten folgen (positionLevel.base wird nur für diesen Aufruf verschoben).
  * --order a,b       Reihenfolge innerhalb der Paare: sind mehrere Story-Knoten offen, kommen die genannten zuerst (sonst Dateireihenfolge).
+ *                   Story 11.20: ein genannter Nebenquest-Knoten wird mitgespielt, sobald er offen ist (z. B. --order n4); wer auf einer
+ *                   übersprungenen Karte beitritt (joins), kommt dort in die Truppe (Ilka bei 2-3).
  * --flags a=b,c     setzt Kampagnen-Flags zu Beginn jedes Laufs (Ausgang einer Entscheidung, z. B. --flags e07=warn für E7 „warnen“); ohne Wert = true,
  *                   der Name muss im Flag-Register stehen.
  * --map-file <pfad> spielt eine Karten-YAML (z. B. tests/fixtures/maps/dev_eisenmark.yaml) als Knoten von Akt 2: am Knoten mit ihrer

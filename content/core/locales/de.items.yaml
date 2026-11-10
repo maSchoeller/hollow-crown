@@ -32,6 +32,7 @@ item.hand_axe.desc: "Eine Wurfaxt. Trifft auch auf Abstand, dafür ungenauer als
 item.haste_scroll.desc: "Eine Schriftrolle, die Beine leicht macht. Ein Verbündeter in der Nähe zieht diese Runde weiter."
 item.heal_staff.desc: "Ein einfacher Heilstab. Heilt einen Verbündeten im Nachbarfeld; die Magie der Figur verstärkt die Heilung."
 item.heirloom.desc: "Tobins Erbstück, eine alte Lanze. Wird stärker, wenn ein Gefährte in der Nähe am Boden liegt."
+item.white_wolf.desc: "Ilkas Bogen der Clanjäger, in weißes Wolfsfell gewickelt. Nebel und Schnee kosten keine Sicht."
 item.horseslayer.desc: "Eine Lanze mit Widerhaken. Besonders tödlich gegen Berittene."
 item.hunting_bow.desc: "Ein leichter Jagdbogen für Späher. Wenig Schaden, aber sehr treffsicher und kaum Gewicht."
 item.iron_axe.desc: "Eine einfache Axt. Viel Schaden, aber ungenauer als Schwert und Lanze. Schlägt die Lanze im Waffendreieck."

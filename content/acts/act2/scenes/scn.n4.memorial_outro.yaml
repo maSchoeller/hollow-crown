@@ -1,0 +1,22 @@
+# Nebenquest N4, Gedenk-Variante nach der Karte (Ilka gefallen): volle Belohnung, der Weißwolf geht an die Truppe.
+id: scn.n4.memorial_outro
+background: clanlager
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die letzten Vorposten weichen in den Wald zurück. Der Nebel hebt sich langsam."
+  - id: l02
+    mood: neutral
+    text: "Der Clan bringt einen hellen Bogen, in weißes Wolfsfell gewickelt. Er war für Ilka bestimmt."
+  - id: l03
+    speaker: [lucan, avatar]
+    mood: sad
+    text: "Weißwolf. Wir tragen ihn weiter. Für sie."
+  - id: l04
+    mood: neutral
+    text: "In der Asche des Lagerfeuers glimmt ein Funke, der nicht verlöschen will: ein Glutfunke."
+  - id: l05
+    speaker: [brenna, tobin, avatar]
+    mood: sad
+    text: "Sie wäre gern hier gewesen. Jetzt sind wir es für sie."

@@ -105,3 +105,4 @@
 
 # --- Item-Skill der Signatur Erbstück (Story 9.12) ---
 - { id: young_heroes, source: item, trigger: passive, condition: { allyDownedWithin: 2 }, effect: { damageBonus: 3 } }   # Erbstück (Tobin): „Helden sterben jung“ – +3 Schaden, solange ein Verbündeter in Reichweite 2 niedergestreckt ist [C]
+- { id: white_wolf_sight, source: item, trigger: passive, effect: { visionBonus: 3 } }   # Weißwolf (Ilka, Story 11.20): „Nebel und Schnee kosten keine Sicht“ – unter Nebel 3 Felder weiter [ASSUMPTION]
