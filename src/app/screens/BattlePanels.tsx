@@ -22,7 +22,7 @@ import {
 import { activeSkillIds } from '../../core/rules/skills';
 import { bagUsed } from '../../core/rules/items';
 import { activeVictory } from '../../core/battle/activeVictory';
-import { mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
+import { chestProgress, mapOf, mapUnitNameKey, sideObjectiveDone, sideSubject } from '../../core/battle/objectives';
 import { t } from '../../i18n';
 import { ItemDetails, itemName, unitName } from '../../ui/components';
 import { ElementIcon, Icon } from '../../ui/icons';
@@ -220,7 +220,8 @@ export function ObjectivesPanel({ s, onClose }: { s: BattleState; onClose: () =>
             ...map.objectives.defeat.filter((d) => d.type !== 'unit_dies' || s.units.some((u) => u.id === d.unit)).map((d) => (d.type === 'unit_dies' ? t('ui.obj.dies', { name: t(mapUnitNameKey(map, d.unit)) }) : t('ui.obj.turnLimit', { turns: d.turns }))),
             // the goal itself names the other defeats (story 4.8): the escorted NPC falls, the round limit of a treasure hunt passes
             ...(v.type === 'escort' ? [t('ui.obj.dies', { name: t(mapUnitNameKey(map, v.unit)) })] : []),
-            ...(v.type === 'treasure' ? [t('ui.obj.turnLimit', { turns: v.turns })] : []),
+            // T6-13F6: once the goal chests are open the round limit ends the hunt as a victory, so it no longer counts as a defeat
+            ...(v.type === 'treasure' && chestProgress(s, v.chests).have < v.chests.length ? [t('ui.obj.turnLimit', { turns: v.turns })] : []),
           ].join(' · ')}
         </b>
       </div>
