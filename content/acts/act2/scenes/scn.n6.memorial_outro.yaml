@@ -1,0 +1,26 @@
+# Nebenquest N6, Gedenk-Variante nach der Karte (Jory gefallen, Story 11.22): Maren gibt die Laute der Truppe, für das Feuer in der Burg.
+# Die Laute Letzter Vorhang ist auch hier die Knotenwirkung (campaign.yaml n6 effects). Text Vorschlag [ASSUMPTION].
+id: scn.n6.memorial_outro
+background: auemarkt
+music: camp
+lines:
+  - id: l01
+    mood: sad
+    text: "Das Boot liegt am Ufer. Die Eintreiber sind fort, ihre Schuldbriefe treiben im Wasser."
+  - id: l02
+    mood: sad
+    text: "Maren schweigt lange. „Wir sind fort, damit die Schuld nicht an ihm hängt.“"
+  - id: l03
+    mood: sad
+    text: "Maren holt eine alte Laute aus dem Wagen. Auf ihrem Bauch ist der rote Vorhang der Bühne gemalt."
+  - id: l04
+    mood: sad
+    text: "„Sie war immer seine. Nehmt sie mit, dorthin, wo er zuletzt gespielt hat.“"
+  - id: l05
+    speaker: [brenna, lucan, avatar]
+    mood: sad
+    text: "Sie bekommt ihren Platz am Feuer. Und jemand lernt, darauf zu spielen."
+  - id: l06
+    speaker: [avatar]
+    mood: neutral
+    text: "Die Flut fällt wieder. Zurück ans Festland."

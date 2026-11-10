@@ -67,3 +67,8 @@ unit.foreman.name: "Vorarbeiter"
 # Story 11.15: Mission 2-4 (Karte; Maelis spricht ihren Brief selbst, Halbfigur maelis)
 map.m2_4_brandschneise.name: "Die Brandschneise"
 unit.maelis.name: "Herzogin Maelis"
+# Story 11.22: Nebenquest N6 (Karte, Gauklermeisterin und Schuldeneintreiber)
+map.n6_auemarkt.name: "Der Auemarkt"
+unit.troupe_master.name: "Meisterin Maren"
+unit.debt_collector.name: "Schuldeneintreiber"
+unit.debt_boss.name: "Oberster Eintreiber"
