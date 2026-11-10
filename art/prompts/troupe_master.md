@@ -51,4 +51,4 @@ Keep this exact image (same character, pose, crop, patchwork coat, headscarf, ra
 ```
 
 - Kostüm, Pose, Messer und Farben unverändert ✓; Mähne überwiegend grau, Krähenfüße, Lachfalten, Stirnlinien ✓; Kopf in Chibi-Größe ✓. Alphakanal, 1254 px ✓.
-- Abnahme durch den Produktinhaber: offen (Kontaktbogen `akt2-bilder-maren-v2.jpg` an die orchestrierende Session, 2026-11-10).
+- Abnahme durch den Produktinhaber: abgenommen am 2026-11-10 (Kontaktbogen `akt2-bilder-maren-v2.jpg`, über die orchestrierende Session).
