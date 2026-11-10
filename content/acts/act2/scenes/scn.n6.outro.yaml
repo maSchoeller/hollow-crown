@@ -1,6 +1,6 @@
 # Nebenquest N6, Szene nach der Karte (Knoten post, Story 11.22): Die Truppe ist frei, Maren gibt Jory seine alte Laute zurück.
 # Die Laute Letzter Vorhang (final_curtain) ist die Knotenwirkung (campaign.yaml n6 effects), die Szene zeigt sie nur, wie N1/N3.
-# Jory ist hier in der Truppe (sonst scn.n6.memorial_outro). Maren spricht als Erzählzeile, bis sie eine Halbfigur hat. Text Vorschlag [ASSUMPTION].
+# Jory ist hier in der Truppe (sonst scn.n6.memorial_outro). Maren spricht mit eigener Halbfigur (troupe_master, 2026-11-10). Text Vorschlag [ASSUMPTION].
 id: scn.n6.outro
 background: auemarkt
 music: camp
@@ -10,7 +10,12 @@ lines:
     text: "Das Boot liegt am Ufer. Die Eintreiber sind fort, ihre Schuldbriefe treiben im Wasser."
   - id: l02
     mood: sad
-    text: "Maren tritt zu Jory. „Wir sind dir eine Erklärung schuldig. Und noch etwas anderes.“"
+    text: "Maren tritt zu Jory."
+  - id: l02b
+    speaker: [troupe_master]
+    fallback: skip
+    mood: sad
+    text: "Wir sind dir eine Erklärung schuldig. Und noch etwas anderes."
   - id: l03
     mood: neutral
     text: "Maren holt eine alte Laute aus dem Wagen. Auf ihrem Bauch ist der rote Vorhang der Bühne gemalt."
@@ -20,8 +25,10 @@ lines:
     mood: happy
     text: "Der Letzte Vorhang. Ich dachte, ihr hättet sie verkauft."
   - id: l05
+    speaker: [troupe_master]
+    fallback: skip
     mood: happy
-    text: "„Nie. Sie war immer deine. Spiel sie, wo man dich hört, nicht wo man dich jagt.“"
+    text: "Nie. Sie war immer deine. Spiel sie, wo man dich hört, nicht wo man dich jagt."
   - id: l06
     speaker: [brenna, lucan, avatar]
     mood: happy

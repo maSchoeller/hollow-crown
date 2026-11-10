@@ -69,7 +69,7 @@ describe('place images of campaign nodes (story 7.6) and scene backdrops (story 
   const run = (place: string) => {
     const loaded = loadContentFromDisk();
     loaded.data.acts[1]!.nodes[0]!.place = place;
-    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set([...loaded.data.acts[2]!.nodes.flatMap((n) => (n.place ? [n.place] : [])), 'grauwacht', 'silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof', 'brandhang'])).map((i) => `${i.file}: ${i.message}`);
+    return validateContent(loaded.data, loaded.locales, undefined, undefined, new Set([...loaded.data.acts[2]!.nodes.flatMap((n) => (n.place ? [n.place] : [])), 'grauwacht', 'silberbach', 'varnhold', 'erlbach', 'lager_unterwegs', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'grabreliefs', 'paktwacht_banner', 'glutfunken', 'paktnacht_glutdom', 'wolfslager', 'rhen_confession', 'hungerlager', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof', 'brandhang', 'aschedorf'])).map((i) => `${i.file}: ${i.message}`);
   };
   it('accepts a location as place', () => {
     expect(run('varnhold')).toEqual([]);

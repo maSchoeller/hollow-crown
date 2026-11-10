@@ -126,7 +126,7 @@ units:
   - { id: e6, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [21, 27], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   # Süden: Sable mit dem Grenzheer, oder nach E7 warn (Sable ist übergelaufen) der Hauptmann mit gleichen Werten; genau eine Figur hält die Stelle
   - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, levelOffset: 1, at: [15, 34], lieutenant: sable, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ not: { flag: { e07: warn } } }] }
-  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, sprite: mercenary, levelOffset: 1, at: [15, 34], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: { e07: warn } }] }
+  - { id: captain, nameKey: unit.border_captain.name, team: enemy, class: duelist, sprite: mercenary, portrait: border_captain, levelOffset: 1, at: [15, 34], items: [{ def: steel_sword }], ai: { profile: trigger, radius: 6, then: aggressive }, requires: [{ flag: { e07: warn } }] }
   - { id: s1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [14, 32], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: s2, nameKey: unit.border_soldier.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 30], items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { id: s3, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [18, 30], items: [{ def: iron_sword }], ai: { profile: aggressive } }

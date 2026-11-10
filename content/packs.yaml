@@ -80,6 +80,7 @@ packs:
       - locations/kupfermine.webp
       - locations/auemarkt.webp
       - locations/silberquell.webp
+      - locations/aschedorf.webp
       - world/sites/burnt_slope_burnt.webp
 
   - id: act1
