@@ -146,7 +146,7 @@ describe('scenes of N6', () => {
 
   it('the master talk speaks through Jory while he lives, else through Lucan', () => {
     expect(ids(afterM26('in'), 'scn.n6.master_talk')).toEqual(['l01', 'l02', 'l03', 'l04', 'l07']);
-    expect(ids(afterM26('dead'), 'scn.n6.master_talk')).toEqual(['l01', 'l05', 'l06', 'l07']);
+    expect(ids(afterM26('dead'), 'scn.n6.master_talk')).toEqual(['l01', 'l05', 'l06', 'l06b', 'l07']);
   });
 
   it('Nell warns of the tide only once she has joined', () => {

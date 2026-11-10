@@ -234,7 +234,7 @@ describe('scenes of 2-6, decision E6 and the burnt village', () => {
     expect(nodeEpilogues(data, inAct2(), 'm2_6')).toEqual([]);
     expect(nodeEpilogues(data, inAct2({ e07: 'warn' }), 'm2_5')).toEqual([]);
     expect(nodeEpilogues(data, inAct2(), 'nope')).toEqual([]);
-    expect(data.scenes['scn.m2_6.burnt_village']).toMatchObject({ background: 'brandhang' });
+    expect(data.scenes['scn.m2_6.burnt_village']).toMatchObject({ background: 'aschedorf' });
     expect(speakers(inAct2({ e07: 'warn' }), 'scn.m2_6.burnt_village').get('l04')).toBe('sable');
   });
 
