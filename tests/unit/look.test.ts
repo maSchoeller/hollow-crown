@@ -237,6 +237,14 @@ describe('content:check rules for prop variants', () => {
     expect(s).not.toBeNull();
     expect(validatePropVariants(withVariants(s!, 'mill_idle'))).toEqual([]);
   });
+  it('a two-field model (the stable, story 11.14) needs the same terrain east of it, without a model of its own there', () => {
+    const map = data.maps.m2_3_rabenweide!;
+    const one = (propVariants: Array<{ at: [number, number]; model: string }>) => validatePropVariants({ ...data, maps: { m: { ...map, propVariants } } }).map((i) => i.message);
+    expect(one([{ at: [6, 1], model: 'stable_a' }])).toEqual([]);
+    // [9,1] has open grass east of it; at [7,1] the stable's second field [8,1] has a hand-placed model of its own
+    expect(one([{ at: [9, 1], model: 'stable_a' }])).toEqual([expect.stringContaining('two fields wide')]);
+    expect(one([{ at: [7, 1], model: 'stable_a' }, { at: [8, 1], model: 'barn_a' }])).toEqual([expect.stringContaining('two fields wide')]);
+  });
 });
 
 describe('render.yaml variant weights (story 15.8)', () => {
@@ -293,7 +301,7 @@ describe('content:check: board models exist and ship (story 15.8)', () => {
     const groups = readdirSync(dir).filter((f) => f.endsWith('.yaml')).map((f) => parse(readFileSync(join(dir, f), 'utf8')) as unknown);
     const out = unshippedGalleryModels(groups);
     for (const m of ['market_a', 'market_b', 'camp_tent_a', 'mill_idle', 'wallrim_idle', 'grove_a']) expect(out.has(m)).toBe(false);
-    for (const m of ['house_town_a', 'chest_b_closed', 'barn_a']) expect(out.has(m)).toBe(true);
+    for (const m of ['house_town_a', 'chest_b_closed', 'field_burnt']) expect(out.has(m)).toBe(true);
     expect(unshippedGalleryModels([{ ships: true, items: [{ id: 'a' }] }, { items: [{ id: 'b' }, { id: 'c', ships: true }] }])).toEqual(new Set(['b']));
   });
   it('checks the models a map sets by hand', () => {

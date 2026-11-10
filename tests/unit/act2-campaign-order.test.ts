@@ -252,7 +252,7 @@ describe('placeholders of act 2 on the world map (story 11.11)', () => {
     added.push(m22);
     expect(mapInBuild(m22)).toBe(true);
     expect(offered(['m2_1'])).toEqual(['m2_2']);
-    // m2_3 stays a placeholder: after 2-2 nothing is on offer, 2-4 opens only once 2-3 is played as well
+    // m2_3 is not in the build (act 2 unreleased, its map since story 11.14 only on disk): after 2-2 nothing is on offer, 2-4 opens only once 2-3 is played as well
     expect(offered(['m2_1', 'm2_2'])).toEqual([]);
     expect(storyOpen(data, inAct2(['m2_1', 'm2_2']))).toEqual(['m2_3']);
     expect(storyOpen(data, inAct2(['m2_1', 'm2_2', 'm2_3']))).toEqual(['m2_4']);

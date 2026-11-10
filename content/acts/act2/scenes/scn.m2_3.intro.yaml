@@ -1,0 +1,41 @@
+# Mission 2-3, Szene vor der Karte (Knoten pre, Story 11.14): Ankunft an der Aure vor dem Gestüt der Silbernen Lanze. Der Bote Dravns überbringt den Auftrag
+# und Dravns erste kleine Lüge (PO 2026-11-09 F4 = A): die Krone habe dem Grenzheer die Pferde längst zugesprochen, die Truppe hole sie nur ab.
+# Rowena zeigt sich erst auf dem Brett (Leutnant-Zeile first). Ilka steht noch ohne Namen im Wald am Nordufer.
+# Gefährtenzeilen mit Ersatzsprecher-Kette. Text nach der Schreib-Pipeline der Narrative als Vorschlag, Abnahme beim Durchspielen.
+id: scn.m2_3.intro
+background: rabenweide
+music: tense
+lines:
+  - id: l01
+    mood: neutral
+    text: "Goldene Weiden bis an die Aure. Drüben weiße Koppeln, Ställe und silberne Wimpel."
+  - id: l02
+    speaker: [dravn_envoy]
+    fallback: skip
+    mood: neutral
+    text: "Das Gestüt der Silbernen Lanze. Der General braucht die Pferde für das Grenzheer."
+  - id: l03
+    speaker: [dravn_envoy]
+    fallback: skip
+    mood: neutral
+    text: "Die Krone hat sie ihm längst zugesprochen. Ihr holt sie nur ab, mehr nicht."
+  - id: l04
+    speaker: [lucan]
+    mood: neutral
+    text: "Wenn die Krone sie zugesprochen hat, warum braucht es dann Söldner zum Abholen?"
+  - id: l05
+    speaker: [dravn_envoy]
+    fallback: skip
+    mood: neutral
+    text: "Die Lanze hält sich für etwas Besseres. Sie gibt nichts her, auch nicht, was der Krone gehört."
+  - id: l06
+    mood: neutral
+    text: "Am Ufer drüben formieren sich Lanzenträger zu Fuß. Kein einziger sitzt im Sattel."
+  - id: l07
+    speaker: [fenn, mira, avatar]
+    mood: neutral
+    text: "Im Wald am Nordufer bewegt sich jemand. Kein Ritter. Eher jemand, der Spuren liest."
+  - id: l08
+    speaker: [avatar]
+    mood: neutral
+    text: "Drei Furten und ein Steg. Wir gehen hinüber und holen, was uns versprochen wurde."

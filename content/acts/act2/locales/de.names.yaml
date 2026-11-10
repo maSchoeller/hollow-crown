@@ -51,7 +51,23 @@ unit.dravn_envoy.name: "Bote des Grenzheers"
 map.m2_1_windscharte.name: "Die Windscharte"
 map.m2_5_silberquell.name: "Kloster Silberquell"
 
+# Story 11.13: Mission 2-2 (Karte, Gegner; Schmuggler und Kundschafter [ASSUMPTION])
+map.m2_2_salzpass.name: "Der Salzpass"
+unit.smuggler.name: "Schmuggler"
+unit.kharesh_scout.name: "Kundschafter aus Kharesh"
+
+# Story 11.14: Mission 2-3 (Karte)
+map.m2_3_rabenweide.name: "Die Rabenweide"
+# Story 11.20: Nebenquest N4 (Karte, Hauptmann der Vorposten, Clanälteste)
+map.n4_clanlager.name: "Das Clanlager"
+unit.outpost_captain.name: "Hauptmann des Vorpostens"
+unit.clan_elder.name: "Clanälteste"
 # Story 11.21: Nebenquest N5 (Karte und Gegner der Mine)
 map.n5_kupfermine.name: "Die Kupfermine"
 unit.duchess_looter.name: "Plünderer der Herzogin"
 unit.foreman.name: "Vorarbeiter"
+# Story 11.22: Nebenquest N6 (Karte, Gauklermeisterin und Schuldeneintreiber)
+map.n6_auemarkt.name: "Der Auemarkt"
+unit.troupe_master.name: "Meisterin Maren"
+unit.debt_collector.name: "Schuldeneintreiber"
+unit.debt_boss.name: "Oberster Eintreiber"

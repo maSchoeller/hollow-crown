@@ -1,0 +1,35 @@
+# Nebenquest N4, Szene nach der Karte (Knoten post, Story 11.20): Die Vorposten ziehen ab, Ilka bekommt den Weißwolf (Knotenwirkung) und bleibt.
+# Ob die Älteste überlebt hat, kann eine Szene nicht abfragen (keine Bedingung auf Nebenziele); die Zeilen lassen es offen.
+id: scn.n4.outro
+background: clanlager
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Die letzten Vorposten weichen in den Wald zurück. Der Nebel hebt sich langsam."
+  - id: l02
+    mood: neutral
+    text: "Der Clan sammelt sich zwischen den Zelten. Jemand bringt einen hellen Bogen, in Wolfsfell gewickelt."
+  - id: l03
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: sad
+    text: "Weißwolf. Der Bogen der Clanjäger. Man gibt ihn nur dem, der fortgeht."
+  - id: l04
+    speaker: [ilka]
+    fallback: skip
+    requires: [{ alive: ilka }]
+    mood: neutral
+    text: "Ich gehe mit euch. Aber jetzt weiß ich wieder, wofür."
+  - id: l05
+    speaker: [lucan]
+    mood: angry
+    text: "Dravn holt sich Pferde, Jagdgründe, Leute. Irgendwann holen wir uns etwas zurück."
+  - id: l06
+    mood: neutral
+    text: "In der Asche des Lagerfeuers glimmt ein Funke, der nicht verlöschen will: ein Glutfunke."
+  - id: l07
+    speaker: [brenna, tobin, avatar]
+    mood: happy
+    text: "Ein Funke und ein Bogen. Für einen Morgen im Schnee kein schlechter Lohn."

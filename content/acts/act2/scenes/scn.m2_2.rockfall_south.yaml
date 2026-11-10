@@ -1,0 +1,14 @@
+# Mission 2-2, Runde 3 (Trigger t_rock1): Steinschlag in der Südenge hinter der Truppe. Vorschlag der Schreib-Pipeline.
+id: scn.m2_2.rockfall_south
+lines:
+  - id: l01
+    mood: neutral
+    text: "Über der Südenge kracht es. Geröll stürzt in den Pass, zwei Felder liegen unter Fels."
+  - id: l02
+    speaker: [brenna, tobin, avatar]
+    mood: angry
+    text: "Das war kein Zufall. Da oben hat jemand nachgeholfen."
+  - id: l03
+    speaker: [lucan]
+    mood: neutral
+    text: "Dann eben nur nach vorn. Weiter."

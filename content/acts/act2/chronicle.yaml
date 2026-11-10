@@ -5,3 +5,8 @@
 - id: a2_mine
   title: "Was der Berg nimmt"
   text: "Paktnacht unter dem Kupferberg. Der König stieg allein in die Halle der Rippen, mit der Glutkrone und leeren Händen. Er kam zurück, und die Krone glühte heller als zuvor. Er selbst war blasser. Er sagte, er habe gegeben, was der Pakt verlangt. Was es war, sagte er nicht. Ich habe es aufgeschrieben, damit einer fragt."
+# 2-2 „Das Siegel im Salzpass“ (Story 11.13), Truhe c_page: [PO offen F3] Vorschlag A – eine Seite aus dem Tempelarchiv, die Grell für Maelis schmuggelt;
+# ein Wächter erzählt eine Paktnacht, in der der König „gab“, ohne zu sagen, was. Text der Schreib-Pipeline als Vorschlag zur Abnahme.
+- id: a2_salzpass
+  title: "Was der König gab"
+  text: "Paktnacht. Der König kniete am Altar, die Glutkrone auf den Knien, und gab. Was, darf ich nicht schreiben; ich sah nur, dass er danach langsamer aufstand. Die Herzöge jubelten. Am Morgen war der Altar warm und der König grau an den Schläfen, mit dreißig Jahren. Ich schreibe es auf, damit einer zählt."
